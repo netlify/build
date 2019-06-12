@@ -1,6 +1,54 @@
+const path = require('path')
+const execa = require('execa')
+const moveCache = require('../utils/moveCache')
+const shasum = require('../utils/shasum')
+const shouldInstallDeps = require('../utils/shouldInstallDeps')
+const { fileExists, writeFile } = require('../utils/fs')
 
+// https://github.com/netlify/build-image/blob/9e0f207a27642d0115b1ca97cd5e8cebbe492f63/run-build-functions.sh#L313-L332
+module.exports = async function installRubyGems(cwd, cacheDir) {
+  const { RUBY_VERSION, BUNDLER_FLAGS, PATH } = process.env
+  const gemFile = path.join(cwd, 'Gemfile')
+  const gemBundleDir = path.join(cwd, '.bundle')
+  if (await fileExists(gemFile)) {
+    // restore_cwd_cache ".bundle" "ruby gems"
+    await moveCache(
+      path.join(cacheDir, '.bundle'),
+      gemBundleDir,
+      'restoring cached ruby gems'
+    )
 
-/*
+    const gemLockPath = path.join(cwd, 'Gemfile.lock')
+    const previousShaPath = path.join(cacheDir, 'gemfile-sha')
+    if (await shouldInstallDeps(gemLockPath, RUBY_VERSION, previousShaPath) || !await fileExists(gemBundleDir)) {
+      console.log('Installing gem bundle')
+      try {
+        await execa('bundle', [
+          'install',
+          '--path',
+          '$NETLIFY_CACHE_DIR/bundle',
+          '--binstubs=$NETLIFY_CACHE_DIR/binstubs']
+          // @TODO verify this ${BUNDLER_FLAGS:+"$BUNDLER_FLAGS"}
+          .concat(BUNDLER_FLAGS ? [BUNDLER_FLAGS] : [])
+        )
+      } catch (err) {
+        console.log('Error during gem install')
+        console.log(err)
+      }
+      console.log('Gem bundle installed')
+
+      /* write new shasum to file */
+      // echo "$(shasum Gemfile.lock)-$RUBY_VERSION" > $NETLIFY_CACHE_DIR/gemfile-sha
+      const sha = await shasum(gemLockPath)
+      const newSha = `${sha}-${RUBY_VERSION}`
+      await writeFile(previousShaPath, newSha)
+    }
+    // export PATH=$NETLIFY_CACHE_DIR/binstubs:$PATH
+    process.env.PATH = `${cacheDir}/binstubs:${PATH}`
+  }
+}
+
+/* original bash script
 # Rubygems
 if [ -f Gemfile ]
 then
@@ -21,4 +69,4 @@ then
     export PATH=$NETLIFY_CACHE_DIR/binstubs:$PATH
   fi
 fi
- */
+*/
