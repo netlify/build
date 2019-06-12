@@ -4,16 +4,16 @@ const makeDir = require('make-dir')
 const copy = require('cpy')
 const del = require('del')
 
-function writeFile(file, contents) {
+function writeFile(filePath, contents) {
   return new Promise(async (resolve, reject) => {
-    const dir = path.dirname(file)
+    const dir = path.dirname(filePath)
     const dirExists = await fileExists(dir)
     if (!dirExists) {
       await makeDir(dir)
     }
-    fs.writeFile(file, contents, (error) => {
+    fs.writeFile(filePath, contents, (error) => {
       if (error) return reject(error)
-      return resolve(file)
+      return resolve(filePath)
     })
   })
 }
