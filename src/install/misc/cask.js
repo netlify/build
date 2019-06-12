@@ -1,4 +1,35 @@
+const path = require('path')
+const execa = require('execa')
+const moveCache = require('../utils/moveCache')
+const { fileExists } = require('../utils/fs')
 
+// https://github.com/netlify/build-image/blob/9e0f207a27642d0115b1ca97cd5e8cebbe492f63/run-build-functions.sh#L507-L516
+module.exports = async function installCaskDeps(cwd, cacheDir) {
+  const caskFile = path.join(cwd, 'Cask')
+
+  const caskCacheFolder = path.join(cacheDir, '.cache')
+  const caskFolder = path.join(cwd, '.cache')
+
+  if (await fileExists(caskFile)) {
+    // restore_home_cache ".cask" "emacs cask dependencies"
+    await moveCache(caskCacheFolder, caskFolder, 'restoring cached emacs cask dependencies')
+    // restore_home_cache ".emacs.d" "emacs cache"
+    await moveCache(
+      path.join(cacheDir, '.emacs.d'),
+      path.join(cwd, '.emacs.d'),
+      'restoring cached emacs cache'
+    )
+
+    try {
+      await execa('cask', ['install'])
+    } catch (err) {
+      console.log('Error installing cask deps')
+      console.log(err)
+      process.exit(1)
+    }
+    console.log('Emacs packages installed')
+  }
+}
 
 /*
 # Cask
