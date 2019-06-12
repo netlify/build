@@ -2,11 +2,16 @@
 
 Netlify build is the next generation of CI/CD tooling for modern web applications.
 
-We have fully synchronized the Netlify build experience across the board, giving users a the same build pipeline directly on their local machines.
+We have fully synchronized the Netlify build experience across the board, giving users a the same build pipeline they know & love in Netlify directly on their local machines.
 
 Whether you are building your site locally with `netlify build` or through git commits in Netlify, developers have access to a powerful set of build features.
 
-Netlify Build is flexible enough for any kind of build setup & is extendable to fit your unique project requirements.
+**Netlify Build** is flexible & build to support any kind of build flow. It is extendable to fit your unique project requirements.
+
+## Design principles
+
+- Core should be extendable
+- Modular components
 
 ##  Requirements
 
@@ -57,7 +62,7 @@ Outputs manifest of resources created
 `finally`
 Last step in deployment chain
 
-These lifecycle hooks are how users, addons, and internal products can extend the functionality of the build process.
+These lifecycle hooks are how users, add-ons, and internal products can extend the functionality of the **Netlify Build** process.
 
 ## Open questions
 
