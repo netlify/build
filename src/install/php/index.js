@@ -1,4 +1,20 @@
+const path = require('path')
+const execa = require('execa')
+const { fileExists } = require('../utils/fs')
 
+// https://github.com/netlify/build-image/blob/9e0f207a27642d0115b1ca97cd5e8cebbe492f63/run-build-functions.sh#L297-L311
+module.exports = async function installPhp(cwd, cacheDir, version) {
+  const { HOME } = process.env
+  const phpBinPath = path.resolve(`/usr/bin/php${version}`)
+  if (await fileExists(phpBinPath)) {
+    try {
+      await execa('ln', ['-sf', phpBinPath, `${HOME}/.php/php`])
+    } catch (err) {
+      console.log(`PHP version ${version} does not exist`)
+      console.log(err)
+    }
+  }
+}
 
 /*
 # PHP version
@@ -16,4 +32,4 @@ else
   echo "PHP version $PHP_VERSION does not exist"
   exit 1
 fi
- */
+*/
