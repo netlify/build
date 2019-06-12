@@ -67,8 +67,9 @@ These lifecycle hooks are how users, add-ons, and internal products can extend t
 ## Open questions
 
 - Context overhaul. How will stages work?
+- Isolated build images for stages?
 - Parallel Step execution?
-- Canary deployments
+- Canary deployments?
 
 ## References & research
 
