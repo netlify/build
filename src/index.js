@@ -51,7 +51,7 @@ const globals = {
 async function runBuildFunction() {
   // Whats NETLIFY_VERBOSE do?
 
-  // Set Globals
+  /* Set Globals env vars */
   Object.keys(globals).map((key) => {
     process.env[key] = globals[key]
   })

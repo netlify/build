@@ -7,11 +7,12 @@ const { readFile, fileExists } = require('../utils/fs')
 module.exports = async function installPython(cwd, cacheDir) {
   const hasPythonRuntime = await fileExists('runtime.txt')
   const hasPipFile = await fileExists('Pipfile')
+  const { HOME } = process.env
   let PYTHON_VERSION = '2.7'
   if (hasPythonRuntime) {
     PYTHON_VERSION = await readFile('runtime.txt')
     try {
-      await execa(['source', `$HOME/python${PYTHON_VERSION}/bin/activate`])
+      await execa('source', [`${HOME}/python${PYTHON_VERSION}/bin/activate`])
     } catch (err) {
       console.log('Error setting python version from runtime.txt')
       console.log('Please see https://github.com/netlify/build-image/#included-software for current versions')
@@ -27,7 +28,7 @@ module.exports = async function installPython(cwd, cacheDir) {
     )
   } else {
     // Default
-    await execa(['source', `$HOME/python${PYTHON_VERSION}/bin/activate`])
+    await execa('source', [`$HOME/python${PYTHON_VERSION}/bin/activate`])
   }
   return PYTHON_VERSION
 }
