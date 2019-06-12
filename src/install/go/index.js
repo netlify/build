@@ -1,4 +1,78 @@
+const path = require('path')
+const execa = require('execa')
+const makeDir = require('make-dir')
+const { readFile, fileExists, removeFiles } = require('../utils/fs')
+const moveCache = require('../utils/moveCache')
 
+// https://github.com/netlify/build-image/blob/9e0f207a27642d0115b1ca97cd5e8cebbe492f63/run-build-functions.sh#L525-L556
+module.exports = async function installGo(cwd, cacheDir, version) {
+  const {
+    GIMME_GO_VERSION,
+    GO_IMPORT_PATH,
+    GOPATH,
+    HOME
+  } = process.env
+  let installGoVersion = version
+  const goVersionFile = path.join(cwd, '.go-version')
+
+  // Restore cached go
+  await moveCache(
+    path.join(cacheDir, 'gimme_cache'),
+    path.join(cwd, 'gimme_cache'),
+    'restoring cached go cache'
+  )
+
+  if (await fileExists(goVersionFile)) {
+    const goVersion = await readFile(goVersionFile)
+    if (goVersion !== version) {
+      installGoVersion = goVersion
+    }
+  }
+
+  if (installGoVersion !== GIMME_GO_VERSION) {
+    console.log(`Installing Go version ${installGoVersion}`)
+    try {
+      process.env.GIMME_ENV_PREFIX = `${HOME}/.gimme_cache/env`
+      process.env.GIMME_VERSION_PREFIX = `${HOME}/.gimme_cache/versions`
+      await execa('gimme', [installGoVersion])
+    } catch (err) {
+      console.log(`Failed to install Go version ${installGoVersion}`)
+      process.exit(1)
+    }
+
+    await sourceGo(installGoVersion, HOME)
+  } else {
+    try {
+      await execa('gimme')
+    } catch (err) {
+      console.log(`gimme not found`, err)
+      process.exit(1)
+    }
+    await sourceGo(GIMME_GO_VERSION, HOME)
+  }
+
+  // Setup project GOPATH
+  if (GO_IMPORT_PATH) {
+    const importPath = `${GOPATH}/src/${GO_IMPORT_PATH}`
+    await makeDir(importPath)
+
+    await removeFiles([`${importPath}/**`])
+
+    const ln = await execa('ln', ['-s', '/opt/buildhome/repo', importPath])
+    if (ln.stdout) {
+      console.log(ln.stdout)
+    }
+  }
+}
+
+async function sourceGo(version, home) {
+  try {
+    await execa('source', [`${home}/.gimme_cache/env/go${version}.linux.amd64.env`])
+  } catch (err) {
+    console.log(`Go source failed`, err)
+    process.exit(1)
+  }
+}
 
 /*
 # Go version
@@ -33,7 +107,7 @@ else
     exit 1
   fi
 fi
- */
+*/
 
 /*
 # Setup project GOPATH
@@ -43,4 +117,4 @@ then
   rm -rf $GOPATH/src/$GO_IMPORT_PATH
   ln -s /opt/buildhome/repo ${GOPATH}/src/$GO_IMPORT_PATH
 fi
- */
+*/
