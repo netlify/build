@@ -27,9 +27,9 @@ module.exports = async function installRubyGems(cwd, cacheDir) {
           'install',
           '--path',
           '$NETLIFY_CACHE_DIR/bundle',
-          '--binstubs=$NETLIFY_CACHE_DIR/binstubs']
-          // @TODO verify this ${BUNDLER_FLAGS:+"$BUNDLER_FLAGS"}
-          .concat(BUNDLER_FLAGS ? [BUNDLER_FLAGS] : [])
+          '--binstubs=$NETLIFY_CACHE_DIR/binstubs'
+        ].concat(BUNDLER_FLAGS ? [BUNDLER_FLAGS] : [])
+        // @TODO ^ verify this ${BUNDLER_FLAGS:+"$BUNDLER_FLAGS"}
         )
       } catch (err) {
         console.log('Error during gem install')
