@@ -1,5 +1,62 @@
+const path = require('path')
+const execa = require('execa')
+const moveCache = require('../utils/moveCache')
+const { fileExists } = require('../utils/fs')
 
-/*
+// https://github.com/netlify/build-image/blob/9e0f207a27642d0115b1ca97cd5e8cebbe492f63/run-build-functions.sh#L334-L364
+module.exports = async function installPipDeps(cwd, cacheDir) {
+  const { PIPENV_RUNTIME, HOME } = process.env
+  const requirementsPath = path.join(cwd, 'requirements.txt')
+  const pipFilePath = path.join(cwd, 'Pipfile')
+  if (await fileExists(requirementsPath)) {
+    console.log('Installing pip dependencies')
+    await moveCache(
+      path.join(cacheDir, '.cache'),
+      path.join(cwd, '.cache'),
+      'restoring cached python cached deps'
+    )
+    try {
+      await execa('pip', ['install', '-r', requirementsPath])
+    } catch (err) {
+      console.log('Error installing pip dependencies')
+      process.exit(1)
+    }
+    console.log('Pip dependencies installed')
+  } else if (await fileExists(pipFilePath)) {
+    console.log('Installing dependencies from Pipfile')
+    try {
+      await execa(`${HOME}/python${PIPENV_RUNTIME}/bin/pipenv`, ['install'])
+    } catch (err) {
+      console.log('Error installing Pipenv dependencies')
+      console.log('Please see https://github.com/netlify/build-image/#included-software for current versions')
+      process.exit(1)
+    }
+    console.log('Pipenv dependencies installed')
+
+    try {
+      // source $($HOME/python$PIPENV_RUNTIME/bin/pipenv --venv)/bin/activate
+      await execa('source', ['$($HOME/python$PIPENV_RUNTIME/bin/pipenv --venv)/bin/activate'])
+      const pythonVersion = await getPythonVersion()
+      console.log(`Python version set to ${pythonVersion}`)
+    } catch (err) {
+      console.log('Error activating Pipenv environment')
+      process.exit(1)
+    }
+  }
+}
+
+async function getPythonVersion() {
+  let version
+  try {
+    const { stdout } = await execa('python', ['-V'])
+    version = stdout
+  } catch (err) {
+    console.log('No python found', err)
+  }
+  return version
+}
+
+/* original logic
 # PIP dependencies
 if [ -f requirements.txt ]
 then
