@@ -12,7 +12,7 @@ const {
 module.exports = async function installNode(cwd, cacheDir, version) {
   let NODE_VERSION = version
   const { NVM_DIR, NPM_TOKEN } = process.env
-  await execa(['source', `${NVM_DIR}/nvm.sh`])
+  await execa('source', [`${NVM_DIR}/nvm.sh`])
 
   const nodeVersionCache = path.join(cacheDir, 'node_version')
   if (await fileExists(nodeVersionCache)) {
@@ -36,12 +36,18 @@ module.exports = async function installNode(cwd, cacheDir, version) {
 
   /* install */
   try {
-    await execa(['nvm', 'install', NODE_VERSION])
+    await execa('nvm', ['install', NODE_VERSION])
     // Get version
-    NODE_VERSION = await execa(['nvm', 'current'])
+    NODE_VERSION = await execa('nvm', ['current'])
     if (NODE_VERSION === 'none') { // todo harden this
-      await execa(['nvm', 'debug'])
-      await execa(['env'])
+      const debug = await execa('nvm', ['debug'])
+      if (debug.stdout) {
+        console.log(debug.stdout)
+      }
+      const envCommand = await execa('env')
+      if (envCommand.stdout) {
+        console.log(envCommand.stdout)
+      }
     }
   } catch (err) {
     console.log(`Failed to install node version '${NODE_VERSION}'`)
