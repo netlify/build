@@ -1,7 +1,39 @@
+const path = require('path')
+const execa = require('execa')
+const moveCache = require('../utils/moveCache')
+const shasum = require('../utils/shasum')
+const shouldInstallDeps = require('../utils/shouldInstallDeps')
+const { fileExists, writeFile, readFile } = require('../utils/fs')
 
+module.exports = async function installRuby(cwd, cacheDir, version) {
+  const { HOME } = process.env
+  let tmpRubyVersion = version
 
-module.exports = async function installRuby(cwd, cacheDir) {
+  try {
+    await execa('source', [`${HOME}/.rvm/scripts/rvm`])
+  } catch (err) {
+    console.log('No rvm found', err)
+    process.exit(1)
+  }
+  // # rvm will overwrite RUBY_VERSION, so we must control it.
+  process.env.RUBY_VERSION = tmpRubyVersion
 
+  let druby = process.env.RUBY_VERSION
+  const rubyVersionFile = path.join(cwd, '.ruby-version')
+  if (await fileExists(rubyVersionFile)) {
+    druby = await readFile(rubyVersionFile)
+    console.log(`Attempting ruby version ${druby}, read from .ruby-version file`)
+  } else {
+    console.log(`Attempting ruby version ${druby}, read from environment`)
+  }
+
+  try {
+    // TODO what is this doing?
+    await execa('rvm', ['use', druby, '>', '/dev/null', '2>&1'])
+  } catch (err) {
+    console.log('RVM use error', err)
+    process.exit(1)
+  }
 }
 
 /*
