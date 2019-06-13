@@ -1,9 +1,7 @@
 const path = require('path')
 const makeDir = require('make-dir')
 const execa = require('execa')
-const shasum = require('./src/utils/shasum')
-const installPython = require('./install/python')
-const installNode = require('./install/node')
+const installDependencies = require('./install')
 const { readFile } = require('./src/utils/fs')
 
 const NETLIFY_BUILD_BASE = '/opt/buildhome'
@@ -62,37 +60,8 @@ async function runBuildFunction() {
   }))
 }
 
-/**
- * If shas don't match update deps
- * @param  {string} currentPath  - file to check
- * @param  {string} previousPath - location of previous hash
- * @return {Boolean}
- */
-async function shouldInstallDeps(currentPath, previousPath) {
-  if (!previousPath) {
-    return true
-  }
-  const current = await shasum(currentPath)
-  const previous = await readFile(previousPath)
-  if (current !== previous) {
-    return true
-  }
-  return false
-}
-
-// install_dependencies
-async function installDependencies(config = {}) {
-  const { node_version, ruby_version, yarn_version, php_version, go_version } = config
-
-  await installPython(CWD, NETLIFY_CACHE_DIR)
-
-  await installNode(CWD, NETLIFY_CACHE_DIR, node_version)
-
-  // ... more to come
-
-}
-
 async function runBuild() {
+  // inputs from Buildbot
   const dir = '$(dirname $0)'
   const build_dir = '$1'
   const node_version = '$2'
@@ -111,18 +80,21 @@ async function runBuild() {
   )
   */
 
+  await runBuildFunction()
+
   console.log('Installing dependencies')
   await installDependencies({
     node_version,
     ruby_version,
     yarn_version,
     php_version,
-    go_version: '.shrug'
+    go_version: '.shrug',
+    CWD: CWD,
+    NETLIFY_CACHE_DIR: NETLIFY_CACHE_DIR
   })
 
   /* Parse build command and try to fix missing deps */
   // install_missing_commands
-
 
   console.log('Verify run directory')
   // set_go_import_path
