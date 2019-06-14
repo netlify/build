@@ -2,6 +2,7 @@ const path = require('path')
 const makeDir = require('make-dir')
 const execa = require('execa')
 const installDependencies = require('./install')
+const installMissingCommands = require('./install/missing-commands')
 const { readFile } = require('./src/utils/fs')
 
 const NETLIFY_BUILD_BASE = '/opt/buildhome'
@@ -72,7 +73,7 @@ async function runBuild() {
   const functions_dir = '$6'
   const zisi_temp_dir = '$7'
 
-  const BUILD_COMMAND_PARSER = '$cmd'
+  const BUILD_COMMAND = '$cmd'
   /*
   const BUILD_COMMAND_PARSER = $(cat <<EOF
   $cmd
@@ -94,7 +95,7 @@ async function runBuild() {
   })
 
   /* Parse build command and try to fix missing deps */
-  // install_missing_commands
+  await installMissingCommands(CWD, NETLIFY_CACHE_DIR, BUILD_COMMAND)
 
   console.log('Verify run directory')
   // set_go_import_path
