@@ -4,7 +4,9 @@ const execa = require('execa')
 const installDependencies = require('./install')
 const installMissingCommands = require('./install/missing-commands')
 const setGoImportPath = require('./install/set-go-import-path')
-const { readFile } = require('./src/utils/fs')
+const minimist = require('minimist')
+
+const argv = minimist(process.argv.slice(2))
 
 const NETLIFY_BUILD_BASE = '/opt/buildhome'
 const NETLIFY_CACHE_DIR = `${NETLIFY_BUILD_BASE}/cache`
@@ -62,41 +64,50 @@ async function runBuildFunction() {
   }))
 }
 
-async function runBuild() {
+// fields.BuildDir, fields.NodeVersion, fields.RubyVersion, fields.YarnVersion, fields.BuildCmd, fields.FunctionsDir, fields.ZisiTempDir
+
+/**
+ * Run Netlify Build
+ * @param  {Object} config - Netlify Build config
+ * @param  {String} config.buildDir - Build directory
+ * @param  {String} config.buildCmd - Build command
+ * @param  {String} config.functionsDir - Functions directory
+ * @param  {String} config.zisiTempDir - Zip & ship temp dir... todo remove
+ * @param  {String} config.nodeVersion - Node version
+ * @param  {String} config.rubyVersion - Ruby version
+ * @param  {String} config.yarnVersion - Yarn version
+ * @return {[type]}        [description]
+ */
+async function runBuild(config) {
+  const {
+    buildDir,
+    buildCmd,
+    functionsDir,
+    zisiTempDir,
+    nodeVersion,
+    rubyVersion,
+    yarnVersion
+  } = config
   // inputs from Buildbot
-  const dir = '$(dirname $0)'
-  const build_dir = '$1'
-  const node_version = '$2'
-  const ruby_version = '$3'
-  const yarn_version = '$4'
-  const cmd = '$5'
-  const php_version = '5.6'
-  const functions_dir = '$6'
-  const zisi_temp_dir = '$7'
+  const parentDir = path.dirname(buildDir)
+  const phpVersion = '5.6'
 
-  const BUILD_COMMAND = '$cmd'
-  /*
-  const BUILD_COMMAND_PARSER = $(cat <<EOF
-  $cmd
-  EOF
-  )
-  */
-
+  // 
   await runBuildFunction()
 
   console.log('Installing dependencies')
   await installDependencies({
-    node_version,
-    ruby_version,
-    yarn_version,
-    php_version,
-    go_version: '.shrug',
+    nodeVersion,
+    rubyVersion,
+    yarnVersion,
+    phpVersion,
+    goVersion: '.shrug',
     CWD: CWD,
     NETLIFY_CACHE_DIR: NETLIFY_CACHE_DIR
   })
 
   /* Parse build command and try to fix missing deps */
-  await installMissingCommands(CWD, NETLIFY_CACHE_DIR, BUILD_COMMAND)
+  await installMissingCommands(CWD, NETLIFY_CACHE_DIR, buildCmd)
 
   console.log('Verify run directory')
   await setGoImportPath(CWD)
@@ -104,7 +115,8 @@ async function runBuild() {
   /* Run the build command */
   console.log('Executing user command: $cmd')
   try {
-    await execa(cmd)
+    // TODO parse buildCmd or execa.shell
+    await execa(buildCmd)
   } catch (err) {
     console.log('Build Error', err)
     process.exit(1)

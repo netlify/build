@@ -18,20 +18,20 @@ const installZipAndShip = require('./serverless/zip-and-ship')
 // https://github.com/netlify/build-image/blob/9e0f207a27642d0115b1ca97cd5e8cebbe492f63/run-build-functions.sh#L59-L581
 module.exports = async function installDependencies(config = {}) {
   const {
-    node_version,
-    ruby_version,
-    yarn_version,
-    php_version,
-    go_version,
+    nodeVersion,
+    rubyVersion,
+    yarnVersion,
+    phpVersion,
+    goVersion,
     CWD,
     NETLIFY_CACHE_DIR
   } = config
 
   await installPython(CWD, NETLIFY_CACHE_DIR)
 
-  await installNode(CWD, NETLIFY_CACHE_DIR, node_version)
+  await installNode(CWD, NETLIFY_CACHE_DIR, nodeVersion)
 
-  // Not complete await installRuby(CWD, NETLIFY_CACHE_DIR, ruby_version)
+  // Not complete await installRuby(CWD, NETLIFY_CACHE_DIR, rubyVersion)
 
   // await installJava(CWD, NETLIFY_CACHE_DIR)
   // process.env.JAVA_VERSION = default_sdk
@@ -43,7 +43,7 @@ module.exports = async function installDependencies(config = {}) {
   await installPipDeps(CWD, NETLIFY_CACHE_DIR)
 
   /* NPM Dependencies */
-  await installNodeDeps(CWD, NETLIFY_CACHE_DIR, yarn_version)
+  await installNodeDeps(CWD, NETLIFY_CACHE_DIR, yarnVersion)
 
   /* Bower Dependencies */
   await installBowerDeps(CWD, NETLIFY_CACHE_DIR)
@@ -73,7 +73,7 @@ module.exports = async function installDependencies(config = {}) {
   await installComposerDeps(CWD, NETLIFY_CACHE_DIR)
 
   /* Go version */
-  await installGo(CWD, NETLIFY_CACHE_DIR, go_version)
+  await installGo(CWD, NETLIFY_CACHE_DIR, goVersion)
 
   /* WAPM version */
   await installWapm(CWD, NETLIFY_CACHE_DIR)
