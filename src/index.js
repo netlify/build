@@ -3,6 +3,7 @@ const makeDir = require('make-dir')
 const execa = require('execa')
 const installDependencies = require('./install')
 const installMissingCommands = require('./install/missing-commands')
+const setGoImportPath = require('./install/set-go-import-path')
 const { readFile } = require('./src/utils/fs')
 
 const NETLIFY_BUILD_BASE = '/opt/buildhome'
@@ -98,7 +99,7 @@ async function runBuild() {
   await installMissingCommands(CWD, NETLIFY_CACHE_DIR, BUILD_COMMAND)
 
   console.log('Verify run directory')
-  // set_go_import_path
+  await setGoImportPath(CWD)
 
   /* Run the build command */
   console.log('Executing user command: $cmd')
