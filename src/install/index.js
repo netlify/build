@@ -31,7 +31,7 @@ module.exports = async function installDependencies(config = {}) {
 
   await installNode(CWD, NETLIFY_CACHE_DIR, nodeVersion)
 
-  // Not complete await installRuby(CWD, NETLIFY_CACHE_DIR, rubyVersion)
+  await installRuby(CWD, NETLIFY_CACHE_DIR, rubyVersion)
 
   // await installJava(CWD, NETLIFY_CACHE_DIR)
   // process.env.JAVA_VERSION = default_sdk
