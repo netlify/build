@@ -6,6 +6,7 @@ const cacheArtifacts = require('./cache')
 const installMissingCommands = require('./install/missing-commands')
 const setGoImportPath = require('./install/set-go-import-path')
 const minimist = require('minimist')
+const { getProcessCount, findRunningProcs } = require('./utils/findRunningProcs')
 
 const argv = minimist(process.argv.slice(2))
 
@@ -130,6 +131,14 @@ async function runBuild(config) {
   await cacheArtifacts(CWD, NETLIFY_CACHE_DIR)
 
   /* Report lingering process */
-  // report_lingering_procs
-  // https://www.npmjs.com/package/ps-list
+  const procs = await findRunningProcs()
+  const count = getProcessCount(procs) - 1
+  if (count > 0) {
+    console.log('** WARNING **')
+    console.log('There are some lingering processes even after the build process finished: ')
+    console.log(`${procs}`)
+    console.log('Our builds do not kill your processes automatically, so please make sure')
+    console.log('that nothing is running after your build finishes, or it will be marked as')
+    console.log('failed since something is still running.')
+  }
 }
