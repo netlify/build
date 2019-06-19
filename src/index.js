@@ -2,6 +2,7 @@ const path = require('path')
 const makeDir = require('make-dir')
 const execa = require('execa')
 const installDependencies = require('./install')
+const cacheArtifacts = require('./cache')
 const installMissingCommands = require('./install/missing-commands')
 const setGoImportPath = require('./install/set-go-import-path')
 const minimist = require('minimist')
@@ -92,7 +93,7 @@ async function runBuild(config) {
   const parentDir = path.dirname(buildDir)
   const phpVersion = '5.6'
 
-  // 
+  //
   await runBuildFunction()
 
   console.log('Installing dependencies')
@@ -126,7 +127,7 @@ async function runBuild(config) {
   // prep_functions $functions_dir $zisi_temp_dir
 
   /* Cache all the things */
-  // cache_artifacts
+  await cacheArtifacts(CWD, NETLIFY_CACHE_DIR)
 
   /* Report lingering process */
   // report_lingering_procs
