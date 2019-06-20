@@ -1,3 +1,4 @@
+const installPhp = require('./php')
 const installPython = require('./python')
 const installPipDeps = require('./python/pip')
 const installNode = require('./node/install-node')
@@ -35,6 +36,9 @@ module.exports = async function installDependencies(config = {}) {
 
   // await installJava(CWD, NETLIFY_CACHE_DIR)
   // process.env.JAVA_VERSION = default_sdk
+  // @TODO what is default_sdk?
+
+  await installPhp(CWD, NETLIFY_CACHE_DIR, phpVersion)
 
   /* Ruby gems */
   await installRubyGems(CWD, NETLIFY_CACHE_DIR)
