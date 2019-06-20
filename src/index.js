@@ -1,22 +1,27 @@
 const path = require('path')
 const execa = require('execa')
 const installDependencies = require('./install')
+const cacheArtifacts = require('./cache')
 const prepFunctions = require('./install/serverless/prep-functions')
 const runBuildFunction = require('./run-build-function')
-const cacheArtifacts = require('./cache')
 const installMissingCommands = require('./install/missing-commands')
 const setGoImportPath = require('./install/set-go-import-path')
-const minimist = require('minimist')
 const { getProcessCount, findRunningProcs } = require('./utils/findRunningProcs')
-
-const argv = minimist(process.argv.slice(2))
 
 const NETLIFY_BUILD_BASE = '/opt/buildhome'
 const NETLIFY_CACHE_DIR = `${NETLIFY_BUILD_BASE}/cache`
 const NETLIFY_REPO_DIR = `${NETLIFY_BUILD_BASE}/repo`
 const CWD = process.cwd()
 
-// fields.BuildDir, fields.NodeVersion, fields.RubyVersion, fields.YarnVersion, fields.BuildCmd, fields.FunctionsDir, fields.ZisiTempDir
+/*
+  fields.BuildDir,
+  fields.NodeVersion,
+  fields.RubyVersion,
+  fields.YarnVersion,
+  fields.BuildCmd,
+  fields.FunctionsDir,
+  fields.ZisiTempDir
+ */
 
 /**
  * Run Netlify Build
@@ -30,7 +35,7 @@ const CWD = process.cwd()
  * @param  {String} config.yarnVersion - Yarn version
  * @return {[type]}        [description]
  */
-async function runBuild(config) {
+module.exports = async function runBuild(config) {
   const {
     buildDir,
     buildCmd,

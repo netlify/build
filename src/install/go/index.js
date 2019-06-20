@@ -1,8 +1,8 @@
 const path = require('path')
 const execa = require('execa')
 const makeDir = require('make-dir')
-const { readFile, fileExists, removeFiles } = require('../utils/fs')
-const moveCache = require('../utils/moveCache')
+const { readFile, fileExists, removeFiles } = require('../../utils/fs')
+const moveCache = require('../../utils/moveCache')
 
 // https://github.com/netlify/build-image/blob/9e0f207a27642d0115b1ca97cd5e8cebbe492f63/run-build-functions.sh#L525-L556
 module.exports = async function installGo(cwd, cacheDir, version) {

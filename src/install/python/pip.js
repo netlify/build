@@ -1,7 +1,7 @@
 const path = require('path')
 const execa = require('execa')
-const moveCache = require('../utils/moveCache')
-const { fileExists } = require('../utils/fs')
+const moveCache = require('../../utils/moveCache')
+const { fileExists } = require('../../utils/fs')
 
 // https://github.com/netlify/build-image/blob/9e0f207a27642d0115b1ca97cd5e8cebbe492f63/run-build-functions.sh#L334-L364
 module.exports = async function installPipDeps(cwd, cacheDir) {

@@ -6,7 +6,7 @@ const {
   fileExists,
   removeFiles,
   copyFiles
-} = require('../utils/fs')
+} = require('../../utils/fs')
 
 // https://github.com/netlify/build-image/blob/9e0f207a27642d0115b1ca97cd5e8cebbe492f63/run-build-functions.sh#L186
 module.exports = async function installNode(cwd, cacheDir, version) {

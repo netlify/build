@@ -1,9 +1,6 @@
 const path = require('path')
 const execa = require('execa')
-const moveCache = require('../utils/moveCache')
-const { fileExists, writeFile } = require('../utils/fs')
-const shasum = require('../utils/shasum')
-const shouldInstallDeps = require('../utils/shouldInstallDeps')
+const { fileExists, writeFile } = require('../../utils/fs')
 
 module.exports = async function prepFunctions(functionsDir, zisiTempDir) {
   if (!functionsDir) {

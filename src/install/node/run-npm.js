@@ -1,9 +1,9 @@
 const path = require('path')
 const execa = require('execa')
 const setTempDir = require('./utils/set-temp-dir')
-const shasum = require('../utils/shasum')
-const shouldInstallDeps = require('../utils/shouldInstallDeps')
-const { writeFile } = require('../utils/fs')
+const shasum = require('../../utils/shasum')
+const shouldInstallDeps = require('../../utils/shouldInstallDeps')
+const { writeFile } = require('../../utils/fs')
 
 // https://github.com/netlify/build-image/blob/9e0f207a27642d0115b1ca97cd5e8cebbe492f63/run-build-functions.sh#L119-L157
 module.exports = async function runNpm(cwd, cacheDir) {

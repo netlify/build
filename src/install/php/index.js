@@ -1,6 +1,6 @@
 const path = require('path')
 const execa = require('execa')
-const { fileExists } = require('../utils/fs')
+const { fileExists } = require('../../utils/fs')
 
 // https://github.com/netlify/build-image/blob/9e0f207a27642d0115b1ca97cd5e8cebbe492f63/run-build-functions.sh#L297-L311
 module.exports = async function installPhp(cwd, cacheDir, version) {
