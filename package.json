@@ -12,7 +12,7 @@
     "configorama": "0.0.8",
     "cpy": "^7.2.0",
     "del": "^4.1.1",
-    "execa": "^1.0.0",
+    "execa": "^2.0.0-alpha.0",
     "get-stream": "^5.1.0",
     "make-dir": "^3.0.0",
     "minimist": "^1.2.0"
