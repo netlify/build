@@ -1,13 +1,13 @@
 {
   "name": "netlify-build",
   "version": "1.0.0",
-  "description": "",
+  "description": "Netlify build module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lifecycle": "node ./cli.js"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "configorama": "0.0.8",
     "cpy": "^7.2.0",
