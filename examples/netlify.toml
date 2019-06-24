@@ -1,0 +1,23 @@
+[build]
+  command = "npm run build"
+  publish = "build"
+
+[plugins]
+  [plugins.cypress]
+    [plugins.cypress.config]
+      pageLoadTimeout = 60000
+      baseUrl = "${env:SITE}"
+
+[dev]
+  command = "yarn start"
+  port = 3000
+  publish = "dist"
+
+[context.production]
+  environment = { FOO = "${env:MY_VAR_PROD}" }
+
+[context.qa]
+  environment = { FOO = "${env:MY_VAR_QA}" }
+
+[context.dev]
+  environment = { FOO = "${env:MY_VAR_DEV}" }

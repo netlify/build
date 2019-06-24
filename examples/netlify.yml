@@ -1,0 +1,35 @@
+version: 06-25-2019
+
+plugins:
+  - netlify-cypress-plugin:
+      baseUrl: "${env:SITE}"
+      pageLoadTimeout: 60000
+  - netlify-sitemap-plugin:
+      exclude: "**/dist"
+  - netlify-notify-plugin:
+      emails:
+        - david@netlify.com
+        - jim@netlify.com
+  - netlify-cache-plugin:
+      dir: 'lol-dir'
+      ttl: 100000
+  - netlify-lighthouse-plugin: true
+
+build:
+  command: npm run build
+  lifecycle:
+    init:
+      - npm run preBuildThing
+      - export VALUE=lol
+      - echo "much wow"
+    getCache:
+      - curl 'get custom cache thing'
+    install: npm install && rm -rf badfile
+    build:
+      command: |
+        echo 'Hello Netlify Build!'
+        npm run build
+    package:
+      - zip -q -r .functions/package.zip src node_modules
+
+addons:

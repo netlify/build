@@ -3,7 +3,7 @@ const minimist = require('minimist')
 const deepLog = require('./src/utils/deeplog')
 const netlifyConfig = require('./src/config')
 
-const netlifyConfigFile = path.join(__dirname, 'netlify.yml')
+const netlifyConfigFile = path.join(__dirname, 'examples', 'netlify.yml')
 const cliFlags = minimist(process.argv.slice(2))
 
 /* env vars */
