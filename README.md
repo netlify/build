@@ -116,11 +116,11 @@ This section describes the netlify build environment.
 
 ### Directories
 
-`.netlify`
-`.netlify/src` - Source code from repo, zip, tar
-`.netlify/cache` - Files persisted across builds
-`.netlify/cache/dependancies` - All dependancies are cache here. These are used for lookup / install process.
-`.netlify/build` - Built files
+- `.netlify`
+- `.netlify/src` - Source code from repo, zip, tar
+- `.netlify/cache` - Files persisted across builds
+- `.netlify/cache/dependancies` - All dependancies are cache here. These are used for lookup / install process.
+- `.netlify/build` - Built files
 
 ### Environment variables
 
