@@ -62,6 +62,10 @@ Whether you are building your site locally with `netlify build` or through git c
 
 Build steps are codified in the Netlify UI or via `netlify` config file this gives us a version controlled build system of immutable deployments.
 
+**Design of build steps & lifecycle WIP**
+
+[See other CI/CD configs](./research.md)
+
 ```
 (Example code WIP)
 examples in /examples
