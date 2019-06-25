@@ -1,4 +1,4 @@
-# (WIP) Netlify Build
+# Netlify Build (WIP)
 
 Netlify build is the next generation of CI/CD tooling for modern web applications.
 
@@ -18,12 +18,14 @@ Whether you are building your site locally with `netlify build` or through git c
 
 - Must be backwards compatible with existing site builds
 - Builds must be cancellable
-- Builds must be fast
+- Builds must be fast [ref](https://github.com/netlify/build-image/issues/141)
 - Builds must handle git + zip/tar/etc builds
-- Builds must support [mono-repos](https://github.com/netlify/product/issues/121)
-- Builds must account for add-on provisioning/updating
+- Builds must support [mono-repos](https://github.com/netlify/product/issues/121), [related](https://github.com/netlify/buildbot/pull/309), [ref](https://github.com/netlify/build-image/issues/141)
 - Builds must allow [dynamic configuration resolution](https://github.com/netlify/netlify-config)
 - Builds should be extendable via plugins
+- Build image must have preinstalled `netlify-cli` with prepopulated auth keys
+- Improve overall DX [ref](https://github.com/netlify/buildbot/issues/125)
+- Builds must account for add-on provisioning/updating
 
 ## Ops
 
@@ -32,6 +34,7 @@ Ideal ops state:
 - Isolated build environments
 - Multi-region failover
 - Pro-active alerting
+- Configurable log retention
 
 ## Logging behavior
 
@@ -84,6 +87,24 @@ WIP flow
 
 <img width="813" alt="wip-build-flow" src="https://user-images.githubusercontent.com/532272/60057812-bb1ed200-969a-11e9-9721-2d606a4ed027.png">
 
+## Build Environment
+
+This section describes the netlify build environment.
+
+### Directories
+
+`.netlify`
+`.netlify/src` - Source code from repo, zip, tar
+`.netlify/cache` - Files persisted across builds
+`.netlify/cache/dependancies` - All dependancies are cache here. These are used for lookup / install process.
+`.netlify/build` - Built files
+
+### Environment variables
+
+The build environment variables should be codified and used to automatically populate the [docs page](https://www.netlify.com/docs/continuous-deployment/#environment-variables).
+
+List TBH. Backwards compatible
+
 ## Open questions
 
 - Context overhaul. How will stages work?
@@ -119,4 +140,12 @@ netlify build --dry-run
 
 ## Notes
 
-- [](https://community.netlify.com/t/variable-setting-before-deploy/1416)
+- [Allow for variables before deployment](https://community.netlify.com/t/variable-setting-before-deploy/1416) [ref](https://github.com/netlify/buildbot/issues/320 )
+- [Fix auto publishing issues](https://netlify.slack.com/archives/CJNDNPXEC/p1561433292306900)
+- [Fix local testing issues](https://github.com/netlify/build-image/issues/273)
+- [Fix development process](https://github.com/netlify/buildbot/issues/345)
+
+## Future
+
+- BYOImage. [ref](https://github.com/netlify/netlify-react-ui/issues/2386)
+- [Allow for scheduled builds](https://github.com/netlify/product/issues/81)

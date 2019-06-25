@@ -8,10 +8,6 @@ const cliFlags = minimist(process.argv.slice(2))
 
 /* env vars */
 process.env.SITE = 'https://site.com'
-process.env.MY_VAR_DEFAULT = 'default value'
-process.env.MY_VAR_PROD = 'prod value'
-process.env.MY_VAR_QA = 'qa value'
-process.env.MY_VAR_DEV = 'dev value'
 
 ;(async function main () {
   /* Load config */
@@ -93,16 +89,22 @@ process.env.MY_VAR_DEV = 'dev value'
   /* patch environment dependencies */
 
   /* Execute build with plugins */
-  await engine(buildInstructions, config)
-  console.log('done')
+  const manifest = await engine(buildInstructions, config)
+  console.log('Build complete', manifest)
 })()
 
+/**
+ * Plugin engine
+ * @param  {Array} methodsToRun - Plugin functions to run
+ * @param  {Object} config - Netlify config file values
+ * @return {Object} updated config?
+ */
 async function engine(methodsToRun, config) {
-  const returnData = await methodsToRun.reduce(async (promiseChain, plugin, i) => {
+  const returnData = await methodsToRun.reduce(async (promiseChain, plugin) => {
     const { method, hook, config, name } = plugin
-    console.log(`Running lifeCycleHooks "${name}" "${hook}"`)
     const currentData = await promiseChain
     if (method && typeof method === 'function') {
+      console.log(`>> Running "${hook}" lifecycle from "${name}" plugin`)
       const pluginReturnValue = await method(config)
       if (pluginReturnValue) {
         return Promise.resolve(Object.assign({}, currentData, pluginReturnValue))
