@@ -151,6 +151,8 @@ netlify build --dry-run
 
 ## References & research
 
+[See other CI/CD configs](./research.md)
+
 - [Travis](https://docs.travis-ci.com/user/job-lifecycle)
 - [AWS codeBuild](https://docs.aws.amazon.com/codebuild/latest/userguide/build-spec-ref.html#build-spec-ref-syntax)
 - [GCP cloudBuild](https://cloud.google.com/cloud-build/docs/configuring-builds/create-basic-configuration) [video](https://www.youtube.com/watch?v=iyGHW4UQ_Ts)
