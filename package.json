@@ -4,7 +4,8 @@
   "description": "Netlify build module",
   "main": "index.js",
   "scripts": {
-    "lifecycle": "node ./cli.js"
+    "lifecycle": "node ./cli.js",
+    "docs": "md-magic --path '**/*.md' --ignore 'node_modules'"
   },
   "author": "",
   "license": "MIT",
@@ -16,5 +17,8 @@
     "get-stream": "^5.1.0",
     "make-dir": "^3.0.0",
     "minimist": "^1.2.0"
+  },
+  "devDependencies": {
+    "markdown-magic": "^0.1.25"
   }
 }

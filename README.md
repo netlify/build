@@ -8,13 +8,31 @@ Whether you are building your site locally with `netlify build` or through git c
 
 **Netlify Build** is flexible & build to support any kind of build flow. It is extendable to fit your unique project requirements.
 
+<!-- AUTO-GENERATED-CONTENT:START (TOC) -->
+- [Design principles](#design-principles)
+- [Requirements](#requirements)
+- [Ops](#ops)
+  * [Ideal ops state:](#ideal-ops-state)
+  * [Logging behavior](#logging-behavior)
+- [How it works](#how-it-works)
+- [Lifecycle](#lifecycle)
+- [Build Environment](#build-environment)
+  * [Directories](#directories)
+  * [Environment variables](#environment-variables)
+- [Open questions](#open-questions)
+- [CLI Commands](#cli-commands)
+- [References & research](#references--research)
+- [Notes](#notes)
+- [Future](#future)
+<!-- AUTO-GENERATED-CONTENT:END -->
+
 ## Design principles
 
 - Extendable core
 - Modular components
 - Works in CI/CD & local context
 
-##  Requirements
+## Requirements
 
 - Must be backwards compatible with existing site builds
 - Builds must be cancellable
@@ -29,23 +47,24 @@ Whether you are building your site locally with `netlify build` or through git c
 
 ## Ops
 
-Ideal ops state:
+### Ideal ops state:
 
 - Isolated build environments
 - Multi-region failover
 - Pro-active alerting
 - Configurable log retention
 
-## Logging behavior
+### Logging behavior
 
 - Build Logs will not publicly visible by default (security vector). Users can opt in for public logs
 
-## About
+## How it works
 
 Build steps are codified in the Netlify UI or via `netlify` config file this gives us a version controlled build system of immutable deployments.
 
 ```
 (Example code WIP)
+examples in /examples
 ```
 
 ## Lifecycle
