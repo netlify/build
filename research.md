@@ -231,4 +231,64 @@ custom:
      - build/serverless/add-dynamodb-auto-scaling.js
 ```
 
+# [buildkite](https://buildkite.com/docs/pipelines/command-step)
+
+```yml
+steps:
+  - label: ":hammer: Tests"
+    commands:
+      - "npm install"
+      - "npm run tests"
+    branches: "master"
+    env:
+      NODE_ENV: "test"
+    agents:
+      npm: "true"
+      queue: "tests"
+    artifact_paths:
+      - "logs/**/*"
+      - "coverage/**/*"
+    parallelism: 5
+    timeout_in_minutes: 3
+    retry:
+      automatic:
+        - exit_status: -1
+          limit: 2
+        - exit_status: 143
+          limit: 2
+        - exit_status: 255
+          limit: 2
+
+  - label: "Visual diff"
+    commands:
+      - "npm install"
+      - "npm run visual-diff"
+    retry:
+      automatic:
+        limit: 3
+
+  - label: "Skipped job"
+    command: "broken.sh"
+    skip: "Currently broken and needs to be fixed"
+
+  - wait
+
+  - label: ":shipit: Deploy"
+    command: "deploy.sh"
+    branches: "master"
+    concurrency: 1
+    concurrency_group: "my-app/deploy"
+    retry:
+      manual:
+        allowed: false
+        reason: "Sorry, you can't retry a deployment"
+
+  - wait
+
+  - label: "Smoke test"
+    command: "smoke-test.sh"
+    soft_fail:
+      - exit_status: 1
+```
+
 # [Other CI tools](https://github.com/ligurio/awesome-ci)
