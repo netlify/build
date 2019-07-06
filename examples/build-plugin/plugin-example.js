@@ -3,7 +3,7 @@
 
 function netlifyPlugin(conf) {
   return {
-    // Add custom CLI commands
+    // Add custom CLI commands. Converted into CLI commands
     commands: [
       {
         name: 'foobar',
@@ -12,8 +12,12 @@ function netlifyPlugin(conf) {
       }
     ],
     // Hook into lifecycle
-    init: () => {
+    init: ({ config, cancel, utils }) => {
       console.log('init thing')
+      const bar = true
+      if (bar) {
+        return cancel('Cancel my build because reasons')
+      }
     },
     build: () => {
       console.log('build thing')

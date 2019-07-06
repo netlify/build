@@ -3,7 +3,8 @@ const minimist = require('minimist')
 const deepLog = require('./src/utils/deeplog')
 const netlifyConfig = require('./src/config')
 
-const netlifyConfigFile = path.join(__dirname, 'examples', 'netlify.yml')
+const baseDir = path.join(__dirname, 'examples')
+const netlifyConfigFile = path.join(baseDir, 'netlify.yml')
 const cliFlags = minimist(process.argv.slice(2))
 
 /* env vars */
@@ -29,12 +30,13 @@ process.env.SITE = 'https://site.com'
     try {
       // resolve file path
       console.log(`Loading plugin "${name}"`)
-
-      code = require(name)
-      // console.log('code', code)
+      // Resolves relative plugins and plugins from node_modules dir. TODO harden resolution
+      const filePath = (!name.match(/^\./)) ? name : path.resolve(baseDir, name)
+      code = require(filePath)
     } catch (e) {
       console.log(`Error loading ${name} plugin`)
       console.log(e)
+      // TODO If plugin not found, automatically try and install and retry here
     }
 
     if (typeof code !== 'object' && typeof code !== 'function') {
@@ -61,8 +63,8 @@ process.env.SITE = 'https://site.com'
     lifeCycleHooks: {}
   })
 
-  console.log('Build Lifecycle:')
-  deepLog(allPlugins)
+  // console.log('Build Lifecycle:')
+  // deepLog(allPlugins)
 
   const lifecycle = [
     'init',
@@ -70,7 +72,9 @@ process.env.SITE = 'https://site.com'
     'getCache',
     'install',
     'build',
-    'postBuild', // todo figure out pre/post setup
+      // >
+      // 'build:site'
+      // 'build:function',
     'package',
     'deploy',
     'saveCache',
@@ -78,20 +82,37 @@ process.env.SITE = 'https://site.com'
     'finally'
   ]
 
+  // Add pre & post hooks
+  const fullLifecycle = lifecycle.reduce((acc, hook) => {
+    acc = acc.concat([ preFix(hook), hook, postFix(hook) ])
+    return acc
+  }, [])
+  // console.log('fullLifecycle', fullLifecycle)
+
   /* Get active build instructions */
-  const buildInstructions = lifecycle.reduce((acc, n) => {
+  const buildInstructions = fullLifecycle.reduce((acc, n) => {
     if (allPlugins.lifeCycleHooks[n]) {
       acc = acc.concat(allPlugins.lifeCycleHooks[n])
     }
     return acc
   }, [])
 
+  console.log('buildInstructions', buildInstructions)
   /* patch environment dependencies */
 
   /* Execute build with plugins */
+  console.log()
   const manifest = await engine(buildInstructions, config)
   console.log('Build complete', manifest)
 })()
+
+function preFix(hook) {
+  return `pre${hook}`
+}
+
+function postFix(hook) {
+  return `post${hook}`
+}
 
 /**
  * Plugin engine
@@ -100,12 +121,14 @@ process.env.SITE = 'https://site.com'
  * @return {Object} updated config?
  */
 async function engine(methodsToRun, config) {
-  const returnData = await methodsToRun.reduce(async (promiseChain, plugin) => {
+  const returnData = await methodsToRun.reduce(async (promiseChain, plugin, i) => {
     const { method, hook, config, name } = plugin
     const currentData = await promiseChain
     if (method && typeof method === 'function') {
-      console.log(`>> Running "${hook}" lifecycle from "${name}" plugin`)
+      console.log(`> ${i + 1}. Running "${hook}" lifecycle from "${name}" plugin`)
+      console.log()
       const pluginReturnValue = await method(config)
+      console.log()
       if (pluginReturnValue) {
         return Promise.resolve(Object.assign({}, currentData, pluginReturnValue))
       }

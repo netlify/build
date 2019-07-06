@@ -1,19 +1,19 @@
 version: 06-25-2019
 
 plugins:
-  - netlify-cypress-plugin:
+  - ./plugins/netlify-plugin-cypress:
       baseUrl: "${env:SITE}"
       pageLoadTimeout: 60000
-  - netlify-sitemap-plugin:
+  - ./plugins/netlify-plugin-sitemap:
       exclude: "**/dist"
-  - netlify-notify-plugin:
+  - ./plugins/netlify-plugin-notify:
       emails:
         - david@netlify.com
         - jim@netlify.com
-  - netlify-cache-plugin:
-      dir: 'lol-dir'
-      ttl: 100000
-  - netlify-lighthouse-plugin: true
+  # - netlify-cache-plugin:
+  #     dir: 'lol-dir'
+  #     ttl: 100000
+  # - netlify-lighthouse-plugin: true
 
 build:
   command: npm run build
