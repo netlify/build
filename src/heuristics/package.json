@@ -1,0 +1,29 @@
+{
+  "name": "example-project",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "lifecycle": "node ./cli.js",
+    "prehaha": "echo 'prehaha'",
+    "haha": "echo 'hahax'",
+    "lol": "echo 'lol'",
+    "posthaha": "post echo 'haha'",
+    "whatever": "npm run haha && npm run lol",
+    "pretest": "npm run whatever && echo 'pretest' && sls info",
+    "test": "ava xyz && npm run docs",
+    "prebuild": "echo preBuild",
+    "build": "gatsby build",
+    "postbuild": "echo postBuild",
+    "posttest": "echo after",
+    "xx": "echo 'xx'",
+    "docs": "md-magic --path '**/*.md' --ignore 'node_modules'"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "configorama": "0.0.8"
+  },
+  "devDependencies": {
+    "markdown-magic": "^0.1.25"
+  }
+}
