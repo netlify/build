@@ -45,7 +45,7 @@ async function cacheArtifacts(cwd, cacheDir) {
   if (GO_IMPORT_PATH) {
     const goPath = path.join(GOPATH, 'src', GO_IMPORT_PATH)
     // unlink $GOPATH/src/$GO_IMPORT_PATH
-    await del(goPath)
+    await del(goPath, { force: true })
   }
 
   // chmod -R +rw $HOME/.gimme_cache
@@ -63,7 +63,7 @@ async function cacheArtifacts(cwd, cacheDir) {
   const cacheNodePathVersion = path.join(cacheNodePath, NODE_VERSION)
   if (await fileExists(cacheNodePathVersion)) {
     // rm -rf $NETLIFY_CACHE_DIR/node_version
-    await del(cacheNodePath)
+    await del(cacheNodePath, { force: true })
     // mkdir $NETLIFY_CACHE_DIR/node_version
     await makeDir(cacheNodePath)
     // mv $NVM_DIR/versions/node/* $NETLIFY_CACHE_DIR/node_version/
@@ -80,7 +80,7 @@ async function cacheArtifacts(cwd, cacheDir) {
     const rubyCustomVersionPath = path.join(rubyPath, `ruby-${RUBY_VERSION}`)
     if (await fileExists(rubyCustomVersionPath)) {
       // rm -rf $NETLIFY_CACHE_DIR/ruby_version
-      await del(rubyPath)
+      await del(rubyPath, { force: true })
       // mkdir $NETLIFY_CACHE_DIR/ruby_version
       await makeDir(rubyPath)
       // mv $RVM_DIR/rubies/ruby-$RUBY_VERSION $NETLIFY_CACHE_DIR/ruby_version/
@@ -92,7 +92,7 @@ async function cacheArtifacts(cwd, cacheDir) {
     }
   } else {
     // rm -rf $NETLIFY_CACHE_DIR/ruby_version
-    await del(rubyPath)
+    await del(rubyPath, { force: true })
   }
 }
 
