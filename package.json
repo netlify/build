@@ -15,8 +15,12 @@
     "del": "^4.1.1",
     "execa": "^2.0.0-alpha.0",
     "get-stream": "^5.1.0",
+    "is-invalid-path": "^1.0.2",
     "make-dir": "^3.0.0",
-    "minimist": "^1.2.0"
+    "minimist": "^1.2.0",
+    "npm-run-path": "^3.1.0",
+    "parse-npm-script": "0.0.3",
+    "shell-source": "^1.1.0"
   },
   "devDependencies": {
     "markdown-magic": "^0.1.25"
