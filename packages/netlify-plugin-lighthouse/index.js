@@ -3,12 +3,14 @@ const path = require('path')
 
 function netlifyLighthousePlugin(conf) {
   return {
-    // Hook into lifecycle
+    /* Run lighthouse on post deploy */
     postdeploy: async () => {
+      const site = conf.site || process.env.SITE
+      /* TODO fetch previous scores from cache */
       const lighthouseCI = path.join(__dirname, 'node_modules', '.bin', 'lighthouse-ci')
       let resp
       try {
-        const subprocess = execa(lighthouseCI, ['https://netlify.com'], {
+        const subprocess = execa(lighthouseCI, [site], {
           shell: true
         })
         subprocess.stderr.pipe(process.stderr)
@@ -18,6 +20,8 @@ function netlifyLighthousePlugin(conf) {
         console.log(err)
       }
       // console.log(resp.stdout)
+
+      /* TODO save scores and diff between builds */
     }
   }
 }

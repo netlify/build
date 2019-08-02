@@ -10,7 +10,7 @@ const cliFlags = minimist(process.argv.slice(2))
 const netlifyConfigFile = cliFlags.config
 
 /* env vars */
-process.env.SITE = 'https://site.com'
+process.env.SITE = 'https://netlify.com'
 
 ;(async function main () {
   /* Load config */

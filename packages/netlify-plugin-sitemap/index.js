@@ -48,7 +48,8 @@ function netlifySitemapPlugin(conf = {}) {
   return {
     // Hook into lifecycle
     postbuild: async () => {
-      if (!conf.homepage) {
+      const siteUrl = conf.homepage || process.env.SITE
+      if (!siteUrl) {
         throw new Error('Sitemap plugin missing homepage value')
       }
       if (!conf.distPath) {
@@ -56,7 +57,7 @@ function netlifySitemapPlugin(conf = {}) {
       }
       console.log('Creating sitemap from files...')
       await makeSitemap({
-        homepage: conf.homepage,
+        homepage: siteUrl,
         distPath: conf.distPath
       })
     }

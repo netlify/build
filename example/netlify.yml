@@ -5,7 +5,6 @@ plugins:
       baseUrl: ${env:SITE}
       pageLoadTimeout: 60000
   - netlify-plugin-sitemap:
-      homepage: https://lol.com/
       distPath: build
       exclude: "**/dist"
   - netlify-plugin-notifier:
