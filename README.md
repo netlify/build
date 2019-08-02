@@ -4,7 +4,10 @@ Netlify build is the next generation of CI/CD tooling for modern web application
 
 It is designed to support any kind of build flow and is extendable to fit any unique project requirements.
 
-<!-- AUTO-GENERATED-CONTENT:START (TOC) -->
+<!-- AUTO-GENERATED-CONTENT:START (TOC:collapse=true&collapseText=Expand Table of Contents) -->
+<details>
+<summary>Expand Table of Contents</summary>
+
 - [Design principles](#design-principles)
 - [How it works](#how-it-works)
 - [Lifecycle](#lifecycle)
@@ -15,6 +18,8 @@ It is designed to support any kind of build flow and is extendable to fit any un
   * [Environment variables](#environment-variables)
 - [CLI commands](#cli-commands)
 - [Setting up the project](#setting-up-the-project)
+
+</details>
 <!-- AUTO-GENERATED-CONTENT:END -->
 
 ## Design principles
