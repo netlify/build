@@ -8,14 +8,23 @@ plugins:
       distPath: build
       exclude: "**/dist"
   - netlify-plugin-notifier:
-      emails:
-        - david@netlify.com
-        - jim@netlify.com
+      # It's possible to flatten larger config values into file references
+      notices:
+        - event: 'postbuild'
+          type: email
+          to: david@netlify.com
+          subject: 'Your site is ready!'
+          message: 'Horray!'
+        - event: 'postbuild'
+          type: sms
+          to: '222-222-2222'
+          message: 'Your build is published!'
+        - event: 'buildfailed'
+          type: webhook
+          endpoint: 'https://my-webhook-endpoint.com/api'
+          message: 'Your site build failed sorry charlie'
   - netlify-contentful-plugin:
       enabled: false
-  # - netlify-cache-plugin:
-  #     dir: 'lol-dir'
-  #     ttl: 100000
   - netlify-plugin-lighthouse:
       enabled: ${env:LIGHTHOUSE_ENABLED, true}
 
