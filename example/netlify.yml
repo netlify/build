@@ -8,7 +8,6 @@ plugins:
       distPath: build
       exclude: "**/dist"
   - netlify-plugin-notifier:
-      # It's possible to flatten larger config values into file references
       notices:
         - event: 'postbuild'
           type: email
