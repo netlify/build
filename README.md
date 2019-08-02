@@ -30,16 +30,9 @@ It is designed to support any kind of build flow and is extendable to fit any un
 
 ## How it works
 
-Build steps are codified in the Netlify UI or via `netlify` config file this gives us a version controlled build system of immutable deployments.
+Build steps are codified in the Netlify UI or via `netlify` config file.
 
-**Design of build steps & lifecycle WIP**
-
-[See other CI/CD configs](./research.md)
-
-```
-(Example code WIP)
-examples in /examples
-```
+Builds are controlled by a series of lifecycle hooks that `plugins` & configuration hook into.
 
 ## Lifecycle
 
