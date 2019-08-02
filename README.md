@@ -170,23 +170,15 @@ To reference a secret in Netlify config:
 bar: ${secrets:MY_REMOTE_SECRET}
 ```
 
-## Build Environment
+## Simplified Build Env
 
-This section describes the netlify build environment.
+The folder structure of the build environment is also being revamped to streamline & simplify how users interact with it.
 
-### Directories
-
-- `.netlify`
+- `.netlify` - Main folder
 - `.netlify/src` - Source code from repo, zip, tar
 - `.netlify/cache` - Files persisted across builds
-- `.netlify/cache/dependancies` - All dependancies are cache here. These are used for lookup / install process.
+- `.netlify/cache/dependencies` - All dependencies are cache here. These are used for lookup / install process.
 - `.netlify/build` - Built files
-
-### Environment variables
-
-The build environment variables should be codified and used to automatically populate the [docs page](https://www.netlify.com/docs/continuous-deployment/#environment-variables).
-
-List TBH. Backwards compatible
 
 ## CLI commands
 
