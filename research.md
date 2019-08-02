@@ -11,6 +11,7 @@ Examples of other CI/CD configuration files.
 - [Github Actions](#github-actions)
 - [Gitlab CI](#gitlab-ci)
 - [Serverless lifecycle](#serverless-lifecycle)
+- [buildkite](#buildkite)
 - [Other CI tools](#other-ci-tools)
 <!-- AUTO-GENERATED-CONTENT:END -->
 

@@ -1,29 +1,20 @@
-# Netlify Build (WIP)
+# Netlify Build
 
 Netlify build is the next generation of CI/CD tooling for modern web applications.
 
-We have fully synchronized the Netlify build experience across the board, giving users a the same build pipeline they know & love in Netlify directly on their local machines.
-
-Whether you are building your site locally with `netlify build` or through git commits in Netlify, developers have access to a powerful set of build features.
-
-**Netlify Build** is flexible & build to support any kind of build flow. It is extendable to fit your unique project requirements.
+It is designed to support any kind of build flow and is extendable to fit any unique project requirements.
 
 <!-- AUTO-GENERATED-CONTENT:START (TOC) -->
 - [Design principles](#design-principles)
-- [Requirements](#requirements)
-- [Ops](#ops)
-  * [Ideal ops state:](#ideal-ops-state)
-  * [Logging behavior](#logging-behavior)
 - [How it works](#how-it-works)
 - [Lifecycle](#lifecycle)
+- [Plugins](#plugins)
+- [Configuration](#configuration)
 - [Build Environment](#build-environment)
   * [Directories](#directories)
   * [Environment variables](#environment-variables)
-- [Open questions](#open-questions)
-- [CLI Commands](#cli-commands)
-- [References & research](#references--research)
-- [Notes](#notes)
-- [Future](#future)
+- [CLI commands](#cli-commands)
+- [Setting up the project](#setting-up-the-project)
 <!-- AUTO-GENERATED-CONTENT:END -->
 
 ## Design principles
@@ -31,32 +22,6 @@ Whether you are building your site locally with `netlify build` or through git c
 - Extendable core
 - Modular components
 - Works in CI/CD & local context
-
-## Requirements
-
-- Must be backwards compatible with existing site builds
-- Builds must be cancellable
-- Builds must be fast [ref](https://github.com/netlify/build-image/issues/141)
-- Builds must handle git + zip/tar/etc builds
-- Builds must support [mono-repos](https://github.com/netlify/product/issues/121), [related](https://github.com/netlify/buildbot/pull/309), [ref](https://github.com/netlify/build-image/issues/141)
-- Builds must allow [dynamic configuration resolution](https://github.com/netlify/netlify-config)
-- Builds should be extendable via plugins
-- Build image must have preinstalled `netlify-cli` with prepopulated auth keys
-- Improve overall DX [ref](https://github.com/netlify/buildbot/issues/125)
-- Builds must account for add-on provisioning/updating
-
-## Ops
-
-### Ideal ops state:
-
-- Isolated build environments
-- Multi-region failover
-- Pro-active alerting
-- Configurable log retention
-
-### Logging behavior
-
-- Build Logs will not publicly visible by default (security vector). Users can opt in for public logs
 
 ## How it works
 
@@ -73,42 +38,139 @@ examples in /examples
 
 ## Lifecycle
 
-Builds typically have a lifecycle associated with them.
+The Netlify build lifecycle consists of these `events`
 
-What follows is the Netlify build lifecycle:
+Events are activities happening in the build system.
 
-`configParse`
-Parse `netlify.toml` and resolve any dynamic configuration include build image if specified
+```js
+const lifecycle = [
+  /* ↓ Build initialization steps */
+  'init',
+  /* ↓ Fetch previous build cache */
+  'getCache',
+  /* ↓ Install project dependancies */
+  'install',
+  /* ↓ Build the site & functions */
+  'build',
+  /* ↓ Package & optimize artifact */
+  'package',
+  /* ↓ Deploy built artifact */
+  'deploy',
+  /* ↓ Save cached assets */
+  'saveCache',
+  /* ↓ Outputs manifest of resources created */
+  'manifest',
+  /* ↓ Build finished */
+  'finally'
+]
+```
 
-`getCache`
-Fetch previous build cache
+The Lifecycle flows through events and their `pre` and `post` counterparts.
 
-`install`
-Install project dependancies
+`pre` happens before a specific event
 
-`build`
-Build project
+`post` happens before a specific event
 
-`package`
-Create build artifact
+```
+      ┌───────────────┬────────────────┬──────────────────┐
+      │      pre      │     event      │       post       │
+      ├───────────────┼────────────────┼──────────────────┤
+      │               │                │                  │
+      │               │                │                  │
+...   │   prebuild    │     build      │    postbuild     │   ...
+      │               │                │                  │
+      │               │                │                  │
+      └───────────────┤                ├──────────────────┘
+                      └────────────────┘
 
-`deploy`
-Deploy built artifact
+      ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ▶
 
-`saveCache`
-Save cached assets
+                        event flow
+```
 
-`manifest`
-Outputs manifest of resources created
+**Example:**
 
-`finally`
-Last step in deployment chain
+`prebuild` runs first, then `build`, then `postbuild` in that order.
 
-These lifecycle hooks are how users, add-ons, and internal products can extend the functionality of the **Netlify Build** process.
+This applies to all lifecycle events listed above.
 
-WIP flow
 
-<img width="813" alt="wip-build-flow" src="https://user-images.githubusercontent.com/532272/60057812-bb1ed200-969a-11e9-9721-2d606a4ed027.png">
+## Plugins
+
+Plugins are POJOs (plain old javascript objects) with methods that match the various lifecycle events.
+
+```js
+function exampleNetlifyPlugin(config) {
+  return {
+    // Hook into `init` lifecycle
+    init: () => {
+      console.log('Do custom thing when buildbot initializes')
+    },
+    // Hook into `postbuild` lifecycle
+    postbuild: () => {
+      console.log('Build finished. Do custom thing')
+    }
+    // ... etc
+  }
+}
+```
+
+**Examples:**
+
+- **netlify-plugin-lighthouse** to automatically track your lighthouse site score between deployments
+- **netlify-plugin--cypress** to automatically run integration tests
+- **netlify-plugin--tweet-new-post** to automatically share new content via twitter on new publish
+- **netlify-plugin--sitemap** to generate sitemaps after build
+- **netlify-plugin--notify** to automatically wired up build notifications
+- ... skys the limit 🌈
+
+## Configuration
+
+Configuration can be written in `toml`, `yml`, `json`, `json5`, or `javascript`.
+
+**Example:**
+
+```yml
+# Config file `plugins` defines plugins used by build. Plugins are optional
+plugins:
+  - ./localpath/plugin-folder:
+      optionOne: 'hello'
+      optionTwo: 'there'
+  - plugin-from-npm:
+      optionOne: 'neat'
+  - other-plugin-from-npm::
+      arrayOfValues:
+        - david@netlify.com
+        - jim@netlify.com
+
+# Inline `build.lifecycle` steps can be defined
+build:
+  lifecycle:
+    init:
+      - npm run foo
+      - export VALUE=lol
+      - echo "much wow"
+    getCache:
+      - echo 'curl custom cache'
+    prebuild: echo "${secrets:privateKey}"
+    build: |
+      echo 'Hello Netlify Build!'
+      npm run build
+```
+
+Configuration now supports `environment` variables & `secrets`.
+
+To reference an environment variable in Netlify config:
+
+```yml
+foo: ${env:MY_ENV_VAR}
+```
+
+To reference a secret in Netlify config:
+
+```yml
+bar: ${secrets:MY_REMOTE_SECRET}
+```
 
 ## Build Environment
 
@@ -128,49 +190,28 @@ The build environment variables should be codified and used to automatically pop
 
 List TBH. Backwards compatible
 
-## Open questions
-
-- Context overhaul. How will stages work?
-- Isolated build images for stages? re: actions/codePipeline
-- Parallel Step execution?
-- Canary deployments?
-
-## CLI Commands
-
-Run the build
+## CLI commands
 
 ```
 netlify build
 ```
 
-Test out the build flow. This will output everything that happens in the build flow without executing the commands
+Test out the build flow. This will output everything that happens in the build flow without executing the plugins.
 
 ```
 netlify build --dry-run
 ```
 
-## References & research
+## Setting up the project
 
-[See other CI/CD configs](./research.md)
+1. Clone down the repo
 
-- [Travis](https://docs.travis-ci.com/user/job-lifecycle)
-- [AWS codeBuild](https://docs.aws.amazon.com/codebuild/latest/userguide/build-spec-ref.html#build-spec-ref-syntax)
-- [GCP cloudBuild](https://cloud.google.com/cloud-build/docs/configuring-builds/create-basic-configuration) [video](https://www.youtube.com/watch?v=iyGHW4UQ_Ts)
-- [Circle CI](https://circleci.com/docs/2.0/sample-config/#sample-configuration-with-sequential-workflow)
-- [Codeship CI](https://documentation.codeship.com/pro/builds-and-configuration/steps/#parallelizing-steps-and-tests)
-- [Github Actions](https://help.github.com/en/articles/creating-a-workflow-with-github-actions)
-- [Gitlab CI](https://docs.gitlab.com/ee/user/project/pages/getting_started_part_four.html)
-- [CI tool ecosystem](https://github.com/ligurio/awesome-ci)
-- [Custom hooks](https://www.npmjs.com/package/serverless-scriptable-plugin)
+  ```
+  git clone git@github.com:netlify/netlify-build.git
+  ```
 
-## Notes
+2. Install project dependancies
 
-- [Allow for variables before deployment](https://community.netlify.com/t/variable-setting-before-deploy/1416) [ref](https://github.com/netlify/buildbot/issues/320 )
-- [Fix auto publishing issues](https://netlify.slack.com/archives/CJNDNPXEC/p1561433292306900)
-- [Fix local testing issues](https://github.com/netlify/build-image/issues/273)
-- [Fix development process](https://github.com/netlify/buildbot/issues/345)
-
-## Future
-
-- BYOImage. [ref](https://github.com/netlify/netlify-react-ui/issues/2386)
-- [Allow for scheduled builds](https://github.com/netlify/product/issues/81)
+  ```
+  npm run bootstrap
+  ```
