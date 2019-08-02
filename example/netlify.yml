@@ -1,0 +1,35 @@
+version: 06-25-2019
+
+plugins:
+  - netlify-plugin-cypress:
+      baseUrl: ${env:SITE}
+      pageLoadTimeout: 60000
+  - netlify-plugin-sitemap:
+      exclude: "**/dist"
+  - netlify-plugin-notifier:
+      emails:
+        - david@netlify.com
+        - jim@netlify.com
+  - netlify-contentful-plugin:
+      enabled: false
+  # - netlify-cache-plugin:
+  #     dir: 'lol-dir'
+  #     ttl: 100000
+  - netlify-plugin-lighthouse:
+      enabled: ${env:LIGHTHOUSE_ENABLED, true}
+
+build:
+  lifecycle:
+    init:
+      - npm run foo
+      - export VALUE=lol
+      - echo "much wow"
+    getCache:
+      - echo 'curl custom cache'
+    #install: npm install
+    prebuild: echo "${secrets:privateKey}"
+    build: |
+      echo 'Hello Netlify Build!'
+      npm run build
+    # package:
+    #   - zip -q -r .functions/package.zip src node_modules
