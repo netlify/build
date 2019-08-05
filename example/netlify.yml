@@ -1,31 +1,8 @@
 version: 06-25-2019
 
 plugins:
-  - netlify-plugin-cypress:
-      baseUrl: ${env:SITE}
-      pageLoadTimeout: 60000
-  - netlify-plugin-sitemap:
-      distPath: build
-      exclude: "**/dist"
-  - netlify-plugin-notifier:
-      notices:
-        - event: 'postbuild'
-          type: email
-          to: david@netlify.com
-          subject: 'Your site is ready!'
-          message: 'Horray!'
-        - event: 'postbuild'
-          type: sms
-          to: '222-222-2222'
-          message: 'Your build is published!'
-        - event: 'buildfailed'
-          type: webhook
-          endpoint: 'https://my-webhook-endpoint.com/api'
-          message: 'Your site build failed sorry charlie'
-  - netlify-contentful-plugin:
-      enabled: false
-  - netlify-plugin-lighthouse:
-      enabled: ${env:LIGHTHOUSE_ENABLED, true}
+  - netlify-plugin-axe:
+      axeFlags: '--rules color-contrast,html-has-lang'
 
 build:
   lifecycle:

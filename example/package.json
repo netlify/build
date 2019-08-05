@@ -14,8 +14,10 @@
   "devDependencies": {
     "netlify-plugin-cypress": "file:../packages/netlify-plugin-cypress",
     "netlify-plugin-example": "file:../packages/netlify-plugin-example",
+    "netlify-plugin-axe": "file:../packages/netlify-plugin-axe",
     "netlify-plugin-lighthouse": "file:../packages/netlify-plugin-lighthouse",
     "netlify-plugin-notifier": "file:../packages/netlify-plugin-notifier",
     "netlify-plugin-sitemap": "file:../packages/netlify-plugin-sitemap"
-  }
+  },
+  "dependencies": {}
 }
