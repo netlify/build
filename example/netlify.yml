@@ -1,6 +1,8 @@
 version: 06-25-2019
 
 plugins:
+  - netlify-plugin-example:
+      foo: 1
   - netlify-plugin-cypress:
       baseUrl: ${env:SITE}
       pageLoadTimeout: 60000
