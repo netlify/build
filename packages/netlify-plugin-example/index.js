@@ -27,7 +27,7 @@ function netlifySitemapPlugin(conf, createStore) {
       console.log('Getting str from store: ', store.get('foo.str'))
       console.log('Getting num from store: ', store.get('foo.num'))
     },
-    postbuild: () => {
+    finally: () => {
       // get nested key and value
       console.log('Getting str from store: ', store.get('foo.str'))
       console.log('Getting randTimes100 from store: ', store.get('randTimes100'))

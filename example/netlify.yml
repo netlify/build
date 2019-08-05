@@ -28,6 +28,8 @@ plugins:
       enabled: false
   - netlify-plugin-lighthouse:
       enabled: ${env:LIGHTHOUSE_ENABLED, true}
+      currentVersion: '0.0.3'
+      compareWithVersion: '0.0.1'
 
 build:
   lifecycle:
