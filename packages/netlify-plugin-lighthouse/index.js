@@ -41,30 +41,36 @@ function netlifyLighthousePlugin(conf, createStore) {
           const [k, v] = key.split(': ')
           curLightHouse[k] = Number(v)
         })
-        const prevLightHouse = store.get('lighthouse')
+        const prevLightHouse = store.get(`lighthouse.${compareWithVersion}`)
         let totalImprovement = 0
         if (prevLightHouse) {
           console.log(`Comparing lighthouse results from version: ${chalk.yellow(compareWithVersion)} to version: ${chalk.yellow(currentVersion)}:`)
           Object.entries(curLightHouse).forEach(([k,v]) => {
             const prevV = prevLightHouse[k]
+            if (!prevV) return // we should never get here but just in case lighthouse format changes...
             const improvement = v - prevV
             if (improvement < 0) {
-              console.log(`${chalk.yellow(k)} ${chalk.magenta('regressed')} from ${prevV} to ${v}`)
+              console.log(`- ${chalk.yellow(k)} ${chalk.magenta('regressed')} from ${prevV} to ${v}`)
             } else if (improvement > 0) {
-              console.log(`${chalk.yellow(k)} ${chalk.green('improved')} from ${prevV} to ${v}`)
+              console.log(`- ${chalk.yellow(k)} ${chalk.green('improved')} from ${prevV} to ${v}`)
             }
+            // TODO: print out links to give suggestions on what to do! lets see what lighthouse-ci gives us
             totalImprovement += improvement
           })
           if (Math.abs(totalImprovement) > 2) { // some significance bar
             const color = totalImprovement > 0 ? chalk.green : chalk.magenta 
-            console.log(`${chalk.yellow("Total Improvement")}: ${color(totalImprovement)} points!`)
+            console.log(`${chalk.yellow.bold("Total Improvement")}: ${color(totalImprovement)} points!`)
+          }
+        } else {
+          if (compareWithVersion) {
+            console.warn(`Warning: you set ${
+              chalk.yellow('compareWithVersion') + '=' + chalk.yellow(compareWithVersion)
+            } but that version was not found in our result storage.`)
           }
         }
         store.set(`lighthouse.${currentVersion}`, curLightHouse)
         console.log(`Saved results as version: ${chalk.yellow(currentVersion)}`)
       }
-
-      /* TODO save scores and diff between builds */
     }
   }
 }
