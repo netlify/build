@@ -1,0 +1,17 @@
+{
+  "name": "netlify-plugin-monorepo",
+  "private": true,
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^2.4.2",
+    "execa": "^2.0.3",
+    "run-if-diff": "^2.0.0"
+  }
+}

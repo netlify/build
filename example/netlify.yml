@@ -25,7 +25,12 @@ plugins:
   - netlify-contentful-plugin:
       enabled: false
   - netlify-plugin-lighthouse:
-      enabled: ${env:LIGHTHOUSE_ENABLED, true}
+      enabled: false
+      # enabled: ${env:LIGHTHOUSE_ENABLED, true}
+  - netlify-plugin-monorepo:
+      enabled: true
+      files:
+        - "src/**.html"
 
 build:
   lifecycle:

@@ -3,29 +3,29 @@ const minimist = require('minimist')
 const chalk = require('chalk')
 const execa = require('execa')
 const deepLog = require('./utils/deeplog')
-const netlifyConfig = require('./config')
+const getNetlifyConfig = require('./config')
 
 const baseDir = process.cwd()
 const cliFlags = minimist(process.argv.slice(2))
-const netlifyConfigFile = cliFlags.config
+const netlifyConfigFilePath = cliFlags.config
 
 /* env vars */
 process.env.SITE = 'https://netlify.com'
 
 ;(async function main () {
   /* Load config */
-  let config = {}
+  let netlifyConfig = {}
   try {
-    config = await netlifyConfig(netlifyConfigFile, cliFlags)
+    netlifyConfig = await getNetlifyConfig(netlifyConfigFilePath, cliFlags)
   } catch (err) {
     console.log('Config error', err)
   }
   console.log(chalk.cyanBright.bold('Netlify Config'))
-  deepLog(config)
+  deepLog(netlifyConfig)
   console.log()
 
   /* Parse plugins */
-  const plugins = config.plugins || []
+  const plugins = netlifyConfig.plugins || []
   const allPlugins = plugins.filter((plug) => {
     /* Load enabled plugins only */
     const name = Object.keys(plug)[0]
@@ -116,7 +116,7 @@ process.env.SITE = 'https://netlify.com'
   /* Get active build instructions */
   const buildInstructions = fullLifecycle.reduce((acc, n) => {
     /* Merge in config lifecycle events first */
-    if (config.build.lifecycle[n]) {
+    if (netlifyConfig.build.lifecycle[n]) {
       acc = acc.concat({
         name: `config.build.lifecycle.${n}`,
         hook: n,
@@ -124,13 +124,14 @@ process.env.SITE = 'https://netlify.com'
         method: async () => {
           try {
             // Parse commands and turn into exec
-            if (Array.isArray(config.build.lifecycle[n])) {
-              const doCommands = config.build.lifecycle[n].map((cmd) => {
+            if (Array.isArray(netlifyConfig.build.lifecycle[n])) {
+              const doCommands = netlifyConfig.build.lifecycle[n].map((cmd) => {
+                // TODO refactor into reduce to run in order
                 return execCommand(cmd)
               })
               await Promise.all(doCommands)
             } else {
-              const commands = config.build.lifecycle[n].split('\n')
+              const commands = netlifyConfig.build.lifecycle[n].split('\n')
               const doCommands = commands.map((cmd) => {
                 if (!cmd) {
                   return Promise.resolve()
@@ -141,7 +142,7 @@ process.env.SITE = 'https://netlify.com'
             }
           } catch (err) {
             console.log(chalk.redBright(`Error from netlify config build.lifecycle.${n} n from command:`))
-            console.log(`"${config.build.lifecycle[n]}"`)
+            console.log(`"${netlifyConfig.build.lifecycle[n]}"`)
             console.log()
             console.log(chalk.redBright('Error message\n'))
             console.log(err.stderr)
@@ -181,7 +182,7 @@ process.env.SITE = 'https://netlify.com'
   console.log()
   console.log(chalk.greenBright.bold('Running Netlify Build Lifecycle'))
   console.log()
-  const manifest = await engine(buildInstructions, config)
+  const manifest = await engine(buildInstructions, netlifyConfig)
   console.log(chalk.greenBright.bold('Netlify Build complete'))
   console.log()
   if (Object.keys(manifest).length) {
@@ -212,7 +213,7 @@ async function execCommand(cmd) {
  * @param  {Object} config - Netlify config file values
  * @return {Object} updated config?
  */
-async function engine(methodsToRun, config) {
+async function engine(methodsToRun, netlifyConfig) {
   const returnData = await methodsToRun.reduce(async (promiseChain, plugin, i) => {
     const { method, hook, config, name } = plugin
     const currentData = await promiseChain
@@ -220,7 +221,14 @@ async function engine(methodsToRun, config) {
       const source = (name.match(/^config\.build/)) ? 'via config' : 'plugin'
       console.log(chalk.cyanBright(`> ${i + 1}. Running "${hook}" lifecycle from "${name}" ${source}`))
       console.log()
-      const pluginReturnValue = await method(config)
+      const pluginReturnValue = await method({
+        netlifyConfig,
+        pluginConfig: config,
+        context: {
+          rootPath: path.resolve(path.dirname(netlifyConfigFilePath)),
+          configPath: path.resolve(netlifyConfigFilePath),
+        }
+      })
       console.log()
       if (pluginReturnValue) {
         return Promise.resolve(Object.assign({}, currentData, pluginReturnValue))
