@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "foo": "echo 'bar'",
-    "build": "mkdir -p build && cp index.html build",
+    "build": "mkdir -p build && cp src/index.html build",
     "go": "node ../packages/build-core/src/exec-lifecycle.js --config ./netlify.yml",
     "plan": "node ../packages/build-core/src/exec-lifecycle.js --config ./netlify.yml --dryRun"
   },
@@ -16,6 +16,7 @@
     "netlify-plugin-example": "file:../packages/netlify-plugin-example",
     "netlify-plugin-lighthouse": "file:../packages/netlify-plugin-lighthouse",
     "netlify-plugin-notifier": "file:../packages/netlify-plugin-notifier",
-    "netlify-plugin-sitemap": "file:../packages/netlify-plugin-sitemap"
+    "netlify-plugin-sitemap": "file:../packages/netlify-plugin-sitemap",
+    "netlify-plugin-monorepo": "file:../packages/netlify-plugin-monorepo"
   }
 }
