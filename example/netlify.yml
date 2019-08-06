@@ -1,6 +1,8 @@
 version: 06-25-2019
 
 plugins:
+  - netlify-plugin-example:
+      foo: 1
   - netlify-plugin-cypress:
       baseUrl: ${env:SITE}
       pageLoadTimeout: 60000
@@ -25,8 +27,9 @@ plugins:
   - netlify-contentful-plugin:
       enabled: false
   - netlify-plugin-lighthouse:
-      enabled: false
-      # enabled: ${env:LIGHTHOUSE_ENABLED, true}
+      enabled: ${env:LIGHTHOUSE_ENABLED, true}
+      currentVersion: '0.0.3'
+      compareWithVersion: '0.0.1'
   - netlify-plugin-monorepo:
       enabled: true
       files:
