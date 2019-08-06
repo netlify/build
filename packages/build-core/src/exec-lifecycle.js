@@ -4,7 +4,6 @@ const chalk = require('chalk')
 const execa = require('execa')
 const deepLog = require('./utils/deeplog')
 const netlifyConfig = require('./config')
-const Conf = require('conf') // for simple kv store
 
 const baseDir = process.cwd()
 const cliFlags = minimist(process.argv.slice(2))
@@ -12,11 +11,6 @@ const netlifyConfigFile = cliFlags.config
 
 /* env vars */
 process.env.SITE = 'https://netlify.com'
-// // TODO: enable this in production
-// const NETLIFY_BUILD_BASE = '/opt/buildhome'
-// // just for local dev
-const NETLIFY_BUILD_BASE = '.'
-const NETLIFY_CACHE_DIR = `${NETLIFY_BUILD_BASE}/cache`
 
 ;(async function main () {
   /* Load config */
@@ -62,17 +56,7 @@ const NETLIFY_CACHE_DIR = `${NETLIFY_BUILD_BASE}/cache`
       throw new Error(`Plugin ${name} is malformed. Must be object or function`)
     }
 
-
-    // kvstore in `${NETLIFY_CACHE_DIR}/${name}.json`
-    // we choose to let the user createStore instead of doing it for them
-    // bc they may want to set `defaults` and `schema` and `de/serialize`
-    const createStore = confOptions => new Conf({ 
-      ...confOptions, 
-      cwd: NETLIFY_CACHE_DIR,
-      configName: name
-    });
-
-    const methods = (typeof code === 'function') ? code(pluginConfig, createStore) : code
+    const methods = (typeof code === 'function') ? code(pluginConfig) : code
 
     // Map plugins methods in order for later execution
     Object.keys(methods).forEach((hook) => {

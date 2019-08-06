@@ -1,14 +1,30 @@
 const execa = require('execa')
 const path = require('path')
 const chalk = require('chalk')
+const Conf = require('conf') // for simple kv store
 
-function netlifyLighthousePlugin(conf, createStore) {
+// // TODO: enable this in production
+// const NETLIFY_BUILD_BASE = '/opt/buildhome'
+// // just for local dev
+const NETLIFY_BUILD_BASE = '.'
+const NETLIFY_CACHE_DIR = `${NETLIFY_BUILD_BASE}/cache`
+
+// kvstore in `${NETLIFY_CACHE_DIR}/${name}.json`
+// we choose to let the user createStore instead of doing it for them
+// bc they may want to set `defaults` and `schema` and `de/serialize`
+const createStore = confOptions => new Conf({
+  ...confOptions,
+  cwd: NETLIFY_CACHE_DIR,
+  configName: 'netlify-plugin-lighthouse'
+})
+
+function netlifyLighthousePlugin(conf) {
   const store = createStore()
-  let { 
-    enabled,  // currently unused
-    currentVersion,  // users will be tempted to use semver, but we really don't care
-    compareWithVersion 
-  } =  conf
+  let {
+    enabled, // currently unused
+    currentVersion, // users will be tempted to use semver, but we really don't care
+    compareWithVersion
+  } = conf
   if (typeof currentVersion === `undefined`) {
     console.log(`lighthouseplugin version not specified, auto assigning ${chalk.yellow("currentVersion='init'")}`)
     currentVersion = 'init'
@@ -37,7 +53,7 @@ function netlifyLighthousePlugin(conf, createStore) {
         // serialize response
         let arr = resp.stdout.split('\n')
         const curLightHouse = {}
-        arr = arr.slice(0, arr.length-2).forEach(key => {
+        arr = arr.slice(0, arr.length - 2).forEach(key => {
           const [k, v] = key.split(': ')
           curLightHouse[k] = Number(v)
         })
@@ -45,7 +61,7 @@ function netlifyLighthousePlugin(conf, createStore) {
         let totalImprovement = 0
         if (prevLightHouse) {
           console.log(`Comparing lighthouse results from version: ${chalk.yellow(compareWithVersion)} to version: ${chalk.yellow(currentVersion)}:`)
-          Object.entries(curLightHouse).forEach(([k,v]) => {
+          Object.entries(curLightHouse).forEach(([k, v]) => {
             const prevV = prevLightHouse[k]
             if (!prevV) return // we should never get here but just in case lighthouse format changes...
             const improvement = v - prevV
@@ -58,8 +74,8 @@ function netlifyLighthousePlugin(conf, createStore) {
             totalImprovement += improvement
           })
           if (Math.abs(totalImprovement) > 2) { // some significance bar
-            const color = totalImprovement > 0 ? chalk.green : chalk.magenta 
-            console.log(`${chalk.yellow.bold("Total Improvement")}: ${color(totalImprovement)} points!`)
+            const color = totalImprovement > 0 ? chalk.green : chalk.magenta
+            console.log(`${chalk.yellow.bold('Total Improvement')}: ${color(totalImprovement)} points!`)
           }
         } else {
           if (compareWithVersion) {
