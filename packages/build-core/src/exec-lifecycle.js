@@ -11,6 +11,9 @@ const netlifyConfigFilePath = cliFlags.config
 
 /* env vars */
 process.env.SITE = 'https://netlify.com'
+// process.env.TWILIO_ACCOUNT_SID = 'xyz'
+// process.env.TWILIO_AUTH_TOKEN = 'xyz'
+// process.env.TWILIO_PHONE_NUMBER = '17273085805'
 
 ;(async function main () {
   /* Load config */
@@ -182,12 +185,16 @@ process.env.SITE = 'https://netlify.com'
   console.log()
   console.log(chalk.greenBright.bold('Running Netlify Build Lifecycle'))
   console.log()
-  const manifest = await engine(buildInstructions, netlifyConfig)
-  console.log(chalk.greenBright.bold('Netlify Build complete'))
-  console.log()
-  if (Object.keys(manifest).length) {
-    console.log('Manifest:')
-    deepLog(manifest)
+  try {
+    const manifest = await engine(buildInstructions, netlifyConfig)
+    console.log(chalk.greenBright.bold('Netlify Build complete'))
+    console.log()
+    if (Object.keys(manifest).length) {
+      console.log('Manifest:')
+      deepLog(manifest)
+    }
+  } catch (err) {
+    console.log(err)
   }
 })()
 
@@ -221,17 +228,28 @@ async function engine(methodsToRun, netlifyConfig) {
       const source = (name.match(/^config\.build/)) ? 'via config' : 'plugin'
       console.log(chalk.cyanBright(`> ${i + 1}. Running "${hook}" lifecycle from "${name}" ${source}`))
       console.log()
-      const pluginReturnValue = await method({
-        netlifyConfig,
-        pluginConfig: config,
-        context: {
-          rootPath: path.resolve(path.dirname(netlifyConfigFilePath)),
-          configPath: path.resolve(netlifyConfigFilePath),
+      const rootPath = path.resolve(path.dirname(netlifyConfigFilePath))
+
+      try {
+        const pluginReturnValue = await method({
+          netlifyConfig,
+          pluginConfig: config,
+          context: {
+            rootPath: rootPath,
+            configPath: path.resolve(netlifyConfigFilePath),
+          },
+          constants: {
+            CACHE_DIR: path.join(rootPath, '.netlify', 'cache'),
+            BUILD_DIR: path.join(rootPath, '.netlify', 'build')
+          }
+        })
+        console.log()
+        if (pluginReturnValue) {
+          return Promise.resolve(Object.assign({}, currentData, pluginReturnValue))
         }
-      })
-      console.log()
-      if (pluginReturnValue) {
-        return Promise.resolve(Object.assign({}, currentData, pluginReturnValue))
+      } catch (error) {
+        console.log(chalk.redBright(`Error in ${name} plugin`))
+        throw error
       }
     }
     return Promise.resolve(currentData)
