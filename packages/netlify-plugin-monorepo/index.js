@@ -3,11 +3,15 @@ const execa = require('execa')
 const chalk = require('chalk')
 const { diff } = require('run-if-diff')
 
-function netlifyMonoRepoPlugin(conf, stuff) {
+/**
+ * Mono repo support
+ * @param  {object} config - Plugin configuration
+ * @param  {object} config.file - directories to use to determine if build should run
+ */
+module.exports = function netlifyMonoRepoPlugin(config) {
   return {
-    init: async (x) => {
-      console.log('x', x)
-      let files = conf.files
+    init: async ({ pluginConfig }) => {
+      let files = pluginConfig.files
       const cwd = process.cwd()
       if (!files) {
         console.log('monorepo plugin requires files array to work')
@@ -32,7 +36,7 @@ function netlifyMonoRepoPlugin(conf, stuff) {
       try {
         const currentBranch = await gitBranchName()
         const result = await diff({
-          since: conf.since || currentBranch,
+          since: pluginConfig.since || currentBranch,
           files: filesToCheck
         })
         // console.log('result', result)
@@ -57,7 +61,7 @@ function netlifyMonoRepoPlugin(conf, stuff) {
         console.log(chalk.greenBright('Proceed with Build!\n'))
       } catch (error) {
         console.error(error)
-        process.exitCode = 1
+        process.exit(0)
       }
     }
   }
@@ -71,5 +75,3 @@ async function gitBranchName() {
     console.log(`gitBranchName Error`, e)
   }
 }
-
-module.exports = netlifyMonoRepoPlugin
