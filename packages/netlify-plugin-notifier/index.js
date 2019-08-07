@@ -1,13 +1,13 @@
 const TwilioSdk = require('twilio')
+const pkg = require('./package.json')
 
-function netlifyNotifyPlugin(conf = {}) {
-  // console.log(require('util').inspect(conf, {showHidden: false, depth: null}))
-
-  if (!conf.notices) {
+function netlifyNotifyPlugin(config) {
+  if (!config.notices) {
+    console.log(`No notices found on ${pkg.name} plugin config`)
     return {}
   }
 
-  const messagesByLifeCycle = conf.notices.reduce((acc, curr) => {
+  const messagesByLifeCycle = config.notices.reduce((acc, curr) => {
     if (!curr.event) {
       throw new Error('notice event is undefined', curr)
     }
@@ -25,16 +25,16 @@ function netlifyNotifyPlugin(conf = {}) {
     acc[curr] = async () => {
       const runNotices = messages.map((msg) => {
         if (msg.type === 'sms') {
-          console.log(`send ${msg.type} message to ${msg.to}`)
-          return sendSMS(msg, conf)
+          console.log(`Sending ${msg.type} message to ${msg.to}...`)
+          return sendSMS(msg, config)
         }
         if (msg.type === 'webhook') {
-          console.log(`send ${msg.type} message to ${msg.to}`)
-          return sendWebhook(msg, conf)
+          console.log(`Sending ${msg.type} message to ${msg.to}...`)
+          return sendWebhook(msg, config)
         }
         if (msg.type === 'email') {
-          console.log(`send ${msg.type} message to ${msg.to}`)
-          return sendEmail(msg, conf)
+          console.log(`Sending ${msg.type} message to ${msg.to}...`)
+          return sendEmail(msg, config)
         }
         return Promise.resolve()
       })
@@ -76,15 +76,35 @@ function sendWebhook(message, config) {
 */
 
 function sendSMS(message, config) {
-  return 'noOp for now'
-  const { TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN } = config
-  const twilio = new TwilioSdk(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
-  // add image to sms if body.image supplied
-  if (message.image) {
-    message.mediaUrl = message.image
+  if (!config.sms || !config.sms.provider) {
+    throw new Error('No sms provider configured')
   }
 
-  return twilio.messages.create(message)
+  if (config.sms.provider === 'twilio') {
+    const { TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER } = config.sms
+    if (!TWILIO_ACCOUNT_SID) {
+      throw new Error('No TWILIO_ACCOUNT_SID supplied to notifier plugin')
+    }
+    if (!TWILIO_AUTH_TOKEN) {
+      throw new Error('No TWILIO_AUTH_TOKEN supplied to notifier plugin')
+    }
+    if (!TWILIO_PHONE_NUMBER) {
+      throw new Error('No TWILIO_PHONE_NUMBER supplied to notifier plugin')
+    }
+
+    const twilio = new TwilioSdk(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+    // add image to sms if body.image supplied
+    if (message.image) {
+      message.mediaUrl = message.image
+    }
+    if (message.message) {
+      message.body = message.message
+    }
+    // Todo make configurable on message level
+    message.from = TWILIO_PHONE_NUMBER
+
+    return twilio.messages.create(message)
+  }
 }
 
 module.exports = netlifyNotifyPlugin
