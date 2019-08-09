@@ -1,0 +1,41 @@
+{
+  "name": "netlify-build-plugin",
+  "description": "Netlify build CLI command",
+  "version": "0.0.1",
+  "author": "David Wells @davidwells",
+  "homepage": "https://github.com/netlify/netlify-build",
+  "license": "MIT",
+  "bugs": "https://github.com/netlify/netlify-build/issues",
+  "repository": "netlify/netlify-build",
+  "scripts": {
+    "postpack": "rm -f oclif.manifest.json",
+    "posttest": "eslint .",
+    "prepack": "oclif-dev manifest && oclif-dev readme",
+    "test": "run-s test:*"
+  },
+  "dependencies": {
+    "@netlify/cli-utils": "^1.0.7",
+    "@oclif/command": "^1",
+    "@oclif/config": "^1",
+  },
+  "devDependencies": {
+    "@oclif/dev-cli": "^1",
+    "@oclif/plugin-help": "^2",
+    "@oclif/test": "^1"
+  },
+  "engines": {
+    "node": ">=8.3.0"
+  },
+  "files": [
+    "/oclif.manifest.json",
+    "/src",
+    "/yarn.lock"
+  ],
+  "oclif": {
+    "commands": "./src/commands",
+    "bin": "netlify",
+    "devPlugins": [
+      "@oclif/plugin-help"
+    ]
+  }
+}
