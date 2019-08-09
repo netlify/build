@@ -7,9 +7,9 @@ const getNetlifyConfig = require('./config')
 
 const baseDir = process.cwd()
 const cliFlags = minimist(process.argv.slice(2))
-const netlifyConfigFilePath = cliFlags.config
 
-module.exports = async function build() {
+module.exports = async function build(configPath) {
+  const netlifyConfigFilePath = configPath || cliFlags.config
   /* Load config */
   let netlifyConfig = {}
   try {
@@ -181,7 +181,8 @@ module.exports = async function build() {
   console.log(chalk.greenBright.bold('Running Netlify Build Lifecycle'))
   console.log()
   try {
-    const manifest = await engine(buildInstructions, netlifyConfig)
+    // TODO refactor engine args
+    const manifest = await engine(buildInstructions, netlifyConfig, netlifyConfigFilePath)
     console.log(chalk.greenBright.bold('Netlify Build complete'))
     console.log()
     if (Object.keys(manifest).length) {
@@ -215,7 +216,7 @@ async function execCommand(cmd) {
  * @param  {Object} config - Netlify config file values
  * @return {Object} updated config?
  */
-async function engine(methodsToRun, netlifyConfig) {
+async function engine(methodsToRun, netlifyConfig, netlifyConfigFilePath) {
   const returnData = await methodsToRun.reduce(async (promiseChain, plugin, i) => {
     const { method, hook, config, name } = plugin
     const currentData = await promiseChain

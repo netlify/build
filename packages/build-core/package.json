@@ -2,7 +2,10 @@
   "name": "@netlify/build",
   "version": "1.0.0",
   "description": "Netlify build module",
-  "main": "index.js",
+  "main": "src/build.js",
+  "bin": {
+    "netlify-build": "./src/exec-build.js"
+  },
   "author": "",
   "license": "MIT",
   "dependencies": {
