@@ -6,8 +6,8 @@
   "scripts": {
     "foo": "echo 'bar'",
     "build": "mkdir -p build && cp src/index.html build",
-    "go": "node ../packages/build-core/src/exec-lifecycle.js --config ./netlify.yml",
-    "plan": "node ../packages/build-core/src/exec-lifecycle.js --config ./netlify.yml --dryRun"
+    "go": "node ../packages/build-core/src/exec-build.js --config ./netlify.yml",
+    "plan": "node ../packages/build-core/src/exec-build.js --config ./netlify.yml --dryRun"
   },
   "author": "",
   "license": "ISC",

@@ -9,19 +9,14 @@ const baseDir = process.cwd()
 const cliFlags = minimist(process.argv.slice(2))
 const netlifyConfigFilePath = cliFlags.config
 
-/* env vars */
-process.env.SITE = 'https://netlify.com'
-// process.env.TWILIO_ACCOUNT_SID = 'xyz'
-// process.env.TWILIO_AUTH_TOKEN = 'xyz'
-// process.env.TWILIO_PHONE_NUMBER = '17273085805'
-
-;(async function main () {
+module.exports = async function build() {
   /* Load config */
   let netlifyConfig = {}
   try {
     netlifyConfig = await getNetlifyConfig(netlifyConfigFilePath, cliFlags)
   } catch (err) {
-    console.log('Config error', err)
+    console.log('Netlify Config Error')
+    throw err
   }
   console.log(chalk.cyanBright.bold('Netlify Config'))
   deepLog(netlifyConfig)
@@ -196,7 +191,7 @@ process.env.SITE = 'https://netlify.com'
   } catch (err) {
     console.log(err)
   }
-})()
+}
 
 function preFix(hook) {
   return `pre${hook}`

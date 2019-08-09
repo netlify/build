@@ -1,9 +1,13 @@
+/**
+ * (WIP) Scaffold docker image, update dependancies, set correct language libs
+ * Node port of https://github.com/netlify/build-image/blob/xenial/run-build.sh
+ */
 const path = require('path')
 const execa = require('execa')
 const installDependencies = require('./install')
 const cacheArtifacts = require('./cache')
 const prepFunctions = require('./install/serverless/prep-functions')
-const runBuildFunction = require('./run-build-function')
+const runBuildFunction = require('./utils/create-directories')
 const installMissingCommands = require('./install/missing-commands')
 const setGoImportPath = require('./install/set-go-import-path')
 const { getProcessCount, findRunningProcs } = require('./utils/findRunningProcs')

@@ -17,13 +17,15 @@ module.exports = function netlifyMonoRepoPlugin(config) {
         console.log('monorepo plugin requires files array to work')
         return
       }
-
+      /* Todo decide if config change should ignore mono repo ignore and trigger build
       const defaultFiles = [
         'netlify.toml',
         'netlify.yml',
         'netlify.js',
         'netlify.json'
       ]
+      */
+      const defaultFiles = []
 
       const filesToCheck = defaultFiles.concat(files).map((name) => {
         const parent = path.dirname(cwd)
