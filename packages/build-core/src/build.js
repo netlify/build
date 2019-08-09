@@ -74,6 +74,10 @@ module.exports = async function build(configPath) {
     lifeCycleHooks: {}
   })
 
+  if (!netlifyConfig.build) {
+    throw new Error('No build settings found')
+  }
+
   // console.log('Build Lifecycle:')
   // deepLog(allPlugins)
 
@@ -111,10 +115,38 @@ module.exports = async function build(configPath) {
   }, [])
   // console.log('fullLifecycle', fullLifecycle)
 
+  if (netlifyConfig.build &&
+      netlifyConfig.build.lifecycle &&
+      netlifyConfig.build.command
+  ) {
+    throw new Error(`build.command && build.lifecycle are both defined. Please move build.command to build.lifecycle.build`)
+  }
+
   /* Get active build instructions */
   const buildInstructions = fullLifecycle.reduce((acc, n) => {
+    // Support for old command. Add build.command to execution
+    if (netlifyConfig.build.command && n === 'build') {
+      acc = acc.concat({
+        name: `config.build.command`,
+        hook: 'build',
+        config: {},
+        method: async () => {
+          try {
+            await execCommand(netlifyConfig.build.command)
+          } catch (err) {
+            console.log(chalk.redBright(`Error from netlify config.build.command:`))
+            console.log(`"${netlifyConfig.build.command}"`)
+            console.log()
+            console.log(chalk.redBright('Error message\n'))
+            console.log(err.stderr)
+            console.log()
+            process.exit(1)
+          }
+        }
+      })
+    }
     /* Merge in config lifecycle events first */
-    if (netlifyConfig.build.lifecycle[n]) {
+    if (netlifyConfig.build.lifecycle && netlifyConfig.build.lifecycle[n]) {
       acc = acc.concat({
         name: `config.build.lifecycle.${n}`,
         hook: n,
