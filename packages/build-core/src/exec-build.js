@@ -2,6 +2,9 @@
 const chalk = require('chalk')
 const build = require('./build')
 const hasConfig = require('./utils/hasConfig')
+const minimist = require('minimist')
+
+const args = minimist(process.argv.slice(2))
 
 async function execBuild() {
   console.log(chalk.greenBright.bold(`Starting Netlify Build`))
@@ -13,7 +16,7 @@ async function execBuild() {
   console.log(configPath)
   console.log()
   // Then run build lifecycle
-  build(configPath).catch((e) => {
+  build(configPath, args).catch((e) => {
     console.log(e)
   })
 }

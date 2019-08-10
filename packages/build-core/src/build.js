@@ -1,14 +1,12 @@
 const path = require('path')
-const minimist = require('minimist')
 const chalk = require('chalk')
 const execa = require('execa')
 const deepLog = require('./utils/deeplog')
 const getNetlifyConfig = require('./config')
 
 const baseDir = process.cwd()
-const cliFlags = minimist(process.argv.slice(2))
 
-module.exports = async function build(configPath) {
+module.exports = async function build(configPath, cliFlags) {
   const netlifyConfigFilePath = configPath || cliFlags.config
   /* Load config */
   let netlifyConfig = {}
