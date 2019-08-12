@@ -1,6 +1,6 @@
 const path = require('path')
 const { zipFunction } = require('@netlify/zip-it-and-ship-it')
-const { appendFile, exists, readFile, writeFile, ensureDir } = require('fs-extra')
+const fs = require('fs-extra')
 
 function netlifyFunctionsPlugin(conf = {}) {
   return {
@@ -20,16 +20,18 @@ function netlifyFunctionsPlugin(conf = {}) {
         // Add rewrites rules
         const originalPath = `/.netlify/functions/${functionName}`
         acc.rewrites = acc.rewrites.concat({
-          fromPath: originalPath,
-          toPath: functionData.path
+          fromPath: functionData.path,
+          toPath: originalPath
         })
 
-        console.log(`Rewriting ${originalPath} to ${functionData.path}`)
+        console.log(`Mapping ${functionData.path} to ${originalPath}`)
 
         // configuration for functions
         acc.functions = acc.functions.concat({
           name: functionName,
+          filename: functionData.handler,
           path: functionPath,
+          method: functionData.method
         })
 
         return acc
@@ -39,14 +41,11 @@ function netlifyFunctionsPlugin(conf = {}) {
         redirects: []
       })
 
-      // Zip up functions
-      const zips = data.functions.map((func) => {
-        console.log(`Zipping "${func.name}" function...`)
-        return packageFunction(func.path, destFolder)
+      const processFuncs = data.functions.map(async (func) => {
+        return processFunction(func, destFolder)
       })
-      await Promise.all(zips)
 
-      // TODO wrap functions with method check
+      await Promise.all(processFuncs)
 
       // Write to redirects file
       await writeRedirectsFile(buildFolder, data.redirects, data.rewrites)
@@ -56,9 +55,69 @@ function netlifyFunctionsPlugin(conf = {}) {
   }
 }
 
+async function processFunction(func, destFolder) {
+  const tempPath = tempFileName(func.path)
+  // Cleanup from failed build
+  if (await fs.exists(tempPath)) {
+    const content = await fs.readFile(func.path)
+    if (content.match(/Netlify function wrapper/)) {
+      // Reset original source code
+      await fs.copy(tempPath, func.path)
+    }
+  }
+  // Create copy of original function handler
+  await fs.copy(func.path, tempPath)
+  // Wrap function code
+  console.log(`Wrapping function ${func.name}...`)
+  const handler = generateHandler(func)
+  // Write new function code to original file
+  await fs.writeFile(func.path, handler)
+  // Zip it up the wrapped function
+  console.log(`Packaging function ${func.name}...`)
+  await packageFunction(func.path, destFolder)
+  // copy original function code back
+  await fs.copy(tempPath, func.path)
+  // Delete backup
+  await fs.unlink(tempPath)
+  return handler
+}
+
+function tempFileName(filePath) {
+  return filePath.replace(/\.js$/, '-temp.js')
+}
+
 async function packageFunction(functionPath, destFolder) {
-  await ensureDir(destFolder)
+  await fs.ensureDir(destFolder)
   await zipFunction(functionPath, destFolder)
+}
+
+function generateHandler(func) {
+  const { name, method } = func
+  const tempFile = path.basename(tempFileName(func.path))
+  return `
+/* Netlify function wrapper */
+let originalFunction, handlerError
+try {
+  originalFunction = require('./${tempFile}')
+} catch (err) {
+  handlerError = err
+}
+
+exports['handler'] = function ${name}(event, context, callback) {
+  if (handlerError) {
+    return callback(handlerError)
+  }
+  if (event.httpMethod !== "${method}") {
+    const errorMessage = \`"\${event.httpMethod}" not allowed\`
+    console.log(errorMessage)
+    return callback(errorMessage)
+  }
+  try {
+    return originalFunction['handler'](event, context, callback)
+  } catch (err) {
+    throw err
+  }
+}`
 }
 
 const HEADER_COMMENT = `## Created with netlify functions plugin`
@@ -120,9 +179,9 @@ async function writeRedirectsFile(buildDir, redirects, rewrites) {
   // Websites may also have statically defined redirects
   // In that case we should append to them (not overwrite)
   // Make sure we aren't just looking at previous build results though
-  const fileExists = await exists(FILE_PATH)
+  const fileExists = await fs.exists(FILE_PATH)
   if (fileExists) {
-    const fileContents = await readFile(FILE_PATH)
+    const fileContents = await fs.readFile(FILE_PATH)
     if (fileContents.indexOf(HEADER_COMMENT) < 0) {
       appendToFile = true
     }
@@ -131,8 +190,8 @@ async function writeRedirectsFile(buildDir, redirects, rewrites) {
   const data = `${HEADER_COMMENT}\n\n${[...redirects, ...rewrites].join(`\n`)}`
 
   return appendToFile
-    ? appendFile(FILE_PATH, `\n\n${data}`)
-    : writeFile(FILE_PATH, data)
+    ? fs.appendFile(FILE_PATH, `\n\n${data}`)
+    : fs.writeFile(FILE_PATH, data)
 }
 
 module.exports = netlifyFunctionsPlugin
