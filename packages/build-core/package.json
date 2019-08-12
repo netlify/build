@@ -1,12 +1,16 @@
 {
   "name": "@netlify/build",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "Netlify build module",
   "main": "src/build.js",
   "bin": {
     "netlify-build": "./src/exec-build.js"
   },
-  "author": "",
+  "author": "Netlify Inc.",
+  "contributors": [
+    "David Wells <hello@davidwells.io> (https://davidwells.io/)",
+    "Swyx <swyx@netlify.com> (https://www.swyx.io)"
+  ],
   "license": "MIT",
   "dependencies": {
     "chalk": "^2.4.2",

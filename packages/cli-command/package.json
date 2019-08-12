@@ -2,6 +2,7 @@
   "name": "netlify-build-plugin",
   "description": "Netlify build CLI command",
   "version": "0.0.1",
+  "private": true,
   "author": "David Wells @davidwells",
   "homepage": "https://github.com/netlify/netlify-build",
   "license": "MIT",
