@@ -5,19 +5,22 @@
   "main": "index.js",
   "scripts": {
     "foo": "echo 'bar'",
+    "prebuild": "cp _redirects build",
     "build": "mkdir -p build && cp src/index.html build",
-    "go": "netlify-build",
-    "plan": "netlify-build --dryRun"
+    "go": "cross-env SITE=https://netlify.com netlify-build",
+    "plan": "cross-env SITE=https://netlify.com netlify-build --dryRun"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@netlify/build": "file:../packages/build-core",
+    "cross-env": "^5.2.0",
     "netlify-plugin-cypress": "file:../packages/netlify-plugin-cypress",
     "netlify-plugin-example": "file:../packages/netlify-plugin-example",
+    "netlify-plugin-functions": "file:../packages/netlify-plugin-functions",
     "netlify-plugin-lighthouse": "file:../packages/netlify-plugin-lighthouse",
+    "netlify-plugin-monorepo": "file:../packages/netlify-plugin-monorepo",
     "netlify-plugin-notifier": "file:../packages/netlify-plugin-notifier",
-    "netlify-plugin-sitemap": "file:../packages/netlify-plugin-sitemap",
-    "netlify-plugin-monorepo": "file:../packages/netlify-plugin-monorepo"
+    "netlify-plugin-sitemap": "file:../packages/netlify-plugin-sitemap"
   }
 }
