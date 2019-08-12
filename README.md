@@ -107,11 +107,12 @@ function exampleNetlifyPlugin(initialConfig) {
      * @param  {object} context         - Build context
      * @param  {object} context.siteId  - Netlify site Id
      * @param  {object} context.siteUrl - Netlify site url
+     * @param  {object} context.siteConfig - Netlify site url
      * @param  {object} utils        [description]
      * @return {[type]}              [description]
      */
     init: ({ netlifyConfig, pluginConfig, context, utils }) => {
-      const { siteId, siteUrl, siteConfig, deployUrl, cwd } = context
+      const { siteId, siteUrl, /*siteConfig*/, deployUrl } = context
       console.log(`Current site id`, siteId)
       console.log(`Current live site url`, siteUrl)
       console.log(`Current siteConfig`, siteConfig)
@@ -134,10 +135,11 @@ function exampleNetlifyPlugin(initialConfig) {
 **Examples:**
 
 - **netlify-plugin-lighthouse** to automatically track your lighthouse site score between deployments
-- **netlify-plugin--cypress** to automatically run integration tests
-- **netlify-plugin--tweet-new-post** to automatically share new content via twitter on new publish
-- **netlify-plugin--sitemap** to generate sitemaps after build
-- **netlify-plugin--notify** to automatically wired up build notifications
+- **netlify-plugin-cypress** to automatically run integration tests
+- **netlify-plugin-tweet-new-post** to automatically share new content via twitter on new publish
+- **netlify-plugin-sitemap** to generate sitemaps after build
+- **netlify-plugin-notify** to automatically wired up build notifications
+- **netlify-plugin-a11y-axe** to automatically audit site for accessibility issues
 - ... skys the limit 🌈
 
 ## Configuration
