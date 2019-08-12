@@ -1,12 +1,23 @@
 version: 06-25-2019
 
 plugins:
+  # - netlify-plugin-functions:
+  #     functions:
+  #       foo:
+  #         handler: src/foo.js
+  #         path: /foo
+  #         method: GET
+  #       bar:
+  #         handler: src/bar.js
+  #         path: /bar
+  #         method: GET
   - netlify-plugin-example:
       enabled: true
   - netlify-plugin-cypress:
       baseUrl: ${env:SITE, https://netlify.com}
       pageLoadTimeout: 60000
   - netlify-plugin-sitemap:
+      baseUrl: ${env:SITE, https://netlify.com}
       distPath: build
       exclude: "**/dist"
   - netlify-plugin-notifier:
@@ -14,9 +25,9 @@ plugins:
       enabled: false
       sms:
         provider: twilio
-        TWILIO_ACCOUNT_SID: ${env:TWILIO_ACCOUNT_SID}
-        TWILIO_AUTH_TOKEN: ${env:TWILIO_AUTH_TOKEN}
-        TWILIO_PHONE_NUMBER: ${env:TWILIO_PHONE_NUMBER}
+        TWILIO_ACCOUNT_SID: ${env:TWILIO_ACCOUNT_SID, 'NA'}
+        TWILIO_AUTH_TOKEN: ${env:TWILIO_AUTH_TOKEN, 'NA'}
+        TWILIO_PHONE_NUMBER: ${env:TWILIO_PHONE_NUMBER, 'NA'}
       notices:
         - event: postbuild
           type: email
@@ -32,15 +43,17 @@ plugins:
           endpoint: 'https://my-webhook-endpoint.com/api'
           message: 'Your site build failed sorry charlie'
   - netlify-plugin-lighthouse:
-      enabled: ${env:LIGHTHOUSE_ENABLED, true}
+      enabled: true
       currentVersion: 0.0.4
       compareWithVersion: 0.0.3
   - netlify-plugin-monorepo:
-      enabled: true
+      enabled: false
       files:
         - "src/**"
 
 build:
+  functions: functions
+  # command: echo 'hi'
   lifecycle:
     init:
       - npm run foo
