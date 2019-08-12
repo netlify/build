@@ -14,7 +14,7 @@
     "test": "run-s test:*"
   },
   "dependencies": {
-    "@netlify/build": "^1.0.0",
+    "@netlify/build": "^0.0.1",
     "@netlify/cli-utils": "^1.0.7",
     "@oclif/command": "^1",
     "@oclif/config": "^1"
