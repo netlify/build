@@ -46,6 +46,7 @@ function netlifyLighthousePlugin(conf) {
         resp = await subprocess
       } catch (err) {
         console.log(err)
+        throw err
       }
       // console.log(resp.stdout)
 
