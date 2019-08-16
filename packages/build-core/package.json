@@ -1,6 +1,6 @@
 {
   "name": "@netlify/build",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Netlify build module",
   "main": "src/build.js",
   "bin": {
@@ -11,6 +11,11 @@
     "David Wells <hello@davidwells.io> (https://davidwells.io/)",
     "Swyx <swyx@netlify.com> (https://www.swyx.io)"
   ],
+  "scripts": {
+    "release:patch": "npm version patch && npm publish",
+    "release:minor": "npm version minor && npm publish",
+    "release:major": "npm version major && npm publish"
+  },
   "license": "MIT",
   "dependencies": {
     "@netlify/zip-it-and-ship-it": "^0.3.1",

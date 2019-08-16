@@ -3,7 +3,7 @@ const chalk = require('chalk')
 const execa = require('execa')
 const deepLog = require('./utils/deeplog')
 const getNetlifyConfig = require('./config')
-const { fileExists } = require('./utils/fs')
+const { fileExists, readDir } = require('./utils/fs')
 const os = require('os')
 const makeDir = require('make-dir')
 const { zipFunctions } = require('@netlify/zip-it-and-ship-it')
@@ -116,7 +116,7 @@ module.exports = async function build(configPath, cliFlags) {
     ])
     return acc
   }, [])
-  console.log('fullLifecycle', fullLifecycle)
+  // console.log('fullLifecycle', fullLifecycle)
 
   if (netlifyConfig.build &&
       netlifyConfig.build.lifecycle &&
@@ -228,6 +228,10 @@ module.exports = async function build(configPath, cliFlags) {
     console.log(err)
   }
 
+  /* Function bundling logic.
+
+    TODO: Move into plugin lifecycle
+  */
   if (!netlifyConfig.build.functions) {
     console.log('No functions directory set. Skipping functions build step')
     return false
@@ -241,7 +245,7 @@ module.exports = async function build(configPath, cliFlags) {
   const tempFileDir = path.join(os.tmpdir(), 'zisi-')
 
   if (!await fileExists(tempFileDir)) {
-    console.log(`Functions directory "${netlifyConfig.build.functions}" not found`)
+    console.log(`Functions directory "${tempFileDir}" not found`)
     console.log(`Creating tmp dir`, tempFileDir)
     await makeDir(tempFileDir)
   }
@@ -254,6 +258,8 @@ module.exports = async function build(configPath, cliFlags) {
     throw new Error(err)
   }
   console.log('Functions bundled!')
+  const funcs = await readDir(tempFileDir)
+  console.log(funcs)
 
   console.log('Rock and roll')
 }
