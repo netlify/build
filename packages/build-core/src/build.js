@@ -3,7 +3,10 @@ const chalk = require('chalk')
 const execa = require('execa')
 const deepLog = require('./utils/deeplog')
 const getNetlifyConfig = require('./config')
-
+const { fileExists } = require('./utils/fs')
+const os = require('os')
+const makeDir = require('make-dir')
+const { zipFunctions } = require('@netlify/zip-it-and-ship-it')
 const baseDir = process.cwd()
 
 module.exports = async function build(configPath, cliFlags) {
@@ -90,6 +93,8 @@ module.exports = async function build(configPath, cliFlags) {
     'install',
     /* Build the site & functions */
     'build', // 'build:site', 'build:function',
+    'build:site',
+    'build:function',
     /* Package & optimize artifact */
     'package',
     /* Deploy built artifact */
@@ -111,7 +116,7 @@ module.exports = async function build(configPath, cliFlags) {
     ])
     return acc
   }, [])
-  // console.log('fullLifecycle', fullLifecycle)
+  console.log('fullLifecycle', fullLifecycle)
 
   if (netlifyConfig.build &&
       netlifyConfig.build.lifecycle &&
@@ -222,6 +227,35 @@ module.exports = async function build(configPath, cliFlags) {
   } catch (err) {
     console.log(err)
   }
+
+  if (!netlifyConfig.build.functions) {
+    console.log('No functions directory set. Skipping functions build step')
+    return false
+  }
+
+  if (!await fileExists(netlifyConfig.build.functions)) {
+    console.log(`Functions directory "${netlifyConfig.build.functions}" not found`)
+    throw new Error('Functions Build cancelled')
+  }
+
+  const tempFileDir = path.join(os.tmpdir(), 'zisi-')
+
+  if (!await fileExists(tempFileDir)) {
+    console.log(`Functions directory "${netlifyConfig.build.functions}" not found`)
+    console.log(`Creating tmp dir`, tempFileDir)
+    await makeDir(tempFileDir)
+  }
+
+  try {
+    console.log('Zipping functions')
+    await zipFunctions(netlifyConfig.build.functions, tempFileDir)
+  } catch (err) {
+    console.log('Functions bundling error')
+    throw new Error(err)
+  }
+  console.log('Functions bundled!')
+
+  console.log('Rock and roll')
 }
 
 function preFix(hook) {
