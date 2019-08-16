@@ -5,7 +5,7 @@ const fs = require('fs-extra')
 function netlifyFunctionsPlugin(conf = {}) {
   return {
     postbuild: async ({ netlifyConfig }) => {
-      console.log('Configuring Functions...')
+      console.log('Configuring Functions...', netlifyConfig)
       if (!conf.functions) {
         throw new Error('You must provide functions to the functions plugin')
       }
@@ -16,6 +16,7 @@ function netlifyFunctionsPlugin(conf = {}) {
       const data = Object.keys(conf.functions).reduce((acc, functionName) => {
         const functionData = conf.functions[functionName]
         const functionPath = path.resolve(functionData.handler)
+        // const functionFileName = path.basename(functionData.handler).replace(/\.js$/, '')
 
         // Add rewrites rules
         const originalPath = `/.netlify/functions/${functionName}`
@@ -24,7 +25,7 @@ function netlifyFunctionsPlugin(conf = {}) {
           toPath: originalPath
         })
 
-        console.log(`Mapping ${functionData.path} to ${originalPath}`)
+        console.log(`Mapping ${functionData.path} to ${originalPath}. Method: ${functionData.method}`)
 
         // configuration for functions
         acc.functions = acc.functions.concat({
@@ -40,6 +41,11 @@ function netlifyFunctionsPlugin(conf = {}) {
         rewrites: [],
         redirects: []
       })
+
+      const buildDir = path.resolve(netlifyConfig.build.publish)
+      const buildDirFunctions = path.join(buildDir, netlifyConfig.build.functions)
+      // Clean functions deploy directory
+      await fs.emptyDir(buildDirFunctions)
 
       const processFuncs = data.functions.map(async (func) => {
         return processFunction(func, destFolder)
@@ -70,15 +76,21 @@ async function processFunction(func, destFolder) {
   // Wrap function code
   console.log(`Wrapping function ${func.name}...`)
   const handler = generateHandler(func)
-  // Write new function code to original file
-  await fs.writeFile(func.path, handler)
+  // Write new function handler code to name of function file
+  const regex = new RegExp(`${path.basename(func.path)}$`)
+  const funcNamePath = func.path.replace(regex, `${func.name}.js`)
+  await fs.writeFile(funcNamePath, handler)
   // Zip it up the wrapped function
-  console.log(`Packaging function ${func.name}...`)
-  await packageFunction(func.path, destFolder)
+  console.log(`Packaging function ${funcNamePath}...`)
+  await packageFunction(funcNamePath, destFolder)
   // copy original function code back
   await fs.copy(tempPath, func.path)
   // Delete backup
   await fs.unlink(tempPath)
+  if (func.path !== funcNamePath) {
+    // Delete renamed function from src dir
+    await fs.unlink(funcNamePath)
+  }
   return handler
 }
 
