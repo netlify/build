@@ -1,16 +1,17 @@
 version: 06-25-2019
 
 plugins:
-  # - netlify-plugin-functions:
-  #     functions:
-  #       foo:
-  #         handler: src/foo.js
-  #         path: /foo
-  #         method: GET
-  #       bar:
-  #         handler: src/bar.js
-  #         path: /bar
-  #         method: GET
+  - netlify-plugin-functions:
+      enabled: false
+      functions:
+        foo:
+          handler: src/backend/whatever.js
+          path: /api/lol
+          method: POST
+        bar:
+          handler: src/backend/myFuncName.js
+          path: /api/cool
+          method: GET
   - netlify-plugin-example:
       enabled: true
   - netlify-plugin-cypress:
@@ -43,7 +44,7 @@ plugins:
           endpoint: 'https://my-webhook-endpoint.com/api'
           message: 'Your site build failed sorry charlie'
   - netlify-plugin-lighthouse:
-      enabled: true
+      enabled: false
       currentVersion: 0.0.4
       compareWithVersion: 0.0.3
   - netlify-plugin-monorepo:
