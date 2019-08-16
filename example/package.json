@@ -5,10 +5,11 @@
   "main": "index.js",
   "scripts": {
     "foo": "echo 'bar'",
-    "prebuild": "cp _redirects build",
-    "build": "mkdir -p build && cp src/index.html build",
+    "prebuild": "mkdir -p build && cp _redirects build",
+    "build": "cp src/index.html build",
     "go": "cross-env SITE=https://netlify.com netlify-build",
-    "plan": "cross-env SITE=https://netlify.com netlify-build --dryRun"
+    "plan": "cross-env SITE=https://netlify.com netlify-build --dryRun",
+    "deploy": "netlify deploy --functions=build/functions --dir=build --prod"
   },
   "author": "",
   "license": "ISC",
@@ -22,5 +23,8 @@
     "netlify-plugin-monorepo": "file:../packages/netlify-plugin-monorepo",
     "netlify-plugin-notifier": "file:../packages/netlify-plugin-notifier",
     "netlify-plugin-sitemap": "file:../packages/netlify-plugin-sitemap"
+  },
+  "dependencies": {
+    "lodash": "^4.17.15"
   }
 }
