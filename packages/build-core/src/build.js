@@ -243,7 +243,10 @@ module.exports = async function build(configPath, cliFlags) {
   }
 
   const deployID = process.env.DEPLOY_ID || '12345'
-  const tempFileDir = path.join(os.tmpdir(), `netlify-build-functions-${deployID}`)
+  let tempFileDir = path.join(baseDir, '.netlify', 'functions')
+  if (isNetlifyCI()) {
+    tempFileDir = path.join(os.tmpdir(), `zisi-${deployID}`)
+  }
 
   if (!await fileExists(tempFileDir)) {
     console.log(`Temp functions directory "${tempFileDir}" not found`)
@@ -323,4 +326,12 @@ async function engine(methodsToRun, netlifyConfig, netlifyConfigFilePath) {
   }, Promise.resolve({}))
   // console.log('returnData', returnData)
   return returnData
+}
+
+// Test if inside netlify build context
+function isNetlifyCI() {
+  if (process.env.DEPLOY_PRIME_URL) {
+    return true
+  }
+  return false
 }
