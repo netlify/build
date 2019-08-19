@@ -242,10 +242,11 @@ module.exports = async function build(configPath, cliFlags) {
     throw new Error('Functions Build cancelled')
   }
 
-  const tempFileDir = path.join(os.tmpdir(), 'zisi-')
+  const deployID = process.env.DEPLOY_ID || '12345'
+  const tempFileDir = path.join(os.tmpdir(), `netlify-build-functions-${deployID}`)
 
   if (!await fileExists(tempFileDir)) {
-    console.log(`Functions directory "${tempFileDir}" not found`)
+    console.log(`Temp functions directory "${tempFileDir}" not found`)
     console.log(`Creating tmp dir`, tempFileDir)
     await makeDir(tempFileDir)
   }
