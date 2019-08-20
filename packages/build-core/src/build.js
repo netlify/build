@@ -250,7 +250,7 @@ module.exports = async function build(configPath, cliFlags) {
   if (IS_NETLIFY) {
     tempFileDir = path.join(os.tmpdir(), `zisi-${deployID}`)
   }
-
+  console.log(tempFileDir)
   if (!await fileExists(tempFileDir)) {
     console.log(`Temp functions directory "${tempFileDir}" not found`)
     console.log(`Creating tmp dir`, tempFileDir)
@@ -340,7 +340,7 @@ async function engine(methodsToRun, netlifyConfig, netlifyConfigFilePath) {
 
 // Test if inside netlify build context
 function isNetlifyCI() {
-  if (process.env.DEPLOY_PRIME_URL) {
+  if (process.env.NETLIFY) {
     return true
   }
   return false
