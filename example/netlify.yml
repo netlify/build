@@ -22,7 +22,6 @@ plugins:
       distPath: build
       exclude: "**/dist"
   - netlify-plugin-notifier:
-      # disabled b/c you need twilio keys for this to work
       enabled: false
       sms:
         provider: twilio
@@ -37,7 +36,7 @@ plugins:
           message: 'Horray!'
         - event: postbuild
           type: sms
-          to: 727-687-1858
+          to: 727-687-1888
           message: 'Your build is published {url}!'
         - event: buildFailed
           type: webhook
