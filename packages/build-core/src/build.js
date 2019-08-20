@@ -227,9 +227,12 @@ module.exports = async function build(configPath, cliFlags) {
       deepLog(manifest)
     }
   } catch (err) {
+    console.log('Lifecycle error')
     console.log(err)
   }
 
+  const IS_NETLIFY = isNetlifyCI()
+  console.log('IS_NETLIFY', IS_NETLIFY)
   /* Function bundling logic.
 
     TODO: Move into plugin lifecycle
@@ -246,11 +249,11 @@ module.exports = async function build(configPath, cliFlags) {
 
   const deployID = process.env.DEPLOY_ID || '12345'
   let tempFileDir = path.join(baseDir, '.netlify', 'functions')
-  const IS_NETLIFY = isNetlifyCI()
+
   if (IS_NETLIFY) {
     tempFileDir = path.join(os.tmpdir(), `zisi-${deployID}`)
   }
-  console.log(tempFileDir)
+  console.log('tempFileDir', tempFileDir)
   if (!await fileExists(tempFileDir)) {
     console.log(`Temp functions directory "${tempFileDir}" not found`)
     console.log(`Creating tmp dir`, tempFileDir)
@@ -340,7 +343,8 @@ async function engine(methodsToRun, netlifyConfig, netlifyConfigFilePath) {
 
 // Test if inside netlify build context
 function isNetlifyCI() {
-  if (process.env.NETLIFY) {
+  console.log('Check if in Netlify Buildbot')
+  if (process.env.DEPLOY_PRIME_URL) {
     return true
   }
   return false
