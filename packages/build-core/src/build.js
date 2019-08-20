@@ -1,11 +1,13 @@
+const os = require('os')
 const path = require('path')
 const chalk = require('chalk')
 const execa = require('execa')
+const makeDir = require('make-dir')
 const deepLog = require('./utils/deeplog')
 const getNetlifyConfig = require('./config')
-const { fileExists, readDir } = require('./utils/fs')
-const os = require('os')
-const makeDir = require('make-dir')
+const { toToml } = require('./config')
+const { fileExists, readDir, writeFile } = require('./utils/fs')
+
 const { zipFunctions } = require('@netlify/zip-it-and-ship-it')
 const baseDir = process.cwd()
 
@@ -244,7 +246,8 @@ module.exports = async function build(configPath, cliFlags) {
 
   const deployID = process.env.DEPLOY_ID || '12345'
   let tempFileDir = path.join(baseDir, '.netlify', 'functions')
-  if (isNetlifyCI()) {
+  const IS_NETLIFY = isNetlifyCI()
+  if (IS_NETLIFY) {
     tempFileDir = path.join(os.tmpdir(), `zisi-${deployID}`)
   }
 
@@ -265,7 +268,14 @@ module.exports = async function build(configPath, cliFlags) {
   const funcs = await readDir(tempFileDir)
   console.log(funcs)
 
-  console.log('Rock and roll')
+  console.log('Rock and roll ⊂◉‿◉つ')
+  if (IS_NETLIFY) {
+    const toml = toToml(netlifyConfig)
+    const tomlPath = path.join(baseDir, 'netlify.toml')
+    console.log('\nTOML output:\n')
+    console.log(toml)
+    await writeFile(tomlPath, toml)
+  }
 }
 
 function preFix(hook) {

@@ -1,6 +1,6 @@
 {
   "name": "@netlify/build",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Netlify build module",
   "main": "src/build.js",
   "bin": {
@@ -20,7 +20,7 @@
   "dependencies": {
     "@netlify/zip-it-and-ship-it": "^0.3.1",
     "chalk": "^2.4.2",
-    "configorama": "0.0.8",
+    "configorama": "0.0.9",
     "cpy": "^7.2.0",
     "del": "^4.1.1",
     "execa": "^2.0.3",
