@@ -16,11 +16,11 @@ async function execBuild() {
   console.log(configPath)
   console.log()
   // Then run build lifecycle
-  build(configPath, args).catch((e) => {
-    console.log(e)
-  })
+  await build(configPath, args)
 }
 
-execBuild().catch((e) => {
+execBuild().then(() => {
+  console.log('Exiting build process!')
+}).catch((e) => {
   console.log(e)
 })

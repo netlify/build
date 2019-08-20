@@ -220,12 +220,8 @@ module.exports = async function build(configPath, cliFlags) {
   try {
     // TODO refactor engine args
     const manifest = await engine(buildInstructions, netlifyConfig, netlifyConfigFilePath)
-    console.log(chalk.greenBright.bold('Netlify Build complete'))
-    console.log()
-    if (Object.keys(manifest).length) {
-      console.log('Manifest:')
-      deepLog(manifest)
-    }
+    console.log('...')
+    console.log('Netlify Build complete!')
   } catch (err) {
     console.log('Lifecycle error')
     console.log(err)
