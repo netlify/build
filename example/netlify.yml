@@ -15,7 +15,7 @@ plugins:
   - netlify-plugin-example:
       enabled: true
   - netlify-plugin-cypress:
-      baseUrl: ${env:SITE, https://netlify.com}
+      baseUrl: ${env:URL, https://netlify.com}
       pageLoadTimeout: 60000
   - netlify-plugin-sitemap:
       baseUrl: ${env:SITE, https://netlify.com}
