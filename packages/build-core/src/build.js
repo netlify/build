@@ -7,8 +7,8 @@ const deepLog = require('./utils/deeplog')
 const getNetlifyConfig = require('./config')
 const { toToml } = require('./config')
 const { fileExists, readDir, writeFile } = require('./utils/fs')
-
 const { zipFunctions } = require('@netlify/zip-it-and-ship-it')
+
 const baseDir = process.cwd()
 
 module.exports = async function build(configPath, cliFlags) {
@@ -43,7 +43,9 @@ module.exports = async function build(configPath, cliFlags) {
       if (name.match(/^\./)) {
         filePath = path.resolve(baseDir, name)
       } else {
-        filePath = path.resolve(baseDir, 'node_modules', name)
+        // If module scoped add @ symbol prefix
+        const formattedName = (name.match(/^netlify\//)) ? `@${name.replace(/^@/, '')}` : name
+        filePath = path.resolve(baseDir, 'node_modules', formattedName)
       }
       console.log(chalk.yellow(`Loading plugin "${name}" from ${filePath}`))
       code = require(filePath)
@@ -152,29 +154,22 @@ module.exports = async function build(configPath, cliFlags) {
     }
     /* Merge in config lifecycle events first */
     if (netlifyConfig.build.lifecycle && netlifyConfig.build.lifecycle[n]) {
+      const cmds = netlifyConfig.build.lifecycle[n]
       acc = acc.concat({
         name: `config.build.lifecycle.${n}`,
         hook: n,
         config: {},
         method: async () => {
           try {
-            // Parse commands and turn into exec
-            if (Array.isArray(netlifyConfig.build.lifecycle[n])) {
-              const doCommands = netlifyConfig.build.lifecycle[n].map((cmd) => {
-                // TODO refactor into reduce to run in order
-                return execCommand(cmd)
-              })
-              await Promise.all(doCommands)
-            } else {
-              const commands = netlifyConfig.build.lifecycle[n].split('\n')
-              const doCommands = commands.map((cmd) => {
-                if (!cmd) {
-                  return Promise.resolve()
-                }
-                return execCommand(cmd)
-              })
-              await Promise.all(doCommands)
-            }
+            const commands = Array.isArray(cmds) ? cmds : cmds.split('\n')
+            const doCommands = commands.reduce(async (promiseChain, curr) => {
+              const data = await promiseChain
+              // TODO pass in env vars if not available
+              const stdout = await execCommand(curr)
+              return Promise.resolve(data.concat(stdout))
+            }, Promise.resolve([]))
+            // TODO return stdout?
+            const output = await doCommands // eslint-disable-line
           } catch (err) {
             console.log(chalk.redBright(`Error from netlify config build.lifecycle.${n} n from command:`))
             console.log(`"${netlifyConfig.build.lifecycle[n]}"`)
@@ -232,9 +227,9 @@ module.exports = async function build(configPath, cliFlags) {
   }
 
   const IS_NETLIFY = isNetlifyCI()
-  /* Function bundling logic.
 
-    TODO: Move into plugin lifecycle
+  /* Function bundling logic.
+     TODO: Move into plugin lifecycle
   */
   if (!netlifyConfig.build.functions) {
     console.log('No functions directory set. Skipping functions build step')
@@ -278,6 +273,7 @@ module.exports = async function build(configPath, cliFlags) {
     console.log()
     console.log(toml)
     await writeFile(tomlPath, toml)
+    console.log(`TOML file written to ${tomlPath}`)
   }
 }
 
