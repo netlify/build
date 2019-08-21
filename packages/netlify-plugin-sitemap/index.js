@@ -45,7 +45,6 @@ async function makeSitemap(opts = {}) {
 }
 
 function netlifySitemapPlugin(conf = {}) {
-  console.log(conf)
   return {
     // Hook into lifecycle
     postbuild: async () => {
