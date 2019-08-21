@@ -20,7 +20,7 @@
   "dependencies": {
     "@netlify/zip-it-and-ship-it": "^0.3.1",
     "chalk": "^2.4.2",
-    "configorama": "0.0.9",
+    "configorama": "0.1.0",
     "cpy": "^7.2.0",
     "del": "^4.1.1",
     "execa": "^2.0.3",
