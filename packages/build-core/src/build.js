@@ -220,15 +220,18 @@ module.exports = async function build(configPath, cliFlags) {
   try {
     // TODO refactor engine args
     const manifest = await engine(buildInstructions, netlifyConfig, netlifyConfigFilePath)
-    console.log('...')
-    console.log('Netlify Build complete!')
+    console.log(chalk.greenBright.bold('Netlify Build complete'))
+    console.log()
+    if (Object.keys(manifest).length) {
+      console.log('Manifest:')
+      deepLog(manifest)
+    }
   } catch (err) {
     console.log('Lifecycle error')
     console.log(err)
   }
 
   const IS_NETLIFY = isNetlifyCI()
-  console.log('IS_NETLIFY', IS_NETLIFY)
   /* Function bundling logic.
 
     TODO: Move into plugin lifecycle
@@ -249,7 +252,7 @@ module.exports = async function build(configPath, cliFlags) {
   if (IS_NETLIFY) {
     tempFileDir = path.join(os.tmpdir(), `zisi-${deployID}`)
   }
-  console.log('tempFileDir', tempFileDir)
+
   if (!await fileExists(tempFileDir)) {
     console.log(`Temp functions directory "${tempFileDir}" not found`)
     console.log(`Creating tmp dir`, tempFileDir)
@@ -267,11 +270,12 @@ module.exports = async function build(configPath, cliFlags) {
   const funcs = await readDir(tempFileDir)
   console.log(funcs)
 
-  console.log('Rock and roll ⊂◉‿◉つ')
   if (IS_NETLIFY) {
     const toml = toToml(netlifyConfig)
     const tomlPath = path.join(baseDir, 'netlify.toml')
-    console.log('\nTOML output:\n')
+    console.log()
+    console.log('TOML output:')
+    console.log()
     console.log(toml)
     await writeFile(tomlPath, toml)
   }
@@ -339,7 +343,6 @@ async function engine(methodsToRun, netlifyConfig, netlifyConfigFilePath) {
 
 // Test if inside netlify build context
 function isNetlifyCI() {
-  console.log('Check if in Netlify Buildbot')
   if (process.env.DEPLOY_PRIME_URL) {
     return true
   }

@@ -20,7 +20,8 @@ async function execBuild() {
 }
 
 execBuild().then(() => {
-  console.log('Exiting build process!')
+  const sparkles = chalk.cyanBright('(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧')
+  console.log(`\n${sparkles} Finished with the build process!\n`)
 }).catch((e) => {
   console.log(e)
 })
