@@ -3,20 +3,21 @@ const path = require('path')
 const chalk = require('chalk')
 const mkdirp = require('mkdirp')
 
-function netlifyAxePlugin(conf, 
+function netlifyAxePlugin(
+  conf,
   // createStore
-  ) {
+) {
   // const store = createStore()
-  let { 
-    enabled,  // currently unused
-    axeFlags
-  } =  conf
+  let {
+    enabled, // currently unused
+    axeFlags,
+  } = conf
   return {
     init: async () => {
       mkdirp.sync(`.axe-results/`)
       await execa('chmod', ['-R', '+rw', `.axe-results`])
     },
-    /* Run lighthouse on post deploy */
+    /* Run axe on post deploy */
     postdeploy: async () => {
       const site = conf.site || process.env.SITE
       /* TODO fetch previous scores from cache */
@@ -24,7 +25,7 @@ function netlifyAxePlugin(conf,
       let resp
       try {
         const subprocess = execa(axeCLI, [site, axeFlags, `--save .axe-results/result.json`], {
-          shell: true
+          shell: true,
         })
         subprocess.stderr.pipe(process.stderr)
         subprocess.stdout.pipe(process.stdout)
@@ -34,14 +35,14 @@ function netlifyAxePlugin(conf,
       }
       // console.log({resp})
 
-      if (resp && (resp.exitCodeName === 'SUCCESS')) {
+      if (resp && resp.exitCodeName === 'SUCCESS') {
         let results = require(`${process.cwd()}/.axe-results/result.json`)
         if (results && results[0]) {
           results = results[0].violations
         }
-        console.log({violations: results})
+        console.log({ violations: results })
       }
-    }
+    },
   }
 }
 

@@ -14,8 +14,8 @@ It is designed to support any kind of build flow and is extendable to fit any un
 - [Plugins](#plugins)
 - [Configuration](#configuration)
 - [Build Environment](#build-environment)
-  * [Directories](#directories)
-  * [Environment variables](#environment-variables)
+  - [Directories](#directories)
+  - [Environment variables](#environment-variables)
 - [CLI commands](#cli-commands)
 - [Setting up the project](#setting-up-the-project)
 
@@ -59,7 +59,7 @@ const lifecycle = [
   /* ↓ Outputs manifest of resources created */
   'manifest',
   /* ↓ Build finished */
-  'finally'
+  'finally',
 ]
 ```
 
@@ -91,7 +91,6 @@ The Lifecycle flows through events and their `pre` and `post` counterparts.
 `prebuild` runs first, then `build`, then `postbuild` in that order.
 
 This applies to all lifecycle events listed above.
-
 
 ## Plugins
 
@@ -220,12 +219,12 @@ netlify build --dry-run
 
 1. Clone down the repo
 
-  ```
-  git clone git@github.com:netlify/netlify-build.git
-  ```
+```
+git clone git@github.com:netlify/netlify-build.git
+```
 
 2. Install project dependancies
 
-  ```
-  npm run bootstrap
-  ```
+```
+npm i && npm run bootstrap
+```

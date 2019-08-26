@@ -17,10 +17,6 @@ plugins:
   - netlify-plugin-cypress:
       baseUrl: ${env:URL, https://netlify.com}
       pageLoadTimeout: 60000
-  - netlify-plugin-sitemap:
-      baseUrl: ${env:SITE, https://netlify.com}
-      distPath: build
-      exclude: '**/dist'
   - netlify-plugin-notifier:
       enabled: false
       sms:
@@ -47,9 +43,8 @@ plugins:
       currentVersion: 0.0.4
       compareWithVersion: 0.0.3
   - netlify-plugin-axe:
-      # https://github.com/dequelabs/axe-cli#running-specific-rules
-      axeFlags: '--rules color-contrast,html-has-lang'
-      enabled: false
+      axeFlags: '--rules color-contrast,html-has-lang' # https://github.com/dequelabs/axe-cli#running-specific-rules
+      enabled: true
   - netlify-plugin-monorepo:
       enabled: false
       files:
@@ -67,8 +62,6 @@ build:
       - echo 'curl custom cache'
     #install: npm install
     prebuild: echo "${secrets:privateKey}"
-    build: |
-      echo 'Hello Netlify Build!'
-      npm run build
+    build: echo 'Hello Netlify Build!' && npm run build
     # package:
     #   - zip -q -r .functions/package.zip src node_modules
