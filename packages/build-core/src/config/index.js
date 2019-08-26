@@ -34,3 +34,5 @@ async function netlifyConfig(configFile, cliFlags) {
 }
 
 module.exports = netlifyConfig
+
+module.exports.toToml = configorama.format.toml.dump

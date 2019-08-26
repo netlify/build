@@ -3,6 +3,7 @@ const path = require('path')
 const makeDir = require('make-dir')
 const copy = require('cpy') /* @TODO `cpy` doesnt recursively move files */
 const del = require('del')
+const { promisify } = require('util')
 const isInvalidFilePath = require('is-invalid-path')
 const execAsync = require('./execAsync')
 // var isWindows = require('is-windows');
@@ -89,11 +90,26 @@ async function copyDirectory(src, dist) {
   return execAsync(copyCommand)
 }
 
+const readdirP = promisify(fs.readdir)
+const statP = promisify(fs.stat)
+
+async function readDir(dir, allFiles = []) {
+  const files = (await readdirP(dir)).map(f => path.join(dir, f))
+  allFiles.push(...files)
+  await Promise.all(
+    files.map(
+      async f => (await statP(f)).isDirectory() && readDir(f, allFiles)
+    )
+  )
+  return allFiles
+}
+
 module.exports = {
   writeFile,
   readFile,
   fileExists,
   copyFiles: copyDirectory,
   // copyDirectory,
-  removeFiles
+  removeFiles,
+  readDir
 }

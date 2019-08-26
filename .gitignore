@@ -3,3 +3,4 @@ research
 .DS_Store
 run.js
 terraform
+.netlify

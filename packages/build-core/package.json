@@ -1,17 +1,29 @@
 {
   "name": "@netlify/build",
-  "version": "1.0.0",
+  "version": "0.0.9",
   "description": "Netlify build module",
-  "main": "index.js",
-  "author": "",
+  "main": "src/build.js",
+  "bin": {
+    "netlify-build": "./src/exec-build.js"
+  },
+  "author": "Netlify Inc.",
+  "contributors": [
+    "David Wells <hello@davidwells.io> (https://davidwells.io/)",
+    "Swyx <swyx@netlify.com> (https://www.swyx.io)"
+  ],
+  "scripts": {
+    "release:patch": "npm version patch && npm publish",
+    "release:minor": "npm version minor && npm publish",
+    "release:major": "npm version major && npm publish"
+  },
   "license": "MIT",
   "dependencies": {
+    "@netlify/zip-it-and-ship-it": "^0.3.1",
     "chalk": "^2.4.2",
-    "configorama": "0.0.8",
+    "configorama": "0.1.0",
     "cpy": "^7.2.0",
     "del": "^4.1.1",
-    "execa": "^2.0.0-alpha.0",
-    "get-stream": "^5.1.0",
+    "execa": "^2.0.3",
     "is-invalid-path": "^1.0.2",
     "make-dir": "^3.0.0",
     "minimist": "^1.2.0",

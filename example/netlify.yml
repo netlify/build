@@ -1,36 +1,63 @@
 version: 06-25-2019
 
 plugins:
+  - netlify-plugin-functions:
+      enabled: false
+      functions:
+        foo:
+          handler: src/backend/whatever.js
+          path: /api/lol
+          method: POST
+        bar:
+          handler: src/backend/myFuncName.js
+          path: /api/cool
+          method: GET
+  - netlify-plugin-example:
+      enabled: true
   - netlify-plugin-cypress:
-      baseUrl: ${env:SITE}
+      baseUrl: ${env:URL, https://netlify.com}
       pageLoadTimeout: 60000
   - netlify-plugin-sitemap:
+      baseUrl: ${env:SITE, https://netlify.com}
       distPath: build
-      exclude: "**/dist"
+      exclude: '**/dist'
   - netlify-plugin-notifier:
+      enabled: false
+      sms:
+        provider: twilio
+        TWILIO_ACCOUNT_SID: ${env:TWILIO_ACCOUNT_SID, 'NA'}
+        TWILIO_AUTH_TOKEN: ${env:TWILIO_AUTH_TOKEN, 'NA'}
+        TWILIO_PHONE_NUMBER: ${env:TWILIO_PHONE_NUMBER, 'NA'}
       notices:
-        - event: 'postbuild'
+        - event: postbuild
           type: email
           to: david@netlify.com
           subject: 'Your site is ready!'
           message: 'Horray!'
-        - event: 'postbuild'
+        - event: postbuild
           type: sms
-          to: '222-222-2222'
-          message: 'Your build is published!'
-        - event: 'buildfailed'
+          to: 727-687-1888
+          message: 'Your build is published {url}!'
+        - event: buildFailed
           type: webhook
           endpoint: 'https://my-webhook-endpoint.com/api'
           message: 'Your site build failed sorry charlie'
-  - netlify-contentful-plugin:
-      enabled: false
   - netlify-plugin-lighthouse:
       enabled: ${env:LIGHTHOUSE_ENABLED, true}
+      currentVersion: 0.0.4
+      compareWithVersion: 0.0.3
   - netlify-plugin-axe:
       # https://github.com/dequelabs/axe-cli#running-specific-rules
       axeFlags: '--rules color-contrast,html-has-lang'
+      enabled: false
+  - netlify-plugin-monorepo:
+      enabled: false
+      files:
+        - 'src/**'
 
 build:
+  functions: functions
+  # command: echo 'hi'
   lifecycle:
     init:
       - npm run foo

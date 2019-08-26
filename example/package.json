@@ -5,19 +5,27 @@
   "main": "index.js",
   "scripts": {
     "foo": "echo 'bar'",
-    "build": "mkdir -p build && cp index.html build",
-    "go": "node ../packages/build-core/src/exec-lifecycle.js --config ./netlify.yml",
-    "plan": "node ../packages/build-core/src/exec-lifecycle.js --config ./netlify.yml --dryRun"
+    "prebuild": "mkdir -p build && cp _redirects build",
+    "build": "cp src/index.html build",
+    "go": "cross-env SITE=https://netlify.com netlify-build",
+    "plan": "cross-env SITE=https://netlify.com netlify-build --dryRun",
+    "deploy": "netlify deploy --functions=build/functions --dir=build --prod"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@netlify/build": "file:../packages/build-core",
+    "cross-env": "^5.2.0",
     "netlify-plugin-cypress": "file:../packages/netlify-plugin-cypress",
     "netlify-plugin-example": "file:../packages/netlify-plugin-example",
     "netlify-plugin-axe": "file:../packages/netlify-plugin-axe",
+    "netlify-plugin-functions": "file:../packages/netlify-plugin-functions",
     "netlify-plugin-lighthouse": "file:../packages/netlify-plugin-lighthouse",
+    "netlify-plugin-monorepo": "file:../packages/netlify-plugin-monorepo",
     "netlify-plugin-notifier": "file:../packages/netlify-plugin-notifier",
     "netlify-plugin-sitemap": "file:../packages/netlify-plugin-sitemap"
   },
-  "dependencies": {}
+  "dependencies": {
+    "lodash": "^4.17.15"
+  }
 }

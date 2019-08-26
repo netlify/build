@@ -98,11 +98,30 @@ This applies to all lifecycle events listed above.
 Plugins are POJOs (plain old javascript objects) with methods that match the various lifecycle events.
 
 ```js
-function exampleNetlifyPlugin(config) {
+function exampleNetlifyPlugin(initialConfig) {
   return {
-    // Hook into `init` lifecycle
-    init: () => {
-      console.log('Do custom thing when buildbot initializes')
+    /**
+     * [init description]
+     * @param  {object} netlifyConfig   - Current netlify configuration from config file
+     * @param  {object} pluginConfig    - Initial plugin configuration
+     * @param  {object} context         - Build context
+     * @param  {object} context.siteId  - Netlify site Id
+     * @param  {object} context.siteUrl - Netlify site url
+     * @param  {object} context.siteConfig - Netlify site url
+     * @param  {object} utils        [description]
+     * @return {[type]}              [description]
+     */
+    init: ({ netlifyConfig, pluginConfig, context, utils }) => {
+      const { siteId, siteUrl, /*siteConfig*/, deployUrl } = context
+      console.log(`Current site id`, siteId)
+      console.log(`Current live site url`, siteUrl)
+      console.log(`Current siteConfig`, siteConfig)
+      console.log(`Current immutable deploy url`, deployUrl)
+      console.log(`Current working directory`, cwd)
+      /* Plugin config */
+      console.log('Current plugin config', pluginConfig)
+      /* config */
+      console.log('Current netlify config from config file', config)
     },
     // Hook into `postbuild` lifecycle
     postbuild: () => {
@@ -116,10 +135,11 @@ function exampleNetlifyPlugin(config) {
 **Examples:**
 
 - **netlify-plugin-lighthouse** to automatically track your lighthouse site score between deployments
-- **netlify-plugin--cypress** to automatically run integration tests
-- **netlify-plugin--tweet-new-post** to automatically share new content via twitter on new publish
-- **netlify-plugin--sitemap** to generate sitemaps after build
-- **netlify-plugin--notify** to automatically wired up build notifications
+- **netlify-plugin-cypress** to automatically run integration tests
+- **netlify-plugin-tweet-new-post** to automatically share new content via twitter on new publish
+- **netlify-plugin-sitemap** to generate sitemaps after build
+- **netlify-plugin-notify** to automatically wired up build notifications
+- **netlify-plugin-a11y-axe** to automatically audit site for accessibility issues
 - ... skys the limit 🌈
 
 ## Configuration
@@ -132,6 +152,10 @@ Configuration can be written in `toml`, `yml`, `json`, `json5`, or `javascript`.
 # Config file `plugins` defines plugins used by build. Plugins are optional
 plugins:
   - ./localpath/plugin-folder:
+      timeout: 5m
+      enabled: true
+      secrets:
+        shhh: 'only accessible via this plugin'
       optionOne: 'hello'
       optionTwo: 'there'
   - plugin-from-npm:
