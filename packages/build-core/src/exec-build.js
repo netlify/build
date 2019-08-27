@@ -9,7 +9,9 @@ const { FORCE_COLOR } = process.env
 const args = minimist(process.argv.slice(2))
 
 if (FORCE_COLOR !== 'false') {
+  console.log('set colors')
   process.env.FORCE_COLOR = true
+  process.env.colors = true
 }
 
 async function execBuild() {
