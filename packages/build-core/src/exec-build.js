@@ -5,7 +5,12 @@ const hasConfig = require('./utils/hasConfig')
 const minimist = require('minimist')
 const cleanStack = require('./utils/clean-stack')
 
+const { FORCE_COLOR } = process.env
 const args = minimist(process.argv.slice(2))
+
+if (FORCE_COLOR !== 'false') {
+  process.env.FORCE_COLOR = true
+}
 
 async function execBuild() {
   console.log(chalk.greenBright.bold(`Starting Netlify Build`))
