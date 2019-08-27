@@ -1,9 +1,10 @@
 const path = require('path')
-const { zipFunction } = require('@netlify/zip-it-and-ship-it')
 const fs = require('fs-extra')
+const { zipFunction } = require('@netlify/zip-it-and-ship-it')
 
 function netlifyFunctionsPlugin(conf = {}) {
   return {
+    name: 'netlify-functions',
     postbuild: async ({ netlifyConfig }) => {
       console.log('Configuring Functions...', netlifyConfig)
       if (!conf.functions) {
