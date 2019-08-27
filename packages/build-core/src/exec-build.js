@@ -1,18 +1,17 @@
 #!/usr/bin/env node
+const { FORCE_COLOR } = process.env
+if (FORCE_COLOR !== 'false') {
+  console.log('set colors')
+  process.env.FORCE_COLOR = true
+  process.env.colors = true
+}
 const chalk = require('chalk')
 const build = require('./build')
 const hasConfig = require('./utils/hasConfig')
 const minimist = require('minimist')
 const cleanStack = require('./utils/clean-stack')
 
-const { FORCE_COLOR } = process.env
 const args = minimist(process.argv.slice(2))
-
-if (FORCE_COLOR !== 'false') {
-  console.log('set colors')
-  process.env.FORCE_COLOR = true
-  process.env.colors = true
-}
 
 async function execBuild() {
   console.log(chalk.greenBright.bold(`Starting Netlify Build`))
