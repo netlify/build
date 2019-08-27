@@ -58,7 +58,7 @@ module.exports = async function build(configPath, cliFlags) {
   const defaultPlugins = [
     // default Netlify Function bundling and deployment
     netlifyFunctionsPlugin,
-    netlifyDeployPlugin(),
+    // netlifyDeployPlugin(),
   ].map((plug) => {
     return Object.assign({}, plug, {
       core: true
