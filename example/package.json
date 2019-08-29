@@ -18,6 +18,7 @@
     "cross-env": "^5.2.0",
     "netlify-plugin-cypress": "file:../packages/netlify-plugin-cypress",
     "netlify-plugin-example": "file:../packages/netlify-plugin-example",
+    "netlify-plugin-axe": "file:../packages/netlify-plugin-axe",
     "netlify-plugin-functions": "file:../packages/netlify-plugin-functions",
     "netlify-plugin-lighthouse": "file:../packages/netlify-plugin-lighthouse",
     "netlify-plugin-monorepo": "file:../packages/netlify-plugin-monorepo",
@@ -25,6 +26,7 @@
     "netlify-plugin-sitemap": "file:../packages/netlify-plugin-sitemap"
   },
   "dependencies": {
+    "axe-core": "^3.3.2",
     "lodash": "^4.17.15"
   }
 }

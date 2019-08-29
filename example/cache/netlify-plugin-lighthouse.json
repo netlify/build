@@ -1,0 +1,15 @@
+{
+	"lighthouse": {
+		"0": {
+			"0": {
+				"4": {
+					"performance": 76,
+					"accessibility": 97,
+					"best-practices": 93,
+					"seo": 100,
+					"pwa": 74
+				}
+			}
+		}
+	}
+}

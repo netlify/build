@@ -17,10 +17,6 @@ plugins:
   - netlify-plugin-cypress:
       baseUrl: ${env:URL, https://netlify.com}
       pageLoadTimeout: 60000
-  - netlify-plugin-sitemap:
-      baseUrl: ${env:SITE, https://netlify.com}
-      distPath: build
-      exclude: "**/dist"
   - netlify-plugin-notifier:
       enabled: false
       sms:
@@ -43,13 +39,16 @@ plugins:
           endpoint: 'https://my-webhook-endpoint.com/api'
           message: 'Your site build failed sorry charlie'
   - netlify-plugin-lighthouse:
-      enabled: false
+      enabled: ${env:LIGHTHOUSE_ENABLED, true}
       currentVersion: 0.0.4
       compareWithVersion: 0.0.3
+  - netlify-plugin-axe:
+      axeFlags: '--rules color-contrast,html-has-lang' # https://github.com/dequelabs/axe-cli#running-specific-rules
+      enabled: true
   - netlify-plugin-monorepo:
       enabled: false
       files:
-        - "src/**"
+        - 'src/**'
 
 build:
   functions: functions
@@ -63,8 +62,6 @@ build:
       - echo 'curl custom cache'
     #install: npm install
     prebuild: echo "${secrets:privateKey}"
-    build: |
-      echo 'Hello Netlify Build!'
-      npm run build
+    build: echo 'Hello Netlify Build!' && npm run build
     # package:
     #   - zip -q -r .functions/package.zip src node_modules
