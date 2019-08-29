@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 const { FORCE_COLOR } = process.env
 if (FORCE_COLOR !== 'false') {
-  console.log('set colors')
   process.env.FORCE_COLOR = true
   process.env.colors = true
 }
