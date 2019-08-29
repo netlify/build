@@ -4,3 +4,4 @@ research
 run.js
 terraform
 .netlify
+lerna-debug.log
