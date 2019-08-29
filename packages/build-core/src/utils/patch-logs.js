@@ -14,8 +14,13 @@ const monkeyPatchLogFunc = {
     const isTimer = args && args[0] && args[0] === '%s: %sms'
     if (isTimer) {
       const timing = args.map((a, i) => {
+        if (i === 0) {
+          return '%s %sms'
+        }
         if (i === 1) {
-          return chalk.yellow(`elapsed time ${trim(a)}`)
+          const check = chalk.green('✔')
+          const msg = chalk.yellowBright(`${trim(a)}`)
+          return `${check} ${msg} completed in`
         }
         return a
       })
