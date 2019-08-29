@@ -1,22 +1,50 @@
-const os = require('os')
 const path = require('path')
 const chalk = require('chalk')
 const execa = require('execa')
-const makeDir = require('make-dir')
+const API = require('netlify')
 const deepLog = require('./utils/deeplog')
 const getNetlifyConfig = require('./config')
 const { toToml } = require('./config')
-const { fileExists, readDir, writeFile } = require('./utils/fs')
-const { zipFunctions } = require('@netlify/zip-it-and-ship-it')
+const { writeFile } = require('./utils/fs')
+const netlifyLogs = require('./utils/patch-logs')
+const netlifyFunctionsPlugin = require('./plugins/functions')
+const netlifyDeployPlugin = require('./plugins/deploy')
 
 const baseDir = process.cwd()
 
+/* Monkey patch console.log */
+console.log = netlifyLogs.patch
+
+const lifecycle = [
+  /* Build initialization steps */
+  'init',
+  /* Fetch previous build cache */
+  'getCache',
+  /* Install project dependancies */
+  'install',
+  /* Build the site & functions */
+  'build', // 'build:site', 'build:function',
+  'buildSite',
+  'buildFunctions',
+  /* Package & optimize artifact */
+  'package',
+  /* Deploy built artifact */
+  'deploy',
+  /* Save cached assets */
+  'saveCache',
+  /* Outputs manifest of resources created */
+  'manifest',
+  /* Build finished */
+  'finally'
+]
+
 module.exports = async function build(configPath, cliFlags) {
-  const netlifyConfigFilePath = configPath || cliFlags.config
+  const netlifyConfigPath = configPath || cliFlags.config
+  const netlifyToken = process.env.NETLIFY_TOKEN || cliFlags.token
   /* Load config */
   let netlifyConfig = {}
   try {
-    netlifyConfig = await getNetlifyConfig(netlifyConfigFilePath, cliFlags)
+    netlifyConfig = await getNetlifyConfig(netlifyConfigPath, cliFlags)
   } catch (err) {
     console.log('Netlify Config Error')
     throw err
@@ -26,33 +54,56 @@ module.exports = async function build(configPath, cliFlags) {
   console.log()
 
   /* Parse plugins */
-  const plugins = netlifyConfig.plugins || []
+  const initialPlugins = netlifyConfig.plugins || []
+  const defaultPlugins = [
+    // default Netlify Function bundling and deployment
+    netlifyFunctionsPlugin,
+    // netlifyDeployPlugin(),
+  ].map((plug) => {
+    return Object.assign({}, plug, {
+      core: true
+    })
+  })
+
+  const plugins = defaultPlugins.concat(initialPlugins)
   const allPlugins = plugins.filter((plug) => {
     /* Load enabled plugins only */
     const name = Object.keys(plug)[0]
     const pluginConfig = plug[name] || {}
     return pluginConfig.enabled !== false && pluginConfig.enabled !== 'false'
   }).reduce((acc, curr) => {
-    const name = Object.keys(curr)[0]
-    const pluginConfig = curr[name] || {}
+    // TODO refactor how plugins are included / checked
+    const keys = Object.keys(curr)
+    const alreadyResolved = keys.some((cur) => {
+      return typeof curr[cur] === 'function'
+    }, false)
+
     let code
-    try {
-      // resolve file path
-      // TODO harden resolution
-      let filePath
-      if (name.match(/^\./)) {
-        filePath = path.resolve(baseDir, name)
-      } else {
-        // If module scoped add @ symbol prefix
-        const formattedName = (name.match(/^netlify\//)) ? `@${name.replace(/^@/, '')}` : name
-        filePath = path.resolve(baseDir, 'node_modules', formattedName)
+    const name = curr.name || keys[0]
+    const pluginConfig = curr[name] || {}
+    if (alreadyResolved) {
+      code = curr
+      console.log(chalk.yellow(`Loading plugin "${name}" from core`))
+    } else {
+      try {
+        // resolve file path
+        // TODO harden resolution
+        let filePath
+        if (name.match(/^\./)) {
+          filePath = path.resolve(baseDir, name)
+        } else {
+          // If module scoped add @ symbol prefix
+          const formattedName = (name.match(/^netlify\//)) ? `@${name.replace(/^@/, '')}` : name
+          filePath = path.resolve(baseDir, 'node_modules', formattedName)
+        }
+        console.log(chalk.yellow(`Loading plugin "${name}" from ${filePath}`))
+        code = require(filePath)
+      } catch (e) {
+        console.log(`Error loading ${name} plugin`)
+        console.log(e)
+        // TODO If plugin not found, automatically try and install and retry here
+        // await execa(`npm install ${name}`)
       }
-      console.log(chalk.yellow(`Loading plugin "${name}" from ${filePath}`))
-      code = require(filePath)
-    } catch (e) {
-      console.log(`Error loading ${name} plugin`)
-      console.log(e)
-      // TODO If plugin not found, automatically try and install and retry here
     }
 
     if (typeof code !== 'object' && typeof code !== 'function') {
@@ -61,8 +112,46 @@ module.exports = async function build(configPath, cliFlags) {
 
     const methods = (typeof code === 'function') ? code(pluginConfig) : code
 
+    const cleanMethods = Object.keys(methods).reduce((acc, cur) => {
+      if (cur === 'core' || cur === 'name') {
+        return acc
+      }
+      acc[cur] = methods[cur]
+      return acc
+    }, {})
+    // console.log('methods', cleanMethods)
     // Map plugins methods in order for later execution
-    Object.keys(methods).forEach((hook) => {
+    Object.keys(cleanMethods).forEach((hook) => {
+      /* Override core functionality */
+      // Match string with 1 or more colons
+      const override = hook.match(/(?:[^:]*[:]){1,}[^:]*$/)
+      if (override) {
+        const str = override[0]
+        const [ , pluginName, overideMethod ] = str.match(/([a-zA-Z/@]+):([a-zA-Z/@:]+)/)
+        // @TODO throw if non existant plugin trying to be overriden?
+        // if (plugin not found) {
+        //   throw new Error(`${pluginName} not found`)
+        // }
+        if (acc.lifeCycleHooks[overideMethod]) {
+          acc.lifeCycleHooks[overideMethod] = acc.lifeCycleHooks[overideMethod].map((x) => {
+            if (x.name === pluginName) {
+              return {
+                name: name,
+                hook: hook,
+                config: pluginConfig,
+                method: methods[hook],
+                override: {
+                  target: pluginName,
+                  method: overideMethod
+                }
+              }
+            }
+            return x
+          })
+          return acc
+        }
+      }
+      /* End Override core functionality */
       if (!acc.lifeCycleHooks[hook]) {
         acc.lifeCycleHooks[hook] = []
       }
@@ -82,37 +171,15 @@ module.exports = async function build(configPath, cliFlags) {
   if (!netlifyConfig.build) {
     throw new Error('No build settings found')
   }
-
   // console.log('Build Lifecycle:')
   // deepLog(allPlugins)
 
-  const lifecycle = [
-    /* Build initialization steps */
-    'init',
-    /* Parse netlify.toml and resolve any dynamic configuration include build image if specified */
-    'configParse',
-    /* Fetch previous build cache */
-    'getCache',
-    /* Install project dependancies */
-    'install',
-    /* Build the site & functions */
-    'build', // 'build:site', 'build:function',
-    'build:site',
-    'build:function',
-    /* Package & optimize artifact */
-    'package',
-    /* Deploy built artifact */
-    'deploy',
-    /* Save cached assets */
-    'saveCache',
-    /* Outputs manifest of resources created */
-    'manifest',
-    /* Build finished */
-    'finally'
-  ]
-
   // Add pre & post hooks
-  const fullLifecycle = lifecycle.reduce((acc, hook) => {
+  let fullLifecycle = lifecycle.reduce((acc, hook) => {
+    if (hook === 'finally' || hook === 'init') {
+      acc = acc.concat([hook])
+      return acc
+    }
     acc = acc.concat([
       preFix(hook),
       hook,
@@ -120,7 +187,23 @@ module.exports = async function build(configPath, cliFlags) {
     ])
     return acc
   }, [])
+
+  fullLifecycle = fullLifecycle.concat(['onError'])
   // console.log('fullLifecycle', fullLifecycle)
+
+  /* Validate lifecyle key name */
+  Object.keys(allPlugins.lifeCycleHooks).forEach((name, i) => {
+    const info = allPlugins.lifeCycleHooks[name]
+    if (!fullLifecycle.includes(name)) {
+      const brokenPlugins = info.map((plug) => {
+        return plug.name
+      }).join(',')
+      console.log(chalk.redBright(`Invalid lifecycle hook "${name}" in ${brokenPlugins}.`))
+      console.log(`Please use a valid event name. One of:`)
+      console.log(`${fullLifecycle.map((n) => `"${n}"`).join(', ')}`)
+      throw new Error(`Invalid lifecycle hook`)
+    }
+  })
 
   if (netlifyConfig.build &&
       netlifyConfig.build.lifecycle &&
@@ -130,7 +213,7 @@ module.exports = async function build(configPath, cliFlags) {
   }
 
   /* Get active build instructions */
-  const buildInstructions = fullLifecycle.reduce((acc, n) => {
+  const instructions = fullLifecycle.reduce((acc, n) => {
     // Support for old command. Add build.command to execution
     if (netlifyConfig.build.command && n === 'build') {
       acc = acc.concat({
@@ -189,6 +272,10 @@ module.exports = async function build(configPath, cliFlags) {
     return acc
   }, [])
 
+  const buildInstructions = instructions.filter((instruction) => {
+    return instruction.hook !== 'onError'
+  })
+
   if (cliFlags.dryRun) {
     console.log()
     console.log(chalk.cyanBright.bold('Netlify Build Steps'))
@@ -214,7 +301,12 @@ module.exports = async function build(configPath, cliFlags) {
   console.log()
   try {
     // TODO refactor engine args
-    const manifest = await engine(buildInstructions, netlifyConfig, netlifyConfigFilePath)
+    const manifest = await engine({
+      instructions: buildInstructions,
+      netlifyConfig,
+      netlifyConfigPath,
+      netlifyToken
+    })
     console.log(chalk.greenBright.bold('Netlify Build complete'))
     console.log()
     if (Object.keys(manifest).length) {
@@ -222,48 +314,25 @@ module.exports = async function build(configPath, cliFlags) {
       deepLog(manifest)
     }
   } catch (err) {
-    console.log('Lifecycle error')
-    console.log(err)
+    console.log(chalk.redBright('Lifecycle error'))
+    /* Resolve all ‘onError’ methods and try to fix things */
+    const errorInstructions = instructions.filter((instruction) => {
+      return instruction.hook === 'onError'
+    })
+    if (errorInstructions) {
+      console.log(chalk.greenBright('Running onError methods'))
+      await engine({
+        instructions: errorInstructions,
+        netlifyConfig,
+        netlifyConfigPath,
+        netlifyToken,
+        error: err
+      })
+    }
+    throw err
   }
 
   const IS_NETLIFY = isNetlifyCI()
-
-  /* Function bundling logic.
-     TODO: Move into plugin lifecycle
-  */
-  if (!netlifyConfig.build.functions) {
-    console.log('No functions directory set. Skipping functions build step')
-    return false
-  }
-
-  if (!await fileExists(netlifyConfig.build.functions)) {
-    console.log(`Functions directory "${netlifyConfig.build.functions}" not found`)
-    throw new Error('Functions Build cancelled')
-  }
-
-  const deployID = process.env.DEPLOY_ID || '12345'
-  let tempFileDir = path.join(baseDir, '.netlify', 'functions')
-
-  if (IS_NETLIFY) {
-    tempFileDir = path.join(os.tmpdir(), `zisi-${deployID}`)
-  }
-
-  if (!await fileExists(tempFileDir)) {
-    console.log(`Temp functions directory "${tempFileDir}" not found`)
-    console.log(`Creating tmp dir`, tempFileDir)
-    await makeDir(tempFileDir)
-  }
-
-  try {
-    console.log('Zipping functions')
-    await zipFunctions(netlifyConfig.build.functions, tempFileDir)
-  } catch (err) {
-    console.log('Functions bundling error')
-    throw new Error(err)
-  }
-  console.log('Functions bundled!')
-  const funcs = await readDir(tempFileDir)
-  console.log(funcs)
 
   if (IS_NETLIFY) {
     const toml = toToml(netlifyConfig)
@@ -299,30 +368,71 @@ async function execCommand(cmd) {
  * @param  {Object} config - Netlify config file values
  * @return {Object} updated config?
  */
-async function engine(methodsToRun, netlifyConfig, netlifyConfigFilePath) {
-  const returnData = await methodsToRun.reduce(async (promiseChain, plugin, i) => {
-    const { method, hook, config, name } = plugin
+async function engine({
+  instructions,
+  netlifyConfig,
+  netlifyConfigPath,
+  netlifyToken,
+  error
+}) {
+  const returnData = await instructions.reduce(async (promiseChain, plugin, i) => {
+    const { method, hook, config, name, override } = plugin
     const currentData = await promiseChain
     if (method && typeof method === 'function') {
+      console.time(name)
       const source = (name.match(/^config\.build/)) ? 'via config' : 'plugin'
-      console.log(chalk.cyanBright(`> ${i + 1}. Running "${hook}" lifecycle from "${name}" ${source}`))
+      // reset logs context
+      netlifyLogs.reset()
       console.log()
-      const rootPath = path.resolve(path.dirname(netlifyConfigFilePath))
+      if (override) {
+        console.log(chalk.redBright.bold(`> OVERRIDE: "${override.method}" method in ${override.target} has been overriden by "${name}"`))
+      }
+      console.log(chalk.cyanBright.bold(`> ${i + 1}. Running "${hook}" lifecycle from "${name}" ${source}`))
+      // set log context
+      netlifyLogs.setContext(name)
+
+      console.log()
 
       try {
+        // https://github.com/netlify/cli-utils/blob/master/src/index.js#L40-L60
         const pluginReturnValue = await method({
-          netlifyConfig,
+          /* Netlify configuration file netlify.[toml|yml|json] */
+          netlifyConfig: netlifyConfig,
+          /* Plugin configuration */
           pluginConfig: config,
-          context: {
-            rootPath: rootPath,
-            configPath: path.resolve(netlifyConfigFilePath),
-          },
+          /* Netlify API client */
+          api: new API(netlifyToken),
+          /* Values constants */
           constants: {
-            CACHE_DIR: path.join(rootPath, '.netlify', 'cache'),
-            BUILD_DIR: path.join(rootPath, '.netlify', 'build')
-          }
+            CONFIG_PATH: path.resolve(netlifyConfigPath),
+            BASE_DIR: baseDir,
+            CACHE_DIR: path.join(baseDir, '.netlify', 'cache'),
+            BUILD_DIR: path.join(baseDir, '.netlify', 'build')
+          },
+          /* Utilities helper functions */
+          utils: {
+            cache: {
+              get: (filePath) => {
+                console.log('get cache file')
+              },
+              save: (filePath, contents) => {
+                console.log('save cache file')
+              },
+              delete: (filePath) => {
+                console.log('delete cache file')
+              }
+            },
+            redirects: {
+              get: () => {},
+              set: () => {},
+              delete: () => {}
+            }
+          },
+          /* Error for `onError` handlers */
+          error: error
         })
         console.log()
+        console.timeEnd(name)
         if (pluginReturnValue) {
           return Promise.resolve(Object.assign({}, currentData, pluginReturnValue))
         }
@@ -333,6 +443,7 @@ async function engine(methodsToRun, netlifyConfig, netlifyConfigFilePath) {
     }
     return Promise.resolve(currentData)
   }, Promise.resolve({}))
+  netlifyLogs.reset()
   // console.log('returnData', returnData)
   return returnData
 }

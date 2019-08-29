@@ -1,6 +1,6 @@
 {
   "name": "@netlify/build",
-  "version": "0.0.9",
+  "version": "0.0.13",
   "description": "Netlify build module",
   "main": "src/build.js",
   "bin": {
@@ -20,6 +20,7 @@
   "dependencies": {
     "@netlify/zip-it-and-ship-it": "^0.3.1",
     "chalk": "^2.4.2",
+    "clean-stack": "^2.2.0",
     "configorama": "0.1.0",
     "cpy": "^7.2.0",
     "del": "^4.1.1",
@@ -27,9 +28,11 @@
     "is-invalid-path": "^1.0.2",
     "make-dir": "^3.0.0",
     "minimist": "^1.2.0",
+    "netlify": "^2.4.8",
     "npm-run-path": "^3.1.0",
     "parse-npm-script": "0.0.3",
-    "shell-source": "^1.1.0"
+    "shell-source": "^1.1.0",
+    "stack-utils": "^1.0.2"
   },
   "devDependencies": {
     "ava": "^2.2.0",
