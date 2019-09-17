@@ -20,7 +20,7 @@ Today, we are going to setup and use `Netlify Build`
 
 3. Create a `Netlify Config` file
 
-    a. Starting from scratch
+    a. **Starting from scratch**
 
     1. Create a `netlify.yml` file in your sites root directory
 
@@ -42,13 +42,15 @@ Today, we are going to setup and use `Netlify Build`
           - echo 'wow thing ran!'
     ```
 
-    b. Converting existing `netlify.toml`
+    b. **Converting existing `netlify.toml`**
 
     1. Convert toml file to yml
 
     2. Move build command into build.lifecycle.build
 
-4. Lets run `Netlify Build` locally
+4. Lets install & run `Netlify Build` locally
+
+    Install from npm
 
     ```bash
     npm install @netlify/build -g
@@ -123,6 +125,10 @@ Today, we are going to setup and use `Netlify Build`
     }
     ```
 
+    The `postbuild` function exported here corresponds to the `postbuild` lifecycle hook.
+
+    You can [see all lifecycle events here](https://github.com/netlify/netlify-build/blob/master/packages/build-core/src/build.js#L18-L39)
+
     4. Include your plugin
 
     ```yml
@@ -160,8 +166,13 @@ Today, we are going to setup and use `Netlify Build`
 
 8. Create a site in Netlify and connect your repo
 
-    Ping David with your site name and url and he can turn on `Netlify Build` in the live Netlify platform.
+    Set the a `NETLIFY_BUILD_LIFECYCLE_TRIAL` environment variable in your site and set it's value to `enabled=true`
 
+9. Trigger a build
+
+    `Netlify Build` will now run automatically on git commits
+
+10. Fin 🎉
 <!-- ## Concepts
 
 `Netlify Build` introduces a couple new features to your build process.
