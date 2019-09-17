@@ -276,7 +276,7 @@ module.exports = async function build(configPath, cliFlags) {
     return instruction.hook !== 'onError'
   })
 
-  if (cliFlags.dryRun) {
+  if (cliFlags.dryRun || cliFlags.plan) {
     console.log()
     console.log(chalk.cyanBright.bold('Netlify Build Steps'))
     console.log()
