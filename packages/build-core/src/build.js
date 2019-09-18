@@ -3,7 +3,8 @@ const chalk = require('chalk')
 const execa = require('execa')
 const API = require('netlify')
 const deepLog = require('./utils/deeplog')
-const getNetlifyConfig = require('./config')
+const resolveNetlifyConfig = require('./config')
+const getNelifyConfigFile = require('./utils/hasConfig')
 const { toToml } = require('./config')
 const { writeFile } = require('./utils/fs')
 const { getSecrets, redactStream } = require('./utils/redact')
@@ -42,7 +43,7 @@ module.exports = async function build(configPath, cliFlags) {
   /* Load config */
   let netlifyConfig = {}
   try {
-    netlifyConfig = await getNetlifyConfig(netlifyConfigPath, cliFlags)
+    netlifyConfig = await resolveNetlifyConfig(netlifyConfigPath, cliFlags)
   } catch (err) {
     console.log('Netlify Config Error')
     throw err
@@ -213,6 +214,7 @@ module.exports = async function build(configPath, cliFlags) {
   /* Get user set ENV vars and redact */
   const redactedKeys = getSecrets(['SECRET_ENV_VAR', 'MY_API_KEY'])
   /* Monkey patch console.log */
+  const originalConsoleLog = console.log
   console.log = netlifyLogs.patch(redactedKeys)
 
   /* Get active build instructions */
@@ -334,6 +336,9 @@ module.exports = async function build(configPath, cliFlags) {
     }
     throw err
   }
+
+  // Reset console.log for CLI
+  console.log = originalConsoleLog
 
   const IS_NETLIFY = isNetlifyCI()
 
@@ -462,3 +467,8 @@ function isNetlifyCI() {
   }
   return false
 }
+
+// Expose Netlify config
+module.exports.netlifyConfig = resolveNetlifyConfig
+// Expose Netlify config path getter
+module.exports.getNelifyConfigFile = getNelifyConfigFile
