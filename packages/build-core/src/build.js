@@ -6,12 +6,13 @@ const deepLog = require('./utils/deeplog')
 const getNetlifyConfig = require('./config')
 const { toToml } = require('./config')
 const { writeFile } = require('./utils/fs')
+const { getSecrets, redactStream } = require('./utils/redact')
 const netlifyLogs = require('./utils/patch-logs')
 const netlifyFunctionsPlugin = require('./plugins/functions')
 const netlifyDeployPlugin = require('./plugins/deploy')
-
 const baseDir = process.cwd()
 
+// const pt = require('prepend-transform')
 const lifecycle = [
   /* Build initialization steps */
   'init',
@@ -209,6 +210,11 @@ module.exports = async function build(configPath, cliFlags) {
     throw new Error(`build.command && build.lifecycle are both defined. Please move build.command to build.lifecycle.build`)
   }
 
+  /* Get user set ENV vars and redact */
+  const redactedKeys = getSecrets(['SECRET_ENV_VAR', 'MY_API_KEY'])
+  /* Monkey patch console.log */
+  console.log = netlifyLogs.patch(redactedKeys)
+
   /* Get active build instructions */
   const instructions = fullLifecycle.reduce((acc, n) => {
     // Support for old command. Add build.command to execution
@@ -219,7 +225,7 @@ module.exports = async function build(configPath, cliFlags) {
         config: {},
         method: async () => {
           try {
-            await execCommand(netlifyConfig.build.command)
+            await execCommand(netlifyConfig.build.command, redactedKeys)
           } catch (err) {
             console.log(chalk.redBright(`Error from netlify config.build.command:`))
             console.log(`"${netlifyConfig.build.command}"`)
@@ -245,7 +251,7 @@ module.exports = async function build(configPath, cliFlags) {
             const doCommands = commands.reduce(async (promiseChain, curr) => {
               const data = await promiseChain
               // TODO pass in env vars if not available
-              const stdout = await execCommand(curr)
+              const stdout = await execCommand(curr, redactedKeys)
               return Promise.resolve(data.concat(stdout))
             }, Promise.resolve([]))
             // TODO return stdout?
@@ -268,10 +274,6 @@ module.exports = async function build(configPath, cliFlags) {
     }
     return acc
   }, [])
-
-  const redactedKeys = ['SECRET_ENV_VAR', 'MY_API_KEY']
-  /* Monkey patch console.log */
-  console.log = netlifyLogs.patch(redactedKeys)
 
   const buildInstructions = instructions.filter((instruction) => {
     return instruction.hook !== 'onError'
@@ -355,10 +357,14 @@ function postFix(hook) {
   return `post${hook}`
 }
 
-async function execCommand(cmd) {
+async function execCommand(cmd, secrets) {
   console.log(chalk.yellowBright(`Running "${cmd}"`))
   const subprocess = execa(`${cmd}`, { shell: true })
-  subprocess.stdout.pipe(process.stdout)
+  subprocess.stdout
+    // Redact ENV vars
+    .pipe(redactStream(secrets))
+    // Output to console
+    .pipe(process.stdout, { end: true })
   const { stdout } = await subprocess
   return stdout
 }

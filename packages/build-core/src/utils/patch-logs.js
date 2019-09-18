@@ -1,10 +1,8 @@
 const chalk = require('chalk')
 const util = require('util')
-const redactEnv = require('redact-env')
-const isPlainObject = require('lodash.isplainobject')
+const { redactValues } = require('./redact')
 
-function monkeyPatchLogs(secretKeys) {
-  const secrets = redactEnv.build(secretKeys)
+function monkeyPatchLogs(secrets) {
   return {
     apply (target, ctx, args) {
       if (!args.length) {
@@ -62,31 +60,4 @@ module.exports.setContext = (pre) => {
 
 module.exports.reset = () => {
   process.env.LOG_CONTEXT = ''
-}
-
-// Yoinked from lodash to save dependencies
-function isObject(value) {
-  var type = typeof value
-  return value != null && (type === 'object' || type === 'function')
-}
-
-function redactValues(target, secrets) {
-  // If it's not an object or string then it's a primitive. Nothing to redact.
-  if (!isObject(target) && typeof target !== 'string') {
-    return target
-  }
-  // Redact string values
-  if (typeof target === 'string') {
-    return redactEnv.redact(target, secrets)
-  }
-  // Redact Array values
-  if (Array.isArray(target)) {
-    return target.map((val) => redactValues(val, secrets))
-  } else if (isPlainObject(target)) {
-    return Object.keys(target).reduce((newObj, key) => {
-      newObj[key] = redactValues(target[key], secrets)
-      return newObj
-    }, {})
-  }
-  return target
 }
