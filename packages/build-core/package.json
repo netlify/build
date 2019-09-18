@@ -26,11 +26,13 @@
     "del": "^4.1.1",
     "execa": "^2.0.3",
     "is-invalid-path": "^1.0.2",
+    "lodash.isplainobject": "^4.0.6",
     "make-dir": "^3.0.0",
     "minimist": "^1.2.0",
     "netlify": "^2.4.8",
     "npm-run-path": "^3.1.0",
     "parse-npm-script": "0.0.3",
+    "redact-env": "^0.2.0",
     "shell-source": "^1.1.0",
     "stack-utils": "^1.0.2"
   },

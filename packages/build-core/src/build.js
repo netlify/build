@@ -12,9 +12,6 @@ const netlifyDeployPlugin = require('./plugins/deploy')
 
 const baseDir = process.cwd()
 
-/* Monkey patch console.log */
-console.log = netlifyLogs.patch
-
 const lifecycle = [
   /* Build initialization steps */
   'init',
@@ -271,6 +268,10 @@ module.exports = async function build(configPath, cliFlags) {
     }
     return acc
   }, [])
+
+  const redactedKeys = ['SECRET_ENV_VAR', 'MY_API_KEY']
+  /* Monkey patch console.log */
+  console.log = netlifyLogs.patch(redactedKeys)
 
   const buildInstructions = instructions.filter((instruction) => {
     return instruction.hook !== 'onError'
