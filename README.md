@@ -99,6 +99,9 @@ Plugins are POJOs (plain old javascript objects) with methods that match the var
 ```js
 function exampleNetlifyPlugin(initialConfig) {
   return {
+    name: 'my-awesome-plugin',
+    /* Define the netlify API methods required if plugin making calls with netlify SDK */
+    scopes: ['listSites'],
     /**
      * [init description]
      * @param  {object} netlifyConfig   - Current netlify configuration from config file
@@ -106,7 +109,7 @@ function exampleNetlifyPlugin(initialConfig) {
      * @param  {object} utils        [description]
      * @return {[type]}              [description]
      */
-    init: ({ netlifyConfig, pluginConfig, utils, constants }) => {
+    init: ({ netlifyConfig, pluginConfig, utils, constants, api }) => {
       const { siteId, siteUrl, /*siteConfig*/, deployUrl } = context
       console.log(`Current site id`, siteId)
       console.log(`Current live site url`, siteUrl)
