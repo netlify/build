@@ -37,9 +37,9 @@ const lifecycle = [
   'finally'
 ]
 
-module.exports = async function build(configPath, cliFlags) {
+module.exports = async function build(configPath, cliFlags, token) {
   const netlifyConfigPath = configPath || cliFlags.config
-  const netlifyToken = process.env.NETLIFY_TOKEN || cliFlags.token
+  const netlifyToken = token || process.env.NETLIFY_TOKEN || cliFlags.token
   /* Load config */
   let netlifyConfig = {}
   try {
@@ -109,18 +109,24 @@ module.exports = async function build(configPath, cliFlags) {
       throw new Error(`Plugin ${name} is malformed. Must be object or function`)
     }
 
-    const methods = (typeof code === 'function') ? code(pluginConfig) : code
+    const pluginSrc = (typeof code === 'function') ? code(pluginConfig) : code
 
-    const cleanMethods = Object.keys(methods).reduce((acc, cur) => {
-      if (cur === 'core' || cur === 'name') {
+    /* Format plugin into useable data */
+    const pluginData = Object.keys(pluginSrc).reduce((acc, key) => {
+      const config = pluginSrc[key]
+      if (typeof config === 'function') {
+        acc.methods[key] = config
         return acc
       }
-      acc[cur] = methods[cur]
+      acc.meta[key] = config
       return acc
-    }, {})
-    // console.log('methods', cleanMethods)
+    }, {
+      meta: {},
+      methods: {}
+    })
+
     // Map plugins methods in order for later execution
-    Object.keys(cleanMethods).forEach((hook) => {
+    Object.keys(pluginData.methods).forEach((hook) => {
       /* Override core functionality */
       // Match string with 1 or more colons
       const override = hook.match(/(?:[^:]*[:]){1,}[^:]*$/)
@@ -138,7 +144,8 @@ module.exports = async function build(configPath, cliFlags) {
                 name: name,
                 hook: hook,
                 config: pluginConfig,
-                method: methods[hook],
+                meta: pluginData.meta,
+                method: pluginSrc[hook],
                 override: {
                   target: pluginName,
                   method: overideMethod
@@ -157,8 +164,9 @@ module.exports = async function build(configPath, cliFlags) {
       acc.lifeCycleHooks[hook] = acc.lifeCycleHooks[hook].concat({
         name: name,
         hook: hook,
+        meta: pluginData.meta,
         config: pluginConfig,
-        method: methods[hook]
+        method: pluginSrc[hook]
       })
     })
 
@@ -187,7 +195,7 @@ module.exports = async function build(configPath, cliFlags) {
     return acc
   }, [])
 
-  fullLifecycle = fullLifecycle.concat(['onError'])
+  fullLifecycle = fullLifecycle.concat(['onError', 'scopes'])
   // console.log('fullLifecycle', fullLifecycle)
 
   /* Validate lifecyle key name */
@@ -389,6 +397,7 @@ async function engine({
 }) {
   const returnData = await instructions.reduce(async (promiseChain, plugin, i) => {
     const { method, hook, config, name, override } = plugin
+    const meta = plugin.meta || {}
     const currentData = await promiseChain
     if (method && typeof method === 'function') {
       console.time(name)
@@ -404,6 +413,24 @@ async function engine({
       netlifyLogs.setContext(name)
 
       console.log()
+      let apiClient
+      if (netlifyToken) {
+        apiClient = new API(netlifyToken)
+        /* Redact API methods to scopes. Default scopes '*'... revisit */
+        if (meta && meta.scopes) {
+          const scopes = meta.scopes || ['*']
+          const apiMethods = Object.getPrototypeOf(apiClient)
+          /* If scopes not *, redact the methods not allowed */
+          if (!scopes.includes('*')) {
+            Object.keys(apiMethods).forEach((meth) => {
+              if (!scopes.includes(meth)) {
+                // TODO figure out if Object.setPrototypeOf will work
+                apiClient.__proto__[meth] = disableApiMethod(name, meth) // eslint-disable-line
+              }
+            })
+          }
+        }
+      }
 
       try {
         // https://github.com/netlify/cli-utils/blob/master/src/index.js#L40-L60
@@ -413,7 +440,7 @@ async function engine({
           /* Plugin configuration */
           pluginConfig: config,
           /* Netlify API client */
-          api: new API(netlifyToken),
+          api: apiClient,
           /* Values constants */
           constants: {
             CONFIG_PATH: path.resolve(netlifyConfigPath),
@@ -458,6 +485,12 @@ async function engine({
   netlifyLogs.reset()
   // console.log('returnData', returnData)
   return returnData
+}
+
+function disableApiMethod(pluginName, method) {
+  return () => {
+    throw new Error(`The "${pluginName}" plugin is not authorized to use "api.${method}". Please update the plugin scopes.`)
+  }
 }
 
 // Test if inside netlify build context
