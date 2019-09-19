@@ -3,13 +3,15 @@ function netlifySitemapPlugin(conf) {
   return {
     scopes: ['listSites'],
     // Hook into lifecycle
-    init: async ({ api }) => {
+    init: ({ api }) => {
       console.log('init')
-      const sits = await api.listSites()
-      console.log(sits)
     },
-    finally: () => {
-      console.log('finally')
+    finally: async ({ api }) => {
+      console.log('Finally... get site count')
+      const sites = await api.listSites()
+      if (sites) {
+        console.log(`Site count! ${sites.length}`)
+      }
     }
   }
 }

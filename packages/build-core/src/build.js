@@ -37,7 +37,10 @@ const lifecycle = [
   'finally'
 ]
 
+const TIME_KEY = 'Netlify Build'
+
 module.exports = async function build(configPath, cliFlags, token) {
+  console.time(TIME_KEY)
   const netlifyConfigPath = configPath || cliFlags.config
   const netlifyToken = token || process.env.NETLIFY_TOKEN || cliFlags.token
   /* Load config */
@@ -320,7 +323,10 @@ module.exports = async function build(configPath, cliFlags, token) {
       netlifyConfigPath,
       netlifyToken
     })
-    console.log(chalk.greenBright.bold('Netlify Build complete'))
+    console.log()
+    console.log(chalk.greenBright.bold('┌───────────────────────────┐'))
+    console.log(chalk.greenBright.bold('│  Netlify Build Complete!  │'))
+    console.log(chalk.greenBright.bold('└───────────────────────────┘'))
     console.log()
     if (Object.keys(manifest).length) {
       console.log('Manifest:')
@@ -345,11 +351,8 @@ module.exports = async function build(configPath, cliFlags, token) {
     throw err
   }
 
-  // Reset console.log for CLI
-  console.log = originalConsoleLog
-
+  /* Write TOML file to support current buildbot */
   const IS_NETLIFY = isNetlifyCI()
-
   if (IS_NETLIFY) {
     const toml = toToml(netlifyConfig)
     const tomlPath = path.join(baseDir, 'netlify.toml')
@@ -360,6 +363,9 @@ module.exports = async function build(configPath, cliFlags, token) {
     await writeFile(tomlPath, toml)
     console.log(`TOML file written to ${tomlPath}`)
   }
+  console.timeEnd(TIME_KEY)
+  // Reset console.log for CLI
+  console.log = originalConsoleLog
 }
 
 function preFix(hook) {
@@ -473,9 +479,15 @@ async function engine({
               }
             },
             redirects: {
-              get: () => {},
-              set: () => {},
-              delete: () => {}
+              get: () => {
+                console.log('get redirect')
+              },
+              set: () => {
+                console.log('set redirect')
+              },
+              delete: () => {
+                console.log('delete redirect')
+              }
             }
           },
           /* Error for `onError` handlers */
@@ -493,7 +505,10 @@ async function engine({
     }
     return Promise.resolve(currentData)
   }, Promise.resolve({}))
+
+  /* Clear logs prefix */
   netlifyLogs.reset()
+
   // console.log('returnData', returnData)
   return returnData
 }
