@@ -409,9 +409,6 @@ async function engine({
         console.log(chalk.redBright.bold(`> OVERRIDE: "${override.method}" method in ${override.target} has been overriden by "${name}"`))
       }
       console.log(chalk.cyanBright.bold(`> ${i + 1}. Running "${hook}" lifecycle from "${name}" ${source}`))
-      // set log context
-      netlifyLogs.setContext(name)
-
       console.log()
       let apiClient
       if (netlifyToken) {
@@ -420,9 +417,20 @@ async function engine({
         if (meta && meta.scopes) {
           const scopes = meta.scopes || ['*']
           const apiMethods = Object.getPrototypeOf(apiClient)
+          const apiMethodArray = Object.keys(apiMethods)
+          /* validate scopes */
+          scopes.forEach((scopeName, i) => {
+            if (scopeName !== '*' && !apiMethodArray.includes(scopeName)) {
+              console.log(chalk.redBright(`Invalid scope "${scopeName}" in "${name}" plugin.`))
+              console.log(chalk.white.bold(`Please use a valid event name. One of:`))
+              console.log(`${['*'].concat(apiMethodArray).map((n) => `"${n}"`).join(', ')}`)
+              console.log()
+              throw new Error(`Invalid scope "${scopeName}" in "${name}" plugin.`)
+            }
+          })
           /* If scopes not *, redact the methods not allowed */
           if (!scopes.includes('*')) {
-            Object.keys(apiMethods).forEach((meth) => {
+            apiMethodArray.forEach((meth) => {
               if (!scopes.includes(meth)) {
                 // TODO figure out if Object.setPrototypeOf will work
                 apiClient.__proto__[meth] = disableApiMethod(name, meth) // eslint-disable-line
@@ -431,6 +439,9 @@ async function engine({
           }
         }
       }
+
+      // set log context
+      netlifyLogs.setContext(name)
 
       try {
         // https://github.com/netlify/cli-utils/blob/master/src/index.js#L40-L60
