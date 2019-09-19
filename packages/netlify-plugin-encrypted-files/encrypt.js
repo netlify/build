@@ -8,9 +8,9 @@ const crypto = require('crypto')
 const rimraf = require('rimraf')
 const zlib = require('zlib')
 const { Transform } = require('stream')
-const prog = sade('encrypt')
 
 const ENCRYPTED_PLUGIN_SALT = 'ENCRYPTED_PLUGIN_SALT'
+const { NETLIFY_ENCRYPT_KEY } = process.env
 
 // for crypto stuff later
 class AppendInitVect extends Transform {
@@ -40,18 +40,19 @@ sade('encrypt <regex>', true)
   // .option('-H, --host', 'Hostname to bind', 'localhost')
   // .option('-p, --port', 'Port to bind', 5000)
   .action((regex, opts) => {
-    console.log({ regex })
-    // console.log({ opts })
+    if (typeof NETLIFY_ENCRYPT_KEY === 'undefined') {
+      console.error('must define NETLIFY_ENCRYPT_KEY to use netlify-plugin-encrypted-files')
+      process.exit(1)
+    }
     // Program handler
     const filePaths = opts._
     if (!filePaths.length) throw new Error('no filePaths matched ' + regex)
 
     // prepare encrypt folder
-    if (fs.existsSync('.encrypted'))
-      console.log('clearing ' + '.encrypted') || rimraf.sync('.encrypted')
+    if (fs.existsSync('.encrypted')) console.log('clearing ' + '.encrypted') || rimraf.sync('.encrypted')
     fs.mkdirSync('.encrypted')
 
-    filePaths.forEach(filePath => {
+    filePaths.forEach((filePath) => {
       // path.basename('/foo/bar/baz/asdf/quux.html')
       // // returns
       // 'quux.html'
@@ -69,7 +70,7 @@ function encrypt(file) {
   const initVect = crypto.randomBytes(16)
 
   // Generate a cipher key from the password.
-  const CIPHER_KEY = getCipherKey(ENCRYPTED_PLUGIN_SALT)
+  const CIPHER_KEY = getCipherKey(ENCRYPTED_PLUGIN_SALT + NETLIFY_ENCRYPT_KEY)
   const readStream = fs.createReadStream(file)
   const gzip = zlib.createGzip()
   const cipher = crypto.createCipheriv('aes256', CIPHER_KEY, initVect)

@@ -1,9 +1,12 @@
+const pluginDecrypt = require('./pluginDecrypt')
+
 function encryptedFilesPlugin(conf) {
   return {
     // scopes: ['listSites'],
     // Hook into lifecycle
     init: () => {
-      process.env
+      console.log('decrypting files')
+      pluginDecrypt()
     },
   }
 }
