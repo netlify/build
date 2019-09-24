@@ -22,7 +22,23 @@ async function execBuild() {
   console.log(configPath)
   console.log()
   // Then run build lifecycle
-  await build(configPath, args)
+  console.log('process.argv', process.argv)
+
+  // Redact argv so raw API key not exposed
+  let skipNext = false
+  const newArgv = process.argv.reduce((acc, value) => {
+    if (skipNext && (value && value.length > 20)) { // length === 64
+      skipNext = false
+      return acc
+    }
+    if (value === '--token') {
+      skipNext = true
+      return acc
+    }
+    return acc.concat(value)
+  }, [])
+  console.log('newArgv', newArgv)
+  await build(configPath, args, args.token)
 }
 
 execBuild().then(() => {
