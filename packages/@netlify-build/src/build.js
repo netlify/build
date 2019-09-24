@@ -3,9 +3,8 @@ const chalk = require('chalk')
 const execa = require('execa')
 const API = require('netlify')
 const deepLog = require('./utils/deeplog')
-const resolveNetlifyConfig = require('./config')
-const getNelifyConfigFile = require('./utils/hasConfig')
-const { toToml } = require('./config')
+const resolveConfig = require('@netlify/config')
+const { formatUtils, getConfigFile } = require('@netlify/config')
 const { writeFile } = require('./utils/fs')
 const { getSecrets, redactStream } = require('./utils/redact')
 const netlifyLogs = require('./utils/patch-logs')
@@ -46,7 +45,7 @@ module.exports = async function build(configPath, cliFlags, token) {
   /* Load config */
   let netlifyConfig = {}
   try {
-    netlifyConfig = await resolveNetlifyConfig(netlifyConfigPath, cliFlags)
+    netlifyConfig = await resolveConfig(netlifyConfigPath, cliFlags)
   } catch (err) {
     console.log('Netlify Config Error')
     throw err
@@ -354,7 +353,7 @@ module.exports = async function build(configPath, cliFlags, token) {
   /* Write TOML file to support current buildbot */
   const IS_NETLIFY = isNetlifyCI()
   if (IS_NETLIFY) {
-    const toml = toToml(netlifyConfig)
+    const toml = formatUtils.toml.dump(netlifyConfig)
     const tomlPath = path.join(baseDir, 'netlify.toml')
     console.log()
     console.log('TOML output:')
@@ -528,6 +527,6 @@ function isNetlifyCI() {
 }
 
 // Expose Netlify config
-module.exports.netlifyConfig = resolveNetlifyConfig
+module.exports.netlifyConfig = resolveConfig
 // Expose Netlify config path getter
-module.exports.getNelifyConfigFile = getNelifyConfigFile
+module.exports.getConfigFile = getConfigFile

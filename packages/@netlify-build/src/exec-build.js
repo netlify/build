@@ -6,7 +6,7 @@ if (FORCE_COLOR !== 'false') {
 }
 const chalk = require('chalk')
 const build = require('./build')
-const hasConfig = require('./utils/hasConfig')
+const { getConfigFile } = require('@netlify/config')
 const minimist = require('minimist')
 const cleanStack = require('./utils/clean-stack')
 
@@ -16,7 +16,7 @@ async function execBuild() {
   console.log(chalk.greenBright.bold(`Starting Netlify Build`))
   console.log()
   // Automatically resolve the config path
-  const configPath = await hasConfig(process.cwd())
+  const configPath = await getConfigFile(process.cwd())
 
   console.log(chalk.cyanBright.bold(`Using config file:`))
   console.log(configPath)
