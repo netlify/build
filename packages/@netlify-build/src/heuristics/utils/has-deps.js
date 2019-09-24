@@ -1,4 +1,3 @@
-
 function hasDependency(name, pkg) {
   const { dependencies, devDependencies } = pkg
   const hasItInDeps = dependencies && dependencies[name]

@@ -1,10 +1,12 @@
-const chalk = require('chalk')
 const util = require('util')
+
+const chalk = require('chalk')
+
 const { redactValues } = require('./redact')
 
 function monkeyPatchLogs(secrets) {
   return {
-    apply (target, ctx, args) {
+    apply(target, ctx, args) {
       if (!args.length) {
         return Reflect.apply(...arguments)
       }
@@ -28,15 +30,19 @@ function monkeyPatchLogs(secrets) {
       }
       let prefixSet = false
 
-      arguments['2'] = args.map((a) => {
+      arguments['2'] = args.map(a => {
         const redactedLog = redactValues(a, secrets)
         if (typeof a === 'object') {
-          return util.inspect(redactedLog, { showHidden: false, depth: null, colors: true })
+          return util.inspect(redactedLog, {
+            showHidden: false,
+            depth: null,
+            colors: true
+          })
         }
         if (!prefixSet) {
           prefixSet = true
           const pre = process.env.LOG_CONTEXT || ''
-          const prefix = (pre) ? `${chalk.bold(trim(pre))}: ` : ''
+          const prefix = pre ? `${chalk.bold(trim(pre))}: ` : ''
           return `${prefix}${redactedLog}`
         }
         return redactedLog
@@ -50,11 +56,11 @@ function trim(string) {
   return string.replace(/^config\./, '')
 }
 
-module.exports.patch = (secrets) => {
+module.exports.patch = secrets => {
   return new Proxy(console.log, monkeyPatchLogs(secrets))
 }
 
-module.exports.setContext = (pre) => {
+module.exports.setContext = pre => {
   process.env.LOG_CONTEXT = pre
 }
 

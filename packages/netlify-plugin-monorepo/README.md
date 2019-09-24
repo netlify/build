@@ -14,5 +14,5 @@ plugins:
       enabled: true
       # files to check for changes
       files:
-        - "src/**.html"
+        - 'src/**.html'
 ```

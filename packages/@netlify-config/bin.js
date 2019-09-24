@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 const path = require('path')
+
 const minimist = require('minimist')
+
 const args = minimist(process.argv.slice(2))
 const netlifyConfig = require('./index')
 const { getConfigFile } = require('./index')
@@ -24,8 +26,10 @@ async function execConfig() {
   return config
 }
 
-execConfig(args).then((config) => {
-  if (config) console.log(config)
-}).catch((e) => {
-  console.log('error', e)
-})
+execConfig(args)
+  .then(config => {
+    if (config) console.log(config)
+  })
+  .catch(e => {
+    console.log('error', e)
+  })

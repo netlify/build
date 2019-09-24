@@ -3,14 +3,15 @@
  */
 const fs = require('fs')
 const path = require('path')
+
 const sm = require('sitemap')
 const globby = require('globby')
 
 async function makeSitemap(opts = {}) {
   const { distPath, fileName, homepage } = opts
   const htmlFiles = `${distPath}/**/**.html`
-  const paths = await globby([ htmlFiles ])
-  const urls = paths.map((file) => {
+  const paths = await globby([htmlFiles])
+  const urls = paths.map(file => {
     const regex = new RegExp(`^${distPath}`)
     const urlPath = file.replace(regex, '')
     return {
@@ -30,7 +31,7 @@ async function makeSitemap(opts = {}) {
   // Creates a sitemap object given the input configuration with URLs
   const sitemap = sm.createSitemap(options)
   // Generates XML with a callback function
-  sitemap.toXML((error) => {
+  sitemap.toXML(error => {
     if (error) {
       throw error
     }

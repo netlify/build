@@ -1,8 +1,11 @@
 const path = require('path')
+
 const execa = require('execa')
-const install = require('./utils/install')
+
 const moveCache = require('../../utils/moveCache')
 const { fileExists } = require('../../utils/fs')
+
+const install = require('./utils/install')
 
 // https://github.com/netlify/build-image/blob/9e0f207a27642d0115b1ca97cd5e8cebbe492f63/run-build-functions.sh#L380
 module.exports = async function installBower(cwd, cacheDir) {

@@ -1,44 +1,45 @@
 const path = require('path')
+
 const makeDir = require('make-dir')
 const del = require('del')
 const execa = require('execa')
+
 const moveCache = require('../utils/moveCache')
 const { fileExists } = require('../utils/fs')
 
 // https://github.com/netlify/buildbot/blob/4f9545d11ca266bd58b6de4ff24de132b8338287/script/run-build.sh#L38
 // https://github.com/netlify/build-image/blob/9e0f207a27642d0115b1ca97cd5e8cebbe492f63/run-build-functions.sh#L586
 async function cacheArtifacts(cwd, cacheDir) {
-  const {
-    HOME,
-    GO_IMPORT_PATH,
-    GOPATH,
-    NODE_VERSION,
-    NVM_DIR,
-    CUSTOM_RUBY,
-    RUBY_VERSION,
-    RVM_DIR
-  } = process.env
+  const { HOME, GO_IMPORT_PATH, GOPATH, NODE_VERSION, NVM_DIR, CUSTOM_RUBY, RUBY_VERSION, RVM_DIR } = process.env
 
   console.log('Caching artifacts')
   // 'relative path' : 'Message'
-  const cacheCwd = cacheDeps({
-    '.bundle': 'ruby gems',
-    'bower_components': 'bower components',
-    'node_modules': 'node modules',
-    '.venv': 'python virtualenv',
-    'wapm_packages': 'wapm packages',
-  }, cwd, cacheDir)
+  const cacheCwd = cacheDeps(
+    {
+      '.bundle': 'ruby gems',
+      bower_components: 'bower components',
+      node_modules: 'node modules',
+      '.venv': 'python virtualenv',
+      wapm_packages: 'wapm packages'
+    },
+    cwd,
+    cacheDir
+  )
 
-  const cacheHomeDir = cacheDeps({
-    '.yarn_cache': 'yarn cache',
-    '.cache': 'pip cache',
-    '.cask': 'emacs cask dependencies',
-    '.emacs.d': 'emacs cache',
-    '.m2': 'maven dependencies',
-    '.boot': 'boot dependencies',
-    '.composer': 'composer dependencies',
-    '.wasmer/cache': 'wasmer cache',
-  }, HOME, cacheDir)
+  const cacheHomeDir = cacheDeps(
+    {
+      '.yarn_cache': 'yarn cache',
+      '.cache': 'pip cache',
+      '.cask': 'emacs cask dependencies',
+      '.emacs.d': 'emacs cache',
+      '.m2': 'maven dependencies',
+      '.boot': 'boot dependencies',
+      '.composer': 'composer dependencies',
+      '.wasmer/cache': 'wasmer cache'
+    },
+    HOME,
+    cacheDir
+  )
 
   await Promise.all(cacheCwd.concat(cacheHomeDir))
 
@@ -52,11 +53,7 @@ async function cacheArtifacts(cwd, cacheDir) {
   const goCache = path.join(HOME, '.gimme_cache')
   await execa('chmod', ['-R', '+rw', goCache])
   // cache_home_directory ".gimme_cache" "go dependencies"
-  await moveCache(
-    goCache,
-    path.join(cacheDir, '.gimme_cache'),
-    'go dependencies'
-  )
+  await moveCache(goCache, path.join(cacheDir, '.gimme_cache'), 'go dependencies')
 
   // cache the version of node installed
   const cacheNodePath = path.join(cacheDir, 'node_version')
@@ -67,11 +64,7 @@ async function cacheArtifacts(cwd, cacheDir) {
     // mkdir $NETLIFY_CACHE_DIR/node_version
     await makeDir(cacheNodePath)
     // mv $NVM_DIR/versions/node/* $NETLIFY_CACHE_DIR/node_version/
-    await moveCache(
-      path.join(NVM_DIR, 'versions/node'),
-      path.join(cacheDir, 'node_version'),
-      'node deps'
-    )
+    await moveCache(path.join(NVM_DIR, 'versions/node'), path.join(cacheDir, 'node_version'), 'node deps')
   }
 
   // cache the version of ruby installed
@@ -97,7 +90,7 @@ async function cacheArtifacts(cwd, cacheDir) {
 }
 
 function cacheDeps(map, src, dest) {
-  return Object.keys(map).map((key) => {
+  return Object.keys(map).map(key => {
     const cwdPath = path.join(src, key)
     const cachePath = path.join(dest, key)
     const message = map[key]

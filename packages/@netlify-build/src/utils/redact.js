@@ -1,4 +1,5 @@
 const stream = require('stream')
+
 const redactEnv = require('redact-env')
 const isPlainObject = require('lodash.isplainobject')
 
@@ -22,7 +23,7 @@ function redactValues(target, secrets) {
   }
   // Redact Array values
   if (Array.isArray(target)) {
-    return target.map((val) => redactValues(val, secrets))
+    return target.map(val => redactValues(val, secrets))
   } else if (isPlainObject(target)) {
     return Object.keys(target).reduce((newObj, key) => {
       newObj[key] = redactValues(target[key], secrets)

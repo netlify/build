@@ -1,5 +1,7 @@
 const path = require('path')
+
 const execa = require('execa')
+
 const moveCache = require('../../utils/moveCache')
 const { fileExists } = require('../../utils/fs')
 
@@ -10,11 +12,7 @@ module.exports = async function installPipDeps(cwd, cacheDir) {
   const pipFilePath = path.join(cwd, 'Pipfile')
   if (await fileExists(requirementsPath)) {
     console.log('Installing pip dependencies')
-    await moveCache(
-      path.join(cacheDir, '.cache'),
-      path.join(cwd, '.cache'),
-      'restoring cached python cached deps'
-    )
+    await moveCache(path.join(cacheDir, '.cache'), path.join(cwd, '.cache'), 'restoring cached python cached deps')
     try {
       await execa('pip', ['install', '-r', requirementsPath])
     } catch (err) {

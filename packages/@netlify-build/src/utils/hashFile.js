@@ -8,7 +8,7 @@ module.exports = function hashFile(filename, algorithm) {
     let shasum = crypto.createHash(algorithm)
     try {
       let s = fs.ReadStream(filename)
-      s.on('data', (data) => {
+      s.on('data', data => {
         shasum.update(data)
       })
       // making digest

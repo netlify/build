@@ -115,7 +115,6 @@ function exampleNetlifyPlugin(config) {
 - **netlify-plugin--notify** to automatically wired up build notifications
 - ... skys the limit 🌈
 
-
 ## Configuration
 
 Configuration can be written in `toml`, `yml`, `json`, `json5`, or `javascript`.

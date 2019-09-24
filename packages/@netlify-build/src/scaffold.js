@@ -3,7 +3,9 @@
  * Node port of https://github.com/netlify/build-image/blob/xenial/run-build.sh
  */
 const path = require('path')
+
 const execa = require('execa')
+
 const installDependencies = require('./install')
 const cacheArtifacts = require('./cache')
 const prepFunctions = require('./install/serverless/prep-functions')
@@ -40,15 +42,7 @@ const CWD = process.cwd()
  * @return {[type]}        [description]
  */
 module.exports = async function runBuild(config) {
-  const {
-    buildDir,
-    buildCmd,
-    functionsDir,
-    zisiTempDir,
-    nodeVersion,
-    rubyVersion,
-    yarnVersion
-  } = config
+  const { buildDir, buildCmd, functionsDir, zisiTempDir, nodeVersion, rubyVersion, yarnVersion } = config
   // inputs from Buildbot
   const parentDir = path.dirname(buildDir)
   const phpVersion = '5.6'

@@ -1,4 +1,5 @@
 const path = require('path')
+
 const execa = require('execa')
 const runNvmCommand = path.join(__dirname, 'run-nvm.sh')
 

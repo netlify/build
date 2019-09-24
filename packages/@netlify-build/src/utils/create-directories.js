@@ -29,7 +29,7 @@ const directories = [
   `${NETLIFY_CACHE_DIR}/.composer`,
   `${NETLIFY_CACHE_DIR}/.gimme_cache/gopath`,
   `${NETLIFY_CACHE_DIR}/.gimme_cache/gocache`,
-  `${NETLIFY_CACHE_DIR}/.wasmer/cache`,
+  `${NETLIFY_CACHE_DIR}/.wasmer/cache`
 ]
 
 const globals = {
@@ -54,15 +54,18 @@ module.exports = async function runBuildFunction() {
   }
 
   /* Set Globals env vars */
-  Object.keys(globals).map((key) => { // eslint-disable-line
+  Object.keys(globals).map(key => {
+    // eslint-disable-line
     process.env[key] = globals[key]
   })
 
   /* Make the directories */
-  const newDirPaths = await Promise.all(directories.map((dir) => {
-    console.log(`Make directory ${dir}`)
-    return makeDir(dir)
-  }))
+  const newDirPaths = await Promise.all(
+    directories.map(dir => {
+      console.log(`Make directory ${dir}`)
+      return makeDir(dir)
+    })
+  )
 
   return newDirPaths
 }

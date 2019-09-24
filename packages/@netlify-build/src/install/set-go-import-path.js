@@ -1,6 +1,8 @@
 const path = require('path')
+
 const execa = require('execa')
 const makeDir = require('make-dir')
+
 const { removeFiles } = require('../utils/fs')
 
 // https://github.com/netlify/build-image/blob/9e0f207a27642d0115b1ca97cd5e8cebbe492f63/run-build-functions.sh#L675
@@ -10,7 +12,7 @@ module.exports = async function setGoImportPath(cwd) {
     const importPath = `${GOPATH}/src/${GO_IMPORT_PATH}"`
     const dirPath = path.dirname(importPath)
 
-    await removeFiles([ dirPath ])
+    await removeFiles([dirPath])
 
     await makeDir(dirPath)
 

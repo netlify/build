@@ -1,4 +1,3 @@
-
 function netlifyCypressPlugin(conf) {
   return {
     // Hook into lifecycle

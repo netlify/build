@@ -1,9 +1,12 @@
 const path = require('path')
+
 const execa = require('execa')
-const install = require('./utils/install')
-const setTempDir = require('./utils/set-temp-dir')
+
 const moveCache = require('../../utils/moveCache')
 const { fileExists, removeFiles, copyFiles } = require('../../utils/fs')
+
+const install = require('./utils/install')
+const setTempDir = require('./utils/set-temp-dir')
 
 module.exports = async function runYarn(cwd, cacheDir, yarnVersion) {
   const yarnCacheDir = path.join(cacheDir, 'yarn')
@@ -17,11 +20,7 @@ module.exports = async function runYarn(cwd, cacheDir, yarnVersion) {
     process.env.PATH = `${cacheDir}/yarn/bin}:${process.env.PATH}`
   }
   /* restore yarn cache */
-  await moveCache(
-    path.join(cacheDir, '.yarn_cache'),
-    path.join(cwd, '.yarn_cache'),
-    'restoring cached .yarn_cache'
-  )
+  await moveCache(path.join(cacheDir, '.yarn_cache'), path.join(cwd, '.yarn_cache'), 'restoring cached .yarn_cache')
 
   // Look for yarn
   let hasYarn

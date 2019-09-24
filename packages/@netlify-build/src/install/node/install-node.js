@@ -1,13 +1,10 @@
 const path = require('path')
+
 const execa = require('execa')
+
 const source = require('../../utils/source')
-const {
-  readFile,
-  writeFile,
-  fileExists,
-  removeFiles,
-  copyFiles
-} = require('../../utils/fs')
+const { readFile, writeFile, fileExists, removeFiles, copyFiles } = require('../../utils/fs')
+
 const runNvm = require('./utils/run-nvm')
 
 // https://github.com/netlify/build-image/blob/9e0f207a27642d0115b1ca97cd5e8cebbe492f63/run-build-functions.sh#L186
@@ -44,7 +41,8 @@ module.exports = async function installNode(cwd, cacheDir, version) {
     await runNvm(`nvm install ${NODE_VERSION}`)
     // Get version
     NODE_VERSION = await runNvm(`nvm current`)
-    if (NODE_VERSION === 'none') { // todo harden this
+    if (NODE_VERSION === 'none') {
+      // todo harden this
       const debug = await runNvm(`nvm debug`)
       if (debug) {
         console.log(debug)
@@ -65,7 +63,7 @@ module.exports = async function installNode(cwd, cacheDir, version) {
 
   // Set NPM token if one set
   const npmConfigPath = path.join(cwd, 'npmrc')
-  if (NPM_TOKEN && !await fileExists(npmConfigPath)) {
+  if (NPM_TOKEN && !(await fileExists(npmConfigPath))) {
     await writeFile(npmConfigPath, `//registry.npmjs.org/:_authToken=${NPM_TOKEN}`)
   }
 }

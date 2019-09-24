@@ -37,7 +37,6 @@
     "stack-utils": "^1.0.2"
   },
   "devDependencies": {
-    "ava": "^2.2.0",
     "markdown-magic": "^0.1.25"
   }
 }

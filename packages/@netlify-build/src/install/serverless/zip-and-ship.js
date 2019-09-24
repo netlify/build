@@ -1,4 +1,5 @@
 const path = require('path')
+
 const execa = require('execa')
 
 // https://github.com/netlify/build-image/blob/9e0f207a27642d0115b1ca97cd5e8cebbe492f63/run-build-functions.sh#L490-L505
@@ -11,13 +12,7 @@ module.exports = async function installZola(cwd, cacheDir) {
     try {
       const binrcVersion = await getBinRcVersion()
       const binRcPath = path.join(cacheDir, `.binrc-${binrcVersion}`)
-      zipAndShip = await execa('binrc', [
-        'install',
-        '-c',
-        binRcPath,
-        'netlify/zip-it-and-ship-it',
-        ZISI_VERSION
-      ])
+      zipAndShip = await execa('binrc', ['install', '-c', binRcPath, 'netlify/zip-it-and-ship-it', ZISI_VERSION])
     } catch (err) {
       console.log(`Error during zip/ship install ${ZISI_VERSION}`)
       console.log(err)
@@ -29,11 +24,7 @@ module.exports = async function installZola(cwd, cacheDir) {
     }
 
     const installPath = zipAndShip.stdout
-    await execa('ln', [
-      '-s',
-      installPath,
-      `/opt/buildhome/.binrc/bin/zip-it-and-ship-it_${ZISI_VERSION}`
-    ])
+    await execa('ln', ['-s', installPath, `/opt/buildhome/.binrc/bin/zip-it-and-ship-it_${ZISI_VERSION}`])
 
     await execa('ln', [
       '-s',

@@ -1,4 +1,3 @@
-
 function netlifySitemapPlugin(conf) {
   return {
     scopes: ['listSites'],

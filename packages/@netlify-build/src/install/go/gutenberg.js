@@ -1,5 +1,3 @@
-
-
 /* dead? https://dev.to/ruthreyer/tea-site-built-with-gutenberg-1c0b https://www.getgutenberg.io/
 # Gutenberg
 if [ -n "$GUTENBERG_VERSION" ]

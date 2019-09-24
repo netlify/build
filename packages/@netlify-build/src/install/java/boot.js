@@ -1,5 +1,7 @@
 const path = require('path')
+
 const execa = require('execa')
+
 const moveCache = require('../../utils/moveCache')
 const { fileExists, writeFile } = require('../../utils/fs')
 const shasum = require('../../utils/shasum')
@@ -12,17 +14,9 @@ module.exports = async function installBoot(cwd, cacheDir) {
 
   if (await fileExists(bootConfig)) {
     // restore_home_cache ".m2" "maven dependencies"
-    await moveCache(
-      path.join(cacheDir, '.m2'),
-      path.join(cwd, '.m2'),
-      'restoring cached maven dependencies'
-    )
+    await moveCache(path.join(cacheDir, '.m2'), path.join(cwd, '.m2'), 'restoring cached maven dependencies')
     // restore_home_cache ".boot" "boot dependencies"
-    await moveCache(
-      path.join(cacheDir, '.boot'),
-      path.join(cwd, '.boot'),
-      'restoring cached boot dependencies'
-    )
+    await moveCache(path.join(cacheDir, '.boot'), path.join(cwd, '.boot'), 'restoring cached boot dependencies')
 
     const buildBootFile = path.join(cwd, 'build.boot')
     const previousSha = path.join(cacheDir, 'project-boot-sha')

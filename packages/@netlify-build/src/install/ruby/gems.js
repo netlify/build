@@ -1,5 +1,7 @@
 const path = require('path')
+
 const execa = require('execa')
+
 const moveCache = require('../../utils/moveCache')
 const shasum = require('../../utils/shasum')
 const shouldInstallDeps = require('../../utils/shouldInstallDeps')
@@ -12,24 +14,19 @@ module.exports = async function installRubyGems(cwd, cacheDir) {
   const gemBundleDir = path.join(cwd, '.bundle')
   if (await fileExists(gemFile)) {
     // restore_cwd_cache ".bundle" "ruby gems"
-    await moveCache(
-      path.join(cacheDir, '.bundle'),
-      gemBundleDir,
-      'restoring cached ruby gems'
-    )
+    await moveCache(path.join(cacheDir, '.bundle'), gemBundleDir, 'restoring cached ruby gems')
 
     const gemLockPath = path.join(cwd, 'Gemfile.lock')
     const previousShaPath = path.join(cacheDir, 'gemfile-sha')
-    if (await shouldInstallDeps(gemLockPath, RUBY_VERSION, previousShaPath) || !await fileExists(gemBundleDir)) {
+    if ((await shouldInstallDeps(gemLockPath, RUBY_VERSION, previousShaPath)) || !(await fileExists(gemBundleDir))) {
       console.log('Installing gem bundle')
       try {
-        await execa('bundle', [
-          'install',
-          '--path',
-          '$NETLIFY_CACHE_DIR/bundle',
-          '--binstubs=$NETLIFY_CACHE_DIR/binstubs'
-        ].concat(BUNDLER_FLAGS ? [BUNDLER_FLAGS] : [])
-        // @TODO ^ verify this ${BUNDLER_FLAGS:+"$BUNDLER_FLAGS"}
+        await execa(
+          'bundle',
+          ['install', '--path', '$NETLIFY_CACHE_DIR/bundle', '--binstubs=$NETLIFY_CACHE_DIR/binstubs'].concat(
+            BUNDLER_FLAGS ? [BUNDLER_FLAGS] : []
+          )
+          // @TODO ^ verify this ${BUNDLER_FLAGS:+"$BUNDLER_FLAGS"}
         )
       } catch (err) {
         console.log('Error during gem install')
