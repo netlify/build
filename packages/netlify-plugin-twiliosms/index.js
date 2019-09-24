@@ -12,9 +12,9 @@ function netlifyPlugin(conf) {
 
       client.messages
         .create({
-          body: "Hi there, we just built the site successfully!",
-          to: "+447725202255", // Text this number
-          from: "+16503000213" // From a valid Twilio number
+          body: "Hi there, we just deployed the site successfully!",
+          to: process.env.TO_NUM, // Text this number
+          from: process.env.FROM_NUM // From a valid Twilio number
         })
         .then(message => console.log(message.sid))
     }
