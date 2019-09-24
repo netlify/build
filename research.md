@@ -3,6 +3,7 @@
 Examples of other CI/CD configuration files.
 
 <!-- AUTO-GENERATED-CONTENT:START (TOC) -->
+
 - [Travis](#travis)
 - [AWS codeBuild](#aws-codebuild)
 - [GCP cloudBuild](#gcp-cloudbuild)
@@ -13,7 +14,7 @@ Examples of other CI/CD configuration files.
 - [Serverless lifecycle](#serverless-lifecycle)
 - [buildkite](#buildkite)
 - [Other CI tools](#other-ci-tools)
-<!-- AUTO-GENERATED-CONTENT:END -->
+  <!-- AUTO-GENERATED-CONTENT:END -->
 
 ## [Travis](https://docs.travis-ci.com/user/job-lifecycle)
 
@@ -48,7 +49,6 @@ after_success:
   - docker push $REPO
 ```
 
-
 # [AWS codeBuild](https://docs.aws.amazon.com/codebuild/latest/userguide/build-spec-ref.html#build-spec-ref-syntax)
 
 Notes: `phases` is lifecycle
@@ -75,25 +75,24 @@ artifacts:
   discard-paths: yes
 ```
 
-
 # [GCP cloudBuild](https://cloud.google.com/cloud-build/docs/configuring-builds/create-basic-configuration) [video](https://www.youtube.com/watch?v=iyGHW4UQ_Ts)
 
 Note: `steps` array is lifecycle
 
 ```yml
 steps:
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/my-project/my-image', '.']
-  timeout: 500s
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/my-project/my-image']
-- name: 'gcr.io/cloud-builders/kubectl'
-  args: ['set', 'image', 'deployment/my-deployment', 'my-container=gcr.io/my-project/my-image']
-  env:
-  - 'CLOUDSDK_COMPUTE_ZONE=us-east4-b'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=my-cluster'
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/my-project/my-image', '.']
+    timeout: 500s
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/my-project/my-image']
+  - name: 'gcr.io/cloud-builders/kubectl'
+    args: ['set', 'image', 'deployment/my-deployment', 'my-container=gcr.io/my-project/my-image']
+    env:
+      - 'CLOUDSDK_COMPUTE_ZONE=us-east4-b'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=my-cluster'
 options:
-    machineType: 'N1_HIGHCPU_8'
+  machineType: 'N1_HIGHCPU_8'
 timeout: 660s
 tags: ['mytag1', 'mytag2']
 images: ['gcr.io/my-project/myimage']
@@ -109,7 +108,7 @@ jobs:
     # The primary container is an instance of the first image listed. The job's commands run in this container.
     docker:
       - image: circleci/node:4.8.2-jessie
-    # The secondary container is an instance of the second listed image which is run in a common network where ports exposed on the primary container are available on localhost.
+      # The secondary container is an instance of the second listed image which is run in a common network where ports exposed on the primary container are available on localhost.
       - image: mongo:3.4.4-jessie
     steps:
       - checkout
@@ -196,7 +195,7 @@ image: ruby:2.3
 
 cache:
   paths:
-  - vendor/
+    - vendor/
 
 before_script:
   - bundle install --path vendor
@@ -204,51 +203,51 @@ before_script:
 pages:
   stage: deploy
   script:
-  - bundle exec jekyll build -d public
+    - bundle exec jekyll build -d public
   artifacts:
     paths:
-    - public
+      - public
   only:
-  - master
+    - master
 
 test:
   stage: test
   script:
-  - bundle exec jekyll build -d test
+    - bundle exec jekyll build -d test
   artifacts:
     paths:
-    - test
+      - test
   except:
-  - master
+    - master
 ```
 
 # [Serverless lifecycle](https://gist.github.com/HyperBrain/50d38027a8f57778d5b0f135d80ea406) & [Custom hooks](https://www.npmjs.com/package/serverless-scriptable-plugin)
 
 ```yml
 custom:
- scriptHooks:
-   after:package:createDeploymentArtifacts:
-     - build/serverless/add-log-subscriptions.js
-     - build/serverless/add-dynamodb-auto-scaling.js
+  scriptHooks:
+    after:package:createDeploymentArtifacts:
+      - build/serverless/add-log-subscriptions.js
+      - build/serverless/add-dynamodb-auto-scaling.js
 ```
 
 # [buildkite](https://buildkite.com/docs/pipelines/command-step)
 
 ```yml
 steps:
-  - label: ":hammer: Tests"
+  - label: ':hammer: Tests'
     commands:
-      - "npm install"
-      - "npm run tests"
-    branches: "master"
+      - 'npm install'
+      - 'npm run tests'
+    branches: 'master'
     env:
-      NODE_ENV: "test"
+      NODE_ENV: 'test'
     agents:
-      npm: "true"
-      queue: "tests"
+      npm: 'true'
+      queue: 'tests'
     artifact_paths:
-      - "logs/**/*"
-      - "coverage/**/*"
+      - 'logs/**/*'
+      - 'coverage/**/*'
     parallelism: 5
     timeout_in_minutes: 3
     retry:
@@ -260,25 +259,25 @@ steps:
         - exit_status: 255
           limit: 2
 
-  - label: "Visual diff"
+  - label: 'Visual diff'
     commands:
-      - "npm install"
-      - "npm run visual-diff"
+      - 'npm install'
+      - 'npm run visual-diff'
     retry:
       automatic:
         limit: 3
 
-  - label: "Skipped job"
-    command: "broken.sh"
-    skip: "Currently broken and needs to be fixed"
+  - label: 'Skipped job'
+    command: 'broken.sh'
+    skip: 'Currently broken and needs to be fixed'
 
   - wait
 
-  - label: ":shipit: Deploy"
-    command: "deploy.sh"
-    branches: "master"
+  - label: ':shipit: Deploy'
+    command: 'deploy.sh'
+    branches: 'master'
     concurrency: 1
-    concurrency_group: "my-app/deploy"
+    concurrency_group: 'my-app/deploy'
     retry:
       manual:
         allowed: false
@@ -286,8 +285,8 @@ steps:
 
   - wait
 
-  - label: "Smoke test"
-    command: "smoke-test.sh"
+  - label: 'Smoke test'
+    command: 'smoke-test.sh'
     soft_fail:
       - exit_status: 1
 ```

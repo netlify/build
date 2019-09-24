@@ -1,4 +1,5 @@
 const TwilioSdk = require('twilio')
+
 const pkg = require('./package.json')
 
 function netlifyNotifyPlugin(config) {
@@ -23,7 +24,7 @@ function netlifyNotifyPlugin(config) {
     const messages = messagesByLifeCycle[curr]
     /* Generate notifications */
     acc[curr] = async () => {
-      const runNotices = messages.map((msg) => {
+      const runNotices = messages.map(msg => {
         if (msg.type === 'sms') {
           console.log(`Sending ${msg.type} message to ${msg.to}...`)
           return sendSMS(msg, config)

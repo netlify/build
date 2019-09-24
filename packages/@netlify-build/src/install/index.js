@@ -18,15 +18,7 @@ const installZipAndShip = require('./serverless/zip-and-ship')
 
 // https://github.com/netlify/build-image/blob/9e0f207a27642d0115b1ca97cd5e8cebbe492f63/run-build-functions.sh#L59-L581
 module.exports = async function installDependencies(config = {}) {
-  const {
-    nodeVersion,
-    rubyVersion,
-    yarnVersion,
-    phpVersion,
-    goVersion,
-    CWD,
-    NETLIFY_CACHE_DIR
-  } = config
+  const { nodeVersion, rubyVersion, yarnVersion, phpVersion, goVersion, CWD, NETLIFY_CACHE_DIR } = config
   console.log(CWD, NETLIFY_CACHE_DIR)
   await installPython(CWD, NETLIFY_CACHE_DIR)
 

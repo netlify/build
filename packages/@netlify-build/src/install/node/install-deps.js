@@ -1,8 +1,10 @@
 const path = require('path')
+
 const moveCache = require('../../utils/moveCache')
+const { fileExists } = require('../../utils/fs')
+
 const runNpm = require('./run-npm')
 const runYarn = require('./run-yarn')
-const { fileExists } = require('../../utils/fs')
 
 // Install Node project deps
 // https://github.com/netlify/build-image/blob/9e0f207a27642d0115b1ca97cd5e8cebbe492f63/run-build-functions.sh#L366-L378

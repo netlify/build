@@ -1,5 +1,7 @@
 const path = require('path')
+
 const execa = require('execa')
+
 const source = require('../../utils/source')
 const moveCache = require('../../utils/moveCache')
 const { readFile, fileExists } = require('../../utils/fs')
@@ -23,11 +25,7 @@ module.exports = async function installPython(cwd, cacheDir) {
     console.log(`Python version set to ${PYTHON_VERSION}`)
   } else if (await fileExists(pipFilePath)) {
     console.log('Found Pipfile restoring Pipenv virtualenv')
-    await moveCache(
-      path.join(cacheDir, '.venv'),
-      path.join(cwd, '.venv'),
-      'restoring cached python virtualenv'
-    )
+    await moveCache(path.join(cacheDir, '.venv'), path.join(cwd, '.venv'), 'restoring cached python virtualenv')
   } else {
     console.log('what')
     const env = await source(`${HOME}/python${PYTHON_VERSION}/bin/activate`)

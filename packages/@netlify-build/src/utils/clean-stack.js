@@ -62,10 +62,15 @@ module.exports = stack => {
   // TODO: fix it in `stack-utils`
   stack = cleanStack(stack)
 
-  return stackUtils.clean(stack)
-    // Remove the trailing newline inserted by the `stack-utils` module
-    .trim()
-    // Remove remaining file:// prefixes, inserted by `esm`, that are not
-    // cleaned up by `stack-utils`
-    .split('\n').map(line => line.replace(/\(file:\/\/([^/].+:\d+:\d+)\)$/, '($1)')).join('\n')
+  return (
+    stackUtils
+      .clean(stack)
+      // Remove the trailing newline inserted by the `stack-utils` module
+      .trim()
+      // Remove remaining file:// prefixes, inserted by `esm`, that are not
+      // cleaned up by `stack-utils`
+      .split('\n')
+      .map(line => line.replace(/\(file:\/\/([^/].+:\d+:\d+)\)$/, '($1)'))
+      .join('\n')
+  )
 }

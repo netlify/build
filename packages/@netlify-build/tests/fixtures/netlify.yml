@@ -5,7 +5,7 @@ plugins:
       baseUrl: ${env:SITE}
       pageLoadTimeout: 60000
   - ./plugins/netlify-plugin-sitemap:
-      exclude: "**/dist"
+      exclude: '**/dist'
   - ./plugins/netlify-plugin-notify:
       emails:
         - david@netlify.com

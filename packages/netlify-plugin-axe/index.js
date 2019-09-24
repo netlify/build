@@ -1,12 +1,13 @@
-const execa = require('execa')
 const path = require('path')
+
+const execa = require('execa')
 const chalk = require('chalk')
 const mkdirp = require('mkdirp')
 
-function netlifyAxePlugin(conf, /* createStore */) {
+function netlifyAxePlugin(conf /* createStore */) {
   let {
     enabled, // currently unused
-    axeFlags,
+    axeFlags
   } = conf
   return {
     init: async () => {
@@ -21,7 +22,7 @@ function netlifyAxePlugin(conf, /* createStore */) {
       let resp
       try {
         const subprocess = execa(axeCLI, [site, axeFlags, `--save .axe-results/result.json`], {
-          shell: true,
+          shell: true
         })
         subprocess.stderr.pipe(process.stderr)
         subprocess.stdout.pipe(process.stdout)
@@ -38,7 +39,7 @@ function netlifyAxePlugin(conf, /* createStore */) {
         }
         console.log({ violations: results })
       }
-    },
+    }
   }
 }
 

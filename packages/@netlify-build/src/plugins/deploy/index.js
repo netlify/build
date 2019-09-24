@@ -1,4 +1,5 @@
 const path = require('path')
+
 const { fileExists, readDir } = require('../../utils/fs')
 const { CONTEXT } = process.env
 
@@ -21,7 +22,7 @@ module.exports = () => {
       }
 
       const publishPath = path.resolve(build.publish)
-      if (!await fileExists(publishPath)) {
+      if (!(await fileExists(publishPath))) {
         console.log(`Publish dir not found`)
         process.exit(1)
       }
@@ -32,7 +33,7 @@ module.exports = () => {
         process.exit(1)
       }
 
-      const deployToProduction = (CONTEXT === 'production')
+      const deployToProduction = CONTEXT === 'production'
 
       if (!constants.siteId) {
         console.log(`No siteId found`)

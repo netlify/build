@@ -1,4 +1,5 @@
 const path = require('path')
+
 const fs = require('fs-extra')
 const { zipFunction } = require('@netlify/zip-it-and-ship-it')
 
@@ -14,41 +15,44 @@ function netlifyFunctionsPlugin(conf = {}) {
       const buildFolder = path.join(process.cwd(), 'build')
       const destFolder = path.join(buildFolder, 'functions')
 
-      const data = Object.keys(conf.functions).reduce((acc, functionName) => {
-        const functionData = conf.functions[functionName]
-        const functionPath = path.resolve(functionData.handler)
-        // const functionFileName = path.basename(functionData.handler).replace(/\.js$/, '')
+      const data = Object.keys(conf.functions).reduce(
+        (acc, functionName) => {
+          const functionData = conf.functions[functionName]
+          const functionPath = path.resolve(functionData.handler)
+          // const functionFileName = path.basename(functionData.handler).replace(/\.js$/, '')
 
-        // Add rewrites rules
-        const originalPath = `/.netlify/functions/${functionName}`
-        acc.rewrites = acc.rewrites.concat({
-          fromPath: functionData.path,
-          toPath: originalPath
-        })
+          // Add rewrites rules
+          const originalPath = `/.netlify/functions/${functionName}`
+          acc.rewrites = acc.rewrites.concat({
+            fromPath: functionData.path,
+            toPath: originalPath
+          })
 
-        console.log(`Mapping ${functionData.path} to ${originalPath}. Method: ${functionData.method}`)
+          console.log(`Mapping ${functionData.path} to ${originalPath}. Method: ${functionData.method}`)
 
-        // configuration for functions
-        acc.functions = acc.functions.concat({
-          name: functionName,
-          filename: functionData.handler,
-          path: functionPath,
-          method: functionData.method
-        })
+          // configuration for functions
+          acc.functions = acc.functions.concat({
+            name: functionName,
+            filename: functionData.handler,
+            path: functionPath,
+            method: functionData.method
+          })
 
-        return acc
-      }, {
-        functions: [],
-        rewrites: [],
-        redirects: []
-      })
+          return acc
+        },
+        {
+          functions: [],
+          rewrites: [],
+          redirects: []
+        }
+      )
 
       const buildDir = path.resolve(netlifyConfig.build.publish)
       const buildDirFunctions = path.join(buildDir, netlifyConfig.build.functions)
       // Clean functions deploy directory
       await fs.emptyDir(buildDirFunctions)
 
-      const processFuncs = data.functions.map(async (func) => {
+      const processFuncs = data.functions.map(async func => {
         return processFunction(func, destFolder)
       })
 
@@ -173,8 +177,7 @@ async function writeRedirectsFile(buildDir, redirects, rewrites) {
 
       if (typeof value === `string` && value.indexOf(` `) >= 0) {
         console.warn(
-          `Invalid redirect value "${value}" specified for key "${key}". ` +
-            `Values should not contain spaces.`
+          `Invalid redirect value "${value}" specified for key "${key}". ` + `Values should not contain spaces.`
         )
       } else {
         pieces.push(`${key}=${value}`)
@@ -184,9 +187,7 @@ async function writeRedirectsFile(buildDir, redirects, rewrites) {
     return pieces.join(`  `)
   })
 
-  rewrites = rewrites.map(
-    ({ fromPath, toPath }) => `${fromPath}  ${toPath}  200`
-  )
+  rewrites = rewrites.map(({ fromPath, toPath }) => `${fromPath}  ${toPath}  200`)
   let appendToFile = false
 
   // Websites may also have statically defined redirects
@@ -202,9 +203,7 @@ async function writeRedirectsFile(buildDir, redirects, rewrites) {
 
   const data = `${HEADER_COMMENT}\n\n${[...redirects, ...rewrites].join(`\n`)}`
 
-  return appendToFile
-    ? fs.appendFile(FILE_PATH, `\n\n${data}`)
-    : fs.writeFile(FILE_PATH, data)
+  return appendToFile ? fs.appendFile(FILE_PATH, `\n\n${data}`) : fs.writeFile(FILE_PATH, data)
 }
 
 module.exports = netlifyFunctionsPlugin

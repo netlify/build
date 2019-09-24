@@ -1,10 +1,12 @@
 const fs = require('fs')
 const path = require('path')
+const { promisify } = require('util')
+
 const makeDir = require('make-dir')
 const copy = require('cpy') /* @TODO `cpy` doesnt recursively move files */
 const del = require('del')
-const { promisify } = require('util')
 const isInvalidFilePath = require('is-invalid-path')
+
 const execAsync = require('./execAsync')
 // var isWindows = require('is-windows');
 
@@ -15,7 +17,7 @@ function writeFile(filePath, contents) {
     if (!dirExists) {
       await makeDir(dir)
     }
-    fs.writeFile(filePath, contents, (error) => {
+    fs.writeFile(filePath, contents, error => {
       if (error) return reject(error)
       return resolve(filePath)
     })
@@ -33,7 +35,7 @@ function readFile(filePath) {
 
 function fileExists(filePath) {
   return new Promise((resolve, reject) => {
-    fs.access(filePath, fs.F_OK, (err) => {
+    fs.access(filePath, fs.F_OK, err => {
       if (err) return resolve(false)
       return resolve(true)
     })
@@ -42,12 +44,16 @@ function fileExists(filePath) {
 
 //
 async function copyFiles(files, destination, opts = {}) {
-  const options = Object.assign({}, {
-    cwd: 'set cwd',
-    parents: true,
-    overwrite: true
-  }, opts)
-  const filesToCopy = (typeof files === 'string') ? [files] : files
+  const options = Object.assign(
+    {},
+    {
+      cwd: 'set cwd',
+      parents: true,
+      overwrite: true
+    },
+    opts
+  )
+  const filesToCopy = typeof files === 'string' ? [files] : files
   console.log('filesToCopy', filesToCopy)
   console.log('destination', destination)
   const copiedPaths = await copy(filesToCopy, destination, options)
@@ -59,7 +65,7 @@ async function copyFiles(files, destination, opts = {}) {
 }
 
 async function removeFiles(filePaths, opts = {}) {
-  const removeFiles = (typeof filePaths === 'string') ? [filePaths] : filePaths
+  const removeFiles = typeof filePaths === 'string' ? [filePaths] : filePaths
   const deletedPaths = await del(removeFiles, opts)
   console.log('Deleted files and directories:\n', deletedPaths.join('\n'))
   return deletedPaths
@@ -73,7 +79,7 @@ async function copyDirectory(src, dist) {
     throw new Error('Not a valid file path')
   }
 
-  if (!await fileExists(src)) {
+  if (!(await fileExists(src))) {
     console.log(`Skipping cache copy for ${src}. It doesnt exist`)
     return false
   }
@@ -96,11 +102,7 @@ const statP = promisify(fs.stat)
 async function readDir(dir, allFiles = []) {
   const files = (await readdirP(dir)).map(f => path.join(dir, f))
   allFiles.push(...files)
-  await Promise.all(
-    files.map(
-      async f => (await statP(f)).isDirectory() && readDir(f, allFiles)
-    )
-  )
+  await Promise.all(files.map(async f => (await statP(f)).isDirectory() && readDir(f, allFiles)))
   return allFiles
 }
 

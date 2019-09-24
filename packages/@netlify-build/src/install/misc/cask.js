@@ -1,5 +1,7 @@
 const path = require('path')
+
 const execa = require('execa')
+
 const moveCache = require('../../utils/moveCache')
 const { fileExists } = require('../../utils/fs')
 
@@ -14,11 +16,7 @@ module.exports = async function installCaskDeps(cwd, cacheDir) {
     // restore_home_cache ".cask" "emacs cask dependencies"
     await moveCache(caskCacheFolder, caskFolder, 'restoring cached emacs cask dependencies')
     // restore_home_cache ".emacs.d" "emacs cache"
-    await moveCache(
-      path.join(cacheDir, '.emacs.d'),
-      path.join(cwd, '.emacs.d'),
-      'restoring cached emacs cache'
-    )
+    await moveCache(path.join(cacheDir, '.emacs.d'), path.join(cwd, '.emacs.d'), 'restoring cached emacs cache')
 
     try {
       await execa('cask', ['install'])

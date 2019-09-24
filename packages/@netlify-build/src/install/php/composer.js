@@ -1,5 +1,7 @@
 const path = require('path')
+
 const execa = require('execa')
+
 const moveCache = require('../../utils/moveCache')
 const { fileExists } = require('../../utils/fs')
 
@@ -8,11 +10,7 @@ module.exports = async function installComposerDeps(cwd, cacheDir) {
   const composerConfig = path.join(cwd, 'composer.json')
   if (await fileExists(composerConfig)) {
     /* Restore cache */
-    await moveCache(
-      path.join(cacheDir, '.composer'),
-      path.join(cwd, '.composer'),
-      'restoring cached composer deps'
-    )
+    await moveCache(path.join(cacheDir, '.composer'), path.join(cwd, '.composer'), 'restoring cached composer deps')
     /* Run composer install */
     try {
       await execa('composer', ['install'])

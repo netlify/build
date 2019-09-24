@@ -1,10 +1,12 @@
 const path = require('path')
+
 const chalk = require('chalk')
 const execa = require('execa')
 const API = require('netlify')
-const deepLog = require('./utils/deeplog')
 const resolveConfig = require('@netlify/config')
 const { formatUtils, getConfigFile } = require('@netlify/config')
+
+const deepLog = require('./utils/deeplog')
 const { writeFile } = require('./utils/fs')
 const { getSecrets, redactStream } = require('./utils/redact')
 const netlifyLogs = require('./utils/patch-logs')
@@ -58,124 +60,132 @@ module.exports = async function build(configPath, cliFlags, token) {
   const initialPlugins = netlifyConfig.plugins || []
   const defaultPlugins = [
     // default Netlify Function bundling and deployment
-    netlifyFunctionsPlugin,
+    netlifyFunctionsPlugin
     // netlifyDeployPlugin(),
-  ].map((plug) => {
+  ].map(plug => {
     return Object.assign({}, plug, {
       core: true
     })
   })
 
   const plugins = defaultPlugins.concat(initialPlugins)
-  const allPlugins = plugins.filter((plug) => {
-    /* Load enabled plugins only */
-    const name = Object.keys(plug)[0]
-    const pluginConfig = plug[name] || {}
-    return pluginConfig.enabled !== false && pluginConfig.enabled !== 'false'
-  }).reduce((acc, curr) => {
-    // TODO refactor how plugins are included / checked
-    const keys = Object.keys(curr)
-    const alreadyResolved = keys.some((cur) => {
-      return typeof curr[cur] === 'function'
-    }, false)
+  const allPlugins = plugins
+    .filter(plug => {
+      /* Load enabled plugins only */
+      const name = Object.keys(plug)[0]
+      const pluginConfig = plug[name] || {}
+      return pluginConfig.enabled !== false && pluginConfig.enabled !== 'false'
+    })
+    .reduce(
+      (acc, curr) => {
+        // TODO refactor how plugins are included / checked
+        const keys = Object.keys(curr)
+        const alreadyResolved = keys.some(cur => {
+          return typeof curr[cur] === 'function'
+        }, false)
 
-    let code
-    const name = curr.name || keys[0]
-    const pluginConfig = curr[name] || {}
-    if (alreadyResolved) {
-      code = curr
-      console.log(chalk.yellow(`Loading plugin "${name}" from core`))
-    } else {
-      try {
-        // resolve file path
-        // TODO harden resolution
-        let filePath
-        if (name.match(/^\./)) {
-          filePath = path.resolve(baseDir, name)
+        let code
+        const name = curr.name || keys[0]
+        const pluginConfig = curr[name] || {}
+        if (alreadyResolved) {
+          code = curr
+          console.log(chalk.yellow(`Loading plugin "${name}" from core`))
         } else {
-          // If module scoped add @ symbol prefix
-          const formattedName = (name.match(/^netlify\//)) ? `@${name.replace(/^@/, '')}` : name
-          filePath = path.resolve(baseDir, 'node_modules', formattedName)
-        }
-        console.log(chalk.yellow(`Loading plugin "${name}" from ${filePath}`))
-        code = require(filePath)
-      } catch (e) {
-        console.log(`Error loading ${name} plugin`)
-        console.log(e)
-        // TODO If plugin not found, automatically try and install and retry here
-        // await execa(`npm install ${name}`)
-      }
-    }
-
-    if (typeof code !== 'object' && typeof code !== 'function') {
-      throw new Error(`Plugin ${name} is malformed. Must be object or function`)
-    }
-
-    const pluginSrc = (typeof code === 'function') ? code(pluginConfig) : code
-
-    /* Format plugin into useable data */
-    const pluginData = Object.keys(pluginSrc).reduce((acc, key) => {
-      const config = pluginSrc[key]
-      if (typeof config === 'function') {
-        acc.methods[key] = config
-        return acc
-      }
-      acc.meta[key] = config
-      return acc
-    }, {
-      meta: {},
-      methods: {}
-    })
-
-    // Map plugins methods in order for later execution
-    Object.keys(pluginData.methods).forEach((hook) => {
-      /* Override core functionality */
-      // Match string with 1 or more colons
-      const override = hook.match(/(?:[^:]*[:]){1,}[^:]*$/)
-      if (override) {
-        const str = override[0]
-        const [ , pluginName, overideMethod ] = str.match(/([a-zA-Z/@]+):([a-zA-Z/@:]+)/)
-        // @TODO throw if non existant plugin trying to be overriden?
-        // if (plugin not found) {
-        //   throw new Error(`${pluginName} not found`)
-        // }
-        if (acc.lifeCycleHooks[overideMethod]) {
-          acc.lifeCycleHooks[overideMethod] = acc.lifeCycleHooks[overideMethod].map((x) => {
-            if (x.name === pluginName) {
-              return {
-                name: name,
-                hook: hook,
-                config: pluginConfig,
-                meta: pluginData.meta,
-                method: pluginSrc[hook],
-                override: {
-                  target: pluginName,
-                  method: overideMethod
-                }
-              }
+          try {
+            // resolve file path
+            // TODO harden resolution
+            let filePath
+            if (name.match(/^\./)) {
+              filePath = path.resolve(baseDir, name)
+            } else {
+              // If module scoped add @ symbol prefix
+              const formattedName = name.match(/^netlify\//) ? `@${name.replace(/^@/, '')}` : name
+              filePath = path.resolve(baseDir, 'node_modules', formattedName)
             }
-            return x
-          })
-          return acc
+            console.log(chalk.yellow(`Loading plugin "${name}" from ${filePath}`))
+            code = require(filePath)
+          } catch (e) {
+            console.log(`Error loading ${name} plugin`)
+            console.log(e)
+            // TODO If plugin not found, automatically try and install and retry here
+            // await execa(`npm install ${name}`)
+          }
         }
-      }
-      /* End Override core functionality */
-      if (!acc.lifeCycleHooks[hook]) {
-        acc.lifeCycleHooks[hook] = []
-      }
-      acc.lifeCycleHooks[hook] = acc.lifeCycleHooks[hook].concat({
-        name: name,
-        hook: hook,
-        meta: pluginData.meta,
-        config: pluginConfig,
-        method: pluginSrc[hook]
-      })
-    })
 
-    return acc
-  }, {
-    lifeCycleHooks: {}
-  })
+        if (typeof code !== 'object' && typeof code !== 'function') {
+          throw new Error(`Plugin ${name} is malformed. Must be object or function`)
+        }
+
+        const pluginSrc = typeof code === 'function' ? code(pluginConfig) : code
+
+        /* Format plugin into useable data */
+        const pluginData = Object.keys(pluginSrc).reduce(
+          (acc, key) => {
+            const config = pluginSrc[key]
+            if (typeof config === 'function') {
+              acc.methods[key] = config
+              return acc
+            }
+            acc.meta[key] = config
+            return acc
+          },
+          {
+            meta: {},
+            methods: {}
+          }
+        )
+
+        // Map plugins methods in order for later execution
+        Object.keys(pluginData.methods).forEach(hook => {
+          /* Override core functionality */
+          // Match string with 1 or more colons
+          const override = hook.match(/(?:[^:]*[:]){1,}[^:]*$/)
+          if (override) {
+            const str = override[0]
+            const [, pluginName, overideMethod] = str.match(/([a-zA-Z/@]+):([a-zA-Z/@:]+)/)
+            // @TODO throw if non existant plugin trying to be overriden?
+            // if (plugin not found) {
+            //   throw new Error(`${pluginName} not found`)
+            // }
+            if (acc.lifeCycleHooks[overideMethod]) {
+              acc.lifeCycleHooks[overideMethod] = acc.lifeCycleHooks[overideMethod].map(x => {
+                if (x.name === pluginName) {
+                  return {
+                    name: name,
+                    hook: hook,
+                    config: pluginConfig,
+                    meta: pluginData.meta,
+                    method: pluginSrc[hook],
+                    override: {
+                      target: pluginName,
+                      method: overideMethod
+                    }
+                  }
+                }
+                return x
+              })
+              return acc
+            }
+          }
+          /* End Override core functionality */
+          if (!acc.lifeCycleHooks[hook]) {
+            acc.lifeCycleHooks[hook] = []
+          }
+          acc.lifeCycleHooks[hook] = acc.lifeCycleHooks[hook].concat({
+            name: name,
+            hook: hook,
+            meta: pluginData.meta,
+            config: pluginConfig,
+            method: pluginSrc[hook]
+          })
+        })
+
+        return acc
+      },
+      {
+        lifeCycleHooks: {}
+      }
+    )
 
   if (!netlifyConfig.build) {
     throw new Error('No build settings found')
@@ -189,11 +199,7 @@ module.exports = async function build(configPath, cliFlags, token) {
       acc = acc.concat([hook])
       return acc
     }
-    acc = acc.concat([
-      preFix(hook),
-      hook,
-      postFix(hook)
-    ])
+    acc = acc.concat([preFix(hook), hook, postFix(hook)])
     return acc
   }, [])
 
@@ -204,21 +210,22 @@ module.exports = async function build(configPath, cliFlags, token) {
   Object.keys(allPlugins.lifeCycleHooks).forEach((name, i) => {
     const info = allPlugins.lifeCycleHooks[name]
     if (!fullLifecycle.includes(name)) {
-      const brokenPlugins = info.map((plug) => {
-        return plug.name
-      }).join(',')
+      const brokenPlugins = info
+        .map(plug => {
+          return plug.name
+        })
+        .join(',')
       console.log(chalk.redBright(`Invalid lifecycle hook "${name}" in ${brokenPlugins}.`))
       console.log(`Please use a valid event name. One of:`)
-      console.log(`${fullLifecycle.map((n) => `"${n}"`).join(', ')}`)
+      console.log(`${fullLifecycle.map(n => `"${n}"`).join(', ')}`)
       throw new Error(`Invalid lifecycle hook`)
     }
   })
 
-  if (netlifyConfig.build &&
-      netlifyConfig.build.lifecycle &&
-      netlifyConfig.build.command
-  ) {
-    throw new Error(`build.command && build.lifecycle are both defined. Please move build.command to build.lifecycle.build`)
+  if (netlifyConfig.build && netlifyConfig.build.lifecycle && netlifyConfig.build.command) {
+    throw new Error(
+      `build.command && build.lifecycle are both defined. Please move build.command to build.lifecycle.build`
+    )
   }
 
   /* Get user set ENV vars and redact */
@@ -287,7 +294,7 @@ module.exports = async function build(configPath, cliFlags, token) {
     return acc
   }, [])
 
-  const buildInstructions = instructions.filter((instruction) => {
+  const buildInstructions = instructions.filter(instruction => {
     return instruction.hook !== 'onError'
   })
 
@@ -297,7 +304,7 @@ module.exports = async function build(configPath, cliFlags, token) {
     console.log()
     buildInstructions.forEach((instruction, i) => {
       const { name, hook } = instruction
-      const source = (name.match(/^config\.build/)) ? 'config' : 'plugin'
+      const source = name.match(/^config\.build/) ? 'config' : 'plugin'
       const count = chalk.cyanBright(`${i + 1}.`)
       const hookName = chalk.bold(`"${hook}"`)
       const sourceOutput = chalk.yellow(`${name}`)
@@ -334,7 +341,7 @@ module.exports = async function build(configPath, cliFlags, token) {
   } catch (err) {
     console.log(chalk.redBright('Lifecycle error'))
     /* Resolve all ‘onError’ methods and try to fix things */
-    const errorInstructions = instructions.filter((instruction) => {
+    const errorInstructions = instructions.filter(instruction => {
       return instruction.hook === 'onError'
     })
     if (errorInstructions) {
@@ -382,7 +389,10 @@ async function execCommand(cmd, secrets) {
     // Redact ENV vars
     .pipe(redactStream(secrets))
     // Output to console
-    .pipe(process.stdout, { end: true })
+    .pipe(
+      process.stdout,
+      { end: true }
+    )
   const { stdout } = await subprocess
   return stdout
 }
@@ -393,25 +403,23 @@ async function execCommand(cmd, secrets) {
  * @param  {Object} config - Netlify config file values
  * @return {Object} updated config?
  */
-async function engine({
-  instructions,
-  netlifyConfig,
-  netlifyConfigPath,
-  netlifyToken,
-  error
-}) {
+async function engine({ instructions, netlifyConfig, netlifyConfigPath, netlifyToken, error }) {
   const returnData = await instructions.reduce(async (promiseChain, plugin, i) => {
     const { method, hook, config, name, override } = plugin
     const meta = plugin.meta || {}
     const currentData = await promiseChain
     if (method && typeof method === 'function') {
       console.time(name)
-      const source = (name.match(/^config\.build/)) ? 'via config' : 'plugin'
+      const source = name.match(/^config\.build/) ? 'via config' : 'plugin'
       // reset logs context
       netlifyLogs.reset()
       console.log()
       if (override) {
-        console.log(chalk.redBright.bold(`> OVERRIDE: "${override.method}" method in ${override.target} has been overriden by "${name}"`))
+        console.log(
+          chalk.redBright.bold(
+            `> OVERRIDE: "${override.method}" method in ${override.target} has been overriden by "${name}"`
+          )
+        )
       }
       console.log(chalk.cyanBright.bold(`> ${i + 1}. Running "${hook}" lifecycle from "${name}" ${source}`))
       console.log()
@@ -428,14 +436,19 @@ async function engine({
             if (scopeName !== '*' && !apiMethodArray.includes(scopeName)) {
               console.log(chalk.redBright(`Invalid scope "${scopeName}" in "${name}" plugin.`))
               console.log(chalk.white.bold(`Please use a valid event name. One of:`))
-              console.log(`${['*'].concat(apiMethodArray).map((n) => `"${n}"`).join(', ')}`)
+              console.log(
+                `${['*']
+                  .concat(apiMethodArray)
+                  .map(n => `"${n}"`)
+                  .join(', ')}`
+              )
               console.log()
               throw new Error(`Invalid scope "${scopeName}" in "${name}" plugin.`)
             }
           })
           /* If scopes not *, redact the methods not allowed */
           if (!scopes.includes('*')) {
-            apiMethodArray.forEach((meth) => {
+            apiMethodArray.forEach(meth => {
               if (!scopes.includes(meth)) {
                 // TODO figure out if Object.setPrototypeOf will work
                 apiClient.__proto__[meth] = disableApiMethod(name, meth) // eslint-disable-line
@@ -467,13 +480,13 @@ async function engine({
           /* Utilities helper functions */
           utils: {
             cache: {
-              get: (filePath) => {
+              get: filePath => {
                 console.log('get cache file')
               },
               save: (filePath, contents) => {
                 console.log('save cache file')
               },
-              delete: (filePath) => {
+              delete: filePath => {
                 console.log('delete cache file')
               }
             },
@@ -514,7 +527,9 @@ async function engine({
 
 function disableApiMethod(pluginName, method) {
   return () => {
-    throw new Error(`The "${pluginName}" plugin is not authorized to use "api.${method}". Please update the plugin scopes.`)
+    throw new Error(
+      `The "${pluginName}" plugin is not authorized to use "api.${method}". Please update the plugin scopes.`
+    )
   }
 }
 

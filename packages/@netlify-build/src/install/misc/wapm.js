@@ -1,5 +1,7 @@
 const path = require('path')
+
 const execa = require('execa')
+
 const moveCache = require('../../utils/moveCache')
 const { fileExists } = require('../../utils/fs')
 
@@ -8,7 +10,7 @@ module.exports = async function installWapm(cwd, cacheDir) {
   const wapmConfig = path.join(cwd, 'wapm.toml')
   const wapmLock = path.join(cwd, 'wapm.lock')
 
-  if (await fileExists(wapmConfig) || await fileExists(wapmLock)) {
+  if ((await fileExists(wapmConfig)) || (await fileExists(wapmLock))) {
     // source $HOME/.wasmer/wasmer.sh
     try {
       // @ TODO verify $HOME works here

@@ -1,6 +1,8 @@
 const path = require('path')
+
 const execa = require('execa')
 const del = require('del')
+
 const source = require('../../utils/source')
 const { fileExists, readFile, copyFiles } = require('../../utils/fs')
 
@@ -79,16 +81,15 @@ module.exports = async function installRuby(cwd, cacheDir, version) {
   } else {
     console.log('** WARNING **')
     console.log(`Using custom ruby version ${druby}, this will slow down the build.`)
-    console.log('To ensure fast builds, set the RUBY_VERSION environment variable, or .ruby-version file, to an included ruby version.')
+    console.log(
+      'To ensure fast builds, set the RUBY_VERSION environment variable, or .ruby-version file, to an included ruby version.'
+    )
     // echo "Included versions: ${rvs[@]#ruby-}"
     console.log(`Included versions: ${rvs}`)
 
     try {
       // @TODO verify command
-      await execa('rvm', [
-        '--quiet-curl',
-        '--create', 'use', druby
-      ], {
+      await execa('rvm', ['--quiet-curl', '--create', 'use', druby], {
         rvm_install_on_use_flag: '1'
       })
     } catch (err) {

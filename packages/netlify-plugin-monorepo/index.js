@@ -1,4 +1,5 @@
 const path = require('path')
+
 const execa = require('execa')
 const chalk = require('chalk')
 const { diff } = require('run-if-diff')
@@ -27,7 +28,7 @@ module.exports = function netlifyMonoRepoPlugin(config) {
       */
       const defaultFiles = []
 
-      const filesToCheck = defaultFiles.concat(files).map((name) => {
+      const filesToCheck = defaultFiles.concat(files).map(name => {
         const parent = path.dirname(cwd)
         const regex = new RegExp(`^${parent}/`)
         return path.join(cwd, name).replace(regex, '')
@@ -48,7 +49,7 @@ module.exports = function netlifyMonoRepoPlugin(config) {
           process.exit(0)
         }
         // console.log(`Detected changes in:`, result.matched)
-        const changedFiles = result.matched.map((file) => {
+        const changedFiles = result.matched.map(file => {
           return {
             path: file,
             fullPath: path.resolve(file)
@@ -56,7 +57,7 @@ module.exports = function netlifyMonoRepoPlugin(config) {
         })
         // console.log('changedFiles', changedFiles)
         console.log(chalk.cyanBright(`Detected ${changedFiles.length} file changes\n`))
-        changedFiles.forEach((file) => {
+        changedFiles.forEach(file => {
           console.log(`File ${file.path} changed`)
         })
         console.log()

@@ -1,24 +1,12 @@
 {
-  "packages": [
-    "packages/*"
-  ],
+  "packages": ["packages/*"],
   "version": "independent",
   "command": {
     "publish": {
-      "allowBranch": [
-        "master",
-        "next"
-      ],
+      "allowBranch": ["master", "next"],
       "conventionalCommits": true,
       "message": "chore(release): :tada: :rocket: [skip ci]"
     }
   },
-  "ignoreChanges": [
-    "**/CHANGELOG.md",
-    "**/package-lock.json",
-    "**/test/**",
-    "lerna.json",
-    "package.json",
-    "README.md"
-  ]
+  "ignoreChanges": ["**/CHANGELOG.md", "**/package-lock.json", "**/test/**", "lerna.json", "package.json", "README.md"]
 }

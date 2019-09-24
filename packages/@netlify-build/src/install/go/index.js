@@ -1,6 +1,8 @@
 const path = require('path')
+
 const execa = require('execa')
 const makeDir = require('make-dir')
+
 const { readFile, fileExists, removeFiles } = require('../../utils/fs')
 const moveCache = require('../../utils/moveCache')
 const source = require('../../utils/source')
@@ -8,21 +10,12 @@ const source = require('../../utils/source')
 // https://github.com/netlify/build-image/blob/9e0f207a27642d0115b1ca97cd5e8cebbe492f63/run-build-functions.sh#L525-L556
 module.exports = async function installGo(cwd, cacheDir, version) {
   console.log('INSTALL GO')
-  const {
-    GIMME_GO_VERSION,
-    GO_IMPORT_PATH,
-    GOPATH,
-    HOME
-  } = process.env
+  const { GIMME_GO_VERSION, GO_IMPORT_PATH, GOPATH, HOME } = process.env
   let installGoVersion = version
   const goVersionFile = path.join(cwd, '.go-version')
 
   // Restore cached go
-  await moveCache(
-    path.join(cacheDir, 'gimme_cache'),
-    path.join(cwd, 'gimme_cache'),
-    'restoring cached go cache'
-  )
+  await moveCache(path.join(cacheDir, 'gimme_cache'), path.join(cwd, 'gimme_cache'), 'restoring cached go cache')
 
   if (await fileExists(goVersionFile)) {
     const goVersion = await readFile(goVersionFile)

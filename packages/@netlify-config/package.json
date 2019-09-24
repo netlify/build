@@ -11,14 +11,12 @@
     "David Wells <hello@davidwells.io> (https://davidwells.io/)"
   ],
   "scripts": {
-    "test": "ava --verbose",
     "release:patch": "npm version patch && npm publish",
     "release:minor": "npm version minor && npm publish",
     "release:major": "npm version major && npm publish"
   },
   "license": "MIT",
   "dependencies": {
-    "ava": "^2.4.0",
     "configorama": "0.3.1",
     "minimist": "^1.2.0"
   },

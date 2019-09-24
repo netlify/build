@@ -1,8 +1,10 @@
 const fs = require('fs')
 const { promisify } = require('util')
-const netlifyConfig = require('../config')
+
 const npmRunPath = require('npm-run-path')
 const parseCommand = require('parse-npm-script')
+
+const netlifyConfig = require('../config')
 
 const readFileAsync = promisify(fs.readFile)
 
@@ -47,30 +49,33 @@ module.exports = async function getHeuristics({ pkgPath, configPath }) {
 
     const vals = await Promise.all(allThings)
 
-    buildInfo = vals.reduce((acc, c) => {
-      if (typeof c === 'string') {
-        const prefix = (acc['command']) ? ' && ' : ''
-        acc['command'] = `${acc['command']}${prefix}${c}`
-        acc['steps'] = acc['steps'].concat({
-          name: null,
-          raw: c,
-          parsed: c
-        })
-        acc['raw'] = acc['raw'].concat(c)
-        acc['combined'] = acc['raw'].join(' && ')
-      } else {
-        acc['command'] = `${acc['command']} && ${c.command}`
-        acc['steps'] = acc['steps'].concat(c.steps)
-        acc['raw'] = acc['raw'].concat(c.raw)
-        acc['combined'] = acc['raw'].join(' && ')
+    buildInfo = vals.reduce(
+      (acc, c) => {
+        if (typeof c === 'string') {
+          const prefix = acc['command'] ? ' && ' : ''
+          acc['command'] = `${acc['command']}${prefix}${c}`
+          acc['steps'] = acc['steps'].concat({
+            name: null,
+            raw: c,
+            parsed: c
+          })
+          acc['raw'] = acc['raw'].concat(c)
+          acc['combined'] = acc['raw'].join(' && ')
+        } else {
+          acc['command'] = `${acc['command']} && ${c.command}`
+          acc['steps'] = acc['steps'].concat(c.steps)
+          acc['raw'] = acc['raw'].concat(c.raw)
+          acc['combined'] = acc['raw'].join(' && ')
+        }
+        return acc
+      },
+      {
+        command: '',
+        steps: [],
+        raw: [],
+        combined: ''
       }
-      return acc
-    }, {
-      command: '',
-      steps: [],
-      raw: [],
-      combined: ''
-    })
+    )
     // console.log('vals', vals)
     // console.log('combined', buildInfo)
   }

@@ -5,9 +5,10 @@ if (FORCE_COLOR !== 'false') {
   process.env.colors = true
 }
 const chalk = require('chalk')
-const build = require('./build')
 const { getConfigFile } = require('@netlify/config')
 const minimist = require('minimist')
+
+const build = require('./build')
 const cleanStack = require('./utils/clean-stack')
 
 const args = minimist(process.argv.slice(2))
@@ -27,7 +28,8 @@ async function execBuild() {
   // Redact argv so raw API key not exposed
   let skipNext = false
   const newArgv = process.argv.reduce((acc, value) => {
-    if (skipNext && (value && value.length > 20)) { // length === 64
+    if (skipNext && (value && value.length > 20)) {
+      // length === 64
       skipNext = false
       return acc
     }
@@ -41,19 +43,21 @@ async function execBuild() {
   await build(configPath, args, args.token)
 }
 
-execBuild().then(() => {
-  const sparkles = chalk.cyanBright('(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧')
-  console.log(`\n${sparkles} Finished with the build process!\n`)
-}).catch((e) => {
-  console.log()
-  console.log(chalk.redBright.bold('┌────────────────────────┐'))
-  console.log(chalk.redBright.bold('│  Netlify Build Error!  │'))
-  console.log(chalk.redBright.bold('└────────────────────────┘'))
-  console.log(chalk.bold(` ${e.message}`))
-  console.log()
-  console.log(chalk.redBright.bold('┌────────────────────────┐'))
-  console.log(chalk.redBright.bold('│      Stack Trace:      │'))
-  console.log(chalk.redBright.bold('└────────────────────────┘'))
-  console.log(` ${chalk.bold(cleanStack(e.stack))}`)
-  console.log()
-})
+execBuild()
+  .then(() => {
+    const sparkles = chalk.cyanBright('(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧')
+    console.log(`\n${sparkles} Finished with the build process!\n`)
+  })
+  .catch(e => {
+    console.log()
+    console.log(chalk.redBright.bold('┌────────────────────────┐'))
+    console.log(chalk.redBright.bold('│  Netlify Build Error!  │'))
+    console.log(chalk.redBright.bold('└────────────────────────┘'))
+    console.log(chalk.bold(` ${e.message}`))
+    console.log()
+    console.log(chalk.redBright.bold('┌────────────────────────┐'))
+    console.log(chalk.redBright.bold('│      Stack Trace:      │'))
+    console.log(chalk.redBright.bold('└────────────────────────┘'))
+    console.log(` ${chalk.bold(cleanStack(e.stack))}`)
+    console.log()
+  })

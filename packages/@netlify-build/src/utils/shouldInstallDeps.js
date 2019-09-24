@@ -8,7 +8,7 @@ const { readFile, fileExists } = require('./fs')
  * @return {Boolean}
  */
 module.exports = async function shouldInstallDeps(currentPath, postFix, previousPath) {
-  if (!await fileExists(previousPath)) {
+  if (!(await fileExists(previousPath))) {
     return true
   }
   const currentSha = await shasum(currentPath)

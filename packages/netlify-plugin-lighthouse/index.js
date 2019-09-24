@@ -1,5 +1,6 @@
-const execa = require('execa')
 const path = require('path')
+
+const execa = require('execa')
 const chalk = require('chalk')
 const Conf = require('conf') // for simple kv store
 
@@ -12,11 +13,12 @@ const NETLIFY_CACHE_DIR = `${NETLIFY_BUILD_BASE}/cache`
 // kvstore in `${NETLIFY_CACHE_DIR}/${name}.json`
 // we choose to let the user createStore instead of doing it for them
 // bc they may want to set `defaults` and `schema` and `de/serialize`
-const createStore = confOptions => new Conf({
-  ...confOptions,
-  cwd: NETLIFY_CACHE_DIR,
-  configName: 'netlify-plugin-lighthouse'
-})
+const createStore = confOptions =>
+  new Conf({
+    ...confOptions,
+    cwd: NETLIFY_CACHE_DIR,
+    configName: 'netlify-plugin-lighthouse'
+  })
 
 function netlifyLighthousePlugin(conf) {
   const store = createStore()
@@ -61,7 +63,11 @@ function netlifyLighthousePlugin(conf) {
         const prevLightHouse = store.get(`lighthouse.${compareWithVersion}`)
         let totalImprovement = 0
         if (prevLightHouse) {
-          console.log(`Comparing lighthouse results from version: ${chalk.yellow(compareWithVersion)} to version: ${chalk.yellow(currentVersion)}:`)
+          console.log(
+            `Comparing lighthouse results from version: ${chalk.yellow(compareWithVersion)} to version: ${chalk.yellow(
+              currentVersion
+            )}:`
+          )
           Object.entries(curLightHouse).forEach(([k, v]) => {
             const prevV = prevLightHouse[k]
             if (!prevV) return // we should never get here but just in case lighthouse format changes...
@@ -74,15 +80,18 @@ function netlifyLighthousePlugin(conf) {
             // TODO: print out links to give suggestions on what to do! lets see what lighthouse-ci gives us
             totalImprovement += improvement
           })
-          if (Math.abs(totalImprovement) > 2) { // some significance bar
+          if (Math.abs(totalImprovement) > 2) {
+            // some significance bar
             const color = totalImprovement > 0 ? chalk.green : chalk.magenta
             console.log(`${chalk.yellow.bold('Total Improvement')}: ${color(totalImprovement)} points!`)
           }
         } else {
           if (compareWithVersion) {
-            console.warn(`Warning: you set ${
-              chalk.yellow('compareWithVersion') + '=' + chalk.yellow(compareWithVersion)
-            } but that version was not found in our result storage.`)
+            console.warn(
+              `Warning: you set ${chalk.yellow('compareWithVersion') +
+                '=' +
+                chalk.yellow(compareWithVersion)} but that version was not found in our result storage.`
+            )
           }
         }
         store.set(`lighthouse.${currentVersion}`, curLightHouse)
