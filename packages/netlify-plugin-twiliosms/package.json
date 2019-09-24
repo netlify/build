@@ -1,0 +1,17 @@
+{
+  "name": "netlify-plugin-twiliosms",
+  "private": true,
+  "version": "0.0.1",
+  "description": "An extremely simple plugin that texts you when your site is done building",
+  "main": "index.js",
+  "scripts": {
+    "release:patch": "npm version patch && npm publish",
+    "release:minor": "npm version minor && npm publish",
+    "release:major": "npm version major && npm publish"
+  },
+  "author": "sdras",
+  "license": "MIT",
+  "dependencies": {
+    "twilio": "^3.35.0"
+  }
+}
