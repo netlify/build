@@ -6,6 +6,7 @@
   "main": "index.js",
   "scripts": {
     "bootstrap": "lerna bootstrap && cd example && npm install",
+    "test": "lerna run test",
     "docs": "md-magic --path '**/*.md' --ignore 'node_modules'"
   },
   "author": "",
