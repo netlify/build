@@ -39,7 +39,7 @@ plugins:
           endpoint: 'https://my-webhook-endpoint.com/api'
           message: 'Your site build failed sorry charlie'
   - netlify-plugin-lighthouse:
-      enabled: ${env:LIGHTHOUSE_ENABLED, true}
+      enabled: ${env:LIGHTHOUSE_ENABLED, false}
       currentVersion: 0.0.4
       compareWithVersion: 0.0.3
   - netlify-plugin-axe:
