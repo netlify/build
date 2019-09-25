@@ -1,0 +1,21 @@
+{
+  "name": "netlify-plugin-encrypted-files",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "bin": {
+    "encrypt": "./encrypt.js",
+    "decrypt": "./decrypt.js"
+  },
+  "scripts": {
+    "release:patch": "npm version patch && npm publish",
+    "release:minor": "npm version minor && npm publish",
+    "release:major": "npm version major && npm publish"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "rimraf": "^3.0.0",
+    "sade": "^1.6.1"
+  }
+}
