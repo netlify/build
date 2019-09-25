@@ -4,7 +4,7 @@
   "description": "Netlify build module",
   "main": "src/build.js",
   "bin": {
-    "netlify-build": "./src/exec-build.js"
+    "netlify-build": "./src/build/bin.js"
   },
   "author": "Netlify Inc.",
   "contributors": [
