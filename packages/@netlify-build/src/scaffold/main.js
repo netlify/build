@@ -4,13 +4,13 @@
  */
 const execa = require('execa')
 
-const installDependencies = require('./install')
-const cacheArtifacts = require('./cache')
-const prepFunctions = require('./install/serverless/prep-functions')
-const runBuildFunction = require('./utils/create-directories')
-const installMissingCommands = require('./install/missing-commands')
-const setGoImportPath = require('./install/set-go-import-path')
-const { getProcessCount, findRunningProcs } = require('./utils/findRunningProcs')
+const installDependencies = require('../install')
+const cacheArtifacts = require('../cache')
+const prepFunctions = require('../install/serverless/prep-functions')
+const runBuildFunction = require('../utils/create-directories')
+const installMissingCommands = require('../install/missing-commands')
+const setGoImportPath = require('../install/set-go-import-path')
+const { getProcessCount, findRunningProcs } = require('../utils/findRunningProcs')
 
 const NETLIFY_BUILD_BASE = '/opt/buildhome'
 const NETLIFY_CACHE_DIR = `${NETLIFY_BUILD_BASE}/cache`

@@ -1,4 +1,4 @@
-const runBuild = require('./scaffold')
+const runBuild = require('./main')
 
 runBuild({
   buildDir: '',
