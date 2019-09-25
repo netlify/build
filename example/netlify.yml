@@ -44,7 +44,7 @@ plugins:
       compareWithVersion: 0.0.3
   - netlify-plugin-axe:
       axeFlags: '--rules color-contrast,html-has-lang' # https://github.com/dequelabs/axe-cli#running-specific-rules
-      enabled: true
+      enabled: false
   - netlify-plugin-monorepo:
       enabled: false
       files:
