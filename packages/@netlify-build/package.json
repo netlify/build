@@ -6,6 +6,11 @@
   "bin": {
     "netlify-build": "./src/build/bin.js"
   },
+  "files": [
+    "src/**/*.js",
+    "src/**/*.sh",
+    "!tests"
+  ],
   "author": "Netlify Inc.",
   "contributors": [
     "David Wells <hello@davidwells.io> (https://davidwells.io/)",
