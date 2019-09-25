@@ -51,7 +51,7 @@ plugins:
         - 'src/**'
 
 build:
-  functions: functions
+  functions: src/backend
   # command: echo 'hi'
   lifecycle:
     init:
