@@ -11,7 +11,6 @@ const { writeFile } = require('./utils/fs')
 const { getSecrets, redactStream } = require('./utils/redact')
 const netlifyLogs = require('./utils/patch-logs')
 const netlifyFunctionsPlugin = require('./plugins/functions')
-const netlifyDeployPlugin = require('./plugins/deploy')
 const baseDir = process.cwd()
 
 // const pt = require('prepend-transform')

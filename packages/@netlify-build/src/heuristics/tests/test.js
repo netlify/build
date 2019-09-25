@@ -1,7 +1,8 @@
 const path = require('path')
 const util = require('util')
 
-const getHeuristics = require('./index')
+// eslint-disable-next-line node/no-unpublished-require
+const getHeuristics = require('../index')
 
 getHeuristics({
   pkgPath: path.join(__dirname, 'package.json'),

@@ -3,34 +3,28 @@ const path = require('path')
 const { promisify } = require('util')
 
 const makeDir = require('make-dir')
-const copy = require('cpy') /* @TODO `cpy` doesnt recursively move files */
 const del = require('del')
 const isInvalidFilePath = require('is-invalid-path')
 
 const execAsync = require('./execAsync')
-// var isWindows = require('is-windows');
 
-function writeFile(filePath, contents) {
-  return new Promise(async (resolve, reject) => {
-    const dir = path.dirname(filePath)
-    const dirExists = await fileExists(dir)
-    if (!dirExists) {
-      await makeDir(dir)
-    }
-    fs.writeFile(filePath, contents, error => {
-      if (error) return reject(error)
-      return resolve(filePath)
-    })
-  })
+const pWriteFile = promisify(fs.writeFile)
+const pReadFile = promisify(fs.readFile)
+const pReaddir = promisify(fs.readdir)
+const pStat = promisify(fs.stat)
+
+async function writeFile(filePath, contents) {
+  const dir = path.dirname(filePath)
+  const dirExists = await fileExists(dir)
+  if (!dirExists) {
+    await makeDir(dir)
+  }
+  await pWriteFile(filePath, contents)
 }
 
-function readFile(filePath) {
-  return new Promise((resolve, reject) => {
-    fs.readFile(filePath, 'utf8', (error, data) => {
-      if (error) return reject(error)
-      return resolve(data)
-    })
-  })
+async function readFile(filePath) {
+  const content = await pReadFile(filePath, 'utf8')
+  return content
 }
 
 function fileExists(filePath) {
@@ -42,28 +36,6 @@ function fileExists(filePath) {
   })
 }
 
-//
-async function copyFiles(files, destination, opts = {}) {
-  const options = Object.assign(
-    {},
-    {
-      cwd: 'set cwd',
-      parents: true,
-      overwrite: true
-    },
-    opts
-  )
-  const filesToCopy = typeof files === 'string' ? [files] : files
-  console.log('filesToCopy', filesToCopy)
-  console.log('destination', destination)
-  const copiedPaths = await copy(filesToCopy, destination, options)
-  // .on('progress', (progress) => {
-  //   console.log('copy progress', progress)
-  // })
-  console.log(`Copy files ${destination}`, copiedPaths)
-  return copiedPaths
-}
-
 async function removeFiles(filePaths, opts = {}) {
   const removeFiles = typeof filePaths === 'string' ? [filePaths] : filePaths
   const deletedPaths = await del(removeFiles, opts)
@@ -71,7 +43,7 @@ async function removeFiles(filePaths, opts = {}) {
   return deletedPaths
 }
 
-async function copyDirectory(src, dist) {
+async function copyFiles(src, dist) {
   console.log(`Copying ${src} into ${dist}...`)
   const finalSrc = src.replace(/\/$/, '')
   // Valid path is a path
@@ -96,13 +68,10 @@ async function copyDirectory(src, dist) {
   return execAsync(copyCommand)
 }
 
-const readdirP = promisify(fs.readdir)
-const statP = promisify(fs.stat)
-
 async function readDir(dir, allFiles = []) {
-  const files = (await readdirP(dir)).map(f => path.join(dir, f))
+  const files = (await pReaddir(dir)).map(f => path.join(dir, f))
   allFiles.push(...files)
-  await Promise.all(files.map(async f => (await statP(f)).isDirectory() && readDir(f, allFiles)))
+  await Promise.all(files.map(async f => (await pStat(f)).isDirectory() && readDir(f, allFiles)))
   return allFiles
 }
 
@@ -110,8 +79,7 @@ module.exports = {
   writeFile,
   readFile,
   fileExists,
-  copyFiles: copyDirectory,
-  // copyDirectory,
+  copyFiles,
   removeFiles,
   readDir
 }

@@ -1,8 +1,4 @@
-const minimist = require('minimist')
-
-const runBuild = require('./run-build')
-
-const argv = minimist(process.argv.slice(2))
+const runBuild = require('./scaffold')
 
 runBuild({
   buildDir: '',

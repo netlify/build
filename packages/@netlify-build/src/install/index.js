@@ -4,7 +4,6 @@ const installPipDeps = require('./python/pip')
 const installNode = require('./node/install-node')
 const installNodeDeps = require('./node/install-deps')
 const installBowerDeps = require('./node/bower')
-const installRuby = require('./ruby')
 const installRubyGems = require('./ruby/gems')
 const installLeiningen = require('./java/leiningen')
 const installBoot = require('./java/boot')
@@ -18,7 +17,7 @@ const installZipAndShip = require('./serverless/zip-and-ship')
 
 // https://github.com/netlify/build-image/blob/9e0f207a27642d0115b1ca97cd5e8cebbe492f63/run-build-functions.sh#L59-L581
 module.exports = async function installDependencies(config = {}) {
-  const { nodeVersion, rubyVersion, yarnVersion, phpVersion, goVersion, CWD, NETLIFY_CACHE_DIR } = config
+  const { nodeVersion, yarnVersion, phpVersion, goVersion, CWD, NETLIFY_CACHE_DIR } = config
   console.log(CWD, NETLIFY_CACHE_DIR)
   await installPython(CWD, NETLIFY_CACHE_DIR)
 

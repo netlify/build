@@ -9,7 +9,6 @@ const { fileExists, readFile, copyFiles } = require('../../utils/fs')
 // https://github.com/netlify/build-image/blob/9e0f207a27642d0115b1ca97cd5e8cebbe492f63/run-build-functions.sh#L233-L292
 module.exports = async function installRuby(cwd, cacheDir, version) {
   const { HOME } = process.env
-  let tmpRubyVersion = version
 
   try {
     await source(`${HOME}/.rvm/scripts/rvm`)
@@ -18,7 +17,7 @@ module.exports = async function installRuby(cwd, cacheDir, version) {
     process.exit(1)
   }
   // # rvm will overwrite RUBY_VERSION, so we must control it.
-  process.env.RUBY_VERSION = tmpRubyVersion
+  process.env.RUBY_VERSION = version
 
   let druby = process.env.RUBY_VERSION
   const rubyVersionFile = path.join(cwd, '.ruby-version')

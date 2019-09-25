@@ -5,7 +5,6 @@ const execa = require('execa')
 const moveCache = require('../../utils/moveCache')
 const { fileExists, removeFiles, copyFiles } = require('../../utils/fs')
 
-const install = require('./utils/install')
 const setTempDir = require('./utils/set-temp-dir')
 
 module.exports = async function runYarn(cwd, cacheDir, yarnVersion) {

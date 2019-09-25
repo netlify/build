@@ -2,8 +2,6 @@
  * (WIP) Scaffold docker image, update dependancies, set correct language libs
  * Node port of https://github.com/netlify/build-image/blob/xenial/run-build.sh
  */
-const path = require('path')
-
 const execa = require('execa')
 
 const installDependencies = require('./install')
@@ -16,7 +14,6 @@ const { getProcessCount, findRunningProcs } = require('./utils/findRunningProcs'
 
 const NETLIFY_BUILD_BASE = '/opt/buildhome'
 const NETLIFY_CACHE_DIR = `${NETLIFY_BUILD_BASE}/cache`
-const NETLIFY_REPO_DIR = `${NETLIFY_BUILD_BASE}/repo`
 const CWD = process.cwd()
 
 /*
@@ -42,9 +39,8 @@ const CWD = process.cwd()
  * @return {[type]}        [description]
  */
 module.exports = async function runBuild(config) {
-  const { buildDir, buildCmd, functionsDir, zisiTempDir, nodeVersion, rubyVersion, yarnVersion } = config
+  const { buildCmd, functionsDir, zisiTempDir, nodeVersion, rubyVersion, yarnVersion } = config
   // inputs from Buildbot
-  const parentDir = path.dirname(buildDir)
   const phpVersion = '5.6'
   const goVersion = '1.12'
 

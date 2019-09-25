@@ -1,7 +1,5 @@
 const path = require('path')
 
-const execa = require('execa')
-
 const source = require('../../utils/source')
 const moveCache = require('../../utils/moveCache')
 const { readFile, fileExists } = require('../../utils/fs')

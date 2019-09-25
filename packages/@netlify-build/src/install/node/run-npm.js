@@ -56,7 +56,7 @@ module.exports = async function runNpm(cwd, cacheDir) {
     export PATH=$(npm bin):$PATH
       verify below code
     */
-    const resp = await execa('npm', ['bin'])
-    process.env.PATH = `${resp.stdout}:${process.env.PATH}`
+    const { stdout } = await execa('npm', ['bin'])
+    process.env.PATH = `${stdout}:${process.env.PATH}`
   }
 }

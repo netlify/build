@@ -1,6 +1,8 @@
-import path from 'path'
-import test from 'ava'
-import netlifyConfig from '../index'
+const path = require('path')
+
+const test = require('ava')
+
+const netlifyConfig = require('../index')
 
 test('Test TOML', async t => {
   const filePath = path.resolve(__dirname, 'fixtures/netlify.toml')

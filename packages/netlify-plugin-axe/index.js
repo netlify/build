@@ -1,14 +1,10 @@
 const path = require('path')
 
 const execa = require('execa')
-const chalk = require('chalk')
 const mkdirp = require('mkdirp')
 
 function netlifyAxePlugin(conf /* createStore */) {
-  let {
-    enabled, // currently unused
-    axeFlags
-  } = conf
+  let { axeFlags } = conf
   return {
     init: async () => {
       mkdirp.sync(`.axe-results/`)
