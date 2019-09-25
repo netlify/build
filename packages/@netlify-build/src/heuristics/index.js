@@ -3,8 +3,7 @@ const { promisify } = require('util')
 
 const npmRunPath = require('npm-run-path')
 const parseCommand = require('parse-npm-script')
-
-const netlifyConfig = require('../config')
+const netlifyConfig = require('@netlify/config')
 
 const readFileAsync = promisify(fs.readFile)
 

@@ -1,4 +1,4 @@
-const lodash = require('lodash')
+require('lodash')
 
 exports.handler = (event, context, callback) => {
   return callback(null, {

@@ -10,7 +10,7 @@ const source = require('../../utils/source')
 // https://github.com/netlify/build-image/blob/9e0f207a27642d0115b1ca97cd5e8cebbe492f63/run-build-functions.sh#L525-L556
 module.exports = async function installGo(cwd, cacheDir, version) {
   console.log('INSTALL GO')
-  const { GIMME_GO_VERSION, GO_IMPORT_PATH, GOPATH, HOME } = process.env
+  const { GIMME_GO_VERSION, GO_IMPORT_PATH, GOPATH } = process.env
   let installGoVersion = version
   const goVersionFile = path.join(cwd, '.go-version')
 
@@ -27,15 +27,15 @@ module.exports = async function installGo(cwd, cacheDir, version) {
   if (installGoVersion !== GIMME_GO_VERSION) {
     console.log(`Installing Go version ${installGoVersion}`)
     try {
-      process.env.GIMME_ENV_PREFIX = `${HOME}/.gimme_cache/env`
-      process.env.GIMME_VERSION_PREFIX = `${HOME}/.gimme_cache/versions`
+      process.env.GIMME_ENV_PREFIX = `${process.env.HOME}/.gimme_cache/env`
+      process.env.GIMME_VERSION_PREFIX = `${process.env.HOME}/.gimme_cache/versions`
       await execa('gimme', [installGoVersion])
     } catch (err) {
       console.log(`Failed to install Go version ${installGoVersion}`)
       process.exit(1)
     }
 
-    await sourceGo(installGoVersion, HOME)
+    await sourceGo(installGoVersion, process.env.HOME)
   } else {
     try {
       await execa('gimme')
@@ -43,7 +43,7 @@ module.exports = async function installGo(cwd, cacheDir, version) {
       console.log(`gimme not found`, err)
       process.exit(1)
     }
-    await sourceGo(GIMME_GO_VERSION, HOME)
+    await sourceGo(GIMME_GO_VERSION, process.env.HOME)
   }
 
   // Setup project GOPATH

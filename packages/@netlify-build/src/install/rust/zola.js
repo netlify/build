@@ -4,7 +4,7 @@ const execa = require('execa')
 
 // https://github.com/netlify/build-image/blob/9e0f207a27642d0115b1ca97cd5e8cebbe492f63/run-build-functions.sh#L476-L488
 module.exports = async function installZola(cwd, cacheDir) {
-  const { ZOLA_VERSION, PATH } = process.env
+  const { ZOLA_VERSION } = process.env
   if (ZOLA_VERSION) {
     console.log(`Installing Zola ${ZOLA_VERSION}`)
 
@@ -25,7 +25,7 @@ module.exports = async function installZola(cwd, cacheDir) {
 
     // export PATH=$(dirname $zolaOut):$PATH
     const zolaDir = path.dirname(zola.stdout)
-    process.env.PATH = `${zolaDir}:${PATH}`
+    process.env.PATH = `${zolaDir}:${process.env.PATH}`
   }
 }
 

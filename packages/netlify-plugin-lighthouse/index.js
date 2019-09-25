@@ -22,11 +22,8 @@ const createStore = confOptions =>
 
 function netlifyLighthousePlugin(conf) {
   const store = createStore()
-  let {
-    enabled, // currently unused
-    currentVersion, // users will be tempted to use semver, but we really don't care
-    compareWithVersion
-  } = conf
+  // users will be tempted to use semver, but we really don't care
+  let { currentVersion, compareWithVersion } = conf
   if (typeof currentVersion === `undefined`) {
     console.log(`lighthouseplugin version not specified, auto assigning ${chalk.yellow("currentVersion='init'")}`)
     currentVersion = 'init'
@@ -54,12 +51,7 @@ function netlifyLighthousePlugin(conf) {
 
       if (resp.exitCodeName === 'SUCCESS') {
         // serialize response
-        let arr = resp.stdout.split('\n')
         const curLightHouse = {}
-        arr = arr.slice(0, arr.length - 2).forEach(key => {
-          const [k, v] = key.split(': ')
-          curLightHouse[k] = Number(v)
-        })
         const prevLightHouse = store.get(`lighthouse.${compareWithVersion}`)
         let totalImprovement = 0
         if (prevLightHouse) {

@@ -4,7 +4,7 @@ const execa = require('execa')
 
 // https://github.com/netlify/build-image/blob/9e0f207a27642d0115b1ca97cd5e8cebbe492f63/run-build-functions.sh#L447-L460
 module.exports = async function installHugo(cwd, cacheDir) {
-  const { HUGO_VERSION, PATH } = process.env
+  const { HUGO_VERSION } = process.env
   if (HUGO_VERSION) {
     console.log(`Installing Hugo ${HUGO_VERSION}`)
 
@@ -25,7 +25,7 @@ module.exports = async function installHugo(cwd, cacheDir) {
 
     // PATH=$(dirname $hugoOut):$PATH
     const hugoDir = path.dirname(hugo.stdout)
-    process.env.PATH = `${hugoDir}:${PATH}`
+    process.env.PATH = `${hugoDir}:${process.env.PATH}`
 
     try {
       const version = await execa('hugo', ['version'])
