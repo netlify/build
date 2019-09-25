@@ -8,8 +8,9 @@ const chalk = require('chalk')
 const { getConfigFile } = require('@netlify/config')
 const minimist = require('minimist')
 
-const build = require('./build')
-const cleanStack = require('./utils/clean-stack')
+const cleanStack = require('../utils/clean-stack')
+
+const build = require('./main')
 
 const args = minimist(process.argv.slice(2))
 
