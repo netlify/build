@@ -6,6 +6,10 @@ function netlifySitemapPlugin(conf) {
       console.log('init')
     },
     finally: async ({ api }) => {
+      if (api === undefined) {
+        return
+      }
+
       console.log('Finally... get site count')
       const sites = await api.listSites()
       if (sites) {
