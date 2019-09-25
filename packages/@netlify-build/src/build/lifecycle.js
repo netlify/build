@@ -22,7 +22,7 @@ const LIFECYCLE = [
   'init',
   ...MAIN_LIFECYCLE,
   /* Build finished */
-  'finally',
+  'end',
   'onError',
   'scopes'
 ]

@@ -5,7 +5,7 @@ function netlifySitemapPlugin(conf) {
     init: ({ api }) => {
       console.log('init')
     },
-    finally: async ({ api }) => {
+    end: async ({ api }) => {
       if (api === undefined) {
         return
       }

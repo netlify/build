@@ -59,7 +59,7 @@ const lifecycle = [
   /* ↓ Outputs manifest of resources created */
   'manifest',
   /* ↓ Build finished */
-  'finally'
+  'end'
 ]
 ```
 
