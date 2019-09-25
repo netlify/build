@@ -1,8 +1,6 @@
 #!/usr/bin/env node
-const { FORCE_COLOR } = process.env
-if (FORCE_COLOR !== 'false') {
+if (!process.env.FORCE_COLOR) {
   process.env.FORCE_COLOR = true
-  process.env.colors = true
 }
 const chalk = require('chalk')
 const { getConfigFile } = require('@netlify/config')
