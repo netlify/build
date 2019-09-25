@@ -33,23 +33,10 @@ function netlifyLighthousePlugin(conf) {
     /* Run lighthouse on post deploy */
     postdeploy: async () => {
       const site = conf.site || process.env.SITE
-      /* TODO fetch previous scores from cache */
-      const lighthouseCI = path.join(__dirname, 'node_modules', '.bin', 'lighthouse-ci')
-      let resp
-      try {
-        const subprocess = execa(lighthouseCI, [site], {
-          shell: true
-        })
-        subprocess.stderr.pipe(process.stderr)
-        subprocess.stdout.pipe(process.stdout)
-        resp = await subprocess
-      } catch (err) {
-        console.log(err)
-        throw err
-      }
-      // console.log(resp.stdout)
 
-      if (resp.exitCodeName === 'SUCCESS') {
+      // TODO: fetch previous scores from cache
+      await execa.command(`lighthouse-ci ${site}`, { stdio: 'inherit', preferLocal: true })
+
         // serialize response
         const curLightHouse = {}
         const prevLightHouse = store.get(`lighthouse.${compareWithVersion}`)
@@ -89,7 +76,6 @@ function netlifyLighthousePlugin(conf) {
         store.set(`lighthouse.${currentVersion}`, curLightHouse)
         console.log(`Saved results as version: ${chalk.yellow(currentVersion)}`)
       }
-    }
   }
 }
 
