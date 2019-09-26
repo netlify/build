@@ -10,7 +10,7 @@ const deepLog = require('../utils/deeplog')
 const { writeFile } = require('../utils/fs')
 const { getSecrets, redactStream } = require('../utils/redact')
 const netlifyLogs = require('../utils/patch-logs')
-const netlifyFunctionsPlugin = require('../plugins/functions')
+const defaultPlugins = require('../plugins')
 const baseDir = process.cwd()
 
 // const pt = require('prepend-transform')
@@ -55,19 +55,7 @@ module.exports = async function build(configPath, cliFlags, token) {
   deepLog(netlifyConfig)
   console.log()
 
-  /* Parse plugins */
-  const initialPlugins = netlifyConfig.plugins || []
-  const defaultPlugins = [
-    // default Netlify Function bundling and deployment
-    netlifyFunctionsPlugin
-    // netlifyDeployPlugin(),
-  ].map(plug => {
-    return Object.assign({}, plug, {
-      core: true
-    })
-  })
-
-  const plugins = defaultPlugins.concat(initialPlugins)
+  const plugins = [...defaultPlugins, ...(netlifyConfig.plugins || [])]
   const allPlugins = plugins
     .filter(plug => {
       /* Load enabled plugins only */
