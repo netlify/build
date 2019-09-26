@@ -42,6 +42,8 @@
     "stack-utils": "^1.0.2"
   },
   "devDependencies": {
-    "markdown-magic": "^0.1.25"
+    "ava": "^2.4.0",
+    "markdown-magic": "^0.1.25",
+    "strip-ansi": "^5.2.0"
   }
 }

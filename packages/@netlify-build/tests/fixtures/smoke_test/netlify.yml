@@ -1,0 +1,15 @@
+version: 06-25-2019
+
+plugins:
+  - ../../../../netlify-plugin-sitemap:
+      enabled: false
+  - ../../../../netlify-plugin-notifier: {}
+
+build:
+  lifecycle:
+    init:
+      - export VALUE=test
+      - echo "$VALUE"
+    getCache: echo 'curl custom cache'
+    prebuild: echo "${secrets:privateKey}"
+    build: npm run build
