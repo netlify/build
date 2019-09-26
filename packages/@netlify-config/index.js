@@ -45,6 +45,11 @@ async function netlifyConfig(configFile, cliFlags) {
       }
     ]
   })
+
+  if (config === undefined) {
+    return { build: {} }
+  }
+
   return config
 }
 
