@@ -19,7 +19,7 @@ sade('decrypt', true)
   // // There are a lot...
   // .option('-H, --host', 'Hostname to bind', 'localhost')
   // .option('-p, --port', 'Port to bind', 5000)
-  .action((opts) => {
+  .action(opts => {
     // remember, if you add an arg to decrypt, the signature of the .action callback changes to add that arg too
 
     pluginDecrypt(opts)

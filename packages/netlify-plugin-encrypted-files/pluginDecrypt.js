@@ -1,43 +1,44 @@
 // // just copy psate from the decrypt file
-const sade = require('sade')
 const path = require('path')
 const fs = require('fs')
 const crypto = require('crypto')
 const zlib = require('zlib')
-const { Transform } = require('stream')
-const prog = sade('encrypt')
+// const { Transform } = require('stream')
+
+// const sade = require('sade')
+// const prog = sade('encrypt')
 
 const ENCRYPTED_PLUGIN_SALT = 'ENCRYPTED_PLUGIN_SALT'
 const { NETLIFY_ENCRYPT_KEY } = process.env
 
 // for crypto stuff later
-class AppendInitVect extends Transform {
-  constructor(initVect, opts) {
-    super(opts)
-    this.initVect = initVect
-    this.appended = false
-  }
+// class AppendInitVect extends Transform {
+//   constructor(initVect, opts) {
+//     super(opts)
+//     this.initVect = initVect
+//     this.appended = false
+//   }
 
-  _transform(chunk, encoding, cb) {
-    if (!this.appended) {
-      this.push(this.initVect)
-      this.appended = true
-    }
-    this.push(chunk)
-    cb()
-  }
-}
+//   _transform(chunk, encoding, cb) {
+//     if (!this.appended) {
+//       this.push(this.initVect)
+//       this.appended = true
+//     }
+//     this.push(chunk)
+//     cb()
+//   }
+// }
 
 module.exports = function pluginDecrypt({
   // unzip to '.testdecrypt' folder instead of overwriting real files
-  testdecrypt = false,
+  testdecrypt = false
 }) {
   if (typeof NETLIFY_ENCRYPT_KEY === 'undefined') {
     console.error('must define NETLIFY_ENCRYPT_KEY to use netlify-plugin-encrypted-files')
     process.exit(1)
   }
   const files = fs.readdirSync('.encrypted')
-  files.forEach((sourceFilePath) => {
+  files.forEach(sourceFilePath => {
     let destinationfilePath = Buffer.from(sourceFilePath, 'base64').toString()
     decrypt(path.join('.encrypted', sourceFilePath), destinationfilePath, testdecrypt)
   })
@@ -51,7 +52,7 @@ function decrypt(sourceFilePath, destinationfilePath, testdecrypt) {
   const readInitVect = fs.createReadStream(sourceFilePath, { end: 15 })
 
   let initVect
-  readInitVect.on('data', (chunk) => {
+  readInitVect.on('data', chunk => {
     initVect = chunk
   })
 
