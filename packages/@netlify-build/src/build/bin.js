@@ -1,7 +1,4 @@
 #!/usr/bin/env node
-if (!process.env.FORCE_COLOR) {
-  process.env.FORCE_COLOR = true
-}
 const chalk = require('chalk')
 const { getConfigFile } = require('@netlify/config')
 const minimist = require('minimist')
