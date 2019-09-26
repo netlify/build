@@ -1,6 +1,7 @@
 const path = require('path')
 const { cwd } = require('process')
 
+require('./colors')
 const chalk = require('chalk')
 const execa = require('execa')
 const filterObj = require('filter-obj')
@@ -9,9 +10,12 @@ const pReduce = require('p-reduce')
 const API = require('netlify')
 const resolveConfig = require('@netlify/config')
 const { formatUtils, getConfigPath } = require('@netlify/config')
+const isPlainObj = require('is-plain-obj')
+const omit = require('omit.js')
 require('array-flat-polyfill')
 
 const deepLog = require('../utils/deeplog')
+const cleanStack = require('../utils/clean-stack')
 const { writeFile } = require('../utils/fs')
 const { getSecrets, redactStream } = require('../utils/redact')
 const netlifyLogs = require('../utils/patch-logs')
@@ -25,15 +29,31 @@ const { HEADING_PREFIX } = require('./constants')
 
 // const pt = require('prepend-transform')
 
-module.exports = async function build(configPath, cliFlags, token) {
+module.exports = async function build(inputOptions = {}) {
+  const { token } = inputOptions
+  const options = omit(inputOptions, ['token'])
+  try {
   const buildTimer = startTimer()
-  const netlifyConfigPath = configPath || cliFlags.config
+
+  console.log(chalk.greenBright.bold(`${HEADING_PREFIX} Starting Netlify Build`))
+  console.log(`https://github.com/netlify/build`)
+  console.log()
+
+  console.log(chalk.cyanBright.bold('Options'))
+  deepLog(options)
+  console.log()
+
+  const netlifyToken = token || process.env.NETLIFY_TOKEN
+
+  const netlifyConfigPath = options.config || (await getConfigPath())
+  console.log(chalk.cyanBright.bold(`${HEADING_PREFIX} Using config file: ${netlifyConfigPath}`))
+  console.log()
+
   const baseDir = getBaseDir(netlifyConfigPath)
-  const netlifyToken = token || process.env.NETLIFY_TOKEN || cliFlags.token
   /* Load config */
   let netlifyConfig = {}
   try {
-    netlifyConfig = await resolveConfig(netlifyConfigPath, cliFlags)
+    netlifyConfig = await resolveConfig(netlifyConfigPath, options)
   } catch (err) {
     console.log('Netlify Config Error')
     throw err
@@ -166,7 +186,7 @@ module.exports = async function build(configPath, cliFlags, token) {
     return instruction.hook !== 'onError'
   })
 
-  if (cliFlags.dry) {
+  if (options.dry) {
     console.log()
     console.log(chalk.cyanBright.bold(`${HEADING_PREFIX} Netlify Build Steps`))
     console.log()
@@ -248,6 +268,28 @@ module.exports = async function build(configPath, cliFlags, token) {
   endTimer({ context: 'Netlify Build' }, buildTimer)
   // Reset console.log for CLI
   console.log = originalConsoleLog
+
+  const sparkles = chalk.cyanBright('(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧')
+  console.log(`\n${sparkles} Have a nice day!\n`)
+  } catch (error) {
+    console.log()
+    console.log(chalk.redBright.bold('┌─────────────────────────────┐'))
+    console.log(chalk.redBright.bold('│    Netlify Build Error!     │'))
+    console.log(chalk.redBright.bold('└─────────────────────────────┘'))
+    console.log(chalk.bold(` ${error.message}`))
+    console.log()
+    console.log(chalk.yellowBright.bold('┌─────────────────────────────┐'))
+    console.log(chalk.yellowBright.bold('│      Error Stack Trace      │'))
+    console.log(chalk.yellowBright.bold('└─────────────────────────────┘'))
+    if (process.env.ERROR_VERBOSE) {
+      console.log(error.stack)
+    } else {
+      console.log(` ${chalk.bold(cleanStack(error.stack))}`)
+      console.log()
+      console.log(` Set environment variable ERROR_VERBOSE=true for deep traces`)
+    }
+    console.log()
+  }
 }
 
 const getBaseDir = function(netlifyConfigPath) {
