@@ -16,21 +16,21 @@ async function netlifyConfig(configFile, cliFlags) {
     variableSources: [
       {
         /* Match variables ${secrets:xyz} */
-        match: RegExp(/^secrets:/g),
-        resolver: (varToProcess, opts, currentObject) => {
+        match: /^secrets:/g,
+        async resolver() {
           // Call to remote secret store
-          return Promise.resolve('shhhhhhh')
+          return 'shhhhhhh'
         }
       },
       {
         /* Match variables ${context:xyz} */
-        match: RegExp(/^context:/g),
-        resolver: (varToProcess, opts, currentObject) => {
+        match: /^context:/g,
+        async resolver(varToProcess, opts, currentObject) {
           const objectPath = varToProcess.replace(/^context:/, '')
           const context = opts.context || 'production'
           const newValue = dotPropGet(`context.${context}.${objectPath}`, currentObject)
           const lookup = `\${self:${newValue}}`
-          return Promise.resolve(lookup)
+          return lookup
         }
       }
     ]
