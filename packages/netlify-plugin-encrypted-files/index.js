@@ -7,7 +7,7 @@ function encryptedFilesPlugin(conf) {
     init: () => {
       console.log('decrypting files')
       pluginDecrypt()
-    },
+    }
   }
 }
 

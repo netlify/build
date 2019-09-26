@@ -1,13 +1,14 @@
 #!/usr/bin/env node
 'use strict'
 
-const sade = require('sade')
 const path = require('path')
 const fs = require('fs')
 const crypto = require('crypto')
-const rimraf = require('rimraf')
 const zlib = require('zlib')
 const { Transform } = require('stream')
+
+const rimraf = require('rimraf')
+const sade = require('sade')
 
 const ENCRYPTED_PLUGIN_SALT = 'ENCRYPTED_PLUGIN_SALT'
 const { NETLIFY_ENCRYPT_KEY } = process.env
@@ -52,7 +53,7 @@ sade('encrypt <regex>', true)
     if (fs.existsSync('.encrypted')) console.log('clearing ' + '.encrypted') || rimraf.sync('.encrypted')
     fs.mkdirSync('.encrypted')
 
-    filePaths.forEach((filePath) => {
+    filePaths.forEach(filePath => {
       // path.basename('/foo/bar/baz/asdf/quux.html')
       // // returns
       // 'quux.html'

@@ -17,11 +17,11 @@ function netlifyAxePlugin(conf /* createStore */) {
         preferLocal: true
       })
 
-        let results = require(`${process.cwd()}/.axe-results/result.json`)
-        if (results && results[0]) {
-          results = results[0].violations
-        }
-        console.log({ violations: results })
+      let results = require(`${process.cwd()}/.axe-results/result.json`)
+      if (results && results[0]) {
+        results = results[0].violations
+      }
+      console.log({ violations: results })
     }
   }
 }
