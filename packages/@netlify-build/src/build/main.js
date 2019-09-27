@@ -1,4 +1,5 @@
 const path = require('path')
+const { cwd } = require('process')
 
 const chalk = require('chalk')
 const execa = require('execa')
@@ -11,7 +12,6 @@ const { writeFile } = require('../utils/fs')
 const { getSecrets, redactStream } = require('../utils/redact')
 const netlifyLogs = require('../utils/patch-logs')
 const defaultPlugins = require('../plugins')
-const baseDir = process.cwd()
 
 // const pt = require('prepend-transform')
 const lifecycle = [
@@ -42,6 +42,7 @@ const TIME_KEY = 'Netlify Build'
 module.exports = async function build(configPath, cliFlags, token) {
   console.time(TIME_KEY)
   const netlifyConfigPath = configPath || cliFlags.config
+  const baseDir = getBaseDir(netlifyConfigPath)
   const netlifyToken = token || process.env.NETLIFY_TOKEN || cliFlags.token
   /* Load config */
   let netlifyConfig = {}
@@ -314,7 +315,8 @@ module.exports = async function build(configPath, cliFlags, token) {
       instructions: buildInstructions,
       netlifyConfig,
       netlifyConfigPath,
-      netlifyToken
+      netlifyToken,
+      baseDir
     })
     console.log()
     console.log(chalk.greenBright.bold('┌───────────────────────────┐'))
@@ -338,6 +340,7 @@ module.exports = async function build(configPath, cliFlags, token) {
         netlifyConfig,
         netlifyConfigPath,
         netlifyToken,
+        baseDir,
         error: err
       })
     }
@@ -359,6 +362,14 @@ module.exports = async function build(configPath, cliFlags, token) {
   console.timeEnd(TIME_KEY)
   // Reset console.log for CLI
   console.log = originalConsoleLog
+}
+
+const getBaseDir = function(netlifyConfigPath) {
+  if (netlifyConfigPath === undefined) {
+    return cwd()
+  }
+
+  return path.dirname(netlifyConfigPath)
 }
 
 function preFix(hook) {
@@ -390,7 +401,7 @@ async function execCommand(cmd, secrets) {
  * @param  {Object} config - Netlify config file values
  * @return {Object} updated config?
  */
-async function engine({ instructions, netlifyConfig, netlifyConfigPath, netlifyToken, error }) {
+async function engine({ instructions, netlifyConfig, netlifyConfigPath, netlifyToken, baseDir, error }) {
   const returnData = await instructions.reduce(async (promiseChain, plugin, i) => {
     const { method, hook, config, name, override } = plugin
     const meta = plugin.meta || {}
