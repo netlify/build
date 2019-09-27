@@ -1,12 +1,11 @@
-const path = require('path')
-
 const test = require('ava')
 
-const netlifyConfig = require('../index')
+const netlifyConfig = require('..')
+
+const FIXTURES_DIR = `${__dirname}/fixtures`
 
 test('Test TOML', async t => {
-  const filePath = path.resolve(__dirname, 'fixtures/netlify.toml')
-  const config = await netlifyConfig(filePath)
+  const config = await netlifyConfig(`${FIXTURES_DIR}/netlify.toml`)
 
   t.deepEqual(config, {
     build: {
@@ -18,8 +17,7 @@ test('Test TOML', async t => {
 })
 
 test('Test YAML', async t => {
-  const filePath = path.resolve(__dirname, 'fixtures/netlify.yml')
-  const config = await netlifyConfig(filePath)
+  const config = await netlifyConfig(`${FIXTURES_DIR}/netlify.yml`)
 
   t.deepEqual(config, {
     build: {
@@ -31,8 +29,8 @@ test('Test YAML', async t => {
 })
 
 test('Test JSON', async t => {
-  const filePath = path.resolve(__dirname, 'fixtures/netlify.json')
-  const config = await netlifyConfig(filePath)
+  const config = await netlifyConfig(`${FIXTURES_DIR}/netlify.json`)
+
   t.deepEqual(config, {
     build: {
       publish: 'dist',
