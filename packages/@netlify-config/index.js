@@ -4,7 +4,7 @@ const { cwd } = require('process')
 const configorama = require('configorama')
 const pathExists = require('path-exists')
 
-const getConfigFile = require('./utils/hasConfig')
+const getConfigPath = require('./path')
 
 /* https://github.com/developit/dlv */
 const dotPropGet = (obj, key, def, p) => {
@@ -52,4 +52,4 @@ module.exports = netlifyConfig
 /* Formatting utilities */
 module.exports.formatUtils = configorama.format
 /* Resolve Netlify config path */
-module.exports.getConfigFile = getConfigFile
+module.exports.getConfigPath = getConfigPath
