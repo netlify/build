@@ -6,7 +6,7 @@ const pathExists = require('path-exists')
 
 const getConfigPath = require('./path')
 
-async function netlifyConfig(configFile, options) {
+async function resolveConfig(configFile, options) {
   const configPath = resolve(cwd(), configFile)
 
   if (!(await pathExists(configPath))) {
@@ -39,7 +39,7 @@ async function netlifyConfig(configFile, options) {
   return configA
 }
 
-module.exports = netlifyConfig
+module.exports.resolveConfig = resolveConfig
 /* Formatting utilities */
 module.exports.formatUtils = configorama.format
 /* Resolve Netlify config path */
