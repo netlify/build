@@ -7,6 +7,7 @@ const filterObj = require('filter-obj')
 const API = require('netlify')
 const resolveConfig = require('@netlify/config')
 const { formatUtils, getConfigFile } = require('@netlify/config')
+const isPlainObj = require('is-plain-obj')
 
 const deepLog = require('../utils/deeplog')
 const { writeFile } = require('../utils/fs')
@@ -101,11 +102,11 @@ module.exports = async function build(configPath, cliFlags, token) {
           }
         }
 
-        if (typeof code !== 'object' && typeof code !== 'function') {
+        const pluginSrc = typeof code === 'function' ? code(pluginConfig) : code
+
+        if (!isPlainObj(pluginSrc)) {
           throw new Error(`Plugin ${name} is malformed. Must be object or function`)
         }
-
-        const pluginSrc = typeof code === 'function' ? code(pluginConfig) : code
 
         const meta = filterObj(pluginSrc, (key, value) => typeof value !== 'function')
 
