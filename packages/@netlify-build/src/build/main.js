@@ -15,6 +15,8 @@ const { getSecrets, redactStream } = require('../utils/redact')
 const netlifyLogs = require('../utils/patch-logs')
 const defaultPlugins = require('../plugins')
 
+const { importPlugin } = require('./import')
+
 // const pt = require('prepend-transform')
 const lifecycle = [
   /* Build initialization steps */
@@ -74,33 +76,11 @@ module.exports = async function build(configPath, cliFlags, token) {
           return typeof curr[cur] === 'function'
         }, false)
 
-        let code
         const name = curr.name || keys[0]
         const pluginConfig = curr[name] || {}
-        if (alreadyResolved) {
-          code = curr
-          console.log(chalk.yellow(`Loading plugin "${name}" from core`))
-        } else {
-          try {
-            // resolve file path
-            // TODO harden resolution
-            let filePath
-            if (name.match(/^\./)) {
-              filePath = path.resolve(baseDir, name)
-            } else {
-              // If module scoped add @ symbol prefix
-              const formattedName = name.match(/^netlify\//) ? `@${name.replace(/^@/, '')}` : name
-              filePath = path.resolve(baseDir, 'node_modules', formattedName)
-            }
-            console.log(chalk.yellow(`Loading plugin "${name}" from ${filePath}`))
-            code = require(filePath)
-          } catch (e) {
-            console.log(`Error loading ${name} plugin`)
-            console.log(e)
-            // TODO If plugin not found, automatically try and install and retry here
-            // await execa(`npm install ${name}`)
-          }
-        }
+
+        console.log(chalk.yellow(`Loading plugin "${name}"`))
+        const code = alreadyResolved ? curr : importPlugin(name, baseDir)
 
         const pluginSrc = typeof code === 'function' ? code(pluginConfig) : code
 
