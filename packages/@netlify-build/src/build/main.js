@@ -92,50 +92,50 @@ module.exports = async function build(configPath, cliFlags, token) {
 
         // Map plugins methods in order for later execution
         Object.entries(pluginSrc)
-        .filter(([, value]) => typeof value === 'function')
-        .forEach(([hook, method]) => {
-          /* Override core functionality */
-          // Match string with 1 or more colons
-          const override = hook.match(/(?:[^:]*[:]){1,}[^:]*$/)
-          if (override) {
-            const str = override[0]
-            const [, pluginName, overideMethod] = str.match(/([a-zA-Z/@]+):([a-zA-Z/@:]+)/)
-            // @TODO throw if non existant plugin trying to be overriden?
-            // if (plugin not found) {
-            //   throw new Error(`${pluginName} not found`)
-            // }
-            if (acc.lifeCycleHooks[overideMethod]) {
-              acc.lifeCycleHooks[overideMethod] = acc.lifeCycleHooks[overideMethod].map(x => {
-                if (x.name === pluginName) {
-                  return {
-                    name,
-                    hook,
-                    config: pluginConfig,
-                    meta,
-                    method,
-                    override: {
-                      target: pluginName,
-                      method: overideMethod
+          .filter(([, value]) => typeof value === 'function')
+          .forEach(([hook, method]) => {
+            /* Override core functionality */
+            // Match string with 1 or more colons
+            const override = hook.match(/(?:[^:]*[:]){1,}[^:]*$/)
+            if (override) {
+              const str = override[0]
+              const [, pluginName, overideMethod] = str.match(/([a-zA-Z/@]+):([a-zA-Z/@:]+)/)
+              // @TODO throw if non existant plugin trying to be overriden?
+              // if (plugin not found) {
+              //   throw new Error(`${pluginName} not found`)
+              // }
+              if (acc.lifeCycleHooks[overideMethod]) {
+                acc.lifeCycleHooks[overideMethod] = acc.lifeCycleHooks[overideMethod].map(x => {
+                  if (x.name === pluginName) {
+                    return {
+                      name,
+                      hook,
+                      config: pluginConfig,
+                      meta,
+                      method,
+                      override: {
+                        target: pluginName,
+                        method: overideMethod
+                      }
                     }
                   }
-                }
-                return x
-              })
-              return acc
+                  return x
+                })
+                return acc
+              }
             }
-          }
-          /* End Override core functionality */
-          if (!acc.lifeCycleHooks[hook]) {
-            acc.lifeCycleHooks[hook] = []
-          }
-          acc.lifeCycleHooks[hook] = acc.lifeCycleHooks[hook].concat({
-            name,
-            hook,
-            meta,
-            config: pluginConfig,
-            method
+            /* End Override core functionality */
+            if (!acc.lifeCycleHooks[hook]) {
+              acc.lifeCycleHooks[hook] = []
+            }
+            acc.lifeCycleHooks[hook] = acc.lifeCycleHooks[hook].concat({
+              name,
+              hook,
+              meta,
+              config: pluginConfig,
+              method
+            })
           })
-        })
 
         return acc
       },
