@@ -7,7 +7,6 @@ const netlifyConfig = require('../index')
 test('Test TOML', async t => {
   const filePath = path.resolve(__dirname, 'fixtures/netlify.toml')
   const config = await netlifyConfig(filePath)
-  console.log('config', config)
 
   t.deepEqual(config, {
     build: {
