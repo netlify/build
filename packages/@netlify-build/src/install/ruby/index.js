@@ -2,9 +2,10 @@ const path = require('path')
 
 const execa = require('execa')
 const del = require('del')
+const pathExists = require('path-exists')
 
 const source = require('../../utils/source')
-const { fileExists, readFile, copyFiles } = require('../../utils/fs')
+const { readFile, copyFiles } = require('../../utils/fs')
 
 // https://github.com/netlify/build-image/blob/9e0f207a27642d0115b1ca97cd5e8cebbe492f63/run-build-functions.sh#L233-L292
 module.exports = async function installRuby(cwd, cacheDir, version) {
@@ -20,8 +21,8 @@ module.exports = async function installRuby(cwd, cacheDir, version) {
   process.env.RUBY_VERSION = version
 
   let druby = process.env.RUBY_VERSION
-  const rubyVersionFile = path.join(cwd, '.ruby-version')
-  if (await fileExists(rubyVersionFile)) {
+  const rubyVersionFile = `${cwd}/.ruby-version`
+  if (await pathExists(rubyVersionFile)) {
     druby = await readFile(rubyVersionFile)
     console.log(`Attempting ruby version ${druby}, read from .ruby-version file`)
   } else {
@@ -50,9 +51,8 @@ module.exports = async function installRuby(cwd, cacheDir, version) {
     process.exit(1)
   }
 
-  const fulldruby = `ruby-${druby}`
-  const fulldrubyPath = path.join(cacheDir, 'ruby_version', fulldruby)
-  if (await fileExists(fulldrubyPath)) {
+  const fulldrubyPath = `${cacheDir}/ruby_version/ruby-${druby}`
+  if (await pathExists(fulldrubyPath)) {
     console.log('Started restoring cached ruby version')
     // rm -rf $RVM_DIR/rubies/${fulldruby}
     await del(fulldrubyPath)

@@ -5,6 +5,7 @@ const { promisify } = require('util')
 const makeDir = require('make-dir')
 const del = require('del')
 const isInvalidFilePath = require('is-invalid-path')
+const pathExists = require('path-exists')
 
 const execAsync = require('./execAsync')
 
@@ -15,8 +16,7 @@ const pStat = promisify(fs.stat)
 
 async function writeFile(filePath, contents) {
   const dir = path.dirname(filePath)
-  const dirExists = await fileExists(dir)
-  if (!dirExists) {
+  if (!(await pathExists(dir))) {
     await makeDir(dir)
   }
   await pWriteFile(filePath, contents)
@@ -25,15 +25,6 @@ async function writeFile(filePath, contents) {
 async function readFile(filePath) {
   const content = await pReadFile(filePath, 'utf8')
   return content
-}
-
-function fileExists(filePath) {
-  return new Promise((resolve, reject) => {
-    fs.access(filePath, fs.F_OK, err => {
-      if (err) return resolve(false)
-      return resolve(true)
-    })
-  })
 }
 
 async function removeFiles(filePaths, opts = {}) {
@@ -51,13 +42,13 @@ async function copyFiles(src, dist) {
     throw new Error('Not a valid file path')
   }
 
-  if (!(await fileExists(src))) {
+  if (!(await pathExists(src))) {
     console.log(`Skipping cache copy for ${src}. It doesnt exist`)
     return false
   }
 
   const dir = path.dirname(dist)
-  const dirExists = await fileExists(dist)
+  const dirExists = await pathExists(dist)
   if (!dirExists) {
     await makeDir(dir)
   }
@@ -78,7 +69,6 @@ async function readDir(dir, allFiles = []) {
 module.exports = {
   writeFile,
   readFile,
-  fileExists,
   copyFiles,
   removeFiles,
   readDir

@@ -1,6 +1,8 @@
 const path = require('path')
 
-const { fileExists, readDir } = require('../../utils/fs')
+const pathExists = require('path-exists')
+
+const { readDir } = require('../../utils/fs')
 const { CONTEXT } = process.env
 
 module.exports = () => {
@@ -23,7 +25,7 @@ module.exports = () => {
       }
 
       const publishPath = path.resolve(build.publish)
-      if (!(await fileExists(publishPath))) {
+      if (!(await pathExists(publishPath))) {
         console.log(`Publish dir not found`)
         process.exit(1)
       }

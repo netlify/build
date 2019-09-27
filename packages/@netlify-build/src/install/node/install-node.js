@@ -1,9 +1,10 @@
 const path = require('path')
 
 const execa = require('execa')
+const pathExists = require('path-exists')
 
 const source = require('../../utils/source')
-const { readFile, writeFile, fileExists, removeFiles, copyFiles } = require('../../utils/fs')
+const { readFile, writeFile, removeFiles, copyFiles } = require('../../utils/fs')
 
 const runNvm = require('./utils/run-nvm')
 
@@ -14,9 +15,9 @@ module.exports = async function installNode(cwd, cacheDir, version) {
 
   await source(`${NVM_DIR}/nvm.sh`)
 
-  const nodeVersionCache = path.join(cacheDir, 'node_version')
-  console.log('cache path', nodeVersionCache)
-  if (await fileExists(nodeVersionCache)) {
+  const nodeVersionCache = `${cacheDir}/node_version`
+  console.log('cache path', path.normalize(nodeVersionCache))
+  if (await pathExists(nodeVersionCache)) {
     // Clear nvm dir
     console.log('Started restoring cached node version')
     await removeFiles([`${NVM_DIR}/versions/node/*`], { force: true })
@@ -25,12 +26,12 @@ module.exports = async function installNode(cwd, cacheDir, version) {
     console.log('Finished restoring cached node version')
   }
 
-  const nvmRcPath = path.join(cwd, 'nvmrc')
-  const nodeVersionPath = path.join(cwd, '.node-version')
-  if (await fileExists(nvmRcPath)) {
+  const nvmRcPath = `${cwd}/nvmrc`
+  const nodeVersionPath = `${cwd}/.node-version`
+  if (await pathExists(nvmRcPath)) {
     NODE_VERSION = await readFile(nvmRcPath)
     console.log(`Attempting node version '${NODE_VERSION}' from .nvmrc`)
-  } else if (await fileExists(nodeVersionPath)) {
+  } else if (await pathExists(nodeVersionPath)) {
     NODE_VERSION = await readFile(nvmRcPath)
     console.log(`Attempting node version '${NODE_VERSION}' from .node-version`)
   }
@@ -62,8 +63,8 @@ module.exports = async function installNode(cwd, cacheDir, version) {
   process.env.NODE_VERSION = NODE_VERSION
 
   // Set NPM token if one set
-  const npmConfigPath = path.join(cwd, 'npmrc')
-  if (NPM_TOKEN && !(await fileExists(npmConfigPath))) {
+  const npmConfigPath = `${cwd}/npmrc`
+  if (NPM_TOKEN && !(await pathExists(npmConfigPath))) {
     await writeFile(npmConfigPath, `//registry.npmjs.org/:_authToken=${NPM_TOKEN}`)
   }
 }

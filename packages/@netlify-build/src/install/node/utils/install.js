@@ -1,13 +1,10 @@
-const path = require('path')
-
 const execa = require('execa')
-
-const { fileExists } = require('../../../utils/fs')
+const pathExists = require('path-exists')
 
 /* Install a dep with yarn or npm */
 module.exports = async function installWithYarnOrNpm(name, cwd) {
-  const yarnLock = path.join(cwd, 'yarn.lock')
-  const hasYarnLock = await fileExists(yarnLock)
+  const yarnLock = `${cwd}/yarn.lock`
+  const hasYarnLock = await pathExists(yarnLock)
 
   const [use, cmd] = hasYarnLock ? ['yarn', 'add'] : ['npm', 'install']
 
