@@ -60,8 +60,8 @@ module.exports = async function build(configPath, cliFlags, token) {
     .filter(plug => {
       /* Load enabled plugins only */
       const name = Object.keys(plug)[0]
-      const pluginConfig = plug[name] || {}
-      return pluginConfig.enabled !== false && pluginConfig.enabled !== 'false'
+      const { enabled = true } = plug[name] || {}
+      return enabled
     })
     .reduce(
       (acc, curr) => {
