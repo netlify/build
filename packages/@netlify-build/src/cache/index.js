@@ -3,9 +3,9 @@ const path = require('path')
 const makeDir = require('make-dir')
 const del = require('del')
 const execa = require('execa')
+const pathExists = require('path-exists')
 
 const moveCache = require('../utils/moveCache')
-const { fileExists } = require('../utils/fs')
 
 // https://github.com/netlify/buildbot/blob/4f9545d11ca266bd58b6de4ff24de132b8338287/script/run-build.sh#L38
 // https://github.com/netlify/build-image/blob/9e0f207a27642d0115b1ca97cd5e8cebbe492f63/run-build-functions.sh#L586
@@ -56,9 +56,9 @@ async function cacheArtifacts(cwd, cacheDir) {
   await moveCache(goCache, path.join(cacheDir, '.gimme_cache'), 'go dependencies')
 
   // cache the version of node installed
-  const cacheNodePath = path.join(cacheDir, 'node_version')
-  const cacheNodePathVersion = path.join(cacheNodePath, NODE_VERSION)
-  if (await fileExists(cacheNodePathVersion)) {
+  const cacheNodePath = `${cacheDir}/node_version`
+  const cacheNodePathVersion = `${cacheNodePath}/${NODE_VERSION}`
+  if (await pathExists(cacheNodePathVersion)) {
     // rm -rf $NETLIFY_CACHE_DIR/node_version
     await del(cacheNodePath, { force: true })
     // mkdir $NETLIFY_CACHE_DIR/node_version
@@ -68,10 +68,10 @@ async function cacheArtifacts(cwd, cacheDir) {
   }
 
   // cache the version of ruby installed
-  const rubyPath = path.join(cacheDir, 'ruby_version')
+  const rubyPath = `${cacheDir}/ruby_version`
   if (CUSTOM_RUBY && CUSTOM_RUBY !== '0') {
-    const rubyCustomVersionPath = path.join(rubyPath, `ruby-${RUBY_VERSION}`)
-    if (await fileExists(rubyCustomVersionPath)) {
+    const rubyCustomVersionPath = `${rubyPath}/ruby-${RUBY_VERSION}`
+    if (await pathExists(rubyCustomVersionPath)) {
       // rm -rf $NETLIFY_CACHE_DIR/ruby_version
       await del(rubyPath, { force: true })
       // mkdir $NETLIFY_CACHE_DIR/ruby_version

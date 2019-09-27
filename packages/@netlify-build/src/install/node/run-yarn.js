@@ -1,17 +1,18 @@
 const path = require('path')
 
 const execa = require('execa')
+const pathExists = require('path-exists')
 
 const moveCache = require('../../utils/moveCache')
-const { fileExists, removeFiles, copyFiles } = require('../../utils/fs')
+const { removeFiles, copyFiles } = require('../../utils/fs')
 
 const setTempDir = require('./utils/set-temp-dir')
 
 module.exports = async function runYarn(cwd, cacheDir, yarnVersion) {
-  const yarnCacheDir = path.join(cacheDir, 'yarn')
-  const yarnHomeDir = path.join(process.env.HOME, '.yarn')
+  const yarnCacheDir = `${cacheDir}/yarn`
+  const yarnHomeDir = `${process.env.HOME}/.yarn`
 
-  if (await fileExists(yarnCacheDir)) {
+  if (await pathExists(yarnCacheDir)) {
     /* What does this do?
     export PATH=$NETLIFY_CACHE_DIR/yarn/bin:$PATH
       verify below code

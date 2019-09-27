@@ -1,24 +1,25 @@
 const path = require('path')
 
 const execa = require('execa')
+const pathExists = require('path-exists')
 
 const moveCache = require('../../utils/moveCache')
 const shasum = require('../../utils/shasum')
 const shouldInstallDeps = require('../../utils/shouldInstallDeps')
-const { fileExists, writeFile } = require('../../utils/fs')
+const { writeFile } = require('../../utils/fs')
 
 // https://github.com/netlify/build-image/blob/9e0f207a27642d0115b1ca97cd5e8cebbe492f63/run-build-functions.sh#L313-L332
 module.exports = async function installRubyGems(cwd, cacheDir) {
   const { RUBY_VERSION, BUNDLER_FLAGS } = process.env
-  const gemFile = path.join(cwd, 'Gemfile')
-  const gemBundleDir = path.join(cwd, '.bundle')
-  if (await fileExists(gemFile)) {
+  const gemFile = `${cwd}/Gemfile`
+  const gemBundleDir = `${cwd}/.bundle`
+  if (await pathExists(gemFile)) {
     // restore_cwd_cache ".bundle" "ruby gems"
     await moveCache(path.join(cacheDir, '.bundle'), gemBundleDir, 'restoring cached ruby gems')
 
     const gemLockPath = path.join(cwd, 'Gemfile.lock')
     const previousShaPath = path.join(cacheDir, 'gemfile-sha')
-    if ((await shouldInstallDeps(gemLockPath, RUBY_VERSION, previousShaPath)) || !(await fileExists(gemBundleDir))) {
+    if ((await shouldInstallDeps(gemLockPath, RUBY_VERSION, previousShaPath)) || !(await pathExists(gemBundleDir))) {
       console.log('Installing gem bundle')
       try {
         await execa(

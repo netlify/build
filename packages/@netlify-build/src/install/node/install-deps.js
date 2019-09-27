@@ -1,7 +1,8 @@
 const path = require('path')
 
+const pathExists = require('path-exists')
+
 const moveCache = require('../../utils/moveCache')
-const { fileExists } = require('../../utils/fs')
 
 const runNpm = require('./run-npm')
 const runYarn = require('./run-yarn')
@@ -9,10 +10,10 @@ const runYarn = require('./run-yarn')
 // Install Node project deps
 // https://github.com/netlify/build-image/blob/9e0f207a27642d0115b1ca97cd5e8cebbe492f63/run-build-functions.sh#L366-L378
 module.exports = async function installNodeDeps(cwd, cacheDir, yarnVersion) {
-  const packageJSON = path.join(cwd, 'package.json')
-  const yarnLock = path.join(cwd, 'yarn.lock')
+  const packageJSON = `${cwd}/package.json`
+  const yarnLock = `${cwd}/yarn.lock`
 
-  if (await fileExists(packageJSON)) {
+  if (await pathExists(packageJSON)) {
     // Restory cache node_modules
     await moveCache(
       path.join(cacheDir, 'node_modules'),
@@ -21,7 +22,7 @@ module.exports = async function installNodeDeps(cwd, cacheDir, yarnVersion) {
     )
     console.log('ho')
 
-    if (await fileExists(yarnLock)) {
+    if (await pathExists(yarnLock)) {
       await runYarn(cwd, cacheDir, yarnVersion)
     } else {
       await runNpm(cwd, cacheDir)

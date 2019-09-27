@@ -1,16 +1,16 @@
 const path = require('path')
 
 const execa = require('execa')
+const pathExists = require('path-exists')
 
 const moveCache = require('../../utils/moveCache')
-const { fileExists } = require('../../utils/fs')
 
 // https://github.com/netlify/build-image/blob/9e0f207a27642d0115b1ca97cd5e8cebbe492f63/run-build-functions.sh#L558-L572
 module.exports = async function installWapm(cwd, cacheDir) {
-  const wapmConfig = path.join(cwd, 'wapm.toml')
-  const wapmLock = path.join(cwd, 'wapm.lock')
+  const wapmConfig = `${cwd}/wapm.toml`
+  const wapmLock = `${cwd}/wapm.lock`
 
-  if ((await fileExists(wapmConfig)) || (await fileExists(wapmLock))) {
+  if ((await pathExists(wapmConfig)) || (await pathExists(wapmLock))) {
     // source $HOME/.wasmer/wasmer.sh
     try {
       // @ TODO verify $HOME works here

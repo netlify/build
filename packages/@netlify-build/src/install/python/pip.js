@@ -1,26 +1,26 @@
 const path = require('path')
 
 const execa = require('execa')
+const pathExists = require('path-exists')
 
 const moveCache = require('../../utils/moveCache')
-const { fileExists } = require('../../utils/fs')
 
 // https://github.com/netlify/build-image/blob/9e0f207a27642d0115b1ca97cd5e8cebbe492f63/run-build-functions.sh#L334-L364
 module.exports = async function installPipDeps(cwd, cacheDir) {
   const { PIPENV_RUNTIME, HOME } = process.env
-  const requirementsPath = path.join(cwd, 'requirements.txt')
-  const pipFilePath = path.join(cwd, 'Pipfile')
-  if (await fileExists(requirementsPath)) {
+  const requirementsPath = `${cwd}/requirements.txt`
+  const pipFilePath = `${cwd}/Pipfile`
+  if (await pathExists(requirementsPath)) {
     console.log('Installing pip dependencies')
     await moveCache(path.join(cacheDir, '.cache'), path.join(cwd, '.cache'), 'restoring cached python cached deps')
     try {
-      await execa('pip', ['install', '-r', requirementsPath])
+      await execa('pip', ['install', '-r', path.normalize(requirementsPath)])
     } catch (err) {
       console.log('Error installing pip dependencies')
       process.exit(1)
     }
     console.log('Pip dependencies installed')
-  } else if (await fileExists(pipFilePath)) {
+  } else if (await pathExists(pipFilePath)) {
     console.log('Installing dependencies from Pipfile')
     try {
       await execa(`${HOME}/python${PIPENV_RUNTIME}/bin/pipenv`, ['install'])

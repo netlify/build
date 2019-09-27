@@ -2,8 +2,9 @@ const path = require('path')
 
 const execa = require('execa')
 const makeDir = require('make-dir')
+const pathExists = require('path-exists')
 
-const { readFile, fileExists, removeFiles } = require('../../utils/fs')
+const { readFile, removeFiles } = require('../../utils/fs')
 const moveCache = require('../../utils/moveCache')
 const source = require('../../utils/source')
 
@@ -12,12 +13,12 @@ module.exports = async function installGo(cwd, cacheDir, version) {
   console.log('INSTALL GO')
   const { GIMME_GO_VERSION, GO_IMPORT_PATH, GOPATH } = process.env
   let installGoVersion = version
-  const goVersionFile = path.join(cwd, '.go-version')
+  const goVersionFile = `${cwd}/.go-version`
 
   // Restore cached go
   await moveCache(path.join(cacheDir, 'gimme_cache'), path.join(cwd, 'gimme_cache'), 'restoring cached go cache')
 
-  if (await fileExists(goVersionFile)) {
+  if (await pathExists(goVersionFile)) {
     const goVersion = await readFile(goVersionFile)
     if (goVersion !== version) {
       installGoVersion = goVersion

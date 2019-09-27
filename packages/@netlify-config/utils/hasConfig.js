@@ -1,10 +1,11 @@
-const fs = require('fs')
 const path = require('path')
+
+const pathExists = require('path-exists')
 
 const configFileName = 'netlify'
 
 module.exports = async function getConfigPath(dirPath) {
-  if (isNetlifyFile(dirPath) && (await fileExists(dirPath))) {
+  if (isNetlifyFile(dirPath) && (await pathExists(dirPath))) {
     // Full config path supplied exit early
     return dirPath
   }
@@ -12,7 +13,7 @@ module.exports = async function getConfigPath(dirPath) {
   const formats = ['toml', 'yml', 'yaml', 'json', 'js']
 
   const checkForFiles = formats.map(format => {
-    return fileExists(path.join(dirPath, `${configFileName}.${format}`))
+    return pathExists(`${dirPath}/${configFileName}.${format}`)
   })
 
   const files = await Promise.all(checkForFiles)
@@ -39,13 +40,4 @@ module.exports = async function getConfigPath(dirPath) {
 function isNetlifyFile(filePath) {
   const regex = new RegExp(`${configFileName}.(toml|yml|yaml|json|js)$`)
   return filePath.match(regex)
-}
-
-function fileExists(filePath) {
-  return new Promise((resolve, reject) => {
-    fs.access(filePath, fs.F_OK, err => {
-      if (err) return resolve(false)
-      return resolve(true)
-    })
-  })
 }

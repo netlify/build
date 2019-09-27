@@ -1,18 +1,19 @@
 const path = require('path')
 
 const execa = require('execa')
+const pathExists = require('path-exists')
 
 const moveCache = require('../../utils/moveCache')
-const { fileExists, writeFile } = require('../../utils/fs')
+const { writeFile } = require('../../utils/fs')
 const shasum = require('../../utils/shasum')
 const shouldInstallDeps = require('../../utils/shouldInstallDeps')
 
 // https://github.com/netlify/build-image/blob/9e0f207a27642d0115b1ca97cd5e8cebbe492f63/run-build-functions.sh#L406-L424
 module.exports = async function installLeiningen(cwd, cacheDir) {
   const { JAVA_VERSION } = process.env
-  const leiningenConfig = path.join(cwd, 'project.clj')
+  const leiningenConfig = `${cwd}/project.clj`
 
-  if (await fileExists(leiningenConfig)) {
+  if (await pathExists(leiningenConfig)) {
     // restore_home_cache ".m2" "maven dependencies"
     await moveCache(path.join(cacheDir, '.m2'), path.join(cwd, '.m2'), 'restoring cached maven dependencies')
 

@@ -2,9 +2,10 @@ const os = require('os')
 const path = require('path')
 
 const makeDir = require('make-dir')
+const pathExists = require('path-exists')
 const { zipFunctions } = require('@netlify/zip-it-and-ship-it')
 
-const { fileExists, readDir } = require('../../utils/fs')
+const { readDir } = require('../../utils/fs')
 const { DEPLOY_PRIME_URL, DEPLOY_ID } = process.env
 
 module.exports = {
@@ -19,7 +20,7 @@ module.exports = {
       return false
     }
 
-    if (!(await fileExists(build.functions))) {
+    if (!(await pathExists(build.functions))) {
       console.log(`Functions directory "${build.functions}" not found`)
       throw new Error('Functions Build cancelled')
     }
@@ -31,7 +32,7 @@ module.exports = {
       tempFileDir = path.join(os.tmpdir(), `zisi-${DEPLOY_ID}`)
     }
 
-    if (!(await fileExists(tempFileDir))) {
+    if (!(await pathExists(tempFileDir))) {
       console.log(`Temp functions directory "${tempFileDir}" not found`)
       console.log(`Creating tmp dir`, tempFileDir)
       await makeDir(tempFileDir)

@@ -1,6 +1,5 @@
 const execa = require('execa')
-
-const { fileExists } = require('../../utils/fs')
+const pathExists = require('path-exists')
 
 module.exports = async function prepFunctions(functionsDir, zisiTempDir) {
   if (!functionsDir) {
@@ -8,7 +7,7 @@ module.exports = async function prepFunctions(functionsDir, zisiTempDir) {
     return false
   }
   console.log(`Function Dir: ${functionsDir}`)
-  if (!(await fileExists(functionsDir))) {
+  if (!(await pathExists(functionsDir))) {
     console.log(`Skipping functions preparation step: ${functionsDir} not found`)
     return false
   }

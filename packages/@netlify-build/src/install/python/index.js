@@ -1,16 +1,18 @@
 const path = require('path')
 
+const pathExists = require('path-exists')
+
 const source = require('../../utils/source')
 const moveCache = require('../../utils/moveCache')
-const { readFile, fileExists } = require('../../utils/fs')
+const { readFile } = require('../../utils/fs')
 
 // https://github.com/netlify/build-image/blob/9e0f207a27642d0115b1ca97cd5e8cebbe492f63/run-build-functions.sh#L166
 module.exports = async function installPython(cwd, cacheDir) {
   const { HOME } = process.env
-  const pythonRuntimeConfig = path.join(cwd, 'runtime.txt')
-  const pipFilePath = path.join(cwd, 'Pipfile')
+  const pythonRuntimeConfig = `${cwd}/runtime.txt`
+  const pipFilePath = `${cwd}/Pipfile`
   let PYTHON_VERSION = '2.7'
-  if (await fileExists(pythonRuntimeConfig)) {
+  if (await pathExists(pythonRuntimeConfig)) {
     PYTHON_VERSION = await readFile(pythonRuntimeConfig)
     try {
       const env = await source(`${HOME}/python${PYTHON_VERSION}/bin/activate`)
@@ -21,7 +23,7 @@ module.exports = async function installPython(cwd, cacheDir) {
       process.exit(1)
     }
     console.log(`Python version set to ${PYTHON_VERSION}`)
-  } else if (await fileExists(pipFilePath)) {
+  } else if (await pathExists(pipFilePath)) {
     console.log('Found Pipfile restoring Pipenv virtualenv')
     await moveCache(path.join(cacheDir, '.venv'), path.join(cwd, '.venv'), 'restoring cached python virtualenv')
   } else {
