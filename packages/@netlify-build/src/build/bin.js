@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+require('./colors')
 const chalk = require('chalk')
 const { getConfigFile } = require('@netlify/config')
 const minimist = require('minimist')
