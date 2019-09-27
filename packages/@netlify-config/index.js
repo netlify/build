@@ -1,4 +1,8 @@
+const { resolve } = require('path')
+const { cwd } = require('process')
+
 const configorama = require('configorama')
+const pathExists = require('path-exists')
 
 const getConfigFile = require('./utils/hasConfig')
 
@@ -11,7 +15,13 @@ const dotPropGet = (obj, key, def, p) => {
 }
 
 async function netlifyConfig(configFile, cliFlags) {
-  const config = await configorama(configFile, {
+  const configPath = resolve(cwd(), configFile)
+
+  if (!(await pathExists(configPath))) {
+    throw new Error(`Configuration file does not exist: ${configPath}`)
+  }
+
+  const config = await configorama(configPath, {
     options: cliFlags,
     variableSources: [
       {
