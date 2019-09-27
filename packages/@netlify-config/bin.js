@@ -3,9 +3,11 @@ const path = require('path')
 
 const minimist = require('minimist')
 
-const args = minimist(process.argv.slice(2))
+const { getConfigPath } = require('./path')
+
 const netlifyConfig = require('./index')
-const { getConfigFile } = require('./index')
+
+const args = minimist(process.argv.slice(2))
 
 async function execConfig() {
   let config
@@ -13,7 +15,7 @@ async function execConfig() {
     let configPath
     // No path supplied
     if (!args._ || !args._.length) {
-      configPath = await getConfigFile(process.cwd())
+      configPath = await getConfigPath()
     } else if (args._[0]) {
       // No path arg supplied
       configPath = path.resolve(process.cwd(), args._[0])
