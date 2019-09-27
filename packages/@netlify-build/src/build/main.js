@@ -68,24 +68,20 @@ module.exports = async function build(inputOptions = {}) {
   }
 
   const hooksArray = plugins
-    .filter(plug => {
-      /* Load enabled plugins only */
-      const name = Object.keys(plug)[0]
-      const pluginConfig = plug[name] || {}
-      return pluginConfig.enabled !== false && pluginConfig.enabled !== 'false'
+    .map(plugin => {
+      if (plugin.core) {
+        return plugin
+      }
+
+      const [name] = Object.keys(plugin)
+      const pluginConfig = plugin[name]
+      return { ...pluginConfig, name }
     })
-    .flatMap(curr => {
-      // TODO refactor how plugins are included / checked
-      const keys = Object.keys(curr)
-      const alreadyResolved = keys.some(cur => {
-        return typeof curr[cur] === 'function'
-      }, false)
-
-      const name = curr.name || keys[0]
-      const pluginConfig = curr[name] || {}
-
+    .filter(({ enabled }) => String(enabled) !== 'false')
+    .flatMap(pluginConfig => {
+      const { core, name } = pluginConfig
       console.log(chalk.yellowBright(`Loading plugin "${name}"`))
-      const code = alreadyResolved ? curr : importPlugin(name, baseDir)
+      const code = core ? pluginConfig : importPlugin(name, baseDir)
 
       const pluginSrc = typeof code === 'function' ? code(pluginConfig) : code
 
