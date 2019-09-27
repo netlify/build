@@ -29,6 +29,8 @@ const getColorLevel = function() {
   }
 
   // Guess how many colors are supported, mostly based on environment variables
+  // This allows using 256 colors or 16 million colors on terminals that
+  // support it
   return DEPTH_TO_LEVEL[getColorDepth()]
 }
 
