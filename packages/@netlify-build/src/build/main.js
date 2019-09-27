@@ -2,6 +2,7 @@ const path = require('path')
 
 const chalk = require('chalk')
 const execa = require('execa')
+const filterObj = require('filter-obj')
 const API = require('netlify')
 const resolveConfig = require('@netlify/config')
 const { formatUtils, getConfigFile } = require('@netlify/config')
@@ -105,25 +106,12 @@ module.exports = async function build(configPath, cliFlags, token) {
 
         const pluginSrc = typeof code === 'function' ? code(pluginConfig) : code
 
-        /* Format plugin into useable data */
-        const pluginData = Object.keys(pluginSrc).reduce(
-          (acc, key) => {
-            const config = pluginSrc[key]
-            if (typeof config === 'function') {
-              acc.methods[key] = config
-              return acc
-            }
-            acc.meta[key] = config
-            return acc
-          },
-          {
-            meta: {},
-            methods: {}
-          }
-        )
+        const meta = filterObj(pluginSrc, (key, value) => typeof value !== 'function')
 
         // Map plugins methods in order for later execution
-        Object.keys(pluginData.methods).forEach(hook => {
+        Object.entries(pluginSrc)
+        .filter(([, value]) => typeof value === 'function')
+        .forEach(([hook, method]) => {
           /* Override core functionality */
           // Match string with 1 or more colons
           const override = hook.match(/(?:[^:]*[:]){1,}[^:]*$/)
@@ -138,11 +126,11 @@ module.exports = async function build(configPath, cliFlags, token) {
               acc.lifeCycleHooks[overideMethod] = acc.lifeCycleHooks[overideMethod].map(x => {
                 if (x.name === pluginName) {
                   return {
-                    name: name,
-                    hook: hook,
+                    name,
+                    hook,
                     config: pluginConfig,
-                    meta: pluginData.meta,
-                    method: pluginSrc[hook],
+                    meta,
+                    method,
                     override: {
                       target: pluginName,
                       method: overideMethod
@@ -159,11 +147,11 @@ module.exports = async function build(configPath, cliFlags, token) {
             acc.lifeCycleHooks[hook] = []
           }
           acc.lifeCycleHooks[hook] = acc.lifeCycleHooks[hook].concat({
-            name: name,
-            hook: hook,
-            meta: pluginData.meta,
+            name,
+            hook,
+            meta,
             config: pluginConfig,
-            method: pluginSrc[hook]
+            method
           })
         })
 

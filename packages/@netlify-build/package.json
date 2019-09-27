@@ -30,6 +30,7 @@
     "cpy": "^7.2.0",
     "del": "^4.1.1",
     "execa": "^2.0.3",
+    "filter-obj": "^2.0.0",
     "is-invalid-path": "^1.0.2",
     "lodash.isplainobject": "^4.0.6",
     "make-dir": "^3.0.0",
