@@ -112,7 +112,7 @@ function netlifyPlugin(config) {
     init: config => {
       const srcDirectory = config.pluginConfig.src.directory
       if (!srcDirectory) return console.log(`No src found in ${pkg.name} plugin config`)
-      const directoryPath = path.join(__dirname, `../../${srcDirectory}`)
+      const directoryPath = path.join(config.constants.BASE_DIR, srcDirectory)
 
       //scanning the directory and then reading each file
       fs.readdir(directoryPath, (err, files) => {
