@@ -1,7 +1,7 @@
 const stream = require('stream')
 
 const redactEnv = require('redact-env')
-const isPlainObject = require('lodash.isplainobject')
+const isPlainObject = require('is-plain-obj')
 
 function isObject(value) {
   var type = typeof value
