@@ -33,6 +33,7 @@
     "execa": "^2.0.3",
     "figures": "^3.0.0",
     "filter-obj": "^2.0.0",
+    "group-by": "0.0.1",
     "is-invalid-path": "^1.0.2",
     "is-plain-obj": "^2.0.0",
     "make-dir": "^3.0.0",

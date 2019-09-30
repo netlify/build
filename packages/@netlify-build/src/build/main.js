@@ -12,6 +12,7 @@ const resolveConfig = require('@netlify/config')
 const { formatUtils, getConfigPath } = require('@netlify/config')
 const isPlainObj = require('is-plain-obj')
 const omit = require('omit.js')
+const groupBy = require('group-by')
 require('array-flat-polyfill')
 
 const deepLog = require('../utils/deeplog')
@@ -26,6 +27,7 @@ const { importPlugin } = require('./import')
 const { LIFECYCLE } = require('./lifecycle')
 const { validatePlugin } = require('./validate')
 const { HEADING_PREFIX } = require('./constants')
+const { getOverride, isNotOverridden } = require('./override.js')
 
 // const pt = require('prepend-transform')
 
@@ -65,14 +67,14 @@ module.exports = async function build(inputOptions = {}) {
     console.log(chalk.cyanBright.bold(`${HEADING_PREFIX} Loading plugins`))
   }
 
-  const lifeCycleHooks = plugins
+  const hooksArray = plugins
     .filter(plug => {
       /* Load enabled plugins only */
       const name = Object.keys(plug)[0]
       const pluginConfig = plug[name] || {}
       return pluginConfig.enabled !== false && pluginConfig.enabled !== 'false'
     })
-    .reduce((lifeCycleHooks, curr) => {
+    .flatMap(curr => {
       // TODO refactor how plugins are included / checked
       const keys = Object.keys(curr)
       const alreadyResolved = keys.some(cur => {
@@ -91,47 +93,16 @@ module.exports = async function build(inputOptions = {}) {
 
       const meta = filterObj(pluginSrc, (key, value) => typeof value !== 'function')
 
-      // Map plugins methods in order for later execution
-      Object.entries(pluginSrc)
+      // TODO: validate allowed characters in `pluginSrc` properties
+      return Object.entries(pluginSrc)
         .filter(([, value]) => typeof value === 'function')
-        .map(([hook, method]) => ({ name, hook, pluginConfig, meta, method }))
-        .forEach(lifeCycleHook => {
-          const { hook } = lifeCycleHook
-          /* Override core functionality */
-          // Match string with 1 or more colons
-          const override = hook.match(/(?:[^:]*[:]){1,}[^:]*$/)
-          if (override) {
-            const str = override[0]
-            const [, pluginName, overideMethod] = str.match(/([a-zA-Z/@]+):([a-zA-Z/@:]+)/)
-            // @TODO throw if non existant plugin trying to be overriden?
-            // if (plugin not found) {
-            //   throw new Error(`${pluginName} not found`)
-            // }
-            if (lifeCycleHooks[overideMethod]) {
-              lifeCycleHooks[overideMethod] = lifeCycleHooks[overideMethod].map(x => {
-                if (x.name === pluginName) {
-                  return {
-                    ...lifeCycleHook,
-                    override: {
-                      target: pluginName,
-                      method: overideMethod
-                    }
-                  }
-                }
-                return x
-              })
-              return lifeCycleHooks
-            }
-          }
-          /* End Override core functionality */
-          if (!lifeCycleHooks[hook]) {
-            lifeCycleHooks[hook] = []
-          }
-          lifeCycleHooks[hook] = [...lifeCycleHooks[hook], lifeCycleHook]
+        .map(([hook, method]) => {
+          const override = getOverride(hook)
+          return { name, hook: override.hook || hook, pluginConfig, meta, method, override }
         })
-
-      return lifeCycleHooks
-    }, {})
+    })
+    .filter(isNotOverridden)
+  const lifeCycleHooks = groupBy(hooksArray, 'hook')
 
   if (netlifyConfig.build.lifecycle && netlifyConfig.build.command) {
     throw new Error(
@@ -159,7 +130,8 @@ module.exports = async function build(inputOptions = {}) {
             pluginConfig: {},
             async method() {
               await execCommand(configCommand, 'build.command', redactedKeys)
-            }
+            },
+            override: {}
           }
         : undefined,
       // Merge in config lifecycle events first
@@ -175,7 +147,8 @@ module.exports = async function build(inputOptions = {}) {
               // TODO pass in env vars if not available
               // TODO return stdout?
               await pMapSeries(commands, command => execCommand(command, redactedKeys))
-            }
+            },
+            override: {}
           }
         : undefined,
       ...(lifeCycleHooks[hook] ? lifeCycleHooks[hook] : [])
@@ -369,11 +342,9 @@ const runInstruction = async function({
   netlifyLogs.reset()
 
   console.log()
-  if (override) {
+  if (override.hook) {
     console.log(
-      chalk.redBright.bold(
-        `> OVERRIDE: "${override.method}" method in ${override.target} has been overriden by "${name}"`
-      )
+      chalk.redBright.bold(`> OVERRIDE: "${override.hook}" method in ${override.name} has been overriden by "${name}"`)
     )
   }
   const lifecycleName = error ? '' : 'lifecycle '
