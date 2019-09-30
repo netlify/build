@@ -23,8 +23,7 @@ const LIFECYCLE = [
   ...MAIN_LIFECYCLE,
   /* Build finished */
   'finally',
-  'onError',
-  'scopes'
+  'onError'
 ]
 
 module.exports = { LIFECYCLE }

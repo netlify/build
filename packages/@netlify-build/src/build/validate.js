@@ -14,11 +14,14 @@ const validatePlugin = function(plugin, pluginName) {
 
 const validateProperty = function(value, propName, pluginName) {
   if (typeof value === 'function') {
-    return validateHook(propName, pluginName)
+    validateMethod(propName, pluginName)
+    return
   }
+
+  validateNonMethod(propName, pluginName)
 }
 
-const validateHook = function(propName, pluginName) {
+const validateMethod = function(propName, pluginName) {
   const hook = propName.replace(OVERRIDE_REGEXP, '')
 
   if (!LIFECYCLE.includes(hook)) {
@@ -31,5 +34,16 @@ const validateHook = function(propName, pluginName) {
 
 // Hooks can start with `pluginName:` to override another plugin
 const OVERRIDE_REGEXP = /^[^:]+:/
+
+const validateNonMethod = function(propName, pluginName) {
+  if (!ALLOWED_PROPERTIES.includes(propName)) {
+    console.log(chalk.redBright(`Invalid property '${propName}' in '${pluginName}'.`))
+    console.log(`Please use a property name. One of:`)
+    console.log(`${ALLOWED_PROPERTIES.map(name => `"${name}"`).join(', ')}`)
+    throw new Error('Invalid plugin property')
+  }
+}
+
+const ALLOWED_PROPERTIES = ['name', 'core', 'scopes']
 
 module.exports = { validatePlugin }
