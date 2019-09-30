@@ -124,20 +124,23 @@ module.exports = async function build(configPath, cliFlags, token) {
   const originalConsoleLog = console.log
   console.log = netlifyLogs.patch(redactedKeys)
 
+  const {
+    build: { command: configCommand, lifecycle: configLifecycle }
+  } = netlifyConfig
   /* Get active build instructions */
   const instructions = LIFECYCLE.reduce((acc, hook) => {
     // Support for old command. Add build.command to execution
-    if (netlifyConfig.build.command && hook === 'build') {
+    if (configCommand && hook === 'build') {
       acc = acc.concat({
         name: `config.build.command`,
         hook: 'build',
         config: {},
         method: async () => {
           try {
-            await execCommand(netlifyConfig.build.command, redactedKeys)
+            await execCommand(configCommand, redactedKeys)
           } catch (err) {
             console.log(chalk.redBright(`Error from netlify config.build.command:`))
-            console.log(`"${netlifyConfig.build.command}"`)
+            console.log(`"${configCommand}"`)
             console.log()
             console.log(chalk.redBright('Error message\n'))
             console.log(err.stderr)
@@ -148,15 +151,17 @@ module.exports = async function build(configPath, cliFlags, token) {
       })
     }
     /* Merge in config lifecycle events first */
-    if (netlifyConfig.build.lifecycle && netlifyConfig.build.lifecycle[hook]) {
-      const cmds = netlifyConfig.build.lifecycle[hook]
+    if (configLifecycle && configLifecycle[hook]) {
+      const cmds = configLifecycle[hook]
       acc = acc.concat({
         name: `config.build.lifecycle.${hook}`,
         hook: hook,
         config: {},
         method: async () => {
           try {
-            const commands = Array.isArray(cmds) ? cmds : cmds.split('\n')
+            const commands = Array.isArray(configLifecycle[hook])
+              ? configLifecycle[hook]
+              : configLifecycle[hook].split('\n')
             const doCommands = commands.reduce(async (promiseChain, curr) => {
               const data = await promiseChain
               // TODO pass in env vars if not available
@@ -167,7 +172,7 @@ module.exports = async function build(configPath, cliFlags, token) {
             const output = await doCommands // eslint-disable-line
           } catch (err) {
             console.log(chalk.redBright(`Error from netlify config build.lifecycle.${hook} n from command:`))
-            console.log(`"${netlifyConfig.build.lifecycle[hook]}"`)
+            console.log(`"${configLifecycle[hook]}"`)
             console.log()
             console.log(chalk.redBright('Error message\n'))
             console.log(err.stderr)
