@@ -17,37 +17,9 @@ const netlifyLogs = require('../utils/patch-logs')
 const defaultPlugins = require('../plugins')
 
 const { importPlugin } = require('./import')
+const { LIFECYCLE } = require('./lifecycle')
 
 // const pt = require('prepend-transform')
-
-const MAIN_LIFECYCLE = [
-  /* Fetch previous build cache */
-  'getCache',
-  /* Install project dependancies */
-  'install',
-  /* Build the site & functions */
-  'build', // 'build:site', 'build:function',
-  'buildSite',
-  'buildFunctions',
-  /* Package & optimize artifact */
-  'package',
-  /* Deploy built artifact */
-  'deploy',
-  /* Save cached assets */
-  'saveCache',
-  /* Outputs manifest of resources created */
-  'manifest'
-].flatMap(hook => [`pre${hook}`, hook, `post${hook}`])
-
-const LIFECYCLE = [
-  /* Build initialization steps */
-  'init',
-  ...MAIN_LIFECYCLE,
-  /* Build finished */
-  'finally',
-  'onError',
-  'scopes'
-]
 
 const TIME_KEY = 'Netlify Build'
 
