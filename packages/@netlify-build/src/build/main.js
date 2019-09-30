@@ -7,7 +7,6 @@ const filterObj = require('filter-obj')
 const API = require('netlify')
 const resolveConfig = require('@netlify/config')
 const { formatUtils, getConfigFile } = require('@netlify/config')
-const isPlainObj = require('is-plain-obj')
 require('array-flat-polyfill')
 
 const deepLog = require('../utils/deeplog')
@@ -18,6 +17,7 @@ const defaultPlugins = require('../plugins')
 
 const { importPlugin } = require('./import')
 const { LIFECYCLE } = require('./lifecycle')
+const { validatePlugin } = require('./validate')
 
 // const pt = require('prepend-transform')
 
@@ -63,9 +63,7 @@ module.exports = async function build(configPath, cliFlags, token) {
 
       const pluginSrc = typeof code === 'function' ? code(pluginConfig) : code
 
-      if (!isPlainObj(pluginSrc)) {
-        throw new Error(`Plugin ${name} is malformed. Must be object or function`)
-      }
+      validatePlugin(pluginSrc, name)
 
       const meta = filterObj(pluginSrc, (key, value) => typeof value !== 'function')
 
@@ -114,22 +112,6 @@ module.exports = async function build(configPath, cliFlags, token) {
   if (!netlifyConfig.build) {
     throw new Error('No build settings found')
   }
-
-  /* Validate lifecyle key name */
-  Object.keys(lifeCycleHooks).forEach((name, i) => {
-    const info = lifeCycleHooks[name]
-    if (!LIFECYCLE.includes(name)) {
-      const brokenPlugins = info
-        .map(plug => {
-          return plug.name
-        })
-        .join(',')
-      console.log(chalk.redBright(`Invalid lifecycle hook "${name}" in ${brokenPlugins}.`))
-      console.log(`Please use a valid event name. One of:`)
-      console.log(`${LIFECYCLE.map(n => `"${n}"`).join(', ')}`)
-      throw new Error(`Invalid lifecycle hook`)
-    }
-  })
 
   if (netlifyConfig.build && netlifyConfig.build.lifecycle && netlifyConfig.build.command) {
     throw new Error(
