@@ -130,59 +130,59 @@ module.exports = async function build(configPath, cliFlags, token) {
   /* Get active build instructions */
   const instructions = LIFECYCLE.flatMap(hook => {
     return [
-    // Support for old command. Add build.command to execution
-    configCommand && hook === 'build'
-    ? {
-        name: `config.build.command`,
-        hook: 'build',
-        config: {},
-        async method() {
-          try {
-            await execCommand(configCommand, redactedKeys)
-          } catch (err) {
-            console.log(chalk.redBright(`Error from netlify config.build.command:`))
-            console.log(`"${configCommand}"`)
-            console.log()
-            console.log(chalk.redBright('Error message\n'))
-            console.log(err.stderr)
-            console.log()
-            process.exit(1)
+      // Support for old command. Add build.command to execution
+      configCommand && hook === 'build'
+        ? {
+            name: `config.build.command`,
+            hook: 'build',
+            config: {},
+            async method() {
+              try {
+                await execCommand(configCommand, redactedKeys)
+              } catch (err) {
+                console.log(chalk.redBright(`Error from netlify config.build.command:`))
+                console.log(`"${configCommand}"`)
+                console.log()
+                console.log(chalk.redBright('Error message\n'))
+                console.log(err.stderr)
+                console.log()
+                process.exit(1)
+              }
+            }
           }
-        }
-      }
-    : undefined,
-    // Merge in config lifecycle events first
-    configLifecycle && configLifecycle[hook]
-    ? {
-        name: `config.build.lifecycle.${hook}`,
-        hook,
-        config: {},
-        async method() {
-          try {
-            const commands = Array.isArray(configLifecycle[hook])
-              ? configLifecycle[hook]
-              : configLifecycle[hook].split('\n')
-            const doCommands = commands.reduce(async (promiseChain, curr) => {
-              const data = await promiseChain
-              // TODO pass in env vars if not available
-              const stdout = await execCommand(curr, redactedKeys)
-              return Promise.resolve(data.concat(stdout))
-            }, Promise.resolve([]))
-            // TODO return stdout?
-            const output = await doCommands // eslint-disable-line
-          } catch (err) {
-            console.log(chalk.redBright(`Error from netlify config build.lifecycle.${hook} n from command:`))
-            console.log(`"${configLifecycle[hook]}"`)
-            console.log()
-            console.log(chalk.redBright('Error message\n'))
-            console.log(err.stderr)
-            console.log()
-            process.exit(1)
+        : undefined,
+      // Merge in config lifecycle events first
+      configLifecycle && configLifecycle[hook]
+        ? {
+            name: `config.build.lifecycle.${hook}`,
+            hook,
+            config: {},
+            async method() {
+              try {
+                const commands = Array.isArray(configLifecycle[hook])
+                  ? configLifecycle[hook]
+                  : configLifecycle[hook].split('\n')
+                const doCommands = commands.reduce(async (promiseChain, curr) => {
+                  const data = await promiseChain
+                  // TODO pass in env vars if not available
+                  const stdout = await execCommand(curr, redactedKeys)
+                  return Promise.resolve(data.concat(stdout))
+                }, Promise.resolve([]))
+                // TODO return stdout?
+                const output = await doCommands // eslint-disable-line
+              } catch (err) {
+                console.log(chalk.redBright(`Error from netlify config build.lifecycle.${hook} n from command:`))
+                console.log(`"${configLifecycle[hook]}"`)
+                console.log()
+                console.log(chalk.redBright('Error message\n'))
+                console.log(err.stderr)
+                console.log()
+                process.exit(1)
+              }
+            }
           }
-        }
-      }
-    : undefined,
-    ...(lifeCycleHooks[hook] ? lifeCycleHooks[hook] : [])
+        : undefined,
+      ...(lifeCycleHooks[hook] ? lifeCycleHooks[hook] : [])
     ].filter(Boolean)
   })
 
