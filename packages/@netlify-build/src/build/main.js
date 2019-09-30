@@ -92,7 +92,9 @@ module.exports = async function build(configPath, cliFlags, token) {
       // Map plugins methods in order for later execution
       Object.entries(pluginSrc)
         .filter(([, value]) => typeof value === 'function')
-        .forEach(([hook, method]) => {
+        .map(([hook, method]) => ({ name, hook, config: pluginConfig, meta, method }))
+        .forEach(lifeCycleHook => {
+          const { hook } = lifeCycleHook
           /* Override core functionality */
           // Match string with 1 or more colons
           const override = hook.match(/(?:[^:]*[:]){1,}[^:]*$/)
@@ -107,11 +109,7 @@ module.exports = async function build(configPath, cliFlags, token) {
               lifeCycleHooks[overideMethod] = lifeCycleHooks[overideMethod].map(x => {
                 if (x.name === pluginName) {
                   return {
-                    name,
-                    hook,
-                    config: pluginConfig,
-                    meta,
-                    method,
+                    ...lifeCycleHook,
                     override: {
                       target: pluginName,
                       method: overideMethod
@@ -127,13 +125,7 @@ module.exports = async function build(configPath, cliFlags, token) {
           if (!lifeCycleHooks[hook]) {
             lifeCycleHooks[hook] = []
           }
-          lifeCycleHooks[hook] = lifeCycleHooks[hook].concat({
-            name,
-            hook,
-            meta,
-            config: pluginConfig,
-            method
-          })
+          lifeCycleHooks[hook] = [...lifeCycleHooks[hook], lifeCycleHook]
         })
 
       return lifeCycleHooks
