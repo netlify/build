@@ -61,7 +61,7 @@ module.exports = async function build(configPath, cliFlags, token) {
   console.log()
 
   const plugins = [...defaultPlugins, ...(netlifyConfig.plugins || [])]
-  const allPlugins = plugins
+  const lifeCycleHooks = plugins
     .filter(plug => {
       /* Load enabled plugins only */
       const name = Object.keys(plug)[0]
@@ -69,7 +69,7 @@ module.exports = async function build(configPath, cliFlags, token) {
       return pluginConfig.enabled !== false && pluginConfig.enabled !== 'false'
     })
     .reduce(
-      (acc, curr) => {
+      (lifeCycleHooks, curr) => {
         // TODO refactor how plugins are included / checked
         const keys = Object.keys(curr)
         const alreadyResolved = keys.some(cur => {
@@ -104,8 +104,8 @@ module.exports = async function build(configPath, cliFlags, token) {
               // if (plugin not found) {
               //   throw new Error(`${pluginName} not found`)
               // }
-              if (acc.lifeCycleHooks[overideMethod]) {
-                acc.lifeCycleHooks[overideMethod] = acc.lifeCycleHooks[overideMethod].map(x => {
+              if (lifeCycleHooks[overideMethod]) {
+                lifeCycleHooks[overideMethod] = lifeCycleHooks[overideMethod].map(x => {
                   if (x.name === pluginName) {
                     return {
                       name,
@@ -121,14 +121,14 @@ module.exports = async function build(configPath, cliFlags, token) {
                   }
                   return x
                 })
-                return acc
+                return lifeCycleHooks
               }
             }
             /* End Override core functionality */
-            if (!acc.lifeCycleHooks[hook]) {
-              acc.lifeCycleHooks[hook] = []
+            if (!lifeCycleHooks[hook]) {
+              lifeCycleHooks[hook] = []
             }
-            acc.lifeCycleHooks[hook] = acc.lifeCycleHooks[hook].concat({
+            lifeCycleHooks[hook] = lifeCycleHooks[hook].concat({
               name,
               hook,
               meta,
@@ -137,18 +137,14 @@ module.exports = async function build(configPath, cliFlags, token) {
             })
           })
 
-        return acc
+        return lifeCycleHooks
       },
-      {
-        lifeCycleHooks: {}
-      }
+      {}
     )
 
   if (!netlifyConfig.build) {
     throw new Error('No build settings found')
   }
-  // console.log('Build Lifecycle:')
-  // deepLog(allPlugins)
 
   // Add pre & post hooks
   let fullLifecycle = lifecycle.reduce((acc, hook) => {
@@ -161,11 +157,10 @@ module.exports = async function build(configPath, cliFlags, token) {
   }, [])
 
   fullLifecycle = fullLifecycle.concat(['onError', 'scopes'])
-  // console.log('fullLifecycle', fullLifecycle)
 
   /* Validate lifecyle key name */
-  Object.keys(allPlugins.lifeCycleHooks).forEach((name, i) => {
-    const info = allPlugins.lifeCycleHooks[name]
+  Object.keys(lifeCycleHooks).forEach((name, i) => {
+    const info = lifeCycleHooks[name]
     if (!fullLifecycle.includes(name)) {
       const brokenPlugins = info
         .map(plug => {
@@ -245,8 +240,8 @@ module.exports = async function build(configPath, cliFlags, token) {
       })
     }
 
-    if (allPlugins.lifeCycleHooks[n]) {
-      acc = acc.concat(allPlugins.lifeCycleHooks[n])
+    if (lifeCycleHooks[n]) {
+      acc = acc.concat(lifeCycleHooks[n])
     }
     return acc
   }, [])
