@@ -128,14 +128,15 @@ module.exports = async function build(configPath, cliFlags, token) {
     build: { command: configCommand, lifecycle: configLifecycle }
   } = netlifyConfig
   /* Get active build instructions */
-  const instructions = LIFECYCLE.reduce((acc, hook) => {
+  const instructions = LIFECYCLE.flatMap(hook => {
+    return [
     // Support for old command. Add build.command to execution
-    if (configCommand && hook === 'build') {
-      acc = acc.concat({
+    configCommand && hook === 'build'
+    ? {
         name: `config.build.command`,
         hook: 'build',
         config: {},
-        method: async () => {
+        async method() {
           try {
             await execCommand(configCommand, redactedKeys)
           } catch (err) {
@@ -148,16 +149,15 @@ module.exports = async function build(configPath, cliFlags, token) {
             process.exit(1)
           }
         }
-      })
-    }
-    /* Merge in config lifecycle events first */
-    if (configLifecycle && configLifecycle[hook]) {
-      const cmds = configLifecycle[hook]
-      acc = acc.concat({
+      }
+    : undefined,
+    // Merge in config lifecycle events first
+    configLifecycle && configLifecycle[hook]
+    ? {
         name: `config.build.lifecycle.${hook}`,
-        hook: hook,
+        hook,
         config: {},
-        method: async () => {
+        async method() {
           try {
             const commands = Array.isArray(configLifecycle[hook])
               ? configLifecycle[hook]
@@ -180,14 +180,11 @@ module.exports = async function build(configPath, cliFlags, token) {
             process.exit(1)
           }
         }
-      })
-    }
-
-    if (lifeCycleHooks[hook]) {
-      acc = acc.concat(lifeCycleHooks[hook])
-    }
-    return acc
-  }, [])
+      }
+    : undefined,
+    ...(lifeCycleHooks[hook] ? lifeCycleHooks[hook] : [])
+    ].filter(Boolean)
+  })
 
   const buildInstructions = instructions.filter(instruction => {
     return instruction.hook !== 'onError'
