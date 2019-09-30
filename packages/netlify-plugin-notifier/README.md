@@ -10,16 +10,16 @@ Send messages during different build lifecycle events
 plugins:
   - netlify-plugin-notifier:
       notices:
-        - event: 'postbuild'
+        - event: buildEnd
           type: email
           to: david@netlify.com
           subject: 'Your site is ready!'
           message: 'Horray!'
-        - event: 'postbuild'
+        - event: buildEnd
           type: sms
           to: '222-222-2222'
           message: 'Your build is published!'
-        - event: 'buildfailed'
+        - event: buildFailed
           type: webhook
           endpoint: 'https://my-webhook-endpoint.com/api'
           message: 'Your site build failed sorry charlie'

@@ -48,7 +48,7 @@ async function makeSitemap(opts = {}) {
 function netlifySitemapPlugin(conf = {}) {
   return {
     // Hook into lifecycle
-    postbuild: async () => {
+    buildEnd: async () => {
       const siteUrl = conf.baseUrl || process.env.SITE
       if (!siteUrl) {
         throw new Error('Sitemap plugin missing homepage value')

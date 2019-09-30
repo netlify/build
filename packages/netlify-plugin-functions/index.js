@@ -6,7 +6,7 @@ const { zipFunction } = require('@netlify/zip-it-and-ship-it')
 function netlifyFunctionsPlugin(conf = {}) {
   return {
     name: 'netlify-functions',
-    postbuild: async ({ netlifyConfig }) => {
+    buildEnd: async ({ netlifyConfig }) => {
       console.log('Configuring Functions...', netlifyConfig)
       if (!conf.functions) {
         throw new Error('You must provide functions to the functions plugin')

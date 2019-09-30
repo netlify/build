@@ -29,7 +29,7 @@ function netlifyLighthousePlugin(conf) {
   if (typeof compareWithVersion === `undefined`) compareWithVersion = 'init' // will just come up undefined if doesn't exist
   return {
     /* Run lighthouse on post deploy */
-    postdeploy: async () => {
+    deployEnd: async () => {
       const site = conf.site || process.env.SITE
 
       // TODO: fetch previous scores from cache

@@ -64,7 +64,7 @@ phases:
     commands:
       - echo Build started on `date`
       - mvn test
-  post_build:
+  buildEnd:
     commands:
       - echo Build completed on `date`
       - mvn package

@@ -57,19 +57,19 @@ const lifecycle = [
 ]
 ```
 
-The Lifecycle flows through events and their `pre` and `post` counterparts.
+The Lifecycle flows through events and their `*Start` and `*End` counterparts.
 
-`pre` happens before a specific event
+`*Start` happens before a specific event
 
-`post` happens before a specific event
+`*End` happens before a specific event
 
 ```
       ┌───────────────┬────────────────┬──────────────────┐
-      │      pre      │     event      │       post       │
+      │    *Start     │     event      │       *End       │
       ├───────────────┼────────────────┼──────────────────┤
       │               │                │                  │
       │               │                │                  │
-...   │   prebuild    │     build      │    postbuild     │   ...
+...   │  buildStart   │     build      │     buildEnd     │   ...
       │               │                │                  │
       │               │                │                  │
       └───────────────┤                ├──────────────────┘
@@ -82,7 +82,7 @@ The Lifecycle flows through events and their `pre` and `post` counterparts.
 
 **Example:**
 
-`prebuild` runs first, then `build`, then `postbuild` in that order.
+`buildStart` runs first, then `build`, then `buildEnd` in that order.
 
 This applies to all lifecycle events listed above.
 
@@ -97,8 +97,8 @@ function exampleNetlifyPlugin(config) {
     init: () => {
       console.log('Do custom thing when buildbot initializes')
     },
-    // Hook into `postbuild` lifecycle
-    postbuild: () => {
+    // Hook into `buildEnd` lifecycle
+    buildEnd: () => {
       console.log('Build finished. Do custom thing')
     }
     // ... etc
@@ -143,7 +143,7 @@ build:
       - echo "much wow"
     getCache:
       - echo 'curl custom cache'
-    prebuild: echo "${secrets:privateKey}"
+    buildStart: echo "${secrets:privateKey}"
     build: |
       echo 'Hello Netlify Build!'
       npm run build

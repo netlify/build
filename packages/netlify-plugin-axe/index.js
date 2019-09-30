@@ -9,7 +9,7 @@ function netlifyAxePlugin(conf /* createStore */) {
       await execa('chmod', ['-R', '+rw', `.axe-results`])
     },
     /* Run axe on post deploy */
-    postdeploy: async () => {
+    deployEnd: async () => {
       const site = conf.site || process.env.SITE
 
       await execa(`axe ${site} ${axeFlags} --save .axe-results/result.json`, {

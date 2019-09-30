@@ -15,7 +15,7 @@ const MAIN_LIFECYCLE = [
   'saveCache',
   /* Outputs manifest of resources created */
   'manifest'
-].flatMap(hook => [`pre${hook}`, hook, `post${hook}`])
+].flatMap(hook => [`${hook}Start`, hook, `${hook}End`])
 
 const LIFECYCLE = [
   /* Build initialization steps */
