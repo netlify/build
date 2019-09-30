@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 require('./colors')
 const chalk = require('chalk')
-const { getConfigFile } = require('@netlify/config')
+const { getConfigPath } = require('@netlify/config')
 const minimist = require('minimist')
 
 const cleanStack = require('../utils/clean-stack')
@@ -14,13 +14,12 @@ async function execBuild() {
   console.log(chalk.greenBright.bold(`Starting Netlify Build`))
   console.log()
   // Automatically resolve the config path
-  const configPath = await getConfigFile(process.cwd())
+  const configPath = await getConfigPath(process.cwd())
 
   console.log(chalk.cyanBright.bold(`Using config file:`))
   console.log(configPath)
   console.log()
   // Then run build lifecycle
-  console.log('process.argv', process.argv)
 
   // Redact argv so raw API key not exposed
   let skipNext = false
@@ -36,8 +35,7 @@ async function execBuild() {
     }
     return acc.concat(value)
   }, [])
-  console.log('newArgv', newArgv)
-  await build(configPath, args, args.token)
+  await build(configPath, newArgv, args.token)
 }
 
 execBuild()
