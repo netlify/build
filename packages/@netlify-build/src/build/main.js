@@ -8,6 +8,7 @@ const API = require('netlify')
 const resolveConfig = require('@netlify/config')
 const { formatUtils, getConfigFile } = require('@netlify/config')
 const isPlainObj = require('is-plain-obj')
+require('array-flat-polyfill')
 
 const deepLog = require('../utils/deeplog')
 const { writeFile } = require('../utils/fs')
@@ -18,9 +19,8 @@ const defaultPlugins = require('../plugins')
 const { importPlugin } = require('./import')
 
 // const pt = require('prepend-transform')
-const lifecycle = [
-  /* Build initialization steps */
-  'init',
+
+const MAIN_LIFECYCLE = [
   /* Fetch previous build cache */
   'getCache',
   /* Install project dependancies */
@@ -36,9 +36,17 @@ const lifecycle = [
   /* Save cached assets */
   'saveCache',
   /* Outputs manifest of resources created */
-  'manifest',
+  'manifest'
+].flatMap(hook => [`pre${hook}`, hook, `post${hook}`])
+
+const LIFECYCLE = [
+  /* Build initialization steps */
+  'init',
+  ...MAIN_LIFECYCLE,
   /* Build finished */
-  'finally'
+  'finally',
+  'onError',
+  'scopes'
 ]
 
 const TIME_KEY = 'Netlify Build'
@@ -135,22 +143,10 @@ module.exports = async function build(configPath, cliFlags, token) {
     throw new Error('No build settings found')
   }
 
-  // Add pre & post hooks
-  let fullLifecycle = lifecycle.reduce((acc, hook) => {
-    if (hook === 'finally' || hook === 'init') {
-      acc = acc.concat([hook])
-      return acc
-    }
-    acc = acc.concat([preFix(hook), hook, postFix(hook)])
-    return acc
-  }, [])
-
-  fullLifecycle = fullLifecycle.concat(['onError', 'scopes'])
-
   /* Validate lifecyle key name */
   Object.keys(lifeCycleHooks).forEach((name, i) => {
     const info = lifeCycleHooks[name]
-    if (!fullLifecycle.includes(name)) {
+    if (!LIFECYCLE.includes(name)) {
       const brokenPlugins = info
         .map(plug => {
           return plug.name
@@ -158,7 +154,7 @@ module.exports = async function build(configPath, cliFlags, token) {
         .join(',')
       console.log(chalk.redBright(`Invalid lifecycle hook "${name}" in ${brokenPlugins}.`))
       console.log(`Please use a valid event name. One of:`)
-      console.log(`${fullLifecycle.map(n => `"${n}"`).join(', ')}`)
+      console.log(`${LIFECYCLE.map(n => `"${n}"`).join(', ')}`)
       throw new Error(`Invalid lifecycle hook`)
     }
   })
@@ -176,7 +172,7 @@ module.exports = async function build(configPath, cliFlags, token) {
   console.log = netlifyLogs.patch(redactedKeys)
 
   /* Get active build instructions */
-  const instructions = fullLifecycle.reduce((acc, n) => {
+  const instructions = LIFECYCLE.reduce((acc, n) => {
     // Support for old command. Add build.command to execution
     if (netlifyConfig.build.command && n === 'build') {
       acc = acc.concat({
@@ -323,14 +319,6 @@ const getBaseDir = function(netlifyConfigPath) {
   }
 
   return path.dirname(netlifyConfigPath)
-}
-
-function preFix(hook) {
-  return `pre${hook}`
-}
-
-function postFix(hook) {
-  return `post${hook}`
 }
 
 async function execCommand(cmd, secrets) {
