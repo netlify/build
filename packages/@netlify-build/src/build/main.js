@@ -137,17 +137,7 @@ module.exports = async function build(configPath, cliFlags, token) {
             hook: 'build',
             config: {},
             async method() {
-              try {
-                await execCommand(configCommand, redactedKeys)
-              } catch (err) {
-                console.log(chalk.redBright(`Error from netlify config.build.command:`))
-                console.log(`"${configCommand}"`)
-                console.log()
-                console.log(chalk.redBright('Error message\n'))
-                console.log(err.stderr)
-                console.log()
-                process.exit(1)
-              }
+              await execCommand(configCommand, 'build.command', redactedKeys)
             }
           }
         : undefined,
@@ -158,27 +148,17 @@ module.exports = async function build(configPath, cliFlags, token) {
             hook,
             config: {},
             async method() {
-              try {
-                const commands = Array.isArray(configLifecycle[hook])
-                  ? configLifecycle[hook]
-                  : configLifecycle[hook].split('\n')
-                const doCommands = commands.reduce(async (promiseChain, curr) => {
-                  const data = await promiseChain
-                  // TODO pass in env vars if not available
-                  const stdout = await execCommand(curr, redactedKeys)
-                  return Promise.resolve(data.concat(stdout))
-                }, Promise.resolve([]))
-                // TODO return stdout?
-                const output = await doCommands // eslint-disable-line
-              } catch (err) {
-                console.log(chalk.redBright(`Error from netlify config build.lifecycle.${hook} n from command:`))
-                console.log(`"${configLifecycle[hook]}"`)
-                console.log()
-                console.log(chalk.redBright('Error message\n'))
-                console.log(err.stderr)
-                console.log()
-                process.exit(1)
-              }
+              const commands = Array.isArray(configLifecycle[hook])
+                ? configLifecycle[hook]
+                : configLifecycle[hook].split('\n')
+              const doCommands = commands.reduce(async (promiseChain, curr) => {
+                const data = await promiseChain
+                // TODO pass in env vars if not available
+                const stdout = await execCommand(curr, `build.lifecycle.${hook}`, redactedKeys)
+                return Promise.resolve(data.concat(stdout))
+              }, Promise.resolve([]))
+              // TODO return stdout?
+              const output = await doCommands // eslint-disable-line
             }
           }
         : undefined,
@@ -276,7 +256,7 @@ const getBaseDir = function(netlifyConfigPath) {
   return path.dirname(netlifyConfigPath)
 }
 
-async function execCommand(cmd, secrets) {
+async function execCommand(cmd, name, secrets) {
   console.log(chalk.yellowBright(`Running "${cmd}"`))
   const subprocess = execa(`${cmd}`, { shell: true })
   subprocess.stdout
@@ -287,8 +267,18 @@ async function execCommand(cmd, secrets) {
       process.stdout,
       { end: true }
     )
-  const { stdout } = await subprocess
-  return stdout
+  try {
+    const { stdout } = await subprocess
+    return stdout
+  } catch (err) {
+    console.log(chalk.redBright(`Error from netlify config ${name}:`))
+    console.log(`"${cmd}"`)
+    console.log()
+    console.log(chalk.redBright('Error message\n'))
+    console.log(err.stderr)
+    console.log()
+    process.exit(1)
+  }
 }
 
 /**
