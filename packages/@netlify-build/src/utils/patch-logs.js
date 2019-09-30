@@ -6,15 +6,16 @@ const { redactValues } = require('./redact')
 
 function monkeyPatchLogs(secrets) {
   return {
-    apply(target, ctx, args) {
+    apply(proxy, context, args) {
       if (!args.length) {
-        return Reflect.apply(...arguments)
+        return Reflect.apply(proxy, context, args)
       }
+
       // console.warn('arguments', args)
       // update ARGS
       const isTimer = args && args[0] && args[0] === '%s: %sms'
       if (isTimer) {
-        const timing = args.map((a, i) => {
+        const redactedArgs = args.map((a, i) => {
           if (i === 0) {
             return '%s %sms'
           }
@@ -25,12 +26,11 @@ function monkeyPatchLogs(secrets) {
           }
           return a
         })
-        arguments['2'] = timing
-        return Reflect.apply(...arguments)
+        return Reflect.apply(proxy, context, redactedArgs)
       }
-      let prefixSet = false
 
-      arguments['2'] = args.map(a => {
+      let prefixSet = false
+      const redactedArgs = args.map(a => {
         const redactedLog = redactValues(a, secrets)
         if (typeof a === 'object') {
           return util.inspect(redactedLog, {
@@ -47,7 +47,7 @@ function monkeyPatchLogs(secrets) {
         }
         return redactedLog
       })
-      return Reflect.apply(...arguments)
+      return Reflect.apply(proxy, context, redactedArgs)
     }
   }
 }
