@@ -15,4 +15,4 @@ const getConfigPath = async function(cwd) {
 
 const FILENAMES = ['netlify.toml', 'netlify.yml', 'netlify.yaml', 'netlify.json', 'netlify.js']
 
-module.exports = { getConfigPath }
+module.exports = getConfigPath
