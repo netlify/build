@@ -125,9 +125,9 @@ module.exports = async function build(configPath, cliFlags, token) {
   console.log = netlifyLogs.patch(redactedKeys)
 
   /* Get active build instructions */
-  const instructions = LIFECYCLE.reduce((acc, n) => {
+  const instructions = LIFECYCLE.reduce((acc, hook) => {
     // Support for old command. Add build.command to execution
-    if (netlifyConfig.build.command && n === 'build') {
+    if (netlifyConfig.build.command && hook === 'build') {
       acc = acc.concat({
         name: `config.build.command`,
         hook: 'build',
@@ -148,11 +148,11 @@ module.exports = async function build(configPath, cliFlags, token) {
       })
     }
     /* Merge in config lifecycle events first */
-    if (netlifyConfig.build.lifecycle && netlifyConfig.build.lifecycle[n]) {
-      const cmds = netlifyConfig.build.lifecycle[n]
+    if (netlifyConfig.build.lifecycle && netlifyConfig.build.lifecycle[hook]) {
+      const cmds = netlifyConfig.build.lifecycle[hook]
       acc = acc.concat({
-        name: `config.build.lifecycle.${n}`,
-        hook: n,
+        name: `config.build.lifecycle.${hook}`,
+        hook: hook,
         config: {},
         method: async () => {
           try {
@@ -166,8 +166,8 @@ module.exports = async function build(configPath, cliFlags, token) {
             // TODO return stdout?
             const output = await doCommands // eslint-disable-line
           } catch (err) {
-            console.log(chalk.redBright(`Error from netlify config build.lifecycle.${n} n from command:`))
-            console.log(`"${netlifyConfig.build.lifecycle[n]}"`)
+            console.log(chalk.redBright(`Error from netlify config build.lifecycle.${hook} n from command:`))
+            console.log(`"${netlifyConfig.build.lifecycle[hook]}"`)
             console.log()
             console.log(chalk.redBright('Error message\n'))
             console.log(err.stderr)
@@ -178,8 +178,8 @@ module.exports = async function build(configPath, cliFlags, token) {
       })
     }
 
-    if (lifeCycleHooks[n]) {
-      acc = acc.concat(lifeCycleHooks[n])
+    if (lifeCycleHooks[hook]) {
+      acc = acc.concat(lifeCycleHooks[hook])
     }
     return acc
   }, [])
