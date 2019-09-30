@@ -15,16 +15,15 @@ const { writeFile } = require('../utils/fs')
 const { getSecrets, redactStream } = require('../utils/redact')
 const netlifyLogs = require('../utils/patch-logs')
 const defaultPlugins = require('../plugins')
+const { startTimer, endTimer } = require('../utils/timer')
 
 const { importPlugin } = require('./import')
 const { LIFECYCLE } = require('./lifecycle')
 
 // const pt = require('prepend-transform')
 
-const TIME_KEY = 'Netlify Build'
-
 module.exports = async function build(configPath, cliFlags, token) {
-  console.time(TIME_KEY)
+  const buildTimer = startTimer()
   const netlifyConfigPath = configPath || cliFlags.config
   const baseDir = getBaseDir(netlifyConfigPath)
   const netlifyToken = token || process.env.NETLIFY_TOKEN || cliFlags.token
@@ -280,7 +279,7 @@ module.exports = async function build(configPath, cliFlags, token) {
     await writeFile(tomlPath, toml)
     console.log(`TOML file written to ${tomlPath}`)
   }
-  console.timeEnd(TIME_KEY)
+  endTimer('Netlify Build', buildTimer)
   // Reset console.log for CLI
   console.log = originalConsoleLog
 }
@@ -320,7 +319,7 @@ async function engine({ instructions, netlifyConfig, netlifyConfigPath, netlifyT
     const meta = plugin.meta || {}
     const currentData = await promiseChain
     if (method && typeof method === 'function') {
-      console.time(name)
+      const methodTimer = startTimer()
       const source = name.match(/^config\.build/) ? 'via config' : 'plugin'
       // reset logs context
       netlifyLogs.reset()
@@ -417,7 +416,7 @@ async function engine({ instructions, netlifyConfig, netlifyConfigPath, netlifyT
           error: error
         })
         console.log()
-        console.timeEnd(name)
+        endTimer(name.replace('config.', ''), methodTimer)
         if (pluginReturnValue) {
           return Promise.resolve(Object.assign({}, currentData, pluginReturnValue))
         }

@@ -13,21 +13,6 @@ function monkeyPatchLogs(secrets) {
 
       // console.warn('arguments', args)
       // update ARGS
-      const isTimer = args && args[0] && args[0] === '%s: %sms'
-      if (isTimer) {
-        const redactedArgs = args.map((a, i) => {
-          if (i === 0) {
-            return '%s %sms'
-          }
-          if (i === 1) {
-            const check = chalk.green('✔')
-            const msg = chalk.yellowBright(`${trim(a)}`)
-            return `${check} ${msg} completed in`
-          }
-          return a
-        })
-        return Reflect.apply(proxy, context, redactedArgs)
-      }
 
       let prefixSet = false
       const redactedArgs = args.map(a => {
