@@ -68,79 +68,76 @@ module.exports = async function build(configPath, cliFlags, token) {
       const pluginConfig = plug[name] || {}
       return pluginConfig.enabled !== false && pluginConfig.enabled !== 'false'
     })
-    .reduce(
-      (lifeCycleHooks, curr) => {
-        // TODO refactor how plugins are included / checked
-        const keys = Object.keys(curr)
-        const alreadyResolved = keys.some(cur => {
-          return typeof curr[cur] === 'function'
-        }, false)
+    .reduce((lifeCycleHooks, curr) => {
+      // TODO refactor how plugins are included / checked
+      const keys = Object.keys(curr)
+      const alreadyResolved = keys.some(cur => {
+        return typeof curr[cur] === 'function'
+      }, false)
 
-        const name = curr.name || keys[0]
-        const pluginConfig = curr[name] || {}
+      const name = curr.name || keys[0]
+      const pluginConfig = curr[name] || {}
 
-        console.log(chalk.yellow(`Loading plugin "${name}"`))
-        const code = alreadyResolved ? curr : importPlugin(name, baseDir)
+      console.log(chalk.yellow(`Loading plugin "${name}"`))
+      const code = alreadyResolved ? curr : importPlugin(name, baseDir)
 
-        const pluginSrc = typeof code === 'function' ? code(pluginConfig) : code
+      const pluginSrc = typeof code === 'function' ? code(pluginConfig) : code
 
-        if (!isPlainObj(pluginSrc)) {
-          throw new Error(`Plugin ${name} is malformed. Must be object or function`)
-        }
+      if (!isPlainObj(pluginSrc)) {
+        throw new Error(`Plugin ${name} is malformed. Must be object or function`)
+      }
 
-        const meta = filterObj(pluginSrc, (key, value) => typeof value !== 'function')
+      const meta = filterObj(pluginSrc, (key, value) => typeof value !== 'function')
 
-        // Map plugins methods in order for later execution
-        Object.entries(pluginSrc)
-          .filter(([, value]) => typeof value === 'function')
-          .forEach(([hook, method]) => {
-            /* Override core functionality */
-            // Match string with 1 or more colons
-            const override = hook.match(/(?:[^:]*[:]){1,}[^:]*$/)
-            if (override) {
-              const str = override[0]
-              const [, pluginName, overideMethod] = str.match(/([a-zA-Z/@]+):([a-zA-Z/@:]+)/)
-              // @TODO throw if non existant plugin trying to be overriden?
-              // if (plugin not found) {
-              //   throw new Error(`${pluginName} not found`)
-              // }
-              if (lifeCycleHooks[overideMethod]) {
-                lifeCycleHooks[overideMethod] = lifeCycleHooks[overideMethod].map(x => {
-                  if (x.name === pluginName) {
-                    return {
-                      name,
-                      hook,
-                      config: pluginConfig,
-                      meta,
-                      method,
-                      override: {
-                        target: pluginName,
-                        method: overideMethod
-                      }
+      // Map plugins methods in order for later execution
+      Object.entries(pluginSrc)
+        .filter(([, value]) => typeof value === 'function')
+        .forEach(([hook, method]) => {
+          /* Override core functionality */
+          // Match string with 1 or more colons
+          const override = hook.match(/(?:[^:]*[:]){1,}[^:]*$/)
+          if (override) {
+            const str = override[0]
+            const [, pluginName, overideMethod] = str.match(/([a-zA-Z/@]+):([a-zA-Z/@:]+)/)
+            // @TODO throw if non existant plugin trying to be overriden?
+            // if (plugin not found) {
+            //   throw new Error(`${pluginName} not found`)
+            // }
+            if (lifeCycleHooks[overideMethod]) {
+              lifeCycleHooks[overideMethod] = lifeCycleHooks[overideMethod].map(x => {
+                if (x.name === pluginName) {
+                  return {
+                    name,
+                    hook,
+                    config: pluginConfig,
+                    meta,
+                    method,
+                    override: {
+                      target: pluginName,
+                      method: overideMethod
                     }
                   }
-                  return x
-                })
-                return lifeCycleHooks
-              }
+                }
+                return x
+              })
+              return lifeCycleHooks
             }
-            /* End Override core functionality */
-            if (!lifeCycleHooks[hook]) {
-              lifeCycleHooks[hook] = []
-            }
-            lifeCycleHooks[hook] = lifeCycleHooks[hook].concat({
-              name,
-              hook,
-              meta,
-              config: pluginConfig,
-              method
-            })
+          }
+          /* End Override core functionality */
+          if (!lifeCycleHooks[hook]) {
+            lifeCycleHooks[hook] = []
+          }
+          lifeCycleHooks[hook] = lifeCycleHooks[hook].concat({
+            name,
+            hook,
+            meta,
+            config: pluginConfig,
+            method
           })
+        })
 
-        return lifeCycleHooks
-      },
-      {}
-    )
+      return lifeCycleHooks
+    }, {})
 
   if (!netlifyConfig.build) {
     throw new Error('No build settings found')
