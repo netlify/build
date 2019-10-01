@@ -335,39 +335,7 @@ const runInstruction = async function({
   console.log(chalk.redBright.bold(`> ${index + 1}. Running "${hook}" ${lifecycleName}from "${name}" ${source}`))
   console.log()
 
-  let apiClient
-  if (netlifyToken) {
-    apiClient = new API(netlifyToken)
-    /* Redact API methods to scopes. Default scopes '*'... revisit */
-    if (scopes) {
-      const apiMethods = Object.getPrototypeOf(apiClient)
-      const apiMethodArray = Object.keys(apiMethods)
-      /* validate scopes */
-      scopes.forEach((scopeName, i) => {
-        if (scopeName !== '*' && !apiMethodArray.includes(scopeName)) {
-          console.log(chalk.redBright(`Invalid scope "${scopeName}" in "${name}" plugin.`))
-          console.log(chalk.white.bold(`Please use a valid event name. One of:`))
-          console.log(
-            `${['*']
-              .concat(apiMethodArray)
-              .map(n => `"${n}"`)
-              .join(', ')}`
-          )
-          console.log()
-          throw new Error(`Invalid scope "${scopeName}" in "${name}" plugin.`)
-        }
-      })
-      /* If scopes not *, redact the methods not allowed */
-      if (!scopes.includes('*')) {
-        apiMethodArray.forEach(meth => {
-          if (!scopes.includes(meth)) {
-            // TODO figure out if Object.setPrototypeOf will work
-            apiClient.__proto__[meth] = disableApiMethod(name, meth) // eslint-disable-line
-          }
-        })
-      }
-    }
-  }
+  const apiClient = getApiClient({ netlifyToken, name, scopes })
 
   // set log context
   netlifyLogs.setContext(name)
@@ -423,6 +391,48 @@ const runInstruction = async function({
     console.log(chalk.redBright(`Error in ${name} plugin`))
     throw error
   }
+}
+
+const getApiClient = function({ netlifyToken, name, scopes }) {
+  if (!netlifyToken) {
+    return
+  }
+
+  const apiClient = new API(netlifyToken)
+
+  /* Redact API methods to scopes. Default scopes '*'... revisit */
+  if (scopes) {
+    const apiMethods = Object.getPrototypeOf(apiClient)
+    const apiMethodArray = Object.keys(apiMethods)
+
+    /* validate scopes */
+    scopes.forEach((scopeName, i) => {
+      if (scopeName !== '*' && !apiMethodArray.includes(scopeName)) {
+        console.log(chalk.redBright(`Invalid scope "${scopeName}" in "${name}" plugin.`))
+        console.log(chalk.white.bold(`Please use a valid event name. One of:`))
+        console.log(
+          `${['*']
+            .concat(apiMethodArray)
+            .map(n => `"${n}"`)
+            .join(', ')}`
+        )
+        console.log()
+        throw new Error(`Invalid scope "${scopeName}" in "${name}" plugin.`)
+      }
+    })
+
+    /* If scopes not *, redact the methods not allowed */
+    if (!scopes.includes('*')) {
+      apiMethodArray.forEach(meth => {
+        if (!scopes.includes(meth)) {
+          // TODO figure out if Object.setPrototypeOf will work
+          apiClient.__proto__[meth] = disableApiMethod(name, meth) // eslint-disable-line
+        }
+      })
+    }
+  }
+
+  return apiClient
 }
 
 function disableApiMethod(pluginName, method) {
