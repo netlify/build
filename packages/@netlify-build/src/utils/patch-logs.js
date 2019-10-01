@@ -10,12 +10,13 @@ function monkeyPatchLogs(secrets) {
       if (!args.length) {
         return Reflect.apply(proxy, context, args)
       }
-
-      // console.warn('arguments', args)
-      // update ARGS
-
       let prefixSet = false
       const redactedArgs = args.map(a => {
+        // If log is logging error, redact and return stack
+        if (a instanceof Error) {
+          return redactValues(a.stack, secrets)
+        }
+
         const redactedLog = redactValues(a, secrets)
         if (typeof a === 'object') {
           return util.inspect(redactedLog, {
