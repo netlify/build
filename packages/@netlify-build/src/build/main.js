@@ -180,20 +180,17 @@ module.exports = async function build(configPath, cliFlags, token) {
       if (hook.length > acc) return hook.length
       return acc
     }, 0)
-    buildInstructions.forEach((instruction, i) => {
-      const { name, hook } = instruction
+    buildInstructions.forEach(({ name, hook }, index) => {
       const source = name.startsWith('config.build') ? `in ${path.basename(netlifyConfigPath)}` : 'plugin'
-      const count = chalk.cyanBright(`${i + 1}.`)
-      const hookName = chalk.white.bold(`${rightPad(hook, width + 2, ' ')} `) // ↓
+      const count = chalk.cyanBright(`${index + 1}.`)
+      const hookName = chalk.white.bold(`${rightPad(hook, width + 2, ' ')} `)
       const niceName = name.startsWith('config.build') ? name.replace(/^config\./, '') : name
-      const sourceOutput = chalk.white.bold(`${niceName}`)
+      const sourceOutput = chalk.white.bold(niceName)
       console.log(chalk.cyanBright(`${count} ${hookName} source ${sourceOutput} ${source} `))
     })
     console.log()
-    // deepLog(buildInstructions)
     process.exit(0)
   }
-  // console.log('buildInstructions', buildInstructions)
   /* patch environment dependencies */
 
   /* Execute build with plugins */
