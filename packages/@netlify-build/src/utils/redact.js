@@ -12,6 +12,10 @@ function redactValues(target, secrets) {
     return redactEnv.redact(target, secrets)
   }
 
+  if (target instanceof Error) {
+    return redactEnv.redact(target.stack, secrets)
+  }
+
   return mapObj(
     target,
     (key, value) => [

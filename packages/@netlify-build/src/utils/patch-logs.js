@@ -12,11 +12,6 @@ function monkeyPatchLogs(secrets) {
       }
       let prefixSet = false
       const redactedArgs = args.map(a => {
-        // If log is logging error, redact and return stack
-        if (a instanceof Error) {
-          return redactValues(a.stack, secrets)
-        }
-
         const redactedLog = redactValues(a, secrets)
         if (typeof a === 'object') {
           return util.inspect(redactedLog, {
