@@ -4,6 +4,7 @@ const { cwd } = require('process')
 const chalk = require('chalk')
 const execa = require('execa')
 const filterObj = require('filter-obj')
+const pMapSeries = require('p-map-series')
 const API = require('netlify')
 const resolveConfig = require('@netlify/config')
 const { formatUtils, getConfigPath } = require('@netlify/config')
@@ -147,14 +148,10 @@ module.exports = async function build(configPath, cliFlags, token) {
               const commands = Array.isArray(configLifecycle[hook])
                 ? configLifecycle[hook]
                 : configLifecycle[hook].split('\n')
-              const doCommands = commands.reduce(async (promiseChain, curr) => {
-                const data = await promiseChain
-                // TODO pass in env vars if not available
-                const stdout = await execCommand(curr, `build.lifecycle.${hook}`, redactedKeys)
-                return Promise.resolve(data.concat(stdout))
-              }, Promise.resolve([]))
+              // TODO pass in env vars if not available
               // TODO return stdout?
-              const output = await doCommands // eslint-disable-line
+              // eslint-disable-next-line no-unused-vars
+              const output = await pMapSeries(commands, command => execCommand(command, redactedKeys))
             }
           }
         : undefined,
