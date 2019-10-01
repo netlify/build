@@ -46,11 +46,8 @@ async function netlifyConfig(configFile, cliFlags) {
     ]
   })
 
-  if (config === undefined) {
-    return { build: {} }
-  }
-
-  return config
+  const configA = Object.assign({ build: {} }, config)
+  return configA
 }
 
 module.exports = netlifyConfig
