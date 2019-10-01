@@ -71,7 +71,7 @@ module.exports = async function build(configPath, cliFlags, token) {
       // Map plugins methods in order for later execution
       Object.entries(pluginSrc)
         .filter(([, value]) => typeof value === 'function')
-        .map(([hook, method]) => ({ name, hook, config: pluginConfig, meta, method }))
+        .map(([hook, method]) => ({ name, hook, pluginConfig, meta, method }))
         .forEach(lifeCycleHook => {
           const { hook } = lifeCycleHook
           /* Override core functionality */
@@ -133,7 +133,7 @@ module.exports = async function build(configPath, cliFlags, token) {
         ? {
             name: `config.build.command`,
             hook: 'build',
-            config: {},
+            pluginConfig: {},
             async method() {
               await execCommand(configCommand, 'build.command', redactedKeys)
             }
@@ -144,7 +144,7 @@ module.exports = async function build(configPath, cliFlags, token) {
         ? {
             name: `config.build.lifecycle.${hook}`,
             hook,
-            config: {},
+            pluginConfig: {},
             async method() {
               const commands = Array.isArray(configLifecycle[hook])
                 ? configLifecycle[hook]
@@ -310,7 +310,7 @@ async function engine({ instructions, netlifyConfig, netlifyConfigPath, netlifyT
 
 const runInstruction = async function({
   currentData,
-  instruction: { method, hook, config, name, override, meta: { scopes } = {} },
+  instruction: { method, hook, pluginConfig, name, override, meta: { scopes } = {} },
   index,
   netlifyConfig,
   netlifyConfigPath,
@@ -346,7 +346,7 @@ const runInstruction = async function({
       /* Netlify configuration file netlify.[toml|yml|json] */
       netlifyConfig,
       /* Plugin configuration */
-      pluginConfig: config,
+      pluginConfig,
       /* Netlify API client */
       api: apiClient,
       /* Values constants */
