@@ -6,7 +6,7 @@ const execa = require('execa')
 const filterObj = require('filter-obj')
 const API = require('netlify')
 const resolveConfig = require('@netlify/config')
-const { formatUtils, getConfigFile } = require('@netlify/config')
+const { formatUtils, getConfigPath } = require('@netlify/config')
 require('array-flat-polyfill')
 
 const deepLog = require('../utils/deeplog')
@@ -440,4 +440,4 @@ function isNetlifyCI() {
 // Expose Netlify config
 module.exports.netlifyConfig = resolveConfig
 // Expose Netlify config path getter
-module.exports.getConfigFile = getConfigFile
+module.exports.getConfigPath = getConfigPath
