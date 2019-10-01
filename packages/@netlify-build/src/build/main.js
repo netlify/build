@@ -310,7 +310,7 @@ async function engine({ instructions, netlifyConfig, netlifyConfigPath, netlifyT
 
 const runInstruction = async function({
   currentData,
-  instruction: { method, hook, config, name, override, meta = {} },
+  instruction: { method, hook, config, name, override, meta: { scopes } = {} },
   index,
   netlifyConfig,
   netlifyConfigPath,
@@ -339,8 +339,7 @@ const runInstruction = async function({
   if (netlifyToken) {
     apiClient = new API(netlifyToken)
     /* Redact API methods to scopes. Default scopes '*'... revisit */
-    if (meta && meta.scopes) {
-      const scopes = meta.scopes || ['*']
+    if (scopes) {
       const apiMethods = Object.getPrototypeOf(apiClient)
       const apiMethodArray = Object.keys(apiMethods)
       /* validate scopes */
