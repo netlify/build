@@ -1,16 +1,29 @@
 const stream = require('stream')
 
 const redactEnv = require('redact-env')
-// TODO: npm uninstall es6-week-map after
-// https://github.com/mcmath/deep-map/pull/15 is merged
-const deepMap = require('deep-map')
+const mapObj = require('map-obj')
 
 function getSecrets(secretKeys) {
   return redactEnv.build(secretKeys)
 }
 
 function redactValues(target, secrets) {
-  return deepMap(target, value => redactEnv.redact(value, secrets))
+  if (typeof target !== 'object' || target === null) {
+    return redactEnv.redact(target, secrets)
+  }
+
+  if (target instanceof Error) {
+    return redactEnv.redact(target.stack, secrets)
+  }
+
+  return mapObj(
+    target,
+    (key, value) => [
+      redactEnv.redact(key, secrets),
+      typeof value === 'string' ? redactEnv.redact(value, secrets) : value
+    ],
+    { deep: true }
+  )
 }
 
 function redactStream(secrets) {
