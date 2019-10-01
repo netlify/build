@@ -138,6 +138,8 @@ function exampleNetlifyPlugin(initialConfig) {
 - **netlify-plugin-sitemap** to generate sitemaps after build
 - **netlify-plugin-notify** to automatically wired up build notifications
 - **netlify-plugin-a11y-axe** to automatically audit site for accessibility issues
+- **netlify-plugin-twiliosms** text your boss every time you deploy so they know you're working
+- **netlify-plugin-svgoptimizer** to automatically optimize all SVGs in a directory when the site is built
 - ... skys the limit 🌈
 
 ## Configuration
