@@ -14,7 +14,7 @@ async function execBuild() {
   console.log(chalk.greenBright.bold(`Starting Netlify Build`))
   console.log()
   // Automatically resolve the config path
-  const configPath = await getConfigPath(process.cwd())
+  const configPath = await getConfigPath()
 
   console.log(chalk.cyanBright.bold(`Using config file:`))
   console.log(configPath)
