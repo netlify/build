@@ -399,10 +399,7 @@ async function engine({ instructions, netlifyConfig, netlifyConfigPath, netlifyT
           error: error
         })
         console.log()
-        endTimer({
-          context: name.replace('config.', ''),
-          hook: hook
-        }, methodTimer)
+        endTimer({ context: name.replace('config.', ''), hook }, methodTimer)
         if (pluginReturnValue) {
           return Promise.resolve(Object.assign({}, currentData, pluginReturnValue))
         }

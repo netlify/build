@@ -1,7 +1,9 @@
 const fs = require('fs')
 const path = require('path')
-const pkg = require('./package.json')
+
 const svgo = require('svgo')
+
+const pkg = require('./package.json')
 
 const svgoinit = new svgo({
   plugins: [
