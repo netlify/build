@@ -150,8 +150,7 @@ module.exports = async function build(configPath, cliFlags, token) {
                 : configLifecycle[hook].split('\n')
               // TODO pass in env vars if not available
               // TODO return stdout?
-              // eslint-disable-next-line no-unused-vars
-              const output = await pMapSeries(commands, command => execCommand(command, redactedKeys))
+              await pMapSeries(commands, command => execCommand(command, redactedKeys))
             }
           }
         : undefined,
