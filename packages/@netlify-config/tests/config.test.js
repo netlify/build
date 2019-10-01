@@ -10,7 +10,9 @@ test('Test TOML', async t => {
   t.deepEqual(config, {
     build: {
       publish: 'dist',
-      command: 'npm run build',
+      lifecycle: {
+        build: ['npm run build']
+      },
       functions: 'functions'
     }
   })
@@ -22,7 +24,9 @@ test('Test YAML', async t => {
   t.deepEqual(config, {
     build: {
       publish: 'dist',
-      command: 'npm run build',
+      lifecycle: {
+        build: ['npm run build']
+      },
       functions: 'functions'
     }
   })
@@ -34,7 +38,9 @@ test('Test JSON', async t => {
   t.deepEqual(config, {
     build: {
       publish: 'dist',
-      command: 'npm run build',
+      lifecycle: {
+        build: ['npm run build']
+      },
       functions: 'functions'
     }
   })
