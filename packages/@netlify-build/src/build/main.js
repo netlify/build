@@ -289,7 +289,6 @@ async function engine({ instructions, netlifyConfig, netlifyConfigPath, netlifyT
   const returnData = await pReduce(
     instructions,
     async (currentData, { method, hook, config, name, override, meta = {} }, index) => {
-    if (method && typeof method === 'function') {
       const methodTimer = startTimer()
       // reset logs context
       netlifyLogs.reset()
@@ -391,15 +390,11 @@ async function engine({ instructions, netlifyConfig, netlifyConfigPath, netlifyT
         })
         console.log()
         endTimer({ context: name.replace('config.', ''), hook }, methodTimer)
-        if (pluginReturnValue) {
-          return Object.assign({}, currentData, pluginReturnValue)
-        }
+        return Object.assign({}, currentData, pluginReturnValue)
       } catch (error) {
         console.log(chalk.redBright(`Error in ${name} plugin`))
         throw error
       }
-    }
-    return currentData
     },
     {}
   )
