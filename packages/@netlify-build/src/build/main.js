@@ -114,7 +114,7 @@ module.exports = async function build(configPath, cliFlags, token) {
 
   if (netlifyConfig.build && netlifyConfig.build.lifecycle && netlifyConfig.build.command) {
     throw new Error(
-      `build.command && build.lifecycle are both defined. Please move build.command to build.lifecycle.build`
+      `build.command && build.lifecycle are both defined in config file. Please move build.command to build.lifecycle.build`
     )
   }
 
