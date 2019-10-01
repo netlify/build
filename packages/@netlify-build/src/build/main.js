@@ -420,10 +420,7 @@ function disableApiMethod(pluginName, method) {
 
 // Test if inside netlify build context
 function isNetlifyCI() {
-  if (process.env.DEPLOY_PRIME_URL) {
-    return true
-  }
-  return false
+  return Boolean(process.env.DEPLOY_PRIME_URL)
 }
 
 // Expose Netlify config
