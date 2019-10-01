@@ -108,11 +108,7 @@ module.exports = async function build(configPath, cliFlags, token) {
       return lifeCycleHooks
     }, {})
 
-  if (!netlifyConfig.build) {
-    throw new Error('No build settings found')
-  }
-
-  if (netlifyConfig.build && netlifyConfig.build.lifecycle && netlifyConfig.build.command) {
+  if (netlifyConfig.build.lifecycle && netlifyConfig.build.command) {
     throw new Error(
       `build.command && build.lifecycle are both defined in config file. Please move build.command to build.lifecycle.build`
     )
