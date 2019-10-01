@@ -318,112 +318,112 @@ const runInstruction = async function({
   baseDir,
   error
 }) {
-      const methodTimer = startTimer()
-      // reset logs context
-      netlifyLogs.reset()
+  const methodTimer = startTimer()
+  // reset logs context
+  netlifyLogs.reset()
 
-      console.log()
-      if (override) {
-        console.log(
-          chalk.redBright.bold(
-            `> OVERRIDE: "${override.method}" method in ${override.target} has been overriden by "${name}"`
+  console.log()
+  if (override) {
+    console.log(
+      chalk.redBright.bold(
+        `> OVERRIDE: "${override.method}" method in ${override.target} has been overriden by "${name}"`
+      )
+    )
+  }
+  const lifecycleName = error ? '' : 'lifecycle '
+  const source = name.startsWith('config.build') ? 'via config' : 'plugin'
+  console.log(chalk.redBright.bold(`> ${index + 1}. Running "${hook}" ${lifecycleName}from "${name}" ${source}`))
+  console.log()
+
+  let apiClient
+  if (netlifyToken) {
+    apiClient = new API(netlifyToken)
+    /* Redact API methods to scopes. Default scopes '*'... revisit */
+    if (meta && meta.scopes) {
+      const scopes = meta.scopes || ['*']
+      const apiMethods = Object.getPrototypeOf(apiClient)
+      const apiMethodArray = Object.keys(apiMethods)
+      /* validate scopes */
+      scopes.forEach((scopeName, i) => {
+        if (scopeName !== '*' && !apiMethodArray.includes(scopeName)) {
+          console.log(chalk.redBright(`Invalid scope "${scopeName}" in "${name}" plugin.`))
+          console.log(chalk.white.bold(`Please use a valid event name. One of:`))
+          console.log(
+            `${['*']
+              .concat(apiMethodArray)
+              .map(n => `"${n}"`)
+              .join(', ')}`
           )
-        )
+          console.log()
+          throw new Error(`Invalid scope "${scopeName}" in "${name}" plugin.`)
+        }
+      })
+      /* If scopes not *, redact the methods not allowed */
+      if (!scopes.includes('*')) {
+        apiMethodArray.forEach(meth => {
+          if (!scopes.includes(meth)) {
+            // TODO figure out if Object.setPrototypeOf will work
+            apiClient.__proto__[meth] = disableApiMethod(name, meth) // eslint-disable-line
+          }
+        })
       }
-      const lifecycleName = error ? '' : 'lifecycle '
-      const source = name.startsWith('config.build') ? 'via config' : 'plugin'
-      console.log(chalk.redBright.bold(`> ${index + 1}. Running "${hook}" ${lifecycleName}from "${name}" ${source}`))
-      console.log()
+    }
+  }
 
-      let apiClient
-      if (netlifyToken) {
-        apiClient = new API(netlifyToken)
-        /* Redact API methods to scopes. Default scopes '*'... revisit */
-        if (meta && meta.scopes) {
-          const scopes = meta.scopes || ['*']
-          const apiMethods = Object.getPrototypeOf(apiClient)
-          const apiMethodArray = Object.keys(apiMethods)
-          /* validate scopes */
-          scopes.forEach((scopeName, i) => {
-            if (scopeName !== '*' && !apiMethodArray.includes(scopeName)) {
-              console.log(chalk.redBright(`Invalid scope "${scopeName}" in "${name}" plugin.`))
-              console.log(chalk.white.bold(`Please use a valid event name. One of:`))
-              console.log(
-                `${['*']
-                  .concat(apiMethodArray)
-                  .map(n => `"${n}"`)
-                  .join(', ')}`
-              )
-              console.log()
-              throw new Error(`Invalid scope "${scopeName}" in "${name}" plugin.`)
-            }
-          })
-          /* If scopes not *, redact the methods not allowed */
-          if (!scopes.includes('*')) {
-            apiMethodArray.forEach(meth => {
-              if (!scopes.includes(meth)) {
-                // TODO figure out if Object.setPrototypeOf will work
-                apiClient.__proto__[meth] = disableApiMethod(name, meth) // eslint-disable-line
-              }
-            })
+  // set log context
+  netlifyLogs.setContext(name)
+
+  try {
+    // https://github.com/netlify/cli-utils/blob/master/src/index.js#L40-L60
+    const pluginReturnValue = await method({
+      /* Netlify configuration file netlify.[toml|yml|json] */
+      netlifyConfig: netlifyConfig,
+      /* Plugin configuration */
+      pluginConfig: config,
+      /* Netlify API client */
+      api: apiClient,
+      /* Values constants */
+      constants: {
+        CONFIG_PATH: path.resolve(netlifyConfigPath),
+        BASE_DIR: baseDir,
+        CACHE_DIR: path.join(baseDir, '.netlify', 'cache'),
+        BUILD_DIR: path.join(baseDir, '.netlify', 'build')
+      },
+      /* Utilities helper functions */
+      utils: {
+        cache: {
+          get: filePath => {
+            console.log('get cache file')
+          },
+          save: (filePath, contents) => {
+            console.log('save cache file')
+          },
+          delete: filePath => {
+            console.log('delete cache file')
+          }
+        },
+        redirects: {
+          get: () => {
+            console.log('get redirect')
+          },
+          set: () => {
+            console.log('set redirect')
+          },
+          delete: () => {
+            console.log('delete redirect')
           }
         }
-      }
-
-      // set log context
-      netlifyLogs.setContext(name)
-
-      try {
-        // https://github.com/netlify/cli-utils/blob/master/src/index.js#L40-L60
-        const pluginReturnValue = await method({
-          /* Netlify configuration file netlify.[toml|yml|json] */
-          netlifyConfig: netlifyConfig,
-          /* Plugin configuration */
-          pluginConfig: config,
-          /* Netlify API client */
-          api: apiClient,
-          /* Values constants */
-          constants: {
-            CONFIG_PATH: path.resolve(netlifyConfigPath),
-            BASE_DIR: baseDir,
-            CACHE_DIR: path.join(baseDir, '.netlify', 'cache'),
-            BUILD_DIR: path.join(baseDir, '.netlify', 'build')
-          },
-          /* Utilities helper functions */
-          utils: {
-            cache: {
-              get: filePath => {
-                console.log('get cache file')
-              },
-              save: (filePath, contents) => {
-                console.log('save cache file')
-              },
-              delete: filePath => {
-                console.log('delete cache file')
-              }
-            },
-            redirects: {
-              get: () => {
-                console.log('get redirect')
-              },
-              set: () => {
-                console.log('set redirect')
-              },
-              delete: () => {
-                console.log('delete redirect')
-              }
-            }
-          },
-          /* Error for `onError` handlers */
-          error: error
-        })
-        console.log()
-        endTimer({ context: name.replace('config.', ''), hook }, methodTimer)
-        return Object.assign({}, currentData, pluginReturnValue)
-      } catch (error) {
-        console.log(chalk.redBright(`Error in ${name} plugin`))
-        throw error
-      }
+      },
+      /* Error for `onError` handlers */
+      error: error
+    })
+    console.log()
+    endTimer({ context: name.replace('config.', ''), hook }, methodTimer)
+    return Object.assign({}, currentData, pluginReturnValue)
+  } catch (error) {
+    console.log(chalk.redBright(`Error in ${name} plugin`))
+    throw error
+  }
 }
 
 function disableApiMethod(pluginName, method) {
