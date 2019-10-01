@@ -5,6 +5,7 @@ const chalk = require('chalk')
 const execa = require('execa')
 const filterObj = require('filter-obj')
 const pMapSeries = require('p-map-series')
+const pReduce = require('p-reduce')
 const API = require('netlify')
 const resolveConfig = require('@netlify/config')
 const { formatUtils, getConfigPath } = require('@netlify/config')
@@ -285,10 +286,9 @@ async function execCommand(cmd, name, secrets) {
  * @return {Object} updated config?
  */
 async function engine({ instructions, netlifyConfig, netlifyConfigPath, netlifyToken, baseDir, error }) {
-  const returnData = await instructions.reduce(async (promiseChain, plugin, index) => {
-    const { method, hook, config, name, override } = plugin
-    const meta = plugin.meta || {}
-    const currentData = await promiseChain
+  const returnData = await pReduce(
+    instructions,
+    async (currentData, { method, hook, config, name, override, meta = {} }, index) => {
     if (method && typeof method === 'function') {
       const methodTimer = startTimer()
       // reset logs context
@@ -392,15 +392,17 @@ async function engine({ instructions, netlifyConfig, netlifyConfigPath, netlifyT
         console.log()
         endTimer({ context: name.replace('config.', ''), hook }, methodTimer)
         if (pluginReturnValue) {
-          return Promise.resolve(Object.assign({}, currentData, pluginReturnValue))
+          return Object.assign({}, currentData, pluginReturnValue)
         }
       } catch (error) {
         console.log(chalk.redBright(`Error in ${name} plugin`))
         throw error
       }
     }
-    return Promise.resolve(currentData)
-  }, Promise.resolve({}))
+    return currentData
+    },
+    {}
+  )
 
   /* Clear logs prefix */
   netlifyLogs.reset()
