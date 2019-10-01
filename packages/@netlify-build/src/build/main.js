@@ -288,7 +288,36 @@ async function execCommand(cmd, name, secrets) {
 async function engine({ instructions, netlifyConfig, netlifyConfigPath, netlifyToken, baseDir, error }) {
   const returnData = await pReduce(
     instructions,
-    async (currentData, { method, hook, config, name, override, meta = {} }, index) => {
+    (currentData, instruction, index) =>
+      runInstruction({
+        currentData,
+        instruction,
+        index,
+        netlifyConfig,
+        netlifyConfigPath,
+        netlifyToken,
+        baseDir,
+        error
+      }),
+    {}
+  )
+
+  /* Clear logs prefix */
+  netlifyLogs.reset()
+
+  return returnData
+}
+
+const runInstruction = async function({
+  currentData,
+  instruction: { method, hook, config, name, override, meta = {} },
+  index,
+  netlifyConfig,
+  netlifyConfigPath,
+  netlifyToken,
+  baseDir,
+  error
+}) {
       const methodTimer = startTimer()
       // reset logs context
       netlifyLogs.reset()
@@ -395,15 +424,6 @@ async function engine({ instructions, netlifyConfig, netlifyConfigPath, netlifyT
         console.log(chalk.redBright(`Error in ${name} plugin`))
         throw error
       }
-    },
-    {}
-  )
-
-  /* Clear logs prefix */
-  netlifyLogs.reset()
-
-  // console.log('returnData', returnData)
-  return returnData
 }
 
 function disableApiMethod(pluginName, method) {
