@@ -10,7 +10,7 @@ const { DEPLOY_PRIME_URL, DEPLOY_ID } = process.env
 
 module.exports = {
   /* Plugin namespace */
-  name: '@netlify/function',
+  name: '@netlify/functions',
   core: true,
   /* Hook into buildFunctions lifecycle */
   buildFunctions: async ({ netlifyConfig }) => {
