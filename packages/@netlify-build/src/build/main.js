@@ -344,7 +344,7 @@ const runInstruction = async function({
     // https://github.com/netlify/cli-utils/blob/master/src/index.js#L40-L60
     const pluginReturnValue = await method({
       /* Netlify configuration file netlify.[toml|yml|json] */
-      netlifyConfig: netlifyConfig,
+      netlifyConfig,
       /* Plugin configuration */
       pluginConfig: config,
       /* Netlify API client */
@@ -382,7 +382,7 @@ const runInstruction = async function({
         }
       },
       /* Error for `onError` handlers */
-      error: error
+      error
     })
     console.log()
     endTimer({ context: name.replace('config.', ''), hook }, methodTimer)
