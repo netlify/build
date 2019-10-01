@@ -285,15 +285,15 @@ async function execCommand(cmd, name, secrets) {
  * @return {Object} updated config?
  */
 async function engine({ instructions, netlifyConfig, netlifyConfigPath, netlifyToken, baseDir, error }) {
-  const returnData = await instructions.reduce(async (promiseChain, plugin, i) => {
+  const returnData = await instructions.reduce(async (promiseChain, plugin, index) => {
     const { method, hook, config, name, override } = plugin
     const meta = plugin.meta || {}
     const currentData = await promiseChain
     if (method && typeof method === 'function') {
       const methodTimer = startTimer()
-      const source = name.match(/^config\.build/) ? 'via config' : 'plugin'
       // reset logs context
       netlifyLogs.reset()
+
       console.log()
       if (override) {
         console.log(
@@ -302,12 +302,11 @@ async function engine({ instructions, netlifyConfig, netlifyConfigPath, netlifyT
           )
         )
       }
-      if (error) {
-        console.log(chalk.redBright.bold(`> ${i + 1}. Running "${hook}" from "${name}" ${source}`))
-      } else {
-        console.log(chalk.cyanBright.bold(`> ${i + 1}. Running "${hook}" lifecycle from "${name}" ${source}`))
-      }
+      const lifecycleName = error ? '' : 'lifecycle '
+      const source = name.startsWith('config.build') ? 'via config' : 'plugin'
+      console.log(chalk.redBright.bold(`> ${index + 1}. Running "${hook}" ${lifecycleName}from "${name}" ${source}`))
       console.log()
+
       let apiClient
       if (netlifyToken) {
         apiClient = new API(netlifyToken)
