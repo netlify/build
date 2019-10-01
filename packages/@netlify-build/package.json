@@ -52,5 +52,8 @@
     "ava": "^2.4.0",
     "markdown-magic": "^0.1.25",
     "strip-ansi": "^5.2.0"
+  },
+  "engines": {
+    "node": ">=8.12.0"
   }
 }
