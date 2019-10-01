@@ -57,7 +57,7 @@ module.exports = async function build(configPath, cliFlags, token) {
       const name = curr.name || keys[0]
       const pluginConfig = curr[name] || {}
 
-      console.log(chalk.yellow(`Loading plugin "${name}"`))
+      console.log(chalk.yellowBright(`Loading plugin "${name}"`))
       const code = alreadyResolved ? curr : importPlugin(name, baseDir)
 
       const pluginSrc = typeof code === 'function' ? code(pluginConfig) : code
@@ -203,22 +203,27 @@ module.exports = async function build(configPath, cliFlags, token) {
       baseDir
     })
     console.log()
-    console.log(chalk.greenBright.bold('┌───────────────────────────┐'))
-    console.log(chalk.greenBright.bold('│  Netlify Build Complete!  │'))
-    console.log(chalk.greenBright.bold('└───────────────────────────┘'))
+    console.log(chalk.greenBright.bold('┌─────────────────────────────┐'))
+    console.log(chalk.greenBright.bold('│   Netlify Build Complete!   │'))
+    console.log(chalk.greenBright.bold('└─────────────────────────────┘'))
     console.log()
     if (Object.keys(manifest).length) {
       console.log('Manifest:')
       deepLog(manifest)
     }
   } catch (err) {
-    console.log(chalk.redBright('Lifecycle error'))
+    netlifyLogs.reset()
+    console.log()
+    console.log(chalk.redBright.bold('┌─────────────────────┐'))
+    console.log(chalk.redBright.bold('│  Lifecycle Error!   │'))
+    console.log(chalk.redBright.bold('└─────────────────────┘'))
     /* Resolve all ‘onError’ methods and try to fix things */
     const errorInstructions = instructions.filter(instruction => {
       return instruction.hook === 'onError'
     })
     if (errorInstructions) {
-      console.log(chalk.greenBright('Running onError methods'))
+      console.log()
+      console.log(chalk.cyanBright('Running onError methods'))
       await engine({
         instructions: errorInstructions,
         netlifyConfig,
@@ -243,7 +248,7 @@ module.exports = async function build(configPath, cliFlags, token) {
     await writeFile(tomlPath, toml)
     console.log(`TOML file written to ${tomlPath}`)
   }
-  endTimer('Netlify Build', buildTimer)
+  endTimer({ context: 'Netlify Build' }, buildTimer)
   // Reset console.log for CLI
   console.log = originalConsoleLog
 }
@@ -257,7 +262,7 @@ const getBaseDir = function(netlifyConfigPath) {
 }
 
 async function execCommand(cmd, name, secrets) {
-  console.log(chalk.yellowBright(`Running "${cmd}"`))
+  console.log(chalk.yellowBright(`Running command "${cmd}"`))
   const subprocess = execa(`${cmd}`, { shell: true })
   subprocess.stdout
     // Redact ENV vars
@@ -305,7 +310,11 @@ async function engine({ instructions, netlifyConfig, netlifyConfigPath, netlifyT
           )
         )
       }
-      console.log(chalk.cyanBright.bold(`> ${i + 1}. Running "${hook}" lifecycle from "${name}" ${source}`))
+      if (error) {
+        console.log(chalk.redBright.bold(`> ${i + 1}. Running "${hook}" from "${name}" ${source}`))
+      } else {
+        console.log(chalk.cyanBright.bold(`> ${i + 1}. Running "${hook}" lifecycle from "${name}" ${source}`))
+      }
       console.log()
       let apiClient
       if (netlifyToken) {
@@ -390,7 +399,10 @@ async function engine({ instructions, netlifyConfig, netlifyConfigPath, netlifyT
           error: error
         })
         console.log()
-        endTimer(name.replace('config.', ''), methodTimer)
+        endTimer({
+          context: name.replace('config.', ''),
+          hook: hook
+        }, methodTimer)
         if (pluginReturnValue) {
           return Promise.resolve(Object.assign({}, currentData, pluginReturnValue))
         }
