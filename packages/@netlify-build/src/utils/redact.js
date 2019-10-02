@@ -9,28 +9,28 @@ function getSecrets(secretKeys) {
 
 function redactValues(target, secrets) {
   const type = typeof target
-  if (type === 'number' || type === 'boolean') {
-    return target
+
+  if (type === 'string') {
+    return redactEnv.redact(target, secrets)
   }
+
   if (type === 'function') {
     return redactEnv.redact(target.toString(), secrets)
-  }
-  if (type !== 'object' || target === null) {
-    return redactEnv.redact(target, secrets)
   }
 
   if (target instanceof Error) {
     return redactEnv.redact(target.stack, secrets)
   }
 
-  return mapObj(
-    target,
-    (key, value) => [
-      redactEnv.redact(key, secrets),
-      typeof value === 'string' ? redactEnv.redact(value, secrets) : value
-    ],
-    { deep: true }
-  )
+  if (Array.isArray(target)) {
+    return target.map(value => redactValues(value, secrets))
+  }
+
+  if (type === 'object' && target !== null) {
+    return mapObj(target, (key, value) => [redactValues(key, secrets), redactValues(value, secrets)], { deep: true })
+  }
+
+  return target
 }
 
 function redactStream(secrets) {
