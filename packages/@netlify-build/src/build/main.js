@@ -111,44 +111,9 @@ module.exports = async function build(inputOptions = {}) {
     const originalConsoleLog = console.log
     console.log = netlifyLogs.patch(redactedKeys)
 
-    const {
-      build: { command: configCommand, lifecycle: configLifecycle }
-    } = netlifyConfig
-    /* Get active build instructions */
-    const instructions = LIFECYCLE.flatMap(hook => {
-      return [
-        // Support for old command. Add build.command to execution
-        configCommand && hook === 'build'
-          ? {
-              name: `config.build.command`,
-              hook: 'build',
-              pluginConfig: {},
-              async method() {
-                await execCommand(configCommand, 'build.command', redactedKeys)
-              },
-              override: {}
-            }
-          : undefined,
-        // Merge in config lifecycle events first
-        configLifecycle && configLifecycle[hook]
-          ? {
-              name: `config.build.lifecycle.${hook}`,
-              hook,
-              pluginConfig: {},
-              async method() {
-                const commands = Array.isArray(configLifecycle[hook])
-                  ? configLifecycle[hook]
-                  : configLifecycle[hook].split('\n')
-                // TODO pass in env vars if not available
-                // TODO return stdout?
-                await pMapSeries(commands, command => execCommand(command, `build.lifecycle.${hook}`, redactedKeys))
-              },
-              override: {}
-            }
-          : undefined,
-        ...(lifeCycleHooks[hook] ? lifeCycleHooks[hook] : [])
-      ].filter(Boolean)
-    })
+    const instructions = LIFECYCLE.flatMap(hook =>
+      getHookInstructions({ hook, lifeCycleHooks, netlifyConfig, redactedKeys })
+    )
 
     const buildInstructions = instructions.filter(instruction => {
       return instruction.hook !== 'onError'
@@ -231,6 +196,49 @@ const getBaseDir = function(netlifyConfigPath) {
   }
 
   return path.dirname(netlifyConfigPath)
+}
+
+// Get instructions for a specific hook
+const getHookInstructions = function({
+  hook,
+  lifeCycleHooks,
+  netlifyConfig: {
+    build: { command: configCommand, lifecycle: configLifecycle }
+  },
+  redactedKeys
+}) {
+  return [
+    // Support for old command. Add build.command to execution
+    configCommand && hook === 'build'
+      ? {
+          name: `config.build.command`,
+          hook: 'build',
+          pluginConfig: {},
+          async method() {
+            await execCommand(configCommand, 'build.command', redactedKeys)
+          },
+          override: {}
+        }
+      : undefined,
+    // Merge in config lifecycle events first
+    configLifecycle && configLifecycle[hook]
+      ? {
+          name: `config.build.lifecycle.${hook}`,
+          hook,
+          pluginConfig: {},
+          async method() {
+            const commands = Array.isArray(configLifecycle[hook])
+              ? configLifecycle[hook]
+              : configLifecycle[hook].split('\n')
+            // TODO pass in env vars if not available
+            // TODO return stdout?
+            await pMapSeries(commands, command => execCommand(command, `build.lifecycle.${hook}`, redactedKeys))
+          },
+          override: {}
+        }
+      : undefined,
+    ...(lifeCycleHooks[hook] ? lifeCycleHooks[hook] : [])
+  ].filter(Boolean)
 }
 
 async function execCommand(cmd, name, secrets) {
