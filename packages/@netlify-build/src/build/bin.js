@@ -5,7 +5,6 @@ const minimist = require('minimist')
 const omit = require('omit.js')
 
 const build = require('./main')
-const { HEADING_PREFIX } = require('./constants')
 
 async function runCli() {
   const options = minimist(argv.slice(2))
