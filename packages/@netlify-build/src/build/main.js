@@ -423,7 +423,7 @@ const getApiClient = function({ netlifyToken, name, scopes }) {
   const apiClient = new API(netlifyToken)
 
   /* Redact API methods to scopes. Default scopes '*'... revisit */
-  if (scopes) {
+  if (scopes && !scopes.includes('*')) {
     const apiMethods = Object.getPrototypeOf(apiClient)
     const apiMethodArray = Object.keys(apiMethods)
 
@@ -443,26 +443,20 @@ const getApiClient = function({ netlifyToken, name, scopes }) {
       }
     })
 
-    /* If scopes not *, redact the methods not allowed */
-    if (!scopes.includes('*')) {
-      apiMethodArray.forEach(meth => {
-        if (!scopes.includes(meth)) {
-          // TODO figure out if Object.setPrototypeOf will work
-          apiClient.__proto__[meth] = disableApiMethod(name, meth) // eslint-disable-line
-        }
+    Object.keys(API.prototype)
+      .filter(method => !scopes.includes(method))
+      .forEach(method => {
+        apiClient[method] = disabledApiMethod.bind(null, name, method)
       })
-    }
   }
 
   return apiClient
 }
 
-function disableApiMethod(pluginName, method) {
-  return () => {
-    throw new Error(
-      `The "${pluginName}" plugin is not authorized to use "api.${method}". Please update the plugin scopes.`
-    )
-  }
+async function disabledApiMethod(pluginName, method) {
+  throw new Error(
+    `The "${pluginName}" plugin is not authorized to use "api.${method}". Please update the plugin scopes.`
+  )
 }
 
 // Test if inside netlify build context
