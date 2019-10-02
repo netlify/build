@@ -4,6 +4,7 @@ const chalk = require('chalk')
 
 const { redactValues } = require('./redact')
 
+let previous = ''
 function monkeyPatchLogs(secrets) {
   return {
     apply(proxy, context, args) {
@@ -23,7 +24,9 @@ function monkeyPatchLogs(secrets) {
         if (!prefixSet) {
           prefixSet = true
           const pre = process.env.LOG_CONTEXT || ''
-          const prefix = pre ? `${chalk.bold(trim(pre))}: ` : ''
+          // const prefix = (pre && previous !== pre) ? `${chalk.bold(trim(pre))}:\n` : ''
+          const prefix = '' // disable prefix for now. Need to revisit
+          previous = pre
           return `${prefix}${redactedLog}`
         }
         return redactedLog
