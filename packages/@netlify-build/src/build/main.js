@@ -345,7 +345,7 @@ const runInstruction = async function({
     error
   })
 
-  const apiClient = getApiClient({ netlifyToken, name, scopes })
+  const api = getApiClient({ netlifyToken, name, scopes })
 
   netlifyLogs.setContext(name)
 
@@ -357,7 +357,7 @@ const runInstruction = async function({
       /* Plugin configuration */
       pluginConfig,
       /* Netlify API client */
-      api: apiClient,
+      api,
       /* Values constants */
       constants: {
         CONFIG_PATH: path.resolve(netlifyConfigPath),
