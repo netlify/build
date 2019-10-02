@@ -15,7 +15,9 @@ const endTimer = function({ context, hook }, [startSecs, startNsecs]) {
   const durationMs = Math.ceil(durationNs / NANOSECS_TO_MSECS)
   const hookLog = hook ? `.${chalk.bold(hook)}` : ''
   const contextLog = context.startsWith('build.lifecycle') ? 'build.lifecycle' : context
-  console.info(` ${chalk.greenBright(tick)}  ${chalk.greenBright.bold(contextLog)}${hookLog} completed in ${durationMs}ms`)
+  console.info(
+    ` ${chalk.greenBright(tick)}  ${chalk.greenBright.bold(contextLog)}${hookLog} completed in ${durationMs}ms`
+  )
 }
 
 const NANOSECS_TO_SECS = 1e9
