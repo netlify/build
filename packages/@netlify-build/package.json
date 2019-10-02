@@ -47,6 +47,7 @@
     "parse-npm-script": "0.0.3",
     "path-exists": "^4.0.0",
     "redact-env": "^0.2.0",
+    "replacestream": "^4.0.3",
     "resolve": "^1.12.0",
     "shell-source": "^1.1.0",
     "stack-utils": "^1.0.2"
