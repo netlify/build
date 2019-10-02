@@ -111,12 +111,10 @@ module.exports = async function build(inputOptions = {}) {
     const originalConsoleLog = console.log
     console.log = netlifyLogs.patch(redactedKeys)
 
-    const instructions = LIFECYCLE.flatMap(hook =>
-      getHookInstructions({ hook, lifeCycleHooks, netlifyConfig, redactedKeys })
-    )
-
-    const buildInstructions = instructions.filter(instruction => {
-      return instruction.hook !== 'onError'
+    const { buildInstructions, errorInstructions } = getInstructions({
+      lifeCycleHooks,
+      netlifyConfig,
+      redactedKeys
     })
 
     if (options.dry) {
@@ -159,13 +157,10 @@ module.exports = async function build(inputOptions = {}) {
       console.log(chalk.redBright.bold('┌─────────────────────┐'))
       console.log(chalk.redBright.bold('│  Lifecycle Error!   │'))
       console.log(chalk.redBright.bold('└─────────────────────┘'))
-      /* Resolve all ‘onError’ methods and try to fix things */
-      const errorInstructions = instructions.filter(instruction => {
-        return instruction.hook === 'onError'
-      })
-      if (errorInstructions) {
+      if (errorInstructions.length !== 0) {
         console.log()
         console.log(chalk.cyanBright('Running onError methods'))
+        // Resolve all ‘onError’ methods and try to fix things
         await runInstructions(errorInstructions, {
           netlifyConfig,
           netlifyConfigPath,
@@ -196,6 +191,16 @@ const getBaseDir = function(netlifyConfigPath) {
   }
 
   return path.dirname(netlifyConfigPath)
+}
+
+// Get instructions for all hooks
+const getInstructions = function({ lifeCycleHooks, netlifyConfig, redactedKeys }) {
+  const instructions = LIFECYCLE.flatMap(hook =>
+    getHookInstructions({ hook, lifeCycleHooks, netlifyConfig, redactedKeys })
+  )
+  const buildInstructions = instructions.filter(({ hook }) => hook !== 'onError')
+  const errorInstructions = instructions.filter(({ hook }) => hook === 'onError')
+  return { buildInstructions, errorInstructions }
 }
 
 // Get instructions for a specific hook
