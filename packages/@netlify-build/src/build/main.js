@@ -8,14 +8,13 @@ const filterObj = require('filter-obj')
 const pMapSeries = require('p-map-series')
 const pReduce = require('p-reduce')
 const resolveConfig = require('@netlify/config')
-const { formatUtils, getConfigPath } = require('@netlify/config')
+const { getConfigPath } = require('@netlify/config')
 const omit = require('omit.js')
 const groupBy = require('group-by')
 require('array-flat-polyfill')
 
 const deepLog = require('../utils/deeplog')
 const cleanStack = require('../utils/clean-stack')
-const { writeFile } = require('../utils/fs')
 const { getSecrets, redactStream } = require('../utils/redact')
 const netlifyLogs = require('../utils/patch-logs')
 const defaultPlugins = require('../plugins')
@@ -23,6 +22,7 @@ const { startTimer, endTimer } = require('../utils/timer')
 
 const { importPlugin } = require('./import')
 const { LIFECYCLE } = require('./lifecycle')
+const { tomlWrite } = require('./toml')
 const { validatePlugin } = require('./validate')
 const { HEADING_PREFIX } = require('./constants')
 const { getOverride, isNotOverridden } = require('./override')
@@ -212,18 +212,7 @@ module.exports = async function build(inputOptions = {}) {
       throw err
     }
 
-    /* Write TOML file to support current buildbot */
-    const IS_NETLIFY = isNetlifyCI()
-    if (IS_NETLIFY) {
-      const toml = formatUtils.toml.dump(netlifyConfig)
-      const tomlPath = path.join(baseDir, 'netlify.toml')
-      console.log()
-      console.log('TOML output:')
-      console.log()
-      console.log(toml)
-      await writeFile(tomlPath, toml)
-      console.log(`TOML file written to ${tomlPath}`)
-    }
+    await tomlWrite(netlifyConfig, baseDir)
 
     logBuildSuccess()
     endTimer({ context: 'Netlify Build' }, buildTimer)
@@ -450,11 +439,6 @@ const logInstruction = function({
   console.log(logColor.bold(`│ ${output}   │`))
   console.log(logColor.bold(`└─${line}─┘`))
   console.log()
-}
-
-// Test if inside netlify build context
-function isNetlifyCI() {
-  return Boolean(process.env.DEPLOY_PRIME_URL)
 }
 
 // Expose Netlify config
