@@ -7,7 +7,6 @@ const execa = require('execa')
 const filterObj = require('filter-obj')
 const pMapSeries = require('p-map-series')
 const pReduce = require('p-reduce')
-const API = require('netlify')
 const resolveConfig = require('@netlify/config')
 const { formatUtils, getConfigPath } = require('@netlify/config')
 const omit = require('omit.js')
@@ -26,7 +25,8 @@ const { importPlugin } = require('./import')
 const { LIFECYCLE } = require('./lifecycle')
 const { validatePlugin } = require('./validate')
 const { HEADING_PREFIX } = require('./constants')
-const { getOverride, isNotOverridden } = require('./override.js')
+const { getOverride, isNotOverridden } = require('./override')
+const { getApiClient } = require('./api')
 
 // const pt = require('prepend-transform')
 
@@ -412,31 +412,6 @@ const runInstruction = async function({
     console.log(chalk.redBright(`Error in ${name} plugin`))
     throw error
   }
-}
-
-const getApiClient = function({ netlifyToken, name, scopes }) {
-  if (!netlifyToken) {
-    return
-  }
-
-  const apiClient = new API(netlifyToken)
-
-  /* Redact API methods to scopes. Default scopes '*'... revisit */
-  if (scopes && !scopes.includes('*')) {
-    Object.keys(API.prototype)
-      .filter(method => !scopes.includes(method))
-      .forEach(method => {
-        apiClient[method] = disabledApiMethod.bind(null, name, method)
-      })
-  }
-
-  return apiClient
-}
-
-async function disabledApiMethod(pluginName, method) {
-  throw new Error(
-    `The "${pluginName}" plugin is not authorized to use "api.${method}". Please update the plugin scopes.`
-  )
 }
 
 // Test if inside netlify build context
