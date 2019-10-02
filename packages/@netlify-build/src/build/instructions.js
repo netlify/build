@@ -76,16 +76,10 @@ const getHookInstructions = function({
 const execCommand = async function(cmd, name, secrets) {
   logCommandStart(cmd)
 
-  const subprocess = execa(`${cmd}`, { shell: true })
-  subprocess.stdout
-    // Redact ENV vars
-    .pipe(redactStream(secrets))
-    // Output to console
-    .pipe(
-      process.stdout,
-      { end: true }
-    )
   try {
+    const subprocess = execa(String(cmd), { shell: true })
+    subprocess.stdout.pipe(redactStream(secrets)).pipe(process.stdout)
+    subprocess.stderr.pipe(redactStream(secrets)).pipe(process.stderr)
     const { stdout } = await subprocess
     return stdout
   } catch (error) {
