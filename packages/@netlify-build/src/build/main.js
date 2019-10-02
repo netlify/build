@@ -34,211 +34,211 @@ module.exports = async function build(inputOptions = {}) {
   const { token } = inputOptions
   const options = omit(inputOptions, ['token'])
   try {
-  const buildTimer = startTimer()
+    const buildTimer = startTimer()
 
-  console.log(chalk.greenBright.bold(`${HEADING_PREFIX} Starting Netlify Build`))
-  console.log(`https://github.com/netlify/build`)
-  console.log()
-
-  console.log(chalk.cyanBright.bold('Options'))
-  deepLog(options)
-  console.log()
-
-  const netlifyToken = token || process.env.NETLIFY_TOKEN
-
-  const netlifyConfigPath = options.config || (await getConfigPath())
-  console.log(chalk.cyanBright.bold(`${HEADING_PREFIX} Using config file: ${netlifyConfigPath}`))
-  console.log()
-
-  const baseDir = getBaseDir(netlifyConfigPath)
-  /* Load config */
-  let netlifyConfig = {}
-  try {
-    netlifyConfig = await resolveConfig(netlifyConfigPath, options)
-  } catch (err) {
-    console.log('Netlify Config Error')
-    throw err
-  }
-
-  const plugins = [...defaultPlugins, ...(netlifyConfig.plugins || [])]
-
-  if (plugins.length) {
-    console.log(chalk.cyanBright.bold(`${HEADING_PREFIX} Loading plugins`))
-  }
-
-  const hooksArray = plugins
-    .map(plugin => {
-      if (plugin.core) {
-        return plugin
-      }
-
-      const [name] = Object.keys(plugin)
-      const pluginConfig = plugin[name]
-      return { ...pluginConfig, name }
-    })
-    .filter(({ enabled }) => String(enabled) !== 'false')
-    .flatMap(pluginConfig => {
-      const { core, name } = pluginConfig
-      console.log(chalk.yellowBright(`Loading plugin "${name}"`))
-      const code = core ? pluginConfig : importPlugin(name, baseDir)
-
-      const pluginSrc = typeof code === 'function' ? code(pluginConfig) : code
-
-      validatePlugin(pluginSrc, name)
-
-      const meta = filterObj(pluginSrc, (key, value) => typeof value !== 'function')
-
-      // TODO: validate allowed characters in `pluginSrc` properties
-      return Object.entries(pluginSrc)
-        .filter(([, value]) => typeof value === 'function')
-        .map(([hook, method]) => {
-          const override = getOverride(hook)
-          return { name, hook: override.hook || hook, pluginConfig, meta, method, override }
-        })
-    })
-    .filter(isNotOverridden)
-  const lifeCycleHooks = groupBy(hooksArray, 'hook')
-
-  if (netlifyConfig.build.lifecycle && netlifyConfig.build.command) {
-    throw new Error(
-      `build.command && build.lifecycle are both defined in config file. Please move build.command to build.lifecycle.build`
-    )
-  }
-
-  /* Get user set ENV vars and redact */
-  const redactedKeys = getSecrets(['SECRET_ENV_VAR', 'MY_API_KEY'])
-  /* Monkey patch console.log */
-  const originalConsoleLog = console.log
-  console.log = netlifyLogs.patch(redactedKeys)
-
-  const {
-    build: { command: configCommand, lifecycle: configLifecycle }
-  } = netlifyConfig
-  /* Get active build instructions */
-  const instructions = LIFECYCLE.flatMap(hook => {
-    return [
-      // Support for old command. Add build.command to execution
-      configCommand && hook === 'build'
-        ? {
-            name: `config.build.command`,
-            hook: 'build',
-            pluginConfig: {},
-            async method() {
-              await execCommand(configCommand, 'build.command', redactedKeys)
-            },
-            override: {}
-          }
-        : undefined,
-      // Merge in config lifecycle events first
-      configLifecycle && configLifecycle[hook]
-        ? {
-            name: `config.build.lifecycle.${hook}`,
-            hook,
-            pluginConfig: {},
-            async method() {
-              const commands = Array.isArray(configLifecycle[hook])
-                ? configLifecycle[hook]
-                : configLifecycle[hook].split('\n')
-              // TODO pass in env vars if not available
-              // TODO return stdout?
-              await pMapSeries(commands, command => execCommand(command, redactedKeys))
-            },
-            override: {}
-          }
-        : undefined,
-      ...(lifeCycleHooks[hook] ? lifeCycleHooks[hook] : [])
-    ].filter(Boolean)
-  })
-
-  const buildInstructions = instructions.filter(instruction => {
-    return instruction.hook !== 'onError'
-  })
-
-  if (options.dry) {
-    console.log()
-    console.log(chalk.cyanBright.bold(`${HEADING_PREFIX} Netlify Build Steps`))
+    console.log(chalk.greenBright.bold(`${HEADING_PREFIX} Starting Netlify Build`))
+    console.log(`https://github.com/netlify/build`)
     console.log()
 
-    const width = Math.max(...buildInstructions.map(({ hook }) => hook.length))
-    buildInstructions.forEach(({ name, hook }, index) => {
-      const source = name.startsWith('config.build') ? `in ${path.basename(netlifyConfigPath)}` : 'plugin'
-      const count = chalk.cyanBright(`${index + 1}.`)
-      const hookName = chalk.white.bold(`${hook.padEnd(width + 2)} `)
-      const niceName = name.startsWith('config.build') ? name.replace(/^config\./, '') : name
-      const sourceOutput = chalk.white.bold(niceName)
-      console.log(chalk.cyanBright(`${count} ${hookName} source ${sourceOutput} ${source} `))
-    })
+    console.log(chalk.cyanBright.bold('Options'))
+    deepLog(options)
     console.log()
-    process.exit(0)
-  }
-  /* patch environment dependencies */
 
-  /* Execute build with plugins */
-  console.log()
-  console.log(chalk.greenBright.bold('Running Netlify Build Lifecycle'))
-  console.log()
-  try {
-    // TODO refactor engine args
-    const manifest = await engine({
-      instructions: buildInstructions,
-      netlifyConfig,
-      netlifyConfigPath,
-      netlifyToken,
-      baseDir
-    })
-    if (Object.keys(manifest).length) {
-      console.log('Manifest:')
-      deepLog(manifest)
+    const netlifyToken = token || process.env.NETLIFY_TOKEN
+
+    const netlifyConfigPath = options.config || (await getConfigPath())
+    console.log(chalk.cyanBright.bold(`${HEADING_PREFIX} Using config file: ${netlifyConfigPath}`))
+    console.log()
+
+    const baseDir = getBaseDir(netlifyConfigPath)
+    /* Load config */
+    let netlifyConfig = {}
+    try {
+      netlifyConfig = await resolveConfig(netlifyConfigPath, options)
+    } catch (err) {
+      console.log('Netlify Config Error')
+      throw err
     }
-  } catch (err) {
-    netlifyLogs.reset()
-    console.log()
-    console.log(chalk.redBright.bold('┌─────────────────────┐'))
-    console.log(chalk.redBright.bold('│  Lifecycle Error!   │'))
-    console.log(chalk.redBright.bold('└─────────────────────┘'))
-    /* Resolve all ‘onError’ methods and try to fix things */
-    const errorInstructions = instructions.filter(instruction => {
-      return instruction.hook === 'onError'
+
+    const plugins = [...defaultPlugins, ...(netlifyConfig.plugins || [])]
+
+    if (plugins.length) {
+      console.log(chalk.cyanBright.bold(`${HEADING_PREFIX} Loading plugins`))
+    }
+
+    const hooksArray = plugins
+      .map(plugin => {
+        if (plugin.core) {
+          return plugin
+        }
+
+        const [name] = Object.keys(plugin)
+        const pluginConfig = plugin[name]
+        return { ...pluginConfig, name }
+      })
+      .filter(({ enabled }) => String(enabled) !== 'false')
+      .flatMap(pluginConfig => {
+        const { core, name } = pluginConfig
+        console.log(chalk.yellowBright(`Loading plugin "${name}"`))
+        const code = core ? pluginConfig : importPlugin(name, baseDir)
+
+        const pluginSrc = typeof code === 'function' ? code(pluginConfig) : code
+
+        validatePlugin(pluginSrc, name)
+
+        const meta = filterObj(pluginSrc, (key, value) => typeof value !== 'function')
+
+        // TODO: validate allowed characters in `pluginSrc` properties
+        return Object.entries(pluginSrc)
+          .filter(([, value]) => typeof value === 'function')
+          .map(([hook, method]) => {
+            const override = getOverride(hook)
+            return { name, hook: override.hook || hook, pluginConfig, meta, method, override }
+          })
+      })
+      .filter(isNotOverridden)
+    const lifeCycleHooks = groupBy(hooksArray, 'hook')
+
+    if (netlifyConfig.build.lifecycle && netlifyConfig.build.command) {
+      throw new Error(
+        `build.command && build.lifecycle are both defined in config file. Please move build.command to build.lifecycle.build`
+      )
+    }
+
+    /* Get user set ENV vars and redact */
+    const redactedKeys = getSecrets(['SECRET_ENV_VAR', 'MY_API_KEY'])
+    /* Monkey patch console.log */
+    const originalConsoleLog = console.log
+    console.log = netlifyLogs.patch(redactedKeys)
+
+    const {
+      build: { command: configCommand, lifecycle: configLifecycle }
+    } = netlifyConfig
+    /* Get active build instructions */
+    const instructions = LIFECYCLE.flatMap(hook => {
+      return [
+        // Support for old command. Add build.command to execution
+        configCommand && hook === 'build'
+          ? {
+              name: `config.build.command`,
+              hook: 'build',
+              pluginConfig: {},
+              async method() {
+                await execCommand(configCommand, 'build.command', redactedKeys)
+              },
+              override: {}
+            }
+          : undefined,
+        // Merge in config lifecycle events first
+        configLifecycle && configLifecycle[hook]
+          ? {
+              name: `config.build.lifecycle.${hook}`,
+              hook,
+              pluginConfig: {},
+              async method() {
+                const commands = Array.isArray(configLifecycle[hook])
+                  ? configLifecycle[hook]
+                  : configLifecycle[hook].split('\n')
+                // TODO pass in env vars if not available
+                // TODO return stdout?
+                await pMapSeries(commands, command => execCommand(command, redactedKeys))
+              },
+              override: {}
+            }
+          : undefined,
+        ...(lifeCycleHooks[hook] ? lifeCycleHooks[hook] : [])
+      ].filter(Boolean)
     })
-    if (errorInstructions) {
+
+    const buildInstructions = instructions.filter(instruction => {
+      return instruction.hook !== 'onError'
+    })
+
+    if (options.dry) {
       console.log()
-      console.log(chalk.cyanBright('Running onError methods'))
-      await engine({
-        instructions: errorInstructions,
+      console.log(chalk.cyanBright.bold(`${HEADING_PREFIX} Netlify Build Steps`))
+      console.log()
+
+      const width = Math.max(...buildInstructions.map(({ hook }) => hook.length))
+      buildInstructions.forEach(({ name, hook }, index) => {
+        const source = name.startsWith('config.build') ? `in ${path.basename(netlifyConfigPath)}` : 'plugin'
+        const count = chalk.cyanBright(`${index + 1}.`)
+        const hookName = chalk.white.bold(`${hook.padEnd(width + 2)} `)
+        const niceName = name.startsWith('config.build') ? name.replace(/^config\./, '') : name
+        const sourceOutput = chalk.white.bold(niceName)
+        console.log(chalk.cyanBright(`${count} ${hookName} source ${sourceOutput} ${source} `))
+      })
+      console.log()
+      process.exit(0)
+    }
+    /* patch environment dependencies */
+
+    /* Execute build with plugins */
+    console.log()
+    console.log(chalk.greenBright.bold('Running Netlify Build Lifecycle'))
+    console.log()
+    try {
+      // TODO refactor engine args
+      const manifest = await engine({
+        instructions: buildInstructions,
         netlifyConfig,
         netlifyConfigPath,
         netlifyToken,
-        baseDir,
-        error: err
+        baseDir
       })
+      if (Object.keys(manifest).length) {
+        console.log('Manifest:')
+        deepLog(manifest)
+      }
+    } catch (err) {
+      netlifyLogs.reset()
+      console.log()
+      console.log(chalk.redBright.bold('┌─────────────────────┐'))
+      console.log(chalk.redBright.bold('│  Lifecycle Error!   │'))
+      console.log(chalk.redBright.bold('└─────────────────────┘'))
+      /* Resolve all ‘onError’ methods and try to fix things */
+      const errorInstructions = instructions.filter(instruction => {
+        return instruction.hook === 'onError'
+      })
+      if (errorInstructions) {
+        console.log()
+        console.log(chalk.cyanBright('Running onError methods'))
+        await engine({
+          instructions: errorInstructions,
+          netlifyConfig,
+          netlifyConfigPath,
+          netlifyToken,
+          baseDir,
+          error: err
+        })
+      }
+      throw err
     }
-    throw err
-  }
 
-  /* Write TOML file to support current buildbot */
-  const IS_NETLIFY = isNetlifyCI()
-  if (IS_NETLIFY) {
-    const toml = formatUtils.toml.dump(netlifyConfig)
-    const tomlPath = path.join(baseDir, 'netlify.toml')
+    /* Write TOML file to support current buildbot */
+    const IS_NETLIFY = isNetlifyCI()
+    if (IS_NETLIFY) {
+      const toml = formatUtils.toml.dump(netlifyConfig)
+      const tomlPath = path.join(baseDir, 'netlify.toml')
+      console.log()
+      console.log('TOML output:')
+      console.log()
+      console.log(toml)
+      await writeFile(tomlPath, toml)
+      console.log(`TOML file written to ${tomlPath}`)
+    }
+
     console.log()
-    console.log('TOML output:')
+    console.log(chalk.greenBright.bold('┌─────────────────────────────┐'))
+    console.log(chalk.greenBright.bold('│   Netlify Build Complete!   │'))
+    console.log(chalk.greenBright.bold('└─────────────────────────────┘'))
     console.log()
-    console.log(toml)
-    await writeFile(tomlPath, toml)
-    console.log(`TOML file written to ${tomlPath}`)
-  }
+    endTimer({ context: 'Netlify Build' }, buildTimer)
+    // Reset console.log for CLI
+    console.log = originalConsoleLog
 
-  console.log()
-  console.log(chalk.greenBright.bold('┌─────────────────────────────┐'))
-  console.log(chalk.greenBright.bold('│   Netlify Build Complete!   │'))
-  console.log(chalk.greenBright.bold('└─────────────────────────────┘'))
-  console.log()
-  endTimer({ context: 'Netlify Build' }, buildTimer)
-  // Reset console.log for CLI
-  console.log = originalConsoleLog
-
-  const sparkles = chalk.cyanBright('(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧')
-  console.log(`\n${sparkles} Have a nice day!\n`)
+    const sparkles = chalk.cyanBright('(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧')
+    console.log(`\n${sparkles} Have a nice day!\n`)
   } catch (error) {
     console.log()
     console.log(chalk.redBright.bold('┌─────────────────────────────┐'))
