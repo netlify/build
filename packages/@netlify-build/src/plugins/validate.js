@@ -2,7 +2,7 @@ const API = require('netlify')
 const chalk = require('chalk')
 const isPlainObj = require('is-plain-obj')
 
-const { LIFECYCLE } = require('./lifecycle')
+const { LIFECYCLE } = require('../build/lifecycle')
 
 // Validate the shape of a plugin
 const validatePlugin = function(plugin, pluginName) {
