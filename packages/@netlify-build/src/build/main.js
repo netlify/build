@@ -25,6 +25,7 @@ const { LIFECYCLE } = require('./lifecycle')
 const { tomlWrite } = require('./toml')
 const { validatePlugin } = require('./validate')
 const { HEADING_PREFIX } = require('./constants')
+const { doDryRun } = require('./dry')
 const { getOverride, isNotOverridden } = require('./override')
 const { getApiClient } = require('./api')
 
@@ -117,24 +118,7 @@ module.exports = async function build(inputOptions = {}) {
       redactedKeys
     })
 
-    if (options.dry) {
-      console.log()
-      console.log(chalk.cyanBright.bold(`${HEADING_PREFIX} Netlify Build Steps`))
-      console.log()
-
-      const width = Math.max(...buildInstructions.map(({ hook }) => hook.length))
-      buildInstructions.forEach(({ name, hook }, index) => {
-        const source = name.startsWith('config.build') ? `in ${path.basename(netlifyConfigPath)}` : 'plugin'
-        const count = chalk.cyanBright(`${index + 1}.`)
-        const hookName = chalk.white.bold(`${hook.padEnd(width + 2)} `)
-        const niceName = name.startsWith('config.build') ? name.replace(/^config\./, '') : name
-        const sourceOutput = chalk.white.bold(niceName)
-        console.log(chalk.cyanBright(`${count} ${hookName} source ${sourceOutput} ${source} `))
-      })
-      console.log()
-      process.exit(0)
-    }
-    /* patch environment dependencies */
+    doDryRun({ buildInstructions, netlifyConfigPath, options })
 
     /* Execute build with plugins */
     console.log()
