@@ -1,8 +1,4 @@
-const path = require('path')
-
-const chalk = require('chalk')
-
-const { HEADING_PREFIX } = require('./constants')
+const { logDryRunStart, logDryRunInstruction, logDryRunEnd } = require('./log')
 
 // If the `dry` option is specified, do a dry run
 const doDryRun = function({ buildInstructions, netlifyConfigPath, options: { dry } }) {
@@ -10,26 +6,16 @@ const doDryRun = function({ buildInstructions, netlifyConfigPath, options: { dry
     return
   }
 
-  console.log()
-  console.log(chalk.cyanBright.bold(`${HEADING_PREFIX} Netlify Build Steps`))
-  console.log()
+  logDryRunStart()
 
   const width = Math.max(...buildInstructions.map(({ hook }) => hook.length))
   buildInstructions.forEach((instruction, index) =>
     logDryRunInstruction({ instruction, index, netlifyConfigPath, width })
   )
 
-  console.log()
-  process.exit(0)
-}
+  logDryRunEnd()
 
-const logDryRunInstruction = function({ instruction: { name, hook }, index, netlifyConfigPath, width }) {
-  const source = name.startsWith('config.build') ? `in ${path.basename(netlifyConfigPath)}` : 'plugin'
-  const count = chalk.cyanBright(`${index + 1}.`)
-  const hookName = chalk.white.bold(`${hook.padEnd(width + 2)} `)
-  const niceName = name.startsWith('config.build') ? name.replace(/^config\./, '') : name
-  const sourceOutput = chalk.white.bold(niceName)
-  console.log(chalk.cyanBright(`${count} ${hookName} source ${sourceOutput} ${source} `))
+  process.exit(0)
 }
 
 module.exports = { doDryRun }
