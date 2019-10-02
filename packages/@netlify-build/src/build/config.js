@@ -6,12 +6,8 @@ const {
 
 const resolveConfig = require('@netlify/config')
 const { getConfigPath } = require('@netlify/config')
-const chalk = require('chalk')
-const omit = require('omit.js')
 
-const deepLog = require('../utils/deeplog')
-
-const { HEADING_PREFIX } = require('./constants')
+const { logOptions, logConfigPath, logConfigError } = require('./log')
 
 // Retrieve configuration object
 const loadConfig = async function({ options, options: { token, config } }) {
@@ -27,20 +23,9 @@ const loadConfig = async function({ options, options: { token, config } }) {
     const netlifyConfig = await resolveConfig(netlifyConfigPath, options)
     return { netlifyConfig, netlifyConfigPath, netlifyToken, baseDir }
   } catch (error) {
-    console.log('Netlify Config Error')
+    logConfigError()
     throw error
   }
-}
-
-const logOptions = function(options) {
-  console.log(chalk.cyanBright.bold('Options'))
-  deepLog(omit(options, ['token']))
-  console.log()
-}
-
-const logConfigPath = function(netlifyConfigPath) {
-  console.log(chalk.cyanBright.bold(`${HEADING_PREFIX} Using config file: ${netlifyConfigPath}`))
-  console.log()
 }
 
 const getBaseDir = function(netlifyConfigPath) {

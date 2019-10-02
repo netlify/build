@@ -1,7 +1,6 @@
 const path = require('path')
 
 require('./colors')
-const chalk = require('chalk')
 const execa = require('execa')
 const pMapSeries = require('p-map-series')
 const pReduce = require('p-reduce')
@@ -13,6 +12,13 @@ const { startTimer, endTimer } = require('../utils/timer')
 
 const { LIFECYCLE } = require('./lifecycle')
 const { getApiClient } = require('./api')
+const {
+  logInstruction,
+  logCommandStart,
+  logCommandError,
+  logInstructionSuccess,
+  logInstructionError
+} = require('./log')
 
 // Get instructions for all hooks
 const getInstructions = function({ pluginsHooks, netlifyConfig, redactedKeys }) {
@@ -68,7 +74,8 @@ const getHookInstructions = function({
 }
 
 const execCommand = async function(cmd, name, secrets) {
-  console.log(chalk.yellowBright(`Running command "${cmd}"`))
+  logCommandStart(cmd)
+
   const subprocess = execa(`${cmd}`, { shell: true })
   subprocess.stdout
     // Redact ENV vars
@@ -81,13 +88,8 @@ const execCommand = async function(cmd, name, secrets) {
   try {
     const { stdout } = await subprocess
     return stdout
-  } catch (err) {
-    console.log(chalk.redBright(`Error from netlify config ${name}:`))
-    console.log(`"${cmd}"`)
-    console.log()
-    console.log(chalk.redBright('Error message\n'))
-    console.log(err.stderr)
-    console.log()
+  } catch (error) {
+    logCommandError(cmd, name, error)
     process.exit(1)
   }
 }
@@ -191,51 +193,19 @@ const runInstruction = async function({
       /* Error for `onError` handlers */
       error
     })
-    console.log()
-    endTimer({ context: name.replace('config.', ''), hook }, methodTimer)
+
+    logInstructionSuccess()
     netlifyLogs.reset()
+
+    endTimer({ context: name.replace('config.', ''), hook }, methodTimer)
+
     return Object.assign({}, currentData, pluginReturnValue)
   } catch (error) {
-    console.log(chalk.redBright(`Error in ${name} plugin`))
+    logInstructionError(name)
     netlifyLogs.reset()
+
     throw error
   }
-}
-
-const logInstruction = function({
-  currentData,
-  method,
-  hook,
-  pluginConfig,
-  name,
-  override,
-  scopes,
-  index,
-  netlifyConfig,
-  netlifyConfigPath,
-  netlifyToken,
-  baseDir,
-  error
-}) {
-  console.log()
-  if (override.hook) {
-    console.log(
-      chalk.redBright.bold(`> OVERRIDE: "${override.hook}" method in ${override.name} has been overriden by "${name}"`)
-    )
-  }
-  const lifecycleName = error ? '' : 'lifecycle '
-  const source = name.startsWith('config.build') ? `in ${path.basename(netlifyConfigPath)} config file` : 'plugin'
-  const niceName = name.startsWith('config.build') ? name.replace(/^config\./, '') : name
-  const logColor = error ? chalk.redBright : chalk.cyanBright
-  const outputNoChalk = `${index + 1}. Running ${hook} ${lifecycleName}from ${niceName} ${source}`
-  const output = `${index + 1}. Running ${chalk.white.bold(hook)} ${lifecycleName}from ${chalk.white.bold(
-    niceName
-  )} ${source}`
-  const line = '─'.repeat(outputNoChalk.length + 2)
-  console.log(logColor.bold(`┌─${line}─┐`))
-  console.log(logColor.bold(`│ ${output}   │`))
-  console.log(logColor.bold(`└─${line}─┘`))
-  console.log()
 }
 
 module.exports = { getInstructions, runInstructions }
