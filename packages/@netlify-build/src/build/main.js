@@ -175,15 +175,11 @@ module.exports = async function build(configPath, cliFlags, token) {
     console.log(chalk.cyanBright.bold(`${HEADING_PREFIX} Netlify Build Steps`))
     console.log()
 
-    const width = buildInstructions.reduce((acc, instruction) => {
-      const { hook } = instruction
-      if (hook.length > acc) return hook.length
-      return acc
-    }, 0)
+    const width = Math.max(...buildInstructions.map(({ hook }) => hook.length))
     buildInstructions.forEach(({ name, hook }, index) => {
       const source = name.startsWith('config.build') ? `in ${path.basename(netlifyConfigPath)}` : 'plugin'
       const count = chalk.cyanBright(`${index + 1}.`)
-      const hookName = chalk.white.bold(`${rightPad(hook, width + 2, ' ')} `)
+      const hookName = chalk.white.bold(`${hook.padEnd(width + 2)} `)
       const niceName = name.startsWith('config.build') ? name.replace(/^config\./, '') : name
       const sourceOutput = chalk.white.bold(niceName)
       console.log(chalk.cyanBright(`${count} ${hookName} source ${sourceOutput} ${source} `))
@@ -264,18 +260,6 @@ const getBaseDir = function(netlifyConfigPath) {
   }
 
   return path.dirname(netlifyConfigPath)
-}
-
-function rightPad(str, length, char) {
-  var i = -1
-  length = length - str.length
-  if (!char && char !== 0) {
-    char = ' '
-  }
-  while (++i < length) {
-    str += char
-  }
-  return str
 }
 
 async function execCommand(cmd, name, secrets) {
