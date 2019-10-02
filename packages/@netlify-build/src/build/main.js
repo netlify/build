@@ -21,6 +21,7 @@ const { startTimer, endTimer } = require('../utils/timer')
 const { importPlugin } = require('./import')
 const { LIFECYCLE } = require('./lifecycle')
 const { validatePlugin } = require('./validate')
+const { HEADING_PREFIX } = require('./constants')
 
 // const pt = require('prepend-transform')
 
@@ -37,11 +38,17 @@ module.exports = async function build(configPath, cliFlags, token) {
     console.log('Netlify Config Error')
     throw err
   }
-  console.log(chalk.cyanBright.bold('Netlify Config'))
-  deepLog(netlifyConfig)
-  console.log()
+
+  // console.log(chalk.cyanBright.bold('Netlify Config'))
+  // deepLog(netlifyConfig)
+  // console.log()
 
   const plugins = [...defaultPlugins, ...(netlifyConfig.plugins || [])]
+
+  if (plugins.length) {
+    console.log(chalk.cyanBright.bold(`${HEADING_PREFIX} Loading plugins`))
+  }
+
   const lifeCycleHooks = plugins
     .filter(plug => {
       /* Load enabled plugins only */
@@ -165,15 +172,22 @@ module.exports = async function build(configPath, cliFlags, token) {
 
   if (cliFlags.dryRun || cliFlags.plan) {
     console.log()
-    console.log(chalk.cyanBright.bold('Netlify Build Steps'))
+    console.log(chalk.cyanBright.bold(`${HEADING_PREFIX} Netlify Build Steps`))
     console.log()
+
+    const width = buildInstructions.reduce((acc, instruction) => {
+      const { hook } = instruction
+      if (hook.length > acc) return hook.length
+      return acc
+    }, 0)
     buildInstructions.forEach((instruction, i) => {
       const { name, hook } = instruction
-      const source = name.match(/^config\.build/) ? 'config' : 'plugin'
+      const source = name.startsWith('config.build') ? `in ${path.basename(netlifyConfigPath)}` : 'plugin'
       const count = chalk.cyanBright(`${i + 1}.`)
-      const hookName = chalk.bold(`"${hook}"`)
-      const sourceOutput = chalk.yellow(`${name}`)
-      console.log(`${count}  ${hookName} lifecycle hook from ${source} "${sourceOutput}"`)
+      const hookName = chalk.white.bold(`${rightPad(hook, width + 2, ' ')} `) // ↓
+      const niceName = name.startsWith('config.build') ? name.replace(/^config\./, '') : name
+      const sourceOutput = chalk.white.bold(`${niceName}`)
+      console.log(chalk.cyanBright(`${count} ${hookName} source ${sourceOutput} ${source} `))
     })
     console.log()
     // deepLog(buildInstructions)
@@ -195,11 +209,6 @@ module.exports = async function build(configPath, cliFlags, token) {
       netlifyToken,
       baseDir
     })
-    console.log()
-    console.log(chalk.greenBright.bold('┌─────────────────────────────┐'))
-    console.log(chalk.greenBright.bold('│   Netlify Build Complete!   │'))
-    console.log(chalk.greenBright.bold('└─────────────────────────────┘'))
-    console.log()
     if (Object.keys(manifest).length) {
       console.log('Manifest:')
       deepLog(manifest)
@@ -241,6 +250,12 @@ module.exports = async function build(configPath, cliFlags, token) {
     await writeFile(tomlPath, toml)
     console.log(`TOML file written to ${tomlPath}`)
   }
+
+  console.log()
+  console.log(chalk.greenBright.bold('┌─────────────────────────────┐'))
+  console.log(chalk.greenBright.bold('│   Netlify Build Complete!   │'))
+  console.log(chalk.greenBright.bold('└─────────────────────────────┘'))
+  console.log()
   endTimer({ context: 'Netlify Build' }, buildTimer)
   // Reset console.log for CLI
   console.log = originalConsoleLog
@@ -252,6 +267,19 @@ const getBaseDir = function(netlifyConfigPath) {
   }
 
   return path.dirname(netlifyConfigPath)
+}
+
+
+function rightPad(str, length, char) {
+  var i = -1;
+  length = length - str.length;
+  if (!char && char !== 0) {
+    char = ' ';
+  }
+  while (++i < length) {
+    str += char;
+  }
+  return str;
 }
 
 async function execCommand(cmd, name, secrets) {
@@ -331,8 +359,15 @@ const runInstruction = async function({
     )
   }
   const lifecycleName = error ? '' : 'lifecycle '
-  const source = name.startsWith('config.build') ? 'via config' : 'plugin'
-  console.log(chalk.redBright.bold(`> ${index + 1}. Running "${hook}" ${lifecycleName}from "${name}" ${source}`))
+  const source = name.startsWith('config.build') ? `in ${path.basename(netlifyConfigPath)} config file` : 'plugin'
+  const niceName = name.startsWith('config.build') ? name.replace(/^config\./, '') : name
+  const logColor = error ? chalk.redBright : chalk.cyanBright
+  const outputNoChalk = `${index + 1}. Running ${hook} ${lifecycleName}from ${niceName} ${source}`
+  const output = `${index + 1}. Running ${chalk.white.bold(hook)} ${lifecycleName}from ${chalk.white.bold(niceName)} ${source}`
+  const line = '─'.repeat(outputNoChalk.length + 2)
+  console.log(logColor.bold(`┌─${line}─┐`))
+  console.log(logColor.bold(`│ ${output}   │`))
+  console.log(logColor.bold(`└─${line}─┘`))
   console.log()
 
   const apiClient = getApiClient({ netlifyToken, name, scopes })

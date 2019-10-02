@@ -7,16 +7,18 @@ const minimist = require('minimist')
 const cleanStack = require('../utils/clean-stack')
 
 const build = require('./main')
+const { HEADING_PREFIX } = require('./constants')
 
 const args = minimist(process.argv.slice(2))
 
 async function execBuild() {
-  console.log(chalk.greenBright.bold(`Starting Netlify Build`))
+  console.log(chalk.greenBright.bold(`${HEADING_PREFIX} Starting Netlify Build`))
+  console.log(`https://github.com/netlify/build`)
   console.log()
   // Automatically resolve the config path
   const configPath = await getConfigPath()
 
-  console.log(chalk.cyanBright.bold(`Using config file:`))
+  console.log(chalk.cyanBright.bold(`${HEADING_PREFIX} Using config file:`))
   console.log(configPath)
   console.log()
   // Then run build lifecycle
@@ -35,13 +37,14 @@ async function execBuild() {
     }
     return acc.concat(value)
   }, [])
-  await build(configPath, newArgv, args.token)
+
+  await build(configPath, minimist(newArgv), args.token)
 }
 
 execBuild()
   .then(() => {
     const sparkles = chalk.cyanBright('(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧')
-    console.log(`\n${sparkles} Finished with the build process!\n`)
+    console.log(`\n${sparkles} Have a nice day!\n`)
   })
   .catch(e => {
     console.log()
