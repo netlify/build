@@ -141,7 +141,7 @@ module.exports = async function build(inputOptions = {}) {
                   : configLifecycle[hook].split('\n')
                 // TODO pass in env vars if not available
                 // TODO return stdout?
-                await pMapSeries(commands, command => execCommand(command, redactedKeys))
+                await pMapSeries(commands, command => execCommand(command, `build.lifecycle.${hook}`, redactedKeys))
               },
               override: {}
             }
