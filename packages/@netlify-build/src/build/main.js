@@ -1,5 +1,4 @@
 const path = require('path')
-const { cwd } = require('process')
 
 require('./colors')
 const chalk = require('chalk')
@@ -8,7 +7,6 @@ const pMapSeries = require('p-map-series')
 const pReduce = require('p-reduce')
 const resolveConfig = require('@netlify/config')
 const { getConfigPath } = require('@netlify/config')
-const omit = require('omit.js')
 require('array-flat-polyfill')
 
 const deepLog = require('../utils/deeplog')
@@ -18,6 +16,7 @@ const netlifyLogs = require('../utils/patch-logs')
 const { getPluginsHooks } = require('../plugins/main')
 const { startTimer, endTimer } = require('../utils/timer')
 
+const { loadConfig } = require('./config')
 const { LIFECYCLE } = require('./lifecycle')
 const { tomlWrite } = require('./toml')
 const { HEADING_PREFIX } = require('./constants')
@@ -26,9 +25,7 @@ const { getApiClient } = require('./api')
 
 // const pt = require('prepend-transform')
 
-module.exports = async function build(inputOptions = {}) {
-  const { token } = inputOptions
-  const options = omit(inputOptions, ['token'])
+module.exports = async function build(options = {}) {
   try {
     const buildTimer = startTimer()
 
@@ -36,25 +33,7 @@ module.exports = async function build(inputOptions = {}) {
     console.log(`https://github.com/netlify/build`)
     console.log()
 
-    console.log(chalk.cyanBright.bold('Options'))
-    deepLog(options)
-    console.log()
-
-    const netlifyToken = token || process.env.NETLIFY_TOKEN
-
-    const netlifyConfigPath = options.config || (await getConfigPath())
-    console.log(chalk.cyanBright.bold(`${HEADING_PREFIX} Using config file: ${netlifyConfigPath}`))
-    console.log()
-
-    const baseDir = getBaseDir(netlifyConfigPath)
-    /* Load config */
-    let netlifyConfig = {}
-    try {
-      netlifyConfig = await resolveConfig(netlifyConfigPath, options)
-    } catch (err) {
-      console.log('Netlify Config Error')
-      throw err
-    }
+    const { netlifyConfig, netlifyConfigPath, netlifyToken, baseDir } = await loadConfig({ options })
 
     const pluginsHooks = getPluginsHooks(netlifyConfig, baseDir)
 
@@ -125,14 +104,6 @@ module.exports = async function build(inputOptions = {}) {
   } catch (error) {
     logBuildError(error)
   }
-}
-
-const getBaseDir = function(netlifyConfigPath) {
-  if (netlifyConfigPath === undefined) {
-    return cwd()
-  }
-
-  return path.dirname(netlifyConfigPath)
 }
 
 // Get instructions for all hooks
