@@ -39,10 +39,6 @@ module.exports = async function build(configPath, cliFlags, token) {
     throw err
   }
 
-  // console.log(chalk.cyanBright.bold('Netlify Config'))
-  // deepLog(netlifyConfig)
-  // console.log()
-
   const plugins = [...defaultPlugins, ...(netlifyConfig.plugins || [])]
 
   if (plugins.length) {
