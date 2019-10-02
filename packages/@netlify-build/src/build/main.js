@@ -225,35 +225,14 @@ module.exports = async function build(inputOptions = {}) {
       console.log(`TOML file written to ${tomlPath}`)
     }
 
-    console.log()
-    console.log(chalk.greenBright.bold('┌─────────────────────────────┐'))
-    console.log(chalk.greenBright.bold('│   Netlify Build Complete!   │'))
-    console.log(chalk.greenBright.bold('└─────────────────────────────┘'))
-    console.log()
+    logBuildSuccess()
     endTimer({ context: 'Netlify Build' }, buildTimer)
+    logBuildEnd()
+
     // Reset console.log for CLI
     console.log = originalConsoleLog
-
-    const sparkles = chalk.cyanBright('(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧')
-    console.log(`\n${sparkles} Have a nice day!\n`)
   } catch (error) {
-    console.log()
-    console.log(chalk.redBright.bold('┌─────────────────────────────┐'))
-    console.log(chalk.redBright.bold('│    Netlify Build Error!     │'))
-    console.log(chalk.redBright.bold('└─────────────────────────────┘'))
-    console.log(chalk.bold(` ${error.message}`))
-    console.log()
-    console.log(chalk.yellowBright.bold('┌─────────────────────────────┐'))
-    console.log(chalk.yellowBright.bold('│      Error Stack Trace      │'))
-    console.log(chalk.yellowBright.bold('└─────────────────────────────┘'))
-    if (process.env.ERROR_VERBOSE) {
-      console.log(error.stack)
-    } else {
-      console.log(` ${chalk.bold(cleanStack(error.stack))}`)
-      console.log()
-      console.log(` Set environment variable ERROR_VERBOSE=true for deep traces`)
-    }
-    console.log()
+    logBuildError(error)
   }
 }
 
@@ -288,6 +267,39 @@ async function execCommand(cmd, name, secrets) {
     console.log()
     process.exit(1)
   }
+}
+
+const logBuildSuccess = function() {
+  console.log()
+  console.log(chalk.greenBright.bold('┌─────────────────────────────┐'))
+  console.log(chalk.greenBright.bold('│   Netlify Build Complete!   │'))
+  console.log(chalk.greenBright.bold('└─────────────────────────────┘'))
+  console.log()
+}
+
+const logBuildEnd = function() {
+  const sparkles = chalk.cyanBright('(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧')
+  console.log(`\n${sparkles} Have a nice day!\n`)
+}
+
+const logBuildError = function(error) {
+  console.log()
+  console.log(chalk.redBright.bold('┌─────────────────────────────┐'))
+  console.log(chalk.redBright.bold('│    Netlify Build Error!     │'))
+  console.log(chalk.redBright.bold('└─────────────────────────────┘'))
+  console.log(chalk.bold(` ${error.message}`))
+  console.log()
+  console.log(chalk.yellowBright.bold('┌─────────────────────────────┐'))
+  console.log(chalk.yellowBright.bold('│      Error Stack Trace      │'))
+  console.log(chalk.yellowBright.bold('└─────────────────────────────┘'))
+  if (process.env.ERROR_VERBOSE) {
+    console.log(error.stack)
+  } else {
+    console.log(` ${chalk.bold(cleanStack(error.stack))}`)
+    console.log()
+    console.log(` Set environment variable ERROR_VERBOSE=true for deep traces`)
+  }
+  console.log()
 }
 
 /**
