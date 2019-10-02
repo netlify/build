@@ -14,7 +14,7 @@ const dotPropGet = (obj, key, def, p) => {
   return obj === undefined || p < key.length ? def : obj
 }
 
-async function netlifyConfig(configFile, cliFlags) {
+async function netlifyConfig(configFile, options) {
   const configPath = resolve(cwd(), configFile)
 
   if (!(await pathExists(configPath))) {
@@ -22,7 +22,7 @@ async function netlifyConfig(configFile, cliFlags) {
   }
 
   const config = await configorama(configPath, {
-    options: cliFlags,
+    options,
     variableSources: [
       {
         /* Match variables ${secrets:xyz} */
