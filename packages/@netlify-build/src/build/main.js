@@ -329,25 +329,21 @@ const runInstruction = async function({
 }) {
   const methodTimer = startTimer()
 
-  console.log()
-  if (override.hook) {
-    console.log(
-      chalk.redBright.bold(`> OVERRIDE: "${override.hook}" method in ${override.name} has been overriden by "${name}"`)
-    )
-  }
-  const lifecycleName = error ? '' : 'lifecycle '
-  const source = name.startsWith('config.build') ? `in ${path.basename(netlifyConfigPath)} config file` : 'plugin'
-  const niceName = name.startsWith('config.build') ? name.replace(/^config\./, '') : name
-  const logColor = error ? chalk.redBright : chalk.cyanBright
-  const outputNoChalk = `${index + 1}. Running ${hook} ${lifecycleName}from ${niceName} ${source}`
-  const output = `${index + 1}. Running ${chalk.white.bold(hook)} ${lifecycleName}from ${chalk.white.bold(
-    niceName
-  )} ${source}`
-  const line = '─'.repeat(outputNoChalk.length + 2)
-  console.log(logColor.bold(`┌─${line}─┐`))
-  console.log(logColor.bold(`│ ${output}   │`))
-  console.log(logColor.bold(`└─${line}─┘`))
-  console.log()
+  logInstruction({
+    currentData,
+    method,
+    hook,
+    pluginConfig,
+    name,
+    override,
+    scopes,
+    index,
+    netlifyConfig,
+    netlifyConfigPath,
+    netlifyToken,
+    baseDir,
+    error
+  })
 
   const apiClient = getApiClient({ netlifyToken, name, scopes })
 
@@ -406,6 +402,42 @@ const runInstruction = async function({
     netlifyLogs.reset()
     throw error
   }
+}
+
+const logInstruction = function({
+  currentData,
+  method,
+  hook,
+  pluginConfig,
+  name,
+  override,
+  scopes,
+  index,
+  netlifyConfig,
+  netlifyConfigPath,
+  netlifyToken,
+  baseDir,
+  error
+}) {
+  console.log()
+  if (override.hook) {
+    console.log(
+      chalk.redBright.bold(`> OVERRIDE: "${override.hook}" method in ${override.name} has been overriden by "${name}"`)
+    )
+  }
+  const lifecycleName = error ? '' : 'lifecycle '
+  const source = name.startsWith('config.build') ? `in ${path.basename(netlifyConfigPath)} config file` : 'plugin'
+  const niceName = name.startsWith('config.build') ? name.replace(/^config\./, '') : name
+  const logColor = error ? chalk.redBright : chalk.cyanBright
+  const outputNoChalk = `${index + 1}. Running ${hook} ${lifecycleName}from ${niceName} ${source}`
+  const output = `${index + 1}. Running ${chalk.white.bold(hook)} ${lifecycleName}from ${chalk.white.bold(
+    niceName
+  )} ${source}`
+  const line = '─'.repeat(outputNoChalk.length + 2)
+  console.log(logColor.bold(`┌─${line}─┐`))
+  console.log(logColor.bold(`│ ${output}   │`))
+  console.log(logColor.bold(`└─${line}─┘`))
+  console.log()
 }
 
 // Test if inside netlify build context
