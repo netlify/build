@@ -39,12 +39,6 @@ module.exports = async function build(options = {}) {
       redactedKeys
     })
 
-    if (netlifyConfig.build.lifecycle && netlifyConfig.build.command) {
-      throw new Error(
-        `build.command && build.lifecycle are both defined in config file. Please move build.command to build.lifecycle.build`
-      )
-    }
-
     doDryRun({ buildInstructions, netlifyConfigPath, options })
 
     logLifeCycleStart()

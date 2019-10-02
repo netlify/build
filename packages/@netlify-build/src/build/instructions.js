@@ -35,36 +35,22 @@ const getHookInstructions = function({
   hook,
   pluginsHooks,
   netlifyConfig: {
-    build: { command: configCommand, lifecycle: configLifecycle }
+    build: {
+      lifecycle: { [hook]: lifecycleCommands }
+    }
   },
   redactedKeys
 }) {
   return [
-    // Support for old command. Add build.command to execution
-    configCommand && hook === 'build'
-      ? {
-          name: `config.build.command`,
-          hook: 'build',
-          pluginConfig: {},
-          async method() {
-            await execCommand(configCommand, 'build.command', redactedKeys)
-          },
-          override: {}
-        }
-      : undefined,
-    // Merge in config lifecycle events first
-    configLifecycle && configLifecycle[hook]
+    lifecycleCommands
       ? {
           name: `config.build.lifecycle.${hook}`,
           hook,
           pluginConfig: {},
           async method() {
-            const commands = Array.isArray(configLifecycle[hook])
-              ? configLifecycle[hook]
-              : configLifecycle[hook].split('\n')
-            // TODO pass in env vars if not available
-            // TODO return stdout?
-            await pMapSeries(commands, command => execCommand(command, `build.lifecycle.${hook}`, redactedKeys))
+            await pMapSeries(lifecycleCommands, command =>
+              execCommand(command, `build.lifecycle.${hook}`, redactedKeys)
+            )
           },
           override: {}
         }

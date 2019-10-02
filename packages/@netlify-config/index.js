@@ -5,6 +5,8 @@ const configorama = require('configorama')
 const pathExists = require('path-exists')
 
 const getConfigPath = require('./path')
+const { validateConfig } = require('./validate')
+const { normalizeConfig } = require('./normalize')
 
 async function netlifyConfig(configFile, options) {
   const configPath = resolve(cwd(), configFile)
@@ -35,7 +37,9 @@ async function netlifyConfig(configFile, options) {
     ]
   })
 
-  const configA = Object.assign({ build: {} }, config)
+  validateConfig(config)
+
+  const configA = normalizeConfig(config)
   return configA
 }
 
