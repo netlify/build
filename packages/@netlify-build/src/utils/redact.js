@@ -8,7 +8,14 @@ function getSecrets(secretKeys) {
 }
 
 function redactValues(target, secrets) {
-  if (typeof target !== 'object' || target === null) {
+  const type = typeof target
+  if (type === 'number' || type === 'boolean') {
+    return target
+  }
+  if (type === 'function') {
+    return redactEnv.redact(target.toString(), secrets)
+  }
+  if (type !== 'object' || target === null) {
     return redactEnv.redact(target, secrets)
   }
 
