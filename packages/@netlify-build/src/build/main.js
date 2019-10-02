@@ -424,25 +424,6 @@ const getApiClient = function({ netlifyToken, name, scopes }) {
 
   /* Redact API methods to scopes. Default scopes '*'... revisit */
   if (scopes && !scopes.includes('*')) {
-    const apiMethods = Object.getPrototypeOf(apiClient)
-    const apiMethodArray = Object.keys(apiMethods)
-
-    /* validate scopes */
-    scopes.forEach((scopeName, i) => {
-      if (scopeName !== '*' && !apiMethodArray.includes(scopeName)) {
-        console.log(chalk.redBright(`Invalid scope "${scopeName}" in "${name}" plugin.`))
-        console.log(chalk.white.bold(`Please use a valid event name. One of:`))
-        console.log(
-          `${['*']
-            .concat(apiMethodArray)
-            .map(n => `"${n}"`)
-            .join(', ')}`
-        )
-        console.log()
-        throw new Error(`Invalid scope "${scopeName}" in "${name}" plugin.`)
-      }
-    })
-
     Object.keys(API.prototype)
       .filter(method => !scopes.includes(method))
       .forEach(method => {
