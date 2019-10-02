@@ -179,8 +179,7 @@ module.exports = async function build(inputOptions = {}) {
     console.log()
     try {
       // TODO refactor engine args
-      const manifest = await engine({
-        instructions: buildInstructions,
+      const manifest = await runInstructions(buildInstructions, {
         netlifyConfig,
         netlifyConfigPath,
         netlifyToken,
@@ -191,7 +190,6 @@ module.exports = async function build(inputOptions = {}) {
         deepLog(manifest)
       }
     } catch (err) {
-      netlifyLogs.reset()
       console.log()
       console.log(chalk.redBright.bold('┌─────────────────────┐'))
       console.log(chalk.redBright.bold('│  Lifecycle Error!   │'))
@@ -203,8 +201,7 @@ module.exports = async function build(inputOptions = {}) {
       if (errorInstructions) {
         console.log()
         console.log(chalk.cyanBright('Running onError methods'))
-        await engine({
-          instructions: errorInstructions,
+        await runInstructions(errorInstructions, {
           netlifyConfig,
           netlifyConfigPath,
           netlifyToken,
@@ -299,8 +296,11 @@ async function execCommand(cmd, name, secrets) {
  * @param  {Object} config - Netlify config file values
  * @return {Object} updated config?
  */
-async function engine({ instructions, netlifyConfig, netlifyConfigPath, netlifyToken, baseDir, error }) {
-  const returnData = await pReduce(
+const runInstructions = async function(
+  instructions,
+  { netlifyConfig, netlifyConfigPath, netlifyToken, baseDir, error }
+) {
+  return await pReduce(
     instructions,
     (currentData, instruction, index) =>
       runInstruction({
@@ -315,11 +315,6 @@ async function engine({ instructions, netlifyConfig, netlifyConfigPath, netlifyT
       }),
     {}
   )
-
-  /* Clear logs prefix */
-  netlifyLogs.reset()
-
-  return returnData
 }
 
 const runInstruction = async function({
@@ -333,8 +328,6 @@ const runInstruction = async function({
   error
 }) {
   const methodTimer = startTimer()
-  // reset logs context
-  netlifyLogs.reset()
 
   console.log()
   if (override.hook) {
@@ -358,7 +351,6 @@ const runInstruction = async function({
 
   const apiClient = getApiClient({ netlifyToken, name, scopes })
 
-  // set log context
   netlifyLogs.setContext(name)
 
   try {
@@ -407,9 +399,11 @@ const runInstruction = async function({
     })
     console.log()
     endTimer({ context: name.replace('config.', ''), hook }, methodTimer)
+    netlifyLogs.reset()
     return Object.assign({}, currentData, pluginReturnValue)
   } catch (error) {
     console.log(chalk.redBright(`Error in ${name} plugin`))
+    netlifyLogs.reset()
     throw error
   }
 }
