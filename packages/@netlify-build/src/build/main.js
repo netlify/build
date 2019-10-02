@@ -4,29 +4,24 @@ const { cwd } = require('process')
 require('./colors')
 const chalk = require('chalk')
 const execa = require('execa')
-const filterObj = require('filter-obj')
 const pMapSeries = require('p-map-series')
 const pReduce = require('p-reduce')
 const resolveConfig = require('@netlify/config')
 const { getConfigPath } = require('@netlify/config')
 const omit = require('omit.js')
-const groupBy = require('group-by')
 require('array-flat-polyfill')
 
 const deepLog = require('../utils/deeplog')
 const cleanStack = require('../utils/clean-stack')
 const { getSecrets, redactStream } = require('../utils/redact')
 const netlifyLogs = require('../utils/patch-logs')
-const defaultPlugins = require('../plugins')
+const { getPluginsHooks } = require('../plugins/main')
 const { startTimer, endTimer } = require('../utils/timer')
 
-const { importPlugin } = require('./import')
 const { LIFECYCLE } = require('./lifecycle')
 const { tomlWrite } = require('./toml')
-const { validatePlugin } = require('./validate')
 const { HEADING_PREFIX } = require('./constants')
 const { doDryRun } = require('./dry')
-const { getOverride, isNotOverridden } = require('./override')
 const { getApiClient } = require('./api')
 
 // const pt = require('prepend-transform')
@@ -61,44 +56,7 @@ module.exports = async function build(inputOptions = {}) {
       throw err
     }
 
-    const plugins = [...defaultPlugins, ...(netlifyConfig.plugins || [])]
-
-    if (plugins.length) {
-      console.log(chalk.cyanBright.bold(`${HEADING_PREFIX} Loading plugins`))
-    }
-
-    const hooksArray = plugins
-      .map(plugin => {
-        if (plugin.core) {
-          return plugin
-        }
-
-        const [name] = Object.keys(plugin)
-        const pluginConfig = plugin[name]
-        return { ...pluginConfig, name }
-      })
-      .filter(({ enabled }) => String(enabled) !== 'false')
-      .flatMap(pluginConfig => {
-        const { core, name } = pluginConfig
-        console.log(chalk.yellowBright(`Loading plugin "${name}"`))
-        const code = core ? pluginConfig : importPlugin(name, baseDir)
-
-        const pluginSrc = typeof code === 'function' ? code(pluginConfig) : code
-
-        validatePlugin(pluginSrc, name)
-
-        const meta = filterObj(pluginSrc, (key, value) => typeof value !== 'function')
-
-        // TODO: validate allowed characters in `pluginSrc` properties
-        return Object.entries(pluginSrc)
-          .filter(([, value]) => typeof value === 'function')
-          .map(([hook, method]) => {
-            const override = getOverride(hook)
-            return { name, hook: override.hook || hook, pluginConfig, meta, method, override }
-          })
-      })
-      .filter(isNotOverridden)
-    const lifeCycleHooks = groupBy(hooksArray, 'hook')
+    const pluginsHooks = getPluginsHooks(netlifyConfig, baseDir)
 
     if (netlifyConfig.build.lifecycle && netlifyConfig.build.command) {
       throw new Error(
@@ -113,7 +71,7 @@ module.exports = async function build(inputOptions = {}) {
     console.log = netlifyLogs.patch(redactedKeys)
 
     const { buildInstructions, errorInstructions } = getInstructions({
-      lifeCycleHooks,
+      pluginsHooks,
       netlifyConfig,
       redactedKeys
     })
@@ -178,9 +136,9 @@ const getBaseDir = function(netlifyConfigPath) {
 }
 
 // Get instructions for all hooks
-const getInstructions = function({ lifeCycleHooks, netlifyConfig, redactedKeys }) {
+const getInstructions = function({ pluginsHooks, netlifyConfig, redactedKeys }) {
   const instructions = LIFECYCLE.flatMap(hook =>
-    getHookInstructions({ hook, lifeCycleHooks, netlifyConfig, redactedKeys })
+    getHookInstructions({ hook, pluginsHooks, netlifyConfig, redactedKeys })
   )
   const buildInstructions = instructions.filter(({ hook }) => hook !== 'onError')
   const errorInstructions = instructions.filter(({ hook }) => hook === 'onError')
@@ -190,7 +148,7 @@ const getInstructions = function({ lifeCycleHooks, netlifyConfig, redactedKeys }
 // Get instructions for a specific hook
 const getHookInstructions = function({
   hook,
-  lifeCycleHooks,
+  pluginsHooks,
   netlifyConfig: {
     build: { command: configCommand, lifecycle: configLifecycle }
   },
@@ -226,7 +184,7 @@ const getHookInstructions = function({
           override: {}
         }
       : undefined,
-    ...(lifeCycleHooks[hook] ? lifeCycleHooks[hook] : [])
+    ...(pluginsHooks[hook] ? pluginsHooks[hook] : [])
   ].filter(Boolean)
 }
 
