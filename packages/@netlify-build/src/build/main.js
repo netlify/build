@@ -266,17 +266,16 @@ const getBaseDir = function(netlifyConfigPath) {
   return path.dirname(netlifyConfigPath)
 }
 
-
 function rightPad(str, length, char) {
-  var i = -1;
-  length = length - str.length;
+  var i = -1
+  length = length - str.length
   if (!char && char !== 0) {
-    char = ' ';
+    char = ' '
   }
   while (++i < length) {
-    str += char;
+    str += char
   }
-  return str;
+  return str
 }
 
 async function execCommand(cmd, name, secrets) {
@@ -360,7 +359,9 @@ const runInstruction = async function({
   const niceName = name.startsWith('config.build') ? name.replace(/^config\./, '') : name
   const logColor = error ? chalk.redBright : chalk.cyanBright
   const outputNoChalk = `${index + 1}. Running ${hook} ${lifecycleName}from ${niceName} ${source}`
-  const output = `${index + 1}. Running ${chalk.white.bold(hook)} ${lifecycleName}from ${chalk.white.bold(niceName)} ${source}`
+  const output = `${index + 1}. Running ${chalk.white.bold(hook)} ${lifecycleName}from ${chalk.white.bold(
+    niceName
+  )} ${source}`
   const line = '─'.repeat(outputNoChalk.length + 2)
   console.log(logColor.bold(`┌─${line}─┐`))
   console.log(logColor.bold(`│ ${output}   │`))
