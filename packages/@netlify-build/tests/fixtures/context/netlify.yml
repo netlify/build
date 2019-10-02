@@ -1,0 +1,8 @@
+build:
+  lifecycle:
+    build: echo ${context:testProp}
+context:
+  development:
+    testProp: dev
+  production:
+    testProp: prod

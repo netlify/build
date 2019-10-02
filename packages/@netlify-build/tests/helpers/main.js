@@ -16,6 +16,9 @@ const NORMALIZE_REGEXPS = [
   [/\\/gu, '/'],
   // File paths
   [/(^|[ "'])\.{0,2}\/[^ "'\n]+/gm, '$1/file/path'],
+  // Stack traces
+  [/^.*\([^)]+:\d+:\d+\)$/gm, 'STACK TRACE'],
+  [/(STACK TRACE\n)+/, 'STACK TRACE'],
   // Durations
   [/[\d.]+ms/g, '1ms'],
   // Package versions
