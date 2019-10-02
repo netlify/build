@@ -6,14 +6,6 @@ const pathExists = require('path-exists')
 
 const getConfigPath = require('./path')
 
-/* https://github.com/developit/dlv */
-const dotPropGet = (obj, key, def, p) => {
-  p = 0
-  key = key.split ? key.split('.') : key
-  while (obj && p < key.length) obj = obj[key[p++]]
-  return obj === undefined || p < key.length ? def : obj
-}
-
 async function netlifyConfig(configFile, options) {
   const configPath = resolve(cwd(), configFile)
 
@@ -26,7 +18,7 @@ async function netlifyConfig(configFile, options) {
     variableSources: [
       {
         /* Match variables ${secrets:xyz} */
-        match: /^secrets:/g,
+        match: /^secrets:/,
         async resolver() {
           // Call to remote secret store
           return 'shhhhhhh'
@@ -34,13 +26,10 @@ async function netlifyConfig(configFile, options) {
       },
       {
         /* Match variables ${context:xyz} */
-        match: /^context:/g,
-        async resolver(varToProcess, opts, currentObject) {
-          const objectPath = varToProcess.replace(/^context:/, '')
-          const context = opts.context || 'production'
-          const newValue = dotPropGet(`context.${context}.${objectPath}`, currentObject)
-          const lookup = `\${self:${newValue}}`
-          return lookup
+        match: /^context:/,
+        async resolver(varToProcess, { context = 'production' }) {
+          const objectPath = varToProcess.replace('context:', '')
+          return `\${self:context.${context}.${objectPath}}`
         }
       }
     ]
