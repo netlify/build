@@ -36,17 +36,24 @@ const isPluginEnabled = function({ enabled }) {
   return String(enabled) !== 'false'
 }
 
-const loadPlugins = function(pluginsOptions, baseDir) {
-  return Promise.all(pluginsOptions.map(pluginOptions => loadPlugin(pluginOptions, baseDir)))
+const loadPlugins = async function(pluginsOptions, baseDir) {
+  const plugins = await Promise.all(pluginsOptions.map(pluginOptions => loadPlugin(pluginOptions, baseDir)))
+  return plugins.flat()
 }
 
 const loadPlugin = async function({ pluginId, type, pluginConfig }, baseDir) {
   const plugin = await importPlugin({ type, pluginConfig, pluginId, baseDir })
-  validatePlugin(plugin, pluginId)
+
+  if (Array.isArray(plugin)) {
+    return plugin.flat(Infinity).map(nestedPlugin => ({ plugin: nestedPlugin, pluginId, pluginConfig, type }))
+  }
+
   return { plugin, pluginId, pluginConfig, type }
 }
 
 const getPluginHooks = function({ plugin, pluginId, pluginConfig, type }) {
+  validatePlugin(plugin, pluginId)
+
   const meta = filterObj(plugin, (key, value) => !isPluginHook(key, value))
   const hooks = filterObj(plugin, isPluginHook)
   return Object.entries(hooks).map(([hook, method]) =>
