@@ -3,7 +3,7 @@ const execa = require('execa')
 
 const { normalizeOutput } = require('./helpers/main.js')
 
-const BINARY_PATH = `${__dirname}/../src/build/bin.js`
+const BINARY_PATH = `${__dirname}/../src/core/bin.js`
 const FIXTURES_DIR = `${__dirname}/fixtures`
 
 test('Smoke test', async t => {

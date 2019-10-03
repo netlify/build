@@ -2,9 +2,9 @@
   "name": "@netlify/build",
   "version": "0.0.16",
   "description": "Netlify build module",
-  "main": "src/build.js",
+  "main": "src/core/main.js",
   "bin": {
-    "netlify-build": "./src/build/bin.js"
+    "netlify-build": "./src/core/bin.js"
   },
   "files": [
     "src/**/*.js",
