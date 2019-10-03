@@ -8,8 +8,8 @@ const getApiClient = function({ token, name, scopes }) {
 
   const api = new NetlifyAPI(token)
 
-  /* Redact API methods to scopes. Default scopes '*'... revisit */
-  if (scopes && !scopes.includes('*')) {
+  // Redact API methods to scopes
+  if (Array.isArray(scopes) && !scopes.includes('*')) {
     Object.keys(NetlifyAPI.prototype)
       .filter(method => !scopes.includes(method))
       .forEach(method => {
