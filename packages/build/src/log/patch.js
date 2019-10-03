@@ -1,9 +1,13 @@
-const { getSecrets, redactValues } = require('./redact')
-const { serialize } = require('./serialize')
+const { inspect } = require('util')
+
+const redactEnv = require('redact-env')
+const replaceStream = require('replacestream')
+
+const { hasColors } = require('./colors')
 
 // Monkey patch console.log() to redact secrets
 const startPatchingLog = function() {
-  const redactedKeys = getSecrets(SECRETS)
+  const redactedKeys = redactEnv.build(SECRETS)
   const originalConsoleLog = console.log
   console.log = patchLogs(redactedKeys)
   return { redactedKeys, originalConsoleLog }
@@ -28,24 +32,33 @@ const monkeyPatchLogs = function(secrets) {
         return Reflect.apply(proxy, context, args)
       }
       let prefixSet = false
-      const redactedArgs = args.map(a => {
-        const redactedLog = redactValues(a, secrets)
-        if (typeof a === 'object') {
-          return serialize(redactedLog)
-        }
+      const redactedArgs = args.map(arg => {
+        const argA = typeof arg === 'string' ? arg : serialize(arg)
+        const argB = redactEnv.redact(argA, secrets)
+
         if (!prefixSet) {
           prefixSet = true
           const pre = process.env.LOG_CONTEXT || ''
           // const prefix = (pre && previous !== pre) ? `${chalk.bold(pre.replace('config.', ''))}:\n` : ''
           const prefix = '' // disable prefix for now. Need to revisit
           previous = pre
-          return `${prefix}${redactedLog}`
+          return `${prefix}${argB}`
         }
-        return redactedLog
+
+        return argB
       })
       return Reflect.apply(proxy, context, redactedArgs)
     }
   }
+}
+
+// Serialize non-strings for printing
+const serialize = function(value) {
+  return inspect(value, { depth: null, colors: hasColors() })
+}
+
+function redactStream(secrets) {
+  return replaceStream(secrets, '[secrets]')
 }
 
 const setLogContext = function(pre) {
@@ -56,4 +69,4 @@ const unsetLogContext = function() {
   process.env.LOG_CONTEXT = ''
 }
 
-module.exports = { startPatchingLog, stopPatchingLog, setLogContext, unsetLogContext }
+module.exports = { startPatchingLog, stopPatchingLog, redactStream, setLogContext, unsetLogContext }
