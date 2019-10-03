@@ -6,8 +6,7 @@ const {
 const { tick, pointer } = require('figures')
 const omit = require('omit.js')
 
-const { patchLogs } = require('./patch')
-const { getSecrets } = require('./redact')
+const { startPatchingLog, stopPatchingLog } = require('./patch')
 const { serialize } = require('./serialize')
 const { setColorLevel } = require('./colors')
 const { cleanStack } = require('./stack')
@@ -15,20 +14,6 @@ const { cleanStack } = require('./stack')
 setColorLevel()
 // eslint-disable-next-line import/order
 const { greenBright, cyanBright, redBright, yellowBright, bold } = require('chalk')
-
-// Monkey patch console.log() to redact secrets
-const startPatchingLog = function() {
-  const redactedKeys = getSecrets(SECRETS)
-  const originalConsoleLog = console.log
-  console.log = patchLogs(redactedKeys)
-  return { redactedKeys, originalConsoleLog }
-}
-
-const SECRETS = ['SECRET_ENV_VAR', 'MY_API_KEY']
-
-const stopPatchingLog = function(originalConsoleLog) {
-  console.log = originalConsoleLog
-}
 
 const HEADING_PREFIX = pointer
 

@@ -1,13 +1,27 @@
-/* eslint-disable  no-unused-vars */
-const util = require('util')
-
-const chalk = require('chalk')
-
-const { redactValues } = require('./redact')
+const { getSecrets, redactValues } = require('./redact')
 const { serialize } = require('./serialize')
 
-let previous = ''
-function monkeyPatchLogs(secrets) {
+// Monkey patch console.log() to redact secrets
+const startPatchingLog = function() {
+  const redactedKeys = getSecrets(SECRETS)
+  const originalConsoleLog = console.log
+  console.log = patchLogs(redactedKeys)
+  return { redactedKeys, originalConsoleLog }
+}
+
+const SECRETS = ['SECRET_ENV_VAR', 'MY_API_KEY']
+
+const stopPatchingLog = function(originalConsoleLog) {
+  console.log = originalConsoleLog
+}
+
+const patchLogs = function(secrets) {
+  return new Proxy(console.log, monkeyPatchLogs(secrets))
+}
+
+const monkeyPatchLogs = function(secrets) {
+  // eslint-disable-next-line no-unused-vars
+  let previous = ''
   return {
     apply(proxy, context, args) {
       if (!args.length) {
@@ -22,7 +36,7 @@ function monkeyPatchLogs(secrets) {
         if (!prefixSet) {
           prefixSet = true
           const pre = process.env.LOG_CONTEXT || ''
-          // const prefix = (pre && previous !== pre) ? `${chalk.bold(trim(pre))}:\n` : ''
+          // const prefix = (pre && previous !== pre) ? `${chalk.bold(pre.replace('config.', ''))}:\n` : ''
           const prefix = '' // disable prefix for now. Need to revisit
           previous = pre
           return `${prefix}${redactedLog}`
@@ -34,18 +48,12 @@ function monkeyPatchLogs(secrets) {
   }
 }
 
-function trim(string) {
-  return string.replace(/^config\./, '')
-}
-
-module.exports.patchLogs = secrets => {
-  return new Proxy(console.log, monkeyPatchLogs(secrets))
-}
-
-module.exports.setLogContext = pre => {
+const setLogContext = function(pre) {
   process.env.LOG_CONTEXT = pre
 }
 
-module.exports.unsetLogContext = () => {
+const unsetLogContext = function() {
   process.env.LOG_CONTEXT = ''
 }
+
+module.exports = { startPatchingLog, stopPatchingLog, setLogContext, unsetLogContext }
