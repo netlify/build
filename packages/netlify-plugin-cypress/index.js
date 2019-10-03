@@ -1,7 +1,7 @@
 function netlifyCypressPlugin(conf) {
   return {
     // Hook into lifecycle
-    postbuild: () => {
+    postBuild: () => {
       console.log('running cypress integration tests')
     },
     manifest: () => {

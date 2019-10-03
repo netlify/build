@@ -75,7 +75,7 @@ The Lifecycle flows through events and their `pre` and `post` counterparts.
       ├───────────────┼────────────────┼──────────────────┤
       │               │                │                  │
       │               │                │                  │
-...   │   prebuild    │     build      │    postbuild     │   ...
+...   │   preBuild    │     build      │    postBuild     │   ...
       │               │                │                  │
       │               │                │                  │
       └───────────────┤                ├──────────────────┘
@@ -88,7 +88,7 @@ The Lifecycle flows through events and their `pre` and `post` counterparts.
 
 **Example:**
 
-`prebuild` runs first, then `build`, then `postbuild` in that order.
+`preBuild` runs first, then `build`, then `postBuild` in that order.
 
 This applies to all lifecycle events listed above.
 
@@ -121,8 +121,8 @@ function exampleNetlifyPlugin(initialConfig) {
       /* config */
       console.log('Current netlify config from config file', config)
     },
-    // Hook into `postbuild` lifecycle
-    postbuild: () => {
+    // Hook into `postBuild` lifecycle
+    postBuild: () => {
       console.log('Build finished. Do custom thing')
     }
     // ... etc
@@ -174,7 +174,7 @@ build:
       - echo "much wow"
     getCache:
       - echo 'curl custom cache'
-    prebuild: echo "${secrets:privateKey}"
+    preBuild: echo "${secrets:privateKey}"
     build: |
       echo 'Hello Netlify Build!'
       npm run build

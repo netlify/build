@@ -33,8 +33,16 @@ const normalizeCommand = function(lifecycle, command) {
 }
 
 const normalizeLifecycle = function(hook, value) {
+  const hookA = hook.replace(HOOK_REGEXP, replaceHookName)
   const valueA = typeof value === 'string' ? value.trim().split('\n') : value
-  return [hook, valueA]
+  return [hookA, valueA]
 }
+
+// We allow both `prebuild` and `preBuild` although the later one is preferred
+const replaceHookName = function(full, prefix, char) {
+  return `${prefix}${char.toUpperCase()}`
+}
+
+const HOOK_REGEXP = /^(pre|post)([a-zA-Z])/
 
 module.exports = { normalizeConfig }
