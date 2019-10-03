@@ -1,5 +1,5 @@
 {
-  "name": "netlify-plugin-axe",
+  "name": "@netlify/plugin-axe",
   "private": true,
   "version": "0.0.1",
   "description": "",
@@ -13,7 +13,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\""
   },
-  "keywords": [],
+  "keywords": [
+    "netlify",
+    "netlify-plugin"
+  ],
   "author": "",
   "license": "ISC"
 }

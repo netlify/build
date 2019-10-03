@@ -109,11 +109,11 @@ const logInstruction = function({ hook, name, override, index, configPath, error
     )
   }
   const lifecycleName = error ? '' : 'lifecycle '
-  const source = name.startsWith('config.build') ? `in ${basename(configPath)} config file` : 'plugin'
+  const source = name.startsWith('config.build') ? ` in ${basename(configPath)} config file` : ''
   const niceName = name.startsWith('config.build') ? name.replace(/^config\./, '') : name
   const logColor = error ? redBright : cyanBright
-  const outputNoChalk = `${index + 1}. Running ${hook} ${lifecycleName}from ${niceName} ${source}`
-  const output = `${index + 1}. Running ${bold(hook)} ${lifecycleName}from ${bold(niceName)} ${source}`
+  const outputNoChalk = `${index + 1}. Running ${hook} ${lifecycleName}from ${niceName}${source}`
+  const output = `${index + 1}. Running ${bold(hook)} ${lifecycleName}from ${bold(niceName)}${source}`
   const line = '─'.repeat(outputNoChalk.length + 2)
   console.log(logColor.bold(`┌─${line}─┐`))
   console.log(logColor.bold(`│ ${output}   │`))

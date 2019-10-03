@@ -14,16 +14,16 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@netlify/build": "file:../packages/build-core",
-    "cross-env": "^5.2.0",
-    "netlify-plugin-cypress": "file:../packages/netlify-plugin-cypress",
-    "netlify-plugin-example": "file:../packages/netlify-plugin-example",
-    "netlify-plugin-axe": "file:../packages/netlify-plugin-axe",
-    "netlify-plugin-functions": "file:../packages/netlify-plugin-functions",
-    "netlify-plugin-lighthouse": "file:../packages/netlify-plugin-lighthouse",
-    "netlify-plugin-monorepo": "file:../packages/netlify-plugin-monorepo",
-    "netlify-plugin-notifier": "file:../packages/netlify-plugin-notifier",
-    "netlify-plugin-sitemap": "file:../packages/netlify-plugin-sitemap"
+    "@netlify/build": "file:../packages/build",
+    "@netlify/plugin-cypress": "file:../packages/netlify-plugin-cypress",
+    "@netlify/plugin-example": "file:../packages/netlify-plugin-example",
+    "@netlify/plugin-axe": "file:../packages/netlify-plugin-axe",
+    "@netlify/plugin-functions": "file:../packages/netlify-plugin-functions",
+    "@netlify/plugin-lighthouse": "file:../packages/netlify-plugin-lighthouse",
+    "@netlify/plugin-monorepo": "file:../packages/netlify-plugin-monorepo",
+    "@netlify/plugin-notifier": "file:../packages/netlify-plugin-notifier",
+    "@netlify/plugin-sitemap": "file:../packages/netlify-plugin-sitemap",
+    "cross-env": "^5.2.0"
   },
   "dependencies": {
     "axe-core": "^3.3.2",
