@@ -1,6 +1,8 @@
 require('./colors')
+
 const resolveConfig = require('@netlify/config')
 const { getConfigPath } = require('@netlify/config')
+
 require('array-flat-polyfill')
 
 const { getPluginsHooks } = require('../plugins/main')

@@ -7,7 +7,7 @@ const { tick, pointer } = require('figures')
 const { greenBright, cyanBright, redBright, yellowBright, bold } = require('chalk')
 const omit = require('omit.js')
 
-const deepLog = require('../utils/deeplog')
+const { deepLog } = require('../utils/deeplog')
 const cleanStack = require('../utils/clean-stack')
 const { getSecrets } = require('../utils/redact')
 const { patchLogs } = require('../utils/patch-logs')
