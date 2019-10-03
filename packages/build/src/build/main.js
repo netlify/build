@@ -1,18 +1,9 @@
-require('./colors')
-
 const resolveConfig = require('@netlify/config')
 const { getConfigPath } = require('@netlify/config')
 
 require('array-flat-polyfill')
 
 const { getPluginsHooks } = require('../plugins/main')
-const { startTimer, endTimer } = require('../utils/timer')
-
-const { loadConfig } = require('./config')
-const { handleInstructionError } = require('./error')
-const { getInstructions, runInstructions } = require('./instructions')
-const { tomlWrite } = require('./toml')
-const { doDryRun } = require('./dry')
 const {
   startPatchingLog,
   stopPatchingLog,
@@ -22,7 +13,14 @@ const {
   logBuildError,
   logBuildSuccess,
   logBuildEnd
-} = require('./log')
+} = require('../log/main')
+const { startTimer, endTimer } = require('../log/timer')
+
+const { loadConfig } = require('./config')
+const { handleInstructionError } = require('./error')
+const { getInstructions, runInstructions } = require('./instructions')
+const { tomlWrite } = require('./toml')
+const { doDryRun } = require('./dry')
 
 const build = async function(options = {}) {
   const { redactedKeys, originalConsoleLog } = startPatchingLog()

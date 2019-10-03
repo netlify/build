@@ -2,7 +2,7 @@ const filterObj = require('filter-obj')
 const groupBy = require('group-by')
 
 const netlifyFunctionsPlugin = require('../plugins/functions')
-const { logLoadPlugins, logLoadPlugin } = require('../build/log')
+const { logLoadPlugins, logLoadPlugin } = require('../log/main')
 
 const { importPlugin } = require('./import')
 const { validatePlugin } = require('./validate')

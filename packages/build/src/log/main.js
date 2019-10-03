@@ -4,13 +4,17 @@ const {
 } = require('process')
 
 const { tick, pointer } = require('figures')
-const { greenBright, cyanBright, redBright, yellowBright, bold } = require('chalk')
 const omit = require('omit.js')
 
-const { deepLog } = require('../utils/deeplog')
-const cleanStack = require('../utils/clean-stack')
-const { getSecrets } = require('../utils/redact')
-const { patchLogs } = require('../utils/patch-logs')
+const { patchLogs } = require('./patch')
+const { getSecrets } = require('./redact')
+const { serialize } = require('./serialize')
+const { setColorLevel } = require('./colors')
+const { cleanStack } = require('./stack')
+
+setColorLevel()
+// eslint-disable-next-line import/order
+const { greenBright, cyanBright, redBright, yellowBright, bold } = require('chalk')
 
 // Monkey patch console.log() to redact secrets
 const startPatchingLog = function() {
@@ -36,7 +40,7 @@ const logBuildStart = function() {
 
 const logOptions = function(options) {
   console.log(cyanBright.bold('Options'))
-  deepLog(omit(options, ['token']))
+  console.log(serialize(omit(options, ['token'])))
   console.log()
 }
 
@@ -129,7 +133,7 @@ const logManifest = function(manifest) {
   }
 
   console.log('Manifest:')
-  deepLog(manifest)
+  console.log(serialize(manifest))
 }
 
 const logTomlWrite = function(tomlPath, toml) {
@@ -163,7 +167,7 @@ const logBuildError = function(error) {
   console.log(yellowBright.bold('│      Error Stack Trace      │'))
   console.log(yellowBright.bold('└─────────────────────────────┘'))
 
-  if (ERROR_VERBOSE) {
+  if (ERROR_VERBOSE === 'true') {
     console.log(error.stack)
   } else {
     console.log(` ${bold(cleanStack(error.stack))}`)

@@ -1,18 +1,17 @@
 const path = require('path')
 
-require('./colors')
 const execa = require('execa')
 const pMapSeries = require('p-map-series')
 const pReduce = require('p-reduce')
 require('array-flat-polyfill')
 
-const { redactStream } = require('../utils/redact')
-const { setLogContext, unsetLogContext } = require('../utils/patch-logs')
-const { startTimer, endTimer } = require('../utils/timer')
+const { logInstruction, logCommandStart, logCommandError, logInstructionSuccess } = require('../log/main')
+const { setLogContext, unsetLogContext } = require('../log/patch')
+const { redactStream } = require('../log/redact')
+const { startTimer, endTimer } = require('../log/timer')
 
 const { LIFECYCLE } = require('./lifecycle')
 const { getApiClient } = require('./api')
-const { logInstruction, logCommandStart, logCommandError, logInstructionSuccess } = require('./log')
 
 // Get instructions for all hooks
 const getInstructions = function({ pluginsHooks, config, redactedKeys }) {

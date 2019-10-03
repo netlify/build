@@ -1,4 +1,4 @@
-const { logDryRunStart, logDryRunInstruction, logDryRunEnd } = require('./log')
+const { logDryRunStart, logDryRunInstruction, logDryRunEnd } = require('../log/main')
 
 // If the `dry` option is specified, do a dry run
 const doDryRun = function({ buildInstructions, configPath, options: { dry } }) {

@@ -1,6 +1,6 @@
 const { hrtime } = require('process')
 
-const { logTimer } = require('../build/log')
+const { logTimer } = require('./main')
 
 // Starts a timer
 const startTimer = function() {
