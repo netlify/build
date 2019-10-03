@@ -8,7 +8,7 @@ const importPlugin = function(name, baseDir) {
   try {
     return require(modulePath)
   } catch (error) {
-    console.log(`Error loading '${moduleName}' plugin`)
+    error.message = `Error loading '${moduleName}' plugin:\n${error.message}`
     throw error
   }
 }
@@ -32,7 +32,7 @@ const resolvePlugin = function(moduleName, baseDir) {
     return resolve.sync(moduleName, { basedir: baseDir })
   } catch (error) {
     // TODO: if plugin not found, automatically try to `npm install` it
-    console.log(`'${moduleName}' plugin not installed or found`)
+    error.message = `'${moduleName}' plugin not installed or found:\n${error.message}`
     throw error
   }
 }

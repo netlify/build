@@ -66,7 +66,7 @@ module.exports = async function build(options = {}) {
     await tomlWrite(config, baseDir)
 
     logBuildSuccess()
-    endTimer({ context: 'Netlify Build' }, buildTimer)
+    endTimer(buildTimer, 'Netlify Build')
     logBuildEnd()
   } catch (error) {
     logBuildError(error)

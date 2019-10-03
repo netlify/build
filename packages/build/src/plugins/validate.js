@@ -1,5 +1,4 @@
 const API = require('netlify')
-const chalk = require('chalk')
 const isPlainObj = require('is-plain-obj')
 
 const { LIFECYCLE } = require('../build/lifecycle')
@@ -26,10 +25,9 @@ const validateMethod = function(propName, pluginName) {
   const hook = propName.replace(OVERRIDE_REGEXP, '')
 
   if (!LIFECYCLE.includes(hook)) {
-    console.log(chalk.redBright(`Invalid lifecycle hook '${hook}' in '${pluginName}'.`))
-    console.log(`Please use a valid event name. One of:`)
-    console.log(serializeList(LIFECYCLE))
-    throw new Error(`Invalid lifecycle hook`)
+    throw new Error(`Invalid lifecycle hook '${hook}' in '${pluginName}'.
+Please use a valid event name. One of:
+${serializeList(LIFECYCLE)}`)
   }
 }
 
@@ -38,10 +36,9 @@ const OVERRIDE_REGEXP = /^[^:]+:/
 
 const validateNonMethod = function(value, propName, pluginName) {
   if (!ALLOWED_PROPERTIES.includes(propName)) {
-    console.log(chalk.redBright(`Invalid property '${propName}' in '${pluginName}'.`))
-    console.log(`Please use a property name. One of:`)
-    console.log(serializeList(ALLOWED_PROPERTIES))
-    throw new Error('Invalid plugin property')
+    throw new Error(`Invalid property '${propName}' in '${pluginName}'.
+Please use a property name. One of:
+${serializeList(ALLOWED_PROPERTIES)}`)
   }
 
   if (propName === 'scopes') {
@@ -57,11 +54,9 @@ const validateScopes = function(scopes, pluginName) {
     return
   }
 
-  console.log(chalk.redBright(`Invalid scopes ${serializeList(wrongScopes)} in '${pluginName}'`))
-  console.log(chalk.white.bold(`Please use a valid scope. One of:`))
-  console.log(serializeList(ALLOWED_SCOPES))
-  console.log()
-  throw new Error(`Invalid scopes property`)
+  throw new Error(`Invalid scopes ${serializeList(wrongScopes)} in '${pluginName}'
+Please use a valid scope. One of:
+${serializeList(ALLOWED_SCOPES)}`)
 }
 
 const isValidScope = function(scope) {

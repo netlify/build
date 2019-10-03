@@ -3,6 +3,7 @@ const {
   env: { ERROR_VERBOSE }
 } = require('process')
 
+const { tick, pointer } = require('figures')
 const { greenBright, cyanBright, redBright, yellowBright, bold } = require('chalk')
 const omit = require('omit.js')
 
@@ -11,19 +12,21 @@ const cleanStack = require('../utils/clean-stack')
 const { getSecrets } = require('../utils/redact')
 const { patchLogs } = require('../utils/patch-logs')
 
-const { HEADING_PREFIX } = require('./constants')
-
 // Monkey patch console.log() to redact secrets
 const startPatchingLog = function() {
-  const redactedKeys = getSecrets(['SECRET_ENV_VAR', 'MY_API_KEY'])
+  const redactedKeys = getSecrets(SECRETS)
   const originalConsoleLog = console.log
   console.log = patchLogs(redactedKeys)
   return { redactedKeys, originalConsoleLog }
 }
 
+const SECRETS = ['SECRET_ENV_VAR', 'MY_API_KEY']
+
 const stopPatchingLog = function(originalConsoleLog) {
   console.log = originalConsoleLog
 }
+
+const HEADING_PREFIX = pointer
 
 const logBuildStart = function() {
   console.log(greenBright.bold(`${HEADING_PREFIX} Starting Netlify Build`))
@@ -42,8 +45,12 @@ const logConfigPath = function(configPath) {
   console.log()
 }
 
-const logConfigError = function() {
-  console.log('Netlify Config Error')
+const logLoadPlugins = function() {
+  console.log(cyanBright.bold(`${HEADING_PREFIX} Loading plugins`))
+}
+
+const logLoadPlugin = function(name) {
+  console.log(yellowBright(`Loading plugin "${name}"`))
 }
 
 const logLifeCycleStart = function() {
@@ -108,8 +115,12 @@ const logInstructionSuccess = function() {
   console.log()
 }
 
-const logInstructionError = function(name) {
-  console.log(redBright(`Error in ${name} plugin`))
+const logTimer = function(durationMs, hook, context) {
+  const hookA = hook ? `.${bold(hook)}` : ''
+  const contextA = context.replace('config.', '')
+  const contextB = contextA.startsWith('build.lifecycle') ? 'build.lifecycle' : contextA
+
+  console.info(` ${greenBright(tick)}  ${greenBright.bold(contextB)}${hookA} completed in ${durationMs}ms`)
 }
 
 const logManifest = function(manifest) {
@@ -182,7 +193,8 @@ module.exports = {
   logBuildStart,
   logOptions,
   logConfigPath,
-  logConfigError,
+  logLoadPlugins,
+  logLoadPlugin,
   logLifeCycleStart,
   logDryRunStart,
   logDryRunInstruction,
@@ -191,7 +203,7 @@ module.exports = {
   logCommandStart,
   logCommandError,
   logInstructionSuccess,
-  logInstructionError,
+  logTimer,
   logManifest,
   logTomlWrite,
   logInstructionsError,
