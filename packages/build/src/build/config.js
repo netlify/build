@@ -1,6 +1,5 @@
-const path = require('path')
+const { dirname } = require('path')
 const {
-  cwd,
   env: { NETLIFY_TOKEN }
 } = require('process')
 
@@ -10,30 +9,20 @@ const { getConfigPath } = require('@netlify/config')
 const { logOptions, logConfigPath, logConfigError } = require('./log')
 
 // Retrieve configuration object
-const loadConfig = async function({ options, options: { token, config } }) {
+const loadConfig = async function({ options, options: { token = NETLIFY_TOKEN, config } }) {
   logOptions(options)
 
-  const netlifyToken = token || NETLIFY_TOKEN
-
-  const netlifyConfigPath = config || (await getConfigPath())
-  logConfigPath(netlifyConfigPath)
-  const baseDir = getBaseDir(netlifyConfigPath)
+  const configPath = config || (await getConfigPath())
+  logConfigPath(configPath)
+  const baseDir = dirname(configPath)
 
   try {
-    const netlifyConfig = await resolveConfig(netlifyConfigPath, options)
-    return { netlifyConfig, netlifyConfigPath, netlifyToken, baseDir }
+    const config = await resolveConfig(configPath, options)
+    return { config, configPath, token, baseDir }
   } catch (error) {
     logConfigError()
     throw error
   }
-}
-
-const getBaseDir = function(netlifyConfigPath) {
-  if (netlifyConfigPath === undefined) {
-    return cwd()
-  }
-
-  return path.dirname(netlifyConfigPath)
 }
 
 module.exports = { loadConfig }

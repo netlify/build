@@ -7,7 +7,7 @@ const pReduce = require('p-reduce')
 require('array-flat-polyfill')
 
 const { redactStream } = require('../utils/redact')
-const netlifyLogs = require('../utils/patch-logs')
+const { setLogContext, unsetLogContext } = require('../utils/patch-logs')
 const { startTimer, endTimer } = require('../utils/timer')
 
 const { LIFECYCLE } = require('./lifecycle')
@@ -21,10 +21,8 @@ const {
 } = require('./log')
 
 // Get instructions for all hooks
-const getInstructions = function({ pluginsHooks, netlifyConfig, redactedKeys }) {
-  const instructions = LIFECYCLE.flatMap(hook =>
-    getHookInstructions({ hook, pluginsHooks, netlifyConfig, redactedKeys })
-  )
+const getInstructions = function({ pluginsHooks, config, redactedKeys }) {
+  const instructions = LIFECYCLE.flatMap(hook => getHookInstructions({ hook, pluginsHooks, config, redactedKeys }))
   const buildInstructions = instructions.filter(({ hook }) => hook !== 'onError')
   const errorInstructions = instructions.filter(({ hook }) => hook === 'onError')
   return { buildInstructions, errorInstructions }
@@ -33,30 +31,28 @@ const getInstructions = function({ pluginsHooks, netlifyConfig, redactedKeys }) 
 // Get instructions for a specific hook
 const getHookInstructions = function({
   hook,
-  pluginsHooks,
-  netlifyConfig: {
+  pluginsHooks: { [hook]: pluginHooks = [] },
+  config: {
     build: {
       lifecycle: { [hook]: lifecycleCommands }
     }
   },
   redactedKeys
 }) {
-  return [
-    lifecycleCommands
-      ? {
-          name: `config.build.lifecycle.${hook}`,
-          hook,
-          pluginConfig: {},
-          async method() {
-            await pMapSeries(lifecycleCommands, command =>
-              execCommand(command, `build.lifecycle.${hook}`, redactedKeys)
-            )
-          },
-          override: {}
-        }
-      : undefined,
-    ...(pluginsHooks[hook] ? pluginsHooks[hook] : [])
-  ].filter(Boolean)
+  if (lifecycleCommands === undefined) {
+    return pluginHooks
+  }
+
+  const lifeCycleHook = {
+    name: `config.build.lifecycle.${hook}`,
+    hook,
+    pluginConfig: {},
+    async method() {
+      await pMapSeries(lifecycleCommands, command => execCommand(command, `build.lifecycle.${hook}`, redactedKeys))
+    },
+    override: {}
+  }
+  return [lifeCycleHook, ...pluginHooks]
 }
 
 const execCommand = async function(cmd, name, secrets) {
@@ -75,23 +71,11 @@ const execCommand = async function(cmd, name, secrets) {
 }
 
 // Run a set of instructions
-const runInstructions = async function(
-  instructions,
-  { netlifyConfig, netlifyConfigPath, netlifyToken, baseDir, error }
-) {
+const runInstructions = async function(instructions, { config, configPath, token, baseDir, error }) {
   return await pReduce(
     instructions,
     (currentData, instruction, index) =>
-      runInstruction({
-        currentData,
-        instruction,
-        index,
-        netlifyConfig,
-        netlifyConfigPath,
-        netlifyToken,
-        baseDir,
-        error
-      }),
+      runInstruction({ currentData, instruction, index, config, configPath, token, baseDir, error }),
     {}
   )
 }
@@ -101,50 +85,27 @@ const runInstruction = async function({
   currentData,
   instruction: { method, hook, pluginConfig, name, override, meta: { scopes } = {} },
   index,
-  netlifyConfig,
-  netlifyConfigPath,
-  netlifyToken,
+  config,
+  configPath,
+  token,
   baseDir,
   error
 }) {
   const methodTimer = startTimer()
 
-  logInstruction({
-    currentData,
-    method,
-    hook,
-    pluginConfig,
-    name,
-    override,
-    scopes,
-    index,
-    netlifyConfig,
-    netlifyConfigPath,
-    netlifyToken,
-    baseDir,
-    error
-  })
+  logInstruction({ hook, name, override, index, configPath, error })
 
-  const api = getApiClient({ netlifyToken, name, scopes })
+  const api = getApiClient({ token, name, scopes })
+  const constants = getConstants(configPath, baseDir)
 
-  netlifyLogs.setContext(name)
+  setLogContext(name)
 
   try {
-    // https://github.com/netlify/cli-utils/blob/master/src/index.js#L40-L60
     const pluginReturnValue = await method({
-      /* Netlify configuration file netlify.[toml|yml|json] */
-      netlifyConfig,
-      /* Plugin configuration */
+      config,
       pluginConfig,
-      /* Netlify API client */
       api,
-      /* Values constants */
-      constants: {
-        CONFIG_PATH: path.resolve(netlifyConfigPath),
-        BASE_DIR: baseDir,
-        CACHE_DIR: path.join(baseDir, '.netlify', 'cache'),
-        BUILD_DIR: path.join(baseDir, '.netlify', 'build')
-      },
+      constants,
       /* Utilities helper functions */
       utils: {
         cache: {
@@ -170,21 +131,29 @@ const runInstruction = async function({
           }
         }
       },
-      /* Error for `onError` handlers */
       error
     })
 
     logInstructionSuccess()
-    netlifyLogs.reset()
+    unsetLogContext()
 
     endTimer({ context: name.replace('config.', ''), hook }, methodTimer)
 
     return Object.assign({}, currentData, pluginReturnValue)
   } catch (error) {
     logInstructionError(name)
-    netlifyLogs.reset()
+    unsetLogContext()
 
     throw error
+  }
+}
+
+const getConstants = function(configPath, baseDir) {
+  return {
+    CONFIG_PATH: path.resolve(configPath),
+    BASE_DIR: baseDir,
+    CACHE_DIR: path.join(baseDir, '.netlify', 'cache'),
+    BUILD_DIR: path.join(baseDir, '.netlify', 'build')
   }
 }
 

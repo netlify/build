@@ -104,12 +104,12 @@ function exampleNetlifyPlugin(initialConfig) {
     scopes: ['listSites'],
     /**
      * [init description]
-     * @param  {object} netlifyConfig   - Current netlify configuration from config file
+     * @param  {object} config          - Current netlify configuration from config file
      * @param  {object} pluginConfig    - Initial plugin configuration
      * @param  {object} utils        [description]
      * @return {[type]}              [description]
      */
-    init: ({ netlifyConfig, pluginConfig, utils, constants, api }) => {
+    init: ({ config, pluginConfig, utils, constants, api }) => {
       const { siteId, siteUrl, /*siteConfig*/, deployUrl } = context
       console.log(`Current site id`, siteId)
       console.log(`Current live site url`, siteUrl)

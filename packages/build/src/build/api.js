@@ -1,12 +1,12 @@
 const NetlifyAPI = require('netlify')
 
 // Retrieve Netlify API client, providing a authentication token was provided
-const getApiClient = function({ netlifyToken, name, scopes }) {
-  if (!netlifyToken) {
+const getApiClient = function({ token, name, scopes }) {
+  if (!token) {
     return
   }
 
-  const api = new NetlifyAPI(netlifyToken)
+  const api = new NetlifyAPI(token)
 
   /* Redact API methods to scopes. Default scopes '*'... revisit */
   if (scopes && !scopes.includes('*')) {

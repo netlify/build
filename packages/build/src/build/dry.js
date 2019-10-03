@@ -1,7 +1,7 @@
 const { logDryRunStart, logDryRunInstruction, logDryRunEnd } = require('./log')
 
 // If the `dry` option is specified, do a dry run
-const doDryRun = function({ buildInstructions, netlifyConfigPath, options: { dry } }) {
+const doDryRun = function({ buildInstructions, configPath, options: { dry } }) {
   if (!dry) {
     return
   }
@@ -9,9 +9,7 @@ const doDryRun = function({ buildInstructions, netlifyConfigPath, options: { dry
   logDryRunStart()
 
   const width = Math.max(...buildInstructions.map(({ hook }) => hook.length))
-  buildInstructions.forEach((instruction, index) =>
-    logDryRunInstruction({ instruction, index, netlifyConfigPath, width })
-  )
+  buildInstructions.forEach((instruction, index) => logDryRunInstruction({ instruction, index, configPath, width }))
 
   logDryRunEnd()
 

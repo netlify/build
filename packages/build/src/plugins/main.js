@@ -10,12 +10,12 @@ const { validatePlugin } = require('./validate')
 const { getOverride, isNotOverridden } = require('./override')
 
 // Retrieve plugin lifecycle hooks
-const getPluginsHooks = function(netlifyConfig, baseDir) {
-  const plugins = [...DEFAULT_PLUGINS, ...(netlifyConfig.plugins || [])]
+const getPluginsHooks = function({ config: { plugins = [] }, baseDir }) {
+  const pluginsA = [...DEFAULT_PLUGINS, ...plugins]
 
   console.log(chalk.cyanBright.bold(`${HEADING_PREFIX} Loading plugins`))
 
-  const hooksArray = plugins
+  const hooksArray = pluginsA
     .map(normalizePlugin)
     .filter(isPluginEnabled)
     .flatMap(pluginConfig => getPluginHooks({ pluginConfig, baseDir }))

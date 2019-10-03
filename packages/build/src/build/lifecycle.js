@@ -4,7 +4,7 @@ const MAIN_LIFECYCLE = [
   /* Install project dependancies */
   'install',
   /* Build the site & functions */
-  'build', // 'build:site', 'build:function',
+  'build',
   'buildSite',
   'buildFunctions',
   /* Package & optimize artifact */

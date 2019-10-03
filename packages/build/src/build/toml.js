@@ -5,12 +5,12 @@ const { writeFile } = require('../utils/fs')
 const { logTomlWrite } = require('./log')
 
 // Write TOML file to support current buildbot
-const tomlWrite = async function(netlifyConfig, baseDir) {
+const tomlWrite = async function(config, baseDir) {
   if (!isNetlifyCI()) {
     return
   }
 
-  const toml = formatUtils.toml.dump(netlifyConfig)
+  const toml = formatUtils.toml.dump(config)
   const tomlPath = `${baseDir}/netlify.toml`
   await writeFile(tomlPath, toml)
 
