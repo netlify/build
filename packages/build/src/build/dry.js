@@ -8,12 +8,16 @@ const doDryRun = function({ buildInstructions, configPath, options: { dry } }) {
 
   logDryRunStart()
 
-  const width = Math.max(...buildInstructions.map(({ hook }) => hook.length))
+  const width = Math.max(...buildInstructions.map(getHookLength))
   buildInstructions.forEach((instruction, index) => logDryRunInstruction({ instruction, index, configPath, width }))
 
   logDryRunEnd()
 
   process.exit(0)
+}
+
+const getHookLength = function({ hook }) {
+  return hook.length
 }
 
 module.exports = { doDryRun }

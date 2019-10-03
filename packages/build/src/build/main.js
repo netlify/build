@@ -24,7 +24,7 @@ const {
   logBuildEnd
 } = require('./log')
 
-module.exports = async function build(options = {}) {
+const build = async function(options = {}) {
   const { redactedKeys, originalConsoleLog } = startPatchingLog()
 
   const buildTimer = startTimer()
@@ -77,7 +77,6 @@ module.exports = async function build(options = {}) {
   stopPatchingLog(originalConsoleLog)
 }
 
-// Expose Netlify config
+module.exports = build
 module.exports.resolveConfig = resolveConfig
-// Expose Netlify config path getter
 module.exports.getConfigPath = getConfigPath
