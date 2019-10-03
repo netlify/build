@@ -36,6 +36,7 @@ const build = async function(options = {}) {
     const { buildInstructions, errorInstructions } = getInstructions({
       pluginsHooks,
       config,
+      baseDir,
       redactedKeys
     })
 

@@ -6,13 +6,13 @@ const { zipFunction } = require('@netlify/zip-it-and-ship-it')
 function netlifyFunctionsPlugin(conf = {}) {
   return {
     name: 'netlify-functions',
-    postBuild: async ({ config }) => {
+    postBuild: async ({ config, constants: { BASE_DIR } }) => {
       console.log('Configuring Functions...', config)
       if (!conf.functions) {
         throw new Error('You must provide functions to the functions plugin')
       }
 
-      const buildFolder = path.join(process.cwd(), 'build')
+      const buildFolder = path.join(BASE_DIR, 'build')
       const destFolder = path.join(buildFolder, 'functions')
 
       const data = Object.keys(conf.functions).reduce(

@@ -14,8 +14,10 @@ const { LIFECYCLE } = require('./lifecycle')
 const { getApiClient } = require('./api')
 
 // Get instructions for all hooks
-const getInstructions = function({ pluginsHooks, config, redactedKeys }) {
-  const instructions = LIFECYCLE.flatMap(hook => getHookInstructions({ hook, pluginsHooks, config, redactedKeys }))
+const getInstructions = function({ pluginsHooks, config, baseDir, redactedKeys }) {
+  const instructions = LIFECYCLE.flatMap(hook =>
+    getHookInstructions({ hook, pluginsHooks, config, baseDir, redactedKeys })
+  )
   const buildInstructions = instructions.filter(({ hook }) => hook !== 'onError')
   const errorInstructions = instructions.filter(({ hook }) => hook === 'onError')
   return { buildInstructions, errorInstructions }
@@ -30,6 +32,7 @@ const getHookInstructions = function({
       lifecycle: { [hook]: lifecycleCommands }
     }
   },
+  baseDir,
   redactedKeys
 }) {
   if (lifecycleCommands === undefined) {
@@ -40,7 +43,9 @@ const getHookInstructions = function({
     name: `config.build.lifecycle.${hook}`,
     hook,
     async method() {
-      await pMapSeries(lifecycleCommands, command => execCommand(command, `build.lifecycle.${hook}`, redactedKeys))
+      await pMapSeries(lifecycleCommands, command =>
+        execCommand(command, `build.lifecycle.${hook}`, baseDir, redactedKeys)
+      )
     },
     meta: {},
     override: {},
@@ -49,11 +54,11 @@ const getHookInstructions = function({
   return [lifeCycleHook, ...pluginHooks]
 }
 
-const execCommand = async function(cmd, name, secrets) {
+const execCommand = async function(cmd, name, baseDir, secrets) {
   logCommandStart(cmd)
 
   try {
-    const subprocess = execa(String(cmd), { shell: true })
+    const subprocess = execa(String(cmd), { shell: true, cwd: baseDir })
     subprocess.stdout.pipe(redactStream(secrets)).pipe(process.stdout)
     subprocess.stderr.pipe(redactStream(secrets)).pipe(process.stderr)
     const { stdout } = await subprocess

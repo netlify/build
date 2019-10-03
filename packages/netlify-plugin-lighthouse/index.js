@@ -4,22 +4,9 @@ const Conf = require('conf') // for simple kv store
 
 // // TODO: enable this in production
 // const NETLIFY_BUILD_BASE = '/opt/buildhome'
-// // just for local dev
-const NETLIFY_BUILD_BASE = '.'
-const NETLIFY_CACHE_DIR = `${NETLIFY_BUILD_BASE}/cache`
-
-// kvstore in `${NETLIFY_CACHE_DIR}/${name}.json`
-// we choose to let the user createStore instead of doing it for them
-// bc they may want to set `defaults` and `schema` and `de/serialize`
-const createStore = confOptions =>
-  new Conf({
-    ...confOptions,
-    cwd: NETLIFY_CACHE_DIR,
-    configName: 'netlify-plugin-lighthouse'
-  })
 
 function netlifyLighthousePlugin(conf) {
-  const store = createStore()
+  let store
   // users will be tempted to use semver, but we really don't care
   let { currentVersion, compareWithVersion } = conf
   if (typeof currentVersion === `undefined`) {
@@ -28,6 +15,16 @@ function netlifyLighthousePlugin(conf) {
   }
   if (typeof compareWithVersion === `undefined`) compareWithVersion = 'init' // will just come up undefined if doesn't exist
   return {
+    // kvstore in `${NETLIFY_CACHE_DIR}/${name}.json`
+    // we choose to let the user createStore instead of doing it for them
+    // bc they may want to set `defaults` and `schema` and `de/serialize`
+    init({ constants: { BASE_DIR } }) {
+      store = new Conf({
+        cwd: `${BASE_DIR}/cache`,
+        configName: 'netlify-plugin-lighthouse'
+      })
+    },
+
     /* Run lighthouse on postDeploy */
     postDeploy: async () => {
       const site = conf.site || process.env.SITE
