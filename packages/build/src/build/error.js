@@ -1,5 +1,6 @@
+const { logInstructionsError, logErrorInstructions } = require('../log/main')
+
 const { runInstructions } = require('./instructions')
-const { logInstructionsError, logErrorInstructions } = require('./log')
 
 // Error handler when an instruction fails
 // Resolve all 'onError' methods and try to fix things

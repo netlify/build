@@ -6,7 +6,7 @@ const {
 const resolveConfig = require('@netlify/config')
 const { getConfigPath } = require('@netlify/config')
 
-const { logOptions, logConfigPath } = require('./log')
+const { logOptions, logConfigPath } = require('../log/main')
 
 // Retrieve configuration object
 const loadConfig = async function({ options, options: { token = NETLIFY_TOKEN, config } }) {

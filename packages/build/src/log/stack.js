@@ -1,26 +1,9 @@
+const {
+  env: { DEBUG_BUILD }
+} = require('process')
+
 const StackUtils = require('stack-utils')
-const cleanStack = require('clean-stack')
-
-// Ignore unimportant stack trace lines
-let ignoreStackLines = []
-
-const stackFrameLine = /^.+( \(.+:\d+:\d+\)|:\d+:\d+)$/
-
-if (process.env.DEBUG_BUILD) {
-  ignoreStackLines = StackUtils.nodeInternals()
-}
-
-const stackUtils = new StackUtils({
-  internals: ignoreStackLines
-})
-
-function extractFrames(stack) {
-  return stack
-    .split('\n')
-    .map(line => line.trim())
-    .filter(line => stackFrameLine.test(line))
-    .join('\n')
-}
+const cleanStackLib = require('clean-stack')
 
 /*
  * Given a string value of the format generated for the `stack` property of a
@@ -52,25 +35,54 @@ function extractFrames(stack) {
  * Object.<anonymous> (/home/ava/ex.js:14:3)
  * ```
  */
-module.exports = stack => {
-  if (!stack) {
-    return ''
-  }
-
-  stack = extractFrames(stack)
+const cleanStack = function(stack) {
+  const stackA = extractFrames(stack)
   // Workaround for https://github.com/tapjs/stack-utils/issues/14
   // TODO: fix it in `stack-utils`
-  stack = cleanStack(stack)
+  const stackB = cleanStackLib(stackA)
 
   return (
     stackUtils
-      .clean(stack)
+      .clean(stackB)
       // Remove the trailing newline inserted by the `stack-utils` module
       .trim()
-      // Remove remaining file:// prefixes, inserted by `esm`, that are not
-      // cleaned up by `stack-utils`
       .split('\n')
-      .map(line => line.replace(/\(file:\/\/([^/].+:\d+:\d+)\)$/, '($1)'))
+      .map(removeFilePrefix)
       .join('\n')
   )
 }
+
+const extractFrames = function(stack) {
+  return stack
+    .split('\n')
+    .map(trimLine)
+    .filter(isFrame)
+    .join('\n')
+}
+
+const trimLine = function(line) {
+  return line.trim()
+}
+
+const isFrame = function(line) {
+  return STACK_FRAME_LINE_REGEXP.test(line)
+}
+
+const STACK_FRAME_LINE_REGEXP = /^.+( \(.+:\d+:\d+\)|:\d+:\d+)$/
+
+const getStackUtils = function() {
+  const options = DEBUG_BUILD ? { internals: StackUtils.nodeInternals() } : {}
+  return new StackUtils(options)
+}
+
+const stackUtils = getStackUtils()
+
+// Remove remaining file:// prefixes, inserted by `esm`, that are not cleaned
+// up by `stack-utils`
+const removeFilePrefix = function(line) {
+  return line.replace(FILE_PREFIX_REGEXP, '($1)')
+}
+
+const FILE_PREFIX_REGEXP = /\(file:\/\/([^/].+:\d+:\d+)\)$/
+
+module.exports = { cleanStack }
