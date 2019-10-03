@@ -118,14 +118,14 @@ Today, we are going to setup and use `Netlify Build`
    ```js
    module.exports = function myFirstPlugin(config) {
      return {
-       postbuild: () => {
+       postBuild: () => {
          console.log('This runs after build')
        }
      }
    }
    ```
 
-   The `postbuild` function exported here corresponds to the `postbuild` lifecycle hook.
+   The `postBuild` function exported here corresponds to the `postBuild` lifecycle hook.
 
    You can [see all lifecycle events here](https://github.com/netlify/netlify-build/blob/master/packages/build-core/src/build.js#L18-L39)
 

@@ -8,8 +8,8 @@ function netlifyAxePlugin(conf /* createStore */) {
       mkdirp.sync(`.axe-results/`)
       await execa('chmod', ['-R', '+rw', `.axe-results`])
     },
-    /* Run axe on post deploy */
-    postdeploy: async () => {
+    /* Run axe on postDeploy */
+    postDeploy: async () => {
       const site = conf.site || process.env.SITE
 
       await execa(`axe ${site} ${axeFlags} --save .axe-results/result.json`, {

@@ -1,3 +1,11 @@
+const addPrePostHooks = function(hook) {
+  return [`pre${capitalize(hook)}`, hook, `post${capitalize(hook)}`]
+}
+
+const capitalize = function([firstChar, ...chars]) {
+  return `${firstChar.toUpperCase()}${chars.join('')}`
+}
+
 const MAIN_LIFECYCLE = [
   /* Fetch previous build cache */
   'getCache',
@@ -15,7 +23,7 @@ const MAIN_LIFECYCLE = [
   'saveCache',
   /* Outputs manifest of resources created */
   'manifest'
-].flatMap(hook => [`pre${hook}`, hook, `post${hook}`])
+].flatMap(addPrePostHooks)
 
 const LIFECYCLE = [
   /* Build initialization steps */

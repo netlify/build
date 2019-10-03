@@ -25,12 +25,12 @@ plugins:
         TWILIO_AUTH_TOKEN: ${env:TWILIO_AUTH_TOKEN, 'NA'}
         TWILIO_PHONE_NUMBER: ${env:TWILIO_PHONE_NUMBER, 'NA'}
       notices:
-        - event: postbuild
+        - event: postBuild
           type: email
           to: david@netlify.com
           subject: 'Your site is ready!'
           message: 'Horray!'
-        - event: postbuild
+        - event: postBuild
           type: sms
           to: 727-687-1888
           message: 'Your build is published {url}!'
@@ -61,7 +61,7 @@ build:
     getCache:
       - echo 'curl custom cache'
     #install: npm install
-    prebuild: echo "${secrets:privateKey}"
+    preBuild: echo "${secrets:privateKey}"
     build: echo 'Hello Netlify Build!' && npm run build
     # package:
     #   - zip -q -r .functions/package.zip src node_modules
