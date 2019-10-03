@@ -30,7 +30,7 @@ test.skip('--config with an invalid path', async t => {
   t.snapshot(normalizeOutput(all))
 })
 
-test('Variable ${env:...}', async t => {
+test('{env:...}', async t => {
   const { all } = await execa.command(BINARY_PATH, {
     cwd: `${FIXTURES_DIR}/env`,
     env: { TEST: 'test' }
@@ -38,28 +38,28 @@ test('Variable ${env:...}', async t => {
   t.snapshot(normalizeOutput(all))
 })
 
-test('Variable ${secrets:...}', async t => {
+test('{secrets:...}', async t => {
   const { all } = await execa.command(BINARY_PATH, {
     cwd: `${FIXTURES_DIR}/secrets`
   })
   t.snapshot(normalizeOutput(all))
 })
 
-test('Variable ${context:...}', async t => {
+test('{context:...}', async t => {
   const { all } = await execa.command(BINARY_PATH, {
     cwd: `${FIXTURES_DIR}/context`
   })
   t.snapshot(normalizeOutput(all))
 })
 
-test.skip('Variable ${context:...} with --context', async t => {
+test.skip('{context:...} with --context', async t => {
   const { all } = await execa.command(`${BINARY_PATH} --context development`, {
     cwd: `${FIXTURES_DIR}/context`
   })
   t.snapshot(normalizeOutput(all))
 })
 
-test.skip('Variable ${context:...} pointing to undefined path', async t => {
+test.skip('{context:...} pointing to undefined path', async t => {
   const { all } = await execa.command(`${BINARY_PATH} --context invalid`, {
     cwd: `${FIXTURES_DIR}/context`
   })

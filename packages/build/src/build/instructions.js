@@ -12,13 +12,7 @@ const { startTimer, endTimer } = require('../utils/timer')
 
 const { LIFECYCLE } = require('./lifecycle')
 const { getApiClient } = require('./api')
-const {
-  logInstruction,
-  logCommandStart,
-  logCommandError,
-  logInstructionSuccess,
-  logInstructionError
-} = require('./log')
+const { logInstruction, logCommandStart, logCommandError, logInstructionSuccess } = require('./log')
 
 // Get instructions for all hooks
 const getInstructions = function({ pluginsHooks, config, redactedKeys }) {
@@ -137,13 +131,13 @@ const runInstruction = async function({
     logInstructionSuccess()
     unsetLogContext()
 
-    endTimer({ context: name.replace('config.', ''), hook }, methodTimer)
+    endTimer(methodTimer, name, hook)
 
     return Object.assign({}, currentData, pluginReturnValue)
   } catch (error) {
-    logInstructionError(name)
     unsetLogContext()
 
+    error.message = `Error in '${name}' plugin:\n${error.message}`
     throw error
   }
 }

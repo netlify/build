@@ -1,9 +1,8 @@
 const filterObj = require('filter-obj')
 const groupBy = require('group-by')
-const chalk = require('chalk')
 
 const netlifyFunctionsPlugin = require('../plugins/functions')
-const { HEADING_PREFIX } = require('../build/constants')
+const { logLoadPlugins, logLoadPlugin } = require('../build/log')
 
 const { importPlugin } = require('./import')
 const { validatePlugin } = require('./validate')
@@ -13,7 +12,7 @@ const { getOverride, isNotOverridden } = require('./override')
 const getPluginsHooks = function({ config: { plugins = [] }, baseDir }) {
   const pluginsA = [...DEFAULT_PLUGINS, ...plugins]
 
-  console.log(chalk.cyanBright.bold(`${HEADING_PREFIX} Loading plugins`))
+  logLoadPlugins()
 
   const hooksArray = pluginsA
     .map(normalizePlugin)
@@ -55,7 +54,7 @@ const getPluginHooks = function({ pluginConfig, pluginConfig: { core, name }, ba
 }
 
 const loadPlugin = function(pluginConfig, core, name, baseDir) {
-  console.log(chalk.yellowBright(`Loading plugin "${name}"`))
+  logLoadPlugin(name)
 
   const code = core ? pluginConfig : importPlugin(name, baseDir)
 
