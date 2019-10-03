@@ -36,4 +36,10 @@ const getColorLevel = function() {
 
 const DEPTH_TO_LEVEL = { 1: '0', 4: '1', 8: '2', 24: '3' }
 
+const hasColors = function() {
+  return env.FORCE_COLOR !== '0' && env.FORCE_COLOR !== 'false'
+}
+
 setColorLevel()
+
+module.exports = { hasColors }

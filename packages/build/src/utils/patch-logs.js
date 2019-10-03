@@ -4,6 +4,7 @@ const util = require('util')
 const chalk = require('chalk')
 
 const { redactValues } = require('./redact')
+const { deepLog } = require('./deeplog')
 
 let previous = ''
 function monkeyPatchLogs(secrets) {
@@ -16,11 +17,7 @@ function monkeyPatchLogs(secrets) {
       const redactedArgs = args.map(a => {
         const redactedLog = redactValues(a, secrets)
         if (typeof a === 'object') {
-          return util.inspect(redactedLog, {
-            showHidden: false,
-            depth: null,
-            colors: true
-          })
+          return deepLog(redactedLog)
         }
         if (!prefixSet) {
           prefixSet = true

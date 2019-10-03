@@ -1,5 +1,9 @@
-const util = require('util')
+const { inspect } = require('util')
 
-module.exports = function deepLog(obj) {
-  console.log(util.inspect(obj, { showHidden: false, depth: null, colors: true }))
+const { hasColors } = require('../build/colors')
+
+const deepLog = function(obj) {
+  console.log(inspect(obj, { depth: null, colors: hasColors() }))
 }
+
+module.exports = { deepLog }
