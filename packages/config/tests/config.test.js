@@ -1,11 +1,11 @@
 const test = require('ava')
 
-const netlifyConfig = require('..')
+const resolveConfig = require('..')
 
 const FIXTURES_DIR = `${__dirname}/fixtures`
 
 test('Test TOML', async t => {
-  const config = await netlifyConfig(`${FIXTURES_DIR}/netlify.toml`)
+  const config = await resolveConfig(`${FIXTURES_DIR}/netlify.toml`)
 
   t.deepEqual(config, {
     build: {
@@ -19,7 +19,7 @@ test('Test TOML', async t => {
 })
 
 test('Test YAML', async t => {
-  const config = await netlifyConfig(`${FIXTURES_DIR}/netlify.yml`)
+  const config = await resolveConfig(`${FIXTURES_DIR}/netlify.yml`)
 
   t.deepEqual(config, {
     build: {
@@ -33,7 +33,7 @@ test('Test YAML', async t => {
 })
 
 test('Test JSON', async t => {
-  const config = await netlifyConfig(`${FIXTURES_DIR}/netlify.json`)
+  const config = await resolveConfig(`${FIXTURES_DIR}/netlify.json`)
 
   t.deepEqual(config, {
     build: {

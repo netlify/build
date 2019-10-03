@@ -41,14 +41,14 @@ function trim(string) {
   return string.replace(/^config\./, '')
 }
 
-module.exports.patch = secrets => {
+module.exports.patchLogs = secrets => {
   return new Proxy(console.log, monkeyPatchLogs(secrets))
 }
 
-module.exports.setContext = pre => {
+module.exports.setLogContext = pre => {
   process.env.LOG_CONTEXT = pre
 }
 
-module.exports.reset = () => {
+module.exports.unsetLogContext = () => {
   process.env.LOG_CONTEXT = ''
 }

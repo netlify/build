@@ -17,8 +17,8 @@ module.exports = () => {
       }
     },
     /* Hook into buildFunctions lifecycle */
-    deploy: async ({ netlifyConfig, constants, api }) => {
-      const { build } = netlifyConfig
+    deploy: async ({ config, constants, api }) => {
+      const { build } = config
       if (!build || !build.publish) {
         console.log('No publish directory set. Skipping deploy step')
         return false

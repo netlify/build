@@ -5,7 +5,7 @@ const minimist = require('minimist')
 
 const { getConfigPath } = require('./path')
 
-const netlifyConfig = require('./index')
+const resolveConfig = require('./index')
 
 const args = minimist(process.argv.slice(2))
 
@@ -20,7 +20,7 @@ async function execConfig() {
       // No path arg supplied
       configPath = path.resolve(process.cwd(), args._[0])
     }
-    config = await netlifyConfig(configPath, args)
+    config = await resolveConfig(configPath, args)
   } catch (err) {
     console.log(err.message)
   }

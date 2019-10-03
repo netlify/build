@@ -30,40 +30,40 @@ module.exports = async function build(options = {}) {
   try {
     logBuildStart()
 
-    const { netlifyConfig, netlifyConfigPath, netlifyToken, baseDir } = await loadConfig({ options })
+    const { config, configPath, token, baseDir } = await loadConfig({ options })
 
-    const pluginsHooks = getPluginsHooks(netlifyConfig, baseDir)
+    const pluginsHooks = getPluginsHooks({ config, baseDir })
     const { buildInstructions, errorInstructions } = getInstructions({
       pluginsHooks,
-      netlifyConfig,
+      config,
       redactedKeys
     })
 
-    doDryRun({ buildInstructions, netlifyConfigPath, options })
+    doDryRun({ buildInstructions, configPath, options })
 
     logLifeCycleStart()
 
     try {
       const manifest = await runInstructions(buildInstructions, {
-        netlifyConfig,
-        netlifyConfigPath,
-        netlifyToken,
+        config,
+        configPath,
+        token,
         baseDir
       })
       logManifest(manifest)
     } catch (error) {
       await handleInstructionError({
         errorInstructions,
-        netlifyConfig,
-        netlifyConfigPath,
-        netlifyToken,
+        config,
+        configPath,
+        token,
         baseDir,
         error
       })
       throw error
     }
 
-    await tomlWrite(netlifyConfig, baseDir)
+    await tomlWrite(config, baseDir)
 
     logBuildSuccess()
     endTimer({ context: 'Netlify Build' }, buildTimer)
@@ -76,6 +76,6 @@ module.exports = async function build(options = {}) {
 }
 
 // Expose Netlify config
-module.exports.netlifyConfig = resolveConfig
+module.exports.resolveConfig = resolveConfig
 // Expose Netlify config path getter
 module.exports.getConfigPath = getConfigPath

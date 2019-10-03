@@ -3,13 +3,13 @@ const {
   env: { ERROR_VERBOSE }
 } = require('process')
 
-const { greenBright, cyanBright, redBright, yellowBright, white, bold } = require('chalk')
+const { greenBright, cyanBright, redBright, yellowBright, bold } = require('chalk')
 const omit = require('omit.js')
 
 const deepLog = require('../utils/deeplog')
 const cleanStack = require('../utils/clean-stack')
 const { getSecrets } = require('../utils/redact')
-const netlifyLogs = require('../utils/patch-logs')
+const { patchLogs } = require('../utils/patch-logs')
 
 const { HEADING_PREFIX } = require('./constants')
 
@@ -17,7 +17,7 @@ const { HEADING_PREFIX } = require('./constants')
 const startPatchingLog = function() {
   const redactedKeys = getSecrets(['SECRET_ENV_VAR', 'MY_API_KEY'])
   const originalConsoleLog = console.log
-  console.log = netlifyLogs.patch(redactedKeys)
+  console.log = patchLogs(redactedKeys)
   return { redactedKeys, originalConsoleLog }
 }
 
@@ -37,8 +37,8 @@ const logOptions = function(options) {
   console.log()
 }
 
-const logConfigPath = function(netlifyConfigPath) {
-  console.log(cyanBright.bold(`${HEADING_PREFIX} Using config file: ${netlifyConfigPath}`))
+const logConfigPath = function(configPath) {
+  console.log(cyanBright.bold(`${HEADING_PREFIX} Using config file: ${configPath}`))
   console.log()
 }
 
@@ -58,12 +58,12 @@ const logDryRunStart = function() {
   console.log()
 }
 
-const logDryRunInstruction = function({ instruction: { name, hook }, index, netlifyConfigPath, width }) {
-  const source = name.startsWith('config.build') ? `in ${basename(netlifyConfigPath)}` : 'plugin'
+const logDryRunInstruction = function({ instruction: { name, hook }, index, configPath, width }) {
+  const source = name.startsWith('config.build') ? `in ${basename(configPath)}` : 'plugin'
   const count = cyanBright(`${index + 1}.`)
-  const hookName = white.bold(`${hook.padEnd(width + 2)} `)
-  const niceName = name.startsWith('config.build') ? name.replace(/^config\./, '') : name
-  const sourceOutput = white.bold(niceName)
+  const hookName = bold(`${hook.padEnd(width + 2)} `)
+  const niceName = name.startsWith('config.build') ? name.replace('config.', '') : name
+  const sourceOutput = bold(niceName)
   console.log(cyanBright(`${count} ${hookName} source ${sourceOutput} ${source} `))
 }
 
@@ -71,21 +71,7 @@ const logDryRunEnd = function() {
   console.log()
 }
 
-const logInstruction = function({
-  currentData,
-  method,
-  hook,
-  pluginConfig,
-  name,
-  override,
-  scopes,
-  index,
-  netlifyConfig,
-  netlifyConfigPath,
-  netlifyToken,
-  baseDir,
-  error
-}) {
+const logInstruction = function({ hook, name, override, index, configPath, error }) {
   console.log()
   if (override.hook) {
     console.log(
@@ -93,11 +79,11 @@ const logInstruction = function({
     )
   }
   const lifecycleName = error ? '' : 'lifecycle '
-  const source = name.startsWith('config.build') ? `in ${basename(netlifyConfigPath)} config file` : 'plugin'
+  const source = name.startsWith('config.build') ? `in ${basename(configPath)} config file` : 'plugin'
   const niceName = name.startsWith('config.build') ? name.replace(/^config\./, '') : name
   const logColor = error ? redBright : cyanBright
   const outputNoChalk = `${index + 1}. Running ${hook} ${lifecycleName}from ${niceName} ${source}`
-  const output = `${index + 1}. Running ${white.bold(hook)} ${lifecycleName}from ${white.bold(niceName)} ${source}`
+  const output = `${index + 1}. Running ${bold(hook)} ${lifecycleName}from ${bold(niceName)} ${source}`
   const line = '─'.repeat(outputNoChalk.length + 2)
   console.log(logColor.bold(`┌─${line}─┐`))
   console.log(logColor.bold(`│ ${output}   │`))

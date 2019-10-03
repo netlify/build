@@ -13,8 +13,8 @@ module.exports = {
   name: '@netlify/functions',
   core: true,
   /* Hook into buildFunctions lifecycle */
-  buildFunctions: async ({ netlifyConfig }) => {
-    const { build } = netlifyConfig
+  buildFunctions: async ({ config }) => {
+    const { build } = config
     if (!build || !build.functions) {
       console.log('No functions directory set. Skipping functions build step')
       return false

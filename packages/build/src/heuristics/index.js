@@ -3,7 +3,7 @@ const { promisify } = require('util')
 
 const npmRunPath = require('npm-run-path')
 const parseCommand = require('parse-npm-script')
-const netlifyConfig = require('@netlify/config')
+const resolveConfig = require('@netlify/config')
 
 const readFileAsync = promisify(fs.readFile)
 
@@ -29,7 +29,7 @@ module.exports = async function getHeuristics({ pkgPath, configPath }) {
   const pkg = await parseJson(pkgPath)
 
   // get netlify config
-  const config = await netlifyConfig(configPath)
+  const config = await resolveConfig(configPath)
 
   // get build chain info via build command
   let buildInfo = {}
