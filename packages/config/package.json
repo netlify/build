@@ -19,6 +19,7 @@
   "dependencies": {
     "configorama": "0.3.4",
     "find-up": "^4.1.0",
+    "map-obj": "^4.1.0",
     "minimist": "^1.2.0",
     "omit.js": "^1.0.2",
     "path-exists": "^4.0.0"
