@@ -14,7 +14,8 @@ test('Test TOML', async t => {
         build: ['npm run build']
       },
       functions: 'functions'
-    }
+    },
+    plugins: {}
   })
 })
 
@@ -28,7 +29,8 @@ test('Test YAML', async t => {
         build: ['npm run build']
       },
       functions: 'functions'
-    }
+    },
+    plugins: {}
   })
 })
 
@@ -42,6 +44,7 @@ test('Test JSON', async t => {
         build: ['npm run build']
       },
       functions: 'functions'
-    }
+    },
+    plugins: {}
   })
 })

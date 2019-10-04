@@ -3,7 +3,7 @@ const omit = require('omit.js')
 
 // Normalize configuration object
 const normalizeConfig = function(config) {
-  const configA = Object.assign({ build: {} }, config)
+  const configA = Object.assign({ build: {}, plugins: {} }, config)
   const configB = normalizeLifecycles(configA)
   return configB
 }

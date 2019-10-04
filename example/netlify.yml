@@ -1,8 +1,10 @@
 version: 06-25-2019
 
 plugins:
-  - netlify-plugin-functions:
-      enabled: false
+  functions:
+    type: netlify-plugin-functions
+    enabled: false
+    config:
       functions:
         foo:
           handler: src/backend/whatever.js
@@ -12,13 +14,18 @@ plugins:
           handler: src/backend/myFuncName.js
           path: /api/cool
           method: GET
-  - netlify-plugin-example:
-      enabled: true
-  - netlify-plugin-cypress:
+  example:
+    type: netlify-plugin-example
+    enabled: true
+  cypress:
+    type: netlify-plugin-cypress
+    config:
       baseUrl: ${env:URL, https://netlify.com}
       pageLoadTimeout: 60000
-  - netlify-plugin-notifier:
-      enabled: false
+  notifier:
+    type: netlify-plugin-notifier
+    enabled: false
+    config:
       sms:
         provider: twilio
         TWILIO_ACCOUNT_SID: ${env:TWILIO_ACCOUNT_SID, 'NA'}
@@ -38,15 +45,21 @@ plugins:
           type: webhook
           endpoint: 'https://my-webhook-endpoint.com/api'
           message: 'Your site build failed sorry charlie'
-  - netlify-plugin-lighthouse:
-      enabled: ${env:LIGHTHOUSE_ENABLED, false}
+  lighthouse:
+    type: netlify-plugin-lighthouse
+    enabled: ${env:LIGHTHOUSE_ENABLED, false}
+    config:
       currentVersion: 0.0.4
       compareWithVersion: 0.0.3
-  - netlify-plugin-axe:
+  axe:
+    type: netlify-plugin-axe
+    enabled: false
+    config:
       axeFlags: '--rules color-contrast,html-has-lang' # https://github.com/dequelabs/axe-cli#running-specific-rules
-      enabled: false
-  - netlify-plugin-monorepo:
-      enabled: false
+  monorepo:
+    type: netlify-plugin-monorepo
+    enabled: false
+    config:
       files:
         - 'src/**'
 

@@ -32,7 +32,7 @@ const build = async function(options = {}) {
 
     const { config, configPath, token, baseDir } = await loadConfig({ options })
 
-    const pluginsHooks = getPluginsHooks({ config, baseDir })
+    const pluginsHooks = await getPluginsHooks({ config, baseDir })
     const { buildInstructions, errorInstructions } = getInstructions({
       pluginsHooks,
       config,

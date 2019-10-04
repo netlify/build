@@ -39,11 +39,12 @@ const getHookInstructions = function({
   const lifeCycleHook = {
     name: `config.build.lifecycle.${hook}`,
     hook,
-    pluginConfig: {},
     async method() {
       await pMapSeries(lifecycleCommands, command => execCommand(command, `build.lifecycle.${hook}`, redactedKeys))
     },
-    override: {}
+    meta: {},
+    override: {},
+    pluginConfig: {}
   }
   return [lifeCycleHook, ...pluginHooks]
 }
