@@ -3,33 +3,39 @@ const {
   env: { ERROR_VERBOSE }
 } = require('process')
 
-const { tick, pointer } = require('figures')
+const { tick, pointer, arrowDown } = require('figures')
 const omit = require('omit.js')
 
 const { startPatchingLog, stopPatchingLog } = require('./patch')
 const { setColorLevel } = require('./colors')
 const { cleanStack } = require('./stack')
 
+
 setColorLevel()
 // eslint-disable-next-line import/order
 const { greenBright, cyanBright, redBright, yellowBright, bold } = require('chalk')
 
 const HEADING_PREFIX = pointer
+const SUBTEXT_PADDING = '  '
 
 const logBuildStart = function() {
   console.log(greenBright.bold(`${HEADING_PREFIX} Starting Netlify Build`))
-  console.log(`https://github.com/netlify/build`)
+  console.log(`${SUBTEXT_PADDING}https://github.com/netlify/build`)
   console.log()
 }
 
 const logOptions = function(options) {
-  console.log(cyanBright.bold('Options'))
-  console.log(omit(options, ['token']))
-  console.log()
+  const opts = omit(options, ['token', 'dry'])
+  if (Object.keys(opts).length) {
+    console.log(cyanBright.bold('Options'))
+    console.log(' ', opts)
+    console.log()
+  }
 }
 
 const logConfigPath = function(configPath) {
-  console.log(cyanBright.bold(`${HEADING_PREFIX} Using config file: ${configPath}`))
+  console.log(cyanBright.bold(`${HEADING_PREFIX} Using config file:`))
+  console.log(`${SUBTEXT_PADDING}${configPath}`)
   console.log()
 }
 
@@ -37,29 +43,51 @@ const logLoadPlugins = function() {
   console.log(cyanBright.bold(`${HEADING_PREFIX} Loading plugins`))
 }
 
-const logLoadPlugin = function(pluginId) {
-  console.log(yellowBright(`Loading plugin "${pluginId}"`))
+const logLoadPlugin = function(pluginId, location) {
+  console.log(yellowBright(`${SUBTEXT_PADDING}Loading plugin "${pluginId}" from ${location}`))
 }
 
-const logLifeCycleStart = function() {
+const logLifeCycleStart = function(instructions) {
   console.log()
-  console.log(greenBright.bold('Running Netlify Build Lifecycle'))
-  console.log()
+  console.log(greenBright.bold(`${HEADING_PREFIX} Running Netlify Build Lifecycle`))
+  const stepsWord = (instructions.length === 1) ? 'step' : `steps`
+  console.log(`${SUBTEXT_PADDING}Found ${instructions.length} ${stepsWord}. Lets do this!`)
 }
 
 const logDryRunStart = function() {
   console.log()
   console.log(cyanBright.bold(`${HEADING_PREFIX} Netlify Build Steps`))
+  console.log(`${SUBTEXT_PADDING}For more information on build lifecycles see the docs https://github.com/netlify/build`)
   console.log()
+  console.log(`${SUBTEXT_PADDING}Running \`netlify build\` will execute this build flow`)
+  console.log()
+
 }
 
-const logDryRunInstruction = function({ instruction: { name, hook }, index, configPath, width }) {
+const logDryRunInstruction = function({ instruction: { name, hook }, index, configPath, width, buildInstructions }) {
+  // const pluginData = buildInstructions[index]
+  const isLastInstruction = buildInstructions.length === index + 1
   const source = name.startsWith('config.build') ? `in ${basename(configPath)}` : 'plugin'
-  const count = cyanBright(`${index + 1}.`)
-  const hookName = bold(`${hook.padEnd(width + 2)} `)
+  const countText = `${index + 1}.`
+  const count = cyanBright(countText)
   const niceName = name.startsWith('config.build') ? name.replace('config.', '') : name
-  const sourceOutput = bold(niceName)
-  console.log(cyanBright(`${count} ${hookName} source ${sourceOutput} ${source} `))
+  const boxWidth = width + countText.length + 3
+  const line = '─'.repeat(boxWidth)
+
+  if (index === 0) {
+    console.log(bold(`${SUBTEXT_PADDING}┌─${line}─┬─${line}─`))
+    console.log(bold(`${SUBTEXT_PADDING}│ ${'Lifecycle name'.padEnd(boxWidth)} │  ${'Location'.padEnd(boxWidth)}`))
+    console.log(bold(`${SUBTEXT_PADDING}└─${line}─┴─${line}─`))
+  }
+
+  const showArrow = (isLastInstruction) ? ' ' : arrowDown
+  console.log(cyanBright.bold(`${SUBTEXT_PADDING}┌─${line}─┐ `))
+  console.log(cyanBright.bold(`${SUBTEXT_PADDING}│ ${count} ${hook.padEnd(boxWidth - 5)} ${showArrow} │ via ${niceName} ${source}`))
+  console.log(cyanBright.bold(`${SUBTEXT_PADDING}└─${line}─┘ `))
+  // ├ if folding
+  if (isLastInstruction) {
+    console.log(`${SUBTEXT_PADDING}If this looks good to you. Run \`netlify build\``)
+  }
 }
 
 const logDryRunEnd = function() {
@@ -70,7 +98,7 @@ const logInstruction = function({ hook, name, override, index, configPath, error
   console.log()
   if (override.hook) {
     console.log(
-      redBright.bold(`> OVERRIDE: "${override.hook}" method in ${override.name} has been overriden by "${name}"`)
+      redBright.bold(`${HEADING_PREFIX} OVERRIDE: "${override.hook}" method in ${override.name} has been overriden by "${name}"`)
     )
   }
   const lifecycleName = error ? '' : 'lifecycle '
@@ -87,11 +115,11 @@ const logInstruction = function({ hook, name, override, index, configPath, error
 }
 
 const logCommandStart = function(cmd) {
-  console.log(yellowBright(`Running command "${cmd}"`))
+  console.log(`${yellowBright(`Running command "${cmd}"`)}`)
 }
 
 const logCommandError = function(cmd, name, error) {
-  console.log(redBright(`Error from netlify config ${name}:`))
+  console.log(redBright(`${SUBTEXT_PADDING}Error from netlify config ${name}:`))
   console.log(`"${cmd}"`)
   console.log()
   console.log(redBright('Error message\n'))
