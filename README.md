@@ -92,6 +92,8 @@ The Lifecycle flows through events and their `pre` and `post` counterparts.
 
 This applies to all lifecycle events listed above.
 
+By default, Netlify build will execute all steps in the config file and instantly fail the build, if any lifecycle step throws an error. 
+
 ## Plugins
 
 Plugins are POJOs (plain old javascript objects) with methods that match the various lifecycle events.
