@@ -7,7 +7,7 @@ require('array-flat-polyfill')
 
 const { logInstruction, logCommandStart, logCommandError, logInstructionSuccess } = require('../log/main')
 const { setLogContext, unsetLogContext } = require('../log/patch')
-const { redactStream } = require('../log/redact')
+const { redactStream } = require('../log/patch')
 const { startTimer, endTimer } = require('../log/timer')
 
 const { LIFECYCLE } = require('./lifecycle')

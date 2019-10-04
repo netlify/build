@@ -7,7 +7,6 @@ const { tick, pointer } = require('figures')
 const omit = require('omit.js')
 
 const { startPatchingLog, stopPatchingLog } = require('./patch')
-const { serialize } = require('./serialize')
 const { setColorLevel } = require('./colors')
 const { cleanStack } = require('./stack')
 
@@ -25,7 +24,7 @@ const logBuildStart = function() {
 
 const logOptions = function(options) {
   console.log(cyanBright.bold('Options'))
-  console.log(serialize(omit(options, ['token'])))
+  console.log(omit(options, ['token']))
   console.log()
 }
 
@@ -118,7 +117,7 @@ const logManifest = function(manifest) {
   }
 
   console.log('Manifest:')
-  console.log(serialize(manifest))
+  console.log(manifest)
 }
 
 const logTomlWrite = function(tomlPath, toml) {
