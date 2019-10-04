@@ -86,7 +86,7 @@ const logDryRunInstruction = function({ instruction: { name, hook }, index, conf
   console.log(cyanBright.bold(`${SUBTEXT_PADDING}└─${line}─┘ `))
   // ├ if folding
   if (isLastInstruction) {
-    console.log(`${SUBTEXT_PADDING}If this looks good to you. Run \`netlify build\``)
+    console.log(`${SUBTEXT_PADDING}If this looks good to you, run \`netlify build\` to execute the build`)
   }
 }
 
