@@ -42,7 +42,7 @@ const build = async function(options = {}) {
 
     doDryRun({ buildInstructions, configPath, options })
 
-    logLifeCycleStart()
+    logLifeCycleStart(buildInstructions)
 
     try {
       const manifest = await runInstructions(buildInstructions, {
