@@ -7,9 +7,6 @@ const { CONTEXT } = process.env
 
 module.exports = () => {
   return {
-    /* Plugin namespace */
-    name: '@netlify/deploy',
-    core: true,
     onError: ({ error }) => {
       console.log('do something with error', error.message)
       if (error.message.match(/invalid json response body/)) {

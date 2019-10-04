@@ -1,38 +1,53 @@
+const { promisify } = require('util')
+
 const resolve = require('resolve')
 
-// Import plugin either by module name or by file path
-const importPlugin = function(name, baseDir) {
-  const moduleName = addPackageScope(name)
-  const modulePath = resolvePlugin(moduleName, baseDir)
+const { logLoadPlugin } = require('../log/main')
+
+const pResolve = promisify(resolve)
+
+// Import plugin either by module name or by file path.
+const importPlugin = async function(type, pluginConfig, pluginId, baseDir) {
+  const plugin = await requirePlugin(type, pluginId, baseDir)
+
+  if (typeof plugin !== 'function') {
+    return plugin
+  }
 
   try {
-    return require(modulePath)
+    return plugin(pluginConfig)
   } catch (error) {
-    error.message = `Error loading '${moduleName}' plugin:\n${error.message}`
+    error.message = `Error loading '${pluginId}' plugin:\n${error.message}`
     throw error
   }
 }
 
-// YAML does not allow object keys to start with `@`. However npm scoped
-// packages do, so we allow users to omit them.
-const addPackageScope = function(name) {
-  if (!SCOPED_PACKAGE_REGEXP.test(name)) {
-    return name
+const requirePlugin = async function(type, pluginId, baseDir) {
+  // Default plugins are already loaded.
+  if (typeof type !== 'string') {
+    return type
   }
 
-  return `@${name}`
-}
+  logLoadPlugin(pluginId)
 
-const SCOPED_PACKAGE_REGEXP = /^[\w-][\w-.]*\/[\w-.]+$/
+  const modulePath = await resolvePlugin(type, baseDir)
+
+  try {
+    return require(modulePath)
+  } catch (error) {
+    error.message = `Error importing '${pluginId}' plugin:\n${error.message}`
+    throw error
+  }
+}
 
 // We use `resolve` because `require()` should be relative to `baseDir` not to
 // this `__filename`
-const resolvePlugin = function(moduleName, baseDir) {
+const resolvePlugin = async function(type, baseDir) {
   try {
-    return resolve.sync(moduleName, { basedir: baseDir })
+    return await pResolve(type, { basedir: baseDir })
   } catch (error) {
     // TODO: if plugin not found, automatically try to `npm install` it
-    error.message = `'${moduleName}' plugin not installed or found:\n${error.message}`
+    error.message = `'${type}' plugin not installed or found:\n${error.message}`
     throw error
   }
 }

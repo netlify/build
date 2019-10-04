@@ -37,8 +37,8 @@ const logLoadPlugins = function() {
   console.log(cyanBright.bold(`${HEADING_PREFIX} Loading plugins`))
 }
 
-const logLoadPlugin = function(name) {
-  console.log(yellowBright(`Loading plugin "${name}"`))
+const logLoadPlugin = function(pluginId) {
+  console.log(yellowBright(`Loading plugin "${pluginId}"`))
 }
 
 const logLifeCycleStart = function() {
