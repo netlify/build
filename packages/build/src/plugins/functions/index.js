@@ -1,5 +1,5 @@
 const os = require('os')
-const path = require('path')
+const { resolve, join } = require('path')
 
 const makeDir = require('make-dir')
 const pathExists = require('path-exists')
@@ -10,23 +10,29 @@ const { DEPLOY_PRIME_URL, DEPLOY_ID } = process.env
 
 module.exports = {
   /* Hook into buildFunctions lifecycle */
-  buildFunctions: async ({ config }) => {
-    const { build } = config
-    if (!build || !build.functions) {
+  buildFunctions: async ({
+    config: {
+      build: { functions }
+    },
+    constants: { BASE_DIR }
+  }) => {
+    if (!functions) {
       console.log('No functions directory set. Skipping functions build step')
       return false
     }
 
-    if (!(await pathExists(build.functions))) {
-      console.log(`Functions directory "${build.functions}" not found`)
+    const functionsDir = resolve(BASE_DIR, functions)
+
+    if (!(await pathExists(functionsDir))) {
+      console.log(`Functions directory "${functionsDir}" not found`)
       throw new Error('Functions Build cancelled')
     }
 
-    let tempFileDir = path.join(process.cwd(), '.netlify', 'functions')
+    let tempFileDir = join(BASE_DIR, '.netlify', 'functions')
 
     // Is inside netlify context
     if (DEPLOY_PRIME_URL) {
-      tempFileDir = path.join(os.tmpdir(), `zisi-${DEPLOY_ID}`)
+      tempFileDir = join(os.tmpdir(), `zisi-${DEPLOY_ID}`)
     }
 
     if (!(await pathExists(tempFileDir))) {
@@ -37,7 +43,7 @@ module.exports = {
 
     try {
       console.log('Zipping functions')
-      await zipFunctions(build.functions, tempFileDir)
+      await zipFunctions(functionsDir, tempFileDir)
     } catch (err) {
       console.log('Functions bundling error')
       throw new Error(err)

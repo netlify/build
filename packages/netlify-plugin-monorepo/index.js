@@ -11,9 +11,8 @@ const { diff } = require('run-if-diff')
  */
 module.exports = function netlifyMonoRepoPlugin(config) {
   return {
-    init: async ({ pluginConfig }) => {
+    init: async ({ pluginConfig, constants: { BASE_DIR } }) => {
       let files = pluginConfig.files
-      const cwd = process.cwd()
       if (!files) {
         console.log('monorepo plugin requires files array to work')
         return
@@ -29,9 +28,9 @@ module.exports = function netlifyMonoRepoPlugin(config) {
       const defaultFiles = []
 
       const filesToCheck = defaultFiles.concat(files).map(name => {
-        const parent = path.dirname(cwd)
+        const parent = path.dirname(BASE_DIR)
         const regex = new RegExp(`^${parent}/`)
-        return path.join(cwd, name).replace(regex, '')
+        return path.join(BASE_DIR, name).replace(regex, '')
       })
       // console.log('filesToCheck', filesToCheck)
 

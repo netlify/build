@@ -9,7 +9,7 @@ function netlifyAxePlugin(conf /* createStore */) {
       await execa('chmod', ['-R', '+rw', `.axe-results`])
     },
     /* Run axe on postDeploy */
-    postDeploy: async () => {
+    postDeploy: async ({ constants: { BASE_DIR } }) => {
       const site = conf.site || process.env.SITE
 
       await execa(`axe ${site} ${axeFlags} --save .axe-results/result.json`, {
@@ -17,7 +17,7 @@ function netlifyAxePlugin(conf /* createStore */) {
         preferLocal: true
       })
 
-      let results = require(`${process.cwd()}/.axe-results/result.json`)
+      let results = require(`${BASE_DIR}/.axe-results/result.json`)
       if (results && results[0]) {
         results = results[0].violations
       }
