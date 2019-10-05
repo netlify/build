@@ -65,7 +65,7 @@ const logDryRunStart = function() {
 }
 
 const logDryRunInstruction = function({ instruction: { name, hook }, index, configPath, width, buildInstructions }) {
-  // const pluginData = buildInstructions[index]
+  const pluginData = buildInstructions[index] || {}
   const isLastInstruction = buildInstructions.length === index + 1
   const source = name.startsWith('config.build') ? `in ${basename(configPath)}` : 'plugin'
   const countText = `${index + 1}.`
@@ -80,9 +80,10 @@ const logDryRunInstruction = function({ instruction: { name, hook }, index, conf
     console.log(bold(`${SUBTEXT_PADDING}└─${line}─┴─${line}─`))
   }
 
+  const srcLocation = (pluginData.type) ? ` in ${pluginData.type}` : ''
   const showArrow = (isLastInstruction) ? ' ' : arrowDown
   console.log(cyanBright.bold(`${SUBTEXT_PADDING}┌─${line}─┐ `))
-  console.log(cyanBright.bold(`${SUBTEXT_PADDING}│ ${count} ${hook.padEnd(boxWidth - 5)} ${showArrow} │ via ${niceName} ${source}`))
+  console.log(cyanBright.bold(`${SUBTEXT_PADDING}│ ${count} ${hook.padEnd(boxWidth - 5)} ${showArrow} │ via ${niceName} ${source}${srcLocation}`))
   console.log(cyanBright.bold(`${SUBTEXT_PADDING}└─${line}─┘ `))
   // ├ if folding
   if (isLastInstruction) {
