@@ -11,7 +11,6 @@ const { getOverride, isNotOverridden } = require('./override')
 // Retrieve plugin lifecycle hooks
 const getPluginsHooks = async function({ config: { plugins: pluginsOptions }, baseDir }) {
   logLoadPlugins()
-
   const pluginsOptionsA = Object.assign({}, DEFAULT_PLUGINS, pluginsOptions)
   const pluginsOptionsB = Object.entries(pluginsOptionsA)
     .map(normalizePluginOptions)
@@ -43,24 +42,24 @@ const loadPluginHooks = async function({ pluginId, type, pluginConfig }, baseDir
 
   validatePlugin(plugin, pluginId)
 
-  const hooks = getPluginHooks(plugin, pluginId, pluginConfig)
+  const hooks = getPluginHooks(plugin, pluginId, pluginConfig, type)
   return hooks
 }
 
-const getPluginHooks = function(plugin, pluginId, pluginConfig) {
+const getPluginHooks = function(plugin, pluginId, pluginConfig, type) {
   const meta = filterObj(plugin, (key, value) => !isPluginHook(key, value))
   const hooks = filterObj(plugin, isPluginHook)
-  return Object.entries(hooks).map(([hook, method]) => getPluginHook({ hook, method, meta, pluginId, pluginConfig }))
+  return Object.entries(hooks).map(([hook, method]) => getPluginHook({ hook, type, method, meta, pluginId, pluginConfig }))
 }
 
 const isPluginHook = function(key, value) {
   return typeof value === 'function'
 }
 
-const getPluginHook = function({ hook, method, meta, pluginId, pluginConfig }) {
+const getPluginHook = function({ hook, type, method, meta, pluginId, pluginConfig }) {
   const override = getOverride(hook)
   const hookA = override.hook || hook
-  return { name: pluginId, hook: hookA, method, meta, override, pluginConfig }
+  return { name: pluginId, hook: hookA, type, method, meta, override, pluginConfig }
 }
 
 module.exports = { defaultPlugins: DEFAULT_PLUGINS, getPluginsHooks }

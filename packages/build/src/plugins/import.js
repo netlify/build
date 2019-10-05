@@ -28,7 +28,7 @@ const requirePlugin = async function(type, pluginId, baseDir) {
     return type
   }
 
-  logLoadPlugin(pluginId)
+  logLoadPlugin(pluginId, type)
 
   const modulePath = await resolvePlugin(type, baseDir)
 
