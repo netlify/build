@@ -54,3 +54,8 @@ test.skip('{context:...} pointing to undefined path', async t => {
   const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/context/netlify.yml --context invalid`)
   t.snapshot(normalizeOutput(all))
 })
+
+test('Can override plugins', async t => {
+  const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/override/netlify.yml`)
+  t.snapshot(normalizeOutput(all))
+})

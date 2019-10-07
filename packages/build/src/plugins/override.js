@@ -1,19 +1,20 @@
-// Any plugin hook `name:...` overrides any previous hook `...` of the plugin `name`
+// Any plugin hook `type:...` overrides any previous hook `...` of the plugin `type`
 const getOverride = function(hookName) {
   if (!hookName.includes(':')) {
     return {}
   }
 
-  const [name, ...parts] = hookName.split(':')
+  const [type, ...parts] = hookName.split(':')
   const hook = parts.join(':')
-  return { name, hook }
+  return { type, hook }
 }
 
-// Remove plugin hooks that are overriden by a later hook called `name:...`
+// Remove plugin hooks that are overriden by a hook called `type:...`
 const isNotOverridden = function(lifeCycleHook, index, lifeCycleHooks) {
-  return lifeCycleHooks
-    .slice(index + 1)
-    .every(({ override: { hook, name } }) => hook !== lifeCycleHook.hook || name !== lifeCycleHook.name)
+  return !lifeCycleHooks.some(
+    ({ override: { hook, type } }, indexA) =>
+      index !== indexA && hook === lifeCycleHook.hook && type === lifeCycleHook.type
+  )
 }
 
 module.exports = { getOverride, isNotOverridden }

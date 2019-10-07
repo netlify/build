@@ -104,7 +104,7 @@ const logInstruction = function({ hook, name, override, index, configPath, error
   if (override.hook) {
     console.log(
       redBright.bold(
-        `${HEADING_PREFIX} OVERRIDE: "${override.hook}" method in ${override.name} has been overriden by "${name}"`
+        `${HEADING_PREFIX} OVERRIDE: "${override.hook}" method in "${override.type}" has been overriden by "${name}"`
       )
     )
   }

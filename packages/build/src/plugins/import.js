@@ -7,8 +7,8 @@ const { logLoadPlugin } = require('../log/main')
 const pResolve = promisify(resolve)
 
 // Import plugin either by module name or by file path.
-const importPlugin = async function(type, pluginConfig, pluginId, baseDir) {
-  const plugin = await requirePlugin(type, pluginId, baseDir)
+const importPlugin = async function({ type, core, pluginConfig, pluginId, baseDir }) {
+  const plugin = await requirePlugin(type, core, pluginId, baseDir)
 
   if (typeof plugin !== 'function') {
     return plugin
@@ -22,10 +22,10 @@ const importPlugin = async function(type, pluginConfig, pluginId, baseDir) {
   }
 }
 
-const requirePlugin = async function(type, pluginId, baseDir) {
-  // Default plugins are already loaded.
-  if (typeof type !== 'string') {
-    return type
+const requirePlugin = async function(type, core, pluginId, baseDir) {
+  // Core plugins are already loaded.
+  if (core !== undefined) {
+    return core
   }
 
   logLoadPlugin(pluginId, type)
