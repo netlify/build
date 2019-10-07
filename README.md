@@ -26,13 +26,13 @@ It is designed to support any kind of build flow and is extendable to fit any un
 
 - Extendable core
 - Modular components
-- Works in CI/CD & local context
+- Works locally & in any CI/CD context
 
 ## How it works
 
-Build steps are codified in the Netlify UI or via `netlify` config file.
+Build steps are codified in the Netlify UI or via `netlify` config file in the `build.lifecycle` or as `plugins`.
 
-Builds are controlled by a series of lifecycle hooks that `plugins` & configuration hook into.
+Builds are controlled by a series of lifecycle events that `plugins` & configuration (`build.lifecycle`) hook into.
 
 ## Lifecycle
 
@@ -44,20 +44,22 @@ Events are activities happening in the build system.
 const lifecycle = [
   /* ↓ Build initialization steps */
   'init',
-  /* ↓ Fetch previous build cache */
+  /* Fetch previous build cache */
   'getCache',
-  /* ↓ Install project dependancies */
+  /* Install project dependancies */
   'install',
-  /* ↓ Build the site & functions */
+  /* Build the site & functions */
   'build',
-  /* ↓ Package & optimize artifact */
+  'buildSite',
+  'buildFunctions',
+  /* Package & optimize artifact */
   'package',
-  /* ↓ Deploy built artifact */
+  /* Deploy built artifact */
   'deploy',
-  /* ↓ Save cached assets */
+  /* Save cached assets */
   'saveCache',
-  /* ↓ Outputs manifest of resources created */
-  'manifest',
+  /* Outputs manifest of resources created */
+  'manifest'
   /* ↓ Build finished */
   'finally'
 ]
@@ -99,35 +101,33 @@ By default, Netlify build will execute all steps in the config file and instantl
 Plugins are POJOs (plain old javascript objects) with methods that match the various lifecycle events.
 
 ```js
-function exampleNetlifyPlugin(initialConfig) {
+{
+  name: 'my-awesome-plugin',
+  init: () => { /* Run custom logic at beginning of build */ }
+  preBuild: () => { /* Run custom logic before build happens */ },
+  finally: () => { /* Run custom logic at the end of the build */ }
+  // ... etc
+}
+```
+
+Here is an example:
+
+```js
+module.exports = function exampleOne(config) {
+  // do initial things with plugin 'config'
   return {
-    name: 'my-awesome-plugin',
-    /* Define the netlify API methods required if plugin making calls with netlify SDK */
-    scopes: ['listSites'],
-    /**
-     * [init description]
-     * @param  {object} config          - Current netlify configuration from config file
-     * @param  {object} pluginConfig    - Initial plugin configuration
-     * @param  {object} utils        [description]
-     * @return {[type]}              [description]
-     */
-    init: ({ config, pluginConfig, utils, constants, api }) => {
-      const { siteId, siteUrl, /*siteConfig*/, deployUrl } = context
-      console.log(`Current site id`, siteId)
-      console.log(`Current live site url`, siteUrl)
-      console.log(`Current siteConfig`, siteConfig)
-      console.log(`Current immutable deploy url`, deployUrl)
-      console.log(`Current working directory`, cwd)
-      /* Plugin config */
-      console.log('Current plugin config', pluginConfig)
-      /* config */
-      console.log('Current netlify config from config file', config)
+    init: () => {
+      console.log('Run custom logic at beginning of build')
     },
-    // Hook into `postBuild` lifecycle
+    preBuild: () => {
+      console.log('Run custom logic before build happens')
+    },
     postBuild: () => {
-      console.log('Build finished. Do custom thing')
-    }
-    // ... etc
+      console.log('Run custom logic after build happens')
+    },
+    finally: () => {
+      console.log('Run custom logic at the end of the build')
+    },
   }
 }
 ```
@@ -153,19 +153,18 @@ Configuration can be written in `toml`, `yml`, `json`, `json5`, or `javascript`.
 ```yml
 # Config file `plugins` defines plugins used by build. Plugins are optional
 plugins:
-  - ./localpath/plugin-folder:
-      timeout: 5m
-      enabled: true
-      secrets:
-        shhh: 'only accessible via this plugin'
+  pluginAbc:
+    type: ./local/path/to/plugin-folder
+    config:
       optionOne: 'hello'
       optionTwo: 'there'
-  - plugin-from-npm:
-      optionOne: 'neat'
-  - other-plugin-from-npm::
-      arrayOfValues:
-        - david@netlify.com
-        - jim@netlify.com
+ pluginTwo:
+   type: plugin-from-npm
+   config:
+     optionOne: 'neat'
+     arrayOfValues:
+      - david@netlify.com
+      - jim@netlify.com
 
 # Inline `build.lifecycle` steps can be defined
 build:
@@ -176,7 +175,7 @@ build:
       - echo "much wow"
     getCache:
       - echo 'curl custom cache'
-    preBuild: echo "${secrets:privateKey}"
+    preBuild: echo "${env:privateKey}"
     build: |
       echo 'Hello Netlify Build!'
       npm run build
@@ -190,22 +189,6 @@ To reference an environment variable in Netlify config:
 foo: ${env:MY_ENV_VAR}
 ```
 
-To reference a secret in Netlify config:
-
-```yml
-bar: ${secrets:MY_REMOTE_SECRET}
-```
-
-## Simplified Build Env
-
-The folder structure of the build environment is also being revamped to streamline & simplify how users interact with it.
-
-- `.netlify` - Main folder
-- `.netlify/src` - Source code from repo, zip, tar
-- `.netlify/cache` - Files persisted across builds
-- `.netlify/cache/dependencies` - All dependencies are cache here. These are used for lookup / install process.
-- `.netlify/build` - Built files
-
 ## CLI commands
 
 ```
@@ -215,7 +198,7 @@ netlify build
 Test out the build flow. This will output everything that happens in the build flow without executing the plugins.
 
 ```
-netlify build --dry-run
+netlify build --dry
 ```
 
 ## Setting up the project
@@ -229,5 +212,5 @@ git clone git@github.com:netlify/netlify-build.git
 2. Install project dependancies
 
 ```
-npm i && npm run bootstrap
+npm install && npm run bootstrap
 ```
