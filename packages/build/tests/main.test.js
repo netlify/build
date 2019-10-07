@@ -59,3 +59,8 @@ test('Can override plugins', async t => {
   const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/override/netlify.yml`)
   t.snapshot(normalizeOutput(all))
 })
+
+test('--verbose', async t => {
+  const { all } = await execa.command(`${BINARY_PATH} --verbose --config invalid`)
+  t.snapshot(normalizeOutput(all))
+})

@@ -70,7 +70,7 @@ const build = async function(options = {}) {
     endTimer(buildTimer, 'Netlify Build')
     logBuildEnd()
   } catch (error) {
-    logBuildError(error)
+    logBuildError(error, options)
   }
 
   stopPatchingLog(originalConsoleLog)
