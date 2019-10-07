@@ -113,6 +113,7 @@ Plugins are POJOs (plain old javascript objects) with methods that match the var
 Here is an example:
 
 ```js
+/* file ./plugins/my-plugin/index.js */
 module.exports = function exampleOne(config) {
   // do initial things with plugin 'config'
   return {
@@ -131,6 +132,27 @@ module.exports = function exampleOne(config) {
   }
 }
 ```
+
+To use this plugin, define the `plugins` key in your Netlify config file.
+
+
+```yml
+build:
+  functions: src/functions
+  publish: build
+  command: npm run build
+
+# Netlify build plugins
+plugins:
+  examplePlugin:
+    # Path to plugin. Can be local relative path or reference to node_modules
+    type: ./plugins/my-plugin/
+    config:
+      a: hello
+      b: goodbye
+```
+
+### Plugin Examples
 
 **Examples:**
 
