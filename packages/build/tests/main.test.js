@@ -11,17 +11,17 @@ test('Smoke test', async t => {
   t.snapshot(normalizeOutput(all))
 })
 
-test.skip('Empty configuration', async t => {
+test('Empty configuration', async t => {
   const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/empty/netlify.yml`)
   t.snapshot(normalizeOutput(all))
 })
 
-test.skip('--config', async t => {
+test('--config', async t => {
   const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/empty/netlify.yml`)
   t.snapshot(normalizeOutput(all))
 })
 
-test.skip('--config with an invalid path', async t => {
+test('--config with an invalid path', async t => {
   const { all } = await execa.command(`${BINARY_PATH} --config invalid`)
   t.snapshot(normalizeOutput(all))
 })
@@ -43,14 +43,14 @@ test('{context:...}', async t => {
   t.snapshot(normalizeOutput(all))
 })
 
-test.skip('{context:...} with --context', async t => {
+test('{context:...} with --context', async t => {
   const { all } = await execa.command(
     `${BINARY_PATH} --config ${FIXTURES_DIR}/context/netlify.yml --context development`
   )
   t.snapshot(normalizeOutput(all))
 })
 
-test.skip('{context:...} pointing to undefined path', async t => {
+test('{context:...} pointing to undefined path', async t => {
   const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/context/netlify.yml --context invalid`)
   t.snapshot(normalizeOutput(all))
 })
