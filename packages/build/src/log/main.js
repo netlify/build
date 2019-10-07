@@ -1,7 +1,4 @@
 const { basename } = require('path')
-const {
-  env: { ERROR_VERBOSE }
-} = require('process')
 
 const { tick, pointer, arrowDown } = require('figures')
 const omit = require('omit.js')
@@ -175,7 +172,7 @@ const logErrorInstructions = function() {
   console.log(cyanBright('Running onError methods'))
 }
 
-const logBuildError = function(error) {
+const logBuildError = function(error, { verbose }) {
   console.log()
   console.log(redBright.bold('┌─────────────────────────────┐'))
   console.log(redBright.bold('│    Netlify Build Error!     │'))
@@ -186,12 +183,12 @@ const logBuildError = function(error) {
   console.log(yellowBright.bold('│      Error Stack Trace      │'))
   console.log(yellowBright.bold('└─────────────────────────────┘'))
 
-  if (ERROR_VERBOSE === 'true') {
+  if (verbose) {
     console.log(error.stack)
   } else {
     console.log(` ${bold(cleanStack(error.stack))}`)
     console.log()
-    console.log(` Set environment variable ERROR_VERBOSE=true for deep traces`)
+    console.log(` Use the --verbose option for deep traces`)
   }
 
   console.log()
