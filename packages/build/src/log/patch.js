@@ -57,8 +57,9 @@ const serialize = function(value) {
   return inspect(value, { depth: null, colors: hasColors() })
 }
 
-function redactStream(secrets) {
-  return replaceStream(secrets, '[secrets]')
+const redactProcess = function(childProcess, redactedKeys) {
+  childProcess.stdout.pipe(replaceStream(redactedKeys, '[secrets]')).pipe(process.stdout)
+  childProcess.stderr.pipe(replaceStream(redactedKeys, '[secrets]')).pipe(process.stderr)
 }
 
 const setLogContext = function(pre) {
@@ -69,4 +70,4 @@ const unsetLogContext = function() {
   process.env.LOG_CONTEXT = ''
 }
 
-module.exports = { startPatchingLog, stopPatchingLog, redactStream, setLogContext, unsetLogContext }
+module.exports = { startPatchingLog, stopPatchingLog, redactProcess, setLogContext, unsetLogContext }

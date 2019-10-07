@@ -1,5 +1,5 @@
 const os = require('os')
-const { resolve, join } = require('path')
+const { resolve } = require('path')
 
 const makeDir = require('make-dir')
 const pathExists = require('path-exists')
@@ -13,26 +13,25 @@ module.exports = {
   buildFunctions: async ({
     config: {
       build: { functions }
-    },
-    constants: { BASE_DIR }
+    }
   }) => {
     if (!functions) {
       console.log('No functions directory set. Skipping functions build step')
       return false
     }
 
-    const functionsDir = resolve(BASE_DIR, functions)
+    const functionsDir = resolve(functions)
 
     if (!(await pathExists(functionsDir))) {
       console.log(`Functions directory "${functionsDir}" not found`)
       throw new Error('Functions Build cancelled')
     }
 
-    let tempFileDir = join(BASE_DIR, '.netlify', 'functions')
+    let tempFileDir = resolve('.netlify/functions')
 
     // Is inside netlify context
     if (DEPLOY_PRIME_URL) {
-      tempFileDir = join(os.tmpdir(), `zisi-${DEPLOY_ID}`)
+      tempFileDir = resolve(os.tmpdir(), `zisi-${DEPLOY_ID}`)
     }
 
     if (!(await pathExists(tempFileDir))) {
