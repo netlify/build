@@ -16,8 +16,8 @@ const getPluginsHooks = async function({ config: { plugins: pluginsOptions }, ba
     .map(normalizePluginOptions)
     .filter(isPluginEnabled)
 
-  const hooks = await Promise.all(pluginsOptionsB.map(pluginOptions => loadPluginHooks(pluginOptions, baseDir)))
-  const hooksA = hooks.flat().filter(isNotOverridden)
+  const plugins = await loadPlugins(pluginsOptionsB, baseDir)
+  const hooksA = plugins.flatMap(getPluginHooks).filter(isNotOverridden)
   const pluginsHooks = groupBy(hooksA, 'hook')
   return pluginsHooks
 }
@@ -37,16 +37,17 @@ const isPluginEnabled = function({ enabled }) {
   return String(enabled) !== 'false'
 }
 
-const loadPluginHooks = async function({ pluginId, type, core, pluginConfig }, baseDir) {
-  const plugin = await importPlugin({ type, core, pluginConfig, pluginId, baseDir })
-
-  validatePlugin(plugin, pluginId)
-
-  const hooks = getPluginHooks(plugin, pluginId, pluginConfig, type)
-  return hooks
+const loadPlugins = function(pluginsOptions, baseDir) {
+  return Promise.all(pluginsOptions.map(pluginOptions => loadPlugin(pluginOptions, baseDir)))
 }
 
-const getPluginHooks = function(plugin, pluginId, pluginConfig, type) {
+const loadPlugin = async function({ pluginId, type, core, pluginConfig }, baseDir) {
+  const plugin = await importPlugin({ type, core, pluginConfig, pluginId, baseDir })
+  validatePlugin(plugin, pluginId)
+  return { plugin, pluginId, pluginConfig, type }
+}
+
+const getPluginHooks = function({ plugin, pluginId, pluginConfig, type }) {
   const meta = filterObj(plugin, (key, value) => !isPluginHook(key, value))
   const hooks = filterObj(plugin, isPluginHook)
   return Object.entries(hooks).map(([hook, method]) =>
