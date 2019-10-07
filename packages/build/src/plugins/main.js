@@ -1,7 +1,6 @@
 const filterObj = require('filter-obj')
 const groupBy = require('group-by')
 
-const functionsPlugin = require('../plugins/functions')
 const { logLoadPlugins } = require('../log/main')
 
 const { importPlugin } = require('./import')
@@ -23,12 +22,12 @@ const getPluginsHooks = async function({ config: { plugins: pluginsOptions }, ba
 }
 
 const DEFAULT_PLUGINS = {
-  '@netlify/functions': { type: '@netlify/functions', core: functionsPlugin }
+  '@netlify/functions': { type: `${__dirname}/functions/index.js` }
 }
 
 const normalizePluginOptions = function([pluginId, pluginOptions]) {
-  const { type, core, enabled, config: pluginConfig } = Object.assign({}, DEFAULT_PLUGIN_OPTIONS, pluginOptions)
-  return { pluginId, type, core, enabled, pluginConfig }
+  const { type, enabled, config: pluginConfig } = Object.assign({}, DEFAULT_PLUGIN_OPTIONS, pluginOptions)
+  return { pluginId, type, enabled, pluginConfig }
 }
 
 const DEFAULT_PLUGIN_OPTIONS = { enabled: true, config: {} }
@@ -41,8 +40,8 @@ const loadPlugins = function(pluginsOptions, baseDir) {
   return Promise.all(pluginsOptions.map(pluginOptions => loadPlugin(pluginOptions, baseDir)))
 }
 
-const loadPlugin = async function({ pluginId, type, core, pluginConfig }, baseDir) {
-  const plugin = await importPlugin({ type, core, pluginConfig, pluginId, baseDir })
+const loadPlugin = async function({ pluginId, type, pluginConfig }, baseDir) {
+  const plugin = await importPlugin({ type, pluginConfig, pluginId, baseDir })
   validatePlugin(plugin, pluginId)
   return { plugin, pluginId, pluginConfig, type }
 }
