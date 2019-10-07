@@ -3,8 +3,6 @@ const { basename } = require('path')
 const { tick, pointer, arrowDown } = require('figures')
 const omit = require('omit.js')
 
-const { DEFAULT_PLUGINS } = require('../plugins/constants')
-
 const { startPatchingLog, stopPatchingLog } = require('./patch')
 const { cleanStack } = require('./stack')
 
@@ -39,8 +37,8 @@ const logLoadPlugins = function() {
   console.log(cyanBright.bold(`${HEADING_PREFIX} Loading plugins`))
 }
 
-const logLoadPlugin = function(pluginId, loc) {
-  const location = Object.keys(DEFAULT_PLUGINS).includes(pluginId) ? 'build core' : loc
+const logLoadPlugin = function(pluginId, type, core) {
+  const location = core ? 'build core' : type
   console.log(yellowBright(`${SUBTEXT_PADDING}Loading plugin "${pluginId}" from ${location}`))
 }
 
@@ -97,7 +95,7 @@ const logDryRunEnd = function() {
   console.log()
 }
 
-const logInstruction = function({ hook, name, override, index, configPath, error }) {
+const logInstruction = function({ hook, name, override }, { index, configPath, error }) {
   console.log()
   if (override.hook) {
     console.log(

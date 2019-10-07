@@ -7,7 +7,9 @@ const { getConfigPath } = require('@netlify/config')
 
 require('array-flat-polyfill')
 
-const { getPluginsHooks } = require('../plugins/main')
+const { loadPlugins } = require('../plugins/parent/load')
+const { getPluginsOptions } = require('../plugins/parent/options')
+const { startPlugins, stopPlugins } = require('../plugins/parent/spawn')
 const {
   startPatchingLog,
   stopPatchingLog,
@@ -37,36 +39,22 @@ const build = async function(options = {}) {
 
     const { config, configPath, token, baseDir } = await loadConfig({ options })
 
-    const pluginsHooks = await getPluginsHooks({ config, baseDir })
-    const { buildInstructions, errorInstructions } = getInstructions({
-      pluginsHooks,
-      config,
-      baseDir,
-      redactedKeys
-    })
-
-    doDryRun({ buildInstructions, configPath, options })
-
-    logLifeCycleStart(buildInstructions)
+    const pluginsOptions = getPluginsOptions({ config })
+    const childProcesses = await startPlugins(pluginsOptions, baseDir)
 
     try {
-      const manifest = await runInstructions(buildInstructions, {
+      await runBuild({
+        pluginsOptions,
+        childProcesses,
         config,
         configPath,
-        token,
-        baseDir
-      })
-      logManifest(manifest)
-    } catch (error) {
-      await handleInstructionError({
-        errorInstructions,
-        config,
-        configPath,
-        token,
         baseDir,
-        error
+        redactedKeys,
+        token,
+        options
       })
-      throw error
+    } finally {
+      await stopPlugins(childProcesses)
     }
 
     /* Temporary write config file out to toml for remote CI to process */
@@ -82,6 +70,40 @@ const build = async function(options = {}) {
   }
 
   stopPatchingLog(originalConsoleLog)
+}
+
+const runBuild = async function({
+  pluginsOptions,
+  childProcesses,
+  config,
+  configPath,
+  baseDir,
+  redactedKeys,
+  token,
+  options
+}) {
+  const pluginsHooks = await loadPlugins({
+    pluginsOptions,
+    childProcesses,
+    config,
+    configPath,
+    baseDir,
+    redactedKeys,
+    token
+  })
+  const { buildInstructions, errorInstructions } = getInstructions({ pluginsHooks, config })
+
+  doDryRun({ buildInstructions, configPath, options })
+
+  logLifeCycleStart(buildInstructions)
+
+  try {
+    const manifest = await runInstructions(buildInstructions, { childProcesses, configPath, baseDir, redactedKeys })
+    logManifest(manifest)
+  } catch (error) {
+    await handleInstructionError(errorInstructions, { childProcesses, configPath, baseDir, redactedKeys, error })
+    throw error
+  }
 }
 
 module.exports = build

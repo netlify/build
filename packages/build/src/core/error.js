@@ -4,12 +4,15 @@ const { runInstructions } = require('./instructions')
 
 // Error handler when an instruction fails
 // Resolve all 'onError' methods and try to fix things
-const handleInstructionError = async function({ errorInstructions, config, configPath, token, baseDir, error }) {
+const handleInstructionError = async function(
+  errorInstructions,
+  { childProcesses, configPath, baseDir, redactedKeys, error }
+) {
   logInstructionsError()
 
   if (errorInstructions.length !== 0) {
     logErrorInstructions()
-    await runInstructions(errorInstructions, { config, configPath, token, baseDir, error })
+    await runInstructions(errorInstructions, { childProcesses, configPath, baseDir, redactedKeys, error })
   }
 }
 
