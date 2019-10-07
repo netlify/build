@@ -92,7 +92,7 @@ The Lifecycle flows through events and their `pre` and `post` counterparts.
 
 This applies to all lifecycle events listed above.
 
-By default, Netlify build will execute all steps in the config file and instantly fail the build, if any lifecycle step throws an error. 
+By default, Netlify build will execute all steps in the config file and instantly fail the build, if any lifecycle step throws an error.
 
 ## Plugins
 

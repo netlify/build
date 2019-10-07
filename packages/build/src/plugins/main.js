@@ -49,7 +49,9 @@ const loadPluginHooks = async function({ pluginId, type, pluginConfig }, baseDir
 const getPluginHooks = function(plugin, pluginId, pluginConfig, type) {
   const meta = filterObj(plugin, (key, value) => !isPluginHook(key, value))
   const hooks = filterObj(plugin, isPluginHook)
-  return Object.entries(hooks).map(([hook, method]) => getPluginHook({ hook, type, method, meta, pluginId, pluginConfig }))
+  return Object.entries(hooks).map(([hook, method]) =>
+    getPluginHook({ hook, type, method, meta, pluginId, pluginConfig })
+  )
 }
 
 const isPluginHook = function(key, value) {
