@@ -1,5 +1,5 @@
 {
-  "name": "netlify-plugin-functions",
+  "name": "@netlify/plugin-functions",
   "private": true,
   "version": "0.0.1",
   "description": "Configurable function paths & methods",
@@ -9,6 +9,10 @@
     "release:minor": "npm version minor && npm publish",
     "release:major": "npm version major && npm publish"
   },
+  "keywords": [
+    "netlify",
+    "netlify-plugin"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {

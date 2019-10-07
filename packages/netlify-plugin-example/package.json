@@ -1,5 +1,5 @@
 {
-  "name": "netlify-plugin-example",
+  "name": "@netlify/plugin-example",
   "private": true,
   "version": "0.0.1",
   "description": "",
@@ -7,6 +7,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\""
   },
+  "keywords": [
+    "netlify",
+    "netlify-plugin"
+  ],
   "author": "",
   "license": "ISC"
 }

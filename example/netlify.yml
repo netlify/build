@@ -2,7 +2,7 @@ version: 06-25-2019
 
 plugins:
   functions:
-    type: netlify-plugin-functions
+    type: '@netlify/plugin-functions'
     enabled: false
     config:
       functions:
@@ -15,15 +15,15 @@ plugins:
           path: /api/cool
           method: GET
   example:
-    type: netlify-plugin-example
+    type: '@netlify/plugin-example'
     enabled: true
   cypress:
-    type: netlify-plugin-cypress
+    type: '@netlify/plugin-cypress'
     config:
       baseUrl: ${env:URL, https://netlify.com}
       pageLoadTimeout: 60000
   notifier:
-    type: netlify-plugin-notifier
+    type: '@netlify/plugin-notifier'
     enabled: false
     config:
       sms:
@@ -46,18 +46,18 @@ plugins:
           endpoint: 'https://my-webhook-endpoint.com/api'
           message: 'Your site build failed sorry charlie'
   lighthouse:
-    type: netlify-plugin-lighthouse
+    type: '@netlify/plugin-lighthouse'
     enabled: ${env:LIGHTHOUSE_ENABLED, false}
     config:
       currentVersion: 0.0.4
       compareWithVersion: 0.0.3
   axe:
-    type: netlify-plugin-axe
+    type: '@netlify/plugin-axe'
     enabled: false
     config:
       axeFlags: '--rules color-contrast,html-has-lang' # https://github.com/dequelabs/axe-cli#running-specific-rules
   monorepo:
-    type: netlify-plugin-monorepo
+    type: '@netlify/plugin-monorepo'
     enabled: false
     config:
       files:

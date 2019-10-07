@@ -67,7 +67,7 @@ Today, we are going to setup and use `Netlify Build`
    Let's install the sitemap plugin from `npm`
 
    ```bash
-   npm install @netlify/sitemap-plugin
+   npm install @netlify/plugin-sitemap
    ```
 
    After installing, add the plugin to your `Netlify Config`
@@ -75,7 +75,7 @@ Today, we are going to setup and use `Netlify Build`
    ```yml
    # `plugins` are all netlify plugins installed for the site
    plugins:
-     - netlify/sitemap-plugin:
+     - netlify/plugin-sitemap:
          enabled: true
 
    build:
@@ -127,7 +127,7 @@ Today, we are going to setup and use `Netlify Build`
 
    The `postBuild` function exported here corresponds to the `postBuild` lifecycle hook.
 
-   You can [see all lifecycle events here](https://github.com/netlify/netlify-build/blob/master/packages/build-core/src/build.js#L18-L39)
+   You can [see all lifecycle events here](https://github.com/netlify/build/blob/master/packages/build/src/core/lifecycle.js)
 
    4. Include your plugin
 
@@ -138,7 +138,7 @@ Today, we are going to setup and use `Netlify Build`
      - ./plugins/my-first-plugin:
          enabled: true
      # Plugin from npm
-     - netlify/sitemap-plugin:
+     - netlify/plugin-sitemap:
          enabled: true
 
    build:

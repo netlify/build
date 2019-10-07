@@ -5,7 +5,6 @@ const { zipFunction } = require('@netlify/zip-it-and-ship-it')
 
 function netlifyFunctionsPlugin(conf = {}) {
   return {
-    name: 'netlify-functions',
     postBuild: async ({ config, constants: { BASE_DIR } }) => {
       console.log('Configuring Functions...', config)
       if (!conf.functions) {

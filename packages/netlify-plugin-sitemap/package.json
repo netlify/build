@@ -1,5 +1,5 @@
 {
-  "name": "@netlify/sitemap-plugin",
+  "name": "@netlify/plugin-sitemap",
   "version": "0.0.2",
   "description": "",
   "main": "index.js",
@@ -8,6 +8,10 @@
     "release:minor": "npm version minor && npm publish",
     "release:major": "npm version major && npm publish"
   },
+  "keywords": [
+    "netlify",
+    "netlify-plugin"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
