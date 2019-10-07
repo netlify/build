@@ -23,12 +23,12 @@ const getPluginsHooks = async function({ config: { plugins: pluginsOptions }, ba
 }
 
 const DEFAULT_PLUGINS = {
-  '@netlify/functions': { type: functionsPlugin }
+  '@netlify/functions': { type: '@netlify/functions', core: functionsPlugin }
 }
 
 const normalizePluginOptions = function([pluginId, pluginOptions]) {
-  const { type, enabled, config: pluginConfig } = Object.assign({}, DEFAULT_PLUGIN_OPTIONS, pluginOptions)
-  return { pluginId, type, enabled, pluginConfig }
+  const { type, core, enabled, config: pluginConfig } = Object.assign({}, DEFAULT_PLUGIN_OPTIONS, pluginOptions)
+  return { pluginId, type, core, enabled, pluginConfig }
 }
 
 const DEFAULT_PLUGIN_OPTIONS = { enabled: true, config: {} }
@@ -37,8 +37,8 @@ const isPluginEnabled = function({ enabled }) {
   return String(enabled) !== 'false'
 }
 
-const loadPluginHooks = async function({ pluginId, type, pluginConfig }, baseDir) {
-  const plugin = await importPlugin(type, pluginConfig, pluginId, baseDir)
+const loadPluginHooks = async function({ pluginId, type, core, pluginConfig }, baseDir) {
+  const plugin = await importPlugin({ type, core, pluginConfig, pluginId, baseDir })
 
   validatePlugin(plugin, pluginId)
 

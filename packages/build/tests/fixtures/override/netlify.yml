@@ -1,0 +1,5 @@
+plugins:
+  example:
+    type: example
+  exampleOverride:
+    type: ./override.js
