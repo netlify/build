@@ -10,7 +10,6 @@ const { startPatchingLog, stopPatchingLog } = require('./patch')
 const { setColorLevel } = require('./colors')
 const { cleanStack } = require('./stack')
 
-
 setColorLevel()
 // eslint-disable-next-line import/order
 const { greenBright, cyanBright, redBright, yellowBright, bold } = require('chalk')
@@ -50,18 +49,19 @@ const logLoadPlugin = function(pluginId, location) {
 const logLifeCycleStart = function(instructions) {
   console.log()
   console.log(greenBright.bold(`${HEADING_PREFIX} Running Netlify Build Lifecycle`))
-  const stepsWord = (instructions.length === 1) ? 'step' : `steps`
+  const stepsWord = instructions.length === 1 ? 'step' : `steps`
   console.log(`${SUBTEXT_PADDING}Found ${instructions.length} ${stepsWord}. Lets do this!`)
 }
 
 const logDryRunStart = function() {
   console.log()
   console.log(cyanBright.bold(`${HEADING_PREFIX} Netlify Build Steps`))
-  console.log(`${SUBTEXT_PADDING}For more information on build lifecycles see the docs https://github.com/netlify/build`)
+  console.log(
+    `${SUBTEXT_PADDING}For more information on build lifecycles see the docs https://github.com/netlify/build`
+  )
   console.log()
   console.log(`${SUBTEXT_PADDING}Running \`netlify build\` will execute this build flow`)
   console.log()
-
 }
 
 const logDryRunInstruction = function({ instruction: { name, hook }, index, configPath, width, buildInstructions }) {
@@ -80,10 +80,14 @@ const logDryRunInstruction = function({ instruction: { name, hook }, index, conf
     console.log(bold(`${SUBTEXT_PADDING}└─${line}─┴─${line}─`))
   }
 
-  const srcLocation = (pluginData.type) ? ` in ${pluginData.type}` : ''
-  const showArrow = (isLastInstruction) ? ' ' : arrowDown
+  const srcLocation = pluginData.type ? ` in ${pluginData.type}` : ''
+  const showArrow = isLastInstruction ? ' ' : arrowDown
   console.log(cyanBright.bold(`${SUBTEXT_PADDING}┌─${line}─┐ `))
-  console.log(cyanBright.bold(`${SUBTEXT_PADDING}│ ${count} ${hook.padEnd(boxWidth - 5)} ${showArrow} │ via ${niceName} ${source}${srcLocation}`))
+  console.log(
+    cyanBright.bold(
+      `${SUBTEXT_PADDING}│ ${count} ${hook.padEnd(boxWidth - 5)} ${showArrow} │ via ${niceName} ${source}${srcLocation}`
+    )
+  )
   console.log(cyanBright.bold(`${SUBTEXT_PADDING}└─${line}─┘ `))
   // ├ if folding
   if (isLastInstruction) {
@@ -99,7 +103,9 @@ const logInstruction = function({ hook, name, override, index, configPath, error
   console.log()
   if (override.hook) {
     console.log(
-      redBright.bold(`${HEADING_PREFIX} OVERRIDE: "${override.hook}" method in ${override.name} has been overriden by "${name}"`)
+      redBright.bold(
+        `${HEADING_PREFIX} OVERRIDE: "${override.hook}" method in ${override.name} has been overriden by "${name}"`
+      )
     )
   }
   const lifecycleName = error ? '' : 'lifecycle '
