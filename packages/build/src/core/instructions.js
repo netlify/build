@@ -47,7 +47,7 @@ const getHookInstructions = function({
         execCommand(command, `build.lifecycle.${hook}`, baseDir, redactedKeys)
       )
     },
-    meta: {},
+    meta: { scopes: [] },
     override: {},
     pluginConfig: {}
   }
@@ -82,7 +82,14 @@ const runInstructions = async function(instructions, { config, configPath, token
 // Run a single instruction
 const runInstruction = async function({
   currentData,
-  instruction: { method, hook, pluginConfig, name, override, meta: { scopes } = {} },
+  instruction: {
+    method,
+    hook,
+    pluginConfig,
+    name,
+    override,
+    meta: { scopes }
+  },
   index,
   config,
   configPath,

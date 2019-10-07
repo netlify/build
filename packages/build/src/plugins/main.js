@@ -58,10 +58,21 @@ const isPluginHook = function(key, value) {
   return typeof value === 'function'
 }
 
-const getPluginHook = function({ hook, type, method, meta, pluginId, pluginConfig }) {
+const getPluginHook = function({
+  hook,
+  type,
+  method,
+  meta,
+  meta: { scopes = DEFAULT_SCOPES },
+  pluginId,
+  pluginConfig
+}) {
+  const metaA = Object.assign({}, meta, { scopes })
   const override = getOverride(hook)
   const hookA = override.hook || hook
-  return { name: pluginId, hook: hookA, type, method, meta, override, pluginConfig }
+  return { name: pluginId, hook: hookA, type, method, meta: metaA, override, pluginConfig }
 }
+
+const DEFAULT_SCOPES = []
 
 module.exports = { defaultPlugins: DEFAULT_PLUGINS, getPluginsHooks }
