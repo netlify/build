@@ -11,7 +11,8 @@
     "test:lint": "eslint --ignore-path .gitignore --fix \"{packages,example}/**/*.js\"",
     "test:prettier": "prettier --ignore-path .gitignore --write --loglevel warn \"{packages,example}/**/*.{js,md,yml,json}\" \"*.{js,md,yml,json}\"",
     "test:ava": "ava",
-    "example": "./packages/build/src/core/bin.js --config example/netlify.yml"
+    "example": "node ./packages/build/src/core/bin.js --config example/netlify.yml",
+    "debug": "node --inspect-brk ./packages/build/src/core/bin.js --config example/netlify.yml"
   },
   "ava": {
     "files": [
