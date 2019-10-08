@@ -24,7 +24,8 @@ const getColorLevel = function() {
   }
 
   // Node <9.9.0 does not have `getColorDepth()`. Default to 16 colors then.
-  if (getColorDepth === undefined) {
+  // This also ensure colors are used in the BuildBot
+  if (getColorDepth === undefined || env.DEPLOY_PRIME_URL) {
     return '1'
   }
 
