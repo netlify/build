@@ -17,7 +17,12 @@ plugins:
     type: '@netlify/plugin-404-no-more'
     config:
       failMode: 'error' # can switch to warn
-      blankSlate: false # set true to regnerate manifest from scratch (remember to turn it back off!)
+      cacheKey: 'anystring' # bump this key any time you need to restart from scratch
+      # not yet implemented - compare vs specific build IDs to ensure no regression
+      # preserveBuildIds: 
+        # - foo 
+        # - foo 
+        # - foo 
 ```
 
 

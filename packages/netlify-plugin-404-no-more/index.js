@@ -8,7 +8,7 @@ const test404plugin = false // toggle this off for production
 
 function netlify404nomore(conf) {
   let failMode = conf.failMode || 'error' // either 'warn' or 'error'
-  let blankSlateMode = conf.blankSlate // boolean, turn off prev file checking. remember to turn back on when you're happy
+  let cacheKey = conf.cacheKey || 'defaultCacheKey' // string - helps to quickly switch to a new cache if a mistake was made
   let store
   return {
     // kvstore in `${NETLIFY_CACHE_DIR}/${name}.json`
@@ -31,7 +31,7 @@ function netlify404nomore(conf) {
         throw new Error('must specify publish dir in netlify config [build] section')
       }
       const buildFolderPath = path.join(BASE_DIR, BUILD_DIR)
-      const prevManifest = blankSlateMode ? [] : store.get(`manifest`) || []
+      const prevManifest = store.get(cacheKey) || []
       if (test404plugin) {
         // add missing paths for testing
         prevManifest.push(path.join(buildFolderPath, '/path/to/missing.html'))
@@ -47,7 +47,7 @@ function netlify404nomore(conf) {
        *
        *
        */
-      if (!blankSlateMode && prevManifest.length) {
+      if (prevManifest.length) {
         // deal with redirects
         let prevManifestPostRedirects = []
         let invalidRedirectDestinations = []
@@ -69,7 +69,6 @@ function netlify404nomore(conf) {
               buildFolderPath,
               match.to + (match.to.endsWith('index.html') ? '' : '/index.html')
             )
-            console.log({ toPath1, toPath2 })
             if (fs.existsSync(toPath1) || fs.existsSync(toPath2)) {
               // exists! no longer need to check for broken links
             } else {
@@ -95,7 +94,6 @@ function netlify404nomore(conf) {
           }
         })
         if (missingFiles.length || invalidRedirectDestinations.length) {
-          // fail build if anything not found
           missingFiles.forEach(mf => {
             console.error(
               `${chalk.red('@netlify/plugin-404-no-more:')}: can't find ${chalk.cyan(
@@ -103,6 +101,13 @@ function netlify404nomore(conf) {
               )} which existed in previous build`
             )
           })
+          if (missingFiles.length) {
+            console.log(
+              `Missing HTML files detected. If you intentionally changed URL structure, you should set up redirects: ${chalk.cyan(
+                'https://url.netlify.com/B1qkCwqOr'
+              )}`
+            )
+          }
           invalidRedirectDestinations.forEach(ird => {
             console.error(
               `${chalk.red('@netlify/plugin-404-no-more:')}: can't find ${chalk.cyan(
@@ -124,6 +129,7 @@ function netlify404nomore(conf) {
       let newManifest = []
       newManifest = walkSync(buildFolderPath).filter(x => x.endsWith('.html'))
       // honestly we can log out the new and deleted pages as well if we wish
+      // next time, baby
       var items = [...prevManifest, ...newManifest]
       var uniqueItems = Array.from(new Set(items))
       store.set(`manifest`, uniqueItems)
