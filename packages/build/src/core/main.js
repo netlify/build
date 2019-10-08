@@ -1,3 +1,7 @@
+// eslint-disable-next-line import/order
+const { setColorLevel } = require('../log/colors')
+setColorLevel()
+
 const resolveConfig = require('@netlify/config')
 const { getConfigPath } = require('@netlify/config')
 

@@ -16,6 +16,11 @@ const setColorLevel = function() {
 }
 
 const getColorLevel = function() {
+  // This also ensure colors are used in the BuildBot
+  if (env.DEPLOY_PRIME_URL) {
+    return '1'
+  }
+
   // If the output is not a console (e.g. redirected to `less` or to a file),
   // we disable colors because ANSI sequences are a problem most of the time in
   // that case
@@ -24,8 +29,7 @@ const getColorLevel = function() {
   }
 
   // Node <9.9.0 does not have `getColorDepth()`. Default to 16 colors then.
-  // This also ensure colors are used in the BuildBot
-  if (getColorDepth === undefined || env.DEPLOY_PRIME_URL) {
+  if (getColorDepth === undefined) {
     return '1'
   }
 

@@ -4,10 +4,8 @@ const { tick, pointer, arrowDown } = require('figures')
 const omit = require('omit.js')
 
 const { startPatchingLog, stopPatchingLog } = require('./patch')
-const { setColorLevel } = require('./colors')
 const { cleanStack } = require('./stack')
 
-setColorLevel()
 // eslint-disable-next-line import/order
 const { greenBright, cyanBright, redBright, yellowBright, bold } = require('chalk')
 
