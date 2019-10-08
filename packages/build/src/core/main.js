@@ -20,6 +20,8 @@ const {
 } = require('../log/main')
 const { startTimer, endTimer } = require('../log/timer')
 
+const isNetlifyCI = require('../utils/is-netlify-ci')
+
 const { loadConfig } = require('./config')
 const { handleInstructionError } = require('./error')
 const { getInstructions, runInstructions } = require('./instructions')
@@ -68,7 +70,10 @@ const build = async function(options = {}) {
       throw error
     }
 
-    await tomlWrite(config, baseDir)
+    /* Temporary write config file out to toml for remote CI to process */
+    if (isNetlifyCI()) {
+      await tomlWrite(config, baseDir)
+    }
 
     logBuildSuccess()
     endTimer(buildTimer, 'Netlify Build')
