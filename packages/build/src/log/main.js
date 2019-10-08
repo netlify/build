@@ -3,6 +3,8 @@ const { basename } = require('path')
 const { tick, pointer, arrowDown } = require('figures')
 const omit = require('omit.js')
 
+const { DEFAULT_PLUGINS } = require('../plugins/constants')
+
 const { startPatchingLog, stopPatchingLog } = require('./patch')
 const { cleanStack } = require('./stack')
 
@@ -37,7 +39,8 @@ const logLoadPlugins = function() {
   console.log(cyanBright.bold(`${HEADING_PREFIX} Loading plugins`))
 }
 
-const logLoadPlugin = function(pluginId, location) {
+const logLoadPlugin = function(pluginId, loc) {
+  const location = (Object.keys(DEFAULT_PLUGINS).includes(pluginId)) ? 'Build core' : loc
   console.log(yellowBright(`${SUBTEXT_PADDING}Loading plugin "${pluginId}" from ${location}`))
 }
 
