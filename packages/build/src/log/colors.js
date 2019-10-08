@@ -12,7 +12,7 @@ const setColorLevel = function() {
     return
   }
   const level = getColorLevel()
-  if (level !== '0' && env.FORCE_COLOR !== 'false') {
+  if (level !== '0' && hasColors()) {
     process.env.colors = true
   }
   env.FORCE_COLOR = level
