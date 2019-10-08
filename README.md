@@ -128,13 +128,12 @@ module.exports = function exampleOne(config) {
     },
     finally: () => {
       console.log('Run custom logic at the end of the build')
-    },
+    }
   }
 }
 ```
 
 To use this plugin, define the `plugins` key in your Netlify config file.
-
 
 ```yml
 build:
