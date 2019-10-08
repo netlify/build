@@ -108,7 +108,7 @@ function netlify404nomore(conf) {
             if (invalidRedirectDestinations.length)
               msgs.push(`${chalk.red.bold(invalidRedirectDestinations.length)} redirect destinations were missing`)
             msgs.push(`${chalk.cyan('failMode')} is ${chalk.red('error')}`)
-            throw new Error(`${[filemsg, redirmsg, mode].join(' and ')}, terminating build.`)
+            throw new Error(`${msgs.join(' and ')}, terminating build.`)
           }
         }
       }
