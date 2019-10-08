@@ -1,6 +1,10 @@
 version: 06-25-2019
 
 plugins:
+  404-no-more:
+    type: '@netlify/plugin-404-no-more'
+    config:
+      failMode: 'error' # can switch to warn
   functions:
     type: '@netlify/plugin-functions'
     enabled: false
@@ -66,6 +70,7 @@ plugins:
 build:
   functions: src/backend
   # command: echo 'hi'
+  publish: build
   lifecycle:
     init:
       - npm run foo
@@ -74,7 +79,8 @@ build:
     getCache:
       - echo 'curl custom cache'
     #install: npm install
-    preBuild: echo "${secrets:privateKey}"
-    build: echo 'Hello Netlify Build!' && npm run build
+    # preBuild: echo "${secrets:privateKey}"
+    build: 
+      - echo 'Hello Netlify Build!' && npm run build
     # package:
     #   - zip -q -r .functions/package.zip src node_modules
