@@ -1,6 +1,6 @@
-# Netlify Plugin SVG Optimizer
+# Netlify Plugin 404 No More
 
-This build plugin with take in a directory of SVG assets, and optimize them.
+This build plugin will remember the html files you've built, and either warn or fail your build when you make the next build and accidentally lose some html pages (whether on purpose or intentional). The plugin understands redirects, so you can add a redirect to resolve missing html.
 
 ## Usage
 
@@ -10,22 +10,16 @@ In the plugins, src, directory, add the path that the assets are in (last line i
 
 ```
 build:
-  publish: build
-  lifecycle:
-    init:
-      - echo "Starting the build"
-    build:
-      - npm run build
-    finally: echo "Ending the build"
+  publish: build # NOTE: you should have a publish folder specified here for this to work
 
 plugins:
-  # Local plugin
-  - ./plugins/netlify-plugin-svg-optimizer:
-      enabled: true
-      src:
-        # directory: where our svg assets are located. please note: this will overwrite the files in this directory
-        directory: /src/assets/
+  404-no-more:
+    type: '@netlify/plugin-404-no-more'
+    config:
+      failMode: 'error' # can switch to warn
+      blankSlate: false # set true to regnerate manifest from scratch (remember to turn it back off!)
 ```
+
 
 ### Env Variable
 
