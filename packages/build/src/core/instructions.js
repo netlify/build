@@ -112,31 +112,6 @@ const runInstruction = async function({
       pluginConfig,
       api,
       constants,
-      /* Utilities helper functions */
-      utils: {
-        cache: {
-          get: filePath => {
-            console.log('get cache file')
-          },
-          save: (filePath, contents) => {
-            console.log('save cache file')
-          },
-          delete: filePath => {
-            console.log('delete cache file')
-          }
-        },
-        redirects: {
-          get: () => {
-            console.log('get redirect')
-          },
-          set: () => {
-            console.log('set redirect')
-          },
-          delete: () => {
-            console.log('delete redirect')
-          }
-        }
-      },
       error
     })
 
