@@ -6,6 +6,7 @@
   "main": "index.js",
   "scripts": {
     "bootstrap": "lerna bootstrap && cd example && npm install",
+    "postinstall": "npm run bootstrap",
     "docs": "md-magic --path '**/*.md' --ignore 'node_modules'",
     "test": "run-s test:*",
     "test:lint": "eslint --ignore-path .gitignore --fix \"{packages,example}/**/*.js\"",
