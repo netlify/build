@@ -31,7 +31,7 @@ function netlify404nomore(conf) {
         throw new Error('must specify publish dir in netlify config [build] section')
       }
       const buildFolderPath = path.join(BASE_DIR, BUILD_DIR)
-      const prevManifest = store.get(`manifest`) || []
+      const prevManifest = blankSlateMode ? [] : store.get(`manifest`) || []
       if (test404plugin) {
         // add missing paths for testing
         prevManifest.push(path.join(buildFolderPath, '/path/to/missing.html'))
@@ -65,7 +65,11 @@ function netlify404nomore(conf) {
             //  conditions: {},
             //  exceptions: {} }
             const toPath1 = path.join(buildFolderPath, match.to + '.html')
-            const toPath2 = path.join(buildFolderPath, match.to + '/index.html')
+            const toPath2 = path.join(
+              buildFolderPath,
+              match.to + (match.to.endsWith('index.html') ? '' : '/index.html')
+            )
+            console.log({ toPath1, toPath2 })
             if (fs.existsSync(toPath1) || fs.existsSync(toPath2)) {
               // exists! no longer need to check for broken links
             } else {
@@ -94,12 +98,16 @@ function netlify404nomore(conf) {
           // fail build if anything not found
           missingFiles.forEach(mf => {
             console.error(
-              `${chalk.red('Netlify Build 404 Plugin:')}: can't find ${chalk.cyan(mf)} which existed in previous build`
+              `${chalk.red('@netlify/plugin-404-no-more:')}: can't find ${chalk.cyan(
+                path.relative(buildFolderPath, mf)
+              )} which existed in previous build`
             )
           })
           invalidRedirectDestinations.forEach(ird => {
             console.error(
-              `${chalk.red('Netlify Build 404 Plugin:')}: can't find ${chalk.cyan(ird)}, which redirects rely on`
+              `${chalk.red('@netlify/plugin-404-no-more:')}: can't find ${chalk.cyan(
+                path.relative(buildFolderPath, ird)
+              )}, which redirects rely on`
             )
           })
           if (failMode === 'error') {
