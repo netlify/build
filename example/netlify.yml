@@ -16,7 +16,7 @@ plugins:
           method: GET
   example:
     type: '@netlify/plugin-example'
-    enabled: true
+    enabled: false
   cypress:
     type: '@netlify/plugin-cypress'
     config:
