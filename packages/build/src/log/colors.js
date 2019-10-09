@@ -4,6 +4,8 @@ const {
   stdout: { isTTY, getColorDepth }
 } = require('process')
 
+const isNetlifyCI = require('../utils/is-netlify-ci')
+
 // Set the amount of colors to use by `chalk` (and underlying `supports-color`)
 // 0 is no colors, 1 is 16 colors, 2 is 256 colors, 3 is 16 million colors.
 const setColorLevel = function() {
@@ -17,7 +19,7 @@ const setColorLevel = function() {
 
 const getColorLevel = function() {
   // This also ensure colors are used in the BuildBot
-  if (env.DEPLOY_PRIME_URL) {
+  if (isNetlifyCI()) {
     return '1'
   }
 
