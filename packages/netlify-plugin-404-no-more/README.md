@@ -30,4 +30,3 @@ plugins:
 
 For now, you will also need this in your environment variables:
 
-- **NETLIFY_BUILD_LIFECYCLE_TRIAL** - enabled=true
