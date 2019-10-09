@@ -40,7 +40,7 @@ const logLoadPlugins = function() {
 }
 
 const logLoadPlugin = function(pluginId, loc) {
-  const location = (Object.keys(DEFAULT_PLUGINS).includes(pluginId)) ? 'build core' : loc
+  const location = Object.keys(DEFAULT_PLUGINS).includes(pluginId) ? 'build core' : loc
   console.log(yellowBright(`${SUBTEXT_PADDING}Loading plugin "${pluginId}" from ${location}`))
 }
 
