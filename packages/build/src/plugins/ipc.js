@@ -38,11 +38,9 @@ const executePlugin = async function(eventName, message, { baseDir, redactedKeys
     const response = parseMessage(responseString)
 
     if (Array.isArray(response)) {
+      // Add core prop for downstream usage
       const enrichedResponse = response.map((plugin) => {
-        // Add core prop for downstream usage
-        if (core) {
-          return Object.assign({}, plugin, { core: core })
-        }
+        if (core) return Object.assign({}, plugin, { core: core })
         return plugin
       })
       return { response: enrichedResponse, output }
