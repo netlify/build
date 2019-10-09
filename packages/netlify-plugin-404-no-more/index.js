@@ -24,9 +24,9 @@ function netlify404nomore(conf) {
     /* index html files preDeploy */
     preDeploy: async opts => {
       // console.log({ opts })
-      const { BASE_DIR } = opts.constants // where we start from
+      const { BASE_DIR, BUILD_DIR } = opts.constants // where we start from
 
-      let BUILD_DIR = opts.config.build.publish // build folder from netlify config.. there ought to be a nicer way to get this if set elsewhere
+      // let BUILD_DIR = opts.config.build.publish // build folder from netlify config.. there ought to be a nicer way to get this if set elsewhere
       if (typeof BUILD_DIR === 'undefined') {
         throw new Error('must specify publish dir in netlify config [build] section')
       }
