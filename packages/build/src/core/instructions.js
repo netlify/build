@@ -132,10 +132,10 @@ const runInstruction = async function({
 
 const getConstants = function(configPath, config, baseDir) {
   const defaultBuildDir = path.join(baseDir, '.netlify', 'build')
-  const buildDir = (config.build && config.build.publish) ? path.resolve(config.build.publish) : defaultBuildDir
+  const buildDir = config.build && config.build.publish ? path.resolve(config.build.publish) : defaultBuildDir
   const localCacheDir = path.join(baseDir, '.netlify', 'cache')
   const removeCacheDir = path.join('/opt/build/cache')
-  const cacheDir = (isNetlifyCI()) ? removeCacheDir : localCacheDir
+  const cacheDir = isNetlifyCI() ? removeCacheDir : localCacheDir
   return {
     CONFIG_PATH: path.resolve(configPath),
     BASE_DIR: baseDir,
