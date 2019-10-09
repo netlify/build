@@ -43,7 +43,11 @@ const build = async function(options = {}) {
     const pluginsHooks = await loadPlugins({ pluginsOptions, config, configPath, baseDir, redactedKeys, token })
     const { buildInstructions, errorInstructions } = getInstructions({ pluginsHooks, config })
 
-    doDryRun({ buildInstructions, configPath, options })
+    /* If the `dry` option is specified, do a dry run and exit */
+    if (options.dry) {
+      doDryRun({ buildInstructions, configPath, options })
+      process.exit(0)
+    }
 
     logLifeCycleStart(buildInstructions)
 
