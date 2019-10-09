@@ -9,6 +9,7 @@ const { logInstruction, logCommandStart, logCommandError, logInstructionSuccess 
 const { setLogContext, unsetLogContext } = require('../log/patch')
 const { redactStream } = require('../log/patch')
 const { startTimer, endTimer } = require('../log/timer')
+const isNetlifyCI = require('../utils/is-netlify-ci')
 
 const { LIFECYCLE } = require('./lifecycle')
 const { getApiClient } = require('./api')
@@ -102,7 +103,7 @@ const runInstruction = async function({
   logInstruction({ hook, name, override, index, configPath, error })
 
   const api = getApiClient({ token, name, scopes })
-  const constants = getConstants(configPath, baseDir)
+  const constants = getConstants(configPath, config, baseDir)
 
   setLogContext(name)
 
@@ -129,12 +130,17 @@ const runInstruction = async function({
   }
 }
 
-const getConstants = function(configPath, baseDir) {
+const getConstants = function(configPath, config, baseDir) {
+  const defaultBuildDir = path.join(baseDir, '.netlify', 'build')
+  const buildDir = (config.build && config.build.publish) ? path.resolve(config.build.publish) : defaultBuildDir
+  const localCacheDir = path.join(baseDir, '.netlify', 'cache')
+  const removeCacheDir = path.join('/opt/build/cache')
+  const cacheDir = (isNetlifyCI()) ? removeCacheDir : localCacheDir
   return {
     CONFIG_PATH: path.resolve(configPath),
     BASE_DIR: baseDir,
-    CACHE_DIR: path.join(baseDir, '.netlify', 'cache'),
-    BUILD_DIR: path.join(baseDir, '.netlify', 'build')
+    CACHE_DIR: cacheDir,
+    BUILD_DIR: buildDir
   }
 }
 
