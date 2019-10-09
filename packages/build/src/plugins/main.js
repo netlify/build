@@ -3,6 +3,7 @@ const groupBy = require('group-by')
 
 const { logLoadPlugins } = require('../log/main')
 
+const { DEFAULT_PLUGINS } = require('./constants')
 const { importPlugin } = require('./import')
 const { validatePlugin } = require('./validate')
 const { getOverride, isNotOverridden } = require('./override')
@@ -19,10 +20,6 @@ const getPluginsHooks = async function({ config: { plugins: pluginsOptions }, ba
   const hooksA = plugins.flatMap(getPluginHooks).filter(isNotOverridden)
   const pluginsHooks = groupBy(hooksA, 'hook')
   return pluginsHooks
-}
-
-const DEFAULT_PLUGINS = {
-  '@netlify/functions': { type: `${__dirname}/functions/index.js` }
 }
 
 const normalizePluginOptions = function([pluginId, pluginOptions]) {
@@ -75,4 +72,7 @@ const getPluginHook = function({
 
 const DEFAULT_SCOPES = []
 
-module.exports = { defaultPlugins: DEFAULT_PLUGINS, getPluginsHooks }
+module.exports = {
+  defaultPlugins: DEFAULT_PLUGINS,
+  getPluginsHooks
+}
