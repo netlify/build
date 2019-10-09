@@ -4,7 +4,7 @@ plugins:
   404-no-more:
     type: '@netlify/plugin-404-no-more'
     config:
-      failMode: 'error' # can switch to warn
+      on404: 'error' # can switch to warn
       blankSlate: false # true to track diffs, false to clear cahce and start from scratch
   functions:
     type: '@netlify/plugin-functions'

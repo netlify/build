@@ -7,8 +7,8 @@ const matchRules = require('./matchRules')
 const test404plugin = false // toggle this off for production
 
 function netlify404nomore(conf) {
-  let failMode = conf.failMode || 'error' // either 'warn' or 'error'
-  let cacheKey = conf.cacheKey || 'defaultCacheKey' // string - helps to quickly switch to a new cache if a mistake was made
+  let on404 = conf.on404 || 'error' // either 'warn' or 'error'
+  let cacheKey = conf.cacheKey || 'pluginNoMore404Cache' // string - helps to quickly switch to a new cache if a mistake was made
   let store
   return {
     // kvstore in `${NETLIFY_CACHE_DIR}/${name}.json`
@@ -115,19 +115,20 @@ function netlify404nomore(conf) {
               )}, which redirects rely on`
             )
           })
-          if (failMode === 'error') {
+          if (on404 === 'error') {
             const msgs = []
             if (missingFiles.length) msgs.push(`${chalk.red.bold(missingFiles.length)} files were missing`)
             if (invalidRedirectDestinations.length)
               msgs.push(`${chalk.red.bold(invalidRedirectDestinations.length)} redirect destinations were missing`)
-            msgs.push(`${chalk.cyan('failMode')} is ${chalk.red('error')}`)
+            msgs.push(`${chalk.cyan('on404')} is ${chalk.red('error')}`)
             throw new Error(`${msgs.join(' and ')}, terminating build.`)
           }
         }
       }
 
       let newManifest = []
-      newManifest = walkSync(buildFolderPath).filter(x => x.endsWith('.html'))
+      newManifest = await walk(buildFolderPath)
+      newManifest = newManifest.filter(x => x.endsWith('.html'))
       // honestly we can log out the new and deleted pages as well if we wish
       // next time, baby
       var items = [...prevManifest, ...newManifest]
@@ -140,15 +141,17 @@ function netlify404nomore(conf) {
 
 module.exports = netlify404nomore
 
+const {promisify} = require('util')
+const readdir = promisify(fs.readdir))
 // recursive crawl to get a list of filepaths
 // https://gist.github.com/kethinov/6658166
-var walkSync = function(dir, filelist) {
-  var files = fs.readdirSync(dir)
+var walk = async function(dir, filelist) {
+  var files = await readdir(dir)
   filelist = filelist || []
   files.forEach(function(file) {
     const dirfile = path.join(dir, file)
     if (fs.statSync(dirfile).isDirectory()) {
-      filelist = walkSync(dirfile + '/', filelist)
+      filelist = await walk(dirfile + '/', filelist)
     } else {
       filelist.push(dirfile)
     }

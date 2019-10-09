@@ -1,15 +1,14 @@
 {
-  "name": "@netlify/plugin-404-no-more",
+  "name": "@netlify/plugin-no-more-404",
   "version": "0.0.1",
-  "description": "break build on missing html with no redirects",
+  "description": "fail netlify build if html goes missing with no redirects",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "svg",
-    "optimization",
-    "performance",
+    "link-checking",
+    "netlify",
     "build",
     "plugins"
   ],
