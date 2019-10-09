@@ -34,13 +34,19 @@ const executePlugin = async function(eventName, message, { baseDir, redactedKeys
       childProcess,
       getStream(childProcess.stdio[RESPONSE_FD])
     ])
-    const response = parseMessage(responseString).map((plugin) => {
-      // Add core prop for downstream usage
-      if (core) {
-        return Object.assign({}, plugin, { core: core })
-      }
-      return plugin
-    })
+
+    const response = parseMessage(responseString)
+
+    if (Array.isArray(response)) {
+      const enrichedResponse = response.map((plugin) => {
+        // Add core prop for downstream usage
+        if (core) {
+          return Object.assign({}, plugin, { core: core })
+        }
+        return plugin
+      })
+      return { response: enrichedResponse, output }
+    }
     return { response, output }
   } catch (error) {
     error.message = fixPluginError(error)
