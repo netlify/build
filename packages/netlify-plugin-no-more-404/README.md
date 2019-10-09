@@ -8,13 +8,13 @@ In the plugins, src, directory, add the path that the assets are in (last line i
 
 `netlify.yml`
 
-```
+```yml
 build:
   publish: build # NOTE: you should have a publish folder specified here for this to work
 
 plugins:
-  404-no-more:
-    type: '@netlify/plugin-404-no-more'
+  no-more-404:
+    type: '@netlify/plugin-no-more-404'
     config:
       on404: 'error' # can switch to warn
       cacheKey: 'anystring' # bump this key any time you need to restart from scratch

@@ -17,7 +17,7 @@ function netlify404nomore(conf) {
     init({ constants: { CACHE_DIR } }) {
       store = new Conf({
         cwd: CACHE_DIR,
-        configName: 'netlify-plugin-404-no-more'
+        configName: 'netlify-plugin-no-more-404'
       })
     },
 
@@ -96,7 +96,7 @@ function netlify404nomore(conf) {
         if (missingFiles.length || invalidRedirectDestinations.length) {
           missingFiles.forEach(mf => {
             console.error(
-              `${chalk.red('@netlify/plugin-404-no-more:')}: can't find ${chalk.cyan(
+              `${chalk.red('@netlify/plugin-no-more-404:')}: can't find ${chalk.cyan(
                 path.relative(buildFolderPath, mf)
               )} which existed in previous build`
             )
@@ -110,7 +110,7 @@ function netlify404nomore(conf) {
           }
           invalidRedirectDestinations.forEach(ird => {
             console.error(
-              `${chalk.red('@netlify/plugin-404-no-more:')}: can't find ${chalk.cyan(
+              `${chalk.red('@netlify/plugin-no-more-404:')}: can't find ${chalk.cyan(
                 path.relative(buildFolderPath, ird)
               )}, which redirects rely on`
             )

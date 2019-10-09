@@ -15,7 +15,7 @@
   "license": "ISC",
   "devDependencies": {
     "@netlify/build": "file:../packages/build",
-    "@netlify/plugin-404-no-more": "file:../packages/netlify-plugin-404-no-more",
+    "@netlify/plugin-no-more-404": "file:../packages/netlify-plugin-no-more-404",
     "@netlify/plugin-cypress": "file:../packages/netlify-plugin-cypress",
     "@netlify/plugin-example": "file:../packages/netlify-plugin-example",
     "@netlify/plugin-axe": "file:../packages/netlify-plugin-axe",
