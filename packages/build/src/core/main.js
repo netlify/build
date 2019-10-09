@@ -1,3 +1,5 @@
+require('../utils/polyfills')
+
 // eslint-disable-next-line import/order
 const { setColorLevel } = require('../log/colors')
 setColorLevel()
@@ -5,9 +7,8 @@ setColorLevel()
 const resolveConfig = require('@netlify/config')
 const { getConfigPath } = require('@netlify/config')
 
-require('array-flat-polyfill')
-
-const { getPluginsHooks } = require('../plugins/main')
+const { getPluginsOptions } = require('../plugins/options')
+const { loadPlugins } = require('../plugins/load')
 const {
   startPatchingLog,
   stopPatchingLog,
@@ -37,35 +38,20 @@ const build = async function(options = {}) {
 
     const { config, configPath, token, baseDir } = await loadConfig({ options })
 
-    const pluginsHooks = await getPluginsHooks({ config, baseDir })
-    const { buildInstructions, errorInstructions } = getInstructions({
-      pluginsHooks,
-      config,
-      baseDir,
-      redactedKeys
-    })
+    const pluginsOptions = getPluginsOptions({ config })
+
+    const pluginsHooks = await loadPlugins({ pluginsOptions, config, configPath, baseDir, redactedKeys, token })
+    const { buildInstructions, errorInstructions } = getInstructions({ pluginsHooks, config })
 
     doDryRun({ buildInstructions, configPath, options })
 
     logLifeCycleStart(buildInstructions)
 
     try {
-      const manifest = await runInstructions(buildInstructions, {
-        config,
-        configPath,
-        token,
-        baseDir
-      })
+      const manifest = await runInstructions(buildInstructions, { config, configPath, token, baseDir, redactedKeys })
       logManifest(manifest)
     } catch (error) {
-      await handleInstructionError({
-        errorInstructions,
-        config,
-        configPath,
-        token,
-        baseDir,
-        error
-      })
+      await handleInstructionError(errorInstructions, { config, configPath, token, baseDir, redactedKeys, error })
       throw error
     }
 

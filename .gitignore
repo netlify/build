@@ -1,7 +1,6 @@
 node_modules
 research
 .DS_Store
-run.js
 terraform
 .netlify
 lerna-debug.log

@@ -1,23 +1,23 @@
-const path = require('path')
+const { resolve, basename } = require('path')
 
 const fs = require('fs-extra')
 const { zipFunction } = require('@netlify/zip-it-and-ship-it')
 
 function netlifyFunctionsPlugin(conf = {}) {
   return {
-    postBuild: async ({ config, constants: { BASE_DIR } }) => {
+    postBuild: async ({ config }) => {
       console.log('Configuring Functions...', config)
       if (!conf.functions) {
         throw new Error('You must provide functions to the functions plugin')
       }
 
-      const buildFolder = path.join(BASE_DIR, 'build')
-      const destFolder = path.join(buildFolder, 'functions')
+      const buildFolder = resolve('build')
+      const destFolder = resolve(buildFolder, 'functions')
 
       const data = Object.keys(conf.functions).reduce(
         (acc, functionName) => {
           const functionData = conf.functions[functionName]
-          const functionPath = path.resolve(functionData.handler)
+          const functionPath = resolve(functionData.handler)
           // const functionFileName = path.basename(functionData.handler).replace(/\.js$/, '')
 
           // Add rewrites rules
@@ -46,8 +46,8 @@ function netlifyFunctionsPlugin(conf = {}) {
         }
       )
 
-      const buildDir = path.resolve(config.build.publish)
-      const buildDirFunctions = path.join(buildDir, config.build.functions)
+      const buildDir = resolve(config.build.publish)
+      const buildDirFunctions = resolve(buildDir, config.build.functions)
       // Clean functions deploy directory
       await fs.emptyDir(buildDirFunctions)
 
@@ -81,7 +81,7 @@ async function processFunction(func, destFolder) {
   console.log(`Wrapping function ${func.name}...`)
   const handler = generateHandler(func)
   // Write new function handler code to name of function file
-  const regex = new RegExp(`${path.basename(func.path)}$`)
+  const regex = new RegExp(`${basename(func.path)}$`)
   const funcNamePath = func.path.replace(regex, `${func.name}.js`)
   await fs.writeFile(funcNamePath, handler)
   // Zip it up the wrapped function
@@ -109,7 +109,7 @@ async function packageFunction(functionPath, destFolder) {
 
 function generateHandler(func) {
   const { name, method } = func
-  const tempFile = path.basename(tempFileName(func.path))
+  const tempFile = basename(tempFileName(func.path))
   return `
 /* Netlify function wrapper */
 let originalFunction, handlerError
@@ -143,7 +143,7 @@ async function writeRedirectsFile(buildDir, redirects, rewrites) {
     return null
   }
 
-  const FILE_PATH = path.join(buildDir, `_redirects`)
+  const FILE_PATH = resolve(buildDir, `_redirects`)
 
   // Map redirect data to the format Netlify expects
   // https://www.netlify.com/docs/redirects/

@@ -1,4 +1,5 @@
-const path = require('path')
+const { resolve, dirname } = require('path')
+const { cwd } = require('process')
 
 const execa = require('execa')
 const chalk = require('chalk')
@@ -11,8 +12,7 @@ const { diff } = require('run-if-diff')
  */
 module.exports = function netlifyMonoRepoPlugin(config) {
   return {
-    init: async ({ pluginConfig, constants: { BASE_DIR } }) => {
-      let files = pluginConfig.files
+    init: async ({ pluginConfig: { files, since } }) => {
       if (!files) {
         console.log('monorepo plugin requires files array to work')
         return
@@ -28,9 +28,9 @@ module.exports = function netlifyMonoRepoPlugin(config) {
       const defaultFiles = []
 
       const filesToCheck = defaultFiles.concat(files).map(name => {
-        const parent = path.dirname(BASE_DIR)
+        const parent = dirname(cwd())
         const regex = new RegExp(`^${parent}/`)
-        return path.join(BASE_DIR, name).replace(regex, '')
+        return resolve(name).replace(regex, '')
       })
       // console.log('filesToCheck', filesToCheck)
 
@@ -38,7 +38,7 @@ module.exports = function netlifyMonoRepoPlugin(config) {
       try {
         const currentBranch = await gitBranchName()
         const result = await diff({
-          since: pluginConfig.since || currentBranch,
+          since: since || currentBranch,
           files: filesToCheck
         })
         // console.log('result', result)
@@ -51,7 +51,7 @@ module.exports = function netlifyMonoRepoPlugin(config) {
         const changedFiles = result.matched.map(file => {
           return {
             path: file,
-            fullPath: path.resolve(file)
+            fullPath: resolve(file)
           }
         })
         // console.log('changedFiles', changedFiles)

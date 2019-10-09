@@ -4,6 +4,8 @@ const { argv } = require('process')
 const minimist = require('minimist')
 const omit = require('omit.js')
 
+require('../utils/polyfills')
+
 const build = require('./main')
 
 async function runCli() {

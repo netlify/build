@@ -1,3 +1,5 @@
+const { resolve } = require('path')
+
 const execa = require('execa')
 const chalk = require('chalk')
 const Conf = require('conf') // for simple kv store
@@ -18,9 +20,9 @@ function netlifyLighthousePlugin(conf) {
     // kvstore in `${NETLIFY_CACHE_DIR}/${name}.json`
     // we choose to let the user createStore instead of doing it for them
     // bc they may want to set `defaults` and `schema` and `de/serialize`
-    init({ constants: { BASE_DIR } }) {
+    init() {
       store = new Conf({
-        cwd: `${BASE_DIR}/cache`,
+        cwd: resolve('cache'),
         configName: 'netlify-plugin-lighthouse'
       })
     },
