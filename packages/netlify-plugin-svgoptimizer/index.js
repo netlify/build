@@ -109,37 +109,33 @@ const svgoinit = new svgo({
   ]
 })
 
-function netlifyPlugin(config) {
-  return {
-    init: ({
-      pluginConfig: {
-        src: { directory: srcDirectory }
-      }
-    }) => {
-      if (!srcDirectory) return console.log(`No src found in ${pkg.name} plugin config`)
-      const directoryPath = resolve(srcDirectory)
+module.exports = {
+  init({
+    pluginConfig: {
+      src: { directory: srcDirectory }
+    }
+  }) {
+    if (!srcDirectory) return console.log(`No src found in ${pkg.name} plugin config`)
+    const directoryPath = resolve(srcDirectory)
 
-      //scanning the directory and then reading each file
-      fs.readdir(directoryPath, (err, files) => {
-        if (err) console.log(`Unable to scan directory: ${err}`)
+    //scanning the directory and then reading each file
+    fs.readdir(directoryPath, (err, files) => {
+      if (err) console.log(`Unable to scan directory: ${err}`)
 
-        files.forEach(function(file) {
-          const filePath = resolve(directoryPath, file)
-          fs.readFile(filePath, 'utf8', function(err, data) {
-            if (err) console.log(err)
+      files.forEach(function(file) {
+        const filePath = resolve(directoryPath, file)
+        fs.readFile(filePath, 'utf8', function(err, data) {
+          if (err) console.log(err)
 
-            svgoinit.optimize(data, { path: filePath }).then(result => {
-              //take the file and rewrite it with the new optimized SVG
-              fs.writeFile(filePath, result.data, err => {
-                if (err) throw err
-                console.log('SVG optimized correctly!')
-              })
+          svgoinit.optimize(data, { path: filePath }).then(result => {
+            //take the file and rewrite it with the new optimized SVG
+            fs.writeFile(filePath, result.data, err => {
+              if (err) throw err
+              console.log('SVG optimized correctly!')
             })
           })
         })
       })
-    }
+    })
   }
 }
-
-module.exports = netlifyPlugin

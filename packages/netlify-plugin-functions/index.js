@@ -3,65 +3,69 @@ const { resolve, basename } = require('path')
 const fs = require('fs-extra')
 const { zipFunction } = require('@netlify/zip-it-and-ship-it')
 
-function netlifyFunctionsPlugin(conf = {}) {
-  return {
-    postBuild: async ({ config }) => {
-      console.log('Configuring Functions...', config)
-      if (!conf.functions) {
-        throw new Error('You must provide functions to the functions plugin')
-      }
-
-      const buildFolder = resolve('build')
-      const destFolder = resolve(buildFolder, 'functions')
-
-      const data = Object.keys(conf.functions).reduce(
-        (acc, functionName) => {
-          const functionData = conf.functions[functionName]
-          const functionPath = resolve(functionData.handler)
-          // const functionFileName = path.basename(functionData.handler).replace(/\.js$/, '')
-
-          // Add rewrites rules
-          const originalPath = `/.netlify/functions/${functionName}`
-          acc.rewrites = acc.rewrites.concat({
-            fromPath: functionData.path,
-            toPath: originalPath
-          })
-
-          console.log(`Mapping ${functionData.path} to ${originalPath}. Method: ${functionData.method}`)
-
-          // configuration for functions
-          acc.functions = acc.functions.concat({
-            name: functionName,
-            filename: functionData.handler,
-            path: functionPath,
-            method: functionData.method
-          })
-
-          return acc
-        },
-        {
-          functions: [],
-          rewrites: [],
-          redirects: []
-        }
-      )
-
-      const buildDir = resolve(config.build.publish)
-      const buildDirFunctions = resolve(buildDir, config.build.functions)
-      // Clean functions deploy directory
-      await fs.emptyDir(buildDirFunctions)
-
-      const processFuncs = data.functions.map(async func => {
-        return processFunction(func, destFolder)
-      })
-
-      await Promise.all(processFuncs)
-
-      // Write to redirects file
-      await writeRedirectsFile(buildFolder, data.redirects, data.rewrites)
-
-      console.log('Functions ready!')
+module.exports = {
+  async postBuild({
+    pluginConfig,
+    pluginConfig: { functions },
+    config: {
+      build: { publish, functions: functionsDir }
     }
+  }) {
+    console.log('Configuring Functions...', pluginConfig)
+    if (!functions) {
+      throw new Error('You must provide functions to the functions plugin')
+    }
+
+    const buildFolder = resolve('build')
+    const destFolder = resolve(buildFolder, 'functions')
+
+    const data = Object.keys(functions).reduce(
+      (acc, functionName) => {
+        const functionData = functions[functionName]
+        const functionPath = resolve(functionData.handler)
+        // const functionFileName = path.basename(functionData.handler).replace(/\.js$/, '')
+
+        // Add rewrites rules
+        const originalPath = `/.netlify/functions/${functionName}`
+        acc.rewrites = acc.rewrites.concat({
+          fromPath: functionData.path,
+          toPath: originalPath
+        })
+
+        console.log(`Mapping ${functionData.path} to ${originalPath}. Method: ${functionData.method}`)
+
+        // configuration for functions
+        acc.functions = acc.functions.concat({
+          name: functionName,
+          filename: functionData.handler,
+          path: functionPath,
+          method: functionData.method
+        })
+
+        return acc
+      },
+      {
+        functions: [],
+        rewrites: [],
+        redirects: []
+      }
+    )
+
+    const buildDir = resolve(publish)
+    const buildDirFunctions = resolve(buildDir, functionsDir)
+    // Clean functions deploy directory
+    await fs.emptyDir(buildDirFunctions)
+
+    const processFuncs = data.functions.map(async func => {
+      return processFunction(func, destFolder)
+    })
+
+    await Promise.all(processFuncs)
+
+    // Write to redirects file
+    await writeRedirectsFile(buildFolder, data.redirects, data.rewrites)
+
+    console.log('Functions ready!')
   }
 }
 
@@ -204,5 +208,3 @@ async function writeRedirectsFile(buildDir, redirects, rewrites) {
 
   return appendToFile ? fs.appendFile(FILE_PATH, `\n\n${data}`) : fs.writeFile(FILE_PATH, data)
 }
-
-module.exports = netlifyFunctionsPlugin

@@ -45,24 +45,15 @@ async function makeSitemap(opts = {}) {
   console.log('Sitemap Built!', sitemapFile)
 }
 
-function netlifySitemapPlugin(conf = {}) {
-  return {
-    // Hook into lifecycle
-    postBuild: async () => {
-      const siteUrl = conf.baseUrl || process.env.SITE
-      if (!siteUrl) {
-        throw new Error('Sitemap plugin missing homepage value')
-      }
-      if (!conf.distPath) {
-        throw new Error('Sitemap plugin missing build directory')
-      }
-      console.log('Creating sitemap from files...')
-      await makeSitemap({
-        homepage: siteUrl,
-        distPath: conf.distPath
-      })
+module.exports = {
+  async postBuild({ baseUrl = process.env.SITE, distPath }) {
+    if (!baseUrl) {
+      throw new Error('Sitemap plugin missing homepage value')
     }
+    if (!distPath) {
+      throw new Error('Sitemap plugin missing build directory')
+    }
+    console.log('Creating sitemap from files...')
+    await makeSitemap({ homepage: baseUrl, distPath })
   }
 }
-
-module.exports = netlifySitemapPlugin
