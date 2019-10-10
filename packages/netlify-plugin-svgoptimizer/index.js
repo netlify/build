@@ -110,11 +110,9 @@ const svgoinit = new svgo({
 })
 
 module.exports = {
-  init({
-    pluginConfig: {
-      src: { directory: srcDirectory }
-    }
-  }) {
+  init({ pluginConfig }) {
+    const srcDirectory = pluginConfig.src.directory
+
     if (!srcDirectory) return console.log(`No src found in ${pkg.name} plugin config`)
     const directoryPath = resolve(srcDirectory)
 

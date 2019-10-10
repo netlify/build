@@ -4,13 +4,12 @@ const fs = require('fs-extra')
 const { zipFunction } = require('@netlify/zip-it-and-ship-it')
 
 module.exports = {
-  async postBuild({
-    pluginConfig,
-    pluginConfig: { functions },
-    config: {
+  async postBuild({ pluginConfig, config }) {
+    const { functions } = pluginConfig
+    const {
       build: { publish, functions: functionsDir }
-    }
-  }) {
+    } = config
+
     console.log('Configuring Functions...', pluginConfig)
     if (!functions) {
       throw new Error('You must provide functions to the functions plugin')
