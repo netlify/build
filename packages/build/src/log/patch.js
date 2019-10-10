@@ -3,8 +3,6 @@ const { inspect } = require('util')
 const redactEnv = require('redact-env')
 const replaceStream = require('replacestream')
 
-const { hasColors } = require('./colors')
-
 // Monkey patch console.log() to redact secrets
 const startPatchingLog = function() {
   const redactedKeys = redactEnv.build(SECRETS)
@@ -54,7 +52,7 @@ const monkeyPatchLogs = function(secrets) {
 
 // Serialize non-strings for printing
 const serialize = function(value) {
-  return inspect(value, { depth: Infinity, colors: hasColors() })
+  return inspect(value, { depth: Infinity })
 }
 
 const redactProcess = function(childProcess, redactedKeys) {
