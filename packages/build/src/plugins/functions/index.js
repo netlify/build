@@ -3,9 +3,9 @@ const { resolve } = require('path')
 
 const makeDir = require('make-dir')
 const pathExists = require('path-exists')
+const readdirp = require('readdirp')
 const { zipFunctions } = require('@netlify/zip-it-and-ship-it')
 
-const { readDir } = require('../../utils/fs')
 const { DEPLOY_PRIME_URL, DEPLOY_ID } = process.env
 
 module.exports = {
@@ -47,8 +47,9 @@ module.exports = {
       console.log('Functions bundling error')
       throw new Error(err)
     }
-    console.log('Functions bundled!')
-    const funcs = await readDir(tempFileDir)
-    console.log(funcs)
+    const files = await readdirp.promise(tempFileDir)
+    const paths = files.map(({ path }) => ` - ${path}`).join('\n')
+    console.log(`Functions bundled in ${tempFileDir}:`)
+    console.log(paths)
   }
 }
