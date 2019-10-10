@@ -38,20 +38,17 @@ const getHookInstructions = function({
 }
 
 // Run a set of instructions
-const runInstructions = async function(instructions, { config, configPath, token, baseDir, redactedKeys, error }) {
+const runInstructions = async function(instructions, { config, configPath, token, baseDir, error }) {
   return await pReduce(
     instructions,
     (currentData, instruction, index) =>
-      runInstruction(instruction, { currentData, index, config, configPath, token, baseDir, redactedKeys, error }),
+      runInstruction(instruction, { currentData, index, config, configPath, token, baseDir, error }),
     {}
   )
 }
 
 // Run a single instruction
-const runInstruction = async function(
-  instruction,
-  { currentData, index, config, configPath, token, baseDir, redactedKeys, error }
-) {
+const runInstruction = async function(instruction, { currentData, index, config, configPath, token, baseDir, error }) {
   const { name, hook } = instruction
 
   const methodTimer = startTimer()
@@ -61,7 +58,7 @@ const runInstruction = async function(
   setLogContext(name)
 
   try {
-    const pluginReturnValue = await fireMethod(instruction, { baseDir, redactedKeys, config, token, error })
+    const pluginReturnValue = await fireMethod(instruction, { baseDir, config, token, error })
 
     logInstructionSuccess()
     unsetLogContext()
@@ -77,25 +74,25 @@ const runInstruction = async function(
   }
 }
 
-const fireMethod = function(instruction, { baseDir, redactedKeys, config, token, error }) {
+const fireMethod = function(instruction, { baseDir, config, token, error }) {
   if (instruction.commands !== undefined) {
-    return execCommands(instruction, { baseDir, redactedKeys })
+    return execCommands(instruction, { baseDir })
   }
 
-  return firePluginHook(instruction, { config, token, baseDir, redactedKeys, error })
+  return firePluginHook(instruction, { config, token, baseDir, error })
 }
 
 // Fire a `config.lifecycle.*` series of commands
-const execCommands = async function({ hook, commands }, { baseDir, redactedKeys }) {
-  await pMapSeries(commands, command => execCommand({ hook, command, baseDir, redactedKeys }))
+const execCommands = async function({ hook, commands }, { baseDir }) {
+  await pMapSeries(commands, command => execCommand({ hook, command, baseDir }))
 }
 
-const execCommand = async function({ hook, command, baseDir, redactedKeys }) {
+const execCommand = async function({ hook, command, baseDir }) {
   logCommandStart(command)
 
   try {
     const childProcess = execa(command, { shell: true, cwd: baseDir })
-    redactProcess(childProcess, redactedKeys)
+    redactProcess(childProcess)
     await childProcess
   } catch (error) {
     logCommandError(command, hook, error)
@@ -106,14 +103,10 @@ const execCommand = async function({ hook, command, baseDir, redactedKeys }) {
 // Fire a plugin hook method
 const firePluginHook = async function(
   { type, hook, pluginPath, pluginConfig, hookName, constants },
-  { config, token, baseDir, redactedKeys, error }
+  { config, token, baseDir, error }
 ) {
   try {
-    await executePlugin(
-      'run',
-      { pluginPath, pluginConfig, hookName, config, token, error, constants },
-      { baseDir, redactedKeys }
-    )
+    await executePlugin('run', { pluginPath, pluginConfig, hookName, config, token, error, constants }, { baseDir })
   } catch (error) {
     logCommandError(type, hook, error)
     throw error
