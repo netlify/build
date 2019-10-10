@@ -19,7 +19,6 @@ const {
   logBuildSuccess,
   logBuildEnd
 } = require('../log/main')
-const { startPatchingLog, stopPatchingLog } = require('../log/patch')
 const { startTimer, endTimer } = require('../log/timer')
 const isNetlifyCI = require('../utils/is-netlify-ci')
 
@@ -30,8 +29,6 @@ const { tomlWrite } = require('./toml')
 const { doDryRun } = require('./dry')
 
 const build = async function(options = {}) {
-  const originalConsoleLog = startPatchingLog()
-
   const buildTimer = startTimer()
 
   try {
@@ -71,8 +68,6 @@ const build = async function(options = {}) {
   } catch (error) {
     logBuildError(error, options)
   }
-
-  stopPatchingLog(originalConsoleLog)
 }
 
 module.exports = build
