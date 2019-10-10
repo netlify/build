@@ -2,12 +2,15 @@ const { exit } = require('process')
 
 require('../../utils/polyfills')
 const { getMessageFromParent, sendMessageToParent } = require('../ipc')
+const { setColorLevel } = require('../../log/colors')
 
 const { load } = require('./load')
 const { run } = require('./run')
 
 // Main entry point of plugin child processes
 const runChild = async function() {
+  setColorLevel()
+
   const { eventName, message } = getMessageFromParent()
 
   try {

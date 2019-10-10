@@ -3,21 +3,25 @@ const {
   // eslint-disable-next-line node/no-unsupported-features/node-builtins
   stdout: { isTTY, getColorDepth }
 } = require('process')
+const {
+  inspect: { defaultOptions }
+} = require('util')
 
 const isNetlifyCI = require('../utils/is-netlify-ci')
 
 // Set the amount of colors to use by `chalk` (and underlying `supports-color`)
 // 0 is no colors, 1 is 16 colors, 2 is 256 colors, 3 is 16 million colors.
 const setColorLevel = function() {
-  // Allow user overridding this logic
-  if (env.FORCE_COLOR) {
-    return
-  }
-
   env.FORCE_COLOR = getColorLevel()
+  defaultOptions.colors = hasColors()
 }
 
 const getColorLevel = function() {
+  // Allow user overridding this logic
+  if (env.FORCE_COLOR) {
+    return env.FORCE_COLOR
+  }
+
   // This also ensure colors are used in the BuildBot
   if (isNetlifyCI()) {
     return '1'
@@ -47,4 +51,4 @@ const hasColors = function() {
   return env.FORCE_COLOR !== '0' && env.FORCE_COLOR !== 'false'
 }
 
-module.exports = { setColorLevel, hasColors }
+module.exports = { setColorLevel }
