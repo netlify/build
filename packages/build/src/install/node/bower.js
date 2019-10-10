@@ -3,7 +3,7 @@ const path = require('path')
 const execa = require('execa')
 const pathExists = require('path-exists')
 
-const moveCache = require('../../utils/moveCache')
+const moveCache = require('../../cache/moveCache')
 
 const install = require('./utils/install')
 

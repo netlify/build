@@ -1,4 +1,4 @@
-const execAsync = require('./execAsync')
+const execAsync = require('../../utils/execAsync')
 
 async function findRunningProcs() {
   let stdout

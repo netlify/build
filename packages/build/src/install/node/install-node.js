@@ -3,8 +3,8 @@ const path = require('path')
 const execa = require('execa')
 const pathExists = require('path-exists')
 
-const source = require('../../utils/source')
 const { readFile, writeFile, removeFiles, copyFiles } = require('../../utils/fs')
+const source = require('../utils/source')
 
 const runNvm = require('./utils/run-nvm')
 

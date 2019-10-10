@@ -2,9 +2,9 @@ const path = require('path')
 
 const pathExists = require('path-exists')
 
-const source = require('../../utils/source')
-const moveCache = require('../../utils/moveCache')
 const { readFile } = require('../../utils/fs')
+const moveCache = require('../../cache/moveCache')
+const source = require('../utils/source')
 
 // https://github.com/netlify/build-image/blob/9e0f207a27642d0115b1ca97cd5e8cebbe492f63/run-build-functions.sh#L166
 module.exports = async function installPython(cwd, cacheDir) {
