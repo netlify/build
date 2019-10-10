@@ -8,7 +8,9 @@ module.exports = {
     mkdirp.sync(`.axe-results/`)
     await execa('chmod', ['-R', '+rw', `.axe-results`])
   },
-  async postDeploy({ pluginConfig: { site = process.env.SITE, axeFlags } }) {
+  async postDeploy({ pluginConfig }) {
+    const { site = process.env.SITE, axeFlags } = pluginConfig
+
     await execa(`axe ${site} ${axeFlags} --save .axe-results/result.json`, {
       stdio: 'inherit',
       preferLocal: true

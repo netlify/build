@@ -10,11 +10,11 @@ const { DEPLOY_PRIME_URL, DEPLOY_ID } = process.env
 
 module.exports = {
   /* Hook into buildFunctions lifecycle */
-  async buildFunctions({
-    config: {
+  async buildFunctions({ config }) {
+    const {
       build: { functions }
-    }
-  }) {
+    } = config
+
     if (!functions) {
       console.log('No functions directory set. Skipping functions build step')
       return false

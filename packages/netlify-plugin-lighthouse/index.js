@@ -9,7 +9,9 @@ const Conf = require('conf') // for simple kv store
 
 module.exports = {
   // users will be tempted to use semver, but we really don't care
-  async postDeploy({ pluginConfig: { site = process.env.SITE, currentVersion, compareWithVersion = 'init' } }) {
+  async postDeploy({ pluginConfig }) {
+    let { site = process.env.SITE, currentVersion, compareWithVersion = 'init' } = pluginConfig
+
     if (typeof currentVersion === `undefined`) {
       console.log(`lighthouseplugin version not specified, auto assigning ${chalk.yellow("currentVersion='init'")}`)
       currentVersion = 'init'
