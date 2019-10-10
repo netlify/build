@@ -13,22 +13,16 @@ const {
 
 const Twilio = require('twilio')
 
-function netlifyTwilioSms() {
-  const client = new Twilio(ACCOUNT_SID, AUTH_TOKEN)
+module.exports = {
+  async finally() {
+    console.log('Finish the build up, prepping to text!')
 
-  return {
-    // Hook into lifecycle
-    async finally() {
-      console.log('Finish the build up, prepping to text!')
-
-      const { sid } = await client.messages.create({
-        body: 'Hi there, we just deployed the site successfully!',
-        to: TO_NUM,
-        from: FROM_NUM
-      })
-      console.log(sid)
-    }
+    const client = new Twilio(ACCOUNT_SID, AUTH_TOKEN)
+    const { sid } = await client.messages.create({
+      body: 'Hi there, we just deployed the site successfully!',
+      to: TO_NUM,
+      from: FROM_NUM
+    })
+    console.log(sid)
   }
 }
-
-module.exports = netlifyTwilioSms
