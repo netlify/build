@@ -23,7 +23,13 @@ const NORMALIZE_REGEXPS = [
   // Durations
   [/[\d.]+ms/g, '1ms'],
   // Package versions
-  [/@[\d.]+/g, '@VERSION']
+  [/@[\d.]+/g, '@VERSION'],
+  // Multiline objects are printed differently by `util.inspect()` in Node 8 and
+  // 12 due to different default options
+  [/{\n\s+/gm, '{ '],
+  [/\n}/gm, ' }'],
+  [/,\n\s+/gm, ', '],
+  [/:\n\s+/gm, ': ']
 ]
 
 module.exports = { normalizeOutput }
