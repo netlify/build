@@ -61,14 +61,12 @@ const logDryRunStart = function() {
 }
 
 const logDryRunInstruction = function({
-  instruction: { name, hook, core },
+  instruction: { name, hook, type, core },
   index,
   configPath,
   width,
   buildInstructions
 }) {
-  const pluginData = buildInstructions[index] || {}
-  const isLastInstruction = buildInstructions.length === index + 1
   const source = name.startsWith('config.build') ? `in ${basename(configPath)}` : 'plugin'
   const countText = `${index + 1}.`
   const count = cyanBright(countText)
@@ -82,9 +80,9 @@ const logDryRunInstruction = function({
     console.log(bold(`${SUBTEXT_PADDING}└─${line}─┴─${line}─`))
   }
 
-  const location = core ? 'core' : pluginData.type
-  const locationText = pluginData.type ? ` in ${location}` : ''
-  const showArrow = isLastInstruction ? ' ' : arrowDown
+  const location = core ? 'core' : type
+  const locationText = type ? ` in ${location}` : ''
+  const showArrow = buildInstructions.length === index + 1 ? ' ' : arrowDown
   console.log(cyanBright.bold(`${SUBTEXT_PADDING}┌─${line}─┐ `))
   console.log(
     cyanBright.bold(
@@ -94,13 +92,11 @@ const logDryRunInstruction = function({
     )
   )
   console.log(cyanBright.bold(`${SUBTEXT_PADDING}└─${line}─┘ `))
-  // ├ if folding
-  if (isLastInstruction) {
-    console.log(`${SUBTEXT_PADDING}If this looks good to you, run \`netlify build\` to execute the build`)
-  }
 }
 
 const logDryRunEnd = function() {
+  console.log()
+  console.log(`${SUBTEXT_PADDING}If this looks good to you, run \`netlify build\` to execute the build`)
   console.log()
 }
 
