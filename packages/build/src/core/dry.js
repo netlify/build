@@ -2,7 +2,6 @@ const { logDryRunStart, logDryRunInstruction, logDryRunEnd } = require('../log/m
 
 // If the `dry` option is specified, do a dry run
 const doDryRun = function({ buildInstructions, configPath }) {
-
   logDryRunStart()
 
   const width = Math.max(...buildInstructions.map(getHookLength))

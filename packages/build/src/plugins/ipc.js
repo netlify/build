@@ -39,7 +39,7 @@ const executePlugin = async function(eventName, message, { baseDir, redactedKeys
 
     if (Array.isArray(response)) {
       // Add core prop for downstream usage
-      const enrichedResponse = response.map((plugin) => {
+      const enrichedResponse = response.map(plugin => {
         if (core) return Object.assign({}, plugin, { core: core })
         return plugin
       })
