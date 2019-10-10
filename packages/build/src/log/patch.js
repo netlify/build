@@ -54,7 +54,7 @@ const monkeyPatchLogs = function(secrets) {
 
 // Serialize non-strings for printing
 const serialize = function(value) {
-  return inspect(value, { depth: null, colors: hasColors() })
+  return inspect(value, { depth: null, colors: hasColors(), compact: false })
 }
 
 const redactProcess = function(childProcess, redactedKeys) {
