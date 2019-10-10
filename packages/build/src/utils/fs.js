@@ -11,8 +11,6 @@ const execAsync = require('./execAsync')
 
 const pWriteFile = promisify(fs.writeFile)
 const pReadFile = promisify(fs.readFile)
-const pReaddir = promisify(fs.readdir)
-const pStat = promisify(fs.stat)
 
 async function writeFile(filePath, contents) {
   const dir = path.dirname(filePath)
@@ -59,17 +57,9 @@ async function copyFiles(src, dist) {
   return execAsync(copyCommand)
 }
 
-async function readDir(dir, allFiles = []) {
-  const files = (await pReaddir(dir)).map(f => path.join(dir, f))
-  allFiles.push(...files)
-  await Promise.all(files.map(async f => (await pStat(f)).isDirectory() && readDir(f, allFiles)))
-  return allFiles
-}
-
 module.exports = {
   writeFile,
   readFile,
   copyFiles,
-  removeFiles,
-  readDir
+  removeFiles
 }

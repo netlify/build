@@ -1,8 +1,8 @@
 const path = require('path')
 
 const pathExists = require('path-exists')
+const readdirp = require('readdirp')
 
-const { readDir } = require('../../utils/fs')
 const { CONTEXT } = process.env
 
 module.exports = () => {
@@ -27,7 +27,7 @@ module.exports = () => {
         process.exit(1)
       }
 
-      const files = await readDir(publishPath)
+      const files = await readdirp.promise(publishPath)
       if (!files || !files.length) {
         console.log(`No files found in publish dir`)
         process.exit(1)
