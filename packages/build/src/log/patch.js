@@ -5,23 +5,17 @@ const replaceStream = require('replacestream')
 
 // Monkey patch console.log() to redact secrets
 const startPatchingLog = function() {
-  const redactedKeys = redactEnv.build(SECRETS)
   const originalConsoleLog = console.log
-  console.log = patchLogs(redactedKeys)
-  return { redactedKeys, originalConsoleLog }
+  console.log = new Proxy(console.log, monkeyPatchLogs())
+  return originalConsoleLog
 }
-
-const SECRETS = ['SECRET_ENV_VAR', 'MY_API_KEY']
 
 const stopPatchingLog = function(originalConsoleLog) {
   console.log = originalConsoleLog
 }
 
-const patchLogs = function(secrets) {
-  return new Proxy(console.log, monkeyPatchLogs(secrets))
-}
-
-const monkeyPatchLogs = function(secrets) {
+const monkeyPatchLogs = function() {
+  const secrets = redactEnv.build(SECRETS)
   // eslint-disable-next-line no-unused-vars
   let previous = ''
   return {
@@ -55,10 +49,13 @@ const serialize = function(value) {
   return inspect(value, { depth: Infinity })
 }
 
-const redactProcess = function(childProcess, redactedKeys) {
-  childProcess.stdout.pipe(replaceStream(redactedKeys, '[secrets]')).pipe(process.stdout)
-  childProcess.stderr.pipe(replaceStream(redactedKeys, '[secrets]')).pipe(process.stderr)
+const redactProcess = function(childProcess) {
+  const secrets = redactEnv.build(SECRETS)
+  childProcess.stdout.pipe(replaceStream(secrets, '[secrets]')).pipe(process.stdout)
+  childProcess.stderr.pipe(replaceStream(secrets, '[secrets]')).pipe(process.stderr)
 }
+
+const SECRETS = ['SECRET_ENV_VAR', 'MY_API_KEY']
 
 const setLogContext = function(pre) {
   process.env.LOG_CONTEXT = pre

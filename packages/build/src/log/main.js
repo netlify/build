@@ -3,7 +3,6 @@ const { basename } = require('path')
 const { tick, pointer, arrowDown } = require('figures')
 const omit = require('omit.js')
 
-const { startPatchingLog, stopPatchingLog } = require('./patch')
 const { cleanStack } = require('./stack')
 
 // eslint-disable-next-line import/order
@@ -215,8 +214,6 @@ const logBuildEnd = function() {
 }
 
 module.exports = {
-  startPatchingLog,
-  stopPatchingLog,
   logBuildStart,
   logOptions,
   logConfigPath,

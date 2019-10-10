@@ -12,8 +12,6 @@ const { getConfigPath } = require('@netlify/config')
 const { getPluginsOptions } = require('../plugins/options')
 const { loadPlugins } = require('../plugins/load')
 const {
-  startPatchingLog,
-  stopPatchingLog,
   logBuildStart,
   logLifeCycleStart,
   logManifest,
@@ -21,6 +19,7 @@ const {
   logBuildSuccess,
   logBuildEnd
 } = require('../log/main')
+const { startPatchingLog, stopPatchingLog } = require('../log/patch')
 const { startTimer, endTimer } = require('../log/timer')
 const isNetlifyCI = require('../utils/is-netlify-ci')
 
@@ -31,7 +30,7 @@ const { tomlWrite } = require('./toml')
 const { doDryRun } = require('./dry')
 
 const build = async function(options = {}) {
-  const { redactedKeys, originalConsoleLog } = startPatchingLog()
+  const originalConsoleLog = startPatchingLog()
 
   const buildTimer = startTimer()
 
@@ -42,7 +41,7 @@ const build = async function(options = {}) {
 
     const pluginsOptions = getPluginsOptions({ config })
 
-    const pluginsHooks = await loadPlugins({ pluginsOptions, config, configPath, baseDir, redactedKeys, token })
+    const pluginsHooks = await loadPlugins({ pluginsOptions, config, configPath, baseDir, token })
     const { buildInstructions, errorInstructions } = getInstructions({ pluginsHooks, config })
 
     /* If the `dry` option is specified, do a dry run and exit */
@@ -54,10 +53,10 @@ const build = async function(options = {}) {
     logLifeCycleStart(buildInstructions)
 
     try {
-      const manifest = await runInstructions(buildInstructions, { config, configPath, token, baseDir, redactedKeys })
+      const manifest = await runInstructions(buildInstructions, { config, configPath, token, baseDir })
       logManifest(manifest)
     } catch (error) {
-      await handleInstructionError(errorInstructions, { config, configPath, token, baseDir, redactedKeys, error })
+      await handleInstructionError(errorInstructions, { config, configPath, token, baseDir, error })
       throw error
     }
 

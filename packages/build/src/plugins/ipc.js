@@ -20,14 +20,14 @@ const pWrite = promisify(write)
 //    (for both security and safety reasons)
 //  - logs can be buffered which allows manipulating them for log shipping,
 //    secrets redacting and parallel plugins
-const executePlugin = async function(eventName, message, { baseDir, redactedKeys }) {
+const executePlugin = async function(eventName, message, { baseDir }) {
   const messageString = serializeMessage(message)
 
   const childProcess = execa('node', [CHILD_MAIN_PATH, eventName, messageString], {
     cwd: baseDir,
     stdio: ['ignore', 'pipe', 'pipe', 'pipe']
   })
-  redactProcess(childProcess, redactedKeys)
+  redactProcess(childProcess)
 
   try {
     const [{ all: output }, responseString] = await Promise.all([
