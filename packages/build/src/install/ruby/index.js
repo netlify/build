@@ -4,8 +4,8 @@ const execa = require('execa')
 const del = require('del')
 const pathExists = require('path-exists')
 
-const source = require('../../utils/source')
 const { readFile, copyFiles } = require('../../utils/fs')
+const source = require('../utils/source')
 
 // https://github.com/netlify/build-image/blob/9e0f207a27642d0115b1ca97cd5e8cebbe492f63/run-build-functions.sh#L233-L292
 module.exports = async function installRuby(cwd, cacheDir, version) {

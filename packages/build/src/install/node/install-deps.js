@@ -2,7 +2,7 @@ const path = require('path')
 
 const pathExists = require('path-exists')
 
-const moveCache = require('../../utils/moveCache')
+const moveCache = require('../../cache/moveCache')
 
 const runNpm = require('./run-npm')
 const runYarn = require('./run-yarn')

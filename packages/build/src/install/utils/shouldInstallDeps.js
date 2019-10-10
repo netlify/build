@@ -1,7 +1,8 @@
 const pathExists = require('path-exists')
 
+const { readFile } = require('../../utils/fs')
+
 const shasum = require('./shasum')
-const { readFile } = require('./fs')
 
 /**
  * If shas don't match update deps

@@ -1,7 +1,13 @@
 const fs = require('fs')
 const crypto = require('crypto')
 
-module.exports = function hashFile(filename, algorithm) {
+async function shasum(filePath, algorithm) {
+  const hashAlgorithm = algorithm || 'sha1'
+  const hash = await hashFile(filePath, hashAlgorithm)
+  return hash
+}
+
+const hashFile = function(filename, algorithm) {
   return new Promise((resolve, reject) => {
     // Algorithm depends on availability of OpenSSL on platform
     // Another algorithms: 'sha1', 'md5', 'sha256', 'sha512' ...
@@ -22,3 +28,5 @@ module.exports = function hashFile(filename, algorithm) {
     }
   })
 }
+
+module.exports = shasum

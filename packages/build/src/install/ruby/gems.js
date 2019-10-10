@@ -3,10 +3,10 @@ const path = require('path')
 const execa = require('execa')
 const pathExists = require('path-exists')
 
-const moveCache = require('../../utils/moveCache')
-const shasum = require('../../utils/shasum')
-const shouldInstallDeps = require('../../utils/shouldInstallDeps')
+const moveCache = require('../../cache/moveCache')
 const { writeFile } = require('../../utils/fs')
+const shasum = require('../utils/shasum')
+const shouldInstallDeps = require('../utils/shouldInstallDeps')
 
 // https://github.com/netlify/build-image/blob/9e0f207a27642d0115b1ca97cd5e8cebbe492f63/run-build-functions.sh#L313-L332
 module.exports = async function installRubyGems(cwd, cacheDir) {

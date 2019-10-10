@@ -2,9 +2,9 @@ const path = require('path')
 
 const execa = require('execa')
 
-const shasum = require('../../utils/shasum')
-const shouldInstallDeps = require('../../utils/shouldInstallDeps')
 const { writeFile } = require('../../utils/fs')
+const shasum = require('../utils/shasum')
+const shouldInstallDeps = require('../utils/shouldInstallDeps')
 
 const setTempDir = require('./utils/set-temp-dir')
 

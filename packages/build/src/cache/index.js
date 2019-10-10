@@ -5,7 +5,7 @@ const del = require('del')
 const execa = require('execa')
 const pathExists = require('path-exists')
 
-const moveCache = require('../utils/moveCache')
+const moveCache = require('./moveCache')
 
 // https://github.com/netlify/buildbot/blob/4f9545d11ca266bd58b6de4ff24de132b8338287/script/run-build.sh#L38
 // https://github.com/netlify/build-image/blob/9e0f207a27642d0115b1ca97cd5e8cebbe492f63/run-build-functions.sh#L586
