@@ -30,7 +30,7 @@ const loadPlugin = async function(
     const { response: hooks } = await executePlugin(
       'load',
       { pluginId, type, baseDir, pluginConfig, configPath, config },
-      { baseDir, redactedKeys }
+      { baseDir, redactedKeys, core }
     )
     return hooks
   } catch (error) {
