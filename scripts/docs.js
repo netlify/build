@@ -50,7 +50,8 @@ const config = {
         .join('\n')
       return packages
     },
-    LIFECYCLE_TABLE(content, options) {
+    LIFECYCLE_TABLE(content, opts) {
+      const options = opts || {}
       const fileContents = fs.readFileSync(CONSTANTS.lifecycle, 'utf-8')
       const docBlocs = parseJsDoc(fileContents)
 
@@ -68,7 +69,12 @@ const config = {
         desc = desc.replace(/\n/g, '<br/>')
 
         if (eventName[1]) {
-          const eventNameWithLink = `<a href="#lifecycle${eventName[1].toLowerCase()}">${eventName[1]}</a>`
+          let eventNameWithLink
+          if (options.noAnchors) {
+            eventNameWithLink = eventName[1]
+          } else {
+            eventNameWithLink = `<a href="#lifecycle${eventName[1].toLowerCase()}">${eventName[1]}</a>`
+          }
           // console.log('data', data)
           const invisibleSpace = ' ‏‏‎ '
           const doubleInvisibleSpace = ' ‏‏‎  ‏‏‎  ‏‏‎ '
@@ -146,6 +152,7 @@ build:
 
 const markdownFiles = [
   path.join(rootDir, 'README.md'),
+  path.join(rootDir, 'docs/**/**.md'),
   path.join(rootDir, 'packages/**/**.md'),
   `!${path.join(rootDir, 'packages/**/node_modules/**/**.md')}`,
   '!node_modules'
