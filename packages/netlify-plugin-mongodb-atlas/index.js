@@ -70,10 +70,16 @@ async function ensureCluster({ clusterName, projectId }) {
     })
 
     const checker = setInterval(async () => {
-      cluster = await apiCall({
-        endpoint: '/groups/{GROUP-ID}/clusters/{CLUSTER-NAME}',
-        pathParams: { 'GROUP-ID': projectId, 'CLUSTER-NAME': clusterName }
-      })
+      try {
+        cluster = await apiCall({
+          endpoint: '/groups/{GROUP-ID}/clusters/{CLUSTER-NAME}',
+          pathParams: { 'GROUP-ID': projectId, 'CLUSTER-NAME': clusterName }
+        })
+      } catch (err) {
+        clearInterval(checker)
+        rej(`MongoDB Atlas: Error while fetching newly created cluster`, err)
+        return
+      }
       console.log(`MongoDB Atlas: Cluster state "${cluster.stateName}"`)
 
       if (cluster.stateName === 'DELETED') {
@@ -83,7 +89,6 @@ async function ensureCluster({ clusterName, projectId }) {
         clearInterval(checker)
         res()
       }
-
     }, 30000)
 
     await wait
