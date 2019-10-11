@@ -12,27 +12,25 @@ const test404plugin = false // toggle this off for production
 function netlify404nomore(conf) {
   let on404 = conf.on404 || 'error' // either 'warn' or 'error'
   let cacheKey = conf.cacheKey || 'pluginNoMore404Cache' // string - helps to quickly switch to a new cache if a mistake was made
-  let store
   return {
-    // kvstore in `${NETLIFY_CACHE_DIR}/${name}.json`
-    // we choose to let the user createStore instead of doing it for them
-    // bc they may want to set `defaults` and `schema` and `de/serialize`
-    init({ constants: { CACHE_DIR } }) {
-      store = new Conf({
-        cwd: CACHE_DIR,
-        configName: 'netlify-plugin-no-more-404'
-      })
-    },
-
     /* index html files preDeploy */
     preDeploy: async opts => {
       // console.log({ opts })
-      const { BUILD_DIR } = opts.constants // where we start from
+      const { CACHE_DIR, BUILD_DIR } = opts.constants // where we start from
 
       // let BUILD_DIR = opts.config.build.publish // build folder from netlify config.. there ought to be a nicer way to get this if set elsewhere
       if (typeof BUILD_DIR === 'undefined') {
         throw new Error('must specify publish dir in netlify config [build] section')
       }
+
+      // kvstore in `${NETLIFY_CACHE_DIR}/${name}.json`
+      // we choose to let the user createStore instead of doing it for them
+      // bc they may want to set `defaults` and `schema` and `de/serialize`
+      const store = new Conf({
+        cwd: CACHE_DIR,
+        configName: 'netlify-plugin-no-more-404'
+      })
+
       const buildFolderPath = path.resolve(BUILD_DIR)
       const prevManifest = store.get(cacheKey) || []
       if (test404plugin) {
