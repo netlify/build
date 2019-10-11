@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "foo": "echo 'bar'",
-    "prebuild": "mkdir -p build && cp _redirects build",
-    "build": "cp src/index.html build",
+    "prebuild": "rm -rf build && mkdir -p build && cp _redirects build",
+    "build": "cp -R src/frontend/* build",
     "go": "cross-env SITE=https://netlify.com netlify-build",
     "plan": "cross-env SITE=https://netlify.com netlify-build --dryRun",
     "deploy": "netlify deploy --functions=build/functions --dir=build --prod"
@@ -15,6 +15,7 @@
   "license": "ISC",
   "devDependencies": {
     "@netlify/build": "file:../packages/build",
+    "@netlify/plugin-no-more-404": "file:../packages/netlify-plugin-no-more-404",
     "@netlify/plugin-cypress": "file:../packages/netlify-plugin-cypress",
     "@netlify/plugin-example": "file:../packages/netlify-plugin-example",
     "@netlify/plugin-axe": "file:../packages/netlify-plugin-axe",

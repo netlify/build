@@ -1,0 +1,23 @@
+{
+  "name": "@netlify/plugin-no-more-404",
+  "version": "0.0.1",
+  "description": "fail netlify build if html goes missing with no redirects",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "link-checking",
+    "netlify",
+    "build",
+    "plugins"
+  ],
+  "author": "swyx",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^2.4.2",
+    "conf": "^6.1.0",
+    "netlify-redirect-parser": "^1.0.3",
+    "netlify-redirector": "^0.1.0"
+  }
+}

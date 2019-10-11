@@ -1,1 +1,2 @@
-## nothing
+## ## sample redirect for testing no-more-404 plugin
+## /blog/* /index.html

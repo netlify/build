@@ -1,6 +1,11 @@
 version: 06-25-2019
 
 plugins:
+  no-more-404:
+    type: '@netlify/plugin-no-more-404'
+    config:
+      on404: 'error' # can switch to warn
+      blankSlate: false # true to track diffs, false to clear cahce and start from scratch
   functions:
     type: '@netlify/plugin-functions'
     enabled: false
@@ -66,6 +71,7 @@ plugins:
 build:
   functions: src/backend
   # command: echo 'hi'
+  publish: build
   lifecycle:
     init:
       - npm run foo
@@ -74,7 +80,8 @@ build:
     getCache:
       - echo 'curl custom cache'
     #install: npm install
-    preBuild: echo "${secrets:privateKey}"
-    build: echo 'Hello Netlify Build!' && npm run build
+    # preBuild: echo "${secrets:privateKey}"
+    build: 
+      - echo 'Hello Netlify Build!' && npm run build
     # package:
     #   - zip -q -r .functions/package.zip src node_modules
