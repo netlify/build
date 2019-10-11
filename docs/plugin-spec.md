@@ -28,6 +28,7 @@ Plugins can expose additional commands to the netlify CLI
 
 For example the `mongoDb` plugin could expose a `netlify mongo:delete` command that tears down the given resource.
 
+
 ### Creating Plugins
 
 [Creating Plugins](./creating-plugins.md)

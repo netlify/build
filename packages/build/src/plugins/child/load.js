@@ -12,14 +12,14 @@ const pResolve = promisify(resolve)
 
 // Retrieve list of hook methods of a plugin.
 // This also validates the plugin.
-const load = async function({ pluginId, type, baseDir, pluginConfig, configPath, config }) {
+const load = async function({ pluginId, type, baseDir, pluginConfig, configPath, config, core }) {
   const pluginPath = await resolvePlugin(type, baseDir)
 
   const logic = getLogic(pluginPath, pluginConfig)
   validatePlugin(logic)
 
   const constants = getConstants(configPath, config, baseDir)
-  const hooks = getPluginHooks({ logic, pluginId, pluginPath, pluginConfig, type, constants })
+  const hooks = getPluginHooks({ logic, pluginId, pluginPath, pluginConfig, type, core, constants })
   return hooks
 }
 
@@ -35,10 +35,10 @@ const resolvePlugin = async function(type, baseDir) {
   }
 }
 
-const getPluginHooks = function({ logic, pluginId, pluginPath, pluginConfig, type, constants }) {
+const getPluginHooks = function({ logic, pluginId, pluginPath, pluginConfig, type, core, constants }) {
   return Object.entries(logic)
     .filter(isPluginHook)
-    .map(([hook]) => getPluginHook({ hook, pluginId, pluginPath, pluginConfig, type, constants }))
+    .map(([hook]) => getPluginHook({ hook, pluginId, pluginPath, pluginConfig, type, core, constants }))
 }
 
 const isPluginHook = function([, value]) {
@@ -46,10 +46,10 @@ const isPluginHook = function([, value]) {
 }
 
 // Retrieve a single hook from this plugin
-const getPluginHook = function({ hook, pluginId, pluginPath, pluginConfig, type, constants }) {
+const getPluginHook = function({ hook, pluginId, pluginPath, pluginConfig, type, core, constants }) {
   const override = getOverride(hook)
   const hookA = override.hook || hook
-  return { name: pluginId, type, hook: hookA, hookName: hook, override, pluginPath, pluginConfig, constants }
+  return { name: pluginId, type, hook: hookA, hookName: hook, override, pluginPath, pluginConfig, core, constants }
 }
 
 module.exports = { load }
