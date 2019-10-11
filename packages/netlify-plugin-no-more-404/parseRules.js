@@ -1,6 +1,7 @@
 // https://github.com/netlify/cli/blob/0d183f0d0d44c0f6367fdb5e74d41821958da1d0/src/utils/rules-proxy.js
 const fs = require('fs')
 const path = require('path')
+
 const redirectParser = require('netlify-redirect-parser')
 module.exports = parseRules
 function parseRules(projectDir) {

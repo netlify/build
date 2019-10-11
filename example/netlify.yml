@@ -81,7 +81,7 @@ build:
       - echo 'curl custom cache'
     #install: npm install
     # preBuild: echo "${secrets:privateKey}"
-    build: 
+    build:
       - echo 'Hello Netlify Build!' && npm run build
     # package:
     #   - zip -q -r .functions/package.zip src node_modules
