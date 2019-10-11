@@ -8,7 +8,10 @@ It is designed to support any kind of build flow and is extendable to fit any un
 <details>
 <summary>Expand Table of Contents</summary>
 
+- [About](#about)
 - [How it works](#how-it-works)
+  * [Extending via config](#extending-via-config)
+  * [Extending via plugins](#extending-via-plugins)
 - [Lifecycle](#lifecycle)
   * [lifecycle.init](#lifecycleinit)
   * [lifecycle.getCache](#lifecyclegetcache)
@@ -29,11 +32,66 @@ It is designed to support any kind of build flow and is extendable to fit any un
 </details>
 <!-- AUTO-GENERATED-CONTENT:END -->
 
+## About
+
+During a site build, there are a variety of things happening under the hood.
+
+- We are downloading & installing dependencies
+- running your build command
+- caching files
+- and deploying your site to the web
+
+Netlify build adds a programatic interface on these lifecycle steps and allows for greater flexibility in how your site & serverless functions deploy.
+
 ## How it works
 
-Build steps are codified in the Netlify UI or via `netlify` config file in the `build.lifecycle` or as `plugins`.
+Builds are controlled by a series of [lifecycle](#lifecycle) events that `plugins` & configuration (`build.lifecycle`) hook into.
 
-Builds are controlled by a series of lifecycle events that `plugins` & configuration (`build.lifecycle`) hook into.
+Plugins and `build.lifecycle` are defined in your netlify configuration file.
+
+The build [lifecycle](#lifecycle) can be extended in two ways:
+
+1. Inline via the `build.lifecycle` config
+2. With plugins via `plugins` config
+
+### Extending via config
+
+Build steps are defined in the `netlify` config file. (a.k.a `netlify.toml` or `netlify.yml` **new 🎉!**)
+
+Inside the netlify config file, you can attach [lifecycle](#lifecycle) commands to `build.lifecycle`.
+
+```yml
+build:
+  publish: my-dist-folder
+  # Run this lifecycle during build
+  lifecycle:
+    init:
+      - npm run thing
+      - echo "much wow"
+    preBuild: curl download-static-content
+    build: npm run build
+    postBuild:
+      - npx generate-sitemap
+```
+
+### Extending via plugins
+
+```yml
+# Config file `plugins` defines plugins used by build.
+plugins:
+  pluginAbc:
+    type: ./local/path/to/plugin-folder
+    config:
+      optionOne: 'hello'
+      optionTwo: 'there'
+ pluginTwo:
+   type: plugin-from-npm
+   config:
+     optionOne: 'neat'
+     arrayOfValues:
+      - david@netlify.com
+      - jim@netlify.com
+```
 
 ## Lifecycle
 
