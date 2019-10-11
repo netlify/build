@@ -31,7 +31,7 @@ module.exports = async function installPython(cwd, cacheDir) {
     const env = await source(`${HOME}/python${PYTHON_VERSION}/bin/activate`)
     console.log('new env', env)
     // Default
-    // await execa.command(`${HOME}/python${PYTHON_VERSION}/bin/activate`)
+    // await execa(`${HOME}/python${PYTHON_VERSION}/bin/activate`)
   }
   return PYTHON_VERSION
 }

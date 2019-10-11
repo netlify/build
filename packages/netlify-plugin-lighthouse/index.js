@@ -26,7 +26,7 @@ module.exports = {
     })
 
     // TODO: fetch previous scores from cache
-    await execa.command(`lighthouse-ci ${site}`, { stdio: 'inherit' })
+    await execa('lighthouse-ci', site, { stdio: 'inherit' })
 
     // serialize response
     const curLightHouse = {}
