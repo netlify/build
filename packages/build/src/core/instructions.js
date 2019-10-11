@@ -5,7 +5,6 @@ require('array-flat-polyfill')
 
 const { executePlugin } = require('../plugins/ipc')
 const { logInstruction, logCommandStart, logCommandError, logInstructionSuccess } = require('../log/main')
-const { setLogContext, unsetLogContext } = require('../log/patch')
 const { redactProcess } = require('../log/patch')
 const { startTimer, endTimer } = require('../log/timer')
 
@@ -55,20 +54,15 @@ const runInstruction = async function(instruction, { currentData, index, config,
 
   logInstruction(instruction, { index, configPath, error })
 
-  setLogContext(name)
-
   try {
     const pluginReturnValue = await fireMethod(instruction, { baseDir, config, token, error })
 
     logInstructionSuccess()
-    unsetLogContext()
 
     endTimer(methodTimer, name, hook)
 
     return Object.assign({}, currentData, pluginReturnValue)
   } catch (error) {
-    unsetLogContext()
-
     error.message = `Error in '${name}' plugin:\n${error.message}`
     throw error
   }
