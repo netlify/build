@@ -56,10 +56,10 @@ Builds are controlled by a series of [lifecycle](#lifecycle) events that `plugin
 
 Plugins and `build.lifecycle` are defined in your netlify configuration file.
 
-The build [lifecycle](#lifecycle) can be extended in two ways:
+**The [build lifecycle](#lifecycle) can be extended in two ways:**
 
-1. Adding lifecycle steps to `build.lifecycle` in your config file
-2. With [plugins](#plugins)
+1. Adding lifecycle steps to `build.lifecycle` in your [config file](#extending-via-config)
+2. Installing pre-packaged [plugins](#plugins)
 
 ### Extending via config
 
@@ -100,6 +100,8 @@ plugins:
       - jim@netlify.com
 ```
 
+Jump to [plugin docs](#plugins)
+
 ## Lifecycle
 
 The Netlify build lifecycle consists of these lifecycle `events`.
@@ -128,242 +130,352 @@ Events are activities that happen while during the course of the build system ru
 `init` - Runs before anything else
 
 
-```js
-module.exports = function myPlugin(pluginConfig) {
-  return {
-    init: () => {
-      console.log("Do thing on init step")
+<details>
+  <summary>Using `init` in a plugin</summary>
+
+  ```js
+  module.exports = function myPlugin(pluginConfig) {
+    return {
+      init: () => {
+        console.log("Do thing on init step")
+      }
     }
   }
-}
-```
+  ```
+
+</details>
   
-```yml
-build:
-  lifecycle:
-    init:
-      - echo "Do thing on init step"
-```
+<details>
+  <summary>Using `init` in `build.lifecycle`</summary>
+
+  ```yml
+  build:
+    lifecycle:
+      init:
+        - echo "Do thing on init step"
+  ```
+
+</details>
   
 ### lifecycle.getCache
 
 `getCache` - Fetch previous build cache
 
 
-```js
-module.exports = function myPlugin(pluginConfig) {
-  return {
-    getCache: () => {
-      console.log("Do thing on getCache step")
+<details>
+  <summary>Using `getCache` in a plugin</summary>
+
+  ```js
+  module.exports = function myPlugin(pluginConfig) {
+    return {
+      getCache: () => {
+        console.log("Do thing on getCache step")
+      }
     }
   }
-}
-```
+  ```
+
+</details>
   
-```yml
-build:
-  lifecycle:
-    getCache:
-      - echo "Do thing on getCache step"
-```
+<details>
+  <summary>Using `getCache` in `build.lifecycle`</summary>
+
+  ```yml
+  build:
+    lifecycle:
+      getCache:
+        - echo "Do thing on getCache step"
+  ```
+
+</details>
   
 ### lifecycle.install
 
 `install` - Install project dependancies
 
 
-```js
-module.exports = function myPlugin(pluginConfig) {
-  return {
-    install: () => {
-      console.log("Do thing on install step")
+<details>
+  <summary>Using `install` in a plugin</summary>
+
+  ```js
+  module.exports = function myPlugin(pluginConfig) {
+    return {
+      install: () => {
+        console.log("Do thing on install step")
+      }
     }
   }
-}
-```
+  ```
+
+</details>
   
-```yml
-build:
-  lifecycle:
-    install:
-      - echo "Do thing on install step"
-```
+<details>
+  <summary>Using `install` in `build.lifecycle`</summary>
+
+  ```yml
+  build:
+    lifecycle:
+      install:
+        - echo "Do thing on install step"
+  ```
+
+</details>
   
 ### lifecycle.preBuild
 
 `preBuild` - runs before functions & build commands run
 
 
-```js
-module.exports = function myPlugin(pluginConfig) {
-  return {
-    preBuild: () => {
-      console.log("Do thing on preBuild step")
+<details>
+  <summary>Using `preBuild` in a plugin</summary>
+
+  ```js
+  module.exports = function myPlugin(pluginConfig) {
+    return {
+      preBuild: () => {
+        console.log("Do thing on preBuild step")
+      }
     }
   }
-}
-```
+  ```
+
+</details>
   
-```yml
-build:
-  lifecycle:
-    preBuild:
-      - echo "Do thing on preBuild step"
-```
+<details>
+  <summary>Using `preBuild` in `build.lifecycle`</summary>
+
+  ```yml
+  build:
+    lifecycle:
+      preBuild:
+        - echo "Do thing on preBuild step"
+  ```
+
+</details>
   
 ### lifecycle.functionsBuild
 
 `functionsBuild` - build the serverless functions
 
 
-```js
-module.exports = function myPlugin(pluginConfig) {
-  return {
-    functionsBuild: () => {
-      console.log("Do thing on functionsBuild step")
+<details>
+  <summary>Using `functionsBuild` in a plugin</summary>
+
+  ```js
+  module.exports = function myPlugin(pluginConfig) {
+    return {
+      functionsBuild: () => {
+        console.log("Do thing on functionsBuild step")
+      }
     }
   }
-}
-```
+  ```
+
+</details>
   
-```yml
-build:
-  lifecycle:
-    functionsBuild:
-      - echo "Do thing on functionsBuild step"
-```
+<details>
+  <summary>Using `functionsBuild` in `build.lifecycle`</summary>
+
+  ```yml
+  build:
+    lifecycle:
+      functionsBuild:
+        - echo "Do thing on functionsBuild step"
+  ```
+
+</details>
   
 ### lifecycle.build
 
 `build` - build commands run
 
 
-```js
-module.exports = function myPlugin(pluginConfig) {
-  return {
-    build: () => {
-      console.log("Do thing on build step")
+<details>
+  <summary>Using `build` in a plugin</summary>
+
+  ```js
+  module.exports = function myPlugin(pluginConfig) {
+    return {
+      build: () => {
+        console.log("Do thing on build step")
+      }
     }
   }
-}
-```
+  ```
+
+</details>
   
-```yml
-build:
-  lifecycle:
-    build:
-      - echo "Do thing on build step"
-```
+<details>
+  <summary>Using `build` in `build.lifecycle`</summary>
+
+  ```yml
+  build:
+    lifecycle:
+      build:
+        - echo "Do thing on build step"
+  ```
+
+</details>
   
 ### lifecycle.postBuild
 
 `postBuild` - Runs after site & functions have been built
 
 
-```js
-module.exports = function myPlugin(pluginConfig) {
-  return {
-    postBuild: () => {
-      console.log("Do thing on postBuild step")
+<details>
+  <summary>Using `postBuild` in a plugin</summary>
+
+  ```js
+  module.exports = function myPlugin(pluginConfig) {
+    return {
+      postBuild: () => {
+        console.log("Do thing on postBuild step")
+      }
     }
   }
-}
-```
+  ```
+
+</details>
   
-```yml
-build:
-  lifecycle:
-    postBuild:
-      - echo "Do thing on postBuild step"
-```
+<details>
+  <summary>Using `postBuild` in `build.lifecycle`</summary>
+
+  ```yml
+  build:
+    lifecycle:
+      postBuild:
+        - echo "Do thing on postBuild step"
+  ```
+
+</details>
   
 ### lifecycle.package
 
 `package` - Package & optimize artifact
 
 
-```js
-module.exports = function myPlugin(pluginConfig) {
-  return {
-    package: () => {
-      console.log("Do thing on package step")
+<details>
+  <summary>Using `package` in a plugin</summary>
+
+  ```js
+  module.exports = function myPlugin(pluginConfig) {
+    return {
+      package: () => {
+        console.log("Do thing on package step")
+      }
     }
   }
-}
-```
+  ```
+
+</details>
   
-```yml
-build:
-  lifecycle:
-    package:
-      - echo "Do thing on package step"
-```
+<details>
+  <summary>Using `package` in `build.lifecycle`</summary>
+
+  ```yml
+  build:
+    lifecycle:
+      package:
+        - echo "Do thing on package step"
+  ```
+
+</details>
   
 ### lifecycle.preDeploy
 
 `preDeploy` - Deploy built artifact
 
 
-```js
-module.exports = function myPlugin(pluginConfig) {
-  return {
-    preDeploy: () => {
-      console.log("Do thing on preDeploy step")
+<details>
+  <summary>Using `preDeploy` in a plugin</summary>
+
+  ```js
+  module.exports = function myPlugin(pluginConfig) {
+    return {
+      preDeploy: () => {
+        console.log("Do thing on preDeploy step")
+      }
     }
   }
-}
-```
+  ```
+
+</details>
   
-```yml
-build:
-  lifecycle:
-    preDeploy:
-      - echo "Do thing on preDeploy step"
-```
+<details>
+  <summary>Using `preDeploy` in `build.lifecycle`</summary>
+
+  ```yml
+  build:
+    lifecycle:
+      preDeploy:
+        - echo "Do thing on preDeploy step"
+  ```
+
+</details>
   
 ### lifecycle.saveCache
 
 `saveCache` - Save cached assets
 
 
-```js
-module.exports = function myPlugin(pluginConfig) {
-  return {
-    saveCache: () => {
-      console.log("Do thing on saveCache step")
+<details>
+  <summary>Using `saveCache` in a plugin</summary>
+
+  ```js
+  module.exports = function myPlugin(pluginConfig) {
+    return {
+      saveCache: () => {
+        console.log("Do thing on saveCache step")
+      }
     }
   }
-}
-```
+  ```
+
+</details>
   
-```yml
-build:
-  lifecycle:
-    saveCache:
-      - echo "Do thing on saveCache step"
-```
+<details>
+  <summary>Using `saveCache` in `build.lifecycle`</summary>
+
+  ```yml
+  build:
+    lifecycle:
+      saveCache:
+        - echo "Do thing on saveCache step"
+  ```
+
+</details>
   
 ### lifecycle.finally
 
 `finally` - Runs after anything else
 
 
-```js
-module.exports = function myPlugin(pluginConfig) {
-  return {
-    finally: () => {
-      console.log("Do thing on finally step")
+<details>
+  <summary>Using `finally` in a plugin</summary>
+
+  ```js
+  module.exports = function myPlugin(pluginConfig) {
+    return {
+      finally: () => {
+        console.log("Do thing on finally step")
+      }
     }
   }
-}
-```
+  ```
+
+</details>
   
-```yml
-build:
-  lifecycle:
-    finally:
-      - echo "Do thing on finally step"
-```
+<details>
+  <summary>Using `finally` in `build.lifecycle`</summary>
+
+  ```yml
+  build:
+    lifecycle:
+      finally:
+        - echo "Do thing on finally step"
+  ```
+
+</details>
 <!-- AUTO-GENERATED-CONTENT:END (PLUGINS) -->
 
 

@@ -127,26 +127,36 @@ function formatName(name) {
 
 function renderPluginExample(name) {
   return `
-\`\`\`js
-module.exports = function myPlugin(pluginConfig) {
-  return {
-    ${name}: () => {
-      console.log("Do thing on ${name} step")
+<details>
+  <summary>Using \`${name}\` in a plugin</summary>
+
+  \`\`\`js
+  module.exports = function myPlugin(pluginConfig) {
+    return {
+      ${name}: () => {
+        console.log("Do thing on ${name} step")
+      }
     }
   }
-}
-\`\`\`
+  \`\`\`
+
+</details>
   `
 }
 
 function renderLifeCycleExample(name) {
   return `
-\`\`\`yml
-build:
-  lifecycle:
-    ${name}:
-      - echo "Do thing on ${name} step"
-\`\`\`
+<details>
+  <summary>Using \`${name}\` in \`build.lifecycle\`</summary>
+
+  \`\`\`yml
+  build:
+    lifecycle:
+      ${name}:
+        - echo "Do thing on ${name} step"
+  \`\`\`
+
+</details>
   `
 }
 
