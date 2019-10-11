@@ -1,7 +1,8 @@
-const redirector = require('netlify-redirector')
-const parseRules = require('./parseRules')
-
 const url = require('url')
+
+const redirector = require('netlify-redirector')
+
+const parseRules = require('./parseRules')
 
 module.exports = matchRules
 // https://github.com/netlify/cli/blob/0d183f0d0d44c0f6367fdb5e74d41821958da1d0/src/utils/rules-proxy.js#L90-L118
@@ -48,7 +49,7 @@ const getMatcher = projectDir => {
         jwtRole: 'app_metadata.authorization.roles'
       })
       .then(m => {
-        matcher = m
+        const matcher = m
         return matcher
       })
   }

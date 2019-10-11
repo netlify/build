@@ -1,7 +1,10 @@
 const path = require('path')
+const fs = require('fs')
+const { promisify } = require('util')
+
 const chalk = require('chalk')
 const Conf = require('conf') // for simple kv store
-const fs = require('fs')
+
 const matchRules = require('./matchRules')
 // const test404plugin = true // toggle this off for production
 const test404plugin = false // toggle this off for production
@@ -141,20 +144,21 @@ function netlify404nomore(conf) {
 
 module.exports = netlify404nomore
 
-const {promisify} = require('util')
 const readdir = promisify(fs.readdir)
 // recursive crawl to get a list of filepaths
 // https://gist.github.com/kethinov/6658166
 var walk = async function(dir, filelist) {
   var files = await readdir(dir)
   filelist = filelist || []
-  await Promise.all(files.map(async function(file) {
-    const dirfile = path.join(dir, file)
-    if (fs.statSync(dirfile).isDirectory()) {
-      filelist = await walk(dirfile + '/', filelist)
-    } else {
-      filelist.push(dirfile)
-    }
-  }))
+  await Promise.all(
+    files.map(async function(file) {
+      const dirfile = path.join(dir, file)
+      if (fs.statSync(dirfile).isDirectory()) {
+        filelist = await walk(dirfile + '/', filelist)
+      } else {
+        filelist.push(dirfile)
+      }
+    })
+  )
   return filelist
 }
