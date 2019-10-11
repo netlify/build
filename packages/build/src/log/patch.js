@@ -14,13 +14,9 @@ const log = function(...args) {
 
 const serializeArg = function(arg, state) {
   const argA = typeof arg === 'string' ? arg : inspect(arg, { depth: Infinity })
-  const argB = addContext(argA, state)
-  const argC = redactEnv.redact(argB, secrets)
-  return argC
+  const argB = redactEnv.redact(argA, secrets)
+  return argB
 }
-
-// eslint-disable-next-line no-unused-vars
-let previous = ''
 
 const redactProcess = function(childProcess) {
   childProcess.stdout.pipe(replaceStream(secrets, '[secrets]')).pipe(process.stdout)
@@ -30,25 +26,4 @@ const redactProcess = function(childProcess) {
 const SECRETS = ['SECRET_ENV_VAR', 'MY_API_KEY']
 const secrets = redactEnv.build(SECRETS)
 
-const addContext = function(arg, state) {
-  if (state.prefixSet) {
-    return arg
-  }
-
-  state.prefixSet = true
-  const pre = process.env.LOG_CONTEXT || ''
-  // const prefix = (pre && previous !== pre) ? `${chalk.bold(pre.replace('config.', ''))}:\n` : ''
-  const prefix = '' // disable prefix for now. Need to revisit
-  previous = pre
-  return `${prefix}${arg}`
-}
-
-const setLogContext = function(pre) {
-  process.env.LOG_CONTEXT = pre
-}
-
-const unsetLogContext = function() {
-  process.env.LOG_CONTEXT = ''
-}
-
-module.exports = { log, redactProcess, setLogContext, unsetLogContext }
+module.exports = { log, redactProcess }
