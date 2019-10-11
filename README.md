@@ -24,7 +24,7 @@ It is designed to support any kind of build flow and is extendable to fit any un
 - [Configuration](#configuration)
 - [CLI commands](#cli-commands)
 - [Setting up the project](#setting-up-the-project)
-- [XYZ](#xyz)
+  * [Packages](#packages)
 
 </details>
 <!-- AUTO-GENERATED-CONTENT:END -->
@@ -42,19 +42,19 @@ The Netlify build lifecycle consists of these lifecycle `events`.
 Events are activities that happen while during the course of the build system running.
 
 <!-- AUTO-GENERATED-CONTENT:START (LIFECYCLE_TABLE) -->
-| Event | Description |
+| Lifecycle hook | Description |
 |:------|:-------|
-| ⇩ ‏‏‎ **<a href="#lifecycleinit">init</a>** | Runs before anything else |
-| ⇩ ‏‏‎ **<a href="#lifecyclegetcache">getCache</a>** | Fetch previous build cache |
-| ⇩ ‏‏‎ **<a href="#lifecycleinstall">install</a>** | Install project dependancies |
-| ⇩ ‏‏‎ **<a href="#lifecycleprebuild">preBuild</a>** | runs before functions & build commands run |
-| ⇩ ‏‏‎ **<a href="#lifecyclefunctionsbuild">functionsBuild</a>** | build the serverless functions |
-| ⇩ ‏‏‎ **<a href="#lifecyclebuild">build</a>** | build commands run |
-| ⇩ ‏‏‎ **<a href="#lifecyclepostbuild">postBuild</a>** | Runs after site & functions have been built |
-| ⇩ ‏‏‎ **<a href="#lifecyclepackage">package</a>** | Package & optimize artifact |
-| ⇩ ‏‏‎ **<a href="#lifecyclepredeploy">preDeploy</a>** | Deploy built artifact |
-| ⇩ ‏‏‎ **<a href="#lifecyclesavecache">saveCache</a>** | Save cached assets |
-| 🎉 ‏‏‎ **<a href="#lifecyclefinally">finally</a>** | Runs after anything else |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecycleinit">init</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Runs before anything else |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclegetcache">getCache</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Fetch previous build cache |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecycleinstall">install</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Install project dependancies |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecycleprebuild">preBuild</a>** ‏‏‎  ‏‏‎  ‏‏‎  | runs before functions & build commands run |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclefunctionsbuild">functionsBuild</a>** ‏‏‎  ‏‏‎  ‏‏‎  | build the serverless functions |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclebuild">build</a>** ‏‏‎  ‏‏‎  ‏‏‎  | build commands run |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclepostbuild">postBuild</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Runs after site & functions have been built |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclepackage">package</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Package & optimize artifact |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclepredeploy">preDeploy</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Deploy built artifact |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclesavecache">saveCache</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Save cached assets |
+| 🎉 ‏‏‎ **<a href="#lifecyclefinally">finally</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Runs after anything else |
 <!-- AUTO-GENERATED-CONTENT:END (LIFECYCLE_TABLE) -->
 
 <!-- AUTO-GENERATED-CONTENT:START (LIFECYCLE_DOCS) -->
@@ -72,14 +72,14 @@ module.exports = function myPlugin(pluginConfig) {
   }
 }
 ```
-
+  
 ```yml
 build:
   lifecycle:
     init:
       - echo "Do thing on init step"
 ```
-
+  
 ### lifecycle.getCache
 
 `getCache` - Fetch previous build cache
@@ -94,14 +94,14 @@ module.exports = function myPlugin(pluginConfig) {
   }
 }
 ```
-
+  
 ```yml
 build:
   lifecycle:
     getCache:
       - echo "Do thing on getCache step"
 ```
-
+  
 ### lifecycle.install
 
 `install` - Install project dependancies
@@ -116,14 +116,14 @@ module.exports = function myPlugin(pluginConfig) {
   }
 }
 ```
-
+  
 ```yml
 build:
   lifecycle:
     install:
       - echo "Do thing on install step"
 ```
-
+  
 ### lifecycle.preBuild
 
 `preBuild` - runs before functions & build commands run
@@ -138,14 +138,14 @@ module.exports = function myPlugin(pluginConfig) {
   }
 }
 ```
-
+  
 ```yml
 build:
   lifecycle:
     preBuild:
       - echo "Do thing on preBuild step"
 ```
-
+  
 ### lifecycle.functionsBuild
 
 `functionsBuild` - build the serverless functions
@@ -160,14 +160,14 @@ module.exports = function myPlugin(pluginConfig) {
   }
 }
 ```
-
+  
 ```yml
 build:
   lifecycle:
     functionsBuild:
       - echo "Do thing on functionsBuild step"
 ```
-
+  
 ### lifecycle.build
 
 `build` - build commands run
@@ -182,14 +182,14 @@ module.exports = function myPlugin(pluginConfig) {
   }
 }
 ```
-
+  
 ```yml
 build:
   lifecycle:
     build:
       - echo "Do thing on build step"
 ```
-
+  
 ### lifecycle.postBuild
 
 `postBuild` - Runs after site & functions have been built
@@ -204,14 +204,14 @@ module.exports = function myPlugin(pluginConfig) {
   }
 }
 ```
-
+  
 ```yml
 build:
   lifecycle:
     postBuild:
       - echo "Do thing on postBuild step"
 ```
-
+  
 ### lifecycle.package
 
 `package` - Package & optimize artifact
@@ -226,14 +226,14 @@ module.exports = function myPlugin(pluginConfig) {
   }
 }
 ```
-
+  
 ```yml
 build:
   lifecycle:
     package:
       - echo "Do thing on package step"
 ```
-
+  
 ### lifecycle.preDeploy
 
 `preDeploy` - Deploy built artifact
@@ -248,14 +248,14 @@ module.exports = function myPlugin(pluginConfig) {
   }
 }
 ```
-
+  
 ```yml
 build:
   lifecycle:
     preDeploy:
       - echo "Do thing on preDeploy step"
 ```
-
+  
 ### lifecycle.saveCache
 
 `saveCache` - Save cached assets
@@ -270,14 +270,14 @@ module.exports = function myPlugin(pluginConfig) {
   }
 }
 ```
-
+  
 ```yml
 build:
   lifecycle:
     saveCache:
       - echo "Do thing on saveCache step"
 ```
-
+  
 ### lifecycle.finally
 
 `finally` - Runs after anything else
@@ -292,7 +292,7 @@ module.exports = function myPlugin(pluginConfig) {
   }
 }
 ```
-
+  
 ```yml
 build:
   lifecycle:

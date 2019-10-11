@@ -57,7 +57,7 @@ const config = {
       const events = docBlocs.filter((d) => {
         return !d.description.summary.match(/^\*\*/)
       })
-      let md = '| Event | Description |\n'
+      let md = '| Lifecycle hook | Description |\n'
       md += '|:------|:-------|\n'
       events.forEach((data) => {
         const eventName = data.description.summary.match(/^`(.*)`/)
@@ -71,8 +71,10 @@ const config = {
           const eventNameWithLink = `<a href="#lifecycle${eventName[1].toLowerCase()}">${eventName[1]}</a>`
           // console.log('data', data)
           const invisibleSpace = ' ‏‏‎ '
+          const doubleInvisibleSpace = ' ‏‏‎  ‏‏‎  ‏‏‎ '
+          const spacing = (eventName[1] === 'finally') ? invisibleSpace : doubleInvisibleSpace
           const arrow = (eventName[1] === 'finally') ? '🎉' : '⇩'
-          md += `| ${arrow}${invisibleSpace}**${eventNameWithLink}** | ${desc} |\n`
+          md += `| ${arrow}${spacing}**${eventNameWithLink}**${doubleInvisibleSpace} | ${desc} |\n`
         }
       })
       return md.replace(/^\s+|\s+$/g, '')
