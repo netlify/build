@@ -94,8 +94,14 @@ async function ensureUser({ username, password, projectId }) {
 
 async function ensureResources(opts = {}) {
   const project = await ensureProject({ projectName: opts.project })
-  await ensureCluster({ clusterName: opts.cluster, projectId: project.id })
-  await ensureUser({ username: opts.dbUsername, password: opts.dbPassword, projectId: project.id })
+  const cluster = await ensureCluster({ clusterName: opts.cluster, projectId: project.id })
+  const user = await ensureUser({ username: opts.dbUsername, password: opts.dbPassword, projectId: project.id })
+
+  const connectionURI = new URL(cluster.mongoURIWithOptions)
+  connectionURI.username = user.username
+  connectionURI.password = opts.dbPassword
+
+  process.env.MONGODB_ATLAS_CONNECTION_URI = connectionURI.toString()
 }
 
 function netlifyMongoDBAtlasPlugin(conf = {}) {
