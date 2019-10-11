@@ -64,3 +64,13 @@ test('--verbose', async t => {
   const { all } = await execa.command(`${BINARY_PATH} --verbose --config invalid`)
   t.snapshot(normalizeOutput(all))
 })
+
+test('Lifecycle commands can execute local binaries', async t => {
+  const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/local_bin/netlify.yml`)
+  t.snapshot(normalizeOutput(all))
+})
+
+test('Plugins can execute local binaries', async t => {
+  const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/local_bin_plugin/netlify.yml`)
+  t.snapshot(normalizeOutput(all))
+})
