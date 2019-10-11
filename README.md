@@ -2,16 +2,14 @@
 
 Netlify build is the next generation of CI/CD tooling for modern web applications.
 
-It is designed to support any kind of build flow and is extendable to fit any unique project requirements.
-
 <!-- AUTO-GENERATED-CONTENT:START (TOC:collapse=true&collapseText=Expand Table of Contents) -->
 <details>
 <summary>Expand Table of Contents</summary>
 
 - [Background](#background)
 - [How it works](#how-it-works)
-  * [Extending via config](#extending-via-config)
-  * [Extending via plugins](#extending-via-plugins)
+  * [1. Extending via config](#1-extending-via-config)
+  * [2. Extending via plugins](#2-extending-via-plugins)
 - [Lifecycle](#lifecycle)
   * [lifecycle.init](#lifecycleinit)
   * [lifecycle.getCache](#lifecyclegetcache)
@@ -48,24 +46,22 @@ This is a simplified view of a typical build life cycle:
 
 Historically, when connecting your site to Netlify, we ask for the build command (step 3 above) and will run through this process. This works great for most use cases & will continue to do so 😃
 
-For builds that require a little more flexibility, we are introducing a programatic interface on top of these build lifecycle steps.
+For builds that require a little more flexibility, we are introducing a programatic interface on top of these build lifecycle steps to allow users to customize this flow.
+
+**Netlify Build** is designed to support any kind of build flow and is extendable to fit any unique project requirements.
 
 ## How it works
 
-Builds are controlled by a series of [lifecycle](#lifecycle) events that `plugins` & configuration (`build.lifecycle`) hook into.
-
-Plugins and `build.lifecycle` are defined in your netlify configuration file.
+Builds are controlled by a series of [lifecycle](#lifecycle) events that `plugins` & configuration hook into.
 
 **The [build lifecycle](#lifecycle) can be extended in two ways:**
 
 1. Adding lifecycle steps to `build.lifecycle` in your [config file](#extending-via-config)
 2. Installing pre-packaged [plugins](#plugins)
 
-### Extending via config
+### 1. Extending via config
 
-Build steps are defined in the `netlify` config file. (a.k.a `netlify.toml` or `netlify.yml` **new 🎉!**)
-
-Inside the netlify config file, you can attach [lifecycle](#lifecycle) commands to `build.lifecycle`.
+Inside the netlify config file, you can attach [lifecycle](#lifecycle) commands to a new property `build.lifecycle`.
 
 ```yml
 build:
@@ -81,7 +77,11 @@ build:
       - npx generate-sitemap
 ```
 
-### Extending via plugins
+### 2. Extending via plugins
+
+[Netlify Plugins](#plugins) are installable packages that extend the functionality of the netlify build process.
+
+They can be installed from `npm` or run locally from relative path in your project.
 
 ```yml
 # Config file `plugins` defines plugins used by build.
@@ -100,13 +100,10 @@ plugins:
       - jim@netlify.com
 ```
 
-Jump to [plugin docs](#plugins)
-
 ## Lifecycle
 
-The Netlify build lifecycle consists of these lifecycle `events`.
+The build process runs through a series of lifecycle `events`. These events are the places we can hook into and extend how the Netlify build operates.
 
-Events are activities that happen while during the course of the build system running.
 
 <!-- AUTO-GENERATED-CONTENT:START (LIFECYCLE_TABLE) -->
 | Lifecycle hook | Description |
@@ -114,15 +111,39 @@ Events are activities that happen while during the course of the build system ru
 | ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecycleinit">init</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Runs before anything else |
 | ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclegetcache">getCache</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Fetch previous build cache |
 | ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecycleinstall">install</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Install project dependancies |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecycleprebuild">preBuild</a>** ‏‏‎  ‏‏‎  ‏‏‎  | runs before functions & build commands run |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclefunctionsbuild">functionsBuild</a>** ‏‏‎  ‏‏‎  ‏‏‎  | build the serverless functions |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclebuild">build</a>** ‏‏‎  ‏‏‎  ‏‏‎  | build commands run |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecycleprebuild">preBuild</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Runs before functions & build commands run |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclefunctionsbuild">functionsBuild</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Build the serverless functions |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclebuild">build</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Build commands are executed |
 | ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclepostbuild">postBuild</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Runs after site & functions have been built |
 | ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclepackage">package</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Package & optimize artifact |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclepredeploy">preDeploy</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Deploy built artifact |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclepredeploy">preDeploy</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Runs before built artifacts are deployed |
 | ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclesavecache">saveCache</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Save cached assets |
 | 🎉 ‏‏‎ **<a href="#lifecyclefinally">finally</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Runs after anything else |
 <!-- AUTO-GENERATED-CONTENT:END (LIFECYCLE_TABLE) -->
+
+The Lifecycle flows the events in order and executes and their `pre` & `post` counterparts.
+
+`pre` happens before a specific event.
+
+`post` happens before a specific event.
+
+```
+      ┌───────────────┬────────────────┬──────────────────┐
+      │      pre      │     event      │       post       │
+      ├───────────────┼────────────────┼──────────────────┤
+      │               │                │                  │
+      │               │                │                  │
+...   │   preBuild    │     build      │    postBuild     │   ...
+      │               │                │                  │
+      │               │                │                  │
+      └───────────────┤                ├──────────────────┘
+                      └────────────────┘
+
+      ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ▶
+
+                        event flow
+```
+
 
 <!-- AUTO-GENERATED-CONTENT:START (LIFECYCLE_DOCS) -->
 ### lifecycle.init
@@ -132,7 +153,7 @@ Events are activities that happen while during the course of the build system ru
 
 <details>
   <summary>Using init</summary>
-  
+
   <br/>
 
   **1. Using with a Plugin**
@@ -158,7 +179,7 @@ Events are activities that happen while during the course of the build system ru
       config:
         foo: bar
   ```
-  
+
 
   **2. Using with via `build.lifecycle`**
 
@@ -168,7 +189,7 @@ build:
     init:
       - echo "Do thing on init step"
 ```
-  
+
 </details>
 
 ### lifecycle.getCache
@@ -178,7 +199,7 @@ build:
 
 <details>
   <summary>Using getCache</summary>
-  
+
   <br/>
 
   **1. Using with a Plugin**
@@ -204,7 +225,7 @@ build:
       config:
         foo: bar
   ```
-  
+
 
   **2. Using with via `build.lifecycle`**
 
@@ -214,7 +235,7 @@ build:
     getCache:
       - echo "Do thing on getCache step"
 ```
-  
+
 </details>
 
 ### lifecycle.install
@@ -224,7 +245,7 @@ build:
 
 <details>
   <summary>Using install</summary>
-  
+
   <br/>
 
   **1. Using with a Plugin**
@@ -250,7 +271,7 @@ build:
       config:
         foo: bar
   ```
-  
+
 
   **2. Using with via `build.lifecycle`**
 
@@ -260,17 +281,17 @@ build:
     install:
       - echo "Do thing on install step"
 ```
-  
+
 </details>
 
 ### lifecycle.preBuild
 
-`preBuild` - runs before functions & build commands run
+`preBuild` - Runs before functions & build commands run
 
 
 <details>
   <summary>Using preBuild</summary>
-  
+
   <br/>
 
   **1. Using with a Plugin**
@@ -296,7 +317,7 @@ build:
       config:
         foo: bar
   ```
-  
+
 
   **2. Using with via `build.lifecycle`**
 
@@ -306,17 +327,17 @@ build:
     preBuild:
       - echo "Do thing on preBuild step"
 ```
-  
+
 </details>
 
 ### lifecycle.functionsBuild
 
-`functionsBuild` - build the serverless functions
+`functionsBuild` - Build the serverless functions
 
 
 <details>
   <summary>Using functionsBuild</summary>
-  
+
   <br/>
 
   **1. Using with a Plugin**
@@ -342,7 +363,7 @@ build:
       config:
         foo: bar
   ```
-  
+
 
   **2. Using with via `build.lifecycle`**
 
@@ -352,17 +373,17 @@ build:
     functionsBuild:
       - echo "Do thing on functionsBuild step"
 ```
-  
+
 </details>
 
 ### lifecycle.build
 
-`build` - build commands run
+`build` - Build commands are executed
 
 
 <details>
   <summary>Using build</summary>
-  
+
   <br/>
 
   **1. Using with a Plugin**
@@ -388,7 +409,7 @@ build:
       config:
         foo: bar
   ```
-  
+
 
   **2. Using with via `build.lifecycle`**
 
@@ -398,7 +419,7 @@ build:
     build:
       - echo "Do thing on build step"
 ```
-  
+
 </details>
 
 ### lifecycle.postBuild
@@ -408,7 +429,7 @@ build:
 
 <details>
   <summary>Using postBuild</summary>
-  
+
   <br/>
 
   **1. Using with a Plugin**
@@ -434,7 +455,7 @@ build:
       config:
         foo: bar
   ```
-  
+
 
   **2. Using with via `build.lifecycle`**
 
@@ -444,7 +465,7 @@ build:
     postBuild:
       - echo "Do thing on postBuild step"
 ```
-  
+
 </details>
 
 ### lifecycle.package
@@ -454,7 +475,7 @@ build:
 
 <details>
   <summary>Using package</summary>
-  
+
   <br/>
 
   **1. Using with a Plugin**
@@ -480,7 +501,7 @@ build:
       config:
         foo: bar
   ```
-  
+
 
   **2. Using with via `build.lifecycle`**
 
@@ -490,17 +511,17 @@ build:
     package:
       - echo "Do thing on package step"
 ```
-  
+
 </details>
 
 ### lifecycle.preDeploy
 
-`preDeploy` - Deploy built artifact
+`preDeploy` - Runs before built artifacts are deployed
 
 
 <details>
   <summary>Using preDeploy</summary>
-  
+
   <br/>
 
   **1. Using with a Plugin**
@@ -526,7 +547,7 @@ build:
       config:
         foo: bar
   ```
-  
+
 
   **2. Using with via `build.lifecycle`**
 
@@ -536,7 +557,7 @@ build:
     preDeploy:
       - echo "Do thing on preDeploy step"
 ```
-  
+
 </details>
 
 ### lifecycle.saveCache
@@ -546,7 +567,7 @@ build:
 
 <details>
   <summary>Using saveCache</summary>
-  
+
   <br/>
 
   **1. Using with a Plugin**
@@ -572,7 +593,7 @@ build:
       config:
         foo: bar
   ```
-  
+
 
   **2. Using with via `build.lifecycle`**
 
@@ -582,7 +603,7 @@ build:
     saveCache:
       - echo "Do thing on saveCache step"
 ```
-  
+
 </details>
 
 ### lifecycle.finally
@@ -592,7 +613,7 @@ build:
 
 <details>
   <summary>Using finally</summary>
-  
+
   <br/>
 
   **1. Using with a Plugin**
@@ -618,7 +639,7 @@ build:
       config:
         foo: bar
   ```
-  
+
 
   **2. Using with via `build.lifecycle`**
 
@@ -628,7 +649,7 @@ build:
     finally:
       - echo "Do thing on finally step"
 ```
-  
+
 </details>
 <!-- AUTO-GENERATED-CONTENT:END (PLUGINS) -->
 
