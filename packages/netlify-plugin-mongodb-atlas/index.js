@@ -13,8 +13,8 @@ async function apiCall({ endpoint = '/', method = 'GET', pathParams = {}, queryP
 
   const endpointURL = new URL(endpoint, urlBase)
 
-  for (const key of pathParams) endpointURL.pathname = endpointURL.pathname.replace(`{${key}`, pathParams[key])
-  for (const key of queryParams) endpointURL.searchParams.append(key, queryParams[key])
+  for (const key in pathParams) endpointURL.pathname = endpointURL.pathname.replace(`{${key}`, pathParams[key])
+  for (const key in queryParams) endpointURL.searchParams.append(key, queryParams[key])
 
   const body = method.toUpperCase() === 'POST' && JSON.stringify(bodyParams)
   return client.fetch(endpointURL, {
