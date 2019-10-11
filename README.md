@@ -777,11 +777,19 @@ Plugins can do a-lot and we are excited what the JAMstack community will build!
 
 ## CLI commands
 
+Like [Netlify dev](https://www.netlify.com/products/dev/), Netlify build runs locally and in the remote CI context
+
+To execute your build locally, run the following CLI command:
+
 ```
 netlify build
 ```
 
-Test out the build flow. This will output everything that happens in the build flow without executing the plugins.
+It's also possible to "try before you buy" and test out the build flow before executing any code with the `dry` run flag.
+
+The `--dry` flag will output everything that happens in the build flow without executing the plugin lifecycle methods.
+
+To execute a test run of the build locally, run the following CLI command:
 
 ```
 netlify build --dry
