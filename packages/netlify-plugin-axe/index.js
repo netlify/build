@@ -12,8 +12,7 @@ module.exports = {
     const { site = process.env.SITE, axeFlags } = pluginConfig
 
     await execa(`axe ${site} ${axeFlags} --save .axe-results/result.json`, {
-      stdio: 'inherit',
-      preferLocal: true
+      stdio: 'inherit'
     })
 
     let results = require(`${cwd()}/.axe-results/result.json`)

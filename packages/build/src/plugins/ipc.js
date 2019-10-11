@@ -25,7 +25,8 @@ const executePlugin = async function(eventName, message, { baseDir }) {
 
   const childProcess = execa('node', [CHILD_MAIN_PATH, eventName, messageString], {
     cwd: baseDir,
-    stdio: ['ignore', 'pipe', 'pipe', 'pipe']
+    stdio: ['ignore', 'pipe', 'pipe', 'pipe'],
+    preferLocal: true
   })
   redactProcess(childProcess)
 

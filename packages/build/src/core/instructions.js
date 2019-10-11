@@ -85,7 +85,7 @@ const execCommand = async function({ hook, command, baseDir }) {
   logCommandStart(command)
 
   try {
-    const childProcess = execa(command, { shell: true, cwd: baseDir })
+    const childProcess = execa(command, { shell: true, cwd: baseDir, preferLocal: true })
     redactProcess(childProcess)
     await childProcess
   } catch (error) {
