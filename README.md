@@ -8,7 +8,7 @@ It is designed to support any kind of build flow and is extendable to fit any un
 <details>
 <summary>Expand Table of Contents</summary>
 
-- [About](#about)
+- [Background](#background)
 - [How it works](#how-it-works)
   * [Extending via config](#extending-via-config)
   * [Extending via plugins](#extending-via-plugins)
@@ -25,6 +25,8 @@ It is designed to support any kind of build flow and is extendable to fit any un
   * [lifecycle.saveCache](#lifecyclesavecache)
   * [lifecycle.finally](#lifecyclefinally)
 - [Configuration](#configuration)
+- [Plugins](#plugins)
+  * [What can plugins do?](#what-can-plugins-do)
 - [CLI commands](#cli-commands)
 - [Setting up the project](#setting-up-the-project)
   * [Packages](#packages)
@@ -32,16 +34,21 @@ It is designed to support any kind of build flow and is extendable to fit any un
 </details>
 <!-- AUTO-GENERATED-CONTENT:END -->
 
-## About
+## Background
 
 During a site build, there are a variety of things happening under the hood.
 
-- We are downloading & installing dependencies
-- running your build command
-- caching files
-- and deploying your site to the web
+This is a simplified view of a typical build life cycle:
 
-Netlify build adds a programatic interface on these lifecycle steps and allows for greater flexibility in how your site & serverless functions deploy.
+1. Netlify clones your repo & looks for diffs
+2. Dependencies are install in the project
+3. We run your build command
+4. Files & dependencies are cached
+5. Finally, your site is deployed to the web!
+
+Historically, when connecting your site to Netlify, we ask for the build command (step 3 above) and will run through this process. This works great for most use cases & will continue to do so 😃
+
+For builds that require a little more flexibility, we are introducing a programatic interface on top of these build lifecycle steps.
 
 ## How it works
 
@@ -51,8 +58,8 @@ Plugins and `build.lifecycle` are defined in your netlify configuration file.
 
 The build [lifecycle](#lifecycle) can be extended in two ways:
 
-1. Inline via the `build.lifecycle` config
-2. With plugins via `plugins` config
+1. Adding lifecycle steps to `build.lifecycle` in your config file
+2. With [plugins](#plugins)
 
 ### Extending via config
 
@@ -404,6 +411,82 @@ To reference an environment variable in Netlify config:
 ```yml
 foo: ${env:MY_ENV_VAR}
 ```
+
+## Plugins
+
+Netlify Plugins extend the functionality of the netlify build process.
+
+Plugins are POJOs (plain old javascript objects) that allow users to hook into the different lifecycle steps happening during their site builds.
+
+For example, hooking into the `preBuild` step to run something before your build command. Or the `postBuild` hook for running things after your site build has completed.
+
+
+```js
+{
+  name: 'my-awesome-plugin',
+  init: () => { /* Run custom logic at beginning of build */ }
+  preBuild: () => { /* Run custom logic before build happens */ },
+  finally: () => { /* Run custom logic at the end of the build */ }
+  // ... etc
+}
+```
+
+Here is an example:
+
+```js
+/* file ./plugins/my-plugin/index.js */
+module.exports = function exampleOne(config) {
+  // do initial things with plugin 'config'
+  return {
+    init: () => {
+      console.log('Run custom logic at beginning of build')
+    },
+    preBuild: () => {
+      console.log('Run custom logic before build happens')
+    },
+    postBuild: () => {
+      console.log('Run custom logic after build happens')
+    },
+    finally: () => {
+      console.log('Run custom logic at the end of the build')
+    }
+  }
+}
+```
+
+To use this plugin, define the `plugins` key in your Netlify config file.
+
+```yml
+build:
+  functions: src/functions
+  publish: build
+  command: npm run build
+
+# Netlify build plugins
+plugins:
+  examplePlugin:
+    # Path to plugin. Can be local relative path or reference to node_modules
+    type: ./plugins/my-plugin/
+    config:
+      a: hello
+      b: goodbye
+```
+
+### What can plugins do?
+
+Plugins can do a-lot and we are excited what the JAMstack community will build!
+
+**Here are some examples:**
+
+- **netlify-plugin-lighthouse** to automatically track your lighthouse site score between deployments
+- **netlify-plugin-cypress** to automatically run integration tests
+- **netlify-plugin-tweet-new-post** to automatically share new content via twitter on new publish
+- **netlify-plugin-sitemap** to generate sitemaps after build
+- **netlify-plugin-notify** to automatically wired up build notifications
+- **netlify-plugin-a11y-axe** to automatically audit site for accessibility issues
+- **netlify-plugin-twiliosms** text your boss every time you deploy so they know you're working
+- **netlify-plugin-svgoptimizer** to automatically optimize all SVGs in a directory when the site is built
+- ... the sky is the limit 🌈
 
 ## CLI commands
 
