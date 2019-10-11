@@ -68,8 +68,11 @@ async function ensureCluster({ clusterName, projectId }) {
       res = resolve
       rej = reject
     })
+    let tries = 0
 
     const checker = setInterval(async () => {
+      if(tries > 29) return rej('MongoDB Atlas: The cluster took to much time to provision')
+
       try {
         cluster = await apiCall({
           endpoint: '/groups/{GROUP-ID}/clusters/{CLUSTER-NAME}',
@@ -77,8 +80,7 @@ async function ensureCluster({ clusterName, projectId }) {
         })
       } catch (err) {
         clearInterval(checker)
-        rej(`MongoDB Atlas: Error while fetching newly created cluster`, err)
-        return
+        return rej(`MongoDB Atlas: Error while fetching newly created cluster`, err)
       }
       console.log(`MongoDB Atlas: Cluster state "${cluster.stateName}"`)
 
@@ -89,6 +91,8 @@ async function ensureCluster({ clusterName, projectId }) {
         clearInterval(checker)
         res()
       }
+
+      tries++
     }, 30000)
 
     await wait
