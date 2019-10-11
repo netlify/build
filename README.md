@@ -131,7 +131,9 @@ Events are activities that happen while during the course of the build system ru
 
 
 <details>
-  <summary>Using `init` in a plugin</summary>
+  <summary>Using "init" via a plugin</summary>
+
+  Below is an example plugin using the `init` hook
 
   ```js
   module.exports = function myPlugin(pluginConfig) {
@@ -143,10 +145,20 @@ Events are activities that happen while during the course of the build system ru
   }
   ```
 
+  After creating the plugin, add into your Netlify config file under `plugins`
+
+  ```yml
+  plugins:
+    myPlugin:
+      type: ./path/to/plugin
+      config:
+        foo: bar
+  ```
+
 </details>
   
 <details>
-  <summary>Using `init` in `build.lifecycle`</summary>
+  <summary>Using "init" in config</summary>
 
   ```yml
   build:
@@ -163,7 +175,9 @@ Events are activities that happen while during the course of the build system ru
 
 
 <details>
-  <summary>Using `getCache` in a plugin</summary>
+  <summary>Using "getCache" via a plugin</summary>
+
+  Below is an example plugin using the `getCache` hook
 
   ```js
   module.exports = function myPlugin(pluginConfig) {
@@ -175,10 +189,20 @@ Events are activities that happen while during the course of the build system ru
   }
   ```
 
+  After creating the plugin, add into your Netlify config file under `plugins`
+
+  ```yml
+  plugins:
+    myPlugin:
+      type: ./path/to/plugin
+      config:
+        foo: bar
+  ```
+
 </details>
   
 <details>
-  <summary>Using `getCache` in `build.lifecycle`</summary>
+  <summary>Using "getCache" in config</summary>
 
   ```yml
   build:
@@ -195,7 +219,9 @@ Events are activities that happen while during the course of the build system ru
 
 
 <details>
-  <summary>Using `install` in a plugin</summary>
+  <summary>Using "install" via a plugin</summary>
+
+  Below is an example plugin using the `install` hook
 
   ```js
   module.exports = function myPlugin(pluginConfig) {
@@ -207,10 +233,20 @@ Events are activities that happen while during the course of the build system ru
   }
   ```
 
+  After creating the plugin, add into your Netlify config file under `plugins`
+
+  ```yml
+  plugins:
+    myPlugin:
+      type: ./path/to/plugin
+      config:
+        foo: bar
+  ```
+
 </details>
   
 <details>
-  <summary>Using `install` in `build.lifecycle`</summary>
+  <summary>Using "install" in config</summary>
 
   ```yml
   build:
@@ -227,7 +263,9 @@ Events are activities that happen while during the course of the build system ru
 
 
 <details>
-  <summary>Using `preBuild` in a plugin</summary>
+  <summary>Using "preBuild" via a plugin</summary>
+
+  Below is an example plugin using the `preBuild` hook
 
   ```js
   module.exports = function myPlugin(pluginConfig) {
@@ -239,10 +277,20 @@ Events are activities that happen while during the course of the build system ru
   }
   ```
 
+  After creating the plugin, add into your Netlify config file under `plugins`
+
+  ```yml
+  plugins:
+    myPlugin:
+      type: ./path/to/plugin
+      config:
+        foo: bar
+  ```
+
 </details>
   
 <details>
-  <summary>Using `preBuild` in `build.lifecycle`</summary>
+  <summary>Using "preBuild" in config</summary>
 
   ```yml
   build:
@@ -259,7 +307,9 @@ Events are activities that happen while during the course of the build system ru
 
 
 <details>
-  <summary>Using `functionsBuild` in a plugin</summary>
+  <summary>Using "functionsBuild" via a plugin</summary>
+
+  Below is an example plugin using the `functionsBuild` hook
 
   ```js
   module.exports = function myPlugin(pluginConfig) {
@@ -271,10 +321,20 @@ Events are activities that happen while during the course of the build system ru
   }
   ```
 
+  After creating the plugin, add into your Netlify config file under `plugins`
+
+  ```yml
+  plugins:
+    myPlugin:
+      type: ./path/to/plugin
+      config:
+        foo: bar
+  ```
+
 </details>
   
 <details>
-  <summary>Using `functionsBuild` in `build.lifecycle`</summary>
+  <summary>Using "functionsBuild" in config</summary>
 
   ```yml
   build:
@@ -291,7 +351,9 @@ Events are activities that happen while during the course of the build system ru
 
 
 <details>
-  <summary>Using `build` in a plugin</summary>
+  <summary>Using "build" via a plugin</summary>
+
+  Below is an example plugin using the `build` hook
 
   ```js
   module.exports = function myPlugin(pluginConfig) {
@@ -303,10 +365,20 @@ Events are activities that happen while during the course of the build system ru
   }
   ```
 
+  After creating the plugin, add into your Netlify config file under `plugins`
+
+  ```yml
+  plugins:
+    myPlugin:
+      type: ./path/to/plugin
+      config:
+        foo: bar
+  ```
+
 </details>
   
 <details>
-  <summary>Using `build` in `build.lifecycle`</summary>
+  <summary>Using "build" in config</summary>
 
   ```yml
   build:
@@ -323,7 +395,9 @@ Events are activities that happen while during the course of the build system ru
 
 
 <details>
-  <summary>Using `postBuild` in a plugin</summary>
+  <summary>Using "postBuild" via a plugin</summary>
+
+  Below is an example plugin using the `postBuild` hook
 
   ```js
   module.exports = function myPlugin(pluginConfig) {
@@ -335,10 +409,20 @@ Events are activities that happen while during the course of the build system ru
   }
   ```
 
+  After creating the plugin, add into your Netlify config file under `plugins`
+
+  ```yml
+  plugins:
+    myPlugin:
+      type: ./path/to/plugin
+      config:
+        foo: bar
+  ```
+
 </details>
   
 <details>
-  <summary>Using `postBuild` in `build.lifecycle`</summary>
+  <summary>Using "postBuild" in config</summary>
 
   ```yml
   build:
@@ -355,7 +439,9 @@ Events are activities that happen while during the course of the build system ru
 
 
 <details>
-  <summary>Using `package` in a plugin</summary>
+  <summary>Using "package" via a plugin</summary>
+
+  Below is an example plugin using the `package` hook
 
   ```js
   module.exports = function myPlugin(pluginConfig) {
@@ -367,10 +453,20 @@ Events are activities that happen while during the course of the build system ru
   }
   ```
 
+  After creating the plugin, add into your Netlify config file under `plugins`
+
+  ```yml
+  plugins:
+    myPlugin:
+      type: ./path/to/plugin
+      config:
+        foo: bar
+  ```
+
 </details>
   
 <details>
-  <summary>Using `package` in `build.lifecycle`</summary>
+  <summary>Using "package" in config</summary>
 
   ```yml
   build:
@@ -387,7 +483,9 @@ Events are activities that happen while during the course of the build system ru
 
 
 <details>
-  <summary>Using `preDeploy` in a plugin</summary>
+  <summary>Using "preDeploy" via a plugin</summary>
+
+  Below is an example plugin using the `preDeploy` hook
 
   ```js
   module.exports = function myPlugin(pluginConfig) {
@@ -399,10 +497,20 @@ Events are activities that happen while during the course of the build system ru
   }
   ```
 
+  After creating the plugin, add into your Netlify config file under `plugins`
+
+  ```yml
+  plugins:
+    myPlugin:
+      type: ./path/to/plugin
+      config:
+        foo: bar
+  ```
+
 </details>
   
 <details>
-  <summary>Using `preDeploy` in `build.lifecycle`</summary>
+  <summary>Using "preDeploy" in config</summary>
 
   ```yml
   build:
@@ -419,7 +527,9 @@ Events are activities that happen while during the course of the build system ru
 
 
 <details>
-  <summary>Using `saveCache` in a plugin</summary>
+  <summary>Using "saveCache" via a plugin</summary>
+
+  Below is an example plugin using the `saveCache` hook
 
   ```js
   module.exports = function myPlugin(pluginConfig) {
@@ -431,10 +541,20 @@ Events are activities that happen while during the course of the build system ru
   }
   ```
 
+  After creating the plugin, add into your Netlify config file under `plugins`
+
+  ```yml
+  plugins:
+    myPlugin:
+      type: ./path/to/plugin
+      config:
+        foo: bar
+  ```
+
 </details>
   
 <details>
-  <summary>Using `saveCache` in `build.lifecycle`</summary>
+  <summary>Using "saveCache" in config</summary>
 
   ```yml
   build:
@@ -451,7 +571,9 @@ Events are activities that happen while during the course of the build system ru
 
 
 <details>
-  <summary>Using `finally` in a plugin</summary>
+  <summary>Using "finally" via a plugin</summary>
+
+  Below is an example plugin using the `finally` hook
 
   ```js
   module.exports = function myPlugin(pluginConfig) {
@@ -463,10 +585,20 @@ Events are activities that happen while during the course of the build system ru
   }
   ```
 
+  After creating the plugin, add into your Netlify config file under `plugins`
+
+  ```yml
+  plugins:
+    myPlugin:
+      type: ./path/to/plugin
+      config:
+        foo: bar
+  ```
+
 </details>
   
 <details>
-  <summary>Using `finally` in `build.lifecycle`</summary>
+  <summary>Using "finally" in config</summary>
 
   ```yml
   build:

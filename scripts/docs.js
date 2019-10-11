@@ -128,7 +128,9 @@ function formatName(name) {
 function renderPluginExample(name) {
   return `
 <details>
-  <summary>Using \`${name}\` in a plugin</summary>
+  <summary>Using "${name}" via a plugin</summary>
+
+  Below is an example plugin using the \`${name}\` hook
 
   \`\`\`js
   module.exports = function myPlugin(pluginConfig) {
@@ -140,6 +142,16 @@ function renderPluginExample(name) {
   }
   \`\`\`
 
+  After creating the plugin, add into your Netlify config file under \`plugins\`
+
+  \`\`\`yml
+  plugins:
+    myPlugin:
+      type: ./path/to/plugin
+      config:
+        foo: bar
+  \`\`\`
+
 </details>
   `
 }
@@ -147,7 +159,7 @@ function renderPluginExample(name) {
 function renderLifeCycleExample(name) {
   return `
 <details>
-  <summary>Using \`${name}\` in \`build.lifecycle\`</summary>
+  <summary>Using "${name}" in config</summary>
 
   \`\`\`yml
   build:
