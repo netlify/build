@@ -131,7 +131,11 @@ Events are activities that happen while during the course of the build system ru
 
 
 <details>
-  <summary>Using "init" via a plugin</summary>
+  <summary>Using init</summary>
+  
+  <br/>
+
+  **1. Using with a Plugin**
 
   Below is an example plugin using the `init` hook
 
@@ -154,28 +158,30 @@ Events are activities that happen while during the course of the build system ru
       config:
         foo: bar
   ```
-
-</details>
   
-<details>
-  <summary>Using "init" in config</summary>
 
-  ```yml
-  build:
-    lifecycle:
-      init:
-        - echo "Do thing on init step"
-  ```
+  **2. Using with via `build.lifecycle`**
 
-</details>
+```yml
+build:
+  lifecycle:
+    init:
+      - echo "Do thing on init step"
+```
   
+</details>
+
 ### lifecycle.getCache
 
 `getCache` - Fetch previous build cache
 
 
 <details>
-  <summary>Using "getCache" via a plugin</summary>
+  <summary>Using getCache</summary>
+  
+  <br/>
+
+  **1. Using with a Plugin**
 
   Below is an example plugin using the `getCache` hook
 
@@ -198,28 +204,30 @@ Events are activities that happen while during the course of the build system ru
       config:
         foo: bar
   ```
-
-</details>
   
-<details>
-  <summary>Using "getCache" in config</summary>
 
-  ```yml
-  build:
-    lifecycle:
-      getCache:
-        - echo "Do thing on getCache step"
-  ```
+  **2. Using with via `build.lifecycle`**
 
-</details>
+```yml
+build:
+  lifecycle:
+    getCache:
+      - echo "Do thing on getCache step"
+```
   
+</details>
+
 ### lifecycle.install
 
 `install` - Install project dependancies
 
 
 <details>
-  <summary>Using "install" via a plugin</summary>
+  <summary>Using install</summary>
+  
+  <br/>
+
+  **1. Using with a Plugin**
 
   Below is an example plugin using the `install` hook
 
@@ -242,28 +250,30 @@ Events are activities that happen while during the course of the build system ru
       config:
         foo: bar
   ```
-
-</details>
   
-<details>
-  <summary>Using "install" in config</summary>
 
-  ```yml
-  build:
-    lifecycle:
-      install:
-        - echo "Do thing on install step"
-  ```
+  **2. Using with via `build.lifecycle`**
 
-</details>
+```yml
+build:
+  lifecycle:
+    install:
+      - echo "Do thing on install step"
+```
   
+</details>
+
 ### lifecycle.preBuild
 
 `preBuild` - runs before functions & build commands run
 
 
 <details>
-  <summary>Using "preBuild" via a plugin</summary>
+  <summary>Using preBuild</summary>
+  
+  <br/>
+
+  **1. Using with a Plugin**
 
   Below is an example plugin using the `preBuild` hook
 
@@ -286,28 +296,30 @@ Events are activities that happen while during the course of the build system ru
       config:
         foo: bar
   ```
-
-</details>
   
-<details>
-  <summary>Using "preBuild" in config</summary>
 
-  ```yml
-  build:
-    lifecycle:
-      preBuild:
-        - echo "Do thing on preBuild step"
-  ```
+  **2. Using with via `build.lifecycle`**
 
-</details>
+```yml
+build:
+  lifecycle:
+    preBuild:
+      - echo "Do thing on preBuild step"
+```
   
+</details>
+
 ### lifecycle.functionsBuild
 
 `functionsBuild` - build the serverless functions
 
 
 <details>
-  <summary>Using "functionsBuild" via a plugin</summary>
+  <summary>Using functionsBuild</summary>
+  
+  <br/>
+
+  **1. Using with a Plugin**
 
   Below is an example plugin using the `functionsBuild` hook
 
@@ -330,28 +342,30 @@ Events are activities that happen while during the course of the build system ru
       config:
         foo: bar
   ```
-
-</details>
   
-<details>
-  <summary>Using "functionsBuild" in config</summary>
 
-  ```yml
-  build:
-    lifecycle:
-      functionsBuild:
-        - echo "Do thing on functionsBuild step"
-  ```
+  **2. Using with via `build.lifecycle`**
 
-</details>
+```yml
+build:
+  lifecycle:
+    functionsBuild:
+      - echo "Do thing on functionsBuild step"
+```
   
+</details>
+
 ### lifecycle.build
 
 `build` - build commands run
 
 
 <details>
-  <summary>Using "build" via a plugin</summary>
+  <summary>Using build</summary>
+  
+  <br/>
+
+  **1. Using with a Plugin**
 
   Below is an example plugin using the `build` hook
 
@@ -374,28 +388,30 @@ Events are activities that happen while during the course of the build system ru
       config:
         foo: bar
   ```
-
-</details>
   
-<details>
-  <summary>Using "build" in config</summary>
 
-  ```yml
-  build:
-    lifecycle:
-      build:
-        - echo "Do thing on build step"
-  ```
+  **2. Using with via `build.lifecycle`**
 
-</details>
+```yml
+build:
+  lifecycle:
+    build:
+      - echo "Do thing on build step"
+```
   
+</details>
+
 ### lifecycle.postBuild
 
 `postBuild` - Runs after site & functions have been built
 
 
 <details>
-  <summary>Using "postBuild" via a plugin</summary>
+  <summary>Using postBuild</summary>
+  
+  <br/>
+
+  **1. Using with a Plugin**
 
   Below is an example plugin using the `postBuild` hook
 
@@ -418,28 +434,30 @@ Events are activities that happen while during the course of the build system ru
       config:
         foo: bar
   ```
-
-</details>
   
-<details>
-  <summary>Using "postBuild" in config</summary>
 
-  ```yml
-  build:
-    lifecycle:
-      postBuild:
-        - echo "Do thing on postBuild step"
-  ```
+  **2. Using with via `build.lifecycle`**
 
-</details>
+```yml
+build:
+  lifecycle:
+    postBuild:
+      - echo "Do thing on postBuild step"
+```
   
+</details>
+
 ### lifecycle.package
 
 `package` - Package & optimize artifact
 
 
 <details>
-  <summary>Using "package" via a plugin</summary>
+  <summary>Using package</summary>
+  
+  <br/>
+
+  **1. Using with a Plugin**
 
   Below is an example plugin using the `package` hook
 
@@ -462,28 +480,30 @@ Events are activities that happen while during the course of the build system ru
       config:
         foo: bar
   ```
-
-</details>
   
-<details>
-  <summary>Using "package" in config</summary>
 
-  ```yml
-  build:
-    lifecycle:
-      package:
-        - echo "Do thing on package step"
-  ```
+  **2. Using with via `build.lifecycle`**
 
-</details>
+```yml
+build:
+  lifecycle:
+    package:
+      - echo "Do thing on package step"
+```
   
+</details>
+
 ### lifecycle.preDeploy
 
 `preDeploy` - Deploy built artifact
 
 
 <details>
-  <summary>Using "preDeploy" via a plugin</summary>
+  <summary>Using preDeploy</summary>
+  
+  <br/>
+
+  **1. Using with a Plugin**
 
   Below is an example plugin using the `preDeploy` hook
 
@@ -506,28 +526,30 @@ Events are activities that happen while during the course of the build system ru
       config:
         foo: bar
   ```
-
-</details>
   
-<details>
-  <summary>Using "preDeploy" in config</summary>
 
-  ```yml
-  build:
-    lifecycle:
-      preDeploy:
-        - echo "Do thing on preDeploy step"
-  ```
+  **2. Using with via `build.lifecycle`**
 
-</details>
+```yml
+build:
+  lifecycle:
+    preDeploy:
+      - echo "Do thing on preDeploy step"
+```
   
+</details>
+
 ### lifecycle.saveCache
 
 `saveCache` - Save cached assets
 
 
 <details>
-  <summary>Using "saveCache" via a plugin</summary>
+  <summary>Using saveCache</summary>
+  
+  <br/>
+
+  **1. Using with a Plugin**
 
   Below is an example plugin using the `saveCache` hook
 
@@ -550,28 +572,30 @@ Events are activities that happen while during the course of the build system ru
       config:
         foo: bar
   ```
-
-</details>
   
-<details>
-  <summary>Using "saveCache" in config</summary>
 
-  ```yml
-  build:
-    lifecycle:
-      saveCache:
-        - echo "Do thing on saveCache step"
-  ```
+  **2. Using with via `build.lifecycle`**
 
-</details>
+```yml
+build:
+  lifecycle:
+    saveCache:
+      - echo "Do thing on saveCache step"
+```
   
+</details>
+
 ### lifecycle.finally
 
 `finally` - Runs after anything else
 
 
 <details>
-  <summary>Using "finally" via a plugin</summary>
+  <summary>Using finally</summary>
+  
+  <br/>
+
+  **1. Using with a Plugin**
 
   Below is an example plugin using the `finally` hook
 
@@ -594,19 +618,17 @@ Events are activities that happen while during the course of the build system ru
       config:
         foo: bar
   ```
-
-</details>
   
-<details>
-  <summary>Using "finally" in config</summary>
 
-  ```yml
-  build:
-    lifecycle:
-      finally:
-        - echo "Do thing on finally step"
-  ```
+  **2. Using with via `build.lifecycle`**
 
+```yml
+build:
+  lifecycle:
+    finally:
+      - echo "Do thing on finally step"
+```
+  
 </details>
 <!-- AUTO-GENERATED-CONTENT:END (PLUGINS) -->
 

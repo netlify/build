@@ -98,8 +98,10 @@ const config = {
         updatedContent += `### ${formatName(eventName[1])}\n\n`
         updatedContent += `${data.description.full}\n\n`
 
-        updatedContent += renderPluginExample(eventName[1])
-        updatedContent += renderLifeCycleExample(eventName[1])
+        const pluginExample = renderPluginExample(eventName[1])
+        const configExample = renderConfigExample(eventName[1])
+        updatedContent += collapse(`Using ${eventName[1]}`, `${pluginExample}\n${configExample}`)
+
         /* maybe fold
         <details>
           <summary>Plugin example</summary>
@@ -125,10 +127,20 @@ function formatName(name) {
   return `${prefix}.${name}`
 }
 
+function collapse(summary, content) {
+return `
+<details>
+  <summary>${summary}</summary>
+  ${content}
+</details>
+`
+}
+
 function renderPluginExample(name) {
   return `
-<details>
-  <summary>Using "${name}" via a plugin</summary>
+  <br/>
+
+  **1. Using with a Plugin**
 
   Below is an example plugin using the \`${name}\` hook
 
@@ -151,24 +163,19 @@ function renderPluginExample(name) {
       config:
         foo: bar
   \`\`\`
-
-</details>
   `
 }
 
-function renderLifeCycleExample(name) {
+function renderConfigExample(name) {
   return `
-<details>
-  <summary>Using "${name}" in config</summary>
+  **2. Using with via \`build.lifecycle\`**
 
-  \`\`\`yml
-  build:
-    lifecycle:
-      ${name}:
-        - echo "Do thing on ${name} step"
-  \`\`\`
-
-</details>
+\`\`\`yml
+build:
+  lifecycle:
+    ${name}:
+      - echo "Do thing on ${name} step"
+\`\`\`
   `
 }
 
