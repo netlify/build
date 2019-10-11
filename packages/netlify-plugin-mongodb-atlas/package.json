@@ -1,0 +1,24 @@
+{
+  "name": "@netlify/plugin-mongodb-atlas",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "release:patch": "npm version patch && npm publish",
+    "release:minor": "npm version minor && npm publish",
+    "release:major": "npm version major && npm publish"
+  },
+  "keywords": [
+    "atlas",
+    "netlify",
+    "netlify-plugin",
+    "netlify-mongo",
+    "mongodb-atlast",
+    "mongo"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "digest-fetch": "^1.0.5"
+  }
+}
