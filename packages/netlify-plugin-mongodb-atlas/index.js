@@ -62,6 +62,31 @@ async function ensureCluster({ clusterName, projectId }) {
         },
       },
     })
+
+    let res, rej
+    const wait = new Promise((resolve, reject) => {
+      res = resolve
+      rej = reject
+    })
+
+    const checker = setInterval(async () => {
+      cluster = await apiCall({
+        endpoint: '/groups/{GROUP-ID}/clusters/{CLUSTER-NAME}',
+        pathParams: { 'GROUP-ID': projectId, 'CLUSTER-NAME': clusterName }
+      })
+      console.log(`MongoDB Atlas: Cluster state "${cluster.stateName}"`)
+
+      if (cluster.stateName === 'DELETED') {
+        clearInterval(checker)
+        rej('MongoDB Atlas: Invalid state for cluster')
+      } else if (cluster.stateName === 'IDLE') {
+        clearInterval(checker)
+        res()
+      }
+
+    }, 30000)
+
+    await wait
   }
 
   return cluster
