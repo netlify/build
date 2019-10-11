@@ -148,13 +148,13 @@ const readdir = promisify(fs.readdir)
 var walk = async function(dir, filelist) {
   var files = await readdir(dir)
   filelist = filelist || []
-  files.forEach(function(file) {
+  await Promise.all(files.map(async function(file) {
     const dirfile = path.join(dir, file)
     if (fs.statSync(dirfile).isDirectory()) {
       filelist = await walk(dirfile + '/', filelist)
     } else {
       filelist.push(dirfile)
     }
-  })
+  }))
   return filelist
 }
