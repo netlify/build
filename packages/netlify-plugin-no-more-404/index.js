@@ -142,7 +142,7 @@ function netlify404nomore(conf) {
 module.exports = netlify404nomore
 
 const {promisify} = require('util')
-const readdir = promisify(fs.readdir))
+const readdir = promisify(fs.readdir)
 // recursive crawl to get a list of filepaths
 // https://gist.github.com/kethinov/6658166
 var walk = async function(dir, filelist) {
