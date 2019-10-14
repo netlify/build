@@ -179,7 +179,6 @@ const logErrorInstructions = function() {
 }
 
 const logBuildError = function(error, { verbose }) {
-  log()
   log(redBright.bold('┌─────────────────────────────┐'))
   log(redBright.bold('│    Netlify Build Error!     │'))
   log(redBright.bold('└─────────────────────────────┘'))
