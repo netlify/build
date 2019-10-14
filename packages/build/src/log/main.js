@@ -3,6 +3,8 @@ const { basename } = require('path')
 const { tick, pointer, arrowDown } = require('figures')
 const omit = require('omit.js')
 
+const telemetry = require('../utils/telemetry')
+
 const { log } = require('./patch')
 const { cleanStack } = require('./stack')
 
@@ -125,8 +127,7 @@ const logCommandStart = function(cmd) {
 }
 
 const logCommandError = function(name, hook, error) {
-  log(redBright(`${SUBTEXT_PADDING}Error from netlify config ${hook}:`))
-  log(`"${name}"`)
+  log(redBright(`Error in "${hook}" step from "${name}"`))
   log()
   log(redBright('Error message\n'))
   log(error.message)
@@ -199,6 +200,13 @@ const logBuildError = function(error, { verbose }) {
   log()
 }
 
+function getPluginsByType(config) {
+  const plugins = config.plugins || {}
+  return Object.keys(plugins).map((name) => {
+    return plugins[name].type
+  })
+}
+
 const logBuildSuccess = function() {
   log()
   log(greenBright.bold('┌─────────────────────────────┐'))
@@ -207,9 +215,17 @@ const logBuildSuccess = function() {
   log()
 }
 
-const logBuildEnd = function() {
+const logBuildEnd = function({ instructions, netlifyConfig, duration }) {
   const sparkles = cyanBright('(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧')
   log(`\n${sparkles} Have a nice day!\n`)
+  const plugins = getPluginsByType(netlifyConfig)
+  // telemetry noOps if BUILD_TELEMETRY_DISBALED set
+  telemetry.track('buildComplete', {
+    steps: instructions.length,
+    duration: duration.duration,
+    pluginCount: plugins.length,
+    plugins: plugins
+  })
 }
 
 module.exports = {
