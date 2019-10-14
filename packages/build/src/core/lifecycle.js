@@ -1,4 +1,3 @@
-
 const LIFECYCLE = [
   /**
    * `init` - Runs before anything else
