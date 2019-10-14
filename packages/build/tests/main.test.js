@@ -86,3 +86,12 @@ test('--version', async t => {
   const { all } = await execa.command(`${BINARY_PATH} --version`)
   t.is(all, version)
 })
+
+test('Can define options as environment variables', async t => {
+  const { all } = await execa.command(BINARY_PATH, {
+    env: {
+      NETLIFY_BUILD_CONFIG: `${FIXTURES_DIR}/empty/netlify.yml`
+    }
+  })
+  t.snapshot(normalizeOutput(all))
+})

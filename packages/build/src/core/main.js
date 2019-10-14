@@ -22,19 +22,22 @@ const {
 const { startTimer, endTimer } = require('../log/timer')
 const isNetlifyCI = require('../utils/is-netlify-ci')
 
+const { getOptions } = require('./options')
 const { loadConfig } = require('./config')
 const { handleInstructionError } = require('./error')
 const { getInstructions, runInstructions } = require('./instructions')
 const { tomlWrite } = require('./toml')
 const { doDryRun } = require('./dry')
 
-const build = async function(options = {}) {
+const build = async function(options) {
+  const optionsA = getOptions(options)
+
   const buildTimer = startTimer()
 
   try {
     logBuildStart()
 
-    const { config, configPath, token, baseDir } = await loadConfig({ options })
+    const { config, configPath, token, baseDir } = await loadConfig({ options: optionsA })
 
     const pluginsOptions = getPluginsOptions({ config })
 
@@ -42,7 +45,7 @@ const build = async function(options = {}) {
     const { buildInstructions, errorInstructions } = getInstructions({ pluginsHooks, config })
 
     /* If the `dry` option is specified, do a dry run and exit */
-    if (options.dry) {
+    if (optionsA.dry) {
       doDryRun({ buildInstructions, configPath })
       exit(0)
     }
@@ -66,7 +69,7 @@ const build = async function(options = {}) {
     endTimer(buildTimer, 'Netlify Build')
     logBuildEnd()
   } catch (error) {
-    logBuildError(error, options)
+    logBuildError(error, optionsA)
   }
 }
 
