@@ -23,7 +23,6 @@ const prefixEventNames = {
 const enrichPayload = {
   NAMESPACE: 'enrich',
   trackStart: ({ payload, instance }) => {
-    console.log('payload', payload)
     return {
       ...payload,
       ...{

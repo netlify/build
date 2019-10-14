@@ -7,7 +7,7 @@ const { data, type, version } = JSON.parse(process.argv[2])
 const API_HOST = 'telemetry-service.netlify.com'
 const API_PATHS = {
   'track': '/collect',
-  'identify': '/.netlify/functions/todo'
+  'identify': '/identify'
 }
 
 const payload = JSON.stringify(data)
