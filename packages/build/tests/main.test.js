@@ -1,6 +1,8 @@
 const test = require('ava')
 const execa = require('execa')
 
+const { version } = require('../package.json')
+
 const { normalizeOutput } = require('./helpers/main.js')
 
 const BINARY_PATH = `${__dirname}/../src/core/bin.js`
@@ -73,4 +75,14 @@ test('Lifecycle commands can execute local binaries', async t => {
 test('Plugins can execute local binaries', async t => {
   const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/local_bin_plugin/netlify.yml`)
   t.snapshot(normalizeOutput(all))
+})
+
+test('--help', async t => {
+  const { all } = await execa.command(`${BINARY_PATH} --help`)
+  t.snapshot(normalizeOutput(all))
+})
+
+test('--version', async t => {
+  const { all } = await execa.command(`${BINARY_PATH} --version`)
+  t.is(all, version)
 })
