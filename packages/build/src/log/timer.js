@@ -7,13 +7,25 @@ const startTimer = function() {
   return hrtime()
 }
 
-// Ends a timer and prints the result on console
-const endTimer = function([startSecs, startNsecs], context, hook) {
+// Stops a timer
+const endTimerDuration = function([startSecs, startNsecs]) {
   const [endSecs, endNsecs] = hrtime()
   const durationNs = (endSecs - startSecs) * NANOSECS_TO_SECS + endNsecs - startNsecs
   const durationMs = Math.ceil(durationNs / NANOSECS_TO_MSECS)
+  return durationMs
+}
+
+// Ends a timer and prints the result on console
+const endTimer = function(hrTime, context, hook) {
+  const durationMs = endTimerDuration(hrTime)
 
   logTimer(durationMs, hook, context)
+
+  return {
+    duration: durationMs,
+    hook,
+    context
+  }
 }
 
 const NANOSECS_TO_SECS = 1e9
