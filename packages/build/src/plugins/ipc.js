@@ -46,15 +46,12 @@ const executePlugin = async function(eventName, message, { baseDir }) {
 
 // Fix the error message produced by Execa
 const fixPluginError = function({ message }) {
-  return message.replace(NODE_ARGS_REGEXP, '').replace(EXIT_CODE_NAME, '')
+  return message.replace(NODE_ARGS_REGEXP, '')
 }
 
 // We don't want to report `process.argv` as it's not useful and might contain
 // confidential information (such as the API token)
 const NODE_ARGS_REGEXP = /: node .*/
-// Exit code 1 is reported as `EPERM` by Node.js but that's incorrect. This
-// should be a catch-all error exit code.
-const EXIT_CODE_NAME = ' (EPERM)'
 
 // Retrieve information passed from parent process to plugin child process
 const getMessageFromParent = function() {
