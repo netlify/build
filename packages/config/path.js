@@ -7,7 +7,9 @@ const getConfigPath = async function(cwd) {
   const configPath = await findUp(FILENAMES, { cwd })
 
   if (configPath === undefined) {
-    throw new Error('No "netlify.*" configuration file was found')
+    throw new Error(`No netlify configuration file was found
+ Please add a "netlify.yml", "netlify.toml", or "netlify.json" file and try again
+`)
   }
 
   return configPath
