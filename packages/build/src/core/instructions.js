@@ -38,12 +38,18 @@ const getHookInstructions = function({
 
 // Run a set of instructions
 const runInstructions = async function(instructions, { config, configPath, token, baseDir, error }) {
-  return await pReduce(
-    instructions,
-    (currentData, instruction, index) =>
-      runInstruction(instruction, { currentData, index, config, configPath, token, baseDir, error }),
-    {}
-  )
+  const manifest = await pReduce(instructions, (currentData, instruction, index) => {
+      return runInstruction(instruction, {
+        currentData,
+        index,
+        config,
+        configPath,
+        token,
+        baseDir,
+        error
+      })
+    }, {})
+  return manifest
 }
 
 // Run a single instruction

@@ -126,7 +126,7 @@ The Lifecycle flows the events in order and executes and their `pre` & `post` co
 
 `pre` happens before a specific event.
 
-`post` happens before a specific event.
+`post` happens after a specific event.
 
 ```
       ┌───────────────┬────────────────┬──────────────────┐
