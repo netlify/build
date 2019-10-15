@@ -1,0 +1,13 @@
+{
+  "name": "backwards-compatible-example",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Netlify.toml example working with new @netlify/build",
+  "scripts": {
+    "setup": "echo \"setup npm script\"",
+    "build": "node ../../packages/build/src/core/bin.js",
+    "makeSite": "mkdir -p build && cp src/index.html build"
+  },
+  "author": "",
+  "license": "MIT"
+}
