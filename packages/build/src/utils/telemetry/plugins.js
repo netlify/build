@@ -12,9 +12,7 @@ const prefixEventNames = {
     const prefixedEvent = event.startsWith(prefix) ? event : `${prefix}${event}`
     return {
       ...payload,
-      ...{
-        event: prefixedEvent
-      }
+      event: prefixedEvent
     }
   }
 }
@@ -25,11 +23,7 @@ const enrichPayload = {
   trackStart: ({ payload, instance }) => {
     return {
       ...payload,
-      ...{
-        properties: Object.assign({}, payload.properties, {
-          isNetlifyCI: isNetlifyCI()
-        })
-      }
+      properties: { ...payload.properties, isNetlifyCI: isNetlifyCI() }
     }
   }
 }
