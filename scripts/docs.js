@@ -183,6 +183,8 @@ const markdownFiles = [
   path.join(rootDir, 'README.md'),
   path.join(rootDir, 'docs/**/**.md'),
   path.join(rootDir, 'packages/**/**.md'),
+  path.join(rootDir, 'examples/**/**.md'),
+  `!${path.join(rootDir, 'examples/**/node_modules/**/**.md')}`,
   `!${path.join(rootDir, 'packages/**/node_modules/**/**.md')}`,
   '!node_modules'
 ]

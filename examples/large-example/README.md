@@ -30,38 +30,30 @@ It is designed to support any kind of build flow and is extendable to fit any un
 
 ## Lifecycle
 
-The Netlify build lifecycle consists of these `events`
+The build process runs through a series of lifecycle `events`. These events are the places we can hook into and extend how the Netlify build operates.
 
-Events are activities happening in the build system.
+<!-- AUTO-GENERATED-CONTENT:START (LIFECYCLE_TABLE) -->
+| Lifecycle hook | Description |
+|:------|:-------|
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecycleinit">init</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Runs before anything else |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclegetcache">getCache</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Fetch previous build cache |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecycleinstall">install</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Install project dependancies |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecycleprebuild">preBuild</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Runs before functions & build commands run |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclefunctionsbuild">functionsBuild</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Build the serverless functions |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclebuild">build</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Build commands are executed |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclepostbuild">postBuild</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Runs after site & functions have been built |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclepackage">package</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Package & optimize artifact |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclepredeploy">preDeploy</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Runs before built artifacts are deployed |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclesavecache">saveCache</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Save cached assets |
+| 🎉 ‏‏‎ **<a href="#lifecyclefinally">finally</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Runs after anything else |
+<!-- AUTO-GENERATED-CONTENT:END (LIFECYCLE_TABLE) -->
 
-```js
-const lifecycle = [
-  /* ↓ Build initialization steps */
-  'init',
-  /* ↓ Fetch previous build cache */
-  'getCache',
-  /* ↓ Install project dependancies */
-  'install',
-  /* ↓ Build the site & functions */
-  'build',
-  /* ↓ Package & optimize artifact */
-  'package',
-  /* ↓ Deploy built artifact */
-  'deploy',
-  /* ↓ Save cached assets */
-  'saveCache',
-  /* ↓ Outputs manifest of resources created */
-  'manifest',
-  /* ↓ Build finished */
-  'finally'
-]
-```
 
 The Lifecycle flows through events and their `pre` and `post` counterparts.
 
 `pre` happens before a specific event
 
-`post` happens before a specific event
+`post` happens after a specific event
 
 ```
       ┌───────────────┬────────────────┬──────────────────┐
@@ -79,12 +71,6 @@ The Lifecycle flows through events and their `pre` and `post` counterparts.
 
                         event flow
 ```
-
-**Example:**
-
-`preBuild` runs first, then `build`, then `postBuild` in that order.
-
-This applies to all lifecycle events listed above.
 
 ## Plugins
 
@@ -106,33 +92,27 @@ function exampleNetlifyPlugin(config) {
 }
 ```
 
-**Examples:**
-
-- **netlify-plugin-lighthouse** to automatically track your lighthouse site score between deployments
-- **netlify-plugin--cypress** to automatically run integration tests
-- **netlify-plugin--tweet-new-post** to automatically share new content via twitter on new publish
-- **netlify-plugin--sitemap** to generate sitemaps after build
-- **netlify-plugin--notify** to automatically wired up build notifications
-- ... skys the limit 🌈
-
 ## Configuration
 
-Configuration can be written in `toml`, `yml`, `json`, `json5`, or `javascript`.
+Configuration can be written in `toml`, `yml`, `json`, or `json5`.
 
 **Example:**
 
 ```yml
 # Config file `plugins` defines plugins used by build. Plugins are optional
 plugins:
-  - ./localpath/plugin-folder:
+  pluginAbc:
+    type: ./local/path/to/plugin-folder
+    config:
       optionOne: 'hello'
       optionTwo: 'there'
-  - plugin-from-npm:
-      optionOne: 'neat'
-  - other-plugin-from-npm::
-      arrayOfValues:
-        - david@netlify.com
-        - jim@netlify.com
+ pluginTwo:
+   type: plugin-from-npm
+   config:
+     optionOne: 'neat'
+     arrayOfValues:
+      - david@netlify.com
+      - jim@netlify.com
 
 # Inline `build.lifecycle` steps can be defined
 build:
@@ -143,44 +123,8 @@ build:
       - echo "much wow"
     getCache:
       - echo 'curl custom cache'
-    preBuild: echo "${secrets:privateKey}"
+    preBuild: echo "${env:privateKey}"
     build: |
       echo 'Hello Netlify Build!'
       npm run build
 ```
-
-Configuration now supports `environment` variables & `secrets`.
-
-To reference an environment variable in Netlify config:
-
-```yml
-foo: ${env:MY_ENV_VAR}
-```
-
-To reference a secret in Netlify config:
-
-```yml
-bar: ${secrets:MY_REMOTE_SECRET}
-```
-
-## CLI commands
-
-```
-netlify build
-```
-
-Test out the build flow. This will output everything that happens in the build flow without executing the plugins.
-
-```
-netlify build --dry-run
-```
-
-## Simplified Build Env
-
-The folder structure of the build environment is also being revamped to streamline & simplify how users interact with it.
-
-- `.netlify` - Main folder
-- `.netlify/src` - Source code from repo, zip, tar
-- `.netlify/cache` - Files persisted across builds
-- `.netlify/cache/dependencies` - All dependencies are cache here. These are used for lookup / install process.
-- `.netlify/build` - Built files

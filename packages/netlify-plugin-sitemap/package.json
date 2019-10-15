@@ -17,5 +17,8 @@
   "dependencies": {
     "globby": "^10.0.1",
     "sitemap": "^3.2.2"
+  },
+  "engines": {
+    "node": ">=8.12.0"
   }
 }

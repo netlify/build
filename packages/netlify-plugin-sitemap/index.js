@@ -1,6 +1,4 @@
-/**
- * Generates sitemap
- */
+/* Generates a sitemap */
 const fs = require('fs')
 const path = require('path')
 
@@ -46,14 +44,17 @@ async function makeSitemap(opts = {}) {
 }
 
 module.exports = {
-  async postBuild({ baseUrl = process.env.SITE, distPath }) {
+  // { baseUrl = process.env.SITE, distPath }
+  postBuild: async ({ constants, pluginConfig }) => {
+    const baseUrl = pluginConfig.baseUrl || process.env.SITE
+    const buildDir = pluginConfig.dir || constants.BUILD_DIR
     if (!baseUrl) {
       throw new Error('Sitemap plugin missing homepage value')
     }
-    if (!distPath) {
+    if (!buildDir) {
       throw new Error('Sitemap plugin missing build directory')
     }
     console.log('Creating sitemap from files...')
-    await makeSitemap({ homepage: baseUrl, distPath })
+    await makeSitemap({ homepage: baseUrl, distPath: buildDir })
   }
 }
