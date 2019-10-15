@@ -5,7 +5,6 @@ const mkdirp = require('mkdirp')
 
 module.exports = {
   init: async ({ constants }) => {
-    console.log('constants', constants)
     const resultsDir = join(constants.CACHE_DIR, `axe-results`)
     mkdirp.sync(resultsDir)
     await execa('chmod', ['-R', '+rw', resultsDir])
