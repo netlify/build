@@ -35,6 +35,7 @@
     "execa": "^3.0.0",
     "figures": "^3.0.0",
     "filter-obj": "^2.0.1",
+    "find-up": "^4.1.0",
     "get-stream": "^5.1.0",
     "group-by": "0.0.1",
     "is-invalid-path": "^1.0.2",

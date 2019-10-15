@@ -1,5 +1,6 @@
 const test = require('ava')
 const execa = require('execa')
+const del = require('del')
 
 const { version } = require('../package.json')
 
@@ -100,5 +101,11 @@ test('Can define options as environment variables', async t => {
     },
     all: true
   })
+  t.snapshot(normalizeOutput(all))
+})
+
+test('Install local plugin dependencies', async t => {
+  const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/plugin_deps/netlify.yml`, { all: true })
+  await del(`${FIXTURES_DIR}/plugin_deps/plugin/node_modules`)
   t.snapshot(normalizeOutput(all))
 })

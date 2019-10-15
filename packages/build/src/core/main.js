@@ -10,6 +10,7 @@ const resolveConfig = require('@netlify/config')
 const { getConfigPath } = require('@netlify/config')
 
 const { getPluginsOptions } = require('../plugins/options')
+const { installPlugins } = require('../plugins/install')
 const { loadPlugins } = require('../plugins/load')
 const {
   logBuildStart,
@@ -48,9 +49,11 @@ const build = async function(options) {
     logBuildStart()
 
     const { config, configPath, token, baseDir } = await loadConfig({ options: optionsA })
-    const pluginsOptions = getPluginsOptions({ config })
 
-    const pluginsHooks = await loadPlugins({ pluginsOptions, config, configPath, baseDir, token })
+    const pluginsOptions = getPluginsOptions({ config })
+    const pluginsOptionsA = await installPlugins(pluginsOptions, baseDir)
+    const pluginsHooks = await loadPlugins({ pluginsOptions: pluginsOptionsA, config, configPath, baseDir, token })
+
     const { buildInstructions, errorInstructions } = getInstructions({ pluginsHooks, config })
     const instructions = buildInstructions
     /* If the `dry` option is specified, do a dry run and exit */
