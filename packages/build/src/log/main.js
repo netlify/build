@@ -214,10 +214,10 @@ const logBuildSuccess = function() {
   log()
 }
 
-const logBuildEnd = function({ instructions, netlifyConfig, duration }) {
+const logBuildEnd = function({ instructions, config, duration }) {
   const sparkles = cyanBright('(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧')
   log(`\n${sparkles} Have a nice day!\n`)
-  const plugins = getPluginsByType(netlifyConfig)
+  const plugins = getPluginsByType(config)
   // telemetry noOps if BUILD_TELEMETRY_DISBALED set
   telemetry.track('buildComplete', {
     steps: instructions.length,
