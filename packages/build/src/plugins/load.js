@@ -26,7 +26,7 @@ const loadPlugin = async function({ type, pluginConfig, pluginId, core }, { conf
   try {
     const { response: hooks } = await executePlugin(
       'load',
-      { pluginId, type, baseDir, pluginConfig, configPath, config, core },
+      { pluginId, type, pluginConfig, configPath, config, core },
       { baseDir }
     )
     return hooks
