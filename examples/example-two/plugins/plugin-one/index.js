@@ -1,4 +1,3 @@
-
 module.exports = function exampleOne(conf) {
   const hook = conf.hook || 'preBuild'
   return {

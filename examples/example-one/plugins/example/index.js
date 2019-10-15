@@ -1,4 +1,3 @@
-
 // Export plugin
 module.exports = function netlifyPlugin(config) {
   return {
@@ -31,6 +30,6 @@ module.exports = function netlifyPlugin(config) {
     },
     finally: () => {
       console.log('Hi from finally')
-    },
+    }
   }
 }
