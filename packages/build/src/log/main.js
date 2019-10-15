@@ -201,7 +201,7 @@ const logBuildError = function(error, { verbose }) {
 
 function getPluginsByType(config) {
   const plugins = config.plugins || {}
-  return Object.keys(plugins).map((name) => {
+  return Object.keys(plugins).map(name => {
     return plugins[name].type
   })
 }

@@ -5,7 +5,7 @@ const pkg = require('../../../package.json')
 const plugins = require('./plugins')
 
 /* If BUILD_TELEMETRY_DISBALED, disable api calls */
-const activePlugins = (process.env.BUILD_TELEMETRY_DISBALED) ? [] : plugins
+const activePlugins = process.env.BUILD_TELEMETRY_DISBALED ? [] : plugins
 
 /* If DEBUG true, disable telemetry api calls */
 const DEBUG_ENABLED = false

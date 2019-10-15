@@ -19,7 +19,8 @@ module.exports = {
     }
 
     const resultsPath = join(CACHE_DIR, `axe-results/result.json`)
-      .replace(dirname(CONFIG_PATH), '').replace(/^\//, '')
+      .replace(dirname(CONFIG_PATH), '')
+      .replace(/^\//, '')
 
     await execa(`axe ${testSite} ${axeFlags} --save ${resultsPath}`, {
       cwd: __dirname,

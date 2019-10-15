@@ -27,7 +27,8 @@ module.exports = {
     const buildFolder = resolve('build')
     const destFolder = resolve(buildFolder, 'functions')
 
-    const data = Object.keys(functions).reduce((acc, functionName) => {
+    const data = Object.keys(functions).reduce(
+      (acc, functionName) => {
         const functionData = functions[functionName]
         const functionPath = resolve(functionData.handler)
         // const functionFileName = path.basename(functionData.handler).replace(/\.js$/, '')
