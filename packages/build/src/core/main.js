@@ -29,6 +29,16 @@ const { getInstructions, runInstructions } = require('./instructions')
 const { tomlWrite } = require('./toml')
 const { doDryRun } = require('./dry')
 
+/**
+ * Netlify Build
+ * @param  {object} options - build configuration options
+ * @param  {string} [options.config] - Netlify config file path
+ * @param  {string} [options.token] - Netlify API token for authentication
+ * @param  {string} [options.context] - Build context
+ * @param  {boolean} [options.dry] - printing commands without executing them
+ * @param  {boolean} [options.verbose] - Print messages and errors verbosely
+ * @return {object} manifest information. @TODO implement
+ */
 const build = async function(options) {
   const optionsA = getOptions(options)
 
