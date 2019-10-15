@@ -1,4 +1,5 @@
 const { promisify } = require('util')
+const { cwd: getCwd } = require('process')
 
 const resolve = require('resolve')
 
@@ -12,22 +13,22 @@ const pResolve = promisify(resolve)
 
 // Retrieve list of hook methods of a plugin.
 // This also validates the plugin.
-const load = async function({ pluginId, type, baseDir, pluginConfig, configPath, config, core }) {
-  const pluginPath = await resolvePlugin(type, baseDir)
+const load = async function({ pluginId, type, pluginConfig, configPath, config, core }) {
+  const pluginPath = await resolvePlugin(type)
 
   const logic = getLogic(pluginPath, pluginConfig)
   validatePlugin(logic)
 
-  const constants = getConstants(configPath, config, baseDir)
+  const constants = getConstants(configPath, config)
   const hooks = getPluginHooks({ logic, pluginId, pluginPath, pluginConfig, type, core, constants })
   return hooks
 }
 
 // We use `resolve` because `require()` should be relative to `baseDir` not to
 // this `__filename`
-const resolvePlugin = async function(type, baseDir) {
+const resolvePlugin = async function(type) {
   try {
-    return await pResolve(type, { basedir: baseDir })
+    return await pResolve(type, { basedir: getCwd() })
   } catch (error) {
     // TODO: if plugin not found, automatically try to `npm install` it
     error.message = `'${type}' plugin not installed or found\n${error.message}`
