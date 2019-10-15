@@ -4,10 +4,14 @@
   "version": "0.0.0",
   "description": "Example Netlify Build Site",
   "scripts": {
-    "preview": "node ../../packages/build/src/core/bin.js --dry",
-    "build": "node ../../packages/build/src/core/bin.js",
+    "postinstall": "cd ../../ && npm install",
+    "preview": "netlify-build --dry",
+    "build": "netlify-build",
     "makeSite": "mkdir -p build && cp src/index.html build"
   },
   "author": "David Wells",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@netlify/build": "file:../../packages/build"
+  }
 }
