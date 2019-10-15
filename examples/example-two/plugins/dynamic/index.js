@@ -1,4 +1,3 @@
-
 // Based on the configuration passed into the plugin,
 // a dynamic lifecycle event is returned
 module.exports = function dynamicPlugin(conf) {

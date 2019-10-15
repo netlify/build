@@ -1,4 +1,3 @@
-
 # Build settings
 build:
   functions: functions
@@ -37,5 +36,5 @@ plugins:
     type: '@netlify/plugin-axe'
     enabled: false
     config:
-       # https://github.com/dequelabs/axe-cli#running-specific-rules
+      # https://github.com/dequelabs/axe-cli#running-specific-rules
       axeFlags: '--rules color-contrast,html-has-lang'
