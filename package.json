@@ -5,15 +5,15 @@
   "description": "Netlify build module",
   "main": "index.js",
   "scripts": {
-    "bootstrap": "lerna bootstrap && cd example && npm install",
+    "bootstrap": "lerna bootstrap && cd examples/example-two && npm install",
     "postinstall": "npm run bootstrap",
     "docs": "node ./scripts/docs.js",
     "test": "run-s test:*",
-    "test:lint": "eslint --ignore-path .gitignore --fix \"{packages,example}/**/*.js\"",
-    "test:prettier": "prettier --ignore-path .gitignore --write --loglevel warn \"{packages,example}/**/*.{js,md,yml,json}\" \"*.{js,md,yml,json}\"",
+    "test:lint": "eslint --ignore-path .gitignore --fix \"{packages,examples}/**/*.js\"",
+    "test:prettier": "prettier --ignore-path .gitignore --write --loglevel warn \"{packages,examples}/**/*.{js,md,yml,json}\" \"*.{js,md,yml,json}\"",
     "test:ava": "ava",
-    "example": "node ./packages/build/src/core/bin.js --config example/netlify.yml",
-    "debug": "node --inspect-brk ./packages/build/src/core/bin.js --config example/netlify.yml"
+    "example": "node ./packages/build/src/core/bin.js --config examples/example-two/netlify.yml",
+    "debug": "node --inspect-brk ./packages/build/src/core/bin.js --config examples/example-two/netlify.yml"
   },
   "ava": {
     "files": [
