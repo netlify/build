@@ -6,10 +6,10 @@
   "main": "index.js",
   "dependencies": {
     "axe-cli": "^3.1.1",
+    "axe-core": "^3.3.2",
     "execa": "^3.0.0",
     "mkdirp": "^0.5.1"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\""
   },
@@ -18,5 +18,8 @@
     "netlify-plugin"
   ],
   "author": "",
-  "license": "ISC"
+  "license": "MIT",
+  "engines": {
+    "node": ">=8.12.0"
+  }
 }
