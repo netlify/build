@@ -35,7 +35,7 @@ plugins:
       compareWithVersion: 0.0.3
   axe:
     type: '@netlify/plugin-axe'
-    enabled: true
+    enabled: false
     config:
        # https://github.com/dequelabs/axe-cli#running-specific-rules
       axeFlags: '--rules color-contrast,html-has-lang'
