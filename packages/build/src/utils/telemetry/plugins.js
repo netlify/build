@@ -28,7 +28,7 @@ const enrichPayload = {
       ...{
         properties: Object.assign({}, payload.properties, {
           isNetlifyCI: isNetlifyCI()
-        }),
+        })
       }
     }
   }
@@ -47,8 +47,4 @@ const netlifyTelemetry = {
 }
 
 /* Return analytic plugins */
-module.exports = [
-  prefixEventNames,
-  enrichPayload,
-  netlifyTelemetry
-]
+module.exports = [prefixEventNames, enrichPayload, netlifyTelemetry]

@@ -8,7 +8,7 @@ module.exports = function sendData(payload, version) {
     version: version
   })
   // Spawn detached child process to send telemetry
-  spawn(process.execPath, [ join(__dirname, 'request.js'), args ], {
+  spawn(process.execPath, [join(__dirname, 'request.js'), args], {
     detached: true,
     stdio: 'ignore'
   }).unref()
