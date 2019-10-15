@@ -4,13 +4,22 @@ const fs = require('fs-extra')
 const { zipFunction } = require('@netlify/zip-it-and-ship-it')
 
 module.exports = {
-  async postBuild({ pluginConfig, config }) {
+  postBuild: async ({ pluginConfig, config }) => {
     const { functions } = pluginConfig
-    const {
-      build: { publish, functions: functionsDir }
-    } = config
+    const { build } = config
 
-    console.log('Configuring Functions...', pluginConfig)
+    if (!build || !build.publish) {
+      throw new Error('No build settings')
+    }
+
+    const functionsDir = build.functions
+    if (!functionsDir) {
+      console.log('No functions directory found')
+      return
+    }
+
+    console.log('Configuring Functions...')
+    console.log(pluginConfig)
     if (!functions) {
       throw new Error('You must provide functions to the functions plugin')
     }
@@ -18,8 +27,7 @@ module.exports = {
     const buildFolder = resolve('build')
     const destFolder = resolve(buildFolder, 'functions')
 
-    const data = Object.keys(functions).reduce(
-      (acc, functionName) => {
+    const data = Object.keys(functions).reduce((acc, functionName) => {
         const functionData = functions[functionName]
         const functionPath = resolve(functionData.handler)
         // const functionFileName = path.basename(functionData.handler).replace(/\.js$/, '')
@@ -50,7 +58,7 @@ module.exports = {
       }
     )
 
-    const buildDir = resolve(publish)
+    const buildDir = resolve(build.publish)
     const buildDirFunctions = resolve(buildDir, functionsDir)
     // Clean functions deploy directory
     await fs.emptyDir(buildDirFunctions)
