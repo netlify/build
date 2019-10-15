@@ -44,18 +44,15 @@ const build = async function(options) {
 
   const buildTimer = startTimer()
 
-  let instructions
-  let netlifyConfig
   try {
     logBuildStart()
 
     const { config, configPath, token, baseDir } = await loadConfig({ options: optionsA })
-    netlifyConfig = config
     const pluginsOptions = getPluginsOptions({ config })
 
     const pluginsHooks = await loadPlugins({ pluginsOptions, config, configPath, baseDir, token })
     const { buildInstructions, errorInstructions } = getInstructions({ pluginsHooks, config })
-    instructions = buildInstructions
+    const instructions = buildInstructions
     /* If the `dry` option is specified, do a dry run and exit */
     if (optionsA.dry) {
       doDryRun({ buildInstructions, configPath })
@@ -79,7 +76,7 @@ const build = async function(options) {
 
     logBuildSuccess()
     const duration = endTimer(buildTimer, 'Netlify Build')
-    logBuildEnd({ instructions, netlifyConfig, duration })
+    logBuildEnd({ instructions, config, duration })
   } catch (error) {
     logBuildError(error, optionsA)
   }
