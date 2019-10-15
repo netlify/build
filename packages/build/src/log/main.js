@@ -35,7 +35,12 @@ const logConfigPath = function(configPath) {
   log()
 }
 
+const logInstallPlugins = function() {
+  log(cyanBright.bold(`${HEADING_PREFIX} Installing plugins dependencies`))
+}
+
 const logLoadPlugins = function() {
+  log()
   log(cyanBright.bold(`${HEADING_PREFIX} Loading plugins`))
 }
 
@@ -224,6 +229,7 @@ module.exports = {
   logBuildStart,
   logOptions,
   logConfigPath,
+  logInstallPlugins,
   logLoadPlugins,
   logLoadPlugin,
   logLifeCycleStart,

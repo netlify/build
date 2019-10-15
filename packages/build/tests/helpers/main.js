@@ -21,7 +21,7 @@ const NORMALIZE_REGEXPS = [
   [/^\s+at .*$/gm, 'STACK TRACE'],
   [/(STACK TRACE\n)+/, 'STACK TRACE'],
   // Durations
-  [/[\d.]+ms/g, '1ms'],
+  [/[\d.]+m?s/g, '1ms'],
   // Package versions
   [/@[\d.]+/g, '@VERSION'],
   // Multiline objects are printed differently by `util.inspect()` in Node 8 and

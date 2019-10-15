@@ -1,5 +1,3 @@
-version: 06-25-2019
-
 plugins:
   sitemap:
     type: ../../../../netlify-plugin-sitemap
