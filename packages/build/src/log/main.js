@@ -9,7 +9,7 @@ const { log } = require('./patch')
 const { cleanStack } = require('./stack')
 
 // eslint-disable-next-line import/order
-const { greenBright, cyanBright, redBright, yellowBright, bold } = require('chalk')
+const { greenBright, cyanBright, redBright, yellowBright, bold, white } = require('chalk')
 
 const HEADING_PREFIX = pointer
 const SUBTEXT_PADDING = '  '
@@ -72,30 +72,37 @@ const logDryRunInstruction = function({
   width,
   buildInstructions
 }) {
-  const source = name.startsWith('config.build') ? `in ${basename(configPath)}` : 'plugin'
   const countText = `${index + 1}.`
   const count = cyanBright(countText)
-  const niceName = name.startsWith('config.build') ? name.replace('config.', '') : name
-  const boxWidth = width + countText.length + 3
+  const boxOffset = buildInstructions.length.toString().length + 4
+  const textOffset = countText.length + 3
+  const boxWidth = width + boxOffset
   const line = '─'.repeat(boxWidth)
-
+  const secondLine = '─'.repeat(boxWidth + 5)
   if (index === 0) {
-    log(bold(`${SUBTEXT_PADDING}┌─${line}─┬─${line}─`))
-    log(bold(`${SUBTEXT_PADDING}│ ${'Lifecycle name'.padEnd(boxWidth)} │  ${'Location'.padEnd(boxWidth)}`))
-    log(bold(`${SUBTEXT_PADDING}└─${line}─┴─${line}─`))
+    log(bold(`${SUBTEXT_PADDING}┌─${line}─┬─${secondLine}─`))
+    log(bold(`${SUBTEXT_PADDING}│ ${'Lifecycle Hook'.padEnd(boxWidth)} │   ${'Location'.padEnd(boxWidth)}`))
+    log(bold(`${SUBTEXT_PADDING}└─${line}─┴─${secondLine}─`))
   }
 
-  const location = core ? 'core' : type
-  const locationText = type ? ` in ${location}` : ''
+  const linePrefix = name.startsWith('config.build')
+    ? `Config ${cyanBright(basename(configPath))} ${yellowBright(name.replace('config.', ''))}`
+    : `Plugin`
+
+  let msg
+  if (name.startsWith('config.build')) {
+    //  in ${basename(configPath)}
+    msg = `${white(linePrefix)}`
+  } else if (core) {
+    msg = `${white(linePrefix)} ${yellowBright(name)} in build core`
+  } else {
+    msg = `${white(linePrefix)} ${name} ${yellowBright(type)}`
+  }
+
+  // const locationText = type ? `${location}` : ''
   const showArrow = buildInstructions.length === index + 1 ? ' ' : arrowDown
   log(cyanBright.bold(`${SUBTEXT_PADDING}┌─${line}─┐ `))
-  log(
-    cyanBright.bold(
-      `${SUBTEXT_PADDING}│ ${count} ${hook.padEnd(
-        boxWidth - 5
-      )} ${showArrow} │ via ${niceName} ${source}${locationText}`
-    )
-  )
+  log(cyanBright.bold(`${SUBTEXT_PADDING}│ ${count} ${hook.padEnd(boxWidth - textOffset)} ${showArrow} │  ${msg}`))
   log(cyanBright.bold(`${SUBTEXT_PADDING}└─${line}─┘ `))
 }
 
