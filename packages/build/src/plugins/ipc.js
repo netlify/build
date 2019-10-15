@@ -45,8 +45,9 @@ const executePlugin = async function(eventName, message, { baseDir }) {
 }
 
 // Fix the error message produced by Execa
-const fixPluginError = function({ message }) {
-  return message.replace(NODE_ARGS_REGEXP, '')
+const fixPluginError = function({ message, stderr }) {
+  const messageA = message.replace(NODE_ARGS_REGEXP, '')
+  return `${messageA}\n${stderr}`
 }
 
 // We don't want to report `process.argv` as it's not useful and might contain
