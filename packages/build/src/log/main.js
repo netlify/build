@@ -199,13 +199,6 @@ const logBuildError = function(error, { verbose }) {
   log()
 }
 
-function getPluginsByType(config) {
-  const plugins = config.plugins || {}
-  return Object.keys(plugins).map(name => {
-    return plugins[name].type
-  })
-}
-
 const logBuildSuccess = function() {
   log()
   log(greenBright.bold('┌─────────────────────────────┐'))
@@ -217,13 +210,13 @@ const logBuildSuccess = function() {
 const logBuildEnd = function({ instructions, config, duration }) {
   const sparkles = cyanBright('(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧')
   log(`\n${sparkles} Have a nice day!\n`)
-  const plugins = getPluginsByType(config)
+  const plugins = Object.values(config.plugins).map(({ type }) => type)
   // telemetry noOps if BUILD_TELEMETRY_DISBALED set
   telemetry.track('buildComplete', {
     steps: instructions.length,
     duration: duration.duration,
     pluginCount: plugins.length,
-    plugins: plugins
+    plugins
   })
 }
 
