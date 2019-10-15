@@ -5,9 +5,13 @@
   "description": "Netlify.toml example working with new @netlify/build",
   "scripts": {
     "setup": "echo \"setup npm script\"",
+    "preview": "node ../../packages/build/src/core/bin.js --dry",
     "build": "node ../../packages/build/src/core/bin.js",
     "makeSite": "mkdir -p build && cp src/index.html build"
   },
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@netlify/plugin-sitemap": "file:../../packages/netlify-plugin-sitemap"
+  }
 }
