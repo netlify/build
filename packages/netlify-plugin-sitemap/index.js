@@ -44,7 +44,6 @@ async function makeSitemap(opts = {}) {
 }
 
 module.exports = {
-  // { baseUrl = process.env.SITE, distPath }
   postBuild: async ({ constants, pluginConfig }) => {
     const baseUrl = pluginConfig.baseUrl || process.env.SITE
     const buildDir = pluginConfig.dir || constants.BUILD_DIR
