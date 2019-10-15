@@ -1,0 +1,20 @@
+
+# Build Settings
+build:
+  functions: functions
+  publish: build
+  # Inline lifecycle hooks
+  lifecycle:
+    init:
+      - echo "Starting the build"
+    build:
+      - npm run makeSite
+    finally:
+      - echo "Ending the build"
+
+# Build plugins
+plugins:
+  examplePlugin:
+    type: ./plugins/example
+    config:
+      hi: foo

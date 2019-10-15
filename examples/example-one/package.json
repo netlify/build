@@ -1,0 +1,13 @@
+{
+  "name": "example-one",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Example Netlify Build Site",
+  "scripts": {
+    "preview": "node ../../packages/build/src/core/bin.js --dry",
+    "build": "node ../../packages/build/src/core/bin.js",
+    "makeSite": "mkdir -p build && cp src/index.html build"
+  },
+  "author": "David Wells",
+  "license": "MIT"
+}
