@@ -1,4 +1,4 @@
-const { join, resolve, dirname } = require('path')
+const { join, dirname } = require('path')
 
 const execa = require('execa')
 const mkdirp = require('mkdirp')
@@ -21,11 +21,8 @@ module.exports = {
       .replace(dirname(CONFIG_PATH), '')
       .replace(/^\//, '')
 
-    await execa(`axe ${testSite} ${axeFlags} --save ${resultsPath}`, {
-      cwd: __dirname,
-      shell: true,
+    await execa.command(`axe ${testSite} ${axeFlags} --save ${resultsPath}`, {
       preferLocal: true,
-      localDir: resolve(__dirname),
       stdio: 'inherit'
     })
 
