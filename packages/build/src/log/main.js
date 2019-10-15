@@ -214,7 +214,7 @@ const logBuildEnd = function({ instructions, config, duration }) {
   // telemetry noOps if BUILD_TELEMETRY_DISBALED set
   telemetry.track('buildComplete', {
     steps: instructions.length,
-    duration: duration.duration,
+    duration,
     pluginCount: plugins.length,
     plugins
   })

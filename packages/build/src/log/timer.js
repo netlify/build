@@ -21,11 +21,7 @@ const endTimer = function(hrTime, context, hook) {
 
   logTimer(durationMs, hook, context)
 
-  return {
-    duration: durationMs,
-    hook,
-    context
-  }
+  return durationMs
 }
 
 const NANOSECS_TO_SECS = 1e9
