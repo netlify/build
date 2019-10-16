@@ -161,3 +161,19 @@ test('Install local plugin dependencies: no package.json', async t => {
   })
   t.snapshot(normalizeOutput(all))
 })
+
+test('Functions: simple setup', async t => {
+  await del(`${FIXTURES_DIR}/functions/.netlify/functions/`)
+
+  const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/functions/netlify.yml`, {
+    all: true
+  })
+  t.snapshot(normalizeOutput(all))
+})
+
+test('Functions: invalid source directory', async t => {
+  const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/functions_invalid/netlify.yml`, {
+    all: true
+  })
+  t.snapshot(normalizeOutput(all))
+})
