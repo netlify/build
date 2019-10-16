@@ -4,7 +4,7 @@ Netlify build is the next generation of CI/CD tooling for modern web application
 
 [Sign up for the private beta](https://www.netlify.com/build/plugins-beta/)
 
-[Demo video](https://www.youtube.com/watch?v=oHg5SJYRHA0) and [slides](https://docs.google.com/presentation/d/1zNcHHrJWnEp6Y-NDk9RE6g9GYCUjI-kdgYW28G2GkSA/edit?usp=sharing). See also [example guide here in Creating and using your first Netlify Build Plugin](https://www.netlify.com/blog/2019/10/16/creating-and-using-your-first-netlify-build-plugin/).
+[Demo video](https://www.youtube.com/watch?v=4m6Hi4_qEVE) and [slides](https://docs.google.com/presentation/d/1zNcHHrJWnEp6Y-NDk9RE6g9GYCUjI-kdgYW28G2GkSA/edit?usp=sharing). See also [example guide here in Creating and using your first Netlify Build Plugin](https://www.netlify.com/blog/2019/10/16/creating-and-using-your-first-netlify-build-plugin/).
 
 <!-- AUTO-GENERATED-CONTENT:START (TOC:collapse=true&collapseText=Expand Table of Contents) -->
 <details>
