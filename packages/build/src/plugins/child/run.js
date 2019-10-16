@@ -3,7 +3,7 @@ const { getApiClient } = require('./api')
 
 // Run a specific plugin hook
 const run = async function({ pluginPath, pluginConfig, hookName, config, token, error, constants }) {
-  const logic = getLogic(pluginPath, pluginConfig)
+  const logic = getLogic({ pluginPath, config, pluginConfig })
   const api = getApiClient({ logic, token })
   await logic[hookName]({ api, constants, pluginConfig, config, error })
   return {}

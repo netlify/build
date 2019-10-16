@@ -112,9 +112,9 @@ Plugin configuration is also supplied top level if you are returning a dynamic p
 Instead of a plugin being a simple object, instead the plugin is a `function` that returns a plain old javascript object.
 
 ```js
-function helloWorldPlugin(conf) {
-  console.log(conf.foo) // bar
-  console.log(conf.fizz) // pop
+function helloWorldPlugin({ pluginConfig, config }) {
+  console.log(pluginConfig.foo) // bar
+  console.log(pluginConfig.fizz) // pop
   return {
     preBuild: ({ pluginConfig, config }) => {
       console.log('Hello world from preBuild lifecycle step!')

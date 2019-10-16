@@ -7,7 +7,7 @@ const { getConstants } = require('./constants')
 // Retrieve list of hook methods of a plugin.
 // This also validates the plugin.
 const load = async function({ pluginId, type, pluginPath, pluginConfig, configPath, config, core }) {
-  const logic = getLogic(pluginPath, pluginConfig)
+  const logic = getLogic({ pluginPath, config, pluginConfig })
   validatePlugin(logic)
 
   const constants = getConstants(configPath, config)
