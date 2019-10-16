@@ -1,0 +1,11 @@
+{
+  "name": "my-awesome-site",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Much wow, awesome!",
+  "scripts": {
+    "build": "mkdir -p build && cp src/index.html build"
+  },
+  "author": "@DavidWells",
+  "license": "MIT"
+}

@@ -1,0 +1,6 @@
+
+# Build instructions
+build:
+  command: npm run build
+  publish: build
+  functions: functions
