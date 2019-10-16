@@ -2,6 +2,10 @@
 
 Netlify build is the next generation of CI/CD tooling for modern web applications.
 
+[Sign up for the private beta](https://www.netlify.com/build/plugins-beta/)
+
+[Demo video](https://www.youtube.com/watch?v=oHg5SJYRHA0) and [slides](https://docs.google.com/presentation/d/1zNcHHrJWnEp6Y-NDk9RE6g9GYCUjI-kdgYW28G2GkSA/edit?usp=sharing)
+
 <!-- AUTO-GENERATED-CONTENT:START (TOC:collapse=true&collapseText=Expand Table of Contents) -->
 <details>
 <summary>Expand Table of Contents</summary>
