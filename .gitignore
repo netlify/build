@@ -4,3 +4,4 @@ research
 terraform
 .netlify
 lerna-debug.log
+.nyc_output

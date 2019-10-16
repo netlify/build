@@ -43,6 +43,7 @@
     "lerna": "^3.16.4",
     "markdown-magic": "^0.1.25",
     "npm-run-all": "^4.1.5",
+    "nyc": "^14.1.1",
     "prettier": "^1.18.2"
   },
   "dependencies": {},
