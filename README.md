@@ -4,7 +4,7 @@ Netlify build is the next generation of CI/CD tooling for modern web application
 
 [Sign up for the private beta](https://www.netlify.com/build/plugins-beta/)
 
-[Demo video](https://www.youtube.com/watch?v=oHg5SJYRHA0) and [slides](https://docs.google.com/presentation/d/1zNcHHrJWnEp6Y-NDk9RE6g9GYCUjI-kdgYW28G2GkSA/edit?usp=sharing)
+[Demo video](https://www.youtube.com/watch?v=oHg5SJYRHA0) and [slides](https://docs.google.com/presentation/d/1zNcHHrJWnEp6Y-NDk9RE6g9GYCUjI-kdgYW28G2GkSA/edit?usp=sharing). See also [example guide here in Creating and using your first Netlify Build Plugin](https://www.netlify.com/blog/2019/10/16/creating-and-using-your-first-netlify-build-plugin/).
 
 <!-- AUTO-GENERATED-CONTENT:START (TOC:collapse=true&collapseText=Expand Table of Contents) -->
 <details>
@@ -754,7 +754,7 @@ Plugins can do a-lot and we are excited what the JAMstack community will build!
 - **@netlify/plugin-no-more-404** fail build or warn if prior .html files disappear without corresponding Netlify redirects.
 - **@netlify/plugin-axe** to automatically audit site for accessibility issues
 - **@netlify/plugin-encrypted-files** to encrypt files in source, but to decrypt them locally and for the build, so that you can do *partial* open source sites without leaking announcements or private info.
-- **netlify-plugin-twiliosms** text your boss every time you deploy so they know you're working
+- **netlify-plugin-twiliosms** text your boss every time you deploy so they know you're working - [example guide here in Creating and using your first Netlify Build Plugin](https://www.netlify.com/blog/2019/10/16/creating-and-using-your-first-netlify-build-plugin/)
 - **netlify-plugin-svgoptimizer** to automatically optimize all SVGs in a directory when the site is built
 - ... the sky is the limit 🌈
 
