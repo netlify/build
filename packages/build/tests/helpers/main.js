@@ -17,9 +17,11 @@ const NORMALIZE_REGEXPS = [
   // File paths
   [/(^|[ "'])\.{0,2}\/[^ "'\n]+/gm, '$1/file/path'],
   // Stack traces
-  [/^.*\([^)]+:\d+:\d+\)$/gm, 'STACK TRACE'],
+  [/Require stack:\n[^}]*}/g, 'STACK TRACE'],
+  [/{ Error:/g, 'Error:'],
+  [/^.*:\d+:\d+\)?$/gm, 'STACK TRACE'],
   [/^\s+at .*$/gm, 'STACK TRACE'],
-  [/(STACK TRACE\n)+/, 'STACK TRACE'],
+  [/(STACK TRACE\n)+/g, 'STACK TRACE\n'],
   // Durations
   [/[\d.]+m?s/g, '1ms'],
   // Package versions
@@ -29,7 +31,9 @@ const NORMALIZE_REGEXPS = [
   [/{\n\s+/gm, '{ '],
   [/\n}/gm, ' }'],
   [/,\n\s+/gm, ', '],
-  [/:\n\s+/gm, ': ']
+  [/:\n\s+/gm, ': '],
+  // Semantic versions
+  [/v\d+\.\d+\.\d+/, 'v1.0.0']
 ]
 
 module.exports = { normalizeOutput }
