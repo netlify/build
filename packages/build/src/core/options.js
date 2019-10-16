@@ -7,7 +7,7 @@ const camelcaseKeys = require('camelcase-keys')
 // Retrieve build options
 const getOptions = function(options = {}) {
   const envOptions = getEnvOptions()
-  return Object.assign({}, envOptions, options)
+  return { ...envOptions, ...options }
 }
 
 // Find all environment variables starting with `NETLIFY_BUILD_*` and converts

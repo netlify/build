@@ -71,7 +71,7 @@ const runInstruction = async function(instruction, { currentData, index, config,
 
     endTimer(methodTimer, name, hook)
 
-    return Object.assign({}, currentData, pluginReturnValue)
+    return { ...currentData, ...pluginReturnValue }
   } catch (error) {
     error.message = `Error in '${name}' plugin:\n${error.message}`
     throw error

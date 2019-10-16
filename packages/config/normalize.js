@@ -1,26 +1,25 @@
 const mapObj = require('map-obj')
-const omit = require('omit.js')
 
 // Normalize configuration object
 const normalizeConfig = function(config) {
-  const configA = Object.assign({ build: {}, plugins: {} }, config)
-  const configB = normalizeLifecycles(configA)
+  const configA = { ...DEFAULT_CONFIG, ...config }
+  const configB = normalizeLifecycles({ config: configA })
   return configB
 }
 
-const normalizeLifecycles = function(config) {
-  const {
-    build,
-    build: { command, lifecycle = {} }
-  } = config
-  const buildA = omit(build, ['command'])
+const DEFAULT_CONFIG = { build: {}, plugins: {} }
+
+const normalizeLifecycles = function({
+  config,
+  config: {
+    build: { command, lifecycle = {}, ...build }
+  }
+}) {
   const lifecycleA = normalizeCommand(lifecycle, command)
 
   const lifecycleB = mapObj(lifecycleA, normalizeLifecycle)
 
-  return Object.assign({}, config, {
-    build: Object.assign({}, buildA, { lifecycle: lifecycleB })
-  })
+  return { ...config, build: { ...build, lifecycle: lifecycleB } }
 }
 
 // `build.lifecycle.build` was previously called `build.command`
