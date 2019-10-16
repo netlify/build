@@ -10,7 +10,7 @@ const installDependencies = async function(packageRoot) {
   const command = await getCommand(packageRoot)
 
   try {
-    await execa.command(command, { cwd: packageRoot, stdio: 'inherit' })
+    await execa.command(command, { cwd: packageRoot, stdio: 'inherit', preferLocal: true })
   } catch (error) {
     error.message = `Error while installing dependencies in ${packageRoot}\n${error.message}`
     throw error
