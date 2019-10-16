@@ -1,0 +1,3 @@
+plugins:
+  test:
+    type: netlify-plugin-test

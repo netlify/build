@@ -1,0 +1,3 @@
+plugins:
+  testPlugin:
+    type: does-not-exist
