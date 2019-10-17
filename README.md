@@ -753,7 +753,7 @@ Plugins can do a-lot and we are excited what the JAMstack community will build!
 - **netlify-plugin-notify** to automatically wired up build notifications
 - **@netlify/plugin-no-more-404** fail build or warn if prior .html files disappear without corresponding Netlify redirects.
 - **@netlify/plugin-axe** to automatically audit site for accessibility issues
-- **@netlify/plugin-encrypted-files** to encrypt files in source, but to decrypt them locally and for the build, so that you can do *partial* open source sites without leaking announcements or private info.
+- **@netlify/plugin-encrypted-files** to encrypt files in source, but to decrypt them locally and for the build, so that you can do _partial_ open source sites without leaking announcements or private info.
 - **netlify-plugin-twiliosms** text your boss every time you deploy so they know you're working - [example guide here in Creating and using your first Netlify Build Plugin](https://www.netlify.com/blog/2019/10/16/creating-and-using-your-first-netlify-build-plugin/)
 - **netlify-plugin-svgoptimizer** to automatically optimize all SVGs in a directory when the site is built
 - ... the sky is the limit 🌈
