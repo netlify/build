@@ -16,6 +16,11 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{matrix.node}}
-      - run: npm install
-      - run: npm run test-ci
-      - uses: coverallsapp/github-action@master
+      - name: Install dependencies
+        run: npm install
+      - name: Tests
+        run: npm run test-ci
+      - name: Coveralls test coverage
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{secrets.github_token}}
