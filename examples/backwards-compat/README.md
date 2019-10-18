@@ -153,4 +153,5 @@ For this example we will add the `@netlify/sitemap` plugin
 
 4. **Create your own plugins**
 
-   Now it's time to [create your own build plugins](https://github.com/netlify/build/blob/master/docs/creating-a-plugin.md)!
+   Now it's time to
+   [create your own build plugins](https://github.com/netlify/build/blob/master/docs/creating-a-plugin.md)!

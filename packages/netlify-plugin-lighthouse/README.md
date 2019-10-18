@@ -1,6 +1,7 @@
 ## Netlify Plugin Lighthouse
 
-this does a basic lighthouse run and reports and stores the results. if it there has been a previous run, it also diffs the results to report improvements.
+this does a basic lighthouse run and reports and stores the results. if it there has been a previous run, it also diffs
+the results to report improvements.
 
 This shows the diffs:
 
