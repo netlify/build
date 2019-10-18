@@ -1,0 +1,20 @@
+name: Continuous integration
+on: [push, pull_request]
+env:
+  CI: true
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macOS-latest, windows-latest]
+        node: [8.3.0, 10, 12]
+      fails-fast: false
+    runs-on: ${{matrix.os}}
+    steps:
+      - uses: actions/checkout@v1
+      - name: Node.js ${{matrix.node}}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{matrix.node}}
+      - run: npm ci
+      - run: npm test
