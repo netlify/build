@@ -1,6 +1,8 @@
 # Netlify Plugin No More 404
 
-This build plugin will remember the html files you've built, and either warn or fail your build when you make the next build and accidentally lose some html pages (whether on purpose or intentional). The plugin understands redirects, so you can add a redirect to resolve missing html.
+This build plugin will remember the html files you've built, and either warn or fail your build when you make the next
+build and accidentally lose some html pages (whether on purpose or intentional). The plugin understands redirects, so
+you can add a redirect to resolve missing html.
 
 ## Usage
 
