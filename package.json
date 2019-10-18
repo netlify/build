@@ -30,6 +30,10 @@
       "pre-push": "npm test"
     }
   },
+  "keywords": [
+    "netlify",
+    "netlify-plugin"
+  ],
   "author": "",
   "license": "MIT",
   "devDependencies": {
