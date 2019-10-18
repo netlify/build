@@ -13,7 +13,7 @@ const getOverride = function(hookName) {
 const isNotOverridden = function(lifeCycleHook, index, lifeCycleHooks) {
   return !lifeCycleHooks.some(
     ({ override: { hook, type } }, indexA) =>
-      index !== indexA && hook === lifeCycleHook.hook && type === lifeCycleHook.type
+      index !== indexA && hook === lifeCycleHook.hook && type === lifeCycleHook.type,
   )
 }
 

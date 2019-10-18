@@ -9,7 +9,7 @@ const getPluginsOptions = function({ config: { plugins: pluginsOptions } }) {
 }
 
 const DEFAULT_PLUGINS = {
-  '@netlify/functions': { type: `${DEFAULT_PLUGINS_DIR}/functions/index.js`, core: true }
+  '@netlify/functions': { type: `${DEFAULT_PLUGINS_DIR}/functions/index.js`, core: true },
 }
 
 const normalizePluginOptions = function([pluginId, pluginOptions]) {

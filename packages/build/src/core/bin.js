@@ -26,29 +26,29 @@ const OPTIONS = {
     string: true,
     describe: `Path to the configuration file.
 Defaults to any netlify.yml, netlify.toml, netlify.json or netlify.js file in
-the current directory or any parent directory`
+the current directory or any parent directory`,
   },
   token: {
     string: true,
     describe: `Netlify API token for authentication.
-The NETLIFY_TOKEN environment variable can be used as well.`
+The NETLIFY_TOKEN environment variable can be used as well.`,
   },
   context: {
     string: true,
     describe: `Build context.
-Default: 'production'`
+Default: 'production'`,
   },
   dry: {
     boolean: true,
     describe: `Run in dry mode, i.e. printing commands without
 executing them.
-Default: false`
+Default: false`,
   },
   verbose: {
     boolean: true,
     describe: `Print messages and errors verbosely.
-Default: false`
-  }
+Default: false`,
+  },
 }
 
 const USAGE = `$0 [OPTIONS...]

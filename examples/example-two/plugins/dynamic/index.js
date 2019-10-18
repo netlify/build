@@ -5,6 +5,6 @@ module.exports = function dynamicPlugin(conf) {
   return {
     [`${hook}`]: () => {
       console.log('do the stuff')
-    }
+    },
   }
 }

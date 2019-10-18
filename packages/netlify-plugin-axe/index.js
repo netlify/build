@@ -23,7 +23,7 @@ module.exports = {
 
     await execa.command(`axe ${testSite} ${axeFlags} --save ${resultsPath}`, {
       preferLocal: true,
-      stdio: 'inherit'
+      stdio: 'inherit',
     })
 
     let results = require(resultsPath)
@@ -31,5 +31,5 @@ module.exports = {
       results = results[0].violations
     }
     console.log({ violations: results })
-  }
+  },
 }

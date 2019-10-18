@@ -81,7 +81,7 @@ module.exports = async function installRuby(cwd, cacheDir, version) {
     console.log('** WARNING **')
     console.log(`Using custom ruby version ${druby}, this will slow down the build.`)
     console.log(
-      'To ensure fast builds, set the RUBY_VERSION environment variable, or .ruby-version file, to an included ruby version.'
+      'To ensure fast builds, set the RUBY_VERSION environment variable, or .ruby-version file, to an included ruby version.',
     )
     // echo "Included versions: ${rvs[@]#ruby-}"
     console.log(`Included versions: ${rvs}`)
@@ -89,7 +89,7 @@ module.exports = async function installRuby(cwd, cacheDir, version) {
     try {
       // @TODO verify command
       await execa('rvm', ['--quiet-curl', '--create', 'use', druby], {
-        rvm_install_on_use_flag: '1'
+        rvm_install_on_use_flag: '1',
       })
     } catch (err) {
       console.log(`Failed to install ruby version '${druby}'`, err)

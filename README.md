@@ -180,7 +180,7 @@ module.exports = function myPlugin(pluginConfig) {
   return {
     init: () => {
       console.log('Do thing on init step')
-    }
+    },
   }
 }
 ```
@@ -224,7 +224,7 @@ module.exports = function myPlugin(pluginConfig) {
   return {
     getCache: () => {
       console.log('Do thing on getCache step')
-    }
+    },
   }
 }
 ```
@@ -268,7 +268,7 @@ module.exports = function myPlugin(pluginConfig) {
   return {
     install: () => {
       console.log('Do thing on install step')
-    }
+    },
   }
 }
 ```
@@ -312,7 +312,7 @@ module.exports = function myPlugin(pluginConfig) {
   return {
     preBuild: () => {
       console.log('Do thing on preBuild step')
-    }
+    },
   }
 }
 ```
@@ -356,7 +356,7 @@ module.exports = function myPlugin(pluginConfig) {
   return {
     functionsBuild: () => {
       console.log('Do thing on functionsBuild step')
-    }
+    },
   }
 }
 ```
@@ -400,7 +400,7 @@ module.exports = function myPlugin(pluginConfig) {
   return {
     build: () => {
       console.log('Do thing on build step')
-    }
+    },
   }
 }
 ```
@@ -444,7 +444,7 @@ module.exports = function myPlugin(pluginConfig) {
   return {
     postBuild: () => {
       console.log('Do thing on postBuild step')
-    }
+    },
   }
 }
 ```
@@ -488,7 +488,7 @@ module.exports = function myPlugin(pluginConfig) {
   return {
     package: () => {
       console.log('Do thing on package step')
-    }
+    },
   }
 }
 ```
@@ -532,7 +532,7 @@ module.exports = function myPlugin(pluginConfig) {
   return {
     preDeploy: () => {
       console.log('Do thing on preDeploy step')
-    }
+    },
   }
 }
 ```
@@ -576,7 +576,7 @@ module.exports = function myPlugin(pluginConfig) {
   return {
     saveCache: () => {
       console.log('Do thing on saveCache step')
-    }
+    },
   }
 }
 ```
@@ -620,7 +620,7 @@ module.exports = function myPlugin(pluginConfig) {
   return {
     finally: () => {
       console.log('Do thing on finally step')
-    }
+    },
   }
 }
 ```
@@ -730,7 +730,7 @@ module.exports = function exampleOne(config) {
     },
     finally: () => {
       console.log('Run custom logic at the end of the build')
-    }
+    },
   }
 }
 ```

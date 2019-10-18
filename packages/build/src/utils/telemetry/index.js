@@ -11,7 +11,7 @@ const telemetry = Analytics({
   app: 'netlifyCI',
   debug: DEBUG_ENABLED,
   version: pkg.version,
-  plugins: plugins
+  plugins: plugins,
 })
 
 module.exports = telemetry

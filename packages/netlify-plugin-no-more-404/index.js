@@ -28,7 +28,7 @@ function netlify404nomore(pluginConfig) {
       // bc they may want to set `defaults` and `schema` and `de/serialize`
       const store = new Conf({
         cwd: CACHE_DIR,
-        configName: 'netlify-plugin-no-more-404'
+        configName: 'netlify-plugin-no-more-404',
       })
 
       const buildFolderPath = path.resolve(BUILD_DIR)
@@ -68,7 +68,7 @@ function netlify404nomore(pluginConfig) {
             const toPath1 = path.join(buildFolderPath, match.to + '.html')
             const toPath2 = path.join(
               buildFolderPath,
-              match.to + (match.to.endsWith('index.html') ? '' : '/index.html')
+              match.to + (match.to.endsWith('index.html') ? '' : '/index.html'),
             )
             if (fs.existsSync(toPath1) || fs.existsSync(toPath2)) {
               // exists! no longer need to check for broken links
@@ -76,8 +76,8 @@ function netlify404nomore(pluginConfig) {
               // the redirect itself is invalid!
               console.error(
                 `Redirect from ${chalk.yellow(match.from)} to ${chalk.yellow(
-                  match.to
-                )} directs to a missing page... please check!`
+                  match.to,
+                )} directs to a missing page... please check!`,
               )
               invalidRedirectDestinations.push(match.to)
             }
@@ -98,22 +98,22 @@ function netlify404nomore(pluginConfig) {
           missingFiles.forEach(mf => {
             console.error(
               `${chalk.red('@netlify/plugin-no-more-404:')}: can't find ${chalk.cyan(
-                path.relative(buildFolderPath, mf)
-              )} which existed in previous build`
+                path.relative(buildFolderPath, mf),
+              )} which existed in previous build`,
             )
           })
           if (missingFiles.length) {
             console.log(
               `Missing HTML files detected. If you intentionally changed URL structure, you should set up redirects: ${chalk.cyan(
-                'https://url.netlify.com/B1qkCwqOr'
-              )}`
+                'https://url.netlify.com/B1qkCwqOr',
+              )}`,
             )
           }
           invalidRedirectDestinations.forEach(ird => {
             console.error(
               `${chalk.red('@netlify/plugin-no-more-404:')}: can't find ${chalk.cyan(
-                path.relative(buildFolderPath, ird)
-              )}, which redirects rely on`
+                path.relative(buildFolderPath, ird),
+              )}, which redirects rely on`,
             )
           })
           if (on404 === 'error') {
@@ -136,7 +136,7 @@ function netlify404nomore(pluginConfig) {
       var uniqueItems = Array.from(new Set(items))
       store.set(`manifest`, uniqueItems)
       console.log('html manifest saved for next run')
-    }
+    },
   }
 }
 
@@ -156,7 +156,7 @@ var walk = async function(dir, filelist) {
       } else {
         filelist.push(dirfile)
       }
-    })
+    }),
   )
   return filelist
 }

@@ -7,7 +7,7 @@ const { data, reqType, version } = JSON.parse(process.argv[2])
 const API_HOST = 'telemetry-service.netlify.com'
 const API_PATHS = {
   track: '/collect',
-  identify: '/identify'
+  identify: '/identify',
 }
 
 const payload = JSON.stringify(data)
@@ -21,14 +21,14 @@ const req = https.request(
       'Content-Type': 'application/json',
       'Content-Length': payload.length,
       'X-Netlify-Client': 'NETLIFY_CI',
-      'X-Netlify-Client-Version': version
-    }
+      'X-Netlify-Client-Version': version,
+    },
   },
   res => {
     res.on('data', d => {
       process.exit()
     })
-  }
+  },
 )
 
 req.on('error', e => {

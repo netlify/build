@@ -7,8 +7,8 @@ const {
     // Text this number
     TO_NUM,
     // From a valid Twilio number
-    FROM_NUM
-  }
+    FROM_NUM,
+  },
 } = require('process')
 
 const Twilio = require('twilio')
@@ -21,8 +21,8 @@ module.exports = {
     const { sid } = await client.messages.create({
       body: 'Hi there, we just deployed the site successfully!',
       to: TO_NUM,
-      from: FROM_NUM
+      from: FROM_NUM,
     })
     console.log(sid)
-  }
+  },
 }

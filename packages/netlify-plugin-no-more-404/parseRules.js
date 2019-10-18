@@ -10,7 +10,7 @@ function parseRules(projectDir) {
   const baseRedirectsPath = path.resolve(projectDir, '_redirects')
   if (fs.existsSync(baseRedirectsPath)) {
     rules = rules.concat(
-      parseFile(redirectParser.parseRedirectsFormat, '_redirects', fs.readFileSync(baseRedirectsPath, 'utf-8'))
+      parseFile(redirectParser.parseRedirectsFormat, '_redirects', fs.readFileSync(baseRedirectsPath, 'utf-8')),
     )
   }
 

@@ -20,10 +20,10 @@ async function cacheArtifacts(cwd, cacheDir) {
       bower_components: 'bower components',
       node_modules: 'node modules',
       '.venv': 'python virtualenv',
-      wapm_packages: 'wapm packages'
+      wapm_packages: 'wapm packages',
     },
     cwd,
-    cacheDir
+    cacheDir,
   )
 
   const cacheHomeDir = cacheDeps(
@@ -35,10 +35,10 @@ async function cacheArtifacts(cwd, cacheDir) {
       '.m2': 'maven dependencies',
       '.boot': 'boot dependencies',
       '.composer': 'composer dependencies',
-      '.wasmer/cache': 'wasmer cache'
+      '.wasmer/cache': 'wasmer cache',
     },
     HOME,
-    cacheDir
+    cacheDir,
   )
 
   await Promise.all(cacheCwd.concat(cacheHomeDir))
@@ -80,7 +80,7 @@ async function cacheArtifacts(cwd, cacheDir) {
       await moveCache(
         path.join(RVM_DIR, 'rubies', `ruby-${RUBY_VERSION}`),
         path.join(cacheDir, 'ruby_version'),
-        'ruby deps'
+        'ruby deps',
       )
     }
   } else {

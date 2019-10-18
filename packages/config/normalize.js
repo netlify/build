@@ -12,8 +12,8 @@ const DEFAULT_CONFIG = { build: {}, plugins: {} }
 const normalizeLifecycles = function({
   config,
   config: {
-    build: { command, lifecycle = {}, ...build }
-  }
+    build: { command, lifecycle = {}, ...build },
+  },
 }) {
   const lifecycleA = normalizeCommand(lifecycle, command)
 

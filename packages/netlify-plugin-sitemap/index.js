@@ -17,14 +17,14 @@ async function makeSitemap(opts = {}) {
       changefreq: 'weekly',
       priority: 0.8,
       lastmodrealtime: true,
-      lastmodfile: file
+      lastmodfile: file,
     }
   })
   console.log('homepage', homepage)
   const options = {
     hostname: `${homepage.replace(/\/$/, '')}/`,
     cacheTime: 600000, // 600 sec cache period
-    urls
+    urls,
   }
   // Creates a sitemap object given the input configuration with URLs
   const sitemap = sm.createSitemap(options)
@@ -55,5 +55,5 @@ module.exports = {
     }
     console.log('Creating sitemap from files...')
     await makeSitemap({ homepage: baseUrl, distPath: buildDir })
-  }
+  },
 }

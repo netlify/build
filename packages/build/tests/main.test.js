@@ -32,7 +32,7 @@ test('--config with an invalid path', async t => {
 test('{env:...}', async t => {
   const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/env/netlify.yml`, {
     env: { TEST: 'test' },
-    all: true
+    all: true,
   })
   t.snapshot(normalizeOutput(all))
 })
@@ -50,14 +50,14 @@ test('{context:...}', async t => {
 test('{context:...} with --context', async t => {
   const { all } = await execa.command(
     `${BINARY_PATH} --config ${FIXTURES_DIR}/context/netlify.yml --context development`,
-    { all: true }
+    { all: true },
   )
   t.snapshot(normalizeOutput(all))
 })
 
 test('{context:...} pointing to undefined path', async t => {
   const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/context/netlify.yml --context invalid`, {
-    all: true
+    all: true,
   })
   t.snapshot(normalizeOutput(all))
 })
@@ -79,7 +79,7 @@ test('Lifecycle commands can execute local binaries', async t => {
 
 test('Plugins can execute local binaries', async t => {
   const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/local_bin_plugin/netlify.yml`, {
-    all: true
+    all: true,
   })
   t.snapshot(normalizeOutput(all))
 })
@@ -97,30 +97,30 @@ test('--version', async t => {
 test('Can define options as environment variables', async t => {
   const { all } = await execa.command(BINARY_PATH, {
     env: {
-      NETLIFY_BUILD_CONFIG: `${FIXTURES_DIR}/empty/netlify.yml`
+      NETLIFY_BUILD_CONFIG: `${FIXTURES_DIR}/empty/netlify.yml`,
     },
-    all: true
+    all: true,
   })
   t.snapshot(normalizeOutput(all))
 })
 
 test('Can install plugins as Node modules', async t => {
   const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/module_plugin/netlify.yml`, {
-    all: true
+    all: true,
   })
   t.snapshot(normalizeOutput(all))
 })
 
 test('Reports missing plugins', async t => {
   const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/missing_plugin/netlify.yml`, {
-    all: true
+    all: true,
   })
   t.snapshot(normalizeOutput(all))
 })
 
 test('Can install local plugins', async t => {
   const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/local_plugin/netlify.yml`, {
-    all: true
+    all: true,
   })
   t.snapshot(normalizeOutput(all))
 })
@@ -134,7 +134,7 @@ test('Install local plugin dependencies: with npm', async t => {
 
 test('Install local plugin dependencies: with yarn', async t => {
   const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/plugin_deps_yarn/netlify.yml`, {
-    all: true
+    all: true,
   })
   t.snapshot(normalizeOutput(all))
 
@@ -143,21 +143,21 @@ test('Install local plugin dependencies: with yarn', async t => {
 
 test('Install local plugin dependencies: propagate errors', async t => {
   const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/plugin_deps_error/netlify.yml`, {
-    all: true
+    all: true,
   })
   t.snapshot(normalizeOutput(all))
 })
 
 test('Install local plugin dependencies: already installed', async t => {
   const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/plugin_deps_already/netlify.yml`, {
-    all: true
+    all: true,
   })
   t.snapshot(normalizeOutput(all))
 })
 
 test('Install local plugin dependencies: no package.json', async t => {
   const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/plugin_deps_no_package/netlify.yml`, {
-    all: true
+    all: true,
   })
   t.snapshot(normalizeOutput(all))
 })
@@ -166,14 +166,14 @@ test('Functions: simple setup', async t => {
   await del(`${FIXTURES_DIR}/functions/.netlify/functions/`)
 
   const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/functions/netlify.yml`, {
-    all: true
+    all: true,
   })
   t.snapshot(normalizeOutput(all))
 })
 
 test('Functions: invalid source directory', async t => {
   const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/functions_invalid/netlify.yml`, {
-    all: true
+    all: true,
   })
   t.snapshot(normalizeOutput(all))
 })

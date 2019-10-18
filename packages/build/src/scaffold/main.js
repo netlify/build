@@ -59,7 +59,7 @@ module.exports = async function runBuild(config) {
     phpVersion,
     goVersion,
     CWD: CWD,
-    NETLIFY_CACHE_DIR: NETLIFY_CACHE_DIR
+    NETLIFY_CACHE_DIR: NETLIFY_CACHE_DIR,
   })
 
   /* Parse build command and try to fix missing deps */

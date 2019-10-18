@@ -57,7 +57,7 @@ const LIFECYCLE = [
    */
   'finally',
   // Todo onError is not part of lifecycle. Its a special handler
-  'onError'
+  'onError',
 ]
 
 module.exports = { LIFECYCLE }

@@ -25,13 +25,13 @@ module.exports = async function installWapm(cwd, cacheDir) {
     await moveCache(
       path.join(cacheDir, '.wasmer/cache'),
       path.join(cwd, '.wasmer/cache'),
-      'restoring cached wasmer cache'
+      'restoring cached wasmer cache',
     )
     // restore_cwd_cache "wapm_packages" "wapm packages"
     await moveCache(
       path.join(cacheDir, '.wasmer/cache'),
       path.join(cwd, '.wasmer/cache'),
-      'restoring cached wasmer cache'
+      'restoring cached wasmer cache',
     )
 
     try {

@@ -3,6 +3,6 @@ module.exports = function exampleOne(conf) {
   return {
     [`${hook}`]: () => {
       console.log('do the stuff')
-    }
+    },
   }
 }

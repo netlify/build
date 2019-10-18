@@ -5,5 +5,5 @@ module.exports = {
   init() {
     console.log('decrypting files')
     pluginDecrypt()
-  }
+  },
 }

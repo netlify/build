@@ -4,7 +4,7 @@ async function findRunningProcs() {
   let stdout
   try {
     const proc = await execAsync(
-      'ps aux | grep -v [p]s | grep -v [g]rep | grep -v [b]ash | grep -v "/usr/local/bin/buildbot" | grep -v [d]efunct | grep -v "[build]"'
+      'ps aux | grep -v [p]s | grep -v [g]rep | grep -v [b]ash | grep -v "/usr/local/bin/buildbot" | grep -v [d]efunct | grep -v "[build]"',
     )
     /* didnt work with execa
     const proc = await execa('ps', [
@@ -38,5 +38,5 @@ function getProcessCount(processes) {
 
 module.exports = {
   findRunningProcs,
-  getProcessCount
+  getProcessCount,
 }

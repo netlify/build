@@ -30,6 +30,6 @@ module.exports = function netlifyPlugin(config) {
     },
     finally: () => {
       console.log('Hi from finally')
-    }
+    },
   }
 }

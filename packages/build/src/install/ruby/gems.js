@@ -25,8 +25,8 @@ module.exports = async function installRubyGems(cwd, cacheDir) {
         await execa(
           'bundle',
           ['install', '--path', '$NETLIFY_CACHE_DIR/bundle', '--binstubs=$NETLIFY_CACHE_DIR/binstubs'].concat(
-            BUNDLER_FLAGS ? [BUNDLER_FLAGS] : []
-          )
+            BUNDLER_FLAGS ? [BUNDLER_FLAGS] : [],
+          ),
           // @TODO ^ verify this ${BUNDLER_FLAGS:+"$BUNDLER_FLAGS"}
         )
       } catch (err) {

@@ -24,7 +24,8 @@
     ],
     "import/order": [2, { "newlines-between": "always" }],
     "no-process-exit": 0,
-    "require-atomic-updates": 0
+    "require-atomic-updates": 0,
+    "comma-dangle": [2, "always-multiline"]
   },
   "overrides": [
     {

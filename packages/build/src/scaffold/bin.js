@@ -7,7 +7,7 @@ runBuild({
   zisiTempDir: '',
   nodeVersion: '10.16.0',
   rubyVersion: '2.6.2',
-  yarnVersion: ''
+  yarnVersion: '',
 }).catch(err => {
   console.log('err', err)
 })

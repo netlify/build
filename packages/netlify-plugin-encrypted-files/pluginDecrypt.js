@@ -31,7 +31,7 @@ const { NETLIFY_ENCRYPT_KEY } = process.env
 
 module.exports = function pluginDecrypt({
   // unzip to '.testdecrypt' folder instead of overwriting real files
-  testdecrypt = false
+  testdecrypt = false,
 }) {
   if (typeof NETLIFY_ENCRYPT_KEY === 'undefined') {
     console.error('must define NETLIFY_ENCRYPT_KEY to use netlify-plugin-encrypted-files')

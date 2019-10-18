@@ -22,7 +22,7 @@ module.exports = {
     // bc they may want to set `defaults` and `schema` and `de/serialize`
     const store = new Conf({
       cwd: resolve('cache'),
-      configName: 'netlify-plugin-lighthouse'
+      configName: 'netlify-plugin-lighthouse',
     })
 
     // TODO: fetch previous scores from cache
@@ -35,8 +35,8 @@ module.exports = {
     if (prevLightHouse) {
       console.log(
         `Comparing lighthouse results from version: ${chalk.yellow(compareWithVersion)} to version: ${chalk.yellow(
-          currentVersion
-        )}:`
+          currentVersion,
+        )}:`,
       )
       Object.entries(curLightHouse).forEach(([k, v]) => {
         const prevV = prevLightHouse[k]
@@ -60,11 +60,11 @@ module.exports = {
         console.warn(
           `Warning: you set ${chalk.yellow('compareWithVersion') +
             '=' +
-            chalk.yellow(compareWithVersion)} but that version was not found in our result storage.`
+            chalk.yellow(compareWithVersion)} but that version was not found in our result storage.`,
         )
       }
     }
     store.set(`lighthouse.${currentVersion}`, curLightHouse)
     console.log(`Saved results as version: ${chalk.yellow(currentVersion)}`)
-  }
+  },
 }

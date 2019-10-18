@@ -38,7 +38,7 @@ module.exports = async function runYarn(cwd, cacheDir, yarnVersion) {
       console.log(`Found yarn version (${version.stdout}) that doesn't match expected (${yarnVersion})"`)
       const deleteDirs = [
         yarnCacheDir,
-        path.join(process.env.HOME, '.yarn') // TODO verify path lookup
+        path.join(process.env.HOME, '.yarn'), // TODO verify path lookup
       ]
       // rm -rf $NETLIFY_CACHE_DIR/yarn $HOME/.yarn
       await removeFiles(deleteDirs)
@@ -50,7 +50,7 @@ module.exports = async function runYarn(cwd, cacheDir, yarnVersion) {
   if (!hasYarn) {
     console.log(`Installing yarn at version ${yarnVersion}`)
     const deleteDirs = [
-      yarnHomeDir // TODO verify path lookup
+      yarnHomeDir, // TODO verify path lookup
     ]
     // rm -rf $HOME/.yarn
     await removeFiles(deleteDirs)

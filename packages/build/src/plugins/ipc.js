@@ -26,14 +26,14 @@ const executePlugin = async function(eventName, message, { baseDir }) {
   const childProcess = execa('node', [CHILD_MAIN_PATH, eventName, messageString], {
     cwd: baseDir,
     stdio: ['ignore', 'pipe', 'pipe', 'pipe'],
-    preferLocal: true
+    preferLocal: true,
   })
   redactProcess(childProcess)
 
   try {
     const [{ all: output }, responseString] = await Promise.all([
       childProcess,
-      getStream(childProcess.stdio[RESPONSE_FD])
+      getStream(childProcess.stdio[RESPONSE_FD]),
     ])
 
     const response = parseMessage(responseString)

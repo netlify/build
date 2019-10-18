@@ -24,7 +24,7 @@ async function resolveConfig(configFile, options) {
         async resolver() {
           // Call to remote secret store
           return 'shhhhhhh'
-        }
+        },
       },
       {
         /* Match variables ${context:xyz} */
@@ -32,9 +32,9 @@ async function resolveConfig(configFile, options) {
         async resolver(varToProcess, { context = 'production' }) {
           const objectPath = varToProcess.replace('context:', '')
           return `\${self:context.${context}.${objectPath}}`
-        }
-      }
-    ]
+        },
+      },
+    ],
   })
 
   validateConfig(config)

@@ -11,11 +11,11 @@ test('Test TOML', async t => {
     build: {
       publish: 'dist',
       lifecycle: {
-        build: ['npm run build']
+        build: ['npm run build'],
       },
-      functions: 'functions'
+      functions: 'functions',
     },
-    plugins: {}
+    plugins: {},
   })
 })
 
@@ -26,11 +26,11 @@ test('Test YAML', async t => {
     build: {
       publish: 'dist',
       lifecycle: {
-        build: ['npm run build']
+        build: ['npm run build'],
       },
-      functions: 'functions'
+      functions: 'functions',
     },
-    plugins: {}
+    plugins: {},
   })
 })
 
@@ -41,10 +41,10 @@ test('Test JSON', async t => {
     build: {
       publish: 'dist',
       lifecycle: {
-        build: ['npm run build']
+        build: ['npm run build'],
       },
-      functions: 'functions'
+      functions: 'functions',
     },
-    plugins: {}
+    plugins: {},
   })
 })
