@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+const { exit } = require('process')
+
 const yargs = require('yargs')
 const filterObj = require('filter-obj')
 
@@ -10,7 +12,9 @@ const build = require('./main')
 const runCli = async function() {
   const options = parseArgs()
   const optionsA = filterObj(options, isUserOption)
-  await build(optionsA)
+  const success = await build(optionsA)
+  const exitCode = success ? 0 : 1
+  exit(exitCode)
 }
 
 const parseArgs = function() {
