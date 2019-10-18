@@ -33,7 +33,11 @@ const NORMALIZE_REGEXPS = [
   [/,\n\s+/gm, ', '],
   [/:\n\s+/gm, ': '],
   // Semantic versions
-  [/v\d+\.\d+\.\d+/, 'v1.0.0']
+  [/v\d+\.\d+\.\d+/, 'v1.0.0'],
+  // npm install logs
+  [/added \d+ package.*/, 'added packages'],
+  [/^npm ERR!.*/gm, 'npm ERR!'],
+  [/(npm ERR!\n)+/g, 'npm ERR!\n']
 ]
 
 module.exports = { normalizeOutput }
