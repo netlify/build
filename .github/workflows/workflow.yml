@@ -19,5 +19,4 @@ jobs:
         with:
           node-version: ${{matrix.node}}
       - run: npm ci
-      - run: ls packages/config
       - run: npm test
