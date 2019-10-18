@@ -106,6 +106,9 @@ plugins:
       - jim@netlify.com
 ```
 
+Netlify plugins can be found on npm by
+[searching for `keywords:netlify-build-plugin`](https://www.npmjs.com/search?q=keywords%3Anetlify-build-plugin).
+
 ## Lifecycle
 
 The build process runs through a series of lifecycle `events`. These events are the places we can hook into and extend how the Netlify build operates.
