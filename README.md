@@ -107,7 +107,7 @@ plugins:
 ```
 
 Netlify plugins can be found on npm by
-[searching for `keywords:netlify-build-plugin`](https://www.npmjs.com/search?q=keywords%3Anetlify-build-plugin).
+[searching for `keywords:netlify-plugin`](https://www.npmjs.com/search?q=keywords%3Anetlify-plugin).
 
 ## Lifecycle
 

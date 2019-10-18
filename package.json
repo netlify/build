@@ -32,8 +32,7 @@
   },
   "keywords": [
     "netlify",
-    "netlify-build",
-    "netlify-build-plugin"
+    "netlify-plugin"
   ],
   "author": "",
   "license": "MIT",

@@ -136,10 +136,11 @@ Plugins as functions returning the object is a powerful way to provide advanced 
 
 The
 [`name` property in `package.json`](https://docs.npmjs.com/files/package.json#name)
-should start with `netlify-plugin-` (such as `netlify-plugin-example`).
+should start with `netlify-plugin-` (such as `netlify-plugin-example` or
+`@scope/netlify-plugin-example`).
 
 It is recommended for the GitHub repository to be named like this as well.
 
 The
 [`keywords` property in `package.json`](https://docs.npmjs.com/files/package.json#keywords) and the [GitHub topics](https://github.com/topics)
-should contain the `netlify` and `netlify-build-plugin` keywords.
+should contain the `netlify` and `netlify-plugin` keywords.
