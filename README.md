@@ -1,5 +1,7 @@
 # Netlify Build
 
+[![Coverage Status](https://coveralls.io/repos/github/netlify/build/badge.svg)](https://coveralls.io/github/netlify/build)
+
 Netlify build is the next generation of CI/CD tooling for modern web applications.
 
 [Sign up for the private beta](https://www.netlify.com/build/plugins-beta/)
