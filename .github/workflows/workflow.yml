@@ -11,10 +11,33 @@ jobs:
       fail-fast: false
     runs-on: ${{matrix.os}}
     steps:
-      - uses: actions/checkout@v1
+      - name: Git checkout
+        uses: actions/checkout@v1
       - name: Node.js ${{matrix.node}}
         uses: actions/setup-node@v1
         with:
           node-version: ${{matrix.node}}
-      - run: npm install
-      - run: npm run test-ci
+      - name: Install dependencies
+        run: npm install
+      - name: Tests
+        run: npm run test-ci
+      - name: Coveralls test coverage
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{secrets.github_token}}
+          parallel: true
+  coveralls:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v1
+      - name: Node.js 12
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - name: Coveralls finished
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{secrets.github_token}}
+          parallel-finished: true
