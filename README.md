@@ -159,7 +159,7 @@ The Lifecycle flows the events in order and executes and their `pre` & `post` co
 
 <details>
   <summary>Using init</summary>
-  
+
   <br/>
 
 **1. Using with a Plugin**
@@ -203,7 +203,7 @@ build:
 
 <details>
   <summary>Using getCache</summary>
-  
+
   <br/>
 
 **1. Using with a Plugin**
@@ -247,7 +247,7 @@ build:
 
 <details>
   <summary>Using install</summary>
-  
+
   <br/>
 
 **1. Using with a Plugin**
@@ -291,7 +291,7 @@ build:
 
 <details>
   <summary>Using preBuild</summary>
-  
+
   <br/>
 
 **1. Using with a Plugin**
@@ -335,7 +335,7 @@ build:
 
 <details>
   <summary>Using functionsBuild</summary>
-  
+
   <br/>
 
 **1. Using with a Plugin**
@@ -379,7 +379,7 @@ build:
 
 <details>
   <summary>Using build</summary>
-  
+
   <br/>
 
 **1. Using with a Plugin**
@@ -423,7 +423,7 @@ build:
 
 <details>
   <summary>Using postBuild</summary>
-  
+
   <br/>
 
 **1. Using with a Plugin**
@@ -467,7 +467,7 @@ build:
 
 <details>
   <summary>Using package</summary>
-  
+
   <br/>
 
 **1. Using with a Plugin**
@@ -511,7 +511,7 @@ build:
 
 <details>
   <summary>Using preDeploy</summary>
-  
+
   <br/>
 
 **1. Using with a Plugin**
@@ -555,7 +555,7 @@ build:
 
 <details>
   <summary>Using saveCache</summary>
-  
+
   <br/>
 
 **1. Using with a Plugin**
@@ -599,7 +599,7 @@ build:
 
 <details>
   <summary>Using finally</summary>
-  
+
   <br/>
 
 **1. Using with a Plugin**
