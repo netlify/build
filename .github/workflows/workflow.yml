@@ -6,8 +6,10 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest, macOS-latest, windows-latest]
-        node: [8.3.0, 10, 12]
+        os: [ubuntu-latest]
+        node: [12]
+        # os: [ubuntu-latest, macOS-latest, windows-latest]
+        # node: [8.3.0, 10, 12]
       fail-fast: false
     runs-on: ${{matrix.os}}
     steps:
@@ -17,4 +19,5 @@ jobs:
         with:
           node-version: ${{matrix.node}}
       - run: npm ci
+      - run: ls packages/config
       - run: npm test
