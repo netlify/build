@@ -1,4 +1,4 @@
-# Netlify Build
+<img src="static/logo.png" width="400"/><br>
 
 [![Coverage Status](https://coveralls.io/repos/github/netlify/build/badge.svg)](https://coveralls.io/github/netlify/build)
 
