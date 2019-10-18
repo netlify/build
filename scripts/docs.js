@@ -1,5 +1,6 @@
 const path = require('path')
 const fs = require('fs')
+
 const markdownMagic = require('markdown-magic')
 const dox = require('dox')
 
@@ -19,9 +20,10 @@ const config = {
     // https://github.com/moleculerjs/moleculer-addons/blob/master/readme-generator.js#L11
     PACKAGES(content, options) {
       const base = path.resolve('packages')
-      const packages = fs.readdirSync(path.resolve('packages'))
+      const packages = fs
+        .readdirSync(path.resolve('packages'))
         .filter(pkg => !/^\./.test(pkg))
-        .map(pkg => ([pkg, fs.readFileSync(path.join(base, pkg, 'package.json'), 'utf8')]))
+        .map(pkg => [pkg, fs.readFileSync(path.join(base, pkg, 'package.json'), 'utf8')])
         .filter(([pkg, json]) => {
           const parsed = JSON.parse(json)
           return parsed.private !== true
@@ -35,10 +37,11 @@ const config = {
     },
     PLUGINS(content, options) {
       const base = path.resolve('packages')
-      const packages = fs.readdirSync(path.resolve('packages'))
+      const packages = fs
+        .readdirSync(path.resolve('packages'))
         .filter(pkg => !/^\./.test(pkg))
         .filter(pkg => pkg.match(/netlify-plugin/))
-        .map(pkg => ([pkg, fs.readFileSync(path.join(base, pkg, 'package.json'), 'utf8')]))
+        .map(pkg => [pkg, fs.readFileSync(path.join(base, pkg, 'package.json'), 'utf8')])
         .filter(([pkg, json]) => {
           const parsed = JSON.parse(json)
           return parsed.private !== true
@@ -55,12 +58,12 @@ const config = {
       const fileContents = fs.readFileSync(CONSTANTS.lifecycle, 'utf-8')
       const docBlocs = parseJsDoc(fileContents)
 
-      const events = docBlocs.filter((d) => {
+      const events = docBlocs.filter(d => {
         return !d.description.summary.match(/^\*\*/)
       })
       let md = '| Lifecycle hook | Description |\n'
       md += '|:------|:-------|\n'
-      events.forEach((data) => {
+      events.forEach(data => {
         const eventName = data.description.summary.match(/^`(.*)`/)
         let desc = data.description.summary.replace(eventName[0], '')
         /* remove prefixed “ - whatever" */
@@ -78,8 +81,8 @@ const config = {
           // console.log('data', data)
           const invisibleSpace = ' ‏‏‎ '
           const doubleInvisibleSpace = ' ‏‏‎  ‏‏‎  ‏‏‎ '
-          const spacing = (eventName[1] === 'finally') ? invisibleSpace : doubleInvisibleSpace
-          const arrow = (eventName[1] === 'finally') ? '🎉' : '⇩'
+          const spacing = eventName[1] === 'finally' ? invisibleSpace : doubleInvisibleSpace
+          const arrow = eventName[1] === 'finally' ? '🎉' : '⇩'
           md += `| ${arrow}${spacing}**${eventNameWithLink}**${doubleInvisibleSpace} | ${desc} |\n`
         }
       })
@@ -90,19 +93,21 @@ const config = {
       const docBlocs = parseJsDoc(fileContents)
       let updatedContent = ''
 
-      docBlocs.filter((data) => {
-        const niceName = formatName(data.ctx.name)
-        return !nonLifecycleKeys.includes(niceName)
-      }).forEach((data) => {
-        const eventName = data.description.summary.match(/^`(.*)`/)
-        updatedContent += `### ${formatName(eventName[1])}\n\n`
-        updatedContent += `${data.description.full}\n\n`
+      docBlocs
+        .filter(data => {
+          const niceName = formatName(data.ctx.name)
+          return !nonLifecycleKeys.includes(niceName)
+        })
+        .forEach(data => {
+          const eventName = data.description.summary.match(/^`(.*)`/)
+          updatedContent += `### ${formatName(eventName[1])}\n\n`
+          updatedContent += `${data.description.full}\n\n`
 
-        const pluginExample = renderPluginExample(eventName[1])
-        const configExample = renderConfigExample(eventName[1])
-        updatedContent += collapse(`Using ${eventName[1]}`, `${pluginExample}\n${configExample}`)
+          const pluginExample = renderPluginExample(eventName[1])
+          const configExample = renderConfigExample(eventName[1])
+          updatedContent += collapse(`Using ${eventName[1]}`, `${pluginExample}\n${configExample}`)
 
-        /* maybe fold
+          /* maybe fold
         <details>
           <summary>Plugin example</summary>
 
@@ -112,8 +117,8 @@ const config = {
 
         </details>
          */
-        updatedContent += `\n`
-      })
+          updatedContent += `\n`
+        })
       return updatedContent.replace(/^\s+|\s+$/g, '')
     }
   }
@@ -128,7 +133,7 @@ function formatName(name) {
 }
 
 function collapse(summary, content) {
-return `
+  return `
 <details>
   <summary>${summary}</summary>
   ${content}
