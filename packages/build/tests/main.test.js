@@ -104,8 +104,60 @@ test('Can define options as environment variables', async t => {
   t.snapshot(normalizeOutput(all))
 })
 
-test('Install local plugin dependencies', async t => {
+test('Can install plugins as Node modules', async t => {
+  const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/module_plugin/netlify.yml`, {
+    all: true
+  })
+  t.snapshot(normalizeOutput(all))
+})
+
+test('Reports missing plugins', async t => {
+  const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/missing_plugin/netlify.yml`, {
+    all: true
+  })
+  t.snapshot(normalizeOutput(all))
+})
+
+test('Can install local plugins', async t => {
+  const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/local_plugin/netlify.yml`, {
+    all: true
+  })
+  t.snapshot(normalizeOutput(all))
+})
+
+test('Install local plugin dependencies: with npm', async t => {
   const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/plugin_deps/netlify.yml`, { all: true })
+  t.snapshot(normalizeOutput(all))
+
   await del(`${FIXTURES_DIR}/plugin_deps/plugin/node_modules`)
+})
+
+test('Install local plugin dependencies: with yarn', async t => {
+  const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/plugin_deps_yarn/netlify.yml`, {
+    all: true
+  })
+  t.snapshot(normalizeOutput(all))
+
+  await del(`${FIXTURES_DIR}/plugin_deps_yarn/plugin/node_modules`)
+})
+
+test('Install local plugin dependencies: propagate errors', async t => {
+  const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/plugin_deps_error/netlify.yml`, {
+    all: true
+  })
+  t.snapshot(normalizeOutput(all))
+})
+
+test('Install local plugin dependencies: already installed', async t => {
+  const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/plugin_deps_already/netlify.yml`, {
+    all: true
+  })
+  t.snapshot(normalizeOutput(all))
+})
+
+test('Install local plugin dependencies: no package.json', async t => {
+  const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/plugin_deps_no_package/netlify.yml`, {
+    all: true
+  })
   t.snapshot(normalizeOutput(all))
 })

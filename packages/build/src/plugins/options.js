@@ -2,7 +2,7 @@ const DEFAULT_PLUGINS_DIR = __dirname
 
 // Load plugin options (specified by user in `config.plugins`)
 const getPluginsOptions = function({ config: { plugins: pluginsOptions } }) {
-  const pluginsOptionsA = Object.assign({}, DEFAULT_PLUGINS, pluginsOptions)
+  const pluginsOptionsA = { ...DEFAULT_PLUGINS, ...pluginsOptions }
   return Object.entries(pluginsOptionsA)
     .map(normalizePluginOptions)
     .filter(isPluginEnabled)
@@ -13,7 +13,7 @@ const DEFAULT_PLUGINS = {
 }
 
 const normalizePluginOptions = function([pluginId, pluginOptions]) {
-  const { type, core, enabled, config: pluginConfig } = Object.assign({}, DEFAULT_PLUGIN_OPTIONS, pluginOptions)
+  const { type, core, enabled, config: pluginConfig } = { ...DEFAULT_PLUGIN_OPTIONS, ...pluginOptions }
   return { pluginId, type, core, enabled, pluginConfig }
 }
 

@@ -30,7 +30,8 @@ It is designed to support any kind of build flow and is extendable to fit any un
 
 ## Lifecycle
 
-The build process runs through a series of lifecycle `events`. These events are the places we can hook into and extend how the Netlify build operates.
+The build process runs through a series of lifecycle `events`. These events are the places we can hook into and extend
+how the Netlify build operates.
 
 <!-- AUTO-GENERATED-CONTENT:START (LIFECYCLE_TABLE) -->
 

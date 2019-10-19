@@ -9,21 +9,22 @@ For example, hooking into the `preBuild` step to run something before your build
 ## Available Lifecycle Hooks
 
 <!-- AUTO-GENERATED-CONTENT:START (LIFECYCLE_TABLE:noAnchors=true) -->
-| Lifecycle hook | Description |
-|:------|:-------|
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **init** ‏‏‎  ‏‏‎  ‏‏‎  | Runs before anything else |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **getCache** ‏‏‎  ‏‏‎  ‏‏‎  | Fetch previous build cache |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **install** ‏‏‎  ‏‏‎  ‏‏‎  | Install project dependancies |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **preBuild** ‏‏‎  ‏‏‎  ‏‏‎  | Runs before functions & build commands run |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **functionsBuild** ‏‏‎  ‏‏‎  ‏‏‎  | Build the serverless functions |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **build** ‏‏‎  ‏‏‎  ‏‏‎  | Build commands are executed |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **postBuild** ‏‏‎  ‏‏‎  ‏‏‎  | Runs after site & functions have been built |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **package** ‏‏‎  ‏‏‎  ‏‏‎  | Package & optimize artifact |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **preDeploy** ‏‏‎  ‏‏‎  ‏‏‎  | Runs before built artifacts are deployed |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **saveCache** ‏‏‎  ‏‏‎  ‏‏‎  | Save cached assets |
-| 🎉 ‏‏‎ **finally** ‏‏‎  ‏‏‎  ‏‏‎  | Runs after anything else |
-<!-- AUTO-GENERATED-CONTENT:END (LIFECYCLE_TABLE) -->
 
+| Lifecycle hook                               | Description                                 |
+| :------------------------------------------- | :------------------------------------------ |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **init** ‏‏‎ ‏‏‎ ‏‏‎           | Runs before anything else                   |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **getCache** ‏‏‎ ‏‏‎ ‏‏‎       | Fetch previous build cache                  |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **install** ‏‏‎ ‏‏‎ ‏‏‎        | Install project dependancies                |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **preBuild** ‏‏‎ ‏‏‎ ‏‏‎       | Runs before functions & build commands run  |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **functionsBuild** ‏‏‎ ‏‏‎ ‏‏‎ | Build the serverless functions              |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **build** ‏‏‎ ‏‏‎ ‏‏‎          | Build commands are executed                 |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **postBuild** ‏‏‎ ‏‏‎ ‏‏‎      | Runs after site & functions have been built |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **package** ‏‏‎ ‏‏‎ ‏‏‎        | Package & optimize artifact                 |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **preDeploy** ‏‏‎ ‏‏‎ ‏‏‎      | Runs before built artifacts are deployed    |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **saveCache** ‏‏‎ ‏‏‎ ‏‏‎      | Save cached assets                          |
+| 🎉 ‏‏‎ **finally** ‏‏‎ ‏‏‎ ‏‏‎               | Runs after anything else                    |
+
+<!-- AUTO-GENERATED-CONTENT:END (LIFECYCLE_TABLE) -->
 
 ## Anatomy of a plugin
 
@@ -130,3 +131,16 @@ Plugins as functions returning the object is a powerful way to provide advanced 
 - Returning only specific lifecycles to execute based on config
 - Giving plugin users the ability to customize order of execution of functionality
 - Preforming input validation on configuration to fail fast if invalid values are passed in
+
+## Publishing a plugin
+
+The
+[`name` property in `package.json`](https://docs.npmjs.com/files/package.json#name)
+should start with `netlify-plugin-` (such as `netlify-plugin-example` or
+`@scope/netlify-plugin-example`).
+
+It is recommended for the GitHub repository to be named like this as well.
+
+The
+[`keywords` property in `package.json`](https://docs.npmjs.com/files/package.json#keywords) and the [GitHub topics](https://github.com/topics)
+should contain the `netlify` and `netlify-plugin` keywords.

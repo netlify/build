@@ -1,6 +1,14 @@
-# Netlify Build
+<img src="static/logo.png" width="400"/><br>
+
+[![Coverage Status](https://coveralls.io/repos/github/netlify/build/badge.svg)](https://coveralls.io/github/netlify/build)
 
 Netlify build is the next generation of CI/CD tooling for modern web applications.
+
+[Sign up for the private beta](https://www.netlify.com/build/plugins-beta/)
+
+[Demo video](https://www.youtube.com/watch?v=4m6Hi4_qEVE) and
+[slides](https://docs.google.com/presentation/d/1zNcHHrJWnEp6Y-NDk9RE6g9GYCUjI-kdgYW28G2GkSA/edit?usp=sharing). See also
+[example guide here in Creating and using your first Netlify Build Plugin](https://www.netlify.com/blog/2019/10/16/creating-and-using-your-first-netlify-build-plugin/).
 
 <!-- AUTO-GENERATED-CONTENT:START (TOC:collapse=true&collapseText=Expand Table of Contents) -->
 <details>
@@ -44,11 +52,14 @@ This is a simplified view of a typical build life cycle:
 4. Files & dependencies are cached
 5. Finally, your site is deployed to the web!
 
-Historically, when connecting your site to Netlify, we ask for the build command (step 3 above) and will run through this process. This works great for most use cases & will continue to do so 😃
+Historically, when connecting your site to Netlify, we ask for the build command (step 3 above) and will run through
+this process. This works great for most use cases & will continue to do so 😃
 
-For builds that require a little more flexibility, we are introducing a programatic interface on top of these build lifecycle steps to allow users to customize this flow.
+For builds that require a little more flexibility, we are introducing a programatic interface on top of these build
+lifecycle steps to allow users to customize this flow.
 
-**Netlify Build** is designed to support any kind of build flow and is extendable to fit any unique project requirements.
+**Netlify Build** is designed to support any kind of build flow and is extendable to fit any unique project
+requirements.
 
 ## How it works
 
@@ -100,9 +111,13 @@ plugins:
       - jim@netlify.com
 ```
 
+Netlify plugins can be found on npm by
+[searching for `keywords:netlify-plugin`](https://www.npmjs.com/search?q=keywords%3Anetlify-plugin).
+
 ## Lifecycle
 
-The build process runs through a series of lifecycle `events`. These events are the places we can hook into and extend how the Netlify build operates.
+The build process runs through a series of lifecycle `events`. These events are the places we can hook into and extend
+how the Netlify build operates.
 
 <!-- AUTO-GENERATED-CONTENT:START (LIFECYCLE_TABLE) -->
 
@@ -153,7 +168,7 @@ The Lifecycle flows the events in order and executes and their `pre` & `post` co
 
 <details>
   <summary>Using init</summary>
-  
+
   <br/>
 
 **1. Using with a Plugin**
@@ -197,7 +212,7 @@ build:
 
 <details>
   <summary>Using getCache</summary>
-  
+
   <br/>
 
 **1. Using with a Plugin**
@@ -241,7 +256,7 @@ build:
 
 <details>
   <summary>Using install</summary>
-  
+
   <br/>
 
 **1. Using with a Plugin**
@@ -285,7 +300,7 @@ build:
 
 <details>
   <summary>Using preBuild</summary>
-  
+
   <br/>
 
 **1. Using with a Plugin**
@@ -329,7 +344,7 @@ build:
 
 <details>
   <summary>Using functionsBuild</summary>
-  
+
   <br/>
 
 **1. Using with a Plugin**
@@ -373,7 +388,7 @@ build:
 
 <details>
   <summary>Using build</summary>
-  
+
   <br/>
 
 **1. Using with a Plugin**
@@ -417,7 +432,7 @@ build:
 
 <details>
   <summary>Using postBuild</summary>
-  
+
   <br/>
 
 **1. Using with a Plugin**
@@ -461,7 +476,7 @@ build:
 
 <details>
   <summary>Using package</summary>
-  
+
   <br/>
 
 **1. Using with a Plugin**
@@ -505,7 +520,7 @@ build:
 
 <details>
   <summary>Using preDeploy</summary>
-  
+
   <br/>
 
 **1. Using with a Plugin**
@@ -549,7 +564,7 @@ build:
 
 <details>
   <summary>Using saveCache</summary>
-  
+
   <br/>
 
 **1. Using with a Plugin**
@@ -593,7 +608,7 @@ build:
 
 <details>
   <summary>Using finally</summary>
-  
+
   <br/>
 
 **1. Using with a Plugin**
@@ -681,9 +696,11 @@ foo: ${env:MY_ENV_VAR}
 
 Netlify Plugins extend the functionality of the netlify build process.
 
-Plugins are POJOs (plain old javascript objects) that allow users to hook into the different lifecycle steps happening during their site builds.
+Plugins are POJOs (plain old javascript objects) that allow users to hook into the different lifecycle steps happening
+during their site builds.
 
-For example, hooking into the `preBuild` step to run something before your build command. Or the `postBuild` hook for running things after your site build has completed.
+For example, hooking into the `preBuild` step to run something before your build command. Or the `postBuild` hook for
+running things after your site build has completed.
 
 ```js
 {
@@ -747,8 +764,13 @@ Plugins can do a-lot and we are excited what the JAMstack community will build!
 - **netlify-plugin-tweet-new-post** to automatically share new content via twitter on new publish
 - **netlify-plugin-sitemap** to generate sitemaps after build
 - **netlify-plugin-notify** to automatically wired up build notifications
-- **netlify-plugin-a11y-axe** to automatically audit site for accessibility issues
-- **netlify-plugin-twiliosms** text your boss every time you deploy so they know you're working
+- **@netlify/plugin-no-more-404** fail build or warn if prior .html files disappear without corresponding Netlify
+  redirects.
+- **@netlify/plugin-axe** to automatically audit site for accessibility issues
+- **@netlify/plugin-encrypted-files** to encrypt files in source, but to decrypt them locally and for the build, so that
+  you can do _partial_ open source sites without leaking announcements or private info.
+- **netlify-plugin-twiliosms** text your boss every time you deploy so they know you're working -
+  [example guide here in Creating and using your first Netlify Build Plugin](https://www.netlify.com/blog/2019/10/16/creating-and-using-your-first-netlify-build-plugin/)
 - **netlify-plugin-svgoptimizer** to automatically optimize all SVGs in a directory when the site is built
 - ... the sky is the limit 🌈
 
@@ -762,7 +784,8 @@ To execute your build locally, run the following CLI command:
 netlify build
 ```
 
-It's also possible to "try before you buy" and test out the build flow before executing any code with the `dry` run flag.
+It's also possible to "try before you buy" and test out the build flow before executing any code with the `dry` run
+flag.
 
 The `--dry` flag will output everything that happens in the build flow without executing the plugin lifecycle methods.
 
@@ -796,8 +819,12 @@ Below are a list of packages included.
 
 - [@netlify/build](./packages/build) Netlify build module [npm link](https://www.npmjs.com/package/@netlify/build).
 - [@netlify/config](./packages/config) Netlify config module [npm link](https://www.npmjs.com/package/@netlify/config).
-- [@netlify/plugin-encrypted-files](./packages/netlify-plugin-encrypted-files) [npm link](https://www.npmjs.com/package/@netlify/plugin-encrypted-files).
-- [@netlify/plugin-no-more-404](./packages/netlify-plugin-no-more-404) fail netlify build if html goes missing with no redirects [npm link](https://www.npmjs.com/package/@netlify/plugin-no-more-404).
-- [@netlify/plugin-sitemap](./packages/netlify-plugin-sitemap) [npm link](https://www.npmjs.com/package/@netlify/plugin-sitemap).
-- [netlify-build-plugin-svgoptimizer](./packages/netlify-plugin-svgoptimizer) Optimize SVG assets during the Netlify build process [npm link](https://www.npmjs.com/package/netlify-build-plugin-svgoptimizer).
+- [@netlify/plugin-encrypted-files](./packages/netlify-plugin-encrypted-files)
+  [npm link](https://www.npmjs.com/package/@netlify/plugin-encrypted-files).
+- [@netlify/plugin-no-more-404](./packages/netlify-plugin-no-more-404) fail netlify build if html goes missing with no
+  redirects [npm link](https://www.npmjs.com/package/@netlify/plugin-no-more-404).
+- [@netlify/plugin-sitemap](./packages/netlify-plugin-sitemap)
+  [npm link](https://www.npmjs.com/package/@netlify/plugin-sitemap).
+- [netlify-build-plugin-svgoptimizer](./packages/netlify-plugin-svgoptimizer) Optimize SVG assets during the Netlify
+  build process [npm link](https://www.npmjs.com/package/netlify-build-plugin-svgoptimizer).
   <!-- AUTO-GENERATED-CONTENT:END (PACKAGES) -->

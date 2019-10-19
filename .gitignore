@@ -1,6 +1,11 @@
 node_modules
+!packages/build/tests/fixtures/*/node_modules
+!packages/build/tests/fixtures/*/*/node_modules
 research
 .DS_Store
 terraform
 .netlify
 lerna-debug.log
+.nyc_output
+coverage
+.eslintcache

@@ -28,7 +28,7 @@
   },
   "overrides": [
     {
-      "files": "**/*.test.js",
+      "files": ["**/*.test.js", "scripts/**/*.js"],
       "rules": {
         "node/no-unpublished-require": 0,
         "node/no-missing-require": 0
