@@ -17,7 +17,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "configorama": "0.3.5",
+    "configorama": "0.3.6",
     "find-up": "^4.1.0",
     "map-obj": "^4.1.0",
     "minimist": "^1.2.0",
