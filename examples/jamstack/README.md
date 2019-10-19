@@ -1,1 +1,0 @@
-# Jamstack conf demo
