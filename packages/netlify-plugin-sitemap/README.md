@@ -8,7 +8,7 @@ In your netlify config file add:
 
 ```yml
 plugins:
-  - netlify-plugin-sitemap
+  - id: netlify-plugin-sitemap
 ```
 
 ## Configuration
@@ -17,6 +17,7 @@ Configure the plugin `distPath` (defaults to `build`)
 
 ```yml
 plugins:
-  - netlify-plugin-sitemap
+  - id: netlify-plugin-sitemap
+    config:
       distPath: build
 ```

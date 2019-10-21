@@ -1,5 +1,5 @@
 plugins:
-  example:
+  - id: example
     type: netlify-plugin-example
-  exampleOverride:
+  - id: exampleOverride
     type: ./override.js

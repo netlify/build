@@ -97,12 +97,12 @@ They can be installed from `npm` or run locally from relative path in your proje
 ```yml
 # Config file `plugins` defines plugins used by build.
 plugins:
-  pluginAbc:
+  - id: pluginAbc
     type: ./local/path/to/plugin-folder
     config:
       optionOne: 'hello'
       optionTwo: 'there'
- pluginTwo:
+ - id: pluginTwo
    type: plugin-from-npm
    config:
      optionOne: 'neat'
@@ -189,7 +189,7 @@ After creating the plugin, add into your Netlify config file under `plugins`
 
 ```yml
 plugins:
-  myPlugin:
+  - id: myPlugin
     type: ./path/to/plugin
     config:
       foo: bar
@@ -233,7 +233,7 @@ After creating the plugin, add into your Netlify config file under `plugins`
 
 ```yml
 plugins:
-  myPlugin:
+  - id: myPlugin
     type: ./path/to/plugin
     config:
       foo: bar
@@ -277,7 +277,7 @@ After creating the plugin, add into your Netlify config file under `plugins`
 
 ```yml
 plugins:
-  myPlugin:
+  - id: myPlugin
     type: ./path/to/plugin
     config:
       foo: bar
@@ -321,7 +321,7 @@ After creating the plugin, add into your Netlify config file under `plugins`
 
 ```yml
 plugins:
-  myPlugin:
+  - id: myPlugin
     type: ./path/to/plugin
     config:
       foo: bar
@@ -365,7 +365,7 @@ After creating the plugin, add into your Netlify config file under `plugins`
 
 ```yml
 plugins:
-  myPlugin:
+  - id: myPlugin
     type: ./path/to/plugin
     config:
       foo: bar
@@ -409,7 +409,7 @@ After creating the plugin, add into your Netlify config file under `plugins`
 
 ```yml
 plugins:
-  myPlugin:
+  - id: myPlugin
     type: ./path/to/plugin
     config:
       foo: bar
@@ -453,7 +453,7 @@ After creating the plugin, add into your Netlify config file under `plugins`
 
 ```yml
 plugins:
-  myPlugin:
+  - id: myPlugin
     type: ./path/to/plugin
     config:
       foo: bar
@@ -497,7 +497,7 @@ After creating the plugin, add into your Netlify config file under `plugins`
 
 ```yml
 plugins:
-  myPlugin:
+  - id: myPlugin
     type: ./path/to/plugin
     config:
       foo: bar
@@ -541,7 +541,7 @@ After creating the plugin, add into your Netlify config file under `plugins`
 
 ```yml
 plugins:
-  myPlugin:
+  - id: myPlugin
     type: ./path/to/plugin
     config:
       foo: bar
@@ -585,7 +585,7 @@ After creating the plugin, add into your Netlify config file under `plugins`
 
 ```yml
 plugins:
-  myPlugin:
+  - id: myPlugin
     type: ./path/to/plugin
     config:
       foo: bar
@@ -629,7 +629,7 @@ After creating the plugin, add into your Netlify config file under `plugins`
 
 ```yml
 plugins:
-  myPlugin:
+  - id: myPlugin
     type: ./path/to/plugin
     config:
       foo: bar
@@ -656,18 +656,18 @@ Configuration can be written in `toml`, `yml`, `json`, or `json5`.
 ```yml
 # Config file `plugins` defines plugins used by build. Plugins are optional
 plugins:
-  pluginAbc:
+  - id: pluginAbc
     type: ./local/path/to/plugin-folder
     config:
       optionOne: 'hello'
       optionTwo: 'there'
- pluginTwo:
-   type: plugin-from-npm
-   config:
-     optionOne: 'neat'
-     arrayOfValues:
-      - david@netlify.com
-      - jim@netlify.com
+  - id: pluginTwo
+    type: plugin-from-npm
+    config:
+      optionOne: 'neat'
+      arrayOfValues:
+        - david@netlify.com
+        - jim@netlify.com
 
 # Inline `build.lifecycle` steps can be defined
 build:
@@ -745,7 +745,7 @@ build:
 
 # Netlify build plugins
 plugins:
-  examplePlugin:
+  - id: examplePlugin
     # Path to plugin. Can be local relative path or reference to node_modules
     type: ./plugins/my-plugin/
     config:

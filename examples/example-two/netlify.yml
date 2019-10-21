@@ -13,26 +13,26 @@ build:
 
 # Build Plugins
 plugins:
-  one:
+  - id: one
     type: ./plugins/plugin-one
-  two:
+  - id: two
     type: ./plugins/plugin-two
-  dynamic:
+  - id: dynamic
     type: ./plugins/dynamic
     config:
       hook: init
-  check404s:
+  - id: check404s
     type: '@netlify/plugin-no-more-404'
     config:
       on404: 'error'
       blankSlate: false
-  lighthouse:
+  - id: lighthouse
     type: '@netlify/plugin-lighthouse'
     enabled: ${env:LIGHTHOUSE_ENABLED, false}
     config:
       currentVersion: 0.0.4
       compareWithVersion: 0.0.3
-  axe:
+  - id: axe
     type: '@netlify/plugin-axe'
     enabled: false
     config:

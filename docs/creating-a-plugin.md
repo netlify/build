@@ -2,9 +2,11 @@
 
 Netlify Plugins extend the functionality of the Netlify Build process.
 
-Plugins are plain javascript objects that allow users to hook into the different lifecycle steps happening during their site builds.
+Plugins are plain javascript objects that allow users to hook into the different lifecycle steps happening during their
+site builds.
 
-For example, hooking into the `preBuild` step to run something before your build command. Or the `postBuild` hook for running things after your site build has completed.
+For example, hooking into the `preBuild` step to run something before your build command. Or the `postBuild` hook for
+running things after your site build has completed.
 
 ## Available Lifecycle Hooks
 
@@ -42,7 +44,8 @@ module.exports = helloWorldPlugin
 
 This plugin will log out `Hello world from preBuild lifecycle step!` before right before the build commands are run.
 
-Save the plugin code locally to a `./plugins/my-plugin` folder as `index.js`. This will allow us to use the plugin in the next step.
+Save the plugin code locally to a `./plugins/my-plugin` folder as `index.js`. This will allow us to use the plugin in
+the next step.
 
 ## Using a plugin
 
@@ -57,11 +60,12 @@ build:
 
 # Attach our plugin
 plugins:
-  myFirstPlugin:
+  - id: myFirstPlugin
     type: ./plugins/my-plugin
 ```
 
-Now that the plugin is declared, we can verify it's loading correctly with the `netlify build --dry` command. This execute a "dry run" of our build and show us the plugins & commands that will execute for a real build.
+Now that the plugin is declared, we can verify it's loading correctly with the `netlify build --dry` command. This
+execute a "dry run" of our build and show us the plugins & commands that will execute for a real build.
 
 ```bash
 netlify build --dry
@@ -84,7 +88,7 @@ If your plugin requires additional values from the user to do things, those can 
 ```yml
 # Attach our plugin
 plugins:
-  myFirstPlugin:
+  - id: myFirstPlugin
     type: ./plugins/my-plugin
     config:
       foo: bar
@@ -109,7 +113,8 @@ module.exports = helloWorldPlugin
 
 Plugin configuration is also supplied top level if you are returning a dynamic plugin.
 
-Instead of a plugin being a simple object, instead the plugin is a `function` that returns a plain old javascript object.
+Instead of a plugin being a simple object, instead the plugin is a `function` that returns a plain old javascript
+object.
 
 ```js
 function helloWorldPlugin(pluginConfig, config) {
@@ -134,13 +139,10 @@ Plugins as functions returning the object is a powerful way to provide advanced 
 
 ## Publishing a plugin
 
-The
-[`name` property in `package.json`](https://docs.npmjs.com/files/package.json#name)
-should start with `netlify-plugin-` (such as `netlify-plugin-example` or
-`@scope/netlify-plugin-example`).
+The [`name` property in `package.json`](https://docs.npmjs.com/files/package.json#name) should start with
+`netlify-plugin-` (such as `netlify-plugin-example` or `@scope/netlify-plugin-example`).
 
 It is recommended for the GitHub repository to be named like this as well.
 
-The
-[`keywords` property in `package.json`](https://docs.npmjs.com/files/package.json#keywords) and the [GitHub topics](https://github.com/topics)
-should contain the `netlify` and `netlify-plugin` keywords.
+The [`keywords` property in `package.json`](https://docs.npmjs.com/files/package.json#keywords) and the
+[GitHub topics](https://github.com/topics) should contain the `netlify` and `netlify-plugin` keywords.

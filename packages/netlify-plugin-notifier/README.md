@@ -8,7 +8,8 @@ Send messages during different build lifecycle events
 
 ```yml
 plugins:
-  - netlify-plugin-notifier:
+  - id: netlify-plugin-notifier
+    config:
       notices:
         - event: postBuild
           type: email

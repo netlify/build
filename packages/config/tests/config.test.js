@@ -15,7 +15,7 @@ test('Test TOML', async t => {
       },
       functions: 'functions',
     },
-    plugins: {},
+    plugins: [],
   })
 })
 
@@ -30,7 +30,7 @@ test('Test YAML', async t => {
       },
       functions: 'functions',
     },
-    plugins: {},
+    plugins: [],
   })
 })
 
@@ -45,6 +45,6 @@ test('Test JSON', async t => {
       },
       functions: 'functions',
     },
-    plugins: {},
+    plugins: [],
   })
 })

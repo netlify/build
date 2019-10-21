@@ -15,7 +15,7 @@ build:
   publish: build # NOTE: you should have a publish folder specified here for this to work
 
 plugins:
-  no-more-404:
+  - id: no-more-404
     type: '@netlify/plugin-no-more-404'
     config:
       on404: 'error' # can switch to warn

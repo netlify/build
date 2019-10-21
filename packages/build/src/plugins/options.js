@@ -2,18 +2,16 @@ const DEFAULT_PLUGINS_DIR = __dirname
 
 // Load plugin options (specified by user in `config.plugins`)
 const getPluginsOptions = function({ config: { plugins: pluginsOptions } }) {
-  const pluginsOptionsA = { ...DEFAULT_PLUGINS, ...pluginsOptions }
-  return Object.entries(pluginsOptionsA)
-    .map(normalizePluginOptions)
-    .filter(isPluginEnabled)
+  return [...DEFAULT_PLUGINS, ...pluginsOptions].map(normalizePluginOptions).filter(isPluginEnabled)
 }
 
-const DEFAULT_PLUGINS = {
-  '@netlify/functions': { type: `${DEFAULT_PLUGINS_DIR}/functions/index.js`, core: true },
-}
+const DEFAULT_PLUGINS = [{ id: '@netlify/functions', type: `${DEFAULT_PLUGINS_DIR}/functions/index.js`, core: true }]
 
-const normalizePluginOptions = function([pluginId, pluginOptions]) {
-  const { type, core, enabled, config: pluginConfig } = { ...DEFAULT_PLUGIN_OPTIONS, ...pluginOptions }
+const normalizePluginOptions = function(pluginOptions) {
+  const { type, id: pluginId, core, enabled, config: pluginConfig } = {
+    ...DEFAULT_PLUGIN_OPTIONS,
+    ...pluginOptions
+  }
   return { pluginId, type, core, enabled, pluginConfig }
 }
 
