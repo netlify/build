@@ -1,55 +1,80 @@
-const os = require('os')
+const { tmpdir } = require('os')
 const { resolve } = require('path')
+const {
+  env: { DEPLOY_ID }
+} = require('process')
 
 const makeDir = require('make-dir')
 const pathExists = require('path-exists')
 const readdirp = require('readdirp')
 const { zipFunctions } = require('@netlify/zip-it-and-ship-it')
 
-const { DEPLOY_PRIME_URL, DEPLOY_ID } = process.env
+const isNetlifyCI = require('../../utils/is-netlify-ci')
 
-module.exports = {
-  /* Hook into buildFunctions lifecycle */
-  async functionsBuild({ config }) {
-    const {
-      build: { functions }
-    } = config
+// Plugin to bundle Netlify functions with @netlify/zip-it-and-ship-it
+const functionsPlugin = function(pluginConfig, { build: { functions: srcDir } }) {
+  if (srcDir === undefined) {
+    return {}
+  }
 
-    if (!functions) {
-      console.log('No functions directory set. Skipping functions build step')
-      return false
-    }
+  return { init, functionsBuild }
+}
 
-    const functionsDir = resolve(functions)
-
-    if (!(await pathExists(functionsDir))) {
-      console.log(`Functions directory "${functionsDir}" not found`)
-      throw new Error('Functions Build cancelled')
-    }
-
-    let tempFileDir = resolve('.netlify/functions')
-
-    // Is inside netlify context
-    if (DEPLOY_PRIME_URL) {
-      tempFileDir = resolve(os.tmpdir(), `zisi-${DEPLOY_ID}`)
-    }
-
-    if (!(await pathExists(tempFileDir))) {
-      console.log(`Temp functions directory "${tempFileDir}" not found`)
-      console.log(`Creating tmp dir`, tempFileDir)
-      await makeDir(tempFileDir)
-    }
-
-    try {
-      console.log('Zipping functions')
-      await zipFunctions(functionsDir, tempFileDir)
-    } catch (err) {
-      console.log('Functions bundling error')
-      throw new Error(err)
-    }
-    const files = await readdirp.promise(tempFileDir)
-    const paths = files.map(({ path }) => ` - ${path}`).join('\n')
-    console.log(`Functions bundled in ${tempFileDir}:`)
-    console.log(paths)
+// Validate plugin configuration at startup
+const init = async function({
+  config: {
+    build: { functions: srcDir }
+  }
+}) {
+  if (!(await pathExists(srcDir))) {
+    throw new Error(`Functions directory "${resolve(srcDir)}" not found`)
   }
 }
+
+// Bundle Netlify functions
+const functionsBuild = async function({
+  config: {
+    build: { functions: srcDir }
+  }
+}) {
+  const destDir = getDestDir()
+
+  // TODO: remove this after https://github.com/netlify/zip-it-and-ship-it/pull/48 is merged
+  // since that PR allows `destDir` not to exist
+  if (!(await pathExists(destDir))) {
+    await makeDir(destDir)
+  }
+
+  console.log('Zipping functions')
+  await zipFunctions(srcDir, destDir)
+
+  await logResults(destDir)
+}
+
+// Retrieve directory where bundled functions will be
+const getDestDir = function() {
+  if (isNetlifyCI()) {
+    return `${tmpdir()}/zisi-${DEPLOY_ID}`
+  }
+
+  return '.netlify/functions'
+}
+
+// Print the list of paths to the bundled functions
+const logResults = async function(destDir) {
+  const paths = await getLoggedPaths(destDir)
+  console.log(`Functions bundled in "${resolve(destDir)}":`)
+  console.log(paths)
+}
+
+const getLoggedPaths = async function(destDir) {
+  const files = await readdirp.promise(destDir)
+  const paths = files.map(getLoggedPath).join('\n')
+  return paths
+}
+
+const getLoggedPath = function({ path }) {
+  return ` - ${path}`
+}
+
+module.exports = functionsPlugin
