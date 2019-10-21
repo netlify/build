@@ -24,7 +24,7 @@
   "license": "MIT",
   "dependencies": {
     "@netlify/config": "0.0.3",
-    "@netlify/zip-it-and-ship-it": "^0.3.1",
+    "@netlify/zip-it-and-ship-it": "netlify/zip-it-and-ship-it#feature/async",
     "analytics": "^0.2.5",
     "array-flat-polyfill": "^1.0.1",
     "camelcase-keys": "^6.0.1",

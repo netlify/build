@@ -4,7 +4,6 @@ const {
   env: { DEPLOY_ID }
 } = require('process')
 
-const makeDir = require('make-dir')
 const pathExists = require('path-exists')
 const readdirp = require('readdirp')
 const { zipFunctions } = require('@netlify/zip-it-and-ship-it')
@@ -38,12 +37,6 @@ const functionsBuild = async function({
   }
 }) {
   const destDir = getDestDir()
-
-  // TODO: remove this after https://github.com/netlify/zip-it-and-ship-it/pull/48 is merged
-  // since that PR allows `destDir` not to exist
-  if (!(await pathExists(destDir))) {
-    await makeDir(destDir)
-  }
 
   console.log('Zipping functions')
   await zipFunctions(srcDir, destDir)
