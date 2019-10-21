@@ -21,7 +21,7 @@ const loadLogic = function({ logic, config, pluginConfig }) {
   }
 
   try {
-    return logic({ config, pluginConfig })
+    return logic(pluginConfig, config)
   } catch (error) {
     error.message = `Error loading plugin:\n${error.message}`
     throw error

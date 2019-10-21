@@ -9,7 +9,7 @@ const matchRules = require('./matchRules')
 // const test404plugin = true // toggle this off for production
 const test404plugin = false // toggle this off for production
 
-function netlify404nomore({ pluginConfig }) {
+function netlify404nomore(pluginConfig) {
   let on404 = pluginConfig.on404 || 'error' // either 'warn' or 'error'
   let cacheKey = pluginConfig.cacheKey || 'pluginNoMore404Cache' // string - helps to quickly switch to a new cache if a mistake was made
   return {

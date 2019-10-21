@@ -2,7 +2,7 @@ const TwilioSdk = require('twilio')
 
 const pkg = require('./package.json')
 
-module.exports = function netlifyNotifyPlugin({ pluginConfig }) {
+module.exports = function netlifyNotifyPlugin(pluginConfig) {
   const { notices, sms, email, webhook } = pluginConfig
 
   if (!notices) {
