@@ -21,21 +21,21 @@ const loadPlugins = async function({ pluginsOptions, config, configPath, baseDir
 // Retrieve plugin hooks for one plugin.
 // Do it by executing the plugin `load` event handler.
 const loadPlugin = async function(
-  { type, pluginPath, pluginConfig, pluginId, core },
+  { type, pluginPath, pluginConfig, id, core },
   { config, configPath, baseDir, token },
 ) {
-  logLoadPlugin(pluginId, type, core)
+  logLoadPlugin(id, type, core)
 
   try {
     const { response: hooks } = await executePlugin(
       'load',
-      { pluginId, type, pluginPath, pluginConfig, configPath, config, core },
+      { id, type, pluginPath, pluginConfig, configPath, config, core },
       { baseDir },
     )
     return hooks
   } catch (error) {
-    const id = pluginId === undefined ? '' : `"${pluginId}" `
-    error.message = `Error loading ${id}plugin:\n${error.message}`
+    const idA = id === undefined ? type : id
+    error.message = `Error loading "${idA}" plugin:\n${error.message}`
     throw error
   }
 }

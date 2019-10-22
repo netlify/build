@@ -110,6 +110,7 @@ const svgoinit = new svgo({
 })
 
 module.exports = {
+  name: '@netlify/plugin-svgoptimizer',
   init({ pluginConfig }) {
     const srcDirectory = pluginConfig.src.directory
 

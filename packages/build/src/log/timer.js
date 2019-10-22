@@ -16,10 +16,10 @@ const endTimerDuration = function([startSecs, startNsecs]) {
 }
 
 // Ends a timer and prints the result on console
-const endTimer = function(hrTime, context, hook) {
+const endTimer = function(hrTime, id, hook) {
   const durationMs = endTimerDuration(hrTime)
 
-  logTimer(durationMs, hook, context)
+  logTimer(durationMs, hook, id)
 
   return durationMs
 }

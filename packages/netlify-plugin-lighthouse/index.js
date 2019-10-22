@@ -8,6 +8,7 @@ const Conf = require('conf') // for simple kv store
 // const NETLIFY_BUILD_BASE = '/opt/buildhome'
 
 module.exports = {
+  name: '@netlify/plugin-lighthouse',
   // users will be tempted to use semver, but we really don't care
   async postDeploy({ pluginConfig }) {
     let { site = process.env.SITE, currentVersion, compareWithVersion = 'init' } = pluginConfig

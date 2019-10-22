@@ -15,11 +15,13 @@ const { installDependencies } = require('../../utils/install')
 // Plugin to bundle Netlify functions with @netlify/zip-it-and-ship-it
 const functionsPlugin = function(pluginConfig, { build: { functions: srcDir } }) {
   if (srcDir === undefined) {
-    return {}
+    return { name: NAME }
   }
 
-  return { init, install, functionsBuild }
+  return { name: NAME, init, install, functionsBuild }
 }
+
+const NAME = '@netlify/plugin-functions-core'
 
 // Validate plugin configuration at startup
 const init = async function({

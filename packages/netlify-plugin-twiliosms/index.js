@@ -14,6 +14,7 @@ const {
 const Twilio = require('twilio')
 
 module.exports = {
+  name: '@netlify/plugin-twiliosms',
   async finally() {
     console.log('Finish the build up, prepping to text!')
 

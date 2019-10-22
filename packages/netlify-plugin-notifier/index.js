@@ -1,13 +1,13 @@
 const TwilioSdk = require('twilio')
 
-const pkg = require('./package.json')
-
 module.exports = function netlifyNotifyPlugin(pluginConfig) {
   const { notices, sms, email, webhook } = pluginConfig
 
+  const plugin = { name: '@netlify/plugin-notifier' }
+
   if (!notices) {
-    console.log(`No notices found on ${pkg.name} plugin config`)
-    return {}
+    console.log(`No notices found on "@netlify/plugin-notifier" plugin configuration`)
+    return plugin
   }
 
   const messagesByLifeCycle = notices.reduce((acc, curr) => {
@@ -19,7 +19,7 @@ module.exports = function netlifyNotifyPlugin(pluginConfig) {
     }
     acc[curr.event] = acc[curr.event].concat(curr)
     return acc
-  }, {})
+  }, plugin)
   // console.log('messagesByLifeCycle', messagesByLifeCycle)
 
   const pluginMethods = Object.keys(messagesByLifeCycle).reduce((acc, curr) => {
@@ -44,7 +44,7 @@ module.exports = function netlifyNotifyPlugin(pluginConfig) {
       await Promise.all(runNotices)
     }
     return acc
-  }, {})
+  }, plugin)
   // console.log('pluginMethods', pluginMethods)
 
   return pluginMethods

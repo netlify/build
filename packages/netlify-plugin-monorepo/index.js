@@ -11,6 +11,7 @@ const { diff } = require('run-if-diff')
  * @param  {object} config.file - directories to use to determine if build should run
  */
 module.exports = {
+  name: '@netlify/plugin-monorepo',
   async init({ pluginConfig }) {
     const { files, since } = pluginConfig
 

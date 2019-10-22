@@ -690,7 +690,7 @@ running things after your site build has completed.
 
 ```js
 {
-  name: 'my-awesome-plugin',
+  name: 'netlify-plugin-awesome',
   init: () => { /* Run custom logic at beginning of build */ }
   preBuild: () => { /* Run custom logic before build happens */ },
   finally: () => { /* Run custom logic at the end of the build */ }
@@ -705,6 +705,7 @@ Here is an example:
 module.exports = function exampleOne(config) {
   // do initial things with plugin 'config'
   return {
+    name: 'netlify-plugin-awesome',
     init: () => {
       console.log('Run custom logic at beginning of build')
     },

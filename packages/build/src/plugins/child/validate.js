@@ -10,7 +10,22 @@ const validatePlugin = function(logic) {
     throw new Error(`Plugin must be an object or a function`)
   }
 
+  validateRequiredProperties(logic)
+
   Object.entries(logic).forEach(([propName, value]) => validateProperty(value, propName))
+}
+
+// Validate `plugin.*` required properties
+const validateRequiredProperties = function(logic) {
+  REQUIRED_PROPERTIES.forEach(propName => validateRequiredProperty(logic, propName))
+}
+
+const REQUIRED_PROPERTIES = ['name']
+
+const validateRequiredProperty = function(logic, propName) {
+  if (logic[propName] === undefined) {
+    throw new Error(`Missing required property '${propName}'`)
+  }
 }
 
 const validateProperty = function(value, propName) {
@@ -22,6 +37,7 @@ const validateProperty = function(value, propName) {
   validateNonMethod(value, propName)
 }
 
+// Validate `plugin.*` hook methods
 const validateMethod = function(propName) {
   const hook = propName.replace(OVERRIDE_REGEXP, '')
 
@@ -36,19 +52,29 @@ ${serializeList(LIFECYCLE)}`)
 const OVERRIDE_REGEXP = /^[^:]+:/
 
 const validateNonMethod = function(value, propName) {
-  if (!ALLOWED_PROPERTIES.includes(propName)) {
+  const validator = VALIDATORS[propName]
+
+  if (validator === undefined) {
     throw new Error(`Invalid property '${propName}'.
 Please use a property name. One of:
-${serializeList(ALLOWED_PROPERTIES)}`)
+${serializeList(Object.keys(VALIDATORS))}`)
   }
 
-  if (propName === 'scopes') {
-    validateScopes(value)
+  validator(value)
+}
+
+// Validate `plugin.name`
+const validateName = function(name) {
+  if (typeof name !== 'string') {
+    throw new Error(`Property 'name' must be a string`)
+  }
+
+  if (!name.startsWith('@netlify/plugin-') && !name.startsWith('netlify-plugin-')) {
+    throw new Error(`Property 'name' must starts with 'netlify-plugin-*' and match the package name`)
   }
 }
 
-const ALLOWED_PROPERTIES = ['scopes']
-
+// Validate `plugin.scopes`
 const validateScopes = function(scopes) {
   const wrongScopes = scopes.filter(scope => !isValidScope(scope))
   if (wrongScopes.length === 0) {
@@ -65,6 +91,8 @@ const isValidScope = function(scope) {
 }
 
 const ALLOWED_SCOPES = ['*', ...Object.keys(API.prototype)]
+
+const VALIDATORS = { name: validateName, scopes: validateScopes }
 
 const serializeList = function(array) {
   return array.map(quote).join(', ')
