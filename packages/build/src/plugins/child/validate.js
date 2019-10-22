@@ -17,14 +17,19 @@ const validatePlugin = function(logic) {
 
 // Validate `plugin.*` required properties
 const validateRequiredProperties = function(logic) {
-  REQUIRED_PROPERTIES.forEach(propName => validateRequiredProperty(logic, propName))
+  REQUIRED_PROPERTIES.forEach(validation => validateRequiredProperty(logic, validation))
 }
 
-const REQUIRED_PROPERTIES = ['name']
+const REQUIRED_PROPERTIES = [{
+  key: 'name',
+  errorMsg: `> Please add the required "name" property to the object exported from the plugin.
+> More info: http://bit.ly/31z46mF\n`
+}]
 
-const validateRequiredProperty = function(logic, propName) {
-  if (logic[propName] === undefined) {
-    throw new Error(`Missing required property '${propName}'`)
+const validateRequiredProperty = function(logic, validation) {
+  if (logic[validation.key] === undefined) {
+    const msg = validation.errorMsg || ''
+    throw new Error(`Missing required property '${validation.key}'\n${msg}`)
   }
 }
 
@@ -69,9 +74,11 @@ const validateName = function(name) {
     throw new Error(`Property 'name' must be a string`)
   }
 
+  /* Disable forced prefix
   if (!name.startsWith('@netlify/plugin-') && !name.startsWith('netlify-plugin-')) {
     throw new Error(`Property 'name' must starts with 'netlify-plugin-*' and match the package name`)
   }
+  */
 }
 
 // Validate `plugin.scopes`
