@@ -97,13 +97,11 @@ They can be installed from `npm` or run locally from relative path in your proje
 ```yml
 # Config file `plugins` defines plugins used by build.
 plugins:
-  - id: pluginAbc
-    type: ./local/path/to/plugin-folder
+  - type: ./local/path/to/plugin-folder
     config:
       optionOne: 'hello'
       optionTwo: 'there'
- - id: pluginTwo
-   type: plugin-from-npm
+ - type: plugin-from-npm
    config:
      optionOne: 'neat'
      arrayOfValues:
@@ -189,8 +187,7 @@ After creating the plugin, add into your Netlify config file under `plugins`
 
 ```yml
 plugins:
-  - id: myPlugin
-    type: ./path/to/plugin
+  - type: ./path/to/plugin
     config:
       foo: bar
 ```
@@ -233,8 +230,7 @@ After creating the plugin, add into your Netlify config file under `plugins`
 
 ```yml
 plugins:
-  - id: myPlugin
-    type: ./path/to/plugin
+  - type: ./path/to/plugin
     config:
       foo: bar
 ```
@@ -277,8 +273,7 @@ After creating the plugin, add into your Netlify config file under `plugins`
 
 ```yml
 plugins:
-  - id: myPlugin
-    type: ./path/to/plugin
+  - type: ./path/to/plugin
     config:
       foo: bar
 ```
@@ -321,8 +316,7 @@ After creating the plugin, add into your Netlify config file under `plugins`
 
 ```yml
 plugins:
-  - id: myPlugin
-    type: ./path/to/plugin
+  - type: ./path/to/plugin
     config:
       foo: bar
 ```
@@ -365,8 +359,7 @@ After creating the plugin, add into your Netlify config file under `plugins`
 
 ```yml
 plugins:
-  - id: myPlugin
-    type: ./path/to/plugin
+  - type: ./path/to/plugin
     config:
       foo: bar
 ```
@@ -409,8 +402,7 @@ After creating the plugin, add into your Netlify config file under `plugins`
 
 ```yml
 plugins:
-  - id: myPlugin
-    type: ./path/to/plugin
+  - type: ./path/to/plugin
     config:
       foo: bar
 ```
@@ -453,8 +445,7 @@ After creating the plugin, add into your Netlify config file under `plugins`
 
 ```yml
 plugins:
-  - id: myPlugin
-    type: ./path/to/plugin
+  - type: ./path/to/plugin
     config:
       foo: bar
 ```
@@ -497,8 +488,7 @@ After creating the plugin, add into your Netlify config file under `plugins`
 
 ```yml
 plugins:
-  - id: myPlugin
-    type: ./path/to/plugin
+  - type: ./path/to/plugin
     config:
       foo: bar
 ```
@@ -541,8 +531,7 @@ After creating the plugin, add into your Netlify config file under `plugins`
 
 ```yml
 plugins:
-  - id: myPlugin
-    type: ./path/to/plugin
+  - type: ./path/to/plugin
     config:
       foo: bar
 ```
@@ -585,8 +574,7 @@ After creating the plugin, add into your Netlify config file under `plugins`
 
 ```yml
 plugins:
-  - id: myPlugin
-    type: ./path/to/plugin
+  - type: ./path/to/plugin
     config:
       foo: bar
 ```
@@ -629,8 +617,7 @@ After creating the plugin, add into your Netlify config file under `plugins`
 
 ```yml
 plugins:
-  - id: myPlugin
-    type: ./path/to/plugin
+  - type: ./path/to/plugin
     config:
       foo: bar
 ```
@@ -656,13 +643,11 @@ Configuration can be written in `toml`, `yml`, `json`, or `json5`.
 ```yml
 # Config file `plugins` defines plugins used by build. Plugins are optional
 plugins:
-  - id: pluginAbc
-    type: ./local/path/to/plugin-folder
+  - type: ./local/path/to/plugin-folder
     config:
       optionOne: 'hello'
       optionTwo: 'there'
-  - id: pluginTwo
-    type: plugin-from-npm
+  - type: plugin-from-npm
     config:
       optionOne: 'neat'
       arrayOfValues:
@@ -745,9 +730,8 @@ build:
 
 # Netlify build plugins
 plugins:
-  - id: examplePlugin
-    # Path to plugin. Can be local relative path or reference to node_modules
-    type: ./plugins/my-plugin/
+  # Path to plugin. Can be local relative path or reference to node_modules
+  - type: ./plugins/my-plugin/
     config:
       a: hello
       b: goodbye
@@ -759,19 +743,19 @@ Plugins can do a-lot and we are excited what the JAMstack community will build!
 
 **Here are some examples:**
 
-- **netlify-plugin-lighthouse** to automatically track your lighthouse site score between deployments
-- **netlify-plugin-cypress** to automatically run integration tests
-- **netlify-plugin-tweet-new-post** to automatically share new content via twitter on new publish
-- **netlify-plugin-sitemap** to generate sitemaps after build
-- **netlify-plugin-notify** to automatically wired up build notifications
+- **@netlify/plugin-lighthouse** to automatically track your lighthouse site score between deployments
+- **@netlify/plugin-sitemap** to generate sitemaps after build
+- **@netlify/plugin-notify** to automatically wired up build notifications
 - **@netlify/plugin-no-more-404** fail build or warn if prior .html files disappear without corresponding Netlify
   redirects.
 - **@netlify/plugin-axe** to automatically audit site for accessibility issues
 - **@netlify/plugin-encrypted-files** to encrypt files in source, but to decrypt them locally and for the build, so that
   you can do _partial_ open source sites without leaking announcements or private info.
-- **netlify-plugin-twiliosms** text your boss every time you deploy so they know you're working -
+- **@netlify/plugin-twiliosms** text your boss every time you deploy so they know you're working -
   [example guide here in Creating and using your first Netlify Build Plugin](https://www.netlify.com/blog/2019/10/16/creating-and-using-your-first-netlify-build-plugin/)
-- **netlify-plugin-svgoptimizer** to automatically optimize all SVGs in a directory when the site is built
+- **@netlify/plugin-svgoptimizer** to automatically optimize all SVGs in a directory when the site is built
+- **netlify-plugin-cypress** to automatically run integration tests
+- **netlify-plugin-tweet-new-post** to automatically share new content via twitter on new publish
 - ... the sky is the limit 🌈
 
 ## CLI commands

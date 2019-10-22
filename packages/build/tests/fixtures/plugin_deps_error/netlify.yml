@@ -1,3 +1,2 @@
 plugins:
-  - id: test
-    type: ./plugin/main.js
+  - type: ./plugin/main.js

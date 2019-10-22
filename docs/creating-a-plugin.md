@@ -36,7 +36,7 @@ Plugins are javascript objects like so:
 const helloWorldPlugin = {
   preBuild: () => {
     console.log('Hello world from preBuild lifecycle step!')
-  }
+  },
 }
 
 module.exports = helloWorldPlugin
@@ -60,8 +60,7 @@ build:
 
 # Attach our plugin
 plugins:
-  - id: myFirstPlugin
-    type: ./plugins/my-plugin
+  - type: ./plugins/my-plugin
 ```
 
 Now that the plugin is declared, we can verify it's loading correctly with the `netlify build --dry` command. This
@@ -88,8 +87,7 @@ If your plugin requires additional values from the user to do things, those can 
 ```yml
 # Attach our plugin
 plugins:
-  - id: myFirstPlugin
-    type: ./plugins/my-plugin
+  - type: ./plugins/my-plugin
     config:
       foo: bar
       fizz: pop
@@ -105,7 +103,7 @@ const helloWorldPlugin = {
     console.log('Hello world from preBuild lifecycle step!')
     console.log(config.foo) // bar
     console.log(config.fizz) // pop
-  }
+  },
 }
 
 module.exports = helloWorldPlugin
@@ -125,7 +123,7 @@ function helloWorldPlugin(pluginConfig, config) {
       console.log('Hello world from preBuild lifecycle step!')
       console.log(pluginConfig.foo) // bar
       console.log(pluginConfig.fizz) // pop
-    }
+    },
   }
 }
 module.exports = helloWorldPlugin

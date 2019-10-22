@@ -8,7 +8,7 @@ In your netlify config file add:
 
 ```yml
 plugins:
-  - id: netlify-plugin-twiliosms
+  - type: '@netlify/plugin-twiliosms'
 ```
 
 ## Configuration

@@ -103,13 +103,11 @@ Configuration can be written in `toml`, `yml`, `json`, or `json5`.
 ```yml
 # Config file `plugins` defines plugins used by build. Plugins are optional
 plugins:
-  - id: pluginAbc
-    type: ./local/path/to/plugin-folder
+  - type: ./local/path/to/plugin-folder
     config:
       optionOne: 'hello'
       optionTwo: 'there'
-  - id: pluginTwo
-    type: plugin-from-npm
+  - type: plugin-from-npm
     config:
       optionOne: 'neat'
       arrayOfValues:

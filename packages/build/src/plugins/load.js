@@ -34,7 +34,8 @@ const loadPlugin = async function(
     )
     return hooks
   } catch (error) {
-    error.message = `Error loading '${pluginId}' plugin:\n${error.message}`
+    const id = pluginId === undefined ? '' : `"${pluginId}" `
+    error.message = `Error loading ${id}plugin:\n${error.message}`
     throw error
   }
 }

@@ -1,5 +1,5 @@
 {
-  "name": "netlify-plugin-twiliosms",
+  "name": "@netlify/plugin-twiliosms",
   "private": true,
   "version": "0.0.1",
   "description": "An extremely simple plugin that texts you when your site is done building",

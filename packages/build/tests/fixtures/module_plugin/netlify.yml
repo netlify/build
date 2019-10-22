@@ -1,3 +1,2 @@
 plugins:
-  - id: test
-    type: netlify-plugin-test
+  - type: netlify-plugin-test

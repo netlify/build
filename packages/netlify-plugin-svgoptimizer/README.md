@@ -19,9 +19,7 @@ build:
     finally: echo "Ending the build"
 
 plugins:
-  # Local plugin
-  - id: svgoptimizer
-    type: ./plugins/netlify-plugin-svg-optimizer
+  - type: '@netlify/plugin-svgoptimizer'
     enabled: true
     config:
       src:

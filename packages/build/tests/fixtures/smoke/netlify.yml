@@ -1,9 +1,7 @@
 plugins:
-  - id: sitemap
-    type: ../../../../netlify-plugin-sitemap
+  - type: ../../../../netlify-plugin-sitemap
     enabled: false
-  - id: notifier
-    type: ../../../../netlify-plugin-notifier
+  - type: ../../../../netlify-plugin-notifier
 
 build:
   lifecycle:

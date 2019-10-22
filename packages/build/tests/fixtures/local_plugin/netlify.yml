@@ -1,3 +1,2 @@
 plugins:
-  - id: testPlugin
-    type: ./plugin
+  - type: ./plugin
