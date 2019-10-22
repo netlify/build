@@ -35,12 +35,12 @@ const init = async function({
 // Install Netlify functions dependencies
 const install = async function({
   config: {
-    build: { functions: srcDir }
-  }
+    build: { functions: srcDir },
+  },
 }) {
   const packagePaths = await fastGlob([`${srcDir}/**/package.json`, `!${srcDir}/**/node_modules`], {
     onlyFiles: true,
-    unique: true
+    unique: true,
   })
 
   if (packagePaths.length === 0) {

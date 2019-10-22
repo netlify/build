@@ -226,11 +226,11 @@ test('Functions: invalid source directory', async t => {
 test('Functions: install dependencies top-level', async t => {
   await del([
     `${FIXTURES_DIR}/functions_deps/.netlify/functions/`,
-    `${FIXTURES_DIR}/functions_deps/functions/node_modules/`
+    `${FIXTURES_DIR}/functions_deps/functions/node_modules/`,
   ])
 
   const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/functions_deps/netlify.yml`, {
-    all: true
+    all: true,
   })
   t.snapshot(normalizeOutput(all))
 
@@ -240,11 +240,11 @@ test('Functions: install dependencies top-level', async t => {
 test('Functions: install dependencies nested', async t => {
   await del([
     `${FIXTURES_DIR}/functions_deps_dir/.netlify/functions/`,
-    `${FIXTURES_DIR}/functions_deps_dir/functions/function/node_modules/`
+    `${FIXTURES_DIR}/functions_deps_dir/functions/function/node_modules/`,
   ])
 
   const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/functions_deps_dir/netlify.yml`, {
-    all: true
+    all: true,
   })
   t.snapshot(normalizeOutput(all))
 
@@ -256,7 +256,7 @@ test('Functions: ignore package.json inside node_modules', async t => {
 
   const { all } = await execa.command(
     `${BINARY_PATH} --config ${FIXTURES_DIR}/functions_deps_node_modules/netlify.yml`,
-    { all: true }
+    { all: true },
   )
   t.snapshot(normalizeOutput(all))
 })
