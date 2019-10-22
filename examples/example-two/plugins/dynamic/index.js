@@ -3,6 +3,7 @@
 module.exports = function dynamicPlugin(conf) {
   const hook = conf.hook || 'preBuild'
   return {
+    name: 'netlify-plugin-dynamic-example',
     [`${hook}`]: () => {
       console.log('do the stuff')
     },

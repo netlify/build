@@ -1,5 +1,6 @@
 module.exports = function pluginTwo() {
   return {
+    name: 'netlify-plugin-two',
     init: () => {
       console.log('this is the first thing run')
     },
