@@ -38,6 +38,7 @@
     "find-up": "^4.1.0",
     "get-stream": "^5.1.0",
     "group-by": "0.0.1",
+    "is-ci": "^2.0.0",
     "is-invalid-path": "^1.0.2",
     "is-plain-obj": "^2.0.0",
     "make-dir": "^3.0.0",
