@@ -74,7 +74,7 @@ const validateName = function(name) {
     throw new Error(`Property 'name' must be a string`)
   }
 
-  /* Disable forced prefix
+  /* Disable forced prefix. TODO figure out if we want this
   if (!name.startsWith('@netlify/plugin-') && !name.startsWith('netlify-plugin-')) {
     throw new Error(`Property 'name' must starts with 'netlify-plugin-*' and match the package name`)
   }
