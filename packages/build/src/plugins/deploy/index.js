@@ -6,6 +6,7 @@ const readdirp = require('readdirp')
 const { CONTEXT } = process.env
 
 module.exports = {
+  name: '@netlify/plugin-deploy',
   onError({ error }) {
     console.log('do something with error', error.message)
     if (error.message.match(/invalid json response body/)) {

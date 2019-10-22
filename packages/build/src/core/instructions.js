@@ -33,7 +33,7 @@ const getHookInstructions = function({
     return pluginHooks
   }
 
-  const lifeCycleHook = { name: `config.build.lifecycle.${hook}`, hook, commands, override: {} }
+  const lifeCycleHook = { id: `config.build.lifecycle.${hook}`, hook, commands, override: {} }
   return [lifeCycleHook, ...pluginHooks]
 }
 
@@ -59,7 +59,7 @@ const runInstructions = async function(instructions, { config, configPath, token
 
 // Run a single instruction
 const runInstruction = async function(instruction, { currentData, index, config, configPath, token, baseDir, error }) {
-  const { name, hook } = instruction
+  const { id, hook } = instruction
 
   const methodTimer = startTimer()
 
@@ -70,11 +70,11 @@ const runInstruction = async function(instruction, { currentData, index, config,
 
     logInstructionSuccess()
 
-    endTimer(methodTimer, name, hook)
+    endTimer(methodTimer, id, hook)
 
     return { ...currentData, ...pluginReturnValue }
   } catch (error) {
-    error.message = `Error in '${name}' plugin:\n${error.message}`
+    error.message = `Error in '${id}' plugin:\n${error.message}`
     throw error
   }
 }
@@ -110,13 +110,13 @@ const execCommand = async function({ hook, command, baseDir }) {
 
 // Fire a plugin hook method
 const firePluginHook = async function(
-  { type, hook, pluginPath, pluginConfig, hookName, constants },
+  { id, hook, pluginPath, pluginConfig, hookName, constants },
   { config, token, baseDir, error },
 ) {
   try {
     await executePlugin('run', { pluginPath, pluginConfig, hookName, config, token, error, constants }, { baseDir })
   } catch (error) {
-    logCommandError(type, hook, error)
+    logCommandError(id, hook, error)
     throw error
   }
 }

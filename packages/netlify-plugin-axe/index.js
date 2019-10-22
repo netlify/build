@@ -4,6 +4,7 @@ const execa = require('execa')
 const mkdirp = require('mkdirp')
 
 module.exports = {
+  name: '@netlify/plugin-axe',
   init: async ({ constants }) => {
     const resultsDir = join(constants.CACHE_DIR, `axe-results`)
     mkdirp.sync(resultsDir)

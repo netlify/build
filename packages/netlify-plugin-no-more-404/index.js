@@ -13,6 +13,7 @@ function netlify404nomore(pluginConfig) {
   let on404 = pluginConfig.on404 || 'error' // either 'warn' or 'error'
   let cacheKey = pluginConfig.cacheKey || 'pluginNoMore404Cache' // string - helps to quickly switch to a new cache if a mistake was made
   return {
+    name: '@netlify/plugin-no-more-404',
     /* index html files preDeploy */
     preDeploy: async opts => {
       // console.log({ opts })

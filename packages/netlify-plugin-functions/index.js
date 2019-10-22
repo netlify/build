@@ -4,6 +4,7 @@ const fs = require('fs-extra')
 const { zipFunction } = require('@netlify/zip-it-and-ship-it')
 
 module.exports = {
+  name: '@netlify/plugin-functions',
   '@netlify/functions:functionsBuild': async ({ pluginConfig, config }) => {
     const { functions } = pluginConfig
     const { build } = config

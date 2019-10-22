@@ -99,6 +99,7 @@ To access them in your plugin code you can:
 
 ```js
 const helloWorldPlugin = {
+  name: 'netlify-plugin-hello-world',
   preBuild: ({ pluginConfig }) => {
     console.log('Hello world from preBuild lifecycle step!')
     console.log(config.foo) // bar
@@ -119,6 +120,7 @@ function helloWorldPlugin(pluginConfig, config) {
   console.log(pluginConfig.foo) // bar
   console.log(pluginConfig.fizz) // pop
   return {
+    name: 'netlify-plugin-hello-world',
     preBuild: ({ pluginConfig, config }) => {
       console.log('Hello world from preBuild lifecycle step!')
       console.log(pluginConfig.foo) // bar
@@ -138,7 +140,8 @@ Plugins as functions returning the object is a powerful way to provide advanced 
 ## Publishing a plugin
 
 The [`name` property in `package.json`](https://docs.npmjs.com/files/package.json#name) should start with
-`netlify-plugin-` (such as `netlify-plugin-example` or `@scope/netlify-plugin-example`).
+`netlify-plugin-` (such as `netlify-plugin-example` or `@scope/netlify-plugin-example`). It should match the plugin
+`name` field.
 
 It is recommended for the GitHub repository to be named like this as well.
 

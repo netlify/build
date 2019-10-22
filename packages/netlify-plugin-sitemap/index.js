@@ -44,6 +44,7 @@ async function makeSitemap(opts = {}) {
 }
 
 module.exports = {
+  name: '@netlify/plugin-sitemap',
   postBuild: async ({ constants, pluginConfig }) => {
     const baseUrl = pluginConfig.baseUrl || process.env.SITE
     const buildDir = pluginConfig.dir || constants.BUILD_DIR

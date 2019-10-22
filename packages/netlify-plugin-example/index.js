@@ -1,4 +1,5 @@
 module.exports = {
+  name: '@netlify/plugin-example',
   scopes: ['listSites'],
   init({ api }) {
     console.log('init')

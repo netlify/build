@@ -44,10 +44,10 @@ const logLoadPlugins = function() {
   log(cyanBright.bold(`${HEADING_PREFIX} Loading plugins`))
 }
 
-const logLoadPlugin = function(pluginId, type, core) {
-  const id = pluginId === undefined ? '' : `"${pluginId}" `
+const logLoadPlugin = function(id, type, core) {
+  const idA = id === undefined ? '' : `"${id}" `
   const location = core ? 'build core' : type
-  log(yellowBright(`${SUBTEXT_PADDING}Loading plugin ${id}from ${location}`))
+  log(yellowBright(`${SUBTEXT_PADDING}Loading plugin ${idA}from ${location}`))
 }
 
 const logLifeCycleStart = function(instructions) {
@@ -67,7 +67,7 @@ const logDryRunStart = function() {
 }
 
 const logDryRunInstruction = function({
-  instruction: { name, hook, type, core },
+  instruction: { id, hook, type, core },
   index,
   configPath,
   width,
@@ -86,18 +86,18 @@ const logDryRunInstruction = function({
     log(bold(`${SUBTEXT_PADDING}└─${line}─┴─${secondLine}─`))
   }
 
-  const linePrefix = name.startsWith('config.build')
-    ? `Config ${cyanBright(basename(configPath))} ${yellowBright(name.replace('config.', ''))}`
+  const linePrefix = id.startsWith('config.build')
+    ? `Config ${cyanBright(basename(configPath))} ${yellowBright(id.replace('config.', ''))}`
     : `Plugin`
 
   let msg
-  if (name.startsWith('config.build')) {
+  if (id.startsWith('config.build')) {
     //  in ${basename(configPath)}
     msg = `${white(linePrefix)}`
   } else if (core) {
-    msg = `${white(linePrefix)} ${yellowBright(name)} in build core`
+    msg = `${white(linePrefix)} ${yellowBright(id)} in build core`
   } else {
-    msg = `${white(linePrefix)} ${name} ${yellowBright(type)}`
+    msg = `${white(linePrefix)} ${id} ${yellowBright(type)}`
   }
 
   // const locationText = type ? `${location}` : ''
@@ -113,18 +113,18 @@ const logDryRunEnd = function() {
   log()
 }
 
-const logInstruction = function({ hook, name, override }, { index, configPath, error }) {
+const logInstruction = function({ hook, id, override }, { index, configPath, error }) {
   log()
   if (override.hook) {
     log(
       redBright.bold(
-        `${HEADING_PREFIX} OVERRIDE: "${override.hook}" method in "${override.type}" has been overriden by "${name}"`,
+        `${HEADING_PREFIX} OVERRIDE: "${override.hook}" method in "${override.name}" has been overriden by "${id}"`,
       ),
     )
   }
   const lifecycleName = error ? '' : 'lifecycle '
-  const source = name.startsWith('config.build') ? ` in ${basename(configPath)} config file` : ''
-  const niceName = name.startsWith('config.build') ? name.replace(/^config\./, '') : name
+  const source = id.startsWith('config.build') ? ` in ${basename(configPath)} config file` : ''
+  const niceName = id.startsWith('config.build') ? id.replace(/^config\./, '') : id
   const logColor = error ? redBright : cyanBright
   const outputNoChalk = `${index + 1}. Running ${hook} ${lifecycleName}from ${niceName}${source}`
   const output = `${index + 1}. Running ${bold(hook)} ${lifecycleName}from ${bold(niceName)}${source}`
@@ -139,8 +139,8 @@ const logCommandStart = function(cmd) {
   log(`${yellowBright(`Running command "${cmd}"`)}`)
 }
 
-const logCommandError = function(name, hook, error) {
-  log(redBright(`Error in "${hook}" step from "${name}"`))
+const logCommandError = function(id, hook, error) {
+  log(redBright(`Error in "${hook}" step from "${id}"`))
   log()
   log(redBright('Error message\n'))
   log(error.message)
@@ -154,12 +154,12 @@ const logInstructionSuccess = function() {
   log()
 }
 
-const logTimer = function(durationMs, hook, context) {
+const logTimer = function(durationMs, hook, id) {
   const hookA = hook ? `.${bold(hook)}` : ''
-  const contextA = context.replace('config.', '')
-  const contextB = contextA.startsWith('build.lifecycle') ? 'build.lifecycle' : contextA
+  const idA = id.replace('config.', '')
+  const idB = idA.startsWith('build.lifecycle') ? 'build.lifecycle' : idA
 
-  log(` ${greenBright(tick)}  ${greenBright.bold(contextB)}${hookA} completed in ${durationMs}ms`)
+  log(` ${greenBright(tick)}  ${greenBright.bold(idB)}${hookA} completed in ${durationMs}ms`)
 }
 
 const logManifest = function(manifest) {
