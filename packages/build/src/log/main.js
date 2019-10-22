@@ -4,9 +4,11 @@ const { tick, pointer, arrowDown } = require('figures')
 const omit = require('omit.js')
 
 const telemetry = require('../utils/telemetry')
+const pkg = require('../../package.json')
 
 const { log } = require('./patch')
 const { cleanStack } = require('./stack')
+
 
 // eslint-disable-next-line import/order
 const { greenBright, cyanBright, redBright, yellowBright, bold, white } = require('chalk')
@@ -15,7 +17,7 @@ const HEADING_PREFIX = pointer
 const SUBTEXT_PADDING = '  '
 
 const logBuildStart = function() {
-  log(greenBright.bold(`${HEADING_PREFIX} Starting Netlify Build`))
+  log(greenBright.bold(`${HEADING_PREFIX} Starting Netlify Build`), `version ${pkg.version}`)
   log(`${SUBTEXT_PADDING}https://github.com/netlify/build`)
   log()
 }
