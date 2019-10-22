@@ -1,11 +1,12 @@
 const execa = require('execa')
 const pMapSeries = require('p-map-series')
 const pReduce = require('p-reduce')
+const getStream = require('get-stream')
 require('array-flat-polyfill')
 
 const { executePlugin } = require('../plugins/ipc')
 const { logInstruction, logCommandStart, logCommandError, logInstructionSuccess } = require('../log/main')
-const { redactProcess } = require('../log/patch')
+const { streamProcessOutput, writeProcessOutput, writeProcessError } = require('../log/stream')
 const { startTimer, endTimer } = require('../log/timer')
 
 const { LIFECYCLE } = require('./lifecycle')
@@ -94,11 +95,14 @@ const execCommands = async function({ hook, commands }, { baseDir }) {
 const execCommand = async function({ hook, command, baseDir }) {
   logCommandStart(command)
 
+  const childProcess = execa(command, { shell: true, cwd: baseDir, preferLocal: true, all: true })
+  const all = streamProcessOutput(childProcess)
+
   try {
-    const childProcess = execa(command, { shell: true, cwd: baseDir, preferLocal: true })
-    redactProcess(childProcess)
-    await childProcess
+    const [output] = await Promise.all([getStream(all), childProcess])
+    writeProcessOutput(output)
   } catch (error) {
+    writeProcessError(error)
     logCommandError(command, hook, error)
     throw error
   }

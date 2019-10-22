@@ -14,16 +14,22 @@ const log = function(...args) {
 
 const serializeArg = function(arg, state) {
   const argA = typeof arg === 'string' ? arg : inspect(arg, { depth: Infinity })
-  const argB = redactEnv.redact(argA, secrets)
+  const argB = redactString(argA)
   return argB
 }
 
-const redactProcess = function(childProcess) {
-  childProcess.stdout.pipe(replaceStream(secrets, '[secure]')).pipe(process.stdout)
-  childProcess.stderr.pipe(replaceStream(secrets, '[secure]')).pipe(process.stderr)
+const redactString = function(string) {
+  return redactEnv.redact(string, secrets)
+}
+
+const redactProcess = function({ stdout, stderr, all }) {
+  const stdoutA = stdout.pipe(replaceStream(secrets, '[secure]'))
+  const stderrA = stderr.pipe(replaceStream(secrets, '[secure]'))
+  const allA = all.pipe(replaceStream(secrets, '[secure]'))
+  return { stdout: stdoutA, stderr: stderrA, all: allA }
 }
 
 const SECRETS = ['SECRET_ENV_VAR', 'MY_API_KEY']
 const secrets = redactEnv.build(SECRETS)
 
-module.exports = { log, redactProcess }
+module.exports = { log, redactString, redactProcess }

@@ -5,7 +5,7 @@ const { write } = require('fs')
 const execa = require('execa')
 const getStream = require('get-stream')
 
-const { redactProcess } = require('../log/patch')
+const { streamProcessOutput, writeProcessOutput, writeProcessError } = require('../log/stream')
 
 const CHILD_MAIN_PATH = `${__dirname}/child/main.js`
 
@@ -27,18 +27,22 @@ const executePlugin = async function(eventName, message, { baseDir }) {
     cwd: baseDir,
     stdio: ['ignore', 'pipe', 'pipe', 'pipe'],
     preferLocal: true,
+    all: true,
   })
-  redactProcess(childProcess)
+  const all = streamProcessOutput(childProcess)
 
   try {
-    const [{ all: output }, responseString] = await Promise.all([
-      childProcess,
+    const [output, responseString] = await Promise.all([
+      getStream(all),
       getStream(childProcess.stdio[RESPONSE_FD]),
+      childProcess,
     ])
+    writeProcessOutput(output)
 
     const response = parseMessage(responseString)
     return { response, output }
   } catch (error) {
+    writeProcessError(error)
     error.message = fixPluginError(error)
     throw error
   }
