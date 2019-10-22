@@ -5,32 +5,45 @@ const { LIFECYCLE } = require('../../core/lifecycle')
 
 // Validate the shape of a plugin return value
 // TODO: validate allowed characters in `logic` properties
-const validatePlugin = function(logic) {
+const validatePlugin = function(logic, type) {
   if (!isPlainObj(logic)) {
     throw new Error(`Plugin must be an object or a function`)
   }
 
-  validateRequiredProperties(logic)
+  validateRequiredProperties(logic, type)
 
   Object.entries(logic).forEach(([propName, value]) => validateProperty(value, propName))
 }
 
 // Validate `plugin.*` required properties
-const validateRequiredProperties = function(logic) {
-  REQUIRED_PROPERTIES.forEach(validation => validateRequiredProperty(logic, validation))
+const validateRequiredProperties = function(logic, type) {
+  REQUIRED_PROPERTIES.forEach(validation => validateRequiredProperty(logic, validation, type))
 }
 
 const REQUIRED_PROPERTIES = [{
   key: 'name',
-  errorMsg: `> Attention Beta testers!
+  errorMsg: `
+> Attention Beta testers!
 > Please add the required "name" property to the object exported from the plugin.
-> This is a new required field from plugins http://bit.ly/31z46mF\n`
+> This is a new required field from plugins http://bit.ly/31z46mF\n
+
+Example:
+
+function netlifyPlugin(config) {
+  return {
+    name: 'my-plugin-name', <--- New required "name" field
+    init: () => {
+      console.log('Hi from init')
+    },
+  }
+}
+`
 }]
 
-const validateRequiredProperty = function(logic, validation) {
+const validateRequiredProperty = function(logic, validation, type) {
   if (logic[validation.key] === undefined) {
     const msg = validation.errorMsg || ''
-    throw new Error(`Missing required property '${validation.key}'\n${msg}`)
+    throw new Error(`Missing required property '${validation.key}' in ${type}\n${msg}`)
   }
 }
 
