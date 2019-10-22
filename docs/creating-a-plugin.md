@@ -2,7 +2,7 @@
 
 Netlify Plugins extend the functionality of the Netlify Build process.
 
-Plugins are plain javascript objects that allow users to hook into the different lifecycle steps happening during their
+Plugins are plain JavaScript objects that allow users to hook into the different lifecycle steps happening during their
 site builds.
 
 For example, hooking into the `preBuild` step to run something before your build command. Or the `postBuild` hook for
@@ -16,7 +16,7 @@ running things after your site build has completed.
 | :------------------------------------------- | :------------------------------------------ |
 | ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **init** ‏‏‎ ‏‏‎ ‏‏‎           | Runs before anything else                   |
 | ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **getCache** ‏‏‎ ‏‏‎ ‏‏‎       | Fetch previous build cache                  |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **install** ‏‏‎ ‏‏‎ ‏‏‎        | Install project dependancies                |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **install** ‏‏‎ ‏‏‎ ‏‏‎        | Install project dependencies                |
 | ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **preBuild** ‏‏‎ ‏‏‎ ‏‏‎       | Runs before functions & build commands run  |
 | ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **functionsBuild** ‏‏‎ ‏‏‎ ‏‏‎ | Build the serverless functions              |
 | ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **build** ‏‏‎ ‏‏‎ ‏‏‎          | Build commands are executed                 |
@@ -30,7 +30,7 @@ running things after your site build has completed.
 
 ## Anatomy of a plugin
 
-Plugins are javascript objects like so:
+Plugins are JavaScript objects like so:
 
 ```js
 const helloWorldPlugin = {
@@ -111,7 +111,7 @@ module.exports = helloWorldPlugin
 
 Plugin configuration is also supplied top level if you are returning a dynamic plugin.
 
-Instead of a plugin being a simple object, instead the plugin is a `function` that returns a plain old javascript
+Instead of a plugin being a simple object, instead the plugin is a `function` that returns a plain old JavaScript
 object.
 
 ```js

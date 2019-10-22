@@ -124,7 +124,7 @@ how the Netlify build operates.
 | :---------------------------------------------------------------------------------- | :------------------------------------------ |
 | ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleinit">init</a>** ‏‏‎ ‏‏‎ ‏‏‎                     | Runs before anything else                   |
 | ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclegetcache">getCache</a>** ‏‏‎ ‏‏‎ ‏‏‎             | Fetch previous build cache                  |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleinstall">install</a>** ‏‏‎ ‏‏‎ ‏‏‎               | Install project dependancies                |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleinstall">install</a>** ‏‏‎ ‏‏‎ ‏‏‎               | Install project dependencies                |
 | ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleprebuild">preBuild</a>** ‏‏‎ ‏‏‎ ‏‏‎             | Runs before functions & build commands run  |
 | ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclefunctionsbuild">functionsBuild</a>** ‏‏‎ ‏‏‎ ‏‏‎ | Build the serverless functions              |
 | ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclebuild">build</a>** ‏‏‎ ‏‏‎ ‏‏‎                   | Build commands are executed                 |
@@ -249,7 +249,7 @@ build:
 
 ### lifecycle.install
 
-`install` - Install project dependancies
+`install` - Install project dependencies
 
 <details>
   <summary>Using install</summary>
@@ -682,7 +682,7 @@ foo: ${env:MY_ENV_VAR}
 
 Netlify Plugins extend the functionality of the netlify build process.
 
-Plugins are POJOs (plain old javascript objects) that allow users to hook into the different lifecycle steps happening
+Plugins are POJOs (plain old JavaScript objects) that allow users to hook into the different lifecycle steps happening
 during their site builds.
 
 For example, hooking into the `preBuild` step to run something before your build command. Or the `postBuild` hook for
