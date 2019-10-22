@@ -19,8 +19,8 @@ const serializeArg = function(arg, state) {
 }
 
 const redactProcess = function(childProcess) {
-  childProcess.stdout.pipe(replaceStream(secrets, '[secrets]')).pipe(process.stdout)
-  childProcess.stderr.pipe(replaceStream(secrets, '[secrets]')).pipe(process.stderr)
+  childProcess.stdout.pipe(replaceStream(secrets, '[secure]')).pipe(process.stdout)
+  childProcess.stderr.pipe(replaceStream(secrets, '[secure]')).pipe(process.stderr)
 }
 
 const SECRETS = ['SECRET_ENV_VAR', 'MY_API_KEY']
