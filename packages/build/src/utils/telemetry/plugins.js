@@ -1,4 +1,5 @@
 const pkg = require('../../../package.json')
+const isCI = require('is-ci')
 const isNetlifyCI = require('../is-netlify-ci')
 
 const sendData = require('./api')
@@ -23,7 +24,17 @@ const enrichPayload = {
   trackStart: ({ payload, instance }) => {
     return {
       ...payload,
-      properties: { ...payload.properties, isNetlifyCI: isNetlifyCI() }
+      properties: {
+        ...payload.properties,
+        // check if running in CI environment
+        isCI: isCI,
+        // Check if Netlify CI
+        isNetlifyCI: isNetlifyCI(),
+        // Add package version
+        buildVersion: pkg.version,
+        // Add node version
+        nodeVersion: process.version.replace(/^v/, '')
+      }
     }
   }
 }
