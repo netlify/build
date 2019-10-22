@@ -2,6 +2,10 @@ const DEFAULT_PLUGINS_DIR = __dirname
 
 // Load plugin options (specified by user in `config.plugins`)
 const getPluginsOptions = function({ config: { plugins: pluginsOptions } }) {
+  // Temporary warning for malformed plugin block in config
+  if (!Array.isArray(pluginsOptions)) {
+    console.log('Warning: Plugins have been changed to an array!\nSee more information in the docs http://bit.ly/31z46mF')
+  }
   return [...DEFAULT_PLUGINS, ...pluginsOptions].map(normalizePluginOptions).filter(isPluginEnabled)
 }
 
