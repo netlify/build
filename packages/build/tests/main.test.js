@@ -48,7 +48,7 @@ test('{env:...}', async t => {
 })
 
 test('{secrets:...}', async t => {
-  const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/secrets/netlify.yml`, {
+  const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/secrets_conf/netlify.yml`, {
     all: true,
     reject: false,
   })
@@ -277,4 +277,22 @@ test('Exit code is 1 on error', async t => {
     reject: false,
   })
   t.is(exitCode, 1)
+})
+
+test('Redact secrets in build.lifecycle', async t => {
+  const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/secrets_lifecycle/netlify.yml`, {
+    all: true,
+    reject: false,
+    env: { SECRET_ENV_VAR: 'apiKey' },
+  })
+  t.snapshot(normalizeOutput(all))
+})
+
+test('Redact secrets in plugins', async t => {
+  const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/secrets_plugin/netlify.yml`, {
+    all: true,
+    reject: false,
+    env: { SECRET_ENV_VAR: 'apiKey' },
+  })
+  t.snapshot(normalizeOutput(all))
 })
