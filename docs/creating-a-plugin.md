@@ -34,6 +34,7 @@ Plugins are JavaScript objects like so:
 
 ```js
 const helloWorldPlugin = {
+  name: 'hello-world',
   preBuild: () => {
     console.log('Hello world from preBuild lifecycle step!')
   },
