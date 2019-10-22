@@ -10,7 +10,7 @@ const DEFAULT_PLUGINS = [{ id: '@netlify/functions', type: `${DEFAULT_PLUGINS_DI
 const normalizePluginOptions = function(pluginOptions) {
   const { type, id: pluginId, core, enabled, config: pluginConfig } = {
     ...DEFAULT_PLUGIN_OPTIONS,
-    ...pluginOptions
+    ...pluginOptions,
   }
   return { pluginId, type, core, enabled, pluginConfig }
 }
