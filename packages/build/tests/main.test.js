@@ -231,6 +231,7 @@ test('Functions: install dependencies top-level', async t => {
 
   const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/functions_deps/netlify.yml`, {
     all: true,
+    reject: false,
   })
   t.snapshot(normalizeOutput(all))
 
@@ -245,6 +246,7 @@ test('Functions: install dependencies nested', async t => {
 
   const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/functions_deps_dir/netlify.yml`, {
     all: true,
+    reject: false,
   })
   t.snapshot(normalizeOutput(all))
 
@@ -256,7 +258,7 @@ test('Functions: ignore package.json inside node_modules', async t => {
 
   const { all } = await execa.command(
     `${BINARY_PATH} --config ${FIXTURES_DIR}/functions_deps_node_modules/netlify.yml`,
-    { all: true },
+    { all: true, reject: false },
   )
   t.snapshot(normalizeOutput(all))
 })
