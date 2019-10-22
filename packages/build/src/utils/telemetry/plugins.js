@@ -5,6 +5,8 @@ const isNetlifyCI = require('../is-netlify-ci')
 
 const sendData = require('./api')
 
+const { BUILD_TELEMETRY_DISABLED } = process.env
+
 /* automatically prefix event names */
 const prefixEventNames = {
   NAMESPACE: 'prefixer',
@@ -52,5 +54,7 @@ const netlifyTelemetry = {
   }
 }
 
+/* If BUILD_TELEMETRY_DISABLED, disable api calls */
+const activePlugins = BUILD_TELEMETRY_DISABLED ? [] : [prefixEventNames, enrichPayload, netlifyTelemetry]
 /* Return analytic plugins */
-module.exports = [prefixEventNames, enrichPayload, netlifyTelemetry]
+module.exports = activePlugins

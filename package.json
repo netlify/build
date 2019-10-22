@@ -25,7 +25,7 @@
     "babel": false,
     "verbose": true,
     "environmentVariables": {
-      "AVA_TESTING_ENV": "on"
+      "BUILD_TELEMETRY_DISABLED": "true"
     }
   },
   "husky": {
