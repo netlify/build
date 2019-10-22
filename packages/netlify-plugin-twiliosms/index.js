@@ -1,17 +1,15 @@
-const {
-  env: {
-    // Your Account SID from www.twilio.com/console
-    ACCOUNT_SID,
-    // Your Auth Token from www.twilio.com/console
-    AUTH_TOKEN,
-    // Text this number
-    TO_NUM,
-    // From a valid Twilio number
-    FROM_NUM,
-  },
-} = require('process')
-
 const Twilio = require('twilio')
+
+const {
+  // Your Account SID from www.twilio.com/console
+  ACCOUNT_SID,
+  // Your Auth Token from www.twilio.com/console
+  AUTH_TOKEN,
+  // Text this number
+  TO_NUM,
+  // From a valid Twilio number
+  FROM_NUM,
+} = process.env
 
 module.exports = {
   name: '@netlify/plugin-twiliosms',

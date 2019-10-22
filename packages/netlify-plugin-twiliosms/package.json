@@ -13,5 +13,8 @@
   "license": "MIT",
   "dependencies": {
     "twilio": "^3.35.0"
+  },
+  "engines": {
+    "node": ">=8.12.0"
   }
 }
