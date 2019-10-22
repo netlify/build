@@ -1,5 +1,6 @@
-const pkg = require('../../../package.json')
 const isCI = require('is-ci')
+
+const pkg = require('../../../package.json')
 const isNetlifyCI = require('../is-netlify-ci')
 
 const sendData = require('./api')

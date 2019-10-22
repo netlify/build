@@ -23,7 +23,10 @@
     ],
     "compileEnhancements": false,
     "babel": false,
-    "verbose": true
+    "verbose": true,
+    "environmentVariables": {
+      "AVA_TESTING_ENV": "on"
+    }
   },
   "husky": {
     "hooks": {
