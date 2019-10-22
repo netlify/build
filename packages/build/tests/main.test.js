@@ -12,7 +12,7 @@ const FIXTURES_DIR = `${__dirname}/fixtures`
 test('Smoke test', async t => {
   const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/smoke/netlify.yml`, {
     all: true,
-    reject: false
+    reject: false,
   })
   t.snapshot(normalizeOutput(all))
 })
@@ -20,7 +20,7 @@ test('Smoke test', async t => {
 test('Empty configuration', async t => {
   const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/empty/netlify.yml`, {
     all: true,
-    reject: false
+    reject: false,
   })
   t.snapshot(normalizeOutput(all))
 })
@@ -28,7 +28,7 @@ test('Empty configuration', async t => {
 test('--config', async t => {
   const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/empty/netlify.yml`, {
     all: true,
-    reject: false
+    reject: false,
   })
   t.snapshot(normalizeOutput(all))
 })
@@ -50,7 +50,7 @@ test('{env:...}', async t => {
 test('{secrets:...}', async t => {
   const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/secrets/netlify.yml`, {
     all: true,
-    reject: false
+    reject: false,
   })
   t.snapshot(normalizeOutput(all))
 })
@@ -58,7 +58,7 @@ test('{secrets:...}', async t => {
 test('{context:...}', async t => {
   const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/context/netlify.yml`, {
     all: true,
-    reject: false
+    reject: false,
   })
   t.snapshot(normalizeOutput(all))
 })
@@ -82,7 +82,7 @@ test('{context:...} pointing to undefined path', async t => {
 test('Can override plugins', async t => {
   const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/override/netlify.yml`, {
     all: true,
-    reject: false
+    reject: false,
   })
   t.snapshot(normalizeOutput(all))
 })
@@ -95,7 +95,7 @@ test('--verbose', async t => {
 test('Lifecycle commands can execute local binaries', async t => {
   const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/local_bin/netlify.yml`, {
     all: true,
-    reject: false
+    reject: false,
   })
   t.snapshot(normalizeOutput(all))
 })
@@ -156,7 +156,7 @@ test('Can install local plugins', async t => {
 test('Install local plugin dependencies: with npm', async t => {
   const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/plugin_deps/netlify.yml`, {
     all: true,
-    reject: false
+    reject: false,
   })
   t.snapshot(normalizeOutput(all))
 
@@ -218,7 +218,7 @@ test('Functions: invalid source directory', async t => {
 test('Exit code is 0 on success', async t => {
   const { exitCode } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/empty/netlify.yml`, {
     all: true,
-    reject: false
+    reject: false,
   })
   t.is(exitCode, 0)
 })
@@ -226,7 +226,7 @@ test('Exit code is 0 on success', async t => {
 test('Exit code is 1 on error', async t => {
   const { exitCode } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/does_not_exist`, {
     all: true,
-    reject: false
+    reject: false,
   })
   t.is(exitCode, 1)
 })
