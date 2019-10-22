@@ -14,7 +14,6 @@ Inside your `netlify.yml`:
 ```yaml
 plugins:
   - type: '@netlify/plugin-lighthouse'
-    enabled: true
     config:
       currentVersion: '0.0.3'
       compareWithVersion: '0.0.1'
@@ -25,7 +24,6 @@ you can pin lighthouse result versions:
 ```yaml
 plugins:
   - type: '@netlify/plugin-lighthouse'
-    enabled: true
     config:
       currentVersion: '0.0.3'
       compareWithVersion: '0.0.1'
