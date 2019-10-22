@@ -3,8 +3,8 @@ const { join } = require('path')
 
 module.exports = function sendData(payload, version) {
   const args = JSON.stringify({
+    reqType: payload.type,
     data: payload,
-    type: payload.type,
     version: version
   })
   // Spawn detached child process to send telemetry

@@ -2,7 +2,7 @@
 /* Detached child process */
 const https = require('https')
 
-const { data, type, version } = JSON.parse(process.argv[2])
+const { data, reqType, version } = JSON.parse(process.argv[2])
 
 const API_HOST = 'telemetry-service.netlify.com'
 const API_PATHS = {
@@ -15,7 +15,7 @@ const payload = JSON.stringify(data)
 const req = https.request(
   {
     hostname: API_HOST,
-    path: API_PATHS[type],
+    path: API_PATHS[reqType],
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

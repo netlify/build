@@ -23,7 +23,10 @@
     ],
     "compileEnhancements": false,
     "babel": false,
-    "verbose": true
+    "verbose": true,
+    "environmentVariables": {
+      "BUILD_TELEMETRY_DISABLED": "true"
+    }
   },
   "husky": {
     "hooks": {
