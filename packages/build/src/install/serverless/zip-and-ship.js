@@ -29,7 +29,7 @@ module.exports = async function installZola(cwd, cacheDir) {
     await execa('ln', [
       '-s',
       `/opt/buildhome/.binrc/bin/zip-it-and-ship-it_${ZISI_VERSION}`,
-      '/opt/buildhome/.binrc/bin/zip-it-and-ship-it'
+      '/opt/buildhome/.binrc/bin/zip-it-and-ship-it',
     ])
 
     const version = await execa('zip-it-and-ship-it', ['--version'])

@@ -29,7 +29,7 @@ const directories = [
   `${NETLIFY_CACHE_DIR}/.composer`,
   `${NETLIFY_CACHE_DIR}/.gimme_cache/gopath`,
   `${NETLIFY_CACHE_DIR}/.gimme_cache/gocache`,
-  `${NETLIFY_CACHE_DIR}/.wasmer/cache`
+  `${NETLIFY_CACHE_DIR}/.wasmer/cache`,
 ]
 
 const globals = {
@@ -43,7 +43,7 @@ const globals = {
   PIPENV_VENV_IN_PROJECT: 1,
   PIPENV_DEFAULT_PYTHON_VERSION: 2.7,
   // CI signal
-  NETLIFY: true
+  NETLIFY: true,
 }
 
 // https://github.com/netlify/build-image/blob/9e0f207a27642d0115b1ca97cd5e8cebbe492f63/run-build-functions.sh#L5-L57
@@ -64,7 +64,7 @@ module.exports = async function runBuildFunction() {
     directories.map(dir => {
       console.log(`Make directory ${dir}`)
       return makeDir(dir)
-    })
+    }),
   )
 
   return newDirPaths

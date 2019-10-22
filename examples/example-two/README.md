@@ -88,7 +88,7 @@ function exampleNetlifyPlugin(config) {
     // Hook into `postBuild` lifecycle
     postBuild: () => {
       console.log('Build finished. Do custom thing')
-    }
+    },
     // ... etc
   }
 }

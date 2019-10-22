@@ -70,7 +70,7 @@ const logDryRunInstruction = function({
   index,
   configPath,
   width,
-  buildInstructions
+  buildInstructions,
 }) {
   const countText = `${index + 1}.`
   const count = cyanBright(countText)
@@ -117,8 +117,8 @@ const logInstruction = function({ hook, name, override }, { index, configPath, e
   if (override.hook) {
     log(
       redBright.bold(
-        `${HEADING_PREFIX} OVERRIDE: "${override.hook}" method in "${override.type}" has been overriden by "${name}"`
-      )
+        `${HEADING_PREFIX} OVERRIDE: "${override.hook}" method in "${override.type}" has been overriden by "${name}"`,
+      ),
     )
   }
   const lifecycleName = error ? '' : 'lifecycle '
@@ -228,7 +228,7 @@ const logBuildEnd = function({ instructions, config, duration }) {
     steps: instructions.length,
     duration,
     pluginCount: plugins.length,
-    plugins
+    plugins,
   })
 }
 
@@ -254,5 +254,5 @@ module.exports = {
   logErrorInstructions,
   logBuildError,
   logBuildSuccess,
-  logBuildEnd
+  logBuildEnd,
 }

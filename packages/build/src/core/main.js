@@ -18,7 +18,7 @@ const {
   logManifest,
   logBuildError,
   logBuildSuccess,
-  logBuildEnd
+  logBuildEnd,
 } = require('../log/main')
 const { startTimer, endTimer } = require('../log/timer')
 const isNetlifyCI = require('../utils/is-netlify-ci')

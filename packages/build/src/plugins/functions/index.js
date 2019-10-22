@@ -1,7 +1,7 @@
 const { tmpdir } = require('os')
 const { resolve } = require('path')
 const {
-  env: { DEPLOY_ID }
+  env: { DEPLOY_ID },
 } = require('process')
 
 const pathExists = require('path-exists')
@@ -22,8 +22,8 @@ const functionsPlugin = function(pluginConfig, { build: { functions: srcDir } })
 // Validate plugin configuration at startup
 const init = async function({
   config: {
-    build: { functions: srcDir }
-  }
+    build: { functions: srcDir },
+  },
 }) {
   if (!(await pathExists(srcDir))) {
     throw new Error(`Functions directory "${resolve(srcDir)}" not found`)
@@ -33,8 +33,8 @@ const init = async function({
 // Bundle Netlify functions
 const functionsBuild = async function({
   config: {
-    build: { functions: srcDir }
-  }
+    build: { functions: srcDir },
+  },
 }) {
   const destDir = getDestDir()
 

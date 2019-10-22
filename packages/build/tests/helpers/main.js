@@ -37,7 +37,7 @@ const NORMALIZE_REGEXPS = [
   // npm install logs
   [/added \d+ package.*/, 'added packages'],
   [/^npm ERR!.*/gm, 'npm ERR!'],
-  [/(npm ERR!\n)+/g, 'npm ERR!\n']
+  [/(npm ERR!\n)+/g, 'npm ERR!\n'],
 ]
 
 module.exports = { normalizeOutput }

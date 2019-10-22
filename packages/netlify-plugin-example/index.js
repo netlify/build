@@ -13,5 +13,5 @@ module.exports = {
     if (sites) {
       console.log(`Site count! ${sites.length}`)
     }
-  }
+  },
 }

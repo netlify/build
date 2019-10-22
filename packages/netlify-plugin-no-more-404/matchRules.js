@@ -21,7 +21,7 @@ async function matchRules(relativeUrl, projectDir) {
       scheme: reqUrl.protocol,
       host: reqUrl.hostname,
       path: reqUrl.pathname,
-      query: reqUrl.search.slice(1)
+      query: reqUrl.search.slice(1),
       // headers,
       // cookieValues,
       // getHeader: name => headers[name.toLowerCase()] || '',
@@ -43,7 +43,7 @@ const getMatcher = projectDir => {
     return redirector
       .parseJSON(JSON.stringify(rules), {
         jwtSecret: 'secret',
-        jwtRole: 'app_metadata.authorization.roles'
+        jwtRole: 'app_metadata.authorization.roles',
       })
       .then(m => {
         const matcher = m
@@ -53,6 +53,6 @@ const getMatcher = projectDir => {
   return Promise.resolve({
     match() {
       return null
-    }
+    },
   })
 }

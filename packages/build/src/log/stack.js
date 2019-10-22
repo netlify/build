@@ -1,5 +1,5 @@
 const {
-  env: { DEBUG_BUILD }
+  env: { DEBUG_BUILD },
 } = require('process')
 
 const StackUtils = require('stack-utils')

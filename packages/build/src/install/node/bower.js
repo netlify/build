@@ -35,7 +35,7 @@ module.exports = async function installBower(cwd, cacheDir) {
     await moveCache(
       path.join(cacheDir, 'bower_components'),
       path.join(cwd, 'bower_components'),
-      'restoring cached bower_components'
+      'restoring cached bower_components',
     )
 
     // TODO move elsewhere. Seperate setup `bower` from the `bower install` steps

@@ -46,11 +46,11 @@ module.exports = {
         fnDir: build.functions,
         statusCb: () => {},
         draft: !deployToProduction,
-        message: 'Site deployed from @netlify/build'
+        message: 'Site deployed from @netlify/build',
       })
     } catch (err) {
       console.log('Deploying site error')
       throw new Error(err)
     }
-  }
+  },
 }

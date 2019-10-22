@@ -11,7 +11,7 @@ const loadPlugins = async function({ pluginsOptions, config, configPath, baseDir
   logLoadPlugins()
 
   const hooks = await Promise.all(
-    pluginsOptions.map(pluginOptions => loadPlugin(pluginOptions, { config, configPath, baseDir, token }))
+    pluginsOptions.map(pluginOptions => loadPlugin(pluginOptions, { config, configPath, baseDir, token })),
   )
   const hooksA = hooks.flat().filter(isNotOverridden)
   const pluginsHooks = groupBy(hooksA, 'hook')
@@ -22,7 +22,7 @@ const loadPlugins = async function({ pluginsOptions, config, configPath, baseDir
 // Do it by executing the plugin `load` event handler.
 const loadPlugin = async function(
   { type, pluginPath, pluginConfig, pluginId, core },
-  { config, configPath, baseDir, token }
+  { config, configPath, baseDir, token },
 ) {
   logLoadPlugin(pluginId, type, core)
 
@@ -30,7 +30,7 @@ const loadPlugin = async function(
     const { response: hooks } = await executePlugin(
       'load',
       { pluginId, type, pluginPath, pluginConfig, configPath, config, core },
-      { baseDir }
+      { baseDir },
     )
     return hooks
   } catch (error) {

@@ -8,7 +8,7 @@ const rootDir = path.join(__dirname, '..')
 const nonLifecycleKeys = ['onError']
 const CONSTANTS = {
   rootDir: rootDir,
-  lifecycle: path.join(rootDir, 'packages/build/src/core/lifecycle.js')
+  lifecycle: path.join(rootDir, 'packages/build/src/core/lifecycle.js'),
 }
 
 function parseJsDoc(contents) {
@@ -120,8 +120,8 @@ const config = {
           updatedContent += `\n`
         })
       return updatedContent.replace(/^\s+|\s+$/g, '')
-    }
-  }
+    },
+  },
 }
 
 function formatName(name) {
@@ -192,7 +192,7 @@ const markdownFiles = [
   path.join(rootDir, 'examples/**/**.md'),
   `!${path.join(rootDir, 'examples/**/node_modules/**/**.md')}`,
   `!${path.join(rootDir, 'packages/**/node_modules/**/**.md')}`,
-  '!node_modules'
+  '!node_modules',
 ]
 markdownMagic(markdownFiles, config, () => {
   console.log('Doc generation complete')

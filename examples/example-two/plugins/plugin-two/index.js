@@ -8,6 +8,6 @@ module.exports = function pluginTwo() {
     },
     postBuild: () => {
       console.log('this is run after site build')
-    }
+    },
   }
 }

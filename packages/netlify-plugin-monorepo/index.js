@@ -40,7 +40,7 @@ module.exports = {
       const currentBranch = await gitBranchName()
       const result = await diff({
         since: since || currentBranch,
-        files: filesToCheck
+        files: filesToCheck,
       })
       // console.log('result', result)
       if (!result.matched.length) {
@@ -52,7 +52,7 @@ module.exports = {
       const changedFiles = result.matched.map(file => {
         return {
           path: file,
-          fullPath: resolve(file)
+          fullPath: resolve(file),
         }
       })
       // console.log('changedFiles', changedFiles)
@@ -66,7 +66,7 @@ module.exports = {
       console.error(error)
       process.exit(0)
     }
-  }
+  },
 }
 
 async function gitBranchName() {

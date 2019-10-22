@@ -1,10 +1,10 @@
 const {
   env,
   // eslint-disable-next-line node/no-unsupported-features/node-builtins
-  stdout: { isTTY, getColorDepth }
+  stdout: { isTTY, getColorDepth },
 } = require('process')
 const {
-  inspect: { defaultOptions }
+  inspect: { defaultOptions },
 } = require('util')
 
 const isNetlifyCI = require('../utils/is-netlify-ci')

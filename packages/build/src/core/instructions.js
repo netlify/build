@@ -24,9 +24,9 @@ const getHookInstructions = function({
   pluginsHooks: { [hook]: pluginHooks = [] },
   config: {
     build: {
-      lifecycle: { [hook]: commands }
-    }
-  }
+      lifecycle: { [hook]: commands },
+    },
+  },
 }) {
   if (commands === undefined) {
     return pluginHooks
@@ -48,10 +48,10 @@ const runInstructions = async function(instructions, { config, configPath, token
         configPath,
         token,
         baseDir,
-        error
+        error,
       })
     },
-    {}
+    {},
   )
   return manifest
 }
@@ -107,7 +107,7 @@ const execCommand = async function({ hook, command, baseDir }) {
 // Fire a plugin hook method
 const firePluginHook = async function(
   { type, hook, pluginPath, pluginConfig, hookName, constants },
-  { config, token, baseDir, error }
+  { config, token, baseDir, error },
 ) {
   try {
     await executePlugin('run', { pluginPath, pluginConfig, hookName, config, token, error, constants }, { baseDir })

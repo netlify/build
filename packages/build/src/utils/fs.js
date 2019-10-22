@@ -61,5 +61,5 @@ module.exports = {
   writeFile,
   readFile,
   copyFiles,
-  removeFiles
+  removeFiles,
 }

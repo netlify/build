@@ -37,7 +37,7 @@ module.exports = {
         const originalPath = `/.netlify/functions/${functionName}`
         acc.rewrites = acc.rewrites.concat({
           fromPath: functionData.path,
-          toPath: originalPath
+          toPath: originalPath,
         })
 
         console.log(`Mapping ${functionData.path} to ${originalPath}. Method: ${functionData.method}`)
@@ -47,7 +47,7 @@ module.exports = {
           name: functionName,
           filename: functionData.handler,
           path: functionPath,
-          method: functionData.method
+          method: functionData.method,
         })
 
         return acc
@@ -55,8 +55,8 @@ module.exports = {
       {
         functions: [],
         rewrites: [],
-        redirects: []
-      }
+        redirects: [],
+      },
     )
 
     const buildDir = resolve(build.publish)
@@ -74,7 +74,7 @@ module.exports = {
     await writeRedirectsFile(buildFolder, data.redirects, data.rewrites)
 
     console.log('Functions ready!')
-  }
+  },
 }
 
 async function processFunction(func, destFolder) {
@@ -188,7 +188,7 @@ async function writeRedirectsFile(buildDir, redirects, rewrites) {
 
       if (typeof value === `string` && value.indexOf(` `) >= 0) {
         console.warn(
-          `Invalid redirect value "${value}" specified for key "${key}". ` + `Values should not contain spaces.`
+          `Invalid redirect value "${value}" specified for key "${key}". ` + `Values should not contain spaces.`,
         )
       } else {
         pieces.push(`${key}=${value}`)

@@ -18,7 +18,7 @@ module.exports = async function installNodeDeps(cwd, cacheDir, yarnVersion) {
     await moveCache(
       path.join(cacheDir, 'node_modules'),
       path.join(cwd, 'node_modules'),
-      'restoring cached node_modules'
+      'restoring cached node_modules',
     )
     console.log('ho')
 

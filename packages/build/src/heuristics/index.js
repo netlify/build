@@ -56,7 +56,7 @@ module.exports = async function getHeuristics({ pkgPath, configPath }) {
           acc['steps'] = acc['steps'].concat({
             name: null,
             raw: c,
-            parsed: c
+            parsed: c,
           })
           acc['raw'] = acc['raw'].concat(c)
           acc['combined'] = acc['raw'].join(' && ')
@@ -72,8 +72,8 @@ module.exports = async function getHeuristics({ pkgPath, configPath }) {
         command: '',
         steps: [],
         raw: [],
-        combined: ''
-      }
+        combined: '',
+      },
     )
     // console.log('vals', vals)
     // console.log('combined', buildInfo)
@@ -96,7 +96,7 @@ module.exports = async function getHeuristics({ pkgPath, configPath }) {
     // Resolved buildcommand info
     build: buildInfo,
     // Best guess of project type
-    projectType: typeofBuild
+    projectType: typeofBuild,
   }
 }
 

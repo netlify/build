@@ -1,6 +1,6 @@
 const { dirname } = require('path')
 const {
-  env: { NETLIFY_TOKEN }
+  env: { NETLIFY_TOKEN },
 } = require('process')
 
 const resolveConfig = require('@netlify/config')

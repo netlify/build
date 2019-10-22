@@ -16,9 +16,9 @@ const prefixEventNames = {
     const prefixedEvent = event.startsWith(prefix) ? event : `${prefix}${event}`
     return {
       ...payload,
-      event: prefixedEvent
+      event: prefixedEvent,
     }
-  }
+  },
 }
 
 /* enrich telemetry payload */
@@ -36,10 +36,10 @@ const enrichPayload = {
         // Add package version
         buildVersion: pkg.version,
         // Add node version
-        nodeVersion: process.version.replace(/^v/, '')
-      }
+        nodeVersion: process.version.replace(/^v/, ''),
+      },
     }
-  }
+  },
 }
 
 /* Sent data to telemetry service, if telemetry enabled */
@@ -51,7 +51,7 @@ const netlifyTelemetry = {
       return
     }
     sendData(payload, pkg.version)
-  }
+  },
 }
 
 /* If BUILD_TELEMETRY_DISABLED, disable api calls */
