@@ -145,6 +145,14 @@ test('Reports missing plugins', async t => {
   t.snapshot(normalizeOutput(all))
 })
 
+test('Plugin.id is optional', async t => {
+  const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/optional_plugin_id/netlify.yml`, {
+    all: true,
+    reject: false,
+  })
+  t.snapshot(normalizeOutput(all))
+})
+
 test('Can install local plugins', async t => {
   const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/local_plugin/netlify.yml`, {
     all: true,
