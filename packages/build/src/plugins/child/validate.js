@@ -22,8 +22,9 @@ const validateRequiredProperties = function(logic) {
 
 const REQUIRED_PROPERTIES = [{
   key: 'name',
-  errorMsg: `> Please add the required "name" property to the object exported from the plugin.
-> More info: http://bit.ly/31z46mF\n`
+  errorMsg: `> Attention Beta testers!
+> Please add the required "name" property to the object exported from the plugin.
+> This is a new required field from plugins http://bit.ly/31z46mF\n`
 }]
 
 const validateRequiredProperty = function(logic, validation) {
