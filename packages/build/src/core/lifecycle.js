@@ -10,7 +10,7 @@ const LIFECYCLE = [
   'getCache',
   'postGetCache',
   /**
-   * `install` - Install project dependancies
+   * `install` - Install project dependencies
    */
   'preInstall',
   'install',

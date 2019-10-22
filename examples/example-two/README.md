@@ -4,7 +4,7 @@ This is a demo site showcasing the new Netlify Build features & lifecycle hooks.
 
 ## Setup
 
-Install dependancies
+Install dependencies
 
 ```
 npm install
@@ -39,7 +39,7 @@ how the Netlify build operates.
 | :---------------------------------------------------------------------------------- | :------------------------------------------ |
 | ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleinit">init</a>** ‏‏‎ ‏‏‎ ‏‏‎                     | Runs before anything else                   |
 | ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclegetcache">getCache</a>** ‏‏‎ ‏‏‎ ‏‏‎             | Fetch previous build cache                  |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleinstall">install</a>** ‏‏‎ ‏‏‎ ‏‏‎               | Install project dependancies                |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleinstall">install</a>** ‏‏‎ ‏‏‎ ‏‏‎               | Install project dependencies                |
 | ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleprebuild">preBuild</a>** ‏‏‎ ‏‏‎ ‏‏‎             | Runs before functions & build commands run  |
 | ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclefunctionsbuild">functionsBuild</a>** ‏‏‎ ‏‏‎ ‏‏‎ | Build the serverless functions              |
 | ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclebuild">build</a>** ‏‏‎ ‏‏‎ ‏‏‎                   | Build commands are executed                 |
@@ -76,7 +76,7 @@ The Lifecycle flows through events and their `pre` and `post` counterparts.
 
 ## Plugins
 
-Plugins are POJOs (plain old javascript objects) with methods that match the various lifecycle events.
+Plugins are POJOs (plain old JavaScript objects) with methods that match the various lifecycle events.
 
 ```js
 function exampleNetlifyPlugin(config) {

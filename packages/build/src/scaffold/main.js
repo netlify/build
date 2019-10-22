@@ -1,5 +1,5 @@
 /**
- * (WIP) Scaffold docker image, update dependancies, set correct language libs
+ * (WIP) Scaffold docker image, update dependencies, set correct language libs
  * Node port of https://github.com/netlify/build-image/blob/xenial/run-build.sh
  */
 const execa = require('execa')
