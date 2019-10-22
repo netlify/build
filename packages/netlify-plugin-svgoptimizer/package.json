@@ -17,5 +17,8 @@
   "license": "MIT",
   "dependencies": {
     "svgo": "^1.3.0"
+  },
+  "engines": {
+    "node": ">=8.12.0"
   }
 }
