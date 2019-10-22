@@ -20,7 +20,6 @@ build:
 
 plugins:
   - type: '@netlify/plugin-svgoptimizer'
-    enabled: true
     config:
       src:
         # directory: where our svg assets are located. please note: this will overwrite the files in this directory
