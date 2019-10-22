@@ -1,3 +1,2 @@
 plugins:
-  test:
-    type: ./plugin/main.js
+  - type: ./plugin/main.js

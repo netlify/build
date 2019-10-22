@@ -8,14 +8,15 @@ In your netlify config file add:
 
 ```yml
 plugins:
-  - netlify-plugin-functions
+  - type: '@netlify/plugin-functions'
 ```
 
 ## Configuration
 
 ```yml
 plugins:
-  - netlify-plugin-functions
+  - type: '@netlify/plugin-functions'
+    config:
       functions:
         foo:
           handler: ./path/to/function-code.handler
@@ -29,7 +30,8 @@ In future functions can take additional configuration
 
 ```yml
 plugins:
-  - netlify-plugin-functions
+  - type: '@netlify/plugin-functions'
+    config:
       functions:
         foo:
           handler: ./path/to/function-code.handler

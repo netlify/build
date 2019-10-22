@@ -24,8 +24,7 @@ build:
 
 # Build plugins
 plugins:
-  examplePlugin:
-    type: ./plugins/example
+  - type: ./plugins/example
     config:
       hi: foo
 ```

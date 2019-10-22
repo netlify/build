@@ -45,8 +45,9 @@ const logLoadPlugins = function() {
 }
 
 const logLoadPlugin = function(pluginId, type, core) {
+  const id = pluginId === undefined ? '' : `"${pluginId}" `
   const location = core ? 'build core' : type
-  log(yellowBright(`${SUBTEXT_PADDING}Loading plugin "${pluginId}" from ${location}`))
+  log(yellowBright(`${SUBTEXT_PADDING}Loading plugin ${id}from ${location}`))
 }
 
 const logLifeCycleStart = function(instructions) {

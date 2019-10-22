@@ -103,18 +103,16 @@ Configuration can be written in `toml`, `yml`, `json`, or `json5`.
 ```yml
 # Config file `plugins` defines plugins used by build. Plugins are optional
 plugins:
-  pluginAbc:
-    type: ./local/path/to/plugin-folder
+  - type: ./local/path/to/plugin-folder
     config:
       optionOne: 'hello'
       optionTwo: 'there'
- pluginTwo:
-   type: plugin-from-npm
-   config:
-     optionOne: 'neat'
-     arrayOfValues:
-      - david@netlify.com
-      - jim@netlify.com
+  - type: plugin-from-npm
+    config:
+      optionOne: 'neat'
+      arrayOfValues:
+        - david@netlify.com
+        - jim@netlify.com
 
 # Inline `build.lifecycle` steps can be defined
 build:

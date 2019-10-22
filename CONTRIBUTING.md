@@ -45,8 +45,8 @@ This is a monorepo. Below are a list of packages included.
   redirects [npm link](https://www.npmjs.com/package/@netlify/plugin-no-more-404).
 - [@netlify/plugin-sitemap](./packages/netlify-plugin-sitemap)
   [npm link](https://www.npmjs.com/package/@netlify/plugin-sitemap).
-- [netlify-build-plugin-svgoptimizer](./packages/netlify-plugin-svgoptimizer) Optimize SVG assets during the Netlify
-  build process [npm link](https://www.npmjs.com/package/netlify-build-plugin-svgoptimizer).
+- [@netlify/plugin-svgoptimizer](./packages/netlify-plugin-svgoptimizer) Optimize SVG assets during the Netlify build
+  process [npm link](https://www.npmjs.com/package/netlify-build-plugin-svgoptimizer).
   <!-- AUTO-GENERATED-CONTENT:END (PACKAGES) -->
 
 # Requirements

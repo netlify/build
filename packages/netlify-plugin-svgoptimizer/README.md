@@ -8,7 +8,7 @@ In the plugins, src, directory, add the path that the assets are in (last line i
 
 `netlify.yml`
 
-```
+```yml
 build:
   publish: build
   lifecycle:
@@ -19,9 +19,9 @@ build:
     finally: echo "Ending the build"
 
 plugins:
-  # Local plugin
-  - ./plugins/netlify-plugin-svg-optimizer:
-      enabled: true
+  - type: '@netlify/plugin-svgoptimizer'
+    enabled: true
+    config:
       src:
         # directory: where our svg assets are located. please note: this will overwrite the files in this directory
         directory: /src/assets/

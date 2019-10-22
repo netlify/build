@@ -10,8 +10,9 @@ Example: Only build my site is files in `src` directory have changed `src/**`
 
 ```yml
 plugins:
-  - netlify-plugin-monorepo:
-      enabled: true
+  - type: '@netlify/plugin-monorepo'
+    enabled: true
+    config:
       # files to check for changes
       files:
         - 'src/**.html'

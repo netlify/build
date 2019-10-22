@@ -26,10 +26,10 @@ const isPluginHook = function([, value]) {
 }
 
 // Retrieve a single hook from this plugin
-const getPluginHook = function({ hook, pluginId, pluginPath, pluginConfig, type, core, constants }) {
+const getPluginHook = function({ hook, type, pluginId: name = type, pluginPath, pluginConfig, core, constants }) {
   const override = getOverride(hook)
   const hookA = override.hook || hook
-  return { name: pluginId, type, hook: hookA, hookName: hook, override, pluginPath, pluginConfig, core, constants }
+  return { name, type, hook: hookA, hookName: hook, override, pluginPath, pluginConfig, core, constants }
 }
 
 module.exports = { load }

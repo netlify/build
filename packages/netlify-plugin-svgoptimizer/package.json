@@ -1,5 +1,5 @@
 {
-  "name": "netlify-build-plugin-svgoptimizer",
+  "name": "@netlify/plugin-svgoptimizer",
   "version": "1.0.3",
   "description": "Optimize SVG assets during the Netlify build process",
   "main": "index.js",

@@ -1,5 +1,3 @@
 plugins:
-  example:
-    type: netlify-plugin-example
-  exampleOverride:
-    type: ./override.js
+  - type: netlify-plugin-example
+  - type: ./override.js

@@ -1,3 +1,2 @@
 plugins:
-  testPlugin:
-    type: does-not-exist
+  - type: does-not-exist
