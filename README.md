@@ -1,6 +1,7 @@
 <img src="static/logo.png" width="400"/><br>
 
 [![Coverage Status](https://coveralls.io/repos/github/netlify/build/badge.svg)](https://coveralls.io/github/netlify/build)
+[![Build](https://github.com/netlify/build/workflows/Build/badge.svg)](https://github.com/netlify/build/actions)
 
 Netlify build is the next generation of CI/CD tooling for modern web applications.
 
