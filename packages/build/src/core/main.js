@@ -80,8 +80,10 @@ const build = async function(options) {
     logBuildSuccess()
     const duration = endTimer(buildTimer, 'Netlify Build')
     logBuildEnd({ instructions, config, duration })
+    return true
   } catch (error) {
     logBuildError(error, optionsA)
+    return false
   }
 }
 
