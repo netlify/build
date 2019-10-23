@@ -20,9 +20,10 @@ const validateRequiredProperties = function(logic, type) {
   REQUIRED_PROPERTIES.forEach(validation => validateRequiredProperty(logic, validation, type))
 }
 
-const REQUIRED_PROPERTIES = [{
-  key: 'name',
-  errorMsg: `
+const REQUIRED_PROPERTIES = [
+  {
+    key: 'name',
+    errorMsg: `
 > Attention Beta testers!
 > Please add the required "name" property to the object exported from the plugin.
 > This is a new required field from plugins http://bit.ly/31z46mF\n
@@ -37,8 +38,9 @@ function netlifyPlugin(config) {
     },
   }
 }
-`
-}]
+`,
+  },
+]
 
 const validateRequiredProperty = function(logic, validation, type) {
   if (logic[validation.key] === undefined) {
