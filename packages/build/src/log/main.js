@@ -4,7 +4,7 @@ const { tick, pointer, arrowDown } = require('figures')
 const omit = require('omit.js')
 
 const telemetry = require('../utils/telemetry')
-const pkg = require('../../package.json')
+const { version } = require('../../package.json')
 
 const { log } = require('./patch')
 const { cleanStack } = require('./stack')
@@ -16,7 +16,7 @@ const HEADING_PREFIX = pointer
 const SUBTEXT_PADDING = '  '
 
 const logBuildStart = function() {
-  log(greenBright.bold(`${HEADING_PREFIX} Starting Netlify Build`), `version ${pkg.version}`)
+  log(greenBright.bold(`${HEADING_PREFIX} Starting Netlify Build v${version}`))
   log(`${SUBTEXT_PADDING}https://github.com/netlify/build`)
   log()
 }

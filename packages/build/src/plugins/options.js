@@ -2,31 +2,6 @@ const DEFAULT_PLUGINS_DIR = __dirname
 
 // Load plugin options (specified by user in `config.plugins`)
 const getPluginsOptions = function({ config: { plugins: pluginsOptions } }) {
-  // Temporary warning for malformed plugin block in config
-  if (!Array.isArray(pluginsOptions)) {
-    console.log(`
-┌────────────────────────────────┐
-│  Hello Beta Testers!!!!!!!!    │
-└────────────────────────────────┘
-
- Plugins have been changed from an object to an array!
-
- Please update your plugins block to an array
-
- plugins:
-   - type: ./plugin/path
-     config:
-       foo: bar
-   - type: npm-module-path
-     config:
-       fizz: pop
-
-
- See more information in the docs http://bit.ly/31z46mF
-
-─────────────────────────────────────────────
-`)
-  }
   return [...DEFAULT_PLUGINS, ...pluginsOptions].map(normalizePluginOptions).filter(isPluginEnabled)
 }
 
