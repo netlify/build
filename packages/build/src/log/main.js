@@ -6,7 +6,7 @@ const omit = require('omit.js')
 const telemetry = require('../utils/telemetry')
 const { version } = require('../../package.json')
 
-const { log } = require('./patch')
+const { log } = require('./logger')
 const { cleanStack } = require('./stack')
 
 // eslint-disable-next-line import/order
