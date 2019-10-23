@@ -1,6 +1,6 @@
 const isNetlifyCI = require('../utils/is-netlify-ci.js')
 
-const { redactProcess, redactString } = require('./logger')
+const { redactProcess, redactString } = require('./redact')
 
 // In CI, we need to buffer child processes output at the moment due to the
 // current BuildBot not handling it correctly.
