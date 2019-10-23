@@ -9,7 +9,6 @@ const pkg = require('../../package.json')
 const { log } = require('./patch')
 const { cleanStack } = require('./stack')
 
-
 // eslint-disable-next-line import/order
 const { greenBright, cyanBright, redBright, yellowBright, bold, white } = require('chalk')
 
