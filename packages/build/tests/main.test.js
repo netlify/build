@@ -312,11 +312,3 @@ test('Validate plugin.name is a string', async t => {
   )
   t.snapshot(normalizeOutput(all))
 })
-
-test('Validate plugin.name is a valid name', async t => {
-  const { all } = await execa.command(
-    `${BINARY_PATH} --config ${FIXTURES_DIR}/plugin_validate_name_invalid/netlify.yml`,
-    { all: true, reject: false },
-  )
-  t.snapshot(normalizeOutput(all))
-})

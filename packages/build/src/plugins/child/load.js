@@ -8,7 +8,7 @@ const { getConstants } = require('./constants')
 // This also validates the plugin.
 const load = async function({ id, type, pluginPath, pluginConfig, configPath, config, core }) {
   const logic = getLogic({ pluginPath, config, pluginConfig })
-  validatePlugin(logic, type)
+  validatePlugin(logic)
 
   const constants = getConstants(configPath, config)
   const hooks = getPluginHooks({ logic, id, pluginPath, pluginConfig, type, core, constants })

@@ -25,7 +25,7 @@ const NORMALIZE_REGEXPS = [
   // Durations
   [/[\d.]+m?s/g, '1ms'],
   // Package versions
-  [/@[\d.]+/g, '@VERSION'],
+  [/([@v])[\d.]+/g, '$11.0.0'],
   // Multiline objects are printed differently by `util.inspect()` in Node 8 and
   // 12 due to different default options
   [/{\n\s+/gm, '{ '],

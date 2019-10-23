@@ -5,47 +5,42 @@ const { LIFECYCLE } = require('../../core/lifecycle')
 
 // Validate the shape of a plugin return value
 // TODO: validate allowed characters in `logic` properties
-const validatePlugin = function(logic, type) {
+const validatePlugin = function(logic) {
   if (!isPlainObj(logic)) {
     throw new Error(`Plugin must be an object or a function`)
   }
 
-  validateRequiredProperties(logic, type)
+  validateRequiredProperties(logic)
 
   Object.entries(logic).forEach(([propName, value]) => validateProperty(value, propName))
 }
 
 // Validate `plugin.*` required properties
-const validateRequiredProperties = function(logic, type) {
-  REQUIRED_PROPERTIES.forEach(validation => validateRequiredProperty(logic, validation, type))
+const validateRequiredProperties = function(logic) {
+  // TODO: remove this after beta testing is done
+  if (logic.name === undefined) {
+    console.warn(NAME_BETA_ERROR)
+  }
+
+  REQUIRED_PROPERTIES.forEach(propName => validateRequiredProperty(logic, propName))
 }
 
-const REQUIRED_PROPERTIES = [
-  {
-    key: 'name',
-    errorMsg: `
-> Attention Beta testers!
-> Please add the required "name" property to the object exported from the plugin.
-> This is a new required field from plugins http://bit.ly/31z46mF\n
+const REQUIRED_PROPERTIES = ['name']
+
+const NAME_BETA_ERROR = `Attention beta testers!
+Please add the required "name" property to the object exported from the plugin.
+This is a new required field from plugins http://bit.ly/31z46mF
 
 Example:
 
-function netlifyPlugin(config) {
-  return {
-    name: 'my-plugin-name', <--- New required "name" field
-    init: () => {
-      console.log('Hi from init')
-    },
-  }
-}
-`,
-  },
-]
+module.exports = {
+  name: 'my-plugin-name',
+  init: () => {},
+}`
 
-const validateRequiredProperty = function(logic, validation, type) {
-  if (logic[validation.key] === undefined) {
-    const msg = validation.errorMsg || ''
-    throw new Error(`Missing required property '${validation.key}' in ${type}\n${msg}`)
+const validateRequiredProperty = function(logic, propName) {
+  if (logic[propName] === undefined) {
+    throw new Error(`Missing required property '${propName}'`)
   }
 }
 
@@ -89,12 +84,6 @@ const validateName = function(name) {
   if (typeof name !== 'string') {
     throw new Error(`Property 'name' must be a string`)
   }
-
-  /* Disable forced prefix. TODO figure out if we want this
-  if (!name.startsWith('@netlify/plugin-') && !name.startsWith('netlify-plugin-')) {
-    throw new Error(`Property 'name' must starts with 'netlify-plugin-*' and match the package name`)
-  }
-  */
 }
 
 // Validate `plugin.scopes`
