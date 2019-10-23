@@ -10,10 +10,9 @@ const getOverride = function(hookName) {
 }
 
 // Remove plugin hooks that are overriden by a hook called `name:...`
-const isNotOverridden = function(lifeCycleHook, index, lifeCycleHooks) {
-  return !lifeCycleHooks.some(
-    ({ override: { hook, name } }, indexA) =>
-      index !== indexA && hook === lifeCycleHook.hook && name === lifeCycleHook.name,
+const isNotOverridden = function(pluginHook, index, pluginHooks) {
+  return !pluginHooks.some(
+    ({ override: { hook, name } }, indexA) => index !== indexA && hook === pluginHook.hook && name === pluginHook.name,
   )
 }
 

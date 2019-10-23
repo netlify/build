@@ -312,3 +312,27 @@ test('Validate plugin.name is a string', async t => {
   )
   t.snapshot(normalizeOutput(all))
 })
+
+test('Remove duplicate plugin options', async t => {
+  const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/duplicate_plugin/netlify.yml`, {
+    all: true,
+    reject: false,
+  })
+  t.snapshot(normalizeOutput(all))
+})
+
+test('Does not remove duplicate plugin options with different ids', async t => {
+  const { all } = await execa.command(
+    `${BINARY_PATH} --config ${FIXTURES_DIR}/duplicate_plugin_different_id/netlify.yml`,
+    { all: true, reject: false },
+  )
+  t.snapshot(normalizeOutput(all))
+})
+
+test('Does not remove duplicate plugin options with different configs', async t => {
+  const { all } = await execa.command(
+    `${BINARY_PATH} --config ${FIXTURES_DIR}/duplicate_plugin_different_config/netlify.yml`,
+    { all: true, reject: false },
+  )
+  t.snapshot(normalizeOutput(all))
+})

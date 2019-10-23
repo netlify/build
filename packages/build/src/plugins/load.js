@@ -1,4 +1,5 @@
 const groupBy = require('group-by')
+const { circularDeepEqual } = require('fast-equals')
 
 const { logLoadPlugins, logLoadPlugin } = require('../log/main')
 
@@ -13,7 +14,10 @@ const loadPlugins = async function({ pluginsOptions, config, configPath, baseDir
   const hooks = await Promise.all(
     pluginsOptions.map(pluginOptions => loadPlugin(pluginOptions, { config, configPath, baseDir, token })),
   )
-  const hooksA = hooks.flat().filter(isNotOverridden)
+  const hooksA = hooks
+    .flat()
+    .filter(isNotDuplicate)
+    .filter(isNotOverridden)
   const pluginsHooks = groupBy(hooksA, 'hook')
   return pluginsHooks
 }
@@ -38,6 +42,12 @@ const loadPlugin = async function(
     error.message = `Error loading "${idA}" plugin:\n${error.message}`
     throw error
   }
+}
+
+// Remove plugin hooks that are duplicates.
+// This might happen when using plugin presets.
+const isNotDuplicate = function(pluginHook, index, pluginHooks) {
+  return !pluginHooks.slice(index + 1).some(laterPluginHook => circularDeepEqual(laterPluginHook, pluginHook))
 }
 
 module.exports = { loadPlugins }
