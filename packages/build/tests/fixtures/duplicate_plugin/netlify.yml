@@ -1,0 +1,5 @@
+plugins:
+  - type: ./plugin
+  - type: ./plugin
+  - type: ./plugin
+    config: {}
