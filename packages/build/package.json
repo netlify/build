@@ -57,14 +57,13 @@
     "replacestream": "^4.0.3",
     "resolve": "^1.12.0",
     "shell-source": "^1.1.0",
-    "stack-utils": "^1.0.2",
+    "strip-ansi": "^5.2.0",
     "yargs": "^14.2.0"
   },
   "devDependencies": {
     "atob": "^2.1.2",
     "ava": "^2.4.0",
     "markdown-magic": "^0.1.25",
-    "strip-ansi": "^5.2.0",
     "yarn": "^1.19.1"
   },
   "engines": {

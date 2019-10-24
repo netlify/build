@@ -6,7 +6,7 @@ require('array-flat-polyfill')
 
 const { executePlugin } = require('../plugins/ipc')
 const { logInstruction, logCommandStart, logCommandError, logInstructionSuccess } = require('../log/main')
-const { streamProcessOutput, writeProcessOutput, writeProcessError } = require('../log/stream')
+const { getOutputStream, writeProcessOutput, writeProcessError } = require('../log/stream')
 const { startTimer, endTimer } = require('../log/timer')
 
 const { LIFECYCLE } = require('./lifecycle')
@@ -74,7 +74,7 @@ const runInstruction = async function(instruction, { currentData, index, config,
 
     return { ...currentData, ...pluginReturnValue }
   } catch (error) {
-    error.message = `Error in '${id}' plugin:\n${error.message}`
+    error.message = `In '${id}':\n${error.message}`
     throw error
   }
 }
@@ -96,7 +96,7 @@ const execCommand = async function({ hook, command, baseDir }) {
   logCommandStart(command)
 
   const childProcess = execa(command, { shell: true, cwd: baseDir, preferLocal: true, all: true })
-  const all = streamProcessOutput(childProcess)
+  const all = getOutputStream(childProcess)
 
   try {
     const [output] = await Promise.all([getStream(all), childProcess])

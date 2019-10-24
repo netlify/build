@@ -87,11 +87,6 @@ test('Can override plugins', async t => {
   t.snapshot(normalizeOutput(all))
 })
 
-test('--verbose', async t => {
-  const { all } = await execa.command(`${BINARY_PATH} --verbose --config invalid`, { all: true, reject: false })
-  t.snapshot(normalizeOutput(all))
-})
-
 test('Lifecycle commands can execute local binaries', async t => {
   const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/local_bin/netlify.yml`, {
     all: true,
@@ -334,5 +329,37 @@ test('Remove duplicate plugin options with different configs but same id', async
     `${BINARY_PATH} --config ${FIXTURES_DIR}/duplicate_plugin_different_config/netlify.yml`,
     { all: true, reject: false },
   )
+  t.snapshot(normalizeOutput(all))
+})
+
+test('Print stack trace of plugin errors', async t => {
+  const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/error_plugin/netlify.yml`, {
+    all: true,
+    reject: false,
+  })
+  t.snapshot(normalizeOutput(all))
+})
+
+test('Print stack trace of lifecycle command errors', async t => {
+  const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/error_lifecycle/netlify.yml`, {
+    all: true,
+    reject: false,
+  })
+  t.snapshot(normalizeOutput(all))
+})
+
+test('Print stack trace of lifecycle command errors with stack traces', async t => {
+  const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/error_lifecycle_stack/netlify.yml`, {
+    all: true,
+    reject: false,
+  })
+  t.snapshot(normalizeOutput(all))
+})
+
+test('Print stack trace of validation errors', async t => {
+  const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/invalid`, {
+    all: true,
+    reject: false,
+  })
   t.snapshot(normalizeOutput(all))
 })

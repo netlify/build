@@ -48,11 +48,6 @@ Default: 'production'`,
 executing them.
 Default: false`,
   },
-  verbose: {
-    boolean: true,
-    describe: `Print messages and errors verbosely.
-Default: false`,
-  },
 }
 
 const USAGE = `$0 [OPTIONS...]
