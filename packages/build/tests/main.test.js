@@ -444,6 +444,62 @@ test('Print stack trace of validation errors', async t => {
   t.snapshot(normalizeOutput(all))
 })
 
+test('Can extend configuration', async t => {
+  const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/extends_simple/netlify.yml`, {
+    all: true,
+    reject: false,
+  })
+  t.snapshot(normalizeOutput(all))
+})
+
+test('Can extend lifecycle commands', async t => {
+  const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/extends_commands/netlify.yml`, {
+    all: true,
+    reject: false,
+  })
+  t.snapshot(normalizeOutput(all))
+})
+
+test('Can extend plugins', async t => {
+  const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/extends_plugins/netlify.yml`, {
+    all: true,
+    reject: false,
+  })
+  t.snapshot(normalizeOutput(all))
+})
+
+test('Can extend and override plugins', async t => {
+  const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/extends_plugins_priority/netlify.yml`, {
+    all: true,
+    reject: false,
+  })
+  t.snapshot(normalizeOutput(all))
+})
+
+test('Can extend with a string', async t => {
+  const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/extends_string/netlify.yml`, {
+    all: true,
+    reject: false,
+  })
+  t.snapshot(normalizeOutput(all))
+})
+
+test('Can extend with an empty array', async t => {
+  const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/extends_empty/netlify.yml`, {
+    all: true,
+    reject: false,
+  })
+  t.snapshot(normalizeOutput(all))
+})
+
+test('Can extend with a Node module', async t => {
+  const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/extends_module/netlify.yml`, {
+    all: true,
+    reject: false,
+  })
+  t.snapshot(normalizeOutput(all))
+})
+
 test('--dry with 0 hooks', async t => {
   const { all } = await execa.command(`${BINARY_PATH} --dry --config ${FIXTURES_DIR}/dry_empty/netlify.yml`, {
     all: true,

@@ -1,0 +1,6 @@
+extends:
+  - ./netlifyTwo.yml
+plugins:
+  - type: ./plugin.js
+    config:
+      test: one

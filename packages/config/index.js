@@ -3,6 +3,7 @@ const configorama = require('configorama')
 const { getConfigPath } = require('./path')
 const { validateConfig } = require('./validate')
 const { normalizeConfig } = require('./normalize')
+const { parseExtends } = require('./extends')
 
 const resolveConfig = async function(configFile, { cwd, context } = {}) {
   const configPath = await getConfigPath(configFile, cwd)
@@ -32,7 +33,8 @@ const resolveConfig = async function(configFile, { cwd, context } = {}) {
   validateConfig(config)
 
   const configA = normalizeConfig(config)
-  return configA
+  const configB = await parseExtends({ config: configA, configPath, context, resolveConfig })
+  return configB
 }
 
 module.exports = resolveConfig

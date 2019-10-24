@@ -1,0 +1,3 @@
+plugins:
+  - id: two
+    type: ./two.js

@@ -1,0 +1,5 @@
+extends:
+  - netlify-preset-test
+build:
+  lifecycle:
+    build: echo one

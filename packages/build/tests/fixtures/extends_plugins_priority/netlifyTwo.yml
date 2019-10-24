@@ -1,0 +1,4 @@
+plugins:
+  - type: ./plugin.js
+    config:
+      test: two

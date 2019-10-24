@@ -1,0 +1,5 @@
+extends:
+  - ./netlifyTwo.yml
+plugins:
+  - id: one
+    type: ./one.js
