@@ -1,5 +1,4 @@
 const groupBy = require('group-by')
-const { circularDeepEqual } = require('fast-equals')
 
 const { logLoadPlugins, logLoadPlugin } = require('../log/main')
 
@@ -45,9 +44,12 @@ const loadPlugin = async function(
 }
 
 // Remove plugin hooks that are duplicates.
-// This might happen when using plugin presets.
+// This might happen when using plugin presets. This also allows users to
+// override the configuration of specific plugins when using presets.
 const isNotDuplicate = function(pluginHook, index, pluginHooks) {
-  return !pluginHooks.slice(index + 1).some(laterPluginHook => circularDeepEqual(laterPluginHook, pluginHook))
+  return !pluginHooks
+    .slice(index + 1)
+    .some(laterPluginHook => laterPluginHook.id === pluginHook.id && laterPluginHook.hook === pluginHook.hook)
 }
 
 module.exports = { loadPlugins }

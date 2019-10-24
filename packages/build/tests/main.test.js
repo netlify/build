@@ -329,7 +329,7 @@ test('Does not remove duplicate plugin options with different ids', async t => {
   t.snapshot(normalizeOutput(all))
 })
 
-test('Does not remove duplicate plugin options with different configs', async t => {
+test('Remove duplicate plugin options with different configs but same id', async t => {
   const { all } = await execa.command(
     `${BINARY_PATH} --config ${FIXTURES_DIR}/duplicate_plugin_different_config/netlify.yml`,
     { all: true, reject: false },
