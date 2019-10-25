@@ -40,6 +40,7 @@ const cleanStackLine = function(lines, line) {
 const STACK_LINE_REGEXP = /^\s+at /
 
 const isInternalStack = function(line) {
+  // This is only needed for local builds
   return line.includes('build/src/plugins/child/')
 }
 
