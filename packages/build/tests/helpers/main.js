@@ -18,7 +18,7 @@ const NORMALIZE_REGEXPS = [
   [/packages\/build/g, '/packages/build'],
   [/(^|[ "'])\.{0,2}\/[^ "'\n]+/gm, '$1/file/path'],
   // CI tests show some error messages differently
-  [/\/file\/path bad option/, 'node: bad option'],
+  [/\/file\/path bad option/g, 'node: bad option'],
   // Stack traces
   [/Require stack:\n[^}]*}/g, 'STACK TRACE'],
   [/{ Error:/g, 'Error:'],
