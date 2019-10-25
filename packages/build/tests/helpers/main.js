@@ -17,7 +17,7 @@ const NORMALIZE_REGEXPS = [
   // File paths
   [/packages\/build/g, '/packages/build'],
   [/(^|[ "'])\.{0,2}\/[^ "'\n]+/gm, '$1/file/path'],
-  // MacOS specifics
+  // CI tests show some error messages differently
   [/\/file\/path bad options/, 'node: bad option'],
   // Stack traces
   [/Require stack:\n[^}]*}/g, 'STACK TRACE'],
