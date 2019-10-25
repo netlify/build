@@ -23,7 +23,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@netlify/config": "0.0.3",
+    "@netlify/config": "^0.0.5",
     "@netlify/zip-it-and-ship-it": "0.4.0-5",
     "analytics": "^0.2.5",
     "array-flat-polyfill": "^1.0.1",
