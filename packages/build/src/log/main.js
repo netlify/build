@@ -7,7 +7,7 @@ const telemetry = require('../utils/telemetry')
 const { version } = require('../../package.json')
 
 const { log } = require('./logger')
-const { cleanStack } = require('./stack')
+const { cleanStacks } = require('./stack.js')
 
 // eslint-disable-next-line import/order
 const { greenBright, cyanBright, redBright, yellowBright, bold, white } = require('chalk')
@@ -141,14 +141,9 @@ const logCommandStart = function(cmd) {
 }
 
 const logCommandError = function(id, hook, error) {
+  log()
   log(redBright(`Error in "${hook}" step from "${id}"`))
-  log()
-  log(redBright('Error message\n'))
   log(error.message)
-  // TODO: enable once we stop use piping child processes to parent process
-  // with `pipe()`
-  // log(error.stderr)
-  log()
 }
 
 const logInstructionSuccess = function() {
@@ -180,36 +175,26 @@ const logTomlWrite = function(tomlPath, toml) {
   log(`TOML file written to ${tomlPath}`)
 }
 
-const logInstructionsError = function() {
+const logErrorInstructions = function() {
   log()
   log(redBright.bold('┌─────────────────────┐'))
   log(redBright.bold('│  Lifecycle Error!   │'))
   log(redBright.bold('└─────────────────────┘'))
-}
-
-const logErrorInstructions = function() {
   log()
   log(cyanBright('Running onError methods'))
 }
 
-const logBuildError = function(error, { verbose }) {
+const logBuildError = function(error) {
+  log()
   log(redBright.bold('┌─────────────────────────────┐'))
   log(redBright.bold('│    Netlify Build Error!     │'))
   log(redBright.bold('└─────────────────────────────┘'))
-  log(bold(` ${error.message}`))
-  log()
-  log(yellowBright.bold('┌─────────────────────────────┐'))
-  log(yellowBright.bold('│      Error Stack Trace      │'))
-  log(yellowBright.bold('└─────────────────────────────┘'))
 
-  if (verbose) {
-    log(error.stack)
+  if (error.all) {
+    log(cleanStacks(`${error.message}\n\n${error.all}`))
   } else {
-    log(` ${bold(cleanStack(error.stack))}`)
-    log()
-    log(` Use the --verbose option for deep traces`)
+    log(`\n${error.stack}`)
   }
-
   log()
 }
 
@@ -252,7 +237,6 @@ module.exports = {
   logTimer,
   logManifest,
   logTomlWrite,
-  logInstructionsError,
   logErrorInstructions,
   logBuildError,
   logBuildSuccess,

@@ -1,88 +1,46 @@
-const {
-  env: { DEBUG_BUILD },
-} = require('process')
+const { cwd } = require('process')
 
-const StackUtils = require('stack-utils')
-const cleanStackLib = require('clean-stack')
+const cleanStack = require('clean-stack')
+const stripAnsi = require('strip-ansi')
 
-/*
- * Given a string value of the format generated for the `stack` property of a
- * V8 error object, return a string that contains only stack frame information
- * for frames that have relevance to the consumer.
- *
- * For example, given the following string value:
- *
- * ```
- * Error
- *     at inner (/home/ava/ex.js:7:12)
- *     at /home/ava/ex.js:12:5
- *     at outer (/home/ava/ex.js:13:4)
- *     at Object.<anonymous> (/home/ava/ex.js:14:3)
- *     at Module._compile (module.js:570:32)
- *     at Object.Module._extensions..js (module.js:579:10)
- *     at Module.load (module.js:487:32)
- *     at tryModuleLoad (module.js:446:12)
- *     at Function.Module._load (module.js:438:3)
- *     at Module.runMain (module.js:604:10)
- * ```
- *
- * ...this function returns the following string value:
- *
- * ```
- * inner (/home/ava/ex.js:7:12)
- * /home/ava/ex.js:12:5
- * outer (/home/ava/ex.js:13:4)
- * Object.<anonymous> (/home/ava/ex.js:14:3)
- * ```
- */
-const cleanStack = function(stack) {
-  const stackA = extractFrames(stack)
-  // Workaround for https://github.com/tapjs/stack-utils/issues/14
-  // TODO: fix it in `stack-utils`
-  const stackB = cleanStackLib(stackA)
-
-  return (
-    stackUtils
-      .clean(stackB)
-      // Remove the trailing newline inserted by the `stack-utils` module
-      .trim()
-      .split('\n')
-      .map(removeFilePrefix)
-      .join('\n')
-  )
+// Clean stack traces:
+//  - remove our internal code, e.g. the logic spawning plugins
+//  - remove node modules and Node.js internals
+//  - strip process.cwd()
+//  - remove colors
+// Keep non stack trace lines as is.
+// We do not use libraries that patch `Error.prepareStackTrace()` because they
+// tend to create issues.
+const cleanStacks = function(string) {
+  return string.split('\n').reduce(cleanStackLine, '')
 }
 
-const extractFrames = function(stack) {
-  return stack
-    .split('\n')
-    .map(trimLine)
-    .filter(isFrame)
-    .join('\n')
+const cleanStackLine = function(lines, line) {
+  const lineA = line.replace(`${cwd()}/`, '')
+  const lineB = stripAnsi(lineA)
+
+  if (!STACK_LINE_REGEXP.test(lineB)) {
+    return `${lines}\n${lineA}`
+  }
+
+  if (isInternalStack(lineB)) {
+    return lines
+  }
+
+  const lineC = cleanStack(lineB)
+
+  if (lineC === '') {
+    return lines
+  }
+
+  return `${lines}\n${lineC}`
 }
 
-const trimLine = function(line) {
-  return line.trim()
+// Check if a line is part of a stack trace
+const STACK_LINE_REGEXP = /^\s+at /
+
+const isInternalStack = function(line) {
+  return line.includes('build/src/plugins/child/')
 }
 
-const isFrame = function(line) {
-  return STACK_FRAME_LINE_REGEXP.test(line)
-}
-
-const STACK_FRAME_LINE_REGEXP = /^.+( \(.+:\d+:\d+\)|:\d+:\d+)$/
-
-const getStackUtils = function() {
-  const options = DEBUG_BUILD ? { internals: StackUtils.nodeInternals() } : {}
-  return new StackUtils(options)
-}
-
-const stackUtils = getStackUtils()
-
-// Remove remaining file:// prefixes, inserted by `esm`, that are not cleaned
-// up by `stack-utils`
-const removeFilePrefix = function(line) {
-  return line.replace(FILE_PREFIX_REGEXP, '($1)')
-}
-
-const FILE_PREFIX_REGEXP = /\(file:\/\/([^/].+:\d+:\d+)\)$/
-
-module.exports = { cleanStack }
+module.exports = { cleanStacks }

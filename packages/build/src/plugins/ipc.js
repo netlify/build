@@ -5,7 +5,7 @@ const { write } = require('fs')
 const execa = require('execa')
 const getStream = require('get-stream')
 
-const { streamProcessOutput, writeProcessOutput, writeProcessError } = require('../log/stream')
+const { getOutputStream, writeProcessOutput, writeProcessError } = require('../log/stream')
 
 const CHILD_MAIN_PATH = `${__dirname}/child/main.js`
 
@@ -29,7 +29,7 @@ const executePlugin = async function(eventName, message, { baseDir }) {
     preferLocal: true,
     all: true,
   })
-  const all = streamProcessOutput(childProcess)
+  const all = getOutputStream(childProcess)
 
   try {
     const [output, responseString] = await Promise.all([
@@ -43,15 +43,10 @@ const executePlugin = async function(eventName, message, { baseDir }) {
     return { response, output }
   } catch (error) {
     writeProcessError(error)
-    error.message = fixPluginError(error)
+    // Fix the error message produced by Execa
+    error.message = error.message.replace(NODE_ARGS_REGEXP, '')
     throw error
   }
-}
-
-// Fix the error message produced by Execa
-const fixPluginError = function({ message, stderr }) {
-  const messageA = message.replace(NODE_ARGS_REGEXP, '')
-  return `${messageA}\n${stderr}`
 }
 
 // We don't want to report `process.argv` as it's not useful and might contain
