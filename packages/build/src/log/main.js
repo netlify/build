@@ -190,8 +190,8 @@ const logBuildError = function(error) {
   log(redBright.bold('│    Netlify Build Error!     │'))
   log(redBright.bold('└─────────────────────────────┘'))
 
-  if (error.all) {
-    log(cleanStacks(`${error.message}\n\n${error.all}`))
+  if (error.all !== undefined) {
+    log(cleanStacks(`${error.message}\n\n${error.all}`.trim()))
   } else {
     log(`\n${error.stack}`)
   }
