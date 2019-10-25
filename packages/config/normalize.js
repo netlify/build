@@ -2,15 +2,8 @@ const mapObj = require('map-obj')
 
 // Normalize configuration object
 const normalizeConfig = function(config) {
-  console.log('Debug', process.env.DEBUG)
-  if (process.env.DEBUG) {
-    console.log('Raw config', config)
-  }
   const configA = { ...DEFAULT_CONFIG, ...config }
   const configB = normalizeLifecycles({ config: configA })
-  if (process.env.DEBUG) {
-    console.log('Normalized config', configB)
-  }
   return configB
 }
 
