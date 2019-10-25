@@ -7,7 +7,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macOS-latest, windows-latest]
-        node: [8.3.0, 10, 12]
+        node: [8.3.0, 10, 12, 13]
       fail-fast: false
     runs-on: ${{matrix.os}}
     steps:
@@ -32,10 +32,10 @@ jobs:
     steps:
       - name: Git checkout
         uses: actions/checkout@v1
-      - name: Node.js 12
+      - name: Node.js 13
         uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node-version: 13
       - name: Coveralls finished
         uses: coverallsapp/github-action@master
         with:
