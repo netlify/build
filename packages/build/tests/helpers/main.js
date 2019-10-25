@@ -1,4 +1,5 @@
 const stripAnsi = require('strip-ansi')
+const { tick, pointer, arrowDown } = require('figures')
 
 // Normalize log output so it can be snapshot consistently across test runs
 const normalizeOutput = function(output) {
@@ -14,6 +15,10 @@ const NORMALIZE_REGEXPS = [
   // Windows specifics
   [/\r\n/gu, '\n'],
   [/\\/gu, '/'],
+  [/[A-Z]:\//g, '/'],
+  [tick, '√'],
+  [pointer, '>'],
+  [arrowDown, '↓'],
   // File paths
   [/packages\/build/g, '/packages/build'],
   [/(^|[ "'])\.{0,2}\/[^ "'\n]+/gm, '$1/file/path'],
