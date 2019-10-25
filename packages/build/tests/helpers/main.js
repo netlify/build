@@ -16,9 +16,9 @@ const NORMALIZE_REGEXPS = [
   [/\r\n/gu, '\n'],
   [/\\/gu, '/'],
   [/[A-Z]:\//g, '/'],
-  [tick, '√'],
-  [pointer, '>'],
-  [arrowDown, '↓'],
+  [new RegExp(tick, 'g'), '√'],
+  [new RegExp(pointer, 'g'), '>'],
+  [new RegExp(arrowDown, 'g'), '↓'],
   // File paths
   [/packages\/build/g, '/packages/build'],
   [/(^|[ "'])\.{0,2}\/[^ "'\n]+/gm, '$1/file/path'],
