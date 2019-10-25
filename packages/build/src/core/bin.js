@@ -50,7 +50,7 @@ Default: false`,
   },
 }
 
-const USAGE = `$0 [OPTIONS...]
+const USAGE = `netlify-build [OPTIONS...]
 
 Run Netlify Build system locally.
 

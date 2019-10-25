@@ -1,5 +1,6 @@
 const test = function() {
-  throw new Error('test')
+  console.log(new Error('test'))
+  process.exit(2)
 }
 
 test()

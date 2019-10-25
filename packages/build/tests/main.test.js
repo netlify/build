@@ -1,3 +1,5 @@
+const { platform } = require('process')
+
 const test = require('ava')
 const execa = require('execa')
 const del = require('del')
@@ -8,14 +10,6 @@ const { normalizeOutput } = require('./helpers/main.js')
 
 const BINARY_PATH = `${__dirname}/../src/core/bin.js`
 const FIXTURES_DIR = `${__dirname}/fixtures`
-
-test('Smoke test', async t => {
-  const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/smoke/netlify.yml`, {
-    all: true,
-    reject: false,
-  })
-  t.snapshot(normalizeOutput(all))
-})
 
 test('Empty configuration', async t => {
   const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/empty/netlify.yml`, {
@@ -166,15 +160,18 @@ test('Install local plugin dependencies: with npm', async t => {
   await del(`${FIXTURES_DIR}/plugin_deps/plugin/node_modules`)
 })
 
-test('Install local plugin dependencies: with yarn', async t => {
-  const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/plugin_deps_yarn/netlify.yml`, {
-    all: true,
-    reject: false,
-  })
-  t.snapshot(normalizeOutput(all))
+// This test does not work on Windows when run inside Ava
+if (platform !== 'win32') {
+  test('Install local plugin dependencies: with yarn', async t => {
+    const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/plugin_deps_yarn/netlify.yml`, {
+      all: true,
+      reject: false,
+    })
+    t.snapshot(normalizeOutput(all))
 
-  await del(`${FIXTURES_DIR}/plugin_deps_yarn/plugin/node_modules`)
-})
+    await del(`${FIXTURES_DIR}/plugin_deps_yarn/plugin/node_modules`)
+  })
+}
 
 test('Install local plugin dependencies: propagate errors', async t => {
   const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/plugin_deps_error/netlify.yml`, {
