@@ -64,6 +64,7 @@
     "atob": "^2.1.2",
     "ava": "^2.4.0",
     "get-bin-path": "^4.0.0",
+    "log-process-errors": "^5.0.2",
     "markdown-magic": "^0.1.25",
     "yarn": "^1.19.1"
   },

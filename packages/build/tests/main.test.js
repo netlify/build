@@ -1,3 +1,5 @@
+require('log-process-errors/build/register/ava')
+
 const { platform } = require('process')
 
 const test = require('ava')
