@@ -1,3 +1,4 @@
+const { execPath } = require('process')
 const { serialize, deserialize } = require('v8')
 const { promisify } = require('util')
 const { write } = require('fs')
@@ -23,7 +24,10 @@ const pWrite = promisify(write)
 const executePlugin = async function(eventName, message, { baseDir }) {
   const messageString = serializeMessage(message)
 
-  const childProcess = execa('node', [CHILD_MAIN_PATH, eventName, messageString], {
+  // `process.execPath` is 'node'.
+  // See https://github.com/netlify/build/issues/387 for explanations on why
+  // we need this instead of simply using 'node'.
+  const childProcess = execa(execPath, [CHILD_MAIN_PATH, eventName, messageString], {
     cwd: baseDir,
     stdio: ['ignore', 'pipe', 'pipe', 'pipe'],
     preferLocal: true,
@@ -51,7 +55,7 @@ const executePlugin = async function(eventName, message, { baseDir }) {
 
 // We don't want to report `process.argv` as it's not useful and might contain
 // confidential information (such as the API token)
-const NODE_ARGS_REGEXP = /: node .*/
+const NODE_ARGS_REGEXP = /: .*/
 
 // Retrieve information passed from parent process to plugin child process
 const getMessageFromParent = function() {
