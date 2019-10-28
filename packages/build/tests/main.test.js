@@ -3,12 +3,13 @@ const { platform } = require('process')
 const test = require('ava')
 const execa = require('execa')
 const del = require('del')
+const { getBinPathSync } = require('get-bin-path')
 
 const { version } = require('../package.json')
 
 const { normalizeOutput } = require('./helpers/main.js')
 
-const BINARY_PATH = `${__dirname}/../src/core/bin.js`
+const BINARY_PATH = getBinPathSync({ cwd: __dirname })
 const FIXTURES_DIR = `${__dirname}/fixtures`
 
 test('Empty configuration', async t => {
