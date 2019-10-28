@@ -41,7 +41,7 @@ Command line options and/or configuration file, if any.
 Enter the following command in a terminal and copy/paste its output:
 
 ```bash
-npx envinfo --system --binaries --npmPackages @netlify/build @netlify/config netlify-cli
+npx envinfo --system --binaries --npmPackages @netlify/build,@netlify/config,netlify-cli
 ```
 
 **Screenshots**
