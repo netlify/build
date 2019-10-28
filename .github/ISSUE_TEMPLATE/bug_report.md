@@ -8,9 +8,8 @@ assignees: ''
 
 Thanks for reporting this bug!
 
-If this is related to a typo or the documentation being unclear, please click on
-the relevant page's `Edit` button (pencil icon) and suggest a correction
-instead.
+If this is related to a typo or the documentation being unclear, please click on the relevant page's `Edit` button
+(pencil icon) and suggest a correction instead.
 
 Please search other issues to make sure this bug has not already been reported.
 
@@ -53,5 +52,5 @@ If applicable, add screenshots to help explain your problem.
 
 Yes/No.
 
-Pull requests are welcome! If you would like to help us fix this bug, please
-check our [contributions guidelines](../blob/master/CONTRIBUTING.md).
+Pull requests are welcome! If you would like to help us fix this bug, please check our
+[contributions guidelines](../blob/master/CONTRIBUTING.md).
