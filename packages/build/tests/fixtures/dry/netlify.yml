@@ -1,0 +1,6 @@
+build:
+  functions: functions
+  lifecycle:
+    build: echo test
+plugins:
+  - type: ./plugin
