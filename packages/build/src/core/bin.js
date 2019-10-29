@@ -32,6 +32,11 @@ const OPTIONS = {
 Defaults to any netlify.yml, netlify.toml, netlify.json or netlify.js file in
 the current directory or any parent directory`,
   },
+  cwd: {
+    string: true,
+    describe: `Current directory. Used to retrieve the configuration file.
+Default: current directory`,
+  },
   token: {
     string: true,
     describe: `Netlify API token for authentication.

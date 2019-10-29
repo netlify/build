@@ -1,6 +1,7 @@
 require('log-process-errors/build/register/ava')
 
-const { platform } = require('process')
+const { platform, cwd } = require('process')
+const { relative } = require('path')
 
 const test = require('ava')
 const execa = require('execa')
@@ -22,7 +23,16 @@ test('Empty configuration', async t => {
   t.snapshot(normalizeOutput(all))
 })
 
-test('--config', async t => {
+test('No --config', async t => {
+  const { all } = await execa.command(`${BINARY_PATH}`, {
+    all: true,
+    reject: false,
+    cwd: `${FIXTURES_DIR}/empty`,
+  })
+  t.snapshot(normalizeOutput(all))
+})
+
+test('--config with an absolute path', async t => {
   const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/empty/netlify.yml`, {
     all: true,
     reject: false,
@@ -30,8 +40,78 @@ test('--config', async t => {
   t.snapshot(normalizeOutput(all))
 })
 
-test('--config with an invalid path', async t => {
+test('--config with a relative path', async t => {
+  const fixtureDir = relative(cwd(), FIXTURES_DIR)
+  const { all } = await execa.command(`${BINARY_PATH} --config ${fixtureDir}/empty/netlify.yml`, {
+    all: true,
+    reject: false,
+  })
+  t.snapshot(normalizeOutput(all))
+})
+
+test('--config with an invalid relative path', async t => {
   const { all } = await execa.command(`${BINARY_PATH} --config invalid`, { all: true, reject: false })
+  t.snapshot(normalizeOutput(all))
+})
+
+test('--config with a Node module', async t => {
+  const { all } = await execa.command(`${BINARY_PATH} --config netlify-config-test`, {
+    all: true,
+    reject: false,
+    cwd: `${FIXTURES_DIR}/config_module`,
+  })
+  t.snapshot(normalizeOutput(all))
+})
+
+test('--config with an invalid Node module', async t => {
+  const { all } = await execa.command(`${BINARY_PATH} --config invalid`, {
+    all: true,
+    reject: false,
+    cwd: `${FIXTURES_DIR}/config_module`,
+  })
+  t.snapshot(normalizeOutput(all))
+})
+
+test('--config with a scoped Node module', async t => {
+  const { all } = await execa.command(`${BINARY_PATH} --config @netlify/config-test`, {
+    all: true,
+    reject: false,
+    cwd: `${FIXTURES_DIR}/config_module`,
+  })
+  t.snapshot(normalizeOutput(all))
+})
+
+test('--config with an invalid scoped Node module', async t => {
+  const { all } = await execa.command(`${BINARY_PATH} --config @netlify/invalid`, {
+    all: true,
+    reject: false,
+    cwd: `${FIXTURES_DIR}/config_module`,
+  })
+  t.snapshot(normalizeOutput(all))
+})
+
+test('--cwd with no config', async t => {
+  const { all } = await execa.command(`${BINARY_PATH} --cwd ${FIXTURES_DIR}/empty`, {
+    all: true,
+    reject: false,
+  })
+  t.snapshot(normalizeOutput(all))
+})
+
+test('--cwd with a relative path config', async t => {
+  const fixtureDir = relative(cwd(), FIXTURES_DIR)
+  const { all } = await execa.command(`${BINARY_PATH} --cwd ${fixtureDir} --config empty/netlify.yml`, {
+    all: true,
+    reject: false,
+  })
+  t.snapshot(normalizeOutput(all))
+})
+
+test('--cwd with a Node module config', async t => {
+  const { all } = await execa.command(
+    `${BINARY_PATH} --config netlify-config-test --cwd ${FIXTURES_DIR}/config_module`,
+    { all: true, reject: false },
+  )
   t.snapshot(normalizeOutput(all))
 })
 

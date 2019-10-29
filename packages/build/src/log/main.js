@@ -22,7 +22,7 @@ const logBuildStart = function() {
 }
 
 const logOptions = function(options) {
-  const opts = omit(options, ['token', 'dry'])
+  const opts = omit(options, ['token', 'dry', 'cwd'])
   if (Object.keys(opts).length) {
     log(cyanBright.bold('Options'))
     log(' ', opts)
