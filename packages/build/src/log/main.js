@@ -58,60 +58,60 @@ const logLifeCycleStart = function(instructions) {
   log(`${SUBTEXT_PADDING}Found ${instructions.length} ${stepsWord}. Lets do this!`)
 }
 
-const logDryRunStart = function() {
-  log()
-  log(cyanBright.bold(`${HEADING_PREFIX} Netlify Build Steps`))
-  log(`${SUBTEXT_PADDING}For more information on build lifecycles see the docs https://github.com/netlify/build`)
-  log()
-  log(`${SUBTEXT_PADDING}Running \`netlify build\` will execute this build flow`)
-  log()
+const logDryRunStart = function(hookWidth, length) {
+  const columnWidth = getDryColumnWidth(hookWidth, length)
+  const line = '─'.repeat(columnWidth)
+  const secondLine = '─'.repeat(columnWidth)
+
+  log(`
+${cyanBright.bold(`${HEADING_PREFIX} Netlify Build Steps`)}
+${SUBTEXT_PADDING}For more information on build lifecycles see the docs https://github.com/netlify/build
+
+${SUBTEXT_PADDING}Running \`netlify build\` will execute this build flow
+
+${bold(`${SUBTEXT_PADDING}┌─${line}─┬─${secondLine}─┐
+${SUBTEXT_PADDING}│ ${DRY_HEADER_NAMES[0].padEnd(columnWidth)} │ ${DRY_HEADER_NAMES[1].padEnd(columnWidth)} │
+${SUBTEXT_PADDING}└─${line}─┴─${secondLine}─┘`)}`)
 }
 
-const logDryRunInstruction = function({
-  instruction: { id, hook, type, core },
-  index,
-  configPath,
-  width,
-  buildInstructions,
-}) {
-  const countText = `${index + 1}.`
-  const count = cyanBright(countText)
-  const boxOffset = buildInstructions.length.toString().length + 4
-  const textOffset = countText.length + 3
-  const boxWidth = width + boxOffset
-  const line = '─'.repeat(boxWidth)
-  const secondLine = '─'.repeat(boxWidth + 5)
-  if (index === 0) {
-    log(bold(`${SUBTEXT_PADDING}┌─${line}─┬─${secondLine}─`))
-    log(bold(`${SUBTEXT_PADDING}│ ${'Lifecycle Hook'.padEnd(boxWidth)} │   ${'Location'.padEnd(boxWidth)}`))
-    log(bold(`${SUBTEXT_PADDING}└─${line}─┴─${secondLine}─`))
-  }
+const logDryRunInstruction = function({ instruction: { id, hook, type, core }, index, configPath, hookWidth, length }) {
+  const columnWidth = getDryColumnWidth(hookWidth, length)
+  const line = '─'.repeat(columnWidth)
+  const countText = `${index + 1}. `
+  const downArrow = length === index + 1 ? '  ' : ` ${arrowDown}`
+  const hookNameWidth = columnWidth - countText.length - downArrow.length
+  const location = getPluginLocation({ id, type, core, configPath })
 
-  const linePrefix = id.startsWith('config.build')
-    ? `Config ${cyanBright(basename(configPath))} ${yellowBright(id.replace('config.', ''))}`
-    : `Plugin`
-
-  let msg
-  if (id.startsWith('config.build')) {
-    //  in ${basename(configPath)}
-    msg = `${white(linePrefix)}`
-  } else if (core) {
-    msg = `${white(linePrefix)} ${yellowBright(id)} in build core`
-  } else {
-    msg = `${white(linePrefix)} ${id} ${yellowBright(type)}`
-  }
-
-  // const locationText = type ? `${location}` : ''
-  const showArrow = buildInstructions.length === index + 1 ? ' ' : arrowDown
-  log(cyanBright.bold(`${SUBTEXT_PADDING}┌─${line}─┐ `))
-  log(cyanBright.bold(`${SUBTEXT_PADDING}│ ${count} ${hook.padEnd(boxWidth - textOffset)} ${showArrow} │  ${msg}`))
-  log(cyanBright.bold(`${SUBTEXT_PADDING}└─${line}─┘ `))
+  log(
+    cyanBright.bold(`${SUBTEXT_PADDING}┌─${line}─┐
+${SUBTEXT_PADDING}│ ${cyanBright(countText)}${hook.padEnd(hookNameWidth)}${downArrow} │ ${location}
+${SUBTEXT_PADDING}└─${line}─┘ `),
+  )
 }
+
+const getPluginLocation = function({ id, type, core, configPath }) {
+  if (id.startsWith('config.')) {
+    return `${white('Config')} ${cyanBright(basename(configPath))} ${yellowBright(id.replace('config.', ''))}`
+  }
+
+  if (core) {
+    return `${white('Plugin')} ${yellowBright(id)} in build core`
+  }
+
+  return `${white('Plugin')} ${id} ${yellowBright(type)}`
+}
+
+const getDryColumnWidth = function(hookWidth, length) {
+  const symbolsWidth = `${length}`.length + 4
+  return Math.max(hookWidth + symbolsWidth, DRY_HEADER_NAMES[0].length)
+}
+
+const DRY_HEADER_NAMES = ['Lifecycle Hook', 'Location']
 
 const logDryRunEnd = function() {
-  log()
-  log(`${SUBTEXT_PADDING}If this looks good to you, run \`netlify build\` to execute the build`)
-  log()
+  log(`
+${SUBTEXT_PADDING}If this looks good to you, run \`netlify build\` to execute the build
+`)
 }
 
 const logInstruction = function({ hook, id, override }, { index, configPath, error }) {
