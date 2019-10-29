@@ -363,3 +363,27 @@ test('Print stack trace of validation errors', async t => {
   })
   t.snapshot(normalizeOutput(all))
 })
+
+test('--dry with 0 hooks', async t => {
+  const { all } = await execa.command(`${BINARY_PATH} --dry --config ${FIXTURES_DIR}/dry_empty/netlify.yml`, {
+    all: true,
+    reject: false,
+  })
+  t.snapshot(normalizeOutput(all))
+})
+
+test('--dry with 1 hook', async t => {
+  const { all } = await execa.command(`${BINARY_PATH} --dry --config ${FIXTURES_DIR}/dry_single/netlify.yml`, {
+    all: true,
+    reject: false,
+  })
+  t.snapshot(normalizeOutput(all))
+})
+
+test('--dry with several hooks', async t => {
+  const { all } = await execa.command(`${BINARY_PATH} --dry --config ${FIXTURES_DIR}/dry/netlify.yml`, {
+    all: true,
+    reject: false,
+  })
+  t.snapshot(normalizeOutput(all))
+})
