@@ -4,8 +4,6 @@ require('../utils/polyfills')
 const { setColorLevel } = require('../log/colors')
 setColorLevel()
 
-const { exit } = require('process')
-
 const resolveConfig = require('@netlify/config')
 const { getConfigPath } = require('@netlify/config')
 
@@ -55,10 +53,10 @@ const build = async function(options) {
 
     const { buildInstructions, errorInstructions } = getInstructions({ pluginsHooks, config })
     const instructions = buildInstructions
-    /* If the `dry` option is specified, do a dry run and exit */
+
     if (optionsA.dry) {
       doDryRun({ buildInstructions, configPath })
-      exit(0)
+      return true
     }
 
     logLifeCycleStart(buildInstructions)
