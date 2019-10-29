@@ -4,9 +4,6 @@ require('../utils/polyfills')
 const { setColorLevel } = require('../log/colors')
 setColorLevel()
 
-const resolveConfig = require('@netlify/config')
-const { getConfigPath } = require('@netlify/config')
-
 const { getPluginsOptions } = require('../plugins/options')
 const { installPlugins } = require('../plugins/install')
 const { loadPlugins } = require('../plugins/load')
@@ -85,5 +82,3 @@ const build = async function(options) {
 }
 
 module.exports = build
-module.exports.resolveConfig = resolveConfig
-module.exports.getConfigPath = getConfigPath

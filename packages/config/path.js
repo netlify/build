@@ -1,9 +1,12 @@
 const findUp = require('find-up')
+const pLocate = require('p-locate')
 
 // Retrieve path to the configuration file.
 // Lookup from `cwd` (default: current directory) to find any file named
 // `netlify.toml`, `netlify.yml`, etc.
-const getConfigPath = async function(cwd) {
+const getConfigPath = async function(cwds) {
+  const cwdsA = Array.isArray(cwds) ? cwds : [cwds]
+  const cwd = await pLocate(cwdsA, async cwd => Boolean(await findUp(FILENAMES, { cwd })))
   const configPath = await findUp(FILENAMES, { cwd })
 
   if (configPath === undefined) {
