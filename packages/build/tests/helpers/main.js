@@ -20,7 +20,7 @@ const NORMALIZE_REGEXPS = [
   [new RegExp(pointer, 'g'), '>'],
   [new RegExp(arrowDown, 'g'), '↓'],
   // File paths
-  [/packages\/build/g, '/packages/build'],
+  [/packages\/+build/g, '/packages/build'],
   [/(^|[ "'])\.{0,2}\/[^ "'\n]+/gm, '$1/file/path'],
   // CI tests show some error messages differently
   [/\/file\/path bad option/g, 'node: bad option'],
