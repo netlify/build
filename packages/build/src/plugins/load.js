@@ -3,15 +3,17 @@ const groupBy = require('group-by')
 const { logLoadPlugins, logLoadPlugin } = require('../log/main')
 
 const { isNotOverridden } = require('./override')
-const { executePlugin } = require('./ipc')
+const { sendEventToChild, getEventFromChild } = require('./ipc')
 
 // Retrieve plugin hooks for all plugins
 // Can use either a module name or a file path to the plugin.
-const loadPlugins = async function({ pluginsOptions, config, configPath, baseDir, token }) {
+const loadPlugins = async function({ pluginsOptions, childProcesses, config, configPath, baseDir, token }) {
   logLoadPlugins()
 
   const hooks = await Promise.all(
-    pluginsOptions.map(pluginOptions => loadPlugin(pluginOptions, { config, configPath, baseDir, token })),
+    pluginsOptions.map((pluginOptions, index) =>
+      loadPlugin(pluginOptions, { childProcesses, index, config, configPath, baseDir, token }),
+    ),
   )
   const hooksA = hooks
     .flat()
@@ -25,20 +27,31 @@ const loadPlugins = async function({ pluginsOptions, config, configPath, baseDir
 // Do it by executing the plugin `load` event handler.
 const loadPlugin = async function(
   { type, pluginPath, pluginConfig, id, core },
-  { config, configPath, baseDir, token },
+  { childProcesses, index, config, configPath, baseDir, token },
 ) {
   logLoadPlugin(id, type, core)
 
+  const { childProcess } = childProcesses[index]
+
   try {
-    const { response: hooks } = await executePlugin(
-      'load',
-      { id, type, pluginPath, pluginConfig, configPath, config, core },
-      { baseDir },
-    )
-    return hooks
+    await sendEventToChild(childProcess, 'load', {
+      id,
+      type,
+      pluginPath,
+      pluginConfig,
+      config,
+      configPath,
+      core,
+      baseDir,
+      token,
+    })
+    const { payload: hooks } = await getEventFromChild(childProcess, 'load')
+    const hooksA = hooks.map(hook => ({ ...hook, childProcess }))
+    return hooksA
   } catch (error) {
     const idA = id === undefined ? type : id
     error.message = `Error loading "${idA}" plugin:\n${error.message}`
+    error.cleanStack = true
     throw error
   }
 }

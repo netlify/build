@@ -1,16 +1,15 @@
-const { redactStream, redactString } = require('./redact')
-const { cleanStacks } = require('./stack')
+const { stdout, stderr } = require('process')
 
-const getOutputStream = function(childProcess) {
-  return redactStream(childProcess.all)
+// Start streaming command or plugin hook output
+const pipeOutput = function(childProcess) {
+  childProcess.stdout.pipe(stdout)
+  childProcess.stderr.pipe(stderr)
 }
 
-const writeProcessOutput = function(output) {
-  process.stdout.write(output)
+// Stop streaming command or plugin hook output
+const unpipeOutput = function(childProcess) {
+  childProcess.stdout.unpipe(stdout)
+  childProcess.stderr.unpipe(stderr)
 }
 
-const writeProcessError = function(error) {
-  process.stdout.write(`${redactString(cleanStacks(error.all))}\n`)
-}
-
-module.exports = { getOutputStream, writeProcessOutput, writeProcessError }
+module.exports = { pipeOutput, unpipeOutput }

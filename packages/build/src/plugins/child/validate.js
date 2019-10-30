@@ -20,7 +20,7 @@ const validatePlugin = function(logic) {
 const validateRequiredProperties = function(logic) {
   // TODO: remove this after beta testing is done
   if (logic.name === undefined) {
-    console.warn(NAME_BETA_ERROR)
+    throw new Error(NAME_BETA_ERROR)
   }
 
   REQUIRED_PROPERTIES.forEach(propName => validateRequiredProperty(logic, propName))

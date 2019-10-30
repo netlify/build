@@ -140,12 +140,6 @@ const logCommandStart = function(cmd) {
   log(`${yellowBright(`Running command "${cmd}"`)}`)
 }
 
-const logCommandError = function(id, hook, error) {
-  log()
-  log(redBright(`Error in "${hook}" step from "${id}"`))
-  log(error.message)
-}
-
 const logInstructionSuccess = function() {
   log()
 }
@@ -156,15 +150,6 @@ const logTimer = function(durationMs, hook, id) {
   const idB = idA.startsWith('build.lifecycle') ? 'build.lifecycle' : idA
 
   log(` ${greenBright(tick)}  ${greenBright.bold(idB)}${hookA} completed in ${durationMs}ms`)
-}
-
-const logManifest = function(manifest) {
-  if (Object.keys(manifest).length === 0) {
-    return
-  }
-
-  log('Manifest:')
-  log(manifest)
 }
 
 const logTomlWrite = function(tomlPath, toml) {
@@ -190,8 +175,8 @@ const logBuildError = function(error) {
   log(redBright.bold('│    Netlify Build Error!     │'))
   log(redBright.bold('└─────────────────────────────┘'))
 
-  if (error.all !== undefined) {
-    log(cleanStacks(`${error.message}\n\n${error.all}`.trim()))
+  if (error.cleanStack) {
+    log(cleanStacks(error.message))
   } else {
     log(`\n${error.stack}`)
   }
@@ -206,13 +191,13 @@ const logBuildSuccess = function() {
   log()
 }
 
-const logBuildEnd = function({ instructions, config, duration }) {
+const logBuildEnd = function({ buildInstructions, config, duration }) {
   const sparkles = cyanBright('(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧')
   log(`\n${sparkles} Have a nice day!\n`)
   const plugins = Object.values(config.plugins).map(({ type }) => type)
   // telemetry noOps if BUILD_TELEMETRY_DISBALED set
   telemetry.track('buildComplete', {
-    steps: instructions.length,
+    steps: buildInstructions.length,
     duration,
     pluginCount: plugins.length,
     plugins,
@@ -232,10 +217,8 @@ module.exports = {
   logDryRunEnd,
   logInstruction,
   logCommandStart,
-  logCommandError,
   logInstructionSuccess,
   logTimer,
-  logManifest,
   logTomlWrite,
   logErrorInstructions,
   logBuildError,
