@@ -11,7 +11,7 @@ const {
   logInstructionSuccess,
 } = require('../log/main')
 const { startTimer, endTimer } = require('../log/timer')
-const { pipeOutput, unpipeOutput } = require('../log/stream')
+const { startOutput, stopOutput } = require('../log/stream')
 
 const { LIFECYCLE } = require('./lifecycle')
 
@@ -114,7 +114,8 @@ const execCommand = async function({ hook, command, baseDir }) {
   logCommandStart(command)
 
   const childProcess = execa(command, { shell: true, cwd: baseDir, preferLocal: true })
-  pipeOutput(childProcess)
+  const chunks = []
+  startOutput(childProcess, chunks)
 
   try {
     await childProcess
@@ -123,13 +124,14 @@ const execCommand = async function({ hook, command, baseDir }) {
     error.cleanStack = true
     throw error
   } finally {
-    unpipeOutput(childProcess)
+    stopOutput(childProcess, chunks)
   }
 }
 
 // Fire a plugin hook method
 const firePluginHook = async function({ id, childProcess, hook, hookName }, { config, token, baseDir, error }) {
-  pipeOutput(childProcess)
+  const chunks = []
+  startOutput(childProcess, chunks)
 
   try {
     await sendEventToChild(childProcess, 'run', { hookName, error })
@@ -139,7 +141,7 @@ const firePluginHook = async function({ id, childProcess, hook, hookName }, { co
     error.cleanStack = true
     throw error
   } finally {
-    unpipeOutput(childProcess)
+    stopOutput(childProcess, chunks)
   }
 }
 
