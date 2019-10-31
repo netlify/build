@@ -11,21 +11,19 @@ running things after your site build has completed.
 ## Available Lifecycle Hooks
 
 <!-- AUTO-GENERATED-CONTENT:START (LIFECYCLE_TABLE:noAnchors=true) -->
-
-| Lifecycle hook                               | Description                                 |
-| :------------------------------------------- | :------------------------------------------ |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **init** ‏‏‎ ‏‏‎ ‏‏‎           | Runs before anything else                   |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **getCache** ‏‏‎ ‏‏‎ ‏‏‎       | Fetch previous build cache                  |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **install** ‏‏‎ ‏‏‎ ‏‏‎        | Install project dependencies                |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **preBuild** ‏‏‎ ‏‏‎ ‏‏‎       | Runs before functions & build commands run  |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **functionsBuild** ‏‏‎ ‏‏‎ ‏‏‎ | Build the serverless functions              |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **build** ‏‏‎ ‏‏‎ ‏‏‎          | Build commands are executed                 |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **postBuild** ‏‏‎ ‏‏‎ ‏‏‎      | Runs after site & functions have been built |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **package** ‏‏‎ ‏‏‎ ‏‏‎        | Package & optimize artifact                 |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **preDeploy** ‏‏‎ ‏‏‎ ‏‏‎      | Runs before built artifacts are deployed    |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **saveCache** ‏‏‎ ‏‏‎ ‏‏‎      | Save cached assets                          |
-| 🎉 ‏‏‎ **finally** ‏‏‎ ‏‏‎ ‏‏‎               | Runs after anything else                    |
-
+| Lifecycle hook | Description |
+|:------|:-------|
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **init** ‏‏‎  ‏‏‎  ‏‏‎  | Runs before anything else |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **getCache** ‏‏‎  ‏‏‎  ‏‏‎  | Fetch previous build cache |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **install** ‏‏‎  ‏‏‎  ‏‏‎  | Install project dependencies |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **preBuild** ‏‏‎  ‏‏‎  ‏‏‎  | Runs before functions & build commands run |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **functionsBuild** ‏‏‎  ‏‏‎  ‏‏‎  | Build the serverless functions |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **build** ‏‏‎  ‏‏‎  ‏‏‎  | Build commands are executed |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **postBuild** ‏‏‎  ‏‏‎  ‏‏‎  | Runs after site & functions have been built |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **package** ‏‏‎  ‏‏‎  ‏‏‎  | Package & optimize artifact |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **preDeploy** ‏‏‎  ‏‏‎  ‏‏‎  | Runs before built artifacts are deployed |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **saveCache** ‏‏‎  ‏‏‎  ‏‏‎  | Save cached assets |
+| 🎉 ‏‏‎ **finally** ‏‏‎  ‏‏‎  ‏‏‎  | Runs after anything else |
 <!-- AUTO-GENERATED-CONTENT:END (LIFECYCLE_TABLE) -->
 
 ## Anatomy of a plugin

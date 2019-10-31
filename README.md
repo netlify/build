@@ -15,28 +15,25 @@ Netlify build is the next generation of CI/CD tooling for modern web application
 <details>
 <summary>Expand Table of Contents</summary>
 
-- [Background](#background)
 - [How it works](#how-it-works)
-  - [1. Extending via config](#1-extending-via-config)
-  - [2. Extending via plugins](#2-extending-via-plugins)
+- [1. Extending via config](#1-extending-via-config)
+- [2. Extending via plugins](#2-extending-via-plugins)
 - [Lifecycle](#lifecycle)
-  - [lifecycle.init](#lifecycleinit)
-  - [lifecycle.getCache](#lifecyclegetcache)
-  - [lifecycle.install](#lifecycleinstall)
-  - [lifecycle.preBuild](#lifecycleprebuild)
-  - [lifecycle.functionsBuild](#lifecyclefunctionsbuild)
-  - [lifecycle.build](#lifecyclebuild)
-  - [lifecycle.postBuild](#lifecyclepostbuild)
-  - [lifecycle.package](#lifecyclepackage)
-  - [lifecycle.preDeploy](#lifecyclepredeploy)
-  - [lifecycle.saveCache](#lifecyclesavecache)
-  - [lifecycle.finally](#lifecyclefinally)
+- [lifecycle.init](#lifecycleinit)
+- [lifecycle.getCache](#lifecyclegetcache)
+- [lifecycle.install](#lifecycleinstall)
+- [lifecycle.preBuild](#lifecycleprebuild)
+- [lifecycle.functionsBuild](#lifecyclefunctionsbuild)
+- [lifecycle.build](#lifecyclebuild)
+- [lifecycle.postBuild](#lifecyclepostbuild)
+- [lifecycle.package](#lifecyclepackage)
+- [lifecycle.preDeploy](#lifecyclepredeploy)
+- [lifecycle.saveCache](#lifecyclesavecache)
+- [lifecycle.finally](#lifecyclefinally)
 - [Configuration](#configuration)
 - [Plugins](#plugins)
-  - [What can plugins do?](#what-can-plugins-do)
+- [What can plugins do?](#what-can-plugins-do)
 - [CLI commands](#cli-commands)
-- [Setting up the project](#setting-up-the-project)
-  - [Packages](#packages)
 
 </details>
 <!-- AUTO-GENERATED-CONTENT:END -->
@@ -167,7 +164,7 @@ The Lifecycle flows the events in order and executes and their `pre` & `post` co
 
 <details>
   <summary>Using init</summary>
-
+  
   <br/>
 
 **1. Using with a Plugin**
@@ -188,7 +185,8 @@ After creating the plugin, add into your Netlify config file under `plugins`
 
 ```yml
 plugins:
-  - type: ./path/to/plugin
+  myPlugin:
+    type: ./path/to/plugin
     config:
       foo: bar
 ```
@@ -210,7 +208,7 @@ build:
 
 <details>
   <summary>Using getCache</summary>
-
+  
   <br/>
 
 **1. Using with a Plugin**
@@ -231,7 +229,8 @@ After creating the plugin, add into your Netlify config file under `plugins`
 
 ```yml
 plugins:
-  - type: ./path/to/plugin
+  myPlugin:
+    type: ./path/to/plugin
     config:
       foo: bar
 ```
@@ -253,7 +252,7 @@ build:
 
 <details>
   <summary>Using install</summary>
-
+  
   <br/>
 
 **1. Using with a Plugin**
@@ -274,7 +273,8 @@ After creating the plugin, add into your Netlify config file under `plugins`
 
 ```yml
 plugins:
-  - type: ./path/to/plugin
+  myPlugin:
+    type: ./path/to/plugin
     config:
       foo: bar
 ```
@@ -296,7 +296,7 @@ build:
 
 <details>
   <summary>Using preBuild</summary>
-
+  
   <br/>
 
 **1. Using with a Plugin**
@@ -317,7 +317,8 @@ After creating the plugin, add into your Netlify config file under `plugins`
 
 ```yml
 plugins:
-  - type: ./path/to/plugin
+  myPlugin:
+    type: ./path/to/plugin
     config:
       foo: bar
 ```
@@ -339,7 +340,7 @@ build:
 
 <details>
   <summary>Using functionsBuild</summary>
-
+  
   <br/>
 
 **1. Using with a Plugin**
@@ -360,7 +361,8 @@ After creating the plugin, add into your Netlify config file under `plugins`
 
 ```yml
 plugins:
-  - type: ./path/to/plugin
+  myPlugin:
+    type: ./path/to/plugin
     config:
       foo: bar
 ```
@@ -382,7 +384,7 @@ build:
 
 <details>
   <summary>Using build</summary>
-
+  
   <br/>
 
 **1. Using with a Plugin**
@@ -403,7 +405,8 @@ After creating the plugin, add into your Netlify config file under `plugins`
 
 ```yml
 plugins:
-  - type: ./path/to/plugin
+  myPlugin:
+    type: ./path/to/plugin
     config:
       foo: bar
 ```
@@ -425,7 +428,7 @@ build:
 
 <details>
   <summary>Using postBuild</summary>
-
+  
   <br/>
 
 **1. Using with a Plugin**
@@ -446,7 +449,8 @@ After creating the plugin, add into your Netlify config file under `plugins`
 
 ```yml
 plugins:
-  - type: ./path/to/plugin
+  myPlugin:
+    type: ./path/to/plugin
     config:
       foo: bar
 ```
@@ -468,7 +472,7 @@ build:
 
 <details>
   <summary>Using package</summary>
-
+  
   <br/>
 
 **1. Using with a Plugin**
@@ -489,7 +493,8 @@ After creating the plugin, add into your Netlify config file under `plugins`
 
 ```yml
 plugins:
-  - type: ./path/to/plugin
+  myPlugin:
+    type: ./path/to/plugin
     config:
       foo: bar
 ```
@@ -511,7 +516,7 @@ build:
 
 <details>
   <summary>Using preDeploy</summary>
-
+  
   <br/>
 
 **1. Using with a Plugin**
@@ -532,7 +537,8 @@ After creating the plugin, add into your Netlify config file under `plugins`
 
 ```yml
 plugins:
-  - type: ./path/to/plugin
+  myPlugin:
+    type: ./path/to/plugin
     config:
       foo: bar
 ```
@@ -554,7 +560,7 @@ build:
 
 <details>
   <summary>Using saveCache</summary>
-
+  
   <br/>
 
 **1. Using with a Plugin**
@@ -575,7 +581,8 @@ After creating the plugin, add into your Netlify config file under `plugins`
 
 ```yml
 plugins:
-  - type: ./path/to/plugin
+  myPlugin:
+    type: ./path/to/plugin
     config:
       foo: bar
 ```
@@ -597,7 +604,7 @@ build:
 
 <details>
   <summary>Using finally</summary>
-
+  
   <br/>
 
 **1. Using with a Plugin**
@@ -618,7 +625,8 @@ After creating the plugin, add into your Netlify config file under `plugins`
 
 ```yml
 plugins:
-  - type: ./path/to/plugin
+  myPlugin:
+    type: ./path/to/plugin
     config:
       foo: bar
 ```
@@ -780,3 +788,9 @@ To execute a test run of the build locally, run the following CLI command:
 ```
 netlify build --dry
 ```
+
+## Contributors
+
+Thanks for contributing!
+
+Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for instructions on how to set up and work on this repo itself.

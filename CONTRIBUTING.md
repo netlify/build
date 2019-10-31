@@ -14,7 +14,13 @@ This project was made with ❤️. The simplest way to give back is by starring 
 Everyone is welcome regardless of personal background. We enforce a [Code of conduct](CODE_OF_CONDUCT.md) in order to
 promote a positive and inclusive environment.
 
-# Development process
+## Update Docs
+
+Docs are updated with `markdown-magic` - run `npm run docs` for it.
+
+We also run this on precommit hooks with `husky`.
+
+## Development process
 
 First fork and clone the repository. If you're not sure how to do this, please watch
 [these videos](https://egghead.io/courses/how-to-contribute-to-an-open-source-project-on-github).
@@ -31,7 +37,7 @@ Make sure everything is correctly setup with:
 npm test
 ```
 
-# Packages
+## Packages
 
 This is a monorepo. Below are a list of packages included.
 
@@ -46,10 +52,19 @@ This is a monorepo. Below are a list of packages included.
 - [@netlify/plugin-sitemap](./packages/netlify-plugin-sitemap)
   [npm link](https://www.npmjs.com/package/@netlify/plugin-sitemap).
 - [@netlify/plugin-svgoptimizer](./packages/netlify-plugin-svgoptimizer) Optimize SVG assets during the Netlify build
-  process [npm link](https://www.npmjs.com/package/netlify-build-plugin-svgoptimizer).
+  process [npm link](https://www.npmjs.com/package/@netlify/plugin-svgoptimizer).
   <!-- AUTO-GENERATED-CONTENT:END (PACKAGES) -->
 
-# Requirements
+## Examples
+
+We include some example projects as fixtures to test again. You'll have to install dependencies there too:
+
+```bash
+cd examples/example-two
+npm i
+```
+
+## Requirements
 
 Linting is performed with ESLint using the [following configuration](.eslintrc.json).
 
