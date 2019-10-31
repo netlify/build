@@ -14,4 +14,20 @@ const telemetry = Analytics({
   plugins: plugins,
 })
 
-module.exports = telemetry
+// Send telemetry request when build completes
+const trackBuildComplete = function({ buildInstructions, config, duration }) {
+  const plugins = Object.values(config.plugins).map(getPluginType)
+
+  telemetry.track('buildComplete', {
+    steps: buildInstructions.length,
+    duration,
+    pluginCount: plugins.length,
+    plugins,
+  })
+}
+
+const getPluginType = function({ type }) {
+  return type
+}
+
+module.exports = { trackBuildComplete }
