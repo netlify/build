@@ -22,6 +22,11 @@ const getColorLevel = function() {
     return env.FORCE_COLOR
   }
 
+  // In unit tests when using `PRINT` mode
+  if (env.PRINT === '1') {
+    return '1'
+  }
+
   // This also ensure colors are used in the BuildBot
   if (isNetlifyCI()) {
     return '1'

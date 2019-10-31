@@ -1,52 +1,68 @@
-const stripAnsi = require('strip-ansi')
-const { tick, pointer, arrowDown } = require('figures')
+require('log-process-errors/build/register/ava')
 
-// Normalize log output so it can be snapshot consistently across test runs
-const normalizeOutput = function(output) {
-  const outputA = stripAnsi(output)
-  return NORMALIZE_REGEXPS.reduce(replaceOutput, outputA)
+const {
+  env: { PRINT },
+} = require('process')
+
+const execa = require('execa')
+const { getBinPath } = require('get-bin-path')
+const chalk = require('chalk')
+
+const { normalizeOutput } = require('./normalize')
+
+const BINARY_PATH = getBinPath({ cwd: __dirname })
+const FIXTURES_DIR = `${__dirname}/../fixtures`
+
+// Run the netlify-build using a fixture directory, then snapshot the output.
+// CLI `flags` can be specified.
+// The `config` can be overriden.
+// Specific `execaOptions` can be specified.
+const runFixture = async function(t, fixtureName, { flags = '', config, ...execaOptions } = {}) {
+  const configFlag = getConfigFlag(config, fixtureName)
+  const binaryPath = await BINARY_PATH
+  const { all, exitCode } = await execa.command(`${binaryPath} ${configFlag} ${flags}`, {
+    all: true,
+    reject: false,
+    ...execaOptions,
+  })
+
+  doTestAction(t, all)
+
+  return { all, exitCode }
 }
 
-const replaceOutput = function(output, [regExp, replacement]) {
-  return output.replace(regExp, replacement)
+// The `config` flag can be overriden, but defaults to the `netlify.yml` inside
+// the fixture directory
+const getConfigFlag = function(config, fixtureName) {
+  if (config === undefined) {
+    return `--config ${FIXTURES_DIR}/${fixtureName}/netlify.yml`
+  }
+
+  if (config === false) {
+    return ''
+  }
+
+  return `--config ${config}`
 }
 
-const NORMALIZE_REGEXPS = [
-  // Windows specifics
-  [/\r\n/gu, '\n'],
-  [/\\/gu, '/'],
-  [/[A-Z]:\//g, '/'],
-  [new RegExp(tick, 'g'), '√'],
-  [new RegExp(pointer, 'g'), '>'],
-  [new RegExp(arrowDown, 'g'), '↓'],
-  // File paths
-  [/packages\/+build/g, '/packages/build'],
-  [/(^|[ "'])\.{0,2}\/[^ "'\n]+/gm, '$1/file/path'],
-  // CI tests show some error messages differently
-  [/\/file\/path bad option/g, 'node: bad option'],
-  // Stack traces
-  [/Require stack:\n[^}]*}/g, 'STACK TRACE'],
-  [/Require stack:\n(- \/file\/path\n)+/g, 'STACK TRACE'],
-  [/{ Error:/g, 'Error:'],
-  [/^.*:\d+:\d+\)?$/gm, 'STACK TRACE'],
-  [/^\s+at .*$/gm, 'STACK TRACE'],
-  [/(STACK TRACE\n)+/g, 'STACK TRACE\n'],
-  // Durations
-  [/[\d.]+m?s/g, '1ms'],
-  // Package versions
-  [/([@v])[\d.]+/g, '$11.0.0'],
-  // Multiline objects are printed differently by `util.inspect()` in Node 8 and
-  // 12 due to different default options
-  [/{\n\s+/gm, '{ '],
-  [/\n}/gm, ' }'],
-  [/,\n\s+/gm, ', '],
-  [/:\n\s+/gm, ': '],
-  // Semantic versions
-  [/v\d+\.\d+\.\d+/, 'v1.0.0'],
-  // npm install logs
-  [/added \d+ package.*/, 'added packages'],
-  [/^npm ERR!.*/gm, 'npm ERR!'],
-  [/(npm ERR!\n)+/g, 'npm ERR!\n'],
-]
+// The `PRINT` environment variable can be set to `1` to run the test in print
+// mode. Print mode is a debugging mode which shows the test output but does
+// not create nor compare its snapshot.
+const doTestAction = function(t, all) {
+  if (PRINT !== '1') {
+    t.snapshot(normalizeOutput(all))
+    return
+  }
 
-module.exports = { normalizeOutput }
+  console.log(`
+${chalk.magentaBright.bold(`${LINE}
+  ${t.title}
+${LINE}`)}
+
+${all}`)
+  t.pass()
+}
+
+const LINE = '='.repeat(40)
+
+module.exports = { runFixture, FIXTURES_DIR }
