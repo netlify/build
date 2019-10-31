@@ -29,7 +29,3 @@ test('Process errors: uncaughtException', async t => {
 test('Process errors: unhandledRejection', async t => {
   await runFixture(t, 'process_error_unhandled_rejection')
 })
-
-test('Process errors: warning', async t => {
-  await runFixture(t, 'process_error_warning')
-})
