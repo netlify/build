@@ -16,7 +16,7 @@ promote a positive and inclusive environment.
 
 ## Update Docs
 
-Docs are updated with `markdown-magic` - run `npm run docs` for it.
+Docs are updated with `markdown-magic` - run `npm run test:docs` for it.
 
 We also run this on precommit hooks with `husky`.
 
@@ -42,13 +42,18 @@ npm test
 This is a monorepo. Below are a list of packages included.
 
 <!-- AUTO-GENERATED-CONTENT:START (PACKAGES) -->
+
 - [@netlify/build](./packages/build) Netlify build module [npm link](https://www.npmjs.com/package/@netlify/build).
 - [@netlify/config](./packages/config) Netlify config module [npm link](https://www.npmjs.com/package/@netlify/config).
-- [@netlify/plugin-encrypted-files](./packages/netlify-plugin-encrypted-files)  [npm link](https://www.npmjs.com/package/@netlify/plugin-encrypted-files).
-- [@netlify/plugin-no-more-404](./packages/netlify-plugin-no-more-404) fail netlify build if html goes missing with no redirects [npm link](https://www.npmjs.com/package/@netlify/plugin-no-more-404).
-- [@netlify/plugin-sitemap](./packages/netlify-plugin-sitemap)  [npm link](https://www.npmjs.com/package/@netlify/plugin-sitemap).
-- [@netlify/plugin-svgoptimizer](./packages/netlify-plugin-svgoptimizer) Optimize SVG assets during the Netlify build process [npm link](https://www.npmjs.com/package/@netlify/plugin-svgoptimizer).
-<!-- AUTO-GENERATED-CONTENT:END (PACKAGES) -->
+- [@netlify/plugin-encrypted-files](./packages/netlify-plugin-encrypted-files)
+  [npm link](https://www.npmjs.com/package/@netlify/plugin-encrypted-files).
+- [@netlify/plugin-no-more-404](./packages/netlify-plugin-no-more-404) fail netlify build if html goes missing with no
+  redirects [npm link](https://www.npmjs.com/package/@netlify/plugin-no-more-404).
+- [@netlify/plugin-sitemap](./packages/netlify-plugin-sitemap)
+  [npm link](https://www.npmjs.com/package/@netlify/plugin-sitemap).
+- [@netlify/plugin-svgoptimizer](./packages/netlify-plugin-svgoptimizer) Optimize SVG assets during the Netlify build
+  process [npm link](https://www.npmjs.com/package/@netlify/plugin-svgoptimizer).
+  <!-- AUTO-GENERATED-CONTENT:END (PACKAGES) -->
 
 ## Examples
 
