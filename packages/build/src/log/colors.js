@@ -51,4 +51,4 @@ const hasColors = function() {
   return env.FORCE_COLOR !== '0' && env.FORCE_COLOR !== 'false'
 }
 
-module.exports = { setColorLevel }
+module.exports = { setColorLevel, hasColors }

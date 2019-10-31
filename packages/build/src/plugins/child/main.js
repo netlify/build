@@ -1,8 +1,10 @@
 require('../../utils/polyfills')
 
-// eslint-disable-next-line import/order
-const { setColorLevel } = require('../../log/colors')
+const { setColorLevel, hasColors } = require('../../log/colors')
 setColorLevel()
+
+// eslint-disable-next-line import/order
+const logProcessErrors = require('log-process-errors')
 
 const { sendEventToParent, getEventsFromParent } = require('../ipc')
 
@@ -11,12 +13,33 @@ const { loadPlugin } = require('./load')
 // Boot plugin child process.
 const bootPlugin = async function() {
   try {
+    handleProcessErrors()
+
     await sendEventToParent('ready')
     const context = await loadPlugin()
     await handleEvents(context)
   } catch (error) {
-    await sendEventToParent('error', { stack: error.stack })
+    await handleError(error)
   }
+}
+
+// On uncaught exceptions and unhandled rejections, print the stack trace.
+// Also, prevent child processes from crashing on uncaught exceptions.
+const handleProcessErrors = function() {
+  logProcessErrors({ log: handleProcessError, colors: hasColors(), exitOn: [] })
+}
+
+const handleProcessError = async function(error, level) {
+  if (level !== 'error') {
+    console[level](error)
+    return
+  }
+
+  await handleError(error)
+}
+
+const handleError = async function(error) {
+  await sendEventToParent('error', { stack: error.stack })
 }
 
 // Wait for events from parent to perform plugin methods

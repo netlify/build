@@ -483,3 +483,27 @@ test('--dry with several hooks', async t => {
   })
   t.snapshot(normalizeOutput(all))
 })
+
+test('Process errors: uncaughtException', async t => {
+  const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/process_error_uncaught/netlify.yml`, {
+    all: true,
+    reject: false,
+  })
+  t.snapshot(normalizeOutput(all))
+})
+
+test('Process errors: unhandledRejection', async t => {
+  const { all } = await execa.command(
+    `${BINARY_PATH} --config ${FIXTURES_DIR}/process_error_unhandled_rejection/netlify.yml`,
+    { all: true, reject: false },
+  )
+  t.snapshot(normalizeOutput(all))
+})
+
+test('Process errors: warning', async t => {
+  const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/process_error_warning/netlify.yml`, {
+    all: true,
+    reject: false,
+  })
+  t.snapshot(normalizeOutput(all))
+})
