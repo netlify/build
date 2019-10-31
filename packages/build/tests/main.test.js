@@ -233,6 +233,14 @@ test('Can install local plugins', async t => {
   t.snapshot(normalizeOutput(all))
 })
 
+test('Plugin output can interleave stdout and stderr', async t => {
+  const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/plugin_streams/netlify.yml`, {
+    all: true,
+    reject: false,
+  })
+  t.snapshot(normalizeOutput(all))
+})
+
 test('Install local plugin dependencies: with npm', async t => {
   const { all } = await execa.command(`${BINARY_PATH} --config ${FIXTURES_DIR}/plugin_deps/netlify.yml`, {
     all: true,
