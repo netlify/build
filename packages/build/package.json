@@ -41,6 +41,7 @@
     "is-ci": "^2.0.0",
     "is-invalid-path": "^1.0.2",
     "is-plain-obj": "^2.0.0",
+    "log-process-errors": "^5.0.2",
     "make-dir": "^3.0.0",
     "map-obj": "^4.1.0",
     "netlify": "^2.4.8",
@@ -63,7 +64,6 @@
     "atob": "^2.1.2",
     "ava": "^2.4.0",
     "get-bin-path": "^4.0.0",
-    "log-process-errors": "^5.0.2",
     "markdown-magic": "^0.1.25",
     "yarn": "^1.19.1"
   },
