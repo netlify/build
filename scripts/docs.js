@@ -163,8 +163,7 @@ function renderPluginExample(name) {
 
   \`\`\`yml
   plugins:
-    myPlugin:
-      type: ./path/to/plugin
+    - type: ./path/to/plugin
       config:
         foo: bar
   \`\`\`

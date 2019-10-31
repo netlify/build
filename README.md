@@ -34,6 +34,7 @@ Netlify build is the next generation of CI/CD tooling for modern web application
 - [Plugins](#plugins)
 - [What can plugins do?](#what-can-plugins-do)
 - [CLI commands](#cli-commands)
+- [Contributors](#contributors)
 
 </details>
 <!-- AUTO-GENERATED-CONTENT:END -->
@@ -116,21 +117,19 @@ The build process runs through a series of lifecycle `events`. These events are 
 how the Netlify build operates.
 
 <!-- AUTO-GENERATED-CONTENT:START (LIFECYCLE_TABLE) -->
-
-| Lifecycle hook                                                                      | Description                                 |
-| :---------------------------------------------------------------------------------- | :------------------------------------------ |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleinit">init</a>** ‏‏‎ ‏‏‎ ‏‏‎                     | Runs before anything else                   |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclegetcache">getCache</a>** ‏‏‎ ‏‏‎ ‏‏‎             | Fetch previous build cache                  |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleinstall">install</a>** ‏‏‎ ‏‏‎ ‏‏‎               | Install project dependencies                |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleprebuild">preBuild</a>** ‏‏‎ ‏‏‎ ‏‏‎             | Runs before functions & build commands run  |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclefunctionsbuild">functionsBuild</a>** ‏‏‎ ‏‏‎ ‏‏‎ | Build the serverless functions              |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclebuild">build</a>** ‏‏‎ ‏‏‎ ‏‏‎                   | Build commands are executed                 |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclepostbuild">postBuild</a>** ‏‏‎ ‏‏‎ ‏‏‎           | Runs after site & functions have been built |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclepackage">package</a>** ‏‏‎ ‏‏‎ ‏‏‎               | Package & optimize artifact                 |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclepredeploy">preDeploy</a>** ‏‏‎ ‏‏‎ ‏‏‎           | Runs before built artifacts are deployed    |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclesavecache">saveCache</a>** ‏‏‎ ‏‏‎ ‏‏‎           | Save cached assets                          |
-| 🎉 ‏‏‎ **<a href="#lifecyclefinally">finally</a>** ‏‏‎ ‏‏‎ ‏‏‎                      | Runs after anything else                    |
-
+| Lifecycle hook | Description |
+|:------|:-------|
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecycleinit">init</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Runs before anything else |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclegetcache">getCache</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Fetch previous build cache |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecycleinstall">install</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Install project dependencies |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecycleprebuild">preBuild</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Runs before functions & build commands run |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclefunctionsbuild">functionsBuild</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Build the serverless functions |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclebuild">build</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Build commands are executed |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclepostbuild">postBuild</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Runs after site & functions have been built |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclepackage">package</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Package & optimize artifact |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclepredeploy">preDeploy</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Runs before built artifacts are deployed |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclesavecache">saveCache</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Save cached assets |
+| 🎉 ‏‏‎ **<a href="#lifecyclefinally">finally</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Runs after anything else |
 <!-- AUTO-GENERATED-CONTENT:END (LIFECYCLE_TABLE) -->
 
 The Lifecycle flows the events in order and executes and their `pre` & `post` counterparts.
@@ -157,41 +156,41 @@ The Lifecycle flows the events in order and executes and their `pre` & `post` co
 ```
 
 <!-- AUTO-GENERATED-CONTENT:START (LIFECYCLE_DOCS) -->
-
 ### lifecycle.init
 
 `init` - Runs before anything else
+
 
 <details>
   <summary>Using init</summary>
   
   <br/>
 
-**1. Using with a Plugin**
+  **1. Using with a Plugin**
 
-Below is an example plugin using the `init` hook
+  Below is an example plugin using the `init` hook
 
-```js
-module.exports = function myPlugin(pluginConfig) {
-  return {
-    init: () => {
-      console.log('Do thing on init step')
-    },
+  ```js
+  module.exports = function myPlugin(pluginConfig) {
+    return {
+      init: () => {
+        console.log("Do thing on init step")
+      }
+    }
   }
-}
-```
+  ```
 
-After creating the plugin, add into your Netlify config file under `plugins`
+  After creating the plugin, add into your Netlify config file under `plugins`
 
-```yml
-plugins:
-  myPlugin:
-    type: ./path/to/plugin
-    config:
-      foo: bar
-```
+  ```yml
+  plugins:
+    - type: ./path/to/plugin
+      config:
+        foo: bar
+  ```
+  
 
-**2. Using with via `build.lifecycle`**
+  **2. Using with via `build.lifecycle`**
 
 ```yml
 build:
@@ -199,43 +198,44 @@ build:
     init:
       - echo "Do thing on init step"
 ```
-
+  
 </details>
 
 ### lifecycle.getCache
 
 `getCache` - Fetch previous build cache
 
+
 <details>
   <summary>Using getCache</summary>
   
   <br/>
 
-**1. Using with a Plugin**
+  **1. Using with a Plugin**
 
-Below is an example plugin using the `getCache` hook
+  Below is an example plugin using the `getCache` hook
 
-```js
-module.exports = function myPlugin(pluginConfig) {
-  return {
-    getCache: () => {
-      console.log('Do thing on getCache step')
-    },
+  ```js
+  module.exports = function myPlugin(pluginConfig) {
+    return {
+      getCache: () => {
+        console.log("Do thing on getCache step")
+      }
+    }
   }
-}
-```
+  ```
 
-After creating the plugin, add into your Netlify config file under `plugins`
+  After creating the plugin, add into your Netlify config file under `plugins`
 
-```yml
-plugins:
-  myPlugin:
-    type: ./path/to/plugin
-    config:
-      foo: bar
-```
+  ```yml
+  plugins:
+    - type: ./path/to/plugin
+      config:
+        foo: bar
+  ```
+  
 
-**2. Using with via `build.lifecycle`**
+  **2. Using with via `build.lifecycle`**
 
 ```yml
 build:
@@ -243,43 +243,44 @@ build:
     getCache:
       - echo "Do thing on getCache step"
 ```
-
+  
 </details>
 
 ### lifecycle.install
 
 `install` - Install project dependencies
 
+
 <details>
   <summary>Using install</summary>
   
   <br/>
 
-**1. Using with a Plugin**
+  **1. Using with a Plugin**
 
-Below is an example plugin using the `install` hook
+  Below is an example plugin using the `install` hook
 
-```js
-module.exports = function myPlugin(pluginConfig) {
-  return {
-    install: () => {
-      console.log('Do thing on install step')
-    },
+  ```js
+  module.exports = function myPlugin(pluginConfig) {
+    return {
+      install: () => {
+        console.log("Do thing on install step")
+      }
+    }
   }
-}
-```
+  ```
 
-After creating the plugin, add into your Netlify config file under `plugins`
+  After creating the plugin, add into your Netlify config file under `plugins`
 
-```yml
-plugins:
-  myPlugin:
-    type: ./path/to/plugin
-    config:
-      foo: bar
-```
+  ```yml
+  plugins:
+    - type: ./path/to/plugin
+      config:
+        foo: bar
+  ```
+  
 
-**2. Using with via `build.lifecycle`**
+  **2. Using with via `build.lifecycle`**
 
 ```yml
 build:
@@ -287,43 +288,44 @@ build:
     install:
       - echo "Do thing on install step"
 ```
-
+  
 </details>
 
 ### lifecycle.preBuild
 
 `preBuild` - Runs before functions & build commands run
 
+
 <details>
   <summary>Using preBuild</summary>
   
   <br/>
 
-**1. Using with a Plugin**
+  **1. Using with a Plugin**
 
-Below is an example plugin using the `preBuild` hook
+  Below is an example plugin using the `preBuild` hook
 
-```js
-module.exports = function myPlugin(pluginConfig) {
-  return {
-    preBuild: () => {
-      console.log('Do thing on preBuild step')
-    },
+  ```js
+  module.exports = function myPlugin(pluginConfig) {
+    return {
+      preBuild: () => {
+        console.log("Do thing on preBuild step")
+      }
+    }
   }
-}
-```
+  ```
 
-After creating the plugin, add into your Netlify config file under `plugins`
+  After creating the plugin, add into your Netlify config file under `plugins`
 
-```yml
-plugins:
-  myPlugin:
-    type: ./path/to/plugin
-    config:
-      foo: bar
-```
+  ```yml
+  plugins:
+    - type: ./path/to/plugin
+      config:
+        foo: bar
+  ```
+  
 
-**2. Using with via `build.lifecycle`**
+  **2. Using with via `build.lifecycle`**
 
 ```yml
 build:
@@ -331,43 +333,44 @@ build:
     preBuild:
       - echo "Do thing on preBuild step"
 ```
-
+  
 </details>
 
 ### lifecycle.functionsBuild
 
 `functionsBuild` - Build the serverless functions
 
+
 <details>
   <summary>Using functionsBuild</summary>
   
   <br/>
 
-**1. Using with a Plugin**
+  **1. Using with a Plugin**
 
-Below is an example plugin using the `functionsBuild` hook
+  Below is an example plugin using the `functionsBuild` hook
 
-```js
-module.exports = function myPlugin(pluginConfig) {
-  return {
-    functionsBuild: () => {
-      console.log('Do thing on functionsBuild step')
-    },
+  ```js
+  module.exports = function myPlugin(pluginConfig) {
+    return {
+      functionsBuild: () => {
+        console.log("Do thing on functionsBuild step")
+      }
+    }
   }
-}
-```
+  ```
 
-After creating the plugin, add into your Netlify config file under `plugins`
+  After creating the plugin, add into your Netlify config file under `plugins`
 
-```yml
-plugins:
-  myPlugin:
-    type: ./path/to/plugin
-    config:
-      foo: bar
-```
+  ```yml
+  plugins:
+    - type: ./path/to/plugin
+      config:
+        foo: bar
+  ```
+  
 
-**2. Using with via `build.lifecycle`**
+  **2. Using with via `build.lifecycle`**
 
 ```yml
 build:
@@ -375,43 +378,44 @@ build:
     functionsBuild:
       - echo "Do thing on functionsBuild step"
 ```
-
+  
 </details>
 
 ### lifecycle.build
 
 `build` - Build commands are executed
 
+
 <details>
   <summary>Using build</summary>
   
   <br/>
 
-**1. Using with a Plugin**
+  **1. Using with a Plugin**
 
-Below is an example plugin using the `build` hook
+  Below is an example plugin using the `build` hook
 
-```js
-module.exports = function myPlugin(pluginConfig) {
-  return {
-    build: () => {
-      console.log('Do thing on build step')
-    },
+  ```js
+  module.exports = function myPlugin(pluginConfig) {
+    return {
+      build: () => {
+        console.log("Do thing on build step")
+      }
+    }
   }
-}
-```
+  ```
 
-After creating the plugin, add into your Netlify config file under `plugins`
+  After creating the plugin, add into your Netlify config file under `plugins`
 
-```yml
-plugins:
-  myPlugin:
-    type: ./path/to/plugin
-    config:
-      foo: bar
-```
+  ```yml
+  plugins:
+    - type: ./path/to/plugin
+      config:
+        foo: bar
+  ```
+  
 
-**2. Using with via `build.lifecycle`**
+  **2. Using with via `build.lifecycle`**
 
 ```yml
 build:
@@ -419,43 +423,44 @@ build:
     build:
       - echo "Do thing on build step"
 ```
-
+  
 </details>
 
 ### lifecycle.postBuild
 
 `postBuild` - Runs after site & functions have been built
 
+
 <details>
   <summary>Using postBuild</summary>
   
   <br/>
 
-**1. Using with a Plugin**
+  **1. Using with a Plugin**
 
-Below is an example plugin using the `postBuild` hook
+  Below is an example plugin using the `postBuild` hook
 
-```js
-module.exports = function myPlugin(pluginConfig) {
-  return {
-    postBuild: () => {
-      console.log('Do thing on postBuild step')
-    },
+  ```js
+  module.exports = function myPlugin(pluginConfig) {
+    return {
+      postBuild: () => {
+        console.log("Do thing on postBuild step")
+      }
+    }
   }
-}
-```
+  ```
 
-After creating the plugin, add into your Netlify config file under `plugins`
+  After creating the plugin, add into your Netlify config file under `plugins`
 
-```yml
-plugins:
-  myPlugin:
-    type: ./path/to/plugin
-    config:
-      foo: bar
-```
+  ```yml
+  plugins:
+    - type: ./path/to/plugin
+      config:
+        foo: bar
+  ```
+  
 
-**2. Using with via `build.lifecycle`**
+  **2. Using with via `build.lifecycle`**
 
 ```yml
 build:
@@ -463,43 +468,44 @@ build:
     postBuild:
       - echo "Do thing on postBuild step"
 ```
-
+  
 </details>
 
 ### lifecycle.package
 
 `package` - Package & optimize artifact
 
+
 <details>
   <summary>Using package</summary>
   
   <br/>
 
-**1. Using with a Plugin**
+  **1. Using with a Plugin**
 
-Below is an example plugin using the `package` hook
+  Below is an example plugin using the `package` hook
 
-```js
-module.exports = function myPlugin(pluginConfig) {
-  return {
-    package: () => {
-      console.log('Do thing on package step')
-    },
+  ```js
+  module.exports = function myPlugin(pluginConfig) {
+    return {
+      package: () => {
+        console.log("Do thing on package step")
+      }
+    }
   }
-}
-```
+  ```
 
-After creating the plugin, add into your Netlify config file under `plugins`
+  After creating the plugin, add into your Netlify config file under `plugins`
 
-```yml
-plugins:
-  myPlugin:
-    type: ./path/to/plugin
-    config:
-      foo: bar
-```
+  ```yml
+  plugins:
+    - type: ./path/to/plugin
+      config:
+        foo: bar
+  ```
+  
 
-**2. Using with via `build.lifecycle`**
+  **2. Using with via `build.lifecycle`**
 
 ```yml
 build:
@@ -507,43 +513,44 @@ build:
     package:
       - echo "Do thing on package step"
 ```
-
+  
 </details>
 
 ### lifecycle.preDeploy
 
 `preDeploy` - Runs before built artifacts are deployed
 
+
 <details>
   <summary>Using preDeploy</summary>
   
   <br/>
 
-**1. Using with a Plugin**
+  **1. Using with a Plugin**
 
-Below is an example plugin using the `preDeploy` hook
+  Below is an example plugin using the `preDeploy` hook
 
-```js
-module.exports = function myPlugin(pluginConfig) {
-  return {
-    preDeploy: () => {
-      console.log('Do thing on preDeploy step')
-    },
+  ```js
+  module.exports = function myPlugin(pluginConfig) {
+    return {
+      preDeploy: () => {
+        console.log("Do thing on preDeploy step")
+      }
+    }
   }
-}
-```
+  ```
 
-After creating the plugin, add into your Netlify config file under `plugins`
+  After creating the plugin, add into your Netlify config file under `plugins`
 
-```yml
-plugins:
-  myPlugin:
-    type: ./path/to/plugin
-    config:
-      foo: bar
-```
+  ```yml
+  plugins:
+    - type: ./path/to/plugin
+      config:
+        foo: bar
+  ```
+  
 
-**2. Using with via `build.lifecycle`**
+  **2. Using with via `build.lifecycle`**
 
 ```yml
 build:
@@ -551,43 +558,44 @@ build:
     preDeploy:
       - echo "Do thing on preDeploy step"
 ```
-
+  
 </details>
 
 ### lifecycle.saveCache
 
 `saveCache` - Save cached assets
 
+
 <details>
   <summary>Using saveCache</summary>
   
   <br/>
 
-**1. Using with a Plugin**
+  **1. Using with a Plugin**
 
-Below is an example plugin using the `saveCache` hook
+  Below is an example plugin using the `saveCache` hook
 
-```js
-module.exports = function myPlugin(pluginConfig) {
-  return {
-    saveCache: () => {
-      console.log('Do thing on saveCache step')
-    },
+  ```js
+  module.exports = function myPlugin(pluginConfig) {
+    return {
+      saveCache: () => {
+        console.log("Do thing on saveCache step")
+      }
+    }
   }
-}
-```
+  ```
 
-After creating the plugin, add into your Netlify config file under `plugins`
+  After creating the plugin, add into your Netlify config file under `plugins`
 
-```yml
-plugins:
-  myPlugin:
-    type: ./path/to/plugin
-    config:
-      foo: bar
-```
+  ```yml
+  plugins:
+    - type: ./path/to/plugin
+      config:
+        foo: bar
+  ```
+  
 
-**2. Using with via `build.lifecycle`**
+  **2. Using with via `build.lifecycle`**
 
 ```yml
 build:
@@ -595,43 +603,44 @@ build:
     saveCache:
       - echo "Do thing on saveCache step"
 ```
-
+  
 </details>
 
 ### lifecycle.finally
 
 `finally` - Runs after anything else
 
+
 <details>
   <summary>Using finally</summary>
   
   <br/>
 
-**1. Using with a Plugin**
+  **1. Using with a Plugin**
 
-Below is an example plugin using the `finally` hook
+  Below is an example plugin using the `finally` hook
 
-```js
-module.exports = function myPlugin(pluginConfig) {
-  return {
-    finally: () => {
-      console.log('Do thing on finally step')
-    },
+  ```js
+  module.exports = function myPlugin(pluginConfig) {
+    return {
+      finally: () => {
+        console.log("Do thing on finally step")
+      }
+    }
   }
-}
-```
+  ```
 
-After creating the plugin, add into your Netlify config file under `plugins`
+  After creating the plugin, add into your Netlify config file under `plugins`
 
-```yml
-plugins:
-  myPlugin:
-    type: ./path/to/plugin
-    config:
-      foo: bar
-```
+  ```yml
+  plugins:
+    - type: ./path/to/plugin
+      config:
+        foo: bar
+  ```
+  
 
-**2. Using with via `build.lifecycle`**
+  **2. Using with via `build.lifecycle`**
 
 ```yml
 build:
@@ -639,7 +648,7 @@ build:
     finally:
       - echo "Do thing on finally step"
 ```
-
+  
 </details>
 <!-- AUTO-GENERATED-CONTENT:END (PLUGINS) -->
 
