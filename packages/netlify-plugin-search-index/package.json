@@ -1,0 +1,19 @@
+{
+  "name": "@netlify/plugin-search-index",
+  "private": true,
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\""
+  },
+  "keywords": [
+    "netlify",
+    "netlify-plugin"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "html-to-text": "^5.1.1"
+  }
+}
