@@ -19,7 +19,7 @@ const startOutput = function(childProcess, chunks) {
 // Stop streaming/buffering command or plugin hook output
 const stopOutput = function(childProcess, chunks) {
   if (shouldBuffer()) {
-    unbufferOutput(childProcess, chunks)
+    unbufferOutput(chunks)
     return
   }
 
