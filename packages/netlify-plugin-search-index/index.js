@@ -10,7 +10,7 @@ const cpy = require('cpy')
 const { zipFunctions } = require('@netlify/zip-it-and-ship-it')
 const htmlToText = require('html-to-text')
 
-const isNetlifyCI = require('../build/src/utils/is-netlify-ci')  // eslint-disable-line no-unpublished-require
+const isNetlifyCI = require('../build/src/utils/is-netlify-ci')  // eslint-disable-line node/no-unpublished-require
 
 function netlifyPluginSearchIndex(pluginConfig) {
   const searchIndexFolder = pluginConfig.searchIndexFolder || 'searchIndex'

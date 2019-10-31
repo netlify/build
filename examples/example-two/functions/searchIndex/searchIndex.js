@@ -1,7 +1,6 @@
 // sample function
 const Fuse = require('./fuse')
-
-let searchIndex = require('./searchIndex.json') // eslint-disable-line no-missing-require
+let searchIndex = require('./searchIndex.json') // eslint-disable-line node/no-missing-require
 searchIndex = Object.entries(searchIndex).map(([k,v]) => {
   return {
     path: k,
