@@ -1,6 +1,7 @@
 const path = require('path')
 const fs = require('fs')
 const { promisify } = require('util')
+
 const htmlToText = require('html-to-text')
 
 function netlifyPluginSearchIndex(pluginConfig) {
