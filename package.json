@@ -17,17 +17,6 @@
     "example": "node ./packages/build/src/core/bin.js --config examples/example-two/netlify.yml",
     "debug": "node --inspect-brk ./packages/build/src/core/bin.js --config examples/example-two/netlify.yml"
   },
-  "ava": {
-    "files": [
-      "packages/**/*.test.js"
-    ],
-    "compileEnhancements": false,
-    "babel": false,
-    "verbose": true,
-    "environmentVariables": {
-      "BUILD_TELEMETRY_DISABLED": "true"
-    }
-  },
   "husky": {
     "hooks": {
       "pre-push": "npm test"

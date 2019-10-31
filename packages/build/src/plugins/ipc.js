@@ -1,92 +1,72 @@
-const { execPath } = require('process')
-const { serialize, deserialize } = require('v8')
 const { promisify } = require('util')
-const { write } = require('fs')
 
-const execa = require('execa')
-const getStream = require('get-stream')
+const pEvent = require('p-event')
 
-const { getOutputStream, writeProcessOutput, writeProcessError } = require('../log/stream')
+// Send event from parent to child process
+const sendEventToChild = async function(childProcess, eventName, payload) {
+  if (!childProcess.connected) {
+    throw new Error(`Could not send event '${eventName}' to child process because it already exited`)
+  }
 
-const CHILD_MAIN_PATH = `${__dirname}/child/main.js`
+  await promisify(childProcess.send.bind(childProcess))([eventName, payload])
+}
 
-const pWrite = promisify(write)
+// Send event from child to parent process
+const sendEventToParent = async function(eventName, payload) {
+  await promisify(process.send.bind(process))([eventName, payload])
+}
 
-// Execute a plugin specific event handler.
-// Information messages are:
-//   - passed as arguments to the child process
-//   - retrieved from std3
-// We fire plugins through a child process so that:
-//  - each plugin is sandboxed, e.g. cannot access/modify its parent `process`
-//    (for both security and safety reasons)
-//  - logs can be buffered which allows manipulating them for log shipping,
-//    secrets redacting and parallel plugins
-const executePlugin = async function(eventName, message, { baseDir }) {
-  const messageString = serializeMessage(message)
+// Receive event from child to parent process
+const getEventFromChild = async function(childProcess, expectedEvent) {
+  if (!childProcess.connected) {
+    throw new Error(`Could not receive event '${eventName}' from child process because it already exited`)
+  }
 
-  // `process.execPath` is 'node'.
-  // See https://github.com/netlify/build/issues/387 for explanations on why
-  // we need this instead of simply using 'node'.
-  const childProcess = execa(execPath, [CHILD_MAIN_PATH, eventName, messageString], {
-    cwd: baseDir,
-    stdio: ['ignore', 'pipe', 'pipe', 'pipe'],
-    preferLocal: true,
-    all: true,
-  })
-  const all = getOutputStream(childProcess)
+  const [eventName, payload] = await pEvent(childProcess, 'message')
 
-  try {
-    const [output, responseString] = await Promise.all([
-      getStream(all),
-      getStream(childProcess.stdio[RESPONSE_FD]),
-      childProcess,
-    ])
-    writeProcessOutput(output)
+  if (eventName === 'error') {
+    throw new Error(payload.stack)
+  }
 
-    const response = parseMessage(responseString)
-    return { response, output }
-  } catch (error) {
-    writeProcessError(error)
-    // Fix the error message produced by Execa
-    error.message = error.message.replace(NODE_ARGS_REGEXP, '')
-    throw error
+  validateEventName(eventName, expectedEvent)
+
+  return { eventName, payload }
+}
+
+// Receive event from parent to child process
+const getEventFromParent = async function(expectedEvent) {
+  const [eventName, payload] = await pEvent(process, 'message')
+  validateEventName(eventName, expectedEvent)
+  return { eventName, payload }
+}
+
+const validateEventName = function(eventName, expectedEvent) {
+  if (expectedEvent !== undefined && expectedEvent !== eventName) {
+    throw new Error(`Expected event '${expectedEvent}' instead of '${eventName}'`)
   }
 }
 
-// We don't want to report `process.argv` as it's not useful and might contain
-// confidential information (such as the API token)
-const NODE_ARGS_REGEXP = /: .*/
+// Poll for events from parent to child process
+// TODO: replace with
+//   `pEvent.iterator(process, 'message', {resolutionEvents: 'exit'})`
+// and async iterators after dropping support for Node 8/9
+const getEventsFromParent = async function(callback) {
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    const { eventName, payload } = await getEventFromParent()
 
-// Retrieve information passed from parent process to plugin child process
-const getMessageFromParent = function() {
-  const [eventName, messageString] = process.argv.slice(2)
-  // Ensure plugins do not access `messageString` since it might contain
-  // secret information such as the API token
-  process.argv = process.argv.slice(0, 1)
+    if (eventName === 'exit') {
+      return
+    }
 
-  const message = parseMessage(messageString)
-  return { eventName, message }
+    await callback(eventName, payload)
+  }
 }
 
-// Pass information from plugin child process to parent process
-const sendMessageToParent = async function(response) {
-  const responseString = serializeMessage(response)
-  await pWrite(RESPONSE_FD, responseString)
+module.exports = {
+  sendEventToChild,
+  sendEventToParent,
+  getEventFromChild,
+  getEventFromParent,
+  getEventsFromParent,
 }
-
-const RESPONSE_FD = 3
-
-// Serialize/parse with `v8` which allows us to pass more types than JSON allows
-const serializeMessage = function(message) {
-  const buffer = serialize(message)
-  const messageString = buffer.toString('hex')
-  return messageString
-}
-
-const parseMessage = function(messageString) {
-  const buffer = Buffer.from(messageString, 'hex')
-  const message = deserialize(buffer)
-  return message
-}
-
-module.exports = { executePlugin, getMessageFromParent, sendMessageToParent }

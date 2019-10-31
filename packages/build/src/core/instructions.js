@@ -1,13 +1,17 @@
 const execa = require('execa')
 const pMapSeries = require('p-map-series')
 const pReduce = require('p-reduce')
-const getStream = require('get-stream')
-require('array-flat-polyfill')
 
-const { executePlugin } = require('../plugins/ipc')
-const { logInstruction, logCommandStart, logCommandError, logInstructionSuccess } = require('../log/main')
-const { getOutputStream, writeProcessOutput, writeProcessError } = require('../log/stream')
+const { getEventFromChild, sendEventToChild } = require('../plugins/ipc')
+const {
+  logLifeCycleStart,
+  logErrorInstructions,
+  logInstruction,
+  logCommandStart,
+  logInstructionSuccess,
+} = require('../log/main')
 const { startTimer, endTimer } = require('../log/timer')
+const { pipeOutput, unpipeOutput } = require('../log/stream')
 
 const { LIFECYCLE } = require('./lifecycle')
 
@@ -35,6 +39,25 @@ const getHookInstructions = function({
 
   const lifeCycleHook = { id: `config.build.lifecycle.${hook}`, hook, commands, override: {} }
   return [lifeCycleHook, ...pluginHooks]
+}
+
+// Run build instructions, i.e. all instructions except error handling ones
+const runBuildInstructions = async function(buildInstructions, { config, configPath, token, baseDir }) {
+  logLifeCycleStart(buildInstructions)
+
+  await runInstructions(buildInstructions, { config, configPath, token, baseDir })
+}
+
+// Error handler when an instruction fails
+// Resolve all 'onError' methods and try to fix things
+const runErrorInstructions = async function(errorInstructions, { config, configPath, token, baseDir, error }) {
+  if (errorInstructions.length === 0) {
+    return
+  }
+
+  logErrorInstructions()
+
+  await runInstructions(errorInstructions, { config, configPath, token, baseDir, error })
 }
 
 // Run a set of instructions
@@ -65,18 +88,13 @@ const runInstruction = async function(instruction, { currentData, index, config,
 
   logInstruction(instruction, { index, configPath, error })
 
-  try {
-    const pluginReturnValue = await fireMethod(instruction, { baseDir, config, token, error })
+  const pluginReturnValue = await fireMethod(instruction, { baseDir, config, token, error })
 
-    logInstructionSuccess()
+  logInstructionSuccess()
 
-    endTimer(methodTimer, id, hook)
+  endTimer(methodTimer, id, hook)
 
-    return { ...currentData, ...pluginReturnValue }
-  } catch (error) {
-    error.message = `In '${id}':\n${error.message}`
-    throw error
-  }
+  return { ...currentData, ...pluginReturnValue }
 }
 
 const fireMethod = function(instruction, { baseDir, config, token, error }) {
@@ -95,30 +113,34 @@ const execCommands = async function({ hook, commands }, { baseDir }) {
 const execCommand = async function({ hook, command, baseDir }) {
   logCommandStart(command)
 
-  const childProcess = execa(command, { shell: true, cwd: baseDir, preferLocal: true, all: true })
-  const all = getOutputStream(childProcess)
+  const childProcess = execa(command, { shell: true, cwd: baseDir, preferLocal: true })
+  pipeOutput(childProcess)
 
   try {
-    const [output] = await Promise.all([getStream(all), childProcess])
-    writeProcessOutput(output)
+    await childProcess
   } catch (error) {
-    writeProcessError(error)
-    logCommandError(command, hook, error)
+    error.message = `In "${hook}" command "${command}":\n${error.message}`
+    error.cleanStack = true
     throw error
+  } finally {
+    unpipeOutput(childProcess)
   }
 }
 
 // Fire a plugin hook method
-const firePluginHook = async function(
-  { id, hook, pluginPath, pluginConfig, hookName, constants },
-  { config, token, baseDir, error },
-) {
+const firePluginHook = async function({ id, childProcess, hook, hookName }, { config, token, baseDir, error }) {
+  pipeOutput(childProcess)
+
   try {
-    await executePlugin('run', { pluginPath, pluginConfig, hookName, config, token, error, constants }, { baseDir })
+    await sendEventToChild(childProcess, 'run', { hookName, error })
+    await getEventFromChild(childProcess, 'run')
   } catch (error) {
-    logCommandError(id, hook, error)
+    error.message = `In "${hook}" step from "${id}":\n${error.message}`
+    error.cleanStack = true
     throw error
+  } finally {
+    unpipeOutput(childProcess)
   }
 }
 
-module.exports = { getInstructions, runInstructions }
+module.exports = { getInstructions, runBuildInstructions, runErrorInstructions }

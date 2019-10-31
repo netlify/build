@@ -6,22 +6,15 @@ setColorLevel()
 
 const { getPluginsOptions } = require('../plugins/options')
 const { installPlugins } = require('../plugins/install')
+const { startPlugins, stopPlugins } = require('../plugins/spawn')
 const { loadPlugins } = require('../plugins/load')
-const {
-  logBuildStart,
-  logLifeCycleStart,
-  logManifest,
-  logBuildError,
-  logBuildSuccess,
-  logBuildEnd,
-} = require('../log/main')
+const { logBuildStart, logBuildError, logBuildSuccess, logBuildEnd } = require('../log/main')
 const { startTimer, endTimer } = require('../log/timer')
 const isNetlifyCI = require('../utils/is-netlify-ci')
 
 const { getOptions } = require('./options')
 const { loadConfig } = require('./config')
-const { handleInstructionError } = require('./error')
-const { getInstructions, runInstructions } = require('./instructions')
+const { getInstructions, runBuildInstructions, runErrorInstructions } = require('./instructions')
 const { tomlWrite } = require('./toml')
 const { doDryRun } = require('./dry')
 
@@ -36,9 +29,9 @@ const { doDryRun } = require('./dry')
  * @return {object} manifest information. @TODO implement
  */
 const build = async function(options) {
-  const optionsA = getOptions(options)
-
   const buildTimer = startTimer()
+
+  const optionsA = getOptions(options)
 
   try {
     logBuildStart()
@@ -47,38 +40,84 @@ const build = async function(options) {
 
     const pluginsOptions = getPluginsOptions({ config })
     const pluginsOptionsA = await installPlugins(pluginsOptions, baseDir)
-    const pluginsHooks = await loadPlugins({ pluginsOptions: pluginsOptionsA, config, configPath, baseDir, token })
 
-    const { buildInstructions, errorInstructions } = getInstructions({ pluginsHooks, config })
-    const instructions = buildInstructions
+    const buildInstructions = await buildRun({
+      pluginsOptions: pluginsOptionsA,
+      config,
+      configPath,
+      baseDir,
+      token,
+      options: optionsA,
+    })
 
     if (optionsA.dry) {
-      doDryRun({ buildInstructions, configPath })
       return true
     }
 
-    logLifeCycleStart(buildInstructions)
-
-    try {
-      const manifest = await runInstructions(buildInstructions, { config, configPath, token, baseDir })
-      logManifest(manifest)
-    } catch (error) {
-      await handleInstructionError(errorInstructions, { config, configPath, token, baseDir, error })
-      throw error
-    }
-
-    /* Temporary write config file out to toml for remote CI to process */
     if (isNetlifyCI()) {
       await tomlWrite(config, baseDir)
     }
 
     logBuildSuccess()
     const duration = endTimer(buildTimer, 'Netlify Build')
-    logBuildEnd({ instructions, config, duration })
+    logBuildEnd({ buildInstructions, config, duration })
     return true
   } catch (error) {
     logBuildError(error)
     return false
+  }
+}
+
+const buildRun = async function({ pluginsOptions, config, configPath, baseDir, token, options }) {
+  const childProcesses = await startPlugins(pluginsOptions, baseDir)
+
+  try {
+    const buildInstructions = await executeInstructions({
+      pluginsOptions,
+      childProcesses,
+      config,
+      configPath,
+      baseDir,
+      token,
+      options,
+    })
+    return buildInstructions
+  } finally {
+    await stopPlugins(childProcesses)
+  }
+}
+
+const executeInstructions = async function({
+  pluginsOptions,
+  childProcesses,
+  config,
+  configPath,
+  baseDir,
+  token,
+  options: { dry },
+}) {
+  const pluginsHooks = await loadPlugins({
+    pluginsOptions,
+    childProcesses,
+    config,
+    configPath,
+    baseDir,
+    token,
+  })
+
+  const { buildInstructions, errorInstructions } = getInstructions({ pluginsHooks, config })
+
+  if (dry) {
+    doDryRun({ buildInstructions, configPath })
+    return
+  }
+
+  try {
+    await runBuildInstructions(buildInstructions, { config, configPath, token, baseDir })
+    return buildInstructions
+  } catch (error) {
+    await runErrorInstructions(errorInstructions, { config, configPath, token, baseDir, error })
+    throw error
   }
 }
 

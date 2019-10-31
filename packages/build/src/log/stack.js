@@ -12,7 +12,9 @@ const stripAnsi = require('strip-ansi')
 // We do not use libraries that patch `Error.prepareStackTrace()` because they
 // tend to create issues.
 const cleanStacks = function(string) {
-  return string.split('\n').reduce(cleanStackLine, '')
+  return String(string)
+    .split('\n')
+    .reduce(cleanStackLine, '')
 }
 
 const cleanStackLine = function(lines, line) {
@@ -21,6 +23,10 @@ const cleanStackLine = function(lines, line) {
 
   if (!STACK_LINE_REGEXP.test(lineB)) {
     return `${lines}\n${lineA}`
+  }
+
+  if (isUselessStack(lineB)) {
+    return lines
   }
 
   if (isInternalStack(lineB)) {
@@ -39,9 +45,17 @@ const cleanStackLine = function(lines, line) {
 // Check if a line is part of a stack trace
 const STACK_LINE_REGEXP = /^\s+at /
 
+const isUselessStack = function(line) {
+  return USELESS_STACK_REGEXP.test(line)
+}
+
+const USELESS_STACK_REGEXP = /^\s+at <anonymous>/
+
 const isInternalStack = function(line) {
   // This is only needed for local builds
-  return line.includes('build/src/plugins/child/')
+  return INTERNAL_STACK_REGEXP.test(line)
 }
+
+const INTERNAL_STACK_REGEXP = /packages[/\\]build[/\\]src[/\\]/
 
 module.exports = { cleanStacks }
