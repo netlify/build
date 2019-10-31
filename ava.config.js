@@ -1,5 +1,5 @@
 export default {
-  files: ['packages/**/*.test.js'],
+  files: ['packages/**/tests/*.js'],
   compileEnhancements: false,
   babel: false,
   verbose: true,
