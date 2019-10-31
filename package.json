@@ -20,7 +20,7 @@
   "husky": {
     "hooks": {
       "pre-push": "npm test",
-      "precommit": "npm run docs"
+    "pre-push": "npm run docs && npm test"
     }
   },
   "keywords": [
