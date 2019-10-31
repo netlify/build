@@ -1,23 +1,27 @@
+const { tmpdir } = require('os')
 const path = require('path')
 const fs = require('fs')
 const { promisify } = require('util')
+const cpy = require('cpy')
+const {
+  env: { DEPLOY_ID },
+} = require('process')
+const { zipFunctions } = require('@netlify/zip-it-and-ship-it')
 
 const htmlToText = require('html-to-text')
+const isNetlifyCI = require('../build/src/utils/is-netlify-ci')
 
 function netlifyPluginSearchIndex(pluginConfig) {
+  const searchIndexFolder = pluginConfig.searchIndexFolder || 'searchIndex'
   return {
     name: '@netlify/plugin-search-index',
     // scopes: ['listSites'],
-    init({ api }) {
-      console.log('init')
-    },
-    async postBuild(opts) {
-      // const { api } = opts
-      const { CACHE_DIR, BUILD_DIR } = opts.constants // where we start from
-      console.log('hihihihi')
-      console.log({ BUILD_DIR })
 
-      // let BUILD_DIR = opts.config.build.publish // build folder from netlify config.. there ought to be a nicer way to get this if set elsewhere
+    async postBuild(opts) {
+      const { config } = opts
+      const { build } = config
+      const { CACHE_DIR, BUILD_DIR } = opts.constants // where we start from
+
       if (typeof BUILD_DIR === 'undefined') {
         throw new Error('must specify publish dir in netlify config [build] section')
       }
@@ -26,7 +30,6 @@ function netlifyPluginSearchIndex(pluginConfig) {
       let newManifest = []
       newManifest = await walk(buildFolderPath)
       newManifest = newManifest.filter(x => x.endsWith('.html'))
-      console.log({ newManifest })
       let searchIndex = {}
       let customOpts = {
         // TODO: expose this
@@ -43,15 +46,32 @@ function netlifyPluginSearchIndex(pluginConfig) {
           })
         }),
       )
-      let searchIndexPath = path.join(CACHE_DIR, 'searchIndex.json')
+      let searchIndexPath = path.join(buildFolderPath, searchIndexFolder, 'searchIndex.json')
+      if (fs.existsSync(searchIndexPath)) {
+        console.warn(
+          `searchIndex detected at ${searchIndexPath}, will overwrite for this build but this may indicate an accidental conflict`,
+        )
+      }
       ensureDirectoryExistence(searchIndexPath)
-      fs.writeFileSync(searchIndexPath, JSON.stringify(searchIndex))
+      let stringifiedIndex = JSON.stringify(searchIndex)
+      fs.writeFileSync(searchIndexPath, stringifiedIndex)
 
-      // console.log('Finally... get site count')
-      // const sites = await api.listSites()
-      // if (sites) {
-      //   console.log(`Site count! ${sites.length}`)
-      // }
+      // copy out to an intermediate functions dir inside the build dir
+      // i'm not 100% sure this is the best place to put it, we can move in future
+      const functionsDir = 'searchIndexFunction'
+      const buildDir = path.resolve(build.publish)
+      const buildDirFunctions = path.resolve(buildDir, functionsDir)
+      ensureDirectoryExistence(buildDirFunctions)
+      const searchIndexFunctionPath = path.join(buildDirFunctions, 'searchIndex')
+      await cpy(__dirname + '/functionTemplate', searchIndexFunctionPath)
+      // now we have copied it out to intermediate dir
+      // we may want to do some processing/templating
+      fs.writeFileSync(path.join(searchIndexFunctionPath, 'searchIndex.json'), stringifiedIndex)
+      // and then..
+      const destDir = isNetlifyCI() ? `${tmpdir()}/zisi-${DEPLOY_ID}` : '.netlify/functions'
+      await zipFunctions(buildDirFunctions, destDir)
+      console.log('Files copied!')
+      // done with generating functions
     },
   }
 }

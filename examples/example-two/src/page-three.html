@@ -3,14 +3,308 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Page 2</title>
+    <title>Netlify Dev</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body>
-    <h1>Two</h1>
-    <p>
-      Two
-    </p>
+    <h1>Netlify Dev</h1>
+    <article class="markdown-body entry-content p-3 p-md-6" itemprop="text"><h2><a id="user-content-what-is-netlify-dev" class="anchor" aria-hidden="true" href="#what-is-netlify-dev"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>What is Netlify Dev?</h2>
+<div align="center">
+  <h3><a id="user-content-watch-the-introduction-24-minutes" class="anchor" aria-hidden="true" href="#watch-the-introduction-24-minutes"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Watch the introduction (24 minutes)</h3>
+  <a href="https://youtu.be/RL_gtVZ_79Q?t=812" rel="nofollow">
+    <img src="https://camo.githubusercontent.com/097afed57935a67f7ac5427751dc5e53072f78ac/68747470733a2f2f69332e7974696d672e636f6d2f76692f524c5f6774565a5f3739512f687164656661756c742e6a7067" height="200" alt="link to netlify dev talk" data-canonical-src="https://i3.ytimg.com/vi/RL_gtVZ_79Q/hqdefault.jpg" style="max-width:100%;">
+  </a>
+</div>
+<p>Netlify Dev brings the power of Netlify's Edge Logic layer, <a href="#netlify-functions">serverless functions</a> and <a href="#using-add-ons">add-on ecosystem</a> to your local machine. It runs Netlify's production routing engine in a local dev server to make all redirects, proxy rules, function routes or add-on routes available locally and injects the correct environment variables from your site environment, installed add-ons or your netlify.toml file into your build and function environment.</p>
+<div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><code>                            ┌───────────────┐
+                            │   Project     │
+                            │               │
+                            └localhost:5000─┘
+                                    │
+                                    │
+       ┌──────────┐                 │
+       │  Addons  ├────┐            ▼
+       └──────────┘    │    ┌localhost:5000─┐     ┌──────────────┐
+       ┌──────────┐    └───▶│               │     │              │
+       │functions ├────────▶│    Netlify    │     │   Browser    │
+       └──────────┘    ┌───▶│      Dev      │     │              │
+       ┌──────────┐    │    │               │     │              │
+       │_redirects│────┘    └──localhost:8888───▶ localhost:8888─┘
+       └──────────┘
+</code></pre></div>
+<p>With project detectors, it automatically detects common tools like Gatsby, Hugo, React Static, Eleventy, and more, to give a zero config setup for your local dev server and can help scaffolding new functions as you work on them. Read our blogpost for <a href="https://www.netlify.com/blog/2019/04/24/zero-config-yet-technology-agnostic-how-netlify-dev-detectors-work/" rel="nofollow">more on detectors and how you can contribute</a>!</p>
+<h2><a id="user-content-prerequisites" class="anchor" aria-hidden="true" href="#prerequisites"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Prerequisites</h2>
+<ul>
+<li>You should have the latest Netlify CLI version. Run <code>npm install -g netlify-cli</code> to be sure.</li>
+<li>You should be <a href="https://www.netlify.com/docs/cli/#authentication" rel="nofollow">logged in on Netlify CLI</a></li>
+<li>Your project should be linked to a <code>siteID</code> on Netlify (using <a href="https://www.netlify.com/docs/cli/#continuous-deployment" rel="nofollow">netlify init</a> or <a href="https://www.netlify.com/docs/cli/#linking-and-unlinking-sites" rel="nofollow">netlify link</a>). You can confirm this has been done if you have a <code>.netlify</code> folder with a <code>state.json</code> file containing your <code>siteID</code>.</li>
+</ul>
+<p>This is how we pull down your build environment variables and manage your addons on your local machine.</p>
+<h2><a id="user-content-usage" class="anchor" aria-hidden="true" href="#usage"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Usage</h2>
+<ul>
+<li><code>netlify dev</code> start a local dev server for the build tool you're using</li>
+<li><code>netlify dev:exec &lt;command&gt;</code> runs a shell command within the netlify dev environment</li>
+<li><code>netlify functions:create</code> bootstrap a new function</li>
+</ul>
+<details>
+<summary>
+<b>Pro tip: Aliasing commands</b>
+</summary>
+<p>As these commands are expected to be frequently used, it may be helpful to define aliases in your terminal (Mac: <a href="https://jonsuh.com/blog/bash-command-line-shortcuts/" rel="nofollow">bash</a>, <a href="https://askubuntu.com/questions/758496/how-to-make-a-permanent-alias-in-oh-my-zsh" rel="nofollow">zsh</a>, Windows: <a href="https://stackoverflow.com/questions/20530996/aliases-in-windows-command-prompt" rel="nofollow">doskey</a>, <a href="https://stackoverflow.com/questions/20530996/aliases-in-windows-command-prompt" rel="nofollow">registry</a>) to your personal preference. For example:</p>
+<div class="highlight highlight-source-shell"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-c"><span class="pl-c">#</span># ~/.zshrc</span>
+<span class="pl-c1">alias</span> ndeploy=<span class="pl-s"><span class="pl-pds">"</span>netlify deploy --prod<span class="pl-pds">"</span></span>
+<span class="pl-c1">alias</span> nd=<span class="pl-s"><span class="pl-pds">"</span>netlify dev<span class="pl-pds">"</span></span>
+<span class="pl-c1">alias</span> ndl=<span class="pl-s"><span class="pl-pds">"</span>netlify dev --live<span class="pl-pds">"</span></span>
+<span class="pl-c1">alias</span> nfc=<span class="pl-s"><span class="pl-pds">"</span>netlify functions:create<span class="pl-pds">"</span></span>
+<span class="pl-c1">alias</span> ndx=<span class="pl-s"><span class="pl-pds">"</span>netlify dev:exec <span class="pl-pds">"</span></span></pre></div></div>
+</details>
+<h2><a id="user-content-netlify-dev-usage" class="anchor" aria-hidden="true" href="#netlify-dev-usage"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Netlify Dev usage</h2>
+<div class="highlight highlight-source-shell"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre>USAGE
+  $ netlify dev
+
+OPTIONS
+  -c, --command=command      <span class="pl-c1">command</span> to run
+  -f, --functions=functions  Specify a functions folder to serve
+  -o, --offline              disables any features that require network access
+  -p, --port=port            Specify port of netlify dev
+  -l, --live                 Start a public live session
+
+DESCRIPTION
+  The dev <span class="pl-c1">command</span> will run a <span class="pl-k">local</span> dev server with Netlify<span class="pl-s"><span class="pl-pds">'</span>s Edge Logic proxies and redirects, serverless functions, and addons</span>
+<span class="pl-s"></span>
+<span class="pl-s">EXAMPLES</span>
+<span class="pl-s">  $ netlify dev</span>
+<span class="pl-s">  $ netlify dev -c "yarn start"</span>
+<span class="pl-s">  $ netlify dev -c hugo</span>
+<span class="pl-s"></span>
+<span class="pl-s">COMMANDS</span>
+<span class="pl-s">  dev:exec  Exec command</span></pre></div></div>
+<h2><a id="user-content-live-share" class="anchor" aria-hidden="true" href="#live-share"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Live Share</h2>
+<p>To share your ongoing dev session with a coworker, just run Netlify Dev with a <code>--live</code> flag:</p>
+<div class="highlight highlight-source-shell"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre>netlify dev --live</pre></div></div>
+<p>You will get a URL that looks like <code>https://clever-cray-2aa156-6639f3.netlify.live/</code>. This can be accessed by anyone as long as you keep your session open.</p>
+<blockquote>
+<p>Note: there are currently known issues with ending the live session alongside your webdevserver, as well as with live reloading. We are working on fixing it, and would appreciate repro cases, or you may check <a href="https://github.com/netlify/netlify-dev-plugin/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc+label%3A--live">existing issues with the <code>--live</code> tag</a>. In the mean time you can run <code>ps aux | grep live-tunnel</code> and kill these sessions manually.</p>
+</blockquote>
+<h2><a id="user-content-netlifytoml-dev-block" class="anchor" aria-hidden="true" href="#netlifytoml-dev-block"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>netlify.toml [dev] block</h2>
+<p>Netlify Dev is meant to work with zero config for the majority of users, by using its detector system. However you may wish to assert more control over its behavior, and should make use of the new <code>[dev]</code> block in <code>netlify.toml</code> to do so:</p>
+<div class="highlight highlight-source-toml"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-c"><span class="pl-c">#</span> sample netlify.toml</span>
+[<span class="pl-en">build</span>]
+  <span class="pl-smi">command</span> = <span class="pl-s"><span class="pl-pds">"</span>yarn run build<span class="pl-pds">"</span></span>
+  <span class="pl-smi">functions</span> = <span class="pl-s"><span class="pl-pds">"</span>functions<span class="pl-pds">"</span></span> <span class="pl-c"><span class="pl-c">#</span> netlify dev uses this to know where to scaffold and serve your functions</span>
+  <span class="pl-smi">publish</span> = <span class="pl-s"><span class="pl-pds">"</span>dist<span class="pl-pds">"</span></span>
+
+<span class="pl-c"><span class="pl-c">#</span> note: each of these fields are OPTIONAL</span>
+[<span class="pl-en">dev</span>]
+  <span class="pl-smi">command</span> = <span class="pl-s"><span class="pl-pds">"</span>yarn start<span class="pl-pds">"</span></span> <span class="pl-c"><span class="pl-c">#</span> Command to start your dev server</span>
+  <span class="pl-smi">port</span> = <span class="pl-c1">3000</span> <span class="pl-c"><span class="pl-c">#</span> Port that the dev server will be listening on</span>
+  <span class="pl-smi">functionsPort</span> = <span class="pl-c1">34567</span> <span class="pl-c"><span class="pl-c">#</span> port for functions server</span>
+  <span class="pl-smi">targetPort</span> = <span class="pl-c1">3000</span> <span class="pl-c"><span class="pl-c">#</span> Port of target app server</span>
+  <span class="pl-smi">publish</span> = <span class="pl-s"><span class="pl-pds">"</span>dist<span class="pl-pds">"</span></span> <span class="pl-c"><span class="pl-c">#</span> If you use a _redirect file, provide the path to your static content folder</span>
+  <span class="pl-smi">jwtRolePath</span> = <span class="pl-s"><span class="pl-pds">"</span>app_metadata.authorization.roles<span class="pl-pds">"</span></span> <span class="pl-c"><span class="pl-c">#</span> Object path we should look for role values for JWT based redirects</span></pre></div></div>
+<h2><a id="user-content-project-detection" class="anchor" aria-hidden="true" href="#project-detection"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Project detection</h2>
+<p>Netlify Dev will attempt to detect the SSG or build command that you are using, and run these on your behalf, while adding other development utilities. If you have a JavaScript project, it looks for the best <code>package.json</code> script to run for you, using simple heuristics, so you can use the full flexibility of npm scripts. We may add more intelligence to this in future.</p>
+<p><strong>Overriding the detectors</strong>: The number of <a href="https://github.com/netlify/netlify-dev-plugin/tree/master/src/detectors">project types which Netlify Dev can detect</a> is growing, but if yours is not yet supported (contributions welcome!), you can instruct Netlify Dev to run the project on your behalf by declaring it in a <code>[dev]</code> block of your <code>netlify.toml</code> file.</p>
+<div class="highlight highlight-source-toml"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-c"><span class="pl-c">#</span> sample dev block in the toml</span>
+<span class="pl-c"><span class="pl-c">#</span> note: each of these fields are OPTIONAL and should only be used if you need an override</span>
+[<span class="pl-en">dev</span>]
+  <span class="pl-smi">command</span> = <span class="pl-s"><span class="pl-pds">"</span>yarn start<span class="pl-pds">"</span></span> <span class="pl-c"><span class="pl-c">#</span> Command to start your dev server</span>
+  <span class="pl-smi">port</span> = <span class="pl-c1">3000</span> <span class="pl-c"><span class="pl-c">#</span> Port that the dev server will be listening on</span>
+  <span class="pl-smi">functionsPort</span> = <span class="pl-c1">34567</span> <span class="pl-c"><span class="pl-c">#</span> port for functions server</span>
+  <span class="pl-smi">publish</span> = <span class="pl-s"><span class="pl-pds">"</span>dist<span class="pl-pds">"</span></span> <span class="pl-c"><span class="pl-c">#</span> If you use a _redirect file, provide the path to your static content folder</span></pre></div></div>
+<details>
+<summary>
+<b>Explanation of ports in Netlify Dev</b>
+</summary>
+<p>There will be a number of ports that you will encounter when using Netlify Dev, especially when running a static site generator like Gatsby which has its own dev server. All the port numbers can be a bit confusing, so here is a brief explainer.</p>
+<ul>
+<li>If your SSG has a devserver on port 8000 for example, Netlify Dev needs to be told to proxy that port so it can merge it in with the rest of the local Netlify environment (say, running on port 8888), which is what you want to get the full Netlify Dev experience with Functions, Redirects, and so on.</li>
+<li>If you're running a project we have a detector for, we hardcode those conventional ports so you don't have to supply it yourself. If we have multiple detectors that match, we'll ask you to choose.</li>
+<li>However, sometimes you're using some other project (we welcome contributions for detectors!) or just have a custom port you want Netlify Dev to point to for some reason. This is when you go to the <code>netlify.toml</code> <code>[dev]</code> block to specify exactly what port we should listen to.</li>
+</ul>
+<p>As for which port to use while doing local development in Netlify Dev, always look for this box in your console output and use that:</p>
+<div class="highlight highlight-source-shell"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre>   ┌──────────────────────────────────────────────────────────────┐
+   │                                                              │
+   │   [Netlify Dev] Server now ready on http://localhost:64939   │
+   │                                                              │
+   └──────────────────────────────────────────────────────────────┘</pre></div></div>
+</details>
+<h2><a id="user-content-redirects" class="anchor" aria-hidden="true" href="#redirects"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Redirects</h2>
+<p>Netlify Dev has the ability emulate the <a href="https://www.netlify.com/docs/redirects/" rel="nofollow">redirect capability</a> Netlify provide on the <a href="https://netlify.com/features/adn" rel="nofollow">ADN</a> in your local environment. The same redirect rules which you configure to run on the edge, will also work in your local builds.</p>
+<p>Netlify dev supports redirect rules defined in either <code>_redirects</code> or <code>netlify.toml</code> files.</p>
+<p>The order of precedence for applying redirect rules is:</p>
+<ol>
+<li><code>_redirects</code> file (in the project's publish folder)</li>
+<li><code>netlify.toml</code> file (in the project's publish folder)</li>
+<li><code>netlify.toml</code> file (in the project's root folder)</li>
+</ol>
+<p>See the <a href="https://www.netlify.com/docs/redirects/" rel="nofollow">Redirects Documentation</a> for more information on Netlify's redirect and proxying capabilities.</p>
+<h2><a id="user-content-netlify-functions" class="anchor" aria-hidden="true" href="#netlify-functions"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Netlify Functions</h2>
+<p>Netlify can also create serverless functions for you locally as part of Netlify Functions. The serverless functions can then be run by Netlify Dev in the same way that wold be when deployed to the cloud.</p>
+<div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><code>## list of major functionality
+netlify functions:list
+netlify functions:create
+netlify functions:invoke
+</code></pre></div>
+<p>A number of function templates are available to get you started, and you can add your own utility functions to suit your own project development needs. You can also locally invoke them with test payload data.</p>
+<p><strong>Create a new function</strong></p>
+<div class="highlight highlight-source-shell"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre>$ netlify functions:create</pre></div></div>
+<p>Important note: Your functions will likely have <code>node_modules</code> in each folder. These are usually gitignored. You can write bash scripts to install them for production, or use the lightweight <a href="https://github.com/netlify/netlify-lambda/blob/master/README.md#netlify-lambda-install"><code>netlify-lambda install</code></a> CLI to do it for you.</p>
+<details>
+<summary>
+<b>More detailed usage examples</b>
+</summary>
+<div class="highlight highlight-source-shell"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-c"><span class="pl-c">#</span> Create a new function from one of the</span>
+<span class="pl-c"><span class="pl-c">#</span> available templates offered when prompted (see below)</span>
+$ netlify functions:create
+
+<span class="pl-c"><span class="pl-c">#</span> alternatives</span>
+$ netlify functions:create hello-world <span class="pl-c"><span class="pl-c">#</span> Create a new function with a given name</span>
+$ netlify functions:create --name hello-world <span class="pl-c"><span class="pl-c">#</span> same</span>
+
+<span class="pl-c"><span class="pl-c">#</span> Create a new function by cloning a template from a remote url</span>
+<span class="pl-c"><span class="pl-c">#</span> organised with dependencies installed into a subdirectory</span>
+$ netlify functions:create hello-world --url https://github.com/netlify-labs/all-the-functions/tree/master/functions/9-using-middleware</pre></div></div>
+<p><strong>Deploying unbundled function folders</strong></p>
+<p>Functions that have <code>node_modules</code> inside their own folders require these <code>node_modules</code> to be installed when deployed. For the time being, <strong>the Netlify build process does not recursively install dependencies for your function folders yet</strong>. You can write <code>prebuild</code> or <code>postinstall</code> bash scripts to install them for production, or use the lightweight <a href="https://github.com/netlify/netlify-lambda/blob/master/README.md#netlify-lambda-install"><code>netlify-lambda install</code></a> CLI to do it for you.</p>
+<p><strong>Writing your own Function Templates</strong></p>
+<p>Function templates can specify <code>addons</code> that they rely on as well as execute arbitrary code after installation in an <code>onComplete</code> hook, if a special <code>.netlify-function-template.js</code> file exists in the directory:</p>
+<div class="highlight highlight-source-js"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-c"><span class="pl-c">//</span> .netlify-function-template.js</span>
+<span class="pl-c1">module</span>.<span class="pl-smi">exports</span> <span class="pl-k">=</span> {
+  addons<span class="pl-k">:</span> [
+    {
+      addonName<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>fauna<span class="pl-pds">'</span></span>,
+      <span class="pl-en">addonDidInstall</span><span class="pl-k">:</span> () <span class="pl-k">=&gt;</span> {} <span class="pl-c"><span class="pl-c">//</span> post install function to run after installing addon, eg. for setting up schema</span>
+    }
+  ],
+  <span class="pl-en">onComplete</span>() {
+    <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">`</span>custom-template function created from template!<span class="pl-pds">`</span></span>)
+  }
+}</pre></div></div>
+<p>Instead of using our basic templates, you can use your own by passing it with a --url flag: <code>netlify functions:create hello-world --url https://github.com/netlify-labs/all-the-functions/tree/master/functions/9-using-middleware</code>, specifying any addons and postinstall/complete steps as shown above.</p>
+</details>
+<h3><a id="user-content-locally-testing-functions-with-netlify-functionsinvoke" class="anchor" aria-hidden="true" href="#locally-testing-functions-with-netlify-functionsinvoke"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Locally Testing Functions with <code>netlify functions:invoke</code></h3>
+<p><code>netlify functions:invoke</code> allows you to locally test functions going above and beyond a simple GET request in browser. (we only model POSTs now but could easily expand from here).</p>
+<p>If you have Netlify Dev running your functions, you can then test sending payloads of data, or authentication payloads:</p>
+<div class="highlight highlight-source-shell"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-c"><span class="pl-c">#</span> with prompting</span>
+netlify functions:invoke <span class="pl-c"><span class="pl-c">#</span> we will prompt you at each step</span>
+netlify functions:invoke myfunction <span class="pl-c"><span class="pl-c">#</span> invoke a specific function</span>
+netlify functions:invoke --name myfunction <span class="pl-c"><span class="pl-c">#</span> invoke a specific function</span>
+
+<span class="pl-c"><span class="pl-c">#</span> no prompting (good for CI)</span>
+netlify functions:invoke --name myfunction --identity <span class="pl-c"><span class="pl-c">#</span> invoke a specific function with netlify identity headers</span>
+netlify functions:invoke --name myfunction --no-identity <span class="pl-c"><span class="pl-c">#</span> invoke a specific function without netlify identity headers</span>
+
+<span class="pl-c"><span class="pl-c">#</span> sending payloads</span>
+netlify functions:invoke myfunction --payload <span class="pl-s"><span class="pl-pds">'</span>{"foo": 1}<span class="pl-pds">'</span></span>
+netlify functions:invoke myfunction --querystring <span class="pl-s"><span class="pl-pds">"</span>foo=1<span class="pl-pds">"</span></span>
+netlify functions:invoke myfunction --payload <span class="pl-s"><span class="pl-pds">"</span>./pathTo.json<span class="pl-pds">"</span></span></pre></div></div>
+<p>There are special cases for <a href="https://www.netlify.com/docs/functions/?utm_source=blog&amp;utm_medium=netlifydev&amp;utm_campaign=devex#event-triggered-functions" rel="nofollow">event triggered functions</a> (eg <code>identity-signup</code>) which will also give you mock data for testing. This makes manual local testing of event triggered functions possible, which drastically improves the development experience.</p>
+<p>This is a new feature; ideas and feedback and issues and PR's welcome!</p>
+<h3><a id="user-content-function-builders-function-builder-detection-and-relationship-with-netlify-lambda" class="anchor" aria-hidden="true" href="#function-builders-function-builder-detection-and-relationship-with-netlify-lambda"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Function Builders, Function Builder Detection, and Relationship with <code>netlify-lambda</code></h3>
+<p><strong>Existing users of <code>netlify-lambda</code> should have no change to their workflow by switching to <code>netlify dev</code>.</strong> One immediate benefit is no need for <a href="https://github.com/netlify/netlify-lambda#proxying-for-local-development" class="ghh-repo-x tooltipstered" style="box-shadow: transparent 0px 0px;">proxying</a> since Netlify Dev does that for you.</p>
+<p><strong>Why Function Builders</strong></p>
+<p>Notice that all the functions created by <code>netlify functions:create</code> require no build step. This is intentional: we want to remain agnostic of build tooling and thereby create clear expectations: You give us a folder of functions, and we simply serve it (This is called <a href="https://github.com/netlify/zip-it-and-ship-it" class="ghh-repo-x tooltipstered" style="box-shadow: transparent 0px 0px;"><code>zip-it-and-ship-it</code></a>). If you want to build that folder from a separate source folder, that is entirely under your control. Use whatever tool you like.</p>
+<p>This can be helpful, for example, to use ES modules syntax (e.g. <code>import</code>/<code>export</code>) via webpack, babel transforms via <code>babel-cli</code> or <code>babel-loader</code>, or strict type-checking and transpilation with TypeScript's <code>tsc</code> or other webpack loaders.</p>
+<p>We'll call this category of tools <strong>function builders</strong>. In fact, we do maintain an open source function builder dedicated to the task of transforming serverless functions from source to destination via webpack, called <a href="https://github.com/netlify/netlify-lambda" class="ghh-repo-x tooltipstered" style="box-shadow: transparent 0px 0px;"><code>netlify-lambda</code></a>. We maintain <a href="https://github.com/netlify/netlify-lambda#netlify-lambda" class="ghh-repo-x tooltipstered" style="box-shadow: transparent 0px 0px;">a comparison between Netlify Dev and <code>netlify-lambda</code> on its README as well as advice on when to use which or both</a>.</p>
+<p><strong>Function Builder Detection</strong></p>
+<p>We don't expect everyone to use function builders, but we expect many will, and want to provide helpful defaults that "just work" for this. To do that, we use a similar detection concept to <a href="#Project-detection">project detectors</a>, and look for common function builder setups.</p>
+<p>With this feature, pre-Netlify Dev projects like <a href="https://github.com/netlify/create-react-app-lambda" class="ghh-repo-x tooltipstered" style="box-shadow: transparent 0px 0px;">netlify/create-react-app-lambda</a> can immediately use the <code>netlify dev</code> command with no change to code. Currently, we only offer detection for scripts with <code>netlify-lambda build $SRCFOLDER</code>. More ideas are welcome.</p>
+<p>Netlify Dev will watch <code>netlify-lambda</code>'s source folder and rebuild whenever the source file changes, eliminating the need for <code>netlify-lambda serve</code> since we dont want a duplicate functions server.</p>
+<p><strong>Bring Your Own Function Builder</strong></p>
+<p>We may offer detection for more function builders in future, and also let you specify function build commands in the <code>netlify.toml</code> <code>[dev]</code> block. Please share your usecase with us if you are likely to need this.</p>
+<h3><a id="user-content-using-add-ons" class="anchor" aria-hidden="true" href="#using-add-ons"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Using Add-ons</h3>
+<p>Add-ons are a way for Netlify users to extend the functionality of their Jamstack site/app.</p>
+<p>Check out <a href="https://www.netlify.com/docs/partner-add-ons/" rel="nofollow">Add-on docs</a> here.</p>
+<p>To try out an add-on with Netlify dev, run the <code>netlify addons:create</code> command:</p>
+<div class="highlight highlight-source-shell"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre>netlify addons:create fauna</pre></div></div>
+<p>The above command will install the FaunaDB add-on and provision a noSQL database for your site to leverage. The FaunaDB add-on injects environment variables into your site's build process and the serverless functions.</p>
+<p>Or install this <a href="https://github.com/netlify/fauna-one-click" class="ghh-repo-x tooltipstered" style="box-shadow: transparent 0px 0px;">one click example</a>.</p>
+<p>After you have installed an add-on, it will be visible with the <code>netlify addons:list</code> command inside your site's current working directory. You can use <code>netlify addons:delete $ADDONNAME</code> to delete your addon instance.</p>
+<p>For now, it is important to include instructions to create addons for each member of your team, as there is no way to specify addons inside of <code>netlify.toml</code>. We are working on this.</p>
+<h2><a id="user-content-contributinglocal-development" class="anchor" aria-hidden="true" href="#contributinglocal-development"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Contributing/Local Development</h2>
+<p>Thanks for contributing! You'll need to follow these steps to run Netlify CLI and <code>netlify-dev-plugin</code> locally:</p>
+<ol>
+<li>uninstall any globally installed versions of <code>netlify-cli</code></li>
+<li>clone and install deps for <a href="https://github.com/netlify/cli" class="ghh-repo-x tooltipstered" style="box-shadow: transparent 0px 0px;">netlify/cli</a></li>
+<li><code>npm link</code> from inside the <code>cli</code> folder</li>
+<li>clone and install deps for this repo</li>
+<li>inside the <code>netlify-dev-plugin</code> folder, run <code>yarn link</code></li>
+<li>inside the <code>cli</code> folder, run <code>yarn link "netlify-dev-plugin"</code></li>
+</ol>
+<p>Now you're both ready to start testing <code>netlify dev</code> and to contribute to the project! Note these are untested instructions, please get in touch if you're unable to follow them clearly and we'll work with you. Or ping <a href="https://twitter.com/swyx" rel="nofollow">@swyx</a>.</p>
+<p>Note that code that you may be debugging or investigating may be in some transitive dependencies we have published as separate libraries:</p>
+<ul>
+<li><a href="https://github.com/netlify/netlify-rules-proxy/" class="ghh-repo-x tooltipstered" style="box-shadow: transparent 0px 0px;">netlify/netlify-rules-proxy</a> (<a href="https://www.npmjs.com/package/@netlify/rules-proxy" rel="nofollow">npm</a>)</li>
+<li><a href="https://github.com/netlify/node-redirects-parser" class="ghh-repo-x tooltipstered" style="box-shadow: transparent 0px 0px;">netlify/node-redirects-parser</a> (<a href="https://www.npmjs.com/package/netlify-redirect-parser" rel="nofollow">npm</a>)</li>
+<li>(not open source) <a href="https://www.npmjs.com/package/netlify-redirector" rel="nofollow">npmjs.com/package/netlify-redirector</a></li>
+</ul>
+</article>
   </body>
 </html>

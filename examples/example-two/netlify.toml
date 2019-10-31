@@ -1,0 +1,5 @@
+## we only need this because netlify dev doesnt speak yml yet
+
+[dev]
+    publish = "build" # may want to switch this to "build"
+    functions="functions"

@@ -3,14 +3,780 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Page 2</title>
+    <title>Netlify Build</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body>
-    <h1>Two</h1>
-    <p>
-      Two
-    </p>
+    <h1>Netlify Build</h1>
+    <article class="markdown-body entry-content p-5" itemprop="text"><p><a target="_blank" rel="noopener noreferrer" href="/netlify/build/blob/master/static/logo.png"><img src="/netlify/build/raw/master/static/logo.png" width="400" style="max-width:100%;"></a><br></p>
+<p><a href="https://coveralls.io/github/netlify/build" rel="nofollow"><img src="https://camo.githubusercontent.com/893f6e2d7366d023d46dfef988eb934e269f863d/68747470733a2f2f636f766572616c6c732e696f2f7265706f732f6769746875622f6e65746c6966792f6275696c642f62616467652e737667" alt="Coverage Status" data-canonical-src="https://coveralls.io/repos/github/netlify/build/badge.svg" style="max-width:100%;"></a>
+<a href="https://github.com/netlify/build/actions"><img src="https://github.com/netlify/build/workflows/Build/badge.svg" alt="Build" style="max-width:100%;"></a></p>
+<p>Netlify build is the next generation of CI/CD tooling for modern web applications.</p>
+<p><a href="https://www.netlify.com/build/plugins-beta/" rel="nofollow">Sign up for the private beta</a></p>
+<p><a href="https://www.youtube.com/watch?v=4m6Hi4_qEVE" rel="nofollow">Demo video</a> and
+<a href="https://docs.google.com/presentation/d/1zNcHHrJWnEp6Y-NDk9RE6g9GYCUjI-kdgYW28G2GkSA/edit?usp=sharing" rel="nofollow">slides</a>. See also
+<a href="https://www.netlify.com/blog/2019/10/16/creating-and-using-your-first-netlify-build-plugin/" rel="nofollow">example guide here in Creating and using your first Netlify Build Plugin</a>.</p>
+
+<details>
+<summary>Expand Table of Contents</summary>
+<ul>
+<li><a href="#how-it-works">How it works</a></li>
+<li><a href="#1-extending-via-config">1. Extending via config</a></li>
+<li><a href="#2-extending-via-plugins">2. Extending via plugins</a></li>
+<li><a href="#lifecycle">Lifecycle</a></li>
+<li><a href="#lifecycleinit">lifecycle.init</a></li>
+<li><a href="#lifecyclegetcache">lifecycle.getCache</a></li>
+<li><a href="#lifecycleinstall">lifecycle.install</a></li>
+<li><a href="#lifecycleprebuild">lifecycle.preBuild</a></li>
+<li><a href="#lifecyclefunctionsbuild">lifecycle.functionsBuild</a></li>
+<li><a href="#lifecyclebuild">lifecycle.build</a></li>
+<li><a href="#lifecyclepostbuild">lifecycle.postBuild</a></li>
+<li><a href="#lifecyclepackage">lifecycle.package</a></li>
+<li><a href="#lifecyclepredeploy">lifecycle.preDeploy</a></li>
+<li><a href="#lifecyclesavecache">lifecycle.saveCache</a></li>
+<li><a href="#lifecyclefinally">lifecycle.finally</a></li>
+<li><a href="#configuration">Configuration</a></li>
+<li><a href="#plugins">Plugins</a></li>
+<li><a href="#what-can-plugins-do">What can plugins do?</a></li>
+<li><a href="#cli-commands">CLI commands</a></li>
+<li><a href="#contributors">Contributors</a></li>
+</ul>
+</details>
+
+<h2><a id="user-content-background" class="anchor" aria-hidden="true" href="#background"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Background</h2>
+<p>During a site build, there are a variety of things happening under the hood.</p>
+<p>This is a simplified view of a typical build life cycle:</p>
+<ol>
+<li>Netlify clones your repo &amp; looks for diffs</li>
+<li>Dependencies are install in the project</li>
+<li>We run your build command</li>
+<li>Files &amp; dependencies are cached</li>
+<li>Finally, your site is deployed to the web!</li>
+</ol>
+<p>Historically, when connecting your site to Netlify, we ask for the build command (step 3 above) and will run through
+this process. This works great for most use cases &amp; will continue to do so <g-emoji class="g-emoji" alias="smiley" fallback-src="https://github.githubassets.com/images/icons/emoji/unicode/1f603.png">😃</g-emoji></p>
+<p>For builds that require a little more flexibility, we are introducing a programatic interface on top of these build
+lifecycle steps to allow users to customize this flow.</p>
+<p><strong>Netlify Build</strong> is designed to support any kind of build flow and is extendable to fit any unique project
+requirements.</p>
+<h2><a id="user-content-how-it-works" class="anchor" aria-hidden="true" href="#how-it-works"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>How it works</h2>
+<p>Builds are controlled by a series of <a href="#lifecycle">lifecycle</a> events that <code>plugins</code> &amp; configuration hook into.</p>
+<p><strong>The <a href="#lifecycle">build lifecycle</a> can be extended in two ways:</strong></p>
+<ol>
+<li>Adding lifecycle steps to <code>build.lifecycle</code> in your <a href="#extending-via-config">config file</a></li>
+<li>Installing pre-packaged <a href="#plugins">plugins</a></li>
+</ol>
+<h3><a id="user-content-1-extending-via-config" class="anchor" aria-hidden="true" href="#1-extending-via-config"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>1. Extending via config</h3>
+<p>Inside the netlify config file, you can attach <a href="#lifecycle">lifecycle</a> commands to a new property <code>build.lifecycle</code>.</p>
+<div class="highlight highlight-source-yaml"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-ent">build</span>:
+  <span class="pl-ent">publish</span>: <span class="pl-s">my-dist-folder</span>
+  <span class="pl-c"><span class="pl-c">#</span> Run this lifecycle during build</span>
+  <span class="pl-ent">lifecycle</span>:
+    <span class="pl-ent">init</span>:
+      - <span class="pl-s">npm run thing</span>
+      - <span class="pl-s">echo "much wow"</span>
+    <span class="pl-ent">preBuild</span>: <span class="pl-s">curl download-static-content</span>
+    <span class="pl-ent">build</span>: <span class="pl-s">npm run build</span>
+    <span class="pl-ent">postBuild</span>:
+      - <span class="pl-s">npx generate-sitemap</span></pre></div></div>
+<h3><a id="user-content-2-extending-via-plugins" class="anchor" aria-hidden="true" href="#2-extending-via-plugins"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>2. Extending via plugins</h3>
+<p><a href="#plugins">Netlify Plugins</a> are installable packages that extend the functionality of the netlify build process.</p>
+<p>They can be installed from <code>npm</code> or run locally from relative path in your project.</p>
+<div class="highlight highlight-source-yaml"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-c"><span class="pl-c">#</span> Config file `plugins` defines plugins used by build.</span>
+<span class="pl-ent">plugins</span>:
+  - <span class="pl-ent">type</span>: <span class="pl-s">./local/path/to/plugin-folder</span>
+    <span class="pl-ent">config</span>:
+      <span class="pl-ent">optionOne</span>: <span class="pl-s"><span class="pl-pds">'</span>hello<span class="pl-pds">'</span></span>
+      <span class="pl-ent">optionTwo</span>: <span class="pl-s"><span class="pl-pds">'</span>there<span class="pl-pds">'</span></span>
+ - <span class="pl-ent">type</span>: <span class="pl-s">plugin-from-npm</span>
+   <span class="pl-ent">config</span>:
+     <span class="pl-ent">optionOne</span>: <span class="pl-s"><span class="pl-pds">'</span>neat<span class="pl-pds">'</span></span>
+     <span class="pl-ent">arrayOfValues</span>:
+      - <span class="pl-s">david@netlify.com</span>
+      - <span class="pl-s">jim@netlify.com</span></pre></div></div>
+<p>Netlify plugins can be found on npm by
+<a href="https://www.npmjs.com/search?q=keywords%3Anetlify-plugin" rel="nofollow">searching for <code>keywords:netlify-plugin</code></a>.</p>
+<h2><a id="user-content-lifecycle" class="anchor" aria-hidden="true" href="#lifecycle"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Lifecycle</h2>
+<p>The build process runs through a series of lifecycle <code>events</code>. These events are the places we can hook into and extend
+how the Netlify build operates.</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">Lifecycle hook</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">⇩ ‏‏‎ ‏‏‎ ‏‏‎ <strong><a href="#lifecycleinit">init</a></strong> ‏‏‎ ‏‏‎ ‏‏‎</td>
+<td align="left">Runs before anything else</td>
+</tr>
+<tr>
+<td align="left">⇩ ‏‏‎ ‏‏‎ ‏‏‎ <strong><a href="#lifecyclegetcache">getCache</a></strong> ‏‏‎ ‏‏‎ ‏‏‎</td>
+<td align="left">Fetch previous build cache</td>
+</tr>
+<tr>
+<td align="left">⇩ ‏‏‎ ‏‏‎ ‏‏‎ <strong><a href="#lifecycleinstall">install</a></strong> ‏‏‎ ‏‏‎ ‏‏‎</td>
+<td align="left">Install project dependencies</td>
+</tr>
+<tr>
+<td align="left">⇩ ‏‏‎ ‏‏‎ ‏‏‎ <strong><a href="#lifecycleprebuild">preBuild</a></strong> ‏‏‎ ‏‏‎ ‏‏‎</td>
+<td align="left">Runs before functions &amp; build commands run</td>
+</tr>
+<tr>
+<td align="left">⇩ ‏‏‎ ‏‏‎ ‏‏‎ <strong><a href="#lifecyclefunctionsbuild">functionsBuild</a></strong> ‏‏‎ ‏‏‎ ‏‏‎</td>
+<td align="left">Build the serverless functions</td>
+</tr>
+<tr>
+<td align="left">⇩ ‏‏‎ ‏‏‎ ‏‏‎ <strong><a href="#lifecyclebuild">build</a></strong> ‏‏‎ ‏‏‎ ‏‏‎</td>
+<td align="left">Build commands are executed</td>
+</tr>
+<tr>
+<td align="left">⇩ ‏‏‎ ‏‏‎ ‏‏‎ <strong><a href="#lifecyclepostbuild">postBuild</a></strong> ‏‏‎ ‏‏‎ ‏‏‎</td>
+<td align="left">Runs after site &amp; functions have been built</td>
+</tr>
+<tr>
+<td align="left">⇩ ‏‏‎ ‏‏‎ ‏‏‎ <strong><a href="#lifecyclepackage">package</a></strong> ‏‏‎ ‏‏‎ ‏‏‎</td>
+<td align="left">Package &amp; optimize artifact</td>
+</tr>
+<tr>
+<td align="left">⇩ ‏‏‎ ‏‏‎ ‏‏‎ <strong><a href="#lifecyclepredeploy">preDeploy</a></strong> ‏‏‎ ‏‏‎ ‏‏‎</td>
+<td align="left">Runs before built artifacts are deployed</td>
+</tr>
+<tr>
+<td align="left">⇩ ‏‏‎ ‏‏‎ ‏‏‎ <strong><a href="#lifecyclesavecache">saveCache</a></strong> ‏‏‎ ‏‏‎ ‏‏‎</td>
+<td align="left">Save cached assets</td>
+</tr>
+<tr>
+<td align="left"><g-emoji class="g-emoji" alias="tada" fallback-src="https://github.githubassets.com/images/icons/emoji/unicode/1f389.png">🎉</g-emoji> ‏‏‎ <strong><a href="#lifecyclefinally">finally</a></strong> ‏‏‎ ‏‏‎ ‏‏‎</td>
+<td align="left">Runs after anything else</td>
+</tr>
+</tbody>
+</table>
+
+<p>The Lifecycle flows the events in order and executes and their <code>pre</code> &amp; <code>post</code> counterparts.</p>
+<p><code>pre</code> happens before a specific event.</p>
+<p><code>post</code> happens after a specific event.</p>
+<div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><code>      ┌───────────────┬────────────────┬──────────────────┐
+      │      pre      │     event      │       post       │
+      ├───────────────┼────────────────┼──────────────────┤
+      │               │                │                  │
+      │               │                │                  │
+...   │   preBuild    │     build      │    postBuild     │   ...
+      │               │                │                  │
+      │               │                │                  │
+      └───────────────┤                ├──────────────────┘
+                      └────────────────┘
+
+      ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ▶
+
+                        event flow
+</code></pre></div>
+
+<h3><a id="user-content-lifecycleinit" class="anchor" aria-hidden="true" href="#lifecycleinit"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>lifecycle.init</h3>
+<p><code>init</code> - Runs before anything else</p>
+<details>
+  <summary>Using init</summary>
+  <br>
+<p><strong>1. Using with a Plugin</strong></p>
+<p>Below is an example plugin using the <code>init</code> hook</p>
+<div class="highlight highlight-source-js"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-c1">module</span>.<span class="pl-en">exports</span> <span class="pl-k">=</span> <span class="pl-k">function</span> <span class="pl-en">myPlugin</span>(<span class="pl-smi">pluginConfig</span>) {
+  <span class="pl-k">return</span> {
+    <span class="pl-en">init</span><span class="pl-k">:</span> () <span class="pl-k">=&gt;</span> {
+      <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>Do thing on init step<span class="pl-pds">'</span></span>)
+    },
+  }
+}</pre></div></div>
+<p>After creating the plugin, add into your Netlify config file under <code>plugins</code></p>
+<div class="highlight highlight-source-yaml"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-ent">plugins</span>:
+  - <span class="pl-ent">type</span>: <span class="pl-s">./path/to/plugin</span>
+    <span class="pl-ent">config</span>:
+      <span class="pl-ent">foo</span>: <span class="pl-s">bar</span></pre></div></div>
+<p><strong>2. Using with via <code>build.lifecycle</code></strong></p>
+<div class="highlight highlight-source-yaml"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-ent">build</span>:
+  <span class="pl-ent">lifecycle</span>:
+    <span class="pl-ent">init</span>:
+      - <span class="pl-s">echo "Do thing on init step"</span></pre></div></div>
+</details>
+<h3><a id="user-content-lifecyclegetcache" class="anchor" aria-hidden="true" href="#lifecyclegetcache"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>lifecycle.getCache</h3>
+<p><code>getCache</code> - Fetch previous build cache</p>
+<details>
+  <summary>Using getCache</summary>
+  <br>
+<p><strong>1. Using with a Plugin</strong></p>
+<p>Below is an example plugin using the <code>getCache</code> hook</p>
+<div class="highlight highlight-source-js"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-c1">module</span>.<span class="pl-en">exports</span> <span class="pl-k">=</span> <span class="pl-k">function</span> <span class="pl-en">myPlugin</span>(<span class="pl-smi">pluginConfig</span>) {
+  <span class="pl-k">return</span> {
+    <span class="pl-en">getCache</span><span class="pl-k">:</span> () <span class="pl-k">=&gt;</span> {
+      <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>Do thing on getCache step<span class="pl-pds">'</span></span>)
+    },
+  }
+}</pre></div></div>
+<p>After creating the plugin, add into your Netlify config file under <code>plugins</code></p>
+<div class="highlight highlight-source-yaml"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-ent">plugins</span>:
+  - <span class="pl-ent">type</span>: <span class="pl-s">./path/to/plugin</span>
+    <span class="pl-ent">config</span>:
+      <span class="pl-ent">foo</span>: <span class="pl-s">bar</span></pre></div></div>
+<p><strong>2. Using with via <code>build.lifecycle</code></strong></p>
+<div class="highlight highlight-source-yaml"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-ent">build</span>:
+  <span class="pl-ent">lifecycle</span>:
+    <span class="pl-ent">getCache</span>:
+      - <span class="pl-s">echo "Do thing on getCache step"</span></pre></div></div>
+</details>
+<h3><a id="user-content-lifecycleinstall" class="anchor" aria-hidden="true" href="#lifecycleinstall"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>lifecycle.install</h3>
+<p><code>install</code> - Install project dependencies</p>
+<details>
+  <summary>Using install</summary>
+  <br>
+<p><strong>1. Using with a Plugin</strong></p>
+<p>Below is an example plugin using the <code>install</code> hook</p>
+<div class="highlight highlight-source-js"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-c1">module</span>.<span class="pl-en">exports</span> <span class="pl-k">=</span> <span class="pl-k">function</span> <span class="pl-en">myPlugin</span>(<span class="pl-smi">pluginConfig</span>) {
+  <span class="pl-k">return</span> {
+    <span class="pl-en">install</span><span class="pl-k">:</span> () <span class="pl-k">=&gt;</span> {
+      <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>Do thing on install step<span class="pl-pds">'</span></span>)
+    },
+  }
+}</pre></div></div>
+<p>After creating the plugin, add into your Netlify config file under <code>plugins</code></p>
+<div class="highlight highlight-source-yaml"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-ent">plugins</span>:
+  - <span class="pl-ent">type</span>: <span class="pl-s">./path/to/plugin</span>
+    <span class="pl-ent">config</span>:
+      <span class="pl-ent">foo</span>: <span class="pl-s">bar</span></pre></div></div>
+<p><strong>2. Using with via <code>build.lifecycle</code></strong></p>
+<div class="highlight highlight-source-yaml"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-ent">build</span>:
+  <span class="pl-ent">lifecycle</span>:
+    <span class="pl-ent">install</span>:
+      - <span class="pl-s">echo "Do thing on install step"</span></pre></div></div>
+</details>
+<h3><a id="user-content-lifecycleprebuild" class="anchor" aria-hidden="true" href="#lifecycleprebuild"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>lifecycle.preBuild</h3>
+<p><code>preBuild</code> - Runs before functions &amp; build commands run</p>
+<details>
+  <summary>Using preBuild</summary>
+  <br>
+<p><strong>1. Using with a Plugin</strong></p>
+<p>Below is an example plugin using the <code>preBuild</code> hook</p>
+<div class="highlight highlight-source-js"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-c1">module</span>.<span class="pl-en">exports</span> <span class="pl-k">=</span> <span class="pl-k">function</span> <span class="pl-en">myPlugin</span>(<span class="pl-smi">pluginConfig</span>) {
+  <span class="pl-k">return</span> {
+    <span class="pl-en">preBuild</span><span class="pl-k">:</span> () <span class="pl-k">=&gt;</span> {
+      <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>Do thing on preBuild step<span class="pl-pds">'</span></span>)
+    },
+  }
+}</pre></div></div>
+<p>After creating the plugin, add into your Netlify config file under <code>plugins</code></p>
+<div class="highlight highlight-source-yaml"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-ent">plugins</span>:
+  - <span class="pl-ent">type</span>: <span class="pl-s">./path/to/plugin</span>
+    <span class="pl-ent">config</span>:
+      <span class="pl-ent">foo</span>: <span class="pl-s">bar</span></pre></div></div>
+<p><strong>2. Using with via <code>build.lifecycle</code></strong></p>
+<div class="highlight highlight-source-yaml"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-ent">build</span>:
+  <span class="pl-ent">lifecycle</span>:
+    <span class="pl-ent">preBuild</span>:
+      - <span class="pl-s">echo "Do thing on preBuild step"</span></pre></div></div>
+</details>
+<h3><a id="user-content-lifecyclefunctionsbuild" class="anchor" aria-hidden="true" href="#lifecyclefunctionsbuild"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>lifecycle.functionsBuild</h3>
+<p><code>functionsBuild</code> - Build the serverless functions</p>
+<details>
+  <summary>Using functionsBuild</summary>
+  <br>
+<p><strong>1. Using with a Plugin</strong></p>
+<p>Below is an example plugin using the <code>functionsBuild</code> hook</p>
+<div class="highlight highlight-source-js"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-c1">module</span>.<span class="pl-en">exports</span> <span class="pl-k">=</span> <span class="pl-k">function</span> <span class="pl-en">myPlugin</span>(<span class="pl-smi">pluginConfig</span>) {
+  <span class="pl-k">return</span> {
+    <span class="pl-en">functionsBuild</span><span class="pl-k">:</span> () <span class="pl-k">=&gt;</span> {
+      <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>Do thing on functionsBuild step<span class="pl-pds">'</span></span>)
+    },
+  }
+}</pre></div></div>
+<p>After creating the plugin, add into your Netlify config file under <code>plugins</code></p>
+<div class="highlight highlight-source-yaml"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-ent">plugins</span>:
+  - <span class="pl-ent">type</span>: <span class="pl-s">./path/to/plugin</span>
+    <span class="pl-ent">config</span>:
+      <span class="pl-ent">foo</span>: <span class="pl-s">bar</span></pre></div></div>
+<p><strong>2. Using with via <code>build.lifecycle</code></strong></p>
+<div class="highlight highlight-source-yaml"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-ent">build</span>:
+  <span class="pl-ent">lifecycle</span>:
+    <span class="pl-ent">functionsBuild</span>:
+      - <span class="pl-s">echo "Do thing on functionsBuild step"</span></pre></div></div>
+</details>
+<h3><a id="user-content-lifecyclebuild" class="anchor" aria-hidden="true" href="#lifecyclebuild"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>lifecycle.build</h3>
+<p><code>build</code> - Build commands are executed</p>
+<details>
+  <summary>Using build</summary>
+  <br>
+<p><strong>1. Using with a Plugin</strong></p>
+<p>Below is an example plugin using the <code>build</code> hook</p>
+<div class="highlight highlight-source-js"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-c1">module</span>.<span class="pl-en">exports</span> <span class="pl-k">=</span> <span class="pl-k">function</span> <span class="pl-en">myPlugin</span>(<span class="pl-smi">pluginConfig</span>) {
+  <span class="pl-k">return</span> {
+    <span class="pl-en">build</span><span class="pl-k">:</span> () <span class="pl-k">=&gt;</span> {
+      <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>Do thing on build step<span class="pl-pds">'</span></span>)
+    },
+  }
+}</pre></div></div>
+<p>After creating the plugin, add into your Netlify config file under <code>plugins</code></p>
+<div class="highlight highlight-source-yaml"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-ent">plugins</span>:
+  - <span class="pl-ent">type</span>: <span class="pl-s">./path/to/plugin</span>
+    <span class="pl-ent">config</span>:
+      <span class="pl-ent">foo</span>: <span class="pl-s">bar</span></pre></div></div>
+<p><strong>2. Using with via <code>build.lifecycle</code></strong></p>
+<div class="highlight highlight-source-yaml"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-ent">build</span>:
+  <span class="pl-ent">lifecycle</span>:
+    <span class="pl-ent">build</span>:
+      - <span class="pl-s">echo "Do thing on build step"</span></pre></div></div>
+</details>
+<h3><a id="user-content-lifecyclepostbuild" class="anchor" aria-hidden="true" href="#lifecyclepostbuild"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>lifecycle.postBuild</h3>
+<p><code>postBuild</code> - Runs after site &amp; functions have been built</p>
+<details>
+  <summary>Using postBuild</summary>
+  <br>
+<p><strong>1. Using with a Plugin</strong></p>
+<p>Below is an example plugin using the <code>postBuild</code> hook</p>
+<div class="highlight highlight-source-js"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-c1">module</span>.<span class="pl-en">exports</span> <span class="pl-k">=</span> <span class="pl-k">function</span> <span class="pl-en">myPlugin</span>(<span class="pl-smi">pluginConfig</span>) {
+  <span class="pl-k">return</span> {
+    <span class="pl-en">postBuild</span><span class="pl-k">:</span> () <span class="pl-k">=&gt;</span> {
+      <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>Do thing on postBuild step<span class="pl-pds">'</span></span>)
+    },
+  }
+}</pre></div></div>
+<p>After creating the plugin, add into your Netlify config file under <code>plugins</code></p>
+<div class="highlight highlight-source-yaml"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-ent">plugins</span>:
+  - <span class="pl-ent">type</span>: <span class="pl-s">./path/to/plugin</span>
+    <span class="pl-ent">config</span>:
+      <span class="pl-ent">foo</span>: <span class="pl-s">bar</span></pre></div></div>
+<p><strong>2. Using with via <code>build.lifecycle</code></strong></p>
+<div class="highlight highlight-source-yaml"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-ent">build</span>:
+  <span class="pl-ent">lifecycle</span>:
+    <span class="pl-ent">postBuild</span>:
+      - <span class="pl-s">echo "Do thing on postBuild step"</span></pre></div></div>
+</details>
+<h3><a id="user-content-lifecyclepackage" class="anchor" aria-hidden="true" href="#lifecyclepackage"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>lifecycle.package</h3>
+<p><code>package</code> - Package &amp; optimize artifact</p>
+<details>
+  <summary>Using package</summary>
+  <br>
+<p><strong>1. Using with a Plugin</strong></p>
+<p>Below is an example plugin using the <code>package</code> hook</p>
+<div class="highlight highlight-source-js"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-c1">module</span>.<span class="pl-en">exports</span> <span class="pl-k">=</span> <span class="pl-k">function</span> <span class="pl-en">myPlugin</span>(<span class="pl-smi">pluginConfig</span>) {
+  <span class="pl-k">return</span> {
+    <span class="pl-en">package</span><span class="pl-k">:</span> () <span class="pl-k">=&gt;</span> {
+      <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>Do thing on package step<span class="pl-pds">'</span></span>)
+    },
+  }
+}</pre></div></div>
+<p>After creating the plugin, add into your Netlify config file under <code>plugins</code></p>
+<div class="highlight highlight-source-yaml"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-ent">plugins</span>:
+  - <span class="pl-ent">type</span>: <span class="pl-s">./path/to/plugin</span>
+    <span class="pl-ent">config</span>:
+      <span class="pl-ent">foo</span>: <span class="pl-s">bar</span></pre></div></div>
+<p><strong>2. Using with via <code>build.lifecycle</code></strong></p>
+<div class="highlight highlight-source-yaml"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-ent">build</span>:
+  <span class="pl-ent">lifecycle</span>:
+    <span class="pl-ent">package</span>:
+      - <span class="pl-s">echo "Do thing on package step"</span></pre></div></div>
+</details>
+<h3><a id="user-content-lifecyclepredeploy" class="anchor" aria-hidden="true" href="#lifecyclepredeploy"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>lifecycle.preDeploy</h3>
+<p><code>preDeploy</code> - Runs before built artifacts are deployed</p>
+<details>
+  <summary>Using preDeploy</summary>
+  <br>
+<p><strong>1. Using with a Plugin</strong></p>
+<p>Below is an example plugin using the <code>preDeploy</code> hook</p>
+<div class="highlight highlight-source-js"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-c1">module</span>.<span class="pl-en">exports</span> <span class="pl-k">=</span> <span class="pl-k">function</span> <span class="pl-en">myPlugin</span>(<span class="pl-smi">pluginConfig</span>) {
+  <span class="pl-k">return</span> {
+    <span class="pl-en">preDeploy</span><span class="pl-k">:</span> () <span class="pl-k">=&gt;</span> {
+      <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>Do thing on preDeploy step<span class="pl-pds">'</span></span>)
+    },
+  }
+}</pre></div></div>
+<p>After creating the plugin, add into your Netlify config file under <code>plugins</code></p>
+<div class="highlight highlight-source-yaml"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-ent">plugins</span>:
+  - <span class="pl-ent">type</span>: <span class="pl-s">./path/to/plugin</span>
+    <span class="pl-ent">config</span>:
+      <span class="pl-ent">foo</span>: <span class="pl-s">bar</span></pre></div></div>
+<p><strong>2. Using with via <code>build.lifecycle</code></strong></p>
+<div class="highlight highlight-source-yaml"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-ent">build</span>:
+  <span class="pl-ent">lifecycle</span>:
+    <span class="pl-ent">preDeploy</span>:
+      - <span class="pl-s">echo "Do thing on preDeploy step"</span></pre></div></div>
+</details>
+<h3><a id="user-content-lifecyclesavecache" class="anchor" aria-hidden="true" href="#lifecyclesavecache"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>lifecycle.saveCache</h3>
+<p><code>saveCache</code> - Save cached assets</p>
+<details>
+  <summary>Using saveCache</summary>
+  <br>
+<p><strong>1. Using with a Plugin</strong></p>
+<p>Below is an example plugin using the <code>saveCache</code> hook</p>
+<div class="highlight highlight-source-js"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-c1">module</span>.<span class="pl-en">exports</span> <span class="pl-k">=</span> <span class="pl-k">function</span> <span class="pl-en">myPlugin</span>(<span class="pl-smi">pluginConfig</span>) {
+  <span class="pl-k">return</span> {
+    <span class="pl-en">saveCache</span><span class="pl-k">:</span> () <span class="pl-k">=&gt;</span> {
+      <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>Do thing on saveCache step<span class="pl-pds">'</span></span>)
+    },
+  }
+}</pre></div></div>
+<p>After creating the plugin, add into your Netlify config file under <code>plugins</code></p>
+<div class="highlight highlight-source-yaml"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-ent">plugins</span>:
+  - <span class="pl-ent">type</span>: <span class="pl-s">./path/to/plugin</span>
+    <span class="pl-ent">config</span>:
+      <span class="pl-ent">foo</span>: <span class="pl-s">bar</span></pre></div></div>
+<p><strong>2. Using with via <code>build.lifecycle</code></strong></p>
+<div class="highlight highlight-source-yaml"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-ent">build</span>:
+  <span class="pl-ent">lifecycle</span>:
+    <span class="pl-ent">saveCache</span>:
+      - <span class="pl-s">echo "Do thing on saveCache step"</span></pre></div></div>
+</details>
+<h3><a id="user-content-lifecyclefinally" class="anchor" aria-hidden="true" href="#lifecyclefinally"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>lifecycle.finally</h3>
+<p><code>finally</code> - Runs after anything else</p>
+<details>
+  <summary>Using finally</summary>
+  <br>
+<p><strong>1. Using with a Plugin</strong></p>
+<p>Below is an example plugin using the <code>finally</code> hook</p>
+<div class="highlight highlight-source-js"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-c1">module</span>.<span class="pl-en">exports</span> <span class="pl-k">=</span> <span class="pl-k">function</span> <span class="pl-en">myPlugin</span>(<span class="pl-smi">pluginConfig</span>) {
+  <span class="pl-k">return</span> {
+    <span class="pl-en">finally</span><span class="pl-k">:</span> () <span class="pl-k">=&gt;</span> {
+      <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>Do thing on finally step<span class="pl-pds">'</span></span>)
+    },
+  }
+}</pre></div></div>
+<p>After creating the plugin, add into your Netlify config file under <code>plugins</code></p>
+<div class="highlight highlight-source-yaml"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-ent">plugins</span>:
+  - <span class="pl-ent">type</span>: <span class="pl-s">./path/to/plugin</span>
+    <span class="pl-ent">config</span>:
+      <span class="pl-ent">foo</span>: <span class="pl-s">bar</span></pre></div></div>
+<p><strong>2. Using with via <code>build.lifecycle</code></strong></p>
+<div class="highlight highlight-source-yaml"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-ent">build</span>:
+  <span class="pl-ent">lifecycle</span>:
+    <span class="pl-ent">finally</span>:
+      - <span class="pl-s">echo "Do thing on finally step"</span></pre></div></div>
+</details>
+
+<h2><a id="user-content-configuration" class="anchor" aria-hidden="true" href="#configuration"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Configuration</h2>
+<p>Configuration can be written in <code>toml</code>, <code>yml</code>, <code>json</code>, or <code>json5</code>.</p>
+<p><strong>Example:</strong></p>
+<div class="highlight highlight-source-yaml"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-c"><span class="pl-c">#</span> Config file `plugins` defines plugins used by build. Plugins are optional</span>
+<span class="pl-ent">plugins</span>:
+  - <span class="pl-ent">type</span>: <span class="pl-s">./local/path/to/plugin-folder</span>
+    <span class="pl-ent">config</span>:
+      <span class="pl-ent">optionOne</span>: <span class="pl-s"><span class="pl-pds">'</span>hello<span class="pl-pds">'</span></span>
+      <span class="pl-ent">optionTwo</span>: <span class="pl-s"><span class="pl-pds">'</span>there<span class="pl-pds">'</span></span>
+  - <span class="pl-ent">type</span>: <span class="pl-s">plugin-from-npm</span>
+    <span class="pl-ent">config</span>:
+      <span class="pl-ent">optionOne</span>: <span class="pl-s"><span class="pl-pds">'</span>neat<span class="pl-pds">'</span></span>
+      <span class="pl-ent">arrayOfValues</span>:
+        - <span class="pl-s">david@netlify.com</span>
+        - <span class="pl-s">jim@netlify.com</span>
+
+<span class="pl-c"><span class="pl-c">#</span> Inline `build.lifecycle` steps can be defined</span>
+<span class="pl-ent">build</span>:
+  <span class="pl-ent">lifecycle</span>:
+    <span class="pl-ent">init</span>:
+      - <span class="pl-s">npm run foo</span>
+      - <span class="pl-s">export VALUE=lol</span>
+      - <span class="pl-s">echo "much wow"</span>
+    <span class="pl-ent">getCache</span>:
+      - <span class="pl-s">echo 'curl custom cache'</span>
+    <span class="pl-ent">preBuild</span>: <span class="pl-s">echo "${env:privateKey}"</span>
+    <span class="pl-ent">build</span>: <span class="pl-s">|</span>
+<span class="pl-s">      echo 'Hello Netlify Build!'</span>
+<span class="pl-s">      npm run build</span></pre></div></div>
+<p>Configuration now supports <code>environment</code> variables &amp; <code>secrets</code>.</p>
+<p>To reference an environment variable in Netlify config:</p>
+<div class="highlight highlight-source-yaml"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-ent">foo</span>: <span class="pl-s">${env:MY_ENV_VAR}</span></pre></div></div>
+<h2><a id="user-content-plugins" class="anchor" aria-hidden="true" href="#plugins"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Plugins</h2>
+<p>Netlify Plugins extend the functionality of the netlify build process.</p>
+<p>Plugins are POJOs (plain old JavaScript objects) that allow users to hook into the different lifecycle steps happening
+during their site builds.</p>
+<p>For example, hooking into the <code>preBuild</code> step to run something before your build command. Or the <code>postBuild</code> hook for
+running things after your site build has completed.</p>
+<div class="highlight highlight-source-js"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre>{
+  name<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>netlify-plugin-awesome<span class="pl-pds">'</span></span>,
+  <span class="pl-en">init</span><span class="pl-k">:</span> () <span class="pl-k">=&gt;</span> { <span class="pl-c"><span class="pl-c">/*</span> Run custom logic at beginning of build <span class="pl-c">*/</span></span> }
+  <span class="pl-en">preBuild</span><span class="pl-k">:</span> () <span class="pl-k">=&gt;</span> { <span class="pl-c"><span class="pl-c">/*</span> Run custom logic before build happens <span class="pl-c">*/</span></span> },
+  <span class="pl-en">finally</span><span class="pl-k">:</span> () <span class="pl-k">=&gt;</span> { <span class="pl-c"><span class="pl-c">/*</span> Run custom logic at the end of the build <span class="pl-c">*/</span></span> }
+  <span class="pl-c"><span class="pl-c">//</span> ... etc</span>
+}</pre></div></div>
+<p>Here is an example:</p>
+<div class="highlight highlight-source-js"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-c"><span class="pl-c">/*</span> file ./plugins/my-plugin/index.js <span class="pl-c">*/</span></span>
+<span class="pl-c1">module</span>.<span class="pl-en">exports</span> <span class="pl-k">=</span> <span class="pl-k">function</span> <span class="pl-en">exampleOne</span>(<span class="pl-smi">config</span>) {
+  <span class="pl-c"><span class="pl-c">//</span> do initial things with plugin 'config'</span>
+  <span class="pl-k">return</span> {
+    name<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>netlify-plugin-awesome<span class="pl-pds">'</span></span>,
+    <span class="pl-en">init</span><span class="pl-k">:</span> () <span class="pl-k">=&gt;</span> {
+      <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>Run custom logic at beginning of build<span class="pl-pds">'</span></span>)
+    },
+    <span class="pl-en">preBuild</span><span class="pl-k">:</span> () <span class="pl-k">=&gt;</span> {
+      <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>Run custom logic before build happens<span class="pl-pds">'</span></span>)
+    },
+    <span class="pl-en">postBuild</span><span class="pl-k">:</span> () <span class="pl-k">=&gt;</span> {
+      <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>Run custom logic after build happens<span class="pl-pds">'</span></span>)
+    },
+    <span class="pl-en">finally</span><span class="pl-k">:</span> () <span class="pl-k">=&gt;</span> {
+      <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>Run custom logic at the end of the build<span class="pl-pds">'</span></span>)
+    },
+  }
+}</pre></div></div>
+<p>To use this plugin, define the <code>plugins</code> key in your Netlify config file.</p>
+<div class="highlight highlight-source-yaml"><div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><span class="pl-ent">build</span>:
+  <span class="pl-ent">functions</span>: <span class="pl-s">src/functions</span>
+  <span class="pl-ent">publish</span>: <span class="pl-s">build</span>
+  <span class="pl-ent">command</span>: <span class="pl-s">npm run build</span>
+
+<span class="pl-c"><span class="pl-c">#</span> Netlify build plugins</span>
+<span class="pl-ent">plugins</span>:
+  <span class="pl-c"><span class="pl-c">#</span> Path to plugin. Can be local relative path or reference to node_modules</span>
+  - <span class="pl-ent">type</span>: <span class="pl-s">./plugins/my-plugin/</span>
+    <span class="pl-ent">config</span>:
+      <span class="pl-ent">a</span>: <span class="pl-s">hello</span>
+      <span class="pl-ent">b</span>: <span class="pl-s">goodbye</span></pre></div></div>
+<h3><a id="user-content-what-can-plugins-do" class="anchor" aria-hidden="true" href="#what-can-plugins-do"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>What can plugins do?</h3>
+<p>Plugins can do a-lot and we are excited what the JAMstack community will build!</p>
+<p><strong>Here are some examples:</strong></p>
+<ul>
+<li><strong>@netlify/plugin-lighthouse</strong> to automatically track your lighthouse site score between deployments</li>
+<li><strong>@netlify/plugin-sitemap</strong> to generate sitemaps after build</li>
+<li><strong>@netlify/plugin-notify</strong> to automatically wired up build notifications</li>
+<li><strong>@netlify/plugin-no-more-404</strong> fail build or warn if prior .html files disappear without corresponding Netlify
+redirects.</li>
+<li><strong>@netlify/plugin-axe</strong> to automatically audit site for accessibility issues</li>
+<li><strong>@netlify/plugin-encrypted-files</strong> to encrypt files in source, but to decrypt them locally and for the build, so that
+you can do <em>partial</em> open source sites without leaking announcements or private info.</li>
+<li><strong>@netlify/plugin-twiliosms</strong> text your boss every time you deploy so they know you're working -
+<a href="https://www.netlify.com/blog/2019/10/16/creating-and-using-your-first-netlify-build-plugin/" rel="nofollow">example guide here in Creating and using your first Netlify Build Plugin</a></li>
+<li><strong>@netlify/plugin-svgoptimizer</strong> to automatically optimize all SVGs in a directory when the site is built</li>
+<li><strong>netlify-plugin-cypress</strong> to automatically run integration tests</li>
+<li><strong>netlify-plugin-tweet-new-post</strong> to automatically share new content via twitter on new publish</li>
+<li>... the sky is the limit <g-emoji class="g-emoji" alias="rainbow" fallback-src="https://github.githubassets.com/images/icons/emoji/unicode/1f308.png">🌈</g-emoji></li>
+</ul>
+<h2><a id="user-content-cli-commands" class="anchor" aria-hidden="true" href="#cli-commands"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>CLI commands</h2>
+<p>Like <a href="https://www.netlify.com/products/dev/" rel="nofollow">Netlify dev</a>, Netlify build runs locally and in the remote CI context</p>
+<p>To execute your build locally, run the following CLI command:</p>
+<div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><code>netlify build
+</code></pre></div>
+<p>It's also possible to "try before you buy" and test out the build flow before executing any code with the <code>dry</code> run
+flag.</p>
+<p>The <code>--dry</code> flag will output everything that happens in the build flow without executing the plugin lifecycle methods.</p>
+<p>To execute a test run of the build locally, run the following CLI command:</p>
+<div class="codecopy codecopy-large">
+  <button class="codecopy-btn tooltipped tooltipped-s" aria-label="Copy to clipboard">
+    <svg height="16" class="codecopy-btn-icon" viewBox="0 0 14 16" version="1.1" width="16" aria-hidden="true">
+      <path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path>
+    </svg>
+  </button><pre><code>netlify build --dry
+</code></pre></div>
+<h2><a id="user-content-contributors" class="anchor" aria-hidden="true" href="#contributors"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Contributors</h2>
+<p>Thanks for contributing!</p>
+<p>Please see <a href="/netlify/build/blob/master/CONTRIBUTING.md">CONTRIBUTING.md</a> for instructions on how to set up and work on this repo itself.</p>
+</article>
   </body>
 </html>
