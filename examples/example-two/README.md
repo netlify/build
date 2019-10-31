@@ -34,21 +34,19 @@ The build process runs through a series of lifecycle `events`. These events are 
 how the Netlify build operates.
 
 <!-- AUTO-GENERATED-CONTENT:START (LIFECYCLE_TABLE) -->
-
-| Lifecycle hook                                                                      | Description                                 |
-| :---------------------------------------------------------------------------------- | :------------------------------------------ |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleinit">init</a>** ‏‏‎ ‏‏‎ ‏‏‎                     | Runs before anything else                   |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclegetcache">getCache</a>** ‏‏‎ ‏‏‎ ‏‏‎             | Fetch previous build cache                  |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleinstall">install</a>** ‏‏‎ ‏‏‎ ‏‏‎               | Install project dependencies                |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleprebuild">preBuild</a>** ‏‏‎ ‏‏‎ ‏‏‎             | Runs before functions & build commands run  |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclefunctionsbuild">functionsBuild</a>** ‏‏‎ ‏‏‎ ‏‏‎ | Build the serverless functions              |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclebuild">build</a>** ‏‏‎ ‏‏‎ ‏‏‎                   | Build commands are executed                 |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclepostbuild">postBuild</a>** ‏‏‎ ‏‏‎ ‏‏‎           | Runs after site & functions have been built |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclepackage">package</a>** ‏‏‎ ‏‏‎ ‏‏‎               | Package & optimize artifact                 |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclepredeploy">preDeploy</a>** ‏‏‎ ‏‏‎ ‏‏‎           | Runs before built artifacts are deployed    |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclesavecache">saveCache</a>** ‏‏‎ ‏‏‎ ‏‏‎           | Save cached assets                          |
-| 🎉 ‏‏‎ **<a href="#lifecyclefinally">finally</a>** ‏‏‎ ‏‏‎ ‏‏‎                      | Runs after anything else                    |
-
+| Lifecycle hook | Description |
+|:------|:-------|
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecycleinit">init</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Runs before anything else |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclegetcache">getCache</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Fetch previous build cache |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecycleinstall">install</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Install project dependencies |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecycleprebuild">preBuild</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Runs before functions & build commands run |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclefunctionsbuild">functionsBuild</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Build the serverless functions |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclebuild">build</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Build commands are executed |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclepostbuild">postBuild</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Runs after site & functions have been built |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclepackage">package</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Package & optimize artifact |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclepredeploy">preDeploy</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Runs before built artifacts are deployed |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclesavecache">saveCache</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Save cached assets |
+| 🎉 ‏‏‎ **<a href="#lifecyclefinally">finally</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Runs after anything else |
 <!-- AUTO-GENERATED-CONTENT:END (LIFECYCLE_TABLE) -->
 
 The Lifecycle flows through events and their `pre` and `post` counterparts.

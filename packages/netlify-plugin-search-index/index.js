@@ -2,14 +2,15 @@ const { tmpdir } = require('os')
 const path = require('path')
 const fs = require('fs')
 const { promisify } = require('util')
-const cpy = require('cpy')
 const {
   env: { DEPLOY_ID },
 } = require('process')
-const { zipFunctions } = require('@netlify/zip-it-and-ship-it')
 
+const cpy = require('cpy')
+const { zipFunctions } = require('@netlify/zip-it-and-ship-it')
 const htmlToText = require('html-to-text')
-const isNetlifyCI = require('../build/src/utils/is-netlify-ci')
+
+const isNetlifyCI = require('../build/src/utils/is-netlify-ci')  // eslint-disable-line no-unpublished-require
 
 function netlifyPluginSearchIndex(pluginConfig) {
   const searchIndexFolder = pluginConfig.searchIndexFolder || 'searchIndex'
@@ -20,7 +21,7 @@ function netlifyPluginSearchIndex(pluginConfig) {
     async postBuild(opts) {
       const { config } = opts
       const { build } = config
-      const { CACHE_DIR, BUILD_DIR } = opts.constants // where we start from
+      const { BUILD_DIR } = opts.constants // where we start from
 
       if (typeof BUILD_DIR === 'undefined') {
         throw new Error('must specify publish dir in netlify config [build] section')
