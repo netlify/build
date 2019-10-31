@@ -16,7 +16,7 @@ promote a positive and inclusive environment.
 
 ## Update Docs
 
-Docs are updated with `markdown-magic` - run `npm run docs` for it.
+Docs are updated with `markdown-magic` - run `npm run test:docs` for it.
 
 We also run this on precommit hooks with `husky`.
 
