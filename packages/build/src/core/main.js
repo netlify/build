@@ -11,6 +11,7 @@ const { loadPlugins } = require('../plugins/load')
 const { logBuildStart, logBuildError, logBuildSuccess, logBuildEnd } = require('../log/main')
 const { startTimer, endTimer } = require('../log/timer')
 const isNetlifyCI = require('../utils/is-netlify-ci')
+const { trackBuildComplete } = require('../utils/telemetry')
 
 const { getOptions } = require('./options')
 const { loadConfig } = require('./config')
@@ -61,6 +62,7 @@ const build = async function(options) {
     logBuildSuccess()
     const duration = endTimer(buildTimer, 'Netlify Build')
     logBuildEnd({ buildInstructions, config, duration })
+    trackBuildComplete({ buildInstructions, config, duration })
     return true
   } catch (error) {
     logBuildError(error)

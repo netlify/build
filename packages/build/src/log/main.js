@@ -3,7 +3,6 @@ const { basename } = require('path')
 const { tick, pointer, arrowDown } = require('figures')
 const omit = require('omit.js')
 
-const telemetry = require('../utils/telemetry')
 const { version } = require('../../package.json')
 
 const { log } = require('./logger')
@@ -194,14 +193,6 @@ const logBuildSuccess = function() {
 const logBuildEnd = function({ buildInstructions, config, duration }) {
   const sparkles = cyanBright('(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧')
   log(`\n${sparkles} Have a nice day!\n`)
-  const plugins = Object.values(config.plugins).map(({ type }) => type)
-  // telemetry noOps if BUILD_TELEMETRY_DISBALED set
-  telemetry.track('buildComplete', {
-    steps: buildInstructions.length,
-    duration,
-    pluginCount: plugins.length,
-    plugins,
-  })
 }
 
 module.exports = {
