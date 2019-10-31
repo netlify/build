@@ -5,10 +5,11 @@ This site is a backwards compatible example of how **Netlify Build** works with 
 This example is using the `netlify.toml` file and we will be walking through how `@netlify/build` interacts with it.
 
 <!-- AUTO-GENERATED-CONTENT:START (TOC) -->
+
 - [1. Running netlify build with existing config](#1-running-netlify-build-with-existing-config)
 - [2. Adding a build lifecycle steps to config](#2-adding-a-build-lifecycle-steps-to-config)
 - [3. Adding a plugins to the build process](#3-adding-a-plugins-to-the-build-process)
-<!-- AUTO-GENERATED-CONTENT:END -->
+  <!-- AUTO-GENERATED-CONTENT:END -->
 
 ## 1. Running netlify build with existing config
 
