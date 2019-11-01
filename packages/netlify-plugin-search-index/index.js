@@ -2,16 +2,15 @@ const { tmpdir } = require('os')
 const path = require('path')
 const fs = require('fs')
 const { promisify } = require('util')
-const makeDir = require('make-dir')
-const pathExists = require('path-exists')
-const readdirp = require('readdirp')
-
 const {
   env: { DEPLOY_ID },
 } = require('process')
 
+const makeDir = require('make-dir')
+const pathExists = require('path-exists')
+const readdirp = require('readdirp')
 const cpy = require('cpy')
-const { zipFunctions } = require('@netlify/zip-it-and-ship-it')
+const { zipFunctions } = require('@netlify/zip-it-and-ship-it') // eslint-disable-line
 const htmlToText = require('html-to-text')
 
 const isNetlifyCI = () => Boolean(process.env.DEPLOY_PRIME_URL)
@@ -68,7 +67,7 @@ function netlifyPluginSearchIndex(pluginConfig) {
       const functionsDir = 'searchIndexFunction'
       const buildDir = path.resolve(build.publish)
       const buildDirFunctions = path.resolve(buildDir, functionsDir)
-      ensureDirectoryExistence(buildDirFunctions)
+      await pathExists(buildDirFunctions)
       const searchIndexFunctionPath = path.join(buildDirFunctions, 'searchIndex')
       await cpy(__dirname + '/functionTemplate', searchIndexFunctionPath)
       // now we have copied it out to intermediate dir
