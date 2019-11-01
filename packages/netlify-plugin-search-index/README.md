@@ -28,7 +28,7 @@ returns search results to be lighter on your frontend.
 The generated function is available at `.netlify/functions/searchIndex` and you can use it with a search term:
 
 - `.netlify/functions/searchIndex?s=foo` or
-- `.netlify/functions/searchIndex?search=foo` or
+- `.netlify/functions/searchIndex?search=foo`
 
 Under the hood, the search function uses [fuse.js](https://fusejs.io/) and in future we may expose more configurations
 for this.
