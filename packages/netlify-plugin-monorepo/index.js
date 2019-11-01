@@ -1,10 +1,12 @@
+const os = require('os')
 const { resolve, dirname } = require('path')
-const { cwd } = require('process')
 
+const findUp = require('find-up')
 const execa = require('execa')
 const chalk = require('chalk')
 const { diff } = require('run-if-diff')
 
+const logPrefix = '>> '
 /**
  * Mono repo support
  * @param  {object} config - Plugin configuration
@@ -12,13 +14,16 @@ const { diff } = require('run-if-diff')
  */
 module.exports = {
   name: '@netlify/plugin-monorepo',
-  async init({ pluginConfig }) {
+  init: async ({ pluginConfig }) => {
     const { files, since } = pluginConfig
 
     if (!files) {
       console.log('monorepo plugin requires files array to work')
       return
     }
+
+    const filesArray = (typeof files === 'string') ? [files] : files
+
     /* Todo decide if config change should ignore mono repo ignore and trigger build
       const defaultFiles = [
         'netlify.toml',
@@ -28,25 +33,30 @@ module.exports = {
       ]
       */
     const defaultFiles = []
-
-    const filesToCheck = defaultFiles.concat(files).map(name => {
-      const parent = dirname(cwd())
-      const regex = new RegExp(`^${parent}/`)
+    const gitRoot = findRoot()
+    const filesToCheck = defaultFiles.concat(filesArray).map(name => {
+      const regex = new RegExp(`^${gitRoot}/`)
       return resolve(name).replace(regex, '')
     })
-    // console.log('filesToCheck', filesToCheck)
+
+
 
     console.log(chalk.yellowBright('Determining if build should proceed...\n'))
+    console.log('Checking Paths')
+    filesToCheck.forEach((p) => {
+      console.log(`- ${p}`)
+    })
+    console.log()
     try {
       const currentBranch = await gitBranchName()
       const result = await diff({
         since: since || currentBranch,
         files: filesToCheck,
       })
-      // console.log('result', result)
+      console.log('result', result)
       if (!result.matched.length) {
-        console.log(chalk.redBright(`No files we care about changed.\n`))
-        console.log(chalk.redBright(`Exit build early\n`))
+        console.log(chalk.greenBright(`No file changes detected\n`))
+        console.log(chalk.greenBright(`Exit build early 🎉\n`))
         process.exit(0)
       }
       // console.log(`Detected changes in:`, result.matched)
@@ -57,17 +67,34 @@ module.exports = {
         }
       })
       // console.log('changedFiles', changedFiles)
-      console.log(chalk.cyanBright(`Detected ${changedFiles.length} file changes\n`))
+      const changeWord = (changedFiles.length > 1) ? 'changes' : 'change'
+      console.log(chalk.cyanBright(`${logPrefix}Detected ${changedFiles.length} file ${changeWord}\n`))
       changedFiles.forEach(file => {
-        console.log(`File ${file.path} changed`)
+        console.log(`File ${chalk.yellowBright(file.path)} changed`)
       })
       console.log()
-      console.log(chalk.greenBright('Proceed with Build!\n'))
+      console.log(chalk.greenBright(`${logPrefix}Proceed with Build!\n`))
     } catch (error) {
       console.error(error)
       process.exit(0)
     }
   },
+}
+
+// Finds cwd's parent root directory
+function findRoot(cwd) {
+
+  const rootIndicator = findUp.sync(['.git'], {
+    cwd: cwd || process.cwd(),
+    type: 'directory'
+  })
+  if (typeof rootIndicator !== 'string' || rootIndicator == null) return cwd
+
+  const indicatorRoot = dirname(rootIndicator)
+  // To avoid thinking our project root is our global config
+  const root = indicatorRoot !== os.homedir() ? indicatorRoot : cwd
+
+  return root
 }
 
 async function gitBranchName() {
