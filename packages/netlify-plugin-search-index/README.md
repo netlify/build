@@ -19,7 +19,7 @@ plugins:
 
 ## What it does
 
-on `postBuild`, this plugin goes through your HTML files, converts them to searchable text, and stores them as a JSON
+On `postBuild`, this plugin goes through your HTML files, converts them to searchable text, and stores them as a JSON
 blob in `/searchIndex/searchIndex.json`. You can customize the folder name in case of conflict.
 
 You can request this blob in your clientside JavaScript, or you can use the generated function that reads this and
