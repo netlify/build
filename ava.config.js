@@ -6,5 +6,4 @@ export default {
   environmentVariables: {
     BUILD_TELEMETRY_DISABLED: 'true',
   },
-  serial: Boolean(process.env.GITHUB_ACTION),
 }
