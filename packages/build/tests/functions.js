@@ -12,6 +12,11 @@ test('Functions: invalid source directory', async t => {
   await runFixture(t, 'functions_invalid')
 })
 
+test('Functions: default directory', async t => {
+  await del(`${FIXTURES_DIR}/functions_default/.netlify/functions/`)
+  await runFixture(t, 'functions_default')
+})
+
 test('Functions: install dependencies top-level', async t => {
   await del([
     `${FIXTURES_DIR}/functions_deps/.netlify/functions/`,

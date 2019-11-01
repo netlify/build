@@ -14,7 +14,7 @@ const { installDependencies } = require('../../utils/install')
 
 // Plugin to bundle Netlify functions with @netlify/zip-it-and-ship-it
 const functionsPlugin = function(pluginConfig, { build: { functions: srcDir } }) {
-  if (srcDir === undefined) {
+  if (srcDir === undefined && !pathExists.sync(DEFAULT_SRC_DIR)) {
     return { name: NAME }
   }
 
@@ -22,11 +22,12 @@ const functionsPlugin = function(pluginConfig, { build: { functions: srcDir } })
 }
 
 const NAME = '@netlify/plugin-functions-core'
+const DEFAULT_SRC_DIR = 'functions'
 
 // Validate plugin configuration at startup
 const init = async function({
   config: {
-    build: { functions: srcDir },
+    build: { functions: srcDir = DEFAULT_SRC_DIR },
   },
 }) {
   if (!(await pathExists(srcDir))) {
@@ -37,7 +38,7 @@ const init = async function({
 // Install Netlify functions dependencies
 const install = async function({
   config: {
-    build: { functions: srcDir },
+    build: { functions: srcDir = DEFAULT_SRC_DIR },
   },
 }) {
   const packagePaths = await fastGlob([`${srcDir}/**/package.json`, `!${srcDir}/**/node_modules`], {
@@ -59,7 +60,7 @@ const install = async function({
 // Bundle Netlify functions
 const functionsBuild = async function({
   config: {
-    build: { functions: srcDir },
+    build: { functions: srcDir = DEFAULT_SRC_DIR },
   },
 }) {
   const destDir = getDestDir()
