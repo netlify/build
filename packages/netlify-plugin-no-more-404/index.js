@@ -2,6 +2,7 @@ const path = require('path')
 const fs = require('fs')
 const { promisify } = require('util')
 
+const readDir = promisify(fs.readdir)
 const chalk = require('chalk')
 const Conf = require('conf') // for simple kv store
 
@@ -9,15 +10,15 @@ const matchRules = require('./matchRules')
 // const test404plugin = true // toggle this off for production
 const test404plugin = false // toggle this off for production
 
-function netlify404nomore(pluginConfig) {
+module.exports = function netlify404nomore(pluginConfig) {
   let on404 = pluginConfig.on404 || 'error' // either 'warn' or 'error'
   let cacheKey = pluginConfig.cacheKey || 'pluginNoMore404Cache' // string - helps to quickly switch to a new cache if a mistake was made
   return {
     name: '@netlify/plugin-no-more-404',
     /* index html files preDeploy */
-    preDeploy: async opts => {
+    preDeploy: async ({ constants }) => {
       // console.log({ opts })
-      const { CACHE_DIR, BUILD_DIR } = opts.constants // where we start from
+      const { CACHE_DIR, BUILD_DIR } = constants // where we start from
 
       // let BUILD_DIR = opts.config.build.publish // build folder from netlify config.. there ought to be a nicer way to get this if set elsewhere
       if (typeof BUILD_DIR === 'undefined') {
@@ -141,13 +142,10 @@ function netlify404nomore(pluginConfig) {
   }
 }
 
-module.exports = netlify404nomore
-
-const readdir = promisify(fs.readdir)
 // recursive crawl to get a list of filepaths
 // https://gist.github.com/kethinov/6658166
 var walk = async function(dir, filelist) {
-  var files = await readdir(dir)
+  var files = await readDir(dir)
   filelist = filelist || []
   await Promise.all(
     files.map(async function(file) {

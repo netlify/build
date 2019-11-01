@@ -1,11 +1,58 @@
 const fs = require('fs')
 const { resolve } = require('path')
 
+const merge = require('lodash.merge')
 const svgo = require('svgo')
 
 const pkg = require('./package.json')
 
-const svgoinit = new svgo({
+module.exports = {
+  name: '@netlify/plugin-svgoptimizer',
+  init: async ({ pluginConfig }) => {
+    const srcDirectory = pluginConfig.directory
+
+    if (!srcDirectory) {
+      return console.log(`No src found in ${pkg.name} plugin config. Please update SVGO plugin settings`)
+    }
+    const directoryPath = resolve(srcDirectory)
+    const svgoSettings = pluginConfig.svgoSettings || {}
+
+    await optimzeSvgFiles(directoryPath, svgoSettings)
+  },
+}
+
+function optimzeSvgFiles(directoryPath, svgoSettings) {
+  const settings = merge(defaultSVGOConfig, svgoSettings)
+  const svgoinit = new svgo(settings)
+  return new Promise((resolve, reject) => {
+    fs.readdir(directoryPath, (err, files) => {
+      if (err) console.log(`Unable to scan directory: ${err}`)
+
+      files.forEach(function(file) {
+        const filePath = resolve(directoryPath, file)
+        fs.readFile(filePath, 'utf8', function(err, data) {
+          if (err) {
+            console.log(err)
+            return reject(err)
+          }
+
+          svgoinit.optimize(data, { path: filePath }).then(result => {
+            //take the file and rewrite it with the new optimized SVG
+            fs.writeFile(filePath, result.data, err => {
+              if (err) {
+                return reject(err)
+              }
+              console.log('SVG optimized correctly!')
+            })
+          })
+        })
+      })
+      return resolve(true)
+    })
+  })
+}
+
+const defaultSVGOConfig = {
   plugins: [
     {
       cleanupAttrs: true,
@@ -107,34 +154,4 @@ const svgoinit = new svgo({
       removeDimensions: true,
     },
   ],
-})
-
-module.exports = {
-  name: '@netlify/plugin-svgoptimizer',
-  init({ pluginConfig }) {
-    const srcDirectory = pluginConfig.src.directory
-
-    if (!srcDirectory) return console.log(`No src found in ${pkg.name} plugin config`)
-    const directoryPath = resolve(srcDirectory)
-
-    //scanning the directory and then reading each file
-    fs.readdir(directoryPath, (err, files) => {
-      if (err) console.log(`Unable to scan directory: ${err}`)
-
-      files.forEach(function(file) {
-        const filePath = resolve(directoryPath, file)
-        fs.readFile(filePath, 'utf8', function(err, data) {
-          if (err) console.log(err)
-
-          svgoinit.optimize(data, { path: filePath }).then(result => {
-            //take the file and rewrite it with the new optimized SVG
-            fs.writeFile(filePath, result.data, err => {
-              if (err) throw err
-              console.log('SVG optimized correctly!')
-            })
-          })
-        })
-      })
-    })
-  },
 }

@@ -5,6 +5,7 @@ const { zipFunction } = require('@netlify/zip-it-and-ship-it')
 
 module.exports = {
   name: '@netlify/plugin-functions',
+  // Override default function bundling
   '@netlify/functions:functionsBuild': async ({ pluginConfig, config }) => {
     const { functions } = pluginConfig
     const { build } = config

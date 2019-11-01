@@ -5,6 +5,22 @@ const path = require('path')
 const sm = require('sitemap')
 const globby = require('globby')
 
+module.exports = {
+  name: '@netlify/plugin-sitemap',
+  postBuild: async ({ constants, pluginConfig }) => {
+    const baseUrl = pluginConfig.baseUrl || process.env.SITE
+    const buildDir = pluginConfig.dir || constants.BUILD_DIR
+    if (!baseUrl) {
+      throw new Error('Sitemap plugin missing homepage value')
+    }
+    if (!buildDir) {
+      throw new Error('Sitemap plugin missing build directory')
+    }
+    console.log('Creating sitemap from files...')
+    await makeSitemap({ homepage: baseUrl, distPath: buildDir })
+  },
+}
+
 async function makeSitemap(opts = {}) {
   const { distPath, fileName, homepage } = opts
   const htmlFiles = `${distPath}/**/**.html`
@@ -41,20 +57,4 @@ async function makeSitemap(opts = {}) {
   const sitemapFile = path.join(distPath, sitemapFileName)
   fs.writeFileSync(sitemapFile, xml, 'utf-8')
   console.log('Sitemap Built!', sitemapFile)
-}
-
-module.exports = {
-  name: '@netlify/plugin-sitemap',
-  postBuild: async ({ constants, pluginConfig }) => {
-    const baseUrl = pluginConfig.baseUrl || process.env.SITE
-    const buildDir = pluginConfig.dir || constants.BUILD_DIR
-    if (!baseUrl) {
-      throw new Error('Sitemap plugin missing homepage value')
-    }
-    if (!buildDir) {
-      throw new Error('Sitemap plugin missing build directory')
-    }
-    console.log('Creating sitemap from files...')
-    await makeSitemap({ homepage: baseUrl, distPath: buildDir })
-  },
 }

@@ -10,7 +10,7 @@ const Conf = require('conf') // for simple kv store
 module.exports = {
   name: '@netlify/plugin-lighthouse',
   // users will be tempted to use semver, but we really don't care
-  async postDeploy({ pluginConfig }) {
+  postDeploy: async ({ pluginConfig }) => {
     let { site = process.env.SITE, currentVersion, compareWithVersion = 'init' } = pluginConfig
 
     if (typeof currentVersion === `undefined`) {

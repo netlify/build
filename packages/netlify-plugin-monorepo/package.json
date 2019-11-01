@@ -16,6 +16,10 @@
   "dependencies": {
     "chalk": "^2.4.2",
     "execa": "^3.2.0",
+    "find-up": "^4.1.0",
     "run-if-diff": "^2.0.0"
+  },
+  "engines": {
+    "node": ">=8.12.0"
   }
 }

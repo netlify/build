@@ -19,5 +19,8 @@
     "conf": "^6.1.0",
     "netlify-redirect-parser": "^1.0.3",
     "netlify-redirector": "^0.1.0"
+  },
+  "engines": {
+    "node": ">=8.12.0"
   }
 }
