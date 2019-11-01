@@ -14,16 +14,19 @@ const BINARY_PATH = getBinPath({ cwd: __dirname })
 const FIXTURES_DIR = `${__dirname}/../fixtures`
 
 // Run the netlify-build using a fixture directory, then snapshot the output.
-// CLI `flags` can be specified.
-// The `config` can be overriden.
-// Specific `execaOptions` can be specified.
-const runFixture = async function(t, fixtureName, { flags = '', config, ...execaOptions } = {}) {
+// Options:
+//  - `flags` {string[]}: CLI flags
+//  - `config` {string}: `--config` CLI flag
+//  - `cwd` {string}: current directory when calling `netlify-build`
+//  - `env` {object}: environment variable
+const runFixture = async function(t, fixtureName, { flags = '', config, cwd, env } = {}) {
   const configFlag = getConfigFlag(config, fixtureName)
   const binaryPath = await BINARY_PATH
   const { all, exitCode } = await execa.command(`${binaryPath} ${configFlag} ${flags}`, {
     all: true,
     reject: false,
-    ...execaOptions,
+    cwd,
+    env,
   })
 
   doTestAction(t, all)
