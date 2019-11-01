@@ -5,5 +5,5 @@ module.exports = {
   },
   finally: () => {
     console.log('build done')
-  }
+  },
 }

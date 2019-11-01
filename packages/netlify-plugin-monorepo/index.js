@@ -22,7 +22,7 @@ module.exports = {
       return
     }
 
-    const filesArray = (typeof files === 'string') ? [files] : files
+    const filesArray = typeof files === 'string' ? [files] : files
 
     /* Todo decide if config change should ignore mono repo ignore and trigger build
       const defaultFiles = [
@@ -39,11 +39,9 @@ module.exports = {
       return resolve(name).replace(regex, '')
     })
 
-
-
     console.log(chalk.yellowBright('Determining if build should proceed...\n'))
     console.log('Checking Paths')
-    filesToCheck.forEach((p) => {
+    filesToCheck.forEach(p => {
       console.log(`- ${p}`)
     })
     console.log()
@@ -67,7 +65,7 @@ module.exports = {
         }
       })
       // console.log('changedFiles', changedFiles)
-      const changeWord = (changedFiles.length > 1) ? 'changes' : 'change'
+      const changeWord = changedFiles.length > 1 ? 'changes' : 'change'
       console.log(chalk.cyanBright(`${logPrefix}Detected ${changedFiles.length} file ${changeWord}\n`))
       changedFiles.forEach(file => {
         console.log(`File ${chalk.yellowBright(file.path)} changed`)
@@ -83,10 +81,9 @@ module.exports = {
 
 // Finds cwd's parent root directory
 function findRoot(cwd) {
-
   const rootIndicator = findUp.sync(['.git'], {
     cwd: cwd || process.cwd(),
-    type: 'directory'
+    type: 'directory',
   })
   if (typeof rootIndicator !== 'string' || rootIndicator == null) return cwd
 
