@@ -12,7 +12,7 @@
     "netlify-plugin"
   ],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "@netlify/zip-it-and-ship-it": "^0.3.1",
     "cpy": "^7.3.0",
