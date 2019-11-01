@@ -15,5 +15,8 @@
   "license": "ISC",
   "dependencies": {
     "twilio": "^3.33.2"
+  },
+  "engines": {
+    "node": ">=8.12.0"
   }
 }

@@ -1,4 +1,4 @@
-# Netlify monorepo support
+# Netlify Monorepo Plugin
 
 A netlify plugin that determines if a sub folder should build or exit early.
 
