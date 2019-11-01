@@ -46,16 +46,14 @@ const cleanStackLine = function(lines, line) {
 const STACK_LINE_REGEXP = /^\s+at /
 
 const isUselessStack = function(line) {
-  return USELESS_STACK_REGEXP.test(line)
+  return line.includes('<anonymous')
 }
-
-const USELESS_STACK_REGEXP = /^\s+at <anonymous>/
 
 const isInternalStack = function(line) {
   // This is only needed for local builds
   return INTERNAL_STACK_REGEXP.test(line)
 }
 
-const INTERNAL_STACK_REGEXP = /packages[/\\]build[/\\]src[/\\]/
+const INTERNAL_STACK_REGEXP = /packages[/\\]build[/\\](src|node_modules)[/\\]/
 
 module.exports = { cleanStacks }
