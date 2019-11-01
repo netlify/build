@@ -21,13 +21,10 @@ build:
 plugins:
   - type: '@netlify/plugin-svgoptimizer'
     config:
-      src:
-        # directory: where our svg assets are located. please note: this will overwrite the files in this directory
-        directory: /src/assets/
+      directory: /src/assets/
 ```
 
-### Env Variable
+## Configuration
 
-For now, you will also need this in your environment variables:
-
-- **NETLIFY_BUILD_LIFECYCLE_TRIAL** - enabled=true
+- `directory` - where our svg assets are located. please note: this will overwrite the files in this directory
+- `svgoSettings` - Custom SVGO setting overrides
