@@ -13,14 +13,27 @@ const {
 
 module.exports = {
   name: '@netlify/plugin-twiliosms',
-  async finally() {
+  finally: async ({ pluginConfig }) => {
     console.log('Finish the build up, prepping to text!')
+    if (!ACCOUNT_SID) {
+      throw new Error('No ACCOUNT_SID found for twilio plugin')
+    }
+    if (!AUTH_TOKEN) {
+      throw new Error('No AUTH_TOKEN found for twilio plugin')
+    }
+    if (!TO_NUM) {
+      throw new Error('No TO_NUM found for twilio plugin')
+    }
+    if (!FROM_NUM) {
+      throw new Error('No FROM_NUM found for twilio plugin')
+    }
 
     const client = new Twilio(ACCOUNT_SID, AUTH_TOKEN)
+    const message = pluginConfig.message || 'Hi there, we just deployed the site successfully!'
     const { sid } = await client.messages.create({
-      body: 'Hi there, we just deployed the site successfully!',
-      to: TO_NUM,
-      from: FROM_NUM,
+      body: message,
+      to: pluginConfig.to || TO_NUM,
+      from: pluginConfig.from | FROM_NUM,
     })
     console.log(sid)
   },
