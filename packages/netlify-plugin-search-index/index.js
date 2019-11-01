@@ -2,6 +2,10 @@ const { tmpdir } = require('os')
 const path = require('path')
 const fs = require('fs')
 const { promisify } = require('util')
+const makeDir = require('make-dir')
+const pathExists = require('path-exists')
+const readdirp = require('readdirp')
+
 const {
   env: { DEPLOY_ID },
 } = require('process')
@@ -10,7 +14,7 @@ const cpy = require('cpy')
 const { zipFunctions } = require('@netlify/zip-it-and-ship-it')
 const htmlToText = require('html-to-text')
 
-const isNetlifyCI = require('../build/src/utils/is-netlify-ci') // eslint-disable-line node/no-unpublished-require
+const isNetlifyCI = () => Boolean(process.env.DEPLOY_PRIME_URL)
 
 function netlifyPluginSearchIndex(pluginConfig) {
   const searchIndexFolder = pluginConfig.searchIndexFolder || 'searchIndex'
@@ -29,7 +33,9 @@ function netlifyPluginSearchIndex(pluginConfig) {
 
       const buildFolderPath = path.resolve(BUILD_DIR)
       let newManifest = []
-      newManifest = await walk(buildFolderPath)
+      newManifest = await readdirp
+        .promise(buildFolderPath, { directoryFilter: ['node_modules'] })
+        .then(x => x.map(y => y.fullPath))
       newManifest = newManifest.filter(x => x.endsWith('.html'))
       let searchIndex = {}
       let customOpts = {
@@ -48,12 +54,12 @@ function netlifyPluginSearchIndex(pluginConfig) {
         }),
       )
       let searchIndexPath = path.join(buildFolderPath, searchIndexFolder, 'searchIndex.json')
-      if (fs.existsSync(searchIndexPath)) {
+      if (await pathExists(searchIndexPath)) {
         console.warn(
           `searchIndex detected at ${searchIndexPath}, will overwrite for this build but this may indicate an accidental conflict`,
         )
       }
-      ensureDirectoryExistence(searchIndexPath)
+      await makeDir(searchIndexPath)
       let stringifiedIndex = JSON.stringify(searchIndex)
       fs.writeFileSync(searchIndexPath, stringifiedIndex)
 
@@ -77,32 +83,3 @@ function netlifyPluginSearchIndex(pluginConfig) {
   }
 }
 module.exports = netlifyPluginSearchIndex
-
-const readdir = promisify(fs.readdir)
-// recursive crawl to get a list of filepaths
-// https://gist.github.com/kethinov/6658166
-var walk = async function(dir, filelist) {
-  var files = await readdir(dir)
-  filelist = filelist || []
-  await Promise.all(
-    files.map(async function(file) {
-      const dirfile = path.join(dir, file)
-      if (fs.statSync(dirfile).isDirectory()) {
-        filelist = await walk(dirfile + '/', filelist)
-      } else {
-        filelist.push(dirfile)
-      }
-    }),
-  )
-  return filelist
-}
-
-// https://stackoverflow.com/questions/13542667/create-directory-when-writing-to-file-in-node-js
-function ensureDirectoryExistence(filePath) {
-  var dirname = path.dirname(filePath)
-  if (fs.existsSync(dirname)) {
-    return true
-  }
-  ensureDirectoryExistence(dirname)
-  fs.mkdirSync(dirname)
-}

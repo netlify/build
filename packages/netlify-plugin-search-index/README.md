@@ -4,9 +4,12 @@ Generate a Search Index you can query via JavaScript or a Netlify Function
 
 ## You may not need this
 
-There are other ways to add search to your site, like using Algolia or [Vanilla JS with a custom search Index](https://www.hawksworx.com/blog/adding-search-to-a-jamstack-site/). 
+There are other ways to add search to your site, like using Algolia or
+[Vanilla JS with a custom search Index](https://www.hawksworx.com/blog/adding-search-to-a-jamstack-site/).
 
-However, you may wish to have a generic way to generate this index based only on crawling your generated static site, or you may wish to do large index searches in a serverless function instead of making your user download the entire index and run clientside (tradeoffs abound). If that describes you, read on
+However, you may wish to have a generic way to generate this index based only on crawling your generated static site, or
+you may wish to do large index searches in a serverless function instead of making your user download the entire index
+and run clientside (tradeoffs abound). If that describes you, read on
 
 ## How to use
 
