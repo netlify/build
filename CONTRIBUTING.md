@@ -64,6 +64,10 @@ cd examples/example-two
 npm i
 ```
 
+## Testing
+
+See our [testing documentation](packages/build/tests/README.md) to learn about our integration tests setup.
+
 ## Requirements
 
 Linting is performed with ESLint using the [following configuration](.eslintrc.json).
