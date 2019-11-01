@@ -46,7 +46,7 @@ const cleanStackLine = function(lines, line) {
 const STACK_LINE_REGEXP = /^\s+at /
 
 const isUselessStack = function(line) {
-  return line.includes('<anonymous')
+  return line.includes('<anonymous>')
 }
 
 const isInternalStack = function(line) {
