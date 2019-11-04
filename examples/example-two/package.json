@@ -20,6 +20,7 @@
     "@netlify/plugin-axe": "file:../../packages/netlify-plugin-axe",
     "@netlify/plugin-lighthouse": "file:../../packages/netlify-plugin-lighthouse",
     "@netlify/plugin-sitemap": "file:../../packages/netlify-plugin-sitemap",
+    "@netlify/plugin-search-index": "file:../../packages/netlify-plugin-search-index",
     "cross-env": "^5.2.0"
   },
   "dependencies": {

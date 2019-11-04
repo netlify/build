@@ -2,3 +2,5 @@ build
 node_modules
 .DS_Store
 .axe-results
+functions/searchIndex
+functions/myFuncName.zip

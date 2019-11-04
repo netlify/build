@@ -19,7 +19,7 @@ npm run plan
 Run build lifecycle
 
 ```
-npm run go
+npm run build
 ```
 
 ## About

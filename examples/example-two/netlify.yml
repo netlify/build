@@ -13,6 +13,7 @@ build:
 
 # Build Plugins
 plugins:
+  - type: '@netlify/plugin-search-index'
   - type: ./plugins/plugin-one
   - type: ./plugins/plugin-two
   - type: ./plugins/dynamic

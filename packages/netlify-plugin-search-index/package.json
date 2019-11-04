@@ -1,0 +1,24 @@
+{
+  "name": "@netlify/plugin-search-index",
+  "private": true,
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\""
+  },
+  "keywords": [
+    "netlify",
+    "netlify-plugin"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@netlify/zip-it-and-ship-it": "^0.4.0-5",
+    "cpy": "^7.3.0",
+    "html-to-text": "^5.1.1",
+    "make-dir": "^3.0.0",
+    "path-exists": "^4.0.0",
+    "readdirp": "^3.2.0"
+  }
+}
