@@ -4,6 +4,8 @@ const isPlainObj = require('is-plain-obj')
 const { LIFECYCLE } = require('../../core/lifecycle')
 const { serializeList } = require('../../utils/list')
 
+const { validateSchemaSyntax } = require('./json_schema')
+
 // Validate the shape of a plugin return value
 // TODO: validate allowed characters in `logic` properties
 const validatePlugin = function(logic) {
@@ -105,6 +107,23 @@ const isValidScope = function(scope) {
 
 const ALLOWED_SCOPES = ['*', ...Object.keys(API.prototype)]
 
-const VALIDATORS = { name: validateName, scopes: validateScopes }
+// Validate `plugin.config`
+const validateConfigSchema = function(configSchema) {
+  if (!isPlainObj(configSchema)) {
+    throw new Error(`Property 'schema' must be an object`)
+  }
+
+  Object.entries(configSchema).forEach(validateConfigProp)
+}
+
+const validateConfigProp = function([propName, jsonSchema]) {
+  if (!isPlainObj(jsonSchema)) {
+    throw new Error(`Property 'schema.${propName}' must be an object`)
+  }
+
+  validateSchemaSyntax(jsonSchema, `Plugin property 'schema.${propName}'`)
+}
+
+const VALIDATORS = { name: validateName, scopes: validateScopes, config: validateConfigSchema }
 
 module.exports = { validatePlugin }
