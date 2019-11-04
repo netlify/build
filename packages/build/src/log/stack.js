@@ -46,7 +46,12 @@ const cleanStackLine = function(lines, line) {
 const STACK_LINE_REGEXP = /^\s+at /
 
 const isUselessStack = function(line) {
-  return line.includes('<anonymous>')
+  return (
+    // Anonymous function
+    line.includes('<anonymous>') ||
+    // nyc internal code
+    line.includes('node_modules/append-transform')
+  )
 }
 
 const isInternalStack = function(line) {
