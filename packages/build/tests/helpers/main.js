@@ -27,12 +27,16 @@ const runFixture = async function(t, fixtureName, { flags = '', config, cwd, env
     reject: false,
     cwd,
     env,
+    timeout: TIMEOUT,
   })
 
   doTestAction(t, all)
 
   return { all, exitCode }
 }
+
+// 10 minutes timeout
+const TIMEOUT = 6e5
 
 // The `config` flag can be overriden, but defaults to the `netlify.yml` inside
 // the fixture directory
