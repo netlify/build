@@ -19,7 +19,7 @@ const FIXTURES_DIR = `${__dirname}/../fixtures`
 //  - `config` {string}: `--config` CLI flag
 //  - `cwd` {string}: current directory when calling `netlify-build`
 //  - `env` {object}: environment variable
-const runFixture = async function(t, fixtureName, { flags = '', config, cwd, env } = {}) {
+const runFixture = async function(t, fixtureName, { flags = '', config, cwd, env, debug = false } = {}) {
   const configFlag = getConfigFlag(config, fixtureName)
   const binaryPath = await BINARY_PATH
   const { all, exitCode } = await execa.command(`${binaryPath} ${configFlag} ${flags}`, {
@@ -29,7 +29,7 @@ const runFixture = async function(t, fixtureName, { flags = '', config, cwd, env
     env,
   })
 
-  doTestAction(t, all)
+  doTestAction({ t, all, debug })
 
   return { all, exitCode }
 }
@@ -51,12 +51,19 @@ const getConfigFlag = function(config, fixtureName) {
 // The `PRINT` environment variable can be set to `1` to run the test in print
 // mode. Print mode is a debugging mode which shows the test output but does
 // not create nor compare its snapshot.
-const doTestAction = function(t, all) {
-  if (PRINT !== '1') {
-    t.snapshot(normalizeOutput(all))
-    return
+const doTestAction = function({ t, all, debug }) {
+  if (PRINT === '1') {
+    return printOutput(t, all)
   }
 
+  if (debug) {
+    return t.snapshot(all)
+  }
+
+  t.snapshot(normalizeOutput(all))
+}
+
+const printOutput = function(t, all) {
   console.log(`
 ${chalk.magentaBright.bold(`${LINE}
   ${t.title}
