@@ -29,3 +29,7 @@ test('Process errors: uncaughtException', async t => {
 test('Process errors: unhandledRejection', async t => {
   await runFixture(t, 'process_error_unhandled_rejection')
 })
+
+test('Exits in plugins', async t => {
+  await runFixture(t, 'local_plugin_exit')
+})
