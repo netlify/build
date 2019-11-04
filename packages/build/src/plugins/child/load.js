@@ -3,6 +3,7 @@ const { getOverride } = require('../override')
 
 const { getLogic } = require('./logic')
 const { validatePlugin } = require('./validate')
+const { validatePluginConfig } = require('./config')
 const { getApiClient } = require('./api')
 const { getConstants } = require('./constants')
 
@@ -16,6 +17,7 @@ const loadPlugin = async function() {
 
   const logic = getLogic(payload)
   validatePlugin(logic)
+  validatePluginConfig(logic, payload)
 
   const hooks = getPluginHooks(logic, payload)
   await sendEventToParent('load', hooks)
