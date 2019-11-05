@@ -1,3 +1,5 @@
+const { dirname } = require('path')
+
 const configorama = require('configorama')
 
 const { getConfigPath } = require('./path')
@@ -6,6 +8,7 @@ const { normalizeConfig } = require('./normalize')
 
 const resolveConfig = async function(configFile, { cwd, context } = {}) {
   const configPath = await getConfigPath(configFile, cwd)
+  const baseDir = dirname(configPath)
 
   const config = await configorama(configPath, {
     options: { context },
@@ -31,7 +34,7 @@ const resolveConfig = async function(configFile, { cwd, context } = {}) {
 
   validateConfig(config)
 
-  const configA = normalizeConfig(config)
+  const configA = await normalizeConfig(config, baseDir)
   return configA
 }
 

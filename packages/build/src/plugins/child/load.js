@@ -15,14 +15,15 @@ const { getConstants } = require('./constants')
 const loadPlugin = async function() {
   const { payload } = await getEventFromParent('load')
 
-  const logic = getLogic(payload)
+  const constants = getConstants(payload)
+  const logic = getLogic(payload, constants)
   validatePlugin(logic)
   validatePluginConfig(logic, payload)
 
   const hooks = getPluginHooks(logic, payload)
   await sendEventToParent('load', hooks)
 
-  const context = getContext(logic, hooks, payload)
+  const context = getContext(logic, hooks, constants, payload)
   return context
 }
 
@@ -45,9 +46,8 @@ const getPluginHook = function({ method, hook, name, id = name, type, core }) {
 }
 
 // Retrieve context passed to every hook method
-const getContext = function(logic, hooks, { pluginConfig, config, configPath, token }) {
+const getContext = function(logic, hooks, constants, { pluginConfig, config, configPath, baseDir, token }) {
   const api = getApiClient({ logic, token })
-  const constants = getConstants(configPath, config)
   return { hooks, api, constants, pluginConfig, config }
 }
 

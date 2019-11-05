@@ -9,11 +9,11 @@ test('Test TOML', async t => {
 
   t.deepEqual(config, {
     build: {
-      publish: 'dist',
+      publish: `${FIXTURES_DIR}/dist`,
       lifecycle: {
         build: ['npm run build'],
       },
-      functions: 'functions',
+      functions: `${FIXTURES_DIR}/functions`,
     },
     plugins: [],
   })
@@ -24,11 +24,11 @@ test('Test YAML', async t => {
 
   t.deepEqual(config, {
     build: {
-      publish: 'dist',
+      publish: `${FIXTURES_DIR}/dist`,
       lifecycle: {
         build: ['npm run build'],
       },
-      functions: 'functions',
+      functions: `${FIXTURES_DIR}/functions`,
     },
     plugins: [],
   })
@@ -39,11 +39,11 @@ test('Test JSON', async t => {
 
   t.deepEqual(config, {
     build: {
-      publish: 'dist',
+      publish: `${FIXTURES_DIR}/dist`,
       lifecycle: {
         build: ['npm run build'],
       },
-      functions: 'functions',
+      functions: `${FIXTURES_DIR}/functions`,
     },
     plugins: [],
   })

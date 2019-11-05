@@ -6,34 +6,15 @@ const { zipFunction } = require('@netlify/zip-it-and-ship-it')
 module.exports = {
   name: '@netlify/plugin-functions',
   // Override default function bundling
-  '@netlify/functions:functionsBuild': async ({ pluginConfig, config }) => {
-    const { functions } = pluginConfig
-    const { build } = config
-
-    if (!build || !build.publish) {
-      throw new Error('No build settings')
+  '@netlify/functions:functionsBuild': async ({ constants: { FUNCTIONS_SRC, FUNCTIONS_DIST, BUILD_DIR } }) => {
+    if (FUNCTIONS_SRC === undefined) {
+      throw new Error('You must specify config.build.functions when using netlify-plugin-functions')
     }
 
-    const functionsDir = build.functions
-    if (!functionsDir) {
-      console.log('No functions directory found')
-      return
-    }
-
-    console.log('Configuring Functions...')
-    console.log(pluginConfig)
-    if (!functions) {
-      throw new Error('You must provide functions to the functions plugin')
-    }
-
-    const buildFolder = resolve('build')
-    const destFolder = resolve(buildFolder, 'functions')
-
-    const data = Object.keys(functions).reduce(
+    const data = Object.keys(FUNCTIONS_SRC).reduce(
       (acc, functionName) => {
-        const functionData = functions[functionName]
+        const functionData = FUNCTIONS_SRC[functionName]
         const functionPath = resolve(functionData.handler)
-        // const functionFileName = path.basename(functionData.handler).replace(/\.js$/, '')
 
         // Add rewrites rules
         const originalPath = `/.netlify/functions/${functionName}`
@@ -61,19 +42,17 @@ module.exports = {
       },
     )
 
-    const buildDir = resolve(build.publish)
-    const buildDirFunctions = resolve(buildDir, functionsDir)
     // Clean functions deploy directory
-    await fs.emptyDir(buildDirFunctions)
+    await fs.emptyDir(FUNCTIONS_DIST)
 
     const processFuncs = data.functions.map(async func => {
-      return processFunction(func, destFolder)
+      return processFunction(func, FUNCTIONS_DIST)
     })
 
     await Promise.all(processFuncs)
 
     // Write to redirects file
-    await writeRedirectsFile(buildFolder, data.redirects, data.rewrites)
+    await writeRedirectsFile(BUILD_DIR, data.redirects, data.rewrites)
 
     console.log('Functions ready!')
   },

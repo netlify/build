@@ -20,11 +20,6 @@ module.exports = function netlify404nomore(pluginConfig) {
       // console.log({ opts })
       const { CACHE_DIR, BUILD_DIR } = constants // where we start from
 
-      // let BUILD_DIR = opts.config.build.publish // build folder from netlify config.. there ought to be a nicer way to get this if set elsewhere
-      if (typeof BUILD_DIR === 'undefined') {
-        throw new Error('must specify publish dir in netlify config [build] section')
-      }
-
       // kvstore in `${NETLIFY_CACHE_DIR}/${name}.json`
       // we choose to let the user createStore instead of doing it for them
       // bc they may want to set `defaults` and `schema` and `de/serialize`
@@ -33,13 +28,12 @@ module.exports = function netlify404nomore(pluginConfig) {
         configName: 'netlify-plugin-no-more-404',
       })
 
-      const buildFolderPath = path.resolve(BUILD_DIR)
       const prevManifest = store.get(cacheKey) || []
       if (test404plugin) {
         // add missing paths for testing
-        prevManifest.push(path.join(buildFolderPath, '/path/to/missing.html'))
-        prevManifest.push(path.join(buildFolderPath, '/path/to/missing2.html'))
-        prevManifest.push(path.join(buildFolderPath, '/path/missing3.html'))
+        prevManifest.push(path.join(BUILD_DIR, '/path/to/missing.html'))
+        prevManifest.push(path.join(BUILD_DIR, '/path/to/missing2.html'))
+        prevManifest.push(path.join(BUILD_DIR, '/path/missing3.html'))
       }
 
       /**
@@ -55,7 +49,7 @@ module.exports = function netlify404nomore(pluginConfig) {
         let prevManifestPostRedirects = []
         let invalidRedirectDestinations = []
         for (let prevPath of prevManifest) {
-          const match = await matchRules(path.relative(buildFolderPath, prevPath), buildFolderPath)
+          const match = await matchRules(path.relative(BUILD_DIR, prevPath), BUILD_DIR)
           if (match) {
             // match is an object that looks like
             //  { from: '/path/to/*',
@@ -67,11 +61,8 @@ module.exports = function netlify404nomore(pluginConfig) {
             //  negative: false,
             //  conditions: {},
             //  exceptions: {} }
-            const toPath1 = path.join(buildFolderPath, match.to + '.html')
-            const toPath2 = path.join(
-              buildFolderPath,
-              match.to + (match.to.endsWith('index.html') ? '' : '/index.html'),
-            )
+            const toPath1 = path.join(BUILD_DIR, match.to + '.html')
+            const toPath2 = path.join(BUILD_DIR, match.to + (match.to.endsWith('index.html') ? '' : '/index.html'))
             if (fs.existsSync(toPath1) || fs.existsSync(toPath2)) {
               // exists! no longer need to check for broken links
             } else {
@@ -100,7 +91,7 @@ module.exports = function netlify404nomore(pluginConfig) {
           missingFiles.forEach(mf => {
             console.error(
               `${chalk.red('@netlify/plugin-no-more-404:')}: can't find ${chalk.cyan(
-                path.relative(buildFolderPath, mf),
+                path.relative(BUILD_DIR, mf),
               )} which existed in previous build`,
             )
           })
@@ -114,7 +105,7 @@ module.exports = function netlify404nomore(pluginConfig) {
           invalidRedirectDestinations.forEach(ird => {
             console.error(
               `${chalk.red('@netlify/plugin-no-more-404:')}: can't find ${chalk.cyan(
-                path.relative(buildFolderPath, ird),
+                path.relative(BUILD_DIR, ird),
               )}, which redirects rely on`,
             )
           })
@@ -130,7 +121,7 @@ module.exports = function netlify404nomore(pluginConfig) {
       }
 
       let newManifest = []
-      newManifest = await walk(buildFolderPath)
+      newManifest = await walk(BUILD_DIR)
       newManifest = newManifest.filter(x => x.endsWith('.html'))
       // honestly we can log out the new and deleted pages as well if we wish
       // next time, baby

@@ -1,5 +1,3 @@
-const path = require('path')
-
 const pathExists = require('path-exists')
 const readdirp = require('readdirp')
 
@@ -7,51 +5,41 @@ const { CONTEXT } = process.env
 
 module.exports = {
   name: '@netlify/plugin-deploy',
-  onError({ error }) {
-    console.log('do something with error', error.message)
-    if (error.message.match(/invalid json response body/)) {
-      console.log('Attempt to correct build')
-    }
-  },
-  /* Hook into buildFunctions lifecycle */
-  async deploy({ config, constants, api }) {
-    const { build } = config
-    if (!build || !build.publish) {
-      console.log('No publish directory set. Skipping deploy step')
-      return false
+
+  async deploy({
+    config: {
+      build: { functions },
+    },
+    constants: { siteId, CONFIG_PATH, BUILD_DIR },
+    api,
+  }) {
+    if (!(await pathExists(BUILD_DIR))) {
+      throw new Error('Publish dir not found')
     }
 
-    const publishPath = path.resolve(build.publish)
-    if (!(await pathExists(publishPath))) {
-      console.log(`Publish dir not found`)
-      process.exit(1)
+    const files = await readdirp.promise(BUILD_DIR)
+    if (files.length === 0) {
+      throw new Error('No files found in publish dir')
     }
 
-    const files = await readdirp.promise(publishPath)
-    if (!files || !files.length) {
-      console.log(`No files found in publish dir`)
-      process.exit(1)
-    }
-
-    const deployToProduction = CONTEXT === 'production'
-
-    if (!constants.siteId) {
+    if (siteId === undefined) {
       console.log(`No siteId found`)
-      // return false
     }
 
-    try {
-      console.log('Deploying site...')
-      await api.deploy(constants.siteId, publishPath, {
-        configPath: constants.CONFIG_PATH,
-        fnDir: build.functions,
-        statusCb: () => {},
-        draft: !deployToProduction,
-        message: 'Site deployed from @netlify/build',
-      })
-    } catch (err) {
-      console.log('Deploying site error')
-      throw new Error(err)
+    console.log('Deploying site...')
+    await api.deploy(siteId, BUILD_DIR, {
+      configPath: CONFIG_PATH,
+      fnDir: functions,
+      statusCb() {},
+      draft: CONTEXT !== 'production',
+      message: 'Site deployed from @netlify/build',
+    })
+  },
+
+  onError({ error: { message } }) {
+    console.log('do something with error', message)
+    if (message.match(/invalid json response body/)) {
+      console.log('Attempt to correct build')
     }
   },
 }
