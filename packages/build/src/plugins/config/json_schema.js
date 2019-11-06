@@ -44,7 +44,7 @@ const validateFromSchema = moize(mValidateFromSchema, { isDeepEqual: true })
 
 // Validate JSON schema v7 syntax
 const validateSchemaSyntax = function(schema) {
-  const jsonSchemaSchema = omit(JSON_SCHEMA_SCHEMA, ['id', '$id', '$schema', 'default'])
+  const jsonSchemaSchema = omit(JSON_SCHEMA_SCHEMA, ['$id', 'default'])
   return validateFromSchema(jsonSchemaSchema, schema)
 }
 
