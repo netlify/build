@@ -1,9 +1,9 @@
 const { getEventFromParent, sendEventToParent } = require('../ipc')
 const { getOverride } = require('../override')
+const { validatePluginConfig } = require('../config/validate_props.js')
 
 const { getLogic } = require('./logic')
 const { validatePlugin } = require('./validate')
-const { validatePluginConfig } = require('./config')
 const { getApiClient } = require('./api')
 const { getConstants } = require('./constants')
 
