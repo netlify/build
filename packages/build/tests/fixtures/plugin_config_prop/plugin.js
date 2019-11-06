@@ -1,6 +1,8 @@
 module.exports = {
   name: 'netlify-plugin-test',
   config: {
-    test: { enum: ['test'] },
+    properties: {
+      test: { enum: ['test'] },
+    },
   },
 }

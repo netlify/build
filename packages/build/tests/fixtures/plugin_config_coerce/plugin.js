@@ -1,9 +1,11 @@
 module.exports = {
   name: 'netlify-plugin-test',
   config: {
-    test: { default: 'test' },
+    properties: {
+      test: { type: 'array' },
+    },
   },
   init({ pluginConfig: { test } }) {
-    console.log({ test })
+    console.log(JSON.stringify(test))
   },
 }

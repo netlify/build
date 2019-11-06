@@ -4,7 +4,7 @@ const omit = require('omit.js')
 const moize = require('moize').default
 
 // Validate a value against a JSON schema
-const mValidateFromSchema = function(schema, value, message) {
+const mValidateFromSchema = function(schema, value) {
   const validate = ajv.compile(schema)
   const passed = validate(value)
 
@@ -14,7 +14,7 @@ const mValidateFromSchema = function(schema, value, message) {
 
   const [error] = validate.errors
   const errorMessage = Ajv.prototype.errorsText([error], { dataVar: '' }).replace(FIRST_CHAR_REGEXP, '')
-  throw new Error(`${message}:\n${errorMessage}`)
+  return errorMessage
 }
 
 const ajv = new Ajv({
@@ -43,13 +43,9 @@ const FIRST_CHAR_REGEXP = /^[. ]/
 const validateFromSchema = moize(mValidateFromSchema, { isDeepEqual: true })
 
 // Validate JSON schema v7 syntax
-const validateSchemaSyntax = function(schema, propName) {
-  const jsonSchemaSchema = omit(JSON_SCHEMA_SCHEMA, ['id', '$id', '$schema', 'default'])
-  return validateFromSchema(
-    jsonSchemaSchema,
-    schema,
-    `${propName} is not a valid JSON schema (version 7)\n(learn more about JSON schema at https://json-schema.org/understanding-json-schema/)`,
-  )
+const validateSchemaSyntax = function(schema) {
+  const jsonSchemaSchema = omit(JSON_SCHEMA_SCHEMA, ['$id', 'default'])
+  return validateFromSchema(jsonSchemaSchema, schema)
 }
 
 module.exports = { validateFromSchema, validateSchemaSyntax }
