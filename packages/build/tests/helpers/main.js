@@ -3,7 +3,11 @@ require('log-process-errors/build/register/ava')
 const {
   env: { PRINT },
 } = require('process')
+const { normalize } = require('path')
 
+const {
+  meta: { file: testFile },
+} = require('ava')
 const execa = require('execa')
 const { getBinPath } = require('get-bin-path')
 const chalk = require('chalk')
@@ -11,7 +15,7 @@ const chalk = require('chalk')
 const { normalizeOutput } = require('./normalize')
 
 const BINARY_PATH = getBinPath({ cwd: __dirname })
-const FIXTURES_DIR = `${__dirname}/../fixtures`
+const FIXTURES_DIR = normalize(`${testFile}/../fixtures`)
 
 // Run the netlify-build using a fixture directory, then snapshot the output.
 // Options:
