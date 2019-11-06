@@ -115,12 +115,12 @@ Instead of a plugin being a simple object, instead the plugin is a `function` th
 object.
 
 ```js
-function helloWorldPlugin(pluginConfig, config) {
+function helloWorldPlugin(pluginConfig, { constants }) {
   console.log(pluginConfig.foo) // bar
   console.log(pluginConfig.fizz) // pop
   return {
     name: 'netlify-plugin-hello-world',
-    preBuild: ({ pluginConfig, config }) => {
+    preBuild: ({ pluginConfig, config, constants }) => {
       console.log('Hello world from preBuild lifecycle step!')
       console.log(pluginConfig.foo) // bar
       console.log(pluginConfig.fizz) // pop

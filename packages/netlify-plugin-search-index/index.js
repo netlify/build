@@ -1,10 +1,6 @@
-const { tmpdir } = require('os')
 const path = require('path')
 const fs = require('fs')
 const { promisify } = require('util')
-const {
-  env: { DEPLOY_ID },
-} = require('process')
 
 const makeDir = require('make-dir')
 const pathExists = require('path-exists')
@@ -13,8 +9,6 @@ const cpy = require('cpy')
 const { zipFunctions } = require('@netlify/zip-it-and-ship-it') // eslint-disable-line
 const htmlToText = require('html-to-text')
 
-const isNetlifyCI = () => Boolean(process.env.DEPLOY_PRIME_URL)
-
 function netlifyPluginSearchIndex(pluginConfig) {
   const searchIndexFolder = pluginConfig.searchIndexFolder || 'searchIndex'
   return {
@@ -22,18 +16,17 @@ function netlifyPluginSearchIndex(pluginConfig) {
     // scopes: ['listSites'],
 
     async postBuild(opts) {
-      const { config } = opts
-      const { build } = config
-      const { BUILD_DIR } = opts.constants // where we start from
+      const {
+        constants: { BUILD_DIR, FUNCTIONS_SRC, FUNCTIONS_DIST },
+      } = opts
 
-      if (typeof BUILD_DIR === 'undefined') {
-        throw new Error('must specify publish dir in netlify config [build] section')
+      if (FUNCTIONS_SRC === undefined) {
+        throw new Error('You must specify config.build.functions when using netlify-plugin-search-index')
       }
 
-      const buildFolderPath = path.resolve(BUILD_DIR)
       let newManifest = []
       newManifest = await readdirp
-        .promise(buildFolderPath, { directoryFilter: ['node_modules'] })
+        .promise(BUILD_DIR, { directoryFilter: ['node_modules'] })
         .then(x => x.map(y => y.fullPath))
       newManifest = newManifest.filter(x => x.endsWith('.html'))
       let searchIndex = {}
@@ -47,12 +40,12 @@ function netlifyPluginSearchIndex(pluginConfig) {
         newManifest.map(htmlFilePath => {
           return readfile(htmlFilePath, 'utf8').then(htmlFileContent => {
             const text = htmlToText.fromString(htmlFileContent, customOpts)
-            const indexPath = path.relative(buildFolderPath, htmlFilePath)
+            const indexPath = path.relative(BUILD_DIR, htmlFilePath)
             searchIndex[`/${indexPath}`] = text
           })
         }),
       )
-      let searchIndexPath = path.join(buildFolderPath, searchIndexFolder, 'searchIndex.json')
+      let searchIndexPath = path.join(BUILD_DIR, searchIndexFolder, 'searchIndex.json')
       if (await pathExists(searchIndexPath)) {
         console.warn(
           `searchIndex detected at ${searchIndexPath}, will overwrite for this build but this may indicate an accidental conflict`,
@@ -62,20 +55,13 @@ function netlifyPluginSearchIndex(pluginConfig) {
       let stringifiedIndex = JSON.stringify(searchIndex)
       fs.writeFileSync(searchIndexPath, stringifiedIndex)
 
-      // copy out to an intermediate functions dir inside the build dir
-      // i'm not 100% sure this is the best place to put it, we can move in future
-      const functionsDir = 'searchIndexFunction'
-      const buildDir = path.resolve(build.publish)
-      const buildDirFunctions = path.resolve(buildDir, functionsDir)
-      await pathExists(buildDirFunctions)
-      const searchIndexFunctionPath = path.join(buildDirFunctions, 'searchIndex')
+      const searchIndexFunctionPath = path.join(FUNCTIONS_SRC, 'searchIndex')
       await cpy(__dirname + '/functionTemplate', searchIndexFunctionPath)
       // now we have copied it out to intermediate dir
       // we may want to do some processing/templating
       fs.writeFileSync(path.join(searchIndexFunctionPath, 'searchIndex.json'), stringifiedIndex)
       // and then..
-      const destDir = isNetlifyCI() ? `${tmpdir()}/zisi-${DEPLOY_ID}` : '.netlify/functions'
-      await zipFunctions(buildDirFunctions, destDir)
+      await zipFunctions(FUNCTIONS_SRC, FUNCTIONS_DIST)
       console.log('Files copied!')
       // done with generating functions
     },

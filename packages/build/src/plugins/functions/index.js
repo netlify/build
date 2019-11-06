@@ -1,20 +1,15 @@
-const { tmpdir } = require('os')
 const { resolve, dirname } = require('path')
-const {
-  env: { DEPLOY_ID },
-} = require('process')
 
 const pathExists = require('path-exists')
 const fastGlob = require('fast-glob')
 const readdirp = require('readdirp')
 const { zipFunctions } = require('@netlify/zip-it-and-ship-it')
 
-const isNetlifyCI = require('../../utils/is-netlify-ci')
 const { installDependencies } = require('../../utils/install')
 
 // Plugin to bundle Netlify functions with @netlify/zip-it-and-ship-it
-const functionsPlugin = function(pluginConfig, { build: { functions: srcDir } }) {
-  if (srcDir === undefined && !pathExists.sync(DEFAULT_SRC_DIR)) {
+const functionsPlugin = function(pluginConfig, { constants: { FUNCTIONS_SRC } }) {
+  if (FUNCTIONS_SRC === undefined) {
     return { name: NAME }
   }
 
@@ -22,26 +17,17 @@ const functionsPlugin = function(pluginConfig, { build: { functions: srcDir } })
 }
 
 const NAME = '@netlify/plugin-functions-core'
-const DEFAULT_SRC_DIR = 'functions'
 
 // Validate plugin configuration at startup
-const init = async function({
-  config: {
-    build: { functions: srcDir = DEFAULT_SRC_DIR },
-  },
-}) {
-  if (!(await pathExists(srcDir))) {
-    throw new Error(`Functions directory "${resolve(srcDir)}" not found`)
+const init = async function({ constants: { FUNCTIONS_SRC } }) {
+  if (!(await pathExists(FUNCTIONS_SRC))) {
+    throw new Error(`Functions directory "${FUNCTIONS_SRC}" not found`)
   }
 }
 
 // Install Netlify functions dependencies
-const install = async function({
-  config: {
-    build: { functions: srcDir = DEFAULT_SRC_DIR },
-  },
-}) {
-  const packagePaths = await fastGlob([`${srcDir}/**/package.json`, `!${srcDir}/**/node_modules`], {
+const install = async function({ constants: { FUNCTIONS_SRC } }) {
+  const packagePaths = await fastGlob([`${FUNCTIONS_SRC}/**/package.json`, `!${FUNCTIONS_SRC}/**/node_modules`], {
     onlyFiles: true,
     unique: true,
   })
@@ -58,37 +44,22 @@ const install = async function({
 }
 
 // Bundle Netlify functions
-const functionsBuild = async function({
-  config: {
-    build: { functions: srcDir = DEFAULT_SRC_DIR },
-  },
-}) {
-  const destDir = getDestDir()
-
+const functionsBuild = async function({ constants: { FUNCTIONS_SRC, FUNCTIONS_DIST } }) {
   console.log('Zipping functions')
-  await zipFunctions(srcDir, destDir)
+  await zipFunctions(FUNCTIONS_SRC, FUNCTIONS_DIST)
 
-  await logResults(destDir)
-}
-
-// Retrieve directory where bundled functions will be
-const getDestDir = function() {
-  if (isNetlifyCI()) {
-    return `${tmpdir()}/zisi-${DEPLOY_ID}`
-  }
-
-  return '.netlify/functions'
+  await logResults(FUNCTIONS_DIST)
 }
 
 // Print the list of paths to the bundled functions
-const logResults = async function(destDir) {
-  const paths = await getLoggedPaths(destDir)
-  console.log(`Functions bundled in "${resolve(destDir)}":`)
+const logResults = async function(FUNCTIONS_DIST) {
+  const paths = await getLoggedPaths(FUNCTIONS_DIST)
+  console.log(`Functions bundled in "${resolve(FUNCTIONS_DIST)}":`)
   console.log(paths)
 }
 
-const getLoggedPaths = async function(destDir) {
-  const files = await readdirp.promise(destDir)
+const getLoggedPaths = async function(FUNCTIONS_DIST) {
+  const files = await readdirp.promise(FUNCTIONS_DIST)
   const paths = files.map(getLoggedPath).join('\n')
   return paths
 }

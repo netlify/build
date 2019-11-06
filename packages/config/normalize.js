@@ -1,18 +1,25 @@
+const { resolve } = require('path')
+
 const mapObj = require('map-obj')
+const deepMerge = require('deepmerge')
+const { get, set } = require('dot-prop')
+const pathExists = require('path-exists')
 
 // Normalize configuration object
-const normalizeConfig = function(config) {
-  const configA = { ...DEFAULT_CONFIG, ...config }
+const normalizeConfig = async function(config, baseDir) {
+  const configA = deepMerge(DEFAULT_CONFIG, config)
   const configB = normalizeLifecycles({ config: configA })
-  return configB
+  const configC = await addDefaultFunctions({ config: configB, baseDir })
+  const configD = normalizePaths(configC, baseDir)
+  return configD
 }
 
-const DEFAULT_CONFIG = { build: {}, plugins: [] }
+const DEFAULT_CONFIG = { build: { publish: '.netlify/build/', lifecycle: {} }, plugins: [] }
 
 const normalizeLifecycles = function({
   config,
   config: {
-    build: { command, lifecycle = {}, ...build },
+    build: { command, lifecycle, ...build },
   },
 }) {
   const lifecycleA = normalizeCommand(lifecycle, command)
@@ -43,5 +50,46 @@ const replaceHookName = function(full, prefix, char) {
 }
 
 const HOOK_REGEXP = /^(pre|post)([a-zA-Z])/
+
+// `build.functions` defaults to `./functions/` if the directory exists
+const addDefaultFunctions = async function({
+  config,
+  config: {
+    build,
+    build: { functions },
+  },
+  baseDir,
+}) {
+  if (functions !== undefined) {
+    return config
+  }
+
+  const defaultFunctions = resolve(baseDir, DEFAULT_FUNCTIONS)
+  if (!(await pathExists(defaultFunctions))) {
+    return config
+  }
+
+  return { ...config, build: { ...build, functions: defaultFunctions } }
+}
+
+const DEFAULT_FUNCTIONS = 'functions/'
+
+// Resolve paths relatively to the config file.
+// Also normalize paths to OS-specific path delimiters.
+const normalizePaths = function(config, baseDir) {
+  return PATHS.reduce(normalizePath.bind(null, baseDir), config)
+}
+
+const normalizePath = function(baseDir, config, path) {
+  const value = get(config, path)
+
+  if (typeof value !== 'string') {
+    return config
+  }
+
+  return set(config, path, resolve(baseDir, value))
+}
+
+const PATHS = ['build.publish', 'build.functions']
 
 module.exports = { normalizeConfig }

@@ -700,8 +700,7 @@ Here is an example:
 
 ```js
 /* file ./plugins/my-plugin/index.js */
-module.exports = function exampleOne(config) {
-  // do initial things with plugin 'config'
+module.exports = function exampleOne(pluginConfig) {
   return {
     name: 'netlify-plugin-awesome',
     init: () => {
