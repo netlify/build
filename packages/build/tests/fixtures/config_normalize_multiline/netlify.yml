@@ -1,0 +1,5 @@
+build:
+  lifecycle:
+    init: |-
+      echo test
+      echo test
