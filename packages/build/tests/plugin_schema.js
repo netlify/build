@@ -29,3 +29,7 @@ test('pluginConfig must be an object', async t => {
 test('plugin.config validates unknown properties', async t => {
   await runFixture(t, 'plugin_config_unknown')
 })
+
+test('plugin.config validates required properties', async t => {
+  await runFixture(t, 'plugin_config_required')
+})

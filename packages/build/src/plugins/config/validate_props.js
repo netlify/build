@@ -13,6 +13,8 @@ const validatePluginConfig = function({ config: configSchema }, { pluginConfig =
     throw new Error(`Plugin 'config' must be an object`)
   }
 
+  // We default `additionalProperties` to `false`, i.e. users get notified on unknown properties.
+  // Plugin authors can override this by setting it to `true`.
   const errorMessage = validateFromSchema({ additionalProperties: false, ...configSchema }, pluginConfig)
 
   if (errorMessage !== undefined) {
