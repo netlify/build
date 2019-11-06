@@ -13,9 +13,6 @@ module.exports = {
     if (!baseUrl) {
       throw new Error('Sitemap plugin missing homepage value')
     }
-    if (!buildDir) {
-      throw new Error('Sitemap plugin missing build directory')
-    }
     console.log('Creating sitemap from files...')
     await makeSitemap({ homepage: baseUrl, distPath: buildDir })
   },

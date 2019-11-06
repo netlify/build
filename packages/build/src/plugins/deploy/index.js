@@ -1,4 +1,3 @@
-const pathExists = require('path-exists')
 const readdirp = require('readdirp')
 
 const { CONTEXT } = process.env
@@ -13,10 +12,6 @@ module.exports = {
     constants: { siteId, CONFIG_PATH, BUILD_DIR },
     api,
   }) {
-    if (!(await pathExists(BUILD_DIR))) {
-      throw new Error('Publish dir not found')
-    }
-
     const files = await readdirp.promise(BUILD_DIR)
     if (files.length === 0) {
       throw new Error('No files found in publish dir')
