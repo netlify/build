@@ -21,6 +21,7 @@
     "deepmerge": "^4.2.2",
     "dot-prop": "^5.2.0",
     "find-up": "^4.1.0",
+    "make-dir": "^3.0.0",
     "map-obj": "^4.1.0",
     "minimist": "^1.2.0",
     "path-exists": "^4.0.0",
