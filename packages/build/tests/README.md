@@ -4,7 +4,7 @@
 
 Each integration test has the following steps:
 
-1. Select a fixture directory from `./tests/fixtures/`
+1. Select a fixture directory from `./tests/**/fixtures/`
 2. Run the `netlify-build` CLI command on that fixture directory
 3. Snapshot the output
 
@@ -32,7 +32,7 @@ Every test follows this template:
 
 ```js
 const test = require('ava')
-const { runFixture } = require('./helpers/main')
+const { runFixture } = require('../../helpers/main')
 
 test('test title', async t => {
   await runFixture(t, 'fixture_name')
@@ -42,7 +42,7 @@ test('test title', async t => {
 `runFixture()` calls:
 
 ```
-netlify-build --config fixtures/fixture_name/netlify.yml
+netlify-build --config ./fixtures/fixture_name/netlify.yml
 ```
 
 Then snapshots the output.
@@ -51,7 +51,7 @@ Then snapshots the output.
 
 An additional object can be passed to `runFixture()` with the following options:
 
-- `config` `{string}`: `--config` CLI flag. Defaults to `fixtures/fixture_name/netlify.yml`.
+- `config` `{string}`: `--config` CLI flag. Defaults to `./fixtures/fixture_name/netlify.yml`.
 - `flags` `{string[]}`: other CLI flags
 - `cwd` `{string}`: current directory
 - `env` `{object}`: environment variables
@@ -70,7 +70,7 @@ ava
 To run the tests for a specific file:
 
 ```
-ava /path/to/test/file.js
+ava /path/to/tests.js
 ```
 
 To run a single test, use the command above combined with
@@ -88,7 +88,7 @@ A debug mode is available when:
 To activate it, set the `PRINT=1` environment variable:
 
 ```
-PRINT=1 ava /path/to/test/file.js
+PRINT=1 ava /path/to/tests.js
 ```
 
 Using [`test.only()`](https://github.com/avajs/ava/blob/master/docs/01-writing-tests.md#running-specific-tests) to
