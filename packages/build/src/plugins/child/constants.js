@@ -1,5 +1,5 @@
 const { resolve } = require('path')
-const { tmp } = require('os')
+const { tmpdir } = require('os')
 const {
   env: { DEPLOY_ID },
 } = require('process')
@@ -39,7 +39,7 @@ const LOCAL_CACHE_DIR = '.netlify/cache/'
 
 const getFunctionsDist = function(baseDir) {
   if (isNetlifyCI()) {
-    return `${tmp()}/zisi-${DEPLOY_ID}`
+    return `${tmpdir()}/zisi-${DEPLOY_ID}`
   }
 
   return resolve(baseDir, LOCAL_FUNCTIONS_DIST)
