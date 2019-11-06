@@ -11,7 +11,7 @@ const { loadPlugins } = require('../plugins/load')
 const { logBuildStart, logBuildError, logBuildSuccess, logBuildEnd } = require('../log/main')
 const { startTimer, endTimer } = require('../log/timer')
 const isNetlifyCI = require('../utils/is-netlify-ci')
-const { trackBuildComplete } = require('../utils/telemetry')
+const { trackBuildComplete } = require('../telemetry')
 
 const { getOptions } = require('./options')
 const { loadConfig } = require('./config')

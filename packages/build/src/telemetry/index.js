@@ -1,6 +1,6 @@
 const Analytics = require('analytics').default
 
-const pkg = require('../../../package.json')
+const pkg = require('../../package.json')
 
 const plugins = require('./plugins')
 
