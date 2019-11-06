@@ -7,9 +7,8 @@
     "netlify-build": "./src/core/bin.js"
   },
   "files": [
-    "src/**/*.js",
-    "src/**/*.sh",
-    "!tests"
+    "src",
+    "!~"
   ],
   "author": "Netlify Inc.",
   "contributors": [
