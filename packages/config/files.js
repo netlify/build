@@ -19,6 +19,7 @@ const handleFile = async function(config, baseDir, { location, defaultPath, defa
 
   const pathA = await addDefault({ path, baseDir, defaultPath, defaultIfExists })
   const pathB = normalizePath(pathA, baseDir)
+  await ensurePath(pathB, location)
 
   return { location, path: pathB }
 }
@@ -50,6 +51,14 @@ const normalizePath = function(path, baseDir) {
   }
 
   return resolve(baseDir, path)
+}
+
+const ensurePath = async function(path, location) {
+  if (path === undefined || (await pathExists(path))) {
+    return
+  }
+
+  await makeDir(path)
 }
 
 const setProp = function(config, { location, path }) {

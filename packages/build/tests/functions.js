@@ -8,8 +8,9 @@ test('Functions: simple setup', async t => {
   await runFixture(t, 'functions')
 })
 
-test('Functions: invalid source directory', async t => {
-  await runFixture(t, 'functions_invalid')
+test('Functions: missing source directory', async t => {
+  await del(`${FIXTURES_DIR}/functions_missing/missing/`)
+  await runFixture(t, 'functions_missing')
 })
 
 test('Functions: default directory', async t => {
