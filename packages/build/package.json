@@ -8,7 +8,7 @@
   },
   "files": [
     "src",
-    "!~"
+    "!*~"
   ],
   "author": "Netlify Inc.",
   "contributors": [
