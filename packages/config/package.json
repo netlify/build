@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "files": [
     "src",
-    "!~"
+    "!*~"
   ],
   "author": "Netlify Inc.",
   "contributors": [
