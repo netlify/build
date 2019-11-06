@@ -30,14 +30,9 @@ const addDefault = async function({ path, baseDir, defaultPath, defaultIfExists 
   }
 
   const defaultPathA = resolve(baseDir, defaultPath)
-  const exists = await pathExists(defaultPathA)
 
-  if (defaultIfExists && !exists) {
+  if (defaultIfExists && !(await pathExists(defaultPathA))) {
     return path
-  }
-
-  if (!exists) {
-    await makeDir(defaultPathA)
   }
 
   return defaultPathA
