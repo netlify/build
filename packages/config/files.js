@@ -2,6 +2,7 @@ const { resolve } = require('path')
 
 const { get, set, delete: deleteProp } = require('dot-prop')
 const pathExists = require('path-exists')
+const makeDir = require('make-dir')
 
 const handleFiles = async function(config, baseDir) {
   const files = await Promise.all(FILES.map(file => handleFile(config, baseDir, file)))
@@ -28,8 +29,14 @@ const addDefault = async function({ value, baseDir, defaultValue, defaultIfExist
   }
 
   const defaultValueA = resolve(baseDir, defaultValue)
-  if (defaultIfExists && !(await pathExists(defaultValueA))) {
+  const exists = await pathExists(defaultValueA)
+
+  if (defaultIfExists && !exists) {
     return value
+  }
+
+  if (!exists) {
+    await makeDir(defaultValueA)
   }
 
   return defaultValueA
