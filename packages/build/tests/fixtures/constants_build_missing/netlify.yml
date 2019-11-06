@@ -1,0 +1,4 @@
+build:
+  publish: publish
+plugins:
+  - type: ./plugin

@@ -28,6 +28,11 @@ test('constants.BUILD_DIR automatic value', async t => {
   await del(`${FIXTURES_DIR}/constants_build_auto/.netlify/build`)
 })
 
+test('constants.BUILD_DIR missing path', async t => {
+  await del(`${FIXTURES_DIR}/constants_build_missing/publish`)
+  await runFixture(t, 'constants_build_missing')
+})
+
 test('constants.FUNCTIONS_SRC default value', async t => {
   await runFixture(t, 'constants_functions_src_default')
 })
@@ -38,6 +43,11 @@ test('constants.FUNCTIONS_SRC relative path', async t => {
 
 test('constants.FUNCTIONS_SRC automatic value', async t => {
   await runFixture(t, 'constants_functions_src_auto')
+})
+
+test('constants.FUNCTIONS_SRC missing path', async t => {
+  await del(`${FIXTURES_DIR}/constants_functions_src_missing/missing`)
+  await runFixture(t, 'constants_functions_src_missing')
 })
 
 test('constants.FUNCTIONS_DIST', async t => {
