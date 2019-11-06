@@ -2,7 +2,6 @@ const { resolve } = require('path')
 
 const mapObj = require('map-obj')
 const deepMerge = require('deepmerge')
-const { get, set } = require('dot-prop')
 const pathExists = require('path-exists')
 
 // Normalize configuration object
@@ -10,8 +9,7 @@ const normalizeConfig = async function(config, baseDir) {
   const configA = deepMerge(DEFAULT_CONFIG, config)
   const configB = normalizeLifecycles({ config: configA })
   const configC = await addDefaultFunctions({ config: configB, baseDir })
-  const configD = normalizePaths(configC, baseDir)
-  return configD
+  return configC
 }
 
 const DEFAULT_CONFIG = { build: { publish: '.netlify/build/', lifecycle: {} }, plugins: [] }
@@ -73,23 +71,5 @@ const addDefaultFunctions = async function({
 }
 
 const DEFAULT_FUNCTIONS = 'functions/'
-
-// Resolve paths relatively to the config file.
-// Also normalize paths to OS-specific path delimiters.
-const normalizePaths = function(config, baseDir) {
-  return PATHS.reduce(normalizePath.bind(null, baseDir), config)
-}
-
-const normalizePath = function(baseDir, config, path) {
-  const value = get(config, path)
-
-  if (typeof value !== 'string') {
-    return config
-  }
-
-  return set(config, path, resolve(baseDir, value))
-}
-
-const PATHS = ['build.publish', 'build.functions']
 
 module.exports = { normalizeConfig }
