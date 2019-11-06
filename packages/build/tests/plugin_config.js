@@ -37,3 +37,7 @@ test('plugin.config validates required properties', async t => {
 test('plugin.config assign default values', async t => {
   await runFixture(t, 'plugin_config_default')
 })
+
+test('plugin.config coerce types', async t => {
+  await runFixture(t, 'plugin_config_coerce')
+})
