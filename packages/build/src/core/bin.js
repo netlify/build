@@ -42,6 +42,10 @@ Default: current directory`,
     describe: `Netlify API token for authentication.
 The NETLIFY_TOKEN environment variable can be used as well.`,
   },
+  siteId: {
+    string: true,
+    describe: `Netlify Site ID.`,
+  },
   context: {
     string: true,
     describe: `Build context.
