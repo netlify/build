@@ -2,10 +2,11 @@
   "name": "@netlify/config",
   "version": "0.1.2",
   "description": "Netlify config module",
-  "main": "index.js",
-  "bin": {
-    "netlify-config": "./bin.js"
-  },
+  "main": "src/index.js",
+  "files": [
+    "src",
+    "!~"
+  ],
   "author": "Netlify Inc.",
   "contributors": [
     "David Wells <hello@davidwells.io> (https://davidwells.io/)"
@@ -23,7 +24,6 @@
     "find-up": "^4.1.0",
     "make-dir": "^3.0.0",
     "map-obj": "^4.1.0",
-    "minimist": "^1.2.0",
     "path-exists": "^4.0.0",
     "resolve": "^1.12.0"
   },
