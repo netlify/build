@@ -10,53 +10,53 @@ const handleFiles = async function(config, baseDir) {
 }
 
 const FILES = [
-  { path: 'build.publish', defaultValue: '.netlify/build/' },
-  { path: 'build.functions', defaultValue: 'functions/', defaultIfExists: true },
+  { location: 'build.publish', defaultPath: '.netlify/build/' },
+  { location: 'build.functions', defaultPath: 'functions/', defaultIfExists: true },
 ]
 
-const handleFile = async function(config, baseDir, { path, defaultValue, defaultIfExists = false }) {
-  const value = get(config, path)
+const handleFile = async function(config, baseDir, { location, defaultPath, defaultIfExists = false }) {
+  const path = get(config, location)
 
-  const valueA = await addDefault({ value, baseDir, defaultValue, defaultIfExists })
-  const valueB = normalizePath(valueA, baseDir)
+  const pathA = await addDefault({ path, baseDir, defaultPath, defaultIfExists })
+  const pathB = normalizePath(pathA, baseDir)
 
-  return { path, value: valueB }
+  return { location, path: pathB }
 }
 
-const addDefault = async function({ value, baseDir, defaultValue, defaultIfExists }) {
-  if (value !== undefined || defaultValue === undefined) {
-    return value
+const addDefault = async function({ path, baseDir, defaultPath, defaultIfExists }) {
+  if (path !== undefined || defaultPath === undefined) {
+    return path
   }
 
-  const defaultValueA = resolve(baseDir, defaultValue)
-  const exists = await pathExists(defaultValueA)
+  const defaultPathA = resolve(baseDir, defaultPath)
+  const exists = await pathExists(defaultPathA)
 
   if (defaultIfExists && !exists) {
-    return value
+    return path
   }
 
   if (!exists) {
-    await makeDir(defaultValueA)
+    await makeDir(defaultPathA)
   }
 
-  return defaultValueA
+  return defaultPathA
 }
 
 // Resolve paths relatively to the config file.
 // Also normalize paths to OS-specific path delimiters.
-const normalizePath = function(value, baseDir) {
-  if (value === undefined) {
-    return value
+const normalizePath = function(path, baseDir) {
+  if (path === undefined) {
+    return path
   }
 
-  return resolve(baseDir, value)
+  return resolve(baseDir, path)
 }
 
-const setProp = function(config, { path, value }) {
-  if (value === undefined) {
-    deleteProp(config, path)
+const setProp = function(config, { location, path }) {
+  if (path === undefined) {
+    deleteProp(config, location)
   } else {
-    set(config, path, value)
+    set(config, location, path)
   }
 
   return config
