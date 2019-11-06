@@ -33,6 +33,13 @@
         "node/no-unpublished-require": 0,
         "node/no-missing-require": 0
       }
+    },
+    {
+      "files": ["packages/build/scaffold/**/*.js"],
+      "rules": {
+        "node/no-extraneous-require": 0,
+        "node/no-missing-require": 0
+      }
     }
   ]
 }
