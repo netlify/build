@@ -13,6 +13,10 @@ test('No --config', async t => {
   await runFixture(t, '', { config: false, cwd: `${FIXTURES_DIR}/empty` })
 })
 
+test('No --config but none found', async t => {
+  await runFixture(t, '', { config: false, cwd: '/' })
+})
+
 test('--config with an absolute path', async t => {
   await runFixture(t, 'empty')
 })
