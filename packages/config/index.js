@@ -35,8 +35,8 @@ const resolveConfig = async function(configFile, { cwd, context } = {}) {
 
   validateConfig(config)
 
-  const configA = await normalizeConfig(config, baseDir)
-  const configB = handleFiles(configA, baseDir)
+  const configA = normalizeConfig(config)
+  const configB = await handleFiles(configA, baseDir)
   return configB
 }
 
