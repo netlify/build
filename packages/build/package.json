@@ -45,6 +45,7 @@
     "moize": "^5.4.4",
     "netlify": "^2.4.8",
     "omit.js": "^1.0.2",
+    "os-name": "^3.1.0",
     "p-event": "^4.1.0",
     "p-map-series": "^2.1.0",
     "p-reduce": "^2.1.0",

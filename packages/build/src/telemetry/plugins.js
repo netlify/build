@@ -1,4 +1,7 @@
+const os = require('os')
+
 const isCI = require('is-ci')
+const osName = require('os-name')
 
 const pkg = require('../../package.json')
 const isNetlifyCI = require('../utils/is-netlify-ci')
@@ -6,6 +9,8 @@ const isNetlifyCI = require('../utils/is-netlify-ci')
 const sendData = require('./api')
 
 const { BUILD_TELEMETRY_DISABLED } = process.env
+const OS_PLATFORM = osType(os.platform())
+const OS_NAME = osName()
 
 /* automatically prefix event names */
 const prefixEventNames = {
@@ -37,6 +42,10 @@ const enrichPayload = {
         buildVersion: pkg.version,
         // Add node version
         nodeVersion: process.version.replace(/^v/, ''),
+        // OS platform. Linix, windows, MacOS
+        osPlatform: OS_PLATFORM,
+        // OS name
+        osName: OS_NAME,
       },
     }
   },
@@ -52,6 +61,15 @@ const netlifyTelemetry = {
     }
     sendData(payload, pkg.version)
   },
+}
+
+function osType(platform) {
+  if (platform == 'darwin') {
+    return 'MacOS'
+  } else if (platform == 'win32' || platform == 'win64') {
+    return 'Windows'
+  }
+  return 'Linux'
 }
 
 /* If BUILD_TELEMETRY_DISABLED, disable api calls */
