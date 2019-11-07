@@ -1,4 +1,5 @@
 const { basename } = require('path')
+const { platform } = require('process')
 
 const { tick, pointer, arrowDown } = require('figures')
 const omit = require('omit.js')
@@ -191,9 +192,10 @@ const logBuildSuccess = function() {
 }
 
 const logBuildEnd = function({ buildInstructions, config, duration }) {
-  const sparkles = cyanBright('(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧')
-  log(`\n${sparkles} Have a nice day!\n`)
+  log(`\n${cyanBright(SPARKLES)} Have a nice day!\n`)
 }
+
+const SPARKLES = platform === 'wim32' ? '(/Ò_Ò)/' : '(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧'
 
 module.exports = {
   logBuildStart,
