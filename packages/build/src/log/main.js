@@ -195,7 +195,7 @@ const logBuildEnd = function({ buildInstructions, config, duration }) {
   log(`\n${cyanBright(SPARKLES)} Have a nice day!\n`)
 }
 
-const SPARKLES = platform === 'wim32' ? '(/Ò_Ò)/' : '(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧'
+const SPARKLES = platform === 'win32' ? '(/Ò_Ò)/' : '(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧'
 
 module.exports = {
   logBuildStart,
