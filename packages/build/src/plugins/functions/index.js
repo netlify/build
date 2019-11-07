@@ -4,6 +4,7 @@ const pathExists = require('path-exists')
 const fastGlob = require('fast-glob')
 const readdirp = require('readdirp')
 const { zipFunctions } = require('@netlify/zip-it-and-ship-it')
+const unixify = require('unixify')
 
 const { installDependencies } = require('../../utils/install')
 
@@ -27,7 +28,8 @@ const init = async function({ constants: { FUNCTIONS_SRC } }) {
 
 // Install Netlify functions dependencies
 const install = async function({ constants: { FUNCTIONS_SRC } }) {
-  const packagePaths = await fastGlob([`${FUNCTIONS_SRC}/**/package.json`, `!${FUNCTIONS_SRC}/**/node_modules`], {
+  const base = unixify(FUNCTIONS_SRC)
+  const packagePaths = await fastGlob([`${base}/**/package.json`, `!${base}/**/node_modules`], {
     onlyFiles: true,
     unique: true,
   })
