@@ -9,11 +9,12 @@ test('Empty configuration', async t => {
   await runFixture(t, 'empty')
 })
 
-test('Can define options as environment variables', async t => {
-  await runFixture(t, '', {
-    config: false,
+test('Can define configuration as environment variables', async t => {
+  await runFixture(t, 'empty', {
     env: {
-      NETLIFY_BUILD_CONFIG: `${FIXTURES_DIR}/empty/netlify.yml`,
+      NETLIFY_CONFIG_BUILD_LIFECYCLE_BUILD: 'echo build',
+      NETLIFY_CONFIG_BUILD_LIFECYCLE_INSTALL: 'echo install',
+      NETLIFY_CONFIG_BUILD_PUBLISH: 'publish',
     },
   })
 })

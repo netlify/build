@@ -3,6 +3,7 @@ const { dirname } = require('path')
 const configorama = require('configorama')
 
 const { getConfigPath } = require('./path')
+const { addEnvVars } = require('./env')
 const { validateConfig } = require('./validate')
 const { normalizeConfig } = require('./normalize')
 const { handleFiles } = require('./files')
@@ -33,11 +34,13 @@ const resolveConfig = async function(configFile, { cwd, context } = {}) {
     ],
   })
 
-  validateConfig(config)
+  const configA = addEnvVars(config)
 
-  const configA = normalizeConfig(config)
-  const configB = await handleFiles(configA, baseDir)
-  return configB
+  validateConfig(configA)
+
+  const configB = normalizeConfig(configA)
+  const configC = await handleFiles(configB, baseDir)
+  return configC
 }
 
 module.exports = resolveConfig
