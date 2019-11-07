@@ -13,7 +13,6 @@ const { startTimer, endTimer } = require('../log/timer')
 const isNetlifyCI = require('../utils/is-netlify-ci')
 const { trackBuildComplete } = require('../telemetry')
 
-const { getOptions } = require('./options')
 const { loadConfig } = require('./config')
 const { getInstructions, runBuildInstructions, runErrorInstructions } = require('./instructions')
 const { tomlWrite } = require('./toml')
@@ -29,15 +28,13 @@ const { doDryRun } = require('./dry')
  * @param  {string} [options.cwd] - Current directory
  * @return {object} manifest information. @TODO implement
  */
-const build = async function(options) {
+const build = async function(options = {}) {
   const buildTimer = startTimer()
-
-  const optionsA = getOptions(options)
 
   try {
     logBuildStart()
 
-    const { config, configPath, token, baseDir } = await loadConfig({ options: optionsA })
+    const { config, configPath, token, baseDir } = await loadConfig({ options })
 
     const pluginsOptions = getPluginsOptions({ config })
     const pluginsOptionsA = await installPlugins(pluginsOptions, baseDir)
@@ -48,10 +45,10 @@ const build = async function(options) {
       configPath,
       baseDir,
       token,
-      options: optionsA,
+      options,
     })
 
-    if (optionsA.dry) {
+    if (options.dry) {
       return true
     }
 
