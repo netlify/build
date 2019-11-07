@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "foo": "echo 'bar'",
-    "premakeSite": "del -f build && make-dir build && cpy _redirects build",
+    "premakeSite": "del build && make-dir build && cpy _redirects build",
     "makeSite": "cpy \"src/*\" build && cpy src/blog/ build/blog/",
     "build": "netlify-build",
     "plan": "netlify-build --dry",
