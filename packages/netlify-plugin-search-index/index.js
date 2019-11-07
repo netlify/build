@@ -1,5 +1,5 @@
 const path = require('path')
-const fs = require('fs')
+const { readFile, writeFile } = require('fs')
 const { promisify } = require('util')
 
 const makeDir = require('make-dir')
@@ -8,6 +8,9 @@ const readdirp = require('readdirp')
 const cpy = require('cpy')
 const { zipFunctions } = require('@netlify/zip-it-and-ship-it') // eslint-disable-line
 const htmlToText = require('html-to-text')
+
+const pReadFile = promisify(readFile)
+const pWriteFile = promisify(writeFile)
 
 function netlifyPluginSearchIndex(pluginConfig) {
   const searchIndexFolder = pluginConfig.searchIndexFolder || 'searchIndex'
@@ -35,14 +38,12 @@ function netlifyPluginSearchIndex(pluginConfig) {
         // https://www.npmjs.com/package/html-to-text#options
         wordwrap: 130,
       }
-      const readfile = promisify(fs.readFile)
       await Promise.all(
-        newManifest.map(htmlFilePath => {
-          return readfile(htmlFilePath, 'utf8').then(htmlFileContent => {
-            const text = htmlToText.fromString(htmlFileContent, customOpts)
-            const indexPath = path.relative(BUILD_DIR, htmlFilePath)
-            searchIndex[`/${indexPath}`] = text
-          })
+        newManifest.map(async htmlFilePath => {
+          const indexPath = path.relative(BUILD_DIR, htmlFilePath)
+          const htmlFileContent = await pReadFile(htmlFilePath, 'utf8')
+          const text = htmlToText.fromString(htmlFileContent, customOpts)
+          searchIndex[`/${indexPath}`] = text
         }),
       )
       let searchIndexPath = path.join(BUILD_DIR, searchIndexFolder, 'searchIndex.json')
@@ -51,15 +52,15 @@ function netlifyPluginSearchIndex(pluginConfig) {
           `searchIndex detected at ${searchIndexPath}, will overwrite for this build but this may indicate an accidental conflict`,
         )
       }
-      await makeDir(searchIndexPath)
+      await makeDir(`${searchIndexPath}/..`)
       let stringifiedIndex = JSON.stringify(searchIndex)
-      fs.writeFileSync(searchIndexPath, stringifiedIndex)
+      await pWriteFile(searchIndexPath, stringifiedIndex)
 
       const searchIndexFunctionPath = path.join(FUNCTIONS_SRC, 'searchIndex')
       await cpy(__dirname + '/functionTemplate', searchIndexFunctionPath)
       // now we have copied it out to intermediate dir
       // we may want to do some processing/templating
-      fs.writeFileSync(path.join(searchIndexFunctionPath, 'searchIndex.json'), stringifiedIndex)
+      await pWriteFile(path.join(searchIndexFunctionPath, 'searchIndex.json'), stringifiedIndex)
       // and then..
       await zipFunctions(FUNCTIONS_SRC, FUNCTIONS_DIST)
       console.log('Files copied!')
