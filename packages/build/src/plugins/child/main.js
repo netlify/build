@@ -26,7 +26,7 @@ const bootPlugin = async function() {
 // On uncaught exceptions and unhandled rejections, print the stack trace.
 // Also, prevent child processes from crashing on uncaught exceptions.
 const handleProcessErrors = function() {
-  logProcessErrors({ log: handleProcessError, colors: hasColors(), exitOn: [] })
+  logProcessErrors({ log: handleProcessError, colors: hasColors(), exitOn: [], level: { multipleResolves: 'silent' } })
 }
 
 const handleProcessError = async function(error, level) {
