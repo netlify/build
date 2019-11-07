@@ -45,7 +45,7 @@ const enrichPayload = {
         // OS platform. Linix, windows, MacOS
         osPlatform: OS_PLATFORM,
         // OS name
-        osName: OS_NAME
+        osName: OS_NAME,
       },
     }
   },
