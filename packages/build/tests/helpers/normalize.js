@@ -41,7 +41,7 @@ const NORMALIZE_REGEXPS = [
   [/{\n\s+/gm, '{ '],
   [/\n}/gm, ' }'],
   [/,\n\s+/gm, ', '],
-  [/:\n\s+/gm, ': '],
+  [/:\n\s+([^-\s])/gm, ': $1'],
   // Semantic versions
   [/\d+\.\d+\.\d+/, '1.0.0'],
   // npm install logs

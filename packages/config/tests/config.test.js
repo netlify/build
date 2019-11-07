@@ -1,3 +1,5 @@
+const { normalize } = require('path')
+
 const test = require('ava')
 
 const resolveConfig = require('..')
@@ -9,11 +11,11 @@ test('Test TOML', async t => {
 
   t.deepEqual(config, {
     build: {
-      publish: `${FIXTURES_DIR}/dist`,
+      publish: normalize(`${FIXTURES_DIR}/dist`),
       lifecycle: {
         build: ['npm run build'],
       },
-      functions: `${FIXTURES_DIR}/functions`,
+      functions: normalize(`${FIXTURES_DIR}/functions`),
     },
     plugins: [],
   })
@@ -24,11 +26,11 @@ test('Test YAML', async t => {
 
   t.deepEqual(config, {
     build: {
-      publish: `${FIXTURES_DIR}/dist`,
+      publish: normalize(`${FIXTURES_DIR}/dist`),
       lifecycle: {
         build: ['npm run build'],
       },
-      functions: `${FIXTURES_DIR}/functions`,
+      functions: normalize(`${FIXTURES_DIR}/functions`),
     },
     plugins: [],
   })
@@ -39,11 +41,11 @@ test('Test JSON', async t => {
 
   t.deepEqual(config, {
     build: {
-      publish: `${FIXTURES_DIR}/dist`,
+      publish: normalize(`${FIXTURES_DIR}/dist`),
       lifecycle: {
         build: ['npm run build'],
       },
-      functions: `${FIXTURES_DIR}/functions`,
+      functions: normalize(`${FIXTURES_DIR}/functions`),
     },
     plugins: [],
   })
