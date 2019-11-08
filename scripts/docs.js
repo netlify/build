@@ -8,7 +8,7 @@ const rootDir = path.join(__dirname, '..')
 const nonLifecycleKeys = ['onError']
 const CONSTANTS = {
   rootDir: rootDir,
-  lifecycle: path.join(rootDir, 'packages/build/src/core/lifecycle.js'),
+  lifecycle: path.join(rootDir, 'packages/config/src/lifecycle.js'),
 }
 
 function parseJsDoc(contents) {

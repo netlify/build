@@ -2,10 +2,6 @@ const test = require('ava')
 
 const { runFixture } = require('../../helpers/main')
 
-test('prebuild instead of preBuild', async t => {
-  await runFixture(t, 'case')
-})
-
 test('Multiline commands', async t => {
   await runFixture(t, 'multiline')
 })
