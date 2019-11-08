@@ -39,7 +39,7 @@ ${getExample(value, example)}`)
 
 // Recurse over children (each part of the `property` array).
 // Can use * to recurse over array|object elements.
-const validateChild = function({ value, nextPropName, property, propPath, example, ...rest }) {
+const validateChild = function({ value, nextPropName, property, propPath, ...rest }) {
   if (value === undefined) {
     return
   }
@@ -48,20 +48,20 @@ const validateChild = function({ value, nextPropName, property, propPath, exampl
     return validateProperty(value, {
       property: [nextPropName, ...property],
       propPath: `${propPath}.${nextPropName}`,
-      example,
       ...rest,
     })
   }
 
-  return Object.keys(value).forEach(childProp => {
-    const propPathA = Array.isArray(value) ? `${propPath}[${childProp}]` : `${propPath}.${childProp}`
-    const childPropA = Array.isArray(value) ? Number(childProp) : childProp
-    validateProperty(value, {
-      property: [childPropA, ...property],
-      propPath: propPathA,
-      example,
-      ...rest,
-    })
+  return Object.keys(value).forEach(childProp => validateChildProp({ childProp, value, property, propPath, ...rest }))
+}
+
+const validateChildProp = function({ childProp, value, property, propPath, ...rest }) {
+  const propPathA = Array.isArray(value) ? `${propPath}[${childProp}]` : `${propPath}.${childProp}`
+  const childPropA = Array.isArray(value) ? Number(childProp) : childProp
+  validateProperty(value, {
+    property: [childPropA, ...property],
+    propPath: propPathA,
+    ...rest,
   })
 }
 
