@@ -41,8 +41,8 @@ how the Netlify build operates.
 | ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclegetcache">getCache</a>** ‏‏‎ ‏‏‎ ‏‏‎             | Fetch previous build cache                  |
 | ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleinstall">install</a>** ‏‏‎ ‏‏‎ ‏‏‎               | Install project dependencies                |
 | ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleprebuild">preBuild</a>** ‏‏‎ ‏‏‎ ‏‏‎             | Runs before functions & build commands run  |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclefunctionsbuild">functionsBuild</a>** ‏‏‎ ‏‏‎ ‏‏‎ | Build the serverless functions              |
 | ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclebuild">build</a>** ‏‏‎ ‏‏‎ ‏‏‎                   | Build commands are executed                 |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclefunctionsbuild">functionsBuild</a>** ‏‏‎ ‏‏‎ ‏‏‎ | Build the serverless functions              |
 | ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclepostbuild">postBuild</a>** ‏‏‎ ‏‏‎ ‏‏‎           | Runs after site & functions have been built |
 | ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclepackage">package</a>** ‏‏‎ ‏‏‎ ‏‏‎               | Package & optimize artifact                 |
 | ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclepredeploy">preDeploy</a>** ‏‏‎ ‏‏‎ ‏‏‎           | Runs before built artifacts are deployed    |

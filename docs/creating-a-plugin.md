@@ -17,8 +17,8 @@ running things after your site build has completed.
 | ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **getCache** ‏‏‎  ‏‏‎  ‏‏‎  | Fetch previous build cache |
 | ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **install** ‏‏‎  ‏‏‎  ‏‏‎  | Install project dependencies |
 | ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **preBuild** ‏‏‎  ‏‏‎  ‏‏‎  | Runs before functions & build commands run |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **functionsBuild** ‏‏‎  ‏‏‎  ‏‏‎  | Build the serverless functions |
 | ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **build** ‏‏‎  ‏‏‎  ‏‏‎  | Build commands are executed |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **functionsBuild** ‏‏‎  ‏‏‎  ‏‏‎  | Build the serverless functions |
 | ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **postBuild** ‏‏‎  ‏‏‎  ‏‏‎  | Runs after site & functions have been built |
 | ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **package** ‏‏‎  ‏‏‎  ‏‏‎  | Package & optimize artifact |
 | ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **preDeploy** ‏‏‎  ‏‏‎  ‏‏‎  | Runs before built artifacts are deployed |

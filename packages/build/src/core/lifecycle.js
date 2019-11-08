@@ -20,15 +20,15 @@ const LIFECYCLE = [
    */
   'preBuild',
   /**
+   * `build` - Build commands are executed
+   */
+  'build',
+  /**
    * `functionsBuild` - Build the serverless functions
    */
   'preFunctionsBuild',
   'functionsBuild',
   'postFunctionsBuild',
-  /**
-   * `build` - Build commands are executed
-   */
-  'build',
   /**
    * `postBuild` - Runs after site & functions have been built
    */
