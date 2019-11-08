@@ -17,16 +17,24 @@ const validateConfig = function(config) {
 // Validate a single property in the configuration file.
 const validateProperty = function(
   parent,
-  { property: [propName, nextPropName, ...property], propPath = propName, required, check, message, example },
+  {
+    property: [propName, nextPropName, ...property],
+    propPath = propName,
+    valuePath = [propName],
+    required,
+    check,
+    message,
+    example,
+  },
 ) {
   const value = parent[propName]
 
   if (nextPropName !== undefined) {
-    return validateChild({ value, nextPropName, property, propPath, required, check, message, example })
+    return validateChild({ value, nextPropName, property, propPath, valuePath, required, check, message, example })
   }
 
   if (value === undefined) {
-    return checkRequired({ value, required, propPath, example })
+    return checkRequired({ value, required, propPath, valuePath, example })
   }
 
   if (check !== undefined && check(value, parent)) {
@@ -34,11 +42,11 @@ const validateProperty = function(
   }
 
   throw new Error(`Configuration property '${propPath}' ${message}
-${getExample(value, example)}`)
+${getExample({ value, valuePath, example })}`)
 }
 
 // Recurse over children (each part of the `property` array).
-const validateChild = function({ value, nextPropName, property, propPath, ...rest }) {
+const validateChild = function({ value, nextPropName, property, propPath, valuePath, ...rest }) {
   if (value === undefined) {
     return
   }
@@ -47,33 +55,37 @@ const validateChild = function({ value, nextPropName, property, propPath, ...res
     return validateProperty(value, {
       property: [nextPropName, ...property],
       propPath: `${propPath}.${nextPropName}`,
+      valuePath: [...valuePath, nextPropName],
       ...rest,
     })
   }
 
-  return Object.keys(value).forEach(childProp => validateChildProp({ childProp, value, property, propPath, ...rest }))
+  return Object.keys(value).forEach(childProp =>
+    validateChildProp({ childProp, value, property, propPath, valuePath, ...rest }),
+  )
 }
 
 // Can use * to recurse over array|object elements.
-const validateChildProp = function({ childProp, value, property, propPath, ...rest }) {
+const validateChildProp = function({ childProp, value, property, propPath, valuePath, ...rest }) {
   const propPathA = Array.isArray(value) ? `${propPath}[${childProp}]` : `${propPath}.${childProp}`
   const childPropA = Array.isArray(value) ? Number(childProp) : childProp
   validateProperty(value, {
     property: [childPropA, ...property],
     propPath: propPathA,
+    valuePath: [...valuePath, childPropA],
     ...rest,
   })
 }
 
 // When `required` is `true`, property must be defined, unless its parent is
 // `undefined`. To make parent required, set its `required` to `true` as well.
-const checkRequired = function({ value, required, propPath, example }) {
+const checkRequired = function({ value, required, propPath, valuePath, example }) {
   if (!required) {
     return
   }
 
   throw new Error(`Configuration property '${propPath}' is required.
-${getExample(value, example)}`)
+${getExample({ value, valuePath, example })}`)
 }
 
 module.exports = { validateConfig }

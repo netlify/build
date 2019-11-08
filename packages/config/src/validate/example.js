@@ -1,23 +1,33 @@
-const { dump, JSON_SCHEMA } = require('js-yaml')
+const { dump } = require('js-yaml')
 const indentString = require('indent-string')
 
 // Print invalid value and example netlify.yml
-const getExample = function(value, example) {
+const getExample = function({ value, valuePath, example }) {
   return `
-Invalid value:
+Invalid syntax:
 
-${indentString(serializeValue(value), 2)}
+${indentString(getInvalidValue(value, valuePath), 2)}
 
-Example 'netlify.yml':
+Valid syntax:
 ${indentString(example, 2)}`
 }
 
-const serializeValue = function(value) {
-  if (value === undefined) {
-    return String(value)
+const getInvalidValue = function(value, valuePath) {
+  const invalidValue = valuePath.reverse().reduce(setInvalidValuePart, value)
+  const invalidValueA = serializeValue(invalidValue)
+  return invalidValueA
+}
+
+const setInvalidValuePart = function(value, part) {
+  if (Number.isInteger(part)) {
+    return value === undefined ? [] : [value]
   }
 
-  return dump(value, { schema: JSON_SCHEMA, noRefs: true }).trim()
+  return value === undefined ? {} : { [part]: value }
+}
+
+const serializeValue = function(value) {
+  return dump(value, { noRefs: true }).trim()
 }
 
 module.exports = { getExample }
