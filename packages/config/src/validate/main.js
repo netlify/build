@@ -1,3 +1,5 @@
+const { cyan } = require('chalk')
+
 const { VALIDATIONS } = require('./validations')
 const { getExample } = require('./example')
 
@@ -41,7 +43,7 @@ const validateProperty = function(
     return
   }
 
-  throw new Error(`Configuration property '${propPath}' ${message}
+  throw new Error(`Configuration property ${cyan.bold(propPath)} ${message}
 ${getExample({ value, prevPath, example })}`)
 }
 
@@ -91,7 +93,7 @@ const checkRequired = function({ value, required, propPath, prevPath, example })
     return
   }
 
-  throw new Error(`Configuration property '${propPath}' is required.
+  throw new Error(`Configuration property ${cyan.bold(propPath)} is required.
 ${getExample({ value, prevPath, example })}`)
 }
 

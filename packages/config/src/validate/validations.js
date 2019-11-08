@@ -1,4 +1,5 @@
 const isPlainObj = require('is-plain-obj')
+const { cyan } = require('chalk')
 
 const { LIFECYCLE } = require('../lifecycle')
 
@@ -82,8 +83,8 @@ const VALIDATIONS = [
   {
     property: 'build.command',
     check: (value, { lifecycle }) => lifecycle === undefined,
-    message: `must not be defined when 'build.lifecycle' is also defined.
-Please rename 'build.command' to 'build.lifecycle.build.'`,
+    message: `must not be defined when ${cyan.bold('build.lifecycle')} is also defined.
+Please rename ${cyan.bold('build.command')} to ${cyan.bold('build.lifecycle.build.')}`,
     example: { build: { lifecycle: { build: 'npm run build' } } },
   },
   {
