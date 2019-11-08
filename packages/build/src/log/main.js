@@ -156,14 +156,10 @@ ${cyanBright('Running onError methods')}`)
 }
 
 const logBuildError = function(error) {
-  log(redBright.bold(`\n${getHeader('Netlify Build Error')}`))
-
-  if (error.cleanStack) {
-    log(cleanStacks(error.message))
-  } else {
-    log(`\n${error.stack}`)
-  }
-  log()
+  const errorStack = error.cleanStack ? cleanStacks(error.message) : `\n${error.stack}`
+  log(`${redBright.bold(`\n${getHeader('Netlify Build Error')}`)}
+${errorStack}
+`)
 }
 
 const logBuildSuccess = function() {
