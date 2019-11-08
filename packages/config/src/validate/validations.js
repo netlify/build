@@ -19,131 +19,89 @@ const VALIDATIONS = [
     property: 'plugins',
     check: value => Array.isArray(value) && value.every(isPlainObj),
     message: 'must be an array of objects.',
-    example: `
-  plugins:
-    - type: netlify-plugin-one
-    - type: netlify-plugin-two`,
+    example: {
+      plugins: [{ type: 'netlify-plugin-one' }, { type: 'netlify-plugin-two' }],
+    },
   },
   {
     property: 'plugins.*',
     ...validProperties(['id', 'type', 'enabled', 'config']),
-    example: `
-plugins:
-  - id: one
-    type: netlify-plugin-one
-    enabled: false
-    config:
-      port: 80`,
+    example: {
+      plugins: [{ id: 'one', type: 'netlify-plugin-one', enabled: false, config: { port: 80 } }],
+    },
   },
   {
     property: 'plugins.*.id',
     check: isString,
     message: 'must be an string.',
-    example: `
-plugins:
-  - id: one
-    type: netlify-plugin-one`,
+    example: { plugins: [{ id: 'one', type: 'netlify-plugin-one' }] },
   },
   {
     property: 'plugins.*.type',
     required: true,
     check: isString,
     message: 'must be a string.',
-    example: `
-plugins:
-  - type: netlify-plugin-one`,
+    example: { plugins: [{ type: 'netlify-plugin-one' }] },
   },
   {
     property: 'plugins.*.enabled',
     check: isBoolean,
     message: 'must be a boolean.',
-    example: `
-plugins:
-  - type: netlify-plugin-one
-    enabled: false`,
+    example: { plugins: [{ type: 'netlify-plugin-one', enabled: false }] },
   },
   {
     property: 'plugins.*.config',
     check: isPlainObj,
     message: 'must be a plain object.',
-    example: `
-plugins:
-  - type: netlify-plugin-one
-    config:
-      port: 80`,
+    example: { plugins: [{ type: 'netlify-plugin-one', config: { port: 80 } }] },
   },
   {
     property: 'build',
     check: isPlainObj,
     message: 'must be a plain object.',
-    example: `
-build:
-  lifecycle:
-    build: npm run build`,
+    example: { build: { lifecycle: { build: 'npm run build' } } },
   },
   {
     property: 'build.publish',
     check: isString,
     message: 'must be a string.',
-    example: `
-build:
-  publish: dist`,
+    example: { build: { publish: 'dist' } },
   },
   {
     property: 'build.functions',
     check: isString,
     message: 'must be a string.',
-    example: `
-build:
-  functions: functions`,
+    example: { build: { functions: 'functions' } },
   },
   {
     property: 'build.command',
     check: value => isString(value) || (Array.isArray(value) && value.every(isString)),
     message: 'must be a string or an array of strings.',
-    example: `
-build:
-  command:
-    - npm run build
-    - npm test`,
+    example: { build: { command: ['npm run build', 'npm test'] } },
   },
   {
     property: 'build.command',
     check: (value, { lifecycle }) => lifecycle === undefined,
     message: `must not be defined when 'build.lifecycle' is also defined.
 Please rename 'build.command' to 'build.lifecycle.build.'`,
-    example: `
-build:
-  lifecycle:
-    build: npm run build`,
+    example: { build: { lifecycle: { build: 'npm run build' } } },
   },
   {
     property: 'build.lifecycle',
     check: isPlainObj,
     message: 'must be a plain object.',
-    example: `
-build:
-  lifecycle:
-    build: npm run build`,
+    example: { build: { lifecycle: { build: 'npm run build' } } },
   },
   {
     property: 'build.lifecycle',
     ...validProperties(LIFECYCLE),
-    example: `
-build:
-  lifecycle:
-    build: npm run build`,
+    example: { build: { lifecycle: { build: 'npm run build' } } },
   },
   {
     property: 'build.lifecycle.*',
     check: value => isString(value) || (Array.isArray(value) && value.every(isString)),
     message: 'must be a string or an array of strings.',
-    example: `
-build:
-  lifecycle:
-    build:
-      - npm run build
-      - npm test`,
+    example: { build: { lifecycle: { build: ['npm run build', 'npm test'] } } },
   },
 ]
 

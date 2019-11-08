@@ -9,7 +9,8 @@ Invalid syntax:
 ${indentString(getInvalidValue(value, prevPath), 2)}
 
 Valid syntax:
-${indentString(example, 2)}`
+
+${indentString(serializeValue(example), 2)}`
 }
 
 const getInvalidValue = function(value, prevPath) {
