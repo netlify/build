@@ -1,6 +1,7 @@
 const isPlainObj = require('is-plain-obj')
 
-const { LIFECYCLE } = require('./lifecycle')
+const { LIFECYCLE } = require('../lifecycle')
+
 const { isString, isBoolean, validProperties } = require('./helpers')
 
 // List of validations performed on the configuration file.

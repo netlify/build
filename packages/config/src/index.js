@@ -7,6 +7,7 @@ const { addEnvVars } = require('./env')
 const { validateConfig } = require('./validate/main')
 const { normalizeConfig } = require('./normalize')
 const { handleFiles } = require('./files')
+const { LIFECYCLE } = require('./lifecycle')
 
 const resolveConfig = async function(configFile, { cwd, context } = {}) {
   const configPath = await getConfigPath(configFile, cwd)
@@ -44,7 +45,6 @@ const resolveConfig = async function(configFile, { cwd, context } = {}) {
 }
 
 module.exports = resolveConfig
-/* Formatting utilities */
 module.exports.formatUtils = configorama.format
-/* Resolve Netlify config path */
 module.exports.getConfigPath = getConfigPath
+module.exports.LIFECYCLE = LIFECYCLE

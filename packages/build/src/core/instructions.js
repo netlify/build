@@ -1,6 +1,7 @@
 const execa = require('execa')
 const pMapSeries = require('p-map-series')
 const pReduce = require('p-reduce')
+const { LIFECYCLE } = require('@netlify/config')
 
 const { getEventFromChild, sendEventToChild } = require('../plugins/ipc')
 const {
@@ -12,8 +13,6 @@ const {
 } = require('../log/main')
 const { startTimer, endTimer } = require('../log/timer')
 const { startOutput, stopOutput } = require('../log/stream')
-
-const { LIFECYCLE } = require('./lifecycle')
 
 // Get instructions for all hooks
 const getInstructions = function({ pluginsHooks, config }) {

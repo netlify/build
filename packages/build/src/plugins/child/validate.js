@@ -1,7 +1,7 @@
 const API = require('netlify')
 const isPlainObj = require('is-plain-obj')
+const { LIFECYCLE } = require('@netlify/config')
 
-const { LIFECYCLE } = require('../../core/lifecycle')
 const { serializeList } = require('../../utils/list')
 const { validateConfigSchema } = require('../config/validate_config.js')
 
