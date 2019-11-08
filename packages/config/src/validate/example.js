@@ -2,18 +2,18 @@ const { dump } = require('js-yaml')
 const indentString = require('indent-string')
 
 // Print invalid value and example netlify.yml
-const getExample = function({ value, valuePath, example }) {
+const getExample = function({ value, prevPath, example }) {
   return `
 Invalid syntax:
 
-${indentString(getInvalidValue(value, valuePath), 2)}
+${indentString(getInvalidValue(value, prevPath), 2)}
 
 Valid syntax:
 ${indentString(example, 2)}`
 }
 
-const getInvalidValue = function(value, valuePath) {
-  const invalidValue = valuePath.reverse().reduce(setInvalidValuePart, value)
+const getInvalidValue = function(value, prevPath) {
+  const invalidValue = prevPath.reverse().reduce(setInvalidValuePart, value)
   const invalidValueA = serializeValue(invalidValue)
   return invalidValueA
 }
