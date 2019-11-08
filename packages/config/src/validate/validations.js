@@ -6,7 +6,9 @@ const { isString, isBoolean, validProperties } = require('./helpers')
 // List of validations performed on the configuration file.
 // Validation are performed in order: parent should be before children.
 // Each validation is an object with the following properties:
-//   - `property` {string}: dot-delimited path to the property. Can contain `*`.
+//   - `property` {string}: dot-delimited path to the property.
+//     Can contain `*` providing a previous check validates the parent is an
+//     object or an array.
 //   - `check` {(value) => boolean}: validation check function
 //   - `message` {string}: error message
 //   - `example` {string}: example of correct code
