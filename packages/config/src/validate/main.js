@@ -1,5 +1,3 @@
-const isPlainObj = require('is-plain-obj')
-
 const { VALIDATIONS } = require('./validations')
 const { getExample } = require('./example')
 
@@ -53,11 +51,6 @@ const validateChild = function({ value, nextPropName, property, propPath, exampl
       example,
       ...rest,
     })
-  }
-
-  if (!Array.isArray(value) && !isPlainObj(value)) {
-    throw new Error(`Configuration property '${propPath}' must be an array or a plain object.
-${getExample(value, example)}`)
   }
 
   return Object.keys(value).forEach(childProp => {
