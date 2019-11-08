@@ -1,5 +1,6 @@
 require('../utils/polyfills')
 
+// This needs to be done before `chalk` is loaded
 // eslint-disable-next-line import/order
 const { setColorLevel } = require('../log/colors')
 setColorLevel()
