@@ -1,45 +1,7 @@
 const isPlainObj = require('is-plain-obj')
 
-const isString = function(value) {
-  return typeof value === 'string'
-}
-
-const isBoolean = function(value) {
-  return typeof value === 'boolean'
-}
-
-const validProperties = function(propNames) {
-  return {
-    check: value => Object.keys(value).every(propName => propNames.includes(propName)),
-    message: `has unknown properties. Valid properties are:
-${propNames.map(propName => `  - ${propName}`).join('\n')}`,
-  }
-}
-
-const LIFECYCLE = [
-  'init',
-  'preGetCache',
-  'getCache',
-  'postGetCache',
-  'preInstall',
-  'install',
-  'postInstall',
-  'preBuild',
-  'build',
-  'preFunctionsBuild',
-  'functionsBuild',
-  'postFunctionsBuild',
-  'postBuild',
-  'prePackage',
-  'package',
-  'postPackage',
-  'preDeploy',
-  'preSaveCache',
-  'saveCache',
-  'postSaveCache',
-  'finally',
-  'onError',
-]
+const { LIFECYCLE } = require('./lifecycle')
+const { isString, isBoolean, validProperties } = require('./helpers')
 
 // List of validations performed on the configuration file.
 // Validation are performed in order: parent should be before children.

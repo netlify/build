@@ -4,7 +4,7 @@ const configorama = require('configorama')
 
 const { getConfigPath } = require('./path')
 const { addEnvVars } = require('./env')
-const { validateConfig } = require('./validate')
+const { validateConfig } = require('./validate/main')
 const { normalizeConfig } = require('./normalize')
 const { handleFiles } = require('./files')
 

@@ -1,16 +1,14 @@
-const indentString = require('indent-string')
 const isPlainObj = require('is-plain-obj')
-const { dump, JSON_SCHEMA } = require('js-yaml')
 
 const { VALIDATIONS } = require('./validations')
+const { getExample } = require('./example')
 
 // Validate the configuration file.
 // Performed before normalization.
 const validateConfig = function(config) {
   try {
     VALIDATIONS.forEach(({ property, ...validation }) => {
-      const propertyA = property.split('.')
-      validateProperty(config, { ...validation, property: propertyA })
+      validateProperty(config, { ...validation, property: property.split('.') })
     })
   } catch (error) {
     error.cleanStack = true
@@ -83,24 +81,6 @@ const checkRequired = function({ value, required, propPath, example }) {
 
   throw new Error(`Configuration property '${propPath}' is required.
 ${getExample(value, example)}`)
-}
-
-const getExample = function(value, example) {
-  return `
-Invalid value:
-
-${indentString(serializeValue(value), 2)}
-
-Example 'netlify.yml':
-${indentString(example, 2)}`
-}
-
-const serializeValue = function(value) {
-  if (value === undefined) {
-    return String(value)
-  }
-
-  return dump(value, { schema: JSON_SCHEMA, noRefs: true }).trim()
 }
 
 module.exports = { validateConfig }
