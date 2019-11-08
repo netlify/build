@@ -22,10 +22,6 @@ test('plugin.config works with undefined pluginConfig', async t => {
   await runFixture(t, 'undefined')
 })
 
-test('pluginConfig must be an object', async t => {
-  await runFixture(t, 'object')
-})
-
 test('plugin.config validates unknown properties', async t => {
   await runFixture(t, 'unknown')
 })
