@@ -2,7 +2,8 @@ const test = require('ava')
 
 const { runFixture } = require('../../helpers/main')
 
-test('Can use local plugins', async t => {
+// eslint-disable-next-line
+test.only('Can use local plugins', async t => {
   await runFixture(t, 'local')
 })
 

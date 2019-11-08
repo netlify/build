@@ -3,6 +3,7 @@ const { platform } = require('process')
 
 const { tick, pointer, arrowDown } = require('figures')
 const omit = require('omit.js')
+const stringWidth = require('string-width')
 
 const { version } = require('../../package.json')
 
@@ -120,16 +121,8 @@ ${HEADING_PREFIX} OVERRIDE: "${override.hook}" method in "${override.name}" has 
   const source = id.startsWith('config.build') ? ` in ${basename(configPath)} config file` : ''
   const niceName = id.startsWith('config.build') ? id.replace(/^config\./, '') : id
   const logColor = error ? redBright.bold : cyanBright.bold
-  const outputNoChalk = `${index + 1}. Running ${hook} ${lifecycleName}from ${niceName}${source}`
-  const output = `${index + 1}. Running ${bold(hook)} ${lifecycleName}from ${bold(niceName)}${source}`
-  const line = '─'.repeat(outputNoChalk.length + 2)
-  log(
-    logColor(`${overrideWarning}
-┌─${line}─┐
-│ ${output}   │
-└─${line}─┘
-`),
-  )
+  const header = `${index + 1}. Running ${bold(hook)} ${lifecycleName}from ${bold(niceName)}${source}`
+  log(logColor(`${overrideWarning}\n${getHeader(header)}\n`))
 }
 
 const logCommandStart = function(cmd) {
@@ -157,21 +150,13 @@ TOML file written to ${tomlPath}`)
 }
 
 const logErrorInstructions = function() {
-  log(`${redBright.bold(`
-┌─────────────────────┐
-│  Lifecycle Error!   │
-└─────────────────────┘`)}
+  log(`${redBright.bold(`\n${getHeader('Lifecycle Error')}`)}
 
 ${cyanBright('Running onError methods')}`)
 }
 
 const logBuildError = function(error) {
-  log(
-    redBright.bold(`
-┌─────────────────────────────┐
-│    Netlify Build Error!     │
-└─────────────────────────────┘`),
-  )
+  log(redBright.bold(`\n${getHeader('Netlify Build Error')}`))
 
   if (error.cleanStack) {
     log(cleanStacks(error.message))
@@ -182,13 +167,7 @@ const logBuildError = function(error) {
 }
 
 const logBuildSuccess = function() {
-  log(
-    greenBright.bold(`
-┌─────────────────────────────┐
-│   Netlify Build Complete!   │
-└─────────────────────────────┘
-`),
-  )
+  log(greenBright.bold(`\n${getHeader('Netlify Build Complete')}\n`))
 }
 
 const logBuildEnd = function({ buildInstructions, config, duration }) {
@@ -196,6 +175,22 @@ const logBuildEnd = function({ buildInstructions, config, duration }) {
 }
 
 const SPARKLES = platform === 'win32' ? '(/Ò_Ò)/' : '(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧'
+
+// Print a rectangular header
+const getHeader = function(message) {
+  const messageWidth = stringWidth(message)
+  const headerWidth = Math.max(HEADER_MIN_WIDTH, messageWidth + MIN_PADDING * 2)
+  const line = '─'.repeat(headerWidth)
+  const paddingWidth = (headerWidth - messageWidth) / 2
+  const paddingLeft = ' '.repeat(Math.floor(paddingWidth))
+  const paddingRight = ' '.repeat(Math.ceil(paddingWidth))
+  return `┌${line}┐
+│${paddingLeft}${message}${paddingRight}│
+└${line}┘`
+}
+
+const HEADER_MIN_WIDTH = 29
+const MIN_PADDING = 1
 
 module.exports = {
   logBuildStart,
