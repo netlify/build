@@ -23,8 +23,8 @@ Netlify build is the next generation of CI/CD tooling for modern web application
 - [lifecycle.getCache](#lifecyclegetcache)
 - [lifecycle.install](#lifecycleinstall)
 - [lifecycle.preBuild](#lifecycleprebuild)
-- [lifecycle.functionsBuild](#lifecyclefunctionsbuild)
 - [lifecycle.build](#lifecyclebuild)
+- [lifecycle.functionsBuild](#lifecyclefunctionsbuild)
 - [lifecycle.postBuild](#lifecyclepostbuild)
 - [lifecycle.package](#lifecyclepackage)
 - [lifecycle.preDeploy](#lifecyclepredeploy)
@@ -124,8 +124,8 @@ how the Netlify build operates.
 | ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclegetcache">getCache</a>** ‏‏‎ ‏‏‎ ‏‏‎             | Fetch previous build cache                  |
 | ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleinstall">install</a>** ‏‏‎ ‏‏‎ ‏‏‎               | Install project dependencies                |
 | ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleprebuild">preBuild</a>** ‏‏‎ ‏‏‎ ‏‏‎             | Runs before functions & build commands run  |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclefunctionsbuild">functionsBuild</a>** ‏‏‎ ‏‏‎ ‏‏‎ | Build the serverless functions              |
 | ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclebuild">build</a>** ‏‏‎ ‏‏‎ ‏‏‎                   | Build commands are executed                 |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclefunctionsbuild">functionsBuild</a>** ‏‏‎ ‏‏‎ ‏‏‎ | Build the serverless functions              |
 | ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclepostbuild">postBuild</a>** ‏‏‎ ‏‏‎ ‏‏‎           | Runs after site & functions have been built |
 | ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclepackage">package</a>** ‏‏‎ ‏‏‎ ‏‏‎               | Package & optimize artifact                 |
 | ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclepredeploy">preDeploy</a>** ‏‏‎ ‏‏‎ ‏‏‎           | Runs before built artifacts are deployed    |
@@ -331,49 +331,6 @@ build:
 
 </details>
 
-### lifecycle.functionsBuild
-
-`functionsBuild` - Build the serverless functions
-
-<details>
-  <summary>Using functionsBuild</summary>
-  
-  <br/>
-
-**1. Using with a Plugin**
-
-Below is an example plugin using the `functionsBuild` hook
-
-```js
-module.exports = function myPlugin(pluginConfig) {
-  return {
-    functionsBuild: () => {
-      console.log('Do thing on functionsBuild step')
-    },
-  }
-}
-```
-
-After creating the plugin, add into your Netlify config file under `plugins`
-
-```yml
-plugins:
-  - type: ./path/to/plugin
-    config:
-      foo: bar
-```
-
-**2. Using with via `build.lifecycle`**
-
-```yml
-build:
-  lifecycle:
-    functionsBuild:
-      - echo "Do thing on functionsBuild step"
-```
-
-</details>
-
 ### lifecycle.build
 
 `build` - Build commands are executed
@@ -413,6 +370,49 @@ build:
   lifecycle:
     build:
       - echo "Do thing on build step"
+```
+
+</details>
+
+### lifecycle.functionsBuild
+
+`functionsBuild` - Build the serverless functions
+
+<details>
+  <summary>Using functionsBuild</summary>
+  
+  <br/>
+
+**1. Using with a Plugin**
+
+Below is an example plugin using the `functionsBuild` hook
+
+```js
+module.exports = function myPlugin(pluginConfig) {
+  return {
+    functionsBuild: () => {
+      console.log('Do thing on functionsBuild step')
+    },
+  }
+}
+```
+
+After creating the plugin, add into your Netlify config file under `plugins`
+
+```yml
+plugins:
+  - type: ./path/to/plugin
+    config:
+      foo: bar
+```
+
+**2. Using with via `build.lifecycle`**
+
+```yml
+build:
+  lifecycle:
+    functionsBuild:
+      - echo "Do thing on functionsBuild step"
 ```
 
 </details>
