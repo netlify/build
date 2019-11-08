@@ -18,7 +18,7 @@ var options = {
 }
 var fuse = new Fuse(searchIndex, options)
 
-exports.handler = async (event, context) => {
+exports.handler = async event => {
   const searchTerm = event.queryStringParameters.search || event.queryStringParameters.s
   if (typeof searchTerm === 'undefined') {
     return {

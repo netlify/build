@@ -164,7 +164,7 @@ const logBuildSuccess = function() {
   log(greenBright.bold(`\n${getHeader('Netlify Build Complete')}\n`))
 }
 
-const logBuildEnd = function({ buildInstructions, config, duration }) {
+const logBuildEnd = function() {
   log(`\n${cyanBright(SPARKLES)} Have a nice day!\n`)
 }
 

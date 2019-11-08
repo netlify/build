@@ -59,7 +59,7 @@ const build = async function(options = {}) {
 
     logBuildSuccess()
     const duration = endTimer(buildTimer, 'Netlify Build')
-    logBuildEnd({ buildInstructions, config, duration })
+    logBuildEnd()
     await trackBuildComplete({ buildInstructions, config, duration })
     return true
   } catch (error) {

@@ -1,4 +1,4 @@
-module.exports = function exampleOne(conf) {
+module.exports = function exampleOne() {
   return {
     name: 'netlify-plugin-one',
     init: () => {

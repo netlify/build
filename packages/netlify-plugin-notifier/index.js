@@ -50,11 +50,11 @@ module.exports = function netlifyNotifyPlugin(pluginConfig) {
   return pluginMethods
 }
 
-function sendEmail(message, emailConfig) {
+function sendEmail() {
   // Todo implement email sends
 }
 
-function sendWebhook(message, webhookConfig) {
+function sendWebhook() {
   // Todo implement API requests with retry logic
 }
 

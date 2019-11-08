@@ -18,13 +18,13 @@ function parseJsDoc(contents) {
 const config = {
   transforms: {
     // https://github.com/moleculerjs/moleculer-addons/blob/master/readme-generator.js#L11
-    PACKAGES(content, options) {
+    PACKAGES() {
       const base = path.resolve('packages')
       const packages = fs
         .readdirSync(path.resolve('packages'))
         .filter(pkg => !/^\./.test(pkg))
         .map(pkg => [pkg, fs.readFileSync(path.join(base, pkg, 'package.json'), 'utf8')])
-        .filter(([pkg, json]) => {
+        .filter(([, json]) => {
           const parsed = JSON.parse(json)
           return parsed.private !== true
         })
@@ -35,14 +35,14 @@ const config = {
         .join('\n')
       return packages
     },
-    PLUGINS(content, options) {
+    PLUGINS() {
       const base = path.resolve('packages')
       const packages = fs
         .readdirSync(path.resolve('packages'))
         .filter(pkg => !/^\./.test(pkg))
         .filter(pkg => pkg.match(/netlify-plugin/))
         .map(pkg => [pkg, fs.readFileSync(path.join(base, pkg, 'package.json'), 'utf8')])
-        .filter(([pkg, json]) => {
+        .filter(([, json]) => {
           const parsed = JSON.parse(json)
           return parsed.private !== true
         })
@@ -88,7 +88,7 @@ const config = {
       })
       return md.replace(/^\s+|\s+$/g, '')
     },
-    LIFECYCLE_DOCS(content, options) {
+    LIFECYCLE_DOCS() {
       const fileContents = fs.readFileSync(CONSTANTS.lifecycle, 'utf-8')
       const docBlocs = parseJsDoc(fileContents)
       let updatedContent = ''
