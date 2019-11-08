@@ -67,12 +67,19 @@ const validateChild = function({ value, nextPropName, property, propPath, valueP
 
 // Can use * to recurse over array|object elements.
 const validateChildProp = function({ childProp, value, property, propPath, valuePath, ...rest }) {
-  const propPathA = Array.isArray(value) ? `${propPath}[${childProp}]` : `${propPath}.${childProp}`
-  const childPropA = Array.isArray(value) ? Number(childProp) : childProp
+  if (Array.isArray(value)) {
+    return validateProperty(value, {
+      valuePath: [...valuePath, Number(childProp)],
+      property: [Number(childProp), ...property],
+      propPath: `${propPath}[${childProp}]`,
+      ...rest,
+    })
+  }
+
   validateProperty(value, {
-    property: [childPropA, ...property],
-    propPath: propPathA,
-    valuePath: [...valuePath, childPropA],
+    valuePath: [...valuePath, childProp],
+    property: [childProp, ...property],
+    propPath: `${propPath}.${childProp}`,
     ...rest,
   })
 }
