@@ -4,14 +4,12 @@ const { platform } = require('process')
 const { tick, pointer, arrowDown } = require('figures')
 const omit = require('omit.js')
 const stringWidth = require('string-width')
+const { greenBright, cyanBright, redBright, yellowBright, bold, white } = require('chalk')
 
 const { version } = require('../../package.json')
 
 const { log } = require('./logger')
 const { cleanStacks } = require('./stack.js')
-
-// eslint-disable-next-line import/order
-const { greenBright, cyanBright, redBright, yellowBright, bold, white } = require('chalk')
 
 const HEADING_PREFIX = pointer
 const SUBTEXT_PADDING = '  '
