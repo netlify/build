@@ -1,7 +1,7 @@
 const { dump, JSON_SCHEMA } = require('js-yaml')
 const indentString = require('indent-string')
 
-// Print invalid valud and example netlify.yml
+// Print invalid value and example netlify.yml
 const getExample = function(value, example) {
   return `
 Invalid value:
