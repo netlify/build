@@ -25,13 +25,13 @@ const req = https.request(
     },
   },
   res => {
-    res.on('data', d => {
+    res.on('data', () => {
       process.exit()
     })
   },
 )
 
-req.on('error', e => {
+req.on('error', () => {
   process.exit(1)
 })
 

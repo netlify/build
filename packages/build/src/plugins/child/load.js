@@ -46,7 +46,7 @@ const getPluginHook = function({ method, hook, name, id = name, type, core }) {
 }
 
 // Retrieve context passed to every hook method
-const getContext = function(logic, hooks, constants, { pluginConfig, config, configPath, baseDir, token }) {
+const getContext = function(logic, hooks, constants, { pluginConfig, config, token }) {
   const api = getApiClient({ logic, token })
   return { hooks, api, constants, pluginConfig, config }
 }

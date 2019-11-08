@@ -10,7 +10,6 @@ const isNetlifyCI = require('../../utils/is-netlify-ci')
 const getConstants = function({
   configPath,
   baseDir,
-  config,
   config: {
     build: { publish, functions },
   },

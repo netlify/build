@@ -100,7 +100,7 @@ module.exports = async function getHeuristics({ pkgPath, configPath }) {
   }
 }
 
-async function parseJson(packagePath, script) {
+async function parseJson(packagePath) {
   const pkgString = await readFileAsync(packagePath, 'utf-8')
   const pkg = JSON.parse(pkgString)
   return pkg

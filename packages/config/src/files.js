@@ -21,7 +21,7 @@ const handleFile = async function(config, baseDir, { location, defaultPath, defa
 
   const pathA = await addDefault({ path, baseDir, defaultPath, defaultIfExists })
   const pathB = normalizePath(pathA, baseDir)
-  await ensurePath(pathB, location)
+  await ensurePath(pathB)
 
   return { location, path: pathB }
 }
@@ -54,7 +54,7 @@ const normalizePath = function(path, baseDir) {
 }
 
 // Create directory if it does not already exists
-const ensurePath = async function(path, location) {
+const ensurePath = async function(path) {
   if (path === undefined || (await pathExists(path))) {
     return
   }

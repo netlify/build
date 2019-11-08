@@ -29,7 +29,7 @@ const prefixEventNames = {
 /* enrich telemetry payload */
 const enrichPayload = {
   NAMESPACE: 'enrich',
-  trackStart: ({ payload, instance }) => {
+  trackStart: ({ payload }) => {
     return {
       ...payload,
       properties: {

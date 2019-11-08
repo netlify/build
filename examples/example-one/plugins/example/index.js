@@ -1,5 +1,5 @@
 // Export plugin
-module.exports = function netlifyPlugin(config) {
+module.exports = function netlifyPlugin() {
   return {
     name: 'netlify-plugin-one',
     init: () => {

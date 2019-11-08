@@ -16,13 +16,13 @@ module.exports = function execAsync(cmd, opts) {
 
       return resolve({ stdout, stderr })
     })
-    process.stdout.on('data', data => {
+    process.stdout.on('data', () => {
       // console.log(`${data}`)
     })
-    process.stderr.on('data', data => {
+    process.stderr.on('data', () => {
       // console.log(`${data.toString()}`)
     })
-    process.on('exit', code => {
+    process.on('exit', () => {
       // console.log('child process exited with code ' + code.toString())
     })
   })
