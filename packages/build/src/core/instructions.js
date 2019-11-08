@@ -42,38 +42,30 @@ const getHookInstructions = function({
 }
 
 // Run build instructions, i.e. all instructions except error handling ones
-const runBuildInstructions = async function(buildInstructions, { config, configPath, token, baseDir }) {
+const runBuildInstructions = async function(buildInstructions, { configPath, baseDir }) {
   logLifeCycleStart(buildInstructions)
 
-  await runInstructions(buildInstructions, { config, configPath, token, baseDir })
+  await runInstructions(buildInstructions, { configPath, baseDir })
 }
 
 // Error handler when an instruction fails
 // Resolve all 'onError' methods and try to fix things
-const runErrorInstructions = async function(errorInstructions, { config, configPath, token, baseDir, error }) {
+const runErrorInstructions = async function(errorInstructions, { configPath, baseDir, error }) {
   if (errorInstructions.length === 0) {
     return
   }
 
   logErrorInstructions()
 
-  await runInstructions(errorInstructions, { config, configPath, token, baseDir, error })
+  await runInstructions(errorInstructions, { configPath, baseDir, error })
 }
 
 // Run a set of instructions
-const runInstructions = async function(instructions, { config, configPath, token, baseDir, error }) {
+const runInstructions = async function(instructions, { configPath, baseDir, error }) {
   const manifest = await pReduce(
     instructions,
     (currentData, instruction, index) => {
-      return runInstruction(instruction, {
-        currentData,
-        index,
-        config,
-        configPath,
-        token,
-        baseDir,
-        error,
-      })
+      return runInstruction(instruction, { currentData, index, configPath, baseDir, error })
     },
     {},
   )
@@ -81,14 +73,14 @@ const runInstructions = async function(instructions, { config, configPath, token
 }
 
 // Run a single instruction
-const runInstruction = async function(instruction, { currentData, index, config, configPath, token, baseDir, error }) {
+const runInstruction = async function(instruction, { currentData, index, configPath, baseDir, error }) {
   const { id, hook } = instruction
 
   const methodTimer = startTimer()
 
   logInstruction(instruction, { index, configPath, error })
 
-  const pluginReturnValue = await fireMethod(instruction, { baseDir, config, token, error })
+  const pluginReturnValue = await fireMethod(instruction, { baseDir, error })
 
   logInstructionSuccess()
 
@@ -97,12 +89,12 @@ const runInstruction = async function(instruction, { currentData, index, config,
   return { ...currentData, ...pluginReturnValue }
 }
 
-const fireMethod = function(instruction, { baseDir, config, token, error }) {
+const fireMethod = function(instruction, { baseDir, error }) {
   if (instruction.commands !== undefined) {
     return execCommands(instruction, { baseDir })
   }
 
-  return firePluginHook(instruction, { config, token, baseDir, error })
+  return firePluginHook(instruction, { error })
 }
 
 // Fire a `config.lifecycle.*` series of commands
@@ -129,7 +121,7 @@ const execCommand = async function({ hook, command, baseDir }) {
 }
 
 // Fire a plugin hook method
-const firePluginHook = async function({ id, childProcess, hook, hookName }, { config, token, baseDir, error }) {
+const firePluginHook = async function({ id, childProcess, hook, hookName }, { error }) {
   const chunks = []
   startOutput(childProcess, chunks)
 

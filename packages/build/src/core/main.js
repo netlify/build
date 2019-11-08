@@ -113,10 +113,10 @@ const executeInstructions = async function({
   }
 
   try {
-    await runBuildInstructions(buildInstructions, { config, configPath, token, baseDir })
+    await runBuildInstructions(buildInstructions, { configPath, baseDir })
     return buildInstructions
   } catch (error) {
-    await runErrorInstructions(errorInstructions, { config, configPath, token, baseDir, error })
+    await runErrorInstructions(errorInstructions, { configPath, baseDir, error })
     throw error
   }
 }
