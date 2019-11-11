@@ -48,8 +48,9 @@ Instead of calling process.exit(), plugin methods should either return (on succe
 // This runs forever until `childProcess.kill()` is called.
 const getEventsFromParent = async function(callback) {
   return new Promise((resolve, reject) => {
-    process.on('message', async ([eventName, payload]) => {
+    process.on('message', async message => {
       try {
+        const [eventName, payload] = message
         await callback(eventName, payload)
       } catch (error) {
         reject(error)
