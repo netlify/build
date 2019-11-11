@@ -34,18 +34,23 @@ const loadPlugin = async function(
   const { childProcess } = childProcesses[index]
 
   try {
-    await sendEventToChild(childProcess, 'load', {
-      id,
-      type,
-      pluginPath,
-      pluginConfig,
-      config,
-      configPath,
-      core,
-      baseDir,
-      token,
-    })
-    const { payload: hooks } = await getEventFromChild(childProcess, 'load')
+    // We need to fire them in parallel because `process.send()` can be slow
+    // to await, i.e. child might send `load` event before parent `load` event
+    // returns.
+    const [{ payload: hooks }] = await Promise.all([
+      getEventFromChild(childProcess, 'load'),
+      sendEventToChild(childProcess, 'load', {
+        id,
+        type,
+        pluginPath,
+        pluginConfig,
+        config,
+        configPath,
+        core,
+        baseDir,
+        token,
+      }),
+    ])
     const hooksA = hooks.map(hook => ({ ...hook, childProcess }))
     return hooksA
   } catch (error) {

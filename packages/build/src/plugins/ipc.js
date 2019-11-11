@@ -19,7 +19,7 @@ const sendEventToParent = async function(eventName, payload) {
 // Receive event from child to parent process
 const getEventFromChild = async function(childProcess, expectedEvent) {
   if (!childProcess.connected) {
-    throw new Error(`Could not receive event '${eventName}' from child process because it already exited`)
+    throw new Error(`Could not receive event '${expectedEvent}' from child process because it already exited`)
   }
 
   // If the child process exited, we abort listening to the event
@@ -37,45 +37,31 @@ Instead of calling process.exit(), plugin methods should either return (on succe
     throw new Error(payload.stack)
   }
 
-  validateEventName(eventName, expectedEvent)
-
-  return { eventName, payload }
-}
-
-// Receive event from parent to child process
-const getEventFromParent = async function(expectedEvent) {
-  const [eventName, payload] = await pEvent(process, 'message')
-  validateEventName(eventName, expectedEvent)
-  return { eventName, payload }
-}
-
-const validateEventName = function(eventName, expectedEvent) {
   if (expectedEvent !== undefined && expectedEvent !== eventName) {
     throw new Error(`Expected event '${expectedEvent}' instead of '${eventName}'`)
   }
+
+  return { eventName, payload }
 }
 
-// Poll for events from parent to child process
-// TODO: replace with
-//   `pEvent.iterator(process, 'message', {resolutionEvents: 'exit'})`
-// and async iterators after dropping support for Node 8/9
+// Respond to events from parent to child process.
+// This runs forever until `childProcess.kill()` is called.
 const getEventsFromParent = async function(callback) {
-  // eslint-disable-next-line no-constant-condition
-  while (true) {
-    const { eventName, payload } = await getEventFromParent()
-
-    if (eventName === 'exit') {
-      return
-    }
-
-    await callback(eventName, payload)
-  }
+  return new Promise((resolve, reject) => {
+    process.on('message', async message => {
+      try {
+        const [eventName, payload] = message
+        await callback(eventName, payload)
+      } catch (error) {
+        reject(error)
+      }
+    })
+  })
 }
 
 module.exports = {
   sendEventToChild,
   sendEventToParent,
   getEventFromChild,
-  getEventFromParent,
   getEventsFromParent,
 }

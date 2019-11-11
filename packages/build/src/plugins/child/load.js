@@ -1,4 +1,3 @@
-const { getEventFromParent, sendEventToParent } = require('../ipc')
 const { getOverride } = require('../override')
 const { validatePluginConfig } = require('../config/validate_props.js')
 
@@ -12,19 +11,16 @@ const { getConstants } = require('./constants')
 // This also validates the plugin.
 // Do it when parent requests it using the `load` event.
 // Also figure out the list of hooks. This is also passed to the parent.
-const loadPlugin = async function() {
-  const { payload } = await getEventFromParent('load')
-
+const loadPlugin = function(payload) {
   const constants = getConstants(payload)
   const logic = getLogic(payload, constants)
   validatePlugin(logic)
   validatePluginConfig(logic, payload)
 
   const hooks = getPluginHooks(logic, payload)
-  await sendEventToParent('load', hooks)
 
   const context = getContext(logic, hooks, constants, payload)
-  return context
+  return { context, hooks }
 }
 
 const getPluginHooks = function(logic, { id, type, core }) {
