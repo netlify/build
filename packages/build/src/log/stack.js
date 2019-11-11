@@ -50,7 +50,8 @@ const isUselessStack = function(line) {
     // Anonymous function
     line.includes('<anonymous>') ||
     // nyc internal code
-    line.includes('node_modules/append-transform')
+    line.includes('node_modules/append-transform') ||
+    line.includes('node_modules/signal-exit')
   )
 }
 
