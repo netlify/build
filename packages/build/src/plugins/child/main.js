@@ -52,6 +52,7 @@ const handleEvent = async function(eventName, payload, state) {
   await sendEventToParent(eventName, response)
 }
 
+// Initial plugin load
 const load = async function(payload, state) {
   const { context, hooks } = await loadPlugin(payload)
   state.context = context
