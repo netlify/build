@@ -17,6 +17,9 @@ const bootPlugin = async function() {
     handleProcessErrors()
 
     const state = {}
+    // We need to fire them in parallel because `process.send()` can be slow
+    // to await, i.e. parent might send `load` event before child `ready` event
+    // returns.
     await Promise.all([handleEvents(state), sendEventToParent('ready')])
   } catch (error) {
     await handleError(error)
