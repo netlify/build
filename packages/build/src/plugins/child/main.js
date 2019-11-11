@@ -53,8 +53,8 @@ const handleEvent = async function(eventName, payload, state) {
 }
 
 // Initial plugin load
-const load = async function(payload, state) {
-  const { context, hooks } = await loadPlugin(payload)
+const load = function(payload, state) {
+  const { context, hooks } = loadPlugin(payload)
   state.context = context
   return hooks
 }
