@@ -125,8 +125,13 @@ const firePluginHook = async function({ id, childProcess, hook, hookName }, { er
   startOutput(childProcess, chunks)
 
   try {
-    await sendEventToChild(childProcess, 'run', { hookName, error })
-    await getEventFromChild(childProcess, 'run')
+    // We need to fire them in parallel because `process.send()` can be slow
+    // to await, i.e. child might send `run` event before parent `run` event
+    // returns.
+    await Promise.all([
+      getEventFromChild(childProcess, 'run'),
+      sendEventToChild(childProcess, 'run', { hookName, error }),
+    ])
   } catch (error) {
     error.message = `In "${hook}" step from "${id}":\n${error.message}`
     error.cleanStack = true

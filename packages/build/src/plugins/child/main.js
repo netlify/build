@@ -16,9 +16,8 @@ const bootPlugin = async function() {
   try {
     handleProcessErrors()
 
-    await sendEventToParent('ready')
-    const context = await loadPlugin()
-    await handleEvents(context)
+    const state = {}
+    await Promise.all([handleEvents(state), sendEventToParent('ready')])
   } catch (error) {
     await handleError(error)
   }
@@ -44,22 +43,27 @@ const handleError = async function(error) {
 }
 
 // Wait for events from parent to perform plugin methods
-const handleEvents = async function(context) {
-  await getEventsFromParent((eventName, payload) => handleEvent(eventName, payload, context))
+const handleEvents = async function(state) {
+  await getEventsFromParent((eventName, payload) => handleEvent(eventName, payload, state))
 }
 
-const handleEvent = async function(eventName, payload, context) {
-  const response = await EVENTS[eventName](payload, context)
+const handleEvent = async function(eventName, payload, state) {
+  const response = await EVENTS[eventName](payload, state)
   await sendEventToParent(eventName, response)
-  return response
+}
+
+const load = async function(payload, state) {
+  const { context, hooks } = await loadPlugin(payload)
+  state.context = context
+  return hooks
 }
 
 // Run a specific plugin hook method
-const run = async function({ hookName, error }, { hooks, api, constants, pluginConfig, config }) {
+const run = async function({ hookName, error }, { context: { hooks, api, constants, pluginConfig, config } }) {
   const { method } = hooks.find(hookA => hookA.hookName === hookName)
   await method({ api, constants, pluginConfig, config, error })
 }
 
-const EVENTS = { run }
+const EVENTS = { load, run }
 
 bootPlugin()
