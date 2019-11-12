@@ -31,16 +31,6 @@ jobs:
         with:
           github-token: ${{ secrets.github_token }}
           parallel: 'true'
-  coveralls:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Git checkout
-        uses: actions/checkout@v1
-      - name: Node.js 13
-        uses: actions/setup-node@v1
-        with:
-          node-version: 13
       - name: Coveralls finished
         uses: coverallsapp/github-action@master
         with:
