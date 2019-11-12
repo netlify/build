@@ -34,14 +34,14 @@ const getEventFromChild = async function(childProcess, callId) {
   }
 }
 
-const isCorrectMessage = function(callId, [eventName, response]) {
-  return eventName === 'error' || callId === response.callId
+const isCorrectMessage = function(expectedCallId, [actualCallId]) {
+  return actualCallId === 'error' || actualCallId === expectedCallId
 }
 
 const getMessage = async function(messagePromise) {
-  const [eventName, response] = await messagePromise
+  const [callId, response] = await messagePromise
 
-  if (eventName === 'error') {
+  if (callId === 'error') {
     throw new Error(response.stack)
   }
 
@@ -75,8 +75,8 @@ const getEventsFromParent = async function(callback) {
 }
 
 // Send event from child to parent process
-const sendEventToParent = async function(eventName, payload) {
-  await promisify(process.send.bind(process))([eventName, payload])
+const sendEventToParent = async function(callId, payload) {
+  await promisify(process.send.bind(process))([callId, payload])
 }
 
 module.exports = {
