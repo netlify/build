@@ -20,7 +20,7 @@ const bootPlugin = async function() {
     // We need to fire them in parallel because `process.send()` can be slow
     // to await, i.e. parent might send `load` event before child `ready` event
     // returns.
-    await Promise.all([handleEvents(state), sendEventToParent('ready')])
+    await Promise.all([handleEvents(state), sendEventToParent('ready', { callId: 'ready' })])
   } catch (error) {
     await handleError(error)
   }
@@ -50,22 +50,23 @@ const handleEvents = async function(state) {
   await getEventsFromParent((eventName, payload) => handleEvent(eventName, payload, state))
 }
 
-const handleEvent = async function(eventName, payload, state) {
+const handleEvent = async function(eventName, { callId, ...payload }, state) {
   const response = await EVENTS[eventName](payload, state)
-  await sendEventToParent(eventName, response)
+  await sendEventToParent(eventName, { ...response, callId })
 }
 
 // Initial plugin load
 const load = function(payload, state) {
   const { context, hooks } = loadPlugin(payload)
   state.context = context
-  return hooks
+  return { hooks }
 }
 
 // Run a specific plugin hook method
 const run = async function({ hookName, error }, { context: { hooks, api, constants, pluginConfig, config } }) {
   const { method } = hooks.find(hookA => hookA.hookName === hookName)
   await method({ api, constants, pluginConfig, config, error })
+  return {}
 }
 
 const EVENTS = { load, run }

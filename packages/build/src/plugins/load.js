@@ -34,7 +34,7 @@ const loadPlugin = async function(
   const { childProcess } = childProcesses[index]
 
   try {
-    const hooks = await callChild(childProcess, 'load', {
+    const { hooks } = await callChild(childProcess, 'load', {
       id,
       type,
       pluginPath,

@@ -1,48 +1,51 @@
 const { promisify } = require('util')
 
 const pEvent = require('p-event')
+const uuid = require('uuid/v4')
 
 // Send event from child to parent process then wait for response
 // We need to fire them in parallel because `process.send()` can be slow
 // to await, i.e. child might send response before parent start listening for it
 const callChild = async function(childProcess, eventName, payload) {
+  const callId = uuid()
   const [response] = await Promise.all([
-    getEventFromChild(childProcess, eventName),
-    sendEventToChild(childProcess, eventName, payload),
+    getEventFromChild(childProcess, callId),
+    sendEventToChild(childProcess, eventName, { ...payload, callId }),
   ])
   return response
 }
 
 // Receive event from child to parent process
-const getEventFromChild = async function(childProcess, expectedEvent) {
+// Wait for `message` event. However stops if child process exits.
+// We need to make `p-event` listeners are properly cleaned up too.
+const getEventFromChild = async function(childProcess, callId) {
   if (!childProcess.connected) {
-    throw new Error(`Could not receive event '${expectedEvent}' from child process because it already exited`)
+    throw new Error('Could not receive event from child process because it already exited')
   }
 
-  const [eventName, response] = await getMessageFromChild(childProcess)
+  const filter = isCorrectMessage.bind(null, callId)
+  const messagePromise = pEvent(childProcess, 'message', { filter })
+  const exitPromise = pEvent(childProcess, 'exit', { multiArgs: true })
+  try {
+    return await Promise.race([getMessage(messagePromise), getExit(exitPromise)])
+  } finally {
+    messagePromise.cancel()
+    exitPromise.cancel()
+  }
+}
+
+const isCorrectMessage = function(callId, [eventName, response]) {
+  return eventName === 'error' || callId === response.callId
+}
+
+const getMessage = async function(messagePromise) {
+  const [eventName, response] = await messagePromise
 
   if (eventName === 'error') {
     throw new Error(response.stack)
   }
 
-  if (expectedEvent !== undefined && expectedEvent !== eventName) {
-    throw new Error(`Expected event '${expectedEvent}' instead of '${eventName}'`)
-  }
-
   return response
-}
-
-// Wait for `message` event. However stops if child process exits.
-// We need to make `p-event` listeners are properly cleaned up too.
-const getMessageFromChild = async function(childProcess) {
-  const messagePromise = pEvent(childProcess, 'message')
-  const exitPromise = pEvent(childProcess, 'exit', { multiArgs: true })
-  try {
-    return await Promise.race([messagePromise, getExit(exitPromise)])
-  } finally {
-    messagePromise.cancel()
-    exitPromise.cancel()
-  }
 }
 
 const getExit = async function(exitPromise) {
