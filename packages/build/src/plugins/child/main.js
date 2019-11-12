@@ -41,8 +41,8 @@ const handleProcessError = async function(error, level) {
   await handleError(error)
 }
 
-const handleError = async function(error) {
-  await sendEventToParent('error', { stack: error.stack })
+const handleError = async function({ stack }) {
+  await sendEventToParent('error', { stack })
 }
 
 // Wait for events from parent to perform plugin methods
