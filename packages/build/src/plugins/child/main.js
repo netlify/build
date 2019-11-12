@@ -47,10 +47,10 @@ const handleError = async function({ stack }) {
 
 // Wait for events from parent to perform plugin methods
 const handleEvents = async function(state) {
-  await getEventsFromParent((eventName, payload) => handleEvent(eventName, payload, state))
+  await getEventsFromParent((callId, eventName, payload) => handleEvent(callId, eventName, payload, state))
 }
 
-const handleEvent = async function(eventName, { callId, ...payload }, state) {
+const handleEvent = async function(callId, eventName, payload, state) {
   const response = await EVENTS[eventName](payload, state)
   await sendEventToParent(callId, response)
 }

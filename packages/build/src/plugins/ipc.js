@@ -10,7 +10,7 @@ const callChild = async function(childProcess, eventName, payload) {
   const callId = uuid()
   const [response] = await Promise.all([
     getEventFromChild(childProcess, callId),
-    sendEventToChild(childProcess, eventName, { ...payload, callId }),
+    sendEventToChild(childProcess, callId, eventName, payload),
   ])
   return response
 }
@@ -57,8 +57,8 @@ Instead of calling process.exit(), plugin methods should either return (on succe
 }
 
 // Send event from parent to child process
-const sendEventToChild = async function(childProcess, eventName, payload) {
-  await promisify(childProcess.send.bind(childProcess))([eventName, payload])
+const sendEventToChild = async function(childProcess, callId, eventName, payload) {
+  await promisify(childProcess.send.bind(childProcess))([callId, eventName, payload])
 }
 
 // Respond to events from parent to child process.
@@ -67,8 +67,8 @@ const getEventsFromParent = async function(callback) {
   return new Promise((resolve, reject) => {
     process.on('message', async message => {
       try {
-        const [eventName, payload] = message
-        await callback(eventName, payload)
+        const [callId, eventName, payload] = message
+        await callback(callId, eventName, payload)
       } catch (error) {
         reject(error)
       }
