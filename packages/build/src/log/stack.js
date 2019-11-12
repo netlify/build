@@ -56,7 +56,7 @@ const isUselessStack = function(line) {
   )
 }
 
-const BACKLASH_REGEXP = /\\g/
+const BACKLASH_REGEXP = /\\/g
 
 const isInternalStack = function(line) {
   // This is only needed for local builds
