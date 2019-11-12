@@ -22,16 +22,7 @@ const getEventFromChild = async function(childProcess, expectedEvent) {
     throw new Error(`Could not receive event '${expectedEvent}' from child process because it already exited`)
   }
 
-  // If the child process exited, we abort listening to the event
-  const [argA, argB] = await pEvent(childProcess, ['message', 'exit'], { multiArgs: true })
-
-  // We distinguish exit event from message event with arity
-  if (argB !== undefined) {
-    throw new Error(`Plugin exited with exit code ${argA} and signal ${argB}.
-Instead of calling process.exit(), plugin methods should either return (on success) or throw errors (on failure).`)
-  }
-
-  const [eventName, payload] = argA
+  const [eventName, payload] = await getMessageFromChild(childProcess)
 
   if (eventName === 'error') {
     throw new Error(payload.stack)
@@ -42,6 +33,25 @@ Instead of calling process.exit(), plugin methods should either return (on succe
   }
 
   return { eventName, payload }
+}
+
+// Wait for `message` event. However stops if child process exits.
+// We need to make `p-event` listeners are properly cleaned up too.
+const getMessageFromChild = async function(childProcess) {
+  const messagePromise = pEvent(childProcess, 'message')
+  const exitPromise = pEvent(childProcess, 'exit', { multiArgs: true })
+  try {
+    return await Promise.race([messagePromise, getExit(exitPromise)])
+  } finally {
+    messagePromise.cancel()
+    exitPromise.cancel()
+  }
+}
+
+const getExit = async function(exitPromise) {
+  const [exitCode, signal] = await exitPromise
+  throw new Error(`Plugin exited with exit code ${exitCode} and signal ${signal}.
+Instead of calling process.exit(), plugin methods should either return (on success) or throw errors (on failure).`)
 }
 
 // Respond to events from parent to child process.
