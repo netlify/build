@@ -46,14 +46,17 @@ const cleanStackLine = function(lines, line) {
 const STACK_LINE_REGEXP = /^\s+at /
 
 const isUselessStack = function(line) {
+  const lineA = line.replace(BACKLASH_REGEXP, '/')
   return (
     // Anonymous function
-    line.includes('<anonymous>') ||
+    lineA.includes('<anonymous>') ||
     // nyc internal code
-    line.includes('node_modules/append-transform') ||
-    line.includes('node_modules/signal-exit')
+    lineA.includes('node_modules/append-transform') ||
+    lineA.includes('node_modules/signal-exit')
   )
 }
+
+const BACKLASH_REGEXP = /\\/g
 
 const isInternalStack = function(line) {
   // This is only needed for local builds
