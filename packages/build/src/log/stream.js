@@ -1,4 +1,7 @@
 const { stdout, stderr } = require('process')
+const { promisify } = require('util')
+
+const pSetTimeout = promisify(setTimeout)
 
 const isNetlifyCI = require('../utils/is-netlify-ci')
 // Start streaming command or plugin hook output
@@ -17,13 +20,13 @@ const startOutput = function(childProcess, chunks) {
 }
 
 // Stop streaming/buffering command or plugin hook output
-const stopOutput = function(childProcess, chunks) {
+const stopOutput = async function(childProcess, chunks) {
   if (shouldBuffer()) {
     unbufferOutput(chunks)
     return
   }
 
-  unpipeOutput(childProcess)
+  await unpipeOutput(childProcess)
 }
 
 const pipeOutput = function(childProcess) {
@@ -31,7 +34,12 @@ const pipeOutput = function(childProcess) {
   childProcess.stderr.pipe(stderr)
 }
 
-const unpipeOutput = function(childProcess) {
+const unpipeOutput = async function(childProcess) {
+  // childProcess.stdout|stderr might have some writes not piped|written to
+  // parent process.stdout|stderr yet.
+  // TODO: find a more reliable way to ensure those writes are flushed.
+  await pSetTimeout(0)
+
   childProcess.stdout.unpipe(stdout)
   childProcess.stderr.unpipe(stderr)
 }
