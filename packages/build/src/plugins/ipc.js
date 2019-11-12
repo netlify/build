@@ -16,7 +16,12 @@ const callChild = async function(childProcess, eventName, payload) {
 }
 
 // Receive event from child to parent process
-// Wait for `message` event. However stops if child process exits.
+// Wait for either:
+//  - `message` event with a specific `callId`
+//  - `message` event with an `error` `callId` indicating an exception in the
+//    child process
+//  - child process `exit`
+// In the later two cases, we propagate the error.
 // We need to make `p-event` listeners are properly cleaned up too.
 const getEventFromChild = async function(childProcess, callId) {
   if (!childProcess.connected) {
