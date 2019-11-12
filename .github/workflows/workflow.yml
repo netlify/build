@@ -18,10 +18,10 @@ jobs:
     steps:
       - name: Git checkout
         uses: actions/checkout@v1
-      - name: Node.js ${{matrix.node}}
+      - name: Node.js ${{ matrix.node }}
         uses: actions/setup-node@v1
         with:
-          node-version: ${{matrix.node}}
+          node-version: ${{ matrix.node }}
       - name: Install dependencies
         run: npm install
       - name: Tests
@@ -29,20 +29,10 @@ jobs:
       - name: Coveralls test coverage
         uses: coverallsapp/github-action@master
         with:
-          github-token: ${{secrets.github_token}}
+          github-token: ${{ secrets.github_token }}
           parallel: 'true'
-  coveralls:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Git checkout
-        uses: actions/checkout@v1
-      - name: Node.js 13
-        uses: actions/setup-node@v1
-        with:
-          node-version: 13
       - name: Coveralls finished
         uses: coverallsapp/github-action@master
         with:
-          github-token: ${{secrets.github_token}}
+          github-token: ${{ secrets.github_token }}
           parallel-finished: 'true'
