@@ -2,18 +2,15 @@ const { promisify } = require('util')
 
 const pEvent = require('p-event')
 
-// Send event from parent to child process
-const sendEventToChild = async function(childProcess, eventName, payload) {
-  if (!childProcess.connected) {
-    throw new Error(`Could not send event '${eventName}' to child process because it already exited`)
-  }
-
-  await promisify(childProcess.send.bind(childProcess))([eventName, payload])
-}
-
-// Send event from child to parent process
-const sendEventToParent = async function(eventName, payload) {
-  await promisify(process.send.bind(process))([eventName, payload])
+// Send event from child to parent process then wait for response
+// We need to fire them in parallel because `process.send()` can be slow
+// to await, i.e. child might send response before parent start listening for it
+const callChild = async function(childProcess, eventName, payload) {
+  const [response] = await Promise.all([
+    getEventFromChild(childProcess, eventName),
+    sendEventToChild(childProcess, eventName, payload),
+  ])
+  return response
 }
 
 // Receive event from child to parent process
@@ -22,17 +19,17 @@ const getEventFromChild = async function(childProcess, expectedEvent) {
     throw new Error(`Could not receive event '${expectedEvent}' from child process because it already exited`)
   }
 
-  const [eventName, payload] = await getMessageFromChild(childProcess)
+  const [eventName, response] = await getMessageFromChild(childProcess)
 
   if (eventName === 'error') {
-    throw new Error(payload.stack)
+    throw new Error(response.stack)
   }
 
   if (expectedEvent !== undefined && expectedEvent !== eventName) {
     throw new Error(`Expected event '${expectedEvent}' instead of '${eventName}'`)
   }
 
-  return { eventName, payload }
+  return response
 }
 
 // Wait for `message` event. However stops if child process exits.
@@ -54,6 +51,11 @@ const getExit = async function(exitPromise) {
 Instead of calling process.exit(), plugin methods should either return (on success) or throw errors (on failure).`)
 }
 
+// Send event from parent to child process
+const sendEventToChild = async function(childProcess, eventName, payload) {
+  await promisify(childProcess.send.bind(childProcess))([eventName, payload])
+}
+
 // Respond to events from parent to child process.
 // This runs forever until `childProcess.kill()` is called.
 const getEventsFromParent = async function(callback) {
@@ -69,9 +71,14 @@ const getEventsFromParent = async function(callback) {
   })
 }
 
+// Send event from child to parent process
+const sendEventToParent = async function(eventName, payload) {
+  await promisify(process.send.bind(process))([eventName, payload])
+}
+
 module.exports = {
-  sendEventToChild,
-  sendEventToParent,
+  callChild,
   getEventFromChild,
   getEventsFromParent,
+  sendEventToParent,
 }
