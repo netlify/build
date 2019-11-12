@@ -41,25 +41,25 @@ const handleProcessError = async function(error, level) {
   await handleError(error)
 }
 
-const handleError = async function(error) {
-  await sendEventToParent('error', { stack: error.stack })
+const handleError = async function({ stack }) {
+  await sendEventToParent('error', { stack })
 }
 
 // Wait for events from parent to perform plugin methods
 const handleEvents = async function(state) {
-  await getEventsFromParent((eventName, payload) => handleEvent(eventName, payload, state))
+  await getEventsFromParent((callId, eventName, payload) => handleEvent(callId, eventName, payload, state))
 }
 
-const handleEvent = async function(eventName, payload, state) {
+const handleEvent = async function(callId, eventName, payload, state) {
   const response = await EVENTS[eventName](payload, state)
-  await sendEventToParent(eventName, response)
+  await sendEventToParent(callId, response)
 }
 
 // Initial plugin load
 const load = function(payload, state) {
   const { context, hooks } = loadPlugin(payload)
   state.context = context
-  return hooks
+  return { hooks }
 }
 
 // Run a specific plugin hook method
