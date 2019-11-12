@@ -115,7 +115,7 @@ const execCommand = async function({ hook, command, baseDir }) {
     error.cleanStack = true
     throw error
   } finally {
-    stopOutput(childProcess, chunks)
+    await stopOutput(childProcess, chunks)
   }
 }
 
@@ -137,7 +137,7 @@ const firePluginHook = async function({ id, childProcess, hook, hookName }, { er
     error.cleanStack = true
     throw error
   } finally {
-    stopOutput(childProcess, chunks)
+    await stopOutput(childProcess, chunks)
   }
 }
 
