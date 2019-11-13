@@ -35,13 +35,22 @@ const pipeOutput = function(childProcess) {
 }
 
 const unpipeOutput = async function(childProcess) {
-  // childProcess.stdout|stderr might have some writes not piped|written to
-  // parent process.stdout|stderr yet.
-  // TODO: find a more reliable way to ensure those writes are flushed.
-  await pSetTimeout(0)
+  await Promise.all([waitForFlush(childProcess.stdout), waitForFlush(childProcess.stderr)])
 
   childProcess.stdout.unpipe(stdout)
   childProcess.stderr.unpipe(stderr)
+}
+
+// childProcess.stdout|stderr might have some writes not piped|written to
+// parent process.stdout|stderr yet.
+// TODO: find a more reliable way
+const waitForFlush = async function(stream) {
+  while (stream._readableState.paused) {
+    await pSetTimeout(0)
+    stream.resume()
+  }
+
+  await pSetTimeout(0)
 }
 
 const bufferOutput = function(childProcess, chunks) {
