@@ -34,8 +34,7 @@ Example:
     properties: {
       foo: { type: "string" },
       bar: { type: "boolean" }
-    },
-    additionalProperties: false
+    }
   }
 
 Learn more about JSON schema at https://json-schema.org/understanding-json-schema/`)
