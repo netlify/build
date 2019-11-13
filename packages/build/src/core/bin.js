@@ -21,7 +21,7 @@ const runCli = async function() {
   // BuildBot to print some messages before those are flushed.
   // The following is a temporary workaround. This should be fixed once the
   // logic moves from the BuildBot to Netlify Build
-  await pSetTimeout(1e2)
+  await pSetTimeout(1e3)
 
   const exitCode = success ? 0 : 1
   exit(exitCode)
