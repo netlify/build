@@ -29,5 +29,5 @@ jobs:
       - name: Codecov test coverage
         run:
           curl -s https://codecov.io/bash | bash -s -- -Z -y codecov.yml -f coverage/coverage-final.json -t ${{
-          secrets.CODECOV_TOKEN }}
-          # -F ${{ matrix.os }} -F node_${{ matrix.node }}
+          secrets.CODECOV_TOKEN }} -F ${{ matrix.os }}
+          # -F node_${{ matrix.node }}
