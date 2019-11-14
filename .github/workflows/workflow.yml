@@ -27,7 +27,7 @@ jobs:
       - name: Tests
         run: npm run test-ci
       - name: Codecov test coverage
-        uses: codecov/codecov-action@v1.0.3
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          file: coverage/coverage-final.json
+        run:
+          curl -s https://codecov.io/bash | bash -s -- -Z -y codecov.yml -f coverage/coverage-final.json -t ${{
+          secrets.CODECOV_TOKEN }}
+          # -F ${{ matrix.os }} -F node_${{ matrix.node }}
