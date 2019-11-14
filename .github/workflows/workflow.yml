@@ -26,22 +26,9 @@ jobs:
         run: npm install
       - name: Tests
         run: npm run test-ci
-      - name: Coveralls test coverage
-        uses: coverallsapp/github-action@master
+      - name: Codecov test coverage
+        uses: codecov/codecov-action@1.0.3
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          parallel: 'true'
-      ## Parallel test coverages do not currently work with Coveralls
-      ## See https://github.com/coverallsapp/github-action/issues/13
-      ## and https://github.com/coverallsapp/github-action/issues/18
-      ## Which means only the fastest build (usually either Linux or Mac) is used.
-      ## When this is fixed, the following lines should be commented out.
-      # coverage:
-      #   needs: build
-      #   runs-on: ubuntu-latest
-      #   steps:
-      - name: Coveralls finished
-        uses: coverallsapp/github-action@master
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          parallel-finished: 'true'
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: coverage/coverage-final.json
+          flags: ${{ matrix.os }}
