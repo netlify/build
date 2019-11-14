@@ -21,6 +21,11 @@ const NORMALIZE_REGEXPS = [
   [new RegExp(pointer, 'g'), '>'],
   [new RegExp(arrowDown, 'g'), '↓'],
   [/^.*(Have a nice day)/m, '$1'],
+  // A bug in nyc (https://github.com/istanbuljs/istanbuljs/issues/141) is
+  // creating those error messages on Windows. This happens randomly and
+  // seldomly. This might be fixed by nyc@15
+  [/Transformation error for .*\n/g, ''],
+  [/EPERM: operation not permitted, rename .*\n/g, ''],
   // File paths
   [/packages\/+build/g, '/packages/build'],
   [/(^|[ "'])\.{0,2}\/[^ "'\n]+/gm, '$1/file/path'],
