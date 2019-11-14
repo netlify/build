@@ -28,15 +28,18 @@ jobs:
         run: npm run test-ci
       - name: Coveralls test coverage
         uses: coverallsapp/github-action@master
-        env:
-          COVERALLS_PARALLEL: 'true'
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-  #         parallel: 'true'
-  coverage:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
+          parallel: 'true'
+      ## Parallel test coverages do not currently work with Coveralls
+      ## See https://github.com/coverallsapp/github-action/issues/13
+      ## and https://github.com/coverallsapp/github-action/issues/18
+      ## Which means only the fastest build (usually either Linux or Mac) is used.
+      ## When this is fixed, the following lines should be commented out.
+      # coverage:
+      #   needs: build
+      #   runs-on: ubuntu-latest
+      #   steps:
       - name: Coveralls finished
         uses: coverallsapp/github-action@master
         with:
