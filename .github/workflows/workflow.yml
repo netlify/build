@@ -28,6 +28,8 @@ jobs:
         run: npm run test-ci
       - name: Coveralls test coverage
         uses: coverallsapp/github-action@master
+        env:
+          COVERALLS_PARALLEL: 'true'
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
   #         parallel: 'true'
