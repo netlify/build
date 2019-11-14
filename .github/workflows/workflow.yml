@@ -28,6 +28,5 @@ jobs:
         run: npm run test-ci
       - name: Codecov test coverage
         run:
-          os="${{ matrix.os }}" && os="${os/-latest/}" && node="${{ matrix.node }}}" && node="node_${node//./_}" && curl
-          -s https://codecov.io/bash | bash -s -- -Z -y codecov.yml -f coverage/coverage-final.json -t ${{
-          secrets.CODECOV_TOKEN }} -F "$os" -F "$node"
+          curl -s https://codecov.io/bash | bash -s -- -Z -y codecov.yml -f coverage/coverage-final.json -t ${{
+          secrets.CODECOV_TOKEN }}
