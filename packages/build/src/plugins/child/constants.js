@@ -33,7 +33,7 @@ const getCacheDir = function(baseDir) {
   return resolve(baseDir, LOCAL_CACHE_DIR)
 }
 
-const CI_CACHE_DIR = '/opts/build/cache/'
+const CI_CACHE_DIR = '/opt/build/cache/'
 const LOCAL_CACHE_DIR = '.netlify/cache/'
 
 const getFunctionsDist = function(baseDir) {
