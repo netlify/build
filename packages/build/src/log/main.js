@@ -154,6 +154,20 @@ const logTimer = function(durationMs, hook, id) {
   log(` ${greenBright(tick)}  ${greenBright.bold(idB)}${hookA} completed in ${durationMs}ms`)
 }
 
+const logCacheStart = function() {
+  log(cyanBright.bold(`${HEADING_PREFIX} Caching artifacts`))
+}
+
+const logCacheDir = function(description) {
+  log(`${SUBTEXT_PADDING}Caching ${description}`)
+}
+
+const logErrorInstructions = function() {
+  log(`${redBright.bold(`\n${getHeader('Lifecycle Error')}`)}
+
+${cyanBright('Running onError methods')}`)
+}
+
 const logBuildError = function(error) {
   const errorStack = error.cleanStack ? cleanStacks(error.message) : `\n${error.stack}`
   log(`${redBright.bold(`\n${getHeader('Netlify Build Error')}`)}
@@ -202,6 +216,9 @@ module.exports = {
   logCommandStart,
   logInstructionSuccess,
   logTimer,
+  logCacheStart,
+  logCacheDir,
+  logErrorInstructions,
   logBuildError,
   logBuildSuccess,
   logBuildEnd,

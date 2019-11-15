@@ -9,6 +9,7 @@ const mapObj = require('map-obj')
 const globalCacheDir = require('global-cache-dir')
 
 const isNetlifyCI = require('../../utils/is-netlify-ci')
+const { getCacheDir } = require('../../cache/dir.js')
 
 // Retrieve constants passed to plugins
 const getConstants = async function({
@@ -46,22 +47,6 @@ const getConstants = async function({
   const constantsA = mapObj(constants, (key, path) => [key, normalizePath(path, baseDir)])
   return constantsA
 }
-
-const getCacheDir = function() {
-  if (!isNetlifyCI()) {
-    return LOCAL_CACHE_DIR
-  }
-
-  if (platform === 'linux') {
-    return CI_CACHE_DIR
-  }
-
-  return globalCacheDir(PROJECT_NAME)
-}
-
-const LOCAL_CACHE_DIR = '.netlify/cache/'
-const CI_CACHE_DIR = '/opt/build/cache/'
-const PROJECT_NAME = 'netlify-build'
 
 const getFunctionsDist = function() {
   if (isNetlifyCI()) {

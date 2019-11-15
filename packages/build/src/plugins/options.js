@@ -1,4 +1,5 @@
-const DEFAULT_PLUGINS_DIR = __dirname
+const FUNCTIONS_PLUGIN = `${__dirname}/functions/index.js`
+const CACHE_PLUGIN = `${__dirname}/../cache/plugin.js`
 
 // Load plugin options (specified by user in `config.plugins`)
 const getPluginsOptions = function({ config: { plugins: pluginsOptions } }) {
@@ -6,7 +7,8 @@ const getPluginsOptions = function({ config: { plugins: pluginsOptions } }) {
 }
 
 const DEFAULT_PLUGINS = [
-  { id: '@netlify/plugin-functions-core', type: `${DEFAULT_PLUGINS_DIR}/functions/index.js`, core: true },
+  { id: '@netlify/plugin-functions-core', type: FUNCTIONS_PLUGIN, core: true },
+  { id: '@netlify/plugin-cache-core', type: CACHE_PLUGIN, core: true },
 ]
 
 const normalizePluginOptions = function(pluginOptions) {
