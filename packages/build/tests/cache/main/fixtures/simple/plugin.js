@@ -8,6 +8,8 @@ const {
 const makeDir = require('make-dir')
 const del = require('del')
 
+const cachePath = `${CACHE_PATH}/test/test`
+
 const pWriteFile = promisify(writeFile)
 const pReadFile = promisify(readFile)
 
@@ -16,16 +18,16 @@ const DUMMY_VALUE = String(Math.random())
 module.exports = {
   name: 'netlify-plugin-test',
   async preSaveCache({ constants: { CACHE_DIR } }) {
-    await del(`${CACHE_DIR}/${CACHE_PATH}`)
+    await del(`${CACHE_DIR}/${cachePath}`)
 
-    await makeDir(dirname(CACHE_PATH))
-    await pWriteFile(CACHE_PATH, DUMMY_VALUE)
+    await makeDir(dirname(cachePath))
+    await pWriteFile(cachePath, DUMMY_VALUE)
   },
   async postSaveCache({ constants: { CACHE_DIR } }) {
-    const [sourceDir] = CACHE_PATH.split('/')
+    const [sourceDir] = cachePath.split('/')
     await del(sourceDir)
 
-    const value = await pReadFile(`${CACHE_DIR}/${CACHE_PATH}`, 'utf8')
+    const value = await pReadFile(`${CACHE_DIR}/${cachePath}`, 'utf8')
     console.log(value === DUMMY_VALUE)
   },
 }

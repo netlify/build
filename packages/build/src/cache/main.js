@@ -11,11 +11,21 @@ const isNetlifyCI = require('../utils/is-netlify-ci')
 const cacheArtifacts = async function(baseDir, cacheDir) {
   logCacheStart()
 
-  await saveCache({ baseDir, cacheDir, cacheBase: '.', path: 'node_modules', description: 'Node modules' })
+  await Promise.all(
+    ARTIFACTS.map(({ base, path, description }) => saveCache({ baseDir, cacheDir, base, path, description })),
+  )
 }
 
-const saveCache = async function({ baseDir, cacheDir, cacheBase, path, description }) {
-  const cacheBaseA = resolve(baseDir, cacheBase)
+const ARTIFACTS = [
+  { base: '.', path: 'node_modules', description: 'Node modules' },
+  { base: '.', path: 'bower_components', description: 'Bower components' },
+  { base: '.', path: '.bundle', description: 'Ruby gems' },
+  { base: '.', path: '.venv', description: 'Python virtualenv' },
+  { base: '.', path: 'wapm_packages', description: 'WAPM packages' },
+]
+
+const saveCache = async function({ baseDir, cacheDir, base, path, description }) {
+  const cacheBaseA = resolve(baseDir, base)
   const srcPath = resolve(cacheBaseA, path)
 
   if (!(await pathExists(srcPath))) {
