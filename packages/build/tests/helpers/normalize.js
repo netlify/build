@@ -39,7 +39,7 @@ const NORMALIZE_REGEXPS = [
   [/^\s+at .*$/gm, 'STACK TRACE'],
   [/(STACK TRACE\n)+/g, 'STACK TRACE\n'],
   // Durations
-  [/[\d.]+m?s/g, '1ms'],
+  [/\d[\d.]*m?s/g, '1ms'],
   // Package versions
   [/([@v])[\d.]+/g, '$11.0.0'],
   // Multiline objects are printed differently by `util.inspect()` in Node 8 and
