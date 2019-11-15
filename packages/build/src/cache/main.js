@@ -1,4 +1,5 @@
 const { resolve, dirname } = require('path')
+const { homedir } = require('os')
 
 const pathExists = require('path-exists')
 const del = require('del')
@@ -28,7 +29,7 @@ const ARTIFACTS = [
 
 // Cache a single directory
 const saveCache = async function({ baseDir, cacheDir, base, path, description }) {
-  const cacheBaseA = resolve(baseDir, base)
+  const cacheBaseA = base === '~' ? homedir() : resolve(baseDir, base)
   const srcPath = resolve(cacheBaseA, path)
 
   if (!(await pathExists(srcPath))) {
