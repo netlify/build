@@ -1,22 +1,26 @@
 const { writeFile, readFile } = require('fs')
 const { promisify } = require('util')
+const { dirname } = require('path')
+const {
+  env: { CACHE_PATH },
+} = require('process')
 
 const makeDir = require('make-dir')
 const del = require('del')
 
-const DUMMY_VALUE = `module.exports = ${Math.random()}`
-
 const pWriteFile = promisify(writeFile)
 const pReadFile = promisify(readFile)
+
+const DUMMY_VALUE = String(Math.random())
 
 module.exports = {
   name: 'netlify-plugin-test',
   async preSaveCache({ constants: { CACHE_DIR } }) {
-    await Promise.all([del(`${CACHE_DIR}/node_modules`), makeDir('node_modules/test')])
-    await pWriteFile('node_modules/test/test.js', DUMMY_VALUE)
+    await Promise.all([del(`${CACHE_DIR}/${CACHE_PATH}`), makeDir(dirname(CACHE_PATH))])
+    await pWriteFile(CACHE_PATH, DUMMY_VALUE)
   },
   async postSaveCache({ constants: { CACHE_DIR } }) {
-    const value = await pReadFile(`${CACHE_DIR}/node_modules/test/test.js`, 'utf8')
+    const value = await pReadFile(`${CACHE_DIR}/${CACHE_PATH}`, 'utf8')
     console.log(value === DUMMY_VALUE)
   },
 }
