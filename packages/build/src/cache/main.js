@@ -8,6 +8,7 @@ const cpy = require('cpy')
 const { logCacheStart, logCacheDir } = require('../log/main')
 const isNetlifyCI = require('../utils/is-netlify-ci')
 
+// Cache a list of pre-defined directories, for future builds to re-use
 const cacheArtifacts = async function(baseDir, cacheDir) {
   logCacheStart()
 
@@ -16,6 +17,7 @@ const cacheArtifacts = async function(baseDir, cacheDir) {
   )
 }
 
+// List of directories to cache
 const ARTIFACTS = [
   { base: '.', path: 'node_modules', description: 'Node modules' },
   { base: '.', path: 'bower_components', description: 'Bower components' },
@@ -24,6 +26,7 @@ const ARTIFACTS = [
   { base: '.', path: 'wapm_packages', description: 'WAPM packages' },
 ]
 
+// Cache a single directory
 const saveCache = async function({ baseDir, cacheDir, base, path, description }) {
   const cacheBaseA = resolve(baseDir, base)
   const srcPath = resolve(cacheBaseA, path)
