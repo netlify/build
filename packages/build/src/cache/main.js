@@ -1,7 +1,7 @@
 const { resolve, dirname } = require('path')
 const { homedir } = require('os')
 const {
-  env: { NETLIFY_BUILD_TEST_HOME },
+  env: { CACHE_BASE },
 } = require('process')
 
 const pathExists = require('path-exists')
@@ -26,7 +26,7 @@ const ARTIFACTS = [
   { path: './.bundle' },
   { path: './.venv' },
   { path: './wapm_packages' },
-  // { path: '~/.yarn_cache' },
+  { path: '~/.yarn_cache' },
 ]
 
 // Cache a single directory
@@ -60,8 +60,13 @@ const parseCachePath = function(path, baseDir, cacheDir) {
 }
 
 const getBase = function(base, baseDir) {
+  // This is used in tests
+  if (CACHE_BASE !== undefined) {
+    return resolve(baseDir, CACHE_BASE)
+  }
+
   if (base === '~') {
-    return NETLIFY_BUILD_TEST_HOME === undefined ? homedir() : NETLIFY_BUILD_TEST_HOME
+    return homedir()
   }
 
   return resolve(baseDir, base)

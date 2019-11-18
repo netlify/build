@@ -2,6 +2,8 @@ const test = require('ava')
 
 const { runFixture } = require('../../helpers/main')
 
+const HOME_CACHE = `${__dirname}/home_cache`
+
 test('Node modules', async t => {
   await runFixture(t, 'node', { env: { CACHE_BASE: '.', CACHE_PATH: 'node_modules' } })
 })
@@ -20,4 +22,8 @@ test('Python virtualenv', async t => {
 
 test('WAPM packages', async t => {
   await runFixture(t, 'wapm', { env: { CACHE_BASE: '.', CACHE_PATH: 'wapm_packages' } })
+})
+
+test('Yarn', async t => {
+  await runFixture(t, 'yarn', { env: { CACHE_BASE: HOME_CACHE, CACHE_PATH: '.yarn_cache' } })
 })

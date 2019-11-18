@@ -19,7 +19,7 @@ const DUMMY_VALUE = String(Math.random())
 module.exports = {
   name: 'netlify-plugin-test',
   async preSaveCache({ constants: { CACHE_DIR } }) {
-    await del(`${CACHE_DIR}/${cachePath}`)
+    await del(`${CACHE_DIR}/${cachePath}`, { force: true })
 
     await makeDir(dirname(fullCachePath))
     await pWriteFile(fullCachePath, DUMMY_VALUE)
@@ -27,7 +27,7 @@ module.exports = {
   async postSaveCache({ constants: { CACHE_DIR } }) {
     const [sourceDir] = cachePath.split('/')
     const fullSourceDir = resolve(CACHE_BASE, sourceDir)
-    await del(fullSourceDir)
+    await del(fullSourceDir, { force: true })
 
     const value = await pReadFile(`${CACHE_DIR}/${cachePath}`, 'utf8')
     console.log(value === DUMMY_VALUE)
