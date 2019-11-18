@@ -31,7 +31,6 @@ const parseArgs = function() {
   return yargs
     .options(OPTIONS)
     .usage(USAGE)
-    .strict()
     .parse()
 }
 
