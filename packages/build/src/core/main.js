@@ -35,7 +35,7 @@ const build = async function(options = {}) {
   try {
     logBuildStart()
 
-    const { config, configPath, token, baseDir } = await loadConfig({ options })
+    const { config, configPath, token, baseDir } = await loadConfig(options)
 
     const pluginsOptions = getPluginsOptions({ config })
     const pluginsOptionsA = await installPlugins(pluginsOptions, baseDir)

@@ -5,12 +5,15 @@ const {
 
 const resolveConfig = require('@netlify/config')
 const { getConfigPath } = require('@netlify/config')
+const omit = require('omit.js')
 
 const { logOptions, logConfigPath } = require('../log/main')
 
 // Retrieve configuration object
-const loadConfig = async function({ options, options: { token = NETLIFY_TOKEN, config, cwd, context } }) {
-  logOptions(options)
+const loadConfig = async function(options) {
+  const { token = NETLIFY_TOKEN, config, cwd, context } = options
+  const opts = omit(options, ['token', 'dry', 'cwd'])
+  logOptions(opts)
 
   const configPath = await getConfigPath(config, cwd)
   logConfigPath(configPath)
