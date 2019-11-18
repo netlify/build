@@ -49,6 +49,8 @@ const ARTIFACTS = [
   { path: '~/.wasmer/cache' },
   // Go dependencies
   { path: '~/.gimme_cache' },
+  // nvm
+  { path: '~/.nvm/versions/node' },
 ]
 
 // Cache a single directory

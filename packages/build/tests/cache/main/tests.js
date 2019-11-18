@@ -59,3 +59,7 @@ test.serial('Wasmer', async t => {
 test.serial('Go dependencies', async t => {
   await runFixture(t, 'gimme', { env: { CACHE_BASE: HOME_CACHE, CACHE_PATH: '.gimme_cache' } })
 })
+
+test.serial('nvm', async t => {
+  await runFixture(t, 'nvm', { env: { CACHE_BASE: HOME_CACHE, CACHE_PATH: '.nvm/versions/node' } })
+})
