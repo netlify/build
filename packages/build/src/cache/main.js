@@ -27,10 +27,7 @@ const ARTIFACTS = [
 
 // Cache a single directory
 const saveCache = async function({ baseDir, cacheDir, path }) {
-  const [base, ...pathA] = path.split('/')
-  const baseA = base === '~' ? homedir() : resolve(baseDir, base)
-  const relPath = pathA.join('/')
-  const srcPath = resolve(baseA, relPath)
+  const { srcPath, cachePath, base, relPath } = parseCachePath(path, baseDir, cacheDir)
 
   if (!(await pathExists(srcPath))) {
     return
@@ -38,7 +35,6 @@ const saveCache = async function({ baseDir, cacheDir, path }) {
 
   logCacheDir(path)
 
-  const cachePath = resolve(cacheDir, relPath)
   await del(cachePath, { force: true })
 
   // In CI, files are directly moved, which is faster.
@@ -46,8 +42,17 @@ const saveCache = async function({ baseDir, cacheDir, path }) {
   if (isNetlifyCI()) {
     await moveFile(srcPath, cachePath, { overwrite: false })
   } else {
-    await cpy(relPath, dirname(cachePath), { cwd: baseA, parents: true })
+    await cpy(relPath, dirname(cachePath), { cwd: base, parents: true })
   }
+}
+
+const parseCachePath = function(path, baseDir, cacheDir) {
+  const [base, ...pathA] = path.split('/')
+  const baseA = base === '~' ? homedir() : resolve(baseDir, base)
+  const relPath = pathA.join('/')
+  const srcPath = resolve(baseA, relPath)
+  const cachePath = resolve(cacheDir, relPath)
+  return { srcPath, cachePath, base: baseA, relPath }
 }
 
 module.exports = { cacheArtifacts }
