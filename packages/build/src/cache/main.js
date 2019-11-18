@@ -51,6 +51,8 @@ const ARTIFACTS = [
   { path: '~/.gimme_cache' },
   // nvm
   { path: '~/.nvm/versions/node' },
+  // rvm
+  { path: '~/.rvm/rubies' },
 ]
 
 // Cache a single directory

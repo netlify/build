@@ -63,3 +63,7 @@ test.serial('Go dependencies', async t => {
 test.serial('nvm', async t => {
   await runFixture(t, 'nvm', { env: { CACHE_BASE: HOME_CACHE, CACHE_PATH: '.nvm/versions/node' } })
 })
+
+test.serial('rvm', async t => {
+  await runFixture(t, 'rvm', { env: { CACHE_BASE: HOME_CACHE, CACHE_PATH: '.rvm/rubies' } })
+})
