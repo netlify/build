@@ -9,10 +9,14 @@ const { logOptions, logConfigPath } = require('../log/main')
 
 // Retrieve configuration object
 const loadConfig = async function(options) {
-  const optsWithDefaults = Object.assign({}, {
-    ...(CONTEXT && { context: CONTEXT }),
-    ...(NETLIFY_TOKEN && { token: NETLIFY_TOKEN })
-  }, options)
+  const optsWithDefaults = Object.assign(
+    {},
+    {
+      ...(CONTEXT && { context: CONTEXT }),
+      ...(NETLIFY_TOKEN && { token: NETLIFY_TOKEN }),
+    },
+    options,
+  )
   const opts = omit(optsWithDefaults, ['token'])
   logOptions(opts)
 
@@ -26,7 +30,8 @@ const loadConfig = async function(options) {
       config,
       configPath,
       token: optsWithDefaults.token,
-      baseDir }
+      baseDir,
+    }
   } catch (error) {
     error.message = `Netlify configuration error:\n${error.message}`
     throw error
