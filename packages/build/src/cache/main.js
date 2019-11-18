@@ -21,11 +21,17 @@ const cacheArtifacts = async function(baseDir, cacheDir) {
 
 // List of directories to cache
 const ARTIFACTS = [
+  // Node modules
   { path: './node_modules' },
+  // Bower components
   { path: './bower_components' },
+  // Ruby gems
   { path: './.bundle' },
+  // Python virtualenv
   { path: './.venv' },
+  // WAPM packages (WebAssembly)
   { path: './wapm_packages' },
+  // Yarn
   { path: '~/.yarn_cache' },
 ]
 
