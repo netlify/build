@@ -13,22 +13,24 @@ const isNetlifyCI = require('../utils/is-netlify-ci')
 const cacheArtifacts = async function(baseDir, cacheDir) {
   logCacheStart()
 
-  await Promise.all(ARTIFACTS.map(({ base, path }) => saveCache({ baseDir, cacheDir, base, path })))
+  await Promise.all(ARTIFACTS.map(({ path }) => saveCache({ baseDir, cacheDir, path })))
 }
 
 // List of directories to cache
 const ARTIFACTS = [
-  { base: '.', path: 'node_modules' },
-  { base: '.', path: 'bower_components' },
-  { base: '.', path: '.bundle' },
-  { base: '.', path: '.venv' },
-  { base: '.', path: 'wapm_packages' },
+  { path: './node_modules' },
+  { path: './bower_components' },
+  { path: './.bundle' },
+  { path: './.venv' },
+  { path: './wapm_packages' },
 ]
 
 // Cache a single directory
-const saveCache = async function({ baseDir, cacheDir, base, path }) {
-  const cacheBaseA = base === '~' ? homedir() : resolve(baseDir, base)
-  const srcPath = resolve(cacheBaseA, path)
+const saveCache = async function({ baseDir, cacheDir, path }) {
+  const [base, ...pathA] = path.split('/')
+  const baseA = base === '~' ? homedir() : resolve(baseDir, base)
+  const relPath = pathA.join('/')
+  const srcPath = resolve(baseA, relPath)
 
   if (!(await pathExists(srcPath))) {
     return
@@ -36,7 +38,7 @@ const saveCache = async function({ baseDir, cacheDir, base, path }) {
 
   logCacheDir(path)
 
-  const cachePath = resolve(cacheDir, path)
+  const cachePath = resolve(cacheDir, relPath)
   await del(cachePath, { force: true })
 
   // In CI, files are directly moved, which is faster.
@@ -44,7 +46,7 @@ const saveCache = async function({ baseDir, cacheDir, base, path }) {
   if (isNetlifyCI()) {
     await moveFile(srcPath, cachePath, { overwrite: false })
   } else {
-    await cpy(path, dirname(cachePath), { cwd: cacheBaseA, parents: true })
+    await cpy(relPath, dirname(cachePath), { cwd: baseA, parents: true })
   }
 }
 

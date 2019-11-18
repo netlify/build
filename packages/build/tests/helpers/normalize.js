@@ -29,6 +29,7 @@ const NORMALIZE_REGEXPS = [
   [/EPERM: operation not permitted, rename .*\n/g, ''],
   // File paths
   [/packages\/+build/g, '/packages/build'],
+  [/Caching [.~]\//g, 'Caching '],
   [/(^|[ "'])\.{0,2}\/[^ "'\n]+/gm, '$1/file/path'],
   // CI tests show some error messages differently
   [/\/file\/path bad option/g, 'node: bad option'],
