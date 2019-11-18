@@ -68,7 +68,7 @@ const saveCache = async function({ baseDir, cacheDir, path }) {
   if (isNetlifyCI()) {
     await moveFile(srcPath, cachePath, { overwrite: false })
   } else {
-    await cpy(basename(srcPath), dirname(cachePath), { cwd: dirname(srcPath), parents: true })
+    await cpy(basename(srcPath), dirname(cachePath), { cwd: dirname(srcPath), parents: true, overwrite: false })
   }
 }
 
