@@ -39,7 +39,7 @@
     "indent-string": "^4.0.0",
     "is-ci": "^2.0.0",
     "is-plain-obj": "^2.0.0",
-    "log-process-errors": "^5.0.2",
+    "log-process-errors": "^5.0.3",
     "map-obj": "^4.1.0",
     "moize": "^5.4.4",
     "netlify": "^2.4.8",
