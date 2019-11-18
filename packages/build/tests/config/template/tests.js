@@ -6,7 +6,8 @@ test('{env:...}', async t => {
   await runFixture(t, 'env', { env: { TEST: 'test' } })
 })
 
-test('{secrets:...}', async t => {
+// Can't implement until backend ready
+test.skip('{secrets:...}', async t => {
   await runFixture(t, 'secrets')
 })
 
