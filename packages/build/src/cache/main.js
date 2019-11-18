@@ -1,5 +1,8 @@
 const { resolve, dirname } = require('path')
 const { homedir } = require('os')
+const {
+  env: { NETLIFY_BUILD_TEST_HOME },
+} = require('process')
 
 const pathExists = require('path-exists')
 const del = require('del')
@@ -23,6 +26,7 @@ const ARTIFACTS = [
   { path: './.bundle' },
   { path: './.venv' },
   { path: './wapm_packages' },
+  // { path: '~/.yarn_cache' },
 ]
 
 // Cache a single directory
@@ -48,11 +52,19 @@ const saveCache = async function({ baseDir, cacheDir, path }) {
 
 const parseCachePath = function(path, baseDir, cacheDir) {
   const [base, ...pathA] = path.split('/')
-  const baseA = base === '~' ? homedir() : resolve(baseDir, base)
+  const baseA = getBase(base, baseDir)
   const relPath = pathA.join('/')
   const srcPath = resolve(baseA, relPath)
   const cachePath = resolve(cacheDir, relPath)
   return { srcPath, cachePath, base: baseA, relPath }
+}
+
+const getBase = function(base, baseDir) {
+  if (base === '~') {
+    return NETLIFY_BUILD_TEST_HOME === undefined ? homedir() : NETLIFY_BUILD_TEST_HOME
+  }
+
+  return resolve(baseDir, base)
 }
 
 module.exports = { cacheArtifacts }
