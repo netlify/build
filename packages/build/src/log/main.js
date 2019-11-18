@@ -158,8 +158,8 @@ const logCacheStart = function() {
   log(cyanBright.bold(`${HEADING_PREFIX} Caching artifacts`))
 }
 
-const logCacheDir = function(description) {
-  log(`${SUBTEXT_PADDING}Caching ${description}`)
+const logCacheDir = function(path) {
+  log(`${SUBTEXT_PADDING}Caching ${path}`)
 }
 
 const logErrorInstructions = function() {

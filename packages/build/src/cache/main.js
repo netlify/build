@@ -13,22 +13,20 @@ const isNetlifyCI = require('../utils/is-netlify-ci')
 const cacheArtifacts = async function(baseDir, cacheDir) {
   logCacheStart()
 
-  await Promise.all(
-    ARTIFACTS.map(({ base, path, description }) => saveCache({ baseDir, cacheDir, base, path, description })),
-  )
+  await Promise.all(ARTIFACTS.map(({ base, path }) => saveCache({ baseDir, cacheDir, base, path })))
 }
 
 // List of directories to cache
 const ARTIFACTS = [
-  { base: '.', path: 'node_modules', description: 'Node modules' },
-  { base: '.', path: 'bower_components', description: 'Bower components' },
-  { base: '.', path: '.bundle', description: 'Ruby gems' },
-  { base: '.', path: '.venv', description: 'Python virtualenv' },
-  { base: '.', path: 'wapm_packages', description: 'WAPM packages' },
+  { base: '.', path: 'node_modules' },
+  { base: '.', path: 'bower_components' },
+  { base: '.', path: '.bundle' },
+  { base: '.', path: '.venv' },
+  { base: '.', path: 'wapm_packages' },
 ]
 
 // Cache a single directory
-const saveCache = async function({ baseDir, cacheDir, base, path, description }) {
+const saveCache = async function({ baseDir, cacheDir, base, path }) {
   const cacheBaseA = base === '~' ? homedir() : resolve(baseDir, base)
   const srcPath = resolve(cacheBaseA, path)
 
@@ -36,7 +34,7 @@ const saveCache = async function({ baseDir, cacheDir, base, path, description })
     return
   }
 
-  logCacheDir(description)
+  logCacheDir(path)
 
   const cachePath = resolve(cacheDir, path)
   await del(cachePath, { force: true })
