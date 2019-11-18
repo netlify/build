@@ -10,27 +10,27 @@ test('plugins: not array of objects', async t => {
   await runFixture(t, 'plugins_not_objects')
 })
 
-test('plugins.*: unknown property', async t => {
+test('plugins.any: unknown property', async t => {
   await runFixture(t, 'plugins_unknown')
 })
 
-test('plugins.*.id: string', async t => {
+test('plugins.any.id: string', async t => {
   await runFixture(t, 'plugins_id_string')
 })
 
-test('plugins.*.type: required', async t => {
+test('plugins.any.type: required', async t => {
   await runFixture(t, 'plugins_type_required')
 })
 
-test('plugins.*.type: string', async t => {
+test('plugins.any.type: string', async t => {
   await runFixture(t, 'plugins_type_string')
 })
 
-test('plugins.*.enabled: boolean', async t => {
+test('plugins.any.enabled: boolean', async t => {
   await runFixture(t, 'plugins_enabled_boolean')
 })
 
-test('plugins.*.config: object', async t => {
+test('plugins.any.config: object', async t => {
   await runFixture(t, 'plugins_config_object')
 })
 
