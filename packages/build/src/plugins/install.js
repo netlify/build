@@ -68,6 +68,11 @@ const getPackageRoots = async function(pluginsPaths, baseDir) {
 
 const findPackageRoot = async function(cwd) {
   const packagePath = await findUp('package.json', { cwd })
+
+  if (packagePath === undefined) {
+    return
+  }
+
   const packageRoot = dirname(packagePath)
   return packageRoot
 }
