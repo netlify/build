@@ -14,6 +14,7 @@
     "test:prettier": "prettier --ignore-path .gitignore --write --loglevel warn \"{.github,packages,examples,scripts}/**/*.{js,md,yml,json}\" \"*.{js,md,yml,json}\"",
     "test:dev:ava": "ava",
     "test:ci:ava": "nyc -r lcovonly -r text -r json ava",
+    "fixsnapshots": "ava --update-snapshots",
     "example": "node ./packages/build/src/core/bin.js --config examples/example-two/netlify.yml",
     "debug": "node --inspect-brk ./packages/build/src/core/bin.js --config examples/example-two/netlify.yml"
   },
