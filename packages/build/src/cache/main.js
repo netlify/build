@@ -1,4 +1,4 @@
-const { resolve, dirname } = require('path')
+const { resolve, dirname, basename } = require('path')
 const { homedir } = require('os')
 const {
   env: { CACHE_BASE },
@@ -31,7 +31,7 @@ const ARTIFACTS = [
 
 // Cache a single directory
 const saveCache = async function({ baseDir, cacheDir, path }) {
-  const { srcPath, cachePath, base, relPath } = parseCachePath(path, baseDir, cacheDir)
+  const { srcPath, cachePath } = parseCachePath(path, baseDir, cacheDir)
 
   if (!(await pathExists(srcPath))) {
     return
@@ -46,7 +46,7 @@ const saveCache = async function({ baseDir, cacheDir, path }) {
   if (isNetlifyCI()) {
     await moveFile(srcPath, cachePath, { overwrite: false })
   } else {
-    await cpy(relPath, dirname(cachePath), { cwd: base, parents: true })
+    await cpy(basename(srcPath), dirname(cachePath), { cwd: dirname(srcPath), parents: true })
   }
 }
 
@@ -54,9 +54,10 @@ const parseCachePath = function(path, baseDir, cacheDir) {
   const [base, ...pathA] = path.split('/')
   const baseA = getBase(base, baseDir)
   const relPath = pathA.join('/')
+
   const srcPath = resolve(baseA, relPath)
   const cachePath = resolve(cacheDir, relPath)
-  return { srcPath, cachePath, base: baseA, relPath }
+  return { srcPath, cachePath }
 }
 
 const getBase = function(base, baseDir) {
