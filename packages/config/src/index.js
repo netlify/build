@@ -9,12 +9,12 @@ const { normalizeConfig } = require('./normalize')
 const { handleFiles } = require('./files')
 const { LIFECYCLE } = require('./lifecycle')
 
-const resolveConfig = async function(configFile, { cwd, context } = {}) {
-  const configPath = await getConfigPath(configFile, cwd)
+const resolveConfig = async function(configFile, options = {}) {
+  const configPath = await getConfigPath(configFile, options.cwd)
   const baseDir = dirname(configPath)
 
   const config = await configorama(configPath, {
-    options: { context },
+    options: options,
     variableSources: [
       /*{
         // Match variables ${secrets:xyz}
