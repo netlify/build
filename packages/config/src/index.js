@@ -16,14 +16,14 @@ const resolveConfig = async function(configFile, { cwd, context } = {}) {
   const config = await configorama(configPath, {
     options: { context },
     variableSources: [
-      {
-        /* Match variables ${secrets:xyz} */
+      /*{
+        // Match variables ${secrets:xyz}
         match: /^secrets:/,
         async resolver() {
           // Call to remote secret store
           return 'shhhhhhh'
         },
-      },
+      },*/
       {
         /* Match variables ${context:xyz} */
         match: /^context:/,
