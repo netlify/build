@@ -25,13 +25,14 @@ const FIXTURES_DIR = normalize(`${testFile}/../fixtures`)
 //  - `env` {object}: environment variable
 //  - `snapshot` {boolean}: whether to create a snapshot
 const runFixture = async function(t, fixtureName, { flags = '', config, cwd, env, debug, snapshot = true } = {}) {
+  const envA = { CACHE_BASE: '.', ...env }
   const configFlag = getConfigFlag(config, fixtureName)
   const binaryPath = await BINARY_PATH
   const { all, exitCode } = await execa.command(`${binaryPath} ${configFlag} ${flags}`, {
     all: true,
     reject: false,
     cwd,
-    env,
+    env: envA,
     timeout: TIMEOUT,
   })
 
