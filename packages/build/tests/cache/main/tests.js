@@ -24,6 +24,34 @@ test('WAPM packages', async t => {
   await runFixture(t, 'wapm', { env: { CACHE_BASE: '.', CACHE_PATH: 'wapm_packages' } })
 })
 
-test('Yarn', async t => {
+test.serial('Yarn', async t => {
   await runFixture(t, 'yarn', { env: { CACHE_BASE: HOME_CACHE, CACHE_PATH: '.yarn_cache' } })
+})
+
+test.serial('Pip', async t => {
+  await runFixture(t, 'pip', { env: { CACHE_BASE: HOME_CACHE, CACHE_PATH: '.cache/pip' } })
+})
+
+test.serial('Emacs cache', async t => {
+  await runFixture(t, 'emacs_cache', { env: { CACHE_BASE: HOME_CACHE, CACHE_PATH: '.cask' } })
+})
+
+test.serial('Emacs', async t => {
+  await runFixture(t, 'emacs', { env: { CACHE_BASE: HOME_CACHE, CACHE_PATH: '.emacs.d' } })
+})
+
+test.serial('Maven', async t => {
+  await runFixture(t, 'maven', { env: { CACHE_BASE: HOME_CACHE, CACHE_PATH: '.m2' } })
+})
+
+test.serial('Boot', async t => {
+  await runFixture(t, 'boot', { env: { CACHE_BASE: HOME_CACHE, CACHE_PATH: '.boot' } })
+})
+
+test.serial('Composer', async t => {
+  await runFixture(t, 'composer', { env: { CACHE_BASE: HOME_CACHE, CACHE_PATH: '.composer' } })
+})
+
+test.serial('Wasmer', async t => {
+  await runFixture(t, 'wasmer', { env: { CACHE_BASE: HOME_CACHE, CACHE_PATH: '.wasmer/cache' } })
 })

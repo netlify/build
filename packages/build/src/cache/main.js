@@ -33,6 +33,20 @@ const ARTIFACTS = [
   { path: './wapm_packages' },
   // Yarn
   { path: '~/.yarn_cache' },
+  // Pip
+  { path: '~/.cache/pip' },
+  // Emacs cask
+  { path: '~/.cask' },
+  // Emacs
+  { path: '~/.emacs.d' },
+  // Maven
+  { path: '~/.m2' },
+  // Boot
+  { path: '~/.boot' },
+  // Composer
+  { path: '~/.composer' },
+  // Wasmer
+  { path: '~/.wasmer/cache' },
 ]
 
 // Cache a single directory
