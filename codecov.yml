@@ -5,6 +5,4 @@ coverage:
   parsers:
     javascript:
       enable_partials: true
-comment:
-  layout: files,flags
-  require_changes: true
+comment: false
