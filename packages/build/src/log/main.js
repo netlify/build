@@ -2,7 +2,6 @@ const { basename } = require('path')
 const { platform } = require('process')
 
 const { tick, pointer, arrowDown } = require('figures')
-const omit = require('omit.js')
 const stringWidth = require('string-width')
 const { greenBright, cyanBright, redBright, yellowBright, bold, white } = require('chalk')
 
@@ -21,9 +20,8 @@ ${SUBTEXT_PADDING}https://github.com/netlify/build
 }
 
 const logOptions = function(options) {
-  const opts = omit(options, ['token', 'dry', 'cwd'])
-  if (Object.keys(opts).length) {
-    log(`${cyanBright.bold('Options')}\n`, opts, '\n')
+  if (Object.keys(options).length) {
+    log(`${cyanBright.bold('Options')}\n`, options, '\n')
   }
 }
 
