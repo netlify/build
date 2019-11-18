@@ -60,10 +60,10 @@ test.serial('Go dependencies', async t => {
   await runFixture(t, 'gimme', { env: { CACHE_BASE: HOME_CACHE, CACHE_PATH: '.gimme_cache' } })
 })
 
-test.serial('nvm', async t => {
+test.serial.skip('nvm', async t => {
   await runFixture(t, 'nvm', { env: { CACHE_BASE: HOME_CACHE, CACHE_PATH: '.nvm/versions/node' } })
 })
 
-test.serial('rvm', async t => {
+test.serial.skip('rvm', async t => {
   await runFixture(t, 'rvm', { env: { CACHE_BASE: HOME_CACHE, CACHE_PATH: '.rvm/rubies' } })
 })

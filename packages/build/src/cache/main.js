@@ -50,9 +50,9 @@ const ARTIFACTS = [
   // Go dependencies
   { path: '~/.gimme_cache' },
   // nvm
-  { path: '~/.nvm/versions/node' },
+  // { path: '~/.nvm/versions/node' },
   // rvm
-  { path: '~/.rvm/rubies' },
+  // { path: '~/.rvm/rubies' },
 ]
 
 // Cache a single directory
