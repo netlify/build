@@ -10,7 +10,7 @@ const {
 } = require('ava')
 const execa = require('execa')
 const { getBinPath } = require('get-bin-path')
-const chalk = require('chalk')
+const { magentaBright } = require('chalk')
 
 const { normalizeOutput } = require('./normalize')
 
@@ -75,7 +75,7 @@ const doTestAction = function({ t, all, isPrint, debug = isPrint, snapshot }) {
 
 const printOutput = function(t, all) {
   console.log(`
-${chalk.magentaBright.bold(`${LINE}
+${magentaBright.bold(`${LINE}
   ${t.title}
 ${LINE}`)}
 
