@@ -5,28 +5,21 @@ const {
 
 const resolveConfig = require('@netlify/config')
 const { getConfigPath } = require('@netlify/config')
-const filterObj = require('filter-obj')
 
 const { logOptions, logConfigPath } = require('../log/main')
 
 // Retrieve configuration object
-const loadConfig = async function({
-  options: { cwd, config },
-  options: { token = NETLIFY_TOKEN, context = CONTEXT, ...options },
-}) {
-  const optionsA = { ...options, context }
-  const optionsB = filterObj(optionsA, isDefined)
+const loadConfig = async function({ options: { config, cwd }, options: { token = NETLIFY_TOKEN, ...options } }) {
+  logOptions(options)
 
-  logOptions(optionsB)
-
-  const optionsC = { ...DEFAULT_OPTIONS, ...optionsB }
+  const optionsA = { ...DEFAULT_OPTIONS, ...options }
 
   const configPath = await getConfigPath(config, cwd)
   logConfigPath(configPath)
   const baseDir = dirname(configPath)
 
   try {
-    const configA = await resolveConfig(configPath, optionsC)
+    const configA = await resolveConfig(configPath, optionsA)
     return { config: configA, configPath, token, baseDir }
   } catch (error) {
     error.message = `Netlify configuration error:\n${error.message}`
@@ -34,10 +27,7 @@ const loadConfig = async function({
   }
 }
 
-const DEFAULT_OPTIONS = { context: 'production' }
-
-const isDefined = function(key, value) {
-  return value !== undefined
-}
+const DEFAULT_CONTEXT = 'production'
+const DEFAULT_OPTIONS = { context: CONTEXT || DEFAULT_CONTEXT }
 
 module.exports = { loadConfig }

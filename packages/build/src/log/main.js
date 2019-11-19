@@ -4,6 +4,7 @@ const { platform } = require('process')
 const { tick, pointer, arrowDown } = require('figures')
 const stringWidth = require('string-width')
 const { greenBright, cyanBright, redBright, yellowBright, bold, white } = require('chalk')
+const filterObj = require('filter-obj')
 
 const { version } = require('../../package.json')
 
@@ -20,9 +21,14 @@ ${SUBTEXT_PADDING}https://github.com/netlify/build
 }
 
 const logOptions = function(options) {
-  if (Object.keys(options).length) {
-    log(`${cyanBright.bold('Options')}\n`, options, '\n')
+  const optionsA = filterObj(options, isDefined)
+  if (Object.keys(optionsA).length) {
+    log(`${cyanBright.bold('Options')}\n`, optionsA, '\n')
   }
+}
+
+const isDefined = function(key, value) {
+  return value !== undefined
 }
 
 const logConfigPath = function(configPath) {
