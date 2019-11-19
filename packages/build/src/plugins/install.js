@@ -12,8 +12,6 @@ const pResolve = promisify(resolve)
 // Install dependencies of local plugins.
 // Also resolve path of plugins' main files.
 const installPlugins = async function(pluginsOptions, baseDir) {
-  logInstallPlugins()
-
   const pluginsOptionsA = await Promise.all(pluginsOptions.map(pluginOptions => resolvePlugin(pluginOptions, baseDir)))
 
   await installPluginDependencies(pluginsOptionsA, baseDir)
@@ -41,6 +39,12 @@ const installPluginDependencies = async function(pluginsOptions, baseDir) {
   }
 
   const packageRoots = await getPackageRoots(pluginsPaths, baseDir)
+
+  if (packageRoots.length === 0) {
+    return
+  }
+
+  logInstallPlugins()
 
   await Promise.all(packageRoots.map(installDependencies))
 }
