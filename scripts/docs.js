@@ -57,9 +57,11 @@ const config = {
       const base = path.resolve('packages')
       const fileContents = fs.readFileSync(path.join(base, 'build/src/plugins/child', 'constants.js'), 'utf8')
       const docBlocs = parseJsDoc(fileContents)
-      const updatedContents = docBlocs.map((doc) => {
-        return `- \`${doc.ctx.name}\` ${doc.description.full}`
-      }).join('\n')
+      const updatedContents = docBlocs
+        .map(doc => {
+          return `- \`${doc.ctx.name}\` ${doc.description.full}`
+        })
+        .join('\n')
 
       return updatedContents
     },
