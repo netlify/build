@@ -32,7 +32,7 @@
     "deepmerge": "^4.2.2",
     "execa": "^3.3.0",
     "fast-glob": "^3.1.0",
-    "figures": "^3.0.0",
+    "figures": "^3.1.0",
     "filter-obj": "^2.0.1",
     "find-up": "^4.1.0",
     "group-by": "0.0.1",
