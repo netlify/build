@@ -1,0 +1,23 @@
+# Build settings
+build:
+  functions: functions
+  publish: build
+  lifecycle:
+    build:
+      - echo 'Hello Netlify Build!' && npm run makeSite
+
+# Build Plugins
+plugins:
+  # Plugin one
+  - type: ./plugins/plugin-one
+    name: MY_CUSTOM_NAME
+  # Plugin two
+  - type: ./plugins/plugin-two
+    config:
+      # output from plugin one
+      bar: ${outputs:MY_CUSTOM_NAME.init.foo}
+      # output from plugin three
+      fizz: ${outputs:OTHER_THING.init.zaz}
+  # Plugin three
+  - type: ./plugins/plugin-three
+    name: OTHER_THING
