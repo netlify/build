@@ -9,17 +9,17 @@ const { normalizeConfig } = require('./normalize')
 const { handleFiles } = require('./files')
 const { LIFECYCLE } = require('./lifecycle')
 
-const resolveConfig = async function(configFile, { cwd, context } = {}) {
+const resolveConfig = async function(configFile, { cwd, ...options } = {}) {
   const configPath = await getConfigPath(configFile, cwd)
   const baseDir = dirname(configPath)
 
   const config = await configorama(configPath, {
-    options: { context },
+    options,
     variableSources: [
       {
-        /* Match variables ${context:xyz} */
+        // ${context:VAR} -> config.context.CONTEXT.VAR
         match: /^context:/,
-        async resolver(varToProcess, { context = 'production' }) {
+        async resolver(varToProcess, { context }) {
           const objectPath = varToProcess.replace('context:', '')
           return `\${self:context.${context}.${objectPath}}`
         },

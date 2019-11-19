@@ -17,3 +17,7 @@ test('{context:...} with --context', async t => {
 test('{context:...} pointing to undefined path', async t => {
   await runFixture(t, 'context', { flags: '--context invalid' })
 })
+
+test('{opt:...}', async t => {
+  await runFixture(t, 'opt', { flags: '--custom test' })
+})
