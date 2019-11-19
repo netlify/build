@@ -1,0 +1,13 @@
+build:
+  lifecycle:
+    init:
+      - uses: netlify-plugin-one
+      - uses: netlify-plugin-two#doThis
+    build:
+      - echo 'Hello Netlify Build!' && npm run makeSite
+      - uses: netlify-plugin-three
+      - uses: netlify-plugin-two#doThat
+        config:
+          # Plugin-to-user communication
+          # Uses the `zaz` return value of `netlify-plugin-three`
+          fizz: ${outputs:zaz}
