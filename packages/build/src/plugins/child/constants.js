@@ -17,11 +17,26 @@ const getConstants = function({
   const cacheDir = getCacheDir(baseDir)
   const functionsDist = getFunctionsDist(baseDir)
   return {
+    /**
+     * Path to the netlify configuration file
+     */
     CONFIG_PATH: configPath,
+    /**
+     * The build directory of the site
+     */
     BUILD_DIR: publish,
-    FUNCTIONS_SRC: functions,
-    FUNCTIONS_DIST: functionsDist,
+    /**
+     * The directory files can be cached in between builds
+     */
     CACHE_DIR: cacheDir,
+    /**
+     * The directory where function source code lives
+     */
+    FUNCTIONS_SRC: functions,
+    /**
+     * The directory where built serverless functions are placed before deployment
+     */
+    FUNCTIONS_DIST: functionsDist,
   }
 }
 

@@ -17,14 +17,6 @@ const resolveConfig = async function(configFile, { cwd, context } = {}) {
     options: { context },
     variableSources: [
       {
-        /* Match variables ${secrets:xyz} */
-        match: /^secrets:/,
-        async resolver() {
-          // Call to remote secret store
-          return 'shhhhhhh'
-        },
-      },
-      {
         /* Match variables ${context:xyz} */
         match: /^context:/,
         async resolver(varToProcess, { context = 'production' }) {

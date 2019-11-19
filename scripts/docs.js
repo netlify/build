@@ -53,6 +53,18 @@ const config = {
         .join('\n')
       return packages
     },
+    CONSTANTS() {
+      const base = path.resolve('packages')
+      const fileContents = fs.readFileSync(path.join(base, 'build/src/plugins/child', 'constants.js'), 'utf8')
+      const docBlocs = parseJsDoc(fileContents)
+      const updatedContents = docBlocs
+        .map(doc => {
+          return `- \`${doc.ctx.name}\` ${doc.description.full}`
+        })
+        .join('\n')
+
+      return updatedContents
+    },
     LIFECYCLE_TABLE(content, opts) {
       const options = opts || {}
       const fileContents = fs.readFileSync(CONSTANTS.lifecycle, 'utf-8')

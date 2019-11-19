@@ -6,10 +6,6 @@ test('{env:...}', async t => {
   await runFixture(t, 'env', { env: { TEST: 'test' } })
 })
 
-test('{secrets:...}', async t => {
-  await runFixture(t, 'secrets')
-})
-
 test('{context:...}', async t => {
   await runFixture(t, 'context')
 })

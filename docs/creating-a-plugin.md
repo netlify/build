@@ -136,6 +136,31 @@ Plugins as functions returning the object is a powerful way to provide advanced 
 - Giving plugin users the ability to customize order of execution of functionality
 - Preforming input validation on configuration to fail fast if invalid values are passed in
 
+## Plugin constants
+
+Inside of each lifecycle function there is a `constants` key.
+
+```js
+function helloWorldPlugin(pluginConfig) {
+  return {
+    name: 'netlify-plugin-hello-world',
+    preBuild: ({ constants }) => {
+      console.log(constants)
+    },
+  }
+}
+```
+
+The `constants` key contains the following values:
+
+<!-- AUTO-GENERATED-CONTENT:START (CONSTANTS) -->
+- `CONFIG_PATH` Path to the netlify configuration file
+- `BUILD_DIR` The build directory of the site
+- `CACHE_DIR` The directory files can be cached in between builds
+- `FUNCTIONS_SRC` The directory where function source code lives
+- `FUNCTIONS_DIST` The directory where built serverless functions are placed before deployment
+<!-- AUTO-GENERATED-CONTENT:END -->
+
 ## Publishing a plugin
 
 The [`name` property in `package.json`](https://docs.npmjs.com/files/package.json#name) should start with

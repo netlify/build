@@ -21,7 +21,7 @@ ${SUBTEXT_PADDING}https://github.com/netlify/build
 }
 
 const logOptions = function(options) {
-  const opts = omit(options, ['token', 'dry', 'cwd'])
+  const opts = omit(options, ['token'])
   if (Object.keys(opts).length) {
     log(`${cyanBright.bold('Options')}\n`, opts, '\n')
   }
