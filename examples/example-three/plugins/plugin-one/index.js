@@ -5,13 +5,13 @@ module.exports = function exampleOne() {
       // When output is returned
       init: {
         // Key that is returned
-        foo: 'string'
-      }
+        foo: 'string',
+      },
     },
     init: () => {
       console.log('this is the first thing run')
       return {
-        foo: 'wow cool'
+        foo: 'wow cool',
       }
     },
   }

@@ -3,13 +3,13 @@ module.exports = function exampleOne() {
     name: 'netlify-plugin-one',
     outputs: {
       init: {
-        zaz: 'string'
-      }
+        zaz: 'string',
+      },
     },
     init: () => {
       // Do stuff and return output
       return {
-        zaz: 'nice'
+        zaz: 'nice',
       }
     },
   }
