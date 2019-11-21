@@ -83,6 +83,6 @@ ${all}`)
   t.pass()
 }
 
-const LINE = '='.repeat(40)
+const LINE = '='.repeat(50)
 
 module.exports = { runFixture, FIXTURES_DIR }
