@@ -1,8 +1,7 @@
-const { dirname } = require('path')
-
 const configorama = require('configorama')
 
 const { getConfigPath } = require('./path')
+const { getBaseDir } = require('./base_dir')
 const { addEnvVars } = require('./env')
 const { validateConfig } = require('./validate/main')
 const { normalizeConfig } = require('./normalize')
@@ -11,9 +10,25 @@ const { LIFECYCLE } = require('./lifecycle')
 
 const resolveConfig = async function(configFile, { cwd, ...options } = {}) {
   const configPath = await getConfigPath(configFile, cwd)
-  const baseDir = dirname(configPath)
+  const baseDir = await getBaseDir(configPath)
 
-  const config = await configorama(configPath, {
+  const config = await getConfig(configPath, options)
+
+  const configA = addEnvVars(config)
+
+  validateConfig(configA)
+
+  const configB = normalizeConfig(configA)
+  const configC = await handleFiles(configB, baseDir)
+  return configC
+}
+
+const getConfig = function(configPath, options) {
+  if (configPath === undefined) {
+    return {}
+  }
+
+  return configorama(configPath, {
     options,
     variableSources: [
       {
@@ -26,17 +41,9 @@ const resolveConfig = async function(configFile, { cwd, ...options } = {}) {
       },
     ],
   })
-
-  const configA = addEnvVars(config)
-
-  validateConfig(configA)
-
-  const configB = normalizeConfig(configA)
-  const configC = await handleFiles(configB, baseDir)
-  return configC
 }
 
 module.exports = resolveConfig
-module.exports.formatUtils = configorama.format
+module.exports.getBaseDir = getBaseDir
 module.exports.getConfigPath = getConfigPath
 module.exports.LIFECYCLE = LIFECYCLE

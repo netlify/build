@@ -24,16 +24,8 @@ const getConfigPath = async function(configFile, cwd) {
   return getLocalConfig(configFile, cwd)
 }
 
-const getDefaultConfig = async function(cwd) {
-  const configPath = await findUp(FILENAMES, { cwd })
-
-  if (configPath === undefined) {
-    throw new Error(`No netlify configuration file was found
- Please add a "netlify.yml", "netlify.toml", or "netlify.json" file and try again
-`)
-  }
-
-  return configPath
+const getDefaultConfig = function(cwd) {
+  return findUp(FILENAMES, { cwd })
 }
 
 const FILENAMES = ['netlify.toml', 'netlify.yml', 'netlify.yaml', 'netlify.json', 'netlify.js']

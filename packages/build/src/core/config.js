@@ -1,10 +1,9 @@
-const { dirname } = require('path')
 const {
   env: { NETLIFY_TOKEN, CONTEXT },
 } = require('process')
 
 const resolveConfig = require('@netlify/config')
-const { getConfigPath } = require('@netlify/config')
+const { getConfigPath, getBaseDir } = require('@netlify/config')
 
 const { logOptions, logConfigPath } = require('../log/main')
 
@@ -16,7 +15,7 @@ const loadConfig = async function({ options: { config, cwd }, options: { token =
 
   const configPath = await getConfigPath(config, cwd)
   logConfigPath(configPath)
-  const baseDir = dirname(configPath)
+  const baseDir = await getBaseDir(configPath)
 
   try {
     const configA = await resolveConfig(configPath, optionsA)

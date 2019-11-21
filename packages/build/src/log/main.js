@@ -32,6 +32,11 @@ const isDefined = function(key, value) {
 }
 
 const logConfigPath = function(configPath) {
+  if (configPath === undefined) {
+    log(`${cyanBright.bold(`${HEADING_PREFIX} No config file was defined: using default values.`)}`)
+    return
+  }
+
   log(`${cyanBright.bold(`${HEADING_PREFIX} Using config file:`)}
 ${SUBTEXT_PADDING}${configPath}
 `)

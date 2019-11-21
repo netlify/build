@@ -1,7 +1,10 @@
-const { cwd } = require('process')
+const { cwd, platform } = require('process')
 const { relative } = require('path')
+const { tmpdir } = require('os')
 
 const test = require('ava')
+const makeDir = require('make-dir')
+const del = require('del')
 
 const { runFixture, FIXTURES_DIR } = require('../../helpers/main')
 
@@ -24,8 +27,22 @@ test('No --config', async t => {
 })
 
 test('No --config but none found', async t => {
-  await runFixture(t, '', { config: false, cwd: '/' })
+  const cwd = `${tmpdir()}/netlify-build`
+  await makeDir(cwd)
+
+  try {
+    await runFixture(t, '', { config: false, cwd })
+  } finally {
+    del(cwd, { force: true })
+  }
 })
+
+// Windows permissions system is different
+if (platform !== 'win32') {
+  test('--config with a directory without permissions', async t => {
+    await runFixture(t, 'empty', { config: false, cwd: '/' })
+  })
+}
 
 test('--config with an absolute path', async t => {
   await runFixture(t, 'empty')
