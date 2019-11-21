@@ -1,4 +1,5 @@
-const { join, dirname } = require('path')
+const { join } = require('path')
+const { cwd } = require('process')
 
 const execa = require('execa')
 const mkdirp = require('mkdirp')
@@ -12,14 +13,14 @@ module.exports = {
   },
   postBuild: async ({ pluginConfig, constants }) => {
     const { site, axeFlags } = pluginConfig
-    const { CACHE_DIR, CONFIG_PATH } = constants
+    const { CACHE_DIR } = constants
     const testSite = site || process.env.SITE
     if (!testSite) {
       throw new Error('Site is not supplied')
     }
 
     const resultsPath = join(CACHE_DIR, `axe-results/result.json`)
-      .replace(dirname(CONFIG_PATH), '')
+      .replace(cwd(), '')
       .replace(/^\//, '')
 
     await execa.command(`axe ${testSite} ${axeFlags} --save ${resultsPath}`, {
