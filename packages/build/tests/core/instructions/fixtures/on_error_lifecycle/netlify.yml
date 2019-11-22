@@ -1,0 +1,4 @@
+build:
+  lifecycle:
+    build: node --invalid
+    onError: echo onError
