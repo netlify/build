@@ -17,9 +17,15 @@ const { startOutput, stopOutput } = require('../log/stream')
 // Get instructions for all hooks
 const getInstructions = function({ pluginsHooks, config }) {
   const instructions = LIFECYCLE.flatMap(hook => getHookInstructions({ hook, pluginsHooks, config }))
-  const buildInstructions = instructions.filter(({ hook }) => hook !== 'onError')
-  const errorInstructions = instructions.filter(({ hook }) => hook === 'onError')
+
+  const buildInstructions = instructions.filter(instruction => !isErrorInstruction(instruction))
+  const errorInstructions = instructions.filter(isErrorInstruction)
+
   return { buildInstructions, errorInstructions }
+}
+
+const isErrorInstruction = function({ hook }) {
+  return hook === 'onError'
 }
 
 // Get instructions for a specific hook
