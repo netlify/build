@@ -40,7 +40,7 @@ const build = async function(options = {}) {
     const pluginsOptions = getPluginsOptions({ config })
     const pluginsOptionsA = await installPlugins(pluginsOptions, baseDir)
 
-    const buildInstructions = await buildRun({
+    const instructionsCount = await buildRun({
       pluginsOptions: pluginsOptionsA,
       config,
       configPath,
@@ -60,7 +60,7 @@ const build = async function(options = {}) {
     logBuildSuccess()
     const duration = endTimer(buildTimer, 'Netlify Build')
     logBuildEnd()
-    await trackBuildComplete({ buildInstructions, config, duration })
+    await trackBuildComplete({ instructionsCount, config, duration })
     return true
   } catch (error) {
     logBuildError(error)
@@ -72,7 +72,7 @@ const buildRun = async function({ pluginsOptions, config, configPath, baseDir, t
   const childProcesses = await startPlugins(pluginsOptions, baseDir)
 
   try {
-    const buildInstructions = await executeInstructions({
+    return await executeInstructions({
       pluginsOptions,
       childProcesses,
       config,
@@ -81,7 +81,6 @@ const buildRun = async function({ pluginsOptions, config, configPath, baseDir, t
       token,
       options,
     })
-    return buildInstructions
   } finally {
     await stopPlugins(childProcesses)
   }
@@ -105,16 +104,16 @@ const executeInstructions = async function({
     token,
   })
 
-  const { buildInstructions, errorInstructions } = getInstructions({ pluginsHooks, config })
+  const { buildInstructions, errorInstructions, instructionsCount } = getInstructions({ pluginsHooks, config })
 
   if (dry) {
-    doDryRun({ buildInstructions, configPath })
+    doDryRun({ buildInstructions, instructionsCount, configPath })
     return
   }
 
   try {
     await runBuildInstructions(buildInstructions, { configPath, baseDir })
-    return buildInstructions
+    return instructionsCount
   } catch (error) {
     await runErrorInstructions(errorInstructions, { configPath, baseDir, error })
     throw error

@@ -15,7 +15,8 @@ const getInstructions = function({ pluginsHooks, config }) {
   const buildInstructions = instructions.filter(instruction => !isErrorInstruction(instruction))
   const errorInstructions = instructions.filter(isErrorInstruction)
 
-  return { buildInstructions, errorInstructions }
+  const instructionsCount = buildInstructions.length
+  return { buildInstructions, errorInstructions, instructionsCount }
 }
 
 const isErrorInstruction = function({ hook }) {
