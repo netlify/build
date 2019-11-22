@@ -55,15 +55,16 @@ const functionsBuild = async function({ constants: { FUNCTIONS_SRC, FUNCTIONS_DI
 
 // Print the list of paths to the bundled functions
 const logResults = async function(FUNCTIONS_DIST) {
-  const paths = await getLoggedPaths(FUNCTIONS_DIST)
-  console.log(`Functions bundled in ${FUNCTIONS_DIST}`)
-  console.log(paths)
-}
-
-const getLoggedPaths = async function(FUNCTIONS_DIST) {
   const files = await readdirp.promise(FUNCTIONS_DIST)
+
+  if (files.length === 0) {
+    console.log('No functions were bundled')
+    return
+  }
+
   const paths = files.map(getLoggedPath).join('\n')
-  return paths
+  console.log(`Functions bundled in ${FUNCTIONS_DIST}
+${paths}`)
 }
 
 const getLoggedPath = function({ path }) {
