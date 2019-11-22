@@ -4,13 +4,7 @@ const pReduce = require('p-reduce')
 const { LIFECYCLE } = require('@netlify/config')
 
 const { callChild } = require('../plugins/ipc')
-const {
-  logLifeCycleStart,
-  logErrorInstructions,
-  logInstruction,
-  logCommandStart,
-  logInstructionSuccess,
-} = require('../log/main')
+const { logLifeCycleStart, logInstruction, logCommandStart, logInstructionSuccess } = require('../log/main')
 const { startTimer, endTimer } = require('../log/timer')
 const { startOutput, stopOutput } = require('../log/stream')
 
@@ -59,8 +53,6 @@ const runErrorInstructions = async function(errorInstructions, { configPath, bas
   if (errorInstructions.length === 0) {
     return
   }
-
-  logErrorInstructions()
 
   await runInstructions(errorInstructions, { configPath, baseDir, error })
 }
