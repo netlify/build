@@ -12,12 +12,19 @@ const { startOutput, stopOutput } = require('../log/stream')
 const getInstructions = function({ pluginsHooks, config }) {
   const instructions = LIFECYCLE.flatMap(hook => getHookInstructions({ hook, pluginsHooks, config }))
 
-  const buildInstructions = instructions.filter(instruction => !isErrorInstruction(instruction))
+  const buildInstructions = instructions.filter(
+    instruction => !isFinalInstruction(instruction) && !isErrorInstruction(instruction),
+  )
+  const finalInstructions = instructions.filter(isFinalInstruction)
   const errorInstructions = instructions.filter(isErrorInstruction)
 
-  const mainInstructions = [...buildInstructions]
+  const mainInstructions = [...buildInstructions, ...finalInstructions]
   const instructionsCount = mainInstructions.length
-  return { mainInstructions, buildInstructions, errorInstructions, instructionsCount }
+  return { mainInstructions, buildInstructions, finalInstructions, errorInstructions, instructionsCount }
+}
+
+const isFinalInstruction = function({ hook }) {
+  return hook === 'finally'
 }
 
 const isErrorInstruction = function({ hook }) {
@@ -47,6 +54,7 @@ const getHookInstructions = function({
 // Runs `finally` hooks at the end, whether an error was thrown or not.
 const runInstructions = async function({
   buildInstructions,
+  finalInstructions,
   errorInstructions,
   instructionsCount,
   configPath,
@@ -59,6 +67,8 @@ const runInstructions = async function({
   } catch (error) {
     await execInstructions(errorInstructions, { configPath, baseDir, failFast: false, error })
     throw error
+  } finally {
+    await execInstructions(finalInstructions, { configPath, baseDir, failFast: false })
   }
 }
 

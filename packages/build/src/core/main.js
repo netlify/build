@@ -98,10 +98,13 @@ const executeInstructions = async function({
     token,
   })
 
-  const { mainInstructions, buildInstructions, errorInstructions, instructionsCount } = getInstructions({
-    pluginsHooks,
-    config,
-  })
+  const {
+    mainInstructions,
+    buildInstructions,
+    finalInstructions,
+    errorInstructions,
+    instructionsCount,
+  } = getInstructions({ pluginsHooks, config })
 
   if (dry) {
     doDryRun({ mainInstructions, instructionsCount, configPath })
@@ -110,6 +113,7 @@ const executeInstructions = async function({
 
   await runInstructions({
     buildInstructions,
+    finalInstructions,
     errorInstructions,
     instructionsCount,
     configPath,

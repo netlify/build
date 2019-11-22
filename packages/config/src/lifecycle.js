@@ -53,11 +53,17 @@ const LIFECYCLE = [
   'saveCache',
   'postSaveCache',
   /**
-   * `finally` - Runs after anything else
+   * `onSuccess` - Runs on build success
+   */
+  'onSuccess',
+  /**
+   * `onError` - Runs on build error
+   */
+  'onError',
+  /**
+   * `finally` - Runs on build error or success
    */
   'finally',
-  // Todo onError is not part of lifecycle. Its a special handler
-  'onError',
 ]
 
 module.exports = { LIFECYCLE }
