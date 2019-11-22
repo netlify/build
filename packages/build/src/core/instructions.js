@@ -42,50 +42,69 @@ const getHookInstructions = function({
   return [lifeCycleHook, ...pluginHooks]
 }
 
-// Run build instructions, i.e. all instructions except error handling ones
-const runBuildInstructions = async function(buildInstructions, { configPath, baseDir }) {
-  logLifeCycleStart(buildInstructions)
+// Run all instructions.
+// If an error arises, runs `onError` hooks.
+// Runs `finally` hooks at the end, whether an error was thrown or not.
+const runInstructions = async function({
+  buildInstructions,
+  errorInstructions,
+  instructionsCount,
+  configPath,
+  baseDir,
+}) {
+  logLifeCycleStart(instructionsCount)
 
-  await runInstructions(buildInstructions, { configPath, baseDir })
+  try {
+    await execInstructions(buildInstructions, { configPath, baseDir, failFast: true })
+  } catch (error) {
+    await execInstructions(errorInstructions, { configPath, baseDir, failFast: false, error })
+    throw error
+  }
 }
 
-// Error handler when an instruction fails
-// Resolve all 'onError' methods and try to fix things
-const runErrorInstructions = async function(errorInstructions, { configPath, baseDir, error }) {
-  if (errorInstructions.length === 0) {
-    return
+// Run a set of instructions.
+// `onError` and `finally` do not `failFast`, i.e. if they fail, the other hooks
+// of the same name keep running. However the failure is still eventually
+// thrown. This allows users to be notified of issues inside their `onError` or
+// `finally` hooks.
+const execInstructions = async function(instructions, { configPath, baseDir, failFast, error }) {
+  const { failure, manifest: manifestA } = await pReduce(
+    instructions,
+    ({ failure, manifest }, instruction, index) =>
+      runInstruction(instruction, { manifest, index, configPath, baseDir, error, failure, failFast }),
+    { manifest: {} },
+  )
+
+  if (failure !== undefined) {
+    throw failure
   }
 
-  await runInstructions(errorInstructions, { configPath, baseDir, error })
-}
-
-// Run a set of instructions
-const runInstructions = async function(instructions, { configPath, baseDir, error }) {
-  const manifest = await pReduce(
-    instructions,
-    (currentData, instruction, index) => {
-      return runInstruction(instruction, { currentData, index, configPath, baseDir, error })
-    },
-    {},
-  )
-  return manifest
+  return manifestA
 }
 
 // Run a single instruction
-const runInstruction = async function(instruction, { currentData, index, configPath, baseDir, error }) {
-  const { id, hook } = instruction
+const runInstruction = async function(instruction, { manifest, index, configPath, baseDir, error, failure, failFast }) {
+  try {
+    const { id, hook } = instruction
 
-  const methodTimer = startTimer()
+    const methodTimer = startTimer()
 
-  logInstruction(instruction, { index, configPath, error })
+    logInstruction(instruction, { index, configPath, error })
 
-  const pluginReturnValue = await fireMethod(instruction, { baseDir, error })
+    const pluginReturnValue = await fireMethod(instruction, { baseDir, error })
 
-  logInstructionSuccess()
+    logInstructionSuccess()
 
-  endTimer(methodTimer, id, hook)
+    endTimer(methodTimer, id, hook)
 
-  return { ...currentData, ...pluginReturnValue }
+    return { failure, manifest: { ...manifest, ...pluginReturnValue } }
+  } catch (failure) {
+    if (failFast) {
+      throw failure
+    }
+
+    return { failure, manifest }
+  }
 }
 
 const fireMethod = function(instruction, { baseDir, error }) {
@@ -135,4 +154,4 @@ const firePluginHook = async function({ id, childProcess, hook, hookName }, { er
   }
 }
 
-module.exports = { getInstructions, runBuildInstructions, runErrorInstructions }
+module.exports = { getInstructions, runInstructions }
