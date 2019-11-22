@@ -85,6 +85,8 @@ const sendEventToParent = async function(callId, payload) {
 
 // Errors are not serializable through `child_process` `ipc` so we need to
 // convert from/to plain objects.
+// TODO: use `child_process.spawn()` `serialization: 'advanced'` option after
+// dropping support for Node.js <=13.2.0
 const serializePayload = function({ error: { name, message, stack, ...error } = {}, ...payload }) {
   if (name === undefined) {
     return payload
