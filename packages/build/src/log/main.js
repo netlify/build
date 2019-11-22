@@ -62,8 +62,8 @@ const logLifeCycleStart = function(instructions) {
 ${SUBTEXT_PADDING}Found ${instructions.length} ${stepsWord}. Lets do this!`)
 }
 
-const logDryRunStart = function(hookWidth, length) {
-  const columnWidth = getDryColumnWidth(hookWidth, length)
+const logDryRunStart = function(hookWidth, instructionsCount) {
+  const columnWidth = getDryColumnWidth(hookWidth, instructionsCount)
   const line = '─'.repeat(columnWidth)
   const secondLine = '─'.repeat(columnWidth)
 
@@ -78,11 +78,17 @@ ${SUBTEXT_PADDING}│ ${DRY_HEADER_NAMES[0].padEnd(columnWidth)} │ ${DRY_HEADE
 ${SUBTEXT_PADDING}└─${line}─┴─${secondLine}─┘`)}`)
 }
 
-const logDryRunInstruction = function({ instruction: { id, hook, type, core }, index, configPath, hookWidth, length }) {
-  const columnWidth = getDryColumnWidth(hookWidth, length)
+const logDryRunInstruction = function({
+  instruction: { id, hook, type, core },
+  index,
+  configPath,
+  hookWidth,
+  instructionsCount,
+}) {
+  const columnWidth = getDryColumnWidth(hookWidth, instructionsCount)
   const line = '─'.repeat(columnWidth)
   const countText = `${index + 1}. `
-  const downArrow = length === index + 1 ? '  ' : ` ${arrowDown}`
+  const downArrow = instructionsCount === index + 1 ? '  ' : ` ${arrowDown}`
   const hookNameWidth = columnWidth - countText.length - downArrow.length
   const location = getPluginLocation({ id, type, core, configPath })
 
@@ -105,8 +111,8 @@ const getPluginLocation = function({ id, type, core, configPath }) {
   return `${white('Plugin')} ${id} ${yellowBright(type)}`
 }
 
-const getDryColumnWidth = function(hookWidth, length) {
-  const symbolsWidth = `${length}`.length + 4
+const getDryColumnWidth = function(hookWidth, instructionsCount) {
+  const symbolsWidth = `${instructionsCount}`.length + 4
   return Math.max(hookWidth + symbolsWidth, DRY_HEADER_NAMES[0].length)
 }
 
