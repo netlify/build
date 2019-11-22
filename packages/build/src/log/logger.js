@@ -6,7 +6,7 @@ const { redactString } = require('./redact')
 //  - serialize objects
 //  - redact secrets
 const log = function(...args) {
-  const string = args.map(arg => serializeArg(arg)).join(' ')
+  const string = args.map(arg => serializeArg(arg)).join('\n')
   console.log(string)
 }
 
