@@ -15,7 +15,7 @@ const isNetlifyCI = require('../utils/is-netlify-ci')
 const { trackBuildComplete } = require('../telemetry')
 
 const { loadConfig } = require('./config')
-const { getInstructions, runBuildInstructions, runErrorInstructions } = require('./instructions')
+const { getInstructions, runInstructions } = require('./instructions')
 const { tomlWrite } = require('./toml')
 const { doDryRun } = require('./dry')
 
@@ -114,13 +114,14 @@ const executeInstructions = async function({
     return
   }
 
-  try {
-    await runBuildInstructions(buildInstructions, { configPath, baseDir })
-    return instructionsCount
-  } catch (error) {
-    await runErrorInstructions(errorInstructions, { configPath, baseDir, error })
-    throw error
-  }
+  await runInstructions({
+    buildInstructions,
+    errorInstructions,
+    instructionsCount,
+    configPath,
+    baseDir,
+  })
+  return instructionsCount
 }
 
 module.exports = build

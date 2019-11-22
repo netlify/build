@@ -56,10 +56,10 @@ const logLoadPlugin = function(id, type, core) {
   log(yellowBright(`${SUBTEXT_PADDING}Loading plugin ${idA}from ${location}`))
 }
 
-const logLifeCycleStart = function(instructions) {
-  const stepsWord = instructions.length === 1 ? 'step' : `steps`
+const logLifeCycleStart = function(instructionsCount) {
+  const stepsWord = instructionsCount === 1 ? 'step' : `steps`
   log(`\n${greenBright.bold(`${HEADING_PREFIX} Running Netlify Build Lifecycle`)}
-${SUBTEXT_PADDING}Found ${instructions.length} ${stepsWord}. Lets do this!`)
+${SUBTEXT_PADDING}Found ${instructionsCount} ${stepsWord}. Lets do this!`)
 }
 
 const logDryRunStart = function(hookWidth, instructionsCount) {
