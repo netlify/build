@@ -1,4 +1,4 @@
-const { relative } = require('path')
+const { relative, normalize } = require('path')
 const { tmpdir } = require('os')
 const {
   env: { DEPLOY_ID },
@@ -48,8 +48,8 @@ const getConstants = function({
 // Instead of passing absolute paths, we pass paths relative to `baseDir`, so
 // that logs are less verbose.
 const normalizePath = function(path, baseDir) {
-  if (path === undefined) {
-    return
+  if (path === undefined || !normalize(path).startsWith(baseDir)) {
+    return path
   }
 
   return relative(baseDir, path)
