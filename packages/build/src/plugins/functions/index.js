@@ -1,4 +1,4 @@
-const { resolve, dirname } = require('path')
+const { dirname } = require('path')
 
 const pathExists = require('path-exists')
 const fastGlob = require('fast-glob')
@@ -47,7 +47,7 @@ const install = async function({ constants: { FUNCTIONS_SRC } }) {
 
 // Bundle Netlify functions
 const functionsBuild = async function({ constants: { FUNCTIONS_SRC, FUNCTIONS_DIST } }) {
-  console.log('Zipping functions')
+  console.log(`Bundling functions from ${FUNCTIONS_SRC}`)
   await zipFunctions(FUNCTIONS_SRC, FUNCTIONS_DIST)
 
   await logResults(FUNCTIONS_DIST)
@@ -56,7 +56,7 @@ const functionsBuild = async function({ constants: { FUNCTIONS_SRC, FUNCTIONS_DI
 // Print the list of paths to the bundled functions
 const logResults = async function(FUNCTIONS_DIST) {
   const paths = await getLoggedPaths(FUNCTIONS_DIST)
-  console.log(`Functions bundled in "${resolve(FUNCTIONS_DIST)}":`)
+  console.log(`Functions bundled in ${FUNCTIONS_DIST}`)
   console.log(paths)
 }
 
