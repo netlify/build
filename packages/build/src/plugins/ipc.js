@@ -58,7 +58,8 @@ Instead of calling process.exit(), plugin methods should either return (on succe
 
 // Send event from parent to child process
 const sendEventToChild = async function(childProcess, callId, eventName, payload) {
-  await promisify(childProcess.send.bind(childProcess))([callId, eventName, payload])
+  const payloadA = serializePayload(payload)
+  await promisify(childProcess.send.bind(childProcess))([callId, eventName, payloadA])
 }
 
 // Respond to events from parent to child process.
@@ -68,7 +69,8 @@ const getEventsFromParent = async function(callback) {
     process.on('message', async message => {
       try {
         const [callId, eventName, payload] = message
-        await callback(callId, eventName, payload)
+        const payloadA = parsePayload(payload)
+        await callback(callId, eventName, payloadA)
       } catch (error) {
         reject(error)
       }
@@ -79,6 +81,26 @@ const getEventsFromParent = async function(callback) {
 // Send event from child to parent process
 const sendEventToParent = async function(callId, payload) {
   await promisify(process.send.bind(process))([callId, payload])
+}
+
+// Errors are not serializable through `child_process` `ipc` so we need to
+// convert from/to plain objects.
+const serializePayload = function({ error: { name, message, stack, ...error } = {}, ...payload }) {
+  if (name === undefined) {
+    return payload
+  }
+
+  return { ...payload, error: { ...error, name, message, stack } }
+}
+
+const parsePayload = function({ error: { name, message, stack, ...error } = {}, ...payload }) {
+  if (name === undefined) {
+    return payload
+  }
+
+  const errorA = new Error(message)
+  Object.assign(errorA, { name, stack }, error)
+  return { ...payload, error: errorA }
 }
 
 module.exports = {
