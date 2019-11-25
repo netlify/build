@@ -24,7 +24,7 @@ plugins:
       on404: 'error'
       blankSlate: false
   - type: '@netlify/plugin-lighthouse'
-    enabled: ${env:LIGHTHOUSE_ENABLED, false}
+    enabled: false
     config:
       currentVersion: 0.0.4
       compareWithVersion: 0.0.3
