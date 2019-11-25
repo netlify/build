@@ -1,29 +1,27 @@
-const { join } = require('path')
-const { cwd } = require('process')
+const {
+  cwd,
+  env: { SITE },
+} = require('process')
 
 const execa = require('execa')
-const mkdirp = require('mkdirp')
+const makeDir = require('make-dir')
 
 module.exports = {
   name: '@netlify/plugin-axe',
-  init: async ({ constants }) => {
-    const resultsDir = join(constants.CACHE_DIR, `axe-results`)
-    mkdirp.sync(resultsDir)
-    await execa('chmod', ['-R', '+rw', resultsDir])
+  config: {
+    required: ['site'],
+    properties: {
+      site: { type: 'string', default: SITE },
+      axeFlags: { type: 'string' },
+    },
   },
-  postBuild: async ({ pluginConfig, constants }) => {
-    const { site, axeFlags } = pluginConfig
-    const { CACHE_DIR } = constants
-    const testSite = site || process.env.SITE
-    if (!testSite) {
-      throw new Error('Site is not supplied')
-    }
+  async postBuild({ pluginConfig: { site, axeFlags }, constants: { CACHE_DIR } }) {
+    const resultsDir = `${CACHE_DIR}/axe-results`
+    await makeDir(resultsDir)
 
-    const resultsPath = join(CACHE_DIR, `axe-results/result.json`)
-      .replace(cwd(), '')
-      .replace(/^\//, '')
+    const resultsPath = `${resultsDir}/result.json`.replace(cwd(), '').replace(/^\//, '')
 
-    await execa.command(`axe ${testSite} ${axeFlags} --save ${resultsPath}`, {
+    await execa.command(`axe ${site} ${axeFlags} --save ${resultsPath}`, {
       preferLocal: true,
       stdio: 'inherit',
     })
