@@ -5,10 +5,12 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "axe-cli": "^3.1.1",
-    "axe-core": "^3.3.2",
     "execa": "^3.2.0",
-    "mkdirp": "^0.5.1"
+    "make-dir": "^3.0.0"
+  },
+  "peerDependencies": {
+    "axe-cli": "^3.1.1",
+    "axe-core": "^3.3.2"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\""
