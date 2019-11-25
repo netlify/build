@@ -113,8 +113,8 @@ Netlify plugins can be found on npm by
 
 ## Lifecycle
 
-The build process runs through a series of lifecycle `events`. These events are the places we can hook into and extend
-how the Netlify build operates.
+The build process runs through a series of lifecycle events. These events are the places we can hook into and extend how
+the Netlify build operates.
 
 <!-- AUTO-GENERATED-CONTENT:START (LIFECYCLE_TABLE) -->
 
@@ -668,7 +668,7 @@ build:
       npm run build
 ```
 
-Configuration now supports `environment` variables & `secrets`.
+Configuration now supports `environment` variables.
 
 To reference an environment variable in Netlify config:
 
@@ -680,42 +680,31 @@ foo: ${env:MY_ENV_VAR}
 
 Netlify Plugins extend the functionality of the netlify build process.
 
-Plugins are POJOs (plain old JavaScript objects) that allow users to hook into the different lifecycle steps happening
-during their site builds.
+Plugins are plain JavaScript objects that allow users to hook into the different lifecycle steps happening during their
+site builds.
 
 For example, hooking into the `preBuild` step to run something before your build command. Or the `postBuild` hook for
 running things after your site build has completed.
 
-```js
-{
-  name: 'netlify-plugin-awesome',
-  init: () => { /* Run custom logic at beginning of build */ }
-  preBuild: () => { /* Run custom logic before build happens */ },
-  finally: () => { /* Run custom logic at the end of the build */ }
-  // ... etc
-}
-```
-
 Here is an example:
 
 ```js
-/* file ./plugins/my-plugin/index.js */
-module.exports = function exampleOne(pluginConfig) {
-  return {
-    name: 'netlify-plugin-awesome',
-    init: () => {
-      console.log('Run custom logic at beginning of build')
-    },
-    preBuild: () => {
-      console.log('Run custom logic before build happens')
-    },
-    postBuild: () => {
-      console.log('Run custom logic after build happens')
-    },
-    finally: () => {
-      console.log('Run custom logic at the end of the build')
-    },
-  }
+// ./node_modules/netlify-plugin-awesome/index.js
+
+module.exports = {
+  name: 'netlify-plugin-awesome',
+  init: () => {
+    console.log('Run custom logic at beginning of build')
+  },
+  preBuild: () => {
+    console.log('Run custom logic before build happens')
+  },
+  postBuild: () => {
+    console.log('Run custom logic after build happens')
+  },
+  finally: () => {
+    console.log('Run custom logic at the end of the build')
+  },
 }
 ```
 
@@ -730,10 +719,10 @@ build:
 # Netlify build plugins
 plugins:
   # Path to plugin. Can be local relative path or reference to node_modules
-  - type: ./plugins/my-plugin/
+  - type: netlify-plugin-awesome
     config:
-      a: hello
-      b: goodbye
+      foo: hello
+      bar: goodbye
 ```
 
 ### What can plugins do?

@@ -31,20 +31,18 @@ running things after your site build has completed.
 Plugins are JavaScript objects like so:
 
 ```js
-const helloWorldPlugin = {
-  name: 'hello-world',
+module.exports = {
+  name: 'netlify-plugin-hello-world',
   preBuild: () => {
     console.log('Hello world from preBuild lifecycle step!')
   },
 }
-
-module.exports = helloWorldPlugin
 ```
 
 This plugin will log out `Hello world from preBuild lifecycle step!` before right before the build commands are run.
 
-Save the plugin code locally to a `./plugins/my-plugin` folder as `index.js`. This will allow us to use the plugin in
-the next step.
+Save the plugin code locally to a `./plugins/netlify-plugin-hello-world` folder as `index.js`. This will allow us to use
+the plugin in the next step.
 
 ## Using a plugin
 
@@ -59,7 +57,7 @@ build:
 
 # Attach our plugin
 plugins:
-  - type: ./plugins/my-plugin
+  - type: ./plugins/netlify-plugin-hello-world
 ```
 
 Now that the plugin is declared, we can verify it's loading correctly with the `netlify build --dry` command. This
@@ -69,7 +67,7 @@ execute a "dry run" of our build and show us the plugins & commands that will ex
 netlify build --dry
 ```
 
-Notice how our `preBuild` step from our `helloWorldPlugin` is listed in the things that execute.
+Notice how our `preBuild` step from our `netlify-plugin-hello-world` is listed in the things that execute.
 
 Now, let's run the build!
 
@@ -86,7 +84,7 @@ If your plugin requires additional values from the user to do things, those can 
 ```yml
 # Attach our plugin
 plugins:
-  - type: ./plugins/my-plugin
+  - type: ./plugins/netlify-plugin-hello-world
     config:
       foo: bar
       fizz: pop
@@ -97,27 +95,23 @@ These `config` values are passed into the plugin when the lifecycle methods are 
 To access them in your plugin code you can:
 
 ```js
-const helloWorldPlugin = {
+module.exports = {
   name: 'netlify-plugin-hello-world',
   preBuild: ({ pluginConfig }) => {
     console.log('Hello world from preBuild lifecycle step!')
-    console.log(config.foo) // bar
-    console.log(config.fizz) // pop
+    console.log(pluginConfig.foo) // bar
+    console.log(pluginConfig.fizz) // pop
   },
 }
-
-module.exports = helloWorldPlugin
 ```
 
-Plugin configuration is also supplied top level if you are returning a dynamic plugin.
-
-Instead of a plugin being a simple object, instead the plugin is a `function` that returns a plain old JavaScript
-object.
+Instead of a plugin being a simple object, it can also be a function returning an object:
 
 ```js
-function helloWorldPlugin(pluginConfig, { constants }) {
+module.exports = function helloWorldPlugin(pluginConfig) {
   console.log(pluginConfig.foo) // bar
   console.log(pluginConfig.fizz) // pop
+
   return {
     name: 'netlify-plugin-hello-world',
     preBuild: ({ pluginConfig, config, constants }) => {
@@ -127,27 +121,46 @@ function helloWorldPlugin(pluginConfig, { constants }) {
     },
   }
 }
-module.exports = helloWorldPlugin
 ```
 
-Plugins as functions returning the object is a powerful way to provide advanced functionality like:
+## Validating plugin configuration
 
-- Returning only specific lifecycles to execute based on config
-- Giving plugin users the ability to customize order of execution of functionality
-- Preforming input validation on configuration to fail fast if invalid values are passed in
+The plugin configuration can be validated using a `config` property:
+
+```js
+module.exports = {
+  name: 'netlify-plugin-hello-world',
+  config: {
+    required: ['foo'],
+    properties: {
+      foo: { type: 'string', enum: ['bar', 'one', 'two'] },
+      bar: { type: 'string' },
+      increment: { type: 'number', minimum: 0, maximum: 10, default: 5 }
+    }
+  },
+  preBuild: ({ pluginConfig }) => { ... },
+}
+```
+
+The `config` property is a JSON schema v7 describing the `pluginConfig` object.
+
+More information about JSON schema can be found at https://json-schema.org/understanding-json-schema/.
+
+`config.properties` can have `default` values as shown in the example above. They can also be `required` as shown above.
+
+It is recommended to validate your plugin configuration and assign default values using the `config` property instead of
+doing it inside hook methods.
 
 ## Plugin constants
 
 Inside of each lifecycle function there is a `constants` key.
 
 ```js
-function helloWorldPlugin(pluginConfig) {
-  return {
-    name: 'netlify-plugin-hello-world',
-    preBuild: ({ constants }) => {
-      console.log(constants)
-    },
-  }
+module.exports = {
+  name: 'netlify-plugin-hello-world',
+  preBuild: ({ constants }) => {
+    console.log(constants)
+  },
 }
 ```
 
