@@ -1,0 +1,5 @@
+plugins:
+  - type: ./plugin
+    id: one
+  - type: ./plugin
+    id: two
