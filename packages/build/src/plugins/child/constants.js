@@ -4,6 +4,8 @@ const {
   env: { DEPLOY_ID },
 } = require('process')
 
+const mapObj = require('map-obj')
+
 const isNetlifyCI = require('../../utils/is-netlify-ci')
 
 // Retrieve constants passed to plugins
@@ -14,21 +16,18 @@ const getConstants = function({
     build: { publish, functions },
   },
 }) {
-  const configPathA = normalizePath(configPath, baseDir)
-  const publishA = normalizePath(publish, baseDir)
   const cacheDir = getCacheDir()
-  const functionsSrc = normalizePath(functions, baseDir)
   const functionsDist = getFunctionsDist()
 
-  return {
+  const constants = {
     /**
      * Path to the netlify configuration file
      */
-    CONFIG_PATH: configPathA,
+    CONFIG_PATH: configPath,
     /**
      * The build directory of the site
      */
-    BUILD_DIR: publishA,
+    BUILD_DIR: publish,
     /**
      * The directory files can be cached in between builds
      */
@@ -36,23 +35,14 @@ const getConstants = function({
     /**
      * The directory where function source code lives
      */
-    FUNCTIONS_SRC: functionsSrc,
+    FUNCTIONS_SRC: functions,
     /**
      * The directory where built serverless functions are placed before deployment
      */
     FUNCTIONS_DIST: functionsDist,
   }
-}
-
-// The current directory is `baseDir`. Most constants are inside this `baseDir`.
-// Instead of passing absolute paths, we pass paths relative to `baseDir`, so
-// that logs are less verbose.
-const normalizePath = function(path, baseDir) {
-  if (path === undefined || !normalize(path).startsWith(baseDir)) {
-    return path
-  }
-
-  return relative(baseDir, path)
+  const constantsA = mapObj(constants, (key, path) => [key, normalizePath(path, baseDir)])
+  return constantsA
 }
 
 const getCacheDir = function() {
@@ -75,5 +65,22 @@ const getFunctionsDist = function() {
 }
 
 const LOCAL_FUNCTIONS_DIST = '.netlify/functions/'
+
+// The current directory is `baseDir`. Most constants are inside this `baseDir`.
+// Instead of passing absolute paths, we pass paths relative to `baseDir`, so
+// that logs are less verbose.
+const normalizePath = function(path, baseDir) {
+  if (path === undefined) {
+    return path
+  }
+
+  const pathA = normalize(path)
+
+  if (pathA.startsWith(baseDir)) {
+    return relative(baseDir, pathA)
+  }
+
+  return pathA
+}
 
 module.exports = { getConstants }
