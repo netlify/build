@@ -11,8 +11,8 @@ const { getConstants } = require('./constants')
 // This also validates the plugin.
 // Do it when parent requests it using the `load` event.
 // Also figure out the list of hooks. This is also passed to the parent.
-const loadPlugin = function(payload) {
-  const constants = getConstants(payload)
+const loadPlugin = async function(payload) {
+  const constants = await getConstants(payload)
   const logic = getLogic(payload, constants)
   validatePlugin(logic)
   validatePluginConfig(logic, payload)
