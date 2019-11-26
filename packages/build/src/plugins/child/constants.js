@@ -2,21 +2,23 @@ const { relative, normalize } = require('path')
 const { tmpdir } = require('os')
 const {
   env: { DEPLOY_ID },
+  platform,
 } = require('process')
 
 const mapObj = require('map-obj')
+const globalCacheDir = require('global-cache-dir')
 
 const isNetlifyCI = require('../../utils/is-netlify-ci')
 
 // Retrieve constants passed to plugins
-const getConstants = function({
+const getConstants = async function({
   configPath,
   baseDir,
   config: {
     build: { publish, functions },
   },
 }) {
-  const cacheDir = getCacheDir()
+  const cacheDir = await getCacheDir()
   const functionsDist = getFunctionsDist()
 
   const constants = {
@@ -46,15 +48,20 @@ const getConstants = function({
 }
 
 const getCacheDir = function() {
-  if (isNetlifyCI()) {
+  if (!isNetlifyCI()) {
+    return LOCAL_CACHE_DIR
+  }
+
+  if (platform === 'linux') {
     return CI_CACHE_DIR
   }
 
-  return LOCAL_CACHE_DIR
+  return globalCacheDir(PROJECT_NAME)
 }
 
-const CI_CACHE_DIR = '/opt/build/cache/'
 const LOCAL_CACHE_DIR = '.netlify/cache/'
+const CI_CACHE_DIR = '/opt/build/cache/'
+const PROJECT_NAME = 'netlify-build'
 
 const getFunctionsDist = function() {
   if (isNetlifyCI()) {
