@@ -23,7 +23,6 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@iarna/toml": "^2.2.3",
     "@netlify/config": "^0.1.11",
     "@netlify/zip-it-and-ship-it": "^0.4.0-7",
     "ajv": "^6.10.2",
