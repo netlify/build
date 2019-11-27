@@ -25,15 +25,23 @@ const disableApiMethods = function(api, scopes) {
     return
   }
 
-  Object.keys(NetlifyAPI.prototype)
-    .filter(method => !scopes.includes(method))
-    .forEach(method => {
-      api[method] = disabledApiMethod.bind(null, method)
-    })
+  API_METHODS.filter(method => !scopes.includes(method)).forEach(method => {
+    api[method] = disabledApiMethod.bind(null, method)
+  })
 }
+
+const getApiMethods = function() {
+  return NetlifyAPI.methods.map(getApiMethod)
+}
+
+const getApiMethod = function({ operationId }) {
+  return operationId
+}
+
+const API_METHODS = getApiMethods()
 
 const disabledApiMethod = async function(method) {
   throw new Error(`This plugin is not authorized to use "api.${method}". Please update the plugin scopes.`)
 }
 
-module.exports = { getApiClient }
+module.exports = { getApiClient, API_METHODS }

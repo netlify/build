@@ -1,9 +1,10 @@
-const API = require('netlify')
 const isPlainObj = require('is-plain-obj')
 const { LIFECYCLE } = require('@netlify/config')
 
 const { serializeList } = require('../../utils/list')
-const { validateConfigSchema } = require('../config/validate_config.js')
+const { validateConfigSchema } = require('../config/validate_config')
+
+const { API_METHODS } = require('./api')
 
 // Validate the shape of a plugin return value
 // TODO: validate allowed characters in `logic` properties
@@ -104,7 +105,7 @@ const isValidScope = function(scope) {
   return ALLOWED_SCOPES.includes(scope)
 }
 
-const ALLOWED_SCOPES = ['*', ...Object.keys(API.prototype)]
+const ALLOWED_SCOPES = ['*', ...API_METHODS]
 
 const VALIDATORS = { name: validateName, scopes: validateScopes, config: validateConfigSchema }
 
