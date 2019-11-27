@@ -64,7 +64,7 @@ const bufferOutput = function(childProcess, chunks) {
 
 const unbufferOutput = function(chunks) {
   const output = chunks.join('')
-  process.stdout.write(output)
+  process.stdout.write(`${output}\n`)
 }
 
 const shouldBuffer = function() {
