@@ -154,14 +154,6 @@ const logTimer = function(durationMs, hook, id) {
   log(` ${greenBright(tick)}  ${greenBright.bold(idB)}${hookA} completed in ${durationMs}ms`)
 }
 
-const logTomlWrite = function(tomlPath, toml) {
-  log(`
-TOML output:
-
-${toml}
-TOML file written to ${tomlPath}`)
-}
-
 const logBuildError = function(error) {
   const errorStack = error.cleanStack ? cleanStacks(error.message) : `\n${error.stack}`
   log(`${redBright.bold(`\n${getHeader('Netlify Build Error')}`)}
@@ -210,7 +202,6 @@ module.exports = {
   logCommandStart,
   logInstructionSuccess,
   logTimer,
-  logTomlWrite,
   logBuildError,
   logBuildSuccess,
   logBuildEnd,

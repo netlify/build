@@ -11,12 +11,10 @@ const { startPlugins, stopPlugins } = require('../plugins/spawn')
 const { loadPlugins } = require('../plugins/load')
 const { logBuildStart, logBuildError, logBuildSuccess, logBuildEnd } = require('../log/main')
 const { startTimer, endTimer } = require('../log/timer')
-const isNetlifyCI = require('../utils/is-netlify-ci')
 const { trackBuildComplete } = require('../telemetry')
 
 const { loadConfig } = require('./config')
 const { getInstructions, runInstructions } = require('./instructions')
-const { tomlWrite } = require('./toml')
 const { doDryRun } = require('./dry')
 
 /**
@@ -51,10 +49,6 @@ const build = async function(options = {}) {
 
     if (options.dry) {
       return true
-    }
-
-    if (isNetlifyCI()) {
-      await tomlWrite(config, baseDir)
     }
 
     logBuildSuccess()
