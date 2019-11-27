@@ -1,6 +1,5 @@
 node_modules
 !**/fixtures/**/node_modules
-**/fixtures/**/netlify.toml
 research
 .DS_Store
 terraform
