@@ -101,7 +101,7 @@ const executeInstructions = async function({
   const {
     mainInstructions,
     buildInstructions,
-    finalInstructions,
+    endInstructions,
     errorInstructions,
     instructionsCount,
   } = getInstructions({ pluginsHooks, config })
@@ -113,7 +113,7 @@ const executeInstructions = async function({
 
   await runInstructions({
     buildInstructions,
-    finalInstructions,
+    endInstructions,
     errorInstructions,
     instructionsCount,
     configPath,

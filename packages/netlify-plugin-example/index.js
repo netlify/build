@@ -3,7 +3,7 @@ module.exports = {
   init: () => {
     console.log('init')
   },
-  finally: () => {
+  onEnd: () => {
     console.log('build done')
   },
 }

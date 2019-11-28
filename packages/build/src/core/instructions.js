@@ -13,18 +13,18 @@ const getInstructions = function({ pluginsHooks, config }) {
   const instructions = LIFECYCLE.flatMap(hook => getHookInstructions({ hook, pluginsHooks, config }))
 
   const buildInstructions = instructions.filter(
-    instruction => !isFinalInstruction(instruction) && !isErrorInstruction(instruction),
+    instruction => !isEndInstruction(instruction) && !isErrorInstruction(instruction),
   )
-  const finalInstructions = instructions.filter(isFinalInstruction)
+  const endInstructions = instructions.filter(isEndInstruction)
   const errorInstructions = instructions.filter(isErrorInstruction)
 
-  const mainInstructions = [...buildInstructions, ...finalInstructions]
+  const mainInstructions = [...buildInstructions, ...endInstructions]
   const instructionsCount = mainInstructions.length
-  return { mainInstructions, buildInstructions, finalInstructions, errorInstructions, instructionsCount }
+  return { mainInstructions, buildInstructions, endInstructions, errorInstructions, instructionsCount }
 }
 
-const isFinalInstruction = function({ hook }) {
-  return hook === 'finally'
+const isEndInstruction = function({ hook }) {
+  return hook === 'onEnd'
 }
 
 const isErrorInstruction = function({ hook }) {
@@ -51,10 +51,10 @@ const getHookInstructions = function({
 
 // Run all instructions.
 // If an error arises, runs `onError` hooks.
-// Runs `finally` hooks at the end, whether an error was thrown or not.
+// Runs `onEnd` hooks at the end, whether an error was thrown or not.
 const runInstructions = async function({
   buildInstructions,
-  finalInstructions,
+  endInstructions,
   errorInstructions,
   instructionsCount,
   configPath,
@@ -68,15 +68,15 @@ const runInstructions = async function({
     await execInstructions(errorInstructions, { configPath, baseDir, failFast: false, error })
     throw error
   } finally {
-    await execInstructions(finalInstructions, { configPath, baseDir, failFast: false })
+    await execInstructions(endInstructions, { configPath, baseDir, failFast: false })
   }
 }
 
 // Run a set of instructions.
-// `onError` and `finally` do not `failFast`, i.e. if they fail, the other hooks
+// `onError` and `onEnd` do not `failFast`, i.e. if they fail, the other hooks
 // of the same name keep running. However the failure is still eventually
 // thrown. This allows users to be notified of issues inside their `onError` or
-// `finally` hooks.
+// `onEnd` hooks.
 const execInstructions = async function(instructions, { configPath, baseDir, failFast, error }) {
   const { failure, manifest: manifestA } = await pReduce(
     instructions,

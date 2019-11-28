@@ -105,8 +105,8 @@ const config = {
           // console.log('data', data)
           const invisibleSpace = ' ‏‏‎ '
           const doubleInvisibleSpace = ' ‏‏‎  ‏‏‎  ‏‏‎ '
-          const spacing = eventName[1] === 'finally' ? invisibleSpace : doubleInvisibleSpace
-          const arrow = eventName[1] === 'finally' ? '🎉' : '⇩'
+          const spacing = eventName[1] === 'onEnd' ? invisibleSpace : doubleInvisibleSpace
+          const arrow = eventName[1] === 'onEnd' ? '🎉' : '⇩'
           md += `| ${arrow}${spacing}**${eventNameWithLink}**${doubleInvisibleSpace} | ${desc} |\n`
         }
       })

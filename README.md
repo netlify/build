@@ -29,7 +29,7 @@ Netlify build is the next generation of CI/CD tooling for modern web application
 - [lifecycle.saveCache](#lifecyclesavecache)
 - [lifecycle.onSuccess](#lifecycleonsuccess)
 - [onError](#onerror)
-- [lifecycle.finally](#lifecyclefinally)
+- [lifecycle.onEnd](#lifecycleonend)
 - [Configuration](#configuration)
 - [Plugins](#plugins)
 - [What can plugins do?](#what-can-plugins-do)
@@ -119,19 +119,21 @@ the Netlify build operates.
 
 <!-- AUTO-GENERATED-CONTENT:START (LIFECYCLE_TABLE) -->
 
-| Lifecycle hook                                                                      | Description                              |
-| :---------------------------------------------------------------------------------- | :--------------------------------------- |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleinit">init</a>** ‏‏‎ ‏‏‎ ‏‏‎                     | Runs before anything else                |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclegetcache">getCache</a>** ‏‏‎ ‏‏‎ ‏‏‎             | Fetch previous build cache               |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleinstall">install</a>** ‏‏‎ ‏‏‎ ‏‏‎               | Install project dependencies             |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclebuild">build</a>** ‏‏‎ ‏‏‎ ‏‏‎                   | Build commands are executed              |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclefunctionsbuild">functionsBuild</a>** ‏‏‎ ‏‏‎ ‏‏‎ | Build the serverless functions           |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclepackage">package</a>** ‏‏‎ ‏‏‎ ‏‏‎               | Package & optimize artifact              |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclepredeploy">preDeploy</a>** ‏‏‎ ‏‏‎ ‏‏‎           | Runs before built artifacts are deployed |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclesavecache">saveCache</a>** ‏‏‎ ‏‏‎ ‏‏‎           | Save cached assets                       |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleonsuccess">onSuccess</a>** ‏‏‎ ‏‏‎ ‏‏‎           | Runs on build success                    |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleonerror">onError</a>** ‏‏‎ ‏‏‎ ‏‏‎               | Runs on build error                      |
-| 🎉 ‏‏‎ **<a href="#lifecyclefinally">finally</a>** ‏‏‎ ‏‏‎ ‏‏‎                      | Runs on build error or success           |
+| Lifecycle hook                                                                      | Description                                 |
+| :---------------------------------------------------------------------------------- | :------------------------------------------ |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleinit">init</a>** ‏‏‎ ‏‏‎ ‏‏‎                     | Runs before anything else                   |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclegetcache">getCache</a>** ‏‏‎ ‏‏‎ ‏‏‎             | Fetch previous build cache                  |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleinstall">install</a>** ‏‏‎ ‏‏‎ ‏‏‎               | Install project dependencies                |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleprebuild">preBuild</a>** ‏‏‎ ‏‏‎ ‏‏‎             | Runs before functions & build commands run  |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclebuild">build</a>** ‏‏‎ ‏‏‎ ‏‏‎                   | Build commands are executed                 |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclefunctionsbuild">functionsBuild</a>** ‏‏‎ ‏‏‎ ‏‏‎ | Build the serverless functions              |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclepostbuild">postBuild</a>** ‏‏‎ ‏‏‎ ‏‏‎           | Runs after site & functions have been built |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclepackage">package</a>** ‏‏‎ ‏‏‎ ‏‏‎               | Package & optimize artifact                 |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclepredeploy">preDeploy</a>** ‏‏‎ ‏‏‎ ‏‏‎           | Runs before built artifacts are deployed    |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclesavecache">saveCache</a>** ‏‏‎ ‏‏‎ ‏‏‎           | Save cached assets                          |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleonsuccess">onSuccess</a>** ‏‏‎ ‏‏‎ ‏‏‎           | Runs on build success                       |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleonerror">onError</a>** ‏‏‎ ‏‏‎ ‏‏‎               | Runs on build error                         |
+| 🎉 ‏‏‎ **<a href="#lifecycleonend">onEnd</a>** ‏‏‎ ‏‏‎ ‏‏‎                          | Runs on build error or success              |
 
 <!-- AUTO-GENERATED-CONTENT:END (LIFECYCLE_TABLE) -->
 
@@ -166,7 +168,7 @@ The Lifecycle flows the events in order and executes and their `pre` & `post` co
 
 <details>
   <summary>Using init</summary>
-  
+
   <br/>
 
 **1. Using with a Plugin**
@@ -209,7 +211,7 @@ build:
 
 <details>
   <summary>Using getCache</summary>
-  
+
   <br/>
 
 **1. Using with a Plugin**
@@ -252,7 +254,7 @@ build:
 
 <details>
   <summary>Using install</summary>
-  
+
   <br/>
 
 **1. Using with a Plugin**
@@ -295,7 +297,7 @@ build:
 
 <details>
   <summary>Using build</summary>
-  
+
   <br/>
 
 **1. Using with a Plugin**
@@ -338,7 +340,7 @@ build:
 
 <details>
   <summary>Using functionsBuild</summary>
-  
+
   <br/>
 
 **1. Using with a Plugin**
@@ -381,7 +383,7 @@ build:
 
 <details>
   <summary>Using package</summary>
-  
+
   <br/>
 
 **1. Using with a Plugin**
@@ -424,7 +426,7 @@ build:
 
 <details>
   <summary>Using preDeploy</summary>
-  
+
   <br/>
 
 **1. Using with a Plugin**
@@ -467,7 +469,7 @@ build:
 
 <details>
   <summary>Using saveCache</summary>
-  
+
   <br/>
 
 **1. Using with a Plugin**
@@ -510,7 +512,7 @@ build:
 
 <details>
   <summary>Using onSuccess</summary>
-  
+
   <br/>
 
 **1. Using with a Plugin**
@@ -553,7 +555,7 @@ build:
 
 <details>
   <summary>Using onError</summary>
-  
+
   <br/>
 
 **1. Using with a Plugin**
@@ -590,24 +592,24 @@ build:
 
 </details>
 
-### lifecycle.finally
+### lifecycle.onEnd
 
-`finally` - Runs on build error or success
+`onEnd` - Runs on build error or success
 
 <details>
-  <summary>Using finally</summary>
-  
+  <summary>Using onEnd</summary>
+
   <br/>
 
 **1. Using with a Plugin**
 
-Below is an example plugin using the `finally` hook
+Below is an example plugin using the `onEnd` hook
 
 ```js
 module.exports = function myPlugin(pluginConfig) {
   return {
-    finally: () => {
-      console.log('Do thing on finally step')
+    onEnd: () => {
+      console.log('Do thing on onEnd step')
     },
   }
 }
@@ -627,8 +629,8 @@ plugins:
 ```yml
 build:
   lifecycle:
-    finally:
-      - echo "Do thing on finally step"
+    onEnd:
+      - echo "Do thing on onEnd step"
 ```
 
 </details>
@@ -703,7 +705,7 @@ module.exports = {
   postBuild: () => {
     console.log('Run custom logic after build happens')
   },
-  finally: () => {
+  onEnd: () => {
     console.log('Run custom logic at the end of the build')
   },
 }

@@ -29,8 +29,8 @@ module.exports = function netlifyPlugin() {
     saveCache: () => {
       console.log('Hi from saveCache')
     },
-    finally: () => {
-      console.log('Hi from finally')
+    onEnd: () => {
+      console.log('Hi from onEnd')
     },
   }
 }

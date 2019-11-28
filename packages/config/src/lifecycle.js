@@ -55,9 +55,9 @@ const LIFECYCLE = [
    */
   'onError',
   /**
-   * `finally` - Runs on build error or success
+   * `onEnd` - Runs on build error or success
    */
-  'finally',
+  'onEnd',
 ]
 
 module.exports = { LIFECYCLE }

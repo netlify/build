@@ -23,7 +23,7 @@ running things after your site build has completed.
 | ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **saveCache** ‏‏‎  ‏‏‎  ‏‏‎  | Save cached assets |
 | ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **onSuccess** ‏‏‎  ‏‏‎  ‏‏‎  | Runs on build success |
 | ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **onError** ‏‏‎  ‏‏‎  ‏‏‎  | Runs on build error |
-| 🎉 ‏‏‎ **finally** ‏‏‎  ‏‏‎  ‏‏‎  | Runs on build error or success |
+| 🎉 ‏‏‎ **onEnd** ‏‏‎  ‏‏‎  ‏‏‎  | Runs on build error or success |
 <!-- AUTO-GENERATED-CONTENT:END (LIFECYCLE_TABLE) -->
 
 ## Anatomy of a plugin
