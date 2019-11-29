@@ -7,6 +7,7 @@ const { zipFunctions } = require('@netlify/zip-it-and-ship-it')
 const unixify = require('unixify')
 
 const { installDependencies } = require('../../utils/install')
+const { serializeList } = require('../../utils/list')
 
 // Plugin to bundle Netlify functions with @netlify/zip-it-and-ship-it
 const functionsPlugin = function(pluginConfig, { constants: { FUNCTIONS_SRC } }) {
@@ -62,13 +63,13 @@ const logResults = async function(FUNCTIONS_DIST) {
     return
   }
 
-  const paths = files.map(getLoggedPath).join('\n')
+  const paths = files.map(getLoggedPath)
   console.log(`Functions bundled in ${FUNCTIONS_DIST}
-${paths}`)
+${serializeList(paths)}`)
 }
 
 const getLoggedPath = function({ path }) {
-  return ` - ${path}`
+  return path
 }
 
 module.exports = functionsPlugin
