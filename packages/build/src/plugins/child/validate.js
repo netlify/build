@@ -75,13 +75,12 @@ const validateName = function(name) {
 
 // Validate `plugin.scopes`
 const validateScopes = function(scopes) {
-  const wrongScopes = scopes.filter(scope => !isValidScope(scope))
-  if (wrongScopes.length === 0) {
+  const wrongScope = scopes.find(scope => !isValidScope(scope))
+  if (wrongScope === undefined) {
     return
   }
 
-  throw new Error(`Invalid scopes:
-${serializeList(wrongScopes)}
+  throw new Error(`Invalid scope "${wrongScope}"
 Please use a valid scope. One of:
 ${serializeList(ALLOWED_SCOPES)}`)
 }
