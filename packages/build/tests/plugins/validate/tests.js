@@ -17,3 +17,7 @@ test('Validate plugin.name is a string', async t => {
 test('Validate plugin lifecycle names', async t => {
   await runFixture(t, 'lifecycle')
 })
+
+test('Validate plugin property names', async t => {
+  await runFixture(t, 'property')
+})
