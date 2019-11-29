@@ -1,10 +1,13 @@
-// Turn [1, 2, 3] into "1", "2", "3"
+// Turn [1, 2, 3] into:
+//  - 1
+//  - 2
+//  - 3
 const serializeList = function(array) {
-  return array.map(quote).join(', ')
+  return array.map(addDash).join('\n')
 }
 
-const quote = function(string) {
-  return `"${string}"`
+const addDash = function(string) {
+  return ` - ${string}`
 }
 
 module.exports = { serializeList }
