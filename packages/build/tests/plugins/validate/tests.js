@@ -21,3 +21,7 @@ test('Validate plugin property names', async t => {
 test('Validate plugin.name is a string', async t => {
   await runFixture(t, 'name_string')
 })
+
+test('Validate plugin.scopes is valid', async t => {
+  await runFixture(t, 'scopes')
+})
