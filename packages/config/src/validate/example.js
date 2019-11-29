@@ -22,7 +22,7 @@ const getInvalidValue = function(value, prevPath) {
 
 const setInvalidValuePart = function(value, part) {
   if (Number.isInteger(part)) {
-    return value === undefined ? [] : [value]
+    return [value]
   }
 
   return value === undefined ? {} : { [part]: value }
