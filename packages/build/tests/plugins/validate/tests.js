@@ -2,6 +2,10 @@ const test = require('ava')
 
 const { runFixture } = require('../../helpers/main')
 
+test('Validate plugin is an object', async t => {
+  await runFixture(t, 'object')
+})
+
 test('Validate plugin.name is required', async t => {
   await runFixture(t, 'name_required')
 })
