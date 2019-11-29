@@ -80,7 +80,8 @@ const validateScopes = function(scopes) {
     return
   }
 
-  throw new Error(`Invalid scopes ${serializeList(wrongScopes)}.
+  throw new Error(`Invalid scopes:
+${serializeList(wrongScopes)}
 Please use a valid scope. One of:
 ${serializeList(ALLOWED_SCOPES)}`)
 }
