@@ -13,6 +13,10 @@ const pSetTimeout = promisify(setTimeout)
 
 // CLI entry point
 const runCli = async function() {
+  if (process.env.DEBUG) {
+    console.log(process.env)
+  }
+
   const options = parseArgs()
   const optionsA = filterObj(options, isUserOption)
   const success = await build(optionsA)
