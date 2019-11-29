@@ -11,6 +11,7 @@ const { isString, isBoolean, validProperties } = require('./helpers')
 //   - `property` {string}: dot-delimited path to the property.
 //     Can contain `*` providing a previous check validates the parent is an
 //     object or an array.
+//   - `required` {boolean}
 //   - `check` {(value) => boolean}: validation check function
 //   - `message` {string}: error message
 //   - `example` {string}: example of correct code
