@@ -1,14 +1,13 @@
 const { emitWarning } = require('process')
+const { promisify } = require('util')
+
+const pSetTimeout = promisify(setTimeout)
 
 module.exports = {
   name: 'netlify-plugin-test',
-  init() {
+  async init() {
+    emitWarning('test')
     console.log('init')
+    await pSetTimeout(0)
   },
 }
-
-const emitWarn = function() {
-  emitWarning('test')
-}
-
-emitWarn()
