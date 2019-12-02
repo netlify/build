@@ -29,3 +29,7 @@ test('Handles top-level errors', async t => {
 test('Handles top function errors', async t => {
   await runFixture(t, 'error_function')
 })
+
+test('Handles process warnings', async t => {
+  await runFixture(t, 'error_warning')
+})
