@@ -21,3 +21,7 @@ test('Plugin.id is optional', async t => {
 test('Can override plugins', async t => {
   await runFixture(t, 'override')
 })
+
+test('Handles top-level errors', async t => {
+  await runFixture(t, 'error_top')
+})
