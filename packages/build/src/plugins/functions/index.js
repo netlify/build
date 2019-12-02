@@ -1,6 +1,5 @@
 const { dirname } = require('path')
 
-const pathExists = require('path-exists')
 const fastGlob = require('fast-glob')
 const readdirp = require('readdirp')
 const { zipFunctions } = require('@netlify/zip-it-and-ship-it')
@@ -15,17 +14,10 @@ const functionsPlugin = function(pluginConfig, { constants: { FUNCTIONS_SRC } })
     return { name: NAME }
   }
 
-  return { name: NAME, init, install, functionsBuild }
+  return { name: NAME, install, functionsBuild }
 }
 
 const NAME = '@netlify/plugin-functions-core'
-
-// Validate plugin configuration at startup
-const init = async function({ constants: { FUNCTIONS_SRC } }) {
-  if (!(await pathExists(FUNCTIONS_SRC))) {
-    throw new Error(`Functions directory "${FUNCTIONS_SRC}" not found`)
-  }
-}
 
 // Install Netlify functions dependencies
 const install = async function({ constants: { FUNCTIONS_SRC } }) {
