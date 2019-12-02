@@ -33,3 +33,7 @@ test('Handles top function errors', async t => {
 test('Handles process warnings', async t => {
   await runFixture(t, 'error_warning')
 })
+
+test('Unhandled promises', async t => {
+  await runFixture(t, 'error_promise')
+})
