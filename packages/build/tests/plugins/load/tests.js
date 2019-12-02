@@ -37,3 +37,7 @@ test('Process warnings', async t => {
 test('Unhandled promises', async t => {
   await runFixture(t, 'error_promise')
 })
+
+test('Early exit', async t => {
+  await runFixture(t, 'early_exit')
+})

@@ -25,8 +25,11 @@ const ajv = new Ajv({
   unknownFormats: 'ignore',
   // Make logging silent (e.g. warn on unknown format) but throws on errors
   logger: {
+    // istanbul ignore next
     log() {},
+    // istanbul ignore next
     warn() {},
+    // istanbul ignore next
     error(message) {
       throw message
     },
