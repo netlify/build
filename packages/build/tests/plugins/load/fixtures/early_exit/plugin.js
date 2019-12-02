@@ -7,4 +7,8 @@ module.exports = {
   },
 }
 
-setTimeout(exit)
+setTimeout(() => {
+  setTimeout(() => {
+    exit()
+  }, 0)
+}, 0)
