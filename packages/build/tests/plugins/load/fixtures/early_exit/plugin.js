@@ -2,7 +2,7 @@ const { exit } = require('process')
 
 module.exports = {
   name: 'netlify-plugin-test',
-  init() {
+  build() {
     console.log('test')
   },
 }
