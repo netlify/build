@@ -12,8 +12,7 @@ test('Lifecycle commands can execute local binaries', async t => {
   await runFixture(t, 'local_bin')
 })
 
-// Tests fail on MacOS due to some internals within GitHub actions
-if (platform !== 'darwin') {
+if (platform === 'linux') {
   test('Lifecycle commands can execute shell commands', async t => {
     await runFixture(t, 'shell')
   })
