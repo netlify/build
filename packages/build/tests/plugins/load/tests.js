@@ -1,3 +1,5 @@
+const { platform } = require('process')
+
 const test = require('ava')
 
 const { runFixture } = require('../../helpers/main')
@@ -38,6 +40,9 @@ test('Unhandled promises', async t => {
   await runFixture(t, 'error_promise')
 })
 
-test('Early exit', async t => {
-  await runFixture(t, 'early_exit')
-})
+// Process exit is different on Windows
+if (platform !== 'win32') {
+  test('Early exit', async t => {
+    await runFixture(t, 'early_exit')
+  })
+}
