@@ -23,14 +23,6 @@ const getInstructions = function({ pluginsHooks, config }) {
   return { mainInstructions, buildInstructions, endInstructions, errorInstructions, instructionsCount }
 }
 
-const isEndInstruction = function({ hook }) {
-  return hook === 'onEnd'
-}
-
-const isErrorInstruction = function({ hook }) {
-  return hook === 'onError'
-}
-
 // Get instructions for a specific hook
 const getHookInstructions = function({
   hook,
@@ -47,6 +39,14 @@ const getHookInstructions = function({
 
   const lifeCycleHook = { id: `config.build.lifecycle.${hook}`, hook, commands, override: {} }
   return [lifeCycleHook, ...pluginHooks]
+}
+
+const isEndInstruction = function({ hook }) {
+  return hook === 'onEnd'
+}
+
+const isErrorInstruction = function({ hook }) {
+  return hook === 'onError'
 }
 
 // Run all instructions.
