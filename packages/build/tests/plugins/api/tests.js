@@ -25,3 +25,7 @@ test('star scopes', async t => {
 test('default scopes', async t => {
   await runFixture(t, 'default_scopes', { flags: '--token=test' })
 })
+
+test('--site-id', async t => {
+  await runFixture(t, 'site_id', { flags: '--site-id=test' })
+})
