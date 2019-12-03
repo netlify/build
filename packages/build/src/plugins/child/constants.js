@@ -17,7 +17,7 @@ const getConstants = async function({
     build: { publish, functions },
   },
 }) {
-  const cacheDir = await getCacheDir(baseDir)
+  const cacheDir = await getCacheDir()
   const functionsDist = getFunctionsDist()
 
   const constants = {
