@@ -13,3 +13,7 @@ test('Lifecycle commands can execute local binaries', async t => {
 test('Lifecycle commands can execute shell commands', async t => {
   await runFixture(t, 'shell')
 })
+
+test('Lifecycle commands use correct PWD', async t => {
+  await runFixture(t, 'pwd')
+})
