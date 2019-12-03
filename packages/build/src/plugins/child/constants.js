@@ -2,11 +2,9 @@ const { relative, normalize } = require('path')
 const { tmpdir } = require('os')
 const {
   env: { DEPLOY_ID },
-  platform,
 } = require('process')
 
 const mapObj = require('map-obj')
-const globalCacheDir = require('global-cache-dir')
 
 const isNetlifyCI = require('../../utils/is-netlify-ci')
 const { getCacheDir } = require('../../cache/dir.js')
@@ -19,7 +17,7 @@ const getConstants = async function({
     build: { publish, functions },
   },
 }) {
-  const cacheDir = await getCacheDir()
+  const cacheDir = await getCacheDir(baseDir)
   const functionsDist = getFunctionsDist()
 
   const constants = {
