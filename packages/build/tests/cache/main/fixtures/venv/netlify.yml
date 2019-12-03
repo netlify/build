@@ -1,2 +1,2 @@
 plugins:
-  - type: ../../cache_plugin.js
+  - type: ../cache_plugin.js
