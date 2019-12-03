@@ -162,12 +162,6 @@ const logCacheDir = function(path) {
   log(`${SUBTEXT_PADDING}Caching ${path}`)
 }
 
-const logErrorInstructions = function() {
-  log(`${redBright.bold(`\n${getHeader('Lifecycle Error')}`)}
-
-${cyanBright('Running onError methods')}`)
-}
-
 const logBuildError = function(error) {
   const errorStack = error.cleanStack ? cleanStacks(error.message) : `\n${error.stack}`
   log(`${redBright.bold(`\n${getHeader('Netlify Build Error')}`)}
@@ -218,7 +212,6 @@ module.exports = {
   logTimer,
   logCacheStart,
   logCacheDir,
-  logErrorInstructions,
   logBuildError,
   logBuildSuccess,
   logBuildEnd,
