@@ -1,0 +1,3 @@
+plugins:
+  - type: ./plugin
+    enabled: false
