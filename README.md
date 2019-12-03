@@ -28,7 +28,7 @@ Netlify build is the next generation of CI/CD tooling for modern web application
 - [lifecycle.preDeploy](#lifecyclepredeploy)
 - [lifecycle.saveCache](#lifecyclesavecache)
 - [lifecycle.onSuccess](#lifecycleonsuccess)
-- [onError](#onerror)
+- [lifecycle.onError](#lifecycleonerror)
 - [lifecycle.onEnd](#lifecycleonend)
 - [Configuration](#configuration)
 - [Plugins](#plugins)
@@ -549,7 +549,7 @@ build:
 
 </details>
 
-### onError
+### lifecycle.onError
 
 `onError` - Runs on build error
 

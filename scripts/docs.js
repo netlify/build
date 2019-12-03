@@ -11,7 +11,6 @@ const CONSTANTS_PATH = path.join(ROOT_DIR, 'packages/build/src/plugins/child', '
 const LIFECYCLE_PATH = path.join(ROOT_DIR, 'packages/config/src/lifecycle.js')
 const PLUGINS_DATABASE_URL = 'https://raw.githubusercontent.com/netlify/plugins/master/plugins.json'
 const PLUGIN_NAME_REGEX = /(?:(?:^|-)netlify-plugin(?:-|$))|(?:(?:^|-)netlify(?:-|$))/
-const nonLifecycleKeys = ['onError']
 
 const config = {
   transforms: {
@@ -117,21 +116,16 @@ const config = {
       const docBlocs = parseJsDoc(fileContents)
       let updatedContent = ''
 
-      docBlocs
-        .filter(data => {
-          const niceName = formatName(data.ctx.name)
-          return !nonLifecycleKeys.includes(niceName)
-        })
-        .forEach(data => {
-          const eventName = data.description.summary.match(/^`(.*)`/)
-          updatedContent += `### ${formatName(eventName[1])}\n\n`
-          updatedContent += `${data.description.full}\n\n`
+      docBlocs.forEach(data => {
+        const eventName = data.description.summary.match(/^`(.*)`/)
+        updatedContent += `### lifecycle.${eventName[1]}\n\n`
+        updatedContent += `${data.description.full}\n\n`
 
-          const pluginExample = renderPluginExample(eventName[1])
-          const configExample = renderConfigExample(eventName[1])
-          updatedContent += collapse(`Using ${eventName[1]}`, `${pluginExample}\n${configExample}`)
+        const pluginExample = renderPluginExample(eventName[1])
+        const configExample = renderConfigExample(eventName[1])
+        updatedContent += collapse(`Using ${eventName[1]}`, `${pluginExample}\n${configExample}`)
 
-          /* maybe fold
+        /* maybe fold
         <details>
           <summary>Plugin example</summary>
 
@@ -141,66 +135,11 @@ const config = {
 
         </details>
          */
-          updatedContent += `\n`
-        })
+        updatedContent += `\n`
+      })
       return updatedContent.replace(/^\s+|\s+$/g, '')
     },
   },
-}
-
-/* Utils functions */
-function parseJsDoc(contents) {
-  return dox.parseComments(contents, { raw: true, skipSingleStar: true })
-}
-
-function sortPlugins(a, b) {
-  const aName = a.name.toLowerCase()
-  const bName = b.name.toLowerCase()
-  return (
-    aName.replace(PLUGIN_NAME_REGEX, '').localeCompare(bName.replace(PLUGIN_NAME_REGEX, '')) ||
-    aName.localeCompare(bName)
-  )
-}
-
-function formatPluginName(string) {
-  return toTitleCase(
-    string
-      .toLowerCase()
-      .replace(PLUGIN_NAME_REGEX, '')
-      .replace(/-/g, ' ')
-      .replace(/plugin$/g, '')
-      .trim(),
-  )
-}
-
-function toTitleCase(str) {
-  return str.replace(/\w\S*/g, function(txt) {
-    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
-  })
-}
-
-function getUsername(repo) {
-  if (!repo) {
-    return null
-  }
-
-  const o = new URL(repo)
-  let path = o.pathname
-
-  if (path.length && path.charAt(0) === '/') {
-    path = path.slice(1)
-  }
-
-  path = path.split('/')[0]
-  return path
-}
-
-function formatName(name) {
-  const prefix = 'lifecycle'
-  if (nonLifecycleKeys.includes(name)) {
-    return `${name}`
-  }
-  return `${prefix}.${name}`
 }
 
 function collapse(summary, content) {
