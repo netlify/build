@@ -9,3 +9,7 @@ test('Lifecycle commands can execute global binaries', async t => {
 test('Lifecycle commands can execute local binaries', async t => {
   await runFixture(t, 'local_bin')
 })
+
+test('Lifecycle commands can execute shell commands', async t => {
+  await runFixture(t, 'shell')
+})
