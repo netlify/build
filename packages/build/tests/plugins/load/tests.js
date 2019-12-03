@@ -20,6 +20,10 @@ test('Plugin.id is optional', async t => {
   await runFixture(t, 'optional_id')
 })
 
+test.only('Plugin.enabled', async t => {
+  await runFixture(t, 'enabled')
+})
+
 test('Override plugins', async t => {
   await runFixture(t, 'override')
 })
