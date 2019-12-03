@@ -67,11 +67,8 @@
   "devDependencies": {
     "atob": "^2.1.2",
     "ava": "^2.4.0",
-    "cpy": "^7.3.0",
-    "del": "^5.1.0",
     "get-bin-path": "^4.0.0",
     "make-dir": "^3.0.0",
-    "markdown-magic": "^0.1.25",
     "nock": "^11.7.0",
     "yarn": "^1.19.1"
   },
