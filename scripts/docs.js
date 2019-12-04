@@ -1,8 +1,10 @@
 const path = require('path')
 const fs = require('fs')
+const { URL } = require('url')
 
 const markdownMagic = require('markdown-magic')
 const dox = require('dox')
+const request = require('sync-request')
 
 const rootDir = path.join(__dirname, '..')
 const nonLifecycleKeys = ['onError']
@@ -10,6 +12,7 @@ const CONSTANTS = {
   rootDir: rootDir,
   lifecycle: path.join(rootDir, 'packages/config/src/lifecycle.js'),
 }
+const REGEX = /(?:(?:^|-)netlify-plugin(?:-|$))|(?:(?:^|-)netlify(?:-|$))/
 
 function parseJsDoc(contents) {
   return dox.parseComments(contents, { raw: true, skipSingleStar: true })
@@ -52,6 +55,21 @@ const config = {
         })
         .join('\n')
       return packages
+    },
+    COMMUNITY_PLUGINS() {
+      const data = remoteRequest('https://raw.githubusercontent.com/netlify/plugins/master/plugins.json')
+      const PLUGINS = JSON.parse(data)
+      let md = ``
+      md += `| Plugin | Author |\n`
+      md += '|:---------------------------|:-----------:|\n'
+      PLUGINS.sort(sortPlugins).forEach(data => {
+        const userName = getUsername(data.repo)
+        const profileURL = `https://github.com/${userName}`
+        md += `| **[${formatPluginName(data.name)} - \`${data.name.toLowerCase()}\`](${data.repo})** <br/> `
+        md += ` ${data.description} | `
+        md += `[${userName}](${profileURL}) |\n`
+      })
+      return md.replace(/^\s+|\s+$/g, '')
     },
     CONSTANTS() {
       const base = path.resolve('packages')
@@ -136,6 +154,47 @@ const config = {
   },
 }
 
+/* Utils functions */
+function sortPlugins(a, b) {
+  const aName = a.name.toLowerCase()
+  const bName = b.name.toLowerCase()
+  return aName.replace(REGEX, '').localeCompare(bName.replace(REGEX, '')) || aName.localeCompare(bName)
+}
+
+function formatPluginName(string) {
+  return toTitleCase(
+    string
+      .toLowerCase()
+      .replace(REGEX, '')
+      .replace(/-/g, ' ')
+      .replace(/plugin$/g, '')
+      .trim(),
+  )
+}
+
+function toTitleCase(str) {
+  return str.replace(/\w\S*/g, function(txt) {
+    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+  })
+}
+
+function getUsername(repo) {
+  if (!repo) {
+    return null
+  }
+
+  const o = new URL(repo)
+  console.log('o', o)
+  let path = o.pathname
+
+  if (path.length && path.charAt(0) === '/') {
+    path = path.slice(1)
+  }
+
+  path = path.split('/')[0]
+  return path
+}
+
 function formatName(name) {
   const prefix = 'lifecycle'
   if (nonLifecycleKeys.includes(name)) {
@@ -193,6 +252,18 @@ build:
       - echo "Do thing on ${name} step"
 \`\`\`
   `
+}
+
+function remoteRequest(url) {
+  let body
+  try {
+    const res = request('GET', url)
+    body = res.getBody('utf8')
+  } catch (e) {
+    console.log(`WARNING: REMOTE URL ${url} NOT FOUND`) // eslint-disable-line
+    console.log(e.message) // eslint-disable-line
+  }
+  return body
 }
 
 const markdownFiles = [
