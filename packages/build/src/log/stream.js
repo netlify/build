@@ -46,7 +46,7 @@ const unpipeOutput = async function(childProcess) {
 // TODO: find a more reliable way
 const waitForFlush = async function(stream) {
   while (stream._readableState.paused) {
-    await pSetTimeout(0)
+    await pSetTimeout(1e3)
     stream.resume()
   }
 
