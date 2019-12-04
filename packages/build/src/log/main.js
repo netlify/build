@@ -22,7 +22,7 @@ ${SUBTEXT_PADDING}https://github.com/netlify/build
 
 const logOptions = function(options) {
   const optionsA = filterObj(options, isDefined)
-  if (Object.keys(optionsA).length) {
+  if (Object.keys(optionsA).length !== 0) {
     log(cyanBright.bold('Options'), optionsA, '')
   }
 }
