@@ -184,7 +184,6 @@ function getUsername(repo) {
   }
 
   const o = new URL(repo)
-  console.log('o', o)
   let path = o.pathname
 
   if (path.length && path.charAt(0) === '/') {
