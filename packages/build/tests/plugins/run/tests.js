@@ -13,6 +13,7 @@ test('Plugin output can interleave stdout and stderr', async t => {
 // TODO: check output length once big outputs are actually fixed
 test.serial('Big plugin output is not truncated', async t => {
   await runFixture(t, 'big', { snapshot: false })
+  t.pass()
 })
 
 test('Plugin output is buffered in CI', async t => {
