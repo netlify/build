@@ -6,17 +6,12 @@ const markdownMagic = require('markdown-magic')
 const dox = require('dox')
 const request = require('sync-request')
 
-const rootDir = path.join(__dirname, '..')
+const ROOT_DIR = path.join(__dirname, '..')
+const CONSTANTS_PATH = path.join(ROOT_DIR, 'packages/build/src/plugins/child', 'constants.js')
+const LIFECYCLE_PATH = path.join(ROOT_DIR, 'packages/config/src/lifecycle.js')
+const PLUGINS_DATABASE_URL = 'https://raw.githubusercontent.com/netlify/plugins/master/plugins.json'
+const PLUGIN_NAME_REGEX = /(?:(?:^|-)netlify-plugin(?:-|$))|(?:(?:^|-)netlify(?:-|$))/
 const nonLifecycleKeys = ['onError']
-const CONSTANTS = {
-  rootDir: rootDir,
-  lifecycle: path.join(rootDir, 'packages/config/src/lifecycle.js'),
-}
-const REGEX = /(?:(?:^|-)netlify-plugin(?:-|$))|(?:(?:^|-)netlify(?:-|$))/
-
-function parseJsDoc(contents) {
-  return dox.parseComments(contents, { raw: true, skipSingleStar: true })
-}
 
 const config = {
   transforms: {
@@ -57,7 +52,7 @@ const config = {
       return packages
     },
     COMMUNITY_PLUGINS() {
-      const data = remoteRequest('https://raw.githubusercontent.com/netlify/plugins/master/plugins.json')
+      const data = remoteRequest(PLUGINS_DATABASE_URL)
       const PLUGINS = JSON.parse(data)
       let md = ``
       md += `| Plugin | Author |\n`
@@ -72,8 +67,7 @@ const config = {
       return md.replace(/^\s+|\s+$/g, '')
     },
     CONSTANTS() {
-      const base = path.resolve('packages')
-      const fileContents = fs.readFileSync(path.join(base, 'build/src/plugins/child', 'constants.js'), 'utf8')
+      const fileContents = fs.readFileSync(CONSTANTS_PATH, 'utf8')
       const docBlocs = parseJsDoc(fileContents)
       const updatedContents = docBlocs
         .map(doc => {
@@ -85,7 +79,7 @@ const config = {
     },
     LIFECYCLE_TABLE(content, opts) {
       const options = opts || {}
-      const fileContents = fs.readFileSync(CONSTANTS.lifecycle, 'utf-8')
+      const fileContents = fs.readFileSync(LIFECYCLE_PATH, 'utf-8')
       const docBlocs = parseJsDoc(fileContents)
 
       const events = docBlocs.filter(d => {
@@ -119,7 +113,7 @@ const config = {
       return md.replace(/^\s+|\s+$/g, '')
     },
     LIFECYCLE_DOCS() {
-      const fileContents = fs.readFileSync(CONSTANTS.lifecycle, 'utf-8')
+      const fileContents = fs.readFileSync(LIFECYCLE_PATH, 'utf-8')
       const docBlocs = parseJsDoc(fileContents)
       let updatedContent = ''
 
@@ -155,17 +149,21 @@ const config = {
 }
 
 /* Utils functions */
+function parseJsDoc(contents) {
+  return dox.parseComments(contents, { raw: true, skipSingleStar: true })
+}
+
 function sortPlugins(a, b) {
   const aName = a.name.toLowerCase()
   const bName = b.name.toLowerCase()
-  return aName.replace(REGEX, '').localeCompare(bName.replace(REGEX, '')) || aName.localeCompare(bName)
+  return aName.replace(PLUGIN_NAME_REGEX, '').localeCompare(bName.replace(PLUGIN_NAME_REGEX, '')) || aName.localeCompare(bName)
 }
 
 function formatPluginName(string) {
   return toTitleCase(
     string
       .toLowerCase()
-      .replace(REGEX, '')
+      .replace(PLUGIN_NAME_REGEX, '')
       .replace(/-/g, ' ')
       .replace(/plugin$/g, '')
       .trim(),
@@ -266,13 +264,13 @@ function remoteRequest(url) {
 }
 
 const markdownFiles = [
-  path.join(rootDir, 'README.md'),
-  path.join(rootDir, 'CONTRIBUTING.md'),
-  path.join(rootDir, 'docs/**/**.md'),
-  path.join(rootDir, 'packages/**/**.md'),
-  path.join(rootDir, 'examples/**/**.md'),
-  `!${path.join(rootDir, 'examples/**/node_modules/**/**.md')}`,
-  `!${path.join(rootDir, 'packages/**/node_modules/**/**.md')}`,
+  path.join(ROOT_DIR, 'README.md'),
+  path.join(ROOT_DIR, 'CONTRIBUTING.md'),
+  path.join(ROOT_DIR, 'docs/**/**.md'),
+  path.join(ROOT_DIR, 'packages/**/**.md'),
+  path.join(ROOT_DIR, 'examples/**/**.md'),
+  `!${path.join(ROOT_DIR, 'examples/**/node_modules/**/**.md')}`,
+  `!${path.join(ROOT_DIR, 'packages/**/node_modules/**/**.md')}`,
   '!node_modules',
 ]
 markdownMagic(markdownFiles, config, () => {
