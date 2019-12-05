@@ -20,7 +20,6 @@
     "@netlify/plugin-lighthouse": "file:../../packages/netlify-plugin-lighthouse",
     "@netlify/plugin-no-more-404": "file:../../packages/netlify-plugin-no-more-404",
     "@netlify/plugin-search-index": "file:../../packages/netlify-plugin-search-index",
-    "@netlify/plugin-sitemap": "file:../../packages/netlify-plugin-sitemap",
     "cpy-cli": "^2.0.0",
     "cross-env": "^5.2.0",
     "del-cli": "^3.0.0",
