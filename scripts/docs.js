@@ -142,6 +142,53 @@ const config = {
   },
 }
 
+/* Utils functions */
+function parseJsDoc(contents) {
+  return dox.parseComments(contents, { raw: true, skipSingleStar: true })
+}
+
+function sortPlugins(a, b) {
+  const aName = a.name.toLowerCase()
+  const bName = b.name.toLowerCase()
+  return (
+    aName.replace(PLUGIN_NAME_REGEX, '').localeCompare(bName.replace(PLUGIN_NAME_REGEX, '')) ||
+    aName.localeCompare(bName)
+  )
+}
+
+function formatPluginName(string) {
+  return toTitleCase(
+    string
+      .toLowerCase()
+      .replace(PLUGIN_NAME_REGEX, '')
+      .replace(/-/g, ' ')
+      .replace(/plugin$/g, '')
+      .trim(),
+  )
+}
+
+function toTitleCase(str) {
+  return str.replace(/\w\S*/g, function(txt) {
+    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+  })
+}
+
+function getUsername(repo) {
+  if (!repo) {
+    return null
+  }
+
+  const o = new URL(repo)
+  let path = o.pathname
+
+  if (path.length && path.charAt(0) === '/') {
+    path = path.slice(1)
+  }
+
+  path = path.split('/')[0]
+  return path
+}
+
 function collapse(summary, content) {
   return `
 <details>
