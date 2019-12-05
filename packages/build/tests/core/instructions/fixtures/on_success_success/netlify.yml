@@ -1,0 +1,4 @@
+build:
+  lifecycle:
+    build: node --version
+    onSuccess: echo onSuccess

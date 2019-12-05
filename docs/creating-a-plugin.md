@@ -16,14 +16,14 @@ running things after your site build has completed.
 | ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **init** ‏‏‎  ‏‏‎  ‏‏‎  | Runs before anything else |
 | ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **getCache** ‏‏‎  ‏‏‎  ‏‏‎  | Fetch previous build cache |
 | ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **install** ‏‏‎  ‏‏‎  ‏‏‎  | Install project dependencies |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **preBuild** ‏‏‎  ‏‏‎  ‏‏‎  | Runs before functions & build commands run |
 | ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **build** ‏‏‎  ‏‏‎  ‏‏‎  | Build commands are executed |
 | ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **functionsBuild** ‏‏‎  ‏‏‎  ‏‏‎  | Build the serverless functions |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **postBuild** ‏‏‎  ‏‏‎  ‏‏‎  | Runs after site & functions have been built |
 | ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **package** ‏‏‎  ‏‏‎  ‏‏‎  | Package & optimize artifact |
 | ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **preDeploy** ‏‏‎  ‏‏‎  ‏‏‎  | Runs before built artifacts are deployed |
 | ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **saveCache** ‏‏‎  ‏‏‎  ‏‏‎  | Save cached assets |
-| 🎉 ‏‏‎ **finally** ‏‏‎  ‏‏‎  ‏‏‎  | Runs after anything else |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **onSuccess** ‏‏‎  ‏‏‎  ‏‏‎  | Runs on build success |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **onError** ‏‏‎  ‏‏‎  ‏‏‎  | Runs on build error |
+| 🎉 ‏‏‎ **onEnd** ‏‏‎  ‏‏‎  ‏‏‎  | Runs on build error or success |
 <!-- AUTO-GENERATED-CONTENT:END (LIFECYCLE_TABLE) -->
 
 ## Anatomy of a plugin

@@ -16,23 +16,17 @@ const LIFECYCLE = [
   'install',
   'postInstall',
   /**
-   * `preBuild` - Runs before functions & build commands run
-   */
-  'preBuild',
-  /**
    * `build` - Build commands are executed
    */
+  'preBuild',
   'build',
+  'postBuild',
   /**
    * `functionsBuild` - Build the serverless functions
    */
   'preFunctionsBuild',
   'functionsBuild',
   'postFunctionsBuild',
-  /**
-   * `postBuild` - Runs after site & functions have been built
-   */
-  'postBuild',
   /**
    * `package` - Package & optimize artifact
    */
@@ -53,11 +47,17 @@ const LIFECYCLE = [
   'saveCache',
   'postSaveCache',
   /**
-   * `finally` - Runs after anything else
+   * `onSuccess` - Runs on build success
    */
-  'finally',
-  // Todo onError is not part of lifecycle. Its a special handler
+  'onSuccess',
+  /**
+   * `onError` - Runs on build error
+   */
   'onError',
+  /**
+   * `onEnd` - Runs on build error or success
+   */
+  'onEnd',
 ]
 
 module.exports = { LIFECYCLE }

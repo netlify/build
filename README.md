@@ -22,14 +22,14 @@ Netlify build is the next generation of CI/CD tooling for modern web application
 - [lifecycle.init](#lifecycleinit)
 - [lifecycle.getCache](#lifecyclegetcache)
 - [lifecycle.install](#lifecycleinstall)
-- [lifecycle.preBuild](#lifecycleprebuild)
 - [lifecycle.build](#lifecyclebuild)
 - [lifecycle.functionsBuild](#lifecyclefunctionsbuild)
-- [lifecycle.postBuild](#lifecyclepostbuild)
 - [lifecycle.package](#lifecyclepackage)
 - [lifecycle.preDeploy](#lifecyclepredeploy)
 - [lifecycle.saveCache](#lifecyclesavecache)
-- [lifecycle.finally](#lifecyclefinally)
+- [lifecycle.onSuccess](#lifecycleonsuccess)
+- [lifecycle.onError](#lifecycleonerror)
+- [lifecycle.onEnd](#lifecycleonend)
 - [Configuration](#configuration)
 - [Plugins](#plugins)
 - [What can plugins do?](#what-can-plugins-do)
@@ -118,19 +118,21 @@ The build process runs through a series of lifecycle events. These events are th
 the Netlify build operates.
 
 <!-- AUTO-GENERATED-CONTENT:START (LIFECYCLE_TABLE) -->
-| Lifecycle hook | Description |
-|:------|:-------|
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecycleinit">init</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Runs before anything else |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclegetcache">getCache</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Fetch previous build cache |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecycleinstall">install</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Install project dependencies |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecycleprebuild">preBuild</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Runs before functions & build commands run |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclebuild">build</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Build commands are executed |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclefunctionsbuild">functionsBuild</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Build the serverless functions |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclepostbuild">postBuild</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Runs after site & functions have been built |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclepackage">package</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Package & optimize artifact |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclepredeploy">preDeploy</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Runs before built artifacts are deployed |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecyclesavecache">saveCache</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Save cached assets |
-| 🎉 ‏‏‎ **<a href="#lifecyclefinally">finally</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Runs after anything else |
+
+| Lifecycle hook                                                                      | Description                              |
+| :---------------------------------------------------------------------------------- | :--------------------------------------- |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleinit">init</a>** ‏‏‎ ‏‏‎ ‏‏‎                     | Runs before anything else                |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclegetcache">getCache</a>** ‏‏‎ ‏‏‎ ‏‏‎             | Fetch previous build cache               |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleinstall">install</a>** ‏‏‎ ‏‏‎ ‏‏‎               | Install project dependencies             |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclebuild">build</a>** ‏‏‎ ‏‏‎ ‏‏‎                   | Build commands are executed              |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclefunctionsbuild">functionsBuild</a>** ‏‏‎ ‏‏‎ ‏‏‎ | Build the serverless functions           |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclepackage">package</a>** ‏‏‎ ‏‏‎ ‏‏‎               | Package & optimize artifact              |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclepredeploy">preDeploy</a>** ‏‏‎ ‏‏‎ ‏‏‎           | Runs before built artifacts are deployed |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclesavecache">saveCache</a>** ‏‏‎ ‏‏‎ ‏‏‎           | Save cached assets                       |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleonsuccess">onSuccess</a>** ‏‏‎ ‏‏‎ ‏‏‎           | Runs on build success                    |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleonerror">onError</a>** ‏‏‎ ‏‏‎ ‏‏‎               | Runs on build error                      |
+| 🎉 ‏‏‎ **<a href="#lifecycleonend">onEnd</a>** ‏‏‎ ‏‏‎ ‏‏‎                          | Runs on build error or success           |
+
 <!-- AUTO-GENERATED-CONTENT:END (LIFECYCLE_TABLE) -->
 
 The Lifecycle flows the events in order and executes and their `pre` & `post` counterparts.
@@ -157,41 +159,40 @@ The Lifecycle flows the events in order and executes and their `pre` & `post` co
 ```
 
 <!-- AUTO-GENERATED-CONTENT:START (LIFECYCLE_DOCS) -->
+
 ### lifecycle.init
 
 `init` - Runs before anything else
-
 
 <details>
   <summary>Using init</summary>
   
   <br/>
 
-  **1. Using with a Plugin**
+**1. Using with a Plugin**
 
-  Below is an example plugin using the `init` hook
+Below is an example plugin using the `init` hook
 
-  ```js
-  module.exports = function myPlugin(pluginConfig) {
-    return {
-      init: () => {
-        console.log("Do thing on init step")
-      }
-    }
+```js
+module.exports = function myPlugin(pluginConfig) {
+  return {
+    init: () => {
+      console.log('Do thing on init step')
+    },
   }
-  ```
+}
+```
 
-  After creating the plugin, add into your Netlify config file under `plugins`
+After creating the plugin, add into your Netlify config file under `plugins`
 
-  ```yml
-  plugins:
-    - type: ./path/to/plugin
-      config:
-        foo: bar
-  ```
-  
+```yml
+plugins:
+  - type: ./path/to/plugin
+    config:
+      foo: bar
+```
 
-  **2. Using with via `build.lifecycle`**
+**2. Using with via `build.lifecycle`**
 
 ```yml
 build:
@@ -199,44 +200,42 @@ build:
     init:
       - echo "Do thing on init step"
 ```
-  
+
 </details>
 
 ### lifecycle.getCache
 
 `getCache` - Fetch previous build cache
 
-
 <details>
   <summary>Using getCache</summary>
   
   <br/>
 
-  **1. Using with a Plugin**
+**1. Using with a Plugin**
 
-  Below is an example plugin using the `getCache` hook
+Below is an example plugin using the `getCache` hook
 
-  ```js
-  module.exports = function myPlugin(pluginConfig) {
-    return {
-      getCache: () => {
-        console.log("Do thing on getCache step")
-      }
-    }
+```js
+module.exports = function myPlugin(pluginConfig) {
+  return {
+    getCache: () => {
+      console.log('Do thing on getCache step')
+    },
   }
-  ```
+}
+```
 
-  After creating the plugin, add into your Netlify config file under `plugins`
+After creating the plugin, add into your Netlify config file under `plugins`
 
-  ```yml
-  plugins:
-    - type: ./path/to/plugin
-      config:
-        foo: bar
-  ```
-  
+```yml
+plugins:
+  - type: ./path/to/plugin
+    config:
+      foo: bar
+```
 
-  **2. Using with via `build.lifecycle`**
+**2. Using with via `build.lifecycle`**
 
 ```yml
 build:
@@ -244,44 +243,42 @@ build:
     getCache:
       - echo "Do thing on getCache step"
 ```
-  
+
 </details>
 
 ### lifecycle.install
 
 `install` - Install project dependencies
 
-
 <details>
   <summary>Using install</summary>
   
   <br/>
 
-  **1. Using with a Plugin**
+**1. Using with a Plugin**
 
-  Below is an example plugin using the `install` hook
+Below is an example plugin using the `install` hook
 
-  ```js
-  module.exports = function myPlugin(pluginConfig) {
-    return {
-      install: () => {
-        console.log("Do thing on install step")
-      }
-    }
+```js
+module.exports = function myPlugin(pluginConfig) {
+  return {
+    install: () => {
+      console.log('Do thing on install step')
+    },
   }
-  ```
+}
+```
 
-  After creating the plugin, add into your Netlify config file under `plugins`
+After creating the plugin, add into your Netlify config file under `plugins`
 
-  ```yml
-  plugins:
-    - type: ./path/to/plugin
-      config:
-        foo: bar
-  ```
-  
+```yml
+plugins:
+  - type: ./path/to/plugin
+    config:
+      foo: bar
+```
 
-  **2. Using with via `build.lifecycle`**
+**2. Using with via `build.lifecycle`**
 
 ```yml
 build:
@@ -289,89 +286,42 @@ build:
     install:
       - echo "Do thing on install step"
 ```
-  
-</details>
 
-### lifecycle.preBuild
-
-`preBuild` - Runs before functions & build commands run
-
-
-<details>
-  <summary>Using preBuild</summary>
-  
-  <br/>
-
-  **1. Using with a Plugin**
-
-  Below is an example plugin using the `preBuild` hook
-
-  ```js
-  module.exports = function myPlugin(pluginConfig) {
-    return {
-      preBuild: () => {
-        console.log("Do thing on preBuild step")
-      }
-    }
-  }
-  ```
-
-  After creating the plugin, add into your Netlify config file under `plugins`
-
-  ```yml
-  plugins:
-    - type: ./path/to/plugin
-      config:
-        foo: bar
-  ```
-  
-
-  **2. Using with via `build.lifecycle`**
-
-```yml
-build:
-  lifecycle:
-    preBuild:
-      - echo "Do thing on preBuild step"
-```
-  
 </details>
 
 ### lifecycle.build
 
 `build` - Build commands are executed
 
-
 <details>
   <summary>Using build</summary>
   
   <br/>
 
-  **1. Using with a Plugin**
+**1. Using with a Plugin**
 
-  Below is an example plugin using the `build` hook
+Below is an example plugin using the `build` hook
 
-  ```js
-  module.exports = function myPlugin(pluginConfig) {
-    return {
-      build: () => {
-        console.log("Do thing on build step")
-      }
-    }
+```js
+module.exports = function myPlugin(pluginConfig) {
+  return {
+    build: () => {
+      console.log('Do thing on build step')
+    },
   }
-  ```
+}
+```
 
-  After creating the plugin, add into your Netlify config file under `plugins`
+After creating the plugin, add into your Netlify config file under `plugins`
 
-  ```yml
-  plugins:
-    - type: ./path/to/plugin
-      config:
-        foo: bar
-  ```
-  
+```yml
+plugins:
+  - type: ./path/to/plugin
+    config:
+      foo: bar
+```
 
-  **2. Using with via `build.lifecycle`**
+**2. Using with via `build.lifecycle`**
 
 ```yml
 build:
@@ -379,44 +329,42 @@ build:
     build:
       - echo "Do thing on build step"
 ```
-  
+
 </details>
 
 ### lifecycle.functionsBuild
 
 `functionsBuild` - Build the serverless functions
 
-
 <details>
   <summary>Using functionsBuild</summary>
   
   <br/>
 
-  **1. Using with a Plugin**
+**1. Using with a Plugin**
 
-  Below is an example plugin using the `functionsBuild` hook
+Below is an example plugin using the `functionsBuild` hook
 
-  ```js
-  module.exports = function myPlugin(pluginConfig) {
-    return {
-      functionsBuild: () => {
-        console.log("Do thing on functionsBuild step")
-      }
-    }
+```js
+module.exports = function myPlugin(pluginConfig) {
+  return {
+    functionsBuild: () => {
+      console.log('Do thing on functionsBuild step')
+    },
   }
-  ```
+}
+```
 
-  After creating the plugin, add into your Netlify config file under `plugins`
+After creating the plugin, add into your Netlify config file under `plugins`
 
-  ```yml
-  plugins:
-    - type: ./path/to/plugin
-      config:
-        foo: bar
-  ```
-  
+```yml
+plugins:
+  - type: ./path/to/plugin
+    config:
+      foo: bar
+```
 
-  **2. Using with via `build.lifecycle`**
+**2. Using with via `build.lifecycle`**
 
 ```yml
 build:
@@ -424,89 +372,42 @@ build:
     functionsBuild:
       - echo "Do thing on functionsBuild step"
 ```
-  
-</details>
 
-### lifecycle.postBuild
-
-`postBuild` - Runs after site & functions have been built
-
-
-<details>
-  <summary>Using postBuild</summary>
-  
-  <br/>
-
-  **1. Using with a Plugin**
-
-  Below is an example plugin using the `postBuild` hook
-
-  ```js
-  module.exports = function myPlugin(pluginConfig) {
-    return {
-      postBuild: () => {
-        console.log("Do thing on postBuild step")
-      }
-    }
-  }
-  ```
-
-  After creating the plugin, add into your Netlify config file under `plugins`
-
-  ```yml
-  plugins:
-    - type: ./path/to/plugin
-      config:
-        foo: bar
-  ```
-  
-
-  **2. Using with via `build.lifecycle`**
-
-```yml
-build:
-  lifecycle:
-    postBuild:
-      - echo "Do thing on postBuild step"
-```
-  
 </details>
 
 ### lifecycle.package
 
 `package` - Package & optimize artifact
 
-
 <details>
   <summary>Using package</summary>
   
   <br/>
 
-  **1. Using with a Plugin**
+**1. Using with a Plugin**
 
-  Below is an example plugin using the `package` hook
+Below is an example plugin using the `package` hook
 
-  ```js
-  module.exports = function myPlugin(pluginConfig) {
-    return {
-      package: () => {
-        console.log("Do thing on package step")
-      }
-    }
+```js
+module.exports = function myPlugin(pluginConfig) {
+  return {
+    package: () => {
+      console.log('Do thing on package step')
+    },
   }
-  ```
+}
+```
 
-  After creating the plugin, add into your Netlify config file under `plugins`
+After creating the plugin, add into your Netlify config file under `plugins`
 
-  ```yml
-  plugins:
-    - type: ./path/to/plugin
-      config:
-        foo: bar
-  ```
-  
+```yml
+plugins:
+  - type: ./path/to/plugin
+    config:
+      foo: bar
+```
 
-  **2. Using with via `build.lifecycle`**
+**2. Using with via `build.lifecycle`**
 
 ```yml
 build:
@@ -514,44 +415,42 @@ build:
     package:
       - echo "Do thing on package step"
 ```
-  
+
 </details>
 
 ### lifecycle.preDeploy
 
 `preDeploy` - Runs before built artifacts are deployed
 
-
 <details>
   <summary>Using preDeploy</summary>
   
   <br/>
 
-  **1. Using with a Plugin**
+**1. Using with a Plugin**
 
-  Below is an example plugin using the `preDeploy` hook
+Below is an example plugin using the `preDeploy` hook
 
-  ```js
-  module.exports = function myPlugin(pluginConfig) {
-    return {
-      preDeploy: () => {
-        console.log("Do thing on preDeploy step")
-      }
-    }
+```js
+module.exports = function myPlugin(pluginConfig) {
+  return {
+    preDeploy: () => {
+      console.log('Do thing on preDeploy step')
+    },
   }
-  ```
+}
+```
 
-  After creating the plugin, add into your Netlify config file under `plugins`
+After creating the plugin, add into your Netlify config file under `plugins`
 
-  ```yml
-  plugins:
-    - type: ./path/to/plugin
-      config:
-        foo: bar
-  ```
-  
+```yml
+plugins:
+  - type: ./path/to/plugin
+    config:
+      foo: bar
+```
 
-  **2. Using with via `build.lifecycle`**
+**2. Using with via `build.lifecycle`**
 
 ```yml
 build:
@@ -559,44 +458,42 @@ build:
     preDeploy:
       - echo "Do thing on preDeploy step"
 ```
-  
+
 </details>
 
 ### lifecycle.saveCache
 
 `saveCache` - Save cached assets
 
-
 <details>
   <summary>Using saveCache</summary>
   
   <br/>
 
-  **1. Using with a Plugin**
+**1. Using with a Plugin**
 
-  Below is an example plugin using the `saveCache` hook
+Below is an example plugin using the `saveCache` hook
 
-  ```js
-  module.exports = function myPlugin(pluginConfig) {
-    return {
-      saveCache: () => {
-        console.log("Do thing on saveCache step")
-      }
-    }
+```js
+module.exports = function myPlugin(pluginConfig) {
+  return {
+    saveCache: () => {
+      console.log('Do thing on saveCache step')
+    },
   }
-  ```
+}
+```
 
-  After creating the plugin, add into your Netlify config file under `plugins`
+After creating the plugin, add into your Netlify config file under `plugins`
 
-  ```yml
-  plugins:
-    - type: ./path/to/plugin
-      config:
-        foo: bar
-  ```
-  
+```yml
+plugins:
+  - type: ./path/to/plugin
+    config:
+      foo: bar
+```
 
-  **2. Using with via `build.lifecycle`**
+**2. Using with via `build.lifecycle`**
 
 ```yml
 build:
@@ -604,52 +501,136 @@ build:
     saveCache:
       - echo "Do thing on saveCache step"
 ```
-  
+
 </details>
 
-### lifecycle.finally
+### lifecycle.onSuccess
 
-`finally` - Runs after anything else
-
+`onSuccess` - Runs on build success
 
 <details>
-  <summary>Using finally</summary>
+  <summary>Using onSuccess</summary>
   
   <br/>
 
-  **1. Using with a Plugin**
+**1. Using with a Plugin**
 
-  Below is an example plugin using the `finally` hook
+Below is an example plugin using the `onSuccess` hook
 
-  ```js
-  module.exports = function myPlugin(pluginConfig) {
-    return {
-      finally: () => {
-        console.log("Do thing on finally step")
-      }
-    }
+```js
+module.exports = function myPlugin(pluginConfig) {
+  return {
+    onSuccess: () => {
+      console.log('Do thing on onSuccess step')
+    },
   }
-  ```
+}
+```
 
-  After creating the plugin, add into your Netlify config file under `plugins`
+After creating the plugin, add into your Netlify config file under `plugins`
 
-  ```yml
-  plugins:
-    - type: ./path/to/plugin
-      config:
-        foo: bar
-  ```
-  
+```yml
+plugins:
+  - type: ./path/to/plugin
+    config:
+      foo: bar
+```
 
-  **2. Using with via `build.lifecycle`**
+**2. Using with via `build.lifecycle`**
 
 ```yml
 build:
   lifecycle:
-    finally:
-      - echo "Do thing on finally step"
+    onSuccess:
+      - echo "Do thing on onSuccess step"
 ```
+
+</details>
+
+### lifecycle.onError
+
+`onError` - Runs on build error
+
+<details>
+  <summary>Using onError</summary>
   
+  <br/>
+
+**1. Using with a Plugin**
+
+Below is an example plugin using the `onError` hook
+
+```js
+module.exports = function myPlugin(pluginConfig) {
+  return {
+    onError: () => {
+      console.log('Do thing on onError step')
+    },
+  }
+}
+```
+
+After creating the plugin, add into your Netlify config file under `plugins`
+
+```yml
+plugins:
+  - type: ./path/to/plugin
+    config:
+      foo: bar
+```
+
+**2. Using with via `build.lifecycle`**
+
+```yml
+build:
+  lifecycle:
+    onError:
+      - echo "Do thing on onError step"
+```
+
+</details>
+
+### lifecycle.onEnd
+
+`onEnd` - Runs on build error or success
+
+<details>
+  <summary>Using onEnd</summary>
+  
+  <br/>
+
+**1. Using with a Plugin**
+
+Below is an example plugin using the `onEnd` hook
+
+```js
+module.exports = function myPlugin(pluginConfig) {
+  return {
+    onEnd: () => {
+      console.log('Do thing on onEnd step')
+    },
+  }
+}
+```
+
+After creating the plugin, add into your Netlify config file under `plugins`
+
+```yml
+plugins:
+  - type: ./path/to/plugin
+    config:
+      foo: bar
+```
+
+**2. Using with via `build.lifecycle`**
+
+```yml
+build:
+  lifecycle:
+    onEnd:
+      - echo "Do thing on onEnd step"
+```
+
 </details>
 <!-- AUTO-GENERATED-CONTENT:END (PLUGINS) -->
 
@@ -722,7 +703,7 @@ module.exports = {
   postBuild: () => {
     console.log('Run custom logic after build happens')
   },
-  finally: () => {
+  onEnd: () => {
     console.log('Run custom logic at the end of the build')
   },
 }
@@ -768,23 +749,25 @@ Plugins can do a-lot and we are excited what the JAMstack community will build!
 
 ## Community Plugins
 
-To add a plugin, add informations to the [plugins.json file]('https://github.com/netlify/plugins/blob/master/plugins.json').
+To add a plugin, add informations to the
+[plugins.json file]('https://github.com/netlify/plugins/blob/master/plugins.json').
 
 <!-- AUTO-GENERATED-CONTENT:START (COMMUNITY_PLUGINS) -->
-| Plugin | Author |
-|:---------------------------|:-----------:|
-| **[Build Plugin Speedcurve - `netlify-build-plugin-speedcurve`](https://github.com/tkadlec/netlify-build-plugin-speedcurve)** <br/>  After a successful build, tell SpeedCurve you've deployed and trigger a round of testing | [tkadlec](https://github.com/tkadlec) |
-| **[Checklinks - `netlify-plugin-checklinks`](https://github.com/munter/netlify-plugin-checklinks)** <br/>  Checklinks helps you keep all your asset references correct and avoid embarrassing broken links to your internal pages, or even to external pages you link out to. | [munter](https://github.com/munter) |
-| **[Deployment Hours - `netlify-deployment-hours-plugin`](https://github.com/neverendingqs/netlify-deployment-hours-plugin)** <br/>  A Netlify build plugin that blocks deployment if it outside of deployment hours. | [neverendingqs](https://github.com/neverendingqs) |
-| **[Fetch Feeds - `netlify-plugin-fetch-feeds`](https://github.com/philhawksworth/netlify-plugin-fetch-feeds)** <br/>  A Netlify plugin to source content from remote feeds including RSS and JSON | [philhawksworth](https://github.com/philhawksworth) |
-| **[Gatsby Cache - `netlify-plugin-gatsby-cache`](https://github.com/jlengstorf/netlify-plugin-gatsby-cache#readme)** <br/>  Persist the Gatsby cache between Netlify builds for huge build speed improvements! ⚡️ | [jlengstorf](https://github.com/jlengstorf) |
-| **[Hashfiles - `netlify-plugin-hashfiles`](https://github.com/munter/netlify-plugin-hashfiles)** <br/>  Hashfiles sets you up with an optimal caching strategy for static sites, where static assets across pages are cached for as long as possible in the visitors browser and never have to be re-requested. | [munter](https://github.com/munter) |
-| **[Image Optim - `netlify-plugin-image-optim`](https://github.com/chrisdwheatley/netlify-plugin-image-optim)** <br/>  Optimize images as part of your Netlify build process. Optimizes PNG, JPEG, GIF and SVG file formats. | [chrisdwheatley](https://github.com/chrisdwheatley) |
-| **[Sitemap - `netlify-plugin-sitemap`](https://github.com/netlify-labs/netlify-plugin-sitemap)** <br/>  Automatically generate sitemaps on build | [netlify-labs](https://github.com/netlify-labs) |
-| **[Subfont - `netlify-plugin-subfont`](https://github.com/munter/netlify-plugin-subfont)** <br/>  Subfont post-processes your web page to analyse you usage of web fonts, then reworks your webpage to use an optimal font loading strategy for the best performance. | [munter](https://github.com/munter) |
-| **[Yield Data For Eleventy - `netlify-plugin-yield-data-for-eleventy`](https://github.com/philhawksworth/netlify-plugin-yield-data-for-eleventy)** <br/>  A Netlify plugin to expose data collected to in the Netlify build cache to place and structure that Eleventy can use | [philhawksworth](https://github.com/philhawksworth) |
-<!-- AUTO-GENERATED-CONTENT:END (COMMUNITY_PLUGINS) -->
 
+| Plugin                                                                                                                                                                                                                                                                                                         |                       Author                        |
+| :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------: |
+| **[Build Plugin Speedcurve - `netlify-build-plugin-speedcurve`](https://github.com/tkadlec/netlify-build-plugin-speedcurve)** <br/> After a successful build, tell SpeedCurve you've deployed and trigger a round of testing                                                                                   |        [tkadlec](https://github.com/tkadlec)        |
+| **[Checklinks - `netlify-plugin-checklinks`](https://github.com/munter/netlify-plugin-checklinks)** <br/> Checklinks helps you keep all your asset references correct and avoid embarrassing broken links to your internal pages, or even to external pages you link out to.                                   |         [munter](https://github.com/munter)         |
+| **[Deployment Hours - `netlify-deployment-hours-plugin`](https://github.com/neverendingqs/netlify-deployment-hours-plugin)** <br/> A Netlify build plugin that blocks deployment if it outside of deployment hours.                                                                                            |  [neverendingqs](https://github.com/neverendingqs)  |
+| **[Fetch Feeds - `netlify-plugin-fetch-feeds`](https://github.com/philhawksworth/netlify-plugin-fetch-feeds)** <br/> A Netlify plugin to source content from remote feeds including RSS and JSON                                                                                                               | [philhawksworth](https://github.com/philhawksworth) |
+| **[Gatsby Cache - `netlify-plugin-gatsby-cache`](https://github.com/jlengstorf/netlify-plugin-gatsby-cache#readme)** <br/> Persist the Gatsby cache between Netlify builds for huge build speed improvements! ⚡️                                                                                              |     [jlengstorf](https://github.com/jlengstorf)     |
+| **[Hashfiles - `netlify-plugin-hashfiles`](https://github.com/munter/netlify-plugin-hashfiles)** <br/> Hashfiles sets you up with an optimal caching strategy for static sites, where static assets across pages are cached for as long as possible in the visitors browser and never have to be re-requested. |         [munter](https://github.com/munter)         |
+| **[Image Optim - `netlify-plugin-image-optim`](https://github.com/chrisdwheatley/netlify-plugin-image-optim)** <br/> Optimize images as part of your Netlify build process. Optimizes PNG, JPEG, GIF and SVG file formats.                                                                                     | [chrisdwheatley](https://github.com/chrisdwheatley) |
+| **[Sitemap - `netlify-plugin-sitemap`](https://github.com/netlify-labs/netlify-plugin-sitemap)** <br/> Automatically generate sitemaps on build                                                                                                                                                                |   [netlify-labs](https://github.com/netlify-labs)   |
+| **[Subfont - `netlify-plugin-subfont`](https://github.com/munter/netlify-plugin-subfont)** <br/> Subfont post-processes your web page to analyse you usage of web fonts, then reworks your webpage to use an optimal font loading strategy for the best performance.                                           |         [munter](https://github.com/munter)         |
+| **[Yield Data For Eleventy - `netlify-plugin-yield-data-for-eleventy`](https://github.com/philhawksworth/netlify-plugin-yield-data-for-eleventy)** <br/> A Netlify plugin to expose data collected to in the Netlify build cache to place and structure that Eleventy can use                                  | [philhawksworth](https://github.com/philhawksworth) |
+
+<!-- AUTO-GENERATED-CONTENT:END (COMMUNITY_PLUGINS) -->
 
 ## CLI commands
 

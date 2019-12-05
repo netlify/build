@@ -11,7 +11,6 @@ const CONSTANTS_PATH = path.join(ROOT_DIR, 'packages/build/src/plugins/child', '
 const LIFECYCLE_PATH = path.join(ROOT_DIR, 'packages/config/src/lifecycle.js')
 const PLUGINS_DATABASE_URL = 'https://raw.githubusercontent.com/netlify/plugins/master/plugins.json'
 const PLUGIN_NAME_REGEX = /(?:(?:^|-)netlify-plugin(?:-|$))|(?:(?:^|-)netlify(?:-|$))/
-const nonLifecycleKeys = ['onError']
 
 const config = {
   transforms: {
@@ -105,8 +104,8 @@ const config = {
           // console.log('data', data)
           const invisibleSpace = ' ‏‏‎ '
           const doubleInvisibleSpace = ' ‏‏‎  ‏‏‎  ‏‏‎ '
-          const spacing = eventName[1] === 'finally' ? invisibleSpace : doubleInvisibleSpace
-          const arrow = eventName[1] === 'finally' ? '🎉' : '⇩'
+          const spacing = eventName[1] === 'onEnd' ? invisibleSpace : doubleInvisibleSpace
+          const arrow = eventName[1] === 'onEnd' ? '🎉' : '⇩'
           md += `| ${arrow}${spacing}**${eventNameWithLink}**${doubleInvisibleSpace} | ${desc} |\n`
         }
       })
@@ -117,21 +116,16 @@ const config = {
       const docBlocs = parseJsDoc(fileContents)
       let updatedContent = ''
 
-      docBlocs
-        .filter(data => {
-          const niceName = formatName(data.ctx.name)
-          return !nonLifecycleKeys.includes(niceName)
-        })
-        .forEach(data => {
-          const eventName = data.description.summary.match(/^`(.*)`/)
-          updatedContent += `### ${formatName(eventName[1])}\n\n`
-          updatedContent += `${data.description.full}\n\n`
+      docBlocs.forEach(data => {
+        const eventName = data.description.summary.match(/^`(.*)`/)
+        updatedContent += `### lifecycle.${eventName[1]}\n\n`
+        updatedContent += `${data.description.full}\n\n`
 
-          const pluginExample = renderPluginExample(eventName[1])
-          const configExample = renderConfigExample(eventName[1])
-          updatedContent += collapse(`Using ${eventName[1]}`, `${pluginExample}\n${configExample}`)
+        const pluginExample = renderPluginExample(eventName[1])
+        const configExample = renderConfigExample(eventName[1])
+        updatedContent += collapse(`Using ${eventName[1]}`, `${pluginExample}\n${configExample}`)
 
-          /* maybe fold
+        /* maybe fold
         <details>
           <summary>Plugin example</summary>
 
@@ -141,8 +135,8 @@ const config = {
 
         </details>
          */
-          updatedContent += `\n`
-        })
+        updatedContent += `\n`
+      })
       return updatedContent.replace(/^\s+|\s+$/g, '')
     },
   },
@@ -193,14 +187,6 @@ function getUsername(repo) {
 
   path = path.split('/')[0]
   return path
-}
-
-function formatName(name) {
-  const prefix = 'lifecycle'
-  if (nonLifecycleKeys.includes(name)) {
-    return `${name}`
-  }
-  return `${prefix}.${name}`
 }
 
 function collapse(summary, content) {
