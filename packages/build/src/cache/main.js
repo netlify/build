@@ -91,10 +91,12 @@ const getBase = function(base, baseDir) {
     return resolve(baseDir, CACHE_BASE)
   }
 
+  // istanbul ignore next
   if (base === '~') {
     return homedir()
   }
 
+  // istanbul ignore next
   return resolve(baseDir, base)
 }
 
