@@ -5,7 +5,6 @@
 const execa = require('execa')
 
 const installDependencies = require('../install')
-const cacheArtifacts = require('../cache')
 const prepFunctions = require('../install/serverless/prep-functions')
 const installMissingCommands = require('../install/missing-commands')
 const setGoImportPath = require('../install/set-go-import-path')
@@ -84,7 +83,7 @@ module.exports = async function runBuild(config) {
   await prepFunctions(functionsDir, zisiTempDir)
 
   /* Cache all the things */
-  await cacheArtifacts(CWD, NETLIFY_CACHE_DIR)
+  // await cacheArtifacts(CWD, NETLIFY_CACHE_DIR)
 
   /* Report lingering process */
   const procs = await findRunningProcs()
