@@ -1,6 +1,6 @@
 module.exports = {
   name: 'netlify-plugin-valid',
-  onEnd() {
+  end() {
     console.log('Plugin valid')
   },
 }

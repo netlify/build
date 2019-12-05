@@ -1,6 +1,6 @@
 module.exports = {
   name: 'netlify-plugin-valid',
-  onError({ error: { message } }) {
+  error({ error: { message } }) {
     console.log(message)
   },
 }

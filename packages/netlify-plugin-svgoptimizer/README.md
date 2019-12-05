@@ -16,7 +16,7 @@ build:
       - echo "Starting the build"
     build:
       - npm run build
-    onEnd: echo "Ending the build"
+    end: echo "Ending the build"
 
 plugins:
   - type: '@netlify/plugin-svgoptimizer'

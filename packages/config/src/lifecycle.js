@@ -47,17 +47,17 @@ const LIFECYCLE = [
   'saveCache',
   'postSaveCache',
   /**
-   * `onSuccess` - Runs on build success
+   * `success` - Runs on build success
    */
-  'onSuccess',
+  'success',
   /**
-   * `onError` - Runs on build error
+   * `error` - Runs on build error
    */
-  'onError',
+  'error',
   /**
-   * `onEnd` - Runs on build error or success
+   * `end` - Runs on build error or success
    */
-  'onEnd',
+  'end',
 ]
 
 module.exports = { LIFECYCLE }

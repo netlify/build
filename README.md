@@ -27,9 +27,9 @@ Netlify build is the next generation of CI/CD tooling for modern web application
 - [lifecycle.package](#lifecyclepackage)
 - [lifecycle.preDeploy](#lifecyclepredeploy)
 - [lifecycle.saveCache](#lifecyclesavecache)
-- [lifecycle.onSuccess](#lifecycleonsuccess)
-- [lifecycle.onError](#lifecycleonerror)
-- [lifecycle.onEnd](#lifecycleonend)
+- [lifecycle.success](#lifecyclesuccess)
+- [lifecycle.error](#lifecycleerror)
+- [lifecycle.end](#lifecycleend)
 - [Configuration](#configuration)
 - [Plugins](#plugins)
 - [What can plugins do?](#what-can-plugins-do)
@@ -129,9 +129,9 @@ the Netlify build operates.
 | ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclepackage">package</a>** ‏‏‎ ‏‏‎ ‏‏‎               | Package & optimize artifact              |
 | ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclepredeploy">preDeploy</a>** ‏‏‎ ‏‏‎ ‏‏‎           | Runs before built artifacts are deployed |
 | ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclesavecache">saveCache</a>** ‏‏‎ ‏‏‎ ‏‏‎           | Save cached assets                       |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleonsuccess">onSuccess</a>** ‏‏‎ ‏‏‎ ‏‏‎           | Runs on build success                    |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleonerror">onError</a>** ‏‏‎ ‏‏‎ ‏‏‎               | Runs on build error                      |
-| 🎉 ‏‏‎ **<a href="#lifecycleonend">onEnd</a>** ‏‏‎ ‏‏‎ ‏‏‎                          | Runs on build error or success           |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclesuccess">success</a>** ‏‏‎ ‏‏‎ ‏‏‎               | Runs on build success                    |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleerror">error</a>** ‏‏‎ ‏‏‎ ‏‏‎                   | Runs on build error                      |
+| 🎉 ‏‏‎ **<a href="#lifecycleend">end</a>** ‏‏‎ ‏‏‎ ‏‏‎                              | Runs on build error or success           |
 
 <!-- AUTO-GENERATED-CONTENT:END (LIFECYCLE_TABLE) -->
 
@@ -504,24 +504,24 @@ build:
 
 </details>
 
-### lifecycle.onSuccess
+### lifecycle.success
 
-`onSuccess` - Runs on build success
+`success` - Runs on build success
 
 <details>
-  <summary>Using onSuccess</summary>
+  <summary>Using success</summary>
   
   <br/>
 
 **1. Using with a Plugin**
 
-Below is an example plugin using the `onSuccess` hook
+Below is an example plugin using the `success` hook
 
 ```js
 module.exports = function myPlugin(pluginConfig) {
   return {
-    onSuccess: () => {
-      console.log('Do thing on onSuccess step')
+    success: () => {
+      console.log('Do thing on success step')
     },
   }
 }
@@ -541,30 +541,30 @@ plugins:
 ```yml
 build:
   lifecycle:
-    onSuccess:
-      - echo "Do thing on onSuccess step"
+    success:
+      - echo "Do thing on success step"
 ```
 
 </details>
 
-### lifecycle.onError
+### lifecycle.error
 
-`onError` - Runs on build error
+`error` - Runs on build error
 
 <details>
-  <summary>Using onError</summary>
+  <summary>Using error</summary>
   
   <br/>
 
 **1. Using with a Plugin**
 
-Below is an example plugin using the `onError` hook
+Below is an example plugin using the `error` hook
 
 ```js
 module.exports = function myPlugin(pluginConfig) {
   return {
-    onError: () => {
-      console.log('Do thing on onError step')
+    error: () => {
+      console.log('Do thing on error step')
     },
   }
 }
@@ -584,30 +584,30 @@ plugins:
 ```yml
 build:
   lifecycle:
-    onError:
-      - echo "Do thing on onError step"
+    error:
+      - echo "Do thing on error step"
 ```
 
 </details>
 
-### lifecycle.onEnd
+### lifecycle.end
 
-`onEnd` - Runs on build error or success
+`end` - Runs on build error or success
 
 <details>
-  <summary>Using onEnd</summary>
+  <summary>Using end</summary>
   
   <br/>
 
 **1. Using with a Plugin**
 
-Below is an example plugin using the `onEnd` hook
+Below is an example plugin using the `end` hook
 
 ```js
 module.exports = function myPlugin(pluginConfig) {
   return {
-    onEnd: () => {
-      console.log('Do thing on onEnd step')
+    end: () => {
+      console.log('Do thing on end step')
     },
   }
 }
@@ -627,8 +627,8 @@ plugins:
 ```yml
 build:
   lifecycle:
-    onEnd:
-      - echo "Do thing on onEnd step"
+    end:
+      - echo "Do thing on end step"
 ```
 
 </details>
@@ -703,7 +703,7 @@ module.exports = {
   postBuild: () => {
     console.log('Run custom logic after build happens')
   },
-  onEnd: () => {
+  end: () => {
     console.log('Run custom logic at the end of the build')
   },
 }

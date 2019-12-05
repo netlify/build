@@ -1,4 +1,4 @@
 build:
   lifecycle:
     build: node --invalid
-    onEnd: echo onEnd
+    end: echo end

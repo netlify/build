@@ -42,16 +42,16 @@ const getHookInstructions = function({
 }
 
 const isEndInstruction = function({ hook }) {
-  return hook === 'onEnd'
+  return hook === 'end'
 }
 
 const isErrorInstruction = function({ hook }) {
-  return hook === 'onError'
+  return hook === 'error'
 }
 
 // Run all instructions.
-// If an error arises, runs `onError` hooks.
-// Runs `onEnd` hooks at the end, whether an error was thrown or not.
+// If an error arises, runs `error` hooks.
+// Runs `end` hooks at the end, whether an error was thrown or not.
 const runInstructions = async function({
   buildInstructions,
   endInstructions,
@@ -73,10 +73,10 @@ const runInstructions = async function({
 }
 
 // Run a set of instructions.
-// `onError` and `onEnd` do not `failFast`, i.e. if they fail, the other hooks
+// `error` and `end` do not `failFast`, i.e. if they fail, the other hooks
 // of the same name keep running. However the failure is still eventually
-// thrown. This allows users to be notified of issues inside their `onError` or
-// `onEnd` hooks.
+// thrown. This allows users to be notified of issues inside their `error` or
+// `end` hooks.
 const execInstructions = async function(instructions, { configPath, baseDir, failFast, error }) {
   const { failure, manifest: manifestA } = await pReduce(
     instructions,

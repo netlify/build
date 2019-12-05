@@ -21,9 +21,9 @@ running things after your site build has completed.
 | ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **package** ‏‏‎  ‏‏‎  ‏‏‎  | Package & optimize artifact |
 | ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **preDeploy** ‏‏‎  ‏‏‎  ‏‏‎  | Runs before built artifacts are deployed |
 | ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **saveCache** ‏‏‎  ‏‏‎  ‏‏‎  | Save cached assets |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **onSuccess** ‏‏‎  ‏‏‎  ‏‏‎  | Runs on build success |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **onError** ‏‏‎  ‏‏‎  ‏‏‎  | Runs on build error |
-| 🎉 ‏‏‎ **onEnd** ‏‏‎  ‏‏‎  ‏‏‎  | Runs on build error or success |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **success** ‏‏‎  ‏‏‎  ‏‏‎  | Runs on build success |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **error** ‏‏‎  ‏‏‎  ‏‏‎  | Runs on build error |
+| 🎉 ‏‏‎ **end** ‏‏‎  ‏‏‎  ‏‏‎  | Runs on build error or success |
 <!-- AUTO-GENERATED-CONTENT:END (LIFECYCLE_TABLE) -->
 
 ## Anatomy of a plugin
