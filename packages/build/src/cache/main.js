@@ -49,6 +49,11 @@ const ARTIFACTS = [
   { path: '~/.wasmer/cache' },
   // Go dependencies
   { path: '~/.gimme_cache' },
+  // TODO: the buildbot currently uses different file paths. Once Netlify Build
+  // handles both saving cache and restoring cache, this should not be an issue
+  // anymore.
+  //   CACHE_DIR/node_version -> CACHE_DIR/.nvm/versions/node[/$NODE_VERSION]
+  //   CACHE_DIR/ruby_version -> CACHE_DIR/.rvm/rubies[/ruby-$RUBY_VERSION]
   // nvm
   { path: '~/.nvm/versions/node' },
   // TODO: only cache rvm when the version is not already in the Docker image,
