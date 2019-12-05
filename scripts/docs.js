@@ -156,7 +156,10 @@ function parseJsDoc(contents) {
 function sortPlugins(a, b) {
   const aName = a.name.toLowerCase()
   const bName = b.name.toLowerCase()
-  return aName.replace(PLUGIN_NAME_REGEX, '').localeCompare(bName.replace(PLUGIN_NAME_REGEX, '')) || aName.localeCompare(bName)
+  return (
+    aName.replace(PLUGIN_NAME_REGEX, '').localeCompare(bName.replace(PLUGIN_NAME_REGEX, '')) ||
+    aName.localeCompare(bName)
+  )
 }
 
 function formatPluginName(string) {
