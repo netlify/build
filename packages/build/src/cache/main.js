@@ -72,15 +72,7 @@ const saveCache = async function({ baseDir, cacheDir, path }) {
 
   logCacheDir(path)
 
-  await del(cachePath, { force: true })
-
-  // In CI, files are directly moved, which is faster.
-  // But locally, we want to keep the source files.
-  if (isNetlifyCI()) {
-    await moveFile(srcPath, cachePath, { overwrite: false })
-  } else {
-    await cpy(basename(srcPath), dirname(cachePath), { cwd: dirname(srcPath), parents: true, overwrite: false })
-  }
+  await persistCache(srcPath, cachePath)
 }
 
 const parseCachePath = function(path, baseDir, cacheDir) {
@@ -104,6 +96,22 @@ const getBase = function(base, baseDir) {
   }
 
   return resolve(baseDir, base)
+}
+
+// In CI, files are directly moved, which is faster.
+// But locally, we want to keep the source files.
+const persistCache = async function(srcPath, cachePath) {
+  await del(cachePath, { force: true })
+
+  if (!isNetlifyCI()) {
+    return cpy(basename(srcPath), dirname(cachePath), {
+      cwd: dirname(srcPath),
+      parents: true,
+      overwrite: false,
+    })
+  }
+
+  await moveFile(srcPath, cachePath, { overwrite: false })
 }
 
 module.exports = { cacheArtifacts }
