@@ -16,23 +16,17 @@ const LIFECYCLE = [
   'install',
   'postInstall',
   /**
-   * `preBuild` - Runs before functions & build commands run
-   */
-  'preBuild',
-  /**
    * `build` - Build commands are executed
    */
+  'preBuild',
   'build',
+  'postBuild',
   /**
    * `functionsBuild` - Build the serverless functions
    */
   'preFunctionsBuild',
   'functionsBuild',
   'postFunctionsBuild',
-  /**
-   * `postBuild` - Runs after site & functions have been built
-   */
-  'postBuild',
   /**
    * `package` - Package & optimize artifact
    */
