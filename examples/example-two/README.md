@@ -47,7 +47,7 @@ how the Netlify build operates.
 | ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclesavecache">saveCache</a>** ‏‏‎ ‏‏‎ ‏‏‎           | Save cached assets                       |
 | ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleonsuccess">onSuccess</a>** ‏‏‎ ‏‏‎ ‏‏‎           | Runs on build success                    |
 | ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleonerror">onError</a>** ‏‏‎ ‏‏‎ ‏‏‎               | Runs on build error                      |
-| 🎉 ‏‏‎ **<a href="#lifecyclefinally">finally</a>** ‏‏‎ ‏‏‎ ‏‏‎                      | Runs on build error or success           |
+| 🎉 ‏‏‎ **<a href="#lifecycleonend">onEnd</a>** ‏‏‎ ‏‏‎ ‏‏‎                          | Runs on build error or success           |
 
 <!-- AUTO-GENERATED-CONTENT:END (LIFECYCLE_TABLE) -->
 

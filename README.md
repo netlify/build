@@ -119,21 +119,19 @@ the Netlify build operates.
 
 <!-- AUTO-GENERATED-CONTENT:START (LIFECYCLE_TABLE) -->
 
-| Lifecycle hook                                                                      | Description                                 |
-| :---------------------------------------------------------------------------------- | :------------------------------------------ |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleinit">init</a>** ‏‏‎ ‏‏‎ ‏‏‎                     | Runs before anything else                   |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclegetcache">getCache</a>** ‏‏‎ ‏‏‎ ‏‏‎             | Fetch previous build cache                  |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleinstall">install</a>** ‏‏‎ ‏‏‎ ‏‏‎               | Install project dependencies                |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleprebuild">preBuild</a>** ‏‏‎ ‏‏‎ ‏‏‎             | Runs before functions & build commands run  |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclebuild">build</a>** ‏‏‎ ‏‏‎ ‏‏‎                   | Build commands are executed                 |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclefunctionsbuild">functionsBuild</a>** ‏‏‎ ‏‏‎ ‏‏‎ | Build the serverless functions              |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclepostbuild">postBuild</a>** ‏‏‎ ‏‏‎ ‏‏‎           | Runs after site & functions have been built |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclepackage">package</a>** ‏‏‎ ‏‏‎ ‏‏‎               | Package & optimize artifact                 |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclepredeploy">preDeploy</a>** ‏‏‎ ‏‏‎ ‏‏‎           | Runs before built artifacts are deployed    |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclesavecache">saveCache</a>** ‏‏‎ ‏‏‎ ‏‏‎           | Save cached assets                          |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleonsuccess">onSuccess</a>** ‏‏‎ ‏‏‎ ‏‏‎           | Runs on build success                       |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleonerror">onError</a>** ‏‏‎ ‏‏‎ ‏‏‎               | Runs on build error                         |
-| 🎉 ‏‏‎ **<a href="#lifecycleonend">onEnd</a>** ‏‏‎ ‏‏‎ ‏‏‎                          | Runs on build error or success              |
+| Lifecycle hook                                                                      | Description                              |
+| :---------------------------------------------------------------------------------- | :--------------------------------------- |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleinit">init</a>** ‏‏‎ ‏‏‎ ‏‏‎                     | Runs before anything else                |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclegetcache">getCache</a>** ‏‏‎ ‏‏‎ ‏‏‎             | Fetch previous build cache               |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleinstall">install</a>** ‏‏‎ ‏‏‎ ‏‏‎               | Install project dependencies             |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclebuild">build</a>** ‏‏‎ ‏‏‎ ‏‏‎                   | Build commands are executed              |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclefunctionsbuild">functionsBuild</a>** ‏‏‎ ‏‏‎ ‏‏‎ | Build the serverless functions           |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclepackage">package</a>** ‏‏‎ ‏‏‎ ‏‏‎               | Package & optimize artifact              |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclepredeploy">preDeploy</a>** ‏‏‎ ‏‏‎ ‏‏‎           | Runs before built artifacts are deployed |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclesavecache">saveCache</a>** ‏‏‎ ‏‏‎ ‏‏‎           | Save cached assets                       |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleonsuccess">onSuccess</a>** ‏‏‎ ‏‏‎ ‏‏‎           | Runs on build success                    |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleonerror">onError</a>** ‏‏‎ ‏‏‎ ‏‏‎               | Runs on build error                      |
+| 🎉 ‏‏‎ **<a href="#lifecycleonend">onEnd</a>** ‏‏‎ ‏‏‎ ‏‏‎                          | Runs on build error or success           |
 
 <!-- AUTO-GENERATED-CONTENT:END (LIFECYCLE_TABLE) -->
 
@@ -168,7 +166,7 @@ The Lifecycle flows the events in order and executes and their `pre` & `post` co
 
 <details>
   <summary>Using init</summary>
-
+  
   <br/>
 
 **1. Using with a Plugin**
@@ -211,7 +209,7 @@ build:
 
 <details>
   <summary>Using getCache</summary>
-
+  
   <br/>
 
 **1. Using with a Plugin**
@@ -254,7 +252,7 @@ build:
 
 <details>
   <summary>Using install</summary>
-
+  
   <br/>
 
 **1. Using with a Plugin**
@@ -297,7 +295,7 @@ build:
 
 <details>
   <summary>Using build</summary>
-
+  
   <br/>
 
 **1. Using with a Plugin**
@@ -340,7 +338,7 @@ build:
 
 <details>
   <summary>Using functionsBuild</summary>
-
+  
   <br/>
 
 **1. Using with a Plugin**
@@ -383,7 +381,7 @@ build:
 
 <details>
   <summary>Using package</summary>
-
+  
   <br/>
 
 **1. Using with a Plugin**
@@ -426,7 +424,7 @@ build:
 
 <details>
   <summary>Using preDeploy</summary>
-
+  
   <br/>
 
 **1. Using with a Plugin**
@@ -469,7 +467,7 @@ build:
 
 <details>
   <summary>Using saveCache</summary>
-
+  
   <br/>
 
 **1. Using with a Plugin**
@@ -512,7 +510,7 @@ build:
 
 <details>
   <summary>Using onSuccess</summary>
-
+  
   <br/>
 
 **1. Using with a Plugin**
@@ -555,7 +553,7 @@ build:
 
 <details>
   <summary>Using onError</summary>
-
+  
   <br/>
 
 **1. Using with a Plugin**
@@ -598,7 +596,7 @@ build:
 
 <details>
   <summary>Using onEnd</summary>
-
+  
   <br/>
 
 **1. Using with a Plugin**
