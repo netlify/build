@@ -13,7 +13,7 @@ const {
 
 module.exports = {
   name: '@netlify/plugin-twiliosms',
-  onEnd: async ({ pluginConfig }) => {
+  end: async ({ pluginConfig }) => {
     console.log('Finish the build up, prepping to text!')
     if (!ACCOUNT_SID) {
       throw new Error('No ACCOUNT_SID found for twilio plugin')

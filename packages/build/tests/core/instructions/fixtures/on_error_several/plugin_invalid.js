@@ -1,6 +1,6 @@
 module.exports = {
   name: 'netlify-plugin-invalid',
-  onError() {
+  error() {
     console.log('Plugin invalid')
     throw new Error('Plugin invalid test')
   },

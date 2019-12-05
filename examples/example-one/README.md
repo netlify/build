@@ -19,7 +19,7 @@ build:
       - echo "Starting the build"
     build:
       - npm run makeSite
-    onEnd:
+    end:
       - echo "Ending the build"
 
 # Build plugins

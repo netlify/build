@@ -11,7 +11,7 @@ module.exports = {
     console.log('test')
     throw new TestError('test')
   },
-  onError({ error: { name, message, stack } }) {
+  error({ error: { name, message, stack } }) {
     console.log(name)
     console.log(message)
     console.log(stack)

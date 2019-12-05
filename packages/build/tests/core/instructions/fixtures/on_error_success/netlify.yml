@@ -1,4 +1,4 @@
 build:
   lifecycle:
     build: node --version
-    onError: echo onError
+    error: echo error

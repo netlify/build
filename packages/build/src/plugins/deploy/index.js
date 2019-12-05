@@ -31,7 +31,7 @@ module.exports = {
     })
   },
 
-  onError({ error: { message } }) {
+  error({ error: { message } }) {
     console.log('do something with error', message)
     if (message.match(/invalid json response body/)) {
       console.log('Attempt to correct build')
