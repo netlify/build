@@ -12,7 +12,6 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@netlify/build": "file:../../packages/build",
-    "@netlify/plugin-sitemap": "file:../../packages/netlify-plugin-sitemap"
+    "@netlify/build": "file:../../packages/build"
   }
 }
