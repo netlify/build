@@ -51,6 +51,8 @@ const ARTIFACTS = [
   { path: '~/.gimme_cache' },
   // nvm
   { path: '~/.nvm/versions/node' },
+  // TODO: only cache rvm when the version is not already in the Docker image,
+  // i.e. it is a custom version
   // rvm
   { path: '~/.rvm/rubies' },
 ]
