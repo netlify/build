@@ -23,8 +23,9 @@ const removePrefix = function([name, value]) {
     .replace(ENV_CONFIG_PREFIX, '')
     .toLowerCase()
     .replace(/_/g, '.')
+  const nameB = fixLegacy(nameA)
   const valueA = coerceType(value)
-  return set({}, nameA, valueA)
+  return set({}, nameB, valueA)
 }
 
 const ENV_CONFIG_PREFIX = 'NETLIFY_CONFIG_'
@@ -36,6 +37,19 @@ const coerceType = function(value) {
   } catch (error) {
     return value
   }
+}
+
+// This is due to https://github.com/netlify/buildbot/pull/513/files#diff-16120d2ef3dd18199ee88957bb11cf51R58
+// to prevent warning messages from being printed.
+// TODO: remove this once the buildbot has been updated to using
+// `NETLIFY_CONFIG_BUILD_LIFECYCLE_ONBUILD` instead of
+// `NETLIFY_CONFIG_BUILD_LIFECYCLE_BUILD`.
+const fixLegacy = function(name) {
+  if (name === 'build.lifecycle.build') {
+    return 'build.lifecycle.onbuild'
+  }
+
+  return name
 }
 
 module.exports = { addEnvVars }
