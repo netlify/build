@@ -13,3 +13,7 @@ test('Array commands', async t => {
 test('build.command', async t => {
   await runFixture(t, 'command')
 })
+
+test('build.lifecycle.build', async t => {
+  await runFixture(t, 'old_lifecycle')
+})
