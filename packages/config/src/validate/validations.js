@@ -3,7 +3,7 @@ const { cyan } = require('chalk')
 
 const { LIFECYCLE, LEGACY_LIFECYCLE } = require('../lifecycle')
 
-const { isString, isBoolean, validProperties } = require('./helpers')
+const { isString, isBoolean, validProperties, deprecatedProperties } = require('./helpers')
 
 // List of validations performed on the configuration file.
 // Validation are performed in order: parent should be before children.
@@ -99,6 +99,11 @@ Please rename ${cyan.bold('build.command')} to ${cyan.bold('build.lifecycle.onBu
     property: 'build.lifecycle',
     ...validProperties(LIFECYCLE, Object.keys(LEGACY_LIFECYCLE)),
     example: { build: { lifecycle: { onBuild: 'npm run build' } } },
+  },
+  {
+    property: 'build.lifecycle.*',
+    ...deprecatedProperties(LEGACY_LIFECYCLE, event => ({ build: { lifecycle: { [event]: 'npm run build' } } })),
+    warn: true,
   },
   {
     property: 'build.lifecycle.*',
