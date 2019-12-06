@@ -59,4 +59,31 @@ const LIFECYCLE = [
   'onEnd',
 ]
 
-module.exports = { LIFECYCLE }
+// TODO: remove after going out of beta
+const LEGACY_LIFECYCLE = {
+  init: 'onInit',
+  preGetCache: 'onPreGetCache',
+  getCache: 'onGetCache',
+  postGetCache: 'onPostGetCache',
+  preInstall: 'onPreInstall',
+  install: 'onInstall',
+  postInstall: 'onPostInstall',
+  preBuild: 'onPreBuild',
+  build: 'onBuild',
+  postBuild: 'onPostBuild',
+  preFunctionsBuild: 'onPreFunctionsBuild',
+  functionsBuild: 'onFunctionsBuild',
+  postFunctionsBuild: 'onPostFunctionsBuild',
+  prePackage: 'onPrePackage',
+  package: 'onPackage',
+  postPackage: 'onPostPackage',
+  preDeploy: 'onPreDeploy',
+  preSaveCache: 'onPreSaveCache',
+  saveCache: 'onSaveCache',
+  postSaveCache: 'onPostSaveCache',
+  success: 'onSuccess',
+  error: 'onError',
+  end: 'onEnd',
+}
+
+module.exports = { LIFECYCLE, LEGACY_LIFECYCLE }

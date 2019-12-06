@@ -1,6 +1,8 @@
 const mapObj = require('map-obj')
 const deepMerge = require('deepmerge')
 
+const { LEGACY_LIFECYCLE } = require('./lifecycle.js')
+
 // Normalize configuration object
 const normalizeConfig = function(config) {
   const configA = deepMerge(DEFAULT_CONFIG, config)
@@ -33,8 +35,9 @@ const normalizeCommand = function(lifecycle, command) {
 }
 
 const normalizeLifecycle = function(hook, value) {
+  const hookA = LEGACY_LIFECYCLE[hook] === undefined ? hook : LEGACY_LIFECYCLE[hook]
   const valueA = typeof value === 'string' ? value.trim().split('\n') : value
-  return [hook, valueA]
+  return [hookA, valueA]
 }
 
 module.exports = { normalizeConfig }

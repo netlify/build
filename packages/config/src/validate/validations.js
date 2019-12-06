@@ -1,7 +1,7 @@
 const isPlainObj = require('is-plain-obj')
 const { cyan } = require('chalk')
 
-const { LIFECYCLE } = require('../lifecycle')
+const { LIFECYCLE, LEGACY_LIFECYCLE } = require('../lifecycle')
 
 const { isString, isBoolean, validProperties } = require('./helpers')
 
@@ -97,7 +97,7 @@ Please rename ${cyan.bold('build.command')} to ${cyan.bold('build.lifecycle.onBu
   },
   {
     property: 'build.lifecycle',
-    ...validProperties(LIFECYCLE),
+    ...validProperties(LIFECYCLE, Object.keys(LEGACY_LIFECYCLE)),
     example: { build: { lifecycle: { onBuild: 'npm run build' } } },
   },
   {
