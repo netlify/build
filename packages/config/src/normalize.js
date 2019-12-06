@@ -1,7 +1,7 @@
 const mapObj = require('map-obj')
 const deepMerge = require('deepmerge')
 
-const { LEGACY_LIFECYCLE } = require('./lifecycle.js')
+const { LEGACY_LIFECYCLE, normalizeLifecycleCase } = require('./lifecycle.js')
 
 // Normalize configuration object
 const normalizeConfig = function(config) {
@@ -35,9 +35,10 @@ const normalizeCommand = function(lifecycle, command) {
 }
 
 const normalizeLifecycle = function(hook, value) {
-  const hookA = LEGACY_LIFECYCLE[hook] === undefined ? hook : LEGACY_LIFECYCLE[hook]
+  const hookA = normalizeLifecycleCase(hook)
+  const hookB = LEGACY_LIFECYCLE[hookA] === undefined ? hookA : LEGACY_LIFECYCLE[hookA]
   const valueA = typeof value === 'string' ? value.trim().split('\n') : value
-  return [hookA, valueA]
+  return [hookB, valueA]
 }
 
 module.exports = { normalizeConfig }
