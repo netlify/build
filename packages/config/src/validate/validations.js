@@ -83,7 +83,7 @@ const VALIDATIONS = [
   },
   {
     property: 'build.command',
-    check: (value, { lifecycle }) => lifecycle === undefined,
+    check: (value, key, { lifecycle }) => lifecycle === undefined,
     message: `must not be defined when ${cyan.bold('build.lifecycle')} is also defined.
 Please rename ${cyan.bold('build.command')} to ${cyan.bold('build.lifecycle.onBuild.')}`,
     example: { build: { lifecycle: { onBuild: 'npm run build' } } },
