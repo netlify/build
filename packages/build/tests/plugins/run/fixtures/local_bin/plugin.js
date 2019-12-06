@@ -2,7 +2,7 @@ const execa = require('execa')
 
 module.exports = {
   name: 'netlify-plugin-test',
-  async init() {
+  async onInit() {
     await execa('atob', ['dGVzdA=='], { stdio: 'inherit' })
   },
 }

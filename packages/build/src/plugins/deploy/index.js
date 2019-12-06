@@ -5,7 +5,7 @@ const { CONTEXT } = process.env
 module.exports = {
   name: '@netlify/plugin-deploy',
 
-  async deploy({
+  async onDeploy({
     config: {
       build: { functions },
     },
@@ -31,7 +31,7 @@ module.exports = {
     })
   },
 
-  error({ error: { message } }) {
+  onError({ error: { message } }) {
     console.log('do something with error', message)
     if (message.match(/invalid json response body/)) {
       console.log('Attempt to correct build')

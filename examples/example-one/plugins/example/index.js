@@ -2,35 +2,35 @@
 module.exports = function netlifyPlugin() {
   return {
     name: 'netlify-plugin-one',
-    init: () => {
-      console.log('Hi from init')
+    onInit: () => {
+      console.log('Hi from onInit')
     },
-    getCache: () => {
-      console.log('Hi from getCache')
+    onGetCache: () => {
+      console.log('Hi from onGetCache')
     },
-    install: () => {
-      console.log('Hi from install')
+    onInstall: () => {
+      console.log('Hi from onInstall')
     },
-    preBuild: () => {
-      console.log('Hi from preBuild')
+    onPreBuild: () => {
+      console.log('Hi from onPreBuild')
     },
-    build: () => {
-      console.log('Hi from build')
+    onBuild: () => {
+      console.log('Hi from onBuild')
     },
-    postBuild: () => {
-      console.log('Hi from postBuild')
+    onPostBuild: () => {
+      console.log('Hi from onPostBuild')
     },
-    package: () => {
-      console.log('Hi from package')
+    onPackage: () => {
+      console.log('Hi from onPackage')
     },
-    preDeploy: () => {
-      console.log('Hi from preDeploy')
+    onPreDeploy: () => {
+      console.log('Hi from onPreDeploy')
     },
-    saveCache: () => {
-      console.log('Hi from saveCache')
+    onSaveCache: () => {
+      console.log('Hi from onSaveCache')
     },
-    end: () => {
-      console.log('Hi from end')
+    onEnd: () => {
+      console.log('Hi from onEnd')
     },
   }
 }

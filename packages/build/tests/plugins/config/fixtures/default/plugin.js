@@ -5,7 +5,7 @@ module.exports = {
       test: { default: 'test' },
     },
   },
-  init({ pluginConfig: { test } }) {
+  onInit({ pluginConfig: { test } }) {
     console.log(test)
   },
 }

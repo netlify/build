@@ -1,5 +1,5 @@
 build:
   lifecycle:
-    build: node --invalid
-    error: echo error
-    end: echo end
+    onBuild: node --invalid
+    onError: echo onError
+    onEnd: echo onEnd

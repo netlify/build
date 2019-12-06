@@ -7,11 +7,11 @@ class TestError extends Error {
 
 module.exports = {
   name: 'netlify-plugin-test',
-  build() {
+  onBuild() {
     console.log('test')
     throw new TestError('test')
   },
-  error({ error: { name, message, stack } }) {
+  onError({ error: { name, message, stack } }) {
     console.log(name)
     console.log(message)
     console.log(stack)

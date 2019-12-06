@@ -13,7 +13,7 @@ test('Test TOML', async t => {
     build: {
       publish: normalize(`${FIXTURES_DIR}/dist`),
       lifecycle: {
-        build: ['npm run build'],
+        onBuild: ['npm run build'],
       },
       functions: normalize(`${FIXTURES_DIR}/functions`),
     },
@@ -28,7 +28,7 @@ test('Test YAML', async t => {
     build: {
       publish: normalize(`${FIXTURES_DIR}/dist`),
       lifecycle: {
-        build: ['npm run build'],
+        onBuild: ['npm run build'],
       },
       functions: normalize(`${FIXTURES_DIR}/functions`),
     },
@@ -43,7 +43,7 @@ test('Test JSON', async t => {
     build: {
       publish: normalize(`${FIXTURES_DIR}/dist`),
       lifecycle: {
-        build: ['npm run build'],
+        onBuild: ['npm run build'],
       },
       functions: normalize(`${FIXTURES_DIR}/functions`),
     },

@@ -8,7 +8,7 @@ const pkg = require('./package.json')
 
 module.exports = {
   name: '@netlify/plugin-svgoptimizer',
-  init: async ({ pluginConfig }) => {
+  onInit: async ({ pluginConfig }) => {
     const srcDirectory = pluginConfig.directory
 
     if (!srcDirectory) {

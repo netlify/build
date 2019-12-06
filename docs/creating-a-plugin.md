@@ -5,25 +5,27 @@ Netlify Plugins extend the functionality of the Netlify Build process.
 Plugins are plain JavaScript objects that allow users to hook into the different lifecycle steps happening during their
 site builds.
 
-For example, hooking into the `preBuild` step to run something before your build command. Or the `postBuild` hook for
-running things after your site build has completed.
+For example, hooking into the `onPreBuild` step to run something before your build command. Or the `onPostBuild` hook
+for running things after your site build has completed.
 
 ## Available Lifecycle Hooks
 
 <!-- AUTO-GENERATED-CONTENT:START (LIFECYCLE_TABLE:noAnchors=true) -->
-| Lifecycle hook | Description |
-|:------|:-------|
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **init** ‏‏‎  ‏‏‎  ‏‏‎  | Runs before anything else |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **getCache** ‏‏‎  ‏‏‎  ‏‏‎  | Fetch previous build cache |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **install** ‏‏‎  ‏‏‎  ‏‏‎  | Install project dependencies |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **build** ‏‏‎  ‏‏‎  ‏‏‎  | Build commands are executed |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **functionsBuild** ‏‏‎  ‏‏‎  ‏‏‎  | Build the serverless functions |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **package** ‏‏‎  ‏‏‎  ‏‏‎  | Package & optimize artifact |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **preDeploy** ‏‏‎  ‏‏‎  ‏‏‎  | Runs before built artifacts are deployed |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **saveCache** ‏‏‎  ‏‏‎  ‏‏‎  | Save cached assets |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **success** ‏‏‎  ‏‏‎  ‏‏‎  | Runs on build success |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **error** ‏‏‎  ‏‏‎  ‏‏‎  | Runs on build error |
-| 🎉 ‏‏‎ **end** ‏‏‎  ‏‏‎  ‏‏‎  | Runs on build error or success |
+
+| Lifecycle hook                                 | Description                              |
+| :--------------------------------------------- | :--------------------------------------- |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **onInit** ‏‏‎ ‏‏‎ ‏‏‎           | Runs before anything else                |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **onGetCache** ‏‏‎ ‏‏‎ ‏‏‎       | Fetch previous build cache               |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **onInstall** ‏‏‎ ‏‏‎ ‏‏‎        | Install project dependencies             |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **onBuild** ‏‏‎ ‏‏‎ ‏‏‎          | Build commands are executed              |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **onFunctionsBuild** ‏‏‎ ‏‏‎ ‏‏‎ | Build the serverless functions           |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **onPackage** ‏‏‎ ‏‏‎ ‏‏‎        | Package & optimize artifact              |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **onPreDeploy** ‏‏‎ ‏‏‎ ‏‏‎      | Runs before built artifacts are deployed |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **onSaveCache** ‏‏‎ ‏‏‎ ‏‏‎      | Save cached assets                       |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **onSuccess** ‏‏‎ ‏‏‎ ‏‏‎        | Runs on build success                    |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **onError** ‏‏‎ ‏‏‎ ‏‏‎          | Runs on build error                      |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **onEnd** ‏‏‎ ‏‏‎ ‏‏‎            | Runs on build error or success           |
+
 <!-- AUTO-GENERATED-CONTENT:END (LIFECYCLE_TABLE) -->
 
 ## Anatomy of a plugin
@@ -33,13 +35,13 @@ Plugins are JavaScript objects like so:
 ```js
 module.exports = {
   name: 'netlify-plugin-hello-world',
-  preBuild: () => {
-    console.log('Hello world from preBuild lifecycle step!')
+  onPreBuild: () => {
+    console.log('Hello world from onPreBuild lifecycle step!')
   },
 }
 ```
 
-This plugin will log out `Hello world from preBuild lifecycle step!` before right before the build commands are run.
+This plugin will log out `Hello world from onPreBuild lifecycle step!` before right before the build commands are run.
 
 Save the plugin code locally to a `./plugins/netlify-plugin-hello-world` folder as `index.js`. This will allow us to use
 the plugin in the next step.
@@ -67,7 +69,7 @@ execute a "dry run" of our build and show us the plugins & commands that will ex
 netlify build --dry
 ```
 
-Notice how our `preBuild` step from our `netlify-plugin-hello-world` is listed in the things that execute.
+Notice how our `onPreBuild` step from our `netlify-plugin-hello-world` is listed in the things that execute.
 
 Now, let's run the build!
 
@@ -75,7 +77,7 @@ Now, let's run the build!
 netlify build
 ```
 
-This will execute our `preBuild` function and the `npm run build` command.
+This will execute our `onPreBuild` function and the `npm run build` command.
 
 ## Adding configuration to plugins
 
@@ -97,8 +99,8 @@ To access them in your plugin code you can:
 ```js
 module.exports = {
   name: 'netlify-plugin-hello-world',
-  preBuild: ({ pluginConfig }) => {
-    console.log('Hello world from preBuild lifecycle step!')
+  onPreBuild: ({ pluginConfig }) => {
+    console.log('Hello world from onPreBuild lifecycle step!')
     console.log(pluginConfig.foo) // bar
     console.log(pluginConfig.fizz) // pop
   },
@@ -114,8 +116,8 @@ module.exports = function helloWorldPlugin(pluginConfig) {
 
   return {
     name: 'netlify-plugin-hello-world',
-    preBuild: ({ pluginConfig, config, constants }) => {
-      console.log('Hello world from preBuild lifecycle step!')
+    onPreBuild: ({ pluginConfig, config, constants }) => {
+      console.log('Hello world from onPreBuild lifecycle step!')
       console.log(pluginConfig.foo) // bar
       console.log(pluginConfig.fizz) // pop
     },
@@ -138,7 +140,7 @@ module.exports = {
       increment: { type: 'number', minimum: 0, maximum: 10, default: 5 }
     }
   },
-  preBuild: ({ pluginConfig }) => { ... },
+  onPreBuild: ({ pluginConfig }) => { ... },
 }
 ```
 
@@ -158,7 +160,7 @@ Inside of each lifecycle function there is a `constants` key.
 ```js
 module.exports = {
   name: 'netlify-plugin-hello-world',
-  preBuild: ({ constants }) => {
+  onPreBuild: ({ constants }) => {
     console.log(constants)
   },
 }
@@ -167,12 +169,13 @@ module.exports = {
 The `constants` key contains the following values:
 
 <!-- AUTO-GENERATED-CONTENT:START (CONSTANTS) -->
+
 - `CONFIG_PATH` Path to the netlify configuration file
 - `BUILD_DIR` The build directory of the site
 - `CACHE_DIR` The directory files can be cached in between builds
 - `FUNCTIONS_SRC` The directory where function source code lives
 - `FUNCTIONS_DIST` The directory where built serverless functions are placed before deployment
-<!-- AUTO-GENERATED-CONTENT:END -->
+  <!-- AUTO-GENERATED-CONTENT:END -->
 
 ## Publishing a plugin
 

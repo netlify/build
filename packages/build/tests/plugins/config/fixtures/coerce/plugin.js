@@ -5,7 +5,7 @@ module.exports = {
       test: { type: 'array' },
     },
   },
-  init({ pluginConfig: { test } }) {
+  onInit({ pluginConfig: { test } }) {
     console.log(JSON.stringify(test))
   },
 }

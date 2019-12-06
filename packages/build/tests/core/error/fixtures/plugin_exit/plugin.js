@@ -1,9 +1,9 @@
 module.exports = {
   name: 'netlify-plugin-test',
-  async init() {
+  async onInit() {
     process.exit(1)
   },
-  build() {
+  onBuild() {
     console.log('test')
   },
 }
