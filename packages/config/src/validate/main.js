@@ -55,8 +55,14 @@ const validateProperty = function(
     return
   }
 
-  throw new Error(`Configuration property ${cyan.bold(propPath)} ${message}
-${getExample({ value, key, prevPath, example })}`)
+  reportError({ prevPath, propPath, message, example, value, key, parent })
+}
+
+const reportError = function({ prevPath, propPath, message, example, value, key, parent }) {
+  const messageA = typeof message === 'function' ? message(value, key, parent) : message
+  const error = `Configuration property ${cyan.bold(propPath)} ${messageA}
+${getExample({ value, key, prevPath, example })}`
+  throw new Error(error)
 }
 
 // Recurse over children (each part of the `property` array).
