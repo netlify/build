@@ -3,6 +3,7 @@ const { validatePluginConfig } = require('../config/validate_props.js')
 
 const { getLogic } = require('./logic')
 const { validatePlugin } = require('./validate')
+const { normalizePlugin } = require('./normalize')
 const { getApiClient } = require('./api')
 const { getConstants } = require('./constants')
 
@@ -14,12 +15,15 @@ const { getConstants } = require('./constants')
 const loadPlugin = async function(payload) {
   const constants = await getConstants(payload)
   const logic = getLogic(payload, constants)
+
   validatePlugin(logic)
   validatePluginConfig(logic, payload)
 
-  const hooks = getPluginHooks(logic, payload)
+  const logicA = normalizePlugin(logic)
 
-  const context = getContext(logic, hooks, constants, payload)
+  const hooks = getPluginHooks(logicA, payload)
+
+  const context = getContext(logicA, hooks, constants, payload)
   return { context, hooks }
 }
 
