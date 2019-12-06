@@ -23,13 +23,13 @@ const normalizeLifecycles = function({
   return { ...config, build: { ...build, lifecycle: lifecycleB } }
 }
 
-// `build.lifecycle.build` was previously called `build.command`
+// `build.lifecycle.onBuild` was previously called `build.command`
 const normalizeCommand = function(lifecycle, command) {
   if (command === undefined) {
     return lifecycle
   }
 
-  return { ...lifecycle, build: command }
+  return { ...lifecycle, onBuild: command }
 }
 
 const normalizeLifecycle = function(hook, value) {

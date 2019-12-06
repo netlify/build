@@ -12,11 +12,11 @@ In the plugins, src, directory, add the path that the assets are in (last line i
 build:
   publish: build
   lifecycle:
-    init:
+    onInit:
       - echo "Starting the build"
-    build:
+    onBuild:
       - npm run build
-    end: echo "Ending the build"
+    onEnd: echo "Ending the build"
 
 plugins:
   - type: '@netlify/plugin-svgoptimizer'

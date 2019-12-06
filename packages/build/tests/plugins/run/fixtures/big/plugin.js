@@ -1,6 +1,6 @@
 module.exports = {
   name: 'netlify-plugin-test',
-  init() {
+  onInit() {
     console.log('a'.repeat(1e7))
   },
 }

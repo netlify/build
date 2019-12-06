@@ -19,17 +19,17 @@ Netlify build is the next generation of CI/CD tooling for modern web application
 - [1. Extending via config](#1-extending-via-config)
 - [2. Extending via plugins](#2-extending-via-plugins)
 - [Lifecycle](#lifecycle)
-- [lifecycle.init](#lifecycleinit)
-- [lifecycle.getCache](#lifecyclegetcache)
-- [lifecycle.install](#lifecycleinstall)
-- [lifecycle.build](#lifecyclebuild)
-- [lifecycle.functionsBuild](#lifecyclefunctionsbuild)
-- [lifecycle.package](#lifecyclepackage)
-- [lifecycle.preDeploy](#lifecyclepredeploy)
-- [lifecycle.saveCache](#lifecyclesavecache)
-- [lifecycle.success](#lifecyclesuccess)
-- [lifecycle.error](#lifecycleerror)
-- [lifecycle.end](#lifecycleend)
+- [lifecycle.onInit](#lifecycleoninit)
+- [lifecycle.onGetCache](#lifecycleongetcache)
+- [lifecycle.onInstall](#lifecycleoninstall)
+- [lifecycle.onBuild](#lifecycleonbuild)
+- [lifecycle.onFunctionsBuild](#lifecycleonfunctionsbuild)
+- [lifecycle.onPackage](#lifecycleonpackage)
+- [lifecycle.onPreDeploy](#lifecycleonpredeploy)
+- [lifecycle.onSaveCache](#lifecycleonsavecache)
+- [lifecycle.onSuccess](#lifecycleonsuccess)
+- [lifecycle.onError](#lifecycleonerror)
+- [lifecycle.onEnd](#lifecycleonend)
 - [Configuration](#configuration)
 - [Plugins](#plugins)
 - [What can plugins do?](#what-can-plugins-do)
@@ -79,12 +79,12 @@ build:
   publish: my-dist-folder
   # Run this lifecycle during build
   lifecycle:
-    init:
+    onInit:
       - npm run thing
       - echo "much wow"
-    preBuild: curl download-static-content
-    build: npm run build
-    postBuild:
+    onPreBuild: curl download-static-content
+    onBuild: npm run build
+    onPostBuild:
       - npx generate-sitemap
 ```
 
@@ -119,35 +119,35 @@ the Netlify build operates.
 
 <!-- AUTO-GENERATED-CONTENT:START (LIFECYCLE_TABLE) -->
 
-| Lifecycle hook                                                                      | Description                              |
-| :---------------------------------------------------------------------------------- | :--------------------------------------- |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleinit">init</a>** ‏‏‎ ‏‏‎ ‏‏‎                     | Runs before anything else                |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclegetcache">getCache</a>** ‏‏‎ ‏‏‎ ‏‏‎             | Fetch previous build cache               |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleinstall">install</a>** ‏‏‎ ‏‏‎ ‏‏‎               | Install project dependencies             |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclebuild">build</a>** ‏‏‎ ‏‏‎ ‏‏‎                   | Build commands are executed              |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclefunctionsbuild">functionsBuild</a>** ‏‏‎ ‏‏‎ ‏‏‎ | Build the serverless functions           |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclepackage">package</a>** ‏‏‎ ‏‏‎ ‏‏‎               | Package & optimize artifact              |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclepredeploy">preDeploy</a>** ‏‏‎ ‏‏‎ ‏‏‎           | Runs before built artifacts are deployed |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclesavecache">saveCache</a>** ‏‏‎ ‏‏‎ ‏‏‎           | Save cached assets                       |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecyclesuccess">success</a>** ‏‏‎ ‏‏‎ ‏‏‎               | Runs on build success                    |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleerror">error</a>** ‏‏‎ ‏‏‎ ‏‏‎                   | Runs on build error                      |
-| 🎉 ‏‏‎ **<a href="#lifecycleend">end</a>** ‏‏‎ ‏‏‎ ‏‏‎                              | Runs on build error or success           |
+| Lifecycle hook                                                                          | Description                              |
+| :-------------------------------------------------------------------------------------- | :--------------------------------------- |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleoninit">onInit</a>** ‏‏‎ ‏‏‎ ‏‏‎                     | Runs before anything else                |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleongetcache">onGetCache</a>** ‏‏‎ ‏‏‎ ‏‏‎             | Fetch previous build cache               |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleoninstall">onInstall</a>** ‏‏‎ ‏‏‎ ‏‏‎               | Install project dependencies             |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleonbuild">onBuild</a>** ‏‏‎ ‏‏‎ ‏‏‎                   | Build commands are executed              |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleonfunctionsbuild">onFunctionsBuild</a>** ‏‏‎ ‏‏‎ ‏‏‎ | Build the serverless functions           |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleonpackage">onPackage</a>** ‏‏‎ ‏‏‎ ‏‏‎               | Package & optimize artifact              |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleonpredeploy">onPreDeploy</a>** ‏‏‎ ‏‏‎ ‏‏‎           | Runs before built artifacts are deployed |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleonsavecache">onSaveCache</a>** ‏‏‎ ‏‏‎ ‏‏‎           | Save cached assets                       |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleonsuccess">onSuccess</a>** ‏‏‎ ‏‏‎ ‏‏‎               | Runs on build success                    |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleonerror">onError</a>** ‏‏‎ ‏‏‎ ‏‏‎                   | Runs on build error                      |
+| 🎉 ‏‏‎ **<a href="#lifecycleonend">onEnd</a>** ‏‏‎ ‏‏‎ ‏‏‎                              | Runs on build error or success           |
 
 <!-- AUTO-GENERATED-CONTENT:END (LIFECYCLE_TABLE) -->
 
-The Lifecycle flows the events in order and executes and their `pre` & `post` counterparts.
+The Lifecycle flows the events in order and executes and their `onPre` & `onPost` counterparts.
 
-`pre` happens before a specific event.
+`onPre` happens before a specific event.
 
-`post` happens after a specific event.
+`onPost` happens after a specific event.
 
 ```
       ┌───────────────┬────────────────┬──────────────────┐
-      │      pre      │     event      │       post       │
+      │     onPre     │     event      │      onPost      │
       ├───────────────┼────────────────┼──────────────────┤
       │               │                │                  │
       │               │                │                  │
-...   │   preBuild    │     build      │    postBuild     │   ...
+...   │  onPreBuild   │    onBuild     │   onPostBuild    │   ...
       │               │                │                  │
       │               │                │                  │
       └───────────────┤                ├──────────────────┘
@@ -160,24 +160,24 @@ The Lifecycle flows the events in order and executes and their `pre` & `post` co
 
 <!-- AUTO-GENERATED-CONTENT:START (LIFECYCLE_DOCS) -->
 
-### lifecycle.init
+### lifecycle.onInit
 
-`init` - Runs before anything else
+`onInit` - Runs before anything else
 
 <details>
-  <summary>Using init</summary>
+  <summary>Using onInit</summary>
   
   <br/>
 
 **1. Using with a Plugin**
 
-Below is an example plugin using the `init` hook
+Below is an example plugin using the `onInit` hook
 
 ```js
 module.exports = function myPlugin(pluginConfig) {
   return {
-    init: () => {
-      console.log('Do thing on init step')
+    onInit: () => {
+      console.log('Do thing on onInit step')
     },
   }
 }
@@ -197,30 +197,30 @@ plugins:
 ```yml
 build:
   lifecycle:
-    init:
-      - echo "Do thing on init step"
+    onInit:
+      - echo "Do thing on onInit step"
 ```
 
 </details>
 
-### lifecycle.getCache
+### lifecycle.onGetCache
 
-`getCache` - Fetch previous build cache
+`onGetCache` - Fetch previous build cache
 
 <details>
-  <summary>Using getCache</summary>
+  <summary>Using onGetCache</summary>
   
   <br/>
 
 **1. Using with a Plugin**
 
-Below is an example plugin using the `getCache` hook
+Below is an example plugin using the `onGetCache` hook
 
 ```js
 module.exports = function myPlugin(pluginConfig) {
   return {
-    getCache: () => {
-      console.log('Do thing on getCache step')
+    onGetCache: () => {
+      console.log('Do thing on onGetCache step')
     },
   }
 }
@@ -240,30 +240,30 @@ plugins:
 ```yml
 build:
   lifecycle:
-    getCache:
-      - echo "Do thing on getCache step"
+    onGetCache:
+      - echo "Do thing on onGetCache step"
 ```
 
 </details>
 
-### lifecycle.install
+### lifecycle.onInstall
 
-`install` - Install project dependencies
+`onInstall` - Install project dependencies
 
 <details>
-  <summary>Using install</summary>
+  <summary>Using onInstall</summary>
   
   <br/>
 
 **1. Using with a Plugin**
 
-Below is an example plugin using the `install` hook
+Below is an example plugin using the `onInstall` hook
 
 ```js
 module.exports = function myPlugin(pluginConfig) {
   return {
-    install: () => {
-      console.log('Do thing on install step')
+    onInstall: () => {
+      console.log('Do thing on onInstall step')
     },
   }
 }
@@ -283,30 +283,30 @@ plugins:
 ```yml
 build:
   lifecycle:
-    install:
-      - echo "Do thing on install step"
+    onInstall:
+      - echo "Do thing on onInstall step"
 ```
 
 </details>
 
-### lifecycle.build
+### lifecycle.onBuild
 
-`build` - Build commands are executed
+`onBuild` - Build commands are executed
 
 <details>
-  <summary>Using build</summary>
+  <summary>Using onBuild</summary>
   
   <br/>
 
 **1. Using with a Plugin**
 
-Below is an example plugin using the `build` hook
+Below is an example plugin using the `onBuild` hook
 
 ```js
 module.exports = function myPlugin(pluginConfig) {
   return {
-    build: () => {
-      console.log('Do thing on build step')
+    onBuild: () => {
+      console.log('Do thing on onBuild step')
     },
   }
 }
@@ -326,30 +326,30 @@ plugins:
 ```yml
 build:
   lifecycle:
-    build:
-      - echo "Do thing on build step"
+    onBuild:
+      - echo "Do thing on onBuild step"
 ```
 
 </details>
 
-### lifecycle.functionsBuild
+### lifecycle.onFunctionsBuild
 
-`functionsBuild` - Build the serverless functions
+`onFunctionsBuild` - Build the serverless functions
 
 <details>
-  <summary>Using functionsBuild</summary>
+  <summary>Using onFunctionsBuild</summary>
   
   <br/>
 
 **1. Using with a Plugin**
 
-Below is an example plugin using the `functionsBuild` hook
+Below is an example plugin using the `onFunctionsBuild` hook
 
 ```js
 module.exports = function myPlugin(pluginConfig) {
   return {
-    functionsBuild: () => {
-      console.log('Do thing on functionsBuild step')
+    onFunctionsBuild: () => {
+      console.log('Do thing on onFunctionsBuild step')
     },
   }
 }
@@ -369,30 +369,30 @@ plugins:
 ```yml
 build:
   lifecycle:
-    functionsBuild:
-      - echo "Do thing on functionsBuild step"
+    onFunctionsBuild:
+      - echo "Do thing on onFunctionsBuild step"
 ```
 
 </details>
 
-### lifecycle.package
+### lifecycle.onPackage
 
-`package` - Package & optimize artifact
+`onPackage` - Package & optimize artifact
 
 <details>
-  <summary>Using package</summary>
+  <summary>Using onPackage</summary>
   
   <br/>
 
 **1. Using with a Plugin**
 
-Below is an example plugin using the `package` hook
+Below is an example plugin using the `onPackage` hook
 
 ```js
 module.exports = function myPlugin(pluginConfig) {
   return {
-    package: () => {
-      console.log('Do thing on package step')
+    onPackage: () => {
+      console.log('Do thing on onPackage step')
     },
   }
 }
@@ -412,30 +412,30 @@ plugins:
 ```yml
 build:
   lifecycle:
-    package:
-      - echo "Do thing on package step"
+    onPackage:
+      - echo "Do thing on onPackage step"
 ```
 
 </details>
 
-### lifecycle.preDeploy
+### lifecycle.onPreDeploy
 
-`preDeploy` - Runs before built artifacts are deployed
+`onPreDeploy` - Runs before built artifacts are deployed
 
 <details>
-  <summary>Using preDeploy</summary>
+  <summary>Using onPreDeploy</summary>
   
   <br/>
 
 **1. Using with a Plugin**
 
-Below is an example plugin using the `preDeploy` hook
+Below is an example plugin using the `onPreDeploy` hook
 
 ```js
 module.exports = function myPlugin(pluginConfig) {
   return {
-    preDeploy: () => {
-      console.log('Do thing on preDeploy step')
+    onPreDeploy: () => {
+      console.log('Do thing on onPreDeploy step')
     },
   }
 }
@@ -455,30 +455,30 @@ plugins:
 ```yml
 build:
   lifecycle:
-    preDeploy:
-      - echo "Do thing on preDeploy step"
+    onPreDeploy:
+      - echo "Do thing on onPreDeploy step"
 ```
 
 </details>
 
-### lifecycle.saveCache
+### lifecycle.onSaveCache
 
-`saveCache` - Save cached assets
+`onSaveCache` - Save cached assets
 
 <details>
-  <summary>Using saveCache</summary>
+  <summary>Using onSaveCache</summary>
   
   <br/>
 
 **1. Using with a Plugin**
 
-Below is an example plugin using the `saveCache` hook
+Below is an example plugin using the `onSaveCache` hook
 
 ```js
 module.exports = function myPlugin(pluginConfig) {
   return {
-    saveCache: () => {
-      console.log('Do thing on saveCache step')
+    onSaveCache: () => {
+      console.log('Do thing on onSaveCache step')
     },
   }
 }
@@ -498,30 +498,30 @@ plugins:
 ```yml
 build:
   lifecycle:
-    saveCache:
-      - echo "Do thing on saveCache step"
+    onSaveCache:
+      - echo "Do thing on onSaveCache step"
 ```
 
 </details>
 
-### lifecycle.success
+### lifecycle.onSuccess
 
-`success` - Runs on build success
+`onSuccess` - Runs on build success
 
 <details>
-  <summary>Using success</summary>
+  <summary>Using onSuccess</summary>
   
   <br/>
 
 **1. Using with a Plugin**
 
-Below is an example plugin using the `success` hook
+Below is an example plugin using the `onSuccess` hook
 
 ```js
 module.exports = function myPlugin(pluginConfig) {
   return {
-    success: () => {
-      console.log('Do thing on success step')
+    onSuccess: () => {
+      console.log('Do thing on onSuccess step')
     },
   }
 }
@@ -541,30 +541,30 @@ plugins:
 ```yml
 build:
   lifecycle:
-    success:
-      - echo "Do thing on success step"
+    onSuccess:
+      - echo "Do thing on onSuccess step"
 ```
 
 </details>
 
-### lifecycle.error
+### lifecycle.onError
 
-`error` - Runs on build error
+`onError` - Runs on build error
 
 <details>
-  <summary>Using error</summary>
+  <summary>Using onError</summary>
   
   <br/>
 
 **1. Using with a Plugin**
 
-Below is an example plugin using the `error` hook
+Below is an example plugin using the `onError` hook
 
 ```js
 module.exports = function myPlugin(pluginConfig) {
   return {
-    error: () => {
-      console.log('Do thing on error step')
+    onError: () => {
+      console.log('Do thing on onError step')
     },
   }
 }
@@ -584,30 +584,30 @@ plugins:
 ```yml
 build:
   lifecycle:
-    error:
-      - echo "Do thing on error step"
+    onError:
+      - echo "Do thing on onError step"
 ```
 
 </details>
 
-### lifecycle.end
+### lifecycle.onEnd
 
-`end` - Runs on build error or success
+`onEnd` - Runs on build error or success
 
 <details>
-  <summary>Using end</summary>
+  <summary>Using onEnd</summary>
   
   <br/>
 
 **1. Using with a Plugin**
 
-Below is an example plugin using the `end` hook
+Below is an example plugin using the `onEnd` hook
 
 ```js
 module.exports = function myPlugin(pluginConfig) {
   return {
-    end: () => {
-      console.log('Do thing on end step')
+    onEnd: () => {
+      console.log('Do thing on onEnd step')
     },
   }
 }
@@ -627,8 +627,8 @@ plugins:
 ```yml
 build:
   lifecycle:
-    end:
-      - echo "Do thing on end step"
+    onEnd:
+      - echo "Do thing on onEnd step"
 ```
 
 </details>
@@ -657,14 +657,14 @@ plugins:
 # Inline `build.lifecycle` steps can be defined
 build:
   lifecycle:
-    init:
+    onInit:
       - npm run foo
       - export VALUE=lol
       - echo "much wow"
-    getCache:
+    onGetCache:
       - echo 'curl custom cache'
-    preBuild: echo "${env:privateKey}"
-    build: |
+    onPreBuild: echo "${env:privateKey}"
+    onBuild: |
       echo 'Hello Netlify Build!'
       npm run build
 ```
@@ -684,8 +684,8 @@ Netlify Plugins extend the functionality of the netlify build process.
 Plugins are plain JavaScript objects that allow users to hook into the different lifecycle steps happening during their
 site builds.
 
-For example, hooking into the `preBuild` step to run something before your build command. Or the `postBuild` hook for
-running things after your site build has completed.
+For example, hooking into the `onPreBuild` step to run something before your build command. Or the `onPostBuild` hook
+for running things after your site build has completed.
 
 Here is an example:
 
@@ -694,16 +694,16 @@ Here is an example:
 
 module.exports = {
   name: 'netlify-plugin-awesome',
-  init: () => {
+  onInit: () => {
     console.log('Run custom logic at beginning of build')
   },
-  preBuild: () => {
+  onPreBuild: () => {
     console.log('Run custom logic before build happens')
   },
-  postBuild: () => {
+  onPostBuild: () => {
     console.log('Run custom logic after build happens')
   },
-  end: () => {
+  onEnd: () => {
     console.log('Run custom logic at the end of the build')
   },
 }

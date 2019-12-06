@@ -1,6 +1,6 @@
 build:
   lifecycle:
-    build: echo ${context:testProp}
+    onBuild: echo ${context:testProp}
 context:
   development:
     testProp: dev

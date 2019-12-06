@@ -14,7 +14,7 @@ const logPrefix = '>> '
  */
 module.exports = {
   name: '@netlify/plugin-monorepo',
-  init: async ({ pluginConfig }) => {
+  onInit: async ({ pluginConfig }) => {
     const { files, since } = pluginConfig
 
     if (!files) {

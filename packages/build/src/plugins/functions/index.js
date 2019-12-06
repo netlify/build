@@ -14,13 +14,13 @@ const functionsPlugin = function(pluginConfig, { constants: { FUNCTIONS_SRC } })
     return { name: NAME }
   }
 
-  return { name: NAME, install, functionsBuild }
+  return { name: NAME, onInstall, onFunctionsBuild }
 }
 
 const NAME = '@netlify/plugin-functions-core'
 
 // Install Netlify functions dependencies
-const install = async function({ constants: { FUNCTIONS_SRC } }) {
+const onInstall = async function({ constants: { FUNCTIONS_SRC } }) {
   const base = unixify(FUNCTIONS_SRC)
   const packagePaths = await fastGlob([`${base}/**/package.json`, `!${base}/**/node_modules`], {
     onlyFiles: true,
@@ -39,7 +39,7 @@ const install = async function({ constants: { FUNCTIONS_SRC } }) {
 }
 
 // Bundle Netlify functions
-const functionsBuild = async function({ constants: { FUNCTIONS_SRC, FUNCTIONS_DIST } }) {
+const onFunctionsBuild = async function({ constants: { FUNCTIONS_SRC, FUNCTIONS_DIST } }) {
   console.log(`Bundling functions from ${FUNCTIONS_SRC}`)
   await zipFunctions(FUNCTIONS_SRC, FUNCTIONS_DIST)
 

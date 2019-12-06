@@ -1,63 +1,62 @@
 const LIFECYCLE = [
   /**
-   * `init` - Runs before anything else
+   * `onInit` - Runs before anything else
    */
-  'init',
+  'onInit',
   /**
-   * `getCache` - Fetch previous build cache
+   * `onGetCache` - Fetch previous build cache
    */
-  'preGetCache',
-  'getCache',
-  'postGetCache',
+  'onPreGetCache',
+  'onGetCache',
+  'onPostGetCache',
   /**
-   * `install` - Install project dependencies
+   * `onInstall` - Install project dependencies
    */
-  'preInstall',
-  'install',
-  'postInstall',
+  'onPreInstall',
+  'onInstall',
+  'onPostInstall',
   /**
-   * `build` - Build commands are executed
+   * `onBuild` - Build commands are executed
    */
-  'preBuild',
-  'build',
-  'postBuild',
+  'onPreBuild',
+  'onBuild',
+  'onPostBuild',
   /**
-   * `functionsBuild` - Build the serverless functions
+   * `onFunctionsBuild` - Build the serverless functions
    */
-  'preFunctionsBuild',
-  'functionsBuild',
-  'postFunctionsBuild',
+  'onPreFunctionsBuild',
+  'onFunctionsBuild',
+  'onPostFunctionsBuild',
   /**
-   * `package` - Package & optimize artifact
+   * `onPackage` - Package & optimize artifact
    */
-  'prePackage',
-  'package',
-  'postPackage',
+  'onPrePackage',
+  'onPackage',
+  'onPostPackage',
   /**
-   * `preDeploy` - Runs before built artifacts are deployed
+   * `onPreDeploy` - Runs before built artifacts are deployed
    */
-  'preDeploy',
-
-  // 'deploy', Not currently active
-  // 'postDeploy', Not currently active
+  'onPreDeploy',
+  // 'onDeploy', Not currently active
+  // 'onPostDeploy', Not currently active
   /**
-   * `saveCache` - Save cached assets
+   * `onSaveCache` - Save cached assets
    */
-  'preSaveCache',
-  'saveCache',
-  'postSaveCache',
+  'onPreSaveCache',
+  'onSaveCache',
+  'onPostSaveCache',
   /**
-   * `success` - Runs on build success
+   * `onSuccess` - Runs on build success
    */
-  'success',
+  'onSuccess',
   /**
-   * `error` - Runs on build error
+   * `onError` - Runs on build error
    */
-  'error',
+  'onError',
   /**
-   * `end` - Runs on build error or success
+   * `onEnd` - Runs on build error or success
    */
-  'end',
+  'onEnd',
 ]
 
 module.exports = { LIFECYCLE }

@@ -61,7 +61,7 @@ const VALIDATIONS = [
     property: 'build',
     check: isPlainObj,
     message: 'must be a plain object.',
-    example: { build: { lifecycle: { build: 'npm run build' } } },
+    example: { build: { lifecycle: { onBuild: 'npm run build' } } },
   },
   {
     property: 'build.publish',
@@ -85,25 +85,25 @@ const VALIDATIONS = [
     property: 'build.command',
     check: (value, { lifecycle }) => lifecycle === undefined,
     message: `must not be defined when ${cyan.bold('build.lifecycle')} is also defined.
-Please rename ${cyan.bold('build.command')} to ${cyan.bold('build.lifecycle.build.')}`,
-    example: { build: { lifecycle: { build: 'npm run build' } } },
+Please rename ${cyan.bold('build.command')} to ${cyan.bold('build.lifecycle.onBuild.')}`,
+    example: { build: { lifecycle: { onBuild: 'npm run build' } } },
   },
   {
     property: 'build.lifecycle',
     check: isPlainObj,
     message: 'must be a plain object.',
-    example: { build: { lifecycle: { build: 'npm run build' } } },
+    example: { build: { lifecycle: { onBuild: 'npm run build' } } },
   },
   {
     property: 'build.lifecycle',
     ...validProperties(LIFECYCLE),
-    example: { build: { lifecycle: { build: 'npm run build' } } },
+    example: { build: { lifecycle: { onBuild: 'npm run build' } } },
   },
   {
     property: 'build.lifecycle.*',
     check: value => isString(value) || (Array.isArray(value) && value.every(isString)),
     message: 'must be a string or an array of strings.',
-    example: { build: { lifecycle: { build: ['npm run build', 'npm test'] } } },
+    example: { build: { lifecycle: { onBuild: ['npm run build', 'npm test'] } } },
   },
 ]
 

@@ -60,7 +60,7 @@ function sendWebhook() {
 
 /*
 {
-  postBuild: async () => {
+  onPostBuild: async () => {
     console.log('conf', conf)
     try {
       const message = {

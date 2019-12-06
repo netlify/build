@@ -15,11 +15,11 @@ build:
   publish: build
   # Inline lifecycle hooks
   lifecycle:
-    init:
+    onInit:
       - echo "Starting the build"
-    build:
+    onBuild:
       - npm run makeSite
-    end:
+    onEnd:
       - echo "Ending the build"
 
 # Build plugins

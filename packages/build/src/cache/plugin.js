@@ -5,7 +5,7 @@ const { cacheArtifacts } = require('./main')
 // Save/restore cache core plugin
 const cachePlugin = {
   name: '@netlify/plugin-cache-core',
-  async saveCache({ constants: { CACHE_DIR } }) {
+  async onSaveCache({ constants: { CACHE_DIR } }) {
     await cacheArtifacts(cwd(), CACHE_DIR)
   },
 }

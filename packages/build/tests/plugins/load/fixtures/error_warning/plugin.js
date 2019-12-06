@@ -5,9 +5,9 @@ const pSetTimeout = promisify(setTimeout)
 
 module.exports = {
   name: 'netlify-plugin-test',
-  async init() {
+  async onInit() {
     emitWarning('test')
-    console.log('init')
+    console.log('onInit')
     await pSetTimeout(0)
   },
 }

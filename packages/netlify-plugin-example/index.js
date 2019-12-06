@@ -1,9 +1,9 @@
 module.exports = {
   name: '@netlify/plugin-example',
-  init: () => {
-    console.log('init')
+  onInit: () => {
+    console.log('onInit')
   },
-  end: () => {
-    console.log('build done')
+  onEnd: () => {
+    console.log('onBuild')
   },
 }

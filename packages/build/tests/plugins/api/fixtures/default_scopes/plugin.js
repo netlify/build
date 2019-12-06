@@ -1,6 +1,6 @@
 module.exports = {
   name: 'netlify-plugin-test',
-  async init({ api: { listSites } }) {
+  async onInit({ api: { listSites } }) {
     await listSites('https://example.com')
   },
 }

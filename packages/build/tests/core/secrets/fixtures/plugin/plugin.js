@@ -1,6 +1,6 @@
 module.exports = {
   name: 'netlify-plugin-test',
-  init() {
+  onInit() {
     console.log('apiKey')
   },
 }

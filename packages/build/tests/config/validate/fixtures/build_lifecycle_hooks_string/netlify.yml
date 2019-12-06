@@ -1,3 +1,3 @@
 build:
   lifecycle:
-    build: true
+    onBuild: true

@@ -55,12 +55,12 @@ This will allow you to run multiple commands during the build lifecycle
   publish = "build"
   functions = "functions"
 + [build.lifecycle]
-+ init = [
++ onInit = [
 +   "npm run setup",
 +   "echo \"multiple commands! Neat-o torpedo!\""
 + ]
-+ preBuild = "echo \"prebuild running!\""
-+ build = "npm run makeSite"
++ onPreBuild = "echo \"onPreBuild running!\""
++ onBuild = "npm run makeSite"
 ```
 
 Resulting in this `toml`
@@ -71,12 +71,12 @@ Resulting in this `toml`
   publish = "build"
   functions = "functions"
   [build.lifecycle]
-  init = [
+  onInit = [
     "npm run setup",
     "echo \"multiple commands! Neat-o torpedo!\""
   ]
-  preBuild = "echo \"prebuild running!\""
-  build = "npm run makeSite"
+  onPreBuild = "echo \"onPreBuild running!\""
+  onBuild = "npm run makeSite"
 ```
 
 Preview the new build steps:
@@ -123,12 +123,12 @@ For this example we will add the `@netlify/sitemap` plugin
      publish = "build"
      functions = "functions"
      [build.lifecycle]
-     init = [
+     onInit = [
        "npm run setup",
        "echo \"multiple commands! Neat-o torpedo!\""
      ]
-     preBuild = "echo \"prebuild running!\""
-     build = "npm run makeSite"
+     onPreBuild = "echo \"onPreBuild running!\""
+     onBuild = "npm run makeSite"
 
    # Build Plugins
    [plugins]
