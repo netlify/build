@@ -15,6 +15,7 @@ const { isString, isBoolean, validProperties } = require('./helpers')
 //   - `check` {(value) => boolean}: validation check function
 //   - `message` {string}: error message
 //   - `example` {string}: example of correct code
+//   - `warn` {boolean}: whether to print a console message or throw an error
 // We use this instead of JSON schema (or others) to get nicer error messages.
 const VALIDATIONS = [
   {
