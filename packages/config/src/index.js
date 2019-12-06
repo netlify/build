@@ -6,7 +6,7 @@ const { addEnvVars } = require('./env')
 const { validateConfig } = require('./validate/main')
 const { normalizeConfig } = require('./normalize')
 const { handleFiles } = require('./files')
-const { LIFECYCLE } = require('./lifecycle')
+const { LIFECYCLE, LEGACY_LIFECYCLE } = require('./lifecycle')
 
 const resolveConfig = async function(configFile, { cwd, ...options } = {}) {
   const configPath = await getConfigPath(configFile, cwd)
@@ -47,3 +47,4 @@ module.exports = resolveConfig
 module.exports.getBaseDir = getBaseDir
 module.exports.getConfigPath = getConfigPath
 module.exports.LIFECYCLE = LIFECYCLE
+module.exports.LEGACY_LIFECYCLE = LEGACY_LIFECYCLE
