@@ -6,9 +6,9 @@ const isBoolean = function(value) {
   return typeof value === 'boolean'
 }
 
-const validProperties = function(propNames) {
+const validProperties = function(propNames, legacyPropNames = propNames) {
   return {
-    check: value => Object.keys(value).every(propName => propNames.includes(propName)),
+    check: value => Object.keys(value).every(propName => [...propNames, ...legacyPropNames].includes(propName)),
     message: `has unknown properties. Valid properties are:
 ${propNames.map(propName => `  - ${propName}`).join('\n')}`,
   }
