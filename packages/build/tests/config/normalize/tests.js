@@ -17,3 +17,11 @@ test('build.command', async t => {
 test('build.lifecycle.build', async t => {
   await runFixture(t, 'old_lifecycle')
 })
+
+test('build.lifecycle.onbuild case', async t => {
+  await runFixture(t, 'case')
+})
+
+test('build.lifecycle.prebuild case', async t => {
+  await runFixture(t, 'old_case')
+})
