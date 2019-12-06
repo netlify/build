@@ -23,7 +23,7 @@ const trackBuildComplete = async function({ instructionsCount, config, duration,
     duration,
     pluginCount: plugins.length,
     plugins,
-    ...siteId && { siteId }
+    ...(siteId && { siteId }),
   })
 }
 
