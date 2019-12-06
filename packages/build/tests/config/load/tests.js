@@ -12,7 +12,7 @@ test('Empty configuration', async t => {
   await runFixture(t, 'empty')
 })
 
-test.skip('Can define configuration as environment variables', async t => {
+test('Can define configuration as environment variables', async t => {
   await runFixture(t, 'empty', {
     env: {
       NETLIFY_CONFIG_BUILD_LIFECYCLE_ONBUILD: 'echo onBuild',
