@@ -6,25 +6,29 @@ const isBoolean = function(value) {
   return typeof value === 'boolean'
 }
 
-const validProperties = function(propNames, legacyPropNames = propNames) {
+const validProperties = function(propNames, legacyPropNames = [], mapper = identity) {
   return {
-    check: value => Object.keys(value).every(propName => [...propNames, ...legacyPropNames].includes(propName)),
+    check: value => checkValidProperty(value, [...propNames, ...legacyPropNames], mapper),
     message: `has unknown properties. Valid properties are:
 ${propNames.map(propName => `  - ${propName}`).join('\n')}`,
   }
 }
 
-const deprecatedProperties = function(properties, getExample) {
+const checkValidProperty = function(value, propNames, mapper) {
+  return Object.keys(value).every(propName => propNames.includes(mapper(propName)))
+}
+
+const deprecatedProperties = function(properties, getExample, mapper = identity) {
   return {
     check(value, key) {
-      return findDeprecatedProperty(properties, key) === undefined
+      return findDeprecatedProperty(properties, mapper(key)) === undefined
     },
     message(value, key) {
-      const newPropName = findDeprecatedProperty(properties, key)
+      const newPropName = findDeprecatedProperty(properties, mapper(key))
       return `is deprecated. It should be renamed to '${newPropName}'.`
     },
     example(value, key) {
-      const newPropName = findDeprecatedProperty(properties, key)
+      const newPropName = findDeprecatedProperty(properties, mapper(key))
       return getExample(newPropName)
     },
   }
@@ -36,6 +40,10 @@ const findDeprecatedProperty = function(properties, key) {
     return
   }
   return newPropName
+}
+
+const identity = function(value) {
+  return value
 }
 
 module.exports = { isString, isBoolean, validProperties, deprecatedProperties }
