@@ -1,7 +1,7 @@
 const isPlainObj = require('is-plain-obj')
 const { cyan } = require('chalk')
 
-const { LIFECYCLE, LEGACY_LIFECYCLE } = require('../lifecycle')
+const { LIFECYCLE, LEGACY_LIFECYCLE, normalizeLifecycleCase } = require('../lifecycle')
 
 const { isString, isBoolean, validProperties, deprecatedProperties } = require('./helpers')
 
@@ -97,12 +97,16 @@ Please rename ${cyan.bold('build.command')} to ${cyan.bold('build.lifecycle.onBu
   },
   {
     property: 'build.lifecycle',
-    ...validProperties(LIFECYCLE, Object.keys(LEGACY_LIFECYCLE)),
+    ...validProperties(LIFECYCLE, Object.keys(LEGACY_LIFECYCLE), normalizeLifecycleCase),
     example: { build: { lifecycle: { onBuild: 'npm run build' } } },
   },
   {
     property: 'build.lifecycle.*',
-    ...deprecatedProperties(LEGACY_LIFECYCLE, event => ({ build: { lifecycle: { [event]: 'npm run build' } } })),
+    ...deprecatedProperties(
+      LEGACY_LIFECYCLE,
+      event => ({ build: { lifecycle: { [event]: 'npm run build' } } }),
+      normalizeLifecycleCase,
+    ),
     warn: true,
   },
   {
