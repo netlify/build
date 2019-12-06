@@ -14,4 +14,28 @@ ${propNames.map(propName => `  - ${propName}`).join('\n')}`,
   }
 }
 
-module.exports = { isString, isBoolean, validProperties }
+const deprecatedProperties = function(properties, getExample) {
+  return {
+    check(value, key) {
+      return findDeprecatedProperty(properties, key) === undefined
+    },
+    message(value, key) {
+      const newPropName = findDeprecatedProperty(properties, key)
+      return `is deprecated. It should be renamed to '${newPropName}'.`
+    },
+    example(value, key) {
+      const newPropName = findDeprecatedProperty(properties, key)
+      return getExample(newPropName)
+    },
+  }
+}
+
+const findDeprecatedProperty = function(properties, key) {
+  const newPropName = properties[key]
+  if (newPropName === undefined) {
+    return
+  }
+  return newPropName
+}
+
+module.exports = { isString, isBoolean, validProperties, deprecatedProperties }
