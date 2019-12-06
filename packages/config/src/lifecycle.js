@@ -86,4 +86,25 @@ const LEGACY_LIFECYCLE = {
   end: 'onEnd',
 }
 
-module.exports = { LIFECYCLE, LEGACY_LIFECYCLE }
+// `build.lifecycle.onEvent` can also be spelled `build.lifecycle.onevent`
+const normalizeLifecycleCase = function(event) {
+  const normalizedEvent = LIFECYCLE_CASES[event]
+  if (normalizedEvent === undefined) {
+    return event
+  }
+
+  return normalizedEvent
+}
+
+const getLifecycleCases = function() {
+  const events = [...LIFECYCLE, ...Object.keys(LEGACY_LIFECYCLE)].map(getLifecycleCase)
+  return Object.assign({}, ...events)
+}
+
+const getLifecycleCase = function(event) {
+  return { [event.toLowerCase()]: event }
+}
+
+const LIFECYCLE_CASES = getLifecycleCases()
+
+module.exports = { LIFECYCLE, LEGACY_LIFECYCLE, normalizeLifecycleCase }
