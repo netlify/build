@@ -1,5 +1,5 @@
 const isPlainObj = require('is-plain-obj')
-const { LIFECYCLE } = require('@netlify/config')
+const { LIFECYCLE, LEGACY_LIFECYCLE } = require('@netlify/config')
 
 const { serializeList } = require('../../utils/list')
 const { validateConfigSchema } = require('../config/validate_config')
@@ -44,7 +44,7 @@ const validateProperty = function(value, propName) {
 const validateMethod = function(propName) {
   const hook = propName.replace(OVERRIDE_REGEXP, '')
 
-  if (!LIFECYCLE.includes(hook)) {
+  if (!LIFECYCLE.includes(hook) && LEGACY_LIFECYCLE[hook] === undefined) {
     throw new Error(`Invalid lifecycle hook '${hook}'.
 Please use a valid event name. One of:
 ${serializeList(LIFECYCLE)}`)
