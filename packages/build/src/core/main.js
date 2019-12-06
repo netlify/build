@@ -54,7 +54,7 @@ const build = async function(options = {}) {
     logBuildSuccess()
     const duration = endTimer(buildTimer, 'Netlify Build')
     logBuildEnd()
-    await trackBuildComplete({ instructionsCount, config, duration, siteId: options.siteId })
+    await trackBuildComplete({ instructionsCount, config, duration, options })
     return true
   } catch (error) {
     logBuildError(error)
