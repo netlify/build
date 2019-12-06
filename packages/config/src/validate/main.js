@@ -56,7 +56,7 @@ const validateProperty = function(
   }
 
   throw new Error(`Configuration property ${cyan.bold(propPath)} ${message}
-${getExample({ value, key, prevPath, example })}`
+${getExample({ value, key, prevPath, example })}`)
 }
 
 // Recurse over children (each part of the `property` array).
