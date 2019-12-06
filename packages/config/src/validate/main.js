@@ -23,6 +23,7 @@ const validateProperty = function(
     nextPath: [propName, nextPropName, ...nextPath],
     prevPath = [propName],
     propPath = propName,
+    key = propName,
     required,
     check,
     message,
@@ -32,19 +33,30 @@ const validateProperty = function(
   const value = parent[propName]
 
   if (nextPropName !== undefined) {
-    return validateChild({ value, nextPropName, prevPath, nextPath, propPath, required, check, message, example })
+    return validateChild({
+      value,
+      nextPropName,
+      prevPath,
+      nextPath,
+      propPath,
+      key,
+      required,
+      check,
+      message,
+      example,
+    })
   }
 
   if (value === undefined) {
     return checkRequired({ value, required, propPath, prevPath, example })
   }
 
-  if (check !== undefined && check(value, parent)) {
+  if (check !== undefined && check(value, key, parent)) {
     return
   }
 
   throw new Error(`Configuration property ${cyan.bold(propPath)} ${message}
-${getExample({ value, prevPath, example })}`)
+${getExample({ value, key, prevPath, example })}`)
 }
 
 // Recurse over children (each part of the `property` array).
@@ -55,10 +67,11 @@ const validateChild = function({ value, nextPropName, prevPath, nextPath, propPa
 
   if (nextPropName !== '*') {
     return validateProperty(value, {
+      ...rest,
       prevPath: [...prevPath, nextPropName],
       nextPath: [nextPropName, ...nextPath],
       propPath: `${propPath}.${nextPropName}`,
-      ...rest,
+      key: nextPropName,
     })
   }
 
@@ -70,19 +83,22 @@ const validateChild = function({ value, nextPropName, prevPath, nextPath, propPa
 // Can use * to recurse over array|object elements.
 const validateChildProp = function({ childProp, value, nextPath, propPath, prevPath, ...rest }) {
   if (Array.isArray(value)) {
+    const key = Number(childProp)
     return validateProperty(value, {
-      prevPath: [...prevPath, Number(childProp)],
-      nextPath: [Number(childProp), ...nextPath],
-      propPath: `${propPath}[${childProp}]`,
       ...rest,
+      prevPath: [...prevPath, key],
+      nextPath: [key, ...nextPath],
+      propPath: `${propPath}[${childProp}]`,
+      key,
     })
   }
 
   validateProperty(value, {
+    ...rest,
     prevPath: [...prevPath, childProp],
     nextPath: [childProp, ...nextPath],
     propPath: `${propPath}.${childProp}`,
-    ...rest,
+    key: childProp,
   })
 }
 
