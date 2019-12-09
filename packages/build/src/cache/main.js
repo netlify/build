@@ -18,7 +18,7 @@ const { getCacheDir } = require('./dir')
 const cacheArtifacts = async function(baseDir) {
   logCacheStart()
 
-  const cacheDir = getCacheDir()
+  const cacheDir = await getCacheDir()
   await Promise.all(ARTIFACTS.map(({ base, path }) => saveCache({ baseDir, cacheDir, base, path })))
 }
 
