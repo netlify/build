@@ -19,55 +19,55 @@ const cacheArtifacts = async function(baseDir) {
   logCacheStart()
 
   const cacheDir = getCacheDir()
-  await Promise.all(ARTIFACTS.map(({ path }) => saveCache({ baseDir, cacheDir, path })))
+  await Promise.all(ARTIFACTS.map(({ base, path }) => saveCache({ baseDir, cacheDir, base, path })))
 }
 
 // List of directories to cache
 const ARTIFACTS = [
   // Node modules
-  { path: './node_modules' },
+  { path: 'node_modules' },
   // Bower components
-  { path: './bower_components' },
+  { path: 'bower_components' },
   // Ruby gems
-  { path: './.bundle' },
+  { path: '.bundle' },
   // Python virtualenv
-  { path: './.venv' },
+  { path: '.venv' },
   // WAPM packages (WebAssembly)
-  { path: './wapm_packages' },
+  { path: 'wapm_packages' },
   // Yarn
-  { path: '~/.yarn_cache' },
+  { base: '~', path: '.yarn_cache' },
   // Pip
-  { path: '~/.cache/pip' },
+  { base: '~', path: '.cache/pip' },
   // Emacs cask
-  { path: '~/.cask' },
+  { base: '~', path: '.cask' },
   // Emacs
-  { path: '~/.emacs.d' },
+  { base: '~', path: '.emacs.d' },
   // Maven
-  { path: '~/.m2' },
+  { base: '~', path: '.m2' },
   // Boot
-  { path: '~/.boot' },
+  { base: '~', path: '.boot' },
   // Composer
-  { path: '~/.composer' },
+  { base: '~', path: '.composer' },
   // Wasmer
-  { path: '~/.wasmer/cache' },
+  { base: '~', path: '.wasmer/cache' },
   // Go dependencies
-  { path: '~/.gimme_cache' },
+  { base: '~', path: '.gimme_cache' },
   // TODO: the buildbot currently uses different file paths. Once Netlify Build
   // handles both saving cache and restoring cache, this should not be an issue
   // anymore.
   //   CACHE_DIR/node_version -> CACHE_DIR/.nvm/versions/node[/$NODE_VERSION]
   //   CACHE_DIR/ruby_version -> CACHE_DIR/.rvm/rubies[/ruby-$RUBY_VERSION]
   // nvm
-  { path: '~/.nvm/versions/node' },
+  { base: '~', path: '.nvm/versions/node' },
   // TODO: only cache rvm when the version is not already in the Docker image,
   // i.e. it is a custom version
   // rvm
-  { path: '~/.rvm/rubies' },
+  { base: '~', path: '.rvm/rubies' },
 ]
 
 // Cache a single directory
-const saveCache = async function({ baseDir, cacheDir, path }) {
-  const { srcPath, cachePath } = parseCachePath(path, baseDir, cacheDir)
+const saveCache = async function({ baseDir, cacheDir, base, path }) {
+  const { srcPath, cachePath } = parseCachePath({ baseDir, cacheDir, base, path })
 
   if (!(await pathExists(srcPath))) {
     return
@@ -78,13 +78,10 @@ const saveCache = async function({ baseDir, cacheDir, path }) {
   await persistCache(srcPath, cachePath)
 }
 
-const parseCachePath = function(path, baseDir, cacheDir) {
-  const [base, ...pathA] = path.split('/')
+const parseCachePath = function({ baseDir, cacheDir, base, path }) {
   const baseA = getBase(base, baseDir)
-  const relPath = pathA.join('/')
-
-  const srcPath = resolve(baseA, relPath)
-  const cachePath = resolve(cacheDir, relPath)
+  const srcPath = resolve(baseA, path)
+  const cachePath = resolve(cacheDir, path)
   return { srcPath, cachePath }
 }
 
