@@ -88,7 +88,7 @@ const LEGACY_LIFECYCLE = {
 
 // `build.lifecycle.onEvent` can also be spelled `build.lifecycle.onevent`
 const normalizeLifecycleCase = function(event) {
-  const normalizedEvent = LIFECYCLE_CASES[event]
+  const normalizedEvent = LIFECYCLE_CASES[event.toLowerCase()]
   if (normalizedEvent === undefined) {
     return event
   }
