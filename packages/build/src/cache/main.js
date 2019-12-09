@@ -87,6 +87,7 @@ const parseCachePath = function({ baseDir, cacheDir, base, path }) {
 
 const getBase = function(base, baseDir) {
   // This is used in tests
+  // istanbul ignore else
   if (CACHE_BASE !== undefined) {
     return resolve(baseDir, CACHE_BASE)
   }
