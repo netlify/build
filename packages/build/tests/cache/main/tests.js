@@ -70,6 +70,8 @@ test.serial('rvm', async t => {
   await runFixture(t, 'rvm', { env: { CACHE_BASE: HOME_CACHE, CACHE_PATH: '.rvm/rubies' } })
 })
 
+// This works on Windows locally but not inside GitHub actions
+// TODO: figure out why
 if (platform !== 'win32') {
   test('CI', async t => {
     await runFixture(t, 'ci', { env: { CACHE_BASE: '.', CACHE_PATH: 'bower_components', DEPLOY_PRIME_URL: 'test' } })
