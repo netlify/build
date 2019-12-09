@@ -1,3 +1,5 @@
+const { platform } = require('process')
+
 const test = require('ava')
 
 const { runFixture } = require('../../helpers/main')
@@ -68,6 +70,8 @@ test.serial('rvm', async t => {
   await runFixture(t, 'rvm', { env: { CACHE_BASE: HOME_CACHE, CACHE_PATH: '.rvm/rubies' } })
 })
 
-test('CI', async t => {
-  await runFixture(t, 'ci', { env: { CACHE_BASE: '.', CACHE_PATH: 'bower_components', DEPLOY_PRIME_URL: 'test' } })
-})
+if (platform !== 'win32') {
+  test('CI', async t => {
+    await runFixture(t, 'ci', { env: { CACHE_BASE: '.', CACHE_PATH: 'bower_components', DEPLOY_PRIME_URL: 'test' } })
+  })
+}
