@@ -12,10 +12,13 @@ const cpy = require('cpy')
 const { logCacheStart, logCacheDir } = require('../log/main')
 const isNetlifyCI = require('../utils/is-netlify-ci')
 
+const { getCacheDir } = require('./dir')
+
 // Cache a list of pre-defined directories, for future builds to re-use
-const cacheArtifacts = async function(baseDir, cacheDir) {
+const cacheArtifacts = async function(baseDir) {
   logCacheStart()
 
+  const cacheDir = getCacheDir()
   await Promise.all(ARTIFACTS.map(({ path }) => saveCache({ baseDir, cacheDir, path })))
 }
 
