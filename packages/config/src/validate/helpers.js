@@ -18,7 +18,7 @@ const checkValidProperty = function(value, propNames, mapper) {
   return Object.keys(value).every(propName => propNames.includes(mapper(propName)))
 }
 
-const deprecatedProperties = function(properties, getExample, mapper = identity) {
+const deprecatedProperties = function(properties, getExample, mapper) {
   return {
     check(value, key) {
       return findDeprecatedProperty(properties, mapper(key)) === undefined
