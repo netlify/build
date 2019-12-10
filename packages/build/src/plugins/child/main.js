@@ -63,9 +63,9 @@ const load = async function(payload, state) {
 }
 
 // Run a specific plugin hook method
-const run = async function({ hookName, error }, { context: { hooks, api, constants, pluginConfig, config } }) {
+const run = async function({ hookName, error }, { context: { hooks, api, utils, constants, pluginConfig, config } }) {
   const { method } = hooks.find(hookA => hookA.hookName === hookName)
-  await method({ api, constants, pluginConfig, config, error })
+  await method({ api, utils, constants, pluginConfig, config, error })
 }
 
 const EVENTS = { load, run }
