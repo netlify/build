@@ -5,6 +5,7 @@ const { getLogic } = require('./logic')
 const { validatePlugin } = require('./validate')
 const { normalizePlugin } = require('./normalize')
 const { getApiClient } = require('./api')
+const { getUtils } = require('./utils')
 const { getConstants } = require('./constants')
 
 // Load context passed to every plugin method.
@@ -23,7 +24,7 @@ const loadPlugin = async function(payload) {
 
   const hooks = getPluginHooks(logicA, payload)
 
-  const context = getContext(logicA, hooks, constants, payload)
+  const context = await getContext(logicA, hooks, constants, payload)
   return { context, hooks }
 }
 
@@ -46,9 +47,10 @@ const getPluginHook = function({ method, hook, name, id = name, type, core }) {
 }
 
 // Retrieve context passed to every hook method
-const getContext = function(logic, hooks, constants, { pluginConfig, config, token }) {
+const getContext = async function(logic, hooks, constants, { pluginPath, pluginConfig, config, token }) {
   const api = getApiClient({ logic, token })
-  return { hooks, api, constants, pluginConfig, config }
+  const utils = await getUtils(pluginPath)
+  return { hooks, api, utils, constants, pluginConfig, config }
 }
 
 module.exports = { loadPlugin }
