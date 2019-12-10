@@ -1,5 +1,3 @@
-const { platform } = require('process')
-
 const test = require('ava')
 
 const { runFixture } = require('../../helpers/main')
