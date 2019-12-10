@@ -55,7 +55,7 @@ An additional object can be passed to `runFixture()` with the following options:
 - `flags` `{string[]}`: other CLI flags
 - `cwd` `{string}`: current directory
 - `env` `{object}`: environment variables
-- `debug` `{boolean}`: see [below](#output-normalization)
+- `normalize` `{boolean}`: see [below](#output-normalization)
 
 You usually do not need to specify any of those options except `flags` when testing specific CLI flags.
 
@@ -113,8 +113,10 @@ Sometimes the `netlify-build` output contains non-deterministic information such
 Those would make the test snapshot non-reproducible. To fix this, the output is normalized by `./helpers/normalize.js`.
 This basically performs a series of regular expressions replacements.
 
-If you want to remove the normalization during debugging, use the `debug` option:
+If you want to remove the normalization during debugging, use the `normalize` option:
 
 ```js
-await runFixture(t, 'fixture_name', { debug: true })
+await runFixture(t, 'fixture_name', { normalize: false })
 ```
+
+`normalize` is `false` when `PRINT=1` is used, `true` otherwise.
