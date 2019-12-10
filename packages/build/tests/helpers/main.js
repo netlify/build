@@ -23,8 +23,9 @@ const FIXTURES_DIR = normalize(`${testFile}/../fixtures`)
 //  - `config` {string}: `--config` CLI flag
 //  - `cwd` {string}: current directory when calling `netlify-build`
 //  - `env` {object}: environment variable
+//  - `normalize` {boolean}: whether to normalize output
 //  - `snapshot` {boolean}: whether to create a snapshot
-const runFixture = async function(t, fixtureName, { flags = '', config, cwd, env, debug, snapshot = true } = {}) {
+const runFixture = async function(t, fixtureName, { flags = '', config, cwd, env, normalize, snapshot = true } = {}) {
   const envA = { CACHE_BASE: '.', NETLIFY_BUILD_SAVE_CACHE: '1', ...env }
   const configFlag = getConfigFlag(config, fixtureName)
   const binaryPath = await BINARY_PATH
@@ -37,7 +38,7 @@ const runFixture = async function(t, fixtureName, { flags = '', config, cwd, env
   })
 
   const isPrint = PRINT === '1'
-  doTestAction({ t, all, isPrint, debug, snapshot })
+  doTestAction({ t, all, isPrint, normalize, snapshot })
 
   return { all, exitCode }
 }
@@ -62,8 +63,8 @@ const getConfigFlag = function(config, fixtureName) {
 // The `PRINT` environment variable can be set to `1` to run the test in print
 // mode. Print mode is a debugging mode which shows the test output but does
 // not create nor compare its snapshot.
-const doTestAction = function({ t, all, isPrint, debug = isPrint, snapshot }) {
-  const allA = debug ? all : normalizeOutput(all)
+const doTestAction = function({ t, all, isPrint, normalize = !isPrint, snapshot }) {
+  const allA = normalize ? normalizeOutput(all) : all
 
   if (isPrint) {
     return printOutput(t, allA)
