@@ -44,9 +44,6 @@ test('Unhandled promises', async t => {
   await runFixture(t, 'error_promise')
 })
 
-// Process exit is different on Windows
-if (platform !== 'win32') {
-  test('Early exit', async t => {
-    await runFixture(t, 'early_exit')
-  })
-}
+test('Early exit', async t => {
+  await runFixture(t, 'early_exit')
+})
