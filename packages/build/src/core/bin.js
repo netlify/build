@@ -65,6 +65,7 @@ The NETLIFY_TOKEN environment variable can be used as well.`,
 Default: 'production'`,
   },
   dry: {
+    alias: 'dry-run',
     boolean: true,
     describe: `Run in dry mode, i.e. printing commands without
 executing them.
