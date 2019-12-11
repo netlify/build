@@ -19,13 +19,13 @@ const { doDryRun } = require('./dry')
 
 /**
  * Netlify Build
- * @param  {object} options - build configuration options
- * @param  {string} [options.config] - Netlify config file path
- * @param  {string} [options.token] - Netlify API token for authentication
- * @param  {string} [options.context] - Build context
- * @param  {boolean} [options.dry] - printing commands without executing them
- * @param  {string} [options.cwd] - Current directory
- * @return {object} manifest information. @TODO implement
+ * @param  {object} flags - build configuration CLI flags
+ * @param  {string} [flags.config] - Netlify config file path
+ * @param  {string} [flags.cwd] - Current directory
+ * @param  {string} [flags.token] - Netlify API token for authentication
+ * @param  {string} [flags.siteId] - Netlify Site ID
+ * @param  {string} [flags.context] - Build context
+ * @param  {boolean} [flags.dry] - printing commands without executing them
  */
 const build = async function(flags = {}) {
   const buildTimer = startTimer()
