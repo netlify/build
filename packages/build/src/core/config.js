@@ -5,20 +5,20 @@ const {
 const resolveConfig = require('@netlify/config')
 const { getConfigPath, getBaseDir } = require('@netlify/config')
 
-const { logOptions, logConfigPath } = require('../log/main')
+const { logFlags, logConfigPath } = require('../log/main')
 
 // Retrieve configuration object
-const loadConfig = async function({ options: { config, cwd }, options: { token = NETLIFY_TOKEN, ...options } }) {
-  logOptions(options)
+const loadConfig = async function({ flags: { config, cwd }, flags: { token = NETLIFY_TOKEN, ...flags } }) {
+  logFlags(flags)
 
-  const optionsA = { ...DEFAULT_OPTIONS, ...options }
+  const flagsA = { ...DEFAULT_FLAGS, ...flags }
 
   const configPath = await getConfigPath(config, cwd)
   logConfigPath(configPath)
   const baseDir = await getBaseDir(configPath)
 
   try {
-    const configA = await resolveConfig(configPath, optionsA)
+    const configA = await resolveConfig(configPath, flagsA)
     return { config: configA, configPath, token, baseDir }
   } catch (error) {
     error.message = `Netlify configuration error:\n${error.message}`
@@ -27,6 +27,6 @@ const loadConfig = async function({ options: { config, cwd }, options: { token =
 }
 
 const DEFAULT_CONTEXT = 'production'
-const DEFAULT_OPTIONS = { context: CONTEXT || DEFAULT_CONTEXT }
+const DEFAULT_FLAGS = { context: CONTEXT || DEFAULT_CONTEXT }
 
 module.exports = { loadConfig }

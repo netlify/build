@@ -34,7 +34,7 @@ A clear and concise description of what you expected to happen.
 
 **Configuration**
 
-Command line options and/or configuration file, if any.
+Command line flags and/or configuration file, if any.
 
 **Environment**
 

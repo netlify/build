@@ -15,12 +15,12 @@ const telemetry = Analytics({
 })
 
 // Send telemetry request when build completes
-const trackBuildComplete = async function({ instructionsCount, config, duration, options }) {
-  const payload = getPayload({ instructionsCount, config, duration, options })
+const trackBuildComplete = async function({ instructionsCount, config, duration, flags }) {
+  const payload = getPayload({ instructionsCount, config, duration, flags })
   await telemetry.track('buildComplete', payload)
 }
 
-const getPayload = function({ instructionsCount, config, duration, options: { siteId } }) {
+const getPayload = function({ instructionsCount, config, duration, flags: { siteId } }) {
   const plugins = Object.values(config.plugins).map(getPluginType)
   return { steps: instructionsCount, duration, pluginCount: plugins.length, plugins, siteId }
 }

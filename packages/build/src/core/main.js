@@ -19,21 +19,21 @@ const { doDryRun } = require('./dry')
 
 /**
  * Netlify Build
- * @param  {object} options - build configuration options
- * @param  {string} [options.config] - Netlify config file path
- * @param  {string} [options.token] - Netlify API token for authentication
- * @param  {string} [options.context] - Build context
- * @param  {boolean} [options.dry] - printing commands without executing them
- * @param  {string} [options.cwd] - Current directory
- * @return {object} manifest information. @TODO implement
+ * @param  {object} flags - build configuration CLI flags
+ * @param  {string} [flags.config] - Netlify config file path
+ * @param  {string} [flags.cwd] - Current directory
+ * @param  {string} [flags.token] - Netlify API token for authentication
+ * @param  {string} [flags.siteId] - Netlify Site ID
+ * @param  {string} [flags.context] - Build context
+ * @param  {boolean} [flags.dry] - printing commands without executing them
  */
-const build = async function(options = {}) {
+const build = async function(flags = {}) {
   const buildTimer = startTimer()
 
   try {
     logBuildStart()
 
-    const { config, configPath, token, baseDir } = await loadConfig({ options })
+    const { config, configPath, token, baseDir } = await loadConfig({ flags })
 
     const pluginsOptions = getPluginsOptions({ config })
     const pluginsOptionsA = await installPlugins(pluginsOptions, baseDir)
@@ -44,17 +44,17 @@ const build = async function(options = {}) {
       configPath,
       baseDir,
       token,
-      options,
+      flags,
     })
 
-    if (options.dry) {
+    if (flags.dry) {
       return true
     }
 
     logBuildSuccess()
     const duration = endTimer(buildTimer, 'Netlify Build')
     logBuildEnd()
-    await trackBuildComplete({ instructionsCount, config, duration, options })
+    await trackBuildComplete({ instructionsCount, config, duration, flags })
     return true
   } catch (error) {
     logBuildError(error)
@@ -62,7 +62,7 @@ const build = async function(options = {}) {
   }
 }
 
-const buildRun = async function({ pluginsOptions, config, configPath, baseDir, token, options }) {
+const buildRun = async function({ pluginsOptions, config, configPath, baseDir, token, flags }) {
   const childProcesses = await startPlugins(pluginsOptions, baseDir)
 
   try {
@@ -73,7 +73,7 @@ const buildRun = async function({ pluginsOptions, config, configPath, baseDir, t
       configPath,
       baseDir,
       token,
-      options,
+      flags,
     })
   } finally {
     await stopPlugins(childProcesses)
@@ -87,7 +87,7 @@ const executeInstructions = async function({
   configPath,
   baseDir,
   token,
-  options: { dry },
+  flags: { dry },
 }) {
   const pluginsHooks = await loadPlugins({
     pluginsOptions,

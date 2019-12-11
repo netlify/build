@@ -20,10 +20,10 @@ ${SUBTEXT_PADDING}https://github.com/netlify/build
 `)
 }
 
-const logOptions = function(options) {
-  const optionsA = filterObj(options, isDefined)
-  if (Object.keys(optionsA).length !== 0) {
-    log(cyanBright.bold('Options'), optionsA, '')
+const logFlags = function(flags) {
+  const flagsA = filterObj(flags, isDefined)
+  if (Object.keys(flagsA).length !== 0) {
+    log(cyanBright.bold('Flags'), flagsA, '')
   }
 }
 
@@ -197,7 +197,7 @@ const MIN_PADDING = 1
 
 module.exports = {
   logBuildStart,
-  logOptions,
+  logFlags,
   logConfigPath,
   logInstallPlugins,
   logLoadPlugins,
