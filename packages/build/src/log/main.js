@@ -57,7 +57,7 @@ const logLoadPlugin = function(id, type, core) {
 }
 
 const logLifeCycleStart = function(commandsCount) {
-  const commandsWord = commandsCount === 1 ? 'step' : `steps`
+  const commandsWord = commandsCount === 1 ? 'command' : `commands`
   log(`\n${greenBright.bold(`${HEADING_PREFIX} Running Netlify Build Lifecycle`)}
 ${SUBTEXT_PADDING}Found ${commandsCount} ${commandsWord}. Lets do this!`)
 }
@@ -68,8 +68,8 @@ const logDryRunStart = function(hookWidth, commandsCount) {
   const secondLine = '─'.repeat(columnWidth)
 
   log(`
-${cyanBright.bold(`${HEADING_PREFIX} Netlify Build Steps`)}
-${SUBTEXT_PADDING}For more information on build lifecycles see the docs https://github.com/netlify/build
+${cyanBright.bold(`${HEADING_PREFIX} Netlify Build Commands`)}
+${SUBTEXT_PADDING}For more information on build events see the docs https://github.com/netlify/build
 
 ${SUBTEXT_PADDING}Running \`netlify build\` will execute this build flow
 
@@ -110,7 +110,7 @@ const getDryColumnWidth = function(hookWidth, commandsCount) {
   return Math.max(hookWidth + symbolsWidth, DRY_HEADER_NAMES[0].length)
 }
 
-const DRY_HEADER_NAMES = ['Lifecycle Hook', 'Location']
+const DRY_HEADER_NAMES = ['Event', 'Location']
 
 const logDryRunEnd = function() {
   log(`
@@ -123,12 +123,11 @@ const logCommand = function({ hook, id, override }, { index, configPath, error }
     override.hook === undefined
       ? ''
       : redBright(`
-${HEADING_PREFIX} OVERRIDE: "${override.hook}" method in "${override.name}" has been overriden by "${id}"`)
-  const lifecycleName = error ? '' : 'lifecycle '
+${HEADING_PREFIX} OVERRIDE: "${override.hook}" command in "${override.name}" has been overriden by "${id}"`)
   const source = id.startsWith('config.build') ? ` in ${basename(configPath)} config file` : ''
   const niceName = id.startsWith('config.build') ? id.replace(/^config\./, '') : id
   const logColor = error ? redBright.bold : cyanBright.bold
-  const header = `${index + 1}. Running ${bold(hook)} ${lifecycleName}from ${bold(niceName)}${source}`
+  const header = `${index + 1}. Running ${bold(hook)} command from ${bold(niceName)}${source}`
   log(logColor(`${overrideWarning}\n${getHeader(header)}\n`))
 }
 

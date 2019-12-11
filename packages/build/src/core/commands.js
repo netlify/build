@@ -147,7 +147,7 @@ const firePluginCommand = async function({ id, childProcess, hook, hookName }, {
   try {
     await callChild(childProcess, 'run', { hookName, error })
   } catch (error) {
-    error.message = `In "${hook}" step from "${id}":\n${error.message}`
+    error.message = `In "${hook}" command from "${id}":\n${error.message}`
     error.cleanStack = true
     throw error
   } finally {
