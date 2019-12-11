@@ -56,7 +56,7 @@ Historically, when connecting your site to Netlify, we ask for the build command
 this process. This works great for most use cases & will continue to do so 😃
 
 For builds that require a little more flexibility, we are introducing a programatic interface on top of these build
-lifecycle steps to allow users to customize this flow.
+events to allow users to customize this flow.
 
 **Netlify Build** is designed to support any kind of build flow and is extendable to fit any unique project
 requirements.
@@ -67,7 +67,7 @@ Builds are controlled by a series of [lifecycle](#lifecycle) events that `plugin
 
 **The [build lifecycle](#lifecycle) can be extended in two ways:**
 
-1. Adding lifecycle steps to `build.lifecycle` in your [config file](#extending-via-config)
+1. Adding lifecycle commands to `build.lifecycle` in your [config file](#extending-via-config)
 2. Installing pre-packaged [plugins](#plugins)
 
 ### 1. Extending via config
@@ -177,7 +177,7 @@ Below is an example plugin using the `onInit` hook
 module.exports = function myPlugin(pluginConfig) {
   return {
     onInit: () => {
-      console.log('Do thing on onInit step')
+      console.log('Do thing on onInit event')
     },
   }
 }
@@ -198,7 +198,7 @@ plugins:
 build:
   lifecycle:
     onInit:
-      - echo "Do thing on onInit step"
+      - echo "Do thing on onInit event"
 ```
 
 </details>
@@ -220,7 +220,7 @@ Below is an example plugin using the `onGetCache` hook
 module.exports = function myPlugin(pluginConfig) {
   return {
     onGetCache: () => {
-      console.log('Do thing on onGetCache step')
+      console.log('Do thing on onGetCache event')
     },
   }
 }
@@ -241,7 +241,7 @@ plugins:
 build:
   lifecycle:
     onGetCache:
-      - echo "Do thing on onGetCache step"
+      - echo "Do thing on onGetCache event"
 ```
 
 </details>
@@ -263,7 +263,7 @@ Below is an example plugin using the `onInstall` hook
 module.exports = function myPlugin(pluginConfig) {
   return {
     onInstall: () => {
-      console.log('Do thing on onInstall step')
+      console.log('Do thing on onInstall event')
     },
   }
 }
@@ -284,7 +284,7 @@ plugins:
 build:
   lifecycle:
     onInstall:
-      - echo "Do thing on onInstall step"
+      - echo "Do thing on onInstall event"
 ```
 
 </details>
@@ -306,7 +306,7 @@ Below is an example plugin using the `onBuild` hook
 module.exports = function myPlugin(pluginConfig) {
   return {
     onBuild: () => {
-      console.log('Do thing on onBuild step')
+      console.log('Do thing on onBuild event')
     },
   }
 }
@@ -327,7 +327,7 @@ plugins:
 build:
   lifecycle:
     onBuild:
-      - echo "Do thing on onBuild step"
+      - echo "Do thing on onBuild event"
 ```
 
 </details>
@@ -349,7 +349,7 @@ Below is an example plugin using the `onFunctionsBuild` hook
 module.exports = function myPlugin(pluginConfig) {
   return {
     onFunctionsBuild: () => {
-      console.log('Do thing on onFunctionsBuild step')
+      console.log('Do thing on onFunctionsBuild event')
     },
   }
 }
@@ -370,7 +370,7 @@ plugins:
 build:
   lifecycle:
     onFunctionsBuild:
-      - echo "Do thing on onFunctionsBuild step"
+      - echo "Do thing on onFunctionsBuild event"
 ```
 
 </details>
@@ -392,7 +392,7 @@ Below is an example plugin using the `onPackage` hook
 module.exports = function myPlugin(pluginConfig) {
   return {
     onPackage: () => {
-      console.log('Do thing on onPackage step')
+      console.log('Do thing on onPackage event')
     },
   }
 }
@@ -413,7 +413,7 @@ plugins:
 build:
   lifecycle:
     onPackage:
-      - echo "Do thing on onPackage step"
+      - echo "Do thing on onPackage event"
 ```
 
 </details>
@@ -435,7 +435,7 @@ Below is an example plugin using the `onPreDeploy` hook
 module.exports = function myPlugin(pluginConfig) {
   return {
     onPreDeploy: () => {
-      console.log('Do thing on onPreDeploy step')
+      console.log('Do thing on onPreDeploy event')
     },
   }
 }
@@ -456,7 +456,7 @@ plugins:
 build:
   lifecycle:
     onPreDeploy:
-      - echo "Do thing on onPreDeploy step"
+      - echo "Do thing on onPreDeploy event"
 ```
 
 </details>
@@ -478,7 +478,7 @@ Below is an example plugin using the `onSaveCache` hook
 module.exports = function myPlugin(pluginConfig) {
   return {
     onSaveCache: () => {
-      console.log('Do thing on onSaveCache step')
+      console.log('Do thing on onSaveCache event')
     },
   }
 }
@@ -499,7 +499,7 @@ plugins:
 build:
   lifecycle:
     onSaveCache:
-      - echo "Do thing on onSaveCache step"
+      - echo "Do thing on onSaveCache event"
 ```
 
 </details>
@@ -521,7 +521,7 @@ Below is an example plugin using the `onSuccess` hook
 module.exports = function myPlugin(pluginConfig) {
   return {
     onSuccess: () => {
-      console.log('Do thing on onSuccess step')
+      console.log('Do thing on onSuccess event')
     },
   }
 }
@@ -542,7 +542,7 @@ plugins:
 build:
   lifecycle:
     onSuccess:
-      - echo "Do thing on onSuccess step"
+      - echo "Do thing on onSuccess event"
 ```
 
 </details>
@@ -564,7 +564,7 @@ Below is an example plugin using the `onError` hook
 module.exports = function myPlugin(pluginConfig) {
   return {
     onError: () => {
-      console.log('Do thing on onError step')
+      console.log('Do thing on onError event')
     },
   }
 }
@@ -585,7 +585,7 @@ plugins:
 build:
   lifecycle:
     onError:
-      - echo "Do thing on onError step"
+      - echo "Do thing on onError event"
 ```
 
 </details>
@@ -607,7 +607,7 @@ Below is an example plugin using the `onEnd` hook
 module.exports = function myPlugin(pluginConfig) {
   return {
     onEnd: () => {
-      console.log('Do thing on onEnd step')
+      console.log('Do thing on onEnd event')
     },
   }
 }
@@ -628,7 +628,7 @@ plugins:
 build:
   lifecycle:
     onEnd:
-      - echo "Do thing on onEnd step"
+      - echo "Do thing on onEnd event"
 ```
 
 </details>
@@ -654,7 +654,7 @@ plugins:
         - david@netlify.com
         - jim@netlify.com
 
-# Inline `build.lifecycle` steps can be defined
+# Inline `build.lifecycle` commands can be defined
 build:
   lifecycle:
     onInit:
@@ -681,10 +681,10 @@ foo: ${env:MY_ENV_VAR}
 
 Netlify Plugins extend the functionality of the netlify build process.
 
-Plugins are plain JavaScript objects that allow users to hook into the different lifecycle steps happening during their
+Plugins are plain JavaScript objects that allow users to hook into the different lifecycle events happening during their
 site builds.
 
-For example, hooking into the `onPreBuild` step to run something before your build command. Or the `onPostBuild` hook
+For example, hooking into the `onPreBuild` event to run something before your build command. Or the `onPostBuild` hook
 for running things after your site build has completed.
 
 Here is an example:
