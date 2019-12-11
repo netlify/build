@@ -5,7 +5,7 @@ research
 terraform
 .netlify
 lerna-debug.log
-.yarn-error.log
+yarn-error.log
 .nyc_output
 coverage
 .eslintcache
