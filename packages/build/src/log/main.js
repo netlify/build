@@ -23,7 +23,7 @@ ${SUBTEXT_PADDING}https://github.com/netlify/build
 const logFlags = function(flags) {
   const flagsA = filterObj(flags, isDefined)
   if (Object.keys(flagsA).length !== 0) {
-    log(cyanBright.bold('Options'), flagsA, '')
+    log(cyanBright.bold('Flags'), flagsA, '')
   }
 }
 
