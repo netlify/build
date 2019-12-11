@@ -9,3 +9,7 @@ test('--dry with 1 hook', async t => {
 test('--dry with several hooks', async t => {
   await runFixture(t, 'several', { flags: '--dry' })
 })
+
+test('--dry-run', async t => {
+  await runFixture(t, 'single', { flags: '--dry-run' })
+})
