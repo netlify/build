@@ -124,10 +124,11 @@ const logCommand = function({ hook, id, override }, { index, configPath, error }
       ? ''
       : redBright(`
 ${HEADING_PREFIX} OVERRIDE: "${override.hook}" command in "${override.name}" has been overriden by "${id}"`)
-  const source = id.startsWith('config.build') ? ` in ${basename(configPath)} config file` : ''
-  const niceName = id.startsWith('config.build') ? id.replace(/^config\./, '') : id
+  const description = id.startsWith('config.build')
+    ? `${bold(id.replace('config.', ''))} command from ${basename(configPath)} config file`
+    : `${bold(hook)} command from ${bold(id)}`
   const logColor = error ? redBright.bold : cyanBright.bold
-  const header = `${index + 1}. Running ${bold(hook)} command from ${bold(niceName)}${source}`
+  const header = `${index + 1}. Running ${description}`
   log(logColor(`${overrideWarning}\n${getHeader(header)}\n`))
 }
 
