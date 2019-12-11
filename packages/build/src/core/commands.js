@@ -4,84 +4,75 @@ const pReduce = require('p-reduce')
 const { LIFECYCLE } = require('@netlify/config')
 
 const { callChild } = require('../plugins/ipc')
-const { logLifeCycleStart, logInstruction, logCommandStart, logInstructionSuccess } = require('../log/main')
+const { logLifeCycleStart, logCommand, logShellCommandStart, logCommandSuccess } = require('../log/main')
 const { startTimer, endTimer } = require('../log/timer')
 const { startOutput, stopOutput } = require('../log/stream')
 
-// Get instructions for all hooks
-const getInstructions = function({ pluginsHooks, config }) {
-  const instructions = LIFECYCLE.flatMap(hook => getHookInstructions({ hook, pluginsHooks, config }))
+// Get commands for all events
+const getCommands = function({ pluginsHooks, config }) {
+  const commands = LIFECYCLE.flatMap(hook => getEventCommands({ hook, pluginsHooks, config }))
 
-  const buildInstructions = instructions.filter(
-    instruction => !isEndInstruction(instruction) && !isErrorInstruction(instruction),
-  )
-  const endInstructions = instructions.filter(isEndInstruction)
-  const errorInstructions = instructions.filter(isErrorInstruction)
+  const buildCommands = commands.filter(command => !isEndCommand(command) && !isErrorCommand(command))
+  const endCommands = commands.filter(isEndCommand)
+  const errorCommands = commands.filter(isErrorCommand)
 
-  const mainInstructions = [...buildInstructions, ...endInstructions]
-  const instructionsCount = mainInstructions.length
-  return { mainInstructions, buildInstructions, endInstructions, errorInstructions, instructionsCount }
+  const mainCommands = [...buildCommands, ...endCommands]
+  const commandsCount = mainCommands.length
+  return { mainCommands, buildCommands, endCommands, errorCommands, commandsCount }
 }
 
-// Get instructions for a specific hook
-const getHookInstructions = function({
+// Get commands for a specific event
+const getEventCommands = function({
   hook,
-  pluginsHooks: { [hook]: pluginHooks = [] },
+  pluginsHooks: { [hook]: pluginCommands = [] },
   config: {
     build: {
-      lifecycle: { [hook]: commands },
+      lifecycle: { [hook]: shellCommands },
     },
   },
 }) {
-  if (commands === undefined) {
-    return pluginHooks
+  if (shellCommands === undefined) {
+    return pluginCommands
   }
 
-  const lifeCycleHook = { id: `config.build.lifecycle.${hook}`, hook, commands, override: {} }
-  return [lifeCycleHook, ...pluginHooks]
+  const shellCommand = { id: `config.build.lifecycle.${hook}`, hook, shellCommands, override: {} }
+  return [shellCommand, ...pluginCommands]
 }
 
-const isEndInstruction = function({ hook }) {
+const isEndCommand = function({ hook }) {
   return hook === 'onEnd'
 }
 
-const isErrorInstruction = function({ hook }) {
+const isErrorCommand = function({ hook }) {
   return hook === 'onError'
 }
 
-// Run all instructions.
+// Run all commands.
 // If an error arises, runs `onError` hooks.
 // Runs `onEnd` hooks at the end, whether an error was thrown or not.
-const runInstructions = async function({
-  buildInstructions,
-  endInstructions,
-  errorInstructions,
-  instructionsCount,
-  configPath,
-  baseDir,
-}) {
-  logLifeCycleStart(instructionsCount)
+const runCommands = async function({ buildCommands, endCommands, errorCommands, commandsCount, configPath, baseDir }) {
+  logLifeCycleStart(commandsCount)
 
   try {
-    await execInstructions(buildInstructions, { configPath, baseDir, failFast: true })
+    await execCommands(buildCommands, { configPath, baseDir, failFast: true })
   } catch (error) {
-    await execInstructions(errorInstructions, { configPath, baseDir, failFast: false, error })
+    await execCommands(errorCommands, { configPath, baseDir, failFast: false, error })
     throw error
   } finally {
-    await execInstructions(endInstructions, { configPath, baseDir, failFast: false })
+    await execCommands(endCommands, { configPath, baseDir, failFast: false })
   }
 }
 
-// Run a set of instructions.
+// Run a set of commands.
 // `onError` and `onEnd` do not `failFast`, i.e. if they fail, the other hooks
 // of the same name keep running. However the failure is still eventually
 // thrown. This allows users to be notified of issues inside their `onError` or
 // `onEnd` hooks.
-const execInstructions = async function(instructions, { configPath, baseDir, failFast, error }) {
+const execCommands = async function(commands, { configPath, baseDir, failFast, error }) {
   const { failure, manifest: manifestA } = await pReduce(
-    instructions,
-    ({ failure, manifest }, instruction, index) =>
-      runInstruction(instruction, { manifest, index, configPath, baseDir, error, failure, failFast }),
+    commands,
+    ({ failure, manifest }, command, index) =>
+      runCommand(command, { manifest, index, configPath, baseDir, error, failure, failFast }),
     { manifest: {} },
   )
 
@@ -92,18 +83,18 @@ const execInstructions = async function(instructions, { configPath, baseDir, fai
   return manifestA
 }
 
-// Run a single instruction
-const runInstruction = async function(instruction, { manifest, index, configPath, baseDir, error, failure, failFast }) {
+// Run a command (shell or plugin)
+const runCommand = async function(command, { manifest, index, configPath, baseDir, error, failure, failFast }) {
   try {
-    const { id, hook } = instruction
+    const { id, hook } = command
 
     const methodTimer = startTimer()
 
-    logInstruction(instruction, { index, configPath, error })
+    logCommand(command, { index, configPath, error })
 
-    const pluginReturnValue = await fireMethod(instruction, { baseDir, error })
+    const pluginReturnValue = await fireCommand(command, { baseDir, error })
 
-    logInstructionSuccess()
+    logCommandSuccess()
 
     endTimer(methodTimer, id, hook)
 
@@ -117,30 +108,30 @@ const runInstruction = async function(instruction, { manifest, index, configPath
   }
 }
 
-const fireMethod = function(instruction, { baseDir, error }) {
-  if (instruction.commands !== undefined) {
-    return execCommands(instruction, { baseDir })
+const fireCommand = function(command, { baseDir, error }) {
+  if (command.shellCommands !== undefined) {
+    return fireShellCommands(command, { baseDir })
   }
 
-  return firePluginHook(instruction, { error })
+  return firePluginCommand(command, { error })
 }
 
-// Fire a `config.lifecycle.*` series of commands
-const execCommands = async function({ hook, commands }, { baseDir }) {
-  await pMapSeries(commands, command => execCommand({ hook, command, baseDir }))
+// Fire a `config.lifecycle.*` series of shell commands
+const fireShellCommands = async function({ hook, shellCommands }, { baseDir }) {
+  await pMapSeries(shellCommands, shellCommand => fireShellCommand({ hook, shellCommand, baseDir }))
 }
 
-const execCommand = async function({ hook, command, baseDir }) {
-  logCommandStart(command)
+const fireShellCommand = async function({ hook, shellCommand, baseDir }) {
+  logShellCommandStart(shellCommand)
 
-  const childProcess = execa(command, { shell: true, cwd: baseDir, preferLocal: true })
+  const childProcess = execa(shellCommand, { shell: true, cwd: baseDir, preferLocal: true })
   const chunks = []
   startOutput(childProcess, chunks)
 
   try {
     await childProcess
   } catch (error) {
-    error.message = `In "${hook}" command "${command}":\n${error.message}`
+    error.message = `In "${hook}" command "${shellCommand}":\n${error.message}`
     error.cleanStack = true
     throw error
   } finally {
@@ -148,8 +139,8 @@ const execCommand = async function({ hook, command, baseDir }) {
   }
 }
 
-// Fire a plugin hook method
-const firePluginHook = async function({ id, childProcess, hook, hookName }, { error }) {
+// Fire a plugin command
+const firePluginCommand = async function({ id, childProcess, hook, hookName }, { error }) {
   const chunks = []
   startOutput(childProcess, chunks)
 
@@ -164,4 +155,4 @@ const firePluginHook = async function({ id, childProcess, hook, hookName }, { er
   }
 }
 
-module.exports = { getInstructions, runInstructions }
+module.exports = { getCommands, runCommands }

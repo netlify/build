@@ -2,10 +2,10 @@
 
 Netlify Plugins extend the functionality of the Netlify Build process.
 
-Plugins are plain JavaScript objects that allow users to hook into the different lifecycle steps happening during their
-site builds.
+Plugins are plain JavaScript objects that allow users to hook into the different events happening during their site
+builds.
 
-For example, hooking into the `onPreBuild` step to run something before your build command. Or the `onPostBuild` hook
+For example, hooking into the `onPreBuild` event to run something before your build command. Or the `onPostBuild` hook
 for running things after your site build has completed.
 
 ## Available Lifecycle Hooks
@@ -34,12 +34,12 @@ Plugins are JavaScript objects like so:
 module.exports = {
   name: 'netlify-plugin-hello-world',
   onPreBuild: () => {
-    console.log('Hello world from onPreBuild lifecycle step!')
+    console.log('Hello world from onPreBuild event!')
   },
 }
 ```
 
-This plugin will log out `Hello world from onPreBuild lifecycle step!` before right before the build commands are run.
+This plugin will log out `Hello world from onPreBuild event!` before right before the build commands are run.
 
 Save the plugin code locally to a `./plugins/netlify-plugin-hello-world` folder as `index.js`. This will allow us to use
 the plugin in the next step.
@@ -67,7 +67,7 @@ execute a "dry run" of our build and show us the plugins & commands that will ex
 netlify build --dry
 ```
 
-Notice how our `onPreBuild` step from our `netlify-plugin-hello-world` is listed in the things that execute.
+Notice how our `onPreBuild` event handler from our `netlify-plugin-hello-world` is listed in the things that execute.
 
 Now, let's run the build!
 
@@ -98,7 +98,7 @@ To access them in your plugin code you can:
 module.exports = {
   name: 'netlify-plugin-hello-world',
   onPreBuild: ({ pluginConfig }) => {
-    console.log('Hello world from onPreBuild lifecycle step!')
+    console.log('Hello world from onPreBuild event!')
     console.log(pluginConfig.foo) // bar
     console.log(pluginConfig.fizz) // pop
   },
@@ -115,7 +115,7 @@ module.exports = function helloWorldPlugin(pluginConfig) {
   return {
     name: 'netlify-plugin-hello-world',
     onPreBuild: ({ pluginConfig, config, constants }) => {
-      console.log('Hello world from onPreBuild lifecycle step!')
+      console.log('Hello world from onPreBuild event!')
       console.log(pluginConfig.foo) // bar
       console.log(pluginConfig.fizz) // pop
     },

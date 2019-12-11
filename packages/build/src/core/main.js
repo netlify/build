@@ -14,7 +14,7 @@ const { startTimer, endTimer } = require('../log/timer')
 const { trackBuildComplete } = require('../telemetry')
 
 const { loadConfig } = require('./config')
-const { getInstructions, runInstructions } = require('./commands')
+const { getCommands, runCommands } = require('./commands')
 const { doDryRun } = require('./dry')
 
 /**
@@ -38,7 +38,7 @@ const build = async function(flags = {}) {
     const pluginsOptions = getPluginsOptions({ config })
     const pluginsOptionsA = await installPlugins(pluginsOptions, baseDir)
 
-    const instructionsCount = await buildRun({
+    const commandsCount = await buildRun({
       pluginsOptions: pluginsOptionsA,
       config,
       configPath,
@@ -54,7 +54,7 @@ const build = async function(flags = {}) {
     logBuildSuccess()
     const duration = endTimer(buildTimer, 'Netlify Build')
     logBuildEnd()
-    await trackBuildComplete({ instructionsCount, config, duration, flags })
+    await trackBuildComplete({ commandsCount, config, duration, flags })
     return true
   } catch (error) {
     logBuildError(error)
@@ -66,7 +66,7 @@ const buildRun = async function({ pluginsOptions, config, configPath, baseDir, t
   const childProcesses = await startPlugins(pluginsOptions, baseDir)
 
   try {
-    return await executeInstructions({
+    return await executeCommands({
       pluginsOptions,
       childProcesses,
       config,
@@ -80,7 +80,7 @@ const buildRun = async function({ pluginsOptions, config, configPath, baseDir, t
   }
 }
 
-const executeInstructions = async function({
+const executeCommands = async function({
   pluginsOptions,
   childProcesses,
   config,
@@ -98,28 +98,25 @@ const executeInstructions = async function({
     token,
   })
 
-  const {
-    mainInstructions,
-    buildInstructions,
-    endInstructions,
-    errorInstructions,
-    instructionsCount,
-  } = getInstructions({ pluginsHooks, config })
+  const { mainCommands, buildCommands, endCommands, errorCommands, commandsCount } = getCommands({
+    pluginsHooks,
+    config,
+  })
 
   if (dry) {
-    doDryRun({ mainInstructions, instructionsCount, configPath })
+    doDryRun({ mainCommands, commandsCount, configPath })
     return
   }
 
-  await runInstructions({
-    buildInstructions,
-    endInstructions,
-    errorInstructions,
-    instructionsCount,
+  await runCommands({
+    buildCommands,
+    endCommands,
+    errorCommands,
+    commandsCount,
     configPath,
     baseDir,
   })
-  return instructionsCount
+  return commandsCount
 }
 
 module.exports = build

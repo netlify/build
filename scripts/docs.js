@@ -210,7 +210,7 @@ function renderPluginExample(name) {
   module.exports = function myPlugin(pluginConfig) {
     return {
       ${name}: () => {
-        console.log("Do thing on ${name} step")
+        console.log("Do thing on ${name} event")
       }
     }
   }
@@ -235,7 +235,7 @@ function renderConfigExample(name) {
 build:
   lifecycle:
     ${name}:
-      - echo "Do thing on ${name} step"
+      - echo "Do thing on ${name} event"
 \`\`\`
   `
 }

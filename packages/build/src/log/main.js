@@ -56,14 +56,14 @@ const logLoadPlugin = function(id, type, core) {
   log(yellowBright(`${SUBTEXT_PADDING}Loading plugin ${idA}from ${location}`))
 }
 
-const logLifeCycleStart = function(instructionsCount) {
-  const stepsWord = instructionsCount === 1 ? 'step' : `steps`
+const logLifeCycleStart = function(commandsCount) {
+  const commandsWord = commandsCount === 1 ? 'step' : `steps`
   log(`\n${greenBright.bold(`${HEADING_PREFIX} Running Netlify Build Lifecycle`)}
-${SUBTEXT_PADDING}Found ${instructionsCount} ${stepsWord}. Lets do this!`)
+${SUBTEXT_PADDING}Found ${commandsCount} ${commandsWord}. Lets do this!`)
 }
 
-const logDryRunStart = function(hookWidth, instructionsCount) {
-  const columnWidth = getDryColumnWidth(hookWidth, instructionsCount)
+const logDryRunStart = function(hookWidth, commandsCount) {
+  const columnWidth = getDryColumnWidth(hookWidth, commandsCount)
   const line = '─'.repeat(columnWidth)
   const secondLine = '─'.repeat(columnWidth)
 
@@ -78,17 +78,11 @@ ${SUBTEXT_PADDING}│ ${DRY_HEADER_NAMES[0].padEnd(columnWidth)} │ ${DRY_HEADE
 ${SUBTEXT_PADDING}└─${line}─┴─${secondLine}─┘`)}`)
 }
 
-const logDryRunInstruction = function({
-  instruction: { id, hook, type, core },
-  index,
-  configPath,
-  hookWidth,
-  instructionsCount,
-}) {
-  const columnWidth = getDryColumnWidth(hookWidth, instructionsCount)
+const logDryRunCommand = function({ command: { id, hook, type, core }, index, configPath, hookWidth, commandsCount }) {
+  const columnWidth = getDryColumnWidth(hookWidth, commandsCount)
   const line = '─'.repeat(columnWidth)
   const countText = `${index + 1}. `
-  const downArrow = instructionsCount === index + 1 ? '  ' : ` ${arrowDown}`
+  const downArrow = commandsCount === index + 1 ? '  ' : ` ${arrowDown}`
   const hookNameWidth = columnWidth - countText.length - downArrow.length
   const location = getPluginLocation({ id, type, core, configPath })
 
@@ -111,8 +105,8 @@ const getPluginLocation = function({ id, type, core, configPath }) {
   return `${white('Plugin')} ${id} ${yellowBright(type)}`
 }
 
-const getDryColumnWidth = function(hookWidth, instructionsCount) {
-  const symbolsWidth = `${instructionsCount}`.length + 4
+const getDryColumnWidth = function(hookWidth, commandsCount) {
+  const symbolsWidth = `${commandsCount}`.length + 4
   return Math.max(hookWidth + symbolsWidth, DRY_HEADER_NAMES[0].length)
 }
 
@@ -124,7 +118,7 @@ ${SUBTEXT_PADDING}If this looks good to you, run \`netlify build\` to execute th
 `)
 }
 
-const logInstruction = function({ hook, id, override }, { index, configPath, error }) {
+const logCommand = function({ hook, id, override }, { index, configPath, error }) {
   const overrideWarning =
     override.hook === undefined
       ? ''
@@ -138,11 +132,11 @@ ${HEADING_PREFIX} OVERRIDE: "${override.hook}" method in "${override.name}" has 
   log(logColor(`${overrideWarning}\n${getHeader(header)}\n`))
 }
 
-const logCommandStart = function(cmd) {
-  log(yellowBright(`Running command "${cmd}"`))
+const logShellCommandStart = function(shellCommand) {
+  log(yellowBright(`Running command "${shellCommand}"`))
 }
 
-const logInstructionSuccess = function() {
+const logCommandSuccess = function() {
   log('')
 }
 
@@ -204,11 +198,11 @@ module.exports = {
   logLoadPlugin,
   logLifeCycleStart,
   logDryRunStart,
-  logDryRunInstruction,
+  logDryRunCommand,
   logDryRunEnd,
-  logInstruction,
-  logCommandStart,
-  logInstructionSuccess,
+  logCommand,
+  logShellCommandStart,
+  logCommandSuccess,
   logTimer,
   logCacheStart,
   logCacheDir,
