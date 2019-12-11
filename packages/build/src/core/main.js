@@ -14,7 +14,7 @@ const { startTimer, endTimer } = require('../log/timer')
 const { trackBuildComplete } = require('../telemetry')
 
 const { loadConfig } = require('./config')
-const { getInstructions, runInstructions } = require('./instructions')
+const { getInstructions, runInstructions } = require('./commands')
 const { doDryRun } = require('./dry')
 
 /**
