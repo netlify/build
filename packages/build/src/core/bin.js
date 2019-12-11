@@ -17,9 +17,9 @@ const runCli = async function() {
     console.log(process.env)
   }
 
-  const options = parseArgs()
-  const optionsA = filterObj(options, isUserOption)
-  const success = await build(optionsA)
+  const flags = parseFlags()
+  const flagsA = filterObj(flags, isUserFlag)
+  const success = await build(flagsA)
 
   // Some stdout|stderr logs will not have been flushed. This leads the current
   // BuildBot to print some messages before those are flushed.
@@ -31,14 +31,14 @@ const runCli = async function() {
   exit(exitCode)
 }
 
-const parseArgs = function() {
+const parseFlags = function() {
   return yargs
-    .options(OPTIONS)
+    .options(FLAGS)
     .usage(USAGE)
     .parse()
 }
 
-const OPTIONS = {
+const FLAGS = {
   config: {
     string: true,
     describe: `Path to the configuration file.
@@ -82,7 +82,7 @@ NETLIFY_BUILD_. For example the environment variable NETLIFY_BUILD_DRY=true can
 be used instead of the CLI flag --dry.`
 
 // Remove `yargs`-specific options, shortcuts, dash-cased and aliases
-const isUserOption = function(key, value) {
+const isUserFlag = function(key, value) {
   return value !== undefined && !INTERNAL_KEYS.includes(key) && key.length !== 1 && !key.includes('-')
 }
 
