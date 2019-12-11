@@ -1,18 +1,18 @@
 const mapObj = require('map-obj')
 const deepMerge = require('deepmerge')
 
-const { LEGACY_LIFECYCLE, normalizeLifecycleCase } = require('./lifecycle.js')
+const { LEGACY_LIFECYCLE, normalizeLifecycleCase } = require('./events')
 
 // Normalize configuration object
 const normalizeConfig = function(config) {
   const configA = deepMerge(DEFAULT_CONFIG, config)
-  const configB = normalizeLifecycles({ config: configA })
+  const configB = normalizeLifecycle({ config: configA })
   return configB
 }
 
 const DEFAULT_CONFIG = { build: { lifecycle: {} }, plugins: [] }
 
-const normalizeLifecycles = function({
+const normalizeLifecycle = function({
   config,
   config: {
     build: { command, lifecycle, ...build },

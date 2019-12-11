@@ -1,7 +1,7 @@
 const isPlainObj = require('is-plain-obj')
 const { cyan } = require('chalk')
 
-const { LIFECYCLE, LEGACY_LIFECYCLE, normalizeLifecycleCase } = require('../lifecycle')
+const { LIFECYCLE, LEGACY_LIFECYCLE, normalizeLifecycleCase } = require('../events')
 
 const { isString, isBoolean, validProperties, deprecatedProperties } = require('./helpers')
 

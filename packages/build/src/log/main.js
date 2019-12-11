@@ -56,7 +56,7 @@ const logLoadPlugin = function(id, type, core) {
   log(yellowBright(`${SUBTEXT_PADDING}Loading plugin ${idA}from ${location}`))
 }
 
-const logLifeCycleStart = function(commandsCount) {
+const logCommandsStart = function(commandsCount) {
   const commandsWord = commandsCount === 1 ? 'command' : `commands`
   log(`\n${greenBright.bold(`${HEADING_PREFIX} Running Netlify Build Lifecycle`)}
 ${SUBTEXT_PADDING}Found ${commandsCount} ${commandsWord}. Lets do this!`)
@@ -202,7 +202,7 @@ module.exports = {
   logInstallPlugins,
   logLoadPlugins,
   logLoadPlugin,
-  logLifeCycleStart,
+  logCommandsStart,
   logDryRunStart,
   logDryRunCommand,
   logDryRunEnd,

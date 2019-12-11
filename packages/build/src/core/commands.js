@@ -4,7 +4,7 @@ const pReduce = require('p-reduce')
 const { LIFECYCLE } = require('@netlify/config')
 
 const { callChild } = require('../plugins/ipc')
-const { logLifeCycleStart, logCommand, logShellCommandStart, logCommandSuccess } = require('../log/main')
+const { logCommandsStart, logCommand, logShellCommandStart, logCommandSuccess } = require('../log/main')
 const { startTimer, endTimer } = require('../log/timer')
 const { startOutput, stopOutput } = require('../log/stream')
 
@@ -51,7 +51,7 @@ const isErrorCommand = function({ event }) {
 // If an error arises, runs `onError` events.
 // Runs `onEnd` events at the end, whether an error was thrown or not.
 const runCommands = async function({ buildCommands, endCommands, errorCommands, commandsCount, configPath, baseDir }) {
-  logLifeCycleStart(commandsCount)
+  logCommandsStart(commandsCount)
 
   try {
     await execCommands(buildCommands, { configPath, baseDir, failFast: true })

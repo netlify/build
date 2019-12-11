@@ -10,19 +10,21 @@ after your site build has completed.
 ## Available event handlers
 
 <!-- AUTO-GENERATED-CONTENT:START (LIFECYCLE_TABLE:noAnchors=true) -->
-| Event          | Description |
-|:------|:-------|
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **onInit** ‏‏‎  ‏‏‎  ‏‏‎  | Runs before anything else |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **onGetCache** ‏‏‎  ‏‏‎  ‏‏‎  | Fetch previous build cache |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **onInstall** ‏‏‎  ‏‏‎  ‏‏‎  | Install project dependencies |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **onBuild** ‏‏‎  ‏‏‎  ‏‏‎  | Build commands are executed |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **onFunctionsBuild** ‏‏‎  ‏‏‎  ‏‏‎  | Build the serverless functions |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **onPackage** ‏‏‎  ‏‏‎  ‏‏‎  | Package & optimize artifact |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **onPreDeploy** ‏‏‎  ‏‏‎  ‏‏‎  | Runs before built artifacts are deployed |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **onSaveCache** ‏‏‎  ‏‏‎  ‏‏‎  | Save cached assets |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **onSuccess** ‏‏‎  ‏‏‎  ‏‏‎  | Runs on build success |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **onError** ‏‏‎  ‏‏‎  ‏‏‎  | Runs on build error |
-| 🎉 ‏‏‎ **onEnd** ‏‏‎  ‏‏‎  ‏‏‎  | Runs on build error or success |
+
+| Event                                          | Description                              |
+| :--------------------------------------------- | :--------------------------------------- |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **onInit** ‏‏‎ ‏‏‎ ‏‏‎           | Runs before anything else                |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **onGetCache** ‏‏‎ ‏‏‎ ‏‏‎       | Fetch previous build cache               |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **onInstall** ‏‏‎ ‏‏‎ ‏‏‎        | Install project dependencies             |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **onBuild** ‏‏‎ ‏‏‎ ‏‏‎          | Build commands are executed              |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **onFunctionsBuild** ‏‏‎ ‏‏‎ ‏‏‎ | Build the serverless functions           |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **onPackage** ‏‏‎ ‏‏‎ ‏‏‎        | Package & optimize artifact              |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **onPreDeploy** ‏‏‎ ‏‏‎ ‏‏‎      | Runs before built artifacts are deployed |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **onSaveCache** ‏‏‎ ‏‏‎ ‏‏‎      | Save cached assets                       |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **onSuccess** ‏‏‎ ‏‏‎ ‏‏‎        | Runs on build success                    |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **onError** ‏‏‎ ‏‏‎ ‏‏‎          | Runs on build error                      |
+| 🎉 ‏‏‎ **onEnd** ‏‏‎ ‏‏‎ ‏‏‎                   | Runs on build error or success           |
+
 <!-- AUTO-GENERATED-CONTENT:END (LIFECYCLE_TABLE) -->
 
 ## Anatomy of a plugin
@@ -89,7 +91,7 @@ plugins:
       fizz: pop
 ```
 
-These `config` values are passed into the plugin when the lifecycle methods are being executed.
+These `config` values are passed into the plugin when the event handlers are being executed.
 
 To access them in your plugin code you can:
 
@@ -152,7 +154,7 @@ doing it inside event handlers.
 
 ## Plugin constants
 
-Inside of each lifecycle function there is a `constants` key.
+Inside of each event handler there is a `constants` key.
 
 ```js
 module.exports = {
@@ -166,12 +168,13 @@ module.exports = {
 The `constants` key contains the following values:
 
 <!-- AUTO-GENERATED-CONTENT:START (CONSTANTS) -->
+
 - `CONFIG_PATH` Path to the netlify configuration file
 - `BUILD_DIR` The build directory of the site
 - `CACHE_DIR` The directory files can be cached in between builds
 - `FUNCTIONS_SRC` The directory where function source code lives
 - `FUNCTIONS_DIST` The directory where built serverless functions are placed before deployment
-<!-- AUTO-GENERATED-CONTENT:END -->
+  <!-- AUTO-GENERATED-CONTENT:END -->
 
 ## Publishing a plugin
 
