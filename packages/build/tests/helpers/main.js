@@ -70,9 +70,16 @@ const doTestAction = function({ t, all, isPrint, normalize = !isPrint, snapshot 
     return printOutput(t, allA)
   }
 
-  if (snapshot) {
-    t.snapshot(allA)
+  if (!snapshot) {
+    return
   }
+
+  if (shouldIgnoreSnapshot(allA)) {
+    t.pass()
+    return
+  }
+
+  t.snapshot(allA)
 }
 
 const printOutput = function(t, all) {
@@ -86,5 +93,14 @@ ${all}`)
 }
 
 const LINE = '='.repeat(50)
+
+const shouldIgnoreSnapshot = function(all) {
+  return IGNORE_REGEXPS.some(regExp => regExp.test(all))
+}
+
+const IGNORE_REGEXPS = [
+  // Some tests run npm|yarn, which sometimes fail due to network errors
+  /getaddrinfo EAI_AGAIN/,
+]
 
 module.exports = { runFixture, FIXTURES_DIR }
