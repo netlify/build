@@ -65,6 +65,7 @@ The NETLIFY_TOKEN environment variable can be used as well.`,
 Default: 'production'`,
   },
   dry: {
+    alias: 'dry-run',
     boolean: true,
     describe: `Run in dry mode, i.e. printing commands without
 executing them.
@@ -80,11 +81,11 @@ Options can also be specified as environment variables prefixed with
 NETLIFY_BUILD_. For example the environment variable NETLIFY_BUILD_DRY=true can
 be used instead of the CLI flag --dry.`
 
-// Remove `yargs`-specific options, shortcuts and dash-cased
+// Remove `yargs`-specific options, shortcuts, dash-cased and aliases
 const isUserOption = function(key, value) {
   return value !== undefined && !INTERNAL_KEYS.includes(key) && key.length !== 1 && !key.includes('-')
 }
 
-const INTERNAL_KEYS = ['help', 'version', '_', '$0']
+const INTERNAL_KEYS = ['help', 'version', '_', '$0', 'dryRun']
 
 runCli()
