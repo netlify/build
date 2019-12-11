@@ -62,8 +62,8 @@ const logLifeCycleStart = function(commandsCount) {
 ${SUBTEXT_PADDING}Found ${commandsCount} ${commandsWord}. Lets do this!`)
 }
 
-const logDryRunStart = function(hookWidth, commandsCount) {
-  const columnWidth = getDryColumnWidth(hookWidth, commandsCount)
+const logDryRunStart = function(eventWidth, commandsCount) {
+  const columnWidth = getDryColumnWidth(eventWidth, commandsCount)
   const line = '─'.repeat(columnWidth)
   const secondLine = '─'.repeat(columnWidth)
 
@@ -78,17 +78,23 @@ ${SUBTEXT_PADDING}│ ${DRY_HEADER_NAMES[0].padEnd(columnWidth)} │ ${DRY_HEADE
 ${SUBTEXT_PADDING}└─${line}─┴─${secondLine}─┘`)}`)
 }
 
-const logDryRunCommand = function({ command: { id, hook, type, core }, index, configPath, hookWidth, commandsCount }) {
-  const columnWidth = getDryColumnWidth(hookWidth, commandsCount)
+const logDryRunCommand = function({
+  command: { id, event, type, core },
+  index,
+  configPath,
+  eventWidth,
+  commandsCount,
+}) {
+  const columnWidth = getDryColumnWidth(eventWidth, commandsCount)
   const line = '─'.repeat(columnWidth)
   const countText = `${index + 1}. `
   const downArrow = commandsCount === index + 1 ? '  ' : ` ${arrowDown}`
-  const hookNameWidth = columnWidth - countText.length - downArrow.length
+  const eventWidthA = columnWidth - countText.length - downArrow.length
   const location = getPluginLocation({ id, type, core, configPath })
 
   log(
     cyanBright.bold(`${SUBTEXT_PADDING}┌─${line}─┐
-${SUBTEXT_PADDING}│ ${cyanBright(countText)}${hook.padEnd(hookNameWidth)}${downArrow} │ ${location}
+${SUBTEXT_PADDING}│ ${cyanBright(countText)}${event.padEnd(eventWidthA)}${downArrow} │ ${location}
 ${SUBTEXT_PADDING}└─${line}─┘ `),
   )
 }
@@ -105,9 +111,9 @@ const getPluginLocation = function({ id, type, core, configPath }) {
   return `${white('Plugin')} ${id} ${yellowBright(type)}`
 }
 
-const getDryColumnWidth = function(hookWidth, commandsCount) {
+const getDryColumnWidth = function(eventWidth, commandsCount) {
   const symbolsWidth = `${commandsCount}`.length + 4
-  return Math.max(hookWidth + symbolsWidth, DRY_HEADER_NAMES[0].length)
+  return Math.max(eventWidth + symbolsWidth, DRY_HEADER_NAMES[0].length)
 }
 
 const DRY_HEADER_NAMES = ['Event', 'Location']
@@ -118,15 +124,15 @@ ${SUBTEXT_PADDING}If this looks good to you, run \`netlify build\` to execute th
 `)
 }
 
-const logCommand = function({ hook, id, override }, { index, configPath, error }) {
+const logCommand = function({ event, id, override }, { index, configPath, error }) {
   const overrideWarning =
-    override.hook === undefined
+    override.event === undefined
       ? ''
       : redBright(`
-${HEADING_PREFIX} OVERRIDE: "${override.hook}" command in "${override.name}" has been overriden by "${id}"`)
+${HEADING_PREFIX} OVERRIDE: "${override.event}" command in "${override.name}" has been overriden by "${id}"`)
   const description = id.startsWith('config.build')
     ? `${bold(id.replace('config.', ''))} command from ${basename(configPath)} config file`
-    : `${bold(hook)} command from ${bold(id)}`
+    : `${bold(event)} command from ${bold(id)}`
   const logColor = error ? redBright.bold : cyanBright.bold
   const header = `${index + 1}. Running ${description}`
   log(logColor(`${overrideWarning}\n${getHeader(header)}\n`))
@@ -140,12 +146,12 @@ const logCommandSuccess = function() {
   log('')
 }
 
-const logTimer = function(durationMs, hook, id) {
-  const hookA = hook ? `.${bold(hook)}` : ''
+const logTimer = function(durationMs, event, id) {
+  const eventA = event ? `.${bold(event)}` : ''
   const idA = id.replace('config.', '')
   const idB = idA.startsWith('build.lifecycle') ? 'build.lifecycle' : idA
 
-  log(` ${greenBright(tick)}  ${greenBright.bold(idB)}${hookA} completed in ${durationMs}ms`)
+  log(` ${greenBright(tick)}  ${greenBright.bold(idB)}${eventA} completed in ${durationMs}ms`)
 }
 
 const logCacheStart = function() {

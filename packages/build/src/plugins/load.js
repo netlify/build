@@ -5,25 +5,25 @@ const { logLoadPlugins, logLoadPlugin } = require('../log/main')
 const { isNotOverridden } = require('./override')
 const { callChild } = require('./ipc')
 
-// Retrieve plugin hooks for all plugins
+// Retrieve all plugins commands
 // Can use either a module name or a file path to the plugin.
 const loadPlugins = async function({ pluginsOptions, childProcesses, config, configPath, baseDir, token }) {
   logLoadPlugins()
 
-  const hooks = await Promise.all(
+  const pluginCommands = await Promise.all(
     pluginsOptions.map((pluginOptions, index) =>
       loadPlugin(pluginOptions, { childProcesses, index, config, configPath, baseDir, token }),
     ),
   )
-  const hooksA = hooks
+  const pluginCommandsA = pluginCommands
     .flat()
     .filter(isNotDuplicate)
     .filter(isNotOverridden)
-  const pluginsHooks = groupBy(hooksA, 'hook')
-  return pluginsHooks
+  const pluginsCommandsB = groupBy(pluginCommandsA, 'event')
+  return pluginsCommandsB
 }
 
-// Retrieve plugin hooks for one plugin.
+// Retrieve plugin commands for one plugin.
 // Do it by executing the plugin `load` event handler.
 const loadPlugin = async function(
   { type, pluginPath, pluginConfig, id, core },
@@ -34,7 +34,7 @@ const loadPlugin = async function(
   const { childProcess } = childProcesses[index]
 
   try {
-    const { hooks } = await callChild(childProcess, 'load', {
+    const { pluginCommands } = await callChild(childProcess, 'load', {
       id,
       type,
       pluginPath,
@@ -45,8 +45,8 @@ const loadPlugin = async function(
       baseDir,
       token,
     })
-    const hooksA = hooks.map(hook => ({ ...hook, childProcess }))
-    return hooksA
+    const pluginCommandsA = pluginCommands.map(pluginCommand => ({ ...pluginCommand, childProcess }))
+    return pluginCommandsA
   } catch (error) {
     const idA = id === undefined ? type : id
     error.message = `Error loading "${idA}" plugin:\n${error.message}`
@@ -55,13 +55,16 @@ const loadPlugin = async function(
   }
 }
 
-// Remove plugin hooks that are duplicates.
+// Remove plugin commands that are duplicates.
 // This might happen when using plugin presets. This also allows users to
 // override the configuration of specific plugins when using presets.
-const isNotDuplicate = function(pluginHook, index, pluginHooks) {
-  return !pluginHooks
+const isNotDuplicate = function(pluginCommand, index, pluginCommands) {
+  return !pluginCommands
     .slice(index + 1)
-    .some(laterPluginHook => laterPluginHook.id === pluginHook.id && laterPluginHook.hook === pluginHook.hook)
+    .some(
+      laterPluginCommand =>
+        laterPluginCommand.id === pluginCommand.id && laterPluginCommand.event === pluginCommand.event,
+    )
 }
 
 module.exports = { loadPlugins }

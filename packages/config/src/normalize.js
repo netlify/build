@@ -18,15 +18,13 @@ const normalizeLifecycles = function({
     build: { command, lifecycle, ...build },
   },
 }) {
-  const lifecycleA = normalizeCommand(lifecycle, command)
-
-  const lifecycleB = mapObj(lifecycleA, normalizeLifecycle)
-
+  const lifecycleA = normalizeOnBuild(lifecycle, command)
+  const lifecycleB = mapObj(lifecycleA, normalizeBashCommands)
   return { ...config, build: { ...build, lifecycle: lifecycleB } }
 }
 
 // `build.lifecycle.onBuild` was previously called `build.command`
-const normalizeCommand = function(lifecycle, command) {
+const normalizeOnBuild = function(lifecycle, command) {
   if (command === undefined) {
     return lifecycle
   }
@@ -34,11 +32,11 @@ const normalizeCommand = function(lifecycle, command) {
   return { ...lifecycle, onBuild: command }
 }
 
-const normalizeLifecycle = function(hook, value) {
-  const hookA = normalizeLifecycleCase(hook)
-  const hookB = LEGACY_LIFECYCLE[hookA] === undefined ? hookA : LEGACY_LIFECYCLE[hookA]
-  const valueA = typeof value === 'string' ? value.trim().split('\n') : value
-  return [hookB, valueA]
+const normalizeBashCommands = function(event, bashCommands) {
+  const eventA = normalizeLifecycleCase(event)
+  const eventB = LEGACY_LIFECYCLE[eventA] === undefined ? eventA : LEGACY_LIFECYCLE[eventA]
+  const bashCommandsA = typeof bashCommands === 'string' ? bashCommands.trim().split('\n') : bashCommands
+  return [eventB, bashCommandsA]
 }
 
 module.exports = { normalizeConfig }

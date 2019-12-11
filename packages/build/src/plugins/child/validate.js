@@ -40,18 +40,18 @@ const validateProperty = function(value, propName) {
   validateNonMethod(value, propName)
 }
 
-// Validate `plugin.*` hook methods
+// Validate `plugin.*` event handlers
 const validateMethod = function(propName) {
-  const hook = propName.replace(OVERRIDE_REGEXP, '')
+  const propNameA = propName.replace(OVERRIDE_REGEXP, '')
 
-  if (!LIFECYCLE.includes(hook) && LEGACY_LIFECYCLE[hook] === undefined) {
-    throw new Error(`Invalid lifecycle hook '${hook}'.
+  if (!LIFECYCLE.includes(propNameA) && LEGACY_LIFECYCLE[propNameA] === undefined) {
+    throw new Error(`Invalid event '${propNameA}'.
 Please use a valid event name. One of:
 ${serializeList(LIFECYCLE)}`)
   }
 }
 
-// Hooks can start with `pluginName:` to override another plugin
+// Event handlers can start with `pluginName:` to override another plugin
 const OVERRIDE_REGEXP = /^[^:]+:/
 
 const validateNonMethod = function(value, propName) {

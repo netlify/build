@@ -12,7 +12,7 @@ const { getConstants } = require('./constants')
 // This also requires the plugin file and fire its top-level function.
 // This also validates the plugin.
 // Do it when parent requests it using the `load` event.
-// Also figure out the list of hooks. This is also passed to the parent.
+// Also figure out the list of plugin commands. This is also passed to the parent.
 const loadPlugin = async function(payload) {
   const constants = await getConstants(payload)
   const logic = getLogic(payload, constants)
@@ -22,35 +22,35 @@ const loadPlugin = async function(payload) {
 
   const logicA = normalizePlugin(logic)
 
-  const hooks = getPluginHooks(logicA, payload)
+  const pluginCommands = getPluginCommands(logicA, payload)
 
-  const context = await getContext(logicA, hooks, constants, payload)
-  return { context, hooks }
+  const context = await getContext(logicA, pluginCommands, constants, payload)
+  return { context, pluginCommands }
 }
 
-const getPluginHooks = function(logic, { id, type, core }) {
+const getPluginCommands = function(logic, { id, type, core }) {
   const { name } = logic
   return Object.entries(logic)
-    .filter(isPluginHook)
-    .map(([hook, method]) => getPluginHook({ method, hook, name, id, type, core }))
+    .filter(isEventHandler)
+    .map(([event, method]) => getPluginCommand({ method, event, name, id, type, core }))
 }
 
-const isPluginHook = function([, value]) {
+const isEventHandler = function([, value]) {
   return typeof value === 'function'
 }
 
-// Retrieve a single hook from this plugin
-const getPluginHook = function({ method, hook, name, id = name, type, core }) {
-  const override = getOverride(hook)
-  const hookA = override.hook || hook
-  return { method, id, name, type, hook: hookA, hookName: hook, override, core }
+// Retrieve a single command from this plugin
+const getPluginCommand = function({ method, event, name, id = name, type, core }) {
+  const override = getOverride(event)
+  const eventA = override.event || event
+  return { method, id, name, type, event: eventA, originalEvent: event, override, core }
 }
 
-// Retrieve context passed to every hook method
-const getContext = async function(logic, hooks, constants, { pluginPath, pluginConfig, config, token }) {
+// Retrieve context passed to every event handler
+const getContext = async function(logic, pluginCommands, constants, { pluginPath, pluginConfig, config, token }) {
   const api = getApiClient({ logic, token })
   const utils = await getUtils(pluginPath)
-  return { hooks, api, utils, constants, pluginConfig, config }
+  return { pluginCommands, api, utils, constants, pluginConfig, config }
 }
 
 module.exports = { loadPlugin }

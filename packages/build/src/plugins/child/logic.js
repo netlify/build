@@ -1,5 +1,5 @@
 // Require the plugin file and fire its top-level function.
-// The returned object is the `logic` which includes all hook methods.
+// The returned object is the `logic` which includes all event handlers.
 const getLogic = function({ pluginPath, pluginConfig }, constants) {
   const logic = requireLogic(pluginPath)
   const logicA = loadLogic({ logic, pluginConfig, constants })

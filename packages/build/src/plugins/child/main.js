@@ -57,14 +57,17 @@ const handleEvent = async function(callId, eventName, payload, state) {
 
 // Initial plugin load
 const load = async function(payload, state) {
-  const { context, hooks } = await loadPlugin(payload)
+  const { context, pluginCommands } = await loadPlugin(payload)
   state.context = context
-  return { hooks }
+  return { pluginCommands }
 }
 
-// Run a specific plugin hook method
-const run = async function({ hookName, error }, { context: { hooks, api, utils, constants, pluginConfig, config } }) {
-  const { method } = hooks.find(hookA => hookA.hookName === hookName)
+// Run a specific plugin event handler
+const run = async function(
+  { originalEvent, error },
+  { context: { pluginCommands, api, utils, constants, pluginConfig, config } },
+) {
+  const { method } = pluginCommands.find(pluginCommand => pluginCommand.originalEvent === originalEvent)
   await method({ api, utils, constants, pluginConfig, config, error })
 }
 

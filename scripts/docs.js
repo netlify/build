@@ -84,7 +84,7 @@ const config = {
       const events = docBlocs.filter(d => {
         return !d.description.summary.match(/^\*\*/)
       })
-      let md = '| Lifecycle hook | Description |\n'
+      let md = '| Event          | Description |\n'
       md += '|:------|:-------|\n'
       events.forEach(data => {
         const eventName = data.description.summary.match(/^`(.*)`/)
@@ -204,7 +204,7 @@ function renderPluginExample(name) {
 
   **1. Using with a Plugin**
 
-  Below is an example plugin using the \`${name}\` hook
+  Below is an example plugin using the \`${name}\` event handler
 
   \`\`\`js
   module.exports = function myPlugin(pluginConfig) {

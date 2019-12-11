@@ -9,8 +9,8 @@ const { startTimer, endTimer } = require('../log/timer')
 const { startOutput, stopOutput } = require('../log/stream')
 
 // Get commands for all events
-const getCommands = function({ pluginsHooks, config }) {
-  const commands = LIFECYCLE.flatMap(hook => getEventCommands({ hook, pluginsHooks, config }))
+const getCommands = function({ pluginsCommands, config }) {
+  const commands = LIFECYCLE.flatMap(event => getEventCommands({ event, pluginsCommands, config }))
 
   const buildCommands = commands.filter(command => !isEndCommand(command) && !isErrorCommand(command))
   const endCommands = commands.filter(isEndCommand)
@@ -23,11 +23,11 @@ const getCommands = function({ pluginsHooks, config }) {
 
 // Get commands for a specific event
 const getEventCommands = function({
-  hook,
-  pluginsHooks: { [hook]: pluginCommands = [] },
+  event,
+  pluginsCommands: { [event]: pluginCommands = [] },
   config: {
     build: {
-      lifecycle: { [hook]: shellCommands },
+      lifecycle: { [event]: shellCommands },
     },
   },
 }) {
@@ -35,21 +35,21 @@ const getEventCommands = function({
     return pluginCommands
   }
 
-  const shellCommand = { id: `config.build.lifecycle.${hook}`, hook, shellCommands, override: {} }
+  const shellCommand = { id: `config.build.lifecycle.${event}`, event, shellCommands, override: {} }
   return [shellCommand, ...pluginCommands]
 }
 
-const isEndCommand = function({ hook }) {
-  return hook === 'onEnd'
+const isEndCommand = function({ event }) {
+  return event === 'onEnd'
 }
 
-const isErrorCommand = function({ hook }) {
-  return hook === 'onError'
+const isErrorCommand = function({ event }) {
+  return event === 'onError'
 }
 
 // Run all commands.
-// If an error arises, runs `onError` hooks.
-// Runs `onEnd` hooks at the end, whether an error was thrown or not.
+// If an error arises, runs `onError` events.
+// Runs `onEnd` events at the end, whether an error was thrown or not.
 const runCommands = async function({ buildCommands, endCommands, errorCommands, commandsCount, configPath, baseDir }) {
   logLifeCycleStart(commandsCount)
 
@@ -64,10 +64,10 @@ const runCommands = async function({ buildCommands, endCommands, errorCommands, 
 }
 
 // Run a set of commands.
-// `onError` and `onEnd` do not `failFast`, i.e. if they fail, the other hooks
+// `onError` and `onEnd` do not `failFast`, i.e. if they fail, the other events
 // of the same name keep running. However the failure is still eventually
 // thrown. This allows users to be notified of issues inside their `onError` or
-// `onEnd` hooks.
+// `onEnd` events.
 const execCommands = async function(commands, { configPath, baseDir, failFast, error }) {
   const { failure, manifest: manifestA } = await pReduce(
     commands,
@@ -86,7 +86,7 @@ const execCommands = async function(commands, { configPath, baseDir, failFast, e
 // Run a command (shell or plugin)
 const runCommand = async function(command, { manifest, index, configPath, baseDir, error, failure, failFast }) {
   try {
-    const { id, hook } = command
+    const { id, event } = command
 
     const methodTimer = startTimer()
 
@@ -96,7 +96,7 @@ const runCommand = async function(command, { manifest, index, configPath, baseDi
 
     logCommandSuccess()
 
-    endTimer(methodTimer, id, hook)
+    endTimer(methodTimer, id, event)
 
     return { failure, manifest: { ...manifest, ...pluginReturnValue } }
   } catch (failure) {
@@ -117,11 +117,11 @@ const fireCommand = function(command, { baseDir, error }) {
 }
 
 // Fire a `config.lifecycle.*` series of shell commands
-const fireShellCommands = async function({ hook, shellCommands }, { baseDir }) {
-  await pMapSeries(shellCommands, shellCommand => fireShellCommand({ hook, shellCommand, baseDir }))
+const fireShellCommands = async function({ event, shellCommands }, { baseDir }) {
+  await pMapSeries(shellCommands, shellCommand => fireShellCommand({ event, shellCommand, baseDir }))
 }
 
-const fireShellCommand = async function({ hook, shellCommand, baseDir }) {
+const fireShellCommand = async function({ event, shellCommand, baseDir }) {
   logShellCommandStart(shellCommand)
 
   const childProcess = execa(shellCommand, { shell: true, cwd: baseDir, preferLocal: true })
@@ -131,7 +131,7 @@ const fireShellCommand = async function({ hook, shellCommand, baseDir }) {
   try {
     await childProcess
   } catch (error) {
-    error.message = `In "${hook}" command "${shellCommand}":\n${error.message}`
+    error.message = `In "${event}" command "${shellCommand}":\n${error.message}`
     error.cleanStack = true
     throw error
   } finally {
@@ -140,14 +140,14 @@ const fireShellCommand = async function({ hook, shellCommand, baseDir }) {
 }
 
 // Fire a plugin command
-const firePluginCommand = async function({ id, childProcess, hook, hookName }, { error }) {
+const firePluginCommand = async function({ id, childProcess, event, originalEvent }, { error }) {
   const chunks = []
   startOutput(childProcess, chunks)
 
   try {
-    await callChild(childProcess, 'run', { hookName, error })
+    await callChild(childProcess, 'run', { originalEvent, error })
   } catch (error) {
-    error.message = `In "${hook}" command from "${id}":\n${error.message}`
+    error.message = `In "${event}" command from "${id}":\n${error.message}`
     error.cleanStack = true
     throw error
   } finally {

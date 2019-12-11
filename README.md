@@ -63,7 +63,7 @@ requirements.
 
 ## How it works
 
-Builds are controlled by a series of [lifecycle](#lifecycle) events that `plugins` & configuration hook into.
+Builds are controlled by a series of [lifecycle](#lifecycle) events that `plugins` and configuration hook into.
 
 **The [build lifecycle](#lifecycle) can be extended in two ways:**
 
@@ -114,12 +114,12 @@ Netlify plugins can be found on npm by
 
 ## Lifecycle
 
-The build process runs through a series of lifecycle events. These events are the places we can hook into and extend how
-the Netlify build operates.
+The build process runs through a series of lifecycle events. These events are the places we can extend how the Netlify
+build operates.
 
 <!-- AUTO-GENERATED-CONTENT:START (LIFECYCLE_TABLE) -->
 
-| Lifecycle hook                                                                          | Description                              |
+| Event                                                                                   | Description                              |
 | :-------------------------------------------------------------------------------------- | :--------------------------------------- |
 | ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleoninit">onInit</a>** ‏‏‎ ‏‏‎ ‏‏‎                     | Runs before anything else                |
 | ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleongetcache">onGetCache</a>** ‏‏‎ ‏‏‎ ‏‏‎             | Fetch previous build cache               |
@@ -171,7 +171,7 @@ The Lifecycle flows the events in order and executes and their `onPre` & `onPost
 
 **1. Using with a Plugin**
 
-Below is an example plugin using the `onInit` hook
+Below is an example plugin using the `onInit` event handler
 
 ```js
 module.exports = function myPlugin(pluginConfig) {
@@ -214,7 +214,7 @@ build:
 
 **1. Using with a Plugin**
 
-Below is an example plugin using the `onGetCache` hook
+Below is an example plugin using the `onGetCache` event handler
 
 ```js
 module.exports = function myPlugin(pluginConfig) {
@@ -257,7 +257,7 @@ build:
 
 **1. Using with a Plugin**
 
-Below is an example plugin using the `onInstall` hook
+Below is an example plugin using the `onInstall` event handler
 
 ```js
 module.exports = function myPlugin(pluginConfig) {
@@ -300,7 +300,7 @@ build:
 
 **1. Using with a Plugin**
 
-Below is an example plugin using the `onBuild` hook
+Below is an example plugin using the `onBuild` event handler
 
 ```js
 module.exports = function myPlugin(pluginConfig) {
@@ -343,7 +343,7 @@ build:
 
 **1. Using with a Plugin**
 
-Below is an example plugin using the `onFunctionsBuild` hook
+Below is an example plugin using the `onFunctionsBuild` event handler
 
 ```js
 module.exports = function myPlugin(pluginConfig) {
@@ -386,7 +386,7 @@ build:
 
 **1. Using with a Plugin**
 
-Below is an example plugin using the `onPackage` hook
+Below is an example plugin using the `onPackage` event handler
 
 ```js
 module.exports = function myPlugin(pluginConfig) {
@@ -429,7 +429,7 @@ build:
 
 **1. Using with a Plugin**
 
-Below is an example plugin using the `onPreDeploy` hook
+Below is an example plugin using the `onPreDeploy` event handler
 
 ```js
 module.exports = function myPlugin(pluginConfig) {
@@ -472,7 +472,7 @@ build:
 
 **1. Using with a Plugin**
 
-Below is an example plugin using the `onSaveCache` hook
+Below is an example plugin using the `onSaveCache` event handler
 
 ```js
 module.exports = function myPlugin(pluginConfig) {
@@ -515,7 +515,7 @@ build:
 
 **1. Using with a Plugin**
 
-Below is an example plugin using the `onSuccess` hook
+Below is an example plugin using the `onSuccess` event handler
 
 ```js
 module.exports = function myPlugin(pluginConfig) {
@@ -558,7 +558,7 @@ build:
 
 **1. Using with a Plugin**
 
-Below is an example plugin using the `onError` hook
+Below is an example plugin using the `onError` event handler
 
 ```js
 module.exports = function myPlugin(pluginConfig) {
@@ -601,7 +601,7 @@ build:
 
 **1. Using with a Plugin**
 
-Below is an example plugin using the `onEnd` hook
+Below is an example plugin using the `onEnd` event handler
 
 ```js
 module.exports = function myPlugin(pluginConfig) {
@@ -681,11 +681,10 @@ foo: ${env:MY_ENV_VAR}
 
 Netlify Plugins extend the functionality of the netlify build process.
 
-Plugins are plain JavaScript objects that allow users to hook into the different lifecycle events happening during their
-site builds.
+Plugins are plain JavaScript objects with event handlers for the different events happening during builds.
 
-For example, hooking into the `onPreBuild` event to run something before your build command. Or the `onPostBuild` hook
-for running things after your site build has completed.
+For example, the `onPreBuild` event handler runs before your build command. Or the `onPostBuild` event handler runs
+after your site build has completed.
 
 Here is an example:
 

@@ -13,7 +13,6 @@ Configuration is written in `YAML` instead of `TOML`
 build:
   functions: functions
   publish: build
-  # Inline lifecycle hooks
   lifecycle:
     onInit:
       - echo "Starting the build"
