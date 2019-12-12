@@ -1,4 +1,4 @@
-const LIFECYCLE = [
+const EVENTS = [
   /**
    * `onInit` - Runs before anything else
    */
@@ -60,7 +60,7 @@ const LIFECYCLE = [
 ]
 
 // TODO: remove after going out of beta
-const LEGACY_LIFECYCLE = {
+const LEGACY_EVENTS = {
   init: 'onInit',
   preGetCache: 'onPreGetCache',
   getCache: 'onGetCache',
@@ -87,24 +87,24 @@ const LEGACY_LIFECYCLE = {
 }
 
 // `build.lifecycle.onEvent` can also be spelled `build.lifecycle.onevent`
-const normalizeLifecycleCase = function(event) {
-  const normalizedEvent = LIFECYCLE_CASES[event.toLowerCase()]
-  if (normalizedEvent === undefined) {
-    return event
+const normalizeEventHandler = function(eventHandler) {
+  const normalizedEventHandler = EVENT_HANDLER_CASES[eventHandler.toLowerCase()]
+  if (normalizedEventHandler === undefined) {
+    return eventHandler
   }
 
-  return normalizedEvent
+  return normalizedEventHandler
 }
 
-const getLifecycleCases = function() {
-  const events = [...LIFECYCLE, ...Object.keys(LEGACY_LIFECYCLE)].map(getLifecycleCase)
+const getEventHandlerCases = function() {
+  const events = [...EVENTS, ...Object.keys(LEGACY_EVENTS)].map(getEventHandlerCase)
   return Object.assign({}, ...events)
 }
 
-const getLifecycleCase = function(event) {
+const getEventHandlerCase = function(event) {
   return { [event.toLowerCase()]: event }
 }
 
-const LIFECYCLE_CASES = getLifecycleCases()
+const EVENT_HANDLER_CASES = getEventHandlerCases()
 
-module.exports = { LIFECYCLE, LEGACY_LIFECYCLE, normalizeLifecycleCase }
+module.exports = { EVENTS, LEGACY_EVENTS, normalizeEventHandler }

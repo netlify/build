@@ -1,7 +1,7 @@
 const execa = require('execa')
 const pMapSeries = require('p-map-series')
 const pReduce = require('p-reduce')
-const { LIFECYCLE } = require('@netlify/config')
+const { EVENTS } = require('@netlify/config')
 
 const { callChild } = require('../plugins/ipc')
 const { logCommandsStart, logCommand, logShellCommandStart, logCommandSuccess } = require('../log/main')
@@ -10,7 +10,7 @@ const { startOutput, stopOutput } = require('../log/stream')
 
 // Get commands for all events
 const getCommands = function({ pluginsCommands, config }) {
-  const commands = LIFECYCLE.flatMap(event => getEventCommands({ event, pluginsCommands, config }))
+  const commands = EVENTS.flatMap(event => getEventCommands({ event, pluginsCommands, config }))
 
   const buildCommands = commands.filter(command => !isEndCommand(command) && !isErrorCommand(command))
   const endCommands = commands.filter(isEndCommand)

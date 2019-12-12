@@ -1,7 +1,7 @@
 const mapObj = require('map-obj')
 const deepMerge = require('deepmerge')
 
-const { LEGACY_LIFECYCLE, normalizeLifecycleCase } = require('./events')
+const { LEGACY_EVENTS, normalizeEventHandler } = require('./events')
 
 // Normalize configuration object
 const normalizeConfig = function(config) {
@@ -33,8 +33,8 @@ const normalizeOnBuild = function(lifecycle, command) {
 }
 
 const normalizeBashCommands = function(event, bashCommands) {
-  const eventA = normalizeLifecycleCase(event)
-  const eventB = LEGACY_LIFECYCLE[eventA] === undefined ? eventA : LEGACY_LIFECYCLE[eventA]
+  const eventA = normalizeEventHandler(event)
+  const eventB = LEGACY_EVENTS[eventA] === undefined ? eventA : LEGACY_EVENTS[eventA]
   const bashCommandsA = typeof bashCommands === 'string' ? bashCommands.trim().split('\n') : bashCommands
   return [eventB, bashCommandsA]
 }

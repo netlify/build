@@ -1,5 +1,5 @@
 const isPlainObj = require('is-plain-obj')
-const { LIFECYCLE, LEGACY_LIFECYCLE } = require('@netlify/config')
+const { EVENTS, LEGACY_EVENTS } = require('@netlify/config')
 
 const { serializeList } = require('../../utils/list')
 const { validateConfigSchema } = require('../config/validate_config')
@@ -44,10 +44,10 @@ const validateProperty = function(value, propName) {
 const validateMethod = function(propName) {
   const propNameA = propName.replace(OVERRIDE_REGEXP, '')
 
-  if (!LIFECYCLE.includes(propNameA) && LEGACY_LIFECYCLE[propNameA] === undefined) {
+  if (!EVENTS.includes(propNameA) && LEGACY_EVENTS[propNameA] === undefined) {
     throw new Error(`Invalid event '${propNameA}'.
 Please use a valid event name. One of:
-${serializeList(LIFECYCLE)}`)
+${serializeList(EVENTS)}`)
   }
 }
 
