@@ -22,17 +22,11 @@ const EVENTS = [
   'onBuild',
   'onPostBuild',
   /**
-   * `onFunctionsBuild` - Build the serverless functions
+   * `onFunctionsPackage` - Package the serverless functions
    */
-  'onPreFunctionsBuild',
-  'onFunctionsBuild',
-  'onPostFunctionsBuild',
-  /**
-   * `onPackage` - Package & optimize artifact
-   */
-  'onPrePackage',
-  'onPackage',
-  'onPostPackage',
+  'onPreFunctionsPackage',
+  'onFunctionsPackage',
+  'onPostFunctionsPackage',
   /**
    * `onPreDeploy` - Runs before built artifacts are deployed
    */
@@ -71,12 +65,9 @@ const LEGACY_EVENTS = {
   preBuild: 'onPreBuild',
   build: 'onBuild',
   postBuild: 'onPostBuild',
-  preFunctionsBuild: 'onPreFunctionsBuild',
-  functionsBuild: 'onFunctionsBuild',
-  postFunctionsBuild: 'onPostFunctionsBuild',
-  prePackage: 'onPrePackage',
-  package: 'onPackage',
-  postPackage: 'onPostPackage',
+  preFunctionsPackage: 'onPreFunctionsPackage',
+  functionsPackage: 'onFunctionsPackage',
+  postFunctionsPackage: 'onPostFunctionsPackage',
   preDeploy: 'onPreDeploy',
   preSaveCache: 'onPreSaveCache',
   saveCache: 'onSaveCache',
