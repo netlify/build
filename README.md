@@ -166,7 +166,7 @@ The Lifecycle flows the events in order and executes and their `onPre` & `onPost
 
 <details>
   <summary>Using onInit</summary>
-
+  
   <br/>
 
 **1. Using with a Plugin**
@@ -209,7 +209,7 @@ build:
 
 <details>
   <summary>Using onGetCache</summary>
-
+  
   <br/>
 
 **1. Using with a Plugin**
@@ -252,7 +252,7 @@ build:
 
 <details>
   <summary>Using onInstall</summary>
-
+  
   <br/>
 
 **1. Using with a Plugin**
@@ -295,7 +295,7 @@ build:
 
 <details>
   <summary>Using onBuild</summary>
-
+  
   <br/>
 
 **1. Using with a Plugin**
@@ -338,7 +338,7 @@ build:
 
 <details>
   <summary>Using onFunctionsBuild</summary>
-
+  
   <br/>
 
 **1. Using with a Plugin**
@@ -381,7 +381,7 @@ build:
 
 <details>
   <summary>Using onPackage</summary>
-
+  
   <br/>
 
 **1. Using with a Plugin**
@@ -424,7 +424,7 @@ build:
 
 <details>
   <summary>Using onPreDeploy</summary>
-
+  
   <br/>
 
 **1. Using with a Plugin**
@@ -467,7 +467,7 @@ build:
 
 <details>
   <summary>Using onSaveCache</summary>
-
+  
   <br/>
 
 **1. Using with a Plugin**
@@ -510,7 +510,7 @@ build:
 
 <details>
   <summary>Using onSuccess</summary>
-
+  
   <br/>
 
 **1. Using with a Plugin**
@@ -553,7 +553,7 @@ build:
 
 <details>
   <summary>Using onError</summary>
-
+  
   <br/>
 
 **1. Using with a Plugin**
@@ -596,7 +596,7 @@ build:
 
 <details>
   <summary>Using onEnd</summary>
-
+  
   <br/>
 
 **1. Using with a Plugin**
