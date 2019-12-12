@@ -5,9 +5,6 @@ coverage:
   parsers:
     javascript:
       enable_partials: true
-  status:
-    project:
-      threshold: 5
-    patch:
-      threshold: 5
-comment: false
+comment:
+  layout: files,flags
+  require_changes: true

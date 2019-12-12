@@ -13,6 +13,8 @@ const pSetTimeout = promisify(setTimeout)
 
 // CLI entry point
 const runCli = async function() {
+  // TODO: remove once https://github.com/netlify/buildbot/issues/538 is fixed
+  // istanbul ignore next
   if (process.env.DEBUG) {
     console.log(process.env)
   }

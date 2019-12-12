@@ -27,7 +27,7 @@ const { doDryRun } = require('./dry')
  * @param  {string} [flags.context] - Build context
  * @param  {boolean} [flags.dry] - printing commands without executing them
  */
-const build = async function(flags = {}) {
+const build = async function(flags) {
   const buildTimer = startTimer()
 
   try {
