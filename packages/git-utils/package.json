@@ -1,0 +1,36 @@
+{
+  "name": "@netlify/utils-git",
+  "version": "0.0.1",
+  "description": "Utility for dealing with modified, created, deleted files since a git commit",
+  "main": "src/index.js",
+  "scripts": {
+    "publish": "git push origin && git push origin --tags",
+    "release:patch": "npm version patch && npm publish",
+    "release:minor": "npm version minor && npm publish",
+    "release:major": "npm version major && npm publish"
+  },
+  "author": "",
+  "license": "MIT",
+  "files": [
+    "dist",
+    "src",
+    "README.md"
+  ],
+  "dependencies": {
+    "debug": "^4.1.1",
+    "json5": "^2.1.1",
+    "jsonpointer": "^4.0.1",
+    "lodash.includes": "^4.3.0",
+    "lodash.isobject": "^3.0.2",
+    "lodash.keys": "^4.2.0",
+    "lodash.mapvalues": "^4.6.0",
+    "lodash.memoize": "^4.1.2",
+    "micromatch": "^4.0.2",
+    "parse-diff": "^0.6.0",
+    "rfc6902": "^3.0.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/netlify/build"
+  }
+}
