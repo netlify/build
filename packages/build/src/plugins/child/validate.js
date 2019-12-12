@@ -1,5 +1,5 @@
 const isPlainObj = require('is-plain-obj')
-const { LIFECYCLE, LEGACY_LIFECYCLE } = require('@netlify/config')
+const { EVENTS, LEGACY_EVENTS } = require('@netlify/config')
 
 const { serializeList } = require('../../utils/list')
 const { validateConfigSchema } = require('../config/validate_config')
@@ -40,18 +40,18 @@ const validateProperty = function(value, propName) {
   validateNonMethod(value, propName)
 }
 
-// Validate `plugin.*` hook methods
+// Validate `plugin.*` event handlers
 const validateMethod = function(propName) {
-  const hook = propName.replace(OVERRIDE_REGEXP, '')
+  const propNameA = propName.replace(OVERRIDE_REGEXP, '')
 
-  if (!LIFECYCLE.includes(hook) && LEGACY_LIFECYCLE[hook] === undefined) {
-    throw new Error(`Invalid lifecycle hook '${hook}'.
+  if (!EVENTS.includes(propNameA) && LEGACY_EVENTS[propNameA] === undefined) {
+    throw new Error(`Invalid event '${propNameA}'.
 Please use a valid event name. One of:
-${serializeList(LIFECYCLE)}`)
+${serializeList(EVENTS)}`)
   }
 }
 
-// Hooks can start with `pluginName:` to override another plugin
+// Event handlers can start with `pluginName:` to override another plugin
 const OVERRIDE_REGEXP = /^[^:]+:/
 
 const validateNonMethod = function(value, propName) {

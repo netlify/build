@@ -7,7 +7,7 @@ This example is using the `netlify.toml` file and we will be walking through how
 <!-- AUTO-GENERATED-CONTENT:START (TOC) -->
 
 - [1. Running netlify build with existing config](#1-running-netlify-build-with-existing-config)
-- [2. Adding a build lifecycle steps to config](#2-adding-a-build-lifecycle-steps-to-config)
+- [2. Adding build lifecycle commands to config](#2-adding-build-lifecycle-commands-to-config)
 - [3. Adding a plugins to the build process](#3-adding-a-plugins-to-the-build-process)
   <!-- AUTO-GENERATED-CONTENT:END -->
 
@@ -43,7 +43,7 @@ Our standard `netlify.toml` config looks like this:
 
    This will execute your build command and output the site
 
-## 2. Adding a build lifecycle steps to config
+## 2. Adding build lifecycle commands to config
 
 Convert `build.command` to `build.lifecycle`
 

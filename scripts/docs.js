@@ -8,7 +8,7 @@ const request = require('sync-request')
 
 const ROOT_DIR = path.join(__dirname, '..')
 const CONSTANTS_PATH = path.join(ROOT_DIR, 'packages/build/src/plugins/child', 'constants.js')
-const LIFECYCLE_PATH = path.join(ROOT_DIR, 'packages/config/src/lifecycle.js')
+const LIFECYCLE_PATH = path.join(ROOT_DIR, 'packages/config/src/events.js')
 const PLUGINS_DATABASE_URL = 'https://raw.githubusercontent.com/netlify/plugins/master/plugins.json'
 const PLUGIN_NAME_REGEX = /(?:(?:^|-)netlify-plugin(?:-|$))|(?:(?:^|-)netlify(?:-|$))/
 
@@ -84,7 +84,7 @@ const config = {
       const events = docBlocs.filter(d => {
         return !d.description.summary.match(/^\*\*/)
       })
-      let md = '| Lifecycle hook | Description |\n'
+      let md = '| Event          | Description |\n'
       md += '|:------|:-------|\n'
       events.forEach(data => {
         const eventName = data.description.summary.match(/^`(.*)`/)
@@ -204,7 +204,7 @@ function renderPluginExample(name) {
 
   **1. Using with a Plugin**
 
-  Below is an example plugin using the \`${name}\` hook
+  Below is an example plugin using the \`${name}\` event handler
 
   \`\`\`js
   module.exports = function myPlugin(pluginConfig) {

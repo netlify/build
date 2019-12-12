@@ -2,16 +2,15 @@
 
 Netlify Plugins extend the functionality of the Netlify Build process.
 
-Plugins are plain JavaScript objects that allow users to hook into the different events happening during their site
-builds.
+Plugins are plain JavaScript objects with event handlers for the different events happening during builds.
 
-For example, hooking into the `onPreBuild` event to run something before your build command. Or the `onPostBuild` hook
-for running things after your site build has completed.
+For example, the `onPreBuild` event handler runs before your build command. Or the `onPostBuild` event handler runs
+after your site build has completed.
 
-## Available Lifecycle Hooks
+## Available event handlers
 
 <!-- AUTO-GENERATED-CONTENT:START (LIFECYCLE_TABLE:noAnchors=true) -->
-| Lifecycle hook | Description |
+| Event          | Description |
 |:------|:-------|
 | ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **onInit** ‏‏‎  ‏‏‎  ‏‏‎  | Runs before anything else |
 | ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **onGetCache** ‏‏‎  ‏‏‎  ‏‏‎  | Fetch previous build cache |
@@ -90,7 +89,7 @@ plugins:
       fizz: pop
 ```
 
-These `config` values are passed into the plugin when the lifecycle methods are being executed.
+These `config` values are passed into the plugin when the event handlers are being executed.
 
 To access them in your plugin code you can:
 
@@ -149,11 +148,11 @@ More information about JSON schema can be found at https://json-schema.org/under
 `config.properties` can have `default` values as shown in the example above. They can also be `required` as shown above.
 
 It is recommended to validate your plugin configuration and assign default values using the `config` property instead of
-doing it inside hook methods.
+doing it inside event handlers.
 
 ## Plugin constants
 
-Inside of each lifecycle function there is a `constants` key.
+Inside of each event handler there is a `constants` key.
 
 ```js
 module.exports = {

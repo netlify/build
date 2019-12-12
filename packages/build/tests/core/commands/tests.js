@@ -18,7 +18,7 @@ test('onError lifecycle', async t => {
   await runFixture(t, 'on_error_lifecycle')
 })
 
-test('onError plugin hook', async t => {
+test('onError plugin event handler', async t => {
   await runFixture(t, 'on_error_plugin')
 })
 

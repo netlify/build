@@ -62,14 +62,14 @@ test('build.lifecycle: object', async t => {
   await runFixture(t, 'build_lifecycle_object')
 })
 
-test('build.lifecycle: hook names', async t => {
-  await runFixture(t, 'build_lifecycle_hooks')
+test('build.lifecycle: event names', async t => {
+  await runFixture(t, 'build_lifecycle_events')
 })
 
 test('build.lifecycle: string', async t => {
-  await runFixture(t, 'build_lifecycle_hooks_string')
+  await runFixture(t, 'build_lifecycle_events_string')
 })
 
 test('build.lifecycle: array', async t => {
-  await runFixture(t, 'build_lifecycle_hooks_array')
+  await runFixture(t, 'build_lifecycle_events_array')
 })

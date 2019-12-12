@@ -1,5 +1,5 @@
 const mapObj = require('map-obj')
-const { LEGACY_LIFECYCLE } = require('@netlify/config')
+const { LEGACY_EVENTS } = require('@netlify/config')
 
 // Normalize plugin shape
 const normalizePlugin = function(logic) {
@@ -7,7 +7,7 @@ const normalizePlugin = function(logic) {
 }
 
 const normalizeProperty = function(key, value) {
-  const newKey = LEGACY_LIFECYCLE[key]
+  const newKey = LEGACY_EVENTS[key]
 
   if (newKey === undefined) {
     return [key, value]

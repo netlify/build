@@ -89,7 +89,7 @@ const executeCommands = async function({
   token,
   flags: { dry },
 }) {
-  const pluginsHooks = await loadPlugins({
+  const pluginsCommands = await loadPlugins({
     pluginsOptions,
     childProcesses,
     config,
@@ -99,7 +99,7 @@ const executeCommands = async function({
   })
 
   const { mainCommands, buildCommands, endCommands, errorCommands, commandsCount } = getCommands({
-    pluginsHooks,
+    pluginsCommands,
     config,
   })
 
