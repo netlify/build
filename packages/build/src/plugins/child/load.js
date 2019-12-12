@@ -1,3 +1,5 @@
+const gitData = require('@netlify/utils-git')
+
 const { getOverride } = require('../override')
 const { validatePluginConfig } = require('../config/validate_props.js')
 
@@ -24,7 +26,13 @@ const loadPlugin = async function(payload) {
 
   const pluginCommands = getPluginCommands(logicA, payload)
 
-  const context = await getContext(logicA, pluginCommands, constants, payload)
+
+  // @TODO add additional way to specify which commit / branch to diff from
+  const ref = process.env.CACHED_COMMIT_REF || 'master'
+  // @TODO hoist gitData top level?
+  const git = await gitData({ base: ref })
+
+  const context = await getContext(logicA, pluginCommands, constants, payload, git)
   return { context, pluginCommands }
 }
 
@@ -46,11 +54,15 @@ const getPluginCommand = function({ method, event, name, id = name, type, core }
   return { method, id, name, type, event: eventA, originalEvent: event, override, core }
 }
 
-// Retrieve context passed to every event handler
-const getContext = async function(logic, pluginCommands, constants, { pluginPath, pluginConfig, config, token }) {
+// Retrieve context passed to every hook method
+const getContext = async function(logic, pluginCommands, constants, { pluginPath, pluginConfig, config, token }, git) {
   const api = getApiClient({ logic, token })
   const utils = await getUtils(pluginPath)
-  return { pluginCommands, api, utils, constants, pluginConfig, config }
+
+  // Assign core utils
+  const allUtils = Object.assign({}, utils, { git })
+
+  return { pluginCommands, api, utils: allUtils, constants, pluginConfig, config }
 }
 
 module.exports = { loadPlugin }
