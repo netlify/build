@@ -9,20 +9,17 @@ module.exports = function fileMatcher(keyedPaths) {
     return mapValues(keyedPaths, paths => {
       const excludePatterns = patterns.filter(p => isExclude(p))
       const includePatterns = patterns.filter(p => !isExclude(p))
-      const included = includePatterns.reduce(
-        (accum, pattern) => accum.concat(micromatch.match(paths, pattern)),
-        []
-      )
-      return excludePatterns.reduce(
-        (accum, pattern) => micromatch.match(accum, pattern),
-        included
-      )
+      const included = includePatterns.reduce((accum, pattern) => accum.concat(micromatch.match(paths, pattern)), [])
+      return excludePatterns.reduce((accum, pattern) => micromatch.match(accum, pattern), included)
     })
   }
   function finalize(keyedPaths) {
     return Object.assign(
-      Object.assign({}, mapValues(keyedPaths, paths => paths.length > 0)),
-      { getKeyedPaths: () => keyedPaths }
+      Object.assign(
+        {},
+        mapValues(keyedPaths, paths => paths.length > 0),
+      ),
+      { getKeyedPaths: () => keyedPaths },
     )
   }
   return (...patterns) => finalize(matchPatterns(patterns))

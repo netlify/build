@@ -23,9 +23,11 @@ const localGetCommits = (base, head) => {
   return new Promise(done => {
     const args = ['log', `${base}...${head}`, `--pretty=format:${formatJSON}`]
     const child = spawn('git', args, { env: process.env })
-    let stdOut = ''
+
+    let stdOut = '' // eslint-disable-line no-unused-vars
     let stdErr = ''
     let realCommits = []
+
     d('> git', args.join(' '))
     child.stdout.on('data', async data => {
       data = data.toString()
@@ -33,28 +35,28 @@ const localGetCommits = (base, head) => {
       // remove trailing comma, and wrap into an array
       const asJSONString = `[${data.substring(0, data.length - 1)}]`
       const commits = JSON5.parse(asJSONString)
-      realCommits = realCommits.concat(commits.map(c =>
-        Object.assign(Object.assign({}, c), { parents: c.parents.split(' ') })
-      ))
+      realCommits = realCommits.concat(
+        commits.map(c => Object.assign(Object.assign({}, c), { parents: c.parents.split(' ') })),
+      )
     })
     child.stderr.on('data', data => {
       stdErr += data.toString()
       console.error(`Could not get commits from git between ${base} and ${head}`)
       throw new Error(stdErr)
     })
-    child.on('close', (code) => {
+    child.on('close', code => {
       if (code === 0) {
         // console.log(`exit_code = ${code}`);
         // console.log('no commits found')
         return done(realCommits)
       }
       // console.log(`exit_code = ${code}`);
-      return done(stdErr);
-    });
-    child.on('error', (error) => {
-      stdErr += error.toString();
+      return done(stdErr)
+    })
+    child.on('error', error => {
+      stdErr += error.toString()
       if (stdErr) {
-        console.log(stdErr);
+        console.log(stdErr)
       }
     })
   })

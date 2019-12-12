@@ -42,15 +42,9 @@ class LocalGit {
       baseSHA: this.options.base || 'master',
       headSHA: 'HEAD',
       getFileContents: localGetFileAtSHA,
-      getFullDiff: localGetDiff
+      getFullDiff: localGetDiff,
     }
     return gitJSONToGitDSL(gitJSON, config)
-  }
-  async getInlineComments(_) {
-    return []
-  }
-  async getReviewInfo() {
-    return {}
   }
 }
 

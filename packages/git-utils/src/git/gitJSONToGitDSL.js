@@ -14,32 +14,30 @@ const fileMatcher = require('../fileMatcher')
 module.exports.gitJSONToGitDSL = (gitJSONRep, config) => {
   const getFullDiff = config.getStructuredDiffForFile
     ? null
-    : memoize((base, head) => {
-        return config.getFullDiff(base, head)
-      }, (base, head) => `${base}...${head}`)
+    : memoize(
+        (base, head) => {
+          return config.getFullDiff(base, head)
+        },
+        (base, head) => `${base}...${head}`,
+      )
   /**
    * Takes a filename, and pulls from the PR the two versions of a file
    * where we then pass that off to the rfc6902 JSON patch generator.
    *
    * @param filename The path of the file
    */
-  const JSONPatchForFile = async (filename) => {
+  // Will probably use in future. Don't remove
+  // eslint-disable-next-line no-unused-vars
+  const JSONPatchForFile = async filename => {
+    // eslint-disable-line
     // We already have access to the diff, so see if the file is in there
     // if it's not return an empty diff
     if (!gitJSONRep.modified_files.includes(filename)) {
       return null
     }
     // Grab the two files contents.
-    const baseFile = await config.getFileContents(
-      filename,
-      config.repo,
-      config.baseSHA
-    )
-    const headFile = await config.getFileContents(
-      filename,
-      config.repo,
-      config.headSHA
-    )
+    const baseFile = await config.getFileContents(filename, config.repo, config.baseSHA)
+    const headFile = await config.getFileContents(filename, config.repo, config.headSHA)
     // Parse JSON. `fileContents` returns empty string for files that are
     // missing in one of the refs, ie. when the file is created or deleted.
     const baseJSON = baseFile === '' ? {} : JSON5.parse(baseFile)
@@ -49,7 +47,7 @@ module.exports.gitJSONToGitDSL = (gitJSONRep, config) => {
     return {
       before: baseFile === '' ? null : baseJSON,
       after: headFile === '' ? null : headJSON,
-      diff: jsonDiff.createPatch(baseJSON, headJSON)
+      diff: jsonDiff.createPatch(baseJSON, headJSON),
     }
   }
   /**
@@ -58,6 +56,8 @@ module.exports.gitJSONToGitDSL = (gitJSONRep, config) => {
    *
    * @param filename path of the file
    */
+  // Will probably use in future. Don't remove
+  // eslint-disable-next-line no-unused-vars
   const JSONDiffForFile = async filename => {
     const patchObject = await JSONPatchForFile(filename)
     if (!patchObject) {
@@ -70,13 +70,10 @@ module.exports.gitJSONToGitDSL = (gitJSONRep, config) => {
       // We don't want to show the last root object, as these tend to just go directly
       // to a single value in the patch. This is fine, but not useful when showing a before/after
       const pathSteps = path.split('/')
-      const backAStepPath =
-        pathSteps.length <= 2
-          ? path
-          : pathSteps.slice(0, pathSteps.length - 1).join('/')
+      const backAStepPath = pathSteps.length <= 2 ? path : pathSteps.slice(0, pathSteps.length - 1).join('/')
       const diff = {
         after: jsonpointer.get(after, backAStepPath) || null,
-        before: jsonpointer.get(before, backAStepPath) || null
+        before: jsonpointer.get(before, backAStepPath) || null,
       }
       const emptyValueOfCounterpart = other => {
         if (Array.isArray(other)) {
@@ -108,28 +105,20 @@ module.exports.gitJSONToGitDSL = (gitJSONRep, config) => {
     }, Object.create(null))
   }
   const linesOfCode = async () => {
-    const [
-      createdFilesDiffs,
-      modifiedFilesDiffs,
-      deletedFilesDiffs
-    ] = await Promise.all([
+    const [createdFilesDiffs, modifiedFilesDiffs, deletedFilesDiffs] = await Promise.all([
       Promise.all(gitJSONRep.created_files.map(path => diffForFile(path))),
       Promise.all(gitJSONRep.modified_files.map(path => diffForFile(path))),
-      Promise.all(gitJSONRep.deleted_files.map(path => diffForFile(path)))
+      Promise.all(gitJSONRep.deleted_files.map(path => diffForFile(path))),
     ])
     let additions = createdFilesDiffs
-      .map(diff =>
-        !diff ? 0 : diff.added === '' ? 0 : diff.added.split('\n').length
-      )
+      .map(diff => (!diff ? 0 : diff.added === '' ? 0 : diff.added.split('\n').length))
       .reduce((mem, value) => mem + value, 0)
     let deletions = deletedFilesDiffs
-      .map(diff =>
-        !diff ? 0 : diff.removed === '' ? 0 : diff.removed.split('\n').length
-      )
+      .map(diff => (!diff ? 0 : diff.removed === '' ? 0 : diff.removed.split('\n').length))
       .reduce((mem, value) => mem + value, 0)
     const modifiedLines = modifiedFilesDiffs.map(diff => [
       !diff ? 0 : diff.added === '' ? 0 : diff.added.split('\n').length,
-      !diff ? 0 : diff.removed === '' ? 0 : diff.removed.split('\n').length
+      !diff ? 0 : diff.removed === '' ? 0 : diff.removed.split('\n').length,
     ])
     additions = modifiedLines.reduce((mem, value) => mem + value[0], additions)
     deletions = modifiedLines.reduce((mem, value) => mem + value[1], deletions)
@@ -142,21 +131,17 @@ module.exports.gitJSONToGitDSL = (gitJSONRep, config) => {
    *
    * @param filename File path for the diff
    */
+  // Will probably use in future. Don't remove
+  // eslint-disable-next-line no-unused-vars
   const structuredDiffForFile = async filename => {
     let fileDiffs
     if (config.getStructuredDiffForFile) {
-      fileDiffs = await config.getStructuredDiffForFile(
-        config.baseSHA,
-        config.headSHA,
-        filename
-      )
+      fileDiffs = await config.getStructuredDiffForFile(config.baseSHA, config.headSHA, filename)
     } else {
       const diff = await getFullDiff(config.baseSHA, config.headSHA)
       fileDiffs = parseDiff(diff)
     }
-    const structuredDiff = fileDiffs.find(
-      diff => diff.from === filename || diff.to === filename
-    )
+    const structuredDiff = fileDiffs.find(diff => diff.from === filename || diff.to === filename)
     if (structuredDiff !== undefined && structuredDiff.chunks !== undefined) {
       return { chunks: structuredDiff.chunks }
     } else {
@@ -168,25 +153,17 @@ module.exports.gitJSONToGitDSL = (gitJSONRep, config) => {
    *
    * @param filename File path for the diff
    */
+  // Will probably use in future. Don't remove
+  // eslint-disable-next-line no-unused-vars
   const diffForFile = async filename => {
     const structuredDiff = await structuredDiffForFile(filename)
     if (!structuredDiff) {
       return null
     }
-    const allLines = structuredDiff.chunks
-      .map(c => c.changes)
-      .reduce((a, b) => a.concat(b), [])
+    const allLines = structuredDiff.chunks.map(c => c.changes).reduce((a, b) => a.concat(b), [])
     return {
-      before: await config.getFileContents(
-        filename,
-        config.repo,
-        config.baseSHA
-      ),
-      after: await config.getFileContents(
-        filename,
-        config.repo,
-        config.headSHA
-      ),
+      before: await config.getFileContents(filename, config.repo, config.baseSHA),
+      after: await config.getFileContents(filename, config.repo, config.headSHA),
       diff: allLines.map(getContent).join(os.EOL),
       added: allLines
         .filter(byType('add'))
@@ -195,7 +172,7 @@ module.exports.gitJSONToGitDSL = (gitJSONRep, config) => {
       removed: allLines
         .filter(byType('del'))
         .map(getContent)
-        .join(os.EOL)
+        .join(os.EOL),
     }
   }
   return {
@@ -203,7 +180,7 @@ module.exports.gitJSONToGitDSL = (gitJSONRep, config) => {
       modified: gitJSONRep.modified_files,
       created: gitJSONRep.created_files,
       deleted: gitJSONRep.deleted_files,
-      edited: gitJSONRep.modified_files.concat(gitJSONRep.created_files)
+      edited: gitJSONRep.modified_files.concat(gitJSONRep.created_files),
     }),
     modifiedFiles: gitJSONRep.modified_files,
     createdFiles: gitJSONRep.created_files,
@@ -216,6 +193,6 @@ module.exports.gitJSONToGitDSL = (gitJSONRep, config) => {
     JSONPatchForFile,
     JSONDiffForFile,
     */
-    linesOfCode
+    linesOfCode,
   }
 }

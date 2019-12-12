@@ -10,7 +10,6 @@ npm install @netlify/utils-git
 
 ## Usage
 
-
 ```js
 const gitData = require('git-er-done')
 
@@ -19,7 +18,7 @@ const GIT_COMMIT_REF = '9f63b23ec99e36a176d73909fc67a39dc3bd56b7'
 
 gitData({
   base: GIT_COMMIT_REF,
-}).then((git) => {
+}).then(git => {
   /* git data returns
   {
     fileMatch: [Function], <-- Lookup function
