@@ -1,4 +1,5 @@
 const { readFileSync } = require('fs')
+
 const { gitJSONToGitDSL } = require('./git/gitJSONToGitDSL')
 const { diffToGitJSONDSL } = require('./git/diffToGitJSONDSL')
 const { localGetDiff } = require('./git/localGetDiff')

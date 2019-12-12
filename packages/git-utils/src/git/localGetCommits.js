@@ -40,7 +40,7 @@ const localGetCommits = (base, head) => {
     child.stderr.on('data', data => {
       stdErr += data.toString()
       console.error(`Could not get commits from git between ${base} and ${head}`)
-      throw new Error(cleanStack(data.toString()))
+      throw new Error(stdErr)
     })
     child.on('close', (code) => {
       if (code === 0) {
@@ -53,8 +53,8 @@ const localGetCommits = (base, head) => {
     });
     child.on('error', (error) => {
       stdErr += error.toString();
-      if (stream_output) {
-        console.log(error.toString());
+      if (stdErr) {
+        console.log(stdErr);
       }
     })
   })

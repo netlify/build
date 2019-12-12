@@ -1,5 +1,6 @@
-const { debug } = require('../debug')
 const { exec } = require('child_process')
+
+const { debug } = require('../debug')
 
 const d = debug('localGetFileAtSHA')
 
