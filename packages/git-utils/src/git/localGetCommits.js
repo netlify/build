@@ -1,5 +1,7 @@
-const JSON5 = require('json5')
 const { spawn } = require('child_process')
+
+const JSON5 = require('json5')
+
 const { debug } = require('../debug')
 
 const d = debug('localGetDiff')

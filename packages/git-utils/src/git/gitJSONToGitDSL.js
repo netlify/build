@@ -1,4 +1,5 @@
 const os = require('os')
+
 const parseDiff = require('parse-diff')
 const includes = require('lodash.includes')
 const isobject = require('lodash.isobject')
@@ -7,6 +8,7 @@ const memoize = require('lodash.memoize')
 const jsonDiff = require('rfc6902')
 const jsonpointer = require('jsonpointer')
 const JSON5 = require('json5')
+
 const fileMatcher = require('../fileMatcher')
 
 module.exports.gitJSONToGitDSL = (gitJSONRep, config) => {
