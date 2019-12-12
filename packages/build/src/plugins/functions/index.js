@@ -8,13 +8,13 @@ const unixify = require('unixify')
 const { installDependencies } = require('../../utils/install')
 const { serializeList } = require('../../utils/list')
 
-// Plugin to bundle Netlify functions with @netlify/zip-it-and-ship-it
+// Plugin to package Netlify functions with @netlify/zip-it-and-ship-it
 const functionsPlugin = function(pluginConfig, { constants: { FUNCTIONS_SRC } }) {
   if (FUNCTIONS_SRC === undefined) {
     return { name: NAME }
   }
 
-  return { name: NAME, onInstall, onFunctionsBuild }
+  return { name: NAME, onInstall, onFunctionsPackage }
 }
 
 const NAME = '@netlify/plugin-functions-core'
@@ -38,25 +38,25 @@ const onInstall = async function({ constants: { FUNCTIONS_SRC } }) {
   await Promise.all(packageRoots.map(installDependencies))
 }
 
-// Bundle Netlify functions
-const onFunctionsBuild = async function({ constants: { FUNCTIONS_SRC, FUNCTIONS_DIST } }) {
-  console.log(`Bundling functions from ${FUNCTIONS_SRC}`)
+// Package Netlify functions
+const onFunctionsPackage = async function({ constants: { FUNCTIONS_SRC, FUNCTIONS_DIST } }) {
+  console.log(`Packaging functions from ${FUNCTIONS_SRC}`)
   await zipFunctions(FUNCTIONS_SRC, FUNCTIONS_DIST)
 
   await logResults(FUNCTIONS_DIST)
 }
 
-// Print the list of paths to the bundled functions
+// Print the list of paths to the packaged functions
 const logResults = async function(FUNCTIONS_DIST) {
   const files = await readdirp.promise(FUNCTIONS_DIST)
 
   if (files.length === 0) {
-    console.log('No functions were bundled')
+    console.log('No functions were packaged')
     return
   }
 
   const paths = files.map(getLoggedPath)
-  console.log(`Functions bundled in ${FUNCTIONS_DIST}
+  console.log(`Functions packaged in ${FUNCTIONS_DIST}
 ${serializeList(paths)}`)
 }
 

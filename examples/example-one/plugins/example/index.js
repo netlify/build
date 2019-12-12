@@ -20,9 +20,6 @@ module.exports = function netlifyPlugin() {
     onPostBuild: () => {
       console.log('Hi from onPostBuild')
     },
-    onPackage: () => {
-      console.log('Hi from onPackage')
-    },
     onPreDeploy: () => {
       console.log('Hi from onPreDeploy')
     },

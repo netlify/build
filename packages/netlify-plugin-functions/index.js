@@ -5,8 +5,8 @@ const { zipFunction } = require('@netlify/zip-it-and-ship-it')
 
 module.exports = {
   name: '@netlify/plugin-functions',
-  // Override default function bundling
-  '@netlify/functions:onFunctionsBuild': async ({ constants: { FUNCTIONS_SRC, FUNCTIONS_DIST, BUILD_DIR } }) => {
+  // Override default function packaging
+  '@netlify/functions:onFunctionsPackage': async ({ constants: { FUNCTIONS_SRC, FUNCTIONS_DIST, BUILD_DIR } }) => {
     if (FUNCTIONS_SRC === undefined) {
       throw new Error('You must specify config.build.functions when using netlify-plugin-functions')
     }

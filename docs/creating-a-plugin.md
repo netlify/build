@@ -16,8 +16,7 @@ after your site build has completed.
 | ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **onGetCache** ‏‏‎  ‏‏‎  ‏‏‎  | Fetch previous build cache |
 | ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **onInstall** ‏‏‎  ‏‏‎  ‏‏‎  | Install project dependencies |
 | ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **onBuild** ‏‏‎  ‏‏‎  ‏‏‎  | Build commands are executed |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **onFunctionsBuild** ‏‏‎  ‏‏‎  ‏‏‎  | Build the serverless functions |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **onPackage** ‏‏‎  ‏‏‎  ‏‏‎  | Package & optimize artifact |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **onFunctionsPackage** ‏‏‎  ‏‏‎  ‏‏‎  | Package the serverless functions |
 | ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **onPreDeploy** ‏‏‎  ‏‏‎  ‏‏‎  | Runs before built artifacts are deployed |
 | ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **onSaveCache** ‏‏‎  ‏‏‎  ‏‏‎  | Save cached assets |
 | ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **onSuccess** ‏‏‎  ‏‏‎  ‏‏‎  | Runs on build success |

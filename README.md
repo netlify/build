@@ -23,8 +23,7 @@ Netlify build is the next generation of CI/CD tooling for modern web application
 - [lifecycle.onGetCache](#lifecycleongetcache)
 - [lifecycle.onInstall](#lifecycleoninstall)
 - [lifecycle.onBuild](#lifecycleonbuild)
-- [lifecycle.onFunctionsBuild](#lifecycleonfunctionsbuild)
-- [lifecycle.onPackage](#lifecycleonpackage)
+- [lifecycle.onFunctionsPackage](#lifecycleonfunctionspackage)
 - [lifecycle.onPreDeploy](#lifecycleonpredeploy)
 - [lifecycle.onSaveCache](#lifecycleonsavecache)
 - [lifecycle.onSuccess](#lifecycleonsuccess)
@@ -119,19 +118,18 @@ build operates.
 
 <!-- AUTO-GENERATED-CONTENT:START (LIFECYCLE_TABLE) -->
 
-| Event                                                                                   | Description                              |
-| :-------------------------------------------------------------------------------------- | :--------------------------------------- |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleoninit">onInit</a>** ‏‏‎ ‏‏‎ ‏‏‎                     | Runs before anything else                |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleongetcache">onGetCache</a>** ‏‏‎ ‏‏‎ ‏‏‎             | Fetch previous build cache               |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleoninstall">onInstall</a>** ‏‏‎ ‏‏‎ ‏‏‎               | Install project dependencies             |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleonbuild">onBuild</a>** ‏‏‎ ‏‏‎ ‏‏‎                   | Build commands are executed              |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleonfunctionsbuild">onFunctionsBuild</a>** ‏‏‎ ‏‏‎ ‏‏‎ | Build the serverless functions           |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleonpackage">onPackage</a>** ‏‏‎ ‏‏‎ ‏‏‎               | Package & optimize artifact              |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleonpredeploy">onPreDeploy</a>** ‏‏‎ ‏‏‎ ‏‏‎           | Runs before built artifacts are deployed |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleonsavecache">onSaveCache</a>** ‏‏‎ ‏‏‎ ‏‏‎           | Save cached assets                       |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleonsuccess">onSuccess</a>** ‏‏‎ ‏‏‎ ‏‏‎               | Runs on build success                    |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleonerror">onError</a>** ‏‏‎ ‏‏‎ ‏‏‎                   | Runs on build error                      |
-| 🎉 ‏‏‎ **<a href="#lifecycleonend">onEnd</a>** ‏‏‎ ‏‏‎ ‏‏‎                              | Runs on build error or success           |
+| Event                                                                                       | Description                              |
+| :------------------------------------------------------------------------------------------ | :--------------------------------------- |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleoninit">onInit</a>** ‏‏‎ ‏‏‎ ‏‏‎                         | Runs before anything else                |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleongetcache">onGetCache</a>** ‏‏‎ ‏‏‎ ‏‏‎                 | Fetch previous build cache               |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleoninstall">onInstall</a>** ‏‏‎ ‏‏‎ ‏‏‎                   | Install project dependencies             |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleonbuild">onBuild</a>** ‏‏‎ ‏‏‎ ‏‏‎                       | Build commands are executed              |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleonfunctionspackage">onFunctionsPackage</a>** ‏‏‎ ‏‏‎ ‏‏‎ | Package the serverless functions         |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleonpredeploy">onPreDeploy</a>** ‏‏‎ ‏‏‎ ‏‏‎               | Runs before built artifacts are deployed |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleonsavecache">onSaveCache</a>** ‏‏‎ ‏‏‎ ‏‏‎               | Save cached assets                       |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleonsuccess">onSuccess</a>** ‏‏‎ ‏‏‎ ‏‏‎                   | Runs on build success                    |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleonerror">onError</a>** ‏‏‎ ‏‏‎ ‏‏‎                       | Runs on build error                      |
+| 🎉 ‏‏‎ **<a href="#lifecycleonend">onEnd</a>** ‏‏‎ ‏‏‎ ‏‏‎                                  | Runs on build error or success           |
 
 <!-- AUTO-GENERATED-CONTENT:END (LIFECYCLE_TABLE) -->
 
@@ -332,24 +330,24 @@ build:
 
 </details>
 
-### lifecycle.onFunctionsBuild
+### lifecycle.onFunctionsPackage
 
-`onFunctionsBuild` - Build the serverless functions
+`onFunctionsPackage` - Package the serverless functions
 
 <details>
-  <summary>Using onFunctionsBuild</summary>
+  <summary>Using onFunctionsPackage</summary>
   
   <br/>
 
 **1. Using with a Plugin**
 
-Below is an example plugin using the `onFunctionsBuild` event handler
+Below is an example plugin using the `onFunctionsPackage` event handler
 
 ```js
 module.exports = function myPlugin(pluginConfig) {
   return {
-    onFunctionsBuild: () => {
-      console.log('Do thing on onFunctionsBuild event')
+    onFunctionsPackage: () => {
+      console.log('Do thing on onFunctionsPackage event')
     },
   }
 }
@@ -369,51 +367,8 @@ plugins:
 ```yml
 build:
   lifecycle:
-    onFunctionsBuild:
-      - echo "Do thing on onFunctionsBuild event"
-```
-
-</details>
-
-### lifecycle.onPackage
-
-`onPackage` - Package & optimize artifact
-
-<details>
-  <summary>Using onPackage</summary>
-  
-  <br/>
-
-**1. Using with a Plugin**
-
-Below is an example plugin using the `onPackage` event handler
-
-```js
-module.exports = function myPlugin(pluginConfig) {
-  return {
-    onPackage: () => {
-      console.log('Do thing on onPackage event')
-    },
-  }
-}
-```
-
-After creating the plugin, add into your Netlify config file under `plugins`
-
-```yml
-plugins:
-  - type: ./path/to/plugin
-    config:
-      foo: bar
-```
-
-**2. Using with via `build.lifecycle`**
-
-```yml
-build:
-  lifecycle:
-    onPackage:
-      - echo "Do thing on onPackage event"
+    onFunctionsPackage:
+      - echo "Do thing on onFunctionsPackage event"
 ```
 
 </details>
