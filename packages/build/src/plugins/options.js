@@ -19,7 +19,11 @@ const getPluginsOptions = async function({ plugins: pluginsOptions }, baseDir) {
 
 const DEFAULT_PLUGINS = [
   { id: '@netlify/plugin-functions-core', type: FUNCTIONS_PLUGIN, core: true },
-  ...(NETLIFY_BUILD_SAVE_CACHE === '1' ? [{ id: '@netlify/plugin-cache-core', type: CACHE_PLUGIN, core: true }] : []),
+  // TODO: remove NETLIFY_BUILD_SAVE_CACHE once integrated in the buildbot
+  ...(NETLIFY_BUILD_SAVE_CACHE === '1'
+    ? [{ id: '@netlify/plugin-cache-core', type: CACHE_PLUGIN, core: true }]
+    : // istanbul ignore next
+      []),
 ]
 
 const normalizePluginOptions = function(pluginOptions) {
