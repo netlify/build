@@ -1,37 +1,13 @@
 const { dirname } = require('path')
-const { promisify } = require('util')
 
-const resolve = require('resolve')
 const findUp = require('find-up')
 
 const { installDependencies } = require('../utils/install')
 const { logInstallPlugins } = require('../log/main')
 
-const pResolve = promisify(resolve)
-
 // Install dependencies of local plugins.
 // Also resolve path of plugins' main files.
 const installPlugins = async function(pluginsOptions, baseDir) {
-  const pluginsOptionsA = await Promise.all(pluginsOptions.map(pluginOptions => resolvePlugin(pluginOptions, baseDir)))
-
-  await installPluginDependencies(pluginsOptionsA, baseDir)
-
-  return pluginsOptionsA
-}
-
-// We use `resolve` because `require()` should be relative to `baseDir` not to
-// this `__filename`
-const resolvePlugin = async function({ type, ...pluginOptions }, baseDir) {
-  try {
-    const pluginPath = await pResolve(type, { basedir: baseDir })
-    return { ...pluginOptions, type, pluginPath }
-  } catch (error) {
-    error.message = `'${type}' plugin not installed or found\n${error.message}`
-    throw error
-  }
-}
-
-const installPluginDependencies = async function(pluginsOptions, baseDir) {
   const pluginsPaths = getPluginsPaths(pluginsOptions)
 
   if (pluginsPaths.length === 0) {

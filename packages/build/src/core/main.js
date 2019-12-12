@@ -35,11 +35,11 @@ const build = async function(flags = {}) {
 
     const { config, configPath, token, baseDir } = await loadConfig({ flags })
 
-    const pluginsOptions = getPluginsOptions({ config })
-    const pluginsOptionsA = await installPlugins(pluginsOptions, baseDir)
+    const pluginsOptions = await getPluginsOptions(config, baseDir)
+    await installPlugins(pluginsOptions, baseDir)
 
     const commandsCount = await buildRun({
-      pluginsOptions: pluginsOptionsA,
+      pluginsOptions,
       config,
       configPath,
       baseDir,
