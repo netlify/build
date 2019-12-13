@@ -1,7 +1,17 @@
+const {
+  env: { NETLIFY_BUILD_API_CLIENT },
+} = require('process')
+
 const NetlifyAPI = require('netlify')
 
 // Retrieve Netlify API client, providing a authentication token was provided
 const getApiClient = function({ logic: { scopes = DEFAULT_SCOPES }, token }) {
+  // This feature is not currently finished due to lack of API support
+  // See https://github.com/netlify/build/issues/585
+  if (NETLIFY_BUILD_API_CLIENT !== '1') {
+    return
+  }
+
   if (!token) {
     if (scopes.length !== 0) {
       throw new Error(`This plugin requires a Netlify API authentication token`)
