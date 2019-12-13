@@ -101,6 +101,7 @@ const shouldIgnoreSnapshot = function(all) {
 const IGNORE_REGEXPS = [
   // Some tests run npm|yarn, which sometimes fail due to network errors
   /getaddrinfo EAI_AGAIN/,
+  /npm ERR!/,
 ]
 
 module.exports = { runFixture, FIXTURES_DIR }
