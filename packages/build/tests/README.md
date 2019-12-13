@@ -64,13 +64,13 @@ You usually do not need to specify any of those options except `flags` when test
 To run all tests:
 
 ```
-ava
+npx ava
 ```
 
 To run the tests for a specific file:
 
 ```
-ava /path/to/tests.js
+npx ava /path/to/tests.js
 ```
 
 To run a single test, use the command above combined with
@@ -88,7 +88,7 @@ A debug mode is available when:
 To activate it, set the `PRINT=1` environment variable:
 
 ```
-PRINT=1 ava /path/to/tests.js
+PRINT=1 npx ava /path/to/tests.js
 ```
 
 Using [`test.only()`](https://github.com/avajs/ava/blob/master/docs/01-writing-tests.md#running-specific-tests) to
