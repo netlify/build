@@ -20,7 +20,12 @@ const runCli = async function() {
   }
 
   const flags = parseFlags()
-  const flagsA = filterObj(flags, isUserFlag)
+  const { features, ...flagsA } = filterObj(flags, isUserFlag)
+
+  if (features) {
+    return printFeatures()
+  }
+
   const success = await build(flagsA)
 
   // Some stdout|stderr logs will not have been flushed. This leads the current
@@ -73,6 +78,11 @@ Default: 'production'`,
 executing them.
 Default: false`,
   },
+  features: {
+    boolean: true,
+    describe: `Print currently enabled feature flags.
+Default: false`,
+  },
 }
 
 const USAGE = `netlify-build [OPTIONS...]
@@ -89,5 +99,13 @@ const isUserFlag = function(key, value) {
 }
 
 const INTERNAL_KEYS = ['help', 'version', '_', '$0', 'dryRun']
+
+const printFeatures = function() {
+  console.log(['', ...FEATURES, ''].join(FEATURES_DELIMITER))
+  exit(0)
+}
+
+const FEATURES = ['cachesave']
+const FEATURES_DELIMITER = '_'
 
 runCli()
