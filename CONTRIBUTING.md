@@ -45,8 +45,6 @@ This is a monorepo. Below are a list of packages included.
 
 - [@netlify/build](./packages/build) Netlify build module [npm link](https://www.npmjs.com/package/@netlify/build).
 - [@netlify/config](./packages/config) Netlify config module [npm link](https://www.npmjs.com/package/@netlify/config).
-- [@netlify/plugin-svgoptimizer](./packages/netlify-plugin-svgoptimizer) Optimize SVG assets during the Netlify build
-  process [npm link](https://www.npmjs.com/package/@netlify/plugin-svgoptimizer).
   <!-- AUTO-GENERATED-CONTENT:END (PACKAGES) -->
 
 ## Examples
