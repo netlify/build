@@ -105,7 +105,7 @@ const printFeatures = function() {
   exit(0)
 }
 
-const FEATURES = ['cache_save']
-const FEATURES_DELIMITER = '__'
+const FEATURES = ['cachesave']
+const FEATURES_DELIMITER = '_'
 
 runCli()
