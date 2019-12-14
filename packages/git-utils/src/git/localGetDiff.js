@@ -5,7 +5,7 @@ const { debug } = require('../debug')
 const d = debug('localGetDiff')
 
 const localGetDiff = (base, head) => {
-  return new Promise(done => {
+  return new Promise((done, reject) => {
     const args = ['diff', `${base}...${head}`]
     let stdout = ''
     let stdErr = ''
@@ -15,19 +15,22 @@ const localGetDiff = (base, head) => {
       stdout += chunk
     })
     child.stderr.on('data', data => {
-      console.error(`Could not get diff from git between ${base} and ${head}`)
+      console.log(`Could not get diff from git between ${base} and ${head}`)
       stdErr += data.toString()
-      throw new Error(data.toString())
+      reject(stdErr)
     })
     child.on('close', function(code) {
       if (code === 0) {
         done(stdout)
       }
+      // no diffs found. Return empty state
+      done('')
     })
     child.on('error', error => {
       stdErr += error.toString()
       if (stdErr) {
         console.log('git diff error', stdErr)
+        reject(stdErr)
       }
     })
   })
