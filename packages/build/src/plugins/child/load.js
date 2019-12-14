@@ -26,7 +26,6 @@ const loadPlugin = async function(payload) {
 
   const pluginCommands = getPluginCommands(logicA, payload)
 
-
   // @TODO add additional way to specify which commit / branch to diff from
   const ref = process.env.CACHED_COMMIT_REF || 'master'
   // @TODO hoist gitData top level?

@@ -22,7 +22,7 @@ class LocalGit {
     const head = 'HEAD'
     try {
       this.gitDiff = await localGetDiff(base, head)
-    } catch(err) {
+    } catch (err) {
       console.log('diff error', err)
       this.gitDiff = ''
     }
