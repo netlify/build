@@ -1,4 +1,4 @@
-const gitData = require('@netlify/utils-git')
+const gitData = require('@netlify/git-utils')
 
 const { getOverride } = require('../override')
 const { validatePluginConfig } = require('../config/validate_props.js')
