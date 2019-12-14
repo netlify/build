@@ -20,7 +20,12 @@ class LocalGit {
     }
     const base = this.options.base || 'master'
     const head = 'HEAD'
-    this.gitDiff = await localGetDiff(base, head)
+    try {
+      this.gitDiff = await localGetDiff(base, head)
+    } catch(err) {
+      console.log('diff error', err)
+      this.gitDiff = ''
+    }
     return this.gitDiff
   }
   async validateThereAreChanges() {
