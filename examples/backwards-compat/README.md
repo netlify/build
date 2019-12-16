@@ -109,10 +109,10 @@ For this example we will add the `@netlify/sitemap` plugin
 
    ```toml
    # Build Plugins
-   [plugins]
-     [plugins.sitemap]
-     type = "@netlify/plugin-sitemap"
-     config = { baseUrl = "https://my-site.com" }
+   [[plugins]]
+   type = "@netlify/plugin-sitemap"
+     [plugins.config]
+     baseUrl = "https://my-site.com"
    ```
 
    Your full `toml` should look like this:
@@ -131,10 +131,10 @@ For this example we will add the `@netlify/sitemap` plugin
      onBuild = "npm run makeSite"
 
    # Build Plugins
-   [plugins]
-     [plugins.siteMapPlugin]
-     type = "@netlify/plugin-sitemap"
-     config = { baseUrl = "https://my-site.com" }
+   [[plugins]]
+   type = "@netlify/plugin-sitemap"
+     [plugins.config]
+     baseUrl = "https://my-site.com"
    ```
 
 3. **Preview and run the build**
