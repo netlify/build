@@ -4,7 +4,5 @@
   "description": "test",
   "license": "MIT",
   "repository": "test",
-  "dependencies": {
-    "@netlify/utils-test": "^1.0.0"
-  }
+  "dependencies": {}
 }
