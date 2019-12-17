@@ -9,3 +9,15 @@ test('utils none', async t => {
 test('utils load', async t => {
   await runFixture(t, 'load')
 })
+
+test('utils sync function', async t => {
+  await runFixture(t, 'function_sync')
+})
+
+test('utils async function', async t => {
+  await runFixture(t, 'function_async')
+})
+
+test('utils error', async t => {
+  await runFixture(t, 'error')
+})
