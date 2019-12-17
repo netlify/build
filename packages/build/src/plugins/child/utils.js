@@ -13,9 +13,7 @@ const getUtils = async function(pluginPath) {
 }
 
 // Hardcoded list of core utilities
-// TODO: remove `test` once we have at least one utility. This is used for
-// testing at the moment.
-const UTILS = [{ varName: 'test', packageName: '@netlify/utils-test' }]
+const UTILS = [{ varName: 'git', packageName: '@netlify/git-utils' }]
 
 const getUtil = async function(varName, packageName, pluginPath) {
   const utilPath = await getUtilPath(packageName, pluginPath)
