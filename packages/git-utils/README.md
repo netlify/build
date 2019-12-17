@@ -5,18 +5,18 @@ Utility for dealing with modified, created, deleted files since a git commit.
 ## Install
 
 ```bash
-npm install @netlify/utils-git
+npm install @netlify/git-utils
 ```
 
 ## Usage
 
 ```js
-const gitData = require('git-er-done')
+const gitUtils = require('@netlify/git-utils')
 
 // Git commit ref / branch to check against. Default is 'master'
 const GIT_COMMIT_REF = '9f63b23ec99e36a176d73909fc67a39dc3bd56b7'
 
-gitData({
+gitUtils({
   base: GIT_COMMIT_REF,
 }).then(git => {
   /* git data returns
@@ -63,7 +63,7 @@ gitData({
     // Do stuff because markdown files are changed
   }
 
-  const mdFilesData = mdFiles.getKeyedPaths()
+  const mdFilesData = git.match('**/*.md')
   /* mdFilesData is full information on the files in the sub path that changed
   {
     modified: [ Array of modified files ],
@@ -72,8 +72,6 @@ gitData({
     edited: [ Array of edited files ]
   }
   */
-
-  //... Etc. GIT ER DONE
 })
 ```
 
