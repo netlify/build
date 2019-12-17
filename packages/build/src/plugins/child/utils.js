@@ -23,7 +23,7 @@ const getUtil = async function(varName, packageName, pluginPath) {
     return {}
   }
 
-  const util = require(utilPath)
+  const util = await resolveUtil(utilPath, varName)
   return { [varName]: util }
 }
 
@@ -33,6 +33,17 @@ const getUtilPath = async function(packageName, pluginPath) {
     // If the package was not installed, return nothing silently
   } catch (error) {
     return
+  }
+}
+
+const resolveUtil = async function(utilPath, varName) {
+  try {
+    const util = require(utilPath)
+    const utilA = typeof util === 'function' ? util() : util
+    const utilB = await utilA
+    return utilB
+  } catch (error) {
+    throw new Error(`Could not load core utility '${varName}': ${error.stack}`)
   }
 }
 
