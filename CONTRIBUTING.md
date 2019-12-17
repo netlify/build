@@ -45,6 +45,8 @@ This is a monorepo. Below are a list of packages included.
 
 - [@netlify/build](./packages/build) Netlify build module [npm link](https://www.npmjs.com/package/@netlify/build).
 - [@netlify/config](./packages/config) Netlify config module [npm link](https://www.npmjs.com/package/@netlify/config).
+- [@netlify/git-utils](./packages/git-utils) Utility for dealing with modified, created, deleted files since a git
+  commit [npm link](https://www.npmjs.com/package/@netlify/git-utils).
   <!-- AUTO-GENERATED-CONTENT:END (PACKAGES) -->
 
 ## Examples
