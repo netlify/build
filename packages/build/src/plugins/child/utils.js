@@ -8,20 +8,22 @@ const pResolve = promisify(resolve)
 // core utilities so that they are versioned. However if they are installed, we
 // automatically require them and pass them as `utils` argument for convenience.
 const getUtils = async function(pluginPath) {
-  const utils = await Promise.all(UTILS.map(({ varName, packageName }) => getUtil(varName, packageName, pluginPath)))
+  const utils = await Promise.all(
+    UTILS.map(({ varName, packageName, dynamic }) => getUtil({ varName, packageName, dynamic, pluginPath })),
+  )
   return Object.assign({}, ...utils)
 }
 
 // Hardcoded list of core utilities
-const UTILS = [{ varName: 'git', packageName: '@netlify/git-utils' }]
+const UTILS = [{ varName: 'git', packageName: '@netlify/git-utils', dynamic: true }]
 
-const getUtil = async function(varName, packageName, pluginPath) {
+const getUtil = async function({ varName, packageName, dynamic, pluginPath }) {
   const utilPath = await getUtilPath(packageName, pluginPath)
   if (utilPath === undefined) {
     return {}
   }
 
-  const util = await resolveUtil(utilPath, varName)
+  const util = await resolveUtil(utilPath, varName, dynamic)
   return { [varName]: util }
 }
 
@@ -34,10 +36,10 @@ const getUtilPath = async function(packageName, pluginPath) {
   }
 }
 
-const resolveUtil = async function(utilPath, varName) {
+const resolveUtil = async function(utilPath, varName, dynamic) {
   try {
     const util = require(utilPath)
-    const utilA = typeof util === 'function' ? util() : util
+    const utilA = dynamic ? util() : util
     const utilB = await utilA
     return utilB
   } catch (error) {
