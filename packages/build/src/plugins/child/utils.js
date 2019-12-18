@@ -15,7 +15,10 @@ const getUtils = async function(pluginPath) {
 }
 
 // Hardcoded list of core utilities
-const UTILS = [{ varName: 'git', packageName: '@netlify/git-utils', dynamic: true }]
+const UTILS = [
+  { varName: 'git', packageName: '@netlify/git-utils', dynamic: true },
+  { varName: 'cache', packageName: '@netlify/cache-utils' },
+]
 
 const getUtil = async function({ varName, packageName, dynamic, pluginPath }) {
   const utilPath = await getUtilPath(packageName, pluginPath)
