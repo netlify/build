@@ -18,7 +18,7 @@ const getUtils = async function(pluginPath) {
 const UTILS = [
   { varName: 'git', packageName: '@netlify/git-utils', dynamic: true },
   { varName: 'cache', packageName: '@netlify/cache-utils' },
-  { varName: 'exec', packageName: '@netlify/exec-utils' },
+  { varName: 'run', packageName: '@netlify/run-utils' },
 ]
 
 const getUtil = async function({ varName, packageName, dynamic, pluginPath }) {
