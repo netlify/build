@@ -6,10 +6,6 @@ test('utils none', async t => {
   await runFixture(t, 'none')
 })
 
-test('utils load', async t => {
-  await runFixture(t, 'load')
-})
-
 test('utils sync function', async t => {
   await runFixture(t, 'function_sync')
 })
