@@ -1,0 +1,35 @@
+{
+  "name": "@netlify/cache-utils",
+  "version": "0.0.1",
+  "description": "Utility for caching files in Netlify Build",
+  "main": "src/main.js",
+  "files": [
+    "src",
+    "!*~"
+  ],
+  "author": "Netlify Inc.",
+  "scripts": {
+    "release:patch": "npm version patch && npm publish",
+    "release:minor": "npm version minor && npm publish",
+    "release:major": "npm version major && npm publish"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "cpy": "^8.0.0",
+    "del": "^5.1.0",
+    "get-stream": "^5.1.0",
+    "global-cache-dir": "^1.0.1",
+    "junk": "^3.1.0",
+    "move-file": "^1.2.0",
+    "path-exists": "^4.0.0",
+    "readdirp": "^3.3.0"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/netlify/build"
+  },
+  "engines": {
+    "node": ">=8.3.0"
+  }
+}
