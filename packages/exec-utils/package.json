@@ -1,0 +1,28 @@
+{
+  "name": "@netlify/exec-utils",
+  "version": "0.0.1",
+  "description": "Utility for executing commands and processes inside Netlify Build",
+  "main": "src/main.js",
+  "files": [
+    "src",
+    "!*~"
+  ],
+  "author": "Netlify Inc.",
+  "scripts": {
+    "release:patch": "npm version patch && npm publish",
+    "release:minor": "npm version minor && npm publish",
+    "release:major": "npm version major && npm publish"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "execa": "^3.4.0"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/netlify/build"
+  },
+  "engines": {
+    "node": ">=8.3.0"
+  }
+}
