@@ -41,8 +41,8 @@ test('cache-utils ci', async t => {
   await runFixture(t, 'save', { env: { DEPLOY_PRIME_URL: 'test', CACHE_BASE: 'test' } })
 })
 
-test('cache-utils home directory', async t => {
-  await runFixture(t, 'home')
+test('cache-utils directory', async t => {
+  await runFixture(t, 'directory')
 })
 
 test('cache-utils save non existing', async t => {
@@ -76,7 +76,7 @@ test('cache-utils manifest missing', async t => {
 // This does not work on Windows when inside GitHub actions
 // TODO: figure out why
 if (!isCi || platform !== 'win32') {
-  test('cache-utils directory', async t => {
-    await runFixture(t, 'directory')
+  test('cache-utils home directory', async t => {
+    await runFixture(t, 'home')
   })
 }
