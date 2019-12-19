@@ -1,5 +1,8 @@
 const { homedir } = require('os')
-const { version } = require('process')
+const {
+  version,
+  env: { TEST_NO_CACHE },
+} = require('process')
 
 const { logCacheStart, logCacheDir } = require('../log/main')
 
@@ -15,6 +18,12 @@ const cachePlugin = {
 
 // Cache a single directory
 const saveCache = async function(path, cache) {
+  // In tests we don't run caching since it is slow and make source directory
+  // much bigger
+  if (TEST_NO_CACHE === '1') {
+    return
+  }
+
   const success = await cache.save(path)
 
   if (success) {
