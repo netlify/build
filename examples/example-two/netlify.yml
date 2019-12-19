@@ -3,7 +3,7 @@ build:
   functions: functions
   lifecycle:
     onInit: echo "Starting the build"
-    onBuild: npm run makeSite
+    onBuild: gulp build
     onEnd: echo "Ending the build"
 
 plugins:
