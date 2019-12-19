@@ -106,7 +106,8 @@ const hashStream = async function(stream) {
 }
 
 const hashString = async function(string) {
-  const hashStream = createHash(HASH_ALGO, { encoding: 'hex' }).end(string)
+  const hashStream = createHash(HASH_ALGO, { encoding: 'hex' })
+  hashStream.end(string)
   const hash = await getStream(hashStream)
   return hash
 }
