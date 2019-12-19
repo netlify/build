@@ -7,19 +7,16 @@ const {
 const mapObj = require('map-obj')
 
 const isNetlifyCI = require('../../utils/is-netlify-ci')
-const { getCacheDir } = require('../../cache/dir.js')
 
 // Retrieve constants passed to plugins
-const getConstants = async function({
+const getConstants = function({
   configPath,
   baseDir,
   config: {
     build: { publish, functions },
   },
 }) {
-  const cacheDir = await getCacheDir()
   const functionsDist = getFunctionsDist()
-
   const constants = {
     /**
      * Path to the netlify configuration file
@@ -29,10 +26,6 @@ const getConstants = async function({
      * The build directory of the site
      */
     BUILD_DIR: publish,
-    /**
-     * The directory files can be cached in between builds
-     */
-    CACHE_DIR: cacheDir,
     /**
      * The directory where function source code lives
      */

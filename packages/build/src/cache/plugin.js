@@ -1,4 +1,5 @@
 const { homedir } = require('os')
+const { version } = require('process')
 
 const { logCacheStart, logCacheDir } = require('../log/main')
 
@@ -10,6 +11,15 @@ const cachePlugin = {
 
     await Promise.all(ARTIFACTS.map(path => saveCache(path, cache)))
   },
+}
+
+// Cache a single directory
+const saveCache = async function(path, cache) {
+  const success = await cache.save(path)
+
+  if (success) {
+    logCacheDir(path)
+  }
 }
 
 // List of directories to cache
@@ -49,20 +59,11 @@ const ARTIFACTS = [
   //   CACHE_DIR/node_version -> CACHE_DIR/.nvm/versions/node[/$NODE_VERSION]
   //   CACHE_DIR/ruby_version -> CACHE_DIR/.rvm/rubies[/ruby-$RUBY_VERSION]
   // nvm
-  `${HOME}/.nvm/versions/node`,
+  `${HOME}/.nvm/versions/node/${version}`,
   // TODO: only cache rvm when the version is not already in the Docker image,
   // i.e. it is a custom version
   // rvm
   `${HOME}/.rvm/rubies`,
 ]
-
-// Cache a single directory
-const saveCache = async function(path, cache) {
-  const success = await cache.save(path)
-
-  if (success) {
-    logCacheDir(path)
-  }
-}
 
 module.exports = cachePlugin
