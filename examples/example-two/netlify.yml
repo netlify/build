@@ -1,0 +1,10 @@
+build:
+  publish: build
+  functions: functions
+  lifecycle:
+    onInit: echo "Starting the build"
+    onBuild: gulp build
+    onEnd: echo "Ending the build"
+
+plugins:
+  - type: ./plugin
