@@ -1,11 +1,13 @@
 const { createHash } = require('crypto')
-const { stat, readFile } = require('fs')
+const { stat, readFile, createReadStream } = require('fs')
 const { promisify } = require('util')
 const { relative } = require('path')
+const { cpus } = require('os')
 
 const getStream = require('get-stream')
 const readdirp = require('readdirp')
 const junk = require('junk')
+const pMap = require('p-map')
 
 const pStat = promisify(stat)
 const pReadFile = promisify(readFile)
@@ -26,11 +28,11 @@ const getHash = async function(srcPath, base) {
 // Hash a directory recursively
 const hashDir = async function(dirPath, fileStat, base) {
   const files = await readdirp.promise(dirPath, { fileFilter, alwaysStat: true })
-  const hashInfos = await Promise.all([
-    getHashInfo(dirPath, fileStat, base),
-    ...files.map(({ fullPath, stats }) => getFileInfo(fullPath, stats, base)),
-  ])
-  const hash = await computeHash(hashInfos)
+  const dirHashInfo = getHashInfo(dirPath, fileStat, base)
+  const hashInfos = await pMap(files, ({ fullPath, stats }) => getFileInfo(fullPath, stats, base), {
+    concurrency: MAX_CONCURRENCY,
+  })
+  const hash = await computeHash([dirHashInfo, ...hashInfos])
   return hash
 }
 
@@ -46,13 +48,31 @@ const hashFile = async function(filePath, fileStat, base) {
   return hash
 }
 
+// Avoid memory crashes due to too high parallelism.
+// This is mostly CPU-bound (hashing), so higher values actually make it slower.
+const MAX_CONCURRENCY = cpus().length
+
 const getFileInfo = async function(filePath, stat, base) {
-  const content = await pReadFile(filePath, 'utf8')
-  const hashInfo = await getHashInfo(filePath, stat, base, content)
+  const content = await getContent(filePath, stat)
+  const hashInfo = getHashInfo(filePath, stat, base, content)
   return hashInfo
 }
 
-const getHashInfo = async function(filePath, { mode, uid, gid }, base, content) {
+// If a file is too big, we stream it and hash it first so it does not take up
+// memory. Otherwise files with lots of big files can end up taking the whole
+// memory and crash the process.
+const getContent = function(filePath, { size }) {
+  if (size < MAX_HASH_CONTENT) {
+    return pReadFile(filePath, 'utf8')
+  }
+
+  const fileStream = createReadStream(filePath)
+  return hashStream(fileStream)
+}
+
+const MAX_HASH_CONTENT = 1e5
+
+const getHashInfo = function(filePath, { mode, uid, gid }, base, content) {
   const path = relative(base, filePath)
   return { path, content, mode, uid, gid }
 }
@@ -79,13 +99,21 @@ const comparePath = function(hashInfoA, hashInfoB) {
   return 0
 }
 
-const hashString = async function(string) {
-  const hashStream = createHash(HASH_ALGO)
-  hashStream.end(string)
-  const hash = await getStream(hashStream, { encoding: 'hex' })
+const hashStream = async function(stream) {
+  const hashStream = stream.pipe(createHash(HASH_ALGO, { encoding: 'hex' }))
+  const hash = await getStream(hashStream)
   return hash
 }
 
-const HASH_ALGO = 'sha256'
+const hashString = async function(string) {
+  const hashStream = createHash(HASH_ALGO, { encoding: 'hex' })
+  hashStream.end(string)
+  const hash = await getStream(hashStream)
+  return hash
+}
+
+// We need a hashing algoritm that's as fast as possible.
+// Userland CRC32 implementations are actually slower than Node.js SHA1.
+const HASH_ALGO = 'sha1'
 
 module.exports = { getHash }
