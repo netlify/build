@@ -25,3 +25,7 @@ test('build.lifecycle.onbuild case', async t => {
 test('build.lifecycle.prebuild case', async t => {
   await runFixture(t, 'old_case')
 })
+
+test('build.lifecycle.finally', async t => {
+  await runFixture(t, 'finally')
+})
