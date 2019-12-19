@@ -1,0 +1,9 @@
+{
+  "name": "example-two",
+  "version": "0.0.1",
+  "author": "Netlify Inc.",
+  "license": "MIT",
+  "devDependencies": {
+    "gulp": "^4.0.2"
+  }
+}
