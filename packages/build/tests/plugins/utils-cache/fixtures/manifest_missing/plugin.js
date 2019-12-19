@@ -13,9 +13,9 @@ module.exports = {
     const id = String(Math.random()).replace('.', '')
 
     await pWriteFile(id, id)
-    await cache.save(id, { ttl: 1 })
+    await cache.save(id, { ttl: 5 })
     console.log(await cache.has(id))
-    await pSetTimeout(2e3)
+    await pSetTimeout(10e3)
 
     await del(`.netlify/cache/cwd/${id}.cache.json`)
 
