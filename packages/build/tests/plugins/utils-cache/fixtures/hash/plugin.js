@@ -14,8 +14,8 @@ module.exports = {
     const id = String(Math.random()).replace('.', '')
 
     await pWriteFile(id, id)
-    await cache.save(id)
-    await cache.save(id, { move: true })
+    console.log(await cache.save(id))
+    console.log(await cache.save(id, { move: true }))
     console.log(await pathExists(id))
     await del(id)
   },

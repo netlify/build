@@ -9,17 +9,19 @@ const save = async function(path, { move = DEFAULT_MOVE, ttl = DEFAULT_TTL } = {
   const { srcPath, cachePath, base } = await parsePath(path)
 
   if (!(await pathExists(srcPath))) {
-    return
+    return false
   }
 
   const { manifestInfo, identical } = await getManifestInfo(srcPath, cachePath, ttl, base)
   if (identical) {
-    return
+    return false
   }
 
   await removeCacheFile(cachePath)
   await moveCacheFile(srcPath, cachePath, move)
   await writeManifest(manifestInfo)
+
+  return true
 }
 
 // Restore a cached file
@@ -27,26 +29,34 @@ const restore = async function(path, { move = DEFAULT_MOVE } = {}) {
   const { srcPath, cachePath } = await parsePath(path)
 
   if (await pathExists(srcPath)) {
-    return
+    return false
   }
 
   if (!(await pathExists(cachePath))) {
-    return
+    return false
   }
 
   if (await isExpired(srcPath, cachePath)) {
-    return
+    return false
   }
 
   await moveCacheFile(cachePath, srcPath, move)
+
+  return true
 }
 
 // Remove the cache of a file
 const remove = async function(path) {
   const { cachePath } = await parsePath(path)
 
+  if (!(await pathExists(cachePath))) {
+    return false
+  }
+
   await removeCacheFile(cachePath)
   await removeManifest(cachePath)
+
+  return true
 }
 
 // Check if a file is cached

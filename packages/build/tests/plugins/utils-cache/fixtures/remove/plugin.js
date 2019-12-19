@@ -12,11 +12,12 @@ module.exports = {
     const id = String(Math.random()).replace('.', '')
 
     await pWriteFile(id, id)
-    await cache.save(id)
+    console.log(await cache.save(id))
     await del(id)
 
     console.log(await cache.has(id))
-    await cache.remove(id)
+    console.log(await cache.remove(id))
     console.log(await cache.has(id))
+    console.log(await cache.remove(id))
   },
 }

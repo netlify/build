@@ -18,8 +18,8 @@ module.exports = {
 
     const paths = await makeFiles(dir)
 
-    await cache.save(dir)
-    await cache.save(dir, { move: true })
+    console.log(await cache.save(dir))
+    console.log(await cache.save(dir, { move: true }))
     console.log((await Promise.all(paths.map(path => pathExists(path)))).every(Boolean))
     await del(dir)
   },

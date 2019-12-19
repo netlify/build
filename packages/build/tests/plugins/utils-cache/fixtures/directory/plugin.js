@@ -19,10 +19,10 @@ module.exports = {
 
     await makeDir(dir)
     await pWriteFile(path, id)
-    await cache.save(dir)
+    console.log(await cache.save(dir))
     await del(dir)
 
-    await cache.restore(dir)
+    console.log(await cache.restore(dir))
     console.log(await pathExists(path))
     await del(dir)
   },
