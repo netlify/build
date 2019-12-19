@@ -41,9 +41,3 @@ test('git-utils unknown commit', async t => {
     env: { CACHED_COMMIT_REF: 'aaaaaaaa', TEST_HEAD: 'aaaaaaaa' },
   })
 })
-
-test('git-utils future commit', async t => {
-  await runFixture(t, 'full', {
-    env: { CACHED_COMMIT_REF: env.TEST_HEAD, TEST_HEAD: env.CACHED_COMMIT_REF },
-  })
-})
