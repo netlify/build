@@ -69,7 +69,7 @@ test('cache-utils hash big directory', async t => {
 // TODO: figure out why
 if (!isCi || !version.startsWith('v8.')) {
   test('cache-utils ci', async t => {
-    await runFixture(t, 'save', { env: { DEPLOY_PRIME_URL: 'test', CACHE_BASE: 'test' } })
+    await runFixture(t, 'save', { env: { DEPLOY_PRIME_URL: 'test' } })
   })
 }
 

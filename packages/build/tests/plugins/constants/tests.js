@@ -3,14 +3,6 @@ const del = require('del')
 
 const { runFixture, FIXTURES_DIR } = require('../../helpers/main')
 
-test('constants.CACHE_DIR local', async t => {
-  await runFixture(t, 'cache')
-})
-
-test('constants.CACHE_DIR CI', async t => {
-  await runFixture(t, 'cache', { env: { DEPLOY_PRIME_URL: 'test' } })
-})
-
 test('constants.CONFIG_PATH', async t => {
   await runFixture(t, 'config')
 })
