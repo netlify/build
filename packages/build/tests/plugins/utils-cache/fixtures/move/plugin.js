@@ -14,11 +14,11 @@ module.exports = {
     const id = String(Math.random()).replace('.', '')
 
     await pWriteFile(id, id)
-    await cache.save(id, { move: true })
+    console.log(await cache.save(id, { move: true }))
     console.log(await pathExists(id))
 
     console.log(await cache.has(id))
-    await cache.restore(id, { move: true })
+    console.log(await cache.restore(id, { move: true }))
     console.log(await cache.has(id))
     console.log(await pathExists(id))
     await del(id)

@@ -13,7 +13,7 @@ module.exports = {
     const id = String(Math.random()).replace('.', '')
 
     await pWriteFile(id, id)
-    await cache.save(id, { ttl: 5 })
+    console.log(await cache.save(id, { ttl: 5 }))
     console.log(await cache.has(id))
     await pSetTimeout(10e3)
 

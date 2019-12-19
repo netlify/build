@@ -13,12 +13,12 @@ module.exports = {
     const id = String(Math.random()).replace('.', '')
 
     await pWriteFile(id, id)
-    await cache.save(id)
+    console.log(await cache.save(id))
 
     const newId = String(Math.random()).replace('.', '')
     await pWriteFile(id, newId)
 
-    await cache.restore(id)
+    console.log(await cache.restore(id))
     const contents = await pReadFile(id, 'utf8')
     console.log(contents === newId)
     await del(id)
