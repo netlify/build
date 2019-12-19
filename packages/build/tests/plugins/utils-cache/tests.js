@@ -73,6 +73,10 @@ test('cache-utils hash directory', async t => {
   await runFixture(t, 'hash_directory')
 })
 
+test('cache-utils hash big directory', async t => {
+  await runFixture(t, 'hash_big')
+})
+
 test('cache-utils manifest missing', async t => {
   await runFixture(t, 'manifest_missing')
 })
