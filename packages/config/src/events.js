@@ -75,6 +75,7 @@ const LEGACY_EVENTS = {
   success: 'onSuccess',
   error: 'onError',
   end: 'onEnd',
+  finally: 'onEnd',
 }
 
 // `build.lifecycle.onEvent` can also be spelled `build.lifecycle.onevent`
