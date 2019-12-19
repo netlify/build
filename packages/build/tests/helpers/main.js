@@ -26,7 +26,12 @@ const FIXTURES_DIR = normalize(`${testFile}/../fixtures`)
 //  - `normalize` {boolean}: whether to normalize output
 //  - `snapshot` {boolean}: whether to create a snapshot
 const runFixture = async function(t, fixtureName, { flags = '', config, cwd, env, normalize, snapshot = true } = {}) {
-  const envA = { CACHE_BASE: '.', NETLIFY_BUILD_SAVE_CACHE: '1', ...env }
+  const envA = {
+    CACHE_BASE: '.',
+    NETLIFY_BUILD_SAVE_CACHE: '1',
+    TEST_NO_CACHE: '1',
+    ...env,
+  }
   const configFlag = getConfigFlag(config, fixtureName)
   const binaryPath = await BINARY_PATH
   const { all, exitCode } = await execa.command(`${binaryPath} ${configFlag} ${flags}`, {

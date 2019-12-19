@@ -1,7 +1,7 @@
 const { resolve, dirname, basename } = require('path')
 const { homedir } = require('os')
 const {
-  env: { CACHE_BASE },
+  env: { CACHE_BASE, TEST_NO_CACHE },
 } = require('process')
 
 const pathExists = require('path-exists')
@@ -67,6 +67,12 @@ const ARTIFACTS = [
 
 // Cache a single directory
 const saveCache = async function({ baseDir, cacheDir, base, path }) {
+  // In tests we don't run caching since it is slow and make source directory
+  // much bigger
+  if (TEST_NO_CACHE === '1') {
+    return
+  }
+
   const { srcPath, cachePath } = parseCachePath({ baseDir, cacheDir, base, path })
 
   if (!(await pathExists(srcPath))) {
