@@ -1,4 +1,4 @@
-// eslint-disable-next-line node/no-unpublished-require
+// eslint-disable-next-line node/no-unpublished-require, node/no-missing-require
 const { src, dest } = require('gulp')
 
 const build = function() {
