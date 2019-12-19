@@ -39,7 +39,7 @@ test('cache-utils TTL negative', async t => {
 
 // This does not work on Node 8 when inside GitHub actions
 // TODO: figure out why
-if (!isCi || !version.startsWith('8.')) {
+if (!isCi || !version.startsWith('v8.')) {
   test('cache-utils ci', async t => {
     await runFixture(t, 'save', { env: { DEPLOY_PRIME_URL: 'test', CACHE_BASE: 'test' } })
   })
