@@ -73,6 +73,18 @@ test('cache-utils hash big directory', async t => {
   await runFixture(t, 'hash_big')
 })
 
+test('cache-utils digests', async t => {
+  await runFixture(t, 'digests')
+})
+
+test('cache-utils digests missing', async t => {
+  await runFixture(t, 'digests_missing')
+})
+
+test('cache-utils digests many', async t => {
+  await runFixture(t, 'digests_many')
+})
+
 // This does not work on Node 8 when inside GitHub actions
 // TODO: figure out why
 if (!isCi || !version.startsWith('v8.')) {

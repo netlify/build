@@ -15,14 +15,32 @@ const pReadFile = promisify(readFile)
 // Compute the hash of a file's contents.
 // Use SHA256 on the contents. Also hashes some file metadata: file path, file
 // type, permissions, uid/gid.
-const getHash = async function(srcPath, base) {
-  const fileStat = await pStat(srcPath)
+const getHash = async function(srcPath, digests, base) {
+  const { digestPath, fileStat } = await findDigest(srcPath, digests)
 
   if (fileStat.isDirectory()) {
-    return hashDir(srcPath, fileStat, base)
+    return hashDir(digestPath, fileStat, base)
   }
 
-  return hashFile(srcPath, fileStat, base)
+  return hashFile(digestPath, fileStat, base)
+}
+
+// Computing a big directory like `node_modules` is slow. However those can
+// sometime be represented by a digest file such as `package-lock.json` which
+// is much smaller and fast to hash. We allow specifying those using the
+// `digests` option.
+const findDigest = async function(srcPath, digests) {
+  const fileStats = await Promise.all([...digests, srcPath].map(getStat))
+  return fileStats.find(Boolean)
+}
+
+const getStat = async function(digestPath) {
+  try {
+    const fileStat = await pStat(digestPath)
+    return { digestPath, fileStat }
+  } catch (error) {
+    return
+  }
 }
 
 // Hash a directory recursively
