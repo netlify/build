@@ -18,8 +18,8 @@ const loadConfig = async function({ flags: { config, cwd }, flags: { token = NET
   const baseDir = await getBaseDir(configPath)
 
   try {
-    const configA = await resolveConfig(configPath, flagsA)
-    return { config: configA, configPath, token, baseDir }
+    const netlifyConfig = await resolveConfig(configPath, flagsA)
+    return { netlifyConfig, configPath, token, baseDir }
   } catch (error) {
     error.message = `Netlify configuration error:\n${error.message}`
     throw error

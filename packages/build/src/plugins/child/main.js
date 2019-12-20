@@ -65,10 +65,10 @@ const load = async function(payload, state) {
 // Run a specific plugin event handler
 const run = async function(
   { originalEvent, error },
-  { context: { pluginCommands, api, utils, constants, pluginConfig, config } },
+  { context: { pluginCommands, api, utils, constants, pluginConfig, netlifyConfig } },
 ) {
   const { method } = pluginCommands.find(pluginCommand => pluginCommand.originalEvent === originalEvent)
-  await method({ api, utils, constants, pluginConfig, config, error })
+  await method({ api, utils, constants, pluginConfig, netlifyConfig, error })
 }
 
 const EVENTS = { load, run }

@@ -9,8 +9,8 @@ const { startTimer, endTimer } = require('../log/timer')
 const { startOutput, stopOutput } = require('../log/stream')
 
 // Get commands for all events
-const getCommands = function({ pluginsCommands, config }) {
-  const commands = EVENTS.flatMap(event => getEventCommands({ event, pluginsCommands, config }))
+const getCommands = function({ pluginsCommands, netlifyConfig }) {
+  const commands = EVENTS.flatMap(event => getEventCommands({ event, pluginsCommands, netlifyConfig }))
 
   const buildCommands = commands.filter(command => !isEndCommand(command) && !isErrorCommand(command))
   const endCommands = commands.filter(isEndCommand)
@@ -25,7 +25,7 @@ const getCommands = function({ pluginsCommands, config }) {
 const getEventCommands = function({
   event,
   pluginsCommands: { [event]: pluginCommands = [] },
-  config: {
+  netlifyConfig: {
     build: {
       lifecycle: { [event]: shellCommands },
     },

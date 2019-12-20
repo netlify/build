@@ -33,14 +33,14 @@ const build = async function(flags) {
   try {
     logBuildStart()
 
-    const { config, configPath, token, baseDir } = await loadConfig({ flags })
+    const { netlifyConfig, configPath, token, baseDir } = await loadConfig({ flags })
 
-    const pluginsOptions = await getPluginsOptions(config, baseDir)
+    const pluginsOptions = await getPluginsOptions(netlifyConfig, baseDir)
     await installPlugins(pluginsOptions, baseDir)
 
     const commandsCount = await buildRun({
       pluginsOptions,
-      config,
+      netlifyConfig,
       configPath,
       baseDir,
       token,
@@ -54,7 +54,7 @@ const build = async function(flags) {
     logBuildSuccess()
     const duration = endTimer(buildTimer, 'Netlify Build')
     logBuildEnd()
-    await trackBuildComplete({ commandsCount, config, duration, flags })
+    await trackBuildComplete({ commandsCount, netlifyConfig, duration, flags })
     return true
   } catch (error) {
     logBuildError(error)
@@ -62,14 +62,14 @@ const build = async function(flags) {
   }
 }
 
-const buildRun = async function({ pluginsOptions, config, configPath, baseDir, token, flags }) {
+const buildRun = async function({ pluginsOptions, netlifyConfig, configPath, baseDir, token, flags }) {
   const childProcesses = await startPlugins(pluginsOptions, baseDir)
 
   try {
     return await executeCommands({
       pluginsOptions,
       childProcesses,
-      config,
+      netlifyConfig,
       configPath,
       baseDir,
       token,
@@ -83,7 +83,7 @@ const buildRun = async function({ pluginsOptions, config, configPath, baseDir, t
 const executeCommands = async function({
   pluginsOptions,
   childProcesses,
-  config,
+  netlifyConfig,
   configPath,
   baseDir,
   token,
@@ -92,7 +92,7 @@ const executeCommands = async function({
   const pluginsCommands = await loadPlugins({
     pluginsOptions,
     childProcesses,
-    config,
+    netlifyConfig,
     configPath,
     baseDir,
     token,
@@ -100,7 +100,7 @@ const executeCommands = async function({
 
   const { mainCommands, buildCommands, endCommands, errorCommands, commandsCount } = getCommands({
     pluginsCommands,
-    config,
+    netlifyConfig,
   })
 
   if (dry) {
