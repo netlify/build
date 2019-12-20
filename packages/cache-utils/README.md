@@ -93,19 +93,6 @@ module.exports = {
 ```
 
 ```js
-// Restore/cache several files/directories
-module.exports = {
-  name: 'example-plugin',
-  async onGetCache({ utils: { cache } }) {
-    await cache.restore(['./path/to/file', './path/to/other'])
-  }
-  async onSaveCache({ utils: { cache } }) {
-    await cache.save(['./path/to/file', './path/to/other'])
-  }
-}
-```
-
-```js
 // Computing whether a big directory of files has changed or not can be slow.
 // If that directory has a lockfile or a manifest file that can be used to
 // check if its contents has changed, you can pass it to the `digests` option.
@@ -115,10 +102,23 @@ module.exports = {
 module.exports = {
   name: 'example-plugin',
   async onGetCache({ utils: { cache } }) {
-    await cache.restore('node_modules', {digests: ['package-lock.json', 'yarn.lock']})
+    await cache.restore('node_modules', { digests: ['package-lock.json', 'yarn.lock'] })
   }
   async onSaveCache({ utils: { cache } }) {
-    await cache.save('node_modules', {digests: ['package-lock.json', 'yarn.lock']})
+    await cache.save('node_modules', { digests: ['package-lock.json', 'yarn.lock'] })
+  }
+}
+```
+
+```js
+// Restore/cache several files/directories
+module.exports = {
+  name: 'example-plugin',
+  async onGetCache({ utils: { cache } }) {
+    await cache.restore(['./path/to/file', './path/to/other'])
+  }
+  async onSaveCache({ utils: { cache } }) {
+    await cache.save(['./path/to/file', './path/to/other'])
   }
 }
 ```
