@@ -7,6 +7,8 @@ Utility for caching files in Netlify Build.
 
 # Examples
 
+## Simple
+
 ```js
 module.exports = {
   name: 'example-plugin',
@@ -27,6 +29,8 @@ module.exports = {
   }
 }
 ```
+
+## Conditional logic
 
 ```js
 // Conditional logic can be applied depending on whether the file has been
@@ -54,8 +58,9 @@ module.exports = {
 }
 ```
 
+## Cache invalidation
+
 ```js
-// Cache invalidation
 module.exports = {
   name: 'example-plugin',
   async onSaveCache({ utils: { cache } }) {
@@ -64,8 +69,10 @@ module.exports = {
 }
 ```
 
+## Time-to-live
+
 ```js
-// Time-to-live: only cache the following file/directory for 1 hour
+// Only cache the following file/directory for 1 hour
 module.exports = {
   name: 'example-plugin',
   async onGetCache({ utils: { cache } }) {
@@ -76,6 +83,8 @@ module.exports = {
   }
 }
 ```
+
+## Fast mode
 
 ```js
 // Move files to the cache instead of copying them. This is much faster but this
@@ -91,6 +100,8 @@ module.exports = {
   }
 }
 ```
+
+## Lock files
 
 ```js
 // Computing whether a big directory of files has changed or not can be slow.
@@ -110,6 +121,8 @@ module.exports = {
 }
 ```
 
+## Multiple directories
+
 ```js
 // Restore/cache several files/directories
 module.exports = {
@@ -128,3 +141,76 @@ module.exports = {
 ```
 npm install @netlify/cache-utils
 ```
+
+# API
+
+## save(path, options?)
+
+`path`: `string`\
+`options`: `object`\
+_Returns_: `Promise<Boolean>`
+
+Cache a file/directory.
+
+Skipped if the file/directory is already cached and its contents has not changed.
+
+Returns `true` if the file/directory was cached, `false` otherwise.
+
+### options
+
+#### move
+
+_Type_: `boolean`\
+_Default_: `false`
+
+Move files to the cache instead of copying them. This is much faster but this removes local files, so should only be
+done when those files won't be used anymore by the current build.
+
+#### ttl
+
+_Type_: `number` (in seconds)\
+_Default_: `undefined`
+
+Only cache the file/directory for a specific amount of time.
+
+#### digests
+
+_Type_: `string[]`\
+_Default_: `[]`
+
+Paths to lock files or manifest files that can be used to check if the directory to cache has changed. Using this option
+speeds up caching.
+
+## restore(path, options?)
+
+`path`: `string`\
+`options`: `object`\
+_Returns_: `Promise<Boolean>`
+
+Restore a file/directory previously cached. Skipped if the file/directory already exists locally or if it has not been
+cached yet.
+
+Returns `true` if the file/directory was restored, `false` otherwise.
+
+### options
+
+#### move
+
+_Type_: `boolean`\
+_Default_: `false`
+
+## remove(path)
+
+`path`: `string`\
+_Returns_: `Promise<Boolean>`
+
+Remove a file/directory from the cache. Useful for cache invalidation.
+
+Returns `true` if the file/directory cache was removed, `false` otherwise.
+
+## has(path)
+
+`path`: `string`\
+_Returns_: `Promise<Boolean>`
+
+Returns whether a file/directory is currently cached.
