@@ -43,6 +43,21 @@ test('No --config but none found', async t => {
   }
 })
 
+test('No --config but none found and with environment variables', async t => {
+  const cwd = `${tmpdir()}/netlify-build`
+  await makeDir(cwd)
+
+  try {
+    await runFixture(t, '', {
+      config: false,
+      cwd,
+      env: { NETLIFY_CONFIG_BUILD_LIFECYCLE_ONBUILD: 'echo onBuild' },
+    })
+  } finally {
+    del(cwd, { force: true })
+  }
+})
+
 // Windows permissions system is different
 if (platform !== 'win32') {
   test('--config with a directory without permissions', async t => {

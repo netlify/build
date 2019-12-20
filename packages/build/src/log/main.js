@@ -130,8 +130,9 @@ const logCommand = function({ event, id, override }, { index, configPath, error 
       ? ''
       : redBright(`
 ${HEADING_PREFIX} OVERRIDE: "${override.event}" command in "${override.name}" has been overriden by "${id}"`)
+  const configName = configPath === undefined ? '' : ` from ${basename(configPath)} config file`
   const description = id.startsWith('config.build')
-    ? `${bold(id.replace('config.', ''))} command from ${basename(configPath)} config file`
+    ? `${bold(id.replace('config.', ''))} command${configName}`
     : `${bold(event)} command from ${bold(id)}`
   const logColor = error ? redBright.bold : cyanBright.bold
   const header = `${index + 1}. Running ${description}`
