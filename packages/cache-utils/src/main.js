@@ -12,7 +12,7 @@ const saveOne = async function(path, { move = DEFAULT_MOVE, ttl = DEFAULT_TTL, d
     return false
   }
 
-  const { manifestInfo, identical } = await getManifestInfo({ srcPath, cachePath, ttl, digests, base })
+  const { manifestInfo, identical } = await getManifestInfo({ srcPath, cachePath, move, ttl, digests, base })
   if (identical) {
     return false
   }

@@ -15,7 +15,7 @@ module.exports = {
 
     await pWriteFile(id, id)
     console.log(await cache.save(id))
-    console.log(await cache.save(id, { move: true }))
+    console.log(await cache.save(id))
     console.log(await pathExists(id))
     await del(id)
   },

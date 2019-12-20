@@ -15,7 +15,12 @@ const pReadFile = promisify(readFile)
 // Compute the hash of a file's contents.
 // Use SHA256 on the contents. Also hashes some file metadata: file path, file
 // type, permissions, uid/gid.
-const getHash = async function(srcPath, digests, base) {
+const getHash = async function({ srcPath, move, digests, base }) {
+  // Moving files is faster than computing hashes
+  if (move) {
+    return ''
+  }
+
   const { digestPath, fileStat } = await findDigest(srcPath, digests)
 
   if (fileStat.isDirectory()) {
