@@ -1,4 +1,4 @@
-<img src="static/logo.png" width="400"/><br>
+<img src="../../static/logo.png" width="400"/><br>
 
 [![Coverage Status](https://codecov.io/gh/netlify/build/branch/master/graph/badge.svg)](https://codecov.io/gh/netlify/build)
 [![Build](https://github.com/netlify/build/workflows/Build/badge.svg)](https://github.com/netlify/build/actions)
@@ -29,19 +29,35 @@ module.exports = {
 ```
 
 ```js
+// Conditional logic can be applied depending on whether the file has been
+// previously cached or not
+const path = './path/to/file'
+
 module.exports = {
   name: 'example-plugin',
-  // Conditional logic can be applied depending on whether the file has been
-  // previously cached or not
   async onGetCache({ utils: { cache } }) {
-    if (await cache.has('./path/to/file')) {
-      console.log('Restoring file cached')
-      await cache.restore('./path/to/file')
-    } else {
-      console.log('No file cached')
+    if (!(await cache.has(path))) {
+      console.log(`File ${path} not cached`)
+      return
+    }
+
+    console.log(`About to restore cached file ${path}...`)
+    if (await cache.restore('./path/to/file')) {
+      console.log(`Restored cached file ${path}`)
     }
   },
-  // Remove cache so future builds don't use it anymore
+  async onSaveCache({ utils: { cache } }) {
+    if (await cache.save('./path/to/file')) {
+      console.log('Saved cached file ${path}`)
+    }
+  }
+}
+```
+
+```js
+// Cache invalidation
+module.exports = {
+  name: 'example-plugin',
   async onSaveCache({ utils: { cache } }) {
     await cache.remove('./path/to/file')
   },
