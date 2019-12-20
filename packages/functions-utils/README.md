@@ -5,6 +5,8 @@
 
 Utility for adding Functions files in Netlify Build.
 
+This allows plugins to dynamically inject Netlify Functions inside users builds.
+
 # Example
 
 ```js
