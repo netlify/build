@@ -16,7 +16,7 @@ module.exports = {
   //  - the file/directory has not been cached yet
   async onInit({ utils: { redirects } }) {
     await redirects.get(projectPath)
-  }
+  },
 }
 ```
 
