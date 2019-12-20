@@ -1,0 +1,33 @@
+<img src="../../static/logo.png" width="400"/><br>
+
+[![Coverage Status](https://codecov.io/gh/netlify/build/branch/master/graph/badge.svg)](https://codecov.io/gh/netlify/build)
+[![Build](https://github.com/netlify/build/workflows/Build/badge.svg)](https://github.com/netlify/build/actions)
+
+Utility for adding Functions files in Netlify Build.
+
+# Example
+
+```js
+module.exports = {
+  name: 'example-plugin',
+  // Add a Netlify Functions file or directory to a build
+  async onPostBuild({ utils: { functions } }) {
+    await functions.add('./path/to/function')
+  },
+}
+```
+
+# Install
+
+```
+npm install @netlify/functions-utils
+```
+
+# API
+
+## add(path)
+
+`path`: `string`\
+_Returns_: `Promise`
+
+Add a Functions file or directory to a build.

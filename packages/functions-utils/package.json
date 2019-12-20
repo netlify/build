@@ -1,0 +1,29 @@
+{
+  "name": "@netlify/functions-utils",
+  "version": "0.1.0",
+  "description": "Utility for adding Functions files in Netlify Build",
+  "main": "src/main.js",
+  "files": [
+    "src",
+    "!*~"
+  ],
+  "author": "Netlify Inc.",
+  "scripts": {
+    "release:patch": "npm version patch && npm publish",
+    "release:minor": "npm version minor && npm publish",
+    "release:major": "npm version major && npm publish"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "cpy": "^8.0.0",
+    "path-exists": "^4.0.0"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/netlify/build"
+  },
+  "engines": {
+    "node": ">=8.3.0"
+  }
+}
