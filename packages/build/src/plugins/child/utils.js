@@ -7,9 +7,11 @@ const pResolve = promisify(resolve)
 // Retrieve the `utils` argument. We enforce plugins to explicitly install
 // core utilities so that they are versioned. However if they are installed, we
 // automatically require them and pass them as `utils` argument for convenience.
-const getUtils = async function(pluginPath) {
+const getUtils = async function({ pluginPath, constants, logic: { name } }) {
   const utils = await Promise.all(
-    UTILS.map(({ varName, packageName, dynamic }) => getUtil({ varName, packageName, dynamic, pluginPath })),
+    UTILS.map(({ varName, packageName, dynamic }) =>
+      getUtil({ varName, packageName, dynamic, pluginPath, constants, name }),
+    ),
   )
   return Object.assign({}, ...utils)
 }
@@ -20,15 +22,16 @@ const UTILS = [
   { varName: 'cache', packageName: '@netlify/cache-utils' },
   { varName: 'run', packageName: '@netlify/run-utils' },
   { varName: 'redirects', packageName: '@netlify/redirects-utils' },
+  { varName: 'functions', packageName: '@netlify/functions-utils', dynamic: true },
 ]
 
-const getUtil = async function({ varName, packageName, dynamic, pluginPath }) {
+const getUtil = async function({ varName, packageName, dynamic, pluginPath, constants, name }) {
   const utilPath = await getUtilPath(packageName, pluginPath)
   if (utilPath === undefined) {
     return {}
   }
 
-  const util = await resolveUtil(utilPath, varName, dynamic)
+  const util = await resolveUtil({ utilPath, varName, dynamic, constants, name })
   return { [varName]: util }
 }
 
@@ -41,10 +44,10 @@ const getUtilPath = async function(packageName, pluginPath) {
   }
 }
 
-const resolveUtil = async function(utilPath, varName, dynamic) {
+const resolveUtil = async function({ utilPath, varName, dynamic, constants, name }) {
   try {
     const util = require(utilPath)
-    const utilA = dynamic ? util() : util
+    const utilA = dynamic ? util({ constants, name }) : util
     const utilB = await utilA
     return utilB
   } catch (error) {

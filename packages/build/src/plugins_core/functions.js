@@ -4,19 +4,12 @@ const fastGlob = require('fast-glob')
 const readdirp = require('readdirp')
 const { zipFunctions } = require('@netlify/zip-it-and-ship-it')
 const unixify = require('unixify')
+const pathExists = require('path-exists')
 
 const { installDependencies } = require('../utils/install')
 const { serializeList } = require('../utils/list')
 
 // Plugin to package Netlify functions with @netlify/zip-it-and-ship-it
-const functionsPlugin = function(pluginConfig, { constants: { FUNCTIONS_SRC } }) {
-  if (FUNCTIONS_SRC === undefined) {
-    return { name: NAME }
-  }
-
-  return { name: NAME, onInstall, onFunctionsPackage }
-}
-
 const NAME = '@netlify/plugin-functions-core'
 
 // Install Netlify functions dependencies
@@ -40,6 +33,10 @@ const onInstall = async function({ constants: { FUNCTIONS_SRC } }) {
 
 // Package Netlify functions
 const onFunctionsPackage = async function({ constants: { FUNCTIONS_SRC, FUNCTIONS_DIST } }) {
+  if (!(await pathExists(FUNCTIONS_SRC))) {
+    return
+  }
+
   console.log(`Packaging functions from ${FUNCTIONS_SRC}`)
   await zipFunctions(FUNCTIONS_SRC, FUNCTIONS_DIST)
 
@@ -64,4 +61,4 @@ const getLoggedPath = function({ path }) {
   return path
 }
 
-module.exports = functionsPlugin
+module.exports = { name: NAME, onInstall, onFunctionsPackage }

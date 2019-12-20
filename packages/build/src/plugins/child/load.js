@@ -15,7 +15,7 @@ const { getConstants } = require('./constants')
 // Also figure out the list of plugin commands. This is also passed to the parent.
 const loadPlugin = async function(payload) {
   const constants = getConstants(payload)
-  const logic = getLogic(payload, constants)
+  const logic = getLogic(payload)
 
   validatePlugin(logic)
   validatePluginConfig(logic, payload)
@@ -49,7 +49,7 @@ const getPluginCommand = function({ method, event, name, id = name, type, core }
 // Retrieve context passed to every event handler
 const getContext = async function(logic, pluginCommands, constants, { pluginPath, pluginConfig, config, token }) {
   const api = getApiClient({ logic, token })
-  const utils = await getUtils(pluginPath)
+  const utils = await getUtils({ pluginPath, constants, logic })
   return { pluginCommands, api, utils, constants, pluginConfig, config }
 }
 
