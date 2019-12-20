@@ -31,8 +31,8 @@ const getPluginsPaths = function(pluginsOptions) {
   return [...new Set(pluginsPaths)]
 }
 
-const isLocalPlugin = function({ core, type }) {
-  return !core && (type.startsWith('.') || type.startsWith('/'))
+const isLocalPlugin = function({ core, package }) {
+  return !core && (package.startsWith('.') || package.startsWith('/'))
 }
 
 const getPluginPath = function({ pluginPath }) {

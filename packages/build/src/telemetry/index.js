@@ -21,12 +21,12 @@ const trackBuildComplete = async function({ commandsCount, netlifyConfig, durati
 }
 
 const getPayload = function({ commandsCount, netlifyConfig, duration, flags: { siteId } }) {
-  const plugins = Object.values(netlifyConfig.plugins).map(getPluginType)
+  const plugins = Object.values(netlifyConfig.plugins).map(getPluginPackage)
   return { steps: commandsCount, duration, pluginCount: plugins.length, plugins, siteId }
 }
 
-const getPluginType = function({ type }) {
-  return type
+const getPluginPackage = function({ package }) {
+  return package
 }
 
 module.exports = { trackBuildComplete }
