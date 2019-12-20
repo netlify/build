@@ -13,7 +13,7 @@ const getConstants = function({
   configPath,
   baseDir,
   config: {
-    build: { publish, functions },
+    build: { publish, functions = DEFAULT_FUNCTIONS },
   },
 }) {
   const functionsDist = getFunctionsDist()
@@ -38,6 +38,8 @@ const getConstants = function({
   const constantsA = mapObj(constants, (key, path) => [key, normalizePath(path, baseDir)])
   return constantsA
 }
+
+const DEFAULT_FUNCTIONS = 'functions'
 
 const getFunctionsDist = function() {
   if (isNetlifyCI()) {
