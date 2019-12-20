@@ -5,14 +5,14 @@ const { getManifestInfo, writeManifest, removeManifest, isExpired } = require('.
 const { moveCacheFile, removeCacheFile } = require('./fs')
 
 // Cache a file
-const saveOne = async function(path, { move = DEFAULT_MOVE, ttl = DEFAULT_TTL } = {}) {
+const saveOne = async function(path, { move = DEFAULT_MOVE, ttl = DEFAULT_TTL, digests = [] } = {}) {
   const { srcPath, cachePath, base } = await parsePath(path)
 
   if (!(await pathExists(srcPath))) {
     return false
   }
 
-  const { manifestInfo, identical } = await getManifestInfo(srcPath, cachePath, ttl, base)
+  const { manifestInfo, identical } = await getManifestInfo({ srcPath, cachePath, ttl, digests, base })
   if (identical) {
     return false
   }
