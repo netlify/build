@@ -6,7 +6,12 @@ const isBoolean = function(value) {
   return typeof value === 'boolean'
 }
 
-const validProperties = function(propNames, legacyPropNames = [], mapper = identity) {
+const validProperties = function(
+  propNames,
+  // istanbul ignore next
+  legacyPropNames = [],
+  mapper = identity,
+) {
   return {
     check: value => checkValidProperty(value, [...propNames, ...legacyPropNames], mapper),
     message: `has unknown properties. Valid properties are:

@@ -57,9 +57,8 @@ const logLoadPlugin = function(id, package, core) {
 }
 
 const logCommandsStart = function(commandsCount) {
-  const commandsWord = commandsCount === 1 ? 'command' : `commands`
   log(`\n${greenBright.bold(`${HEADING_PREFIX} Running Netlify Build Lifecycle`)}
-${SUBTEXT_PADDING}Found ${commandsCount} ${commandsWord}. Lets do this!`)
+${SUBTEXT_PADDING}Found ${commandsCount} commands. Lets do this!`)
 }
 
 const logDryRunStart = function(eventWidth, commandsCount) {

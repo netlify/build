@@ -42,7 +42,6 @@ const VALIDATIONS = [
   },
   {
     property: 'plugins.*',
-    required: true,
     check: ({ package, type }) => package !== undefined || type !== undefined,
     message: '"package" property is required.',
     example: { plugins: [{ package: 'netlify-plugin-one' }] },

@@ -9,5 +9,6 @@ module.exports = {
     emitWarning('test')
     console.log('onInit')
     await pSetTimeout(0)
+    await pSetTimeout(0)
   },
 }
