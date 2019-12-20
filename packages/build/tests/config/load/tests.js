@@ -44,7 +44,7 @@ test('No --config but none found', async t => {
 })
 
 test('No --config but none found and with environment variables', async t => {
-  const cwd = `${tmpdir()}/netlify-build`
+  const cwd = `${tmpdir()}/netlify-build-two`
   await makeDir(cwd)
 
   try {
