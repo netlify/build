@@ -7,6 +7,8 @@ const filterObj = require('filter-obj')
 
 require('../utils/polyfills')
 
+const isNetlifyCI = require('../utils/is-netlify-ci')
+
 const build = require('./main')
 
 const pSetTimeout = promisify(setTimeout)
@@ -32,7 +34,9 @@ const runCli = async function() {
   // BuildBot to print some messages before those are flushed.
   // The following is a temporary workaround. This should be fixed once the
   // logic moves from the BuildBot to Netlify Build
-  await pSetTimeout(1e3)
+  if (isNetlifyCI()) {
+    await pSetTimeout(1e3)
+  }
 
   const exitCode = success ? 0 : 1
   exit(exitCode)
