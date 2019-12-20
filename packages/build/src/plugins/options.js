@@ -1,30 +1,17 @@
-const {
-  env: { NETLIFY_BUILD_SAVE_CACHE },
-} = require('process')
 const { promisify } = require('util')
 
 const resolve = require('resolve')
 
-const pResolve = promisify(resolve)
+const { CORE_PLUGINS } = require('../plugins_core/main')
 
-const FUNCTIONS_PLUGIN = `${__dirname}/functions/index.js`
-const CACHE_PLUGIN = `${__dirname}/../cache/plugin.js`
+const pResolve = promisify(resolve)
 
 // Load plugin options (specified by user in `config.plugins`)
 const getPluginsOptions = async function({ plugins: pluginsOptions }, baseDir) {
-  const pluginsOptionsA = [...DEFAULT_PLUGINS, ...pluginsOptions].map(normalizePluginOptions).filter(isPluginEnabled)
+  const pluginsOptionsA = [...CORE_PLUGINS, ...pluginsOptions].map(normalizePluginOptions).filter(isPluginEnabled)
   const pluginsOptionsB = await Promise.all(pluginsOptionsA.map(pluginOptions => resolvePlugin(pluginOptions, baseDir)))
   return pluginsOptionsB
 }
-
-const DEFAULT_PLUGINS = [
-  { id: '@netlify/plugin-functions-core', type: FUNCTIONS_PLUGIN, core: true },
-  // TODO: remove NETLIFY_BUILD_SAVE_CACHE once integrated in the buildbot
-  ...(NETLIFY_BUILD_SAVE_CACHE === '1'
-    ? [{ id: '@netlify/plugin-cache-core', type: CACHE_PLUGIN, core: true }]
-    : // istanbul ignore next
-      []),
-]
 
 const normalizePluginOptions = function(pluginOptions) {
   const { id, type, core, enabled, config: pluginConfig } = {
