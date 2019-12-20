@@ -47,10 +47,15 @@ const getPluginCommand = function({ method, event, name, id = name, type, core }
 }
 
 // Retrieve context passed to every event handler
-const getContext = async function(logic, pluginCommands, constants, { pluginPath, pluginConfig, config, token }) {
+const getContext = async function(
+  logic,
+  pluginCommands,
+  constants,
+  { pluginPath, pluginConfig, netlifyConfig, token },
+) {
   const api = getApiClient({ logic, token })
   const utils = await getUtils({ pluginPath, constants, logic })
-  return { pluginCommands, api, utils, constants, pluginConfig, config }
+  return { pluginCommands, api, utils, constants, pluginConfig, netlifyConfig }
 }
 
 module.exports = { loadPlugin }

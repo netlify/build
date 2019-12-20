@@ -112,7 +112,7 @@ module.exports = function helloWorldPlugin(pluginConfig) {
 
   return {
     name: 'netlify-plugin-hello-world',
-    onPreBuild: ({ pluginConfig, config, constants }) => {
+    onPreBuild: ({ pluginConfig, netlifyConfig, constants }) => {
       console.log('Hello world from onPreBuild event!')
       console.log(pluginConfig.foo) // bar
       console.log(pluginConfig.fizz) // pop
