@@ -28,7 +28,8 @@ const VALIDATIONS = [
   },
   {
     property: 'plugins.*',
-    ...validProperties(['id', 'package', 'enabled', 'config']),
+    // TODO: remove 'type' after the Beta release since its' legacy
+    ...validProperties(['id', 'package', 'enabled', 'config'], ['type']),
     example: {
       plugins: [{ id: 'one', package: 'netlify-plugin-one', enabled: false, config: { port: 80 } }],
     },
@@ -40,8 +41,21 @@ const VALIDATIONS = [
     example: { plugins: [{ id: 'one', package: 'netlify-plugin-one' }] },
   },
   {
-    property: 'plugins.*.package',
+    property: 'plugins.*',
     required: true,
+    check: ({ package, type }) => package !== undefined || type !== undefined,
+    message: '"package" property is required.',
+    example: { plugins: [{ package: 'netlify-plugin-one' }] },
+  },
+  {
+    property: 'plugins.*.type',
+    check: type => type === undefined,
+    message: 'has been renamed to "package".',
+    example: { plugins: [{ package: 'netlify-plugin-one' }] },
+    warn: true,
+  },
+  {
+    property: 'plugins.*.package',
     check: isString,
     message: 'must be a string.',
     example: { plugins: [{ package: 'netlify-plugin-one' }] },

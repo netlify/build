@@ -29,3 +29,7 @@ test('build.lifecycle.prebuild case', async t => {
 test('build.lifecycle.finally', async t => {
   await runFixture(t, 'finally')
 })
+
+test('plugins[*].type', async t => {
+  await runFixture(t, 'type')
+})
