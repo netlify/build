@@ -12,18 +12,23 @@ const pReadFile = promisify(readFile)
 
 // Retrieve cache manifest of a file to cache, which contains the file/directory
 // contents hash and the `expires` date.
-const getManifestInfo = async function({ srcPath, cachePath, ttl, digests, base }) {
+const getManifestInfo = async function({ srcPath, cachePath, move, ttl, digests, base }) {
   const manifestPath = getManifestPath(cachePath)
   const expires = getExpires(ttl)
-  const hash = await getHash(srcPath, digests, base)
+  const hash = await getHash({ srcPath, move, digests, base })
   const manifest = { expires, hash }
   const manifestString = `${JSON.stringify(manifest, null, 2)}\n`
-  const identical = await isIdentical(manifestPath, manifestString)
+  const identical = await isIdentical({ manifestPath, manifestString, move })
   return { manifestInfo: { manifestPath, manifestString }, identical }
 }
 
 // Whether the cache manifest has changed
-const isIdentical = async function(manifestPath, manifestString) {
+const isIdentical = async function({ manifestPath, manifestString, move }) {
+  // Moving files is faster than computing hashes
+  if (move) {
+    return false
+  }
+
   if (!(await pathExists(manifestPath))) {
     return false
   }
