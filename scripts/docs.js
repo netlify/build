@@ -220,7 +220,7 @@ function renderPluginExample(name) {
 
   \`\`\`yml
   plugins:
-    - type: ./path/to/plugin
+    - package: ./path/to/plugin
       config:
         foo: bar
   \`\`\`

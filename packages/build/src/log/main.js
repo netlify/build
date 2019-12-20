@@ -50,9 +50,9 @@ const logLoadPlugins = function() {
   log(cyanBright.bold(`\n${HEADING_PREFIX} Loading plugins`))
 }
 
-const logLoadPlugin = function(id, type, core) {
+const logLoadPlugin = function(id, package, core) {
   const idA = id === undefined ? '' : `"${id}" `
-  const location = core ? 'build core' : type
+  const location = core ? 'build core' : package
   log(yellowBright(`${SUBTEXT_PADDING}Loading plugin ${idA}from ${location}`))
 }
 
@@ -79,7 +79,7 @@ ${SUBTEXT_PADDING}└─${line}─┴─${secondLine}─┘`)}`)
 }
 
 const logDryRunCommand = function({
-  command: { id, event, type, core },
+  command: { id, event, package, core },
   index,
   configPath,
   eventWidth,
@@ -90,7 +90,7 @@ const logDryRunCommand = function({
   const countText = `${index + 1}. `
   const downArrow = commandsCount === index + 1 ? '  ' : ` ${arrowDown}`
   const eventWidthA = columnWidth - countText.length - downArrow.length
-  const location = getPluginLocation({ id, type, core, configPath })
+  const location = getPluginLocation({ id, package, core, configPath })
 
   log(
     cyanBright.bold(`${SUBTEXT_PADDING}┌─${line}─┐
@@ -99,7 +99,7 @@ ${SUBTEXT_PADDING}└─${line}─┘ `),
   )
 }
 
-const getPluginLocation = function({ id, type, core, configPath }) {
+const getPluginLocation = function({ id, package, core, configPath }) {
   if (id.startsWith('config.')) {
     return `${white('Config')} ${cyanBright(basename(configPath))} ${yellowBright(id.replace('config.', ''))}`
   }
@@ -108,7 +108,7 @@ const getPluginLocation = function({ id, type, core, configPath }) {
     return `${white('Plugin')} ${yellowBright(id)} in build core`
   }
 
-  return `${white('Plugin')} ${id} ${yellowBright(type)}`
+  return `${white('Plugin')} ${id} ${yellowBright(package)}`
 }
 
 const getDryColumnWidth = function(eventWidth, commandsCount) {

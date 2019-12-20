@@ -23,40 +23,54 @@ const VALIDATIONS = [
     check: value => Array.isArray(value) && value.every(isPlainObj),
     message: 'must be an array of objects.',
     example: {
-      plugins: [{ type: 'netlify-plugin-one' }, { type: 'netlify-plugin-two' }],
+      plugins: [{ package: 'netlify-plugin-one' }, { package: 'netlify-plugin-two' }],
     },
   },
   {
     property: 'plugins.*',
-    ...validProperties(['id', 'type', 'enabled', 'config']),
+    // TODO: remove 'type' after the Beta release since its' legacy
+    ...validProperties(['id', 'package', 'enabled', 'config'], ['type']),
     example: {
-      plugins: [{ id: 'one', type: 'netlify-plugin-one', enabled: false, config: { port: 80 } }],
+      plugins: [{ id: 'one', package: 'netlify-plugin-one', enabled: false, config: { port: 80 } }],
     },
   },
   {
     property: 'plugins.*.id',
     check: isString,
     message: 'must be an string.',
-    example: { plugins: [{ id: 'one', type: 'netlify-plugin-one' }] },
+    example: { plugins: [{ id: 'one', package: 'netlify-plugin-one' }] },
+  },
+  {
+    property: 'plugins.*',
+    required: true,
+    check: ({ package, type }) => package !== undefined || type !== undefined,
+    message: '"package" property is required.',
+    example: { plugins: [{ package: 'netlify-plugin-one' }] },
   },
   {
     property: 'plugins.*.type',
-    required: true,
+    check: type => type === undefined,
+    message: 'has been renamed to "package".',
+    example: { plugins: [{ package: 'netlify-plugin-one' }] },
+    warn: true,
+  },
+  {
+    property: 'plugins.*.package',
     check: isString,
     message: 'must be a string.',
-    example: { plugins: [{ type: 'netlify-plugin-one' }] },
+    example: { plugins: [{ package: 'netlify-plugin-one' }] },
   },
   {
     property: 'plugins.*.enabled',
     check: isBoolean,
     message: 'must be a boolean.',
-    example: { plugins: [{ type: 'netlify-plugin-one', enabled: false }] },
+    example: { plugins: [{ package: 'netlify-plugin-one', enabled: false }] },
   },
   {
     property: 'plugins.*.config',
     check: isPlainObj,
     message: 'must be a plain object.',
-    example: { plugins: [{ type: 'netlify-plugin-one', config: { port: 80 } }] },
+    example: { plugins: [{ package: 'netlify-plugin-one', config: { port: 80 } }] },
   },
   {
     property: 'build',

@@ -26,17 +26,17 @@ const loadPlugins = async function({ pluginsOptions, childProcesses, netlifyConf
 // Retrieve plugin commands for one plugin.
 // Do it by executing the plugin `load` event handler.
 const loadPlugin = async function(
-  { type, pluginPath, pluginConfig, id, core },
+  { package, pluginPath, pluginConfig, id, core },
   { childProcesses, index, netlifyConfig, configPath, baseDir, token },
 ) {
-  logLoadPlugin(id, type, core)
+  logLoadPlugin(id, package, core)
 
   const { childProcess } = childProcesses[index]
 
   try {
     const { pluginCommands } = await callChild(childProcess, 'load', {
       id,
-      type,
+      package,
       pluginPath,
       pluginConfig,
       netlifyConfig,
@@ -48,7 +48,7 @@ const loadPlugin = async function(
     const pluginCommandsA = pluginCommands.map(pluginCommand => ({ ...pluginCommand, childProcess }))
     return pluginCommandsA
   } catch (error) {
-    const idA = id === undefined ? type : id
+    const idA = id === undefined ? package : id
     error.message = `Error loading "${idA}" plugin:\n${error.message}`
     error.cleanStack = true
     throw error

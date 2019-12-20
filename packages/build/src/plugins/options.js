@@ -14,11 +14,11 @@ const getPluginsOptions = async function({ plugins: pluginsOptions }, baseDir) {
 }
 
 const normalizePluginOptions = function(pluginOptions) {
-  const { id, type, core, enabled, config: pluginConfig } = {
+  const { id, package, core, enabled, config: pluginConfig } = {
     ...DEFAULT_PLUGIN_OPTIONS,
     ...pluginOptions,
   }
-  return { id, type, core, enabled, pluginConfig }
+  return { id, package, core, enabled, pluginConfig }
 }
 
 const DEFAULT_PLUGIN_OPTIONS = { enabled: true, core: false, config: {} }
@@ -29,12 +29,12 @@ const isPluginEnabled = function({ enabled }) {
 
 // We use `resolve` because `require()` should be relative to `baseDir` not to
 // this `__filename`
-const resolvePlugin = async function({ type, ...pluginOptions }, baseDir) {
+const resolvePlugin = async function({ package, ...pluginOptions }, baseDir) {
   try {
-    const pluginPath = await pResolve(type, { basedir: baseDir })
-    return { ...pluginOptions, type, pluginPath }
+    const pluginPath = await pResolve(package, { basedir: baseDir })
+    return { ...pluginOptions, package, pluginPath }
   } catch (error) {
-    error.message = `'${type}' plugin not installed or found\n${error.message}`
+    error.message = `'${package}' plugin not installed or found\n${error.message}`
     throw error
   }
 }

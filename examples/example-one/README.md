@@ -23,7 +23,7 @@ build:
 
 # Build plugins
 plugins:
-  - type: ./plugins/example
+  - package: ./plugins/example
     config:
       hi: foo
 ```

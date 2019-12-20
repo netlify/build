@@ -110,7 +110,7 @@ For this example we will add the `@netlify/sitemap` plugin
    ```toml
    # Build Plugins
    [[plugins]]
-   type = "@netlify/plugin-sitemap"
+   package = "@netlify/plugin-sitemap"
      [plugins.config]
      baseUrl = "https://my-site.com"
    ```
@@ -132,7 +132,7 @@ For this example we will add the `@netlify/sitemap` plugin
 
    # Build Plugins
    [[plugins]]
-   type = "@netlify/plugin-sitemap"
+   package = "@netlify/plugin-sitemap"
      [plugins.config]
      baseUrl = "https://my-site.com"
    ```

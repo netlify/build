@@ -1,4 +1,4 @@
 build:
   functions: functions
 plugins:
-  - type: ./plugin
+  - package: ./plugin

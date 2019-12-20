@@ -3,4 +3,4 @@ build:
   lifecycle:
     onBuild: echo test
 plugins:
-  - type: ./plugin
+  - package: ./plugin
