@@ -5,6 +5,7 @@ const {
 } = require('process')
 
 const { logCacheStart, logCacheDir } = require('../log/main')
+const isNetlifyCI = require('../utils/is-netlify-ci')
 
 // Save/restore cache core plugin
 const cachePlugin = {
@@ -24,7 +25,7 @@ const saveCache = async function(path, cache) {
     return
   }
 
-  const success = await cache.save(path)
+  const success = await cache.save(path, { move: isNetlifyCI() })
 
   // istanbul ignore else
   if (success) {
