@@ -5,7 +5,7 @@ const { getManifestInfo, writeManifest, removeManifest, isExpired } = require('.
 const { moveCacheFile, removeCacheFile } = require('./fs')
 
 // Cache a file
-const save = async function(path, { move = DEFAULT_MOVE, ttl = DEFAULT_TTL } = {}) {
+const saveOne = async function(path, { move = DEFAULT_MOVE, ttl = DEFAULT_TTL } = {}) {
   const { srcPath, cachePath, base } = await parsePath(path)
 
   if (!(await pathExists(srcPath))) {
@@ -25,7 +25,7 @@ const save = async function(path, { move = DEFAULT_MOVE, ttl = DEFAULT_TTL } = {
 }
 
 // Restore a cached file
-const restore = async function(path, { move = DEFAULT_MOVE } = {}) {
+const restoreOne = async function(path, { move = DEFAULT_MOVE } = {}) {
   const { srcPath, cachePath } = await parsePath(path)
 
   if (await pathExists(srcPath)) {
@@ -46,7 +46,7 @@ const restore = async function(path, { move = DEFAULT_MOVE } = {}) {
 }
 
 // Remove the cache of a file
-const remove = async function(path) {
+const removeOne = async function(path) {
   const { cachePath } = await parsePath(path)
 
   if (!(await pathExists(cachePath))) {
@@ -60,7 +60,7 @@ const remove = async function(path) {
 }
 
 // Check if a file is cached
-const has = async function(path) {
+const hasOne = async function(path) {
   const { srcPath, cachePath } = await parsePath(path)
 
   return (await pathExists(cachePath)) && !(await isExpired(srcPath, cachePath))
@@ -68,5 +68,21 @@ const has = async function(path) {
 
 const DEFAULT_MOVE = false
 const DEFAULT_TTL = undefined
+
+// Allow each of the main functions to take either a single path or an array of
+// paths as arguments
+const allowMany = async function(func, paths, ...args) {
+  if (!Array.isArray(paths)) {
+    return func(paths, ...args)
+  }
+
+  const results = await Promise.all(paths.map(path => func(path, ...args)))
+  return results.some(Boolean)
+}
+
+const save = allowMany.bind(null, saveOne)
+const restore = allowMany.bind(null, restoreOne)
+const remove = allowMany.bind(null, removeOne)
+const has = allowMany.bind(null, hasOne)
 
 module.exports = { save, restore, remove, has }

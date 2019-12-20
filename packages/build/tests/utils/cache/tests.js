@@ -13,12 +13,20 @@ test('cache-utils save', async t => {
   await runFixture(t, 'save')
 })
 
+test('cache-utils save array', async t => {
+  await runFixture(t, 'save_array')
+})
+
 test('cache-utils no options', async t => {
   await runFixture(t, 'no_options')
 })
 
 test('cache-utils remove', async t => {
   await runFixture(t, 'remove')
+})
+
+test('cache-utils remove array', async t => {
+  await runFixture(t, 'remove_array')
 })
 
 test('cache-utils move', async t => {

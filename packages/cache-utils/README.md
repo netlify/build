@@ -76,6 +76,19 @@ module.exports = {
 }
 ```
 
+```js
+// Restore/cache several files/directories
+module.exports = {
+  name: 'example-plugin',
+  async onGetCache({ utils: { cache } }) {
+    await cache.restore(['./path/to/file', './path/to/other'])
+  }
+  async onSaveCache({ utils: { cache } }) {
+    await cache.save(['./path/to/file', './path/to/other'])
+  }
+}
+```
+
 # Install
 
 ```
