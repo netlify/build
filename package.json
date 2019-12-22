@@ -10,6 +10,7 @@
     "update-snapshots": "ava -u",
     "test": "run-s test:* test:dev:*",
     "test-ci": "run-s test:* test:ci:*",
+    "pre-push": "run-s test:*",
     "test:docs": "node ./scripts/docs.js",
     "test:lint": "eslint --ignore-path .gitignore --fix --cache --format=codeframe --max-warnings=0 \"{packages,examples,scripts}/**/*.js\"",
     "test:prettier": "prettier --ignore-path .gitignore --write --loglevel warn \"{.github,packages,examples,scripts}/**/*.{js,md,yml,json}\" \"*.{js,md,yml,json}\"",
@@ -18,7 +19,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-push": "npm test"
+      "pre-push": "npm run pre-push"
     }
   },
   "keywords": [
