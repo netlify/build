@@ -13,8 +13,8 @@ This allows plugins to dynamically inject Netlify Functions inside users builds.
 module.exports = {
   name: 'example-plugin',
   // Add a Netlify Functions file or directory to a build
-  async onPostBuild({ utils: { functions } }) {
-    await functions.add('./path/to/function')
+  async onPostBuild({ utils }) {
+    await utils.functions.add('./path/to/function')
   },
 }
 ```

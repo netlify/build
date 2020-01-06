@@ -16,16 +16,16 @@ module.exports = {
   // Does not do anything if:
   //  - the file/directory already exists locally
   //  - the file/directory has not been cached yet
-  async onGetCache({ utils: { cache } }) {
-    await cache.restore('./path/to/file')
+  async onGetCache({ utils }) {
+    await utils.cache.restore('./path/to/file')
   }
   // Cache file/directory for future builds.
   // Does not do anything if:
   //  - the file/directory does not exist locally
   //  - the file/directory is already cached and its contents has not changed
   //    If this is a directory, this includes children's contents
-  async onSaveCache({ utils: { cache } }) {
-    await cache.save('./path/to/file')
+  async onSaveCache({ utils }) {
+    await utils.cache.save('./path/to/file')
   }
 }
 ```
@@ -39,7 +39,9 @@ const path = './path/to/file'
 
 module.exports = {
   name: 'example-plugin',
-  async onGetCache({ utils: { cache } }) {
+  async onGetCache({ utils }) {
+    const { cache } = utils
+
     if (!(await cache.has(path))) {
       console.log(`File ${path} not cached`)
       return
@@ -50,9 +52,9 @@ module.exports = {
       console.log(`Restored cached file ${path}`)
     }
   },
-  async onSaveCache({ utils: { cache } }) {
-    if (await cache.save('./path/to/file')) {
-      console.log('Saved cached file ${path}`)
+  async onSaveCache({ utils }) {
+    if (await utils.cache.save('./path/to/file')) {
+      console.log(`Saved cached file ${path}`)
     }
   }
 }
@@ -63,8 +65,8 @@ module.exports = {
 ```js
 module.exports = {
   name: 'example-plugin',
-  async onSaveCache({ utils: { cache } }) {
-    await cache.remove('./path/to/file')
+  async onSaveCache({ utils }) {
+    await utils.cache.remove('./path/to/file')
   },
 }
 ```
@@ -75,11 +77,11 @@ module.exports = {
 // Only cache the following file/directory for 1 hour
 module.exports = {
   name: 'example-plugin',
-  async onGetCache({ utils: { cache } }) {
-    await cache.restore('./path/to/file', { ttl: 3600 })
+  async onGetCache({ utils }) {
+    await utils.cache.restore('./path/to/file', { ttl: 3600 })
   }
   async onSaveCache({ utils: { cache } }) {
-    await cache.save('./path/to/file')
+    await utils.cache.save('./path/to/file')
   }
 }
 ```
@@ -92,11 +94,11 @@ module.exports = {
 // anymore by the current build.
 module.exports = {
   name: 'example-plugin',
-  async onGetCache({ utils: { cache } }) {
-    await cache.restore('./path/to/file', { move: true })
+  async onGetCache({ utils }) {
+    await utils.cache.restore('./path/to/file', { move: true })
   }
-  async onSaveCache({ utils: { cache } }) {
-    await cache.save('./path/to/file', { move: true })
+  async onSaveCache({ utils }) {
+    await utils.cache.save('./path/to/file', { move: true })
   }
 }
 ```
@@ -112,11 +114,15 @@ module.exports = {
 // `node_modules` directory.
 module.exports = {
   name: 'example-plugin',
-  async onGetCache({ utils: { cache } }) {
-    await cache.restore('node_modules', { digests: ['package-lock.json', 'yarn.lock'] })
+  async onGetCache({ utils }) {
+    await utils.cache.restore('node_modules', {
+      digests: ['package-lock.json', 'yarn.lock']
+    })
   }
-  async onSaveCache({ utils: { cache } }) {
-    await cache.save('node_modules', { digests: ['package-lock.json', 'yarn.lock'] })
+  async onSaveCache({ utils }) {
+    await utils.cache.save('node_modules', {
+      digests: ['package-lock.json', 'yarn.lock']
+    })
   }
 }
 ```
@@ -127,11 +133,11 @@ module.exports = {
 // Restore/cache several files/directories
 module.exports = {
   name: 'example-plugin',
-  async onGetCache({ utils: { cache } }) {
-    await cache.restore(['./path/to/file', './path/to/other'])
+  async onGetCache({ utils }) {
+    await utils.cache.restore(['./path/to/file', './path/to/other'])
   }
-  async onSaveCache({ utils: { cache } }) {
-    await cache.save(['./path/to/file', './path/to/other'])
+  async onSaveCache({ utils }) {
+    await utils.cache.save(['./path/to/file', './path/to/other'])
   }
 }
 ```
