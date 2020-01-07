@@ -56,7 +56,7 @@ module.exports = {
     if (await utils.cache.save('./path/to/file')) {
       console.log(`Saved cached file ${path}`)
     }
-  }
+  },
 }
 ```
 
