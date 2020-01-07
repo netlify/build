@@ -13,8 +13,9 @@ test('Install local plugin dependencies: with npm', async t => {
 })
 
 // This test does not work on Windows when run inside Ava
+// TODO: enable this test
 if (platform !== 'win32') {
-  test('Install local plugin dependencies: with yarn', async t => {
+  test.skip('Install local plugin dependencies: with yarn', async t => {
     await runFixture(t, 'yarn')
     await del(`${FIXTURES_DIR}/yarn/plugin/node_modules`)
   })
