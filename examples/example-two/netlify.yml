@@ -7,6 +7,4 @@ build:
     onEnd: echo "Ending the build"
 
 plugins:
-  # TODO: rename `type` to `package` next time `@netlify/build` is published
-  # to npm
-  - type: ./plugin
+  - package: ./plugin
