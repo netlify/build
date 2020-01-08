@@ -13,22 +13,24 @@ async function parseFile(parser, name, filePath) {
   return result.success
 }
 
-async function get(projectPath) {
-  const rules = []
+async function getAll(projectPath) {
+  const rulesUnique = new Set()
 
   const configPath = await getConfigPath(undefined, projectPath)
   const redirectsFilePath = path.resolve(projectPath, '_redirects')
 
   if (fs.existsSync(redirectsFilePath)) {
     const fileName = redirectsFilePath.split(path.sep).pop()
-    rules.push(...(await parseFile(parseRedirectsFormat, fileName, redirectsFilePath)))
+    (await parseFile(parseRedirectsFormat, fileName, redirectsFilePath))
+      .forEach(r => rulesUnique.add(JSON.stringify(r)))
   }
   if (fs.existsSync(configPath)) {
     const fileName = configPath.split(path.sep).pop()
-    rules.push(...(await parseFile(parseNetlifyConfig, fileName, configPath)))
+    (await parseFile(parseNetlifyConfig, fileName, configPath))
+      .forEach(r => rulesUnique.add(JSON.stringify(r)))
   }
 
-  return rules
+  return Array.from(rulesUnique).map(item => JSON.parse(item))
 }
 
-module.exports = { get }
+module.exports = { getAll }
