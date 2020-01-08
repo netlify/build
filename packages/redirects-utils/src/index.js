@@ -40,7 +40,7 @@ async function getAll(projectPath) {
   return Array.from(rulesUnique).map(item => JSON.parse(item))
 }
 
-async function deleteEntry(rule = {}, projectPath) {
+async function remove(rule = {}, projectPath) {
   const rules = (await getAll(projectPath)).filter(
     r =>
       !(
@@ -81,4 +81,4 @@ async function add(rule = {}, projectPath) {
   return writeFileAsync(path.resolve(projectPath, 'netlify.toml'), TOMLConfig, { flag: 'w' })
 }
 
-module.exports = { getAll, delete: deleteEntry, add }
+module.exports = { getAll, remove, add }
