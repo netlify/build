@@ -27,13 +27,17 @@ async function getAll(projectPath) {
   if (fs.existsSync(redirectsFilePath)) {
     const fileName = redirectsFilePath
       .split(path.sep)
-      .pop()(await parseFile(parseRedirectsFormat, fileName, redirectsFilePath))
+      .pop();
+
+    (await parseFile(parseRedirectsFormat, fileName, redirectsFilePath))
       .forEach(r => rulesUnique.add(JSON.stringify(r)))
   }
   if (fs.existsSync(configPath)) {
     const fileName = configPath
       .split(path.sep)
-      .pop()(await parseFile(parseNetlifyConfig, fileName, configPath))
+      .pop();
+
+    (await parseFile(parseNetlifyConfig, fileName, configPath))
       .forEach(r => rulesUnique.add(JSON.stringify(r)))
   }
 
