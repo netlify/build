@@ -17,6 +17,8 @@ const getConstants = function({
   },
 }) {
   const functionsDist = getFunctionsDist()
+  const cacheDir = getCacheDir()
+
   const constants = {
     /**
      * Path to the netlify configuration file
@@ -26,6 +28,10 @@ const getConstants = function({
      * The build directory of the site
      */
     BUILD_DIR: publish,
+    /**
+     * The directory files can be cached in between builds
+     */
+    CACHE_DIR: cacheDir,
     /**
      * The directory where function source code lives
      */
@@ -40,7 +46,7 @@ const getConstants = function({
 }
 
 const DEFAULT_FUNCTIONS = 'functions'
-
+const LOCAL_FUNCTIONS_DIST = '.netlify/functions/'
 const getFunctionsDist = function() {
   if (isNetlifyCI()) {
     return `${tmpdir()}/zisi-${DEPLOY_ID}`
@@ -49,7 +55,15 @@ const getFunctionsDist = function() {
   return LOCAL_FUNCTIONS_DIST
 }
 
-const LOCAL_FUNCTIONS_DIST = '.netlify/functions/'
+const CI_CACHE_DIR = '/opt/build/cache/'
+const LOCAL_CACHE_DIR = '.netlify/cache/'
+const getCacheDir = function() {
+  if (isNetlifyCI()) {
+    return CI_CACHE_DIR
+  }
+
+  return LOCAL_CACHE_DIR
+}
 
 // The current directory is `baseDir`. Most constants are inside this `baseDir`.
 // Instead of passing absolute paths, we pass paths relative to `baseDir`, so
