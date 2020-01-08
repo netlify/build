@@ -65,4 +65,20 @@ async function deleteEntry(rule = {}, projectPath) {
   return writeFileAsync(path.resolve(projectPath, 'netlify.toml'), TOMLConfig, { flag: 'w' })
 }
 
-module.exports = { getAll, delete: deleteEntry }
+async function add(rule = {}, projectPath) {
+  const rulesUnique = new Set((await getAll(projectPath)).map(r => JSON.stringify(r)))
+  rulesUnique.add(JSON.stringify(rule))
+
+  const rules = Array.from(rulesUnique).map(item => JSON.parse(item))
+
+  const configPath = await getConfigPath(undefined, projectPath)
+  const config = await resolveConfig(configPath, { cwd: projectPath })
+
+  config.redirects = rules
+
+  const TOMLConfig = configorama.format.toml.dump(config)
+
+  return writeFileAsync(path.resolve(projectPath, 'netlify.toml'), TOMLConfig, { flag: 'w' })
+}
+
+module.exports = { getAll, delete: deleteEntry, add }
