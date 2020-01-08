@@ -1,2 +1,2 @@
 plugins:
-  - type: netlify-plugin-test
+  - package: netlify-plugin-test

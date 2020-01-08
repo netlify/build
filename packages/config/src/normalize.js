@@ -16,11 +16,13 @@ const normalizeLifecycle = function({
   config,
   config: {
     build: { command, lifecycle, ...build },
+    plugins,
   },
 }) {
   const lifecycleA = normalizeOnBuild(lifecycle, command)
   const lifecycleB = mapObj(lifecycleA, normalizeBashCommands)
-  return { ...config, build: { ...build, lifecycle: lifecycleB } }
+  const pluginsA = plugins.map(normalizePlugin)
+  return { ...config, build: { ...build, lifecycle: lifecycleB }, plugins: pluginsA }
 }
 
 // `build.lifecycle.onBuild` was previously called `build.command`
@@ -37,6 +39,12 @@ const normalizeBashCommands = function(event, bashCommands) {
   const eventB = LEGACY_EVENTS[eventA] === undefined ? eventA : LEGACY_EVENTS[eventA]
   const bashCommandsA = typeof bashCommands === 'string' ? bashCommands.trim().split('\n') : bashCommands
   return [eventB, bashCommandsA]
+}
+
+// `plugins[*].package` was previously called `plugins[*].type`
+// TODO: remove after the Beta release since it's legacy
+const normalizePlugin = function({ type, package = type, ...plugin }) {
+  return { ...plugin, package }
 }
 
 module.exports = { normalizeConfig }

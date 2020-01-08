@@ -50,16 +50,15 @@ const logLoadPlugins = function() {
   log(cyanBright.bold(`\n${HEADING_PREFIX} Loading plugins`))
 }
 
-const logLoadPlugin = function(id, type, core) {
+const logLoadPlugin = function(id, package, core) {
   const idA = id === undefined ? '' : `"${id}" `
-  const location = core ? 'build core' : type
+  const location = core ? 'build core' : package
   log(yellowBright(`${SUBTEXT_PADDING}Loading plugin ${idA}from ${location}`))
 }
 
 const logCommandsStart = function(commandsCount) {
-  const commandsWord = commandsCount === 1 ? 'command' : `commands`
   log(`\n${greenBright.bold(`${HEADING_PREFIX} Running Netlify Build Lifecycle`)}
-${SUBTEXT_PADDING}Found ${commandsCount} ${commandsWord}. Lets do this!`)
+${SUBTEXT_PADDING}Found ${commandsCount} commands. Lets do this!`)
 }
 
 const logDryRunStart = function(eventWidth, commandsCount) {
@@ -79,7 +78,7 @@ ${SUBTEXT_PADDING}└─${line}─┴─${secondLine}─┘`)}`)
 }
 
 const logDryRunCommand = function({
-  command: { id, event, type, core },
+  command: { id, event, package, core },
   index,
   configPath,
   eventWidth,
@@ -90,7 +89,7 @@ const logDryRunCommand = function({
   const countText = `${index + 1}. `
   const downArrow = commandsCount === index + 1 ? '  ' : ` ${arrowDown}`
   const eventWidthA = columnWidth - countText.length - downArrow.length
-  const location = getPluginLocation({ id, type, core, configPath })
+  const location = getPluginLocation({ id, package, core, configPath })
 
   log(
     cyanBright.bold(`${SUBTEXT_PADDING}┌─${line}─┐
@@ -99,7 +98,7 @@ ${SUBTEXT_PADDING}└─${line}─┘ `),
   )
 }
 
-const getPluginLocation = function({ id, type, core, configPath }) {
+const getPluginLocation = function({ id, package, core, configPath }) {
   if (id.startsWith('config.')) {
     return `${white('Config')} ${cyanBright(basename(configPath))} ${yellowBright(id.replace('config.', ''))}`
   }
@@ -108,7 +107,7 @@ const getPluginLocation = function({ id, type, core, configPath }) {
     return `${white('Plugin')} ${yellowBright(id)} in build core`
   }
 
-  return `${white('Plugin')} ${id} ${yellowBright(type)}`
+  return `${white('Plugin')} ${id} ${yellowBright(package)}`
 }
 
 const getDryColumnWidth = function(eventWidth, commandsCount) {
@@ -130,8 +129,9 @@ const logCommand = function({ event, id, override }, { index, configPath, error 
       ? ''
       : redBright(`
 ${HEADING_PREFIX} OVERRIDE: "${override.event}" command in "${override.name}" has been overriden by "${id}"`)
+  const configName = configPath === undefined ? '' : ` from ${basename(configPath)} config file`
   const description = id.startsWith('config.build')
-    ? `${bold(id.replace('config.', ''))} command from ${basename(configPath)} config file`
+    ? `${bold(id.replace('config.', ''))} command${configName}`
     : `${bold(event)} command from ${bold(id)}`
   const logColor = error ? redBright.bold : cyanBright.bold
   const header = `${index + 1}. Running ${description}`

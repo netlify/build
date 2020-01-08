@@ -8,6 +8,6 @@ module.exports = {
   async onInit() {
     emitWarning('test')
     console.log('onInit')
-    await pSetTimeout(0)
+    await pSetTimeout(1e3)
   },
 }

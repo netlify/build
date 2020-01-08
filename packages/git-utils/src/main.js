@@ -5,7 +5,10 @@ const { getLinesOfCode } = require('./stats')
 const { getMatchers } = require('./match')
 
 // Main entry point to the git utilities
-const getGitUtils = async function({ base } = {}) {
+const getGitUtils = async function(
+  // istanbul ignore next
+  { base } = {},
+) {
   const baseA = await getBase(base)
   const [{ modifiedFiles, createdFiles, deletedFiles }, commits, linesOfCode] = await Promise.all([
     getDiffFiles(baseA),

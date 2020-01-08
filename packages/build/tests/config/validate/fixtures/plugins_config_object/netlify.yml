@@ -1,3 +1,3 @@
 plugins:
-  - type: test
+  - package: test
     config: true

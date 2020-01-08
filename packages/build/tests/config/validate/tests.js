@@ -18,12 +18,12 @@ test('plugins.any.id: string', async t => {
   await runFixture(t, 'plugins_id_string')
 })
 
-test('plugins.any.type: required', async t => {
-  await runFixture(t, 'plugins_type_required')
+test('plugins.any.package: required', async t => {
+  await runFixture(t, 'plugins_package_required')
 })
 
-test('plugins.any.type: string', async t => {
-  await runFixture(t, 'plugins_type_string')
+test('plugins.any.package: string', async t => {
+  await runFixture(t, 'plugins_package_string')
 })
 
 test('plugins.any.enabled: boolean', async t => {

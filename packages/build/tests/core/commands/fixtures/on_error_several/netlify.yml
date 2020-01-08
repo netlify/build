@@ -2,5 +2,5 @@ build:
   lifecycle:
     onBuild: node --invalid
 plugins:
-  - type: ./plugin_invalid.js
-  - type: ./plugin_valid.js
+  - package: ./plugin_invalid.js
+  - package: ./plugin_valid.js

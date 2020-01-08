@@ -55,7 +55,7 @@ build:
 
 # Attach our plugin
 plugins:
-  - type: ./plugins/netlify-plugin-hello-world
+  - package: ./plugins/netlify-plugin-hello-world
 ```
 
 Now that the plugin is declared, we can verify it's loading correctly with the `netlify build --dry` command. This
@@ -82,7 +82,7 @@ If your plugin requires additional values from the user to do things, those can 
 ```yml
 # Attach our plugin
 plugins:
-  - type: ./plugins/netlify-plugin-hello-world
+  - package: ./plugins/netlify-plugin-hello-world
     config:
       foo: bar
       fizz: pop
@@ -112,7 +112,7 @@ module.exports = function helloWorldPlugin(pluginConfig) {
 
   return {
     name: 'netlify-plugin-hello-world',
-    onPreBuild: ({ pluginConfig, config, constants }) => {
+    onPreBuild: ({ pluginConfig, netlifyConfig, constants }) => {
       console.log('Hello world from onPreBuild event!')
       console.log(pluginConfig.foo) // bar
       console.log(pluginConfig.fizz) // pop

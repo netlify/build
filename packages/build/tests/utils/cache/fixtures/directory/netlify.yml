@@ -1,2 +1,2 @@
 plugins:
-  - type: ./plugin
+  - package: ./plugin

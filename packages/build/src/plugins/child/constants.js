@@ -12,7 +12,7 @@ const isNetlifyCI = require('../../utils/is-netlify-ci')
 const getConstants = function({
   configPath,
   baseDir,
-  config: {
+  netlifyConfig: {
     build: { publish, functions = DEFAULT_FUNCTIONS },
   },
 }) {

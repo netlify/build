@@ -1,4 +1,4 @@
 plugins:
-  - type: ./plugin
+  - package: ./plugin
     config:
       test: test

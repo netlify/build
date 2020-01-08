@@ -1,2 +1,2 @@
 plugins:
-  - type: does-not-exist
+  - package: does-not-exist
