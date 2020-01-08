@@ -1,8 +1,13 @@
 const fs = require('fs')
 const path = require('path')
+const { promisify } = require('util')
 
+const writeFileAsync = promisify(fs.writeFile)
+
+const resolveConfig = require('@netlify/config')
 const { getConfigPath } = require('@netlify/config')
 const { parseRedirectsFormat, parseNetlifyConfig } = require('netlify-redirect-parser')
+const configorama = require('configorama')
 
 async function parseFile(parser, name, filePath) {
   const result = await parser(filePath)
@@ -33,4 +38,29 @@ async function getAll(projectPath) {
   return Array.from(rulesUnique).map(item => JSON.parse(item))
 }
 
-module.exports = { getAll }
+async function deleteEntry(rule = {}, projectPath) {
+  const rules = (await getAll(projectPath))
+    .filter(r =>
+      !(
+        r.from === rule.from &&
+        r.to === rule.to &&
+        r.status === rule.status &&
+        r.force === rule.force &&
+        r.query === rule.query &&
+        JSON.stringify(r.conditions) === JSON.stringify(rule.conditions) &&
+        JSON.stringify(r.headers) === JSON.stringify(rule.headers) &&
+        r.signed === rule.signed
+      ),
+    )
+
+  const configPath = await getConfigPath(undefined, projectPath)
+  const config = await resolveConfig(configPath, { cwd: projectPath })
+
+  config.redirects = rules
+
+  const TOMLConfig = configorama.format.toml.dump(config)
+
+  return writeFileAsync(path.resolve(projectPath, 'netlify.toml'), TOMLConfig, { flag: 'w' })
+}
+
+module.exports = { getAll, delete: deleteEntry }

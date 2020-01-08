@@ -18,8 +18,9 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@netlify/config": "^0.1.12",
-    "netlify-redirect-parser": "^1.0.3"
+    "@netlify/config": "^0.1.13",
+    "configorama": "^0.3.6",
+    "netlify-redirect-parser": "^2.2.0"
   },
   "devDependencies": {},
   "repository": {
