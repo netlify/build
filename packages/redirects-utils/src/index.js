@@ -25,13 +25,15 @@ async function getAll(projectPath) {
   const redirectsFilePath = path.resolve(projectPath, '_redirects')
 
   if (fs.existsSync(redirectsFilePath)) {
-    const fileName = redirectsFilePath.split(path.sep).pop()
-    (await parseFile(parseRedirectsFormat, fileName, redirectsFilePath))
+    const fileName = redirectsFilePath
+      .split(path.sep)
+      .pop()(await parseFile(parseRedirectsFormat, fileName, redirectsFilePath))
       .forEach(r => rulesUnique.add(JSON.stringify(r)))
   }
   if (fs.existsSync(configPath)) {
-    const fileName = configPath.split(path.sep).pop()
-    (await parseFile(parseNetlifyConfig, fileName, configPath))
+    const fileName = configPath
+      .split(path.sep)
+      .pop()(await parseFile(parseNetlifyConfig, fileName, configPath))
       .forEach(r => rulesUnique.add(JSON.stringify(r)))
   }
 
@@ -39,8 +41,8 @@ async function getAll(projectPath) {
 }
 
 async function deleteEntry(rule = {}, projectPath) {
-  const rules = (await getAll(projectPath))
-    .filter(r =>
+  const rules = (await getAll(projectPath)).filter(
+    r =>
       !(
         r.from === rule.from &&
         r.to === rule.to &&
@@ -51,7 +53,7 @@ async function deleteEntry(rule = {}, projectPath) {
         JSON.stringify(r.headers) === JSON.stringify(rule.headers) &&
         r.signed === rule.signed
       ),
-    )
+  )
 
   const configPath = await getConfigPath(undefined, projectPath)
   const config = await resolveConfig(configPath, { cwd: projectPath })
