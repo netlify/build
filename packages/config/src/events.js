@@ -16,10 +16,16 @@ const EVENTS = [
   'onInstall',
   'onPostInstall',
   /**
-   * `onBuild` - Build commands are executed
+   * `onPreBuild` - Before build commands are executed
    */
   'onPreBuild',
+  /**
+   * `onBuild` - Build commands are executed
+   */
   'onBuild',
+  /**
+   * `onPostBuild` - After Build commands are executed
+   */
   'onPostBuild',
   /**
    * `onFunctionsPackage` - Package the serverless functions
