@@ -49,3 +49,11 @@ test('constants.FUNCTIONS_SRC missing path', async t => {
 test('constants.FUNCTIONS_DIST', async t => {
   await runFixture(t, 'functions_dist')
 })
+
+test('constants.CACHE_DIR local', async t => {
+  await runFixture(t, 'cache')
+})
+
+test('constants.CACHE_DIR CI', async t => {
+  await runFixture(t, 'cache', { env: { DEPLOY_PRIME_URL: 'test' } })
+})
