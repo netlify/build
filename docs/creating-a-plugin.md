@@ -18,6 +18,7 @@ after your site build has completed.
 | ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **onPreBuild** ‏‏‎  ‏‏‎  ‏‏‎  | Before build commands are executed |
 | ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **onBuild** ‏‏‎  ‏‏‎  ‏‏‎  | Build commands are executed |
 | ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **onPostBuild** ‏‏‎  ‏‏‎  ‏‏‎  | After Build commands are executed |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **onFunctionsBuild** ‏‏‎  ‏‏‎  ‏‏‎  | Build functions |
 | ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **onFunctionsPackage** ‏‏‎  ‏‏‎  ‏‏‎  | Package the serverless functions |
 | ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **onPreDeploy** ‏‏‎  ‏‏‎  ‏‏‎  | Runs before built artifacts are deployed |
 | ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **onSaveCache** ‏‏‎  ‏‏‎  ‏‏‎  | Save cached assets |

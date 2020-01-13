@@ -25,6 +25,7 @@ Netlify build is the next generation of CI/CD tooling for modern web application
 - [lifecycle.onPreBuild](#lifecycleonprebuild)
 - [lifecycle.onBuild](#lifecycleonbuild)
 - [lifecycle.onPostBuild](#lifecycleonpostbuild)
+- [lifecycle.onFunctionsBuild](#lifecycleonfunctionsbuild)
 - [lifecycle.onFunctionsPackage](#lifecycleonfunctionspackage)
 - [lifecycle.onPreDeploy](#lifecycleonpredeploy)
 - [lifecycle.onSaveCache](#lifecycleonsavecache)
@@ -128,6 +129,7 @@ build operates.
 | ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleonprebuild">onPreBuild</a>** ‏‏‎ ‏‏‎ ‏‏‎                 | Before build commands are executed       |
 | ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleonbuild">onBuild</a>** ‏‏‎ ‏‏‎ ‏‏‎                       | Build commands are executed              |
 | ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleonpostbuild">onPostBuild</a>** ‏‏‎ ‏‏‎ ‏‏‎               | After Build commands are executed        |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleonfunctionsbuild">onFunctionsBuild</a>** ‏‏‎ ‏‏‎ ‏‏‎     | Build functions                          |
 | ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleonfunctionspackage">onFunctionsPackage</a>** ‏‏‎ ‏‏‎ ‏‏‎ | Package the serverless functions         |
 | ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleonpredeploy">onPreDeploy</a>** ‏‏‎ ‏‏‎ ‏‏‎               | Runs before built artifacts are deployed |
 | ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#lifecycleonsavecache">onSaveCache</a>** ‏‏‎ ‏‏‎ ‏‏‎               | Save cached assets                       |
@@ -416,6 +418,49 @@ build:
   lifecycle:
     onPostBuild:
       - echo "Do thing on onPostBuild event"
+```
+
+</details>
+
+### lifecycle.onFunctionsBuild
+
+`onFunctionsBuild` - Build functions
+
+<details>
+  <summary>Using onFunctionsBuild</summary>
+  
+  <br/>
+
+**1. Using with a Plugin**
+
+Below is an example plugin using the `onFunctionsBuild` event handler
+
+```js
+module.exports = function myPlugin(pluginConfig) {
+  return {
+    onFunctionsBuild: () => {
+      console.log('Do thing on onFunctionsBuild event')
+    },
+  }
+}
+```
+
+After creating the plugin, add into your Netlify config file under `plugins`
+
+```yml
+plugins:
+  - package: ./path/to/plugin
+    config:
+      foo: bar
+```
+
+**2. Using with via `build.lifecycle`**
+
+```yml
+build:
+  lifecycle:
+    onFunctionsBuild:
+      - echo "Do thing on onFunctionsBuild event"
 ```
 
 </details>
