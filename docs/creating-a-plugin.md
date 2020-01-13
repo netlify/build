@@ -170,7 +170,6 @@ The `constants` key contains the following values:
 <!-- AUTO-GENERATED-CONTENT:START (CONSTANTS) -->
 - `CONFIG_PATH` Path to the netlify configuration file
 - `BUILD_DIR` The build directory of the site
-- `CACHE_DIR` The directory files can be cached in between builds
 - `FUNCTIONS_SRC` The directory where function source code lives
 - `FUNCTIONS_DIST` The directory where built serverless functions are placed before deployment
 <!-- AUTO-GENERATED-CONTENT:END -->
