@@ -38,7 +38,9 @@ const normalizeBashCommands = function(event, bashCommands) {
   const eventA = normalizeEventHandler(event)
   const eventB = LEGACY_EVENTS[eventA] === undefined ? eventA : LEGACY_EVENTS[eventA]
   const bashCommandsA = typeof bashCommands === 'string' ? bashCommands.trim().split('\n') : bashCommands
-  return [eventB, bashCommandsA]
+  // Remove commands that are empty strings
+  const bashCommandsB = bashCommandsA.filter(Boolean)
+  return [eventB, bashCommandsB]
 }
 
 // `plugins[*].package` was previously called `plugins[*].type`
