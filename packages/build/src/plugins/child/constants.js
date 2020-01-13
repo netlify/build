@@ -29,10 +29,6 @@ const getConstants = function({
      */
     BUILD_DIR: publish,
     /**
-     * The directory files can be cached in between builds
-     */
-    CACHE_DIR: cacheDir,
-    /**
      * The directory where function source code lives
      */
     FUNCTIONS_SRC: functions,
@@ -40,6 +36,7 @@ const getConstants = function({
      * The directory where built serverless functions are placed before deployment
      */
     FUNCTIONS_DIST: functionsDist,
+    CACHE_DIR: cacheDir,
   }
   const constantsA = mapObj(constants, (key, path) => [key, normalizePath(path, baseDir)])
   return constantsA
