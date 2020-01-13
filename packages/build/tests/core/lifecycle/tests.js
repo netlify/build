@@ -21,3 +21,7 @@ if (platform === 'linux') {
 test('Lifecycle commands use correct PWD', async t => {
   await runFixture(t, 'pwd')
 })
+
+test('Lifecycle commands empty strings', async t => {
+  await runFixture(t, 'empty')
+})
