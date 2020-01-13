@@ -69,7 +69,7 @@ ${getExample({ value, key, prevPath, example })}`
     throw new Error(error)
   }
 
-  console.warn(error)
+  console.warn(`${error}\n`)
 }
 
 // Recurse over children (each part of the `property` array).
