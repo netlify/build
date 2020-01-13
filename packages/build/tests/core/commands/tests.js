@@ -45,3 +45,7 @@ test('onEnd + onError failure', async t => {
 test('onEnd several', async t => {
   await runFixture(t, 'on_end_several')
 })
+
+test('numbering', async t => {
+  await runFixture(t, 'numbering')
+})
