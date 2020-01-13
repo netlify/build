@@ -22,6 +22,7 @@
     "configorama": "^0.3.6",
     "deepmerge": "^4.2.2",
     "dot-prop": "^5.2.0",
+    "filter-obj": "^2.0.1",
     "find-up": "^4.1.0",
     "indent-string": "^4.0.0",
     "is-plain-obj": "^2.0.0",
