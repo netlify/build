@@ -28,6 +28,12 @@ const EVENTS = [
    */
   'onPostBuild',
   /**
+   * `onFunctionsBuild` - Build functions
+   */
+  'onPreFunctionsBuild',
+  'onFunctionsBuild',
+  'onPostFunctionsBuild',
+  /**
    * `onFunctionsPackage` - Package the serverless functions
    */
   'onPreFunctionsPackage',
@@ -71,6 +77,9 @@ const LEGACY_EVENTS = {
   preBuild: 'onPreBuild',
   build: 'onBuild',
   postBuild: 'onPostBuild',
+  preFunctionsBuild: 'onPreFunctionsBuild',
+  functionsBuild: 'onFunctionsBuild',
+  postFunctionsBuild: 'onPostFunctionsBuild',
   preFunctionsPackage: 'onPreFunctionsPackage',
   functionsPackage: 'onFunctionsPackage',
   postFunctionsPackage: 'onPostFunctionsPackage',
