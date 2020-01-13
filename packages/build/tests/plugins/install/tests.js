@@ -39,5 +39,10 @@ test('Install local plugin dependencies: no root package.json', async t => {
 
   await runFixture(t, 'no_root_package', { config: `${tmpDir}/netlify.yml` })
 
-  await del(tmpDir, { force: true })
+  try {
+    await del(tmpDir, { force: true })
+    // This sometimes fails on Windows in CI due to Windows directory looking.
+    // This results in `EBUSY: resource busy or locked, rmdir /path/to/dir`
+    // eslint-disable-next-line no-empty
+  } catch (error) {}
 })
