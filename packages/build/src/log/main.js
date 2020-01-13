@@ -134,7 +134,7 @@ ${HEADING_PREFIX} OVERRIDE: "${override.event}" command in "${override.name}" ha
     ? `${bold(id.replace('config.', ''))} command${configName}`
     : `${bold(event)} command from ${bold(id)}`
   const logColor = error ? redBright.bold : cyanBright.bold
-  const header = `${index + 1}. Running ${description}`
+  const header = `${index}. Running ${description}`
   log(logColor(`${overrideWarning}\n${getHeader(header)}\n`))
 }
 

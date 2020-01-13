@@ -53,13 +53,17 @@ const isErrorCommand = function({ event }) {
 const runCommands = async function({ buildCommands, endCommands, errorCommands, commandsCount, configPath, baseDir }) {
   logCommandsStart(commandsCount)
 
+  // We have to use a state variable to keep track of how many commands were run
+  // before an error is thrown, so that error handlers are correctly numbered
+  const state = { index: 0 }
+
   try {
-    await execCommands(buildCommands, { configPath, baseDir, failFast: true })
+    await execCommands(buildCommands, { configPath, baseDir, state, failFast: true })
   } catch (error) {
-    await execCommands(errorCommands, { configPath, baseDir, failFast: false, error })
+    await execCommands(errorCommands, { configPath, baseDir, state, failFast: false, error })
     throw error
   } finally {
-    await execCommands(endCommands, { configPath, baseDir, failFast: false })
+    await execCommands(endCommands, { configPath, baseDir, state, failFast: false })
   }
 }
 
@@ -68,11 +72,11 @@ const runCommands = async function({ buildCommands, endCommands, errorCommands, 
 // of the same name keep running. However the failure is still eventually
 // thrown. This allows users to be notified of issues inside their `onError` or
 // `onEnd` events.
-const execCommands = async function(commands, { configPath, baseDir, failFast, error }) {
+const execCommands = async function(commands, { configPath, baseDir, state, failFast, error }) {
   const { failure, manifest: manifestA } = await pReduce(
     commands,
-    ({ failure, manifest }, command, index) =>
-      runCommand(command, { manifest, index, configPath, baseDir, error, failure, failFast }),
+    ({ failure, manifest }, command) =>
+      runCommand(command, { manifest, configPath, baseDir, state, error, failure, failFast }),
     { manifest: {} },
   )
 
@@ -84,12 +88,14 @@ const execCommands = async function(commands, { configPath, baseDir, failFast, e
 }
 
 // Run a command (shell or plugin)
-const runCommand = async function(command, { manifest, index, configPath, baseDir, error, failure, failFast }) {
+const runCommand = async function(command, { manifest, configPath, baseDir, state, error, failure, failFast }) {
   try {
     const { id, event } = command
 
     const methodTimer = startTimer()
 
+    state.index += 1
+    const { index } = state
     logCommand(command, { index, configPath, error })
 
     const pluginReturnValue = await fireCommand(command, { baseDir, error })
