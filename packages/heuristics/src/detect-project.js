@@ -15,9 +15,9 @@ module.exports = async function detectProjectSettings() {
       } catch (err) {
         console.error(
           `failed to load detector: ${chalk.yellow(
-            det
+            det,
           )}, this is likely a bug in the detector, please file an issue in Netlify Build repo.`,
-          err
+          err,
         )
         return null
       }
@@ -38,7 +38,7 @@ module.exports = async function detectProjectSettings() {
       // eslint-disable-next-line no-console
       console.error(
         'empty args assigned, this is an internal Netlify Dev bug, please report your settings and scripts so we can improve',
-        { scripts, settings }
+        { scripts, settings },
       )
       // eslint-disable-next-line no-process-exit
       process.exit(1)
@@ -58,7 +58,7 @@ module.exports = async function detectProjectSettings() {
         }
         // only show filtered results
         return filterSettings(scriptInquirerOptions, input)
-      }
+      },
     })
     settings = chosenSetting // finally! we have a selected option
     // TODO: offer to save this setting to netlify.toml so you dont keep doing this
@@ -69,7 +69,10 @@ module.exports = async function detectProjectSettings() {
 
 /** utilities for the inquirer section above */
 function filterSettings(scriptInquirerOptions, input) {
-  const filteredSettings = fuzzy.filter(input, scriptInquirerOptions.map(x => x.name))
+  const filteredSettings = fuzzy.filter(
+    input,
+    scriptInquirerOptions.map(x => x.name),
+  )
   const filteredSettingNames = filteredSettings.map(x => (input ? x.string : x))
   return scriptInquirerOptions.filter(t => filteredSettingNames.includes(t.name))
 }
@@ -82,7 +85,7 @@ function formatSettingsArrForInquirer(settingsArr) {
       ans.push({
         name: `[${chalk.yellow(setting.type)}] ${setting.command} ${args.join(' ')}`,
         value: { ...setting, args },
-        short: setting.type + '-' + args.join(' ')
+        short: setting.type + '-' + args.join(' '),
       })
     })
   })

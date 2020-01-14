@@ -19,9 +19,11 @@
 
 ## things to note
 
-- Dev block overrides will supercede anything you write in your detector: https://github.com/netlify/cli/blob/master/docs/netlify-dev.md#project-detection
+- Dev block overrides will supercede anything you write in your detector:
+  https://github.com/netlify/cli/blob/master/docs/netlify-dev.md#project-detection
 - detectors are language agnostic. don't assume npm or yarn.
-- if default args (like 'develop') are missing, that means the user has configured it, best to tell them to use the -c flag.
+- if default args (like 'develop') are missing, that means the user has configured it, best to tell them to use the -c
+  flag.
 
 ## detector notes
 
@@ -57,7 +59,7 @@ module.exports = function() {
     env: { ...process.env },
     possibleArgsArrs,
     urlRegexp: new RegExp(`(http://)([^:]+:)${4000}(/)?`, 'g'),
-    dist: 'public'
+    dist: 'public',
   }
 }
 ```

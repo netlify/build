@@ -51,6 +51,8 @@ This is a monorepo. Below are a list of packages included.
   [npm link](https://www.npmjs.com/package/@netlify/functions-utils).
 - [@netlify/git-utils](./packages/git-utils) Utility for dealing with modified, created, deleted files since a git
   commit [npm link](https://www.npmjs.com/package/@netlify/git-utils).
+- [@netlify/heuristics](./packages/heuristics) Utilities for detecting site and functions builders, git information etc.
+  [npm link](https://www.npmjs.com/package/@netlify/heuristics).
 - [@netlify/run-utils](./packages/run-utils) Utility for running commands inside Netlify Build
   [npm link](https://www.npmjs.com/package/@netlify/run-utils).
   <!-- AUTO-GENERATED-CONTENT:END (PACKAGES) -->

@@ -59,7 +59,7 @@ function scanScripts({ preferredScriptsArr, preferredCommand }) {
     console.log(`You have a package.json without any npm scripts.`)
     // eslint-disable-next-line no-console
     console.log(
-      `Netlify Build's detector system works best with a script, or you can specify a command to run in the netlify.toml [dev]  block `
+      `Netlify Build's detector system works best with a script, or you can specify a command to run in the netlify.toml [dev]  block `,
     )
     warnedAboutEmptyScript = true // dont spam message with every detector
     return [] // not going to match any scripts anyway
@@ -94,5 +94,5 @@ module.exports = {
   hasRequiredDeps,
   hasRequiredFiles,
   getYarnOrNPMCommand,
-  scanScripts
+  scanScripts,
 }

@@ -1,6 +1,6 @@
 const {
   // hasRequiredDeps,
-  hasRequiredFiles
+  hasRequiredFiles,
   // scanScripts
 } = require('./utils/jsdetect')
 
@@ -19,6 +19,6 @@ module.exports = function() {
     command: 'npx',
     possibleArgsArrs: [['eleventy', '--serve', '--watch']],
     urlRegexp: new RegExp(`(http://)([^:]+:)${8080}(/)?`, 'g'),
-    dist: '_site'
+    dist: '_site',
   }
 }
