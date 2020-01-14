@@ -11,6 +11,7 @@ const {
 const execa = require('execa')
 const { getBinPath } = require('get-bin-path')
 const { magentaBright } = require('chalk')
+const del = require('del')
 
 const { normalizeOutput } = require('./normalize')
 
@@ -108,4 +109,14 @@ const IGNORE_REGEXPS = [
   /npm ERR!/,
 ]
 
-module.exports = { runFixture, FIXTURES_DIR }
+// Removing a directory sometimes fails on Windows in CI due to Windows
+// directory locking.
+// This results in `EBUSY: resource busy or locked, rmdir /path/to/dir`
+const removeDir = async function(dir) {
+  try {
+    await del(dir, { force: true })
+    // eslint-disable-next-line no-empty
+  } catch (error) {}
+}
+
+module.exports = { runFixture, FIXTURES_DIR, removeDir }

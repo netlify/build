@@ -1,7 +1,6 @@
 const test = require('ava')
-const del = require('del')
 
-const { runFixture, FIXTURES_DIR } = require('../../helpers/main')
+const { runFixture, FIXTURES_DIR, removeDir } = require('../../helpers/main')
 
 test('constants.CONFIG_PATH', async t => {
   await runFixture(t, 'config')
@@ -20,12 +19,12 @@ test('constants.BUILD_DIR relative path', async t => {
 })
 
 test('constants.BUILD_DIR automatic value', async t => {
-  await del(`${FIXTURES_DIR}/build_auto/.netlify/build`)
+  await removeDir(`${FIXTURES_DIR}/build_auto/.netlify/build`)
   await runFixture(t, 'build_auto')
 })
 
 test('constants.BUILD_DIR missing path', async t => {
-  await del(`${FIXTURES_DIR}/build_missing/publish`)
+  await removeDir(`${FIXTURES_DIR}/build_missing/publish`)
   await runFixture(t, 'build_missing')
 })
 
@@ -42,7 +41,7 @@ test('constants.FUNCTIONS_SRC automatic value', async t => {
 })
 
 test('constants.FUNCTIONS_SRC missing path', async t => {
-  await del(`${FIXTURES_DIR}/functions_src_missing/missing`)
+  await removeDir(`${FIXTURES_DIR}/functions_src_missing/missing`)
   await runFixture(t, 'functions_src_missing')
 })
 
