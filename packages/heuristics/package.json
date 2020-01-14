@@ -19,6 +19,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@netlify/config": "^0.1.14",
     "chalk": "^3.0.0",
     "execa": "^4.0.0",
     "find-up": "^4.1.0",
@@ -28,7 +29,9 @@
     "inquirer": "^7.0.3",
     "inquirer-autocomplete-prompt": "^1.0.1",
     "lodash.isempty": "^4.4.0",
-    "parse-github-url": "^1.0.2"
+    "npm-run-path": "^4.0.1",
+    "parse-github-url": "^1.0.2",
+    "parse-npm-script": "0.0.4"
   },
   "devDependencies": {},
   "repository": {

@@ -5,6 +5,8 @@ const npmRunPath = require('npm-run-path')
 const parseCommand = require('parse-npm-script')
 const resolveConfig = require('@netlify/config')
 
+const detectProjectSettings = require('./detect-project')
+
 const readFileAsync = promisify(fs.readFile)
 
 /*
@@ -80,10 +82,11 @@ module.exports = async function getHeuristics({ pkgPath, configPath }) {
   }
 
   let typeofBuild
-  let unknownTypeOfBuild = true
-  if (unknownTypeOfBuild) {
-    // Run detectors
-    typeofBuild = 'gatsby-v.1.0.1'
+  const settings = await detectProjectSettings(configPath)
+  if (settings && settings.type) {
+    typeofBuild = settings.type
+  } else {
+    console.warn('Neltify Build could not determine your project type.')
   }
 
   return {
