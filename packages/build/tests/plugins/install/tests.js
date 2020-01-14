@@ -2,14 +2,13 @@ const { platform } = require('process')
 const { tmpdir } = require('os')
 
 const test = require('ava')
-const del = require('del')
 const cpy = require('cpy')
 
-const { runFixture, FIXTURES_DIR } = require('../../helpers/main')
+const { runFixture, FIXTURES_DIR, removeDir } = require('../../helpers/main')
 
 test('Install local plugin dependencies: with npm', async t => {
   await runFixture(t, 'npm')
-  await del(`${FIXTURES_DIR}/npm/plugin/node_modules`)
+  await removeDir(`${FIXTURES_DIR}/npm/plugin/node_modules`)
 })
 
 // This test does not work on Windows when run inside Ava
@@ -17,7 +16,7 @@ test('Install local plugin dependencies: with npm', async t => {
 if (platform !== 'win32') {
   test.skip('Install local plugin dependencies: with yarn', async t => {
     await runFixture(t, 'yarn')
-    await del(`${FIXTURES_DIR}/yarn/plugin/node_modules`)
+    await removeDir(`${FIXTURES_DIR}/yarn/plugin/node_modules`)
   })
 }
 
@@ -38,11 +37,5 @@ test('Install local plugin dependencies: no root package.json', async t => {
   await cpy('**', tmpDir, { cwd: `${FIXTURES_DIR}/no_root_package`, parents: true })
 
   await runFixture(t, 'no_root_package', { config: `${tmpDir}/netlify.yml` })
-
-  try {
-    await del(tmpDir, { force: true })
-    // This sometimes fails on Windows in CI due to Windows directory looking.
-    // This results in `EBUSY: resource busy or locked, rmdir /path/to/dir`
-    // eslint-disable-next-line no-empty
-  } catch (error) {}
+  await removeDir(tmpDir, { force: true })
 })

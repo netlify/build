@@ -4,9 +4,8 @@ const { tmpdir } = require('os')
 
 const test = require('ava')
 const makeDir = require('make-dir')
-const del = require('del')
 
-const { runFixture, FIXTURES_DIR } = require('../../helpers/main')
+const { runFixture, FIXTURES_DIR, removeDir } = require('../../helpers/main')
 
 test('Empty configuration', async t => {
   await runFixture(t, 'empty')
@@ -39,7 +38,7 @@ test('No --config but none found', async t => {
   try {
     await runFixture(t, '', { config: false, cwd })
   } finally {
-    del(cwd, { force: true })
+    removeDir(cwd)
   }
 })
 
@@ -54,7 +53,7 @@ test('No --config but none found and with environment variables', async t => {
       env: { NETLIFY_CONFIG_BUILD_LIFECYCLE_ONBUILD: 'echo onBuild' },
     })
   } finally {
-    del(cwd, { force: true })
+    removeDir(cwd)
   }
 })
 
