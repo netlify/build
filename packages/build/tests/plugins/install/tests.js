@@ -1,4 +1,3 @@
-const { platform } = require('process')
 const { tmpdir } = require('os')
 
 const test = require('ava')
@@ -7,18 +6,18 @@ const cpy = require('cpy')
 const { runFixture, FIXTURES_DIR, removeDir } = require('../../helpers/main')
 
 test('Install local plugin dependencies: with npm', async t => {
+  await removeDir(`${FIXTURES_DIR}/npm/plugin/node_modules`)
   await runFixture(t, 'npm')
   await removeDir(`${FIXTURES_DIR}/npm/plugin/node_modules`)
 })
 
-// This test does not work on Windows when run inside Ava
-// TODO: enable this test
-if (platform !== 'win32') {
-  test.skip('Install local plugin dependencies: with yarn', async t => {
-    await runFixture(t, 'yarn')
-    await removeDir(`${FIXTURES_DIR}/yarn/plugin/node_modules`)
-  })
-}
+// This test randomly fails (https://github.com/netlify/build/issues/657)
+// so we do not snapshot it
+test('Install local plugin dependencies: with yarn', async t => {
+  await removeDir(`${FIXTURES_DIR}/yarn/plugin/node_modules`)
+  await runFixture(t, 'yarn')
+  await removeDir(`${FIXTURES_DIR}/yarn/plugin/node_modules`)
+})
 
 test('Install local plugin dependencies: propagate errors', async t => {
   await runFixture(t, 'error')
