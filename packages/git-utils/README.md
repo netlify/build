@@ -53,7 +53,7 @@ module.exports = {
       const whichFiles = cssFiles.getKeyedPaths()
       console.log(whichFiles)
     }
-  }
+  },
 }
 ```
 
@@ -77,7 +77,7 @@ module.exports = {
       linesOfCode: [AsyncFunction: linesOfCode] <-- how many lines of code have changed
     }
     */
-  }
+  },
 }
 ```
 
