@@ -45,6 +45,7 @@ const unpipeOutput = async function(childProcess) {
 // parent process.stdout|stderr yet.
 // TODO: find a more reliable way
 const waitForFlush = async function(stream) {
+  // istanbul ignore next
   while (stream._readableState.paused) {
     await pSetTimeout(1e3)
     stream.resume()
