@@ -44,7 +44,7 @@
     "is-plain-obj": "^2.0.0",
     "log-process-errors": "^5.0.3",
     "map-obj": "^4.1.0",
-    "moize": "^5.4.4",
+    "moize": "^5.4.5",
     "netlify": "^3.0.0",
     "omit.js": "^1.0.2",
     "os-name": "^3.1.0",
