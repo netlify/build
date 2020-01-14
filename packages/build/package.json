@@ -60,7 +60,7 @@
     "strip-ansi": "^6.0.0",
     "unixify": "^1.0.0",
     "uuid": "^3.3.3",
-    "yargs": "^15.0.2"
+    "yargs": "^15.1.0"
   },
   "devDependencies": {
     "atob": "^2.1.2",
