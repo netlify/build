@@ -132,8 +132,8 @@ const createRepoDir = async function() {
 
   await makeDir(cwd)
   await execa.command('git init', { cwd })
-  await execa.command('git config user.email test@test.com')
-  await execa.command('git config user.name test')
+  await execa.command('git config user.email test@test.com', { cwd })
+  await execa.command('git config user.name test', { cwd })
   await addGitCommit(cwd)
   await addGitCommit(cwd)
 
