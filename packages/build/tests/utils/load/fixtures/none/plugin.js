@@ -1,6 +1,10 @@
 module.exports = {
   name: 'netlify-plugin-test',
   onInit({ utils }) {
-    console.log(Object.keys(utils))
+    console.log(
+      Object.keys(utils)
+        .sort()
+        .join(' '),
+    )
   },
 }
