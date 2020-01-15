@@ -15,8 +15,13 @@ const getGitUtils = async function(
     getCommits(baseA),
     getLinesOfCode(baseA),
   ])
-  const { fileMatch, match } = getMatchers({ modifiedFiles, createdFiles, deletedFiles })
-  return { modifiedFiles, createdFiles, deletedFiles, fileMatch, match, commits, linesOfCode }
+  return loadGitUtils({ modifiedFiles, createdFiles, deletedFiles, commits, linesOfCode })
+}
+
+const loadGitUtils = function(git) {
+  const { fileMatch, match } = getMatchers(git)
+  return { ...git, fileMatch, match }
 }
 
 module.exports = getGitUtils
+module.exports.load = loadGitUtils

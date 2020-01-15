@@ -3,11 +3,19 @@ const cacheUtils = require('@netlify/cache-utils')
 const runUtils = require('@netlify/run-utils')
 const functionsUtils = require('@netlify/functions-utils')
 
-// Retrieve the `utils` argument.
-const getUtils = async function({ constants }) {
+// Some utilities need to perform some async initialization logic first.
+// We do it once for all plugins in the parent process then pass it to the child
+// processes.
+const startUtils = async function() {
   const git = await gitUtils()
-  const functions = functionsUtils({ constants })
-  return { git, cache: cacheUtils, run: runUtils, functions }
+  return { git }
 }
 
-module.exports = { getUtils }
+// Retrieve the `utils` argument.
+const getUtils = function({ utilsData: { git }, constants }) {
+  const gitA = gitUtils.load(git)
+  const functions = functionsUtils({ constants })
+  return { git: gitA, cache: cacheUtils, run: runUtils, functions }
+}
+
+module.exports = { startUtils, getUtils }
