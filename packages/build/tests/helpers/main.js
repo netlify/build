@@ -136,6 +136,8 @@ const createRepoDir = async function() {
   await execa.command('git config user.name test', { cwd })
   await execa.command('git commit --allow-empty -m one', { cwd })
   await execa.command('git commit --allow-empty -m two', { cwd })
+  await execa.command('git config --unset user.email', { cwd })
+  await execa.command('git config --unset user.name', { cwd })
 
   return cwd
 }
