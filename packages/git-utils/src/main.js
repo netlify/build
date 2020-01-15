@@ -9,19 +9,25 @@ const getGitUtils = async function(
   // istanbul ignore next
   { base } = {},
 ) {
+  const properties = await addProperties(base)
+  const gitUtils = addMethods(properties)
+  return gitUtils
+}
+
+const addProperties = async function(base) {
   const baseA = await getBase(base)
   const [{ modifiedFiles, createdFiles, deletedFiles }, commits, linesOfCode] = await Promise.all([
     getDiffFiles(baseA),
     getCommits(baseA),
     getLinesOfCode(baseA),
   ])
-  return loadGitUtils({ modifiedFiles, createdFiles, deletedFiles, commits, linesOfCode })
+  return { modifiedFiles, createdFiles, deletedFiles, commits, linesOfCode }
 }
 
-const loadGitUtils = function(git) {
-  const { fileMatch, match } = getMatchers(git)
-  return { ...git, fileMatch, match }
+const addMethods = function(properties) {
+  const { fileMatch, match } = getMatchers(properties)
+  return { ...properties, fileMatch, match }
 }
 
 module.exports = getGitUtils
-module.exports.load = loadGitUtils
+module.exports.load = addMethods
