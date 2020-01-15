@@ -75,12 +75,6 @@ const exampleNetlifyPlugin = {
 }
 ```
 
-# Install
-
-```
-npm install @netlify/run-utils
-```
-
 # API
 
 ## run(file, arguments, options?)

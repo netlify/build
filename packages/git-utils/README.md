@@ -7,12 +7,6 @@
 
 Utility for dealing with modified, created, deleted files since a git commit.
 
-## Install
-
-```bash
-npm install @netlify/git-utils
-```
-
 ## Usage
 
 ```js

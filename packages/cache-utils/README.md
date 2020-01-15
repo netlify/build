@@ -142,12 +142,6 @@ module.exports = {
 }
 ```
 
-# Install
-
-```
-npm install @netlify/cache-utils
-```
-
 # API
 
 ## save(path, options?)
