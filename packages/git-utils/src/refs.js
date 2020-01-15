@@ -5,9 +5,9 @@ const {
 const { git } = require('./exec')
 
 // Retrieve the `base` commit
-const getBase = async function(base) {
+const getBase = async function(base, cwd) {
   const baseA = getBaseRef(base)
-  await verifyBase(baseA)
+  await verifyBase(baseA, cwd)
   return baseA
 }
 
@@ -28,9 +28,9 @@ const getBaseRef = function(base) {
 
 const DEFAULT_BASE = 'master'
 
-const verifyBase = async function(base) {
+const verifyBase = async function(base, cwd) {
   try {
-    await git(['rev-parse', base])
+    await git(['rev-parse', base], cwd)
   } catch (error) {
     throw new Error(`Invalid base commit ${base}\n${error.stderr}`)
   }

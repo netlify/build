@@ -64,7 +64,7 @@ const build = async function(flags) {
 }
 
 const buildRun = async function({ pluginsOptions, netlifyConfig, configPath, baseDir, token, flags }) {
-  const utilsData = await startUtils()
+  const utilsData = await startUtils(baseDir)
   const childProcesses = await startPlugins(pluginsOptions, baseDir)
 
   try {

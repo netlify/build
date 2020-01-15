@@ -1,6 +1,7 @@
 const test = require('ava')
+const cpy = require('cpy')
 
-const { runFixture } = require('../../helpers/main')
+const { runFixture, FIXTURES_DIR, createRepoDir, removeDir } = require('../../helpers/main')
 
 // Runs the git utils against very old commits of @netlify/build so that the
 // tests are stable
@@ -8,6 +9,16 @@ const env = { CACHED_COMMIT_REF: '6bdf580f', TEST_HEAD: '152867c2' }
 
 test('git-utils defined', async t => {
   await runFixture(t, 'defined', { env })
+})
+
+test('git-utils cwd', async t => {
+  const tmpDir = await createRepoDir()
+  try {
+    await cpy('**', tmpDir, { cwd: `${FIXTURES_DIR}/defined`, parents: true })
+    await runFixture(t, 'defined', { config: `${tmpDir}/netlify.yml`, cwd: '/' })
+  } finally {
+    await removeDir(tmpDir)
+  }
 })
 
 test('git-utils linesOfCode', async t => {
