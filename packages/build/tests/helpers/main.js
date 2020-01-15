@@ -32,6 +32,9 @@ const runFixture = async function(t, fixtureName, { flags = '', config, cwd, env
   const envA = {
     NETLIFY_BUILD_SAVE_CACHE: '1',
     TEST_CACHE_PATH: 'none',
+    // GitHub actions CI do not have a `master` branch which makes the `git`
+    // utility fail
+    CACHED_COMMIT_REF: 'HEAD^',
     ...env,
   }
   const configFlag = getConfigFlag(config, fixtureName)
