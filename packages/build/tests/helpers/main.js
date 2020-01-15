@@ -132,10 +132,14 @@ const createRepoDir = async function() {
 
   await makeDir(cwd)
   await execa.command('git init', { cwd })
-  await execa.command('git commit --allow-empty -m One', { cwd })
-  await execa.command('git commit --allow-empty -m Two', { cwd })
+  await addGitCommit(cwd)
+  await addGitCommit(cwd)
 
   return cwd
+}
+
+const addGitCommit = async function(cwd) {
+  await execa.command('git commit --allow-empty --author test\\ <test@test.com> -m test', { cwd })
 }
 
 module.exports = { runFixture, FIXTURES_DIR, removeDir, createRepoDir }
