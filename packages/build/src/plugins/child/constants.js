@@ -5,11 +5,12 @@ const {
 } = require('process')
 
 const mapObj = require('map-obj')
+const { getCacheDir } = require('@netlify/cache-utils')
 
 const isNetlifyCI = require('../../utils/is-netlify-ci')
 
 // Retrieve constants passed to plugins
-const getConstants = function({
+const getConstants = async function({
   configPath,
   baseDir,
   netlifyConfig: {
@@ -17,7 +18,7 @@ const getConstants = function({
   },
 }) {
   const functionsDist = getFunctionsDist()
-  const cacheDir = getCacheDir()
+  const cacheDir = await getCacheDir()
 
   const constants = {
     /**
@@ -50,16 +51,6 @@ const getFunctionsDist = function() {
   }
 
   return LOCAL_FUNCTIONS_DIST
-}
-
-const CI_CACHE_DIR = '/opt/build/cache/'
-const LOCAL_CACHE_DIR = '.netlify/cache/'
-const getCacheDir = function() {
-  if (isNetlifyCI()) {
-    return CI_CACHE_DIR
-  }
-
-  return LOCAL_CACHE_DIR
 }
 
 // The current directory is `baseDir`. Most constants are inside this `baseDir`.
