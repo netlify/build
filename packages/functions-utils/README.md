@@ -19,12 +19,6 @@ module.exports = {
 }
 ```
 
-# Install
-
-```
-npm install @netlify/functions-utils
-```
-
 # API
 
 ## add(path)
