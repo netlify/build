@@ -4,6 +4,7 @@ const {
   env: { PRINT },
 } = require('process')
 const { normalize } = require('path')
+const { tmpdir } = require('os')
 
 const {
   meta: { file: testFile },
@@ -12,6 +13,7 @@ const execa = require('execa')
 const { getBinPath } = require('get-bin-path')
 const { magentaBright } = require('chalk')
 const del = require('del')
+const makeDir = require('make-dir')
 
 const { normalizeOutput } = require('./normalize')
 
@@ -119,4 +121,17 @@ const removeDir = async function(dir) {
   } catch (error) {}
 }
 
-module.exports = { runFixture, FIXTURES_DIR, removeDir }
+// Create a temporary directory with a `.git` directory, which can be used as
+// the current directory of a build. Otherwise the `git` utility does not load.
+const createRepoDir = async function() {
+  const id = String(Math.random()).replace('.', '')
+  const cwd = `${tmpdir()}/netlify-build-${id}`
+
+  await makeDir(cwd)
+  await execa.command('git init', { cwd })
+  await execa.command('git commit --allow-empty -m Init', { cwd })
+
+  return cwd
+}
+
+module.exports = { runFixture, FIXTURES_DIR, removeDir, createRepoDir }

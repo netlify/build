@@ -1,11 +1,9 @@
 const { cwd, platform } = require('process')
 const { relative } = require('path')
-const { tmpdir } = require('os')
 
 const test = require('ava')
-const makeDir = require('make-dir')
 
-const { runFixture, FIXTURES_DIR, removeDir } = require('../../helpers/main')
+const { runFixture, FIXTURES_DIR, removeDir, createRepoDir } = require('../../helpers/main')
 
 test('Empty configuration', async t => {
   await runFixture(t, 'empty')
@@ -32,20 +30,16 @@ test('No --config', async t => {
 })
 
 test('No --config but none found', async t => {
-  const cwd = `${tmpdir()}/netlify-build`
-  await makeDir(cwd)
-
+  const cwd = await createRepoDir()
   try {
     await runFixture(t, '', { config: false, cwd })
   } finally {
-    removeDir(cwd)
+    await removeDir(cwd)
   }
 })
 
 test('No --config but none found and with environment variables', async t => {
-  const cwd = `${tmpdir()}/netlify-build-two`
-  await makeDir(cwd)
-
+  const cwd = await createRepoDir()
   try {
     await runFixture(t, '', {
       config: false,
@@ -53,7 +47,7 @@ test('No --config but none found and with environment variables', async t => {
       env: { NETLIFY_CONFIG_BUILD_LIFECYCLE_ONBUILD: 'echo onBuild' },
     })
   } finally {
-    removeDir(cwd)
+    await removeDir(cwd)
   }
 })
 
