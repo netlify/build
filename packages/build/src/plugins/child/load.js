@@ -47,14 +47,9 @@ const getPluginCommand = function({ method, event, name, id = name, package, cor
 }
 
 // Retrieve context passed to every event handler
-const getContext = async function(
-  logic,
-  pluginCommands,
-  constants,
-  { pluginPath, pluginConfig, netlifyConfig, token },
-) {
+const getContext = async function(logic, pluginCommands, constants, { pluginConfig, netlifyConfig, token }) {
   const api = getApiClient({ logic, token })
-  const utils = await getUtils({ pluginPath, constants, logic })
+  const utils = await getUtils({ constants })
   return { pluginCommands, api, utils, constants, pluginConfig, netlifyConfig }
 }
 
