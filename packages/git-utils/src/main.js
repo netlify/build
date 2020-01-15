@@ -1,3 +1,5 @@
+const { cwd: getCwd } = require('process')
+
 const { getBase } = require('./refs')
 const { getDiffFiles } = require('./diff')
 const { getCommits } = require('./commits')
@@ -7,19 +9,19 @@ const { getMatchers } = require('./match')
 // Main entry point to the git utilities
 const getGitUtils = async function(
   // istanbul ignore next
-  { base } = {},
+  { base, cwd = getCwd() } = {},
 ) {
-  const properties = await addProperties(base)
+  const properties = await addProperties(base, cwd)
   const gitUtils = addMethods(properties)
   return gitUtils
 }
 
-const addProperties = async function(base) {
-  const baseA = await getBase(base)
+const addProperties = async function(base, cwd) {
+  const baseA = await getBase(base, cwd)
   const [{ modifiedFiles, createdFiles, deletedFiles }, commits, linesOfCode] = await Promise.all([
-    getDiffFiles(baseA),
-    getCommits(baseA),
-    getLinesOfCode(baseA),
+    getDiffFiles(baseA, cwd),
+    getCommits(baseA, cwd),
+    getLinesOfCode(baseA, cwd),
   ])
   return { modifiedFiles, createdFiles, deletedFiles, commits, linesOfCode }
 }

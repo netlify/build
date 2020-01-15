@@ -6,8 +6,8 @@ const functionsUtils = require('@netlify/functions-utils')
 // Some utilities need to perform some async initialization logic first.
 // We do it once for all plugins in the parent process then pass it to the child
 // processes.
-const startUtils = async function() {
-  const git = await gitUtils()
+const startUtils = async function(baseDir) {
+  const git = await gitUtils({ cwd: baseDir })
   return { git }
 }
 
