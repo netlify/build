@@ -132,7 +132,8 @@ const createRepoDir = async function() {
 
   await makeDir(cwd)
   await execa.command('git init', { cwd })
-  await execa.command('git commit --allow-empty -m Init', { cwd })
+  await execa.command('git commit --allow-empty -m One', { cwd })
+  await execa.command('git commit --allow-empty -m Two', { cwd })
 
   return cwd
 }
