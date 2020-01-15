@@ -1,10 +1,9 @@
 const { platform } = require('process')
-const { tmpdir } = require('os')
 
 const test = require('ava')
 const cpy = require('cpy')
 
-const { runFixture, FIXTURES_DIR, removeDir } = require('../../helpers/main')
+const { runFixture, FIXTURES_DIR, removeDir, createRepoDir } = require('../../helpers/main')
 
 test('Install local plugin dependencies: with npm', async t => {
   await removeDir(`${FIXTURES_DIR}/npm/plugin/node_modules`)
@@ -36,9 +35,11 @@ test('Install local plugin dependencies: no package.json', async t => {
 })
 
 test('Install local plugin dependencies: no root package.json', async t => {
-  const tmpDir = `${tmpdir()}/build-test-${Math.random()}`
-  await cpy('**', tmpDir, { cwd: `${FIXTURES_DIR}/no_root_package`, parents: true })
-
-  await runFixture(t, 'no_root_package', { config: `${tmpDir}/netlify.yml` })
-  await removeDir(tmpDir, { force: true })
+  const tmpDir = await createRepoDir()
+  try {
+    await cpy('**', tmpDir, { cwd: `${FIXTURES_DIR}/no_root_package`, parents: true })
+    await runFixture(t, 'no_root_package', { config: `${tmpDir}/netlify.yml` })
+  } finally {
+    await removeDir(tmpDir)
+  }
 })

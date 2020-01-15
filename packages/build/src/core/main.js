@@ -8,6 +8,7 @@ setColorLevel()
 const { getPluginsOptions } = require('../plugins/options')
 const { installPlugins } = require('../plugins/install')
 const { startPlugins, stopPlugins } = require('../plugins/spawn')
+const { startUtils } = require('../plugins/child/utils')
 const { loadPlugins } = require('../plugins/load')
 const { logBuildStart, logBuildError, logBuildSuccess, logBuildEnd } = require('../log/main')
 const { startTimer, endTimer } = require('../log/timer')
@@ -63,6 +64,7 @@ const build = async function(flags) {
 }
 
 const buildRun = async function({ pluginsOptions, netlifyConfig, configPath, baseDir, token, flags }) {
+  const utilsData = await startUtils()
   const childProcesses = await startPlugins(pluginsOptions, baseDir)
 
   try {
@@ -70,6 +72,7 @@ const buildRun = async function({ pluginsOptions, netlifyConfig, configPath, bas
       pluginsOptions,
       childProcesses,
       netlifyConfig,
+      utilsData,
       configPath,
       baseDir,
       token,
@@ -84,6 +87,7 @@ const executeCommands = async function({
   pluginsOptions,
   childProcesses,
   netlifyConfig,
+  utilsData,
   configPath,
   baseDir,
   token,
@@ -93,6 +97,7 @@ const executeCommands = async function({
     pluginsOptions,
     childProcesses,
     netlifyConfig,
+    utilsData,
     configPath,
     baseDir,
     token,

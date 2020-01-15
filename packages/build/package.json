@@ -23,8 +23,11 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@netlify/config": "^0.1.14",
     "@netlify/cache-utils": "^0.1.1",
+    "@netlify/config": "^0.1.14",
+    "@netlify/functions-utils": "^0.1.0",
+    "@netlify/git-utils": "0.0.1",
+    "@netlify/run-utils": "0.0.1",
     "@netlify/zip-it-and-ship-it": "^0.4.0-8",
     "ajv": "^6.10.2",
     "analytics": "0.3.0",

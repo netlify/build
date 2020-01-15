@@ -13,7 +13,7 @@ const { getConstants } = require('./constants')
 // This also validates the plugin.
 // Do it when parent requests it using the `load` event.
 // Also figure out the list of plugin commands. This is also passed to the parent.
-const loadPlugin = async function(payload) {
+const loadPlugin = function(payload) {
   const constants = getConstants(payload)
   const logic = getLogic(payload)
 
@@ -24,7 +24,7 @@ const loadPlugin = async function(payload) {
 
   const pluginCommands = getPluginCommands(logicA, payload)
 
-  const context = await getContext(logicA, pluginCommands, constants, payload)
+  const context = getContext(logicA, pluginCommands, constants, payload)
   return { context, pluginCommands }
 }
 
@@ -47,14 +47,9 @@ const getPluginCommand = function({ method, event, name, id = name, package, cor
 }
 
 // Retrieve context passed to every event handler
-const getContext = async function(
-  logic,
-  pluginCommands,
-  constants,
-  { pluginPath, pluginConfig, netlifyConfig, token },
-) {
+const getContext = function(logic, pluginCommands, constants, { pluginConfig, netlifyConfig, utilsData, token }) {
   const api = getApiClient({ logic, token })
-  const utils = await getUtils({ pluginPath, constants, logic })
+  const utils = getUtils({ utilsData, constants })
   return { pluginCommands, api, utils, constants, pluginConfig, netlifyConfig }
 }
 
