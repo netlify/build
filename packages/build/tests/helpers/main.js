@@ -32,9 +32,6 @@ const runFixture = async function(t, fixtureName, { flags = '', config, cwd, env
   const envA = {
     NETLIFY_BUILD_SAVE_CACHE: '1',
     TEST_CACHE_PATH: 'none',
-    // GitHub actions CI do not have a `master` branch which makes the `git`
-    // utility fail
-    CACHED_COMMIT_REF: 'HEAD^',
     ...env,
   }
   const configFlag = getConfigFlag(config, fixtureName)
@@ -135,7 +132,6 @@ const createRepoDir = async function() {
   await execa.command('git config user.email test@test.com', { cwd })
   await execa.command('git config user.name test', { cwd })
   await execa.command('git commit --allow-empty -m one', { cwd })
-  await execa.command('git commit --allow-empty -m two', { cwd })
   await execa.command('git config --unset user.email', { cwd })
   await execa.command('git config --unset user.name', { cwd })
 

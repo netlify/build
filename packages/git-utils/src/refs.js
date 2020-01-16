@@ -4,40 +4,63 @@ const {
 
 const { git } = require('./exec')
 
+// `TEST_HEAD` is only used in unit tests
+// istanbul ignore next
+const HEAD = TEST_HEAD === undefined ? 'HEAD' : TEST_HEAD
+
 // Retrieve the `base` commit
 const getBase = async function(base, cwd) {
-  const baseA = getBaseRef(base)
-  await verifyBase(baseA, cwd)
-  return baseA
+  const refs = getBaseRefs(base)
+  const { ref } = await findRef(refs, cwd)
+  return ref
 }
 
-const getBaseRef = function(base) {
+const getBaseRefs = function(base) {
   // istanbul ignore next
   if (base !== undefined) {
-    return base
+    return [base]
   }
 
   // istanbul ignore else
   if (CACHED_COMMIT_REF) {
-    return CACHED_COMMIT_REF
+    return [CACHED_COMMIT_REF]
   }
 
   // istanbul ignore next
   return DEFAULT_BASE
 }
 
-const DEFAULT_BASE = 'master'
+// Some git repositories are missing `master` branches, so we also try HEAD^.
+// We end with HEAD as a failsafe.
+const DEFAULT_BASE = ['master', `${HEAD}^`, HEAD]
 
-const verifyBase = async function(base, cwd) {
+// Use the first commit that exists
+const findRef = async function(refs, cwd) {
+  const results = await Promise.all(refs.map(ref => checkRef(ref, cwd)))
+  const result = results.find(refExists)
+  if (result === undefined) {
+    const message = getErrorMessage(results[0])
+    throw new Error(message)
+  }
+  return result
+}
+
+const checkRef = async function(ref, cwd) {
   try {
-    await git(['rev-parse', base], cwd)
+    await git(['rev-parse', ref], cwd)
+    return { ref }
   } catch (error) {
-    throw new Error(`Invalid base commit ${base}\n${error.stderr}`)
+    return { ref, error }
   }
 }
 
-// `TEST_HEAD` is only used in unit tests
-// istanbul ignore next
-const HEAD = TEST_HEAD === undefined ? 'HEAD' : TEST_HEAD
+const refExists = function({ error }) {
+  return error === undefined
+}
 
-module.exports = { getBase, HEAD }
+const getErrorMessage = function({ ref, error: { message, stderr } }) {
+  const messages = [message, stderr].filter(Boolean).join('\n')
+  return `Invalid base commit ${ref}\n${messages}`
+}
+
+module.exports = { HEAD, getBase }
