@@ -30,103 +30,6 @@ module.exports = {
 }
 ```
 
-## Conditional logic
-
-```js
-// Conditional logic can be applied depending on whether the file has been
-// previously cached or not
-const path = './path/to/file'
-
-module.exports = {
-  name: 'example-plugin',
-  async onGetCache({ utils }) {
-    const { cache } = utils
-
-    if (!(await cache.has(path))) {
-      console.log(`File ${path} not cached`)
-      return
-    }
-
-    console.log(`About to restore cached file ${path}...`)
-    if (await cache.restore('./path/to/file')) {
-      console.log(`Restored cached file ${path}`)
-    }
-  },
-  async onSaveCache({ utils }) {
-    if (await utils.cache.save('./path/to/file')) {
-      console.log(`Saved cached file ${path}`)
-    }
-  },
-}
-```
-
-## Cache invalidation
-
-```js
-module.exports = {
-  name: 'example-plugin',
-  async onSaveCache({ utils }) {
-    await utils.cache.remove('./path/to/file')
-  },
-}
-```
-
-## Time-to-live
-
-```js
-// Only cache the following file/directory for 1 hour
-module.exports = {
-  name: 'example-plugin',
-  async onGetCache({ utils }) {
-    await utils.cache.restore('./path/to/file', { ttl: 3600 })
-  }
-  async onSaveCache({ utils: { cache } }) {
-    await utils.cache.save('./path/to/file')
-  }
-}
-```
-
-## Fast mode
-
-```js
-// Move files to the cache instead of copying them. This is much faster but this
-// removes local files, so should only be done when those files won't be used
-// anymore by the current build.
-module.exports = {
-  name: 'example-plugin',
-  async onGetCache({ utils }) {
-    await utils.cache.restore('./path/to/file', { move: true })
-  }
-  async onSaveCache({ utils }) {
-    await utils.cache.save('./path/to/file', { move: true })
-  }
-}
-```
-
-## Lock files
-
-```js
-// Computing whether a big directory of files has changed or not can be slow.
-// If that directory has a lockfile or a manifest file that can be used to
-// check if its contents has changed, you can pass it to the `digests` option.
-// This will speed up cache saving.
-// For example, `package-lock.json` and `yarn.lock` are digest files for the
-// `node_modules` directory.
-module.exports = {
-  name: 'example-plugin',
-  async onGetCache({ utils }) {
-    await utils.cache.restore('node_modules', {
-      digests: ['package-lock.json', 'yarn.lock']
-    })
-  }
-  async onSaveCache({ utils }) {
-    await utils.cache.save('node_modules', {
-      digests: ['package-lock.json', 'yarn.lock']
-    })
-  }
-}
-```
-
 ## Multiple directories
 
 ```js
@@ -166,12 +69,40 @@ _Default_: `false`
 Move files to the cache instead of copying them. This is much faster but this removes local files, so should only be
 done when those files won't be used anymore by the current build.
 
+```js
+// Move files to the cache instead of copying them. This is much faster but this
+// removes local files, so should only be done when those files won't be used
+// anymore by the current build.
+module.exports = {
+  name: 'example-plugin',
+  async onGetCache({ utils }) {
+    await utils.cache.restore('./path/to/file', { move: true })
+  }
+  async onSaveCache({ utils }) {
+    await utils.cache.save('./path/to/file', { move: true })
+  }
+}
+```
+
 #### ttl
 
 _Type_: `number` (in seconds)\
 _Default_: `undefined`
 
 Only cache the file/directory for a specific amount of time.
+
+```js
+// Only cache the following file/directory for 1 hour
+module.exports = {
+  name: 'example-plugin',
+  async onGetCache({ utils }) {
+    await utils.cache.restore('./path/to/file', { ttl: 3600 })
+  }
+  async onSaveCache({ utils: { cache } }) {
+    await utils.cache.save('./path/to/file')
+  }
+}
+```
 
 #### digests
 
@@ -180,6 +111,28 @@ _Default_: `[]`
 
 Paths to lock files or manifest files that can be used to check if the directory to cache has changed. Using this option
 speeds up caching.
+
+```js
+// Computing whether a big directory of files has changed or not can be slow.
+// If that directory has a lockfile or a manifest file that can be used to
+// check if its contents has changed, you can pass it to the `digests` option.
+// This will speed up cache saving.
+// For example, `package-lock.json` and `yarn.lock` are digest files for the
+// `node_modules` directory.
+module.exports = {
+  name: 'example-plugin',
+  async onGetCache({ utils }) {
+    await utils.cache.restore('node_modules', {
+      digests: ['package-lock.json', 'yarn.lock']
+    })
+  }
+  async onSaveCache({ utils }) {
+    await utils.cache.save('node_modules', {
+      digests: ['package-lock.json', 'yarn.lock']
+    })
+  }
+}
+```
 
 ## restore(path, options?)
 
@@ -208,9 +161,46 @@ Remove a file/directory from the cache. Useful for cache invalidation.
 
 Returns `true` if the file/directory cache was removed, `false` otherwise.
 
+```js
+module.exports = {
+  name: 'example-plugin',
+  async onSaveCache({ utils }) {
+    await utils.cache.remove('./path/to/file')
+  },
+}
+```
+
 ## has(path)
 
 `path`: `string`\
 _Returns_: `Promise<Boolean>`
 
 Returns whether a file/directory is currently cached.
+
+```js
+// Conditional logic can be applied depending on whether the file has been
+// previously cached or not
+const path = './path/to/file'
+
+module.exports = {
+  name: 'example-plugin',
+  async onGetCache({ utils }) {
+    const { cache } = utils
+
+    if (!(await cache.has(path))) {
+      console.log(`File ${path} not cached`)
+      return
+    }
+
+    console.log(`About to restore cached file ${path}...`)
+    if (await cache.restore('./path/to/file')) {
+      console.log(`Restored cached file ${path}`)
+    }
+  },
+  async onSaveCache({ utils }) {
+    if (await utils.cache.save('./path/to/file')) {
+      console.log(`Saved cached file ${path}`)
+    }
+  },
+}
+```
