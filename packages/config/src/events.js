@@ -53,8 +53,8 @@ const EVENTS = [
   'onEnd',
 ]
 
+// TODO: remove after going out of beta
 const LEGACY_EVENTS = {
-  // TODO: remove after going out of beta
   init: 'onInit',
   preGetCache: 'onPreGetCache',
   getCache: 'onGetCache',
