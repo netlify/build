@@ -3,15 +3,11 @@ const EVENTS = [
    * `onInit` - Runs before anything else
    */
   'onInit',
-  /**
-   * `onGetCache` - Fetch previous build cache
-   */
+  // `onGetCache` - Fetch previous build cache. Not implemented yet.
   'onPreGetCache',
   'onGetCache',
   'onPostGetCache',
-  /**
-   * `onInstall` - Install project dependencies
-   */
+  // `onInstall` - Install project dependencies. Not implemented yet.
   'onPreInstall',
   'onInstall',
   'onPostInstall',
@@ -27,27 +23,19 @@ const EVENTS = [
    * `onPostBuild` - After Build commands are executed
    */
   'onPostBuild',
-  /**
-   * `onFunctionsBuild` - Build functions
-   */
+  // `onFunctionsBuild` - Build functions. Not exposed/documented yet.
   'onPreFunctionsBuild',
   'onFunctionsBuild',
   'onPostFunctionsBuild',
-  /**
-   * `onFunctionsPackage` - Package the serverless functions
-   */
+  // `onFunctionsPackage` - Package the serverless functions. Not exposed/documented yet.
   'onPreFunctionsPackage',
   'onFunctionsPackage',
   'onPostFunctionsPackage',
-  /**
-   * `onPreDeploy` - Runs before built artifacts are deployed
-   */
+  // `onPreDeploy` - Runs before built artifacts are deployed. Not implemented yet.
   'onPreDeploy',
   // 'onDeploy', Not currently active
   // 'onPostDeploy', Not currently active
-  /**
-   * `onSaveCache` - Save cached assets
-   */
+  // `onSaveCache` - Save cached assets. Not implemented yet.
   'onPreSaveCache',
   'onSaveCache',
   'onPostSaveCache',
