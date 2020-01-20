@@ -3,18 +3,14 @@ const EVENTS = [
    * `onInit` - Runs before anything else
    */
   'onInit',
-  /**
-   * `onGetCache` - Fetch previous build cache
-   */
-  // 'onPreGetCache',
-  // 'onGetCache',
-  // 'onPostGetCache',
-  /**
-   * `onInstall` - Install project dependencies
-   */
-  // 'onPreInstall',
-  // 'onInstall',
-  // 'onPostInstall',
+  // `onGetCache` - Fetch previous build cache. Not implemented yet.
+  'onPreGetCache',
+  'onGetCache',
+  'onPostGetCache',
+  // `onInstall` - Install project dependencies. Not implemented yet.
+  'onPreInstall',
+  'onInstall',
+  'onPostInstall',
   /**
    * `onPreBuild` - Before build commands are executed
    */
@@ -27,30 +23,22 @@ const EVENTS = [
    * `onPostBuild` - After Build commands are executed
    */
   'onPostBuild',
-  /**
-   * `onFunctionsBuild` - Build functions
-   */
-  // 'onPreFunctionsBuild',
-  // 'onFunctionsBuild',
-  // 'onPostFunctionsBuild',
-  /**
-   * `onFunctionsPackage` - Package the serverless functions
-   */
-  // 'onPreFunctionsPackage',
-  // 'onFunctionsPackage',
-  // 'onPostFunctionsPackage',
-  /**
-   * `onPreDeploy` - Runs before built artifacts are deployed
-   */
-  // 'onPreDeploy',
+  // `onFunctionsBuild` - Build functions. Not exposed/documented yet.
+  'onPreFunctionsBuild',
+  'onFunctionsBuild',
+  'onPostFunctionsBuild',
+  // `onFunctionsPackage` - Package the serverless functions. Not exposed/documented yet.
+  'onPreFunctionsPackage',
+  'onFunctionsPackage',
+  'onPostFunctionsPackage',
+  // `onPreDeploy` - Runs before built artifacts are deployed. Not implemented yet.
+  'onPreDeploy',
   // 'onDeploy', Not currently active
   // 'onPostDeploy', Not currently active
-  /**
-   * `onSaveCache` - Save cached assets
-   */
-  // 'onPreSaveCache',
-  // 'onSaveCache',
-  // 'onPostSaveCache',
+  // `onSaveCache` - Save cached assets. Not implemented yet.
+  'onPreSaveCache',
+  'onSaveCache',
+  'onPostSaveCache',
   /**
    * `onSuccess` - Runs on build success
    */
@@ -91,23 +79,6 @@ const LEGACY_EVENTS = {
   error: 'onError',
   end: 'onEnd',
   finally: 'onEnd',
-  // TODO: those are temporarily disabled until we implement them
-  onPreGetCache: 'onPreBuild',
-  onGetCache: 'onPreBuild',
-  onPostGetCache: 'onPreBuild',
-  onPreInstall: 'onPreBuild',
-  onInstall: 'onPreBuild',
-  onPostInstall: 'onPreBuild',
-  onPreFunctionsBuild: 'onPostBuild',
-  onFunctionsBuild: 'onPostBuild',
-  onPostFunctionsBuild: 'onPostBuild',
-  onPreFunctionsPackage: 'onPostBuild',
-  onFunctionsPackage: 'onPostBuild',
-  onPostFunctionsPackage: 'onPostBuild',
-  onPreDeploy: 'onPostBuild',
-  onPreSaveCache: 'onPostBuild',
-  onSaveCache: 'onPostBuild',
-  onPostSaveCache: 'onPostBuild',
 }
 
 // `build.lifecycle.onEvent` can also be spelled `build.lifecycle.onevent`
