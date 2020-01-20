@@ -538,8 +538,6 @@ build:
       - npm run foo
       - export VALUE=lol
       - echo "much wow"
-    onGetCache:
-      - echo 'curl custom cache'
     onBuild: |
       echo 'Hello Netlify Build!'
       npm run build

@@ -21,7 +21,7 @@ test('Can define configuration as environment variables', async t => {
   await runFixtureConfig(t, 'empty', {
     env: {
       NETLIFY_CONFIG_BUILD_LIFECYCLE_ONBUILD: 'echo onBuild',
-      NETLIFY_CONFIG_BUILD_LIFECYCLE_ONINSTALL: 'echo onInstall',
+      NETLIFY_CONFIG_BUILD_LIFECYCLE_ONPOSTBUILD: 'echo onPostBuild',
       NETLIFY_CONFIG_BUILD_PUBLISH: 'publish',
     },
   })
