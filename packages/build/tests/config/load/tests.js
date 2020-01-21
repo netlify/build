@@ -19,12 +19,6 @@ test('Can define configuration as environment variables', async t => {
   })
 })
 
-test('Environment variable buildbot fix', async t => {
-  await runFixture(t, 'empty', {
-    env: { NETLIFY_CONFIG_BUILD_LIFECYCLE_BUILD: 'echo onBuild' },
-  })
-})
-
 test('No --config', async t => {
   await runFixture(t, '', { config: false, cwd: `${FIXTURES_DIR}/empty` })
 })
