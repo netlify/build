@@ -42,18 +42,14 @@ npm test
 This is a monorepo. Below are a list of packages included.
 
 <!-- AUTO-GENERATED-CONTENT:START (PACKAGES) -->
-
 - [@netlify/build](./packages/build) Netlify build module [npm link](https://www.npmjs.com/package/@netlify/build).
-- [@netlify/cache-utils](./packages/cache-utils) Utility for caching files in Netlify Build
-  [npm link](https://www.npmjs.com/package/@netlify/cache-utils).
+- [@netlify/cache-utils](./packages/cache-utils) Utility for caching files in Netlify Build [npm link](https://www.npmjs.com/package/@netlify/cache-utils).
 - [@netlify/config](./packages/config) Netlify config module [npm link](https://www.npmjs.com/package/@netlify/config).
-- [@netlify/functions-utils](./packages/functions-utils) Utility for adding Functions files in Netlify Build
-  [npm link](https://www.npmjs.com/package/@netlify/functions-utils).
-- [@netlify/git-utils](./packages/git-utils) Utility for dealing with modified, created, deleted files since a git
-  commit [npm link](https://www.npmjs.com/package/@netlify/git-utils).
-- [@netlify/run-utils](./packages/run-utils) Utility for running commands inside Netlify Build
-  [npm link](https://www.npmjs.com/package/@netlify/run-utils).
-  <!-- AUTO-GENERATED-CONTENT:END (PACKAGES) -->
+- [@netlify/functions-utils](./packages/functions-utils) Utility for adding Functions files in Netlify Build [npm link](https://www.npmjs.com/package/@netlify/functions-utils).
+- [@netlify/git-utils](./packages/git-utils) Utility for dealing with modified, created, deleted files since a git commit [npm link](https://www.npmjs.com/package/@netlify/git-utils).
+- [@netlify/headers-utils](./packages/headers-utils) Utility for managing headers in Netlify Build [npm link](https://www.npmjs.com/package/@netlify/headers-utils).
+- [@netlify/run-utils](./packages/run-utils) Utility for running commands inside Netlify Build [npm link](https://www.npmjs.com/package/@netlify/run-utils).
+<!-- AUTO-GENERATED-CONTENT:END (PACKAGES) -->
 
 ## Testing
 

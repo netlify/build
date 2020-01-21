@@ -1,0 +1,32 @@
+{
+  "name": "@netlify/headers-utils",
+  "version": "0.0.1",
+  "description": "Utility for managing headers in Netlify Build",
+  "main": "src/index.js",
+  "files": [
+    "src",
+    "!*~"
+  ],
+  "author": "Netlify Inc.",
+  "scripts": {
+    "release:patch": "npm version patch && npm publish",
+    "release:minor": "npm version minor && npm publish",
+    "release:major": "npm version major && npm publish"
+  },
+  "contributors": [
+    "Raees Iqbal <i@raeesbhatti.com> (https://raeesbhatti.com/)"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@netlify/config": "^0.1.14",
+    "configorama": "^0.3.6"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/netlify/build"
+  },
+  "engines": {
+    "node": ">=8.3.0"
+  }
+}
