@@ -9,7 +9,7 @@ const deepmerge = require('deepmerge')
 const addEnvVars = function(config) {
   const envVars = Object.entries(env)
     .filter(isEnvOption)
-    .map(removePrefix)
+    .map(([name, value]) => removePrefix(name, value, config))
   return deepmerge.all([...envVars, config])
 }
 
@@ -17,12 +17,12 @@ const isEnvOption = function([name]) {
   return name.startsWith(ENV_CONFIG_PREFIX)
 }
 
-const removePrefix = function([name, value]) {
+const removePrefix = function(name, value, config) {
   const nameA = name
     .replace(ENV_CONFIG_PREFIX, '')
     .toLowerCase()
     .replace(/_/g, '.')
-  const nameB = fixLegacy(nameA)
+  const nameB = fixLegacy(nameA, config)
   const valueA = coerceType(value)
   return set({}, nameB, valueA)
 }
@@ -38,14 +38,13 @@ const coerceType = function(value) {
   }
 }
 
-// This is due to https://github.com/netlify/buildbot/pull/513/files#diff-16120d2ef3dd18199ee88957bb11cf51R58
-// to prevent warning messages from being printed.
-// TODO: remove this once the buildbot has been updated to using
-// `NETLIFY_CONFIG_BUILD_LIFECYCLE_ONBUILD` instead of
-// `NETLIFY_CONFIG_BUILD_LIFECYCLE_BUILD`.
-const fixLegacy = function(name) {
-  if (name === 'build.lifecycle.build') {
-    return 'build.lifecycle.onbuild'
+// We validate that `build.command` and `build.lifecycle.onBuild` are not
+// both defined. However the buildbot passes the second one as an environment
+// variable. We switch it to the first one if needed to avoid this validation
+// error.
+const fixLegacy = function(name, config) {
+  if (name === 'build.lifecycle.onbuild' && config && config.build && config.build.command) {
+    return 'build.command'
   }
 
   return name
