@@ -10,8 +10,7 @@ const addEnvVars = function(config) {
   const envVars = Object.entries(env)
     .filter(isEnvOption)
     .map(removePrefix)
-  const envVarsConfig = deepmerge.all(envVars)
-  return { ...envVarsConfig, ...config }
+  return deepmerge.all([...envVars, config])
 }
 
 const isEnvOption = function([name]) {

@@ -51,6 +51,12 @@ test('No --config but none found and with environment variables', async t => {
   }
 })
 
+test('--config and environment variables', async t => {
+  await runFixture(t, 'envvar', {
+    env: { NETLIFY_CONFIG_BUILD_LIFECYCLE_ONBUILD: 'echo onBuild' },
+  })
+})
+
 // Windows permissions system is different
 if (platform !== 'win32') {
   test('--config with a directory without permissions', async t => {
