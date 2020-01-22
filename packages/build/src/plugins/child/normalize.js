@@ -1,13 +1,9 @@
 const mapObj = require('map-obj')
 const { LEGACY_EVENTS } = require('@netlify/config')
 
-const { getOutputs } = require('../outputs/when')
-
 // Normalize plugin shape
 const normalizePlugin = function(logic) {
-  const logicA = mapObj(logic, normalizeProperty)
-  const logicB = getOutputs(logicA)
-  return logicB
+  return mapObj(logic, normalizeProperty)
 }
 
 const normalizeProperty = function(key, value) {

@@ -39,6 +39,12 @@ const getConfig = function(configPath, options) {
           return `\${self:context.${context}.${objectPath}}`
         },
       },
+      {
+        match: /^outputs:/,
+        async resolver(varToProcess) {
+          return `\${{${varToProcess}}}`
+        },
+      },
     ],
   })
 }

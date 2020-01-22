@@ -1,0 +1,5 @@
+plugins:
+  - package: ./two
+    config:
+      test: ${{outputs:one.example}}
+  - package: ./one

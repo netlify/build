@@ -1,7 +1,5 @@
 const indentString = require('indent-string')
 
-const { parseOutputs } = require('../outputs/when')
-
 const { validateFromSchema } = require('./json_schema')
 
 // Validate `pluginConfig` against `config` JSON schema
@@ -10,10 +8,9 @@ const validatePluginConfig = function({ config: configSchema }, { pluginConfig }
     return
   }
 
-  const { configSchema: configSchemaA } = parseOutputs(configSchema)
   // We default `additionalProperties` to `false`, i.e. users get notified on unknown properties.
   // Plugin authors can override this by setting it to `true`.
-  const errorMessage = validateFromSchema({ additionalProperties: false, ...configSchemaA }, pluginConfig)
+  const errorMessage = validateFromSchema({ additionalProperties: false, ...configSchema }, pluginConfig)
 
   if (errorMessage !== undefined) {
     throw new Error(

@@ -2,8 +2,6 @@ const isPlainObj = require('is-plain-obj')
 const indentString = require('indent-string')
 const deepmerge = require('deepmerge')
 
-const { parseOutputs } = require('../outputs/when')
-
 const { validateSchemaSyntax } = require('./json_schema')
 
 // Validate `plugin.config`
@@ -13,20 +11,14 @@ const validateConfigSchema = function(configSchema) {
   }
 
   // Common mistake: {foo:{}} instead of {properties:{foo:{}}}
-  const { properties } = configSchema
-  if (
-    (Object.keys(configSchema).length !== 0 && properties === undefined) ||
-    (properties !== undefined && !isPlainObj(properties))
-  ) {
+  if (Object.keys(configSchema).length !== 0 && configSchema.properties === undefined) {
     throwConfigError(configSchema, '')
   }
 
-  const { configSchema: configSchemaA } = parseOutputs(configSchema)
-
-  const schema = deepmerge({}, configSchemaA)
+  const schema = deepmerge({}, configSchema)
   const errorMessage = validateSchemaSyntax(schema)
   if (errorMessage !== undefined) {
-    throwConfigError(configSchemaA, `${errorMessage}\n`)
+    throwConfigError(configSchema, `${errorMessage}\n`)
   }
 }
 

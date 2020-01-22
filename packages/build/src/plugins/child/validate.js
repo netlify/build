@@ -3,6 +3,7 @@ const { EVENTS, LEGACY_EVENTS } = require('@netlify/config')
 
 const { serializeList } = require('../../utils/list')
 const { validateConfigSchema } = require('../config/validate_config')
+const { validateOutputs } = require('../outputs/validate')
 
 const { API_METHODS } = require('./api')
 
@@ -91,6 +92,11 @@ const isValidScope = function(scope) {
 
 const ALLOWED_SCOPES = ['*', ...API_METHODS]
 
-const VALIDATORS = { name: validateName, scopes: validateScopes, config: validateConfigSchema }
+const VALIDATORS = {
+  name: validateName,
+  scopes: validateScopes,
+  config: validateConfigSchema,
+  outputs: validateOutputs,
+}
 
 module.exports = { validatePlugin }
