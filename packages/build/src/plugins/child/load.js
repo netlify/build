@@ -1,5 +1,6 @@
 const { getOverride } = require('../override')
 const { validatePluginConfig } = require('../config/validate_props.js')
+const { getInputs } = require('../outputs/input')
 
 const { getLogic } = require('./logic')
 const { validatePlugin } = require('./validate')
@@ -48,9 +49,11 @@ const getPluginCommand = function({ method, event, name, id = name, package, cor
 
 // Retrieve context passed to every event handler
 const getContext = function(logic, pluginCommands, constants, { pluginConfig, netlifyConfig, utilsData, token }) {
+  const { outputs } = logic
   const api = getApiClient({ logic, token })
   const utils = getUtils({ utilsData, constants })
-  return { pluginCommands, api, utils, constants, pluginConfig, netlifyConfig }
+  const inputs = getInputs(pluginConfig)
+  return { pluginCommands, api, utils, constants, pluginConfig, netlifyConfig, inputs, outputs }
 }
 
 module.exports = { loadPlugin }
