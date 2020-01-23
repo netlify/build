@@ -22,7 +22,7 @@ const getCommand = async function(packageRoot) {
     return 'yarn --non-interactive --no-lockfile'
   }
 
-  return 'npm install --no-progress --no-audit --no-package-lock'
+  return 'npm install --no-progress --no-audit --no-fund --no-package-lock'
 }
 
 module.exports = { installDependencies }
