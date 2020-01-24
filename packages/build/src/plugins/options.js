@@ -3,6 +3,8 @@ const { promisify } = require('util')
 const resolve = require('resolve')
 
 const { CORE_PLUGINS } = require('../plugins_core/main')
+const { logResolveError } = require('../log/main')
+const { addDependency } = require('../utils/install')
 
 const pResolve = promisify(resolve)
 
@@ -31,12 +33,20 @@ const isPluginEnabled = function({ enabled }) {
 // this `__filename`
 const resolvePlugin = async function({ package, ...pluginOptions }, baseDir) {
   try {
-    const pluginPath = await pResolve(package, { basedir: baseDir })
-    return { ...pluginOptions, package, pluginPath }
+    return await tryResolvePlugin(package, pluginOptions, baseDir)
+    // Try installing the dependency if it is missing.
+    // This also solves Yarn Plug-and-Play, which does not work well with
+    // `resolve`
   } catch (error) {
-    error.message = `'${package}' plugin not installed or found\n${error.message}`
-    throw error
+    logResolveError(error, package)
+    await addDependency(package, { packageRoot: baseDir, stdio: 'ignore' })
+    return await tryResolvePlugin(package, pluginOptions, baseDir)
   }
+}
+
+const tryResolvePlugin = async function(package, pluginOptions, baseDir) {
+  const pluginPath = await pResolve(package, { basedir: baseDir })
+  return { ...pluginOptions, package, pluginPath }
 }
 
 module.exports = { getPluginsOptions }

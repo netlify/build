@@ -42,6 +42,16 @@ ${SUBTEXT_PADDING}${configPath}
 `)
 }
 
+const logResolveError = function(error, package) {
+  log(
+    redBright.bold(
+      `Error: '${package}' plugin not installed or found.
+Please install it with npm or yarn.
+${error.message}`,
+    ),
+  )
+}
+
 const logInstallPlugins = function() {
   log(cyanBright.bold(`${HEADING_PREFIX} Installing plugins dependencies`))
 }
@@ -199,6 +209,7 @@ module.exports = {
   logBuildStart,
   logFlags,
   logConfigPath,
+  logResolveError,
   logInstallPlugins,
   logLoadPlugins,
   logLoadPlugin,

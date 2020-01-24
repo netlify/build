@@ -19,10 +19,24 @@ const installDependencies = async function(packageRoot) {
 
 const getCommand = async function(packageRoot) {
   if (await pathExists(`${packageRoot}/yarn.lock`)) {
-    return 'yarn --non-interactive --no-lockfile'
+    return 'yarn --non-interactive --no-lockfile --disable-pnp'
   }
 
   return 'npm install --no-progress --no-audit --no-fund --no-package-lock'
 }
 
-module.exports = { installDependencies }
+// Add new Node.js dependencies
+const addDependency = async function(packageName, { packageRoot, stdio }) {
+  const command = await getAddCommand(packageName, packageRoot)
+  await execa.command(command, { cwd: packageRoot, stdio })
+}
+
+const getAddCommand = async function(packageName, packageRoot) {
+  if (await pathExists(`${packageRoot}/yarn.lock`)) {
+    return `yarn add --non-interactive --disable-pnp ${packageName}`
+  }
+
+  return `npm install --no-progress --no-audit --no-fund ${packageName}`
+}
+
+module.exports = { installDependencies, addDependency }
