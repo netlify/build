@@ -1,5 +1,6 @@
 const isPlainObj = require('is-plain-obj')
 const { cyan } = require('chalk')
+const omit = require('omit.js')
 
 const { EVENTS, LEGACY_EVENTS, normalizeEventHandler } = require('../events')
 
@@ -22,9 +23,10 @@ const VALIDATIONS = [
     property: 'plugins',
     check: value => Array.isArray(value) && value.every(isPlainObj),
     message: 'must be an array of objects.',
-    example: {
+    example: (plugins, key, config) => ({
+      ...config,
       plugins: [{ package: 'netlify-plugin-one' }, { package: 'netlify-plugin-two' }],
-    },
+    }),
   },
   {
     property: 'plugins.*',
@@ -38,86 +40,88 @@ const VALIDATIONS = [
     property: 'plugins.*.id',
     check: isString,
     message: 'must be an string.',
-    example: { plugins: [{ id: 'one', package: 'netlify-plugin-one' }] },
+    example: (id, key, plugin) => ({ plugins: [{ ...plugin, id: 'one' }] }),
   },
   {
     property: 'plugins.*',
     check: ({ package, type }) => package !== undefined || type !== undefined,
     message: '"package" property is required.',
-    example: { plugins: [{ package: 'netlify-plugin-one' }] },
+    example: plugin => ({ plugins: [{ ...plugin, package: 'netlify-plugin-one' }] }),
   },
   {
     property: 'plugins.*.type',
     check: type => type === undefined,
     message: 'has been renamed to "package".',
-    example: { plugins: [{ package: 'netlify-plugin-one' }] },
+    example: (type, key, plugin) => ({ plugins: [{ ...omit(plugin, ['type']), package: type }] }),
     warn: true,
   },
   {
     property: 'plugins.*.package',
     check: isString,
     message: 'must be a string.',
-    example: { plugins: [{ package: 'netlify-plugin-one' }] },
+    example: (package, key, plugin) => ({ plugins: [{ ...plugin, package: 'netlify-plugin-one' }] }),
   },
   {
     property: 'plugins.*.enabled',
     check: isBoolean,
     message: 'must be a boolean.',
-    example: { plugins: [{ package: 'netlify-plugin-one', enabled: false }] },
+    example: (enabled, key, plugin) => ({ plugins: [{ ...plugin, package: 'netlify-plugin-one', enabled: false }] }),
   },
   {
     property: 'plugins.*.config',
     check: isPlainObj,
     message: 'must be a plain object.',
-    example: { plugins: [{ package: 'netlify-plugin-one', config: { port: 80 } }] },
+    example: (config, key, plugin) => ({
+      plugins: [{ ...plugin, package: 'netlify-plugin-one', config: { port: 80 } }],
+    }),
   },
   {
     property: 'build',
     check: isPlainObj,
     message: 'must be a plain object.',
-    example: { build: { lifecycle: { onBuild: 'npm run build' } } },
+    example: (build, key, config) => ({ ...config, build: { lifecycle: { onBuild: 'npm run build' } } }),
   },
   {
     property: 'build.publish',
     check: isString,
     message: 'must be a string.',
-    example: { build: { publish: 'dist' } },
+    example: (publish, key, build) => ({ build: { ...build, publish: 'dist' } }),
   },
   {
     property: 'build.functions',
     check: isString,
     message: 'must be a string.',
-    example: { build: { functions: 'functions' } },
+    example: (functions, key, build) => ({ build: { ...build, functions: 'functions' } }),
   },
   {
     property: 'build.command',
     check: value => isString(value) || (Array.isArray(value) && value.every(isString)),
     message: 'must be a string or an array of strings.',
-    example: { build: { command: ['npm run build', 'npm test'] } },
+    example: (command, key, build) => ({ build: { ...build, command: ['npm run build', 'npm test'] } }),
   },
   {
     property: 'build.command',
     check: (value, key, { lifecycle }) => lifecycle === undefined,
     message: `must not be defined when ${cyan.bold('build.lifecycle')} is also defined.
 Please rename ${cyan.bold('build.command')} to ${cyan.bold('build.lifecycle.onBuild.')}`,
-    example: { build: { lifecycle: { onBuild: 'npm run build' } } },
+    example: (command, key, build) => ({ build: { ...build, lifecycle: { onBuild: 'npm run build' } } }),
   },
   {
     property: 'build.lifecycle',
     check: isPlainObj,
     message: 'must be a plain object.',
-    example: { build: { lifecycle: { onBuild: 'npm run build' } } },
+    example: (lifecycle, key, build) => ({ build: { ...build, lifecycle: { onBuild: 'npm run build' } } }),
   },
   {
     property: 'build.lifecycle',
     ...validProperties(EVENTS, Object.keys(LEGACY_EVENTS), normalizeEventHandler),
-    example: { build: { lifecycle: { onBuild: 'npm run build' } } },
+    example: (lifecycle, key, build) => ({ build: { ...build, lifecycle: { onBuild: 'npm run build' } } }),
   },
   {
     property: 'build.lifecycle.*',
     ...deprecatedProperties(
       LEGACY_EVENTS,
-      event => ({ build: { lifecycle: { [event]: 'npm run build' } } }),
+      (event, lifecycle) => ({ build: { lifecycle: { ...lifecycle, [event]: 'npm run build' } } }),
       normalizeEventHandler,
     ),
     warn: true,
@@ -126,7 +130,9 @@ Please rename ${cyan.bold('build.command')} to ${cyan.bold('build.lifecycle.onBu
     property: 'build.lifecycle.*',
     check: value => isString(value) || (Array.isArray(value) && value.every(isString)),
     message: 'must be a string or an array of strings.',
-    example: { build: { lifecycle: { onBuild: ['npm run build', 'npm test'] } } },
+    example: (value, key, lifecycle) => ({
+      build: { lifecycle: { ...lifecycle, onBuild: ['npm run build', 'npm test'] } },
+    }),
   },
 ]
 
