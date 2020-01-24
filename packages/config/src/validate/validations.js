@@ -121,7 +121,7 @@ Please rename ${cyan.bold('build.command')} to ${cyan.bold('build.lifecycle.onBu
     property: 'build.lifecycle.*',
     ...deprecatedProperties(
       LEGACY_EVENTS,
-      (event, lifecycle) => ({ build: { lifecycle: { ...lifecycle, [event]: 'npm run build' } } }),
+      (event, key, lifecycle) => ({ build: { lifecycle: { ...omit(lifecycle, [key]), [event]: 'npm run build' } } }),
       normalizeEventHandler,
     ),
     warn: true,

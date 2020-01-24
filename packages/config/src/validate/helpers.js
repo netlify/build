@@ -34,7 +34,7 @@ const deprecatedProperties = function(properties, getExample, mapper) {
     },
     example(value, key, parent) {
       const newPropName = findDeprecatedProperty(properties, mapper(key))
-      return getExample(newPropName, parent)
+      return getExample(newPropName, key, parent)
     },
   }
 }
