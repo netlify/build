@@ -1,5 +1,3 @@
-const { platform } = require('process')
-
 const test = require('ava')
 const cpy = require('cpy')
 
@@ -11,16 +9,11 @@ test('Install local plugin dependencies: with npm', async t => {
   await removeDir(`${FIXTURES_DIR}/npm/plugin/node_modules`)
 })
 
-// This test randomly fails (https://github.com/netlify/build/issues/657)
-// so we do not snapshot it
-// It does not work on Windows when run with Ava
-if (platform !== 'win32') {
-  test('Install local plugin dependencies: with yarn', async t => {
-    await removeDir(`${FIXTURES_DIR}/yarn/plugin/node_modules`)
-    await runFixture(t, 'yarn')
-    await removeDir(`${FIXTURES_DIR}/yarn/plugin/node_modules`)
-  })
-}
+test('Install local plugin dependencies: with yarn', async t => {
+  await removeDir(`${FIXTURES_DIR}/yarn/plugin/node_modules`)
+  await runFixture(t, 'yarn')
+  await removeDir(`${FIXTURES_DIR}/yarn/plugin/node_modules`)
+})
 
 test('Install local plugin dependencies: propagate errors', async t => {
   await runFixture(t, 'error')
