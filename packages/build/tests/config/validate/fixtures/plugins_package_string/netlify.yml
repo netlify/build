@@ -1,2 +1,3 @@
 plugins:
   - package: true
+    enabled: true

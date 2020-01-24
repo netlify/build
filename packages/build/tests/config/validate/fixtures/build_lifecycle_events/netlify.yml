@@ -1,3 +1,5 @@
 build:
+  publish: publish
   lifecycle:
+    onBuild: onBuild
     unknown: test
