@@ -18,9 +18,9 @@ test('Missing plugins', async t => {
 })
 
 test('Install missing plugins', async t => {
-  await del(`${FIXTURES_DIR}/instal_missing/node_modules`, { force: true })
+  await del(`${FIXTURES_DIR}/install_missing/node_modules`, { force: true })
   await runFixture(t, 'install_missing')
-  await del(`${FIXTURES_DIR}/instal_missing/node_modules`, { force: true })
+  await del(`${FIXTURES_DIR}/install_missing/node_modules`, { force: true })
 })
 
 test('Plugin.id is optional', async t => {
