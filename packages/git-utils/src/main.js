@@ -4,7 +4,7 @@ const { getBase } = require('./refs')
 const { getDiffFiles } = require('./diff')
 const { getCommits } = require('./commits')
 const { getLinesOfCode } = require('./stats')
-const { getMatchers } = require('./match')
+const { fileMatch } = require('./match')
 
 // Main entry point to the git utilities
 const getGitUtils = async function(
@@ -27,8 +27,8 @@ const addProperties = async function(base, cwd) {
 }
 
 const addMethods = function(properties) {
-  const { fileMatch, match } = getMatchers(properties)
-  return { ...properties, fileMatch, match }
+  const fileMatchA = fileMatch.bind(null, properties)
+  return { ...properties, fileMatch: fileMatchA }
 }
 
 module.exports = getGitUtils

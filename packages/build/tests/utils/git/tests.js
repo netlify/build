@@ -33,10 +33,6 @@ test('git-utils diff', async t => {
   await runFixture(t, 'diff', { env })
 })
 
-test('git-utils match', async t => {
-  await runFixture(t, 'match', { env })
-})
-
 test('git-utils fileMatch', async t => {
   await runFixture(t, 'file_match', { env })
 })
