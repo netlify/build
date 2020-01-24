@@ -18,6 +18,10 @@ test('plugins.any.id: string', async t => {
   await runFixture(t, 'plugins_id_string')
 })
 
+test('plugins.any.type renamed', async t => {
+  await runFixture(t, 'plugins_type_renamed')
+})
+
 test('plugins.any.package: required', async t => {
   await runFixture(t, 'plugins_package_required')
 })

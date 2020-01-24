@@ -63,7 +63,7 @@ const validateProperty = function(
 const reportError = function({ prevPath, propPath, message, example, warn, value, key, parent }) {
   const messageA = typeof message === 'function' ? message(value, key, parent) : message
   const error = `Configuration property ${cyan.bold(propPath)} ${messageA}
-${getExample({ value, key, prevPath, example })}`
+${getExample({ value, parent, key, prevPath, example })}`
 
   if (!warn) {
     throw new Error(error)

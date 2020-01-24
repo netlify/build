@@ -3,8 +3,8 @@ const indentString = require('indent-string')
 const { red, green } = require('chalk')
 
 // Print invalid value and example netlify.yml
-const getExample = function({ value, key, prevPath, example }) {
-  const exampleA = typeof example === 'function' ? example(value, key) : example
+const getExample = function({ value, parent, key, prevPath, example }) {
+  const exampleA = typeof example === 'function' ? example(value, key, parent) : example
   return `
 ${red.bold('Invalid syntax')}
 
