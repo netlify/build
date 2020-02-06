@@ -1,0 +1,4 @@
+*                 @netlify/oss-devs
+docs/             @netlify/docs
+docs.js           @netlify/docs
+*.md              @netlify/docs
