@@ -1,13 +1,16 @@
 const path = require('path')
 const fs = require('fs')
+const util = require('util')
 
 const chalk = require('chalk')
 const inquirer = require('inquirer')
 const fuzzy = require('fuzzy')
 
+const readDirAsync = util.promisify(fs.readdir)
+const readFileAsync = util.promisify(fs.readFile)
+
 module.exports = async function detectProjectSettings() {
-  const detectors = fs
-    .readdirSync(path.join(__dirname, 'detectors'))
+  const detectors = (await readDirAsync(path.join(__dirname, 'detectors')))
     .filter(x => x.endsWith('.js')) // only accept .js detector files
     .map(det => {
       try {
@@ -34,7 +37,7 @@ module.exports = async function detectProjectSettings() {
     settings = settingsArr[0]
     settings.args = settings.possibleArgsArrs[0] // just pick the first one
     if (!settings.args) {
-      const { scripts } = JSON.parse(fs.readFileSync('package.json', { encoding: 'utf8' }))
+      const { scripts } = JSON.parse(await readFileAsync('package.json', { encoding: 'utf8' }))
       // eslint-disable-next-line no-console
       console.error(
         'empty args assigned, this is an internal Netlify Dev bug, please report your settings and scripts so we can improve',
