@@ -41,10 +41,15 @@ function hasRequiredDeps(requiredDepArray) {
   }
   return true
 }
+
+const requiredFilesAvailable = []
 function hasRequiredFiles(filenameArr) {
   for (const filename of filenameArr) {
+    if (requiredFilesAvailable.includes(filename)) continue
     if (!existsSync(filename)) {
       return false
+    } else {
+      requiredFilesAvailable.push(filename)
     }
   }
   return true
