@@ -54,7 +54,7 @@ const getManifestPath = function(cachePath) {
 }
 
 // Check whether a file/directory is expired by checking its cache manifest
-const isExpired = async function(srcPath, cachePath) {
+const isExpired = async function(cachePath) {
   const manifestPath = getManifestPath(cachePath)
   if (!(await pathExists(manifestPath))) {
     return false

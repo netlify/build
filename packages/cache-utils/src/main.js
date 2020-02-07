@@ -37,7 +37,7 @@ const restoreOne = async function(path, { move = DEFAULT_MOVE } = {}) {
     return false
   }
 
-  if (await isExpired(srcPath, cachePath)) {
+  if (await isExpired(cachePath)) {
     return false
   }
 
@@ -62,9 +62,9 @@ const removeOne = async function(path) {
 
 // Check if a file is cached
 const hasOne = async function(path) {
-  const { srcPath, cachePath } = await parsePath(path)
+  const { cachePath } = await parsePath(path)
 
-  return (await pathExists(cachePath)) && !(await isExpired(srcPath, cachePath))
+  return (await pathExists(cachePath)) && !(await isExpired(cachePath))
 }
 
 const DEFAULT_MOVE = false
