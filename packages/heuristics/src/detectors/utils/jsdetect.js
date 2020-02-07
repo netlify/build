@@ -20,9 +20,9 @@ function getPkgJSON() {
 }
 function getYarnOrNPMCommand() {
   if (!yarnExists) {
-    yarnExists = existsSync('yarn.lock') ? 'yes' : 'no'
+    yarnExists = !!existsSync('yarn.lock')
   }
-  return yarnExists === 'yes' ? 'yarn' : 'npm'
+  return yarnExists ? 'yarn' : 'npm'
 }
 
 /**
