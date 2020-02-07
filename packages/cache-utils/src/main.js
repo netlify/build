@@ -1,4 +1,5 @@
 const pathExists = require('path-exists')
+const del = require('del')
 
 const { parsePath } = require('./path')
 const { getManifestInfo, writeManifest, removeManifest, isExpired } = require('./manifest')
@@ -29,10 +30,6 @@ const saveOne = async function(path, { move = DEFAULT_MOVE, ttl = DEFAULT_TTL, d
 const restoreOne = async function(path, { move = DEFAULT_MOVE } = {}) {
   const { srcPath, cachePath } = await parsePath(path)
 
-  if (await pathExists(srcPath)) {
-    return false
-  }
-
   if (!(await pathExists(cachePath))) {
     return false
   }
@@ -41,6 +38,7 @@ const restoreOne = async function(path, { move = DEFAULT_MOVE } = {}) {
     return false
   }
 
+  await del(srcPath, { force: true })
   await moveCacheFile(cachePath, srcPath, move)
 
   return true
