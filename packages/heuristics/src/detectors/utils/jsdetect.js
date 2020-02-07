@@ -93,6 +93,6 @@ function scanScripts({ preferredScriptsArr, preferredCommand }) {
 module.exports = {
   hasRequiredDeps,
   hasRequiredFiles,
-  getYarnOrNPMCommand,
+  yarnOrNPMCommand: getYarnOrNPMCommand(),
   scanScripts,
 }

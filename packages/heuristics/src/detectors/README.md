@@ -36,7 +36,7 @@ not sure if we want to support gitbook yet
 requires a global install: https://github.com/GitbookIO/gitbook/blob/master/docs/setup.md
 
 ```js
-const { hasRequiredDeps, hasRequiredFiles, getYarnOrNPMCommand, scanScripts } = require('./utils/jsdetect')
+const { hasRequiredDeps, hasRequiredFiles, yarnOrNPMCommand, scanScripts } = require('./utils/jsdetect')
 module.exports = function() {
   // REQUIRED FILES
   if (!hasRequiredFiles(['README.md', 'SUMMARY.md'])) return false
@@ -53,7 +53,7 @@ module.exports = function() {
 
   return {
     type: 'gitbook',
-    command: getYarnOrNPMCommand(),
+    command: yarnOrNPMCommand,
     port: 8888,
     proxyPort: 4000,
     env: { ...process.env },

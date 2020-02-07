@@ -1,4 +1,4 @@
-const { hasRequiredDeps, hasRequiredFiles, getYarnOrNPMCommand, scanScripts } = require('./utils/jsdetect')
+const { hasRequiredDeps, hasRequiredFiles, yarnOrNPMCommand, scanScripts } = require('./utils/jsdetect')
 module.exports = function() {
   // REQUIRED FILES
   if (!hasRequiredFiles(['package.json', 'gridsome.config.js'])) return false
@@ -14,7 +14,7 @@ module.exports = function() {
 
   return {
     type: 'gridsome',
-    command: getYarnOrNPMCommand(),
+    command: yarnOrNPMCommand,
     port: 8888,
     proxyPort: 8080,
     env: { ...process.env },

@@ -1,4 +1,4 @@
-const { hasRequiredDeps, hasRequiredFiles, getYarnOrNPMCommand, scanScripts } = require('./utils/jsdetect')
+const { hasRequiredDeps, hasRequiredFiles, yarnOrNPMCommand, scanScripts } = require('./utils/jsdetect')
 
 /**
  * detection logic - artificial intelligence!
@@ -23,7 +23,7 @@ module.exports = function() {
 
   return {
     type: 'create-react-app',
-    command: getYarnOrNPMCommand(),
+    command: yarnOrNPMCommand,
     port: 8888, // the port that the Netlify Dev User will use
     proxyPort: 3000, // the port that create-react-app normally outputs
     env: { ...process.env, BROWSER: 'none', PORT: 3000 },

@@ -1,4 +1,4 @@
-const { hasRequiredDeps, hasRequiredFiles, getYarnOrNPMCommand, scanScripts } = require('./utils/jsdetect')
+const { hasRequiredDeps, hasRequiredFiles, yarnOrNPMCommand, scanScripts } = require('./utils/jsdetect')
 
 module.exports = function() {
   // REQUIRED FILES
@@ -21,7 +21,7 @@ module.exports = function() {
 
   return {
     type: 'ember-cli',
-    command: getYarnOrNPMCommand(),
+    command: yarnOrNPMCommand,
     port: 8888,
     proxyPort: 4200,
     env: { ...process.env },

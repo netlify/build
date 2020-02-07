@@ -1,4 +1,4 @@
-const { hasRequiredDeps, hasRequiredFiles, getYarnOrNPMCommand, scanScripts } = require('./utils/jsdetect')
+const { hasRequiredDeps, hasRequiredFiles, yarnOrNPMCommand, scanScripts } = require('./utils/jsdetect')
 
 /**
  * detection logic - artificial intelligence!
@@ -18,7 +18,7 @@ module.exports = function() {
 
   return {
     type: 'stencil',
-    command: getYarnOrNPMCommand(),
+    command: yarnOrNPMCommand,
     port: 8888, // the port that the Netlify Dev User will use
     proxyPort: 3333, // the port that stencil normally outputs
     env: { ...process.env, BROWSER: 'none', PORT: 3000 },
