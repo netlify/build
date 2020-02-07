@@ -2,7 +2,6 @@ const { basename, dirname } = require('path')
 const { stat } = require('fs')
 const { promisify } = require('util')
 
-const del = require('del')
 const cpy = require('cpy')
 const moveFile = require('move-file')
 
@@ -30,9 +29,4 @@ const getSrcGlob = async function(src) {
   return srcBasename
 }
 
-// Remove a cached file/directory from the filesystem
-const removeCacheFile = async function(cachePath) {
-  await del(cachePath, { force: true })
-}
-
-module.exports = { moveCacheFile, removeCacheFile }
+module.exports = { moveCacheFile }

@@ -1,8 +1,9 @@
 const pathExists = require('path-exists')
+const del = require('del')
 
 const { parsePath } = require('./path')
 const { getManifestInfo, writeManifest, removeManifest, isExpired } = require('./manifest')
-const { moveCacheFile, removeCacheFile } = require('./fs')
+const { moveCacheFile } = require('./fs')
 const { getCacheDir } = require('./dir')
 
 // Cache a file
@@ -18,7 +19,7 @@ const saveOne = async function(path, { move = DEFAULT_MOVE, ttl = DEFAULT_TTL, d
     return false
   }
 
-  await removeCacheFile(cachePath)
+  await del(cachePath, { force: true })
   await moveCacheFile(srcPath, cachePath, move)
   await writeManifest(manifestInfo)
 
@@ -29,10 +30,6 @@ const saveOne = async function(path, { move = DEFAULT_MOVE, ttl = DEFAULT_TTL, d
 const restoreOne = async function(path, { move = DEFAULT_MOVE } = {}) {
   const { srcPath, cachePath } = await parsePath(path)
 
-  if (await pathExists(srcPath)) {
-    return false
-  }
-
   if (!(await pathExists(cachePath))) {
     return false
   }
@@ -41,6 +38,7 @@ const restoreOne = async function(path, { move = DEFAULT_MOVE } = {}) {
     return false
   }
 
+  await del(srcPath, { force: true })
   await moveCacheFile(cachePath, srcPath, move)
 
   return true
@@ -54,7 +52,7 @@ const removeOne = async function(path) {
     return false
   }
 
-  await removeCacheFile(cachePath)
+  await del(cachePath, { force: true })
   await removeManifest(cachePath)
 
   return true
