@@ -12,7 +12,7 @@ module.exports = async function detectGitRepo(remote) {
   let repo = {}
   try {
     const gitConfig = await util.promisify(gitconfiglocal)(cwd)
-    const gitDirectory = findUp.sync(['.git'], { cwd: cwd })
+    const gitDirectory = await findUp(['.git'], { cwd: cwd })
     const baseGitPath = path.dirname(gitDirectory)
 
     if (cwd !== baseGitPath) {
