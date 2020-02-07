@@ -16,7 +16,7 @@ module.exports = {
   // Does not do anything if:
   //  - the file/directory already exists locally
   //  - the file/directory has not been cached yet
-  async onGetCache({ utils }) {
+  async onPreBuild({ utils }) {
     await utils.cache.restore('./path/to/file')
   }
   // Cache file/directory for future builds.
@@ -24,7 +24,7 @@ module.exports = {
   //  - the file/directory does not exist locally
   //  - the file/directory is already cached and its contents has not changed
   //    If this is a directory, this includes children's contents
-  async onSaveCache({ utils }) {
+  async onPostBuild({ utils }) {
     await utils.cache.save('./path/to/file')
   }
 }
@@ -36,10 +36,10 @@ module.exports = {
 // Restore/cache several files/directories
 module.exports = {
   name: 'example-plugin',
-  async onGetCache({ utils }) {
+  async onPreBuild({ utils }) {
     await utils.cache.restore(['./path/to/file', './path/to/other'])
   }
-  async onSaveCache({ utils }) {
+  async onPostBuild({ utils }) {
     await utils.cache.save(['./path/to/file', './path/to/other'])
   }
 }
@@ -75,10 +75,10 @@ done when those files won't be used anymore by the current build.
 // anymore by the current build.
 module.exports = {
   name: 'example-plugin',
-  async onGetCache({ utils }) {
+  async onPreBuild({ utils }) {
     await utils.cache.restore('./path/to/file', { move: true })
   }
-  async onSaveCache({ utils }) {
+  async onPostBuild({ utils }) {
     await utils.cache.save('./path/to/file', { move: true })
   }
 }
@@ -95,11 +95,11 @@ Only cache the file/directory for a specific amount of time.
 // Only cache the following file/directory for 1 hour
 module.exports = {
   name: 'example-plugin',
-  async onGetCache({ utils }) {
-    await utils.cache.restore('./path/to/file', { ttl: 3600 })
+  async onPreBuild({ utils }) {
+    await utils.cache.restore('./path/to/file')
   }
-  async onSaveCache({ utils: { cache } }) {
-    await utils.cache.save('./path/to/file')
+  async onPostBuild({ utils }) {
+    await utils.cache.save('./path/to/file', { ttl: 3600 })
   }
 }
 ```
@@ -121,12 +121,10 @@ speeds up caching.
 // `node_modules` directory.
 module.exports = {
   name: 'example-plugin',
-  async onGetCache({ utils }) {
-    await utils.cache.restore('node_modules', {
-      digests: ['package-lock.json', 'yarn.lock']
-    })
+  async onPreBuild({ utils }) {
+    await utils.cache.restore('node_modules')
   }
-  async onSaveCache({ utils }) {
+  async onPostBuild({ utils }) {
     await utils.cache.save('node_modules', {
       digests: ['package-lock.json', 'yarn.lock']
     })
@@ -164,7 +162,7 @@ Returns `true` if the file/directory cache was removed, `false` otherwise.
 ```js
 module.exports = {
   name: 'example-plugin',
-  async onSaveCache({ utils }) {
+  async onPostBuild({ utils }) {
     await utils.cache.remove('./path/to/file')
   },
 }
@@ -184,20 +182,18 @@ const path = './path/to/file'
 
 module.exports = {
   name: 'example-plugin',
-  async onGetCache({ utils }) {
-    const { cache } = utils
-
-    if (!(await cache.has(path))) {
+  async onPreBuild({ utils }) {
+    if (!(await utils.cache.has(path))) {
       console.log(`File ${path} not cached`)
       return
     }
 
     console.log(`About to restore cached file ${path}...`)
-    if (await cache.restore('./path/to/file')) {
+    if (await utils.cache.restore('./path/to/file')) {
       console.log(`Restored cached file ${path}`)
     }
   },
-  async onSaveCache({ utils }) {
+  async onPostBuild({ utils }) {
     if (await utils.cache.save('./path/to/file')) {
       console.log(`Saved cached file ${path}`)
     }
