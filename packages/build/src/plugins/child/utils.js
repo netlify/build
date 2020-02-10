@@ -15,7 +15,13 @@ const startUtils = async function(baseDir) {
 const getUtils = function({ utilsData: { git }, constants }) {
   const gitA = gitUtils.load(git)
   const functions = functionsUtils({ constants })
-  return { git: gitA, cache: cacheUtils, run: runUtils, functions }
+  return {
+    git: gitA,
+    cache: cacheUtils,
+    run: runUtils,
+    // TODO: enable once functions-utils is stable
+    // functions,
+  }
 }
 
 module.exports = { startUtils, getUtils }
