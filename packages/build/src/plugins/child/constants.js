@@ -16,6 +16,7 @@ const getConstants = async function({
   netlifyConfig: {
     build: { publish, functions = DEFAULT_FUNCTIONS },
   },
+  siteId,
 }) {
   const functionsDist = getFunctionsDist()
   const cacheDir = await getCacheDir()
@@ -37,6 +38,10 @@ const getConstants = async function({
      * The directory where built serverless functions are placed before deployment
      */
     FUNCTIONS_DIST: functionsDist,
+    /**
+     * The Netlify Site ID
+     */
+    SITE_ID: siteId,
     CACHE_DIR: cacheDir,
   }
   const constantsA = mapObj(constants, (key, path) => [key, normalizePath(path, baseDir)])

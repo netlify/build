@@ -49,7 +49,7 @@ const loadPlugins = async function({
 // Do it by executing the plugin `load` event handler.
 const loadPlugin = async function(
   { package, pluginPath, pluginConfig, id, core },
-  { childProcesses, index, netlifyConfig, utilsData, configPath, baseDir, token },
+  { childProcesses, index, netlifyConfig, utilsData, configPath, baseDir, token, siteId },
 ) {
   try {
     const { childProcess } = childProcesses[index]
@@ -64,6 +64,7 @@ const loadPlugin = async function(
       core,
       baseDir,
       token,
+      siteId,
     })
     const pluginCommandsA = pluginCommands.map(pluginCommand => ({ ...pluginCommand, childProcess }))
     return { pluginCommands: pluginCommandsA, id, package, core, version }
