@@ -62,7 +62,12 @@ const logLoadPlugins = function() {
 
 const logLoadPlugin = function(package, id = package, core) {
   const coreStr = core ? 'core ' : ''
-  log(yellowBright(`${SUBTEXT_PADDING}Loading ${coreStr}plugin "${id}"`))
+  const location = isLocalPath(id) ? `from "${id}"` : `"${id}"`
+  log(yellowBright(`${SUBTEXT_PADDING}Loading ${coreStr}plugin ${location}`))
+}
+
+const isLocalPath = function(package) {
+  return package.startsWith('.') || package.startsWith('/')
 }
 
 const logCommandsStart = function(commandsCount) {
