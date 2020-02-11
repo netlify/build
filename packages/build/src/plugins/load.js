@@ -15,12 +15,22 @@ const loadPlugins = async function({
   configPath,
   baseDir,
   token,
+  siteId,
 }) {
   logLoadPlugins()
 
   const pluginResults = await Promise.all(
     pluginsOptions.map((pluginOptions, index) =>
-      loadPlugin(pluginOptions, { childProcesses, index, netlifyConfig, utilsData, configPath, baseDir, token }),
+      loadPlugin(pluginOptions, {
+        childProcesses,
+        index,
+        netlifyConfig,
+        utilsData,
+        configPath,
+        baseDir,
+        token,
+        siteId,
+      }),
     ),
   )
 
