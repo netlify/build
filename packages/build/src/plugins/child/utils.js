@@ -14,8 +14,15 @@ const startUtils = async function(baseDir) {
 // Retrieve the `utils` argument.
 const getUtils = function({ utilsData: { git }, constants }) {
   const gitA = gitUtils.load(git)
+  // eslint-disable-next-line no-unused-vars
   const functions = functionsUtils({ constants })
-  return { git: gitA, cache: cacheUtils, run: runUtils, functions }
+  return {
+    git: gitA,
+    cache: cacheUtils,
+    run: runUtils,
+    // TODO: enable once functions-utils is stable
+    // functions,
+  }
 }
 
 module.exports = { startUtils, getUtils }
