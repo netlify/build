@@ -68,7 +68,7 @@ const logLoadedPlugins = function(pluginResults) {
 const getLoadedPlugin = function({ id, package, core, version }) {
   const idA = id === undefined ? '' : `${greenBright.bold(id)} from `
   const versionA = version === undefined ? '' : `@${version}`
-  const location = core ? 'build core' : greenBright.bold(`${package}${versionA}`)
+  const location = core ? 'build core' : `${greenBright.bold(package)}${versionA}`
   return `${SUBTEXT_PADDING} - ${idA}${location}`
 }
 
