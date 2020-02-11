@@ -8,7 +8,7 @@ const { getConfigPath, getBaseDir } = require('@netlify/config')
 const { logFlags, logConfigPath } = require('../log/main')
 
 // Retrieve configuration object
-const loadConfig = async function({ flags: { config, cwd }, flags: { token = NETLIFY_TOKEN, ...flags } }) {
+const loadConfig = async function({ flags: { config, cwd, dry, siteId }, flags: { token = NETLIFY_TOKEN, ...flags } }) {
   logFlags(flags)
 
   const flagsA = { ...DEFAULT_FLAGS, ...flags }
@@ -19,7 +19,7 @@ const loadConfig = async function({ flags: { config, cwd }, flags: { token = NET
 
   try {
     const netlifyConfig = await resolveConfig(configPath, flagsA)
-    return { netlifyConfig, configPath, token, baseDir }
+    return { netlifyConfig, configPath, baseDir, token, dry, siteId }
   } catch (error) {
     error.message = `Netlify configuration error:\n${error.message}`
     throw error
