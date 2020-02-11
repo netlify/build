@@ -61,9 +61,9 @@ const logLoadPlugins = function() {
 }
 
 const logLoadPlugin = function(package, id = package, core) {
-  const coreStr = core ? 'core ' : ''
+  const coreStr = core ? ' from build core' : ''
   const location = isLocalPath(id) ? `from "${id}"` : `"${id}"`
-  log(yellowBright(`${SUBTEXT_PADDING}Loading ${coreStr}plugin ${location}`))
+  log(yellowBright(`${SUBTEXT_PADDING}Loading plugin ${location}${coreStr}`))
 }
 
 const isLocalPath = function(package) {
