@@ -18,12 +18,16 @@ const loadPlugins = async function({
 }) {
   logLoadPlugins()
 
-  const pluginCommands = await Promise.all(
+  const pluginResults = await Promise.all(
     pluginsOptions.map((pluginOptions, index) =>
       loadPlugin(pluginOptions, { childProcesses, index, netlifyConfig, utilsData, configPath, baseDir, token }),
     ),
   )
-  const pluginCommandsA = pluginCommands
+
+  logLoadedPlugins(pluginResults)
+
+  const pluginCommandsA = pluginResults
+    .map(getPluginCommands)
     .flat()
     .filter(isNotDuplicate)
     .filter(isNotOverridden)
@@ -37,12 +41,9 @@ const loadPlugin = async function(
   { package, pluginPath, pluginConfig, id, core },
   { childProcesses, index, netlifyConfig, utilsData, configPath, baseDir, token },
 ) {
-  logLoadPlugin(id, package, core)
-
-  const { childProcess } = childProcesses[index]
-
   try {
-    const { pluginCommands } = await callChild(childProcess, 'load', {
+    const { childProcess } = childProcesses[index]
+    const { pluginCommands, version } = await callChild(childProcess, 'load', {
       id,
       package,
       pluginPath,
@@ -55,13 +56,17 @@ const loadPlugin = async function(
       token,
     })
     const pluginCommandsA = pluginCommands.map(pluginCommand => ({ ...pluginCommand, childProcess }))
-    return pluginCommandsA
+    return { pluginCommands: pluginCommandsA, id, package, core, version }
   } catch (error) {
     const idA = id === undefined ? package : id
     error.message = `Error loading "${idA}" plugin:\n${error.message}`
     error.cleanStack = true
     throw error
   }
+}
+
+const getPluginCommands = function({ pluginCommands }) {
+  return pluginCommands
 }
 
 // Remove plugin commands that are duplicates.
