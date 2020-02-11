@@ -57,9 +57,9 @@ const handleEvent = async function(callId, eventName, payload, state) {
 
 // Initial plugin load
 const load = async function(payload, state) {
-  const { context, pluginCommands } = await loadPlugin(payload)
+  const { context, pluginCommands, version } = await loadPlugin(payload)
   state.context = context
-  return { pluginCommands }
+  return { pluginCommands, version }
 }
 
 // Run a specific plugin event handler
