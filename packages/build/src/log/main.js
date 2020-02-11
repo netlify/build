@@ -60,10 +60,16 @@ const logLoadPlugins = function() {
   log(cyanBright.bold(`\n${HEADING_PREFIX} Loading plugins`))
 }
 
-const logLoadPlugin = function(id, package, core) {
-  const idA = id === undefined ? '' : `"${id}" `
-  const location = core ? 'build core' : package
-  log(yellowBright(`${SUBTEXT_PADDING}Loading plugin ${idA}from ${location}`))
+const logLoadedPlugins = function(pluginResults) {
+  const loadedPlugins = pluginResults.map(getLoadedPlugin).join('\n')
+  log(loadedPlugins)
+}
+
+const getLoadedPlugin = function({ id, package, core, version }) {
+  const idA = id === undefined ? '' : `${greenBright.bold(id)} from `
+  const versionA = version === undefined ? '' : `@${version}`
+  const location = core ? 'build core' : greenBright.bold(`${package}${versionA}`)
+  return `${SUBTEXT_PADDING} - ${idA}${location}`
 }
 
 const logCommandsStart = function(commandsCount) {
@@ -212,7 +218,7 @@ module.exports = {
   logResolveError,
   logInstallPlugins,
   logLoadPlugins,
-  logLoadPlugin,
+  logLoadedPlugins,
   logCommandsStart,
   logDryRunStart,
   logDryRunCommand,

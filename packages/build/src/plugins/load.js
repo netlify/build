@@ -1,6 +1,6 @@
 const groupBy = require('group-by')
 
-const { logLoadPlugins, logLoadPlugin } = require('../log/main')
+const { logLoadPlugins, logLoadedPlugins } = require('../log/main')
 
 const { isNotOverridden } = require('./override')
 const { callChild } = require('./ipc')
