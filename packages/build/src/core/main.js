@@ -34,7 +34,7 @@ const build = async function(flags) {
   try {
     logBuildStart()
 
-    const { netlifyConfig, configPath, token, baseDir } = await loadConfig({ flags })
+    const { netlifyConfig, configPath, baseDir, token, dry, siteId } = await loadConfig({ flags })
 
     const pluginsOptions = await getPluginsOptions(netlifyConfig, baseDir)
     await installPlugins(pluginsOptions, baseDir)
@@ -45,17 +45,17 @@ const build = async function(flags) {
       configPath,
       baseDir,
       token,
-      flags,
+      dry,
     })
 
-    if (flags.dry) {
+    if (dry) {
       return true
     }
 
     logBuildSuccess()
     const duration = endTimer(buildTimer, 'Netlify Build')
     logBuildEnd()
-    await trackBuildComplete({ commandsCount, netlifyConfig, duration, flags })
+    await trackBuildComplete({ commandsCount, netlifyConfig, duration, siteId })
     return true
   } catch (error) {
     logBuildError(error)
@@ -63,7 +63,7 @@ const build = async function(flags) {
   }
 }
 
-const buildRun = async function({ pluginsOptions, netlifyConfig, configPath, baseDir, token, flags }) {
+const buildRun = async function({ pluginsOptions, netlifyConfig, configPath, baseDir, token, dry }) {
   const utilsData = await startUtils(baseDir)
   const childProcesses = await startPlugins(pluginsOptions, baseDir)
 
@@ -76,7 +76,7 @@ const buildRun = async function({ pluginsOptions, netlifyConfig, configPath, bas
       configPath,
       baseDir,
       token,
-      flags,
+      dry,
     })
   } finally {
     await stopPlugins(childProcesses)
@@ -91,7 +91,7 @@ const executeCommands = async function({
   configPath,
   baseDir,
   token,
-  flags: { dry },
+  dry,
 }) {
   const pluginsCommands = await loadPlugins({
     pluginsOptions,
