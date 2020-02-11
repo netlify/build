@@ -60,10 +60,9 @@ const logLoadPlugins = function() {
   log(cyanBright.bold(`\n${HEADING_PREFIX} Loading plugins`))
 }
 
-const logLoadPlugin = function(id, package, core) {
-  const idA = id === undefined ? '' : `"${id}" `
-  const location = core ? 'build core' : package
-  log(yellowBright(`${SUBTEXT_PADDING}Loading plugin ${idA}from ${location}`))
+const logLoadPlugin = function(package, id = package, core) {
+  const coreStr = core ? 'core ' : ''
+  log(yellowBright(`${SUBTEXT_PADDING}Loading ${coreStr}plugin "${id}"`))
 }
 
 const logCommandsStart = function(commandsCount) {

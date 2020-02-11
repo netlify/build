@@ -37,7 +37,7 @@ const loadPlugin = async function(
   { package, pluginPath, pluginConfig, id, core },
   { childProcesses, index, netlifyConfig, utilsData, configPath, baseDir, token },
 ) {
-  logLoadPlugin(id, package, core)
+  logLoadPlugin(package, id, core)
 
   const { childProcess } = childProcesses[index]
 
