@@ -5,11 +5,12 @@ const {
 const resolveConfig = require('@netlify/config')
 const { getConfigPath, getBaseDir } = require('@netlify/config')
 
-const { logFlags, logConfigPath } = require('../log/main')
+const { logFlags, logCurrentDirectory, logConfigPath } = require('../log/main')
 
 // Retrieve configuration object
 const loadConfig = async function({ flags: { config, cwd, dry, siteId }, flags: { token = NETLIFY_TOKEN, ...flags } }) {
   logFlags(flags)
+  logCurrentDirectory()
 
   const flagsA = { ...DEFAULT_FLAGS, ...flags }
 
