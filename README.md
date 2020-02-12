@@ -16,13 +16,13 @@ Netlify build is the next generation of CI/CD tooling for modern web application
   * [1. Extending via config](#1-extending-via-config)
   * [2. Extending via plugins](#2-extending-via-plugins)
 - [Build Lifecycle](#build-lifecycle)
-  * [`onInit` lifecycle](#oninit-lifecycle)
-  * [`onPreBuild` lifecycle](#onprebuild-lifecycle)
-  * [`onBuild` lifecycle](#onbuild-lifecycle)
-  * [`onPostBuild` lifecycle](#onpostbuild-lifecycle)
-  * [`onSuccess` lifecycle](#onsuccess-lifecycle)
-  * [`onError` lifecycle](#onerror-lifecycle)
-  * [`onEnd` lifecycle](#onend-lifecycle)
+  * [`onInit`](#oninit)
+  * [`onPreBuild`](#onprebuild)
+  * [`onBuild`](#onbuild)
+  * [`onPostBuild`](#onpostbuild)
+  * [`onSuccess`](#onsuccess)
+  * [`onError`](#onerror)
+  * [`onEnd`](#onend)
 - [Netlify Configuration](#netlify-configuration)
 - [Plugins](#plugins)
 - [What can plugins do?](#what-can-plugins-do)
@@ -149,7 +149,7 @@ The Lifecycle flows the events in order and executes and their `onPre` & `onPost
 ```
 
 <!-- AUTO-GENERATED-CONTENT:START (LIFECYCLE_DOCS) -->
-### `onInit` lifecycle
+### `onInit`
 
 `onInit` - Runs before anything else
 
@@ -197,7 +197,7 @@ build:
   
 </details>
 
-### `onPreBuild` lifecycle
+### `onPreBuild`
 
 `onPreBuild` - Before build commands are executed
 
@@ -245,7 +245,7 @@ build:
   
 </details>
 
-### `onBuild` lifecycle
+### `onBuild`
 
 `onBuild` - Build commands are executed
 
@@ -293,7 +293,7 @@ build:
   
 </details>
 
-### `onPostBuild` lifecycle
+### `onPostBuild`
 
 `onPostBuild` - After Build commands are executed
 
@@ -341,7 +341,7 @@ build:
   
 </details>
 
-### `onSuccess` lifecycle
+### `onSuccess`
 
 `onSuccess` - Runs on build success
 
@@ -389,7 +389,7 @@ build:
   
 </details>
 
-### `onError` lifecycle
+### `onError`
 
 `onError` - Runs on build error
 
@@ -437,7 +437,7 @@ build:
   
 </details>
 
-### `onEnd` lifecycle
+### `onEnd`
 
 `onEnd` - Runs on build error or success
 
