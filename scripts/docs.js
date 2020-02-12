@@ -118,7 +118,7 @@ const config = {
 
       docBlocs.forEach(data => {
         const eventName = data.description.summary.match(/^`(.*)`/)
-        updatedContent += `### lifecycle.${eventName[1]}\n\n`
+        updatedContent += `### ${eventName[1]} lifecycle\n\n`
         updatedContent += `${data.description.full}\n\n`
 
         const pluginExample = renderPluginExample(eventName[1])
@@ -221,8 +221,11 @@ function renderPluginExample(name) {
   \`\`\`yml
   plugins:
     - package: ./path/to/plugin
-      config:
-        foo: bar
+  \`\`\`
+
+  \`\`\`toml
+  [[plugins]]
+  package = "./path/to/plugin"
   \`\`\`
   `
 }
