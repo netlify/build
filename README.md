@@ -163,10 +163,10 @@ Runs before anything else
 
   ```js
   // File my-plugin.js
-  module.exports = function myPlugin(pluginConfig) {
+  module.exports = function myPlugin(conf) {
     return {
-      onInit: () => {
-        console.log('Do thing on onInit event')
+      onInit: ({ pluginConfig, netlifyConfig, constants, utils }) => {
+        console.log('Run custom logic during onInit event')
       }
     }
   }
@@ -233,10 +233,10 @@ Before build commands are executed
 
   ```js
   // File my-plugin.js
-  module.exports = function myPlugin(pluginConfig) {
+  module.exports = function myPlugin(conf) {
     return {
-      onPreBuild: () => {
-        console.log('Do thing on onPreBuild event')
+      onPreBuild: ({ pluginConfig, netlifyConfig, constants, utils }) => {
+        console.log('Run custom logic during onPreBuild event')
       }
     }
   }
@@ -303,10 +303,10 @@ Build commands are executed
 
   ```js
   // File my-plugin.js
-  module.exports = function myPlugin(pluginConfig) {
+  module.exports = function myPlugin(conf) {
     return {
-      onBuild: () => {
-        console.log('Do thing on onBuild event')
+      onBuild: ({ pluginConfig, netlifyConfig, constants, utils }) => {
+        console.log('Run custom logic during onBuild event')
       }
     }
   }
@@ -373,10 +373,10 @@ After Build commands are executed
 
   ```js
   // File my-plugin.js
-  module.exports = function myPlugin(pluginConfig) {
+  module.exports = function myPlugin(conf) {
     return {
-      onPostBuild: () => {
-        console.log('Do thing on onPostBuild event')
+      onPostBuild: ({ pluginConfig, netlifyConfig, constants, utils }) => {
+        console.log('Run custom logic during onPostBuild event')
       }
     }
   }
@@ -443,10 +443,10 @@ Runs on build success
 
   ```js
   // File my-plugin.js
-  module.exports = function myPlugin(pluginConfig) {
+  module.exports = function myPlugin(conf) {
     return {
-      onSuccess: () => {
-        console.log('Do thing on onSuccess event')
+      onSuccess: ({ pluginConfig, netlifyConfig, constants, utils }) => {
+        console.log('Run custom logic during onSuccess event')
       }
     }
   }
@@ -513,10 +513,10 @@ Runs on build error
 
   ```js
   // File my-plugin.js
-  module.exports = function myPlugin(pluginConfig) {
+  module.exports = function myPlugin(conf) {
     return {
-      onError: () => {
-        console.log('Do thing on onError event')
+      onError: ({ pluginConfig, netlifyConfig, constants, utils }) => {
+        console.log('Run custom logic during onError event')
       }
     }
   }
@@ -583,10 +583,10 @@ Runs on build error or success
 
   ```js
   // File my-plugin.js
-  module.exports = function myPlugin(pluginConfig) {
+  module.exports = function myPlugin(conf) {
     return {
-      onEnd: () => {
-        console.log('Do thing on onEnd event')
+      onEnd: ({ pluginConfig, netlifyConfig, constants, utils }) => {
+        console.log('Run custom logic during onEnd event')
       }
     }
   }

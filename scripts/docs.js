@@ -209,10 +209,10 @@ function renderPluginExample(name) {
 
   \`\`\`js
   // File my-plugin.js
-  module.exports = function myPlugin(pluginConfig) {
+  module.exports = function myPlugin(conf) {
     return {
-      ${name}: () => {
-        console.log('Do thing on ${name} event')
+      ${name}: ({ pluginConfig, netlifyConfig, constants, utils }) => {
+        console.log('Run custom logic during ${name} event')
       }
     }
   }
