@@ -37,7 +37,7 @@ const logConfigPath = function(configPath) {
     return
   }
 
-  log(`${cyanBright.bold(`${HEADING_PREFIX} Using config file:`)}
+  log(`${cyanBright.bold(`${HEADING_PREFIX} Config file`)}
 ${SUBTEXT_PADDING}${configPath}
 `)
 }
