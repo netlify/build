@@ -23,7 +23,7 @@ const getConstants = async function({
 
   const constants = {
     /**
-     * Path to the netlify configuration file
+     * Path to the Netlify configuration file
      */
     CONFIG_PATH: configPath,
     /**
@@ -42,6 +42,9 @@ const getConstants = async function({
      * The Netlify Site ID
      */
     SITE_ID: siteId,
+    /**
+     * Path to the Netlify build cache folder
+     */
     CACHE_DIR: cacheDir,
   }
   const constantsA = mapObj(constants, (key, path) => [key, normalizePath(path, baseDir, key)])
