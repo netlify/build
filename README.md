@@ -155,11 +155,9 @@ Runs before anything else
 
 
 <details>
-  <summary>Using onInit</summary>
+  <summary>Using onInit in a plugin</summary>
   
   <br/>
-
-  **1. Using with a Plugin**
 
   Below is an example plugin using the `onInit` event handler
 
@@ -185,15 +183,22 @@ Runs before anything else
   package = "./path/to/plugin"
   ```
   
+</details>
 
-  **2. Using with via `build.lifecycle`**
 
-```yml
-build:
-  lifecycle:
-    onInit:
-      - echo "Do thing on onInit event"
-```
+<details>
+  <summary>Using onInit via Netlify config</summary>
+  
+  <br/>
+
+  Below is an example of how to use the `onInit` event in the Netlify config file.
+
+  ```yml
+  build:
+    lifecycle:
+      onInit:
+        - echo "Do thing on onInit event"
+  ```
   
 </details>
 
@@ -203,11 +208,9 @@ Before build commands are executed
 
 
 <details>
-  <summary>Using onPreBuild</summary>
+  <summary>Using onPreBuild in a plugin</summary>
   
   <br/>
-
-  **1. Using with a Plugin**
 
   Below is an example plugin using the `onPreBuild` event handler
 
@@ -233,15 +236,22 @@ Before build commands are executed
   package = "./path/to/plugin"
   ```
   
+</details>
 
-  **2. Using with via `build.lifecycle`**
 
-```yml
-build:
-  lifecycle:
-    onPreBuild:
-      - echo "Do thing on onPreBuild event"
-```
+<details>
+  <summary>Using onPreBuild via Netlify config</summary>
+  
+  <br/>
+
+  Below is an example of how to use the `onPreBuild` event in the Netlify config file.
+
+  ```yml
+  build:
+    lifecycle:
+      onPreBuild:
+        - echo "Do thing on onPreBuild event"
+  ```
   
 </details>
 
@@ -251,11 +261,9 @@ Build commands are executed
 
 
 <details>
-  <summary>Using onBuild</summary>
+  <summary>Using onBuild in a plugin</summary>
   
   <br/>
-
-  **1. Using with a Plugin**
 
   Below is an example plugin using the `onBuild` event handler
 
@@ -281,15 +289,22 @@ Build commands are executed
   package = "./path/to/plugin"
   ```
   
+</details>
 
-  **2. Using with via `build.lifecycle`**
 
-```yml
-build:
-  lifecycle:
-    onBuild:
-      - echo "Do thing on onBuild event"
-```
+<details>
+  <summary>Using onBuild via Netlify config</summary>
+  
+  <br/>
+
+  Below is an example of how to use the `onBuild` event in the Netlify config file.
+
+  ```yml
+  build:
+    lifecycle:
+      onBuild:
+        - echo "Do thing on onBuild event"
+  ```
   
 </details>
 
@@ -299,11 +314,9 @@ After Build commands are executed
 
 
 <details>
-  <summary>Using onPostBuild</summary>
+  <summary>Using onPostBuild in a plugin</summary>
   
   <br/>
-
-  **1. Using with a Plugin**
 
   Below is an example plugin using the `onPostBuild` event handler
 
@@ -329,15 +342,22 @@ After Build commands are executed
   package = "./path/to/plugin"
   ```
   
+</details>
 
-  **2. Using with via `build.lifecycle`**
 
-```yml
-build:
-  lifecycle:
-    onPostBuild:
-      - echo "Do thing on onPostBuild event"
-```
+<details>
+  <summary>Using onPostBuild via Netlify config</summary>
+  
+  <br/>
+
+  Below is an example of how to use the `onPostBuild` event in the Netlify config file.
+
+  ```yml
+  build:
+    lifecycle:
+      onPostBuild:
+        - echo "Do thing on onPostBuild event"
+  ```
   
 </details>
 
@@ -347,11 +367,9 @@ Runs on build success
 
 
 <details>
-  <summary>Using onSuccess</summary>
+  <summary>Using onSuccess in a plugin</summary>
   
   <br/>
-
-  **1. Using with a Plugin**
 
   Below is an example plugin using the `onSuccess` event handler
 
@@ -377,15 +395,22 @@ Runs on build success
   package = "./path/to/plugin"
   ```
   
+</details>
 
-  **2. Using with via `build.lifecycle`**
 
-```yml
-build:
-  lifecycle:
-    onSuccess:
-      - echo "Do thing on onSuccess event"
-```
+<details>
+  <summary>Using onSuccess via Netlify config</summary>
+  
+  <br/>
+
+  Below is an example of how to use the `onSuccess` event in the Netlify config file.
+
+  ```yml
+  build:
+    lifecycle:
+      onSuccess:
+        - echo "Do thing on onSuccess event"
+  ```
   
 </details>
 
@@ -395,11 +420,9 @@ Runs on build error
 
 
 <details>
-  <summary>Using onError</summary>
+  <summary>Using onError in a plugin</summary>
   
   <br/>
-
-  **1. Using with a Plugin**
 
   Below is an example plugin using the `onError` event handler
 
@@ -425,15 +448,22 @@ Runs on build error
   package = "./path/to/plugin"
   ```
   
+</details>
 
-  **2. Using with via `build.lifecycle`**
 
-```yml
-build:
-  lifecycle:
-    onError:
-      - echo "Do thing on onError event"
-```
+<details>
+  <summary>Using onError via Netlify config</summary>
+  
+  <br/>
+
+  Below is an example of how to use the `onError` event in the Netlify config file.
+
+  ```yml
+  build:
+    lifecycle:
+      onError:
+        - echo "Do thing on onError event"
+  ```
   
 </details>
 
@@ -443,11 +473,9 @@ Runs on build error or success
 
 
 <details>
-  <summary>Using onEnd</summary>
+  <summary>Using onEnd in a plugin</summary>
   
   <br/>
-
-  **1. Using with a Plugin**
 
   Below is an example plugin using the `onEnd` event handler
 
@@ -473,15 +501,22 @@ Runs on build error or success
   package = "./path/to/plugin"
   ```
   
+</details>
 
-  **2. Using with via `build.lifecycle`**
 
-```yml
-build:
-  lifecycle:
-    onEnd:
-      - echo "Do thing on onEnd event"
-```
+<details>
+  <summary>Using onEnd via Netlify config</summary>
+  
+  <br/>
+
+  Below is an example of how to use the `onEnd` event in the Netlify config file.
+
+  ```yml
+  build:
+    lifecycle:
+      onEnd:
+        - echo "Do thing on onEnd event"
+  ```
   
 </details>
 <!-- AUTO-GENERATED-CONTENT:END (PLUGINS) -->

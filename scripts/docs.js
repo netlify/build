@@ -124,7 +124,9 @@ const config = {
 
         const pluginExample = renderPluginExample(eventName[1])
         const configExample = renderConfigExample(eventName[1])
-        updatedContent += collapse(`Using ${eventName[1]}`, `${pluginExample}\n${configExample}`)
+        updatedContent += collapse(`Using ${eventName[1]} in a plugin`, `${pluginExample}`)
+        updatedContent += '\n'
+        updatedContent += collapse(`Using ${eventName[1]} via Netlify config`, `${configExample}`)
 
         /* maybe fold
         <details>
@@ -203,8 +205,6 @@ function renderPluginExample(name) {
   return `
   <br/>
 
-  **1. Using with a Plugin**
-
   Below is an example plugin using the \`${name}\` event handler
 
   \`\`\`js
@@ -233,14 +233,16 @@ function renderPluginExample(name) {
 
 function renderConfigExample(name) {
   return `
-  **2. Using with via \`build.lifecycle\`**
+  <br/>
 
-\`\`\`yml
-build:
-  lifecycle:
-    ${name}:
-      - echo "Do thing on ${name} event"
-\`\`\`
+  Below is an example of how to use the \`${name}\` event in the Netlify config file.
+
+  \`\`\`yml
+  build:
+    lifecycle:
+      ${name}:
+        - echo "Do thing on ${name} event"
+  \`\`\`
   `
 }
 
