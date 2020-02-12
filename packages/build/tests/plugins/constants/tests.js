@@ -56,3 +56,7 @@ test('constants.CACHE_DIR local', async t => {
 test('constants.CACHE_DIR CI', async t => {
   await runFixture(t, 'cache', { env: { DEPLOY_PRIME_URL: 'test' } })
 })
+
+test('constants.SITE_ID', async t => {
+  await runFixture(t, 'site_id', { flags: '--site-id test' })
+})

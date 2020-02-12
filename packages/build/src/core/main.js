@@ -46,6 +46,7 @@ const build = async function(flags) {
       baseDir,
       token,
       dry,
+      siteId,
     })
 
     if (dry) {
@@ -63,7 +64,7 @@ const build = async function(flags) {
   }
 }
 
-const buildRun = async function({ pluginsOptions, netlifyConfig, configPath, baseDir, token, dry }) {
+const buildRun = async function({ pluginsOptions, netlifyConfig, configPath, baseDir, token, dry, siteId }) {
   const utilsData = await startUtils(baseDir)
   const childProcesses = await startPlugins(pluginsOptions, baseDir)
 
@@ -77,6 +78,7 @@ const buildRun = async function({ pluginsOptions, netlifyConfig, configPath, bas
       baseDir,
       token,
       dry,
+      siteId,
     })
   } finally {
     await stopPlugins(childProcesses)
@@ -92,6 +94,7 @@ const executeCommands = async function({
   baseDir,
   token,
   dry,
+  siteId,
 }) {
   const pluginsCommands = await loadPlugins({
     pluginsOptions,
@@ -101,6 +104,7 @@ const executeCommands = async function({
     configPath,
     baseDir,
     token,
+    siteId,
   })
 
   const { mainCommands, buildCommands, endCommands, errorCommands, commandsCount } = getCommands({
