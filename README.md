@@ -591,6 +591,8 @@ Using a smart build plugin you could avoid expensive time consuming build proces
 <details>
   <summary>Some plugin examples</summary>
 
+  <br/>
+
   Below is a list of things possible with Build plugins to get some ideas flowing
 
   - **Gatsby cache plugin**
@@ -629,6 +631,8 @@ Some additional benefits we think will materialize out of standardizing these fl
 
 <details>
   <summary>Some plugin examples</summary>
+
+  <br/>
 
   Below is a list of things possible with Build plugins to get some ideas flowing
 
