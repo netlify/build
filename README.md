@@ -182,23 +182,6 @@ Runs before anything else
   plugins:
     - package: ./path/to/my-plugin.js
   ```
-
-  `netlify.toml` example:
-
-  ```toml
-  [[plugins]]
-  package = "./path/to/my-plugin.js"
-  ```
-
-  `netlify.json` example:
-
-  ```json
-  {
-    "plugins": [{
-      "package": "./path/to/my-plugin.js"
-    }]
-  }
-  ```
   
 </details>
 
@@ -251,23 +234,6 @@ Before build commands are executed
   ```yml
   plugins:
     - package: ./path/to/my-plugin.js
-  ```
-
-  `netlify.toml` example:
-
-  ```toml
-  [[plugins]]
-  package = "./path/to/my-plugin.js"
-  ```
-
-  `netlify.json` example:
-
-  ```json
-  {
-    "plugins": [{
-      "package": "./path/to/my-plugin.js"
-    }]
-  }
   ```
   
 </details>
@@ -322,23 +288,6 @@ Build commands are executed
   plugins:
     - package: ./path/to/my-plugin.js
   ```
-
-  `netlify.toml` example:
-
-  ```toml
-  [[plugins]]
-  package = "./path/to/my-plugin.js"
-  ```
-
-  `netlify.json` example:
-
-  ```json
-  {
-    "plugins": [{
-      "package": "./path/to/my-plugin.js"
-    }]
-  }
-  ```
   
 </details>
 
@@ -391,23 +340,6 @@ After Build commands are executed
   ```yml
   plugins:
     - package: ./path/to/my-plugin.js
-  ```
-
-  `netlify.toml` example:
-
-  ```toml
-  [[plugins]]
-  package = "./path/to/my-plugin.js"
-  ```
-
-  `netlify.json` example:
-
-  ```json
-  {
-    "plugins": [{
-      "package": "./path/to/my-plugin.js"
-    }]
-  }
   ```
   
 </details>
@@ -462,23 +394,6 @@ Runs on build success
   plugins:
     - package: ./path/to/my-plugin.js
   ```
-
-  `netlify.toml` example:
-
-  ```toml
-  [[plugins]]
-  package = "./path/to/my-plugin.js"
-  ```
-
-  `netlify.json` example:
-
-  ```json
-  {
-    "plugins": [{
-      "package": "./path/to/my-plugin.js"
-    }]
-  }
-  ```
   
 </details>
 
@@ -532,23 +447,6 @@ Runs on build error
   plugins:
     - package: ./path/to/my-plugin.js
   ```
-
-  `netlify.toml` example:
-
-  ```toml
-  [[plugins]]
-  package = "./path/to/my-plugin.js"
-  ```
-
-  `netlify.json` example:
-
-  ```json
-  {
-    "plugins": [{
-      "package": "./path/to/my-plugin.js"
-    }]
-  }
-  ```
   
 </details>
 
@@ -601,23 +499,6 @@ Runs on build error or success
   ```yml
   plugins:
     - package: ./path/to/my-plugin.js
-  ```
-
-  `netlify.toml` example:
-
-  ```toml
-  [[plugins]]
-  package = "./path/to/my-plugin.js"
-  ```
-
-  `netlify.json` example:
-
-  ```json
-  {
-    "plugins": [{
-      "package": "./path/to/my-plugin.js"
-    }]
-  }
   ```
   
 </details>
@@ -732,6 +613,13 @@ plugins:
 ```
 
 Read the docs for [more information on building plugins](https://github.com/netlify/build/blob/master/docs/creating-a-plugin.md)
+
+The above example shows show to use `netlify.yml` with YAML syntax. It's also possible to keep using `toml`. Adding a plugin in TOML looks like:
+
+```toml
+[[plugins]]
+package = "./path/to/my-plugin.js"
+```
 
 ## What can plugins do?
 

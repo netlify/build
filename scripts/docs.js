@@ -228,23 +228,6 @@ function renderPluginExample(name) {
   plugins:
     - package: ./path/to/my-plugin.js
   \`\`\`
-
-  \`netlify.toml\` example:
-
-  \`\`\`toml
-  [[plugins]]
-  package = "./path/to/my-plugin.js"
-  \`\`\`
-
-  \`netlify.json\` example:
-
-  \`\`\`json
-  {
-    "plugins": [{
-      "package": "./path/to/my-plugin.js"
-    }]
-  }
-  \`\`\`
   `
 }
 
