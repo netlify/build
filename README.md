@@ -26,7 +26,7 @@ Netlify build is the next generation of CI/CD tooling for modern web application
 - [Netlify Configuration](#netlify-configuration)
 - [Plugins](#plugins)
 - [What can plugins do?](#what-can-plugins-do)
-  * [1. Optimizing build speeds & lowing build cost](#1-optimizing-build-speeds--lowing-build-cost)
+  * [1. Optimizing build speeds & lowing cost](#1-optimizing-build-speeds--lowing-cost)
   * [2. Standardize workflows & developer productivity](#2-standardize-workflows--developer-productivity)
 - [Community Plugins](#community-plugins)
 - [CLI commands](#cli-commands)
@@ -582,11 +582,15 @@ Read the docs for [more information on building plugins](https://github.com/netl
 
 Plugins can do **a-lot** and we are excited what the JAMstack community will build!
 
-Below are some areas where build plugins can help expands whats possible in your site builds.
+Below are some areas where build plugins can help expands what is possible in site builds.
 
-### 1. Optimizing build speeds & lowing build cost
+### 1. Optimizing build speeds & lowing cost
 
-Using a smart build plugin you could avoid expensive time consuming build processes such as optimizing the same images every build, avoiding long running builds if relevant files haven't changed, or running incremental builds.
+Using a smart build plugin, you can avoid & optimize expensive time consuming build processes.
+
+This will help users avoid things like optimizing the same images every build, running builds when irrelevant `README.md` files have changed, building site files when only serverless functions have changed etc.
+
+By leveraging the [git](https://github.com/netlify/build/blob/master/packages/git-utils/README.md) and [caching](https://github.com/netlify/build/blob/master/packages/cache-utils/README.md) utilities provided many things are possible!
 
 <details>
   <summary>Some plugin examples</summary>
@@ -611,17 +615,17 @@ Using a smart build plugin you could avoid expensive time consuming build proces
 
 ### 2. Standardize workflows & developer productivity
 
-Setting up new projects & build tools is no easy feat. The amount of complexity that comes with setting up a production build environment is non trivial & typically replicated over and over again for projects.
+In today's age of JavaScript fatigue, setting up new projects & build tools is no easy feat. The amount of complexity that comes with setting up a production build environment is non trivial & typically replicated over and over again for projects.
 
-Build plugins are designed to help streamline this flow & help scale processes across a growing teams.
+Build plugins are designed to help streamline this flow & help scale processes across growing teams.
 
-By abstracting common build tasks **up the stack** out of specific static site generator tools, this allows for plugins to be re-used in any type of project regardless of the underlying framework. This is big news.
+By abstracting common build tasks **up the stack**, this allows for plugins to be re-used in any type of project regardless of the underlying framework or static site generator.
 
-Plugins are meant to be shared within teams & in the broader JAMStack ecosystem. This enables for developers & teams to focus more time on building their app and less time on setting up the CI pipeline.
+Plugins are meant to be shared within teams & in the broader JAMStack ecosystem. This enables developers & teams to focus more time on building their app and less time on setting up the plumbing of a CI pipeline.
 
 Some additional benefits we think will materialize out of standardizing these flows include:
 
-- Better security practices
+- Improved security practices
 - Increased compliance & accessibility
 - Enforcing performance budgets
 - Less time on-boarding new developers to the team
@@ -630,7 +634,7 @@ Some additional benefits we think will materialize out of standardizing these fl
 - & ultimately shipping more awesome
 
 <details>
-  <summary>Some plugin examples</summary>
+  <summary>Some workflow plugin examples</summary>
 
   <br/>
 
@@ -657,11 +661,11 @@ Some additional benefits we think will materialize out of standardizing these fl
 
 </details>
 
-We are excited to see what the community will come up with next.
-
 ## Community Plugins
 
 There is a plugins directory of community created plugins over at https://github.com/netlify/plugins.
+
+We are excited to see what the community will come up with next.
 
 <!-- AUTO-GENERATED-CONTENT:START (COMMUNITY_PLUGINS) -->
 | Plugin | Author |
@@ -687,7 +691,7 @@ To add a plugin, add information to the
 
 Like [Netlify dev](https://www.netlify.com/products/dev/), Netlify build runs locally and in the remote CI context
 
-Install the [Netlify CLI], if you haven't already
+Install the [Netlify CLI](https://github.com/netlify/cli), if you haven't already.
 
 ```
 npm install netlify-cli -g
