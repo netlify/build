@@ -119,7 +119,8 @@ const config = {
       docBlocs.forEach(data => {
         const eventName = data.description.summary.match(/^`(.*)`/)
         updatedContent += `### \`${eventName[1]}\`\n\n`
-        updatedContent += `${data.description.full}\n\n`
+        const cleanDesc = data.description.full.replace(/^`(.*)` - /g, '')
+        updatedContent += `${cleanDesc}\n\n`
 
         const pluginExample = renderPluginExample(eventName[1])
         const configExample = renderConfigExample(eventName[1])

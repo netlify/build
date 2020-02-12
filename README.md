@@ -151,7 +151,7 @@ The Lifecycle flows the events in order and executes and their `onPre` & `onPost
 <!-- AUTO-GENERATED-CONTENT:START (LIFECYCLE_DOCS) -->
 ### `onInit`
 
-`onInit` - Runs before anything else
+Runs before anything else
 
 
 <details>
@@ -199,7 +199,7 @@ build:
 
 ### `onPreBuild`
 
-`onPreBuild` - Before build commands are executed
+Before build commands are executed
 
 
 <details>
@@ -247,7 +247,7 @@ build:
 
 ### `onBuild`
 
-`onBuild` - Build commands are executed
+Build commands are executed
 
 
 <details>
@@ -295,7 +295,7 @@ build:
 
 ### `onPostBuild`
 
-`onPostBuild` - After Build commands are executed
+After Build commands are executed
 
 
 <details>
@@ -343,7 +343,7 @@ build:
 
 ### `onSuccess`
 
-`onSuccess` - Runs on build success
+Runs on build success
 
 
 <details>
@@ -391,7 +391,7 @@ build:
 
 ### `onError`
 
-`onError` - Runs on build error
+Runs on build error
 
 
 <details>
@@ -439,7 +439,7 @@ build:
 
 ### `onEnd`
 
-`onEnd` - Runs on build error or success
+Runs on build error or success
 
 
 <details>
