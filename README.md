@@ -16,18 +16,18 @@ Netlify build is the next generation of CI/CD tooling for modern web application
   * [1. Extending via config](#1-extending-via-config)
   * [2. Extending via plugins](#2-extending-via-plugins)
 - [Build Lifecycle](#build-lifecycle)
-  * [onInit lifecycle](#oninit-lifecycle)
-  * [onPreBuild lifecycle](#onprebuild-lifecycle)
-  * [onBuild lifecycle](#onbuild-lifecycle)
-  * [onPostBuild lifecycle](#onpostbuild-lifecycle)
-  * [onSuccess lifecycle](#onsuccess-lifecycle)
-  * [onError lifecycle](#onerror-lifecycle)
-  * [onEnd lifecycle](#onend-lifecycle)
+  * [`onInit` lifecycle](#oninit-lifecycle)
+  * [`onPreBuild` lifecycle](#onprebuild-lifecycle)
+  * [`onBuild` lifecycle](#onbuild-lifecycle)
+  * [`onPostBuild` lifecycle](#onpostbuild-lifecycle)
+  * [`onSuccess` lifecycle](#onsuccess-lifecycle)
+  * [`onError` lifecycle](#onerror-lifecycle)
+  * [`onEnd` lifecycle](#onend-lifecycle)
 - [Netlify Configuration](#netlify-configuration)
 - [Plugins](#plugins)
 - [What can plugins do?](#what-can-plugins-do)
-  * [Optimizing build speeds & lowing build cost](#optimizing-build-speeds--lowing-build-cost)
-  * [Standardize workflows & developer productivity](#standardize-workflows--developer-productivity)
+  * [1. Optimizing build speeds & lowing build cost](#1-optimizing-build-speeds--lowing-build-cost)
+  * [2. Standardize workflows & developer productivity](#2-standardize-workflows--developer-productivity)
 - [Community Plugins](#community-plugins)
 - [CLI commands](#cli-commands)
 - [Contributors](#contributors)
@@ -47,9 +47,9 @@ This is a simplified view of a typical build life cycle:
 4. Files & dependencies are cached
 5. Finally, your site is deployed to the web!
 
-Historically, when connecting your site to Netlify, we ask for the build command (step 3 above) and will run through this process. This works great for most use cases & will continue to do so 😃
+Historically, when connecting your site to Netlify, we ask for the build command (step 3 above) and will run through this build process. This works great for most use cases & will continue to do so 😃
 
-For builds that require a little more flexibility, we are introducing a programatic interface on top of these build events to allow users to customize this flow.
+For builds that require a little more flexibility, we are introducing **Netlify Build** as programatic interface on top of these build events to allow users to customize this flow.
 
 <img src="static/logo.png" width="400" />
 
@@ -58,12 +58,14 @@ requirements.
 
 ## How it works
 
-Builds are controlled by a series of [lifecycle](#lifecycle) events that `plugins` and configuration hook into.
+Builds are controlled by a series of [lifecycle](#lifecycle) events that `plugins` and Netlify config files can hook into.
 
 **The [build lifecycle](#lifecycle) can be extended in two ways:**
 
 1. Adding lifecycle commands to `build.lifecycle` in your [config file](#extending-via-config)
 2. Installing pre-packaged [plugins](#plugins)
+
+Let's examine each.
 
 ### 1. Extending via config
 
@@ -105,12 +107,11 @@ plugins:
 ```
 
 Netlify plugins can be found on npm by
-[searching for `keywords:netlify-plugin`](https://www.npmjs.com/search?q=keywords%3Anetlify-plugin).
+[searching for `keywords:netlify-plugin`](https://www.npmjs.com/search?q=keywords%3Anetlify-plugin) or in the [plugin directory](https://github.com/netlify/plugins#community-plugins).
 
 ## Build Lifecycle
 
-The build process runs through a series of lifecycle events. These events are the places we can extend how the Netlify
-build operates.
+The build process runs through a series of lifecycle events. These events are the places we can extend how the Netlify build operates.
 
 <!-- AUTO-GENERATED-CONTENT:START (LIFECYCLE_TABLE) -->
 | Event          | Description |
@@ -148,7 +149,7 @@ The Lifecycle flows the events in order and executes and their `onPre` & `onPost
 ```
 
 <!-- AUTO-GENERATED-CONTENT:START (LIFECYCLE_DOCS) -->
-### onInit lifecycle
+### `onInit` lifecycle
 
 `onInit` - Runs before anything else
 
@@ -196,7 +197,7 @@ build:
   
 </details>
 
-### onPreBuild lifecycle
+### `onPreBuild` lifecycle
 
 `onPreBuild` - Before build commands are executed
 
@@ -244,7 +245,7 @@ build:
   
 </details>
 
-### onBuild lifecycle
+### `onBuild` lifecycle
 
 `onBuild` - Build commands are executed
 
@@ -292,7 +293,7 @@ build:
   
 </details>
 
-### onPostBuild lifecycle
+### `onPostBuild` lifecycle
 
 `onPostBuild` - After Build commands are executed
 
@@ -340,7 +341,7 @@ build:
   
 </details>
 
-### onSuccess lifecycle
+### `onSuccess` lifecycle
 
 `onSuccess` - Runs on build success
 
@@ -388,7 +389,7 @@ build:
   
 </details>
 
-### onError lifecycle
+### `onError` lifecycle
 
 `onError` - Runs on build error
 
@@ -436,7 +437,7 @@ build:
   
 </details>
 
-### onEnd lifecycle
+### `onEnd` lifecycle
 
 `onEnd` - Runs on build error or success
 
@@ -579,33 +580,34 @@ Read the docs for [more information on building plugins](https://github.com/netl
 
 ## What can plugins do?
 
-Plugins can do a-lot and we are excited what the JAMstack community will build!
+Plugins can do **a-lot** and we are excited what the JAMstack community will build!
 
-Below are some areas where build plugins can help:
+Below are some areas where build plugins can help expands whats possible in your site builds.
 
-- Optimizing build speeds & lowing build cost
-- Standardize workflows & developer productivity
-- Ensure best practices across teams & projects
-
-### Optimizing build speeds & lowing build cost
+### 1. Optimizing build speeds & lowing build cost
 
 Using a smart build plugin you could avoid expensive time consuming build processes such as optimizing the same images every build, avoiding long running builds if relevant files haven't changed, or running incremental builds.
 
-**Some examples:**
+<details>
+  <summary>Some plugin examples</summary>
 
-- **Gatsby cache plugin**
-- Only running cypress tests if src/route hashes change
-- **Ignore site build scripts** if only Netlify serverless functions change
-- Ignore site build if source files we change about, e.g. markdown/src directory's haven't changed
-- **Short circuit** build process if external content from third party CMS hasn't changed
-- Optimize only new images not found in the previous build cache
-- Only build relevant sub directories that have changed & restore the rest of the site from previous build cache
-- Aggressively cache dependancies for faster boot up times
-- NoOp component library / storybook builds if component src files haven't changed. Save on build minutes
-- Automatically disable builds during specific times of day.
-- ...
+  Below is a list of things possible with Build plugins to get some ideas flowing
 
-### Standardize workflows & developer productivity
+  - **Gatsby cache plugin**
+  - Only running cypress tests if src/route hashes change
+  - **Ignore site build scripts** if only Netlify serverless functions change
+  - Ignore site build if source files we change about, e.g. markdown/src directory's haven't changed
+  - **Short circuit** build process if external content from third party CMS hasn't changed
+  - Optimize only new images not found in the previous build cache
+  - Only build relevant sub directories that have changed & restore the rest of the site from previous build cache
+  - Aggressively cache dependancies for faster boot up times
+  - NoOp component library / storybook builds if component src files haven't changed. Save on build minutes
+  - Automatically disable builds during specific times of day.
+  - ...
+
+</details>
+
+### 2. Standardize workflows & developer productivity
 
 Setting up new projects & build tools is no easy feat. The amount of complexity that comes with setting up a production build environment is non trivial & typically replicated over and over again for projects.
 
@@ -625,26 +627,31 @@ Some additional benefits we think will materialize out of standardizing these fl
 - Easier project scaffolding
 - & ultimately shipping more awesome
 
-**Some plugin examples:**
+<details>
+  <summary>Some plugin examples</summary>
 
-- **Company XYZ creates a plugin that encompasses performance, accessibility & security requirements for all their web properties**. This plugin uses various performance + accessibility regression testing tools and scans dependancies for critical vulnerabilities. This plugin also sends back build metrics to a centralized logging tool for further BI processing. This plugin is installed as a one liner in all Netlify projects.
-- **A component tracking plugin** - This plugin scans the src code for components used from a component library & tracks which products are using which components, their versions, & other meta data. This helps inform the component library team what teams they need to coordinate with to safely test & release changes across the organization.
-- **Analytics assurance plugin** - This plugin scans built output and verifies that every page on the site includes their google analytics tracking code & that the code is not malformed.
-- **"SEO audit" plugin.** - This plugin scans built site to ensure all pages have required meta tags, properly formatted schema tags & social open graph tags. It also verifies the validity of the sitemap and submits the new sitemap to google webmaster tools when a new page is added to ensure a hasty indexation time.
-- **404 no more plugin.** - This plugin guards against pages being removed & not having a proper redirect setup.
-- **Lighthouse performance** - testing to guard against performance degradation.
-- **Text linting plugins** This plugin would scan the built output of the site for common misspellings & brand keywords that need to be consistent across the product & cancel build or report these.
-- **Saucelabs cross browser testing plugin** Automatically run deploy previews their every known browser to verify your app works across all browsers you support
-- **"Self healing" deploy plugins.** - These plugins would detect a regression in a postDeployment hook and automatically report the issue & rollback the regression to a previous verified deployment.
-- **"Canary deployments" plugin** - These plugins can use the A/B routing tool to gradually route traffic to the newly deployed version while "retiring" the previously deployed app if no error threshold is passed
-- **Accessibility plugins** - to automatically audit site for accessibility issues
-- **Image & asset optimization plugins** to automatically optimize site assets in a directory when the site is built to ensure optimal performance.
-- **CSP (Content security policy) audit plugin** - This plugin checks the content security policy of the site & warns + enforces a secure policy to prevent cross script scripting attacks
-- **Third party script + GDPR auditor plugin"** - This plugin scans the site for any third party script tags included, loads the page & reports the find output of scripts loaded on the page, the cookies/storage they produce & report + track them for the user. These values are increasingly important with GPDR & cookie consent laws.
-- **Dependency scanner plugin** - A dependency scanner plugin to ensure no compromised dependencies are present.
-- **Ingress/Egress Rules plugin** This plugin ensures that any http calls during the build process are to approved endpoints & not to malicious third party leaking secrets etc.
-- **XSS payload injection plugin** This plugin runs post deployment & hammers form inputs with common XSS payloads to verify inputs & requests are properly sanitized.
-- ... the sky is the limit 🌈
+  Below is a list of things possible with Build plugins to get some ideas flowing
+
+  - **Company XYZ creates a plugin that encompasses performance, accessibility & security requirements for all their web properties**. This plugin uses various performance + accessibility regression testing tools and scans dependancies for critical vulnerabilities. This plugin also sends back build metrics to a centralized logging tool for further BI processing. This plugin is installed as a one liner in all Netlify projects.
+  - **A component tracking plugin** - This plugin scans the src code for components used from a component library & tracks which products are using which components, their versions, & other meta data. This helps inform the component library team what teams they need to coordinate with to safely test & release changes across the organization.
+  - **Analytics assurance plugin** - This plugin scans built output and verifies that every page on the site includes their google analytics tracking code & that the code is not malformed.
+  - **"SEO audit" plugin.** - This plugin scans built site to ensure all pages have required meta tags, properly formatted schema tags & social open graph tags. It also verifies the validity of the sitemap and submits the new sitemap to google webmaster tools when a new page is added to ensure a hasty indexation time.
+  - **404 no more plugin.** - This plugin guards against pages being removed & not having a proper redirect setup.
+  - **Lighthouse performance** - testing to guard against performance degradation.
+  - **Text linting plugins** This plugin would scan the built output of the site for common misspellings & brand keywords that need to be consistent across the product & cancel build or report these.
+  - **Saucelabs cross browser testing plugin** Automatically run deploy previews their every known browser to verify your app works across all browsers you support
+  - **"Self healing" deploy plugins.** - These plugins would detect a regression in a postDeployment hook and automatically report the issue & rollback the regression to a previous verified deployment.
+  - **"Canary deployments" plugin** - These plugins can use the A/B routing tool to gradually route traffic to the newly deployed version while "retiring" the previously deployed app if no error threshold is passed
+  - **Accessibility plugins** - to automatically audit site for accessibility issues
+  - **Image & asset optimization plugins** to automatically optimize site assets in a directory when the site is built to ensure optimal performance.
+  - **CSP (Content security policy) audit plugin** - This plugin checks the content security policy of the site & warns + enforces a secure policy to prevent cross script scripting attacks
+  - **Third party script + GDPR auditor plugin"** - This plugin scans the site for any third party script tags included, loads the page & reports the find output of scripts loaded on the page, the cookies/storage they produce & report + track them for the user. These values are increasingly important with GPDR & cookie consent laws.
+  - **Dependency scanner plugin** - A dependency scanner plugin to ensure no compromised dependencies are present.
+  - **Ingress/Egress Rules plugin** This plugin ensures that any http calls during the build process are to approved endpoints & not to malicious third party leaking secrets etc.
+  - **XSS payload injection plugin** This plugin runs post deployment & hammers form inputs with common XSS payloads to verify inputs & requests are properly sanitized.
+  - ... the sky is the limit 🌈
+
+</details>
 
 We are excited to see what the community will come up with next.
 
