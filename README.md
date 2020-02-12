@@ -523,13 +523,19 @@ Runs on build error or success
 
 ## Netlify Configuration
 
-Configuration can be written in `toml`, `yml`, `json`, or `json5`.
+Below you will see 2 new values for Netlify configuration. `build.lifecycle` & `plugins`.
+
+`build.lifecycle` is where you can define inline commands to run during the different stages of the build lifecycle.
+
+`plugins` is an array of build plugins to run during the build process. These run in the order in which they are defined.
 
 **Example:**
 
 ```yml
 # Inline `build.lifecycle` commands can be defined
 build:
+  functions: src/functions
+  publish: build
   lifecycle:
     onInit:
       - npm run foo
@@ -546,11 +552,11 @@ build:
 plugins:
   - package: ./local/path/to/plugin-folder
     config:
-      optionOne: 'hello'
-      optionTwo: 'there'
+      optionOne: hello
+      optionTwo: there
   - package: plugin-from-npm
     config:
-      optionOne: 'neat'
+      optionOne: neat
       arrayOfValues:
         - david@netlify.com
         - jim@netlify.com
@@ -564,6 +570,14 @@ To reference an environment variable in Netlify config:
 ```yml
 foo: ${env:MY_ENV_VAR}
 ```
+
+Configuration also supports fallback values:
+
+```yml
+foo: ${env:MY_ENV_VAR, 'default-value'}
+```
+
+Configuration can be written in `toml`, `yml`, `json`, or `json5`.
 
 ## Plugins
 
