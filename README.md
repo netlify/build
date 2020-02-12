@@ -35,9 +35,9 @@ Netlify build is the next generation of CI/CD tooling for modern web application
 </details>
 <!-- AUTO-GENERATED-CONTENT:END -->
 
-<img src="static/logo.png" width="400"/><br>
-
 ## Background
+
+<img src="static/logo.png" width="250" align="right" />
 
 During a site build, there are a variety of things happening under the hood.
 
