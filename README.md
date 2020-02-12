@@ -15,15 +15,15 @@ Netlify build is the next generation of CI/CD tooling for modern web application
 - [How it works](#how-it-works)
   * [1. Extending via config](#1-extending-via-config)
   * [2. Extending via plugins](#2-extending-via-plugins)
-- [Lifecycle](#lifecycle)
-  * [lifecycle.onInit](#lifecycleoninit)
-  * [lifecycle.onPreBuild](#lifecycleonprebuild)
-  * [lifecycle.onBuild](#lifecycleonbuild)
-  * [lifecycle.onPostBuild](#lifecycleonpostbuild)
-  * [lifecycle.onSuccess](#lifecycleonsuccess)
-  * [lifecycle.onError](#lifecycleonerror)
-  * [lifecycle.onEnd](#lifecycleonend)
-- [Configuration](#configuration)
+- [Build Lifecycle](#build-lifecycle)
+  * [onInit lifecycle](#oninit-lifecycle)
+  * [onPreBuild lifecycle](#onprebuild-lifecycle)
+  * [onBuild lifecycle](#onbuild-lifecycle)
+  * [onPostBuild lifecycle](#onpostbuild-lifecycle)
+  * [onSuccess lifecycle](#onsuccess-lifecycle)
+  * [onError lifecycle](#onerror-lifecycle)
+  * [onEnd lifecycle](#onend-lifecycle)
+- [Netlify Configuration](#netlify-configuration)
 - [Plugins](#plugins)
 - [What can plugins do?](#what-can-plugins-do)
   * [Optimizing build speeds & lowing build cost](#optimizing-build-speeds--lowing-build-cost)
@@ -37,8 +37,6 @@ Netlify build is the next generation of CI/CD tooling for modern web application
 
 ## Background
 
-<img src="static/logo.png" width="250" align="right" />
-
 During a site build, there are a variety of things happening under the hood.
 
 This is a simplified view of a typical build life cycle:
@@ -49,11 +47,11 @@ This is a simplified view of a typical build life cycle:
 4. Files & dependencies are cached
 5. Finally, your site is deployed to the web!
 
-Historically, when connecting your site to Netlify, we ask for the build command (step 3 above) and will run through
-this process. This works great for most use cases & will continue to do so 😃
+Historically, when connecting your site to Netlify, we ask for the build command (step 3 above) and will run through this process. This works great for most use cases & will continue to do so 😃
 
-For builds that require a little more flexibility, we are introducing a programatic interface on top of these build
-events to allow users to customize this flow.
+For builds that require a little more flexibility, we are introducing a programatic interface on top of these build events to allow users to customize this flow.
+
+<img src="static/logo.png" width="400" />
 
 **Netlify Build** is designed to support any kind of build flow and is extendable to fit any unique project
 requirements.
@@ -109,7 +107,7 @@ plugins:
 Netlify plugins can be found on npm by
 [searching for `keywords:netlify-plugin`](https://www.npmjs.com/search?q=keywords%3Anetlify-plugin).
 
-## Lifecycle
+## Build Lifecycle
 
 The build process runs through a series of lifecycle events. These events are the places we can extend how the Netlify
 build operates.
@@ -150,7 +148,7 @@ The Lifecycle flows the events in order and executes and their `onPre` & `onPost
 ```
 
 <!-- AUTO-GENERATED-CONTENT:START (LIFECYCLE_DOCS) -->
-### lifecycle.onInit
+### onInit lifecycle
 
 `onInit` - Runs before anything else
 
@@ -179,8 +177,11 @@ The Lifecycle flows the events in order and executes and their `onPre` & `onPost
   ```yml
   plugins:
     - package: ./path/to/plugin
-      config:
-        foo: bar
+  ```
+
+  ```toml
+  [[plugins]]
+  package = "./path/to/plugin"
   ```
   
 
@@ -195,7 +196,7 @@ build:
   
 </details>
 
-### lifecycle.onPreBuild
+### onPreBuild lifecycle
 
 `onPreBuild` - Before build commands are executed
 
@@ -224,8 +225,11 @@ build:
   ```yml
   plugins:
     - package: ./path/to/plugin
-      config:
-        foo: bar
+  ```
+
+  ```toml
+  [[plugins]]
+  package = "./path/to/plugin"
   ```
   
 
@@ -240,7 +244,7 @@ build:
   
 </details>
 
-### lifecycle.onBuild
+### onBuild lifecycle
 
 `onBuild` - Build commands are executed
 
@@ -269,8 +273,11 @@ build:
   ```yml
   plugins:
     - package: ./path/to/plugin
-      config:
-        foo: bar
+  ```
+
+  ```toml
+  [[plugins]]
+  package = "./path/to/plugin"
   ```
   
 
@@ -285,7 +292,7 @@ build:
   
 </details>
 
-### lifecycle.onPostBuild
+### onPostBuild lifecycle
 
 `onPostBuild` - After Build commands are executed
 
@@ -314,8 +321,11 @@ build:
   ```yml
   plugins:
     - package: ./path/to/plugin
-      config:
-        foo: bar
+  ```
+
+  ```toml
+  [[plugins]]
+  package = "./path/to/plugin"
   ```
   
 
@@ -330,7 +340,7 @@ build:
   
 </details>
 
-### lifecycle.onSuccess
+### onSuccess lifecycle
 
 `onSuccess` - Runs on build success
 
@@ -359,8 +369,11 @@ build:
   ```yml
   plugins:
     - package: ./path/to/plugin
-      config:
-        foo: bar
+  ```
+
+  ```toml
+  [[plugins]]
+  package = "./path/to/plugin"
   ```
   
 
@@ -375,7 +388,7 @@ build:
   
 </details>
 
-### lifecycle.onError
+### onError lifecycle
 
 `onError` - Runs on build error
 
@@ -404,8 +417,11 @@ build:
   ```yml
   plugins:
     - package: ./path/to/plugin
-      config:
-        foo: bar
+  ```
+
+  ```toml
+  [[plugins]]
+  package = "./path/to/plugin"
   ```
   
 
@@ -420,7 +436,7 @@ build:
   
 </details>
 
-### lifecycle.onEnd
+### onEnd lifecycle
 
 `onEnd` - Runs on build error or success
 
@@ -449,8 +465,11 @@ build:
   ```yml
   plugins:
     - package: ./path/to/plugin
-      config:
-        foo: bar
+  ```
+
+  ```toml
+  [[plugins]]
+  package = "./path/to/plugin"
   ```
   
 
@@ -466,7 +485,7 @@ build:
 </details>
 <!-- AUTO-GENERATED-CONTENT:END (PLUGINS) -->
 
-## Configuration
+## Netlify Configuration
 
 Configuration can be written in `toml`, `yml`, `json`, or `json5`.
 
@@ -515,8 +534,7 @@ Netlify Plugins extend the functionality of the netlify build process.
 
 Plugins are plain JavaScript objects with event handlers for the different events happening during builds.
 
-For example, the `onPreBuild` event handler runs before your build command. Or the `onPostBuild` event handler runs
-after your site build has completed.
+For example, the `onPreBuild` event handler runs before your build command. Or the `onPostBuild` event handler runs after your site build has completed.
 
 Here is an example:
 
@@ -536,7 +554,7 @@ module.exports = {
   },
   onEnd: () => {
     console.log('Run custom logic at the end of the build')
-  },
+  }
 }
 ```
 
@@ -557,11 +575,13 @@ plugins:
       bar: goodbye
 ```
 
+Read the docs for [more information on building plugins](https://github.com/netlify/build/blob/master/docs/creating-a-plugin.md)
+
 ## What can plugins do?
 
 Plugins can do a-lot and we are excited what the JAMstack community will build!
 
-Below are some areas where build plugins can help.
+Below are some areas where build plugins can help:
 
 - Optimizing build speeds & lowing build cost
 - Standardize workflows & developer productivity
@@ -571,7 +591,7 @@ Below are some areas where build plugins can help.
 
 Using a smart build plugin you could avoid expensive time consuming build processes such as optimizing the same images every build, avoiding long running builds if relevant files haven't changed, or running incremental builds.
 
-Some examples:
+**Some examples:**
 
 - **Gatsby cache plugin**
 - Only running cypress tests if src/route hashes change
@@ -603,9 +623,9 @@ Some additional benefits we think will materialize out of standardizing these fl
 - Less time on-boarding new developers to the team
 - Lower project maintenance
 - Easier project scaffolding
-- & ultimately shipping more awesome 🌈
+- & ultimately shipping more awesome
 
-Some plugin examples:
+**Some plugin examples:**
 
 - **Company XYZ creates a plugin that encompasses performance, accessibility & security requirements for all their web properties**. This plugin uses various performance + accessibility regression testing tools and scans dependancies for critical vulnerabilities. This plugin also sends back build metrics to a centralized logging tool for further BI processing. This plugin is installed as a one liner in all Netlify projects.
 - **A component tracking plugin** - This plugin scans the src code for components used from a component library & tracks which products are using which components, their versions, & other meta data. This helps inform the component library team what teams they need to coordinate with to safely test & release changes across the organization.
@@ -619,22 +639,18 @@ Some plugin examples:
 - **"Canary deployments" plugin** - These plugins can use the A/B routing tool to gradually route traffic to the newly deployed version while "retiring" the previously deployed app if no error threshold is passed
 - **Accessibility plugins** - to automatically audit site for accessibility issues
 - **Image & asset optimization plugins** to automatically optimize site assets in a directory when the site is built to ensure optimal performance.
-- "CSP (Content security policy) audit plugin". This plugin checks the content security policy of the site & warns + enforces a secure policy to prevent cross script scripting attacks
-- "Third party script + GDPR auditor plugin". This plugin scans the site for any third party script tags included, loads the page & reports the find output of scripts loaded on the page, the cookies/storage they produce & report + track them for the user. These values are increasingly important with GPDR & cookie consent laws.
-- As previously mentioned a dependency scanner plugin to ensure no compromised deps are present.
-- "Ingress / Egress Rules" plugin. This plugin ensures that any http calls during the build process are to approved endpoints & not to malicious third party leaking secrets etc.
-- **"XSS payload injection plugin".** This plugin runs post deployment & hammers form inputs with common XSS payloads to verify inputs & requests are properly sanitized.
-- VGS could also use a plugin that runs their add-on functionality on postBuild. They current maintain their own site scraper for this.
-- ...
+- **CSP (Content security policy) audit plugin** - This plugin checks the content security policy of the site & warns + enforces a secure policy to prevent cross script scripting attacks
+- **Third party script + GDPR auditor plugin"** - This plugin scans the site for any third party script tags included, loads the page & reports the find output of scripts loaded on the page, the cookies/storage they produce & report + track them for the user. These values are increasingly important with GPDR & cookie consent laws.
+- **Dependency scanner plugin** - A dependency scanner plugin to ensure no compromised dependencies are present.
+- **Ingress/Egress Rules plugin** This plugin ensures that any http calls during the build process are to approved endpoints & not to malicious third party leaking secrets etc.
+- **XSS payload injection plugin** This plugin runs post deployment & hammers form inputs with common XSS payloads to verify inputs & requests are properly sanitized.
+- ... the sky is the limit 🌈
 
 We are excited to see what the community will come up with next.
 
-There is a plugins directory of community created plugins over at https://github.com/netlify/plugins
-
 ## Community Plugins
 
-To add a plugin, add informations to the
-[plugins.json file]('https://github.com/netlify/plugins/blob/master/plugins.json').
+There is a plugins directory of community created plugins over at https://github.com/netlify/plugins.
 
 <!-- AUTO-GENERATED-CONTENT:START (COMMUNITY_PLUGINS) -->
 | Plugin | Author |
@@ -652,6 +668,9 @@ To add a plugin, add informations to the
 | **[Subfont - `netlify-plugin-subfont`](https://github.com/munter/netlify-plugin-subfont)** <br/>  Subfont post-processes your web page to analyse you usage of web fonts, then reworks your webpage to use an optimal font loading strategy for the best performance. | [munter](https://github.com/munter) |
 | **[Yield Data For Eleventy - `netlify-plugin-yield-data-for-eleventy`](https://github.com/philhawksworth/netlify-plugin-yield-data-for-eleventy)** <br/>  A Netlify plugin to expose data collected to in the Netlify build cache to place and structure that Eleventy can use | [philhawksworth](https://github.com/philhawksworth) |
 <!-- AUTO-GENERATED-CONTENT:END (COMMUNITY_PLUGINS) -->
+
+To add a plugin, add information to the
+[plugins.json file]('https://github.com/netlify/plugins/blob/master/plugins.json').
 
 ## CLI commands
 
