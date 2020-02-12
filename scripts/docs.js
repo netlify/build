@@ -124,9 +124,9 @@ const config = {
 
         const pluginExample = renderPluginExample(eventName[1])
         const configExample = renderConfigExample(eventName[1])
-        updatedContent += collapse(`Using ${eventName[1]} in a plugin`, `${pluginExample}`)
+        updatedContent += collapse(`Using **${eventName[1]}** in a plugin`, `${pluginExample}`)
         updatedContent += '\n'
-        updatedContent += collapse(`Using ${eventName[1]} via Netlify config`, `${configExample}`)
+        updatedContent += collapse(`Using **${eventName[1]}** via Netlify config`, `${configExample}`)
 
         /* maybe fold
         <details>
@@ -208,25 +208,42 @@ function renderPluginExample(name) {
   Below is an example plugin using the \`${name}\` event handler
 
   \`\`\`js
+  // File my-plugin.js
   module.exports = function myPlugin(pluginConfig) {
     return {
       ${name}: () => {
-        console.log("Do thing on ${name} event")
+        console.log('Do thing on ${name} event')
       }
     }
   }
   \`\`\`
 
-  After creating the plugin, add into your Netlify config file under \`plugins\`
+  After creating the plugin, add into your Netlify config file under the \`plugins\` section.
+
+  Plugins can be referenced locally or installed via NPM.
+
+  \`netlify.yml\` example:
 
   \`\`\`yml
   plugins:
-    - package: ./path/to/plugin
+    - package: ./path/to/my-plugin.js
   \`\`\`
+
+  \`netlify.toml\` example:
 
   \`\`\`toml
   [[plugins]]
-  package = "./path/to/plugin"
+  package = "./path/to/my-plugin.js"
+  \`\`\`
+
+  \`netlify.json\` example:
+
+  \`\`\`json
+  {
+    "plugins": [{
+      "package": "./path/to/my-plugin.js"
+    }]
+  }
   \`\`\`
   `
 }

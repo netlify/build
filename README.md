@@ -155,39 +155,56 @@ Runs before anything else
 
 
 <details>
-  <summary>Using onInit in a plugin</summary>
+  <summary>Using **onInit** in a plugin</summary>
   
   <br/>
 
   Below is an example plugin using the `onInit` event handler
 
   ```js
+  // File my-plugin.js
   module.exports = function myPlugin(pluginConfig) {
     return {
       onInit: () => {
-        console.log("Do thing on onInit event")
+        console.log('Do thing on onInit event')
       }
     }
   }
   ```
 
-  After creating the plugin, add into your Netlify config file under `plugins`
+  After creating the plugin, add into your Netlify config file under the `plugins` section.
+
+  Plugins can be referenced locally or installed via NPM.
+
+  `netlify.yml` example:
 
   ```yml
   plugins:
-    - package: ./path/to/plugin
+    - package: ./path/to/my-plugin.js
   ```
+
+  `netlify.toml` example:
 
   ```toml
   [[plugins]]
-  package = "./path/to/plugin"
+  package = "./path/to/my-plugin.js"
+  ```
+
+  `netlify.json` example:
+
+  ```json
+  {
+    "plugins": [{
+      "package": "./path/to/my-plugin.js"
+    }]
+  }
   ```
   
 </details>
 
 
 <details>
-  <summary>Using onInit via Netlify config</summary>
+  <summary>Using **onInit** via Netlify config</summary>
   
   <br/>
 
@@ -208,39 +225,56 @@ Before build commands are executed
 
 
 <details>
-  <summary>Using onPreBuild in a plugin</summary>
+  <summary>Using **onPreBuild** in a plugin</summary>
   
   <br/>
 
   Below is an example plugin using the `onPreBuild` event handler
 
   ```js
+  // File my-plugin.js
   module.exports = function myPlugin(pluginConfig) {
     return {
       onPreBuild: () => {
-        console.log("Do thing on onPreBuild event")
+        console.log('Do thing on onPreBuild event')
       }
     }
   }
   ```
 
-  After creating the plugin, add into your Netlify config file under `plugins`
+  After creating the plugin, add into your Netlify config file under the `plugins` section.
+
+  Plugins can be referenced locally or installed via NPM.
+
+  `netlify.yml` example:
 
   ```yml
   plugins:
-    - package: ./path/to/plugin
+    - package: ./path/to/my-plugin.js
   ```
+
+  `netlify.toml` example:
 
   ```toml
   [[plugins]]
-  package = "./path/to/plugin"
+  package = "./path/to/my-plugin.js"
+  ```
+
+  `netlify.json` example:
+
+  ```json
+  {
+    "plugins": [{
+      "package": "./path/to/my-plugin.js"
+    }]
+  }
   ```
   
 </details>
 
 
 <details>
-  <summary>Using onPreBuild via Netlify config</summary>
+  <summary>Using **onPreBuild** via Netlify config</summary>
   
   <br/>
 
@@ -261,39 +295,56 @@ Build commands are executed
 
 
 <details>
-  <summary>Using onBuild in a plugin</summary>
+  <summary>Using **onBuild** in a plugin</summary>
   
   <br/>
 
   Below is an example plugin using the `onBuild` event handler
 
   ```js
+  // File my-plugin.js
   module.exports = function myPlugin(pluginConfig) {
     return {
       onBuild: () => {
-        console.log("Do thing on onBuild event")
+        console.log('Do thing on onBuild event')
       }
     }
   }
   ```
 
-  After creating the plugin, add into your Netlify config file under `plugins`
+  After creating the plugin, add into your Netlify config file under the `plugins` section.
+
+  Plugins can be referenced locally or installed via NPM.
+
+  `netlify.yml` example:
 
   ```yml
   plugins:
-    - package: ./path/to/plugin
+    - package: ./path/to/my-plugin.js
   ```
+
+  `netlify.toml` example:
 
   ```toml
   [[plugins]]
-  package = "./path/to/plugin"
+  package = "./path/to/my-plugin.js"
+  ```
+
+  `netlify.json` example:
+
+  ```json
+  {
+    "plugins": [{
+      "package": "./path/to/my-plugin.js"
+    }]
+  }
   ```
   
 </details>
 
 
 <details>
-  <summary>Using onBuild via Netlify config</summary>
+  <summary>Using **onBuild** via Netlify config</summary>
   
   <br/>
 
@@ -314,39 +365,56 @@ After Build commands are executed
 
 
 <details>
-  <summary>Using onPostBuild in a plugin</summary>
+  <summary>Using **onPostBuild** in a plugin</summary>
   
   <br/>
 
   Below is an example plugin using the `onPostBuild` event handler
 
   ```js
+  // File my-plugin.js
   module.exports = function myPlugin(pluginConfig) {
     return {
       onPostBuild: () => {
-        console.log("Do thing on onPostBuild event")
+        console.log('Do thing on onPostBuild event')
       }
     }
   }
   ```
 
-  After creating the plugin, add into your Netlify config file under `plugins`
+  After creating the plugin, add into your Netlify config file under the `plugins` section.
+
+  Plugins can be referenced locally or installed via NPM.
+
+  `netlify.yml` example:
 
   ```yml
   plugins:
-    - package: ./path/to/plugin
+    - package: ./path/to/my-plugin.js
   ```
+
+  `netlify.toml` example:
 
   ```toml
   [[plugins]]
-  package = "./path/to/plugin"
+  package = "./path/to/my-plugin.js"
+  ```
+
+  `netlify.json` example:
+
+  ```json
+  {
+    "plugins": [{
+      "package": "./path/to/my-plugin.js"
+    }]
+  }
   ```
   
 </details>
 
 
 <details>
-  <summary>Using onPostBuild via Netlify config</summary>
+  <summary>Using **onPostBuild** via Netlify config</summary>
   
   <br/>
 
@@ -367,39 +435,56 @@ Runs on build success
 
 
 <details>
-  <summary>Using onSuccess in a plugin</summary>
+  <summary>Using **onSuccess** in a plugin</summary>
   
   <br/>
 
   Below is an example plugin using the `onSuccess` event handler
 
   ```js
+  // File my-plugin.js
   module.exports = function myPlugin(pluginConfig) {
     return {
       onSuccess: () => {
-        console.log("Do thing on onSuccess event")
+        console.log('Do thing on onSuccess event')
       }
     }
   }
   ```
 
-  After creating the plugin, add into your Netlify config file under `plugins`
+  After creating the plugin, add into your Netlify config file under the `plugins` section.
+
+  Plugins can be referenced locally or installed via NPM.
+
+  `netlify.yml` example:
 
   ```yml
   plugins:
-    - package: ./path/to/plugin
+    - package: ./path/to/my-plugin.js
   ```
+
+  `netlify.toml` example:
 
   ```toml
   [[plugins]]
-  package = "./path/to/plugin"
+  package = "./path/to/my-plugin.js"
+  ```
+
+  `netlify.json` example:
+
+  ```json
+  {
+    "plugins": [{
+      "package": "./path/to/my-plugin.js"
+    }]
+  }
   ```
   
 </details>
 
 
 <details>
-  <summary>Using onSuccess via Netlify config</summary>
+  <summary>Using **onSuccess** via Netlify config</summary>
   
   <br/>
 
@@ -420,39 +505,56 @@ Runs on build error
 
 
 <details>
-  <summary>Using onError in a plugin</summary>
+  <summary>Using **onError** in a plugin</summary>
   
   <br/>
 
   Below is an example plugin using the `onError` event handler
 
   ```js
+  // File my-plugin.js
   module.exports = function myPlugin(pluginConfig) {
     return {
       onError: () => {
-        console.log("Do thing on onError event")
+        console.log('Do thing on onError event')
       }
     }
   }
   ```
 
-  After creating the plugin, add into your Netlify config file under `plugins`
+  After creating the plugin, add into your Netlify config file under the `plugins` section.
+
+  Plugins can be referenced locally or installed via NPM.
+
+  `netlify.yml` example:
 
   ```yml
   plugins:
-    - package: ./path/to/plugin
+    - package: ./path/to/my-plugin.js
   ```
+
+  `netlify.toml` example:
 
   ```toml
   [[plugins]]
-  package = "./path/to/plugin"
+  package = "./path/to/my-plugin.js"
+  ```
+
+  `netlify.json` example:
+
+  ```json
+  {
+    "plugins": [{
+      "package": "./path/to/my-plugin.js"
+    }]
+  }
   ```
   
 </details>
 
 
 <details>
-  <summary>Using onError via Netlify config</summary>
+  <summary>Using **onError** via Netlify config</summary>
   
   <br/>
 
@@ -473,39 +575,56 @@ Runs on build error or success
 
 
 <details>
-  <summary>Using onEnd in a plugin</summary>
+  <summary>Using **onEnd** in a plugin</summary>
   
   <br/>
 
   Below is an example plugin using the `onEnd` event handler
 
   ```js
+  // File my-plugin.js
   module.exports = function myPlugin(pluginConfig) {
     return {
       onEnd: () => {
-        console.log("Do thing on onEnd event")
+        console.log('Do thing on onEnd event')
       }
     }
   }
   ```
 
-  After creating the plugin, add into your Netlify config file under `plugins`
+  After creating the plugin, add into your Netlify config file under the `plugins` section.
+
+  Plugins can be referenced locally or installed via NPM.
+
+  `netlify.yml` example:
 
   ```yml
   plugins:
-    - package: ./path/to/plugin
+    - package: ./path/to/my-plugin.js
   ```
+
+  `netlify.toml` example:
 
   ```toml
   [[plugins]]
-  package = "./path/to/plugin"
+  package = "./path/to/my-plugin.js"
+  ```
+
+  `netlify.json` example:
+
+  ```json
+  {
+    "plugins": [{
+      "package": "./path/to/my-plugin.js"
+    }]
+  }
   ```
   
 </details>
 
 
 <details>
-  <summary>Using onEnd via Netlify config</summary>
+  <summary>Using **onEnd** via Netlify config</summary>
   
   <br/>
 
