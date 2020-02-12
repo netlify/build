@@ -7,7 +7,10 @@ Netlify build is the next generation of CI/CD tooling for modern web application
 
 [Sign up for the private beta](https://www.netlify.com/build/plugins-beta/)
 
-<!-- AUTO-GENERATED-CONTENT:START (TOC) -->
+<!-- AUTO-GENERATED-CONTENT:START (TOC:collapse=true&collapseText=Expand Table of Contents) -->
+<details>
+<summary>Expand Table of Contents</summary>
+
 - [Background](#background)
 - [How it works](#how-it-works)
   * [1. Extending via config](#1-extending-via-config)
@@ -28,6 +31,8 @@ Netlify build is the next generation of CI/CD tooling for modern web application
 - [Community Plugins](#community-plugins)
 - [CLI commands](#cli-commands)
 - [Contributors](#contributors)
+
+</details>
 <!-- AUTO-GENERATED-CONTENT:END -->
 
 <img src="static/logo.png" width="400"/><br>
@@ -152,7 +157,7 @@ The Lifecycle flows the events in order and executes and their `onPre` & `onPost
 
 <details>
   <summary>Using onInit</summary>
-
+  
   <br/>
 
   **1. Using with a Plugin**
@@ -177,7 +182,7 @@ The Lifecycle flows the events in order and executes and their `onPre` & `onPost
       config:
         foo: bar
   ```
-
+  
 
   **2. Using with via `build.lifecycle`**
 
@@ -187,7 +192,7 @@ build:
     onInit:
       - echo "Do thing on onInit event"
 ```
-
+  
 </details>
 
 ### lifecycle.onPreBuild
@@ -197,7 +202,7 @@ build:
 
 <details>
   <summary>Using onPreBuild</summary>
-
+  
   <br/>
 
   **1. Using with a Plugin**
@@ -222,7 +227,7 @@ build:
       config:
         foo: bar
   ```
-
+  
 
   **2. Using with via `build.lifecycle`**
 
@@ -232,7 +237,7 @@ build:
     onPreBuild:
       - echo "Do thing on onPreBuild event"
 ```
-
+  
 </details>
 
 ### lifecycle.onBuild
@@ -242,7 +247,7 @@ build:
 
 <details>
   <summary>Using onBuild</summary>
-
+  
   <br/>
 
   **1. Using with a Plugin**
@@ -267,7 +272,7 @@ build:
       config:
         foo: bar
   ```
-
+  
 
   **2. Using with via `build.lifecycle`**
 
@@ -277,7 +282,7 @@ build:
     onBuild:
       - echo "Do thing on onBuild event"
 ```
-
+  
 </details>
 
 ### lifecycle.onPostBuild
@@ -287,7 +292,7 @@ build:
 
 <details>
   <summary>Using onPostBuild</summary>
-
+  
   <br/>
 
   **1. Using with a Plugin**
@@ -312,7 +317,7 @@ build:
       config:
         foo: bar
   ```
-
+  
 
   **2. Using with via `build.lifecycle`**
 
@@ -322,7 +327,7 @@ build:
     onPostBuild:
       - echo "Do thing on onPostBuild event"
 ```
-
+  
 </details>
 
 ### lifecycle.onSuccess
@@ -332,7 +337,7 @@ build:
 
 <details>
   <summary>Using onSuccess</summary>
-
+  
   <br/>
 
   **1. Using with a Plugin**
@@ -357,7 +362,7 @@ build:
       config:
         foo: bar
   ```
-
+  
 
   **2. Using with via `build.lifecycle`**
 
@@ -367,7 +372,7 @@ build:
     onSuccess:
       - echo "Do thing on onSuccess event"
 ```
-
+  
 </details>
 
 ### lifecycle.onError
@@ -377,7 +382,7 @@ build:
 
 <details>
   <summary>Using onError</summary>
-
+  
   <br/>
 
   **1. Using with a Plugin**
@@ -402,7 +407,7 @@ build:
       config:
         foo: bar
   ```
-
+  
 
   **2. Using with via `build.lifecycle`**
 
@@ -412,7 +417,7 @@ build:
     onError:
       - echo "Do thing on onError event"
 ```
-
+  
 </details>
 
 ### lifecycle.onEnd
@@ -422,7 +427,7 @@ build:
 
 <details>
   <summary>Using onEnd</summary>
-
+  
   <br/>
 
   **1. Using with a Plugin**
@@ -447,7 +452,7 @@ build:
       config:
         foo: bar
   ```
-
+  
 
   **2. Using with via `build.lifecycle`**
 
@@ -457,7 +462,7 @@ build:
     onEnd:
       - echo "Do thing on onEnd event"
 ```
-
+  
 </details>
 <!-- AUTO-GENERATED-CONTENT:END (PLUGINS) -->
 
