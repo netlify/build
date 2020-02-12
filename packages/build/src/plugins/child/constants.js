@@ -44,7 +44,7 @@ const getConstants = async function({
     SITE_ID: siteId,
     CACHE_DIR: cacheDir,
   }
-  const constantsA = mapObj(constants, (key, path) => [key, normalizePath(path, baseDir)])
+  const constantsA = mapObj(constants, (key, path) => [key, normalizePath(path, baseDir, key)])
   return constantsA
 }
 
@@ -61,8 +61,8 @@ const getFunctionsDist = function() {
 // The current directory is `baseDir`. Most constants are inside this `baseDir`.
 // Instead of passing absolute paths, we pass paths relative to `baseDir`, so
 // that logs are less verbose.
-const normalizePath = function(path, baseDir) {
-  if (path === undefined) {
+const normalizePath = function(path, baseDir, key) {
+  if (path === undefined || NOT_PATHS.includes(key)) {
     return path
   }
 
@@ -74,5 +74,7 @@ const normalizePath = function(path, baseDir) {
 
   return pathA
 }
+
+const NOT_PATHS = ['SITE_ID']
 
 module.exports = { getConstants }
