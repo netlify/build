@@ -124,9 +124,9 @@ const config = {
 
         const pluginExample = renderPluginExample(eventName[1])
         const configExample = renderConfigExample(eventName[1])
-        updatedContent += collapse(`Using **${eventName[1]}** in a plugin`, `${pluginExample}`)
+        updatedContent += collapse(`Using <strong>${eventName[1]}</strong> in a plugin`, `${pluginExample}`)
         updatedContent += '\n'
-        updatedContent += collapse(`Using **${eventName[1]}** via Netlify config`, `${configExample}`)
+        updatedContent += collapse(`Using <strong>${eventName[1]}</strong> via Netlify config`, `${configExample}`)
 
         /* maybe fold
         <details>
@@ -218,7 +218,7 @@ function renderPluginExample(name) {
   }
   \`\`\`
 
-  After creating the plugin, add into your Netlify config file under the \`plugins\` section.
+  After creating the plugin, add into your [Netlify config](#netlify-configuration) file under the \`plugins\` section.
 
   Plugins can be referenced locally or installed via NPM.
 

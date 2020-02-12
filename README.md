@@ -155,7 +155,7 @@ Runs before anything else
 
 
 <details>
-  <summary>Using **onInit** in a plugin</summary>
+  <summary>Using <strong>onInit</strong> in a plugin</summary>
   
   <br/>
 
@@ -172,7 +172,7 @@ Runs before anything else
   }
   ```
 
-  After creating the plugin, add into your Netlify config file under the `plugins` section.
+  After creating the plugin, add into your [Netlify config](#netlify-configuration) file under the `plugins` section.
 
   Plugins can be referenced locally or installed via NPM.
 
@@ -204,7 +204,7 @@ Runs before anything else
 
 
 <details>
-  <summary>Using **onInit** via Netlify config</summary>
+  <summary>Using <strong>onInit</strong> via Netlify config</summary>
   
   <br/>
 
@@ -225,7 +225,7 @@ Before build commands are executed
 
 
 <details>
-  <summary>Using **onPreBuild** in a plugin</summary>
+  <summary>Using <strong>onPreBuild</strong> in a plugin</summary>
   
   <br/>
 
@@ -242,7 +242,7 @@ Before build commands are executed
   }
   ```
 
-  After creating the plugin, add into your Netlify config file under the `plugins` section.
+  After creating the plugin, add into your [Netlify config](#netlify-configuration) file under the `plugins` section.
 
   Plugins can be referenced locally or installed via NPM.
 
@@ -274,7 +274,7 @@ Before build commands are executed
 
 
 <details>
-  <summary>Using **onPreBuild** via Netlify config</summary>
+  <summary>Using <strong>onPreBuild</strong> via Netlify config</summary>
   
   <br/>
 
@@ -295,7 +295,7 @@ Build commands are executed
 
 
 <details>
-  <summary>Using **onBuild** in a plugin</summary>
+  <summary>Using <strong>onBuild</strong> in a plugin</summary>
   
   <br/>
 
@@ -312,7 +312,7 @@ Build commands are executed
   }
   ```
 
-  After creating the plugin, add into your Netlify config file under the `plugins` section.
+  After creating the plugin, add into your [Netlify config](#netlify-configuration) file under the `plugins` section.
 
   Plugins can be referenced locally or installed via NPM.
 
@@ -344,7 +344,7 @@ Build commands are executed
 
 
 <details>
-  <summary>Using **onBuild** via Netlify config</summary>
+  <summary>Using <strong>onBuild</strong> via Netlify config</summary>
   
   <br/>
 
@@ -365,7 +365,7 @@ After Build commands are executed
 
 
 <details>
-  <summary>Using **onPostBuild** in a plugin</summary>
+  <summary>Using <strong>onPostBuild</strong> in a plugin</summary>
   
   <br/>
 
@@ -382,7 +382,7 @@ After Build commands are executed
   }
   ```
 
-  After creating the plugin, add into your Netlify config file under the `plugins` section.
+  After creating the plugin, add into your [Netlify config](#netlify-configuration) file under the `plugins` section.
 
   Plugins can be referenced locally or installed via NPM.
 
@@ -414,7 +414,7 @@ After Build commands are executed
 
 
 <details>
-  <summary>Using **onPostBuild** via Netlify config</summary>
+  <summary>Using <strong>onPostBuild</strong> via Netlify config</summary>
   
   <br/>
 
@@ -435,7 +435,7 @@ Runs on build success
 
 
 <details>
-  <summary>Using **onSuccess** in a plugin</summary>
+  <summary>Using <strong>onSuccess</strong> in a plugin</summary>
   
   <br/>
 
@@ -452,7 +452,7 @@ Runs on build success
   }
   ```
 
-  After creating the plugin, add into your Netlify config file under the `plugins` section.
+  After creating the plugin, add into your [Netlify config](#netlify-configuration) file under the `plugins` section.
 
   Plugins can be referenced locally or installed via NPM.
 
@@ -484,7 +484,7 @@ Runs on build success
 
 
 <details>
-  <summary>Using **onSuccess** via Netlify config</summary>
+  <summary>Using <strong>onSuccess</strong> via Netlify config</summary>
   
   <br/>
 
@@ -505,7 +505,7 @@ Runs on build error
 
 
 <details>
-  <summary>Using **onError** in a plugin</summary>
+  <summary>Using <strong>onError</strong> in a plugin</summary>
   
   <br/>
 
@@ -522,7 +522,7 @@ Runs on build error
   }
   ```
 
-  After creating the plugin, add into your Netlify config file under the `plugins` section.
+  After creating the plugin, add into your [Netlify config](#netlify-configuration) file under the `plugins` section.
 
   Plugins can be referenced locally or installed via NPM.
 
@@ -554,7 +554,7 @@ Runs on build error
 
 
 <details>
-  <summary>Using **onError** via Netlify config</summary>
+  <summary>Using <strong>onError</strong> via Netlify config</summary>
   
   <br/>
 
@@ -575,7 +575,7 @@ Runs on build error or success
 
 
 <details>
-  <summary>Using **onEnd** in a plugin</summary>
+  <summary>Using <strong>onEnd</strong> in a plugin</summary>
   
   <br/>
 
@@ -592,7 +592,7 @@ Runs on build error or success
   }
   ```
 
-  After creating the plugin, add into your Netlify config file under the `plugins` section.
+  After creating the plugin, add into your [Netlify config](#netlify-configuration) file under the `plugins` section.
 
   Plugins can be referenced locally or installed via NPM.
 
@@ -624,7 +624,7 @@ Runs on build error or success
 
 
 <details>
-  <summary>Using **onEnd** via Netlify config</summary>
+  <summary>Using <strong>onEnd</strong> via Netlify config</summary>
   
   <br/>
 
