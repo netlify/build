@@ -99,7 +99,7 @@ const config = {
           if (options.noAnchors) {
             eventNameWithLink = eventName[1]
           } else {
-            eventNameWithLink = `<a href="#lifecycle${eventName[1].toLowerCase()}">${eventName[1]}</a>`
+            eventNameWithLink = `<a href="#${eventName[1].toLowerCase()}">${eventName[1]}</a>`
           }
           // console.log('data', data)
           const invisibleSpace = ' ‏‏‎ '

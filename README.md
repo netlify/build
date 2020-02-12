@@ -116,13 +116,13 @@ The build process runs through a series of lifecycle events. These events are th
 <!-- AUTO-GENERATED-CONTENT:START (LIFECYCLE_TABLE) -->
 | Event          | Description |
 |:------|:-------|
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecycleoninit">onInit</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Runs before anything else |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecycleonprebuild">onPreBuild</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Before build commands are executed |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecycleonbuild">onBuild</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Build commands are executed |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecycleonpostbuild">onPostBuild</a>** ‏‏‎  ‏‏‎  ‏‏‎  | After Build commands are executed |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecycleonsuccess">onSuccess</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Runs on build success |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#lifecycleonerror">onError</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Runs on build error |
-| 🎉 ‏‏‎ **<a href="#lifecycleonend">onEnd</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Runs on build error or success |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#oninit">onInit</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Runs before anything else |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#onprebuild">onPreBuild</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Before build commands are executed |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#onbuild">onBuild</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Build commands are executed |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#onpostbuild">onPostBuild</a>** ‏‏‎  ‏‏‎  ‏‏‎  | After Build commands are executed |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#onsuccess">onSuccess</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Runs on build success |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#onerror">onError</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Runs on build error |
+| 🎉 ‏‏‎ **<a href="#onend">onEnd</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Runs on build error or success |
 <!-- AUTO-GENERATED-CONTENT:END (LIFECYCLE_TABLE) -->
 
 The Lifecycle flows the events in order and executes and their `onPre` & `onPost` counterparts.
@@ -647,19 +647,6 @@ Configuration can be written in `toml`, `yml`, `json`, or `json5`.
 **Example:**
 
 ```yml
-# Config file `plugins` defines plugins used by build. Plugins are optional
-plugins:
-  - package: ./local/path/to/plugin-folder
-    config:
-      optionOne: 'hello'
-      optionTwo: 'there'
-  - package: plugin-from-npm
-    config:
-      optionOne: 'neat'
-      arrayOfValues:
-        - david@netlify.com
-        - jim@netlify.com
-
 # Inline `build.lifecycle` commands can be defined
 build:
   lifecycle:
@@ -673,6 +660,20 @@ build:
     onBuild: |
       echo 'Hello Netlify Build!'
       npm run build
+
+# Config file `plugins` defines plugins used by build. Plugins are optional
+plugins:
+  - package: ./local/path/to/plugin-folder
+    config:
+      optionOne: 'hello'
+      optionTwo: 'there'
+  - package: plugin-from-npm
+    config:
+      optionOne: 'neat'
+      arrayOfValues:
+        - david@netlify.com
+        - jim@netlify.com
+
 ```
 
 Configuration now supports `environment` variables.
