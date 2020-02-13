@@ -48,3 +48,9 @@ test('git-utils unknown commit', async t => {
     env: { CACHED_COMMIT_REF: 'aaaaaaaa', TEST_HEAD: 'aaaaaaaa' },
   })
 })
+
+test('git-utils delayed error', async t => {
+  await runFixture(t, 'delayed', {
+    env: { CACHED_COMMIT_REF: 'aaaaaaaa', TEST_HEAD: 'aaaaaaaa' },
+  })
+})
