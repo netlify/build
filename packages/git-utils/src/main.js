@@ -57,7 +57,7 @@ const getFakeGitUtils = function({ error }) {
     {
       get() {
         // Keep stack trace of both original error and `git.*` referencing
-        throw new Error(`${error}\nStack trace:`)
+        throw new Error(error)
       },
     },
   )
