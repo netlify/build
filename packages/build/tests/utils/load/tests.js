@@ -15,5 +15,5 @@ test('utils-load async function', async t => {
 })
 
 test('utils-load error', async t => {
-  await runFixture(t, 'function_async', { env: { CACHED_COMMIT_REF: 'aaaaaaaa' } })
+  await runFixture(t, 'error', { env: { CACHED_COMMIT_REF: 'aaaaaaaa' } })
 })
