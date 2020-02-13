@@ -17,7 +17,7 @@ const getGitUtils = async function(
     const gitUtils = addMethods(properties)
     return gitUtils
   } catch (error) {
-    return getFakeGitUtils(error)
+    return { error: error.stack }
   }
 }
 
@@ -31,6 +31,13 @@ const getProperties = async function(base, cwd) {
 }
 
 const addMethods = function(properties) {
+  // During initialization, the git utility is not built yet since it is a Proxy
+  // and the utility must be sent across processes, i.e. JSON-serializable.
+  // Instead we only keep the error stack and build the Proxy now.
+  if (properties.error !== undefined) {
+    return getFakeGitUtils(properties)
+  }
+
   const fileMatchA = fileMatch.bind(null, properties)
   return { ...properties, fileMatch: fileMatchA }
 }
@@ -42,14 +49,15 @@ const addMethods = function(properties) {
 // we don't want to report any errors since the user might not use the utility.
 // However we still want to report errors when the user does use the utility.
 // We achieve this by using a Proxy.
-const getFakeGitUtils = function(error) {
+const getFakeGitUtils = function({ error }) {
   return new Proxy(
     // We define those so that `Object.keys()` and similar methods still work
     { modifiedFiles: [], createdFiles: [], deletedFiles: [], commits: [], linesOfCode: 0, fileMatch() {} },
     // Intercept any `git.*` referencing and throw the original initialization error instead.
     {
       get() {
-        throw error
+        // Keep stack trace of both original error and `git.*` referencing
+        throw new Error(`${error}\nStack trace:`)
       },
     },
   )
