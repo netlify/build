@@ -57,7 +57,7 @@ const isManifest = function(filePath) {
   return filePath.endsWith(CACHE_EXTENSION)
 }
 
-const CACHE_EXTENSION = '.cache.json'
+const CACHE_EXTENSION = '.netlify.cache.json'
 
 // Check whether a file/directory is expired by checking its cache manifest
 const isExpired = async function(cachePath) {
