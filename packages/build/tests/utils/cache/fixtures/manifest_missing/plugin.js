@@ -17,7 +17,7 @@ module.exports = {
     console.log(await cache.has(id))
     await pSetTimeout(10e3)
 
-    await del(`.netlify/cache/cwd/${id}.cache.json`)
+    await del(`.netlify/cache/cwd/${id}.netlify.cache.json`)
 
     console.log(await cache.has(id))
     await del(id)
