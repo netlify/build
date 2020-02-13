@@ -52,7 +52,16 @@ const addMethods = function(properties) {
 const getFakeGitUtils = function({ error }) {
   return new Proxy(
     // We define those so that `Object.keys()` and similar methods still work
-    { modifiedFiles: [], createdFiles: [], deletedFiles: [], commits: [], linesOfCode: 0, fileMatch() {} },
+    {
+      modifiedFiles: [],
+      createdFiles: [],
+      deletedFiles: [],
+      commits: [],
+      linesOfCode: 0,
+      fileMatch() {
+        return { modified: [], created: [], deleted: [], edited: [] }
+      },
+    },
     // Intercept any `git.*` referencing and throw the original initialization error instead.
     {
       get() {
