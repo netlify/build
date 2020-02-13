@@ -657,16 +657,16 @@ By leveraging the [git](https://github.com/netlify/build/blob/master/packages/gi
   Below is a list of things possible with Build plugins to get some ideas flowing
 
   - **Gatsby cache plugin**
-  - Only running cypress tests if src/route hashes change
-  - **Ignore site build scripts** if only Netlify serverless functions change
-  - Ignore site build if source files we change about, e.g. markdown/src directory's haven't changed
-  - **Short circuit** build process if external content from third party CMS hasn't changed
-  - Optimize only new images not found in the previous build cache
-  - Only build relevant sub directories that have changed & restore the rest of the site from previous build cache
-  - Aggressively cache dependancies for faster boot up times
-  - NoOp component library / storybook builds if component src files haven't changed. Save on build minutes
+  - **Cypress Route testing plugin** - Only running cypress tests on routes that have changed
+  - **Ignore site build scripts plugin** - Only run site build commands if site files have changed. Otherwise just build serverless functions.
+  - **Smart builds plugin** - Ignore site build if source files we change about, e.g. markdown/src directory's haven't changed
+  - **Check external content updates plugin** - Only build if external content from third party CMS has changed
+  - Optimize only new images **not** found in the previous build's cache folder
+  - Only build relevant sub directories that have changed & restore the rest of the site from previous build cache. Incremental builds?!?!?!
+  - Aggressively cache dependancies/generated files/etc for faster boot up times
+  - NoOp component library/Storybook builds if component src files haven't changed.
   - Automatically disable builds during specific times of day.
-  - ...
+  - ... etc. Maybe options! 🤩
 
 </details>
 
@@ -674,7 +674,7 @@ By leveraging the [git](https://github.com/netlify/build/blob/master/packages/gi
 
 In today's age of JavaScript fatigue, setting up new projects & build tools is no easy feat. The amount of complexity that comes with setting up a production build environment is non trivial & typically replicated over and over again for projects.
 
-Build plugins are designed to help streamline this flow & help scale processes across growing teams.
+Build plugins are designed to help streamline this flow & help growing teams move faster.
 
 By abstracting common build tasks **up the stack**, this allows for plugins to be re-used in any type of project regardless of the underlying framework or static site generator.
 
