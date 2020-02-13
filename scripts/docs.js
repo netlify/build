@@ -99,7 +99,7 @@ const config = {
           if (options.noAnchors) {
             eventNameWithLink = eventName[1]
           } else {
-            eventNameWithLink = `<a href="#lifecycle${eventName[1].toLowerCase()}">${eventName[1]}</a>`
+            eventNameWithLink = `<a href="#${eventName[1].toLowerCase()}">${eventName[1]}</a>`
           }
           // console.log('data', data)
           const invisibleSpace = ' ‏‏‎ '
@@ -118,12 +118,15 @@ const config = {
 
       docBlocs.forEach(data => {
         const eventName = data.description.summary.match(/^`(.*)`/)
-        updatedContent += `### lifecycle.${eventName[1]}\n\n`
-        updatedContent += `${data.description.full}\n\n`
+        updatedContent += `### \`${eventName[1]}\`\n\n`
+        const cleanDesc = data.description.full.replace(/^`(.*)` - /g, '')
+        updatedContent += `${cleanDesc}\n\n`
 
         const pluginExample = renderPluginExample(eventName[1])
         const configExample = renderConfigExample(eventName[1])
-        updatedContent += collapse(`Using ${eventName[1]}`, `${pluginExample}\n${configExample}`)
+        updatedContent += collapse(`Using <strong>${eventName[1]}</strong> in a plugin`, `${pluginExample}`)
+        updatedContent += '\n'
+        updatedContent += collapse(`Using <strong>${eventName[1]}</strong> via Netlify config`, `${configExample}`)
 
         /* maybe fold
         <details>
@@ -202,41 +205,44 @@ function renderPluginExample(name) {
   return `
   <br/>
 
-  **1. Using with a Plugin**
-
   Below is an example plugin using the \`${name}\` event handler
 
   \`\`\`js
-  module.exports = function myPlugin(pluginConfig) {
+  // File my-plugin.js
+  module.exports = function myPlugin(conf) {
     return {
-      ${name}: () => {
-        console.log("Do thing on ${name} event")
+      ${name}: ({ pluginConfig, netlifyConfig, constants, utils }) => {
+        console.log('Run custom logic during ${name} event')
       }
     }
   }
   \`\`\`
 
-  After creating the plugin, add into your Netlify config file under \`plugins\`
+  After creating the plugin, add into your [Netlify config](#netlify-configuration) file under the \`plugins\` section.
+
+  Plugins can be referenced locally or installed via NPM.
+
+  \`netlify.yml\` example:
 
   \`\`\`yml
   plugins:
-    - package: ./path/to/plugin
-      config:
-        foo: bar
+    - package: ./path/to/my-plugin.js
   \`\`\`
   `
 }
 
 function renderConfigExample(name) {
   return `
-  **2. Using with via \`build.lifecycle\`**
+  <br/>
 
-\`\`\`yml
-build:
-  lifecycle:
-    ${name}:
-      - echo "Do thing on ${name} event"
-\`\`\`
+  Below is an example of how to use the \`${name}\` event in the Netlify config file.
+
+  \`\`\`yml
+  build:
+    lifecycle:
+      ${name}:
+        - echo "Do thing on ${name} event"
+  \`\`\`
   `
 }
 

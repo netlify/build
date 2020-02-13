@@ -162,11 +162,12 @@ module.exports = {
 The `constants` key contains the following values:
 
 <!-- AUTO-GENERATED-CONTENT:START (CONSTANTS) -->
-- `CONFIG_PATH` Path to the netlify configuration file
+- `CONFIG_PATH` Path to the Netlify configuration file
 - `BUILD_DIR` The build directory of the site
 - `FUNCTIONS_SRC` The directory where function source code lives
 - `FUNCTIONS_DIST` The directory where built serverless functions are placed before deployment
 - `SITE_ID` The Netlify Site ID
+- `CACHE_DIR` Path to the Netlify build cache folder
 <!-- AUTO-GENERATED-CONTENT:END -->
 
 ## Publishing a plugin
