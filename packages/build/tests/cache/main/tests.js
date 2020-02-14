@@ -12,6 +12,6 @@ test('Cache local', async t => {
 // TODO: figure out why
 if (platform !== 'win32') {
   test('Cache CI', async t => {
-    await runFixture(t, 'ci', { env: { TEST_CACHE_PATH: 'bower_components', DEPLOY_PRIME_URL: 'test' } })
+    await runFixture(t, 'ci', { env: { TEST_CACHE_PATH: 'bower_components', NETLIFY: 'true' } })
   })
 }

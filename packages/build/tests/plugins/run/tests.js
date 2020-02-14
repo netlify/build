@@ -17,5 +17,5 @@ test.serial('Big plugin output is not truncated', async t => {
 })
 
 test('Plugin output is buffered in CI', async t => {
-  await runFixture(t, 'ci', { env: { DEPLOY_PRIME_URL: 'test' } })
+  await runFixture(t, 'ci', { env: { NETLIFY: 'true' } })
 })
