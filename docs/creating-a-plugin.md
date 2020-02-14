@@ -166,8 +166,9 @@ The `constants` key contains the following values:
 - `BUILD_DIR` The build directory of the site
 - `FUNCTIONS_SRC` The directory where function source code lives
 - `FUNCTIONS_DIST` The directory where built serverless functions are placed before deployment
-- `SITE_ID` The Netlify Site ID
 - `CACHE_DIR` Path to the Netlify build cache folder
+- `IS_LOCAL` Boolean indicating whether the build was run locally (Netlify CLI) or in the production CI
+- `SITE_ID` The Netlify Site ID
 <!-- AUTO-GENERATED-CONTENT:END -->
 
 ## Publishing a plugin
