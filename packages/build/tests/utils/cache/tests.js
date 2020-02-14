@@ -89,7 +89,7 @@ test('cache-utils digests many', async t => {
 // TODO: figure out why
 if (!isCi || !version.startsWith('v8.')) {
   test('cache-utils ci', async t => {
-    await runFixture(t, 'save', { env: { DEPLOY_PRIME_URL: 'test' } })
+    await runFixture(t, 'save', { env: { NETLIFY: 'true' } })
   })
 }
 

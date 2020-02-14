@@ -54,7 +54,7 @@ test('constants.CACHE_DIR local', async t => {
 })
 
 test('constants.CACHE_DIR CI', async t => {
-  await runFixture(t, 'cache', { env: { DEPLOY_PRIME_URL: 'test' } })
+  await runFixture(t, 'cache', { env: { NETLIFY: 'true' } })
 })
 
 test('constants.SITE_ID', async t => {

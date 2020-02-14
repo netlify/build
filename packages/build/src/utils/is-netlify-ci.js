@@ -1,4 +1,10 @@
-// Test if inside netlify build context
-module.exports = function isNetlifyCI() {
-  return Boolean(process.env.DEPLOY_PRIME_URL)
+const {
+  env: { NETLIFY },
+} = require('process')
+
+// Check if inside Netlify Build CI
+const isNetlifyCI = function() {
+  return Boolean(NETLIFY)
 }
+
+module.exports = isNetlifyCI

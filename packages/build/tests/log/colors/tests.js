@@ -24,7 +24,7 @@ test('Netlify CI', async t => {
     snapshot: false,
     normalize: false,
     flags: '--dry',
-    env: { DEPLOY_PRIME_URL: 'test' },
+    env: { NETLIFY: 'true' },
   })
   t.true(hasAnsi(all))
 })
