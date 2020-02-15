@@ -4,6 +4,7 @@
  *
  */
 const { existsSync, readFileSync } = require('fs')
+const memoize = require('memoizee')
 
 let pkgJSON = null
 let yarnExists = false
@@ -99,5 +100,5 @@ module.exports = {
   hasRequiredDeps,
   hasRequiredFiles,
   yarnOrNPMCommand: getYarnOrNPMCommand(),
-  scanScripts,
+  scanScripts: memoize(scanScripts),
 }
