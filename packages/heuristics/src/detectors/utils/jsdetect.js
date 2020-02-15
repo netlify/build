@@ -4,26 +4,20 @@
  *
  */
 const { existsSync, readFileSync } = require('fs')
+
 const memoize = require('memoizee')
 
-let pkgJSON = null
-let yarnExists = false
 let warnedAboutEmptyScript = false
 
 /** hold package.json in a singleton so we dont do expensive parsing repeatedly */
-function getPkgJSON() {
-  if (pkgJSON) {
-    return pkgJSON
-  }
+function parsePkgJSON() {
   if (!existsSync('package.json')) throw new Error('dont call this method unless you already checked for pkg json')
-  pkgJSON = JSON.parse(readFileSync('package.json', { encoding: 'utf8' }))
-  return pkgJSON
+  return JSON.parse(readFileSync('package.json', { encoding: 'utf8' }))
 }
+const getPkgJSON = memoize(parsePkgJSON)
+
 function getYarnOrNPMCommand() {
-  if (!yarnExists) {
-    yarnExists = !!existsSync('yarn.lock')
-  }
-  return yarnExists ? 'yarn' : 'npm'
+  return existsSync('yarn.lock') ? 'yarn' : 'npm'
 }
 
 /**
@@ -97,8 +91,8 @@ function scanScripts({ preferredScriptsArr, preferredCommand }) {
 }
 
 module.exports = {
-  hasRequiredDeps,
-  hasRequiredFiles,
-  yarnOrNPMCommand: getYarnOrNPMCommand(),
+  hasRequiredDeps: memoize(hasRequiredDeps),
+  hasRequiredFiles: memoize(hasRequiredFiles),
+  yarnOrNPMCommand: memoize(getYarnOrNPMCommand),
   scanScripts: memoize(scanScripts),
 }
