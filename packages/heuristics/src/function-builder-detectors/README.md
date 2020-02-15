@@ -6,8 +6,22 @@ webpack or other config. the expected output is very simple:
 ```js
 module.exports = {
   src: 'functions-source', // source for your functions
-  build: () => {}, // chokidar will call this to build and rebuild your function
-  npmScript: 'build:functions', // optional, the matching package.json script that calls your function builder
+  functions: {
+    "hello-world": {
+        relativePath: "/hello-world",
+        language: "golang",
+        build: () => {},
+        framework: "revel",
+        buildCmd: "revel build",
+    },
+    "hello-js": {
+        relativePath: "/hello-js",
+        language: "js",
+        build: () => {},
+        framework: "cra",
+        buildCmd: "build:functions",
+    },
+  },
 }
 ```
 

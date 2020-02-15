@@ -21,13 +21,13 @@ module.exports = function() {
     const match = script.match(/netlify-lambda build (\S+)/)
     if (match) {
       settings.src = match[1]
-      settings.npmScript = key
+      settings.buildCmd = key
       break
     }
   }
 
-  if (settings.npmScript) {
-    settings.build = () => execa(yarnExists ? 'yarn' : 'npm', ['run', settings.npmScript])
+  if (settings.buildCmd) {
+    settings.build = () => execa(yarnExists ? 'yarn' : 'npm', ['run', settings.buildCmd])
     settings.builderName = 'netlify-lambda'
     return settings
   }
