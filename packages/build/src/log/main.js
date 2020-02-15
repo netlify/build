@@ -196,6 +196,8 @@ const logBuildError = function(error) {
   log(`
 ${redBright.bold(getHeader('Netlify Build Error'))}
 ${errorStack}
+
+${redBright.bold(getHeader('END Netlify Build Error'))}
 `)
 }
 
