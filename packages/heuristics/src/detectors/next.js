@@ -1,4 +1,4 @@
-const { hasRequiredDeps, hasRequiredFiles, yarnOrNPMCommand, scanScripts } = require('./utils/jsdetect')
+const { hasRequiredDeps, hasRequiredFiles, packageManagerCommand, scanScripts } = require('./utils/jsdetect')
 module.exports = function() {
   // REQUIRED FILES
   if (!hasRequiredFiles(['package.json'])) return false
@@ -18,7 +18,7 @@ module.exports = function() {
   }
   return {
     type: 'next.js',
-    command: yarnOrNPMCommand,
+    command: packageManagerCommand,
     port: 8888,
     proxyPort: 3000,
     env: { ...process.env },

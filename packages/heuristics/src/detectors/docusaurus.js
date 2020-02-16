@@ -1,4 +1,4 @@
-const { hasRequiredDeps, hasRequiredFiles, yarnOrNPMCommand, scanScripts } = require('./utils/jsdetect')
+const { hasRequiredDeps, hasRequiredFiles, packageManagerCommand, scanScripts } = require('./utils/jsdetect')
 module.exports = function() {
   // REQUIRED FILES
   if (!hasRequiredFiles(['package.json', 'siteConfig.js'])) return false
@@ -14,7 +14,7 @@ module.exports = function() {
 
   return {
     type: 'docusaurus',
-    command: yarnOrNPMCommand,
+    command: packageManagerCommand,
     port: 8888,
     proxyPort: 3000,
     env: { ...process.env },

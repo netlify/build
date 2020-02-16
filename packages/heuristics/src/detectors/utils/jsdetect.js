@@ -16,7 +16,7 @@ function parsePkgJSON() {
 }
 const getPkgJSON = memoize(parsePkgJSON)
 
-function getYarnOrNPMCommand() {
+function getPackageManagerCommand() {
   return existsSync('yarn.lock') ? 'yarn' : 'npm'
 }
 
@@ -93,6 +93,6 @@ function scanScripts({ preferredScriptsArr, preferredCommand }) {
 module.exports = {
   hasRequiredDeps: memoize(hasRequiredDeps),
   hasRequiredFiles: memoize(hasRequiredFiles),
-  yarnOrNPMCommand: memoize(getYarnOrNPMCommand),
+  packageManagerCommand: getPackageManagerCommand(),
   scanScripts: memoize(scanScripts),
 }

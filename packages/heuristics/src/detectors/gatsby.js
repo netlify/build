@@ -1,4 +1,4 @@
-const { hasRequiredDeps, hasRequiredFiles, yarnOrNPMCommand, scanScripts } = require('./utils/jsdetect')
+const { hasRequiredDeps, hasRequiredFiles, packageManagerCommand, scanScripts } = require('./utils/jsdetect')
 module.exports = function() {
   // REQUIRED FILES
   if (!hasRequiredFiles(['package.json', 'gatsby-config.js'])) return false
@@ -18,7 +18,7 @@ module.exports = function() {
   }
   return {
     type: 'gatsby',
-    command: yarnOrNPMCommand,
+    command: packageManagerCommand,
     port: 8888,
     proxyPort: 8000,
     env: { ...process.env },
