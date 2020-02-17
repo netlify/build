@@ -47,6 +47,10 @@ test('Top function errors in module', async t => {
   await runFixture(t, 'error_function_module')
 })
 
+test('CI errors with all fields', async t => {
+  await runFixture(t, 'error_ci_full', { env: { NETLIFY: 'true' } })
+})
+
 test('Process warnings', async t => {
   await runFixture(t, 'error_warning')
 })
