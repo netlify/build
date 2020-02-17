@@ -24,7 +24,7 @@ ${EMPTY_LINE}`)
 const logFlags = function(flags) {
   const flagsA = filterObj(flags, isDefined)
   if (Object.keys(flagsA).length !== 0) {
-    log(cyanBright.bold(`${HEADING_PREFIX} Flags`), flagsA, '')
+    log(cyanBright.bold(`${HEADING_PREFIX} Flags`), flagsA, EMPTY_LINE)
   }
 }
 
@@ -40,7 +40,8 @@ ${EMPTY_LINE}`)
 
 const logConfigPath = function(configPath) {
   if (configPath === undefined) {
-    log(`${cyanBright.bold(`${HEADING_PREFIX} No config file was defined: using default values.`)}`)
+    log(`${cyanBright.bold(`${HEADING_PREFIX} No config file was defined: using default values.`)}
+${EMPTY_LINE}`)
     return
   }
 
@@ -64,10 +65,7 @@ const logInstallPlugins = function() {
 }
 
 const logLoadPlugins = function() {
-  log(
-    cyanBright.bold(`${EMPTY_LINE}
-${HEADING_PREFIX} Loading plugins`),
-  )
+  log(cyanBright.bold(`${HEADING_PREFIX} Loading plugins`))
 }
 
 const logLoadedPlugins = function(pluginCommands) {
@@ -204,7 +202,7 @@ const logBuildError = function(error) {
   const errorStack = error.cleanStack ? cleanStacks(error.message) : `\n${error.stack}`
   log(`${EMPTY_LINE}
 ${redBright.bold(getHeader('Netlify Build Error'))}
-${errorStack}
+${errorStack || EMPTY_LINE}
 ${EMPTY_LINE}
 ${redBright.bold(getHeader('END Netlify Build Error'))}
 ${EMPTY_LINE}`)
