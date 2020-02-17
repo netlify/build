@@ -1,10 +1,10 @@
-const { hasRequiredDeps, hasRequiredFiles, packageManagerCommand, scanScripts } = require('../utils/jsdetect')
+const { hasRequiredDeps, hasRequiredFiles, getPackageManagerCommand, scanScripts } = require('../utils/jsdetect')
 
-module.exports = function() {
+module.exports = function(projectDir) {
   // REQUIRED FILES
-  if (!hasRequiredFiles(['package.json'])) return false
+  if (!hasRequiredFiles(['package.json'], projectDir)) return false
   // REQUIRED DEPS
-  if (!hasRequiredDeps(['quasar-cli'])) return false
+  if (!hasRequiredDeps(['quasar-cli'], projectDir)) return false
 
   /** everything below now assumes that we are within Quasar */
 
@@ -22,7 +22,7 @@ module.exports = function() {
   return {
     framework: 'quasar-cli-v0.17',
     language: 'nodejs',
-    command: packageManagerCommand,
+    command: getPackageManagerCommand(projectDir),
     port: 8888,
     proxyPort: 8080,
     env: { ...process.env },

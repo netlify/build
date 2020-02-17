@@ -1,9 +1,7 @@
-const { existsSync } = require('fs')
+const { hasRequiredFiles } = require('../utils/jsdetect')
 
-module.exports = function() {
-  if (!existsSync('config.toml') && !existsSync('config.yaml')) {
-    return false
-  }
+module.exports = function(projectDir) {
+  if (!hasRequiredFiles(['config.toml'], projectDir) && !hasRequiredFiles(['config.yaml'], projectDir)) return false
 
   return {
     framework: 'hugo',

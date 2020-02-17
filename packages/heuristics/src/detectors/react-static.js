@@ -1,9 +1,9 @@
-const { hasRequiredDeps, hasRequiredFiles, packageManagerCommand, scanScripts } = require('../utils/jsdetect')
-module.exports = function() {
+const { hasRequiredDeps, hasRequiredFiles, getPackageManagerCommand, scanScripts } = require('../utils/jsdetect')
+module.exports = function(projectDir) {
   // REQUIRED FILES
-  if (!hasRequiredFiles(['package.json', 'static.config.js'])) return false
+  if (!hasRequiredFiles(['package.json', 'static.config.js'], projectDir)) return false
   // REQUIRED DEPS
-  if (!hasRequiredDeps(['react-static'])) return false
+  if (!hasRequiredDeps(['react-static'], projectDir)) return false
 
   /** everything below now assumes that we are within react-static */
 
@@ -19,7 +19,7 @@ module.exports = function() {
   return {
     framework: 'react-static',
     language: 'nodejs',
-    command: packageManagerCommand,
+    command: getPackageManagerCommand(projectDir),
     port: 8888,
     proxyPort: 3000,
     env: { ...process.env },

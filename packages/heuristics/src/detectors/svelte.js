@@ -1,12 +1,12 @@
-const { hasRequiredDeps, hasRequiredFiles, packageManagerCommand, scanScripts } = require('../utils/jsdetect')
+const { hasRequiredDeps, hasRequiredFiles, getPackageManagerCommand, scanScripts } = require('../utils/jsdetect')
 
-module.exports = function() {
+module.exports = function(projectDir) {
   // REQUIRED FILES
-  if (!hasRequiredFiles(['package.json'])) return false
+  if (!hasRequiredFiles(['package.json'], projectDir)) return false
   // REQUIRED DEPS
-  if (!hasRequiredDeps(['svelte'])) return false
+  if (!hasRequiredDeps(['svelte'], projectDir)) return false
   // HAS DETECTOR, IT WILL BE PICKED UP BY SAPPER DETECTOR, avoid duplication https://github.com/netlify/cli/issues/347
-  if (hasRequiredDeps(['sapper'])) return false
+  if (hasRequiredDeps(['sapper'], projectDir)) return false
 
   /** everything below now assumes that we are within svelte */
 
@@ -23,7 +23,7 @@ module.exports = function() {
   return {
     framework: 'svelte',
     language: 'nodejs',
-    command: packageManagerCommand,
+    command: getPackageManagerCommand(projectDir),
     port: 8888,
     proxyPort: 5000,
     env: { ...process.env },

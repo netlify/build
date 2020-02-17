@@ -1,9 +1,7 @@
-const { existsSync } = require('fs')
+const { hasRequiredFiles } = require('../utils/jsdetect')
 
-module.exports = function() {
-  if (!existsSync('config.rb')) {
-    return false
-  }
+module.exports = function(projectDir) {
+  if (!hasRequiredFiles(['config.rb'], projectDir)) return false
 
   return {
     framework: 'middleman',

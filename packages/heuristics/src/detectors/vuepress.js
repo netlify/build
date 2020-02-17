@@ -1,10 +1,10 @@
-const { hasRequiredDeps, hasRequiredFiles, packageManagerCommand, scanScripts } = require('../utils/jsdetect')
+const { hasRequiredDeps, hasRequiredFiles, getPackageManagerCommand, scanScripts } = require('../utils/jsdetect')
 
-module.exports = function() {
+module.exports = function(projectDir) {
   // REQUIRED FILES
-  if (!hasRequiredFiles(['package.json'])) return false
+  if (!hasRequiredFiles(['package.json'], projectDir)) return false
   // REQUIRED DEPS
-  if (!hasRequiredDeps(['vuepress'])) return false
+  if (!hasRequiredDeps(['vuepress'], projectDir)) return false
 
   /** everything below now assumes that we are within vue */
 
@@ -21,7 +21,7 @@ module.exports = function() {
   return {
     framework: 'vuepress',
     language: 'nodejs',
-    command: packageManagerCommand,
+    command: getPackageManagerCommand(projectDir),
     port: 8888,
     proxyPort: 8080,
     env: { ...process.env },

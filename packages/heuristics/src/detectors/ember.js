@@ -1,11 +1,11 @@
-const { hasRequiredDeps, hasRequiredFiles, packageManagerCommand, scanScripts } = require('../utils/jsdetect')
+const { hasRequiredDeps, hasRequiredFiles, getPackageManagerCommand, scanScripts } = require('../utils/jsdetect')
 
-module.exports = function() {
+module.exports = function(projectDir) {
   // REQUIRED FILES
-  if (!hasRequiredFiles(['package.json'])) return false
-  if (!hasRequiredFiles(['ember-cli-build.js'])) return false
+  if (!hasRequiredFiles(['package.json'], projectDir)) return false
+  if (!hasRequiredFiles(['ember-cli-build.js'], projectDir)) return false
   // REQUIRED DEPS
-  if (!hasRequiredDeps(['ember-cli'])) return false
+  if (!hasRequiredDeps(['ember-cli'], projectDir)) return false
 
   /** everything below now assumes that we are within ember */
 
@@ -22,7 +22,7 @@ module.exports = function() {
   return {
     framework: 'ember-cli',
     language: 'nodejs',
-    command: packageManagerCommand,
+    command: getPackageManagerCommand(projectDir),
     port: 8888,
     proxyPort: 4200,
     env: { ...process.env },

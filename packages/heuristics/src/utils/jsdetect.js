@@ -4,20 +4,21 @@
  *
  */
 const { existsSync, readFileSync } = require('fs')
+const path = require('path')
 
 const memoize = require('memoizee')
 
 let warnedAboutEmptyScript = false
 
 /** hold package.json in a singleton so we dont do expensive parsing repeatedly */
-function parsePkgJSON() {
-  if (!existsSync('package.json')) throw new Error('dont call this method unless you already checked for pkg json')
-  return JSON.parse(readFileSync('package.json', { encoding: 'utf8' }))
+function parsePkgJSON(dir) {
+  if (!existsSync(path.resolve('package.json', dir))) throw new Error('dont call this method unless you already checked for pkg json')
+  return JSON.parse(readFileSync(path.resolve('package.json', dir), { encoding: 'utf8' }))
 }
 const getPkgJSON = memoize(parsePkgJSON)
 
-function getPackageManagerCommand() {
-  return existsSync('yarn.lock') ? 'yarn' : 'npm'
+function getPackageManagerCommand(dir) {
+  return existsSync(path.resolve('yarn.lock', dir)) ? 'yarn' : 'npm'
 }
 
 /**
@@ -25,8 +26,8 @@ function getPackageManagerCommand() {
  *
  */
 
-function hasRequiredDeps(requiredDepArray) {
-  const { dependencies, devDependencies } = getPkgJSON()
+function hasRequiredDeps(requiredDepArray, dir) {
+  const { dependencies, devDependencies } = getPkgJSON(dir)
   for (let depName of requiredDepArray) {
     const hasItInDeps = dependencies && dependencies[depName]
     const hasItInDevDeps = devDependencies && devDependencies[depName]
@@ -37,22 +38,18 @@ function hasRequiredDeps(requiredDepArray) {
   return true
 }
 
-const requiredFilesAvailable = []
-function hasRequiredFiles(filenameArr) {
+function hasRequiredFiles(filenameArr, dir) {
   for (const filename of filenameArr) {
-    if (requiredFilesAvailable.includes(filename)) continue
-    if (!existsSync(filename)) {
+    if (!existsSync(path.resolve(filename, dir))) {
       return false
-    } else {
-      requiredFilesAvailable.push(filename)
     }
   }
   return true
 }
 
 // preferredScriptsArr is in decreasing order of preference
-function scanScripts({ preferredScriptsArr, preferredCommand }) {
-  const { scripts } = getPkgJSON()
+function scanScripts({ preferredScriptsArr, preferredCommand, projectDir }) {
+  const { scripts } = getPkgJSON(projectDir)
 
   if (!scripts && !warnedAboutEmptyScript) {
     // eslint-disable-next-line no-console
@@ -93,6 +90,6 @@ function scanScripts({ preferredScriptsArr, preferredCommand }) {
 module.exports = {
   hasRequiredDeps: memoize(hasRequiredDeps),
   hasRequiredFiles: memoize(hasRequiredFiles),
-  packageManagerCommand: getPackageManagerCommand(),
+  getPackageManagerCommand: memoize(getPackageManagerCommand),
   scanScripts: memoize(scanScripts),
 }

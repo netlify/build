@@ -1,9 +1,9 @@
-const { hasRequiredDeps, hasRequiredFiles, packageManagerCommand, scanScripts } = require('../utils/jsdetect')
-module.exports = function() {
+const { hasRequiredDeps, hasRequiredFiles, getPackageManagerCommand, scanScripts } = require('../utils/jsdetect')
+module.exports = function(projectDir) {
   // REQUIRED FILES
-  if (!hasRequiredFiles(['package.json', 'gatsby-config.js'])) return false
+  if (!hasRequiredFiles(['package.json', 'gatsby-config.js'], projectDir)) return false
   // REQUIRED DEPS
-  if (!hasRequiredDeps(['gatsby'])) return false
+  if (!hasRequiredDeps(['gatsby'], projectDir)) return false
 
   /** everything below now assumes that we are within gatsby */
 
@@ -19,7 +19,7 @@ module.exports = function() {
   return {
     framework: 'gatsby',
     language: 'nodejs',
-    command: packageManagerCommand,
+    command: getPackageManagerCommand(projectDir),
     port: 8888,
     proxyPort: 8000,
     env: { ...process.env },

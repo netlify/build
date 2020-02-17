@@ -37,10 +37,10 @@ not sure if we want to support gitbook yet
 requires a global install: https://github.com/GitbookIO/gitbook/blob/master/docs/setup.md
 
 ```js
-const { hasRequiredDeps, hasRequiredFiles, packageManagerCommand, scanScripts } = require('../utils/jsdetect')
-module.exports = function() {
+const { hasRequiredFiles, getPackageManagerCommand } = require('../utils/jsdetect')
+module.exports = function(projectDir) {
   // REQUIRED FILES
-  if (!hasRequiredFiles(['README.md', 'SUMMARY.md'])) return false
+  if (!hasRequiredFiles(['README.md', 'SUMMARY.md'], projectDir)) return false
   // // REQUIRED DEPS
   // if (!hasRequiredDeps(["hexo"])) return false;
 
@@ -55,7 +55,7 @@ module.exports = function() {
   return {
     framework: 'gitbook',
     language: 'nodejs',
-    command: packageManagerCommand,
+    command: getPackageManagerCommand(projectDir),
     port: 8888,
     proxyPort: 4000,
     env: { ...process.env },

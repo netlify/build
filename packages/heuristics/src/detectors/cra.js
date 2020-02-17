@@ -1,13 +1,13 @@
-const { hasRequiredDeps, hasRequiredFiles, packageManagerCommand, scanScripts } = require('../utils/jsdetect')
+const { hasRequiredDeps, hasRequiredFiles, getPackageManagerCommand, scanScripts } = require('../utils/jsdetect')
 
 /**
  * detection logic - artificial intelligence!
  * */
-module.exports = function() {
+module.exports = function(projectDir) {
   // REQUIRED FILES
-  if (!hasRequiredFiles(['package.json'])) return false
+  if (!hasRequiredFiles(['package.json'], projectDir)) return false
   // REQUIRED DEPS
-  if (!hasRequiredDeps(['react-scripts'])) return false
+  if (!hasRequiredDeps(['react-scripts'], projectDir)) return false
 
   /** everything below now assumes that we are within create-react-app */
 
@@ -24,7 +24,7 @@ module.exports = function() {
   return {
     framework: 'create-react-app',
     language: 'nodejs',
-    command: packageManagerCommand,
+    command: getPackageManagerCommand(projectDir),
     port: 8888, // the port that the Netlify Dev User will use
     proxyPort: 3000, // the port that create-react-app normally outputs
     env: { ...process.env, BROWSER: 'none', PORT: 3000 },

@@ -1,11 +1,10 @@
-const { hasRequiredDeps, hasRequiredFiles, packageManagerCommand, scanScripts } = require('../utils/jsdetect')
+const { hasRequiredDeps, hasRequiredFiles, getPackageManagerCommand, scanScripts } = require('../utils/jsdetect')
 
-module.exports = function() {
+module.exports = function(projectDir) {
   /* REQUIRED FILES */
-  if (!hasRequiredFiles(['package.json'])) return false
-
+  if (!hasRequiredFiles(['package.json'], projectDir)) return false
   /* REQUIRED DEPS */
-  if (!(hasRequiredDeps(['parcel-bundler']) || hasRequiredDeps(['parcel']))) return false
+  if (!(hasRequiredDeps(['parcel-bundler'], projectDir) || hasRequiredDeps(['parcel'], projectDir))) return false
 
   /* Everything below now assumes that we are within parcel */
 
@@ -22,7 +21,7 @@ module.exports = function() {
   return {
     framework: 'parcel',
     language: 'nodejs',
-    command: packageManagerCommand,
+    command: getPackageManagerCommand(projectDir),
     port: 8888,
     proxyPort: 1234,
     env: { ...process.env },

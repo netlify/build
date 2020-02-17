@@ -1,9 +1,9 @@
-const { hasRequiredDeps, hasRequiredFiles, packageManagerCommand, scanScripts } = require('../utils/jsdetect')
-module.exports = function() {
+const { hasRequiredDeps, hasRequiredFiles, getPackageManagerCommand, scanScripts } = require('../utils/jsdetect')
+module.exports = function(projectDir) {
   // REQUIRED FILES
-  if (!hasRequiredFiles(['package.json', 'gridsome.config.js'])) return false
+  if (!hasRequiredFiles(['package.json', 'gridsome.config.js'], projectDir)) return false
   // REQUIRED DEPS
-  if (!hasRequiredDeps(['gridsome'])) return false
+  if (!hasRequiredDeps(['gridsome'], projectDir)) return false
 
   /** everything below now assumes that we are within gridsome */
 
@@ -15,7 +15,7 @@ module.exports = function() {
   return {
     framework: 'gridsome',
     language: 'nodejs',
-    command: packageManagerCommand,
+    command: getPackageManagerCommand(projectDir),
     port: 8888,
     proxyPort: 8080,
     env: { ...process.env },

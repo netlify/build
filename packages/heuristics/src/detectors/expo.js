@@ -1,9 +1,9 @@
-const { hasRequiredDeps, hasRequiredFiles, packageManagerCommand, scanScripts } = require('../utils/jsdetect')
-module.exports = function() {
+const { hasRequiredDeps, hasRequiredFiles, getPackageManagerCommand, scanScripts } = require('../utils/jsdetect')
+module.exports = function(projectDir) {
   // REQUIRED FILES
-  if (!hasRequiredFiles(['package.json', 'app.json'])) return false
+  if (!hasRequiredFiles(['package.json', 'app.json'], projectDir)) return false
   // REQUIRED DEPS
-  if (!hasRequiredDeps(['expo'])) return false
+  if (!hasRequiredDeps(['expo'], projectDir)) return false
 
   /** everything below now assumes that we are within expo */
 
@@ -23,7 +23,7 @@ module.exports = function() {
   return {
     framework: 'expo',
     language: 'nodejs',
-    command: packageManagerCommand,
+    command: getPackageManagerCommand(projectDir),
     port: 8888,
     proxyPort: 19006,
     env: { ...process.env },

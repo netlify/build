@@ -1,9 +1,9 @@
-const { hasRequiredDeps, hasRequiredFiles, packageManagerCommand, scanScripts } = require('../utils/jsdetect')
-module.exports = function() {
+const { hasRequiredDeps, hasRequiredFiles, getPackageManagerCommand, scanScripts } = require('../utils/jsdetect')
+module.exports = function(projectDir) {
   // REQUIRED FILES
-  if (!hasRequiredFiles(['package.json'])) return false
+  if (!hasRequiredFiles(['package.json'], projectDir)) return false
   // REQUIRED DEPS
-  if (!hasRequiredDeps(['@phenomic/core'])) return false
+  if (!hasRequiredDeps(['@phenomic/core'], projectDir)) return false
 
   /** everything below now assumes that we are within gatsby */
 
@@ -15,7 +15,7 @@ module.exports = function() {
   return {
     framework: 'phenomic',
     language: 'nodejs',
-    command: packageManagerCommand,
+    command: getPackageManagerCommand(projectDir),
     port: 8888,
     proxyPort: 3333,
     env: { ...process.env },

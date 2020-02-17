@@ -1,9 +1,7 @@
-const { existsSync } = require('fs')
+const { hasRequiredFiles } = require('../utils/jsdetect')
 
-module.exports = function() {
-  if (!existsSync('_config.yml')) {
-    return false
-  }
+module.exports = function(projectDir) {
+  if (!hasRequiredFiles(['_config.yml'], projectDir)) return false
 
   return {
     framework: 'jekyll',

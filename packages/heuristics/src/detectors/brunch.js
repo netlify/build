@@ -1,9 +1,9 @@
-const { hasRequiredDeps, hasRequiredFiles, packageManagerCommand, scanScripts } = require('../utils/jsdetect')
-module.exports = function() {
+const { hasRequiredDeps, hasRequiredFiles, getPackageManagerCommand, scanScripts } = require('../utils/jsdetect')
+module.exports = function(projectDir) {
   // REQUIRED FILES
-  if (!hasRequiredFiles(['package.json', 'brunch-config.js'])) return false
+  if (!hasRequiredFiles(['package.json', 'brunch-config.js'], projectDir)) return false
   // REQUIRED DEPS
-  if (!hasRequiredDeps(['brunch'])) return false
+  if (!hasRequiredDeps(['brunch'], projectDir)) return false
 
   /** everything below now assumes that we are within gatsby */
 
@@ -15,7 +15,7 @@ module.exports = function() {
   return {
     framework: 'brunch',
     language: 'nodejs',
-    command: packageManagerCommand,
+    command: getPackageManagerCommand(projectDir),
     port: 8888,
     proxyPort: 3333,
     env: { ...process.env },

@@ -21,7 +21,7 @@ module.exports = async function detectProjectSettings() {
 
   let settings
   for (const i in detectors) {
-    const settings = detectors[i]()
+    settings = detectors[i](process.cwd())
     if (settings) break
   }
 

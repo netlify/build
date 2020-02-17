@@ -1,11 +1,11 @@
-const { hasRequiredDeps, hasRequiredFiles, packageManagerCommand, scanScripts } = require('../utils/jsdetect')
+const { hasRequiredDeps, hasRequiredFiles, getPackageManagerCommand, scanScripts } = require('../utils/jsdetect')
 
-module.exports = async function() {
+module.exports = async function(projectDir) {
   /* REQUIRED FILES */
-  if (!hasRequiredFiles(['package.json'])) return false
+  if (!hasRequiredFiles(['package.json'], projectDir)) return false
 
   /* REQUIRED DEPS */
-  if (!(hasRequiredDeps(['netlify-lambda']) || hasRequiredDeps(['netlify-lambda']))) return false
+  if (!(hasRequiredDeps(['netlify-lambda'], projectDir) || hasRequiredDeps(['netlify-lambda'], projectDir))) return false
 
   const possibleArgsArrs = scanScripts({
     preferredScriptsArr: ['build'],
@@ -14,7 +14,7 @@ module.exports = async function() {
 
   return {
     language: 'js',
-    command: packageManagerCommand,
+    command: getPackageManagerCommand(projectDir),
     possibleArgsArrs,
     env: { ...process.env },
     dist: 'build',

@@ -1,9 +1,10 @@
-const { hasRequiredDeps, hasRequiredFiles, packageManagerCommand, scanScripts } = require('../utils/jsdetect')
-module.exports = function() {
+const { hasRequiredDeps, hasRequiredFiles, getPackageManagerCommand, scanScripts } = require('../utils/jsdetect')
+
+module.exports = function(projectDir) {
   // REQUIRED FILES
-  if (!hasRequiredFiles(['package.json', '_config.yml'])) return false
+  if (!hasRequiredFiles(['package.json', '_config.yml'], projectDir)) return false
   // REQUIRED DEPS
-  if (!hasRequiredDeps(['hexo'])) return false
+  if (!hasRequiredDeps(['hexo'], projectDir)) return false
 
   /** everything below now assumes that we are within gatsby */
 
@@ -19,7 +20,7 @@ module.exports = function() {
   return {
     framework: 'hexo',
     language: 'nodejs',
-    command: packageManagerCommand,
+    command: getPackageManagerCommand(projectDir),
     port: 8888,
     proxyPort: 4000,
     env: { ...process.env },
