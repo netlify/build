@@ -56,6 +56,10 @@ const getId = function(packageJson, id) {
 }
 
 const getVersion = function({ version }) {
+  if (version === '') {
+    return
+  }
+
   return version
 }
 
@@ -64,6 +68,10 @@ const getRepository = function({ repository: { url } = {} }) {
 }
 
 const getNpmLink = function({ name }) {
+  if (name === '') {
+    return
+  }
+
   return `https://www.npmjs.com/package/${name}`
 }
 
