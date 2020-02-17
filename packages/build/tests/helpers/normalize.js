@@ -12,6 +12,9 @@ const replaceOutput = function(output, [regExp, replacement]) {
 }
 
 const NORMALIZE_REGEXPS = [
+  // Zero width space characters due to a bug in buildbot:
+  // https://github.com/netlify/buildbot/issues/595
+  [/\u{200b}/gu, ''],
   // Windows specifics
   [/\r\n/gu, '\n'],
   [/\\/gu, '/'],
