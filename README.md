@@ -1,7 +1,11 @@
-# Netlify Build
+<img src="static/logo.png" width="400" />
+
+<br/>
 
 [![Coverage Status](https://codecov.io/gh/netlify/build/branch/master/graph/badge.svg)](https://codecov.io/gh/netlify/build)
 [![Build](https://github.com/netlify/build/workflows/Build/badge.svg)](https://github.com/netlify/build/actions)
+
+# Netlify Build
 
 Netlify build is the next generation of CI/CD tooling for modern web applications.
 
@@ -52,8 +56,6 @@ this build process. This works great for most use cases & will continue to do so
 
 For builds that require a little more flexibility, we are introducing **Netlify Build** as programatic interface on top
 of these build events to allow users to customize this flow.
-
-<img src="static/logo.png" width="400" />
 
 **Netlify Build** is designed to support any kind of build flow and is extendable to fit any unique project
 requirements.
