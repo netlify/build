@@ -39,8 +39,12 @@ test('Top-level errors', async t => {
   await runFixture(t, 'error_top')
 })
 
-test('Top function errors', async t => {
+test('Top function errors local', async t => {
   await runFixture(t, 'error_function')
+})
+
+test('Top function errors in module', async t => {
+  await runFixture(t, 'error_function_module')
 })
 
 test('Process warnings', async t => {
