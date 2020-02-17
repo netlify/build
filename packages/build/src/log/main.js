@@ -16,7 +16,8 @@ const HEADING_PREFIX = pointer
 const SUBTEXT_PADDING = '  '
 
 const logBuildStart = function() {
-  log(`${greenBright.bold(`${HEADING_PREFIX} Starting Netlify Build v${version}`)}
+  log(`${EMPTY_LINE}
+${greenBright.bold(`${HEADING_PREFIX} Starting Netlify Build v${version}`)}
 ${SUBTEXT_PADDING}https://github.com/netlify/build
 ${EMPTY_LINE}`)
 }
