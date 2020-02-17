@@ -3,8 +3,6 @@ const fs = require('fs')
 const util = require('util')
 
 const chalk = require('chalk')
-const inquirer = require('inquirer')
-const fuzzy = require('fuzzy')
 
 const readDirAsync = util.promisify(fs.readdir)
 const readFileAsync = util.promisify(fs.readFile)
@@ -26,71 +24,27 @@ module.exports = async function detectProjectSettings() {
       }
     })
     .filter(Boolean)
-  let settingsArr = []
   let settings = null
   for (const i in detectors) {
     const detectorResult = detectors[i]()
-    if (detectorResult) settingsArr.push(detectorResult)
-  }
-  if (settingsArr.length === 1) {
-    // vast majority of projects will only have one matching detector
-    settings = settingsArr[0]
-    settings.args = settings.possibleArgsArrs[0] // just pick the first one
-    if (!settings.args) {
-      const { scripts } = JSON.parse(await readFileAsync('package.json', { encoding: 'utf8' }))
-      // eslint-disable-next-line no-console
-      console.error(
-        'empty args assigned, this is an internal Netlify Dev bug, please report your settings and scripts so we can improve',
-        { scripts, settings },
-      )
-      // eslint-disable-next-line no-process-exit
-      process.exit(1)
+    if (detectorResult) {
+      settings = detectorResult
+      break
     }
-  } else if (settingsArr.length > 1) {
-    /** multiple matching detectors, make the user choose */
-    // lazy loading on purpose
-    inquirer.registerPrompt('autocomplete', require('inquirer-autocomplete-prompt'))
-    const scriptInquirerOptions = formatSettingsArrForInquirer(settingsArr)
-    const { chosenSetting } = await inquirer.prompt({
-      name: 'chosenSetting',
-      message: `Multiple possible start commands found`,
-      type: 'autocomplete',
-      source: async function(_, input) {
-        if (!input || input === '') {
-          return scriptInquirerOptions
-        }
-        // only show filtered results
-        return filterSettings(scriptInquirerOptions, input)
-      },
-    })
-    settings = chosenSetting // finally! we have a selected option
-    // TODO: offer to save this setting to netlify.toml so you dont keep doing this
+  }
+  if (!settings) return {}
+  // vast majority of projects will only have one matching detector
+  settings.args = settings.possibleArgsArrs[0] // just pick the first one
+  if (!settings.args) {
+    const { scripts } = JSON.parse(await readFileAsync('package.json', { encoding: 'utf8' }))
+    // eslint-disable-next-line no-console
+    console.error(
+      'empty args assigned, this is an internal Netlify Dev bug, please report your settings and scripts so we can improve',
+      { scripts, settings },
+    )
+    // eslint-disable-next-line no-process-exit
+    process.exit(1)
   }
 
   return settings
-}
-
-/** utilities for the inquirer section above */
-function filterSettings(scriptInquirerOptions, input) {
-  const filteredSettings = fuzzy.filter(
-    input,
-    scriptInquirerOptions.map(x => x.name),
-  )
-  const filteredSettingNames = filteredSettings.map(x => (input ? x.string : x))
-  return scriptInquirerOptions.filter(t => filteredSettingNames.includes(t.name))
-}
-
-/** utiltities for the inquirer section above */
-function formatSettingsArrForInquirer(settingsArr) {
-  let ans = []
-  settingsArr.forEach(setting => {
-    setting.possibleArgsArrs.forEach(args => {
-      ans.push({
-        name: `[${chalk.yellow(setting.type)}] ${setting.command} ${args.join(' ')}`,
-        value: { ...setting, args },
-        short: setting.type + '-' + args.join(' '),
-      })
-    })
-  })
-  return ans
 }
