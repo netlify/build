@@ -18,7 +18,7 @@ module.exports = function(projectDir) {
 
   return {
     framework: 'stencil',
-    language: 'nodejs',
+    language: 'js',
     command: getPackageManagerCommand(projectDir),
     port: 8888, // the port that the Netlify Dev User will use
     proxyPort: 3333, // the port that stencil normally outputs

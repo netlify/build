@@ -18,7 +18,7 @@ module.exports = function(projectDir) {
   }
   return {
     framework: 'react-static',
-    language: 'nodejs',
+    language: 'js',
     command: getPackageManagerCommand(projectDir),
     port: 8888,
     proxyPort: 3000,

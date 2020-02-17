@@ -22,7 +22,7 @@ module.exports = function(projectDir) {
   }
   return {
     framework: 'expo',
-    language: 'nodejs',
+    language: 'js',
     command: getPackageManagerCommand(projectDir),
     port: 8888,
     proxyPort: 19006,

@@ -14,7 +14,7 @@ module.exports = function(projectDir) {
 
   return {
     framework: 'gridsome',
-    language: 'nodejs',
+    language: 'js',
     command: getPackageManagerCommand(projectDir),
     port: 8888,
     proxyPort: 8080,

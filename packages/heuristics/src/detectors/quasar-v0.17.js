@@ -21,7 +21,7 @@ module.exports = function(projectDir) {
 
   return {
     framework: 'quasar-cli-v0.17',
-    language: 'nodejs',
+    language: 'js',
     command: getPackageManagerCommand(projectDir),
     port: 8888,
     proxyPort: 8080,

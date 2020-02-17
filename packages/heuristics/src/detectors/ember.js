@@ -21,7 +21,7 @@ module.exports = function(projectDir) {
 
   return {
     framework: 'ember-cli',
-    language: 'nodejs',
+    language: 'js',
     command: getPackageManagerCommand(projectDir),
     port: 8888,
     proxyPort: 4200,

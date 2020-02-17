@@ -20,7 +20,7 @@ module.exports = function(projectDir) {
 
   return {
     framework: 'parcel',
-    language: 'nodejs',
+    language: 'js',
     command: getPackageManagerCommand(projectDir),
     port: 8888,
     proxyPort: 1234,

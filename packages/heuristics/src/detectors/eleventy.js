@@ -14,7 +14,7 @@ module.exports = function(projectDir) {
 
   return {
     framework: 'eleventy',
-    language: 'nodejs',
+    language: 'js',
     port: 8888,
     proxyPort: 8080,
     env: { ...process.env },

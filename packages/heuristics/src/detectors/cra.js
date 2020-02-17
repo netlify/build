@@ -23,7 +23,7 @@ module.exports = function(projectDir) {
 
   return {
     framework: 'create-react-app',
-    language: 'nodejs',
+    language: 'js',
     command: getPackageManagerCommand(projectDir),
     port: 8888, // the port that the Netlify Dev User will use
     proxyPort: 3000, // the port that create-react-app normally outputs
