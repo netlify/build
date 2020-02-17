@@ -5,8 +5,8 @@
  */
 const { existsSync, readFileSync } = require('fs')
 const path = require('path')
-const semver = require('semver')
 
+const semver = require('semver')
 const memoize = require('memoizee')
 
 let warnedAboutEmptyScript = false
