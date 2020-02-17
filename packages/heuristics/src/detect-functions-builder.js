@@ -5,8 +5,9 @@ const util = require('util')
 const chalk = require('chalk')
 
 const readDirAsync = util.promisify(fs.readdir)
+const statAsync = util.promisify(fs.stat)
 
-module.exports = async function detectFunctionsBuilder() {
+module.exports = async function detectFunctionsBuilder(functionsDir) {
   const detectors = (await readDirAsync(path.join(__dirname, 'function-builder-detectors')))
     .filter(x => x.endsWith('.js')) // only accept .js detector files
     .map(det => {
@@ -17,12 +18,35 @@ module.exports = async function detectFunctionsBuilder() {
         return null
       }
     })
-    .filter(Boolean)
+    .filter(Boolean);
 
-  let settings
+  const functionsPath = path.resolve(functionsDir, process.cwd())
+  const settings = {
+    src: functionsPath,
+    functions: {}
+  }
+
   for (const i in detectors) {
-    const settings = detectors[i]()
-    if (settings) break
+    const functionSettings = detectors[i](functionsPath)
+    if (functionSettings) {
+      settings.functions["/"] = functionSettings
+      break
+    }
+  }
+
+  const functionsContents = await readDirAsync(functionsPath)
+  for (const x in functionsContents) {
+    const item = functionsContents[x]
+    const stats = await statAsync(item)
+    if (stats.isDirectory()) {
+      for (const i in detectors) {
+        const functionSettings = detectors[i](path.resolve(item, functionsPath))
+        if (functionSettings) {
+          settings.functions[path.resolve(item, "/")] = functionSettings
+          break
+        }
+      }
+    }
   }
 
   if (!settings) return {}
