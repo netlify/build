@@ -5,6 +5,7 @@
  */
 const { existsSync, readFileSync } = require('fs')
 const path = require('path')
+const semver = require('semver')
 
 const memoize = require('memoizee')
 
@@ -87,9 +88,23 @@ function scanScripts({ preferredScriptsArr, preferredCommand, projectDir }) {
   return possibleArgsArrs
 }
 
+function getLanguageVersion(lang, projectDir) {
+  switch (lang) {
+    case "nodejs": {
+      const configPath = path.resolve('.nvmrc', projectDir)
+      if (existsSync(configPath)) {
+        const nodeVersion = readFileSync(configPath, { encoding: 'utf8' }).replace('\n', '');
+        return semver.clean(nodeVersion)
+      }
+      break
+    }
+  }
+}
+
 module.exports = {
   hasRequiredDeps: memoize(hasRequiredDeps),
   hasRequiredFiles: memoize(hasRequiredFiles),
   getPackageManagerCommand: memoize(getPackageManagerCommand),
   scanScripts: memoize(scanScripts),
+  getLanguageVersion: memoize(getLanguageVersion),
 }

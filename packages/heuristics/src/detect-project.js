@@ -4,6 +4,8 @@ const util = require('util')
 
 const chalk = require('chalk')
 
+const { getLanguageVersion } = require('./utils/jsdetect')
+
 const readDirAsync = util.promisify(fs.readdir)
 
 module.exports = async function detectProjectSettings() {
@@ -19,13 +21,20 @@ module.exports = async function detectProjectSettings() {
     })
     .filter(Boolean)
 
+  const projectPath = process.cwd()
+
   let settings
   for (const i in detectors) {
-    settings = detectors[i](process.cwd())
+    settings = detectors[i](projectPath)
     if (settings) break
   }
 
   if (!settings) return {}
+
+  if (settings.language && !settings.language.includes(':')) {
+    settings.language = [settings.language, getLanguageVersion(settings.language, projectPath)].join(':')
+  }
+
   settings.args = settings.possibleArgsArrs[0] || [] // just pick the first one
   if (!settings.args) {
     // eslint-disable-next-line no-console
