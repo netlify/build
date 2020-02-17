@@ -60,3 +60,11 @@ test('constants.CACHE_DIR CI', async t => {
 test('constants.SITE_ID', async t => {
   await runFixture(t, 'site_id', { flags: '--site-id test' })
 })
+
+test('constants.IS_LOCAL local', async t => {
+  await runFixture(t, 'is_local')
+})
+
+test('constants.IS_LOCAL CI', async t => {
+  await runFixture(t, 'is_local', { env: { NETLIFY: 'true' } })
+})

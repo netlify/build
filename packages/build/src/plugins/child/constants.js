@@ -18,7 +18,8 @@ const getConstants = async function({
   },
   siteId,
 }) {
-  const functionsDist = getFunctionsDist()
+  const isLocal = !isNetlifyCI()
+  const functionsDist = getFunctionsDist(isLocal)
   const cacheDir = await getCacheDir()
 
   const constants = {
@@ -39,13 +40,17 @@ const getConstants = async function({
      */
     FUNCTIONS_DIST: functionsDist,
     /**
-     * The Netlify Site ID
-     */
-    SITE_ID: siteId,
-    /**
      * Path to the Netlify build cache folder
      */
     CACHE_DIR: cacheDir,
+    /**
+     * Boolean indicating whether the build was run locally (Netlify CLI) or in the production CI
+     */
+    IS_LOCAL: isLocal,
+    /**
+     * The Netlify Site ID
+     */
+    SITE_ID: siteId,
   }
   const constantsA = mapObj(constants, (key, path) => [key, normalizePath(path, baseDir, key)])
   return constantsA
@@ -53,12 +58,12 @@ const getConstants = async function({
 
 const DEFAULT_FUNCTIONS = 'functions'
 const LOCAL_FUNCTIONS_DIST = '.netlify/functions/'
-const getFunctionsDist = function() {
-  if (isNetlifyCI()) {
-    return `${tmpdir()}/zisi-${DEPLOY_ID}`
+const getFunctionsDist = function(isLocal) {
+  if (isLocal) {
+    return LOCAL_FUNCTIONS_DIST
   }
 
-  return LOCAL_FUNCTIONS_DIST
+  return `${tmpdir()}/zisi-${DEPLOY_ID}`
 }
 
 // The current directory is `baseDir`. Most constants are inside this `baseDir`.
@@ -78,6 +83,6 @@ const normalizePath = function(path, baseDir, key) {
   return pathA
 }
 
-const NOT_PATHS = ['SITE_ID']
+const NOT_PATHS = ['IS_LOCAL', 'SITE_ID']
 
 module.exports = { getConstants }
