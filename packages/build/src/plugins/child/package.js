@@ -1,8 +1,10 @@
 const readPkgUp = require('read-pkg-up')
 
 // Retrieve plugin's `package.json`
-const getPackageJson = async function({ pluginPath, package }) {
-  if (isLocalPath(package)) {
+const getPackageJson = async function({ pluginPath, local }) {
+  // Local plugins most likely don't have their own `package.json`, so this would
+  // show the project's `package.json` instead
+  if (local) {
     return {}
   }
 
@@ -13,12 +15,6 @@ const getPackageJson = async function({ pluginPath, package }) {
   }
 
   return packageObj.packageJson
-}
-
-// Local plugins most likely don't have their own `package.json`, so this would
-// show the project's `package.json` instead
-const isLocalPath = function(package) {
-  return package.startsWith('.') || package.startsWith('/')
 }
 
 module.exports = { getPackageJson }
