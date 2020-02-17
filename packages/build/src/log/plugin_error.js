@@ -1,6 +1,19 @@
-const { redBright } = require('chalk')
+const { white, redBright } = require('chalk')
 
 const isNetlifyCI = require('../utils/is-netlify-ci')
+
+// Retrieve error message when a plugin event handler fails
+const getPluginErrorMessage = function({ error, id, event, package, packageData, local }) {
+  const pluginDetails = getPluginDetails(packageData, id)
+  const location = local ? 'in local plugin' : 'in npm package'
+  return `${white.bold(`Plugin "${id}" failing with errors`)}
+${pluginDetails}
+${redBright.bold('Error location')}
+Thrown from "${white.bold(event)}" event ${location} ${white.bold(package)}
+
+${redBright.bold('Error message')}
+${error.message}`
+}
 
 // Retrieve plugin's package.json details to include in error messages.
 // Please note `packageJson` has been normalized by `normalize-package-data`.
@@ -66,4 +79,4 @@ const FIELDS = {
   'Report issues': getIssuesLink,
 }
 
-module.exports = { getPluginDetails }
+module.exports = { getPluginErrorMessage }
