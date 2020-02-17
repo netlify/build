@@ -98,9 +98,23 @@ function getLanguageVersion(lang, projectDir) {
       }
       break
     }
+    case 'ruby': {
+      const configPath = path.join(projectDir, '.rbenv-version')
+      if (existsSync(configPath)) {
+        const rubyVersion = readFileSync(configPath, { encoding: 'utf8' }).replace('\n', '');
+        return rubyVersion.trim()
+      }
+      break
+    }
     default:
       return lang
   }
+}
+
+function getLanguage(projectDir) {
+  if (hasRequiredFiles(['package.json'], projectDir) || hasRequiredFiles(['.nvmrc'], projectDir)) return 'js'
+  if (hasRequiredFiles(['requirements.txt'], projectDir)) return 'python'
+  if (hasRequiredFiles(['Gemfile'], projectDir) || hasRequiredFiles(['.rvmrc'], projectDir)) return 'ruby'
 }
 
 module.exports = {
@@ -109,4 +123,5 @@ module.exports = {
   getPackageManagerCommand: memoize(getPackageManagerCommand),
   scanScripts: memoize(scanScripts),
   getLanguageVersion: memoize(getLanguageVersion),
+  getLanguage: memoize(getLanguage),
 }
