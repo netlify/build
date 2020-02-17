@@ -66,13 +66,20 @@ const logLoadPlugins = function() {
   log(cyanBright.bold(`\n${HEADING_PREFIX} Loading plugins`))
 }
 
-const logLoadedPlugins = function(pluginResults) {
-  const loadedPlugins = pluginResults.map(getLoadedPlugin).join('\n')
+const logLoadedPlugins = function(pluginCommands) {
+  const loadedPlugins = pluginCommands
+    .filter(isNotDuplicate)
+    .map(getLoadedPlugin)
+    .join('\n')
   log(loadedPlugins)
 }
 
-const getLoadedPlugin = function({ id, package, core, version }) {
-  const idA = id === undefined ? '' : `${greenBright.bold(id)} from `
+const isNotDuplicate = function(pluginCommand, index, pluginCommands) {
+  return !pluginCommands.slice(index + 1).some(laterPluginCommand => laterPluginCommand.id === pluginCommand.id)
+}
+
+const getLoadedPlugin = function({ id, package, core, packageJson: { version } }) {
+  const idA = id === undefined || id === package ? '' : `${greenBright.bold(id)} from `
   const versionA = version === undefined ? '' : `@${version}`
   const location = core ? 'build core' : `${greenBright.bold(package)}${versionA}`
   return `${SUBTEXT_PADDING} - ${idA}${location}`
@@ -186,7 +193,8 @@ const logCacheDir = function(path) {
 
 const logBuildError = function(error) {
   const errorStack = error.cleanStack ? cleanStacks(error.message) : `\n${error.stack}`
-  log(`${redBright.bold(`\n${getHeader('Netlify Build Error')}`)}
+  log(`
+${redBright.bold(getHeader('Netlify Build Error'))}
 ${errorStack}
 `)
 }

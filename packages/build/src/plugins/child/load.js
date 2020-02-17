@@ -4,7 +4,7 @@ const { validatePluginConfig } = require('../config/validate_props.js')
 const { getLogic } = require('./logic')
 const { validatePlugin } = require('./validate')
 const { normalizePlugin } = require('./normalize')
-const { getVersion } = require('./version')
+const { getPackageJson } = require('./package')
 const { getApiClient } = require('./api')
 const { getUtils } = require('./utils')
 const { getConstants } = require('./constants')
@@ -23,19 +23,19 @@ const loadPlugin = async function(payload) {
 
   const logicA = normalizePlugin(logic)
 
-  const version = await getVersion(payload)
+  const packageJson = await getPackageJson(payload)
 
-  const pluginCommands = getPluginCommands(logicA, payload)
+  const pluginCommands = getPluginCommands(logicA, payload, packageJson)
 
   const context = getContext(logicA, pluginCommands, constants, payload)
-  return { context, pluginCommands, version }
+  return { context, pluginCommands }
 }
 
-const getPluginCommands = function(logic, { id, package, core }) {
+const getPluginCommands = function(logic, { id, package, core }, packageJson) {
   const { name } = logic
   return Object.entries(logic)
     .filter(isEventHandler)
-    .map(([event, method]) => getPluginCommand({ method, event, name, id, package, core }))
+    .map(([event, method]) => getPluginCommand({ method, event, name, id, package, core, packageJson }))
 }
 
 const isEventHandler = function([, value]) {
@@ -43,10 +43,10 @@ const isEventHandler = function([, value]) {
 }
 
 // Retrieve a single command from this plugin
-const getPluginCommand = function({ method, event, name, id = name, package, core }) {
+const getPluginCommand = function({ method, event, name, id = name, package, core, packageJson }) {
   const override = getOverride(event)
   const eventA = override.event || event
-  return { method, id, name, package, event: eventA, originalEvent: event, override, core }
+  return { method, id, name, package, event: eventA, originalEvent: event, override, core, packageJson }
 }
 
 // Retrieve context passed to every event handler

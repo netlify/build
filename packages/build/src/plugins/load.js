@@ -19,7 +19,7 @@ const loadPlugins = async function({
 }) {
   logLoadPlugins()
 
-  const pluginResults = await Promise.all(
+  const pluginCommands = await Promise.all(
     pluginsOptions.map((pluginOptions, index) =>
       loadPlugin(pluginOptions, {
         childProcesses,
@@ -33,16 +33,13 @@ const loadPlugins = async function({
       }),
     ),
   )
+  const pluginCommandsA = pluginCommands.flat()
 
-  logLoadedPlugins(pluginResults)
+  logLoadedPlugins(pluginCommandsA)
 
-  const pluginCommandsA = pluginResults
-    .map(getPluginCommands)
-    .flat()
-    .filter(isNotDuplicate)
-    .filter(isNotOverridden)
-  const pluginsCommandsB = groupBy(pluginCommandsA, 'event')
-  return pluginsCommandsB
+  const pluginCommandsB = pluginCommandsA.filter(isNotDuplicate).filter(isNotOverridden)
+  const pluginsCommandsC = groupBy(pluginCommandsB, 'event')
+  return pluginsCommandsC
 }
 
 // Retrieve plugin commands for one plugin.
@@ -53,7 +50,7 @@ const loadPlugin = async function(
 ) {
   try {
     const { childProcess } = childProcesses[index]
-    const { pluginCommands, version } = await callChild(childProcess, 'load', {
+    const { pluginCommands } = await callChild(childProcess, 'load', {
       id,
       package,
       pluginPath,
@@ -67,17 +64,13 @@ const loadPlugin = async function(
       siteId,
     })
     const pluginCommandsA = pluginCommands.map(pluginCommand => ({ ...pluginCommand, childProcess }))
-    return { pluginCommands: pluginCommandsA, id, package, core, version }
+    return pluginCommandsA
   } catch (error) {
     const idA = id === undefined ? package : id
     error.message = `Error loading "${idA}" plugin:\n${error.message}`
     error.cleanStack = true
     throw error
   }
-}
-
-const getPluginCommands = function({ pluginCommands }) {
-  return pluginCommands
 }
 
 // Remove plugin commands that are duplicates.
