@@ -90,7 +90,7 @@ function scanScripts({ preferredScriptsArr, preferredCommand, projectDir }) {
 
 function getLanguageVersion(lang, projectDir) {
   switch (lang) {
-    case "nodejs": {
+    case "js": {
       const configPath = path.join(projectDir, '.nvmrc')
       if (existsSync(configPath)) {
         const nodeVersion = readFileSync(configPath, { encoding: 'utf8' }).replace('\n', '');
