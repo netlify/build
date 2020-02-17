@@ -2,7 +2,7 @@ const {
   // hasRequiredDeps,
   hasRequiredFiles,
   // scanScripts
-} = require('./utils/jsdetect')
+} = require('../utils/jsdetect')
 
 module.exports = function() {
   // REQUIRED FILES

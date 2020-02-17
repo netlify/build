@@ -37,7 +37,7 @@ not sure if we want to support gitbook yet
 requires a global install: https://github.com/GitbookIO/gitbook/blob/master/docs/setup.md
 
 ```js
-const { hasRequiredDeps, hasRequiredFiles, packageManagerCommand, scanScripts } = require('./utils/jsdetect')
+const { hasRequiredDeps, hasRequiredFiles, packageManagerCommand, scanScripts } = require('../utils/jsdetect')
 module.exports = function() {
   // REQUIRED FILES
   if (!hasRequiredFiles(['README.md', 'SUMMARY.md'])) return false
