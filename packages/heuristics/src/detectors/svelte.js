@@ -21,7 +21,8 @@ module.exports = function() {
   }
 
   return {
-    type: 'svelte',
+    framework: 'svelte',
+    language: 'nodejs',
     command: packageManagerCommand,
     port: 8888,
     proxyPort: 5000,

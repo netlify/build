@@ -19,7 +19,8 @@ module.exports = function() {
   }
 
   return {
-    type: 'vuepress',
+    framework: 'vuepress',
+    language: 'nodejs',
     command: packageManagerCommand,
     port: 8888,
     proxyPort: 8080,

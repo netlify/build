@@ -13,7 +13,8 @@ module.exports = function() {
   })
 
   return {
-    type: 'phenomic',
+    framework: 'phenomic',
+    language: 'nodejs',
     command: packageManagerCommand,
     port: 8888,
     proxyPort: 3333,

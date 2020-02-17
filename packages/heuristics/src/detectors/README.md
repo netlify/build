@@ -6,7 +6,8 @@
 
 ```ts
 {
-    type: String, // e.g. gatsby, vue-cli
+    framework: String, // e.g. gatsby, vue-cli
+    language: String, // e.g. nodejs, ruby:2.4, golang:1.12
     command: String, // e.g. yarn, npm
     port: Number, // e.g. 8888
     proxyPort: Number, // e.g. 3000
@@ -52,7 +53,8 @@ module.exports = function() {
   // });
 
   return {
-    type: 'gitbook',
+    framework: 'gitbook',
+    language: 'nodejs',
     command: packageManagerCommand,
     port: 8888,
     proxyPort: 4000,

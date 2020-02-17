@@ -20,7 +20,8 @@ module.exports = function() {
   }
 
   return {
-    type: 'ember-cli',
+    framework: 'ember-cli',
+    language: 'nodejs',
     command: packageManagerCommand,
     port: 8888,
     proxyPort: 4200,

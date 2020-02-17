@@ -20,7 +20,8 @@ module.exports = function() {
   }
 
   return {
-    type: 'quasar-cli',
+    framework: 'quasar-cli',
+    language: 'nodejs',
     command: packageManagerCommand,
     port: 8888,
     proxyPort: 8080,

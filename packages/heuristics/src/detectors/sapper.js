@@ -19,7 +19,8 @@ module.exports = function() {
   }
 
   return {
-    type: 'sapper',
+    framework: 'sapper',
+    language: 'nodejs',
     command: packageManagerCommand,
     port: 8888,
     proxyPort: 3000,

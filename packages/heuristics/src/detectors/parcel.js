@@ -20,7 +20,8 @@ module.exports = function() {
   }
 
   return {
-    type: 'parcel',
+    framework: 'parcel',
+    language: 'nodejs',
     command: packageManagerCommand,
     port: 8888,
     proxyPort: 1234,

@@ -17,7 +17,8 @@ module.exports = function() {
     possibleArgsArrs.push(['next'])
   }
   return {
-    type: 'next.js',
+    framework: 'next.js',
+    language: 'nodejs',
     command: packageManagerCommand,
     port: 8888,
     proxyPort: 3000,

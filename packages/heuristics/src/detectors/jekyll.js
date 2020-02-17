@@ -6,7 +6,8 @@ module.exports = function() {
   }
 
   return {
-    type: 'jekyll',
+    framework: 'jekyll',
+    language: 'ruby:2.4',
     port: 8888,
     proxyPort: 4000,
     env: { ...process.env },

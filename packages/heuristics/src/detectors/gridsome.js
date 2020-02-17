@@ -13,7 +13,8 @@ module.exports = function() {
   })
 
   return {
-    type: 'gridsome',
+    framework: 'gridsome',
+    language: 'nodejs',
     command: packageManagerCommand,
     port: 8888,
     proxyPort: 8080,

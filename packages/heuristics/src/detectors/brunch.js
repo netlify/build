@@ -13,7 +13,8 @@ module.exports = function() {
   })
 
   return {
-    type: 'brunch',
+    framework: 'brunch',
+    language: 'nodejs',
     command: packageManagerCommand,
     port: 8888,
     proxyPort: 3333,

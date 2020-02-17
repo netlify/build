@@ -6,7 +6,8 @@ module.exports = function() {
   }
 
   return {
-    type: 'middleman',
+    framework: 'middleman',
+    language: 'ruby:2.4',
     port: 8888,
     proxyPort: 4567,
     env: { ...process.env },

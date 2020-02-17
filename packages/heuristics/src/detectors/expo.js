@@ -21,7 +21,8 @@ module.exports = function() {
     possibleArgsArrs.push(['expo', 'start', '--web'])
   }
   return {
-    type: 'expo',
+    framework: 'expo',
+    language: 'nodejs',
     command: packageManagerCommand,
     port: 8888,
     proxyPort: 19006,

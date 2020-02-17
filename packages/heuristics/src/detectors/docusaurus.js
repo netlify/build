@@ -13,7 +13,8 @@ module.exports = function() {
   })
 
   return {
-    type: 'docusaurus',
+    framework: 'docusaurus',
+    language: 'nodejs',
     command: packageManagerCommand,
     port: 8888,
     proxyPort: 3000,

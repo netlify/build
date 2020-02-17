@@ -19,7 +19,8 @@ module.exports = function() {
   }
 
   return {
-    type: 'vue-cli',
+    framework: 'vue-cli',
+    language: 'nodejs',
     command: packageManagerCommand,
     port: 8888,
     proxyPort: 8080,
