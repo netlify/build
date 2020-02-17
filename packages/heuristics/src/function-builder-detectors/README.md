@@ -1,6 +1,6 @@
 ## Function builder detectors
 
-Similar to project detectors, each file here detects function builders. this is so that netlify dev never manages the
+Similar to project detectors, each file here detects function builders. this is so that Netlify Build never manages the
 webpack or other config. the expected output is very simple:
 
 ```js
@@ -8,24 +8,19 @@ module.exports = {
   src: 'functions-source', // source for your functions
   functions: {
     "hello-world": {
-        relativePath: "/hello-world",
-        language: "golang",
-        build: () => {},
-        framework: "revel",
-        buildCmd: "revel build",
+      language: 'golang',
+      command: 'go',
+      possibleArgsArrs: [['build', 'main.go']],
+      env: { ...process.env },
+      dist: 'hello-world',
     },
     "hello-js": {
-        relativePath: "/hello-js",
-        language: "js",
-        build: () => {},
-        framework: "cra",
-        buildCmd: "build:functions",
+      language: 'js',
+      command: 'npm',
+      possibleArgsArrs: [['run', 'build']],
+      env: { ...process.env },
+      dist: 'build',
     },
   },
 }
 ```
-
-example
-
-- [src](https://github.com/netlify/cli/blob/f7b7c6adda3903fa02cf1b3fadcef026a4e56c13/src/function-builder-detectors/netlify-lambda.js#L22)
-- [npmScript](https://github.com/netlify/cli/blob/f7b7c6adda3903fa02cf1b3fadcef026a4e56c13/src/function-builder-detectors/netlify-lambda.js#L23)

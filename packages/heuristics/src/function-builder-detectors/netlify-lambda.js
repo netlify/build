@@ -1,34 +1,22 @@
-const { existsSync, readFileSync } = require('fs')
+const { hasRequiredDeps, hasRequiredFiles, packageManagerCommand, scanScripts } = require('../utils/jsdetect')
 
-const execa = require('execa')
+module.exports = async function() {
+  /* REQUIRED FILES */
+  if (!hasRequiredFiles(['package.json'])) return false
 
-module.exports = function() {
-  if (!existsSync('package.json')) {
-    return false
-  }
+  /* REQUIRED DEPS */
+  if (!(hasRequiredDeps(['netlify-lambda']) || hasRequiredDeps(['netlify-lambda']))) return false
 
-  const packageSettings = JSON.parse(readFileSync('package.json', { encoding: 'utf8' }))
-  const { dependencies, devDependencies, scripts } = packageSettings
-  if (!((dependencies && dependencies['netlify-lambda']) || (devDependencies && devDependencies['netlify-lambda']))) {
-    return false
-  }
+  const possibleArgsArrs = scanScripts({
+    preferredScriptsArr: ['build'],
+    preferredCommand: 'netlify-lambda',
+  })
 
-  const yarnExists = existsSync('yarn.lock')
-  const settings = {}
-
-  for (const key in scripts) {
-    const script = scripts[key]
-    const match = script.match(/netlify-lambda build (\S+)/)
-    if (match) {
-      settings.src = match[1]
-      settings.buildCmd = key
-      break
-    }
-  }
-
-  if (settings.buildCmd) {
-    settings.build = () => execa(yarnExists ? 'yarn' : 'npm', ['run', settings.buildCmd])
-    settings.builderName = 'netlify-lambda'
-    return settings
+  return {
+    language: 'js',
+    command: packageManagerCommand,
+    possibleArgsArrs,
+    env: { ...process.env },
+    dist: 'build',
   }
 }
