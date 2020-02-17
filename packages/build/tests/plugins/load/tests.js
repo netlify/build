@@ -39,8 +39,20 @@ test('Top-level errors', async t => {
   await runFixture(t, 'error_top')
 })
 
-test('Top function errors', async t => {
+test('Top function errors local', async t => {
   await runFixture(t, 'error_function')
+})
+
+test('Top function errors in module', async t => {
+  await runFixture(t, 'error_function_module')
+})
+
+test('CI errors with all fields', async t => {
+  await runFixture(t, 'error_ci_full', { env: { NETLIFY: 'true' } })
+})
+
+test('CI errors with partial fields', async t => {
+  await runFixture(t, 'error_ci_partial', { env: { NETLIFY: 'true' } })
 })
 
 test('Process warnings', async t => {
