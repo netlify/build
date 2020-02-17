@@ -148,7 +148,7 @@ const fireShellCommand = async function({ event, shellCommand, baseDir }) {
 
 // Fire a plugin command
 const firePluginCommand = async function(
-  { id, childProcess, event, originalEvent, package, packageData, local },
+  { id, childProcess, event, originalEvent, package, packageJson, local },
   { error },
 ) {
   const chunks = []
@@ -157,7 +157,7 @@ const firePluginCommand = async function(
   try {
     await callChild(childProcess, 'run', { originalEvent, error })
   } catch (error) {
-    error.message = getPluginErrorMessage({ error, id, event, package, packageData, local })
+    error.message = getPluginErrorMessage({ error, id, event, package, packageJson, local })
     error.cleanStack = true
     throw error
   } finally {

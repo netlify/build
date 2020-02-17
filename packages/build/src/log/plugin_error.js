@@ -3,8 +3,8 @@ const { white, redBright } = require('chalk')
 const isNetlifyCI = require('../utils/is-netlify-ci')
 
 // Retrieve error message when a plugin event handler fails
-const getPluginErrorMessage = function({ error, id, event, package, packageData, local }) {
-  const pluginDetails = getPluginDetails(packageData, id)
+const getPluginErrorMessage = function({ error, id, event, package, packageJson, local }) {
+  const pluginDetails = getPluginDetails(packageJson, id)
   const location = local ? 'in local plugin' : 'in npm package'
   return `${white.bold(`Plugin "${id}" failing with errors`)}
 ${pluginDetails}
@@ -26,7 +26,8 @@ const getPluginDetails = function(packageJson, id) {
   const fields = serializeFields(packageJson, id)
   return `
 ${redBright.bold('Plugin details')}
-${fields}`
+${fields}
+`
 }
 
 // Iterate over a series of package.json fields, serialize each then join them
