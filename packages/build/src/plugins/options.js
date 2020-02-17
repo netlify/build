@@ -20,7 +20,8 @@ const normalizePluginOptions = function(pluginOptions) {
     ...DEFAULT_PLUGIN_OPTIONS,
     ...pluginOptions,
   }
-  return { id, package, core, enabled, pluginConfig }
+  const local = !core && (package.startsWith('.') || package.startsWith('/'))
+  return { id, package, local, core, enabled, pluginConfig }
 }
 
 const DEFAULT_PLUGIN_OPTIONS = { enabled: true, core: false, config: {} }

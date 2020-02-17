@@ -45,7 +45,7 @@ const loadPlugins = async function({
 // Retrieve plugin commands for one plugin.
 // Do it by executing the plugin `load` event handler.
 const loadPlugin = async function(
-  { package, pluginPath, pluginConfig, id, core },
+  { package, pluginPath, pluginConfig, id, core, local },
   { childProcesses, index, netlifyConfig, utilsData, configPath, baseDir, token, siteId },
 ) {
   try {
@@ -59,6 +59,7 @@ const loadPlugin = async function(
       utilsData,
       configPath,
       core,
+      local,
       baseDir,
       token,
       siteId,
