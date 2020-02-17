@@ -2,11 +2,13 @@ const execa = require('execa')
 const pMapSeries = require('p-map-series')
 const pReduce = require('p-reduce')
 const { EVENTS } = require('@netlify/config')
+const { white, redBright } = require('chalk')
 
 const { callChild } = require('../plugins/ipc')
 const { logCommandsStart, logCommand, logShellCommandStart, logCommandSuccess } = require('../log/main')
 const { startTimer, endTimer } = require('../log/timer')
 const { startOutput, stopOutput } = require('../log/stream')
+const { getPluginDetails } = require('../log/package')
 
 // Get commands for all events
 const getCommands = function({ pluginsCommands, netlifyConfig }) {
@@ -146,19 +148,34 @@ const fireShellCommand = async function({ event, shellCommand, baseDir }) {
 }
 
 // Fire a plugin command
-const firePluginCommand = async function({ id, childProcess, event, originalEvent }, { error }) {
+const firePluginCommand = async function(
+  { id, childProcess, event, originalEvent, package, packageData, local },
+  { error },
+) {
   const chunks = []
   startOutput(childProcess, chunks)
 
   try {
     await callChild(childProcess, 'run', { originalEvent, error })
   } catch (error) {
-    error.message = `In "${event}" command from "${id}":\n${error.message}`
+    error.message = getPluginErrorMessage({ error, id, event, package, packageData, local })
     error.cleanStack = true
     throw error
   } finally {
     await stopOutput(childProcess, chunks)
   }
+}
+
+const getPluginErrorMessage = function({ error, id, event, package, packageData, local }) {
+  const pluginDetails = getPluginDetails(packageData, id)
+  const location = local ? 'in local plugin' : 'in npm package'
+  return `${white.bold(`Plugin "${id}" failing with errors`)}
+${pluginDetails}
+${redBright.bold('Error location')}
+Thrown from "${white.bold(event)}" event ${location} ${white.bold(package)}
+
+${redBright.bold('Error message')}
+${error.message}`
 }
 
 module.exports = { getCommands, runCommands }
