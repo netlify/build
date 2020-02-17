@@ -98,6 +98,8 @@ function getLanguageVersion(lang, projectDir) {
       }
       break
     }
+    default:
+      return lang
   }
 }
 
