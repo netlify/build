@@ -22,7 +22,7 @@ module.exports = async function detectFunctionsBuilder(functionsDir) {
     })
     .filter(Boolean);
 
-  const functionsPath = path.resolve(functionsDir, process.cwd())
+  const functionsPath = path.join(process.cwd(), functionsDir)
   const settings = {
     src: functionsPath,
     functions: {}
@@ -45,13 +45,13 @@ module.exports = async function detectFunctionsBuilder(functionsDir) {
     const stats = await statAsync(item)
     if (stats.isDirectory()) {
       for (const i in detectors) {
-        const currentPath = path.resolve(item, functionsPath)
+        const currentPath = path.join(functionsPath, item)
         const functionSettings = detectors[i]()
         if (functionSettings) {
           if (functionSettings.language && !functionSettings.language.includes(':')) {
             functionSettings.language = [functionSettings.language, getLanguageVersion(functionSettings.language, currentPath)].join(':')
           }
-          settings.functions[path.resolve(item, "/")] = functionSettings
+          settings.functions[path.join("/", item)] = functionSettings
           break
         }
       }

@@ -13,13 +13,13 @@ let warnedAboutEmptyScript = false
 
 /** hold package.json in a singleton so we dont do expensive parsing repeatedly */
 function parsePkgJSON(dir) {
-  if (!existsSync(path.resolve('package.json', dir))) throw new Error('dont call this method unless you already checked for pkg json')
-  return JSON.parse(readFileSync(path.resolve('package.json', dir), { encoding: 'utf8' }))
+  if (!existsSync(path.join(dir, 'package.json'))) throw new Error('dont call this method unless you already checked for pkg json')
+  return JSON.parse(readFileSync(path.join(dir, 'package.json'), { encoding: 'utf8' }))
 }
 const getPkgJSON = memoize(parsePkgJSON)
 
 function getPackageManagerCommand(dir) {
-  return existsSync(path.resolve('yarn.lock', dir)) ? 'yarn' : 'npm'
+  return existsSync(path.join(dir, 'yarn.lock')) ? 'yarn' : 'npm'
 }
 
 /**
@@ -41,7 +41,7 @@ function hasRequiredDeps(requiredDepArray, dir) {
 
 function hasRequiredFiles(filenameArr, dir) {
   for (const filename of filenameArr) {
-    if (!existsSync(path.resolve(filename, dir))) {
+    if (!existsSync(path.join(dir, filename))) {
       return false
     }
   }
@@ -91,7 +91,7 @@ function scanScripts({ preferredScriptsArr, preferredCommand, projectDir }) {
 function getLanguageVersion(lang, projectDir) {
   switch (lang) {
     case "nodejs": {
-      const configPath = path.resolve('.nvmrc', projectDir)
+      const configPath = path.join(projectDir, '.nvmrc')
       if (existsSync(configPath)) {
         const nodeVersion = readFileSync(configPath, { encoding: 'utf8' }).replace('\n', '');
         return semver.clean(nodeVersion)
