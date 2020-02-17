@@ -51,7 +51,15 @@ const isErrorCommand = function({ event }) {
 // Run all commands.
 // If an error arises, runs `onError` events.
 // Runs `onEnd` events at the end, whether an error was thrown or not.
-const runCommands = async function({ buildCommands, endCommands, errorCommands, commandsCount, configPath, baseDir }) {
+const runCommands = async function({
+  buildCommands,
+  endCommands,
+  errorCommands,
+  commandsCount,
+  configPath,
+  baseDir,
+  childEnv,
+}) {
   logCommandsStart(commandsCount)
 
   // We have to use a state variable to keep track of how many commands were run
@@ -59,12 +67,12 @@ const runCommands = async function({ buildCommands, endCommands, errorCommands, 
   const state = { index: 0 }
 
   try {
-    await execCommands(buildCommands, { configPath, baseDir, state, failFast: true })
+    await execCommands(buildCommands, { configPath, baseDir, state, childEnv, failFast: true })
   } catch (error) {
-    await execCommands(errorCommands, { configPath, baseDir, state, failFast: false, error })
+    await execCommands(errorCommands, { configPath, baseDir, state, childEnv, failFast: false, error })
     throw error
   } finally {
-    await execCommands(endCommands, { configPath, baseDir, state, failFast: false })
+    await execCommands(endCommands, { configPath, baseDir, state, childEnv, failFast: false })
   }
 }
 
@@ -73,11 +81,11 @@ const runCommands = async function({ buildCommands, endCommands, errorCommands, 
 // of the same name keep running. However the failure is still eventually
 // thrown. This allows users to be notified of issues inside their `onError` or
 // `onEnd` events.
-const execCommands = async function(commands, { configPath, baseDir, state, failFast, error }) {
+const execCommands = async function(commands, { configPath, baseDir, state, childEnv, failFast, error }) {
   const { failure, manifest: manifestA } = await pReduce(
     commands,
     ({ failure, manifest }, command) =>
-      runCommand(command, { manifest, configPath, baseDir, state, error, failure, failFast }),
+      runCommand(command, { manifest, configPath, baseDir, state, childEnv, error, failure, failFast }),
     { manifest: {} },
   )
 
@@ -89,7 +97,10 @@ const execCommands = async function(commands, { configPath, baseDir, state, fail
 }
 
 // Run a command (shell or plugin)
-const runCommand = async function(command, { manifest, configPath, baseDir, state, error, failure, failFast }) {
+const runCommand = async function(
+  command,
+  { manifest, configPath, baseDir, state, childEnv, error, failure, failFast },
+) {
   try {
     const { id, event } = command
 
@@ -99,7 +110,7 @@ const runCommand = async function(command, { manifest, configPath, baseDir, stat
     const { index } = state
     logCommand(command, { index, configPath, error })
 
-    const pluginReturnValue = await fireCommand(command, { baseDir, error })
+    const pluginReturnValue = await fireCommand(command, { baseDir, childEnv, error })
 
     logCommandSuccess()
 
@@ -115,23 +126,29 @@ const runCommand = async function(command, { manifest, configPath, baseDir, stat
   }
 }
 
-const fireCommand = function(command, { baseDir, error }) {
+const fireCommand = function(command, { baseDir, childEnv, error }) {
   if (command.shellCommands !== undefined) {
-    return fireShellCommands(command, { baseDir })
+    return fireShellCommands(command, { baseDir, childEnv })
   }
 
   return firePluginCommand(command, { error })
 }
 
 // Fire a `config.lifecycle.*` series of shell commands
-const fireShellCommands = async function({ event, shellCommands }, { baseDir }) {
-  await pMapSeries(shellCommands, shellCommand => fireShellCommand({ event, shellCommand, baseDir }))
+const fireShellCommands = async function({ event, shellCommands }, { baseDir, childEnv }) {
+  await pMapSeries(shellCommands, shellCommand => fireShellCommand({ event, shellCommand, baseDir, childEnv }))
 }
 
-const fireShellCommand = async function({ event, shellCommand, baseDir }) {
+const fireShellCommand = async function({ event, shellCommand, baseDir, childEnv }) {
   logShellCommandStart(shellCommand)
 
-  const childProcess = execa(shellCommand, { shell: true, cwd: baseDir, preferLocal: true })
+  const childProcess = execa(shellCommand, {
+    shell: true,
+    cwd: baseDir,
+    preferLocal: true,
+    env: childEnv,
+    extendEnv: false,
+  })
   const chunks = []
   startOutput(childProcess, chunks)
 
