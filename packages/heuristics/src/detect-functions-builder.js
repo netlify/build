@@ -58,8 +58,9 @@ module.exports = async function detectFunctionsBuilder(functionsDir) {
     }
   }
 
-  if (!settings) return {}
-  settings.args = settings.possibleArgsArrs[0] || [] // just pick the first one
+  if (settings.possibleArgsArrs && settings.possibleArgsArrs.length) {
+    settings.args = settings.possibleArgsArrs[0]
+  }
   if (!settings.args) {
     // eslint-disable-next-line no-console
     console.error('empty args assigned, this is an internal Netlify Build bug, please report your settings and scripts so we can improve', { settings })
