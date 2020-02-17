@@ -9,7 +9,8 @@ const filterObj = require('filter-obj')
 const { version } = require('../../package.json')
 
 const { log } = require('./logger')
-const { cleanStacks } = require('./stack.js')
+const { cleanStacks } = require('./stack')
+const { EMPTY_LINE } = require('./empty')
 
 const HEADING_PREFIX = pointer
 const SUBTEXT_PADDING = '  '
@@ -17,7 +18,7 @@ const SUBTEXT_PADDING = '  '
 const logBuildStart = function() {
   log(`${greenBright.bold(`${HEADING_PREFIX} Starting Netlify Build v${version}`)}
 ${SUBTEXT_PADDING}https://github.com/netlify/build
-`)
+${EMPTY_LINE}`)
 }
 
 const logFlags = function(flags) {
@@ -34,7 +35,7 @@ const isDefined = function(key, value) {
 const logCurrentDirectory = function() {
   log(`${cyanBright.bold(`${HEADING_PREFIX} Current directory`)}
 ${SUBTEXT_PADDING}${cwd()}
-`)
+${EMPTY_LINE}`)
 }
 
 const logConfigPath = function(configPath) {
@@ -45,7 +46,7 @@ const logConfigPath = function(configPath) {
 
   log(`${cyanBright.bold(`${HEADING_PREFIX} Config file`)}
 ${SUBTEXT_PADDING}${configPath}
-`)
+${EMPTY_LINE}`)
 }
 
 const logResolveError = function(error, package) {
@@ -63,7 +64,10 @@ const logInstallPlugins = function() {
 }
 
 const logLoadPlugins = function() {
-  log(cyanBright.bold(`\n${HEADING_PREFIX} Loading plugins`))
+  log(
+    cyanBright.bold(`${EMPTY_LINE}
+${HEADING_PREFIX} Loading plugins`),
+  )
 }
 
 const logLoadedPlugins = function(pluginCommands) {
@@ -86,7 +90,8 @@ const getLoadedPlugin = function({ id, package, core, packageJson: { version } }
 }
 
 const logCommandsStart = function(commandsCount) {
-  log(`\n${greenBright.bold(`${HEADING_PREFIX} Running Netlify Build Lifecycle`)}
+  log(`${EMPTY_LINE}
+${greenBright.bold(`${HEADING_PREFIX} Running Netlify Build Lifecycle`)}
 ${SUBTEXT_PADDING}Found ${commandsCount} commands. Lets do this!`)
 }
 
@@ -147,16 +152,16 @@ const getDryColumnWidth = function(eventWidth, commandsCount) {
 const DRY_HEADER_NAMES = ['Event', 'Location']
 
 const logDryRunEnd = function() {
-  log(`
+  log(`${EMPTY_LINE}
 ${SUBTEXT_PADDING}If this looks good to you, run \`netlify build\` to execute the build
-`)
+${EMPTY_LINE}`)
 }
 
 const logCommand = function({ event, id, override }, { index, configPath, error }) {
   const overrideWarning =
     override.event === undefined
       ? ''
-      : redBright(`
+      : redBright(`${EMPTY_LINE}
 ${HEADING_PREFIX} OVERRIDE: "${override.event}" command in "${override.name}" has been overriden by "${id}"`)
   const configName = configPath === undefined ? '' : ` from ${basename(configPath)} config file`
   const description = id.startsWith('config.build')
@@ -164,7 +169,11 @@ ${HEADING_PREFIX} OVERRIDE: "${override.event}" command in "${override.name}" ha
     : `${bold(event)} command from ${bold(id)}`
   const logColor = error ? redBright.bold : cyanBright.bold
   const header = `${index}. Running ${description}`
-  log(logColor(`${overrideWarning}\n${getHeader(header)}\n`))
+  log(
+    logColor(`${overrideWarning}
+${getHeader(header)}
+${EMPTY_LINE}`),
+  )
 }
 
 const logShellCommandStart = function(shellCommand) {
@@ -172,7 +181,7 @@ const logShellCommandStart = function(shellCommand) {
 }
 
 const logCommandSuccess = function() {
-  log('')
+  log(EMPTY_LINE)
 }
 
 const logTimer = function(durationMs, event, id) {
@@ -193,20 +202,26 @@ const logCacheDir = function(path) {
 
 const logBuildError = function(error) {
   const errorStack = error.cleanStack ? cleanStacks(error.message) : `\n${error.stack}`
-  log(`
+  log(`${EMPTY_LINE}
 ${redBright.bold(getHeader('Netlify Build Error'))}
 ${errorStack}
-
+${EMPTY_LINE}
 ${redBright.bold(getHeader('END Netlify Build Error'))}
-`)
+${EMPTY_LINE}`)
 }
 
 const logBuildSuccess = function() {
-  log(greenBright.bold(`\n${getHeader('Netlify Build Complete')}\n`))
+  log(
+    greenBright.bold(`${EMPTY_LINE}
+${getHeader('Netlify Build Complete')}
+${EMPTY_LINE}`),
+  )
 }
 
 const logBuildEnd = function() {
-  log(`\n${cyanBright(SPARKLES)} Have a nice day!\n`)
+  log(`${EMPTY_LINE}
+${cyanBright(SPARKLES)} Have a nice day!
+${EMPTY_LINE}`)
 }
 
 const SPARKLES = platform === 'win32' ? '(/Ò_Ò)/' : '(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧'

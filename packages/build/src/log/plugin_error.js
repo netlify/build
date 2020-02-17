@@ -2,6 +2,8 @@ const { white, redBright } = require('chalk')
 
 const isNetlifyCI = require('../utils/is-netlify-ci')
 
+const { EMPTY_LINE } = require('./empty')
+
 // Retrieve error message when a plugin event handler fails
 const getPluginErrorMessage = function({ error, id, event, package, packageJson, local }) {
   const pluginDetails = getPluginDetails(packageJson, id)
@@ -20,14 +22,14 @@ ${error.message}`
 const getPluginDetails = function(packageJson, id) {
   // Local logs are less verbose to allow developers to focus on the stack trace
   if (!isNetlifyCI()) {
-    return ''
+    return EMPTY_LINE
   }
 
   const fields = serializeFields(packageJson, id)
-  return `
+  return `${EMPTY_LINE}
 ${redBright.bold('Plugin details')}
 ${fields}
-`
+${EMPTY_LINE}`
 }
 
 // Iterate over a series of package.json fields, serialize each then join them
