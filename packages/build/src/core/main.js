@@ -10,6 +10,7 @@ const { installPlugins } = require('../plugins/install')
 const { startPlugins, stopPlugins } = require('../plugins/spawn')
 const { startUtils } = require('../plugins/child/utils')
 const { loadPlugins } = require('../plugins/load')
+const { getChildEnv } = require('../plugins/env')
 const { logBuildStart, logBuildError, logBuildSuccess, logBuildEnd } = require('../log/main')
 const { startTimer, endTimer } = require('../log/timer')
 const { trackBuildComplete } = require('../telemetry')
@@ -66,7 +67,8 @@ const build = async function(flags) {
 
 const buildRun = async function({ pluginsOptions, netlifyConfig, configPath, baseDir, token, dry, siteId }) {
   const utilsData = await startUtils(baseDir)
-  const childProcesses = await startPlugins(pluginsOptions, baseDir)
+  const childEnv = getChildEnv()
+  const childProcesses = await startPlugins(pluginsOptions, baseDir, childEnv)
 
   try {
     return await executeCommands({
@@ -76,6 +78,7 @@ const buildRun = async function({ pluginsOptions, netlifyConfig, configPath, bas
       utilsData,
       configPath,
       baseDir,
+      childEnv,
       token,
       dry,
       siteId,
@@ -92,6 +95,7 @@ const executeCommands = async function({
   utilsData,
   configPath,
   baseDir,
+  childEnv,
   token,
   dry,
   siteId,
@@ -124,6 +128,7 @@ const executeCommands = async function({
     commandsCount,
     configPath,
     baseDir,
+    childEnv,
   })
   return commandsCount
 }
