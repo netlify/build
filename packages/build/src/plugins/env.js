@@ -21,6 +21,10 @@ const getDefaultEnv = function() {
 // Environment variables that can be unset by configuration ones but not local
 const getConfigurableEnv = function() {
   return {
+    // Localization
+    LANG: 'en_US.UTF-8',
+    LANGUAGE: 'en_US:en',
+    LC_ALL: 'en_US.UTF-8',
     // Disable telemetry of some tools
     GATSBY_TELEMETRY_DISABLED: '1',
     NEXT_TELEMETRY_DISABLED: '1',
