@@ -1,8 +1,9 @@
 const { platform } = require('process')
 
 const test = require('ava')
+const cpy = require('cpy')
 
-const { runFixture } = require('../../helpers/main')
+const { runFixture, FIXTURES_DIR, removeDir, createRepoDir } = require('../../helpers/main')
 
 // Windows environment variables work differently
 if (platform !== 'win32') {
@@ -41,4 +42,18 @@ test('Environment variable LC_ALL', async t => {
 
 test('Environment variable CONTEXT', async t => {
   await runFixture(t, 'context')
+})
+
+test('Environment variable git', async t => {
+  await runFixture(t, 'git')
+})
+
+test('Environment variable git no repository', async t => {
+  const cwd = await createRepoDir({ git: false })
+  try {
+    await cpy(`${FIXTURES_DIR}/git/*`, cwd)
+    await runFixture(t, 'git', { config: false, cwd })
+  } finally {
+    await removeDir(cwd)
+  }
 })
