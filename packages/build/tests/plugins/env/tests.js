@@ -38,3 +38,7 @@ test('Environment variable LANGUAGE', async t => {
 test('Environment variable LC_ALL', async t => {
   await runFixture(t, 'lc_all')
 })
+
+test('Environment variable CONTEXT', async t => {
+  await runFixture(t, 'context')
+})
