@@ -8,22 +8,32 @@ const getChildEnv = function() {
   }
 
   const defaultEnv = getDefaultEnv()
+  const configurableEnv = getConfigurableEnv()
   const forcedEnv = getForcedEnv()
-  return { ...defaultEnv, ...process.env, ...forcedEnv }
+  return { ...defaultEnv, ...process.env, ...configurableEnv, ...forcedEnv }
 }
 
-// Environment variables that can be unset
+// Environment variables that can be unset by local ones or configuration ones
 const getDefaultEnv = function() {
   return {}
 }
 
-// Environment variables that cannot be unset
-const getForcedEnv = function() {
+// Environment variables that can be unset by configuration ones but not local
+const getConfigurableEnv = function() {
   return {
+    // Localization
+    LANG: 'en_US.UTF-8',
+    LANGUAGE: 'en_US:en',
+    LC_ALL: 'en_US.UTF-8',
     // Disable telemetry of some tools
     GATSBY_TELEMETRY_DISABLED: '1',
     NEXT_TELEMETRY_DISABLED: '1',
   }
+}
+
+// Environment variables that can be unset by neither local nor configuration
+const getForcedEnv = function() {
+  return {}
 }
 
 module.exports = { getChildEnv }

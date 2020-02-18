@@ -26,3 +26,15 @@ test('Environment variable NETLIFY local', async t => {
 test('Environment variable NETLIFY CI', async t => {
   await runFixture(t, 'netlify', { env: { NETLIFY: 'true' } })
 })
+
+test('Environment variable LANG', async t => {
+  await runFixture(t, 'lang')
+})
+
+test('Environment variable LANGUAGE', async t => {
+  await runFixture(t, 'language')
+})
+
+test('Environment variable LC_ALL', async t => {
+  await runFixture(t, 'lc_all')
+})
