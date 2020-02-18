@@ -123,19 +123,25 @@ const removeDir = async function(dir) {
 
 // Create a temporary directory with a `.git` directory, which can be used as
 // the current directory of a build. Otherwise the `git` utility does not load.
-const createRepoDir = async function() {
+const createRepoDir = async function({ git = true } = {}) {
   const id = String(Math.random()).replace('.', '')
   const cwd = `${tmpdir()}/netlify-build-${id}`
-
   await makeDir(cwd)
+  await createGit(cwd, git)
+  return cwd
+}
+
+const createGit = async function(cwd, git) {
+  if (!git) {
+    return
+  }
+
   await execa.command('git init', { cwd })
   await execa.command('git config user.email test@test.com', { cwd })
   await execa.command('git config user.name test', { cwd })
   await execa.command('git commit --allow-empty -m one', { cwd })
   await execa.command('git config --unset user.email', { cwd })
   await execa.command('git config --unset user.name', { cwd })
-
-  return cwd
 }
 
 module.exports = { runFixture, FIXTURES_DIR, removeDir, createRepoDir }
