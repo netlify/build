@@ -33,7 +33,10 @@ const getConfigurableEnv = function() {
 
 // Environment variables that can be unset by neither local nor configuration
 const getForcedEnv = function() {
-  return {}
+  return {
+    // Special context for local builds
+    CONTEXT: 'local',
+  }
 }
 
 module.exports = { getChildEnv }
