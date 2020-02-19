@@ -14,6 +14,14 @@ test('{context:...} with --context', async t => {
   await runFixture(t, 'context', { flags: '--context development' })
 })
 
+test('{context:...} with environment variable CONTEXT', async t => {
+  await runFixture(t, 'context', { env: { CONTEXT: 'development' } })
+})
+
+test('{context:...} priority', async t => {
+  await runFixture(t, 'context', { flags: '--context development', env: { CONTEXT: 'production' } })
+})
+
 test('{context:...} pointing to undefined path', async t => {
   await runFixture(t, 'context', { flags: '--context invalid' })
 })

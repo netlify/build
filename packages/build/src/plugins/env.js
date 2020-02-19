@@ -4,14 +4,14 @@ const { getGitEnv } = require('./git')
 
 // Retrieve the environment variables passed to plugins and lifecycle commands.
 // When run locally, this tries to emulate the production environment.
-const getChildEnv = async function(baseDir) {
+const getChildEnv = async function(baseDir, context) {
   if (isNetlifyCI()) {
     return process.env
   }
 
   const defaultEnv = getDefaultEnv()
   const configurableEnv = getConfigurableEnv()
-  const forcedEnv = await getForcedEnv(baseDir)
+  const forcedEnv = await getForcedEnv(baseDir, context)
   return { ...defaultEnv, ...process.env, ...configurableEnv, ...forcedEnv }
 }
 
@@ -34,11 +34,11 @@ const getConfigurableEnv = function() {
 }
 
 // Environment variables that can be unset by neither local nor configuration
-const getForcedEnv = async function(baseDir) {
+const getForcedEnv = async function(baseDir, context) {
   const gitEnv = await getGitEnv(baseDir)
   return {
-    // Special context for local builds
-    CONTEXT: 'local',
+    // Configuration file context
+    CONTEXT: context,
     // Git-related environment variables
     ...gitEnv,
   }

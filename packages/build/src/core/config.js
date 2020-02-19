@@ -15,7 +15,7 @@ const loadConfig = async function(flags) {
   logCurrentDirectory()
 
   const flagsB = { ...DEFAULT_FLAGS, ...flagsA }
-  const { config, cwd, dry, token, siteId } = flagsB
+  const { config, cwd, dry, token, siteId, context } = flagsB
 
   // Retrieve configuration file path and base directory
   const configPath = await getConfigPath(config, cwd)
@@ -23,7 +23,7 @@ const loadConfig = async function(flags) {
   const baseDir = await getBaseDir(configPath)
 
   const netlifyConfig = await resolveFullConfig(configPath, flagsB)
-  return { netlifyConfig, configPath, baseDir, token, dry, siteId }
+  return { netlifyConfig, configPath, baseDir, token, dry, siteId, context }
 }
 
 // Remove undefined and empty CLI flags
@@ -34,7 +34,7 @@ const isDefined = function(key, value) {
 // Default values of CLI flags
 const DEFAULT_FLAGS = {
   token: NETLIFY_AUTH_TOKEN,
-  context: CONTEXT || 'production',
+  context: CONTEXT || 'local',
 }
 
 // Load configuration file
