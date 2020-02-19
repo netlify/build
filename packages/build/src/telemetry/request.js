@@ -1,39 +1,26 @@
-/* eslint no-process-exit: 0 */
-/* Detached child process */
-const https = require('https')
+const {
+  env: { BUILD_TELEMETRY_URL },
+  argv,
+} = require('process')
 
-const { data, reqType, version } = JSON.parse(process.argv[2])
+const got = require('got')
 
-const API_HOST = 'telemetry-service.netlify.com'
-const API_PATHS = {
-  track: '/collect',
-  identify: '/identify',
+const { version } = require('../../package.json')
+
+// Send HTTP request to telemetry.
+const sendRequest = async function() {
+  const json = JSON.parse(argv[2])
+  await got({ ...GOT_OPTS, json: true, body: json })
 }
 
-const payload = JSON.stringify(data)
-
-const req = https.request(
-  {
-    hostname: API_HOST,
-    path: API_PATHS[reqType],
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Content-Length': payload.length,
-      'X-Netlify-Client': 'NETLIFY_CI',
-      'X-Netlify-Client-Version': version,
-    },
+const GOT_OPTS = {
+  // BUILD_TELEMETRY_URL is used during tests
+  url: BUILD_TELEMETRY_URL || 'https://telemetry-service.netlify.com/collect',
+  method: 'POST',
+  headers: {
+    'X-Netlify-Client': 'NETLIFY_CI',
+    'X-Netlify-Client-Version': version,
   },
-  res => {
-    res.on('data', () => {
-      process.exit()
-    })
-  },
-)
+}
 
-req.on('error', () => {
-  process.exit(1)
-})
-
-req.write(payload)
-req.end()
+sendRequest()

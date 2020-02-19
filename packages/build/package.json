@@ -41,6 +41,7 @@
     "filter-obj": "^2.0.1",
     "find-up": "^4.1.0",
     "global-cache-dir": "^1.0.1",
+    "got": "^9.6.0",
     "group-by": "^0.0.1",
     "indent-string": "^4.0.0",
     "is-ci": "^2.0.0",

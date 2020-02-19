@@ -13,7 +13,7 @@ const { loadPlugins } = require('../plugins/load')
 const { getChildEnv } = require('../plugins/env')
 const { logBuildStart, logBuildError, logBuildSuccess, logBuildEnd } = require('../log/main')
 const { startTimer, endTimer } = require('../log/timer')
-const { trackBuildComplete } = require('../telemetry')
+const { trackBuildComplete } = require('../telemetry/complete')
 
 const { loadConfig } = require('./config')
 const { getCommands, runCommands } = require('./commands')
