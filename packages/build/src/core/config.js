@@ -4,33 +4,47 @@ const {
 
 const resolveConfig = require('@netlify/config')
 const { getConfigPath, getBaseDir } = require('@netlify/config')
+const filterObj = require('filter-obj')
 
 const { logFlags, logCurrentDirectory, logConfigPath } = require('../log/main')
 
 // Retrieve configuration object
-const loadConfig = async function({
-  flags: { config, cwd, dry, siteId },
-  flags: { token = NETLIFY_AUTH_TOKEN, ...flags },
-}) {
-  logFlags(flags)
+const loadConfig = async function(flags) {
+  const flagsA = filterObj(flags, isDefined)
+  logFlags(flagsA)
   logCurrentDirectory()
 
-  const flagsA = { ...DEFAULT_FLAGS, ...flags }
+  const flagsB = { ...DEFAULT_FLAGS, ...flagsA }
+  const { config, cwd, dry, token, siteId } = flagsB
 
+  // Retrieve configuration file path and base directory
   const configPath = await getConfigPath(config, cwd)
   logConfigPath(configPath)
   const baseDir = await getBaseDir(configPath)
 
+  const netlifyConfig = await resolveFullConfig(configPath, flagsB)
+  return { netlifyConfig, configPath, baseDir, token, dry, siteId }
+}
+
+// Remove undefined and empty CLI flags
+const isDefined = function(key, value) {
+  return Boolean(value)
+}
+
+// Default values of CLI flags
+const DEFAULT_FLAGS = {
+  token: NETLIFY_AUTH_TOKEN,
+  context: CONTEXT || 'production',
+}
+
+// Load configuration file
+const resolveFullConfig = async function(configPath, flags) {
   try {
-    const netlifyConfig = await resolveConfig(configPath, flagsA)
-    return { netlifyConfig, configPath, baseDir, token, dry, siteId }
+    return await resolveConfig(configPath, flags)
   } catch (error) {
     error.message = `Netlify configuration error:\n${error.message}`
     throw error
   }
 }
-
-const DEFAULT_CONTEXT = 'production'
-const DEFAULT_FLAGS = { context: CONTEXT || DEFAULT_CONTEXT }
 
 module.exports = { loadConfig }

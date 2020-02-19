@@ -4,7 +4,7 @@ const { platform, cwd } = require('process')
 const { tick, pointer, arrowDown } = require('figures')
 const stringWidth = require('string-width')
 const { greenBright, cyanBright, redBright, yellowBright, bold, white } = require('chalk')
-const filterObj = require('filter-obj')
+const omit = require('omit.js')
 
 const { version } = require('../../package.json')
 
@@ -23,15 +23,11 @@ ${EMPTY_LINE}`)
 }
 
 const logFlags = function(flags) {
-  const flagsA = filterObj(flags, isDefined)
-  if (Object.keys(flagsA).length !== 0) {
-    log(cyanBright.bold(`${HEADING_PREFIX} Flags`), flagsA, EMPTY_LINE)
-  }
+  const flagsA = omit(flags, HIDDEN_FLAGS)
+  log(cyanBright.bold(`${HEADING_PREFIX} Flags`), flagsA, EMPTY_LINE)
 }
 
-const isDefined = function(key, value) {
-  return value !== undefined
-}
+const HIDDEN_FLAGS = ['token']
 
 const logCurrentDirectory = function() {
   log(`${cyanBright.bold(`${HEADING_PREFIX} Current directory`)}
