@@ -34,7 +34,7 @@ const isDefined = function(key, value) {
 // Default values of CLI flags
 const DEFAULT_FLAGS = {
   token: NETLIFY_AUTH_TOKEN,
-  context: CONTEXT || 'production',
+  context: CONTEXT || 'local',
 }
 
 // Load configuration file
