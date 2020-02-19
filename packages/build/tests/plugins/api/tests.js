@@ -11,7 +11,7 @@ test('feature flag', async t => {
 })
 
 test('scopes but no token', async t => {
-  await runFixture(t, 'no_token', { env: { NETLIFY_BUILD_API_CLIENT: '1' } })
+  await runFixture(t, 'no_token', { flags: '--token=', env: { NETLIFY_BUILD_API_CLIENT: '1' } })
 })
 
 test('api call', async t => {

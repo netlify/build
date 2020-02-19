@@ -1,5 +1,5 @@
 const {
-  env: { NETLIFY_TOKEN, CONTEXT },
+  env: { NETLIFY_AUTH_TOKEN, CONTEXT },
 } = require('process')
 
 const resolveConfig = require('@netlify/config')
@@ -8,7 +8,10 @@ const { getConfigPath, getBaseDir } = require('@netlify/config')
 const { logFlags, logCurrentDirectory, logConfigPath } = require('../log/main')
 
 // Retrieve configuration object
-const loadConfig = async function({ flags: { config, cwd, dry, siteId }, flags: { token = NETLIFY_TOKEN, ...flags } }) {
+const loadConfig = async function({
+  flags: { config, cwd, dry, siteId },
+  flags: { token = NETLIFY_AUTH_TOKEN, ...flags },
+}) {
   logFlags(flags)
   logCurrentDirectory()
 
