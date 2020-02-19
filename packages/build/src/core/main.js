@@ -35,7 +35,7 @@ const build = async function(flags) {
   try {
     logBuildStart()
 
-    const { netlifyConfig, configPath, baseDir, token, dry, siteId } = await loadConfig(flags)
+    const { netlifyConfig, configPath, baseDir, token, dry, siteId, context } = await loadConfig(flags)
 
     const pluginsOptions = await getPluginsOptions(netlifyConfig, baseDir)
     await installPlugins(pluginsOptions, baseDir)
@@ -48,6 +48,7 @@ const build = async function(flags) {
       token,
       dry,
       siteId,
+      context,
     })
 
     if (dry) {
@@ -65,9 +66,9 @@ const build = async function(flags) {
   }
 }
 
-const buildRun = async function({ pluginsOptions, netlifyConfig, configPath, baseDir, token, dry, siteId }) {
+const buildRun = async function({ pluginsOptions, netlifyConfig, configPath, baseDir, token, dry, siteId, context }) {
   const utilsData = await startUtils(baseDir)
-  const childEnv = await getChildEnv(baseDir)
+  const childEnv = await getChildEnv(baseDir, context)
   const childProcesses = await startPlugins(pluginsOptions, baseDir, childEnv)
 
   try {
