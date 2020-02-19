@@ -24,9 +24,7 @@ ${EMPTY_LINE}`)
 
 const logFlags = function(flags) {
   const flagsA = omit(flags, HIDDEN_FLAGS)
-  if (Object.keys(flagsA).length !== 0) {
-    log(cyanBright.bold(`${HEADING_PREFIX} Flags`), flagsA, EMPTY_LINE)
-  }
+  log(cyanBright.bold(`${HEADING_PREFIX} Flags`), flagsA, EMPTY_LINE)
 }
 
 const HIDDEN_FLAGS = ['token']
