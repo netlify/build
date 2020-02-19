@@ -5,6 +5,7 @@ const { parsePath } = require('./path')
 const { getManifestInfo, writeManifest, removeManifest, isExpired } = require('./manifest')
 const { moveCacheFile } = require('./fs')
 const { getCacheDir } = require('./dir')
+const { list } = require('./list')
 
 // Cache a file
 const saveOne = async function(path, { move = DEFAULT_MOVE, ttl = DEFAULT_TTL, digests = [] } = {}) {
@@ -84,4 +85,4 @@ const restore = allowMany.bind(null, restoreOne)
 const remove = allowMany.bind(null, removeOne)
 const has = allowMany.bind(null, hasOne)
 
-module.exports = { save, restore, remove, has, getCacheDir }
+module.exports = { save, restore, remove, has, list, getCacheDir }

@@ -1,11 +1,11 @@
 const { writeFile } = require('fs')
 const { promisify } = require('util')
+const { join } = require('path')
 
 // eslint-disable-next-line node/no-extraneous-require
 const del = require('del')
 
 const pWriteFile = promisify(writeFile)
-const pSetTimeout = promisify(setTimeout)
 
 module.exports = {
   name: 'netlify-plugin-test',
@@ -13,13 +13,9 @@ module.exports = {
     const id = String(Math.random()).replace('.', '')
 
     await pWriteFile(id, id)
-    console.log(await cache.save(id, { ttl: 5 }))
-    console.log(await cache.has(id))
-    await pSetTimeout(10e3)
-
-    await del(`.netlify/cache/cwd/${id}.netlify.cache.json`)
-
-    console.log(await cache.has(id))
+    console.log(await cache.save(id))
+    console.log((await cache.list())[0] === join(__dirname, id))
+    console.log(await cache.remove(id))
     await del(id)
   },
 }

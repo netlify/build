@@ -200,3 +200,20 @@ module.exports = {
   },
 }
 ```
+
+## list()
+
+_Returns_: `Promise<string[]>`
+
+Returns the absolute paths of the files currently cached. Those are the paths of the files before being saved (or after
+being restored), not while being cached.
+
+```js
+module.exports = {
+  name: 'example-plugin',
+  async onPreBuild({ utils }) {
+    const files = await utils.cache.list()
+    console.log('Cached files', files)
+  },
+}
+```

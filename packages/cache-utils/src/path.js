@@ -36,4 +36,4 @@ const isChildPath = function({ relPath }) {
   return !relPath.startsWith('..') && relPath !== ''
 }
 
-module.exports = { parsePath }
+module.exports = { parsePath, BASES }

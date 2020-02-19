@@ -33,6 +33,10 @@ test('cache-utils move', async t => {
   await runFixture(t, 'move')
 })
 
+test('cache-utils list', async t => {
+  await runFixture(t, 'list')
+})
+
 test('cache-utils TTL invalid', async t => {
   await runFixture(t, 'ttl_invalid')
 })

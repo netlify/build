@@ -50,8 +50,14 @@ const removeManifest = async function(cachePath) {
 
 // Retrieve the cache manifest filepath
 const getManifestPath = function(cachePath) {
-  return `${cachePath}.cache.json`
+  return `${cachePath}${CACHE_EXTENSION}`
 }
+
+const isManifest = function(filePath) {
+  return filePath.endsWith(CACHE_EXTENSION)
+}
+
+const CACHE_EXTENSION = '.netlify.cache.json'
 
 // Check whether a file/directory is expired by checking its cache manifest
 const isExpired = async function(cachePath) {
@@ -71,4 +77,4 @@ const readManifest = async function(cachePath) {
   return manifest
 }
 
-module.exports = { getManifestInfo, writeManifest, removeManifest, isExpired }
+module.exports = { getManifestInfo, writeManifest, removeManifest, isManifest, isExpired }
