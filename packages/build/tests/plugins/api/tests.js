@@ -6,6 +6,10 @@ test('--token', async t => {
   await runFixture(t, 'token', { flags: '--token=test' })
 })
 
+test('NETLIFY_AUTH_TOKEN environment variable', async t => {
+  await runFixture(t, 'api_call', { env: { NETLIFY_AUTH_TOKEN: 'test', NETLIFY_BUILD_API_CLIENT: '1' } })
+})
+
 test('feature flag', async t => {
   await runFixture(t, 'feature_flag')
 })
