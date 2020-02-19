@@ -2,6 +2,8 @@ build:
   lifecycle:
     onBuild: echo ${context:testProp}
 context:
+  local:
+    testProp: local
   development:
     testProp: dev
   production:
