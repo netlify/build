@@ -35,7 +35,7 @@ const build = async function(flags) {
   try {
     logBuildStart()
 
-    const { netlifyConfig, configPath, baseDir, token, dry, siteId } = await loadConfig({ flags })
+    const { netlifyConfig, configPath, baseDir, token, dry, siteId } = await loadConfig(flags)
 
     const pluginsOptions = await getPluginsOptions(netlifyConfig, baseDir)
     await installPlugins(pluginsOptions, baseDir)
