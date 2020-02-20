@@ -30,8 +30,11 @@ const FIXTURES_DIR = normalize(`${testFile}/../fixtures`)
 //  - `snapshot` {boolean}: whether to create a snapshot
 const runFixture = async function(t, fixtureName, { flags = '', config, cwd, env, normalize, snapshot = true } = {}) {
   const envA = {
+    // Workarounds to mock caching logic
     NETLIFY_BUILD_SAVE_CACHE: '1',
     TEST_CACHE_PATH: 'none',
+    // Ensure local tokens aren't used during development
+    NETLIFY_AUTH_TOKEN: '',
     ...env,
   }
   const configFlag = getConfigFlag(config, fixtureName)
