@@ -8,6 +8,8 @@ const filterObj = require('filter-obj')
 
 const { logFlags, logCurrentDirectory, logConfigPath } = require('../log/main')
 
+const { getSiteInfo } = require('./site_info')
+
 // Retrieve configuration object
 const loadConfig = async function(flags) {
   const flagsA = filterObj(flags, isDefined)
@@ -24,7 +26,9 @@ const loadConfig = async function(flags) {
   const baseDir = await getBaseDir(configPath)
 
   const netlifyConfig = await resolveFullConfig(configPath, flagsC)
-  return { netlifyConfig, configPath, baseDir, token, dry, siteId, context }
+
+  const siteInfo = await getSiteInfo(token, siteId)
+  return { netlifyConfig, configPath, baseDir, token, dry, siteInfo, context }
 }
 
 // Remove undefined and empty CLI flags
