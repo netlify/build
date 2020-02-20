@@ -25,13 +25,13 @@
     "filter-obj": "^2.0.1",
     "find-up": "^4.1.0",
     "indent-string": "^4.0.0",
-    "is-plain-obj": "^2.0.0",
+    "is-plain-obj": "^2.1.0",
     "js-yaml": "^3.13.1",
-    "make-dir": "^3.0.0",
+    "make-dir": "^3.0.2",
     "map-obj": "^4.1.0",
     "omit.js": "^1.0.2",
     "path-exists": "^4.0.0",
-    "resolve": "^1.14.2"
+    "resolve": "^1.15.1"
   },
   "devDependencies": {
     "ava": "^2.4.0"
