@@ -15,14 +15,15 @@ const loadConfig = async function(flags) {
   logCurrentDirectory()
 
   const flagsB = { ...DEFAULT_FLAGS, ...flagsA }
-  const { config, cwd, dry, token, siteId, context } = flagsB
+  const flagsC = filterObj(flagsB, isDefined)
+  const { config, cwd, dry, token, siteId, context } = flagsC
 
   // Retrieve configuration file path and base directory
   const configPath = await getConfigPath(config, cwd)
   logConfigPath(configPath)
   const baseDir = await getBaseDir(configPath)
 
-  const netlifyConfig = await resolveFullConfig(configPath, flagsB)
+  const netlifyConfig = await resolveFullConfig(configPath, flagsC)
   return { netlifyConfig, configPath, baseDir, token, dry, siteId, context }
 }
 
