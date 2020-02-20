@@ -16,7 +16,7 @@ const getConstants = async function({
   netlifyConfig: {
     build: { publish, functions = DEFAULT_FUNCTIONS },
   },
-  siteId,
+  siteInfo: { id: siteId },
 }) {
   const isLocal = !isNetlifyCI()
   const functionsDist = getFunctionsDist(isLocal)

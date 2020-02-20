@@ -35,7 +35,7 @@ const build = async function(flags) {
   try {
     logBuildStart()
 
-    const { netlifyConfig, configPath, baseDir, token, dry, siteId, context } = await loadConfig(flags)
+    const { netlifyConfig, configPath, baseDir, token, dry, siteInfo, context } = await loadConfig(flags)
 
     const pluginsOptions = await getPluginsOptions(netlifyConfig, baseDir)
     await installPlugins(pluginsOptions, baseDir)
@@ -47,7 +47,7 @@ const build = async function(flags) {
       baseDir,
       token,
       dry,
-      siteId,
+      siteInfo,
       context,
     })
 
@@ -58,7 +58,7 @@ const build = async function(flags) {
     logBuildSuccess()
     const duration = endTimer(buildTimer, 'Netlify Build')
     logBuildEnd()
-    await trackBuildComplete({ commandsCount, netlifyConfig, duration, siteId })
+    await trackBuildComplete({ commandsCount, netlifyConfig, duration, siteInfo })
     return true
   } catch (error) {
     logBuildError(error)
@@ -66,7 +66,7 @@ const build = async function(flags) {
   }
 }
 
-const buildRun = async function({ pluginsOptions, netlifyConfig, configPath, baseDir, token, dry, siteId, context }) {
+const buildRun = async function({ pluginsOptions, netlifyConfig, configPath, baseDir, token, dry, siteInfo, context }) {
   const utilsData = await startUtils(baseDir)
   const childEnv = await getChildEnv(baseDir, context)
   const childProcesses = await startPlugins(pluginsOptions, baseDir, childEnv)
@@ -82,7 +82,7 @@ const buildRun = async function({ pluginsOptions, netlifyConfig, configPath, bas
       childEnv,
       token,
       dry,
-      siteId,
+      siteInfo,
     })
   } finally {
     await stopPlugins(childProcesses)
@@ -99,7 +99,7 @@ const executeCommands = async function({
   childEnv,
   token,
   dry,
-  siteId,
+  siteInfo,
 }) {
   const pluginsCommands = await loadPlugins({
     pluginsOptions,
@@ -109,7 +109,7 @@ const executeCommands = async function({
     configPath,
     baseDir,
     token,
-    siteId,
+    siteInfo,
   })
 
   const { mainCommands, buildCommands, endCommands, errorCommands, commandsCount } = getCommands({
