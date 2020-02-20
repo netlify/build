@@ -57,3 +57,39 @@ test('Environment variable git no repository', async t => {
     await removeDir(cwd)
   }
 })
+
+const BUILD_SITE_INFO = JSON.stringify({ url: 'test', build_settings: { repo_url: 'test' } })
+test('Environment variable siteInfo success', async t => {
+  await runFixture(t, 'site_info', {
+    flags: '--token=test --site-id=test',
+    env: { BUILD_SITE_INFO },
+  })
+})
+
+test('Environment variable siteInfo API error', async t => {
+  await runFixture(t, 'site_info', {
+    flags: '--token=test --site-id=test',
+    env: { BUILD_SITE_INFO: 'invalid' },
+  })
+})
+
+test('Environment variable siteInfo no token', async t => {
+  await runFixture(t, 'site_info', {
+    flags: '--site-id=test',
+    env: { BUILD_SITE_INFO },
+  })
+})
+
+test('Environment variable siteInfo no siteId', async t => {
+  await runFixture(t, 'site_info', {
+    flags: '--token=test',
+    env: { BUILD_SITE_INFO },
+  })
+})
+
+test('Environment variable siteInfo CI', async t => {
+  await runFixture(t, 'site_info', {
+    flags: '--token=test --site-id=test',
+    env: { BUILD_SITE_INFO, NETLIFY: 'true' },
+  })
+})
