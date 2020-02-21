@@ -1,4 +1,5 @@
 const isNetlifyCI = require('../utils/is-netlify-ci')
+const { removeFalsy } = require('../utils/remove_falsy')
 
 const { getGitEnv } = require('./git')
 
@@ -12,7 +13,12 @@ const getChildEnv = async function({ baseDir, context, siteInfo }) {
   const defaultEnv = getDefaultEnv(siteInfo)
   const configurableEnv = getConfigurableEnv()
   const forcedEnv = await getForcedEnv(baseDir, context)
-  return { ...defaultEnv, ...process.env, ...configurableEnv, ...forcedEnv }
+  return {
+    ...removeFalsy(defaultEnv),
+    ...process.env,
+    ...removeFalsy(configurableEnv),
+    ...removeFalsy(forcedEnv),
+  }
 }
 
 // Environment variables that can be unset by local ones or configuration ones
