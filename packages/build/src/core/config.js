@@ -4,20 +4,20 @@ const {
 
 const resolveConfig = require('@netlify/config')
 const { getConfigPath, getBaseDir } = require('@netlify/config')
-const filterObj = require('filter-obj')
 
 const { logFlags, logCurrentDirectory, logConfigPath } = require('../log/main')
+const { removeFalsy } = require('../utils/remove_falsy')
 
 const { getSiteInfo } = require('./site_info')
 
 // Retrieve configuration object
 const loadConfig = async function(flags) {
-  const flagsA = filterObj(flags, isDefined)
+  const flagsA = removeFalsy(flags)
   logFlags(flagsA)
   logCurrentDirectory()
 
   const flagsB = { ...DEFAULT_FLAGS, ...flagsA }
-  const flagsC = filterObj(flagsB, isDefined)
+  const flagsC = removeFalsy(flagsB)
   const { config, cwd, dry, token, siteId, context } = flagsC
 
   // Retrieve configuration file path and base directory
@@ -29,11 +29,6 @@ const loadConfig = async function(flags) {
 
   const siteInfo = await getSiteInfo(token, siteId)
   return { netlifyConfig, configPath, baseDir, token, dry, siteInfo, context }
-}
-
-// Remove undefined and empty CLI flags
-const isDefined = function(key, value) {
-  return Boolean(value)
 }
 
 // Default values of CLI flags
