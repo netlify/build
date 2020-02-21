@@ -5,6 +5,6 @@ const {
 module.exports = {
   name: 'netlify-plugin-test',
   onInit({ constants: { SITE_ID } }) {
-    console.log(JSON.stringify({ SITE_ID, URL, REPOSITORY_URL }, null, 2))
+    console.log({ SITE_ID, URL, REPOSITORY_URL })
   },
 }
