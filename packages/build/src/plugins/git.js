@@ -1,5 +1,6 @@
 const execa = require('execa')
-const filterObj = require('filter-obj')
+
+const { removeFalsy } = require('../utils/remove_falsy')
 
 // Retrieve git-related information for use in environment variables.
 // git is optional and there might be not git repository.
@@ -11,7 +12,7 @@ const getGitEnv = async function(baseDir) {
     git(['rev-parse', 'HEAD^'], baseDir),
   ])
   const gitEnv = { BRANCH, HEAD: BRANCH, COMMIT_REF, CACHED_COMMIT_REF }
-  const gitEnvA = filterObj(gitEnv, isDefined)
+  const gitEnvA = removeFalsy(gitEnv)
   return gitEnvA
 }
 
@@ -22,10 +23,6 @@ const git = async function(args, cwd) {
   } catch (error) {
     return
   }
-}
-
-const isDefined = function(key, value) {
-  return value !== undefined
 }
 
 module.exports = { getGitEnv }
