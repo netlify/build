@@ -59,6 +59,8 @@ const NORMALIZE_REGEXPS = [
   [/added \d+ package.*/, 'added packages'],
   [/^npm ERR!.*/gm, 'npm ERR!'],
   [/(npm ERR!\n)+/g, 'npm ERR!\n'],
+  // Empty lines
+  [/^ +$/gm, ''],
 ]
 
 module.exports = { normalizeOutput }
