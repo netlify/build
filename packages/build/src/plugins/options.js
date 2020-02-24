@@ -40,7 +40,7 @@ const resolvePlugin = async function({ package, ...pluginOptions }, baseDir) {
     // `resolve`
   } catch (error) {
     logResolveError(error, package)
-    await addDependency(package, { packageRoot: baseDir, stdio: 'ignore' })
+    await addDependency(package, { packageRoot: baseDir })
     return await tryResolvePlugin(package, pluginOptions, baseDir)
   }
 }

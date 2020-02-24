@@ -20,8 +20,16 @@ const installDependencies = async function(packageRoot) {
 }
 
 // Add new Node.js dependencies
-const addDependency = async function(packageName, { packageRoot, stdio }) {
-  await execa.command(`npm install --no-progress --no-audit --no-fund ${packageName}`, { cwd: packageRoot, stdio })
+const addDependency = async function(packageName, { packageRoot }) {
+  try {
+    await execa.command(`npm install --no-progress --no-audit --no-fund ${packageName}`, {
+      cwd: packageRoot,
+      all: true,
+    })
+  } catch (error) {
+    const errorA = new Error(`Error while installing dependencies in ${packageRoot}\n${error.all}`)
+    throw errorA
+  }
 }
 
 module.exports = { installDependencies, addDependency }
