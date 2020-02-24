@@ -41,6 +41,7 @@ const getModuleConfig = async function(configFile, cwd) {
     return await pResolve(configFile, { basedir: cwd })
   } catch (error) {
     error.message = `Configuration file does not exist: ${configFile}\n${error.message}`
+    error.type = 'userError'
     throw error
   }
 }
@@ -49,7 +50,9 @@ const getLocalConfig = async function(configFile, cwd = process.cwd()) {
   const configPath = resolve(cwd, configFile)
 
   if (!(await pathExists(configPath))) {
-    throw new Error(`Configuration file does not exist: ${configPath}`)
+    const error = new Error(`Configuration file does not exist: ${configPath}`)
+    error.type = 'userError'
+    throw error
   }
 
   return configPath

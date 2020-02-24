@@ -20,12 +20,7 @@ const loadConfig = async function(flags) {
   const flagsC = removeFalsy(flagsB)
   const { config, cwd, dry, token, siteId, context } = flagsC
 
-  // Retrieve configuration file path and base directory
-  const configPath = await getConfigPath(config, cwd)
-  logConfigPath(configPath)
-  const baseDir = await getBaseDir(configPath)
-
-  const netlifyConfig = await resolveFullConfig(configPath, flagsC)
+  const { configPath, netlifyConfig, baseDir } = await resolveFullConfig({ config, cwd, flags: flagsC })
 
   const siteInfo = await getSiteInfo(token, siteId)
   return { netlifyConfig, configPath, baseDir, token, dry, siteInfo, context }
@@ -37,12 +32,21 @@ const DEFAULT_FLAGS = {
   context: CONTEXT || 'local',
 }
 
-// Load configuration file
-const resolveFullConfig = async function(configPath, flags) {
+// Retrieve configuration file path and base directory
+// Then load configuration file
+const resolveFullConfig = async function({ config, cwd, flags }) {
   try {
-    return await resolveConfig(configPath, flags)
+    const configPath = await getConfigPath(config, cwd)
+    logConfigPath(configPath)
+    const baseDir = await getBaseDir(configPath)
+
+    const netlifyConfig = await resolveConfig(configPath, flags)
+    return { configPath, netlifyConfig, baseDir }
   } catch (error) {
-    error.message = `Netlify configuration error:\n${error.message}`
+    if (error.type === 'userError') {
+      error.message = `Netlify configuration error:\n${error.message}`
+      error.cleanStack = true
+    }
     throw error
   }
 }
