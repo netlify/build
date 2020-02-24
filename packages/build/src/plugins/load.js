@@ -2,6 +2,7 @@ const groupBy = require('group-by')
 
 const { logLoadPlugins, logLoadedPlugins } = require('../log/main')
 
+const { getPackageJson } = require('./package')
 const { isNotOverridden } = require('./override')
 const { callChild } = require('./ipc')
 
@@ -48,8 +49,10 @@ const loadPlugin = async function(
   { package, pluginPath, pluginConfig, id, core, local },
   { childProcesses, index, netlifyConfig, utilsData, configPath, baseDir, token, siteInfo },
 ) {
+  const { childProcess } = childProcesses[index]
+  const packageJson = await getPackageJson({ pluginPath, local })
+
   try {
-    const { childProcess } = childProcesses[index]
     const { pluginCommands } = await callChild(childProcess, 'load', {
       id,
       package,
@@ -63,6 +66,7 @@ const loadPlugin = async function(
       baseDir,
       token,
       siteInfo,
+      packageJson,
     })
     const pluginCommandsA = pluginCommands.map(pluginCommand => ({ ...pluginCommand, childProcess }))
     return pluginCommandsA
