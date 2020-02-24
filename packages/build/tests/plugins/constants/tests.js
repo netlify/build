@@ -18,11 +18,6 @@ test('constants.BUILD_DIR relative path', async t => {
   await runFixture(t, 'build_relative')
 })
 
-test('constants.BUILD_DIR automatic value', async t => {
-  await removeDir(`${FIXTURES_DIR}/build_auto/.netlify/build`)
-  await runFixture(t, 'build_auto')
-})
-
 test('constants.BUILD_DIR missing path', async t => {
   await removeDir(`${FIXTURES_DIR}/build_missing/publish`)
   await runFixture(t, 'build_missing')
