@@ -7,7 +7,7 @@ const { callChild } = require('../plugins/ipc')
 const { logCommandsStart, logCommand, logShellCommandStart, logCommandSuccess } = require('../log/main')
 const { startTimer, endTimer } = require('../log/timer')
 const { startOutput, stopOutput } = require('../log/stream')
-const { getPluginErrorMessage } = require('../log/plugin_error')
+const { addErrorInfo } = require('../error/info')
 
 // Get commands for all events
 const getCommands = function({ pluginsCommands, netlifyConfig }) {
@@ -135,11 +135,11 @@ const fireCommand = function(command, { baseDir, childEnv, error }) {
 }
 
 // Fire a `config.lifecycle.*` series of shell commands
-const fireShellCommands = async function({ event, shellCommands }, { baseDir, childEnv }) {
-  await pMapSeries(shellCommands, shellCommand => fireShellCommand({ event, shellCommand, baseDir, childEnv }))
+const fireShellCommands = async function({ id, shellCommands }, { baseDir, childEnv }) {
+  await pMapSeries(shellCommands, shellCommand => fireShellCommand({ id, shellCommand, baseDir, childEnv }))
 }
 
-const fireShellCommand = async function({ event, shellCommand, baseDir, childEnv }) {
+const fireShellCommand = async function({ id, shellCommand, baseDir, childEnv }) {
   logShellCommandStart(shellCommand)
 
   const childProcess = execa(shellCommand, {
@@ -155,8 +155,7 @@ const fireShellCommand = async function({ event, shellCommand, baseDir, childEnv
   try {
     await childProcess
   } catch (error) {
-    error.message = `In "${event}" command "${shellCommand}":\n${error.message}`
-    error.cleanStack = true
+    addErrorInfo(error, { type: 'shellCommand', location: { id, shellCommand } })
     throw error
   } finally {
     await stopOutput(childProcess, chunks)
@@ -174,8 +173,7 @@ const firePluginCommand = async function(
   try {
     await callChild(childProcess, 'run', { originalEvent, error })
   } catch (error) {
-    error.message = getPluginErrorMessage({ error, id, event, package, packageJson, local })
-    error.cleanStack = true
+    addErrorInfo(error, { type: 'pluginCommand', location: { event, package, local }, plugin: { id, packageJson } })
     throw error
   } finally {
     await stopOutput(childProcess, chunks)

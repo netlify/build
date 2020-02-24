@@ -1,6 +1,8 @@
 const pathExists = require('path-exists')
 const execa = require('execa')
 
+const { addErrorInfo } = require('../error/info')
+
 // Install Node.js dependencies in a specific directory
 const installDependencies = async function(packageRoot) {
   if (await pathExists(`${packageRoot}/node_modules`)) {
@@ -15,6 +17,7 @@ const installDependencies = async function(packageRoot) {
     })
   } catch (error) {
     error.message = `Error while installing dependencies in ${packageRoot}\n${error.message}`
+    addErrorInfo(error, { type: 'dependencies' })
     throw error
   }
 }
@@ -28,6 +31,7 @@ const addDependency = async function(packageName, { packageRoot }) {
     })
   } catch (error) {
     const errorA = new Error(`Error while installing dependencies in ${packageRoot}\n${error.all}`)
+    addErrorInfo(errorA, { type: 'dependencies' })
     throw errorA
   }
 }
