@@ -6,9 +6,9 @@ const { greenBright, cyanBright, redBright, yellowBright, bold, white } = requir
 const omit = require('omit.js')
 
 const { version } = require('../../package.json')
+const { serializeError } = require('../error/serialize')
 
 const { log } = require('./logger')
-const { cleanStacks } = require('./stack')
 const { EMPTY_LINE, HEADING_PREFIX, SUBTEXT_PADDING, TICK, ARROW_DOWN } = require('./constants')
 
 const logBuildStart = function() {
@@ -193,12 +193,13 @@ const logCacheDir = function(path) {
 }
 
 const logBuildError = function(error) {
-  const errorStack = error.cleanStack ? cleanStacks(error.message) : `\n${error.stack}`
+  const { header, body } = serializeError(error)
   log(`${EMPTY_LINE}
-${redBright.bold(getHeader('Netlify Build Error'))}
-${errorStack || EMPTY_LINE}
+${redBright.bold(getHeader(header))}
 ${EMPTY_LINE}
-${redBright.bold(getHeader('END Netlify Build Error'))}
+${body}
+${EMPTY_LINE}
+${redBright.bold(getHeader(`END ${header}`))}
 ${EMPTY_LINE}`)
 }
 

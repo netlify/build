@@ -6,6 +6,7 @@ const resolveConfig = require('@netlify/config')
 const { getConfigPath, getBaseDir } = require('@netlify/config')
 
 const { logFlags, logCurrentDirectory, logConfigPath } = require('../log/main')
+const { addErrorInfo } = require('../error/info')
 const { removeFalsy } = require('../utils/remove_falsy')
 
 const { getSiteInfo } = require('./site_info')
@@ -44,8 +45,8 @@ const resolveFullConfig = async function({ config, cwd, flags }) {
     return { configPath, netlifyConfig, baseDir }
   } catch (error) {
     if (error.type === 'userError') {
-      error.message = `Netlify configuration error:\n${error.message}`
-      error.cleanStack = true
+      delete error.type
+      addErrorInfo(error, { type: 'resolveConfig' })
     }
     throw error
   }

@@ -1,6 +1,7 @@
 const groupBy = require('group-by')
 
 const { logLoadPlugins, logLoadedPlugins } = require('../log/main')
+const { addErrorInfo } = require('../error/info')
 
 const { getPackageJson } = require('./package')
 const { isNotOverridden } = require('./override')
@@ -72,8 +73,7 @@ const loadPlugin = async function(
     return pluginCommandsA
   } catch (error) {
     const idA = id === undefined ? package : id
-    error.message = `Error loading "${idA}" plugin:\n${error.message}`
-    error.cleanStack = true
+    addErrorInfo(error, { type: 'pluginLoad', plugin: { id: idA, packageJson }, location: { package, local } })
     throw error
   }
 }
