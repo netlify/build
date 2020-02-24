@@ -1,7 +1,6 @@
 const { basename } = require('path')
 const { platform, cwd } = require('process')
 
-const { tick, pointer, arrowDown } = require('figures')
 const stringWidth = require('string-width')
 const { greenBright, cyanBright, redBright, yellowBright, bold, white } = require('chalk')
 const omit = require('omit.js')
@@ -10,10 +9,7 @@ const { version } = require('../../package.json')
 
 const { log } = require('./logger')
 const { cleanStacks } = require('./stack')
-const { EMPTY_LINE } = require('./empty')
-
-const HEADING_PREFIX = pointer
-const SUBTEXT_PADDING = '  '
+const { EMPTY_LINE, HEADING_PREFIX, SUBTEXT_PADDING, TICK, ARROW_DOWN } = require('./constants')
 
 const logBuildStart = function() {
   log(`${EMPTY_LINE}
@@ -116,7 +112,7 @@ const logDryRunCommand = function({
   const columnWidth = getDryColumnWidth(eventWidth, commandsCount)
   const line = '─'.repeat(columnWidth)
   const countText = `${index + 1}. `
-  const downArrow = commandsCount === index + 1 ? '  ' : ` ${arrowDown}`
+  const downArrow = commandsCount === index + 1 ? '  ' : ` ${ARROW_DOWN}`
   const eventWidthA = columnWidth - countText.length - downArrow.length
   const location = getPluginLocation({ id, package, core, configPath })
 
@@ -184,7 +180,7 @@ const logTimer = function(durationMs, event, id) {
   const idA = id.replace('config.', '')
   const idB = idA.startsWith('build.lifecycle') ? 'build.lifecycle' : idA
 
-  log(` ${greenBright(tick)}  ${greenBright.bold(idB)}${eventA} completed in ${durationMs}ms`)
+  log(` ${greenBright(TICK)}  ${greenBright.bold(idB)}${eventA} completed in ${durationMs}ms`)
 }
 
 const logCacheStart = function() {
