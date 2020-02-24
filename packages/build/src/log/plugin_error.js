@@ -2,7 +2,7 @@ const { white, redBright } = require('chalk')
 
 const isNetlifyCI = require('../utils/is-netlify-ci')
 
-const { EMPTY_LINE } = require('./empty')
+const { EMPTY_LINE } = require('./constants')
 
 // Retrieve error message when a plugin event handler fails
 const getPluginErrorMessage = function({ error, id, event, package, packageJson, local }) {
