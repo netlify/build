@@ -23,7 +23,7 @@ const splitStackInfo = function(string) {
     return { message }
   }
 
-  const stackA = cleanStacks(stack).replace(INITIAL_NEWLINES, '')
+  const stackA = cleanStacks(stack)
   return { message, stack: stackA }
 }
 
@@ -43,7 +43,5 @@ const splitStack = function(string) {
 const isStackTrace = function(line) {
   return line.trim().startsWith('at ')
 }
-
-const INITIAL_NEWLINES = /^\n+/
 
 module.exports = { getStackInfo }

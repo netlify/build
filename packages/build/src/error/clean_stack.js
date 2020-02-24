@@ -15,6 +15,7 @@ const cleanStacks = function(string) {
   return String(string)
     .split('\n')
     .reduce(cleanStackLine, '')
+    .replace(INITIAL_NEWLINES, '')
 }
 
 const cleanStackLine = function(lines, line) {
@@ -64,5 +65,7 @@ const isInternalStack = function(line) {
 }
 
 const INTERNAL_STACK_REGEXP = /packages[/\\]build[/\\](src|node_modules)[/\\]/
+
+const INITIAL_NEWLINES = /^\n+/
 
 module.exports = { cleanStacks }
