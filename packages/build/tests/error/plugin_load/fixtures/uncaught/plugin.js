@@ -1,6 +1,6 @@
 const { promisify } = require('util')
 
-const pTimeout = promisify(setTimeout)
+const pSetTimeout = promisify(setTimeout)
 
 module.exports = {
   name: 'netlify-plugin-test',
@@ -8,6 +8,6 @@ module.exports = {
     setTimeout(function callback() {
       throw new Error('test')
     }, 0)
-    await pTimeout(0)
+    await pSetTimeout(0)
   },
 }

@@ -1,5 +1,3 @@
-const { platform } = require('process')
-
 const test = require('ava')
 const del = require('del')
 
@@ -34,38 +32,3 @@ test('Plugin.enabled', async t => {
 test('Override plugins', async t => {
   await runFixture(t, 'override')
 })
-
-test('Top-level errors', async t => {
-  await runFixture(t, 'error_top')
-})
-
-test('Top function errors local', async t => {
-  await runFixture(t, 'error_function')
-})
-
-test('Top function errors in module', async t => {
-  await runFixture(t, 'error_function_module')
-})
-
-test('CI errors with all fields', async t => {
-  await runFixture(t, 'error_ci_full', { env: { NETLIFY: 'true' } })
-})
-
-test('CI errors with partial fields', async t => {
-  await runFixture(t, 'error_ci_partial', { env: { NETLIFY: 'true' } })
-})
-
-test('Process warnings', async t => {
-  await runFixture(t, 'error_warning')
-})
-
-test('Unhandled promises', async t => {
-  await runFixture(t, 'error_promise')
-})
-
-// Process exit is different on Windows
-if (platform !== 'win32') {
-  test('Early exit', async t => {
-    await runFixture(t, 'early_exit')
-  })
-}
