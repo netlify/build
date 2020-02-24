@@ -46,9 +46,10 @@ ${EMPTY_LINE}`)
 const logResolveError = function(error, package) {
   log(
     redBright.bold(
-      `Error: '${package}' plugin not installed or found.
-Please install it with npm or yarn.
-${error.message}`,
+      `${SUBTEXT_PADDING}Error: '${package}' plugin not installed or found.
+${SUBTEXT_PADDING}Please install it with npm or yarn.
+${SUBTEXT_PADDING}${error.message}
+${EMPTY_LINE}`,
     ),
   )
 }
