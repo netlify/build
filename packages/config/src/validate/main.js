@@ -11,7 +11,7 @@ const validateConfig = function(config) {
       validateProperty(config, { ...validation, nextPath: property.split('.') })
     })
   } catch (error) {
-    error.cleanStack = true
+    error.type = 'userError'
     throw error
   }
 }

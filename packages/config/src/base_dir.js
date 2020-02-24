@@ -28,7 +28,9 @@ const validatePermissions = async function(baseDir) {
   try {
     await pAccess(baseDir, R_OK | W_OK)
   } catch (error) {
-    throw new Error(`Wrong permissions on the base directory ${baseDir}`)
+    const errorA = new Error(`Wrong permissions on the base directory ${baseDir}`)
+    errorA.type = 'userError'
+    throw errorA
   }
 }
 
