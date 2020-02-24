@@ -76,7 +76,7 @@ const normalizePath = function(path, baseDir, key) {
 
   const pathA = normalize(path)
 
-  if (pathA.startsWith(baseDir)) {
+  if (pathA.startsWith(baseDir) && pathA !== baseDir) {
     return relative(baseDir, pathA)
   }
 
