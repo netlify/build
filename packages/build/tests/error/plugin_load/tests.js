@@ -4,6 +4,14 @@ const test = require('ava')
 
 const { runFixture } = require('../../helpers/main')
 
+test('Bugs', async t => {
+  await runFixture(t, 'top', { env: { NETLIFY_BUILD_TEST_UNCAUGHT: 'simple' } })
+})
+
+test('Bugs with error properties', async t => {
+  await runFixture(t, 'top', { env: { NETLIFY_BUILD_TEST_UNCAUGHT: 'props' } })
+})
+
 test('Top-level errors', async t => {
   await runFixture(t, 'top')
 })
