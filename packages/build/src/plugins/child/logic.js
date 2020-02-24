@@ -10,7 +10,7 @@ const requireLogic = function(pluginPath) {
   try {
     return require(pluginPath)
   } catch (error) {
-    error.message = `Error importing plugin:\n${error.message}`
+    error.message = `Could not import plugin:\n${error.message}`
     throw error
   }
 }
@@ -23,7 +23,7 @@ const loadLogic = function({ logic, pluginConfig }) {
   try {
     return logic(pluginConfig)
   } catch (error) {
-    error.message = `Error loading plugin:\n${error.message}`
+    error.message = `Could not load plugin:\n${error.message}`
     throw error
   }
 }
