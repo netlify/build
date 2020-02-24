@@ -4,7 +4,6 @@ const { validatePluginConfig } = require('../config/validate_props.js')
 const { getLogic } = require('./logic')
 const { validatePlugin } = require('./validate')
 const { normalizePlugin } = require('./normalize')
-const { getPackageJson } = require('./package')
 const { getApiClient } = require('./api')
 const { getUtils } = require('./utils')
 const { getConstants } = require('./constants')
@@ -23,15 +22,13 @@ const loadPlugin = async function(payload) {
 
   const logicA = normalizePlugin(logic)
 
-  const packageJson = await getPackageJson(payload)
-
-  const pluginCommands = getPluginCommands(logicA, payload, packageJson)
+  const pluginCommands = getPluginCommands(logicA, payload)
 
   const context = getContext(logicA, pluginCommands, constants, payload)
   return { context, pluginCommands }
 }
 
-const getPluginCommands = function(logic, { id, package, core, local }, packageJson) {
+const getPluginCommands = function(logic, { id, package, core, local, packageJson }) {
   const { name } = logic
   return Object.entries(logic)
     .filter(isEventHandler)
