@@ -193,13 +193,13 @@ const logCacheDir = function(path) {
 }
 
 const logBuildError = function(error) {
-  const { header, body } = serializeError(error)
+  const { header, body, color } = serializeError(error)
   log(`${EMPTY_LINE}
-${redBright.bold(getHeader(header))}
+${color.bold(getHeader(header))}
 ${EMPTY_LINE}
 ${body}
 ${EMPTY_LINE}
-${redBright.bold(getHeader(`END ${header}`))}
+${color.bold(getHeader(`END ${header}`))}
 ${EMPTY_LINE}`)
 }
 

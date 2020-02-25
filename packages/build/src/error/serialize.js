@@ -16,9 +16,9 @@ const { getLocationBlock } = require('./location')
 const serializeError = function({ message, stack, ...errorProps }) {
   const { type, ...errorInfo } = getErrorInfo(errorProps)
   const errorPropsA = cleanErrorProps(errorProps)
-  const { header, ...typeInfo } = getTypeInfo(type)
-  const body = getBody({ typeInfo, message, stack, errorProps: errorPropsA, ...errorInfo })
-  return { header, body }
+  const { header, color = redBright, ...typeInfo } = getTypeInfo(type)
+  const body = getBody({ typeInfo, color, message, stack, errorProps: errorPropsA, ...errorInfo })
+  return { header, body, color }
 }
 
 // Remove error static properties that should not be logged
@@ -31,6 +31,7 @@ const CLEANED_ERROR_PROPS = [INFO_SYM, 'requireStack']
 // Retrieve body to print in logs
 const getBody = function({
   typeInfo: { stackType, getLocation, showErrorProps, rawStack },
+  color,
   message,
   stack,
   errorProps,
@@ -44,7 +45,7 @@ const getBody = function({
   const errorPropsBlock = getErrorPropsBlock(errorProps, showErrorProps)
   return [messageBlock, pluginBlock, locationBlock, errorPropsBlock]
     .filter(Boolean)
-    .map(serializeBlock)
+    .map(({ name, value }) => serializeBlock({ name, value, color }))
     .join(`${EMPTY_LINE}\n${EMPTY_LINE}\n`)
 }
 
@@ -58,8 +59,8 @@ const getErrorPropsBlock = function(errorProps, showErrorProps) {
   return { name: 'Error properties', value }
 }
 
-const serializeBlock = function({ name, value }) {
-  return `${redBright.bold(`${HEADING_PREFIX} ${name}`)}
+const serializeBlock = function({ name, value, color }) {
+  return `${color.bold(`${HEADING_PREFIX} ${name}`)}
 ${indentString(value, INDENT_SIZE)}`
 }
 
