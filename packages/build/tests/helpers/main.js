@@ -3,7 +3,7 @@ require('log-process-errors/build/register/ava')
 const {
   env: { PRINT },
 } = require('process')
-const { normalize } = require('path')
+const { normalize, basename } = require('path')
 const { tmpdir } = require('os')
 
 const {
@@ -14,6 +14,7 @@ const { getBinPath } = require('get-bin-path')
 const { magentaBright } = require('chalk')
 const del = require('del')
 const makeDir = require('make-dir')
+const cpFile = require('cp-file')
 
 const { normalizeOutput } = require('./normalize')
 
@@ -127,9 +128,7 @@ const removeDir = async function(dir) {
 // Create a temporary directory with a `.git` directory, which can be used as
 // the current directory of a build. Otherwise the `git` utility does not load.
 const createRepoDir = async function({ git = true } = {}) {
-  const id = String(Math.random()).replace('.', '')
-  const cwd = `${tmpdir()}/netlify-build-${id}`
-  await makeDir(cwd)
+  const cwd = getTempDir()
   await createGit(cwd, git)
   return cwd
 }
@@ -147,4 +146,21 @@ const createGit = async function(cwd, git) {
   await execa.command('git config --unset user.name', { cwd })
 }
 
-module.exports = { runFixture, FIXTURES_DIR, removeDir, createRepoDir }
+// Copy a file to a temporary one
+const copyToTemp = async function(path) {
+  const filename = basename(path)
+  const tempDir = await getTempDir()
+  const tempFile = `${tempDir}/${filename}`
+  await cpFile(path, tempFile)
+  return { tempDir, tempFile }
+}
+
+// Create and retrieve a new temporary sub-directory
+const getTempDir = async function() {
+  const id = String(Math.random()).replace('.', '')
+  const tempDir = `${tmpdir()}/netlify-build-${id}`
+  await makeDir(tempDir)
+  return tempDir
+}
+
+module.exports = { runFixture, FIXTURES_DIR, removeDir, createRepoDir, copyToTemp }
