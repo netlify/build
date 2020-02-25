@@ -1,6 +1,6 @@
 module.exports = {
   name: 'netlify-plugin-example',
-  onInit() {
-    throw new Error('test')
+  onInit({ utils: { build } }) {
+    build.fail('test')
   },
 }

@@ -48,8 +48,8 @@ const getPluginCommand = function({ method, event, name, id = name, package, cor
 
 // Retrieve context passed to every event handler
 const getContext = function(logic, pluginCommands, constants, { pluginConfig, netlifyConfig, utilsData, token }) {
-  const api = getApiClient({ logic, token })
   const utils = getUtils({ utilsData, constants })
+  const api = getApiClient({ logic, token, utils })
   return { pluginCommands, api, utils, constants, pluginConfig, netlifyConfig }
 }
 
