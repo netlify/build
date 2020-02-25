@@ -15,6 +15,7 @@ const TYPES = {
   dependencies: { header: 'Dependencies error', stackType: 'none' },
   shellCommand: { header: 'Build failed', stackType: 'message', getLocation: getShellCommandLocation },
   fail: { header: 'Build failed', stackType: 'stack', getLocation: getBuildFailLocation },
+  ipc: { header: 'Plugin internal error', stackType: 'none', getLocation: getBuildFailLocation },
   pluginInternalError: {
     header: 'Plugin internal error',
     stackType: 'stack',
