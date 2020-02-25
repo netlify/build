@@ -5,7 +5,10 @@ const fail = function(errorOrMessage) {
   const errorA = errorOrMessage instanceof Error ? errorOrMessage : new Error(errorOrMessage)
   // Do not include `fail()` itself in the stack trace
   Error.captureStackTrace(errorA, fail)
+  errorA[ERROR_TYPE_SYM] = 'fail'
   throw errorA
 }
 
-module.exports = { fail }
+const ERROR_TYPE_SYM = Symbol('errorType')
+
+module.exports = { fail, ERROR_TYPE_SYM }

@@ -20,10 +20,6 @@ test('Top function errors local', async t => {
   await runFixture(t, 'function')
 })
 
-test('Top function errors in module', async t => {
-  await runFixture(t, 'function_module')
-})
-
 test('CI errors with all fields', async t => {
   await runFixture(t, 'ci_full', { env: { NETLIFY: 'true' } })
 })

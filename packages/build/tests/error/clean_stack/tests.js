@@ -16,10 +16,10 @@ test('Clean stack traces of plugin event handlers', async t => {
   t.is(count, 1)
 })
 
-test('Clean stack traces of plugin loads', async t => {
-  const { all } = await runFixture(t, 'load', { snapshot: false, normalize: false })
+test('Does not clean stack traces of exceptions', async t => {
+  const { all } = await runFixture(t, 'exception', { snapshot: false, normalize: false })
   const count = getStackLinesCount(all)
-  t.is(count, 1)
+  t.not(count, 1)
 })
 
 test('Clean stack traces of config validation', async t => {

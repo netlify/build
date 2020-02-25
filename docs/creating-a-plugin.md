@@ -171,6 +171,30 @@ The `constants` key contains the following values:
 - `SITE_ID` The Netlify Site ID
 <!-- AUTO-GENERATED-CONTENT:END -->
 
+## Error reporting
+
+Exceptions thrown inside event handlers are reported in logs as bugs. You should handle errors with `try`/`catch` blocks
+and use `utils.build`:
+
+```js
+module.exports = {
+  name: 'netlify-plugin-hello-world',
+  onPreBuild: ({ utils }) => {
+    try {
+      badMethod()
+    } catch (error) {
+      utils.build.fail('Failure message')
+    }
+  },
+}
+```
+
+The following methods are available depending on the error's type:
+
+- `utils.build.fail('message')`: stops the build
+
+This works inside `async` event handlers as well.
+
 ## Publishing a plugin
 
 The [`name` property in `package.json`](https://docs.npmjs.com/files/package.json#name) should start with
