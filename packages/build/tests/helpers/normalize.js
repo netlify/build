@@ -37,8 +37,8 @@ const NORMALIZE_REGEXPS = [
   // CI tests show some error messages differently
   [/\/file\/path bad option/g, 'node: bad option'],
   // Stack traces
-  [/Require stack:\n[^}]*}/g, ''],
   [/Require stack:\n(\s*- \/file\/path\n)+/g, ''],
+  [/Require stack:\n[^}]*}/g, ''],
   [/{ Error:/g, 'Error:'],
   [/^.*:\d+:\d+\)?$/gm, 'STACK TRACE'],
   [/^\s+at .*$/gm, 'STACK TRACE'],
