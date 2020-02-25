@@ -6,6 +6,10 @@ test('build.fail()', async t => {
   await runFixture(t, 'fail')
 })
 
+test('build.cancel()', async t => {
+  await runFixture(t, 'cancel')
+})
+
 test('exception', async t => {
   await runFixture(t, 'exception')
 })

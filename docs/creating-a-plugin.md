@@ -192,6 +192,7 @@ module.exports = {
 The following methods are available depending on the error's type:
 
 - `utils.build.fail('message')`: stops the build
+- `utils.build.cancel('message')`: cancels the build
 
 This works inside `async` event handlers as well.
 

@@ -3,7 +3,7 @@ const cacheUtils = require('@netlify/cache-utils')
 const runUtils = require('@netlify/run-utils')
 const functionsUtils = require('@netlify/functions-utils')
 
-const { fail } = require('../error')
+const { fail, cancel } = require('../error')
 
 // Some utilities need to perform some async initialization logic first.
 // We do it once for all plugins in the parent process then pass it to the child
@@ -15,7 +15,7 @@ const startUtils = async function(baseDir) {
 
 // Retrieve the `utils` argument.
 const getUtils = function({ utilsData: { git }, constants }) {
-  const buildUtils = { fail }
+  const buildUtils = { fail, cancel }
   const gitA = gitUtils.load(git)
   // eslint-disable-next-line no-unused-vars
   const functions = functionsUtils({ constants, fail })
