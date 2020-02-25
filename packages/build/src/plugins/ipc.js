@@ -3,6 +3,8 @@ const { promisify } = require('util')
 const pEvent = require('p-event')
 const uuid = require('uuid/v4')
 
+const { buildError } = require('../error/build')
+
 // Send event from child to parent process then wait for response
 // We need to fire them in parallel because `process.send()` can be slow
 // to await, i.e. child might send response before parent start listening for it
@@ -87,21 +89,20 @@ const sendEventToParent = async function(callId, payload) {
 // convert from/to plain objects.
 // TODO: use `child_process.spawn()` `serialization: 'advanced'` option after
 // dropping support for Node.js <=13.2.0
-const serializePayload = function({ error: { name, message, stack, ...error } = {}, ...payload }) {
+const serializePayload = function({ error: { name, message, stack, ...errorProps } = {}, ...payload }) {
   if (name === undefined) {
     return payload
   }
 
-  return { ...payload, error: { ...error, name, message, stack } }
+  return { ...payload, error: { ...errorProps, name, message, stack } }
 }
 
-const parsePayload = function({ error: { name, message, stack, ...error } = {}, ...payload }) {
-  if (name === undefined) {
+const parsePayload = function({ error = {}, ...payload }) {
+  if (error.name === undefined) {
     return payload
   }
 
-  const errorA = new Error(message)
-  Object.assign(errorA, { name, stack }, error)
+  const errorA = buildError(error)
   return { ...payload, error: errorA }
 }
 
