@@ -1,30 +1,25 @@
 const { cleanStacks } = require('./clean_stack')
 
 // Retrieve the stack trace
-const getStackInfo = function({ message, stack, stackType }) {
+const getStackInfo = function({ message, stack, stackType, rawStack }) {
+  const { message: messageA, stack: stackA } = splitStackInfo({ message, stack, stackType })
+  const stackB = cleanStacks(stackA, rawStack)
+  return { message: messageA, stack: stackB }
+}
+
+const splitStackInfo = function({ message, stack, stackType }) {
   // Some errors should not show any stack trace
   if (stackType === 'none') {
     return { message }
   }
 
-  // Some errors should show `error.stack` as is, without cleaning it
-  if (stackType === 'stack') {
-    return splitStack(stack)
+  // Some errors have their stack trace inside `error.message` instead of
+  // `error.stack` due to IPC
+  if (stackType === 'message') {
+    return splitStack(message)
   }
 
-  return splitStackInfo(message)
-}
-
-// Some errors have the stack trace inside `error.message` instead of
-// `error.stack` due to IPC
-const splitStackInfo = function(string) {
-  const { message, stack } = splitStack(string)
-  if (stack === undefined) {
-    return { message }
-  }
-
-  const stackA = cleanStacks(stack)
-  return { message, stack: stackA }
+  return splitStack(stack)
 }
 
 const splitStack = function(string) {

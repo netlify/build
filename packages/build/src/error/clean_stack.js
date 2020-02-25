@@ -11,7 +11,12 @@ const stripAnsi = require('strip-ansi')
 // Keep non stack trace lines as is.
 // We do not use libraries that patch `Error.prepareStackTrace()` because they
 // tend to create issues.
-const cleanStacks = function(string) {
+const cleanStacks = function(string, rawStack) {
+  // Internal errors / bugs keep their full stack trace
+  if (rawStack || string === undefined) {
+    return string
+  }
+
   return String(string)
     .split('\n')
     .reduce(cleanStackLine, '')
