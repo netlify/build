@@ -9,18 +9,18 @@ const pStat = promisify(stat)
 
 // Add a Netlify Function file to the `functions` directory so it is processed
 // by `@netlify/plugin-functions-core`
-const functionsUtils = function({ constants: { FUNCTIONS_SRC } }) {
-  return { add: add.bind(null, FUNCTIONS_SRC) }
+const functionsUtils = function({ constants: { FUNCTIONS_SRC }, fail }) {
+  return { add: add.bind(null, FUNCTIONS_SRC, fail) }
 }
 
-const add = async function(dist, src) {
+const add = async function(dist, src, fail) {
   if (!(await pathExists(src))) {
-    throw new Error(`No function file or directory found at "${src}"`)
+    fail(`No function file or directory found at "${src}"`)
   }
 
   const functionsDist = `${dist}/${basename(src)}`
   if (await pathExists(functionsDist)) {
-    throw new Error(`Function file or directory already exists at "${functionsDist}"`)
+    fail(`Function file or directory already exists at "${functionsDist}"`)
   }
 
   const srcGlob = await getSrcGlob(src)

@@ -2,6 +2,8 @@ const isPlainObj = require('is-plain-obj')
 const indentString = require('indent-string')
 const deepmerge = require('deepmerge')
 
+const { fail } = require('../error')
+
 const { validateSchemaSyntax } = require('./json_schema')
 
 // Validate `plugin.config`
@@ -23,7 +25,7 @@ const validateConfigSchema = function(configSchema) {
 }
 
 const throwConfigError = function(configSchema, errorMessage) {
-  throw new Error(`Plugin 'config' must be a JSON schema v7 describing each configuration property.
+  fail(`Plugin 'config' must be a JSON schema v7 describing each configuration property.
 ${errorMessage}
 ${indentString(JSON.stringify(configSchema, null, 2), 2)}
 

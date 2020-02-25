@@ -4,6 +4,8 @@ const {
 
 const NetlifyAPI = require('netlify')
 
+const { fail } = require('../error')
+
 // Retrieve Netlify API client, providing a authentication token was provided
 const getApiClient = function({ logic: { scopes = DEFAULT_SCOPES }, token }) {
   // This feature is not currently finished due to lack of API support
@@ -14,7 +16,7 @@ const getApiClient = function({ logic: { scopes = DEFAULT_SCOPES }, token }) {
 
   if (!token) {
     if (scopes.length !== 0) {
-      throw new Error(`This plugin requires a Netlify API authentication token`)
+      fail('This plugin requires a Netlify API authentication token')
     }
 
     return
@@ -51,7 +53,7 @@ const getApiMethod = function({ operationId }) {
 const API_METHODS = getApiMethods()
 
 const disabledApiMethod = async function(method) {
-  throw new Error(`This plugin is not authorized to use "api.${method}". Please update the plugin scopes.`)
+  fail(`This plugin is not authorized to use "api.${method}". Please update the plugin scopes.`)
 }
 
 module.exports = { getApiClient, API_METHODS }

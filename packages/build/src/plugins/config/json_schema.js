@@ -3,6 +3,8 @@ const JSON_SCHEMA_SCHEMA = require('ajv/lib/refs/json-schema-draft-07.json')
 const omit = require('omit.js')
 const moize = require('moize').default
 
+const { fail } = require('../error')
+
 // Validate a value against a JSON schema
 const mValidateFromSchema = function(schema, value) {
   const validate = ajv.compile(schema)
@@ -31,7 +33,7 @@ const ajv = new Ajv({
     warn() {},
     // istanbul ignore next
     error(message) {
-      throw message
+      fail(message)
     },
   },
   strictDefaults: true,

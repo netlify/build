@@ -1,5 +1,7 @@
 const indentString = require('indent-string')
 
+const { fail } = require('../error')
+
 const { validateFromSchema } = require('./json_schema')
 
 // Validate `pluginConfig` against `config` JSON schema
@@ -13,7 +15,7 @@ const validatePluginConfig = function({ config: configSchema }, { pluginConfig }
   const errorMessage = validateFromSchema({ additionalProperties: false, ...configSchema }, pluginConfig)
 
   if (errorMessage !== undefined) {
-    throw new Error(
+    fail(
       `Plugin configuration is invalid.
 ${errorMessage}
 

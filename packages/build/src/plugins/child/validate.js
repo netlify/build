@@ -3,6 +3,7 @@ const { EVENTS, LEGACY_EVENTS } = require('@netlify/config')
 
 const { serializeList } = require('../../utils/list')
 const { validateConfigSchema } = require('../config/validate_config')
+const { fail } = require('../error')
 
 const { API_METHODS } = require('./api')
 
@@ -10,7 +11,7 @@ const { API_METHODS } = require('./api')
 // TODO: validate allowed characters in `logic` properties
 const validatePlugin = function(logic) {
   if (!isPlainObj(logic)) {
-    throw new Error(`Plugin must be an object or a function`)
+    fail('Plugin must be an object or a function')
   }
 
   validateRequiredProperties(logic)
@@ -27,7 +28,7 @@ const REQUIRED_PROPERTIES = ['name']
 
 const validateRequiredProperty = function(logic, propName) {
   if (logic[propName] === undefined) {
-    throw new Error(`Missing required property '${propName}'`)
+    fail(`Missing required property '${propName}'`)
   }
 }
 
@@ -45,7 +46,7 @@ const validateMethod = function(propName) {
   const propNameA = propName.replace(OVERRIDE_REGEXP, '')
 
   if (!EVENTS.includes(propNameA) && LEGACY_EVENTS[propNameA] === undefined) {
-    throw new Error(`Invalid event '${propNameA}'.
+    fail(`Invalid event '${propNameA}'.
 Please use a valid event name. One of:
 ${serializeList(EVENTS)}`)
   }
@@ -58,7 +59,7 @@ const validateNonMethod = function(value, propName) {
   const validator = VALIDATORS[propName]
 
   if (validator === undefined) {
-    throw new Error(`Invalid property '${propName}'.
+    fail(`Invalid property '${propName}'.
 Please use a property name. One of:
 ${serializeList(Object.keys(VALIDATORS))}`)
   }
@@ -69,7 +70,7 @@ ${serializeList(Object.keys(VALIDATORS))}`)
 // Validate `plugin.name`
 const validateName = function(name) {
   if (typeof name !== 'string') {
-    throw new Error(`Property 'name' must be a string`)
+    fail(`Property 'name' must be a string`)
   }
 }
 
@@ -80,7 +81,7 @@ const validateScopes = function(scopes) {
     return
   }
 
-  throw new Error(`Invalid scope "${wrongScope}"
+  fail(`Invalid scope "${wrongScope}"
 Please use a valid scope. One of:
 ${serializeList(ALLOWED_SCOPES)}`)
 }
