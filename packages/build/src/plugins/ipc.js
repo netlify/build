@@ -4,6 +4,7 @@ const pEvent = require('p-event')
 const uuid = require('uuid/v4')
 
 const { buildError } = require('../error/build')
+const { addErrorInfo } = require('../error/info')
 
 // Send event from child to parent process then wait for response
 // We need to fire them in parallel because `process.send()` can be slow
@@ -27,7 +28,9 @@ const callChild = async function(childProcess, eventName, payload) {
 // We need to make `p-event` listeners are properly cleaned up too.
 const getEventFromChild = async function(childProcess, callId) {
   if (!childProcess.connected) {
-    throw new Error('Could not receive event from child process because it already exited')
+    const error = new Error('Could not receive event from child process because it already exited')
+    addErrorInfo(error, { type: 'ipc' })
+    throw error
   }
 
   const messagePromise = pEvent(childProcess, 'message', { filter: ([actualCallId]) => actualCallId === callId })
@@ -54,8 +57,10 @@ const getError = async function(errorPromise) {
 
 const getExit = async function(exitPromise) {
   const [exitCode, signal] = await exitPromise
-  throw new Error(`Plugin exited with exit code ${exitCode} and signal ${signal}.
+  const error = new Error(`Plugin exited with exit code ${exitCode} and signal ${signal}.
 Instead of calling process.exit(), plugin methods should either return (on success) or throw errors (on failure).`)
+  addErrorInfo(error, { type: 'ipc' })
+  throw error
 }
 
 // Send event from parent to child process
