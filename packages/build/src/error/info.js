@@ -9,4 +9,4 @@ const getErrorInfo = function(error) {
 
 const INFO_SYM = Symbol('info')
 
-module.exports = { addErrorInfo, getErrorInfo }
+module.exports = { addErrorInfo, getErrorInfo, INFO_SYM }
