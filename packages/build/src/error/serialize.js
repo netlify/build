@@ -30,14 +30,14 @@ const CLEANED_ERROR_PROPS = [INFO_SYM, 'requireStack']
 
 // Retrieve body to print in logs
 const getBody = function({
-  typeInfo: { stackType, getLocation, showErrorProps },
+  typeInfo: { stackType, getLocation, showErrorProps, rawStack },
   message,
   stack,
   errorProps,
   location = {},
   plugin = {},
 }) {
-  const { message: messageA, stack: stackA } = getStackInfo({ message, stack, stackType })
+  const { message: messageA, stack: stackA } = getStackInfo({ message, stack, stackType, rawStack })
   const messageBlock = { name: 'Error message', value: messageA }
   const pluginBlock = getPluginBlock(plugin)
   const locationBlock = getLocationBlock({ stack: stackA, location, getLocation })

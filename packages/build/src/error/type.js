@@ -16,7 +16,7 @@ const TYPES = {
   pluginLoad: { header: 'Build failed', stackType: 'message', getLocation: getPluginLoadLocation },
   shellCommand: { header: 'Build failed', stackType: 'message', getLocation: getShellCommandLocation },
   pluginCommand: { header: 'Build failed', stackType: 'message', getLocation: getPluginCommandLocation },
-  internalError: { header: 'Internal error', stackType: 'stack', showErrorProps: true },
+  internalError: { header: 'Internal error', stackType: 'stack', showErrorProps: true, rawStack: true },
 }
 // When no error type matches, it's an uncaught exception, i.e. a bug
 const DEFAULT_TYPE = 'internalError'
