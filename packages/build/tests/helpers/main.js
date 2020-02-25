@@ -128,7 +128,7 @@ const removeDir = async function(dir) {
 // Create a temporary directory with a `.git` directory, which can be used as
 // the current directory of a build. Otherwise the `git` utility does not load.
 const createRepoDir = async function({ git = true } = {}) {
-  const cwd = getTempDir()
+  const cwd = await getTempDir()
   await createGit(cwd, git)
   return cwd
 }
