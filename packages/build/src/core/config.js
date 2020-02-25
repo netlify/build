@@ -6,7 +6,6 @@ const resolveConfig = require('@netlify/config')
 const { getConfigPath, getBaseDir } = require('@netlify/config')
 
 const { logFlags, logCurrentDirectory, logConfigPath } = require('../log/main')
-const { testUncaught } = require('../error/test')
 const { addErrorInfo } = require('../error/info')
 const { removeFalsy } = require('../utils/remove_falsy')
 
@@ -14,8 +13,6 @@ const { getSiteInfo } = require('./site_info')
 
 // Retrieve configuration object
 const loadConfig = async function(flags) {
-  testUncaught()
-
   const flagsA = removeFalsy(flags)
   logFlags(flagsA)
   logCurrentDirectory()
