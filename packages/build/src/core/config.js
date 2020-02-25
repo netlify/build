@@ -1,5 +1,6 @@
 const {
   env: { NETLIFY_AUTH_TOKEN, CONTEXT },
+  execPath,
 } = require('process')
 
 const resolveConfig = require('@netlify/config')
@@ -19,16 +20,17 @@ const loadConfig = async function(flags) {
 
   const flagsB = { ...DEFAULT_FLAGS, ...flagsA }
   const flagsC = removeFalsy(flagsB)
-  const { config, cwd, dry, token, siteId, context } = flagsC
+  const { config, cwd, dry, nodePath, token, siteId, context } = flagsC
 
   const { configPath, netlifyConfig, baseDir } = await resolveFullConfig({ config, cwd, flags: flagsC })
 
   const siteInfo = await getSiteInfo(token, siteId)
-  return { netlifyConfig, configPath, baseDir, token, dry, siteInfo, context }
+  return { netlifyConfig, configPath, baseDir, nodePath, token, dry, siteInfo, context }
 }
 
 // Default values of CLI flags
 const DEFAULT_FLAGS = {
+  nodePath: execPath,
   token: NETLIFY_AUTH_TOKEN,
   context: CONTEXT || 'local',
 }

@@ -35,7 +35,7 @@ const build = async function(flags) {
   try {
     logBuildStart()
 
-    const { netlifyConfig, configPath, baseDir, token, dry, siteInfo, context } = await loadConfig(flags)
+    const { netlifyConfig, configPath, baseDir, nodePath, token, dry, siteInfo, context } = await loadConfig(flags)
 
     const pluginsOptions = await getPluginsOptions(netlifyConfig, baseDir)
     await installPlugins(pluginsOptions, baseDir)
@@ -45,6 +45,7 @@ const build = async function(flags) {
       netlifyConfig,
       configPath,
       baseDir,
+      nodePath,
       token,
       dry,
       siteInfo,
@@ -66,10 +67,20 @@ const build = async function(flags) {
   }
 }
 
-const buildRun = async function({ pluginsOptions, netlifyConfig, configPath, baseDir, token, dry, siteInfo, context }) {
+const buildRun = async function({
+  pluginsOptions,
+  netlifyConfig,
+  configPath,
+  baseDir,
+  nodePath,
+  token,
+  dry,
+  siteInfo,
+  context,
+}) {
   const utilsData = await startUtils(baseDir)
   const childEnv = await getChildEnv({ baseDir, context, siteInfo })
-  const childProcesses = await startPlugins(pluginsOptions, baseDir, childEnv)
+  const childProcesses = await startPlugins({ pluginsOptions, baseDir, nodePath, childEnv })
 
   try {
     return await executeCommands({
@@ -79,6 +90,7 @@ const buildRun = async function({ pluginsOptions, netlifyConfig, configPath, bas
       utilsData,
       configPath,
       baseDir,
+      nodePath,
       childEnv,
       token,
       dry,
@@ -96,6 +108,7 @@ const executeCommands = async function({
   utilsData,
   configPath,
   baseDir,
+  nodePath,
   childEnv,
   token,
   dry,
@@ -129,6 +142,7 @@ const executeCommands = async function({
     commandsCount,
     configPath,
     baseDir,
+    nodePath,
     childEnv,
   })
   return commandsCount

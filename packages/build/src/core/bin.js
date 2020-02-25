@@ -76,6 +76,11 @@ Default: 'production'`,
 executing them.
 Default: false`,
   },
+  nodePath: {
+    string: true,
+    describe: `Path to the Node.js binary to use in user commands and build plugins.
+Default: Current Node.js binary`,
+  },
   features: {
     boolean: true,
     describe: `Print currently enabled feature flags.

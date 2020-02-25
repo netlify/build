@@ -23,7 +23,7 @@ const logFlags = function(flags) {
   log(cyanBright.bold(`${HEADING_PREFIX} Flags`), flagsA, EMPTY_LINE)
 }
 
-const HIDDEN_FLAGS = ['token']
+const HIDDEN_FLAGS = ['nodePath', 'token']
 
 const logCurrentDirectory = function() {
   log(`${cyanBright.bold(`${HEADING_PREFIX} Current directory`)}
