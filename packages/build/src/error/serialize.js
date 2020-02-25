@@ -2,10 +2,11 @@ const { inspect } = require('util')
 
 const { redBright } = require('chalk')
 const indentString = require('indent-string')
+const omit = require('omit.js')
 
 const { EMPTY_LINE, HEADING_PREFIX, INDENT_SIZE } = require('../log/constants')
 
-const { getErrorInfo } = require('./info')
+const { getErrorInfo, INFO_SYM } = require('./info')
 const { getTypeInfo } = require('./type')
 const { getStackInfo } = require('./stack')
 const { getPluginBlock } = require('./plugin')
@@ -14,10 +15,18 @@ const { getLocationBlock } = require('./location')
 // Serialize an error object into a header|body string to print in logs
 const serializeError = function({ message, stack, ...errorProps }) {
   const { type, ...errorInfo } = getErrorInfo(errorProps)
+  const errorPropsA = cleanErrorProps(errorProps)
   const { header, ...typeInfo } = getTypeInfo(type)
-  const body = getBody({ typeInfo, message, stack, errorProps, ...errorInfo })
+  const body = getBody({ typeInfo, message, stack, errorProps: errorPropsA, ...errorInfo })
   return { header, body }
 }
+
+// Remove error static properties that should not be logged
+const cleanErrorProps = function(errorProps) {
+  return omit(errorProps, CLEANED_ERROR_PROPS)
+}
+
+const CLEANED_ERROR_PROPS = [INFO_SYM, 'requireStack']
 
 // Retrieve body to print in logs
 const getBody = function({
