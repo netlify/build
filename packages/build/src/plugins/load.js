@@ -73,7 +73,7 @@ const loadPlugin = async function(
     return pluginCommandsA
   } catch (error) {
     const idA = id === undefined ? package : id
-    addErrorInfo(error, { type: 'pluginLoad', plugin: { id: idA, packageJson }, location: { package, local } })
+    addErrorInfo(error, { plugin: { id: idA, packageJson }, location: { event: 'load', package, local } })
     throw error
   }
 }

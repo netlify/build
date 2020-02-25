@@ -22,30 +22,33 @@ const serializeLocation = function({ stack, location, getLocation }) {
   return [locationString, stack].filter(Boolean).join('\n')
 }
 
-const getPluginLoadLocation = function({ package, local }) {
-  const packageLocation = getPackageLocation({ package, local })
-  return `While loading ${packageLocation}`
-}
-
 const getShellCommandLocation = function({ id, shellCommand }) {
   const idA = id.replace('config.', '')
   return `In configuration "${white.bold(idA)}" command:
 ${white.bold(shellCommand)}`
 }
 
-const getPluginCommandLocation = function({ event, package, local }) {
-  const packageLocation = getPackageLocation({ package, local })
-  return `In "${white.bold(event)}" event in ${packageLocation}`
+const getBuildFailLocation = function({ event, package, local }) {
+  const eventMessage = getEventMessage(event)
+  const packageLocation = getPackageLocation(package, local)
+  return `${eventMessage} ${packageLocation}`
 }
 
-const getPackageLocation = function({ package, local }) {
+const getEventMessage = function(event) {
+  if (event === 'load') {
+    return `While ${white.bold('loading')}`
+  }
+
+  return `In "${white.bold(event)}" event in`
+}
+
+const getPackageLocation = function(package, local) {
   const localString = local ? 'local plugin' : 'npm package'
   return `${localString} "${white.bold(package)}"`
 }
 
 module.exports = {
   getLocationBlock,
-  getPluginLoadLocation,
   getShellCommandLocation,
-  getPluginCommandLocation,
+  getBuildFailLocation,
 }

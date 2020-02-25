@@ -173,7 +173,7 @@ const firePluginCommand = async function(
   try {
     await callChild(childProcess, 'run', { originalEvent, error })
   } catch (error) {
-    addErrorInfo(error, { type: 'pluginCommand', location: { event, package, local }, plugin: { id, packageJson } })
+    addErrorInfo(error, { location: { event, package, local }, plugin: { id, packageJson } })
     throw error
   } finally {
     await stopOutput(childProcess, chunks)

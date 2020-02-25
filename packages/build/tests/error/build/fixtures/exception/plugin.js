@@ -1,6 +1,6 @@
 module.exports = {
   name: 'netlify-plugin-test',
-  onInit() {
+  async onInit() {
     throw new Error('test')
-  }
+  },
 }

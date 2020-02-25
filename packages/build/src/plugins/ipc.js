@@ -48,8 +48,8 @@ const getMessage = async function(messagePromise) {
 }
 
 const getError = async function(errorPromise) {
-  const [, { stack }] = await errorPromise
-  throw new Error(stack)
+  const [, { errorProps, ...values }] = await errorPromise
+  throw buildError({ ...values, ...errorProps })
 }
 
 const getExit = async function(exitPromise) {
