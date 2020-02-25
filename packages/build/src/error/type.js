@@ -1,3 +1,5 @@
+const { yellowBright } = require('chalk')
+
 const { getShellCommandLocation, getBuildFailLocation } = require('./location')
 
 // Retrieve error-type specific information
@@ -15,6 +17,7 @@ const TYPES = {
   dependencies: { header: 'Dependencies error', stackType: 'none' },
   shellCommand: { header: 'Build failed', stackType: 'message', getLocation: getShellCommandLocation },
   fail: { header: 'Build failed', stackType: 'stack', getLocation: getBuildFailLocation },
+  cancel: { header: 'Build canceled', stackType: 'stack', getLocation: getBuildFailLocation, color: yellowBright },
   ipc: { header: 'Plugin internal error', stackType: 'none', getLocation: getBuildFailLocation },
   pluginInternalError: {
     header: 'Plugin internal error',
