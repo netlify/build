@@ -3,8 +3,10 @@ require('log-process-errors/build/register/ava')
 const {
   env: { PRINT },
 } = require('process')
-const { normalize, join, basename } = require('path')
+const { normalize, basename } = require('path')
 const { tmpdir } = require('os')
+const { realpath } = require('fs')
+const { promisify } = require('util')
 
 const {
   meta: { file: testFile },
@@ -20,6 +22,8 @@ const { normalizeOutput } = require('./normalize')
 
 const BINARY_PATH = getBinPath({ cwd: __dirname })
 const FIXTURES_DIR = normalize(`${testFile}/../fixtures`)
+
+const pRealpath = promisify(realpath)
 
 // Run the netlify-build using a fixture directory, then snapshot the output.
 // Options:
@@ -150,7 +154,7 @@ const createGit = async function(cwd, git) {
 const copyToTemp = async function(path) {
   const filename = basename(path)
   const tempDir = await getTempDir()
-  const tempFile = join(tempDir, filename)
+  const tempFile = normalize(`${tempDir}/${filename}`)
   await cpFile(path, tempFile)
   return { tempDir, tempFile }
 }
@@ -158,9 +162,10 @@ const copyToTemp = async function(path) {
 // Create and retrieve a new temporary sub-directory
 const getTempDir = async function() {
   const id = String(Math.random()).replace('.', '')
-  const tempDir = join(tmpdir(), `netlify-build-${id}`)
+  const tempDir = normalize(`${tmpdir()}/netlify-build-${id}`)
   await makeDir(tempDir)
-  return tempDir
+  const tempDirA = await pRealpath(tempDir)
+  return tempDirA
 }
 
 module.exports = { runFixture, FIXTURES_DIR, removeDir, createRepoDir, copyToTemp }
