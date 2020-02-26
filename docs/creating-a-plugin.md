@@ -198,11 +198,13 @@ This works inside `async` event handlers as well.
 
 ## Publishing a plugin
 
-The [`name` property in `package.json`](https://docs.npmjs.com/files/package.json#name) should start with
-`netlify-plugin-` (such as `netlify-plugin-example` or `@scope/netlify-plugin-example`). It should match the plugin
-`name` field.
+The following properties in `package.json` should be added:
 
-It is recommended for the GitHub repository to be named like this as well.
-
-The [`keywords` property in `package.json`](https://docs.npmjs.com/files/package.json#keywords) and the
-[GitHub topics](https://github.com/topics) should contain the `netlify` and `netlify-plugin` keywords.
+- [`name`](https://docs.npmjs.com/files/package.json#name) should start with `netlify-plugin-` (such as
+  `netlify-plugin-example` or `@scope/netlify-plugin-example`). It should match the plugin `name` field. It is
+  recommended for the GitHub repository to be named like this as well.
+- [`keywords`](https://docs.npmjs.com/files/package.json#keywords) should contain the `netlify` and `netlify-plugin`
+  keywords. The same applies to [GitHub topics](https://github.com/topics). This helps users find your plugin.
+- [`repository`](https://docs.npmjs.com/files/package.json#repository) and
+  [`bugs`](https://docs.npmjs.com/files/package.json#bugs) should be defined. Those are displayed to users when an error
+  occurs inside your plugin.
