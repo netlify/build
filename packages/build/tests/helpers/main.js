@@ -3,7 +3,7 @@ require('log-process-errors/build/register/ava')
 const {
   env: { PRINT },
 } = require('process')
-const { normalize, basename } = require('path')
+const { normalize, join, basename } = require('path')
 const { tmpdir } = require('os')
 
 const {
@@ -150,7 +150,7 @@ const createGit = async function(cwd, git) {
 const copyToTemp = async function(path) {
   const filename = basename(path)
   const tempDir = await getTempDir()
-  const tempFile = `${tempDir}/${filename}`
+  const tempFile = join(tempDir, filename)
   await cpFile(path, tempFile)
   return { tempDir, tempFile }
 }
@@ -158,7 +158,7 @@ const copyToTemp = async function(path) {
 // Create and retrieve a new temporary sub-directory
 const getTempDir = async function() {
   const id = String(Math.random()).replace('.', '')
-  const tempDir = `${tmpdir()}/netlify-build-${id}`
+  const tempDir = join(tmpdir(), `netlify-build-${id}`)
   await makeDir(tempDir)
   return tempDir
 }
