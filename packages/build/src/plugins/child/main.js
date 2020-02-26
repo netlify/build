@@ -77,8 +77,7 @@ const run = async function(
   { context: { pluginCommands, api, utils, constants, pluginConfig, netlifyConfig } },
 ) {
   const { method } = pluginCommands.find(pluginCommand => pluginCommand.originalEvent === originalEvent)
-  // TODO: remove `config` after releasing the Beta, since it's legacy
-  await method({ api, utils, constants, pluginConfig, config: netlifyConfig, netlifyConfig, error })
+  await method({ api, utils, constants, pluginConfig, netlifyConfig, error })
 }
 
 const EVENTS = { load, run }
