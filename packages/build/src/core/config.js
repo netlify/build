@@ -32,7 +32,7 @@ const loadConfig = async function(flags) {
 const DEFAULT_FLAGS = {
   nodePath: execPath,
   token: NETLIFY_AUTH_TOKEN,
-  context: CONTEXT || 'local',
+  context: CONTEXT || 'production',
 }
 
 // Retrieve configuration file path and base directory
