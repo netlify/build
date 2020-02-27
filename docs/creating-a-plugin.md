@@ -196,6 +196,24 @@ The following methods are available depending on the error's type:
 
 This works inside `async` event handlers as well.
 
+`utils.build.fail()` and `utils.build.cancel()` can specify an options object with the following properties:
+
+- `error`: the original `Error` instance. Its stack trace will be preserved and its error message will be appended to
+  the `'message'` argument.
+
+```js
+module.exports = {
+  name: 'netlify-plugin-hello-world',
+  onPreBuild: ({ utils }) => {
+    try {
+      badMethod()
+    } catch (error) {
+      utils.build.fail('Failure message', { error })
+    }
+  },
+}
+```
+
 ## Publishing a plugin
 
 The following properties in `package.json` should be added:
