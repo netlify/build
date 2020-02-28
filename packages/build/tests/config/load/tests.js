@@ -69,19 +69,3 @@ test('--config with a relative path', async t => {
 test('--config with an invalid relative path', async t => {
   await runFixture(t, 'invalid')
 })
-
-test('--config with a Node module', async t => {
-  await runFixture(t, '', { config: 'netlify-config-test', cwd: `${FIXTURES_DIR}/module` })
-})
-
-test('--config with an invalid Node module', async t => {
-  await runFixture(t, '', { config: 'invalid', cwd: `${FIXTURES_DIR}/module` })
-})
-
-test('--config with a scoped Node module', async t => {
-  await runFixture(t, '', { config: '@netlify/config-test', cwd: `${FIXTURES_DIR}/module` })
-})
-
-test('--config with an invalid scoped Node module', async t => {
-  await runFixture(t, '', { config: '@netlify/invalid', cwd: `${FIXTURES_DIR}/module` })
-})
