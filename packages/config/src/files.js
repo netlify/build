@@ -16,7 +16,7 @@ const FILES = [{ location: 'build.publish', defaultPath: baseDir => baseDir }, {
 const handleFile = async function(config, baseDir, { location, defaultPath }) {
   const path = get(config, location)
 
-  const pathA = await addDefault({ path, baseDir, defaultPath })
+  const pathA = addDefault({ path, baseDir, defaultPath })
   const pathB = normalizePath(pathA, baseDir)
   await ensurePath(pathB)
 
@@ -24,7 +24,7 @@ const handleFile = async function(config, baseDir, { location, defaultPath }) {
 }
 
 // Add default value
-const addDefault = async function({ path, baseDir, defaultPath }) {
+const addDefault = function({ path, baseDir, defaultPath }) {
   if (path !== undefined || defaultPath === undefined) {
     return path
   }
