@@ -573,7 +573,7 @@ Configuration also supports fallback values:
 foo: ${env:MY_ENV_VAR, 'default-value'}
 ```
 
-Configuration can be written in `toml`, `yml`, `json`, or `json5`.
+Configuration can be written in `toml`, `yml` or `json`.
 
 ## Plugins
 
