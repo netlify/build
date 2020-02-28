@@ -14,6 +14,10 @@ const functionsUtils = function({ constants: { FUNCTIONS_SRC }, fail }) {
 }
 
 const add = async function(dist, src, fail) {
+  if (src === undefined) {
+    fail('No function directory was specified')
+  }
+
   if (!(await pathExists(src))) {
     fail(`No function file or directory found at "${src}"`)
   }
