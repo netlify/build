@@ -19,7 +19,6 @@
   "license": "MIT",
   "dependencies": {
     "chalk": "^3.0.0",
-    "configorama": "^0.3.6",
     "deepmerge": "^4.2.2",
     "dot-prop": "^5.2.0",
     "filter-obj": "^2.0.1",
