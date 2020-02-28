@@ -1,3 +1,5 @@
+const { cwd: getCwd } = require('process')
+
 const configorama = require('configorama')
 
 const { getConfigPath } = require('./path')
@@ -8,7 +10,7 @@ const { normalizeConfig } = require('./normalize')
 const { handleFiles } = require('./files')
 const { EVENTS, LEGACY_EVENTS } = require('./events')
 
-const resolveConfig = async function(configFile, { cwd, ...options } = {}) {
+const resolveConfig = async function(configFile, { cwd = getCwd(), ...options } = {}) {
   const configPath = await getConfigPath(configFile, cwd)
   const baseDir = await getBaseDir(configPath)
 

@@ -1,5 +1,6 @@
 const { resolve } = require('path')
 const { promisify } = require('util')
+const { cwd: getCwd } = require('process')
 
 const findUp = require('find-up')
 const resolvePath = require('resolve')
@@ -14,7 +15,7 @@ const pResolve = promisify(resolvePath)
 //    to find any file named `netlify.toml`, `netlify.yml`, etc.
 //  - a local path
 //  - a Node module. This allows configuration sharing
-const getConfigPath = async function(configFile, cwd) {
+const getConfigPath = async function(configFile, cwd = getCwd()) {
   if (configFile === undefined) {
     return getDefaultConfig(cwd)
   }
@@ -46,7 +47,7 @@ const getModuleConfig = async function(configFile, cwd) {
   }
 }
 
-const getLocalConfig = async function(configFile, cwd = process.cwd()) {
+const getLocalConfig = async function(configFile, cwd) {
   const configPath = resolve(cwd, configFile)
 
   if (!(await pathExists(configPath))) {
