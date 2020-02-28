@@ -1,7 +1,5 @@
 const { cwd: getCwd } = require('process')
 
-const configorama = require('configorama')
-
 const { getConfigPath } = require('./path')
 const { getBaseDir } = require('./base_dir')
 const { addEnvVars } = require('./env')
@@ -11,11 +9,11 @@ const { handleFiles } = require('./files')
 const { EVENTS, LEGACY_EVENTS } = require('./events')
 const { parseConfig } = require('./parse/main')
 
-const resolveConfig = async function(configFile, { cwd = getCwd(), ...options } = {}) {
+const resolveConfig = async function(configFile, { cwd = getCwd() } = {}) {
   const configPath = await getConfigPath(configFile, cwd)
   const baseDir = await getBaseDir(configPath)
 
-  const config = await getConfig(configPath, options)
+  const config = await parseConfig(configPath)
 
   const configA = addEnvVars(config)
 
@@ -24,28 +22,6 @@ const resolveConfig = async function(configFile, { cwd = getCwd(), ...options } 
   const configB = normalizeConfig(configA)
   const configC = await handleFiles(configB, baseDir)
   return configC
-}
-
-const getConfig = async function(configPath, options) {
-  if (configPath === undefined) {
-    return {}
-  }
-
-  const config = await parseConfig(configPath)
-
-  return configorama(config, {
-    options,
-    variableSources: [
-      {
-        // ${context:VAR} -> config.context.CONTEXT.VAR
-        match: /^context:/,
-        async resolver(varToProcess, { context }) {
-          const objectPath = varToProcess.replace('context:', '')
-          return `\${self:context.${context}.${objectPath}}`
-        },
-      },
-    ],
-  })
 }
 
 module.exports = resolveConfig
