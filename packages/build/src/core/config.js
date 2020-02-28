@@ -19,10 +19,9 @@ const loadConfig = async function(flags) {
   logCurrentDirectory()
 
   const flagsB = { ...DEFAULT_FLAGS, ...flagsA }
-  const flagsC = removeFalsy(flagsB)
-  const { config, cwd, dry, nodePath, token, siteId, context } = flagsC
+  const { config, cwd, dry, nodePath, token, siteId, context } = removeFalsy(flagsB)
 
-  const { configPath, netlifyConfig, baseDir } = await resolveFullConfig({ config, cwd, flags: flagsC })
+  const { configPath, netlifyConfig, baseDir } = await resolveFullConfig({ config, cwd, context })
 
   const siteInfo = await getSiteInfo(token, siteId)
   return { netlifyConfig, configPath, baseDir, nodePath, token, dry, siteInfo, context }
@@ -37,13 +36,13 @@ const DEFAULT_FLAGS = {
 
 // Retrieve configuration file path and base directory
 // Then load configuration file
-const resolveFullConfig = async function({ config, cwd, flags }) {
+const resolveFullConfig = async function({ config, cwd, context }) {
   try {
     const configPath = await getConfigPath(config, cwd)
     logConfigPath(configPath)
     const baseDir = await getBaseDir(configPath)
 
-    const netlifyConfig = await resolveConfig(configPath, flags)
+    const netlifyConfig = await resolveConfig(configPath, { cwd, context })
     return { configPath, netlifyConfig, baseDir }
   } catch (error) {
     if (error.type === 'userError') {

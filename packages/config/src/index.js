@@ -9,7 +9,7 @@ const { handleFiles } = require('./files')
 const { EVENTS, LEGACY_EVENTS } = require('./events')
 const { parseConfig } = require('./parse/main')
 
-const resolveConfig = async function(configFile, { cwd = getCwd(), ...options } = {}) {
+const resolveConfig = async function(configFile, { cwd = getCwd() } = {}) {
   const configPath = await getConfigPath(configFile, cwd)
   const baseDir = await getBaseDir(configPath)
 
