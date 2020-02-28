@@ -28,7 +28,7 @@ const getDefaultConfig = function(cwd) {
   return findUp(FILENAMES, { cwd })
 }
 
-const FILENAMES = ['netlify.toml', 'netlify.yml', 'netlify.yaml', 'netlify.json', 'netlify.js']
+const FILENAMES = ['netlify.toml', 'netlify.yml', 'netlify.yaml', 'netlify.json']
 
 const isNodeModule = function(configFile) {
   return configFile.startsWith('@') || !configFile.includes('/')
