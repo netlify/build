@@ -11,7 +11,7 @@ const handleFiles = async function(config, baseDir) {
 }
 
 // List of configuration properties that refer to directories
-const FILES = [{ location: 'build.publish', defaultPath: baseDir => baseDir }, { location: 'build.functions' }]
+const FILES = [{ location: 'build.publish' }, { location: 'build.functions' }]
 
 const handleFile = async function(config, baseDir, { location, defaultPath }) {
   const path = get(config, location)
@@ -29,9 +29,8 @@ const addDefault = function({ path, baseDir, defaultPath }) {
     return path
   }
 
-  const defaultPathA = typeof defaultPath === 'function' ? defaultPath(baseDir) : defaultPath
-  const defaultPathB = resolve(baseDir, defaultPathA)
-  return defaultPathB
+  const defaultPathA = resolve(baseDir, defaultPath)
+  return defaultPathA
 }
 
 // Resolve paths relatively to the config file.
