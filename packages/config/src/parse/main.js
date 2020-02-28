@@ -10,6 +10,10 @@ const { PARSERS } = require('./parsers')
 
 // Load the configuration file and parse it (YAML/JSON/TOML)
 const parseConfig = async function(configPath) {
+  if (configPath === undefined) {
+    return {}
+  }
+
   const configString = await readConfig(configPath)
   const parser = getParser(configPath)
 
