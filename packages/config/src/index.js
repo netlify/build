@@ -9,6 +9,7 @@ const { validateConfig } = require('./validate/main')
 const { normalizeConfig } = require('./normalize')
 const { handleFiles } = require('./files')
 const { EVENTS, LEGACY_EVENTS } = require('./events')
+const { parseConfig } = require('./parse/main')
 
 const resolveConfig = async function(configFile, { cwd = getCwd(), ...options } = {}) {
   const configPath = await getConfigPath(configFile, cwd)
@@ -25,12 +26,14 @@ const resolveConfig = async function(configFile, { cwd = getCwd(), ...options } 
   return configC
 }
 
-const getConfig = function(configPath, options) {
+const getConfig = async function(configPath, options) {
   if (configPath === undefined) {
     return {}
   }
 
-  return configorama(configPath, {
+  const config = await parseConfig(configPath)
+
+  return configorama(config, {
     options,
     variableSources: [
       {
