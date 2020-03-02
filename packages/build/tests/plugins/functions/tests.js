@@ -12,6 +12,10 @@ test('Functions: missing source directory', async t => {
   await runFixture(t, 'missing')
 })
 
+test('Functions: no functions', async t => {
+  await runFixture(t, 'none')
+})
+
 test('Functions: default directory', async t => {
   await runFixture(t, 'default')
 })
