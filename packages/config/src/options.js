@@ -2,14 +2,19 @@ const {
   cwd: getCwd,
   env: { CONTEXT },
 } = require('process')
+const { dirname } = require('path')
 
 const findUp = require('find-up')
 
+const { removeFalsy } = require('./utils/remove_falsy')
+
 // Normalize options and assign default values
 const normalizeOpts = async function(opts = {}) {
-  const optsA = { ...DEFAULT_OPTS, ...opts }
-  const optsB = await addDefaultRepositoryRoot(optsA)
-  return optsB
+  const optsA = removeFalsy(opts)
+  const optsB = { ...DEFAULT_OPTS, ...optsA }
+  const optsC = await addDefaultRepositoryRoot(optsB)
+  const optsD = removeFalsy(optsC)
+  return optsD
 }
 
 const DEFAULT_OPTS = {
@@ -36,7 +41,7 @@ const getRepositoryRoot = async function({ repositoryRoot, cwd }) {
     return cwd
   }
 
-  return repositoryRootA
+  return dirname(repositoryRootA)
 }
 
 module.exports = { normalizeOpts }
