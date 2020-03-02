@@ -23,7 +23,7 @@ const resolveConfig = async function(configFile, { cwd = getCwd() } = {}) {
 
     const configB = normalizeConfig(configA)
     const configC = await handleFiles(configB, baseDir)
-    return configC
+    return { configPath, baseDir, config: configC }
   } catch (error) {
     const configMessage = configPath === undefined ? '' : ` file ${configPath}`
     error.message = `When resolving config${configMessage}:\n${error.message}`
@@ -32,7 +32,5 @@ const resolveConfig = async function(configFile, { cwd = getCwd() } = {}) {
 }
 
 module.exports = resolveConfig
-module.exports.getBaseDir = getBaseDir
-module.exports.getConfigPath = getConfigPath
 module.exports.EVENTS = EVENTS
 module.exports.LEGACY_EVENTS = LEGACY_EVENTS
