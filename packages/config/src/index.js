@@ -1,8 +1,3 @@
-const {
-  cwd: getCwd,
-  env: { CONTEXT },
-} = require('process')
-
 const { getConfigPath } = require('./path')
 const { getBaseDir } = require('./base_dir')
 const { addEnvVars } = require('./env')
@@ -11,8 +6,11 @@ const { normalizeConfig } = require('./normalize')
 const { handleFiles } = require('./files')
 const { EVENTS, LEGACY_EVENTS } = require('./events')
 const { parseConfig } = require('./parse/main')
+const { normalizeOpts } = require('./options')
 
-const resolveConfig = async function(configFile, { cwd = getCwd(), context = CONTEXT || 'production' } = {}) {
+const resolveConfig = async function(configFile, options) {
+  const { cwd, context } = await normalizeOpts(options)
+
   const configPath = await getConfigPath(configFile, cwd)
 
   try {

@@ -18,10 +18,11 @@ const loadConfig = async function(flags) {
   logCurrentDirectory()
 
   const flagsB = { ...DEFAULT_FLAGS, ...flagsA }
-  const { config, cwd, dry, nodePath, token, siteId, context } = removeFalsy(flagsB)
+  const { config, cwd, repositoryRoot, dry, nodePath, token, siteId, context } = removeFalsy(flagsB)
 
   const { configPath, baseDir, config: netlifyConfig, context: contextA } = await resolveFullConfig(config, {
     cwd,
+    repositoryRoot,
     context,
   })
   logConfigPath(configPath)
@@ -38,9 +39,9 @@ const DEFAULT_FLAGS = {
 
 // Retrieve configuration file path and base directory
 // Then load configuration file
-const resolveFullConfig = async function(config, { cwd, context }) {
+const resolveFullConfig = async function(config, { cwd, repositoryRoot, context }) {
   try {
-    return await resolveConfig(config, { cwd, context })
+    return await resolveConfig(config, { cwd, repositoryRoot, context })
   } catch (error) {
     if (error.type === 'userError') {
       delete error.type
