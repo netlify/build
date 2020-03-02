@@ -64,7 +64,7 @@ test('Telemetry error', async t => {
   const { stopServer } = await startServer()
   await runFixture(t, 'success', {
     flags: '--site-id=test',
-    env: { BUILD_TELEMETRY_DISABLED: '', BUILD_TELEMETRY_URL: 'invalid' },
+    env: { BUILD_TELEMETRY_DISABLED: '', BUILD_TELEMETRY_URL: '...' },
   })
   await stopServer()
 })
