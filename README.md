@@ -540,7 +540,6 @@ build:
       - echo "much wow"
     onGetCache:
       - echo 'curl custom cache'
-    onPreBuild: echo "${env:privateKey}"
     onBuild: |
       echo 'Hello Netlify Build!'
       npm run build
@@ -559,21 +558,7 @@ plugins:
         - jim@netlify.com
 ```
 
-Configuration now supports `environment` variables.
-
-To reference an environment variable in Netlify config:
-
-```yml
-foo: ${env:MY_ENV_VAR}
-```
-
-Configuration also supports fallback values:
-
-```yml
-foo: ${env:MY_ENV_VAR, 'default-value'}
-```
-
-Configuration can be written in `toml`, `yml`, `json`, or `json5`.
+Configuration can be written in `toml`, `yml` or `json`.
 
 ## Plugins
 

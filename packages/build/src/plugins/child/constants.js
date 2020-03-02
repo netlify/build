@@ -14,7 +14,7 @@ const getConstants = async function({
   configPath,
   baseDir,
   netlifyConfig: {
-    build: { publish, functions = DEFAULT_FUNCTIONS },
+    build: { publish, functions },
   },
   siteInfo: { id: siteId },
 }) {
@@ -56,7 +56,6 @@ const getConstants = async function({
   return constantsA
 }
 
-const DEFAULT_FUNCTIONS = 'functions'
 const LOCAL_FUNCTIONS_DIST = '.netlify/functions/'
 const getFunctionsDist = function(isLocal) {
   if (isLocal) {
