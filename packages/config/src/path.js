@@ -1,5 +1,4 @@
 const { resolve } = require('path')
-const { cwd: getCwd } = require('process')
 
 const findUp = require('find-up')
 const pathExists = require('path-exists')
@@ -11,7 +10,7 @@ const { throwError } = require('./error')
 //    to find any file named `netlify.toml`, `netlify.yml`, etc.
 //  - a local path
 //  - a Node module. This allows configuration sharing
-const getConfigPath = async function(configFile, cwd = getCwd()) {
+const getConfigPath = async function(configFile, cwd) {
   if (configFile === undefined) {
     return getDefaultConfig(cwd)
   }
