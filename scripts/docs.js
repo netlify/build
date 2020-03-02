@@ -1,6 +1,5 @@
 const path = require('path')
 const fs = require('fs')
-const { URL } = require('url')
 
 const markdownMagic = require('markdown-magic')
 const dox = require('dox')
@@ -57,9 +56,9 @@ const config = {
       md += `| Plugin | Author |\n`
       md += '|:---------------------------|:-----------:|\n'
       PLUGINS.sort(sortPlugins).forEach(data => {
-        const userName = getUsername(data.repo)
+        const userName = data.author
         const profileURL = `https://github.com/${userName}`
-        md += `| **[${formatPluginName(data.name)} - \`${data.name.toLowerCase()}\`](${data.repo})** <br/> `
+        md += `| **[${data.name} - \`${data.package.toLowerCase()}\`](${data.repo})** <br/> `
         md += ` ${data.description} | `
         md += `[${userName}](${profileURL}) |\n`
       })
@@ -157,39 +156,6 @@ function sortPlugins(a, b) {
     aName.replace(PLUGIN_NAME_REGEX, '').localeCompare(bName.replace(PLUGIN_NAME_REGEX, '')) ||
     aName.localeCompare(bName)
   )
-}
-
-function formatPluginName(string) {
-  return toTitleCase(
-    string
-      .toLowerCase()
-      .replace(PLUGIN_NAME_REGEX, '')
-      .replace(/-/g, ' ')
-      .replace(/plugin$/g, '')
-      .trim(),
-  )
-}
-
-function toTitleCase(str) {
-  return str.replace(/\w\S*/g, function(txt) {
-    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
-  })
-}
-
-function getUsername(repo) {
-  if (!repo) {
-    return null
-  }
-
-  const o = new URL(repo)
-  let path = o.pathname
-
-  if (path.length && path.charAt(0) === '/') {
-    path = path.slice(1)
-  }
-
-  path = path.split('/')[0]
-  return path
 }
 
 function collapse(summary, content) {
