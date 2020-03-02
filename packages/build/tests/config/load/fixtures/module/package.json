@@ -1,0 +1,11 @@
+{
+  "name": "config_module",
+  "version": "0.0.1",
+  "description": "test",
+  "license": "MIT",
+  "repository": "test",
+  "dependencies": {
+    "netlify-config-test": "^1.0.0",
+    "@netlify/config-test": "^1.0.0"
+  }
+}

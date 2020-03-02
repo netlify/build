@@ -12,3 +12,7 @@ test('--cwd with no config', async t => {
 test('--cwd with a relative path config', async t => {
   await runFixture(t, '', { config: 'empty/netlify.yml', flags: `--cwd ${relative(cwd(), FIXTURES_DIR)}` })
 })
+
+test('--cwd with a Node module config', async t => {
+  await runFixture(t, '', { config: 'netlify-config-test', flags: `--cwd ${FIXTURES_DIR}/module` })
+})

@@ -11,12 +11,15 @@ const handleFiles = async function(config, baseDir) {
 }
 
 // List of configuration properties that refer to directories
-const FILES = [{ location: 'build.publish', defaultPath: baseDir => baseDir }, { location: 'build.functions' }]
+const FILES = [
+  { location: 'build.publish', defaultPath: baseDir => baseDir },
+  { location: 'build.functions', defaultPath: 'functions/', defaultIfExists: true },
+]
 
-const handleFile = async function(config, baseDir, { location, defaultPath }) {
+const handleFile = async function(config, baseDir, { location, defaultPath, defaultIfExists = false }) {
   const path = get(config, location)
 
-  const pathA = addDefault({ path, baseDir, defaultPath })
+  const pathA = await addDefault({ path, baseDir, defaultPath, defaultIfExists })
   const pathB = normalizePath(pathA, baseDir)
   await ensurePath(pathB)
 
@@ -24,13 +27,20 @@ const handleFile = async function(config, baseDir, { location, defaultPath }) {
 }
 
 // Add default value
-const addDefault = function({ path, baseDir, defaultPath }) {
+const addDefault = async function({ path, baseDir, defaultPath, defaultIfExists }) {
   if (path !== undefined || defaultPath === undefined) {
     return path
   }
 
   const defaultPathA = typeof defaultPath === 'function' ? defaultPath(baseDir) : defaultPath
   const defaultPathB = resolve(baseDir, defaultPathA)
+
+  // When `defaultIfExists: true`, only assign default value if it points to
+  // a directory that already exists
+  if (defaultIfExists && !(await pathExists(defaultPathB))) {
+    return path
+  }
+
   return defaultPathB
 }
 

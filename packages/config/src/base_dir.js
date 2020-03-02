@@ -6,8 +6,6 @@ const {
 } = require('fs')
 const { promisify } = require('util')
 
-const { throwError } = require('./error')
-
 const pAccess = promisify(access)
 
 // Retrieve the base directory used to resolve most paths.
@@ -30,7 +28,9 @@ const validatePermissions = async function(baseDir) {
   try {
     await pAccess(baseDir, R_OK | W_OK)
   } catch (error) {
-    throwError(`Wrong permissions on the base directory ${baseDir}`)
+    const errorA = new Error(`Wrong permissions on the base directory ${baseDir}`)
+    errorA.type = 'userError'
+    throw errorA
   }
 }
 

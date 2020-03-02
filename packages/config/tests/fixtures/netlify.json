@@ -1,0 +1,7 @@
+{
+  "build": {
+    "publish": "dist",
+    "command": "npm run build",
+    "functions": "functions"
+  }
+}

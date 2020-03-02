@@ -13,6 +13,7 @@ test('Functions: missing source directory', async t => {
 })
 
 test('Functions: default directory', async t => {
+  await removeDir(`${FIXTURES_DIR}/default/.netlify/functions/`)
   await runFixture(t, 'default')
 })
 

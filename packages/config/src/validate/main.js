@@ -1,7 +1,5 @@
 const { cyan } = require('chalk')
 
-const { throwError } = require('../error')
-
 const { VALIDATIONS } = require('./validations')
 const { getExample } = require('./example')
 
@@ -13,7 +11,8 @@ const validateConfig = function(config) {
       validateProperty(config, { ...validation, nextPath: property.split('.') })
     })
   } catch (error) {
-    throwError(error)
+    error.type = 'userError'
+    throw error
   }
 }
 
@@ -63,14 +62,14 @@ const validateProperty = function(
 
 const reportError = function({ prevPath, propPath, message, example, warn, value, key, parent }) {
   const messageA = typeof message === 'function' ? message(value, key, parent) : message
-  const errorMessage = `Configuration property ${cyan.bold(propPath)} ${messageA}
+  const error = `Configuration property ${cyan.bold(propPath)} ${messageA}
 ${getExample({ value, parent, key, prevPath, example })}`
 
   if (!warn) {
-    throwError(errorMessage)
+    throw new Error(error)
   }
 
-  console.warn(`${errorMessage}\n`)
+  console.warn(`${error}\n`)
 }
 
 // Recurse over children (each part of the `property` array).
@@ -126,7 +125,7 @@ const checkRequired = function({ value, required, propPath, prevPath, example })
 
   // Not used yet
   // istanbul ignore next
-  throwError(`Configuration property ${cyan.bold(propPath)} is required.
+  throw new Error(`Configuration property ${cyan.bold(propPath)} is required.
 ${getExample({ value, prevPath, example })}`)
 }
 

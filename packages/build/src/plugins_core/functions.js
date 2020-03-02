@@ -14,10 +14,6 @@ const NAME = '@netlify/plugin-functions-core'
 
 // Install Netlify functions dependencies
 const onInstall = async function({ constants: { FUNCTIONS_SRC } }) {
-  if (FUNCTIONS_SRC === undefined || !(await pathExists(FUNCTIONS_SRC))) {
-    return
-  }
-
   const base = unixify(FUNCTIONS_SRC)
   const packagePaths = await fastGlob([`${base}/**/package.json`, `!${base}/**/node_modules`], {
     onlyFiles: true,
@@ -37,7 +33,7 @@ const onInstall = async function({ constants: { FUNCTIONS_SRC } }) {
 
 // Package Netlify functions
 const onFunctionsPackage = async function({ constants: { FUNCTIONS_SRC, FUNCTIONS_DIST } }) {
-  if (FUNCTIONS_SRC === undefined || !(await pathExists(FUNCTIONS_SRC))) {
+  if (!(await pathExists(FUNCTIONS_SRC))) {
     return
   }
 
