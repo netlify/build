@@ -25,7 +25,7 @@ const resolveConfig = async function(configFile, { cwd = getCwd(), context = CON
     validateConfig(configA)
 
     const configB = normalizeConfig(configA)
-    const configC = await handleFiles(configB, baseDir)
+    const configC = handleFiles(configB, baseDir)
     return { configPath, baseDir, config: configC, context }
   } catch (error) {
     const configMessage = configPath === undefined ? '' : ` file ${configPath}`

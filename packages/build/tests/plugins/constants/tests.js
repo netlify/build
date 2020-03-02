@@ -1,6 +1,6 @@
 const test = require('ava')
 
-const { runFixture, FIXTURES_DIR, removeDir } = require('../../helpers/main')
+const { runFixture } = require('../../helpers/main')
 
 test('constants.CONFIG_PATH', async t => {
   await runFixture(t, 'config')
@@ -19,7 +19,6 @@ test('constants.BUILD_DIR relative path', async t => {
 })
 
 test('constants.BUILD_DIR missing path', async t => {
-  await removeDir(`${FIXTURES_DIR}/build_missing/publish`)
   await runFixture(t, 'build_missing')
 })
 
@@ -36,7 +35,6 @@ test('constants.FUNCTIONS_SRC automatic value', async t => {
 })
 
 test('constants.FUNCTIONS_SRC missing path', async t => {
-  await removeDir(`${FIXTURES_DIR}/functions_src_missing/missing`)
   await runFixture(t, 'functions_src_missing')
 })
 
