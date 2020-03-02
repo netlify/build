@@ -6,32 +6,20 @@ const makeDir = require('make-dir')
 
 // Normalize and validate configuration properties that refer to directories
 const handleFiles = async function(config, baseDir) {
-  const files = await Promise.all(FILES.map(file => handleFile(config, baseDir, file)))
+  const files = await Promise.all(FILES.map(location => handleFile(config, baseDir, location)))
   return files.reduce(setProp, config)
 }
 
 // List of configuration properties that refer to directories
-const FILES = [{ location: 'build.publish', defaultPath: baseDir => baseDir }, { location: 'build.functions' }]
+const FILES = ['build.publish', 'build.functions']
 
-const handleFile = async function(config, baseDir, { location, defaultPath }) {
+const handleFile = async function(config, baseDir, location) {
   const path = get(config, location)
 
-  const pathA = addDefault({ path, baseDir, defaultPath })
-  const pathB = normalizePath(pathA, baseDir)
-  await ensurePath(pathB)
+  const pathA = normalizePath(path, baseDir)
+  await ensurePath(pathA)
 
-  return { location, path: pathB }
-}
-
-// Add default value
-const addDefault = function({ path, baseDir, defaultPath }) {
-  if (path !== undefined || defaultPath === undefined) {
-    return path
-  }
-
-  const defaultPathA = typeof defaultPath === 'function' ? defaultPath(baseDir) : defaultPath
-  const defaultPathB = resolve(baseDir, defaultPathA)
-  return defaultPathB
+  return { location, path: pathA }
 }
 
 // Resolve paths relatively to the config file.

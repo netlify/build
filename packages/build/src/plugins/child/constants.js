@@ -14,7 +14,7 @@ const getConstants = async function({
   configPath,
   baseDir,
   netlifyConfig: {
-    build: { publish, functions },
+    build: { publish = baseDir, functions },
   },
   siteInfo: { id: siteId },
 }) {
