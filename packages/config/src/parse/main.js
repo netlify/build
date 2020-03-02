@@ -20,7 +20,7 @@ const parseConfig = async function(configPath) {
   try {
     return parser(configString)
   } catch (error) {
-    throwError(`Could not parse configuration file ${configPath}`, error)
+    throwError('Could not parse configuration file', error)
   }
 }
 
@@ -29,7 +29,7 @@ const readConfig = async function(configPath) {
   try {
     return await pReadFile(configPath, 'utf8')
   } catch (error) {
-    throwError(`Could not read configuration file ${configPath}`, error)
+    throwError('Could not read configuration file', error)
   }
 }
 
@@ -39,7 +39,7 @@ const getParser = function(configPath) {
   const parser = PARSERS[extension]
 
   if (parser === undefined) {
-    throwError(`Unsupported file format "${extension}": ${configPath}`)
+    throwError(`Unsupported file format "${extension}"`)
   }
 
   return parser

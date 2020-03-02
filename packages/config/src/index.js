@@ -8,20 +8,27 @@ const { normalizeConfig } = require('./normalize')
 const { handleFiles } = require('./files')
 const { EVENTS, LEGACY_EVENTS } = require('./events')
 const { parseConfig } = require('./parse/main')
+const { addConfigPath } = require('./error')
 
 const resolveConfig = async function(configFile, { cwd = getCwd() } = {}) {
   const configPath = await getConfigPath(configFile, cwd)
-  const baseDir = await getBaseDir(configPath)
 
-  const config = await parseConfig(configPath)
+  try {
+    const baseDir = await getBaseDir(configPath)
 
-  const configA = addEnvVars(config)
+    const config = await parseConfig(configPath)
 
-  validateConfig(configA)
+    const configA = addEnvVars(config)
 
-  const configB = normalizeConfig(configA)
-  const configC = await handleFiles(configB, baseDir)
-  return configC
+    validateConfig(configA)
+
+    const configB = normalizeConfig(configA)
+    const configC = await handleFiles(configB, baseDir)
+    return configC
+  } catch (error) {
+    addConfigPath(error, configPath)
+    throw error
+  }
 }
 
 module.exports = resolveConfig
