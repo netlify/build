@@ -8,7 +8,6 @@ const { normalizeConfig } = require('./normalize')
 const { handleFiles } = require('./files')
 const { EVENTS, LEGACY_EVENTS } = require('./events')
 const { parseConfig } = require('./parse/main')
-const { addConfigPath } = require('./error')
 
 const resolveConfig = async function(configFile, { cwd = getCwd() } = {}) {
   const configPath = await getConfigPath(configFile, cwd)
@@ -26,7 +25,7 @@ const resolveConfig = async function(configFile, { cwd = getCwd() } = {}) {
     const configC = await handleFiles(configB, baseDir)
     return configC
   } catch (error) {
-    addConfigPath(error, configPath)
+    error.message = `When resolving config file ${configPath}:\n${error.message}`
     throw error
   }
 }

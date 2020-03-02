@@ -2,7 +2,7 @@
 // (such as bugs) with a `type` property.
 const throwError = function(messageOrError, error) {
   const errorA = getError(messageOrError, error)
-  errorA.type = ERROR_TYPE
+  errorA.type = 'userError'
   throw errorA
 }
 
@@ -20,16 +20,4 @@ const getError = function(messageOrError, error) {
   return error
 }
 
-// Add the configuration file path to the error messages
-const addConfigPath = function(error, configPath) {
-  if (error.type !== ERROR_TYPE) {
-    throw error
-  }
-
-  error.message = `When resolving config file ${configPath}:\n${error.message}`
-  throw error
-}
-
-const ERROR_TYPE = 'userError'
-
-module.exports = { throwError, addConfigPath }
+module.exports = { throwError }
