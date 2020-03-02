@@ -11,17 +11,23 @@ const { parseConfig } = require('./parse/main')
 
 const resolveConfig = async function(configFile, { cwd = getCwd() } = {}) {
   const configPath = await getConfigPath(configFile, cwd)
-  const baseDir = await getBaseDir(configPath)
 
-  const config = await parseConfig(configPath)
+  try {
+    const baseDir = await getBaseDir(configPath)
 
-  const configA = addEnvVars(config)
+    const config = await parseConfig(configPath)
 
-  validateConfig(configA)
+    const configA = addEnvVars(config)
 
-  const configB = normalizeConfig(configA)
-  const configC = await handleFiles(configB, baseDir)
-  return configC
+    validateConfig(configA)
+
+    const configB = normalizeConfig(configA)
+    const configC = await handleFiles(configB, baseDir)
+    return configC
+  } catch (error) {
+    error.message = `When resolving config file ${configPath}:\n${error.message}`
+    throw error
+  }
 }
 
 module.exports = resolveConfig
