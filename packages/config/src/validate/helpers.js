@@ -69,6 +69,6 @@ const removeParentDots = function(path) {
   return normalize(path).replace(PARENT_DOTS_REGEXP, '')
 }
 
-const PARENT_DOTS_REGEXP = /\.\.\//g
+const PARENT_DOTS_REGEXP = /\.\.[/\\]/g
 
 module.exports = { isString, isBoolean, validProperties, deprecatedProperties, insideRootCheck, removeParentDots }
