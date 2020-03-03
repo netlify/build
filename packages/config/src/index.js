@@ -25,7 +25,8 @@ const resolveConfig = async function(configFile, { cwd = getCwd() } = {}) {
     const configC = await handleFiles(configB, baseDir)
     return configC
   } catch (error) {
-    error.message = `When resolving config file ${configPath}:\n${error.message}`
+    const configMessage = configPath === undefined ? '' : ` file ${configPath}`
+    error.message = `When resolving config${configMessage}:\n${error.message}`
     throw error
   }
 }
