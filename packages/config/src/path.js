@@ -2,27 +2,27 @@ const { resolve } = require('path')
 
 const findUp = require('find-up')
 const pathExists = require('path-exists')
+const locatePath = require('locate-path')
 
 const { throwError } = require('./error')
 
 // Configuration location can be:
-//  - `undefined`, in which case `cwd` (default: current directory) is looked up
-//    to find any file named `netlify.toml`, `netlify.yml`, etc.
-//  - a local path
-//  - a Node module. This allows configuration sharing
-const getConfigPath = async function(configFile, cwd) {
-  if (configFile === undefined) {
-    return getDefaultConfig(cwd)
+//  - a local path with the --config CLI flag
+//  - a `netlify.*` file in the `repositoryRoot`
+//  - a `netlify.*` file in the current directory or any parent
+const getConfigPath = async function(configFile, cwd, repositoryRoot) {
+  if (configFile !== undefined) {
+    return getLocalConfig(configFile, cwd)
   }
 
-  return getLocalConfig(configFile, cwd)
-}
+  const configPath = await searchConfigFile(repositoryRoot)
+  if (configPath !== undefined) {
+    return configPath
+  }
 
-const getDefaultConfig = function(cwd) {
-  return findUp(FILENAMES, { cwd })
+  const configPathA = await findUp(FILENAMES, { cwd })
+  return configPathA
 }
-
-const FILENAMES = ['netlify.toml', 'netlify.yml', 'netlify.yaml', 'netlify.json']
 
 const getLocalConfig = async function(configFile, cwd) {
   const configPath = resolve(cwd, configFile)
@@ -33,5 +33,13 @@ const getLocalConfig = async function(configFile, cwd) {
 
   return configPath
 }
+
+const searchConfigFile = async function(cwd) {
+  const filenames = FILENAMES.map(filename => resolve(cwd, filename))
+  const configPath = await locatePath(filenames)
+  return configPath
+}
+
+const FILENAMES = ['netlify.toml', 'netlify.yml', 'netlify.yaml', 'netlify.json']
 
 module.exports = { getConfigPath }

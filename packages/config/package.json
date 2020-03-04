@@ -26,6 +26,7 @@
     "indent-string": "^4.0.0",
     "is-plain-obj": "^2.1.0",
     "js-yaml": "^3.13.1",
+    "locate-path": "^5.0.0",
     "map-obj": "^4.1.0",
     "omit.js": "^1.0.2",
     "path-exists": "^4.0.0",
