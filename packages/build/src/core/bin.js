@@ -55,6 +55,11 @@ the current directory or any parent directory`,
     describe: `Current directory. Used to retrieve the configuration file.
 Default: current directory`,
   },
+  repositoryRoot: {
+    string: true,
+    describe: `Git repository root directory. Used to retrieve the configuration file.
+Default: automatically guessed`,
+  },
   token: {
     string: true,
     describe: `Netlify API token for authentication.
