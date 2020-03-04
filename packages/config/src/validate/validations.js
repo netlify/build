@@ -4,7 +4,14 @@ const omit = require('omit.js')
 
 const { EVENTS, LEGACY_EVENTS, normalizeEventHandler } = require('../events')
 
-const { isString, isBoolean, validProperties, deprecatedProperties } = require('./helpers')
+const {
+  isString,
+  isBoolean,
+  validProperties,
+  deprecatedProperties,
+  insideRootCheck,
+  removeParentDots,
+} = require('./helpers')
 
 // List of validations performed on the configuration file.
 // Validation are performed in order: parent should be before children.
@@ -82,16 +89,37 @@ const VALIDATIONS = [
     example: (build, key, config) => ({ ...config, build: { lifecycle: { onBuild: 'npm run build' } } }),
   },
   {
+    property: 'build.base',
+    check: isString,
+    message: 'must be a string.',
+    example: (base, key, build) => ({ build: { ...build, base: 'packages/project' } }),
+  },
+  {
+    property: 'build.base',
+    ...insideRootCheck,
+    example: (base, key, build) => ({ build: { ...build, base: removeParentDots(base) } }),
+  },
+  {
     property: 'build.publish',
     check: isString,
     message: 'must be a string.',
     example: (publish, key, build) => ({ build: { ...build, publish: 'dist' } }),
   },
   {
+    property: 'build.publish',
+    ...insideRootCheck,
+    example: (publish, key, build) => ({ build: { ...build, publish: removeParentDots(publish) } }),
+  },
+  {
     property: 'build.functions',
     check: isString,
     message: 'must be a string.',
     example: (functions, key, build) => ({ build: { ...build, functions: 'functions' } }),
+  },
+  {
+    property: 'build.functions',
+    ...insideRootCheck,
+    example: (functions, key, build) => ({ build: { ...build, functions: removeParentDots(functions) } }),
   },
   {
     property: 'build.command',

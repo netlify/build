@@ -46,8 +46,24 @@ test('build.publish: string', async t => {
   await runFixture(t, 'build_publish_string')
 })
 
+test('build.publish: parent directory', async t => {
+  await runFixture(t, 'build_publish_parent')
+})
+
 test('build.functions: string', async t => {
   await runFixture(t, 'build_functions_string')
+})
+
+test('build.functions: parent directory', async t => {
+  await runFixture(t, 'build_functions_parent')
+})
+
+test('build.base: string', async t => {
+  await runFixture(t, 'build_base_string')
+})
+
+test('build.base: parent directory', async t => {
+  await runFixture(t, 'build_base_parent')
 })
 
 test('build.command: string', async t => {
