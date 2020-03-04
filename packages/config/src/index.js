@@ -14,7 +14,7 @@ const resolveConfig = async function(configFile, options) {
   const configPath = await getConfigPath(configFile, cwd)
 
   try {
-    const baseDir = await getBaseDir(configPath)
+    const baseDir = getBaseDir(configPath)
 
     const config = await parseConfig(configPath)
 
