@@ -4,7 +4,7 @@ const {
 
 const logProcessErrors = require('log-process-errors')
 
-const { hasColors } = require('./colors')
+const { hasColors } = require('../log/colors')
 
 // Print stack traces of warnings.
 // This is for debugging purpose only, so behind an environment variable.
