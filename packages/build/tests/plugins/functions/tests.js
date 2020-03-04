@@ -8,7 +8,6 @@ test('Functions: simple setup', async t => {
 })
 
 test('Functions: missing source directory', async t => {
-  await removeDir(`${FIXTURES_DIR}/missing/missing/`)
   await runFixture(t, 'missing')
 })
 
