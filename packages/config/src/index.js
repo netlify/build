@@ -14,8 +14,6 @@ const resolveConfig = async function(configFile, options) {
   const configPath = await getConfigPath(configFile, cwd, repositoryRoot)
 
   try {
-    const baseDir = getBaseDir(configPath)
-
     const config = await parseConfig(configPath)
 
     const configA = addEnvVars(config)
@@ -23,6 +21,8 @@ const resolveConfig = async function(configFile, options) {
     validateConfig(configA)
 
     const configB = normalizeConfig(configA)
+
+    const baseDir = getBaseDir(repositoryRoot, configB)
     const configC = handleFiles(configB, baseDir)
     return { configPath, baseDir, config: configC, context }
   } catch (error) {

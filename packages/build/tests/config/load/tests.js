@@ -19,14 +19,10 @@ test('Can define configuration as environment variables', async t => {
   })
 })
 
-test('No --config', async t => {
-  await runFixture(t, '', { config: false, cwd: `${FIXTURES_DIR}/empty` })
-})
-
 test('No --config but none found', async t => {
   const cwd = await createRepoDir()
   try {
-    await runFixture(t, '', { config: false, cwd })
+    await runFixture(t, '', { cwd })
   } finally {
     await removeDir(cwd)
   }
@@ -36,7 +32,6 @@ test('No --config but none found and with environment variables', async t => {
   const cwd = await createRepoDir()
   try {
     await runFixture(t, '', {
-      config: false,
       cwd,
       env: { NETLIFY_CONFIG_BUILD_LIFECYCLE_ONBUILD: 'echo onBuild' },
     })
@@ -52,15 +47,15 @@ test('--config and environment variables', async t => {
 })
 
 test('--config with an absolute path', async t => {
-  await runFixture(t, 'empty')
+  await runFixture(t, '', { flags: `--config=${FIXTURES_DIR}/empty/netlify.yml` })
 })
 
 test('--config with a relative path', async t => {
-  await runFixture(t, '', { config: `${relative(cwd(), FIXTURES_DIR)}/empty/netlify.yml` })
+  await runFixture(t, '', { flags: `--config=${relative(cwd(), FIXTURES_DIR)}/empty/netlify.yml` })
 })
 
 test('--config with an invalid relative path', async t => {
-  await runFixture(t, 'invalid')
+  await runFixture(t, '', { flags: '--config=/invalid' })
 })
 
 test('--repository-root', async t => {
