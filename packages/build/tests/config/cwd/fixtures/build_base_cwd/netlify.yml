@@ -3,4 +3,4 @@ build:
   lifecycle:
     onBuild: node -p "process.cwd()"
 plugins:
-  - package: ./plugin.js
+  - package: ./base/plugin.js
