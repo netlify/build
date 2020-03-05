@@ -9,9 +9,9 @@ const { parseConfig } = require('./parse/main')
 const { normalizeOpts } = require('./options')
 
 const resolveConfig = async function(configFile, options) {
-  const { cwd, context } = await normalizeOpts(options)
+  const { cwd, context, repositoryRoot } = await normalizeOpts(options)
 
-  const configPath = await getConfigPath(configFile, cwd)
+  const configPath = await getConfigPath(configFile, cwd, repositoryRoot)
 
   try {
     const baseDir = getBaseDir(configPath)
