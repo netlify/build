@@ -12,9 +12,9 @@ const isNetlifyCI = require('../../utils/is-netlify-ci')
 // Retrieve constants passed to plugins
 const getConstants = async function({
   configPath,
-  baseDir,
+  buildDir,
   netlifyConfig: {
-    build: { publish = baseDir, functions },
+    build: { publish = buildDir, functions },
   },
   siteInfo: { id: siteId },
 }) {
@@ -52,7 +52,7 @@ const getConstants = async function({
      */
     SITE_ID: siteId,
   }
-  const constantsA = mapObj(constants, (key, path) => [key, normalizePath(path, baseDir, key)])
+  const constantsA = mapObj(constants, (key, path) => [key, normalizePath(path, buildDir, key)])
   return constantsA
 }
 
@@ -65,18 +65,18 @@ const getFunctionsDist = function(isLocal) {
   return `${tmpdir()}/zisi-${DEPLOY_ID}`
 }
 
-// The current directory is `baseDir`. Most constants are inside this `baseDir`.
-// Instead of passing absolute paths, we pass paths relative to `baseDir`, so
+// The current directory is `buildDir`. Most constants are inside this `buildDir`.
+// Instead of passing absolute paths, we pass paths relative to `buildDir`, so
 // that logs are less verbose.
-const normalizePath = function(path, baseDir, key) {
+const normalizePath = function(path, buildDir, key) {
   if (path === undefined || NOT_PATHS.includes(key)) {
     return path
   }
 
   const pathA = normalize(path)
 
-  if (pathA.startsWith(baseDir) && pathA !== baseDir) {
-    return relative(baseDir, pathA)
+  if (pathA.startsWith(buildDir) && pathA !== buildDir) {
+    return relative(buildDir, pathA)
   }
 
   return pathA

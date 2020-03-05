@@ -5,11 +5,11 @@ const { removeFalsy } = require('../utils/remove_falsy')
 // Retrieve git-related information for use in environment variables.
 // git is optional and there might be not git repository.
 // We purposely keep this decoupled from the git utility.
-const getGitEnv = async function(baseDir) {
+const getGitEnv = async function(buildDir) {
   const [BRANCH, COMMIT_REF, CACHED_COMMIT_REF] = await Promise.all([
-    git(['rev-parse', '--abbrev-ref', 'HEAD'], baseDir),
-    git(['rev-parse', 'HEAD'], baseDir),
-    git(['rev-parse', 'HEAD^'], baseDir),
+    git(['rev-parse', '--abbrev-ref', 'HEAD'], buildDir),
+    git(['rev-parse', 'HEAD'], buildDir),
+    git(['rev-parse', 'HEAD^'], buildDir),
   ])
   const gitEnv = { BRANCH, HEAD: BRANCH, COMMIT_REF, CACHED_COMMIT_REF }
   const gitEnvA = removeFalsy(gitEnv)

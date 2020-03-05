@@ -1,5 +1,5 @@
 const { getConfigPath } = require('./path')
-const { getBaseDir } = require('./base_dir')
+const { getBuildDir } = require('./build_dir')
 const { addEnvVars } = require('./env')
 const { validateConfig } = require('./validate/main')
 const { normalizeConfig } = require('./normalize')
@@ -22,9 +22,9 @@ const resolveConfig = async function(configFile, options) {
 
     const configB = normalizeConfig(configA)
 
-    const baseDir = getBaseDir(repositoryRoot, configB)
-    const configC = handleFiles(configB, baseDir)
-    return { configPath, baseDir, config: configC, context }
+    const buildDir = getBuildDir(repositoryRoot, configB)
+    const configC = handleFiles(configB, buildDir)
+    return { configPath, buildDir, config: configC, context }
   } catch (error) {
     const configMessage = configPath === undefined ? '' : ` file ${configPath}`
     error.message = `When resolving config${configMessage}:\n${error.message}`

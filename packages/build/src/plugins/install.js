@@ -7,14 +7,14 @@ const { logInstallPlugins } = require('../log/main')
 
 // Install dependencies of local plugins.
 // Also resolve path of plugins' main files.
-const installPlugins = async function(pluginsOptions, baseDir) {
+const installPlugins = async function(pluginsOptions, buildDir) {
   const pluginsPaths = getPluginsPaths(pluginsOptions)
 
   if (pluginsPaths.length === 0) {
     return
   }
 
-  const packageRoots = await getPackageRoots(pluginsPaths, baseDir)
+  const packageRoots = await getPackageRoots(pluginsPaths, buildDir)
 
   if (packageRoots.length === 0) {
     return
@@ -40,9 +40,9 @@ const getPluginPath = function({ pluginPath }) {
 }
 
 // Retrieve `package.json` directories
-const getPackageRoots = async function(pluginsPaths, baseDir) {
-  const [baseRoot, ...packageRoots] = await Promise.all([baseDir, ...pluginsPaths].map(findPackageRoot))
-  const packageRootsA = packageRoots.filter(packageRoot => packageRoot !== baseRoot)
+const getPackageRoots = async function(pluginsPaths, buildDir) {
+  const [repositoryRoot, ...packageRoots] = await Promise.all([buildDir, ...pluginsPaths].map(findPackageRoot))
+  const packageRootsA = packageRoots.filter(packageRoot => packageRoot !== repositoryRoot)
   return [...new Set(packageRootsA)]
 }
 
