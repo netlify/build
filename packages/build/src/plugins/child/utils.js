@@ -8,8 +8,8 @@ const { fail, cancel } = require('../error')
 // Some utilities need to perform some async initialization logic first.
 // We do it once for all plugins in the parent process then pass it to the child
 // processes.
-const startUtils = async function(baseDir) {
-  const git = await gitUtils({ cwd: baseDir })
+const startUtils = async function(buildDir) {
+  const git = await gitUtils({ cwd: buildDir })
   return { git }
 }
 

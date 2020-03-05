@@ -15,7 +15,7 @@ const loadPlugins = async function({
   netlifyConfig,
   utilsData,
   configPath,
-  baseDir,
+  buildDir,
   token,
   siteInfo,
 }) {
@@ -29,7 +29,7 @@ const loadPlugins = async function({
         netlifyConfig,
         utilsData,
         configPath,
-        baseDir,
+        buildDir,
         token,
         siteInfo,
       }),
@@ -48,7 +48,7 @@ const loadPlugins = async function({
 // Do it by executing the plugin `load` event handler.
 const loadPlugin = async function(
   { package, pluginPath, pluginConfig, id, core, local },
-  { childProcesses, index, netlifyConfig, utilsData, configPath, baseDir, token, siteInfo },
+  { childProcesses, index, netlifyConfig, utilsData, configPath, buildDir, token, siteInfo },
 ) {
   const { childProcess } = childProcesses[index]
   const packageJson = await getPackageJson({ pluginPath, local })
@@ -64,7 +64,7 @@ const loadPlugin = async function(
       configPath,
       core,
       local,
-      baseDir,
+      buildDir,
       token,
       siteInfo,
       packageJson,

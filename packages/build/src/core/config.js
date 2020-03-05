@@ -20,7 +20,7 @@ const loadConfig = async function(flags) {
   const flagsB = { ...DEFAULT_FLAGS, ...flagsA }
   const { config, cwd, repositoryRoot, dry, nodePath, token, siteId, context } = removeFalsy(flagsB)
 
-  const { configPath, baseDir, config: netlifyConfig, context: contextA } = await resolveFullConfig(config, {
+  const { configPath, buildDir, config: netlifyConfig, context: contextA } = await resolveFullConfig(config, {
     cwd,
     repositoryRoot,
     context,
@@ -28,7 +28,7 @@ const loadConfig = async function(flags) {
   logConfigPath(configPath)
 
   const siteInfo = await getSiteInfo(token, siteId)
-  return { netlifyConfig, configPath, baseDir, nodePath, token, dry, siteInfo, context: contextA }
+  return { netlifyConfig, configPath, buildDir, nodePath, token, dry, siteInfo, context: contextA }
 }
 
 // Default values of CLI flags
@@ -37,8 +37,8 @@ const DEFAULT_FLAGS = {
   token: NETLIFY_AUTH_TOKEN,
 }
 
-// Retrieve configuration file path and base directory
-// Then load configuration file
+// Retrieve configuration file and related information
+// (path, build directory, etc.)
 const resolveFullConfig = async function(config, { cwd, repositoryRoot, context }) {
   try {
     return await resolveConfig(config, { cwd, repositoryRoot, context })

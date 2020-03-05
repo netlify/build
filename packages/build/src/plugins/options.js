@@ -9,9 +9,11 @@ const { addDependency } = require('../utils/install')
 const pResolve = promisify(resolve)
 
 // Load plugin options (specified by user in `config.plugins`)
-const getPluginsOptions = async function({ plugins: pluginsOptions }, baseDir) {
+const getPluginsOptions = async function({ plugins: pluginsOptions }, buildDir) {
   const pluginsOptionsA = [...CORE_PLUGINS, ...pluginsOptions].map(normalizePluginOptions).filter(isPluginEnabled)
-  const pluginsOptionsB = await Promise.all(pluginsOptionsA.map(pluginOptions => resolvePlugin(pluginOptions, baseDir)))
+  const pluginsOptionsB = await Promise.all(
+    pluginsOptionsA.map(pluginOptions => resolvePlugin(pluginOptions, buildDir)),
+  )
   return pluginsOptionsB
 }
 
@@ -30,23 +32,23 @@ const isPluginEnabled = function({ enabled }) {
   return String(enabled) !== 'false'
 }
 
-// We use `resolve` because `require()` should be relative to `baseDir` not to
+// We use `resolve` because `require()` should be relative to `buildDir` not to
 // this `__filename`
-const resolvePlugin = async function({ package, ...pluginOptions }, baseDir) {
+const resolvePlugin = async function({ package, ...pluginOptions }, buildDir) {
   try {
-    return await tryResolvePlugin(package, pluginOptions, baseDir)
+    return await tryResolvePlugin(package, pluginOptions, buildDir)
     // Try installing the dependency if it is missing.
     // This also solves Yarn Plug-and-Play, which does not work well with
     // `resolve`
   } catch (error) {
     logResolveError(error, package)
-    await addDependency(package, { packageRoot: baseDir })
-    return await tryResolvePlugin(package, pluginOptions, baseDir)
+    await addDependency(package, { packageRoot: buildDir })
+    return await tryResolvePlugin(package, pluginOptions, buildDir)
   }
 }
 
-const tryResolvePlugin = async function(package, pluginOptions, baseDir) {
-  const pluginPath = await pResolve(package, { basedir: baseDir })
+const tryResolvePlugin = async function(package, pluginOptions, buildDir) {
+  const pluginPath = await pResolve(package, { basedir: buildDir })
   return { ...pluginOptions, package, pluginPath }
 }
 

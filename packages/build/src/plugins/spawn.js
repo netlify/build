@@ -10,13 +10,13 @@ const CHILD_MAIN_FILE = `${__dirname}/child/main.js`
 //    (for both security and safety reasons)
 //  - logs can be buffered which allows manipulating them for log shipping,
 //    secrets redacting and parallel plugins
-const startPlugins = function({ pluginsOptions, baseDir, nodePath, childEnv }) {
-  return Promise.all(pluginsOptions.map(() => startPlugin({ baseDir, nodePath, childEnv })))
+const startPlugins = function({ pluginsOptions, buildDir, nodePath, childEnv }) {
+  return Promise.all(pluginsOptions.map(() => startPlugin({ buildDir, nodePath, childEnv })))
 }
 
-const startPlugin = async function({ baseDir, nodePath, childEnv }) {
+const startPlugin = async function({ buildDir, nodePath, childEnv }) {
   const childProcess = execa.node(CHILD_MAIN_FILE, {
-    cwd: baseDir,
+    cwd: buildDir,
     preferLocal: true,
     nodePath,
     execPath: nodePath,

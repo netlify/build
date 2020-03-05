@@ -35,16 +35,16 @@ const build = async function(flags) {
   try {
     logBuildStart()
 
-    const { netlifyConfig, configPath, baseDir, nodePath, token, dry, siteInfo, context } = await loadConfig(flags)
+    const { netlifyConfig, configPath, buildDir, nodePath, token, dry, siteInfo, context } = await loadConfig(flags)
 
-    const pluginsOptions = await getPluginsOptions(netlifyConfig, baseDir)
-    await installPlugins(pluginsOptions, baseDir)
+    const pluginsOptions = await getPluginsOptions(netlifyConfig, buildDir)
+    await installPlugins(pluginsOptions, buildDir)
 
     const commandsCount = await buildRun({
       pluginsOptions,
       netlifyConfig,
       configPath,
-      baseDir,
+      buildDir,
       nodePath,
       token,
       dry,
@@ -71,16 +71,16 @@ const buildRun = async function({
   pluginsOptions,
   netlifyConfig,
   configPath,
-  baseDir,
+  buildDir,
   nodePath,
   token,
   dry,
   siteInfo,
   context,
 }) {
-  const utilsData = await startUtils(baseDir)
-  const childEnv = await getChildEnv({ baseDir, context, siteInfo })
-  const childProcesses = await startPlugins({ pluginsOptions, baseDir, nodePath, childEnv })
+  const utilsData = await startUtils(buildDir)
+  const childEnv = await getChildEnv({ buildDir, context, siteInfo })
+  const childProcesses = await startPlugins({ pluginsOptions, buildDir, nodePath, childEnv })
 
   try {
     return await executeCommands({
@@ -89,7 +89,7 @@ const buildRun = async function({
       netlifyConfig,
       utilsData,
       configPath,
-      baseDir,
+      buildDir,
       nodePath,
       childEnv,
       token,
@@ -107,7 +107,7 @@ const executeCommands = async function({
   netlifyConfig,
   utilsData,
   configPath,
-  baseDir,
+  buildDir,
   nodePath,
   childEnv,
   token,
@@ -120,7 +120,7 @@ const executeCommands = async function({
     netlifyConfig,
     utilsData,
     configPath,
-    baseDir,
+    buildDir,
     token,
     siteInfo,
   })
@@ -141,7 +141,7 @@ const executeCommands = async function({
     errorCommands,
     commandsCount,
     configPath,
-    baseDir,
+    buildDir,
     nodePath,
     childEnv,
   })
