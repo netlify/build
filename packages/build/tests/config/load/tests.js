@@ -28,24 +28,6 @@ test('No --config but none found', async t => {
   }
 })
 
-test('No --config but none found and with environment variables', async t => {
-  const cwd = await createRepoDir()
-  try {
-    await runFixture(t, '', {
-      cwd,
-      env: { NETLIFY_CONFIG_BUILD_LIFECYCLE_ONBUILD: 'echo onBuild' },
-    })
-  } finally {
-    await removeDir(cwd)
-  }
-})
-
-test('--config and environment variables', async t => {
-  await runFixture(t, 'envvar', {
-    env: { NETLIFY_CONFIG_BUILD_LIFECYCLE_ONBUILD: 'echo onBuild' },
-  })
-})
-
 test('--config with an absolute path', async t => {
   await runFixture(t, '', { flags: `--config=${FIXTURES_DIR}/empty/netlify.yml` })
 })
