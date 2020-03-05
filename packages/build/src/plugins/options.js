@@ -1,4 +1,5 @@
 const { promisify } = require('util')
+const { dirname } = require('path')
 
 const resolve = require('resolve')
 
@@ -9,10 +10,10 @@ const { addDependency } = require('../utils/install')
 const pResolve = promisify(resolve)
 
 // Load plugin options (specified by user in `config.plugins`)
-const getPluginsOptions = async function({ plugins: pluginsOptions }, buildDir) {
+const getPluginsOptions = async function({ plugins: pluginsOptions }, buildDir, configPath) {
   const pluginsOptionsA = [...CORE_PLUGINS, ...pluginsOptions].map(normalizePluginOptions).filter(isPluginEnabled)
   const pluginsOptionsB = await Promise.all(
-    pluginsOptionsA.map(pluginOptions => resolvePlugin(pluginOptions, buildDir)),
+    pluginsOptionsA.map(pluginOptions => resolvePlugin(pluginOptions, buildDir, configPath)),
   )
   return pluginsOptionsB
 }
@@ -34,21 +35,22 @@ const isPluginEnabled = function({ enabled }) {
 
 // We use `resolve` because `require()` should be relative to `buildDir` not to
 // this `__filename`
-const resolvePlugin = async function({ package, ...pluginOptions }, buildDir) {
+const resolvePlugin = async function({ package, ...pluginOptions }, buildDir, configPath) {
   try {
-    return await tryResolvePlugin(package, pluginOptions, buildDir)
+    return await tryResolvePlugin({ package, pluginOptions, buildDir, configPath })
     // Try installing the dependency if it is missing.
     // This also solves Yarn Plug-and-Play, which does not work well with
     // `resolve`
   } catch (error) {
     logResolveError(error, package)
     await addDependency(package, { packageRoot: buildDir })
-    return await tryResolvePlugin(package, pluginOptions, buildDir)
+    return await tryResolvePlugin({ package, pluginOptions, buildDir, configPath })
   }
 }
 
-const tryResolvePlugin = async function(package, pluginOptions, buildDir) {
-  const pluginPath = await pResolve(package, { basedir: buildDir })
+const tryResolvePlugin = async function({ package, pluginOptions, buildDir, configPath }) {
+  const basedir = configPath === undefined ? buildDir : dirname(configPath)
+  const pluginPath = await pResolve(package, { basedir })
   return { ...pluginOptions, package, pluginPath }
 }
 
