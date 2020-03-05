@@ -70,7 +70,7 @@ const getRepositoryRootFlag = function(fixtureName, repositoryRoot) {
     return ''
   }
 
-  return `--repositoryRoot=${repositoryRoot}`
+  return `--repositoryRoot=${normalize(repositoryRoot)}`
 }
 
 // The `PRINT` environment variable can be set to `1` to run the test in print
