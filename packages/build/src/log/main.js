@@ -1,5 +1,5 @@
 const { basename } = require('path')
-const { platform, cwd } = require('process')
+const { platform } = require('process')
 
 const stringWidth = require('string-width')
 const { greenBright, cyanBright, redBright, yellowBright, bold, white } = require('chalk')
@@ -25,9 +25,9 @@ const logFlags = function(flags) {
 
 const HIDDEN_FLAGS = ['nodePath', 'token']
 
-const logCurrentDirectory = function() {
+const logBuildDir = function(buildDir) {
   log(`${cyanBright.bold(`${HEADING_PREFIX} Current directory`)}
-${SUBTEXT_PADDING}${cwd()}
+${SUBTEXT_PADDING}${buildDir}
 ${EMPTY_LINE}`)
 }
 
@@ -238,7 +238,7 @@ const MIN_PADDING = 1
 module.exports = {
   logBuildStart,
   logFlags,
-  logCurrentDirectory,
+  logBuildDir,
   logConfigPath,
   logResolveError,
   logInstallPlugins,
