@@ -10,6 +10,10 @@ test('constants.BUILD_DIR default value', async t => {
   await runFixture(t, 'build_default')
 })
 
+test('constants.BUILD_DIR default value with build.base', async t => {
+  await runFixture(t, 'build_default_base')
+})
+
 test('constants.BUILD_DIR absolute path', async t => {
   await runFixture(t, 'build_absolute')
 })
