@@ -1,10 +1,10 @@
 const { inspect } = require('util')
 
 const { redBright } = require('chalk')
-const indentString = require('indent-string')
 const omit = require('omit.js')
 
-const { EMPTY_LINE, HEADING_PREFIX, INDENT_SIZE } = require('../log/constants')
+const { EMPTY_LINE, HEADING_PREFIX } = require('../log/constants')
+const { indent } = require('../log/serialize')
 
 const { getErrorInfo, INFO_SYM } = require('./info')
 const { getTypeInfo } = require('./type')
@@ -61,7 +61,7 @@ const getErrorPropsBlock = function(errorProps, showErrorProps) {
 
 const serializeBlock = function({ name, value, color }) {
   return `${color.bold(`${HEADING_PREFIX} ${name}`)}
-${indentString(value, INDENT_SIZE)}`
+${indent(value)}`
 }
 
 module.exports = { serializeError }

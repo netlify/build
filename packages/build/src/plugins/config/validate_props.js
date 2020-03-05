@@ -1,6 +1,5 @@
-const indentString = require('indent-string')
-
 const { fail } = require('../error')
+const { indent } = require('../../log/serialize')
 
 const { validateFromSchema } = require('./json_schema')
 
@@ -19,7 +18,7 @@ const validatePluginConfig = function({ config: configSchema }, { pluginConfig }
       `Plugin configuration is invalid.
 ${errorMessage}
 
-${indentString(JSON.stringify(pluginConfig, null, 2), 2)}
+${indent(JSON.stringify(pluginConfig, null, 2))}
 `,
     )
   }
