@@ -5,7 +5,7 @@ const {
 
 const resolveConfig = require('@netlify/config')
 
-const { logFlags, logCurrentDirectory, logConfigPath } = require('../log/main')
+const { logFlags, logBuildDir, logConfigPath } = require('../log/main')
 const { addErrorInfo } = require('../error/info')
 const { removeFalsy } = require('../utils/remove_falsy')
 
@@ -15,7 +15,6 @@ const { getSiteInfo } = require('./site_info')
 const loadConfig = async function(flags) {
   const flagsA = removeFalsy(flags)
   logFlags(flagsA)
-  logCurrentDirectory()
 
   const flagsB = { ...DEFAULT_FLAGS, ...flagsA }
   const { config, cwd, repositoryRoot, dry, nodePath, token, siteId, context } = removeFalsy(flagsB)
@@ -25,6 +24,7 @@ const loadConfig = async function(flags) {
     repositoryRoot,
     context,
   })
+  logBuildDir(buildDir)
   logConfigPath(configPath)
 
   const siteInfo = await getSiteInfo(token, siteId)
