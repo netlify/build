@@ -29,6 +29,10 @@ test('No --config but none found', async t => {
   }
 })
 
+test('Several configuration files', async t => {
+  await runFixtureConfig(t, 'several')
+})
+
 test('--config with an absolute path', async t => {
   await runFixtureConfig(t, '', { flags: `--config=${FIXTURES_DIR}/empty/netlify.yml` })
 })
