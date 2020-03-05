@@ -15,7 +15,7 @@ test('git-utils cwd', async t => {
   const tmpDir = await createRepoDir()
   try {
     await cpy('**', tmpDir, { cwd: `${FIXTURES_DIR}/defined`, parents: true })
-    await runFixture(t, 'defined', { config: `${tmpDir}/netlify.yml`, cwd: '/' })
+    await runFixture(t, 'defined', { repositoryRoot: tmpDir })
   } finally {
     await removeDir(tmpDir)
   }

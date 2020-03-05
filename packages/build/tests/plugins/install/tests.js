@@ -31,7 +31,7 @@ test('Install local plugin dependencies: no root package.json', async t => {
   const tmpDir = await createRepoDir()
   try {
     await cpy('**', tmpDir, { cwd: `${FIXTURES_DIR}/no_root_package`, parents: true })
-    await runFixture(t, 'no_root_package', { config: `${tmpDir}/netlify.yml` })
+    await runFixture(t, 'no_root_package', { repositoryRoot: tmpDir })
   } finally {
     await removeDir(tmpDir)
   }

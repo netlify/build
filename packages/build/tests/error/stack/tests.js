@@ -19,5 +19,5 @@ test('Print stack trace of lifecycle command errors with stack traces', async t 
 })
 
 test('Print stack trace of validation errors', async t => {
-  await runFixture(t, 'invalid')
+  await runFixture(t, '', { flags: '--config=/invalid' })
 })

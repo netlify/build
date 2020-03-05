@@ -28,12 +28,15 @@ const pRealpath = promisify(realpath)
 // Run the netlify-build using a fixture directory, then snapshot the output.
 // Options:
 //  - `flags` {string[]}: CLI flags
-//  - `config` {string}: `--config` CLI flag
-//  - `cwd` {string}: current directory when calling `netlify-build`
+//  - `repositoryRoot` {string}: `--repositoryRoot` CLI flag
 //  - `env` {object}: environment variable
 //  - `normalize` {boolean}: whether to normalize output
 //  - `snapshot` {boolean}: whether to create a snapshot
-const runFixture = async function(t, fixtureName, { flags = '', config, cwd, env, normalize, snapshot = true } = {}) {
+const runFixture = async function(
+  t,
+  fixtureName,
+  { flags = '', env, normalize, snapshot = true, repositoryRoot = `${FIXTURES_DIR}/${fixtureName}` } = {},
+) {
   const envA = {
     // Workarounds to mock caching logic
     NETLIFY_BUILD_SAVE_CACHE: '1',
@@ -42,12 +45,11 @@ const runFixture = async function(t, fixtureName, { flags = '', config, cwd, env
     NETLIFY_AUTH_TOKEN: '',
     ...env,
   }
-  const configFlag = getConfigFlag(config, fixtureName)
+  const repositoryRootFlag = getRepositoryRootFlag(fixtureName, repositoryRoot)
   const binaryPath = await BINARY_PATH
-  const { all, exitCode } = await execa.command(`${binaryPath} ${configFlag} ${flags}`, {
+  const { all, exitCode } = await execa.command(`${binaryPath} ${repositoryRootFlag} ${flags}`, {
     all: true,
     reject: false,
-    cwd,
     env: envA,
     timeout: TIMEOUT,
   })
@@ -61,18 +63,14 @@ const runFixture = async function(t, fixtureName, { flags = '', config, cwd, env
 // 10 minutes timeout
 const TIMEOUT = 6e5
 
-// The `config` flag can be overriden, but defaults to the `netlify.yml` inside
-// the fixture directory
-const getConfigFlag = function(config, fixtureName) {
-  if (config === undefined) {
-    return `--config ${FIXTURES_DIR}/${fixtureName}/netlify.yml`
-  }
-
-  if (config === false) {
+// The `repositoryRoot` flag can be overriden, but defaults to the fixture
+// directory
+const getRepositoryRootFlag = function(fixtureName, repositoryRoot) {
+  if (fixtureName === '') {
     return ''
   }
 
-  return `--config ${config}`
+  return `--repositoryRoot=${repositoryRoot}`
 }
 
 // The `PRINT` environment variable can be set to `1` to run the test in print

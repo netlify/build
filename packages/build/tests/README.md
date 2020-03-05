@@ -51,9 +51,8 @@ Then snapshots the output.
 
 An additional object can be passed to `runFixture()` with the following options:
 
-- `config` `{string}`: `--config` CLI flag. Defaults to `./fixtures/fixture_name/netlify.yml`.
+- `repositoryRoot` `{string}`: `--repositoryRoot` CLI flag. Defaults to `./fixtures/fixture_name`.
 - `flags` `{string[]}`: other CLI flags
-- `cwd` `{string}`: current directory
 - `env` `{object}`: environment variables
 - `normalize` `{boolean}`: see [below](#output-normalization)
 

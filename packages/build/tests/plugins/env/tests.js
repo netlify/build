@@ -52,7 +52,7 @@ test('Environment variable git no repository', async t => {
   const cwd = await createRepoDir({ git: false })
   try {
     await cpy(`${FIXTURES_DIR}/git/*`, cwd)
-    await runFixture(t, 'git', { config: false, cwd })
+    await runFixture(t, 'git', { repositoryRoot: cwd })
   } finally {
     await removeDir(cwd)
   }
