@@ -9,7 +9,8 @@ const { version } = require('../../package.json')
 const { serializeError } = require('../error/serialize')
 
 const { log } = require('./logger')
-const { EMPTY_LINE, HEADING_PREFIX, SUBTEXT_PADDING, TICK, ARROW_DOWN } = require('./constants')
+const { serialize, indent, SUBTEXT_PADDING } = require('./serialize')
+const { EMPTY_LINE, HEADING_PREFIX, TICK, ARROW_DOWN } = require('./constants')
 
 const logBuildStart = function() {
   log(`${EMPTY_LINE}
@@ -20,7 +21,7 @@ ${EMPTY_LINE}`)
 
 const logFlags = function(flags) {
   const flagsA = omit(flags, HIDDEN_FLAGS)
-  log(cyanBright.bold(`${HEADING_PREFIX} Flags`), flagsA, EMPTY_LINE)
+  log(cyanBright.bold(`${HEADING_PREFIX} Flags`), indent(serialize(flagsA)))
 }
 
 const HIDDEN_FLAGS = ['nodePath', 'token']

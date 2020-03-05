@@ -7,7 +7,5 @@ const EMPTY_LINE = '\u{200b}'
 const TICK = tick
 const HEADING_PREFIX = pointer
 const ARROW_DOWN = arrowDown
-const INDENT_SIZE = 2
-const SUBTEXT_PADDING = ' '.repeat(INDENT_SIZE)
 
-module.exports = { EMPTY_LINE, HEADING_PREFIX, SUBTEXT_PADDING, TICK, ARROW_DOWN, INDENT_SIZE }
+module.exports = { EMPTY_LINE, HEADING_PREFIX, TICK, ARROW_DOWN }
