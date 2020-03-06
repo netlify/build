@@ -27,7 +27,74 @@ const resolveConfig = async function(configFile, { cachedConfig, ...opts } = {})
 
   const defaultConfig = await getConfig(defaultConfigPath, 'defaultConfig')
 
-  const configPath = await getConfigPath(configFile, cwd, repositoryRoot)
+  const { configPath, config } = await loadConfig({
+    configFile,
+    cwd,
+    context,
+    repositoryRoot,
+    branch,
+    defaultConfig,
+  })
+
+  const buildDir = getBuildDir(repositoryRoot, config)
+  const configA = handleFiles(config, buildDir)
+
+  return { configPath, buildDir, config: configA, context, branch }
+}
+
+// Load configuration file without normalizing it nor merging contexts, etc.
+const getConfig = async function(configPath, name) {
+  try {
+    return await parseConfig(configPath)
+  } catch (error) {
+    error.message = `When resolving ${name} ${configPath}:\n${error.message}`
+    throw error
+  }
+}
+
+// Try to load the configuration file in two passes.
+// The first pass uses the `defaultConfig`'s `build.base` (if defined).
+// The second pass uses the `build.base` from the first pass (if defined).
+const loadConfig = async function({
+  configFile,
+  cwd,
+  context,
+  repositoryRoot,
+  branch,
+  defaultConfig,
+  defaultConfig: { build: { base: defaultBase } = {} },
+}) {
+  const {
+    configPath,
+    config,
+    config: {
+      build: { base },
+    },
+  } = await getFullConfig({ configFile, cwd, context, repositoryRoot, branch, defaultConfig, base: defaultBase })
+
+  // No second pass needed since there is no `build.base`
+  if (base === undefined || base === defaultBase) {
+    return { configPath, config }
+  }
+
+  const { configPath: configPathA, config: configA } = await getFullConfig({
+    cwd,
+    context,
+    repositoryRoot,
+    branch,
+    defaultConfig,
+    base,
+  })
+
+  // Since we don't recurse anymore, we keep the original `build.base` that was used
+  const configB = { ...configA, build: { ...configA.build, base } }
+
+  return { configPath: configPathA, config: configB }
+}
+
+// Load configuration file and normalize it, merge contexts, etc.
+const getFullConfig = async function({ configFile, cwd, context, repositoryRoot, branch, defaultConfig, base }) {
+  const configPath = await getConfigPath({ configFile, cwd, repositoryRoot, base })
 
   try {
     const config = await parseConfig(configPath)
@@ -38,22 +105,10 @@ const resolveConfig = async function(configFile, { cachedConfig, ...opts } = {})
 
     const configC = mergeContext(configB, context, branch)
     const configD = normalizeConfig(configC)
-
-    const buildDir = getBuildDir(repositoryRoot, configD)
-    const configE = handleFiles(configD, buildDir)
-    return { configPath, buildDir, config: configE, context, branch }
+    return { configPath, config: configD }
   } catch (error) {
     const configMessage = configPath === undefined ? '' : ` file ${configPath}`
     error.message = `When resolving config${configMessage}:\n${error.message}`
-    throw error
-  }
-}
-
-const getConfig = async function(configPath, name) {
-  try {
-    return await parseConfig(configPath)
-  } catch (error) {
-    error.message = `When resolving ${name} ${configPath}:\n${error.message}`
     throw error
   }
 }

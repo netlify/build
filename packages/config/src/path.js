@@ -5,20 +5,29 @@ const locatePath = require('locate-path')
 
 // Configuration location can be:
 //  - a local path with the --config CLI flag
+//  - a `netlify.*` file in the `repositoryRoot/{base}`
 //  - a `netlify.*` file in the `repositoryRoot`
 //  - a `netlify.*` file in the current directory or any parent
-const getConfigPath = async function(configFile, cwd, repositoryRoot) {
+const getConfigPath = async function({ configFile, cwd, repositoryRoot, base }) {
   if (configFile !== undefined) {
     return resolve(cwd, configFile)
   }
 
-  const configPath = await searchConfigFile(repositoryRoot)
-  if (configPath !== undefined) {
-    return configPath
+  if (base !== undefined) {
+    const basePath = resolve(repositoryRoot, base)
+    const configPath = await searchConfigFile(basePath)
+    if (configPath !== undefined) {
+      return configPath
+    }
   }
 
-  const configPathA = await findUp(FILENAMES, { cwd })
-  return configPathA
+  const configPathA = await searchConfigFile(repositoryRoot)
+  if (configPathA !== undefined) {
+    return configPathA
+  }
+
+  const configPathB = await findUp(FILENAMES, { cwd })
+  return configPathB
 }
 
 const searchConfigFile = async function(cwd) {
