@@ -13,3 +13,7 @@ test('Context with CLI flag', async t => {
 test('Context deep merge', async t => {
   await runFixture(t, 'deep_merge')
 })
+
+test('Context array merge', async t => {
+  await runFixture(t, 'array_merge')
+})
