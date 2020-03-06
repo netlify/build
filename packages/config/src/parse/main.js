@@ -2,16 +2,22 @@ const { extname } = require('path')
 const { readFile } = require('fs')
 const { promisify } = require('util')
 
-const pReadFile = promisify(readFile)
+const pathExists = require('path-exists')
 
 const { throwError } = require('../error')
 
 const { PARSERS } = require('./parsers')
 
+const pReadFile = promisify(readFile)
+
 // Load the configuration file and parse it (YAML/JSON/TOML)
 const parseConfig = async function(configPath) {
   if (configPath === undefined) {
     return {}
+  }
+
+  if (!(await pathExists(configPath))) {
+    throwError('Configuration file does not exist')
   }
 
   const configString = await readConfig(configPath)
