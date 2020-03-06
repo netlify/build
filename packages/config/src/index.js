@@ -6,6 +6,7 @@ const { normalizeConfig } = require('./normalize')
 const { handleFiles } = require('./files')
 const { EVENTS, LEGACY_EVENTS } = require('./events')
 const { parseConfig } = require('./parse/main')
+const { mergeContext } = require('./context')
 const { normalizeOpts } = require('./options')
 
 const resolveConfig = async function(configFile, options) {
@@ -15,16 +16,16 @@ const resolveConfig = async function(configFile, options) {
 
   try {
     const config = await parseConfig(configPath)
-
     const configA = addEnvVars(config)
+    const configB = mergeContext(configA, context)
 
-    validateConfig(configA)
+    validateConfig(configB)
 
-    const configB = normalizeConfig(configA)
+    const configC = normalizeConfig(configB)
 
-    const buildDir = getBuildDir(repositoryRoot, configB)
-    const configC = handleFiles(configB, buildDir)
-    return { configPath, buildDir, config: configC, context }
+    const buildDir = getBuildDir(repositoryRoot, configC)
+    const configD = handleFiles(configC, buildDir)
+    return { configPath, buildDir, config: configD, context }
   } catch (error) {
     const configMessage = configPath === undefined ? '' : ` file ${configPath}`
     error.message = `When resolving config${configMessage}:\n${error.message}`
