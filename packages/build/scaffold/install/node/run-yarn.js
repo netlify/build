@@ -62,7 +62,7 @@ module.exports = async function runYarn(cwd, cacheDir, yarnVersion) {
     process.env.PATH = `${cacheDir}/yarn/bin:${process.env.PATH}`
   }
 
-  console.log(`Installing NPM modules using Yarn version ${yarnVersion}`)
+  console.log(`Installing npm modules using Yarn version ${yarnVersion}`)
   await setTempDir()
 
   /* @TODO. Not sure what this does
@@ -76,7 +76,7 @@ module.exports = async function runYarn(cwd, cacheDir, yarnVersion) {
 
   if yarn install --cache-folder $NETLIFY_BUILD_BASE/.yarn_cache ${yarn_local:+"$yarn_local"}
   then
-    echo "NPM modules installed using Yarn"
+    echo "npm modules installed using Yarn"
   else
     echo "Error during Yarn install"
     exit 1
@@ -111,7 +111,7 @@ run_yarn() {
   fi
 
 
-  echo "Installing NPM modules using Yarn version $(yarn --version)"
+  echo "Installing npm modules using Yarn version $(yarn --version)"
   run_npm_set_temp
 
   # Remove the cache-folder flag if the user set any.
@@ -124,7 +124,7 @@ run_yarn() {
 
   if yarn install --cache-folder $NETLIFY_BUILD_BASE/.yarn_cache ${yarn_local:+"$yarn_local"}
   then
-    echo "NPM modules installed using Yarn"
+    echo "npm modules installed using Yarn"
   else
     echo "Error during Yarn install"
     exit 1

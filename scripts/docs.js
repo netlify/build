@@ -186,7 +186,7 @@ function renderPluginExample(name) {
 
   After creating the plugin, add into your [Netlify config](#netlify-configuration) file under the \`plugins\` section.
 
-  Plugins can be referenced locally or installed via NPM.
+  Plugins can be referenced locally or installed via npm.
 
   \`netlify.yml\` example:
 
