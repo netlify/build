@@ -39,7 +39,3 @@ test('--config with a relative path', async t => {
 test('--config with an invalid relative path', async t => {
   await runFixture(t, '', { flags: '--config=/invalid' })
 })
-
-test('--repository-root', async t => {
-  await runFixture(t, '', { flags: `--repository-root=${FIXTURES_DIR}/empty` })
-})

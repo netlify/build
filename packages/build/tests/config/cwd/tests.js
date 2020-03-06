@@ -22,3 +22,7 @@ test('build.base current directory', async t => {
 test('no build.base current directory', async t => {
   await runFixture(t, 'build_base_none')
 })
+
+test('--repository-root', async t => {
+  await runFixture(t, '', { flags: `--repository-root=${FIXTURES_DIR}/empty` })
+})
