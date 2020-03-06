@@ -56,6 +56,13 @@ Each configuration default value is used unless overriden through the main confi
 Default: none.`,
     hidden: true,
   },
+  cachedConfig: {
+    string: true,
+    describe: `Path to a file containing the object returned by @netlify/config.
+This is done as a performance optimization to cache the configuration loading logic.
+Default: none.`,
+    hidden: true,
+  },
   cwd: {
     string: true,
     describe: `Current directory. Used to retrieve the configuration file.

@@ -2,7 +2,7 @@
 // They need separate ones though since their property name is different and
 // so is their `example`.
 const addContextValidations = function(validations) {
-  return validations.flatMap(validation => addContextValidation({ validation }))
+  return [].concat(...validations.map(validation => addContextValidation({ validation })))
 }
 
 const addContextValidation = function({ validation, validation: { property, example } }) {

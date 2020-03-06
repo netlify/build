@@ -10,10 +10,22 @@ const { mergeContext } = require('./context')
 const { normalizeOpts } = require('./options')
 const { deepMerge } = require('./utils/merge')
 
-const resolveConfig = async function(configFile, options) {
-  const { defaultConfig: defaultConfigPath, cwd, context, repositoryRoot, branch } = await normalizeOpts(options)
+// Load the configuration file.
+// Takes an optional configuration file path as input and return the resolved
+// `config` together with related properties such as the `configPath`.
+const resolveConfig = async function(configFile, { cachedConfig, ...opts } = {}) {
+  // Performance optimization when @netlify/config caller has already previously
+  // called it and cached the result.
+  // This is used by the buildbot which:
+  //  - first calls @netlify/config since it needs configuration property
+  //  - later calls @netlify/build, which runs @netlify/config under the hood
+  if (cachedConfig !== undefined) {
+    return await getConfig(cachedConfig, 'cachedConfig')
+  }
 
-  const defaultConfig = await getDefaultConfig(defaultConfigPath)
+  const { defaultConfig: defaultConfigPath, cwd, context, repositoryRoot, branch } = await normalizeOpts(opts)
+
+  const defaultConfig = await getConfig(defaultConfigPath, 'defaultConfig')
 
   const configPath = await getConfigPath(configFile, cwd, repositoryRoot)
 
@@ -37,11 +49,11 @@ const resolveConfig = async function(configFile, options) {
   }
 }
 
-const getDefaultConfig = async function(defaultConfigPath) {
+const getConfig = async function(configPath, name) {
   try {
-    return await parseConfig(defaultConfigPath)
+    return await parseConfig(configPath)
   } catch (error) {
-    error.message = `When resolving defaultConfig ${defaultConfigPath}:\n${error.message}`
+    error.message = `When resolving ${name} ${configPath}:\n${error.message}`
     throw error
   }
 }
