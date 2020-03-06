@@ -4,7 +4,7 @@ const { red, green } = require('chalk')
 
 // Print invalid value and example netlify.yml
 const getExample = function({ value, parent, key, prevPath, example }) {
-  const exampleA = typeof example === 'function' ? example(value, key, parent) : example
+  const exampleA = typeof example === 'function' ? example(value, key, parent, prevPath) : example
   return `
 ${red.bold('Invalid syntax')}
 

@@ -1,0 +1,4 @@
+context:
+  development:
+    lifecycle:
+      onBuild: true

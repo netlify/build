@@ -17,10 +17,10 @@ const resolveConfig = async function(configFile, options) {
   try {
     const config = await parseConfig(configPath)
     const configA = addEnvVars(config)
+
+    validateConfig(configA)
+
     const configB = mergeContext(configA, context)
-
-    validateConfig(configB)
-
     const configC = normalizeConfig(configB)
 
     const buildDir = getBuildDir(repositoryRoot, configC)

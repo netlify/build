@@ -99,3 +99,19 @@ test('build.lifecycle: string', async t => {
 test('build.lifecycle: array', async t => {
   await runFixture(t, 'build_lifecycle_events_array')
 })
+
+test('build.context: property', async t => {
+  await runFixture(t, 'build_context_property')
+})
+
+test('build.context: nested property', async t => {
+  await runFixture(t, 'build_context_nested_property')
+})
+
+test('build.context: object', async t => {
+  await runFixture(t, 'build_context_object')
+})
+
+test('build.context.CONTEXT: object', async t => {
+  await runFixture(t, 'build_context_nested_object')
+})
