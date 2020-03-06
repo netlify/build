@@ -9,3 +9,7 @@ test('Context syntax error', async t => {
 test('Context with CLI flag', async t => {
   await runFixture(t, 'flag')
 })
+
+test('Context deep merge', async t => {
+  await runFixture(t, 'deep_merge')
+})
