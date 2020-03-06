@@ -42,7 +42,7 @@ module.exports = async function runNpm(cwd, cacheDir) {
       console.log('run install via npm')
       await execa('npm', ['install']) // TODO FLAGS
     } catch (err) {
-      console.log('Error installing NPM')
+      console.log('Error installing npm')
       process.exit(1)
     }
 

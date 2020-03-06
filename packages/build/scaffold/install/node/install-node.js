@@ -62,7 +62,7 @@ module.exports = async function installNode(cwd, cacheDir, version) {
   // TODO remove this
   process.env.NODE_VERSION = NODE_VERSION
 
-  // Set NPM token if one set
+  // Set npm token if one set
   const npmConfigPath = `${cwd}/npmrc`
   if (NPM_TOKEN && !(await pathExists(npmConfigPath))) {
     await writeFile(npmConfigPath, `//registry.npmjs.org/:_authToken=${NPM_TOKEN}`)
