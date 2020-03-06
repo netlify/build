@@ -74,6 +74,11 @@ The NETLIFY_AUTH_TOKEN environment variable can be used as well.`,
     describe: `Build context.
 Default: 'production'`,
   },
+  branch: {
+    string: true,
+    describe: `Repository branch.
+Default: automatically guessed`,
+  },
   dry: {
     alias: 'dry-run',
     boolean: true,

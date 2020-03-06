@@ -3,16 +3,23 @@ const {
   env: { CONTEXT },
 } = require('process')
 
-const { addDefaultRepositoryRoot } = require('./repository_root')
+const { getRepositoryRoot } = require('./repository_root')
+const { getBranch } = require('./branch')
 const { removeFalsy } = require('./utils/remove_falsy')
 
 // Normalize options and assign default values
 const normalizeOpts = async function(opts = {}) {
   const optsA = removeFalsy(opts)
   const optsB = { ...DEFAULT_OPTS, ...optsA }
-  const optsC = await addDefaultRepositoryRoot(optsB)
-  const optsD = removeFalsy(optsC)
-  return optsD
+
+  const repositoryRoot = await getRepositoryRoot(optsB)
+  const optsC = { ...optsB, repositoryRoot }
+
+  const branch = await getBranch(optsC)
+  const optsD = { ...optsC, branch }
+
+  const optsE = removeFalsy(optsD)
+  return optsE
 }
 
 const DEFAULT_OPTS = {

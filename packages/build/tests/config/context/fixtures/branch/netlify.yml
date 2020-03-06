@@ -1,0 +1,7 @@
+build:
+  lifecycle:
+    onBuild: echo onBuild
+context:
+  testBranch:
+    lifecycle:
+      onBuild: echo onBuildTest

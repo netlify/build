@@ -1,15 +1,17 @@
 const isPlainObj = require('is-plain-obj')
 const deepmerge = require('deepmerge')
 
-// Merge `config.context.{CONTEXT}.*` to `config.build.*`
+// Merge `config.context.{CONTEXT|BRANCH}.*` to `config.build.*`
 // CONTEXT is the `--context` CLI flag.
-const mergeContext = function({ context: contextProps, build = {}, ...config }, context) {
+// BRANCH is the `--branch` CLI flag.
+const mergeContext = function({ context: contextProps, build = {}, ...config }, context, branch) {
   if (!isPlainObj(contextProps)) {
     return { ...config, build }
   }
 
   const contextBuild = contextProps[context]
-  const buildA = deepmerge.all([build, { ...contextBuild }], { arrayMerge })
+  const branchBuild = contextProps[branch]
+  const buildA = deepmerge.all([build, { ...contextBuild }, { ...branchBuild }], { arrayMerge })
   return { ...config, build: buildA }
 }
 
