@@ -12,6 +12,7 @@ const {
   insideRootCheck,
   removeParentDots,
 } = require('./helpers')
+const { addContextValidations } = require('./context')
 
 // List of validations performed on the configuration file.
 // Validation are performed in order: parent should be before children.
@@ -25,7 +26,7 @@ const {
 //   - `example` {string}: example of correct code
 //   - `warn` {boolean}: whether to print a console message or throw an error
 // We use this instead of JSON schema (or others) to get nicer error messages.
-const VALIDATIONS = [
+const RAW_VALIDATIONS = [
   {
     property: 'plugins',
     check: value => Array.isArray(value) && value.every(isPlainObj),
@@ -162,6 +163,20 @@ Please rename ${cyan.bold('build.command')} to ${cyan.bold('build.lifecycle.onBu
       build: { lifecycle: { ...lifecycle, onBuild: ['npm run build', 'npm test'] } },
     }),
   },
+  {
+    property: 'context',
+    check: isPlainObj,
+    message: 'must be a plain object.',
+    example: (context, key, config) => ({ ...config, context: { production: { publish: 'dist' } } }),
+  },
+  {
+    property: 'context.*',
+    check: isPlainObj,
+    message: 'must be a plain object.',
+    example: (contextProps, key, context) => ({ context: { ...context, [key]: { publish: 'dist' } } }),
+  },
 ]
+
+const VALIDATIONS = addContextValidations(RAW_VALIDATIONS)
 
 module.exports = { VALIDATIONS }
