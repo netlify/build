@@ -17,18 +17,20 @@ const loadConfig = async function(flags) {
   logFlags(flagsA)
 
   const flagsB = { ...DEFAULT_FLAGS, ...flagsA }
-  const { config, cwd, repositoryRoot, dry, nodePath, token, siteId, context } = removeFalsy(flagsB)
+  const { config, cwd, repositoryRoot, dry, nodePath, token, siteId, context, branch } = removeFalsy(flagsB)
 
-  const { configPath, buildDir, config: netlifyConfig, context: contextA } = await resolveFullConfig(config, {
-    cwd,
-    repositoryRoot,
-    context,
-  })
+  const {
+    configPath,
+    buildDir,
+    config: netlifyConfig,
+    context: contextA,
+    branch: branchA,
+  } = await resolveFullConfig(config, { cwd, repositoryRoot, context, branch })
   logBuildDir(buildDir)
   logConfigPath(configPath)
 
   const siteInfo = await getSiteInfo(token, siteId)
-  return { netlifyConfig, configPath, buildDir, nodePath, token, dry, siteInfo, context: contextA }
+  return { netlifyConfig, configPath, buildDir, nodePath, token, dry, siteInfo, context: contextA, branch: branchA }
 }
 
 // Default values of CLI flags
@@ -39,9 +41,9 @@ const DEFAULT_FLAGS = {
 
 // Retrieve configuration file and related information
 // (path, build directory, etc.)
-const resolveFullConfig = async function(config, { cwd, repositoryRoot, context }) {
+const resolveFullConfig = async function(config, { cwd, repositoryRoot, context, branch }) {
   try {
-    return await resolveConfig(config, { cwd, repositoryRoot, context })
+    return await resolveConfig(config, { cwd, repositoryRoot, context, branch })
   } catch (error) {
     if (error.type === 'userError') {
       delete error.type

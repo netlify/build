@@ -10,7 +10,7 @@ const { mergeContext } = require('./context')
 const { normalizeOpts } = require('./options')
 
 const resolveConfig = async function(configFile, options) {
-  const { cwd, context, repositoryRoot } = await normalizeOpts(options)
+  const { cwd, context, repositoryRoot, branch } = await normalizeOpts(options)
 
   const configPath = await getConfigPath(configFile, cwd, repositoryRoot)
 
@@ -20,12 +20,12 @@ const resolveConfig = async function(configFile, options) {
 
     validateConfig(configA)
 
-    const configB = mergeContext(configA, context)
+    const configB = mergeContext(configA, context, branch)
     const configC = normalizeConfig(configB)
 
     const buildDir = getBuildDir(repositoryRoot, configC)
     const configD = handleFiles(configC, buildDir)
-    return { configPath, buildDir, config: configD, context }
+    return { configPath, buildDir, config: configD, context, branch }
   } catch (error) {
     const configMessage = configPath === undefined ? '' : ` file ${configPath}`
     error.message = `When resolving config${configMessage}:\n${error.message}`
