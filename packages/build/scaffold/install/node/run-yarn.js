@@ -62,7 +62,7 @@ module.exports = async function runYarn(cwd, cacheDir, yarnVersion) {
     process.env.PATH = `${cacheDir}/yarn/bin:${process.env.PATH}`
   }
 
-  console.log(`Installing NPM modules using Yarn version ${yarnVersion}`)
+  console.log(`Installing npm modules using Yarn version ${yarnVersion}`)
   await setTempDir()
 
   /* @TODO. Not sure what this does

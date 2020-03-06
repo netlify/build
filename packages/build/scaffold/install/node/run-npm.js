@@ -35,7 +35,7 @@ module.exports = async function runNpm(cwd, cacheDir) {
   const previousSha = path.join(cacheDir, 'package-sha')
   console.log('previousSha', previousSha)
   if (await shouldInstallDeps(packageJSON, NODE_VERSION, previousSha)) {
-    console.log(`Installing NPM modules using NPM version ${npmVersion}`)
+    console.log(`Installing npm modules using npm version ${npmVersion}`)
     await setTempDir()
     /* do npm install " npm install ${NPM_FLAGS:+"$NPM_FLAGS"} " */
     try {

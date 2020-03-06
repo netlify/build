@@ -66,7 +66,7 @@ const FIELDS = {
   ID: getId,
   Version: getVersion,
   Repository: getRepository,
-  'NPM link': getNpmLink,
+  'npm link': getNpmLink,
   'Report issues': getIssuesLink,
 }
 

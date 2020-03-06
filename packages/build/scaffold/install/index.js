@@ -37,7 +37,7 @@ module.exports = async function installDependencies(config = {}) {
   /* PIP dependencies */
   await installPipDeps(CWD, NETLIFY_CACHE_DIR)
 
-  /* NPM Dependencies */
+  /* npm Dependencies */
   await installNodeDeps(CWD, NETLIFY_CACHE_DIR, yarnVersion)
 
   /* Bower Dependencies */
