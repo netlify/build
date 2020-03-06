@@ -1,9 +1,15 @@
 const { cwd } = require('process')
 const { relative } = require('path')
+const { writeFile } = require('fs')
+const { promisify } = require('util')
 
 const test = require('ava')
+const del = require('del')
+const resolveConfig = require('@netlify/config')
 
 const { runFixture, FIXTURES_DIR, removeDir, createRepoDir } = require('../../helpers/main')
+
+const pWriteFile = promisify(writeFile)
 
 test('Empty configuration', async t => {
   await runFixture(t, 'empty')
@@ -50,4 +56,20 @@ test('--defaultConfig priority', async t => {
 
 test('--defaultConfig with an invalid relative path', async t => {
   await runFixture(t, '', { flags: '--defaultConfig=/invalid' })
+})
+
+test('--cachedConfig', async t => {
+  const repositoryRoot = `${FIXTURES_DIR}/cached_config`
+  const cachedConfig = await resolveConfig(undefined, { repositoryRoot })
+  const cachedConfigPath = `${repositoryRoot}/cached.yml`
+  await pWriteFile(cachedConfigPath, JSON.stringify(cachedConfig, null, 2))
+  try {
+    await runFixture(t, 'cached_config', { flags: `--cachedConfig=${repositoryRoot}/cached.yml` })
+  } finally {
+    await del(cachedConfigPath, { force: true })
+  }
+})
+
+test('--cachedConfig with an invalid path', async t => {
+  await runFixture(t, '', { flags: '--cachedConfig=/invalid' })
 })

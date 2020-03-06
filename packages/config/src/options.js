@@ -8,7 +8,7 @@ const { getBranch } = require('./branch')
 const { removeFalsy } = require('./utils/remove_falsy')
 
 // Normalize options and assign default values
-const normalizeOpts = async function(opts = {}) {
+const normalizeOpts = async function(opts) {
   const optsA = removeFalsy(opts)
   const optsB = { ...DEFAULT_OPTS, ...optsA }
 
