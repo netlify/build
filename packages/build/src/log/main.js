@@ -24,7 +24,7 @@ const logFlags = function(flags) {
   log(cyanBright.bold(`${HEADING_PREFIX} Flags`), indent(serialize(flagsA)))
 }
 
-const HIDDEN_FLAGS = ['nodePath', 'token']
+const HIDDEN_FLAGS = ['nodePath', 'token', 'defaultConfig']
 
 const logBuildDir = function(buildDir) {
   log(`${cyanBright.bold(`${HEADING_PREFIX} Current directory`)}

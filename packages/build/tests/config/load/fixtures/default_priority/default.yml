@@ -1,0 +1,3 @@
+build:
+  lifecycle:
+    onbuild: echo onBuild

@@ -39,3 +39,15 @@ test('--config with a relative path', async t => {
 test('--config with an invalid relative path', async t => {
   await runFixture(t, '', { flags: '--config=/invalid' })
 })
+
+test('--defaultConfig merge', async t => {
+  await runFixture(t, 'default_merge', { flags: `--defaultConfig=${FIXTURES_DIR}/default_merge/default.yml` })
+})
+
+test('--defaultConfig priority', async t => {
+  await runFixture(t, 'default_priority', { flags: `--defaultConfig=${FIXTURES_DIR}/default_priority/default.yml` })
+})
+
+test('--defaultConfig with an invalid relative path', async t => {
+  await runFixture(t, '', { flags: '--defaultConfig=/invalid' })
+})
