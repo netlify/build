@@ -44,3 +44,7 @@ test('Context deep merge', async t => {
 test('Context array merge', async t => {
   await runFixture(t, 'array_merge')
 })
+
+test('Context merge priority', async t => {
+  await runFixture(t, 'priority_merge', { flags: '--branch=testBranch' })
+})
