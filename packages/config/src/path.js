@@ -8,9 +8,9 @@ const locatePath = require('locate-path')
 //  - a `netlify.*` file in the `repositoryRoot/{base}`
 //  - a `netlify.*` file in the `repositoryRoot`
 //  - a `netlify.*` file in the current directory or any parent
-const getConfigPath = async function({ configFile, cwd, repositoryRoot, base }) {
-  if (configFile !== undefined) {
-    return resolve(cwd, configFile)
+const getConfigPath = async function({ configOpt, cwd, repositoryRoot, base }) {
+  if (configOpt !== undefined) {
+    return resolve(cwd, configOpt)
   }
 
   if (base !== undefined) {

@@ -60,7 +60,7 @@ test('--defaultConfig with an invalid relative path', async t => {
 
 test('--cachedConfig', async t => {
   const repositoryRoot = `${FIXTURES_DIR}/cached_config`
-  const cachedConfig = await resolveConfig(undefined, { repositoryRoot })
+  const cachedConfig = await resolveConfig({ repositoryRoot })
   const cachedConfigPath = `${repositoryRoot}/cached.yml`
   await pWriteFile(cachedConfigPath, JSON.stringify(cachedConfig, null, 2))
   try {
