@@ -56,7 +56,7 @@ test('--defaultConfig with an invalid relative path', async t => {
 
 test('--cachedConfig', async t => {
   const repositoryRoot = `${FIXTURES_DIR}/cached_config`
-  const cachedConfig = await resolveConfig({ repositoryRoot, branch: 'test' })
+  const cachedConfig = await resolveConfig({ repositoryRoot })
   const cachedConfigString = JSON.stringify(cachedConfig).replace(/ /g, '\\ ')
   await runFixture(t, 'cached_config', { flags: `--cachedConfig=${cachedConfigString}` })
 })
