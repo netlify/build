@@ -10,19 +10,15 @@ const { EVENTS, LEGACY_EVENTS } = require('./normalize/events')
 const { parseConfig } = require('./parse/main')
 const { mergeContext } = require('./context')
 const { normalizeOpts } = require('./options/main')
+const { throwError } = require('./error')
 const { deepMerge } = require('./utils/merge')
 
 // Load the configuration file.
 // Takes an optional configuration file path as input and return the resolved
 // `config` together with related properties such as the `configPath`.
 const resolveConfig = async function({ cachedConfig, ...opts } = {}) {
-  // Performance optimization when @netlify/config caller has already previously
-  // called it and cached the result.
-  // This is used by the buildbot which:
-  //  - first calls @netlify/config since it needs configuration property
-  //  - later calls @netlify/build, which runs @netlify/config under the hood
   if (cachedConfig !== undefined) {
-    return await getConfig(cachedConfig, 'cachedConfig')
+    return getCachedConfig(cachedConfig)
   }
 
   const {
@@ -34,7 +30,7 @@ const resolveConfig = async function({ cachedConfig, ...opts } = {}) {
     branch,
   } = await normalizeOpts(opts)
 
-  const defaultConfig = await getConfig(defaultConfigPath, 'defaultConfig')
+  const defaultConfig = await getDefaultConfig(defaultConfigPath)
 
   const { configPath, config } = await loadConfig({
     configOpt,
@@ -51,12 +47,26 @@ const resolveConfig = async function({ cachedConfig, ...opts } = {}) {
   return { configPath, buildDir, config: configA, context, branch }
 }
 
-// Load configuration file without normalizing it nor merging contexts, etc.
-const getConfig = async function(configPath, name) {
+// Performance optimization when @netlify/config caller has already previously
+// called it and cached the result.
+// This is used by the buildbot which:
+//  - first calls @netlify/config since it needs configuration property
+//  - later calls @netlify/build, which runs @netlify/config under the hood
+const getCachedConfig = function(cachedConfig) {
+  try {
+    return JSON.parse(cachedConfig)
+  } catch (error) {
+    throwError('When resolving cached configuration', error)
+  }
+}
+
+// Retrieve default configuration file. It has less priority and it also does
+// not get normalized, merged with contexts, etc.
+const getDefaultConfig = async function(configPath) {
   try {
     return await parseConfig(configPath)
   } catch (error) {
-    error.message = `When resolving ${name} ${configPath}:\n${error.message}`
+    error.message = `When resolving default configuration ${configPath}:\n${error.message}`
     throw error
   }
 }
