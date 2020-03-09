@@ -58,7 +58,7 @@ Default: none.`,
   },
   cachedConfig: {
     string: true,
-    describe: `Path to a file containing the object returned by @netlify/config.
+    describe: `JSON configuration object returned by @netlify/config.
 This is done as a performance optimization to cache the configuration loading logic.
 Default: none.`,
     hidden: true,
