@@ -83,7 +83,7 @@ const buildRun = async function({
   branch,
 }) {
   const utilsData = await startUtils(buildDir)
-  const childEnv = await getChildEnv({ buildDir, context, branch, siteInfo })
+  const childEnv = await getChildEnv({ netlifyConfig, buildDir, context, branch, siteInfo })
   const childProcesses = await startPlugins({ pluginsOptions, buildDir, nodePath, childEnv })
 
   try {

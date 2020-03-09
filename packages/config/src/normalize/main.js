@@ -11,7 +11,10 @@ const normalizeConfig = function(config) {
   return configB
 }
 
-const DEFAULT_CONFIG = { build: { lifecycle: {} }, plugins: [] }
+const DEFAULT_CONFIG = {
+  build: { lifecycle: {}, environment: {} },
+  plugins: [],
+}
 
 const normalizeLifecycle = function({
   config,

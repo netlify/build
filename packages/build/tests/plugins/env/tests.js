@@ -97,3 +97,11 @@ test('Environment variable siteInfo CI', async t => {
     env: { BUILD_SITE_INFO, NETLIFY: 'true' },
   })
 })
+
+test('build.environment', async t => {
+  await runFixture(t, 'build')
+})
+
+test('build.environment readonly', async t => {
+  await runFixture(t, 'build_readonly')
+})

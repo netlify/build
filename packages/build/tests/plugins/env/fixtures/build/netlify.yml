@@ -1,0 +1,5 @@
+build:
+  environment:
+    TEST: test
+plugins:
+  - package: ./plugin
