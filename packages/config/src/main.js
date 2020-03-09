@@ -1,3 +1,5 @@
+require('./utils/polyfills')
+
 const { getConfigPath } = require('./path')
 const { getBuildDir } = require('./build_dir')
 const { addEnvVars } = require('./env')
