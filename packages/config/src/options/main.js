@@ -3,9 +3,10 @@ const {
   env: { CONTEXT },
 } = require('process')
 
+const { removeFalsy } = require('../utils/remove_falsy')
+
 const { getRepositoryRoot } = require('./repository_root')
 const { getBranch } = require('./branch')
-const { removeFalsy } = require('./utils/remove_falsy')
 
 // Normalize options and assign default values
 const normalizeOpts = async function(opts) {

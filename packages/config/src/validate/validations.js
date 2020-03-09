@@ -2,7 +2,7 @@ const isPlainObj = require('is-plain-obj')
 const { cyan } = require('chalk')
 const omit = require('omit.js')
 
-const { EVENTS, LEGACY_EVENTS, normalizeEventHandler } = require('../events')
+const { EVENTS, LEGACY_EVENTS, normalizeEventHandler } = require('../normalize/events')
 
 const {
   isString,
