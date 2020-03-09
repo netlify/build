@@ -2,7 +2,8 @@ const test = require('ava')
 const cpy = require('cpy')
 const execa = require('execa')
 
-const { runFixture, createRepoDir, removeDir, FIXTURES_DIR } = require('../../helpers/main')
+const { runFixture, FIXTURES_DIR } = require('../../helpers/main')
+const { createRepoDir, removeDir } = require('../../helpers/dir')
 
 test('Context with context CLI flag', async t => {
   await runFixture(t, 'context_flag')

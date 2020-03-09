@@ -3,10 +3,7 @@ require('log-process-errors/build/register/ava')
 const {
   env: { PRINT },
 } = require('process')
-const { normalize, basename } = require('path')
-const { tmpdir } = require('os')
-const { realpath } = require('fs')
-const { promisify } = require('util')
+const { normalize } = require('path')
 
 const {
   meta: { file: testFile },
@@ -14,9 +11,6 @@ const {
 const execa = require('execa')
 const { getBinPath } = require('get-bin-path')
 const { magentaBright } = require('chalk')
-const del = require('del')
-const makeDir = require('make-dir')
-const cpFile = require('cp-file')
 
 const PROJECTS_DIR = `${__dirname}/../../..`
 
@@ -24,9 +18,7 @@ const { normalizeOutput } = require('./normalize')
 
 const FIXTURES_DIR = normalize(`${testFile}/../fixtures`)
 
-const pRealpath = promisify(realpath)
-
-// Run the netlify-build using a fixture directory, then snapshot the output.
+// Run the @netlify/build CLI using a fixture directory, then snapshot the output.
 // Options:
 //  - `flags` {string[]}: CLI flags
 //  - `repositoryRoot` {string}: `--repositoryRoot` CLI flag
@@ -61,6 +53,11 @@ const runFixture = async function(
   return { all, exitCode }
 }
 
+// Same with @netlify/config
+const runFixtureConfig = function(t, fixtureName, opts) {
+  return runFixture(t, fixtureName, { ...opts, type: 'config' })
+}
+
 // Each project has its own binary entry point
 const BUILD_BINARY_PATH = getBinPath({ cwd: `${PROJECTS_DIR}/build` })
 const CONFIG_BINARY_PATH = getBinPath({ cwd: `${PROJECTS_DIR}/config` })
@@ -82,10 +79,6 @@ const DEFAULT_ENV = {
     // Make snapshot consistent regardless of the actual current git branch
     BRANCH: 'branch',
   },
-}
-
-const runFixtureConfig = function(t, fixtureName, opts) {
-  return runFixture(t, fixtureName, { ...opts, type: 'config' })
 }
 
 // 10 minutes timeout
@@ -145,53 +138,4 @@ const IGNORE_REGEXPS = [
   /npm ERR!/,
 ]
 
-// Removing a directory sometimes fails on Windows in CI due to Windows
-// directory locking.
-// This results in `EBUSY: resource busy or locked, rmdir /path/to/dir`
-const removeDir = async function(dir) {
-  try {
-    await del(dir, { force: true })
-    // eslint-disable-next-line no-empty
-  } catch (error) {}
-}
-
-// Create a temporary directory with a `.git` directory, which can be used as
-// the current directory of a build. Otherwise the `git` utility does not load.
-const createRepoDir = async function({ git = true } = {}) {
-  const cwd = await getTempDir()
-  await createGit(cwd, git)
-  return cwd
-}
-
-const createGit = async function(cwd, git) {
-  if (!git) {
-    return
-  }
-
-  await execa.command('git init', { cwd })
-  await execa.command('git config user.email test@test.com', { cwd })
-  await execa.command('git config user.name test', { cwd })
-  await execa.command('git commit --allow-empty -m one', { cwd })
-  await execa.command('git config --unset user.email', { cwd })
-  await execa.command('git config --unset user.name', { cwd })
-}
-
-// Copy a file to a temporary one
-const copyToTemp = async function(path) {
-  const filename = basename(path)
-  const tempDir = await getTempDir()
-  const tempFile = normalize(`${tempDir}/${filename}`)
-  await cpFile(path, tempFile)
-  return { tempDir, tempFile }
-}
-
-// Create and retrieve a new temporary sub-directory
-const getTempDir = async function() {
-  const id = String(Math.random()).replace('.', '')
-  const tempDir = normalize(`${tmpdir()}/netlify-build-${id}`)
-  await makeDir(tempDir)
-  const tempDirA = await pRealpath(tempDir)
-  return tempDirA
-}
-
-module.exports = { runFixture, runFixtureConfig, FIXTURES_DIR, removeDir, createRepoDir, copyToTemp }
+module.exports = { runFixture, runFixtureConfig, FIXTURES_DIR }

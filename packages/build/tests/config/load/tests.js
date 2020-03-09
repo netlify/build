@@ -7,7 +7,8 @@ const test = require('ava')
 const del = require('del')
 const resolveConfig = require('@netlify/config')
 
-const { runFixture, FIXTURES_DIR, removeDir, createRepoDir } = require('../../helpers/main')
+const { runFixture, FIXTURES_DIR } = require('../../helpers/main')
+const { createRepoDir, removeDir } = require('../../helpers/dir')
 
 const pWriteFile = promisify(writeFile)
 

@@ -1,7 +1,7 @@
 const test = require('ava')
-const del = require('del')
 
 const { runFixture, FIXTURES_DIR } = require('../../helpers/main')
+const { removeDir } = require('../../helpers/dir')
 
 test('Local plugins', async t => {
   await runFixture(t, 'local')
@@ -16,9 +16,9 @@ test('Missing plugins', async t => {
 })
 
 test('Install missing plugins', async t => {
-  await del(`${FIXTURES_DIR}/install_missing/node_modules`, { force: true })
+  await removeDir(`${FIXTURES_DIR}/install_missing/node_modules`)
   await runFixture(t, 'install_missing')
-  await del(`${FIXTURES_DIR}/install_missing/node_modules`, { force: true })
+  await removeDir(`${FIXTURES_DIR}/install_missing/node_modules`)
 })
 
 test('Plugin.id is optional', async t => {

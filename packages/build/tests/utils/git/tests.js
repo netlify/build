@@ -1,7 +1,8 @@
 const test = require('ava')
 const cpy = require('cpy')
 
-const { runFixture, FIXTURES_DIR, createRepoDir, removeDir } = require('../../helpers/main')
+const { runFixture, FIXTURES_DIR } = require('../../helpers/main')
+const { createRepoDir, removeDir } = require('../../helpers/dir')
 
 // Runs the git utils against very old commits of @netlify/build so that the
 // tests are stable

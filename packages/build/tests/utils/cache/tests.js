@@ -110,7 +110,7 @@ if (!isCi || platform !== 'win32') {
     await runFixture(t, 'ttl')
   })
 
-  test('cache-utils manifest missing', async t => {
+  test.skip('cache-utils manifest missing', async t => {
     await runFixture(t, 'manifest_missing')
   })
 }
