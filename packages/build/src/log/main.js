@@ -7,6 +7,7 @@ const omit = require('omit.js')
 
 const { version } = require('../../package.json')
 const { serializeError } = require('../error/serialize')
+const isNetlifyCI = require('../utils/is-netlify-ci')
 
 const { log } = require('./logger')
 const { serialize, indent, SUBTEXT_PADDING } = require('./serialize')
@@ -24,7 +25,8 @@ const logFlags = function(flags) {
   log(cyanBright.bold(`${HEADING_PREFIX} Flags`), indent(serialize(flagsA)))
 }
 
-const HIDDEN_FLAGS = ['nodePath', 'token', 'defaultConfig', 'cachedConfig']
+const CI_HIDDEN_FLAGS = isNetlifyCI() ? ['nodePath', 'cachedConfig'] : []
+const HIDDEN_FLAGS = ['token', ...CI_HIDDEN_FLAGS]
 
 const logBuildDir = function(buildDir) {
   log(`${cyanBright.bold(`${HEADING_PREFIX} Current directory`)}
