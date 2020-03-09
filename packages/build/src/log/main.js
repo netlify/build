@@ -22,7 +22,7 @@ ${EMPTY_LINE}`)
 
 const logFlags = function(flags) {
   const flagsA = omit(flags, HIDDEN_FLAGS)
-  log(cyanBright.bold(`${HEADING_PREFIX} Flags`), indent(serialize(flagsA)))
+  log(cyanBright.bold(`${HEADING_PREFIX} Flags`), indent(serialize(flagsA)).trimRight(), EMPTY_LINE)
 }
 
 const CI_HIDDEN_FLAGS = isNetlifyCI() ? ['nodePath', 'cachedConfig'] : []
