@@ -15,7 +15,7 @@ const { deepMerge } = require('./utils/merge')
 // Load the configuration file.
 // Takes an optional configuration file path as input and return the resolved
 // `config` together with related properties such as the `configPath`.
-const resolveConfig = async function(configFile, { cachedConfig, ...opts } = {}) {
+const resolveConfig = async function({ cachedConfig, ...opts } = {}) {
   // Performance optimization when @netlify/config caller has already previously
   // called it and cached the result.
   // This is used by the buildbot which:
@@ -25,12 +25,19 @@ const resolveConfig = async function(configFile, { cachedConfig, ...opts } = {})
     return await getConfig(cachedConfig, 'cachedConfig')
   }
 
-  const { defaultConfig: defaultConfigPath, cwd, context, repositoryRoot, branch } = await normalizeOpts(opts)
+  const {
+    config: configOpt,
+    defaultConfig: defaultConfigPath,
+    cwd,
+    context,
+    repositoryRoot,
+    branch,
+  } = await normalizeOpts(opts)
 
   const defaultConfig = await getConfig(defaultConfigPath, 'defaultConfig')
 
   const { configPath, config } = await loadConfig({
-    configFile,
+    configOpt,
     cwd,
     context,
     repositoryRoot,
@@ -58,7 +65,7 @@ const getConfig = async function(configPath, name) {
 // The first pass uses the `defaultConfig`'s `build.base` (if defined).
 // The second pass uses the `build.base` from the first pass (if defined).
 const loadConfig = async function({
-  configFile,
+  configOpt,
   cwd,
   context,
   repositoryRoot,
@@ -72,7 +79,7 @@ const loadConfig = async function({
     config: {
       build: { base },
     },
-  } = await getFullConfig({ configFile, cwd, context, repositoryRoot, branch, defaultConfig, base: defaultBase })
+  } = await getFullConfig({ configOpt, cwd, context, repositoryRoot, branch, defaultConfig, base: defaultBase })
 
   // No second pass needed since there is no `build.base`
   if (base === undefined || base === defaultBase) {
@@ -95,8 +102,8 @@ const loadConfig = async function({
 }
 
 // Load configuration file and normalize it, merge contexts, etc.
-const getFullConfig = async function({ configFile, cwd, context, repositoryRoot, branch, defaultConfig, base }) {
-  const configPath = await getConfigPath({ configFile, cwd, repositoryRoot, base })
+const getFullConfig = async function({ configOpt, cwd, context, repositoryRoot, branch, defaultConfig, base }) {
+  const configPath = await getConfigPath({ configOpt, cwd, repositoryRoot, base })
 
   try {
     const config = await parseConfig(configPath)

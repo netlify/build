@@ -31,13 +31,15 @@ const loadConfig = async function(flags) {
     branch,
   } = removeFalsy(flagsB)
 
-  const {
-    configPath,
-    buildDir,
-    config: netlifyConfig,
-    context: contextA,
-    branch: branchA,
-  } = await resolveFullConfig(config, { defaultConfig, cachedConfig, cwd, repositoryRoot, context, branch })
+  const { configPath, buildDir, config: netlifyConfig, context: contextA, branch: branchA } = await resolveFullConfig({
+    config,
+    defaultConfig,
+    cachedConfig,
+    cwd,
+    repositoryRoot,
+    context,
+    branch,
+  })
   logBuildDir(buildDir)
   logConfigPath(configPath)
 
@@ -53,12 +55,17 @@ const DEFAULT_FLAGS = {
 
 // Retrieve configuration file and related information
 // (path, build directory, etc.)
-const resolveFullConfig = async function(
+const resolveFullConfig = async function({
   config,
-  { defaultConfig, cachedConfig, cwd, repositoryRoot, context, branch },
-) {
+  defaultConfig,
+  cachedConfig,
+  cwd,
+  repositoryRoot,
+  context,
+  branch,
+}) {
   try {
-    return await resolveConfig(config, { defaultConfig, cachedConfig, cwd, repositoryRoot, context, branch })
+    return await resolveConfig({ config, defaultConfig, cachedConfig, cwd, repositoryRoot, context, branch })
   } catch (error) {
     if (error.type === 'userError') {
       delete error.type
