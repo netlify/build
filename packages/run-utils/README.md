@@ -3,7 +3,7 @@
 [![Coverage Status](https://codecov.io/gh/netlify/build/branch/master/graph/badge.svg)](https://codecov.io/gh/netlify/build)
 [![Build](https://github.com/netlify/build/workflows/Build/badge.svg)](https://github.com/netlify/build/actions)
 
-Utility for running commands inside Netlify Build.
+Utility for running commands inside Netlify Build. Currently, there is just one utility, `run`, which is a thin wrapper over `execa` defaulting to `{ preferLocal: true, stdio: 'inherit' }`.
 
 # Examples
 
