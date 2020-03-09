@@ -2,16 +2,16 @@ const stripAnsi = require('strip-ansi')
 const { tick, pointer, arrowDown } = require('figures')
 
 // Normalize log output so it can be snapshot consistently across test runs
-const normalizeOutput = function(output) {
+const normalizeOutput = function(output, type) {
   const outputA = stripAnsi(output)
-  return NORMALIZE_REGEXPS.reduce(replaceOutput, outputA)
+  return NORMALIZE_REGEXPS[type].reduce(replaceOutput, outputA)
 }
 
 const replaceOutput = function(output, [regExp, replacement]) {
   return output.replace(regExp, replacement)
 }
 
-const NORMALIZE_REGEXPS = [
+const MAIN_NORMALIZE_REGEXPS = [
   // Zero width space characters due to a bug in buildbot:
   // https://github.com/netlify/buildbot/issues/595
   [/\u{200b}/gu, ''],
@@ -50,12 +50,6 @@ const NORMALIZE_REGEXPS = [
   [/\d[\d.]*m?s/g, '1ms'],
   // Package versions
   [/([@v])[\d.]+/g, '$11.0.0'],
-  // Multiline objects are printed differently by `util.inspect()` in Node 8 and
-  // 12 due to different default options
-  [/{\n\s+/gm, '{ '],
-  [/\n}/gm, ' }'],
-  [/,\n\s+/gm, ', '],
-  [/:\n\s+([^-\s])/gm, ': $1'],
   // Semantic versions
   [/\d+\.\d+\.\d+/, '1.0.0'],
   // npm install logs
@@ -65,5 +59,21 @@ const NORMALIZE_REGEXPS = [
   // Empty lines
   [/^ +$/gm, ''],
 ]
+
+// Multiline objects are printed differently by `util.inspect()` in Node 8 and
+// 12 due to different default options.
+// Those are not done when snapshotting @netlify/config
+const MULTILINE_NORMALIZE_REGEXPS = [
+  [/{\n\s+/gm, '{ '],
+  [/\n}/gm, ' }'],
+  [/,\n\s+/gm, ', '],
+  [/:\n\s+([^-\s])/gm, ': $1'],
+]
+
+// Some projects require different sets of normalization regExps
+const NORMALIZE_REGEXPS = {
+  build: [...MAIN_NORMALIZE_REGEXPS, ...MULTILINE_NORMALIZE_REGEXPS],
+  config: [...MAIN_NORMALIZE_REGEXPS],
+}
 
 module.exports = { normalizeOutput }

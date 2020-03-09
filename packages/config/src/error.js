@@ -2,7 +2,7 @@
 // (such as bugs) with a `type` property.
 const throwError = function(messageOrError, error) {
   const errorA = getError(messageOrError, error)
-  errorA.type = 'userError'
+  errorA.type = USER_ERROR_TYPE
   throw errorA
 }
 
@@ -20,4 +20,11 @@ const getError = function(messageOrError, error) {
   return error
 }
 
-module.exports = { throwError }
+// Check `error.type`
+const isUserError = function(error) {
+  return error instanceof Error && error.type === USER_ERROR_TYPE
+}
+
+const USER_ERROR_TYPE = 'userError'
+
+module.exports = { throwError, isUserError }

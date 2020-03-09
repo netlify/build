@@ -18,9 +18,10 @@ const del = require('del')
 const makeDir = require('make-dir')
 const cpFile = require('cp-file')
 
+const PROJECTS_DIR = `${__dirname}/../../..`
+
 const { normalizeOutput } = require('./normalize')
 
-const BINARY_PATH = getBinPath({ cwd: __dirname })
 const FIXTURES_DIR = normalize(`${testFile}/../fixtures`)
 
 const pRealpath = promisify(realpath)
@@ -35,18 +36,18 @@ const pRealpath = promisify(realpath)
 const runFixture = async function(
   t,
   fixtureName,
-  { flags = '', env, normalize, snapshot = true, repositoryRoot = `${FIXTURES_DIR}/${fixtureName}` } = {},
+  {
+    type = 'build',
+    flags = '',
+    env,
+    normalize,
+    snapshot = true,
+    repositoryRoot = `${FIXTURES_DIR}/${fixtureName}`,
+  } = {},
 ) {
-  const envA = {
-    // Workarounds to mock caching logic
-    NETLIFY_BUILD_SAVE_CACHE: '1',
-    TEST_CACHE_PATH: 'none',
-    // Ensure local tokens aren't used during development
-    NETLIFY_AUTH_TOKEN: '',
-    ...env,
-  }
+  const envA = { ...DEFAULT_ENV[type], ...env }
   const repositoryRootFlag = getRepositoryRootFlag(fixtureName, repositoryRoot)
-  const binaryPath = await BINARY_PATH
+  const binaryPath = await BINARY_PATH[type]
   const { all, exitCode } = await execa.command(`${binaryPath} ${repositoryRootFlag} ${flags}`, {
     all: true,
     reject: false,
@@ -55,9 +56,36 @@ const runFixture = async function(
   })
 
   const isPrint = PRINT === '1'
-  doTestAction({ t, all, isPrint, normalize, snapshot })
+  doTestAction({ t, type, all, isPrint, normalize, snapshot })
 
   return { all, exitCode }
+}
+
+// Each project has its own binary entry point
+const BUILD_BINARY_PATH = getBinPath({ cwd: `${PROJECTS_DIR}/build` })
+const CONFIG_BINARY_PATH = getBinPath({ cwd: `${PROJECTS_DIR}/config` })
+const BINARY_PATH = {
+  build: BUILD_BINARY_PATH,
+  config: CONFIG_BINARY_PATH,
+}
+
+// Each project has its own set of default environment variables
+const DEFAULT_ENV = {
+  build: {
+    // Workarounds to mock caching logic
+    NETLIFY_BUILD_SAVE_CACHE: '1',
+    TEST_CACHE_PATH: 'none',
+    // Ensure local tokens aren't used during development
+    NETLIFY_AUTH_TOKEN: '',
+  },
+  config: {
+    // Make snapshot consistent regardless of the actual current git branch
+    BRANCH: 'branch',
+  },
+}
+
+const runFixtureConfig = function(t, fixtureName, opts) {
+  return runFixture(t, fixtureName, { ...opts, type: 'config' })
 }
 
 // 10 minutes timeout
@@ -76,8 +104,8 @@ const getRepositoryRootFlag = function(fixtureName, repositoryRoot) {
 // The `PRINT` environment variable can be set to `1` to run the test in print
 // mode. Print mode is a debugging mode which shows the test output but does
 // not create nor compare its snapshot.
-const doTestAction = function({ t, all, isPrint, normalize = !isPrint, snapshot }) {
-  const allA = normalize ? normalizeOutput(all) : all
+const doTestAction = function({ t, type, all, isPrint, normalize = !isPrint, snapshot }) {
+  const allA = normalize ? normalizeOutput(all, type) : all
 
   if (isPrint) {
     return printOutput(t, allA)
@@ -166,4 +194,4 @@ const getTempDir = async function() {
   return tempDirA
 }
 
-module.exports = { runFixture, FIXTURES_DIR, removeDir, createRepoDir, copyToTemp }
+module.exports = { runFixture, runFixtureConfig, FIXTURES_DIR, removeDir, createRepoDir, copyToTemp }
