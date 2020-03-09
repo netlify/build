@@ -106,7 +106,7 @@ if (!isCi || platform !== 'win32') {
 
   // This relies on timing, which is slow in GitHub actions Windows VM, making
   // the tests randomly fail
-  test('cache-utils TTL', async t => {
+  test.skip('cache-utils TTL', async t => {
     await runFixture(t, 'ttl')
   })
 
