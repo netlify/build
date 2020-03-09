@@ -1,6 +1,7 @@
 const test = require('ava')
 
-const { runFixture, FIXTURES_DIR, removeDir } = require('../../helpers/main')
+const { runFixture, FIXTURES_DIR } = require('../../helpers/main')
+const { removeDir } = require('../../helpers/dir')
 
 test('Functions: simple setup', async t => {
   await removeDir(`${FIXTURES_DIR}/simple/.netlify/functions/`)

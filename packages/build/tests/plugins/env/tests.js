@@ -3,7 +3,8 @@ const { platform } = require('process')
 const test = require('ava')
 const cpy = require('cpy')
 
-const { runFixture, FIXTURES_DIR, removeDir, createRepoDir } = require('../../helpers/main')
+const { runFixture, FIXTURES_DIR } = require('../../helpers/main')
+const { createRepoDir, removeDir } = require('../../helpers/dir')
 
 // Windows environment variables work differently
 if (platform !== 'win32') {
