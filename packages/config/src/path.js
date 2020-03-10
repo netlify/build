@@ -1,7 +1,10 @@
-const { resolve } = require('path')
+const { resolve, basename } = require('path')
 
 const findUp = require('find-up')
-const locatePath = require('locate-path')
+const pathExists = require('path-exists')
+const pFilter = require('p-filter')
+
+const { throwError } = require('./error')
 
 // Configuration location can be:
 //  - a local path with the --config CLI flag
@@ -31,9 +34,15 @@ const getConfigPath = async function({ configOpt, cwd, repositoryRoot, base }) {
 }
 
 const searchConfigFile = async function(cwd) {
-  const filenames = FILENAMES.map(filename => resolve(cwd, filename))
-  const configPath = await locatePath(filenames)
-  return configPath
+  const paths = FILENAMES.map(filename => resolve(cwd, filename))
+  const pathsA = await pFilter(paths, pathExists)
+
+  if (pathsA.length > 1) {
+    const filenames = pathsA.map(path => basename(path)).join(', ')
+    throwError(`Should use only one configuration file (among ${filenames}) in:\n${cwd}`)
+  }
+
+  return pathsA[0]
 }
 
 const FILENAMES = ['netlify.toml', 'netlify.yml', 'netlify.yaml', 'netlify.json']
