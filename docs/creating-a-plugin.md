@@ -191,8 +191,8 @@ module.exports = {
 
 The following methods are available depending on the error's type:
 
-- `utils.build.fail('message')`: stops the build
-- `utils.build.cancel('message')`: cancels the build
+- `utils.build.fail('message')`: fails the build - the build in your dashboard would show “Failed”. Use this to indicate something went wrong.
+- `utils.build.cancel('message')`: cancels the build - the dashboard would show “Cancelled” for that build. Use this to indicate that the build is being cancelled as planned.
 
 This works inside `async` event handlers as well.
 
