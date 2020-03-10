@@ -126,8 +126,7 @@ const getFullConfig = async function({ configOpt, cwd, context, repositoryRoot, 
     const configD = normalizeConfig(configC)
     return { configPath, config: configD }
   } catch (error) {
-    const configMessage = configPath === undefined ? '' : ` file ${configPath}`
-    error.message = `When resolving config${configMessage}:\n${error.message}`
+    error.message = `When resolving config file ${configPath}:\n${error.message}`
     throw error
   }
 }
