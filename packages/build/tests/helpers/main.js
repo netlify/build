@@ -37,20 +37,21 @@ const runFixture = async function(
     repositoryRoot = `${FIXTURES_DIR}/${fixtureName}`,
   } = {},
 ) {
-  const envA = { ...DEFAULT_ENV[type], ...env }
+  const isPrint = PRINT === '1'
+  const FORCE_COLOR = isPrint ? '1' : ''
+  const envA = { ...DEFAULT_ENV[type], FORCE_COLOR, ...env }
   const repositoryRootFlag = getRepositoryRootFlag(fixtureName, repositoryRoot)
   const binaryPath = await BINARY_PATH[type]
-  const { all, exitCode } = await execa.command(`${binaryPath} ${repositoryRootFlag} ${flags}`, {
-    all: true,
+  const { stdout, stderr, all, exitCode } = await execa.command(`${binaryPath} ${repositoryRootFlag} ${flags}`, {
+    all: isPrint && snapshot,
     reject: false,
     env: envA,
     timeout: TIMEOUT,
   })
 
-  const isPrint = PRINT === '1'
-  doTestAction({ t, type, all, isPrint, normalize, snapshot })
+  doTestAction({ t, type, stdout, stderr, all, isPrint, normalize, snapshot })
 
-  return { all, exitCode }
+  return { stdout, stderr, exitCode }
 }
 
 // Same with @netlify/config
@@ -97,23 +98,36 @@ const getRepositoryRootFlag = function(fixtureName, repositoryRoot) {
 // The `PRINT` environment variable can be set to `1` to run the test in print
 // mode. Print mode is a debugging mode which shows the test output but does
 // not create nor compare its snapshot.
-const doTestAction = function({ t, type, all, isPrint, normalize = !isPrint, snapshot }) {
-  const allA = normalize ? normalizeOutput(all, type) : all
-
-  if (isPrint) {
-    return printOutput(t, allA)
-  }
-
+const doTestAction = function({ t, type, stdout, stderr, all, isPrint, normalize = !isPrint, snapshot }) {
   if (!snapshot) {
     return
   }
 
-  if (shouldIgnoreSnapshot(allA)) {
+  if (isPrint) {
+    const allA = normalizeOutputString(all, type, normalize)
+    return printOutput(t, allA)
+  }
+
+  const stdoutA = normalizeOutputString(stdout, type, normalize)
+  const stderrA = normalizeOutputString(stderr, type, normalize)
+  // stdout and stderr can be intertwined in a time-sensitive / race-condition
+  // manner otherwise
+  const allB = [stdoutA, stderrA].filter(Boolean).join('\n\n')
+
+  if (shouldIgnoreSnapshot(allB)) {
     t.pass()
     return
   }
 
-  t.snapshot(allA)
+  t.snapshot(allB)
+}
+
+const normalizeOutputString = function(outputString, type, normalize) {
+  if (!normalize) {
+    return outputString
+  }
+
+  return normalizeOutput(outputString, type)
 }
 
 const printOutput = function(t, all) {
