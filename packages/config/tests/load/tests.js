@@ -4,7 +4,14 @@ const { relative } = require('path')
 const test = require('ava')
 
 const resolveConfig = require('../..')
-const { runFixtureConfig, FIXTURES_DIR, createRepoDir, removeDir } = require('../helpers/main')
+const {
+  runFixtureConfig,
+  FIXTURES_DIR,
+  createRepoDir,
+  removeDir,
+  getJsonOpt,
+  escapeExecaOpt,
+} = require('../helpers/main')
 
 test('Empty configuration', async t => {
   await runFixtureConfig(t, 'empty')
@@ -46,22 +53,22 @@ test('--config with an invalid relative path', async t => {
 })
 
 test('--defaultConfig merge', async t => {
-  await runFixtureConfig(t, 'default_merge', { flags: `--defaultConfig=${FIXTURES_DIR}/default_merge/default.yml` })
+  const defaultConfig = getJsonOpt({ build: { lifecycle: { onInit: 'echo onInit' } } })
+  await runFixtureConfig(t, 'default_merge', { flags: `--defaultConfig=${defaultConfig}` })
 })
 
 test('--defaultConfig priority', async t => {
-  await runFixtureConfig(t, 'default_priority', {
-    flags: `--defaultConfig=${FIXTURES_DIR}/default_priority/default.yml`,
-  })
+  const defaultConfig = getJsonOpt({ build: { lifecycle: { onBuild: 'echo onBuild' } } })
+  await runFixtureConfig(t, 'default_priority', { flags: `--defaultConfig=${defaultConfig}` })
 })
 
 test('--defaultConfig with an invalid relative path', async t => {
-  await runFixtureConfig(t, '', { flags: '--defaultConfig=/invalid' })
+  await runFixtureConfig(t, '', { flags: '--defaultConfig={{}' })
 })
 
 test('--cachedConfig', async t => {
   const { stdout } = await runFixtureConfig(t, 'cached_config', { snapshot: false })
-  const cachedConfig = stdout.replace(/ /g, '\\ ')
+  const cachedConfig = escapeExecaOpt(stdout)
   await runFixtureConfig(t, 'cached_config', { flags: `--cachedConfig=${cachedConfig}` })
 })
 

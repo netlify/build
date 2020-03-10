@@ -17,21 +17,22 @@ const { deepMerge } = require('./utils/merge')
 // Takes an optional configuration file path as input and return the resolved
 // `config` together with related properties such as the `configPath`.
 const resolveConfig = async function({ cachedConfig, ...opts } = {}) {
+  // Performance optimization when @netlify/config caller has already previously
+  // called it and cached the result.
+  // This is used by the buildbot which:
+  //  - first calls @netlify/config since it needs configuration property
+  //  - later calls @netlify/build, which runs @netlify/config under the hood
   if (cachedConfig !== undefined) {
-    return getCachedConfig(cachedConfig)
+    return getConfig(cachedConfig, 'cached')
   }
 
-  const {
-    config: configOpt,
-    defaultConfig: defaultConfigPath,
-    cwd,
-    context,
-    repositoryRoot,
-    branch,
-    baseRelDir,
-  } = await normalizeOpts(opts)
+  const { config: configOpt, defaultConfig, cwd, context, repositoryRoot, branch, baseRelDir } = await normalizeOpts(
+    opts,
+  )
 
-  const defaultConfig = await getDefaultConfig(defaultConfigPath)
+  // Retrieve default configuration file. It has less priority and it also does
+  // not get normalized, merged with contexts, etc.
+  const defaultConfigA = getConfig(defaultConfig, 'default')
 
   const { configPath, config } = await loadConfig({
     configOpt,
@@ -39,7 +40,7 @@ const resolveConfig = async function({ cachedConfig, ...opts } = {}) {
     context,
     repositoryRoot,
     branch,
-    defaultConfig,
+    defaultConfig: defaultConfigA,
     baseRelDir,
   })
 
@@ -49,27 +50,17 @@ const resolveConfig = async function({ cachedConfig, ...opts } = {}) {
   return { configPath, buildDir, config: configA, context, branch }
 }
 
-// Performance optimization when @netlify/config caller has already previously
-// called it and cached the result.
-// This is used by the buildbot which:
-//  - first calls @netlify/config since it needs configuration property
-//  - later calls @netlify/build, which runs @netlify/config under the hood
-const getCachedConfig = function(cachedConfig) {
-  try {
-    return JSON.parse(cachedConfig)
-  } catch (error) {
-    throwError('When resolving cached configuration', error)
+// Load a configuration file passed as a JSON object.
+// The logic is much simpler: it does not normalize nor validate it.
+const getConfig = function(config, name) {
+  if (config === undefined) {
+    return {}
   }
-}
 
-// Retrieve default configuration file. It has less priority and it also does
-// not get normalized, merged with contexts, etc.
-const getDefaultConfig = async function(configPath) {
   try {
-    return await parseConfig(configPath)
+    return JSON.parse(config)
   } catch (error) {
-    error.message = `When resolving default configuration ${configPath}:\n${error.message}`
-    throw error
+    throwError(`When resolving ${name} configuration`, error)
   }
 }
 

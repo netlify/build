@@ -152,4 +152,17 @@ const IGNORE_REGEXPS = [
   /npm ERR!/,
 ]
 
-module.exports = { runFixture, runFixtureConfig, FIXTURES_DIR }
+// Get an CLI flag whose value is a JSON object, to be passed to `execa.command()`
+// Used for example by --defaultConfig and --cachedConfig.
+const getJsonOpt = function(object) {
+  return escapeExecaOpt(JSON.stringify(object))
+}
+
+// Escape CLI flag value that might contain a space
+const escapeExecaOpt = function(string) {
+  return string.replace(EXECA_COMMAND_REGEXP, '\\ ')
+}
+
+const EXECA_COMMAND_REGEXP = / /g
+
+module.exports = { runFixture, runFixtureConfig, FIXTURES_DIR, getJsonOpt, escapeExecaOpt }
