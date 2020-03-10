@@ -14,7 +14,7 @@ const getBranch = async function({ branch, repositoryRoot }) {
     return branch
   }
 
-  if (BRANCH !== undefined) {
+  if (BRANCH) {
     return BRANCH
   }
 
