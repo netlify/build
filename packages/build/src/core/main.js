@@ -4,6 +4,7 @@ require('../utils/polyfills')
 // eslint-disable-next-line import/order
 const { setColorLevel } = require('../log/colors')
 setColorLevel()
+require('../error/process')
 
 const { getPluginsOptions } = require('../plugins/options')
 const { installPlugins } = require('../plugins/install')
