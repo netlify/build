@@ -33,3 +33,11 @@ test('No .git', async t => {
     await removeDir(cwd)
   }
 })
+
+test('--cwd non-existing', async t => {
+  await runFixtureConfig(t, '', { flags: `--cwd=/invalid` })
+})
+
+test('--repositoryRoot non-existing', async t => {
+  await runFixtureConfig(t, '', { flags: `--repositoryRoot=/invalid` })
+})
