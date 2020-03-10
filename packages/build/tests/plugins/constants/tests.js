@@ -6,24 +6,28 @@ test('constants.CONFIG_PATH', async t => {
   await runFixture(t, 'config')
 })
 
-test('constants.BUILD_DIR default value', async t => {
-  await runFixture(t, 'build_default')
+test('constants.PUBLISH_DIR default value', async t => {
+  await runFixture(t, 'publish_default')
 })
 
-test('constants.BUILD_DIR default value with build.base', async t => {
-  await runFixture(t, 'build_default_base')
+test('constants.PUBLISH_DIR default value with build.base', async t => {
+  await runFixture(t, 'publish_default_base')
 })
 
-test('constants.BUILD_DIR absolute path', async t => {
-  await runFixture(t, 'build_absolute')
+test('constants.PUBLISH_DIR absolute path', async t => {
+  await runFixture(t, 'publish_absolute')
 })
 
-test('constants.BUILD_DIR relative path', async t => {
-  await runFixture(t, 'build_relative')
+test('constants.PUBLISH_DIR relative path', async t => {
+  await runFixture(t, 'publish_relative')
 })
 
-test('constants.BUILD_DIR missing path', async t => {
-  await runFixture(t, 'build_missing')
+test('constants.PUBLISH_DIR missing path', async t => {
+  await runFixture(t, 'publish_missing')
+})
+
+test('constants.BUILD_DIR backward compatibility', async t => {
+  await runFixture(t, 'build_dir')
 })
 
 test('constants.FUNCTIONS_SRC default value', async t => {
