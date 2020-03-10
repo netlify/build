@@ -13,3 +13,7 @@ test('Base from configuration file property', async t => {
 test('Base logic is not recursive', async t => {
   await runFixtureConfig(t, 'recursive')
 })
+
+test('BaseRelDir feature flag', async t => {
+  await runFixtureConfig(t, 'prop_config', { flags: `--no-baseRelDir` })
+})

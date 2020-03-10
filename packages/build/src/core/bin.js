@@ -92,6 +92,14 @@ Default: 'production'`,
     describe: `Repository branch.
 Default: automatically guessed`,
   },
+  baseRelDir: {
+    boolean: true,
+    describe: `Feature flag meant for backward compatibility.
+When enabled, if the 'build.base' configuration property is defined, it is used
+to try to retrieve a second configuration file and discard the first one.
+Default: true`,
+    hidden: true,
+  },
   dry: {
     alias: 'dry-run',
     boolean: true,

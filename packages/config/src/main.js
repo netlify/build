@@ -28,6 +28,7 @@ const resolveConfig = async function({ cachedConfig, ...opts } = {}) {
     context,
     repositoryRoot,
     branch,
+    baseRelDir,
   } = await normalizeOpts(opts)
 
   const defaultConfig = await getDefaultConfig(defaultConfigPath)
@@ -39,6 +40,7 @@ const resolveConfig = async function({ cachedConfig, ...opts } = {}) {
     repositoryRoot,
     branch,
     defaultConfig,
+    baseRelDir,
   })
 
   const buildDir = getBuildDir(repositoryRoot, config)
@@ -82,6 +84,7 @@ const loadConfig = async function({
   branch,
   defaultConfig,
   defaultConfig: { build: { base: defaultBase } = {} },
+  baseRelDir,
 }) {
   const {
     configPath,
@@ -91,8 +94,12 @@ const loadConfig = async function({
     },
   } = await getFullConfig({ configOpt, cwd, context, repositoryRoot, branch, defaultConfig, base: defaultBase })
 
-  // No second pass needed since there is no `build.base`
-  if (base === undefined || base === defaultBase) {
+  // No second pass needed if:
+  //  - there is no `build.base`
+  //  - `build.base` is the same as the `Base directory` UI setting (already used in the first round)
+  //  - `baseRelDir` feature flag is not used. This feature flag was introduced to ensure
+  //    backward compatibility.
+  if (!baseRelDir || base === undefined || base === defaultBase) {
     return { configPath, config }
   }
 

@@ -26,6 +26,7 @@ const normalizeOpts = async function(opts) {
 const DEFAULT_OPTS = {
   cwd: getCwd(),
   context: CONTEXT || 'production',
+  baseRelDir: true,
 }
 
 module.exports = { normalizeOpts }
