@@ -1,5 +1,0 @@
-build:
-  lifecycle:
-    onBuild: node -p "process.cwd()"
-plugins:
-  - package: ./base/plugin.js
