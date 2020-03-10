@@ -8,8 +8,8 @@ test('--help', async t => {
 })
 
 test('--version', async t => {
-  const { all } = await runFixture(t, '', { flags: '--version' })
-  t.is(all, version)
+  const { stdout } = await runFixture(t, '', { flags: '--version' })
+  t.is(stdout, version)
 })
 
 test('Exit code is 0 on success', async t => {
