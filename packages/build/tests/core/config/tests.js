@@ -32,6 +32,10 @@ test('--branch', async t => {
   await runFixture(t, 'context', { flags: '--branch=testContext' })
 })
 
+test('--baseRelDir', async t => {
+  await runFixtureConfig(t, 'basereldir', { flags: `--no-baseRelDir` })
+})
+
 test('User error', async t => {
   await runFixture(t, '', { flags: `--config=/invalid` })
 })

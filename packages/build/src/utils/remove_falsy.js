@@ -6,7 +6,7 @@ const removeFalsy = function(obj) {
 }
 
 const isDefined = function(key, value) {
-  return Boolean(value)
+  return value !== undefined && value !== ''
 }
 
 module.exports = { removeFalsy }

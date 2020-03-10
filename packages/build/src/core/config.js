@@ -29,6 +29,7 @@ const loadConfig = async function(flags) {
     siteId,
     context,
     branch,
+    baseRelDir,
   } = removeFalsy(flagsB)
 
   const { configPath, buildDir, config: netlifyConfig, context: contextA, branch: branchA } = await resolveFullConfig({
@@ -39,6 +40,7 @@ const loadConfig = async function(flags) {
     repositoryRoot,
     context,
     branch,
+    baseRelDir,
   })
   logBuildDir(buildDir)
   logConfigPath(configPath)
@@ -63,9 +65,19 @@ const resolveFullConfig = async function({
   repositoryRoot,
   context,
   branch,
+  baseRelDir,
 }) {
   try {
-    return await resolveConfig({ config, defaultConfig, cachedConfig, cwd, repositoryRoot, context, branch })
+    return await resolveConfig({
+      config,
+      defaultConfig,
+      cachedConfig,
+      cwd,
+      repositoryRoot,
+      context,
+      branch,
+      baseRelDir,
+    })
   } catch (error) {
     if (error.type === 'userError') {
       delete error.type
