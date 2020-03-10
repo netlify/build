@@ -26,7 +26,7 @@ const logFlags = function(flags) {
 }
 
 const CI_HIDDEN_FLAGS = isNetlifyCI() ? ['nodePath'] : []
-const HIDDEN_FLAGS = ['token', 'cachedConfig', ...CI_HIDDEN_FLAGS]
+const HIDDEN_FLAGS = ['token', 'cachedConfig', 'defaultConfig', ...CI_HIDDEN_FLAGS]
 
 const logBuildDir = function(buildDir) {
   log(`${cyanBright.bold(`${HEADING_PREFIX} Current directory`)}

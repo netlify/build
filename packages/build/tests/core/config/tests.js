@@ -1,6 +1,6 @@
 const test = require('ava')
 
-const { runFixture, runFixtureConfig, FIXTURES_DIR } = require('../../helpers/main')
+const { runFixture, runFixtureConfig, FIXTURES_DIR, getJsonOpt, escapeExecaOpt } = require('../../helpers/main')
 
 test('--cwd', async t => {
   await runFixture(t, '', { flags: `--cwd=${FIXTURES_DIR}/empty` })
@@ -15,12 +15,13 @@ test('--config', async t => {
 })
 
 test('--defaultConfig', async t => {
-  await runFixture(t, 'default_config', { flags: `--defaultConfig=${FIXTURES_DIR}/default_config/default.yml` })
+  const defaultConfig = getJsonOpt({ build: { lifecycle: { onInit: 'echo onInit' } } })
+  await runFixture(t, 'default_config', { flags: `--defaultConfig=${defaultConfig}` })
 })
 
 test('--cachedConfig', async t => {
   const { stdout } = await runFixtureConfig(t, 'cached_config', { snapshot: false })
-  const cachedConfig = stdout.replace(/ /g, '\\ ')
+  const cachedConfig = escapeExecaOpt(stdout)
   await runFixture(t, 'cached_config', { flags: `--cachedConfig=${cachedConfig}` })
 })
 

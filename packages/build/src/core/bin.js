@@ -51,7 +51,7 @@ Defaults to a netlify.yml, netlify.yaml, netlify.toml or netlify.json in the git
   },
   defaultConfig: {
     string: true,
-    describe: `Path to a configuration file containing default values.
+    describe: `JSON configuration object containing default values.
 Each configuration default value is used unless overriden through the main configuration file.
 Default: none.`,
     hidden: true,

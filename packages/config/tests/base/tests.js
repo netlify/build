@@ -1,9 +1,10 @@
 const test = require('ava')
 
-const { runFixtureConfig, FIXTURES_DIR } = require('../helpers/main')
+const { runFixtureConfig, getJsonOpt } = require('../helpers/main')
 
 test('Base from defaultConfig', async t => {
-  await runFixtureConfig(t, 'default_config', { flags: `--defaultConfig=${FIXTURES_DIR}/default_config/default.yml` })
+  const defaultConfig = getJsonOpt({ build: { base: 'base' } })
+  await runFixtureConfig(t, 'default_config', { flags: `--defaultConfig=${defaultConfig}` })
 })
 
 test('Base from configuration file property', async t => {
