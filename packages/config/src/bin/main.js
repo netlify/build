@@ -31,8 +31,7 @@ const handleCliError = function(error) {
   // Errors caused by users do not show stack traces and have exit code 1
   if (isUserError(error)) {
     console.error(error.message)
-    exit(1)
-    return
+    return exit(1)
   }
 
   // Internal errors / bugs have exit code 2
