@@ -2,6 +2,6 @@ build:
   lifecycle:
     onBuild: echo onBuild
 context:
-  testContext:
+  production:
     lifecycle:
       onBuild: echo onBuildTest

@@ -2,5 +2,3 @@ build:
   base: second_base
   lifecycle:
     onBuild: echo onBuildBase
-plugins:
-  - package: ./plugin.js

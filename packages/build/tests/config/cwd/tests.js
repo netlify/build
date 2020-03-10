@@ -2,27 +2,35 @@ const { cwd } = require('process')
 const { relative } = require('path')
 
 const test = require('ava')
+const cpy = require('cpy')
 
-const { runFixture, FIXTURES_DIR } = require('../../helpers/main')
+const { runFixtureConfig, FIXTURES_DIR } = require('../../helpers/main')
+const { createRepoDir, removeDir } = require('../../helpers/dir')
 
 test('--cwd with no config', async t => {
-  await runFixture(t, '', { flags: `--cwd ${FIXTURES_DIR}/empty` })
+  await runFixtureConfig(t, '', { flags: `--cwd=${FIXTURES_DIR}/empty` })
 })
 
 test('--cwd with a relative path config', async t => {
-  await runFixture(t, '', {
-    flags: `--cwd ${relative(cwd(), FIXTURES_DIR)} --config=empty/netlify.yml`,
+  await runFixtureConfig(t, '', {
+    flags: `--cwd=${relative(cwd(), FIXTURES_DIR)} --config=empty/netlify.yml`,
   })
 })
 
 test('build.base current directory', async t => {
-  await runFixture(t, 'build_base_cwd')
-})
-
-test('no build.base current directory', async t => {
-  await runFixture(t, 'build_base_none')
+  await runFixtureConfig(t, 'build_base_cwd')
 })
 
 test('--repository-root', async t => {
-  await runFixture(t, '', { flags: `--repository-root=${FIXTURES_DIR}/empty` })
+  await runFixtureConfig(t, '', { flags: `--repository-root=${FIXTURES_DIR}/empty` })
+})
+
+test('No .git', async t => {
+  const cwd = await createRepoDir({ git: false })
+  try {
+    await cpy(`${FIXTURES_DIR}/empty/*`, cwd)
+    await runFixtureConfig(t, '', { flags: `--cwd=${cwd}` })
+  } finally {
+    await removeDir(cwd)
+  }
 })
