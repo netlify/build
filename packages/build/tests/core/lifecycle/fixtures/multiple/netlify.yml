@@ -1,0 +1,5 @@
+build:
+  lifecycle:
+    onBuild: |
+      echo test
+      echo test
