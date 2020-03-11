@@ -9,6 +9,7 @@ const { logFlags, logBuildDir, logConfigPath } = require('../log/main')
 const { addErrorInfo } = require('../error/info')
 const { removeFalsy } = require('../utils/remove_falsy')
 
+const { getApiClient } = require('./api')
 const { getSiteInfo } = require('./site_info')
 
 // Retrieve configuration object
@@ -45,7 +46,8 @@ const loadConfig = async function(flags) {
   logBuildDir(buildDir)
   logConfigPath(configPath)
 
-  const siteInfo = await getSiteInfo(token, siteId)
+  const api = getApiClient(token)
+  const siteInfo = await getSiteInfo(api, siteId)
   return { netlifyConfig, configPath, buildDir, nodePath, token, dry, siteInfo, context: contextA, branch: branchA }
 }
 
