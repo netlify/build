@@ -2,23 +2,20 @@ const {
   env: { BUILD_SITE_INFO },
 } = require('process')
 
-const NetlifyAPI = require('netlify')
-
 const isNetlifyCI = require('../utils/is-netlify-ci')
 
 // Retrieve Netlify Site information, if availabled.
 // This is only used for local builds environment variables at the moment.
-const getSiteInfo = async function(token, id) {
-  if (token === undefined || id === undefined || isNetlifyCI()) {
-    return { id }
+const getSiteInfo = async function(api, siteId) {
+  if (api === undefined || siteId === undefined || isNetlifyCI()) {
+    return { id: siteId }
   }
 
-  const api = new NetlifyAPI(token)
-  const siteInfo = await getSite(id, api)
-  return { ...siteInfo, id }
+  const siteInfo = await getSite(siteId, api)
+  return { ...siteInfo, id: siteId }
 }
 
-const getSite = async function(site_id, api) {
+const getSite = async function(siteId, api) {
   try {
     // Used for testing.
     // TODO: find a better method not to pollute source code with test mocking.
@@ -26,7 +23,7 @@ const getSite = async function(site_id, api) {
       return JSON.parse(BUILD_SITE_INFO)
     }
 
-    return await api.getSite({ site_id })
+    return await api.getSite({ site_id: siteId })
     // Silently ignore errors. For example the network connection might be down,
     // but local builds should still work regardless.
   } catch (error) {
