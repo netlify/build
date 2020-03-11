@@ -15,6 +15,7 @@ const { getChildEnv } = require('../plugins/env')
 const { logBuildStart, logBuildError, logBuildSuccess, logBuildEnd } = require('../log/main')
 const { startTimer, endTimer } = require('../log/timer')
 const { trackBuildComplete } = require('../telemetry/complete')
+const { handleBuildError } = require('../error/handle')
 
 const { loadConfig } = require('./config')
 const { getCommands, runCommands } = require('./commands')
@@ -40,31 +41,36 @@ const build = async function(flags) {
       flags,
     )
 
-    const pluginsOptions = await getPluginsOptions(netlifyConfig, buildDir, configPath)
-    await installPlugins(pluginsOptions, buildDir)
+    try {
+      const pluginsOptions = await getPluginsOptions(netlifyConfig, buildDir, configPath)
+      await installPlugins(pluginsOptions, buildDir)
 
-    const commandsCount = await buildRun({
-      pluginsOptions,
-      netlifyConfig,
-      configPath,
-      buildDir,
-      nodePath,
-      token,
-      dry,
-      siteInfo,
-      context,
-      branch,
-    })
+      const commandsCount = await buildRun({
+        pluginsOptions,
+        netlifyConfig,
+        configPath,
+        buildDir,
+        nodePath,
+        token,
+        dry,
+        siteInfo,
+        context,
+        branch,
+      })
 
-    if (dry) {
+      if (dry) {
+        return true
+      }
+
+      logBuildSuccess()
+      const duration = endTimer(buildTimer, 'Netlify Build')
+      logBuildEnd()
+      await trackBuildComplete({ commandsCount, netlifyConfig, duration, siteInfo })
       return true
+    } catch (error) {
+      await handleBuildError(error)
+      throw error
     }
-
-    logBuildSuccess()
-    const duration = endTimer(buildTimer, 'Netlify Build')
-    logBuildEnd()
-    await trackBuildComplete({ commandsCount, netlifyConfig, duration, siteInfo })
-    return true
   } catch (error) {
     logBuildError(error)
     return false
