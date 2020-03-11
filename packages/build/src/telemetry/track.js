@@ -1,5 +1,5 @@
 const {
-  env: { BUILD_TELEMETRY_DISABLED, BUILD_TELEMETRY_URL },
+  env: { BUILD_TELEMETRY_DISABLED, TEST_HOST },
 } = require('process')
 
 const Analytics = require('analytics').default
@@ -19,7 +19,7 @@ const track = async function({ payload }) {
   const childProcess = execa('node', [REQUEST_FILE, JSON.stringify(payload)], { detached: true, stdio: 'ignore' })
 
   // During tests, we wait for the HTTP request to complete
-  if (BUILD_TELEMETRY_URL !== undefined) {
+  if (TEST_HOST !== undefined) {
     await childProcess
   }
 }

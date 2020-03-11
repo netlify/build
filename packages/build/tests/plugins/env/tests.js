@@ -5,6 +5,7 @@ const cpy = require('cpy')
 
 const { runFixture, FIXTURES_DIR } = require('../../helpers/main')
 const { createRepoDir, removeDir } = require('../../helpers/dir')
+const { startServer } = require('../../helpers/server')
 
 // Windows environment variables work differently
 if (platform !== 'win32') {
@@ -63,40 +64,52 @@ test('Environment variable git no repository', async t => {
   }
 })
 
-const BUILD_SITE_INFO = JSON.stringify({ url: 'test', build_settings: { repo_url: 'test' } })
+const SITE_INFO_PATH = '/api/v1/sites/test'
+const SITE_INFO_DATA = { url: 'test', build_settings: { repo_url: 'test' } }
+
 test('Environment variable siteInfo success', async t => {
+  const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_DATA)
   await runFixture(t, 'site_info', {
     flags: '--token=test --site-id=test',
-    env: { BUILD_SITE_INFO },
+    env: { TEST_SCHEME: scheme, TEST_HOST: host },
   })
+  await stopServer()
 })
 
 test('Environment variable siteInfo API error', async t => {
+  const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, 'invalid')
   await runFixture(t, 'site_info', {
     flags: '--token=test --site-id=test',
-    env: { BUILD_SITE_INFO: 'invalid' },
+    env: { TEST_SCHEME: scheme, TEST_HOST: host },
   })
+  await stopServer()
 })
 
 test('Environment variable siteInfo no token', async t => {
+  const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_DATA)
   await runFixture(t, 'site_info', {
     flags: '--site-id=test',
-    env: { BUILD_SITE_INFO },
+    env: { TEST_SCHEME: scheme, TEST_HOST: host },
   })
+  await stopServer()
 })
 
 test('Environment variable siteInfo no siteId', async t => {
+  const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_DATA)
   await runFixture(t, 'site_info', {
     flags: '--token=test',
-    env: { BUILD_SITE_INFO },
+    env: { TEST_SCHEME: scheme, TEST_HOST: host },
   })
+  await stopServer()
 })
 
 test('Environment variable siteInfo CI', async t => {
+  const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_DATA)
   await runFixture(t, 'site_info', {
     flags: '--token=test --site-id=test',
-    env: { BUILD_SITE_INFO, NETLIFY: 'true' },
+    env: { TEST_SCHEME: scheme, TEST_HOST: host, NETLIFY: 'true' },
   })
+  await stopServer()
 })
 
 test('build.environment', async t => {
