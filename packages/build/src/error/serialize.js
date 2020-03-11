@@ -14,9 +14,9 @@ const { getLocationBlock } = require('./location')
 
 // Serialize an error object into a header|body string to print in logs
 const serializeError = function({ message, stack, ...errorProps }) {
-  const { type, ...errorInfo } = getErrorInfo(errorProps)
+  const { header, color = redBright, ...typeInfo } = getTypeInfo(errorProps)
+  const errorInfo = getErrorInfo(errorProps)
   const errorPropsA = cleanErrorProps(errorProps)
-  const { header, color = redBright, ...typeInfo } = getTypeInfo(type)
   const body = getBody({ typeInfo, color, message, stack, errorProps: errorPropsA, ...errorInfo })
   return { header, body, color }
 }
