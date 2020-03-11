@@ -35,7 +35,7 @@ test('No .git', async t => {
 })
 
 test('--cwd non-existing', async t => {
-  await runFixtureConfig(t, '', { flags: `--cwd=/invalid` })
+  await runFixtureConfig(t, '', { flags: `--cwd=/invalid --repository-root=${FIXTURES_DIR}/empty` })
 })
 
 test('--repositoryRoot non-existing', async t => {
