@@ -37,9 +37,18 @@ const build = async function(flags) {
 
     logBuildStart()
 
-    const { netlifyConfig, configPath, buildDir, nodePath, token, dry, siteInfo, context, branch } = await loadConfig(
-      flags,
-    )
+    const {
+      netlifyConfig,
+      configPath,
+      buildDir,
+      nodePath,
+      token,
+      api,
+      dry,
+      siteInfo,
+      context,
+      branch,
+    } = await loadConfig(flags)
 
     try {
       const pluginsOptions = await getPluginsOptions(netlifyConfig, buildDir, configPath)
@@ -68,7 +77,7 @@ const build = async function(flags) {
       await trackBuildComplete({ commandsCount, netlifyConfig, duration, siteInfo })
       return true
     } catch (error) {
-      await handleBuildError(error)
+      await handleBuildError(error, api)
       throw error
     }
   } catch (error) {

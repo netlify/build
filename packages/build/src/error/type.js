@@ -20,7 +20,13 @@ const TYPES = {
   dependencies: { header: 'Dependencies error', stackType: 'none' },
   shellCommand: { header: 'Build failed', stackType: 'message', getLocation: getShellCommandLocation },
   fail: { header: 'Build failed', stackType: 'stack', getLocation: getBuildFailLocation },
-  cancel: { header: 'Build canceled', stackType: 'stack', getLocation: getBuildFailLocation, color: yellowBright },
+  cancel: {
+    header: 'Build canceled',
+    stackType: 'stack',
+    getLocation: getBuildFailLocation,
+    color: yellowBright,
+    shouldCancel: true,
+  },
   ipc: { header: 'Plugin internal error', stackType: 'none', getLocation: getBuildFailLocation },
   api: { header: 'API error', stackType: 'message', showErrorProps: true, getLocation: getApiLocation },
   pluginInternalError: {
