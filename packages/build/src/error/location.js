@@ -47,8 +47,13 @@ const getPackageLocation = function(package, local) {
   return `${localString} "${white.bold(package)}"`
 }
 
+const getApiLocation = function({ endpoint, parameters }) {
+  return `While calling the Netlify API endpoint '${endpoint}' with:\n${JSON.stringify(parameters, null, 2)}`
+}
+
 module.exports = {
   getLocationBlock,
   getShellCommandLocation,
   getBuildFailLocation,
+  getApiLocation,
 }
