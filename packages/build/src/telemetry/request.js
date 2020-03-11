@@ -1,5 +1,5 @@
 const {
-  env: { BUILD_TELEMETRY_URL },
+  env: { TEST_SCHEME, TEST_HOST },
   argv,
 } = require('process')
 
@@ -13,9 +13,11 @@ const sendRequest = async function() {
   await got({ ...GOT_OPTS, json: true, body: json })
 }
 
+// TODO: find less intrusive way to mock HTTP requests
+const SCHEME = TEST_SCHEME || 'https'
+const HOST = TEST_HOST || 'telemetry-service.netlify.com'
 const GOT_OPTS = {
-  // BUILD_TELEMETRY_URL is used during tests
-  url: BUILD_TELEMETRY_URL || 'https://telemetry-service.netlify.com/collect',
+  url: `${SCHEME}://${HOST}/collect`,
   method: 'POST',
   headers: {
     'X-Netlify-Client': 'NETLIFY_CI',
