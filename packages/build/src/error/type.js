@@ -1,9 +1,12 @@
 const { yellowBright } = require('chalk')
 
 const { getShellCommandLocation, getBuildFailLocation } = require('./location')
+const { getErrorInfo } = require('./info')
 
 // Retrieve error-type specific information
-const getTypeInfo = function(type) {
+const getTypeInfo = function(errorProps) {
+  const { type } = getErrorInfo(errorProps)
+
   if (TYPES[type] === undefined) {
     return TYPES[DEFAULT_TYPE]
   }
