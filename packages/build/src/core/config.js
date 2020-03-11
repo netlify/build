@@ -48,7 +48,18 @@ const loadConfig = async function(flags) {
 
   const api = getApiClient(token)
   const siteInfo = await getSiteInfo(api, siteId)
-  return { netlifyConfig, configPath, buildDir, nodePath, token, dry, siteInfo, context: contextA, branch: branchA }
+  return {
+    netlifyConfig,
+    configPath,
+    buildDir,
+    nodePath,
+    api,
+    token,
+    dry,
+    siteInfo,
+    context: contextA,
+    branch: branchA,
+  }
 }
 
 // Default values of CLI flags
