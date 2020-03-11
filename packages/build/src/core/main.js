@@ -31,9 +31,9 @@ const { doDryRun } = require('./dry')
  * @param  {boolean} [flags.dry] - printing commands without executing them
  */
 const build = async function(flags) {
-  const buildTimer = startTimer()
-
   try {
+    const buildTimer = startTimer()
+
     logBuildStart()
 
     const { netlifyConfig, configPath, buildDir, nodePath, token, dry, siteInfo, context, branch } = await loadConfig(
