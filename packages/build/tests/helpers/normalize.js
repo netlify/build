@@ -51,9 +51,9 @@ const MAIN_NORMALIZE_REGEXPS = [
   // Package versions
   [/([@v])[\d.]+/g, '$11.0.0'],
   // Semantic versions
-  [/\d+\.\d+\.\d+/, '1.0.0'],
+  [/\d+\.\d+\.\d+/g, '1.0.0'],
   // npm install logs
-  [/added \d+ package.*/, 'added packages'],
+  [/added \d+ package.*/g, 'added packages'],
   [/^npm ERR!.*/gm, 'npm ERR!'],
   [/(npm ERR!\n)+/g, 'npm ERR!\n'],
   // Empty lines
