@@ -13,7 +13,7 @@ const { serializeList } = require('../utils/list')
 const NAME = '@netlify/plugin-functions-core'
 
 // Install Netlify functions dependencies
-const onInstall = async function({ constants: { FUNCTIONS_SRC } }) {
+const onPreBuild = async function({ constants: { FUNCTIONS_SRC } }) {
   if (FUNCTIONS_SRC === undefined || !(await pathExists(FUNCTIONS_SRC))) {
     return
   }
@@ -36,7 +36,7 @@ const onInstall = async function({ constants: { FUNCTIONS_SRC } }) {
 }
 
 // Package Netlify functions
-const onFunctionsPackage = async function({ constants: { FUNCTIONS_SRC, FUNCTIONS_DIST } }) {
+const onPostBuild = async function({ constants: { FUNCTIONS_SRC, FUNCTIONS_DIST } }) {
   if (FUNCTIONS_SRC === undefined || !(await pathExists(FUNCTIONS_SRC))) {
     return
   }
@@ -65,4 +65,4 @@ const getLoggedPath = function({ path }) {
   return path
 }
 
-module.exports = { name: NAME, onInstall, onFunctionsPackage }
+module.exports = { name: NAME, onPreBuild, onPostBuild }
