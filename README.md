@@ -174,7 +174,7 @@ Below is an example plugin using the `onInit` event handler
 // File my-plugin.js
 module.exports = function myPlugin(conf) {
   return {
-    onInit: ({ pluginConfig, netlifyConfig, constants, utils }) => {
+    onInit: ({ inputs, netlifyConfig, constants, utils }) => {
       console.log('Run custom logic during onInit event')
     },
   }
@@ -225,7 +225,7 @@ Below is an example plugin using the `onPreBuild` event handler
 // File my-plugin.js
 module.exports = function myPlugin(conf) {
   return {
-    onPreBuild: ({ pluginConfig, netlifyConfig, constants, utils }) => {
+    onPreBuild: ({ inputs, netlifyConfig, constants, utils }) => {
       console.log('Run custom logic during onPreBuild event')
     },
   }
@@ -276,7 +276,7 @@ Below is an example plugin using the `onBuild` event handler
 // File my-plugin.js
 module.exports = function myPlugin(conf) {
   return {
-    onBuild: ({ pluginConfig, netlifyConfig, constants, utils }) => {
+    onBuild: ({ inputs, netlifyConfig, constants, utils }) => {
       console.log('Run custom logic during onBuild event')
     },
   }
@@ -327,7 +327,7 @@ Below is an example plugin using the `onPostBuild` event handler
 // File my-plugin.js
 module.exports = function myPlugin(conf) {
   return {
-    onPostBuild: ({ pluginConfig, netlifyConfig, constants, utils }) => {
+    onPostBuild: ({ inputs, netlifyConfig, constants, utils }) => {
       console.log('Run custom logic during onPostBuild event')
     },
   }
@@ -378,7 +378,7 @@ Below is an example plugin using the `onSuccess` event handler
 // File my-plugin.js
 module.exports = function myPlugin(conf) {
   return {
-    onSuccess: ({ pluginConfig, netlifyConfig, constants, utils }) => {
+    onSuccess: ({ inputs, netlifyConfig, constants, utils }) => {
       console.log('Run custom logic during onSuccess event')
     },
   }
@@ -429,7 +429,7 @@ Below is an example plugin using the `onError` event handler
 // File my-plugin.js
 module.exports = function myPlugin(conf) {
   return {
-    onError: ({ pluginConfig, netlifyConfig, constants, utils }) => {
+    onError: ({ inputs, netlifyConfig, constants, utils }) => {
       console.log('Run custom logic during onError event')
     },
   }
@@ -480,7 +480,7 @@ Below is an example plugin using the `onEnd` event handler
 // File my-plugin.js
 module.exports = function myPlugin(conf) {
   return {
-    onEnd: ({ pluginConfig, netlifyConfig, constants, utils }) => {
+    onEnd: ({ inputs, netlifyConfig, constants, utils }) => {
       console.log('Run custom logic during onEnd event')
     },
   }

@@ -92,10 +92,10 @@ To access them in your plugin code you can:
 ```js
 module.exports = {
   name: 'netlify-plugin-hello-world',
-  onPreBuild: ({ pluginConfig }) => {
+  onPreBuild: ({ inputs }) => {
     console.log('Hello world from onPreBuild event!')
-    console.log(pluginConfig.foo) // bar
-    console.log(pluginConfig.fizz) // pop
+    console.log(inputs.foo) // bar
+    console.log(inputs.fizz) // pop
   },
 }
 ```
@@ -103,16 +103,16 @@ module.exports = {
 Instead of a plugin being a simple object, it can also be a function returning an object:
 
 ```js
-module.exports = function helloWorldPlugin(pluginConfig) {
-  console.log(pluginConfig.foo) // bar
-  console.log(pluginConfig.fizz) // pop
+module.exports = function helloWorldPlugin(inputs) {
+  console.log(inputs.foo) // bar
+  console.log(inputs.fizz) // pop
 
   return {
     name: 'netlify-plugin-hello-world',
-    onPreBuild: ({ pluginConfig, netlifyConfig, constants }) => {
+    onPreBuild: ({ inputs, netlifyConfig, constants }) => {
       console.log('Hello world from onPreBuild event!')
-      console.log(pluginConfig.foo) // bar
-      console.log(pluginConfig.fizz) // pop
+      console.log(inputs.foo) // bar
+      console.log(inputs.fizz) // pop
     },
   }
 }
@@ -133,11 +133,11 @@ module.exports = {
       increment: { type: 'number', minimum: 0, maximum: 10, default: 5 }
     }
   },
-  onPreBuild: ({ pluginConfig }) => { ... },
+  onPreBuild: ({ inputs }) => { ... },
 }
 ```
 
-The `config` property is a JSON schema v7 describing the `pluginConfig` object.
+The `config` property is a JSON schema v7 describing the `inputs` object.
 
 More information about JSON schema can be found at https://json-schema.org/understanding-json-schema/.
 
@@ -191,8 +191,10 @@ module.exports = {
 
 The following methods are available depending on the error's type:
 
-- `utils.build.fail('message')`: fails the build - the build in your dashboard would show “Failed”. Use this to indicate something went wrong.
-- `utils.build.cancel('message')`: cancels the build - the dashboard would show “Cancelled” for that build. Use this to indicate that the build is being cancelled as planned.
+- `utils.build.fail('message')`: fails the build - the build in your dashboard would show “Failed”. Use this to indicate
+  something went wrong.
+- `utils.build.cancel('message')`: cancels the build - the dashboard would show “Cancelled” for that build. Use this to
+  indicate that the build is being cancelled as planned.
 
 This works inside `async` event handlers as well.
 

@@ -2,6 +2,14 @@ const test = require('ava')
 
 const { runFixture } = require('../../helpers/main')
 
+test('plugin inputs simple', async t => {
+  await runFixture(t, 'simple')
+})
+
+test('pluginConfig backward compatibility', async t => {
+  await runFixture(t, 'backward_compat')
+})
+
 test('plugin.config validates properties', async t => {
   await runFixture(t, 'prop')
 })
@@ -18,7 +26,7 @@ test('plugin.config is validated as a JSON schema 7', async t => {
   await runFixture(t, 'invalid_schema')
 })
 
-test('plugin.config works with undefined pluginConfig', async t => {
+test('plugin.config works with undefined inputs', async t => {
   await runFixture(t, 'undefined')
 })
 
