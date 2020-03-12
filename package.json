@@ -13,8 +13,8 @@
     "pre-push": "run-s test:*",
     "docs": "node ./scripts/docs.js",
     "test:docs": "npm run docs",
-    "test:lint": "eslint --ignore-path .gitignore --fix --cache --format=codeframe --max-warnings=0 \"{packages,examples,scripts}/**/*.js\"",
-    "test:prettier": "prettier --ignore-path .gitignore --write --loglevel warn \"{.github,packages,examples,scripts}/**/*.{js,md,yml,json}\" \"*.{js,md,yml,json}\"",
+    "test:lint": "eslint --ignore-path .gitignore --fix --cache --format=codeframe --max-warnings=0 \"{packages,scripts}/**/*.js\"",
+    "test:prettier": "prettier --ignore-path .gitignore --write --loglevel warn \"{.github,packages,scripts}/**/*.{js,md,yml,json}\" \"*.{js,md,yml,json}\"",
     "test:dev:ava": "ava",
     "test:ci:ava": "nyc -r lcovonly -r text -r json ava"
   },

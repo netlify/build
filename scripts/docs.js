@@ -229,8 +229,6 @@ const markdownFiles = [
   path.join(ROOT_DIR, 'CONTRIBUTING.md'),
   path.join(ROOT_DIR, 'docs/**/**.md'),
   path.join(ROOT_DIR, 'packages/**/**.md'),
-  path.join(ROOT_DIR, 'examples/**/**.md'),
-  `!${path.join(ROOT_DIR, 'examples/**/node_modules/**/**.md')}`,
   `!${path.join(ROOT_DIR, 'packages/**/node_modules/**/**.md')}`,
   '!node_modules',
 ]
