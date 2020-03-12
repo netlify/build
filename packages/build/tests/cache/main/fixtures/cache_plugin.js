@@ -19,12 +19,12 @@ const DUMMY_VALUE = String(Math.random())
 
 module.exports = {
   name: 'netlify-plugin-test',
-  async onPreSaveCache({ utils: { cache } }) {
+  async onPreBuild({ utils: { cache } }) {
     await cache.remove(TEST_CACHE_PATH)
     await makeDir(dirname(cachePath))
     await pWriteFile(cachePath, DUMMY_VALUE)
   },
-  async onPostSaveCache({ utils: { cache } }) {
+  async onPostBuild({ utils: { cache } }) {
     await del(TEST_CACHE_PATH, { force: true })
     await cache.restore(TEST_CACHE_PATH)
     const value = await pReadFile(cachePath, 'utf8')

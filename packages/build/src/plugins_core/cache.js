@@ -10,7 +10,7 @@ const isNetlifyCI = require('../utils/is-netlify-ci')
 // Save/restore cache core plugin
 const cachePlugin = {
   name: '@netlify/plugin-cache-core',
-  async onSaveCache({ utils: { cache } }) {
+  async onPostBuild({ utils: { cache } }) {
     logCacheStart()
 
     await Promise.all(ARTIFACTS.map(({ path, digests }) => saveCache(path, digests, cache)))
