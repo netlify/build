@@ -1,4 +1,0 @@
-build:
-  publish: publish
-  command:
-    - true

@@ -81,13 +81,10 @@ build:
   publish: my-dist-folder
   # Run this lifecycle during build
   lifecycle:
-    onInit:
-      - npm run thing
-      - echo "much wow"
+    onInit: npm run thing
     onPreBuild: curl download-static-content
     onBuild: npm run build
-    onPostBuild:
-      - npx generate-sitemap
+    onPostBuild: npx generate-sitemap
 ```
 
 ### 2. Extending via plugins
@@ -204,8 +201,7 @@ Below is an example of how to use the `onInit` event in the Netlify config file.
 ```yml
 build:
   lifecycle:
-    onInit:
-      - echo "Do thing on onInit event"
+    onInit: echo "Do thing on onInit event"
 ```
 
 </details>
@@ -255,8 +251,7 @@ Below is an example of how to use the `onPreBuild` event in the Netlify config f
 ```yml
 build:
   lifecycle:
-    onPreBuild:
-      - echo "Do thing on onPreBuild event"
+    onPreBuild: echo "Do thing on onPreBuild event"
 ```
 
 </details>
@@ -306,8 +301,7 @@ Below is an example of how to use the `onBuild` event in the Netlify config file
 ```yml
 build:
   lifecycle:
-    onBuild:
-      - echo "Do thing on onBuild event"
+    onBuild: echo "Do thing on onBuild event"
 ```
 
 </details>
@@ -357,8 +351,7 @@ Below is an example of how to use the `onPostBuild` event in the Netlify config 
 ```yml
 build:
   lifecycle:
-    onPostBuild:
-      - echo "Do thing on onPostBuild event"
+    onPostBuild: echo "Do thing on onPostBuild event"
 ```
 
 </details>
@@ -408,8 +401,7 @@ Below is an example of how to use the `onSuccess` event in the Netlify config fi
 ```yml
 build:
   lifecycle:
-    onSuccess:
-      - echo "Do thing on onSuccess event"
+    onSuccess: echo "Do thing on onSuccess event"
 ```
 
 </details>
@@ -459,8 +451,7 @@ Below is an example of how to use the `onError` event in the Netlify config file
 ```yml
 build:
   lifecycle:
-    onError:
-      - echo "Do thing on onError event"
+    onError: echo "Do thing on onError event"
 ```
 
 </details>
@@ -510,8 +501,7 @@ Below is an example of how to use the `onEnd` event in the Netlify config file.
 ```yml
 build:
   lifecycle:
-    onEnd:
-      - echo "Do thing on onEnd event"
+    onEnd: echo "Do thing on onEnd event"
 ```
 
 </details>
@@ -521,7 +511,7 @@ build:
 
 Below you will see 2 new values for Netlify configuration. `build.lifecycle` & `plugins`.
 
-`build.lifecycle` is where you can define inline commands to run during the different stages of the build lifecycle.
+`build.lifecycle` is where you can define shell commands to run during the different stages of the build lifecycle.
 
 `plugins` is an array of build plugins to run during the build process. These run in the order in which they are
 defined.
@@ -534,13 +524,8 @@ build:
   functions: src/functions
   publish: build
   lifecycle:
-    onInit:
-      - npm run foo
-      - export VALUE=lol
-      - echo "much wow"
-    onBuild: |
-      echo 'Hello Netlify Build!'
-      npm run build
+    onInit: npm run foo
+    onBuild: npm run build
 
 # Config file `plugins` defines plugins used by build. Plugins are optional
 plugins:

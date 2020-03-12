@@ -71,10 +71,6 @@ test('build.command: string', async t => {
   await runFixtureConfig(t, 'build_command_string')
 })
 
-test('build.command: array of strings', async t => {
-  await runFixtureConfig(t, 'build_command_array')
-})
-
 test('build.command: not with lifecycle', async t => {
   await runFixtureConfig(t, 'build_command_no_lifecycle')
 })
