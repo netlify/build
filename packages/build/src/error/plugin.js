@@ -1,10 +1,7 @@
-const isNetlifyCI = require('../utils/is-netlify-ci')
-
 // Retrieve plugin's package.json details to include in error messages.
 // Please note `packageJson` has been normalized by `normalize-package-data`.
-const getPluginBlock = function({ packageJson, id }) {
-  // Local logs are less verbose to allow developers to focus on the stack trace
-  if (packageJson === undefined || !isNetlifyCI()) {
+const getPluginBlock = function({ packageJson = {}, id }) {
+  if (Object.keys(packageJson).length === 0) {
     return
   }
 
