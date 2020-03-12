@@ -151,8 +151,7 @@ const fireShellCommand = async function({ id, shellCommand, buildDir, nodePath, 
     env: childEnv,
     extendEnv: false,
   })
-  const chunks = []
-  startOutput(childProcess, chunks)
+  const outputState = startOutput(childProcess)
 
   try {
     await childProcess
@@ -160,7 +159,7 @@ const fireShellCommand = async function({ id, shellCommand, buildDir, nodePath, 
     addErrorInfo(error, { type: 'shellCommand', location: { id, shellCommand } })
     throw error
   } finally {
-    await stopOutput(childProcess, chunks)
+    await stopOutput(childProcess, outputState)
   }
 }
 
@@ -169,8 +168,7 @@ const firePluginCommand = async function(
   { id, childProcess, event, originalEvent, package, packageJson, local },
   { error },
 ) {
-  const chunks = []
-  startOutput(childProcess, chunks)
+  const outputState = startOutput(childProcess)
 
   try {
     await callChild(childProcess, 'run', { originalEvent, error })
@@ -178,7 +176,7 @@ const firePluginCommand = async function(
     addErrorInfo(error, { location: { event, package, local }, plugin: { id, packageJson } })
     throw error
   } finally {
-    await stopOutput(childProcess, chunks)
+    await stopOutput(childProcess, outputState)
   }
 }
 
