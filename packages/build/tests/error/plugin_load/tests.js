@@ -12,12 +12,12 @@ test('Top function errors local', async t => {
   await runFixture(t, 'function')
 })
 
-test('CI errors with all fields', async t => {
-  await runFixture(t, 'ci_full', { env: { NETLIFY: 'true' } })
+test('Node module all fields', async t => {
+  await runFixture(t, 'full')
 })
 
-test('CI errors with partial fields', async t => {
-  await runFixture(t, 'ci_partial', { env: { NETLIFY: 'true' } })
+test('Node module partial fields', async t => {
+  await runFixture(t, 'partial')
 })
 
 test('Process warnings', async t => {
