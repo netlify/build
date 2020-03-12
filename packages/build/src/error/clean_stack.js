@@ -69,7 +69,7 @@ const isInternalStack = function(line) {
   return INTERNAL_STACK_REGEXP.test(line)
 }
 
-const INTERNAL_STACK_REGEXP = /packages[/\\]build[/\\](src|node_modules)[/\\]/
+const INTERNAL_STACK_REGEXP = /(packages|@netlify)[/\\]build[/\\](src|node_modules)[/\\]/
 
 const INITIAL_NEWLINES = /^\n+/
 
