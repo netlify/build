@@ -10,20 +10,18 @@ const isNetlifyCI = require('../utils/is-netlify-ci')
 // But locally we want to stream output instead for a better developer
 // experience.
 // See https://github.com/netlify/build/issues/343
-const startOutput = function(childProcess, chunks) {
+const startOutput = function(childProcess) {
   if (shouldBuffer()) {
-    bufferOutput(childProcess, chunks)
-    return
+    return bufferOutput(childProcess)
   }
 
   pipeOutput(childProcess)
 }
 
 // Stop streaming/buffering Bash command or plugin command output
-const stopOutput = async function(childProcess, chunks) {
+const stopOutput = async function(childProcess, outputState) {
   if (shouldBuffer()) {
-    unbufferOutput(chunks)
-    return
+    return unbufferOutput(childProcess, outputState)
   }
 
   await unpipeOutput(childProcess)
@@ -54,16 +52,21 @@ const waitForFlush = async function(stream) {
   await pSetTimeout(0)
 }
 
-const bufferOutput = function(childProcess, chunks) {
-  childProcess.stdout.on('data', chunk => {
-    chunks.push(chunk)
-  })
-  childProcess.stderr.on('data', chunk => {
-    chunks.push(chunk)
-  })
+const bufferOutput = function(childProcess) {
+  const chunks = []
+  const dataListener = pushChunk.bind(null, chunks)
+  childProcess.stdout.on('data', dataListener)
+  childProcess.stderr.on('data', dataListener)
+  return { chunks, dataListener }
 }
 
-const unbufferOutput = function(chunks) {
+const pushChunk = function(chunks, chunk) {
+  chunks.push(chunk)
+}
+
+const unbufferOutput = function(childProcess, { chunks, dataListener }) {
+  childProcess.stderr.removeListener('data', dataListener)
+  childProcess.stdout.removeListener('data', dataListener)
   const output = chunks.join('')
   process.stdout.write(`${output}\n`)
 }
