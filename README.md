@@ -97,15 +97,15 @@ They can be installed from `npm` or run locally from relative path in your proje
 # Config file `plugins` defines plugins used by build.
 plugins:
   - package: ./local/path/to/plugin-folder
-    config:
+    inputs:
       optionOne: 'hello'
       optionTwo: 'there'
- - package: plugin-from-npm
-   config:
-     optionOne: 'neat'
-     arrayOfValues:
-      - david@netlify.com
-      - jim@netlify.com
+  - package: plugin-from-npm
+    inputs:
+      optionOne: 'neat'
+      arrayOfValues:
+        - david@netlify.com
+        - jim@netlify.com
 ```
 
 Netlify plugins can be found on npm by
@@ -530,11 +530,11 @@ build:
 # Config file `plugins` defines plugins used by build. Plugins are optional
 plugins:
   - package: ./local/path/to/plugin-folder
-    config:
+    inputs:
       optionOne: hello
       optionTwo: there
   - package: plugin-from-npm
-    config:
+    inputs:
       optionOne: neat
       arrayOfValues:
         - david@netlify.com
@@ -586,7 +586,7 @@ build:
 plugins:
   # Path to plugin. Can be local relative path or reference to node_modules
   - package: netlify-plugin-awesome
-    config:
+    inputs:
       foo: hello
       bar: goodbye
 ```

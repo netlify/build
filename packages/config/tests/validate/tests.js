@@ -35,8 +35,12 @@ test('plugins.any.enabled: boolean', async t => {
   await runFixtureConfig(t, 'plugins_enabled_boolean')
 })
 
-test('plugins.any.config: object', async t => {
-  await runFixtureConfig(t, 'plugins_config_object')
+test('plugins.any.config: renamed', async t => {
+  await runFixtureConfig(t, 'plugins_config_renamed')
+})
+
+test('plugins.any.inputs: object', async t => {
+  await runFixtureConfig(t, 'plugins_inputs_object')
 })
 
 test('build: object', async t => {

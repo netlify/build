@@ -72,20 +72,20 @@ netlify build
 
 This will execute our `onPreBuild` function and the `npm run build` command.
 
-## Adding configuration to plugins
+## Adding inputs to plugins
 
-If your plugin requires additional values from the user to do things, those can be provided as `config` to the plugin.
+If your plugin requires additional values from the user to do things, those can be provided as `inputs` to the plugin.
 
 ```yml
 # Attach our plugin
 plugins:
   - package: ./plugins/netlify-plugin-hello-world
-    config:
+    inputs:
       foo: bar
       fizz: pop
 ```
 
-These `config` values are passed into the plugin when the event handlers are being executed.
+These `inputs` values are passed into the plugin when the event handlers are being executed.
 
 To access them in your plugin code you can:
 
@@ -118,9 +118,9 @@ module.exports = function helloWorldPlugin(inputs) {
 }
 ```
 
-## Validating plugin configuration
+## Validating plugin inputs
 
-The plugin configuration can be validated using a `config` property:
+The plugin inputs can be validated using a `config` property:
 
 ```js
 module.exports = {
@@ -143,8 +143,8 @@ More information about JSON schema can be found at https://json-schema.org/under
 
 `config.properties` can have `default` values as shown in the example above. They can also be `required` as shown above.
 
-It is recommended to validate your plugin configuration and assign default values using the `config` property instead of
-doing it inside event handlers.
+It is recommended to validate your plugin inputs and assign default values using the `config` property instead of doing
+it inside event handlers.
 
 ## Plugin constants
 

@@ -2,4 +2,4 @@ plugins:
   - package: ./plugin
   - package: ./plugin
   - package: ./plugin
-    config: {}
+    inputs: {}

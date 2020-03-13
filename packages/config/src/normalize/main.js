@@ -1,6 +1,8 @@
 const mapObj = require('map-obj')
 const deepMerge = require('deepmerge')
 
+const { removeFalsy } = require('../utils/remove_falsy')
+
 const { LEGACY_EVENTS, normalizeEventHandler } = require('./events')
 
 // Normalize configuration object
@@ -44,9 +46,10 @@ const normalizeEvent = function(event, bashCommands) {
 }
 
 // `plugins[*].package` was previously called `plugins[*].type`
+// Same with `plugins[*].config` renamed to `plugins[*].inputs`
 // TODO: remove after the Beta release since it's legacy
-const normalizePlugin = function({ type, package = type, ...plugin }) {
-  return { ...plugin, package }
+const normalizePlugin = function({ type, package = type, config, inputs = config, ...plugin }) {
+  return removeFalsy({ ...plugin, package, inputs })
 }
 
 module.exports = { normalizeConfig }

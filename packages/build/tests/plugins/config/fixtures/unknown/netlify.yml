@@ -1,4 +1,4 @@
 plugins:
   - package: ./plugin
-    config:
+    inputs:
       test: false

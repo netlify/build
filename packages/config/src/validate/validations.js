@@ -38,10 +38,10 @@ const RAW_VALIDATIONS = [
   },
   {
     property: 'plugins.*',
-    // TODO: remove 'type' after the Beta release since its' legacy
-    ...validProperties(['id', 'package', 'enabled', 'config'], ['type']),
+    // TODO: remove 'type', 'config' after the Beta release since its' legacy
+    ...validProperties(['id', 'package', 'enabled', 'inputs'], ['type', 'config']),
     example: {
-      plugins: [{ id: 'one', package: 'netlify-plugin-one', enabled: false, config: { port: 80 } }],
+      plugins: [{ id: 'one', package: 'netlify-plugin-one', enabled: false, inputs: { port: 80 } }],
     },
   },
   {
@@ -77,10 +77,19 @@ const RAW_VALIDATIONS = [
   },
   {
     property: 'plugins.*.config',
+    check: type => type === undefined,
+    message: 'has been renamed to "inputs".',
+    example: (inputs, key, plugin) => ({
+      plugins: [{ ...omit(plugin, ['config']), inputs }],
+    }),
+    warn: true,
+  },
+  {
+    property: 'plugins.*.inputs',
     check: isPlainObj,
     message: 'must be a plain object.',
-    example: (config, key, plugin) => ({
-      plugins: [{ ...plugin, package: 'netlify-plugin-one', config: { port: 80 } }],
+    example: (inputs, key, plugin) => ({
+      plugins: [{ ...plugin, package: 'netlify-plugin-one', inputs: { port: 80 } }],
     }),
   },
   {
