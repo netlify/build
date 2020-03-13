@@ -4,16 +4,6 @@ const EVENTS = [
    */
   'onInit',
 
-  // Fetch previous build cache
-  // 'onPreGetCache',
-  // 'onGetCache',
-  // 'onPostGetCache',
-
-  // Install project dependencies
-  // 'onPreInstall',
-  // 'onInstall',
-  // 'onPostInstall',
-
   /**
    * `onPreBuild` - Before build commands are executed
    */
@@ -26,26 +16,6 @@ const EVENTS = [
    * `onPostBuild` - After Build commands are executed
    */
   'onPostBuild',
-
-  // Build functions
-  // 'onPreFunctionsBuild',
-  // 'onFunctionsBuild',
-  // 'onPostFunctionsBuild',
-
-  // Package the serverless functions
-  // 'onPreFunctionsPackage',
-  // 'onFunctionsPackage',
-  // 'onPostFunctionsPackage',
-
-  // Runs before built artifacts are deployed
-  // 'onPreDeploy',
-  // 'onDeploy', Not currently active
-  // 'onPostDeploy', Not currently active
-
-  // Save cached assets
-  // 'onPreSaveCache',
-  // 'onSaveCache',
-  // 'onPostSaveCache',
 
   /**
    * `onSuccess` - Runs on build success
@@ -90,6 +60,7 @@ const LEGACY_EVENTS = {
   error: 'onError',
   end: 'onEnd',
   finally: 'onEnd',
+
   // TODO: those are temporarily disabled until we implement them
   onPreGetCache: 'onPreBuild',
   onGetCache: 'onPreBuild',
