@@ -3,10 +3,10 @@ const pReduce = require('p-reduce')
 const { EVENTS } = require('@netlify/config')
 
 const { callChild } = require('../plugins/ipc')
-const { logCommandsStart, logCommand, logShellCommandStart, logCommandSuccess } = require('../log/main')
+const { logCommandsStart, logCommand, logShellCommandStart, logCommandSuccess, logPluginError } = require('../log/main')
 const { startTimer, endTimer } = require('../log/timer')
 const { startOutput, stopOutput } = require('../log/stream')
-const { addErrorInfo } = require('../error/info')
+const { addErrorInfo, getErrorInfo } = require('../error/info')
 
 // Get commands for all events
 const getCommands = function({ pluginsCommands, netlifyConfig }) {
@@ -82,27 +82,29 @@ const runCommands = async function({
 // thrown. This allows users to be notified of issues inside their `onError` or
 // `onEnd` events.
 const execCommands = async function(commands, { configPath, buildDir, state, nodePath, childEnv, failFast, error }) {
-  const { failure, manifest: manifestA } = await pReduce(
+  const { failure } = await pReduce(
     commands,
-    ({ failure, manifest }, command) =>
-      runCommand(command, { manifest, configPath, buildDir, state, nodePath, childEnv, error, failure, failFast }),
-    { manifest: {} },
+    ({ failure, failedPlugins }, command) =>
+      runCommand(command, { configPath, buildDir, state, nodePath, childEnv, error, failure, failedPlugins, failFast }),
+    { failedPlugins: [] },
   )
 
   if (failure !== undefined) {
     throw failure
   }
-
-  return manifestA
 }
 
 // Run a command (shell or plugin)
 const runCommand = async function(
   command,
-  { manifest, configPath, buildDir, state, nodePath, childEnv, error, failure, failFast },
+  { configPath, buildDir, state, nodePath, childEnv, error, failure, failedPlugins, failFast },
 ) {
   try {
     const { id, event } = command
+
+    if (failedPlugins.includes(id)) {
+      return { failure, failedPlugins }
+    }
 
     const methodTimer = startTimer()
 
@@ -110,19 +112,15 @@ const runCommand = async function(
     const { index } = state
     logCommand(command, { index, configPath, error })
 
-    const pluginReturnValue = await fireCommand(command, { buildDir, nodePath, childEnv, error })
+    await fireCommand(command, { buildDir, nodePath, childEnv, error })
 
     logCommandSuccess()
 
     endTimer(methodTimer, id, event)
 
-    return { failure, manifest: { ...manifest, ...pluginReturnValue } }
-  } catch (failure) {
-    if (failFast) {
-      throw failure
-    }
-
-    return { failure, manifest }
+    return { failure, failedPlugins }
+  } catch (newFailure) {
+    return handleCommandError({ newFailure, failedPlugins, failure, failFast })
   }
 }
 
@@ -173,6 +171,27 @@ const firePluginCommand = async function(
   } finally {
     await stopOutput(childProcess, outputState)
   }
+}
+
+// Handle shell or plugin error:
+//  - usually (`failFast`), propagate the error to make the build stop.
+//  - if onError and onEnd events (not `failFast`), wait until all event
+//    handlers of the same type have been triggered before propagating
+//  - if `utils.build.failPlugin()` was used, print an error and skip next event
+//    handlers of that plugin. But do not stop build.
+const handleCommandError = function({ newFailure, failedPlugins, failure, failFast }) {
+  const { type, plugin: { id } = {} } = getErrorInfo(newFailure)
+
+  if (type === 'failPlugin') {
+    logPluginError(newFailure)
+    return { failure, failedPlugins: [...failedPlugins, id] }
+  }
+
+  if (failFast) {
+    throw newFailure
+  }
+
+  return { failure: newFailure, failedPlugins }
 }
 
 module.exports = { getCommands, runCommands }

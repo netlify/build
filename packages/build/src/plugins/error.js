@@ -5,6 +5,11 @@ const fail = function(message, opts) {
   throw normalizeError('fail', fail, message, opts)
 }
 
+// Stop plugin. Same as `fail` but only stops plugin not whole build
+const failPlugin = function(message, opts) {
+  throw normalizeError('failPlugin', failPlugin, message, opts)
+}
+
 // Cancel build. Same as `fail` except it marks the build as "canceled".
 const cancel = function(message, opts) {
   throw normalizeError('cancel', cancel, message, opts)
@@ -32,4 +37,4 @@ const getError = function(error, message, func) {
 
 const ERROR_TYPE_SYM = Symbol('errorType')
 
-module.exports = { fail, cancel, ERROR_TYPE_SYM }
+module.exports = { fail, failPlugin, cancel, ERROR_TYPE_SYM }

@@ -20,6 +20,11 @@ const TYPES = {
   dependencies: { header: 'Dependencies error', stackType: 'none' },
   shellCommand: { header: 'Build failed', stackType: 'message', getLocation: getShellCommandLocation },
   fail: { header: 'Build failed', stackType: 'stack', getLocation: getBuildFailLocation },
+  failPlugin: {
+    header: 'Plugin failed',
+    stackType: 'stack',
+    getLocation: getBuildFailLocation,
+  },
   cancel: {
     header: 'Build canceled',
     stackType: 'stack',
