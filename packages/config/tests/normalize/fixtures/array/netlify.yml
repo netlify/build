@@ -1,4 +1,0 @@
-build:
-  lifecycle:
-    onInit:
-      - echo test

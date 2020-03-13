@@ -157,10 +157,10 @@ Please rename ${cyan.bold('build.command')} to ${cyan.bold('build.lifecycle.onBu
   },
   {
     property: 'build.lifecycle.*',
-    check: value => isString(value) || (Array.isArray(value) && value.every(isString)),
-    message: 'must be a string or an array of strings.',
+    check: value => isString(value),
+    message: 'must be a string.',
     example: (value, key, lifecycle) => ({
-      build: { lifecycle: { ...lifecycle, onBuild: ['npm run build', 'npm test'] } },
+      build: { lifecycle: { ...lifecycle, onBuild: 'npm run build' } },
     }),
   },
   {

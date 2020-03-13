@@ -1,5 +1,4 @@
 const execa = require('execa')
-const pMapSeries = require('p-map-series')
 const pReduce = require('p-reduce')
 const { EVENTS } = require('@netlify/config')
 
@@ -28,16 +27,16 @@ const getEventCommands = function({
   pluginsCommands: { [event]: pluginCommands = [] },
   netlifyConfig: {
     build: {
-      lifecycle: { [event]: shellCommands },
+      lifecycle: { [event]: shellCommand },
     },
   },
 }) {
-  if (shellCommands === undefined) {
+  if (shellCommand === undefined) {
     return pluginCommands
   }
 
-  const shellCommand = { id: `config.build.lifecycle.${event}`, event, shellCommands, override: {} }
-  return [shellCommand, ...pluginCommands]
+  const shellCommandA = { id: `config.build.lifecycle.${event}`, event, shellCommand, override: {} }
+  return [shellCommandA, ...pluginCommands]
 }
 
 const isEndCommand = function({ event }) {
@@ -128,19 +127,15 @@ const runCommand = async function(
 }
 
 const fireCommand = function(command, { buildDir, nodePath, childEnv, error }) {
-  if (command.shellCommands !== undefined) {
-    return fireShellCommands(command, { buildDir, nodePath, childEnv })
+  if (command.shellCommand !== undefined) {
+    return fireShellCommand(command, { buildDir, nodePath, childEnv })
   }
 
   return firePluginCommand(command, { error })
 }
 
-// Fire a `config.lifecycle.*` series of shell commands
-const fireShellCommands = async function({ id, shellCommands }, { buildDir, nodePath, childEnv }) {
-  await pMapSeries(shellCommands, shellCommand => fireShellCommand({ id, shellCommand, buildDir, nodePath, childEnv }))
-}
-
-const fireShellCommand = async function({ id, shellCommand, buildDir, nodePath, childEnv }) {
+// Fire a `config.lifecycle.*` shell command
+const fireShellCommand = async function({ id, shellCommand }, { buildDir, nodePath, childEnv }) {
   logShellCommandStart(shellCommand)
 
   const childProcess = execa(shellCommand, {

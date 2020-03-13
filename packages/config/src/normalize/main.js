@@ -1,5 +1,4 @@
 const mapObj = require('map-obj')
-const filterObj = require('filter-obj')
 const deepMerge = require('deepmerge')
 
 const { LEGACY_EVENTS, normalizeEventHandler } = require('./events')
@@ -24,10 +23,9 @@ const normalizeLifecycle = function({
   },
 }) {
   const lifecycleA = normalizeOnBuild(lifecycle, command)
-  const lifecycleB = mapObj(lifecycleA, normalizeBashCommands)
-  const lifecycleC = filterObj(lifecycleB, hasCommands)
+  const lifecycleB = mapObj(lifecycleA, normalizeEvent)
   const pluginsA = plugins.map(normalizePlugin)
-  return { ...config, build: { ...build, lifecycle: lifecycleC }, plugins: pluginsA }
+  return { ...config, build: { ...build, lifecycle: lifecycleB }, plugins: pluginsA }
 }
 
 // `build.lifecycle.onBuild` was previously called `build.command`
@@ -39,18 +37,10 @@ const normalizeOnBuild = function(lifecycle, command) {
   return { ...lifecycle, onBuild: command }
 }
 
-const normalizeBashCommands = function(event, bashCommands) {
+const normalizeEvent = function(event, bashCommands) {
   const eventA = normalizeEventHandler(event)
   const eventB = LEGACY_EVENTS[eventA] === undefined ? eventA : LEGACY_EVENTS[eventA]
-  const bashCommandsA = typeof bashCommands === 'string' ? bashCommands.trim().split('\n') : bashCommands
-  // Remove commands that are empty strings
-  const bashCommandsB = bashCommandsA.filter(Boolean)
-  return [eventB, bashCommandsB]
-}
-
-// Remove commands that are empty arrays
-const hasCommands = function(event, bashCommands) {
-  return bashCommands.length !== 0
+  return [eventB, bashCommands]
 }
 
 // `plugins[*].package` was previously called `plugins[*].type`

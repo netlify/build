@@ -206,8 +206,7 @@ function renderConfigExample(name) {
   \`\`\`yml
   build:
     lifecycle:
-      ${name}:
-        - echo "Do thing on ${name} event"
+      ${name}: echo "Do thing on ${name} event"
   \`\`\`
   `
 }

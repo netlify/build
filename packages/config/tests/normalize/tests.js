@@ -6,10 +6,6 @@ test('Multiline commands', async t => {
   await runFixtureConfig(t, 'multiline')
 })
 
-test('Array commands', async t => {
-  await runFixtureConfig(t, 'array')
-})
-
 test('build.command', async t => {
   await runFixtureConfig(t, 'command')
 })

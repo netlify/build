@@ -1,9 +1,5 @@
 build:
-  lifecycle:
-    onBuild:
-      - echo onBuild
+  ignore: [a, b]
 context:
   production:
-    lifecycle:
-      onBuild:
-        - echo onBuildTest
+    ignore: [c, d]
