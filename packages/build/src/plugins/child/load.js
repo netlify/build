@@ -1,5 +1,5 @@
 const { getOverride } = require('../override')
-const { validateInputs } = require('../config/validate_props.js')
+const { validateInputs } = require('../config/validate_inputs')
 
 const { getLogic } = require('./logic')
 const { validatePlugin } = require('./validate')

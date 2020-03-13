@@ -2,7 +2,7 @@ const isPlainObj = require('is-plain-obj')
 const { EVENTS, LEGACY_EVENTS } = require('@netlify/config')
 
 const { serializeList } = require('../../utils/list')
-const { validateConfigSchema } = require('../config/validate_config')
+const { validateInputsSchema } = require('../config/validate_schema')
 const { fail } = require('../error')
 
 const { API_METHODS } = require('./api')
@@ -61,7 +61,7 @@ const validateNonMethod = function(value, propName) {
   if (validator === undefined) {
     fail(`Invalid property '${propName}'.
 Please use a property name. One of:
-${serializeList(Object.keys(VALIDATORS))}`)
+${serializeList(VALID_PROPERTIES)}`)
   }
 
   validator(value)
@@ -92,6 +92,14 @@ const isValidScope = function(scope) {
 
 const ALLOWED_SCOPES = ['*', ...API_METHODS]
 
-const VALIDATORS = { name: validateName, scopes: validateScopes, config: validateConfigSchema }
+const VALIDATORS = {
+  name: validateName,
+  scopes: validateScopes,
+  inputs: validateInputsSchema,
+  // Backward compatibility with former name.
+  // TODO: remove after going out of beta.
+  config: validateInputsSchema,
+}
+const VALID_PROPERTIES = ['name', 'scopes', 'inputs']
 
 module.exports = { validatePlugin }
