@@ -19,7 +19,7 @@ const createGit = async function(cwd, git) {
   await execa.command('git init', { cwd })
   await execa.command('git config user.email test@test.com', { cwd })
   await execa.command('git config user.name test', { cwd })
-  await execa.command('git commit --allow-empty -m one', { cwd })
+  await execa.command('git commit --no-gpg-sign --allow-empty -m one', { cwd })
   await execa.command('git config --unset user.email', { cwd })
   await execa.command('git config --unset user.name', { cwd })
 }
