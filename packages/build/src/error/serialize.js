@@ -17,8 +17,9 @@ const serializeError = function({ message, stack, ...errorProps }) {
   const { header, color = redBright, ...typeInfo } = getTypeInfo(errorProps)
   const errorInfo = getErrorInfo(errorProps)
   const errorPropsA = cleanErrorProps(errorProps)
+  const headerA = getHeader(header, errorInfo)
   const body = getBody({ typeInfo, color, message, stack, errorProps: errorPropsA, ...errorInfo })
-  return { header, body, color }
+  return { header: headerA, body, color }
 }
 
 // Remove error static properties that should not be logged
@@ -27,6 +28,15 @@ const cleanErrorProps = function(errorProps) {
 }
 
 const CLEANED_ERROR_PROPS = [INFO_SYM, 'requireStack']
+
+// Retrieve header to print in logs
+const getHeader = function(header, errorInfo) {
+  if (typeof header !== 'function') {
+    return header
+  }
+
+  return header(errorInfo)
+}
 
 // Retrieve body to print in logs
 const getBody = function({

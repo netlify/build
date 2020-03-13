@@ -21,7 +21,7 @@ const TYPES = {
   shellCommand: { header: 'Build failed', stackType: 'message', getLocation: getShellCommandLocation },
   fail: { header: 'Build failed', stackType: 'stack', getLocation: getBuildFailLocation },
   failPlugin: {
-    header: 'Plugin failed',
+    header: ({ location: { package } }) => `Plugin "${package}" failed`,
     stackType: 'stack',
     getLocation: getBuildFailLocation,
   },
@@ -32,10 +32,14 @@ const TYPES = {
     color: yellowBright,
     shouldCancel: true,
   },
-  ipc: { header: 'Plugin internal error', stackType: 'none', getLocation: getBuildFailLocation },
+  ipc: {
+    header: ({ location: { package } }) => `Plugin "${package}" internal error`,
+    stackType: 'none',
+    getLocation: getBuildFailLocation,
+  },
   api: { header: 'API error', stackType: 'message', showErrorProps: true, getLocation: getApiLocation },
   pluginInternalError: {
-    header: 'Plugin internal error',
+    header: ({ location: { package } }) => `Plugin "${package}" internal error`,
     stackType: 'stack',
     showErrorProps: true,
     rawStack: true,
