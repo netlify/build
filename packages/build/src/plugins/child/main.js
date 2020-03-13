@@ -74,10 +74,20 @@ const load = async function(payload, state) {
 // Run a specific plugin event handler
 const run = async function(
   { originalEvent, error },
-  { context: { pluginCommands, api, utils, constants, pluginConfig, netlifyConfig } },
+  { context: { pluginCommands, api, utils, constants, inputs, netlifyConfig } },
 ) {
   const { method } = pluginCommands.find(pluginCommand => pluginCommand.originalEvent === originalEvent)
-  await method({ api, utils, constants, pluginConfig, netlifyConfig, error })
+  const runOptions = { api, utils, constants, inputs, netlifyConfig, error }
+  addBackwardCompatibility(runOptions)
+  await method(runOptions)
+}
+
+// Add older names, kept for backward compatibility. Non-enumerable.
+// TODO: remove after being out of beta
+const addBackwardCompatibility = function(runOptions) {
+  Object.defineProperties(runOptions, {
+    pluginConfig: { value: runOptions.inputs },
+  })
 }
 
 const EVENTS = { load, run }

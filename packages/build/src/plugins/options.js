@@ -19,12 +19,12 @@ const getPluginsOptions = async function({ plugins: pluginsOptions }, buildDir, 
 }
 
 const normalizePluginOptions = function(pluginOptions) {
-  const { id, package, core, enabled, config: pluginConfig } = {
+  const { id, package, core, enabled, config: inputs } = {
     ...DEFAULT_PLUGIN_OPTIONS,
     ...pluginOptions,
   }
   const local = !core && (package.startsWith('.') || package.startsWith('/'))
-  return { id, package, local, core, enabled, pluginConfig }
+  return { id, package, local, core, enabled, inputs }
 }
 
 const DEFAULT_PLUGIN_OPTIONS = { enabled: true, core: false, config: {} }
