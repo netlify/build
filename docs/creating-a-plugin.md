@@ -120,12 +120,12 @@ module.exports = function helloWorldPlugin(inputs) {
 
 ## Validating plugin inputs
 
-The plugin inputs can be validated using a `config` property:
+The plugin inputs can be validated using an `inputs` property:
 
 ```js
 module.exports = {
   name: 'netlify-plugin-hello-world',
-  config: {
+  inputs: {
     required: ['foo'],
     properties: {
       foo: { type: 'string', enum: ['bar', 'one', 'two'] },
@@ -137,13 +137,13 @@ module.exports = {
 }
 ```
 
-The `config` property is a JSON schema v7 describing the `inputs` object.
+The `inputs` property is a JSON schema v7 describing the `inputs` object.
 
 More information about JSON schema can be found at https://json-schema.org/understanding-json-schema/.
 
-`config.properties` can have `default` values as shown in the example above. They can also be `required` as shown above.
+`inputs.properties` can have `default` values as shown in the example above. They can also be `required` as shown above.
 
-It is recommended to validate your plugin inputs and assign default values using the `config` property instead of doing
+It is recommended to validate your plugin inputs and assign default values using the `inputs` property instead of doing
 it inside event handlers.
 
 ## Plugin constants

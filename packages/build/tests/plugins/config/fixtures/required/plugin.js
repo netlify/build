@@ -1,6 +1,6 @@
 module.exports = {
   name: 'netlify-plugin-test',
-  config: {
+  inputs: {
     required: ['test'],
     properties: {},
   },
