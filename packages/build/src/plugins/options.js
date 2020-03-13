@@ -19,7 +19,7 @@ const getPluginsOptions = async function({ plugins: pluginsOptions }, buildDir, 
 }
 
 const normalizePluginOptions = function(pluginOptions) {
-  const { id, package, core, enabled, config: inputs } = {
+  const { id, package, core, enabled, inputs } = {
     ...DEFAULT_PLUGIN_OPTIONS,
     ...pluginOptions,
   }
@@ -27,7 +27,7 @@ const normalizePluginOptions = function(pluginOptions) {
   return { id, package, local, core, enabled, inputs }
 }
 
-const DEFAULT_PLUGIN_OPTIONS = { enabled: true, core: false, config: {} }
+const DEFAULT_PLUGIN_OPTIONS = { enabled: true, core: false, inputs: {} }
 
 const isPluginEnabled = function({ enabled }) {
   return String(enabled) !== 'false'
