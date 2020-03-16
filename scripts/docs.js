@@ -3,13 +3,10 @@ const fs = require('fs')
 
 const markdownMagic = require('markdown-magic')
 const dox = require('dox')
-const request = require('sync-request')
 
 const ROOT_DIR = path.join(__dirname, '..')
 const CONSTANTS_PATH = path.join(ROOT_DIR, 'packages/build/src/plugins/child', 'constants.js')
 const LIFECYCLE_PATH = path.join(ROOT_DIR, 'packages/config/src/normalize/events.js')
-const PLUGINS_DATABASE_URL = 'https://raw.githubusercontent.com/netlify/plugins/master/plugins.json'
-const PLUGIN_NAME_REGEX = /(?:(?:^|-)netlify-plugin(?:-|$))|(?:(?:^|-)netlify(?:-|$))/
 
 const config = {
   transforms: {
@@ -48,21 +45,6 @@ const config = {
         })
         .join('\n')
       return packages
-    },
-    COMMUNITY_PLUGINS() {
-      const data = remoteRequest(PLUGINS_DATABASE_URL)
-      const PLUGINS = JSON.parse(data)
-      let md = ``
-      md += `| Plugin | Author |\n`
-      md += '|:---------------------------|:-----------:|\n'
-      PLUGINS.sort(sortPlugins).forEach(data => {
-        const userName = data.author
-        const profileURL = `https://github.com/${userName}`
-        md += `| **[${data.name} - \`${data.package.toLowerCase()}\`](${data.repo})** <br/> `
-        md += ` ${data.description} | `
-        md += `[${userName}](${profileURL}) |\n`
-      })
-      return md.replace(/^\s+|\s+$/g, '')
     },
     CONSTANTS() {
       const fileContents = fs.readFileSync(CONSTANTS_PATH, 'utf8')
@@ -149,15 +131,6 @@ function parseJsDoc(contents) {
   return dox.parseComments(contents, { raw: true, skipSingleStar: true })
 }
 
-function sortPlugins(a, b) {
-  const aName = a.name.toLowerCase()
-  const bName = b.name.toLowerCase()
-  return (
-    aName.replace(PLUGIN_NAME_REGEX, '').localeCompare(bName.replace(PLUGIN_NAME_REGEX, '')) ||
-    aName.localeCompare(bName)
-  )
-}
-
 function collapse(summary, content) {
   return `
 <details>
@@ -209,18 +182,6 @@ function renderConfigExample(name) {
       ${name}: echo "Do thing on ${name} event"
   \`\`\`
   `
-}
-
-function remoteRequest(url) {
-  let body
-  try {
-    const res = request('GET', url)
-    body = res.getBody('utf8')
-  } catch (e) {
-    console.log(`WARNING: REMOTE URL ${url} NOT FOUND`) // eslint-disable-line
-    console.log(e.message) // eslint-disable-line
-  }
-  return body
 }
 
 const markdownFiles = [
