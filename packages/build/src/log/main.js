@@ -195,6 +195,13 @@ const logCacheDir = function(path) {
   log(`${SUBTEXT_PADDING}Caching ${path}`)
 }
 
+const logPluginError = function(error) {
+  const { header, body, color } = serializeError(error)
+  log(`${color.bold(getHeader(header))}
+${EMPTY_LINE}
+${body}`)
+}
+
 const logBuildError = function(error) {
   const { header, body, color } = serializeError(error)
   log(`${EMPTY_LINE}
@@ -257,6 +264,7 @@ module.exports = {
   logTimer,
   logCacheStart,
   logCacheDir,
+  logPluginError,
   logBuildError,
   logBuildSuccess,
   logBuildEnd,

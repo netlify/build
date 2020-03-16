@@ -193,12 +193,14 @@ The following methods are available depending on the error's type:
 
 - `utils.build.fail('message')`: fails the build - the build in your dashboard would show “Failed”. Use this to indicate
   something went wrong.
+- `utils.build.failPlugin('message')`: fails the plugin but not the build.
 - `utils.build.cancel('message')`: cancels the build - the dashboard would show “Cancelled” for that build. Use this to
   indicate that the build is being cancelled as planned.
 
 This works inside `async` event handlers as well.
 
-`utils.build.fail()` and `utils.build.cancel()` can specify an options object with the following properties:
+`utils.build.fail()`, `utils.build.failPlugin()` and `utils.build.cancel()` can specify an options object with the
+following properties:
 
 - `error`: the original `Error` instance. Its stack trace will be preserved and its error message will be appended to
   the `'message'` argument.

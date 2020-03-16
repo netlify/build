@@ -13,6 +13,14 @@ test('build.fail() error option', async t => {
   await runFixture(t, 'fail_error_option')
 })
 
+test('build.failPlugin()', async t => {
+  await runFixture(t, 'fail_plugin')
+})
+
+test('build.failPlugin() error option', async t => {
+  await runFixture(t, 'fail_plugin_error_option')
+})
+
 test('build.cancel()', async t => {
   await runFixture(t, 'cancel')
 })

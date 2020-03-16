@@ -1,0 +1,3 @@
+plugins:
+  - package: ./plugin_two
+  - package: ./plugin
