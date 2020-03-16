@@ -1,5 +1,0 @@
-
-[build]
-  command = "npm run makeSite"
-  publish = "build"
-  functions = "functions"

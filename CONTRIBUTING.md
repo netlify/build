@@ -55,15 +55,6 @@ This is a monorepo. Below are a list of packages included.
   [npm link](https://www.npmjs.com/package/@netlify/run-utils).
   <!-- AUTO-GENERATED-CONTENT:END (PACKAGES) -->
 
-## Examples
-
-We include some example projects as fixtures to test again. You'll have to install dependencies there too:
-
-```bash
-cd examples/example-two
-npm i
-```
-
 ## Testing
 
 See our [testing documentation](packages/build/tests/README.md) to learn about our integration tests setup.
