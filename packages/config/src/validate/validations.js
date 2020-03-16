@@ -169,7 +169,7 @@ Please rename ${cyan.bold('build.command')} to ${cyan.bold('build.lifecycle.onBu
     check: value => isString(value),
     message: 'must be a string.',
     example: (value, key, lifecycle) => ({
-      build: { lifecycle: { ...lifecycle, onBuild: 'npm run build' } },
+      build: { lifecycle: { ...lifecycle, [key]: 'npm run build' } },
     }),
   },
   {

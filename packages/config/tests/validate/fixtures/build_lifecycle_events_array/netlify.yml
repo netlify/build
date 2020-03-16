@@ -1,6 +1,6 @@
 build:
   publish: publish
   lifecycle:
-    onInit: onInit
-    onBuild:
+    onBuild: onBuild
+    onInit:
       - true
