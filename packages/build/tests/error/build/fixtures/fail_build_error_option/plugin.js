@@ -6,7 +6,7 @@ module.exports = {
   name: 'netlify-plugin-test',
   async onInit({
     utils: {
-      error: { failBuild },
+      build: { failBuild },
     },
   }) {
     const error = getError()
