@@ -208,8 +208,6 @@ const logBuildError = function(error) {
 ${color.bold(getHeader(header))}
 ${EMPTY_LINE}
 ${body}
-${EMPTY_LINE}
-${color.bold(getHeader(`END ${header}`))}
 ${EMPTY_LINE}`)
 }
 
