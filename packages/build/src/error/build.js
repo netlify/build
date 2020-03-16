@@ -9,7 +9,7 @@ const buildError = function({ type, name, message, stack, ...errorProps }) {
   // Assign static error properties (if any)
   Object.assign(error, errorProps)
 
-  // Distinguish between utils.error.*() errors and uncaught exceptions / bugs
+  // Distinguish between utils.build.*() errors and uncaught exceptions / bugs
   if (type !== undefined) {
     addErrorInfo(error, { type })
   }

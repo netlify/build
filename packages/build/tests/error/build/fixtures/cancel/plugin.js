@@ -2,7 +2,7 @@ module.exports = {
   name: 'netlify-plugin-test',
   async onInit({
     utils: {
-      error: { cancelBuild },
+      build: { cancelBuild },
     },
   }) {
     cancelBuild('test')
