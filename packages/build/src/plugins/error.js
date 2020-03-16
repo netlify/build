@@ -1,18 +1,18 @@
 // Stop build.
 // As opposed to throwing an error directly or to uncaught exceptions, this is
 // displayed as a user error, not an implementation error.
-const fail = function(message, opts) {
-  throw normalizeError('fail', fail, message, opts)
+const failBuild = function(message, opts) {
+  throw normalizeError('failBuild', failBuild, message, opts)
 }
 
-// Stop plugin. Same as `fail` but only stops plugin not whole build
+// Stop plugin. Same as `failBuild` but only stops plugin not whole build
 const failPlugin = function(message, opts) {
   throw normalizeError('failPlugin', failPlugin, message, opts)
 }
 
-// Cancel build. Same as `fail` except it marks the build as "canceled".
-const cancel = function(message, opts) {
-  throw normalizeError('cancel', cancel, message, opts)
+// Cancel build. Same as `failBuild` except it marks the build as "canceled".
+const cancelBuild = function(message, opts) {
+  throw normalizeError('cancelBuild', cancelBuild, message, opts)
 }
 
 // An `error` option can be passed to keep the original error message and
@@ -37,4 +37,4 @@ const getError = function(error, message, func) {
 
 const ERROR_TYPE_SYM = Symbol('errorType')
 
-module.exports = { fail, failPlugin, cancel, ERROR_TYPE_SYM }
+module.exports = { failBuild, failPlugin, cancelBuild, ERROR_TYPE_SYM }

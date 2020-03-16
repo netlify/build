@@ -11,7 +11,7 @@ const handleBuildError = async function(error, api) {
   await cancelBuild(shouldCancel, api)
 }
 
-// Cancel builds, for example when a plugin uses `utils.build.cancel()`
+// Cancel builds, for example when a plugin uses `utils.error.cancelBuild()`
 const cancelBuild = async function(shouldCancel, api) {
   if (!shouldCancel || api === undefined || !DEPLOY_ID) {
     return

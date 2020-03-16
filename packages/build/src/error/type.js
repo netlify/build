@@ -19,13 +19,13 @@ const TYPES = {
   resolveConfig: { header: 'Configuration error', stackType: 'none' },
   dependencies: { header: 'Dependencies error', stackType: 'none' },
   shellCommand: { header: 'Build failed', stackType: 'message', getLocation: getShellCommandLocation },
-  fail: { header: 'Build failed', stackType: 'stack', getLocation: getBuildFailLocation },
+  failBuild: { header: 'Build failed', stackType: 'stack', getLocation: getBuildFailLocation },
   failPlugin: {
     header: ({ location: { package } }) => `Plugin "${package}" failed`,
     stackType: 'stack',
     getLocation: getBuildFailLocation,
   },
-  cancel: {
+  cancelBuild: {
     header: 'Build canceled',
     stackType: 'stack',
     getLocation: getBuildFailLocation,

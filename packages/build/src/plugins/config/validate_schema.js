@@ -1,7 +1,7 @@
 const isPlainObj = require('is-plain-obj')
 const deepmerge = require('deepmerge')
 
-const { fail } = require('../error')
+const { failBuild } = require('../error')
 const { indent } = require('../../log/serialize')
 
 const { validateSchemaSyntax } = require('./json_schema')
@@ -25,7 +25,7 @@ const validateInputsSchema = function(inputsSchema) {
 }
 
 const throwInputsError = function(inputsSchema, errorMessage) {
-  fail(`Plugin 'inputs' must be a JSON schema v7 describing each input.
+  failBuild(`Plugin 'inputs' must be a JSON schema v7 describing each input.
 ${errorMessage}
 ${indent(JSON.stringify(inputsSchema, null, 2))}
 
