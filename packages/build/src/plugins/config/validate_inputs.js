@@ -1,4 +1,4 @@
-const { fail } = require('../error')
+const { failBuild } = require('../error')
 const { indent } = require('../../log/serialize')
 
 const { validateFromSchema } = require('./json_schema')
@@ -16,7 +16,7 @@ const validateInputs = function({ config, inputs: inputsSchema = config }, { inp
   const errorMessage = validateFromSchema({ additionalProperties: false, ...inputsSchema }, inputs)
 
   if (errorMessage !== undefined) {
-    fail(
+    failBuild(
       `Plugin inputs are invalid.
 ${errorMessage}
 

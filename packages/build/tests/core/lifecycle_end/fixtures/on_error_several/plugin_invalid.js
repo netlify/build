@@ -1,7 +1,11 @@
 module.exports = {
   name: 'netlify-plugin-invalid',
-  onError({ utils: { build } }) {
+  onError({
+    utils: {
+      error: { failBuild },
+    },
+  }) {
     console.log('Plugin invalid')
-    build.fail('Plugin invalid test')
+    failBuild('Plugin invalid test')
   },
 }

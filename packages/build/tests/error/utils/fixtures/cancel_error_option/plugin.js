@@ -6,10 +6,10 @@ module.exports = {
   name: 'netlify-plugin-test',
   async onInit({
     utils: {
-      build: { fail },
+      error: { cancelBuild },
     },
   }) {
     const error = getError()
-    fail('test', { error })
+    cancelBuild('test', { error })
   },
 }

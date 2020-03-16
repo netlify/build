@@ -174,7 +174,7 @@ The `constants` key contains the following values:
 ## Error reporting
 
 Exceptions thrown inside event handlers are reported in logs as bugs. You should handle errors with `try`/`catch` blocks
-and use `utils.build`:
+and use `utils.error`:
 
 ```js
 module.exports = {
@@ -183,7 +183,7 @@ module.exports = {
     try {
       badMethod()
     } catch (error) {
-      utils.build.fail('Failure message')
+      utils.error.failBuild('Failure message')
     }
   },
 }
@@ -191,16 +191,16 @@ module.exports = {
 
 The following methods are available depending on the error's type:
 
-- `utils.build.fail('message')`: fails the build - the build in your dashboard would show “Failed”. Use this to indicate
-  something went wrong.
-- `utils.build.failPlugin('message')`: fails the plugin but not the build.
-- `utils.build.cancel('message')`: cancels the build - the dashboard would show “Cancelled” for that build. Use this to
-  indicate that the build is being cancelled as planned.
+- `utils.error.failBuild('message')`: fails the build - the build in your dashboard would show “Failed”. Use this to
+  indicate something went wrong.
+- `utils.error.failPlugin('message')`: fails the plugin but not the build.
+- `utils.error.cancelBuild('message')`: cancels the build - the dashboard would show “Cancelled” for that build. Use
+  this to indicate that the build is being cancelled as planned.
 
 This works inside `async` event handlers as well.
 
-`utils.build.fail()`, `utils.build.failPlugin()` and `utils.build.cancel()` can specify an options object with the
-following properties:
+`utils.error.failBuild()`, `utils.error.failPlugin()` and `utils.error.cancelBuild()` can specify an options object with
+the following properties:
 
 - `error`: the original `Error` instance. Its stack trace will be preserved and its error message will be appended to
   the `'message'` argument.
@@ -212,7 +212,7 @@ module.exports = {
     try {
       badMethod()
     } catch (error) {
-      utils.build.fail('Failure message', { error })
+      utils.error.failBuild('Failure message', { error })
     }
   },
 }
