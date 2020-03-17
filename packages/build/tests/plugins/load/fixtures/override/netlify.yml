@@ -1,3 +1,0 @@
-plugins:
-  - package: netlify-plugin-example
-  - package: ./override.js

@@ -4,7 +4,6 @@ const { logLoadPlugins, logLoadedPlugins } = require('../log/main')
 const { addErrorInfo } = require('../error/info')
 
 const { getPackageJson } = require('./package')
-const { isNotOverridden } = require('./override')
 const { callChild } = require('./ipc')
 
 // Retrieve all plugins commands
@@ -39,7 +38,7 @@ const loadPlugins = async function({
 
   logLoadedPlugins(pluginCommandsA)
 
-  const pluginCommandsB = pluginCommandsA.filter(isNotDuplicate).filter(isNotOverridden)
+  const pluginCommandsB = pluginCommandsA.filter(isNotDuplicate)
   const pluginsCommandsC = groupBy(pluginCommandsB, 'event')
   return pluginsCommandsC
 }

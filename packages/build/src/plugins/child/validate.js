@@ -43,17 +43,12 @@ const validateProperty = function(value, propName) {
 
 // Validate `plugin.*` event handlers
 const validateMethod = function(propName) {
-  const propNameA = propName.replace(OVERRIDE_REGEXP, '')
-
-  if (!EVENTS.includes(propNameA) && LEGACY_EVENTS[propNameA] === undefined) {
-    failBuild(`Invalid event '${propNameA}'.
+  if (!EVENTS.includes(propName) && LEGACY_EVENTS[propName] === undefined) {
+    failBuild(`Invalid event '${propName}'.
 Please use a valid event name. One of:
 ${serializeList(EVENTS)}`)
   }
 }
-
-// Event handlers can start with `pluginName:` to override another plugin
-const OVERRIDE_REGEXP = /^[^:]+:/
 
 const validateNonMethod = function(value, propName) {
   const validator = VALIDATORS[propName]

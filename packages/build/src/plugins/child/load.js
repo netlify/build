@@ -1,4 +1,3 @@
-const { getOverride } = require('../override')
 const { validateInputs } = require('../config/validate_inputs')
 
 const { getLogic } = require('./logic')
@@ -41,9 +40,7 @@ const isEventHandler = function([, value]) {
 
 // Retrieve a single command from this plugin
 const getPluginCommand = function({ method, event, name, id = name, package, core, local, packageJson }) {
-  const override = getOverride(event)
-  const eventA = override.event || event
-  return { method, id, name, package, event: eventA, originalEvent: event, override, core, local, packageJson }
+  return { method, id, name, package, event, core, local, packageJson }
 }
 
 // Retrieve context passed to every event handler

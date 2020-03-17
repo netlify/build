@@ -35,7 +35,7 @@ const getEventCommands = function({
     return pluginCommands
   }
 
-  const shellCommandA = { id: `config.build.lifecycle.${event}`, event, shellCommand, override: {} }
+  const shellCommandA = { id: `config.build.lifecycle.${event}`, event, shellCommand }
   return [shellCommandA, ...pluginCommands]
 }
 
@@ -157,14 +157,11 @@ const fireShellCommand = async function({ id, shellCommand }, { buildDir, nodePa
 }
 
 // Fire a plugin command
-const firePluginCommand = async function(
-  { id, childProcess, event, originalEvent, package, packageJson, local },
-  { error },
-) {
+const firePluginCommand = async function({ id, childProcess, event, package, packageJson, local }, { error }) {
   const outputState = startOutput(childProcess)
 
   try {
-    await callChild(childProcess, 'run', { originalEvent, error })
+    await callChild(childProcess, 'run', { event, error })
   } catch (error) {
     addErrorInfo(error, { location: { event, package, local }, plugin: { id, packageJson } })
     throw error

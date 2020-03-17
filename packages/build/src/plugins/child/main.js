@@ -73,10 +73,10 @@ const load = async function(payload, state) {
 
 // Run a specific plugin event handler
 const run = async function(
-  { originalEvent, error },
+  { event, error },
   { context: { pluginCommands, api, utils, constants, inputs, netlifyConfig } },
 ) {
-  const { method } = pluginCommands.find(pluginCommand => pluginCommand.originalEvent === originalEvent)
+  const { method } = pluginCommands.find(pluginCommand => pluginCommand.event === event)
   const runOptions = { api, utils, constants, inputs, netlifyConfig, error }
   addBackwardCompatibility(runOptions)
   await method(runOptions)
