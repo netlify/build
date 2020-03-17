@@ -50,7 +50,7 @@ const getBody = function({
 }) {
   const { message: messageA, stack: stackA } = getStackInfo({ message, stack, stackType, rawStack })
   const messageBlock = { name: 'Error message', value: messageA }
-  const pluginBlock = getPluginBlock(plugin)
+  const pluginBlock = getPluginBlock(plugin, location)
   const locationBlock = getLocationBlock({ stack: stackA, location, getLocation })
   const errorPropsBlock = getErrorPropsBlock(errorProps, showErrorProps)
   return [messageBlock, pluginBlock, locationBlock, errorPropsBlock]

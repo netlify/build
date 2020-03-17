@@ -26,20 +26,14 @@ const loadPlugin = async function(payload) {
   return { context, pluginCommands }
 }
 
-const getPluginCommands = function(logic, { id, package, core, local, packageJson }) {
-  const { name } = logic
+const getPluginCommands = function(logic, { package, core, local, packageJson }) {
   return Object.entries(logic)
     .filter(isEventHandler)
-    .map(([event, method]) => getPluginCommand({ method, event, name, id, package, core, local, packageJson }))
+    .map(([event, method]) => ({ method, event, package, core, local, packageJson }))
 }
 
 const isEventHandler = function([, value]) {
   return typeof value === 'function'
-}
-
-// Retrieve a single command from this plugin
-const getPluginCommand = function({ method, event, name, id = name, package, core, local, packageJson }) {
-  return { method, id, name, package, event, core, local, packageJson }
 }
 
 // Retrieve context passed to every event handler

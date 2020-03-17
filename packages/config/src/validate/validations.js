@@ -37,17 +37,11 @@ const RAW_VALIDATIONS = [
   },
   {
     property: 'plugins.*',
-    // TODO: remove 'type', 'config' after the Beta release since its' legacy
-    ...validProperties(['id', 'package', 'enabled', 'inputs'], ['type', 'config']),
+    // TODO: remove 'id', 'type', 'config' after the Beta release since it's legacy
+    ...validProperties(['package', 'enabled', 'inputs'], ['id', 'type', 'config']),
     example: {
-      plugins: [{ id: 'one', package: 'netlify-plugin-one', enabled: false, inputs: { port: 80 } }],
+      plugins: [{ package: 'netlify-plugin-one', enabled: false, inputs: { port: 80 } }],
     },
-  },
-  {
-    property: 'plugins.*.id',
-    check: isString,
-    message: 'must be an string.',
-    example: (id, key, plugin) => ({ plugins: [{ ...plugin, id: 'one' }] }),
   },
   {
     property: 'plugins.*',

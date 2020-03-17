@@ -1,5 +1,0 @@
-plugins:
-  - package: ./plugin
-  - package: ./plugin
-  - package: ./plugin
-    inputs: {}

@@ -1,5 +1,3 @@
 plugins:
   - package: ./plugin
-    id: one
-  - package: ./plugin
-    id: two
+  - package: ./pluginTwo

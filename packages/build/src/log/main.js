@@ -74,14 +74,14 @@ const logLoadedPlugins = function(pluginCommands) {
 }
 
 const isNotDuplicate = function(pluginCommand, index, pluginCommands) {
-  return !pluginCommands.slice(index + 1).some(laterPluginCommand => laterPluginCommand.id === pluginCommand.id)
+  return !pluginCommands
+    .slice(index + 1)
+    .some(laterPluginCommand => laterPluginCommand.package === pluginCommand.package)
 }
 
-const getLoadedPlugin = function({ id, package, core, packageJson: { version } }) {
-  const idA = id === undefined || id === package ? '' : `${greenBright.bold(id)} from `
-  const versionA = version === undefined ? '' : `@${version}`
-  const location = core ? 'build core' : `${greenBright.bold(package)}${versionA}`
-  return `${SUBTEXT_PADDING} - ${idA}${location}`
+const getLoadedPlugin = function({ package, core, packageJson: { version } }) {
+  const location = core ? ' from build core' : version === undefined ? '' : `@${version}`
+  return `${SUBTEXT_PADDING} - ${greenBright.bold(package)}${location}`
 }
 
 const logCommandsStart = function(commandsCount) {
@@ -107,7 +107,7 @@ ${SUBTEXT_PADDING}└─${line}─┴─${secondLine}─┘`)}`)
 }
 
 const logDryRunCommand = function({
-  command: { id, event, package, core },
+  command: { prop, event, package, core },
   index,
   configPath,
   eventWidth,
@@ -118,7 +118,7 @@ const logDryRunCommand = function({
   const countText = `${index + 1}. `
   const downArrow = commandsCount === index + 1 ? '  ' : ` ${ARROW_DOWN}`
   const eventWidthA = columnWidth - countText.length - downArrow.length
-  const location = getPluginLocation({ id, package, core, configPath })
+  const location = getPluginLocation({ prop, package, core, configPath })
 
   log(
     cyanBright.bold(`${SUBTEXT_PADDING}┌─${line}─┐
@@ -127,16 +127,16 @@ ${SUBTEXT_PADDING}└─${line}─┘ `),
   )
 }
 
-const getPluginLocation = function({ id, package, core, configPath }) {
-  if (id.startsWith('config.')) {
-    return `${white('Config')} ${cyanBright(basename(configPath))} ${yellowBright(id.replace('config.', ''))}`
+const getPluginLocation = function({ prop, package, core, configPath }) {
+  if (prop !== undefined) {
+    return `${white('Config')} ${cyanBright(basename(configPath))} ${yellowBright(prop)}`
   }
 
   if (core) {
-    return `${white('Plugin')} ${yellowBright(id)} in build core`
+    return `${white('Plugin')} ${yellowBright(package)} in build core`
   }
 
-  return `${white('Plugin')} ${id} ${yellowBright(package)}`
+  return `${white('Plugin')} ${yellowBright(package)}`
 }
 
 const getDryColumnWidth = function(eventWidth, commandsCount) {
@@ -152,11 +152,10 @@ ${SUBTEXT_PADDING}If this looks good to you, run \`netlify build\` to execute th
 ${EMPTY_LINE}`)
 }
 
-const logCommand = function({ event, id }, { index, configPath, error }) {
+const logCommand = function({ event, prop, package }, { index, configPath, error }) {
   const configName = configPath === undefined ? '' : ` from ${basename(configPath)} config file`
-  const description = id.startsWith('config.build')
-    ? `${bold(id.replace('config.', ''))} command${configName}`
-    : `${bold(event)} command from ${bold(id)}`
+  const description =
+    prop === undefined ? `${bold(event)} command from ${bold(package)}` : `${bold(prop)} command${configName}`
   const logColor = error ? redBright.bold : cyanBright.bold
   const header = `${index}. Running ${description}`
   log(
@@ -174,12 +173,8 @@ const logCommandSuccess = function() {
   log(EMPTY_LINE)
 }
 
-const logTimer = function(durationMs, event, id) {
-  const eventA = event ? `.${bold(event)}` : ''
-  const idA = id.replace('config.', '')
-  const idB = idA.startsWith('build.lifecycle') ? 'build.lifecycle' : idA
-
-  log(` ${greenBright(TICK)}  ${greenBright.bold(idB)}${eventA} completed in ${durationMs}ms`)
+const logTimer = function(durationMs, timerName) {
+  log(` ${greenBright(TICK)}  ${greenBright.bold(timerName)} completed in ${durationMs}ms`)
 }
 
 const logCacheStart = function() {

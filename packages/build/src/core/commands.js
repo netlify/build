@@ -35,7 +35,7 @@ const getEventCommands = function({
     return pluginCommands
   }
 
-  const shellCommandA = { id: `config.build.lifecycle.${event}`, event, shellCommand }
+  const shellCommandA = { prop: `build.lifecycle.${event}`, event, shellCommand }
   return [shellCommandA, ...pluginCommands]
 }
 
@@ -100,9 +100,9 @@ const runCommand = async function(
   { configPath, buildDir, state, nodePath, childEnv, error, failure, failedPlugins, failFast },
 ) {
   try {
-    const { id, event } = command
+    const { event, prop, package } = command
 
-    if (failedPlugins.includes(id)) {
+    if (failedPlugins.includes(package)) {
       return { failure, failedPlugins }
     }
 
@@ -116,7 +116,8 @@ const runCommand = async function(
 
     logCommandSuccess()
 
-    endTimer(methodTimer, id, event)
+    const timerName = prop === undefined ? `${package} ${event}` : prop
+    endTimer(methodTimer, timerName)
 
     return { failure, failedPlugins }
   } catch (newFailure) {
@@ -133,7 +134,7 @@ const fireCommand = function(command, { buildDir, nodePath, childEnv, error }) {
 }
 
 // Fire a `config.lifecycle.*` shell command
-const fireShellCommand = async function({ id, shellCommand }, { buildDir, nodePath, childEnv }) {
+const fireShellCommand = async function({ prop, shellCommand }, { buildDir, nodePath, childEnv }) {
   logShellCommandStart(shellCommand)
 
   const childProcess = execa(shellCommand, {
@@ -149,7 +150,7 @@ const fireShellCommand = async function({ id, shellCommand }, { buildDir, nodePa
   try {
     await childProcess
   } catch (error) {
-    addErrorInfo(error, { type: 'shellCommand', location: { id, shellCommand } })
+    addErrorInfo(error, { type: 'shellCommand', location: { prop, shellCommand } })
     throw error
   } finally {
     await stopOutput(childProcess, outputState)
@@ -157,13 +158,13 @@ const fireShellCommand = async function({ id, shellCommand }, { buildDir, nodePa
 }
 
 // Fire a plugin command
-const firePluginCommand = async function({ id, childProcess, event, package, packageJson, local }, { error }) {
+const firePluginCommand = async function({ childProcess, event, package, packageJson, local }, { error }) {
   const outputState = startOutput(childProcess)
 
   try {
     await callChild(childProcess, 'run', { event, error })
   } catch (error) {
-    addErrorInfo(error, { location: { event, package, local }, plugin: { id, packageJson } })
+    addErrorInfo(error, { plugin: { packageJson, package }, location: { event, package, local } })
     throw error
   } finally {
     await stopOutput(childProcess, outputState)
@@ -177,11 +178,11 @@ const firePluginCommand = async function({ id, childProcess, event, package, pac
 //  - if `utils.build.failPlugin()` was used, print an error and skip next event
 //    handlers of that plugin. But do not stop build.
 const handleCommandError = function({ newFailure, failedPlugins, failure, failFast }) {
-  const { type, plugin: { id } = {} } = getErrorInfo(newFailure)
+  const { type, location: { package } = {} } = getErrorInfo(newFailure)
 
   if (type === 'failPlugin') {
     logPluginError(newFailure)
-    return { failure, failedPlugins: [...failedPlugins, id] }
+    return { failure, failedPlugins: [...failedPlugins, package] }
   }
 
   if (failFast) {
