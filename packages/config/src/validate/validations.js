@@ -1,5 +1,4 @@
 const isPlainObj = require('is-plain-obj')
-const { cyan } = require('chalk')
 const omit = require('omit.js')
 
 const { EVENTS, LEGACY_EVENTS, normalizeEventHandler } = require('../normalize/events')
@@ -136,13 +135,6 @@ const RAW_VALIDATIONS = [
     check: value => isString(value) || (Array.isArray(value) && value.every(isString)),
     message: 'must be a string or an array of strings.',
     example: (command, key, build) => ({ build: { ...build, command: ['npm run build', 'npm test'] } }),
-  },
-  {
-    property: 'build.command',
-    check: (value, key, { lifecycle }) => lifecycle === undefined,
-    message: `must not be defined when ${cyan.bold('build.lifecycle')} is also defined.
-Please rename ${cyan.bold('build.command')} to ${cyan.bold('build.lifecycle.onBuild.')}`,
-    example: (command, key, build) => ({ build: { ...build, lifecycle: { onBuild: 'npm run build' } } }),
   },
   {
     property: 'build.lifecycle',
