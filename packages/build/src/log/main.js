@@ -152,12 +152,7 @@ ${SUBTEXT_PADDING}If this looks good to you, run \`netlify build\` to execute th
 ${EMPTY_LINE}`)
 }
 
-const logCommand = function({ event, id, override }, { index, configPath, error }) {
-  const overrideWarning =
-    override.event === undefined
-      ? ''
-      : redBright(`${EMPTY_LINE}
-${HEADING_PREFIX} OVERRIDE: "${override.event}" command in "${override.name}" has been overriden by "${id}"`)
+const logCommand = function({ event, id }, { index, configPath, error }) {
   const configName = configPath === undefined ? '' : ` from ${basename(configPath)} config file`
   const description = id.startsWith('config.build')
     ? `${bold(id.replace('config.', ''))} command${configName}`
@@ -165,7 +160,7 @@ ${HEADING_PREFIX} OVERRIDE: "${override.event}" command in "${override.name}" ha
   const logColor = error ? redBright.bold : cyanBright.bold
   const header = `${index}. Running ${description}`
   log(
-    logColor(`${overrideWarning}
+    logColor(`
 ${getHeader(header)}
 ${EMPTY_LINE}`),
   )
