@@ -1,5 +1,3 @@
-const { validateInputs } = require('../config/validate_inputs')
-
 const { getLogic } = require('./logic')
 const { validatePlugin } = require('./validate')
 const { normalizePlugin } = require('./normalize')
@@ -16,13 +14,12 @@ const loadPlugin = async function(payload) {
   const logic = getLogic(payload)
 
   validatePlugin(logic)
-  validateInputs(logic, payload)
 
   const logicA = normalizePlugin(logic)
 
   const pluginCommands = getPluginCommands(logicA, payload)
 
-  const context = await getContext(logicA, pluginCommands, payload)
+  const context = await getContext(pluginCommands, payload)
   return { context, pluginCommands }
 }
 
@@ -38,13 +35,12 @@ const isEventHandler = function([, value]) {
 
 // Retrieve context passed to every event handler
 const getContext = async function(
-  logic,
   pluginCommands,
-  { inputs, configPath, buildDir, netlifyConfig, siteInfo, utilsData, token },
+  { manifest, inputs, configPath, buildDir, netlifyConfig, siteInfo, utilsData, token },
 ) {
   const constants = await getConstants({ configPath, buildDir, netlifyConfig, siteInfo })
   const utils = getUtils({ utilsData, constants })
-  const api = getApiClient({ logic, token, utils })
+  const api = getApiClient({ manifest, token, utils })
   return { pluginCommands, api, utils, constants, inputs, netlifyConfig }
 }
 

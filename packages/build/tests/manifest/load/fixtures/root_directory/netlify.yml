@@ -1,0 +1,4 @@
+plugins:
+  - package: ./plugin/main.js
+    inputs:
+      one: test

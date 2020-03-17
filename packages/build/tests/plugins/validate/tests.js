@@ -6,22 +6,14 @@ test('Validate plugin is an object', async t => {
   await runFixture(t, 'object')
 })
 
-test('Validate plugin.name is required', async t => {
-  await runFixture(t, 'name_required')
+test('Validate plugin event handler names', async t => {
+  await runFixture(t, 'handler_name')
 })
 
-test('Validate plugin lifecycle names', async t => {
-  await runFixture(t, 'lifecycle')
+test('Validate plugin event handler function', async t => {
+  await runFixture(t, 'handler_function')
 })
 
-test('Validate plugin property names', async t => {
-  await runFixture(t, 'property')
-})
-
-test('Validate plugin.name is a string', async t => {
-  await runFixture(t, 'name_string')
-})
-
-test('Validate plugin.scopes is valid', async t => {
-  await runFixture(t, 'scopes')
+test('Validate plugin backward compatibility from manifest.yml', async t => {
+  await runFixture(t, 'backward_compat')
 })

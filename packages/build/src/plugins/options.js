@@ -6,6 +6,9 @@ const resolve = require('resolve')
 const { CORE_PLUGINS } = require('../plugins_core/main')
 const { addDependency } = require('../utils/install')
 
+const { getPackageJson } = require('./package')
+const { useManifest } = require('./manifest/main')
+
 const pResolve = promisify(resolve)
 
 // Load plugin options (specified by user in `config.plugins`)
@@ -25,23 +28,37 @@ const normalizePluginOptions = function(pluginOptions) {
 
 const DEFAULT_PLUGIN_OPTIONS = { inputs: {} }
 
+const resolvePlugin = async function(pluginOptions, buildDir, configPath) {
+  const pluginPath = await getPluginPath(pluginOptions, buildDir, configPath)
+  const pluginOptionsA = await loadPluginFiles({ pluginOptions, pluginPath })
+  return pluginOptionsA
+}
+
 // We use `resolve` because `require()` should be relative to `buildDir` not to
 // this `__filename`
 // Automatically installing the dependency if it is missing.
-const resolvePlugin = async function({ package, core, ...pluginOptions }, buildDir, configPath) {
+const getPluginPath = async function({ package, core }, buildDir, configPath) {
   const location = core === undefined ? package : core
   try {
-    return await tryResolvePlugin({ location, package, core, pluginOptions, buildDir, configPath })
+    return await tryGetPluginPath({ location, buildDir, configPath })
   } catch (error) {
     await addDependency(location, { packageRoot: buildDir })
-    return await tryResolvePlugin({ location, package, core, pluginOptions, buildDir, configPath })
+    return await tryGetPluginPath({ location, buildDir, configPath })
   }
 }
 
-const tryResolvePlugin = async function({ location, package, core, pluginOptions, buildDir, configPath }) {
+const tryGetPluginPath = async function({ location, buildDir, configPath }) {
   const basedir = configPath === undefined ? buildDir : dirname(configPath)
   const pluginPath = await pResolve(location, { basedir })
-  return { ...pluginOptions, package, core, pluginPath }
+  return pluginPath
+}
+
+// Load plugin's `package.json` and `manifest.yml`
+const loadPluginFiles = async function({ pluginOptions, pluginOptions: { local }, pluginPath }) {
+  const pluginDir = dirname(pluginPath)
+  const { packageDir, packageJson } = await getPackageJson({ pluginDir, local })
+  const { manifest, inputs: inputsA } = await useManifest(pluginOptions, { pluginDir, packageDir, packageJson })
+  return { ...pluginOptions, pluginPath, packageDir, packageJson, manifest, inputs: inputsA }
 }
 
 module.exports = { getPluginsOptions }

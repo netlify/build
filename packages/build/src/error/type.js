@@ -18,6 +18,11 @@ const getTypeInfo = function(errorProps) {
 const TYPES = {
   resolveConfig: { header: 'Configuration error', stackType: 'none' },
   dependencies: { header: 'Dependencies error', stackType: 'none' },
+  pluginInput: {
+    header: ({ location: { package, input } }) => `Invalid input "${input}" for plugin "${package}"`,
+    stackType: 'none',
+    getLocation: getBuildFailLocation,
+  },
   shellCommand: { header: 'Build failed', stackType: 'message', getLocation: getShellCommandLocation },
   failBuild: { header: 'Build failed', stackType: 'stack', getLocation: getBuildFailLocation },
   failPlugin: {
@@ -38,6 +43,11 @@ const TYPES = {
     getLocation: getBuildFailLocation,
   },
   api: { header: 'API error', stackType: 'message', showErrorProps: true, getLocation: getApiLocation },
+  pluginValidation: {
+    header: ({ location: { package } }) => `Plugin "${package}" internal error`,
+    stackType: 'none',
+    getLocation: getBuildFailLocation,
+  },
   pluginInternalError: {
     header: ({ location: { package } }) => `Plugin "${package}" internal error`,
     stackType: 'stack',

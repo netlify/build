@@ -2,8 +2,8 @@ const {
   env: { NETLIFY_BUILD_SAVE_CACHE },
 } = require('process')
 
-const FUNCTIONS_PLUGIN = `${__dirname}/functions.js`
-const CACHE_PLUGIN = `${__dirname}/cache.js`
+const FUNCTIONS_PLUGIN = `${__dirname}/functions/plugin.js`
+const CACHE_PLUGIN = `${__dirname}/cache/plugin.js`
 
 // Plugins that are installed and enabled by default
 const CORE_PLUGINS = [

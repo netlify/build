@@ -3,7 +3,6 @@ const groupBy = require('group-by')
 const { logLoadPlugins, logLoadedPlugins } = require('../log/main')
 const { addErrorInfo } = require('../error/info')
 
-const { getPackageJson } = require('./package')
 const { callChild } = require('./ipc')
 
 // Retrieve all plugins commands
@@ -45,16 +44,16 @@ const loadPlugins = async function({
 // Retrieve plugin commands for one plugin.
 // Do it by executing the plugin `load` event handler.
 const loadPlugin = async function(
-  { package, pluginPath, inputs, core, local },
+  { package, packageJson, pluginPath, manifest, inputs, core, local },
   { childProcesses, index, netlifyConfig, utilsData, configPath, buildDir, token, siteInfo },
 ) {
   const { childProcess } = childProcesses[index]
-  const packageJson = await getPackageJson({ pluginPath, local })
 
   try {
     const { pluginCommands } = await callChild(childProcess, 'load', {
       package,
       pluginPath,
+      manifest,
       inputs,
       netlifyConfig,
       utilsData,
