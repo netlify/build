@@ -4,10 +4,6 @@ const isString = function(value) {
   return typeof value === 'string'
 }
 
-const isBoolean = function(value) {
-  return typeof value === 'boolean'
-}
-
 const validProperties = function(
   propNames,
   // istanbul ignore next
@@ -71,4 +67,4 @@ const removeParentDots = function(path) {
 
 const PARENT_DOTS_REGEXP = /\.\.[/\\]/g
 
-module.exports = { isString, isBoolean, validProperties, deprecatedProperties, insideRootCheck, removeParentDots }
+module.exports = { isString, validProperties, deprecatedProperties, insideRootCheck, removeParentDots }

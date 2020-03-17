@@ -20,7 +20,3 @@ test('Install missing plugins', async t => {
   await runFixture(t, 'install_missing')
   await removeDir(`${FIXTURES_DIR}/install_missing/node_modules`)
 })
-
-test('Plugin.enabled', async t => {
-  await runFixture(t, 'enabled')
-})
