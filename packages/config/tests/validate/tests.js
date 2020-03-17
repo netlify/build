@@ -15,8 +15,8 @@ test('plugins.any: unknown property', async t => {
   await runFixtureConfig(t, 'plugins_unknown')
 })
 
-test('plugins.any.id: string', async t => {
-  await runFixtureConfig(t, 'plugins_id_string')
+test('plugins.any.id backward compatibility', async t => {
+  await runFixtureConfig(t, 'plugins_id_compat')
 })
 
 test('plugins.any.type renamed', async t => {

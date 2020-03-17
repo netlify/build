@@ -22,9 +22,8 @@ const serializeLocation = function({ stack, location, getLocation }) {
   return [locationString, stack].filter(Boolean).join('\n')
 }
 
-const getShellCommandLocation = function({ id, shellCommand }) {
-  const idA = id.replace('config.', '')
-  return `In configuration "${white.bold(idA)}" command:
+const getShellCommandLocation = function({ prop, shellCommand }) {
+  return `In configuration "${white.bold(prop)}" command:
 ${white.bold(shellCommand)}`
 }
 

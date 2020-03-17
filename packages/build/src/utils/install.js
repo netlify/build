@@ -23,9 +23,9 @@ const installDependencies = async function(packageRoot) {
 }
 
 // Add new Node.js dependencies
-const addDependency = async function(packageName, { packageRoot }) {
+const addDependency = async function(location, { packageRoot }) {
   try {
-    await execa.command(`npm install --no-progress --no-audit --no-fund ${packageName}`, {
+    await execa.command(`npm install --no-progress --no-audit --no-fund ${location}`, {
       cwd: packageRoot,
       all: true,
     })
