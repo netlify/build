@@ -64,7 +64,7 @@ after your site build has completed.
 
 ### Anatomy of a plugin
 
-Plugins consist of two files:
+A plugin consists of two files:
 
 - A `manfiest.yml` file in the package root with the plugin's name at minimum:
   ```yml
@@ -133,10 +133,11 @@ inputs:
   - name: fizz
 ```
 
-When you or a user install the plugin, the input names are used as keys with user-supplied values:
+When you or a user install the plugin, the input names are used as keys with user-supplied values in the site `netlify.toml` file:
 
 ```toml
-# Attach our plugin
+# netlify.toml
+
 [[plugins]]
 package = "./plugins/netlify-plugin-hello-world"
   [plugins.inputs]
@@ -149,8 +150,9 @@ These `inputs` values are passed into the plugin when the event handlers are bei
 To access them in your plugin code you can:
 
 ```js
+// index.js
+
 module.exports = {
-  name: 'netlify-plugin-hello-world',
   onPreBuild: ({ inputs }) => {
     console.log('Hello world from onPreBuild event!')
     console.log(inputs.foo) // bar
@@ -162,12 +164,13 @@ module.exports = {
 Instead of a plugin being a simple object, it can also be a function returning an object:
 
 ```js
+// index.js
+
 module.exports = function helloWorldPlugin(inputs) {
   console.log(inputs.foo) // bar
   console.log(inputs.fizz) // pop
 
   return {
-    name: 'netlify-plugin-hello-world',
     onPreBuild: ({ inputs, netlifyConfig, constants }) => {
       console.log('Hello world from onPreBuild event!')
       console.log(inputs.foo) // bar
@@ -179,28 +182,24 @@ module.exports = function helloWorldPlugin(inputs) {
 
 ### Validating plugin inputs
 
-The plugin inputs can be validated using an `inputs` property:
+The plugin inputs can be validated using the `inputs` property in the plugin `manifest.yml` file:
 
-```js
-module.exports = {
-  name: 'netlify-plugin-hello-world',
-  inputs: {
-    required: ['foo'],
-    properties: {
-      foo: { type: 'string', enum: ['bar', 'one', 'two'] },
-      bar: { type: 'string' },
-      increment: { type: 'number', minimum: 0, maximum: 10, default: 5 }
-    }
-  },
-  onPreBuild: ({ inputs }) => { ... },
-}
+```yml
+# manifest.yml
+
+name: netlify-plugin-hello-world
+inputs:
+  - name: foo
+    required: true
+  - name: fizz
+    default: 5
 ```
 
-The `inputs` property is a JSON schema v7 describing the `inputs` object.
+The `inputs` property is an array of objects with the following members:
 
-More information about JSON schema can be found at https://json-schema.org/understanding-json-schema/.
-
-`inputs.properties` can have `default` values as shown in the example above. They can also be `required` as shown above.
+- `name` `{string}`: Name of the input. Required.
+- `required` `{boolean}`
+- `default` `{any}`: Default value.
 
 It is recommended to validate your plugin inputs and assign default values using the `inputs` property instead of doing
 it inside event handlers.
@@ -211,7 +210,6 @@ Inside of each event handler there is a `constants` key.
 
 ```js
 module.exports = {
-  name: 'netlify-plugin-hello-world',
   onPreBuild: ({ constants }) => {
     console.log(constants)
   },
@@ -237,7 +235,6 @@ and use `utils.build`:
 
 ```js
 module.exports = {
-  name: 'netlify-plugin-hello-world',
   onPreBuild: ({ utils }) => {
     try {
       badMethod()
@@ -266,7 +263,6 @@ the following properties:
 
 ```js
 module.exports = {
-  name: 'netlify-plugin-hello-world',
   onPreBuild: ({ utils }) => {
     try {
       badMethod()
