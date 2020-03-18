@@ -7,20 +7,13 @@ const normalizePlugin = function(logic) {
 }
 
 const normalizeProperty = function(key, value) {
-  const newKey = LEGACY_PROPERTIES[key]
+  const newKey = LEGACY_EVENTS[key]
 
   if (newKey === undefined) {
     return [key, value]
   }
 
   return [newKey, value]
-}
-
-const LEGACY_PROPERTIES = {
-  ...LEGACY_EVENTS,
-  // Backward compatibility with former name.
-  // TODO: remove after going out of beta.
-  config: 'inputs',
 }
 
 module.exports = { normalizePlugin }
