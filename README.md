@@ -11,13 +11,17 @@ Netlify Build is a new, pluggable tool for running builds locally and in Netlify
 <summary>Expand Table of Contents</summary>
 
 - [What are Build Plugins?](#what-are-build-plugins)
-- [Netlify Configuration](#netlify-configuration)
-- [Plugins internals](#plugins-internals)
 - [What can plugins do?](#what-can-plugins-do)
-  * [1. Optimizing build speeds & lowing cost](#1-optimizing-build-speeds--lowing-cost)
-  * [2. Standardize workflows & developer productivity](#2-standardize-workflows--developer-productivity)
-- [Community Plugins](#community-plugins)
-- [CLI commands](#cli-commands)
+- [Creating plugins](#creating-plugins)
+  * [Available event handlers](#available-event-handlers)
+  * [Anatomy of a plugin](#anatomy-of-a-plugin)
+  * [Using a local plugin](#using-a-local-plugin)
+  * [Adding inputs to plugins](#adding-inputs-to-plugins)
+  * [Validating plugin inputs](#validating-plugin-inputs)
+  * [Plugin constants](#plugin-constants)
+  * [Error reporting](#error-reporting)
+- [Publishing a plugin](#publishing-a-plugin)
+  * [Sharing with the community](#sharing-with-the-community)
 - [Contributors](#contributors)
 
 </details>
