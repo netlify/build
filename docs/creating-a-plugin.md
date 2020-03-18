@@ -27,11 +27,16 @@ Plugins are JavaScript objects like so:
 
 ```js
 module.exports = {
-  name: 'netlify-plugin-hello-world',
   onPreBuild: () => {
     console.log('Hello world from onPreBuild event!')
   },
 }
+```
+
+A `manifest.yml` must exist in the package root with the plugin's name:
+
+```yml
+name: netlify-plugin-hello-world
 ```
 
 This plugin will log out `Hello world from onPreBuild event!` before right before the build commands are run.
@@ -91,7 +96,6 @@ To access them in your plugin code you can:
 
 ```js
 module.exports = {
-  name: 'netlify-plugin-hello-world',
   onPreBuild: ({ inputs }) => {
     console.log('Hello world from onPreBuild event!')
     console.log(inputs.foo) // bar
@@ -100,7 +104,16 @@ module.exports = {
 }
 ```
 
-Instead of a plugin being a simple object, it can also be a function returning an object:
+Inputs must be declared in the `manifest.yml`:
+
+```yml
+name: netlify-plugin-hello-world
+inputs:
+  - name: foo
+  - name: fizz
+```
+
+Instead of a plugin being a simple object, the plugin can also be a function returning an object:
 
 ```js
 module.exports = function helloWorldPlugin(inputs) {
@@ -108,7 +121,6 @@ module.exports = function helloWorldPlugin(inputs) {
   console.log(inputs.fizz) // pop
 
   return {
-    name: 'netlify-plugin-hello-world',
     onPreBuild: ({ inputs, netlifyConfig, constants }) => {
       console.log('Hello world from onPreBuild event!')
       console.log(inputs.foo) // bar
@@ -120,28 +132,22 @@ module.exports = function helloWorldPlugin(inputs) {
 
 ## Validating plugin inputs
 
-The plugin inputs can be validated using an `inputs` property:
+The plugin inputs can be validated using the `manifest.yml` `inputs` property:
 
-```js
-module.exports = {
-  name: 'netlify-plugin-hello-world',
-  inputs: {
-    required: ['foo'],
-    properties: {
-      foo: { type: 'string', enum: ['bar', 'one', 'two'] },
-      bar: { type: 'string' },
-      increment: { type: 'number', minimum: 0, maximum: 10, default: 5 }
-    }
-  },
-  onPreBuild: ({ inputs }) => { ... },
-}
+```yml
+name: netlify-plugin-hello-world
+inputs:
+  - name: foo
+    required: true
+  - name: fizz
+    default: 5
 ```
 
-The `inputs` property is a JSON schema v7 describing the `inputs` object.
+The `inputs` property is an array of objects with the following members:
 
-More information about JSON schema can be found at https://json-schema.org/understanding-json-schema/.
-
-`inputs.properties` can have `default` values as shown in the example above. They can also be `required` as shown above.
+- `name` `{string}`: Name of the input. Required.
+- `required` `{boolean}`
+- `default` `{any}`: Default value.
 
 It is recommended to validate your plugin inputs and assign default values using the `inputs` property instead of doing
 it inside event handlers.
@@ -152,7 +158,6 @@ Inside of each event handler there is a `constants` key.
 
 ```js
 module.exports = {
-  name: 'netlify-plugin-hello-world',
   onPreBuild: ({ constants }) => {
     console.log(constants)
   },
@@ -178,7 +183,6 @@ and use `utils.build`:
 
 ```js
 module.exports = {
-  name: 'netlify-plugin-hello-world',
   onPreBuild: ({ utils }) => {
     try {
       badMethod()
@@ -207,7 +211,6 @@ the following properties:
 
 ```js
 module.exports = {
-  name: 'netlify-plugin-hello-world',
   onPreBuild: ({ utils }) => {
     try {
       badMethod()
@@ -223,7 +226,7 @@ module.exports = {
 The following properties in `package.json` should be added:
 
 - [`name`](https://docs.npmjs.com/files/package.json#name) should start with `netlify-plugin-` (such as
-  `netlify-plugin-example` or `@scope/netlify-plugin-example`). It should match the plugin `name` field. It is
+  `netlify-plugin-example` or `@scope/netlify-plugin-example`). It should match the `manifest.yml` `name` field. It is
   recommended for the GitHub repository to be named like this as well.
 - [`keywords`](https://docs.npmjs.com/files/package.json#keywords) should contain the `netlify` and `netlify-plugin`
   keywords. The same applies to [GitHub topics](https://github.com/topics). This helps users find your plugin.

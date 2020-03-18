@@ -1,4 +1,0 @@
-plugins:
-  - package: ./plugin
-    inputs:
-      test: test

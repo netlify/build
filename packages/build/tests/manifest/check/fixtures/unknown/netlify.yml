@@ -1,0 +1,4 @@
+plugins:
+  - package: ./plugin.js
+    inputs:
+      test: true

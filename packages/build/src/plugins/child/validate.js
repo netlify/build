@@ -2,99 +2,40 @@ const isPlainObj = require('is-plain-obj')
 const { EVENTS, LEGACY_EVENTS } = require('@netlify/config')
 
 const { serializeList } = require('../../utils/list')
-const { validateInputsSchema } = require('../config/validate_schema')
 const { failBuild } = require('../error')
 
-const { API_METHODS } = require('./api')
-
 // Validate the shape of a plugin return value
-// TODO: validate allowed characters in `logic` properties
 const validatePlugin = function(logic) {
   if (!isPlainObj(logic)) {
     failBuild('Plugin must be an object or a function')
   }
 
-  validateRequiredProperties(logic)
-
   Object.entries(logic).forEach(([propName, value]) => validateProperty(value, propName))
 }
 
-// Validate `plugin.*` required properties
-const validateRequiredProperties = function(logic) {
-  REQUIRED_PROPERTIES.forEach(propName => validateRequiredProperty(logic, propName))
-}
-
-const REQUIRED_PROPERTIES = ['name']
-
-const validateRequiredProperty = function(logic, propName) {
-  if (logic[propName] === undefined) {
-    failBuild(`Missing required property '${propName}'`)
-  }
-}
-
 const validateProperty = function(value, propName) {
-  if (typeof value === 'function') {
-    validateMethod(propName)
+  if (DEPRECATED_PROPERTIES.includes(propName)) {
     return
   }
 
-  validateNonMethod(value, propName)
+  // All other properties are event handlers
+  validateEventHandler(value, propName)
 }
 
-// Validate `plugin.*` event handlers
-const validateMethod = function(propName) {
+// Backward compatibility. This is now in manifest.yml
+// TODO: remove after migrating existing plugins
+const DEPRECATED_PROPERTIES = ['name', 'inputs', 'config', 'scopes']
+
+const validateEventHandler = function(value, propName) {
   if (!EVENTS.includes(propName) && LEGACY_EVENTS[propName] === undefined) {
     failBuild(`Invalid event '${propName}'.
 Please use a valid event name. One of:
 ${serializeList(EVENTS)}`)
   }
-}
 
-const validateNonMethod = function(value, propName) {
-  const validator = VALIDATORS[propName]
-
-  if (validator === undefined) {
-    failBuild(`Invalid property '${propName}'.
-Please use a property name. One of:
-${serializeList(VALID_PROPERTIES)}`)
-  }
-
-  validator(value)
-}
-
-// Validate `plugin.name`
-const validateName = function(name) {
-  if (typeof name !== 'string') {
-    failBuild(`Property 'name' must be a string`)
+  if (typeof value !== 'function') {
+    failBuild(`Invalid event handler '${propName}': must be a function`)
   }
 }
-
-// Validate `plugin.scopes`
-const validateScopes = function(scopes) {
-  const wrongScope = scopes.find(scope => !isValidScope(scope))
-  if (wrongScope === undefined) {
-    return
-  }
-
-  failBuild(`Invalid scope "${wrongScope}"
-Please use a valid scope. One of:
-${serializeList(ALLOWED_SCOPES)}`)
-}
-
-const isValidScope = function(scope) {
-  return ALLOWED_SCOPES.includes(scope)
-}
-
-const ALLOWED_SCOPES = ['*', ...API_METHODS]
-
-const VALIDATORS = {
-  name: validateName,
-  scopes: validateScopes,
-  inputs: validateInputsSchema,
-  // Backward compatibility with former name.
-  // TODO: remove after going out of beta.
-  config: validateInputsSchema,
-}
-const VALID_PROPERTIES = ['name', 'scopes', 'inputs']
 
 module.exports = { validatePlugin }

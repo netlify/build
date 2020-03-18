@@ -1,0 +1,86 @@
+const { redBright } = require('chalk')
+const { dump: serializeYaml } = require('js-yaml')
+
+const { addErrorInfo } = require('../../error/info')
+const { indent } = require('../../log/serialize')
+
+// Check that plugin inputs match the validation specified in "manifest.yml"
+// Also assign default values
+const checkInputs = function({ inputs, manifest: { inputs: rules = [] }, package, packageJson, local }) {
+  try {
+    const inputsA = addDefaults(inputs, rules)
+    checkRequiredInputs({ inputs: inputsA, rules, package, packageJson, local })
+    Object.keys(inputsA).map(name => checkInput({ name, rules, package, packageJson, local }))
+    return inputsA
+  } catch (error) {
+    error.message = `${error.message}
+
+${redBright.bold('Plugin inputs')}
+
+${serializeInputs(inputs)}`
+    throw error
+  }
+}
+
+// Add "inputs[*].default"
+const addDefaults = function(inputs, rules) {
+  const defaults = rules.filter(hasDefault).map(getDefault)
+  return Object.assign({}, ...defaults, inputs)
+}
+
+const hasDefault = function(rule) {
+  return rule.default !== undefined
+}
+
+const getDefault = function({ name, default: defaultValue }) {
+  return { [name]: defaultValue }
+}
+
+// Check "inputs[*].required"
+const checkRequiredInputs = function({ inputs, rules, package, packageJson, local }) {
+  const missingInputs = rules.filter(rule => isMissingRequired(inputs, rule))
+  if (missingInputs.length === 0) {
+    return
+  }
+
+  const names = missingInputs.map(getName)
+  const error = new Error(`Required inputs for plugin "${package}": ${names.join(', ')}`)
+  addInputError({ error, name: names[0], package, packageJson, local })
+  throw error
+}
+
+const isMissingRequired = function(inputs, { name, required }) {
+  return required && inputs[name] === undefined
+}
+
+const getName = function({ name }) {
+  return name
+}
+
+// Check each "inputs[*].*" property for a specific input
+const checkInput = function({ name, rules, package, packageJson, local }) {
+  const ruleA = rules.find(rule => rule.name === name)
+  if (ruleA === undefined) {
+    const error = new Error(`Invalid input "${name}" for plugin "${package}".\nUnknown input name.`)
+    addInputError({ error, name, package, packageJson, local })
+    throw error
+  }
+}
+
+// Add error information
+const addInputError = function({ error, name, package, packageJson, local }) {
+  addErrorInfo(error, {
+    type: 'pluginInput',
+    plugin: { package, packageJson },
+    location: { event: 'load', package, input: name, local },
+  })
+}
+
+// Serialize inputs to display in error messages
+const serializeInputs = function(inputs) {
+  const inputsA = serializeYaml(inputs, { noRefs: true }).trim()
+  const inputsB = indent(inputsA)
+  return inputsB
+}
+
+module.exports = { checkInputs }
