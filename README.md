@@ -1,26 +1,21 @@
-<img src="static/logo.png" width="400" />
-
-<br/>
+# Netlify Build
 
 [![Coverage Status](https://codecov.io/gh/netlify/build/branch/master/graph/badge.svg)](https://codecov.io/gh/netlify/build)
 [![Build](https://github.com/netlify/build/workflows/Build/badge.svg)](https://github.com/netlify/build/actions)
 
-# Netlify Build
 
-Netlify build is the next generation of CI/CD tooling for modern web applications.
-
-[Sign up for the private beta](https://www.netlify.com/build/plugins-beta/)
+Netlify Build is a new, pluggable tool for running builds locally and in Netlify CI. It introduces Build Plugins, which are **now in public beta.** Learn how to enable your site to use Netlify Build and Build Plugins in the [Netlify docs](https://docs.netlify.com/configure-builds/plugins).
 
 <!-- AUTO-GENERATED-CONTENT:START (TOC:collapse=true&collapseText=Expand Table of Contents) -->
 <details>
 <summary>Expand Table of Contents</summary>
 
-- [Background](#background)
+- [What are Build Plugins?](#what-are-build-plugins)
 - [Netlify Configuration](#netlify-configuration)
 - [Plugins internals](#plugins-internals)
 - [What can plugins do?](#what-can-plugins-do)
-  - [1. Optimizing build speeds & lowing cost](#1-optimizing-build-speeds--lowing-cost)
-  - [2. Standardize workflows & developer productivity](#2-standardize-workflows--developer-productivity)
+  * [1. Optimizing build speeds & lowing cost](#1-optimizing-build-speeds--lowing-cost)
+  * [2. Standardize workflows & developer productivity](#2-standardize-workflows--developer-productivity)
 - [Community Plugins](#community-plugins)
 - [CLI commands](#cli-commands)
 - [Contributors](#contributors)
@@ -28,11 +23,14 @@ Netlify build is the next generation of CI/CD tooling for modern web application
 </details>
 <!-- AUTO-GENERATED-CONTENT:END -->
 
-## Background
+## What are Build Plugins?
 
-Netlify Build Plugins extend the functionality of the Netlify Build process.
+Netlify Build Plugins extend the functionality of the Netlify Build process. You can install plugins made by others, or write your own. You can save them locally in your repository, or share them with others via npm.
 
-Plugins are designed to support any kind of build flow and is extendable to fit any unique project requirements.
+For more information on installing, managing, and running Build Plugins on your Netlify site, visit the [Netlify docs](https://docs.netlify.com/configure-builds/plugins).
+
+The content in this repository focuses on writing your own plugins.
+
 
 ## Netlify Configuration
 
