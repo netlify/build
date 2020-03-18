@@ -10,13 +10,12 @@ const installDependencies = async function(packageRoot) {
   }
 
   try {
-    await execa.command('npm install --no-progress --no-audit --no-fund --no-package-lock', {
+    await execa.command('npm install --no-progress --no-audit --no-fund', {
       cwd: packageRoot,
-      stdio: 'inherit',
-      preferLocal: true,
+      all: true,
     })
   } catch (error) {
-    error.message = `Error while installing dependencies in ${packageRoot}\n${error.message}`
+    error.message = `Error while installing dependencies in ${packageRoot}\n${error.all}`
     addErrorInfo(error, { type: 'dependencies' })
     throw error
   }
