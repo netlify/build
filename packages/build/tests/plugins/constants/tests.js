@@ -60,6 +60,10 @@ if (platform !== 'linux') {
   test('constants.CACHE_DIR CI', async t => {
     await runFixture(t, 'cache', { env: { NETLIFY: 'true' } })
   })
+
+  test('constants.IS_LOCAL CI', async t => {
+    await runFixture(t, 'is_local', { env: { NETLIFY: 'true' } })
+  })
 }
 
 test('constants.SITE_ID', async t => {
@@ -68,8 +72,4 @@ test('constants.SITE_ID', async t => {
 
 test('constants.IS_LOCAL local', async t => {
   await runFixture(t, 'is_local')
-})
-
-test('constants.IS_LOCAL CI', async t => {
-  await runFixture(t, 'is_local', { env: { NETLIFY: 'true' } })
 })
