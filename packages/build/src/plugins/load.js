@@ -40,19 +40,22 @@ const loadPlugin = async function(
 
   try {
     const { pluginCommands } = await callChild(childProcess, 'load', {
-      package,
       pluginPath,
       manifest,
       inputs,
       netlifyConfig,
       utilsData,
-      core,
-      local,
       token,
       constants,
-      packageJson,
     })
-    const pluginCommandsA = pluginCommands.map(pluginCommand => ({ ...pluginCommand, childProcess }))
+    const pluginCommandsA = pluginCommands.map(pluginCommand => ({
+      ...pluginCommand,
+      package,
+      core,
+      local,
+      packageJson,
+      childProcess,
+    }))
     return pluginCommandsA
   } catch (error) {
     addErrorInfo(error, { plugin: { package, packageJson }, location: { event: 'load', package, local } })
