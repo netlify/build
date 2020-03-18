@@ -70,7 +70,7 @@ after your site build has completed.
 
 A plugin consists of two files:
 
-- A `manfiest.yml` file in the package root with the plugin's name at minimum:
+- A `manifest.yml` file in the package root with the plugin's name at minimum:
 
   ```yml
   # manifest.yml
