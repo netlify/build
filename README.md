@@ -71,6 +71,7 @@ after your site build has completed.
 A plugin consists of two files:
 
 - A `manfiest.yml` file in the package root with the plugin's name at minimum:
+
   ```yml
   # manifest.yml
 
@@ -100,7 +101,8 @@ To leverage this plugin we have just created, we need to declare it in our Netli
 Plugins are declared as top-level `[[plugins]]` tables in your `netlify.toml` file.
 
 ```toml
-# Attach our plugin
+# netlify.toml
+
 [[plugins]]
 package = "./plugins/netlify-plugin-hello-world"
 ```
@@ -213,6 +215,8 @@ it inside event handlers.
 Inside of each event handler there is a `constants` key.
 
 ```js
+// index.js
+
 module.exports = {
   onPreBuild: ({ constants }) => {
     console.log(constants)
@@ -238,6 +242,8 @@ Exceptions thrown inside event handlers are reported in logs as bugs. You should
 and use `utils.build`:
 
 ```js
+// index.js
+
 module.exports = {
   onPreBuild: ({ utils }) => {
     try {
@@ -266,6 +272,8 @@ the following properties:
   the `'message'` argument.
 
 ```js
+// index.js
+
 module.exports = {
   onPreBuild: ({ utils }) => {
     try {
