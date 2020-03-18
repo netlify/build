@@ -1,3 +1,2 @@
 plugins:
   - type: ./plugin.js
-    enabled: false

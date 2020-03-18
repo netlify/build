@@ -31,10 +31,6 @@ test('plugins.any.package: string', async t => {
   await runFixtureConfig(t, 'plugins_package_string')
 })
 
-test('plugins.any.enabled: boolean', async t => {
-  await runFixtureConfig(t, 'plugins_enabled_boolean')
-})
-
 test('plugins.any.config: renamed', async t => {
   await runFixtureConfig(t, 'plugins_config_renamed')
 })

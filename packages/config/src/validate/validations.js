@@ -3,14 +3,7 @@ const omit = require('omit.js')
 
 const { EVENTS, LEGACY_EVENTS, normalizeEventHandler } = require('../normalize/events')
 
-const {
-  isString,
-  isBoolean,
-  validProperties,
-  deprecatedProperties,
-  insideRootCheck,
-  removeParentDots,
-} = require('./helpers')
+const { isString, validProperties, deprecatedProperties, insideRootCheck, removeParentDots } = require('./helpers')
 const { addContextValidations } = require('./context')
 
 // List of validations performed on the configuration file.
@@ -37,10 +30,10 @@ const RAW_VALIDATIONS = [
   },
   {
     property: 'plugins.*',
-    // TODO: remove 'id', 'type', 'config' after the Beta release since it's legacy
-    ...validProperties(['package', 'enabled', 'inputs'], ['id', 'type', 'config']),
+    // TODO: remove 'id', 'type', 'config', 'enabled' after the Beta release since it's legacy
+    ...validProperties(['package', 'inputs'], ['id', 'type', 'config', 'enabled']),
     example: {
-      plugins: [{ package: 'netlify-plugin-one', enabled: false, inputs: { port: 80 } }],
+      plugins: [{ package: 'netlify-plugin-one', inputs: { port: 80 } }],
     },
   },
   {
@@ -61,12 +54,6 @@ const RAW_VALIDATIONS = [
     check: isString,
     message: 'must be a string.',
     example: (package, key, plugin) => ({ plugins: [{ ...plugin, package: 'netlify-plugin-one' }] }),
-  },
-  {
-    property: 'plugins.*.enabled',
-    check: isBoolean,
-    message: 'must be a boolean.',
-    example: (enabled, key, plugin) => ({ plugins: [{ ...plugin, package: 'netlify-plugin-one', enabled: false }] }),
   },
   {
     property: 'plugins.*.config',

@@ -11,7 +11,7 @@ const pResolve = promisify(resolve)
 
 // Load plugin options (specified by user in `config.plugins`)
 const getPluginsOptions = async function({ plugins: pluginsOptions }, buildDir, configPath) {
-  const pluginsOptionsA = [...CORE_PLUGINS, ...pluginsOptions].map(normalizePluginOptions).filter(isPluginEnabled)
+  const pluginsOptionsA = [...CORE_PLUGINS, ...pluginsOptions].map(normalizePluginOptions)
   const pluginsOptionsB = await Promise.all(
     pluginsOptionsA.map(pluginOptions => resolvePlugin(pluginOptions, buildDir, configPath)),
   )
@@ -19,16 +19,12 @@ const getPluginsOptions = async function({ plugins: pluginsOptions }, buildDir, 
 }
 
 const normalizePluginOptions = function(pluginOptions) {
-  const { package, core, enabled, inputs } = { ...DEFAULT_PLUGIN_OPTIONS, ...pluginOptions }
+  const { package, core, inputs } = { ...DEFAULT_PLUGIN_OPTIONS, ...pluginOptions }
   const local = core === undefined && (package.startsWith('.') || package.startsWith('/'))
-  return { package, local, core, enabled, inputs }
+  return { package, local, core, inputs }
 }
 
-const DEFAULT_PLUGIN_OPTIONS = { enabled: true, inputs: {} }
-
-const isPluginEnabled = function({ enabled }) {
-  return String(enabled) !== 'false'
-}
+const DEFAULT_PLUGIN_OPTIONS = { inputs: {} }
 
 // We use `resolve` because `require()` should be relative to `buildDir` not to
 // this `__filename`
