@@ -3,7 +3,6 @@ const getError = function() {
 }
 
 module.exports = {
-  name: 'netlify-plugin-one',
   onInit({
     utils: {
       build: { failPlugin },

@@ -8,7 +8,6 @@ const del = require('del')
 const pWriteFile = promisify(writeFile)
 
 module.exports = {
-  name: 'netlify-plugin-test',
   async onInit({ utils: { cache } }) {
     const id = String(Math.random()).replace('.', '')
 

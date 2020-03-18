@@ -1,5 +1,4 @@
 module.exports = {
-  name: 'netlify-plugin-test',
   onInit({
     utils: {
       git: { commits, ...git },

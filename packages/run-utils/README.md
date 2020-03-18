@@ -12,7 +12,6 @@ over `execa` defaulting to `{ preferLocal: true, stdio: 'inherit' }`.
 // Runs `eslint src/ test/` and prints the result
 // Either local or global binaries can be run
 const exampleNetlifyPlugin = {
-  name: 'example-netlify-plugin',
   async onBuild({ utils: { run } }) {
     await run('eslint', ['src/', 'test/'])
   },
@@ -22,7 +21,6 @@ const exampleNetlifyPlugin = {
 ```js
 // Same but with a more convenient syntax
 const exampleNetlifyPlugin = {
-  name: 'example-netlify-plugin',
   async onBuild({ utils: { run } }) {
     await run.command('eslint src/ test/')
   },
@@ -32,7 +30,6 @@ const exampleNetlifyPlugin = {
 ```js
 // Retrieve command's output and exit code as variables
 const exampleNetlifyPlugin = {
-  name: 'example-netlify-plugin',
   async onBuild({ utils: { run } }) {
     const { stdout, stderr, exitCode } = await run('eslint', ['src/', 'test/'])
     console.log({ stdout, stderr, exitCode })
@@ -43,7 +40,6 @@ const exampleNetlifyPlugin = {
 ```js
 // Streaming mode
 const exampleNetlifyPlugin = {
-  name: 'example-netlify-plugin',
   async onBuild({ utils: { run } }) {
     const { stdout } = run('eslint', ['src/', 'test/'])
     stdout.pipe(fs.createWriteStream('stdout.txt'))
@@ -55,7 +51,6 @@ const exampleNetlifyPlugin = {
 // If the command exit code is not 0 or was terminated by a signal, an error
 // is thrown with failure information
 const exampleNetlifyPlugin = {
-  name: 'example-netlify-plugin',
   async onBuild({ utils: { run } }) {
     try {
       await run('eslint', ['does_not_exist'])
@@ -69,7 +64,6 @@ const exampleNetlifyPlugin = {
 ```js
 // Pass environment variables
 const exampleNetlifyPlugin = {
-  name: 'example-netlify-plugin',
   async onBuild({ utils: { run } }) {
     await run('eslint', ['src/', 'test/'], { env: { TEST: 'true' } })
   },

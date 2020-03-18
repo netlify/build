@@ -1,6 +1,4 @@
-module.exports = {
-  name: 'netlify-plugin-test',
-}
+module.exports = {}
 
 const throwError = function() {
   throw new Error('test')
