@@ -93,17 +93,15 @@ Save the `index.js` file locally to a `./plugins/netlify-plugin-hello-world`. Th
 
 To leverage this plugin we have just created, we need to declare it in our Netlify configuration file.
 
-Plugins live under the `plugins` top level key of your `netlify.yml` (or `netlify.toml`) file.
+Plugins are declared as top-level `[[plugins]]` tables in your `netlify.toml` file.
 
-```yml
-build:
-  command: npm run build
-  publish: dist
-
+```toml
 # Attach our plugin
-plugins:
-  - package: ./plugins/netlify-plugin-hello-world
+[[plugins]]
+package = "./plugins/netlify-plugin-hello-world"
 ```
+
+(Note that each plugin you add to the `netlify.toml` file has its own `[[plugins]]` line.)
 
 Now that the plugin is declared, we can verify it's loading correctly with the `netlify build --dry` command. This
 execute a "dry run" of our build and show us the plugins & commands that will execute for a real build.
