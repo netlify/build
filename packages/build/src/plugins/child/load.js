@@ -16,16 +16,16 @@ const loadPlugin = function(payload) {
 
   const logicA = normalizePlugin(logic)
 
-  const pluginCommands = getPluginCommands(logicA, payload)
+  const pluginCommands = getPluginCommands(logicA)
 
   const context = getContext(pluginCommands, payload)
   return { context, pluginCommands }
 }
 
-const getPluginCommands = function(logic, { package, core, local, packageJson }) {
+const getPluginCommands = function(logic) {
   return Object.entries(logic)
     .filter(isEventHandler)
-    .map(([event, method]) => ({ method, event, package, core, local, packageJson }))
+    .map(([event, method]) => ({ method, event }))
 }
 
 const isEventHandler = function([, value]) {
