@@ -1,5 +1,4 @@
 module.exports = {
-  name: 'netlify-plugin-test',
   onInit() {
     console.log('a'.repeat(1e3))
     console.error('b'.repeat(1e3))

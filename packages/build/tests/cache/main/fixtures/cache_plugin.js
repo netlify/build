@@ -18,7 +18,6 @@ const pReadFile = promisify(readFile)
 const DUMMY_VALUE = String(Math.random())
 
 module.exports = {
-  name: 'netlify-plugin-test',
   async onPreBuild({ utils: { cache } }) {
     await cache.remove(TEST_CACHE_PATH)
     await makeDir(dirname(cachePath))

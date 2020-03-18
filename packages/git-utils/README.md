@@ -12,7 +12,6 @@ Utility for dealing with modified, created, deleted files since a git commit.
 ```js
 /* Export the Netlify Plugin */
 module.exports = {
-  name: 'netlify-plugin-one',
   // On the "init" lifecycle event, run this logic
   onInit: ({ utils }) => {
     const { git } = utils
@@ -54,7 +53,6 @@ The `git` util includes the following signature.
 
 ```js
 module.exports = {
-  name: 'netlify-plugin-one',
   // On the "init" lifecycle event, run this logic
   onInit: ({ utils }) => {
     console.log(utils.git)

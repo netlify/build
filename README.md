@@ -558,7 +558,6 @@ Here is an example:
 // ./node_modules/netlify-plugin-awesome/index.js
 
 module.exports = {
-  name: 'netlify-plugin-awesome',
   onInit: () => {
     console.log('Run custom logic at beginning of build')
   },

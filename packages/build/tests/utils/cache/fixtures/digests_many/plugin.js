@@ -7,7 +7,6 @@ const del = require('del')
 const pWriteFile = promisify(writeFile)
 
 module.exports = {
-  name: 'netlify-plugin-test',
   async onInit({ utils: { cache } }) {
     const idOne = String(Math.random()).replace('.', '')
     const idTwo = String(Math.random()).replace('.', '')

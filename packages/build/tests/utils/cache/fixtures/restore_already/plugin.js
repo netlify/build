@@ -8,7 +8,6 @@ const pWriteFile = promisify(writeFile)
 const pReadFile = promisify(readFile)
 
 module.exports = {
-  name: 'netlify-plugin-test',
   async onInit({ utils: { cache } }) {
     const id = String(Math.random()).replace('.', '')
 
