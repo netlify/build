@@ -1,4 +1,5 @@
 const test = require('ava')
+const pathExists = require('path-exists')
 
 const { runFixture, FIXTURES_DIR } = require('../../helpers/main')
 const { removeDir } = require('../../helpers/dir')
@@ -23,7 +24,8 @@ test('Functions: default directory', async t => {
 test('Functions: install dependencies top-level', async t => {
   await removeDir([`${FIXTURES_DIR}/deps/.netlify/functions/`, `${FIXTURES_DIR}/deps/functions/node_modules/`])
   await runFixture(t, 'deps')
-  await removeDir(`${FIXTURES_DIR}/deps/functions/node_modules/`)
+  t.true(await pathExists(`${FIXTURES_DIR}/deps/functions/node_modules/`))
+  await removeDir([`${FIXTURES_DIR}/deps/.netlify/functions/`, `${FIXTURES_DIR}/deps/functions/node_modules/`])
 })
 
 test('Functions: install dependencies nested', async t => {
@@ -32,7 +34,11 @@ test('Functions: install dependencies nested', async t => {
     `${FIXTURES_DIR}/deps_dir/functions/function/node_modules/`,
   ])
   await runFixture(t, 'deps_dir')
-  await removeDir(`${FIXTURES_DIR}/deps_dir/functions/function/node_modules/`)
+  t.true(await pathExists(`${FIXTURES_DIR}/deps_dir/functions/function/node_modules/`))
+  await removeDir([
+    `${FIXTURES_DIR}/deps_dir/.netlify/functions/`,
+    `${FIXTURES_DIR}/deps_dir/functions/function/node_modules/`,
+  ])
 })
 
 test('Functions: ignore package.json inside node_modules', async t => {
