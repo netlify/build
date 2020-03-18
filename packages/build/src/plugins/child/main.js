@@ -65,8 +65,8 @@ const handleEvent = async function(callId, eventName, payload, state) {
 }
 
 // Initial plugin load
-const load = async function(payload, state) {
-  const { context, pluginCommands } = await loadPlugin(payload)
+const load = function(payload, state) {
+  const { context, pluginCommands } = loadPlugin(payload)
   state.context = context
   return { pluginCommands }
 }
@@ -87,6 +87,10 @@ const run = async function(
 const addBackwardCompatibility = function(runOptions) {
   Object.defineProperties(runOptions, {
     pluginConfig: { value: runOptions.inputs },
+  })
+  // Make `constants.BUILD_DIR` non-enumerable
+  Object.defineProperty(runOptions.constants, 'BUILD_DIR', {
+    value: runOptions.constants.BUILD_DIR,
   })
 }
 
