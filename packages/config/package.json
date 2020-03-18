@@ -24,7 +24,6 @@
     "array-flat-polyfill": "^1.0.1",
     "chalk": "^3.0.0",
     "deepmerge": "^4.2.2",
-    "dot-prop": "^5.2.0",
     "execa": "^3.4.0",
     "filter-obj": "^2.0.1",
     "find-up": "^4.1.0",

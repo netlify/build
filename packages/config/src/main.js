@@ -1,7 +1,6 @@
 require('./utils/polyfills')
 
 const { getConfigPath } = require('./path')
-const { addEnvVars } = require('./env')
 const { validateConfig } = require('./validate/main')
 const { handleFiles } = require('./files')
 const { normalizeConfig } = require('./normalize/main')
@@ -114,13 +113,12 @@ const getFullConfig = async function({ configOpt, cwd, context, repositoryRoot, 
   try {
     const config = await parseConfig(configPath)
     const configA = deepMerge(defaultConfig, config)
-    const configB = addEnvVars(configA)
 
-    validateConfig(configB)
+    validateConfig(configA)
 
-    const configC = mergeContext(configB, context, branch)
-    const configD = normalizeConfig(configC)
-    return { configPath, config: configD }
+    const configB = mergeContext(configA, context, branch)
+    const configC = normalizeConfig(configB)
+    return { configPath, config: configC }
   } catch (error) {
     error.message = `When resolving config file ${configPath}:\n${error.message}`
     throw error

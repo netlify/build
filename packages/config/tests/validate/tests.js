@@ -71,12 +71,6 @@ test('build.command: string', async t => {
   await runFixture(t, 'build_command_string')
 })
 
-test('build.command: with environment variable lifecycle', async t => {
-  await runFixture(t, 'build_command_lifecycle_envvar', {
-    env: { NETLIFY_CONFIG_BUILD_LIFECYCLE_ONBUILD: 'echo onBuild' },
-  })
-})
-
 test('build.lifecycle: object', async t => {
   await runFixture(t, 'build_lifecycle_object')
 })
