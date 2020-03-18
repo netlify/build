@@ -61,7 +61,11 @@ const getName = function({ name }) {
 const checkInput = function({ name, rules, package, packageJson, local }) {
   const ruleA = rules.find(rule => rule.name === name)
   if (ruleA === undefined) {
-    const error = new Error(`Invalid input "${name}" for plugin "${package}".\nUnknown input name.`)
+    const error = new Error(`Invalid input "${name}" for plugin "${package}".
+This may be due to:
+  - the input name being misspelled
+  - the plugin having renamed or removed that input
+  - the plugin not declaring that input (in a manifest.yml file)`)
     addInputError({ error, name, package, packageJson, local })
     throw error
   }
