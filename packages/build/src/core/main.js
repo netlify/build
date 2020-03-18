@@ -46,6 +46,7 @@ const build = async function(flags) {
       api,
       dry,
       siteInfo,
+      constants,
       context,
       branch,
     } = await loadConfig(flags)
@@ -63,6 +64,7 @@ const build = async function(flags) {
         token,
         dry,
         siteInfo,
+        constants,
         context,
         branch,
       })
@@ -95,6 +97,7 @@ const buildRun = async function({
   token,
   dry,
   siteInfo,
+  constants,
   context,
   branch,
 }) {
@@ -114,7 +117,7 @@ const buildRun = async function({
       childEnv,
       token,
       dry,
-      siteInfo,
+      constants,
     })
   } finally {
     await stopPlugins(childProcesses)
@@ -132,17 +135,15 @@ const executeCommands = async function({
   childEnv,
   token,
   dry,
-  siteInfo,
+  constants,
 }) {
   const pluginsCommands = await loadPlugins({
     pluginsOptions,
     childProcesses,
     netlifyConfig,
     utilsData,
-    configPath,
-    buildDir,
     token,
-    siteInfo,
+    constants,
   })
 
   const { mainCommands, buildCommands, endCommands, errorCommands, commandsCount } = getCommands({

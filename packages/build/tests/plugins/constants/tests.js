@@ -1,3 +1,5 @@
+const { platform } = require('process')
+
 const test = require('ava')
 
 const { runFixture } = require('../../helpers/main')
@@ -54,9 +56,11 @@ test('constants.CACHE_DIR local', async t => {
   await runFixture(t, 'cache')
 })
 
-test('constants.CACHE_DIR CI', async t => {
-  await runFixture(t, 'cache', { env: { NETLIFY: 'true' } })
-})
+if (platform !== 'linux') {
+  test('constants.CACHE_DIR CI', async t => {
+    await runFixture(t, 'cache', { env: { NETLIFY: 'true' } })
+  })
+}
 
 test('constants.SITE_ID', async t => {
   await runFixture(t, 'site_id', { flags: '--site-id test' })

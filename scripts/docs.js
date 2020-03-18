@@ -5,7 +5,7 @@ const markdownMagic = require('markdown-magic')
 const dox = require('dox')
 
 const ROOT_DIR = path.join(__dirname, '..')
-const CONSTANTS_PATH = path.join(ROOT_DIR, 'packages/build/src/plugins/child', 'constants.js')
+const CONSTANTS_PATH = path.join(ROOT_DIR, 'packages/build/src/core', 'constants.js')
 const LIFECYCLE_PATH = path.join(ROOT_DIR, 'packages/config/src/normalize/events.js')
 
 const config = {

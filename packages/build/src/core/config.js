@@ -11,6 +11,7 @@ const { removeFalsy } = require('../utils/remove_falsy')
 
 const { getApiClient } = require('./api')
 const { getSiteInfo } = require('./site_info')
+const { getConstants } = require('./constants')
 
 // Retrieve configuration object
 const loadConfig = async function(flags) {
@@ -48,6 +49,7 @@ const loadConfig = async function(flags) {
 
   const api = getApiClient(token)
   const siteInfo = await getSiteInfo(api, siteId)
+  const constants = await getConstants({ configPath, buildDir, netlifyConfig, siteInfo })
   return {
     netlifyConfig,
     configPath,
@@ -57,6 +59,7 @@ const loadConfig = async function(flags) {
     token,
     dry,
     siteInfo,
+    constants,
     context: contextA,
     branch: branchA,
   }
