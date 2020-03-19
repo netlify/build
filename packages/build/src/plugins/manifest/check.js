@@ -65,7 +65,7 @@ const checkInput = function({ name, rules, package, packageJson, local }) {
 Check your plugin configuration to be sure that:
   - the input name is spelled correctly
   - the input is included in the plugin's available configuration options
-  - the plugin's input requirements have not changed
+  - the plugin's input requirements have not changed`)
     addInputError({ error, name, package, packageJson, local })
     throw error
   }
