@@ -1,5 +1,8 @@
 const { basename } = require('path')
-const { platform } = require('process')
+const {
+  platform,
+  env: { NETLIFY_BUILD_DEBUG },
+} = require('process')
 
 const stringWidth = require('string-width')
 const { greenBright, cyanBright, redBright, yellowBright, bold, white } = require('chalk')
@@ -44,6 +47,38 @@ ${EMPTY_LINE}`)
   log(`${cyanBright.bold(`${HEADING_PREFIX} Config file`)}
 ${SUBTEXT_PADDING}${configPath}
 ${EMPTY_LINE}`)
+}
+
+const logConfig = function(config) {
+  if (!NETLIFY_BUILD_DEBUG) {
+    return
+  }
+
+  log(cyanBright.bold(`${HEADING_PREFIX} Resolved config`), serialize(simplifyConfig(config)), EMPTY_LINE)
+}
+
+// The resolved configuration gets assigned some default values (empty objects and arrays)
+// to make it more convenient to use without checking for `undefined`.
+// However those empty values are not useful to users, so we don't log them.
+const simplifyConfig = function({ build: { environment, lifecycle, ...build }, plugins, ...config }) {
+  const simplifiedConfig = {
+    ...build,
+    ...removeEmptyObject(environment, 'environment'),
+    ...removeEmptyObject(lifecycle, 'lifecycle'),
+  }
+  return {
+    ...config,
+    ...removeEmptyObject(simplifiedConfig, 'config'),
+    ...removeEmptyArray(plugins, 'plugins'),
+  }
+}
+
+const removeEmptyObject = function(object, propName) {
+  return Object.keys(object).length === 0 ? {} : { [propName]: object }
+}
+
+const removeEmptyArray = function(array, propName) {
+  return array.length === 0 ? {} : { [propName]: array }
 }
 
 const logContext = function(context) {
@@ -237,6 +272,7 @@ module.exports = {
   logFlags,
   logBuildDir,
   logConfigPath,
+  logConfig,
   logContext,
   logInstallPlugins,
   logLoadPlugins,

@@ -1,4 +1,4 @@
 build:
-  publish: /
+  publish: /doesNotExist
 plugins:
   - package: ./plugin
