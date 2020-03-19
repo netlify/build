@@ -10,6 +10,10 @@ test('build.command', async t => {
   await runFixtureConfig(t, 'command')
 })
 
+test('build.command and build.lifecycle.onbuild', async t => {
+  await runFixtureConfig(t, 'command_lifecycle')
+})
+
 test('build.lifecycle.build', async t => {
   await runFixtureConfig(t, 'old_lifecycle')
 })

@@ -7,9 +7,10 @@ const { LEGACY_EVENTS, normalizeEventHandler } = require('./events')
 
 // Normalize configuration object
 const normalizeConfig = function(config) {
-  const configA = deepMerge(DEFAULT_CONFIG, config)
-  const configB = normalizeLifecycle({ config: configA })
-  return configB
+  const { build, plugins, ...configA } = deepMerge(DEFAULT_CONFIG, config)
+  const buildA = normalizeBuild(build)
+  const pluginsA = plugins.map(normalizePlugin)
+  return { ...configA, build: buildA, plugins: pluginsA }
 }
 
 const DEFAULT_CONFIG = {
@@ -17,32 +18,26 @@ const DEFAULT_CONFIG = {
   plugins: [],
 }
 
-const normalizeLifecycle = function({
-  config,
-  config: {
-    build: { command, lifecycle, ...build },
-    plugins,
-  },
-}) {
-  const lifecycleA = normalizeOnBuild(lifecycle, command)
+// Normalize `build` property
+const normalizeBuild = function({ command, lifecycle, ...build }) {
+  const lifecycleA = normalizeOnBuild(command, lifecycle)
   const lifecycleB = mapObj(lifecycleA, normalizeEvent)
-  const pluginsA = plugins.map(normalizePlugin)
-  return { ...config, build: { ...build, lifecycle: lifecycleB }, plugins: pluginsA }
+  return { ...build, lifecycle: lifecycleB }
 }
 
 // `build.lifecycle.onBuild` was previously called `build.command`
-const normalizeOnBuild = function(lifecycle, command) {
-  if (command === undefined) {
+const normalizeOnBuild = function(command, { onBuild = command, ...lifecycle }) {
+  if (onBuild === undefined) {
     return lifecycle
   }
 
-  return { ...lifecycle, onBuild: command }
+  return { ...lifecycle, onBuild }
 }
 
-const normalizeEvent = function(event, bashCommands) {
+const normalizeEvent = function(event, bashCommand) {
   const eventA = normalizeEventHandler(event)
   const eventB = LEGACY_EVENTS[eventA] === undefined ? eventA : LEGACY_EVENTS[eventA]
-  return [eventB, bashCommands]
+  return [eventB, bashCommand]
 }
 
 // `plugins[*].package` was previously called `plugins[*].type`
