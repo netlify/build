@@ -70,6 +70,7 @@ const BINARY_PATH = {
 // Each project has its own set of default environment variables
 const DEFAULT_ENV = {
   build: {
+    NETLIFY_BUILD_DEBUG: '1',
     // Workarounds to mock caching logic
     NETLIFY_BUILD_SAVE_CACHE: '1',
     TEST_CACHE_PATH: 'none',
