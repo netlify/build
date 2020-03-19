@@ -3,6 +3,10 @@ const indentString = require('indent-string')
 
 // Serialize to string
 const serialize = function(arg) {
+  return indent(stringify(arg)).trimRight()
+}
+
+const stringify = function(arg) {
   if (typeof arg !== 'object' || arg === null) {
     return String(arg)
   }

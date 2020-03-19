@@ -1,8 +1,7 @@
 const { redBright } = require('chalk')
-const { dump: serializeYaml } = require('js-yaml')
 
 const { addErrorInfo } = require('../../error/info')
-const { indent } = require('../../log/serialize')
+const { serialize } = require('../../log/serialize')
 
 // Check that plugin inputs match the validation specified in "manifest.yml"
 // Also assign default values
@@ -17,7 +16,7 @@ const checkInputs = function({ inputs, manifest: { inputs: rules = [] }, package
 
 ${redBright.bold('Plugin inputs')}
 
-${serializeInputs(inputs)}`
+${serialize(inputs)}`
     throw error
   }
 }
@@ -78,13 +77,6 @@ const addInputError = function({ error, name, package, packageJson, local }) {
     plugin: { package, packageJson },
     location: { event: 'load', package, input: name, local },
   })
-}
-
-// Serialize inputs to display in error messages
-const serializeInputs = function(inputs) {
-  const inputsA = serializeYaml(inputs, { noRefs: true }).trim()
-  const inputsB = indent(inputsA)
-  return inputsB
 }
 
 module.exports = { checkInputs }
