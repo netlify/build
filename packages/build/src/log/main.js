@@ -46,6 +46,16 @@ ${SUBTEXT_PADDING}${configPath}
 ${EMPTY_LINE}`)
 }
 
+const logContext = function(context) {
+  if (context === undefined) {
+    return
+  }
+
+  log(`${cyanBright.bold(`${HEADING_PREFIX} Context`)}
+${SUBTEXT_PADDING}${context}
+${EMPTY_LINE}`)
+}
+
 const logInstallPlugins = function() {
   log(cyanBright.bold(`${HEADING_PREFIX} Installing plugins dependencies`))
 }
@@ -227,6 +237,7 @@ module.exports = {
   logFlags,
   logBuildDir,
   logConfigPath,
+  logContext,
   logInstallPlugins,
   logLoadPlugins,
   logLoadedPlugins,
