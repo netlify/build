@@ -54,7 +54,7 @@ This is a simplified view of a typical build life cycle:
 Historically, when connecting your site to Netlify, we ask for the build command (step 3 above) and will run through
 this build process. This works great for most use cases & will continue to do so 😃
 
-For builds that require a little more flexibility, we are introducing **Netlify Build** as programatic interface on top
+For builds that require a little more flexibility, we are introducing **Netlify Build** as programmatic interface on top
 of these build events to allow users to customize this flow.
 
 **Netlify Build** is designed to support any kind of build flow and is extendable to fit any unique project
