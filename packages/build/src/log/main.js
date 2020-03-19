@@ -61,14 +61,14 @@ const logConfig = function(config) {
 // to make it more convenient to use without checking for `undefined`.
 // However those empty values are not useful to users, so we don't log them.
 const simplifyConfig = function({ build: { environment, lifecycle, ...build }, plugins, ...config }) {
-  const simplifiedConfig = {
+  const simplifiedBuild = {
     ...build,
     ...removeEmptyObject(environment, 'environment'),
     ...removeEmptyObject(lifecycle, 'lifecycle'),
   }
   return {
     ...config,
-    ...removeEmptyObject(simplifiedConfig, 'config'),
+    ...removeEmptyObject(simplifiedBuild, 'build'),
     ...removeEmptyArray(plugins, 'plugins'),
   }
 }
