@@ -1,6 +1,7 @@
 const { platform } = require('process')
 
 const test = require('ava')
+const isCI = require('is-ci')
 
 const { runFixture } = require('../../helpers/main')
 
@@ -57,7 +58,7 @@ test('constants.CACHE_DIR local', async t => {
 })
 
 // TODO: figure out why those tests randomly fail on Linux
-if (platform !== 'linux') {
+if (platform !== 'linux' || !isCI) {
   test('constants.CACHE_DIR CI', async t => {
     await runFixture(t, 'cache', { env: { NETLIFY: 'true' } })
   })
