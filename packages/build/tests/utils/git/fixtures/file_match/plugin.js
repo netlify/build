@@ -5,6 +5,6 @@ module.exports = {
     },
   }) {
     const { modified, created, deleted, edited } = fileMatch('**/*npm*', '!**/*run-npm*')
-    console.log({ modified, created, deleted, edited })
+    console.log(JSON.stringify({ modified, created, deleted, edited }))
   },
 }
