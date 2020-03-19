@@ -10,7 +10,7 @@ const { serializeError } = require('../error/serialize')
 const isNetlifyCI = require('../utils/is-netlify-ci')
 
 const { log } = require('./logger')
-const { serialize, indent, SUBTEXT_PADDING } = require('./serialize')
+const { serialize, SUBTEXT_PADDING } = require('./serialize')
 const { EMPTY_LINE, HEADING_PREFIX, TICK, ARROW_DOWN } = require('./constants')
 
 const logBuildStart = function() {
@@ -22,7 +22,7 @@ ${EMPTY_LINE}`)
 
 const logFlags = function(flags) {
   const flagsA = omit(flags, HIDDEN_FLAGS)
-  log(cyanBright.bold(`${HEADING_PREFIX} Flags`), indent(serialize(flagsA)).trimRight(), EMPTY_LINE)
+  log(cyanBright.bold(`${HEADING_PREFIX} Flags`), serialize(flagsA), EMPTY_LINE)
 }
 
 const CI_HIDDEN_FLAGS = isNetlifyCI() ? ['nodePath'] : []
