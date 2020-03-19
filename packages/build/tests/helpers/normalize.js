@@ -62,21 +62,10 @@ const MAIN_NORMALIZE_REGEXPS = [
   [/ \.\.\.:443/g, ''],
 ]
 
-// Multiline objects are printed differently by `util.inspect()` in Node 8 and
-// 12 due to different default options.
-// Those are not done when snapshotting @netlify/config
-const MULTILINE_NORMALIZE_REGEXPS = [
-  [/{\n\s*/gm, '{ '],
-  [/\n\s*}/gm, ' }'],
-  [/,\n\s*/gm, ', '],
-  [/:\n\s*([^-\s])/gm, ': $1'],
-  [/:\s*\n\s*{/gm, ': {'],
-]
-
 // Some projects require different sets of normalization regExps
 const NORMALIZE_REGEXPS = {
-  build: [...MAIN_NORMALIZE_REGEXPS, ...MULTILINE_NORMALIZE_REGEXPS],
-  config: [...MAIN_NORMALIZE_REGEXPS],
+  build: MAIN_NORMALIZE_REGEXPS,
+  config: MAIN_NORMALIZE_REGEXPS,
 }
 
 module.exports = { normalizeOutput }

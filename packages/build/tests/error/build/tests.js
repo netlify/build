@@ -1,3 +1,5 @@
+const { version } = require('process')
+
 const test = require('ava')
 
 const { runFixture } = require('../../helpers/main')
@@ -63,12 +65,16 @@ test('build.cancelBuild() API call no token', async t => {
   t.false(request.sent)
 })
 
-test('build.cancelBuild() API call failure', async t => {
-  await runFixture(t, 'cancel', {
-    flags: '--token=test',
-    env: { DEPLOY_ID: 'test', TEST_HOST: '...' },
+// Node 10 `util.inspect()` output is different from Node 8, leading to
+// inconsistent test snapshots
+if (!version.startsWith('v8.')) {
+  test('build.cancelBuild() API call failure', async t => {
+    await runFixture(t, 'cancel', {
+      flags: '--token=test',
+      env: { DEPLOY_ID: 'test', TEST_HOST: '...' },
+    })
   })
-})
+}
 
 test('exception', async t => {
   await runFixture(t, 'exception')
