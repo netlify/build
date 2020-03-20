@@ -29,7 +29,7 @@ const onPreBuild = async function({ constants: { FUNCTIONS_SRC } }) {
 
   const packageRoots = packagePaths.map(dirname)
 
-  await Promise.all(packageRoots.map(installDependencies))
+  await Promise.all(packageRoots.map(packageRoot => installDependencies({ packageRoot })))
 }
 
 // Package Netlify functions

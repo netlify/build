@@ -1,45 +1,42 @@
 const pkgDir = require('pkg-dir')
 
 const { installDependencies } = require('../utils/install')
-const { logInstallPlugins } = require('../log/main')
+const { logInstallLocalPluginsDeps } = require('../log/main')
 
 // Install dependencies of local plugins.
-// Also resolve path of plugins' main files.
-const installPlugins = async function(pluginsOptions, buildDir) {
-  const packageDirs = getPackageDirs(pluginsOptions)
-  if (packageDirs.length === 0) {
+const installLocalPluginsDeps = async function(pluginsOptions, buildDir) {
+  const localPluginsOptions = getLocalPluginsOptions(pluginsOptions)
+  if (localPluginsOptions.length === 0) {
     return
   }
 
-  const packageDirsA = await getPackageRoots(packageDirs, buildDir)
-  if (packageDirsA.length === 0) {
+  const localPluginsOptionsA = await removeMainRoot(localPluginsOptions, buildDir)
+  if (localPluginsOptionsA.length === 0) {
     return
   }
 
-  logInstallPlugins()
-
-  await Promise.all(packageDirsA.map(installDependencies))
+  logInstallLocalPluginsDeps(localPluginsOptionsA)
+  await Promise.all(localPluginsOptionsA.map(({ packageDir }) => installDependencies({ packageRoot: packageDir })))
 }
 
 // Core plugins and non-local plugins already have their dependencies installed
-const getPackageDirs = function(pluginsOptions) {
-  const packageDirs = pluginsOptions.filter(isLocalPlugin).map(getPackageDir)
-  return [...new Set(packageDirs)]
+const getLocalPluginsOptions = function(pluginsOptions) {
+  return pluginsOptions.filter(isLocalPlugin).filter(isUnique)
 }
 
 const isLocalPlugin = function({ local }) {
   return local
 }
 
-const getPackageDir = function({ packageDir }) {
-  return packageDir
+// Remove duplicates
+const isUnique = function({ packageDir }, index, pluginsOptions) {
+  return pluginsOptions.slice(index + 1).every(pluginOption => pluginOption.packageDir !== packageDir)
 }
 
-// Retrieve `package.json` directories
-const getPackageRoots = async function(packageDirs, buildDir) {
+// We only install dependencies of local plugins that have their own `package.json`
+const removeMainRoot = async function(localPluginsOptions, buildDir) {
   const mainPackageDir = await pkgDir(buildDir)
-  const packageDirsA = packageDirs.filter(packageDir => packageDir !== mainPackageDir)
-  return [...new Set(packageDirsA)]
+  return localPluginsOptions.filter(({ packageDir }) => packageDir !== mainPackageDir)
 }
 
-module.exports = { installPlugins }
+module.exports = { installLocalPluginsDeps }
