@@ -2,11 +2,9 @@ const { promisify } = require('util')
 const { dirname } = require('path')
 
 const resolve = require('resolve')
-const pFilter = require('p-filter')
 
 const { CORE_PLUGINS } = require('../plugins_core/main')
-const { addDependencies } = require('../utils/install')
-const { logInstallMissingPlugins } = require('../log/main')
+const { installMissingPlugins } = require('../install/missing')
 
 const { getPackageJson } = require('./package')
 const { useManifest } = require('./manifest/main')
@@ -40,31 +38,6 @@ const getBasedir = function(buildDir, configPath) {
   }
 
   return dirname(configPath)
-}
-
-// Automatically install plugins if not installed already
-const installMissingPlugins = async function(pluginsOptions, basedir) {
-  const missingPlugins = await pFilter(pluginsOptions, pluginOptions => isMissingPlugin(pluginOptions, basedir))
-  if (missingPlugins.length === 0) {
-    return
-  }
-
-  const packages = missingPlugins.map(getPackage)
-  logInstallMissingPlugins(packages)
-  await addDependencies({ packageRoot: basedir, packages })
-}
-
-const isMissingPlugin = async function({ location }, basedir) {
-  try {
-    await pResolve(location, { basedir })
-    return false
-  } catch (error) {
-    return true
-  }
-}
-
-const getPackage = function({ package }) {
-  return package
 }
 
 // Retrieve plugin's main file path.

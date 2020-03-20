@@ -1,10 +1,11 @@
 const pkgDir = require('pkg-dir')
 
-const { installDependencies } = require('../utils/install')
 const { logInstallLocalPluginsDeps } = require('../log/main')
 
+const { installDependencies } = require('./main')
+
 // Install dependencies of local plugins.
-const installLocalPluginsDeps = async function(pluginsOptions, buildDir) {
+const installLocalPluginsDependencies = async function(pluginsOptions, buildDir) {
   const localPluginsOptions = getLocalPluginsOptions(pluginsOptions)
   if (localPluginsOptions.length === 0) {
     return
@@ -39,4 +40,4 @@ const removeMainRoot = async function(localPluginsOptions, buildDir) {
   return localPluginsOptions.filter(({ packageDir }) => packageDir !== mainPackageDir)
 }
 
-module.exports = { installLocalPluginsDeps }
+module.exports = { installLocalPluginsDependencies }

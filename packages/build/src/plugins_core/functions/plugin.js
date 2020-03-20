@@ -1,10 +1,8 @@
-const { dirname } = require('path')
-
-const { zipFunctions } = require('@netlify/zip-it-and-ship-it')
 const readdirp = require('readdirp')
+const { zipFunctions } = require('@netlify/zip-it-and-ship-it')
 const pathExists = require('path-exists')
 
-const { installDependencies } = require('../../utils/install')
+const { installFunctionDependencies } = require('../../install/functions')
 const { serializeList } = require('../../utils/list')
 
 // Plugin to package Netlify functions with @netlify/zip-it-and-ship-it
@@ -25,18 +23,7 @@ const onPreBuild = async function({ constants: { FUNCTIONS_SRC } }) {
     return
   }
 
-  const packagePaths = await readdirp.promise(FUNCTIONS_SRC, { depth: 1, fileFilter: 'package.json' })
-  if (packagePaths.length === 0) {
-    return
-  }
-
-  console.log('Installing functions dependencies')
-  const packageRoots = packagePaths.map(getPackageRoot)
-  await Promise.all(packageRoots.map(packageRoot => installDependencies({ packageRoot })))
-}
-
-const getPackageRoot = function({ fullPath }) {
-  return dirname(fullPath)
+  await installFunctionDependencies(FUNCTIONS_SRC)
 }
 
 // Package Netlify functions
