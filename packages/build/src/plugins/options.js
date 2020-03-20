@@ -2,9 +2,11 @@ const { promisify } = require('util')
 const { dirname } = require('path')
 
 const resolve = require('resolve')
+const pFilter = require('p-filter')
 
 const { CORE_PLUGINS } = require('../plugins_core/main')
-const { addDependency } = require('../utils/install')
+const { addDependencies } = require('../utils/install')
+const { logInstallMissingPlugins } = require('../log/main')
 
 const { getPackageJson } = require('./package')
 const { useManifest } = require('./manifest/main')
@@ -14,8 +16,10 @@ const pResolve = promisify(resolve)
 // Load plugin options (specified by user in `config.plugins`)
 const getPluginsOptions = async function({ plugins }, buildDir, configPath) {
   const pluginsOptions = [...CORE_PLUGINS, ...plugins].map(normalizePluginOptions)
+  const basedir = getBasedir(buildDir, configPath)
+  await installMissingPlugins(pluginsOptions, basedir)
   const pluginsOptionsA = await Promise.all(
-    pluginsOptions.map(pluginOptions => resolvePlugin(pluginOptions, buildDir, configPath)),
+    pluginsOptions.map(pluginOptions => loadPluginFiles({ pluginOptions, basedir })),
   )
   return pluginsOptionsA
 }
@@ -25,32 +29,48 @@ const normalizePluginOptions = function({ package, location = package, core = fa
   return { package, location, local, core, inputs }
 }
 
-const resolvePlugin = async function(pluginOptions, buildDir, configPath) {
-  const pluginPath = await getPluginPath(pluginOptions, buildDir, configPath)
-  const pluginOptionsA = await loadPluginFiles({ pluginOptions, pluginPath })
-  return pluginOptionsA
+// The base directory used when resolving plugins path or package names.
+// This resolution should be relative to the configuration file since this is
+// what users would expect. If no configuration file is present, we use
+// `buildDir`.
+// We use `resolve` because `require()` does not allow custom base directory.
+const getBasedir = function(buildDir, configPath) {
+  if (configPath === undefined) {
+    return buildDir
+  }
+
+  return dirname(configPath)
 }
 
-// We use `resolve` because `require()` should be relative to `buildDir` not to
-// this `__filename`
-// Automatically installing the dependency if it is missing.
-const getPluginPath = async function({ location }, buildDir, configPath) {
+// Automatically install plugins if not installed already
+const installMissingPlugins = async function(pluginsOptions, basedir) {
+  const missingPlugins = await pFilter(pluginsOptions, pluginOptions => isMissingPlugin(pluginOptions, basedir))
+  if (missingPlugins.length === 0) {
+    return
+  }
+
+  const packages = missingPlugins.map(getPackage)
+  logInstallMissingPlugins(packages)
+  await addDependencies({ packageRoot: basedir, packages })
+}
+
+const isMissingPlugin = async function({ location }, basedir) {
   try {
-    return await tryGetPluginPath({ location, buildDir, configPath })
+    await pResolve(location, { basedir })
+    return false
   } catch (error) {
-    await addDependency(location, { packageRoot: buildDir })
-    return await tryGetPluginPath({ location, buildDir, configPath })
+    return true
   }
 }
 
-const tryGetPluginPath = async function({ location, buildDir, configPath }) {
-  const basedir = configPath === undefined ? buildDir : dirname(configPath)
-  const pluginPath = await pResolve(location, { basedir })
-  return pluginPath
+const getPackage = function({ package }) {
+  return package
 }
 
-// Load plugin's `package.json` and `manifest.yml`
-const loadPluginFiles = async function({ pluginOptions, pluginOptions: { local }, pluginPath }) {
+// Retrieve plugin's main file path.
+// Then load plugin's `package.json` and `manifest.yml`.
+const loadPluginFiles = async function({ pluginOptions, pluginOptions: { location, local }, basedir }) {
+  const pluginPath = await pResolve(location, { basedir })
   const pluginDir = dirname(pluginPath)
   const { packageDir, packageJson } = await getPackageJson({ pluginDir, local })
   const { manifest, inputs: inputsA } = await useManifest(pluginOptions, { pluginDir, packageDir, packageJson })

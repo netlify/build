@@ -11,9 +11,10 @@ const omit = require('omit.js')
 const { version } = require('../../package.json')
 const { serializeError } = require('../error/serialize')
 const isNetlifyCI = require('../utils/is-netlify-ci')
+const { serializeList } = require('../utils/list')
 
 const { log } = require('./logger')
-const { serialize, SUBTEXT_PADDING } = require('./serialize')
+const { serialize, SUBTEXT_PADDING, indent } = require('./serialize')
 const { EMPTY_LINE, HEADING_PREFIX, TICK, ARROW_DOWN } = require('./constants')
 
 const logBuildStart = function() {
@@ -88,6 +89,12 @@ const logContext = function(context) {
 
   log(`${cyanBright.bold(`${HEADING_PREFIX} Context`)}
 ${SUBTEXT_PADDING}${context}
+${EMPTY_LINE}`)
+}
+
+const logInstallMissingPlugins = function(packages) {
+  log(`${cyanBright.bold(`${HEADING_PREFIX} Installing plugins`)}
+${indent(serializeList(packages))}
 ${EMPTY_LINE}`)
 }
 
@@ -274,6 +281,7 @@ module.exports = {
   logConfigPath,
   logConfig,
   logContext,
+  logInstallMissingPlugins,
   logInstallPlugins,
   logLoadPlugins,
   logLoadedPlugins,
