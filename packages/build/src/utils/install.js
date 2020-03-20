@@ -22,9 +22,9 @@ const installDependencies = async function(packageRoot) {
 }
 
 // Add new Node.js dependencies
-const addDependency = async function(location, { packageRoot }) {
+const addDependencies = async function({ packageRoot, packages }) {
   try {
-    await execa.command(`npm install --no-progress --no-audit --no-fund ${location}`, {
+    await execa.command(`npm install --no-progress --no-audit --no-fund ${packages.join(' ')}`, {
       cwd: packageRoot,
       all: true,
     })
@@ -35,4 +35,4 @@ const addDependency = async function(location, { packageRoot }) {
   }
 }
 
-module.exports = { installDependencies, addDependency }
+module.exports = { installDependencies, addDependencies }
