@@ -154,9 +154,8 @@ const shouldIgnoreSnapshot = function(all) {
 }
 
 const IGNORE_REGEXPS = [
-  // Some tests run npm|yarn, which sometimes fail due to network errors
+  // Some tests send network requests, which can sometimes fail
   /getaddrinfo EAI_AGAIN/,
-  /npm ERR!/,
 ]
 
 // Get an CLI flag whose value is a JSON object, to be passed to `execa.command()`
