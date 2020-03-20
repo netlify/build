@@ -22,7 +22,7 @@ const getPluginsOptions = async function({ plugins: pluginsOptions }, buildDir, 
 
 const normalizePluginOptions = function(pluginOptions) {
   const { package, core, inputs } = { ...DEFAULT_PLUGIN_OPTIONS, ...pluginOptions }
-  const local = core === undefined && (package.startsWith('.') || package.startsWith('/'))
+  const local = package.startsWith('.') || package.startsWith('/')
   return { package, local, core, inputs }
 }
 
