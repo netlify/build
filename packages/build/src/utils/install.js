@@ -1,14 +1,9 @@
-const pathExists = require('path-exists')
 const execa = require('execa')
 
 const { addErrorInfo } = require('../error/info')
 
 // Install Node.js dependencies in a specific directory
-const installDependencies = async function(packageRoot) {
-  if (await pathExists(`${packageRoot}/node_modules`)) {
-    return
-  }
-
+const installDependencies = async function({ packageRoot }) {
   try {
     await execa.command('npm install --no-progress --no-audit --no-fund', {
       cwd: packageRoot,

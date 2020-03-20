@@ -98,8 +98,15 @@ ${indent(serializeList(packages))}
 ${EMPTY_LINE}`)
 }
 
-const logInstallPlugins = function() {
-  log(cyanBright.bold(`${HEADING_PREFIX} Installing plugins dependencies`))
+const logInstallLocalPluginsDeps = function(localPluginsOptions) {
+  const packages = localPluginsOptions.map(getPackage)
+  log(`${cyanBright.bold(`${HEADING_PREFIX} Installing local plugins dependencies`)}
+${indent(serializeList(packages))}
+${EMPTY_LINE}`)
+}
+
+const getPackage = function({ package }) {
+  return package
 }
 
 const logLoadPlugins = function() {
@@ -282,7 +289,7 @@ module.exports = {
   logConfig,
   logContext,
   logInstallMissingPlugins,
-  logInstallPlugins,
+  logInstallLocalPluginsDeps,
   logLoadPlugins,
   logLoadedPlugins,
   logCommandsStart,
