@@ -19,11 +19,32 @@ test('Non-existing plugins', async t => {
   await runFixture(t, 'non_existing')
 })
 
-test('Install missing plugins', async t => {
-  await removeDir(`${FIXTURES_DIR}/install_missing/node_modules`)
-  await runFixture(t, 'install_missing', { copyRoot: {} })
+// Need to run `npm install` and `yarn` serially to avoid network errors
+test.serial('Install missing plugins with npm locally with lock file', async t => {
+  await removeDir(`${FIXTURES_DIR}/install_missing_npm_lock/node_modules`)
+  await runFixture(t, 'install_missing_npm_lock', { copyRoot: {} })
 })
 
-test('Already installed plugins', async t => {
+test.serial('Install missing plugins with npm in CI with no lock file', async t => {
+  await removeDir(`${FIXTURES_DIR}/install_missing_npm_ci_no_lock/node_modules`)
+  await runFixture(t, 'install_missing_npm_ci_no_lock', { copyRoot: {}, env: { NETLIFY: 'true' } })
+})
+
+test.serial('Install missing plugins with npm in CI with lock file', async t => {
+  await removeDir(`${FIXTURES_DIR}/install_missing_npm_ci_lock/node_modules`)
+  await runFixture(t, 'install_missing_npm_ci_lock', { copyRoot: {}, env: { NETLIFY: 'true' } })
+})
+
+test.serial('Install missing plugins with Yarn locally with lock file', async t => {
+  await removeDir(`${FIXTURES_DIR}/install_missing_yarn_lock/node_modules`)
+  await runFixture(t, 'install_missing_yarn_lock', { copyRoot: {} })
+})
+
+test.serial('Install missing plugins with Yarn in CI with lock file', async t => {
+  await removeDir(`${FIXTURES_DIR}/install_missing_yarn_ci_lock/node_modules`)
+  await runFixture(t, 'install_missing_yarn_ci_lock', { copyRoot: {}, env: { NETLIFY: 'true' } })
+})
+
+test.serial('Already installed plugins', async t => {
   await runFixture(t, 'installed_already')
 })
