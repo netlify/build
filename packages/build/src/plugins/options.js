@@ -12,21 +12,18 @@ const { useManifest } = require('./manifest/main')
 const pResolve = promisify(resolve)
 
 // Load plugin options (specified by user in `config.plugins`)
-const getPluginsOptions = async function({ plugins: pluginsOptions }, buildDir, configPath) {
-  const pluginsOptionsA = [...CORE_PLUGINS, ...pluginsOptions].map(normalizePluginOptions)
-  const pluginsOptionsB = await Promise.all(
-    pluginsOptionsA.map(pluginOptions => resolvePlugin(pluginOptions, buildDir, configPath)),
+const getPluginsOptions = async function({ plugins }, buildDir, configPath) {
+  const pluginsOptions = [...CORE_PLUGINS, ...plugins].map(normalizePluginOptions)
+  const pluginsOptionsA = await Promise.all(
+    pluginsOptions.map(pluginOptions => resolvePlugin(pluginOptions, buildDir, configPath)),
   )
-  return pluginsOptionsB
+  return pluginsOptionsA
 }
 
-const normalizePluginOptions = function(pluginOptions) {
-  const { package, core, inputs } = { ...DEFAULT_PLUGIN_OPTIONS, ...pluginOptions }
-  const local = core === undefined && (package.startsWith('.') || package.startsWith('/'))
-  return { package, local, core, inputs }
+const normalizePluginOptions = function({ package, location = package, core = false, inputs = {} }) {
+  const local = package.startsWith('.') || package.startsWith('/')
+  return { package, location, local, core, inputs }
 }
-
-const DEFAULT_PLUGIN_OPTIONS = { inputs: {} }
 
 const resolvePlugin = async function(pluginOptions, buildDir, configPath) {
   const pluginPath = await getPluginPath(pluginOptions, buildDir, configPath)
@@ -37,8 +34,7 @@ const resolvePlugin = async function(pluginOptions, buildDir, configPath) {
 // We use `resolve` because `require()` should be relative to `buildDir` not to
 // this `__filename`
 // Automatically installing the dependency if it is missing.
-const getPluginPath = async function({ package, core }, buildDir, configPath) {
-  const location = core === undefined ? package : core
+const getPluginPath = async function({ location }, buildDir, configPath) {
   try {
     return await tryGetPluginPath({ location, buildDir, configPath })
   } catch (error) {
