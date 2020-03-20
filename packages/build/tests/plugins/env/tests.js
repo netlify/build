@@ -2,10 +2,8 @@ const { platform } = require('process')
 
 const test = require('ava')
 const isCI = require('is-ci')
-const cpy = require('cpy')
 
-const { runFixture, FIXTURES_DIR } = require('../../helpers/main')
-const { createRepoDir, removeDir } = require('../../helpers/dir')
+const { runFixture } = require('../../helpers/main')
 const { startServer } = require('../../helpers/server')
 
 // Windows environment variables work differently
@@ -59,13 +57,7 @@ test('Environment variable git with --branch', async t => {
 })
 
 test('Environment variable git no repository', async t => {
-  const cwd = await createRepoDir({ git: false })
-  try {
-    await cpy(`${FIXTURES_DIR}/git/*`, cwd)
-    await runFixture(t, 'git', { repositoryRoot: cwd })
-  } finally {
-    await removeDir(cwd)
-  }
+  await runFixture(t, 'git', { copyRoot: { git: false } })
 })
 
 const SITE_INFO_PATH = '/api/v1/sites/test'

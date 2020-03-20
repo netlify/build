@@ -4,14 +4,7 @@ const { relative } = require('path')
 const test = require('ava')
 
 const resolveConfig = require('../..')
-const {
-  runFixtureConfig,
-  FIXTURES_DIR,
-  createRepoDir,
-  removeDir,
-  getJsonOpt,
-  escapeExecaOpt,
-} = require('../helpers/main')
+const { runFixtureConfig, FIXTURES_DIR, getJsonOpt, escapeExecaOpt } = require('../helpers/main')
 
 test('Empty configuration', async t => {
   await runFixtureConfig(t, 'empty')
@@ -28,12 +21,7 @@ test('Can define configuration as environment variables', async t => {
 })
 
 test('No --config but none found', async t => {
-  const cwd = await createRepoDir()
-  try {
-    await runFixtureConfig(t, '', { cwd })
-  } finally {
-    await removeDir(cwd)
-  }
+  await runFixtureConfig(t, 'none', { copyRoot: {} })
 })
 
 test('Several configuration files', async t => {

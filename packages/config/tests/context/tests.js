@@ -1,8 +1,6 @@
 const test = require('ava')
-const cpy = require('cpy')
-const execa = require('execa')
 
-const { runFixtureConfig, FIXTURES_DIR, createRepoDir, removeDir } = require('../helpers/main')
+const { runFixtureConfig } = require('../helpers/main')
 
 test('Context with context CLI flag', async t => {
   await runFixtureConfig(t, 'context_flag', { flags: '--context=testContext' })
@@ -25,24 +23,11 @@ test('Context with branch environment variable', async t => {
 })
 
 test('Context with branch git', async t => {
-  const cwd = await createRepoDir()
-  try {
-    await cpy(`${FIXTURES_DIR}/branch/*`, cwd)
-    await execa.command('git checkout -b testBranch', { cwd })
-    await runFixtureConfig(t, 'branch', { repositoryRoot: cwd, env: { BRANCH: '' } })
-  } finally {
-    await removeDir(cwd)
-  }
+  await runFixtureConfig(t, 'branch', { copyRoot: { branch: 'testBranch' }, env: { BRANCH: '' } })
 })
 
 test('Context with branch fallback', async t => {
-  const cwd = await createRepoDir({ git: false })
-  try {
-    await cpy(`${FIXTURES_DIR}/branch_fallback/*`, cwd)
-    await runFixtureConfig(t, 'branch_fallback', { repositoryRoot: cwd, env: { BRANCH: '' } })
-  } finally {
-    await removeDir(cwd)
-  }
+  await runFixtureConfig(t, 'branch_fallback', { copyRoot: { git: false }, env: { BRANCH: '' } })
 })
 
 test('Context deep merge', async t => {

@@ -2,9 +2,8 @@ const { cwd } = require('process')
 const { relative } = require('path')
 
 const test = require('ava')
-const cpy = require('cpy')
 
-const { runFixtureConfig, FIXTURES_DIR, createRepoDir, removeDir } = require('../helpers/main')
+const { runFixtureConfig, FIXTURES_DIR } = require('../helpers/main')
 
 test('--cwd with no config', async t => {
   await runFixtureConfig(t, '', { flags: `--cwd=${FIXTURES_DIR}/empty` })
@@ -25,13 +24,7 @@ test('--repository-root', async t => {
 })
 
 test('No .git', async t => {
-  const cwd = await createRepoDir({ git: false })
-  try {
-    await cpy(`${FIXTURES_DIR}/empty/*`, cwd)
-    await runFixtureConfig(t, '', { flags: `--cwd=${cwd}` })
-  } finally {
-    await removeDir(cwd)
-  }
+  await runFixtureConfig(t, 'empty', { copyRoot: {}, flags: '--cwd=.' })
 })
 
 test('--cwd non-existing', async t => {

@@ -1,10 +1,8 @@
 const { platform } = require('process')
 
 const test = require('ava')
-const cpy = require('cpy')
 
-const { runFixture, FIXTURES_DIR } = require('../../helpers/main')
-const { createRepoDir, removeDir } = require('../../helpers/dir')
+const { runFixture } = require('../../helpers/main')
 
 test('Top-level errors', async t => {
   await runFixture(t, 'top')
@@ -23,13 +21,7 @@ test('Node module partial fields', async t => {
 })
 
 test('No repository root', async t => {
-  const cwd = await createRepoDir({ git: false })
-  try {
-    await cpy(`${FIXTURES_DIR}/no_root/*`, cwd)
-    await runFixture(t, 'no_root', { repositoryRoot: cwd })
-  } finally {
-    await removeDir(cwd)
-  }
+  await runFixture(t, 'no_root', { copyRoot: { git: false } })
 })
 
 test('Process warnings', async t => {

@@ -13,11 +13,13 @@ const execa = require('execa')
 const { getBinPath } = require('get-bin-path')
 const { magentaBright } = require('chalk')
 const pathKey = require('path-key')
+const cpy = require('cpy')
 
 const PROJECTS_DIR = `${__dirname}/../../..`
 const BUILD_BIN_DIR = `${PROJECTS_DIR}/build/node_modules/.bin`
 
 const { normalizeOutput } = require('./normalize')
+const { createRepoDir, removeDir } = require('./dir')
 
 const FIXTURES_DIR = normalize(`${testFile}/../fixtures`)
 
@@ -28,6 +30,11 @@ const FIXTURES_DIR = normalize(`${testFile}/../fixtures`)
 //  - `env` {object}: environment variable
 //  - `normalize` {boolean}: whether to normalize output
 //  - `snapshot` {boolean}: whether to create a snapshot
+//  - `copyRoot` {object}: copy the fixture directory to a temporary directory
+//    This is useful so that no parent has a `.git` or `package.json`.
+//  - `copyRoot.git` {boolean}: whether the copied directory should have a `.git`
+//    Default: true
+//  - `copyRoot.branch` {string}: create a git branch after copy
 const runFixture = async function(
   t,
   fixtureName,
@@ -38,18 +45,25 @@ const runFixture = async function(
     normalize,
     snapshot = true,
     repositoryRoot = `${FIXTURES_DIR}/${fixtureName}`,
+    copyRoot,
   } = {},
 ) {
   const isPrint = PRINT === '1'
   const FORCE_COLOR = isPrint ? '1' : ''
   const commandEnv = { ...DEFAULT_ENV[type], FORCE_COLOR, ...envOption }
-  const repositoryRootFlag = getRepositoryRootFlag(fixtureName, repositoryRoot)
+  const copyRootDir = await getCopyRootDir({ copyRoot })
+  const repositoryRootFlag = getRepositoryRootFlag({ fixtureName, copyRootDir, repositoryRoot })
   const binaryPath = await BINARY_PATH[type]
-  const { stdout, stderr, all, exitCode } = await execa.command(`${binaryPath} ${repositoryRootFlag} ${flags}`, {
-    all: isPrint && snapshot,
-    reject: false,
-    env: commandEnv,
-    timeout: TIMEOUT,
+  const { stdout, stderr, all, exitCode } = await runCommand({
+    binaryPath,
+    repositoryRootFlag,
+    flags,
+    isPrint,
+    snapshot,
+    commandEnv,
+    fixtureName,
+    copyRoot,
+    copyRootDir,
   })
 
   doTestAction({ t, type, stdout, stderr, all, isPrint, normalize, snapshot })
@@ -94,12 +108,62 @@ const TIMEOUT = 6e5
 
 // The `repositoryRoot` flag can be overriden, but defaults to the fixture
 // directory
-const getRepositoryRootFlag = function(fixtureName, repositoryRoot) {
+const getRepositoryRootFlag = function({ fixtureName, copyRootDir, repositoryRoot }) {
   if (fixtureName === '') {
     return ''
   }
 
+  if (copyRootDir !== undefined) {
+    return `--repositoryRoot=${normalize(copyRootDir)}`
+  }
+
   return `--repositoryRoot=${normalize(repositoryRoot)}`
+}
+
+const getCopyRootDir = function({ copyRoot, copyRoot: { git } = {} }) {
+  if (copyRoot === undefined) {
+    return
+  }
+
+  return createRepoDir({ git })
+}
+
+const runCommand = async function({
+  binaryPath,
+  repositoryRootFlag,
+  flags,
+  isPrint,
+  snapshot,
+  commandEnv,
+  fixtureName,
+  copyRoot,
+  copyRoot: { branch } = {},
+  copyRootDir,
+}) {
+  if (copyRoot === undefined) {
+    return execCommand({ binaryPath, repositoryRootFlag, flags, isPrint, snapshot, commandEnv })
+  }
+
+  try {
+    await cpy('**', copyRootDir, { cwd: `${FIXTURES_DIR}/${fixtureName}`, parents: true })
+
+    if (branch !== undefined) {
+      await execa.command(`git checkout -b ${branch}`, { cwd: copyRootDir })
+    }
+
+    return await execCommand({ binaryPath, repositoryRootFlag, flags, isPrint, snapshot, commandEnv })
+  } finally {
+    await removeDir(copyRootDir)
+  }
+}
+
+const execCommand = function({ binaryPath, repositoryRootFlag, flags, isPrint, snapshot, commandEnv }) {
+  return execa.command(`${binaryPath} ${repositoryRootFlag} ${flags}`, {
+    all: isPrint && snapshot,
+    reject: false,
+    env: commandEnv,
+    timeout: TIMEOUT,
+  })
 }
 
 // The `PRINT` environment variable can be set to `1` to run the test in print
