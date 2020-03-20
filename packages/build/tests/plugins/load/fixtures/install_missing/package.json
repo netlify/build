@@ -5,6 +5,6 @@
   "license": "MIT",
   "repository": "test",
   "dependencies": {
-    "yn": "^4.0.0"
+    "isobject": "^4.0.0"
   }
 }
