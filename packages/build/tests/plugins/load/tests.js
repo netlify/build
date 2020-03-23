@@ -1,8 +1,7 @@
 const test = require('ava')
-const cpy = require('cpy')
 
 const { runFixture, FIXTURES_DIR } = require('../../helpers/main')
-const { createRepoDir, removeDir } = require('../../helpers/dir')
+const { removeDir } = require('../../helpers/dir')
 
 test('Local plugins', async t => {
   await runFixture(t, 'local')
@@ -22,13 +21,7 @@ test('Non-existing plugins', async t => {
 
 test('Install missing plugins', async t => {
   await removeDir(`${FIXTURES_DIR}/install_missing/node_modules`)
-  const tmpDir = await createRepoDir()
-  try {
-    await cpy('**', tmpDir, { cwd: `${FIXTURES_DIR}/install_missing`, parents: true })
-    await runFixture(t, 'install_missing', { repositoryRoot: tmpDir })
-  } finally {
-    await removeDir(tmpDir)
-  }
+  await runFixture(t, 'install_missing', { copyRoot: {} })
 })
 
 test('Already installed plugins', async t => {

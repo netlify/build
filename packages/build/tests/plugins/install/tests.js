@@ -1,9 +1,8 @@
 const test = require('ava')
-const cpy = require('cpy')
 const pathExists = require('path-exists')
 
 const { runFixture, FIXTURES_DIR } = require('../../helpers/main')
-const { createRepoDir, removeDir } = require('../../helpers/dir')
+const { removeDir } = require('../../helpers/dir')
 
 test('Install local plugin dependencies: with npm', async t => {
   await removeDir(`${FIXTURES_DIR}/npm/plugin/node_modules`)
@@ -32,11 +31,5 @@ test('Install local plugin dependencies: no package.json', async t => {
 })
 
 test('Install local plugin dependencies: no root package.json', async t => {
-  const tmpDir = await createRepoDir()
-  try {
-    await cpy('**', tmpDir, { cwd: `${FIXTURES_DIR}/no_root_package`, parents: true })
-    await runFixture(t, 'no_root_package', { repositoryRoot: tmpDir })
-  } finally {
-    await removeDir(tmpDir)
-  }
+  await runFixture(t, 'no_root_package', { copyRoot: {} })
 })
