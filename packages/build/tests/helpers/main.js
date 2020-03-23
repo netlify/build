@@ -1,9 +1,10 @@
 require('log-process-errors/build/register/ava')
 
 const {
+  env,
   env: { PRINT },
 } = require('process')
-const { normalize } = require('path')
+const { normalize, delimiter } = require('path')
 
 const {
   meta: { file: testFile },
@@ -11,8 +12,10 @@ const {
 const execa = require('execa')
 const { getBinPath } = require('get-bin-path')
 const { magentaBright } = require('chalk')
+const pathKey = require('path-key')
 
 const PROJECTS_DIR = `${__dirname}/../../..`
+const BUILD_BIN_DIR = `${PROJECTS_DIR}/build/node_modules/.bin`
 
 const { normalizeOutput } = require('./normalize')
 
@@ -31,7 +34,7 @@ const runFixture = async function(
   {
     type = 'build',
     flags = '',
-    env,
+    env: envOption,
     normalize,
     snapshot = true,
     repositoryRoot = `${FIXTURES_DIR}/${fixtureName}`,
@@ -39,13 +42,13 @@ const runFixture = async function(
 ) {
   const isPrint = PRINT === '1'
   const FORCE_COLOR = isPrint ? '1' : ''
-  const envA = { ...DEFAULT_ENV[type], FORCE_COLOR, ...env }
+  const commandEnv = { ...DEFAULT_ENV[type], FORCE_COLOR, ...envOption }
   const repositoryRootFlag = getRepositoryRootFlag(fixtureName, repositoryRoot)
   const binaryPath = await BINARY_PATH[type]
   const { stdout, stderr, all, exitCode } = await execa.command(`${binaryPath} ${repositoryRootFlag} ${flags}`, {
     all: isPrint && snapshot,
     reject: false,
-    env: envA,
+    env: commandEnv,
     timeout: TIMEOUT,
   })
 
@@ -76,6 +79,9 @@ const DEFAULT_ENV = {
     TEST_CACHE_PATH: 'none',
     // Ensure local tokens aren't used during development
     NETLIFY_AUTH_TOKEN: '',
+    // Allows executing any locally installed Node modules inside tests,
+    // regardless of the current directory
+    [pathKey()]: `${env[pathKey()]}${delimiter}${BUILD_BIN_DIR}`,
   },
   config: {
     // Make snapshot consistent regardless of the actual current git branch
