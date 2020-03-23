@@ -61,7 +61,7 @@
     "resolve": "^1.15.1",
     "string-width": "^4.2.0",
     "strip-ansi": "^6.0.0",
-    "uuid": "^3.4.0",
+    "uuid": "^7.0.2",
     "yargs": "^15.1.0"
   },
   "devDependencies": {
