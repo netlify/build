@@ -30,6 +30,10 @@ test('build.lifecycle.finally', async t => {
   await runFixtureConfig(t, 'finally')
 })
 
+test('build.lifecycle empty', async t => {
+  await runFixtureConfig(t, 'lifecycle_empty')
+})
+
 test('plugins[*].type', async t => {
   await runFixtureConfig(t, 'type')
 })

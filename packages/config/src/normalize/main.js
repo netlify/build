@@ -1,5 +1,6 @@
 const mapObj = require('map-obj')
 const deepMerge = require('deepmerge')
+const filterObj = require('filter-obj')
 
 const { removeFalsy } = require('../utils/remove_falsy')
 
@@ -22,7 +23,8 @@ const DEFAULT_CONFIG = {
 const normalizeBuild = function({ command, lifecycle, ...build }) {
   const lifecycleA = normalizeOnBuild(command, lifecycle)
   const lifecycleB = mapObj(lifecycleA, normalizeEvent)
-  return { ...build, lifecycle: lifecycleB }
+  const lifecycleC = filterObj(lifecycleB, hasCommand)
+  return { ...build, lifecycle: lifecycleC }
 }
 
 // `build.lifecycle.onBuild` was previously called `build.command`
@@ -38,6 +40,11 @@ const normalizeEvent = function(event, bashCommand) {
   const eventA = normalizeEventHandler(event)
   const eventB = LEGACY_EVENTS[eventA] === undefined ? eventA : LEGACY_EVENTS[eventA]
   return [eventB, bashCommand]
+}
+
+// Remove empty commands
+const hasCommand = function(event, bashCommand) {
+  return bashCommand.trim() !== ''
 }
 
 // `plugins[*].package` was previously called `plugins[*].type`
