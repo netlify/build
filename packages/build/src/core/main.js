@@ -7,11 +7,11 @@ setColorLevel()
 require('../error/process')
 
 const { getPluginsOptions } = require('../plugins/options')
-const { installLocalPluginsDeps } = require('../plugins/install')
 const { startPlugins, stopPlugins } = require('../plugins/spawn')
 const { startUtils } = require('../plugins/child/utils')
 const { loadPlugins } = require('../plugins/load')
 const { getChildEnv } = require('../plugins/env')
+const { installLocalPluginsDependencies } = require('../install/local')
 const { logBuildStart, logBuildError, logBuildSuccess, logBuildEnd } = require('../log/main')
 const { startTimer, endTimer } = require('../log/timer')
 const { trackBuildComplete } = require('../telemetry/complete')
@@ -53,7 +53,7 @@ const build = async function(flags) {
 
     try {
       const pluginsOptions = await getPluginsOptions(netlifyConfig, buildDir, configPath)
-      await installLocalPluginsDeps(pluginsOptions, buildDir)
+      await installLocalPluginsDependencies(pluginsOptions, buildDir)
 
       const commandsCount = await buildRun({
         pluginsOptions,
