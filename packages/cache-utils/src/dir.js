@@ -8,7 +8,7 @@ const globalCacheDir = require('global-cache-dir')
 const { isNetlifyCI } = require('./ci')
 
 // Retrieve the cache directory location
-const getCacheDir = function() {
+const getCacheDir = function () {
   if (!isNetlifyCI()) {
     return LOCAL_CACHE_DIR
   }

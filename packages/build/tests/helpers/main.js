@@ -35,7 +35,7 @@ const FIXTURES_DIR = normalize(`${testFile}/../fixtures`)
 //  - `copyRoot.git` {boolean}: whether the copied directory should have a `.git`
 //    Default: true
 //  - `copyRoot.branch` {string}: create a git branch after copy
-const runFixture = async function(
+const runFixture = async function (
   t,
   fixtureName,
   {
@@ -72,7 +72,7 @@ const runFixture = async function(
 }
 
 // Same with @netlify/config
-const runFixtureConfig = function(t, fixtureName, opts) {
+const runFixtureConfig = function (t, fixtureName, opts) {
   return runFixture(t, fixtureName, { ...opts, type: 'config' })
 }
 
@@ -107,7 +107,7 @@ const TIMEOUT = 6e5
 
 // The `repositoryRoot` flag can be overriden, but defaults to the fixture
 // directory
-const getRepositoryRootFlag = function({ fixtureName, copyRootDir, repositoryRoot }) {
+const getRepositoryRootFlag = function ({ fixtureName, copyRootDir, repositoryRoot }) {
   if (fixtureName === '') {
     return ''
   }
@@ -119,7 +119,7 @@ const getRepositoryRootFlag = function({ fixtureName, copyRootDir, repositoryRoo
   return `--repositoryRoot=${normalize(repositoryRoot)}`
 }
 
-const getCopyRootDir = function({ copyRoot, copyRoot: { git } = {} }) {
+const getCopyRootDir = function ({ copyRoot, copyRoot: { git } = {} }) {
   if (copyRoot === undefined) {
     return
   }
@@ -127,7 +127,7 @@ const getCopyRootDir = function({ copyRoot, copyRoot: { git } = {} }) {
   return createRepoDir({ git })
 }
 
-const runCommand = async function({
+const runCommand = async function ({
   binaryPath,
   repositoryRootFlag,
   flags,
@@ -156,7 +156,7 @@ const runCommand = async function({
   }
 }
 
-const execCommand = function({ binaryPath, repositoryRootFlag, flags, isPrint, snapshot, commandEnv }) {
+const execCommand = function ({ binaryPath, repositoryRootFlag, flags, isPrint, snapshot, commandEnv }) {
   return execa.command(`${binaryPath} ${repositoryRootFlag} ${flags}`, {
     all: isPrint && snapshot,
     reject: false,
@@ -168,7 +168,7 @@ const execCommand = function({ binaryPath, repositoryRootFlag, flags, isPrint, s
 // The `PRINT` environment variable can be set to `1` to run the test in print
 // mode. Print mode is a debugging mode which shows the test output but does
 // not create nor compare its snapshot.
-const doTestAction = function({ t, type, stdout, stderr, all, isPrint, normalize = !isPrint, snapshot }) {
+const doTestAction = function ({ t, type, stdout, stderr, all, isPrint, normalize = !isPrint, snapshot }) {
   if (!snapshot) {
     return
   }
@@ -192,7 +192,7 @@ const doTestAction = function({ t, type, stdout, stderr, all, isPrint, normalize
   t.snapshot(allB)
 }
 
-const normalizeOutputString = function(outputString, type, normalize) {
+const normalizeOutputString = function (outputString, type, normalize) {
   if (!normalize) {
     return outputString
   }
@@ -200,7 +200,7 @@ const normalizeOutputString = function(outputString, type, normalize) {
   return normalizeOutput(outputString, type)
 }
 
-const printOutput = function(t, all) {
+const printOutput = function (t, all) {
   console.log(`
 ${magentaBright.bold(`${LINE}
   ${t.title}
@@ -212,7 +212,7 @@ ${all}`)
 
 const LINE = '='.repeat(50)
 
-const shouldIgnoreSnapshot = function(all) {
+const shouldIgnoreSnapshot = function (all) {
   return IGNORE_REGEXPS.some(regExp => regExp.test(all))
 }
 
@@ -223,12 +223,12 @@ const IGNORE_REGEXPS = [
 
 // Get an CLI flag whose value is a JSON object, to be passed to `execa.command()`
 // Used for example by --defaultConfig and --cachedConfig.
-const getJsonOpt = function(object) {
+const getJsonOpt = function (object) {
   return escapeExecaOpt(JSON.stringify(object))
 }
 
 // Escape CLI flag value that might contain a space
-const escapeExecaOpt = function(string) {
+const escapeExecaOpt = function (string) {
   return string.replace(EXECA_COMMAND_REGEXP, '\\ ')
 }
 

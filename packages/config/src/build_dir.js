@@ -5,7 +5,7 @@ const { resolve } = require('path')
 //  - `build.base`
 //  - `--repositoryRoot`
 //  - the current directory
-const getBuildDir = function(repositoryRoot, { build: { base = repositoryRoot } }) {
+const getBuildDir = function (repositoryRoot, { build: { base = repositoryRoot } }) {
   return resolve(repositoryRoot, base)
 }
 

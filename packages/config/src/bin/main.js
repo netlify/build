@@ -9,7 +9,7 @@ const { isUserError } = require('../error')
 const { parseFlags } = require('./flags')
 
 // CLI entry point
-const runCli = async function() {
+const runCli = async function () {
   const flags = parseFlags()
 
   try {
@@ -21,13 +21,13 @@ const runCli = async function() {
 }
 
 // The result is printed as JSON on stdout on success (exit code 0)
-const handleCliSuccess = function(result) {
+const handleCliSuccess = function (result) {
   const resultJson = JSON.stringify(result, null, 2)
   console.log(resultJson)
   exit(0)
 }
 
-const handleCliError = function(error) {
+const handleCliError = function (error) {
   // Errors caused by users do not show stack traces and have exit code 1
   if (isUserError(error)) {
     console.error(error.message)

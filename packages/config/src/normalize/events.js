@@ -81,7 +81,7 @@ const LEGACY_EVENTS = {
 }
 
 // `build.lifecycle.onEvent` can also be spelled `build.lifecycle.onevent`
-const normalizeEventHandler = function(eventHandler) {
+const normalizeEventHandler = function (eventHandler) {
   const normalizedEventHandler = EVENT_HANDLER_CASES[eventHandler.toLowerCase()]
   if (normalizedEventHandler === undefined) {
     return eventHandler
@@ -90,12 +90,12 @@ const normalizeEventHandler = function(eventHandler) {
   return normalizedEventHandler
 }
 
-const getEventHandlerCases = function() {
+const getEventHandlerCases = function () {
   const events = [...EVENTS, ...Object.keys(LEGACY_EVENTS)].map(getEventHandlerCase)
   return Object.assign({}, ...events)
 }
 
-const getEventHandlerCase = function(event) {
+const getEventHandlerCase = function (event) {
   return { [event.toLowerCase()]: event }
 }
 

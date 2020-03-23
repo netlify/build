@@ -17,14 +17,14 @@ const { log } = require('./logger')
 const { serialize, SUBTEXT_PADDING, indent } = require('./serialize')
 const { EMPTY_LINE, HEADING_PREFIX, TICK, ARROW_DOWN } = require('./constants')
 
-const logBuildStart = function() {
+const logBuildStart = function () {
   log(`${EMPTY_LINE}
 ${greenBright.bold(`${HEADING_PREFIX} Starting Netlify Build v${version}`)}
 ${SUBTEXT_PADDING}https://github.com/netlify/build
 ${EMPTY_LINE}`)
 }
 
-const logFlags = function(flags) {
+const logFlags = function (flags) {
   const flagsA = omit(flags, HIDDEN_FLAGS)
   log(cyanBright.bold(`${HEADING_PREFIX} Flags`), serialize(flagsA), EMPTY_LINE)
 }
@@ -32,13 +32,13 @@ const logFlags = function(flags) {
 const CI_HIDDEN_FLAGS = isNetlifyCI() ? ['nodePath'] : []
 const HIDDEN_FLAGS = ['token', 'cachedConfig', 'defaultConfig', ...CI_HIDDEN_FLAGS]
 
-const logBuildDir = function(buildDir) {
+const logBuildDir = function (buildDir) {
   log(`${cyanBright.bold(`${HEADING_PREFIX} Current directory`)}
 ${SUBTEXT_PADDING}${buildDir}
 ${EMPTY_LINE}`)
 }
 
-const logConfigPath = function(configPath) {
+const logConfigPath = function (configPath) {
   if (configPath === undefined) {
     log(`${cyanBright.bold(`${HEADING_PREFIX} No config file was defined: using default values.`)}
 ${EMPTY_LINE}`)
@@ -50,7 +50,7 @@ ${SUBTEXT_PADDING}${configPath}
 ${EMPTY_LINE}`)
 }
 
-const logConfig = function(config) {
+const logConfig = function (config) {
   if (!NETLIFY_BUILD_DEBUG) {
     return
   }
@@ -61,7 +61,7 @@ const logConfig = function(config) {
 // The resolved configuration gets assigned some default values (empty objects and arrays)
 // to make it more convenient to use without checking for `undefined`.
 // However those empty values are not useful to users, so we don't log them.
-const simplifyConfig = function({ build: { environment, lifecycle, ...build }, plugins, ...config }) {
+const simplifyConfig = function ({ build: { environment, lifecycle, ...build }, plugins, ...config }) {
   const simplifiedBuild = {
     ...build,
     ...removeEmptyObject(environment, 'environment'),
@@ -74,15 +74,15 @@ const simplifyConfig = function({ build: { environment, lifecycle, ...build }, p
   }
 }
 
-const removeEmptyObject = function(object, propName) {
+const removeEmptyObject = function (object, propName) {
   return Object.keys(object).length === 0 ? {} : { [propName]: object }
 }
 
-const removeEmptyArray = function(array, propName) {
+const removeEmptyArray = function (array, propName) {
   return array.length === 0 ? {} : { [propName]: array }
 }
 
-const logContext = function(context) {
+const logContext = function (context) {
   if (context === undefined) {
     return
   }
@@ -92,53 +92,50 @@ ${SUBTEXT_PADDING}${context}
 ${EMPTY_LINE}`)
 }
 
-const logInstallMissingPlugins = function(packages) {
+const logInstallMissingPlugins = function (packages) {
   log(`${cyanBright.bold(`${HEADING_PREFIX} Installing plugins`)}
 ${indent(serializeList(packages))}
 ${EMPTY_LINE}`)
 }
 
-const logInstallLocalPluginsDeps = function(localPluginsOptions) {
+const logInstallLocalPluginsDeps = function (localPluginsOptions) {
   const packages = localPluginsOptions.map(getPackage)
   log(`${cyanBright.bold(`${HEADING_PREFIX} Installing local plugins dependencies`)}
 ${indent(serializeList(packages))}
 ${EMPTY_LINE}`)
 }
 
-const getPackage = function({ package }) {
+const getPackage = function ({ package }) {
   return package
 }
 
-const logLoadPlugins = function() {
+const logLoadPlugins = function () {
   log(cyanBright.bold(`${HEADING_PREFIX} Loading plugins`))
 }
 
-const logLoadedPlugins = function(pluginCommands) {
-  const loadedPlugins = pluginCommands
-    .filter(isNotDuplicate)
-    .map(getLoadedPlugin)
-    .join('\n')
+const logLoadedPlugins = function (pluginCommands) {
+  const loadedPlugins = pluginCommands.filter(isNotDuplicate).map(getLoadedPlugin).join('\n')
   log(loadedPlugins)
 }
 
-const isNotDuplicate = function(pluginCommand, index, pluginCommands) {
+const isNotDuplicate = function (pluginCommand, index, pluginCommands) {
   return !pluginCommands
     .slice(index + 1)
     .some(laterPluginCommand => laterPluginCommand.package === pluginCommand.package)
 }
 
-const getLoadedPlugin = function({ package, core, packageJson: { version } }) {
+const getLoadedPlugin = function ({ package, core, packageJson: { version } }) {
   const location = core ? ' from build core' : version === undefined ? '' : `@${version}`
   return `${SUBTEXT_PADDING} - ${greenBright.bold(package)}${location}`
 }
 
-const logCommandsStart = function(commandsCount) {
+const logCommandsStart = function (commandsCount) {
   log(`${EMPTY_LINE}
 ${greenBright.bold(`${HEADING_PREFIX} Running Netlify Build Lifecycle`)}
 ${SUBTEXT_PADDING}Found ${commandsCount} commands. Lets do this!`)
 }
 
-const logDryRunStart = function(eventWidth, commandsCount) {
+const logDryRunStart = function (eventWidth, commandsCount) {
   const columnWidth = getDryColumnWidth(eventWidth, commandsCount)
   const line = '─'.repeat(columnWidth)
   const secondLine = '─'.repeat(columnWidth)
@@ -154,7 +151,7 @@ ${SUBTEXT_PADDING}│ ${DRY_HEADER_NAMES[0].padEnd(columnWidth)} │ ${DRY_HEADE
 ${SUBTEXT_PADDING}└─${line}─┴─${secondLine}─┘`)}`)
 }
 
-const logDryRunCommand = function({
+const logDryRunCommand = function ({
   command: { prop, event, package, core },
   index,
   configPath,
@@ -175,7 +172,7 @@ ${SUBTEXT_PADDING}└─${line}─┘ `),
   )
 }
 
-const getPluginLocation = function({ prop, package, core, configPath }) {
+const getPluginLocation = function ({ prop, package, core, configPath }) {
   if (prop !== undefined) {
     return `${white('Config')} ${cyanBright(basename(configPath))} ${yellowBright(prop)}`
   }
@@ -187,20 +184,20 @@ const getPluginLocation = function({ prop, package, core, configPath }) {
   return `${white('Plugin')} ${yellowBright(package)}`
 }
 
-const getDryColumnWidth = function(eventWidth, commandsCount) {
+const getDryColumnWidth = function (eventWidth, commandsCount) {
   const symbolsWidth = `${commandsCount}`.length + 4
   return Math.max(eventWidth + symbolsWidth, DRY_HEADER_NAMES[0].length)
 }
 
 const DRY_HEADER_NAMES = ['Event', 'Location']
 
-const logDryRunEnd = function() {
+const logDryRunEnd = function () {
   log(`${EMPTY_LINE}
 ${SUBTEXT_PADDING}If this looks good to you, run \`netlify build\` to execute the build
 ${EMPTY_LINE}`)
 }
 
-const logCommand = function({ event, prop, package }, { index, configPath, error }) {
+const logCommand = function ({ event, prop, package }, { index, configPath, error }) {
   const configName = configPath === undefined ? '' : ` from ${basename(configPath)} config file`
   const description =
     prop === undefined ? `${bold(event)} command from ${bold(package)}` : `${bold(prop)} command${configName}`
@@ -213,34 +210,34 @@ ${EMPTY_LINE}`),
   )
 }
 
-const logShellCommandStart = function(shellCommand) {
+const logShellCommandStart = function (shellCommand) {
   log(yellowBright(`Running command "${shellCommand}"`))
 }
 
-const logCommandSuccess = function() {
+const logCommandSuccess = function () {
   log(EMPTY_LINE)
 }
 
-const logTimer = function(durationMs, timerName) {
+const logTimer = function (durationMs, timerName) {
   log(` ${greenBright(TICK)}  ${greenBright.bold(timerName)} completed in ${durationMs}ms`)
 }
 
-const logCacheStart = function() {
+const logCacheStart = function () {
   log(cyanBright.bold(`${HEADING_PREFIX} Caching artifacts`))
 }
 
-const logCacheDir = function(path) {
+const logCacheDir = function (path) {
   log(`${SUBTEXT_PADDING}Caching ${path}`)
 }
 
-const logPluginError = function(error) {
+const logPluginError = function (error) {
   const { header, body, color } = serializeError(error)
   log(`${color.bold(getHeader(header))}
 ${EMPTY_LINE}
 ${body}`)
 }
 
-const logBuildError = function(error) {
+const logBuildError = function (error) {
   const { header, body, color } = serializeError(error)
   log(`${EMPTY_LINE}
 ${color.bold(getHeader(header))}
@@ -249,7 +246,7 @@ ${body}
 ${EMPTY_LINE}`)
 }
 
-const logBuildSuccess = function() {
+const logBuildSuccess = function () {
   log(
     greenBright.bold(`${EMPTY_LINE}
 ${getHeader('Netlify Build Complete')}
@@ -257,7 +254,7 @@ ${EMPTY_LINE}`),
   )
 }
 
-const logBuildEnd = function() {
+const logBuildEnd = function () {
   log(`${EMPTY_LINE}
 ${cyanBright(SPARKLES)} Have a nice day!
 ${EMPTY_LINE}`)
@@ -266,7 +263,7 @@ ${EMPTY_LINE}`)
 const SPARKLES = platform === 'win32' ? '(/Ò_Ò)/' : '(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧'
 
 // Print a rectangular header
-const getHeader = function(message) {
+const getHeader = function (message) {
   const messageWidth = stringWidth(message)
   const headerWidth = Math.max(HEADER_MIN_WIDTH, messageWidth + MIN_PADDING * 2)
   const line = '─'.repeat(headerWidth)

@@ -9,7 +9,7 @@ const execa = require('execa')
 //   - `BRANCH` environment variable
 //   - Running `git`
 //   - 'master' (fallback)
-const getBranch = async function({ branch, repositoryRoot }) {
+const getBranch = async function ({ branch, repositoryRoot }) {
   if (branch !== undefined) {
     return branch
   }
@@ -26,7 +26,7 @@ const getBranch = async function({ branch, repositoryRoot }) {
   return FALLBACK_BRANCH
 }
 
-const getGitBranch = async function(repositoryRoot) {
+const getGitBranch = async function (repositoryRoot) {
   try {
     const { stdout } = await execa.command('git rev-parse --abbrev-ref HEAD', { cwd: repositoryRoot })
     return stdout

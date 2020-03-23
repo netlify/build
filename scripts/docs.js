@@ -26,7 +26,7 @@ const config = {
           return `- [${name}](./packages/${pkg}) ${description} [npm link](https://www.npmjs.com/package/${name}).`
         })
         .join('\n')
-      return packages
+      return `${packages}\n`
     },
     PLUGINS() {
       const base = path.resolve('packages')

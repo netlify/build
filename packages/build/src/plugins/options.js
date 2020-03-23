@@ -12,7 +12,7 @@ const { useManifest } = require('./manifest/main')
 const pResolve = promisify(resolve)
 
 // Load plugin options (specified by user in `config.plugins`)
-const getPluginsOptions = async function({ plugins }, buildDir, configPath) {
+const getPluginsOptions = async function ({ plugins }, buildDir, configPath) {
   const pluginsOptions = [...CORE_PLUGINS, ...plugins].map(normalizePluginOptions)
   const basedir = getBasedir(buildDir, configPath)
   await installMissingPlugins(pluginsOptions, basedir)
@@ -22,7 +22,7 @@ const getPluginsOptions = async function({ plugins }, buildDir, configPath) {
   return pluginsOptionsA
 }
 
-const normalizePluginOptions = function({ package, location = package, core = false, inputs = {} }) {
+const normalizePluginOptions = function ({ package, location = package, core = false, inputs = {} }) {
   const local = package.startsWith('.') || package.startsWith('/')
   return { package, location, local, core, inputs }
 }
@@ -32,7 +32,7 @@ const normalizePluginOptions = function({ package, location = package, core = fa
 // what users would expect. If no configuration file is present, we use
 // `buildDir`.
 // We use `resolve` because `require()` does not allow custom base directory.
-const getBasedir = function(buildDir, configPath) {
+const getBasedir = function (buildDir, configPath) {
   if (configPath === undefined) {
     return buildDir
   }
@@ -42,7 +42,7 @@ const getBasedir = function(buildDir, configPath) {
 
 // Retrieve plugin's main file path.
 // Then load plugin's `package.json` and `manifest.yml`.
-const loadPluginFiles = async function({ pluginOptions, pluginOptions: { location, local }, basedir }) {
+const loadPluginFiles = async function ({ pluginOptions, pluginOptions: { location, local }, basedir }) {
   const pluginPath = await pResolve(location, { basedir })
   const pluginDir = dirname(pluginPath)
   const { packageDir, packageJson } = await getPackageJson({ pluginDir, local })

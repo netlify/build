@@ -11,12 +11,12 @@ const isNetlifyCI = require('../utils/is-netlify-ci')
 
 // Set the amount of colors to use by `chalk` (and underlying `supports-color`)
 // 0 is no colors, 1 is 16 colors, 2 is 256 colors, 3 is 16 million colors.
-const setColorLevel = function() {
+const setColorLevel = function () {
   env.FORCE_COLOR = getColorLevel()
   defaultOptions.colors = hasColors()
 }
 
-const getColorLevel = function() {
+const getColorLevel = function () {
   // Allow user overridding this logic
   if (env.FORCE_COLOR) {
     return env.FORCE_COLOR
@@ -57,7 +57,7 @@ const getColorLevel = function() {
 
 const DEPTH_TO_LEVEL = { 1: '0', 4: '1', 8: '2', 24: '3' }
 
-const hasColors = function() {
+const hasColors = function () {
   return env.FORCE_COLOR !== '0' && env.FORCE_COLOR !== 'false'
 }
 

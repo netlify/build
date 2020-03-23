@@ -3,12 +3,12 @@ const { hrtime } = require('process')
 const { logTimer } = require('./main')
 
 // Starts a timer
-const startTimer = function() {
+const startTimer = function () {
   return hrtime()
 }
 
 // Stops a timer
-const endTimerDuration = function([startSecs, startNsecs]) {
+const endTimerDuration = function ([startSecs, startNsecs]) {
   const [endSecs, endNsecs] = hrtime()
   const durationNs = (endSecs - startSecs) * NANOSECS_TO_SECS + endNsecs - startNsecs
   const durationMs = Math.ceil(durationNs / NANOSECS_TO_MSECS)
@@ -16,7 +16,7 @@ const endTimerDuration = function([startSecs, startNsecs]) {
 }
 
 // Ends a timer and prints the result on console
-const endTimer = function(hrTime, timerName) {
+const endTimer = function (hrTime, timerName) {
   const durationMs = endTimerDuration(hrTime)
 
   logTimer(durationMs, timerName)

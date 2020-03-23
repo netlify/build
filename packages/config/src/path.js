@@ -11,7 +11,7 @@ const { throwError } = require('./error')
 //  - a `netlify.*` file in the `repositoryRoot/{base}`
 //  - a `netlify.*` file in the `repositoryRoot`
 //  - a `netlify.*` file in the current directory or any parent
-const getConfigPath = async function({ configOpt, cwd, repositoryRoot, base }) {
+const getConfigPath = async function ({ configOpt, cwd, repositoryRoot, base }) {
   if (configOpt !== undefined) {
     return resolve(cwd, configOpt)
   }
@@ -33,7 +33,7 @@ const getConfigPath = async function({ configOpt, cwd, repositoryRoot, base }) {
   return configPathB
 }
 
-const searchConfigFile = async function(cwd) {
+const searchConfigFile = async function (cwd) {
   const paths = FILENAMES.map(filename => resolve(cwd, filename))
   const pathsA = await pFilter(paths, pathExists)
 

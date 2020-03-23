@@ -4,11 +4,11 @@ const { runFixture } = require('../../helpers/main')
 const { startServer } = require('../../helpers/server.js')
 
 // Normalize telemetry request so it can be snapshot
-const normalizeSnapshot = function({ body, ...request }) {
+const normalizeSnapshot = function ({ body, ...request }) {
   return { ...request, body: normalizeBody(body) }
 }
 
-const normalizeBody = function({
+const normalizeBody = function ({
   anonymousId,
   meta: { timestamp, ...meta } = {},
   properties: { duration, isCI, buildVersion, nodeVersion, osPlatform, osName, ...properties } = {},

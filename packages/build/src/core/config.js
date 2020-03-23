@@ -14,7 +14,7 @@ const { getSiteInfo } = require('./site_info')
 const { getConstants } = require('./constants')
 
 // Retrieve configuration object
-const loadConfig = async function(flags) {
+const loadConfig = async function (flags) {
   const flagsA = removeFalsy(flags)
   logFlags(flagsA)
 
@@ -75,7 +75,7 @@ const DEFAULT_FLAGS = {
 
 // Retrieve configuration file and related information
 // (path, build directory, etc.)
-const resolveFullConfig = async function({
+const resolveFullConfig = async function ({
   config,
   defaultConfig,
   cachedConfig,

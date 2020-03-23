@@ -1,6 +1,6 @@
 // Retrieve plugin's package.json details to include in error messages.
 // Please note `packageJson` has been normalized by `normalize-package-data`.
-const getPluginBlock = function({ packageJson = {} }, { package }) {
+const getPluginBlock = function ({ packageJson = {} }, { package }) {
   if (Object.keys(packageJson).length === 0) {
     return
   }
@@ -10,7 +10,7 @@ const getPluginBlock = function({ packageJson = {} }, { package }) {
 }
 
 // Iterate over a series of package.json fields, serialize each then join them
-const serializeFields = function(packageJson, package) {
+const serializeFields = function (packageJson, package) {
   return Object.entries(FIELDS)
     .map(([name, getField]) => serializeField({ name, getField, packageJson, package }))
     .filter(Boolean)
@@ -18,7 +18,7 @@ const serializeFields = function(packageJson, package) {
 }
 
 // Serialize a single package.json field
-const serializeField = function({ name, getField, packageJson, package }) {
+const serializeField = function ({ name, getField, packageJson, package }) {
   const field = getField(packageJson, package)
   if (field === undefined) {
     return
@@ -30,11 +30,11 @@ const serializeField = function({ name, getField, packageJson, package }) {
 
 const NAME_PADDING = 16
 
-const getPackage = function(packageJson, package) {
+const getPackage = function (packageJson, package) {
   return package
 }
 
-const getVersion = function({ version }) {
+const getVersion = function ({ version }) {
   if (version === '') {
     return
   }
@@ -42,11 +42,11 @@ const getVersion = function({ version }) {
   return version
 }
 
-const getRepository = function({ repository: { url } = {} }) {
+const getRepository = function ({ repository: { url } = {} }) {
   return url
 }
 
-const getNpmLink = function({ name }) {
+const getNpmLink = function ({ name }) {
   if (name === '') {
     return
   }
@@ -54,7 +54,7 @@ const getNpmLink = function({ name }) {
   return `https://www.npmjs.com/package/${name}`
 }
 
-const getIssuesLink = function({ bugs: { url } = {} }) {
+const getIssuesLink = function ({ bugs: { url } = {} }) {
   return url
 }
 

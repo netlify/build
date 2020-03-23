@@ -7,7 +7,7 @@ const { callChild } = require('./ipc')
 
 // Retrieve all plugins commands
 // Can use either a module name or a file path to the plugin.
-const loadPlugins = async function({ pluginsOptions, childProcesses, netlifyConfig, utilsData, token, constants }) {
+const loadPlugins = async function ({ pluginsOptions, childProcesses, netlifyConfig, utilsData, token, constants }) {
   logLoadPlugins()
 
   const pluginCommands = await Promise.all(
@@ -32,7 +32,7 @@ const loadPlugins = async function({ pluginsOptions, childProcesses, netlifyConf
 
 // Retrieve plugin commands for one plugin.
 // Do it by executing the plugin `load` event handler.
-const loadPlugin = async function(
+const loadPlugin = async function (
   { package, packageJson, pluginPath, manifest, inputs, core, local },
   { childProcesses, index, netlifyConfig, utilsData, token, constants },
 ) {

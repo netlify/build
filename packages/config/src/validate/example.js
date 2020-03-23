@@ -3,7 +3,7 @@ const indentString = require('indent-string')
 const { red, green } = require('chalk')
 
 // Print invalid value and example netlify.yml
-const getExample = function({ value, parent, key, prevPath, example }) {
+const getExample = function ({ value, parent, key, prevPath, example }) {
   const exampleA = typeof example === 'function' ? example(value, key, parent, prevPath) : example
   return `
 ${red.bold('Invalid syntax')}
@@ -15,13 +15,13 @@ ${green.bold('Valid syntax')}
 ${indentString(serializeValue(exampleA), 2)}`
 }
 
-const getInvalidValue = function(value, prevPath) {
+const getInvalidValue = function (value, prevPath) {
   const invalidValue = prevPath.reverse().reduce(setInvalidValuePart, value)
   const invalidValueA = serializeValue(invalidValue)
   return invalidValueA
 }
 
-const setInvalidValuePart = function(value, part) {
+const setInvalidValuePart = function (value, part) {
   if (Number.isInteger(part)) {
     return [value]
   }
@@ -30,7 +30,7 @@ const setInvalidValuePart = function(value, part) {
   return value === undefined ? {} : { [part]: value }
 }
 
-const serializeValue = function(value) {
+const serializeValue = function (value) {
   return dump(value, { noRefs: true }).trim()
 }
 

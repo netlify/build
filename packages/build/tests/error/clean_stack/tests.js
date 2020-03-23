@@ -28,11 +28,11 @@ test('Clean stack traces of config validation', async t => {
   t.is(count, 0)
 })
 
-const getStackLinesCount = function(stdout) {
+const getStackLinesCount = function (stdout) {
   return stdout.split('\n').filter(isStackLine).length
 }
 
-const isStackLine = function(line) {
+const isStackLine = function (line) {
   return line.trim().startsWith('at ')
 }
 

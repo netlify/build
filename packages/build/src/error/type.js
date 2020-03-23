@@ -4,7 +4,7 @@ const { getShellCommandLocation, getBuildFailLocation, getApiLocation } = requir
 const { getErrorInfo } = require('./info')
 
 // Retrieve error-type specific information
-const getTypeInfo = function(errorProps) {
+const getTypeInfo = function (errorProps) {
   const { type } = getErrorInfo(errorProps)
 
   if (TYPES[type] === undefined) {

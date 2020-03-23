@@ -17,7 +17,7 @@ const cachePlugin = {
 }
 
 // Cache a single directory
-const saveCache = async function(path, digests, cache) {
+const saveCache = async function (path, digests, cache) {
   // In tests we don't run caching since it is slow and make source directory
   // much bigger
   if (TEST_CACHE_PATH !== undefined && TEST_CACHE_PATH !== path) {

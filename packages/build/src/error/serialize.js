@@ -13,7 +13,7 @@ const { getPluginBlock } = require('./plugin')
 const { getLocationBlock } = require('./location')
 
 // Serialize an error object into a header|body string to print in logs
-const serializeError = function({ message, stack, ...errorProps }) {
+const serializeError = function ({ message, stack, ...errorProps }) {
   const { header, color = redBright, ...typeInfo } = getTypeInfo(errorProps)
   const errorInfo = getErrorInfo(errorProps)
   const errorPropsA = cleanErrorProps(errorProps)
@@ -23,14 +23,14 @@ const serializeError = function({ message, stack, ...errorProps }) {
 }
 
 // Remove error static properties that should not be logged
-const cleanErrorProps = function(errorProps) {
+const cleanErrorProps = function (errorProps) {
   return omit(errorProps, CLEANED_ERROR_PROPS)
 }
 
 const CLEANED_ERROR_PROPS = [INFO_SYM, 'requireStack']
 
 // Retrieve header to print in logs
-const getHeader = function(header, errorInfo) {
+const getHeader = function (header, errorInfo) {
   if (typeof header !== 'function') {
     return header
   }
@@ -39,7 +39,7 @@ const getHeader = function(header, errorInfo) {
 }
 
 // Retrieve body to print in logs
-const getBody = function({
+const getBody = function ({
   typeInfo: { stackType, getLocation, showErrorProps, rawStack },
   color,
   message,
@@ -60,7 +60,7 @@ const getBody = function({
 }
 
 // In uncaught exceptions, print error static properties
-const getErrorPropsBlock = function(errorProps, showErrorProps) {
+const getErrorPropsBlock = function (errorProps, showErrorProps) {
   if (!showErrorProps || Object.keys(errorProps).length === 0) {
     return
   }
@@ -69,7 +69,7 @@ const getErrorPropsBlock = function(errorProps, showErrorProps) {
   return { name: 'Error properties', value }
 }
 
-const serializeBlock = function({ name, value, color }) {
+const serializeBlock = function ({ name, value, color }) {
   return `${color.bold(`${HEADING_PREFIX} ${name}`)}
 ${indent(value)}`
 }

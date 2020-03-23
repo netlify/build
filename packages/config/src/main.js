@@ -16,7 +16,7 @@ const { deepMerge } = require('./utils/merge')
 // Load the configuration file.
 // Takes an optional configuration file path as input and return the resolved
 // `config` together with related properties such as the `configPath`.
-const resolveConfig = async function({ cachedConfig, ...opts } = {}) {
+const resolveConfig = async function ({ cachedConfig, ...opts } = {}) {
   // Performance optimization when @netlify/config caller has already previously
   // called it and cached the result.
   // This is used by the buildbot which:
@@ -52,7 +52,7 @@ const resolveConfig = async function({ cachedConfig, ...opts } = {}) {
 
 // Load a configuration file passed as a JSON object.
 // The logic is much simpler: it does not normalize nor validate it.
-const getConfig = function(config, name) {
+const getConfig = function (config, name) {
   if (config === undefined) {
     return {}
   }
@@ -67,7 +67,7 @@ const getConfig = function(config, name) {
 // Try to load the configuration file in two passes.
 // The first pass uses the `defaultConfig`'s `build.base` (if defined).
 // The second pass uses the `build.base` from the first pass (if defined).
-const loadConfig = async function({
+const loadConfig = async function ({
   configOpt,
   cwd,
   context,
@@ -110,7 +110,7 @@ const loadConfig = async function({
 }
 
 // Load configuration file and normalize it, merge contexts, etc.
-const getFullConfig = async function({ configOpt, cwd, context, repositoryRoot, branch, defaultConfig, base }) {
+const getFullConfig = async function ({ configOpt, cwd, context, repositoryRoot, branch, defaultConfig, base }) {
   const configPath = await getConfigPath({ configOpt, cwd, repositoryRoot, base })
 
   try {

@@ -7,7 +7,7 @@ const NetlifyAPI = require('netlify')
 const { failBuild } = require('../error')
 
 // Retrieve Netlify API client, providing a authentication token was provided
-const getApiClient = function({ manifest: { scopes = DEFAULT_SCOPES }, token }) {
+const getApiClient = function ({ manifest: { scopes = DEFAULT_SCOPES }, token }) {
   // This feature is not currently finished due to lack of API support
   // See https://github.com/netlify/build/issues/585
   if (NETLIFY_BUILD_API_CLIENT !== '1') {
@@ -32,7 +32,7 @@ const getApiClient = function({ manifest: { scopes = DEFAULT_SCOPES }, token }) 
 const DEFAULT_SCOPES = []
 
 // Redact API methods to scopes
-const disableApiMethods = function(api, scopes) {
+const disableApiMethods = function (api, scopes) {
   if (scopes.includes('*')) {
     return
   }
@@ -42,17 +42,17 @@ const disableApiMethods = function(api, scopes) {
   })
 }
 
-const getApiMethods = function() {
+const getApiMethods = function () {
   return NetlifyAPI.methods.map(getApiMethod)
 }
 
-const getApiMethod = function({ operationId }) {
+const getApiMethod = function ({ operationId }) {
   return operationId
 }
 
 const API_METHODS = getApiMethods()
 
-const disabledApiMethod = async function(method) {
+const disabledApiMethod = async function (method) {
   failBuild(`This plugin is not authorized to use "api.${method}". Please update the plugin scopes.`)
 }
 

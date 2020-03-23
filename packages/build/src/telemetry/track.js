@@ -11,7 +11,7 @@ const REQUEST_FILE = `${__dirname}/request.js`
 // Send HTTP request to telemetry.
 // Telemetry should not impact build speed, so we do not wait for the request
 // to complete, by using a child process.
-const track = async function({ payload }) {
+const track = async function ({ payload }) {
   if (BUILD_TELEMETRY_DISABLED) {
     return
   }

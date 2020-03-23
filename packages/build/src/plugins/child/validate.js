@@ -5,7 +5,7 @@ const { serializeList } = require('../../utils/list')
 const { failBuild } = require('../error')
 
 // Validate the shape of a plugin return value
-const validatePlugin = function(logic) {
+const validatePlugin = function (logic) {
   if (!isPlainObj(logic)) {
     failBuild('Plugin must be an object or a function')
   }
@@ -13,7 +13,7 @@ const validatePlugin = function(logic) {
   Object.entries(logic).forEach(([propName, value]) => validateProperty(value, propName))
 }
 
-const validateProperty = function(value, propName) {
+const validateProperty = function (value, propName) {
   if (DEPRECATED_PROPERTIES.includes(propName)) {
     return
   }
@@ -26,7 +26,7 @@ const validateProperty = function(value, propName) {
 // TODO: remove after migrating existing plugins
 const DEPRECATED_PROPERTIES = ['name', 'inputs', 'config', 'scopes']
 
-const validateEventHandler = function(value, propName) {
+const validateEventHandler = function (value, propName) {
   if (!EVENTS.includes(propName) && LEGACY_EVENTS[propName] === undefined) {
     failBuild(`Invalid event '${propName}'.
 Please use a valid event name. One of:

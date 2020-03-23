@@ -11,7 +11,7 @@ const { PARSERS } = require('./parsers')
 const pReadFile = promisify(readFile)
 
 // Load the configuration file and parse it (YAML/JSON/TOML)
-const parseConfig = async function(configPath) {
+const parseConfig = async function (configPath) {
   if (configPath === undefined) {
     return {}
   }
@@ -31,7 +31,7 @@ const parseConfig = async function(configPath) {
 }
 
 // Reach the configuration file's raw content
-const readConfig = async function(configPath) {
+const readConfig = async function (configPath) {
   try {
     return await pReadFile(configPath, 'utf8')
   } catch (error) {
@@ -40,7 +40,7 @@ const readConfig = async function(configPath) {
 }
 
 // Retrieve the syntax-specific function to parse the raw content
-const getParser = function(configPath) {
+const getParser = function (configPath) {
   const extension = extname(configPath).replace('.', '')
   const parser = PARSERS[extension]
 

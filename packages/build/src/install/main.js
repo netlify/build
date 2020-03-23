@@ -3,7 +3,7 @@ const execa = require('execa')
 const { addErrorInfo } = require('../error/info')
 
 // Install Node.js dependencies in a specific directory
-const installDependencies = async function({ packageRoot }) {
+const installDependencies = async function ({ packageRoot }) {
   try {
     await execa.command('npm install --no-progress --no-audit --no-fund', {
       cwd: packageRoot,
@@ -17,7 +17,7 @@ const installDependencies = async function({ packageRoot }) {
 }
 
 // Add new Node.js dependencies
-const addDependencies = async function({ packageRoot, packages }) {
+const addDependencies = async function ({ packageRoot, packages }) {
   try {
     await execa.command(`npm install --no-progress --no-audit --no-fund ${packages.join(' ')}`, {
       cwd: packageRoot,

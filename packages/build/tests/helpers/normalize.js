@@ -2,12 +2,12 @@ const stripAnsi = require('strip-ansi')
 const { tick, pointer, arrowDown } = require('figures')
 
 // Normalize log output so it can be snapshot consistently across test runs
-const normalizeOutput = function(output, type) {
+const normalizeOutput = function (output, type) {
   const outputA = stripAnsi(output)
   return NORMALIZE_REGEXPS[type].reduce(replaceOutput, outputA)
 }
 
-const replaceOutput = function(output, [regExp, replacement]) {
+const replaceOutput = function (output, [regExp, replacement]) {
   return output.replace(regExp, replacement)
 }
 

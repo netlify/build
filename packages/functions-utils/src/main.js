@@ -9,11 +9,11 @@ const pStat = promisify(stat)
 
 // Add a Netlify Function file to the `functions` directory so it is processed
 // by `@netlify/plugin-functions-core`
-const functionsUtils = function({ constants: { FUNCTIONS_SRC }, failBuild }) {
+const functionsUtils = function ({ constants: { FUNCTIONS_SRC }, failBuild }) {
   return { add: add.bind(null, FUNCTIONS_SRC, failBuild) }
 }
 
-const add = async function(dist, src, failBuild) {
+const add = async function (dist, src, failBuild) {
   if (src === undefined) {
     failBuild('No function directory was specified')
   }
@@ -31,7 +31,7 @@ const add = async function(dist, src, failBuild) {
   await cpy(srcGlob, dist, { cwd: dirname(src), parents: true, overwrite: false })
 }
 
-const getSrcGlob = async function(src) {
+const getSrcGlob = async function (src) {
   const srcBasename = basename(src)
   const stat = await pStat(src)
 

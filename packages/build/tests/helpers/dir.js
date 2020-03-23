@@ -5,13 +5,13 @@ const { getTempDir } = require('./temp')
 
 // Create a temporary directory with a `.git` directory, which can be used as
 // the current directory of a build. Otherwise the `git` utility does not load.
-const createRepoDir = async function({ git = true } = {}) {
+const createRepoDir = async function ({ git = true } = {}) {
   const cwd = await getTempDir()
   await createGit(cwd, git)
   return cwd
 }
 
-const createGit = async function(cwd, git) {
+const createGit = async function (cwd, git) {
   if (!git) {
     return
   }
@@ -27,7 +27,7 @@ const createGit = async function(cwd, git) {
 // Removing a directory sometimes fails on Windows in CI due to Windows
 // directory locking.
 // This results in `EBUSY: resource busy or locked, rmdir /path/to/dir`
-const removeDir = async function(dir) {
+const removeDir = async function (dir) {
   try {
     await del(dir, { force: true })
     // eslint-disable-next-line no-empty

@@ -31,7 +31,7 @@ const { doDryRun } = require('./dry')
  * @param  {string} [flags.context] - Build context
  * @param  {boolean} [flags.dry] - printing commands without executing them
  */
-const build = async function(flags) {
+const build = async function (flags) {
   try {
     const buildTimer = startTimer()
 
@@ -88,7 +88,7 @@ const build = async function(flags) {
   }
 }
 
-const buildRun = async function({
+const buildRun = async function ({
   pluginsOptions,
   netlifyConfig,
   configPath,
@@ -124,7 +124,7 @@ const buildRun = async function({
   }
 }
 
-const executeCommands = async function({
+const executeCommands = async function ({
   pluginsOptions,
   childProcesses,
   netlifyConfig,

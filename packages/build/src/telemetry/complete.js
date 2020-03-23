@@ -9,13 +9,13 @@ const isNetlifyCI = require('../utils/is-netlify-ci')
 const { telemetry } = require('./track')
 
 // Send telemetry request when build completes
-const trackBuildComplete = async function({ commandsCount, netlifyConfig, duration, siteInfo }) {
+const trackBuildComplete = async function ({ commandsCount, netlifyConfig, duration, siteInfo }) {
   const payload = getPayload({ commandsCount, netlifyConfig, duration, siteInfo })
   await telemetry.track('netlifyCI:buildComplete', payload)
 }
 
 // Retrieve telemetry information
-const getPayload = function({ commandsCount, netlifyConfig, duration, siteInfo: { id: siteId } }) {
+const getPayload = function ({ commandsCount, netlifyConfig, duration, siteInfo: { id: siteId } }) {
   const plugins = Object.values(netlifyConfig.plugins).map(getPluginPackage)
   return {
     steps: commandsCount,
@@ -32,7 +32,7 @@ const getPayload = function({ commandsCount, netlifyConfig, duration, siteInfo: 
   }
 }
 
-const getPluginPackage = function({ package }) {
+const getPluginPackage = function ({ package }) {
   return package
 }
 

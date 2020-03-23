@@ -9,7 +9,7 @@ const { getUtils } = require('./utils')
 // This also validates the plugin.
 // Do it when parent requests it using the `load` event.
 // Also figure out the list of plugin commands. This is also passed to the parent.
-const loadPlugin = function(payload) {
+const loadPlugin = function (payload) {
   const logic = getLogic(payload)
 
   validatePlugin(logic)
@@ -22,18 +22,18 @@ const loadPlugin = function(payload) {
   return { context, pluginCommands }
 }
 
-const getPluginCommands = function(logic) {
+const getPluginCommands = function (logic) {
   return Object.entries(logic)
     .filter(isEventHandler)
     .map(([event, method]) => ({ method, event }))
 }
 
-const isEventHandler = function([, value]) {
+const isEventHandler = function ([, value]) {
   return typeof value === 'function'
 }
 
 // Retrieve context passed to every event handler
-const getContext = function(pluginCommands, { manifest, inputs, netlifyConfig, constants, utilsData, token }) {
+const getContext = function (pluginCommands, { manifest, inputs, netlifyConfig, constants, utilsData, token }) {
   const utils = getUtils({ utilsData, constants })
   const api = getApiClient({ manifest, token, utils })
   return { pluginCommands, api, utils, constants, inputs, netlifyConfig }

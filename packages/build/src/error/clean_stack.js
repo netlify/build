@@ -11,19 +11,16 @@ const stripAnsi = require('strip-ansi')
 // Keep non stack trace lines as is.
 // We do not use libraries that patch `Error.prepareStackTrace()` because they
 // tend to create issues.
-const cleanStacks = function(string, rawStack) {
+const cleanStacks = function (string, rawStack) {
   // Internal errors / bugs keep their full stack trace
   if (rawStack || string === undefined) {
     return string
   }
 
-  return String(string)
-    .split('\n')
-    .reduce(cleanStackLine, '')
-    .replace(INITIAL_NEWLINES, '')
+  return String(string).split('\n').reduce(cleanStackLine, '').replace(INITIAL_NEWLINES, '')
 }
 
-const cleanStackLine = function(lines, line) {
+const cleanStackLine = function (lines, line) {
   const lineA = line.replace(cwd(), '')
   const lineB = stripAnsi(lineA)
 
@@ -51,7 +48,7 @@ const cleanStackLine = function(lines, line) {
 // Check if a line is part of a stack trace
 const STACK_LINE_REGEXP = /^\s+at /
 
-const isUselessStack = function(line) {
+const isUselessStack = function (line) {
   const lineA = line.replace(BACKLASH_REGEXP, '/')
   return (
     // Anonymous function
@@ -64,7 +61,7 @@ const isUselessStack = function(line) {
 
 const BACKLASH_REGEXP = /\\/g
 
-const isInternalStack = function(line) {
+const isInternalStack = function (line) {
   // This is only needed for local builds
   return INTERNAL_STACK_REGEXP.test(line)
 }

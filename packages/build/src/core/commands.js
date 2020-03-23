@@ -9,7 +9,7 @@ const { startOutput, stopOutput } = require('../log/stream')
 const { addErrorInfo, getErrorInfo } = require('../error/info')
 
 // Get commands for all events
-const getCommands = function({ pluginsCommands, netlifyConfig }) {
+const getCommands = function ({ pluginsCommands, netlifyConfig }) {
   const commands = EVENTS.flatMap(event => getEventCommands({ event, pluginsCommands, netlifyConfig }))
 
   const buildCommands = commands.filter(command => !isEndCommand(command) && !isErrorCommand(command))
@@ -22,7 +22,7 @@ const getCommands = function({ pluginsCommands, netlifyConfig }) {
 }
 
 // Get commands for a specific event
-const getEventCommands = function({
+const getEventCommands = function ({
   event,
   pluginsCommands: { [event]: pluginCommands = [] },
   netlifyConfig: {
@@ -39,18 +39,18 @@ const getEventCommands = function({
   return [shellCommandA, ...pluginCommands]
 }
 
-const isEndCommand = function({ event }) {
+const isEndCommand = function ({ event }) {
   return event === 'onEnd'
 }
 
-const isErrorCommand = function({ event }) {
+const isErrorCommand = function ({ event }) {
   return event === 'onError'
 }
 
 // Run all commands.
 // If an error arises, runs `onError` events.
 // Runs `onEnd` events at the end, whether an error was thrown or not.
-const runCommands = async function({
+const runCommands = async function ({
   buildCommands,
   endCommands,
   errorCommands,
@@ -81,7 +81,7 @@ const runCommands = async function({
 // of the same name keep running. However the failure is still eventually
 // thrown. This allows users to be notified of issues inside their `onError` or
 // `onEnd` events.
-const execCommands = async function(commands, { configPath, buildDir, state, nodePath, childEnv, failFast, error }) {
+const execCommands = async function (commands, { configPath, buildDir, state, nodePath, childEnv, failFast, error }) {
   const { failure } = await pReduce(
     commands,
     ({ failure, failedPlugins }, command) =>
@@ -95,7 +95,7 @@ const execCommands = async function(commands, { configPath, buildDir, state, nod
 }
 
 // Run a command (shell or plugin)
-const runCommand = async function(
+const runCommand = async function (
   command,
   { configPath, buildDir, state, nodePath, childEnv, error, failure, failedPlugins, failFast },
 ) {
@@ -125,7 +125,7 @@ const runCommand = async function(
   }
 }
 
-const fireCommand = function(command, { buildDir, nodePath, childEnv, error }) {
+const fireCommand = function (command, { buildDir, nodePath, childEnv, error }) {
   if (command.shellCommand !== undefined) {
     return fireShellCommand(command, { buildDir, nodePath, childEnv })
   }
@@ -134,7 +134,7 @@ const fireCommand = function(command, { buildDir, nodePath, childEnv, error }) {
 }
 
 // Fire a `config.lifecycle.*` shell command
-const fireShellCommand = async function({ prop, shellCommand }, { buildDir, nodePath, childEnv }) {
+const fireShellCommand = async function ({ prop, shellCommand }, { buildDir, nodePath, childEnv }) {
   logShellCommandStart(shellCommand)
 
   const childProcess = execa(shellCommand, {
@@ -158,7 +158,7 @@ const fireShellCommand = async function({ prop, shellCommand }, { buildDir, node
 }
 
 // Fire a plugin command
-const firePluginCommand = async function({ childProcess, event, package, packageJson, local }, { error }) {
+const firePluginCommand = async function ({ childProcess, event, package, packageJson, local }, { error }) {
   const outputState = startOutput(childProcess)
 
   try {
@@ -177,7 +177,7 @@ const firePluginCommand = async function({ childProcess, event, package, package
 //    handlers of the same type have been triggered before propagating
 //  - if `utils.build.failPlugin()` was used, print an error and skip next event
 //    handlers of that plugin. But do not stop build.
-const handleCommandError = function({ newFailure, failedPlugins, failure, failFast }) {
+const handleCommandError = function ({ newFailure, failedPlugins, failure, failFast }) {
   const { type, location: { package } = {} } = getErrorInfo(newFailure)
 
   if (type === 'failPlugin') {

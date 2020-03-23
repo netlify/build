@@ -10,7 +10,7 @@ const { getCacheDir } = require('@netlify/cache-utils')
 const isNetlifyCI = require('../utils/is-netlify-ci')
 
 // Retrieve constants passed to plugins
-const getConstants = async function({
+const getConstants = async function ({
   configPath,
   buildDir,
   netlifyConfig: {
@@ -59,7 +59,7 @@ const getConstants = async function({
 }
 
 const LOCAL_FUNCTIONS_DIST = '.netlify/functions/'
-const getFunctionsDist = function(isLocal) {
+const getFunctionsDist = function (isLocal) {
   if (isLocal) {
     return LOCAL_FUNCTIONS_DIST
   }
@@ -70,7 +70,7 @@ const getFunctionsDist = function(isLocal) {
 // The current directory is `buildDir`. Most constants are inside this `buildDir`.
 // Instead of passing absolute paths, we pass paths relative to `buildDir`, so
 // that logs are less verbose.
-const normalizePath = function(path, buildDir, key) {
+const normalizePath = function (path, buildDir, key) {
   if (path === undefined || NOT_PATHS.includes(key)) {
     return path
   }

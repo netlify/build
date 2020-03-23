@@ -9,13 +9,13 @@ const { git } = require('./exec')
 const HEAD = TEST_HEAD === undefined ? 'HEAD' : TEST_HEAD
 
 // Retrieve the `base` commit
-const getBase = async function(base, cwd) {
+const getBase = async function (base, cwd) {
   const refs = getBaseRefs(base)
   const { ref } = await findRef(refs, cwd)
   return ref
 }
 
-const getBaseRefs = function(base) {
+const getBaseRefs = function (base) {
   // istanbul ignore next
   if (base !== undefined) {
     return [base]
@@ -35,7 +35,7 @@ const getBaseRefs = function(base) {
 const DEFAULT_BASE = ['master', `${HEAD}^`, HEAD]
 
 // Use the first commit that exists
-const findRef = async function(refs, cwd) {
+const findRef = async function (refs, cwd) {
   const results = await Promise.all(refs.map(ref => checkRef(ref, cwd)))
   const result = results.find(refExists)
   if (result === undefined) {
@@ -45,7 +45,7 @@ const findRef = async function(refs, cwd) {
   return result
 }
 
-const checkRef = async function(ref, cwd) {
+const checkRef = async function (ref, cwd) {
   try {
     await git(['rev-parse', ref], cwd)
     return { ref }
@@ -54,11 +54,11 @@ const checkRef = async function(ref, cwd) {
   }
 }
 
-const refExists = function({ error }) {
+const refExists = function ({ error }) {
   return error === undefined
 }
 
-const getErrorMessage = function({ ref, error: { message, stderr } }) {
+const getErrorMessage = function ({ ref, error: { message, stderr } }) {
   const messages = [message, stderr].filter(Boolean).join('\n')
   return `Invalid base commit ${ref}\n${messages}`
 }

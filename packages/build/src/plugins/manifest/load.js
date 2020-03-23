@@ -10,7 +10,7 @@ const { validateManifest } = require('./validate')
 const pReadFile = promisify(readFile)
 
 // Load "manifest.yml" using its file path
-const loadManifest = async function({ manifestPath, package, packageJson, local }) {
+const loadManifest = async function ({ manifestPath, package, packageJson, local }) {
   try {
     const rawManifest = await loadRawManifest(manifestPath)
     const manifest = await parseManifest(rawManifest)
@@ -26,7 +26,7 @@ const loadManifest = async function({ manifestPath, package, packageJson, local 
   }
 }
 
-const loadRawManifest = async function(manifestPath) {
+const loadRawManifest = async function (manifestPath) {
   try {
     return await pReadFile(manifestPath, 'utf8')
   } catch (error) {
@@ -35,7 +35,7 @@ const loadRawManifest = async function(manifestPath) {
   }
 }
 
-const parseManifest = async function(rawManifest) {
+const parseManifest = async function (rawManifest) {
   try {
     return await loadYaml(rawManifest, { schema: JSON_SCHEMA, json: true })
   } catch (error) {

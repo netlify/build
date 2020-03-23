@@ -8,7 +8,7 @@ const moveFile = require('move-file')
 const pStat = promisify(stat)
 
 // Move or copy a cached file/directory from/to a local one
-const moveCacheFile = async function(src, dest, move) {
+const moveCacheFile = async function (src, dest, move) {
   // Moving is faster but removes the source files locally
   if (move) {
     return moveFile(src, dest, { overwrite: false })
@@ -18,7 +18,7 @@ const moveCacheFile = async function(src, dest, move) {
   return cpy(srcGlob, dirname(dest), { cwd: dirname(src), parents: true, overwrite: false })
 }
 
-const getSrcGlob = async function(src) {
+const getSrcGlob = async function (src) {
   const srcBasename = basename(src)
   const stat = await pStat(src)
 

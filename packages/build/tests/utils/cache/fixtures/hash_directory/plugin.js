@@ -24,11 +24,11 @@ module.exports = {
   },
 }
 
-const makeFiles = function(dir) {
+const makeFiles = function (dir) {
   return Promise.all(Array.from({ length: 100 }, () => makeFile(dir)))
 }
 
-const makeFile = async function(dir) {
+const makeFile = async function (dir) {
   const id = String(Math.random()).replace('.', '')
   const path = `${dir}/${id}`
   await pWriteFile(path, id)

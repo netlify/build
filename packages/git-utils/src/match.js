@@ -3,7 +3,7 @@ const mapObj = require('map-obj')
 
 // Return functions that return modified|created|deleted files filtered by a
 // globbing pattern
-const fileMatch = function({ modifiedFiles, createdFiles, deletedFiles }, ...patterns) {
+const fileMatch = function ({ modifiedFiles, createdFiles, deletedFiles }, ...patterns) {
   const matchFiles = {
     modified: modifiedFiles,
     created: createdFiles,

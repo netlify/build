@@ -4,7 +4,7 @@ const { promisify } = require('util')
 // Start an HTTP server to mock API calls (telemetry server and Bitballoon)
 // Tests are using child processes, so we cannot use `nock` or similar library
 // that relies on monkey-patching global variables.
-const startServer = async function(path, response = {}) {
+const startServer = async function (path, response = {}) {
   const request = { sent: false, headers: {}, body: {} }
   const server = createServer((req, res) => requestHandler({ req, res, request, response, path }))
   await promisify(server.listen.bind(server))(0)
@@ -15,12 +15,12 @@ const startServer = async function(path, response = {}) {
   return { scheme: 'http', host, request, stopServer }
 }
 
-const getHost = function(server) {
+const getHost = function (server) {
   const port = server.address().port
   return `localhost:${port}`
 }
 
-const requestHandler = function({ req, res, request, response, path }) {
+const requestHandler = function ({ req, res, request, response, path }) {
   let rawBody = ''
   req.on('data', data => {
     rawBody += data.toString()
@@ -30,13 +30,13 @@ const requestHandler = function({ req, res, request, response, path }) {
   })
 }
 
-const onRequestEnd = function({ req: { method, url, headers }, res, request, response, path, rawBody }) {
+const onRequestEnd = function ({ req: { method, url, headers }, res, request, response, path, rawBody }) {
   addRequestInfo({ method, url, headers, request, path, rawBody })
   res.setHeader('Content-Type', 'application/json')
   res.end(JSON.stringify(response))
 }
 
-const addRequestInfo = function({ method, url, headers, request, path, rawBody }) {
+const addRequestInfo = function ({ method, url, headers, request, path, rawBody }) {
   if (url !== path) {
     return
   }
@@ -46,7 +46,7 @@ const addRequestInfo = function({ method, url, headers, request, path, rawBody }
   Object.assign(request, { sent: true, method, headers: headersA, body })
 }
 
-const parseBody = function(rawBody) {
+const parseBody = function (rawBody) {
   try {
     return JSON.parse(rawBody)
   } catch (error) {

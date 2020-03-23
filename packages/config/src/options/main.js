@@ -13,7 +13,7 @@ const { getRepositoryRoot } = require('./repository_root')
 const { getBranch } = require('./branch')
 
 // Normalize options and assign default values
-const normalizeOpts = async function(opts) {
+const normalizeOpts = async function (opts) {
   const optsA = removeFalsy(opts)
   const optsB = { ...DEFAULT_CONFIG_OPTS, ...DEFAULT_OPTS, ...optsA }
 
@@ -50,13 +50,13 @@ const DEFAULT_CONFIG_OPTS =
     : {}
 
 // Verify that options point to existing paths
-const checkPaths = async function(opts) {
+const checkPaths = async function (opts) {
   await Promise.all(PATH_NAMES.map(pathName => checkPath(opts, pathName)))
 }
 
 const PATH_NAMES = ['cwd', 'repositoryRoot']
 
-const checkPath = async function(opts, pathName) {
+const checkPath = async function (opts, pathName) {
   const path = opts[pathName]
   if (!(await pathExists(path))) {
     throwError(`Option '${pathName}' points to a non-existing file`)

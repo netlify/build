@@ -1,12 +1,12 @@
 const redactEnv = require('redact-env')
 const replaceStream = require('replacestream')
 
-const redactString = function(string) {
+const redactString = function (string) {
   return redactEnv.redact(string, secrets)
 }
 
 // istanbul ignore next
-const redactStream = function(stream) {
+const redactStream = function (stream) {
   return stream.pipe(replaceStream(secrets, '[secure]'))
 }
 

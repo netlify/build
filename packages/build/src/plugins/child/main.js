@@ -13,7 +13,7 @@ const { ERROR_TYPE_SYM } = require('../error')
 const { loadPlugin } = require('./load')
 
 // Boot plugin child process.
-const bootPlugin = async function() {
+const bootPlugin = async function () {
   try {
     handleProcessErrors()
 
@@ -29,11 +29,11 @@ const bootPlugin = async function() {
 
 // On uncaught exceptions and unhandled rejections, print the stack trace.
 // Also, prevent child processes from crashing on uncaught exceptions.
-const handleProcessErrors = function() {
+const handleProcessErrors = function () {
   logProcessErrors({ log: handleProcessError, colors: hasColors(), exitOn: [], level: { multipleResolves: 'silent' } })
 }
 
-const handleProcessError = async function(error, level) {
+const handleProcessError = async function (error, level) {
   if (level !== 'error') {
     console[level](error)
     return
@@ -42,7 +42,7 @@ const handleProcessError = async function(error, level) {
   await handleError(error)
 }
 
-const handleError = async function({
+const handleError = async function ({
   name,
   message,
   stack,
@@ -55,24 +55,24 @@ const handleError = async function({
 const DEFAULT_ERROR_TYPE = 'pluginInternalError'
 
 // Wait for events from parent to perform plugin methods
-const handleEvents = async function(state) {
+const handleEvents = async function (state) {
   await getEventsFromParent((callId, eventName, payload) => handleEvent(callId, eventName, payload, state))
 }
 
-const handleEvent = async function(callId, eventName, payload, state) {
+const handleEvent = async function (callId, eventName, payload, state) {
   const response = await EVENTS[eventName](payload, state)
   await sendEventToParent(callId, response)
 }
 
 // Initial plugin load
-const load = function(payload, state) {
+const load = function (payload, state) {
   const { context, pluginCommands } = loadPlugin(payload)
   state.context = context
   return { pluginCommands }
 }
 
 // Run a specific plugin event handler
-const run = async function(
+const run = async function (
   { event, error },
   { context: { pluginCommands, api, utils, constants, inputs, netlifyConfig } },
 ) {
@@ -84,7 +84,7 @@ const run = async function(
 
 // Add older names, kept for backward compatibility. Non-enumerable.
 // TODO: remove after being out of beta
-const addBackwardCompatibility = function(runOptions) {
+const addBackwardCompatibility = function (runOptions) {
   Object.defineProperties(runOptions, {
     pluginConfig: { value: runOptions.inputs },
   })

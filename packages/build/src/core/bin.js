@@ -14,7 +14,7 @@ const build = require('./main')
 const pSetTimeout = promisify(setTimeout)
 
 // CLI entry point
-const runCli = async function() {
+const runCli = async function () {
   const flags = parseFlags()
   const { features, ...flagsA } = filterObj(flags, isUserFlag)
 
@@ -36,11 +36,8 @@ const runCli = async function() {
   exit(exitCode)
 }
 
-const parseFlags = function() {
-  return yargs
-    .options(FLAGS)
-    .usage(USAGE)
-    .parse()
+const parseFlags = function () {
+  return yargs.options(FLAGS).usage(USAGE).parse()
 }
 
 const FLAGS = {
@@ -128,13 +125,13 @@ NETLIFY_BUILD_. For example the environment variable NETLIFY_BUILD_DRY=true can
 be used instead of the CLI flag --dry.`
 
 // Remove `yargs`-specific options, shortcuts, dash-cased and aliases
-const isUserFlag = function(key, value) {
+const isUserFlag = function (key, value) {
   return value !== undefined && !INTERNAL_KEYS.includes(key) && key.length !== 1 && !key.includes('-')
 }
 
 const INTERNAL_KEYS = ['help', 'version', '_', '$0', 'dryRun']
 
-const printFeatures = function() {
+const printFeatures = function () {
   console.log(['', ...FEATURES, ''].join(FEATURES_DELIMITER))
   exit(0)
 }

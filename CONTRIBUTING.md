@@ -53,7 +53,8 @@ This is a monorepo. Below are a list of packages included.
   commit [npm link](https://www.npmjs.com/package/@netlify/git-utils).
 - [@netlify/run-utils](./packages/run-utils) Utility for running commands inside Netlify Build
   [npm link](https://www.npmjs.com/package/@netlify/run-utils).
-  <!-- AUTO-GENERATED-CONTENT:END (PACKAGES) -->
+
+<!-- AUTO-GENERATED-CONTENT:END (PACKAGES) -->
 
 ## Testing
 

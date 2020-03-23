@@ -15,7 +15,7 @@ const pReadFile = promisify(readFile)
 // Compute the hash of a file's contents.
 // Use SHA256 on the contents. Also hashes some file metadata: file path, file
 // type, permissions, uid/gid.
-const getHash = async function({ srcPath, move, digests, base }) {
+const getHash = async function ({ srcPath, move, digests, base }) {
   // Moving files is faster than computing hashes
   if (move) {
     return ''
@@ -34,12 +34,12 @@ const getHash = async function({ srcPath, move, digests, base }) {
 // sometime be represented by a digest file such as `package-lock.json` which
 // is much smaller and fast to hash. We allow specifying those using the
 // `digests` option.
-const findDigest = async function(srcPath, digests) {
+const findDigest = async function (srcPath, digests) {
   const fileStats = await Promise.all([...digests, srcPath].map(getStat))
   return fileStats.find(Boolean)
 }
 
-const getStat = async function(digestPath) {
+const getStat = async function (digestPath) {
   try {
     const fileStat = await pStat(digestPath)
     return { digestPath, fileStat }
@@ -49,7 +49,7 @@ const getStat = async function(digestPath) {
 }
 
 // Hash a directory recursively
-const hashDir = async function(dirPath, fileStat, base) {
+const hashDir = async function (dirPath, fileStat, base) {
   const files = await readdirp.promise(dirPath, { fileFilter, alwaysStat: true })
   const dirHashInfo = getHashInfo(dirPath, fileStat, base)
   const hashInfos = await pMap(files, ({ fullPath, stats }) => getFileInfo(fullPath, stats, base), {
@@ -60,12 +60,12 @@ const hashDir = async function(dirPath, fileStat, base) {
 }
 
 // We do not copy temporary files like `*~` nor hash them
-const fileFilter = function({ basename }) {
+const fileFilter = function ({ basename }) {
   return junk.not(basename)
 }
 
 // Hash a regular file
-const hashFile = async function(filePath, fileStat, base) {
+const hashFile = async function (filePath, fileStat, base) {
   const hashInfo = await getFileInfo(filePath, fileStat, base)
   const hash = await computeHash([hashInfo])
   return hash
@@ -75,7 +75,7 @@ const hashFile = async function(filePath, fileStat, base) {
 // This is mostly CPU-bound (hashing), so higher values actually make it slower.
 const MAX_CONCURRENCY = cpus().length
 
-const getFileInfo = async function(filePath, stat, base) {
+const getFileInfo = async function (filePath, stat, base) {
   const content = await getContent(filePath, stat)
   const hashInfo = getHashInfo(filePath, stat, base, content)
   return hashInfo
@@ -84,7 +84,7 @@ const getFileInfo = async function(filePath, stat, base) {
 // If a file is too big, we stream it and hash it first so it does not take up
 // memory. Otherwise files with lots of big files can end up taking the whole
 // memory and crash the process.
-const getContent = function(filePath, { size }) {
+const getContent = function (filePath, { size }) {
   if (size < MAX_HASH_CONTENT) {
     return pReadFile(filePath, 'utf8')
   }
@@ -95,12 +95,12 @@ const getContent = function(filePath, { size }) {
 
 const MAX_HASH_CONTENT = 1e5
 
-const getHashInfo = function(filePath, { mode, uid, gid }, base, content) {
+const getHashInfo = function (filePath, { mode, uid, gid }, base, content) {
   const path = relative(base, filePath)
   return { path, content, mode, uid, gid }
 }
 
-const computeHash = async function(hashInfos) {
+const computeHash = async function (hashInfos) {
   hashInfos.sort(comparePath)
   const hashInfosString = JSON.stringify(hashInfos)
   const hash = await hashString(hashInfosString)
@@ -110,7 +110,7 @@ const computeHash = async function(hashInfos) {
 // When hashing a directory, sort its files by path so the hash is stable.
 // The hashes are often already sorted, which is why we skip test coverage.
 // istanbul ignore next
-const comparePath = function(hashInfoA, hashInfoB) {
+const comparePath = function (hashInfoA, hashInfoB) {
   if (hashInfoA.path > hashInfoB.path) {
     return 1
   }
@@ -122,13 +122,13 @@ const comparePath = function(hashInfoA, hashInfoB) {
   return 0
 }
 
-const hashStream = async function(stream) {
+const hashStream = async function (stream) {
   const hashStream = stream.pipe(createHash(HASH_ALGO, { encoding: 'hex' }))
   const hash = await getStream(hashStream)
   return hash
 }
 
-const hashString = async function(string) {
+const hashString = async function (string) {
   const hashStream = createHash(HASH_ALGO, { encoding: 'hex' })
   hashStream.end(string)
   const hash = await getStream(hashStream)

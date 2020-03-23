@@ -7,7 +7,7 @@ const { getLinesOfCode } = require('./stats')
 const { fileMatch } = require('./match')
 
 // Main entry point to the git utilities
-const getGitUtils = async function(
+const getGitUtils = async function (
   // istanbul ignore next
   { base, cwd = getCwd() } = {},
 ) {
@@ -21,7 +21,7 @@ const getGitUtils = async function(
   }
 }
 
-const getProperties = async function(base, cwd) {
+const getProperties = async function (base, cwd) {
   const [{ modifiedFiles, createdFiles, deletedFiles }, commits, linesOfCode] = await Promise.all([
     getDiffFiles(base, cwd),
     getCommits(base, cwd),
@@ -30,7 +30,7 @@ const getProperties = async function(base, cwd) {
   return { modifiedFiles, createdFiles, deletedFiles, commits, linesOfCode }
 }
 
-const addMethods = function(properties) {
+const addMethods = function (properties) {
   // During initialization, the git utility is not built yet since it is a Proxy
   // and the utility must be sent across processes, i.e. JSON-serializable.
   // Instead we only keep the error stack and build the Proxy now.
@@ -49,7 +49,7 @@ const addMethods = function(properties) {
 // we don't want to report any errors since the user might not use the utility.
 // However we still want to report errors when the user does use the utility.
 // We achieve this by using a Proxy.
-const getFakeGitUtils = function({ error }) {
+const getFakeGitUtils = function ({ error }) {
   return new Proxy(
     // We define those so that `Object.keys()` and similar methods still work
     {

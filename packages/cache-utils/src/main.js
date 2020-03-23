@@ -8,7 +8,7 @@ const { getCacheDir } = require('./dir')
 const { list } = require('./list')
 
 // Cache a file
-const saveOne = async function(path, { move = DEFAULT_MOVE, ttl = DEFAULT_TTL, digests = [] } = {}) {
+const saveOne = async function (path, { move = DEFAULT_MOVE, ttl = DEFAULT_TTL, digests = [] } = {}) {
   const { srcPath, cachePath, base } = await parsePath(path)
 
   if (!(await pathExists(srcPath))) {
@@ -28,7 +28,7 @@ const saveOne = async function(path, { move = DEFAULT_MOVE, ttl = DEFAULT_TTL, d
 }
 
 // Restore a cached file
-const restoreOne = async function(path, { move = DEFAULT_MOVE } = {}) {
+const restoreOne = async function (path, { move = DEFAULT_MOVE } = {}) {
   const { srcPath, cachePath } = await parsePath(path)
 
   if (!(await pathExists(cachePath))) {
@@ -46,7 +46,7 @@ const restoreOne = async function(path, { move = DEFAULT_MOVE } = {}) {
 }
 
 // Remove the cache of a file
-const removeOne = async function(path) {
+const removeOne = async function (path) {
   const { cachePath } = await parsePath(path)
 
   if (!(await pathExists(cachePath))) {
@@ -60,7 +60,7 @@ const removeOne = async function(path) {
 }
 
 // Check if a file is cached
-const hasOne = async function(path) {
+const hasOne = async function (path) {
   const { cachePath } = await parsePath(path)
 
   return (await pathExists(cachePath)) && !(await isExpired(cachePath))
@@ -71,7 +71,7 @@ const DEFAULT_TTL = undefined
 
 // Allow each of the main functions to take either a single path or an array of
 // paths as arguments
-const allowMany = async function(func, paths, ...args) {
+const allowMany = async function (func, paths, ...args) {
   if (!Array.isArray(paths)) {
     return func(paths, ...args)
   }

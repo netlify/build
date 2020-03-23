@@ -8,13 +8,13 @@ const { failBuild, failPlugin, cancelBuild } = require('../error')
 // Some utilities need to perform some async initialization logic first.
 // We do it once for all plugins in the parent process then pass it to the child
 // processes.
-const startUtils = async function(buildDir) {
+const startUtils = async function (buildDir) {
   const git = await gitUtils({ cwd: buildDir })
   return { git }
 }
 
 // Retrieve the `utils` argument.
-const getUtils = function({ utilsData: { git }, constants }) {
+const getUtils = function ({ utilsData: { git }, constants }) {
   const buildUtils = { failBuild, failPlugin, cancelBuild }
   const gitA = gitUtils.load(git)
   // eslint-disable-next-line no-unused-vars

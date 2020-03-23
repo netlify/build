@@ -3,7 +3,7 @@ const { loadManifest } = require('./load')
 const { checkInputs } = require('./check')
 
 // Load plugin's `manifest.yml`
-const useManifest = async function({ package, local, inputs }, { pluginDir, packageDir, packageJson }) {
+const useManifest = async function ({ package, local, inputs }, { pluginDir, packageDir, packageJson }) {
   const manifestPath = await getManifestPath(pluginDir, packageDir)
 
   if (manifestPath === undefined) {

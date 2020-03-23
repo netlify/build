@@ -1,7 +1,7 @@
 const execa = require('execa')
 
 // Run a command, with arguments being an array
-const run = function(file, args, options) {
+const run = function (file, args, options) {
   const [argsA, optionsA] = parseArgs(args, options)
   const optionsB = { ...DEFAULT_OPTIONS, ...optionsA }
   const childProcess = execa(file, argsA, optionsB)
@@ -10,7 +10,7 @@ const run = function(file, args, options) {
 }
 
 // Run a command, with file + arguments being a single string
-const runCommand = function(command, options) {
+const runCommand = function (command, options) {
   const optionsA = { ...DEFAULT_OPTIONS, ...options }
   const childProcess = execa.command(command, optionsA)
   redirectOutput(childProcess, optionsA)
@@ -18,7 +18,7 @@ const runCommand = function(command, options) {
 }
 
 // Both `args` and `options` are optional
-const parseArgs = function(args, options) {
+const parseArgs = function (args, options) {
   if (Array.isArray(args)) {
     return [args, options]
   }
@@ -34,7 +34,7 @@ const parseArgs = function(args, options) {
 const DEFAULT_OPTIONS = { preferLocal: true }
 
 // Redirect output by default, unless specified otherwise
-const redirectOutput = function(childProcess, { stdio, stdout, stderr }) {
+const redirectOutput = function (childProcess, { stdio, stdout, stderr }) {
   if (stdio !== undefined || stdout !== undefined || stderr !== undefined) {
     return
   }

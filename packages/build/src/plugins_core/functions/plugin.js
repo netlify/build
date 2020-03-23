@@ -6,7 +6,7 @@ const { installFunctionDependencies } = require('../../install/functions')
 const { serializeList } = require('../../utils/list')
 
 // Plugin to package Netlify functions with @netlify/zip-it-and-ship-it
-const functionsPlugins = function(inputs, { constants: { FUNCTIONS_SRC } }) {
+const functionsPlugins = function (inputs, { constants: { FUNCTIONS_SRC } }) {
   // When `config.build.functions` is not defined, it means users does not use
   // Netlify Functions. However when it is defined but points to a non-existing
   // directory, this might mean the directory is created later one, so we cannot
@@ -18,7 +18,7 @@ const functionsPlugins = function(inputs, { constants: { FUNCTIONS_SRC } }) {
   return { onPreBuild, onPostBuild }
 }
 
-const onPreBuild = async function({ constants: { FUNCTIONS_SRC } }) {
+const onPreBuild = async function ({ constants: { FUNCTIONS_SRC } }) {
   if (!(await pathExists(FUNCTIONS_SRC))) {
     return
   }
@@ -27,7 +27,7 @@ const onPreBuild = async function({ constants: { FUNCTIONS_SRC } }) {
 }
 
 // Package Netlify functions
-const onPostBuild = async function({ constants: { FUNCTIONS_SRC, FUNCTIONS_DIST } }) {
+const onPostBuild = async function ({ constants: { FUNCTIONS_SRC, FUNCTIONS_DIST } }) {
   if (!(await pathExists(FUNCTIONS_SRC))) {
     return
   }
@@ -39,7 +39,7 @@ const onPostBuild = async function({ constants: { FUNCTIONS_SRC, FUNCTIONS_DIST 
 }
 
 // Print the list of paths to the packaged functions
-const logResults = async function(FUNCTIONS_DIST) {
+const logResults = async function (FUNCTIONS_DIST) {
   const files = await readdirp.promise(FUNCTIONS_DIST)
 
   if (files.length === 0) {
@@ -52,7 +52,7 @@ const logResults = async function(FUNCTIONS_DIST) {
 ${serializeList(paths)}`)
 }
 
-const getLoggedPath = function({ path }) {
+const getLoggedPath = function ({ path }) {
   return path
 }
 

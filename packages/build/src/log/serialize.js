@@ -2,11 +2,11 @@ const { dump, JSON_SCHEMA } = require('js-yaml')
 const indentString = require('indent-string')
 
 // Serialize to string
-const serialize = function(arg) {
+const serialize = function (arg) {
   return indent(stringify(arg)).trimRight()
 }
 
-const stringify = function(arg) {
+const stringify = function (arg) {
   if (typeof arg !== 'object' || arg === null) {
     return String(arg)
   }
@@ -15,7 +15,7 @@ const stringify = function(arg) {
 }
 
 // Add indentation
-const indent = function(arg) {
+const indent = function (arg) {
   return indentString(arg, INDENT_SIZE)
 }
 

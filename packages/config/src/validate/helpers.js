@@ -1,10 +1,10 @@
 const { normalize } = require('path')
 
-const isString = function(value) {
+const isString = function (value) {
   return typeof value === 'string'
 }
 
-const validProperties = function(
+const validProperties = function (
   propNames,
   // istanbul ignore next
   legacyPropNames = [],
@@ -17,11 +17,11 @@ ${propNames.map(propName => `  - ${propName}`).join('\n')}`,
   }
 }
 
-const checkValidProperty = function(value, propNames, mapper) {
+const checkValidProperty = function (value, propNames, mapper) {
   return Object.keys(value).every(propName => propNames.includes(mapper(propName)))
 }
 
-const deprecatedProperties = function(properties, getExample, mapper) {
+const deprecatedProperties = function (properties, getExample, mapper) {
   return {
     check(value, key) {
       return findDeprecatedProperty(properties, mapper(key)) === undefined
@@ -37,7 +37,7 @@ const deprecatedProperties = function(properties, getExample, mapper) {
   }
 }
 
-const findDeprecatedProperty = function(properties, key) {
+const findDeprecatedProperty = function (properties, key) {
   const newPropName = properties[key]
   if (newPropName === undefined) {
     return
@@ -45,13 +45,13 @@ const findDeprecatedProperty = function(properties, key) {
   return newPropName
 }
 
-const identity = function(value) {
+const identity = function (value) {
   return value
 }
 
 // Ensure paths specified by users in the configuration file are not targetting
 // files outside the repository root directory.
-const isInsideRoot = function(path) {
+const isInsideRoot = function (path) {
   return !normalize(path).startsWith('..')
 }
 
@@ -61,7 +61,7 @@ const insideRootCheck = {
 }
 
 // Used in examples to show how to fix the above check
-const removeParentDots = function(path) {
+const removeParentDots = function (path) {
   return normalize(path).replace(PARENT_DOTS_REGEXP, '')
 }
 

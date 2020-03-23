@@ -7,7 +7,7 @@ const { getExample } = require('./example')
 
 // Validate the configuration file.
 // Performed before normalization.
-const validateConfig = function(config) {
+const validateConfig = function (config) {
   try {
     VALIDATIONS.forEach(({ property, ...validation }) => {
       validateProperty(config, { ...validation, nextPath: property.split('.') })
@@ -18,7 +18,7 @@ const validateConfig = function(config) {
 }
 
 // Validate a single property in the configuration file.
-const validateProperty = function(
+const validateProperty = function (
   parent,
   {
     nextPath: [propName, nextPropName, ...nextPath],
@@ -61,7 +61,7 @@ const validateProperty = function(
   reportError({ prevPath, propPath, message, example, warn, value, key, parent })
 }
 
-const reportError = function({ prevPath, propPath, message, example, warn, value, key, parent }) {
+const reportError = function ({ prevPath, propPath, message, example, warn, value, key, parent }) {
   const messageA = typeof message === 'function' ? message(value, key, parent) : message
   const errorMessage = `Configuration property ${cyan.bold(propPath)} ${messageA}
 ${getExample({ value, parent, key, prevPath, example })}`
@@ -74,7 +74,7 @@ ${getExample({ value, parent, key, prevPath, example })}`
 }
 
 // Recurse over children (each part of the `property` array).
-const validateChild = function({ value, nextPropName, prevPath, nextPath, propPath, ...rest }) {
+const validateChild = function ({ value, nextPropName, prevPath, nextPath, propPath, ...rest }) {
   if (value === undefined) {
     return
   }
@@ -95,7 +95,7 @@ const validateChild = function({ value, nextPropName, prevPath, nextPath, propPa
 }
 
 // Can use * to recurse over array|object elements.
-const validateChildProp = function({ childProp, value, nextPath, propPath, prevPath, ...rest }) {
+const validateChildProp = function ({ childProp, value, nextPath, propPath, prevPath, ...rest }) {
   if (Array.isArray(value)) {
     const key = Number(childProp)
     return validateProperty(value, {
@@ -118,7 +118,7 @@ const validateChildProp = function({ childProp, value, nextPath, propPath, prevP
 
 // When `required` is `true`, property must be defined, unless its parent is
 // `undefined`. To make parent required, set its `required` to `true` as well.
-const checkRequired = function({ value, required, propPath, prevPath, example }) {
+const checkRequired = function ({ value, required, propPath, prevPath, example }) {
   // istanbul ignore else
   if (!required) {
     return

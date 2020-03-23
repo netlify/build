@@ -2,7 +2,7 @@ const { addErrorInfo } = require('./info')
 
 // Retrieve error information from child process and re-build it in current
 // process. We need this since errors are not JSON-serializable.
-const buildError = function({ type, name, message, stack, ...errorProps }) {
+const buildError = function ({ type, name, message, stack, ...errorProps }) {
   const error = new Error('')
 
   assignErrorProps(error, { name, message, stack })
@@ -17,7 +17,7 @@ const buildError = function({ type, name, message, stack, ...errorProps }) {
 }
 
 // Make sure `name`, `message` and `stack` are not enumerable
-const assignErrorProps = function(error, values) {
+const assignErrorProps = function (error, values) {
   ERROR_PROPS.forEach(name => {
     assignErrorProp(error, name, values[name])
   })
@@ -25,7 +25,7 @@ const assignErrorProps = function(error, values) {
 
 const ERROR_PROPS = ['name', 'message', 'stack']
 
-const assignErrorProp = function(error, name, value) {
+const assignErrorProp = function (error, name, value) {
   Object.defineProperty(error, name, { value, enumerable: false, writable: true, configurable: true })
 }
 
