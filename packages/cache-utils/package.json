@@ -23,7 +23,7 @@
     "move-file": "^1.2.0",
     "p-map": "^3.0.0",
     "path-exists": "^4.0.0",
-    "readdirp": "^3.3.0"
+    "readdirp": "^3.4.0"
   },
   "devDependencies": {},
   "repository": {
