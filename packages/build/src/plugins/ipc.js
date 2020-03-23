@@ -1,7 +1,7 @@
 const { promisify } = require('util')
 
 const pEvent = require('p-event')
-const uuid = require('uuid/v4')
+const { v4: uuidv4 } = require('uuid')
 
 const { buildError } = require('../error/build')
 const { addErrorInfo } = require('../error/info')
@@ -10,7 +10,7 @@ const { addErrorInfo } = require('../error/info')
 // We need to fire them in parallel because `process.send()` can be slow
 // to await, i.e. child might send response before parent start listening for it
 const callChild = async function(childProcess, eventName, payload) {
-  const callId = uuid()
+  const callId = uuidv4()
   const [response] = await Promise.all([
     getEventFromChild(childProcess, callId),
     sendEventToChild(childProcess, callId, eventName, payload),
