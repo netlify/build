@@ -1,9 +1,7 @@
 const { dirname } = require('path')
 
-const fastGlob = require('fast-glob')
-const readdirp = require('readdirp')
 const { zipFunctions } = require('@netlify/zip-it-and-ship-it')
-const unixify = require('unixify')
+const readdirp = require('readdirp')
 const pathExists = require('path-exists')
 
 const { installDependencies } = require('../../utils/install')
@@ -27,21 +25,18 @@ const onPreBuild = async function({ constants: { FUNCTIONS_SRC } }) {
     return
   }
 
-  const base = unixify(FUNCTIONS_SRC)
-  const packagePaths = await fastGlob([`${base}/**/package.json`, `!${base}/**/node_modules`], {
-    onlyFiles: true,
-    unique: true,
-  })
-
+  const packagePaths = await readdirp.promise(FUNCTIONS_SRC, { depth: 1, fileFilter: 'package.json' })
   if (packagePaths.length === 0) {
     return
   }
 
   console.log('Installing functions dependencies')
-
-  const packageRoots = packagePaths.map(dirname)
-
+  const packageRoots = packagePaths.map(getPackageRoot)
   await Promise.all(packageRoots.map(packageRoot => installDependencies({ packageRoot })))
+}
+
+const getPackageRoot = function({ fullPath }) {
+  return dirname(fullPath)
 }
 
 // Package Netlify functions
