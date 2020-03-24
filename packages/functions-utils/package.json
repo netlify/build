@@ -18,7 +18,11 @@
     "cpy": "^8.0.0",
     "path-exists": "^4.0.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "ava": "^2.4.0",
+    "del": "^5.1.0",
+    "tmp-promise": "^2.0.2"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/netlify/build"
