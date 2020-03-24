@@ -1,23 +1,23 @@
 const test = require('ava')
 
-const { runFixtureConfig } = require('../helpers/main')
+const { runFixture } = require('../helpers/main')
 
 test('--help', async t => {
-  await runFixtureConfig(t, '', { flags: '--help' })
+  await runFixture(t, '', { flags: '--help' })
 })
 
 test('--version', async t => {
-  await runFixtureConfig(t, '', { flags: '--version' })
+  await runFixture(t, '', { flags: '--version' })
 })
 
 test('Success', async t => {
-  await runFixtureConfig(t, 'empty')
+  await runFixture(t, 'empty')
 })
 
 test('User error', async t => {
-  await runFixtureConfig(t, 'empty', { flags: '--config=/invalid' })
+  await runFixture(t, 'empty', { flags: '--config=/invalid' })
 })
 
 test('CLI flags', async t => {
-  await runFixtureConfig(t, 'empty', { flags: '--branch=test' })
+  await runFixture(t, 'empty', { flags: '--branch=test' })
 })

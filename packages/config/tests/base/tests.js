@@ -1,14 +1,14 @@
 const test = require('ava')
 
-const { runFixtureConfig, getJsonOpt } = require('../helpers/main')
+const { runFixture, getJsonOpt } = require('../helpers/main')
 
 test('Base from defaultConfig', async t => {
   const defaultConfig = getJsonOpt({ build: { base: 'base' } })
-  await runFixtureConfig(t, 'default_config', { flags: `--defaultConfig=${defaultConfig}` })
+  await runFixture(t, 'default_config', { flags: `--defaultConfig=${defaultConfig}` })
 })
 
 test('Base from configuration file property', async t => {
-  const { stdout } = await runFixtureConfig(t, 'prop_config')
+  const { stdout } = await runFixture(t, 'prop_config')
   const {
     buildDir,
     config: {
@@ -21,11 +21,11 @@ test('Base from configuration file property', async t => {
 })
 
 test('Base logic is not recursive', async t => {
-  await runFixtureConfig(t, 'recursive')
+  await runFixture(t, 'recursive')
 })
 
 test('BaseRelDir feature flag', async t => {
-  const { stdout } = await runFixtureConfig(t, 'prop_config', { flags: `--no-baseRelDir` })
+  const { stdout } = await runFixture(t, 'prop_config', { flags: `--no-baseRelDir` })
   const {
     buildDir,
     config: {

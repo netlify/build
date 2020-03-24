@@ -2,16 +2,16 @@ const stripAnsi = require('strip-ansi')
 const { tick, pointer, arrowDown } = require('figures')
 
 // Normalize log output so it can be snapshot consistently across test runs
-const normalizeOutput = function(output, type) {
+const normalizeOutput = function(output) {
   const outputA = stripAnsi(output)
-  return NORMALIZE_REGEXPS[type].reduce(replaceOutput, outputA)
+  return NORMALIZE_REGEXPS.reduce(replaceOutput, outputA)
 }
 
 const replaceOutput = function(output, [regExp, replacement]) {
   return output.replace(regExp, replacement)
 }
 
-const MAIN_NORMALIZE_REGEXPS = [
+const NORMALIZE_REGEXPS = [
   // Zero width space characters due to a bug in buildbot:
   // https://github.com/netlify/buildbot/issues/595
   [/\u{200b}/gu, ''],
@@ -61,11 +61,5 @@ const MAIN_NORMALIZE_REGEXPS = [
   // HTTP errors are shown differently in Node 8
   [/ \.\.\.:443/g, ''],
 ]
-
-// Some projects require different sets of normalization regExps
-const NORMALIZE_REGEXPS = {
-  build: MAIN_NORMALIZE_REGEXPS,
-  config: MAIN_NORMALIZE_REGEXPS,
-}
 
 module.exports = { normalizeOutput }
