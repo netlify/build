@@ -35,6 +35,8 @@ const FIXTURES_DIR = normalize(`${testFile}/../fixtures`)
 //  - `copyRoot.git` {boolean}: whether the copied directory should have a `.git`
 //    Default: true
 //  - `copyRoot.branch` {string}: create a git branch after copy
+//  - `copyRoot.cwd` {boolean}: whether the current directory should be changed
+//    to the temporary directory. Default: false
 const runFixture = async function(
   t,
   fixtureName,
@@ -52,7 +54,7 @@ const runFixture = async function(
   const FORCE_COLOR = isPrint ? '1' : ''
   const commandEnv = { ...DEFAULT_ENV[type], FORCE_COLOR, NETLIFY_BUILD_TEST: '1', ...envOption }
   const copyRootDir = await getCopyRootDir({ copyRoot })
-  const repositoryRootFlag = getRepositoryRootFlag({ fixtureName, copyRootDir, repositoryRoot })
+  const repositoryRootFlag = getRepositoryRootFlag({ fixtureName, copyRoot, copyRootDir, repositoryRoot })
   const binaryPath = await BINARY_PATH[type]
   const { stdout, stderr, all, exitCode } = await runCommand({
     binaryPath,
@@ -107,16 +109,20 @@ const TIMEOUT = 6e5
 
 // The `repositoryRoot` flag can be overriden, but defaults to the fixture
 // directory
-const getRepositoryRootFlag = function({ fixtureName, copyRootDir, repositoryRoot }) {
+const getRepositoryRootFlag = function({ fixtureName, copyRoot: { cwd } = {}, copyRootDir, repositoryRoot }) {
   if (fixtureName === '') {
     return ''
   }
 
-  if (copyRootDir !== undefined) {
-    return `--repositoryRoot=${normalize(copyRootDir)}`
+  if (copyRootDir === undefined) {
+    return `--repositoryRoot=${normalize(repositoryRoot)}`
   }
 
-  return `--repositoryRoot=${normalize(repositoryRoot)}`
+  if (cwd) {
+    return `--cwd=${normalize(copyRootDir)}`
+  }
+
+  return `--repositoryRoot=${normalize(copyRootDir)}`
 }
 
 const getCopyRootDir = function({ copyRoot, copyRoot: { git } = {} }) {
