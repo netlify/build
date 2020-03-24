@@ -1,3 +1,5 @@
+require('./utils/polyfills')
+
 const pathExists = require('path-exists')
 const del = require('del')
 

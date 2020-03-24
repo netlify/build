@@ -15,6 +15,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "array-flat-polyfill": "^1.0.1",
     "cpy": "^8.0.0",
     "del": "^5.1.0",
     "get-stream": "^5.1.0",
