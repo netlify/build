@@ -17,21 +17,21 @@ Netlify build is the next generation of CI/CD tooling for modern web application
 
 - [Background](#background)
 - [How it works](#how-it-works)
-  - [1. Extending via config](#1-extending-via-config)
-  - [2. Extending via plugins](#2-extending-via-plugins)
+  * [1. Extending via config](#1-extending-via-config)
+  * [2. Extending via plugins](#2-extending-via-plugins)
 - [Build Lifecycle](#build-lifecycle)
-  - [`onInit`](#oninit)
-  - [`onPreBuild`](#onprebuild)
-  - [`onBuild`](#onbuild)
-  - [`onPostBuild`](#onpostbuild)
-  - [`onSuccess`](#onsuccess)
-  - [`onError`](#onerror)
-  - [`onEnd`](#onend)
+  * [`onInit`](#oninit)
+  * [`onPreBuild`](#onprebuild)
+  * [`onBuild`](#onbuild)
+  * [`onPostBuild`](#onpostbuild)
+  * [`onSuccess`](#onsuccess)
+  * [`onError`](#onerror)
+  * [`onEnd`](#onend)
 - [Netlify Configuration](#netlify-configuration)
 - [Plugins](#plugins)
 - [What can plugins do?](#what-can-plugins-do)
-  - [1. Optimizing build speeds & lowing cost](#1-optimizing-build-speeds--lowing-cost)
-  - [2. Standardize workflows & developer productivity](#2-standardize-workflows--developer-productivity)
+  * [1. Optimizing build speeds & lowing cost](#1-optimizing-build-speeds--lowing-cost)
+  * [2. Standardize workflows & developer productivity](#2-standardize-workflows--developer-productivity)
 - [Community Plugins](#community-plugins)
 - [CLI commands](#cli-commands)
 - [Contributors](#contributors)
@@ -118,17 +118,15 @@ The build process runs through a series of lifecycle events. These events are th
 build operates.
 
 <!-- AUTO-GENERATED-CONTENT:START (LIFECYCLE_TABLE) -->
-
-| Event                                                                | Description                        |
-| :------------------------------------------------------------------- | :--------------------------------- |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#oninit">onInit</a>** ‏‏‎ ‏‏‎ ‏‏‎           | Runs before anything else          |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#onprebuild">onPreBuild</a>** ‏‏‎ ‏‏‎ ‏‏‎   | Before build commands are executed |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#onbuild">onBuild</a>** ‏‏‎ ‏‏‎ ‏‏‎         | Build commands are executed        |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#onpostbuild">onPostBuild</a>** ‏‏‎ ‏‏‎ ‏‏‎ | After Build commands are executed  |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#onsuccess">onSuccess</a>** ‏‏‎ ‏‏‎ ‏‏‎     | Runs on build success              |
-| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **<a href="#onerror">onError</a>** ‏‏‎ ‏‏‎ ‏‏‎         | Runs on build error                |
-| 🎉 ‏‏‎ **<a href="#onend">onEnd</a>** ‏‏‎ ‏‏‎ ‏‏‎                    | Runs on build error or success     |
-
+| Event          | Description |
+|:------|:-------|
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#oninit">onInit</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Runs before anything else |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#onprebuild">onPreBuild</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Before build commands are executed |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#onbuild">onBuild</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Build commands are executed |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#onpostbuild">onPostBuild</a>** ‏‏‎  ‏‏‎  ‏‏‎  | After Build commands are executed |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#onsuccess">onSuccess</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Runs on build success |
+| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **<a href="#onerror">onError</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Runs on build error |
+| 🎉 ‏‏‎ **<a href="#onend">onEnd</a>** ‏‏‎  ‏‏‎  ‏‏‎  | Runs on build error or success |
 <!-- AUTO-GENERATED-CONTENT:END (LIFECYCLE_TABLE) -->
 
 The Lifecycle flows the events in order and executes and their `onPre` & `onPost` counterparts.
@@ -155,355 +153,368 @@ The Lifecycle flows the events in order and executes and their `onPre` & `onPost
 ```
 
 <!-- AUTO-GENERATED-CONTENT:START (LIFECYCLE_DOCS) -->
-
 ### `onInit`
 
 Runs before anything else
+
 
 <details>
   <summary>Using <strong>onInit</strong> in a plugin</summary>
   
   <br/>
 
-Below is an example plugin using the `onInit` event handler
+  Below is an example plugin using the `onInit` event handler
 
-```js
-// File my-plugin.js
-module.exports = function myPlugin(conf) {
-  return {
-    onInit: ({ inputs, netlifyConfig, constants, utils }) => {
-      console.log('Run custom logic during onInit event')
-    },
+  ```js
+  // File my-plugin.js
+  module.exports = function myPlugin(conf) {
+    return {
+      onInit: ({ inputs, netlifyConfig, constants, utils }) => {
+        console.log('Run custom logic during onInit event')
+      }
+    }
   }
-}
-```
+  ```
 
-After creating the plugin, add into your [Netlify config](#netlify-configuration) file under the `plugins` section.
+  After creating the plugin, add into your [Netlify config](#netlify-configuration) file under the `plugins` section.
 
-Plugins can be referenced locally or installed via npm.
+  Plugins can be referenced locally or installed via npm.
 
-`netlify.yml` example:
+  `netlify.yml` example:
 
-```yml
-plugins:
-  - package: ./path/to/my-plugin.js
-```
-
+  ```yml
+  plugins:
+    - package: ./path/to/my-plugin.js
+  ```
+  
 </details>
+
 
 <details>
   <summary>Using <strong>onInit</strong> via Netlify config</summary>
   
   <br/>
 
-Below is an example of how to use the `onInit` event in the Netlify config file.
+  Below is an example of how to use the `onInit` event in the Netlify config file.
 
-```yml
-build:
-  lifecycle:
-    onInit: echo "Do thing on onInit event"
-```
-
+  ```yml
+  build:
+    lifecycle:
+      onInit: echo "Do thing on onInit event"
+  ```
+  
 </details>
 
 ### `onPreBuild`
 
 Before build commands are executed
 
+
 <details>
   <summary>Using <strong>onPreBuild</strong> in a plugin</summary>
   
   <br/>
 
-Below is an example plugin using the `onPreBuild` event handler
+  Below is an example plugin using the `onPreBuild` event handler
 
-```js
-// File my-plugin.js
-module.exports = function myPlugin(conf) {
-  return {
-    onPreBuild: ({ inputs, netlifyConfig, constants, utils }) => {
-      console.log('Run custom logic during onPreBuild event')
-    },
+  ```js
+  // File my-plugin.js
+  module.exports = function myPlugin(conf) {
+    return {
+      onPreBuild: ({ inputs, netlifyConfig, constants, utils }) => {
+        console.log('Run custom logic during onPreBuild event')
+      }
+    }
   }
-}
-```
+  ```
 
-After creating the plugin, add into your [Netlify config](#netlify-configuration) file under the `plugins` section.
+  After creating the plugin, add into your [Netlify config](#netlify-configuration) file under the `plugins` section.
 
-Plugins can be referenced locally or installed via npm.
+  Plugins can be referenced locally or installed via npm.
 
-`netlify.yml` example:
+  `netlify.yml` example:
 
-```yml
-plugins:
-  - package: ./path/to/my-plugin.js
-```
-
+  ```yml
+  plugins:
+    - package: ./path/to/my-plugin.js
+  ```
+  
 </details>
+
 
 <details>
   <summary>Using <strong>onPreBuild</strong> via Netlify config</summary>
   
   <br/>
 
-Below is an example of how to use the `onPreBuild` event in the Netlify config file.
+  Below is an example of how to use the `onPreBuild` event in the Netlify config file.
 
-```yml
-build:
-  lifecycle:
-    onPreBuild: echo "Do thing on onPreBuild event"
-```
-
+  ```yml
+  build:
+    lifecycle:
+      onPreBuild: echo "Do thing on onPreBuild event"
+  ```
+  
 </details>
 
 ### `onBuild`
 
 Build commands are executed
 
+
 <details>
   <summary>Using <strong>onBuild</strong> in a plugin</summary>
   
   <br/>
 
-Below is an example plugin using the `onBuild` event handler
+  Below is an example plugin using the `onBuild` event handler
 
-```js
-// File my-plugin.js
-module.exports = function myPlugin(conf) {
-  return {
-    onBuild: ({ inputs, netlifyConfig, constants, utils }) => {
-      console.log('Run custom logic during onBuild event')
-    },
+  ```js
+  // File my-plugin.js
+  module.exports = function myPlugin(conf) {
+    return {
+      onBuild: ({ inputs, netlifyConfig, constants, utils }) => {
+        console.log('Run custom logic during onBuild event')
+      }
+    }
   }
-}
-```
+  ```
 
-After creating the plugin, add into your [Netlify config](#netlify-configuration) file under the `plugins` section.
+  After creating the plugin, add into your [Netlify config](#netlify-configuration) file under the `plugins` section.
 
-Plugins can be referenced locally or installed via npm.
+  Plugins can be referenced locally or installed via npm.
 
-`netlify.yml` example:
+  `netlify.yml` example:
 
-```yml
-plugins:
-  - package: ./path/to/my-plugin.js
-```
-
+  ```yml
+  plugins:
+    - package: ./path/to/my-plugin.js
+  ```
+  
 </details>
+
 
 <details>
   <summary>Using <strong>onBuild</strong> via Netlify config</summary>
   
   <br/>
 
-Below is an example of how to use the `onBuild` event in the Netlify config file.
+  Below is an example of how to use the `onBuild` event in the Netlify config file.
 
-```yml
-build:
-  lifecycle:
-    onBuild: echo "Do thing on onBuild event"
-```
-
+  ```yml
+  build:
+    lifecycle:
+      onBuild: echo "Do thing on onBuild event"
+  ```
+  
 </details>
 
 ### `onPostBuild`
 
 After Build commands are executed
 
+
 <details>
   <summary>Using <strong>onPostBuild</strong> in a plugin</summary>
   
   <br/>
 
-Below is an example plugin using the `onPostBuild` event handler
+  Below is an example plugin using the `onPostBuild` event handler
 
-```js
-// File my-plugin.js
-module.exports = function myPlugin(conf) {
-  return {
-    onPostBuild: ({ inputs, netlifyConfig, constants, utils }) => {
-      console.log('Run custom logic during onPostBuild event')
-    },
+  ```js
+  // File my-plugin.js
+  module.exports = function myPlugin(conf) {
+    return {
+      onPostBuild: ({ inputs, netlifyConfig, constants, utils }) => {
+        console.log('Run custom logic during onPostBuild event')
+      }
+    }
   }
-}
-```
+  ```
 
-After creating the plugin, add into your [Netlify config](#netlify-configuration) file under the `plugins` section.
+  After creating the plugin, add into your [Netlify config](#netlify-configuration) file under the `plugins` section.
 
-Plugins can be referenced locally or installed via npm.
+  Plugins can be referenced locally or installed via npm.
 
-`netlify.yml` example:
+  `netlify.yml` example:
 
-```yml
-plugins:
-  - package: ./path/to/my-plugin.js
-```
-
+  ```yml
+  plugins:
+    - package: ./path/to/my-plugin.js
+  ```
+  
 </details>
+
 
 <details>
   <summary>Using <strong>onPostBuild</strong> via Netlify config</summary>
   
   <br/>
 
-Below is an example of how to use the `onPostBuild` event in the Netlify config file.
+  Below is an example of how to use the `onPostBuild` event in the Netlify config file.
 
-```yml
-build:
-  lifecycle:
-    onPostBuild: echo "Do thing on onPostBuild event"
-```
-
+  ```yml
+  build:
+    lifecycle:
+      onPostBuild: echo "Do thing on onPostBuild event"
+  ```
+  
 </details>
 
 ### `onSuccess`
 
 Runs on build success
 
+
 <details>
   <summary>Using <strong>onSuccess</strong> in a plugin</summary>
   
   <br/>
 
-Below is an example plugin using the `onSuccess` event handler
+  Below is an example plugin using the `onSuccess` event handler
 
-```js
-// File my-plugin.js
-module.exports = function myPlugin(conf) {
-  return {
-    onSuccess: ({ inputs, netlifyConfig, constants, utils }) => {
-      console.log('Run custom logic during onSuccess event')
-    },
+  ```js
+  // File my-plugin.js
+  module.exports = function myPlugin(conf) {
+    return {
+      onSuccess: ({ inputs, netlifyConfig, constants, utils }) => {
+        console.log('Run custom logic during onSuccess event')
+      }
+    }
   }
-}
-```
+  ```
 
-After creating the plugin, add into your [Netlify config](#netlify-configuration) file under the `plugins` section.
+  After creating the plugin, add into your [Netlify config](#netlify-configuration) file under the `plugins` section.
 
-Plugins can be referenced locally or installed via npm.
+  Plugins can be referenced locally or installed via npm.
 
-`netlify.yml` example:
+  `netlify.yml` example:
 
-```yml
-plugins:
-  - package: ./path/to/my-plugin.js
-```
-
+  ```yml
+  plugins:
+    - package: ./path/to/my-plugin.js
+  ```
+  
 </details>
+
 
 <details>
   <summary>Using <strong>onSuccess</strong> via Netlify config</summary>
   
   <br/>
 
-Below is an example of how to use the `onSuccess` event in the Netlify config file.
+  Below is an example of how to use the `onSuccess` event in the Netlify config file.
 
-```yml
-build:
-  lifecycle:
-    onSuccess: echo "Do thing on onSuccess event"
-```
-
+  ```yml
+  build:
+    lifecycle:
+      onSuccess: echo "Do thing on onSuccess event"
+  ```
+  
 </details>
 
 ### `onError`
 
 Runs on build error
 
+
 <details>
   <summary>Using <strong>onError</strong> in a plugin</summary>
   
   <br/>
 
-Below is an example plugin using the `onError` event handler
+  Below is an example plugin using the `onError` event handler
 
-```js
-// File my-plugin.js
-module.exports = function myPlugin(conf) {
-  return {
-    onError: ({ inputs, netlifyConfig, constants, utils }) => {
-      console.log('Run custom logic during onError event')
-    },
+  ```js
+  // File my-plugin.js
+  module.exports = function myPlugin(conf) {
+    return {
+      onError: ({ inputs, netlifyConfig, constants, utils }) => {
+        console.log('Run custom logic during onError event')
+      }
+    }
   }
-}
-```
+  ```
 
-After creating the plugin, add into your [Netlify config](#netlify-configuration) file under the `plugins` section.
+  After creating the plugin, add into your [Netlify config](#netlify-configuration) file under the `plugins` section.
 
-Plugins can be referenced locally or installed via npm.
+  Plugins can be referenced locally or installed via npm.
 
-`netlify.yml` example:
+  `netlify.yml` example:
 
-```yml
-plugins:
-  - package: ./path/to/my-plugin.js
-```
-
+  ```yml
+  plugins:
+    - package: ./path/to/my-plugin.js
+  ```
+  
 </details>
+
 
 <details>
   <summary>Using <strong>onError</strong> via Netlify config</summary>
   
   <br/>
 
-Below is an example of how to use the `onError` event in the Netlify config file.
+  Below is an example of how to use the `onError` event in the Netlify config file.
 
-```yml
-build:
-  lifecycle:
-    onError: echo "Do thing on onError event"
-```
-
+  ```yml
+  build:
+    lifecycle:
+      onError: echo "Do thing on onError event"
+  ```
+  
 </details>
 
 ### `onEnd`
 
 Runs on build error or success
 
+
 <details>
   <summary>Using <strong>onEnd</strong> in a plugin</summary>
   
   <br/>
 
-Below is an example plugin using the `onEnd` event handler
+  Below is an example plugin using the `onEnd` event handler
 
-```js
-// File my-plugin.js
-module.exports = function myPlugin(conf) {
-  return {
-    onEnd: ({ inputs, netlifyConfig, constants, utils }) => {
-      console.log('Run custom logic during onEnd event')
-    },
+  ```js
+  // File my-plugin.js
+  module.exports = function myPlugin(conf) {
+    return {
+      onEnd: ({ inputs, netlifyConfig, constants, utils }) => {
+        console.log('Run custom logic during onEnd event')
+      }
+    }
   }
-}
-```
+  ```
 
-After creating the plugin, add into your [Netlify config](#netlify-configuration) file under the `plugins` section.
+  After creating the plugin, add into your [Netlify config](#netlify-configuration) file under the `plugins` section.
 
-Plugins can be referenced locally or installed via npm.
+  Plugins can be referenced locally or installed via npm.
 
-`netlify.yml` example:
+  `netlify.yml` example:
 
-```yml
-plugins:
-  - package: ./path/to/my-plugin.js
-```
-
+  ```yml
+  plugins:
+    - package: ./path/to/my-plugin.js
+  ```
+  
 </details>
+
 
 <details>
   <summary>Using <strong>onEnd</strong> via Netlify config</summary>
   
   <br/>
 
-Below is an example of how to use the `onEnd` event in the Netlify config file.
+  Below is an example of how to use the `onEnd` event in the Netlify config file.
 
-```yml
-build:
-  lifecycle:
-    onEnd: echo "Do thing on onEnd event"
-```
-
+  ```yml
+  build:
+    lifecycle:
+      onEnd: echo "Do thing on onEnd event"
+  ```
+  
 </details>
 <!-- AUTO-GENERATED-CONTENT:END (PLUGINS) -->
 
