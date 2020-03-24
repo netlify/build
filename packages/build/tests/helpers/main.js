@@ -50,7 +50,7 @@ const runFixture = async function(
 ) {
   const isPrint = PRINT === '1'
   const FORCE_COLOR = isPrint ? '1' : ''
-  const commandEnv = { ...DEFAULT_ENV[type], FORCE_COLOR, ...envOption }
+  const commandEnv = { ...DEFAULT_ENV[type], FORCE_COLOR, NETLIFY_BUILD_TEST: '1', ...envOption }
   const copyRootDir = await getCopyRootDir({ copyRoot })
   const repositoryRootFlag = getRepositoryRootFlag({ fixtureName, copyRootDir, repositoryRoot })
   const binaryPath = await BINARY_PATH[type]

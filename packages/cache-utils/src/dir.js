@@ -1,7 +1,4 @@
-const {
-  platform,
-  env: { TEST_CACHE_PATH },
-} = require('process')
+const { platform, env } = require('process')
 
 const globalCacheDir = require('global-cache-dir')
 
@@ -15,7 +12,7 @@ const getCacheDir = function() {
 
   // istanbul ignore next
   // Do not use in tests since /opt might not be writable by current user
-  if (platform === 'linux' && TEST_CACHE_PATH === undefined) {
+  if (platform === 'linux' && !env.NETLIFY_BUILD_TEST) {
     return CI_CACHE_DIR
   }
 
