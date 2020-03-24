@@ -23,7 +23,6 @@ const getColorLevel = function() {
   }
 
   // In unit tests when using `PRINT` mode
-  // istanbul ignore next
   if (env.PRINT === '1') {
     return '1'
   }
@@ -37,13 +36,11 @@ const getColorLevel = function() {
   // we disable colors because ANSI sequences are a problem most of the time in
   // that case
   // We cannot test this since unit tests are never in an interactive terminal
-  // istanbul ignore else
   if (!isTTY) {
     return '0'
   }
 
   // Node <9.9.0 does not have `getColorDepth()`. Default to 16 colors then.
-  // istanbul ignore next
   if (getColorDepth === undefined) {
     return '1'
   }
@@ -51,7 +48,6 @@ const getColorLevel = function() {
   // Guess how many colors are supported, mostly based on environment variables
   // This allows using 256 colors or 16 million colors on terminals that
   // support it
-  // istanbul ignore next
   return DEPTH_TO_LEVEL[getColorDepth()]
 }
 

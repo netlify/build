@@ -26,7 +26,6 @@ const setInvalidValuePart = function(value, part) {
     return [value]
   }
 
-  // istanbul ignore next
   return value === undefined ? {} : { [part]: value }
 }
 

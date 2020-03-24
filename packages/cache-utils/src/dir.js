@@ -13,7 +13,6 @@ const getCacheDir = function() {
     return LOCAL_CACHE_DIR
   }
 
-  // istanbul ignore next
   // Do not use in tests since /opt might not be writable by current user
   if (platform === 'linux' && TEST_CACHE_PATH === undefined) {
     return CI_CACHE_DIR

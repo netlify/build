@@ -11,8 +11,7 @@ const CORE_PLUGINS = [
   // TODO: run only inside tests until integrated in the buildbot
   ...(TEST_CACHE_PATH !== undefined && TEST_CACHE_PATH !== 'none'
     ? [{ package: '@netlify/plugin-cache-core', location: CACHE_PLUGIN, core: true }]
-    : // istanbul ignore next
-      []),
+    : []),
 ]
 
 module.exports = { CORE_PLUGINS }

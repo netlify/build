@@ -109,7 +109,6 @@ const computeHash = async function(hashInfos) {
 
 // When hashing a directory, sort its files by path so the hash is stable.
 // The hashes are often already sorted, which is why we skip test coverage.
-// istanbul ignore next
 const comparePath = function(hashInfoA, hashInfoB) {
   if (hashInfoA.path > hashInfoB.path) {
     return 1

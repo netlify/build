@@ -4,12 +4,7 @@ const isString = function(value) {
   return typeof value === 'string'
 }
 
-const validProperties = function(
-  propNames,
-  // istanbul ignore next
-  legacyPropNames = [],
-  mapper = identity,
-) {
+const validProperties = function(propNames, legacyPropNames = [], mapper = identity) {
   return {
     check: value => checkValidProperty(value, [...propNames, ...legacyPropNames], mapper),
     message: `has unknown properties. Valid properties are:

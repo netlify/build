@@ -7,10 +7,7 @@ const { getLinesOfCode } = require('./stats')
 const { fileMatch } = require('./match')
 
 // Main entry point to the git utilities
-const getGitUtils = async function(
-  // istanbul ignore next
-  { base, cwd = getCwd() } = {},
-) {
+const getGitUtils = async function({ base, cwd = getCwd() } = {}) {
   try {
     const baseA = await getBase(base, cwd)
     const properties = await getProperties(baseA, cwd)

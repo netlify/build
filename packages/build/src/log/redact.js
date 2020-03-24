@@ -5,7 +5,6 @@ const redactString = function(string) {
   return redactEnv.redact(string, secrets)
 }
 
-// istanbul ignore next
 const redactStream = function(stream) {
   return stream.pipe(replaceStream(secrets, '[secure]'))
 }
