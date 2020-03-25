@@ -44,21 +44,18 @@ const loadConfig = async function(flags) {
     branch,
     baseRelDir,
   })
-
-  const { buildDir: buildDirA, netlifyConfig: netlifyConfigA } = fixDuplicatePaths(buildDir, netlifyConfig)
-
-  logBuildDir(buildDirA)
+  logBuildDir(buildDir)
   logConfigPath(configPath)
-  logConfig(netlifyConfigA)
+  logConfig(netlifyConfig)
   logContext(contextA)
 
   const api = getApiClient(token)
   const siteInfo = await getSiteInfo(api, siteId)
-  const constants = await getConstants({ configPath, buildDir: buildDirA, netlifyConfig: netlifyConfigA, siteInfo })
+  const constants = await getConstants({ configPath, buildDir, netlifyConfig, siteInfo })
   return {
-    netlifyConfig: netlifyConfigA,
+    netlifyConfig,
     configPath,
-    buildDir: buildDirA,
+    buildDir,
     nodePath,
     api,
     token,
@@ -68,34 +65,6 @@ const loadConfig = async function(flags) {
     context: contextA,
     branch: branchA,
   }
-}
-
-// TODO: temporary hotfix
-const fixDuplicatePaths = function(buildDir, { build, ...netlifyConfig }) {
-  const buildDirA = fixDuplicatePath(buildDir)
-  const buildA = fixDuplicatePathObject(build, 'base')
-  const buildB = fixDuplicatePathObject(buildA, 'functions')
-  const buildC = fixDuplicatePathObject(buildB, 'publish')
-  const netlifyConfigA = { ...netlifyConfig, build: buildC }
-  return { buildDir: buildDirA, netlifyConfig: netlifyConfigA }
-}
-
-const fixDuplicatePathObject = function(object, propName) {
-  const path = object[propName]
-  if (path === undefined) {
-    return object
-  }
-
-  const pathA = fixDuplicatePath(path)
-  return { ...object, [propName]: pathA }
-}
-
-const fixDuplicatePath = function(path) {
-  if (!path.startsWith('/opt/build/repo/opt/build/repo')) {
-    return path
-  }
-
-  return path.replace('/opt/build/repo', '')
 }
 
 // Default values of CLI flags
