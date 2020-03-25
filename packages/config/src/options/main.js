@@ -1,6 +1,7 @@
 const {
   cwd: getCwd,
-  env: { CONTEXT, TEST_CACHE_PATH },
+  env,
+  env: { CONTEXT },
 } = require('process')
 
 const pathExists = require('path-exists')
@@ -43,7 +44,7 @@ const DEFAULT_OPTS = {
 // TODO: remove it once the buildbot starts using `defaultConfig`.
 const DEFAULT_CONFIG_OPTS =
   // Ensure we are not in a local build or running unit tests
-  isNetlifyCI() && !TEST_CACHE_PATH
+  isNetlifyCI() && !env.NETLIFY_BUILD_TEST
     ? {
         defaultConfig: JSON.stringify({ build: { base: getCwd() } }),
       }
