@@ -1,7 +1,6 @@
 require('./utils/polyfills')
 
 const { getConfigPath } = require('./path')
-const { getBuildDir } = require('./build_dir')
 const { addEnvVars } = require('./env')
 const { validateConfig } = require('./validate/main')
 const { handleFiles } = require('./files')
@@ -44,8 +43,7 @@ const resolveConfig = async function({ cachedConfig, ...opts } = {}) {
     baseRelDir,
   })
 
-  const buildDir = getBuildDir(repositoryRoot, config)
-  const configA = handleFiles({ config, buildDir, repositoryRoot, baseRelDir })
+  const { config: configA, buildDir } = handleFiles({ config, repositoryRoot, baseRelDir })
 
   return { configPath, buildDir, config: configA, context, branch }
 }

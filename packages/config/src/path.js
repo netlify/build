@@ -4,6 +4,7 @@ const findUp = require('find-up')
 const pathExists = require('path-exists')
 const pFilter = require('p-filter')
 
+const { resolvePath } = require('./files')
 const { throwError } = require('./error')
 
 // Configuration location can be:
@@ -17,7 +18,7 @@ const getConfigPath = async function({ configOpt, cwd, repositoryRoot, base }) {
   }
 
   if (base !== undefined) {
-    const basePath = resolve(repositoryRoot, base)
+    const basePath = resolvePath(base, repositoryRoot)
     const configPath = await searchConfigFile(basePath)
     if (configPath !== undefined) {
       return configPath
