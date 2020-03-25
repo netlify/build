@@ -1,43 +1,43 @@
 const test = require('ava')
 
-const { runFixtureConfig } = require('../helpers/main')
+const { runFixture } = require('../helpers/main')
 
 test('Multiline commands', async t => {
-  await runFixtureConfig(t, 'multiline')
+  await runFixture(t, 'multiline')
 })
 
 test('build.command', async t => {
-  await runFixtureConfig(t, 'command')
+  await runFixture(t, 'command')
 })
 
 test('build.command and build.lifecycle.onbuild', async t => {
-  await runFixtureConfig(t, 'command_lifecycle')
+  await runFixture(t, 'command_lifecycle')
 })
 
 test('build.lifecycle.build', async t => {
-  await runFixtureConfig(t, 'old_lifecycle')
+  await runFixture(t, 'old_lifecycle')
 })
 
 test('build.lifecycle.onbuild case', async t => {
-  await runFixtureConfig(t, 'case')
+  await runFixture(t, 'case')
 })
 
 test('build.lifecycle.prebuild case', async t => {
-  await runFixtureConfig(t, 'old_case')
+  await runFixture(t, 'old_case')
 })
 
 test('build.lifecycle.finally', async t => {
-  await runFixtureConfig(t, 'finally')
+  await runFixture(t, 'finally')
 })
 
 test('build.lifecycle empty', async t => {
-  await runFixtureConfig(t, 'lifecycle_empty')
+  await runFixture(t, 'lifecycle_empty')
 })
 
 test('plugins[*].type', async t => {
-  await runFixtureConfig(t, 'type')
+  await runFixture(t, 'type')
 })
 
 test('plugins[*].config', async t => {
-  await runFixtureConfig(t, 'config')
+  await runFixture(t, 'config')
 })

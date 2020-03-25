@@ -1,6 +1,22 @@
+const { getBinPath } = require('get-bin-path')
+
 // Tests require the full monorepo to be present at the moment
 // TODO: split tests utility into its own package
-const { runFixtureConfig, FIXTURES_DIR, getJsonOpt, escapeExecaOpt } = require('../../../build/tests/helpers/main')
-const { removeDir } = require('../../../build/tests/helpers/dir')
+const { runFixtureCommon, FIXTURES_DIR, getJsonOpt, escapeExecaOpt } = require('../../../build/tests/helpers/common')
 
-module.exports = { runFixtureConfig, FIXTURES_DIR, removeDir, getJsonOpt, escapeExecaOpt }
+const ROOT_DIR = `${__dirname}/../..`
+
+const runFixture = async function(t, fixtureName, { env, ...opts } = {}) {
+  return runFixtureCommon(t, fixtureName, {
+    ...opts,
+    binaryPath: await BINARY_PATH,
+    env: {
+      // Make snapshot consistent regardless of the actual current git branch
+      BRANCH: 'branch',
+      ...env,
+    },
+  })
+}
+const BINARY_PATH = getBinPath({ cwd: ROOT_DIR })
+
+module.exports = { runFixture, FIXTURES_DIR, getJsonOpt, escapeExecaOpt }
