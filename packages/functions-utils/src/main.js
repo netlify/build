@@ -9,30 +9,34 @@ const pStat = promisify(stat)
 
 // Add a Netlify Function file to the `functions` directory so it is processed
 // by `@netlify/plugin-functions-core`
-const functionsUtils = function({ constants: { FUNCTIONS_SRC }, failBuild }) {
-  return { add: add.bind(null, FUNCTIONS_SRC, failBuild) }
-}
-
-const add = async function(dist, src, failBuild) {
+const add = async function(src, dist, { fail = defaultFail } = {}) {
   if (src === undefined) {
-    failBuild('No function directory was specified')
+    return fail('No function source directory was specified')
   }
 
   if (!(await pathExists(src))) {
-    failBuild(`No function file or directory found at "${src}"`)
+    return fail(`No function file or directory found at "${src}"`)
   }
 
-  const functionsDist = `${dist}/${basename(src)}`
+  if (dist === undefined) {
+    return fail('No function destination directory was specified')
+  }
+
+  const srcBasename = basename(src)
+  const functionsDist = `${dist}/${srcBasename}`
   if (await pathExists(functionsDist)) {
-    failBuild(`Function file or directory already exists at "${functionsDist}"`)
+    return fail(`Function file or directory already exists at "${functionsDist}"`)
   }
 
-  const srcGlob = await getSrcGlob(src)
+  const srcGlob = await getSrcGlob(src, srcBasename)
   await cpy(srcGlob, dist, { cwd: dirname(src), parents: true, overwrite: false })
 }
 
-const getSrcGlob = async function(src) {
-  const srcBasename = basename(src)
+const defaultFail = function(message) {
+  throw new Error(message)
+}
+
+const getSrcGlob = async function(src, srcBasename) {
   const stat = await pStat(src)
 
   if (stat.isDirectory()) {
@@ -42,4 +46,4 @@ const getSrcGlob = async function(src) {
   return srcBasename
 }
 
-module.exports = functionsUtils
+module.exports = { add }

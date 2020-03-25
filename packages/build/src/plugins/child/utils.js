@@ -14,18 +14,17 @@ const startUtils = async function(buildDir) {
 }
 
 // Retrieve the `utils` argument.
-const getUtils = function({ utilsData: { git }, constants }) {
+const getUtils = function({ utilsData: { git }, constants: { FUNCTIONS_SRC } }) {
   const buildUtils = { failBuild, failPlugin, cancelBuild }
   const gitA = gitUtils.load(git)
-  // eslint-disable-next-line no-unused-vars
-  const functions = functionsUtils({ constants, failBuild })
+  const add = src => functionsUtils.add(src, FUNCTIONS_SRC, { fail: failBuild })
+  const functions = { add }
   const utils = {
     build: buildUtils,
     git: gitA,
     cache: cacheUtils,
     run: runUtils,
-    // TODO: enable once functions-utils is stable
-    // functions,
+    functions,
   }
 
   // Older names, kept for backward compatibility. Non-enumerable.
