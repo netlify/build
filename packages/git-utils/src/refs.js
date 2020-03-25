@@ -5,7 +5,6 @@ const {
 const { git } = require('./exec')
 
 // `TEST_HEAD` is only used in unit tests
-// istanbul ignore next
 const HEAD = TEST_HEAD === undefined ? 'HEAD' : TEST_HEAD
 
 // Retrieve the `base` commit
@@ -16,17 +15,14 @@ const getBase = async function(base, cwd) {
 }
 
 const getBaseRefs = function(base) {
-  // istanbul ignore next
   if (base !== undefined) {
     return [base]
   }
 
-  // istanbul ignore else
   if (CACHED_COMMIT_REF) {
     return [CACHED_COMMIT_REF]
   }
 
-  // istanbul ignore next
   return DEFAULT_BASE
 }
 

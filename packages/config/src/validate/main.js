@@ -119,13 +119,10 @@ const validateChildProp = function({ childProp, value, nextPath, propPath, prevP
 // When `required` is `true`, property must be defined, unless its parent is
 // `undefined`. To make parent required, set its `required` to `true` as well.
 const checkRequired = function({ value, required, propPath, prevPath, example }) {
-  // istanbul ignore else
   if (!required) {
     return
   }
 
-  // Not used yet
-  // istanbul ignore next
   throwError(`Configuration property ${cyan.bold(propPath)} is required.
 ${getExample({ value, prevPath, example })}`)
 }

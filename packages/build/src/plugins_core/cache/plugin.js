@@ -26,7 +26,6 @@ const saveCache = async function(path, digests, cache) {
 
   const success = await cache.save(path, { move: isNetlifyCI(), digests })
 
-  // istanbul ignore else
   if (success) {
     logCacheDir(path)
   }
