@@ -135,7 +135,7 @@ const getLoadedPlugin = function({ package, core, packageJson: { version } }) {
 const logCommandsStart = function(commandsCount) {
   log(`${EMPTY_LINE}
 ${greenBright.bold(`${HEADING_PREFIX} Running Netlify Build Lifecycle`)}
-${SUBTEXT_PADDING}Found ${commandsCount} commands. Lets do this!`)
+${SUBTEXT_PADDING}Found ${commandsCount} commands. Let's do this!`)
 }
 
 const logDryRunStart = function(eventWidth, commandsCount) {
