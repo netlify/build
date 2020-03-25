@@ -1,22 +1,35 @@
 const { resolve } = require('path')
 
-// Make configuration paths relative to `buildDir`
-const handleFiles = function({ build, ...config }, buildDir) {
-  const buildA = PROP_NAMES.reduce((build, propName) => normalizePath(build, propName, buildDir), build)
+// Make configuration paths relative to `buildDir` and converts them to
+// absolute paths
+const handleFiles = function({ config: { build, ...config }, buildDir, repositoryRoot, baseRelDir }) {
+  const buildA = PROP_NAMES.reduce(
+    (build, propName) => normalizePath({ build, propName, buildDir, repositoryRoot, baseRelDir }),
+    build,
+  )
   return { ...config, build: buildA }
 }
 
-const PROP_NAMES = ['publish', 'functions']
+// All file paths in the configuration file
+const PROP_NAMES = ['base', 'publish', 'functions']
 
-const normalizePath = function(build, propName, buildDir) {
+const normalizePath = function({ build, propName, buildDir, repositoryRoot, baseRelDir }) {
   const path = build[propName]
 
   if (path === undefined) {
     return build
   }
 
-  const pathA = resolve(buildDir, path)
-  return { ...build, [propName]: pathA }
+  // `build.base` itself is never relative to `buildDir` since it is contained
+  // in it
+  const pathBase = baseRelDir && propName !== 'base' ? buildDir : repositoryRoot
+  const pathA = path.replace(LEADING_SLASH_REGEXP, '')
+  const pathB = resolve(pathBase, pathA)
+  return { ...build, [propName]: pathB }
 }
+
+// We allow paths in configuration file to start with /
+// In that case, those are actually relative paths not absolute.
+const LEADING_SLASH_REGEXP = /^\/+/
 
 module.exports = { handleFiles }
