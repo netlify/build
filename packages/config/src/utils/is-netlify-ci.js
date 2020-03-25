@@ -1,10 +1,8 @@
-const {
-  env: { NETLIFY },
-} = require('process')
+const { env } = require('process')
 
 // Check if inside Netlify Build CI
 const isNetlifyCI = function() {
-  return Boolean(NETLIFY)
+  return Boolean(env.NETLIFY)
 }
 
 module.exports = isNetlifyCI
