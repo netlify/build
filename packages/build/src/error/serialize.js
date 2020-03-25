@@ -1,10 +1,10 @@
 const { inspect } = require('util')
 
 const { redBright } = require('chalk')
-const omit = require('omit.js')
 
 const { EMPTY_LINE, HEADING_PREFIX } = require('../log/constants')
 const { indent } = require('../log/serialize')
+const { omit } = require('../utils/omit')
 
 const { getErrorInfo, INFO_SYM } = require('./info')
 const { getTypeInfo } = require('./type')

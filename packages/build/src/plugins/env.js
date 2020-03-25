@@ -1,7 +1,6 @@
-const omit = require('omit.js')
-
 const isNetlifyCI = require('../utils/is-netlify-ci')
 const { removeFalsy } = require('../utils/remove_falsy')
+const { omit } = require('../utils/omit')
 
 const { getGitEnv } = require('./git')
 

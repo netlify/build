@@ -1,7 +1,7 @@
 const isPlainObj = require('is-plain-obj')
-const omit = require('omit.js')
 
 const { EVENTS, LEGACY_EVENTS, normalizeEventHandler } = require('../normalize/events')
+const { omit } = require('../utils/omit')
 
 const { isString, validProperties, deprecatedProperties, insideRootCheck, removeParentDots } = require('./helpers')
 const { addContextValidations } = require('./context')

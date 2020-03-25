@@ -6,12 +6,12 @@ const {
 
 const stringWidth = require('string-width')
 const { greenBright, cyanBright, redBright, yellowBright, bold, white } = require('chalk')
-const omit = require('omit.js')
 
 const { version } = require('../../package.json')
 const { serializeError } = require('../error/serialize')
 const isNetlifyCI = require('../utils/is-netlify-ci')
 const { serializeList } = require('../utils/list')
+const { omit } = require('../utils/omit')
 
 const { log } = require('./logger')
 const { serialize, SUBTEXT_PADDING, indent } = require('./serialize')
