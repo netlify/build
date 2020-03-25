@@ -8,6 +8,8 @@ Each integration test has the following steps:
 2. Run the `netlify-build` CLI command on that fixture directory
 3. Snapshot the output
 
+Everything below also applies to `netlify-config` which follows the same pattern but using its own CLI command.
+
 ## Snapshot testing
 
 Snapshot testing is a recent alternative to assertion testing. We use
@@ -42,7 +44,7 @@ test('test title', async t => {
 `runFixture()` calls:
 
 ```
-netlify-build --config ./fixtures/fixture_name/netlify.yml
+netlify-build --repositoryRoot ./fixtures/fixture_name
 ```
 
 Then snapshots the output.
