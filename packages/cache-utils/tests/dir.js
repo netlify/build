@@ -25,7 +25,7 @@ test.serial('Should allow not changing the cache directory', async t => {
 
 // Need to be serial since we change the environment variables
 test.serial('Should allow not changing the cache directory in CI', async t => {
-  const [cacheDir, srcFile] = await Promise.all([createTmpDir(), createTmpFile()])
+  const [cacheDir, [srcFile, srcDir]] = await Promise.all([createTmpDir(), createTmpFile()])
   process.env.NETLIFY_BUILD_TEST = '1'
   process.env.NETLIFY = 'true'
   try {
@@ -36,6 +36,6 @@ test.serial('Should allow not changing the cache directory in CI', async t => {
   } finally {
     delete process.env.NETLIFY
     delete process.env.NETLIFY_BUILD_TEST
-    await removeFiles([cacheDir, srcFile])
+    await removeFiles([cacheDir, srcDir])
   }
 })

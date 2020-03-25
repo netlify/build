@@ -10,26 +10,30 @@ test('Should expose several methods', async t => {
 })
 
 test('Should cache and restore one file', async t => {
-  const [cacheDir, srcFile] = await Promise.all([createTmpDir(), createTmpFile()])
+  const [cacheDir, [srcFile, srcDir]] = await Promise.all([createTmpDir(), createTmpFile()])
   try {
     t.true(await cacheUtils.save(srcFile, { cacheDir }))
     await removeFiles(srcFile)
     t.true(await cacheUtils.restore(srcFile, { cacheDir }))
     t.true(await pathExists(srcFile))
   } finally {
-    await removeFiles([cacheDir, srcFile])
+    await removeFiles([cacheDir, srcDir])
   }
 })
 
 test('Should cache and restore several files', async t => {
-  const [cacheDir, srcFile, otherSrcFile] = await Promise.all([createTmpDir(), createTmpFile(), createTmpFile()])
+  const [cacheDir, [srcFile, srcDir], [otherSrcFile, otherSrcDir]] = await Promise.all([
+    createTmpDir(),
+    createTmpFile(),
+    createTmpFile(),
+  ])
   try {
     t.true(await cacheUtils.save([srcFile, otherSrcFile], { cacheDir }))
     await removeFiles(srcFile)
     t.true(await cacheUtils.restore([srcFile, otherSrcFile], { cacheDir }))
     t.deepEqual(await Promise.all([pathExists(srcFile), pathExists(otherSrcFile)]), [true, true])
   } finally {
-    await removeFiles([cacheDir, srcFile, otherSrcFile])
+    await removeFiles([cacheDir, srcDir, otherSrcDir])
   }
 })
 
@@ -48,7 +52,7 @@ test('Should cache and restore one directory', async t => {
 })
 
 test('Should keep file contents when caching files', async t => {
-  const [cacheDir, srcFile] = await Promise.all([createTmpDir(), createTmpFile()])
+  const [cacheDir, [srcFile, srcDir]] = await Promise.all([createTmpDir(), createTmpFile()])
   try {
     await pWriteFile(srcFile, 'test')
     t.true(await cacheUtils.save(srcFile, { cacheDir }))
@@ -57,12 +61,12 @@ test('Should keep file contents when caching files', async t => {
     t.true(await pathExists(srcFile))
     t.is(await pReadFile(srcFile, 'utf8'), 'test')
   } finally {
-    await removeFiles([cacheDir, srcFile])
+    await removeFiles([cacheDir, srcDir])
   }
 })
 
 test('Should overwrite files on restore', async t => {
-  const [cacheDir, srcFile] = await Promise.all([createTmpDir(), createTmpFile()])
+  const [cacheDir, [srcFile, srcDir]] = await Promise.all([createTmpDir(), createTmpFile()])
   try {
     await pWriteFile(srcFile, 'test')
     t.true(await cacheUtils.save(srcFile, { cacheDir }))
@@ -71,7 +75,7 @@ test('Should overwrite files on restore', async t => {
     t.true(await pathExists(srcFile))
     t.is(await pReadFile(srcFile, 'utf8'), 'test')
   } finally {
-    await removeFiles([cacheDir, srcFile])
+    await removeFiles([cacheDir, srcDir])
   }
 })
 

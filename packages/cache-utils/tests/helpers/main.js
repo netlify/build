@@ -1,21 +1,25 @@
 const { writeFile, readFile } = require('fs')
 const { promisify } = require('util')
+const { join, basename } = require('path')
 
 const del = require('del')
-const { file: getTmpFile, dir: getTmpDir } = require('tmp-promise')
+const { dir: getTmpDir, tmpName } = require('tmp-promise')
 
 const pSetTimeout = promisify(setTimeout)
 const pWriteFile = promisify(writeFile)
 const pReadFile = promisify(readFile)
 
-const createTmpDir = async function() {
-  const { path } = await getTmpDir({ prefix: PREFIX })
+const createTmpDir = async function(opts) {
+  const { path } = await getTmpDir({ ...opts, prefix: PREFIX })
   return path
 }
 
 const createTmpFile = async function(opts) {
-  const { path } = await getTmpFile({ ...opts, prefix: PREFIX })
-  return path
+  const tmpDir = await createTmpDir(opts)
+  const filename = basename(await tmpName())
+  const tmpFile = join(tmpDir, filename)
+  await pWriteFile(tmpFile, '')
+  return [tmpFile, tmpDir]
 }
 
 const PREFIX = 'test-cache-utils-'
