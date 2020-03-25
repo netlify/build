@@ -1,3 +1,5 @@
 build:
+  functions: functions
+  publish: publish
   lifecycle:
     onBuild: echo onBuildBase

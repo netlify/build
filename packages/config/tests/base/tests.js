@@ -8,7 +8,16 @@ test('Base from defaultConfig', async t => {
 })
 
 test('Base from configuration file property', async t => {
-  await runFixtureConfig(t, 'prop_config')
+  const { stdout } = await runFixtureConfig(t, 'prop_config')
+  const {
+    buildDir,
+    config: {
+      build: { base, functions, publish },
+    },
+  } = JSON.parse(stdout)
+  t.is(base, buildDir)
+  t.true(functions.startsWith(buildDir))
+  t.true(publish.startsWith(buildDir))
 })
 
 test('Base logic is not recursive', async t => {
@@ -16,5 +25,14 @@ test('Base logic is not recursive', async t => {
 })
 
 test('BaseRelDir feature flag', async t => {
-  await runFixtureConfig(t, 'prop_config', { flags: `--no-baseRelDir` })
+  const { stdout } = await runFixtureConfig(t, 'prop_config', { flags: `--no-baseRelDir` })
+  const {
+    buildDir,
+    config: {
+      build: { base, functions, publish },
+    },
+  } = JSON.parse(stdout)
+  t.is(base, buildDir)
+  t.false(functions.startsWith(buildDir))
+  t.false(publish.startsWith(buildDir))
 })

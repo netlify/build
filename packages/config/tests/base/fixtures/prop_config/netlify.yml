@@ -1,5 +1,7 @@
 build:
   base: base
+  functions: functions
+  publish: publish
   lifecycle:
     onInit: echo onInit
     onBuild: echo onBuild

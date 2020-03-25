@@ -45,7 +45,7 @@ const resolveConfig = async function({ cachedConfig, ...opts } = {}) {
   })
 
   const buildDir = getBuildDir(repositoryRoot, config)
-  const configA = handleFiles(config, buildDir)
+  const configA = handleFiles({ config, buildDir, repositoryRoot, baseRelDir })
 
   return { configPath, buildDir, config: configA, context, branch }
 }
