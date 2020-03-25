@@ -3,6 +3,7 @@ const {
   env,
   env: { CONTEXT },
 } = require('process')
+const { relative } = require('path')
 
 const pathExists = require('path-exists')
 
@@ -16,10 +17,10 @@ const { getBranch } = require('./branch')
 // Normalize options and assign default values
 const normalizeOpts = async function(opts) {
   const optsA = removeFalsy(opts)
-  const optsB = { ...DEFAULT_CONFIG_OPTS, ...DEFAULT_OPTS, ...optsA }
+  const optsB = { ...DEFAULT_OPTS, ...optsA }
 
   const repositoryRoot = await getRepositoryRoot(optsB)
-  const optsC = { ...optsB, repositoryRoot }
+  const optsC = { ...DEFAULT_CONFIG_OPTS(repositoryRoot), ...optsB, repositoryRoot }
 
   const branch = await getBranch(optsC)
   const optsD = { ...optsC, branch }
@@ -45,10 +46,16 @@ const DEFAULT_OPTS = {
 const DEFAULT_CONFIG_OPTS =
   // Ensure we are not in a local build or running unit tests
   isNetlifyCI() && !env.NETLIFY_BUILD_TEST
-    ? {
-        defaultConfig: JSON.stringify({ build: { base: getCwd() } }),
+    ? repositoryRoot => {
+        const cwd = getCwd()
+        if (repositoryRoot === cwd) {
+          return {}
+        }
+
+        const base = relative(repositoryRoot, cwd)
+        return { defaultConfig: JSON.stringify({ build: { base } }) }
       }
-    : {}
+    : () => ({})
 
 // Verify that options point to existing paths
 const checkPaths = async function(opts) {
