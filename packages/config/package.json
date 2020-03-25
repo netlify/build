@@ -32,7 +32,6 @@
     "is-plain-obj": "^2.1.0",
     "js-yaml": "^3.13.1",
     "map-obj": "^4.1.0",
-    "omit.js": "^1.0.2",
     "p-filter": "^2.1.0",
     "path-exists": "^4.0.0",
     "toml": "^3.0.0",
