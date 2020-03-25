@@ -1,21 +1,15 @@
-const {
-  env,
-  env: { TEST_HEAD },
-} = require('process')
+const { env } = require('process')
 
 const { git } = require('./exec')
 
 // Retrieve the `head` commit
-const getHead = async function(head = HEAD, cwd) {
+const getHead = async function(head = 'HEAD', cwd) {
   const result = await checkRef(head, cwd)
   if (result.error !== undefined) {
     throwError('head', result)
   }
   return result.ref
 }
-
-// `TEST_HEAD` is only used in unit tests
-const HEAD = TEST_HEAD === undefined ? 'HEAD' : TEST_HEAD
 
 // Retrieve the `base` commit
 const getBase = async function(base, head, cwd) {
