@@ -26,7 +26,7 @@
     "@netlify/cache-utils": "^0.2.3",
     "@netlify/config": "^0.4.11",
     "@netlify/functions-utils": "^0.2.2",
-    "@netlify/git-utils": "^0.2.0",
+    "@netlify/git-utils": "^0.2.1",
     "@netlify/run-utils": "^0.1.0",
     "@netlify/zip-it-and-ship-it": "^0.4.0-9",
     "analytics": "0.3.1",
