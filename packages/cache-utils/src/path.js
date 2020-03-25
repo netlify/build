@@ -5,12 +5,12 @@ const { cwd } = require('process')
 const { getCacheDir } = require('./dir')
 
 // Find the paths of the file before/after caching
-const parsePath = async function(path) {
-  const cacheDir = await getCacheDir()
+const parsePath = async function(path, cacheDir) {
+  const cacheDirA = await getCacheDir(cacheDir)
 
   const { name, base, relPath } = findBase(path)
   const srcPath = resolve(base, relPath)
-  const cachePath = resolve(cacheDir, name, relPath)
+  const cachePath = resolve(cacheDirA, name, relPath)
   return { srcPath, cachePath, base }
 }
 
