@@ -1,5 +1,6 @@
 const {
-  env: { CACHED_COMMIT_REF, TEST_HEAD },
+  env,
+  env: { TEST_HEAD },
 } = require('process')
 
 const { git } = require('./exec')
@@ -28,8 +29,8 @@ const getBaseRefs = function(base, head) {
     return [base]
   }
 
-  if (CACHED_COMMIT_REF) {
-    return [CACHED_COMMIT_REF]
+  if (env.CACHED_COMMIT_REF) {
+    return [env.CACHED_COMMIT_REF]
   }
 
   // Some git repositories are missing `master` branches, so we also try HEAD^.
