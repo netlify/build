@@ -47,27 +47,18 @@ const addMethods = function(properties) {
 // we don't want to report any errors since the user might not use the utility.
 // However we still want to report errors when the user does use the utility.
 // We achieve this by using a Proxy.
-const getFakeGitUtils = function({ error }) {
-  return new Proxy(
-    // We define those so that `Object.keys()` and similar methods still work
-    {
-      modifiedFiles: [],
-      createdFiles: [],
-      deletedFiles: [],
-      commits: [],
-      linesOfCode: 0,
-      fileMatch() {
-        return { modified: [], created: [], deleted: [], edited: [] }
-      },
+const getFakeGitUtils = function() {
+  // We define those so that `Object.keys()` and similar methods still work
+  return {
+    modifiedFiles: [],
+    createdFiles: [],
+    deletedFiles: [],
+    commits: [],
+    linesOfCode: 0,
+    fileMatch() {
+      return { modified: [], created: [], deleted: [], edited: [] }
     },
-    // Intercept any `git.*` referencing and throw the original initialization error instead.
-    {
-      get() {
-        // Keep stack trace of both original error and `git.*` referencing
-        throw new Error(error)
-      },
-    },
-  )
+  }
 }
 
 module.exports = getGitUtils
