@@ -8,14 +8,14 @@ const { pWriteFile, createTmpDir, createTmpFile, removeFiles } = require('./help
 const cacheUtils = require('..')
 
 test('Should not save identically cached file', async t => {
-  const [cacheDir, srcFile] = await Promise.all([createTmpDir(), createTmpFile()])
+  const [cacheDir, [srcFile, srcDir]] = await Promise.all([createTmpDir(), createTmpFile()])
   try {
     t.true(await cacheUtils.save(srcFile, { cacheDir }))
     t.false(await cacheUtils.save(srcFile, { cacheDir }))
     await pWriteFile(srcFile, 'test')
     t.true(await cacheUtils.save(srcFile, { cacheDir }))
   } finally {
-    await removeFiles([cacheDir, srcFile])
+    await removeFiles([cacheDir, srcDir])
   }
 })
 

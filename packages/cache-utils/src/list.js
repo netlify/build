@@ -14,6 +14,7 @@ const list = async function({ cacheDir } = {}) {
   return filesA
 }
 
+// TODO: the returned paths are missing the Windows drive
 const listBase = async function({ name, base }, cacheDir) {
   const files = await readdirp.promise(`${cacheDir}/${name}`, { fileFilter })
   const filesA = files.map(({ path }) => join(base, path))
