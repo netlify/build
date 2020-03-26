@@ -10,16 +10,6 @@ test('Empty configuration', async t => {
   await runFixture(t, 'empty')
 })
 
-test('Can define configuration as environment variables', async t => {
-  await runFixture(t, 'empty', {
-    env: {
-      NETLIFY_CONFIG_BUILD_LIFECYCLE_ONBUILD: 'echo onBuild',
-      NETLIFY_CONFIG_BUILD_LIFECYCLE_ONPOSTBUILD: 'echo onPostBuild',
-      NETLIFY_CONFIG_BUILD_PUBLISH: 'publish',
-    },
-  })
-})
-
 test('No --config but none found', async t => {
   await runFixture(t, 'none', { copyRoot: {} })
 })
