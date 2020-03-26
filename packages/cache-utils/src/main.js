@@ -11,13 +11,13 @@ const { list } = require('./list')
 
 // Cache a file
 const saveOne = async function(path, { move = DEFAULT_MOVE, ttl = DEFAULT_TTL, digests = [], cacheDir } = {}) {
-  const { srcPath, cachePath, base } = await parsePath(path, cacheDir)
+  const { srcPath, cachePath } = await parsePath(path, cacheDir)
 
   if (!(await pathExists(srcPath))) {
     return false
   }
 
-  const { manifestInfo, identical } = await getManifestInfo({ srcPath, cachePath, move, ttl, digests, base })
+  const { manifestInfo, identical } = await getManifestInfo({ cachePath, move, ttl, digests })
   if (identical) {
     return false
   }
