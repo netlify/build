@@ -24,7 +24,7 @@
   "license": "MIT",
   "dependencies": {
     "@netlify/cache-utils": "^0.2.4",
-    "@netlify/config": "^0.4.12",
+    "@netlify/config": "^0.5.0",
     "@netlify/functions-utils": "^0.2.3",
     "@netlify/git-utils": "^0.2.2",
     "@netlify/run-utils": "^0.1.1",
