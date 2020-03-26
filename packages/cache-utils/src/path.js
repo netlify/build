@@ -9,9 +9,9 @@ const parsePath = async function(path, cacheDir) {
   const cacheDirA = await getCacheDir(cacheDir)
 
   const srcPath = resolve(path)
-  const { name, base, relPath } = findBase(srcPath)
+  const { name, relPath } = findBase(srcPath)
   const cachePath = join(cacheDirA, name, relPath)
-  return { srcPath, cachePath, base }
+  return { srcPath, cachePath }
 }
 
 // The cached path is the path relative to the base which can be either the
@@ -45,7 +45,7 @@ const parseBase = function(name, base, srcPath) {
   }
 
   const relPath = srcPath.replace(base, '')
-  return { name, base, relPath }
+  return { name, relPath }
 }
 
 const BASES = [

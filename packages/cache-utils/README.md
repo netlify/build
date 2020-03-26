@@ -21,8 +21,6 @@ module.exports = {
   // Cache file/directory for future builds.
   // Does not do anything if:
   //  - the file/directory does not exist locally
-  //  - the file/directory is already cached and its contents has not changed
-  //    If this is a directory, this includes children's contents
   async onPostBuild({ utils }) {
     await utils.cache.save('./path/to/file')
   }
@@ -53,7 +51,7 @@ _Returns_: `Promise<Boolean>`
 
 Cache a file/directory.
 
-Skipped if the file/directory is already cached and its contents has not changed.
+Skipped if the file/directory does not exist locally.
 
 Returns `true` if the file/directory was cached, `false` otherwise.
 
@@ -109,10 +107,8 @@ Paths to lock files or manifest files that can be used to check if the directory
 speeds up caching.
 
 ```js
-// Computing whether a big directory of files has changed or not can be slow.
-// If that directory has a lockfile or a manifest file that can be used to
-// check if its contents has changed, you can pass it to the `digests` option.
-// This will speed up cache saving.
+// If that directory has a lockfile or a manifest file, use it to check if its
+// contents has changed. This will speed up cache saving.
 // For example, `package-lock.json` and `yarn.lock` are digest files for the
 // `node_modules` directory.
 module.exports = {
