@@ -59,6 +59,9 @@ This is a monorepo. Below are a list of packages included.
 
 See our [testing documentation](packages/build/tests/README.md) to learn about our integration tests setup.
 
+To test a beta release of `@netlify/build` in a site on Netlify, set the environment variable
+`NETLIFY_BUILD_CLI_VERSION` to the NPM tag you wish to use.
+
 ## Requirements
 
 Linting is performed with ESLint using the [following configuration](.eslintrc.json).
