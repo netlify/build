@@ -40,7 +40,7 @@ npm run format
 
 Alternatively you can setup your IDE to integrate with Prettier and ESLint for JavaScript and Markdown files.
 
-This is a monorepo. Below are a list of packages [here](packages).
+This is a monorepo. You can find the included packages in the [packages](packages) directory.
 
 ## Testing
 
