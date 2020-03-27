@@ -10,24 +10,6 @@ const LIFECYCLE_PATH = path.join(ROOT_DIR, 'packages/config/src/normalize/events
 
 const config = {
   transforms: {
-    // https://github.com/moleculerjs/moleculer-addons/blob/master/readme-generator.js#L11
-    PACKAGES() {
-      const base = path.resolve('packages')
-      const packages = fs
-        .readdirSync(path.resolve('packages'))
-        .filter(pkg => !/^\./.test(pkg))
-        .map(pkg => [pkg, fs.readFileSync(path.join(base, pkg, 'package.json'), 'utf8')])
-        .filter(([, json]) => {
-          const parsed = JSON.parse(json)
-          return parsed.private !== true
-        })
-        .map(([pkg, json]) => {
-          const { name, description } = JSON.parse(json)
-          return `- [${name}](./packages/${pkg}) ${description} [npm link](https://www.npmjs.com/package/${name}).`
-        })
-        .join('\n')
-      return packages
-    },
     CONSTANTS() {
       const fileContents = fs.readFileSync(CONSTANTS_PATH, 'utf8')
       const docBlocs = parseJsDoc(fileContents)

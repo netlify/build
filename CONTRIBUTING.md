@@ -14,12 +14,6 @@ This project was made with ❤️. The simplest way to give back is by starring 
 Everyone is welcome regardless of personal background. We enforce a [Code of conduct](CODE_OF_CONDUCT.md) in order to
 promote a positive and inclusive environment.
 
-## Update Docs
-
-Docs are updated with `markdown-magic` - run `npm run test:docs` for it.
-
-We also run this on precommit hooks with `husky`.
-
 ## Development process
 
 First fork and clone the repository. If you're not sure how to do this, please watch
@@ -37,23 +31,16 @@ Make sure everything is correctly setup with:
 npm test
 ```
 
-## Packages
+Linting and prettification is performed automatically on `git push`. However you should run them before any `git commit`
+using:
 
-This is a monorepo. Below are a list of packages included.
+```bash
+npm run format
+```
 
-<!-- AUTO-GENERATED-CONTENT:START (PACKAGES) -->
+Alternatively you can setup your IDE to integrate with Prettier and ESLint for JavaScript and Markdown files.
 
-- [@netlify/build](./packages/build) Netlify build module [npm link](https://www.npmjs.com/package/@netlify/build).
-- [@netlify/cache-utils](./packages/cache-utils) Utility for caching files in Netlify Build
-  [npm link](https://www.npmjs.com/package/@netlify/cache-utils).
-- [@netlify/config](./packages/config) Netlify config module [npm link](https://www.npmjs.com/package/@netlify/config).
-- [@netlify/functions-utils](./packages/functions-utils) Utility for adding Functions files in Netlify Build
-  [npm link](https://www.npmjs.com/package/@netlify/functions-utils).
-- [@netlify/git-utils](./packages/git-utils) Utility for dealing with modified, created, deleted files since a git
-  commit [npm link](https://www.npmjs.com/package/@netlify/git-utils).
-- [@netlify/run-utils](./packages/run-utils) Utility for running commands inside Netlify Build
-  [npm link](https://www.npmjs.com/package/@netlify/run-utils).
-  <!-- AUTO-GENERATED-CONTENT:END (PACKAGES) -->
+This is a monorepo. You can find the included packages in the [packages](packages) directory.
 
 ## Testing
 
@@ -62,10 +49,4 @@ See our [testing documentation](packages/build/tests/README.md) to learn about o
 To test a beta release of `@netlify/build` in a site on Netlify, set the environment variable
 `NETLIFY_BUILD_CLI_VERSION` to the NPM tag you wish to use.
 
-## Requirements
-
-Linting is performed with ESLint using the [following configuration](.eslintrc.json).
-
-Prettification is performed with Prettier using the [following configuration](.prettierrc.json).
-
-After submitting the pull request, please make sure the Continuous Integration checks are passing.
+After submitting the pull request, please make sure the Continuous Integration checks (GitHub actions) are passing.
