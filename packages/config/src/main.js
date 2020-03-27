@@ -42,7 +42,7 @@ const resolveConfig = async function({ cachedConfig, ...opts } = {}) {
     baseRelDir,
   })
 
-  const { config: configA, buildDir } = handleFiles({ config, repositoryRoot, baseRelDir })
+  const { config: configA, buildDir } = await handleFiles({ config, repositoryRoot, baseRelDir })
 
   return { configPath, buildDir, config: configA, context, branch }
 }
