@@ -3,8 +3,9 @@
 [![Coverage Status](https://codecov.io/gh/netlify/build/branch/master/graph/badge.svg)](https://codecov.io/gh/netlify/build)
 [![Build](https://github.com/netlify/build/workflows/Build/badge.svg)](https://github.com/netlify/build/actions)
 
-
-Netlify Build is a new, pluggable tool for running builds locally and in Netlify CI. It introduces Build Plugins, which are **now in public beta.** Learn how to enable your site to use Netlify Build and Build Plugins in the [Netlify docs](https://docs.netlify.com/configure-builds/plugins).
+Netlify Build is a new, pluggable tool for running builds locally and in Netlify CI. It introduces Build Plugins, which
+are **now in public beta.** Learn how to enable your site to use Netlify Build and Build Plugins in the
+[Netlify docs](https://docs.netlify.com/configure-builds/plugins).
 
 <!-- AUTO-GENERATED-CONTENT:START (TOC:collapse=true&collapseText=Expand Table of Contents) -->
 <details>
@@ -13,15 +14,15 @@ Netlify Build is a new, pluggable tool for running builds locally and in Netlify
 - [What are Build Plugins?](#what-are-build-plugins)
 - [What can plugins do?](#what-can-plugins-do)
 - [Creating plugins](#creating-plugins)
-  * [Available event handlers](#available-event-handlers)
-  * [Anatomy of a plugin](#anatomy-of-a-plugin)
-  * [Using a local plugin](#using-a-local-plugin)
-  * [Adding inputs to plugins](#adding-inputs-to-plugins)
-  * [Validating plugin inputs](#validating-plugin-inputs)
-  * [Plugin constants](#plugin-constants)
-  * [Error reporting](#error-reporting)
+  - [Available event handlers](#available-event-handlers)
+  - [Anatomy of a plugin](#anatomy-of-a-plugin)
+  - [Using a local plugin](#using-a-local-plugin)
+  - [Adding inputs to plugins](#adding-inputs-to-plugins)
+  - [Validating plugin inputs](#validating-plugin-inputs)
+  - [Plugin constants](#plugin-constants)
+  - [Error reporting](#error-reporting)
 - [Publishing a plugin](#publishing-a-plugin)
-  * [Sharing with the community](#sharing-with-the-community)
+  - [Sharing with the community](#sharing-with-the-community)
 - [Contributors](#contributors)
 
 </details>
@@ -29,15 +30,19 @@ Netlify Build is a new, pluggable tool for running builds locally and in Netlify
 
 ## What are Build Plugins?
 
-Netlify Build Plugins extend the functionality of the Netlify Build process. You can install plugins made by others, or write your own. You can save them locally in your repository, or share them with others via npm.
+Netlify Build Plugins extend the functionality of the Netlify Build process. You can install plugins made by others, or
+write your own. You can save them locally in your repository, or share them with others via npm.
 
-For more information on installing, managing, and running published Build Plugins on your Netlify site, visit the [Netlify docs](https://docs.netlify.com/configure-builds/plugins).
+For more information on installing, managing, and running published Build Plugins on your Netlify site, visit the
+[Netlify docs](https://docs.netlify.com/configure-builds/plugins).
 
 The content in this repository focuses on how to build your own plugins.
 
 ## What can plugins do?
 
-Quite a lot! Community members have already created [several plugins](https://github.com/netlify/plugins#community-plugins) to perform a variety of tasks during the build, including:
+Quite a lot! Community members have already created
+[several plugins](https://github.com/netlify/plugins#community-plugins) to perform a variety of tasks during the build,
+including:
 
 - controlling how files are cached between builds
 - checking for broken links in a site after building
@@ -55,15 +60,17 @@ after your site build has completed.
 ### Available event handlers
 
 <!-- AUTO-GENERATED-CONTENT:START (LIFECYCLE_TABLE:noAnchors=true) -->
-| Event          | Description |
-|:------|:-------|
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **onInit** ‏‏‎  ‏‏‎  ‏‏‎  | Runs before anything else |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **onPreBuild** ‏‏‎  ‏‏‎  ‏‏‎  | Before build commands are executed |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **onBuild** ‏‏‎  ‏‏‎  ‏‏‎  | Build commands are executed |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **onPostBuild** ‏‏‎  ‏‏‎  ‏‏‎  | After Build commands are executed |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **onSuccess** ‏‏‎  ‏‏‎  ‏‏‎  | Runs on build success |
-| ⇩ ‏‏‎  ‏‏‎  ‏‏‎ **onError** ‏‏‎  ‏‏‎  ‏‏‎  | Runs on build error |
-| 🎉 ‏‏‎ **onEnd** ‏‏‎  ‏‏‎  ‏‏‎  | Runs on build error or success |
+
+| Event                                     | Description                        |
+| :---------------------------------------- | :--------------------------------- |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **onInit** ‏‏‎ ‏‏‎ ‏‏‎      | Runs before anything else          |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **onPreBuild** ‏‏‎ ‏‏‎ ‏‏‎  | Before build commands are executed |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **onBuild** ‏‏‎ ‏‏‎ ‏‏‎     | Build commands are executed        |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **onPostBuild** ‏‏‎ ‏‏‎ ‏‏‎ | After Build commands are executed  |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **onSuccess** ‏‏‎ ‏‏‎ ‏‏‎   | Runs on build success              |
+| ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **onError** ‏‏‎ ‏‏‎ ‏‏‎     | Runs on build error                |
+| 🎉 ‏‏‎ **onEnd** ‏‏‎ ‏‏‎ ‏‏‎              | Runs on build error or success     |
+
 <!-- AUTO-GENERATED-CONTENT:END (LIFECYCLE_TABLE) -->
 
 ### Anatomy of a plugin
@@ -90,9 +97,11 @@ A plugin consists of two files:
   }
   ```
 
-The plugin defined above will log out `Hello world from onPreBuild event!` right before the site's build commands are run.
+The plugin defined above will log out `Hello world from onPreBuild event!` right before the site's build commands are
+run.
 
-Save the `index.js` file locally to a `./plugins/netlify-plugin-hello-world`. This will allow us to use the plugin in the next step.
+Save the `index.js` file locally to a `./plugins/netlify-plugin-hello-world`. This will allow us to use the plugin in
+the next step.
 
 ### Using a local plugin
 
@@ -128,7 +137,8 @@ This will execute our `onPreBuild` function and the `npm run build` command.
 
 ### Adding inputs to plugins
 
-If your plugin requires additional values from the user to do things, you can specify these requirements in an `inputs` array in the plugin's `manifest.yml` file:
+If your plugin requires additional values from the user to do things, you can specify these requirements in an `inputs`
+array in the plugin's `manifest.yml` file:
 
 ```yml
 # manifest.yml
@@ -139,7 +149,8 @@ inputs:
   - name: fizz
 ```
 
-When you or a user install the plugin, the input names are used as keys with user-supplied values in the site `netlify.toml` file:
+When you or a user install the plugin, the input names are used as keys with user-supplied values in the site
+`netlify.toml` file:
 
 ```toml
 # netlify.toml
@@ -227,6 +238,7 @@ module.exports = {
 The `constants` key contains the following values:
 
 <!-- AUTO-GENERATED-CONTENT:START (CONSTANTS) -->
+
 - `CONFIG_PATH` Path to the Netlify configuration file
 - `PUBLISH_DIR` Directory that contains the deploy-ready HTML files and assets generated by the build
 - `FUNCTIONS_SRC` The directory where function source code lives
@@ -234,7 +246,7 @@ The `constants` key contains the following values:
 - `CACHE_DIR` Path to the Netlify build cache folder
 - `IS_LOCAL` Boolean indicating whether the build was run locally (Netlify CLI) or in the production CI
 - `SITE_ID` The Netlify Site ID
-<!-- AUTO-GENERATED-CONTENT:END -->
+  <!-- AUTO-GENERATED-CONTENT:END -->
 
 ### Error reporting
 
@@ -305,7 +317,8 @@ There is a plugins directory of community-created plugins over at https://github
 To add a plugin, add information to the
 [plugins.json file]('https://github.com/netlify/plugins/blob/master/plugins.json').
 
-The content of this file is also used to generate the [**Plugins directory**](https://docs.netlify.com/configure-builds/plugins/#explore-plugins) in the Netlify UI.
+The content of this file is also used to generate the
+[**Plugins directory**](https://docs.netlify.com/configure-builds/plugins/#explore-plugins) in the Netlify UI.
 
 ## Contributors
 
