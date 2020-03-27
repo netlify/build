@@ -28,24 +28,6 @@ const config = {
         .join('\n')
       return packages
     },
-    PLUGINS() {
-      const base = path.resolve('packages')
-      const packages = fs
-        .readdirSync(path.resolve('packages'))
-        .filter(pkg => !/^\./.test(pkg))
-        .filter(pkg => pkg.match(/netlify-plugin/))
-        .map(pkg => [pkg, fs.readFileSync(path.join(base, pkg, 'package.json'), 'utf8')])
-        .filter(([, json]) => {
-          const parsed = JSON.parse(json)
-          return parsed.private !== true
-        })
-        .map(([pkg, json]) => {
-          const { name, description } = JSON.parse(json)
-          return `- [${name}](https://github.com/netlify/build/tree/master/packages/${pkg}) ${description} [npm link](https://www.npmjs.com/package/${name}).`
-        })
-        .join('\n')
-      return packages
-    },
     CONSTANTS() {
       const fileContents = fs.readFileSync(CONSTANTS_PATH, 'utf8')
       const docBlocs = parseJsDoc(fileContents)
@@ -92,96 +74,12 @@ const config = {
       })
       return md.replace(/^\s+|\s+$/g, '')
     },
-    LIFECYCLE_DOCS() {
-      const fileContents = fs.readFileSync(LIFECYCLE_PATH, 'utf-8')
-      const docBlocs = parseJsDoc(fileContents)
-      let updatedContent = ''
-
-      docBlocs.forEach(data => {
-        const eventName = data.description.summary.match(/^`(.*)`/)
-        updatedContent += `### \`${eventName[1]}\`\n\n`
-        const cleanDesc = data.description.full.replace(/^`(.*)` - /g, '')
-        updatedContent += `${cleanDesc}\n\n`
-
-        const pluginExample = renderPluginExample(eventName[1])
-        const configExample = renderConfigExample(eventName[1])
-        updatedContent += collapse(`Using <strong>${eventName[1]}</strong> in a plugin`, `${pluginExample}`)
-        updatedContent += '\n'
-        updatedContent += collapse(`Using <strong>${eventName[1]}</strong> via Netlify config`, `${configExample}`)
-
-        /* maybe fold
-        <details>
-          <summary>Plugin example</summary>
-
-          ```js
-          const la = 'foo'
-          ```
-
-        </details>
-         */
-        updatedContent += `\n`
-      })
-      return updatedContent.replace(/^\s+|\s+$/g, '')
-    },
   },
 }
 
 /* Utils functions */
 function parseJsDoc(contents) {
   return dox.parseComments(contents, { raw: true, skipSingleStar: true })
-}
-
-function collapse(summary, content) {
-  return `
-<details>
-  <summary>${summary}</summary>
-  ${content}
-</details>
-`
-}
-
-function renderPluginExample(name) {
-  return `
-  <br/>
-
-  Below is an example plugin using the \`${name}\` event handler
-
-  \`\`\`js
-  // File my-plugin.js
-  module.exports = function myPlugin(conf) {
-    return {
-      ${name}: ({ inputs, netlifyConfig, constants, utils }) => {
-        console.log('Run custom logic during ${name} event')
-      }
-    }
-  }
-  \`\`\`
-
-  After creating the plugin, add into your [Netlify config](#netlify-configuration) file under the \`plugins\` section.
-
-  Plugins can be referenced locally or installed via npm.
-
-  \`netlify.yml\` example:
-
-  \`\`\`yml
-  plugins:
-    - package: ./path/to/my-plugin.js
-  \`\`\`
-  `
-}
-
-function renderConfigExample(name) {
-  return `
-  <br/>
-
-  Below is an example of how to use the \`${name}\` event in the Netlify config file.
-
-  \`\`\`yml
-  build:
-    lifecycle:
-      ${name}: echo "Do thing on ${name} event"
-  \`\`\`
-  `
 }
 
 const markdownFiles = [
