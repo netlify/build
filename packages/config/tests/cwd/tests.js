@@ -31,6 +31,14 @@ test('--cwd non-existing', async t => {
   await runFixture(t, '', { flags: `--cwd=/invalid --repository-root=${FIXTURES_DIR}/empty` })
 })
 
+test('--cwd points to a non-directory file', async t => {
+  await runFixture(t, '', { flags: `--cwd=${FIXTURES_DIR}/empty/netlify.yml --repository-root=${FIXTURES_DIR}/empty` })
+})
+
 test('--repositoryRoot non-existing', async t => {
   await runFixture(t, '', { flags: `--repositoryRoot=/invalid` })
+})
+
+test('--repositoryRoot points to a non-directory file', async t => {
+  await runFixture(t, '', { flags: `--repositoryRoot=${FIXTURES_DIR}/empty/netlify.yml` })
 })
