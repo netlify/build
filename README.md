@@ -7,9 +7,11 @@ Netlify Build is a new, pluggable tool for running builds locally and in Netlify
 are **now in public beta.** Learn how to enable your site to use Netlify Build and Build Plugins in the
 [Netlify docs](https://docs.netlify.com/configure-builds/plugins).
 
-<!-- AUTO-GENERATED-CONTENT:START (TOC:collapse=true&collapseText=Expand Table of Contents) -->
 <details>
 <summary>Expand Table of Contents</summary>
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 - [What are Build Plugins?](#what-are-build-plugins)
 - [What can plugins do?](#what-can-plugins-do)
@@ -25,8 +27,9 @@ are **now in public beta.** Learn how to enable your site to use Netlify Build a
   - [Sharing with the community](#sharing-with-the-community)
 - [Contributors](#contributors)
 
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 </details>
-<!-- AUTO-GENERATED-CONTENT:END -->
 
 ## What are Build Plugins?
 
