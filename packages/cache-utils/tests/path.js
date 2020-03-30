@@ -18,3 +18,11 @@ test('Should allow caching files in home directory', async t => {
     await removeFiles([cacheDir, srcDir])
   }
 })
+
+test('Should not allow caching the current directory', async t => {
+  await t.throwsAsync(cacheUtils.save('.'))
+})
+
+test('Should not allow caching a direct parent directory', async t => {
+  await t.throwsAsync(cacheUtils.save('..'))
+})

@@ -1,17 +1,48 @@
 const { homedir } = require('os')
 const { resolve, join, sep } = require('path')
-const { cwd } = require('process')
+const { cwd: getCwd } = require('process')
 
 const { getCacheDir } = require('./dir')
 
 // Find the paths of the file before/after caching
 const parsePath = async function(path, cacheDir) {
-  const cacheDirA = await getCacheDir(cacheDir)
+  const srcPath = getSrcPath(path)
+  const cachePath = await getCachePath(srcPath, cacheDir)
+  return { srcPath, cachePath }
+}
 
-  const srcPath = resolve(path)
+// Retrieve absolute path to the local file to cache/restore
+const getSrcPath = function(path) {
+  const cwd = getCwd()
+  const srcPath = resolve(cwd, path)
+  checkSrcPath(srcPath, cwd)
+  return srcPath
+}
+
+// Caching the whole repository creates many issues:
+//  - It caches many directories that are not related to Gatsby but take lots of
+//    space, such as node_modules
+//  - It caches directories that are not meant to restored across builds. For
+//    example .git (beside being big).
+//  - It undoes any build operations inside the repository that might have
+//    happened before this plugin starts restoring the cache, leading to
+//    conflicts with other plugins, Netlify Build or the buildbot.
+const checkSrcPath = function(srcPath, cwd) {
+  if (isParentPath(srcPath, cwd)) {
+    throw new Error(`Cannot cache ${srcPath} because it is the current directory (${cwd}) or a parent directory`)
+  }
+}
+
+// Note: srcPath and cwd are already normalized and absolute
+const isParentPath = function(srcPath, cwd) {
+  return `${cwd}${sep}`.startsWith(`${srcPath}${sep}`)
+}
+
+const getCachePath = async function(srcPath, cacheDir) {
+  const cacheDirA = await getCacheDir(cacheDir)
   const { name, relPath } = findBase(srcPath)
   const cachePath = join(cacheDirA, name, relPath)
-  return { srcPath, cachePath }
+  return cachePath
 }
 
 // The cached path is the path relative to the base which can be either the
@@ -49,7 +80,7 @@ const parseBase = function(name, base, srcPath) {
 }
 
 const BASES = [
-  { name: 'cwd', base: cwd() },
+  { name: 'cwd', base: getCwd() },
   { name: 'home', base: homedir() },
   { name: 'root', base: sep },
 ]
