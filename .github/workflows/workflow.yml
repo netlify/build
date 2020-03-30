@@ -27,4 +27,4 @@ jobs:
       - name: Tests
         run: npm run test-ci
       - name: Codecov test coverage
-        run: bash scripts/coverage.sh "${{ secrets.CODECOV_TOKEN }}" "${{ matrix.os }}" "${{ matrix.node }}"
+        run: bash scripts/coverage.sh "${{ matrix.os }}" "${{ matrix.node }}"
