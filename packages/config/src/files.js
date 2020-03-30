@@ -24,11 +24,11 @@ const resolvePaths = function(build, propNames, baseRel) {
 }
 
 const resolvePathProp = function(build, propName, baseRel) {
-  const path = resolvePath(build[propName], baseRel)
+  const path = resolvePath(baseRel, build[propName])
   return path === undefined ? build : { ...build, [propName]: path }
 }
 
-const resolvePath = function(path, baseRel) {
+const resolvePath = function(baseRel, path) {
   if (path === undefined) {
     return
   }
