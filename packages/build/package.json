@@ -46,7 +46,7 @@
     "locate-path": "^5.0.0",
     "log-process-errors": "^5.0.3",
     "map-obj": "^4.1.0",
-    "netlify": "^3.1.0",
+    "netlify": "^4.0.0",
     "os-name": "^3.1.0",
     "p-event": "^4.1.0",
     "p-filter": "^2.1.0",
