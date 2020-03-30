@@ -8,9 +8,6 @@ assignees: ''
 
 Thanks for reporting this bug!
 
-If this is related to a typo or the documentation being unclear, please click on the relevant page's `Edit` button
-(pencil icon) and suggest a correction instead.
-
 Please search other issues to make sure this bug has not already been reported.
 
 Then fill in the sections below.
@@ -19,38 +16,23 @@ Then fill in the sections below.
 
 A clear and concise description of what the bug is.
 
-**Steps to reproduce**
-
-Step-by-step instructions on how to reproduce the behavior.
-
-Example:
-
-1. Type the following command: [...]
-2. etc.
-
-**Expected behavior**
-
-A clear and concise description of what you expected to happen.
-
 **Configuration**
 
-Command line flags and/or configuration file, if any.
-
-**Environment**
-
-Enter the following command in a terminal and copy/paste its output:
+- If possible, please copy/paste below your `netlify.toml`.
+- Did you run your build through the UI or the CLI?
+- If using the CLI, which flags did you use?
+- If using the CLI, please enter the following command in a terminal and copy/paste its output:
 
 ```bash
 npx envinfo --system --binaries --npmPackages @netlify/build,@netlify/config,@netlify/git-utils,@netlify/cache-utils,@netlify/functions-utils,@netlify/run-utils,netlify-cli
 ```
 
-**Screenshots**
+**Deploy logs**
 
-If applicable, add screenshots to help explain your problem.
+If possible, please share a link to the Deploy that failed. If this is not possible or if the build was run in the CLI,
+please copy/paste the deploy logs below instead.
 
-**Can you submit a pull request?**
-
-Yes/No.
+**Pull requests**
 
 Pull requests are welcome! If you would like to help us fix this bug, please check our
 [contributions guidelines](../blob/master/CONTRIBUTING.md).
