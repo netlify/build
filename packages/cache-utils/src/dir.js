@@ -1,4 +1,5 @@
 const { platform, env } = require('process')
+const { resolve } = require('path')
 
 const globalCacheDir = require('global-cache-dir')
 
@@ -7,11 +8,11 @@ const isNetlifyCI = require('./utils/is-netlify-ci')
 // Retrieve the cache directory location
 const getCacheDir = function(cacheDir) {
   if (cacheDir !== undefined) {
-    return cacheDir
+    return resolve(cacheDir)
   }
 
   if (!isNetlifyCI()) {
-    return LOCAL_CACHE_DIR
+    return resolve(LOCAL_CACHE_DIR)
   }
 
   // Do not use in tests since /opt might not be writable by current user
