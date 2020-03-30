@@ -28,7 +28,8 @@ const callChild = async function(childProcess, eventName, payload) {
 // We need to make `p-event` listeners are properly cleaned up too.
 const getEventFromChild = async function(childProcess, callId) {
   if (!childProcess.connected) {
-    const error = new Error('Could not receive event from child process because it already exited')
+    const error = new Error(`Could not receive event from child process because it already exited.
+${EXIT_WARNING}`)
     addErrorInfo(error, { type: 'ipc' })
     throw error
   }
@@ -58,10 +59,22 @@ const getError = async function(errorPromise) {
 const getExit = async function(exitPromise) {
   const [exitCode, signal] = await exitPromise
   const error = new Error(`Plugin exited with exit code ${exitCode} and signal ${signal}.
-Instead of calling process.exit(), plugin methods should either return (on success) or throw errors (on failure).`)
+${EXIT_WARNING}`)
   addErrorInfo(error, { type: 'ipc' })
   throw error
 }
+
+// Plugins should not terminate processes explicitly:
+//  - It prevents specifying error messages to the end users
+//  - It makes it impossible to distinguish between bugs (such as infinite loops) and user errors
+//  - It complicates child process orchestration. For example if an async operation
+//    of a previous event handler is still running, it would be aborted if another
+//    is terminating the process.
+const EXIT_WARNING = `The plugin might have exited due to a bug terminating the process, such as an infinite loop.
+The plugin might also have explicitly terminated the process, for example with process.exit().
+Plugin methods should instead:
+  - on success: return
+  - on failure: call utils.build.failPlugin() or utils.build.failBuild()`
 
 // Send event from parent to child process
 const sendEventToChild = async function(childProcess, callId, eventName, payload) {
