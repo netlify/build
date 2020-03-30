@@ -3,10 +3,9 @@ const {
   env: { CONTEXT },
 } = require('process')
 
-const pathExists = require('path-exists')
-
 const { throwError } = require('../error')
 const { removeFalsy } = require('../utils/remove_falsy')
+const { dirExists } = require('../utils/dir-exists')
 
 const { getRepositoryRoot } = require('./repository_root')
 const { getBranch } = require('./branch')
@@ -23,7 +22,7 @@ const normalizeOpts = async function(opts) {
   const optsD = { ...optsC, branch }
 
   const optsE = removeFalsy(optsD)
-  await checkPaths(optsE)
+  await checkDirs(optsE)
   return optsE
 }
 
@@ -33,17 +32,17 @@ const DEFAULT_OPTS = {
   baseRelDir: true,
 }
 
-// Verify that options point to existing paths
-const checkPaths = async function(opts) {
-  await Promise.all(PATH_NAMES.map(pathName => checkPath(opts, pathName)))
+// Verify that options point to existing directories
+const checkDirs = async function(opts) {
+  await Promise.all(DIR_OPTIONS.map(optName => checkDir(opts, optName)))
 }
 
-const PATH_NAMES = ['cwd', 'repositoryRoot']
+const DIR_OPTIONS = ['cwd', 'repositoryRoot']
 
-const checkPath = async function(opts, pathName) {
-  const path = opts[pathName]
-  if (!(await pathExists(path))) {
-    throwError(`Option '${pathName}' points to a non-existing file`)
+const checkDir = async function(opts, optName) {
+  const path = opts[optName]
+  if (!(await dirExists(path))) {
+    throwError(`Option '${optName}' points to a non-existing directory: ${path}`)
   }
 }
 
