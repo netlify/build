@@ -1,10 +1,13 @@
 const { resolve } = require('path')
 
+const { dirExists } = require('./utils/dir-exists')
+const { throwError } = require('./error')
+
 // Make configuration paths relative to `buildDir` and converts them to
 // absolute paths
-const handleFiles = function({ config: { build, ...config }, repositoryRoot, baseRelDir }) {
+const handleFiles = async function({ config: { build, ...config }, repositoryRoot, baseRelDir }) {
   const buildA = resolvePaths(build, REPOSITORY_RELATIVE_PROPS, repositoryRoot)
-  const buildDir = getBuildDir(repositoryRoot, buildA)
+  const buildDir = await getBuildDir(repositoryRoot, buildA)
   const baseRel = baseRelDir ? buildDir : repositoryRoot
   const buildB = resolvePaths(buildA, BUILD_DIR_RELATIVE_PROPS, baseRel)
   return { config: { ...config, build: buildB }, buildDir }
@@ -44,8 +47,22 @@ const LEADING_SLASH_REGEXP = /^\/+/
 //  - `build.base`
 //  - `--repositoryRoot`
 //  - the current directory (default value of `--repositoryRoot`)
-const getBuildDir = function(repositoryRoot, { base = repositoryRoot }) {
-  return resolve(repositoryRoot, base)
+const getBuildDir = async function(repositoryRoot, { base = repositoryRoot }) {
+  const buildDir = resolve(repositoryRoot, base)
+  await checkBuildDir(buildDir, repositoryRoot)
+  return buildDir
+}
+
+// The build directory is used as the current directory of build commands and
+// build plugins. Therefore it must exist.
+// We already check `repositoryRoot` earlier in the code, so only need to check
+// `buildDir` when it is the base directory instead.
+const checkBuildDir = async function(buildDir, repositoryRoot) {
+  if (buildDir === repositoryRoot || (await dirExists(buildDir))) {
+    return
+  }
+
+  throwError(`Base directory does not exist: ${buildDir}`)
 }
 
 module.exports = { handleFiles, resolvePath }

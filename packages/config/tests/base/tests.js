@@ -36,3 +36,7 @@ test('BaseRelDir feature flag', async t => {
   t.false(functions.startsWith(buildDir))
   t.false(publish.startsWith(buildDir))
 })
+
+test('Base directory does not exist', async t => {
+  await runFixture(t, 'base_invalid')
+})
