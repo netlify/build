@@ -42,6 +42,15 @@ Default: current directory`,
     describe: `Git repository root directory. Used to retrieve the configuration file.
 Default: automatically guessed`,
   },
+  token: {
+    string: true,
+    describe: `Netlify API token for authentication.
+The NETLIFY_AUTH_TOKEN environment variable can be used as well.`,
+  },
+  siteId: {
+    string: true,
+    describe: `Netlify Site ID.`,
+  },
   context: {
     string: true,
     describe: `Build context.

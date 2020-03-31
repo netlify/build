@@ -72,42 +72,6 @@ test('Environment variable siteInfo success', async t => {
   await stopServer()
 })
 
-test('Environment variable siteInfo API error', async t => {
-  const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, 'invalid')
-  await runFixture(t, 'site_info', {
-    flags: '--token=test --site-id=test',
-    env: { TEST_SCHEME: scheme, TEST_HOST: host },
-  })
-  await stopServer()
-})
-
-test('Environment variable siteInfo no token', async t => {
-  const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_DATA)
-  await runFixture(t, 'site_info', {
-    flags: '--site-id=test',
-    env: { TEST_SCHEME: scheme, TEST_HOST: host },
-  })
-  await stopServer()
-})
-
-test('Environment variable siteInfo no siteId', async t => {
-  const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_DATA)
-  await runFixture(t, 'site_info', {
-    flags: '--token=test',
-    env: { TEST_SCHEME: scheme, TEST_HOST: host },
-  })
-  await stopServer()
-})
-
-test('Environment variable siteInfo CI', async t => {
-  const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_DATA)
-  await runFixture(t, 'site_info', {
-    flags: '--token=test --site-id=test',
-    env: { TEST_SCHEME: scheme, TEST_HOST: host, NETLIFY: 'true' },
-  })
-  await stopServer()
-})
-
 test('build.environment', async t => {
   await runFixture(t, 'build')
 })

@@ -7,10 +7,9 @@ const resolveConfig = require('@netlify/config')
 
 const { logFlags, logBuildDir, logConfigPath, logConfig, logContext } = require('../log/main')
 const { addErrorInfo } = require('../error/info')
+const { addApiErrorHandlers } = require('../error/api')
 const { removeFalsy } = require('../utils/remove_falsy')
 
-const { getApiClient } = require('./api')
-const { getSiteInfo } = require('./site_info')
 const { getConstants } = require('./constants')
 
 // Retrieve configuration object
@@ -34,7 +33,15 @@ const loadConfig = async function(flags) {
     baseRelDir,
   } = removeFalsy(flagsB)
 
-  const { configPath, buildDir, config: netlifyConfig, context: contextA, branch: branchA } = await resolveFullConfig({
+  const {
+    configPath,
+    buildDir,
+    config: netlifyConfig,
+    context: contextA,
+    branch: branchA,
+    api,
+    siteInfo,
+  } = await resolveFullConfig({
     config,
     defaultConfig,
     cachedConfig,
@@ -43,21 +50,22 @@ const loadConfig = async function(flags) {
     context,
     branch,
     baseRelDir,
+    token,
+    siteId,
   })
   logBuildDir(buildDir)
   logConfigPath(configPath)
   logConfig(netlifyConfig)
   logContext(contextA)
 
-  const api = getApiClient(token)
-  const siteInfo = await getSiteInfo(api, siteId)
+  const apiA = addApiErrorHandlers(api)
   const constants = await getConstants({ configPath, buildDir, netlifyConfig, siteInfo })
   return {
     netlifyConfig,
     configPath,
     buildDir,
     nodePath,
-    api,
+    api: apiA,
     token,
     dry,
     siteInfo,
@@ -84,6 +92,8 @@ const resolveFullConfig = async function({
   context,
   branch,
   baseRelDir,
+  token,
+  siteId,
 }) {
   try {
     return await resolveConfig({
@@ -95,6 +105,8 @@ const resolveFullConfig = async function({
       context,
       branch,
       baseRelDir,
+      token,
+      siteId,
     })
   } catch (error) {
     if (error.type === 'userError') {

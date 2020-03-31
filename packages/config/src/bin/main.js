@@ -1,5 +1,8 @@
 #!/usr/bin/env node
-const { exit } = require('process')
+const {
+  exit,
+  env: { NETLIFY_BUILD_TEST },
+} = require('process')
 
 require('../utils/polyfills')
 
@@ -22,9 +25,20 @@ const runCli = async function() {
 
 // The result is printed as JSON on stdout on success (exit code 0)
 const handleCliSuccess = function(result) {
-  const resultJson = JSON.stringify(result, null, 2)
+  const resultA = serializeApi(result)
+  const resultJson = JSON.stringify(resultA, null, 2)
   console.log(resultJson)
   exit(0)
+}
+
+// `api` is not JSON-serializable, so we remove it
+// We still indicate it as a boolean in tests
+const serializeApi = function({ api, ...result }) {
+  if (NETLIFY_BUILD_TEST !== '1' || api === undefined) {
+    return result
+  }
+
+  return { ...result, hasApi: true }
 }
 
 const handleCliError = function(error) {

@@ -14,6 +14,7 @@ const cpy = require('cpy')
 
 const { normalizeOutput } = require('./normalize')
 const { createRepoDir, removeDir } = require('./dir')
+const { startServer } = require('./server')
 
 const FIXTURES_DIR = normalize(`${testFile}/../fixtures`)
 
@@ -200,4 +201,4 @@ const escapeExecaOpt = function(string) {
 
 const EXECA_COMMAND_REGEXP = / /g
 
-module.exports = { runFixtureCommon, FIXTURES_DIR, getJsonOpt, escapeExecaOpt }
+module.exports = { runFixtureCommon, FIXTURES_DIR, getJsonOpt, escapeExecaOpt, startServer }
