@@ -132,6 +132,8 @@ _Returns_: `Promise<Boolean>`
 Restore a file/directory previously cached. Skipped if the file/directory already exists locally or if it has not been
 cached yet.
 
+Please be careful: this overwrites the local file/directory if any exists.
+
 Returns `true` if the file/directory was restored, `false` otherwise.
 
 ### options
