@@ -23,7 +23,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@netlify/cache-utils": "^0.2.6",
+    "@netlify/cache-utils": "^0.2.7",
     "@netlify/config": "^0.5.2",
     "@netlify/functions-utils": "^0.2.3",
     "@netlify/git-utils": "^0.2.2",
