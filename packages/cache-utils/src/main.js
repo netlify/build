@@ -19,7 +19,7 @@ const saveOne = async function(path, { move = DEFAULT_MOVE, ttl = DEFAULT_TTL, d
 
   const { manifestInfo, identical } = await getManifestInfo({ cachePath, move, ttl, digests })
   if (identical) {
-    return false
+    return true
   }
 
   await del(cachePath, { force: true })

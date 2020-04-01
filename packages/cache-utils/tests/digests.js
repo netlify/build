@@ -1,6 +1,6 @@
 const test = require('ava')
 
-const { pWriteFile, createTmpDir, removeFiles } = require('./helpers/main')
+const { pWriteFile, pReadFile, createTmpDir, removeFiles } = require('./helpers/main')
 
 const cacheUtils = require('..')
 
@@ -12,9 +12,10 @@ test('Should allow caching according to a digest file', async t => {
     await Promise.all([pWriteFile(srcFile, 'test'), pWriteFile(digest, 'digest')])
     t.true(await cacheUtils.save(srcDir, { cacheDir, digests: [digest] }))
     await pWriteFile(srcFile, 'newTest')
-    t.false(await cacheUtils.save(srcDir, { cacheDir, digests: [digest] }))
-    await pWriteFile(digest, 'newDigest')
     t.true(await cacheUtils.save(srcDir, { cacheDir, digests: [digest] }))
+    t.true(await cacheUtils.restore(srcDir, { cacheDir, digests: [digest] }))
+    const content = await pReadFile(srcFile, 'utf8')
+    t.is(content, 'test')
   } finally {
     await removeFiles([cacheDir, srcDir])
   }
@@ -29,9 +30,10 @@ test('Should allow caching according to several potential digests files', async 
     await Promise.all([pWriteFile(srcFile, 'test'), pWriteFile(digest, 'digest')])
     t.true(await cacheUtils.save(srcDir, { cacheDir, digests: [digestTwo, digest] }))
     await pWriteFile(srcFile, 'newTest')
-    t.false(await cacheUtils.save(srcDir, { cacheDir, digests: [digestTwo, digest] }))
-    await pWriteFile(digest, 'newDigest')
     t.true(await cacheUtils.save(srcDir, { cacheDir, digests: [digestTwo, digest] }))
+    t.true(await cacheUtils.restore(srcDir, { cacheDir, digests: [digestTwo, digest] }))
+    const content = await pReadFile(srcFile, 'utf8')
+    t.is(content, 'test')
   } finally {
     await removeFiles([cacheDir, srcDir])
   }
