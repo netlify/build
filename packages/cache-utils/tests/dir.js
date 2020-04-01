@@ -1,9 +1,9 @@
 const test = require('ava')
 const pathExists = require('path-exists')
 
-const { pWriteFile, createTmpDir, createTmpFile, removeFiles } = require('./helpers/main')
-
 const cacheUtils = require('..')
+
+const { pWriteFile, createTmpDir, createTmpFile, removeFiles } = require('./helpers/main')
 
 // Need to be serial since we change the current directory
 test.serial('Should allow not changing the cache directory', async t => {

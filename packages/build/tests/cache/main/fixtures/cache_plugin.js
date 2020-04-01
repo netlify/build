@@ -1,14 +1,14 @@
 const { writeFile, readFile } = require('fs')
-const { promisify } = require('util')
 const { dirname } = require('path')
 const {
   env: { TEST_CACHE_PATH },
 } = require('process')
+const { promisify } = require('util')
 
 // eslint-disable-next-line node/no-extraneous-require
-const makeDir = require('make-dir')
-// eslint-disable-next-line node/no-extraneous-require
 const del = require('del')
+// eslint-disable-next-line node/no-extraneous-require
+const makeDir = require('make-dir')
 
 const cachePath = `${TEST_CACHE_PATH}/test/test`
 

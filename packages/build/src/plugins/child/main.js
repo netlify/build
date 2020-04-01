@@ -7,8 +7,8 @@ setColorLevel()
 // eslint-disable-next-line import/order
 const logProcessErrors = require('log-process-errors')
 
-const { sendEventToParent, getEventsFromParent } = require('../ipc')
 const { ERROR_TYPE_SYM } = require('../error')
+const { sendEventToParent, getEventsFromParent } = require('../ipc')
 
 const { loadPlugin } = require('./load')
 

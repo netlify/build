@@ -2,8 +2,8 @@ const { cyan } = require('chalk')
 
 const { throwError } = require('../error')
 
-const { VALIDATIONS } = require('./validations')
 const { getExample } = require('./example')
+const { VALIDATIONS } = require('./validations')
 
 // Validate the configuration file.
 // Performed before normalization.

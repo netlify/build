@@ -1,5 +1,5 @@
-const { cwd } = require('process')
 const { relative } = require('path')
+const { cwd } = require('process')
 
 const test = require('ava')
 

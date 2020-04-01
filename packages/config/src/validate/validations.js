@@ -3,8 +3,8 @@ const isPlainObj = require('is-plain-obj')
 const { EVENTS, LEGACY_EVENTS, normalizeEventHandler } = require('../normalize/events')
 const { omit } = require('../utils/omit')
 
-const { isString, validProperties, deprecatedProperties, insideRootCheck, removeParentDots } = require('./helpers')
 const { addContextValidations } = require('./context')
+const { isString, validProperties, deprecatedProperties, insideRootCheck, removeParentDots } = require('./helpers')
 
 // List of validations performed on the configuration file.
 // Validation are performed in order: parent should be before children.

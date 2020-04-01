@@ -6,8 +6,8 @@ const {
 
 require('../utils/polyfills')
 
-const resolveConfig = require('../main')
 const { isUserError } = require('../error')
+const resolveConfig = require('../main')
 
 const { parseFlags } = require('./flags')
 

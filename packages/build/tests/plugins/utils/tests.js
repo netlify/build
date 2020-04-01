@@ -1,7 +1,7 @@
 const test = require('ava')
 
-const { runFixture, FIXTURES_DIR } = require('../../helpers/main')
 const { removeDir } = require('../../helpers/dir')
+const { runFixture, FIXTURES_DIR } = require('../../helpers/main')
 
 test('utils-load none', async t => {
   await runFixture(t, 'none')

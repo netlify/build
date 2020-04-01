@@ -1,13 +1,13 @@
 require('./utils/polyfills')
 
-const pathExists = require('path-exists')
 const del = require('del')
+const pathExists = require('path-exists')
 
-const { parsePath } = require('./path')
-const { getManifestInfo, writeManifest, removeManifest, isExpired } = require('./manifest')
-const { moveCacheFile } = require('./fs')
 const { getCacheDir } = require('./dir')
+const { moveCacheFile } = require('./fs')
 const { list } = require('./list')
+const { getManifestInfo, writeManifest, removeManifest, isExpired } = require('./manifest')
+const { parsePath } = require('./path')
 
 // Cache a file
 const saveOne = async function(path, { move = DEFAULT_MOVE, ttl = DEFAULT_TTL, digests = [], cacheDir } = {}) {

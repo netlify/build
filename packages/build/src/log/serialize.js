@@ -1,5 +1,5 @@
-const { dump, JSON_SCHEMA } = require('js-yaml')
 const indentString = require('indent-string')
+const { dump, JSON_SCHEMA } = require('js-yaml')
 
 // Serialize to string
 const serialize = function(arg) {

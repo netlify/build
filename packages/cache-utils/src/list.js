@@ -3,8 +3,8 @@ const { join } = require('path')
 const readdirp = require('readdirp')
 
 const { getCacheDir } = require('./dir')
-const { BASES } = require('./path')
 const { isManifest } = require('./manifest')
+const { BASES } = require('./path')
 
 // List all cached files
 const list = async function({ cacheDir } = {}) {

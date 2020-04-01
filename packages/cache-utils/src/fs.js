@@ -1,5 +1,5 @@
-const { basename, dirname } = require('path')
 const { stat } = require('fs')
+const { basename, dirname } = require('path')
 const { promisify } = require('util')
 
 const cpy = require('cpy')

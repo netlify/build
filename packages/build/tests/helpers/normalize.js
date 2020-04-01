@@ -1,5 +1,5 @@
-const stripAnsi = require('strip-ansi')
 const { tick, pointer, arrowDown } = require('figures')
+const stripAnsi = require('strip-ansi')
 
 // Normalize log output so it can be snapshot consistently across test runs
 const normalizeOutput = function(output) {

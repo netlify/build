@@ -1,9 +1,9 @@
 const test = require('ava')
 const pathExists = require('path-exists')
 
-const { pWriteFile, pReadFile, createTmpDir, createTmpFile, removeFiles } = require('./helpers/main')
-
 const cacheUtils = require('..')
+
+const { pWriteFile, pReadFile, createTmpDir, createTmpFile, removeFiles } = require('./helpers/main')
 
 test('Should expose several methods', async t => {
   t.deepEqual(Object.keys(cacheUtils).sort(), ['getCacheDir', 'has', 'list', 'remove', 'restore', 'save'])

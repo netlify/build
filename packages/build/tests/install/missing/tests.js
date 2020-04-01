@@ -1,7 +1,7 @@
 const test = require('ava')
 
-const { runFixture, FIXTURES_DIR } = require('../../helpers/main')
 const { removeDir } = require('../../helpers/dir')
+const { runFixture, FIXTURES_DIR } = require('../../helpers/main')
 
 // Need to run `npm install` and `yarn` serially to avoid network errors
 test.serial('Install missing plugins with npm locally with lock file', async t => {

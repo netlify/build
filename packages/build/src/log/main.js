@@ -4,8 +4,8 @@ const {
   env: { NETLIFY_BUILD_DEBUG },
 } = require('process')
 
-const stringWidth = require('string-width')
 const { greenBright, cyanBright, redBright, yellowBright, bold, white } = require('chalk')
+const stringWidth = require('string-width')
 
 const { version } = require('../../package.json')
 const { serializeError } = require('../error/serialize')
@@ -13,9 +13,9 @@ const isNetlifyCI = require('../utils/is-netlify-ci')
 const { serializeList } = require('../utils/list')
 const { omit } = require('../utils/omit')
 
+const { EMPTY_LINE, HEADING_PREFIX, TICK, ARROW_DOWN } = require('./constants')
 const { log } = require('./logger')
 const { serialize, SUBTEXT_PADDING, indent } = require('./serialize')
-const { EMPTY_LINE, HEADING_PREFIX, TICK, ARROW_DOWN } = require('./constants')
 
 const logBuildStart = function() {
   log(`${EMPTY_LINE}

@@ -4,11 +4,11 @@ const {
 } = require('process')
 
 const { throwError } = require('../error')
-const { removeFalsy } = require('../utils/remove_falsy')
 const { dirExists } = require('../utils/dir-exists')
+const { removeFalsy } = require('../utils/remove_falsy')
 
-const { getRepositoryRoot } = require('./repository_root')
 const { getBranch } = require('./branch')
+const { getRepositoryRoot } = require('./repository_root')
 
 // Normalize options and assign default values
 const normalizeOpts = async function(opts) {

@@ -1,7 +1,7 @@
-const gitUtils = require('@netlify/git-utils')
 const cacheUtils = require('@netlify/cache-utils')
-const runUtils = require('@netlify/run-utils')
 const functionsUtils = require('@netlify/functions-utils')
+const gitUtils = require('@netlify/git-utils')
+const runUtils = require('@netlify/run-utils')
 
 const { failBuild, failPlugin, cancelBuild } = require('../error')
 

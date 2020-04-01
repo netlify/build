@@ -1,11 +1,11 @@
-const { relative, normalize } = require('path')
 const { tmpdir } = require('os')
+const { relative, normalize } = require('path')
 const {
   env: { DEPLOY_ID },
 } = require('process')
 
-const mapObj = require('map-obj')
 const { getCacheDir } = require('@netlify/cache-utils')
+const mapObj = require('map-obj')
 
 const isNetlifyCI = require('../utils/is-netlify-ci')
 

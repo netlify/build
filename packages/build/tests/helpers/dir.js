@@ -1,5 +1,5 @@
-const execa = require('execa')
 const del = require('del')
+const execa = require('execa')
 
 const { getTempDir } = require('./temp')
 

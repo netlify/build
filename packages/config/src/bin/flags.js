@@ -1,5 +1,5 @@
-const yargs = require('yargs')
 const filterObj = require('filter-obj')
+const yargs = require('yargs')
 
 // Parse CLI flags
 const parseFlags = function() {

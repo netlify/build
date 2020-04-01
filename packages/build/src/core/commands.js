@@ -1,12 +1,12 @@
+const { EVENTS } = require('@netlify/config')
 const execa = require('execa')
 const pReduce = require('p-reduce')
-const { EVENTS } = require('@netlify/config')
 
-const { callChild } = require('../plugins/ipc')
-const { logCommandsStart, logCommand, logShellCommandStart, logCommandSuccess, logPluginError } = require('../log/main')
-const { startTimer, endTimer } = require('../log/timer')
-const { startOutput, stopOutput } = require('../log/stream')
 const { addErrorInfo, getErrorInfo } = require('../error/info')
+const { logCommandsStart, logCommand, logShellCommandStart, logCommandSuccess, logPluginError } = require('../log/main')
+const { startOutput, stopOutput } = require('../log/stream')
+const { startTimer, endTimer } = require('../log/timer')
+const { callChild } = require('../plugins/ipc')
 
 // Get commands for all events
 const getCommands = function({ pluginsCommands, netlifyConfig }) {

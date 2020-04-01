@@ -1,6 +1,6 @@
 const test = require('ava')
-const { valid: validVersion } = require('semver')
 const execa = require('execa')
+const { valid: validVersion } = require('semver')
 
 const run = require('..')
 

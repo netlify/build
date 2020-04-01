@@ -1,8 +1,8 @@
-const isPlainObj = require('is-plain-obj')
 const { redBright } = require('chalk')
+const isPlainObj = require('is-plain-obj')
 
-const { serializeList } = require('../../utils/list')
 const { indent } = require('../../log/serialize')
+const { serializeList } = require('../../utils/list')
 const { API_METHODS } = require('../child/api')
 
 // Validate `manifest.yml` syntax
