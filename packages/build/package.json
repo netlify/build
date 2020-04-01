@@ -25,7 +25,7 @@
   "dependencies": {
     "@netlify/cache-utils": "^0.2.8",
     "@netlify/config": "^0.5.2",
-    "@netlify/functions-utils": "^0.2.3",
+    "@netlify/functions-utils": "^0.2.4",
     "@netlify/git-utils": "^0.2.2",
     "@netlify/run-utils": "^0.1.1",
     "@netlify/zip-it-and-ship-it": "^0.4.0-9",
