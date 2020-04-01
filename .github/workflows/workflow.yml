@@ -1,11 +1,5 @@
 name: Build
-on:
-  # Ensure GitHub actions are not run twice for same commits
-  push:
-    branches: [master]
-    tags: ['*']
-  pull_request:
-    types: [opened, synchronize, reopened]
+on: [push, pull_request]
 env:
   CI: 'true'
 jobs:
