@@ -1,5 +1,11 @@
 require('./utils/polyfills')
 
+const {
+  env: { NETLIFY_AUTH_TOKEN },
+} = require('process')
+
+const { getApiClient } = require('./api/client')
+const { getSiteInfo } = require('./api/site_info')
 const { getConfigPath } = require('./path')
 const { validateConfig } = require('./validate/main')
 const { handleFiles } = require('./files')
@@ -14,14 +20,22 @@ const { deepMerge } = require('./utils/merge')
 // Load the configuration file.
 // Takes an optional configuration file path as input and return the resolved
 // `config` together with related properties such as the `configPath`.
-const resolveConfig = async function({ cachedConfig, ...opts } = {}) {
+const resolveConfig = async function({ cachedConfig, token = NETLIFY_AUTH_TOKEN, siteId, ...opts } = {}) {
+  // `api` is not JSON-serializable, so we cannot cache it inside `cachedConfig`
+  const api = getApiClient(token)
+
+  // This needs to be done here until buildbot uses a version of @netlify/config
+  // which returns `siteInfo`.
+  // TODO: move after `normalizeOpts()` instead after that.
+  const siteInfo = await getSiteInfo(api, siteId)
+
   // Performance optimization when @netlify/config caller has already previously
   // called it and cached the result.
   // This is used by the buildbot which:
   //  - first calls @netlify/config since it needs configuration property
   //  - later calls @netlify/build, which runs @netlify/config under the hood
   if (cachedConfig !== undefined) {
-    return getConfig(cachedConfig, 'cached')
+    return { siteInfo, ...getConfig(cachedConfig, 'cached'), api }
   }
 
   const { config: configOpt, defaultConfig, cwd, context, repositoryRoot, branch, baseRelDir } = await normalizeOpts(
@@ -44,7 +58,7 @@ const resolveConfig = async function({ cachedConfig, ...opts } = {}) {
 
   const { config: configA, buildDir } = await handleFiles({ config, repositoryRoot, baseRelDir })
 
-  return { configPath, buildDir, config: configA, context, branch }
+  return { siteInfo, configPath, buildDir, config: configA, context, branch, api }
 }
 
 // Load a configuration file passed as a JSON object.

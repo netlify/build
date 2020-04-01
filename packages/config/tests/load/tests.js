@@ -54,6 +54,18 @@ test('--cachedConfig with an invalid path', async t => {
   await runFixture(t, '', { flags: '--cachedConfig={{}' })
 })
 
+test('--cachedConfig with a token', async t => {
+  const { stdout } = await runFixture(t, 'cached_config', { snapshot: false, flags: '--token=test' })
+  const cachedConfig = escapeExecaOpt(stdout)
+  await runFixture(t, 'cached_config', { flags: `--cachedConfig=${cachedConfig} --token=test` })
+})
+
+test('--cachedConfig with a siteId', async t => {
+  const { stdout } = await runFixture(t, 'cached_config', { snapshot: false, flags: '--siteId=test' })
+  const cachedConfig = escapeExecaOpt(stdout)
+  await runFixture(t, 'cached_config', { flags: `--cachedConfig=${cachedConfig} --siteId=test` })
+})
+
 test('Programmatic', async t => {
   const { config } = await resolveConfig({ repositoryRoot: `${FIXTURES_DIR}/empty` })
   t.not(config.build.environment, undefined)

@@ -4,9 +4,9 @@ const { promisify } = require('util')
 // Start an HTTP server to mock API calls (telemetry server and Bitballoon)
 // Tests are using child processes, so we cannot use `nock` or similar library
 // that relies on monkey-patching global variables.
-const startServer = async function(path, response = {}) {
+const startServer = async function(path, response = {}, { status = 200 } = {}) {
   const request = { sent: false, headers: {}, body: {} }
-  const server = createServer((req, res) => requestHandler({ req, res, request, response, path }))
+  const server = createServer((req, res) => requestHandler({ req, res, request, response, status, path }))
   await promisify(server.listen.bind(server))(0)
 
   const host = getHost(server)
@@ -20,18 +20,19 @@ const getHost = function(server) {
   return `localhost:${port}`
 }
 
-const requestHandler = function({ req, res, request, response, path }) {
+const requestHandler = function({ req, res, request, response, status, path }) {
   let rawBody = ''
   req.on('data', data => {
     rawBody += data.toString()
   })
   req.on('end', () => {
-    onRequestEnd({ req, res, request, response, path, rawBody })
+    onRequestEnd({ req, res, request, response, status, path, rawBody })
   })
 }
 
-const onRequestEnd = function({ req: { method, url, headers }, res, request, response, path, rawBody }) {
+const onRequestEnd = function({ req: { method, url, headers }, res, request, response, status, path, rawBody }) {
   addRequestInfo({ method, url, headers, request, path, rawBody })
+  res.statusCode = status
   res.setHeader('Content-Type', 'application/json')
   res.end(JSON.stringify(response))
 }
