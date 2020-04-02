@@ -9,6 +9,7 @@ require('../error/process')
 const { handleBuildError } = require('../error/handle')
 const { installLocalPluginsDependencies } = require('../install/local')
 const { logBuildStart, logBuildError, logBuildSuccess, logBuildEnd } = require('../log/main')
+const { logOldCliVersionError } = require('../log/old_version')
 const { startTimer, endTimer } = require('../log/timer')
 const { startUtils } = require('../plugins/child/utils')
 const { getChildEnv } = require('../plugins/env')
@@ -80,6 +81,7 @@ const build = async function(flags) {
       return true
     } catch (error) {
       await handleBuildError(error, api)
+      await logOldCliVersionError()
       throw error
     }
   } catch (error) {
