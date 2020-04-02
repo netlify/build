@@ -15,7 +15,16 @@
   "rules": {
     "no-console": 0,
     "no-unused-vars": 2,
-    "import/order": [2, { "newlines-between": "always" }],
+    "import/order": [
+      2,
+      {
+        "newlines-between": "always",
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        }
+      }
+    ],
     "no-process-exit": 0,
     "require-atomic-updates": 0,
     "no-undef": [2, { "typeof": true }]

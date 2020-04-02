@@ -1,6 +1,6 @@
-const readdirp = require('readdirp')
 const { zipFunctions } = require('@netlify/zip-it-and-ship-it')
 const pathExists = require('path-exists')
+const readdirp = require('readdirp')
 
 const { installFunctionDependencies } = require('../../install/functions')
 const { serializeList } = require('../../utils/list')

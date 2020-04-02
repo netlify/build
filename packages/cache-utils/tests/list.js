@@ -1,8 +1,8 @@
 const test = require('ava')
 
-const { createTmpDir, createTmpFile, removeFiles } = require('./helpers/main')
-
 const cacheUtils = require('..')
+
+const { createTmpDir, createTmpFile, removeFiles } = require('./helpers/main')
 
 test('Should allow listing cached files', async t => {
   const [cacheDir, [srcFile, srcDir]] = await Promise.all([createTmpDir(), createTmpFile()])

@@ -1,6 +1,6 @@
-const mapObj = require('map-obj')
 const deepMerge = require('deepmerge')
 const filterObj = require('filter-obj')
+const mapObj = require('map-obj')
 
 const { removeFalsy } = require('../utils/remove_falsy')
 

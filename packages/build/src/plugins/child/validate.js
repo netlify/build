@@ -1,5 +1,5 @@
-const isPlainObj = require('is-plain-obj')
 const { EVENTS, LEGACY_EVENTS } = require('@netlify/config')
+const isPlainObj = require('is-plain-obj')
 
 const { serializeList } = require('../../utils/list')
 const { failBuild } = require('../error')

@@ -1,7 +1,7 @@
 const groupBy = require('group-by')
 
-const { logLoadPlugins, logLoadedPlugins } = require('../log/main')
 const { addErrorInfo } = require('../error/info')
+const { logLoadPlugins, logLoadedPlugins } = require('../log/main')
 
 const { callChild } = require('./ipc')
 

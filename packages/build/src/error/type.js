@@ -1,7 +1,7 @@
 const { yellowBright } = require('chalk')
 
-const { getShellCommandLocation, getBuildFailLocation, getApiLocation } = require('./location')
 const { getErrorInfo } = require('./info')
+const { getShellCommandLocation, getBuildFailLocation, getApiLocation } = require('./location')
 
 // Retrieve error-type specific information
 const getTypeInfo = function(errorProps) {

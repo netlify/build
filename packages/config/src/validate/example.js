@@ -1,6 +1,6 @@
-const { dump } = require('js-yaml')
-const indentString = require('indent-string')
 const { red, green } = require('chalk')
+const indentString = require('indent-string')
+const { dump } = require('js-yaml')
 
 // Print invalid value and example netlify.yml
 const getExample = function({ value, parent, key, prevPath, example }) {

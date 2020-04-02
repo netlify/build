@@ -1,12 +1,12 @@
 require('log-process-errors/build/register/ava')
 
-const { normalize, basename } = require('path')
-const { tmpdir } = require('os')
 const { realpath } = require('fs')
+const { tmpdir } = require('os')
+const { normalize, basename } = require('path')
 const { promisify } = require('util')
 
-const makeDir = require('make-dir')
 const cpFile = require('cp-file')
+const makeDir = require('make-dir')
 
 const pRealpath = promisify(realpath)
 

@@ -3,9 +3,9 @@ const { homedir } = require('os')
 const test = require('ava')
 const pathExists = require('path-exists')
 
-const { createTmpDir, createTmpFile, removeFiles } = require('./helpers/main')
-
 const cacheUtils = require('..')
+
+const { createTmpDir, createTmpFile, removeFiles } = require('./helpers/main')
 
 test('Should allow caching files in home directory', async t => {
   const [cacheDir, [srcFile, srcDir]] = await Promise.all([createTmpDir(), createTmpFile({ dir: homedir() })])

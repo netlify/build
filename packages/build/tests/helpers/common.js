@@ -1,19 +1,19 @@
 require('log-process-errors/build/register/ava')
 
+const { normalize } = require('path')
 const {
   env: { PRINT },
 } = require('process')
-const { normalize } = require('path')
 
 const {
   meta: { file: testFile },
 } = require('ava')
-const execa = require('execa')
 const { magentaBright } = require('chalk')
 const cpy = require('cpy')
+const execa = require('execa')
 
-const { normalizeOutput } = require('./normalize')
 const { createRepoDir, removeDir } = require('./dir')
+const { normalizeOutput } = require('./normalize')
 const { startServer } = require('./server')
 
 const FIXTURES_DIR = normalize(`${testFile}/../fixtures`)

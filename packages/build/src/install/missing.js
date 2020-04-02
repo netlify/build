@@ -1,7 +1,7 @@
 const { promisify } = require('util')
 
-const resolve = require('resolve')
 const pFilter = require('p-filter')
+const resolve = require('resolve')
 
 const { logInstallMissingPlugins } = require('../log/main')
 

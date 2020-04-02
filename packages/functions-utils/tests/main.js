@@ -1,9 +1,9 @@
 const test = require('ava')
 const pathExists = require('path-exists')
 
-const { getDist, createDist, removeDist } = require('./helpers/main')
-
 const { add } = require('..')
+
+const { getDist, createDist, removeDist } = require('./helpers/main')
 
 const FIXTURES_DIR = `${__dirname}/fixtures`
 

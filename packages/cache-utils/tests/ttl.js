@@ -1,8 +1,8 @@
 const test = require('ava')
 
-const { pSetTimeout, createTmpDir, createTmpFile, removeFiles } = require('./helpers/main')
-
 const cacheUtils = require('..')
+
+const { pSetTimeout, createTmpDir, createTmpFile, removeFiles } = require('./helpers/main')
 
 // Relies on timing
 test.serial('Should allow a TTL on cached files', async t => {

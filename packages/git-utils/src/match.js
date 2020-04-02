@@ -1,5 +1,5 @@
-const micromatch = require('micromatch')
 const mapObj = require('map-obj')
+const micromatch = require('micromatch')
 
 // Return functions that return modified|created|deleted files filtered by a
 // globbing pattern

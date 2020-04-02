@@ -6,16 +6,16 @@ const {
 
 const { getApiClient } = require('./api/client')
 const { getSiteInfo } = require('./api/site_info')
-const { getConfigPath } = require('./path')
-const { validateConfig } = require('./validate/main')
-const { handleFiles } = require('./files')
-const { normalizeConfig } = require('./normalize/main')
-const { EVENTS, LEGACY_EVENTS } = require('./normalize/events')
-const { parseConfig } = require('./parse/main')
 const { mergeContext } = require('./context')
-const { normalizeOpts } = require('./options/main')
 const { throwError } = require('./error')
+const { handleFiles } = require('./files')
+const { EVENTS, LEGACY_EVENTS } = require('./normalize/events')
+const { normalizeConfig } = require('./normalize/main')
+const { normalizeOpts } = require('./options/main')
+const { parseConfig } = require('./parse/main')
+const { getConfigPath } = require('./path')
 const { deepMerge } = require('./utils/merge')
+const { validateConfig } = require('./validate/main')
 
 // Load the configuration file.
 // Takes an optional configuration file path as input and return the resolved

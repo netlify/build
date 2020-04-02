@@ -1,12 +1,12 @@
 const { resolve, basename } = require('path')
 
 const findUp = require('find-up')
-const pathExists = require('path-exists')
 const pFilter = require('p-filter')
 const pLocate = require('p-locate')
+const pathExists = require('path-exists')
 
-const { resolvePath } = require('./files')
 const { throwError } = require('./error')
+const { resolvePath } = require('./files')
 
 // Configuration location can be:
 //  - a local path with the --config CLI flag

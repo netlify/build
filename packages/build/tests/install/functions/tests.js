@@ -1,9 +1,9 @@
 const test = require('ava')
-const pathExists = require('path-exists')
 const del = require('del')
+const pathExists = require('path-exists')
 
-const { runFixture, FIXTURES_DIR } = require('../../helpers/main')
 const { removeDir } = require('../../helpers/dir')
+const { runFixture, FIXTURES_DIR } = require('../../helpers/main')
 
 // Need to run `npm install` and `yarn` serially to avoid network errors
 test.serial('Functions: install dependencies nested', async t => {

@@ -2,8 +2,8 @@
 const { exit } = require('process')
 const { promisify } = require('util')
 
-const yargs = require('yargs')
 const filterObj = require('filter-obj')
+const yargs = require('yargs')
 
 require('../utils/polyfills')
 

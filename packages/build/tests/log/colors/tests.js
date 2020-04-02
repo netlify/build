@@ -1,6 +1,6 @@
 const test = require('ava')
-const hasAnsi = require('has-ansi')
 const { red } = require('chalk')
+const hasAnsi = require('has-ansi')
 
 const { runFixture } = require('../../helpers/main')
 

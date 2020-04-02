@@ -7,10 +7,10 @@ const { indent } = require('../log/serialize')
 const { omit } = require('../utils/omit')
 
 const { getErrorInfo, INFO_SYM } = require('./info')
-const { getTypeInfo } = require('./type')
-const { getStackInfo } = require('./stack')
-const { getPluginBlock } = require('./plugin')
 const { getLocationBlock } = require('./location')
+const { getPluginBlock } = require('./plugin')
+const { getStackInfo } = require('./stack')
+const { getTypeInfo } = require('./type')
 
 // Serialize an error object into a header|body string to print in logs
 const serializeError = function({ message, stack, ...errorProps }) {

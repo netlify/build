@@ -1,5 +1,5 @@
-const { platform, env } = require('process')
 const { resolve } = require('path')
+const { platform, env } = require('process')
 
 const globalCacheDir = require('global-cache-dir')
 

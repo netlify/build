@@ -1,7 +1,7 @@
 const test = require('ava')
 
-const { runFixture, FIXTURES_DIR } = require('../../helpers/main')
 const { runFixture: runFixtureConfig, getJsonOpt, escapeExecaOpt } = require('../../../../config/tests/helpers/main')
+const { runFixture, FIXTURES_DIR } = require('../../helpers/main')
 
 test('--cwd', async t => {
   await runFixture(t, '', { flags: `--cwd=${FIXTURES_DIR}/empty` })

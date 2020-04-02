@@ -5,9 +5,9 @@ const {
 
 const resolveConfig = require('@netlify/config')
 
-const { logFlags, logBuildDir, logConfigPath, logConfig, logContext } = require('../log/main')
-const { addErrorInfo } = require('../error/info')
 const { addApiErrorHandlers } = require('../error/api')
+const { addErrorInfo } = require('../error/info')
+const { logFlags, logBuildDir, logConfigPath, logConfig, logContext } = require('../log/main')
 const { removeFalsy } = require('../utils/remove_falsy')
 
 const { getConstants } = require('./constants')

@@ -1,6 +1,6 @@
 const { writeFile, readFile } = require('fs')
-const { promisify } = require('util')
 const { join, basename } = require('path')
+const { promisify } = require('util')
 
 const del = require('del')
 const { dir: getTmpDir, tmpName } = require('tmp-promise')

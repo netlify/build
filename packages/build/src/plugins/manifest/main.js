@@ -1,6 +1,6 @@
-const { getManifestPath } = require('./path')
-const { loadManifest } = require('./load')
 const { checkInputs } = require('./check')
+const { loadManifest } = require('./load')
+const { getManifestPath } = require('./path')
 
 // Load plugin's `manifest.yml`
 const useManifest = async function({ package, local, inputs }, { pluginDir, packageDir, packageJson }) {

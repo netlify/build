@@ -1,13 +1,13 @@
-const { promisify } = require('util')
 const { dirname } = require('path')
+const { promisify } = require('util')
 
 const resolve = require('resolve')
 
-const { CORE_PLUGINS } = require('../plugins_core/main')
 const { installMissingPlugins } = require('../install/missing')
+const { CORE_PLUGINS } = require('../plugins_core/main')
 
-const { getPackageJson } = require('./package')
 const { useManifest } = require('./manifest/main')
+const { getPackageJson } = require('./package')
 
 const pResolve = promisify(resolve)
 

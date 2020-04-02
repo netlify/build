@@ -1,8 +1,8 @@
 const test = require('ava')
 
-const { pWriteFile, pReadFile, createTmpDir, removeFiles } = require('./helpers/main')
-
 const cacheUtils = require('..')
+
+const { pWriteFile, pReadFile, createTmpDir, removeFiles } = require('./helpers/main')
 
 test('Should allow caching according to a digest file', async t => {
   const [cacheDir, srcDir] = await Promise.all([createTmpDir(), createTmpDir()])

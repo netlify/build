@@ -1,8 +1,8 @@
-const { getLogic } = require('./logic')
-const { validatePlugin } = require('./validate')
-const { normalizePlugin } = require('./normalize')
 const { getApiClient } = require('./api')
+const { getLogic } = require('./logic')
+const { normalizePlugin } = require('./normalize')
 const { getUtils } = require('./utils')
+const { validatePlugin } = require('./validate')
 
 // Load context passed to every plugin method.
 // This also requires the plugin file and fire its top-level function.

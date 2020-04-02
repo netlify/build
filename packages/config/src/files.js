@@ -1,7 +1,7 @@
 const { resolve } = require('path')
 
-const { dirExists } = require('./utils/dir-exists')
 const { throwError } = require('./error')
+const { dirExists } = require('./utils/dir-exists')
 
 // Make configuration paths relative to `buildDir` and converts them to
 // absolute paths

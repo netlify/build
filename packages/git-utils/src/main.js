@@ -1,10 +1,10 @@
 const { cwd: getCwd } = require('process')
 
-const { getBase, getHead } = require('./refs')
-const { getDiffFiles } = require('./diff')
 const { getCommits } = require('./commits')
-const { getLinesOfCode } = require('./stats')
+const { getDiffFiles } = require('./diff')
 const { fileMatch } = require('./match')
+const { getBase, getHead } = require('./refs')
+const { getLinesOfCode } = require('./stats')
 
 // Main entry point to the git utilities
 const getGitUtils = async function({ base, head, cwd = getCwd() } = {}) {
