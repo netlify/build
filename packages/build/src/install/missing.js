@@ -10,20 +10,20 @@ const { addDependencies } = require('./main')
 const pResolve = promisify(resolve)
 
 // Automatically install plugins if not installed already
-const installMissingPlugins = async function(pluginsOptions, basedir) {
-  const missingPlugins = await pFilter(pluginsOptions, pluginOptions => isMissingPlugin(pluginOptions, basedir))
+const installMissingPlugins = async function(pluginsOptions, buildDir) {
+  const missingPlugins = await pFilter(pluginsOptions, pluginOptions => isMissingPlugin(pluginOptions, buildDir))
   if (missingPlugins.length === 0) {
     return
   }
 
   const packages = missingPlugins.map(getPackage)
   logInstallMissingPlugins(packages)
-  await addDependencies({ packageRoot: basedir, packages })
+  await addDependencies({ packageRoot: buildDir, packages })
 }
 
-const isMissingPlugin = async function({ location }, basedir) {
+const isMissingPlugin = async function({ location }, buildDir) {
   try {
-    await pResolve(location, { basedir })
+    await pResolve(location, { basedir: buildDir })
     return false
   } catch (error) {
     return true
