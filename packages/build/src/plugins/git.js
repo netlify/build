@@ -10,7 +10,7 @@ const getGitEnv = async function(buildDir, branch) {
     git(['rev-parse', 'HEAD'], buildDir),
     git(['rev-parse', 'HEAD^'], buildDir),
   ])
-  const gitEnv = { BRANCH: branch, HEAD: branch, COMMIT_REF, CACHED_COMMIT_REF }
+  const gitEnv = { BRANCH: branch, HEAD: branch, COMMIT_REF, CACHED_COMMIT_REF, PULL_REQUEST: 'false' }
   const gitEnvA = removeFalsy(gitEnv)
   return gitEnvA
 }
