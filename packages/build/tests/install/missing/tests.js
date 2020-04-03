@@ -29,6 +29,11 @@ test.serial('Install missing plugins with Yarn in CI with lock file', async t =>
   await runFixture(t, 'yarn_ci_lock', { copyRoot: {}, env: { NETLIFY: 'true' } })
 })
 
+test.serial('Install missing plugins with Yarn locally with lock file and workspaces', async t => {
+  await removeDir(`${FIXTURES_DIR}/yarn_lock_workspaces/node_modules`)
+  await runFixture(t, 'yarn_lock_workspaces', { copyRoot: {} })
+})
+
 test.serial('Already installed plugins', async t => {
   await runFixture(t, 'installed_already')
 })
