@@ -4,6 +4,8 @@ const {
   env: { NETLIFY_BUILD_TEST },
 } = require('process')
 
+const { stableStringify } = require('fast-safe-stringify')
+
 require('../utils/polyfills')
 
 const { isUserError } = require('../error')
@@ -13,20 +15,21 @@ const { parseFlags } = require('./flags')
 
 // CLI entry point
 const runCli = async function() {
-  const flags = parseFlags()
+  const { stable, ...flags } = parseFlags()
 
   try {
     const result = await resolveConfig(flags)
-    handleCliSuccess(result)
+    handleCliSuccess(result, stable)
   } catch (error) {
     handleCliError(error)
   }
 }
 
 // The result is printed as JSON on stdout on success (exit code 0)
-const handleCliSuccess = function(result) {
+const handleCliSuccess = function(result, stable) {
   const resultA = serializeApi(result)
-  const resultJson = JSON.stringify(resultA, null, 2)
+  const stringifyFunc = stable ? stableStringify : JSON.stringify
+  const resultJson = stringifyFunc(resultA, null, 2)
   console.log(resultJson)
   exit(0)
 }
