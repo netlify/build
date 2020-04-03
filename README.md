@@ -132,7 +132,7 @@ Now, let's run the build!
 netlify build
 ```
 
-This will execute our `onPreBuild` function and the `npm run build` command.
+This will execute our `onPreBuild` function.
 
 ### Adding inputs to plugins
 
