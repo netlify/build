@@ -4,6 +4,7 @@ const {
   env: { NETLIFY_AUTH_TOKEN },
 } = require('process')
 
+const { addBuildSettings } = require('./api/build_settings')
 const { getApiClient } = require('./api/client')
 const { getSiteInfo } = require('./api/site_info')
 const { mergeContext } = require('./context')
@@ -24,18 +25,13 @@ const resolveConfig = async function({ cachedConfig, token = NETLIFY_AUTH_TOKEN,
   // `api` is not JSON-serializable, so we cannot cache it inside `cachedConfig`
   const api = getApiClient(token)
 
-  // This needs to be done here until buildbot uses a version of @netlify/config
-  // which returns `siteInfo`.
-  // TODO: move after `normalizeOpts()` instead after that.
-  const siteInfo = await getSiteInfo(api, siteId)
-
   // Performance optimization when @netlify/config caller has already previously
   // called it and cached the result.
   // This is used by the buildbot which:
   //  - first calls @netlify/config since it needs configuration property
   //  - later calls @netlify/build, which runs @netlify/config under the hood
   if (cachedConfig !== undefined) {
-    return { siteInfo, ...getConfig(cachedConfig, 'cached'), api }
+    return { ...getConfig(cachedConfig, 'cached'), api }
   }
 
   const { config: configOpt, defaultConfig, cwd, context, repositoryRoot, branch, baseRelDir } = await normalizeOpts(
@@ -46,20 +42,32 @@ const resolveConfig = async function({ cachedConfig, token = NETLIFY_AUTH_TOKEN,
   // not get normalized, merged with contexts, etc.
   const defaultConfigA = getConfig(defaultConfig, 'default')
 
+  const siteInfo = await getSiteInfo(api, siteId)
+  const { defaultConfig: defaultConfigB, baseRelDir: baseRelDirA = DEFAULT_BASE_REL_DIR } = addBuildSettings({
+    defaultConfig: defaultConfigA,
+    baseRelDir,
+    siteInfo,
+  })
+
   const { configPath, config } = await loadConfig({
     configOpt,
     cwd,
     context,
     repositoryRoot,
     branch,
-    defaultConfig: defaultConfigA,
-    baseRelDir,
+    defaultConfig: defaultConfigB,
+    baseRelDir: baseRelDirA,
   })
 
-  const { config: configA, buildDir } = await handleFiles({ config, repositoryRoot, baseRelDir })
+  const { config: configA, buildDir } = await handleFiles({ config, repositoryRoot, baseRelDir: baseRelDirA })
 
   return { siteInfo, configPath, buildDir, config: configA, context, branch, api }
 }
+
+// `baseRelDir` should default to `true` only if the option was not passed and
+// it could be retrieved from the `siteInfo`, which is why the default value
+// is assigned later than other properties.
+const DEFAULT_BASE_REL_DIR = true
 
 // Load a configuration file passed as a JSON object.
 // The logic is much simpler: it does not normalize nor validate it.

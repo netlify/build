@@ -29,7 +29,6 @@ const normalizeOpts = async function(opts) {
 const DEFAULT_OPTS = {
   cwd: getCwd(),
   context: CONTEXT || 'production',
-  baseRelDir: true,
 }
 
 // Verify that options point to existing directories
