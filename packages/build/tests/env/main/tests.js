@@ -48,18 +48,6 @@ test('Environment variable CONTEXT', async t => {
   await runFixture(t, 'context')
 })
 
-test('Environment variable git', async t => {
-  await runFixture(t, 'git')
-})
-
-test('Environment variable git with --branch', async t => {
-  await runFixture(t, 'git_branch', { flags: '--branch=test' })
-})
-
-test('Environment variable git no repository', async t => {
-  await runFixture(t, 'git', { copyRoot: { git: false } })
-})
-
 const SITE_INFO_PATH = '/api/v1/sites/test'
 const SITE_INFO_DATA = { url: 'test', build_settings: { repo_url: 'test' } }
 
