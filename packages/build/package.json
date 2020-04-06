@@ -44,7 +44,7 @@
     "is-plain-obj": "^2.1.0",
     "js-yaml": "^3.13.1",
     "locate-path": "^5.0.0",
-    "log-process-errors": "^5.0.3",
+    "log-process-errors": "^5.1.1",
     "map-obj": "^4.1.0",
     "netlify": "^4.0.3",
     "os-name": "^3.1.0",
