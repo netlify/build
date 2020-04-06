@@ -5,26 +5,25 @@ const {
 } = require('process')
 
 const { logCacheStart, logCacheDir } = require('../../log/main')
-const isNetlifyCI = require('../../utils/is-netlify-ci')
 
 // Save/restore cache core plugin
 const cachePlugin = {
-  async onPostBuild({ utils: { cache } }) {
+  async onPostBuild({ utils: { cache }, constants: { IS_LOCAL } }) {
     logCacheStart()
 
-    await Promise.all(ARTIFACTS.map(({ path, digests }) => saveCache(path, digests, cache)))
+    await Promise.all(ARTIFACTS.map(({ path, digests }) => saveCache({ path, digests, cache, IS_LOCAL })))
   },
 }
 
 // Cache a single directory
-const saveCache = async function(path, digests, cache) {
+const saveCache = async function({ path, digests, cache, IS_LOCAL }) {
   // In tests we don't run caching since it is slow and make source directory
   // much bigger
   if (TEST_CACHE_PATH !== undefined && TEST_CACHE_PATH !== path) {
     return
   }
 
-  const success = await cache.save(path, { move: isNetlifyCI(), digests })
+  const success = await cache.save(path, { move: !IS_LOCAL, digests })
 
   if (success) {
     logCacheDir(path)

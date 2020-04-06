@@ -1,4 +1,3 @@
-const isNetlifyCI = require('../utils/is-netlify-ci')
 const { omit } = require('../utils/omit')
 const { removeFalsy } = require('../utils/remove_falsy')
 
@@ -6,8 +5,8 @@ const { getGitEnv } = require('./git')
 
 // Retrieve the environment variables passed to plugins and lifecycle commands.
 // When run locally, this tries to emulate the production environment.
-const getChildEnv = async function({ netlifyConfig, buildDir, branch, context, siteInfo }) {
-  if (isNetlifyCI()) {
+const getChildEnv = async function({ netlifyConfig, buildDir, branch, context, siteInfo, mode }) {
+  if (mode === 'buildbot') {
     return process.env
   }
 

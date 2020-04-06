@@ -31,7 +31,7 @@ test.serial('Functions: install dependencies with npm in CI with no lock file', 
     `${FIXTURES_DIR}/npm_ci_no_lock/functions/node_modules/`,
   ])
 
-  await runFixture(t, 'npm_ci_no_lock', { env: { NETLIFY: 'true' } })
+  await runFixture(t, 'npm_ci_no_lock', { flags: '--mode=buildbot' })
 
   t.true(await pathExists(`${FIXTURES_DIR}/npm_ci_no_lock/functions/node_modules/`))
   await removeDir([
@@ -47,7 +47,7 @@ test.serial('Functions: install dependencies with npm in CI with lock file', asy
     `${FIXTURES_DIR}/npm_ci_lock/.netlify/functions/`,
     `${FIXTURES_DIR}/npm_ci_lock/functions/node_modules/`,
   ])
-  await runFixture(t, 'npm_ci_lock', { env: { NETLIFY: 'true' } })
+  await runFixture(t, 'npm_ci_lock', { flags: '--mode=buildbot' })
   t.true(await pathExists(`${FIXTURES_DIR}/npm_ci_lock/functions/node_modules/`))
   await removeDir([
     `${FIXTURES_DIR}/npm_ci_lock/.netlify/functions/`,
@@ -73,7 +73,7 @@ test.serial('Functions: install dependencies with Yarn in CI with lock file', as
     `${FIXTURES_DIR}/yarn_ci_lock/.netlify/functions/`,
     `${FIXTURES_DIR}/yarn_ci_lock/functions/node_modules/`,
   ])
-  await runFixture(t, 'yarn_ci_lock', { env: { NETLIFY: 'true' } })
+  await runFixture(t, 'yarn_ci_lock', { flags: '--mode=buildbot' })
   t.true(await pathExists(`${FIXTURES_DIR}/yarn_ci_lock/functions/node_modules/`))
   await removeDir([
     `${FIXTURES_DIR}/yarn_ci_lock/.netlify/functions/`,

@@ -7,8 +7,6 @@ const {
 const { getCacheDir } = require('@netlify/cache-utils')
 const mapObj = require('map-obj')
 
-const isNetlifyCI = require('../utils/is-netlify-ci')
-
 // Retrieve constants passed to plugins
 const getConstants = async function({
   configPath,
@@ -17,10 +15,11 @@ const getConstants = async function({
     build: { publish = buildDir, functions },
   },
   siteInfo: { id: siteId },
+  mode,
 }) {
-  const isLocal = !isNetlifyCI()
+  const isLocal = mode !== 'buildbot'
   const functionsDist = getFunctionsDist(isLocal)
-  const cacheDir = await getCacheDir()
+  const cacheDir = await getCacheDir({ mode })
 
   const constants = {
     /**

@@ -9,7 +9,6 @@ const stringWidth = require('string-width')
 
 const { version } = require('../../package.json')
 const { serializeError } = require('../error/serialize')
-const isNetlifyCI = require('../utils/is-netlify-ci')
 const { serializeList } = require('../utils/list')
 const { omit } = require('../utils/omit')
 
@@ -25,12 +24,12 @@ ${EMPTY_LINE}`)
 }
 
 const logFlags = function(flags) {
-  const flagsA = omit(flags, HIDDEN_FLAGS)
+  const hiddenFlags = flags.mode === 'buildbot' ? [...HIDDEN_FLAGS, 'nodePath'] : HIDDEN_FLAGS
+  const flagsA = omit(flags, hiddenFlags)
   log(cyanBright.bold(`${HEADING_PREFIX} Flags`), serialize(flagsA), EMPTY_LINE)
 }
 
-const CI_HIDDEN_FLAGS = isNetlifyCI() ? ['nodePath'] : []
-const HIDDEN_FLAGS = ['token', 'cachedConfig', 'defaultConfig', ...CI_HIDDEN_FLAGS]
+const HIDDEN_FLAGS = ['token', 'cachedConfig', 'defaultConfig']
 
 const logBuildDir = function(buildDir) {
   log(`${cyanBright.bold(`${HEADING_PREFIX} Current directory`)}

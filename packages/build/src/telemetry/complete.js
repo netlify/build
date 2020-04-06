@@ -4,18 +4,17 @@ const isCI = require('is-ci')
 const osName = require('os-name')
 
 const { version } = require('../../package.json')
-const isNetlifyCI = require('../utils/is-netlify-ci')
 
 const { telemetry } = require('./track')
 
 // Send telemetry request when build completes
-const trackBuildComplete = async function({ commandsCount, netlifyConfig, duration, siteInfo }) {
-  const payload = getPayload({ commandsCount, netlifyConfig, duration, siteInfo })
+const trackBuildComplete = async function({ commandsCount, netlifyConfig, duration, siteInfo, mode }) {
+  const payload = getPayload({ commandsCount, netlifyConfig, duration, siteInfo, mode })
   await telemetry.track('netlifyCI:buildComplete', payload)
 }
 
 // Retrieve telemetry information
-const getPayload = function({ commandsCount, netlifyConfig, duration, siteInfo: { id: siteId } }) {
+const getPayload = function({ commandsCount, netlifyConfig, duration, siteInfo: { id: siteId }, mode }) {
   const plugins = Object.values(netlifyConfig.plugins).map(getPluginPackage)
   return {
     steps: commandsCount,
@@ -24,7 +23,7 @@ const getPayload = function({ commandsCount, netlifyConfig, duration, siteInfo: 
     plugins,
     siteId,
     isCI,
-    isNetlifyCI: isNetlifyCI(),
+    isNetlifyCI: mode === 'buildbot',
     buildVersion: version,
     nodeVersion: nodeVersion.replace('v', ''),
     osPlatform: OS_TYPES[platform],

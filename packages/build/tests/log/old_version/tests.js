@@ -10,5 +10,5 @@ test('Print a warning when using an old version through Netlify CLI', async t =>
   }
 
   // We need to unset some environment variables which would otherwise disable `update-notifier`
-  await runFixture(t, 'error', { env: { NETLIFY_BUILD_TEST_CLI: '1', NODE_ENV: '' } })
+  await runFixture(t, 'error', { flags: '--mode=cli', env: { NODE_ENV: '' } })
 })

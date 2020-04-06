@@ -1,12 +1,10 @@
-const isNetlifyCI = require('../utils/is-netlify-ci')
-
 // Retrieve Netlify Site information, if availabled.
 // Used to retrieve local build environment variables and UI build settings.
 // This is not used in production builds since the buildbot passes this
 // information instead.
 // Requires knowing the `siteId` and having the access `token`.
-const getSiteInfo = async function(api, siteId) {
-  if (api === undefined || siteId === undefined || isNetlifyCI()) {
+const getSiteInfo = async function(api, siteId, mode) {
+  if (api === undefined || siteId === undefined || mode === 'buildbot') {
     return { id: siteId }
   }
 

@@ -34,15 +34,22 @@ const resolveConfig = async function({ cachedConfig, token = NETLIFY_AUTH_TOKEN,
     return { ...getConfig(cachedConfig, 'cached'), api }
   }
 
-  const { config: configOpt, defaultConfig, cwd, context, repositoryRoot, branch, baseRelDir } = await normalizeOpts(
-    opts,
-  )
+  const {
+    config: configOpt,
+    defaultConfig,
+    cwd,
+    context,
+    repositoryRoot,
+    branch,
+    baseRelDir,
+    mode,
+  } = await normalizeOpts(opts)
 
   // Retrieve default configuration file. It has less priority and it also does
   // not get normalized, merged with contexts, etc.
   const defaultConfigA = getConfig(defaultConfig, 'default')
 
-  const siteInfo = await getSiteInfo(api, siteId)
+  const siteInfo = await getSiteInfo(api, siteId, mode)
   const { defaultConfig: defaultConfigB, baseRelDir: baseRelDirA = DEFAULT_BASE_REL_DIR } = addBuildSettings({
     defaultConfig: defaultConfigA,
     baseRelDir,

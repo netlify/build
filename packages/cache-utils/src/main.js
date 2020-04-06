@@ -10,8 +10,8 @@ const { getManifestInfo, writeManifest, removeManifest, isExpired } = require('.
 const { parsePath } = require('./path')
 
 // Cache a file
-const saveOne = async function(path, { move = DEFAULT_MOVE, ttl = DEFAULT_TTL, digests = [], cacheDir } = {}) {
-  const { srcPath, cachePath } = await parsePath(path, cacheDir)
+const saveOne = async function(path, { move = DEFAULT_MOVE, ttl = DEFAULT_TTL, digests = [], cacheDir, mode } = {}) {
+  const { srcPath, cachePath } = await parsePath({ path, cacheDir, mode })
 
   if (!(await pathExists(srcPath))) {
     return false
@@ -30,8 +30,8 @@ const saveOne = async function(path, { move = DEFAULT_MOVE, ttl = DEFAULT_TTL, d
 }
 
 // Restore a cached file
-const restoreOne = async function(path, { move = DEFAULT_MOVE, cacheDir } = {}) {
-  const { srcPath, cachePath } = await parsePath(path, cacheDir)
+const restoreOne = async function(path, { move = DEFAULT_MOVE, cacheDir, mode } = {}) {
+  const { srcPath, cachePath } = await parsePath({ path, cacheDir, mode })
 
   if (!(await pathExists(cachePath))) {
     return false
@@ -48,8 +48,8 @@ const restoreOne = async function(path, { move = DEFAULT_MOVE, cacheDir } = {}) 
 }
 
 // Remove the cache of a file
-const removeOne = async function(path, { cacheDir } = {}) {
-  const { cachePath } = await parsePath(path, cacheDir)
+const removeOne = async function(path, { cacheDir, mode } = {}) {
+  const { cachePath } = await parsePath({ path, cacheDir, mode })
 
   if (!(await pathExists(cachePath))) {
     return false
@@ -62,8 +62,8 @@ const removeOne = async function(path, { cacheDir } = {}) {
 }
 
 // Check if a file is cached
-const hasOne = async function(path, { cacheDir } = {}) {
-  const { cachePath } = await parsePath(path, cacheDir)
+const hasOne = async function(path, { cacheDir, mode } = {}) {
+  const { cachePath } = await parsePath({ path, cacheDir, mode })
 
   return (await pathExists(cachePath)) && !(await isExpired(cachePath))
 }

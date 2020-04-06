@@ -1,6 +1,6 @@
 const {
   cwd: getCwd,
-  env: { CONTEXT },
+  env: { CONTEXT, NETLIFY },
 } = require('process')
 
 const { throwError } = require('../error')
@@ -29,6 +29,7 @@ const normalizeOpts = async function(opts) {
 const DEFAULT_OPTS = {
   cwd: getCwd(),
   context: CONTEXT || 'production',
+  mode: NETLIFY ? 'buildbot' : 'require',
 }
 
 // Verify that options point to existing directories

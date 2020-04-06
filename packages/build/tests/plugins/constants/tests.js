@@ -60,11 +60,11 @@ test('constants.CACHE_DIR local', async t => {
 // TODO: figure out why those tests randomly fail on Linux
 if (platform !== 'linux' || !isCI) {
   test('constants.CACHE_DIR CI', async t => {
-    await runFixture(t, 'cache', { env: { NETLIFY: 'true' } })
+    await runFixture(t, 'cache', { flags: '--mode=buildbot' })
   })
 
   test('constants.IS_LOCAL CI', async t => {
-    await runFixture(t, 'is_local', { env: { NETLIFY: 'true' } })
+    await runFixture(t, 'is_local', { flags: '--mode=buildbot' })
   })
 }
 

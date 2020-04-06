@@ -57,8 +57,8 @@ test('Environment variable siteInfo no siteId', async t => {
 test('Environment variable siteInfo CI', async t => {
   const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_DATA)
   await runFixture(t, 'empty', {
-    flags: '--token=test --site-id=test',
-    env: { TEST_SCHEME: scheme, TEST_HOST: host, NETLIFY: 'true' },
+    flags: '--token=test --site-id=test --mode=buildbot',
+    env: { TEST_SCHEME: scheme, TEST_HOST: host },
   })
   await stopServer()
 })
@@ -123,8 +123,8 @@ test('Build settings are not used without a siteId', async t => {
 test('Build settings are not used in CI', async t => {
   const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_BUILD_SETTINGS)
   await runFixture(t, 'base', {
-    flags: '--token=test --site-id=test',
-    env: { TEST_SCHEME: scheme, TEST_HOST: host, NETLIFY: 'true' },
+    flags: '--token=test --site-id=test --mode=buildbot',
+    env: { TEST_SCHEME: scheme, TEST_HOST: host },
   })
   await stopServer()
 })

@@ -7,8 +7,8 @@ const { isManifest } = require('./manifest')
 const { BASES } = require('./path')
 
 // List all cached files
-const list = async function({ cacheDir } = {}) {
-  const cacheDirA = await getCacheDir(cacheDir)
+const list = async function({ cacheDir, mode } = {}) {
+  const cacheDirA = await getCacheDir({ cacheDir, mode })
   const files = await Promise.all(BASES.map(baseInfo => listBase(baseInfo, cacheDirA)))
   const filesA = files.flat()
   return filesA

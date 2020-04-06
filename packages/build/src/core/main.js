@@ -50,11 +50,12 @@ const build = async function(flags) {
       constants,
       context,
       branch,
+      mode,
     } = await loadConfig(flags)
 
     try {
-      const pluginsOptions = await getPluginsOptions(netlifyConfig, buildDir)
-      await installLocalPluginsDependencies(pluginsOptions, buildDir)
+      const pluginsOptions = await getPluginsOptions({ netlifyConfig, buildDir, mode })
+      await installLocalPluginsDependencies({ pluginsOptions, buildDir, mode })
 
       const commandsCount = await buildRun({
         pluginsOptions,
@@ -68,6 +69,7 @@ const build = async function(flags) {
         constants,
         context,
         branch,
+        mode,
       })
 
       if (dry) {
@@ -77,11 +79,11 @@ const build = async function(flags) {
       logBuildSuccess()
       const duration = endTimer(buildTimer, 'Netlify Build')
       logBuildEnd()
-      await trackBuildComplete({ commandsCount, netlifyConfig, duration, siteInfo })
+      await trackBuildComplete({ commandsCount, netlifyConfig, duration, siteInfo, mode })
       return true
     } catch (error) {
       await handleBuildError(error, api)
-      await logOldCliVersionError()
+      await logOldCliVersionError(mode)
       throw error
     }
   } catch (error) {
@@ -102,9 +104,10 @@ const buildRun = async function({
   constants,
   context,
   branch,
+  mode,
 }) {
   const utilsData = await startUtils(buildDir)
-  const childEnv = await getChildEnv({ netlifyConfig, buildDir, context, branch, siteInfo })
+  const childEnv = await getChildEnv({ netlifyConfig, buildDir, context, branch, siteInfo, mode })
   const childProcesses = await startPlugins({ pluginsOptions, buildDir, nodePath, childEnv })
 
   try {
@@ -120,6 +123,7 @@ const buildRun = async function({
       token,
       dry,
       constants,
+      mode,
     })
   } finally {
     await stopPlugins(childProcesses)
@@ -138,6 +142,7 @@ const executeCommands = async function({
   token,
   dry,
   constants,
+  mode,
 }) {
   const pluginsCommands = await loadPlugins({
     pluginsOptions,
@@ -167,6 +172,7 @@ const executeCommands = async function({
     buildDir,
     nodePath,
     childEnv,
+    mode,
   })
   return commandsCount
 }

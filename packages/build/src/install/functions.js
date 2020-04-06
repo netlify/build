@@ -5,7 +5,7 @@ const readdirp = require('readdirp')
 const { installDependencies } = require('./main')
 
 // Install dependencies of Netlify Functions
-const installFunctionDependencies = async function(functionsSrc) {
+const installFunctionDependencies = async function(functionsSrc, isLocal) {
   const packagePaths = await readdirp.promise(functionsSrc, { depth: 1, fileFilter: 'package.json' })
   if (packagePaths.length === 0) {
     return
@@ -13,7 +13,7 @@ const installFunctionDependencies = async function(functionsSrc) {
 
   console.log('Installing functions dependencies')
   const packageRoots = packagePaths.map(getPackageRoot)
-  await Promise.all(packageRoots.map(packageRoot => installDependencies({ packageRoot })))
+  await Promise.all(packageRoots.map(packageRoot => installDependencies({ packageRoot, isLocal })))
 }
 
 const getPackageRoot = function({ fullPath }) {
