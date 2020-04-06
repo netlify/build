@@ -82,7 +82,7 @@ const COMMANDS = {
     installLock: 'npm ci --no-progress --no-audit --no-fund',
   },
   yarn: {
-    add: 'yarn add --no-progress --non-interactive',
+    add: 'yarn add --no-progress --non-interactive --ignore-workspace-root-check',
     installNoLock: 'yarn install --no-progress --non-interactive',
     installLock: 'yarn install --frozen-lockfile --no-progress --non-interactive',
   },
