@@ -10,7 +10,7 @@ test('Node module plugins', async t => {
   await runFixture(t, 'module')
 })
 
-test('Resolution is relative to the config file', async t => {
+test('Resolution is relative to the build directory', async t => {
   await runFixture(t, 'basedir', { flags: `--config=${FIXTURES_DIR}/basedir/base/netlify.yml` })
 })
 
