@@ -12,7 +12,7 @@ const {
 
 const ROOT_DIR = `${__dirname}/../..`
 
-const runFixture = async function(t, fixtureName, { env, ...opts } = {}) {
+const runFixture = async function(t, fixtureName, { env, flags = '', ...opts } = {}) {
   return runFixtureCommon(t, fixtureName, {
     ...opts,
     binaryPath: await BINARY_PATH,
@@ -23,6 +23,7 @@ const runFixture = async function(t, fixtureName, { env, ...opts } = {}) {
       BRANCH: 'branch',
       ...env,
     },
+    flags: `--stable ${flags}`,
   })
 }
 const BINARY_PATH = getBinPath({ cwd: ROOT_DIR })

@@ -42,6 +42,12 @@ Default: current directory`,
     describe: `Git repository root directory. Used to retrieve the configuration file.
 Default: automatically guessed`,
   },
+  stable: {
+    boolean: true,
+    describe: `Sort keys printed in the output.
+Default: false`,
+    default: false,
+  },
   token: {
     string: true,
     describe: `Netlify API token for authentication.
