@@ -24,7 +24,7 @@ A clear and concise description of what the bug is.
 - If using the CLI, please enter the following command in a terminal and copy/paste its output:
 
 ```bash
-npx envinfo --system --binaries --npmPackages @netlify/build,@netlify/config,@netlify/git-utils,@netlify/cache-utils,@netlify/functions-utils,@netlify/run-utils,netlify-cli
+npx envinfo --system --binaries --npmPackages @netlify/build,@netlify/config,@netlify/git-utils,@netlify/cache-utils,@netlify/functions-utils,@netlify/run-utils,netlify-cli --npmGlobalPackages @netlify/build,netlify-cli
 ```
 
 **Deploy logs**
