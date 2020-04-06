@@ -62,3 +62,69 @@ test('Environment variable siteInfo CI', async t => {
   })
   await stopServer()
 })
+
+const SITE_INFO_BUILD_SETTINGS = {
+  url: 'test',
+  build_settings: {
+    cmd: 'testCommand',
+    dir: 'testPublish',
+    functions_dir: 'testFunctions',
+    base: 'base',
+    env: { TEST_ENV: 'test' },
+    base_rel_dir: false,
+  },
+}
+
+test('Use build settings if a siteId and token are provided', async t => {
+  const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_BUILD_SETTINGS)
+  await runFixture(t, 'base', {
+    flags: '--token=test --site-id=test',
+    env: { TEST_SCHEME: scheme, TEST_HOST: host },
+  })
+  await stopServer()
+})
+
+test('Build settings have low merging priority', async t => {
+  const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_BUILD_SETTINGS)
+  await runFixture(t, 'build_settings', {
+    flags: '--token=test --site-id=test --baseRelDir',
+    env: { TEST_SCHEME: scheme, TEST_HOST: host },
+  })
+  await stopServer()
+})
+
+test('Build settings are not used if getSite call fails', async t => {
+  const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_BUILD_SETTINGS, { status: 400 })
+  await runFixture(t, 'base', {
+    flags: '--token=test --site-id=test',
+    env: { TEST_SCHEME: scheme, TEST_HOST: host },
+  })
+  await stopServer()
+})
+
+test('Build settings are not used without a token', async t => {
+  const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_BUILD_SETTINGS)
+  await runFixture(t, 'base', {
+    flags: '--site-id=test',
+    env: { TEST_SCHEME: scheme, TEST_HOST: host },
+  })
+  await stopServer()
+})
+
+test('Build settings are not used without a siteId', async t => {
+  const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_BUILD_SETTINGS)
+  await runFixture(t, 'base', {
+    flags: '--token=test',
+    env: { TEST_SCHEME: scheme, TEST_HOST: host },
+  })
+  await stopServer()
+})
+
+test('Build settings are not used in CI', async t => {
+  const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_BUILD_SETTINGS)
+  await runFixture(t, 'base', {
+    flags: '--token=test --site-id=test',
+    env: { TEST_SCHEME: scheme, TEST_HOST: host, NETLIFY: 'true' },
+  })
+  await stopServer()
+})

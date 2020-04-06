@@ -1,0 +1,7 @@
+build:
+  command: fixtureCommand
+  publish: fixturePublish
+  functions: fixtureFunctions
+  base: other_base
+  environment:
+    TEST_ENV: fixture
