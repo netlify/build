@@ -7,7 +7,7 @@ setColorLevel()
 // eslint-disable-next-line import/order
 const logProcessErrors = require('log-process-errors')
 
-const { ERROR_TYPE_SYM } = require('../error')
+const { isBuildError, ERROR_TYPE_SYM } = require('../error')
 const { sendEventToParent, getEventsFromParent } = require('../ipc')
 
 const { loadPlugin } = require('./load')
@@ -33,13 +33,16 @@ const handleProcessErrors = function() {
   logProcessErrors({ log: handleProcessError, colors: hasColors(), exitOn: [], level: { multipleResolves: 'silent' } })
 }
 
-const handleProcessError = async function(error, level) {
+const handleProcessError = async function(error, level, originalError) {
   if (level !== 'error') {
     console[level](error)
     return
   }
 
-  await handleError(error)
+  // Do not use log-process-errors prettification with errors thrown by `utils.build.*`
+  const errorA = isBuildError(originalError) ? originalError : error
+
+  await handleError(errorA)
 }
 
 const handleError = async function({

@@ -35,6 +35,10 @@ const getError = function(error, message, func) {
   return errorA
 }
 
+const isBuildError = function(error) {
+  return error instanceof Error && error[ERROR_TYPE_SYM] !== undefined
+}
+
 const ERROR_TYPE_SYM = Symbol('errorType')
 
-module.exports = { failBuild, failPlugin, cancelBuild, ERROR_TYPE_SYM }
+module.exports = { failBuild, failPlugin, cancelBuild, isBuildError, ERROR_TYPE_SYM }
