@@ -26,6 +26,7 @@ const getColorLevel = function() {
   }
 
   // This also ensure colors are used in the BuildBot
+  // We cannot use the --mode CLI flag since this must be loaded before `chalk`
   if (env.NETLIFY) {
     return '1'
   }
