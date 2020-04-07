@@ -3,15 +3,13 @@ const { platform, env } = require('process')
 
 const globalCacheDir = require('global-cache-dir')
 
-const isNetlifyCI = require('./utils/is-netlify-ci')
-
 // Retrieve the cache directory location
-const getCacheDir = function(cacheDir) {
+const getCacheDir = function({ cacheDir, mode } = {}) {
   if (cacheDir !== undefined) {
     return resolve(cacheDir)
   }
 
-  if (!isNetlifyCI()) {
+  if (mode !== 'buildbot') {
     return resolve(LOCAL_CACHE_DIR)
   }
 

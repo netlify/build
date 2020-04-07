@@ -7,8 +7,6 @@ const yargs = require('yargs')
 
 require('../utils/polyfills')
 
-const isNetlifyCI = require('../utils/is-netlify-ci')
-
 const build = require('./main')
 
 const pSetTimeout = promisify(setTimeout)
@@ -28,7 +26,7 @@ const runCli = async function() {
   // BuildBot to print some messages before those are flushed.
   // The following is a temporary workaround. This should be fixed once the
   // logic moves from the BuildBot to Netlify Build
-  if (isNetlifyCI()) {
+  if (flagsA.mode === 'buildbot') {
     await pSetTimeout(1e3)
   }
 
@@ -116,6 +114,14 @@ Default: Current Node.js binary`,
     boolean: true,
     describe: `Print currently enabled feature flags.
 Default: false`,
+  },
+  mode: {
+    string: true,
+    describe: `Environment in which this is loaded. Can be:
+  - 'buildbot': within Netlify Buildbot
+  - 'cli': within Netlify CLI
+  - 'require': through require('@netlify/build')`,
+    hidden: true,
   },
 }
 

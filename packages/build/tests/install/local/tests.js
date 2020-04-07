@@ -15,7 +15,7 @@ test.serial('Install local plugin dependencies: with npm locally with lock file'
 
 test.serial('Install local plugin dependencies: with npm in CI with lock file', async t => {
   await removeDir(`${FIXTURES_DIR}/npm_ci_lock/plugin/node_modules`)
-  await runFixture(t, 'npm_ci_lock', { env: { NETLIFY: 'true' } })
+  await runFixture(t, 'npm_ci_lock', { flags: '--mode=buildbot' })
   t.true(await pathExists(`${FIXTURES_DIR}/npm_ci_lock/plugin/node_modules`))
   await removeDir(`${FIXTURES_DIR}/npm_ci_lock/plugin/node_modules`)
 })
@@ -24,7 +24,7 @@ test.serial('Install local plugin dependencies: with npm in CI with no lock file
   await removeDir(`${FIXTURES_DIR}/npm_ci_no_lock/plugin/node_modules`)
   await del(`${FIXTURES_DIR}/npm_ci_no_lock/plugin/package-lock.json`, { force: true })
 
-  await runFixture(t, 'npm_ci_no_lock', { env: { NETLIFY: 'true' } })
+  await runFixture(t, 'npm_ci_no_lock', { flags: '--mode=buildbot' })
 
   t.true(await pathExists(`${FIXTURES_DIR}/npm_ci_no_lock/plugin/node_modules`))
   await removeDir(`${FIXTURES_DIR}/npm_ci_no_lock/plugin/node_modules`)
@@ -41,7 +41,7 @@ test.serial('Install local plugin dependencies: with yarn locally with lock file
 
 test.serial('Install local plugin dependencies: with yarn in CI with lock file', async t => {
   await removeDir(`${FIXTURES_DIR}/yarn_ci_lock/plugin/node_modules`)
-  await runFixture(t, 'yarn_ci_lock', { env: { NETLIFY: 'true' } })
+  await runFixture(t, 'yarn_ci_lock', { flags: '--mode=buildbot' })
   t.true(await pathExists(`${FIXTURES_DIR}/yarn_ci_lock/plugin/node_modules`))
   await removeDir(`${FIXTURES_DIR}/yarn_ci_lock/plugin/node_modules`)
 })

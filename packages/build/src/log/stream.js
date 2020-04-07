@@ -3,15 +3,14 @@ const { promisify } = require('util')
 
 const pSetTimeout = promisify(setTimeout)
 
-const isNetlifyCI = require('../utils/is-netlify-ci')
 // Start streaming Bash command or plugin command output
 // In CI, we need to buffer output instead at the moment due to the current
 // BuildBot not handling it correctly.
 // But locally we want to stream output instead for a better developer
 // experience.
 // See https://github.com/netlify/build/issues/343
-const startOutput = function(childProcess) {
-  if (shouldBuffer()) {
+const startOutput = function(childProcess, mode) {
+  if (shouldBuffer(mode)) {
     return bufferOutput(childProcess)
   }
 
@@ -19,8 +18,8 @@ const startOutput = function(childProcess) {
 }
 
 // Stop streaming/buffering Bash command or plugin command output
-const stopOutput = async function(childProcess, outputState) {
-  if (shouldBuffer()) {
+const stopOutput = async function(childProcess, mode, outputState) {
+  if (shouldBuffer(mode)) {
     return unbufferOutput(childProcess, outputState)
   }
 
@@ -70,8 +69,8 @@ const unbufferOutput = function(childProcess, { chunks, dataListener }) {
   process.stdout.write(`${output}\n`)
 }
 
-const shouldBuffer = function() {
-  return isNetlifyCI()
+const shouldBuffer = function(mode) {
+  return mode === 'buildbot'
 }
 
 module.exports = { startOutput, stopOutput }

@@ -18,12 +18,12 @@ const functionsPlugins = function(inputs, { constants: { FUNCTIONS_SRC } }) {
   return { onPreBuild, onPostBuild }
 }
 
-const onPreBuild = async function({ constants: { FUNCTIONS_SRC } }) {
+const onPreBuild = async function({ constants: { FUNCTIONS_SRC, IS_LOCAL } }) {
   if (!(await pathExists(FUNCTIONS_SRC))) {
     return
   }
 
-  await installFunctionDependencies(FUNCTIONS_SRC)
+  await installFunctionDependencies(FUNCTIONS_SRC, IS_LOCAL)
 }
 
 // Package Netlify functions

@@ -1,5 +1,5 @@
 const {
-  env: { NETLIFY_AUTH_TOKEN },
+  env: { NETLIFY_AUTH_TOKEN, NETLIFY },
   execPath,
 } = require('process')
 
@@ -31,6 +31,7 @@ const loadConfig = async function(flags) {
     context,
     branch,
     baseRelDir,
+    mode,
   } = removeFalsy(flagsB)
 
   const {
@@ -52,6 +53,7 @@ const loadConfig = async function(flags) {
     baseRelDir,
     token,
     siteId,
+    mode,
   })
   logBuildDir(buildDir)
   logConfigPath(configPath)
@@ -59,7 +61,7 @@ const loadConfig = async function(flags) {
   logContext(contextA)
 
   const apiA = addApiErrorHandlers(api)
-  const constants = await getConstants({ configPath, buildDir, netlifyConfig, siteInfo })
+  const constants = await getConstants({ configPath, buildDir, netlifyConfig, siteInfo, mode })
   return {
     netlifyConfig,
     configPath,
@@ -72,6 +74,7 @@ const loadConfig = async function(flags) {
     constants,
     context: contextA,
     branch: branchA,
+    mode,
   }
 }
 
@@ -79,6 +82,7 @@ const loadConfig = async function(flags) {
 const DEFAULT_FLAGS = {
   nodePath: execPath,
   token: NETLIFY_AUTH_TOKEN,
+  mode: NETLIFY ? 'buildbot' : 'require',
 }
 
 // Retrieve configuration file and related information
@@ -94,6 +98,7 @@ const resolveFullConfig = async function({
   baseRelDir,
   token,
   siteId,
+  mode,
 }) {
   try {
     return await resolveConfig({
@@ -107,6 +112,7 @@ const resolveFullConfig = async function({
       baseRelDir,
       token,
       siteId,
+      mode,
     })
   } catch (error) {
     if (error.type === 'userError') {

@@ -28,7 +28,7 @@ test('Environment variable NETLIFY local', async t => {
 // TODO: figure out why those tests randomly fail on Linux
 if (platform !== 'linux' || !isCI) {
   test('Environment variable NETLIFY CI', async t => {
-    await runFixture(t, 'netlify', { env: { NETLIFY: 'true' } })
+    await runFixture(t, 'netlify', { flags: '--mode=buildbot', env: { NETLIFY: 'true' } })
   })
 }
 

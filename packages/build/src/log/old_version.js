@@ -6,15 +6,13 @@ const {
 const readPkgUp = require('read-pkg-up')
 const UpdateNotifier = require('update-notifier')
 
-const { isNetlifyCli } = require('../utils/is-netlify-cli')
-
 // Many build errors happen in local builds that do not use the latest version
 // of `@netlify/build`. We print a warning message on those.
 // We only print this when Netlify CLI has been used. Programmatic usage might
 // come from a deep dependency calling `@netlify/build` and user might not be
 // able to take any upgrade action, making the message noisy.
-const logOldCliVersionError = async function() {
-  if (!isNetlifyCli()) {
+const logOldCliVersionError = async function(mode) {
+  if (mode !== 'cli') {
     return
   }
 

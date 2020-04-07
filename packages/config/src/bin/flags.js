@@ -75,6 +75,14 @@ to try to retrieve a second configuration file and discard the first one.
 Default: true`,
     hidden: true,
   },
+  mode: {
+    string: true,
+    describe: `Environment in which this is loaded. Can be:
+  - 'buildbot': within Netlify Buildbot
+  - 'cli': within Netlify CLI
+  - 'require': through require('@netlify/config')`,
+    hidden: true,
+  },
 }
 
 const USAGE = `netlify-config [OPTIONS...]

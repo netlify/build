@@ -3,21 +3,20 @@ const pathExists = require('path-exists')
 const { gte: gteVersion } = require('semver')
 
 const { addErrorInfo } = require('../error/info')
-const isNetlifyCI = require('../utils/is-netlify-ci')
 
 // Install Node.js dependencies in a specific directory
-const installDependencies = function({ packageRoot }) {
-  return runCommand({ packageRoot, type: 'install' })
+const installDependencies = function({ packageRoot, isLocal }) {
+  return runCommand({ packageRoot, isLocal, type: 'install' })
 }
 
 // Add new Node.js dependencies
-const addDependencies = function({ packageRoot, packages }) {
-  return runCommand({ packageRoot, packages, type: 'add' })
+const addDependencies = function({ packageRoot, isLocal, packages }) {
+  return runCommand({ packageRoot, packages, isLocal, type: 'add' })
 }
 
-const runCommand = async function({ packageRoot, packages, type }) {
+const runCommand = async function({ packageRoot, packages, isLocal, type }) {
   try {
-    const command = await getCommand(packageRoot, type)
+    const command = await getCommand({ packageRoot, type, isLocal })
     const packagesList = packages === undefined ? '' : ` ${packages.join(' ')}`
     await execa.command(`${command}${packagesList}`, { cwd: packageRoot, all: true })
   } catch (error) {
@@ -29,9 +28,9 @@ const runCommand = async function({ packageRoot, packages, type }) {
 }
 
 // Retrieve the shell command to install or add dependencies
-const getCommand = async function(packageRoot, type) {
+const getCommand = async function({ packageRoot, type, isLocal }) {
   const manager = await getManager(packageRoot)
-  const typeA = await getType(packageRoot, type, manager)
+  const typeA = await getType({ packageRoot, type, manager, isLocal })
   const command = COMMANDS[manager][typeA]
   const commandA = await fixNpmCiCompat(command)
   return commandA
@@ -57,12 +56,12 @@ const getManager = async function(packageRoot) {
 //     there is a lock file): lock files are read/written
 //   - "installLock": !(new packages are installed) && (we are in CI && there is
 //     a lock file): lock files are read but not written
-const getType = async function(packageRoot, type, manager) {
+const getType = async function({ packageRoot, type, manager, isLocal }) {
   if (type === 'add') {
     return 'add'
   }
 
-  if (!isNetlifyCI() || !(await hasLockFile(manager, packageRoot))) {
+  if (isLocal || !(await hasLockFile(manager, packageRoot))) {
     return 'installNoLock'
   }
 
