@@ -23,6 +23,7 @@ are **now in public beta.** Learn how to enable your site to use Netlify Build a
   - [Validating plugin inputs](#validating-plugin-inputs)
   - [Plugin constants](#plugin-constants)
   - [Error reporting](#error-reporting)
+  - [Dynamic events](#dynamic-events)
 - [Publishing a plugin](#publishing-a-plugin)
   - [Sharing with the community](#sharing-with-the-community)
 - [Contributors](#contributors)
@@ -182,25 +183,6 @@ module.exports = {
 }
 ```
 
-Instead of a plugin being a simple object, it can also be a function returning an object:
-
-```js
-// index.js
-
-module.exports = function helloWorldPlugin(inputs) {
-  console.log(inputs.foo) // bar
-  console.log(inputs.fizz) // pop
-
-  return {
-    onPreBuild: ({ inputs, netlifyConfig, constants }) => {
-      console.log('Hello world from onPreBuild event!')
-      console.log(inputs.foo) // bar
-      console.log(inputs.fizz) // pop
-    },
-  }
-}
-```
-
 ### Validating plugin inputs
 
 The plugin inputs can be validated using the `inputs` property in the plugin `manifest.yml` file:
@@ -294,6 +276,31 @@ module.exports = {
       utils.build.failBuild('Failure message', { error })
     }
   },
+}
+```
+
+### Dynamic events
+
+Some plugins trigger different events depending on the user's `inputs`. This can be achieved by returning the plugin
+object from a function instead.
+
+```js
+// index.js
+
+module.exports = function helloWorldPlugin(inputs) {
+  if (inputs.before) {
+    return {
+      onPreBuild: () => {
+        console.log('Hello world from onPreBuild event!')
+      },
+    }
+  } else {
+    return {
+      onPostBuild: () => {
+        console.log('Hello world from onPostBuild event!')
+      },
+    }
+  }
 }
 ```
 
