@@ -87,4 +87,16 @@ const restore = allowMany.bind(null, restoreOne)
 const remove = allowMany.bind(null, removeOne)
 const has = allowMany.bind(null, hasOne)
 
-module.exports = { save, restore, remove, has, list, getCacheDir }
+// Change `opts` default values
+const bindOpts = function(opts) {
+  return {
+    save: (paths, optsA) => save(paths, { ...opts, ...optsA }),
+    restore: (paths, optsA) => restore(paths, { ...opts, ...optsA }),
+    remove: (paths, optsA) => remove(paths, { ...opts, ...optsA }),
+    has: (paths, optsA) => has(paths, { ...opts, ...optsA }),
+    list: optsA => list({ ...opts, ...optsA }),
+    getCacheDir: optsA => getCacheDir({ ...opts, ...optsA }),
+  }
+}
+
+module.exports = { save, restore, remove, has, list, getCacheDir, bindOpts }

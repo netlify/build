@@ -14,15 +14,16 @@ const startUtils = async function(buildDir) {
 }
 
 // Retrieve the `utils` argument.
-const getUtils = function({ utilsData: { git }, constants: { FUNCTIONS_SRC } }) {
+const getUtils = function({ utilsData: { git }, constants: { FUNCTIONS_SRC, CACHE_DIR } }) {
   const buildUtils = { failBuild, failPlugin, cancelBuild }
   const gitA = gitUtils.load(git)
+  const cache = cacheUtils.bindOpts({ cacheDir: CACHE_DIR })
   const add = src => functionsUtils.add(src, FUNCTIONS_SRC, { fail: failBuild })
   const functions = { add }
   const utils = {
     build: buildUtils,
     git: gitA,
-    cache: cacheUtils,
+    cache,
     run: runUtils,
     functions,
   }

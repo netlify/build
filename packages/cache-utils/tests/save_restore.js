@@ -6,7 +6,7 @@ const cacheUtils = require('..')
 const { pWriteFile, pReadFile, createTmpDir, createTmpFile, removeFiles } = require('./helpers/main')
 
 test('Should expose several methods', async t => {
-  t.deepEqual(Object.keys(cacheUtils).sort(), ['getCacheDir', 'has', 'list', 'remove', 'restore', 'save'])
+  t.deepEqual(Object.keys(cacheUtils).sort(), ['bindOpts', 'getCacheDir', 'has', 'list', 'remove', 'restore', 'save'])
 })
 
 test('Should cache and restore one file', async t => {
