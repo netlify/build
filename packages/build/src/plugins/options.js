@@ -28,10 +28,10 @@ const normalizePluginOptions = function({ package, location = package, core = fa
 
 // Retrieve plugin's main file path.
 // Then load plugin's `package.json` and `manifest.yml`.
-const loadPluginFiles = async function({ pluginOptions, pluginOptions: { location, local }, buildDir }) {
+const loadPluginFiles = async function({ pluginOptions, pluginOptions: { location }, buildDir }) {
   const pluginPath = await pResolve(location, { basedir: buildDir })
   const pluginDir = dirname(pluginPath)
-  const { packageDir, packageJson } = await getPackageJson({ pluginDir, local })
+  const { packageDir, packageJson } = await getPackageJson({ pluginDir })
   const { manifest, inputs: inputsA } = await useManifest(pluginOptions, { pluginDir, packageDir, packageJson })
   return { ...pluginOptions, pluginPath, packageDir, packageJson, manifest, inputs: inputsA }
 }
