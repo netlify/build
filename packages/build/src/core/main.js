@@ -167,7 +167,6 @@ const executeCommands = async function({
     buildCommands,
     endCommands,
     errorCommands,
-    commandsCount,
     configPath,
     buildDir,
     nodePath,

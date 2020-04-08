@@ -131,12 +131,6 @@ const getLoadedPlugin = function({ package, core, packageJson: { version } }) {
   return `${SUBTEXT_PADDING} - ${greenBright.bold(package)}${location}`
 }
 
-const logCommandsStart = function(commandsCount) {
-  log(`${EMPTY_LINE}
-${greenBright.bold(`${HEADING_PREFIX} Running Netlify Build Lifecycle`)}
-${SUBTEXT_PADDING}Found ${commandsCount} commands. Let's do this!`)
-}
-
 const logDryRunStart = function(eventWidth, commandsCount) {
   const columnWidth = getDryColumnWidth(eventWidth, commandsCount)
   const line = '─'.repeat(columnWidth)
@@ -291,7 +285,6 @@ module.exports = {
   logInstallLocalPluginsDeps,
   logLoadPlugins,
   logLoadedPlugins,
-  logCommandsStart,
   logDryRunStart,
   logDryRunCommand,
   logDryRunEnd,

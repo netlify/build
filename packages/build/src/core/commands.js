@@ -3,7 +3,7 @@ const execa = require('execa')
 const pReduce = require('p-reduce')
 
 const { addErrorInfo, getErrorInfo } = require('../error/info')
-const { logCommandsStart, logCommand, logShellCommandStart, logCommandSuccess, logPluginError } = require('../log/main')
+const { logCommand, logShellCommandStart, logCommandSuccess, logPluginError } = require('../log/main')
 const { startOutput, stopOutput } = require('../log/stream')
 const { startTimer, endTimer } = require('../log/timer')
 const { callChild } = require('../plugins/ipc')
@@ -54,15 +54,12 @@ const runCommands = async function({
   buildCommands,
   endCommands,
   errorCommands,
-  commandsCount,
   configPath,
   buildDir,
   nodePath,
   childEnv,
   mode,
 }) {
-  logCommandsStart(commandsCount)
-
   // We have to use a state variable to keep track of how many commands were run
   // before an error is thrown, so that error handlers are correctly numbered
   const state = { index: 0 }
