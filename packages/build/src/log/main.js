@@ -201,7 +201,7 @@ const logCommand = function({ event, prop, package }, { index, configPath, error
   const description =
     prop === undefined ? `${bold(event)} command from ${bold(package)}` : `${bold(prop)} command${configName}`
   const logColor = error ? redBright.bold : cyanBright.bold
-  const header = `${index}. Running ${description}`
+  const header = `${index}. ${description}`
   log(
     logColor(`
 ${getHeader(header)}
