@@ -23,7 +23,6 @@ const NORMALIZE_REGEXPS = [
   [new RegExp(tick, 'g'), '√'],
   [new RegExp(pointer, 'g'), '>'],
   [new RegExp(arrowDown, 'g'), '↓'],
-  [/^.*(Have a nice day)/m, '$1'],
   [/⚠/gu, '‼'],
   // A bug in nyc (https://github.com/istanbuljs/istanbuljs/issues/141) is
   // creating those error messages on Windows. This happens randomly and

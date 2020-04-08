@@ -1,6 +1,5 @@
 const { basename } = require('path')
 const {
-  platform,
   env: { NETLIFY_BUILD_DEBUG },
 } = require('process')
 
@@ -250,14 +249,6 @@ ${EMPTY_LINE}`),
   )
 }
 
-const logBuildEnd = function() {
-  log(`${EMPTY_LINE}
-${cyanBright(SPARKLES)} Have a nice day!
-${EMPTY_LINE}`)
-}
-
-const SPARKLES = platform === 'win32' ? '(/Ò_Ò)/' : '(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧'
-
 // Print a rectangular header
 const getHeader = function(message) {
   const messageWidth = stringWidth(message)
@@ -297,5 +288,4 @@ module.exports = {
   logPluginError,
   logBuildError,
   logBuildSuccess,
-  logBuildEnd,
 }

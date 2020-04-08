@@ -9,7 +9,7 @@ require('../error/process')
 const { getChildEnv } = require('../env/main')
 const { handleBuildError } = require('../error/handle')
 const { installLocalPluginsDependencies } = require('../install/local')
-const { logBuildStart, logBuildError, logBuildSuccess, logBuildEnd } = require('../log/main')
+const { logBuildStart, logBuildError, logBuildSuccess } = require('../log/main')
 const { logOldCliVersionError } = require('../log/old_version')
 const { startTimer, endTimer } = require('../log/timer')
 const { startUtils } = require('../plugins/child/utils')
@@ -78,7 +78,6 @@ const build = async function(flags) {
 
       logBuildSuccess()
       const duration = endTimer(buildTimer, 'Netlify Build')
-      logBuildEnd()
       await trackBuildComplete({ commandsCount, netlifyConfig, duration, siteInfo, mode })
       return true
     } catch (error) {
