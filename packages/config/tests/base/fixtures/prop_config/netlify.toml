@@ -2,7 +2,4 @@
 base = "/base"
 functions = "functions"
 publish = "publish"
-
-[build.lifecycle]
-onInit = "echo onInit"
-onBuild = "echo onBuild"
+command = "echo command"

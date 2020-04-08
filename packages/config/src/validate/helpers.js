@@ -4,44 +4,21 @@ const isString = function(value) {
   return typeof value === 'string'
 }
 
-const validProperties = function(propNames, legacyPropNames = [], mapper = identity) {
+const isUndefined = function(value) {
+  return value === undefined
+}
+
+// Check an object valid properties, including legacy ones
+const validProperties = function(propNames, legacyPropNames) {
   return {
-    check: value => checkValidProperty(value, [...propNames, ...legacyPropNames], mapper),
+    check: value => checkValidProperty(value, [...propNames, ...legacyPropNames]),
     message: `has unknown properties. Valid properties are:
 ${propNames.map(propName => `  - ${propName}`).join('\n')}`,
   }
 }
 
-const checkValidProperty = function(value, propNames, mapper) {
-  return Object.keys(value).every(propName => propNames.includes(mapper(propName)))
-}
-
-const deprecatedProperties = function(properties, getExample, mapper) {
-  return {
-    check(value, key) {
-      return findDeprecatedProperty(properties, mapper(key)) === undefined
-    },
-    message(value, key) {
-      const newPropName = findDeprecatedProperty(properties, mapper(key))
-      return `is deprecated. It should be renamed to '${newPropName}'.`
-    },
-    example(value, key, parent) {
-      const newPropName = findDeprecatedProperty(properties, mapper(key))
-      return getExample(newPropName, key, parent)
-    },
-  }
-}
-
-const findDeprecatedProperty = function(properties, key) {
-  const newPropName = properties[key]
-  if (newPropName === undefined) {
-    return
-  }
-  return newPropName
-}
-
-const identity = function(value) {
-  return value
+const checkValidProperty = function(value, propNames) {
+  return Object.keys(value).every(propName => propNames.includes(propName))
 }
 
 // Ensure paths specified by users in the configuration file are not targetting
@@ -62,4 +39,4 @@ const removeParentDots = function(path) {
 
 const PARENT_DOTS_REGEXP = /\.\.[/\\]/g
 
-module.exports = { isString, validProperties, deprecatedProperties, insideRootCheck, removeParentDots }
+module.exports = { isString, isUndefined, validProperties, insideRootCheck, removeParentDots }

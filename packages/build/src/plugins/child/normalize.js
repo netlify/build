@@ -1,5 +1,6 @@
-const { LEGACY_EVENTS } = require('@netlify/config')
 const mapObj = require('map-obj')
+
+const { LEGACY_EVENTS } = require('../events')
 
 // Normalize plugin shape
 const normalizePlugin = function(logic) {

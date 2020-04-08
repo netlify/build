@@ -1,6 +1,3 @@
 [build]
 base = "base"
-
-[build.lifecycle]
-onInit = "echo onInit"
-onBuild = "echo onBuild"
+command = "echo command"

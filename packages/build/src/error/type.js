@@ -1,5 +1,5 @@
 const { getErrorInfo } = require('./info')
-const { getShellCommandLocation, getBuildFailLocation, getApiLocation } = require('./location')
+const { getBuildCommandLocation, getBuildFailLocation, getApiLocation } = require('./location')
 
 // Retrieve error-type specific information
 const getTypeInfo = function(errorProps) {
@@ -21,7 +21,7 @@ const TYPES = {
     stackType: 'none',
     getLocation: getBuildFailLocation,
   },
-  shellCommand: { header: 'Build failed', stackType: 'message', getLocation: getShellCommandLocation },
+  buildCommand: { header: 'Build failed', stackType: 'message', getLocation: getBuildCommandLocation },
   failBuild: { header: 'Build failed', stackType: 'stack', getLocation: getBuildFailLocation },
   failPlugin: {
     header: ({ location: { package } }) => `Plugin "${package}" failed`,

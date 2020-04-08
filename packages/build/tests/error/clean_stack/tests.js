@@ -4,8 +4,8 @@ const test = require('ava')
 
 const { runFixture } = require('../../helpers/main')
 
-test('Clean stack traces of lifecycle commands', async t => {
-  const { stdout } = await runFixture(t, 'lifecycle', { snapshot: false, normalize: false })
+test('Clean stack traces of build.command', async t => {
+  const { stdout } = await runFixture(t, 'build_command', { snapshot: false, normalize: false })
   const count = getStackLinesCount(stdout)
   t.is(count, 0)
 })

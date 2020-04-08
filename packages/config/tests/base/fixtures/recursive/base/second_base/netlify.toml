@@ -1,2 +1,2 @@
-[build.lifecycle]
-onBuild = "echo onBuildSecondBase"
+[build]
+command = "echo commandSecondBase"

@@ -1,3 +1,5 @@
+const { getBuildCommandDescription } = require('../log/description')
+
 // Retrieve an error's location to print in logs.
 // Each error type has its own logic (or none if there's no location to print).
 const getLocationBlock = function({ stack, location, getLocation }) {
@@ -20,9 +22,10 @@ const serializeLocation = function({ stack, location, getLocation }) {
   return [locationString, stack].filter(Boolean).join('\n')
 }
 
-const getShellCommandLocation = function({ prop, shellCommand }) {
-  return `In configuration "${prop}" command:
-${shellCommand}`
+const getBuildCommandLocation = function({ buildCommand, configPath }) {
+  const description = getBuildCommandDescription(configPath)
+  return `In ${description}:
+${buildCommand}`
 }
 
 const getBuildFailLocation = function({ event, package, local }) {
@@ -50,7 +53,7 @@ const getApiLocation = function({ endpoint, parameters }) {
 
 module.exports = {
   getLocationBlock,
-  getShellCommandLocation,
+  getBuildCommandLocation,
   getBuildFailLocation,
   getApiLocation,
 }

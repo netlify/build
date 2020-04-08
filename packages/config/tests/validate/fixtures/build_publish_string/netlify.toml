@@ -1,4 +1,2 @@
 [build]
 publish = true
-
-[build.lifecycle]

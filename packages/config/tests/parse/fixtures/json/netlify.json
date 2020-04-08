@@ -1,7 +1,5 @@
 {
   "build": {
-    "lifecycle": {
-      "onBuild": "echo onBuild"
-    }
+    "command": "echo command"
   }
 }

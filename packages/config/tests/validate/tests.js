@@ -71,20 +71,12 @@ test('build.command: string', async t => {
   await runFixture(t, 'build_command_string')
 })
 
-test('build.lifecycle: object', async t => {
-  await runFixture(t, 'build_lifecycle_object')
+test('build.command: array', async t => {
+  await runFixture(t, 'build_command_array')
 })
 
-test('build.lifecycle: event names', async t => {
-  await runFixture(t, 'build_lifecycle_events')
-})
-
-test('build.lifecycle: string', async t => {
-  await runFixture(t, 'build_lifecycle_events_string')
-})
-
-test('build.lifecycle: array', async t => {
-  await runFixture(t, 'build_lifecycle_events_array')
+test('build.lifecycle: deprecated', async t => {
+  await runFixture(t, 'build_lifecycle')
 })
 
 test('build.context: property', async t => {

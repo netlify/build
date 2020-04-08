@@ -1,2 +1,2 @@
-[build.lifecycle]
-invalid = "echo"
+[build]
+command = "echo"

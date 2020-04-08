@@ -16,8 +16,8 @@ test('--config', async t => {
 })
 
 test('--defaultConfig', async t => {
-  const defaultConfig = getJsonOpt({ build: { lifecycle: { onInit: 'echo onInit' } } })
-  await runFixture(t, 'default_config', { flags: `--defaultConfig=${defaultConfig}` })
+  const defaultConfig = getJsonOpt({ build: { command: 'echo commandDefault' } })
+  await runFixture(t, 'empty', { flags: `--defaultConfig=${defaultConfig}` })
 })
 
 test('--cachedConfig', async t => {

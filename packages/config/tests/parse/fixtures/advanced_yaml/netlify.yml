@@ -1,3 +1,2 @@
 build:
-  lifecycle:
-    onBuild: !!js/undefined
+  command: !!js/undefined

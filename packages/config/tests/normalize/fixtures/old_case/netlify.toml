@@ -1,2 +1,0 @@
-[build.lifecycle]
-prebuild = "echo test"

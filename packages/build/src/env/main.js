@@ -3,7 +3,7 @@ const { removeFalsy } = require('../utils/remove_falsy')
 
 const { getGitEnv } = require('./git')
 
-// Retrieve the environment variables passed to plugins and lifecycle commands.
+// Retrieve the environment variables passed to plugins and `build.command`
 // When run locally, this tries to emulate the production environment.
 const getChildEnv = async function({ netlifyConfig, buildDir, branch, context, siteInfo, mode }) {
   if (mode === 'buildbot') {

@@ -1,0 +1,2 @@
+[build]
+command = "node --version && node --version"

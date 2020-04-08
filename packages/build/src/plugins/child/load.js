@@ -25,7 +25,7 @@ const load = function(payload) {
 const getPluginCommands = function(logic) {
   return Object.entries(logic)
     .filter(isEventHandler)
-    .map(([event, method]) => ({ method, event }))
+    .map(([event, method]) => ({ event, method }))
 }
 
 const isEventHandler = function([, value]) {

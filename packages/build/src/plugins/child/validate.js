@@ -1,8 +1,8 @@
-const { EVENTS, LEGACY_EVENTS } = require('@netlify/config')
 const isPlainObj = require('is-plain-obj')
 
 const { serializeArray } = require('../../log/serialize')
 const { failBuild } = require('../error')
+const { EVENTS, LEGACY_EVENTS } = require('../events')
 
 // Validate the shape of a plugin return value
 const validatePlugin = function(logic) {

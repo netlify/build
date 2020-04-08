@@ -1,5 +1,5 @@
-[build.lifecycle]
-onBuild = "echo onBuild"
+[build]
+command = "echo command"
 
-[context.production.lifecycle]
-onBuild = "echo onBuildTest"
+[context.production]
+command = "echo commandTest"
