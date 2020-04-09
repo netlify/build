@@ -1,5 +1,3 @@
-const { white } = require('chalk')
-
 // Retrieve an error's location to print in logs.
 // Each error type has its own logic (or none if there's no location to print).
 const getLocationBlock = function({ stack, location, getLocation }) {
@@ -23,8 +21,8 @@ const serializeLocation = function({ stack, location, getLocation }) {
 }
 
 const getShellCommandLocation = function({ prop, shellCommand }) {
-  return `In configuration "${white.bold(prop)}" command:
-${white.bold(shellCommand)}`
+  return `In configuration "${prop}" command:
+${shellCommand}`
 }
 
 const getBuildFailLocation = function({ event, package, local }) {
@@ -35,15 +33,15 @@ const getBuildFailLocation = function({ event, package, local }) {
 
 const getEventMessage = function(event) {
   if (event === 'load') {
-    return `While ${white.bold('loading')}`
+    return `While loading`
   }
 
-  return `In "${white.bold(event)}" event in`
+  return `In "${event}" event in`
 }
 
 const getPackageLocation = function(package, local) {
   const localString = local ? 'local plugin' : 'npm package'
-  return `${localString} "${white.bold(package)}"`
+  return `${localString} "${package}"`
 }
 
 const getApiLocation = function({ endpoint, parameters }) {

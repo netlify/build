@@ -1,7 +1,6 @@
-const { redBright } = require('chalk')
-
 const { addErrorInfo } = require('../../error/info')
 const { serialize } = require('../../log/serialize')
+const { THEME } = require('../../log/theme')
 
 // Check that plugin inputs match the validation specified in "manifest.yml"
 // Also assign default values
@@ -14,7 +13,7 @@ const checkInputs = function({ inputs, manifest: { inputs: rules = [] }, package
   } catch (error) {
     error.message = `${error.message}
 
-${redBright.bold('Plugin inputs')}
+${THEME.errorSubHeader('Plugin inputs')}
 
 ${serialize(inputs)}`
     throw error

@@ -3,7 +3,6 @@ const {
   env: { NETLIFY_BUILD_DEBUG },
 } = require('process')
 
-const { greenBright, cyan, cyanBright, redBright, yellowBright, bold, white, dim } = require('chalk')
 const prettyMs = require('pretty-ms')
 const stringWidth = require('string-width')
 
@@ -15,13 +14,14 @@ const { omit } = require('../utils/omit')
 const { EMPTY_LINE, HEADING_PREFIX, ARROW_DOWN } = require('./constants')
 const { log } = require('./logger')
 const { serialize, SUBTEXT_PADDING, indent } = require('./serialize')
+const { THEME } = require('./theme')
 
 const logBuildStart = function() {
   log(
     `${EMPTY_LINE}
-${greenBright.bold(getHeader('Netlify Build'))}
+${THEME.header(getHeader('Netlify Build'))}
 ${EMPTY_LINE}
-${cyanBright.bold(`${HEADING_PREFIX} Version`)}
+${THEME.subHeader(`${HEADING_PREFIX} Version`)}
 ${SUBTEXT_PADDING}${name} ${version}
 ${EMPTY_LINE}`,
   )
@@ -30,19 +30,19 @@ ${EMPTY_LINE}`,
 const logFlags = function(flags) {
   const hiddenFlags = flags.mode === 'buildbot' ? [...HIDDEN_FLAGS, 'nodePath'] : HIDDEN_FLAGS
   const flagsA = omit(flags, hiddenFlags)
-  log(cyanBright.bold(`${HEADING_PREFIX} Flags`), serialize(flagsA), EMPTY_LINE)
+  log(THEME.subHeader(`${HEADING_PREFIX} Flags`), serialize(flagsA), EMPTY_LINE)
 }
 
 const HIDDEN_FLAGS = ['token', 'cachedConfig', 'defaultConfig']
 
 const logBuildDir = function(buildDir) {
-  log(`${cyanBright.bold(`${HEADING_PREFIX} Current directory`)}
+  log(`${THEME.subHeader(`${HEADING_PREFIX} Current directory`)}
 ${SUBTEXT_PADDING}${buildDir}
 ${EMPTY_LINE}`)
 }
 
 const logConfigPath = function(configPath = NO_CONFIG_MESSAGE) {
-  log(`${cyanBright.bold(`${HEADING_PREFIX} Config file`)}
+  log(`${THEME.subHeader(`${HEADING_PREFIX} Config file`)}
 ${SUBTEXT_PADDING}${configPath}
 ${EMPTY_LINE}`)
 }
@@ -54,7 +54,7 @@ const logConfig = function(config) {
     return
   }
 
-  log(cyanBright.bold(`${HEADING_PREFIX} Resolved config`), serialize(simplifyConfig(config)), EMPTY_LINE)
+  log(THEME.subHeader(`${HEADING_PREFIX} Resolved config`), serialize(simplifyConfig(config)), EMPTY_LINE)
 }
 
 // The resolved configuration gets assigned some default values (empty objects and arrays)
@@ -86,20 +86,20 @@ const logContext = function(context) {
     return
   }
 
-  log(`${cyanBright.bold(`${HEADING_PREFIX} Context`)}
+  log(`${THEME.subHeader(`${HEADING_PREFIX} Context`)}
 ${SUBTEXT_PADDING}${context}
 ${EMPTY_LINE}`)
 }
 
 const logInstallMissingPlugins = function(packages) {
-  log(`${cyanBright.bold(`${HEADING_PREFIX} Installing plugins`)}
+  log(`${THEME.subHeader(`${HEADING_PREFIX} Installing plugins`)}
 ${indent(serializeList(packages))}
 ${EMPTY_LINE}`)
 }
 
 const logInstallLocalPluginsDeps = function(localPluginsOptions) {
   const packages = localPluginsOptions.map(getPackage)
-  log(`${cyanBright.bold(`${HEADING_PREFIX} Installing local plugins dependencies`)}
+  log(`${THEME.subHeader(`${HEADING_PREFIX} Installing local plugins dependencies`)}
 ${indent(serializeList(packages))}
 ${EMPTY_LINE}`)
 }
@@ -109,7 +109,7 @@ const getPackage = function({ package }) {
 }
 
 const logLoadPlugins = function() {
-  log(cyanBright.bold(`${HEADING_PREFIX} Loading plugins`))
+  log(THEME.subHeader(`${HEADING_PREFIX} Loading plugins`))
 }
 
 const logLoadedPlugins = function(pluginCommands) {
@@ -128,7 +128,7 @@ const isNotDuplicate = function(pluginCommand, index, pluginCommands) {
 
 const getLoadedPlugin = function({ package, core, packageJson: { version } }) {
   const location = core ? ' from build core' : version === undefined ? '' : `@${version}`
-  return `${SUBTEXT_PADDING} - ${greenBright.bold(package)}${location}`
+  return `${SUBTEXT_PADDING} - ${package}${location}`
 }
 
 const logDryRunStart = function(eventWidth, commandsCount) {
@@ -137,12 +137,12 @@ const logDryRunStart = function(eventWidth, commandsCount) {
   const secondLine = '─'.repeat(columnWidth)
 
   log(`
-${cyanBright.bold(`${HEADING_PREFIX} Netlify Build Commands`)}
+${THEME.subHeader(`${HEADING_PREFIX} Netlify Build Commands`)}
 ${SUBTEXT_PADDING}For more information on build events see the docs https://github.com/netlify/build
 
 ${SUBTEXT_PADDING}Running \`netlify build\` will execute this build flow
 
-${bold(`${SUBTEXT_PADDING}┌─${line}─┬─${secondLine}─┐
+${THEME.header(`${SUBTEXT_PADDING}┌─${line}─┬─${secondLine}─┐
 ${SUBTEXT_PADDING}│ ${DRY_HEADER_NAMES[0].padEnd(columnWidth)} │ ${DRY_HEADER_NAMES[1].padEnd(columnWidth)} │
 ${SUBTEXT_PADDING}└─${line}─┴─${secondLine}─┘`)}`)
 }
@@ -162,22 +162,22 @@ const logDryRunCommand = function({
   const location = getPluginLocation({ prop, package, core, configPath })
 
   log(
-    cyanBright.bold(`${SUBTEXT_PADDING}┌─${line}─┐
-${SUBTEXT_PADDING}│ ${cyanBright(countText)}${event.padEnd(eventWidthA)}${downArrow} │ ${location}
-${SUBTEXT_PADDING}└─${line}─┘ `),
+    `${THEME.header(`${SUBTEXT_PADDING}┌─${line}─┐`)}
+${THEME.header(`${SUBTEXT_PADDING}│ ${countText}${event.padEnd(eventWidthA)}${downArrow} │`)} ${location}
+${THEME.header(`${SUBTEXT_PADDING}└─${line}─┘ `)}`,
   )
 }
 
 const getPluginLocation = function({ prop, package, core, configPath }) {
   if (prop !== undefined) {
-    return `${white('Config')} ${cyanBright(basename(configPath))} ${yellowBright(prop)}`
+    return `Config ${basename(configPath)} ${THEME.highlightWords(prop)}`
   }
 
   if (core) {
-    return `${white('Plugin')} ${yellowBright(package)} in build core`
+    return `Plugin ${THEME.highlightWords(package)} in build core`
   }
 
-  return `${white('Plugin')} ${yellowBright(package)}`
+  return `Plugin ${THEME.highlightWords(package)}`
 }
 
 const getDryColumnWidth = function(eventWidth, commandsCount) {
@@ -195,19 +195,16 @@ ${EMPTY_LINE}`)
 
 const logCommand = function({ event, prop, package }, { index, configPath, error }) {
   const configName = configPath === undefined ? '' : ` from ${basename(configPath)} config file`
-  const description =
-    prop === undefined ? `${bold(event)} command from ${bold(package)}` : `${bold(prop)} command${configName}`
-  const logColor = error ? redBright.bold : cyanBright.bold
+  const description = prop === undefined ? `${event} command from ${package}` : `${prop} command${configName}`
+  const logColor = error ? THEME.errorHeader : THEME.header
   const header = `${index}. ${description}`
-  log(
-    logColor(`
-${getHeader(header)}
-${EMPTY_LINE}`),
-  )
+  log(`
+${logColor(getHeader(header))}
+${EMPTY_LINE}`)
 }
 
 const logShellCommandStart = function(shellCommand) {
-  log(cyan(`$ ${shellCommand}`))
+  log(THEME.highlightWords(`$ ${shellCommand}`))
 }
 
 const logCommandSuccess = function() {
@@ -216,11 +213,11 @@ const logCommandSuccess = function() {
 
 const logTimer = function(durationMs, timerName) {
   const duration = prettyMs(durationMs)
-  log(dim(`(${timerName} completed in ${duration})`))
+  log(THEME.dimWords(`(${timerName} completed in ${duration})`))
 }
 
 const logCacheStart = function() {
-  log(cyanBright.bold(`${HEADING_PREFIX} Caching artifacts`))
+  log(THEME.subHeader(`${HEADING_PREFIX} Caching artifacts`))
 }
 
 const logCacheDir = function(path) {
@@ -228,27 +225,27 @@ const logCacheDir = function(path) {
 }
 
 const logPluginError = function(error) {
-  const { header, body, color } = serializeError(error)
-  log(`${color.bold(getHeader(header))}
+  const { header, body, isSuccess } = serializeError(error)
+  const color = isSuccess ? THEME.header : THEME.errorHeader
+  log(`${color(getHeader(header))}
 ${EMPTY_LINE}
 ${body}`)
 }
 
 const logBuildError = function(error) {
-  const { header, body, color } = serializeError(error)
+  const { header, body, isSuccess } = serializeError(error)
+  const color = isSuccess ? THEME.header : THEME.errorHeader
   log(`${EMPTY_LINE}
-${color.bold(getHeader(header))}
+${color(getHeader(header))}
 ${EMPTY_LINE}
 ${body}
 ${EMPTY_LINE}`)
 }
 
 const logBuildSuccess = function() {
-  log(
-    greenBright.bold(`${EMPTY_LINE}
-${getHeader('Netlify Build Complete')}
-${EMPTY_LINE}`),
-  )
+  log(`${EMPTY_LINE}
+${THEME.header(getHeader('Netlify Build Complete'))}
+${EMPTY_LINE}`)
 }
 
 // Print a rectangular header
