@@ -6,7 +6,7 @@ const {
 const { greenBright, cyan, cyanBright, redBright, yellowBright, bold, white } = require('chalk')
 const stringWidth = require('string-width')
 
-const { version } = require('../../package.json')
+const { name, version } = require('../../package.json')
 const { serializeError } = require('../error/serialize')
 const { serializeList } = require('../utils/list')
 const { omit } = require('../utils/omit')
@@ -16,10 +16,14 @@ const { log } = require('./logger')
 const { serialize, SUBTEXT_PADDING, indent } = require('./serialize')
 
 const logBuildStart = function() {
-  log(`${EMPTY_LINE}
-${greenBright.bold(`${HEADING_PREFIX} Starting Netlify Build v${version}`)}
-${SUBTEXT_PADDING}https://github.com/netlify/build
-${EMPTY_LINE}`)
+  log(
+    `${EMPTY_LINE}
+${greenBright.bold(getHeader('Netlify Build'))}
+${EMPTY_LINE}
+${cyanBright.bold(`${HEADING_PREFIX} Version`)}
+${SUBTEXT_PADDING}${name} ${version}
+${EMPTY_LINE}`,
+  )
 }
 
 const logFlags = function(flags) {
