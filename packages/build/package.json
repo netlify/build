@@ -21,6 +21,10 @@
     "release:minor": "npm version minor && npm publish",
     "release:major": "npm version major && npm publish"
   },
+  "repository": "https://github.com/netlify/build",
+  "bugs": {
+    "url": "https://github.com/netlify/build/issues"
+  },
   "license": "MIT",
   "dependencies": {
     "@netlify/cache-utils": "^0.4.1",
