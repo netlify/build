@@ -41,17 +41,13 @@ ${SUBTEXT_PADDING}${buildDir}
 ${EMPTY_LINE}`)
 }
 
-const logConfigPath = function(configPath) {
-  if (configPath === undefined) {
-    log(`${cyanBright.bold(`${HEADING_PREFIX} No config file was defined: using default values.`)}
-${EMPTY_LINE}`)
-    return
-  }
-
+const logConfigPath = function(configPath = NO_CONFIG_MESSAGE) {
   log(`${cyanBright.bold(`${HEADING_PREFIX} Config file`)}
 ${SUBTEXT_PADDING}${configPath}
 ${EMPTY_LINE}`)
 }
+
+const NO_CONFIG_MESSAGE = 'No config file was defined: using default values.'
 
 const logConfig = function(config) {
   if (!NETLIFY_BUILD_DEBUG) {
