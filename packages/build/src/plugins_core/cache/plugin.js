@@ -4,13 +4,11 @@ const {
   env: { TEST_CACHE_PATH },
 } = require('process')
 
-const { logCacheStart, logCacheDir } = require('../../log/main')
+const { logCacheDir } = require('../../log/main')
 
 // Save/restore cache core plugin
 const cachePlugin = {
   async onPostBuild({ utils: { cache }, constants: { IS_LOCAL } }) {
-    logCacheStart()
-
     await Promise.all(ARTIFACTS.map(({ path, digests }) => saveCache({ path, digests, cache, IS_LOCAL })))
   },
 }

@@ -1,8 +1,7 @@
 const isPlainObj = require('is-plain-obj')
 
-const { indent } = require('../../log/serialize')
+const { serializeArray } = require('../../log/serialize')
 const { THEME } = require('../../log/theme')
-const { serializeList } = require('../../utils/list')
 const { API_METHODS } = require('../child/api')
 
 // Validate `manifest.yml` syntax
@@ -17,8 +16,7 @@ const validateManifest = function(manifest, rawManifest) {
     error.message = `Plugin's "manifest.yml" ${error.message}
 
 ${THEME.errorSubHeader('manifest.yml')}
-
-${indent(rawManifest.trim())}`
+${rawManifest.trim()}`
     throw error
   }
 }
@@ -61,7 +59,7 @@ const validateScopes = function({ scopes }) {
   if (wrongScope !== undefined) {
     throw new Error(`scope "${wrongScope}" is invalid
 Please use a valid scope. One of:
-${serializeList(ALLOWED_SCOPES)}`)
+${serializeArray(ALLOWED_SCOPES)}`)
   }
 }
 

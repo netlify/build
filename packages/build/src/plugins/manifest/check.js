@@ -1,5 +1,5 @@
 const { addErrorInfo } = require('../../error/info')
-const { serialize } = require('../../log/serialize')
+const { serializeObject } = require('../../log/serialize')
 const { THEME } = require('../../log/theme')
 
 // Check that plugin inputs match the validation specified in "manifest.yml"
@@ -14,8 +14,7 @@ const checkInputs = function({ inputs, manifest: { inputs: rules = [] }, package
     error.message = `${error.message}
 
 ${THEME.errorSubHeader('Plugin inputs')}
-
-${serialize(inputs)}`
+${serializeObject(inputs)}`
     throw error
   }
 }
