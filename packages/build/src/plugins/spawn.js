@@ -9,7 +9,7 @@ const CHILD_MAIN_FILE = `${__dirname}/child/main.js`
 //  - each plugin is sandboxed, e.g. cannot access/modify its parent `process`
 //    (for both security and safety reasons)
 //  - logs can be buffered which allows manipulating them for log shipping,
-//    secrets redacting and parallel plugins
+//    transforming and parallel plugins
 const startPlugins = function({ pluginsOptions, buildDir, nodePath, childEnv }) {
   return Promise.all(pluginsOptions.map(() => startPlugin({ buildDir, nodePath, childEnv })))
 }
