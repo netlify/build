@@ -32,7 +32,7 @@ const NORMALIZE_REGEXPS = [
   // File paths
   [/packages\/+build/g, '/packages/build'],
   [/Caching [.~]\//g, 'Caching '],
-  [/(^|[ "'])\.{0,2}\/[^ "'\n]+/gm, '$1/file/path'],
+  [/(^|[ "'(])\.{0,2}\/[^ "')\n]+/gm, '$1/file/path'],
   // When serializing flags, Windows keep single quotes due to backslashes,
   // but not Unix
   [/: '\/file\/path'$/gm, ': /file/path'],
@@ -46,7 +46,7 @@ const NORMALIZE_REGEXPS = [
   [/^\s+at .*$/gm, 'STACK TRACE'],
   [/(STACK TRACE\n)+/g, 'STACK TRACE\n'],
   // Durations
-  [/\d[\d.]*m?s/g, '1ms'],
+  [/(\d[\d.]*(ms|m|s)( )?)+/g, '1ms'],
   // Package versions
   [/([@v])[\d.]+/g, '$11.0.0'],
   // Semantic versions

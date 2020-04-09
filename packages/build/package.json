@@ -57,6 +57,7 @@
     "p-reduce": "^2.1.0",
     "path-exists": "^4.0.0",
     "pkg-dir": "^4.2.0",
+    "pretty-ms": "^6.0.1",
     "read-pkg-up": "^7.0.1",
     "readdirp": "^3.4.0",
     "resolve": "^1.15.1",

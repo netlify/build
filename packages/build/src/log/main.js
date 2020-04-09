@@ -3,7 +3,8 @@ const {
   env: { NETLIFY_BUILD_DEBUG },
 } = require('process')
 
-const { greenBright, cyan, cyanBright, redBright, yellowBright, bold, white } = require('chalk')
+const { greenBright, cyan, cyanBright, redBright, yellowBright, bold, white, dim } = require('chalk')
+const prettyMs = require('pretty-ms')
 const stringWidth = require('string-width')
 
 const { name, version } = require('../../package.json')
@@ -11,7 +12,7 @@ const { serializeError } = require('../error/serialize')
 const { serializeList } = require('../utils/list')
 const { omit } = require('../utils/omit')
 
-const { EMPTY_LINE, HEADING_PREFIX, TICK, ARROW_DOWN } = require('./constants')
+const { EMPTY_LINE, HEADING_PREFIX, ARROW_DOWN } = require('./constants')
 const { log } = require('./logger')
 const { serialize, SUBTEXT_PADDING, indent } = require('./serialize')
 
@@ -218,7 +219,8 @@ const logCommandSuccess = function() {
 }
 
 const logTimer = function(durationMs, timerName) {
-  log(` ${greenBright(TICK)}  ${greenBright.bold(timerName)} completed in ${durationMs}ms`)
+  const duration = prettyMs(durationMs)
+  log(dim(`(${timerName} completed in ${duration})`))
 }
 
 const logCacheStart = function() {
