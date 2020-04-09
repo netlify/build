@@ -9,10 +9,10 @@ const { addErrorInfo } = require('../error/info')
 // Send event from child to parent process then wait for response
 // We need to fire them in parallel because `process.send()` can be slow
 // to await, i.e. child might send response before parent start listening for it
-const callChild = async function(childProcess, eventName, payload) {
+const callChild = async function(childProcess, eventName, payload, { plugin, location }) {
   const callId = uuidv4()
   const [response] = await Promise.all([
-    getEventFromChild(childProcess, callId),
+    getEventFromChild(childProcess, callId, { plugin, location }),
     sendEventToChild(childProcess, callId, eventName, payload),
   ])
   return response
@@ -26,11 +26,11 @@ const callChild = async function(childProcess, eventName, payload) {
 //  - child process `exit`
 // In the later two cases, we propagate the error.
 // We need to make `p-event` listeners are properly cleaned up too.
-const getEventFromChild = async function(childProcess, callId) {
+const getEventFromChild = async function(childProcess, callId, { plugin, location }) {
   if (!childProcess.connected) {
     const error = new Error(`Could not receive event from child process because it already exited.
 ${EXIT_WARNING}`)
-    addErrorInfo(error, { type: 'ipc' })
+    addErrorInfo(error, { type: 'ipc', plugin, location })
     throw error
   }
 
@@ -38,7 +38,11 @@ ${EXIT_WARNING}`)
   const errorPromise = pEvent(childProcess, 'message', { filter: ([actualCallId]) => actualCallId === 'error' })
   const exitPromise = pEvent(childProcess, 'exit', { multiArgs: true })
   try {
-    return await Promise.race([getMessage(messagePromise), getError(errorPromise), getExit(exitPromise)])
+    return await Promise.race([
+      getMessage(messagePromise),
+      getError(errorPromise, { plugin, location }),
+      getExit(exitPromise, { plugin, location }),
+    ])
   } finally {
     messagePromise.cancel()
     errorPromise.cancel()
@@ -51,16 +55,16 @@ const getMessage = async function(messagePromise) {
   return response
 }
 
-const getError = async function(errorPromise) {
+const getError = async function(errorPromise, { plugin, location }) {
   const [, { errorProps, ...values }] = await errorPromise
-  throw buildError({ ...values, ...errorProps })
+  throw buildError({ ...values, ...errorProps, plugin, location })
 }
 
-const getExit = async function(exitPromise) {
+const getExit = async function(exitPromise, { plugin, location }) {
   const [exitCode, signal] = await exitPromise
   const error = new Error(`Plugin exited with exit code ${exitCode} and signal ${signal}.
 ${EXIT_WARNING}`)
-  addErrorInfo(error, { type: 'ipc' })
+  addErrorInfo(error, { type: 'ipc', plugin, location })
   throw error
 }
 
