@@ -3,7 +3,7 @@ const {
   env: { NETLIFY_BUILD_DEBUG },
 } = require('process')
 
-const { greenBright, cyanBright, redBright, yellowBright, bold, white } = require('chalk')
+const { greenBright, cyan, cyanBright, redBright, yellowBright, bold, white } = require('chalk')
 const stringWidth = require('string-width')
 
 const { version } = require('../../package.json')
@@ -206,7 +206,7 @@ ${EMPTY_LINE}`),
 }
 
 const logShellCommandStart = function(shellCommand) {
-  log(yellowBright(`Running command "${shellCommand}"`))
+  log(cyan(`$ ${shellCommand}`))
 }
 
 const logCommandSuccess = function() {
