@@ -63,6 +63,20 @@ test('Environment variable siteInfo CI', async t => {
   await stopServer()
 })
 
+const SITE_INFO_BUILD_SETTINGS_NULL = {
+  url: 'test',
+  build_settings: { cmd: null, dir: null, functions_dir: null, base: null, env: null, base_rel_dir: null },
+}
+
+test('Build settings can be null', async t => {
+  const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_BUILD_SETTINGS_NULL)
+  await runFixture(t, 'empty', {
+    flags: '--token=test --site-id=test',
+    env: { TEST_SCHEME: scheme, TEST_HOST: host },
+  })
+  await stopServer()
+})
+
 const SITE_INFO_BUILD_SETTINGS = {
   url: 'test',
   build_settings: {
