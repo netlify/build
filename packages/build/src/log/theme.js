@@ -1,9 +1,9 @@
 const {
   cyanBright: { bold: cyanBrightBold },
   cyan: { bold: cyanBold },
+  cyan,
   redBright: { bold: redBrightBold },
   red: { bold: redBold },
-  white: { bold: whiteBold },
   gray,
 } = require('chalk')
 
@@ -19,7 +19,7 @@ const THEME = {
   // Single lines used as subheaders indicating an error
   errorSubHeader: redBold,
   // One of several words that should be highlighted inside a line
-  highlightWords: whiteBold,
+  highlightWords: cyan,
   // One of several words that should be dimmed inside a line
   dimWords: gray,
 }
