@@ -1,6 +1,7 @@
 require('../../utils/polyfills')
 
 // This needs to be done before `chalk` is loaded
+// Note: `chalk` is also required by some of our dependencies.
 const { setColorLevel, hasColors } = require('../../log/colors')
 setColorLevel()
 

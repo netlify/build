@@ -1,9 +1,8 @@
 const { inspect } = require('util')
 
-const { redBright } = require('chalk')
-
 const { EMPTY_LINE, HEADING_PREFIX } = require('../log/constants')
 const { indent } = require('../log/serialize')
+const { THEME } = require('../log/theme')
 const { omit } = require('../utils/omit')
 
 const { getErrorInfo, INFO_SYM } = require('./info')
@@ -14,12 +13,12 @@ const { getTypeInfo } = require('./type')
 
 // Serialize an error object into a header|body string to print in logs
 const serializeError = function({ message, stack, ...errorProps }) {
-  const { header, color = redBright, ...typeInfo } = getTypeInfo(errorProps)
+  const { header, isSuccess = false, ...typeInfo } = getTypeInfo(errorProps)
   const errorInfo = getErrorInfo(errorProps)
   const errorPropsA = cleanErrorProps(errorProps)
   const headerA = getHeader(header, errorInfo)
-  const body = getBody({ typeInfo, color, message, stack, errorProps: errorPropsA, ...errorInfo })
-  return { header: headerA, body, color }
+  const body = getBody({ typeInfo, isSuccess, message, stack, errorProps: errorPropsA, ...errorInfo })
+  return { header: headerA, body, isSuccess }
 }
 
 // Remove error static properties that should not be logged
@@ -41,7 +40,7 @@ const getHeader = function(header, errorInfo) {
 // Retrieve body to print in logs
 const getBody = function({
   typeInfo: { stackType, getLocation, showErrorProps, rawStack },
-  color,
+  isSuccess,
   message,
   stack,
   errorProps,
@@ -55,7 +54,7 @@ const getBody = function({
   const errorPropsBlock = getErrorPropsBlock(errorProps, showErrorProps)
   return [messageBlock, pluginBlock, locationBlock, errorPropsBlock]
     .filter(Boolean)
-    .map(({ name, value }) => serializeBlock({ name, value, color }))
+    .map(({ name, value }) => serializeBlock({ name, value, isSuccess }))
     .join(`${EMPTY_LINE}\n${EMPTY_LINE}\n`)
 }
 
@@ -69,8 +68,9 @@ const getErrorPropsBlock = function(errorProps, showErrorProps) {
   return { name: 'Error properties', value }
 }
 
-const serializeBlock = function({ name, value, color }) {
-  return `${color.bold(`${HEADING_PREFIX} ${name}`)}
+const serializeBlock = function({ name, value, isSuccess }) {
+  const color = isSuccess ? THEME.subHeader : THEME.errorSubHeader
+  return `${color(`${HEADING_PREFIX} ${name}`)}
 ${indent(value)}`
 }
 

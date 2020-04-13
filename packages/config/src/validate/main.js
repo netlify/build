@@ -1,5 +1,3 @@
-const { cyan } = require('chalk')
-
 const { throwError } = require('../error')
 
 const { getExample } = require('./example')
@@ -63,7 +61,7 @@ const validateProperty = function(
 
 const reportError = function({ prevPath, propPath, message, example, warn, value, key, parent }) {
   const messageA = typeof message === 'function' ? message(value, key, parent) : message
-  const errorMessage = `Configuration property ${cyan.bold(propPath)} ${messageA}
+  const errorMessage = `Configuration property ${propPath} ${messageA}
 ${getExample({ value, parent, key, prevPath, example })}`
 
   if (!warn) {
@@ -123,7 +121,7 @@ const checkRequired = function({ value, required, propPath, prevPath, example })
     return
   }
 
-  throwError(`Configuration property ${cyan.bold(propPath)} is required.
+  throwError(`Configuration property ${propPath} is required.
 ${getExample({ value, prevPath, example })}`)
 }
 

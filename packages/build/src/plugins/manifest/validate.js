@@ -1,7 +1,7 @@
-const { redBright } = require('chalk')
 const isPlainObj = require('is-plain-obj')
 
 const { indent } = require('../../log/serialize')
+const { THEME } = require('../../log/theme')
 const { serializeList } = require('../../utils/list')
 const { API_METHODS } = require('../child/api')
 
@@ -16,7 +16,7 @@ const validateManifest = function(manifest, rawManifest) {
   } catch (error) {
     error.message = `Plugin's "manifest.yml" ${error.message}
 
-${redBright.bold('manifest.yml')}
+${THEME.errorSubHeader('manifest.yml')}
 
 ${indent(rawManifest.trim())}`
     throw error

@@ -1,4 +1,3 @@
-const { red, green } = require('chalk')
 const indentString = require('indent-string')
 const { dump } = require('js-yaml')
 
@@ -6,11 +5,11 @@ const { dump } = require('js-yaml')
 const getExample = function({ value, parent, key, prevPath, example }) {
   const exampleA = typeof example === 'function' ? example(value, key, parent, prevPath) : example
   return `
-${red.bold('Invalid syntax')}
+Invalid syntax
 
 ${indentString(getInvalidValue(value, prevPath), 2)}
 
-${green.bold('Valid syntax')}
+Valid syntax
 
 ${indentString(serializeValue(exampleA), 2)}`
 }

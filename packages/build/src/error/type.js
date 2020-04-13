@@ -1,5 +1,3 @@
-const { yellowBright } = require('chalk')
-
 const { getErrorInfo } = require('./info')
 const { getShellCommandLocation, getBuildFailLocation, getApiLocation } = require('./location')
 
@@ -34,7 +32,7 @@ const TYPES = {
     header: 'Build canceled',
     stackType: 'stack',
     getLocation: getBuildFailLocation,
-    color: yellowBright,
+    isSuccess: true,
     shouldCancel: true,
   },
   ipc: {
