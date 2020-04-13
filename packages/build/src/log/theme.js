@@ -4,7 +4,7 @@ const {
   redBright: { bold: redBrightBold },
   red: { bold: redBold },
   white: { bold: whiteBold },
-  dim,
+  gray,
 } = require('chalk')
 
 // Color theme. Please use this instead of requiring chalk directly, to ensure
@@ -21,7 +21,7 @@ const THEME = {
   // One of several words that should be highlighted inside a line
   highlightWords: whiteBold,
   // One of several words that should be dimmed inside a line
-  dimWords: dim,
+  dimWords: gray,
 }
 
 module.exports = { THEME }
