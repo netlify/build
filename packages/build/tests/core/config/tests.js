@@ -41,3 +41,7 @@ test('--baseRelDir', async t => {
 test('User error', async t => {
   await runFixture(t, '', { flags: `--config=/invalid` })
 })
+
+test('No configuration file', async t => {
+  await runFixture(t, 'none')
+})
