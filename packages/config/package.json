@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "ava": "^2.4.0",
-    "get-bin-path": "^4.0.0",
+    "get-bin-path": "^4.0.1",
     "has-ansi": "^4.0.0"
   },
   "engines": {
