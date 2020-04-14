@@ -1,6 +1,5 @@
 const groupBy = require('group-by')
 
-const { addErrorInfo } = require('../error/info')
 const { logLoadPlugins, logLoadedPlugins } = require('../log/main')
 
 const { callChild } = require('./ipc')
@@ -38,29 +37,21 @@ const loadPlugin = async function(
 ) {
   const { childProcess } = childProcesses[index]
 
-  try {
-    const { pluginCommands } = await callChild(childProcess, 'load', {
-      pluginPath,
-      manifest,
-      inputs,
-      netlifyConfig,
-      utilsData,
-      token,
-      constants,
-    })
-    const pluginCommandsA = pluginCommands.map(pluginCommand => ({
-      ...pluginCommand,
-      package,
-      core,
-      local,
-      packageJson,
-      childProcess,
-    }))
-    return pluginCommandsA
-  } catch (error) {
-    addErrorInfo(error, { plugin: { package, packageJson }, location: { event: 'load', package, local } })
-    throw error
-  }
+  const { pluginCommands } = await callChild(
+    childProcess,
+    'load',
+    { pluginPath, manifest, inputs, netlifyConfig, utilsData, token, constants },
+    { plugin: { package, packageJson }, location: { event: 'load', package, local } },
+  )
+  const pluginCommandsA = pluginCommands.map(pluginCommand => ({
+    ...pluginCommand,
+    package,
+    core,
+    local,
+    packageJson,
+    childProcess,
+  }))
+  return pluginCommandsA
 }
 
 module.exports = { loadPlugins }

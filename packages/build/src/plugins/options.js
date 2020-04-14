@@ -3,6 +3,7 @@ const { promisify } = require('util')
 
 const resolve = require('resolve')
 
+const corePackageJson = require('../../package.json')
 const { installMissingPlugins } = require('../install/missing')
 const { CORE_PLUGINS } = require('../plugins_core/main')
 
@@ -36,4 +37,11 @@ const loadPluginFiles = async function({ pluginOptions, pluginOptions: { locatio
   return { ...pluginOptions, pluginPath, packageDir, packageJson, manifest, inputs: inputsA }
 }
 
-module.exports = { getPluginsOptions }
+// Retrieve information about @netlify/build when an error happens there and not
+// in a plugin
+const getCoreInfo = function() {
+  const { name } = corePackageJson
+  return { package: name, packageJson: corePackageJson, local: false }
+}
+
+module.exports = { getPluginsOptions, getCoreInfo }

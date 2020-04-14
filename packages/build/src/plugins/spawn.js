@@ -1,6 +1,7 @@
 const execa = require('execa')
 
 const { getEventFromChild } = require('./ipc')
+const { getCoreInfo } = require('./options')
 
 const CHILD_MAIN_FILE = `${__dirname}/child/main.js`
 
@@ -11,10 +12,13 @@ const CHILD_MAIN_FILE = `${__dirname}/child/main.js`
 //  - logs can be buffered which allows manipulating them for log shipping,
 //    transforming and parallel plugins
 const startPlugins = function({ pluginsOptions, buildDir, nodePath, childEnv }) {
-  return Promise.all(pluginsOptions.map(() => startPlugin({ buildDir, nodePath, childEnv })))
+  const { package, packageJson, local } = getCoreInfo()
+  return Promise.all(
+    pluginsOptions.map(() => startPlugin({ buildDir, nodePath, childEnv, package, packageJson, local })),
+  )
 }
 
-const startPlugin = async function({ buildDir, nodePath, childEnv }) {
+const startPlugin = async function({ buildDir, nodePath, childEnv, package, packageJson, local }) {
   const childProcess = execa.node(CHILD_MAIN_FILE, {
     cwd: buildDir,
     preferLocal: true,
@@ -23,7 +27,10 @@ const startPlugin = async function({ buildDir, nodePath, childEnv }) {
     env: childEnv,
     extendEnv: false,
   })
-  await getEventFromChild(childProcess, 'ready')
+  await getEventFromChild(childProcess, 'ready', {
+    plugin: { package, packageJson },
+    location: { event: 'load', package, local },
+  })
   return { childProcess }
 }
 
