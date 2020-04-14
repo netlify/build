@@ -1,5 +1,5 @@
 const {
-  env: { NETLIFY_AUTH_TOKEN, NETLIFY },
+  env: { NETLIFY_AUTH_TOKEN },
   execPath,
 } = require('process')
 
@@ -82,7 +82,7 @@ const loadConfig = async function(flags) {
 const DEFAULT_FLAGS = {
   nodePath: execPath,
   token: NETLIFY_AUTH_TOKEN,
-  mode: NETLIFY ? 'buildbot' : 'require',
+  mode: 'require',
 }
 
 // Retrieve configuration file and related information
