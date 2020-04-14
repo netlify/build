@@ -6,18 +6,6 @@ const { installFunctionDependencies } = require('../../install/functions')
 const { serializeList } = require('../../utils/list')
 
 // Plugin to package Netlify functions with @netlify/zip-it-and-ship-it
-const functionsPlugins = function(inputs, { constants: { FUNCTIONS_SRC } }) {
-  // When `config.build.functions` is not defined, it means users does not use
-  // Netlify Functions. However when it is defined but points to a non-existing
-  // directory, this might mean the directory is created later one, so we cannot
-  // do that check yet.
-  if (FUNCTIONS_SRC === undefined) {
-    return {}
-  }
-
-  return { onPreBuild, onPostBuild }
-}
-
 const onPreBuild = async function({ constants: { FUNCTIONS_SRC, IS_LOCAL } }) {
   if (!(await pathExists(FUNCTIONS_SRC))) {
     return
@@ -56,4 +44,4 @@ const getLoggedPath = function({ path }) {
   return path
 }
 
-module.exports = functionsPlugins
+module.exports = { onPreBuild, onPostBuild }

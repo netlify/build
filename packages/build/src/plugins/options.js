@@ -13,8 +13,8 @@ const { getPackageJson } = require('./package')
 const pResolve = promisify(resolve)
 
 // Load plugin options (specified by user in `config.plugins`)
-const getPluginsOptions = async function({ netlifyConfig: { plugins }, buildDir, mode }) {
-  const pluginsOptions = [...CORE_PLUGINS, ...plugins].map(normalizePluginOptions)
+const getPluginsOptions = async function({ netlifyConfig: { plugins }, buildDir, constants: { FUNCTIONS_SRC }, mode }) {
+  const pluginsOptions = [...CORE_PLUGINS(FUNCTIONS_SRC), ...plugins].map(normalizePluginOptions)
   await installMissingPlugins({ pluginsOptions, buildDir, mode })
   const pluginsOptionsA = await Promise.all(
     pluginsOptions.map(pluginOptions => loadPluginFiles({ pluginOptions, buildDir })),
