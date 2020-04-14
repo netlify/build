@@ -19,11 +19,11 @@ test('Several configuration files', async t => {
 })
 
 test('--config with an absolute path', async t => {
-  await runFixture(t, '', { flags: `--config=${FIXTURES_DIR}/empty/netlify.yml` })
+  await runFixture(t, '', { flags: `--config=${FIXTURES_DIR}/empty/netlify.toml` })
 })
 
 test('--config with a relative path', async t => {
-  await runFixture(t, '', { flags: `--config=${relative(cwd(), FIXTURES_DIR)}/empty/netlify.yml` })
+  await runFixture(t, '', { flags: `--config=${relative(cwd(), FIXTURES_DIR)}/empty/netlify.toml` })
 })
 
 test('--config with an invalid relative path', async t => {

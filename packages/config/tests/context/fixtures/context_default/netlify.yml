@@ -1,7 +1,0 @@
-build:
-  lifecycle:
-    onBuild: echo onBuild
-context:
-  production:
-    lifecycle:
-      onBuild: echo onBuildTest

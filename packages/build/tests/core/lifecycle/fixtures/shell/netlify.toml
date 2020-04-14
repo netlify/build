@@ -1,0 +1,2 @@
+[build.lifecycle]
+onBuild = "node --version && node --version"

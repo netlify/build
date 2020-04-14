@@ -1,4 +1,0 @@
-build:
-  base: base
-plugins:
-  - package: ../plugin

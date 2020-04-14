@@ -1,4 +1,0 @@
-build:
-  lifecycle:
-    onBuild: node --version
-    onEnd: echo onEnd

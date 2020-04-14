@@ -2,10 +2,6 @@ const test = require('ava')
 
 const { runFixture } = require('../helpers/main')
 
-test('Multiline commands', async t => {
-  await runFixture(t, 'multiline')
-})
-
 test('build.command', async t => {
   await runFixture(t, 'command')
 })

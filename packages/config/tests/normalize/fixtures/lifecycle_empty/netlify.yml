@@ -1,4 +1,0 @@
-build:
-  lifecycle:
-    onInit: '   '
-    onBuild: ''

@@ -11,7 +11,7 @@ test('--cwd with no config', async t => {
 
 test('--cwd with a relative path config', async t => {
   await runFixture(t, '', {
-    flags: `--cwd=${relative(cwd(), FIXTURES_DIR)} --config=empty/netlify.yml`,
+    flags: `--cwd=${relative(cwd(), FIXTURES_DIR)} --config=empty/netlify.toml`,
   })
 })
 
@@ -32,7 +32,7 @@ test('--cwd non-existing', async t => {
 })
 
 test('--cwd points to a non-directory file', async t => {
-  await runFixture(t, '', { flags: `--cwd=${FIXTURES_DIR}/empty/netlify.yml --repository-root=${FIXTURES_DIR}/empty` })
+  await runFixture(t, '', { flags: `--cwd=${FIXTURES_DIR}/empty/netlify.toml --repository-root=${FIXTURES_DIR}/empty` })
 })
 
 test('--repositoryRoot non-existing', async t => {
@@ -40,5 +40,5 @@ test('--repositoryRoot non-existing', async t => {
 })
 
 test('--repositoryRoot points to a non-directory file', async t => {
-  await runFixture(t, '', { flags: `--repositoryRoot=${FIXTURES_DIR}/empty/netlify.yml` })
+  await runFixture(t, '', { flags: `--repositoryRoot=${FIXTURES_DIR}/empty/netlify.toml` })
 })

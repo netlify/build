@@ -1,0 +1,6 @@
+[build]
+base = "base"
+
+[build.lifecycle]
+onInit = "echo onInit"
+onBuild = "echo onBuild"

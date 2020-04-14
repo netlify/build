@@ -1,6 +1,0 @@
-build:
-  functions: functions
-  lifecycle:
-    onBuild: echo test
-plugins:
-  - package: ./plugin

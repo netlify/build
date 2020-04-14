@@ -1,0 +1,5 @@
+[build.lifecycle]
+onInit = "echo onInit"
+
+[context.production.lifecycle]
+onBuild = "echo onBuild"

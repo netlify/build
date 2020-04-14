@@ -1,0 +1,8 @@
+[build]
+base = "/base"
+functions = "functions"
+publish = "publish"
+
+[build.lifecycle]
+onInit = "echo onInit"
+onBuild = "echo onBuild"

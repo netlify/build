@@ -1,0 +1,8 @@
+[build]
+command = "fixtureCommand"
+publish = "fixturePublish"
+functions = "fixtureFunctions"
+base = "other_base"
+
+[build.environment]
+TEST_ENV = "fixture"
