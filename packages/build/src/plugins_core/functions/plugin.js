@@ -3,7 +3,7 @@ const pathExists = require('path-exists')
 const readdirp = require('readdirp')
 
 const { installFunctionDependencies } = require('../../install/functions')
-const { serializeList } = require('../../utils/list')
+const { serializeArray } = require('../../log/serialize')
 
 // Plugin to package Netlify functions with @netlify/zip-it-and-ship-it
 const onPreBuild = async function({ constants: { FUNCTIONS_SRC, IS_LOCAL } }) {
@@ -37,7 +37,7 @@ const logResults = async function(FUNCTIONS_DIST) {
 
   const paths = files.map(getLoggedPath)
   console.log(`Functions packaged in ${FUNCTIONS_DIST}
-${serializeList(paths)}`)
+${serializeArray(paths)}`)
 }
 
 const getLoggedPath = function({ path }) {

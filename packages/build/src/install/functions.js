@@ -2,6 +2,8 @@ const { dirname } = require('path')
 
 const readdirp = require('readdirp')
 
+const { logInstallFunctionDependencies } = require('../log/main')
+
 const { installDependencies } = require('./main')
 
 // Install dependencies of Netlify Functions
@@ -11,7 +13,8 @@ const installFunctionDependencies = async function(functionsSrc, isLocal) {
     return
   }
 
-  console.log('Installing functions dependencies')
+  logInstallFunctionDependencies()
+
   const packageRoots = packagePaths.map(getPackageRoot)
   await Promise.all(packageRoots.map(packageRoot => installDependencies({ packageRoot, isLocal })))
 }

@@ -1,7 +1,7 @@
 const { EVENTS, LEGACY_EVENTS } = require('@netlify/config')
 const isPlainObj = require('is-plain-obj')
 
-const { serializeList } = require('../../utils/list')
+const { serializeArray } = require('../../log/serialize')
 const { failBuild } = require('../error')
 
 // Validate the shape of a plugin return value
@@ -30,7 +30,7 @@ const validateEventHandler = function(value, propName) {
   if (!EVENTS.includes(propName) && LEGACY_EVENTS[propName] === undefined) {
     failBuild(`Invalid event '${propName}'.
 Please use a valid event name. One of:
-${serializeList(EVENTS)}`)
+${serializeArray(EVENTS)}`)
   }
 
   if (typeof value !== 'function') {
