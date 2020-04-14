@@ -1,0 +1,4 @@
+[build.lifecycle]
+onBuild = "node --invalid"
+onError = "echo onError"
+onEnd = "echo onEnd"

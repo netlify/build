@@ -12,7 +12,7 @@ test('--repository-root', async t => {
 })
 
 test('--config', async t => {
-  await runFixture(t, '', { flags: `--config=${FIXTURES_DIR}/empty/netlify.yml` })
+  await runFixture(t, '', { flags: `--config=${FIXTURES_DIR}/empty/netlify.toml` })
 })
 
 test('--defaultConfig', async t => {

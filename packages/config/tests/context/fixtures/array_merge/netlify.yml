@@ -1,5 +1,0 @@
-build:
-  ignore: [a, b]
-context:
-  production:
-    ignore: [c, d]

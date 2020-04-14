@@ -1,0 +1,5 @@
+[build]
+base = "second_base"
+
+[build.lifecycle]
+onBuild = "echo onBuildBase"

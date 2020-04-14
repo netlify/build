@@ -1,4 +1,0 @@
-build:
-  publish: publish
-plugins:
-  - package: ./plugin

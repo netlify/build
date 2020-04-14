@@ -1,4 +1,0 @@
-build:
-  lifecycle:
-    onBuild: node --invalid
-    onSuccess: echo onSuccess

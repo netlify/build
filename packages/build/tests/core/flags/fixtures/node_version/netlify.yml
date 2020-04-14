@@ -1,5 +1,0 @@
-build:
-  lifecycle:
-    onBuild: node --version
-plugins:
-  - package: ./plugin.js

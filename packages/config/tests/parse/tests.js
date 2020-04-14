@@ -32,7 +32,7 @@ test('Configuration file - advanced YAML', async t => {
 // Node 10 also changed errors there, so Node 8 shows different error messages.
 if (platform !== 'win32' && !version.startsWith('v8.')) {
   test('Configuration file - read permission error', async t => {
-    await runFixture(t, '', { flags: `--config=${FIXTURES_DIR}/read_error/netlify.yml` })
+    await runFixture(t, '', { flags: `--config=${FIXTURES_DIR}/read_error/netlify.toml` })
   })
 }
 

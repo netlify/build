@@ -1,5 +1,0 @@
-build:
-  environment:
-    NETLIFY: test
-plugins:
-  - package: ./plugin

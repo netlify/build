@@ -1,0 +1,3 @@
+[build]
+publish = "publish"
+lifecycle = true

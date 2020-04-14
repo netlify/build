@@ -1,4 +1,0 @@
-plugins:
-  - package: ./plugin.js
-    config:
-      test: test

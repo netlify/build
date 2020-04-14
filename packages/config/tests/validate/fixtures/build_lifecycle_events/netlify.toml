@@ -1,0 +1,6 @@
+[build]
+publish = "publish"
+
+[build.lifecycle]
+onBuild = "onBuild"
+unknown = "test"

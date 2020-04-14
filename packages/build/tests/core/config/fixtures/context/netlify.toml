@@ -1,0 +1,5 @@
+[build.lifecycle]
+onBuild = "echo onBuild"
+
+[context.testContext.lifecycle]
+onBuild = "echo onBuildTest"

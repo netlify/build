@@ -11,7 +11,7 @@ test('Node module plugins', async t => {
 })
 
 test('Resolution is relative to the build directory', async t => {
-  await runFixture(t, 'basedir', { flags: `--config=${FIXTURES_DIR}/basedir/base/netlify.yml` })
+  await runFixture(t, 'basedir', { flags: `--config=${FIXTURES_DIR}/basedir/base/netlify.toml` })
 })
 
 test('Non-existing plugins', async t => {

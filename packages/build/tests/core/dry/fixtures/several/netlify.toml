@@ -1,0 +1,8 @@
+[build]
+functions = "functions"
+
+[build.lifecycle]
+onBuild = "echo test"
+
+[[plugins]]
+package = "./plugin"

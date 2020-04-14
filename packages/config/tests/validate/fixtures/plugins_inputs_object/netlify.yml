@@ -1,3 +1,0 @@
-plugins:
-  - package: test
-    inputs: true

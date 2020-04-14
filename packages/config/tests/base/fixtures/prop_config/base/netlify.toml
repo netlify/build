@@ -1,0 +1,6 @@
+[build]
+functions = "functions"
+publish = "publish"
+
+[build.lifecycle]
+onBuild = "echo onBuildBase"
