@@ -56,7 +56,7 @@ const build = async function(flags) {
     } = await loadConfig(flags)
 
     try {
-      const pluginsOptions = await getPluginsOptions({ netlifyConfig, buildDir, mode })
+      const pluginsOptions = await getPluginsOptions({ netlifyConfig, buildDir, constants, mode })
       await installLocalPluginsDependencies({ pluginsOptions, buildDir, mode })
 
       const commandsCount = await buildRun({

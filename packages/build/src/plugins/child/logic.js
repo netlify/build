@@ -1,8 +1,8 @@
 // Require the plugin file and fire its top-level function.
 // The returned object is the `logic` which includes all event handlers.
-const getLogic = function({ pluginPath, inputs, constants }) {
+const getLogic = function({ pluginPath, inputs }) {
   const logic = requireLogic(pluginPath)
-  const logicA = loadLogic({ logic, inputs, constants })
+  const logicA = loadLogic({ logic, inputs })
   return logicA
 }
 
@@ -15,13 +15,13 @@ const requireLogic = function(pluginPath) {
   }
 }
 
-const loadLogic = function({ logic, inputs, constants }) {
+const loadLogic = function({ logic, inputs }) {
   if (typeof logic !== 'function') {
     return logic
   }
 
   try {
-    return logic(inputs, { constants })
+    return logic(inputs)
   } catch (error) {
     error.message = `Could not load plugin:\n${error.message}`
     throw error
