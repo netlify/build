@@ -36,13 +36,15 @@
     "p-filter": "^2.1.0",
     "p-locate": "^4.1.0",
     "path-exists": "^4.0.0",
+    "strip-indent": "^3.0.0",
     "toml": "^3.0.0",
     "yargs": "^15.3.0"
   },
   "devDependencies": {
     "ava": "^2.4.0",
     "get-bin-path": "^4.0.1",
-    "has-ansi": "^4.0.0"
+    "has-ansi": "^4.0.0",
+    "test-each": "^2.0.0"
   },
   "engines": {
     "node": ">=8.3.0"
