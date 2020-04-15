@@ -45,7 +45,7 @@ const FLAGS = {
   config: {
     string: true,
     describe: `Path to the configuration file.
-Defaults to a netlify.yml, netlify.yaml, netlify.toml or netlify.json in the git repository root directory or the base directory`,
+Defaults to any netlify.toml in the git repository root directory or the base directory`,
   },
   defaultConfig: {
     string: true,
