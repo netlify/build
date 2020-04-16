@@ -11,20 +11,12 @@ const { getTypeInfo } = require('./type')
 
 // Serialize an error object into a header|body string to print in logs
 const serializeError = function({ message, stack, ...errorProps }) {
-  const { header, ...typeInfo } = getTypeInfo(errorProps)
+  const { header, isSuccess, ...typeInfo } = getTypeInfo(errorProps)
   const errorInfo = getErrorInfo(errorProps)
-  const errorPropsA = cleanErrorProps(errorProps)
   const headerA = getHeader(header, errorInfo)
-  const body = getBody({ typeInfo, message, stack, errorProps: errorPropsA, ...errorInfo })
-  return { header: headerA, body }
+  const body = getBody({ typeInfo, isSuccess, message, stack, errorProps, ...errorInfo })
+  return { header: headerA, body, isSuccess }
 }
-
-// Remove error static properties that should not be logged
-const cleanErrorProps = function(errorProps) {
-  return omit(errorProps, CLEANED_ERROR_PROPS)
-}
-
-const CLEANED_ERROR_PROPS = [INFO_SYM, 'requireStack']
 
 // Retrieve header to print in logs
 const getHeader = function(header, errorInfo) {
@@ -38,6 +30,7 @@ const getHeader = function(header, errorInfo) {
 // Retrieve body to print in logs
 const getBody = function({
   typeInfo: { stackType, getLocation, showErrorProps, rawStack },
+  isSuccess,
   message,
   stack,
   errorProps,
@@ -45,6 +38,11 @@ const getBody = function({
   plugin = {},
 }) {
   const { message: messageA, stack: stackA } = getStackInfo({ message, stack, stackType, rawStack })
+
+  if (isSuccess) {
+    return messageA.replace(SUCCESS_ERROR_NAME, '')
+  }
+
   const messageBlock = { name: 'Error message', value: messageA }
   const pluginBlock = getPluginBlock(plugin, location)
   const locationBlock = getLocationBlock({ stack: stackA, location, getLocation })
@@ -55,15 +53,22 @@ const getBody = function({
     .join(`\n\n`)
 }
 
+const SUCCESS_ERROR_NAME = 'Error: '
+
 // In uncaught exceptions, print error static properties
 const getErrorPropsBlock = function(errorProps, showErrorProps) {
-  if (!showErrorProps || Object.keys(errorProps).length === 0) {
+  const errorPropsA = omit(errorProps, CLEANED_ERROR_PROPS)
+
+  if (!showErrorProps || Object.keys(errorPropsA).length === 0) {
     return
   }
 
-  const value = inspect(errorProps)
+  const value = inspect(errorPropsA)
   return { name: 'Error properties', value }
 }
+
+// Remove error static properties that should not be logged
+const CLEANED_ERROR_PROPS = [INFO_SYM, 'requireStack']
 
 const serializeBlock = function({ name, value }) {
   return `${THEME.errorSubHeader(name)}

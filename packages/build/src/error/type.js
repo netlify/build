@@ -29,7 +29,7 @@ const TYPES = {
     getLocation: getBuildFailLocation,
   },
   cancelBuild: {
-    header: 'Build canceled',
+    header: ({ location: { package } }) => `Build canceled by ${package}`,
     stackType: 'stack',
     getLocation: getBuildFailLocation,
     isSuccess: true,

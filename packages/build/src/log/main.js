@@ -212,8 +212,9 @@ const logPluginError = function(error) {
 }
 
 const logBuildError = function(error) {
-  const { header, body } = serializeError(error)
-  logErrorHeader(header)
+  const { header, body, isSuccess } = serializeError(error)
+  const logFunction = isSuccess ? logHeader : logErrorHeader
+  logFunction(header)
   logMessage(`\n${body}\n`)
 }
 
