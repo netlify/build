@@ -66,8 +66,7 @@
     "strip-ansi": "^6.0.0",
     "update-notifier": "^4.1.0",
     "uuid": "^7.0.2",
-    "yargs": "^15.3.1",
-    "yarn": "^1.22.4"
+    "yargs": "^15.3.1"
   },
   "devDependencies": {
     "atob": "^2.1.2",
@@ -79,7 +78,8 @@
     "has-ansi": "^4.0.0",
     "make-dir": "^3.0.2",
     "nock": "^11.9.1",
-    "path-key": "^3.1.1"
+    "path-key": "^3.1.1",
+    "yarn": "^1.22.4"
   },
   "engines": {
     "node": ">=8.3.0"
