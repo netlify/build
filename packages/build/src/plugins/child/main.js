@@ -64,8 +64,12 @@ const handleEvents = async function(state) {
 }
 
 const handleEvent = async function(callId, eventName, payload, state) {
-  const response = await EVENTS[eventName](payload, state)
-  await sendEventToParent(callId, response)
+  try {
+    const response = await EVENTS[eventName](payload, state)
+    await sendEventToParent(callId, response)
+  } catch (error) {
+    await handleError(error)
+  }
 }
 
 // Initial plugin load
