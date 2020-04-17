@@ -151,7 +151,9 @@ array in the plugin's `manifest.yml` file:
 name: netlify-plugin-hello-world
 inputs:
   - name: foo
+    description: Describe what foo does
   - name: fizz
+    description: Describe what fizz does
 ```
 
 When you or a user install the plugin, the input names are used as keys with user-supplied values in the site
@@ -193,14 +195,17 @@ The plugin inputs can be validated using the `inputs` property in the plugin `ma
 name: netlify-plugin-hello-world
 inputs:
   - name: foo
+    description: Describe what foo does
     required: true
   - name: fizz
+    description: Describe what fizz does
     default: 5
 ```
 
 The `inputs` property is an array of objects with the following members:
 
 - `name` `{string}`: Name of the input. Required.
+- `description` `{string}`: Description of the input.
 - `required` `{boolean}`
 - `default` `{any}`: Default value.
 
