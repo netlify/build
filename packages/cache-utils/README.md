@@ -53,7 +53,7 @@ Cache a file/directory.
 
 Skipped if the file/directory does not exist locally.
 
-Returns `true` if the file/directory was cached, `false` otherwise.
+Returns `false` if the file/directory does not exist. Returns `true` otherwise.
 
 ### options
 
@@ -134,7 +134,7 @@ cached yet.
 
 Please be careful: this overwrites the local file/directory if any exists.
 
-Returns `true` if the file/directory was restored, `false` otherwise.
+Returns `false` if the file/directory was not cached yet. Returns `true` otherwise.
 
 ### options
 
@@ -150,7 +150,7 @@ _Returns_: `Promise<Boolean>`
 
 Remove a file/directory from the cache. Useful for cache invalidation.
 
-Returns `true` if the file/directory cache was removed, `false` otherwise.
+Returns `false` if the file/directory was not cached yet. Returns `true` otherwise.
 
 ```js
 module.exports = {
