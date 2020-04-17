@@ -46,6 +46,10 @@ test('manifest.yml inputs name is string', async t => {
   await runFixture(t, 'inputs_name_string')
 })
 
+test('manifest.yml inputs description is a string', async t => {
+  await runFixture(t, 'inputs_description_string')
+})
+
 test('manifest.yml inputs required is a boolean', async t => {
   await runFixture(t, 'inputs_required_boolean')
 })

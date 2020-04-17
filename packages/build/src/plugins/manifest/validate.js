@@ -89,6 +89,7 @@ const validateInput = function(input, index) {
   try {
     validateUnknownInputProps(input)
     validateInputName(input)
+    validateInputDescription(input)
     validateInputRequired(input)
   } catch (error) {
     error.message = `"inputs" property is invalid.
@@ -104,7 +105,7 @@ const validateUnknownInputProps = function(input) {
   }
 }
 
-const VALID_INPUT_PROPS = ['name', 'required', 'default']
+const VALID_INPUT_PROPS = ['name', 'description', 'required', 'default']
 
 const validateInputName = function({ name }) {
   if (name === undefined) {
@@ -113,6 +114,16 @@ const validateInputName = function({ name }) {
 
   if (typeof name !== 'string') {
     throw new Error('"name" property must be a string')
+  }
+}
+
+const validateInputDescription = function({ description }) {
+  if (description === undefined) {
+    return
+  }
+
+  if (typeof description !== 'string') {
+    throw new Error('"description" property must be a string')
   }
 }
 
