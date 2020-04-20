@@ -150,7 +150,7 @@ const fireShellCommand = async function({ prop, shellCommand }, { buildDir, node
   logShellCommandStart(shellCommand)
 
   const childProcess = execa(shellCommand, {
-    shell: true,
+    shell: 'bash',
     cwd: buildDir,
     preferLocal: true,
     execPath: nodePath,
