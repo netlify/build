@@ -6,7 +6,7 @@ const pathExists = require('path-exists')
 
 const { throwError } = require('../error')
 
-const { PARSERS } = require('./parsers')
+const { PARSERS, fixBackwardCompat } = require('./parsers')
 
 const pReadFile = promisify(readFile)
 
@@ -21,10 +21,13 @@ const parseConfig = async function(configPath) {
   }
 
   const configString = await readConfig(configPath)
-  const parser = getParser(configPath)
+  const extension = extname(configPath).replace('.', '')
+  const parser = getParser(configPath, extension)
 
   try {
-    return parser(configString)
+    const config = await parser(configString)
+    await fixBackwardCompat(config, extension, configPath)
+    return config
   } catch (error) {
     throwError('Could not parse configuration file', error)
   }
@@ -40,8 +43,7 @@ const readConfig = async function(configPath) {
 }
 
 // Retrieve the syntax-specific function to parse the raw content
-const getParser = function(configPath) {
-  const extension = extname(configPath).replace('.', '')
+const getParser = function(configPath, extension) {
   const parser = PARSERS[extension]
 
   if (parser === undefined) {

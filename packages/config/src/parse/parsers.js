@@ -1,5 +1,14 @@
+const { writeFile } = require('fs')
+const { basename, dirname, join } = require('path')
+const { promisify } = require('util')
+
+const { yellowBright } = require('chalk')
 const { load: loadYaml, JSON_SCHEMA } = require('js-yaml')
 const { parse: loadToml } = require('toml')
+
+const { serializeToml } = require('../utils/toml.js')
+
+const pWriteFile = promisify(writeFile)
 
 const parseYaml = function(configString) {
   return loadYaml(configString, { schema: JSON_SCHEMA, json: true })
@@ -14,6 +23,7 @@ const parseJson = function(configString) {
 }
 
 // List of parsers for each file extension
+// TODO: remove YAML and JSON after out of beta
 const PARSERS = {
   yaml: parseYaml,
   yml: parseYaml,
@@ -21,4 +31,25 @@ const PARSERS = {
   json: parseJson,
 }
 
-module.exports = { PARSERS }
+// YAML and JSON are deprecated.
+// We convert user's configuration file to `netlify.toml` so they don't have to
+// do it themselves.
+// TODO: remove after out of beta
+const fixBackwardCompat = async function(config, extension, configPath) {
+  if (extension === 'toml') {
+    return
+  }
+
+  console.warn(yellowBright(`netlify.${extension} is deprecated: please use netlify.toml instead.\n`))
+
+  const tomlConfigPath = getTomlConfigPath(configPath, extension)
+  const configString = serializeToml(config)
+  await pWriteFile(tomlConfigPath, `${configString}\n`)
+}
+
+const getTomlConfigPath = function(configPath, extension) {
+  const filename = basename(configPath).replace(extension, 'toml')
+  return join(dirname(configPath), filename)
+}
+
+module.exports = { PARSERS, fixBackwardCompat }

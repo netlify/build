@@ -95,7 +95,7 @@ test('build.context.CONTEXT: object', async t => {
   await runFixture(t, 'build_context_nested_object')
 })
 
-test.skip('Colors', async t => {
-  const { stderr } = await runFixture(t, 'build_object', { snapshot: false, normalize: false })
+test('Colors', async t => {
+  const { stderr } = await runFixture(t, 'colors', { snapshot: false, normalize: false })
   t.true(hasAnsi(stderr))
 })
