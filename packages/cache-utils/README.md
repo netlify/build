@@ -57,28 +57,6 @@ Returns `true` if the file/directory was cached, `false` otherwise.
 
 ### options
 
-#### move
-
-_Type_: `boolean`\
-_Default_: `false`
-
-Move files to the cache instead of copying them. This is much faster but this removes local files, so should only be
-done when those files won't be used anymore by the current build.
-
-```js
-// Move files to the cache instead of copying them. This is much faster but this
-// removes local files, so should only be done when those files won't be used
-// anymore by the current build.
-module.exports = {
-  async onPreBuild({ utils }) {
-    await utils.cache.restore('./path/to/file', { move: true })
-  }
-  async onPostBuild({ utils }) {
-    await utils.cache.save('./path/to/file', { move: true })
-  }
-}
-```
-
 #### ttl
 
 _Type_: `number` (in seconds)\
@@ -137,11 +115,6 @@ Please be careful: this overwrites the local file/directory if any exists.
 Returns `true` if the file/directory was restored, `false` otherwise.
 
 ### options
-
-#### move
-
-_Type_: `boolean`\
-_Default_: `false`
 
 ## remove(path)
 
