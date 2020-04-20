@@ -1,6 +1,7 @@
 const { basename } = require('path')
 const {
   env: { NETLIFY_BUILD_DEBUG },
+  argv,
 } = require('process')
 
 const { arrowDown } = require('figures')
@@ -44,6 +45,9 @@ const logConfig = function(config) {
   if (!NETLIFY_BUILD_DEBUG) {
     return
   }
+
+  logSubHeader('CLI flags')
+  logMessage(argv.slice(2).join('\n'))
 
   logSubHeader('Resolved config')
   logObject(simplifyConfig(config))

@@ -32,7 +32,7 @@ const NORMALIZE_REGEXPS = [
   // File paths
   [/packages\/+build/g, '/packages/build'],
   [/Caching [.~]\//g, 'Caching '],
-  [/(^|[ "'(])\.{0,2}\/[^ "')\n]+/gm, '$1/file/path'],
+  [/(^|[ "'(=])\.{0,2}\/[^ "')\n]+/gm, '$1/file/path'],
   // When serializing flags, Windows keep single quotes due to backslashes,
   // but not Unix
   [/: '\/file\/path'$/gm, ': /file/path'],
