@@ -5,6 +5,7 @@ coverage:
   parsers:
     javascript:
       enable_partials: true
-comment:
-  layout: files,flags
-  require_changes: true
+  status:
+    project: false
+    patch: false
+comment: false
