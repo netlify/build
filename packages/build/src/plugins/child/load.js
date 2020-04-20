@@ -9,7 +9,7 @@ const { validatePlugin } = require('./validate')
 // This also validates the plugin.
 // Do it when parent requests it using the `load` event.
 // Also figure out the list of plugin commands. This is also passed to the parent.
-const loadPlugin = function(payload) {
+const load = function(payload) {
   const logic = getLogic(payload)
 
   validatePlugin(logic)
@@ -19,7 +19,7 @@ const loadPlugin = function(payload) {
   const pluginCommands = getPluginCommands(logicA)
 
   const context = getContext(pluginCommands, payload)
-  return { context, pluginCommands }
+  return { pluginCommands, context }
 }
 
 const getPluginCommands = function(logic) {
@@ -39,4 +39,4 @@ const getContext = function(pluginCommands, { manifest, inputs, netlifyConfig, c
   return { pluginCommands, api, utils, constants, inputs, netlifyConfig }
 }
 
-module.exports = { loadPlugin }
+module.exports = { load }
