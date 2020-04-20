@@ -35,7 +35,7 @@ const isEventHandler = function([, value]) {
 // Retrieve context passed to every event handler
 const getContext = function(pluginCommands, { manifest, inputs, netlifyConfig, constants, utilsData, token }) {
   const utils = getUtils({ utilsData, constants })
-  const api = getApiClient({ manifest, token, utils })
+  const api = getApiClient({ manifest, token })
   return { pluginCommands, api, utils, constants, inputs, netlifyConfig }
 }
 
