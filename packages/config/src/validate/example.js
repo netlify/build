@@ -1,7 +1,7 @@
 const indentString = require('indent-string')
-const { dump } = require('js-yaml')
+const tomlify = require('tomlify-j0.4')
 
-// Print invalid value and example netlify.yml
+// Print invalid value and example netlify.toml
 const getExample = function({ value, parent, key, prevPath, example }) {
   const exampleA = typeof example === 'function' ? example(value, key, parent, prevPath) : example
   return `
@@ -28,8 +28,9 @@ const setInvalidValuePart = function(value, part) {
   return value === undefined ? {} : { [part]: value }
 }
 
-const serializeValue = function(value) {
-  return dump(value, { noRefs: true }).trim()
+// Serialize JavaScript object to TOML
+const serializeValue = function(object) {
+  return tomlify.toToml(object, { space: 2 })
 }
 
 module.exports = { getExample }
