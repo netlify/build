@@ -16,7 +16,6 @@ const { normalizeOpts } = require('./options/main')
 const { parseConfig } = require('./parse/main')
 const { getConfigPath } = require('./path')
 const { deepMerge } = require('./utils/merge')
-const { omit } = require('./utils/omit')
 const { validateConfig } = require('./validate/main')
 
 // Load the configuration file.
@@ -46,7 +45,9 @@ const resolveConfig = async function({ cachedConfig, token = NETLIFY_AUTH_TOKEN,
     mode,
   } = await normalizeOpts(opts)
 
-  const defaultConfigA = getDefaultConfig(defaultConfig, mode)
+  // Retrieve default configuration file. It has less priority and it also does
+  // not get normalized, merged with contexts, etc.
+  const defaultConfigA = getConfig(defaultConfig, 'default')
 
   const siteInfo = await getSiteInfo(api, siteId, mode)
   const { defaultConfig: defaultConfigB, baseRelDir: baseRelDirA = DEFAULT_BASE_REL_DIR } = addBuildSettings({
@@ -74,32 +75,6 @@ const resolveConfig = async function({ cachedConfig, token = NETLIFY_AUTH_TOKEN,
 // it could be retrieved from the `siteInfo`, which is why the default value
 // is assigned later than other properties.
 const DEFAULT_BASE_REL_DIR = true
-
-// Retrieve default configuration file. It has less priority and it also does
-// not get normalized, merged with contexts, etc.
-const getDefaultConfig = function(defaultConfig, mode) {
-  const defaultConfigA = getConfig(defaultConfig, 'default')
-  const defaultConfigB = mode === 'buildbot' ? removeBuildbotEnv(defaultConfigA) : defaultConfigA
-  return defaultConfigB
-}
-
-// The buildbot pass some environment variables both in `@netlify/config` and
-// as `process.env`. We remove the first one since it's redundant and make the
-// `@netlify/config` bigger.
-const removeBuildbotEnv = function({ build: { environment = {}, ...build } = {}, ...defaultConfig }) {
-  const environmentA = omit(environment, BUILDBOT_ENV)
-  return { ...defaultConfig, build: { ...build, environment: environmentA } }
-}
-
-const BUILDBOT_ENV = [
-  'BRANCH',
-  'CONTEXT',
-  'DEPLOY_PRIME_URL',
-  'DEPLOY_URL',
-  'GO_VERSION',
-  'NETLIFY_IMAGES_CDN_DOMAIN',
-  'URL',
-]
 
 // Load a configuration file passed as a JSON object.
 // The logic is much simpler: it does not normalize nor validate it.

@@ -57,9 +57,10 @@ const logConfig = function(config) {
 // to make it more convenient to use without checking for `undefined`.
 // However those empty values are not useful to users, so we don't log them.
 const simplifyConfig = function({ build: { environment, lifecycle, ...build }, plugins, ...config }) {
+  const environmentA = omit(environment, BUILDBOT_ENVIRONMENT)
   const simplifiedBuild = {
     ...build,
-    ...removeEmptyObject(environment, 'environment'),
+    ...removeEmptyObject(environmentA, 'environment'),
     ...removeEmptyObject(lifecycle, 'lifecycle'),
   }
   return {
@@ -68,6 +69,18 @@ const simplifyConfig = function({ build: { environment, lifecycle, ...build }, p
     ...removeEmptyArray(plugins, 'plugins'),
   }
 }
+
+// Added by the buildbot. We only want to print environment variables specified
+// by the user.
+const BUILDBOT_ENVIRONMENT = [
+  'BRANCH',
+  'CONTEXT',
+  'DEPLOY_PRIME_URL',
+  'DEPLOY_URL',
+  'GO_VERSION',
+  'NETLIFY_IMAGES_CDN_DOMAIN',
+  'URL',
+]
 
 const removeEmptyObject = function(object, propName) {
   return Object.keys(object).length === 0 ? {} : { [propName]: object }

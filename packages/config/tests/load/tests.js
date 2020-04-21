@@ -44,16 +44,6 @@ test('--defaultConfig with an invalid relative path', async t => {
   await runFixture(t, '', { flags: '--defaultConfig={{}' })
 })
 
-test('--defaultConfig does not include buildbot environment', async t => {
-  const defaultConfig = getJsonOpt({ build: { environment: { BRANCH: 'test', TEST: 'test' } } })
-  await runFixture(t, 'empty', { flags: `--defaultConfig=${defaultConfig} --mode=buildbot` })
-})
-
-test('--defaultConfig includes buildbot environment on local builds', async t => {
-  const defaultConfig = getJsonOpt({ build: { environment: { BRANCH: 'test', TEST: 'test' } } })
-  await runFixture(t, 'empty', { flags: `--defaultConfig=${defaultConfig}` })
-})
-
 test('--cachedConfig', async t => {
   const { stdout } = await runFixture(t, 'cached_config', { snapshot: false })
   const cachedConfig = escapeExecaOpt(stdout)
