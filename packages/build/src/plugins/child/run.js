@@ -1,10 +1,18 @@
+const { getNewEnvChanges, setEnvChanges } = require('../../env/changes.js')
+
 // Run a specific plugin event handler
-const run = async function({ event, error }, { pluginCommands, api, utils, constants, inputs, netlifyConfig }) {
+const run = async function(
+  { event, error, envChanges },
+  { pluginCommands, api, utils, constants, inputs, netlifyConfig },
+) {
   const { method } = pluginCommands.find(pluginCommand => pluginCommand.event === event)
   const runOptions = { api, utils, constants, inputs, netlifyConfig, error }
   addBackwardCompatibility(runOptions)
+
+  const envBefore = setEnvChanges(envChanges)
   await method(runOptions)
-  return {}
+  const newEnvChanges = getNewEnvChanges(envBefore)
+  return { newEnvChanges }
 }
 
 // Add older names, kept for backward compatibility. Non-enumerable.

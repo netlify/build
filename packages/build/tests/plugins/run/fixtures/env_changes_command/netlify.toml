@@ -1,0 +1,6 @@
+[build]
+command = "node printEnv.js"
+
+[[plugins]]
+package = "./plugin"
+

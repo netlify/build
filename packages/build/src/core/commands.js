@@ -2,6 +2,7 @@ const { EVENTS } = require('@netlify/config')
 const execa = require('execa')
 const pReduce = require('p-reduce')
 
+const { setEnvChanges } = require('../env/changes.js')
 const { addErrorInfo, getErrorInfo } = require('../error/info')
 const { logCommand, logShellCommandStart, logCommandSuccess, logPluginError } = require('../log/main')
 const { startOutput, stopOutput } = require('../log/stream')
@@ -85,20 +86,21 @@ const execCommands = async function(
 ) {
   const { failure } = await pReduce(
     commands,
-    ({ failure, failedPlugins }, command) =>
+    ({ failure, failedPlugins, envChanges: envChangesA }, command) =>
       runCommand(command, {
         configPath,
         buildDir,
         state,
         nodePath,
         childEnv,
+        envChanges: envChangesA,
         mode,
         error,
         failure,
         failedPlugins,
         failFast,
       }),
-    { failedPlugins: [] },
+    { failedPlugins: [], envChanges: {} },
   )
 
   if (failure !== undefined) {
@@ -109,7 +111,7 @@ const execCommands = async function(
 // Run a command (shell or plugin)
 const runCommand = async function(
   command,
-  { configPath, buildDir, state, nodePath, childEnv, mode, error, failure, failedPlugins, failFast },
+  { configPath, buildDir, state, nodePath, childEnv, envChanges, mode, error, failure, failedPlugins, failFast },
 ) {
   try {
     const { event, prop, package } = command
@@ -124,43 +126,53 @@ const runCommand = async function(
     const { index } = state
     logCommand(command, { index, configPath, error })
 
-    await fireCommand(command, { buildDir, nodePath, childEnv, mode, error })
+    const { newEnvChanges } = await fireCommand(command, {
+      buildDir,
+      nodePath,
+      childEnv,
+      envChanges,
+      mode,
+      error,
+    })
+    const nextEnvChanges = { ...envChanges, ...newEnvChanges }
 
     logCommandSuccess()
 
     const timerName = prop === undefined ? `${package} ${event}` : prop
     endTimer(methodTimer, timerName)
 
-    return { failure, failedPlugins }
+    return { failure, failedPlugins, envChanges: nextEnvChanges }
   } catch (newFailure) {
-    return handleCommandError({ newFailure, failedPlugins, failure, failFast })
+    return handleCommandError({ newFailure, failedPlugins, failure, failFast, envChanges })
   }
 }
 
-const fireCommand = function(command, { buildDir, nodePath, childEnv, mode, error }) {
+const fireCommand = function(command, { buildDir, nodePath, childEnv, envChanges, mode, error }) {
   if (command.shellCommand !== undefined) {
-    return fireShellCommand(command, { buildDir, nodePath, childEnv, mode })
+    return fireShellCommand(command, { buildDir, nodePath, childEnv, envChanges, mode })
   }
 
-  return firePluginCommand(command, { mode, error })
+  return firePluginCommand(command, { envChanges, mode, error })
 }
 
 // Fire a `config.lifecycle.*` shell command
-const fireShellCommand = async function({ prop, shellCommand }, { buildDir, nodePath, childEnv, mode }) {
+const fireShellCommand = async function({ prop, shellCommand }, { buildDir, nodePath, childEnv, envChanges, mode }) {
   logShellCommandStart(shellCommand)
 
+  const env = setEnvChanges(envChanges, { ...childEnv })
   const childProcess = execa(shellCommand, {
     shell: 'bash',
     cwd: buildDir,
     preferLocal: true,
     execPath: nodePath,
-    env: childEnv,
+    env,
     extendEnv: false,
   })
   const outputState = startOutput(childProcess, mode)
 
   try {
     await childProcess
+    return {}
   } catch (error) {
     addErrorInfo(error, { type: 'shellCommand', location: { prop, shellCommand } })
     throw error
@@ -170,16 +182,20 @@ const fireShellCommand = async function({ prop, shellCommand }, { buildDir, node
 }
 
 // Fire a plugin command
-const firePluginCommand = async function({ childProcess, event, package, packageJson, local }, { mode, error }) {
+const firePluginCommand = async function(
+  { childProcess, event, package, packageJson, local },
+  { envChanges, mode, error },
+) {
   const outputState = startOutput(childProcess, mode)
 
   try {
-    await callChild(
+    const { newEnvChanges } = await callChild(
       childProcess,
       'run',
-      { event, error },
+      { event, error, envChanges },
       { plugin: { packageJson, package }, location: { event, package, local } },
     )
+    return { newEnvChanges }
   } finally {
     await stopOutput(childProcess, mode, outputState)
   }
@@ -191,19 +207,19 @@ const firePluginCommand = async function({ childProcess, event, package, package
 //    handlers of the same type have been triggered before propagating
 //  - if `utils.build.failPlugin()` was used, print an error and skip next event
 //    handlers of that plugin. But do not stop build.
-const handleCommandError = function({ newFailure, failedPlugins, failure, failFast }) {
+const handleCommandError = function({ newFailure, failedPlugins, failure, failFast, envChanges }) {
   const { type, location: { package } = {} } = getErrorInfo(newFailure)
 
   if (type === 'failPlugin') {
     logPluginError(newFailure)
-    return { failure, failedPlugins: [...failedPlugins, package] }
+    return { failure, failedPlugins: [...failedPlugins, package], envChanges }
   }
 
   if (failFast) {
     throw newFailure
   }
 
-  return { failure: newFailure, failedPlugins }
+  return { failure: newFailure, failedPlugins, envChanges }
 }
 
 module.exports = { getCommands, runCommands }
