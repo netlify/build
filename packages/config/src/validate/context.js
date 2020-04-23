@@ -21,7 +21,7 @@ const CONTEXT_PREFIX = 'context.*.'
 // Wrap `example` to return { context: { CONTEXT: ... } } instead of { build: ... }
 const getValidationExample = function(example, ...args) {
   const { build } = example(...args)
-  const context = args[3][1]
+  const context = args[2][1]
   return { context: { [context]: build } }
 }
 

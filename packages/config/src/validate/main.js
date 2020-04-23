@@ -46,17 +46,16 @@ const validateProperty = function(
     })
   }
 
-  if (value === undefined || (check !== undefined && check(value, key, parent))) {
+  if (value === undefined || (check !== undefined && check(value))) {
     return
   }
 
-  reportError({ prevPath, propPath, message, example, warn, value, key, parent })
+  reportError({ prevPath, propPath, message, example, warn, value, key })
 }
 
-const reportError = function({ prevPath, propPath, message, example, warn, value, key, parent }) {
-  const messageA = typeof message === 'function' ? message(value, key, parent) : message
-  const errorMessage = `Configuration property ${propPath} ${messageA}
-${getExample({ value, parent, key, prevPath, example })}`
+const reportError = function({ prevPath, propPath, message, example, warn, value, key }) {
+  const errorMessage = `Configuration property ${propPath} ${message}
+${getExample({ value, key, prevPath, example })}`
 
   if (!warn) {
     throwError(errorMessage)
