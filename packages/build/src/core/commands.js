@@ -1,3 +1,5 @@
+const { platform } = require('process')
+
 const execa = require('execa')
 const pReduce = require('p-reduce')
 
@@ -197,7 +199,7 @@ const fireBuildCommand = async function({ buildCommand, configPath, buildDir, no
 
   const env = setEnvChanges(envChanges, { ...childEnv })
   const childProcess = execa(buildCommand, {
-    shell: 'bash',
+    shell: SHELL,
     cwd: buildDir,
     preferLocal: true,
     execPath: nodePath,
@@ -216,6 +218,9 @@ const fireBuildCommand = async function({ buildCommand, configPath, buildDir, no
     await stopOutput(childProcess, mode, outputState)
   }
 }
+
+// We use Bash on Unix and `cmd.exe` on Windows
+const SHELL = platform === 'win32' ? true : 'bash'
 
 // Fire a plugin command
 const firePluginCommand = async function({

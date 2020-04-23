@@ -4,9 +4,11 @@ const test = require('ava')
 
 const { runFixture } = require('../../helpers/main')
 
-test('build.command uses Bash', async t => {
-  await runFixture(t, 'bash')
-})
+if (platform !== 'win32') {
+  test('build.command uses Bash', async t => {
+    await runFixture(t, 'bash')
+  })
+}
 
 test('build.command can execute global binaries', async t => {
   await runFixture(t, 'global_bin')
