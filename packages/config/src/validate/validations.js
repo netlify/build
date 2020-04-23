@@ -1,10 +1,10 @@
 const isPlainObj = require('is-plain-obj')
 
-const { EVENTS, LEGACY_EVENTS, normalizeEventHandler } = require('../normalize/events')
+const { getLifecycleCommand } = require('../normalize/lifecycle')
 const { omit } = require('../utils/omit')
 
 const { addContextValidations } = require('./context')
-const { isString, validProperties, deprecatedProperties, insideRootCheck, removeParentDots } = require('./helpers')
+const { isString, isUndefined, validProperties, insideRootCheck, removeParentDots } = require('./helpers')
 
 // List of validations performed on the configuration file.
 // Validation are performed in order: parent should be before children.
@@ -12,7 +12,6 @@ const { isString, validProperties, deprecatedProperties, insideRootCheck, remove
 //   - `property` {string}: dot-delimited path to the property.
 //     Can contain `*` providing a previous check validates the parent is an
 //     object or an array.
-//   - `required` {boolean}
 //   - `check` {(value) => boolean}: validation check function
 //   - `message` {string}: error message
 //   - `example` {string}: example of correct code
@@ -28,42 +27,46 @@ const RAW_VALIDATIONS = [
       plugins: [{ package: 'netlify-plugin-one' }, { package: 'netlify-plugin-two' }],
     }),
   },
+
+  // TODO: remove 'id', 'type', 'config', 'enabled' after going GA
   {
     property: 'plugins.*',
-    // TODO: remove 'id', 'type', 'config', 'enabled' after the Beta release since it's legacy
     ...validProperties(['package', 'inputs'], ['id', 'type', 'config', 'enabled']),
-    example: {
-      plugins: [{ package: 'netlify-plugin-one', inputs: { port: 80 } }],
-    },
+    example: { plugins: [{ package: 'netlify-plugin-one', inputs: { port: 80 } }] },
   },
+
   {
     property: 'plugins.*',
     check: ({ package, type }) => package !== undefined || type !== undefined,
     message: '"package" property is required.',
     example: plugin => ({ plugins: [{ ...plugin, package: 'netlify-plugin-one' }] }),
   },
+
+  // TODO: remove this check after going GA
   {
     property: 'plugins.*.type',
-    check: type => type === undefined,
+    check: isUndefined,
     message: 'has been renamed to "package".',
     example: (type, key, plugin) => ({ plugins: [{ ...omit(plugin, ['type']), package: type }] }),
     warn: true,
   },
+
   {
     property: 'plugins.*.package',
     check: isString,
     message: 'must be a string.',
     example: (package, key, plugin) => ({ plugins: [{ ...plugin, package: 'netlify-plugin-one' }] }),
   },
+
+  // TODO: remove this check after going GA
   {
     property: 'plugins.*.config',
-    check: type => type === undefined,
+    check: isUndefined,
     message: 'has been renamed to "inputs".',
-    example: (inputs, key, plugin) => ({
-      plugins: [{ ...omit(plugin, ['config']), inputs }],
-    }),
+    example: (inputs, key, plugin) => ({ plugins: [{ ...omit(plugin, ['config']), inputs }] }),
     warn: true,
   },
+
   {
     property: 'plugins.*.inputs',
     check: isPlainObj,
@@ -76,7 +79,7 @@ const RAW_VALIDATIONS = [
     property: 'build',
     check: isPlainObj,
     message: 'must be a plain object.',
-    example: (build, key, config) => ({ ...config, build: { lifecycle: { onBuild: 'npm run build' } } }),
+    example: (build, key, config) => ({ ...config, build: { command: 'npm run build' } }),
   },
   {
     property: 'build.base',
@@ -113,38 +116,22 @@ const RAW_VALIDATIONS = [
   },
   {
     property: 'build.command',
-    check: value => isString(value) || (Array.isArray(value) && value.every(isString)),
-    message: 'must be a string or an array of strings.',
-    example: (command, key, build) => ({ build: { ...build, command: ['npm run build', 'npm test'] } }),
+    check: isString,
+    message: 'must be a string',
+    example: (command, key, build) => ({ build: { ...build, command: 'npm run build' } }),
   },
+
+  // TODO: remove this check after going GA
   {
     property: 'build.lifecycle',
-    check: isPlainObj,
-    message: 'must be a plain object.',
-    example: (lifecycle, key, build) => ({ build: { ...build, lifecycle: { onBuild: 'npm run build' } } }),
-  },
-  {
-    property: 'build.lifecycle',
-    ...validProperties(EVENTS, Object.keys(LEGACY_EVENTS), normalizeEventHandler),
-    example: (lifecycle, key, build) => ({ build: { ...build, lifecycle: { onBuild: 'npm run build' } } }),
-  },
-  {
-    property: 'build.lifecycle.*',
-    ...deprecatedProperties(
-      LEGACY_EVENTS,
-      (event, key, lifecycle) => ({ build: { lifecycle: { ...omit(lifecycle, [key]), [event]: 'npm run build' } } }),
-      normalizeEventHandler,
-    ),
+    check: isUndefined,
+    message: 'has been removed. Please use build.command instead.',
+    example: (lifecycle, key, build) => ({
+      build: { ...omit(build, ['lifecycle']), command: getLifecycleCommand(lifecycle) },
+    }),
     warn: true,
   },
-  {
-    property: 'build.lifecycle.*',
-    check: value => isString(value),
-    message: 'must be a string.',
-    example: (value, key, lifecycle) => ({
-      build: { lifecycle: { ...lifecycle, [key]: 'npm run build' } },
-    }),
-  },
+
   {
     property: 'context',
     check: isPlainObj,

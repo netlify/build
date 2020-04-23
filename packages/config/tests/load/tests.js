@@ -31,12 +31,12 @@ test('--config with an invalid relative path', async t => {
 })
 
 test('--defaultConfig merge', async t => {
-  const defaultConfig = getJsonOpt({ build: { lifecycle: { onInit: 'echo onInit' } } })
+  const defaultConfig = getJsonOpt({ build: { publish: 'publish' } })
   await runFixture(t, 'default_merge', { flags: `--defaultConfig=${defaultConfig}` })
 })
 
 test('--defaultConfig priority', async t => {
-  const defaultConfig = getJsonOpt({ build: { lifecycle: { onBuild: 'echo onBuild' } } })
+  const defaultConfig = getJsonOpt({ build: { command: 'echo commandDefault' } })
   await runFixture(t, 'default_priority', { flags: `--defaultConfig=${defaultConfig}` })
 })
 

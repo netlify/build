@@ -10,7 +10,6 @@ const { getSiteInfo } = require('./api/site_info')
 const { mergeContext } = require('./context')
 const { throwError } = require('./error')
 const { handleFiles } = require('./files')
-const { EVENTS, LEGACY_EVENTS } = require('./normalize/events')
 const { normalizeConfig } = require('./normalize/main')
 const { normalizeOpts } = require('./options/main')
 const { parseConfig } = require('./parse/main')
@@ -155,5 +154,3 @@ const getFullConfig = async function({ configOpt, cwd, context, repositoryRoot, 
 }
 
 module.exports = resolveConfig
-module.exports.EVENTS = EVENTS
-module.exports.LEGACY_EVENTS = LEGACY_EVENTS

@@ -1,4 +1,3 @@
-const { basename } = require('path')
 const {
   env: { NETLIFY_BUILD_DEBUG },
   argv,
@@ -11,6 +10,7 @@ const { name, version } = require('../../package.json')
 const { serializeError } = require('../error/serialize')
 const { omit } = require('../utils/omit')
 
+const { getCommandDescription, getBuildCommandDescription } = require('./description')
 const { log, logMessage, logObject, logArray, logHeader, logErrorHeader, logSubHeader } = require('./logger')
 const { THEME } = require('./theme')
 
@@ -56,12 +56,11 @@ const logConfig = function(config) {
 // The resolved configuration gets assigned some default values (empty objects and arrays)
 // to make it more convenient to use without checking for `undefined`.
 // However those empty values are not useful to users, so we don't log them.
-const simplifyConfig = function({ build: { environment, lifecycle, ...build }, plugins, ...config }) {
+const simplifyConfig = function({ build: { environment, ...build }, plugins, ...config }) {
   const environmentA = omit(environment, BUILDBOT_ENVIRONMENT)
   const simplifiedBuild = {
     ...build,
     ...removeEmptyObject(environmentA, 'environment'),
-    ...removeEmptyObject(lifecycle, 'lifecycle'),
   }
   return {
     ...config,
@@ -122,8 +121,8 @@ const logLoadPlugins = function() {
   logSubHeader('Loading plugins')
 }
 
-const logLoadedPlugins = function(pluginCommands) {
-  const loadedPlugins = pluginCommands.filter(isNotDuplicate).map(getLoadedPlugin)
+const logLoadedPlugins = function(pluginsCommands) {
+  const loadedPlugins = pluginsCommands.filter(isNotDuplicate).map(getLoadedPlugin)
   logArray(loadedPlugins)
 }
 
@@ -133,8 +132,8 @@ const isNotDuplicate = function(pluginCommand, index, pluginCommands) {
     .some(laterPluginCommand => laterPluginCommand.package === pluginCommand.package)
 }
 
-const getLoadedPlugin = function({ package, core, packageJson: { version } }) {
-  const location = core ? ' from build core' : version === undefined ? '' : `@${version}`
+const getLoadedPlugin = function({ package, packageJson: { version } }) {
+  const location = version === undefined ? '' : `@${version}`
   return `${package}${location}`
 }
 
@@ -153,19 +152,13 @@ ${THEME.header(`┌─${line}─┬─${secondLine}─┐
 └─${line}─┴─${secondLine}─┘`)}`)
 }
 
-const logDryRunCommand = function({
-  command: { prop, event, package, core },
-  index,
-  configPath,
-  eventWidth,
-  commandsCount,
-}) {
+const logDryRunCommand = function({ command: { event, package }, index, configPath, eventWidth, commandsCount }) {
   const columnWidth = getDryColumnWidth(eventWidth, commandsCount)
   const line = '─'.repeat(columnWidth)
   const countText = `${index + 1}. `
   const downArrow = commandsCount === index + 1 ? '  ' : ` ${arrowDown}`
   const eventWidthA = columnWidth - countText.length - downArrow.length
-  const location = getPluginLocation({ prop, package, core, configPath })
+  const location = getPluginLocation({ package, configPath })
 
   logMessage(
     `${THEME.header(`┌─${line}─┐`)}
@@ -174,13 +167,9 @@ ${THEME.header(`└─${line}─┘ `)}`,
   )
 }
 
-const getPluginLocation = function({ prop, package, core, configPath }) {
-  if (prop !== undefined) {
-    return `Config ${basename(configPath)} ${THEME.highlightWords(prop)}`
-  }
-
-  if (core) {
-    return `Plugin ${THEME.highlightWords(package)} in build core`
+const getPluginLocation = function({ package, configPath }) {
+  if (package === undefined) {
+    return getBuildCommandDescription(configPath)
   }
 
   return `Plugin ${THEME.highlightWords(package)}`
@@ -188,7 +177,7 @@ const getPluginLocation = function({ prop, package, core, configPath }) {
 
 const getDryColumnWidth = function(eventWidth, commandsCount) {
   const symbolsWidth = `${commandsCount}`.length + 4
-  return Math.max(eventWidth + symbolsWidth, DRY_HEADER_NAMES[0].length)
+  return Math.max(eventWidth + symbolsWidth, DRY_HEADER_NAMES[1].length)
 }
 
 const DRY_HEADER_NAMES = ['Event', 'Location']
@@ -197,16 +186,15 @@ const logDryRunEnd = function() {
   logMessage(`\nIf this looks good to you, run \`netlify build\` to execute the build\n`)
 }
 
-const logCommand = function({ event, prop, package }, { index, configPath, error }) {
-  const configName = configPath === undefined ? '' : ` from ${basename(configPath)} config file`
-  const description = prop === undefined ? `${event} command from ${package}` : `${prop} command${configName}`
+const logCommand = function({ event, package, index, configPath, error }) {
+  const description = getCommandDescription({ event, package, configPath })
   const logHeaderFunc = error ? logErrorHeader : logHeader
   logHeaderFunc(`${index}. ${description}`)
   logMessage('')
 }
 
-const logShellCommandStart = function(shellCommand) {
-  log(THEME.highlightWords(`$ ${shellCommand}`))
+const logBuildCommandStart = function(buildCommand) {
+  log(THEME.highlightWords(`$ ${buildCommand}`))
 }
 
 const logCommandSuccess = function() {
@@ -256,7 +244,7 @@ module.exports = {
   logDryRunCommand,
   logDryRunEnd,
   logCommand,
-  logShellCommandStart,
+  logBuildCommandStart,
   logCommandSuccess,
   logTimer,
   logCacheDir,

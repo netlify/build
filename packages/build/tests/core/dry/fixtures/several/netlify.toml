@@ -1,8 +1,6 @@
 [build]
 functions = "functions"
-
-[build.lifecycle]
-onBuild = "echo test"
+command = "echo test"
 
 [[plugins]]
 package = "./plugin"

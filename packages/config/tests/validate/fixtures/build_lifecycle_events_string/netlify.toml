@@ -1,6 +1,0 @@
-[build]
-publish = "publish"
-
-[build.lifecycle]
-onInit = "onInit"
-onBuild = true

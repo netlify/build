@@ -1,2 +1,0 @@
-[build.lifecycle]
-onInit = "echo $GATSBY_TELEMETRY_DISABLED"

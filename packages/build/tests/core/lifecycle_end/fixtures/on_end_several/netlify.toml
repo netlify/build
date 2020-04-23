@@ -1,8 +1,0 @@
-[build.lifecycle]
-onBuild = "node --invalid"
-
-[[plugins]]
-package = "./plugin_invalid.js"
-
-[[plugins]]
-package = "./plugin_valid.js"

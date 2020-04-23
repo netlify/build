@@ -1,5 +1,5 @@
-[build.lifecycle]
-onInit = "echo onInit"
+[build.environment]
+one = "one"
 
-[context.production.lifecycle]
-onBuild = "echo onBuild"
+[context.production.environment]
+two = "two"

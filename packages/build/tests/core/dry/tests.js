@@ -13,3 +13,7 @@ test('--dry with several events', async t => {
 test('--dry-run', async t => {
   await runFixture(t, 'single', { flags: '--dry-run' })
 })
+
+test('--dry with build.command but no netlify.toml', async t => {
+  await runFixture(t, 'none', { flags: '--dry --defaultConfig={"build":{"command":"echo"}}' })
+})

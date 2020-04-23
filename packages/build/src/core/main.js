@@ -154,20 +154,15 @@ const executeCommands = async function({
     constants,
   })
 
-  const { mainCommands, buildCommands, endCommands, errorCommands, commandsCount } = getCommands({
-    pluginsCommands,
-    netlifyConfig,
-  })
+  const { commands, commandsCount } = getCommands(pluginsCommands, netlifyConfig)
 
   if (dry) {
-    doDryRun({ mainCommands, commandsCount, configPath })
+    doDryRun({ commands, commandsCount, configPath })
     return
   }
 
   await runCommands({
-    buildCommands,
-    endCommands,
-    errorCommands,
+    commands,
     configPath,
     buildDir,
     nodePath,

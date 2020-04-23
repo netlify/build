@@ -23,7 +23,6 @@ const validateProperty = function(
     prevPath = [propName],
     propPath = propName,
     key = propName,
-    required,
     check,
     message,
     example,
@@ -40,7 +39,6 @@ const validateProperty = function(
       nextPath,
       propPath,
       key,
-      required,
       check,
       message,
       example,
@@ -48,11 +46,7 @@ const validateProperty = function(
     })
   }
 
-  if (value === undefined) {
-    return checkRequired({ value, required, propPath, prevPath, example })
-  }
-
-  if (check !== undefined && check(value, key, parent)) {
+  if (value === undefined || (check !== undefined && check(value, key, parent))) {
     return
   }
 
@@ -112,17 +106,6 @@ const validateChildProp = function({ childProp, value, nextPath, propPath, prevP
     propPath: `${propPath}.${childProp}`,
     key: childProp,
   })
-}
-
-// When `required` is `true`, property must be defined, unless its parent is
-// `undefined`. To make parent required, set its `required` to `true` as well.
-const checkRequired = function({ value, required, propPath, prevPath, example }) {
-  if (!required) {
-    return
-  }
-
-  throwError(`Configuration property ${propPath} is required.
-${getExample({ value, prevPath, example })}`)
 }
 
 module.exports = { validateConfig }

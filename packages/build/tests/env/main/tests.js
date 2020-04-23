@@ -8,8 +8,8 @@ const { startServer } = require('../../helpers/server')
 
 // Windows environment variables work differently
 if (platform !== 'win32') {
-  test('Environment variable lifecycle commands', async t => {
-    await runFixture(t, 'lifecycle')
+  test('Environment variable in build.command', async t => {
+    await runFixture(t, 'command')
   })
 }
 

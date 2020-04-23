@@ -2,32 +2,16 @@ const test = require('ava')
 
 const { runFixture } = require('../helpers/main')
 
-test('build.command', async t => {
-  await runFixture(t, 'command')
+test('build.lifecycle', async t => {
+  await runFixture(t, 'lifecycle')
 })
 
-test('build.command and build.lifecycle.onbuild', async t => {
+test('build.lifecycle.onBuild combined with build.command', async t => {
   await runFixture(t, 'command_lifecycle')
 })
 
-test('build.lifecycle.build', async t => {
-  await runFixture(t, 'old_lifecycle')
-})
-
-test('build.lifecycle.onbuild case', async t => {
-  await runFixture(t, 'case')
-})
-
-test('build.lifecycle.prebuild case', async t => {
-  await runFixture(t, 'old_case')
-})
-
-test('build.lifecycle.finally', async t => {
-  await runFixture(t, 'finally')
-})
-
-test('build.lifecycle empty', async t => {
-  await runFixture(t, 'lifecycle_empty')
+test('build.command empty', async t => {
+  await runFixture(t, 'command_empty')
 })
 
 test('plugins[*].type', async t => {

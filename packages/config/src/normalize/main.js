@@ -1,50 +1,28 @@
-const deepMerge = require('deepmerge')
-const filterObj = require('filter-obj')
-const mapObj = require('map-obj')
-
+const { deepMerge } = require('../utils/merge')
 const { removeFalsy } = require('../utils/remove_falsy')
 
-const { LEGACY_EVENTS, normalizeEventHandler } = require('./events')
+const { normalizeLifecycle } = require('./lifecycle')
 
 // Normalize configuration object
 const normalizeConfig = function(config) {
   const { build, plugins, ...configA } = deepMerge(DEFAULT_CONFIG, config)
-  const buildA = normalizeBuild(build)
+  const buildA = normalizeLifecycle(build)
+  const buildB = removeEmptyCommand(buildA)
   const pluginsA = plugins.map(normalizePlugin)
-  return { ...configA, build: buildA, plugins: pluginsA }
+  return { ...configA, build: buildB, plugins: pluginsA }
 }
 
 const DEFAULT_CONFIG = {
-  build: { lifecycle: {}, environment: {} },
+  build: { environment: {} },
   plugins: [],
 }
 
-// Normalize `build` property
-const normalizeBuild = function({ command, lifecycle, ...build }) {
-  const lifecycleA = normalizeOnBuild(command, lifecycle)
-  const lifecycleB = mapObj(lifecycleA, normalizeEvent)
-  const lifecycleC = filterObj(lifecycleB, hasCommand)
-  return { ...build, lifecycle: lifecycleC }
-}
-
-// `build.lifecycle.onBuild` was previously called `build.command`
-const normalizeOnBuild = function(command, { onBuild = command, ...lifecycle }) {
-  if (onBuild === undefined) {
-    return lifecycle
+const removeEmptyCommand = function({ command, ...build }) {
+  if (command === undefined || command.trim() === '') {
+    return build
   }
 
-  return { ...lifecycle, onBuild }
-}
-
-const normalizeEvent = function(event, bashCommand) {
-  const eventA = normalizeEventHandler(event)
-  const eventB = LEGACY_EVENTS[eventA] === undefined ? eventA : LEGACY_EVENTS[eventA]
-  return [eventB, bashCommand]
-}
-
-// Remove empty commands
-const hasCommand = function(event, bashCommand) {
-  return bashCommand.trim() !== ''
+  return { ...build, command }
 }
 
 // `plugins[*].package` was previously called `plugins[*].type`

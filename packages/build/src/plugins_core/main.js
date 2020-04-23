@@ -12,13 +12,11 @@ const CORE_PLUGINS = FUNCTIONS_SRC => [
   // However when it is defined but points to a non-existing directory, this
   // might mean the directory is created later one, so we cannot do that check
   // yet.
-  ...(FUNCTIONS_SRC === undefined
-    ? []
-    : [{ package: '@netlify/plugin-functions-core', location: FUNCTIONS_PLUGIN, core: true }]),
+  ...(FUNCTIONS_SRC === undefined ? [] : [{ package: '@netlify/plugin-functions-core', location: FUNCTIONS_PLUGIN }]),
   // TODO: run only inside tests until integrated in the buildbot
   ...(TEST_CACHE_PATH === undefined || TEST_CACHE_PATH === 'none'
     ? []
-    : [{ package: '@netlify/plugin-cache-core', location: CACHE_PLUGIN, core: true }]),
+    : [{ package: '@netlify/plugin-cache-core', location: CACHE_PLUGIN }]),
 ]
 
 module.exports = { CORE_PLUGINS }

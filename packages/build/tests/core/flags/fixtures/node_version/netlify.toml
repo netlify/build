@@ -1,5 +1,5 @@
-[build.lifecycle]
-onBuild = "node --version"
+[build]
+command = "node --version"
 
 [[plugins]]
 package = "./plugin.js"
