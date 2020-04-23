@@ -131,12 +131,17 @@ const getPackage = function({ package }) {
   return package
 }
 
-const logLoadPlugins = function() {
-  logSubHeader('Loading plugins')
-}
-
 const logLoadedPlugins = function(pluginsCommands) {
-  const loadedPlugins = pluginsCommands.filter(isNotDuplicate).map(getLoadedPlugin)
+  const loadedPlugins = pluginsCommands
+    .filter(isNotDuplicate)
+    .filter(isNotCore)
+    .map(getLoadedPlugin)
+
+  if (loadedPlugins.length === 0) {
+    return
+  }
+
+  logSubHeader('Loading plugins')
   logArray(loadedPlugins)
 }
 
@@ -144,6 +149,10 @@ const isNotDuplicate = function(pluginCommand, index, pluginCommands) {
   return !pluginCommands
     .slice(index + 1)
     .some(laterPluginCommand => laterPluginCommand.package === pluginCommand.package)
+}
+
+const isNotCore = function({ core }) {
+  return !core
 }
 
 const getLoadedPlugin = function({ package, packageJson: { version } }) {
@@ -252,7 +261,6 @@ module.exports = {
   logInstallMissingPlugins,
   logInstallLocalPluginsDeps,
   logInstallFunctionDependencies,
-  logLoadPlugins,
   logLoadedPlugins,
   logDryRunStart,
   logDryRunCommand,

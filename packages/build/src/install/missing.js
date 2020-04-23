@@ -21,7 +21,11 @@ const installMissingPlugins = async function({ pluginsOptions, buildDir, mode })
   await addDependencies({ packageRoot: buildDir, isLocal: mode !== 'buildbot', packages })
 }
 
-const isMissingPlugin = async function({ location }, buildDir) {
+const isMissingPlugin = async function({ location, core }, buildDir) {
+  if (core) {
+    return false
+  }
+
   try {
     await pResolve(location, { basedir: buildDir })
     return false
