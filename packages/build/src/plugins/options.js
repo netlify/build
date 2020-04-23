@@ -22,9 +22,9 @@ const getPluginsOptions = async function({ netlifyConfig: { plugins }, buildDir,
   return pluginsOptionsA
 }
 
-const normalizePluginOptions = function({ package, location = package, inputs = {} }) {
-  const local = package.startsWith('.') || package.startsWith('/')
-  return { package, location, local, inputs }
+const normalizePluginOptions = function({ package, location = package, core = false, inputs = {} }) {
+  const local = !core && (package.startsWith('.') || package.startsWith('/'))
+  return { package, location, local, core, inputs }
 }
 
 // Retrieve plugin's main file path.
