@@ -47,11 +47,25 @@ const logConfig = function(config) {
   }
 
   logSubHeader('CLI flags')
-  logMessage(argv.slice(2).join('\n'))
+  logMessage(getLoggedCliFlags())
 
   logSubHeader('Resolved config')
   logObject(simplifyConfig(config))
 }
+
+// Those CLI flags are not useful for debugging, or should be hidden
+const getLoggedCliFlags = function() {
+  return argv
+    .slice(2)
+    .filter(shouldLogCliFlag)
+    .join('\n')
+}
+
+const shouldLogCliFlag = function(arg) {
+  return IGNORED_CLI_FLAGS.every(cliFlag => !arg.startsWith(`--${cliFlag}`))
+}
+
+const IGNORED_CLI_FLAGS = ['cachedConfig', 'token']
 
 // The resolved configuration gets assigned some default values (empty objects and arrays)
 // to make it more convenient to use without checking for `undefined`.
