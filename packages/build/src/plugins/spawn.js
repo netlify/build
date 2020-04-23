@@ -1,3 +1,5 @@
+const { execPath } = require('process')
+
 const execa = require('execa')
 
 const { getEventFromChild } = require('./ipc')
@@ -14,16 +16,18 @@ const CHILD_MAIN_FILE = `${__dirname}/child/main.js`
 const startPlugins = function({ pluginsOptions, buildDir, nodePath, childEnv }) {
   const { package, packageJson, local } = getCoreInfo()
   return Promise.all(
-    pluginsOptions.map(() => startPlugin({ buildDir, nodePath, childEnv, package, packageJson, local })),
+    pluginsOptions.map(({ core }) => startPlugin({ buildDir, nodePath, childEnv, package, packageJson, local, core })),
   )
 }
 
-const startPlugin = async function({ buildDir, nodePath, childEnv, package, packageJson, local }) {
+const startPlugin = async function({ buildDir, nodePath, childEnv, package, packageJson, local, core }) {
+  const childNodePath = getChildNodePath(core, nodePath)
+
   const childProcess = execa.node(CHILD_MAIN_FILE, {
     cwd: buildDir,
     preferLocal: true,
-    nodePath,
-    execPath: nodePath,
+    nodePath: childNodePath,
+    execPath: childNodePath,
     env: childEnv,
     extendEnv: false,
   })
@@ -32,6 +36,16 @@ const startPlugin = async function({ buildDir, nodePath, childEnv, package, pack
     location: { event: 'load', package, local },
   })
   return { childProcess }
+}
+
+// Core plugins use `@netlify/build` Node.js version.
+// Local and external plugins use user's preferred Node.js version.
+const getChildNodePath = function(core, nodePath) {
+  if (core) {
+    return execPath
+  }
+
+  return nodePath
 }
 
 // Stop all plugins child processes
