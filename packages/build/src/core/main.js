@@ -21,7 +21,7 @@ const { startPlugins, stopPlugins } = require('../plugins/spawn')
 const { trackBuildComplete } = require('../telemetry/complete')
 
 const { getCommands, runCommands } = require('./commands')
-const { loadConfig } = require('./config')
+const { normalizeFlags, loadConfig } = require('./config')
 const { doDryRun } = require('./dry')
 
 /**
@@ -35,11 +35,13 @@ const { doDryRun } = require('./dry')
  * @param  {boolean} [flags.dry] - printing commands without executing them
  */
 const build = async function(flags) {
+  const buildTimer = startTimer()
+
+  logBuildStart()
+
+  const flagsA = normalizeFlags(flags)
+
   try {
-    const buildTimer = startTimer()
-
-    logBuildStart()
-
     const {
       netlifyConfig,
       configPath,
@@ -53,7 +55,7 @@ const build = async function(flags) {
       context,
       branch,
       mode,
-    } = await loadConfig(flags)
+    } = await loadConfig(flagsA)
 
     try {
       const pluginsOptions = await getPluginsOptions({ netlifyConfig, buildDir, constants, mode })

@@ -12,28 +12,39 @@ const { removeFalsy } = require('../utils/remove_falsy')
 
 const { getConstants } = require('./constants')
 
-// Retrieve configuration object
-const loadConfig = async function(flags) {
+// Normalize CLI flags
+const normalizeFlags = function(flags) {
   const flagsA = removeFalsy(flags)
   logFlags(flagsA)
 
   const flagsB = { ...DEFAULT_FLAGS, ...flagsA }
-  const {
-    config,
-    defaultConfig,
-    cachedConfig,
-    cwd,
-    repositoryRoot,
-    dry,
-    nodePath,
-    token,
-    siteId,
-    context,
-    branch,
-    baseRelDir,
-    mode,
-  } = removeFalsy(flagsB)
+  const flagsC = removeFalsy(flagsB)
+  return flagsC
+}
 
+// Default values of CLI flags
+const DEFAULT_FLAGS = {
+  nodePath: execPath,
+  token: NETLIFY_AUTH_TOKEN,
+  mode: 'require',
+}
+
+// Retrieve configuration object
+const loadConfig = async function({
+  config,
+  defaultConfig,
+  cachedConfig,
+  cwd,
+  repositoryRoot,
+  dry,
+  nodePath,
+  token,
+  siteId,
+  context,
+  branch,
+  baseRelDir,
+  mode,
+}) {
   const {
     configPath,
     buildDir,
@@ -78,13 +89,6 @@ const loadConfig = async function(flags) {
   }
 }
 
-// Default values of CLI flags
-const DEFAULT_FLAGS = {
-  nodePath: execPath,
-  token: NETLIFY_AUTH_TOKEN,
-  mode: 'require',
-}
-
 // Retrieve configuration file and related information
 // (path, build directory, etc.)
 const resolveFullConfig = async function({
@@ -123,4 +127,4 @@ const resolveFullConfig = async function({
   }
 }
 
-module.exports = { loadConfig }
+module.exports = { normalizeFlags, loadConfig }
