@@ -1,16 +1,21 @@
 const isPlainObj = require('is-plain-obj')
 
+const { addErrorInfo } = require('../../error/info')
 const { serializeArray } = require('../../log/serialize')
-const { failBuild } = require('../error')
 const { EVENTS, LEGACY_EVENTS } = require('../events')
 
 // Validate the shape of a plugin return value
 const validatePlugin = function(logic) {
-  if (!isPlainObj(logic)) {
-    failBuild('Plugin must be an object or a function')
-  }
+  try {
+    if (!isPlainObj(logic)) {
+      throw new Error('Plugin must be an object or a function')
+    }
 
-  Object.entries(logic).forEach(([propName, value]) => validateProperty(value, propName))
+    Object.entries(logic).forEach(([propName, value]) => validateProperty(value, propName))
+  } catch (error) {
+    addErrorInfo(error, { type: 'pluginValidation' })
+    throw error
+  }
 }
 
 const validateProperty = function(value, propName) {
@@ -28,13 +33,13 @@ const DEPRECATED_PROPERTIES = ['name', 'inputs', 'config', 'scopes']
 
 const validateEventHandler = function(value, propName) {
   if (!EVENTS.includes(propName) && LEGACY_EVENTS[propName] === undefined) {
-    failBuild(`Invalid event '${propName}'.
+    throw new Error(`Invalid event '${propName}'.
 Please use a valid event name. One of:
 ${serializeArray(EVENTS)}`)
   }
 
   if (typeof value !== 'function') {
-    failBuild(`Invalid event handler '${propName}': must be a function`)
+    throw new Error(`Invalid event handler '${propName}': must be a function`)
   }
 }
 
