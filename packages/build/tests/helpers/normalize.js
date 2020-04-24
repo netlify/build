@@ -54,7 +54,7 @@ const NORMALIZE_REGEXPS = [
   // npm install logs
   [/added \d+ package.*/g, 'added packages'],
   // npm install logs look different on Node 8.3.0
-  [/npm ERR! 404([^]*npm ERR! 404)?.*/g, ''],
+  [/\snpm ERR! 404([^]*npm ERR! 404)?.*/g, ''],
   // Empty lines
   [/^ +$/gm, ''],
   // HTTP errors are shown differently in Node 8

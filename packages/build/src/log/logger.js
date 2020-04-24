@@ -11,7 +11,7 @@ const { serializeObject, serializeArray } = require('./serialize')
 
 // This should be used instead of `console.log()`
 const log = function(string) {
-  const stringA = string.replace(EMPTY_LINES_REGEXP, EMPTY_LINE)
+  const stringA = String(string).replace(EMPTY_LINES_REGEXP, EMPTY_LINE)
   console.log(stringA)
 }
 
