@@ -9,7 +9,7 @@ setColorLevel()
 require('../error/process')
 
 const { getChildEnv } = require('../env/main')
-const { handleBuildError } = require('../error/handle')
+const { maybeCancelBuild } = require('../error/cancel')
 const { installLocalPluginsDependencies } = require('../install/local')
 const { logBuildStart, logBuildError, logBuildSuccess } = require('../log/main')
 const { logOldCliVersionError } = require('../log/old_version')
@@ -85,7 +85,7 @@ const build = async function(flags) {
       await trackBuildComplete({ commandsCount, netlifyConfig, duration, siteInfo, mode })
       return true
     } catch (error) {
-      await handleBuildError(error, api)
+      await maybeCancelBuild(error, api)
       await logOldCliVersionError(mode)
       throw error
     }
