@@ -16,10 +16,6 @@ test.serial('Big plugin output is not truncated', async t => {
   t.pass()
 })
 
-test('Plugin output is buffered in CI', async t => {
-  await runFixture(t, 'ci', { flags: '--mode=buildbot' })
-})
-
 test('process.env changes are propagated to other plugins', async t => {
   await runFixture(t, 'env_changes_plugin')
 })

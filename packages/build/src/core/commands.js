@@ -7,7 +7,7 @@ const { setEnvChanges } = require('../env/changes.js')
 const { addErrorInfo, getErrorInfo } = require('../error/info')
 const { reportBuildError } = require('../error/monitor/report')
 const { logCommand, logBuildCommandStart, logCommandSuccess, logPluginError } = require('../log/main')
-const { startOutput, stopOutput } = require('../log/stream')
+const { pipeOutput, unpipeOutput } = require('../log/stream')
 const { startTimer, endTimer } = require('../log/timer')
 const { EVENTS } = require('../plugins/events')
 const { callChild } = require('../plugins/ipc')
@@ -53,7 +53,7 @@ const isSuccessCommand = function({ event }) {
 // Run all commands.
 // If an error arises, runs `onError` events.
 // Runs `onEnd` events at the end, whether an error was thrown or not.
-const runCommands = async function({ commands, configPath, buildDir, nodePath, childEnv, mode, errorMonitor }) {
+const runCommands = async function({ commands, configPath, buildDir, nodePath, childEnv, errorMonitor }) {
   // We have to use a state variable to keep track of how many commands were run
   // before an error is thrown, so that error handlers are correctly numbered
   const state = { index: 0 }
@@ -65,7 +65,6 @@ const runCommands = async function({ commands, configPath, buildDir, nodePath, c
       buildDir,
       state,
       nodePath,
-      mode,
       childEnv,
       errorMonitor,
       failFast: true,
@@ -77,7 +76,6 @@ const runCommands = async function({ commands, configPath, buildDir, nodePath, c
       buildDir,
       state,
       nodePath,
-      mode,
       childEnv,
       errorMonitor,
       failFast: false,
@@ -91,7 +89,6 @@ const runCommands = async function({ commands, configPath, buildDir, nodePath, c
       buildDir,
       state,
       nodePath,
-      mode,
       childEnv,
       errorMonitor,
       failFast: false,
@@ -106,7 +103,7 @@ const runCommands = async function({ commands, configPath, buildDir, nodePath, c
 // `onEnd` events.
 const execCommands = async function(
   commands,
-  { configPath, buildDir, state, nodePath, childEnv, mode, errorMonitor, failFast, error },
+  { configPath, buildDir, state, nodePath, childEnv, errorMonitor, failFast, error },
 ) {
   const { failure } = await pReduce(
     commands,
@@ -127,7 +124,6 @@ const execCommands = async function(
         nodePath,
         childEnv,
         envChanges: envChangesA,
-        mode,
         errorMonitor,
         error,
         failure,
@@ -156,7 +152,6 @@ const runCommand = async function({
   nodePath,
   childEnv,
   envChanges,
-  mode,
   errorMonitor,
   error,
   failure,
@@ -186,7 +181,6 @@ const runCommand = async function({
       nodePath,
       childEnv,
       envChanges,
-      mode,
       error,
     })
     const nextEnvChanges = { ...envChanges, ...newEnvChanges }
@@ -214,18 +208,17 @@ const fireCommand = function({
   nodePath,
   childEnv,
   envChanges,
-  mode,
   error,
 }) {
   if (buildCommand !== undefined) {
-    return fireBuildCommand({ buildCommand, configPath, buildDir, nodePath, childEnv, envChanges, mode })
+    return fireBuildCommand({ buildCommand, configPath, buildDir, nodePath, childEnv, envChanges })
   }
 
-  return firePluginCommand({ event, childProcess, package, packageJson, local, envChanges, mode, error })
+  return firePluginCommand({ event, childProcess, package, packageJson, local, envChanges, error })
 }
 
 // Fire `build.command`
-const fireBuildCommand = async function({ buildCommand, configPath, buildDir, nodePath, childEnv, envChanges, mode }) {
+const fireBuildCommand = async function({ buildCommand, configPath, buildDir, nodePath, childEnv, envChanges }) {
   logBuildCommandStart(buildCommand)
 
   const env = setEnvChanges(envChanges, { ...childEnv })
@@ -236,8 +229,8 @@ const fireBuildCommand = async function({ buildCommand, configPath, buildDir, no
     execPath: nodePath,
     env,
     extendEnv: false,
+    stdio: 'inherit',
   })
-  const outputState = startOutput(childProcess, mode)
 
   try {
     await childProcess
@@ -245,8 +238,6 @@ const fireBuildCommand = async function({ buildCommand, configPath, buildDir, no
   } catch (error) {
     addErrorInfo(error, { type: 'buildCommand', location: { buildCommand, configPath } })
     throw error
-  } finally {
-    await stopOutput(childProcess, mode, outputState)
   }
 }
 
@@ -254,17 +245,8 @@ const fireBuildCommand = async function({ buildCommand, configPath, buildDir, no
 const SHELL = platform === 'win32' ? true : 'bash'
 
 // Fire a plugin command
-const firePluginCommand = async function({
-  event,
-  childProcess,
-  package,
-  packageJson,
-  local,
-  envChanges,
-  mode,
-  error,
-}) {
-  const outputState = startOutput(childProcess, mode)
+const firePluginCommand = async function({ event, childProcess, package, packageJson, local, envChanges, error }) {
+  pipeOutput(childProcess)
 
   try {
     const { newEnvChanges } = await callChild(
@@ -275,7 +257,7 @@ const firePluginCommand = async function({
     )
     return { newEnvChanges }
   } finally {
-    await stopOutput(childProcess, mode, outputState)
+    unpipeOutput(childProcess)
   }
 }
 

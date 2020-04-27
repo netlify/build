@@ -132,7 +132,6 @@ const buildRun = async function({
       token,
       dry,
       constants,
-      mode,
       errorMonitor,
     })
   } finally {
@@ -152,7 +151,6 @@ const executeCommands = async function({
   token,
   dry,
   constants,
-  mode,
   errorMonitor,
 }) {
   const pluginsCommands = await loadPlugins({
@@ -177,7 +175,6 @@ const executeCommands = async function({
     buildDir,
     nodePath,
     childEnv,
-    mode,
     errorMonitor,
   })
   return commandsCount
