@@ -27,6 +27,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@bugsnag/js": "^7.0.0",
     "@netlify/cache-utils": "^0.4.1",
     "@netlify/config": "^0.11.0",
     "@netlify/functions-utils": "^0.2.4",

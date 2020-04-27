@@ -10,6 +10,8 @@ require('../error/process')
 
 const { getChildEnv } = require('../env/main')
 const { maybeCancelBuild } = require('../error/cancel')
+const { reportBuildError } = require('../error/monitor/report')
+const { startErrorMonitor } = require('../error/monitor/start')
 const { installLocalPluginsDependencies } = require('../install/local')
 const { logBuildStart, logBuildError, logBuildSuccess } = require('../log/main')
 const { logOldCliVersionError } = require('../log/old_version')
@@ -40,6 +42,7 @@ const build = async function(flags) {
   logBuildStart()
 
   const flagsA = normalizeFlags(flags)
+  const errorMonitor = startErrorMonitor(flagsA)
 
   try {
     const {
@@ -74,6 +77,7 @@ const build = async function(flags) {
         context,
         branch,
         mode,
+        errorMonitor,
       })
 
       if (dry) {
@@ -90,6 +94,7 @@ const build = async function(flags) {
       throw error
     }
   } catch (error) {
+    await reportBuildError(error, errorMonitor)
     logBuildError(error)
     return false
   }
@@ -108,6 +113,7 @@ const buildRun = async function({
   context,
   branch,
   mode,
+  errorMonitor,
 }) {
   const utilsData = await startUtils(buildDir)
   const childEnv = await getChildEnv({ netlifyConfig, buildDir, context, branch, siteInfo, mode })
@@ -127,6 +133,7 @@ const buildRun = async function({
       dry,
       constants,
       mode,
+      errorMonitor,
     })
   } finally {
     await stopPlugins(childProcesses)
@@ -146,6 +153,7 @@ const executeCommands = async function({
   dry,
   constants,
   mode,
+  errorMonitor,
 }) {
   const pluginsCommands = await loadPlugins({
     pluginsOptions,
@@ -170,6 +178,7 @@ const executeCommands = async function({
     nodePath,
     childEnv,
     mode,
+    errorMonitor,
   })
   return commandsCount
 }

@@ -5,6 +5,7 @@ const pReduce = require('p-reduce')
 
 const { setEnvChanges } = require('../env/changes.js')
 const { addErrorInfo, getErrorInfo } = require('../error/info')
+const { reportBuildError } = require('../error/monitor/report')
 const { logCommand, logBuildCommandStart, logCommandSuccess, logPluginError } = require('../log/main')
 const { startOutput, stopOutput } = require('../log/stream')
 const { startTimer, endTimer } = require('../log/timer')
@@ -52,21 +53,49 @@ const isSuccessCommand = function({ event }) {
 // Run all commands.
 // If an error arises, runs `onError` events.
 // Runs `onEnd` events at the end, whether an error was thrown or not.
-const runCommands = async function({ commands, configPath, buildDir, nodePath, childEnv, mode }) {
+const runCommands = async function({ commands, configPath, buildDir, nodePath, childEnv, mode, errorMonitor }) {
   // We have to use a state variable to keep track of how many commands were run
   // before an error is thrown, so that error handlers are correctly numbered
   const state = { index: 0 }
 
   try {
     const mainCommands = commands.filter(isMainCommand)
-    await execCommands(mainCommands, { configPath, buildDir, state, nodePath, mode, childEnv, failFast: true })
+    await execCommands(mainCommands, {
+      configPath,
+      buildDir,
+      state,
+      nodePath,
+      mode,
+      childEnv,
+      errorMonitor,
+      failFast: true,
+    })
   } catch (error) {
     const errorCommands = commands.filter(isErrorCommand)
-    await execCommands(errorCommands, { configPath, buildDir, state, nodePath, mode, childEnv, failFast: false, error })
+    await execCommands(errorCommands, {
+      configPath,
+      buildDir,
+      state,
+      nodePath,
+      mode,
+      childEnv,
+      errorMonitor,
+      failFast: false,
+      error,
+    })
     throw error
   } finally {
     const endCommands = commands.filter(isEndCommand)
-    await execCommands(endCommands, { configPath, buildDir, state, nodePath, mode, childEnv, failFast: false })
+    await execCommands(endCommands, {
+      configPath,
+      buildDir,
+      state,
+      nodePath,
+      mode,
+      childEnv,
+      errorMonitor,
+      failFast: false,
+    })
   }
 }
 
@@ -77,7 +106,7 @@ const runCommands = async function({ commands, configPath, buildDir, nodePath, c
 // `onEnd` events.
 const execCommands = async function(
   commands,
-  { configPath, buildDir, state, nodePath, childEnv, mode, failFast, error },
+  { configPath, buildDir, state, nodePath, childEnv, mode, errorMonitor, failFast, error },
 ) {
   const { failure } = await pReduce(
     commands,
@@ -99,6 +128,7 @@ const execCommands = async function(
         childEnv,
         envChanges: envChangesA,
         mode,
+        errorMonitor,
         error,
         failure,
         failedPlugins,
@@ -127,6 +157,7 @@ const runCommand = async function({
   childEnv,
   envChanges,
   mode,
+  errorMonitor,
   error,
   failure,
   failedPlugins,
@@ -167,7 +198,7 @@ const runCommand = async function({
 
     return { failure, failedPlugins, envChanges: nextEnvChanges }
   } catch (newFailure) {
-    return handleCommandError({ newFailure, failedPlugins, failure, failFast, envChanges })
+    return handleCommandError({ newFailure, failedPlugins, failure, failFast, envChanges, errorMonitor })
   }
 }
 
@@ -254,11 +285,12 @@ const firePluginCommand = async function({
 //    handlers of the same type have been triggered before propagating
 //  - if `utils.build.failPlugin()` was used, print an error and skip next event
 //    handlers of that plugin. But do not stop build.
-const handleCommandError = function({ newFailure, failedPlugins, failure, failFast, envChanges }) {
+const handleCommandError = async function({ newFailure, failedPlugins, failure, failFast, envChanges, errorMonitor }) {
   const { type, location: { package } = {} } = getErrorInfo(newFailure)
 
   if (type === 'failPlugin') {
     logPluginError(newFailure)
+    await reportBuildError(newFailure, errorMonitor)
     return { failure, failedPlugins: [...failedPlugins, package], envChanges }
   }
 
