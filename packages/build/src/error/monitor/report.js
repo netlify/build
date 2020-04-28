@@ -18,12 +18,23 @@ const reportBuildError = async function(error, errorMonitor) {
 
   const { severity, context } = getTypeInfo(error)
   const errorInfo = getErrorInfo(error)
+  const severityA = getSeverity(severity, errorInfo)
   const contextA = getContext(context, errorInfo)
   const groupingHash = getGroupingHash(contextA, error)
   const metadata = getMetadata(errorInfo)
   const app = getApp()
 
-  await reportError({ errorMonitor, error, severity, context: contextA, groupingHash, metadata, app })
+  await reportError({ errorMonitor, error, severity: severityA, context: contextA, groupingHash, metadata, app })
+}
+
+// Plugin authors test their plugins as local plugins. Errors there are more
+// like development errors, and should be reported as `info` only.
+const getSeverity = function(severity, { location: { local } = {} }) {
+  if (local) {
+    return 'info'
+  }
+
+  return severity
 }
 
 const getContext = function(context, errorInfo) {
