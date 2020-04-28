@@ -33,7 +33,7 @@
     "@netlify/functions-utils": "^0.2.4",
     "@netlify/git-utils": "^0.2.2",
     "@netlify/run-utils": "^0.1.1",
-    "@netlify/zip-it-and-ship-it": "^0.4.0-14",
+    "@netlify/zip-it-and-ship-it": "^0.4.0-15",
     "analytics": "0.3.1",
     "array-flat-polyfill": "^1.0.1",
     "chalk": "^3.0.0",
