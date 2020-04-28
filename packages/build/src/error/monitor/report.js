@@ -16,7 +16,7 @@ const reportBuildError = async function(error, errorMonitor) {
     return
   }
 
-  const { severity, context } = getTypeInfo(error)
+  const { type, severity, context } = getTypeInfo(error)
   const errorInfo = getErrorInfo(error)
   const severityA = getSeverity(severity, errorInfo)
   const contextA = getContext(context, errorInfo)
@@ -24,7 +24,12 @@ const reportBuildError = async function(error, errorMonitor) {
   const metadata = getMetadata(errorInfo)
   const app = getApp()
 
-  await reportError({ errorMonitor, error, severity: severityA, context: contextA, groupingHash, metadata, app })
+  const errorName = updateErrorName(error, type)
+  try {
+    await reportError({ errorMonitor, error, severity: severityA, context: contextA, groupingHash, metadata, app })
+  } finally {
+    error.name = errorName
+  }
 }
 
 // Plugin authors test their plugins as local plugins. Errors there are more
@@ -61,6 +66,15 @@ const getApp = function() {
     freeMemory: freemem(),
     totalMemory: totalmem(),
   }
+}
+
+// `error.name` is shown proeminently in the Bugsnag UI. We need to update it to
+// match error `type` since it is more granular and useful.
+// But we change it back after Bugsnag is done reporting.
+const updateErrorName = function(error, type) {
+  const { name } = error
+  error.name = type
+  return name
 }
 
 const reportError = async function({ errorMonitor, error, severity, context, groupingHash, metadata, app }) {
