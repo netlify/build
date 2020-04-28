@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 const { exit } = require('process')
-const { promisify } = require('util')
 
 const filterObj = require('filter-obj')
 const yargs = require('yargs')
@@ -8,8 +7,6 @@ const yargs = require('yargs')
 require('../utils/polyfills')
 
 const build = require('./main')
-
-const pSetTimeout = promisify(setTimeout)
 
 // CLI entry point
 const runCli = async function() {
@@ -21,15 +18,6 @@ const runCli = async function() {
   }
 
   const success = await build(flagsA)
-
-  // Some stdout|stderr logs will not have been flushed. This leads the current
-  // BuildBot to print some messages before those are flushed.
-  // The following is a temporary workaround. This should be fixed once the
-  // logic moves from the BuildBot to Netlify Build
-  if (flagsA.mode === 'buildbot') {
-    await pSetTimeout(1e3)
-  }
-
   const exitCode = success ? 0 : 1
   exit(exitCode)
 }
