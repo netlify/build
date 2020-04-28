@@ -10,6 +10,7 @@ require('../error/process')
 
 const { getChildEnv } = require('../env/main')
 const { maybeCancelBuild } = require('../error/cancel')
+const { removeErrorColors } = require('../error/colors')
 const { reportBuildError } = require('../error/monitor/report')
 const { startErrorMonitor } = require('../error/monitor/start')
 const { installLocalPluginsDependencies } = require('../install/local')
@@ -94,6 +95,7 @@ const build = async function(flags) {
       throw error
     }
   } catch (error) {
+    removeErrorColors(error)
     await reportBuildError(error, errorMonitor)
     logBuildError(error)
     return false
