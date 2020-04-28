@@ -4,6 +4,7 @@ const { log } = require('../../log/logger.js')
 const printEventForTest = function({
   errors: [{ errorMessage }],
   context,
+  groupingHash,
   severity,
   unhandled,
   app: { releaseStage, version, type },
@@ -16,6 +17,7 @@ const printEventForTest = function({
     {
       errorMessage,
       context,
+      groupingHash,
       severity,
       unhandled,
       releaseStage,
