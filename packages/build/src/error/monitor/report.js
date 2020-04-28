@@ -19,10 +19,11 @@ const reportBuildError = async function(error, errorMonitor) {
   const { severity, context } = getTypeInfo(error)
   const errorInfo = getErrorInfo(error)
   const contextA = getContext(context, errorInfo)
+  const groupingHash = getGroupingHash(contextA, error)
   const metadata = getMetadata(errorInfo)
   const app = getApp()
 
-  await reportError({ errorMonitor, error, severity, context: contextA, metadata, app })
+  await reportError({ errorMonitor, error, severity, context: contextA, groupingHash, metadata, app })
 }
 
 const getContext = function(context, errorInfo) {
@@ -31,6 +32,11 @@ const getContext = function(context, errorInfo) {
   }
 
   return context(errorInfo)
+}
+
+const getGroupingHash = function(context, error) {
+  const message = error instanceof Error ? error.message : String(error)
+  return `${context}\n${message}`
 }
 
 const getMetadata = function({ location, plugin }) {
@@ -46,9 +52,11 @@ const getApp = function() {
   }
 }
 
-const reportError = async function({ errorMonitor, error, severity, context, metadata, app }) {
+const reportError = async function({ errorMonitor, error, severity, context, groupingHash, metadata, app }) {
   try {
-    await promisify(errorMonitor.notify)(error, event => onError({ event, severity, context, metadata, app }))
+    await promisify(errorMonitor.notify)(error, event =>
+      onError({ event, severity, context, groupingHash, metadata, app }),
+    )
     // Failsafe
   } catch (error) {
     log(`Error monitor could not notify\n${error.stack}`)
@@ -57,10 +65,11 @@ const reportError = async function({ errorMonitor, error, severity, context, met
 }
 
 // Add more information to Bugsnag events
-const onError = function({ event, severity, context, metadata, app }) {
+const onError = function({ event, severity, context, groupingHash, metadata, app }) {
   Object.assign(event, {
     severity,
     context,
+    groupingHash,
     _metadata: { ...event._metadata, ...metadata },
     app: { ...event.app, ...app },
   })
