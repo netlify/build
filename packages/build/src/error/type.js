@@ -4,12 +4,8 @@ const { getBuildCommandLocation, getBuildFailLocation, getApiLocation } = requir
 // Retrieve error-type specific information
 const getTypeInfo = function(errorProps) {
   const { type } = getErrorInfo(errorProps)
-
-  if (TYPES[type] === undefined) {
-    return { type, ...TYPES[DEFAULT_TYPE] }
-  }
-
-  return { type, ...TYPES[type] }
+  const typeA = TYPES[type] === undefined ? DEFAULT_TYPE : type
+  return { type: typeA, ...TYPES[typeA] }
 }
 
 // List of error types, and their related properties
