@@ -1,6 +1,7 @@
 const { version } = require('process')
 
 const test = require('ava')
+const hasAnsi = require('has-ansi')
 
 const { runFixture } = require('../../helpers/main')
 
@@ -63,4 +64,10 @@ test('Report CLI mode as releaseStage', async t => {
 
 test('Report programmatic mode as releaseStage', async t => {
   await runFixture(t, 'command', { env, flags: '--mode=require' })
+})
+
+test('Remove colors in error.message', async t => {
+  const { stdout } = await runFixture(t, 'colors', { env, snapshot: false })
+  const lines = stdout.split('\n').filter(line => line.includes('ColorTest'))
+  t.true(lines.every(line => !hasAnsi(line)))
 })
