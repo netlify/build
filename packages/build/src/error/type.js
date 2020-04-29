@@ -6,10 +6,10 @@ const getTypeInfo = function(errorProps) {
   const { type } = getErrorInfo(errorProps)
 
   if (TYPES[type] === undefined) {
-    return TYPES[DEFAULT_TYPE]
+    return { type, ...TYPES[DEFAULT_TYPE] }
   }
 
-  return TYPES[type]
+  return { type, ...TYPES[type] }
 }
 
 // List of error types, and their related properties
@@ -86,7 +86,7 @@ const TYPES = {
   },
 
   // Plugin threw an uncaught exception
-  pluginInternalError: {
+  pluginInternal: {
     header: ({ location: { package } }) => `Plugin "${package}" internal error`,
     context: ({ location: { package } }) => `Plugin "${package}" internal error`,
     stackType: 'stack',
@@ -128,7 +128,7 @@ const TYPES = {
   },
 
   // `@netlify/build` threw an uncaught exception
-  internalError: {
+  internal: {
     header: 'Core internal error',
     context: 'Core internal error',
     stackType: 'stack',
@@ -139,6 +139,6 @@ const TYPES = {
   },
 }
 // When no error type matches, it's an uncaught exception, i.e. a bug
-const DEFAULT_TYPE = 'internalError'
+const DEFAULT_TYPE = 'internal'
 
 module.exports = { getTypeInfo }

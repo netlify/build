@@ -16,7 +16,7 @@ const handleError = async function({
   await sendEventToParent('error', { name, message, stack, type, errorProps })
 }
 
-const DEFAULT_ERROR_TYPE = 'pluginInternalError'
+const DEFAULT_ERROR_TYPE = 'pluginInternal'
 
 // On uncaught exceptions and unhandled rejections, print the stack trace.
 // Also, prevent child processes from crashing on uncaught exceptions.
