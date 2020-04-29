@@ -1,7 +1,7 @@
 const isPlainObj = require('is-plain-obj')
 
-const { addErrorInfo } = require('../../error/info')
 const { serializeArray } = require('../../log/serialize')
+const { ERROR_TYPE_SYM } = require('../error')
 const { EVENTS, LEGACY_EVENTS } = require('../events')
 
 // Validate the shape of a plugin return value
@@ -13,7 +13,7 @@ const validatePlugin = function(logic) {
 
     Object.entries(logic).forEach(([propName, value]) => validateProperty(value, propName))
   } catch (error) {
-    addErrorInfo(error, { type: 'pluginValidation' })
+    error[ERROR_TYPE_SYM] = 'pluginValidation'
     throw error
   }
 }
