@@ -36,7 +36,7 @@ const TYPES = {
   // `build.command` non-0 exit code
   buildCommand: {
     header: 'Build failed',
-    context: 'build.command',
+    context: ({ location: { buildCommand } }) => buildCommand,
     stackType: 'message',
     getLocation: getBuildCommandLocation,
     reason: 'user',
