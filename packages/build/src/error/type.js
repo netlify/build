@@ -19,7 +19,6 @@ const TYPES = {
     header: 'Configuration error',
     context: 'Configuration user error',
     stackType: 'none',
-    reason: 'user',
     severity: 'info',
   },
 
@@ -29,7 +28,6 @@ const TYPES = {
     context: ({ location: { package, input } }) => `Plugin "${package}" invalid input "${input}"`,
     stackType: 'none',
     getLocation: getBuildFailLocation,
-    reason: 'user',
     severity: 'info',
   },
 
@@ -39,7 +37,6 @@ const TYPES = {
     context: ({ location: { buildCommand } }) => buildCommand,
     stackType: 'message',
     getLocation: getBuildCommandLocation,
-    reason: 'user',
     severity: 'info',
   },
 
@@ -49,7 +46,6 @@ const TYPES = {
     context: ({ location: { package } }) => `Plugin "${package}" user error`,
     stackType: 'stack',
     getLocation: getBuildFailLocation,
-    reason: 'plugin',
     severity: 'info',
   },
 
@@ -59,7 +55,6 @@ const TYPES = {
     context: ({ location: { package } }) => `Plugin "${package}" user error`,
     stackType: 'stack',
     getLocation: getBuildFailLocation,
-    reason: 'plugin',
     severity: 'info',
   },
 
@@ -71,7 +66,6 @@ const TYPES = {
     getLocation: getBuildFailLocation,
     isSuccess: true,
     shouldCancel: true,
-    reason: 'plugin',
     severity: 'info',
   },
 
@@ -81,7 +75,6 @@ const TYPES = {
     context: ({ location: { package } }) => `Plugin "${package}" internal error`,
     stackType: 'none',
     getLocation: getBuildFailLocation,
-    reason: 'plugin',
     severity: 'warning',
   },
 
@@ -93,7 +86,6 @@ const TYPES = {
     showErrorProps: true,
     rawStack: true,
     getLocation: getBuildFailLocation,
-    reason: 'plugin',
     severity: 'warning',
   },
 
@@ -103,7 +95,6 @@ const TYPES = {
     context: ({ location: { package } }) => `Plugin "${package}" internal error`,
     stackType: 'none',
     getLocation: getBuildFailLocation,
-    reason: 'system',
     severity: 'warning',
   },
 
@@ -112,7 +103,6 @@ const TYPES = {
     header: 'Dependencies error',
     context: 'Packages installation',
     stackType: 'none',
-    reason: 'system',
     severity: 'warning',
   },
 
@@ -123,7 +113,6 @@ const TYPES = {
     stackType: 'message',
     showErrorProps: true,
     getLocation: getApiLocation,
-    reason: 'system',
     severity: 'error',
   },
 
@@ -134,7 +123,6 @@ const TYPES = {
     stackType: 'stack',
     showErrorProps: true,
     rawStack: true,
-    reason: 'system',
     severity: 'error',
   },
 }
