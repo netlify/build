@@ -77,12 +77,18 @@ const reportError = async function({ errorMonitor, error, severity, context, gro
 
 // Add more information to Bugsnag events
 const onError = function({ event, severity, context, groupingHash, metadata, app }) {
+  // `unhandled` is used to calculate Releases "stabiity score", which is
+  // basically the percentage of unhandled errors. Since we handle all errors,
+  // we need to implement this according to error types.
+  const unhandled = event.unhandled || severity === 'error'
+
   Object.assign(event, {
     severity,
     context,
     groupingHash,
     _metadata: { ...event._metadata, ...metadata },
     app: { ...event.app, ...app },
+    unhandled,
   })
 
   if (env.NETLIFY_BUILD_TEST === '1') {
