@@ -20,7 +20,7 @@ const runCommand = async function({ packageRoot, packages, isLocal, type }) {
     const packagesList = packages === undefined ? '' : ` ${packages.join(' ')}`
     await execa.command(`${command}${packagesList}`, { cwd: packageRoot, all: true })
   } catch (error) {
-    const message = error.code === 'ENOENT' ? `${error.path} is not installed` : error.all
+    const message = getErrorMessage(error.all)
     const errorA = new Error(`Error while installing dependencies in ${packageRoot}\n${message}`)
     addErrorInfo(errorA, { type: 'dependencies' })
     throw errorA
@@ -104,5 +104,19 @@ const fixNpmCiCompat = async function(command) {
 }
 
 const NPM_CI_MIN_VERSION = '5.7.0'
+
+// Retrieve message to add to install errors
+const getErrorMessage = function(allOutput) {
+  return allOutput
+    .split('\n')
+    .filter(isNotNpmLogMessage)
+    .join('\n')
+}
+
+// Debug logs shown at the end of npm errors is not useful in Netlify Build
+const isNotNpmLogMessage = function(line) {
+  return NPM_LOG_MESSAGES.every(message => !line.includes(message))
+}
+const NPM_LOG_MESSAGES = ['complete log of this run', '-debug.log']
 
 module.exports = { installDependencies, addDependencies }
