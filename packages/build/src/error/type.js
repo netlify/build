@@ -128,7 +128,7 @@ const TYPES = {
   },
 
   // `@netlify/build` threw an uncaught exception
-  internal: {
+  exception: {
     header: 'Core internal error',
     context: 'Core internal error',
     stackType: 'stack',
@@ -139,6 +139,6 @@ const TYPES = {
   },
 }
 // When no error type matches, it's an uncaught exception, i.e. a bug
-const DEFAULT_TYPE = 'internal'
+const DEFAULT_TYPE = 'exception'
 
 module.exports = { getTypeInfo }
