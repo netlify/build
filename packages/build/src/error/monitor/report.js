@@ -21,7 +21,7 @@ const reportBuildError = async function(error, errorMonitor) {
   const errorInfo = getErrorInfo(error)
   const severityA = getSeverity(severity, errorInfo)
   const contextA = getContext(context, errorInfo)
-  const groupingHash = getGroupingHash(contextA, error)
+  const groupingHash = getGroupingHash(contextA, error, type)
   const metadata = getMetadata(errorInfo)
   const app = getApp()
 
@@ -51,9 +51,9 @@ const getContext = function(context, errorInfo) {
   return context(errorInfo)
 }
 
-const getGroupingHash = function(context, error) {
+const getGroupingHash = function(context, error, type) {
   const message = error instanceof Error ? error.message : String(error)
-  const messageA = normalizeGroupingMessage(message)
+  const messageA = normalizeGroupingMessage(message, type)
   return `${context}\n${messageA}`
 }
 
