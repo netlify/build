@@ -24,7 +24,7 @@ const cleanStacks = function(string, rawStack) {
 }
 
 const cleanStackLine = function(lines, line) {
-  const lineA = line.replace(cwd(), '')
+  const lineA = line.replace(getCwd(), '')
   const lineB = stripAnsi(lineA)
 
   if (!STACK_LINE_REGEXP.test(lineB)) {
@@ -46,6 +46,16 @@ const cleanStackLine = function(lines, line) {
   }
 
   return `${lines}\n${lineC}`
+}
+
+// `process.cwd()` can sometimes fail: directory name too long, current
+// directory has been removed, access denied.
+const getCwd = function() {
+  try {
+    return cwd()
+  } catch (error) {
+    return ''
+  }
 }
 
 // Check if a line is part of a stack trace
