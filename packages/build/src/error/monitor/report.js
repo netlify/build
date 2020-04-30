@@ -8,6 +8,7 @@ const { log } = require('../../log/logger.js')
 const { getErrorInfo } = require('../info')
 const { getTypeInfo } = require('../type')
 
+const { normalizeGroupingMessage } = require('./normalize')
 const { printEventForTest } = require('./print')
 
 // Report a build failure for monitoring purpose
@@ -52,7 +53,8 @@ const getContext = function(context, errorInfo) {
 
 const getGroupingHash = function(context, error) {
   const message = error instanceof Error ? error.message : String(error)
-  return `${context}\n${message}`
+  const messageA = normalizeGroupingMessage(message)
+  return `${context}\n${messageA}`
 }
 
 const getMetadata = function({ location, plugin }) {
