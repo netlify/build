@@ -63,7 +63,7 @@ const getTomlConfig = function(config) {
 }
 
 const getTomlConfigPath = function(configPath, extension) {
-  const filename = basename(configPath).replace(extension, 'toml')
+  const filename = `${basename(configPath, `.${extension}`)}.toml`
   return join(dirname(configPath), filename)
 }
 
