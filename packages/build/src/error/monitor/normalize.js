@@ -41,6 +41,8 @@ const NORMALIZE_REGEXPS = [
   [/version "[^"]+"/g, 'version "1.0.0"'],
   // Cypress plugin prints the user's platform
   [/^Platform: .*/gm, ''],
+  // URLs
+  [/https?:[\w.+_~!$&'()*,;=:@/?#]+/, 'https://domain.com'],
 ]
 
 module.exports = { normalizeGroupingMessage }
