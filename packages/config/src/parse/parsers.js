@@ -42,13 +42,12 @@ const fixBackwardCompat = async function(config, extension, configPath) {
 
   console.warn(yellowBright(`netlify.${extension} is deprecated: please use netlify.toml instead.\n`))
 
-  const tomlConfigPath = getTomlConfigPath(configPath, extension)
   const tomlConfig = getTomlConfig(config)
-
   if (tomlConfig === undefined) {
     return
   }
 
+  const tomlConfigPath = getTomlConfigPath(configPath, extension)
   await pWriteFile(tomlConfigPath, `${tomlConfig}\n`)
 }
 
