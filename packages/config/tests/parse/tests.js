@@ -54,6 +54,12 @@ test('Configuration file - invalid format', async t => {
   await runFixture(t, '', { flags: `--config=${FIXTURES_DIR}/invalid/netlify.invalid` })
 })
 
+test('Configuration file - netlify.yml that cannot be converted to TOML', async t => {
+  const netlifyTomlPath = await getNetlifyTomlPath('non_convertible_yaml')
+  await runFixture(t, 'non_convertible_yaml')
+  t.false(await pathExists(netlifyTomlPath))
+})
+
 test('Configuration file - advanced YAML', async t => {
   await runFixture(t, 'advanced_yaml')
 })

@@ -43,8 +43,23 @@ const fixBackwardCompat = async function(config, extension, configPath) {
   console.warn(yellowBright(`netlify.${extension} is deprecated: please use netlify.toml instead.\n`))
 
   const tomlConfigPath = getTomlConfigPath(configPath, extension)
-  const configString = serializeToml(config)
-  await pWriteFile(tomlConfigPath, `${configString}\n`)
+  const tomlConfig = getTomlConfig(config)
+
+  if (tomlConfig === undefined) {
+    return
+  }
+
+  await pWriteFile(tomlConfigPath, `${tomlConfig}\n`)
+}
+
+const getTomlConfig = function(config) {
+  try {
+    return serializeToml(config)
+    // Some YAML is not serializable to TOML. In that case, we silently give up
+    // trying to convert it
+  } catch (error) {
+    return
+  }
 }
 
 const getTomlConfigPath = function(configPath, extension) {
