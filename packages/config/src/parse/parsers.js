@@ -1,14 +1,8 @@
-const { writeFile } = require('fs')
-const { basename, dirname, join } = require('path')
-const { promisify } = require('util')
-
 const { yellowBright } = require('chalk')
 const { load: loadYaml, JSON_SCHEMA } = require('js-yaml')
 const { parse: loadToml } = require('toml')
 
 const { serializeToml } = require('../utils/toml.js')
-
-const pWriteFile = promisify(writeFile)
 
 const parseYaml = function(configString) {
   return loadYaml(configString, { schema: JSON_SCHEMA, json: true })
@@ -32,38 +26,27 @@ const PARSERS = {
 }
 
 // YAML and JSON are deprecated.
-// We convert user's configuration file to `netlify.toml` so they don't have to
-// do it themselves.
+// We print the user's configuration file converted to `netlify.toml` so they
+// don't have to do it themselves.
 // TODO: remove after out of beta
-const fixBackwardCompat = async function(config, extension, configPath) {
+const fixBackwardCompat = async function(config, extension) {
   if (extension === 'toml') {
     return
   }
 
-  console.warn(yellowBright(`netlify.${extension} is deprecated: please use netlify.toml instead.\n`))
-
-  const tomlConfig = getTomlConfig(config)
-  if (tomlConfig === undefined) {
-    return
-  }
-
-  const tomlConfigPath = getTomlConfigPath(configPath, extension)
-  await pWriteFile(tomlConfigPath, `${tomlConfig}\n`)
+  const exampleConfig = getExampleConfig(config)
+  console.warn(yellowBright(`netlify.${extension} is deprecated: please use netlify.toml instead.\n${exampleConfig}`))
 }
 
-const getTomlConfig = function(config) {
+const getExampleConfig = function(config) {
   try {
-    return serializeToml(config)
+    const tomlConfig = serializeToml(config)
+    return `Example of what your netlify.toml should look like:\n\n${tomlConfig}`
     // Some YAML is not serializable to TOML. In that case, we silently give up
-    // trying to convert it
+    // trying to convert it. Very unlikely.
   } catch (error) {
-    return
+    return ''
   }
-}
-
-const getTomlConfigPath = function(configPath, extension) {
-  const filename = `${basename(configPath, `.${extension}`)}.toml`
-  return join(dirname(configPath), filename)
 }
 
 module.exports = { PARSERS, fixBackwardCompat }
