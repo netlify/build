@@ -9,7 +9,12 @@ const parseYaml = function(configString) {
 }
 
 const parseToml = function(configString) {
-  return loadToml(configString)
+  const config = loadToml(configString)
+  // `toml.parse()` returns a object with `null` prototype deeply, which can
+  // sometimes create problems with some utilities. We convert it.
+  // TOML can return Date instances, but JSON will stringify those, and we
+  // don't use Date in netlify.toml, so this should be ok.
+  return JSON.parse(JSON.stringify(config))
 }
 
 const parseJson = function(configString) {
