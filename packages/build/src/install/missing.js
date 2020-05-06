@@ -1,13 +1,9 @@
-const { promisify } = require('util')
-
 const pFilter = require('p-filter')
-const resolve = require('resolve')
 
 const { logInstallMissingPlugins } = require('../log/main')
+const { resolveLocation } = require('../utils/resolve')
 
 const { addDependencies } = require('./main')
-
-const pResolve = promisify(resolve)
 
 // Automatically install plugins if not installed already
 const installMissingPlugins = async function({ pluginsOptions, buildDir, mode }) {
@@ -27,7 +23,7 @@ const isMissingPlugin = async function({ location, core }, buildDir) {
   }
 
   try {
-    await pResolve(location, { basedir: buildDir })
+    await resolveLocation(location, buildDir)
     return false
   } catch (error) {
     return true

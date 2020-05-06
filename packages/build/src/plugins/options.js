@@ -1,16 +1,12 @@
 const { dirname } = require('path')
-const { promisify } = require('util')
-
-const resolve = require('resolve')
 
 const corePackageJson = require('../../package.json')
 const { installMissingPlugins } = require('../install/missing')
 const { CORE_PLUGINS } = require('../plugins_core/main')
+const { resolveLocation } = require('../utils/resolve')
 
 const { useManifest } = require('./manifest/main')
 const { getPackageJson } = require('./package')
-
-const pResolve = promisify(resolve)
 
 // Load plugin options (specified by user in `config.plugins`)
 const getPluginsOptions = async function({ netlifyConfig: { plugins }, buildDir, constants: { FUNCTIONS_SRC }, mode }) {
@@ -30,7 +26,7 @@ const normalizePluginOptions = function({ package, location = package, core = fa
 // Retrieve plugin's main file path.
 // Then load plugin's `package.json` and `manifest.yml`.
 const loadPluginFiles = async function({ pluginOptions, pluginOptions: { location }, buildDir }) {
-  const pluginPath = await pResolve(location, { basedir: buildDir })
+  const pluginPath = await resolveLocation(location, buildDir)
   const pluginDir = dirname(pluginPath)
   const { packageDir, packageJson } = await getPackageJson({ pluginDir })
   const { manifest, inputs: inputsA } = await useManifest(pluginOptions, { pluginDir, packageDir, packageJson })
