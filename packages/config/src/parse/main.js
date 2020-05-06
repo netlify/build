@@ -26,7 +26,7 @@ const parseConfig = async function(configPath) {
 
   try {
     const config = await parser(configString)
-    await fixBackwardCompat(config, extension, configPath)
+    await fixBackwardCompat(config, extension)
     return config
   } catch (error) {
     throwError('Could not parse configuration file', error)
