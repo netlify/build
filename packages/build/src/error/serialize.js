@@ -10,12 +10,21 @@ const { getStackInfo } = require('./stack')
 const { getTypeInfo } = require('./type')
 
 // Serialize an error object into a header|body string to print in logs
-const serializeError = function({ message, stack, ...errorProps }) {
+const serializeError = function(error) {
+  const { message, stack, ...errorProps } = normalizeError(error)
   const { header, isSuccess, ...typeInfo } = getTypeInfo(errorProps)
   const errorInfo = getErrorInfo(errorProps)
   const headerA = getHeader(header, errorInfo)
   const body = getBody({ typeInfo, isSuccess, message, stack, errorProps, ...errorInfo })
   return { header: headerA, body, isSuccess }
+}
+
+const normalizeError = function(error) {
+  if (error instanceof Error) {
+    return error
+  }
+
+  return new Error(String(error))
 }
 
 // Retrieve header to print in logs
