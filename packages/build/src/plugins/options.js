@@ -13,14 +13,20 @@ const { getPackageJson } = require('./package')
 // Do not allow user override of core plugins
 const getPluginsOptions = async function({ netlifyConfig: { plugins }, buildDir, constants: { FUNCTIONS_SRC }, mode }) {
   const corePlugins = getCorePlugins(FUNCTIONS_SRC)
+  const allCorePlugins = corePlugins.filter(corePlugin => !isOptionalCore(corePlugin, plugins))
   const userPlugins = plugins.filter(({ package }) => !CORE_PLUGINS.includes(package))
-  const pluginsOptions = [...corePlugins, ...userPlugins].map(normalizePluginOptions)
+  const pluginsOptions = [...allCorePlugins, ...userPlugins].map(normalizePluginOptions)
   await installMissingPlugins({ pluginsOptions, buildDir, mode })
   await checkDeprecatedFunctionsInstall(plugins, FUNCTIONS_SRC, buildDir)
   const pluginsOptionsA = await Promise.all(
     pluginsOptions.map(pluginOptions => loadPluginFiles({ pluginOptions, buildDir })),
   )
   return pluginsOptionsA
+}
+
+// Optional core plugins requires user opt-in
+const isOptionalCore = function({ package, optional }, plugins) {
+  return optional && plugins.every(plugin => plugin.package !== package)
 }
 
 const normalizePluginOptions = function({ package, location = package, core = false, inputs = {} }) {
