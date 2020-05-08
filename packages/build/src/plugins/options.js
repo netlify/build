@@ -2,15 +2,18 @@ const { dirname } = require('path')
 
 const corePackageJson = require('../../package.json')
 const { installMissingPlugins } = require('../install/missing')
-const { CORE_PLUGINS } = require('../plugins_core/main')
+const { getCorePlugins, CORE_PLUGINS } = require('../plugins_core/main')
 const { resolveLocation } = require('../utils/resolve')
 
 const { useManifest } = require('./manifest/main')
 const { getPackageJson } = require('./package')
 
 // Load plugin options (specified by user in `config.plugins`)
+// Do not allow user override of core plugins
 const getPluginsOptions = async function({ netlifyConfig: { plugins }, buildDir, constants: { FUNCTIONS_SRC }, mode }) {
-  const pluginsOptions = [...CORE_PLUGINS(FUNCTIONS_SRC), ...plugins].map(normalizePluginOptions)
+  const corePlugins = getCorePlugins(FUNCTIONS_SRC)
+  const userPlugins = plugins.filter(({ package }) => !CORE_PLUGINS.includes(package))
+  const pluginsOptions = [...corePlugins, ...userPlugins].map(normalizePluginOptions)
   await installMissingPlugins({ pluginsOptions, buildDir, mode })
   const pluginsOptionsA = await Promise.all(
     pluginsOptions.map(pluginOptions => loadPluginFiles({ pluginOptions, buildDir })),
