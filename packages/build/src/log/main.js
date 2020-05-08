@@ -10,7 +10,16 @@ const { serializeError } = require('../error/serialize')
 const { omit } = require('../utils/omit')
 
 const { getCommandDescription, getBuildCommandDescription } = require('./description')
-const { log, logMessage, logObject, logArray, logHeader, logErrorHeader, logSubHeader } = require('./logger')
+const {
+  log,
+  logMessage,
+  logObject,
+  logArray,
+  logHeader,
+  logErrorHeader,
+  logSubHeader,
+  logErrorSubHeader,
+} = require('./logger')
 const { THEME } = require('./theme')
 
 const logBuildStart = function() {
@@ -107,6 +116,20 @@ const logInstallLocalPluginsDeps = function(localPluginsOptions) {
 
 const logInstallFunctionDependencies = function() {
   log('Installing functions dependencies')
+}
+
+const logDeprecatedFunctionsInstall = function(functionsSrc) {
+  logErrorSubHeader('Missing plugin')
+  logMessage(
+    THEME.errorLine(`Please use the plugin "@netlify/plugin-functions-install-core" to install dependencies from the "package.json" inside your "${functionsSrc}" directory.
+Example "netlify.toml":
+
+  [build]
+  functions = "${functionsSrc}"
+
+  [[plugins]]
+  package = "@netlify/plugin-functions-install-core"`),
+  )
 }
 
 const getPackage = function({ package }) {
@@ -243,6 +266,7 @@ module.exports = {
   logInstallMissingPlugins,
   logInstallLocalPluginsDeps,
   logInstallFunctionDependencies,
+  logDeprecatedFunctionsInstall,
   logLoadedPlugins,
   logDryRunStart,
   logDryRunCommand,

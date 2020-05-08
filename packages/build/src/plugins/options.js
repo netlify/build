@@ -1,6 +1,7 @@
 const { dirname } = require('path')
 
 const corePackageJson = require('../../package.json')
+const { checkDeprecatedFunctionsInstall } = require('../install/functions')
 const { installMissingPlugins } = require('../install/missing')
 const { getCorePlugins, CORE_PLUGINS } = require('../plugins_core/main')
 const { resolveLocation } = require('../utils/resolve')
@@ -15,6 +16,7 @@ const getPluginsOptions = async function({ netlifyConfig: { plugins }, buildDir,
   const userPlugins = plugins.filter(({ package }) => !CORE_PLUGINS.includes(package))
   const pluginsOptions = [...corePlugins, ...userPlugins].map(normalizePluginOptions)
   await installMissingPlugins({ pluginsOptions, buildDir, mode })
+  await checkDeprecatedFunctionsInstall(plugins, FUNCTIONS_SRC, buildDir)
   const pluginsOptionsA = await Promise.all(
     pluginsOptions.map(pluginOptions => loadPluginFiles({ pluginOptions, buildDir })),
   )
