@@ -2,6 +2,7 @@ const {
   env: { TEST_CACHE_PATH },
 } = require('process')
 
+const FUNCTIONS_INSTALL_PLUGIN = `${__dirname}/functions_install/plugin.js`
 const FUNCTIONS_PLUGIN = `${__dirname}/functions/plugin.js`
 const CACHE_PLUGIN = `${__dirname}/cache/plugin.js`
 
@@ -12,6 +13,9 @@ const getCorePlugins = FUNCTIONS_SRC => [
   // However when it is defined but points to a non-existing directory, this
   // might mean the directory is created later one, so we cannot do that check
   // yet.
+  ...(FUNCTIONS_SRC === undefined
+    ? []
+    : [{ package: '@netlify/plugin-functions-install-core', location: FUNCTIONS_INSTALL_PLUGIN, core: true }]),
   ...(FUNCTIONS_SRC === undefined
     ? []
     : [{ package: '@netlify/plugin-functions-core', location: FUNCTIONS_PLUGIN, core: true }]),

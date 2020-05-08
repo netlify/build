@@ -2,19 +2,9 @@ const { zipFunctions } = require('@netlify/zip-it-and-ship-it')
 const pathExists = require('path-exists')
 const readdirp = require('readdirp')
 
-const { installFunctionDependencies } = require('../../install/functions')
 const { serializeArray } = require('../../log/serialize')
 
 // Plugin to package Netlify functions with @netlify/zip-it-and-ship-it
-const onPreBuild = async function({ constants: { FUNCTIONS_SRC, IS_LOCAL } }) {
-  if (!(await pathExists(FUNCTIONS_SRC))) {
-    return
-  }
-
-  await installFunctionDependencies(FUNCTIONS_SRC, IS_LOCAL)
-}
-
-// Package Netlify functions
 const onPostBuild = async function({ constants: { FUNCTIONS_SRC, FUNCTIONS_DIST } }) {
   if (!(await pathExists(FUNCTIONS_SRC))) {
     return
@@ -44,4 +34,4 @@ const getLoggedPath = function({ path }) {
   return path
 }
 
-module.exports = { onPreBuild, onPostBuild }
+module.exports = { onPostBuild }
