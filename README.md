@@ -313,10 +313,11 @@ module.exports = {
 ```
 
 Plugins end as soon as their methods end. Therefore you should `await` any asynchronous operation. The following
-examples show invalid code and the way to fix it:
+examples show invalid code and the way to fix it.
 
 ```js
 // index.js
+// Example showing how to use callbacks.
 const { promisify } = require('util')
 
 module.exports = {
@@ -339,6 +340,7 @@ module.exports = {
 
 ```js
 // index.js
+// Example showing how to use events.
 const pEvent = require('p-event')
 
 module.exports = {
@@ -365,6 +367,7 @@ module.exports = {
 
 ```js
 // index.js
+// Example showing how to use `Array.forEach()`.
 
 module.exports = {
   // INVALID EXAMPLE: do not use this.
