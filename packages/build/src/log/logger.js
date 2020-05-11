@@ -1,13 +1,9 @@
-const {
-  cyanBright: { bold: cyanBrightBold },
-  cyan: { bold: cyanBold },
-  redBright: { bold: redBrightBold },
-} = require('chalk')
 const { pointer } = require('figures')
 const indentString = require('indent-string')
 
 const { getHeader } = require('./header')
 const { serializeObject, serializeArray } = require('./serialize')
+const { THEME } = require('./theme')
 
 // This should be used instead of `console.log()`
 const log = function(string) {
@@ -37,17 +33,17 @@ const logArray = function(array) {
   logMessage(string)
 }
 
-const logHeader = function(string, { color = cyanBrightBold } = {}) {
+const logHeader = function(string, { color = THEME.header } = {}) {
   const stringA = `\n${color(getHeader(string))}`
   log(stringA)
 }
 
 const logErrorHeader = function(string) {
-  return logHeader(string, { color: redBrightBold })
+  return logHeader(string, { color: THEME.errorHeader })
 }
 
 const logSubHeader = function(string) {
-  const stringA = `\n${cyanBold(`${pointer} ${string}`)}`
+  const stringA = `\n${THEME.subHeader(`${pointer} ${string}`)}`
   log(stringA)
 }
 
