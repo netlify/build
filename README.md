@@ -23,6 +23,7 @@ are **now in public beta.** Learn how to enable your site to use Netlify Build a
   - [Validating plugin inputs](#validating-plugin-inputs)
   - [Plugin constants](#plugin-constants)
   - [Error reporting](#error-reporting)
+  - [Asynchronous code](#asynchronous-code)
   - [Dynamic events](#dynamic-events)
 - [Publishing a plugin](#publishing-a-plugin)
   - [Sharing with the community](#sharing-with-the-community)
@@ -278,6 +279,116 @@ module.exports = {
     } catch (error) {
       return utils.build.failBuild('Failure message', { error })
     }
+  },
+}
+```
+
+### Asynchronous code
+
+Asynchronous code can be achieved by using `async` methods:
+
+```js
+// index.js
+
+module.exports = {
+  onPreBuild: async ({ utils }) => {
+    try {
+      await doSomethingAsync()
+    } catch (error) {
+      utils.build.failBuild('Failure message', { error })
+    }
+  },
+}
+```
+
+Any thrown `Error` or rejected `Promise` that is not handled by [`utils.build`](#error-reporting) will be shown in the
+build logs as a plugin bug.
+
+```js
+// index.js
+
+module.exports = {
+  onPreBuild: async ({ utils }) => {
+    // Any error thrown inside this function will be shown in the build logs as a plugin bug.
+    await doSomethingAsync()
+  },
+}
+```
+
+Plugins end as soon as their methods end. Therefore you should `await` any asynchronous operation. The following
+examples show invalid code and the way to fix it.
+
+```js
+// index.js
+// Example showing how to use callbacks.
+const { promisify } = require('util')
+
+module.exports = {
+  // INVALID EXAMPLE: do not use this.
+  // This callback will not be awaited.
+  onPreBuild: ({ utils }) => {
+    doSomethingAsync((error, response) => {
+      console.log(response)
+    })
+  },
+
+  // VALID EXAMPLE: please use this instead.
+  // This callback will be awaited.
+  onPostBuild: async ({ utils }) => {
+    const response = await promisify(doSomethingAsync)()
+    console.log(response)
+  },
+}
+```
+
+```js
+// index.js
+// Example showing how to use events.
+const pEvent = require('p-event')
+
+module.exports = {
+  // INVALID EXAMPLE: do not use this.
+  // This event will not be awaited.
+  onPreBuild: ({ utils }) => {
+    const emitter = doSomethingAsync()
+    emitter.on('response', response => {
+      console.log(response)
+    })
+    emitter.start()
+  },
+
+  // VALID EXAMPLE: please use this instead.
+  // This event will be awaited.
+  onPreBuild: async ({ utils }) => {
+    const emitter = doSomethingAsync()
+    emitter.start()
+    const response = await pEvent(emitter, 'response')
+    console.log(response)
+  },
+}
+```
+
+```js
+// index.js
+// Example showing how to use `Array.forEach()`.
+
+module.exports = {
+  // INVALID EXAMPLE: do not use this.
+  // This callback will not be awaited.
+  onPreBuild: ({ utils }) => {
+    array.forEach(async () => {
+      await doSomethingAsync()
+    })
+  },
+
+  // VALID EXAMPLE: please use this instead.
+  // This callback will be awaited.
+  onPostBuild: async ({ utils }) => {
+    await Promise.all(
+      array.map(async () => {
+        await doSomethingAsync()
+      }),
+    )
   },
 }
 ```
