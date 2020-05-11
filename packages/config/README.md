@@ -6,7 +6,7 @@ Netlify can be configured:
 - In a [`netlify.toml`](https://docs.netlify.com/configure-builds/file-based-configuration/) at the repository root
   directory or base directory
 
-This library loads, validates and normalizes the Netlify configuration.
+This library loads, validates, and normalizes the Netlify configuration.
 
 # Install
 
