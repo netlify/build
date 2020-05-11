@@ -320,14 +320,16 @@ examples show invalid code and the way to fix it:
 const { promisify } = require('util')
 
 module.exports = {
-  // This callback will not be awaited
+  // INVALID EXAMPLE: do not use this.
+  // This callback will not be awaited.
   onPreBuild: ({ utils }) => {
     doSomethingAsync((error, response) => {
       console.log(response)
     })
   },
 
-  // This callback will be awaited
+  // VALID EXAMPLE: please use this instead.
+  // This callback will be awaited.
   onPostBuild: async ({ utils }) => {
     const response = await promisify(doSomethingAsync)()
     console.log(response)
@@ -340,7 +342,8 @@ module.exports = {
 const pEvent = require('p-event')
 
 module.exports = {
-  // This event will not be awaited
+  // INVALID EXAMPLE: do not use this.
+  // This event will not be awaited.
   onPreBuild: ({ utils }) => {
     const emitter = doSomethingAsync()
     emitter.on('response', response => {
@@ -349,7 +352,8 @@ module.exports = {
     emitter.start()
   },
 
-  // This event will be awaited
+  // VALID EXAMPLE: please use this instead.
+  // This event will be awaited.
   onPreBuild: async ({ utils }) => {
     const emitter = doSomethingAsync()
     emitter.start()
@@ -363,14 +367,16 @@ module.exports = {
 // index.js
 
 module.exports = {
-  // This callback will not be awaited
+  // INVALID EXAMPLE: do not use this.
+  // This callback will not be awaited.
   onPreBuild: ({ utils }) => {
     array.forEach(async () => {
       await doSomethingAsync()
     })
   },
 
-  // This callback will be awaited
+  // VALID EXAMPLE: please use this instead.
+  // This callback will be awaited.
   onPostBuild: async ({ utils }) => {
     await Promise.all(
       array.map(async () => {
