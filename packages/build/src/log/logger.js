@@ -47,4 +47,9 @@ const logSubHeader = function(string) {
   log(stringA)
 }
 
-module.exports = { log, logMessage, logObject, logArray, logHeader, logErrorHeader, logSubHeader }
+const logErrorSubHeader = function(string) {
+  const stringA = `\n${THEME.errorSubHeader(`${pointer} ${string}`)}`
+  log(stringA)
+}
+
+module.exports = { log, logMessage, logObject, logArray, logHeader, logErrorHeader, logSubHeader, logErrorSubHeader }
