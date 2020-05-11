@@ -102,8 +102,8 @@ run.
 
 The `index.js` file runs in a regular Node.js environment and can use any
 [Node.js core methods](https://nodejs.org/api/) and [modules](https://www.npmjs.com/).
-[Environment variables](https://docs.netlify.com/configure-builds/environment-variables/) can be accessed with
-[`process.env`](https://nodejs.org/api/process.html#process_process_env).
+[Environment variables](https://docs.netlify.com/configure-builds/environment-variables/) can be accessed and modified
+with [`process.env`](https://nodejs.org/api/process.html#process_process_env).
 
 Save the `index.js` file locally to a `./plugins/netlify-plugin-hello-world`. This will allow us to use the plugin in
 the next step.
