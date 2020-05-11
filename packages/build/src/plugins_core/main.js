@@ -6,7 +6,7 @@ const FUNCTIONS_PLUGIN = `${__dirname}/functions/plugin.js`
 const CACHE_PLUGIN = `${__dirname}/cache/plugin.js`
 
 // Plugins that are installed and enabled by default
-const CORE_PLUGINS = FUNCTIONS_SRC => [
+const getCorePlugins = FUNCTIONS_SRC => [
   // When no "Functions directory" is defined, it means users does not use
   // Netlify Functions.
   // However when it is defined but points to a non-existing directory, this
@@ -21,4 +21,10 @@ const CORE_PLUGINS = FUNCTIONS_SRC => [
     : [{ package: '@netlify/plugin-cache-core', location: CACHE_PLUGIN, core: true }]),
 ]
 
-module.exports = { CORE_PLUGINS }
+const CORE_PLUGINS = [
+  '@netlify/plugin-functions-install-core',
+  '@netlify/plugin-functions-core',
+  '@netlify/plugin-cache-core',
+]
+
+module.exports = { getCorePlugins, CORE_PLUGINS }

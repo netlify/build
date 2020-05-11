@@ -17,3 +17,7 @@ test('Resolution is relative to the build directory', async t => {
 test('Non-existing plugins', async t => {
   await runFixture(t, 'non_existing')
 })
+
+test('Do not allow overriding core plugins', async t => {
+  await runFixture(t, 'core_override')
+})
