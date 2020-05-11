@@ -22,7 +22,7 @@ const reportBuildError = async function(error, errorMonitor) {
   const severityA = getSeverity(severity, errorInfo)
   const contextA = getContext(context, errorInfo)
   const groupingHash = getGroupingHash(contextA, error, type)
-  const metadata = getMetadata(errorInfo)
+  const metadata = getMetadata(errorInfo, groupingHash)
   const app = getApp()
 
   const errorName = updateErrorName(error, type)
@@ -57,8 +57,8 @@ const getGroupingHash = function(context, error, type) {
   return `${context}\n${messageA}`
 }
 
-const getMetadata = function({ location, plugin }) {
-  return { location, plugin }
+const getMetadata = function({ location, plugin }, groupingHash) {
+  return { location, plugin, other: { groupingHash } }
 }
 
 const getApp = function() {
