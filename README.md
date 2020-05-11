@@ -248,7 +248,7 @@ module.exports = {
     try {
       badMethod()
     } catch (error) {
-      utils.build.failBuild('Failure message')
+      return utils.build.failBuild('Failure message')
     }
   },
 }
@@ -261,8 +261,6 @@ The following methods are available depending on the error's type:
 - `utils.build.failPlugin('message')`: fails the plugin but not the build.
 - `utils.build.cancelBuild('message')`: cancels the build - the dashboard would show “Cancelled” for that build. Use
   this to indicate that the build is being cancelled as planned.
-
-This works inside `async` event handlers as well.
 
 `utils.build.failBuild()`, `utils.build.failPlugin()` and `utils.build.cancelBuild()` can specify an options object with
 the following properties:
@@ -278,7 +276,7 @@ module.exports = {
     try {
       badMethod()
     } catch (error) {
-      utils.build.failBuild('Failure message', { error })
+      return utils.build.failBuild('Failure message', { error })
     }
   },
 }
