@@ -1,3 +1,5 @@
+const { homedir } = require('os')
+
 const execa = require('execa')
 const pathExists = require('path-exists')
 const { gte: gteVersion } = require('semver')
@@ -33,7 +35,8 @@ const getCommand = async function({ packageRoot, type, isLocal }) {
   const typeA = await getType({ packageRoot, type, manager, isLocal })
   const command = COMMANDS[manager][typeA]
   const commandA = await fixNpmCiCompat(command)
-  return commandA
+  const commandB = addYarnCustomCache(commandA, manager, isLocal)
+  return commandB
 }
 
 const getManager = async function(packageRoot) {
@@ -104,6 +107,17 @@ const fixNpmCiCompat = async function(command) {
 }
 
 const NPM_CI_MIN_VERSION = '5.7.0'
+
+// In CI, yarn uses a custom cache folder
+const addYarnCustomCache = function(command, manager, isLocal) {
+  if (manager !== 'yarn' || isLocal) {
+    return command
+  }
+
+  return `${command} --cache-folder=${YARN_CI_CACHE_DIR}`
+}
+
+const YARN_CI_CACHE_DIR = `${homedir()}/.yarn_cache`
 
 // Retrieve message to add to install errors
 const getErrorMessage = function(allOutput) {
