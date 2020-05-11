@@ -298,15 +298,15 @@ module.exports = {
 }
 ```
 
-Any thrown `Error` or rejected `Promise` that is not handled by [`utils.build`](#error-reporting) will be reported as
-bugs.
+Any thrown `Error` or rejected `Promise` that is not handled by [`utils.build`](#error-reporting) will be shown in the
+build logs as a plugin bug.
 
 ```js
 // index.js
 
 module.exports = {
   onPreBuild: async ({ utils }) => {
-    // Any error thrown inside this function will be reported as a bug.
+    // Any error thrown inside this function will be shown in the build logs as a plugin bug.
     await doSomethingAsync()
   },
 }
