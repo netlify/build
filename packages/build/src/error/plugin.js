@@ -60,7 +60,7 @@ const getIssuesLink = function({ bugs: { url } = {} }) {
 
 // List of package.json to serialize
 const FIELDS = {
-  ID: getPackage,
+  Name: getPackage,
   Version: getVersion,
   Repository: getRepository,
   'npm link': getNpmLink,
