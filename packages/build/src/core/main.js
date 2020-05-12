@@ -9,7 +9,6 @@ setColorLevel()
 require('../error/process')
 
 const { getChildEnv } = require('../env/main')
-const { maybeCancelBuild } = require('../error/cancel')
 const { removeErrorColors } = require('../error/colors')
 const { reportBuildError } = require('../error/monitor/report')
 const { startErrorMonitor } = require('../error/monitor/start')
@@ -65,7 +64,7 @@ const build = async function(flags) {
       const pluginsOptions = await getPluginsOptions({ netlifyConfig, buildDir, constants, mode })
       await installLocalPluginsDependencies({ pluginsOptions, buildDir, mode })
 
-      const commandsCount = await buildRun({
+      const { commandsCount, error } = await buildRun({
         pluginsOptions,
         netlifyConfig,
         configPath,
@@ -79,10 +78,15 @@ const build = async function(flags) {
         branch,
         mode,
         errorMonitor,
+        api,
       })
 
       if (dry) {
         return true
+      }
+
+      if (error !== undefined) {
+        throw error
       }
 
       logBuildSuccess()
@@ -90,7 +94,6 @@ const build = async function(flags) {
       await trackBuildComplete({ commandsCount, netlifyConfig, duration, siteInfo, mode })
       return true
     } catch (error) {
-      await maybeCancelBuild(error, api)
       await logOldCliVersionError(mode)
       throw error
     }
@@ -116,6 +119,7 @@ const buildRun = async function({
   branch,
   mode,
   errorMonitor,
+  api,
 }) {
   const utilsData = await startUtils(buildDir)
   const childEnv = await getChildEnv({ netlifyConfig, buildDir, context, branch, siteInfo, mode })
@@ -135,6 +139,7 @@ const buildRun = async function({
       dry,
       constants,
       errorMonitor,
+      api,
     })
   } finally {
     await stopPlugins(childProcesses)
@@ -154,6 +159,7 @@ const executeCommands = async function({
   dry,
   constants,
   errorMonitor,
+  api,
 }) {
   const pluginsCommands = await loadPlugins({
     pluginsOptions,
@@ -168,18 +174,18 @@ const executeCommands = async function({
 
   if (dry) {
     doDryRun({ commands, commandsCount, configPath })
-    return
+    return {}
   }
 
-  await runCommands({
+  return runCommands({
     commands,
     configPath,
     buildDir,
     nodePath,
     childEnv,
     errorMonitor,
+    api,
   })
-  return commandsCount
 }
 
 module.exports = build

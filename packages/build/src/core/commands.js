@@ -4,6 +4,7 @@ const execa = require('execa')
 const pReduce = require('p-reduce')
 
 const { setEnvChanges } = require('../env/changes.js')
+const { cancelBuild } = require('../error/cancel')
 const { addErrorInfo, getErrorInfo } = require('../error/info')
 const { reportBuildError } = require('../error/monitor/report')
 const { logCommand, logBuildCommandStart, logCommandSuccess, logPluginError } = require('../log/main')
@@ -51,67 +52,18 @@ const isSuccessCommand = function({ event }) {
 }
 
 // Run all commands.
+// Each command can change some state: last `error`, environment variables changes,
+// list of `failedPlugins` (that ran `utils.build.failPlugin()`).
 // If an error arises, runs `onError` events.
 // Runs `onEnd` events at the end, whether an error was thrown or not.
-const runCommands = async function({ commands, configPath, buildDir, nodePath, childEnv, errorMonitor }) {
-  // We have to use a state variable to keep track of how many commands were run
-  // before an error is thrown, so that error handlers are correctly numbered
-  const state = { index: 0 }
-
-  try {
-    const mainCommands = commands.filter(isMainCommand)
-    await execCommands(mainCommands, {
-      configPath,
-      buildDir,
-      state,
-      nodePath,
-      childEnv,
-      errorMonitor,
-      failFast: true,
-    })
-  } catch (error) {
-    const errorCommands = commands.filter(isErrorCommand)
-    await execCommands(errorCommands, {
-      configPath,
-      buildDir,
-      state,
-      nodePath,
-      childEnv,
-      errorMonitor,
-      failFast: false,
-      error,
-    })
-    throw error
-  } finally {
-    const endCommands = commands.filter(isEndCommand)
-    await execCommands(endCommands, {
-      configPath,
-      buildDir,
-      state,
-      nodePath,
-      childEnv,
-      errorMonitor,
-      failFast: false,
-    })
-  }
-}
-
-// Run a set of commands.
-// `onError` and `onEnd` do not `failFast`, i.e. if they fail, the other events
-// of the same name keep running. However the failure is still eventually
-// thrown. This allows users to be notified of issues inside their `onError` or
-// `onEnd` events.
-const execCommands = async function(
-  commands,
-  { configPath, buildDir, state, nodePath, childEnv, errorMonitor, failFast, error },
-) {
-  const { failure } = await pReduce(
+const runCommands = async function({ commands, configPath, buildDir, nodePath, childEnv, errorMonitor, api }) {
+  const { index: commandsCount, error: errorA } = await pReduce(
     commands,
-    (
-      { failure, failedPlugins, envChanges: envChangesA },
+    async (
+      { index, error, failedPlugins, envChanges },
       { event, childProcess, package, packageJson, local, buildCommand },
-    ) =>
-      runCommand({
+    ) => {
+      const { newIndex = index, newError = error, failedPlugin = [], newEnvChanges = {} } = await runCommand({
         event,
         childProcess,
         package,
@@ -120,22 +72,25 @@ const execCommands = async function(
         buildCommand,
         configPath,
         buildDir,
-        state,
         nodePath,
+        index,
         childEnv,
-        envChanges: envChangesA,
+        envChanges,
         errorMonitor,
+        api,
         error,
-        failure,
         failedPlugins,
-        failFast,
-      }),
-    { failedPlugins: [], envChanges: {} },
+      })
+      return {
+        index: newIndex,
+        error: newError,
+        failedPlugins: [...failedPlugins, ...failedPlugin],
+        envChanges: { ...envChanges, ...newEnvChanges },
+      }
+    },
+    { index: 0, failedPlugins: [], envChanges: {} },
   )
-
-  if (failure !== undefined) {
-    throw failure
-  }
+  return { commandsCount, error: errorA }
 }
 
 // Run a command (shell or plugin)
@@ -148,52 +103,55 @@ const runCommand = async function({
   buildCommand,
   configPath,
   buildDir,
-  state,
   nodePath,
+  index,
   childEnv,
   envChanges,
   errorMonitor,
+  api,
   error,
-  failure,
   failedPlugins,
-  failFast,
 }) {
-  try {
-    if (failedPlugins.includes(package)) {
-      return { failure, failedPlugins }
-    }
-
-    const methodTimer = startTimer()
-
-    state.index += 1
-    const { index } = state
-    logCommand({ event, package, index, configPath, error })
-
-    const { newEnvChanges } = await fireCommand({
-      event,
-      childProcess,
-      package,
-      packageJson,
-      local,
-      buildCommand,
-      configPath,
-      buildDir,
-      nodePath,
-      childEnv,
-      envChanges,
-      error,
-    })
-    const nextEnvChanges = { ...envChanges, ...newEnvChanges }
-
-    logCommandSuccess()
-
-    const timerName = package === undefined ? 'build.command' : `${package} ${event}`
-    endTimer(methodTimer, timerName)
-
-    return { failure, failedPlugins, envChanges: nextEnvChanges }
-  } catch (newFailure) {
-    return handleCommandError({ newFailure, failedPlugins, failure, failFast, envChanges, errorMonitor })
+  if (shouldSkipCommand({ event, package, error, failedPlugins })) {
+    return {}
   }
+
+  const methodTimer = startTimer()
+
+  logCommand({ event, package, index, configPath, error })
+
+  const { newEnvChanges, newError } = await fireCommand({
+    event,
+    childProcess,
+    package,
+    packageJson,
+    local,
+    buildCommand,
+    configPath,
+    buildDir,
+    nodePath,
+    childEnv,
+    envChanges,
+    error,
+  })
+
+  const newValues =
+    newError === undefined
+      ? handleCommandSuccess({ event, package, newEnvChanges, methodTimer })
+      : await handleCommandError({ newError, errorMonitor, api })
+  return { ...newValues, newIndex: index + 1 }
+}
+
+// If either:
+//   - an error was thrown by the current plugin or another one
+//   - the current plugin previously ran `utils.build.failPlugin()`
+// Then:
+//   - run `onError` event (otherwise not run)
+//   - run `onEnd` event (always run regardless)
+//   - skip other events
+const shouldSkipCommand = function({ event, package, error, failedPlugins }) {
+  const isError = error !== undefined || failedPlugins.includes(package)
+  return (isMainCommand({ event }) && isError) || (isErrorCommand({ event }) && !isError)
 }
 
 const fireCommand = function({
@@ -235,9 +193,9 @@ const fireBuildCommand = async function({ buildCommand, configPath, buildDir, no
   try {
     await childProcess
     return {}
-  } catch (error) {
-    addErrorInfo(error, { type: 'buildCommand', location: { buildCommand, configPath } })
-    throw error
+  } catch (newError) {
+    addErrorInfo(newError, { type: 'buildCommand', location: { buildCommand, configPath } })
+    return { newError }
   }
 }
 
@@ -256,9 +214,21 @@ const firePluginCommand = async function({ event, childProcess, package, package
       { plugin: { packageJson, package }, location: { event, package, local } },
     )
     return { newEnvChanges }
+  } catch (newError) {
+    return { newError }
   } finally {
     unpipeOutput(childProcess)
   }
+}
+
+// `build.command` or plugin event handle success
+const handleCommandSuccess = function({ event, package, newEnvChanges, methodTimer }) {
+  logCommandSuccess()
+
+  const timerName = package === undefined ? 'build.command' : `${package} ${event}`
+  endTimer(methodTimer, timerName)
+
+  return { newEnvChanges }
 }
 
 // Handle shell or plugin error:
@@ -267,20 +237,20 @@ const firePluginCommand = async function({ event, childProcess, package, package
 //    handlers of the same type have been triggered before propagating
 //  - if `utils.build.failPlugin()` was used, print an error and skip next event
 //    handlers of that plugin. But do not stop build.
-const handleCommandError = async function({ newFailure, failedPlugins, failure, failFast, envChanges, errorMonitor }) {
-  const { type, location: { package } = {} } = getErrorInfo(newFailure)
+const handleCommandError = async function({ newError, errorMonitor, api }) {
+  const { type, location: { package } = {} } = getErrorInfo(newError)
 
   if (type === 'failPlugin') {
-    logPluginError(newFailure)
-    await reportBuildError(newFailure, errorMonitor)
-    return { failure, failedPlugins: [...failedPlugins, package], envChanges }
+    logPluginError(newError)
+    await reportBuildError(newError, errorMonitor)
+    return { failedPlugin: [package] }
   }
 
-  if (failFast) {
-    throw newFailure
+  if (type === 'cancelBuild') {
+    await cancelBuild(api)
   }
 
-  return { failure: newFailure, failedPlugins, envChanges }
+  return { newError }
 }
 
 module.exports = { getCommands, isSuccessCommand, runCommands }

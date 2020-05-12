@@ -7,8 +7,6 @@ const getTypeInfo = function({ type }) {
 }
 
 // List of error types, and their related properties
-// Related to error handling:
-//  - `shouldCancel`: `true` when the build should be canceled
 // Related to build error logs:
 //  - `title`: main title shown in build error logs
 //  - `getLocation()`: retrieve a human-friendly location of the error, printed
@@ -79,7 +77,6 @@ const TYPES = {
     stackType: 'stack',
     getLocation: getBuildFailLocation,
     isSuccess: true,
-    shouldCancel: true,
     severity: 'info',
   },
 
