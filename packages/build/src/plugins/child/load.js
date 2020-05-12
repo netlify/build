@@ -1,7 +1,6 @@
 const { getApiClient } = require('./api')
 const { getLogic } = require('./logic')
 const { normalizePlugin } = require('./normalize')
-const { getUtils } = require('./utils')
 const { validatePlugin } = require('./validate')
 
 // Load context passed to every plugin method.
@@ -34,9 +33,8 @@ const isEventHandler = function([, value]) {
 
 // Retrieve context passed to every event handler
 const getContext = function(pluginCommands, { manifest, inputs, netlifyConfig, constants, utilsData, token }) {
-  const utils = getUtils({ utilsData, constants })
   const api = getApiClient({ manifest, token })
-  return { pluginCommands, api, utils, constants, inputs, netlifyConfig }
+  return { pluginCommands, api, utilsData, constants, inputs, netlifyConfig }
 }
 
 module.exports = { load }
