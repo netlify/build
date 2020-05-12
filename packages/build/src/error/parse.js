@@ -13,7 +13,7 @@ const parseError = function(error) {
     errorProps,
     errorInfo,
     errorInfo: { location = {}, plugin = {} },
-    header,
+    title,
     isSuccess,
     stackType,
     getLocation,
@@ -21,27 +21,27 @@ const parseError = function(error) {
     rawStack,
   } = parseErrorInfo(error)
 
-  const headerA = getHeader(header, errorInfo)
+  const titleA = getTitle(title, errorInfo)
 
   const { message: messageA, stack: stackA } = getStackInfo({ message, stack, stackType, rawStack, isSuccess })
 
   const pluginInfo = getPluginInfo(plugin, location)
   const locationInfo = getLocationInfo({ stack: stackA, location, getLocation })
   const errorPropsA = getErrorProps(errorProps, showErrorProps)
-  return { header: headerA, message: messageA, pluginInfo, locationInfo, errorProps: errorPropsA, isSuccess }
+  return { title: titleA, message: messageA, pluginInfo, locationInfo, errorProps: errorPropsA, isSuccess }
 }
 
 // Parse error instance into all the basic properties containing information
 const parseErrorInfo = function(error) {
   const { message, stack, ...errorProps } = normalizeError(error)
-  const { header, isSuccess, stackType, getLocation, showErrorProps, rawStack } = getTypeInfo(errorProps)
+  const { title, isSuccess, stackType, getLocation, showErrorProps, rawStack } = getTypeInfo(errorProps)
   const errorInfo = getErrorInfo(errorProps)
   return {
     message,
     stack,
     errorProps,
     errorInfo,
-    header,
+    title,
     isSuccess,
     stackType,
     getLocation,
@@ -58,13 +58,13 @@ const normalizeError = function(error) {
   return new Error(String(error))
 }
 
-// Retrieve header to print in logs
-const getHeader = function(header, errorInfo) {
-  if (typeof header !== 'function') {
-    return header
+// Retrieve title to print in logs
+const getTitle = function(title, errorInfo) {
+  if (typeof title !== 'function') {
+    return title
   }
 
-  return header(errorInfo)
+  return title(errorInfo)
 }
 
 module.exports = { parseError }

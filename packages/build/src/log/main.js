@@ -239,15 +239,15 @@ const logCacheDir = function(path) {
 }
 
 const logPluginError = function(error) {
-  const { header, body } = serializeLogError(error)
-  logErrorHeader(header)
+  const { title, body } = serializeLogError(error)
+  logErrorHeader(title)
   logMessage(`\n${body}`)
 }
 
 const logBuildError = function(error) {
-  const { header, body, isSuccess } = serializeLogError(error)
+  const { title, body, isSuccess } = serializeLogError(error)
   const logFunction = isSuccess ? logHeader : logErrorHeader
-  logFunction(header)
+  logFunction(title)
   logMessage(`\n${body}\n`)
 }
 
