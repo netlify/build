@@ -1,16 +1,10 @@
 // Retrieve plugin's package.json details to include in error messages.
 // Please note `packageJson` has been normalized by `normalize-package-data`.
-const getPluginBlock = function({ packageJson = {} }, { package }) {
+const getPluginInfo = function({ packageJson = {} }, { package }) {
   if (Object.keys(packageJson).length === 0) {
     return
   }
 
-  const fields = serializeFields(packageJson, package)
-  return { name: 'Plugin details', value: fields }
-}
-
-// Iterate over a series of package.json fields, serialize each then join them
-const serializeFields = function(packageJson, package) {
   return Object.entries(FIELDS)
     .map(([name, getField]) => serializeField({ name, getField, packageJson, package }))
     .filter(Boolean)
@@ -67,4 +61,4 @@ const FIELDS = {
   'Report issues': getIssuesLink,
 }
 
-module.exports = { getPluginBlock }
+module.exports = { getPluginInfo }
