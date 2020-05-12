@@ -11,7 +11,7 @@ const printEventForTest = function({
   device: {
     runtimeVersions: { node },
   },
-  _metadata: { location, plugin: { package } = {} },
+  _metadata: { location, plugin: { package } = {}, other },
 }) {
   const eventString = JSON.stringify(
     {
@@ -27,6 +27,7 @@ const printEventForTest = function({
       node,
       location,
       package,
+      other,
     },
     null,
     2,
