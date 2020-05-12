@@ -2,12 +2,14 @@ const {
   env: { DEPLOY_ID },
 } = require('process')
 
+const { getErrorInfo } = require('./info')
 const { getTypeInfo } = require('./type')
 
 // Handle top-level build errors.
 // Logging is done separately.
 const maybeCancelBuild = async function(error, api) {
-  const { shouldCancel } = getTypeInfo(error)
+  const errorInfo = getErrorInfo(error)
+  const { shouldCancel } = getTypeInfo(errorInfo)
   await cancelBuild(shouldCancel, api)
 }
 

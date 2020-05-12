@@ -17,8 +17,8 @@ const reportBuildError = async function(error, errorMonitor) {
     return
   }
 
-  const { type, severity, title, group = title } = getTypeInfo(error)
   const errorInfo = getErrorInfo(error)
+  const { type, severity, title, group = title } = getTypeInfo(errorInfo)
   const severityA = getSeverity(severity, errorInfo)
   const groupA = getGroup(group, errorInfo)
   const groupingHash = getGroupingHash(groupA, error, type)
