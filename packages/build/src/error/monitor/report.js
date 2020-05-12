@@ -17,17 +17,25 @@ const reportBuildError = async function(error, errorMonitor) {
     return
   }
 
-  const { type, severity, context } = getTypeInfo(error)
+  const { type, severity, group } = getTypeInfo(error)
   const errorInfo = getErrorInfo(error)
   const severityA = getSeverity(severity, errorInfo)
-  const contextA = getContext(context, errorInfo)
-  const groupingHash = getGroupingHash(contextA, error, type)
+  const groupA = getGroup(group, errorInfo)
+  const groupingHash = getGroupingHash(groupA, error, type)
   const metadata = getMetadata(errorInfo, groupingHash)
   const app = getApp()
 
   const errorName = updateErrorName(error, type)
   try {
-    await reportError({ errorMonitor, error, severity: severityA, context: contextA, groupingHash, metadata, app })
+    await reportError({
+      errorMonitor,
+      error,
+      severity: severityA,
+      group: groupA,
+      groupingHash,
+      metadata,
+      app,
+    })
   } finally {
     error.name = errorName
   }
@@ -43,18 +51,18 @@ const getSeverity = function(severity, { location: { local } = {} }) {
   return severity
 }
 
-const getContext = function(context, errorInfo) {
-  if (typeof context !== 'function') {
-    return context
+const getGroup = function(group, errorInfo) {
+  if (typeof group !== 'function') {
+    return group
   }
 
-  return context(errorInfo)
+  return group(errorInfo)
 }
 
-const getGroupingHash = function(context, error, type) {
+const getGroupingHash = function(group, error, type) {
   const message = error instanceof Error ? error.message : String(error)
   const messageA = normalizeGroupingMessage(message, type)
-  return `${context}\n${messageA}`
+  return `${group}\n${messageA}`
 }
 
 const getMetadata = function({ location, plugin }, groupingHash) {
@@ -79,10 +87,10 @@ const updateErrorName = function(error, type) {
   return name
 }
 
-const reportError = async function({ errorMonitor, error, severity, context, groupingHash, metadata, app }) {
+const reportError = async function({ errorMonitor, error, severity, group, groupingHash, metadata, app }) {
   try {
     await promisify(errorMonitor.notify)(error, event =>
-      onError({ event, severity, context, groupingHash, metadata, app }),
+      onError({ event, severity, group, groupingHash, metadata, app }),
     )
     // Failsafe
   } catch (error) {
@@ -92,7 +100,7 @@ const reportError = async function({ errorMonitor, error, severity, context, gro
 }
 
 // Add more information to Bugsnag events
-const onError = function({ event, severity, context, groupingHash, metadata, app }) {
+const onError = function({ event, severity, group, groupingHash, metadata, app }) {
   // `unhandled` is used to calculate Releases "stabiity score", which is
   // basically the percentage of unhandled errors. Since we handle all errors,
   // we need to implement this according to error types.
@@ -100,7 +108,7 @@ const onError = function({ event, severity, context, groupingHash, metadata, app
 
   Object.assign(event, {
     severity,
-    context,
+    context: group,
     groupingHash,
     _metadata: { ...event._metadata, ...metadata },
     app: { ...event.app, ...app },
