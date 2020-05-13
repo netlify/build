@@ -26,6 +26,10 @@ test('utils.status.show() requires a summary', async t => {
   await runUtilsStatusShow(t, { title: 'title', text: 'text' })
 })
 
+test('utils.status.show() allow other fields to be optional', async t => {
+  await runUtilsStatusShow(t, { summary: 'summary' })
+})
+
 test('utils.status.show() title should be a string', async t => {
   await runUtilsStatusShow(t, { title: true, summary: 'summary', text: 'text' })
 })
