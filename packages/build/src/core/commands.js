@@ -4,9 +4,9 @@ const execa = require('execa')
 const pReduce = require('p-reduce')
 
 const { setEnvChanges } = require('../env/changes.js')
-const { cancelBuild } = require('../error/cancel')
 const { addErrorInfo, getErrorInfo } = require('../error/info')
 const { reportBuildError } = require('../error/monitor/report')
+const { serializeErrorStatus } = require('../error/parse/serialize_status')
 const { logCommand, logBuildCommandStart, logCommandSuccess, logPluginError } = require('../log/main')
 const { pipeOutput, unpipeOutput } = require('../log/stream')
 const { startTimer, endTimer } = require('../log/timer')
@@ -58,7 +58,7 @@ const isSuccessCommand = function({ event }) {
 // list of `failedPlugins` (that ran `utils.build.failPlugin()`).
 // If an error arises, runs `onError` events.
 // Runs `onEnd` events at the end, whether an error was thrown or not.
-const runCommands = async function({ commands, configPath, buildDir, nodePath, childEnv, errorMonitor, api }) {
+const runCommands = async function({ commands, configPath, buildDir, nodePath, childEnv, errorMonitor }) {
   const { index: commandsCount, error: errorA, statuses: statusesB } = await pReduce(
     commands,
     async (
@@ -81,7 +81,6 @@ const runCommands = async function({ commands, configPath, buildDir, nodePath, c
           envChanges,
           statuses,
           errorMonitor,
-          api,
           error,
           failedPlugins,
         },
@@ -116,7 +115,6 @@ const runCommand = async function({
   envChanges,
   statuses,
   errorMonitor,
-  api,
   error,
   failedPlugins,
 }) {
@@ -147,7 +145,7 @@ const runCommand = async function({
   const newValues =
     newError === undefined
       ? handleCommandSuccess({ event, package, newEnvChanges, newStatus, methodTimer })
-      : await handleCommandError({ newError, errorMonitor, api })
+      : await handleCommandError({ newError, errorMonitor })
   return { ...newValues, newIndex: index + 1 }
 }
 
@@ -257,20 +255,21 @@ const handleCommandSuccess = function({ event, package, newEnvChanges, newStatus
 //    handlers of the same type have been triggered before propagating
 //  - if `utils.build.failPlugin()` was used, print an error and skip next event
 //    handlers of that plugin. But do not stop build.
-const handleCommandError = async function({ newError, errorMonitor, api }) {
+const handleCommandError = async function({ newError, errorMonitor }) {
   const { type, location: { package } = {} } = getErrorInfo(newError)
+  const newStatus = serializeErrorStatus(newError)
 
   if (type === 'failPlugin') {
-    logPluginError(newError)
-    await reportBuildError(newError, errorMonitor)
-    return { failedPlugin: [package] }
+    return handleFailPlugin({ newStatus, package, newError, errorMonitor })
   }
 
-  if (type === 'cancelBuild') {
-    await cancelBuild(api)
-  }
+  return { newError, newStatus }
+}
 
-  return { newError }
+const handleFailPlugin = async function({ newStatus, package, newError, errorMonitor }) {
+  logPluginError(newError)
+  await reportBuildError(newError, errorMonitor)
+  return { failedPlugin: [package], newStatus }
 }
 
 module.exports = { getCommands, isSuccessCommand, runCommands }

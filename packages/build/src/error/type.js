@@ -1,7 +1,7 @@
 // Retrieve error-type specific information
 const getTypeInfo = function({ type }) {
   const typeA = TYPES[type] === undefined ? DEFAULT_TYPE : type
-  return { type: typeA, ...TYPES[typeA] }
+  return { type: typeA, state: DEFAULT_STATE, ...TYPES[typeA] }
 }
 
 // List of error types, and their related properties
@@ -20,6 +20,8 @@ const getTypeInfo = function({ type }) {
 //      - `message`: printed as is, but taken from `error.message`.
 //        Used when `error.stack` is not being correct due to the error being
 //        passed between different processes.
+// Related to error statuses:
+//  - `state`: error status state. Defaults to `failed_build`
 // Related to Bugsnag:
 //  - `group`: main title shown in Bugsnag. Also used to group errors together
 //    in Bugsnag, combined with `error.message`.
@@ -67,6 +69,7 @@ const TYPES = {
     stackType: 'stack',
     locationType: 'buildFail',
     severity: 'info',
+    state: 'failed_plugin',
   },
 
   // Plugin called `utils.build.cancelBuild()`
@@ -76,6 +79,7 @@ const TYPES = {
     locationType: 'buildFail',
     isSuccess: true,
     severity: 'info',
+    state: 'canceled_plugin',
   },
 
   // Plugin has an invalid shape
@@ -129,7 +133,11 @@ const TYPES = {
     severity: 'error',
   },
 }
+
 // When no error type matches, it's an uncaught exception, i.e. a bug
 const DEFAULT_TYPE = 'exception'
+
+// When no `state` is provided
+const DEFAULT_STATE = 'failed_build'
 
 module.exports = { getTypeInfo }
