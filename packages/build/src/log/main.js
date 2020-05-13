@@ -6,7 +6,7 @@ const { arrowDown } = require('figures')
 const prettyMs = require('pretty-ms')
 
 const { name, version } = require('../../package.json')
-const { serializeLogError } = require('../error/serialize_log')
+const { serializeLogError } = require('../error/parse/serialize_log')
 const { omit } = require('../utils/omit')
 
 const { getCommandDescription, getBuildCommandDescription } = require('./description')

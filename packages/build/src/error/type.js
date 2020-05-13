@@ -1,5 +1,3 @@
-const { getBuildCommandLocation, getBuildFailLocation, getApiLocation } = require('./location')
-
 // Retrieve error-type specific information
 const getTypeInfo = function({ type }) {
   const typeA = TYPES[type] === undefined ? DEFAULT_TYPE : type
@@ -9,7 +7,7 @@ const getTypeInfo = function({ type }) {
 // List of error types, and their related properties
 // Related to build error logs:
 //  - `title`: main title shown in build error logs and in the UI (statuses)
-//  - `getLocation()`: retrieve a human-friendly location of the error, printed
+//  - `locationType`: retrieve a human-friendly location of the error, printed
 //    in build error logs
 //  - `isSuccess`: `true` when this should not be reported as an error
 //  - `showErrorProps`: `true` when the `Error` instance static properties
@@ -42,7 +40,7 @@ const TYPES = {
   pluginInput: {
     title: ({ location: { package, input } }) => `Plugin "${package}" invalid input "${input}"`,
     stackType: 'none',
-    getLocation: getBuildFailLocation,
+    locationType: 'buildFail',
     severity: 'info',
   },
 
@@ -51,7 +49,7 @@ const TYPES = {
     title: '"build.command" failed',
     group: ({ location: { buildCommand } }) => buildCommand,
     stackType: 'message',
-    getLocation: getBuildCommandLocation,
+    locationType: 'buildCommand',
     severity: 'info',
   },
 
@@ -59,7 +57,7 @@ const TYPES = {
   failBuild: {
     title: ({ location: { package } }) => `Plugin "${package}" failed`,
     stackType: 'stack',
-    getLocation: getBuildFailLocation,
+    locationType: 'buildFail',
     severity: 'info',
   },
 
@@ -67,7 +65,7 @@ const TYPES = {
   failPlugin: {
     title: ({ location: { package } }) => `Plugin "${package}" failed`,
     stackType: 'stack',
-    getLocation: getBuildFailLocation,
+    locationType: 'buildFail',
     severity: 'info',
   },
 
@@ -75,7 +73,7 @@ const TYPES = {
   cancelBuild: {
     title: ({ location: { package } }) => `Build canceled by ${package}`,
     stackType: 'stack',
-    getLocation: getBuildFailLocation,
+    locationType: 'buildFail',
     isSuccess: true,
     severity: 'info',
   },
@@ -84,7 +82,7 @@ const TYPES = {
   pluginValidation: {
     title: ({ location: { package } }) => `Plugin "${package}" internal error`,
     stackType: 'none',
-    getLocation: getBuildFailLocation,
+    locationType: 'buildFail',
     severity: 'warning',
   },
 
@@ -94,7 +92,7 @@ const TYPES = {
     stackType: 'stack',
     showErrorProps: true,
     rawStack: true,
-    getLocation: getBuildFailLocation,
+    locationType: 'buildFail',
     severity: 'warning',
   },
 
@@ -102,7 +100,7 @@ const TYPES = {
   ipc: {
     title: ({ location: { package } }) => `Plugin "${package}" internal error`,
     stackType: 'none',
-    getLocation: getBuildFailLocation,
+    locationType: 'buildFail',
     severity: 'warning',
   },
 
@@ -118,7 +116,7 @@ const TYPES = {
     title: ({ location: { endpoint } }) => `API error on "${endpoint}"`,
     stackType: 'message',
     showErrorProps: true,
-    getLocation: getApiLocation,
+    locationType: 'api',
     severity: 'error',
   },
 

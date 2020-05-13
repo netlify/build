@@ -1,8 +1,7 @@
 const { inspect } = require('util')
 
-const { omit } = require('../utils/omit')
-
-const { INFO_SYM } = require('./info')
+const { omit } = require('../../utils/omit')
+const { INFO_SYM } = require('../info')
 
 // In uncaught exceptions, print error static properties
 const getErrorProps = function(errorProps, showErrorProps) {
