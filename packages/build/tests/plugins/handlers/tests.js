@@ -14,6 +14,10 @@ test('plugin.onSuccess is not triggered on failPlugin()', async t => {
   await runFixture(t, 'success_fail_plugin')
 })
 
+test('plugin.onSuccess is not triggered on cancelBuild()', async t => {
+  await runFixture(t, 'success_cancel_build')
+})
+
 test('plugin.onSuccess can fail', async t => {
   await runFixture(t, 'success_fail')
 })
@@ -28,6 +32,10 @@ test('plugin.onError is triggered on failure', async t => {
 
 test('plugin.onError is triggered on failPlugin()', async t => {
   await runFixture(t, 'error_fail_plugin')
+})
+
+test('plugin.onError is triggered on cancelBuild()', async t => {
+  await runFixture(t, 'error_cancel_build')
 })
 
 test('plugin.onError gets an error argument', async t => {
@@ -48,6 +56,10 @@ test('plugin.onEnd is triggered on failure', async t => {
 
 test('plugin.onEnd is triggered on failPlugin()', async t => {
   await runFixture(t, 'end_fail_plugin')
+})
+
+test('plugin.onEnd is triggered on cancelBuild()', async t => {
+  await runFixture(t, 'end_cancel_build')
 })
 
 test('plugin.onEnd can fail', async t => {

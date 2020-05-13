@@ -153,7 +153,7 @@ const runCommand = async function({
 
 // If either:
 //   - an error was thrown by the current plugin or another one
-//   - the current plugin previously ran `utils.build.failPlugin()`
+//   - the current plugin previously ran `utils.build.failPlugin()`, `failBuild()` or `cancelBuild()`
 // Then:
 //   - run `onError` event (otherwise not run)
 //   - run `onEnd` event (always run regardless)
