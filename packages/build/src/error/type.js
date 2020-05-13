@@ -12,7 +12,7 @@ const getTypeInfo = function(errorProps) {
 // Related to error handling:
 //  - `shouldCancel`: `true` when the build should be canceled
 // Related to build error logs:
-//  - `header`: main title shown in build error logs
+//  - `title`: main title shown in build error logs
 //  - `getLocation()`: retrieve a human-friendly location of the error, printed
 //    in build error logs
 //  - `isSuccess`: `true` when this should not be reported as an error
@@ -29,7 +29,7 @@ const getTypeInfo = function(errorProps) {
 // Related to Bugsnag:
 //  - `group`: main title shown in Bugsnag. Also used to group errors together
 //    in Bugsnag, combined with `error.message`.
-//    Defaults to `header`.
+//    Defaults to `title`.
 //  - `severity`: Bugsnag error severity:
 //      - `info`: user error
 //      - `warning`: plugin author error, or possible system error
@@ -37,14 +37,14 @@ const getTypeInfo = function(errorProps) {
 const TYPES = {
   // User configuration error (`@netlify/config`)
   resolveConfig: {
-    header: 'Configuration error',
+    title: 'Configuration error',
     stackType: 'none',
     severity: 'info',
   },
 
   // User misconfigured a plugin
   pluginInput: {
-    header: ({ location: { package, input } }) => `Plugin "${package}" invalid input "${input}"`,
+    title: ({ location: { package, input } }) => `Plugin "${package}" invalid input "${input}"`,
     stackType: 'none',
     getLocation: getBuildFailLocation,
     severity: 'info',
@@ -52,7 +52,7 @@ const TYPES = {
 
   // `build.command` non-0 exit code
   buildCommand: {
-    header: '"build.command" failed',
+    title: '"build.command" failed',
     group: ({ location: { buildCommand } }) => buildCommand,
     stackType: 'message',
     getLocation: getBuildCommandLocation,
@@ -61,7 +61,7 @@ const TYPES = {
 
   // Plugin called `utils.build.failBuild()`
   failBuild: {
-    header: ({ location: { package } }) => `Plugin "${package}" failed`,
+    title: ({ location: { package } }) => `Plugin "${package}" failed`,
     stackType: 'stack',
     getLocation: getBuildFailLocation,
     severity: 'info',
@@ -69,7 +69,7 @@ const TYPES = {
 
   // Plugin called `utils.build.failPlugin()`
   failPlugin: {
-    header: ({ location: { package } }) => `Plugin "${package}" failed`,
+    title: ({ location: { package } }) => `Plugin "${package}" failed`,
     stackType: 'stack',
     getLocation: getBuildFailLocation,
     severity: 'info',
@@ -77,7 +77,7 @@ const TYPES = {
 
   // Plugin called `utils.build.cancelBuild()`
   cancelBuild: {
-    header: ({ location: { package } }) => `Build canceled by ${package}`,
+    title: ({ location: { package } }) => `Build canceled by ${package}`,
     stackType: 'stack',
     getLocation: getBuildFailLocation,
     isSuccess: true,
@@ -87,7 +87,7 @@ const TYPES = {
 
   // Plugin has an invalid shape
   pluginValidation: {
-    header: ({ location: { package } }) => `Plugin "${package}" internal error`,
+    title: ({ location: { package } }) => `Plugin "${package}" internal error`,
     stackType: 'none',
     getLocation: getBuildFailLocation,
     severity: 'warning',
@@ -95,7 +95,7 @@ const TYPES = {
 
   // Plugin threw an uncaught exception
   pluginInternal: {
-    header: ({ location: { package } }) => `Plugin "${package}" internal error`,
+    title: ({ location: { package } }) => `Plugin "${package}" internal error`,
     stackType: 'stack',
     showErrorProps: true,
     rawStack: true,
@@ -105,7 +105,7 @@ const TYPES = {
 
   // Bug while orchestrating child processes
   ipc: {
-    header: ({ location: { package } }) => `Plugin "${package}" internal error`,
+    title: ({ location: { package } }) => `Plugin "${package}" internal error`,
     stackType: 'none',
     getLocation: getBuildFailLocation,
     severity: 'warning',
@@ -113,14 +113,14 @@ const TYPES = {
 
   // Error while installing user packages (missing plugins, local plugins or functions dependencies)
   dependencies: {
-    header: 'Dependencies installation error',
+    title: 'Dependencies installation error',
     stackType: 'none',
     severity: 'warning',
   },
 
   // Request error when `@netlify/build` was calling Netlify API
   api: {
-    header: ({ location: { endpoint } }) => `API error on "${endpoint}"`,
+    title: ({ location: { endpoint } }) => `API error on "${endpoint}"`,
     stackType: 'message',
     showErrorProps: true,
     getLocation: getApiLocation,
@@ -129,7 +129,7 @@ const TYPES = {
 
   // `@netlify/build` threw an uncaught exception
   exception: {
-    header: 'Core internal error',
+    title: 'Core internal error',
     stackType: 'stack',
     showErrorProps: true,
     rawStack: true,
