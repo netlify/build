@@ -1,4 +1,4 @@
-const { THEME } = require('../log/theme')
+const { THEME } = require('../../log/theme')
 
 const { parseError } = require('./parse')
 

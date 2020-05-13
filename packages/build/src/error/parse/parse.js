@@ -1,9 +1,10 @@
-const { getErrorInfo } = require('./info')
+const { getErrorInfo } = require('../info')
+const { getTypeInfo } = require('../type')
+
 const { getLocationInfo } = require('./location')
 const { getPluginInfo } = require('./plugin')
 const { getErrorProps } = require('./properties')
 const { getStackInfo } = require('./stack')
-const { getTypeInfo } = require('./type')
 
 // Parse all error information into a normalized sets of properties
 const parseError = function(error) {
@@ -16,7 +17,7 @@ const parseError = function(error) {
     title,
     isSuccess,
     stackType,
-    getLocation,
+    locationType,
     showErrorProps,
     rawStack,
   } = parseErrorInfo(error)
@@ -26,7 +27,7 @@ const parseError = function(error) {
   const { message: messageA, stack: stackA } = getStackInfo({ message, stack, stackType, rawStack, isSuccess })
 
   const pluginInfo = getPluginInfo(plugin, location)
-  const locationInfo = getLocationInfo({ stack: stackA, location, getLocation })
+  const locationInfo = getLocationInfo({ stack: stackA, location, locationType })
   const errorPropsA = getErrorProps(errorProps, showErrorProps)
   return { title: titleA, message: messageA, pluginInfo, locationInfo, errorProps: errorPropsA, isSuccess }
 }
@@ -35,7 +36,7 @@ const parseError = function(error) {
 const parseErrorInfo = function(error) {
   const { message, stack, ...errorProps } = normalizeError(error)
   const errorInfo = getErrorInfo(errorProps)
-  const { title, isSuccess, stackType, getLocation, showErrorProps, rawStack } = getTypeInfo(errorInfo)
+  const { title, isSuccess, stackType, locationType, showErrorProps, rawStack } = getTypeInfo(errorInfo)
   return {
     message,
     stack,
@@ -44,7 +45,7 @@ const parseErrorInfo = function(error) {
     title,
     isSuccess,
     stackType,
-    getLocation,
+    locationType,
     showErrorProps,
     rawStack,
   }
