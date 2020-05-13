@@ -45,7 +45,7 @@ const validateShowArgs = function(showArgs) {
 }
 
 const validateStringArg = function([key, value]) {
-  if (typeof value !== 'string' || value.trim() === '') {
+  if (value !== undefined && (typeof value !== 'string' || value.trim() === '')) {
     throw new Error(`"${key}" property must be a non-empty string`)
   }
 }
