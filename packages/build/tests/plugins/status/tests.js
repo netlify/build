@@ -14,6 +14,10 @@ test('utils.status.show() are printed locally', async t => {
   await runFixture(t, 'print')
 })
 
+test('utils.status.show() cannot override an error status', async t => {
+  await runFixture(t, 'error_status_override')
+})
+
 test('utils.status.show() argument should be defined', async t => {
   await runUtilsStatusShow(t, '')
 })

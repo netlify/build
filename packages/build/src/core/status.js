@@ -27,8 +27,14 @@ const addStatus = function({ newStatus, statuses, event, package, packageJson: {
     return statuses
   }
 
+  // Error statuses cannot be overwritten
+  const formerStatus = statuses.find(status => status.package === package)
+  if (formerStatus !== undefined && formerStatus.state !== 'success') {
+    return statuses
+  }
+
   // Overrides plugin's previous status and add more information
-  const newStatuses = statuses.filter(status => status.package !== package)
+  const newStatuses = statuses.filter(status => status !== formerStatus)
   return [...newStatuses, { ...newStatus, event, package, version }]
 }
 
