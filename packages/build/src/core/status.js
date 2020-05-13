@@ -1,41 +1,58 @@
 const { logStatuses } = require('../log/main')
 
-// Assign default value for successful `newStatus`
-// Retrieved from `utils.status.show()`, which is optional
-const getSuccessStatus = function({ status, statuses, package }) {
-  // `utils.status.show()` called in the current event
-  if (status !== undefined) {
-    return status
+// The last event handler of a plugin (except for `onError` and `onEnd`)
+// defaults to `utils.status.show({ state: 'success' })` without any `summary`.
+const getSuccessStatus = function(newStatus, { commands, event, package }) {
+  if (newStatus === undefined && isLastMainCommand({ commands, event, package })) {
+    return IMPLICIT_STATUS
   }
 
-  // `utils.status.show()` not called, but set in a previous event
-  const hasStatus = statuses.some(pluginStatus => pluginStatus.package === package)
-  if (hasStatus) {
-    return
-  }
-
-  // `utils.status.show()` not called, but this is the first event, so we assign a default
-  return { state: 'success' }
+  return newStatus
 }
 
-// Merge `success` status to the list of plugin statuses.
+const isLastMainCommand = function({ commands, event, package }) {
+  const mainCommands = commands.filter(command => command.package === package && isMainCommand(command))
+  return mainCommands.length === 0 || mainCommands[mainCommands.length - 1].event === event
+}
+
+const isMainCommand = function({ event }) {
+  return event !== 'onEnd' && event !== 'onError'
+}
+
+const IMPLICIT_STATUS = { state: 'success', implicit: true }
+
+// Merge plugin status to the list of plugin statuses.
 const addStatus = function({ newStatus, statuses, event, package, packageJson: { version } = {} }) {
   // Either:
   //  - `build.command`
-  //  - `utils.status.show()` not called but set in a previous event
+  //  - no status was set
   if (newStatus === undefined) {
     return statuses
   }
 
-  // Error statuses cannot be overwritten
   const formerStatus = statuses.find(status => status.package === package)
-  if (formerStatus !== undefined && formerStatus.state !== 'success') {
+  if (!canOverrideStatus(formerStatus, newStatus)) {
     return statuses
   }
 
   // Overrides plugin's previous status and add more information
   const newStatuses = statuses.filter(status => status !== formerStatus)
   return [...newStatuses, { ...newStatus, event, package, version }]
+}
+
+const canOverrideStatus = function(formerStatus, newStatus) {
+  // No previous status
+  if (formerStatus === undefined) {
+    return true
+  }
+
+  // Implicit statuses can never override
+  if (newStatus.implicit) {
+    return false
+  }
+
+  // Error statuses can only be overwritten by other error statuses
+  return formerStatus.state === 'success' || newStatus.state !== 'success'
 }
 
 const reportStatuses = async function(statuses, api, mode) {
