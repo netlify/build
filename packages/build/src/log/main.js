@@ -234,6 +234,18 @@ const logTimer = function(durationMs, timerName) {
   log(THEME.dimWords(`(${timerName} completed in ${duration})`))
 }
 
+const logStatuses = function(statuses) {
+  logHeader('Summary')
+  statuses.forEach(logStatus)
+}
+
+const logStatus = function({ package, title = `Plugin ${package} ran successfully`, summary, text }) {
+  const titleA = title.includes(package) ? title : `${package}: ${title}`
+  const body = text === undefined ? summary : `${summary}\n${THEME.dimWords(text)}`
+  logSubHeader(titleA)
+  logMessage(body)
+}
+
 const logCacheDir = function(path) {
   logMessage(`Caching ${path}`)
 }
@@ -275,6 +287,7 @@ module.exports = {
   logBuildCommandStart,
   logCommandSuccess,
   logTimer,
+  logStatuses,
   logCacheDir,
   logPluginError,
   logBuildError,

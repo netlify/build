@@ -25,6 +25,7 @@ const { trackBuildComplete } = require('../telemetry/complete')
 const { getCommands, runCommands } = require('./commands')
 const { normalizeFlags, loadConfig } = require('./config')
 const { doDryRun } = require('./dry')
+const { reportStatuses } = require('./status')
 
 /**
  * Netlify Build
@@ -64,7 +65,7 @@ const build = async function(flags) {
       const pluginsOptions = await getPluginsOptions({ netlifyConfig, buildDir, constants, mode })
       await installLocalPluginsDependencies({ pluginsOptions, buildDir, mode })
 
-      const { commandsCount, error } = await buildRun({
+      const { commandsCount, error, statuses } = await buildRun({
         pluginsOptions,
         netlifyConfig,
         configPath,
@@ -84,6 +85,8 @@ const build = async function(flags) {
       if (dry) {
         return true
       }
+
+      await reportStatuses(statuses)
 
       if (error !== undefined) {
         throw error
