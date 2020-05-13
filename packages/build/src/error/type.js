@@ -1,9 +1,7 @@
-const { getErrorInfo } = require('./info')
 const { getBuildCommandLocation, getBuildFailLocation, getApiLocation } = require('./location')
 
 // Retrieve error-type specific information
-const getTypeInfo = function(errorProps) {
-  const { type } = getErrorInfo(errorProps)
+const getTypeInfo = function({ type }) {
   const typeA = TYPES[type] === undefined ? DEFAULT_TYPE : type
   return { type: typeA, ...TYPES[typeA] }
 }

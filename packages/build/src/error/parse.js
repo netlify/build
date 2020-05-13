@@ -34,8 +34,8 @@ const parseError = function(error) {
 // Parse error instance into all the basic properties containing information
 const parseErrorInfo = function(error) {
   const { message, stack, ...errorProps } = normalizeError(error)
-  const { title, isSuccess, stackType, getLocation, showErrorProps, rawStack } = getTypeInfo(errorProps)
   const errorInfo = getErrorInfo(errorProps)
+  const { title, isSuccess, stackType, getLocation, showErrorProps, rawStack } = getTypeInfo(errorInfo)
   return {
     message,
     stack,
