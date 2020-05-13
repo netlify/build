@@ -6,7 +6,7 @@ const { arrowDown } = require('figures')
 const prettyMs = require('pretty-ms')
 
 const { name, version } = require('../../package.json')
-const { serializeError } = require('../error/serialize')
+const { serializeLogError } = require('../error/serialize_log')
 const { omit } = require('../utils/omit')
 
 const { getCommandDescription, getBuildCommandDescription } = require('./description')
@@ -239,13 +239,13 @@ const logCacheDir = function(path) {
 }
 
 const logPluginError = function(error) {
-  const { header, body } = serializeError(error)
+  const { header, body } = serializeLogError(error)
   logErrorHeader(header)
   logMessage(`\n${body}`)
 }
 
 const logBuildError = function(error) {
-  const { header, body, isSuccess } = serializeError(error)
+  const { header, body, isSuccess } = serializeLogError(error)
   const logFunction = isSuccess ? logHeader : logErrorHeader
   logFunction(header)
   logMessage(`\n${body}\n`)

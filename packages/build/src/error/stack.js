@@ -1,10 +1,11 @@
 const { cleanStacks } = require('./clean_stack')
 
 // Retrieve the stack trace
-const getStackInfo = function({ message, stack, stackType, rawStack }) {
+const getStackInfo = function({ message, stack, stackType, rawStack, isSuccess }) {
   const { message: messageA, stack: stackA } = splitStackInfo({ message, stack, stackType })
+  const messageB = isSuccess ? messageA.replace(SUCCESS_ERROR_NAME, '') : messageA
   const stackB = cleanStacks(stackA, rawStack)
-  return { message: messageA, stack: stackB }
+  return { message: messageB, stack: stackB }
 }
 
 const splitStackInfo = function({ message, stack, stackType }) {
@@ -38,5 +39,7 @@ const splitStack = function(string) {
 const isStackTrace = function(line) {
   return line.trim().startsWith('at ')
 }
+
+const SUCCESS_ERROR_NAME = 'Error: '
 
 module.exports = { getStackInfo }
