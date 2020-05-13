@@ -10,6 +10,10 @@ test('utils.status.show() does not fail', async t => {
   await runUtilsStatusShow(t, { title: 'title', summary: 'summary', text: 'text' })
 })
 
+test('utils.status.show() are printed locally', async t => {
+  await runFixture(t, 'print')
+})
+
 test('utils.status.show() argument should be defined', async t => {
   await runUtilsStatusShow(t, '')
 })
