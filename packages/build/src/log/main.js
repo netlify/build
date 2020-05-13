@@ -217,7 +217,7 @@ const logDryRunEnd = function() {
 const logCommand = function({ event, package, index, configPath, error }) {
   const description = getCommandDescription({ event, package, configPath })
   const logHeaderFunc = error ? logErrorHeader : logHeader
-  logHeaderFunc(`${index}. ${description}`)
+  logHeaderFunc(`${index + 1}. ${description}`)
   logMessage('')
 }
 

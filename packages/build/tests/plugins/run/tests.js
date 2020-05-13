@@ -20,6 +20,10 @@ test('process.env changes are propagated to other plugins', async t => {
   await runFixture(t, 'env_changes_plugin')
 })
 
+test('process.env changes are propagated to onError and onEnd', async t => {
+  await runFixture(t, 'env_changes_on_error')
+})
+
 test('process.env changes are propagated to build.command', async t => {
   await runFixture(t, 'env_changes_command')
 })
