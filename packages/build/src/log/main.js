@@ -121,7 +121,7 @@ const logInstallFunctionDependencies = function() {
 const logDeprecatedFunctionsInstall = function(functionsSrc) {
   logErrorSubHeader('Missing plugin')
   logMessage(
-    THEME.errorLine(`Please use the plugin "@netlify/plugin-functions-install-core" to install dependencies from the "package.json" inside your "${functionsSrc}" directory.
+    THEME.errorSubHeader(`Please use the plugin "@netlify/plugin-functions-install-core" to install dependencies from the "package.json" inside your "${functionsSrc}" directory.
 Example "netlify.toml":
 
   [build]
