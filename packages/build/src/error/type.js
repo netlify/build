@@ -8,7 +8,7 @@ const getTypeInfo = function({ type }) {
 
 // List of error types, and their related properties
 // Related to build error logs:
-//  - `title`: main title shown in build error logs
+//  - `title`: main title shown in build error logs and in the UI (statuses)
 //  - `getLocation()`: retrieve a human-friendly location of the error, printed
 //    in build error logs
 //  - `isSuccess`: `true` when this should not be reported as an error
