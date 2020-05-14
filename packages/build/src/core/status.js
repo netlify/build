@@ -1,5 +1,7 @@
 const { env } = require('process')
 
+const stripAnsi = require('strip-ansi')
+
 const { serializeErrorStatus } = require('../error/parse/serialize_status')
 const { logStatuses } = require('../log/main')
 
@@ -66,8 +68,31 @@ const reportPluginLoadError = async function({ error, api, mode, event, package,
 }
 
 const reportStatuses = async function(statuses, api, mode) {
-  printStatuses(statuses, mode)
-  await sendStatuses(statuses, api, mode)
+  const statusesA = removeStatusesColors(statuses)
+  printStatuses(statusesA, mode)
+  await sendStatuses(statusesA, api, mode)
+}
+
+// Remove colors from statuses
+const removeStatusesColors = function(statuses) {
+  return statuses.map(removeStatusColors)
+}
+
+const removeStatusColors = function(status) {
+  const attributes = COLOR_ATTRIBUTES.map(attribute => removeAttrColor(status, attribute))
+  return Object.assign({}, status, ...attributes)
+}
+
+const COLOR_ATTRIBUTES = ['title', 'summary', 'text']
+
+const removeAttrColor = function(status, attribute) {
+  const value = status[attribute]
+  if (value === undefined) {
+    return {}
+  }
+
+  const valueA = stripAnsi(value)
+  return { [attribute]: valueA }
 }
 
 // When not in production, print statuses to console.
