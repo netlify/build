@@ -11,7 +11,13 @@ const { getPackageJson } = require('./package')
 
 // Load plugin options (specified by user in `config.plugins`)
 // Do not allow user override of core plugins
-const getPluginsOptions = async function({ netlifyConfig: { plugins }, buildDir, constants: { FUNCTIONS_SRC }, mode }) {
+const getPluginsOptions = async function({
+  netlifyConfig: { plugins },
+  buildDir,
+  constants: { FUNCTIONS_SRC },
+  mode,
+  api,
+}) {
   const corePlugins = getCorePlugins(FUNCTIONS_SRC)
   const allCorePlugins = corePlugins.filter(corePlugin => !isOptionalCore(corePlugin, plugins))
   const userPlugins = plugins.filter(({ package }) => !CORE_PLUGINS.includes(package))
@@ -19,7 +25,7 @@ const getPluginsOptions = async function({ netlifyConfig: { plugins }, buildDir,
   await installMissingPlugins({ pluginsOptions, buildDir, mode })
   await checkDeprecatedFunctionsInstall(plugins, FUNCTIONS_SRC, buildDir)
   const pluginsOptionsA = await Promise.all(
-    pluginsOptions.map(pluginOptions => loadPluginFiles({ pluginOptions, buildDir })),
+    pluginsOptions.map(pluginOptions => loadPluginFiles({ pluginOptions, buildDir, mode, api })),
   )
   return pluginsOptionsA
 }
@@ -36,11 +42,17 @@ const normalizePluginOptions = function({ package, location = package, core = fa
 
 // Retrieve plugin's main file path.
 // Then load plugin's `package.json` and `manifest.yml`.
-const loadPluginFiles = async function({ pluginOptions, pluginOptions: { location }, buildDir }) {
+const loadPluginFiles = async function({ pluginOptions, pluginOptions: { location }, buildDir, mode, api }) {
   const pluginPath = await resolveLocation(location, buildDir)
   const pluginDir = dirname(pluginPath)
   const { packageDir, packageJson } = await getPackageJson({ pluginDir })
-  const { manifest, inputs: inputsA } = await useManifest(pluginOptions, { pluginDir, packageDir, packageJson })
+  const { manifest, inputs: inputsA } = await useManifest(pluginOptions, {
+    pluginDir,
+    packageDir,
+    packageJson,
+    mode,
+    api,
+  })
   return { ...pluginOptions, pluginPath, packageDir, packageJson, manifest, inputs: inputsA }
 }
 
