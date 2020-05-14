@@ -33,26 +33,26 @@ const normalizeBody = function({
 const TELEMETRY_PATH = '/collect'
 
 test('Telemetry success', async t => {
-  const { scheme, host, request, stopServer } = await startServer(TELEMETRY_PATH)
+  const { scheme, host, requests, stopServer } = await startServer(TELEMETRY_PATH)
   await runFixture(t, 'success', {
     flags: '--site-id=test',
     env: { BUILD_TELEMETRY_DISABLED: '', TEST_SCHEME: scheme, TEST_HOST: host },
     snapshot: false,
   })
   await stopServer()
-  const snapshot = normalizeSnapshot(request)
+  const snapshot = requests.map(normalizeSnapshot)
   t.snapshot(snapshot)
 })
 
 test('Telemetry disabled', async t => {
-  const { scheme, host, request, stopServer } = await startServer(TELEMETRY_PATH)
+  const { scheme, host, requests, stopServer } = await startServer(TELEMETRY_PATH)
   await runFixture(t, 'success', {
     flags: '--site-id=test',
     env: { BUILD_TELEMETRY_DISABLED: 'true', TEST_SCHEME: scheme, TEST_HOST: host },
     snapshot: false,
   })
   await stopServer()
-  t.false(request.sent)
+  t.is(requests.length, 0)
 })
 
 test('Telemetry error', async t => {
