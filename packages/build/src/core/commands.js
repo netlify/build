@@ -79,7 +79,7 @@ const runCommands = async function({ commands, configPath, buildDir, nodePath, c
           index,
           childEnv,
           envChanges,
-          statuses,
+          commands,
           errorMonitor,
           error,
           failedPlugins,
@@ -113,7 +113,7 @@ const runCommand = async function({
   index,
   childEnv,
   envChanges,
-  statuses,
+  commands,
   errorMonitor,
   error,
   failedPlugins,
@@ -138,7 +138,7 @@ const runCommand = async function({
     nodePath,
     childEnv,
     envChanges,
-    statuses,
+    commands,
     error,
   })
 
@@ -173,14 +173,14 @@ const fireCommand = function({
   nodePath,
   childEnv,
   envChanges,
-  statuses,
+  commands,
   error,
 }) {
   if (buildCommand !== undefined) {
     return fireBuildCommand({ buildCommand, configPath, buildDir, nodePath, childEnv, envChanges })
   }
 
-  return firePluginCommand({ event, childProcess, package, packageJson, local, envChanges, statuses, error })
+  return firePluginCommand({ event, childProcess, package, packageJson, local, envChanges, commands, error })
 }
 
 // Fire `build.command`
@@ -218,7 +218,7 @@ const firePluginCommand = async function({
   packageJson,
   local,
   envChanges,
-  statuses,
+  commands,
   error,
 }) {
   pipeOutput(childProcess)
@@ -230,7 +230,7 @@ const firePluginCommand = async function({
       { event, error, envChanges },
       { plugin: { packageJson, package }, location: { event, package, local } },
     )
-    const newStatus = getSuccessStatus({ status, statuses, package })
+    const newStatus = getSuccessStatus(status, { commands, event, package })
     return { newEnvChanges, newStatus }
   } catch (newError) {
     return { newError }

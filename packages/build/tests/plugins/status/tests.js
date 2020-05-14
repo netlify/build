@@ -14,8 +14,40 @@ test('utils.status.show() are printed locally', async t => {
   await runFixture(t, 'print')
 })
 
-test('utils.status.show() cannot override an error status', async t => {
+test('utils.status.show() can override a success status', async t => {
+  await runFixture(t, 'success_status_override')
+})
+
+test('utils.status.show() cannot override an error status with a success status', async t => {
   await runFixture(t, 'error_status_override')
+})
+
+test('utils.status.show() can override an error status with another error status', async t => {
+  await runFixture(t, 'error_status_error_override')
+})
+
+test('utils.status.show() implicit status is not used when an explicit call was made', async t => {
+  await runFixture(t, 'no_implicit')
+})
+
+test('utils.status.show() implicit status is not used when there are no events', async t => {
+  await runFixture(t, 'no_implicit_none')
+})
+
+test('utils.status.show() implicit status is not used when no call was made, with only onError', async t => {
+  await runFixture(t, 'no_implicit_onerror')
+})
+
+test('utils.status.show() implicit status is used when no call was made', async t => {
+  await runFixture(t, 'implicit_one')
+})
+
+test('utils.status.show() implicit status is used when no events have made a call', async t => {
+  await runFixture(t, 'implicit_several')
+})
+
+test('utils.status.show() implicit status is used when no call was made, with only onEnd', async t => {
+  await runFixture(t, 'implicit_onend')
 })
 
 test('utils.status.show() argument should be defined', async t => {
