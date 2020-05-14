@@ -9,6 +9,7 @@ setColorLevel()
 require('../error/process')
 
 const { getChildEnv } = require('../env/main')
+const { maybeCancelBuild } = require('../error/cancel')
 const { removeErrorColors } = require('../error/colors')
 const { reportBuildError } = require('../error/monitor/report')
 const { startErrorMonitor } = require('../error/monitor/start')
@@ -79,7 +80,6 @@ const build = async function(flags) {
         branch,
         mode,
         errorMonitor,
-        api,
       })
 
       if (dry) {
@@ -97,6 +97,7 @@ const build = async function(flags) {
       await trackBuildComplete({ commandsCount, netlifyConfig, duration, siteInfo, mode })
       return true
     } catch (error) {
+      await maybeCancelBuild(error, api)
       await logOldCliVersionError(mode)
       throw error
     }
@@ -122,7 +123,6 @@ const buildRun = async function({
   branch,
   mode,
   errorMonitor,
-  api,
 }) {
   const utilsData = await startUtils(buildDir)
   const childEnv = await getChildEnv({ netlifyConfig, buildDir, context, branch, siteInfo, mode })
@@ -142,7 +142,6 @@ const buildRun = async function({
       dry,
       constants,
       errorMonitor,
-      api,
     })
   } finally {
     await stopPlugins(childProcesses)
@@ -162,7 +161,6 @@ const executeCommands = async function({
   dry,
   constants,
   errorMonitor,
-  api,
 }) {
   const pluginsCommands = await loadPlugins({
     pluginsOptions,
@@ -187,7 +185,6 @@ const executeCommands = async function({
     nodePath,
     childEnv,
     errorMonitor,
-    api,
   })
 }
 
