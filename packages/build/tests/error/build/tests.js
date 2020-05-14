@@ -52,29 +52,29 @@ test('build.cancel() backward compatibility', async t => {
 })
 
 test('build.cancelBuild() API call', async t => {
-  const { scheme, host, request, stopServer } = await startServer(CANCEL_PATH)
+  const { scheme, host, requests, stopServer } = await startServer(CANCEL_PATH)
   await runFixture(t, 'cancel', {
     flags: '--token=test',
     env: { DEPLOY_ID: 'test', TEST_SCHEME: scheme, TEST_HOST: host },
   })
   await stopServer()
-  t.snapshot(request)
+  t.snapshot(requests)
 })
 
 test('build.cancelBuild() API call no DEPLOY_ID', async t => {
-  const { scheme, host, request, stopServer } = await startServer(CANCEL_PATH)
+  const { scheme, host, requests, stopServer } = await startServer(CANCEL_PATH)
   await runFixture(t, 'cancel', { flags: '--token=test', env: { TEST_SCHEME: scheme, TEST_HOST: host } })
   await stopServer()
-  t.false(request.sent)
+  t.is(requests.length, 0)
 })
 
 test('build.cancelBuild() API call no token', async t => {
-  const { scheme, host, request, stopServer } = await startServer(CANCEL_PATH)
+  const { scheme, host, requests, stopServer } = await startServer(CANCEL_PATH)
   await runFixture(t, 'cancel', {
     env: { DEPLOY_ID: 'test', TEST_SCHEME: scheme, TEST_HOST: host },
   })
   await stopServer()
-  t.false(request.sent)
+  t.is(requests.length, 0)
 })
 
 // Node 10 `util.inspect()` output is different from Node 8, leading to
