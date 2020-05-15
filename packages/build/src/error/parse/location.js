@@ -23,9 +23,9 @@ const getBuildCommandLocation = function({ buildCommand, configPath }) {
 ${buildCommand}`
 }
 
-const getBuildFailLocation = function({ event, package, local }) {
+const getBuildFailLocation = function({ event, package, loadedFrom }) {
   const eventMessage = getEventMessage(event)
-  const packageLocation = getPackageLocation(package, local)
+  const packageLocation = getPackageLocation(package, loadedFrom)
   return `${eventMessage} ${packageLocation}`
 }
 
@@ -37,8 +37,8 @@ const getEventMessage = function(event) {
   return `In "${event}" event in`
 }
 
-const getPackageLocation = function(package, local) {
-  const localString = local ? 'local plugin' : 'npm package'
+const getPackageLocation = function(package, loadedFrom) {
+  const localString = loadedFrom === 'local' ? 'local plugin' : 'npm package'
   return `${localString} "${package}"`
 }
 

@@ -29,8 +29,8 @@ const getLocalPluginsOptions = function(pluginsOptions) {
   return pluginsOptions.filter(isLocalPlugin).filter(isUnique)
 }
 
-const isLocalPlugin = function({ local }) {
-  return local
+const isLocalPlugin = function({ loadedFrom }) {
+  return loadedFrom === 'local'
 }
 
 // Remove duplicates

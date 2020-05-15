@@ -4,11 +4,11 @@ const { THEME } = require('../../log/theme')
 
 // Check that plugin inputs match the validation specified in "manifest.yml"
 // Also assign default values
-const checkInputs = function({ inputs, manifest: { inputs: rules = [] }, package, packageJson, local }) {
+const checkInputs = function({ inputs, manifest: { inputs: rules = [] }, package, packageJson, loadedFrom }) {
   try {
     const inputsA = addDefaults(inputs, rules)
-    checkRequiredInputs({ inputs: inputsA, rules, package, packageJson, local })
-    Object.keys(inputsA).map(name => checkInput({ name, rules, package, packageJson, local }))
+    checkRequiredInputs({ inputs: inputsA, rules, package, packageJson, loadedFrom })
+    Object.keys(inputsA).map(name => checkInput({ name, rules, package, packageJson, loadedFrom }))
     return inputsA
   } catch (error) {
     error.message = `${error.message}
@@ -34,7 +34,7 @@ const getDefault = function({ name, default: defaultValue }) {
 }
 
 // Check "inputs[*].required"
-const checkRequiredInputs = function({ inputs, rules, package, packageJson, local }) {
+const checkRequiredInputs = function({ inputs, rules, package, packageJson, loadedFrom }) {
   const missingInputs = rules.filter(rule => isMissingRequired(inputs, rule))
   if (missingInputs.length === 0) {
     return
@@ -42,7 +42,7 @@ const checkRequiredInputs = function({ inputs, rules, package, packageJson, loca
 
   const names = missingInputs.map(getName)
   const error = new Error(`Required inputs for plugin "${package}": ${names.join(', ')}`)
-  addInputError({ error, name: names[0], package, packageJson, local })
+  addInputError({ error, name: names[0], package, packageJson, loadedFrom })
   throw error
 }
 
@@ -55,7 +55,7 @@ const getName = function({ name }) {
 }
 
 // Check each "inputs[*].*" property for a specific input
-const checkInput = function({ name, rules, package, packageJson, local }) {
+const checkInput = function({ name, rules, package, packageJson, loadedFrom }) {
   const ruleA = rules.find(rule => rule.name === name)
   if (ruleA === undefined) {
     const error = new Error(`Invalid input "${name}" for plugin "${package}".
@@ -63,17 +63,17 @@ Check your plugin configuration to be sure that:
   - the input name is spelled correctly
   - the input is included in the plugin's available configuration options
   - the plugin's input requirements have not changed`)
-    addInputError({ error, name, package, packageJson, local })
+    addInputError({ error, name, package, packageJson, loadedFrom })
     throw error
   }
 }
 
 // Add error information
-const addInputError = function({ error, name, package, packageJson, local }) {
+const addInputError = function({ error, name, package, packageJson, loadedFrom }) {
   addErrorInfo(error, {
     type: 'pluginInput',
     plugin: { package, packageJson },
-    location: { event: 'load', package, input: name, local },
+    location: { event: 'load', package, input: name, loadedFrom },
   })
 }
 

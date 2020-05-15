@@ -1,3 +1,4 @@
+const { resolve } = require('path')
 const { env } = require('process')
 
 const pathExists = require('path-exists')
@@ -22,23 +23,34 @@ const resolvePluginsPath = async function({ pluginsOptions, buildDir, mode }) {
   return pluginsOptionsB
 }
 
-const resolvePluginPath = async function({ pluginOptions, pluginOptions: { package, pluginPath }, buildDir, mode }) {
+const resolvePluginPath = async function({
+  pluginOptions,
+  pluginOptions: { package, pluginPath, loadedFrom },
+  buildDir,
+  mode,
+}) {
   // Core plugins
   if (pluginPath !== undefined) {
     return pluginOptions
+  }
+
+  // Local plugins
+  if (loadedFrom === 'local') {
+    const localPath = resolve(buildDir, package)
+    return { ...pluginOptions, pluginPath: localPath }
   }
 
   // Plugin already installed in the project, most likely either local plugins,
   // or external plugins added to `package.json`
   const manualPath = await tryResolvePath(package, buildDir)
   if (manualPath !== undefined) {
-    return { ...pluginOptions, pluginPath: manualPath }
+    return { ...pluginOptions, pluginPath: manualPath, loadedFrom: 'package.json' }
   }
 
   // Cached in the build image
   const buildImagePath = await tryBuildImagePath(package, mode)
   if (buildImagePath !== undefined) {
-    return { ...pluginOptions, pluginPath: buildImagePath }
+    return { ...pluginOptions, pluginPath: buildImagePath, loadedFrom: 'image_cache' }
   }
 
   // Otherwise, it must be automatically installed, as a fallback
@@ -87,7 +99,7 @@ const resolveMissingPluginPath = async function({ pluginOptions, pluginOptions: 
   }
 
   const automaticPath = await resolvePath(package, buildDir)
-  return { ...pluginOptions, pluginPath: automaticPath }
+  return { ...pluginOptions, pluginPath: automaticPath, loadedFrom: 'auto_install' }
 }
 
 module.exports = { resolvePluginsPath }

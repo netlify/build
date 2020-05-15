@@ -147,8 +147,8 @@ const logLoadingPlugins = function(pluginsOptions) {
   logArray(loadingPlugins)
 }
 
-const isNotCore = function({ core }) {
-  return !core
+const isNotCore = function({ loadedFrom }) {
+  return loadedFrom !== 'core'
 }
 
 const getPluginDescription = function({ package, packageJson: { version } }) {

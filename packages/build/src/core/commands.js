@@ -62,7 +62,7 @@ const runCommands = async function({ commands, configPath, buildDir, nodePath, c
     commands,
     async (
       { index, error, failedPlugins, envChanges, statuses },
-      { event, childProcess, package, packageJson, local, buildCommand },
+      { event, childProcess, package, packageJson, loadedFrom, buildCommand },
     ) => {
       const { newIndex = index, newError = error, failedPlugin = [], newEnvChanges = {}, newStatus } = await runCommand(
         {
@@ -70,7 +70,7 @@ const runCommands = async function({ commands, configPath, buildDir, nodePath, c
           childProcess,
           package,
           packageJson,
-          local,
+          loadedFrom,
           buildCommand,
           configPath,
           buildDir,
@@ -104,7 +104,7 @@ const runCommand = async function({
   childProcess,
   package,
   packageJson,
-  local,
+  loadedFrom,
   buildCommand,
   configPath,
   buildDir,
@@ -130,7 +130,7 @@ const runCommand = async function({
     childProcess,
     package,
     packageJson,
-    local,
+    loadedFrom,
     buildCommand,
     configPath,
     buildDir,
@@ -165,7 +165,7 @@ const fireCommand = function({
   childProcess,
   package,
   packageJson,
-  local,
+  loadedFrom,
   buildCommand,
   configPath,
   buildDir,
@@ -179,7 +179,7 @@ const fireCommand = function({
     return fireBuildCommand({ buildCommand, configPath, buildDir, nodePath, childEnv, envChanges })
   }
 
-  return firePluginCommand({ event, childProcess, package, packageJson, local, envChanges, commands, error })
+  return firePluginCommand({ event, childProcess, package, packageJson, loadedFrom, envChanges, commands, error })
 }
 
 // Fire `build.command`
@@ -215,7 +215,7 @@ const firePluginCommand = async function({
   childProcess,
   package,
   packageJson,
-  local,
+  loadedFrom,
   envChanges,
   commands,
   error,
@@ -227,7 +227,7 @@ const firePluginCommand = async function({
       childProcess,
       'run',
       { event, error, envChanges },
-      { plugin: { packageJson, package }, location: { event, package, local } },
+      { plugin: { packageJson, package }, location: { event, package, loadedFrom } },
     )
     const newStatus = getSuccessStatus(status, { commands, event, package })
     return { newEnvChanges, newStatus }

@@ -17,7 +17,7 @@ const getPluginsOptions = async function({
   mode,
   api,
 }) {
-  const corePlugins = getCorePlugins(FUNCTIONS_SRC)
+  const corePlugins = getCorePlugins(FUNCTIONS_SRC).map(addLoadedFromCore)
   const allCorePlugins = corePlugins.filter(corePlugin => !isOptionalCore(corePlugin, plugins))
   const userPlugins = plugins.filter(({ package }) => !CORE_PLUGINS.includes(package))
   const pluginsOptions = [...allCorePlugins, ...userPlugins].map(normalizePluginOptions)
@@ -29,14 +29,30 @@ const getPluginsOptions = async function({
   return pluginsOptionsB
 }
 
+const addLoadedFromCore = function(corePlugin) {
+  return { ...corePlugin, loadedFrom: 'core' }
+}
+
 // Optional core plugins requires user opt-in
 const isOptionalCore = function({ package, optional }, plugins) {
   return optional && plugins.every(plugin => plugin.package !== package)
 }
 
-const normalizePluginOptions = function({ package, pluginPath, core = false, inputs = {} }) {
-  const local = !core && (package.startsWith('.') || package.startsWith('/'))
-  return { package, pluginPath, local, core, inputs }
+const normalizePluginOptions = function({ package, pluginPath, loadedFrom, inputs = {} }) {
+  const loadedFromA = getLoadedFrom(loadedFrom, package)
+  return { package, pluginPath, loadedFrom: loadedFromA, inputs }
+}
+
+const getLoadedFrom = function(loadedFrom, package) {
+  if (loadedFrom !== undefined) {
+    return loadedFrom
+  }
+
+  if (package.startsWith('.') || package.startsWith('/')) {
+    return 'local'
+  }
+
+  return 'external'
 }
 
 // Retrieve plugin's main file path.
@@ -56,9 +72,12 @@ const loadPluginFiles = async function({ pluginOptions: { pluginPath, ...pluginO
 
 // Retrieve information about @netlify/build when an error happens there and not
 // in a plugin
-const getCoreInfo = function() {
+const getSpawnInfo = function() {
   const { name } = corePackageJson
-  return { package: name, packageJson: corePackageJson, local: false }
+  return {
+    plugin: { package: name, packageJson: corePackageJson },
+    location: { event: 'load', package: name, loadedFrom: 'core' },
+  }
 }
 
-module.exports = { getPluginsOptions, getCoreInfo }
+module.exports = { getPluginsOptions, getSpawnInfo }

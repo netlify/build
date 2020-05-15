@@ -5,7 +5,7 @@ const execa = require('execa')
 const { logLoadingPlugins } = require('../log/main')
 
 const { getEventFromChild } = require('./ipc')
-const { getCoreInfo } = require('./options')
+const { getSpawnInfo } = require('./options')
 
 const CHILD_MAIN_FILE = `${__dirname}/child/main.js`
 
@@ -18,14 +18,14 @@ const CHILD_MAIN_FILE = `${__dirname}/child/main.js`
 const startPlugins = function({ pluginsOptions, buildDir, nodePath, childEnv }) {
   logLoadingPlugins(pluginsOptions)
 
-  const { package, packageJson, local } = getCoreInfo()
+  const spawnInfo = getSpawnInfo()
   return Promise.all(
-    pluginsOptions.map(({ core }) => startPlugin({ buildDir, nodePath, childEnv, package, packageJson, local, core })),
+    pluginsOptions.map(({ loadedFrom }) => startPlugin({ buildDir, nodePath, childEnv, loadedFrom, spawnInfo })),
   )
 }
 
-const startPlugin = async function({ buildDir, nodePath, childEnv, package, packageJson, local, core }) {
-  const childNodePath = getChildNodePath(core, nodePath)
+const startPlugin = async function({ buildDir, nodePath, childEnv, loadedFrom, spawnInfo }) {
+  const childNodePath = getChildNodePath(loadedFrom, nodePath)
 
   const childProcess = execa.node(CHILD_MAIN_FILE, {
     cwd: buildDir,
@@ -35,17 +35,14 @@ const startPlugin = async function({ buildDir, nodePath, childEnv, package, pack
     env: childEnv,
     extendEnv: false,
   })
-  await getEventFromChild(childProcess, 'ready', {
-    plugin: { package, packageJson },
-    location: { event: 'load', package, local },
-  })
+  await getEventFromChild(childProcess, 'ready', spawnInfo)
   return { childProcess }
 }
 
 // Core plugins use `@netlify/build` Node.js version.
 // Local and external plugins use user's preferred Node.js version.
-const getChildNodePath = function(core, nodePath) {
-  if (core) {
+const getChildNodePath = function(loadedFrom, nodePath) {
+  if (loadedFrom === 'core') {
     return execPath
   }
 
