@@ -4,16 +4,16 @@ const resolve = require('resolve')
 // We need to use `new Promise()` due to a bug with `utils.promisify()` on
 // `resolve`:
 //   https://github.com/browserify/resolve/issues/151#issuecomment-368210310
-const resolveLocation = function(location, basedir) {
+const resolvePath = function(path, basedir) {
   return new Promise((success, reject) => {
-    resolve(location, { basedir }, (error, resolvedLocation) => {
+    resolve(path, { basedir }, (error, resolvedPath) => {
       if (error) {
         return reject(error)
       }
 
-      success(resolvedLocation)
+      success(resolvedPath)
     })
   })
 }
 
-module.exports = { resolveLocation }
+module.exports = { resolvePath }

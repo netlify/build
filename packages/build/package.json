@@ -53,7 +53,6 @@
     "netlify": "^4.1.6",
     "os-name": "^3.1.0",
     "p-event": "^4.1.0",
-    "p-filter": "^2.1.0",
     "p-reduce": "^2.1.0",
     "path-exists": "^4.0.0",
     "pkg-dir": "^4.2.0",

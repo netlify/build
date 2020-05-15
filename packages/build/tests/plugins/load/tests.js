@@ -21,3 +21,16 @@ test('Non-existing plugins', async t => {
 test('Do not allow overriding core plugins', async t => {
   await runFixture(t, 'core_override')
 })
+
+test('Can use plugins cached in the build image', async t => {
+  await runFixture(t, 'build_image', {
+    env: { TEST_BUILD_IMAGE_PLUGINS_DIR: `${FIXTURES_DIR}/build_image_cache/node_modules` },
+    flags: '--mode=buildbot',
+  })
+})
+
+test('Does not use plugins cached in the build image in local builds', async t => {
+  await runFixture(t, 'build_image', {
+    env: { TEST_BUILD_IMAGE_PLUGINS_DIR: `${FIXTURES_DIR}/build_image_cache/node_modules` },
+  })
+})
