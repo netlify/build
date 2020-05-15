@@ -17,7 +17,7 @@ const getPluginsOptions = async function({
   mode,
   api,
 }) {
-  const corePlugins = getCorePlugins(FUNCTIONS_SRC).map(addLoadedFromCore)
+  const corePlugins = getCorePlugins(FUNCTIONS_SRC).map(addCoreProperties)
   const allCorePlugins = corePlugins.filter(corePlugin => !isOptionalCore(corePlugin, plugins))
   const userPlugins = plugins.filter(isUserPlugin)
   const pluginsOptions = [...allCorePlugins, ...userPlugins].map(normalizePluginOptions)
@@ -29,8 +29,8 @@ const getPluginsOptions = async function({
   return pluginsOptionsB
 }
 
-const addLoadedFromCore = function(corePlugin) {
-  return { ...corePlugin, loadedFrom: 'core' }
+const addCoreProperties = function(corePlugin) {
+  return { ...corePlugin, loadedFrom: 'core', origin: 'core' }
 }
 
 // Optional core plugins requires user opt-in
@@ -42,9 +42,9 @@ const isUserPlugin = function({ package }) {
   return !CORE_PLUGINS.includes(package)
 }
 
-const normalizePluginOptions = function({ package, pluginPath, loadedFrom, inputs = {} }) {
+const normalizePluginOptions = function({ package, pluginPath, loadedFrom, origin, inputs = {} }) {
   const loadedFromA = getLoadedFrom(loadedFrom, package)
-  return { package, pluginPath, loadedFrom: loadedFromA, inputs }
+  return { package, pluginPath, loadedFrom: loadedFromA, origin, inputs }
 }
 
 const getLoadedFrom = function(loadedFrom, package) {

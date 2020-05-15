@@ -1,5 +1,6 @@
 const test = require('ava')
 
+const { getJsonOpt } = require('../../../../config/tests/helpers/main')
 const { runFixture, FIXTURES_DIR } = require('../../helpers/main')
 
 test('Local plugins', async t => {
@@ -8,6 +9,11 @@ test('Local plugins', async t => {
 
 test('Node module plugins', async t => {
   await runFixture(t, 'module')
+})
+
+test('UI plugins', async t => {
+  const defaultConfig = getJsonOpt({ plugins: [{ package: 'netlify-plugin-test' }] })
+  await runFixture(t, 'ui', { flags: `--defaultConfig=${defaultConfig}` })
 })
 
 test('Resolution is relative to the build directory', async t => {
