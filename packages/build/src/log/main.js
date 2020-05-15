@@ -108,6 +108,18 @@ const logInstallMissingPlugins = function(packages) {
   logArray(packages)
 }
 
+const logMissingPluginsWarning = function(packages) {
+  logErrorSubHeader('Missing plugins')
+  logMessage(
+    THEME.errorSubHeader(
+      `The following plugins should be installed either:
+- via the Netlify app
+- as a "dependency" inside your project's "package.json"`,
+    ),
+  )
+  logArray(packages, { color: THEME.errorSubHeader })
+}
+
 const logInstallLocalPluginsDeps = function(localPluginsOptions) {
   const packages = localPluginsOptions.map(getPackage)
   logSubHeader('Installing local plugins dependencies')
@@ -267,6 +279,7 @@ module.exports = {
   logConfig,
   logContext,
   logInstallMissingPlugins,
+  logMissingPluginsWarning,
   logInstallLocalPluginsDeps,
   logInstallFunctionDependencies,
   logDeprecatedFunctionsInstall,

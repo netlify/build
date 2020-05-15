@@ -49,6 +49,7 @@
     "js-yaml": "^3.13.1",
     "locate-path": "^5.0.0",
     "log-process-errors": "^5.1.2",
+    "make-dir": "^3.0.2",
     "map-obj": "^4.1.0",
     "netlify": "^4.1.6",
     "os-name": "^3.1.0",
@@ -76,7 +77,6 @@
     "get-bin-path": "^4.0.1",
     "get-node": "^6.6.0",
     "has-ansi": "^4.0.0",
-    "make-dir": "^3.0.2",
     "nock": "^11.9.1",
     "path-key": "^3.1.1",
     "yarn": "^1.22.4"
