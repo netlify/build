@@ -136,31 +136,22 @@ const getPackage = function({ package }) {
   return package
 }
 
-const logLoadedPlugins = function(pluginsCommands) {
-  const loadedPlugins = pluginsCommands
-    .filter(isNotDuplicate)
-    .filter(isNotCore)
-    .map(getLoadedPlugin)
+const logLoadingPlugins = function(pluginsOptions) {
+  const loadingPlugins = pluginsOptions.filter(isNotCore).map(getPluginDescription)
 
-  if (loadedPlugins.length === 0) {
+  if (loadingPlugins.length === 0) {
     return
   }
 
   logSubHeader('Loading plugins')
-  logArray(loadedPlugins)
-}
-
-const isNotDuplicate = function(pluginCommand, index, pluginCommands) {
-  return !pluginCommands
-    .slice(index + 1)
-    .some(laterPluginCommand => laterPluginCommand.package === pluginCommand.package)
+  logArray(loadingPlugins)
 }
 
 const isNotCore = function({ core }) {
   return !core
 }
 
-const getLoadedPlugin = function({ package, packageJson: { version } }) {
+const getPluginDescription = function({ package, packageJson: { version } }) {
   const location = version === undefined ? '' : `@${version}`
   return `${package}${location}`
 }
@@ -279,7 +270,7 @@ module.exports = {
   logInstallLocalPluginsDeps,
   logInstallFunctionDependencies,
   logDeprecatedFunctionsInstall,
-  logLoadedPlugins,
+  logLoadingPlugins,
   logDryRunStart,
   logDryRunCommand,
   logDryRunEnd,
