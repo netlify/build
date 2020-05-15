@@ -27,7 +27,7 @@ const RAW_VALIDATIONS = [
   // TODO: remove 'id', 'type', 'config', 'enabled' after going GA
   {
     property: 'plugins.*',
-    ...validProperties(['package', 'inputs'], ['id', 'type', 'config', 'enabled']),
+    ...validProperties(['package', 'inputs'], ['id', 'type', 'config', 'enabled', 'origin']),
     example: { plugins: [{ package: 'netlify-plugin-one', inputs: { port: 80 } }] },
   },
 

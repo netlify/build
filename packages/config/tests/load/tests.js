@@ -44,6 +44,11 @@ test('--defaultConfig with an invalid relative path', async t => {
   await runFixture(t, '', { flags: '--defaultConfig={{}' })
 })
 
+test('--defaultConfig merges UI plugins with config plugins', async t => {
+  const defaultConfig = getJsonOpt({ plugins: [{ package: 'one', inputs: { test: true } }] })
+  await runFixture(t, 'plugins_merge', { flags: `--defaultConfig=${defaultConfig}` })
+})
+
 test('--cachedConfig', async t => {
   const { stdout } = await runFixture(t, 'cached_config', { snapshot: false })
   const cachedConfig = escapeExecaOpt(stdout)
