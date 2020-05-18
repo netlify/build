@@ -5,6 +5,7 @@ const execa = require('execa')
 const { logLoadingPlugins } = require('../log/main')
 
 const { getEventFromChild } = require('./ipc')
+const { getUserNodeVersion, getCurrentNodeVersion, checkNodeVersion } = require('./node_version')
 const { getSpawnInfo } = require('./options')
 
 const CHILD_MAIN_FILE = `${__dirname}/child/main.js`
@@ -15,17 +16,32 @@ const CHILD_MAIN_FILE = `${__dirname}/child/main.js`
 //    (for both security and safety reasons)
 //  - logs can be buffered which allows manipulating them for log shipping,
 //    transforming and parallel plugins
-const startPlugins = function({ pluginsOptions, buildDir, nodePath, childEnv, mode }) {
+const startPlugins = async function({ pluginsOptions, buildDir, nodePath, childEnv, mode }) {
   logLoadingPlugins(pluginsOptions)
 
   const spawnInfo = getSpawnInfo()
+  const userNodeVersion = await getUserNodeVersion(nodePath)
   return Promise.all(
-    pluginsOptions.map(({ loadedFrom }) => startPlugin({ buildDir, nodePath, childEnv, loadedFrom, mode, spawnInfo })),
+    pluginsOptions.map(({ package, packageJson, loadedFrom }) =>
+      startPlugin({ buildDir, nodePath, childEnv, package, packageJson, loadedFrom, mode, spawnInfo, userNodeVersion }),
+    ),
   )
 }
 
-const startPlugin = async function({ buildDir, nodePath, childEnv, loadedFrom, mode, spawnInfo }) {
-  const childNodePath = getChildNodePath({ loadedFrom, nodePath, mode })
+const startPlugin = async function({
+  buildDir,
+  nodePath,
+  childEnv,
+  package,
+  packageJson,
+  loadedFrom,
+  mode,
+  spawnInfo,
+  userNodeVersion,
+}) {
+  const { childNodePath, childNodeVersion } = getChildNodePath({ loadedFrom, nodePath, userNodeVersion, mode })
+
+  await checkNodeVersion({ childNodeVersion, package, packageJson })
 
   const childProcess = execa.node(CHILD_MAIN_FILE, {
     cwd: buildDir,
@@ -42,16 +58,12 @@ const startPlugin = async function({ buildDir, nodePath, childEnv, loadedFrom, m
 // Local plugins, `package.json`-installed plugins and local builds use user's
 // preferred Node.js version.
 // Other plugins use `@netlify/build` Node.js version.
-const getChildNodePath = function({ loadedFrom, nodePath, mode }) {
-  if (loadedFrom === 'core') {
-    return execPath
+const getChildNodePath = function({ loadedFrom, nodePath, userNodeVersion, mode }) {
+  if (loadedFrom === 'local' || loadedFrom === 'package.json' || (loadedFrom !== 'core' && mode !== 'buildbot')) {
+    return { childNodePath: nodePath, childNodeVersion: userNodeVersion }
   }
 
-  if (loadedFrom === 'local' || loadedFrom === 'package.json' || mode !== 'buildbot') {
-    return nodePath
-  }
-
-  return execPath
+  return { childNodePath: execPath, childNodeVersion: getCurrentNodeVersion() }
 }
 
 // Stop all plugins child processes

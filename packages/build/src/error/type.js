@@ -31,7 +31,7 @@ const getTypeInfo = function({ type }) {
 //      - `warning`: plugin author error, or possible system error
 //      - `error`: likely system error
 const TYPES = {
-  // User configuration error (`@netlify/config`)
+  // User configuration error (`@netlify/config`, wrong Node.js version)
   resolveConfig: {
     title: 'Configuration error',
     stackType: 'none',
