@@ -3,7 +3,7 @@ const { dirname } = require('path')
 const readPkgUp = require('read-pkg-up')
 
 // Retrieve plugin's `package.json`
-const getPackageJson = async function({ pluginDir }) {
+const getPackageJson = async function(pluginDir) {
   const packageObj = await readPkgUp({ cwd: pluginDir })
   if (packageObj === undefined) {
     return { packageJson: {} }

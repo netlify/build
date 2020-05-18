@@ -152,8 +152,8 @@ const isNotCore = function({ core }) {
 }
 
 const getPluginDescription = function({ package, packageJson: { version } }) {
-  const location = version === undefined ? '' : `@${version}`
-  return `${package}${location}`
+  const versionA = version === undefined ? '' : `@${version}`
+  return `${package}${versionA}`
 }
 
 const logDryRunStart = function(eventWidth, commandsCount) {
@@ -177,16 +177,16 @@ const logDryRunCommand = function({ command: { event, package }, index, configPa
   const countText = `${index + 1}. `
   const downArrow = commandsCount === index + 1 ? '  ' : ` ${arrowDown}`
   const eventWidthA = columnWidth - countText.length - downArrow.length
-  const location = getPluginLocation({ package, configPath })
+  const fullName = getPluginFullName({ package, configPath })
 
   logMessage(
     `${THEME.header(`┌─${line}─┐`)}
-${THEME.header(`│ ${countText}${event.padEnd(eventWidthA)}${downArrow} │`)} ${location}
+${THEME.header(`│ ${countText}${event.padEnd(eventWidthA)}${downArrow} │`)} ${fullName}
 ${THEME.header(`└─${line}─┘ `)}`,
   )
 }
 
-const getPluginLocation = function({ package, configPath }) {
+const getPluginFullName = function({ package, configPath }) {
   if (package === undefined) {
     return getBuildCommandDescription(configPath)
   }
