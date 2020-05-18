@@ -19,7 +19,7 @@ const getPluginsOptions = async function({
 }) {
   const corePlugins = getCorePlugins(FUNCTIONS_SRC).map(addLoadedFromCore)
   const allCorePlugins = corePlugins.filter(corePlugin => !isOptionalCore(corePlugin, plugins))
-  const userPlugins = plugins.filter(({ package }) => !CORE_PLUGINS.includes(package))
+  const userPlugins = plugins.filter(isUserPlugin)
   const pluginsOptions = [...allCorePlugins, ...userPlugins].map(normalizePluginOptions)
   const pluginsOptionsA = await resolvePluginsPath({ pluginsOptions, buildDir, mode })
   const pluginsOptionsB = await Promise.all(
@@ -36,6 +36,10 @@ const addLoadedFromCore = function(corePlugin) {
 // Optional core plugins requires user opt-in
 const isOptionalCore = function({ package, optional }, plugins) {
   return optional && plugins.every(plugin => plugin.package !== package)
+}
+
+const isUserPlugin = function({ package }) {
+  return !CORE_PLUGINS.includes(package)
 }
 
 const normalizePluginOptions = function({ package, pluginPath, loadedFrom, inputs = {} }) {
