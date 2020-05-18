@@ -12,8 +12,7 @@ const { pipeOutput, unpipeOutput } = require('../log/stream')
 const { startTimer, endTimer } = require('../log/timer')
 const { EVENTS } = require('../plugins/events')
 const { callChild } = require('../plugins/ipc')
-
-const { getSuccessStatus, addStatus } = require('./status')
+const { getSuccessStatus, addStatus } = require('../status/add')
 
 // Get commands for all events
 const getCommands = function(pluginsCommands, netlifyConfig) {

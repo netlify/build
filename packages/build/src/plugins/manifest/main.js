@@ -1,4 +1,4 @@
-const { reportPluginLoadError } = require('../../core/status')
+const { reportPluginLoadError } = require('../../status/report')
 
 const { checkInputs } = require('./check')
 const { loadManifest } = require('./load')

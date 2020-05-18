@@ -21,12 +21,12 @@ const { startUtils } = require('../plugins/child/utils')
 const { loadPlugins } = require('../plugins/load')
 const { getPluginsOptions } = require('../plugins/options')
 const { startPlugins, stopPlugins } = require('../plugins/spawn')
+const { reportStatuses } = require('../status/report')
 const { trackBuildComplete } = require('../telemetry/complete')
 
 const { getCommands, runCommands } = require('./commands')
 const { normalizeFlags, loadConfig } = require('./config')
 const { doDryRun } = require('./dry')
-const { reportStatuses } = require('./status')
 
 /**
  * Netlify Build
