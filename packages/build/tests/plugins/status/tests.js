@@ -66,6 +66,10 @@ test('utils.status.show() statuses are not sent to the API without a DEPLOY_ID',
   await runWithApiMock(t, 'print', { env: { DEPLOY_ID: '' } })
 })
 
+test('utils.status.show() statuses are sent to the API without colors', async t => {
+  await runWithApiMock(t, 'colors')
+})
+
 test('report error statuses from failBuild()', async t => {
   await runWithApiMock(t, 'error_fail_build')
 })
