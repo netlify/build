@@ -1,5 +1,6 @@
 const { env } = require('process')
 
+const { serializeErrorStatus } = require('../error/parse/serialize_status')
 const { logStatuses } = require('../log/main')
 
 // The last event handler of a plugin (except for `onError` and `onEnd`)
@@ -57,6 +58,13 @@ const canOverrideStatus = function(formerStatus, newStatus) {
   return formerStatus.state === 'success' || newStatus.state !== 'success'
 }
 
+// Errors that happen during plugin loads should be reported as error statuses
+const reportPluginLoadError = async function({ error, api, mode, event, package, version }) {
+  const errorStatus = serializeErrorStatus(error)
+  const statuses = [{ ...errorStatus, event, package, version }]
+  await reportStatuses(statuses, api, mode)
+}
+
 const reportStatuses = async function(statuses, api, mode) {
   printStatuses(statuses, mode)
   await sendStatuses(statuses, api, mode)
@@ -98,4 +106,4 @@ const sendStatus = async function(api, { package, version, state, event, title, 
   })
 }
 
-module.exports = { getSuccessStatus, addStatus, reportStatuses }
+module.exports = { getSuccessStatus, addStatus, reportPluginLoadError, reportStatuses }

@@ -63,7 +63,7 @@ const build = async function(flags) {
     } = await loadConfig(flagsA)
 
     try {
-      const pluginsOptions = await getPluginsOptions({ netlifyConfig, buildDir, constants, mode })
+      const pluginsOptions = await getPluginsOptions({ netlifyConfig, buildDir, constants, mode, api })
       await installLocalPluginsDependencies({ pluginsOptions, buildDir, mode })
 
       const { commandsCount, error, statuses } = await buildRun({
@@ -79,6 +79,7 @@ const build = async function(flags) {
         context,
         branch,
         mode,
+        api,
         errorMonitor,
       })
 
@@ -122,6 +123,7 @@ const buildRun = async function({
   context,
   branch,
   mode,
+  api,
   errorMonitor,
 }) {
   const utilsData = await startUtils(buildDir)
@@ -141,6 +143,8 @@ const buildRun = async function({
       token,
       dry,
       constants,
+      mode,
+      api,
       errorMonitor,
     })
   } finally {
@@ -160,6 +164,8 @@ const executeCommands = async function({
   token,
   dry,
   constants,
+  mode,
+  api,
   errorMonitor,
 }) {
   const pluginsCommands = await loadPlugins({
@@ -169,6 +175,8 @@ const executeCommands = async function({
     utilsData,
     token,
     constants,
+    mode,
+    api,
   })
 
   const { commands, commandsCount } = getCommands(pluginsCommands, netlifyConfig)

@@ -82,6 +82,18 @@ test('report error statuses from uncaught exceptions with static properties', as
   await runWithApiMock(t, 'error_properties')
 })
 
+test('report error statuses from uncaught exceptions during plugin load', async t => {
+  await runWithApiMock(t, 'error_load_uncaught')
+})
+
+test('report error statuses from plugin invalid shape', async t => {
+  await runWithApiMock(t, 'error_plugin_shape')
+})
+
+test('report error statuses from plugin inputs validation', async t => {
+  await runWithApiMock(t, 'error_inputs_validation')
+})
+
 test('utils.status.show() can override a success status', async t => {
   await runWithApiMock(t, 'success_status_override')
 })
