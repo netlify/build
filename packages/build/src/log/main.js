@@ -149,7 +149,7 @@ const getPackage = function({ package }) {
 }
 
 const logLoadingPlugins = function(pluginsOptions) {
-  const loadingPlugins = pluginsOptions.filter(isNotCore).map(getPluginDescription)
+  const loadingPlugins = pluginsOptions.map(getPluginDescription)
 
   if (loadingPlugins.length === 0) {
     return
@@ -159,13 +159,26 @@ const logLoadingPlugins = function(pluginsOptions) {
   logArray(loadingPlugins)
 }
 
-const isNotCore = function({ loadedFrom }) {
-  return loadedFrom !== 'core'
+const getPluginDescription = function({ package, packageJson: { version }, loadedFrom, origin }) {
+  const versionA = version === undefined ? '' : `@${version}`
+  const pluginOrigin = getPluginOrigin(loadedFrom, origin)
+  return `${THEME.highlightWords(package)}${versionA} from ${pluginOrigin}`
 }
 
-const getPluginDescription = function({ package, packageJson: { version } }) {
-  const versionA = version === undefined ? '' : `@${version}`
-  return `${package}${versionA}`
+const getPluginOrigin = function(loadedFrom, origin) {
+  const originName = ORIGINS[origin]
+
+  if (loadedFrom === 'package.json') {
+    return `${originName} and package.json`
+  }
+
+  return originName
+}
+
+const ORIGINS = {
+  core: 'core',
+  ui: 'Netlify app',
+  config: 'netlify.toml',
 }
 
 const logDryRunStart = function(eventWidth, commandsCount) {
