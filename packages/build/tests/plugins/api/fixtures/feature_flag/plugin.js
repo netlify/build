@@ -1,5 +1,5 @@
 module.exports = {
-  async onInit({ api }) {
+  async onPreBuild({ api }) {
     console.log(api === undefined)
   },
 }

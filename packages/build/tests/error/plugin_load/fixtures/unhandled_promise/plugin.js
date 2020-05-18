@@ -3,9 +3,9 @@ const { promisify } = require('util')
 const pSetTimeout = promisify(setTimeout)
 
 module.exports = {
-  async onInit() {
+  async onPreBuild() {
     unhandledPromise()
-    console.log('onInit')
+    console.log('onPreBuild')
     await pSetTimeout(0)
   },
 }

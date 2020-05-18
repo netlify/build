@@ -3,7 +3,7 @@ const { promisify } = require('util')
 const pSetTimeout = promisify(setTimeout)
 
 module.exports = {
-  async onInit() {
+  async onPreBuild() {
     console.log('one')
     await pSetTimeout(1e3)
     console.error('two')

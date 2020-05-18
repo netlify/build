@@ -1,5 +1,5 @@
 module.exports = {
-  onInit() {
+  onPreBuild() {
     console.log('a'.repeat(1e7))
   },
 }

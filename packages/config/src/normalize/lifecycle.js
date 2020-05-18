@@ -32,7 +32,6 @@ const EVENTS = [
   'onInit',
   'oninit',
   'init',
-
   'onPreBuild',
   'onprebuild',
   'preBuild',

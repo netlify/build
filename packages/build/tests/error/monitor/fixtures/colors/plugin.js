@@ -1,7 +1,7 @@
 const { red } = require('chalk')
 
 module.exports = {
-  onInit() {
+  onPreBuild() {
     throw new Error(red('ColorTest'))
   },
 }

@@ -3,7 +3,7 @@ const {
 } = require('process')
 
 module.exports = {
-  onInit() {
+  onPreBuild() {
     console.log(BRANCH, HEAD)
   },
 }

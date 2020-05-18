@@ -1,6 +1,6 @@
 module.exports = {
-  onInit() {
-    console.log('onInit')
+  onPreBuild() {
+    console.log('onPreBuild')
   },
   onBuild() {
     console.log('onBuild')

@@ -1,5 +1,5 @@
 module.exports = {
-  async onInit({ api: { listSites } }) {
+  async onPreBuild({ api: { listSites } }) {
     await listSites('https://example.com')
   },
 }

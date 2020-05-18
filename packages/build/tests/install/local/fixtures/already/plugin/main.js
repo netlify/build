@@ -2,7 +2,7 @@
 const avg = require('math-avg')
 
 module.exports = {
-  onInit() {
+  onPreBuild() {
     console.log(avg([1, 2]))
   },
 }

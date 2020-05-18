@@ -1,10 +1,5 @@
 const EVENTS = [
   /**
-   * `onInit` - Runs before anything else
-   */
-  'onInit',
-
-  /**
    * `onPreBuild` - Before build commands are executed
    */
   'onPreBuild',
@@ -33,7 +28,8 @@ const EVENTS = [
 
 // TODO: remove after going out of beta
 const LEGACY_EVENTS = {
-  init: 'onInit',
+  init: 'onPreBuild',
+  onInit: 'onPreBuild',
   preBuild: 'onPreBuild',
   preGetCache: 'onPreBuild',
   onPreGetCache: 'onPreBuild',
