@@ -86,7 +86,7 @@ const build = async function(flags) {
         return true
       }
 
-      await reportStatuses(statuses)
+      await reportStatuses(statuses, api, mode)
 
       if (error !== undefined) {
         throw error

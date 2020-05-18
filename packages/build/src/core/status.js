@@ -1,3 +1,5 @@
+const { env } = require('process')
+
 const { logStatuses } = require('../log/main')
 
 // The last event handler of a plugin (except for `onError` and `onEnd`)
@@ -57,6 +59,7 @@ const canOverrideStatus = function(formerStatus, newStatus) {
 
 const reportStatuses = async function(statuses, api, mode) {
   printStatuses(statuses, mode)
+  await sendStatuses(statuses, api, mode)
 }
 
 // When not in production, print statuses to console.
@@ -77,6 +80,22 @@ const printStatuses = function(statuses, mode) {
 
 const shouldPrintStatus = function({ state, summary }) {
   return state === 'success' && summary !== undefined
+}
+
+// In production, send statuses to the API
+const sendStatuses = async function(statuses, api, mode) {
+  if ((mode !== 'buildbot' && env.NETLIFY_BUILD_TEST_STATUS !== '1') || api === undefined || !env.DEPLOY_ID) {
+    return
+  }
+
+  await Promise.all(statuses.map(status => sendStatus(api, status)))
+}
+
+const sendStatus = async function(api, { package, version, state, event, title, summary, text }) {
+  await api.createPluginRun({
+    deploy_id: env.DEPLOY_ID,
+    body: { package, version, state, reporting_event: event, title, summary, text },
+  })
 }
 
 module.exports = { getSuccessStatus, addStatus, reportStatuses }
