@@ -32,8 +32,7 @@ const runCommand = async function({ packageRoot, packages, isLocal, type }) {
 // Retrieve the shell command to install or add dependencies
 const getCommand = async function({ packageRoot, type, isLocal }) {
   const manager = await getManager(packageRoot)
-  const typeA = await getType({ packageRoot, type, manager, isLocal })
-  const command = COMMANDS[manager][typeA]
+  const command = COMMANDS[manager][type]
   const commandA = await fixNpmCiCompat(command)
   const commandB = addYarnCustomCache(commandA, manager, isLocal)
   return commandB
@@ -47,46 +46,14 @@ const getManager = async function(packageRoot) {
   return 'npm'
 }
 
-// Lock files should be:
-//   - read and written locally since we do package managers on behalf of users
-//   - read and written in CI when there is no lock file, since lock files are
-//     sometimes used for caching purpose (their content's hash is)
-//   - read but not written in CI when there is a lock file, to ensure builds
-//     are predictable
-// This leads to three modes:
-//   - "add": (new packages are installed): lock files are read/written
-//   - "installNoLock": !(new packages are installed) && !(we are in CI &&
-//     there is a lock file): lock files are read/written
-//   - "installLock": !(new packages are installed) && (we are in CI && there is
-//     a lock file): lock files are read but not written
-const getType = async function({ packageRoot, type, manager, isLocal }) {
-  if (type === 'add') {
-    return 'add'
-  }
-
-  if (isLocal || !(await hasLockFile(manager, packageRoot))) {
-    return 'installNoLock'
-  }
-
-  return 'installLock'
-}
-
-// If manager is yarn, it means we already know yarn.lock exists since we detect
-// yarn with the presence of a lock file at the moment
-const hasLockFile = async function(manager, packageRoot) {
-  return manager === 'yarn' || (await pathExists(`${packageRoot}/package-lock.json`))
-}
-
 const COMMANDS = {
   npm: {
     add: 'npm install --no-progress --no-audit --no-fund',
-    installNoLock: 'npm install --no-progress --no-audit --no-fund',
-    installLock: 'npm ci --no-progress --no-audit --no-fund',
+    install: 'npm install --no-progress --no-audit --no-fund',
   },
   yarn: {
     add: 'yarn add --no-progress --non-interactive --ignore-workspace-root-check',
-    installNoLock: 'yarn install --no-progress --non-interactive',
-    installLock: 'yarn install --frozen-lockfile --no-progress --non-interactive',
+    install: 'yarn install --no-progress --non-interactive',
   },
 }
 
