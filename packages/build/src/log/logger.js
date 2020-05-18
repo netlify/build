@@ -28,8 +28,8 @@ const logObject = function(object) {
   logMessage(string)
 }
 
-const logArray = function(array) {
-  const string = serializeArray(array)
+const logArray = function(array, { color = THEME.none } = {}) {
+  const string = color(serializeArray(array))
   logMessage(string)
 }
 
