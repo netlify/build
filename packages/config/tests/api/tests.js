@@ -87,6 +87,7 @@ const SITE_INFO_BUILD_SETTINGS = {
     env: { TEST_ENV: 'test' },
     base_rel_dir: false,
   },
+  plugins: [{ package: 'netlify-plugin-test', version: '1.0.0', inputs: { test: true } }],
 }
 
 test('Use build settings if a siteId and token are provided', async t => {

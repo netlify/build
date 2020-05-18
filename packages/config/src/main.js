@@ -8,13 +8,13 @@ const { addBuildSettings } = require('./api/build_settings')
 const { getApiClient } = require('./api/client')
 const { getSiteInfo } = require('./api/site_info')
 const { mergeContext } = require('./context')
+const { mergeDefaultConfig } = require('./default_config')
 const { throwError } = require('./error')
 const { handleFiles } = require('./files')
 const { normalizeConfig } = require('./normalize/main')
 const { normalizeOpts } = require('./options/main')
 const { parseConfig } = require('./parse/main')
 const { getConfigPath } = require('./path')
-const { deepMerge } = require('./utils/merge')
 const { validateConfig } = require('./validate/main')
 
 // Load the configuration file.
@@ -140,7 +140,7 @@ const getFullConfig = async function({ configOpt, cwd, context, repositoryRoot, 
 
   try {
     const config = await parseConfig(configPath)
-    const configA = deepMerge(defaultConfig, config)
+    const configA = mergeDefaultConfig(defaultConfig, config)
 
     validateConfig(configA)
 
