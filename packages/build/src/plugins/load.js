@@ -1,5 +1,3 @@
-const { logLoadedPlugins } = require('../log/main')
-
 const { callChild } = require('./ipc')
 
 // Retrieve all plugins commands
@@ -18,7 +16,6 @@ const loadPlugins = async function({ pluginsOptions, childProcesses, netlifyConf
     ),
   )
   const pluginsCommandsA = pluginsCommands.flat()
-  logLoadedPlugins(pluginsCommandsA)
   return pluginsCommandsA
 }
 

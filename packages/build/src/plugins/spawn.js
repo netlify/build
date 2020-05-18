@@ -2,6 +2,8 @@ const { execPath } = require('process')
 
 const execa = require('execa')
 
+const { logLoadingPlugins } = require('../log/main')
+
 const { getEventFromChild } = require('./ipc')
 const { getCoreInfo } = require('./options')
 
@@ -14,6 +16,8 @@ const CHILD_MAIN_FILE = `${__dirname}/child/main.js`
 //  - logs can be buffered which allows manipulating them for log shipping,
 //    transforming and parallel plugins
 const startPlugins = function({ pluginsOptions, buildDir, nodePath, childEnv }) {
+  logLoadingPlugins(pluginsOptions)
+
   const { package, packageJson, local } = getCoreInfo()
   return Promise.all(
     pluginsOptions.map(({ core }) => startPlugin({ buildDir, nodePath, childEnv, package, packageJson, local, core })),
