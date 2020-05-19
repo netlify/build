@@ -60,7 +60,7 @@ const getGroup = function(group, errorInfo) {
 }
 
 const getGroupingHash = function(group, error, type) {
-  const message = error instanceof Error ? error.message : String(error)
+  const message = error instanceof Error && typeof error.message === 'string' ? error.message : String(error)
   const messageA = normalizeGroupingMessage(message, type)
   return `${group}\n${messageA}`
 }
