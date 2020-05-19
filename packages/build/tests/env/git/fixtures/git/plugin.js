@@ -3,7 +3,7 @@ const {
 } = require('process')
 
 module.exports = {
-  onInit() {
+  onPreBuild() {
     console.log(Boolean(BRANCH))
     console.log(Boolean(HEAD))
     console.log(Boolean(COMMIT_REF))

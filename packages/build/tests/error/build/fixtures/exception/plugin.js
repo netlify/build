@@ -1,5 +1,5 @@
 module.exports = {
-  async onInit() {
+  async onPreBuild() {
     throw new Error('test')
   },
 }

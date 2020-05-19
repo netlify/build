@@ -1,5 +1,5 @@
 module.exports = {
-  onInit({
+  onPreBuild({
     utils: {
       build: { failPlugin },
     },

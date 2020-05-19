@@ -16,7 +16,7 @@ test('Colors in parent process', async t => {
 
 test('Colors in child process', async t => {
   const { stdout } = await runFixture(t, 'child', { snapshot: false, normalize: false, env: { FORCE_COLOR: '1' } })
-  t.true(stdout.includes(red('onInit')))
+  t.true(stdout.includes(red('onPreBuild')))
 })
 
 test('Netlify CI', async t => {

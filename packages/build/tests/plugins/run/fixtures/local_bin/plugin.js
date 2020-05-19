@@ -1,7 +1,7 @@
 const execa = require('execa')
 
 module.exports = {
-  async onInit() {
+  async onPreBuild() {
     await execa('atob', ['dGVzdA=='], { stdio: 'inherit' })
   },
 }

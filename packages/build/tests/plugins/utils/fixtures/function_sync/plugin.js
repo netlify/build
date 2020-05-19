@@ -1,5 +1,5 @@
 module.exports = {
-  onInit({ utils: { cache } }) {
+  onPreBuild({ utils: { cache } }) {
     console.log(
       Object.keys(cache)
         .sort()

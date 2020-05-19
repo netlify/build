@@ -1,11 +1,11 @@
 module.exports = {
-  onInit({
+  onPreBuild({
     utils: {
       build: { failPlugin },
     },
   }) {
     failPlugin('test')
-    console.log('onInit')
+    console.log('onPreBuild')
   },
   onBuild() {
     console.log('onBuild')

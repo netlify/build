@@ -1,5 +1,5 @@
 module.exports = {
-  onInit({ inputs: { test } }) {
+  onPreBuild({ inputs: { test } }) {
     console.log(test)
   },
 }

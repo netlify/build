@@ -1,5 +1,5 @@
 module.exports = {
-  onInit({
+  onPreBuild({
     utils: {
       status: { show },
     },

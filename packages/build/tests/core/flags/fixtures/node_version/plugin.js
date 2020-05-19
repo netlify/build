@@ -4,7 +4,7 @@ const {
 } = require('process')
 
 module.exports = {
-  onInit() {
+  onPreBuild() {
     console.log(execPath === TEST_NODE_PATH)
   },
 }

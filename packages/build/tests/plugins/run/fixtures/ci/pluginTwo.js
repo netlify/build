@@ -1,5 +1,5 @@
 module.exports = {
-  onInit() {
+  onPreBuild() {
     console.log('a'.repeat(1e3))
     console.error('b'.repeat(1e3))
   },

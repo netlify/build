@@ -1,5 +1,5 @@
 module.exports = {
-  async onInit({ constants: { CACHE_DIR } }) {
+  async onPreBuild({ constants: { CACHE_DIR } }) {
     console.log(CACHE_DIR)
   },
 }

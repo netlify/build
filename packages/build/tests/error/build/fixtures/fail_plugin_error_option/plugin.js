@@ -3,14 +3,14 @@ const getError = function() {
 }
 
 module.exports = {
-  onInit({
+  onPreBuild({
     utils: {
       build: { failPlugin },
     },
   }) {
     const error = getError()
     failPlugin('test', { error })
-    console.log('onInit')
+    console.log('onPreBuild')
   },
   onBuild() {
     console.log('onBuild')

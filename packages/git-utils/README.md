@@ -12,7 +12,7 @@ Utility for dealing with modified, created, deleted files since a git commit.
 ```js
 /* Export the Netlify Plugin */
 module.exports = {
-  onInit: ({ utils }) => {
+  onPreBuild: ({ utils }) => {
     const { git } = utils
 
     /* Do stuff if files modified */
@@ -52,7 +52,7 @@ The `git` util includes the following signature.
 
 ```js
 module.exports = {
-  onInit: ({ utils }) => {
+  onPreBuild: ({ utils }) => {
     console.log(utils.git)
     /*
     {

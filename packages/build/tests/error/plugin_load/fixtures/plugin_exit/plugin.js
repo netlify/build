@@ -1,5 +1,5 @@
 module.exports = {
-  async onInit() {
+  async onPreBuild() {
     process.exit(1)
   },
   onBuild() {

@@ -4,7 +4,7 @@ const { promisify } = require('util')
 const pSetTimeout = promisify(setTimeout)
 
 module.exports = {
-  async onInit({
+  async onPreBuild({
     utils: {
       build: { failBuild },
     },

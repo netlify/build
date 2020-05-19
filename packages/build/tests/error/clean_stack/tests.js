@@ -38,7 +38,7 @@ const isStackLine = function(line) {
 
 test('Clean stack traces from cwd', async t => {
   const { stdout } = await runFixture(t, 'plugin', { snapshot: false, normalize: false })
-  t.false(stdout.includes(`onInit (${cwd()}`))
+  t.false(stdout.includes(`onPreBuild (${cwd()}`))
 })
 
 test('Clean stack traces but keep error message', async t => {

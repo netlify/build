@@ -1,5 +1,5 @@
 module.exports = {
-  onInit({ utils: { git } }) {
+  onPreBuild({ utils: { git } }) {
     console.log(
       Object.keys(git)
         .sort()
