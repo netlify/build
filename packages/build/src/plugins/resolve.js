@@ -28,20 +28,20 @@ const resolvePluginsPath = async function({ pluginsOptions, buildDir, mode }) {
 
 const resolvePluginPath = async function({
   pluginOptions,
-  pluginOptions: { package, pluginPath, loadedFrom },
+  pluginOptions: { package, loadedFrom },
   buildDir,
   autoPluginsDir,
   mode,
 }) {
   // Core plugins
-  if (pluginPath !== undefined) {
+  if (loadedFrom !== undefined) {
     return pluginOptions
   }
 
   // Local plugins
-  if (loadedFrom === 'local') {
+  if (package.startsWith('.') || package.startsWith('/')) {
     const localPath = resolve(buildDir, package)
-    return { ...pluginOptions, pluginPath: localPath }
+    return { ...pluginOptions, pluginPath: localPath, loadedFrom: 'local' }
   }
 
   // Plugin already installed in the project, most likely either local plugins,

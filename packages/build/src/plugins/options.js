@@ -43,20 +43,7 @@ const isUserPlugin = function({ package }) {
 }
 
 const normalizePluginOptions = function({ package, pluginPath, loadedFrom, origin, inputs = {} }) {
-  const loadedFromA = getLoadedFrom(loadedFrom, package)
-  return { package, pluginPath, loadedFrom: loadedFromA, origin, inputs }
-}
-
-const getLoadedFrom = function(loadedFrom, package) {
-  if (loadedFrom !== undefined) {
-    return loadedFrom
-  }
-
-  if (package.startsWith('.') || package.startsWith('/')) {
-    return 'local'
-  }
-
-  return 'external'
+  return { package, pluginPath, loadedFrom, origin, inputs }
 }
 
 // Retrieve plugin's main file path.
