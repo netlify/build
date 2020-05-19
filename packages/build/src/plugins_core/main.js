@@ -6,6 +6,8 @@ const FUNCTIONS_INSTALL_PLUGIN = `${__dirname}/functions_install/plugin.js`
 const FUNCTIONS_PLUGIN = `${__dirname}/functions/plugin.js`
 const CACHE_PLUGIN = `${__dirname}/cache/plugin.js`
 
+const { LOCAL_INSTALL_NAME } = require('../install/local')
+
 // Plugins that are installed and enabled by default
 const getCorePlugins = FUNCTIONS_SRC => [
   // When no "Functions directory" is defined, it means users does not use
@@ -29,4 +31,8 @@ const CORE_PLUGINS = [
   '@netlify/plugin-cache-core',
 ]
 
-module.exports = { getCorePlugins, CORE_PLUGINS }
+// Those core plugins cannot be handled like regular plugins because they must
+// be run before plugin child processes start
+const EARLY_CORE_PLUGINS = [LOCAL_INSTALL_NAME]
+
+module.exports = { getCorePlugins, CORE_PLUGINS, EARLY_CORE_PLUGINS }

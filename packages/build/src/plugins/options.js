@@ -2,7 +2,8 @@ const { dirname } = require('path')
 
 const corePackageJson = require('../../package.json')
 const { checkDeprecatedFunctionsInstall } = require('../install/functions')
-const { getCorePlugins, CORE_PLUGINS } = require('../plugins_core/main')
+const { installLocalPluginsDependencies } = require('../install/local')
+const { getCorePlugins, CORE_PLUGINS, EARLY_CORE_PLUGINS } = require('../plugins_core/main')
 
 const { useManifest } = require('./manifest/main')
 const { getPackageJson } = require('./package')
@@ -25,7 +26,10 @@ const getPluginsOptions = async function({
   const pluginsOptionsB = await Promise.all(
     pluginsOptionsA.map(pluginOptions => loadPluginFiles({ pluginOptions, mode, api })),
   )
-  await checkDeprecatedFunctionsInstall(plugins, FUNCTIONS_SRC, buildDir)
+  await Promise.all([
+    checkDeprecatedFunctionsInstall(plugins, FUNCTIONS_SRC, buildDir),
+    installLocalPluginsDependencies({ plugins, pluginsOptions: pluginsOptionsB, buildDir, mode }),
+  ])
   return pluginsOptionsB
 }
 
@@ -39,7 +43,7 @@ const isOptionalCore = function({ package, optional }, plugins) {
 }
 
 const isUserPlugin = function({ package }) {
-  return !CORE_PLUGINS.includes(package)
+  return !CORE_PLUGINS.includes(package) && !EARLY_CORE_PLUGINS.includes(package)
 }
 
 const normalizePluginOptions = function({ package, pluginPath, loadedFrom, origin, inputs = {} }) {
