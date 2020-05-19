@@ -4,46 +4,31 @@ const { deepMerge } = require('./utils/merge')
 
 // Merge `--defaultConfig` which is used to retrieve UI build settings and
 // UI-installed plugins.
-const mergeDefaultConfig = function(defaultConfig, config) {
+const mergeDefaultConfig = function(defaultConfig, { plugins = [], ...config }) {
   // No `--defaultConfig`
   if (!isPlainObj(defaultConfig)) {
-    return config
+    return { ...config, plugins }
   }
 
   const { plugins: defaultPlugins, ...defaultConfigA } = defaultConfig
-  const { plugins, ...configA } = config
 
+  const configA = deepMerge(defaultConfigA, config)
   const pluginsA = mergePlugins(defaultPlugins, plugins)
-  const configB = deepMerge(defaultConfigA, configA)
-
-  if (pluginsA === undefined) {
-    return configB
-  }
-
-  return { ...configB, plugins: pluginsA }
+  return { ...configA, plugins: pluginsA }
 }
 
 // `defaultConfig` `plugins` are UI-installed plugins. Those are merged by
 // concatenation instead of override.
 // Also, we add the `origin` field of plugins: installed through `ui` or through
 // `config` (`netlify.toml`)
-const mergePlugins = function(defaultPlugins, plugins = []) {
+const mergePlugins = function(defaultPlugins, plugins) {
   // Invalid `config.plugins`, validated in next step
-  if (!Array.isArray(plugins) || !plugins.every(isPlainObj)) {
+  // Or no `defaultConfig` `plugins`
+  if (!Array.isArray(plugins) || !plugins.every(isPlainObj) || !Array.isArray(defaultPlugins)) {
     return plugins
   }
 
-  const pluginsA = plugins.map(addConfigOrigin)
-
-  if (!Array.isArray(defaultPlugins)) {
-    return pluginsA
-  }
-
-  return [...defaultPlugins.map(addUiOrigin), ...pluginsA]
-}
-
-const addConfigOrigin = function(plugin) {
-  return { ...plugin, origin: 'config' }
+  return [...defaultPlugins.map(addUiOrigin), ...plugins]
 }
 
 const addUiOrigin = function(plugin) {
