@@ -13,7 +13,6 @@ const { maybeCancelBuild } = require('../error/cancel')
 const { removeErrorColors } = require('../error/colors')
 const { reportBuildError } = require('../error/monitor/report')
 const { startErrorMonitor } = require('../error/monitor/start')
-const { installLocalPluginsDependencies } = require('../install/local')
 const { logBuildStart, logBuildError, logBuildSuccess } = require('../log/main')
 const { logOldCliVersionError } = require('../log/old_version')
 const { startTimer, endTimer } = require('../log/timer')
@@ -64,7 +63,6 @@ const build = async function(flags) {
 
     try {
       const pluginsOptions = await getPluginsOptions({ netlifyConfig, buildDir, constants, mode, api })
-      await installLocalPluginsDependencies({ pluginsOptions, buildDir, mode })
 
       const { commandsCount, error, statuses } = await buildRun({
         pluginsOptions,

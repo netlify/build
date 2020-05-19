@@ -1,11 +1,11 @@
 const pkgDir = require('pkg-dir')
 
-const { logInstallLocalPluginsDeps } = require('../log/main')
+const { logDeprecatedLocalInstall, logInstallLocalPluginsDeps } = require('../log/main')
 
 const { installDependencies } = require('./main')
 
 // Install dependencies of local plugins.
-const installLocalPluginsDependencies = async function({ pluginsOptions, buildDir, mode }) {
+const installLocalPluginsDependencies = async function({ plugins, pluginsOptions, buildDir, mode }) {
   const localPluginsOptions = getLocalPluginsOptions(pluginsOptions)
   if (localPluginsOptions.length === 0) {
     return
@@ -16,6 +16,11 @@ const installLocalPluginsDependencies = async function({ pluginsOptions, buildDi
     return
   }
 
+  if (!canUseLocalPluginsInstall(plugins)) {
+    // TODO: replace log statement by `return` instead once going out of beta
+    logDeprecatedLocalInstall()
+  }
+
   logInstallLocalPluginsDeps(localPluginsOptionsA)
   await Promise.all(
     localPluginsOptionsA.map(({ packageDir }) =>
@@ -23,6 +28,19 @@ const installLocalPluginsDependencies = async function({ pluginsOptions, buildDi
     ),
   )
 }
+
+// Users must add this plugin to their `netlify.toml` `plugins` to use this
+// feature. We don't want to provide it by default because this makes build
+// slow and buggy.
+const canUseLocalPluginsInstall = function(plugins) {
+  return plugins.some(isLocalInstallOptIn)
+}
+
+const isLocalInstallOptIn = function({ package }) {
+  return package === LOCAL_INSTALL_NAME
+}
+
+const LOCAL_INSTALL_NAME = '@netlify/plugin-local-install-core'
 
 // Core plugins and non-local plugins already have their dependencies installed
 const getLocalPluginsOptions = function(pluginsOptions) {
@@ -44,4 +62,4 @@ const removeMainRoot = async function(localPluginsOptions, buildDir) {
   return localPluginsOptions.filter(({ packageDir }) => packageDir !== mainPackageDir)
 }
 
-module.exports = { installLocalPluginsDependencies }
+module.exports = { installLocalPluginsDependencies, LOCAL_INSTALL_NAME }
