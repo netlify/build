@@ -36,12 +36,16 @@ const getVersion = function({ version }) {
   return version
 }
 
+const getHomepage = function(packageJson) {
+  return getRepository(packageJson) || getNpmLink(packageJson) || getIssuesLink(packageJson)
+}
+
 const getRepository = function({ repository: { url } = {} }) {
   return url
 }
 
 const getNpmLink = function({ name }) {
-  if (name === '') {
+  if (!name) {
     return
   }
 
@@ -61,4 +65,4 @@ const FIELDS = {
   'Report issues': getIssuesLink,
 }
 
-module.exports = { getPluginInfo }
+module.exports = { getPluginInfo, getHomepage }

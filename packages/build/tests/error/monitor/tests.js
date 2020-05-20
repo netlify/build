@@ -75,3 +75,7 @@ test('Remove colors in error.message', async t => {
 test('Report BUILD_ID', async t => {
   await runFixture(t, 'command', { env: { ...env, BUILD_ID: 'test' } })
 })
+
+test('Report plugin homepage', async t => {
+  await runFixture(t, 'plugin_homepage', { env })
+})
