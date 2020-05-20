@@ -112,9 +112,7 @@ const logMissingPluginsWarning = function(packages) {
   logErrorSubHeader('Missing plugins')
   logMessage(
     THEME.errorSubHeader(
-      `The following plugins should be installed either:
-- via the Netlify app
-- as a "dependency" inside your project's "package.json"`,
+      `The following plugins should be installed either via the Netlify app or as a "dependency" inside your project's "package.json"`,
     ),
   )
   logArray(packages, { color: THEME.errorSubHeader })
