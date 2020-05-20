@@ -66,7 +66,7 @@ const getGroupingHash = function(group, error, type) {
 }
 
 const getMetadata = function({ location, plugin }, groupingHash) {
-  return { location, plugin, other: { groupingHash } }
+  return { location, plugin, other: { groupingHash, buildId: env.BUILD_ID } }
 }
 
 const getApp = function() {
