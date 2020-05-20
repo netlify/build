@@ -144,7 +144,7 @@ const runCommand = async function({
   const newValues =
     newError === undefined
       ? handleCommandSuccess({ event, package, newEnvChanges, newStatus, methodTimer })
-      : await handleCommandError({ newError, errorMonitor })
+      : await handleCommandError({ newError, errorMonitor, buildCommand })
   return { ...newValues, newIndex: index + 1 }
 }
 
@@ -254,7 +254,12 @@ const handleCommandSuccess = function({ event, package, newEnvChanges, newStatus
 //    handlers of the same type have been triggered before propagating
 //  - if `utils.build.failPlugin()` was used, print an error and skip next event
 //    handlers of that plugin. But do not stop build.
-const handleCommandError = async function({ newError, errorMonitor }) {
+const handleCommandError = async function({ newError, errorMonitor, buildCommand }) {
+  // `build.command` do not report error statuses
+  if (buildCommand !== undefined) {
+    return { newError }
+  }
+
   const { type, location: { package } = {} } = getErrorInfo(newError)
   const newStatus = serializeErrorStatus(newError)
 

@@ -39,6 +39,10 @@ test('report error statuses from cancelBuild()', async t => {
   await runWithApiMock(t, 'error_cancel_build')
 })
 
+test('does not report error statuses from build.command errors', async t => {
+  await runWithApiMock(t, 'error_build_command')
+})
+
 test('report error statuses from uncaught exceptions with static properties', async t => {
   await runWithApiMock(t, 'error_properties')
 })
