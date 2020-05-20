@@ -29,7 +29,7 @@
   "dependencies": {
     "@bugsnag/js": "^7.0.0",
     "@netlify/cache-utils": "^0.4.1",
-    "@netlify/config": "^0.11.9",
+    "@netlify/config": "^0.11.10",
     "@netlify/functions-utils": "^0.2.4",
     "@netlify/git-utils": "^0.2.2",
     "@netlify/run-utils": "^0.1.1",
