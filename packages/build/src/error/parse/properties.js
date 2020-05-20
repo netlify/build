@@ -11,7 +11,7 @@ const getErrorProps = function({ errorProps, showErrorProps, colors }) {
     return
   }
 
-  return inspect(errorPropsA, { colors })
+  return inspect(errorPropsA, { colors, depth: 5 })
 }
 
 // Remove error static properties that should not be logged
