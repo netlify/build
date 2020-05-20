@@ -4,7 +4,7 @@ const { env } = require('process')
 const pathExists = require('path-exists')
 
 const { installMissingPlugins, getAutoPluginsDirPath } = require('../install/missing')
-const { logMissingPluginsWarning } = require('../log/main')
+// const { logMissingPluginsWarning } = require('../log/main')
 const { resolvePath } = require('../utils/resolve')
 
 // Try to find plugins in four places, by priority order:
@@ -142,7 +142,10 @@ const warnOnMissingPlugins = function(pluginsOptions, mode) {
     return
   }
 
-  logMissingPluginsWarning(packages)
+  // TODO: re-enable warning after the following are available:
+  //  - UI installs
+  //  - build-image pre-installed plugins
+  // logMissingPluginsWarning(packages)
 }
 
 const isAutomaticallyInstalled = function({ loadedFrom }) {
