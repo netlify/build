@@ -52,7 +52,7 @@ const resolvePluginPath = async function({
   }
 
   // Cached in the build image
-  const buildImagePath = await tryBuildImagePath(package, mode)
+  const buildImagePath = await tryBuildImagePath(package, mode, buildDir)
   if (buildImagePath !== undefined) {
     return { ...pluginOptions, pluginPath: buildImagePath, loadedFrom: 'image_cache' }
   }
@@ -69,7 +69,7 @@ const resolvePluginPath = async function({
 
 // In production, we pre-install most Build plugins to that directory, for
 // performance reasons
-const tryBuildImagePath = async function(package, mode) {
+const tryBuildImagePath = async function(package, mode, buildDir) {
   if (mode !== 'buildbot') {
     return
   }
@@ -80,7 +80,7 @@ const tryBuildImagePath = async function(package, mode) {
     return
   }
 
-  return resolvePath(buildImagePath)
+  return resolvePath(buildImagePath, buildDir)
 }
 
 const getBuildImagePluginsDir = function() {
