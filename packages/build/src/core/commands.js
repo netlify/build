@@ -57,7 +57,15 @@ const isSuccessCommand = function({ event }) {
 // list of `failedPlugins` (that ran `utils.build.failPlugin()`).
 // If an error arises, runs `onError` events.
 // Runs `onEnd` events at the end, whether an error was thrown or not.
-const runCommands = async function({ commands, configPath, buildDir, nodePath, childEnv, errorMonitor }) {
+const runCommands = async function({
+  commands,
+  configPath,
+  buildDir,
+  nodePath,
+  childEnv,
+  errorMonitor,
+  netlifyConfig,
+}) {
   const { index: commandsCount, error: errorA, statuses: statusesB } = await pReduce(
     commands,
     async (
@@ -83,6 +91,7 @@ const runCommands = async function({ commands, configPath, buildDir, nodePath, c
           errorMonitor,
           error,
           failedPlugins,
+          netlifyConfig,
         },
       )
       const statusesA = addStatus({ newStatus, statuses, event, package, packageJson })
@@ -118,6 +127,7 @@ const runCommand = async function({
   errorMonitor,
   error,
   failedPlugins,
+  netlifyConfig,
 }) {
   if (shouldSkipCommand({ event, package, error, failedPlugins })) {
     return {}
@@ -147,7 +157,7 @@ const runCommand = async function({
   const newValues =
     newError === undefined
       ? handleCommandSuccess({ event, package, newEnvChanges, newStatus, methodTimer })
-      : await handleCommandError({ newError, errorMonitor, buildCommand })
+      : await handleCommandError({ newError, errorMonitor, buildCommand, netlifyConfig })
   return { ...newValues, newIndex: index + 1 }
 }
 
@@ -269,7 +279,7 @@ const handleCommandSuccess = function({ event, package, newEnvChanges, newStatus
 //    handlers of the same type have been triggered before propagating
 //  - if `utils.build.failPlugin()` was used, print an error and skip next event
 //    handlers of that plugin. But do not stop build.
-const handleCommandError = async function({ newError, errorMonitor, buildCommand }) {
+const handleCommandError = async function({ newError, errorMonitor, buildCommand, netlifyConfig }) {
   // `build.command` do not report error statuses
   if (buildCommand !== undefined) {
     return { newError }
@@ -279,14 +289,14 @@ const handleCommandError = async function({ newError, errorMonitor, buildCommand
   const newStatus = serializeErrorStatus(newError)
 
   if (type === 'failPlugin') {
-    return handleFailPlugin({ newStatus, package, newError, errorMonitor })
+    return handleFailPlugin({ newStatus, package, newError, errorMonitor, netlifyConfig })
   }
 
   return { newError, newStatus }
 }
 
-const handleFailPlugin = async function({ newStatus, package, newError, errorMonitor }) {
-  logPluginError(newError)
+const handleFailPlugin = async function({ newStatus, package, newError, errorMonitor, netlifyConfig }) {
+  logPluginError(newError, netlifyConfig)
   await reportBuildError(newError, errorMonitor)
   return { failedPlugin: [package], newStatus }
 }

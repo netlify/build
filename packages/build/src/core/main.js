@@ -98,6 +98,7 @@ const build = async function(flags) {
     } catch (error) {
       await maybeCancelBuild(error, api)
       await logOldCliVersionError(mode)
+      error.netlifyConfig = netlifyConfig
       throw error
     }
   } catch (error) {
@@ -191,6 +192,7 @@ const executeCommands = async function({
     nodePath,
     childEnv,
     errorMonitor,
+    netlifyConfig,
   })
 }
 

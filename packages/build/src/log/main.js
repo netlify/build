@@ -58,6 +58,15 @@ const logConfig = function(config) {
   logObject(simplifyConfig(config))
 }
 
+const logConfigOnError = function(netlifyConfig) {
+  if (netlifyConfig === undefined) {
+    return
+  }
+
+  logMessage(THEME.errorSubHeader('Resolved config'))
+  logObject(simplifyConfig(netlifyConfig))
+}
+
 // The resolved configuration gets assigned some default values (empty objects and arrays)
 // to make it more convenient to use without checking for `undefined`.
 // However those empty values are not useful to users, so we don't log them.
@@ -259,17 +268,19 @@ const logCacheDir = function(path) {
   logMessage(`Caching ${path}`)
 }
 
-const logPluginError = function(error) {
+const logPluginError = function(error, netlifyConfig) {
   const { title, body } = serializeLogError(error)
   logErrorHeader(title)
-  logMessage(`\n${body}`)
+  logMessage(`\n${body}\n`)
+  logConfigOnError(netlifyConfig)
 }
 
 const logBuildError = function(error) {
-  const { title, body, isSuccess } = serializeLogError(error)
+  const { title, body, isSuccess, netlifyConfig } = serializeLogError(error)
   const logFunction = isSuccess ? logHeader : logErrorHeader
   logFunction(title)
   logMessage(`\n${body}\n`)
+  logConfigOnError(netlifyConfig)
 }
 
 const logBuildSuccess = function() {
