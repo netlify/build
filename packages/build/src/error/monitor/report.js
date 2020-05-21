@@ -68,17 +68,17 @@ const getGroupingHash = function(group, error, type) {
 
 const getMetadata = function({ location, plugin }, groupingHash) {
   const pluginMetadata = getPluginMetadata(plugin)
-  return { location, plugin: pluginMetadata, other: { groupingHash, buildId: env.BUILD_ID } }
+  return { location, ...pluginMetadata, other: { groupingHash, buildId: env.BUILD_ID } }
 }
 
 const getPluginMetadata = function(plugin) {
   if (plugin === undefined) {
-    return
+    return {}
   }
 
-  const { packageJson = {} } = plugin
+  const { packageJson } = plugin
   const homepage = getHomepage(packageJson)
-  return { ...plugin, homepage }
+  return { plugin: { ...plugin, homepage }, packageJson }
 }
 
 const getApp = function() {
