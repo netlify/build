@@ -78,9 +78,9 @@ const getPluginMetadata = function(plugin) {
     return {}
   }
 
-  const { packageJson } = plugin
+  const { packageJson, ...pluginA } = plugin
   const homepage = getHomepage(packageJson)
-  return { plugin: { ...plugin, homepage }, packageJson }
+  return { plugin: { ...pluginA, homepage }, packageJson }
 }
 
 const getApp = function() {
