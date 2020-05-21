@@ -4,9 +4,12 @@ const { parseError } = require('./parse')
 
 // Serialize an error object into a title|body string to print in logs
 const serializeLogError = function(error) {
-  const { title, message, pluginInfo, locationInfo, errorProps, isSuccess } = parseError({ error, colors: true })
+  const { title, message, pluginInfo, locationInfo, netlifyConfig, errorProps, isSuccess } = parseError({
+    error,
+    colors: true,
+  })
   const body = getBody({ message, pluginInfo, locationInfo, errorProps, isSuccess })
-  return { title, body, isSuccess }
+  return { title, body, isSuccess, netlifyConfig }
 }
 
 const getBody = function({ message, pluginInfo, locationInfo, errorProps, isSuccess }) {

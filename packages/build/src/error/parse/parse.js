@@ -11,6 +11,7 @@ const parseError = function({ error, colors }) {
   const {
     message,
     stack,
+    netlifyConfig,
     errorProps,
     errorInfo,
     errorInfo: { location = {}, plugin = {} },
@@ -30,17 +31,27 @@ const parseError = function({ error, colors }) {
   const pluginInfo = getPluginInfo(plugin, location)
   const locationInfo = getLocationInfo({ stack: stackA, location, locationType })
   const errorPropsA = getErrorProps({ errorProps, showErrorProps, colors })
-  return { state, title: titleA, message: messageA, pluginInfo, locationInfo, errorProps: errorPropsA, isSuccess }
+  return {
+    state,
+    title: titleA,
+    message: messageA,
+    pluginInfo,
+    locationInfo,
+    netlifyConfig,
+    errorProps: errorPropsA,
+    isSuccess,
+  }
 }
 
 // Parse error instance into all the basic properties containing information
 const parseErrorInfo = function(error) {
-  const { message, stack, ...errorProps } = normalizeError(error)
+  const { message, stack, netlifyConfig, ...errorProps } = normalizeError(error)
   const errorInfo = getErrorInfo(errorProps)
   const { state, title, isSuccess, stackType, locationType, showErrorProps, rawStack } = getTypeInfo(errorInfo)
   return {
     message,
     stack,
+    netlifyConfig,
     errorProps,
     errorInfo,
     state,
