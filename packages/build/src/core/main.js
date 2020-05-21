@@ -60,6 +60,7 @@ const build = async function(flags) {
       branch,
       mode,
     } = await loadConfig(flagsA)
+    const childEnv = await getChildEnv({ netlifyConfig, buildDir, context, branch, siteInfo, mode })
 
     try {
       const pluginsOptions = await getPluginsOptions({ netlifyConfig, buildDir, constants, mode, api })
@@ -70,12 +71,10 @@ const build = async function(flags) {
         configPath,
         buildDir,
         nodePath,
+        childEnv,
         token,
         dry,
-        siteInfo,
         constants,
-        context,
-        branch,
         mode,
         api,
         errorMonitor,
@@ -99,6 +98,7 @@ const build = async function(flags) {
       await maybeCancelBuild(error, api)
       await logOldCliVersionError(mode)
       error.netlifyConfig = netlifyConfig
+      error.childEnv = childEnv
       throw error
     }
   } catch (error) {
@@ -115,18 +115,15 @@ const buildRun = async function({
   configPath,
   buildDir,
   nodePath,
+  childEnv,
   token,
   dry,
-  siteInfo,
   constants,
-  context,
-  branch,
   mode,
   api,
   errorMonitor,
 }) {
   const utilsData = await startUtils(buildDir)
-  const childEnv = await getChildEnv({ netlifyConfig, buildDir, context, branch, siteInfo, mode })
   const childProcesses = await startPlugins({ pluginsOptions, buildDir, nodePath, childEnv, mode })
 
   try {

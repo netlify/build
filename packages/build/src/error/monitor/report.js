@@ -4,6 +4,7 @@ const { promisify } = require('util')
 
 const osName = require('os-name')
 
+const { getEnvMetadata } = require('../../env/metadata')
 const { log } = require('../../log/logger.js')
 const { getErrorInfo } = require('../info')
 const { getHomepage } = require('../parse/plugin')
@@ -66,9 +67,10 @@ const getGroupingHash = function(group, error, type) {
   return `${group}\n${messageA}`
 }
 
-const getMetadata = function({ location, plugin }, groupingHash) {
+const getMetadata = function({ location, plugin, childEnv }, groupingHash) {
   const pluginMetadata = getPluginMetadata(plugin)
-  return { location, ...pluginMetadata, other: { groupingHash, buildId: env.BUILD_ID } }
+  const envMetadata = getEnvMetadata(childEnv)
+  return { location, ...pluginMetadata, env: envMetadata, other: { groupingHash } }
 }
 
 const getPluginMetadata = function(plugin) {
