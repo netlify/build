@@ -6,6 +6,7 @@ const osName = require('os-name')
 
 const { log } = require('../../log/logger.js')
 const { getErrorInfo } = require('../info')
+const { getHomepage } = require('../parse/plugin')
 const { getTypeInfo } = require('../type')
 
 const { normalizeGroupingMessage } = require('./normalize')
@@ -66,7 +67,18 @@ const getGroupingHash = function(group, error, type) {
 }
 
 const getMetadata = function({ location, plugin }, groupingHash) {
-  return { location, plugin, other: { groupingHash, buildId: env.BUILD_ID } }
+  const pluginMetadata = getPluginMetadata(plugin)
+  return { location, plugin: pluginMetadata, other: { groupingHash, buildId: env.BUILD_ID } }
+}
+
+const getPluginMetadata = function(plugin) {
+  if (plugin === undefined) {
+    return
+  }
+
+  const { packageJson = {} } = plugin
+  const homepage = getHomepage(packageJson)
+  return { ...plugin, homepage }
 }
 
 const getApp = function() {
