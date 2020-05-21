@@ -73,6 +73,8 @@ after your site build has completed.
 | ⇩ ‏‏‎ ‏‏‎ ‏‏‎ **onError** ‏‏‎ ‏‏‎ ‏‏‎     | Runs on build error                |
 | 🎉 ‏‏‎ **onEnd** ‏‏‎ ‏‏‎ ‏‏‎              | Runs on build error or success     |
 
+_Please keep in mind that these events are for build events only and do not include deploy events, pertinent in cases that you're working with our API._
+
 ### Anatomy of a plugin
 
 A plugin consists of two files:
