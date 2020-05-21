@@ -8,7 +8,7 @@ const checkInputs = function({ inputs, manifest: { inputs: rules = [] }, package
   try {
     const inputsA = addDefaults(inputs, rules)
     checkRequiredInputs({ inputs: inputsA, rules, package, packageJson, loadedFrom, origin })
-    Object.keys(inputsA).map(name => checkInput({ name, rules, package, packageJson, loadedFrom, origin }))
+    Object.keys(inputsA).map(name => checkInput({ name, rules, package, packageJson, inputs, loadedFrom, origin }))
     return inputsA
   } catch (error) {
     error.message = `${error.message}
@@ -42,7 +42,7 @@ const checkRequiredInputs = function({ inputs, rules, package, packageJson, load
 
   const names = missingInputs.map(getName)
   const error = new Error(`Required inputs for plugin "${package}": ${names.join(', ')}`)
-  addInputError({ error, name: names[0], package, packageJson, loadedFrom, origin })
+  addInputError({ error, name: names[0], package, packageJson, inputs, loadedFrom, origin })
   throw error
 }
 
@@ -55,7 +55,7 @@ const getName = function({ name }) {
 }
 
 // Check each "inputs[*].*" property for a specific input
-const checkInput = function({ name, rules, package, packageJson, loadedFrom, origin }) {
+const checkInput = function({ name, rules, package, packageJson, inputs, loadedFrom, origin }) {
   const ruleA = rules.find(rule => rule.name === name)
   if (ruleA === undefined) {
     const error = new Error(`Invalid input "${name}" for plugin "${package}".
@@ -63,16 +63,16 @@ Check your plugin configuration to be sure that:
   - the input name is spelled correctly
   - the input is included in the plugin's available configuration options
   - the plugin's input requirements have not changed`)
-    addInputError({ error, name, package, packageJson, loadedFrom, origin })
+    addInputError({ error, name, package, packageJson, inputs, loadedFrom, origin })
     throw error
   }
 }
 
 // Add error information
-const addInputError = function({ error, name, package, packageJson, loadedFrom, origin }) {
+const addInputError = function({ error, name, package, packageJson, inputs, loadedFrom, origin }) {
   addErrorInfo(error, {
     type: 'pluginInput',
-    plugin: { package, packageJson },
+    plugin: { package, packageJson, inputs },
     location: { event: 'load', package, input: name, loadedFrom, origin },
   })
 }

@@ -10,7 +10,7 @@ const { validateManifest } = require('./validate')
 const pReadFile = promisify(readFile)
 
 // Load "manifest.yml" using its file path
-const loadManifest = async function({ manifestPath, package, packageJson, loadedFrom, origin }) {
+const loadManifest = async function({ inputs, manifestPath, package, packageJson, loadedFrom, origin }) {
   try {
     const rawManifest = await loadRawManifest(manifestPath)
     const manifest = await parseManifest(rawManifest)
@@ -19,7 +19,7 @@ const loadManifest = async function({ manifestPath, package, packageJson, loaded
   } catch (error) {
     addErrorInfo(error, {
       type: 'pluginValidation',
-      plugin: { package, packageJson },
+      plugin: { package, packageJson, inputs },
       location: { event: 'load', package, loadedFrom, origin },
     })
     throw error

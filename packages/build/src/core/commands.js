@@ -70,7 +70,7 @@ const runCommands = async function({
     commands,
     async (
       { index, error, failedPlugins, envChanges, statuses },
-      { event, childProcess, package, packageJson, loadedFrom, origin, buildCommand },
+      { event, childProcess, package, packageJson, inputs, loadedFrom, origin, buildCommand },
     ) => {
       const { newIndex = index, newError = error, failedPlugin = [], newEnvChanges = {}, newStatus } = await runCommand(
         {
@@ -78,6 +78,7 @@ const runCommands = async function({
           childProcess,
           package,
           packageJson,
+          inputs,
           loadedFrom,
           origin,
           buildCommand,
@@ -114,6 +115,7 @@ const runCommand = async function({
   childProcess,
   package,
   packageJson,
+  inputs,
   loadedFrom,
   origin,
   buildCommand,
@@ -142,6 +144,7 @@ const runCommand = async function({
     childProcess,
     package,
     packageJson,
+    inputs,
     loadedFrom,
     origin,
     buildCommand,
@@ -178,6 +181,7 @@ const fireCommand = function({
   childProcess,
   package,
   packageJson,
+  inputs,
   loadedFrom,
   origin,
   buildCommand,
@@ -198,6 +202,7 @@ const fireCommand = function({
     childProcess,
     package,
     packageJson,
+    inputs,
     loadedFrom,
     origin,
     envChanges,
@@ -239,6 +244,7 @@ const firePluginCommand = async function({
   childProcess,
   package,
   packageJson,
+  inputs,
   loadedFrom,
   origin,
   envChanges,
@@ -252,7 +258,7 @@ const firePluginCommand = async function({
       childProcess,
       'run',
       { event, error, envChanges },
-      { plugin: { packageJson, package }, location: { event, package, loadedFrom, origin } },
+      { plugin: { packageJson, package, inputs }, location: { event, package, loadedFrom, origin } },
     )
     const newStatus = getSuccessStatus(status, { commands, event, package })
     return { newEnvChanges, newStatus }

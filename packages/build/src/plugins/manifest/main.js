@@ -16,7 +16,7 @@ const useManifest = async function(
   }
 
   try {
-    const manifest = await loadManifest({ manifestPath, package, packageJson, loadedFrom, origin })
+    const manifest = await loadManifest({ inputs, manifestPath, package, packageJson, loadedFrom, origin })
     const inputsA = checkInputs({ inputs, manifest, package, packageJson, loadedFrom, origin })
     return { manifest, inputs: inputsA }
   } catch (error) {

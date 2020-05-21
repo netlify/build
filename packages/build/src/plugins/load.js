@@ -46,7 +46,7 @@ const loadPlugin = async function(
       childProcess,
       'load',
       { pluginPath, manifest, inputs, netlifyConfig, utilsData, token, constants },
-      { plugin: { package, packageJson }, location: { event, package, loadedFrom, origin } },
+      { plugin: { package, packageJson, inputs }, location: { event, package, loadedFrom, origin } },
     )
     const pluginCommandsA = pluginCommands.map(({ event }) => ({
       event,
@@ -54,6 +54,7 @@ const loadPlugin = async function(
       loadedFrom,
       origin,
       packageJson,
+      inputs,
       childProcess,
     }))
     return pluginCommandsA
