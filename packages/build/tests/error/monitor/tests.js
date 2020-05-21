@@ -71,3 +71,7 @@ test('Remove colors in error.message', async t => {
   const lines = stdout.split('\n').filter(line => line.includes('ColorTest'))
   t.true(lines.every(line => !hasAnsi(line)))
 })
+
+test('Report BUILD_ID', async t => {
+  await runFixture(t, 'command', { env: { ...env, BUILD_ID: 'test' } })
+})
