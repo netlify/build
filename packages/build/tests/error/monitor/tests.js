@@ -3,6 +3,7 @@ const { version } = require('process')
 const test = require('ava')
 const hasAnsi = require('has-ansi')
 
+const { getJsonOpt } = require('../../../../config/tests/helpers/main')
 const { runFixture } = require('../../helpers/main')
 
 const env = { BUGSNAG_KEY: '00000000000000000000000000000000' }
@@ -78,4 +79,9 @@ test('Report BUILD_ID', async t => {
 
 test('Report plugin homepage', async t => {
   await runFixture(t, 'plugin_homepage', { env })
+})
+
+test('Report plugin origin', async t => {
+  const defaultConfig = getJsonOpt({ plugins: [{ package: './plugin.js' }] })
+  await runFixture(t, 'plugin_origin', { env, flags: `--defaultConfig=${defaultConfig}` })
 })

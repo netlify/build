@@ -18,4 +18,21 @@ const getBuildCommandDescription = function(configPath) {
   return `build.command from ${basename(configPath)}`
 }
 
-module.exports = { getCommandDescription, getBuildCommandDescription }
+// Retrieve human-friendly plugin origin
+const getPluginOrigin = function(loadedFrom, origin) {
+  const originName = ORIGINS[origin]
+
+  if (loadedFrom === 'package.json') {
+    return `from ${originName} and package.json`
+  }
+
+  return `from ${originName}`
+}
+
+const ORIGINS = {
+  core: 'core',
+  ui: 'Netlify app',
+  config: 'netlify.toml',
+}
+
+module.exports = { getCommandDescription, getBuildCommandDescription, getPluginOrigin }

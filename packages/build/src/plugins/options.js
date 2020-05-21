@@ -71,7 +71,7 @@ const getSpawnInfo = function() {
   const { name } = corePackageJson
   return {
     plugin: { package: name, packageJson: corePackageJson },
-    location: { event: 'load', package: name, loadedFrom: 'core' },
+    location: { event: 'load', package: name, loadedFrom: 'core', origin: 'core' },
   }
 }
 

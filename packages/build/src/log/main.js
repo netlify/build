@@ -9,7 +9,7 @@ const { name, version } = require('../../package.json')
 const { serializeLogError } = require('../error/parse/serialize_log')
 const { omit } = require('../utils/omit')
 
-const { getCommandDescription, getBuildCommandDescription } = require('./description')
+const { getCommandDescription, getBuildCommandDescription, getPluginOrigin } = require('./description')
 const {
   log,
   logMessage,
@@ -171,23 +171,7 @@ const logLoadingPlugins = function(pluginsOptions) {
 const getPluginDescription = function({ package, packageJson: { version }, loadedFrom, origin }) {
   const versionA = version === undefined ? '' : `@${version}`
   const pluginOrigin = getPluginOrigin(loadedFrom, origin)
-  return `${THEME.highlightWords(package)}${versionA} from ${pluginOrigin}`
-}
-
-const getPluginOrigin = function(loadedFrom, origin) {
-  const originName = ORIGINS[origin]
-
-  if (loadedFrom === 'package.json') {
-    return `${originName} and package.json`
-  }
-
-  return originName
-}
-
-const ORIGINS = {
-  core: 'core',
-  ui: 'Netlify app',
-  config: 'netlify.toml',
+  return `${THEME.highlightWords(package)}${versionA} ${pluginOrigin}`
 }
 
 const logDryRunStart = function(eventWidth, commandsCount) {

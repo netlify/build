@@ -1,4 +1,4 @@
-const { getBuildCommandDescription } = require('../../log/description')
+const { getBuildCommandDescription, getPluginOrigin } = require('../../log/description')
 
 // Retrieve an error's location to print in logs.
 // Each error type has its own logic (or none if there's no location to print).
@@ -23,10 +23,10 @@ const getBuildCommandLocation = function({ buildCommand, configPath }) {
 ${buildCommand}`
 }
 
-const getBuildFailLocation = function({ event, package, loadedFrom }) {
+const getBuildFailLocation = function({ event, package, loadedFrom, origin }) {
   const eventMessage = getEventMessage(event)
-  const packageLocation = getPackageLocation(package, loadedFrom)
-  return `${eventMessage} ${packageLocation}`
+  const pluginOrigin = getPluginOrigin(loadedFrom, origin)
+  return `${eventMessage} "${package}" ${pluginOrigin}`
 }
 
 const getEventMessage = function(event) {
@@ -35,11 +35,6 @@ const getEventMessage = function(event) {
   }
 
   return `In "${event}" event in`
-}
-
-const getPackageLocation = function(package, loadedFrom) {
-  const localString = loadedFrom === 'local' ? 'local plugin' : 'npm package'
-  return `${localString} "${package}"`
 }
 
 const getApiLocation = function({ endpoint, parameters }) {
