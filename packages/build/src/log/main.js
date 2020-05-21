@@ -49,13 +49,13 @@ const logConfigPath = function(configPath = NO_CONFIG_MESSAGE) {
 
 const NO_CONFIG_MESSAGE = 'No config file was defined: using default values.'
 
-const logConfig = function(config) {
+const logConfig = function(netlifyConfig) {
   if (!NETLIFY_BUILD_DEBUG) {
     return
   }
 
   logSubHeader('Resolved config')
-  logObject(simplifyConfig(config))
+  logObject(simplifyConfig(netlifyConfig))
 }
 
 const logConfigOnError = function(netlifyConfig) {
@@ -70,14 +70,14 @@ const logConfigOnError = function(netlifyConfig) {
 // The resolved configuration gets assigned some default values (empty objects and arrays)
 // to make it more convenient to use without checking for `undefined`.
 // However those empty values are not useful to users, so we don't log them.
-const simplifyConfig = function({ build: { environment, ...build }, plugins, ...config }) {
+const simplifyConfig = function({ build: { environment, ...build }, plugins, ...netlifyConfig }) {
   const environmentA = omit(environment, BUILDBOT_ENVIRONMENT)
   const simplifiedBuild = {
     ...build,
     ...removeEmptyObject(environmentA, 'environment'),
   }
   return {
-    ...config,
+    ...netlifyConfig,
     ...removeEmptyObject(simplifiedBuild, 'build'),
     ...removeEmptyArray(plugins, 'plugins'),
   }
