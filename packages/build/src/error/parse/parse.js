@@ -68,7 +68,7 @@ const parseErrorInfo = function(error) {
 }
 
 const normalizeError = function(error) {
-  if (error instanceof Error) {
+  if (error instanceof Error && typeof error.message === 'string' && typeof error.stack === 'string') {
     return error
   }
 
