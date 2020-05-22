@@ -2,7 +2,8 @@ const { dirname, resolve } = require('path')
 
 const readdirp = require('readdirp')
 
-const { logInstallFunctionDependencies, logDeprecatedFunctionsInstall } = require('../log/main')
+const { addErrorInfo } = require('../error/info')
+const { logInstallFunctionDependencies } = require('../log/main')
 
 const { installDependencies } = require('./main')
 
@@ -42,7 +43,16 @@ const checkDeprecatedFunctionsInstall = async function(plugins, functionsSrc, bu
     return
   }
 
-  logDeprecatedFunctionsInstall(functionsSrc)
+  const error = new Error(`Please use the plugin "@netlify/plugin-functions-install-core" to install dependencies from the "package.json" inside your "${functionsSrc}" directory.
+Example "netlify.toml":
+
+  [build]
+  functions = "${functionsSrc}"
+
+  [[plugins]]
+  package = "@netlify/plugin-functions-install-core"`)
+  addErrorInfo(error, { type: 'resolveConfig' })
+  throw error
 }
 
 const isFunctionsInstallPlugin = function({ package }) {
