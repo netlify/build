@@ -133,17 +133,6 @@ const logInstallLocalPluginsDeps = function(localPluginsOptions) {
   logArray(packages)
 }
 
-const logDeprecatedLocalInstall = function() {
-  logErrorSubHeader('Missing plugin')
-  logMessage(
-    THEME.errorSubHeader(`Please use the plugin "@netlify/plugin-local-install-core" to install dependencies from the "package.json" inside your local plugins.
-Example "netlify.toml":
-
-  [[plugins]]
-  package = "@netlify/plugin-local-install-core"`),
-  )
-}
-
 const logInstallFunctionDependencies = function() {
   log('Installing functions dependencies')
 }
@@ -298,7 +287,6 @@ module.exports = {
   logInstallMissingPlugins,
   logMissingPluginsWarning,
   logInstallLocalPluginsDeps,
-  logDeprecatedLocalInstall,
   logInstallFunctionDependencies,
   logDeprecatedFunctionsInstall,
   logLoadingPlugins,

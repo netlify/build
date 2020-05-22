@@ -1,0 +1,10 @@
+{
+  "name": "plugin_deps_plugin",
+  "version": "0.0.1",
+  "description": "test",
+  "license": "MIT",
+  "repository": "test",
+  "dependencies": {
+    "math-avg": "^1.0.0"
+  }
+}
