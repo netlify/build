@@ -12,6 +12,10 @@ const pReadFile = promisify(readFile)
 // Load "manifest.yml" using its file path
 const loadManifest = async function({ manifestPath, package, packageJson, loadedFrom, origin }) {
   try {
+    if (manifestPath === undefined) {
+      throw new Error(`This plugin is missing a "manifest.yml"`)
+    }
+
     const rawManifest = await loadRawManifest(manifestPath)
     const manifest = await parseManifest(rawManifest)
     validateManifest(manifest, rawManifest)

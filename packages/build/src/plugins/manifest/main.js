@@ -11,10 +11,6 @@ const useManifest = async function(
 ) {
   const manifestPath = await getManifestPath(pluginDir, packageDir)
 
-  if (manifestPath === undefined) {
-    return { manifest: {}, inputs }
-  }
-
   try {
     const manifest = await loadManifest({ manifestPath, package, packageJson, loadedFrom, origin })
     const inputsA = checkInputs({ inputs, manifest, package, packageJson, loadedFrom, origin })
