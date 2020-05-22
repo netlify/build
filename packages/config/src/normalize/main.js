@@ -25,7 +25,7 @@ const removeEmptyCommand = function({ command, ...build }) {
   return { ...build, command }
 }
 
-const normalizePlugin = function({ package, config, inputs = config, origin = DEFAULT_ORIGIN, ...plugin }) {
+const normalizePlugin = function({ package, inputs, origin = DEFAULT_ORIGIN, ...plugin }) {
   return removeFalsy({ ...plugin, package, inputs, origin })
 }
 

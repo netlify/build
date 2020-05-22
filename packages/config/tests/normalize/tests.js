@@ -13,7 +13,3 @@ test('build.lifecycle.onBuild combined with build.command', async t => {
 test('build.command empty', async t => {
   await runFixture(t, 'command_empty')
 })
-
-test('plugins[*].config', async t => {
-  await runFixture(t, 'config')
-})
