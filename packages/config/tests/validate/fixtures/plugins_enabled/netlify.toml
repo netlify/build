@@ -1,0 +1,3 @@
+[[plugins]]
+package = "./plugin.js"
+enabled = true

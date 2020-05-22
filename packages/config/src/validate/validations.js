@@ -32,10 +32,10 @@ const RAW_VALIDATIONS = [
     example: type => ({ plugins: [{ package: type }] }),
   },
 
-  // TODO: remove 'config', 'enabled' after going GA
+  // TODO: remove 'config' after going GA
   {
     property: 'plugins.*',
-    ...validProperties(['package', 'inputs'], ['config', 'enabled', 'origin']),
+    ...validProperties(['package', 'inputs'], ['config', 'origin']),
     example: { plugins: [{ package: 'netlify-plugin-one', inputs: { port: 80 } }] },
   },
 
