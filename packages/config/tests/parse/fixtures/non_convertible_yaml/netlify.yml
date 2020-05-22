@@ -1,4 +1,0 @@
-build:
-  command: echo command
-  # TOML does not allow mixed array types
-  test: [true, 'true']

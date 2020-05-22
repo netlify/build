@@ -1,11 +1,9 @@
-const { resolve, basename } = require('path')
+const { resolve } = require('path')
 
 const findUp = require('find-up')
-const pFilter = require('p-filter')
 const pLocate = require('p-locate')
 const pathExists = require('path-exists')
 
-const { throwError } = require('./error')
 const { resolvePath } = require('./files')
 
 // Configuration location can be:
@@ -19,10 +17,11 @@ const getConfigPath = async function({ configOpt, cwd, repositoryRoot, base }) {
       searchConfigOpt(cwd, configOpt),
       searchBaseConfigFile(repositoryRoot, base),
       searchConfigFile(repositoryRoot),
-      findUp(FILENAMES, { cwd }),
+      findUp(FILENAME, { cwd }),
     ],
     Boolean,
   )
+  await printDeprecatedYaml(configPath, repositoryRoot)
   return configPath
 }
 
@@ -47,17 +46,27 @@ const searchBaseConfigFile = function(repositoryRoot, base) {
 
 // Look for several file extensions for `netlify.*`
 const searchConfigFile = async function(cwd) {
-  const paths = FILENAMES.map(filename => resolve(cwd, filename))
-  const pathsA = await pFilter(paths, pathExists)
-
-  if (pathsA.length > 1) {
-    const filenames = pathsA.map(path => basename(path)).join(', ')
-    throwError(`Should use only one configuration file (among ${filenames}) in:\n${cwd}`)
+  const path = resolve(cwd, FILENAME)
+  if (!(await pathExists(path))) {
+    return
   }
-
-  return pathsA[0]
+  return path
 }
 
-const FILENAMES = ['netlify.toml', 'netlify.yml', 'netlify.yaml', 'netlify.json']
+const FILENAME = 'netlify.toml'
+
+// TODO: remove once users stop using netlify.yml
+const printDeprecatedYaml = async function(configPath, repositoryRoot) {
+  if (configPath !== undefined) {
+    return
+  }
+
+  const yamlConfigPath = await findUp(YAML_FILENAME, { cwd: repositoryRoot })
+  if (yamlConfigPath !== undefined) {
+    throw new Error(`${YAML_FILENAME} is deprecated: please use ${FILENAME} instead.`)
+  }
+}
+
+const YAML_FILENAME = 'netlify.yml'
 
 module.exports = { getConfigPath }

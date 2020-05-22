@@ -14,10 +14,6 @@ test('No --config but none found', async t => {
   await runFixture(t, 'none', { copyRoot: {} })
 })
 
-test('Several configuration files', async t => {
-  await runFixture(t, 'several')
-})
-
 test('--config with an absolute path', async t => {
   await runFixture(t, '', { flags: `--config=${FIXTURES_DIR}/empty/netlify.toml` })
 })
