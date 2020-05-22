@@ -50,6 +50,12 @@ const setOldProperty = function(obj, propName, message) {
   Object.defineProperty(obj, propName, { get: throwPluginValidation.bind(null, message) })
 }
 
+const validateOldProperty = function(obj, propName, message) {
+  if (obj[propName] !== undefined) {
+    throwPluginValidation(message)
+  }
+}
+
 const throwPluginValidation = function(message) {
   const error = new Error(message)
   error[ERROR_TYPE_SYM] = 'pluginValidation'
@@ -63,4 +69,5 @@ module.exports = {
   isBuildError,
   ERROR_TYPE_SYM,
   setOldProperty,
+  validateOldProperty,
 }
