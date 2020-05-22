@@ -1,7 +1,5 @@
 const isPlainObj = require('is-plain-obj')
 
-const { getLifecycleCommand } = require('../normalize/lifecycle')
-
 const { addContextValidations } = require('./context')
 const { isString, isUndefined, validProperties, insideRootCheck, removeParentDots } = require('./helpers')
 
@@ -110,13 +108,12 @@ const RAW_VALIDATIONS = [
     example: () => ({ build: { command: 'npm run build' } }),
   },
 
-  // TODO: remove this check after going GA
+  // TODO: remove once users stop using `build.lifecycle`
   {
     property: 'build.lifecycle',
     check: isUndefined,
     message: 'has been removed. Please use build.command instead.',
-    example: lifecycle => ({ build: { command: getLifecycleCommand(lifecycle) } }),
-    warn: true,
+    example: () => ({ build: { command: 'npm run build' } }),
   },
 
   {

@@ -79,7 +79,7 @@ test('build.command: array', async t => {
   await runFixture(t, 'build_command_array')
 })
 
-test('build.lifecycle: deprecated', async t => {
+test('build.lifecycle: removed', async t => {
   await runFixture(t, 'build_lifecycle')
 })
 
