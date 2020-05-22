@@ -1,6 +1,5 @@
 const { getApiClient } = require('./api')
 const { getLogic } = require('./logic')
-const { normalizePlugin } = require('./normalize')
 const { validatePlugin } = require('./validate')
 
 // Load context passed to every plugin method.
@@ -13,9 +12,7 @@ const load = function(payload) {
 
   validatePlugin(logic)
 
-  const logicA = normalizePlugin(logic)
-
-  const pluginCommands = getPluginCommands(logicA)
+  const pluginCommands = getPluginCommands(logic)
 
   const context = getContext(pluginCommands, payload)
   return { pluginCommands, context }
