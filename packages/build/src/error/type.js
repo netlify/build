@@ -79,7 +79,7 @@ const TYPES = {
     locationType: 'buildFail',
     isSuccess: true,
     severity: 'info',
-    state: 'canceled_plugin',
+    state: 'canceled_build',
   },
 
   // Plugin has an invalid shape
