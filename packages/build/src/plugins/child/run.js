@@ -1,4 +1,5 @@
 const { getNewEnvChanges, setEnvChanges } = require('../../env/changes.js')
+const { setOldProperty } = require('../error')
 
 const { getUtils } = require('./utils')
 
@@ -11,7 +12,7 @@ const run = async function(
   const runState = {}
   const utils = getUtils({ utilsData, constants, runState })
   const runOptions = { api, utils, constants, inputs, netlifyConfig, error }
-  addBackwardCompatibility(runOptions)
+  validateOldSyntax(runOptions)
 
   const envBefore = setEnvChanges(envChanges)
   await method(runOptions)
@@ -19,16 +20,11 @@ const run = async function(
   return { ...runState, newEnvChanges }
 }
 
-// Add older names, kept for backward compatibility. Non-enumerable.
-// TODO: remove after being out of beta
-const addBackwardCompatibility = function(runOptions) {
-  Object.defineProperties(runOptions, {
-    pluginConfig: { value: runOptions.inputs },
-  })
-  // Make `constants.BUILD_DIR` non-enumerable
-  Object.defineProperty(runOptions.constants, 'BUILD_DIR', {
-    value: runOptions.constants.BUILD_DIR,
-  })
+// Backward compatibility warnings. Non-enumerable.
+// TODO: remove once no plugins is doing this anymore.
+const validateOldSyntax = function(runOptions) {
+  setOldProperty(runOptions, 'pluginConfig', 'The "pluginConfig" argument has been renamed to "inputs"')
+  setOldProperty(runOptions.constants, 'BUILD_DIR', 'The "BUILD_DIR" argument has been renamed to "PUBLISH_DIR"')
 }
 
 module.exports = { run }

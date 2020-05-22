@@ -29,7 +29,7 @@ test('constants.PUBLISH_DIR missing path', async t => {
   await runFixture(t, 'publish_missing')
 })
 
-test('constants.BUILD_DIR backward compatibility', async t => {
+test('constants.BUILD_DIR fails and prints a message', async t => {
   await runFixture(t, 'build_dir')
 })
 
