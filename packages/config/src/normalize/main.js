@@ -25,17 +25,7 @@ const removeEmptyCommand = function({ command, ...build }) {
   return { ...build, command }
 }
 
-// `plugins[*].package` was previously called `plugins[*].type`
-// Same with `plugins[*].config` renamed to `plugins[*].inputs`
-// TODO: remove after the Beta release since it's legacy
-const normalizePlugin = function({
-  type,
-  package = type,
-  config,
-  inputs = config,
-  origin = DEFAULT_ORIGIN,
-  ...plugin
-}) {
+const normalizePlugin = function({ package, config, inputs = config, origin = DEFAULT_ORIGIN, ...plugin }) {
   return removeFalsy({ ...plugin, package, inputs, origin })
 }
 

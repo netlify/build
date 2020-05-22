@@ -14,10 +14,6 @@ test('build.command empty', async t => {
   await runFixture(t, 'command_empty')
 })
 
-test('plugins[*].type', async t => {
-  await runFixture(t, 'type')
-})
-
 test('plugins[*].config', async t => {
   await runFixture(t, 'config')
 })
