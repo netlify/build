@@ -126,6 +126,8 @@ package = "./plugins/netlify-plugin-hello-world"
 
 (Note that each plugin you add to the `netlify.toml` file has its own `[[plugins]]` line.)
 
+Local plugins `package` value must start with `.` or `/`.
+
 Now that the plugin is declared, we can verify it's loading correctly with the `netlify build --dry` command. This
 execute a "dry run" of our build and show us the plugins & commands that will execute for a real build.
 
