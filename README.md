@@ -22,6 +22,7 @@ are **now in public beta.** Learn how to enable your site to use Netlify Build a
   - [Adding inputs to plugins](#adding-inputs-to-plugins)
   - [Validating plugin inputs](#validating-plugin-inputs)
   - [Plugin constants](#plugin-constants)
+  - [Utilities](#utilities)
   - [Error reporting](#error-reporting)
   - [Logging](#logging)
   - [Asynchronous code](#asynchronous-code)
@@ -242,6 +243,17 @@ The `constants` key contains the following values:
   defined, but the target might not have been created yet.
 - `IS_LOCAL` Boolean indicating whether the build was run locally (Netlify CLI) or in the production CI
 - `SITE_ID` The Netlify Site ID
+
+### Utilities
+
+Several utilities are providing with the `utils` argument to event handlers:
+
+- [`build`](#error-reporting): to report errors or cancel builds
+- [`status`](#logging): to display information in the deploy summary
+- [`cache`](/packages/cache-utils/README.md): to cache files between builds
+- [`run`](/packages/run-utils/README.md): to run commands and processes
+- [`git`](/packages/git-utils/README.md): to retrieve git-related information such as the list of
+  modified/created/deleted files
 
 ### Error reporting
 
