@@ -81,7 +81,7 @@ test.serial('Functions: install dependencies with Yarn in CI with lock file', as
   ])
 })
 
-test.serial('Functions: install dependencies without using the plugin prints a warning', async t => {
+test('Functions: install dependencies without using the plugin prints a warning', async t => {
   await removeDir([`${FIXTURES_DIR}/warning/.netlify/functions/`, `${FIXTURES_DIR}/warning/functions/node_modules/`])
   await runFixture(t, 'warning')
   await removeDir([`${FIXTURES_DIR}/warning/.netlify/functions/`, `${FIXTURES_DIR}/warning/functions/node_modules/`])

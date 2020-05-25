@@ -148,20 +148,6 @@ const logInstallFunctionDependencies = function() {
   log('Installing functions dependencies')
 }
 
-const logDeprecatedFunctionsInstall = function(functionsSrc) {
-  logErrorSubHeader('Missing plugin')
-  logMessage(
-    THEME.errorSubHeader(`Please use the plugin "@netlify/plugin-functions-install-core" to install dependencies from the "package.json" inside your "${functionsSrc}" directory.
-Example "netlify.toml":
-
-  [build]
-  functions = "${functionsSrc}"
-
-  [[plugins]]
-  package = "@netlify/plugin-functions-install-core"`),
-  )
-}
-
 const getPackage = function({ package }) {
   return package
 }
@@ -300,7 +286,6 @@ module.exports = {
   logInstallLocalPluginsDeps,
   logDeprecatedLocalInstall,
   logInstallFunctionDependencies,
-  logDeprecatedFunctionsInstall,
   logLoadingPlugins,
   logDryRunStart,
   logDryRunCommand,
