@@ -60,12 +60,11 @@ const logConfig = function(netlifyConfig) {
 }
 
 const logConfigOnError = function(error, netlifyConfig) {
-  if (netlifyConfig === undefined) {
+  if (netlifyConfig === undefined || isSuccessException(error)) {
     return
   }
 
-  const color = isSuccessException(error) ? THEME.subHeader : THEME.errorSubHeader
-  logMessage(color('Resolved config'))
+  logMessage(THEME.errorSubHeader('Resolved config'))
   logObject(simplifyConfig(netlifyConfig))
 }
 
