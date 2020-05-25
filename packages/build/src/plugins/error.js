@@ -41,4 +41,26 @@ const isBuildError = function(error) {
 
 const ERROR_TYPE_SYM = Symbol('errorType')
 
-module.exports = { failBuild, failPlugin, cancelBuild, isBuildError, ERROR_TYPE_SYM }
+// Throw an error when using an old property not supported anymore
+const setOldProperty = function(obj, propName, message) {
+  if (propName in obj) {
+    return
+  }
+
+  Object.defineProperty(obj, propName, { get: throwPluginValidation.bind(null, message) })
+}
+
+const throwPluginValidation = function(message) {
+  const error = new Error(message)
+  error[ERROR_TYPE_SYM] = 'pluginValidation'
+  throw error
+}
+
+module.exports = {
+  failBuild,
+  failPlugin,
+  cancelBuild,
+  isBuildError,
+  ERROR_TYPE_SYM,
+  setOldProperty,
+}
