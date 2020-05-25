@@ -6,6 +6,7 @@ const { arrowDown } = require('figures')
 const prettyMs = require('pretty-ms')
 
 const { name, version } = require('../../package.json')
+const { isSuccessException } = require('../error/cancel')
 const { serializeLogError } = require('../error/parse/serialize_log')
 const { omit } = require('../utils/omit')
 
@@ -58,12 +59,13 @@ const logConfig = function(netlifyConfig) {
   logObject(simplifyConfig(netlifyConfig))
 }
 
-const logConfigOnError = function(netlifyConfig) {
+const logConfigOnError = function(error, netlifyConfig) {
   if (netlifyConfig === undefined) {
     return
   }
 
-  logMessage(THEME.errorSubHeader('Resolved config'))
+  const color = isSuccessException(error) ? THEME.subHeader : THEME.errorSubHeader
+  logMessage(color('Resolved config'))
   logObject(simplifyConfig(netlifyConfig))
 }
 
@@ -209,7 +211,7 @@ const logDryRunEnd = function() {
 
 const logCommand = function({ event, package, index, configPath, error }) {
   const description = getCommandDescription({ event, package, configPath })
-  const logHeaderFunc = error ? logErrorHeader : logHeader
+  const logHeaderFunc = error && !isSuccessException(error) ? logErrorHeader : logHeader
   logHeaderFunc(`${index + 1}. ${description}`)
   logMessage('')
 }
@@ -247,7 +249,7 @@ const logPluginError = function(error, netlifyConfig) {
   const { title, body } = serializeLogError(error)
   logErrorHeader(title)
   logMessage(`\n${body}\n`)
-  logConfigOnError(netlifyConfig)
+  logConfigOnError(error, netlifyConfig)
 }
 
 const logBuildError = function(error) {
@@ -255,7 +257,7 @@ const logBuildError = function(error) {
   const logFunction = isSuccess ? logHeader : logErrorHeader
   logFunction(title)
   logMessage(`\n${body}\n`)
-  logConfigOnError(netlifyConfig)
+  logConfigOnError(error, netlifyConfig)
 }
 
 const logBuildSuccess = function() {
