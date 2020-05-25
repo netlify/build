@@ -16,6 +16,10 @@ test.serial('Big plugin output is not truncated', async t => {
   t.pass()
 })
 
+test('Using "pluginConfig" fails with a warning', async t => {
+  await runFixture(t, 'inputs_plugin_config')
+})
+
 test('process.env changes are propagated to other plugins', async t => {
   await runFixture(t, 'env_changes_plugin')
 })
