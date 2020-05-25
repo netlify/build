@@ -26,7 +26,7 @@ const EVENTS = [
   'onEnd',
 ]
 
-// TODO: remove after going out of beta
+// TODO: remove once no plugins is doing this anymore.
 const LEGACY_EVENTS = {
   init: 'onPreBuild',
   onInit: 'onPreBuild',

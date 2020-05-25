@@ -52,7 +52,12 @@ const validateProperty = function(value, propName) {
 const UNDOCUMENTED_PROPERTIES = ['scopes']
 
 const validateEventHandler = function(value, propName) {
-  if (!EVENTS.includes(propName) && LEGACY_EVENTS[propName] === undefined) {
+  // TODO: remove once no plugins is doing this anymore.
+  if (LEGACY_EVENTS[propName] !== undefined) {
+    throw new Error(`Event handler '${propName}' has been renamed to '${LEGACY_EVENTS[propName]}'`)
+  }
+
+  if (!EVENTS.includes(propName)) {
     throw new Error(`Invalid event '${propName}'.
 Please use a valid event name. One of:
 ${serializeArray(EVENTS)}`)
