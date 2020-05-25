@@ -1,15 +1,12 @@
-const { deepMerge } = require('../utils/merge')
-const { removeFalsy } = require('../utils/remove_falsy')
-
-const { normalizeLifecycle } = require('./lifecycle')
+const { deepMerge } = require('./utils/merge')
+const { removeFalsy } = require('./utils/remove_falsy')
 
 // Normalize configuration object
 const normalizeConfig = function(config) {
   const { build, plugins, ...configA } = deepMerge(DEFAULT_CONFIG, config)
-  const buildA = normalizeLifecycle(build)
-  const buildB = removeEmptyCommand(buildA)
+  const buildA = removeEmptyCommand(build)
   const pluginsA = plugins.map(normalizePlugin)
-  return { ...configA, build: buildB, plugins: pluginsA }
+  return { ...configA, build: buildA, plugins: pluginsA }
 }
 
 const DEFAULT_CONFIG = {

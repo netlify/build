@@ -1,8 +1,0 @@
-[build.lifecycle]
-finally = "echo finally"
-functionsPackage = "echo functionsPackage"
-preBuild = "echo preBuild"
-init = "echo init"
-onBuild = "echo onBuild"
-onbuild = "echo onbuild"
-onInit = "echo onInit"

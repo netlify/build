@@ -1,5 +1,0 @@
-[build]
-command = "echo command"
-
-[build.lifecycle]
-onBuild = "echo onBuild"
