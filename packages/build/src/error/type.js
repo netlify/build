@@ -85,7 +85,7 @@ const TYPES = {
   // Plugin has an invalid shape
   pluginValidation: {
     title: ({ location: { package } }) => `Plugin "${package}" internal error`,
-    stackType: 'none',
+    stackType: 'stack',
     locationType: 'buildFail',
     severity: 'warning',
   },
