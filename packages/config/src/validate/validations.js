@@ -41,7 +41,7 @@ const RAW_VALIDATIONS = [
 
   {
     property: 'plugins.*',
-    check: ({ package, type }) => package !== undefined || type !== undefined,
+    check: ({ package }) => package !== undefined,
     message: '"package" property is required.',
     example: () => ({ plugins: [{ package: 'netlify-plugin-one' }] }),
   },
