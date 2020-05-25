@@ -13,7 +13,10 @@ const pReadFile = promisify(readFile)
 const loadManifest = async function({ manifestPath, package, packageJson, loadedFrom, origin }) {
   try {
     if (manifestPath === undefined) {
-      throw new Error(`This plugin is missing a "manifest.yml"`)
+      throw new Error(
+        `This plugin is missing a "manifest.yml".
+Please see the documentation at https://github.com/netlify/build#anatomy-of-a-plugin`,
+      )
     }
 
     const rawManifest = await loadRawManifest(manifestPath)
