@@ -24,10 +24,18 @@ const RAW_VALIDATIONS = [
     example: () => ({ plugins: [{ package: 'netlify-plugin-one' }, { package: 'netlify-plugin-two' }] }),
   },
 
+  // TODO: remove once users stopped using this feature
+  {
+    property: 'plugins.*.type',
+    check: isUndefined,
+    message: 'has been renamed to "package".',
+    example: type => ({ plugins: [{ package: type }] }),
+  },
+
   // TODO: remove 'id', 'type', 'config', 'enabled' after going GA
   {
     property: 'plugins.*',
-    ...validProperties(['package', 'inputs'], ['id', 'type', 'config', 'enabled', 'origin']),
+    ...validProperties(['package', 'inputs'], ['id', 'config', 'enabled', 'origin']),
     example: { plugins: [{ package: 'netlify-plugin-one', inputs: { port: 80 } }] },
   },
 
@@ -36,15 +44,6 @@ const RAW_VALIDATIONS = [
     check: ({ package, type }) => package !== undefined || type !== undefined,
     message: '"package" property is required.',
     example: () => ({ plugins: [{ package: 'netlify-plugin-one' }] }),
-  },
-
-  // TODO: remove this check after going GA
-  {
-    property: 'plugins.*.type',
-    check: isUndefined,
-    message: 'has been renamed to "package".',
-    example: type => ({ plugins: [{ package: type }] }),
-    warn: true,
   },
 
   {
