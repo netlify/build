@@ -53,7 +53,10 @@ const LOCAL_INSTALL_NAME = '@netlify/plugin-local-install-core'
 
 // Core plugins and non-local plugins already have their dependencies installed
 const getLocalPluginsOptions = function(pluginsOptions) {
-  return pluginsOptions.filter(isLocalPlugin).filter(isUnique)
+  return pluginsOptions
+    .filter(isLocalPlugin)
+    .filter(isUnique)
+    .filter(hasPackageDir)
 }
 
 const isLocalPlugin = function({ loadedFrom }) {
@@ -63,6 +66,10 @@ const isLocalPlugin = function({ loadedFrom }) {
 // Remove duplicates
 const isUnique = function({ packageDir }, index, pluginsOptions) {
   return pluginsOptions.slice(index + 1).every(pluginOption => pluginOption.packageDir !== packageDir)
+}
+
+const hasPackageDir = function({ packageDir }) {
+  return packageDir !== undefined
 }
 
 // We only install dependencies of local plugins that have their own `package.json`
