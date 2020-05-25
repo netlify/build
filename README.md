@@ -147,6 +147,9 @@ netlify build
 
 This will execute our `onPreBuild` function.
 
+More information about the `netlify build` command can be found in the
+[Netlify CLI documentation](https://github.com/netlify/cli/blob/master/docs/commands/build.md).
+
 ### Adding inputs to plugins
 
 If your plugin requires additional values from the user to do things, you can specify these requirements in an `inputs`
