@@ -23,6 +23,10 @@ test('plugins.any.type renamed', async t => {
   await runFixture(t, 'plugins_type_renamed')
 })
 
+test('plugins.any.enabled removed', async t => {
+  await runFixture(t, 'plugins_enabled')
+})
+
 test('plugins.any.package: required', async t => {
   await runFixture(t, 'plugins_package_required')
 })
