@@ -244,15 +244,8 @@ const logCacheDir = function(path) {
   logMessage(`Caching ${path}`)
 }
 
-const logPluginError = function(error, netlifyConfig) {
-  const { title, body } = serializeLogError(error)
-  logErrorHeader(title)
-  logMessage(`\n${body}\n`)
-  logConfigOnError(error, netlifyConfig)
-}
-
-const logBuildError = function(error) {
-  const { title, body, isSuccess, netlifyConfig } = serializeLogError(error)
+const logBuildError = function(error, netlifyConfigArg) {
+  const { title, body, isSuccess, netlifyConfig = netlifyConfigArg } = serializeLogError(error)
   const logFunction = isSuccess ? logHeader : logErrorHeader
   logFunction(title)
   logMessage(`\n${body}\n`)
@@ -285,7 +278,6 @@ module.exports = {
   logTimer,
   logStatuses,
   logCacheDir,
-  logPluginError,
   logBuildError,
   logBuildSuccess,
 }

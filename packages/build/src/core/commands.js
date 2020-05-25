@@ -7,7 +7,7 @@ const { setEnvChanges } = require('../env/changes.js')
 const { addErrorInfo, getErrorInfo } = require('../error/info')
 const { reportBuildError } = require('../error/monitor/report')
 const { serializeErrorStatus } = require('../error/parse/serialize_status')
-const { logCommand, logBuildCommandStart, logCommandSuccess, logPluginError } = require('../log/main')
+const { logCommand, logBuildCommandStart, logCommandSuccess, logBuildError } = require('../log/main')
 const { pipeOutput, unpipeOutput } = require('../log/stream')
 const { startTimer, endTimer } = require('../log/timer')
 const { EVENTS } = require('../plugins/events')
@@ -296,7 +296,7 @@ const handleCommandError = async function({ newError, errorMonitor, buildCommand
 }
 
 const handleFailPlugin = async function({ newStatus, package, newError, errorMonitor, netlifyConfig }) {
-  logPluginError(newError, netlifyConfig)
+  logBuildError(newError, netlifyConfig)
   await reportBuildError(newError, errorMonitor)
   return { failedPlugin: [package], newStatus }
 }
