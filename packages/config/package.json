@@ -22,7 +22,6 @@
   "license": "MIT",
   "dependencies": {
     "array-flat-polyfill": "^1.0.1",
-    "chalk": "^3.0.0",
     "deepmerge": "^4.2.2",
     "execa": "^3.4.0",
     "fast-safe-stringify": "^2.0.7",
@@ -30,9 +29,7 @@
     "find-up": "^4.1.0",
     "indent-string": "^4.0.0",
     "is-plain-obj": "^2.1.0",
-    "js-yaml": "^3.13.1",
     "netlify": "^4.1.7",
-    "p-filter": "^2.1.0",
     "p-locate": "^4.1.0",
     "path-exists": "^4.0.0",
     "toml": "^3.0.0",
@@ -42,8 +39,7 @@
   "devDependencies": {
     "ava": "^2.4.0",
     "del": "^5.1.0",
-    "get-bin-path": "^4.0.1",
-    "has-ansi": "^4.0.0"
+    "get-bin-path": "^4.0.1"
   },
   "engines": {
     "node": ">=8.3.0"

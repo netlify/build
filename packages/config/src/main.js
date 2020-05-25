@@ -13,7 +13,7 @@ const { throwError } = require('./error')
 const { handleFiles } = require('./files')
 const { normalizeConfig } = require('./normalize')
 const { normalizeOpts } = require('./options/main')
-const { parseConfig } = require('./parse/main')
+const { parseConfig } = require('./parse')
 const { getConfigPath } = require('./path')
 const { validateConfig } = require('./validate/main')
 

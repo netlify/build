@@ -1,5 +1,4 @@
 const test = require('ava')
-const hasAnsi = require('has-ansi')
 
 const { runFixture } = require('../helpers/main')
 
@@ -97,9 +96,4 @@ test('build.context: object', async t => {
 
 test('build.context.CONTEXT: object', async t => {
   await runFixture(t, 'build_context_nested_object')
-})
-
-test('Colors', async t => {
-  const { stderr } = await runFixture(t, 'colors', { snapshot: false, normalize: false })
-  t.true(hasAnsi(stderr))
 })
