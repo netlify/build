@@ -23,6 +23,7 @@ are **now in public beta.** Learn how to enable your site to use Netlify Build a
   - [Validating plugin inputs](#validating-plugin-inputs)
   - [Plugin constants](#plugin-constants)
   - [Error reporting](#error-reporting)
+  - [Logging](#logging)
   - [Asynchronous code](#asynchronous-code)
   - [Dynamic events](#dynamic-events)
 - [Publishing a plugin](#publishing-a-plugin)
@@ -284,6 +285,44 @@ module.exports = {
   },
 }
 ```
+
+### Logging
+
+Anything printed on the console will be shown in the build logs.
+
+```js
+// index.js
+
+module.exports = {
+  onPreBuild() {
+    console.log('This is printed in the build logs')
+  },
+}
+```
+
+If you'd prefer to make the information more visible, `utils.status.show()` can be used to display them in the deploy
+summary instead.
+
+```js
+// index.js
+
+module.exports = {
+  onPreBuild({ utils }) {
+    utils.status.show({
+      // Optional. Default to the plugin's name followed by a generic title.
+      title: 'Main title',
+      // Required.
+      message: 'Message below the title',
+      // Optional. Empty by default.
+      text: 'Detailed information shown in a collapsible section',
+    })
+  },
+}
+```
+
+Only one status is shown per plugin. Calling `utils.status.show()` twice overrides the previous status.
+
+This is meant for successful information. Errors should be reported [with `utils.build.*` instead](#error-reporting).
 
 ### Asynchronous code
 
