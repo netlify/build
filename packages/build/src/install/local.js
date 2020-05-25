@@ -1,6 +1,7 @@
 const pkgDir = require('pkg-dir')
 
-const { logDeprecatedLocalInstall, logInstallLocalPluginsDeps } = require('../log/main')
+const { addErrorInfo } = require('../error/info')
+const { logInstallLocalPluginsDeps } = require('../log/main')
 
 const { installDependencies } = require('./main')
 
@@ -16,10 +17,7 @@ const installLocalPluginsDependencies = async function({ plugins, pluginsOptions
     return
   }
 
-  if (!canUseLocalPluginsInstall(plugins)) {
-    // TODO: replace log statement by `return` instead once going out of beta
-    logDeprecatedLocalInstall()
-  }
+  checkLocalPluginsInstall(plugins)
 
   logInstallLocalPluginsDeps(localPluginsOptionsA)
   await Promise.all(
@@ -32,8 +30,19 @@ const installLocalPluginsDependencies = async function({ plugins, pluginsOptions
 // Users must add this plugin to their `netlify.toml` `plugins` to use this
 // feature. We don't want to provide it by default because this makes build
 // slow and buggy.
-const canUseLocalPluginsInstall = function(plugins) {
-  return plugins.some(isLocalInstallOptIn)
+// TODO: remove once users all added this plugin to their `netlify.toml`
+const checkLocalPluginsInstall = function(plugins) {
+  if (plugins.some(isLocalInstallOptIn)) {
+    return
+  }
+
+  const error = new Error(`Please use the plugin "@netlify/plugin-local-install-core" to install dependencies from the "package.json" inside your local plugins.
+Example "netlify.toml":
+
+  [[plugins]]
+  package = "@netlify/plugin-local-install-core"`)
+  addErrorInfo(error, { type: 'resolveConfig' })
+  throw error
 }
 
 const isLocalInstallOptIn = function({ package }) {

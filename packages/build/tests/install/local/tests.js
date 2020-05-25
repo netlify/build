@@ -61,3 +61,7 @@ test.serial('Install local plugin dependencies: no package.json', async t => {
 test.serial('Install local plugin dependencies: no root package.json', async t => {
   await runFixture(t, 'no_root_package', { copyRoot: {} })
 })
+
+test('Install local plugin dependencies: missing plugin in netlify.toml', async t => {
+  await runFixture(t, 'missing')
+})
