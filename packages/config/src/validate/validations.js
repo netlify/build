@@ -1,6 +1,5 @@
 const isPlainObj = require('is-plain-obj')
 
-const { addContextValidations } = require('./context')
 const { isString, isUndefined, validProperties, insideRootCheck, removeParentDots } = require('./helpers')
 
 // List of validations performed on the configuration file.
@@ -14,14 +13,35 @@ const { isString, isUndefined, validProperties, insideRootCheck, removeParentDot
 //   - `example` {string}: example of correct code
 //   - `warn` {boolean}: whether to print a console message or throw an error
 // We use this instead of JSON schema (or others) to get nicer error messages.
-const RAW_VALIDATIONS = [
+
+// Validations done before `defaultConfig` merge
+const PRE_MERGE_VALIDATIONS = [
   {
     property: 'plugins',
     check: value => Array.isArray(value) && value.every(isPlainObj),
     message: 'must be an array of objects.',
     example: () => ({ plugins: [{ package: 'netlify-plugin-one' }, { package: 'netlify-plugin-two' }] }),
   },
+]
 
+// Validations done before context merge
+const PRE_CONTEXT_VALIDATIONS = [
+  {
+    property: 'context',
+    check: isPlainObj,
+    message: 'must be a plain object.',
+    example: () => ({ context: { production: { publish: 'dist' } } }),
+  },
+  {
+    property: 'context.*',
+    check: isPlainObj,
+    message: 'must be a plain object.',
+    example: (contextProps, key) => ({ context: { [key]: { publish: 'dist' } } }),
+  },
+]
+
+// Validations done before normalization
+const PRE_NORMALIZE_VALIDATIONS = [
   // TODO: remove once users stop using those features
   {
     property: 'plugins.*.type',
@@ -115,21 +135,6 @@ const RAW_VALIDATIONS = [
     message: 'has been removed. Please use build.command instead.',
     example: () => ({ build: { command: 'npm run build' } }),
   },
-
-  {
-    property: 'context',
-    check: isPlainObj,
-    message: 'must be a plain object.',
-    example: () => ({ context: { production: { publish: 'dist' } } }),
-  },
-  {
-    property: 'context.*',
-    check: isPlainObj,
-    message: 'must be a plain object.',
-    example: (contextProps, key) => ({ context: { [key]: { publish: 'dist' } } }),
-  },
 ]
 
-const VALIDATIONS = addContextValidations(RAW_VALIDATIONS)
-
-module.exports = { VALIDATIONS }
+module.exports = { PRE_MERGE_VALIDATIONS, PRE_CONTEXT_VALIDATIONS, PRE_NORMALIZE_VALIDATIONS }
