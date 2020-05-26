@@ -1,0 +1,12 @@
+[Build]
+Base = "base"
+Command = "gulp build"
+Functions = "functions"
+Ignore = "doIgnore"
+Publish = "publish"
+
+[Build.Environment]
+TEST = "test"
+
+[Build.Processing.css]
+bundle = true
