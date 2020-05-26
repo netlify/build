@@ -7,6 +7,8 @@ const {
 const { getCacheDir } = require('@netlify/cache-utils')
 const mapObj = require('map-obj')
 
+const { version } = require('../../package.json')
+
 // Retrieve constants passed to plugins
 const getConstants = async function({
   configPath,
@@ -47,6 +49,10 @@ const getConstants = async function({
      */
     IS_LOCAL: isLocal,
     /**
+     * The version of Netlify Build
+     */
+    NETLIFY_BUILD_VERSION: version,
+    /**
      * The Netlify Site ID
      */
     SITE_ID: siteId,
@@ -81,6 +87,6 @@ const normalizePath = function(path, buildDir, key) {
   return pathA
 }
 
-const NOT_PATHS = ['IS_LOCAL', 'SITE_ID']
+const NOT_PATHS = ['IS_LOCAL', 'NETLIFY_BUILD_VERSION', 'SITE_ID']
 
 module.exports = { getConstants }

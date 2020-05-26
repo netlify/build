@@ -75,3 +75,7 @@ test('constants.SITE_ID', async t => {
 test('constants.IS_LOCAL local', async t => {
   await runFixture(t, 'is_local')
 })
+
+test('constants.NETLIFY_BUILD_VERSION', async t => {
+  await runFixture(t, 'netlify_build_version')
+})
