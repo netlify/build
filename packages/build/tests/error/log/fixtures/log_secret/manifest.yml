@@ -1,0 +1,5 @@
+name: test
+inputs:
+  - name: secret
+  - name: secretToo
+  - name: notSecret

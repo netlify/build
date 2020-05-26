@@ -3,12 +3,14 @@ const {
 } = require('process')
 
 const { arrowDown } = require('figures')
+const filterObj = require('filter-obj')
 const prettyMs = require('pretty-ms')
 
 const { name, version } = require('../../package.json')
 const { isSuccessException } = require('../error/cancel')
 const { serializeLogError } = require('../error/parse/serialize_log')
 const { omit } = require('../utils/omit')
+const { removeFalsy } = require('../utils/remove_falsy')
 
 const { getCommandDescription, getBuildCommandDescription, getPluginOrigin } = require('./description')
 const {
@@ -65,23 +67,52 @@ const logConfigOnError = function(error, netlifyConfig) {
   }
 
   logMessage(THEME.errorSubHeader('Resolved config'))
-  logObject(simplifyConfig(netlifyConfig))
+  logObject(simplifyConfig(keepPublicProperties(netlifyConfig)))
+}
+
+// Make sure we are not printing secret values. Use an allow list.
+const keepPublicProperties = function({
+  build: { base, command, functions, ignore, processing, publish },
+  headers,
+  plugins,
+  redirects,
+}) {
+  const pluginsA = plugins.map(keepPluginPublicProperties)
+  return {
+    build: { base, command, functions, ignore, processing, publish },
+    headers,
+    plugins: pluginsA,
+    redirects,
+  }
+}
+
+const keepPluginPublicProperties = function({ package, origin, inputs }) {
+  if (inputs === undefined) {
+    return { package, origin }
+  }
+
+  const inputsA = filterObj(inputs, isPublicInput)
+  return { package, origin, inputs: inputsA }
+}
+
+const isPublicInput = function(key, input) {
+  return typeof input === 'boolean'
 }
 
 // The resolved configuration gets assigned some default values (empty objects and arrays)
 // to make it more convenient to use without checking for `undefined`.
 // However those empty values are not useful to users, so we don't log them.
-const simplifyConfig = function({ build: { environment, ...build }, plugins, ...netlifyConfig }) {
+const simplifyConfig = function({ build: { environment = {}, ...build }, plugins, ...netlifyConfig }) {
   const environmentA = omit(environment, BUILDBOT_ENVIRONMENT)
-  const simplifiedBuild = {
+  const simplifiedBuild = removeFalsy({
     ...build,
     ...removeEmptyObject(environmentA, 'environment'),
-  }
-  return {
+  })
+  return removeFalsy({
     ...netlifyConfig,
     ...removeEmptyObject(simplifiedBuild, 'build'),
     ...removeEmptyArray(plugins, 'plugins'),
-  }
+  })
 }
 
 // Added by the buildbot. We only want to print environment variables specified
