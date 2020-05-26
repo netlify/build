@@ -245,6 +245,7 @@ The `constants` key contains the following values:
 - `FUNCTIONS_DIST` The directory where built serverless functions are placed before deployment. Its value is always
   defined, but the target might not have been created yet.
 - `IS_LOCAL` Boolean indicating whether the build was run locally (Netlify CLI) or in the production CI
+- `NETLIFY_BUILD_VERSION` Version of Netlify Build as a `major.minor.patch` string
 - `SITE_ID` The Netlify Site ID
 
 ### Utilities
