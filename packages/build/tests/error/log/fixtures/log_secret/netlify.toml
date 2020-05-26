@@ -1,0 +1,12 @@
+[build]
+command = "node --invalid"
+
+[build.environment]
+SECRET = "secret"
+
+[[plugins]]
+package = "./plugin.js"
+  [plugins.inputs]
+  secret = 'secret'
+  secretToo = 15
+  notSecret = true
