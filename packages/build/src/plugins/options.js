@@ -12,11 +12,13 @@ const { resolvePluginsPath } = require('./resolve')
 // Load plugin options (specified by user in `config.plugins`)
 // Do not allow user override of core plugins
 const getPluginsOptions = async function({
+  netlifyConfig,
   netlifyConfig: { plugins },
   buildDir,
   constants: { FUNCTIONS_SRC },
   mode,
   api,
+  errorMonitor,
 }) {
   const corePlugins = getCorePlugins(FUNCTIONS_SRC).map(addCoreProperties)
   const allCorePlugins = corePlugins.filter(corePlugin => !isOptionalCore(corePlugin, plugins))
@@ -24,7 +26,7 @@ const getPluginsOptions = async function({
   const pluginsOptions = [...allCorePlugins, ...userPlugins].map(normalizePluginOptions)
   const pluginsOptionsA = await resolvePluginsPath({ pluginsOptions, buildDir, mode })
   const pluginsOptionsB = await Promise.all(
-    pluginsOptionsA.map(pluginOptions => loadPluginFiles({ pluginOptions, mode, api })),
+    pluginsOptionsA.map(pluginOptions => loadPluginFiles({ pluginOptions, mode, api, netlifyConfig, errorMonitor })),
   )
   await Promise.all([
     checkDeprecatedFunctionsInstall(plugins, FUNCTIONS_SRC, buildDir),
@@ -52,7 +54,13 @@ const normalizePluginOptions = function({ package, pluginPath, loadedFrom, origi
 
 // Retrieve plugin's main file path.
 // Then load plugin's `package.json` and `manifest.yml`.
-const loadPluginFiles = async function({ pluginOptions: { pluginPath, ...pluginOptions }, mode, api }) {
+const loadPluginFiles = async function({
+  pluginOptions: { pluginPath, ...pluginOptions },
+  mode,
+  api,
+  netlifyConfig,
+  errorMonitor,
+}) {
   const pluginDir = dirname(pluginPath)
   const { packageDir, packageJson } = await getPackageJson(pluginDir)
   const { manifest, inputs: inputsA } = await useManifest(pluginOptions, {
@@ -61,6 +69,8 @@ const loadPluginFiles = async function({ pluginOptions: { pluginPath, ...pluginO
     packageJson,
     mode,
     api,
+    netlifyConfig,
+    errorMonitor,
   })
   return { ...pluginOptions, pluginPath, packageDir, packageJson, manifest, inputs: inputsA }
 }

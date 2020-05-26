@@ -63,7 +63,14 @@ const build = async function(flags) {
     const childEnv = await getChildEnv({ netlifyConfig, buildDir, context, branch, siteInfo, mode })
 
     try {
-      const pluginsOptions = await getPluginsOptions({ netlifyConfig, buildDir, constants, mode, api })
+      const pluginsOptions = await getPluginsOptions({
+        netlifyConfig,
+        buildDir,
+        constants,
+        mode,
+        api,
+        errorMonitor,
+      })
 
       const { commandsCount, error, statuses } = await buildRun({
         pluginsOptions,
@@ -84,7 +91,7 @@ const build = async function(flags) {
         return true
       }
 
-      await reportStatuses(statuses, api, mode)
+      await reportStatuses({ statuses, api, mode, netlifyConfig, errorMonitor })
 
       if (error !== undefined) {
         throw error
@@ -173,6 +180,7 @@ const executeCommands = async function({
     constants,
     mode,
     api,
+    errorMonitor,
   })
 
   const { commands, commandsCount } = getCommands(pluginsCommands, netlifyConfig)
