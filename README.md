@@ -250,7 +250,7 @@ The `constants` key contains the following values:
 
 ### Utilities
 
-Several utilities are providing with the `utils` argument to event handlers:
+Several utilities are provided with the `utils` argument to event handlers:
 
 - [`build`](#error-reporting): to report errors or cancel builds
 - [`status`](#logging): to display information in the deploy summary
@@ -258,6 +258,16 @@ Several utilities are providing with the `utils` argument to event handlers:
 - [`run`](/packages/run-utils/README.md): to run commands and processes
 - [`git`](/packages/git-utils/README.md): to retrieve git-related information such as the list of
   modified/created/deleted files
+
+```js
+// index.js
+
+module.exports = {
+  onPreBuild: async ({ utils: { build, status, cache, run, git } }) => {
+    await run.command('eslint src/ test/')
+  },
+}
+```
 
 ### Error reporting
 
