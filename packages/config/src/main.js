@@ -15,7 +15,12 @@ const { normalizeConfig } = require('./normalize')
 const { normalizeOpts } = require('./options/main')
 const { parseConfig } = require('./parse')
 const { getConfigPath } = require('./path')
-const { validatePreMergeConfig, validatePreContextConfig, validatePreNormalizeConfig } = require('./validate/main')
+const {
+  validatePreMergeConfig,
+  validatePreContextConfig,
+  validatePreNormalizeConfig,
+  validatePostNormalizeConfig,
+} = require('./validate/main')
 
 // Load the configuration file.
 // Takes an optional configuration file path as input and return the resolved
@@ -149,6 +154,8 @@ const getFullConfig = async function({ configOpt, cwd, context, repositoryRoot, 
 
     validatePreNormalizeConfig(configB)
     const configC = normalizeConfig(configB)
+
+    validatePostNormalizeConfig(configC)
 
     return { configPath, config: configC }
   } catch (error) {

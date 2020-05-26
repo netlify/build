@@ -42,6 +42,22 @@ const PRE_CONTEXT_VALIDATIONS = [
 
 // Validations done before normalization
 const PRE_NORMALIZE_VALIDATIONS = [
+  {
+    property: 'build',
+    check: isPlainObj,
+    message: 'must be a plain object.',
+    example: () => ({ build: { command: 'npm run build' } }),
+  },
+  {
+    property: 'build.command',
+    check: isString,
+    message: 'must be a string',
+    example: () => ({ build: { command: 'npm run build' } }),
+  },
+]
+
+// Validations done after normalization
+const POST_NORMALIZE_VALIDATIONS = [
   // TODO: remove once users stop using those features
   {
     property: 'plugins.*.type',
@@ -83,12 +99,6 @@ const PRE_NORMALIZE_VALIDATIONS = [
     example: () => ({ plugins: [{ package: 'netlify-plugin-one', inputs: { port: 80 } }] }),
   },
   {
-    property: 'build',
-    check: isPlainObj,
-    message: 'must be a plain object.',
-    example: () => ({ build: { command: 'npm run build' } }),
-  },
-  {
     property: 'build.base',
     check: isString,
     message: 'must be a string.',
@@ -121,12 +131,6 @@ const PRE_NORMALIZE_VALIDATIONS = [
     ...insideRootCheck,
     example: functions => ({ build: { functions: removeParentDots(functions) } }),
   },
-  {
-    property: 'build.command',
-    check: isString,
-    message: 'must be a string',
-    example: () => ({ build: { command: 'npm run build' } }),
-  },
 
   // TODO: remove once users stop using `build.lifecycle`
   {
@@ -137,4 +141,9 @@ const PRE_NORMALIZE_VALIDATIONS = [
   },
 ]
 
-module.exports = { PRE_MERGE_VALIDATIONS, PRE_CONTEXT_VALIDATIONS, PRE_NORMALIZE_VALIDATIONS }
+module.exports = {
+  PRE_MERGE_VALIDATIONS,
+  PRE_CONTEXT_VALIDATIONS,
+  PRE_NORMALIZE_VALIDATIONS,
+  POST_NORMALIZE_VALIDATIONS,
+}
