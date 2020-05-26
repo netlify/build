@@ -48,7 +48,7 @@ const isUserPlugin = function({ package }) {
   return !CORE_PLUGINS.includes(package) && !EARLY_CORE_PLUGINS.includes(package)
 }
 
-const normalizePluginOptions = function({ package, pluginPath, loadedFrom, origin, inputs = {} }) {
+const normalizePluginOptions = function({ package, pluginPath, loadedFrom, origin, inputs }) {
   return { package, pluginPath, loadedFrom, origin, inputs }
 }
 
