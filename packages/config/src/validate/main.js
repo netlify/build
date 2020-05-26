@@ -1,13 +1,27 @@
 const { throwError } = require('../error')
 
 const { getExample } = require('./example')
-const { VALIDATIONS } = require('./validations')
+const { PRE_MERGE_VALIDATIONS, PRE_CONTEXT_VALIDATIONS, PRE_NORMALIZE_VALIDATIONS } = require('./validations')
 
-// Validate the configuration file.
-// Performed before normalization.
-const validateConfig = function(config) {
+// Validate the configuration file, before `defaultConfig` merge.
+const validatePreMergeConfig = function(config, defaultConfig) {
+  validateConfig(config, PRE_MERGE_VALIDATIONS)
+  validateConfig(defaultConfig, PRE_MERGE_VALIDATIONS)
+}
+
+// Validate the configuration file, before context merge.
+const validatePreContextConfig = function(config) {
+  validateConfig(config, PRE_CONTEXT_VALIDATIONS)
+}
+
+// Validate the configuration file, before normalization.
+const validatePreNormalizeConfig = function(config) {
+  validateConfig(config, PRE_NORMALIZE_VALIDATIONS)
+}
+
+const validateConfig = function(config, validations) {
   try {
-    VALIDATIONS.forEach(({ property, ...validation }) => {
+    validations.forEach(({ property, ...validation }) => {
       validateProperty(config, { ...validation, nextPath: property.split('.') })
     })
   } catch (error) {
@@ -107,4 +121,4 @@ const validateChildProp = function({ childProp, value, nextPath, propPath, prevP
   })
 }
 
-module.exports = { validateConfig }
+module.exports = { validatePreMergeConfig, validatePreContextConfig, validatePreNormalizeConfig }
