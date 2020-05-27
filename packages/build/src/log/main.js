@@ -87,10 +87,6 @@ const keepPublicProperties = function({
 }
 
 const keepPluginPublicProperties = function({ package, origin, inputs }) {
-  if (inputs === undefined) {
-    return { package, origin }
-  }
-
   const inputsA = filterObj(inputs, isPublicInput)
   return { package, origin, inputs: inputsA }
 }
