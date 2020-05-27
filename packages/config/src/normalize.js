@@ -50,10 +50,8 @@ const removeEmptyCommand = function({ command, ...build }) {
   return { ...build, command }
 }
 
-const normalizePlugin = function({ package, inputs = {}, origin = DEFAULT_ORIGIN, ...plugin }) {
+const normalizePlugin = function({ package, inputs = {}, origin, ...plugin }) {
   return removeFalsy({ ...plugin, package, inputs, origin })
 }
-
-const DEFAULT_ORIGIN = 'config'
 
 module.exports = { normalizeConfig }
