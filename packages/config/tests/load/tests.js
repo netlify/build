@@ -41,7 +41,7 @@ test('--defaultConfig with an invalid relative path', async t => {
 })
 
 test('--defaultConfig merges UI plugins with config plugins', async t => {
-  const defaultConfig = getJsonOpt({ plugins: [{ package: 'one', inputs: { test: true } }] })
+  const defaultConfig = getJsonOpt({ plugins: [{ package: 'one', inputs: { test: false, testThree: true } }] })
   await runFixture(t, 'plugins_merge', { flags: `--defaultConfig=${defaultConfig}` })
 })
 

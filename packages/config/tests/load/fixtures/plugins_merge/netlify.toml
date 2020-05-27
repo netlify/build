@@ -1,2 +1,8 @@
 [[plugins]]
+package = "one"
+  [plugins.inputs]
+  test = true
+  testTwo = true
+
+[[plugins]]
 package = "two"
