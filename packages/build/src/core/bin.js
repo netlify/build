@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const { exit } = require('process')
+const process = require('process')
 
 const filterObj = require('filter-obj')
 const yargs = require('yargs')
@@ -18,8 +18,7 @@ const runCli = async function() {
   }
 
   const success = await build(flagsA)
-  const exitCode = success ? 0 : 1
-  exit(exitCode)
+  process.exitCode = success ? 0 : 1
 }
 
 const parseFlags = function() {
@@ -130,7 +129,7 @@ const INTERNAL_KEYS = ['help', 'version', '_', '$0', 'dryRun']
 
 const printFeatures = function() {
   console.log(['', ...FEATURES, ''].join(FEATURES_DELIMITER))
-  exit(0)
+  process.exitCode = 0
 }
 
 const FEATURES = ['cachesave']
