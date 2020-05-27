@@ -4,7 +4,7 @@
 [![Build](https://github.com/netlify/build/workflows/Build/badge.svg)](https://github.com/netlify/build/actions)
 
 Netlify Build is a new, pluggable tool for running builds locally and in Netlify CI. It introduces Build Plugins, which
-are **now in public beta.** Learn how to enable your site to use Netlify Build and Build Plugins in the
+are **[now stable](https://www.netlify.com/blog/2020/05/27/netlify-build-plugins-are-here/).** Learn how to enable your site to use Netlify Build and Build Plugins in the
 [Netlify docs](https://docs.netlify.com/configure-builds/plugins).
 
 <details>
