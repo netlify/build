@@ -342,7 +342,7 @@ module.exports = {
       // Optional. Default to the plugin's name followed by a generic title.
       title: 'Main title',
       // Required.
-      message: 'Message below the title',
+      summary: 'Message below the title',
       // Optional. Empty by default.
       text: 'Detailed information shown in a collapsible section',
     })
