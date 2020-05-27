@@ -1,4 +1,3 @@
-const { resolve } = require('path')
 const { env } = require('process')
 
 const pathExists = require('path-exists')
@@ -40,7 +39,7 @@ const resolvePluginPath = async function({
 
   // Local plugins
   if (package.startsWith('.') || package.startsWith('/')) {
-    const localPath = resolve(buildDir, package)
+    const localPath = await resolvePath(package, buildDir)
     return { ...pluginOptions, pluginPath: localPath, loadedFrom: 'local' }
   }
 
