@@ -7,6 +7,10 @@ test('Local plugins', async t => {
   await runFixture(t, 'local')
 })
 
+test('Local plugins directory', async t => {
+  await runFixture(t, 'local_dir')
+})
+
 test('Node module plugins', async t => {
   await runFixture(t, 'module')
 })
