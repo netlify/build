@@ -1,8 +1,5 @@
 #!/usr/bin/env node
-const {
-  exit,
-  env: { NETLIFY_BUILD_TEST },
-} = require('process')
+const process = require('process')
 
 const { stableStringify } = require('fast-safe-stringify')
 
@@ -31,13 +28,13 @@ const handleCliSuccess = function(result, stable) {
   const stringifyFunc = stable ? stableStringify : JSON.stringify
   const resultJson = stringifyFunc(resultA, null, 2)
   console.log(resultJson)
-  exit(0)
+  process.exitCode = 0
 }
 
 // `api` is not JSON-serializable, so we remove it
 // We still indicate it as a boolean in tests
 const serializeApi = function({ api, ...result }) {
-  if (NETLIFY_BUILD_TEST !== '1' || api === undefined) {
+  if (process.env.NETLIFY_BUILD_TEST !== '1' || api === undefined) {
     return result
   }
 
@@ -48,12 +45,13 @@ const handleCliError = function(error) {
   // Errors caused by users do not show stack traces and have exit code 1
   if (isUserError(error)) {
     console.error(error.message)
-    return exit(1)
+    process.exitCode = 1
+    return
   }
 
   // Internal errors / bugs have exit code 2
   console.error(error.stack)
-  exit(2)
+  process.exitCode = 2
 }
 
 runCli()
