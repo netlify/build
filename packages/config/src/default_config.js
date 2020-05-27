@@ -14,7 +14,8 @@ const mergeDefaultConfig = function({ plugins: defaultPlugins = [], ...defaultCo
 // `config` (`netlify.toml`)
 const mergePlugins = function(defaultPlugins, plugins) {
   const pluginsA = [...defaultPlugins.map(addUiOrigin), ...plugins.map(addConfigOrigin)]
-  return pluginsA
+  const pluginsB = pluginsA.filter(isNotOverridenPlugin)
+  return pluginsB
 }
 
 const addUiOrigin = function(plugin) {
@@ -23,6 +24,13 @@ const addUiOrigin = function(plugin) {
 
 const addConfigOrigin = function(plugin) {
   return { ...plugin, origin: 'config' }
+}
+
+// When a plugin is specified both in the UI and netlify.toml, we only keep
+// the netlify.toml one.
+const isNotOverridenPlugin = function(plugin, index, plugins) {
+  const overridingPlugin = plugins.slice(index + 1).find(({ package }) => plugin.package === package)
+  return overridingPlugin === undefined
 }
 
 module.exports = { mergeDefaultConfig }
