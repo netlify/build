@@ -80,3 +80,10 @@ test.serial('Functions: install dependencies with Yarn in CI with lock file', as
     `${FIXTURES_DIR}/yarn_ci_lock/functions/node_modules/`,
   ])
 })
+
+test.serial('Functions: does not install dependencies unless opting in', async t => {
+  await removeDir([`${FIXTURES_DIR}/optional/.netlify/functions/`, `${FIXTURES_DIR}/optional/functions/node_modules/`])
+  await runFixture(t, 'optional')
+  t.false(await pathExists(`${FIXTURES_DIR}/optional/functions/node_modules/`))
+  await removeDir([`${FIXTURES_DIR}/optional/.netlify/functions/`, `${FIXTURES_DIR}/optional/functions/node_modules/`])
+})

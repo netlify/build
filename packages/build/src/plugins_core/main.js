@@ -17,7 +17,7 @@ const getCorePlugins = FUNCTIONS_SRC => [
   // yet.
   ...(FUNCTIONS_SRC === undefined
     ? []
-    : [{ package: '@netlify/plugin-functions-install-core', pluginPath: FUNCTIONS_INSTALL_PLUGIN }]),
+    : [{ package: '@netlify/plugin-functions-install-core', pluginPath: FUNCTIONS_INSTALL_PLUGIN, optional: true }]),
   ...(FUNCTIONS_SRC === undefined ? [] : [{ package: '@netlify/plugin-functions-core', pluginPath: FUNCTIONS_PLUGIN }]),
   // TODO: run only inside tests until integrated in the buildbot
   ...(TEST_CACHE_PATH === undefined || TEST_CACHE_PATH === 'none'
