@@ -87,3 +87,16 @@ test.serial('Functions: does not install dependencies unless opting in', async t
   t.false(await pathExists(`${FIXTURES_DIR}/optional/functions/node_modules/`))
   await removeDir([`${FIXTURES_DIR}/optional/.netlify/functions/`, `${FIXTURES_DIR}/optional/functions/node_modules/`])
 })
+
+test.serial('Functions: does not print warnings when dependency was mispelled', async t => {
+  await removeDir([
+    `${FIXTURES_DIR}/mispelled_dep/.netlify/functions/`,
+    `${FIXTURES_DIR}/mispelled_dep/functions/node_modules/`,
+  ])
+  await runFixture(t, 'mispelled_dep')
+  t.false(await pathExists(`${FIXTURES_DIR}/mispelled_dep/functions/node_modules/`))
+  await removeDir([
+    `${FIXTURES_DIR}/mispelled_dep/.netlify/functions/`,
+    `${FIXTURES_DIR}/mispelled_dep/functions/node_modules/`,
+  ])
+})
