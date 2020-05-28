@@ -10,6 +10,10 @@ test('plugins: not array of objects', async t => {
   await runFixture(t, 'plugins_not_objects')
 })
 
+test('plugins: do not allow duplicates', async t => {
+  await runFixture(t, 'plugins_duplicate')
+})
+
 test('plugins.any: unknown property', async t => {
   await runFixture(t, 'plugins_unknown')
 })

@@ -1,3 +1,4 @@
+const { throwError } = require('./error')
 const { deepMerge } = require('./utils/merge')
 
 // Merge `--defaultConfig` which is used to retrieve UI build settings and
@@ -30,6 +31,11 @@ const addConfigOrigin = function(plugin) {
 // the netlify.toml one.
 const isNotOverridenPlugin = function(plugin, index, plugins) {
   const overridingPlugin = plugins.slice(index + 1).find(({ package }) => plugin.package === package)
+
+  if (overridingPlugin !== undefined && overridingPlugin.origin === 'config' && plugin.origin === 'config') {
+    throwError(`Plugin "${plugin.package}" must not be specified twice in netlify.toml`)
+  }
+
   return overridingPlugin === undefined
 }
 
