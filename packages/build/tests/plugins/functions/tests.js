@@ -12,6 +12,10 @@ test('Functions: missing source directory', async t => {
   await runFixture(t, 'missing')
 })
 
+test('Functions: must not be a regular file', async t => {
+  await runFixture(t, 'regular_file')
+})
+
 test('Functions: no functions', async t => {
   await runFixture(t, 'none')
 })
