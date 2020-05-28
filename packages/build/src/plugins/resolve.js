@@ -37,27 +37,30 @@ const resolvePluginPath = async function({
     return pluginOptions
   }
 
+  // `package` starting with `/` are relative to the build directory
+  const packageA = package.startsWith('/') ? `.${package}` : package
+
   // Local plugins
-  if (package.startsWith('.') || package.startsWith('/')) {
-    const localPath = await resolvePath(package, buildDir)
+  if (packageA.startsWith('.')) {
+    const localPath = await resolvePath(packageA, buildDir)
     return { ...pluginOptions, pluginPath: localPath, loadedFrom: 'local' }
   }
 
   // Plugin already installed in the project, most likely either local plugins,
   // or external plugins added to `package.json`
-  const manualPath = await tryResolvePath(package, buildDir)
+  const manualPath = await tryResolvePath(packageA, buildDir)
   if (manualPath !== undefined) {
     return { ...pluginOptions, pluginPath: manualPath, loadedFrom: 'package.json' }
   }
 
   // Cached in the build image
-  const buildImagePath = await tryBuildImagePath(package, mode, buildDir)
+  const buildImagePath = await tryBuildImagePath(packageA, mode, buildDir)
   if (buildImagePath !== undefined) {
     return { ...pluginOptions, pluginPath: buildImagePath, loadedFrom: 'image_cache' }
   }
 
   // Plugin previously automatically installed
-  const automaticPath = await tryAutomaticPath(package, autoPluginsDir)
+  const automaticPath = await tryAutomaticPath(packageA, autoPluginsDir)
   if (automaticPath !== undefined) {
     return { ...pluginOptions, pluginPath: automaticPath, loadedFrom: 'auto_install' }
   }
