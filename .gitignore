@@ -4,7 +4,6 @@ research
 .DS_Store
 terraform
 .netlify
-!**/already_installed/.netlify
 lerna-debug.log
 yarn-error.log
 .nyc_output

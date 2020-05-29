@@ -2,8 +2,7 @@ const { env } = require('process')
 
 const pathExists = require('path-exists')
 
-const { installMissingPlugins, getAutoPluginsDirPath } = require('../install/missing')
-// const { logMissingPluginsWarning } = require('../log/main')
+const { installMissingPlugins, getAutoPluginsDirPath, warnOnMissingPlugins } = require('../install/missing')
 const { resolvePath } = require('../utils/resolve')
 
 // Try to find plugins in four places, by priority order:
@@ -13,25 +12,14 @@ const { resolvePath } = require('../utils/resolve')
 //  - cached in the build image
 //  - automatically installed by us (fallback)
 const resolvePluginsPath = async function({ pluginsOptions, buildDir, mode }) {
-  const autoPluginsDir = getAutoPluginsDirPath(buildDir)
   const pluginsOptionsA = await Promise.all(
-    pluginsOptions.map(pluginOptions => resolvePluginPath({ pluginOptions, buildDir, autoPluginsDir, mode })),
+    pluginsOptions.map(pluginOptions => resolvePluginPath({ pluginOptions, buildDir, mode })),
   )
-  await installMissingPlugins({ pluginsOptions: pluginsOptionsA, autoPluginsDir, mode })
-  const pluginsOptionsB = await Promise.all(
-    pluginsOptionsA.map(pluginOptions => resolveMissingPluginPath({ pluginOptions, autoPluginsDir })),
-  )
-  warnOnMissingPlugins(pluginsOptionsB, mode)
+  const pluginsOptionsB = await handleMissingPlugins({ pluginsOptions: pluginsOptionsA, buildDir, mode })
   return pluginsOptionsB
 }
 
-const resolvePluginPath = async function({
-  pluginOptions,
-  pluginOptions: { package, loadedFrom },
-  buildDir,
-  autoPluginsDir,
-  mode,
-}) {
+const resolvePluginPath = async function({ pluginOptions, pluginOptions: { package, loadedFrom }, buildDir, mode }) {
   // Core plugins
   if (loadedFrom !== undefined) {
     return pluginOptions
@@ -57,12 +45,6 @@ const resolvePluginPath = async function({
   const buildImagePath = await tryBuildImagePath(packageA, mode, buildDir)
   if (buildImagePath !== undefined) {
     return { ...pluginOptions, pluginPath: buildImagePath, loadedFrom: 'image_cache' }
-  }
-
-  // Plugin previously automatically installed
-  const automaticPath = await tryAutomaticPath(packageA, autoPluginsDir)
-  if (automaticPath !== undefined) {
-    return { ...pluginOptions, pluginPath: automaticPath, loadedFrom: 'auto_install' }
   }
 
   // Otherwise, it must be automatically installed, as a fallback
@@ -95,15 +77,6 @@ const getBuildImagePluginsDir = function() {
 
 const BUILD_IMAGE_PLUGINS_DIR = '/opt/buildhome/.netlify-build-plugins/node_modules'
 
-// Try to find plugin previously automatically installed
-const tryAutomaticPath = async function(package, autoPluginsDir) {
-  if (!(await pathExists(autoPluginsDir))) {
-    return
-  }
-
-  return tryResolvePath(package, autoPluginsDir)
-}
-
 // Try to `resolve()` the plugin from the build directory
 const tryResolvePath = async function(package, baseDir) {
   try {
@@ -111,6 +84,18 @@ const tryResolvePath = async function(package, baseDir) {
   } catch (error) {
     return
   }
+}
+
+// Handle plugins that were neither local, in the build image cache nor in
+// node_modules. We automatically install those, with a warning.
+const handleMissingPlugins = async function({ pluginsOptions, buildDir, mode }) {
+  const autoPluginsDir = getAutoPluginsDirPath(buildDir)
+  await installMissingPlugins({ pluginsOptions, autoPluginsDir, mode })
+  const pluginsOptionsA = await Promise.all(
+    pluginsOptions.map(pluginOptions => resolveMissingPluginPath({ pluginOptions, autoPluginsDir })),
+  )
+  warnOnMissingPlugins(pluginsOptionsA, mode)
+  return pluginsOptionsA
 }
 
 // Resolve the plugins that just got automatically installed
@@ -125,37 +110,6 @@ const resolveMissingPluginPath = async function({
 
   const automaticPath = await resolvePath(package, autoPluginsDir)
   return { ...pluginOptions, pluginPath: automaticPath, loadedFrom: 'auto_install' }
-}
-
-// Warns when plugins have been automatically installed. This feature is a
-// fallback that should not be relied upon because:
-//  - it is much slower
-//  - npm can be unreliable
-// Warns both when installing the plugin, and when re-using it in a future build
-// Not done for local builds, since they cannot use the alternative
-// (build-image cached plugins).
-const warnOnMissingPlugins = function(pluginsOptions, mode) {
-  if (mode !== 'buildbot') {
-    return
-  }
-
-  const packages = pluginsOptions.filter(isAutomaticallyInstalled).map(getPackage)
-  if (packages.length === 0) {
-    return
-  }
-
-  // TODO: re-enable warning after the following are available:
-  //  - UI installs
-  //  - build-image pre-installed plugins
-  // logMissingPluginsWarning(packages)
-}
-
-const isAutomaticallyInstalled = function({ loadedFrom }) {
-  return loadedFrom === 'auto_install'
-}
-
-const getPackage = function({ package }) {
-  return package
 }
 
 module.exports = { resolvePluginsPath }

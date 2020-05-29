@@ -51,7 +51,7 @@ const getManager = async function(type, packageRoot) {
 
 const COMMANDS = {
   npm: {
-    add: 'npm install --no-progress --no-audit --no-fund',
+    add: 'npm install --no-progress --no-audit --no-fund --no-save',
     install: 'npm install --no-progress --no-audit --no-fund',
   },
   yarn: {

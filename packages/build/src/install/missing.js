@@ -4,7 +4,7 @@ const { promisify } = require('util')
 const makeDir = require('make-dir')
 const pathExists = require('path-exists')
 
-const { logInstallMissingPlugins } = require('../log/main')
+const { logInstallMissingPlugins, logMissingPluginsWarning } = require('../log/main')
 
 const { addLatestDependencies } = require('./main')
 
@@ -83,4 +83,28 @@ const AUTO_PLUGINS_PACKAGE_JSON = {
   license: 'MIT',
 }
 
-module.exports = { getAutoPluginsDirPath, installMissingPlugins }
+// Warns when plugins have been automatically installed. This feature is a
+// fallback that should not be relied upon because:
+//  - it is much slower
+//  - npm can be unreliable
+// Warns both when installing the plugin, and when re-using it in a future build
+// Not done for local builds, since they cannot use the alternative
+// (build-image cached plugins).
+const warnOnMissingPlugins = function(pluginsOptions, mode) {
+  if (mode !== 'buildbot') {
+    return
+  }
+
+  const packages = pluginsOptions.filter(isAutomaticallyInstalled).map(getPackage)
+  if (packages.length === 0) {
+    return
+  }
+
+  logMissingPluginsWarning(packages)
+}
+
+const isAutomaticallyInstalled = function({ loadedFrom }) {
+  return loadedFrom === 'auto_install'
+}
+
+module.exports = { getAutoPluginsDirPath, installMissingPlugins, warnOnMissingPlugins }
