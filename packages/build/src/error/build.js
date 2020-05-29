@@ -2,7 +2,7 @@ const { addErrorInfo } = require('./info')
 
 // Retrieve error information from child process and re-build it in current
 // process. We need this since errors are not JSON-serializable.
-const buildError = function({ type, plugin, location, name, message, stack, ...errorProps }) {
+const buildError = function({ name, message, stack, type, errorProps = {}, plugin, location }) {
   const error = new Error('')
 
   assignErrorProps(error, { name, message, stack })

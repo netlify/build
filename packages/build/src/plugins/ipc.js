@@ -56,8 +56,8 @@ const getMessage = async function(messagePromise) {
 }
 
 const getError = async function(errorPromise, { plugin, location }) {
-  const [, { errorProps, ...values }] = await errorPromise
-  throw buildError({ ...values, ...errorProps, plugin, location })
+  const [, { name, message, stack, type, errorProps }] = await errorPromise
+  throw buildError({ name, message, stack, type, errorProps, plugin, location })
 }
 
 const getExit = async function(exitPromise, { plugin, location }) {
@@ -116,7 +116,7 @@ const serializePayload = function({ error: { name, message, stack, ...errorProps
     return payload
   }
 
-  return { ...payload, error: { ...errorProps, name, message, stack } }
+  return { ...payload, error: { name, message, stack, errorProps } }
 }
 
 const parsePayload = function({ error = {}, ...payload }) {
