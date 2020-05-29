@@ -6,7 +6,7 @@ const pathExists = require('path-exists')
 
 const { logInstallMissingPlugins } = require('../log/main')
 
-const { addDependencies } = require('./main')
+const { addLatestDependencies } = require('./main')
 
 const pWriteFile = promisify(writeFile)
 
@@ -34,7 +34,7 @@ const installMissingPlugins = async function({ pluginsOptions, autoPluginsDir, m
   logInstallMissingPlugins(packages)
 
   await createAutoPluginsDir(autoPluginsDir)
-  await addDependencies({ packageRoot: autoPluginsDir, isLocal: mode !== 'buildbot', packages })
+  await addLatestDependencies({ packageRoot: autoPluginsDir, isLocal: mode !== 'buildbot', packages })
 }
 
 const getMissingPlugins = function(pluginsOptions) {

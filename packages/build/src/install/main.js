@@ -12,7 +12,7 @@ const installDependencies = function({ packageRoot, isLocal }) {
 }
 
 // Add new Node.js dependencies
-const addDependencies = function({ packageRoot, isLocal, packages }) {
+const addLatestDependencies = function({ packageRoot, isLocal, packages }) {
   return runCommand({ packageRoot, packages, isLocal, type: 'add' })
 }
 
@@ -31,14 +31,19 @@ const runCommand = async function({ packageRoot, packages, isLocal, type }) {
 
 // Retrieve the shell command to install or add dependencies
 const getCommand = async function({ packageRoot, type, isLocal }) {
-  const manager = await getManager(packageRoot)
+  const manager = await getManager(type, packageRoot)
   const command = COMMANDS[manager][type]
   const commandA = await fixNpmCiCompat(command)
   const commandB = addYarnCustomCache(commandA, manager, isLocal)
   return commandB
 }
 
-const getManager = async function(packageRoot) {
+const getManager = async function(type, packageRoot) {
+  // `addLatestDependencies()` is only supported with npm at the moment
+  if (type === 'add') {
+    return 'npm'
+  }
+
   if (await pathExists(`${packageRoot}/yarn.lock`)) {
     return 'yarn'
   }
@@ -52,7 +57,6 @@ const COMMANDS = {
     install: 'npm install --no-progress --no-audit --no-fund',
   },
   yarn: {
-    add: 'yarn add --no-progress --non-interactive --ignore-workspace-root-check',
     install: 'yarn install --no-progress --non-interactive',
   },
 }
@@ -100,4 +104,4 @@ const isNotNpmLogMessage = function(line) {
 }
 const NPM_LOG_MESSAGES = ['complete log of this run', '-debug.log']
 
-module.exports = { installDependencies, addDependencies }
+module.exports = { installDependencies, addLatestDependencies }
