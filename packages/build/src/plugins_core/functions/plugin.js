@@ -5,6 +5,8 @@ const readdirp = require('readdirp')
 
 const { serializeArray } = require('../../log/serialize')
 
+const { getZipError } = require('./error')
+
 // Plugin to package Netlify functions with @netlify/zip-it-and-ship-it
 const onPostBuild = async function({ constants: { FUNCTIONS_SRC, FUNCTIONS_DIST } }) {
   if (!(await pathExists(FUNCTIONS_SRC))) {
@@ -16,7 +18,11 @@ const onPostBuild = async function({ constants: { FUNCTIONS_SRC, FUNCTIONS_DIST 
   }
 
   console.log(`Packaging functions from ${FUNCTIONS_SRC}`)
-  await zipFunctions(FUNCTIONS_SRC, FUNCTIONS_DIST)
+  try {
+    await zipFunctions(FUNCTIONS_SRC, FUNCTIONS_DIST)
+  } catch (error) {
+    throw await getZipError(error, FUNCTIONS_SRC)
+  }
 
   await logResults(FUNCTIONS_DIST)
 }
