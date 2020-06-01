@@ -2,7 +2,6 @@ const { homedir } = require('os')
 
 const execa = require('execa')
 const pathExists = require('path-exists')
-const { gte: gteVersion } = require('semver')
 
 const { addErrorInfo } = require('../error/info')
 
@@ -33,9 +32,8 @@ const runCommand = async function({ packageRoot, packages, isLocal, type }) {
 const getCommand = async function({ packageRoot, type, isLocal }) {
   const manager = await getManager(packageRoot)
   const command = COMMANDS[manager][type]
-  const commandA = await fixNpmCiCompat(command)
-  const commandB = addYarnCustomCache(commandA, manager, isLocal)
-  return commandB
+  const commandA = addYarnCustomCache(command, manager, isLocal)
+  return commandA
 }
 
 const getManager = async function(packageRoot) {
@@ -56,24 +54,6 @@ const COMMANDS = {
     install: 'yarn install --no-progress --non-interactive',
   },
 }
-
-// npm ci was introduced in npm@5.7.0 which is shipped in Node >= 8.12.0 and
-// Node >= 10.3.0
-// TODO: remove once we stop supporting Node <8.12.0, Node 9 and Node <10.3.0
-const fixNpmCiCompat = async function(command) {
-  if (!command.includes('npm ci')) {
-    return command
-  }
-
-  const { stdout } = await execa.command('npm --version')
-  if (gteVersion(stdout, NPM_CI_MIN_VERSION)) {
-    return command
-  }
-
-  return command.replace('npm ci', 'npm install')
-}
-
-const NPM_CI_MIN_VERSION = '5.7.0'
 
 // In CI, yarn uses a custom cache folder
 const addYarnCustomCache = function(command, manager, isLocal) {
