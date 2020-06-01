@@ -10,6 +10,7 @@ const { getErrorInfo } = require('../info')
 const { getHomepage } = require('../parse/plugin')
 const { getTypeInfo } = require('../type')
 
+const { getLocationMetadata } = require('./location')
 const { normalizeGroupingMessage } = require('./normalize')
 const { printEventForTest } = require('./print')
 
@@ -70,7 +71,8 @@ const getGroupingHash = function(group, error, type) {
 const getMetadata = function({ location, plugin, childEnv }, groupingHash) {
   const pluginMetadata = getPluginMetadata(plugin)
   const envMetadata = getEnvMetadata(childEnv)
-  return { location, ...pluginMetadata, env: envMetadata, other: { groupingHash } }
+  const locationMetadata = getLocationMetadata(location, envMetadata)
+  return { location: locationMetadata, ...pluginMetadata, env: envMetadata, other: { groupingHash } }
 }
 
 const getPluginMetadata = function(plugin) {

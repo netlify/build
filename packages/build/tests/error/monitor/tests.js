@@ -85,3 +85,9 @@ test('Report plugin origin', async t => {
   const defaultConfig = getJsonOpt({ plugins: [{ package: './plugin.js' }] })
   await runFixture(t, 'plugin_origin', { env, flags: `--defaultConfig=${defaultConfig}` })
 })
+
+test('Report build logs URLs', async t => {
+  await runFixture(t, 'command', {
+    env: { ...env, DEPLOY_ID: 'testDeployId', DEPLOY_URL: 'https://testDeployId--testSiteName.netlify.app' },
+  })
+})
