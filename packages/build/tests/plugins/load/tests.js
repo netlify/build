@@ -11,6 +11,10 @@ test('Local plugins directory', async t => {
   await runFixture(t, 'local_dir')
 })
 
+test('Local plugins absolute path', async t => {
+  await runFixture(t, 'local_absolute')
+})
+
 test('Node module plugins', async t => {
   await runFixture(t, 'module')
 })
