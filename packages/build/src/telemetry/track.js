@@ -9,18 +9,28 @@ const { version } = require('../../package.json')
 const REQUEST_FILE = `${__dirname}/request.js`
 
 // Send HTTP request to telemetry.
-// Telemetry should not impact build speed, so we do not wait for the request
-// to complete, by using a child process.
 const track = async function({ payload }) {
   if (BUILD_TELEMETRY_DISABLED) {
     return
   }
 
-  const childProcess = execa('node', [REQUEST_FILE, JSON.stringify(payload)], { detached: true, stdio: 'ignore' })
+  const promise = spawnRequest(payload)
 
   // During tests, we wait for the HTTP request to complete
   if (TEST_HOST !== undefined) {
-    await childProcess
+    await promise
+  }
+}
+
+// Telemetry should not impact build speed, so we do not wait for the request
+// to complete, by using a child process.
+// We also ignore any errors. Those might happen for example if the current
+// directory was removed by the build command.
+const spawnRequest = async function(payload) {
+  try {
+    await execa('node', [REQUEST_FILE, JSON.stringify(payload)], { detached: true, stdio: 'ignore' })
+  } catch (error) {
+    return
   }
 }
 
