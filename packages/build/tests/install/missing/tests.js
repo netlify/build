@@ -12,5 +12,6 @@ test.serial('Automatically install missing plugins in CI', async t => {
 })
 
 test('Re-use previously automatically installed plugins', async t => {
+  await runFixture(t, 'already_installed', { snapshot: false })
   await runFixture(t, 'already_installed')
 })

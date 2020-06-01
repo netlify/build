@@ -1,2 +1,2 @@
 [[plugins]]
-package = "netlify-plugin-test"
+package = "netlify-plugin-contextual-env"
