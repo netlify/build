@@ -52,6 +52,7 @@ const NORMALIZE_REGEXPS = [
   // zip-it-and-ship-it error when there is a `require()` but dependencies
   // were not installed
   [/(Cannot find module) '([^']+)'/g, "$1 'moduleName'"],
+  [/(A Netlify Function is using) "[^"]+"/g, '$1 "moduleName"'],
   // netlify-plugin-inline-critical-css errors prints a list of file paths
   [/Searched in: .*/g, ''],
   // netlify-plugin-subfont prints font name in errors
