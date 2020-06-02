@@ -34,6 +34,7 @@
     "path-exists": "^4.0.0",
     "toml": "^3.0.0",
     "tomlify-j0.4": "^3.0.0",
+    "validate-npm-package-name": "^3.0.0",
     "yargs": "^15.3.0"
   },
   "devDependencies": {

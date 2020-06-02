@@ -34,6 +34,14 @@ test('plugins.any.package: string', async t => {
   await runFixture(t, 'plugins_package_string')
 })
 
+test('plugins.any.package: should not include a version', async t => {
+  await runFixture(t, 'plugins_package_version')
+})
+
+test('plugins.any.package: should not include a URI scheme', async t => {
+  await runFixture(t, 'plugins_package_scheme')
+})
+
 test('plugins.any.inputs: object', async t => {
   await runFixture(t, 'plugins_inputs_object')
 })

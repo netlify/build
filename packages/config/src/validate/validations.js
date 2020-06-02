@@ -1,4 +1,5 @@
 const isPlainObj = require('is-plain-obj')
+const validateNpmPackageName = require('validate-npm-package-name')
 
 const { isString, validProperties, insideRootCheck, removeParentDots } = require('./helpers')
 
@@ -75,6 +76,17 @@ const POST_NORMALIZE_VALIDATIONS = [
     property: 'plugins.*.package',
     check: isString,
     message: 'must be a string.',
+    example: () => ({ plugins: [{ package: 'netlify-plugin-one' }] }),
+  },
+  // We don't allow `package@tag|version` nor `git:...`, `github:...`,
+  // `https://...`, etc.
+  // We skip this validation for local plugins.
+  // We ensure @scope/plugin still work.
+  {
+    property: 'plugins.*.package',
+    check: package =>
+      package.startsWith('.') || package.startsWith('/') || validateNpmPackageName(package).validForOldPackages,
+    message: 'must be a npm package name only.',
     example: () => ({ plugins: [{ package: 'netlify-plugin-one' }] }),
   },
 

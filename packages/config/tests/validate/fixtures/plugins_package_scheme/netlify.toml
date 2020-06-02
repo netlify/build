@@ -1,0 +1,2 @@
+[[plugins]]
+package = "git@github.com:netlify/plugin-example.git"
