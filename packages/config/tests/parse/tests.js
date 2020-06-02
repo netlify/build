@@ -4,10 +4,6 @@ const test = require('ava')
 
 const { runFixture, FIXTURES_DIR } = require('../helpers/main')
 
-test('Configuration file - netlify.yml prints a warning', async t => {
-  await runFixture(t, 'yml')
-})
-
 test('Configuration file - netlify.toml', async t => {
   await runFixture(t, 'toml')
 })
