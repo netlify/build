@@ -22,10 +22,6 @@ test('plugins.any.id backward compatibility', async t => {
   await runFixture(t, 'plugins_id_compat')
 })
 
-test('plugins.any.type renamed', async t => {
-  await runFixture(t, 'plugins_type_renamed')
-})
-
 test('plugins.any.enabled removed', async t => {
   await runFixture(t, 'plugins_enabled')
 })
@@ -36,10 +32,6 @@ test('plugins.any.package: required', async t => {
 
 test('plugins.any.package: string', async t => {
   await runFixture(t, 'plugins_package_string')
-})
-
-test('plugins.any.config: renamed', async t => {
-  await runFixture(t, 'plugins_config_renamed')
 })
 
 test('plugins.any.inputs: object', async t => {
@@ -80,10 +72,6 @@ test('build.command: string', async t => {
 
 test('build.command: array', async t => {
   await runFixture(t, 'build_command_array')
-})
-
-test('build.lifecycle: removed', async t => {
-  await runFixture(t, 'build_lifecycle')
 })
 
 test('build.context: property', async t => {

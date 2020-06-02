@@ -21,7 +21,6 @@ const getConfigPath = async function({ configOpt, cwd, repositoryRoot, base }) {
     ],
     Boolean,
   )
-  await printDeprecatedYaml(configPath, repositoryRoot)
   return configPath
 }
 
@@ -54,19 +53,5 @@ const searchConfigFile = async function(cwd) {
 }
 
 const FILENAME = 'netlify.toml'
-
-// TODO: remove once users stop using netlify.yml
-const printDeprecatedYaml = async function(configPath, repositoryRoot) {
-  if (configPath !== undefined) {
-    return
-  }
-
-  const yamlConfigPath = await findUp(YAML_FILENAME, { cwd: repositoryRoot })
-  if (yamlConfigPath !== undefined) {
-    throw new Error(`${YAML_FILENAME} is deprecated: please use ${FILENAME} instead.`)
-  }
-}
-
-const YAML_FILENAME = 'netlify.yml'
 
 module.exports = { getConfigPath }

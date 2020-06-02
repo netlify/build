@@ -4,10 +4,6 @@ const isString = function(value) {
   return typeof value === 'string'
 }
 
-const isUndefined = function(value) {
-  return value === undefined
-}
-
 // Check an object valid properties, including legacy ones
 const validProperties = function(propNames, legacyPropNames) {
   return {
@@ -39,4 +35,4 @@ const removeParentDots = function(path) {
 
 const PARENT_DOTS_REGEXP = /\.\.[/\\]/g
 
-module.exports = { isString, isUndefined, validProperties, insideRootCheck, removeParentDots }
+module.exports = { isString, validProperties, insideRootCheck, removeParentDots }

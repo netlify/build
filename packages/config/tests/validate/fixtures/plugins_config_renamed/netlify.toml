@@ -1,5 +1,0 @@
-[[plugins]]
-package = "./plugin.js"
-
-[plugins.config]
-test = "test"

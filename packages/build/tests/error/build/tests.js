@@ -15,10 +15,6 @@ test('build.failBuild() error option', async t => {
   await runFixture(t, 'fail_build_error_option')
 })
 
-test('build.fail() backward compatibility', async t => {
-  await runFixture(t, 'fail_build_compat')
-})
-
 test('build.failBuild() inside a callback', async t => {
   await runFixture(t, 'fail_build_callback')
 })
@@ -45,10 +41,6 @@ test('build.cancelBuild() inside a callback', async t => {
 
 test('build.cancelBuild() error option', async t => {
   await runFixture(t, 'cancel_error_option')
-})
-
-test('build.cancel() backward compatibility', async t => {
-  await runFixture(t, 'cancel_compat')
 })
 
 test('build.cancelBuild() API call', async t => {

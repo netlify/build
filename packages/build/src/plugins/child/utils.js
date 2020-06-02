@@ -3,7 +3,7 @@ const functionsUtils = require('@netlify/functions-utils')
 const gitUtils = require('@netlify/git-utils')
 const runUtils = require('@netlify/run-utils')
 
-const { failBuild, failPlugin, cancelBuild, setOldProperty } = require('../error')
+const { failBuild, failPlugin, cancelBuild } = require('../error')
 
 const { getStatusUtil } = require('./status')
 
@@ -23,7 +23,7 @@ const getUtils = function({ utilsData: { git }, constants: { FUNCTIONS_SRC, CACH
   const add = src => functionsUtils.add(src, FUNCTIONS_SRC, { fail: failBuild })
   const functions = { add }
   const status = getStatusUtil(runState)
-  const utils = {
+  return {
     build: buildUtils,
     git: gitA,
     cache,
@@ -31,13 +31,6 @@ const getUtils = function({ utilsData: { git }, constants: { FUNCTIONS_SRC, CACH
     functions,
     status,
   }
-
-  // Backward compatibility warnings. Non-enumerable.
-  // TODO: remove once no plugins is doing this anymore.
-  setOldProperty(utils.build, 'fail', 'The "fail()" method has been renamed to "failBuild()"')
-  setOldProperty(utils.build, 'cancel', 'The "cancel()" method has been renamed to "cancelBuild()"')
-
-  return utils
 }
 
 module.exports = { startUtils, getUtils }
