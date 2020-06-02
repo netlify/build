@@ -87,3 +87,7 @@ test('exception', async t => {
 test('exception with static properties', async t => {
   await runFixture(t, 'exception_props')
 })
+
+test('exception with circular references', async t => {
+  await runFixture(t, 'exception_circular')
+})
