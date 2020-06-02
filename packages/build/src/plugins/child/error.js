@@ -1,5 +1,6 @@
 // eslint-disable-next-line import/order
 const logProcessErrors = require('log-process-errors')
+const safeJsonStringify = require('safe-json-stringify')
 
 const { hasColors } = require('../../log/colors')
 const { isBuildError, ERROR_TYPE_SYM } = require('../error')
@@ -13,7 +14,11 @@ const handleError = async function({
   [ERROR_TYPE_SYM]: type = DEFAULT_ERROR_TYPE,
   ...errorProps
 }) {
-  await sendEventToParent('error', { name, message, stack, type, errorProps })
+  // IPC uses JSON for the payload. We ensure there are not circular references
+  // as those would make the message sending fail.
+  const errorPropsA = safeJsonStringify.ensureProperties(errorProps)
+
+  await sendEventToParent('error', { name, message, stack, type, errorProps: errorPropsA })
 }
 
 const DEFAULT_ERROR_TYPE = 'pluginInternal'
