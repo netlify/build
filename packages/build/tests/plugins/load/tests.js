@@ -15,6 +15,10 @@ test('Local plugins absolute path', async t => {
   await runFixture(t, 'local_absolute')
 })
 
+test('Local plugins invalid path', async t => {
+  await runFixture(t, 'local_invalid')
+})
+
 test('Node module plugins', async t => {
   await runFixture(t, 'module')
 })
