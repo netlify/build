@@ -2,6 +2,7 @@ const { env } = require('process')
 
 const pathExists = require('path-exists')
 
+const { addErrorInfo } = require('../error/info')
 const { installMissingPlugins, getAutoPluginsDirPath, warnOnMissingPlugins } = require('../install/missing')
 const { resolvePath } = require('../utils/resolve')
 
@@ -30,7 +31,7 @@ const resolvePluginPath = async function({ pluginOptions, pluginOptions: { packa
 
   // Local plugins
   if (packageA.startsWith('.')) {
-    const localPath = await resolvePath(packageA, buildDir)
+    const localPath = await tryLocalPath(packageA, buildDir)
     return { ...pluginOptions, pluginPath: localPath, loadedFrom: 'local' }
   }
 
@@ -49,6 +50,17 @@ const resolvePluginPath = async function({ pluginOptions, pluginOptions: { packa
 
   // Otherwise, it must be automatically installed, as a fallback
   return pluginOptions
+}
+
+// Try to `resolve()` a local plugin
+const tryLocalPath = async function(package, baseDir) {
+  try {
+    return await resolvePath(package, baseDir)
+  } catch (error) {
+    error.message = `Plugin could not be found using local path: ${package}\n${error.message}`
+    addErrorInfo(error, { type: 'resolveConfig' })
+    throw error
+  }
 }
 
 // In production, we pre-install most Build plugins to that directory, for
