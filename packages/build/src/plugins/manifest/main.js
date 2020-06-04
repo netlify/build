@@ -7,7 +7,18 @@ const { getManifestPath } = require('./path')
 // Load plugin's `manifest.yml`
 const useManifest = async function(
   { package, loadedFrom, origin, inputs },
-  { pluginDir, packageDir, packageJson, packageJson: { version }, mode, api, netlifyConfig, errorMonitor, deployId },
+  {
+    pluginDir,
+    packageDir,
+    packageJson,
+    packageJson: { version },
+    mode,
+    api,
+    netlifyConfig,
+    errorMonitor,
+    deployId,
+    testOpts,
+  },
 ) {
   const manifestPath = await getManifestPath(pluginDir, packageDir)
 
@@ -26,6 +37,7 @@ const useManifest = async function(
       netlifyConfig,
       errorMonitor,
       deployId,
+      testOpts,
     })
     throw error
   }

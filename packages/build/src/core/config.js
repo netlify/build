@@ -28,6 +28,9 @@ const DEFAULT_FLAGS = () => ({
   debug: Boolean(env.NETLIFY_BUILD_DEBUG),
   bugsnagKey: env.BUGSNAG_KEY,
   env: {},
+
+  // Flags used only for testing
+  testOpts: {},
 })
 
 // Retrieve configuration object

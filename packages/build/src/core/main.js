@@ -40,7 +40,7 @@ const build = async function(flags = {}) {
 
   logBuildStart()
 
-  const { bugsnagKey, ...flagsA } = normalizeFlags(flags)
+  const { testOpts, bugsnagKey, ...flagsA } = normalizeFlags(flags)
   const errorMonitor = startErrorMonitor({ flags: flagsA, bugsnagKey })
 
   try {
@@ -71,6 +71,7 @@ const build = async function(flags = {}) {
         api,
         errorMonitor,
         deployId,
+        testOpts,
       })
 
       const { commandsCount, error, statuses } = await buildRun({
@@ -87,13 +88,14 @@ const build = async function(flags = {}) {
         api,
         errorMonitor,
         deployId,
+        testOpts,
       })
 
       if (dry) {
         return { success: true }
       }
 
-      await reportStatuses({ statuses, api, mode, netlifyConfig, errorMonitor, deployId })
+      await reportStatuses({ statuses, api, mode, netlifyConfig, errorMonitor, deployId, testOpts })
 
       if (error !== undefined) {
         throw error
@@ -112,7 +114,7 @@ const build = async function(flags = {}) {
     }
   } catch (error) {
     removeErrorColors(error)
-    await reportBuildError(error, errorMonitor)
+    await reportBuildError({ error, errorMonitor, testOpts })
     logBuildError(error)
     return { success: false }
   }
@@ -132,6 +134,7 @@ const buildRun = async function({
   api,
   errorMonitor,
   deployId,
+  testOpts,
 }) {
   const utilsData = await startUtils(buildDir)
   const childProcesses = await startPlugins({ pluginsOptions, buildDir, nodePath, childEnv, mode })
@@ -153,6 +156,7 @@ const buildRun = async function({
       api,
       errorMonitor,
       deployId,
+      testOpts,
     })
   } finally {
     await stopPlugins(childProcesses)
@@ -175,6 +179,7 @@ const executeCommands = async function({
   api,
   errorMonitor,
   deployId,
+  testOpts,
 }) {
   const pluginsCommands = await loadPlugins({
     pluginsOptions,
@@ -187,6 +192,7 @@ const executeCommands = async function({
     api,
     errorMonitor,
     deployId,
+    testOpts,
   })
 
   const { commands, commandsCount } = getCommands(pluginsCommands, netlifyConfig)
@@ -204,6 +210,7 @@ const executeCommands = async function({
     childEnv,
     errorMonitor,
     netlifyConfig,
+    testOpts,
   })
 }
 
