@@ -47,11 +47,10 @@ const runFixtureCommon = async function(
   const FORCE_COLOR = isPrint ? '1' : ''
   const commandEnv = { FORCE_COLOR, NETLIFY_BUILD_TEST: '1', ...envOption }
   const copyRootDir = await getCopyRootDir({ copyRoot })
-  const repositoryRootFlag = getRepositoryRootFlag({ fixtureName, copyRoot, copyRootDir, repositoryRoot })
+  const mainFlags = getMainFlags({ fixtureName, copyRoot, copyRootDir, repositoryRoot, flags })
   const { stdout, stderr, all, exitCode } = await runCommand({
     binaryPath,
-    repositoryRootFlag,
-    flags,
+    mainFlags,
     isPrint,
     snapshot,
     commandEnv,
@@ -67,6 +66,14 @@ const runFixtureCommon = async function(
 
 // 10 minutes timeout
 const TIMEOUT = 6e5
+
+// Retrieve flags to the main entry point
+const getMainFlags = function({ fixtureName, copyRoot, copyRootDir, repositoryRoot, flags }) {
+  const repositoryRootFlag = getRepositoryRootFlag({ fixtureName, copyRoot, copyRootDir, repositoryRoot })
+  return `${DEFAULT_FLAGS} ${repositoryRootFlag} ${flags}`
+}
+
+const DEFAULT_FLAGS = ''
 
 // The `repositoryRoot` flag can be overriden, but defaults to the fixture
 // directory
@@ -96,8 +103,7 @@ const getCopyRootDir = function({ copyRoot, copyRoot: { git } = {} }) {
 
 const runCommand = async function({
   binaryPath,
-  repositoryRootFlag,
-  flags,
+  mainFlags,
   isPrint,
   snapshot,
   commandEnv,
@@ -107,7 +113,7 @@ const runCommand = async function({
   copyRootDir,
 }) {
   if (copyRoot === undefined) {
-    return execCommand({ binaryPath, repositoryRootFlag, flags, isPrint, snapshot, commandEnv })
+    return execCommand({ binaryPath, mainFlags, isPrint, snapshot, commandEnv })
   }
 
   try {
@@ -117,14 +123,14 @@ const runCommand = async function({
       await execa.command(`git checkout -b ${branch}`, { cwd: copyRootDir })
     }
 
-    return await execCommand({ binaryPath, repositoryRootFlag, flags, isPrint, snapshot, commandEnv })
+    return await execCommand({ binaryPath, mainFlags, isPrint, snapshot, commandEnv })
   } finally {
     await removeDir(copyRootDir)
   }
 }
 
-const execCommand = function({ binaryPath, repositoryRootFlag, flags, isPrint, snapshot, commandEnv }) {
-  return execa.command(`${binaryPath} ${repositoryRootFlag} ${flags}`, {
+const execCommand = function({ binaryPath, mainFlags, isPrint, snapshot, commandEnv }) {
+  return execa.command(`${binaryPath} ${mainFlags}`, {
     all: isPrint && snapshot,
     reject: false,
     env: commandEnv,
