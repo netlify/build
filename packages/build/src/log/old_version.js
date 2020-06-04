@@ -1,7 +1,4 @@
-const {
-  env: { NETLIFY_BUILD_TEST },
-  stdout,
-} = require('process')
+const { stdout } = require('process')
 
 const readPkgUp = require('read-pkg-up')
 const UpdateNotifier = require('update-notifier')
@@ -11,23 +8,23 @@ const UpdateNotifier = require('update-notifier')
 // We only print this when Netlify CLI has been used. Programmatic usage might
 // come from a deep dependency calling `@netlify/build` and user might not be
 // able to take any upgrade action, making the message noisy.
-const logOldCliVersionError = async function(mode) {
+const logOldCliVersionError = async function({ mode, testOpts }) {
   if (mode !== 'cli') {
     return
   }
 
-  const pkg = await getPkg()
+  const pkg = await getPkg(testOpts)
   UpdateNotifier({ pkg, updateCheckInterval: 1 }).notify({
     message: OLD_VERSION_MESSAGE,
     shouldNotifyInNpmScript: true,
   })
 }
 
-const getPkg = async function() {
+const getPkg = async function(testOpts) {
   const { packageJson } = await readPkgUp({ cwd: __dirname, normalize: false })
 
   // TODO: Find a way to test this without injecting code in the `src/`
-  if (NETLIFY_BUILD_TEST) {
+  if (testOpts.oldCliLogs) {
     // `update-notifier` does not do anything if not in a TTY.
     // In tests, we need to monkey patch this
     stdout.isTTY = true
