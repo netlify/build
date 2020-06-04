@@ -25,6 +25,7 @@ const DEFAULT_FLAGS = () => ({
   token: env.NETLIFY_AUTH_TOKEN,
   mode: 'require',
   deployId: env.DEPLOY_ID,
+  debug: Boolean(env.NETLIFY_BUILD_DEBUG),
 })
 
 // Retrieve configuration object
@@ -43,6 +44,7 @@ const loadConfig = async function({
   branch,
   baseRelDir,
   mode,
+  debug,
 }) {
   const {
     configPath,
@@ -67,7 +69,7 @@ const loadConfig = async function({
   })
   logBuildDir(buildDir)
   logConfigPath(configPath)
-  logConfig(netlifyConfig)
+  logConfig({ netlifyConfig, debug })
   logContext(contextA)
 
   const apiA = addApiErrorHandlers(api)
