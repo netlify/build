@@ -7,7 +7,7 @@ test('--token', async t => {
 })
 
 test('NETLIFY_AUTH_TOKEN environment variable', async t => {
-  await runFixture(t, 'api_call', { env: { NETLIFY_AUTH_TOKEN: 'test', NETLIFY_BUILD_API_CLIENT: '1' } })
+  await runFixture(t, 'api_call', { flags: '--test-opts.api-client', env: { NETLIFY_AUTH_TOKEN: 'test' } })
 })
 
 test('feature flag', async t => {
@@ -15,35 +15,23 @@ test('feature flag', async t => {
 })
 
 test('scopes but no token', async t => {
-  await runFixture(t, 'no_token', { env: { NETLIFY_AUTH_TOKEN: '', NETLIFY_BUILD_API_CLIENT: '1' } })
+  await runFixture(t, 'no_token', { flags: '--test-opts.api-client', env: { NETLIFY_AUTH_TOKEN: '' } })
 })
 
 test('api call', async t => {
-  await runFixture(t, 'api_call', {
-    flags: '--token=test',
-    env: { NETLIFY_BUILD_API_CLIENT: '1' },
-  })
+  await runFixture(t, 'api_call', { flags: '--token=test --test-opts.api-client' })
 })
 
 test('wrong scopes', async t => {
-  await runFixture(t, 'wrong_scopes', {
-    flags: '--token=test',
-    env: { NETLIFY_BUILD_API_CLIENT: '1' },
-  })
+  await runFixture(t, 'wrong_scopes', { flags: '--token=test --test-opts.api-client' })
 })
 
 test('star scopes', async t => {
-  await runFixture(t, 'star_scopes', {
-    flags: '--token=test',
-    env: { NETLIFY_BUILD_API_CLIENT: '1' },
-  })
+  await runFixture(t, 'star_scopes', { flags: '--token=test --test-opts.api-client' })
 })
 
 test('default scopes', async t => {
-  await runFixture(t, 'default_scopes', {
-    flags: '--token=test',
-    env: { NETLIFY_BUILD_API_CLIENT: '1' },
-  })
+  await runFixture(t, 'default_scopes', { flags: '--token=test --test-opts.api-client' })
 })
 
 test('--site-id', async t => {
