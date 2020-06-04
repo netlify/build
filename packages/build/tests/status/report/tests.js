@@ -20,7 +20,7 @@ test('utils.status.show() statuses are not sent to the API without a token', asy
 })
 
 test('utils.status.show() statuses are not sent to the API without a DEPLOY_ID', async t => {
-  await runWithApiMock(t, 'print', { env: { DEPLOY_ID: '' } })
+  await runWithApiMock(t, 'print', { flags: '--deploy-id=""' })
 })
 
 test('utils.status.show() statuses API errors are handled', async t => {

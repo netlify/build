@@ -16,16 +16,17 @@ const reportPluginLoadError = async function({
   version,
   netlifyConfig,
   errorMonitor,
+  deployId,
 }) {
   const errorStatus = serializeErrorStatus(error)
   const statuses = [{ ...errorStatus, event, package, version }]
-  await reportStatuses({ statuses, api, mode, netlifyConfig, errorMonitor })
+  await reportStatuses({ statuses, api, mode, netlifyConfig, errorMonitor, deployId })
 }
 
-const reportStatuses = async function({ statuses, api, mode, netlifyConfig, errorMonitor }) {
+const reportStatuses = async function({ statuses, api, mode, netlifyConfig, errorMonitor, deployId }) {
   const statusesA = removeStatusesColors(statuses)
   printStatuses(statusesA, mode)
-  await sendStatuses({ statuses: statusesA, api, mode, netlifyConfig, errorMonitor })
+  await sendStatuses({ statuses: statusesA, api, mode, netlifyConfig, errorMonitor, deployId })
 }
 
 // When not in production, print statuses to console.
@@ -49,12 +50,12 @@ const shouldPrintStatus = function({ state, summary }) {
 }
 
 // In production, send statuses to the API
-const sendStatuses = async function({ statuses, api, mode, netlifyConfig, errorMonitor }) {
-  if ((mode !== 'buildbot' && env.NETLIFY_BUILD_TEST_STATUS !== '1') || api === undefined || !env.DEPLOY_ID) {
+const sendStatuses = async function({ statuses, api, mode, netlifyConfig, errorMonitor, deployId }) {
+  if ((mode !== 'buildbot' && env.NETLIFY_BUILD_TEST_STATUS !== '1') || api === undefined || !deployId) {
     return
   }
 
-  await Promise.all(statuses.map(status => sendStatus({ api, status, netlifyConfig, errorMonitor })))
+  await Promise.all(statuses.map(status => sendStatus({ api, status, netlifyConfig, errorMonitor, deployId })))
 }
 
 const sendStatus = async function({
@@ -62,10 +63,11 @@ const sendStatus = async function({
   status: { package, version, state, event, title, summary, text },
   netlifyConfig,
   errorMonitor,
+  deployId,
 }) {
   try {
     await api.createPluginRun({
-      deploy_id: env.DEPLOY_ID,
+      deploy_id: deployId,
       body: { package, version, state, reporting_event: event, title, summary, text },
     })
     // Bitballoon API randomly fails with 502.

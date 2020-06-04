@@ -53,12 +53,13 @@ const build = async function(flags = {}) {
       api,
       dry,
       siteInfo,
+      deployId,
       constants,
       context,
       branch,
       mode,
     } = await loadConfig(flagsA)
-    const childEnv = await getChildEnv({ netlifyConfig, buildDir, context, branch, siteInfo, mode })
+    const childEnv = await getChildEnv({ netlifyConfig, buildDir, context, branch, siteInfo, deployId, mode })
 
     try {
       const pluginsOptions = await getPluginsOptions({
@@ -68,6 +69,7 @@ const build = async function(flags = {}) {
         mode,
         api,
         errorMonitor,
+        deployId,
       })
 
       const { commandsCount, error, statuses } = await buildRun({
@@ -83,13 +85,14 @@ const build = async function(flags = {}) {
         mode,
         api,
         errorMonitor,
+        deployId,
       })
 
       if (dry) {
         return { success: true }
       }
 
-      await reportStatuses({ statuses, api, mode, netlifyConfig, errorMonitor })
+      await reportStatuses({ statuses, api, mode, netlifyConfig, errorMonitor, deployId })
 
       if (error !== undefined) {
         throw error
@@ -100,7 +103,7 @@ const build = async function(flags = {}) {
       await trackBuildComplete({ commandsCount, netlifyConfig, duration, siteInfo, mode })
       return { success: true }
     } catch (error) {
-      await maybeCancelBuild(error, api)
+      await maybeCancelBuild({ error, api, deployId })
       await logOldCliVersionError(mode)
       error.netlifyConfig = netlifyConfig
       error.childEnv = childEnv
@@ -127,6 +130,7 @@ const buildRun = async function({
   mode,
   api,
   errorMonitor,
+  deployId,
 }) {
   const utilsData = await startUtils(buildDir)
   const childProcesses = await startPlugins({ pluginsOptions, buildDir, nodePath, childEnv, mode })
@@ -147,6 +151,7 @@ const buildRun = async function({
       mode,
       api,
       errorMonitor,
+      deployId,
     })
   } finally {
     await stopPlugins(childProcesses)
@@ -168,6 +173,7 @@ const executeCommands = async function({
   mode,
   api,
   errorMonitor,
+  deployId,
 }) {
   const pluginsCommands = await loadPlugins({
     pluginsOptions,
@@ -179,6 +185,7 @@ const executeCommands = async function({
     mode,
     api,
     errorMonitor,
+    deployId,
   })
 
   const { commands, commandsCount } = getCommands(pluginsCommands, netlifyConfig)
