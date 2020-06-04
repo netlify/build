@@ -28,6 +28,7 @@ const DEFAULT_FLAGS = () => ({
   debug: Boolean(env.NETLIFY_BUILD_DEBUG),
   bugsnagKey: env.BUGSNAG_KEY,
   env: {},
+  telemetry: !env.BUILD_TELEMETRY_DISABLED,
 
   // Flags used only for testing
   testOpts: {},
@@ -49,6 +50,7 @@ const loadConfig = async function({
   branch,
   baseRelDir,
   env: envOpt,
+  telemetry,
   mode,
   debug,
 }) {
@@ -94,6 +96,7 @@ const loadConfig = async function({
     context: contextA,
     branch: branchA,
     envOpt,
+    telemetry,
     mode,
   }
 }

@@ -107,6 +107,11 @@ Default: Current Node.js binary`,
     describe: `Print currently enabled feature flags.
 Default: false`,
   },
+  telemetry: {
+    boolean: true,
+    describe: `Enable telemetry.
+Default: true`,
+  },
   mode: {
     string: true,
     describe: `Environment in which this is loaded. Can be:
