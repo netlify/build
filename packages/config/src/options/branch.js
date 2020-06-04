@@ -1,6 +1,4 @@
-const {
-  env: { BRANCH },
-} = require('process')
+const { env } = require('process')
 
 const execa = require('execa')
 
@@ -14,8 +12,8 @@ const getBranch = async function({ branch, repositoryRoot }) {
     return branch
   }
 
-  if (BRANCH) {
-    return BRANCH
+  if (env.BRANCH) {
+    return env.BRANCH
   }
 
   const gitBranch = await getGitBranch(repositoryRoot)
