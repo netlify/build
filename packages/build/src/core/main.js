@@ -86,7 +86,7 @@ const build = async function(flags) {
       })
 
       if (dry) {
-        return true
+        return { success: true }
       }
 
       await reportStatuses({ statuses, api, mode, netlifyConfig, errorMonitor })
@@ -98,7 +98,7 @@ const build = async function(flags) {
       logBuildSuccess()
       const duration = endTimer(buildTimer, 'Netlify Build')
       await trackBuildComplete({ commandsCount, netlifyConfig, duration, siteInfo, mode })
-      return true
+      return { success: true }
     } catch (error) {
       await maybeCancelBuild(error, api)
       await logOldCliVersionError(mode)
@@ -110,7 +110,7 @@ const build = async function(flags) {
     removeErrorColors(error)
     await reportBuildError(error, errorMonitor)
     logBuildError(error)
-    return false
+    return { success: false }
   }
 }
 
