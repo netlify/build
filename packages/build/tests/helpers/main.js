@@ -14,8 +14,6 @@ const runFixture = async function(t, fixtureName, { env: envOption, ...opts } = 
     ...opts,
     binaryPath: await BINARY_PATH,
     env: {
-      // Workarounds to mock caching logic
-      TEST_CACHE_PATH: 'none',
       // Ensure local tokens aren't used during development
       NETLIFY_AUTH_TOKEN: '',
       // Allows executing any locally installed Node modules inside tests,
