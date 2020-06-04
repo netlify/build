@@ -26,6 +26,7 @@ const DEFAULT_FLAGS = () => ({
   mode: 'require',
   deployId: env.DEPLOY_ID,
   debug: Boolean(env.NETLIFY_BUILD_DEBUG),
+  bugsnagKey: env.BUGSNAG_KEY,
 })
 
 // Retrieve configuration object

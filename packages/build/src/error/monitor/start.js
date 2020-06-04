@@ -1,5 +1,3 @@
-const { env } = require('process')
-
 const Bugsnag = require('@bugsnag/js')
 const memoizeOne = require('memoize-one')
 
@@ -9,16 +7,15 @@ const { log } = require('../../log/logger.js')
 const projectRoot = `${__dirname}/../../..`
 
 // Start a client to monitor errors
-const startErrorMonitor = function({ mode }) {
-  const apiKey = env.BUGSNAG_KEY
-  if (!apiKey) {
+const startErrorMonitor = function({ flags: { mode }, bugsnagKey }) {
+  if (!bugsnagKey) {
     return
   }
 
   const releaseStage = getReleaseStage(mode)
   try {
     const errorMonitor = startBugsnag({
-      apiKey,
+      apiKey: bugsnagKey,
       appVersion: `${name} ${version}`,
       appType: name,
       releaseStage,

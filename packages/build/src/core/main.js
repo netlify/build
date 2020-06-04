@@ -40,8 +40,8 @@ const build = async function(flags = {}) {
 
   logBuildStart()
 
-  const flagsA = normalizeFlags(flags)
-  const errorMonitor = startErrorMonitor(flagsA)
+  const { bugsnagKey, ...flagsA } = normalizeFlags(flags)
+  const errorMonitor = startErrorMonitor({ flags: flagsA, bugsnagKey })
 
   try {
     const {
