@@ -17,7 +17,7 @@ const runCli = async function() {
     return printFeatures()
   }
 
-  const success = await build(flagsA)
+  const { success } = await build(flagsA)
   process.exitCode = success ? 0 : 1
 }
 
