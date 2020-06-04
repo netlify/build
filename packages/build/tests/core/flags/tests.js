@@ -31,7 +31,7 @@ test('--node-path is not used by core plugins', async t => {
 test('--node-path is not used by build-image cached plugins', async t => {
   const { path } = await getNode(CHILD_NODE_VERSION)
   await runFixture(t, 'build_image', {
-    flags: `--node-path=${path} --mode=buildbot`,
-    env: { TEST_NODE_PATH: execPath, TEST_BUILD_IMAGE_PLUGINS_DIR: `${FIXTURES_DIR}/build_image_cache/node_modules` },
+    flags: `--node-path=${path} --mode=buildbot --test-opts.build-image-plugins-dir=${FIXTURES_DIR}/build_image_cache/node_modules`,
+    env: { TEST_NODE_PATH: execPath },
   })
 })

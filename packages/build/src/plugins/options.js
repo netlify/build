@@ -25,7 +25,7 @@ const getPluginsOptions = async function({
   const allCorePlugins = corePlugins.filter(corePlugin => !isOptionalCore(corePlugin, plugins))
   const userPlugins = plugins.filter(isUserPlugin)
   const pluginsOptions = [...allCorePlugins, ...userPlugins].map(normalizePluginOptions)
-  const pluginsOptionsA = await resolvePluginsPath({ pluginsOptions, buildDir, mode })
+  const pluginsOptionsA = await resolvePluginsPath({ pluginsOptions, buildDir, mode, testOpts })
   const pluginsOptionsB = await Promise.all(
     pluginsOptionsA.map(pluginOptions =>
       loadPluginFiles({ pluginOptions, mode, api, netlifyConfig, errorMonitor, deployId, testOpts }),
