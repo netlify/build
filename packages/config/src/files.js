@@ -1,7 +1,8 @@
 const { resolve } = require('path')
 
+const { isDirectory } = require('path-type')
+
 const { throwError } = require('./error')
-const { dirExists } = require('./utils/dir-exists')
 
 // Make configuration paths relative to `buildDir` and converts them to
 // absolute paths
@@ -58,7 +59,7 @@ const getBuildDir = async function(repositoryRoot, { base = repositoryRoot }) {
 // We already check `repositoryRoot` earlier in the code, so only need to check
 // `buildDir` when it is the base directory instead.
 const checkBuildDir = async function(buildDir, repositoryRoot) {
-  if (buildDir === repositoryRoot || (await dirExists(buildDir))) {
+  if (buildDir === repositoryRoot || (await isDirectory(buildDir))) {
     return
   }
 

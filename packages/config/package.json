@@ -32,6 +32,7 @@
     "netlify": "^4.2.0",
     "p-locate": "^4.1.0",
     "path-exists": "^4.0.0",
+    "path-type": "^4.0.0",
     "toml": "^3.0.0",
     "tomlify-j0.4": "^3.0.0",
     "validate-npm-package-name": "^3.0.0",
