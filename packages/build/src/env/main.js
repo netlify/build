@@ -1,3 +1,5 @@
+const { env } = require('process')
+
 const { omit } = require('../utils/omit')
 const { removeFalsy } = require('../utils/remove_falsy')
 
@@ -5,9 +7,9 @@ const { getGitEnv } = require('./git')
 
 // Retrieve the environment variables passed to plugins and `build.command`
 // When run locally, this tries to emulate the production environment.
-const getChildEnv = async function({ netlifyConfig, buildDir, branch, context, siteInfo, deployId, mode }) {
+const getChildEnv = async function({ netlifyConfig, buildDir, branch, context, siteInfo, deployId, envOpt, mode }) {
   if (mode === 'buildbot') {
-    return process.env
+    return { ...env, ...envOpt }
   }
 
   const defaultEnv = getDefaultEnv()
@@ -16,10 +18,11 @@ const getChildEnv = async function({ netlifyConfig, buildDir, branch, context, s
   const forcedEnv = await getForcedEnv({ buildDir, branch, context, siteInfo })
   return {
     ...removeFalsy(defaultEnv),
-    ...process.env,
+    ...env,
     ...removeFalsy(configurableEnv),
     ...removeFalsy(configEnv),
     ...removeFalsy(forcedEnv),
+    ...envOpt,
   }
 }
 

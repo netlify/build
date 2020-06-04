@@ -57,9 +57,10 @@ const build = async function(flags = {}) {
       constants,
       context,
       branch,
+      envOpt,
       mode,
     } = await loadConfig(flagsA)
-    const childEnv = await getChildEnv({ netlifyConfig, buildDir, context, branch, siteInfo, deployId, mode })
+    const childEnv = await getChildEnv({ netlifyConfig, buildDir, context, branch, siteInfo, deployId, envOpt, mode })
 
     try {
       const pluginsOptions = await getPluginsOptions({

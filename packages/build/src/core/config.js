@@ -27,6 +27,7 @@ const DEFAULT_FLAGS = () => ({
   deployId: env.DEPLOY_ID,
   debug: Boolean(env.NETLIFY_BUILD_DEBUG),
   bugsnagKey: env.BUGSNAG_KEY,
+  env: {},
 })
 
 // Retrieve configuration object
@@ -44,6 +45,7 @@ const loadConfig = async function({
   context,
   branch,
   baseRelDir,
+  env: envOpt,
   mode,
   debug,
 }) {
@@ -88,6 +90,7 @@ const loadConfig = async function({
     constants,
     context: contextA,
     branch: branchA,
+    envOpt,
     mode,
   }
 }
