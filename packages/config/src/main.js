@@ -23,9 +23,15 @@ const {
 // Load the configuration file.
 // Takes an optional configuration file path as input and return the resolved
 // `config` together with related properties such as the `configPath`.
-const resolveConfig = async function({ cachedConfig, token = env.NETLIFY_AUTH_TOKEN, siteId, ...opts } = {}) {
+const resolveConfig = async function({
+  cachedConfig,
+  token = env.NETLIFY_AUTH_TOKEN,
+  siteId,
+  testOpts = {},
+  ...opts
+} = {}) {
   // `api` is not JSON-serializable, so we cannot cache it inside `cachedConfig`
-  const api = getApiClient(token)
+  const api = getApiClient(token, testOpts)
 
   // Performance optimization when @netlify/config caller has already previously
   // called it and cached the result.

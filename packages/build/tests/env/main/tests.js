@@ -54,8 +54,7 @@ const SITE_INFO_DATA = { url: 'test', build_settings: { repo_url: 'test' } }
 test('Environment variable siteInfo success', async t => {
   const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_DATA)
   await runFixture(t, 'site_info', {
-    flags: '--token=test --site-id=test',
-    env: { TEST_SCHEME: scheme, TEST_HOST: host },
+    flags: `--token=test --site-id=test --testOpts.scheme=${scheme} --testOpts.host=${host}`,
   })
   await stopServer()
 })

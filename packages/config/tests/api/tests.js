@@ -21,8 +21,7 @@ const SITE_INFO_ERROR = { error: 'invalid' }
 test('Environment variable siteInfo success', async t => {
   const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_DATA)
   await runFixture(t, 'empty', {
-    flags: '--token=test --site-id=test',
-    env: { TEST_SCHEME: scheme, TEST_HOST: host },
+    flags: `--token=test --site-id=test --testOpts.scheme=${scheme} --testOpts.host=${host}`,
   })
   await stopServer()
 })
@@ -30,35 +29,27 @@ test('Environment variable siteInfo success', async t => {
 test('Environment variable siteInfo API error', async t => {
   const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_ERROR, { status: 400 })
   await runFixture(t, 'empty', {
-    flags: '--token=test --site-id=test',
-    env: { TEST_SCHEME: scheme, TEST_HOST: host },
+    flags: `--token=test --site-id=test --testOpts.scheme=${scheme} --testOpts.host=${host}`,
   })
   await stopServer()
 })
 
 test('Environment variable siteInfo no token', async t => {
   const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_DATA)
-  await runFixture(t, 'empty', {
-    flags: '--site-id=test',
-    env: { TEST_SCHEME: scheme, TEST_HOST: host },
-  })
+  await runFixture(t, 'empty', { flags: `--site-id=test --testOpts.scheme=${scheme} --testOpts.host=${host}` })
   await stopServer()
 })
 
 test('Environment variable siteInfo no siteId', async t => {
   const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_DATA)
-  await runFixture(t, 'empty', {
-    flags: '--token=test',
-    env: { TEST_SCHEME: scheme, TEST_HOST: host },
-  })
+  await runFixture(t, 'empty', { flags: `--token=test --testOpts.scheme=${scheme} --testOpts.host=${host}` })
   await stopServer()
 })
 
 test('Environment variable siteInfo CI', async t => {
   const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_DATA)
   await runFixture(t, 'empty', {
-    flags: '--token=test --site-id=test --mode=buildbot',
-    env: { TEST_SCHEME: scheme, TEST_HOST: host },
+    flags: `--token=test --site-id=test --mode=buildbot --testOpts.scheme=${scheme} --testOpts.host=${host}`,
   })
   await stopServer()
 })
@@ -71,8 +62,7 @@ const SITE_INFO_BUILD_SETTINGS_NULL = {
 test('Build settings can be null', async t => {
   const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_BUILD_SETTINGS_NULL)
   await runFixture(t, 'empty', {
-    flags: '--token=test --site-id=test',
-    env: { TEST_SCHEME: scheme, TEST_HOST: host },
+    flags: `--token=test --site-id=test --testOpts.scheme=${scheme} --testOpts.host=${host}`,
   })
   await stopServer()
 })
@@ -93,8 +83,7 @@ const SITE_INFO_BUILD_SETTINGS = {
 test('Use build settings if a siteId and token are provided', async t => {
   const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_BUILD_SETTINGS)
   await runFixture(t, 'base', {
-    flags: '--token=test --site-id=test',
-    env: { TEST_SCHEME: scheme, TEST_HOST: host },
+    flags: `--token=test --site-id=test --testOpts.scheme=${scheme} --testOpts.host=${host}`,
   })
   await stopServer()
 })
@@ -102,8 +91,7 @@ test('Use build settings if a siteId and token are provided', async t => {
 test('Build settings have low merging priority', async t => {
   const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_BUILD_SETTINGS)
   await runFixture(t, 'build_settings', {
-    flags: '--token=test --site-id=test --baseRelDir',
-    env: { TEST_SCHEME: scheme, TEST_HOST: host },
+    flags: `--token=test --site-id=test --baseRelDir --testOpts.scheme=${scheme} --testOpts.host=${host}`,
   })
   await stopServer()
 })
@@ -111,35 +99,27 @@ test('Build settings have low merging priority', async t => {
 test('Build settings are not used if getSite call fails', async t => {
   const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_BUILD_SETTINGS, { status: 400 })
   await runFixture(t, 'base', {
-    flags: '--token=test --site-id=test',
-    env: { TEST_SCHEME: scheme, TEST_HOST: host },
+    flags: `--token=test --site-id=test --testOpts.scheme=${scheme} --testOpts.host=${host}`,
   })
   await stopServer()
 })
 
 test('Build settings are not used without a token', async t => {
   const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_BUILD_SETTINGS)
-  await runFixture(t, 'base', {
-    flags: '--site-id=test',
-    env: { TEST_SCHEME: scheme, TEST_HOST: host },
-  })
+  await runFixture(t, 'base', { flags: `--site-id=test --testOpts.scheme=${scheme} --testOpts.host=${host}` })
   await stopServer()
 })
 
 test('Build settings are not used without a siteId', async t => {
   const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_BUILD_SETTINGS)
-  await runFixture(t, 'base', {
-    flags: '--token=test',
-    env: { TEST_SCHEME: scheme, TEST_HOST: host },
-  })
+  await runFixture(t, 'base', { flags: `--token=test --testOpts.scheme=${scheme} --testOpts.host=${host}` })
   await stopServer()
 })
 
 test('Build settings are not used in CI', async t => {
   const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_BUILD_SETTINGS)
   await runFixture(t, 'base', {
-    flags: '--token=test --site-id=test --mode=buildbot',
-    env: { TEST_SCHEME: scheme, TEST_HOST: host },
+    flags: `--token=test --site-id=test --mode=buildbot --testOpts.scheme=${scheme} --testOpts.host=${host}`,
   })
   await stopServer()
 })
