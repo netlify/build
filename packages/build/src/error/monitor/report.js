@@ -1,5 +1,4 @@
 const { type, freemem, totalmem } = require('os')
-const { env } = require('process')
 const { promisify } = require('util')
 
 const osName = require('os-name')
@@ -15,7 +14,7 @@ const { normalizeGroupingMessage } = require('./normalize')
 const { printEventForTest } = require('./print')
 
 // Report a build failure for monitoring purpose
-const reportBuildError = async function(error, errorMonitor) {
+const reportBuildError = async function({ error, errorMonitor, testOpts }) {
   if (errorMonitor === undefined) {
     return
   }
@@ -38,6 +37,7 @@ const reportBuildError = async function(error, errorMonitor) {
       groupingHash,
       metadata,
       app,
+      testOpts,
     })
   } finally {
     error.name = errorName
@@ -103,10 +103,10 @@ const updateErrorName = function(error, type) {
   return name
 }
 
-const reportError = async function({ errorMonitor, error, severity, group, groupingHash, metadata, app }) {
+const reportError = async function({ errorMonitor, error, severity, group, groupingHash, metadata, app, testOpts }) {
   try {
     await promisify(errorMonitor.notify)(error, event =>
-      onError({ event, severity, group, groupingHash, metadata, app }),
+      onError({ event, severity, group, groupingHash, metadata, app, testOpts }),
     )
     // Failsafe
   } catch (error) {
@@ -116,7 +116,7 @@ const reportError = async function({ errorMonitor, error, severity, group, group
 }
 
 // Add more information to Bugsnag events
-const onError = function({ event, severity, group, groupingHash, metadata, app }) {
+const onError = function({ event, severity, group, groupingHash, metadata, app, testOpts }) {
   // `unhandled` is used to calculate Releases "stabiity score", which is
   // basically the percentage of unhandled errors. Since we handle all errors,
   // we need to implement this according to error types.
@@ -131,7 +131,7 @@ const onError = function({ event, severity, group, groupingHash, metadata, app }
     unhandled,
   })
 
-  if (env.NETLIFY_BUILD_TEST === '1') {
+  if (testOpts.errorMonitor) {
     printEventForTest(event)
     return false
   }

@@ -65,6 +65,7 @@ const runCommands = async function({
   childEnv,
   errorMonitor,
   netlifyConfig,
+  testOpts,
 }) {
   const { index: commandsCount, error: errorA, statuses: statusesB } = await pReduce(
     commands,
@@ -92,6 +93,7 @@ const runCommands = async function({
           error,
           failedPlugins,
           netlifyConfig,
+          testOpts,
         },
       )
       const statusesA = addStatus({ newStatus, statuses, event, package, packageJson })
@@ -128,6 +130,7 @@ const runCommand = async function({
   error,
   failedPlugins,
   netlifyConfig,
+  testOpts,
 }) {
   if (shouldSkipCommand({ event, package, error, failedPlugins })) {
     return {}
@@ -157,7 +160,7 @@ const runCommand = async function({
   const newValues =
     newError === undefined
       ? handleCommandSuccess({ event, package, newEnvChanges, newStatus, methodTimer })
-      : await handleCommandError({ newError, errorMonitor, buildCommand, netlifyConfig })
+      : await handleCommandError({ newError, errorMonitor, buildCommand, netlifyConfig, testOpts })
   return { ...newValues, newIndex: index + 1 }
 }
 
@@ -279,7 +282,7 @@ const handleCommandSuccess = function({ event, package, newEnvChanges, newStatus
 //    handlers of the same type have been triggered before propagating
 //  - if `utils.build.failPlugin()` was used, print an error and skip next event
 //    handlers of that plugin. But do not stop build.
-const handleCommandError = async function({ newError, errorMonitor, buildCommand, netlifyConfig }) {
+const handleCommandError = async function({ newError, errorMonitor, buildCommand, netlifyConfig, testOpts }) {
   // `build.command` do not report error statuses
   if (buildCommand !== undefined) {
     return { newError }
@@ -289,15 +292,15 @@ const handleCommandError = async function({ newError, errorMonitor, buildCommand
   const newStatus = serializeErrorStatus(newError)
 
   if (type === 'failPlugin') {
-    return handleFailPlugin({ newStatus, package, newError, errorMonitor, netlifyConfig })
+    return handleFailPlugin({ newStatus, package, newError, errorMonitor, netlifyConfig, testOpts })
   }
 
   return { newError, newStatus }
 }
 
-const handleFailPlugin = async function({ newStatus, package, newError, errorMonitor, netlifyConfig }) {
+const handleFailPlugin = async function({ newStatus, package, newError, errorMonitor, netlifyConfig, testOpts }) {
   logBuildError(newError, netlifyConfig)
-  await reportBuildError(newError, errorMonitor)
+  await reportBuildError({ error: newError, errorMonitor, testOpts })
   return { failedPlugin: [package], newStatus }
 }
 

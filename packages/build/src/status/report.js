@@ -17,16 +17,17 @@ const reportPluginLoadError = async function({
   netlifyConfig,
   errorMonitor,
   deployId,
+  testOpts,
 }) {
   const errorStatus = serializeErrorStatus(error)
   const statuses = [{ ...errorStatus, event, package, version }]
-  await reportStatuses({ statuses, api, mode, netlifyConfig, errorMonitor, deployId })
+  await reportStatuses({ statuses, api, mode, netlifyConfig, errorMonitor, deployId, testOpts })
 }
 
-const reportStatuses = async function({ statuses, api, mode, netlifyConfig, errorMonitor, deployId }) {
+const reportStatuses = async function({ statuses, api, mode, netlifyConfig, errorMonitor, deployId, testOpts }) {
   const statusesA = removeStatusesColors(statuses)
   printStatuses(statusesA, mode)
-  await sendStatuses({ statuses: statusesA, api, mode, netlifyConfig, errorMonitor, deployId })
+  await sendStatuses({ statuses: statusesA, api, mode, netlifyConfig, errorMonitor, deployId, testOpts })
 }
 
 // When not in production, print statuses to console.
@@ -50,12 +51,14 @@ const shouldPrintStatus = function({ state, summary }) {
 }
 
 // In production, send statuses to the API
-const sendStatuses = async function({ statuses, api, mode, netlifyConfig, errorMonitor, deployId }) {
+const sendStatuses = async function({ statuses, api, mode, netlifyConfig, errorMonitor, deployId, testOpts }) {
   if ((mode !== 'buildbot' && env.NETLIFY_BUILD_TEST_STATUS !== '1') || api === undefined || !deployId) {
     return
   }
 
-  await Promise.all(statuses.map(status => sendStatus({ api, status, netlifyConfig, errorMonitor, deployId })))
+  await Promise.all(
+    statuses.map(status => sendStatus({ api, status, netlifyConfig, errorMonitor, deployId, testOpts })),
+  )
 }
 
 const sendStatus = async function({
@@ -64,6 +67,7 @@ const sendStatus = async function({
   netlifyConfig,
   errorMonitor,
   deployId,
+  testOpts,
 }) {
   try {
     await api.createPluginRun({
@@ -75,7 +79,7 @@ const sendStatus = async function({
     // to report the error both in logs and in error monitoring.
   } catch (error) {
     logBuildError(error, netlifyConfig)
-    await reportBuildError(error, errorMonitor)
+    await reportBuildError({ error, errorMonitor, testOpts })
   }
 }
 

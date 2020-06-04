@@ -120,6 +120,10 @@ Default: false`,
     describe: 'Print debugging information',
     hidden: true,
   },
+  testOpts: {
+    describe: 'Options for testing only',
+    hidden: true,
+  },
 }
 
 const USAGE = `netlify-build [OPTIONS...]

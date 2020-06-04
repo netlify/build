@@ -6,7 +6,7 @@ const hasAnsi = require('has-ansi')
 const { getJsonOpt } = require('../../../../config/tests/helpers/main')
 const { runFixture } = require('../../helpers/main')
 
-const flags = '--bugsnag-key=00000000000000000000000000000000'
+const flags = '--test-opts.error-monitor --bugsnag-key=00000000000000000000000000000000'
 
 test('Report build.command failure', async t => {
   await runFixture(t, 'command', { flags })
