@@ -67,6 +67,11 @@ The NETLIFY_AUTH_TOKEN environment variable can be used as well.`,
     string: true,
     describe: `Netlify Site ID.`,
   },
+  deployId: {
+    string: true,
+    describe: `Netlify Deploy ID.
+Default: automatically guessed`,
+  },
   context: {
     string: true,
     describe: `Build context.

@@ -1,13 +1,9 @@
-const {
-  env: { DEPLOY_ID },
-} = require('process')
-
 const { getErrorInfo } = require('./info')
 const { getTypeInfo } = require('./type')
 
 // Cancel builds, for example when a plugin uses `utils.build.cancelBuild()`
-const maybeCancelBuild = async function(error, api) {
-  if (api === undefined || !DEPLOY_ID) {
+const maybeCancelBuild = async function({ error, api, deployId }) {
+  if (api === undefined || !deployId) {
     return
   }
 
@@ -17,7 +13,7 @@ const maybeCancelBuild = async function(error, api) {
     return
   }
 
-  await api.cancelSiteDeploy({ deploy_id: DEPLOY_ID })
+  await api.cancelSiteDeploy({ deploy_id: deployId })
 }
 
 // Is an exception but not a build error, e.g. canceled builds

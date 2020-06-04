@@ -45,7 +45,7 @@ test('Report IPC error', async t => {
 })
 
 test('Report API error', async t => {
-  await runFixture(t, 'cancel_build', { env: { ...env, DEPLOY_ID: 'test' }, flags: '--token=test' })
+  await runFixture(t, 'cancel_build', { env, flags: '--token=test --deploy-id=test' })
 })
 
 // Node v8 uses a different error message format

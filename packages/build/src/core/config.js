@@ -1,7 +1,4 @@
-const {
-  env: { NETLIFY_AUTH_TOKEN },
-  execPath,
-} = require('process')
+const { env, execPath } = require('process')
 
 const resolveConfig = require('@netlify/config')
 
@@ -17,17 +14,18 @@ const normalizeFlags = function(flags) {
   const flagsA = removeFalsy(flags)
   logFlags(flagsA)
 
-  const flagsB = { ...DEFAULT_FLAGS, ...flagsA }
+  const flagsB = { ...DEFAULT_FLAGS(), ...flagsA }
   const flagsC = removeFalsy(flagsB)
   return flagsC
 }
 
 // Default values of CLI flags
-const DEFAULT_FLAGS = {
+const DEFAULT_FLAGS = () => ({
   nodePath: execPath,
-  token: NETLIFY_AUTH_TOKEN,
+  token: env.NETLIFY_AUTH_TOKEN,
   mode: 'require',
-}
+  deployId: env.DEPLOY_ID,
+})
 
 // Retrieve configuration object
 const loadConfig = async function({
@@ -40,6 +38,7 @@ const loadConfig = async function({
   nodePath,
   token,
   siteId,
+  deployId,
   context,
   branch,
   baseRelDir,
@@ -72,7 +71,7 @@ const loadConfig = async function({
   logContext(contextA)
 
   const apiA = addApiErrorHandlers(api)
-  const constants = await getConstants({ configPath, buildDir, netlifyConfig, siteInfo, mode })
+  const constants = await getConstants({ configPath, buildDir, netlifyConfig, siteInfo, deployId, mode })
   return {
     netlifyConfig,
     configPath,
@@ -82,6 +81,7 @@ const loadConfig = async function({
     token,
     dry,
     siteInfo,
+    deployId,
     constants,
     context: contextA,
     branch: branchA,

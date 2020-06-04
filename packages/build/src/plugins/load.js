@@ -14,6 +14,7 @@ const loadPlugins = async function({
   mode,
   api,
   errorMonitor,
+  deployId,
 }) {
   const pluginsCommands = await Promise.all(
     pluginsOptions.map((pluginOptions, index) =>
@@ -27,6 +28,7 @@ const loadPlugins = async function({
         mode,
         api,
         errorMonitor,
+        deployId,
       }),
     ),
   )
@@ -38,7 +40,7 @@ const loadPlugins = async function({
 // Do it by executing the plugin `load` event handler.
 const loadPlugin = async function(
   { package, packageJson, packageJson: { version } = {}, pluginPath, manifest, inputs, loadedFrom, origin },
-  { childProcesses, index, netlifyConfig, utilsData, token, constants, mode, api, errorMonitor },
+  { childProcesses, index, netlifyConfig, utilsData, token, constants, mode, api, errorMonitor, deployId },
 ) {
   const { childProcess } = childProcesses[index]
   const event = 'load'
@@ -60,7 +62,17 @@ const loadPlugin = async function(
     }))
     return pluginCommandsA
   } catch (error) {
-    await reportPluginLoadError({ error, api, mode, event, package, version, netlifyConfig, errorMonitor })
+    await reportPluginLoadError({
+      error,
+      api,
+      mode,
+      event,
+      package,
+      version,
+      netlifyConfig,
+      errorMonitor,
+      deployId,
+    })
     throw error
   }
 }

@@ -5,14 +5,14 @@ const { getGitEnv } = require('./git')
 
 // Retrieve the environment variables passed to plugins and `build.command`
 // When run locally, this tries to emulate the production environment.
-const getChildEnv = async function({ netlifyConfig, buildDir, branch, context, siteInfo, mode }) {
+const getChildEnv = async function({ netlifyConfig, buildDir, branch, context, siteInfo, deployId, mode }) {
   if (mode === 'buildbot') {
     return process.env
   }
 
   const defaultEnv = getDefaultEnv()
   const configurableEnv = getConfigurableEnv()
-  const configEnv = getConfigEnv(netlifyConfig)
+  const configEnv = getConfigEnv(netlifyConfig, deployId)
   const forcedEnv = await getForcedEnv({ buildDir, branch, context, siteInfo })
   return {
     ...removeFalsy(defaultEnv),
@@ -41,9 +41,12 @@ const getConfigurableEnv = function() {
   }
 }
 
-// Environment variables specified in UI settings or in `build.environment`
-const getConfigEnv = function({ build: { environment } }) {
-  return omit(environment, READONLY_ENV)
+// Environment variables specified in UI settings, in `build.environment` or
+// in CLI flags
+const getConfigEnv = function({ build: { environment } }, deployId) {
+  const deployIdEnv = deployId === undefined ? {} : { DEPLOY_ID: deployId }
+  const configEnv = omit(environment, READONLY_ENV)
+  return { ...deployIdEnv, ...configEnv }
 }
 
 // Those environment variables cannot be overriden by configuration
