@@ -6,8 +6,6 @@ require('../utils/polyfills')
 const { setColorLevel } = require('../log/colors')
 setColorLevel()
 
-require('../error/process')
-
 const { getChildEnv } = require('../env/main')
 const { maybeCancelBuild } = require('../error/cancel')
 const { removeErrorColors } = require('../error/colors')
