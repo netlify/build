@@ -115,6 +115,11 @@ Default: false`,
   - 'require': through require('@netlify/build')`,
     hidden: true,
   },
+  debug: {
+    boolean: true,
+    describe: 'Print debugging information',
+    hidden: true,
+  },
 }
 
 const USAGE = `netlify-build [OPTIONS...]

@@ -73,7 +73,7 @@ const getMainFlags = function({ fixtureName, copyRoot, copyRootDir, repositoryRo
   return `${DEFAULT_FLAGS} ${repositoryRootFlag} ${flags}`
 }
 
-const DEFAULT_FLAGS = ''
+const DEFAULT_FLAGS = '--debug'
 
 // The `repositoryRoot` flag can be overriden, but defaults to the fixture
 // directory

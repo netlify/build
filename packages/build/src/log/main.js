@@ -1,7 +1,3 @@
-const {
-  env: { NETLIFY_BUILD_DEBUG },
-} = require('process')
-
 const { arrowDown } = require('figures')
 const filterObj = require('filter-obj')
 const prettyMs = require('pretty-ms')
@@ -38,7 +34,7 @@ const logFlags = function(flags) {
   logObject(flagsA)
 }
 
-const HIDDEN_FLAGS = ['token', 'deployId', 'cachedConfig', 'defaultConfig']
+const HIDDEN_FLAGS = ['token', 'deployId', 'cachedConfig', 'defaultConfig', 'debug']
 
 const logBuildDir = function(buildDir) {
   logSubHeader('Current directory')
@@ -52,8 +48,8 @@ const logConfigPath = function(configPath = NO_CONFIG_MESSAGE) {
 
 const NO_CONFIG_MESSAGE = 'No config file was defined: using default values.'
 
-const logConfig = function(netlifyConfig) {
-  if (!NETLIFY_BUILD_DEBUG) {
+const logConfig = function({ netlifyConfig, debug }) {
+  if (!debug) {
     return
   }
 
