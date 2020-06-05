@@ -48,7 +48,7 @@ const runFixtureCommon = async function(
   const commandEnv = { FORCE_COLOR, NETLIFY_BUILD_TEST: '1', ...envOption }
   const copyRootDir = await getCopyRootDir({ copyRoot })
   const mainFlags = getMainFlags({ fixtureName, copyRoot, copyRootDir, repositoryRoot, flags })
-  const { stdout, stderr, all, exitCode } = await runCommand({
+  const { stdout, stderr, all, failed } = await runCommand({
     binaryPath,
     mainFlags,
     isPrint,
@@ -61,7 +61,7 @@ const runFixtureCommon = async function(
 
   doTestAction({ t, stdout, stderr, all, isPrint, normalize, snapshot })
 
-  return { stdout, stderr, exitCode }
+  return { stdout, stderr, failed }
 }
 
 // 10 minutes timeout
