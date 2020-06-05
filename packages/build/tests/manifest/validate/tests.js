@@ -18,14 +18,6 @@ test('manifest.yml name is a string', async t => {
   await runFixture(t, 'name_string')
 })
 
-test('manifest.yml scopes is an array', async t => {
-  await runFixture(t, 'scopes_array')
-})
-
-test('manifest.yml scopes invalid', async t => {
-  await runFixture(t, 'scopes_invalid')
-})
-
 test('manifest.yml inputs array', async t => {
   await runFixture(t, 'inputs_array')
 })

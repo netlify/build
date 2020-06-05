@@ -86,7 +86,6 @@ const loadConfig = async function({
     buildDir,
     nodePath,
     api: apiA,
-    token,
     dry,
     siteInfo,
     deployId,

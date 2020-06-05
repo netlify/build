@@ -25,7 +25,7 @@ const useManifest = async function(
   try {
     const manifest = await loadManifest({ manifestPath, package, packageJson, loadedFrom, origin })
     const inputsA = checkInputs({ inputs, manifest, package, packageJson, loadedFrom, origin })
-    return { manifest, inputs: inputsA }
+    return inputsA
   } catch (error) {
     await reportPluginLoadError({
       error,

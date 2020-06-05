@@ -65,7 +65,7 @@ const loadPluginFiles = async function({
 }) {
   const pluginDir = dirname(pluginPath)
   const { packageDir, packageJson } = await getPackageJson(pluginDir)
-  const { manifest, inputs: inputsA } = await useManifest(pluginOptions, {
+  const inputs = await useManifest(pluginOptions, {
     pluginDir,
     packageDir,
     packageJson,
@@ -76,7 +76,7 @@ const loadPluginFiles = async function({
     deployId,
     testOpts,
   })
-  return { ...pluginOptions, pluginPath, packageDir, packageJson, manifest, inputs: inputsA }
+  return { ...pluginOptions, pluginPath, packageDir, packageJson, inputs }
 }
 
 // Retrieve information about @netlify/build when an error happens there and not
