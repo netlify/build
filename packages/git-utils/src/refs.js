@@ -3,8 +3,8 @@ const { env } = require('process')
 const { git } = require('./exec')
 
 // Retrieve the `head` commit
-const getHead = async function(head = 'HEAD', cwd) {
-  const result = await checkRef(head, cwd)
+const getHead = function(head = 'HEAD', cwd) {
+  const result = checkRef(head, cwd)
   if (result.error !== undefined) {
     throwError('head', result)
   }
@@ -12,9 +12,9 @@ const getHead = async function(head = 'HEAD', cwd) {
 }
 
 // Retrieve the `base` commit
-const getBase = async function(base, head, cwd) {
+const getBase = function(base, head, cwd) {
   const refs = getBaseRefs(base, head)
-  const { ref } = await findRef(refs, cwd)
+  const { ref } = findRef(refs, cwd)
   return ref
 }
 
@@ -33,8 +33,8 @@ const getBaseRefs = function(base, head) {
 }
 
 // Use the first commit that exists
-const findRef = async function(refs, cwd) {
-  const results = await Promise.all(refs.map(ref => checkRef(ref, cwd)))
+const findRef = function(refs, cwd) {
+  const results = refs.map(ref => checkRef(ref, cwd))
   const result = results.find(refExists)
   if (result === undefined) {
     throwError('base', results[0])
@@ -43,9 +43,9 @@ const findRef = async function(refs, cwd) {
 }
 
 // Check if a commit exists
-const checkRef = async function(ref, cwd) {
+const checkRef = function(ref, cwd) {
   try {
-    await git(['rev-parse', ref], cwd)
+    git(['rev-parse', ref], cwd)
     return { ref }
   } catch (error) {
     return { ref, error }

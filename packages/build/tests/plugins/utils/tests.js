@@ -15,10 +15,6 @@ test('utils-load async function', async t => {
   await runFixture(t, 'function_async')
 })
 
-test('utils-load error', async t => {
-  await runFixture(t, 'error', { env: { CACHED_COMMIT_REF: 'aaaaaaaa' } })
-})
-
 test('utils functions', async t => {
   await removeDir(`${FIXTURES_DIR}/functions/functions`)
   await runFixture(t, 'functions')
@@ -30,5 +26,5 @@ test('utils git with no root', async t => {
 })
 
 test('utils git with no root delayed error', async t => {
-  await runFixture(t, 'git_no_root_delayed', { copyRoot: { git: false } })
+  await runFixture(t, 'none', { copyRoot: { git: false } })
 })

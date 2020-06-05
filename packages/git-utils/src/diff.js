@@ -2,8 +2,8 @@ const { git } = require('./exec')
 
 // Return the list of modified|created|deleted files according to git, between
 // the `base` commit and the `HEAD`
-const getDiffFiles = async function(base, head, cwd) {
-  const stdout = await git(['diff', '--name-status', '--no-renames', `${base}...${head}`], cwd)
+const getDiffFiles = function(base, head, cwd) {
+  const stdout = git(['diff', '--name-status', '--no-renames', `${base}...${head}`], cwd)
   const files = stdout
     .split('\n')
     .map(getDiffFile)

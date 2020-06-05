@@ -7,18 +7,10 @@ const { failBuild, failPlugin, cancelBuild } = require('../error')
 
 const { getStatusUtil } = require('./status')
 
-// Some utilities need to perform some async initialization logic first.
-// We do it once for all plugins in the parent process then pass it to the child
-// processes.
-const startUtils = async function(buildDir) {
-  const git = await gitUtils({ cwd: buildDir })
-  return { git }
-}
-
 // Retrieve the `utils` argument.
-const getUtils = function({ utilsData: { git }, constants: { FUNCTIONS_SRC, CACHE_DIR }, runState }) {
+const getUtils = function({ constants: { FUNCTIONS_SRC, CACHE_DIR }, runState }) {
   const buildUtils = { failBuild, failPlugin, cancelBuild }
-  const gitA = gitUtils.load(git)
+  const gitA = getGitUtils()
   const cache = cacheUtils.bindOpts({ cacheDir: CACHE_DIR })
   const add = src => functionsUtils.add(src, FUNCTIONS_SRC, { fail: failBuild })
   const functions = { add }
@@ -33,4 +25,12 @@ const getUtils = function({ utilsData: { git }, constants: { FUNCTIONS_SRC, CACH
   }
 }
 
-module.exports = { startUtils, getUtils }
+const getGitUtils = function() {
+  try {
+    return gitUtils()
+  } catch (error) {
+    return {}
+  }
+}
+
+module.exports = { getUtils }

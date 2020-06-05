@@ -14,7 +14,6 @@ const { startErrorMonitor } = require('../error/monitor/start')
 const { logBuildStart, logBuildError, logBuildSuccess } = require('../log/main')
 const { logOldCliVersionError } = require('../log/old_version')
 const { startTimer, endTimer } = require('../log/timer')
-const { startUtils } = require('../plugins/child/utils')
 const { loadPlugins } = require('../plugins/load')
 const { getPluginsOptions } = require('../plugins/options')
 const { startPlugins, stopPlugins } = require('../plugins/spawn')
@@ -134,7 +133,6 @@ const buildRun = async function({
   deployId,
   testOpts,
 }) {
-  const utilsData = await startUtils(buildDir)
   const childProcesses = await startPlugins({ pluginsOptions, buildDir, nodePath, childEnv, mode })
 
   try {
@@ -142,7 +140,6 @@ const buildRun = async function({
       pluginsOptions,
       childProcesses,
       netlifyConfig,
-      utilsData,
       configPath,
       buildDir,
       nodePath,
@@ -164,7 +161,6 @@ const executeCommands = async function({
   pluginsOptions,
   childProcesses,
   netlifyConfig,
-  utilsData,
   configPath,
   buildDir,
   nodePath,
@@ -181,7 +177,6 @@ const executeCommands = async function({
     pluginsOptions,
     childProcesses,
     netlifyConfig,
-    utilsData,
     constants,
     mode,
     api,
