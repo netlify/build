@@ -262,7 +262,7 @@ const firePluginCommand = async function({
   } catch (newError) {
     return { newError }
   } finally {
-    unpipeOutput(childProcess)
+    await unpipeOutput(childProcess)
   }
 }
 
