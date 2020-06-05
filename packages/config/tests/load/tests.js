@@ -46,8 +46,8 @@ test('--defaultConfig merges UI plugins with config plugins', async t => {
 })
 
 test('--cachedConfig', async t => {
-  const { stdout } = await runFixture(t, 'cached_config', { snapshot: false })
-  const cachedConfig = escapeExecaOpt(stdout)
+  const { returnValue } = await runFixture(t, 'cached_config', { snapshot: false })
+  const cachedConfig = escapeExecaOpt(returnValue)
   await runFixture(t, 'cached_config', { flags: `--cachedConfig=${cachedConfig}` })
 })
 
@@ -56,14 +56,14 @@ test('--cachedConfig with an invalid path', async t => {
 })
 
 test('--cachedConfig with a token', async t => {
-  const { stdout } = await runFixture(t, 'cached_config', { snapshot: false, flags: '--token=test' })
-  const cachedConfig = escapeExecaOpt(stdout)
+  const { returnValue } = await runFixture(t, 'cached_config', { snapshot: false, flags: '--token=test' })
+  const cachedConfig = escapeExecaOpt(returnValue)
   await runFixture(t, 'cached_config', { flags: `--cachedConfig=${cachedConfig} --token=test` })
 })
 
 test('--cachedConfig with a siteId', async t => {
-  const { stdout } = await runFixture(t, 'cached_config', { snapshot: false, flags: '--siteId=test' })
-  const cachedConfig = escapeExecaOpt(stdout)
+  const { returnValue } = await runFixture(t, 'cached_config', { snapshot: false, flags: '--siteId=test' })
+  const cachedConfig = escapeExecaOpt(returnValue)
   await runFixture(t, 'cached_config', { flags: `--cachedConfig=${cachedConfig} --siteId=test` })
 })
 

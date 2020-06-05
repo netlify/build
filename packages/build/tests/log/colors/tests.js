@@ -5,31 +5,31 @@ const hasAnsi = require('has-ansi')
 const { runFixture } = require('../../helpers/main')
 
 test('Colors in parent process', async t => {
-  const { stdout } = await runFixture(t, 'parent', {
+  const { returnValue } = await runFixture(t, 'parent', {
     snapshot: false,
     normalize: false,
     flags: '--dry',
     env: { FORCE_COLOR: '1' },
   })
-  t.true(hasAnsi(stdout))
+  t.true(hasAnsi(returnValue))
 })
 
 test('Colors in child process', async t => {
-  const { stdout } = await runFixture(t, 'child', { snapshot: false, normalize: false, env: { FORCE_COLOR: '1' } })
-  t.true(stdout.includes(red('onPreBuild')))
+  const { returnValue } = await runFixture(t, 'child', { snapshot: false, normalize: false, env: { FORCE_COLOR: '1' } })
+  t.true(returnValue.includes(red('onPreBuild')))
 })
 
 test('Netlify CI', async t => {
-  const { stdout } = await runFixture(t, 'parent', {
+  const { returnValue } = await runFixture(t, 'parent', {
     snapshot: false,
     normalize: false,
     flags: '--dry',
     env: { NETLIFY: 'true' },
   })
-  t.true(hasAnsi(stdout))
+  t.true(hasAnsi(returnValue))
 })
 
 test('No TTY', async t => {
-  const { stdout } = await runFixture(t, 'parent', { snapshot: false, normalize: false, flags: '--dry' })
-  t.false(hasAnsi(stdout))
+  const { returnValue } = await runFixture(t, 'parent', { snapshot: false, normalize: false, flags: '--dry' })
+  t.false(hasAnsi(returnValue))
 })

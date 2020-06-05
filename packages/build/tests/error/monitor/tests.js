@@ -68,8 +68,8 @@ test('Report programmatic mode as releaseStage', async t => {
 })
 
 test('Remove colors in error.message', async t => {
-  const { stdout } = await runFixture(t, 'colors', { flags, snapshot: false })
-  const lines = stdout.split('\n').filter(line => line.includes('ColorTest'))
+  const { returnValue } = await runFixture(t, 'colors', { flags, snapshot: false })
+  const lines = returnValue.split('\n').filter(line => line.includes('ColorTest'))
   t.true(lines.every(line => !hasAnsi(line)))
 })
 
