@@ -11,11 +11,7 @@ const build = require('./main')
 // CLI entry point
 const runCli = async function() {
   const flags = parseFlags()
-  const { features, ...flagsA } = filterObj(flags, isUserFlag)
-
-  if (features) {
-    return printFeatures()
-  }
+  const flagsA = filterObj(flags, isUserFlag)
 
   const { success } = await build(flagsA)
   process.exitCode = success ? 0 : 1
@@ -102,11 +98,6 @@ Default: false`,
     describe: `Path to the Node.js binary to use in user commands and build plugins.
 Default: Current Node.js binary`,
   },
-  features: {
-    boolean: true,
-    describe: `Print currently enabled feature flags.
-Default: false`,
-  },
   telemetry: {
     boolean: true,
     describe: `Enable telemetry.
@@ -145,13 +136,5 @@ const isUserFlag = function(key, value) {
 }
 
 const INTERNAL_KEYS = ['help', 'version', '_', '$0', 'dryRun']
-
-const printFeatures = function() {
-  console.log(['', ...FEATURES, ''].join(FEATURES_DELIMITER))
-  process.exitCode = 0
-}
-
-const FEATURES = ['cachesave']
-const FEATURES_DELIMITER = '_'
 
 runCli()

@@ -21,7 +21,3 @@ test('Exit code is 1 on error', async t => {
   const { exitCode } = await runFixture(t, '', { flags: '--config=/invalid' })
   t.is(exitCode, 1)
 })
-
-test('--features', async t => {
-  await runFixture(t, '', { flags: '--features' })
-})
