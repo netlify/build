@@ -1,11 +1,5 @@
 require('../utils/polyfills')
 
-// This needs to be done before `chalk` is loaded.
-// Note: `chalk` is also required by some of our dependencies.
-// eslint-disable-next-line import/order
-const { setColorLevel } = require('../log/colors')
-setColorLevel()
-
 const { getChildEnv } = require('../env/main')
 const { maybeCancelBuild } = require('../error/cancel')
 const { removeErrorColors } = require('../error/colors')

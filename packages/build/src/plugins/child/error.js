@@ -2,7 +2,6 @@
 const logProcessErrors = require('log-process-errors')
 const safeJsonStringify = require('safe-json-stringify')
 
-const { hasColors } = require('../../log/colors')
 const { isBuildError, ERROR_TYPE_SYM } = require('../error')
 const { sendEventToParent } = require('../ipc')
 
@@ -26,7 +25,7 @@ const DEFAULT_ERROR_TYPE = 'pluginInternal'
 // On uncaught exceptions and unhandled rejections, print the stack trace.
 // Also, prevent child processes from crashing on uncaught exceptions.
 const handleProcessErrors = function() {
-  logProcessErrors({ log: handleProcessError, colors: hasColors(), exitOn: [], level: { multipleResolves: 'silent' } })
+  logProcessErrors({ log: handleProcessError, exitOn: [], level: { multipleResolves: 'silent' } })
 }
 
 const handleProcessError = async function(error, level, originalError) {
