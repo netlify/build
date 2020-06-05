@@ -62,25 +62,31 @@ const getCwd = function() {
 const STACK_LINE_REGEXP = /^\s+at /
 
 const isUselessStack = function(line) {
-  const lineA = line.replace(BACKLASH_REGEXP, '/')
+  const lineA = normalizePathSlashes(line)
   return (
     // Anonymous function
     lineA.includes('<anonymous>') ||
+    lineA.includes('(index 0)') ||
     // nyc internal code
     lineA.includes('node_modules/append-transform') ||
     lineA.includes('node_modules/signal-exit')
   )
 }
 
-const BACKLASH_REGEXP = /\\/g
-
+// This is only needed for local builds and tests
 const isInternalStack = function(line) {
-  // This is only needed for local builds
-  return INTERNAL_STACK_REGEXP.test(line)
+  const lineA = normalizePathSlashes(line)
+  return INTERNAL_STACK_REGEXP.test(lineA)
 }
 
-const INTERNAL_STACK_REGEXP = /(packages|@netlify)[/\\]build[/\\](src|node_modules)[/\\]/
+const INTERNAL_STACK_REGEXP = /(packages|@netlify)\/build\/(src\/|tests\/helpers\/|tests\/.*\/tests.js|node_modules)/
 
 const INITIAL_NEWLINES = /^\n+/
+
+const normalizePathSlashes = function(line) {
+  return line.replace(BACKLASH_REGEXP, '/')
+}
+
+const BACKLASH_REGEXP = /\\/g
 
 module.exports = { cleanStacks }
