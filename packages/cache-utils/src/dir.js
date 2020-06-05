@@ -1,10 +1,10 @@
 const { resolve } = require('path')
-const { platform, env } = require('process')
+const { platform } = require('process')
 
 const globalCacheDir = require('global-cache-dir')
 
 // Retrieve the cache directory location
-const getCacheDir = function({ cacheDir, mode } = {}) {
+const getCacheDir = function({ cacheDir, mode, isTest } = {}) {
   if (cacheDir !== undefined) {
     return resolve(cacheDir)
   }
@@ -14,7 +14,7 @@ const getCacheDir = function({ cacheDir, mode } = {}) {
   }
 
   // Do not use in tests since /opt might not be writable by current user
-  if (platform === 'linux' && !env.NETLIFY_BUILD_TEST) {
+  if (platform === 'linux' && !isTest) {
     return CI_CACHE_DIR
   }
 

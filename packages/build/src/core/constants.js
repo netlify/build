@@ -16,10 +16,11 @@ const getConstants = async function({
   siteInfo: { id: siteId },
   deployId,
   mode,
+  testOpts: { cachePath: testCachePath },
 }) {
   const isLocal = mode !== 'buildbot'
   const functionsDist = getFunctionsDist(isLocal, deployId)
-  const cacheDir = await getCacheDir({ mode })
+  const cacheDir = await getCacheDir({ mode, isTest: testCachePath !== undefined })
 
   const constants = {
     /**
