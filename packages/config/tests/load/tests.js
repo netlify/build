@@ -4,7 +4,7 @@ const { cwd } = require('process')
 const test = require('ava')
 
 const resolveConfig = require('../..')
-const { runFixture, FIXTURES_DIR, getJsonOpt, escapeExecaOpt } = require('../helpers/main')
+const { runFixture, FIXTURES_DIR, escapeExecaOpt } = require('../helpers/main')
 
 test('Empty configuration', async t => {
   await runFixture(t, 'empty')
@@ -27,12 +27,12 @@ test('--config with an invalid relative path', async t => {
 })
 
 test('--defaultConfig merge', async t => {
-  const defaultConfig = getJsonOpt({ build: { publish: 'publish' } })
+  const defaultConfig = escapeExecaOpt(JSON.stringify({ build: { publish: 'publish' } }))
   await runFixture(t, 'default_merge', { flags: `--defaultConfig=${defaultConfig}` })
 })
 
 test('--defaultConfig priority', async t => {
-  const defaultConfig = getJsonOpt({ build: { command: 'echo commandDefault' } })
+  const defaultConfig = escapeExecaOpt(JSON.stringify({ build: { command: 'echo commandDefault' } }))
   await runFixture(t, 'default_priority', { flags: `--defaultConfig=${defaultConfig}` })
 })
 
@@ -41,7 +41,9 @@ test('--defaultConfig with an invalid relative path', async t => {
 })
 
 test('--defaultConfig merges UI plugins with config plugins', async t => {
-  const defaultConfig = getJsonOpt({ plugins: [{ package: 'one', inputs: { test: false, testThree: true } }] })
+  const defaultConfig = escapeExecaOpt(
+    JSON.stringify({ plugins: [{ package: 'one', inputs: { test: false, testThree: true } }] }),
+  )
   await runFixture(t, 'plugins_merge', { flags: `--defaultConfig=${defaultConfig}` })
 })
 

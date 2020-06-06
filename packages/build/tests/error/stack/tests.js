@@ -1,5 +1,6 @@
 const test = require('ava')
 
+const { escapeExecaOpt } = require('../../../../config/tests/helpers/main')
 const { runFixture } = require('../../helpers/main')
 
 test('Print stack trace of plugin errors', async t => {
@@ -19,7 +20,8 @@ test('Print stack trace of build.command errors with stack traces', async t => {
 })
 
 test('Print stack trace of Build command UI settings', async t => {
-  await runFixture(t, 'none', { flags: '--defaultConfig={"build":{"command":"node\\ --invalid"}}' })
+  const defaultConfig = escapeExecaOpt(JSON.stringify({ build: { command: 'node --invalid' } }))
+  await runFixture(t, 'none', { flags: `--defaultConfig=${defaultConfig}` })
 })
 
 test('Print stack trace of validation errors', async t => {

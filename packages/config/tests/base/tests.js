@@ -1,9 +1,9 @@
 const test = require('ava')
 
-const { runFixture, getJsonOpt } = require('../helpers/main')
+const { runFixture, escapeExecaOpt } = require('../helpers/main')
 
 test('Base from defaultConfig', async t => {
-  const defaultConfig = getJsonOpt({ build: { base: 'base' } })
+  const defaultConfig = escapeExecaOpt(JSON.stringify({ build: { base: 'base' } }))
   await runFixture(t, 'default_config', { flags: `--defaultConfig=${defaultConfig}` })
 })
 
