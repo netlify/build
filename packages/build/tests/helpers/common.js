@@ -1,9 +1,7 @@
 require('log-process-errors/build/register/ava')
 
 const { normalize } = require('path')
-const {
-  env: { PRINT },
-} = require('process')
+const { env } = require('process')
 
 const {
   meta: { file: testFile },
@@ -36,21 +34,19 @@ const runFixtureCommon = async function(
   {
     flags = '',
     env: envOption,
-    normalize,
+    normalize = !isPrint(),
     snapshot = true,
     repositoryRoot = `${FIXTURES_DIR}/${fixtureName}`,
     copyRoot,
     binaryPath,
   } = {},
 ) {
-  const isPrint = PRINT === '1'
   const commandEnv = { NETLIFY_BUILD_TEST: '1', ...envOption }
   const copyRootDir = await getCopyRootDir({ copyRoot })
   const mainFlags = getMainFlags({ fixtureName, copyRoot, copyRootDir, repositoryRoot, flags })
   const { stdout, stderr, all, exitCode } = await runCommand({
     binaryPath,
     mainFlags,
-    isPrint,
     snapshot,
     commandEnv,
     fixtureName,
@@ -58,7 +54,7 @@ const runFixtureCommon = async function(
     copyRootDir,
   })
 
-  doTestAction({ t, stdout, stderr, all, isPrint, normalize, snapshot })
+  doTestAction({ t, stdout, stderr, all, normalize, snapshot })
 
   return { stdout, stderr, exitCode }
 }
@@ -103,7 +99,6 @@ const getCopyRootDir = function({ copyRoot, copyRoot: { git } = {} }) {
 const runCommand = async function({
   binaryPath,
   mainFlags,
-  isPrint,
   snapshot,
   commandEnv,
   fixtureName,
@@ -112,7 +107,7 @@ const runCommand = async function({
   copyRootDir,
 }) {
   if (copyRoot === undefined) {
-    return execCommand({ binaryPath, mainFlags, isPrint, snapshot, commandEnv })
+    return execCommand({ binaryPath, mainFlags, snapshot, commandEnv })
   }
 
   try {
@@ -122,15 +117,15 @@ const runCommand = async function({
       await execa.command(`git checkout -b ${branch}`, { cwd: copyRootDir })
     }
 
-    return await execCommand({ binaryPath, mainFlags, isPrint, snapshot, commandEnv })
+    return await execCommand({ binaryPath, mainFlags, snapshot, commandEnv })
   } finally {
     await removeDir(copyRootDir)
   }
 }
 
-const execCommand = function({ binaryPath, mainFlags, isPrint, snapshot, commandEnv }) {
+const execCommand = function({ binaryPath, mainFlags, snapshot, commandEnv }) {
   return execa.command(`${binaryPath} ${mainFlags}`, {
-    all: isPrint && snapshot,
+    all: isPrint() && snapshot,
     reject: false,
     env: commandEnv,
     timeout: TIMEOUT,
@@ -140,12 +135,12 @@ const execCommand = function({ binaryPath, mainFlags, isPrint, snapshot, command
 // The `PRINT` environment variable can be set to `1` to run the test in print
 // mode. Print mode is a debugging mode which shows the test output but does
 // not create nor compare its snapshot.
-const doTestAction = function({ t, stdout, stderr, all, isPrint, normalize = !isPrint, snapshot }) {
+const doTestAction = function({ t, stdout, stderr, all, normalize, snapshot }) {
   if (!snapshot) {
     return
   }
 
-  if (isPrint) {
+  if (isPrint()) {
     const allA = normalizeOutputString(all, normalize)
     return printOutput(t, allA)
   }
@@ -192,6 +187,11 @@ const IGNORE_REGEXPS = [
   // Some tests send network requests, which can sometimes fail
   /getaddrinfo EAI_AGAIN/,
 ]
+
+// When running tests with PRINT=1, print the results instead of snapshotting
+const isPrint = function() {
+  return env.PRINT === '1'
+}
 
 // Get an CLI flag whose value is a JSON object, to be passed to `execa.command()`
 // Used for example by --defaultConfig and --cachedConfig.
