@@ -46,8 +46,7 @@ const parseManifest = async function(rawManifest) {
   try {
     return await loadYaml(rawManifest, { schema: JSON_SCHEMA, json: true })
   } catch (error) {
-    error.message = `Could not parse plugin's "manifest.yml"\n${error.message}`
-    throw error
+    throw new Error(`Could not parse plugin's "manifest.yml"\n${error.message}`)
   }
 }
 
