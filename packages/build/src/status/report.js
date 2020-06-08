@@ -1,5 +1,3 @@
-const { env } = require('process')
-
 const { reportBuildError } = require('../error/monitor/report')
 const { serializeErrorStatus } = require('../error/parse/serialize_status')
 const { logStatuses, logBuildError } = require('../log/main')
@@ -52,7 +50,7 @@ const shouldPrintStatus = function({ state, summary }) {
 
 // In production, send statuses to the API
 const sendStatuses = async function({ statuses, api, mode, netlifyConfig, errorMonitor, deployId, testOpts }) {
-  if ((mode !== 'buildbot' && env.NETLIFY_BUILD_TEST_STATUS !== '1') || api === undefined || !deployId) {
+  if ((mode !== 'buildbot' && !testOpts.sendStatus) || api === undefined || !deployId) {
     return
   }
 

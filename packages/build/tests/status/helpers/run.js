@@ -32,8 +32,8 @@ const comparePackage = function({ body: { package: packageA } }, { body: { packa
 const runWithApiMock = async function(t, fixture, { flags = '--token=test', env, status } = {}) {
   const { scheme, host, requests, stopServer } = await startServer(STATUS_PATH, {}, { status })
   await runFixture(t, fixture, {
-    flags: `--deploy-id=test ${flags}`,
-    env: { TEST_SCHEME: scheme, TEST_HOST: host, NETLIFY_BUILD_TEST_STATUS: '1', ...env },
+    flags: `--deploy-id=test ${flags} --test-opts.send-status`,
+    env: { TEST_SCHEME: scheme, TEST_HOST: host, ...env },
   })
   await stopServer()
   const snapshots = requests.map(normalizeRequest).sort(comparePackage)
