@@ -42,9 +42,9 @@ test('Handles big outputs', async t => {
   try {
     const bigContent = getBigNetlifyContent()
     await pWriteFile(bigNetlify, bigContent)
-    const { stdout } = await runFixture(t, 'big', { snapshot: false })
+    const { returnValue } = await runFixture(t, 'big', { snapshot: false })
     t.notThrows(() => {
-      JSON.parse(stdout)
+      JSON.parse(returnValue)
     })
   } finally {
     await del(bigNetlify, { force: true })
