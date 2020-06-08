@@ -73,16 +73,19 @@ test('Should return the number of lines of code', t => {
   t.is(linesOfCode, 163)
 })
 
-test.skip('Should return the commits', t => {
+test('Should return the commits', t => {
   const { commits } = getGitUtils(DEFAULT_OPTS)
   t.is(commits.length, 3)
-  t.deepEqual(commits[0], {
-    sha: '152867c29d975a929f60d35b4a8a05d94661d517',
-    parents: 'bf7ed523',
-    author: { name: 'DavidWells', email: 'hello@davidwells.io', date: '2019-06-11 21:25:51 -0700' },
-    committer: { name: 'DavidWells', email: 'hello@davidwells.io', date: '2019-06-11 21:25:51 -0700' },
-    message: 'add-npm-logic',
-  })
+  const [{ sha, author, committer, message }] = commits
+  t.deepEqual(
+    { sha, author, committer, message },
+    {
+      sha: '152867c29d975a929f60d35b4a8a05d94661d517',
+      author: { name: 'DavidWells', email: 'hello@davidwells.io', date: '2019-06-11 21:25:51 -0700' },
+      committer: { name: 'DavidWells', email: 'hello@davidwells.io', date: '2019-06-11 21:25:51 -0700' },
+      message: 'add-npm-logic',
+    },
+  )
 })
 
 test('Should return the modified/created/deleted files', t => {

@@ -67,6 +67,7 @@ test('build.cancelBuild() API call no token', async t => {
 
 // Node 10 `util.inspect()` output is different from Node 8, leading to
 // inconsistent test snapshots
+// TODO: remove once dropping Node 8
 if (!version.startsWith('v8.')) {
   test('build.cancelBuild() API call failure', async t => {
     await runFixture(t, 'cancel', { flags: { token: 'test', deployId: 'test', testOpts: { host: '...' } } })
@@ -174,6 +175,7 @@ test('Report API error', async t => {
 })
 
 // Node v8 uses a different error message format
+// TODO: remove once dropping Node 8
 if (!version.startsWith('v8.')) {
   test('Report dependencies error', async t => {
     await runFixture(t, 'dependencies', { flags })
