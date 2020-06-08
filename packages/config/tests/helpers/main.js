@@ -17,6 +17,8 @@ const runFixture = async function(t, fixtureName, { env, flags = '', ...opts } =
     flags: flagsB,
   })
 }
+
+// Use a top-level promise so it's only performed once at load time
 const BINARY_PATH = getBinPath({ cwd: ROOT_DIR })
 
 module.exports = { runFixture, FIXTURES_DIR, escapeExecaOpt, startServer }
