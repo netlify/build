@@ -3,28 +3,24 @@ const test = require('ava')
 const { removeDir } = require('../../helpers/dir')
 const { runFixture, FIXTURES_DIR } = require('../../helpers/main')
 
-test('utils-load none', async t => {
-  await runFixture(t, 'none')
+test('Expose some utils', async t => {
+  await runFixture(t, 'keys')
 })
 
-test('utils-load sync function', async t => {
-  await runFixture(t, 'function_sync')
+test('Utils are defined', async t => {
+  await runFixture(t, 'defined')
 })
 
-test('utils-load async function', async t => {
-  await runFixture(t, 'function_async')
-})
-
-test('utils functions', async t => {
+test('Can run utils', async t => {
   await removeDir(`${FIXTURES_DIR}/functions/functions`)
   await runFixture(t, 'functions')
   await removeDir(`${FIXTURES_DIR}/functions/functions`)
 })
 
-test('utils git with no root', async t => {
+test('Git utils fails if no root', async t => {
   await runFixture(t, 'git_no_root', { copyRoot: { git: false } })
 })
 
-test('utils git with no root delayed error', async t => {
-  await runFixture(t, 'none', { copyRoot: { git: false } })
+test('Git utils does not fail if no root and not used', async t => {
+  await runFixture(t, 'keys', { copyRoot: { git: false } })
 })

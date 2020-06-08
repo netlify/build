@@ -2,11 +2,6 @@ const isPlainObj = require('is-plain-obj')
 
 const { ERROR_TYPE_SYM } = require('../error')
 
-// Retrieve `utils.status.*` methods
-const getStatusUtil = function(runState) {
-  return { show: show.bind(undefined, runState) }
-}
-
 // Report status information to the UI
 const show = function(runState, showArgs) {
   validateShowArgs(showArgs)
@@ -50,4 +45,4 @@ const validateStringArg = function([key, value]) {
   }
 }
 
-module.exports = { getStatusUtil }
+module.exports = { show }
