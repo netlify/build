@@ -14,23 +14,24 @@ const normalizeFlags = function(flags) {
   const flagsA = removeFalsy(flags)
   logFlags(flagsA)
 
-  const defaultFlags = getDefaultFlags()
+  const defaultFlags = getDefaultFlags(flagsA)
   const flagsB = { ...defaultFlags, ...flagsA }
   const flagsC = removeFalsy(flagsB)
   return flagsC
 }
 
 // Default values of CLI flags
-const getDefaultFlags = function() {
+const getDefaultFlags = function({ env: envOpt = {} }) {
+  const combinedEnv = { ...env, ...envOpt }
   return {
-    env: {},
+    env: envOpt,
     nodePath: execPath,
-    token: env.NETLIFY_AUTH_TOKEN,
+    token: combinedEnv.NETLIFY_AUTH_TOKEN,
     mode: 'require',
-    deployId: env.DEPLOY_ID,
-    debug: Boolean(env.NETLIFY_BUILD_DEBUG),
-    bugsnagKey: env.BUGSNAG_KEY,
-    telemetry: !env.BUILD_TELEMETRY_DISABLED,
+    deployId: combinedEnv.DEPLOY_ID,
+    debug: Boolean(combinedEnv.NETLIFY_BUILD_DEBUG),
+    bugsnagKey: combinedEnv.BUGSNAG_KEY,
+    telemetry: !combinedEnv.BUILD_TELEMETRY_DISABLED,
     testOpts: {},
   }
 }
@@ -78,6 +79,7 @@ const loadConfig = async function(
     token,
     siteId,
     mode,
+    envOpt,
     testOpts,
   })
   logBuildDir(buildDir)
@@ -119,6 +121,7 @@ const resolveFullConfig = async function({
   token,
   siteId,
   mode,
+  envOpt,
   testOpts,
 }) {
   try {
@@ -134,6 +137,7 @@ const resolveFullConfig = async function({
       token,
       siteId,
       mode,
+      env: envOpt,
       testOpts,
     })
   } catch (error) {
