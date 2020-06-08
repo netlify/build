@@ -38,7 +38,7 @@ const runFixtureCommon = async function(
   fixtureName,
   {
     flags = {},
-    env: commandEnv = {},
+    env: envOption = {},
     normalize = !isPrint(),
     snapshot = true,
     repositoryRoot = `${FIXTURES_DIR}/${fixtureName}`,
@@ -48,6 +48,8 @@ const runFixtureCommon = async function(
     useBinary = false,
   } = {},
 ) {
+  const forceColor = isPrint() ? { FORCE_COLOR: '1' } : {}
+  const commandEnv = { ...forceColor, ...envOption }
   const copyRootDir = await getCopyRootDir({ copyRoot })
   const mainFlags = getMainFlags({ fixtureName, copyRoot, copyRootDir, repositoryRoot, flags })
   const { returnValue, failed } = await runCommand({
