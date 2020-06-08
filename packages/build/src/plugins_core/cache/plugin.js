@@ -1,8 +1,5 @@
 const { homedir } = require('os')
-const {
-  version,
-  env: { TEST_CACHE_PATH },
-} = require('process')
+const { version, env } = require('process')
 
 const { logCacheDir } = require('../../log/main')
 
@@ -17,7 +14,7 @@ const cachePlugin = {
 const saveCache = async function({ path, digests, cache, IS_LOCAL }) {
   // In tests we don't run caching since it is slow and make source directory
   // much bigger
-  if (TEST_CACHE_PATH !== undefined && TEST_CACHE_PATH !== path) {
+  if (env.TEST_CACHE_PATH !== undefined && env.TEST_CACHE_PATH !== path) {
     return
   }
 
