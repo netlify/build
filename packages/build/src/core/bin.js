@@ -1,4 +1,11 @@
 #!/usr/bin/env node
+
+// This needs to be done before `chalk` is loaded.
+// Note: `chalk` is also required by some of our dependencies.
+// eslint-disable-next-line import/order
+const { setColorLevel } = require('../log/colors')
+setColorLevel()
+
 const process = require('process')
 
 const filterObj = require('filter-obj')

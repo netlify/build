@@ -44,8 +44,7 @@ const runFixtureCommon = async function(
   } = {},
 ) {
   const isPrint = PRINT === '1'
-  const FORCE_COLOR = isPrint ? '1' : ''
-  const commandEnv = { FORCE_COLOR, NETLIFY_BUILD_TEST: '1', ...envOption }
+  const commandEnv = { NETLIFY_BUILD_TEST: '1', ...envOption }
   const copyRootDir = await getCopyRootDir({ copyRoot })
   const mainFlags = getMainFlags({ fixtureName, copyRoot, copyRootDir, repositoryRoot, flags })
   const { stdout, stderr, all, exitCode } = await runCommand({
