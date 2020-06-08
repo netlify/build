@@ -57,7 +57,7 @@ const getModuleName = function(error) {
   return result[1]
 }
 
-const MODULE_NOT_FOUND_REGEXP = /Cannot find module '([^']+)'/
+const MODULE_NOT_FOUND_REGEXP = /Cannot find module '(@[^'/]+\/[^'/]|[^'/]+)/
 
 const getWarning = function(moduleName) {
   return `A Netlify Function is using "${moduleName}" but that dependency has not been installed yet.
