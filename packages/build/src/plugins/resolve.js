@@ -10,11 +10,11 @@ const { resolvePath } = require('../utils/resolve')
 //  - external plugin already installed in `node_modules`, most likely through `package.json`
 //  - cached in the build image
 //  - automatically installed by us (fallback)
-const resolvePluginsPath = async function({ pluginsOptions, buildDir, mode, testOpts }) {
+const resolvePluginsPath = async function({ pluginsOptions, buildDir, mode, logs, testOpts }) {
   const pluginsOptionsA = await Promise.all(
     pluginsOptions.map(pluginOptions => resolvePluginPath({ pluginOptions, buildDir, mode, testOpts })),
   )
-  const pluginsOptionsB = await handleMissingPlugins({ pluginsOptions: pluginsOptionsA, buildDir, mode })
+  const pluginsOptionsB = await handleMissingPlugins({ pluginsOptions: pluginsOptionsA, buildDir, mode, logs })
   return pluginsOptionsB
 }
 
@@ -104,13 +104,13 @@ const tryResolvePath = async function(package, baseDir) {
 
 // Handle plugins that were neither local, in the build image cache nor in
 // node_modules. We automatically install those, with a warning.
-const handleMissingPlugins = async function({ pluginsOptions, buildDir, mode }) {
+const handleMissingPlugins = async function({ pluginsOptions, buildDir, mode, logs }) {
   const autoPluginsDir = getAutoPluginsDirPath(buildDir)
-  await installMissingPlugins({ pluginsOptions, autoPluginsDir, mode })
+  await installMissingPlugins({ pluginsOptions, autoPluginsDir, mode, logs })
   const pluginsOptionsA = await Promise.all(
     pluginsOptions.map(pluginOptions => resolveMissingPluginPath({ pluginOptions, autoPluginsDir })),
   )
-  warnOnMissingPlugins(pluginsOptionsA, mode)
+  warnOnMissingPlugins({ pluginsOptions: pluginsOptionsA, mode, logs })
   return pluginsOptionsA
 }
 

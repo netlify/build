@@ -1,18 +1,21 @@
 const { log } = require('../../log/logger.js')
 
 // Print event payload instead of sending actual request during tests
-const printEventForTest = function({
-  errors: [{ errorClass, errorMessage }],
-  context,
-  groupingHash,
-  severity,
-  unhandled,
-  app: { releaseStage, version, type },
-  device: {
-    runtimeVersions: { node },
+const printEventForTest = function(
+  {
+    errors: [{ errorClass, errorMessage }],
+    context,
+    groupingHash,
+    severity,
+    unhandled,
+    app: { releaseStage, version, type },
+    device: {
+      runtimeVersions: { node },
+    },
+    _metadata: { location, plugin: { package, homepage } = {}, packageJson, env: { BUILD_ID } = {}, other },
   },
-  _metadata: { location, plugin: { package, homepage } = {}, packageJson, env: { BUILD_ID } = {}, other },
-}) {
+  logs,
+) {
   const eventString = JSON.stringify(
     {
       errorClass,
@@ -35,7 +38,7 @@ const printEventForTest = function({
     null,
     2,
   )
-  log(`\nError monitoring payload:\n${eventString}`)
+  log(logs, `\nError monitoring payload:\n${eventString}`)
 }
 
 module.exports = {

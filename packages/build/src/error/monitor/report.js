@@ -14,7 +14,7 @@ const { normalizeGroupingMessage } = require('./normalize')
 const { printEventForTest } = require('./print')
 
 // Report a build failure for monitoring purpose
-const reportBuildError = async function({ error, errorMonitor, testOpts }) {
+const reportBuildError = async function({ error, errorMonitor, logs, testOpts }) {
   if (errorMonitor === undefined) {
     return
   }
@@ -37,6 +37,7 @@ const reportBuildError = async function({ error, errorMonitor, testOpts }) {
       groupingHash,
       metadata,
       app,
+      logs,
       testOpts,
     })
   } finally {
@@ -103,20 +104,30 @@ const updateErrorName = function(error, type) {
   return name
 }
 
-const reportError = async function({ errorMonitor, error, severity, group, groupingHash, metadata, app, testOpts }) {
+const reportError = async function({
+  errorMonitor,
+  error,
+  severity,
+  group,
+  groupingHash,
+  metadata,
+  app,
+  logs,
+  testOpts,
+}) {
   try {
     await promisify(errorMonitor.notify)(error, event =>
-      onError({ event, severity, group, groupingHash, metadata, app, testOpts }),
+      onError({ event, severity, group, groupingHash, metadata, app, logs, testOpts }),
     )
     // Failsafe
   } catch (error) {
-    log(`Error monitor could not notify\n${error.stack}`)
+    log(logs, `Error monitor could not notify\n${error.stack}`)
     return
   }
 }
 
 // Add more information to Bugsnag events
-const onError = function({ event, severity, group, groupingHash, metadata, app, testOpts }) {
+const onError = function({ event, severity, group, groupingHash, metadata, app, logs, testOpts }) {
   // `unhandled` is used to calculate Releases "stabiity score", which is
   // basically the percentage of unhandled errors. Since we handle all errors,
   // we need to implement this according to error types.
@@ -132,7 +143,7 @@ const onError = function({ event, severity, group, groupingHash, metadata, app, 
   })
 
   if (testOpts.errorMonitor) {
-    printEventForTest(event)
+    printEventForTest(event, logs)
     return false
   }
 

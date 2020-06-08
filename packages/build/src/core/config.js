@@ -10,9 +10,9 @@ const { removeFalsy } = require('../utils/remove_falsy')
 const { getConstants } = require('./constants')
 
 // Normalize CLI flags
-const normalizeFlags = function(flags) {
+const normalizeFlags = function(flags, logs) {
   const flagsA = removeFalsy(flags)
-  logFlags(flagsA)
+  logFlags(logs, flagsA)
 
   const defaultFlags = getDefaultFlags(flagsA)
   const flagsB = { ...defaultFlags, ...flagsA }
@@ -57,6 +57,7 @@ const loadConfig = async function(
     mode,
     debug,
   },
+  logs,
   testOpts,
 ) {
   const {
@@ -82,10 +83,10 @@ const loadConfig = async function(
     envOpt,
     testOpts,
   })
-  logBuildDir(buildDir)
-  logConfigPath(configPath)
-  logConfig({ netlifyConfig, debug })
-  logContext(contextA)
+  logBuildDir(logs, buildDir)
+  logConfigPath(logs, configPath)
+  logConfig({ logs, netlifyConfig, debug })
+  logContext(logs, contextA)
 
   const apiA = addApiErrorHandlers(api)
   const constants = await getConstants({ configPath, buildDir, netlifyConfig, siteInfo, deployId, mode, testOpts })

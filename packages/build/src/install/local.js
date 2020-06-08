@@ -6,7 +6,7 @@ const { logInstallLocalPluginsDeps } = require('../log/main')
 const { installDependencies } = require('./main')
 
 // Install dependencies of local plugins.
-const installLocalPluginsDependencies = async function({ plugins, pluginsOptions, buildDir, mode }) {
+const installLocalPluginsDependencies = async function({ plugins, pluginsOptions, buildDir, mode, logs }) {
   const localPluginsOptions = getLocalPluginsOptions(pluginsOptions)
   if (localPluginsOptions.length === 0) {
     return
@@ -19,7 +19,7 @@ const installLocalPluginsDependencies = async function({ plugins, pluginsOptions
 
   checkLocalPluginsInstall(plugins)
 
-  logInstallLocalPluginsDeps(localPluginsOptionsA)
+  logInstallLocalPluginsDeps(logs, localPluginsOptionsA)
   await Promise.all(
     localPluginsOptionsA.map(({ packageDir }) =>
       installDependencies({ packageRoot: packageDir, isLocal: mode !== 'buildbot' }),

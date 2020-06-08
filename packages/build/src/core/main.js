@@ -5,6 +5,7 @@ const { maybeCancelBuild } = require('../error/cancel')
 const { removeErrorColors } = require('../error/colors')
 const { reportBuildError } = require('../error/monitor/report')
 const { startErrorMonitor } = require('../error/monitor/start')
+const { getBufferLogs } = require('../log/logger')
 const { logBuildStart, logBuildError, logBuildSuccess } = require('../log/main')
 const { logOldCliVersionError } = require('../log/old_version')
 const { startTimer, endTimer } = require('../log/timer')
@@ -31,10 +32,11 @@ const { doDryRun } = require('./dry')
 const build = async function(flags = {}) {
   const buildTimer = startTimer()
 
-  logBuildStart()
+  const logs = getBufferLogs(flags)
+  logBuildStart(logs)
 
-  const { testOpts, bugsnagKey, ...flagsA } = normalizeFlags(flags)
-  const errorMonitor = startErrorMonitor({ flags: flagsA, bugsnagKey })
+  const { testOpts, bugsnagKey, ...flagsA } = normalizeFlags(flags, logs)
+  const errorMonitor = startErrorMonitor({ flags: flagsA, logs, bugsnagKey })
 
   try {
     const {
@@ -52,7 +54,7 @@ const build = async function(flags = {}) {
       envOpt,
       telemetry,
       mode,
-    } = await loadConfig(flagsA, testOpts)
+    } = await loadConfig(flagsA, logs, testOpts)
     const childEnv = await getChildEnv({ netlifyConfig, buildDir, context, branch, siteInfo, deployId, envOpt, mode })
 
     try {
@@ -64,6 +66,7 @@ const build = async function(flags = {}) {
         api,
         errorMonitor,
         deployId,
+        logs,
         testOpts,
       })
 
@@ -80,23 +83,24 @@ const build = async function(flags = {}) {
         api,
         errorMonitor,
         deployId,
+        logs,
         testOpts,
       })
 
       if (dry) {
-        return { success: true }
+        return { success: true, logs }
       }
 
-      await reportStatuses({ statuses, api, mode, netlifyConfig, errorMonitor, deployId, testOpts })
+      await reportStatuses({ statuses, api, mode, netlifyConfig, errorMonitor, deployId, logs, testOpts })
 
       if (error !== undefined) {
         throw error
       }
 
-      logBuildSuccess()
-      const duration = endTimer(buildTimer, 'Netlify Build')
+      logBuildSuccess(logs)
+      const duration = endTimer(logs, buildTimer, 'Netlify Build')
       await trackBuildComplete({ commandsCount, netlifyConfig, duration, siteInfo, telemetry, mode, testOpts })
-      return { success: true }
+      return { success: true, logs }
     } catch (error) {
       await maybeCancelBuild({ error, api, deployId })
       await logOldCliVersionError({ mode, testOpts })
@@ -106,9 +110,9 @@ const build = async function(flags = {}) {
     }
   } catch (error) {
     removeErrorColors(error)
-    await reportBuildError({ error, errorMonitor, testOpts })
-    logBuildError(error)
-    return { success: false }
+    await reportBuildError({ error, errorMonitor, logs, testOpts })
+    logBuildError({ error, logs })
+    return { success: false, logs }
   }
 }
 
@@ -125,9 +129,10 @@ const buildRun = async function({
   api,
   errorMonitor,
   deployId,
+  logs,
   testOpts,
 }) {
-  const childProcesses = await startPlugins({ pluginsOptions, buildDir, nodePath, childEnv, mode })
+  const childProcesses = await startPlugins({ pluginsOptions, buildDir, nodePath, childEnv, mode, logs })
 
   try {
     return await executeCommands({
@@ -144,6 +149,7 @@ const buildRun = async function({
       api,
       errorMonitor,
       deployId,
+      logs,
       testOpts,
     })
   } finally {
@@ -165,6 +171,7 @@ const executeCommands = async function({
   api,
   errorMonitor,
   deployId,
+  logs,
   testOpts,
 }) {
   const pluginsCommands = await loadPlugins({
@@ -176,13 +183,14 @@ const executeCommands = async function({
     api,
     errorMonitor,
     deployId,
+    logs,
     testOpts,
   })
 
   const { commands, commandsCount } = getCommands(pluginsCommands, netlifyConfig)
 
   if (dry) {
-    doDryRun({ commands, commandsCount, configPath })
+    doDryRun({ commands, commandsCount, configPath, logs })
     return {}
   }
 
@@ -194,6 +202,7 @@ const executeCommands = async function({
     childEnv,
     errorMonitor,
     netlifyConfig,
+    logs,
     testOpts,
   })
 }

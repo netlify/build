@@ -5,9 +5,25 @@ const { getHeader } = require('./header')
 const { serializeObject, serializeArray } = require('./serialize')
 const { THEME } = require('./theme')
 
+// When the `buffer` option is true, we return logs instead of printing them
+// on the console. The logs are accumulated in a `logs` array variable.
+const getBufferLogs = function({ buffer = false }) {
+  if (!buffer) {
+    return
+  }
+
+  return { stdout: [], stderr: [] }
+}
+
 // This should be used instead of `console.log()`
-const log = function(string) {
+const log = function(logs, string) {
   const stringA = String(string).replace(EMPTY_LINES_REGEXP, EMPTY_LINE)
+
+  if (logs !== undefined) {
+    logs.stdout.push(stringA)
+    return
+  }
+
   console.log(stringA)
 }
 
@@ -16,40 +32,50 @@ const log = function(string) {
 const EMPTY_LINES_REGEXP = /^\s*$/gm
 const EMPTY_LINE = '\u{200b}'
 
-const logMessage = function(string) {
+const logMessage = function(logs, string) {
   const stringA = indentString(string, INDENT_SIZE)
-  log(stringA)
+  log(logs, stringA)
 }
 
 const INDENT_SIZE = 2
 
-const logObject = function(object) {
+const logObject = function(logs, object) {
   const string = serializeObject(object)
-  logMessage(string)
+  logMessage(logs, string)
 }
 
-const logArray = function(array, { color = THEME.none } = {}) {
+const logArray = function(logs, array, { color = THEME.none } = {}) {
   const string = color(serializeArray(array))
-  logMessage(string)
+  logMessage(logs, string)
 }
 
-const logHeader = function(string, { color = THEME.header } = {}) {
+const logHeader = function(logs, string, { color = THEME.header } = {}) {
   const stringA = `\n${color(getHeader(string))}`
-  log(stringA)
+  log(logs, stringA)
 }
 
-const logErrorHeader = function(string) {
-  return logHeader(string, { color: THEME.errorHeader })
+const logErrorHeader = function(logs, string) {
+  return logHeader(logs, string, { color: THEME.errorHeader })
 }
 
-const logSubHeader = function(string) {
+const logSubHeader = function(logs, string) {
   const stringA = `\n${THEME.subHeader(`${pointer} ${string}`)}`
-  log(stringA)
+  log(logs, stringA)
 }
 
-const logErrorSubHeader = function(string) {
+const logErrorSubHeader = function(logs, string) {
   const stringA = `\n${THEME.errorSubHeader(`${pointer} ${string}`)}`
-  log(stringA)
+  log(logs, stringA)
 }
 
-module.exports = { log, logMessage, logObject, logArray, logHeader, logErrorHeader, logSubHeader, logErrorSubHeader }
+module.exports = {
+  getBufferLogs,
+  log,
+  logMessage,
+  logObject,
+  logArray,
+  logHeader,
+  logErrorHeader,
+  logSubHeader,
+  logErrorSubHeader,
+}

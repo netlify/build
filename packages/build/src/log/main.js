@@ -21,17 +21,17 @@ const {
 } = require('./logger')
 const { THEME } = require('./theme')
 
-const logBuildStart = function() {
-  logHeader('Netlify Build')
-  logSubHeader('Version')
-  logMessage(`${name} ${version}`)
+const logBuildStart = function(logs) {
+  logHeader(logs, 'Netlify Build')
+  logSubHeader(logs, 'Version')
+  logMessage(logs, `${name} ${version}`)
 }
 
-const logFlags = function(flags) {
+const logFlags = function(logs, flags) {
   const hiddenFlags = flags.mode === 'buildbot' ? [...HIDDEN_FLAGS, 'nodePath'] : HIDDEN_FLAGS
   const flagsA = omit(flags, hiddenFlags)
-  logSubHeader('Flags')
-  logObject(flagsA)
+  logSubHeader(logs, 'Flags')
+  logObject(logs, flagsA)
 }
 
 const HIDDEN_FLAGS = [
@@ -39,6 +39,7 @@ const HIDDEN_FLAGS = [
   'deployId',
   'cachedConfig',
   'defaultConfig',
+  'buffer',
   'debug',
   'env',
   'bugsnagKey',
@@ -46,34 +47,34 @@ const HIDDEN_FLAGS = [
   'telemetry',
 ]
 
-const logBuildDir = function(buildDir) {
-  logSubHeader('Current directory')
-  logMessage(buildDir)
+const logBuildDir = function(logs, buildDir) {
+  logSubHeader(logs, 'Current directory')
+  logMessage(logs, buildDir)
 }
 
-const logConfigPath = function(configPath = NO_CONFIG_MESSAGE) {
-  logSubHeader('Config file')
-  logMessage(configPath)
+const logConfigPath = function(logs, configPath = NO_CONFIG_MESSAGE) {
+  logSubHeader(logs, 'Config file')
+  logMessage(logs, configPath)
 }
 
 const NO_CONFIG_MESSAGE = 'No config file was defined: using default values.'
 
-const logConfig = function({ netlifyConfig, debug }) {
+const logConfig = function({ logs, netlifyConfig, debug }) {
   if (!debug) {
     return
   }
 
-  logSubHeader('Resolved config')
-  logObject(simplifyConfig(netlifyConfig))
+  logSubHeader(logs, 'Resolved config')
+  logObject(logs, simplifyConfig(netlifyConfig))
 }
 
-const logConfigOnError = function(error, netlifyConfig) {
+const logConfigOnError = function({ logs, error, netlifyConfig }) {
   if (netlifyConfig === undefined || isSuccessException(error)) {
     return
   }
 
-  logMessage(THEME.errorSubHeader('Resolved config'))
-  logObject(simplifyConfig(keepPublicProperties(netlifyConfig)))
+  logMessage(logs, THEME.errorSubHeader('Resolved config'))
+  logObject(logs, simplifyConfig(keepPublicProperties(netlifyConfig)))
 }
 
 // Make sure we are not printing secret values. Use an allow list.
@@ -137,53 +138,54 @@ const removeEmptyArray = function(array, propName) {
   return array.length === 0 ? {} : { [propName]: array }
 }
 
-const logContext = function(context) {
+const logContext = function(logs, context) {
   if (context === undefined) {
     return
   }
 
-  logSubHeader('Context')
-  logMessage(context)
+  logSubHeader(logs, 'Context')
+  logMessage(logs, context)
 }
 
-const logInstallMissingPlugins = function(packages) {
-  logSubHeader('Installing plugins')
-  logArray(packages)
+const logInstallMissingPlugins = function(logs, packages) {
+  logSubHeader(logs, 'Installing plugins')
+  logArray(logs, packages)
 }
 
-const logMissingPluginsWarning = function(packages) {
-  logErrorSubHeader('Missing plugins')
+const logMissingPluginsWarning = function(logs, packages) {
+  logErrorSubHeader(logs, 'Missing plugins')
   logMessage(
+    logs,
     THEME.errorSubHeader(
       `The following plugins should be installed either via the Netlify app or as a "dependency" inside your project's "package.json"`,
     ),
   )
-  logArray(packages, { color: THEME.errorSubHeader })
+  logArray(logs, packages, { color: THEME.errorSubHeader })
 }
 
-const logInstallLocalPluginsDeps = function(localPluginsOptions) {
+const logInstallLocalPluginsDeps = function(logs, localPluginsOptions) {
   const packages = localPluginsOptions.map(getPackage)
-  logSubHeader('Installing local plugins dependencies')
-  logArray(packages)
+  logSubHeader(logs, 'Installing local plugins dependencies')
+  logArray(logs, packages)
 }
 
 const logInstallFunctionDependencies = function() {
-  log('Installing functions dependencies')
+  log(undefined, 'Installing functions dependencies')
 }
 
 const getPackage = function({ package }) {
   return package
 }
 
-const logLoadingPlugins = function(pluginsOptions) {
+const logLoadingPlugins = function(logs, pluginsOptions) {
   const loadingPlugins = pluginsOptions.map(getPluginDescription)
 
   if (loadingPlugins.length === 0) {
     return
   }
 
-  logSubHeader('Loading plugins')
-  logArray(loadingPlugins)
+  logSubHeader(logs, 'Loading plugins')
+  logArray(logs, loadingPlugins)
 }
 
 const getPluginDescription = function({ package, packageJson: { version }, loadedFrom, origin }) {
@@ -192,22 +194,25 @@ const getPluginDescription = function({ package, packageJson: { version }, loade
   return `${THEME.highlightWords(package)}${versionA} ${pluginOrigin}`
 }
 
-const logDryRunStart = function(eventWidth, commandsCount) {
+const logDryRunStart = function({ logs, eventWidth, commandsCount }) {
   const columnWidth = getDryColumnWidth(eventWidth, commandsCount)
   const line = '─'.repeat(columnWidth)
   const secondLine = '─'.repeat(columnWidth)
 
-  logSubHeader('Netlify Build Commands')
-  logMessage(`For more information on build events see the docs https://github.com/netlify/build
+  logSubHeader(logs, 'Netlify Build Commands')
+  logMessage(
+    logs,
+    `For more information on build events see the docs https://github.com/netlify/build
 
 Running \`netlify build\` will execute this build flow
 
 ${THEME.header(`┌─${line}─┬─${secondLine}─┐
 │ ${DRY_HEADER_NAMES[0].padEnd(columnWidth)} │ ${DRY_HEADER_NAMES[1].padEnd(columnWidth)} │
-└─${line}─┴─${secondLine}─┘`)}`)
+└─${line}─┴─${secondLine}─┘`)}`,
+  )
 }
 
-const logDryRunCommand = function({ command: { event, package }, index, configPath, eventWidth, commandsCount }) {
+const logDryRunCommand = function({ logs, command: { event, package }, index, configPath, eventWidth, commandsCount }) {
   const columnWidth = getDryColumnWidth(eventWidth, commandsCount)
   const line = '─'.repeat(columnWidth)
   const countText = `${index + 1}. `
@@ -216,6 +221,7 @@ const logDryRunCommand = function({ command: { event, package }, index, configPa
   const fullName = getPluginFullName({ package, configPath })
 
   logMessage(
+    logs,
     `${THEME.header(`┌─${line}─┐`)}
 ${THEME.header(`│ ${countText}${event.padEnd(eventWidthA)}${downArrow} │`)} ${fullName}
 ${THEME.header(`└─${line}─┘ `)}`,
@@ -237,57 +243,57 @@ const getDryColumnWidth = function(eventWidth, commandsCount) {
 
 const DRY_HEADER_NAMES = ['Event', 'Location']
 
-const logDryRunEnd = function() {
-  logMessage(`\nIf this looks good to you, run \`netlify build\` to execute the build\n`)
+const logDryRunEnd = function(logs) {
+  logMessage(logs, `\nIf this looks good to you, run \`netlify build\` to execute the build\n`)
 }
 
-const logCommand = function({ event, package, index, configPath, error }) {
+const logCommand = function({ logs, event, package, index, configPath, error }) {
   const description = getCommandDescription({ event, package, configPath })
   const logHeaderFunc = error && !isSuccessException(error) ? logErrorHeader : logHeader
-  logHeaderFunc(`${index + 1}. ${description}`)
-  logMessage('')
+  logHeaderFunc(logs, `${index + 1}. ${description}`)
+  logMessage(logs, '')
 }
 
-const logBuildCommandStart = function(buildCommand) {
-  log(THEME.highlightWords(`$ ${buildCommand}`))
+const logBuildCommandStart = function(logs, buildCommand) {
+  log(logs, THEME.highlightWords(`$ ${buildCommand}`))
 }
 
-const logCommandSuccess = function() {
-  logMessage('')
+const logCommandSuccess = function(logs) {
+  logMessage(logs, '')
 }
 
-const logTimer = function(durationMs, timerName) {
+const logTimer = function(logs, durationMs, timerName) {
   const duration = prettyMs(durationMs)
-  log(THEME.dimWords(`(${timerName} completed in ${duration})`))
+  log(logs, THEME.dimWords(`(${timerName} completed in ${duration})`))
 }
 
-const logStatuses = function(statuses) {
-  logHeader('Summary')
-  statuses.forEach(logStatus)
+const logStatuses = function(logs, statuses) {
+  logHeader(logs, 'Summary')
+  statuses.forEach(status => logStatus(logs, status))
 }
 
-const logStatus = function({ package, title = `Plugin ${package} ran successfully`, summary, text }) {
+const logStatus = function(logs, { package, title = `Plugin ${package} ran successfully`, summary, text }) {
   const titleA = title.includes(package) ? title : `${package}: ${title}`
   const body = text === undefined ? summary : `${summary}\n${THEME.dimWords(text)}`
-  logSubHeader(titleA)
-  logMessage(body)
+  logSubHeader(logs, titleA)
+  logMessage(logs, body)
 }
 
 const logCacheDir = function(path) {
-  logMessage(`Caching ${path}`)
+  logMessage(undefined, `Caching ${path}`)
 }
 
-const logBuildError = function(error, netlifyConfigArg) {
+const logBuildError = function({ error, netlifyConfig: netlifyConfigArg, logs }) {
   const { title, body, isSuccess, netlifyConfig = netlifyConfigArg } = serializeLogError(error)
   const logFunction = isSuccess ? logHeader : logErrorHeader
-  logFunction(title)
-  logMessage(`\n${body}\n`)
-  logConfigOnError(error, netlifyConfig)
+  logFunction(logs, title)
+  logMessage(logs, `\n${body}\n`)
+  logConfigOnError({ logs, error, netlifyConfig })
 }
 
-const logBuildSuccess = function() {
-  logHeader('Netlify Build Complete')
-  logMessage('')
+const logBuildSuccess = function(logs) {
+  logHeader(logs, 'Netlify Build Complete')
+  logMessage(logs, '')
 }
 
 module.exports = {

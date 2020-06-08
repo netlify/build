@@ -19,19 +19,20 @@ const getPluginsOptions = async function({
   api,
   errorMonitor,
   deployId,
+  logs,
   testOpts,
 }) {
   const corePlugins = getCorePlugins(FUNCTIONS_SRC, testOpts).map(addCoreProperties)
   const allCorePlugins = corePlugins.filter(corePlugin => !isOptionalCore(corePlugin, plugins))
   const userPlugins = plugins.filter(isUserPlugin)
   const pluginsOptions = [...allCorePlugins, ...userPlugins].map(normalizePluginOptions)
-  const pluginsOptionsA = await resolvePluginsPath({ pluginsOptions, buildDir, mode, testOpts })
+  const pluginsOptionsA = await resolvePluginsPath({ pluginsOptions, buildDir, mode, logs, testOpts })
   const pluginsOptionsB = await Promise.all(
     pluginsOptionsA.map(pluginOptions =>
-      loadPluginFiles({ pluginOptions, mode, api, netlifyConfig, errorMonitor, deployId, testOpts }),
+      loadPluginFiles({ pluginOptions, mode, api, netlifyConfig, errorMonitor, deployId, logs, testOpts }),
     ),
   )
-  await installLocalPluginsDependencies({ plugins, pluginsOptions: pluginsOptionsB, buildDir, mode })
+  await installLocalPluginsDependencies({ plugins, pluginsOptions: pluginsOptionsB, buildDir, mode, logs })
   return pluginsOptionsB
 }
 
@@ -61,6 +62,7 @@ const loadPluginFiles = async function({
   netlifyConfig,
   errorMonitor,
   deployId,
+  logs,
   testOpts,
 }) {
   const pluginDir = dirname(pluginPath)
@@ -74,6 +76,7 @@ const loadPluginFiles = async function({
     netlifyConfig,
     errorMonitor,
     deployId,
+    logs,
     testOpts,
   })
   return { ...pluginOptions, pluginPath, packageDir, packageJson, inputs }

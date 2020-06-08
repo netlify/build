@@ -3,17 +3,17 @@ const { logDryRunStart, logDryRunCommand, logDryRunEnd } = require('../log/main'
 const { isSuccessCommand } = require('./commands')
 
 // If the `dry` flag is specified, do a dry run
-const doDryRun = function({ commands, commandsCount, configPath }) {
+const doDryRun = function({ commands, commandsCount, configPath, logs }) {
   const successCommands = commands.filter(isSuccessCommand)
   const eventWidth = Math.max(...successCommands.map(getEventLength))
 
-  logDryRunStart(eventWidth, commandsCount)
+  logDryRunStart({ logs, eventWidth, commandsCount })
 
   successCommands.forEach((command, index) => {
-    logDryRunCommand({ command, index, configPath, eventWidth, commandsCount })
+    logDryRunCommand({ logs, command, index, configPath, eventWidth, commandsCount })
   })
 
-  logDryRunEnd()
+  logDryRunEnd(logs)
 }
 
 const getEventLength = function({ event }) {
