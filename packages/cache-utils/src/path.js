@@ -49,8 +49,9 @@ const getCachePath = async function({ srcPath, cacheDir, mode }) {
 // current directory, the home directory or the root directory. Each is tried
 // in order.
 const findBase = function(srcPath) {
+  const bases = getBases()
   const srcPathA = normalizeWindows(srcPath)
-  return BASES.map(({ name, base }) => parseBase(name, base, srcPathA)).find(Boolean)
+  return bases.map(({ name, base }) => parseBase(name, base, srcPathA)).find(Boolean)
 }
 
 // Windows drives are problematic:
@@ -79,10 +80,12 @@ const parseBase = function(name, base, srcPath) {
   return { name, relPath }
 }
 
-const BASES = [
-  { name: 'cwd', base: getCwd() },
-  { name: 'home', base: homedir() },
-  { name: 'root', base: sep },
-]
+const getBases = function() {
+  return [
+    { name: 'cwd', base: getCwd() },
+    { name: 'home', base: homedir() },
+    { name: 'root', base: sep },
+  ]
+}
 
-module.exports = { parsePath, BASES }
+module.exports = { parsePath, getBases }
