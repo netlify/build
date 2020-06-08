@@ -1,10 +1,10 @@
 module.exports = {
   async onPreBuild() {
     const error = new Error('test')
-    error.self = error
     error.test = true
-    error.nullProp = null
+    error.prop = null
     error.objectProp = {}
+    error.objectProp.self = error.objectProp
     throw error
   },
 }
