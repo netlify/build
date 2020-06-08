@@ -4,13 +4,10 @@ const { setOldProperty } = require('../error')
 const { getUtils } = require('./utils')
 
 // Run a specific plugin event handler
-const run = async function(
-  { event, error, envChanges },
-  { pluginCommands, api, utilsData, constants, inputs, netlifyConfig },
-) {
+const run = async function({ event, error, envChanges }, { pluginCommands, api, constants, inputs, netlifyConfig }) {
   const { method } = pluginCommands.find(pluginCommand => pluginCommand.event === event)
   const runState = {}
-  const utils = getUtils({ utilsData, constants, runState })
+  const utils = getUtils({ constants, runState })
   const runOptions = { api, utils, constants, inputs, netlifyConfig, error }
   validateOldSyntax(runOptions)
 
