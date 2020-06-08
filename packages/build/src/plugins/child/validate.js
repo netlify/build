@@ -13,7 +13,7 @@ const validatePlugin = function(logic) {
 
     validateOldProperties(logic)
 
-    Object.entries(logic).forEach(([propName, value]) => validateProperty(value, propName))
+    Object.entries(logic).forEach(([propName, value]) => validateEventHandler(value, propName))
   } catch (error) {
     error[ERROR_TYPE_SYM] = 'pluginValidation'
     throw error
@@ -40,17 +40,7 @@ const validateOldProperties = function(logic) {
   )
 }
 
-const validateProperty = function(value, propName) {
-  if (UNDOCUMENTED_PROPERTIES.includes(propName)) {
-    return
-  }
-
-  // All other properties are event handlers
-  validateEventHandler(value, propName)
-}
-
-const UNDOCUMENTED_PROPERTIES = ['scopes']
-
+// All other properties are event handlers
 const validateEventHandler = function(value, propName) {
   // TODO: remove once no plugins is doing this anymore.
   if (LEGACY_EVENTS[propName] !== undefined) {

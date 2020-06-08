@@ -1,8 +1,6 @@
 const isPlainObj = require('is-plain-obj')
 
-const { serializeArray } = require('../../log/serialize')
 const { THEME } = require('../../log/theme')
-const { API_METHODS } = require('../child/api')
 
 // Validate `manifest.yml` syntax
 const validateManifest = function(manifest, rawManifest) {
@@ -10,7 +8,6 @@ const validateManifest = function(manifest, rawManifest) {
     validateBasic(manifest)
     validateUnknownProps(manifest)
     validateName(manifest)
-    validateScopes(manifest)
     validateInputs(manifest)
   } catch (error) {
     error.message = `Plugin's "manifest.yml" ${error.message}
@@ -34,7 +31,7 @@ const validateUnknownProps = function(manifest) {
   }
 }
 
-const VALID_PROPS = ['name', 'inputs', 'scopes']
+const VALID_PROPS = ['name', 'inputs']
 
 const validateName = function({ name }) {
   if (name === undefined) {
@@ -45,29 +42,6 @@ const validateName = function({ name }) {
     throw new Error('"name" property must be a string')
   }
 }
-
-const validateScopes = function({ scopes }) {
-  if (scopes === undefined) {
-    return
-  }
-
-  if (!Array.isArray(scopes)) {
-    throw new Error('"scopes" property must be an array')
-  }
-
-  const wrongScope = scopes.find(scope => !isValidScope(scope))
-  if (wrongScope !== undefined) {
-    throw new Error(`scope "${wrongScope}" is invalid
-Please use a valid scope. One of:
-${serializeArray(ALLOWED_SCOPES)}`)
-  }
-}
-
-const isValidScope = function(scope) {
-  return ALLOWED_SCOPES.includes(scope)
-}
-
-const ALLOWED_SCOPES = ['*', ...API_METHODS]
 
 const validateInputs = function({ inputs }) {
   if (inputs === undefined) {

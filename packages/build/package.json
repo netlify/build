@@ -52,7 +52,6 @@
     "make-dir": "^3.0.2",
     "map-obj": "^4.1.0",
     "memoize-one": "^5.1.1",
-    "netlify": "^4.2.0",
     "os-name": "^3.1.0",
     "p-event": "^4.1.0",
     "p-reduce": "^2.1.0",
