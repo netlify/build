@@ -1,5 +1,3 @@
-const { env } = require('process')
-
 const pathExists = require('path-exists')
 
 const { addErrorInfo } = require('../error/info')
@@ -12,15 +10,21 @@ const { resolvePath } = require('../utils/resolve')
 //  - external plugin already installed in `node_modules`, most likely through `package.json`
 //  - cached in the build image
 //  - automatically installed by us (fallback)
-const resolvePluginsPath = async function({ pluginsOptions, buildDir, mode }) {
+const resolvePluginsPath = async function({ pluginsOptions, buildDir, mode, testOpts }) {
   const pluginsOptionsA = await Promise.all(
-    pluginsOptions.map(pluginOptions => resolvePluginPath({ pluginOptions, buildDir, mode })),
+    pluginsOptions.map(pluginOptions => resolvePluginPath({ pluginOptions, buildDir, mode, testOpts })),
   )
   const pluginsOptionsB = await handleMissingPlugins({ pluginsOptions: pluginsOptionsA, buildDir, mode })
   return pluginsOptionsB
 }
 
-const resolvePluginPath = async function({ pluginOptions, pluginOptions: { package, loadedFrom }, buildDir, mode }) {
+const resolvePluginPath = async function({
+  pluginOptions,
+  pluginOptions: { package, loadedFrom },
+  buildDir,
+  mode,
+  testOpts,
+}) {
   // Core plugins
   if (loadedFrom !== undefined) {
     return pluginOptions
@@ -43,7 +47,7 @@ const resolvePluginPath = async function({ pluginOptions, pluginOptions: { packa
   }
 
   // Cached in the build image
-  const buildImagePath = await tryBuildImagePath(packageA, mode, buildDir)
+  const buildImagePath = await tryBuildImagePath({ package: packageA, mode, buildDir, testOpts })
   if (buildImagePath !== undefined) {
     return { ...pluginOptions, pluginPath: buildImagePath, loadedFrom: 'image_cache' }
   }
@@ -65,12 +69,12 @@ const tryLocalPath = async function(package, baseDir) {
 
 // In production, we pre-install most Build plugins to that directory, for
 // performance reasons
-const tryBuildImagePath = async function(package, mode, buildDir) {
+const tryBuildImagePath = async function({ package, mode, buildDir, testOpts }) {
   if (mode !== 'buildbot') {
     return
   }
 
-  const pluginsDir = getBuildImagePluginsDir()
+  const pluginsDir = getBuildImagePluginsDir(testOpts)
   const buildImagePath = `${pluginsDir}/${package}`
   if (!(await pathExists(buildImagePath))) {
     return
@@ -79,9 +83,9 @@ const tryBuildImagePath = async function(package, mode, buildDir) {
   return resolvePath(buildImagePath, buildDir)
 }
 
-const getBuildImagePluginsDir = function() {
-  if (env.TEST_BUILD_IMAGE_PLUGINS_DIR) {
-    return env.TEST_BUILD_IMAGE_PLUGINS_DIR
+const getBuildImagePluginsDir = function(testOpts) {
+  if (testOpts.buildImagePluginsDir !== undefined) {
+    return testOpts.buildImagePluginsDir
   }
 
   return BUILD_IMAGE_PLUGINS_DIR
