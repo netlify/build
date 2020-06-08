@@ -59,9 +59,6 @@ const runFixtureCommon = async function(
   return { stdout, stderr, exitCode }
 }
 
-// 10 minutes timeout
-const TIMEOUT = 6e5
-
 // Retrieve flags to the main entry point
 const getMainFlags = function({ fixtureName, copyRoot, copyRootDir, repositoryRoot, flags }) {
   const repositoryRootFlag = getRepositoryRootFlag({ fixtureName, copyRoot, copyRootDir, repositoryRoot })
@@ -128,7 +125,6 @@ const execCommand = function({ binaryPath, mainFlags, snapshot, commandEnv }) {
     all: isPrint() && snapshot,
     reject: false,
     env: commandEnv,
-    timeout: TIMEOUT,
   })
 }
 
