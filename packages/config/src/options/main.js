@@ -3,8 +3,9 @@ const {
   env: { CONTEXT },
 } = require('process')
 
+const { isDirectory } = require('path-type')
+
 const { throwError } = require('../error')
-const { dirExists } = require('../utils/dir-exists')
 const { removeFalsy } = require('../utils/remove_falsy')
 
 const { getBranch } = require('./branch')
@@ -41,7 +42,7 @@ const DIR_OPTIONS = ['cwd', 'repositoryRoot']
 
 const checkDir = async function(opts, optName) {
   const path = opts[optName]
-  if (!(await dirExists(path))) {
+  if (!(await isDirectory(path))) {
     throwError(`Option '${optName}' points to a non-existing directory: ${path}`)
   }
 }
