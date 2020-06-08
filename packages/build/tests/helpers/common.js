@@ -44,7 +44,7 @@ const runFixtureCommon = async function(
   const commandEnv = { NETLIFY_BUILD_TEST: '1', ...envOption }
   const copyRootDir = await getCopyRootDir({ copyRoot })
   const mainFlags = getMainFlags({ fixtureName, copyRoot, copyRootDir, repositoryRoot, flags })
-  const { stdout, stderr, all, exitCode } = await runCommand({
+  const { stdout, stderr, all, failed } = await runCommand({
     binaryPath,
     mainFlags,
     snapshot,
@@ -56,7 +56,7 @@ const runFixtureCommon = async function(
 
   doTestAction({ t, stdout, stderr, all, normalize, snapshot })
 
-  return { stdout, stderr, exitCode }
+  return { stdout, stderr, failed }
 }
 
 // Retrieve flags to the main entry point

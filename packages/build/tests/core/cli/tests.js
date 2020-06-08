@@ -13,11 +13,11 @@ test('--version', async t => {
 })
 
 test('Exit code is 0 on success', async t => {
-  const { exitCode } = await runFixture(t, 'empty')
-  t.is(exitCode, 0)
+  const { failed } = await runFixture(t, 'empty')
+  t.not(failed)
 })
 
 test('Exit code is 1 on error', async t => {
-  const { exitCode } = await runFixture(t, '', { flags: '--config=/invalid' })
-  t.is(exitCode, 1)
+  const { failed } = await runFixture(t, '', { flags: '--config=/invalid' })
+  t.true(failed)
 })
