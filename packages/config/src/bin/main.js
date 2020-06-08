@@ -12,9 +12,8 @@ const { parseFlags } = require('./flags')
 
 // CLI entry point
 const runCli = async function() {
-  const { stable, ...flags } = parseFlags()
-
   try {
+    const { stable, ...flags } = parseFlags()
     const result = await resolveConfig(flags)
     handleCliSuccess(result, stable)
   } catch (error) {
