@@ -2,16 +2,23 @@ const test = require('ava')
 
 const { runFixture } = require('../../helpers/main')
 
+const getNodePath = function(version) {
+  return `/home/ether/.nvm/versions/node/v${version}/bin/node`
+}
+
 test('Validate --node-path version is supported by our codebase', async t => {
-  await runFixture(t, 'simple', { flags: '--node-path=/home/ether/.nvm/versions/node/v8.2.0/bin/node' })
+  const nodePath = getNodePath('8.2.0')
+  await runFixture(t, 'simple', { flags: `--node-path=${nodePath}` })
 })
 
 test('Validate --node-path unsupported version does not fail when no plugins are used', async t => {
-  await runFixture(t, 'empty', { flags: '--node-path=/home/ether/.nvm/versions/node/v8.2.0/bin/node' })
+  const nodePath = getNodePath('8.2.0')
+  await runFixture(t, 'empty', { flags: `--node-path=${nodePath}` })
 })
 
 test('Validate --node-path version is supported by the plugin', async t => {
-  await runFixture(t, 'engines', { flags: '--node-path=/home/ether/.nvm/versions/node/v9.0.0/bin/node' })
+  const nodePath = getNodePath('9.0.0')
+  await runFixture(t, 'engines', { flags: `--node-path=${nodePath}` })
 })
 
 test('Validate --node-path', async t => {
