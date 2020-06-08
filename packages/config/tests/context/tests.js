@@ -19,15 +19,15 @@ test('Context with branch CLI flag', async t => {
 })
 
 test('Context with branch environment variable', async t => {
-  await runFixture(t, 'branch', { env: { BRANCH: 'testBranch' } })
+  await runFixture(t, 'branch', { env: { BRANCH: 'testBranch' }, flags: '--branch=""' })
 })
 
 test('Context with branch git', async t => {
-  await runFixture(t, 'branch', { copyRoot: { branch: 'testBranch' }, env: { BRANCH: '' } })
+  await runFixture(t, 'branch', { copyRoot: { branch: 'testBranch' }, flags: '--branch=""' })
 })
 
 test('Context with branch fallback', async t => {
-  await runFixture(t, 'branch_fallback', { copyRoot: { git: false }, env: { BRANCH: '' } })
+  await runFixture(t, 'branch_fallback', { copyRoot: { git: false }, flags: '--branch=""' })
 })
 
 test('Context deep merge', async t => {

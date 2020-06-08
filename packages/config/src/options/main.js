@@ -11,17 +11,23 @@ const { getRepositoryRoot } = require('./repository_root')
 // Assign default options
 const addDefaultOpts = function(opts = {}) {
   const optsA = removeFalsy(opts)
-  const defaultOpts = DEFAULT_OPTS()
+  const defaultOpts = getDefaultOpts(optsA)
   const optsB = { ...defaultOpts, ...optsA }
   const optsC = removeFalsy(optsB)
   return optsC
 }
 
-const DEFAULT_OPTS = () => ({
-  cwd: getCwd(),
-  context: env.CONTEXT || 'production',
-  mode: 'require',
-})
+const getDefaultOpts = function({ env: envOpt = {} }) {
+  const combinedEnv = { ...env, ...envOpt }
+  return {
+    env: envOpt,
+    cwd: getCwd(),
+    context: combinedEnv.CONTEXT || 'production',
+    branch: combinedEnv.BRANCH,
+    token: combinedEnv.NETLIFY_AUTH_TOKEN,
+    mode: 'require',
+  }
+}
 
 // Normalize options
 const normalizeOpts = async function(opts) {

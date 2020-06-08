@@ -1,5 +1,3 @@
-const { env } = require('process')
-
 const execa = require('execa')
 
 // Find out git branch among (in priority order):
@@ -8,12 +6,8 @@ const execa = require('execa')
 //   - Running `git`
 //   - 'master' (fallback)
 const getBranch = async function({ branch, repositoryRoot }) {
-  if (branch !== undefined) {
+  if (branch) {
     return branch
-  }
-
-  if (env.BRANCH) {
-    return env.BRANCH
   }
 
   const gitBranch = await getGitBranch(repositoryRoot)
