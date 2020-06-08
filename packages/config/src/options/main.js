@@ -1,7 +1,4 @@
-const {
-  cwd: getCwd,
-  env: { CONTEXT },
-} = require('process')
+const { cwd: getCwd, env } = require('process')
 
 const { isDirectory } = require('path-type')
 
@@ -14,7 +11,7 @@ const { getRepositoryRoot } = require('./repository_root')
 // Normalize options and assign default values
 const normalizeOpts = async function(opts) {
   const optsA = removeFalsy(opts)
-  const optsB = { ...DEFAULT_OPTS, ...optsA }
+  const optsB = { ...DEFAULT_OPTS(), ...optsA }
 
   const repositoryRoot = await getRepositoryRoot(optsB)
   const optsC = { ...optsB, repositoryRoot }
@@ -27,11 +24,11 @@ const normalizeOpts = async function(opts) {
   return optsE
 }
 
-const DEFAULT_OPTS = {
+const DEFAULT_OPTS = () => ({
   cwd: getCwd(),
-  context: CONTEXT || 'production',
+  context: env.CONTEXT || 'production',
   mode: 'require',
-}
+})
 
 // Verify that options point to existing directories
 const checkDirs = async function(opts) {
