@@ -3,7 +3,4 @@ export default {
   compileEnhancements: false,
   babel: false,
   verbose: true,
-  environmentVariables: {
-    BUILD_TELEMETRY_DISABLED: 'true',
-  },
 }

@@ -58,6 +58,7 @@ const build = async function(flags = {}) {
       context,
       branch,
       envOpt,
+      telemetry,
       mode,
     } = await loadConfig(flagsA)
     const childEnv = await getChildEnv({ netlifyConfig, buildDir, context, branch, siteInfo, deployId, envOpt, mode })
@@ -103,7 +104,7 @@ const build = async function(flags = {}) {
 
       logBuildSuccess()
       const duration = endTimer(buildTimer, 'Netlify Build')
-      await trackBuildComplete({ commandsCount, netlifyConfig, duration, siteInfo, mode })
+      await trackBuildComplete({ commandsCount, netlifyConfig, duration, siteInfo, telemetry, mode })
       return { success: true }
     } catch (error) {
       await maybeCancelBuild({ error, api, deployId })

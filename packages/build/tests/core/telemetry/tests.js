@@ -35,8 +35,8 @@ const TELEMETRY_PATH = '/collect'
 test('Telemetry success', async t => {
   const { scheme, host, requests, stopServer } = await startServer(TELEMETRY_PATH)
   await runFixture(t, 'success', {
-    flags: '--site-id=test',
-    env: { BUILD_TELEMETRY_DISABLED: '', TEST_SCHEME: scheme, TEST_HOST: host },
+    flags: `--site-id=test --telemetry`,
+    env: { TEST_SCHEME: scheme, TEST_HOST: host },
     snapshot: false,
   })
   await stopServer()
@@ -55,11 +55,22 @@ test('Telemetry disabled', async t => {
   t.is(requests.length, 0)
 })
 
+test('Telemetry disabled with flag', async t => {
+  const { scheme, host, requests, stopServer } = await startServer(TELEMETRY_PATH)
+  await runFixture(t, 'success', {
+    flags: `--site-id=test --no-telemetry`,
+    env: { TEST_SCHEME: scheme, TEST_HOST: host },
+    snapshot: false,
+  })
+  await stopServer()
+  t.is(requests.length, 0)
+})
+
 test('Telemetry error', async t => {
   const { stopServer } = await startServer(TELEMETRY_PATH)
   await runFixture(t, 'success', {
-    flags: '--site-id=test',
-    env: { BUILD_TELEMETRY_DISABLED: '', TEST_HOST: '...' },
+    flags: `--site-id=test --telemetry`,
+    env: { TEST_HOST: '...' },
   })
   await stopServer()
 })

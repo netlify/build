@@ -5,12 +5,12 @@ const osName = require('os-name')
 
 const { version } = require('../../package.json')
 
-const { telemetry } = require('./track')
+const { analytics } = require('./track')
 
 // Send telemetry request when build completes
-const trackBuildComplete = async function({ commandsCount, netlifyConfig, duration, siteInfo, mode }) {
+const trackBuildComplete = async function({ commandsCount, netlifyConfig, duration, siteInfo, telemetry, mode }) {
   const payload = getPayload({ commandsCount, netlifyConfig, duration, siteInfo, mode })
-  await telemetry.track('netlifyCI:buildComplete', payload)
+  await analytics.track('netlifyCI:buildComplete', { payload, telemetry })
 }
 
 // Retrieve telemetry information
