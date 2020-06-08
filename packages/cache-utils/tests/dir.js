@@ -3,10 +3,9 @@ const pathExists = require('path-exists')
 
 const cacheUtils = require('..')
 
-const { pWriteFile, createTmpDir, createTmpFile, removeFiles } = require('./helpers/main')
+const { pWriteFile, createTmpDir, removeFiles } = require('./helpers/main')
 
-// Need to be serial since we change the current directory
-test.serial('Should allow not changing the cache directory', async t => {
+test('Should allow not changing the cache directory', async t => {
   const [cacheDir, srcDir] = await Promise.all([createTmpDir(), createTmpDir()])
   const currentDir = process.cwd()
   process.chdir(srcDir)
@@ -23,17 +22,7 @@ test.serial('Should allow not changing the cache directory', async t => {
   }
 })
 
-// Need to be serial since we change the environment variables
-test.serial('Should allow not changing the cache directory in CI', async t => {
-  const [cacheDir, [srcFile, srcDir]] = await Promise.all([createTmpDir(), createTmpFile()])
-  process.env.NETLIFY_BUILD_TEST = '1'
-  try {
-    t.true(await cacheUtils.save(srcFile, { mode: 'buildbot' }))
-    await removeFiles(srcFile)
-    t.true(await cacheUtils.restore(srcFile, { mode: 'buildbot' }))
-    t.true(await pathExists(srcFile))
-  } finally {
-    delete process.env.NETLIFY_BUILD_TEST
-    await removeFiles([cacheDir, srcDir])
-  }
+test('Should allow not changing the cache directory in CI', async t => {
+  const cacheDir = await cacheUtils.getCacheDir({ mode: 'buildbot', isTest: true })
+  t.true(await pathExists(cacheDir))
 })

@@ -85,7 +85,7 @@ const loadConfig = async function(
   logContext(contextA)
 
   const apiA = addApiErrorHandlers(api)
-  const constants = await getConstants({ configPath, buildDir, netlifyConfig, siteInfo, deployId, mode })
+  const constants = await getConstants({ configPath, buildDir, netlifyConfig, siteInfo, deployId, mode, testOpts })
   return {
     netlifyConfig,
     configPath,
