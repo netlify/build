@@ -11,7 +11,7 @@ test('--dry with several events', async t => {
 })
 
 test('--dry-run', async t => {
-  await runFixture(t, 'single', { flags: { dryRun: true } })
+  await runFixture(t, 'single', { flags: { dryRun: true }, useBinary: true })
 })
 
 test('--dry with build.command but no netlify.toml', async t => {
