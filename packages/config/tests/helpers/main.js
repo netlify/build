@@ -7,17 +7,14 @@ const { runFixtureCommon, FIXTURES_DIR, escapeExecaOpt, startServer } = require(
 const ROOT_DIR = `${__dirname}/../..`
 
 const runFixture = async function(t, fixtureName, { env, flags = '', ...opts } = {}) {
+  const flagsA = flags.includes('--branch') ? flags : `--branch=branch ${flags}`
+  const flagsB = `--stable ${flagsA}`
   return runFixtureCommon(t, fixtureName, {
     ...opts,
     binaryPath: await BINARY_PATH,
-    env: {
-      // Ensure local tokens aren't used during development
-      NETLIFY_AUTH_TOKEN: '',
-      // Make snapshot consistent regardless of the actual current git branch
-      BRANCH: 'branch',
-      ...env,
-    },
-    flags: `--stable ${flags}`,
+    // Ensure local tokens aren't used during development
+    env: { NETLIFY_AUTH_TOKEN: '', ...env },
+    flags: flagsB,
   })
 }
 const BINARY_PATH = getBinPath({ cwd: ROOT_DIR })
