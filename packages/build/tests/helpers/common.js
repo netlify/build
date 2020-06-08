@@ -44,19 +44,18 @@ const runFixtureCommon = async function(
   const commandEnv = { NETLIFY_BUILD_TEST: '1', ...envOption }
   const copyRootDir = await getCopyRootDir({ copyRoot })
   const mainFlags = getMainFlags({ fixtureName, copyRoot, copyRootDir, repositoryRoot, flags })
-  const { stdout, stderr, all, failed } = await runCommand({
+  const { returnValue, failed } = await runCommand({
     binaryPath,
     mainFlags,
-    snapshot,
     commandEnv,
     fixtureName,
     copyRoot,
     copyRootDir,
   })
 
-  doTestAction({ t, stdout, stderr, all, normalize, snapshot })
+  doTestAction({ t, returnValue, normalize, snapshot })
 
-  return { stdout, stderr, failed }
+  return { returnValue, failed }
 }
 
 // Retrieve flags to the main entry point
@@ -96,7 +95,6 @@ const getCopyRootDir = function({ copyRoot, copyRoot: { git } = {} }) {
 const runCommand = async function({
   binaryPath,
   mainFlags,
-  snapshot,
   commandEnv,
   fixtureName,
   copyRoot,
@@ -104,7 +102,7 @@ const runCommand = async function({
   copyRootDir,
 }) {
   if (copyRoot === undefined) {
-    return execCommand({ binaryPath, mainFlags, snapshot, commandEnv })
+    return execCommand({ binaryPath, mainFlags, commandEnv })
   }
 
   try {
@@ -114,45 +112,41 @@ const runCommand = async function({
       await execa.command(`git checkout -b ${branch}`, { cwd: copyRootDir })
     }
 
-    return await execCommand({ binaryPath, mainFlags, snapshot, commandEnv })
+    return await execCommand({ binaryPath, mainFlags, commandEnv })
   } finally {
     await removeDir(copyRootDir)
   }
 }
 
-const execCommand = function({ binaryPath, mainFlags, snapshot, commandEnv }) {
-  return execa.command(`${binaryPath} ${mainFlags}`, {
-    all: isPrint() && snapshot,
+const execCommand = async function({ binaryPath, mainFlags, commandEnv }) {
+  const { all, failed } = await execa.command(`${binaryPath} ${mainFlags}`, {
+    all: true,
     reject: false,
     env: commandEnv,
   })
+  return { returnValue: all, failed }
 }
 
 // The `PRINT` environment variable can be set to `1` to run the test in print
 // mode. Print mode is a debugging mode which shows the test output but does
 // not create nor compare its snapshot.
-const doTestAction = function({ t, stdout, stderr, all, normalize, snapshot }) {
+const doTestAction = function({ t, returnValue, normalize, snapshot }) {
   if (!snapshot) {
     return
   }
 
+  const normalizedReturn = normalizeOutputString(returnValue, normalize)
+
   if (isPrint()) {
-    const allA = normalizeOutputString(all, normalize)
-    return printOutput(t, allA)
+    return printOutput(t, normalizedReturn)
   }
 
-  const stdoutA = normalizeOutputString(stdout, normalize)
-  const stderrA = normalizeOutputString(stderr, normalize)
-  // stdout and stderr can be intertwined in a time-sensitive / race-condition
-  // manner otherwise
-  const allB = [stdoutA, stderrA].filter(Boolean).join('\n\n')
-
-  if (shouldIgnoreSnapshot(allB)) {
+  if (shouldIgnoreSnapshot(normalizedReturn)) {
     t.pass()
     return
   }
 
-  t.snapshot(allB)
+  t.snapshot(normalizedReturn)
 }
 
 const normalizeOutputString = function(outputString, normalize) {
@@ -163,20 +157,20 @@ const normalizeOutputString = function(outputString, normalize) {
   return normalizeOutput(outputString)
 }
 
-const printOutput = function(t, all) {
+const printOutput = function(t, normalizedReturn) {
   console.log(`
 ${magentaBright.bold(`${LINE}
   ${t.title}
 ${LINE}`)}
 
-${all}`)
+${normalizedReturn}`)
   t.pass()
 }
 
 const LINE = '='.repeat(50)
 
-const shouldIgnoreSnapshot = function(all) {
-  return IGNORE_REGEXPS.some(regExp => regExp.test(all))
+const shouldIgnoreSnapshot = function(normalizedReturn) {
+  return IGNORE_REGEXPS.some(regExp => regExp.test(normalizedReturn))
 }
 
 const IGNORE_REGEXPS = [

@@ -21,8 +21,8 @@ test('--defaultConfig', async t => {
 })
 
 test('--cachedConfig', async t => {
-  const { stdout } = await runFixtureConfig(t, 'cached_config', { snapshot: false })
-  const cachedConfig = escapeExecaOpt(stdout)
+  const { returnValue } = await runFixtureConfig(t, 'cached_config', { snapshot: false })
+  const cachedConfig = escapeExecaOpt(returnValue)
   await runFixture(t, 'cached_config', { flags: `--cachedConfig=${cachedConfig}` })
 })
 
