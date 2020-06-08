@@ -17,6 +17,7 @@ const useManifest = async function(
     netlifyConfig,
     errorMonitor,
     deployId,
+    logs,
     testOpts,
   },
 ) {
@@ -37,6 +38,7 @@ const useManifest = async function(
       netlifyConfig,
       errorMonitor,
       deployId,
+      logs,
       testOpts,
     })
     throw error

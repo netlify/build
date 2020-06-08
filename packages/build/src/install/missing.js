@@ -25,13 +25,13 @@ const AUTO_PLUGINS_DIR = '.netlify/plugins/'
 // We are always using `npm` to mimic the behavior of plugins cached in the
 // build image. Users requiring `yarn` or custom npm/yarn flags should install
 // the plugin in their `package.json`.
-const installMissingPlugins = async function({ pluginsOptions, autoPluginsDir, mode }) {
+const installMissingPlugins = async function({ pluginsOptions, autoPluginsDir, mode, logs }) {
   const packages = getMissingPlugins(pluginsOptions)
   if (packages.length === 0) {
     return
   }
 
-  logInstallMissingPlugins(packages)
+  logInstallMissingPlugins(logs, packages)
 
   await createAutoPluginsDir(autoPluginsDir)
   await addLatestDependencies({ packageRoot: autoPluginsDir, isLocal: mode !== 'buildbot', packages })
@@ -90,7 +90,7 @@ const AUTO_PLUGINS_PACKAGE_JSON = {
 // Warns both when installing the plugin, and when re-using it in a future build
 // Not done for local builds, since they cannot use the alternative
 // (build-image cached plugins).
-const warnOnMissingPlugins = function(pluginsOptions, mode) {
+const warnOnMissingPlugins = function({ pluginsOptions, mode, logs }) {
   if (mode !== 'buildbot') {
     return
   }
@@ -100,7 +100,7 @@ const warnOnMissingPlugins = function(pluginsOptions, mode) {
     return
   }
 
-  logMissingPluginsWarning(packages)
+  logMissingPluginsWarning(logs, packages)
 }
 
 const isAutomaticallyInstalled = function({ loadedFrom }) {

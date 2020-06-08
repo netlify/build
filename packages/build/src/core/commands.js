@@ -8,7 +8,12 @@ const { addErrorInfo, getErrorInfo } = require('../error/info')
 const { reportBuildError } = require('../error/monitor/report')
 const { serializeErrorStatus } = require('../error/parse/serialize_status')
 const { logCommand, logBuildCommandStart, logCommandSuccess, logBuildError } = require('../log/main')
-const { pipeOutput, unpipeOutput } = require('../log/stream')
+const {
+  getBuildCommandStdio,
+  handleBuildCommandOutput,
+  pipePluginOutput,
+  unpipePluginOutput,
+} = require('../log/stream')
 const { startTimer, endTimer } = require('../log/timer')
 const { EVENTS } = require('../plugins/events')
 const { callChild } = require('../plugins/ipc')
@@ -65,6 +70,7 @@ const runCommands = async function({
   childEnv,
   errorMonitor,
   netlifyConfig,
+  logs,
   testOpts,
 }) {
   const { index: commandsCount, error: errorA, statuses: statusesB } = await pReduce(
@@ -93,6 +99,7 @@ const runCommands = async function({
           error,
           failedPlugins,
           netlifyConfig,
+          logs,
           testOpts,
         },
       )
@@ -130,6 +137,7 @@ const runCommand = async function({
   error,
   failedPlugins,
   netlifyConfig,
+  logs,
   testOpts,
 }) {
   if (shouldSkipCommand({ event, package, error, failedPlugins })) {
@@ -138,7 +146,7 @@ const runCommand = async function({
 
   const methodTimer = startTimer()
 
-  logCommand({ event, package, index, configPath, error })
+  logCommand({ logs, event, package, index, configPath, error })
 
   const { newEnvChanges, newError, newStatus } = await fireCommand({
     event,
@@ -155,12 +163,13 @@ const runCommand = async function({
     envChanges,
     commands,
     error,
+    logs,
   })
 
   const newValues =
     newError === undefined
-      ? handleCommandSuccess({ event, package, newEnvChanges, newStatus, methodTimer })
-      : await handleCommandError({ newError, errorMonitor, buildCommand, netlifyConfig, testOpts })
+      ? handleCommandSuccess({ event, package, newEnvChanges, newStatus, methodTimer, logs })
+      : await handleCommandError({ newError, errorMonitor, buildCommand, netlifyConfig, logs, testOpts })
   return { ...newValues, newIndex: index + 1 }
 }
 
@@ -191,9 +200,10 @@ const fireCommand = function({
   envChanges,
   commands,
   error,
+  logs,
 }) {
   if (buildCommand !== undefined) {
-    return fireBuildCommand({ buildCommand, configPath, buildDir, nodePath, childEnv, envChanges })
+    return fireBuildCommand({ buildCommand, configPath, buildDir, nodePath, childEnv, envChanges, logs })
   }
 
   return firePluginCommand({
@@ -206,14 +216,16 @@ const fireCommand = function({
     envChanges,
     commands,
     error,
+    logs,
   })
 }
 
 // Fire `build.command`
-const fireBuildCommand = async function({ buildCommand, configPath, buildDir, nodePath, childEnv, envChanges }) {
-  logBuildCommandStart(buildCommand)
+const fireBuildCommand = async function({ buildCommand, configPath, buildDir, nodePath, childEnv, envChanges, logs }) {
+  logBuildCommandStart(logs, buildCommand)
 
   const env = setEnvChanges(envChanges, { ...childEnv })
+  const stdio = getBuildCommandStdio(logs)
   const childProcess = execa(buildCommand, {
     shell: SHELL,
     cwd: buildDir,
@@ -221,13 +233,15 @@ const fireBuildCommand = async function({ buildCommand, configPath, buildDir, no
     execPath: nodePath,
     env,
     extendEnv: false,
-    stdio: 'inherit',
+    stdio,
   })
 
   try {
-    await childProcess
+    const buildCommandOutput = await childProcess
+    handleBuildCommandOutput(buildCommandOutput, logs)
     return {}
   } catch (newError) {
+    handleBuildCommandOutput(newError, logs)
     addErrorInfo(newError, { type: 'buildCommand', location: { buildCommand, configPath } })
     return { newError }
   }
@@ -247,8 +261,9 @@ const firePluginCommand = async function({
   envChanges,
   commands,
   error,
+  logs,
 }) {
-  pipeOutput(childProcess)
+  const listeners = pipePluginOutput(childProcess, logs)
 
   try {
     const { newEnvChanges, status } = await callChild(
@@ -262,16 +277,16 @@ const firePluginCommand = async function({
   } catch (newError) {
     return { newError }
   } finally {
-    await unpipeOutput(childProcess)
+    await unpipePluginOutput(childProcess, logs, listeners)
   }
 }
 
 // `build.command` or plugin event handle success
-const handleCommandSuccess = function({ event, package, newEnvChanges, newStatus, methodTimer }) {
-  logCommandSuccess()
+const handleCommandSuccess = function({ event, package, newEnvChanges, newStatus, methodTimer, logs }) {
+  logCommandSuccess(logs)
 
   const timerName = package === undefined ? 'build.command' : `${package} ${event}`
-  endTimer(methodTimer, timerName)
+  endTimer(logs, methodTimer, timerName)
 
   return { newEnvChanges, newStatus }
 }
@@ -282,7 +297,7 @@ const handleCommandSuccess = function({ event, package, newEnvChanges, newStatus
 //    handlers of the same type have been triggered before propagating
 //  - if `utils.build.failPlugin()` was used, print an error and skip next event
 //    handlers of that plugin. But do not stop build.
-const handleCommandError = async function({ newError, errorMonitor, buildCommand, netlifyConfig, testOpts }) {
+const handleCommandError = async function({ newError, errorMonitor, buildCommand, netlifyConfig, logs, testOpts }) {
   // `build.command` do not report error statuses
   if (buildCommand !== undefined) {
     return { newError }
@@ -292,15 +307,14 @@ const handleCommandError = async function({ newError, errorMonitor, buildCommand
   const newStatus = serializeErrorStatus(newError)
 
   if (type === 'failPlugin') {
-    return handleFailPlugin({ newStatus, package, newError, errorMonitor, netlifyConfig, testOpts })
+    return handleFailPlugin({ newStatus, package, newError, errorMonitor, netlifyConfig, logs, testOpts })
   }
 
   return { newError, newStatus }
 }
-
-const handleFailPlugin = async function({ newStatus, package, newError, errorMonitor, netlifyConfig, testOpts }) {
-  logBuildError(newError, netlifyConfig)
-  await reportBuildError({ error: newError, errorMonitor, testOpts })
+const handleFailPlugin = async function({ newStatus, package, newError, errorMonitor, netlifyConfig, logs, testOpts }) {
+  logBuildError({ error: newError, netlifyConfig, logs })
+  await reportBuildError({ error: newError, errorMonitor, logs, testOpts })
   return { failedPlugin: [package], newStatus }
 }
 

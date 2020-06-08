@@ -7,12 +7,13 @@ const { log } = require('../../log/logger.js')
 const projectRoot = `${__dirname}/../../..`
 
 // Start a client to monitor errors
-const startErrorMonitor = function({ flags: { mode }, bugsnagKey }) {
+const startErrorMonitor = function({ flags: { mode }, logs, bugsnagKey }) {
   if (!bugsnagKey) {
     return
   }
 
   const releaseStage = getReleaseStage(mode)
+  const logger = getLogger(logs)
   try {
     const errorMonitor = startBugsnag({
       apiKey: bugsnagKey,
@@ -29,7 +30,7 @@ const startErrorMonitor = function({ flags: { mode }, bugsnagKey }) {
     return errorMonitor
     // Failsafe
   } catch (error) {
-    log(`Error monitor could not start\n${error.stack}`)
+    log(logs, `Error monitor could not start\n${error.stack}`)
     return
   }
 }
@@ -48,6 +49,9 @@ const DEFAULT_RELEASE_STAGE = 'unknown'
 
 // We don't want Bugsnag logs except on warnings/errors.
 // We also want to use our own `log` utility, unprefixed.
-const logger = { debug() {}, info() {}, warn: log, error: log }
+const getLogger = function(logs) {
+  const logFunc = log.bind(null, logs)
+  return { debug() {}, info() {}, warn: logFunc, error: logFunc }
+}
 
 module.exports = { startErrorMonitor }

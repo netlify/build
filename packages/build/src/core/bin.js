@@ -20,7 +20,8 @@ const runCli = async function() {
   const flags = parseFlags()
   const flagsA = filterObj(flags, isUserFlag)
 
-  const { success } = await build(flagsA)
+  const { success, logs } = await build(flagsA)
+  printLogs(logs)
   process.exitCode = success ? 0 : 1
 }
 
@@ -127,6 +128,11 @@ Default: true`,
     describe: 'Options for testing only',
     hidden: true,
   },
+  buffer: {
+    boolean: true,
+    describe: 'Buffer output instead of streaming it',
+    hidden: true,
+  },
 }
 
 const USAGE = `netlify-build [OPTIONS...]
@@ -143,5 +149,15 @@ const isUserFlag = function(key, value) {
 }
 
 const INTERNAL_KEYS = ['help', 'version', '_', '$0', 'dryRun']
+
+// Used mostly for testing
+const printLogs = function(logs) {
+  if (logs === undefined) {
+    return
+  }
+
+  const allLogs = [logs.stdout.join('\n'), logs.stderr.join('\n')].filter(Boolean).join('\n\n')
+  console.log(allLogs)
+}
 
 runCli()

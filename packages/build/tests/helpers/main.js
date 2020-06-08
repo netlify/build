@@ -13,7 +13,7 @@ const runFixture = async function(t, fixtureName, { env: envOption, flags = '', 
   return runFixtureCommon(t, fixtureName, {
     ...opts,
     binaryPath: await BINARY_PATH,
-    flags: `--no-telemetry ${flags}`,
+    flags: `--no-telemetry --buffer ${flags}`,
     env: {
       BUILD_TELEMETRY_DISABLED: '',
       // Ensure local tokens aren't used during development

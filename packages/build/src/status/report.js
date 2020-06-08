@@ -15,22 +15,23 @@ const reportPluginLoadError = async function({
   netlifyConfig,
   errorMonitor,
   deployId,
+  logs,
   testOpts,
 }) {
   const errorStatus = serializeErrorStatus(error)
   const statuses = [{ ...errorStatus, event, package, version }]
-  await reportStatuses({ statuses, api, mode, netlifyConfig, errorMonitor, deployId, testOpts })
+  await reportStatuses({ statuses, api, mode, netlifyConfig, errorMonitor, deployId, logs, testOpts })
 }
 
-const reportStatuses = async function({ statuses, api, mode, netlifyConfig, errorMonitor, deployId, testOpts }) {
+const reportStatuses = async function({ statuses, api, mode, netlifyConfig, errorMonitor, deployId, logs, testOpts }) {
   const statusesA = removeStatusesColors(statuses)
-  printStatuses(statusesA, mode)
-  await sendStatuses({ statuses: statusesA, api, mode, netlifyConfig, errorMonitor, deployId, testOpts })
+  printStatuses({ statuses: statusesA, mode, logs })
+  await sendStatuses({ statuses: statusesA, api, mode, netlifyConfig, errorMonitor, deployId, logs, testOpts })
 }
 
 // When not in production, print statuses to console.
 // Only print successful ones, since errors are logged afterwards.
-const printStatuses = function(statuses, mode) {
+const printStatuses = function({ statuses, mode, logs }) {
   if (mode === 'buildbot') {
     return
   }
@@ -41,7 +42,7 @@ const printStatuses = function(statuses, mode) {
     return
   }
 
-  logStatuses(successStatuses)
+  logStatuses(logs, successStatuses)
 }
 
 const shouldPrintStatus = function({ state, summary }) {
@@ -49,13 +50,13 @@ const shouldPrintStatus = function({ state, summary }) {
 }
 
 // In production, send statuses to the API
-const sendStatuses = async function({ statuses, api, mode, netlifyConfig, errorMonitor, deployId, testOpts }) {
+const sendStatuses = async function({ statuses, api, mode, netlifyConfig, errorMonitor, deployId, logs, testOpts }) {
   if ((mode !== 'buildbot' && !testOpts.sendStatus) || api === undefined || !deployId) {
     return
   }
 
   await Promise.all(
-    statuses.map(status => sendStatus({ api, status, netlifyConfig, errorMonitor, deployId, testOpts })),
+    statuses.map(status => sendStatus({ api, status, netlifyConfig, errorMonitor, deployId, logs, testOpts })),
   )
 }
 
@@ -65,6 +66,7 @@ const sendStatus = async function({
   netlifyConfig,
   errorMonitor,
   deployId,
+  logs,
   testOpts,
 }) {
   try {
@@ -76,8 +78,8 @@ const sendStatus = async function({
     // Builds should be successful when this API call fails, but we still want
     // to report the error both in logs and in error monitoring.
   } catch (error) {
-    logBuildError(error, netlifyConfig)
-    await reportBuildError({ error, errorMonitor, testOpts })
+    logBuildError({ error, netlifyConfig, logs })
+    await reportBuildError({ error, errorMonitor, logs, testOpts })
   }
 }
 
