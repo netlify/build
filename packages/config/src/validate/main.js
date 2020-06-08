@@ -50,7 +50,6 @@ const validateProperty = function(
     check,
     message,
     example,
-    warn,
   },
 ) {
   const value = parent[propName]
@@ -66,7 +65,6 @@ const validateProperty = function(
       check,
       message,
       example,
-      warn,
     })
   }
 
@@ -74,18 +72,12 @@ const validateProperty = function(
     return
   }
 
-  reportError({ prevPath, propPath, message, example, warn, value, key })
+  reportError({ prevPath, propPath, message, example, value, key })
 }
 
-const reportError = function({ prevPath, propPath, message, example, warn, value, key }) {
-  const errorMessage = `Configuration property ${propPath} ${message}
-${getExample({ value, key, prevPath, example })}`
-
-  if (!warn) {
-    throwError(errorMessage)
-  }
-
-  console.warn(`${errorMessage}\n`)
+const reportError = function({ prevPath, propPath, message, example, value, key }) {
+  throwError(`Configuration property ${propPath} ${message}
+${getExample({ value, key, prevPath, example })}`)
 }
 
 // Recurse over children (each part of the `property` array).
