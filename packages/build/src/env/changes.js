@@ -1,4 +1,4 @@
-const process = require('process')
+const { env } = require('process')
 
 const filterObj = require('filter-obj')
 const mapObj = require('map-obj')
@@ -7,9 +7,8 @@ const mapObj = require('map-obj')
 // `build.command`. Since those are different processes, we figure out when they
 // do this and communicate the new `process.env` to other processes.
 const getNewEnvChanges = function(envBefore) {
-  const currentEnv = getCurrentEnv()
-  const envChanges = filterObj(currentEnv, (name, value) => value !== envBefore[name])
-  const deletedEnv = filterObj(envBefore, name => currentEnv[name] === undefined)
+  const envChanges = filterObj(env, (name, value) => value !== envBefore[name])
+  const deletedEnv = filterObj(envBefore, name => env[name] === undefined)
   const deletedEnvA = mapObj(deletedEnv, setToNull)
   return { ...envChanges, ...deletedEnvA }
 }
@@ -24,7 +23,7 @@ const setToNull = function(name) {
 
 // Set `process.env` changes from a previous different plugin.
 // Can also merge with a `currentEnv` plain object instead of `process.env`.
-const setEnvChanges = function(envChanges, currentEnv = getCurrentEnv()) {
+const setEnvChanges = function(envChanges, currentEnv = env) {
   Object.entries(envChanges).forEach(([name, value]) => setEnvChange(name, value, currentEnv))
   return { ...currentEnv }
 }
@@ -40,10 +39,6 @@ const setEnvChange = function(name, value, currentEnv) {
   }
 
   currentEnv[name] = value
-}
-
-const getCurrentEnv = function() {
-  return process.env
 }
 
 module.exports = { getNewEnvChanges, setEnvChanges }
