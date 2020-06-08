@@ -3,7 +3,7 @@ const { version } = require('process')
 const test = require('ava')
 const hasAnsi = require('has-ansi')
 
-const { getJsonOpt } = require('../../../../config/tests/helpers/main')
+const { escapeExecaOpt } = require('../../../../config/tests/helpers/main')
 const { runFixture } = require('../../helpers/main')
 
 const flags = '--test-opts.error-monitor --bugsnag-key=00000000000000000000000000000000'
@@ -82,7 +82,7 @@ test('Report plugin homepage', async t => {
 })
 
 test('Report plugin origin', async t => {
-  const defaultConfig = getJsonOpt({ plugins: [{ package: './plugin.js' }] })
+  const defaultConfig = escapeExecaOpt(JSON.stringify({ plugins: [{ package: './plugin.js' }] }))
   await runFixture(t, 'plugin_origin', { flags: `${flags} --defaultConfig=${defaultConfig}` })
 })
 

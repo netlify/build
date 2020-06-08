@@ -1,6 +1,6 @@
 const test = require('ava')
 
-const { getJsonOpt } = require('../../../../config/tests/helpers/main')
+const { escapeExecaOpt } = require('../../../../config/tests/helpers/main')
 const { runFixture, FIXTURES_DIR } = require('../../helpers/main')
 
 test('Local plugins', async t => {
@@ -24,7 +24,7 @@ test('Node module plugins', async t => {
 })
 
 test('UI plugins', async t => {
-  const defaultConfig = getJsonOpt({ plugins: [{ package: 'netlify-plugin-test' }] })
+  const defaultConfig = escapeExecaOpt(JSON.stringify({ plugins: [{ package: 'netlify-plugin-test' }] }))
   await runFixture(t, 'ui', { flags: `--defaultConfig=${defaultConfig}` })
 })
 

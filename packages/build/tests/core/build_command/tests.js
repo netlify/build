@@ -2,6 +2,7 @@ const { platform } = require('process')
 
 const test = require('ava')
 
+const { escapeExecaOpt } = require('../../../../config/tests/helpers/main')
 const { runFixture } = require('../../helpers/main')
 
 if (platform !== 'win32') {
@@ -29,5 +30,6 @@ test('build.command use correct PWD', async t => {
 })
 
 test('build.command from UI settings', async t => {
-  await runFixture(t, 'none', { flags: '--defaultConfig={"build":{"command":"node\\ --version"}}' })
+  const defaultConfig = escapeExecaOpt(JSON.stringify({ build: { command: 'node --version' } }))
+  await runFixture(t, 'none', { flags: `--defaultConfig=${defaultConfig}` })
 })
