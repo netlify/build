@@ -1,7 +1,3 @@
-const {
-  env: { TEST_HOST },
-} = require('process')
-
 const Analytics = require('analytics').default
 const execa = require('execa')
 
@@ -13,17 +9,25 @@ const REQUEST_FILE = `${__dirname}/request.js`
 // to complete, by using a child process.
 // We also ignore any errors. Those might happen for example if the current
 // directory was removed by the build command.
-const track = async function({ payload: { properties: { telemetry, payload: properties } = {}, ...payload } = {} }) {
+const track = async function({
+  payload: {
+    properties: { telemetry, testOpts: { telemetryOrigin = '' } = {}, payload: properties } = {},
+    ...payload
+  } = {},
+}) {
   if (!telemetry) {
     return
   }
 
   const payloadA = { ...payload, properties }
   try {
-    const childProcess = execa('node', [REQUEST_FILE, JSON.stringify(payloadA)], { detached: true, stdio: 'ignore' })
+    const childProcess = execa('node', [REQUEST_FILE, JSON.stringify(payloadA), telemetryOrigin], {
+      detached: true,
+      stdio: 'ignore',
+    })
 
     // During tests, we wait for the HTTP request to complete
-    if (TEST_HOST === undefined) {
+    if (telemetryOrigin === '') {
       childProcess.unref()
     }
 
