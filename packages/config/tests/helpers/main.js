@@ -6,14 +6,12 @@ const { runFixtureCommon, FIXTURES_DIR, escapeExecaOpt, startServer } = require(
 
 const ROOT_DIR = `${__dirname}/../..`
 
-const runFixture = async function(t, fixtureName, { env, flags = {}, ...opts } = {}) {
-  return runFixtureCommon(t, fixtureName, {
-    ...opts,
-    binaryPath: await BINARY_PATH,
-    // Ensure local tokens aren't used during development
-    env: { NETLIFY_AUTH_TOKEN: '', ...env },
-    flags: { branch: 'branch', stable: true, ...flags },
-  })
+const runFixture = async function(t, fixtureName, { flags = {}, env, ...opts } = {}) {
+  const binaryPath = await BINARY_PATH
+  const flagsA = { stable: true, branch: 'branch', ...flags }
+  // Ensure local environment variables aren't used during development
+  const envA = { NETLIFY_AUTH_TOKEN: '', ...env }
+  return runFixtureCommon(t, fixtureName, { ...opts, flags: flagsA, env: envA, binaryPath })
 }
 
 // Use a top-level promise so it's only performed once at load time
