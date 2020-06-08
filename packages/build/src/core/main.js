@@ -60,7 +60,7 @@ const build = async function(flags = {}) {
       envOpt,
       telemetry,
       mode,
-    } = await loadConfig(flagsA)
+    } = await loadConfig(flagsA, testOpts)
     const childEnv = await getChildEnv({ netlifyConfig, buildDir, context, branch, siteInfo, deployId, envOpt, mode })
 
     try {
