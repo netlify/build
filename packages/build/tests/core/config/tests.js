@@ -4,42 +4,42 @@ const { runFixture: runFixtureConfig, escapeExecaOpt } = require('../../../../co
 const { runFixture, FIXTURES_DIR } = require('../../helpers/main')
 
 test('--cwd', async t => {
-  await runFixture(t, '', { flags: `--cwd=${FIXTURES_DIR}/empty` })
+  await runFixture(t, '', { flags: { cwd: `${FIXTURES_DIR}/empty` } })
 })
 
 test('--repository-root', async t => {
-  await runFixture(t, '', { flags: `--repository-root=${FIXTURES_DIR}/empty` })
+  await runFixture(t, '', { flags: { repositoryRoot: `${FIXTURES_DIR}/empty` } })
 })
 
 test('--config', async t => {
-  await runFixture(t, '', { flags: `--config=${FIXTURES_DIR}/empty/netlify.toml` })
+  await runFixture(t, '', { flags: { config: `${FIXTURES_DIR}/empty/netlify.toml` } })
 })
 
 test('--defaultConfig', async t => {
   const defaultConfig = escapeExecaOpt(JSON.stringify({ build: { command: 'echo commandDefault' } }))
-  await runFixture(t, 'empty', { flags: `--defaultConfig=${defaultConfig}` })
+  await runFixture(t, 'empty', { flags: { defaultConfig } })
 })
 
 test('--cachedConfig', async t => {
   const { returnValue } = await runFixtureConfig(t, 'cached_config', { snapshot: false })
   const cachedConfig = escapeExecaOpt(returnValue)
-  await runFixture(t, 'cached_config', { flags: `--cachedConfig=${cachedConfig}` })
+  await runFixture(t, 'cached_config', { flags: { cachedConfig } })
 })
 
 test('--context', async t => {
-  await runFixture(t, 'context', { flags: '--context=testContext' })
+  await runFixture(t, 'context', { flags: { context: 'testContext' } })
 })
 
 test('--branch', async t => {
-  await runFixture(t, 'context', { flags: '--branch=testContext' })
+  await runFixture(t, 'context', { flags: { branch: 'testContext' } })
 })
 
 test('--baseRelDir', async t => {
-  await runFixtureConfig(t, 'basereldir', { flags: `--no-baseRelDir` })
+  await runFixtureConfig(t, 'basereldir', { flags: { baseRelDir: false } })
 })
 
 test('User error', async t => {
-  await runFixture(t, '', { flags: `--config=/invalid` })
+  await runFixture(t, '', { flags: { config: '/invalid' } })
 })
 
 test('No configuration file', async t => {

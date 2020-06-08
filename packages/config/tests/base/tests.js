@@ -4,7 +4,7 @@ const { runFixture, escapeExecaOpt } = require('../helpers/main')
 
 test('Base from defaultConfig', async t => {
   const defaultConfig = escapeExecaOpt(JSON.stringify({ build: { base: 'base' } }))
-  await runFixture(t, 'default_config', { flags: `--defaultConfig=${defaultConfig}` })
+  await runFixture(t, 'default_config', { flags: { defaultConfig } })
 })
 
 test('Base from configuration file property', async t => {
@@ -25,7 +25,7 @@ test('Base logic is not recursive', async t => {
 })
 
 test('BaseRelDir feature flag', async t => {
-  const { returnValue } = await runFixture(t, 'prop_config', { flags: `--no-baseRelDir` })
+  const { returnValue } = await runFixture(t, 'prop_config', { flags: { baseRelDir: false } })
   const {
     buildDir,
     config: {

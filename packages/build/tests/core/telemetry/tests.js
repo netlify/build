@@ -35,7 +35,7 @@ const TELEMETRY_PATH = '/collect'
 test('Telemetry success', async t => {
   const { scheme, host, requests, stopServer } = await startServer(TELEMETRY_PATH)
   await runFixture(t, 'success', {
-    flags: `--site-id=test --test-opts.telemetry-origin=${scheme}://${host} --telemetry`,
+    flags: { siteId: 'test', testOpts: { telemetryOrigin: `${scheme}://${host}` }, telemetry: true },
     snapshot: false,
   })
   await stopServer()
@@ -46,7 +46,7 @@ test('Telemetry success', async t => {
 test('Telemetry disabled', async t => {
   const { scheme, host, requests, stopServer } = await startServer(TELEMETRY_PATH)
   await runFixture(t, 'success', {
-    flags: `--site-id=test --test-opts.telemetry-origin=${scheme}://${host}`,
+    flags: { siteId: 'test', testOpts: { telemetryOrigin: `${scheme}://${host}` } },
     env: { BUILD_TELEMETRY_DISABLED: 'true' },
     snapshot: false,
   })
@@ -57,7 +57,7 @@ test('Telemetry disabled', async t => {
 test('Telemetry disabled with flag', async t => {
   const { scheme, host, requests, stopServer } = await startServer(TELEMETRY_PATH)
   await runFixture(t, 'success', {
-    flags: `--site-id=test --test-opts.telemetry-origin=${scheme}://${host} --no-telemetry`,
+    flags: { siteId: 'test', testOpts: { telemetryOrigin: `${scheme}://${host}` }, telemetry: false },
     snapshot: false,
   })
   await stopServer()
@@ -66,6 +66,8 @@ test('Telemetry disabled with flag', async t => {
 
 test('Telemetry error', async t => {
   const { stopServer } = await startServer(TELEMETRY_PATH)
-  await runFixture(t, 'success', { flags: `--site-id=test --test-opts.telemetry-origin=https://... --telemetry` })
+  await runFixture(t, 'success', {
+    flags: { siteId: 'test', testOpts: { telemetryOrigin: `https://...` }, telemetry: true },
+  })
   await stopServer()
 })

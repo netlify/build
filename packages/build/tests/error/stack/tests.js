@@ -21,9 +21,9 @@ test('Print stack trace of build.command errors with stack traces', async t => {
 
 test('Print stack trace of Build command UI settings', async t => {
   const defaultConfig = escapeExecaOpt(JSON.stringify({ build: { command: 'node --invalid' } }))
-  await runFixture(t, 'none', { flags: `--defaultConfig=${defaultConfig}` })
+  await runFixture(t, 'none', { flags: { defaultConfig } })
 })
 
 test('Print stack trace of validation errors', async t => {
-  await runFixture(t, '', { flags: '--config=/invalid' })
+  await runFixture(t, '', { flags: { config: '/invalid' } })
 })

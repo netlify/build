@@ -9,6 +9,7 @@ const {
 const { magentaBright } = require('chalk')
 const cpy = require('cpy')
 const execa = require('execa')
+const isPlainObj = require('is-plain-obj')
 
 const { createRepoDir, removeDir } = require('./dir')
 const { normalizeOutput } = require('./normalize')
@@ -18,9 +19,9 @@ const FIXTURES_DIR = normalize(`${testFile}/../fixtures`)
 
 // Run a CLI using a fixture directory, then snapshot the output.
 // Options:
-//  - `flags` {string[]}: CLI flags
-//  - `repositoryRoot` {string}: `--repositoryRoot` CLI flag
-//  - `env` {object}: environment variable
+//  - `flags` {object}: programmatic flags
+//  - `repositoryRoot` {string}: repositoryRoot flag
+//  - `env` {object}: environment variables
 //  - `normalize` {boolean}: whether to normalize output
 //  - `snapshot` {boolean}: whether to create a snapshot
 //  - `copyRoot` {object}: copy the fixture directory to a temporary directory
@@ -32,7 +33,7 @@ const runFixtureCommon = async function(
   t,
   fixtureName,
   {
-    flags = '',
+    flags = {},
     env: envOption,
     normalize = !isPrint(),
     snapshot = true,
@@ -61,27 +62,29 @@ const runFixtureCommon = async function(
 // Retrieve flags to the main entry point
 const getMainFlags = function({ fixtureName, copyRoot, copyRootDir, repositoryRoot, flags }) {
   const repositoryRootFlag = getRepositoryRootFlag({ fixtureName, copyRoot, copyRootDir, repositoryRoot })
-  return `${DEFAULT_FLAGS} ${repositoryRootFlag} ${flags}`
+  return { ...DEFAULT_FLAGS, ...repositoryRootFlag, ...flags }
 }
 
-const DEFAULT_FLAGS = '--debug'
+const DEFAULT_FLAGS = {
+  debug: true,
+}
 
 // The `repositoryRoot` flag can be overriden, but defaults to the fixture
 // directory
 const getRepositoryRootFlag = function({ fixtureName, copyRoot: { cwd } = {}, copyRootDir, repositoryRoot }) {
   if (fixtureName === '') {
-    return ''
+    return {}
   }
 
   if (copyRootDir === undefined) {
-    return `--repositoryRoot=${normalize(repositoryRoot)}`
+    return { repositoryRoot: normalize(repositoryRoot) }
   }
 
   if (cwd) {
-    return `--cwd=${normalize(copyRootDir)}`
+    return { cwd: normalize(copyRootDir) }
   }
 
-  return `--repositoryRoot=${normalize(copyRootDir)}`
+  return { repositoryRoot: normalize(copyRootDir) }
 }
 
 const getCopyRootDir = function({ copyRoot, copyRoot: { git } = {} }) {
@@ -119,12 +122,28 @@ const runCommand = async function({
 }
 
 const execCommand = async function({ binaryPath, mainFlags, commandEnv }) {
-  const { all, failed } = await execa.command(`${binaryPath} ${mainFlags}`, {
+  const cliFlags = getCliFlags(mainFlags)
+  const { all, failed } = await execa.command(`${binaryPath} ${cliFlags}`, {
     all: true,
     reject: false,
     env: commandEnv,
   })
   return { returnValue: all, failed }
+}
+
+const getCliFlags = function(mainFlags, prefix = []) {
+  return Object.entries(mainFlags)
+    .flatMap(([name, value]) => getCliFlag({ name, value, prefix }))
+    .join(' ')
+}
+
+const getCliFlag = function({ name, value, prefix }) {
+  if (isPlainObj(value)) {
+    return getCliFlags(value, [...prefix, name])
+  }
+
+  const key = [...prefix, name].join('.')
+  return [`--${key}=${value}`]
 }
 
 // The `PRINT` environment variable can be set to `1` to run the test in print
