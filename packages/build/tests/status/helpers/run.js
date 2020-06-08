@@ -29,10 +29,10 @@ const comparePackage = function({ body: { package: packageA } }, { body: { packa
   return packageA < packageB ? -1 : 1
 }
 
-const runWithApiMock = async function(t, fixture, { flags = '--token=test', env, status } = {}) {
+const runWithApiMock = async function(t, fixture, { flags = { token: 'test' }, env, status } = {}) {
   const { scheme, host, requests, stopServer } = await startServer(STATUS_PATH, {}, { status })
   await runFixture(t, fixture, {
-    flags: `--deploy-id=test ${flags} --testOpts.send-status --testOpts.scheme=${scheme} --testOpts.host=${host}`,
+    flags: { deployId: 'test', ...flags, testOpts: { scheme, host, sendStatus: true } },
     env,
   })
   await stopServer()

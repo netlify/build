@@ -6,15 +6,13 @@ const { runFixtureCommon, FIXTURES_DIR, escapeExecaOpt, startServer } = require(
 
 const ROOT_DIR = `${__dirname}/../..`
 
-const runFixture = async function(t, fixtureName, { env, flags = '', ...opts } = {}) {
-  const flagsA = flags.includes('--branch') ? flags : `--branch=branch ${flags}`
-  const flagsB = `--stable ${flagsA}`
+const runFixture = async function(t, fixtureName, { env, flags = {}, ...opts } = {}) {
   return runFixtureCommon(t, fixtureName, {
     ...opts,
     binaryPath: await BINARY_PATH,
     // Ensure local tokens aren't used during development
     env: { NETLIFY_AUTH_TOKEN: '', ...env },
-    flags: flagsB,
+    flags: { branch: 'branch', stable: true, ...flags },
   })
 }
 

@@ -83,11 +83,11 @@ test('build.command: array', async t => {
 })
 
 test('build.context: property', async t => {
-  await runFixture(t, 'build_context_property', { flags: '--context=development' })
+  await runFixture(t, 'build_context_property', { flags: { context: 'development' } })
 })
 
 test('build.context: nested property', async t => {
-  await runFixture(t, 'build_context_nested_property', { flags: '--context=development' })
+  await runFixture(t, 'build_context_nested_property', { flags: { context: 'development' } })
 })
 
 test('build.context: object', async t => {

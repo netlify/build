@@ -9,11 +9,11 @@ const { runFixture, FIXTURES_DIR } = require('../helpers/main')
 const pWriteFile = promisify(writeFile)
 
 test('--help', async t => {
-  await runFixture(t, '', { flags: '--help' })
+  await runFixture(t, '', { flags: { help: true } })
 })
 
 test('--version', async t => {
-  await runFixture(t, '', { flags: '--version' })
+  await runFixture(t, '', { flags: { version: true } })
 })
 
 test('Success', async t => {
@@ -21,19 +21,19 @@ test('Success', async t => {
 })
 
 test('User error', async t => {
-  await runFixture(t, 'empty', { flags: '--config=/invalid' })
+  await runFixture(t, 'empty', { flags: { config: '/invalid' } })
 })
 
 test('CLI flags', async t => {
-  await runFixture(t, 'empty', { flags: '--branch=test' })
+  await runFixture(t, 'empty', { flags: { branch: 'test' } })
 })
 
 test('Stabilitize output with the --stable flag', async t => {
-  await runFixture(t, 'empty', { flags: '--stable' })
+  await runFixture(t, 'empty', { flags: { stable: true } })
 })
 
 test('Does not stabilitize output without the --stable flag', async t => {
-  await runFixture(t, 'empty', { flags: '--no-stable' })
+  await runFixture(t, 'empty', { flags: { stable: false } })
 })
 
 test('Handles big outputs', async t => {

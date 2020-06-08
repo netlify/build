@@ -60,16 +60,16 @@ test('constants.CACHE_DIR local', async t => {
 // TODO: figure out why those tests randomly fail on Linux
 if (platform !== 'linux' || !isCI) {
   test('constants.CACHE_DIR CI', async t => {
-    await runFixture(t, 'cache', { flags: '--mode=buildbot' })
+    await runFixture(t, 'cache', { flags: { mode: 'buildbot' } })
   })
 
   test('constants.IS_LOCAL CI', async t => {
-    await runFixture(t, 'is_local', { flags: '--mode=buildbot' })
+    await runFixture(t, 'is_local', { flags: { mode: 'buildbot' } })
   })
 }
 
 test('constants.SITE_ID', async t => {
-  await runFixture(t, 'site_id', { flags: '--site-id test' })
+  await runFixture(t, 'site_id', { flags: { siteId: 'test' } })
 })
 
 test('constants.IS_LOCAL local', async t => {

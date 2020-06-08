@@ -6,7 +6,7 @@ const hasAnsi = require('has-ansi')
 const { escapeExecaOpt } = require('../../../../config/tests/helpers/main')
 const { runFixture } = require('../../helpers/main')
 
-const flags = '--test-opts.error-monitor --bugsnag-key=00000000000000000000000000000000'
+const flags = { testOpts: { errorMonitor: true }, bugsnagKey: '00000000000000000000000000000000' }
 
 test('Report build.command failure', async t => {
   await runFixture(t, 'command', { flags })
@@ -45,7 +45,7 @@ test('Report IPC error', async t => {
 })
 
 test('Report API error', async t => {
-  await runFixture(t, 'cancel_build', { flags: `${flags} --token=test --deploy-id=test` })
+  await runFixture(t, 'cancel_build', { flags: { ...flags, token: 'test', deployId: 'test' } })
 })
 
 // Node v8 uses a different error message format
@@ -56,15 +56,15 @@ if (!version.startsWith('v8.')) {
 }
 
 test('Report buildbot mode as releaseStage', async t => {
-  await runFixture(t, 'command', { flags: `${flags} --mode=buildbot` })
+  await runFixture(t, 'command', { flags: { ...flags, mode: 'buildbot' } })
 })
 
 test('Report CLI mode as releaseStage', async t => {
-  await runFixture(t, 'command', { flags: `${flags} --mode=cli` })
+  await runFixture(t, 'command', { flags: { ...flags, mode: 'cli' } })
 })
 
 test('Report programmatic mode as releaseStage', async t => {
-  await runFixture(t, 'command', { flags: `${flags} --mode=require` })
+  await runFixture(t, 'command', { flags: { ...flags, mode: 'require' } })
 })
 
 test('Remove colors in error.message', async t => {
@@ -83,7 +83,7 @@ test('Report plugin homepage', async t => {
 
 test('Report plugin origin', async t => {
   const defaultConfig = escapeExecaOpt(JSON.stringify({ plugins: [{ package: './plugin.js' }] }))
-  await runFixture(t, 'plugin_origin', { flags: `${flags} --defaultConfig=${defaultConfig}` })
+  await runFixture(t, 'plugin_origin', { flags: { ...flags, defaultConfig } })
 })
 
 test('Report build logs URLs', async t => {

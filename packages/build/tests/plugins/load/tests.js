@@ -25,11 +25,11 @@ test('Node module plugins', async t => {
 
 test('UI plugins', async t => {
   const defaultConfig = escapeExecaOpt(JSON.stringify({ plugins: [{ package: 'netlify-plugin-test' }] }))
-  await runFixture(t, 'ui', { flags: `--defaultConfig=${defaultConfig}` })
+  await runFixture(t, 'ui', { flags: { defaultConfig } })
 })
 
 test('Resolution is relative to the build directory', async t => {
-  await runFixture(t, 'basedir', { flags: `--config=${FIXTURES_DIR}/basedir/base/netlify.toml` })
+  await runFixture(t, 'basedir', { flags: { config: `${FIXTURES_DIR}/basedir/base/netlify.toml` } })
 })
 
 test('Non-existing plugins', async t => {
@@ -42,12 +42,12 @@ test('Do not allow overriding core plugins', async t => {
 
 test('Can use plugins cached in the build image', async t => {
   await runFixture(t, 'build_image', {
-    flags: `--test-opts.build-image-plugins-dir=${FIXTURES_DIR}/build_image_cache/node_modules --mode=buildbot`,
+    flags: { testOpts: { buildImagePluginsDir: `${FIXTURES_DIR}/build_image_cache/node_modules` }, mode: 'buildbot' },
   })
 })
 
 test('Does not use plugins cached in the build image in local builds', async t => {
   await runFixture(t, 'build_image', {
-    flags: `--test-opts.build-image-plugins-dir=${FIXTURES_DIR}/build_image_cache/node_modules`,
+    flags: { testOpts: { buildImagePluginsDir: `${FIXTURES_DIR}/build_image_cache/node_modules` } },
   })
 })

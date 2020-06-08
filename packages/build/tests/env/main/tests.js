@@ -28,7 +28,7 @@ test('Environment variable NETLIFY local', async t => {
 // TODO: figure out why those tests randomly fail on Linux
 if (platform !== 'linux' || !isCI) {
   test('Environment variable NETLIFY CI', async t => {
-    await runFixture(t, 'netlify', { flags: '--mode=buildbot', env: { NETLIFY: 'true' } })
+    await runFixture(t, 'netlify', { flags: { mode: 'buildbot' }, env: { NETLIFY: 'true' } })
   })
 }
 
@@ -53,9 +53,7 @@ const SITE_INFO_DATA = { url: 'test', build_settings: { repo_url: 'test' } }
 
 test('Environment variable siteInfo success', async t => {
   const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_DATA)
-  await runFixture(t, 'site_info', {
-    flags: `--token=test --site-id=test --testOpts.scheme=${scheme} --testOpts.host=${host}`,
-  })
+  await runFixture(t, 'site_info', { flags: { token: 'test', siteId: 'test', testOpts: { scheme, host } } })
   await stopServer()
 })
 

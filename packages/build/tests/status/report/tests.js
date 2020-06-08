@@ -8,7 +8,7 @@ test('utils.status.show() are printed locally', async t => {
 })
 
 test('utils.status.show() are not printed in production', async t => {
-  await runFixture(t, 'print', { flags: '--mode=buildbot' })
+  await runFixture(t, 'print', { flags: { mode: 'buildbot' } })
 })
 
 test('utils.status.show() statuses are sent to the API', async t => {
@@ -16,11 +16,11 @@ test('utils.status.show() statuses are sent to the API', async t => {
 })
 
 test('utils.status.show() statuses are not sent to the API without a token', async t => {
-  await runWithApiMock(t, 'print', { flags: '' })
+  await runWithApiMock(t, 'print', { flags: { token: '' } })
 })
 
 test('utils.status.show() statuses are not sent to the API without a DEPLOY_ID', async t => {
-  await runWithApiMock(t, 'print', { flags: '--deploy-id=""' })
+  await runWithApiMock(t, 'print', { flags: { deployId: '' } })
 })
 
 test('utils.status.show() statuses API errors are handled', async t => {

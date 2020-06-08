@@ -20,7 +20,7 @@ test('Install local plugin dependencies: with yarn locally', async t => {
 
 test('Install local plugin dependencies: with yarn in CI', async t => {
   await removeDir(`${FIXTURES_DIR}/yarn_ci/plugin/node_modules`)
-  await runFixture(t, 'yarn_ci', { flags: '--mode=buildbot' })
+  await runFixture(t, 'yarn_ci', { flags: { mode: 'buildbot' } })
   t.true(await pathExists(`${FIXTURES_DIR}/yarn_ci/plugin/node_modules`))
   await removeDir(`${FIXTURES_DIR}/yarn_ci/plugin/node_modules`)
 })

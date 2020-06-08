@@ -31,5 +31,5 @@ test('build.command use correct PWD', async t => {
 
 test('build.command from UI settings', async t => {
   const defaultConfig = escapeExecaOpt(JSON.stringify({ build: { command: 'node --version' } }))
-  await runFixture(t, 'none', { flags: `--defaultConfig=${defaultConfig}` })
+  await runFixture(t, 'none', { flags: { defaultConfig } })
 })

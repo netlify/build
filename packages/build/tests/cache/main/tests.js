@@ -6,7 +6,7 @@ const { runFixture } = require('../../helpers/main')
 
 test('Cache local', async t => {
   await runFixture(t, 'local', {
-    flags: '--test-opts.cache-path=bower_components',
+    flags: { testOpts: { cachePath: 'bower_components' } },
     env: { TEST_CACHE_PATH: 'bower_components' },
   })
 })
@@ -16,7 +16,7 @@ test('Cache local', async t => {
 if (platform !== 'win32') {
   test('Cache CI', async t => {
     await runFixture(t, 'ci', {
-      flags: '--test-opts.cache-path=bower_components --mode=buildbot',
+      flags: { testOpts: { cachePath: 'bower_components' }, mode: 'buildbot' },
       env: { TEST_CACHE_PATH: 'bower_components' },
     })
   })

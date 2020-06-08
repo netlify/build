@@ -8,7 +8,7 @@ test('Colors in parent process', async t => {
   const { returnValue } = await runFixture(t, 'parent', {
     snapshot: false,
     normalize: false,
-    flags: '--dry',
+    flags: { dry: true },
     env: { FORCE_COLOR: '1' },
   })
   t.true(hasAnsi(returnValue))
@@ -23,13 +23,13 @@ test('Netlify CI', async t => {
   const { returnValue } = await runFixture(t, 'parent', {
     snapshot: false,
     normalize: false,
-    flags: '--dry',
+    flags: { dry: true },
     env: { NETLIFY: 'true' },
   })
   t.true(hasAnsi(returnValue))
 })
 
 test('No TTY', async t => {
-  const { returnValue } = await runFixture(t, 'parent', { snapshot: false, normalize: false, flags: '--dry' })
+  const { returnValue } = await runFixture(t, 'parent', { snapshot: false, normalize: false, flags: { dry: true } })
   t.false(hasAnsi(returnValue))
 })

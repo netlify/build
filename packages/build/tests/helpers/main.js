@@ -4,11 +4,11 @@ const { runFixtureCommon, FIXTURES_DIR } = require('./common')
 
 const ROOT_DIR = `${__dirname}/../..`
 
-const runFixture = async function(t, fixtureName, { env: envOption, flags = '', ...opts } = {}) {
+const runFixture = async function(t, fixtureName, { env: envOption, flags = {}, ...opts } = {}) {
   return runFixtureCommon(t, fixtureName, {
     ...opts,
     binaryPath: await BINARY_PATH,
-    flags: `--no-telemetry --buffer ${flags}`,
+    flags: { telemetry: false, buffer: true, ...flags },
     env: {
       BUILD_TELEMETRY_DISABLED: '',
       // Ensure local tokens aren't used during development

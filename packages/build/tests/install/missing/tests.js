@@ -7,7 +7,7 @@ test('Automatically install missing plugins locally', async t => {
 })
 
 test('Automatically install missing plugins in CI', async t => {
-  await runFixture(t, 'main', { copyRoot: {}, flags: '--mode=buildbot' })
+  await runFixture(t, 'main', { copyRoot: {}, flags: { mode: 'buildbot' } })
 })
 
 test('Re-use previously automatically installed plugins', async t => {
