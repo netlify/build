@@ -4,12 +4,13 @@ const readdirp = require('readdirp')
 
 const { getCacheDir } = require('./dir')
 const { isManifest } = require('./manifest')
-const { BASES } = require('./path')
+const { getBases } = require('./path')
 
 // List all cached files
 const list = async function({ cacheDir, mode } = {}) {
+  const bases = getBases()
   const cacheDirA = await getCacheDir({ cacheDir, mode })
-  const files = await Promise.all(BASES.map(baseInfo => listBase(baseInfo, cacheDirA)))
+  const files = await Promise.all(bases.map(baseInfo => listBase(baseInfo, cacheDirA)))
   const filesA = files.flat()
   return filesA
 }
