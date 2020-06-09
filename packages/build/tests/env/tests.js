@@ -3,9 +3,20 @@ const { platform } = require('process')
 const test = require('ava')
 const isCI = require('is-ci')
 
-const { runFixture } = require('../../helpers/main')
-const { startServer } = require('../../helpers/server')
+const { runFixture } = require('../helpers/main')
+const { startServer } = require('../helpers/server')
 
+test('Environment variable git', async t => {
+  await runFixture(t, 'git')
+})
+
+test('Environment variable git with --branch', async t => {
+  await runFixture(t, 'git_branch', { flags: { branch: 'test' } })
+})
+
+test('Environment variable git no repository', async t => {
+  await runFixture(t, 'git', { copyRoot: { git: false } })
+})
 // Windows environment variables work differently
 if (platform !== 'win32') {
   test('Environment variable in build.command', async t => {
