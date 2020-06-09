@@ -3,6 +3,7 @@ const { promisify } = require('util')
 
 const test = require('ava')
 const del = require('del')
+const isCI = require('is-ci')
 
 const { runFixture, FIXTURES_DIR } = require('../helpers/main')
 
@@ -36,27 +37,30 @@ test('Does not stabilitize output without the --stable flag', async t => {
   await runFixture(t, 'empty', { flags: { stable: false }, useBinary: true })
 })
 
-test('Handles big outputs', async t => {
-  const bigNetlify = `${FIXTURES_DIR}/big/netlify.toml`
-  await del(bigNetlify, { force: true })
-  try {
-    const bigContent = getBigNetlifyContent()
-    await pWriteFile(bigNetlify, bigContent)
-    const { returnValue } = await runFixture(t, 'big', { snapshot: false, useBinary: true })
-    t.notThrows(() => {
-      JSON.parse(returnValue)
-    })
-  } finally {
+// This test is too slow in local development
+if (isCI) {
+  test.only('Handles big outputs', async t => {
+    const bigNetlify = `${FIXTURES_DIR}/big/netlify.toml`
     await del(bigNetlify, { force: true })
+    try {
+      const bigContent = getBigNetlifyContent()
+      await pWriteFile(bigNetlify, bigContent)
+      const { returnValue } = await runFixture(t, 'big', { snapshot: false, useBinary: true })
+      t.notThrows(() => {
+        JSON.parse(returnValue)
+      })
+    } finally {
+      await del(bigNetlify, { force: true })
+    }
+  })
+
+  const getBigNetlifyContent = function() {
+    const envVars = Array.from({ length: BIG_NUMBER }, getEnvVar).join('\n')
+    return `[build.environment]\n${envVars}`
   }
-})
 
-const getBigNetlifyContent = function() {
-  const envVars = Array.from({ length: BIG_NUMBER }, getEnvVar).join('\n')
-  return `[build.environment]\n${envVars}`
+  const BIG_NUMBER = 1e4
 }
-
-const BIG_NUMBER = 1e4
 
 const getEnvVar = function(value, index) {
   return `TEST${index} = ${index}`
