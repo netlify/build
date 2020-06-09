@@ -1,4 +1,4 @@
-const { delimiter } = require('path')
+const { delimiter, normalize } = require('path')
 const { env } = require('process')
 
 const { getBinPath } = require('get-bin-path')
@@ -9,7 +9,7 @@ const netlifyBuild = require('../../')
 const { runFixtureCommon, FIXTURES_DIR } = require('./common')
 
 const ROOT_DIR = `${__dirname}/../..`
-const BUILD_BIN_DIR = `${ROOT_DIR}/node_modules/.bin`
+const BUILD_BIN_DIR = normalize(`${ROOT_DIR}/node_modules/.bin`)
 
 const runFixture = async function(t, fixtureName, { flags = {}, env: envOption = {}, ...opts } = {}) {
   const binaryPath = await BINARY_PATH
