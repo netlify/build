@@ -18,21 +18,7 @@ const { startServer } = require('./server')
 const FIXTURES_DIR = normalize(`${testFile}/../fixtures`)
 
 // Run a CLI using a fixture directory, then snapshot the output.
-// Options:
-//  - `flags` {object}: programmatic flags
-//  - `repositoryRoot` {string}: repositoryRoot flag
-//  - `env` {object}: environment variables
-//  - `normalize` {boolean}: whether to normalize output
-//  - `snapshot` {boolean}: whether to create a snapshot
-//  - `copyRoot` {object}: copy the fixture directory to a temporary directory
-//    This is useful so that no parent has a `.git` or `package.json`.
-//  - `copyRoot.git` {boolean}: whether the copied directory should have a `.git`
-//    Default: true
-//  - `copyRoot.branch` {string}: create a git branch after copy
-//  - `mainFunc` {function}: main function
-//  - `binaryPath` {string}: path to the CLI main file
-//  - `useBinary` {boolean}: whether to use the CLI instead of the programmatic
-//    entry point
+// Options: see tests/README.md
 const runFixtureCommon = async function(
   t,
   fixtureName,
