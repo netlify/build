@@ -48,7 +48,7 @@ const getEventFromChild = async function(childProcess, callId, { plugin, locatio
 }
 
 const childProcessHasExited = function(childProcess) {
-  return !childProcess.connected
+  return !childProcess.connected || childProcess.signalCode !== null || childProcess.exitCode !== null
 }
 
 const getMessage = async function(messagePromise) {
