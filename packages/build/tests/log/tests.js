@@ -5,45 +5,26 @@ const isCI = require('is-ci')
 
 const { runFixture } = require('../helpers/main')
 
+// Common options for color-related tests
+const opts = { snapshot: false, normalize: false, useBinary: true }
+
 test('Colors in parent process', async t => {
-  const { returnValue } = await runFixture(t, 'parent', {
-    snapshot: false,
-    normalize: false,
-    flags: { dry: true },
-    env: { FORCE_COLOR: '1' },
-    useBinary: true,
-  })
+  const { returnValue } = await runFixture(t, 'parent', { ...opts, flags: { dry: true }, env: { FORCE_COLOR: '1' } })
   t.true(hasAnsi(returnValue))
 })
 
 test('Colors in child process', async t => {
-  const { returnValue } = await runFixture(t, 'child', {
-    snapshot: false,
-    normalize: false,
-    env: { FORCE_COLOR: '1' },
-    useBinary: true,
-  })
+  const { returnValue } = await runFixture(t, 'child', { ...opts, env: { FORCE_COLOR: '1' } })
   t.true(returnValue.includes(red('onPreBuild')))
 })
 
 test('Netlify CI', async t => {
-  const { returnValue } = await runFixture(t, 'parent', {
-    snapshot: false,
-    normalize: false,
-    flags: { dry: true },
-    env: { NETLIFY: 'true' },
-    useBinary: true,
-  })
+  const { returnValue } = await runFixture(t, 'parent', { ...opts, flags: { dry: true }, env: { NETLIFY: 'true' } })
   t.true(hasAnsi(returnValue))
 })
 
 test('No TTY', async t => {
-  const { returnValue } = await runFixture(t, 'parent', {
-    snapshot: false,
-    normalize: false,
-    flags: { dry: true },
-    useBinary: true,
-  })
+  const { returnValue } = await runFixture(t, 'parent', { ...opts, flags: { dry: true } })
   t.false(hasAnsi(returnValue))
 })
 
