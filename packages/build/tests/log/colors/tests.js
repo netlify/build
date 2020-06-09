@@ -10,12 +10,18 @@ test('Colors in parent process', async t => {
     normalize: false,
     flags: { dry: true },
     env: { FORCE_COLOR: '1' },
+    useBinary: true,
   })
   t.true(hasAnsi(returnValue))
 })
 
 test('Colors in child process', async t => {
-  const { returnValue } = await runFixture(t, 'child', { snapshot: false, normalize: false, env: { FORCE_COLOR: '1' } })
+  const { returnValue } = await runFixture(t, 'child', {
+    snapshot: false,
+    normalize: false,
+    env: { FORCE_COLOR: '1' },
+    useBinary: true,
+  })
   t.true(returnValue.includes(red('onPreBuild')))
 })
 
@@ -25,11 +31,17 @@ test('Netlify CI', async t => {
     normalize: false,
     flags: { dry: true },
     env: { NETLIFY: 'true' },
+    useBinary: true,
   })
   t.true(hasAnsi(returnValue))
 })
 
 test('No TTY', async t => {
-  const { returnValue } = await runFixture(t, 'parent', { snapshot: false, normalize: false, flags: { dry: true } })
+  const { returnValue } = await runFixture(t, 'parent', {
+    snapshot: false,
+    normalize: false,
+    flags: { dry: true },
+    useBinary: true,
+  })
   t.false(hasAnsi(returnValue))
 })

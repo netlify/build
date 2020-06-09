@@ -31,9 +31,9 @@ const handleCliSuccess = function(result, stable) {
 }
 
 // `api` is not JSON-serializable, so we remove it
-// We still indicate it as a boolean in tests
+// We still indicate it as a boolean
 const serializeApi = function({ api, ...result }) {
-  if (process.env.NETLIFY_BUILD_TEST !== '1' || api === undefined) {
+  if (api === undefined) {
     return result
   }
 

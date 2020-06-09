@@ -1,6 +1,6 @@
 const test = require('ava')
 
-const { runFixture: runFixtureConfig, escapeExecaOpt } = require('../../../../config/tests/helpers/main')
+const { runFixture: runFixtureConfig } = require('../../../../config/tests/helpers/main')
 const { runFixture, FIXTURES_DIR } = require('../../helpers/main')
 
 test('--cwd', async t => {
@@ -16,14 +16,13 @@ test('--config', async t => {
 })
 
 test('--defaultConfig', async t => {
-  const defaultConfig = escapeExecaOpt(JSON.stringify({ build: { command: 'echo commandDefault' } }))
+  const defaultConfig = JSON.stringify({ build: { command: 'echo commandDefault' } })
   await runFixture(t, 'empty', { flags: { defaultConfig } })
 })
 
 test('--cachedConfig', async t => {
   const { returnValue } = await runFixtureConfig(t, 'cached_config', { snapshot: false })
-  const cachedConfig = escapeExecaOpt(returnValue)
-  await runFixture(t, 'cached_config', { flags: { cachedConfig } })
+  await runFixture(t, 'cached_config', { flags: { cachedConfig: returnValue } })
 })
 
 test('--context', async t => {
