@@ -41,7 +41,8 @@
   "devDependencies": {
     "ava": "^2.4.0",
     "del": "^5.1.0",
-    "get-bin-path": "^4.0.1"
+    "get-bin-path": "^4.0.1",
+    "is-ci": "^2.0.0"
   },
   "engines": {
     "node": ">=8.3.0"
