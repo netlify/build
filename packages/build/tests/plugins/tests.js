@@ -1,7 +1,4 @@
-const { platform } = require('process')
-
 const test = require('ava')
-const isCI = require('is-ci')
 
 const { removeDir } = require('../helpers/dir')
 const { runFixture, FIXTURES_DIR } = require('../helpers/main')
@@ -58,16 +55,13 @@ test('constants.CACHE_DIR local', async t => {
   await runFixture(t, 'cache')
 })
 
-// TODO: figure out why those tests randomly fail on Linux
-if (platform !== 'linux' || !isCI) {
-  test('constants.CACHE_DIR CI', async t => {
-    await runFixture(t, 'cache', { flags: { mode: 'buildbot' } })
-  })
+test('constants.CACHE_DIR CI', async t => {
+  await runFixture(t, 'cache', { flags: { mode: 'buildbot' } })
+})
 
-  test('constants.IS_LOCAL CI', async t => {
-    await runFixture(t, 'is_local', { flags: { mode: 'buildbot' } })
-  })
-}
+test('constants.IS_LOCAL CI', async t => {
+  await runFixture(t, 'is_local', { flags: { mode: 'buildbot' } })
+})
 
 test('constants.SITE_ID', async t => {
   await runFixture(t, 'site_id', { flags: { siteId: 'test' } })

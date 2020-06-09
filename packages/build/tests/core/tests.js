@@ -12,6 +12,10 @@ if (platform !== 'win32') {
   test('build.command uses Bash', async t => {
     await runFixture(t, 'bash')
   })
+
+  test('build.command can execute shell commands', async t => {
+    await runFixture(t, 'shell')
+  })
 }
 
 test('build.command can execute global binaries', async t => {
@@ -21,12 +25,6 @@ test('build.command can execute global binaries', async t => {
 test('build.command can execute local binaries', async t => {
   await runFixture(t, 'local_bin')
 })
-
-if (platform === 'linux') {
-  test('build.command can execute shell commands', async t => {
-    await runFixture(t, 'shell')
-  })
-}
 
 test('build.command use correct PWD', async t => {
   await runFixture(t, 'pwd')
@@ -44,16 +42,12 @@ test('Cache local', async t => {
   })
 })
 
-// This works on Windows locally but not inside GitHub actions
-// TODO: figure out why
-if (platform !== 'win32') {
-  test('Cache CI', async t => {
-    await runFixture(t, 'ci', {
-      flags: { testOpts: { cachePath: 'bower_components' }, mode: 'buildbot' },
-      env: { TEST_CACHE_PATH: 'bower_components' },
-    })
+test('Cache CI', async t => {
+  await runFixture(t, 'ci', {
+    flags: { testOpts: { cachePath: 'bower_components' }, mode: 'buildbot' },
+    env: { TEST_CACHE_PATH: 'bower_components' },
   })
-}
+})
 
 test('--help', async t => {
   await runFixture(t, '', { flags: { help: true }, useBinary: true })
