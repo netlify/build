@@ -259,9 +259,7 @@ test('Exits in plugins', async t => {
 
 // Process exit is different on Windows
 if (platform !== 'win32') {
-  // That test relies on timing due to IPC, so we need to run it serially to
-  // prevent race conditions
-  test.serial('Early exit', async t => {
+  test('Early exit', async t => {
     await runFixture(t, 'early_exit')
   })
 }
