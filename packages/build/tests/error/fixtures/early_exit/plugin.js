@@ -1,13 +1,6 @@
-const { exit } = require('process')
-
 module.exports = {
   onPreBuild() {
-    console.log('onPreBuild')
-    setTimeout(() => {
-      exit()
-    }, 0)
+    process.env.TEST_PID = process.pid
   },
-  onPostBuild() {
-    console.log('onPostBuild')
-  },
+  onPostBuild() {},
 }
