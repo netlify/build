@@ -268,10 +268,6 @@ const logStatus = function(logs, { package, title = `Plugin ${package} ran succe
   logMessage(logs, body)
 }
 
-const logCacheDir = function(path) {
-  logMessage(undefined, `Caching ${path}`)
-}
-
 const logBuildError = function({ error, netlifyConfig: netlifyConfigArg, logs }) {
   const { title, body, isSuccess, netlifyConfig = netlifyConfigArg } = serializeLogError(error)
   const logFunction = isSuccess ? logHeader : logErrorHeader
@@ -305,7 +301,6 @@ module.exports = {
   logCommandSuccess,
   logTimer,
   logStatuses,
-  logCacheDir,
   logBuildError,
   logBuildSuccess,
 }

@@ -22,7 +22,7 @@ const getPluginsOptions = async function({
   logs,
   testOpts,
 }) {
-  const corePlugins = getCorePlugins(FUNCTIONS_SRC, testOpts).map(addCoreProperties)
+  const corePlugins = getCorePlugins(FUNCTIONS_SRC).map(addCoreProperties)
   const allCorePlugins = corePlugins.filter(corePlugin => !isOptionalCore(corePlugin, plugins))
   const userPlugins = plugins.filter(isUserPlugin)
   const pluginsOptions = [...allCorePlugins, ...userPlugins].map(normalizePluginOptions)
