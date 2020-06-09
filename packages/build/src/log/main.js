@@ -34,17 +34,7 @@ const logFlags = function(logs, flags) {
   logObject(logs, flagsA)
 }
 
-const HIDDEN_FLAGS = [
-  'token',
-  'deployId',
-  'cachedConfig',
-  'defaultConfig',
-  'buffer',
-  'debug',
-  'env',
-  'bugsnagKey',
-  'telemetry',
-]
+const HIDDEN_FLAGS = ['token', 'cachedConfig', 'defaultConfig', 'buffer', 'debug', 'env', 'bugsnagKey', 'telemetry']
 
 const logBuildDir = function(logs, buildDir) {
   logSubHeader(logs, 'Current directory')
