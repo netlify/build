@@ -27,11 +27,8 @@ const callChild = async function(childProcess, eventName, payload, { plugin, loc
 // In the later two cases, we propagate the error.
 // We need to make `p-event` listeners are properly cleaned up too.
 const getEventFromChild = async function(childProcess, callId, { plugin, location }) {
-  if (!childProcess.connected) {
-    const error = new Error(`Could not receive event from child process because it already exited.
-${EXIT_WARNING}`)
-    addErrorInfo(error, { type: 'ipc', plugin, location })
-    throw error
+  if (childProcessHasExited(childProcess)) {
+    throwChildExit('Could not receive event from child process because it already exited.', { plugin, location })
   }
 
   const messagePromise = pEvent(childProcess, 'message', { filter: ([actualCallId]) => actualCallId === callId })
@@ -50,6 +47,10 @@ ${EXIT_WARNING}`)
   }
 }
 
+const childProcessHasExited = function(childProcess) {
+  return !childProcess.connected
+}
+
 const getMessage = async function(messagePromise) {
   const [, response] = await messagePromise
   return response
@@ -62,10 +63,7 @@ const getError = async function(errorPromise, { plugin, location }) {
 
 const getExit = async function(exitPromise, { plugin, location }) {
   const [exitCode, signal] = await exitPromise
-  const error = new Error(`Plugin exited with exit code ${exitCode} and signal ${signal}.
-${EXIT_WARNING}`)
-  addErrorInfo(error, { type: 'ipc', plugin, location })
-  throw error
+  throwChildExit(`Plugin exited with exit code ${exitCode} and signal ${signal}.`, { plugin, location })
 }
 
 // Plugins should not terminate processes explicitly:
@@ -74,6 +72,12 @@ ${EXIT_WARNING}`)
 //  - It complicates child process orchestration. For example if an async operation
 //    of a previous event handler is still running, it would be aborted if another
 //    is terminating the process.
+const throwChildExit = function(message, { plugin, location }) {
+  const error = new Error(`${message}\n${EXIT_WARNING}`)
+  addErrorInfo(error, { type: 'ipc', plugin, location })
+  throw error
+}
+
 const EXIT_WARNING = `The plugin might have exited due to a bug terminating the process, such as an infinite loop.
 The plugin might also have explicitly terminated the process, for example with process.exit().
 Plugin methods should instead:
