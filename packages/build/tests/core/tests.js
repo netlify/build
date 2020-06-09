@@ -2,11 +2,14 @@ const { platform, execPath } = require('process')
 
 const test = require('ava')
 const getNode = require('get-node')
+const moize = require('moize').default
 
 const { runFixture: runFixtureConfig } = require('../../../config/tests/helpers/main')
 const { version } = require('../../package.json')
 const { runFixture, FIXTURES_DIR } = require('../helpers/main')
 const { startServer } = require('../helpers/server.js')
+
+const mGetNode = moize(getNode, { isPromise: true })
 
 if (platform !== 'win32') {
   test('build.command uses Bash', async t => {
@@ -130,27 +133,27 @@ const CHILD_NODE_VERSION = '8.3.0'
 const VERY_OLD_NODE_VERSION = '4.0.0'
 
 test('--node-path is used by build.command', async t => {
-  const { path } = await getNode(CHILD_NODE_VERSION)
+  const { path } = await mGetNode(CHILD_NODE_VERSION)
   await runFixture(t, 'build_command', { flags: { nodePath: path }, env: { TEST_NODE_PATH: path } })
 })
 
 test('--node-path is used by local plugins', async t => {
-  const { path } = await getNode(CHILD_NODE_VERSION)
+  const { path } = await mGetNode(CHILD_NODE_VERSION)
   await runFixture(t, 'local_node_path', { flags: { nodePath: path }, env: { TEST_NODE_PATH: path } })
 })
 
 test('--node-path is used by plugins added to package.json', async t => {
-  const { path } = await getNode(CHILD_NODE_VERSION)
+  const { path } = await mGetNode(CHILD_NODE_VERSION)
   await runFixture(t, 'package', { flags: { nodePath: path }, env: { TEST_NODE_PATH: path } })
 })
 
 test('--node-path is not used by core plugins', async t => {
-  const { path } = await getNode(VERY_OLD_NODE_VERSION)
+  const { path } = await mGetNode(VERY_OLD_NODE_VERSION)
   await runFixture(t, 'core', { flags: { nodePath: path } })
 })
 
 test('--node-path is not used by build-image cached plugins', async t => {
-  const { path } = await getNode(CHILD_NODE_VERSION)
+  const { path } = await mGetNode(CHILD_NODE_VERSION)
   await runFixture(t, 'build_image', {
     flags: {
       nodePath: path,
