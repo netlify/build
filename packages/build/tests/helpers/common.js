@@ -71,11 +71,7 @@ const runFixtureCommon = async function(
 // Retrieve flags to the main entry point
 const getMainFlags = function({ fixtureName, copyRoot, copyRootDir, repositoryRoot, flags }) {
   const repositoryRootFlag = getRepositoryRootFlag({ fixtureName, copyRoot, copyRootDir, repositoryRoot })
-  return { ...DEFAULT_FLAGS, ...repositoryRootFlag, ...flags }
-}
-
-const DEFAULT_FLAGS = {
-  debug: true,
+  return { ...repositoryRootFlag, ...flags }
 }
 
 // The `repositoryRoot` flag can be overriden, but defaults to the fixture
