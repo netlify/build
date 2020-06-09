@@ -1,17 +1,31 @@
+const { delimiter } = require('path')
+const { env } = require('process')
+
 const { getBinPath } = require('get-bin-path')
+const pathKey = require('path-key')
 
 const netlifyBuild = require('../../')
 
 const { runFixtureCommon, FIXTURES_DIR } = require('./common')
 
 const ROOT_DIR = `${__dirname}/../..`
+const BUILD_BIN_DIR = `${ROOT_DIR}/node_modules/.bin`
 
-const runFixture = async function(t, fixtureName, { flags = {}, env = {}, ...opts } = {}) {
+const runFixture = async function(t, fixtureName, { flags = {}, env: envOption = {}, ...opts } = {}) {
   const binaryPath = await BINARY_PATH
   const flagsA = { telemetry: false, buffer: true, ...flags }
-  // Ensure local environment variables aren't used during development
-  const envA = { BUILD_TELEMETRY_DISABLED: '', NETLIFY_AUTH_TOKEN: '', ...env }
-  return runFixtureCommon(t, fixtureName, { ...opts, flags: flagsA, env: envA, mainFunc, binaryPath })
+  const envOptionA = {
+    // Ensure local environment variables aren't used during development
+    BUILD_TELEMETRY_DISABLED: '',
+    NETLIFY_AUTH_TOKEN: '',
+    // Allows executing any locally installed Node modules inside tests,
+    // regardless of the current directory.
+    // This is needed for example to run `yarn` in tests in environments that
+    // do not have a global binary of `yarn`.
+    [pathKey()]: `${env[pathKey()]}${delimiter}${BUILD_BIN_DIR}`,
+    ...envOption,
+  }
+  return runFixtureCommon(t, fixtureName, { ...opts, flags: flagsA, env: envOptionA, mainFunc, binaryPath })
 }
 
 const mainFunc = async function(flags) {
