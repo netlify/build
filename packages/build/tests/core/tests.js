@@ -38,20 +38,6 @@ test('build.command from UI settings', async t => {
   await runFixture(t, 'none', { flags: { defaultConfig } })
 })
 
-test('Cache local', async t => {
-  await runFixture(t, 'local', {
-    flags: { testOpts: { cachePath: 'bower_components' } },
-    env: { TEST_CACHE_PATH: 'bower_components' },
-  })
-})
-
-test('Cache CI', async t => {
-  await runFixture(t, 'ci', {
-    flags: { testOpts: { cachePath: 'bower_components' }, mode: 'buildbot' },
-    env: { TEST_CACHE_PATH: 'bower_components' },
-  })
-})
-
 test('--help', async t => {
   await runFixture(t, '', { flags: { help: true }, useBinary: true })
 })
