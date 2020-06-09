@@ -46,6 +46,8 @@ const NORMALIZE_REGEXPS = [
   [/^.*:\d+:\d+\)?$/gm, 'STACK TRACE'],
   [/^\s+at .*$/gm, 'STACK TRACE'],
   [/(STACK TRACE\n)+/g, 'STACK TRACE\n'],
+  // Ports
+  [/:\d{2,}/, ':80'],
   // Durations
   [/(\d[\d.]*(ms|m|s)( )?)+/g, '1ms'],
   // Package versions

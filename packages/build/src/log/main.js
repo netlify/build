@@ -43,7 +43,6 @@ const HIDDEN_FLAGS = [
   'debug',
   'env',
   'bugsnagKey',
-  'testOpts',
   'telemetry',
 ]
 
