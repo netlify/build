@@ -26,20 +26,11 @@ const reportBuildError = async function({ error, errorMonitor, logs, testOpts })
   const groupingHash = getGroupingHash(groupA, error, type)
   const metadata = getMetadata(errorInfo, groupingHash)
   const app = getApp()
+  const eventProps = getEventProps({ severity: severityA, group: groupA, groupingHash, metadata, app })
 
   const errorName = updateErrorName(error, type)
   try {
-    await reportError({
-      errorMonitor,
-      error,
-      severity: severityA,
-      group: groupA,
-      groupingHash,
-      metadata,
-      app,
-      logs,
-      testOpts,
-    })
+    await reportError({ errorMonitor, error, logs, testOpts, eventProps })
   } finally {
     error.name = errorName
   }
@@ -104,21 +95,14 @@ const updateErrorName = function(error, type) {
   return name
 }
 
-const reportError = async function({
-  errorMonitor,
-  error,
-  severity,
-  group,
-  groupingHash,
-  metadata,
-  app,
-  logs,
-  testOpts,
-}) {
+const reportError = async function({ errorMonitor, error, logs, testOpts, eventProps }) {
+  if (testOpts.errorMonitor) {
+    printEventForTest(error, eventProps, logs)
+    return
+  }
+
   try {
-    await promisify(errorMonitor.notify)(error, event =>
-      onError({ event, severity, group, groupingHash, metadata, app, logs, testOpts }),
-    )
+    await promisify(errorMonitor.notify)(error, event => onError(event, eventProps))
     // Failsafe
   } catch (error) {
     log(logs, `Error monitor could not notify\n${error.stack}`)
@@ -126,27 +110,22 @@ const reportError = async function({
   }
 }
 
-// Add more information to Bugsnag events
-const onError = function({ event, severity, group, groupingHash, metadata, app, logs, testOpts }) {
+const getEventProps = function({ severity, group, groupingHash, metadata, app }) {
   // `unhandled` is used to calculate Releases "stabiity score", which is
   // basically the percentage of unhandled errors. Since we handle all errors,
   // we need to implement this according to error types.
-  const unhandled = event.unhandled || severity === 'error'
+  const unhandled = severity === 'error'
+  return { severity, context: group, groupingHash, _metadata: metadata, app, unhandled }
+}
 
+// Add more information to Bugsnag events
+const onError = function(event, eventProps) {
   Object.assign(event, {
-    severity,
-    context: group,
-    groupingHash,
-    _metadata: { ...event._metadata, ...metadata },
-    app: { ...event.app, ...app },
-    unhandled,
+    ...eventProps,
+    unhandled: event.unhandled || eventProps.unhandled,
+    _metadata: { ...event._metadata, ...eventProps._metadata },
+    app: { ...event.app, ...eventProps.app },
   })
-
-  if (testOpts.errorMonitor) {
-    printEventForTest(event, logs)
-    return false
-  }
-
   return true
 }
 
