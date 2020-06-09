@@ -1,3 +1,5 @@
+const { platform } = require('process')
+
 const test = require('ava')
 const execa = require('execa')
 const { valid: validVersion } = require('semver')
@@ -22,15 +24,18 @@ test('Can run a command as a single string', async t => {
   t.truthy(validVersion(stdout))
 })
 
-test('Can run with no arguments', async t => {
-  const { stdout } = await run('echo', { stdio: 'pipe' })
-  t.is(stdout.trim(), '')
-})
+// `echo` in `cmd.exe` is different from Unix
+if (platform !== 'win32') {
+  test('Can run with no arguments', async t => {
+    const { stdout } = await run('echo', { stdio: 'pipe' })
+    t.is(stdout.trim(), '')
+  })
 
-test('Can run with no arguments nor options object', async t => {
-  const { stdout } = await run('echo')
-  t.is(stdout.trim(), '')
-})
+  test('Can run with no arguments nor options object', async t => {
+    const { stdout } = await run('echo')
+    t.is(stdout.trim(), '')
+  })
+}
 
 test('Can run local binaries', async t => {
   const { stdout } = await run('ava', ['--version'], { stdio: 'pipe' })
