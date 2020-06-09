@@ -34,7 +34,7 @@ test('Functions: install dependencies with Yarn locally', async t => {
     `${FIXTURES_DIR}/functions_yarn/.netlify/functions/`,
     `${FIXTURES_DIR}/functions_yarn/functions/node_modules/`,
   ])
-  await runFixture(t, 'functions_yarn')
+  await runFixture(t, 'functions_yarn', { useBinary: true })
   t.true(await pathExists(`${FIXTURES_DIR}/functions_yarn/functions/node_modules/`))
   await removeDir([
     `${FIXTURES_DIR}/functions_yarn/.netlify/functions/`,
@@ -47,7 +47,7 @@ test('Functions: install dependencies with Yarn in CI', async t => {
     `${FIXTURES_DIR}/functions_yarn_ci/.netlify/functions/`,
     `${FIXTURES_DIR}/functions_yarn_ci/functions/node_modules/`,
   ])
-  await runFixture(t, 'functions_yarn_ci', { flags: { mode: 'buildbot' } })
+  await runFixture(t, 'functions_yarn_ci', { useBinary: true, flags: { mode: 'buildbot' } })
   t.true(await pathExists(`${FIXTURES_DIR}/functions_yarn_ci/functions/node_modules/`))
   await removeDir([
     `${FIXTURES_DIR}/functions_yarn_ci/.netlify/functions/`,
@@ -84,14 +84,14 @@ test('Install local plugin dependencies: with npm', async t => {
 
 test('Install local plugin dependencies: with yarn locally', async t => {
   await removeDir(`${FIXTURES_DIR}/yarn/plugin/node_modules`)
-  await runFixture(t, 'yarn')
+  await runFixture(t, 'yarn', { useBinary: true })
   t.true(await pathExists(`${FIXTURES_DIR}/yarn/plugin/node_modules`))
   await removeDir(`${FIXTURES_DIR}/yarn/plugin/node_modules`)
 })
 
 test('Install local plugin dependencies: with yarn in CI', async t => {
   await removeDir(`${FIXTURES_DIR}/yarn_ci/plugin/node_modules`)
-  await runFixture(t, 'yarn_ci', { flags: { mode: 'buildbot' } })
+  await runFixture(t, 'yarn_ci', { useBinary: true, flags: { mode: 'buildbot' } })
   t.true(await pathExists(`${FIXTURES_DIR}/yarn_ci/plugin/node_modules`))
   await removeDir(`${FIXTURES_DIR}/yarn_ci/plugin/node_modules`)
 })
