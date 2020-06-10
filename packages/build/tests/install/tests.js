@@ -51,7 +51,7 @@ test('Functions: install dependencies with Yarn locally', async t => {
 test('Functions: install dependencies with Yarn in CI', async t => {
   await runInstallFixture(t, 'functions_yarn_ci', [`${FIXTURES_DIR}/functions_yarn_ci/functions/node_modules/`], {
     useBinary: true,
-    flags: { mode: 'buildbot' },
+    flags: { mode: 'buildbot', deployId: 'functions_yarn_ci' },
   })
 })
 
