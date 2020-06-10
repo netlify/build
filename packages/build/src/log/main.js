@@ -256,6 +256,17 @@ const logTimer = function(logs, durationMs, timerName) {
   log(logs, THEME.dimWords(`(${timerName} completed in ${duration})`))
 }
 
+// Print the list of Netlify Functions about to be bundled
+const logFunctionsToBundle = async function(functions, FUNCTIONS_SRC) {
+  if (functions.length === 0) {
+    log(undefined, `No Functions were found in ${THEME.highlightWords(FUNCTIONS_SRC)} directory`)
+    return
+  }
+
+  log(undefined, `Packaging Functions from ${THEME.highlightWords(FUNCTIONS_SRC)} directory:`)
+  logArray(undefined, functions, { indent: false })
+}
+
 const logStatuses = function(logs, statuses) {
   logHeader(logs, 'Summary')
   statuses.forEach(status => logStatus(logs, status))
@@ -301,6 +312,7 @@ module.exports = {
   logCommandSuccess,
   logTimer,
   logStatuses,
+  logFunctionsToBundle,
   logBuildError,
   logBuildSuccess,
 }
