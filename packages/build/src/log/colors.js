@@ -3,8 +3,6 @@ const {
   inspect: { defaultOptions },
 } = require('util')
 
-const supportsColor = require('supports-color')
-
 // Ensure colors are used in the buildbot.
 // For `chalk`, underlying `supports-color` and `console.log()`.
 const setColorLevel = function() {
@@ -22,6 +20,10 @@ const setColorLevel = function() {
 // would normally lose colors. If the parent has colors, we pass an environment
 // variable to the child process to force colors.
 const getParentColorEnv = function() {
+  // This must be required after `env.FORCE_COLOR` has been set because it
+  // checks it at require-time.
+  const supportsColor = require('supports-color')
+
   if (supportsColor.stdout === false) {
     return {}
   }
