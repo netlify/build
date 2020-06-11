@@ -54,6 +54,7 @@ const build = async function(flags = {}) {
       envOpt,
       telemetry,
       mode,
+      buildImagePluginsDir,
     } = await loadConfig(flagsA, logs, testOpts)
     const childEnv = await getChildEnv({ netlifyConfig, buildDir, context, branch, siteInfo, deployId, envOpt, mode })
 
@@ -63,6 +64,7 @@ const build = async function(flags = {}) {
         buildDir,
         constants,
         mode,
+        buildImagePluginsDir,
         api,
         errorMonitor,
         deployId,

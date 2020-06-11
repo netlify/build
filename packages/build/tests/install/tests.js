@@ -3,6 +3,7 @@ const pathExists = require('path-exists')
 
 const { removeDir } = require('../helpers/dir')
 const { runFixture, FIXTURES_DIR } = require('../helpers/main')
+const { getTempDir } = require('../helpers/temp')
 
 // Run fixture and ensure:
 //  - specific directories exist after run
@@ -105,7 +106,12 @@ test('Automatically install missing plugins locally', async t => {
 })
 
 test('Automatically install missing plugins in CI', async t => {
-  await runFixture(t, 'missing', { copyRoot: {}, flags: { mode: 'buildbot' } })
+  const buildImagePluginsDir = await getTempDir()
+  try {
+    await runFixture(t, 'missing', { copyRoot: {}, flags: { buildImagePluginsDir } })
+  } finally {
+    await removeDir(buildImagePluginsDir)
+  }
 })
 
 test('Automatically install missing plugins locally when picked in UI', async t => {

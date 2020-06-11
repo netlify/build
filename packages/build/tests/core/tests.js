@@ -144,7 +144,7 @@ test('--node-path is not used by build-image cached plugins', async t => {
     flags: {
       nodePath: path,
       mode: 'buildbot',
-      testOpts: { buildImagePluginsDir: `${FIXTURES_DIR}/build_image_cache/node_modules` },
+      buildImagePluginsDir: `${FIXTURES_DIR}/build_image_cache/node_modules`,
     },
     env: { TEST_NODE_PATH: execPath },
   })

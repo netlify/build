@@ -59,6 +59,7 @@ const loadConfig = async function(
     env: envOpt,
     telemetry,
     mode,
+    buildImagePluginsDir,
     debug,
   },
   logs,
@@ -116,6 +117,7 @@ const loadConfig = async function(
     envOpt,
     telemetry,
     mode,
+    buildImagePluginsDir,
   }
 }
 
