@@ -1,9 +1,10 @@
-const { zipFunctions } = require('@netlify/zip-it-and-ship-it')
+const { relative } = require('path')
+
+const { zipFunctions, listFunctions } = require('@netlify/zip-it-and-ship-it')
 const pathExists = require('path-exists')
 const { isDirectory } = require('path-type')
-const readdirp = require('readdirp')
 
-const { serializeArray } = require('../../log/serialize')
+const { logFunctionsToBundle } = require('../../log/main')
 
 const { getZipError } = require('./error')
 
@@ -22,32 +23,23 @@ const onPostBuild = async function({
     failBuild(`The Netlify Functions setting should target a directory, not a regular file: ${FUNCTIONS_SRC}`)
   }
 
-  console.log(`Packaging functions from ${FUNCTIONS_SRC}`)
+  const functions = await getFunctionPaths(FUNCTIONS_SRC)
+  logFunctionsToBundle(functions, FUNCTIONS_SRC)
+
+  if (functions.length === 0) {
+    return
+  }
+
   try {
     await zipFunctions(FUNCTIONS_SRC, FUNCTIONS_DIST)
   } catch (error) {
     throw await getZipError(error, FUNCTIONS_SRC)
   }
-
-  await logResults(FUNCTIONS_DIST)
 }
 
-// Print the list of paths to the packaged functions
-const logResults = async function(FUNCTIONS_DIST) {
-  const files = await readdirp.promise(FUNCTIONS_DIST)
-
-  if (files.length === 0) {
-    console.log('No functions were packaged')
-    return
-  }
-
-  const paths = files.map(getLoggedPath)
-  console.log(`Functions packaged in ${FUNCTIONS_DIST}
-${serializeArray(paths)}`)
-}
-
-const getLoggedPath = function({ path }) {
-  return path
+const getFunctionPaths = async function(FUNCTIONS_SRC) {
+  const functions = await listFunctions(FUNCTIONS_SRC)
+  return functions.map(({ mainFile }) => relative(FUNCTIONS_SRC, mainFile))
 }
 
 module.exports = { onPostBuild }

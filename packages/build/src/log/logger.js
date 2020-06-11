@@ -32,8 +32,8 @@ const log = function(logs, string) {
 const EMPTY_LINES_REGEXP = /^\s*$/gm
 const EMPTY_LINE = '\u{200b}'
 
-const logMessage = function(logs, string) {
-  const stringA = indentString(string, INDENT_SIZE)
+const logMessage = function(logs, string, { indent = true } = {}) {
+  const stringA = indent ? indentString(string, INDENT_SIZE) : string
   log(logs, stringA)
 }
 
@@ -44,9 +44,9 @@ const logObject = function(logs, object) {
   logMessage(logs, string)
 }
 
-const logArray = function(logs, array, { color = THEME.none } = {}) {
+const logArray = function(logs, array, { color = THEME.none, indent } = {}) {
   const string = color(serializeArray(array))
-  logMessage(logs, string)
+  logMessage(logs, string, { indent })
 }
 
 const logHeader = function(logs, string, { color = THEME.header } = {}) {
