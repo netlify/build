@@ -2,6 +2,7 @@ const test = require('ava')
 
 const { removeDir } = require('../helpers/dir')
 const { runFixture, FIXTURES_DIR } = require('../helpers/main')
+const { getTempDir } = require('../helpers/temp')
 
 test('constants.CONFIG_PATH', async t => {
   await runFixture(t, 'config')
@@ -94,6 +95,15 @@ test('Functions: no functions', async t => {
 
 test('Functions: default directory', async t => {
   await runFixture(t, 'default')
+})
+
+test('Functions: --functionsDistDir', async t => {
+  const functionsDistDir = await getTempDir()
+  try {
+    await runFixture(t, 'simple', { flags: { functionsDistDir } })
+  } finally {
+    await removeDir(functionsDistDir)
+  }
 })
 
 test('plugin.onSuccess is triggered on success', async t => {
