@@ -90,6 +90,10 @@ const AUTO_PLUGINS_PACKAGE_JSON = {
 // Warns both when installing the plugin, and when re-using it in a future build
 // Not done for local builds, since they cannot use the alternative
 // (build-image cached plugins).
+// We also do not warn if the plugin has been installed through the UI. This is
+// because there is always a time gap between the moment when:
+//  - a plugin is shown in the UI (`plugins.json` in `netlify/build` updated)
+//  - a plugin is pre-installed in the `build-image` (`buildbot` deployed)
 const warnOnMissingPlugins = function({ pluginsOptions, mode, logs }) {
   if (mode !== 'buildbot') {
     return
@@ -103,8 +107,8 @@ const warnOnMissingPlugins = function({ pluginsOptions, mode, logs }) {
   logMissingPluginsWarning(logs, packages)
 }
 
-const isAutomaticallyInstalled = function({ loadedFrom }) {
-  return loadedFrom === 'auto_install'
+const isAutomaticallyInstalled = function({ loadedFrom, origin }) {
+  return loadedFrom === 'auto_install' && origin === 'config'
 }
 
 module.exports = { getAutoPluginsDirPath, installMissingPlugins, warnOnMissingPlugins }
