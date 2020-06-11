@@ -14,7 +14,6 @@ const isPlainObj = require('is-plain-obj')
 const { createRepoDir, removeDir } = require('./dir')
 const { normalizeOutput } = require('./normalize')
 const { startServer } = require('./server')
-const { getTempDir } = require('./temp')
 
 const FIXTURES_DIR = normalize(`${testFile}/../fixtures`)
 
@@ -214,4 +213,4 @@ const isPrint = function() {
   return env.PRINT === '1'
 }
 
-module.exports = { runFixtureCommon, FIXTURES_DIR, startServer, removeDir, getTempDir }
+module.exports = { runFixtureCommon, FIXTURES_DIR, startServer }
