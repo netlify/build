@@ -1,11 +1,12 @@
 const isPlainObj = require('is-plain-obj')
+const mapObj = require('map-obj')
 
 const { ERROR_TYPE_SYM } = require('../error')
 
 // Report status information to the UI
 const show = function(runState, showArgs) {
   validateShowArgs(showArgs)
-  const { title, summary, text } = showArgs
+  const { title, summary, text } = removeEmptyStrings(showArgs)
   runState.status = { state: 'success', title, summary, text }
 }
 
@@ -27,11 +28,11 @@ const validateShowArgs = function(showArgs) {
       throw new Error(`must only contain "title", "summary" or "text" properties, not ${otherKeys.join(', ')}`)
     }
 
-    if (summary === undefined) {
+    Object.entries({ title, summary, text }).forEach(validateStringArg)
+
+    if (summary === undefined || summary.trim() === '') {
       throw new Error('requires specifying a "summary" property')
     }
-
-    Object.entries({ title, summary, text }).forEach(validateStringArg)
   } catch (error) {
     error.message = `utils.status.show() ${error.message}`
     error[ERROR_TYPE_SYM] = 'pluginValidation'
@@ -40,9 +41,21 @@ const validateShowArgs = function(showArgs) {
 }
 
 const validateStringArg = function([key, value]) {
-  if (value !== undefined && (typeof value !== 'string' || value.trim() === '')) {
-    throw new Error(`"${key}" property must be a non-empty string`)
+  if (value !== undefined && typeof value !== 'string') {
+    throw new Error(`"${key}" property must be a string`)
   }
+}
+
+const removeEmptyStrings = function(showArgs) {
+  return mapObj(showArgs, removeEmptyString)
+}
+
+const removeEmptyString = function(key, value) {
+  if (typeof value === 'string' && value.trim() === '') {
+    return [key]
+  }
+
+  return [key, value]
 }
 
 module.exports = { show }

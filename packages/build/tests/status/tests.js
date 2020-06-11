@@ -173,7 +173,7 @@ test('utils.status.show() title should be a string', async t => {
   await runUtilsStatusShow(t, { title: true, summary: 'summary', text: 'text' })
 })
 
-test('utils.status.show() title should not be empty', async t => {
+test('utils.status.show() title can be empty', async t => {
   await runUtilsStatusShow(t, { title: ' ', summary: 'summary', text: 'text' })
 })
 
@@ -189,6 +189,6 @@ test('utils.status.show() text should be a string', async t => {
   await runUtilsStatusShow(t, { title: 'title', summary: 'summary', text: true })
 })
 
-test('utils.status.show() text should not be empty', async t => {
+test('utils.status.show() text can be empty', async t => {
   await runUtilsStatusShow(t, { title: 'title', summary: 'summary', text: ' ' })
 })
