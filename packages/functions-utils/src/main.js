@@ -2,6 +2,7 @@ const { stat } = require('fs')
 const { basename, dirname } = require('path')
 const { promisify } = require('util')
 
+const { listFunctions } = require('@netlify/zip-it-and-ship-it')
 const cpy = require('cpy')
 const pathExists = require('path-exists')
 
@@ -19,7 +20,7 @@ const add = async function(src, dist, { fail = defaultFail } = {}) {
   }
 
   if (dist === undefined) {
-    return fail('No function destination directory was specified')
+    return fail('No function directory was specified')
   }
 
   const srcBasename = basename(src)
@@ -32,10 +33,6 @@ const add = async function(src, dist, { fail = defaultFail } = {}) {
   await cpy(srcGlob, dist, { cwd: dirname(src), parents: true, overwrite: false })
 }
 
-const defaultFail = function(message) {
-  throw new Error(message)
-}
-
 const getSrcGlob = async function(src, srcBasename) {
   const stat = await pStat(src)
 
@@ -46,4 +43,20 @@ const getSrcGlob = async function(src, srcBasename) {
   return srcBasename
 }
 
-module.exports = { add }
+const list = async function(functionsSrc, { fail = defaultFail } = {}) {
+  if (functionsSrc === undefined) {
+    return fail('No function directory was specified')
+  }
+
+  try {
+    return await listFunctions(functionsSrc)
+  } catch (error) {
+    fail('Could not list Netlify Functions', { error })
+  }
+}
+
+const defaultFail = function(message) {
+  throw new Error(message)
+}
+
+module.exports = { add, list }

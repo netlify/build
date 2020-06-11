@@ -1,7 +1,9 @@
+const { normalize } = require('path')
+
 const test = require('ava')
 const pathExists = require('path-exists')
 
-const { add } = require('..')
+const { add, list } = require('..')
 
 const { getDist, createDist, removeDist } = require('./helpers/main')
 
@@ -76,4 +78,24 @@ test('Should allow "fail" option to customize failures', async t => {
   }
   await add(undefined, undefined, { fail })
   t.is(typeof failMessage, 'string')
+})
+
+const normalizeMainFile = function(fixtureDir, { mainFile, runtime, extension }) {
+  const mainFileA = normalize(`${fixtureDir}/${mainFile}`)
+  return { mainFile: mainFileA, runtime, extension }
+}
+
+test('Can list function file with list()', async t => {
+  const fixtureDir = `${FIXTURES_DIR}/list`
+  const functions = await list(fixtureDir)
+  t.deepEqual(
+    functions,
+    [
+      { mainFile: 'one/index.js', runtime: 'js', extension: '.js' },
+      { mainFile: 'test', runtime: 'go', extension: '' },
+      { mainFile: 'test.js', runtime: 'js', extension: '.js' },
+      { mainFile: 'test.zip', runtime: 'js', extension: '.zip' },
+      { mainFile: 'two/two.js', runtime: 'js', extension: '.js' },
+    ].map(normalizeMainFile.bind(null, fixtureDir)),
+  )
 })

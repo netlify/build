@@ -3,9 +3,12 @@
 [![Coverage Status](https://codecov.io/gh/netlify/build/branch/master/graph/badge.svg)](https://codecov.io/gh/netlify/build)
 [![Build](https://github.com/netlify/build/workflows/Build/badge.svg)](https://github.com/netlify/build/actions)
 
-Utility for adding Functions files in Netlify Build.
+Utility for handling Netlify Functions in Netlify Build plugins.
 
-This allows plugins to dynamically inject Netlify Functions inside users builds.
+This allows plugins to:
+
+- list available Netlify Functions
+- dynamically inject Netlify Functions inside users builds.
 
 # Example
 
@@ -20,9 +23,24 @@ module.exports = {
 
 # API
 
+## list()
+
+_Returns_: `Promise<object[]>`
+
+Returns the list of Netlify Functions as a Promise resolving to an array of objects with the following properties:
+
+- `mainFile` `{string}`: absolute path to the Function's main file
+- `extension` `{string}`: file extension of the Function's main file. For Go Functions, this might be an empty string.
+  For Node.js Functions, this is either `.js` or `.zip`.
+- `runtime` `"js" | "go"`: Function's programming language
+
+This throws when no `functions` directory was specified by the user, or when it points to a non-existing directory.
+
 ## add(path)
 
 `path`: `string`\
 _Returns_: `Promise`
 
 Add a Functions file or directory to a build.
+
+This throws when no `functions` directory was specified by the user, or when it points to a non-existing directory.
