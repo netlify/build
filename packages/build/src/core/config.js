@@ -28,6 +28,7 @@ const getDefaultFlags = function({ env: envOpt = {} }) {
     nodePath: execPath,
     token: combinedEnv.NETLIFY_AUTH_TOKEN,
     mode: 'require',
+    functionsDistDir: DEFAULT_FUNCTIONS_DIST,
     deployId: combinedEnv.DEPLOY_ID,
     debug: Boolean(combinedEnv.NETLIFY_BUILD_DEBUG),
     bugsnagKey: combinedEnv.BUGSNAG_KEY,
@@ -35,6 +36,8 @@ const getDefaultFlags = function({ env: envOpt = {} }) {
     testOpts: {},
   }
 }
+
+const DEFAULT_FUNCTIONS_DIST = '.netlify/functions/'
 
 // Retrieve configuration object
 const loadConfig = async function(
@@ -96,7 +99,6 @@ const loadConfig = async function(
     functionsDistDir,
     netlifyConfig,
     siteInfo,
-    deployId,
     mode,
   })
   return {

@@ -1,4 +1,3 @@
-const { tmpdir } = require('os')
 const { relative, normalize } = require('path')
 
 const { getCacheDir } = require('@netlify/cache-utils')
@@ -15,11 +14,9 @@ const getConstants = async function({
     build: { publish = buildDir, functions },
   },
   siteInfo: { id: siteId },
-  deployId,
   mode,
 }) {
   const isLocal = mode !== 'buildbot'
-  const functionsDist = getFunctionsDist(functionsDistDir, isLocal, deployId)
   const cacheDir = await getCacheDir({ mode })
 
   const constants = {
@@ -38,7 +35,7 @@ const getConstants = async function({
     /**
      * The directory where built serverless functions are placed before deployment
      */
-    FUNCTIONS_DIST: functionsDist,
+    FUNCTIONS_DIST: functionsDistDir,
     /**
      * Path to the Netlify build cache folder
      */
@@ -58,19 +55,6 @@ const getConstants = async function({
   }
   const constantsA = mapObj(constants, (key, path) => [key, normalizePath(path, buildDir, key)])
   return constantsA
-}
-
-const LOCAL_FUNCTIONS_DIST = '.netlify/functions/'
-const getFunctionsDist = function(functionsDistDir, isLocal, deployId) {
-  if (functionsDistDir && functionsDistDir != '') {
-    return functionsDistDir
-  }
-
-  if (isLocal) {
-    return LOCAL_FUNCTIONS_DIST
-  }
-
-  return `${tmpdir()}/zisi-${deployId}`
 }
 
 // The current directory is `buildDir`. Most constants are inside this `buildDir`.
