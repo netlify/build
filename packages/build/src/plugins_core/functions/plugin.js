@@ -8,13 +8,18 @@ const { serializeArray } = require('../../log/serialize')
 const { getZipError } = require('./error')
 
 // Plugin to package Netlify functions with @netlify/zip-it-and-ship-it
-const onPostBuild = async function({ constants: { FUNCTIONS_SRC, FUNCTIONS_DIST } }) {
+const onPostBuild = async function({
+  constants: { FUNCTIONS_SRC, FUNCTIONS_DIST },
+  utils: {
+    build: { failBuild },
+  },
+}) {
   if (!(await pathExists(FUNCTIONS_SRC))) {
     return
   }
 
   if (!(await isDirectory(FUNCTIONS_SRC))) {
-    throw new Error(`The Netlify Functions setting should target a directory, not a regular file: ${FUNCTIONS_SRC}`)
+    failBuild(`The Netlify Functions setting should target a directory, not a regular file: ${FUNCTIONS_SRC}`)
   }
 
   console.log(`Packaging functions from ${FUNCTIONS_SRC}`)
