@@ -106,6 +106,11 @@ Default: false`,
     describe: `Path to the Node.js binary to use in user commands and build plugins.
 Default: Current Node.js binary`,
   },
+  functionsDistDir: {
+    string: true,
+    describe: `Path to the directory where packaged functions are kept.
+Default: automatically guessed`,
+  },
   telemetry: {
     boolean: true,
     describe: `Enable telemetry.

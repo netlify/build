@@ -4,7 +4,13 @@ const { getBinPath } = require('get-bin-path')
 // Tests require the full monorepo to be present at the moment
 // TODO: split tests utility into its own package
 const resolveConfig = require('../..')
-const { runFixtureCommon, FIXTURES_DIR, startServer } = require('../../../build/tests/helpers/common')
+const {
+  runFixtureCommon,
+  FIXTURES_DIR,
+  startServer,
+  removeDir,
+  getTempDir,
+} = require('../../../build/tests/helpers/common')
 
 const ROOT_DIR = `${__dirname}/../..`
 
@@ -35,4 +41,4 @@ const serializeApi = function({ api, ...result }) {
 // Use a top-level promise so it's only performed once at load time
 const BINARY_PATH = getBinPath({ cwd: ROOT_DIR })
 
-module.exports = { runFixture, FIXTURES_DIR, startServer }
+module.exports = { runFixture, FIXTURES_DIR, startServer, removeDir, getTempDir }

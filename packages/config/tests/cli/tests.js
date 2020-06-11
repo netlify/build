@@ -5,7 +5,7 @@ const test = require('ava')
 const del = require('del')
 const isCI = require('is-ci')
 
-const { runFixture, FIXTURES_DIR } = require('../helpers/main')
+const { runFixture, FIXTURES_DIR, removeDir, getTempDir } = require('../helpers/main')
 
 const pWriteFile = promisify(writeFile)
 
@@ -35,6 +35,12 @@ test('Stabilitize output with the --stable flag', async t => {
 
 test('Does not stabilitize output without the --stable flag', async t => {
   await runFixture(t, 'empty', { flags: { stable: false }, useBinary: true })
+})
+
+test('--functionsDistDir', async t => {
+  const tempDirPath = await getTempDir()
+  await runFixture(t, 'empty', { flags: `--functionsDistDir=${tempDirPath}` })
+  await removeDir(tempDirPath)
 })
 
 // This test is too slow in local development

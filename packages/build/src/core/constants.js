@@ -10,6 +10,7 @@ const { version } = require('../../package.json')
 const getConstants = async function({
   configPath,
   buildDir,
+  functionsDistDir,
   netlifyConfig: {
     build: { publish = buildDir, functions },
   },
@@ -18,7 +19,7 @@ const getConstants = async function({
   mode,
 }) {
   const isLocal = mode !== 'buildbot'
-  const functionsDist = getFunctionsDist(isLocal, deployId)
+  const functionsDist = getFunctionsDist(functionsDistDir, isLocal, deployId)
   const cacheDir = await getCacheDir({ mode })
 
   const constants = {
@@ -60,7 +61,11 @@ const getConstants = async function({
 }
 
 const LOCAL_FUNCTIONS_DIST = '.netlify/functions/'
-const getFunctionsDist = function(isLocal, deployId) {
+const getFunctionsDist = function(functionsDistDir, isLocal, deployId) {
+  if (functionsDistDir && functionsDistDir != '') {
+    return functionsDistDir
+  }
+
   if (isLocal) {
     return LOCAL_FUNCTIONS_DIST
   }
