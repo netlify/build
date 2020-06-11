@@ -19,7 +19,11 @@ test('Colors in child process', async t => {
 })
 
 test('Netlify CI', async t => {
-  const { returnValue } = await runFixture(t, 'parent', { ...opts, flags: { dry: true }, env: { NETLIFY: 'true' } })
+  const { returnValue } = await runFixture(t, 'parent', {
+    ...opts,
+    flags: { dry: true, mode: 'buildbot' },
+    env: { FORCE_COLOR: '1' },
+  })
   t.true(hasAnsi(returnValue))
 })
 

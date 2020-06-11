@@ -1,11 +1,6 @@
 require('../../utils/polyfills')
 
-// This needs to be done before `chalk` is loaded
-// Note: `chalk` is also required by some of our dependencies.
-// eslint-disable-next-line import/order
-const { setColorLevel } = require('../../log/colors')
-setColorLevel()
-
+const { setInspectColors } = require('../../log/colors')
 const { sendEventToParent, getEventsFromParent } = require('../ipc')
 
 const { handleProcessErrors, handleError } = require('./error')
@@ -16,6 +11,7 @@ const { run } = require('./run')
 const bootPlugin = async function() {
   try {
     handleProcessErrors()
+    setInspectColors()
 
     const state = {}
     // We need to fire them in parallel because `process.send()` can be slow
