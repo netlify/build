@@ -16,6 +16,8 @@ const ENVIRONMENT_VARIABLES = [
   // URL and IDs
   'BUILD_ID',
   'DEPLOY_ID',
+  'SITE_NAME',
+  'SITE_ID',
   'REPOSITORY_URL',
   'URL',
   'DEPLOY_URL',
