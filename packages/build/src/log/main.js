@@ -41,7 +41,7 @@ const INTERNAL_FLAGS = ['cachedConfig', 'defaultConfig']
 // Hidden because those are used in tests
 const TEST_FLAGS = ['buffer', 'debug', 'telemetry']
 const HIDDEN_FLAGS = [...SECURE_FLAGS, ...INTERNAL_FLAGS, ...TEST_FLAGS]
-const HIDDEN_BUILDBOT_FLAGS = [...HIDDEN_FLAGS, 'nodePath', 'functionsDistDir']
+const HIDDEN_BUILDBOT_FLAGS = [...HIDDEN_FLAGS, 'nodePath', 'functionsDistDir', 'buildImagePluginsDir']
 
 const logBuildDir = function(logs, buildDir) {
   logSubHeader(logs, 'Current directory')
