@@ -94,8 +94,8 @@ const AUTO_PLUGINS_PACKAGE_JSON = {
 // because there is always a time gap between the moment when:
 //  - a plugin is shown in the UI (`plugins.json` in `netlify/build` updated)
 //  - a plugin is pre-installed in the `build-image` (`buildbot` deployed)
-const warnOnMissingPlugins = function({ pluginsOptions, mode, logs }) {
-  if (mode !== 'buildbot') {
+const warnOnMissingPlugins = function({ pluginsOptions, buildImagePluginsDir, logs }) {
+  if (buildImagePluginsDir === undefined) {
     return
   }
 

@@ -104,6 +104,13 @@ Default: Current Node.js binary`,
     string: true,
     describe: `Path to the directory where packaged functions are kept.
 Default: automatically guessed`,
+    hidden: true,
+  },
+  buildImagePluginsDir: {
+    string: true,
+    describe: `Path to the directory when build plugins are pre-installed.
+Default: none`,
+    hidden: true,
   },
   telemetry: {
     boolean: true,

@@ -10,11 +10,17 @@ const { resolvePath } = require('../utils/resolve')
 //  - external plugin already installed in `node_modules`, most likely through `package.json`
 //  - cached in the build image
 //  - automatically installed by us (fallback)
-const resolvePluginsPath = async function({ pluginsOptions, buildDir, mode, logs, testOpts }) {
+const resolvePluginsPath = async function({ pluginsOptions, buildDir, mode, logs, buildImagePluginsDir }) {
   const pluginsOptionsA = await Promise.all(
-    pluginsOptions.map(pluginOptions => resolvePluginPath({ pluginOptions, buildDir, mode, testOpts })),
+    pluginsOptions.map(pluginOptions => resolvePluginPath({ pluginOptions, buildDir, buildImagePluginsDir })),
   )
-  const pluginsOptionsB = await handleMissingPlugins({ pluginsOptions: pluginsOptionsA, buildDir, mode, logs })
+  const pluginsOptionsB = await handleMissingPlugins({
+    pluginsOptions: pluginsOptionsA,
+    buildDir,
+    mode,
+    buildImagePluginsDir,
+    logs,
+  })
   return pluginsOptionsB
 }
 
@@ -22,8 +28,7 @@ const resolvePluginPath = async function({
   pluginOptions,
   pluginOptions: { package, loadedFrom },
   buildDir,
-  mode,
-  testOpts,
+  buildImagePluginsDir,
 }) {
   // Core plugins
   if (loadedFrom !== undefined) {
@@ -47,7 +52,7 @@ const resolvePluginPath = async function({
   }
 
   // Cached in the build image
-  const buildImagePath = await tryBuildImagePath({ package: packageA, mode, buildDir, testOpts })
+  const buildImagePath = await tryBuildImagePath({ package: packageA, buildDir, buildImagePluginsDir })
   if (buildImagePath !== undefined) {
     return { ...pluginOptions, pluginPath: buildImagePath, loadedFrom: 'image_cache' }
   }
@@ -69,29 +74,18 @@ const tryLocalPath = async function(package, baseDir) {
 
 // In production, we pre-install most Build plugins to that directory, for
 // performance reasons
-const tryBuildImagePath = async function({ package, mode, buildDir, testOpts }) {
-  if (mode !== 'buildbot') {
+const tryBuildImagePath = async function({ package, buildDir, buildImagePluginsDir }) {
+  if (buildImagePluginsDir === undefined) {
     return
   }
 
-  const pluginsDir = getBuildImagePluginsDir(testOpts)
-  const buildImagePath = `${pluginsDir}/${package}`
+  const buildImagePath = `${buildImagePluginsDir}/${package}`
   if (!(await pathExists(buildImagePath))) {
     return
   }
 
   return resolvePath(buildImagePath, buildDir)
 }
-
-const getBuildImagePluginsDir = function(testOpts) {
-  if (testOpts.buildImagePluginsDir !== undefined) {
-    return testOpts.buildImagePluginsDir
-  }
-
-  return BUILD_IMAGE_PLUGINS_DIR
-}
-
-const BUILD_IMAGE_PLUGINS_DIR = '/opt/buildhome/.netlify-build-plugins/node_modules'
 
 // Try to `resolve()` the plugin from the build directory
 const tryResolvePath = async function(package, baseDir) {
@@ -104,13 +98,13 @@ const tryResolvePath = async function(package, baseDir) {
 
 // Handle plugins that were neither local, in the build image cache nor in
 // node_modules. We automatically install those, with a warning.
-const handleMissingPlugins = async function({ pluginsOptions, buildDir, mode, logs }) {
+const handleMissingPlugins = async function({ pluginsOptions, buildDir, mode, buildImagePluginsDir, logs }) {
   const autoPluginsDir = getAutoPluginsDirPath(buildDir)
   await installMissingPlugins({ pluginsOptions, autoPluginsDir, mode, logs })
   const pluginsOptionsA = await Promise.all(
     pluginsOptions.map(pluginOptions => resolveMissingPluginPath({ pluginOptions, autoPluginsDir })),
   )
-  warnOnMissingPlugins({ pluginsOptions: pluginsOptionsA, mode, logs })
+  warnOnMissingPlugins({ pluginsOptions: pluginsOptionsA, buildImagePluginsDir, logs })
   return pluginsOptionsA
 }
 

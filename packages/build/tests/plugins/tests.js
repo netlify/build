@@ -221,14 +221,12 @@ test('Do not allow overriding core plugins', async t => {
 
 test('Can use plugins cached in the build image', async t => {
   await runFixture(t, 'build_image', {
-    flags: { testOpts: { buildImagePluginsDir: `${FIXTURES_DIR}/build_image_cache/node_modules` }, mode: 'buildbot' },
+    flags: { buildImagePluginsDir: `${FIXTURES_DIR}/build_image_cache/node_modules` },
   })
 })
 
 test('Does not use plugins cached in the build image in local builds', async t => {
-  await runFixture(t, 'build_image', {
-    flags: { testOpts: { buildImagePluginsDir: `${FIXTURES_DIR}/build_image_cache/node_modules` } },
-  })
+  await runFixture(t, 'build_image')
 })
 
 const getNodePath = function(version) {
