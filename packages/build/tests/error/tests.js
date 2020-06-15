@@ -216,7 +216,7 @@ test('Report plugin origin', async t => {
 test('Report build logs URLs', async t => {
   await runFixture(t, 'command', {
     flags,
-    env: { DEPLOY_ID: 'testDeployId', DEPLOY_URL: 'https://testDeployId--testSiteName.netlify.app' },
+    env: { DEPLOY_ID: 'testDeployId', SITE_NAME: 'testSiteName' },
     useBinary: true,
   })
 })
