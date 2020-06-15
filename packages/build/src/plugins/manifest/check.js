@@ -8,7 +8,7 @@ const checkInputs = function({ inputs, manifest: { inputs: rules = [] }, package
   try {
     const inputsA = addDefaults(inputs, rules)
     checkRequiredInputs({ inputs: inputsA, rules, package, packageJson, loadedFrom, origin })
-    Object.keys(inputsA).map(name => checkInput({ name, rules, package, packageJson, loadedFrom, origin }))
+    checkUnknownInputs({ inputs: inputsA, rules, package, packageJson, loadedFrom, origin })
     return inputsA
   } catch (error) {
     error.message = `${error.message}
@@ -55,17 +55,38 @@ const getName = function({ name }) {
 }
 
 // Check each "inputs[*].*" property for a specific input
-const checkInput = function({ name, rules, package, packageJson, loadedFrom, origin }) {
-  const ruleA = rules.find(rule => rule.name === name)
-  if (ruleA === undefined) {
-    const error = new Error(`Invalid input "${name}" for plugin "${package}".
+const checkUnknownInputs = function({ inputs, rules, package, packageJson, loadedFrom, origin }) {
+  const knownInputs = rules.map(getName)
+  const unknownInputs = Object.keys(inputs).filter(name => !knownInputs.includes(name))
+  if (unknownInputs.length === 0) {
+    return
+  }
+
+  const unknownInputsMessage = getUnknownInputsMessage({ package, knownInputs, unknownInputs })
+  const error = new Error(`${unknownInputsMessage}
 Check your plugin configuration to be sure that:
   - the input name is spelled correctly
   - the input is included in the plugin's available configuration options
   - the plugin's input requirements have not changed`)
-    addInputError({ error, name, package, packageJson, loadedFrom, origin })
-    throw error
+  const [name] = unknownInputs
+  addInputError({ error, name, package, packageJson, loadedFrom, origin })
+  throw error
+}
+
+const getUnknownInputsMessage = function({ package, knownInputs, unknownInputs }) {
+  const unknownInputsStr = unknownInputs.map(quoteWord).join(', ')
+
+  if (knownInputs.length === 0) {
+    return `Plugin "${package}" does not accept any inputs but you specified: ${unknownInputsStr}`
   }
+
+  const knownInputsStr = knownInputs.map(quoteWord).join(', ')
+  return `Unknown inputs for plugin "${package}": ${unknownInputsStr}
+Plugin inputs should be one of: ${knownInputsStr}`
+}
+
+const quoteWord = function(word) {
+  return `"${word}"`
 }
 
 // Add error information
