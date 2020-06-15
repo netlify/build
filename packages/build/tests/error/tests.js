@@ -288,3 +288,14 @@ test('Print stack trace of Build command UI settings', async t => {
 test('Print stack trace of validation errors', async t => {
   await runFixture(t, '', { flags: { config: '/invalid' } })
 })
+
+// Node 10 `util.inspect()` output is different from Node 8, leading to
+// inconsistent test snapshots
+// TODO: remove once dropping Node 8
+if (!version.startsWith('v8.')) {
+  test('Redact API token on errors', async t => {
+    await runFixture(t, 'api_token_redact', {
+      flags: { token: '0123456789abcdef', deployId: 'test', mode: 'buildbot', testOpts: { host: '...' } },
+    })
+  })
+}
