@@ -22,8 +22,19 @@ const startPlugins = async function({ pluginsOptions, buildDir, nodePath, childE
   const spawnInfo = getSpawnInfo()
   const userNodeVersion = await getUserNodeVersion(nodePath)
   return Promise.all(
-    pluginsOptions.map(({ package, packageJson, loadedFrom }) =>
-      startPlugin({ buildDir, nodePath, childEnv, package, packageJson, loadedFrom, mode, spawnInfo, userNodeVersion }),
+    pluginsOptions.map(({ package, packageJson, loadedFrom, pluginDir }) =>
+      startPlugin({
+        buildDir,
+        nodePath,
+        childEnv,
+        package,
+        packageJson,
+        loadedFrom,
+        pluginDir,
+        mode,
+        spawnInfo,
+        userNodeVersion,
+      }),
     ),
   )
 }
@@ -35,6 +46,7 @@ const startPlugin = async function({
   package,
   packageJson,
   loadedFrom,
+  pluginDir,
   mode,
   spawnInfo,
   userNodeVersion,
@@ -46,6 +58,7 @@ const startPlugin = async function({
   const childProcess = execa.node(CHILD_MAIN_FILE, {
     cwd: buildDir,
     preferLocal: true,
+    localDir: pluginDir,
     nodePath: childNodePath,
     execPath: childNodePath,
     env: childEnv,

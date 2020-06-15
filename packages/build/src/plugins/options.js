@@ -80,7 +80,7 @@ const loadPluginFiles = async function({
     logs,
     testOpts,
   })
-  return { ...pluginOptions, pluginPath, packageDir, packageJson, inputs }
+  return { ...pluginOptions, pluginPath, pluginDir, packageDir, packageJson, inputs }
 }
 
 // Retrieve information about @netlify/build when an error happens there and not
