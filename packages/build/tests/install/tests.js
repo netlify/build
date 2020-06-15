@@ -108,6 +108,11 @@ test('Automatically install missing plugins in CI', async t => {
   await runFixture(t, 'missing', { copyRoot: {}, flags: { mode: 'buildbot' } })
 })
 
+test('Automatically install missing plugins locally when picked in UI', async t => {
+  const defaultConfig = JSON.stringify({ plugins: [{ package: 'netlify-plugin-contextual-env' }] })
+  await runFixture(t, 'empty', { copyRoot: {}, flags: { mode: 'buildbot', defaultConfig } })
+})
+
 test('Re-use previously automatically installed plugins', async t => {
   await runFixture(t, 'already_installed', { snapshot: false })
   await runFixture(t, 'already_installed')
