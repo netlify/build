@@ -28,13 +28,20 @@ const logBuildStart = function(logs) {
 }
 
 const logFlags = function(logs, flags) {
-  const hiddenFlags = flags.mode === 'buildbot' ? [...HIDDEN_FLAGS, 'nodePath'] : HIDDEN_FLAGS
+  const hiddenFlags = flags.mode === 'buildbot' ? HIDDEN_BUILDBOT_FLAGS : HIDDEN_FLAGS
   const flagsA = omit(flags, hiddenFlags)
   logSubHeader(logs, 'Flags')
   logObject(logs, flagsA)
 }
 
-const HIDDEN_FLAGS = ['token', 'cachedConfig', 'defaultConfig', 'buffer', 'debug', 'env', 'bugsnagKey', 'telemetry']
+// Hidden because the value is security-sensitive
+const SECURE_FLAGS = ['token', 'bugsnagKey', 'env']
+// Hidden because those are only used internally
+const INTERNAL_FLAGS = ['cachedConfig', 'defaultConfig']
+// Hidden because those are used in tests
+const TEST_FLAGS = ['buffer', 'debug', 'telemetry']
+const HIDDEN_FLAGS = [...SECURE_FLAGS, ...INTERNAL_FLAGS, ...TEST_FLAGS]
+const HIDDEN_BUILDBOT_FLAGS = [...HIDDEN_FLAGS, 'nodePath', 'functionsDistDir']
 
 const logBuildDir = function(logs, buildDir) {
   logSubHeader(logs, 'Current directory')
