@@ -229,6 +229,12 @@ test('Does not use plugins cached in the build image in local builds', async t =
   await runFixture(t, 'build_image')
 })
 
+test('Can execute local binaries when using plugins cached in the build image', async t => {
+  await runFixture(t, 'build_image_bin', {
+    flags: { buildImagePluginsDir: `${FIXTURES_DIR}/build_image_cache_bin/node_modules` },
+  })
+})
+
 const getNodePath = function(version) {
   return `/home/ether/.nvm/versions/node/v${version}/bin/node`
 }
