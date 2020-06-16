@@ -9,8 +9,6 @@ const { version } = require('../../package.json')
 const { runFixture, FIXTURES_DIR } = require('../helpers/main')
 const { startServer } = require('../helpers/server.js')
 
-const mGetNode = moize(getNode, { isPromise: true })
-
 if (platform !== 'win32') {
   test('build.command uses Bash', async t => {
     await runFixture(t, 'bash')
@@ -117,6 +115,24 @@ test('--dry with build.command but no netlify.toml', async t => {
 
 const CHILD_NODE_VERSION = '8.3.0'
 const VERY_OLD_NODE_VERSION = '4.0.0'
+
+// Try `get-node` several times because it sometimes fails due to network failures
+const getNodeBinary = async function(version, retries = 1) {
+  try {
+    return await getNode(version)
+  } catch (error) {
+    if (retries < MAX_RETRIES) {
+      return getNodeBinary(version, retries + 1)
+    }
+
+    throw error
+  }
+}
+
+const MAX_RETRIES = 10
+
+// Memoize `get-node`
+const mGetNode = moize(getNodeBinary, { isPromise: true })
 
 test('--node-path is used by build.command', async t => {
   const { path } = await mGetNode(CHILD_NODE_VERSION)
