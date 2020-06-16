@@ -69,7 +69,8 @@ There are several ways to fix this problem:
   - Adding the following plugin to your "netlify.toml":
 
 [[plugins]]
-package = "@netlify/plugin-functions-install-core"`
+package = "@netlify/plugin-functions-install-core"
+`
 }
 
 module.exports = { getZipError }
