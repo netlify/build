@@ -6,8 +6,12 @@ test('manifest.yml check required inputs', async t => {
   await runFixture(t, 'required')
 })
 
-test('manifest.yml check unknown property', async t => {
-  await runFixture(t, 'unknown')
+test('manifest.yml check unknown property when plugin has none', async t => {
+  await runFixture(t, 'unknown_none')
+})
+
+test('manifest.yml check unknown property when plugin has some', async t => {
+  await runFixture(t, 'unknown_some')
 })
 
 test('manifest.yml check default value', async t => {

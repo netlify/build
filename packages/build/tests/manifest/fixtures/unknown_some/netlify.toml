@@ -1,0 +1,5 @@
+[[plugins]]
+package = "./plugin.js"
+
+[plugins.inputs]
+test = true

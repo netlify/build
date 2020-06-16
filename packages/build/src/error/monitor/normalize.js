@@ -49,6 +49,10 @@ const NORMALIZE_REGEXPS = [
   [/\d+/g, '0'],
   // Hexadecimal strings
   [/[0-9a-fA-F]{6,}/, 'hex'],
+  // On unknown inputs, we print the inputs
+  [/(does not accept any inputs but you specified: ).*/, '$1'],
+  [/(Unknown inputs for plugin).*/, '$1'],
+  [/(Plugin inputs should be one of: ).*/, '$1'],
   // On required inputs, we print the inputs
   [/^Plugin inputs[^]*/gm, ''],
   [/(Required inputs for plugin).*/gm, '$1'],
