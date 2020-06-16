@@ -51,6 +51,9 @@ const NORMALIZE_REGEXPS = [
   [/[0-9a-fA-F]{6,}/, 'hex'],
   // On required inputs, we print the inputs
   [/^Plugin inputs[^]*/gm, ''],
+  [/(Required inputs for plugin).*/gm, '$1'],
+  // Netlify Functions validation check
+  [/(should target a directory, not a regular file):.*/, '$1'],
   // zip-it-and-ship-it error when there is a `require()` but dependencies
   // were not installed
   [/(Cannot find module) '([^']+)'/g, "$1 'moduleName'"],
@@ -63,6 +66,8 @@ const NORMALIZE_REGEXPS = [
   // is highly build-specific
   [/^(vers?ions|Plugin configuration|Subfont called with): \{[^}]+\}/gm, ''],
   [/^Resolved entry points: \[[^\]]+\]/gm, ''],
+  // netlify-plugin-minify-html parse error
+  [/(Parse Error):[^]*/, '$1'],
   // Multiple empty lines
   [/^\s*$/gm, ''],
 ]
