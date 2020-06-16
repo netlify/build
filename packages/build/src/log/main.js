@@ -174,7 +174,7 @@ const getPackage = function({ package }) {
 }
 
 const logLoadingPlugins = function(logs, pluginsOptions) {
-  const loadingPlugins = pluginsOptions.map(getPluginDescription)
+  const loadingPlugins = pluginsOptions.filter(isNotCorePlugin).map(getPluginDescription)
 
   if (loadingPlugins.length === 0) {
     return
@@ -182,6 +182,11 @@ const logLoadingPlugins = function(logs, pluginsOptions) {
 
   logSubHeader(logs, 'Loading plugins')
   logArray(logs, loadingPlugins)
+}
+
+// We only logs plugins explicitly enabled by users
+const isNotCorePlugin = function({ origin }) {
+  return origin !== 'core'
 }
 
 const getPluginDescription = function({ package, packageJson: { version }, loadedFrom, origin }) {
