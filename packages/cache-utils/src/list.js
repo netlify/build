@@ -8,7 +8,7 @@ const { getBases } = require('./path')
 
 // List all cached files
 const list = async function({ cacheDir, mode } = {}) {
-  const bases = getBases()
+  const bases = await getBases()
   const cacheDirA = await getCacheDir({ cacheDir, mode })
   const files = await Promise.all(bases.map(baseInfo => listBase(baseInfo, cacheDirA)))
   const filesA = files.flat()
