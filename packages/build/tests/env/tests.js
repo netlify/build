@@ -72,3 +72,7 @@ test('build.environment', async t => {
 test('build.environment readonly', async t => {
   await runFixture(t, 'build_readonly')
 })
+
+test('Does not pass BUGSNAG_KEY to build command and plugins', async t => {
+  await runFixture(t, 'bugsnag_key', { env: { BUGSNAG_KEY: 'test' } })
+})

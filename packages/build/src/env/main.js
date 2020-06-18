@@ -1,5 +1,7 @@
 const { env } = require('process')
 
+const filterObj = require('filter-obj')
+
 const { getParentColorEnv } = require('../log/colors')
 const { omit } = require('../utils/omit')
 const { removeFalsy } = require('../utils/remove_falsy')
@@ -9,8 +11,10 @@ const { getGitEnv } = require('./git')
 // Retrieve the environment variables passed to plugins and `build.command`
 // When run locally, this tries to emulate the production environment.
 const getChildEnv = async function({ netlifyConfig, buildDir, branch, context, siteInfo, deployId, envOpt, mode }) {
+  const parentEnv = getParentEnv(envOpt)
+
   if (mode === 'buildbot') {
-    return { ...env, ...envOpt }
+    return parentEnv
   }
 
   const defaultEnv = getDefaultEnv()
@@ -19,13 +23,24 @@ const getChildEnv = async function({ netlifyConfig, buildDir, branch, context, s
   const forcedEnv = await getForcedEnv({ buildDir, branch, context, siteInfo })
   return {
     ...removeFalsy(defaultEnv),
-    ...env,
+    ...parentEnv,
     ...removeFalsy(configurableEnv),
     ...removeFalsy(configEnv),
     ...removeFalsy(forcedEnv),
-    ...envOpt,
   }
 }
+
+// Current process's environment variables, with some of them removed
+const getParentEnv = function(envOpt) {
+  const parentEnv = { ...env, ...envOpt }
+  return filterObj(parentEnv, shouldKeepEnv)
+}
+
+const shouldKeepEnv = function(key) {
+  return !REMOVED_PARENT_ENV.includes(key.toLowerCase())
+}
+
+const REMOVED_PARENT_ENV = ['bugsnag_key']
 
 // Environment variables that can be unset by local ones or configuration ones
 const getDefaultEnv = function() {
