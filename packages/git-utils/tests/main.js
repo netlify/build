@@ -68,6 +68,12 @@ test.serial('Should allow overriding the current directory', t => {
   }
 })
 
+test('Should throw when the current directory is invalid', t => {
+  t.throws(() => {
+    getGitUtils({ ...DEFAULT_OPTS, cwd: '/does/not/exist' })
+  })
+})
+
 test('Should return the number of lines of code', t => {
   const { linesOfCode } = getGitUtils(DEFAULT_OPTS)
   t.is(linesOfCode, 163)
