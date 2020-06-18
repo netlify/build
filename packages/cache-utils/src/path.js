@@ -1,23 +1,34 @@
 const { homedir } = require('os')
-const { resolve, join, sep } = require('path')
-const process = require('process')
+const { resolve, isAbsolute, join, sep } = require('path')
 
 const { getCacheDir } = require('./dir')
 const { safeGetCwd } = require('./utils/cwd')
 
 // Find the paths of the file before/after caching
 const parsePath = async function({ path, cacheDir, mode }) {
-  const srcPath = getSrcPath(path)
+  const srcPath = await getSrcPath(path)
   const cachePath = await getCachePath({ srcPath, cacheDir, mode })
   return { srcPath, cachePath }
 }
 
 // Retrieve absolute path to the local file to cache/restore
-const getSrcPath = function(path) {
-  const cwd = process.cwd()
-  const srcPath = resolve(cwd, path)
+const getSrcPath = async function(path) {
+  const cwd = await safeGetCwd()
+  const srcPath = resolvePath(path, cwd)
   checkSrcPath(srcPath, cwd)
   return srcPath
+}
+
+const resolvePath = function(path, cwd) {
+  if (isAbsolute(path)) {
+    return resolve(path)
+  }
+
+  if (cwd !== '') {
+    return resolve(cwd, path)
+  }
+
+  throw new Error(`Current directory does not exist: ${cwd}`)
 }
 
 // Caching the whole repository creates many issues:
@@ -29,7 +40,7 @@ const getSrcPath = function(path) {
 //    happened before this plugin starts restoring the cache, leading to
 //    conflicts with other plugins, Netlify Build or the buildbot.
 const checkSrcPath = function(srcPath, cwd) {
-  if (isParentPath(srcPath, cwd)) {
+  if (cwd !== '' && isParentPath(srcPath, cwd)) {
     throw new Error(`Cannot cache ${srcPath} because it is the current directory (${cwd}) or a parent directory`)
   }
 }
