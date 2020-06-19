@@ -14,6 +14,16 @@ const { isString, validProperties, insideRootCheck, removeParentDots } = require
 //   - `example` {string}: example of correct code
 // We use this instead of JSON schema (or others) to get nicer error messages.
 
+// Validations done before case normalization
+const PRE_CASE_NORMALIZE_VALIDATIONS = [
+  {
+    property: 'build',
+    check: isPlainObj,
+    message: 'must be a plain object.',
+    example: () => ({ build: { command: 'npm run build' } }),
+  },
+]
+
 // Validations done before `defaultConfig` merge
 const PRE_MERGE_VALIDATIONS = [
   {
@@ -42,12 +52,6 @@ const PRE_CONTEXT_VALIDATIONS = [
 
 // Validations done before normalization
 const PRE_NORMALIZE_VALIDATIONS = [
-  {
-    property: 'build',
-    check: isPlainObj,
-    message: 'must be a plain object.',
-    example: () => ({ build: { command: 'npm run build' } }),
-  },
   {
     property: 'build.command',
     check: isString,
@@ -131,6 +135,7 @@ const POST_NORMALIZE_VALIDATIONS = [
 ]
 
 module.exports = {
+  PRE_CASE_NORMALIZE_VALIDATIONS,
   PRE_MERGE_VALIDATIONS,
   PRE_CONTEXT_VALIDATIONS,
   PRE_NORMALIZE_VALIDATIONS,

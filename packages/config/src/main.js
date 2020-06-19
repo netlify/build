@@ -3,6 +3,7 @@ require('./utils/polyfills')
 const { addBuildSettings } = require('./api/build_settings')
 const { getApiClient } = require('./api/client')
 const { getSiteInfo } = require('./api/site_info')
+const { normalizeConfigCase } = require('./case')
 const { mergeContext } = require('./context')
 const { mergeDefaultConfig } = require('./default_config')
 const { throwError } = require('./error')
@@ -12,6 +13,7 @@ const { addDefaultOpts, normalizeOpts } = require('./options/main')
 const { parseConfig } = require('./parse')
 const { getConfigPath } = require('./path')
 const {
+  validatePreCaseNormalize,
   validatePreMergeConfig,
   validatePreContextConfig,
   validatePreNormalizeConfig,
@@ -144,18 +146,21 @@ const getFullConfig = async function({ configOpt, cwd, context, repositoryRoot, 
   try {
     const config = await parseConfig(configPath)
 
-    validatePreMergeConfig(config, defaultConfig)
-    const configA = mergeDefaultConfig(defaultConfig, config)
+    validatePreCaseNormalize(config)
+    const configA = normalizeConfigCase(config)
 
-    validatePreContextConfig(configA)
-    const configB = mergeContext(configA, context, branch)
+    validatePreMergeConfig(configA, defaultConfig)
+    const configB = mergeDefaultConfig(defaultConfig, configA)
 
-    validatePreNormalizeConfig(configB)
-    const configC = normalizeConfig(configB)
+    validatePreContextConfig(configB)
+    const configC = mergeContext(configB, context, branch)
 
-    validatePostNormalizeConfig(configC)
+    validatePreNormalizeConfig(configC)
+    const configD = normalizeConfig(configC)
 
-    return { configPath, config: configC }
+    validatePostNormalizeConfig(configD)
+
+    return { configPath, config: configD }
   } catch (error) {
     error.message = `When resolving config file ${configPath}:\n${error.message}`
     throw error
