@@ -65,6 +65,10 @@ test('Environment variable siteInfo success', async t => {
   await stopServer()
 })
 
+test('Empty string environment variables', async t => {
+  await runFixture(t, 'empty_string')
+})
+
 test('build.environment', async t => {
   await runFixture(t, 'build')
 })
