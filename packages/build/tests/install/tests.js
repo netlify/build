@@ -66,6 +66,11 @@ test('Functions: does not print warnings when dependency was mispelled', async t
   t.false(await pathExists(`${FIXTURES_DIR}/mispelled_dep/functions/node_modules/`))
 })
 
+test('Functions: does not print warnings when dependency was local', async t => {
+  await runInstallFixture(t, 'local_dep', [`${FIXTURES_DIR}/local_dep/.netlify/functions/`])
+  t.false(await pathExists(`${FIXTURES_DIR}/local_dep/functions/node_modules/`))
+})
+
 test('Install local plugin dependencies: with npm', async t => {
   await runInstallFixture(t, 'npm', [`${FIXTURES_DIR}/npm/plugin/node_modules/`])
 })
