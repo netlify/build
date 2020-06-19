@@ -1,13 +1,14 @@
 const { platform } = require('process')
 
 const execa = require('execa')
+const isPlainObj = require('is-plain-obj')
 const pReduce = require('p-reduce')
 
 const { setEnvChanges } = require('../env/changes.js')
 const { addErrorInfo, getErrorInfo } = require('../error/info')
 const { reportBuildError } = require('../error/monitor/report')
 const { serializeErrorStatus } = require('../error/parse/serialize_status')
-const { logCommand, logBuildCommandStart, logCommandSuccess, logBuildError } = require('../log/main')
+const { logCommand, logBuildCommandStart, logCommandSuccess, logCiReactWarning, logBuildError } = require('../log/main')
 const {
   getBuildCommandStdio,
   handleBuildCommandOutput,
@@ -68,6 +69,7 @@ const runCommands = async function({
   buildDir,
   nodePath,
   childEnv,
+  sitePackageJson,
   errorMonitor,
   netlifyConfig,
   logs,
@@ -94,6 +96,7 @@ const runCommands = async function({
           index,
           childEnv,
           envChanges,
+          sitePackageJson,
           commands,
           errorMonitor,
           error,
@@ -132,6 +135,7 @@ const runCommand = async function({
   index,
   childEnv,
   envChanges,
+  sitePackageJson,
   commands,
   errorMonitor,
   error,
@@ -161,6 +165,7 @@ const runCommand = async function({
     nodePath,
     childEnv,
     envChanges,
+    sitePackageJson,
     commands,
     error,
     logs,
@@ -198,12 +203,22 @@ const fireCommand = function({
   nodePath,
   childEnv,
   envChanges,
+  sitePackageJson,
   commands,
   error,
   logs,
 }) {
   if (buildCommand !== undefined) {
-    return fireBuildCommand({ buildCommand, configPath, buildDir, nodePath, childEnv, envChanges, logs })
+    return fireBuildCommand({
+      buildCommand,
+      configPath,
+      buildDir,
+      nodePath,
+      childEnv,
+      envChanges,
+      logs,
+      sitePackageJson,
+    })
   }
 
   return firePluginCommand({
@@ -221,7 +236,16 @@ const fireCommand = function({
 }
 
 // Fire `build.command`
-const fireBuildCommand = async function({ buildCommand, configPath, buildDir, nodePath, childEnv, envChanges, logs }) {
+const fireBuildCommand = async function({
+  buildCommand,
+  configPath,
+  buildDir,
+  nodePath,
+  childEnv,
+  envChanges,
+  logs,
+  sitePackageJson,
+}) {
   logBuildCommandStart(logs, buildCommand)
 
   const env = setEnvChanges(envChanges, { ...childEnv })
@@ -242,13 +266,34 @@ const fireBuildCommand = async function({ buildCommand, configPath, buildDir, no
     return {}
   } catch (newError) {
     handleBuildCommandOutput(newError, logs)
-    addErrorInfo(newError, { type: 'buildCommand', location: { buildCommand, configPath } })
+    handleBuildCommandError({ error: newError, buildCommand, configPath, env, sitePackageJson, logs })
     return { newError }
   }
 }
 
 // We use Bash on Unix and `cmd.exe` on Windows
 const SHELL = platform === 'win32' ? true : 'bash'
+
+// When `build.command` fails
+const handleBuildCommandError = function({ error, buildCommand, configPath, env, sitePackageJson, logs }) {
+  addErrorInfo(error, { type: 'buildCommand', location: { buildCommand, configPath } })
+
+  if (isCiReactError({ error, env, sitePackageJson })) {
+    logCiReactWarning(logs)
+  }
+}
+
+const isCiReactError = function({ error, env: { CI }, sitePackageJson }) {
+  return (
+    error.exitCode === 1 && typeof CI === 'string' && CI.toLowerCase() !== 'false' && isCreateReactApp(sitePackageJson)
+  )
+}
+
+const isCreateReactApp = function({ scripts }) {
+  return isPlainObj(scripts) && scripts.build === CREATE_REACT_APP_BUILD
+}
+
+const CREATE_REACT_APP_BUILD = 'react-scripts build'
 
 // Fire a plugin command
 const firePluginCommand = async function({

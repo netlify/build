@@ -14,6 +14,7 @@ const { getPluginsOptions } = require('../plugins/options')
 const { startPlugins, stopPlugins } = require('../plugins/spawn')
 const { reportStatuses } = require('../status/report')
 const { trackBuildComplete } = require('../telemetry/complete')
+const { getPackageJson } = require('../utils/package')
 
 const { getCommands, runCommands } = require('./commands')
 const { normalizeFlags, loadConfig } = require('./config')
@@ -57,6 +58,7 @@ const build = async function(flags = {}) {
       buildImagePluginsDir,
     } = await loadConfig(flagsA, logs, testOpts)
     const childEnv = await getChildEnv({ netlifyConfig, buildDir, context, branch, siteInfo, deployId, envOpt, mode })
+    const { packageJson: sitePackageJson } = await getPackageJson(buildDir)
 
     try {
       const pluginsOptions = await getPluginsOptions({
@@ -79,6 +81,7 @@ const build = async function(flags = {}) {
         buildDir,
         nodePath,
         childEnv,
+        sitePackageJson,
         dry,
         constants,
         mode,
@@ -125,6 +128,7 @@ const buildRun = async function({
   buildDir,
   nodePath,
   childEnv,
+  sitePackageJson,
   dry,
   constants,
   mode,
@@ -145,6 +149,7 @@ const buildRun = async function({
       buildDir,
       nodePath,
       childEnv,
+      sitePackageJson,
       dry,
       constants,
       mode,
@@ -167,6 +172,7 @@ const executeCommands = async function({
   buildDir,
   nodePath,
   childEnv,
+  sitePackageJson,
   dry,
   constants,
   mode,
@@ -202,6 +208,7 @@ const executeCommands = async function({
     buildDir,
     nodePath,
     childEnv,
+    sitePackageJson,
     errorMonitor,
     netlifyConfig,
     logs,
