@@ -77,14 +77,14 @@ const runCommands = async function({
     commands,
     async (
       { index, error, failedPlugins, envChanges, statuses },
-      { event, childProcess, package, packageJson, loadedFrom, origin, buildCommand },
+      { event, childProcess, package, pluginPackageJson, loadedFrom, origin, buildCommand },
     ) => {
       const { newIndex = index, newError = error, failedPlugin = [], newEnvChanges = {}, newStatus } = await runCommand(
         {
           event,
           childProcess,
           package,
-          packageJson,
+          pluginPackageJson,
           loadedFrom,
           origin,
           buildCommand,
@@ -103,7 +103,7 @@ const runCommands = async function({
           testOpts,
         },
       )
-      const statusesA = addStatus({ newStatus, statuses, event, package, packageJson })
+      const statusesA = addStatus({ newStatus, statuses, event, package, pluginPackageJson })
       return {
         index: newIndex,
         error: newError,
@@ -122,7 +122,7 @@ const runCommand = async function({
   event,
   childProcess,
   package,
-  packageJson,
+  pluginPackageJson,
   loadedFrom,
   origin,
   buildCommand,
@@ -152,7 +152,7 @@ const runCommand = async function({
     event,
     childProcess,
     package,
-    packageJson,
+    pluginPackageJson,
     loadedFrom,
     origin,
     buildCommand,
@@ -189,7 +189,7 @@ const fireCommand = function({
   event,
   childProcess,
   package,
-  packageJson,
+  pluginPackageJson,
   loadedFrom,
   origin,
   buildCommand,
@@ -210,7 +210,7 @@ const fireCommand = function({
     event,
     childProcess,
     package,
-    packageJson,
+    pluginPackageJson,
     loadedFrom,
     origin,
     envChanges,
@@ -255,7 +255,7 @@ const firePluginCommand = async function({
   event,
   childProcess,
   package,
-  packageJson,
+  pluginPackageJson,
   loadedFrom,
   origin,
   envChanges,
@@ -270,7 +270,7 @@ const firePluginCommand = async function({
       childProcess,
       'run',
       { event, error, envChanges },
-      { plugin: { packageJson, package }, location: { event, package, loadedFrom, origin } },
+      { plugin: { pluginPackageJson, package }, location: { event, package, loadedFrom, origin } },
     )
     const newStatus = getSuccessStatus(status, { commands, event, package })
     return { newEnvChanges, newStatus }

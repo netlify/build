@@ -42,7 +42,7 @@ const getCurrentNodeVersion = function() {
 const checkNodeVersion = async function({
   childNodeVersion,
   package,
-  packageJson: { engines: { node: pluginNodeVersionRange } = {} } = {},
+  pluginPackageJson: { engines: { node: pluginNodeVersionRange } = {} } = {},
 }) {
   // Build plugins are instrumented with a wrapper code which has a minimal
   // allowed Node.js version.

@@ -67,11 +67,11 @@ const loadPluginFiles = async function({
   testOpts,
 }) {
   const pluginDir = dirname(pluginPath)
-  const { packageDir, packageJson } = await getPackageJson(pluginDir)
+  const { packageDir, packageJson: pluginPackageJson } = await getPackageJson(pluginDir)
   const inputs = await useManifest(pluginOptions, {
     pluginDir,
     packageDir,
-    packageJson,
+    pluginPackageJson,
     mode,
     api,
     netlifyConfig,
@@ -80,7 +80,7 @@ const loadPluginFiles = async function({
     logs,
     testOpts,
   })
-  return { ...pluginOptions, pluginPath, pluginDir, packageDir, packageJson, inputs }
+  return { ...pluginOptions, pluginPath, pluginDir, packageDir, pluginPackageJson, inputs }
 }
 
 // Retrieve information about @netlify/build when an error happens there and not
@@ -88,7 +88,7 @@ const loadPluginFiles = async function({
 const getSpawnInfo = function() {
   const { name } = corePackageJson
   return {
-    plugin: { package: name, packageJson: corePackageJson },
+    plugin: { package: name, pluginPackageJson: corePackageJson },
     location: { event: 'load', package: name, loadedFrom: 'core', origin: 'core' },
   }
 }

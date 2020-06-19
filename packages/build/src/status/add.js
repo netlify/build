@@ -20,7 +20,7 @@ const isMainCommand = function({ event }) {
 const IMPLICIT_STATUS = { state: 'success', implicit: true }
 
 // Merge plugin status to the list of plugin statuses.
-const addStatus = function({ newStatus, statuses, event, package, packageJson: { version } = {} }) {
+const addStatus = function({ newStatus, statuses, event, package, pluginPackageJson: { version } = {} }) {
   // Either:
   //  - `build.command`
   //  - no status was set

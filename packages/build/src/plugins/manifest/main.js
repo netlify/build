@@ -10,8 +10,8 @@ const useManifest = async function(
   {
     pluginDir,
     packageDir,
-    packageJson,
-    packageJson: { version },
+    pluginPackageJson,
+    pluginPackageJson: { version },
     mode,
     api,
     netlifyConfig,
@@ -24,8 +24,8 @@ const useManifest = async function(
   const manifestPath = await getManifestPath(pluginDir, packageDir)
 
   try {
-    const manifest = await loadManifest({ manifestPath, package, packageJson, loadedFrom, origin })
-    const inputsA = checkInputs({ inputs, manifest, package, packageJson, loadedFrom, origin })
+    const manifest = await loadManifest({ manifestPath, package, pluginPackageJson, loadedFrom, origin })
+    const inputsA = checkInputs({ inputs, manifest, package, pluginPackageJson, loadedFrom, origin })
     return inputsA
   } catch (error) {
     await reportPluginLoadError({
