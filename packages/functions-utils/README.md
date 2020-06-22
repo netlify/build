@@ -30,6 +30,7 @@ _Returns_: `Promise<object[]>`
 Returns the list of Netlify Functions as a Promise resolving to an array of objects with the following properties:
 
 - `mainFile` `{string}`: absolute path to the Function's main file
+- `srcFiles` `{string[]}`: absolute path to all the Function's files (main files and required files)
 - `extension` `{string}`: file extension of the Function's main file. For Go Functions, this might be an empty string.
   For Node.js Functions, this is either `.js` or `.zip`.
 - `runtime` `"js" | "go"`: Function's programming language
