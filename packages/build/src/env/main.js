@@ -4,7 +4,6 @@ const filterObj = require('filter-obj')
 
 const { getParentColorEnv } = require('../log/colors')
 const { omit } = require('../utils/omit')
-const { removeFalsy } = require('../utils/remove_falsy')
 
 const { getGitEnv } = require('./git')
 
@@ -22,11 +21,11 @@ const getChildEnv = async function({ netlifyConfig, buildDir, branch, context, s
   const configEnv = getConfigEnv(netlifyConfig, deployId)
   const forcedEnv = await getForcedEnv({ buildDir, branch, context, siteInfo })
   return {
-    ...removeFalsy(defaultEnv),
+    ...defaultEnv,
     ...parentEnv,
-    ...removeFalsy(configurableEnv),
-    ...removeFalsy(configEnv),
-    ...removeFalsy(forcedEnv),
+    ...configurableEnv,
+    ...configEnv,
+    ...forcedEnv,
   }
 }
 
