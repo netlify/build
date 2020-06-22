@@ -80,3 +80,10 @@ test('build.environment readonly', async t => {
 test('Does not pass BUGSNAG_KEY to build command and plugins', async t => {
   await runFixture(t, 'bugsnag_key', { env: { BUGSNAG_KEY: 'test' } })
 })
+
+// Process exit handling is different in Windows
+if (platform !== 'win32') {
+  test('Prints a warning when build command fails in CI with create-react-app', async t => {
+    await runFixture(t, 'create_react_app', { env: { CI: 'true' } })
+  })
+}

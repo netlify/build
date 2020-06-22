@@ -3,9 +3,9 @@ const { dirname } = require('path')
 const corePackageJson = require('../../package.json')
 const { installLocalPluginsDependencies } = require('../install/local')
 const { getCorePlugins, CORE_PLUGINS, EARLY_CORE_PLUGINS } = require('../plugins_core/main')
+const { getPackageJson } = require('../utils/package')
 
 const { useManifest } = require('./manifest/main')
-const { getPackageJson } = require('./package')
 const { resolvePluginsPath } = require('./resolve')
 
 // Load plugin options (specified by user in `config.plugins`)
