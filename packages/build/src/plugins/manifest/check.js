@@ -4,11 +4,18 @@ const { THEME } = require('../../log/theme')
 
 // Check that plugin inputs match the validation specified in "manifest.yml"
 // Also assign default values
-const checkInputs = function({ inputs, manifest: { inputs: rules = [] }, package, packageJson, loadedFrom, origin }) {
+const checkInputs = function({
+  inputs,
+  manifest: { inputs: rules = [] },
+  package,
+  pluginPackageJson,
+  loadedFrom,
+  origin,
+}) {
   try {
     const inputsA = addDefaults(inputs, rules)
-    checkRequiredInputs({ inputs: inputsA, rules, package, packageJson, loadedFrom, origin })
-    checkUnknownInputs({ inputs: inputsA, rules, package, packageJson, loadedFrom, origin })
+    checkRequiredInputs({ inputs: inputsA, rules, package, pluginPackageJson, loadedFrom, origin })
+    checkUnknownInputs({ inputs: inputsA, rules, package, pluginPackageJson, loadedFrom, origin })
     return inputsA
   } catch (error) {
     error.message = `${error.message}
@@ -34,7 +41,7 @@ const getDefault = function({ name, default: defaultValue }) {
 }
 
 // Check "inputs[*].required"
-const checkRequiredInputs = function({ inputs, rules, package, packageJson, loadedFrom, origin }) {
+const checkRequiredInputs = function({ inputs, rules, package, pluginPackageJson, loadedFrom, origin }) {
   const missingInputs = rules.filter(rule => isMissingRequired(inputs, rule))
   if (missingInputs.length === 0) {
     return
@@ -42,7 +49,7 @@ const checkRequiredInputs = function({ inputs, rules, package, packageJson, load
 
   const names = missingInputs.map(getName)
   const error = new Error(`Required inputs for plugin "${package}": ${names.join(', ')}`)
-  addInputError({ error, name: names[0], package, packageJson, loadedFrom, origin })
+  addInputError({ error, name: names[0], package, pluginPackageJson, loadedFrom, origin })
   throw error
 }
 
@@ -55,7 +62,7 @@ const getName = function({ name }) {
 }
 
 // Check each "inputs[*].*" property for a specific input
-const checkUnknownInputs = function({ inputs, rules, package, packageJson, loadedFrom, origin }) {
+const checkUnknownInputs = function({ inputs, rules, package, pluginPackageJson, loadedFrom, origin }) {
   const knownInputs = rules.map(getName)
   const unknownInputs = Object.keys(inputs).filter(name => !knownInputs.includes(name))
   if (unknownInputs.length === 0) {
@@ -69,7 +76,7 @@ Check your plugin configuration to be sure that:
   - the input is included in the plugin's available configuration options
   - the plugin's input requirements have not changed`)
   const [name] = unknownInputs
-  addInputError({ error, name, package, packageJson, loadedFrom, origin })
+  addInputError({ error, name, package, pluginPackageJson, loadedFrom, origin })
   throw error
 }
 
@@ -90,10 +97,10 @@ const quoteWord = function(word) {
 }
 
 // Add error information
-const addInputError = function({ error, name, package, packageJson, loadedFrom, origin }) {
+const addInputError = function({ error, name, package, pluginPackageJson, loadedFrom, origin }) {
   addErrorInfo(error, {
     type: 'pluginInput',
-    plugin: { package, packageJson },
+    plugin: { package, pluginPackageJson },
     location: { event: 'load', package, input: name, loadedFrom, origin },
   })
 }

@@ -39,7 +39,7 @@ const loadPlugins = async function({
 // Retrieve plugin commands for one plugin.
 // Do it by executing the plugin `load` event handler.
 const loadPlugin = async function(
-  { package, packageJson, packageJson: { version } = {}, pluginPath, inputs, loadedFrom, origin },
+  { package, pluginPackageJson, pluginPackageJson: { version } = {}, pluginPath, inputs, loadedFrom, origin },
   { childProcesses, index, netlifyConfig, constants, mode, api, errorMonitor, deployId, logs, testOpts },
 ) {
   const { childProcess } = childProcesses[index]
@@ -50,14 +50,14 @@ const loadPlugin = async function(
       childProcess,
       'load',
       { pluginPath, inputs, netlifyConfig, constants },
-      { plugin: { package, packageJson }, location: { event, package, loadedFrom, origin } },
+      { plugin: { package, pluginPackageJson }, location: { event, package, loadedFrom, origin } },
     )
     const pluginCommandsA = pluginCommands.map(({ event }) => ({
       event,
       package,
       loadedFrom,
       origin,
-      packageJson,
+      pluginPackageJson,
       childProcess,
     }))
     return pluginCommandsA

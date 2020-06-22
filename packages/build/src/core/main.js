@@ -105,7 +105,7 @@ const build = async function(flags = {}) {
       return { success: true, logs }
     } catch (error) {
       await maybeCancelBuild({ error, api, deployId })
-      await logOldCliVersionError({ mode, testOpts })
+      logOldCliVersionError({ mode, testOpts })
       error.netlifyConfig = netlifyConfig
       error.childEnv = childEnv
       throw error

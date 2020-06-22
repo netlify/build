@@ -1,19 +1,19 @@
 // Retrieve plugin's package.json details to include in error messages.
-// Please note `packageJson` has been normalized by `normalize-package-data`.
-const getPluginInfo = function({ packageJson = {} }, { package }) {
-  if (Object.keys(packageJson).length === 0) {
+// Please note `pluginPackageJson` has been normalized by `normalize-package-data`.
+const getPluginInfo = function({ pluginPackageJson = {} }, { package }) {
+  if (Object.keys(pluginPackageJson).length === 0) {
     return
   }
 
   return Object.entries(FIELDS)
-    .map(([name, getField]) => serializeField({ name, getField, packageJson, package }))
+    .map(([name, getField]) => serializeField({ name, getField, pluginPackageJson, package }))
     .filter(Boolean)
     .join('\n')
 }
 
 // Serialize a single package.json field
-const serializeField = function({ name, getField, packageJson, package }) {
-  const field = getField(packageJson, package)
+const serializeField = function({ name, getField, pluginPackageJson, package }) {
+  const field = getField(pluginPackageJson, package)
   if (field === undefined) {
     return
   }
@@ -24,7 +24,7 @@ const serializeField = function({ name, getField, packageJson, package }) {
 
 const NAME_PADDING = 16
 
-const getPackage = function(packageJson, package) {
+const getPackage = function(pluginPackageJson, package) {
   return package
 }
 
@@ -36,8 +36,8 @@ const getVersion = function({ version }) {
   return version
 }
 
-const getHomepage = function(packageJson = {}) {
-  return getRepository(packageJson) || getNpmLink(packageJson) || getIssuesLink(packageJson)
+const getHomepage = function(pluginPackageJson = {}) {
+  return getRepository(pluginPackageJson) || getNpmLink(pluginPackageJson) || getIssuesLink(pluginPackageJson)
 }
 
 const getRepository = function({ repository: { url } = {} }) {
