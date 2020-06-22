@@ -1,8 +1,9 @@
 const { homedir } = require('os')
 const { resolve, join, sep } = require('path')
-const { cwd: getCwd } = require('process')
+const process = require('process')
 
 const { getCacheDir } = require('./dir')
+const { safeGetCwd } = require('./utils/cwd')
 
 // Find the paths of the file before/after caching
 const parsePath = async function({ path, cacheDir, mode }) {
@@ -13,7 +14,7 @@ const parsePath = async function({ path, cacheDir, mode }) {
 
 // Retrieve absolute path to the local file to cache/restore
 const getSrcPath = function(path) {
-  const cwd = getCwd()
+  const cwd = process.cwd()
   const srcPath = resolve(cwd, path)
   checkSrcPath(srcPath, cwd)
   return srcPath
@@ -40,7 +41,7 @@ const isParentPath = function(srcPath, cwd) {
 
 const getCachePath = async function({ srcPath, cacheDir, mode }) {
   const cacheDirA = await getCacheDir({ cacheDir, mode })
-  const { name, relPath } = findBase(srcPath)
+  const { name, relPath } = await findBase(srcPath)
   const cachePath = join(cacheDirA, name, relPath)
   return cachePath
 }
@@ -48,8 +49,8 @@ const getCachePath = async function({ srcPath, cacheDir, mode }) {
 // The cached path is the path relative to the base which can be either the
 // current directory, the home directory or the root directory. Each is tried
 // in order.
-const findBase = function(srcPath) {
-  const bases = getBases()
+const findBase = async function(srcPath) {
+  const bases = await getBases()
   const srcPathA = normalizeWindows(srcPath)
   return bases.map(({ name, base }) => parseBase(name, base, srcPathA)).find(Boolean)
 }
@@ -80,12 +81,18 @@ const parseBase = function(name, base, srcPath) {
   return { name, relPath }
 }
 
-const getBases = function() {
-  return [
-    { name: 'cwd', base: getCwd() },
-    { name: 'home', base: homedir() },
-    { name: 'root', base: sep },
-  ]
+const getBases = async function() {
+  const cwdBase = await getCwdBase()
+  return [...cwdBase, { name: 'home', base: homedir() }, { name: 'root', base: sep }]
+}
+
+const getCwdBase = async function() {
+  const cwd = await safeGetCwd()
+  if (cwd === '') {
+    return []
+  }
+
+  return [{ name: 'cwd', base: cwd }]
 }
 
 module.exports = { parsePath, getBases }
