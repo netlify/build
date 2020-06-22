@@ -2,11 +2,17 @@ const { throwError } = require('../error')
 
 const { getExample } = require('./example')
 const {
+  PRE_CASE_NORMALIZE_VALIDATIONS,
   PRE_MERGE_VALIDATIONS,
   PRE_CONTEXT_VALIDATIONS,
   PRE_NORMALIZE_VALIDATIONS,
   POST_NORMALIZE_VALIDATIONS,
 } = require('./validations')
+
+// Validate the configuration file, before case normalization.
+const validatePreCaseNormalize = function(config) {
+  validateConfig(config, PRE_CASE_NORMALIZE_VALIDATIONS)
+}
 
 // Validate the configuration file, before `defaultConfig` merge.
 const validatePreMergeConfig = function(config, defaultConfig) {
@@ -124,6 +130,7 @@ const validateChildProp = function({ childProp, value, nextPath, propPath, prevP
 }
 
 module.exports = {
+  validatePreCaseNormalize,
   validatePreMergeConfig,
   validatePreContextConfig,
   validatePreNormalizeConfig,
