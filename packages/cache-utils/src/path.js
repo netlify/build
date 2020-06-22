@@ -5,15 +5,15 @@ const { getCacheDir } = require('./dir')
 const { safeGetCwd } = require('./utils/cwd')
 
 // Find the paths of the file before/after caching
-const parsePath = async function({ path, cacheDir, mode }) {
-  const srcPath = await getSrcPath(path)
-  const cachePath = await getCachePath({ srcPath, cacheDir, mode })
+const parsePath = async function({ path, cacheDir, cwdOpt, mode }) {
+  const srcPath = await getSrcPath(path, cwdOpt)
+  const cachePath = await getCachePath({ srcPath, cacheDir, cwdOpt, mode })
   return { srcPath, cachePath }
 }
 
 // Retrieve absolute path to the local file to cache/restore
-const getSrcPath = async function(path) {
-  const cwd = await safeGetCwd()
+const getSrcPath = async function(path, cwdOpt) {
+  const cwd = await safeGetCwd(cwdOpt)
   const srcPath = resolvePath(path, cwd)
   checkSrcPath(srcPath, cwd)
   return srcPath
@@ -50,9 +50,9 @@ const isParentPath = function(srcPath, cwd) {
   return `${cwd}${sep}`.startsWith(`${srcPath}${sep}`)
 }
 
-const getCachePath = async function({ srcPath, cacheDir, mode }) {
+const getCachePath = async function({ srcPath, cacheDir, cwdOpt, mode }) {
   const cacheDirA = await getCacheDir({ cacheDir, mode })
-  const { name, relPath } = await findBase(srcPath)
+  const { name, relPath } = await findBase(srcPath, cwdOpt)
   const cachePath = join(cacheDirA, name, relPath)
   return cachePath
 }
@@ -60,8 +60,8 @@ const getCachePath = async function({ srcPath, cacheDir, mode }) {
 // The cached path is the path relative to the base which can be either the
 // current directory, the home directory or the root directory. Each is tried
 // in order.
-const findBase = async function(srcPath) {
-  const bases = await getBases()
+const findBase = async function(srcPath, cwdOpt) {
+  const bases = await getBases(cwdOpt)
   const srcPathA = normalizeWindows(srcPath)
   return bases.map(({ name, base }) => parseBase(name, base, srcPathA)).find(Boolean)
 }
@@ -92,13 +92,13 @@ const parseBase = function(name, base, srcPath) {
   return { name, relPath }
 }
 
-const getBases = async function() {
-  const cwdBase = await getCwdBase()
+const getBases = async function(cwdOpt) {
+  const cwdBase = await getCwdBase(cwdOpt)
   return [...cwdBase, { name: 'home', base: homedir() }, { name: 'root', base: sep }]
 }
 
-const getCwdBase = async function() {
-  const cwd = await safeGetCwd()
+const getCwdBase = async function(cwdOpt) {
+  const cwd = await safeGetCwd(cwdOpt)
   if (cwd === '') {
     return []
   }

@@ -101,6 +101,13 @@ module.exports = {
 }
 ```
 
+#### cwd
+
+_Type_: `string` \
+_Default_:`process.cwd()`
+
+Current directory used to resolve relative paths.
+
 ## restore(path, options?)
 
 `path`: `string`\
@@ -116,7 +123,14 @@ Returns `false` if the file/directory was not cached yet. Returns `true` otherwi
 
 ### options
 
-## remove(path)
+#### cwd
+
+_Type_: `string` \
+_Default_:`process.cwd()`
+
+Current directory used to resolve relative paths.
+
+## remove(path, options?)
 
 `path`: `string`\
 _Returns_: `Promise<Boolean>`
@@ -133,7 +147,16 @@ module.exports = {
 }
 ```
 
-## has(path)
+### options
+
+#### cwd
+
+_Type_: `string` \
+_Default_:`process.cwd()`
+
+Current directory used to resolve relative paths.
+
+## has(path, options?)
 
 `path`: `string`\
 _Returns_: `Promise<Boolean>`
@@ -165,7 +188,16 @@ module.exports = {
 }
 ```
 
-## list()
+### options
+
+#### cwd
+
+_Type_: `string` \
+_Default_:`process.cwd()`
+
+Current directory used to resolve relative paths.
+
+## list(options?)
 
 _Returns_: `Promise<string[]>`
 
@@ -180,3 +212,12 @@ module.exports = {
   },
 }
 ```
+
+### options
+
+#### cwd
+
+_Type_: `string` \
+_Default_:`process.cwd()`
+
+Current directory used to resolve relative paths.
