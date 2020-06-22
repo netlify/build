@@ -1,4 +1,4 @@
-const { cwd: getCwd, env } = require('process')
+const process = require('process')
 
 const { isDirectory } = require('path-type')
 
@@ -17,16 +17,26 @@ const addDefaultOpts = function(opts = {}) {
   return optsC
 }
 
-const getDefaultOpts = function({ env: envOpt = {} }) {
-  const combinedEnv = { ...env, ...envOpt }
+const getDefaultOpts = function({ env: envOpt = {}, cwd: cwdOpt }) {
+  const combinedEnv = { ...process.env, ...envOpt }
   return {
+    ...getDefaultCwd(cwdOpt),
     env: envOpt,
-    cwd: getCwd(),
     context: combinedEnv.CONTEXT || 'production',
     branch: combinedEnv.BRANCH,
     token: combinedEnv.NETLIFY_AUTH_TOKEN,
     mode: 'require',
   }
+}
+
+// `process.cwd()` can throw, so only call it when needed
+const getDefaultCwd = function(cwdOpt) {
+  if (cwdOpt !== undefined) {
+    return {}
+  }
+
+  const cwd = process.cwd()
+  return { cwd }
 }
 
 // Normalize options
