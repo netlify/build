@@ -290,7 +290,7 @@ const isCiReactError = function({ error, env: { CI }, sitePackageJson }) {
 }
 
 const isCreateReactApp = function({ scripts }) {
-  return isPlainObj(scripts) && scripts.build === CREATE_REACT_APP_BUILD
+  return isPlainObj(scripts) && typeof scripts.build === 'string' && scripts.build.startsWith(CREATE_REACT_APP_BUILD)
 }
 
 const CREATE_REACT_APP_BUILD = 'react-scripts build'
