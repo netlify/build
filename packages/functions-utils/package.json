@@ -1,6 +1,6 @@
 {
   "name": "@netlify/functions-utils",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Utility for adding Functions files in Netlify Build",
   "main": "src/main.js",
   "files": [
