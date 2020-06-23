@@ -27,15 +27,24 @@ module.exports = {
 
 _Returns_: `Promise<object[]>`
 
-Returns the list of Netlify Functions as a Promise resolving to an array of objects with the following properties:
+Returns the list of Netlify Functions main files as a Promise resolving to an array of objects with the following
+properties:
 
 - `mainFile` `{string}`: absolute path to the Function's main file
-- `srcFiles` `{string[]}`: absolute path to all the Function's files (main files and required files)
 - `extension` `{string}`: file extension of the Function's main file. For Go Functions, this might be an empty string.
   For Node.js Functions, this is either `.js` or `.zip`.
 - `runtime` `"js" | "go"`: Function's programming language
 
 This throws when no `functions` directory was specified by the user, or when it points to a non-existing directory.
+
+## listAll()
+
+_Returns_: `Promise<object[]>`
+
+Same as `list()` except it also returns the files required by the Functions main files. This is much slower. The object
+have the following additional member:
+
+- `srcFile` `{string}`: absolute path to the file
 
 ## add(path)
 

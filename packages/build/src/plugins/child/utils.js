@@ -32,7 +32,8 @@ const getFunctionsUtils = function(FUNCTIONS_SRC) {
   const functionsUtils = require('@netlify/functions-utils')
   const add = src => functionsUtils.add(src, FUNCTIONS_SRC, { fail: failBuild })
   const list = functionsUtils.list.bind(null, FUNCTIONS_SRC, { fail: failBuild })
-  return { add, list }
+  const listAll = functionsUtils.listAll.bind(null, FUNCTIONS_SRC, { fail: failBuild })
+  return { add, list, listAll }
 }
 
 const getStatusUtils = function(runState) {
