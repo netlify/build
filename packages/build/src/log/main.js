@@ -34,11 +34,11 @@ const logFlags = function(logs, flags, { debug }) {
 }
 
 // Hidden because the value is security-sensitive
-const SECURE_FLAGS = ['token', 'bugsnagKey', 'env']
+const SECURE_FLAGS = ['token', 'bugsnagKey', 'env', 'cachedConfig', 'defaultConfig']
 // Hidden because those are used in tests
 const TEST_FLAGS = ['buffer', 'debug', 'telemetry']
 // Hidden because those are only used internally
-const INTERNAL_FLAGS = ['cachedConfig', 'defaultConfig', 'nodePath', 'functionsDistDir', 'buildImagePluginsDir']
+const INTERNAL_FLAGS = ['nodePath', 'functionsDistDir', 'buildImagePluginsDir']
 const HIDDEN_FLAGS = [...SECURE_FLAGS, ...TEST_FLAGS, ...INTERNAL_FLAGS]
 const HIDDEN_DEBUG_FLAGS = [...SECURE_FLAGS, ...TEST_FLAGS]
 
