@@ -26,8 +26,9 @@ const logBuildStart = function(logs) {
   logMessage(logs, `${name} ${version}`)
 }
 
-const logFlags = function(logs, flags) {
-  const flagsA = omit(flags, HIDDEN_FLAGS)
+const logFlags = function(logs, flags, { debug }) {
+  const hiddenFlags = debug ? HIDDEN_DEBUG_FLAGS : HIDDEN_FLAGS
+  const flagsA = omit(flags, hiddenFlags)
   logSubHeader(logs, 'Flags')
   logObject(logs, flagsA)
 }
@@ -39,6 +40,7 @@ const TEST_FLAGS = ['buffer', 'debug', 'telemetry']
 // Hidden because those are only used internally
 const INTERNAL_FLAGS = ['cachedConfig', 'defaultConfig', 'nodePath', 'functionsDistDir', 'buildImagePluginsDir']
 const HIDDEN_FLAGS = [...SECURE_FLAGS, ...TEST_FLAGS, ...INTERNAL_FLAGS]
+const HIDDEN_DEBUG_FLAGS = [...SECURE_FLAGS, ...TEST_FLAGS]
 
 const logBuildDir = function(logs, buildDir) {
   logSubHeader(logs, 'Current directory')
