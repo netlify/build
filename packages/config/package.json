@@ -29,7 +29,7 @@
     "find-up": "^4.1.0",
     "indent-string": "^4.0.0",
     "is-plain-obj": "^2.1.0",
-    "netlify": "^4.3.2",
+    "netlify": "^4.3.3",
     "p-locate": "^4.1.0",
     "path-exists": "^4.0.0",
     "path-type": "^4.0.0",
