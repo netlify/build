@@ -4,9 +4,9 @@ const { removeFalsy } = require('../utils/remove_falsy')
 
 // Make sure we are not printing secret values. Use an allow list.
 const cleanupConfig = function({
-  build: { base, command, environment = {}, functions, ignore, processing, publish },
+  build: { base, command, environment = {}, functions, ignore, processing, publish } = {},
   headers,
-  plugins,
+  plugins = [],
   redirects,
 }) {
   const environmentA = cleanupEnvironment(environment)

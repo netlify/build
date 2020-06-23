@@ -9,6 +9,7 @@ const { mergeDefaultConfig } = require('./default_config')
 const { throwError } = require('./error')
 const { handleFiles } = require('./files')
 const { cleanupConfig } = require('./log/cleanup')
+const { logDefaultConfig } = require('./log/options')
 const { normalizeConfig } = require('./normalize')
 const { addDefaultOpts, normalizeOpts } = require('./options/main')
 const { parseConfig } = require('./parse')
@@ -48,11 +49,10 @@ const resolveConfig = async function(opts) {
     siteId,
     baseRelDir,
     mode,
+    debug,
   } = await normalizeOpts(optsA)
 
-  // Retrieve default configuration file. It has less priority and it also does
-  // not get normalized, merged with contexts, etc.
-  const defaultConfigA = getConfig(defaultConfig, 'default')
+  const defaultConfigA = parseDefaultConfig(defaultConfig, debug)
 
   const siteInfo = await getSiteInfo(api, siteId, mode)
   const { defaultConfig: defaultConfigB, baseRelDir: baseRelDirA = DEFAULT_BASE_REL_DIR } = addBuildSettings({
@@ -80,6 +80,14 @@ const resolveConfig = async function(opts) {
 // it could be retrieved from the `siteInfo`, which is why the default value
 // is assigned later than other properties.
 const DEFAULT_BASE_REL_DIR = true
+
+// Retrieve default configuration file. It has less priority and it also does
+// not get normalized, merged with contexts, etc.
+const parseDefaultConfig = function(defaultConfig, debug) {
+  const defaultConfigA = getConfig(defaultConfig, 'default')
+  logDefaultConfig(defaultConfigA, debug)
+  return defaultConfigA
+}
 
 // Load a configuration file passed as a JSON object.
 // The logic is much simpler: it does not normalize nor validate it.

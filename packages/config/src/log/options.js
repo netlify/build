@@ -1,5 +1,7 @@
 const { removeFalsy } = require('../utils/remove_falsy')
 
+const { cleanupConfig } = require('./cleanup')
+
 // Log options in debug mode.
 const logOpts = function(opts, { debug }) {
   if (!debug) {
@@ -10,9 +12,19 @@ const logOpts = function(opts, { debug }) {
   debugLogObject('options', cleanedOpts)
 }
 
+// Log `defaultConfig` option in debug mode
+const logDefaultConfig = function(defaultConfig, debug) {
+  if (!debug || defaultConfig === undefined) {
+    return
+  }
+
+  const cleanedConfig = cleanupConfig(defaultConfig)
+  debugLogObject('defaultConfig', cleanedConfig)
+}
+
 const debugLogObject = function(message, object) {
   const serializedObject = JSON.stringify(object, null, 2)
-  console.warn(`@netlify/config ${message}\n${serializedObject}`)
+  console.warn(`@netlify/config ${message}\n${serializedObject}\n`)
 }
 
 // Use an allowlist to prevent printing confidential values.
@@ -45,4 +57,4 @@ const removeEmptyArray = function(array, propName) {
   return array.length === 0 ? {} : { [propName]: array }
 }
 
-module.exports = { logOpts }
+module.exports = { logOpts, logDefaultConfig }
