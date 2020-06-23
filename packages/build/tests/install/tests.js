@@ -57,17 +57,17 @@ test('Functions: install dependencies with Yarn in CI', async t => {
 })
 
 test('Functions: does not install dependencies unless opting in', async t => {
-  await runInstallFixture(t, 'optional', [`${FIXTURES_DIR}/optional/.netlify/functions/`])
+  await runInstallFixture(t, 'optional', [])
   t.false(await pathExists(`${FIXTURES_DIR}/optional/functions/node_modules/`))
 })
 
 test('Functions: does not print warnings when dependency was mispelled', async t => {
-  await runInstallFixture(t, 'mispelled_dep', [`${FIXTURES_DIR}/mispelled_dep/.netlify/functions/`])
+  await runInstallFixture(t, 'mispelled_dep', [])
   t.false(await pathExists(`${FIXTURES_DIR}/mispelled_dep/functions/node_modules/`))
 })
 
 test('Functions: does not print warnings when dependency was local', async t => {
-  await runInstallFixture(t, 'local_dep', [`${FIXTURES_DIR}/local_dep/.netlify/functions/`])
+  await runInstallFixture(t, 'local_dep', [])
   t.false(await pathExists(`${FIXTURES_DIR}/local_dep/functions/node_modules/`))
 })
 
