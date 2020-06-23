@@ -11,13 +11,14 @@ const { getConstants } = require('./constants')
 
 // Normalize CLI flags
 const normalizeFlags = function(flags, logs) {
-  const flagsA = removeFalsy(flags)
-  logFlags(logs, flagsA)
+  const rawFlags = removeFalsy(flags)
+  const defaultFlags = getDefaultFlags(rawFlags)
+  const mergedFlags = { ...defaultFlags, ...rawFlags }
+  const normalizedFlags = removeFalsy(mergedFlags)
 
-  const defaultFlags = getDefaultFlags(flagsA)
-  const flagsB = { ...defaultFlags, ...flagsA }
-  const flagsC = removeFalsy(flagsB)
-  return flagsC
+  logFlags(logs, rawFlags, normalizedFlags)
+
+  return normalizedFlags
 }
 
 // Default values of CLI flags
