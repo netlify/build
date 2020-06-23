@@ -3,6 +3,7 @@ const process = require('process')
 const { isDirectory } = require('path-type')
 
 const { throwError } = require('../error')
+const { logOpts } = require('../log/options')
 const { removeFalsy } = require('../utils/remove_falsy')
 
 const { getBranch } = require('./branch')
@@ -10,11 +11,14 @@ const { getRepositoryRoot } = require('./repository_root')
 
 // Assign default options
 const addDefaultOpts = function(opts = {}) {
-  const optsA = removeFalsy(opts)
-  const defaultOpts = getDefaultOpts(optsA)
-  const optsB = { ...defaultOpts, ...optsA }
-  const optsC = removeFalsy(optsB)
-  return optsC
+  const rawOpts = removeFalsy(opts)
+  const defaultOpts = getDefaultOpts(rawOpts)
+  const mergedOpts = { ...defaultOpts, ...rawOpts }
+  const normalizedOpts = removeFalsy(mergedOpts)
+
+  logOpts(rawOpts, normalizedOpts)
+
+  return normalizedOpts
 }
 
 const getDefaultOpts = function({ env: envOpt = {}, cwd: cwdOpt }) {
@@ -26,6 +30,7 @@ const getDefaultOpts = function({ env: envOpt = {}, cwd: cwdOpt }) {
     branch: combinedEnv.BRANCH,
     token: combinedEnv.NETLIFY_AUTH_TOKEN,
     mode: 'require',
+    debug: Boolean(combinedEnv.NETLIFY_BUILD_DEBUG),
   }
 }
 
