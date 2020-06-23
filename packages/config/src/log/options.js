@@ -22,6 +22,17 @@ const logDefaultConfig = function(defaultConfig, debug) {
   debugLogObject('defaultConfig', cleanedConfig)
 }
 
+// Log return value of `@netlify/config` in debug mode
+const logResult = function({ configPath, buildDir, config, context, branch }, debug) {
+  if (!debug) {
+    return
+  }
+
+  const configA = cleanupConfig(config)
+  const resultA = { configPath, buildDir, config: configA, context, branch }
+  debugLogObject('result', resultA)
+}
+
 const debugLogObject = function(message, object) {
   const serializedObject = JSON.stringify(object, null, 2)
   console.warn(`@netlify/config ${message}\n${serializedObject}\n`)
@@ -57,4 +68,4 @@ const removeEmptyArray = function(array, propName) {
   return array.length === 0 ? {} : { [propName]: array }
 }
 
-module.exports = { logOpts, logDefaultConfig }
+module.exports = { logOpts, logDefaultConfig, logResult }

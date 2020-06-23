@@ -9,7 +9,7 @@ const { mergeDefaultConfig } = require('./default_config')
 const { throwError } = require('./error')
 const { handleFiles } = require('./files')
 const { cleanupConfig } = require('./log/cleanup')
-const { logDefaultConfig } = require('./log/options')
+const { logDefaultConfig, logResult } = require('./log/options')
 const { normalizeConfig } = require('./normalize')
 const { addDefaultOpts, normalizeOpts } = require('./options/main')
 const { parseConfig } = require('./parse')
@@ -73,7 +73,9 @@ const resolveConfig = async function(opts) {
 
   const { config: configA, buildDir } = await handleFiles({ config, repositoryRoot, baseRelDir: baseRelDirA })
 
-  return { siteInfo, configPath, buildDir, config: configA, context, branch, api }
+  const result = { siteInfo, configPath, buildDir, config: configA, context, branch, api }
+  logResult(result, debug)
+  return result
 }
 
 // `baseRelDir` should default to `true` only if the option was not passed and
