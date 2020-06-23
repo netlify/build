@@ -21,7 +21,7 @@ const addDefaultOpts = function(opts = {}) {
   return normalizedOpts
 }
 
-const getDefaultOpts = function({ env: envOpt = {}, cwd: cwdOpt }) {
+const getDefaultOpts = function({ env: envOpt = {}, cwd: cwdOpt, defaultConfig }) {
   const combinedEnv = { ...process.env, ...envOpt }
   return {
     ...getDefaultCwd(cwdOpt),
@@ -30,7 +30,22 @@ const getDefaultOpts = function({ env: envOpt = {}, cwd: cwdOpt }) {
     branch: combinedEnv.BRANCH,
     token: combinedEnv.NETLIFY_AUTH_TOKEN,
     mode: 'require',
-    debug: Boolean(combinedEnv.NETLIFY_BUILD_DEBUG),
+    debug: getDefaultDebug(combinedEnv, defaultConfig),
+  }
+}
+
+// --debug can be set using an environment variable `NETLIFY_BUILD_DEBUG` either
+// locally or in the UI build settings
+const getDefaultDebug = function(combinedEnv, defaultConfig) {
+  if (combinedEnv.NETLIFY_BUILD_DEBUG) {
+    return true
+  }
+
+  try {
+    const { build: { environment: { NETLIFY_BUILD_DEBUG } = {} } = {} } = JSON.parse(defaultConfig)
+    return Boolean(NETLIFY_BUILD_DEBUG)
+  } catch (error) {
+    return false
   }
 }
 
