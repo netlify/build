@@ -8,6 +8,7 @@ const { mergeContext } = require('./context')
 const { mergeDefaultConfig } = require('./default_config')
 const { throwError } = require('./error')
 const { handleFiles } = require('./files')
+const { cleanupConfig } = require('./log/cleanup')
 const { normalizeConfig } = require('./normalize')
 const { addDefaultOpts, normalizeOpts } = require('./options/main')
 const { parseConfig } = require('./parse')
@@ -168,3 +169,6 @@ const getFullConfig = async function({ configOpt, cwd, context, repositoryRoot, 
 }
 
 module.exports = resolveConfig
+// TODO: on next major release, export a single object instead of mutating the
+// top-level function
+module.exports.cleanupConfig = cleanupConfig
