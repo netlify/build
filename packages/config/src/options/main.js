@@ -3,7 +3,7 @@ const process = require('process')
 const { isDirectory } = require('path-type')
 
 const { throwError } = require('../error')
-const { logOpts } = require('../log/options')
+const { logOpts } = require('../log/main')
 const { removeFalsy } = require('../utils/remove_falsy')
 
 const { getBranch } = require('./branch')

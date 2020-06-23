@@ -2,6 +2,8 @@ const filterObj = require('filter-obj')
 
 const { removeFalsy } = require('../utils/remove_falsy')
 
+const { removeEmptyObject, removeEmptyArray } = require('./remove')
+
 // Make sure we are not printing secret values. Use an allow list.
 const cleanupConfig = function({
   build: { base, command, environment = {}, functions, ignore, processing, publish } = {},
@@ -56,15 +58,6 @@ const simplifyConfig = function({ build: { environment, ...build }, plugins, ...
     ...removeEmptyObject(buildA, 'build'),
     ...removeEmptyArray(plugins, 'plugins'),
   })
-}
-
-const removeEmptyObject = function(object, propName) {
-  const objectA = removeFalsy(object)
-  return Object.keys(objectA).length === 0 ? {} : { [propName]: objectA }
-}
-
-const removeEmptyArray = function(array, propName) {
-  return array.length === 0 ? {} : { [propName]: array }
 }
 
 module.exports = { cleanupConfig }
