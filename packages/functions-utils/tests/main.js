@@ -3,7 +3,7 @@ const { normalize } = require('path')
 const test = require('ava')
 const pathExists = require('path-exists')
 
-const { add, list } = require('..')
+const { add, list, listAll } = require('..')
 
 const { getDist, createDist, removeDist } = require('./helpers/main')
 
@@ -80,23 +80,39 @@ test('Should allow "fail" option to customize failures', async t => {
   t.is(typeof failMessage, 'string')
 })
 
-const normalizeFiles = function(fixtureDir, { mainFile, runtime, extension, srcFiles }) {
+const normalizeFiles = function(fixtureDir, { mainFile, runtime, extension, srcFile }) {
   const mainFileA = normalize(`${fixtureDir}/${mainFile}`)
-  const srcFilesA = srcFiles.map(file => normalize(`${fixtureDir}/${file}`))
-  return { mainFile: mainFileA, runtime, extension, srcFiles: srcFilesA }
+  const srcFileA = srcFile === undefined ? {} : { srcFile: normalize(`${fixtureDir}/${srcFile}`) }
+  return { mainFile: mainFileA, runtime, extension, ...srcFileA }
 }
 
-test.skip('Can list function file with list()', async t => {
+test('Can list function main files with list()', async t => {
   const fixtureDir = `${FIXTURES_DIR}/list`
   const functions = await list(fixtureDir)
   t.deepEqual(
     functions,
     [
-      { mainFile: 'one/index.js', runtime: 'js', extension: '.js', srcFiles: ['one/index.js'] },
-      { mainFile: 'test', runtime: 'go', extension: '', srcFiles: ['test'] },
-      { mainFile: 'test.js', runtime: 'js', extension: '.js', srcFiles: ['test.js'] },
-      { mainFile: 'test.zip', runtime: 'js', extension: '.zip', srcFiles: ['test.zip'] },
-      { mainFile: 'two/two.js', runtime: 'js', extension: '.js', srcFiles: ['two/three.js', 'two/two.js'] },
+      { mainFile: 'one/index.js', runtime: 'js', extension: '.js' },
+      { mainFile: 'test', runtime: 'go', extension: '' },
+      { mainFile: 'test.js', runtime: 'js', extension: '.js' },
+      { mainFile: 'test.zip', runtime: 'js', extension: '.zip' },
+      { mainFile: 'two/two.js', runtime: 'js', extension: '.js' },
+    ].map(normalizeFiles.bind(null, fixtureDir)),
+  )
+})
+
+test('Can list all function files with listAll()', async t => {
+  const fixtureDir = `${FIXTURES_DIR}/list`
+  const functions = await listAll(fixtureDir)
+  t.deepEqual(
+    functions,
+    [
+      { mainFile: 'one/index.js', runtime: 'js', extension: '.js', srcFile: 'one/index.js' },
+      { mainFile: 'test', runtime: 'go', extension: '', srcFile: 'test' },
+      { mainFile: 'test.js', runtime: 'js', extension: '.js', srcFile: 'test.js' },
+      { mainFile: 'test.zip', runtime: 'js', extension: '.zip', srcFile: 'test.zip' },
+      { mainFile: 'two/two.js', runtime: 'js', extension: '.js', srcFile: 'two/three.js' },
+      { mainFile: 'two/two.js', runtime: 'js', extension: '.js', srcFile: 'two/two.js' },
     ].map(normalizeFiles.bind(null, fixtureDir)),
   )
 })

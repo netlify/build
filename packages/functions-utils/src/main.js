@@ -2,7 +2,7 @@ const { stat } = require('fs')
 const { basename, dirname } = require('path')
 const { promisify } = require('util')
 
-const { listFunctions } = require('@netlify/zip-it-and-ship-it')
+const { listFunctions, listFunctionsFiles } = require('@netlify/zip-it-and-ship-it')
 const cpy = require('cpy')
 const pathExists = require('path-exists')
 
@@ -55,8 +55,20 @@ const list = async function(functionsSrc, { fail = defaultFail } = {}) {
   }
 }
 
+const listAll = async function(functionsSrc, { fail = defaultFail } = {}) {
+  if (functionsSrc === undefined) {
+    return fail('No function directory was specified')
+  }
+
+  try {
+    return await listFunctionsFiles(functionsSrc)
+  } catch (error) {
+    fail('Could not list Netlify Functions files', { error })
+  }
+}
+
 const defaultFail = function(message) {
   throw new Error(message)
 }
 
-module.exports = { add, list }
+module.exports = { add, list, listAll }
