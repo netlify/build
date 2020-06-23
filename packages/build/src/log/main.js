@@ -1,3 +1,4 @@
+const { cleanupConfig } = require('@netlify/config')
 const { arrowDown } = require('figures')
 const prettyMs = require('pretty-ms')
 
@@ -6,7 +7,6 @@ const { isSuccessException } = require('../error/cancel')
 const { serializeLogError } = require('../error/parse/serialize_log')
 const { omit } = require('../utils/omit')
 
-const { cleanupConfig } = require('./cleanup')
 const { getCommandDescription, getBuildCommandDescription, getPluginOrigin } = require('./description')
 const {
   log,
