@@ -6,7 +6,7 @@ const { getCacheDir } = require('./dir')
 const { isManifest } = require('./manifest')
 const { getBases } = require('./path')
 
-// List all cached files
+// List all cached files/directories, at the top-level
 const list = async function({ cacheDir, cwd: cwdOpt, mode } = {}) {
   const bases = await getBases(cwdOpt)
   const cacheDirA = await getCacheDir({ cacheDir, mode })
@@ -17,7 +17,7 @@ const list = async function({ cacheDir, cwd: cwdOpt, mode } = {}) {
 
 // TODO: the returned paths are missing the Windows drive
 const listBase = async function({ name, base }, cacheDir) {
-  const files = await readdirp.promise(`${cacheDir}/${name}`, { fileFilter })
+  const files = await readdirp.promise(`${cacheDir}/${name}`, { fileFilter, depth: 1, type: 'all' })
   const filesA = files.map(({ path }) => join(base, path))
   return filesA
 }
