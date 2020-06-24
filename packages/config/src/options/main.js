@@ -3,6 +3,7 @@ const process = require('process')
 const { isDirectory } = require('path-type')
 
 const { throwError } = require('../error')
+const { getBufferLogs } = require('../log/logger')
 const { logOpts } = require('../log/main')
 const { removeFalsy } = require('../utils/remove_falsy')
 
@@ -16,9 +17,12 @@ const addDefaultOpts = function(opts = {}) {
   const mergedOpts = { ...defaultOpts, ...rawOpts }
   const normalizedOpts = removeFalsy(mergedOpts)
 
-  logOpts(rawOpts, normalizedOpts)
+  const logs = getBufferLogs(normalizedOpts)
+  const normalizedOptsA = { ...normalizedOpts, logs }
 
-  return normalizedOpts
+  logOpts(rawOpts, normalizedOptsA)
+
+  return normalizedOptsA
 }
 
 const getDefaultOpts = function({ env: envOpt = {}, cwd: cwdOpt, defaultConfig }) {
@@ -31,6 +35,7 @@ const getDefaultOpts = function({ env: envOpt = {}, cwd: cwdOpt, defaultConfig }
     token: combinedEnv.NETLIFY_AUTH_TOKEN,
     mode: 'require',
     debug: getDefaultDebug(combinedEnv, defaultConfig),
+    buffer: false,
   }
 }
 

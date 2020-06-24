@@ -3,38 +3,38 @@ const { logObject, logSubHeader } = require('./logger')
 const { cleanupConfigOpts } = require('./options')
 
 // Log options in debug mode.
-const logOpts = function(opts, { debug, cachedConfig }) {
+const logOpts = function(opts, { logs, debug, cachedConfig }) {
   // In production, print those in the first call to `@netlify/config`, not the
   // second one done inside `@netlify/build`
   if (!debug || cachedConfig !== undefined) {
     return
   }
 
-  logSubHeader('Initial build settings')
-  logObject(cleanupConfigOpts(opts))
+  logSubHeader(logs, 'Initial build settings')
+  logObject(logs, cleanupConfigOpts(opts))
 }
 
 // Log `defaultConfig` option in debug mode
-const logDefaultConfig = function(defaultConfig, debug) {
+const logDefaultConfig = function(defaultConfig, { logs, debug }) {
   if (!debug || defaultConfig === undefined) {
     return
   }
 
-  logSubHeader('UI build settings')
-  logObject(cleanupConfig(defaultConfig))
+  logSubHeader(logs, 'UI build settings')
+  logObject(logs, cleanupConfig(defaultConfig))
 }
 
 // Log return value of `@netlify/config` in debug mode
-const logResult = function({ configPath, buildDir, config, context, branch }, debug) {
+const logResult = function({ configPath, buildDir, config, context, branch }, { logs, debug }) {
   if (!debug) {
     return
   }
 
-  logSubHeader('Resolved build settings')
-  logObject({ configPath, buildDir, context, branch })
+  logSubHeader(logs, 'Resolved build settings')
+  logObject(logs, { configPath, buildDir, context, branch })
 
-  logSubHeader('Resolved config')
-  logObject(cleanupConfig(config))
+  logSubHeader(logs, 'Resolved config')
+  logObject(logs, cleanupConfig(config))
 }
 
 module.exports = { logOpts, logDefaultConfig, logResult }

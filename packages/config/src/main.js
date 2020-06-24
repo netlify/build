@@ -50,9 +50,10 @@ const resolveConfig = async function(opts) {
     baseRelDir,
     mode,
     debug,
+    logs,
   } = await normalizeOpts(optsA)
 
-  const defaultConfigA = parseDefaultConfig(defaultConfig, debug)
+  const defaultConfigA = parseDefaultConfig({ defaultConfig, logs, debug })
 
   const siteInfo = await getSiteInfo(api, siteId, mode)
   const { defaultConfig: defaultConfigB, baseRelDir: baseRelDirA = DEFAULT_BASE_REL_DIR } = addBuildSettings({
@@ -73,8 +74,8 @@ const resolveConfig = async function(opts) {
 
   const { config: configA, buildDir } = await handleFiles({ config, repositoryRoot, baseRelDir: baseRelDirA })
 
-  const result = { siteInfo, configPath, buildDir, config: configA, context, branch, api }
-  logResult(result, debug)
+  const result = { siteInfo, configPath, buildDir, config: configA, context, branch, api, logs }
+  logResult(result, { logs, debug })
   return result
 }
 
@@ -85,9 +86,9 @@ const DEFAULT_BASE_REL_DIR = true
 
 // Retrieve default configuration file. It has less priority and it also does
 // not get normalized, merged with contexts, etc.
-const parseDefaultConfig = function(defaultConfig, debug) {
+const parseDefaultConfig = function({ defaultConfig, logs, debug }) {
   const defaultConfigA = getConfig(defaultConfig, 'default')
-  logDefaultConfig(defaultConfigA, debug)
+  logDefaultConfig(defaultConfigA, { logs, debug })
   return defaultConfigA
 }
 

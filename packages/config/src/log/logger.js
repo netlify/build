@@ -3,10 +3,26 @@ const { pointer } = require('figures')
 const { serializeObject } = require('./serialize')
 const { THEME } = require('./theme')
 
+// When the `buffer` option is true, we return logs instead of printing them
+// on the console. The logs are accumulated in a `logs` array variable.
+const getBufferLogs = function({ buffer }) {
+  if (!buffer) {
+    return
+  }
+
+  return { stdout: [], stderr: [] }
+}
+
 // This should be used instead of `console.log()`
 // Printed on stderr because stdout is reserved for the JSON output
-const log = function(string) {
+const log = function(logs, string) {
   const stringA = String(string).replace(EMPTY_LINES_REGEXP, EMPTY_LINE)
+
+  if (logs !== undefined) {
+    logs.stderr.push(stringA)
+    return
+  }
+
   console.warn(stringA)
 }
 
@@ -15,14 +31,14 @@ const log = function(string) {
 const EMPTY_LINES_REGEXP = /^\s*$/gm
 const EMPTY_LINE = '\u{200b}'
 
-const logObject = function(object) {
+const logObject = function(logs, object) {
   const string = serializeObject(object)
-  log(string)
+  log(logs, string)
 }
 
-const logSubHeader = function(string) {
+const logSubHeader = function(logs, string) {
   const stringA = `\n${THEME.subHeader(`${pointer} ${string}`)}`
-  log(stringA)
+  log(logs, stringA)
 }
 
-module.exports = { log, logObject, logSubHeader }
+module.exports = { getBufferLogs, log, logObject, logSubHeader }
