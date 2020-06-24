@@ -11,7 +11,7 @@ const logOpts = function(opts, { debug, cachedConfig }) {
   }
 
   const cleanedOpts = cleanupConfigOpts(opts)
-  logTitledObject('@netlify/config options', cleanedOpts)
+  logTitledObject('Initial build settings', cleanedOpts)
 }
 
 // Log `defaultConfig` option in debug mode
@@ -21,7 +21,7 @@ const logDefaultConfig = function(defaultConfig, debug) {
   }
 
   const cleanedConfig = cleanupConfig(defaultConfig)
-  logTitledObject('@netlify/config defaultConfig', cleanedConfig)
+  logTitledObject('UI build settings', cleanedConfig)
 }
 
 // Log return value of `@netlify/config` in debug mode
@@ -30,9 +30,8 @@ const logResult = function({ configPath, buildDir, config, context, branch }, de
     return
   }
 
-  const configA = cleanupConfig(config)
-  const resultA = { configPath, buildDir, config: configA, context, branch }
-  logTitledObject('@netlify/config result', resultA)
+  logTitledObject('Resolved build settings', { configPath, buildDir, context, branch })
+  logTitledObject('Resolved config', cleanupConfig(config))
 }
 
 const logTitledObject = function(message, object) {
