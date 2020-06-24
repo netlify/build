@@ -104,7 +104,7 @@ module.exports = {
 #### cwd
 
 _Type_: `string` \
-_Default_:`process.cwd()`
+_Default_: `process.cwd()`
 
 Current directory used to resolve relative paths.
 
@@ -126,7 +126,7 @@ Returns `false` if the file/directory was not cached yet. Returns `true` otherwi
 #### cwd
 
 _Type_: `string` \
-_Default_:`process.cwd()`
+_Default_: `process.cwd()`
 
 Current directory used to resolve relative paths.
 
@@ -152,7 +152,7 @@ module.exports = {
 #### cwd
 
 _Type_: `string` \
-_Default_:`process.cwd()`
+_Default_: `process.cwd()`
 
 Current directory used to resolve relative paths.
 
@@ -193,7 +193,7 @@ module.exports = {
 #### cwd
 
 _Type_: `string` \
-_Default_:`process.cwd()`
+_Default_: `process.cwd()`
 
 Current directory used to resolve relative paths.
 
@@ -218,6 +218,13 @@ module.exports = {
 #### cwd
 
 _Type_: `string` \
-_Default_:`process.cwd()`
+_Default_: `process.cwd()`
 
 Current directory used to resolve relative paths.
+
+#### depth
+
+_Type_: `number` \
+_Default_: `1`
+
+Number of subdirectories to include. `0` means only top-level directories will be included.
