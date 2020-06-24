@@ -2,8 +2,10 @@ const { cleanupConfig } = require('./cleanup')
 const { cleanupConfigOpts } = require('./options')
 
 // Log options in debug mode.
-const logOpts = function(opts, { debug }) {
-  if (!debug) {
+const logOpts = function(opts, { debug, cachedConfig }) {
+  // In production, print those in the first call to `@netlify/config`, not the
+  // second one done inside `@netlify/build`
+  if (!debug || cachedConfig !== undefined) {
     return
   }
 
