@@ -10,7 +10,7 @@ const logOpts = function(opts, { logs, debug, cachedConfig }) {
     return
   }
 
-  logSubHeader(logs, 'Initial build settings')
+  logSubHeader(logs, 'Initial build environment')
   logObject(logs, cleanupConfigOpts(opts))
 }
 
@@ -30,7 +30,7 @@ const logResult = function({ configPath, buildDir, config, context, branch }, { 
     return
   }
 
-  logSubHeader(logs, 'Resolved build settings')
+  logSubHeader(logs, 'Resolved build environment')
   logObject(logs, { configPath, buildDir, context, branch })
 
   logSubHeader(logs, 'Resolved config')
