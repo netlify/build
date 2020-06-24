@@ -88,6 +88,11 @@ Default: true`,
     describe: 'Print debugging information',
     hidden: true,
   },
+  buffer: {
+    boolean: true,
+    describe: 'Buffer output instead of streaming it',
+    hidden: true,
+  },
 }
 
 const USAGE = `netlify-config [OPTIONS...]
