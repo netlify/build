@@ -1,4 +1,5 @@
 const { cleanupConfig } = require('./cleanup')
+const { log, logObject } = require('./logger')
 const { cleanupConfigOpts } = require('./options')
 
 // Log options in debug mode.
@@ -10,7 +11,7 @@ const logOpts = function(opts, { debug, cachedConfig }) {
   }
 
   const cleanedOpts = cleanupConfigOpts(opts)
-  debugLogObject('options', cleanedOpts)
+  logTitledObject('@netlify/config options', cleanedOpts)
 }
 
 // Log `defaultConfig` option in debug mode
@@ -20,7 +21,7 @@ const logDefaultConfig = function(defaultConfig, debug) {
   }
 
   const cleanedConfig = cleanupConfig(defaultConfig)
-  debugLogObject('defaultConfig', cleanedConfig)
+  logTitledObject('@netlify/config defaultConfig', cleanedConfig)
 }
 
 // Log return value of `@netlify/config` in debug mode
@@ -31,23 +32,13 @@ const logResult = function({ configPath, buildDir, config, context, branch }, de
 
   const configA = cleanupConfig(config)
   const resultA = { configPath, buildDir, config: configA, context, branch }
-  debugLogObject('result', resultA)
+  logTitledObject('@netlify/config result', resultA)
 }
 
-const debugLogObject = function(message, object) {
-  const serializedObject = JSON.stringify(object, null, 2)
-  logWarning(`@netlify/config ${message}\n${serializedObject}\n`)
+const logTitledObject = function(message, object) {
+  log(message)
+  logObject(object)
+  log('')
 }
-
-// Printed on stderr because stdout is reserved for the JSON output
-const logWarning = function(string) {
-  const stringA = string.replace(EMPTY_LINES_REGEXP, EMPTY_LINE)
-  console.warn(stringA)
-}
-
-// We need to add a zero width space character in empty lines. Otherwise the
-// buildbot removes those due to a bug: https://github.com/netlify/buildbot/issues/595
-const EMPTY_LINES_REGEXP = /^\s*$/gm
-const EMPTY_LINE = '\u{200b}'
 
 module.exports = { logOpts, logDefaultConfig, logResult }
