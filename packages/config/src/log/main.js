@@ -34,7 +34,18 @@ const logResult = function({ configPath, buildDir, config, context, branch }, de
 
 const debugLogObject = function(message, object) {
   const serializedObject = JSON.stringify(object, null, 2)
-  console.warn(`@netlify/config ${message}\n${serializedObject}\n`)
+  logWarning(`@netlify/config ${message}\n${serializedObject}\n`)
 }
+
+// Printed on stderr because stdout is reserved for the JSON output
+const logWarning = function(string) {
+  const stringA = string.replace(EMPTY_LINES_REGEXP, EMPTY_LINE)
+  console.warn(stringA)
+}
+
+// We need to add a zero width space character in empty lines. Otherwise the
+// buildbot removes those due to a bug: https://github.com/netlify/buildbot/issues/595
+const EMPTY_LINES_REGEXP = /^\s*$/gm
+const EMPTY_LINE = '\u{200b}'
 
 module.exports = { logOpts, logDefaultConfig, logResult }
