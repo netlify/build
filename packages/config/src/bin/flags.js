@@ -83,6 +83,11 @@ Default: true`,
   - 'require': through require('@netlify/config')`,
     hidden: true,
   },
+  debug: {
+    boolean: true,
+    describe: 'Print debugging information',
+    hidden: true,
+  },
 }
 
 const USAGE = `netlify-config [OPTIONS...]
