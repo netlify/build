@@ -1,3 +1,5 @@
+const { serializeObject } = require('./serialize')
+
 // This should be used instead of `console.log()`
 // Printed on stderr because stdout is reserved for the JSON output
 const log = function(string) {
@@ -13,10 +15,6 @@ const EMPTY_LINE = '\u{200b}'
 const logObject = function(object) {
   const string = serializeObject(object)
   log(string)
-}
-
-const serializeObject = function(object) {
-  return JSON.stringify(object, null, 2)
 }
 
 module.exports = { log, logObject }
