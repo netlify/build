@@ -21,6 +21,10 @@ test('--repository-root', async t => {
   await runFixture(t, '', { flags: { repositoryRoot: `${FIXTURES_DIR}/empty` } })
 })
 
+test('Default --repository-root with netlify.toml', async t => {
+  await runFixture(t, 'repository_root_netlify', { copyRoot: { cwd: true, git: false } })
+})
+
 test('No .git', async t => {
   await runFixture(t, 'empty', { copyRoot: { cwd: true, git: false } })
 })
