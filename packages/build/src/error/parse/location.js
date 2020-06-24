@@ -17,8 +17,8 @@ const getLocationInfo = function({ stack, location, locationType }) {
   return [locationString, stack].filter(Boolean).join('\n')
 }
 
-const getBuildCommandLocation = function({ buildCommand, configPath }) {
-  const description = getBuildCommandDescription(configPath)
+const getBuildCommandLocation = function({ buildCommand, buildCommandOrigin }) {
+  const description = getBuildCommandDescription(buildCommandOrigin)
   return `In ${description}:
 ${buildCommand}`
 }

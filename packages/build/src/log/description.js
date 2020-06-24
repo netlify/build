@@ -1,26 +1,25 @@
-const { basename } = require('path')
-
 // Retrieve description of `build.command` or of an event handler
-const getCommandDescription = function({ event, package, configPath }) {
-  if (package === undefined) {
-    return getBuildCommandDescription(configPath)
+const getCommandDescription = function({ event, buildCommandOrigin, package }) {
+  if (buildCommandOrigin !== undefined) {
+    return getBuildCommandDescription(buildCommandOrigin)
   }
 
   return `${event} command from ${package}`
 }
 
 // Retrieve description of `build.command`
-const getBuildCommandDescription = function(configPath) {
-  if (configPath === undefined) {
-    return `Build command from settings`
-  }
+const getBuildCommandDescription = function(buildCommandOrigin) {
+  return BUILD_COMMAND_DESCRIPTIONS[buildCommandOrigin]
+}
 
-  return `build.command from ${basename(configPath)}`
+const BUILD_COMMAND_DESCRIPTIONS = {
+  ui: 'Build command from Netlify app',
+  config: 'build.command from netlify.toml',
 }
 
 // Retrieve human-friendly plugin origin
 const getPluginOrigin = function(loadedFrom, origin) {
-  const originName = ORIGINS[origin]
+  const originName = PLUGIN_ORIGINS[origin]
 
   if (loadedFrom === 'package.json') {
     return `from ${originName} and package.json`
@@ -29,7 +28,7 @@ const getPluginOrigin = function(loadedFrom, origin) {
   return `from ${originName}`
 }
 
-const ORIGINS = {
+const PLUGIN_ORIGINS = {
   core: 'core',
   ui: 'Netlify app',
   config: 'netlify.toml',

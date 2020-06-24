@@ -151,13 +151,19 @@ ${THEME.header(`┌─${line}─┬─${secondLine}─┐
   )
 }
 
-const logDryRunCommand = function({ logs, command: { event, package }, index, configPath, eventWidth, commandsCount }) {
+const logDryRunCommand = function({
+  logs,
+  command: { event, package, buildCommandOrigin },
+  index,
+  eventWidth,
+  commandsCount,
+}) {
   const columnWidth = getDryColumnWidth(eventWidth, commandsCount)
   const line = '─'.repeat(columnWidth)
   const countText = `${index + 1}. `
   const downArrow = commandsCount === index + 1 ? '  ' : ` ${arrowDown}`
   const eventWidthA = columnWidth - countText.length - downArrow.length
-  const fullName = getPluginFullName({ package, configPath })
+  const fullName = getPluginFullName({ package, buildCommandOrigin })
 
   logMessage(
     logs,
@@ -167,9 +173,9 @@ ${THEME.header(`└─${line}─┘ `)}`,
   )
 }
 
-const getPluginFullName = function({ package, configPath }) {
-  if (package === undefined) {
-    return getBuildCommandDescription(configPath)
+const getPluginFullName = function({ package, buildCommandOrigin }) {
+  if (buildCommandOrigin !== undefined) {
+    return getBuildCommandDescription(buildCommandOrigin)
   }
 
   return `Plugin ${THEME.highlightWords(package)}`
@@ -186,8 +192,8 @@ const logDryRunEnd = function(logs) {
   logMessage(logs, `\nIf this looks good to you, run \`netlify build\` to execute the build\n`)
 }
 
-const logCommand = function({ logs, event, package, index, configPath, error }) {
-  const description = getCommandDescription({ event, package, configPath })
+const logCommand = function({ logs, event, buildCommandOrigin, package, index, error }) {
+  const description = getCommandDescription({ event, buildCommandOrigin, package })
   const logHeaderFunc = error && !isSuccessException(error) ? logErrorHeader : logHeader
   logHeaderFunc(logs, `${index + 1}. ${description}`)
   logMessage(logs, '')

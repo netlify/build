@@ -43,3 +43,8 @@ if (!isCI) {
     })
   })
 }
+
+test('Logs whether the build commands came from the UI', async t => {
+  const defaultConfig = JSON.stringify({ build: { command: 'node --invalid' } })
+  await runFixture(t, 'empty', { flags: { defaultConfig } })
+})
