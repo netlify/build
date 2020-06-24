@@ -19,7 +19,7 @@ const DEFAULT_DEPTH = 1
 
 // TODO: the returned paths are missing the Windows drive
 const listBase = async function({ name, base, cacheDir, depth }) {
-  const files = await readdirp.promise(`${cacheDir}/${name}`, { fileFilter, depth, type: 'all' })
+  const files = await readdirp.promise(`${cacheDir}/${name}`, { fileFilter, depth, type: 'files_directories' })
   const filesA = files.map(({ path }) => join(base, path))
   return filesA
 }
