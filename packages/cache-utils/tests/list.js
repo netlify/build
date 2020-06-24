@@ -11,7 +11,22 @@ test('Should allow listing cached files', async t => {
   try {
     t.deepEqual(await cacheUtils.list({ cacheDir }), [])
     t.true(await cacheUtils.save(srcFile, { cacheDir }))
-    t.deepEqual(await cacheUtils.list({ cacheDir }), [srcFile.replace(/^[a-zA-Z]:\\/, '\\')])
+    const files = await cacheUtils.list({ cacheDir })
+    t.is(files.length, 2)
+    t.true(files.every(file => srcFile.replace(/^[a-zA-Z]:\\/, '\\').startsWith(file)))
+  } finally {
+    await removeFiles([cacheDir, srcDir])
+  }
+})
+
+test('Should allow changing the listing depth', async t => {
+  const [cacheDir, [srcFile, srcDir]] = await Promise.all([createTmpDir(), createTmpFile()])
+  try {
+    t.deepEqual(await cacheUtils.list({ cacheDir }), [])
+    t.true(await cacheUtils.save(srcFile, { cacheDir }))
+    const files = await cacheUtils.list({ cacheDir, depth: 0 })
+    t.is(files.length, 1)
+    t.true(files.every(file => srcFile.replace(/^[a-zA-Z]:\\/, '\\').startsWith(file)))
   } finally {
     await removeFiles([cacheDir, srcDir])
   }
