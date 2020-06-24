@@ -1,5 +1,5 @@
 const { cleanupConfig } = require('./cleanup')
-const { log, logObject } = require('./logger')
+const { logObject, logSubHeader } = require('./logger')
 const { cleanupConfigOpts } = require('./options')
 
 // Log options in debug mode.
@@ -10,8 +10,8 @@ const logOpts = function(opts, { debug, cachedConfig }) {
     return
   }
 
-  const cleanedOpts = cleanupConfigOpts(opts)
-  logTitledObject('Initial build settings', cleanedOpts)
+  logSubHeader('Initial build settings')
+  logObject(cleanupConfigOpts(opts))
 }
 
 // Log `defaultConfig` option in debug mode
@@ -20,8 +20,8 @@ const logDefaultConfig = function(defaultConfig, debug) {
     return
   }
 
-  const cleanedConfig = cleanupConfig(defaultConfig)
-  logTitledObject('UI build settings', cleanedConfig)
+  logSubHeader('UI build settings')
+  logObject(cleanupConfig(defaultConfig))
 }
 
 // Log return value of `@netlify/config` in debug mode
@@ -30,14 +30,11 @@ const logResult = function({ configPath, buildDir, config, context, branch }, de
     return
   }
 
-  logTitledObject('Resolved build settings', { configPath, buildDir, context, branch })
-  logTitledObject('Resolved config', cleanupConfig(config))
-}
+  logSubHeader('Resolved build settings')
+  logObject({ configPath, buildDir, context, branch })
 
-const logTitledObject = function(message, object) {
-  log(message)
-  logObject(object)
-  log('')
+  logSubHeader('Resolved config')
+  logObject(cleanupConfig(config))
 }
 
 module.exports = { logOpts, logDefaultConfig, logResult }

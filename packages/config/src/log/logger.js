@@ -1,4 +1,7 @@
+const { pointer } = require('figures')
+
 const { serializeObject } = require('./serialize')
+const { THEME } = require('./theme')
 
 // This should be used instead of `console.log()`
 // Printed on stderr because stdout is reserved for the JSON output
@@ -17,4 +20,9 @@ const logObject = function(object) {
   log(string)
 }
 
-module.exports = { log, logObject }
+const logSubHeader = function(string) {
+  const stringA = `\n${THEME.subHeader(`${pointer} ${string}`)}`
+  log(stringA)
+}
+
+module.exports = { log, logObject, logSubHeader }
