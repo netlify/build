@@ -45,6 +45,7 @@ const resolveConfig = async function(opts) {
     cwd,
     context,
     repositoryRoot,
+    base,
     branch,
     siteId,
     baseRelDir,
@@ -53,7 +54,7 @@ const resolveConfig = async function(opts) {
     logs,
   } = await normalizeOpts(optsA)
 
-  const defaultConfigA = parseDefaultConfig({ defaultConfig, logs, debug })
+  const defaultConfigA = parseDefaultConfig({ defaultConfig, base, logs, debug })
 
   const siteInfo = await getSiteInfo(api, siteId, mode)
   const { defaultConfig: defaultConfigB, baseRelDir: baseRelDirA = DEFAULT_BASE_REL_DIR } = addBuildSettings({
@@ -86,10 +87,22 @@ const DEFAULT_BASE_REL_DIR = true
 
 // Retrieve default configuration file. It has less priority and it also does
 // not get normalized, merged with contexts, etc.
-const parseDefaultConfig = function({ defaultConfig, logs, debug }) {
+const parseDefaultConfig = function({ defaultConfig, base, logs, debug }) {
   const defaultConfigA = getConfig(defaultConfig, 'default')
-  logDefaultConfig(defaultConfigA, { logs, debug })
-  return defaultConfigA
+  const defaultConfigB = addDefaultConfigBase(defaultConfigA, base)
+  logDefaultConfig(defaultConfigB, { logs, debug })
+  return defaultConfigB
+}
+
+// When the `base` was overridden, add it to `defaultConfig` so it behaves
+// as if it had been specified in the UI settings
+const addDefaultConfigBase = function(defaultConfig, base) {
+  if (base === undefined) {
+    return defaultConfig
+  }
+
+  const { build = {} } = defaultConfig
+  return { ...defaultConfig, build: { ...build, base } }
 }
 
 // Load a configuration file passed as a JSON object.
