@@ -17,6 +17,10 @@ test('build.base current directory', async t => {
   await runFixture(t, 'build_base_cwd')
 })
 
+test('build.base override', async t => {
+  await runFixture(t, 'build_base_override', { flags: { cwd: `${FIXTURES_DIR}/build_base_override/subdir` } })
+})
+
 test('--repository-root', async t => {
   await runFixture(t, '', { flags: { repositoryRoot: `${FIXTURES_DIR}/empty` } })
 })
