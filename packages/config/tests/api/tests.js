@@ -14,6 +14,10 @@ test('--site-id', async t => {
   await runFixture(t, 'empty', { flags: { siteId: 'test' } })
 })
 
+test('NETLIFY_SITE_ID environment variable', async t => {
+  await runFixture(t, 'empty', { env: { NETLIFY_SITE_ID: 'test' } })
+})
+
 const SITE_INFO_PATH = '/api/v1/sites/test'
 const SITE_INFO_DATA = { url: 'test', build_settings: { repo_url: 'test' } }
 const SITE_INFO_ERROR = { error: 'invalid' }
