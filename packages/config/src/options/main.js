@@ -33,6 +33,7 @@ const getDefaultOpts = function({ env: envOpt = {}, cwd: cwdOpt, defaultConfig }
     context: combinedEnv.CONTEXT || 'production',
     branch: combinedEnv.BRANCH,
     token: combinedEnv.NETLIFY_AUTH_TOKEN,
+    siteId: combinedEnv.NETLIFY_SITE_ID,
     mode: 'require',
     debug: getDefaultDebug(combinedEnv, defaultConfig),
     buffer: false,
