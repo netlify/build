@@ -6,13 +6,13 @@ const { removeEmptyObject, removeEmptyArray } = require('./remove')
 
 // Make sure we are not printing secret values. Use an allow list.
 const cleanupConfig = function({
-  build: { base, command, environment = {}, functions, ignore, processing, publish } = {},
+  build: { base, command, commandOrigin, environment = {}, functions, ignore, processing, publish } = {},
   headers,
   plugins = [],
   redirects,
 }) {
   const environmentA = cleanupEnvironment(environment)
-  const build = { base, command, environment: environmentA, functions, ignore, processing, publish }
+  const build = { base, command, commandOrigin, environment: environmentA, functions, ignore, processing, publish }
   const pluginsA = plugins.map(cleanupPlugin)
   const netlifyConfig = simplifyConfig({ build, plugins: pluginsA, headers, redirects })
   return netlifyConfig

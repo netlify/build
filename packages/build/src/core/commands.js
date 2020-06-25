@@ -29,12 +29,15 @@ const getCommands = function(pluginsCommands, netlifyConfig) {
 }
 
 // Merge `build.command` with plugin event handlers
-const addBuildCommand = function(pluginsCommands, { build: { command: buildCommand } }) {
+const addBuildCommand = function(
+  pluginsCommands,
+  { build: { command: buildCommand, commandOrigin: buildCommandOrigin } },
+) {
   if (buildCommand === undefined) {
     return pluginsCommands
   }
 
-  return [{ event: 'onBuild', buildCommand }, ...pluginsCommands]
+  return [{ event: 'onBuild', buildCommand, buildCommandOrigin }, ...pluginsCommands]
 }
 
 // Sort plugin commands by event order.
@@ -79,7 +82,7 @@ const runCommands = async function({
     commands,
     async (
       { index, error, failedPlugins, envChanges, statuses },
-      { event, childProcess, package, pluginPackageJson, loadedFrom, origin, buildCommand },
+      { event, childProcess, package, pluginPackageJson, loadedFrom, origin, buildCommand, buildCommandOrigin },
     ) => {
       const { newIndex = index, newError = error, failedPlugin = [], newEnvChanges = {}, newStatus } = await runCommand(
         {
@@ -90,6 +93,7 @@ const runCommands = async function({
           loadedFrom,
           origin,
           buildCommand,
+          buildCommandOrigin,
           configPath,
           buildDir,
           nodePath,
@@ -129,6 +133,7 @@ const runCommand = async function({
   loadedFrom,
   origin,
   buildCommand,
+  buildCommandOrigin,
   configPath,
   buildDir,
   nodePath,
@@ -150,7 +155,7 @@ const runCommand = async function({
 
   const methodTimer = startTimer()
 
-  logCommand({ logs, event, package, index, configPath, error })
+  logCommand({ logs, event, buildCommandOrigin, package, index, error })
 
   const { newEnvChanges, newError, newStatus } = await fireCommand({
     event,
@@ -160,6 +165,7 @@ const runCommand = async function({
     loadedFrom,
     origin,
     buildCommand,
+    buildCommandOrigin,
     configPath,
     buildDir,
     nodePath,
@@ -198,6 +204,7 @@ const fireCommand = function({
   loadedFrom,
   origin,
   buildCommand,
+  buildCommandOrigin,
   configPath,
   buildDir,
   nodePath,
@@ -211,6 +218,7 @@ const fireCommand = function({
   if (buildCommand !== undefined) {
     return fireBuildCommand({
       buildCommand,
+      buildCommandOrigin,
       configPath,
       buildDir,
       nodePath,
@@ -238,6 +246,7 @@ const fireCommand = function({
 // Fire `build.command`
 const fireBuildCommand = async function({
   buildCommand,
+  buildCommandOrigin,
   configPath,
   buildDir,
   nodePath,
@@ -266,7 +275,15 @@ const fireBuildCommand = async function({
     return {}
   } catch (newError) {
     handleBuildCommandOutput(newError, logs)
-    handleBuildCommandError({ error: newError, buildCommand, configPath, env, sitePackageJson, logs })
+    handleBuildCommandError({
+      error: newError,
+      buildCommand,
+      buildCommandOrigin,
+      configPath,
+      env,
+      sitePackageJson,
+      logs,
+    })
     return { newError }
   }
 }
@@ -275,8 +292,16 @@ const fireBuildCommand = async function({
 const SHELL = platform === 'win32' ? true : 'bash'
 
 // When `build.command` fails
-const handleBuildCommandError = function({ error, buildCommand, configPath, env, sitePackageJson, logs }) {
-  addErrorInfo(error, { type: 'buildCommand', location: { buildCommand, configPath } })
+const handleBuildCommandError = function({
+  error,
+  buildCommand,
+  buildCommandOrigin,
+  configPath,
+  env,
+  sitePackageJson,
+  logs,
+}) {
+  addErrorInfo(error, { type: 'buildCommand', location: { buildCommand, buildCommandOrigin, configPath } })
 
   if (isCiReactError({ error, env, sitePackageJson })) {
     logCiReactWarning(logs)

@@ -198,7 +198,7 @@ const executeCommands = async function({
   const { commands, commandsCount } = getCommands(pluginsCommands, netlifyConfig)
 
   if (dry) {
-    doDryRun({ commands, commandsCount, configPath, logs })
+    doDryRun({ commands, commandsCount, logs })
     return {}
   }
 
