@@ -24,6 +24,16 @@ const logDefaultConfig = function(defaultConfig, { logs, debug }) {
   logObject(logs, cleanupConfig(defaultConfig))
 }
 
+// Log `inlineConfig` option in debug mode
+const logInlineConfig = function(initialConfig, { logs, debug }) {
+  if (!debug) {
+    return
+  }
+
+  logSubHeader(logs, 'CLI flags')
+  logObject(logs, cleanupConfig(initialConfig))
+}
+
 // Log return value of `@netlify/config` in debug mode
 const logResult = function({ configPath, buildDir, config, context, branch }, { logs, debug }) {
   if (!debug) {
@@ -37,4 +47,4 @@ const logResult = function({ configPath, buildDir, config, context, branch }, { 
   logObject(logs, cleanupConfig(config))
 }
 
-module.exports = { logOpts, logDefaultConfig, logResult }
+module.exports = { logOpts, logDefaultConfig, logInlineConfig, logResult }

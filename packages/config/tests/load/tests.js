@@ -45,6 +45,31 @@ test('--defaultConfig merges UI plugins with config plugins', async t => {
   await runFixture(t, 'plugins_merge', { flags: { defaultConfig } })
 })
 
+test('--inlineConfig CLI flag', async t => {
+  await runFixture(t, 'default_merge', { flags: { 'inlineConfig.build.publish': 'publish' }, useBinary: true })
+})
+
+test('--inlineConfig is merged', async t => {
+  const inlineConfig = { build: { publish: 'publish' } }
+  await runFixture(t, 'default_merge', { flags: { inlineConfig } })
+})
+
+test('--inlineConfig is merged with priority', async t => {
+  const inlineConfig = { build: { command: 'echo commandInline' } }
+  await runFixture(t, 'default_priority', { flags: { inlineConfig } })
+})
+
+test('--inlineConfig falsy values are ignored', async t => {
+  const inlineConfig = { build: { command: '', publish: undefined } }
+  await runFixture(t, 'default_priority', { flags: { inlineConfig } })
+})
+
+test('--inlineConfig can override the "base"', async t => {
+  const defaultConfig = JSON.stringify({ build: { base: 'defaultBase' } })
+  const inlineConfig = { build: { base: 'base' } }
+  await runFixture(t, 'merge_base', { flags: { defaultConfig, inlineConfig } })
+})
+
 test('--cachedConfig', async t => {
   const { returnValue } = await runFixture(t, 'cached_config', { snapshot: false })
   await runFixture(t, 'cached_config', { flags: { cachedConfig: returnValue } })

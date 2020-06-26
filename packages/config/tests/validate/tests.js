@@ -102,3 +102,8 @@ test('Validates defaultConfig', async t => {
   const defaultConfig = JSON.stringify({ build: { command: false } })
   await runFixture(t, 'empty', { flags: { defaultConfig } })
 })
+
+test('Validates inlineConfig', async t => {
+  const inlineConfig = { build: { command: false } }
+  await runFixture(t, 'empty', { flags: { inlineConfig } })
+})

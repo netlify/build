@@ -6,6 +6,7 @@ const { normalizeConfigCase } = require('./case')
 const { mergeContext } = require('./context')
 const { getConfig, parseDefaultConfig } = require('./default')
 const { handleFiles } = require('./files')
+const { getInlineConfig } = require('./inline_config')
 const { cleanupConfig } = require('./log/cleanup')
 const { logResult } = require('./log/main')
 const { mergeConfigs } = require('./merge')
@@ -41,6 +42,7 @@ const resolveConfig = async function(opts) {
   const {
     config: configOpt,
     defaultConfig,
+    inlineConfig,
     cwd,
     context,
     repositoryRoot,
@@ -63,6 +65,7 @@ const resolveConfig = async function(opts) {
     logs,
     debug,
   })
+  const inlineConfigA = getInlineConfig({ inlineConfig, logs, debug })
 
   const { configPath, config } = await loadConfig({
     configOpt,
@@ -71,6 +74,7 @@ const resolveConfig = async function(opts) {
     repositoryRoot,
     branch,
     defaultConfig: defaultConfigA,
+    inlineConfig: inlineConfigA,
     baseRelDir: baseRelDirA,
   })
 
@@ -92,6 +96,8 @@ const loadConfig = async function({
   branch,
   defaultConfig,
   defaultConfig: { build: { base: defaultBase } = {} },
+  inlineConfig,
+  inlineConfig: { build: { base: initialBase = defaultBase } = {} },
   baseRelDir,
 }) {
   const {
@@ -100,14 +106,23 @@ const loadConfig = async function({
     config: {
       build: { base },
     },
-  } = await getFullConfig({ configOpt, cwd, context, repositoryRoot, branch, defaultConfig, base: defaultBase })
+  } = await getFullConfig({
+    configOpt,
+    cwd,
+    context,
+    repositoryRoot,
+    branch,
+    defaultConfig,
+    inlineConfig,
+    base: initialBase,
+  })
 
   // No second pass needed if:
   //  - there is no `build.base`
   //  - `build.base` is the same as the `Base directory` UI setting (already used in the first round)
   //  - `baseRelDir` feature flag is not used. This feature flag was introduced to ensure
   //    backward compatibility.
-  if (!baseRelDir || base === undefined || base === defaultBase) {
+  if (!baseRelDir || base === undefined || base === initialBase) {
     return { configPath, config }
   }
 
@@ -117,6 +132,7 @@ const loadConfig = async function({
     repositoryRoot,
     branch,
     defaultConfig,
+    inlineConfig,
     base,
   })
 
@@ -127,7 +143,16 @@ const loadConfig = async function({
 }
 
 // Load configuration file and normalize it, merge contexts, etc.
-const getFullConfig = async function({ configOpt, cwd, context, repositoryRoot, branch, defaultConfig, base }) {
+const getFullConfig = async function({
+  configOpt,
+  cwd,
+  context,
+  repositoryRoot,
+  branch,
+  defaultConfig,
+  inlineConfig,
+  base,
+}) {
   const configPath = await getConfigPath({ configOpt, cwd, repositoryRoot, base })
 
   try {
@@ -136,8 +161,8 @@ const getFullConfig = async function({ configOpt, cwd, context, repositoryRoot, 
     validatePreCaseNormalize(config)
     const configA = normalizeConfigCase(config)
 
-    validatePreMergeConfig(configA, defaultConfig)
-    const configB = mergeConfigs(defaultConfig, configA)
+    validatePreMergeConfig(defaultConfig, configA, inlineConfig)
+    const configB = mergeConfigs(defaultConfig, configA, inlineConfig)
 
     validatePreContextConfig(configB)
     const configC = mergeContext(configB, context, branch)

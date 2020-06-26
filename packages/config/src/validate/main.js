@@ -16,9 +16,10 @@ const validatePreCaseNormalize = function(config) {
 }
 
 // Validate the configuration file, before `defaultConfig` merge.
-const validatePreMergeConfig = function(config, defaultConfig) {
-  validateConfig(config, PRE_MERGE_VALIDATIONS)
+const validatePreMergeConfig = function(defaultConfig, config, inlineConfig) {
   validateConfig(defaultConfig, PRE_MERGE_VALIDATIONS)
+  validateConfig(config, PRE_MERGE_VALIDATIONS)
+  validateConfig(inlineConfig, PRE_MERGE_VALIDATIONS)
 }
 
 // Validate the configuration file, before context merge.
