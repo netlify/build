@@ -1,16 +1,17 @@
 const indentString = require('indent-string')
 
+const { THEME } = require('../log/theme')
 const { serializeToml } = require('../utils/toml.js')
 
 // Print invalid value and example netlify.toml
 const getExample = function({ value, key, prevPath, example }) {
   const exampleA = typeof example === 'function' ? example(value, key, prevPath) : example
   return `
-Invalid syntax
+${THEME.errorSubHeader('Invalid syntax')}
 
 ${indentString(getInvalidValue(value, prevPath), 2)}
 
-Valid syntax
+${THEME.subHeader('Valid syntax')}
 
 ${indentString(serializeToml(exampleA), 2)}`
 }

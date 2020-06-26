@@ -1,4 +1,5 @@
 const test = require('ava')
+const hasAnsi = require('has-ansi')
 
 const { runFixture } = require('../helpers/main')
 
@@ -18,4 +19,18 @@ test('Debug mode can be enabled using the NETLIFY_BUILD_DEBUG environment variab
 test('Debug mode can be enabled using the NETLIFY_BUILD_DEBUG environment UI setting', async t => {
   const defaultConfig = JSON.stringify({ build: { environment: { NETLIFY_BUILD_DEBUG: 'true' } } })
   await runFixture(t, 'simple', { flags: { defaultConfig } })
+})
+
+test('Prints colors', async t => {
+  const { returnValue } = await runFixture(t, 'simple', {
+    flags: { debug: true },
+    env: { FORCE_COLOR: '1' },
+    snapshot: false,
+    useBinary: true,
+  })
+  const {
+    logs: { stderr },
+  } = JSON.parse(returnValue)
+  const stderrA = stderr.join('\n')
+  t.true(hasAnsi(stderrA))
 })
