@@ -4,7 +4,7 @@ const { deepMerge } = require('./utils/merge')
 
 // Merge `--defaultConfig` which is used to retrieve UI build settings and
 // UI-installed plugins.
-const mergeDefaultConfig = function({ plugins: defaultPlugins = [], ...defaultConfig }, { plugins = [], ...config }) {
+const mergeConfigs = function({ plugins: defaultPlugins = [], ...defaultConfig }, { plugins = [], ...config }) {
   const [defaultConfigA, configA] = addBuildCommandOrigins(defaultConfig, config)
   const configB = deepMerge(defaultConfigA, configA)
   const pluginsA = mergePlugins(defaultPlugins, plugins)
@@ -33,4 +33,4 @@ const isNotOverridenPlugin = function(plugin, index, plugins) {
   return overridingPlugin === undefined
 }
 
-module.exports = { mergeDefaultConfig }
+module.exports = { mergeConfigs }
