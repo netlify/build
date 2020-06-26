@@ -21,7 +21,6 @@ const run = async function({ event, error, envChanges }, { pluginCommands, const
 // TODO: remove once no plugins is doing this anymore.
 const validateOldSyntax = function(runOptions) {
   setOldProperty(runOptions, 'pluginConfig', 'The "pluginConfig" argument has been renamed to "inputs"')
-  setOldProperty(runOptions.constants, 'BUILD_DIR', 'The "BUILD_DIR" argument has been renamed to "PUBLISH_DIR"')
 }
 
 module.exports = { run }
