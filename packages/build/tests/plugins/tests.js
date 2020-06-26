@@ -322,10 +322,6 @@ test('Validate plugin backward compatibility from manifest.yml with "name"', asy
   await runFixture(t, 'backward_compat_name')
 })
 
-test('Validate plugin backward compatibility from manifest.yml with "inputs"', async t => {
-  await runFixture(t, 'backward_compat_inputs')
-})
-
 test('Validate plugin backward compatibility from manifest.yml with "config"', async t => {
   await runFixture(t, 'backward_compat_config')
 })
