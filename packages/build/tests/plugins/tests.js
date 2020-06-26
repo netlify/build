@@ -272,10 +272,6 @@ test.serial('Big plugin output is not truncated', async t => {
   t.pass()
 })
 
-test('Using "pluginConfig" fails with a warning', async t => {
-  await runFixture(t, 'inputs_plugin_config')
-})
-
 test('Plugins can have inputs', async t => {
   await runFixture(t, 'inputs')
 })
