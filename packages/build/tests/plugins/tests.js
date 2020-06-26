@@ -254,10 +254,6 @@ test('Validate --node-path', async t => {
   await runFixture(t, 'node_version_simple', { flags: { nodePath: '/doesNotExist' } })
 })
 
-test('plugin.event is renamed to plugin.onEvent', async t => {
-  await runFixture(t, 'event_name')
-})
-
 test('Plugins can execute local binaries', async t => {
   await runFixture(t, 'local_bin')
 })

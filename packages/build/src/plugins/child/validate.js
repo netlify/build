@@ -2,7 +2,7 @@ const isPlainObj = require('is-plain-obj')
 
 const { serializeArray } = require('../../log/serialize')
 const { ERROR_TYPE_SYM, validateOldProperty } = require('../error')
-const { EVENTS, LEGACY_EVENTS } = require('../events')
+const { EVENTS } = require('../events')
 
 // Validate the shape of a plugin return value
 const validatePlugin = function(logic) {
@@ -42,11 +42,6 @@ const validateOldProperties = function(logic) {
 
 // All other properties are event handlers
 const validateEventHandler = function(value, propName) {
-  // TODO: remove once no plugins is doing this anymore.
-  if (LEGACY_EVENTS[propName] !== undefined) {
-    throw new Error(`Event handler '${propName}' has been renamed to '${LEGACY_EVENTS[propName]}'`)
-  }
-
   if (!EVENTS.includes(propName)) {
     throw new Error(`Invalid event '${propName}'.
 Please use a valid event name. One of:
