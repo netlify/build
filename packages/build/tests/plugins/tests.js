@@ -118,7 +118,7 @@ test('plugin.onSuccess is not triggered on cancelBuild()', async t => {
   await runFixture(t, 'success_cancel_build')
 })
 
-test('plugin.onSuccess can fail', async t => {
+test('plugin.onSuccess can fail but does not stop builds', async t => {
   await runFixture(t, 'success_fail')
 })
 
