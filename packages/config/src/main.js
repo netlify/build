@@ -1,14 +1,13 @@
 require('./utils/polyfills')
 
-const { addBuildSettings } = require('./api/build_settings')
 const { getApiClient } = require('./api/client')
 const { getSiteInfo } = require('./api/site_info')
 const { normalizeConfigCase } = require('./case')
 const { mergeContext } = require('./context')
-const { throwError } = require('./error')
+const { getConfig, parseDefaultConfig } = require('./default')
 const { handleFiles } = require('./files')
 const { cleanupConfig } = require('./log/cleanup')
-const { logDefaultConfig, logResult } = require('./log/main')
+const { logResult } = require('./log/main')
 const { mergeConfigs } = require('./merge')
 const { normalizeConfig } = require('./normalize')
 const { addDefaultOpts, normalizeOpts } = require('./options/main')
@@ -54,13 +53,15 @@ const resolveConfig = async function(opts) {
     logs,
   } = await normalizeOpts(optsA)
 
-  const defaultConfigA = parseDefaultConfig({ defaultConfig, base, logs, debug })
-
   const siteInfo = await getSiteInfo(api, siteId, mode)
-  const { defaultConfig: defaultConfigB, baseRelDir: baseRelDirA = DEFAULT_BASE_REL_DIR } = addBuildSettings({
-    defaultConfig: defaultConfigA,
+
+  const { defaultConfig: defaultConfigA, baseRelDir: baseRelDirA } = parseDefaultConfig({
+    defaultConfig,
+    base,
     baseRelDir,
     siteInfo,
+    logs,
+    debug,
   })
 
   const { configPath, config } = await loadConfig({
@@ -69,7 +70,7 @@ const resolveConfig = async function(opts) {
     context,
     repositoryRoot,
     branch,
-    defaultConfig: defaultConfigB,
+    defaultConfig: defaultConfigA,
     baseRelDir: baseRelDirA,
   })
 
@@ -78,45 +79,6 @@ const resolveConfig = async function(opts) {
   const result = { siteInfo, configPath, buildDir, config: configA, context, branch, api, logs }
   logResult(result, { logs, debug })
   return result
-}
-
-// `baseRelDir` should default to `true` only if the option was not passed and
-// it could be retrieved from the `siteInfo`, which is why the default value
-// is assigned later than other properties.
-const DEFAULT_BASE_REL_DIR = true
-
-// Retrieve default configuration file. It has less priority and it also does
-// not get normalized, merged with contexts, etc.
-const parseDefaultConfig = function({ defaultConfig, base, logs, debug }) {
-  const defaultConfigA = getConfig(defaultConfig, 'default')
-  const defaultConfigB = addDefaultConfigBase(defaultConfigA, base)
-  logDefaultConfig(defaultConfigB, { logs, debug })
-  return defaultConfigB
-}
-
-// When the `base` was overridden, add it to `defaultConfig` so it behaves
-// as if it had been specified in the UI settings
-const addDefaultConfigBase = function(defaultConfig, base) {
-  if (base === undefined) {
-    return defaultConfig
-  }
-
-  const { build = {} } = defaultConfig
-  return { ...defaultConfig, build: { ...build, base } }
-}
-
-// Load a configuration file passed as a JSON object.
-// The logic is much simpler: it does not normalize nor validate it.
-const getConfig = function(config, name) {
-  if (config === undefined) {
-    return {}
-  }
-
-  try {
-    return JSON.parse(config)
-  } catch (error) {
-    throwError(`When resolving ${name} configuration`, error)
-  }
 }
 
 // Try to load the configuration file in two passes.
