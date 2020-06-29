@@ -1,12 +1,18 @@
 const pkgDir = require('pkg-dir')
 
-const { addErrorInfo } = require('../error/info')
 const { logInstallLocalPluginsDeps } = require('../log/main')
 
 const { installDependencies } = require('./main')
 
 // Install dependencies of local plugins.
+// Users must add this plugin to their `netlify.toml` `plugins` to use this
+// feature. We don't want to provide it by default because this makes build
+// slow and buggy.
 const installLocalPluginsDependencies = async function({ plugins, pluginsOptions, buildDir, mode, logs }) {
+  if (!plugins.some(isLocalInstallOptIn)) {
+    return
+  }
+
   const localPluginsOptions = getLocalPluginsOptions(pluginsOptions)
   if (localPluginsOptions.length === 0) {
     return
@@ -17,32 +23,12 @@ const installLocalPluginsDependencies = async function({ plugins, pluginsOptions
     return
   }
 
-  checkLocalPluginsInstall(plugins)
-
   logInstallLocalPluginsDeps(logs, localPluginsOptionsA)
   await Promise.all(
     localPluginsOptionsA.map(({ packageDir }) =>
       installDependencies({ packageRoot: packageDir, isLocal: mode !== 'buildbot' }),
     ),
   )
-}
-
-// Users must add this plugin to their `netlify.toml` `plugins` to use this
-// feature. We don't want to provide it by default because this makes build
-// slow and buggy.
-// TODO: remove once users all added this plugin to their `netlify.toml`
-const checkLocalPluginsInstall = function(plugins) {
-  if (plugins.some(isLocalInstallOptIn)) {
-    return
-  }
-
-  const error = new Error(`Please use the plugin "@netlify/plugin-local-install-core" to install dependencies from the "package.json" inside your local plugins.
-Example "netlify.toml":
-
-  [[plugins]]
-  package = "@netlify/plugin-local-install-core"`)
-  addErrorInfo(error, { type: 'resolveConfig' })
-  throw error
 }
 
 const isLocalInstallOptIn = function({ package }) {
