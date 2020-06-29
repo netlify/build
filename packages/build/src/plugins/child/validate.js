@@ -11,28 +11,19 @@ const validatePlugin = function(logic) {
       throw new Error('Plugin must be an object or a function')
     }
 
-    validateOldProperties(logic)
+    // Backward compatibility warning.
+    // TODO: remove once no plugins is doing this anymore.
+    validateOldProperty(
+      logic,
+      'name',
+      'The "name" plugin property has moved from the main plugin file to a "manifest.yml" instead',
+    )
 
     Object.entries(logic).forEach(([propName, value]) => validateEventHandler(value, propName))
   } catch (error) {
     error[ERROR_TYPE_SYM] = 'pluginValidation'
     throw error
   }
-}
-
-// Backward compatibility warnings.
-// TODO: remove once no plugins is doing this anymore.
-const validateOldProperties = function(logic) {
-  validateOldProperty(
-    logic,
-    'name',
-    'The "name" plugin property has moved from the main plugin file to a "manifest.yml" instead',
-  )
-  validateOldProperty(
-    logic,
-    'config',
-    'The "config" plugin property has moved from the main plugin file to a "manifest.yml" instead and renamed "inputs"',
-  )
 }
 
 // All other properties are event handlers
