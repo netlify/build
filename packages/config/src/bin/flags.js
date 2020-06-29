@@ -32,6 +32,11 @@ This is done as a performance optimization to cache the configuration loading lo
 Default: none.`,
     hidden: true,
   },
+  inlineConfig: {
+    describe: `Configuration properties overriding the configuration file and other settings.
+Default: none.`,
+    hidden: true,
+  },
   cwd: {
     string: true,
     describe: `Current directory. Used to retrieve the configuration file.

@@ -4,10 +4,15 @@ const { deepMerge } = require('./utils/merge')
 
 // Merge `--defaultConfig` which is used to retrieve UI build settings and
 // UI-installed plugins.
-const mergeConfigs = function({ plugins: defaultPlugins = [], ...defaultConfig }, { plugins = [], ...config }) {
-  const [defaultConfigA, configA] = addBuildCommandOrigins(defaultConfig, config)
-  const configB = deepMerge(defaultConfigA, configA)
-  const pluginsA = mergePlugins(defaultPlugins, plugins)
+// Also merge `inlineConfig` which is used for Netlify CLI flags.
+const mergeConfigs = function(
+  { plugins: defaultPlugins = [], ...defaultConfig },
+  { plugins = [], ...config },
+  { plugins: inlinePlugins = [], ...inlineConfig },
+) {
+  const [defaultConfigA, configA, inlineConfigA] = addBuildCommandOrigins(defaultConfig, config, inlineConfig)
+  const configB = deepMerge(defaultConfigA, configA, inlineConfigA)
+  const pluginsA = mergePlugins(defaultPlugins, plugins, inlinePlugins)
   return { ...configB, plugins: pluginsA }
 }
 
@@ -15,9 +20,9 @@ const mergeConfigs = function({ plugins: defaultPlugins = [], ...defaultConfig }
 // concatenation instead of override.
 // Also, we add the `origin` field of plugins: installed through `ui` or through
 // `config` (`netlify.toml`)
-const mergePlugins = function(defaultPlugins, plugins) {
-  const [defaultPluginsA, pluginsA] = addPluginsOrigins(defaultPlugins, plugins)
-  const pluginsB = [...defaultPluginsA, ...pluginsA].filter(isNotOverridenPlugin)
+const mergePlugins = function(defaultPlugins, plugins, inlinePlugins) {
+  const [defaultPluginsA, pluginsA, inlinePluginsA] = addPluginsOrigins(defaultPlugins, plugins, inlinePlugins)
+  const pluginsB = [...defaultPluginsA, ...pluginsA, ...inlinePluginsA].filter(isNotOverridenPlugin)
   return pluginsB
 }
 

@@ -9,7 +9,8 @@ test('Prints some information in debug mode', async t => {
 
 test('Does not print confidential information in debug mode', async t => {
   const defaultConfig = JSON.stringify({ build: { environment: { SECRET: 'true' } } })
-  await runFixture(t, 'simple', { flags: { debug: true, defaultConfig }, env: { SECRET: 'true' } })
+  const inlineConfig = { build: { environment: { SECRET_TWO: 'true' } } }
+  await runFixture(t, 'simple', { flags: { debug: true, defaultConfig, inlineConfig }, env: { SECRET: 'true' } })
 })
 
 test('Debug mode can be enabled using the NETLIFY_BUILD_DEBUG environment variable', async t => {

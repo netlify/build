@@ -5,8 +5,12 @@ const CONFIG_ORIGIN = 'config'
 // Add `build.commandOrigin`. This shows whether `build.command` came from the
 // `ui` or from the `config`.
 // This also removes empty build commands.
-const addBuildCommandOrigins = function(defaultConfig, config) {
-  return [addBuildCommandUiOrigin(defaultConfig), addBuildCommandConfigOrigin(config)]
+const addBuildCommandOrigins = function(defaultConfig, config, inlineConfig) {
+  return [
+    addBuildCommandUiOrigin(defaultConfig),
+    addBuildCommandConfigOrigin(config),
+    addBuildCommandConfigOrigin(inlineConfig),
+  ]
 }
 
 const addBuildCommandOrigin = function(commandOrigin, { build = {}, ...config }) {
@@ -28,8 +32,12 @@ const addCommandOrigin = function(commandOrigin, { command, ...build }) {
 const addCommandConfigOrigin = addCommandOrigin.bind(null, CONFIG_ORIGIN)
 
 // Add `plugins[*].origin`. This is like `build.commandOrigin` but for plugins.
-const addPluginsOrigins = function(defaultPlugins, plugins) {
-  return [defaultPlugins.map(addPluginUiOrigin), plugins.map(addPluginConfigOrigin)]
+const addPluginsOrigins = function(defaultPlugins, plugins, inlinePlugins) {
+  return [
+    defaultPlugins.map(addPluginUiOrigin),
+    plugins.map(addPluginConfigOrigin),
+    inlinePlugins.map(addPluginConfigOrigin),
+  ]
 }
 
 const addPluginOrigin = function(origin, plugin) {
