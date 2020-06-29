@@ -97,3 +97,8 @@ test('build.context: object', async t => {
 test('build.context.CONTEXT: object', async t => {
   await runFixture(t, 'build_context_nested_object')
 })
+
+test('Validates defaultConfig', async t => {
+  const defaultConfig = JSON.stringify({ build: { command: false } })
+  await runFixture(t, 'empty', { flags: { defaultConfig } })
+})
