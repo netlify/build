@@ -30,11 +30,6 @@ const validateOldProperties = function(logic) {
   )
   validateOldProperty(
     logic,
-    'inputs',
-    'The "inputs" plugin property has moved from the main plugin file to a "manifest.yml" instead',
-  )
-  validateOldProperty(
-    logic,
     'config',
     'The "config" plugin property has moved from the main plugin file to a "manifest.yml" instead and renamed "inputs"',
   )
