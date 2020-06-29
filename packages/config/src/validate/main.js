@@ -1,4 +1,5 @@
 const { throwError } = require('../error')
+const { THEME } = require('../log/theme')
 
 const { getExample } = require('./example')
 const {
@@ -82,7 +83,7 @@ const validateProperty = function(
 }
 
 const reportError = function({ prevPath, propPath, message, example, value, key }) {
-  throwError(`Configuration property ${propPath} ${message}
+  throwError(`${THEME.highlightWords('Configuration property')} ${propPath} ${message}
 ${getExample({ value, key, prevPath, example })}`)
 }
 
