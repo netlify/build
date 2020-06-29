@@ -61,6 +61,10 @@ test('Functions: does not install dependencies unless opting in', async t => {
   t.false(await pathExists(`${FIXTURES_DIR}/optional/functions/node_modules/`))
 })
 
+test('Functions: install dependencies handles errors', async t => {
+  await runInstallFixture(t, 'functions_error', [])
+})
+
 test('Functions: does not print warnings when dependency was mispelled', async t => {
   await runInstallFixture(t, 'mispelled_dep', [])
   t.false(await pathExists(`${FIXTURES_DIR}/mispelled_dep/functions/node_modules/`))

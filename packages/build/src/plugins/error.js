@@ -1,3 +1,5 @@
+const { addErrorInfo } = require('../error/info')
+
 // Stop build.
 // As opposed to throwing an error directly or to uncaught exceptions, this is
 // displayed as a user error, not an implementation error.
@@ -19,7 +21,7 @@ const cancelBuild = function(message, opts) {
 // stack trace. An additional `message` string is always required.
 const normalizeError = function(type, func, message, { error } = {}) {
   const errorA = getError(error, message, func)
-  errorA[ERROR_TYPE_SYM] = type
+  addErrorInfo(errorA, { type })
   return errorA
 }
 
@@ -35,27 +37,19 @@ const getError = function(error, message, func) {
   return errorA
 }
 
-const isBuildError = function(error) {
-  return error instanceof Error && error[ERROR_TYPE_SYM] !== undefined
-}
-
 const validateOldProperty = function(obj, propName, message) {
   if (obj[propName] === undefined) {
     return
   }
 
   const error = new Error(message)
-  error[ERROR_TYPE_SYM] = 'pluginValidation'
+  addErrorInfo(error, { type: 'pluginValidation' })
   throw error
 }
-
-const ERROR_TYPE_SYM = Symbol('errorType')
 
 module.exports = {
   failBuild,
   failPlugin,
   cancelBuild,
-  isBuildError,
   validateOldProperty,
-  ERROR_TYPE_SYM,
 }
