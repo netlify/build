@@ -3,8 +3,8 @@ const { dirname } = require('path')
 const readPkgUp = require('read-pkg-up')
 
 // Retrieve `package.json` from a specific directory
-const getPackageJson = async function(cwd) {
-  const packageObj = await readPkgUp({ cwd })
+const getPackageJson = async function(cwd, { normalize = true } = {}) {
+  const packageObj = await readPkgUp({ cwd, normalize })
   if (packageObj === undefined) {
     return { packageJson: {} }
   }

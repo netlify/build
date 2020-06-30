@@ -97,6 +97,10 @@ test('No configuration file', async t => {
   await runFixture(t, 'none')
 })
 
+test('Invalid package.json does not make build fail', async t => {
+  await runFixture(t, 'invalid_package_json')
+})
+
 test('--dry with one event', async t => {
   await runFixture(t, 'single', { flags: { dry: true } })
 })
