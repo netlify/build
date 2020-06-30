@@ -141,6 +141,10 @@ test('report error statuses from plugin inputs validation', async t => {
   await runWithApiMock(t, 'error_inputs_validation')
 })
 
+test('report error statuses from plugin loads with other plugins loading', async t => {
+  await runWithApiMock(t, 'error_plugin_load')
+})
+
 const runUtilsStatusShow = function(t, argument) {
   return runFixture(t, 'show_util', { env: { SHOW_ARG: JSON.stringify(argument) } })
 }
