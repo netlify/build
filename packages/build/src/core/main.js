@@ -58,7 +58,7 @@ const build = async function(flags = {}) {
       buildImagePluginsDir,
     } = await loadConfig(flagsA, logs, testOpts)
     const childEnv = await getChildEnv({ netlifyConfig, buildDir, context, branch, siteInfo, deployId, envOpt, mode })
-    const { packageJson: sitePackageJson } = await getPackageJson(buildDir)
+    const { packageJson: sitePackageJson } = await getPackageJson(buildDir, { normalize: false })
 
     try {
       const pluginsOptions = await getPluginsOptions({
