@@ -1,26 +1,15 @@
 // eslint-disable-next-line import/order
 const logProcessErrors = require('log-process-errors')
-const safeJsonStringify = require('safe-json-stringify')
 
-const { isBuildError, ERROR_TYPE_SYM } = require('../error')
+const { errorToJson } = require('../../error/build')
+const { isBuildError } = require('../../error/info')
 const { sendEventToParent } = require('../ipc')
 
 // Handle any top-level error and communicate it back to parent
-const handleError = async function({
-  name,
-  message,
-  stack,
-  [ERROR_TYPE_SYM]: type = DEFAULT_ERROR_TYPE,
-  ...errorProps
-}) {
-  // IPC uses JSON for the payload. We ensure there are not circular references
-  // as those would make the message sending fail.
-  const errorPropsA = safeJsonStringify.ensureProperties(errorProps)
-
-  await sendEventToParent('error', { name, message, stack, type, errorProps: errorPropsA })
+const handleError = async function(error) {
+  const errorPayload = errorToJson(error, { type: 'pluginInternal' })
+  await sendEventToParent('error', errorPayload)
 }
-
-const DEFAULT_ERROR_TYPE = 'pluginInternal'
 
 // On uncaught exceptions and unhandled rejections, print the stack trace.
 // Also, prevent child processes from crashing on uncaught exceptions.

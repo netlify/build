@@ -3,7 +3,7 @@ const { promisify } = require('util')
 const pEvent = require('p-event')
 const { v4: uuidv4 } = require('uuid')
 
-const { buildError } = require('../error/build')
+const { jsonToError, errorToJson } = require('../error/build')
 const { addErrorInfo } = require('../error/info')
 
 // Send event from child to parent process then wait for response
@@ -57,8 +57,9 @@ const getMessage = async function(messagePromise) {
 }
 
 const getError = async function(errorPromise, { plugin, location }) {
-  const [, { name, message, stack, type, errorProps }] = await errorPromise
-  throw buildError({ name, message, stack, type, errorProps, plugin, location })
+  const [, error] = await errorPromise
+  const errorA = jsonToError(error, { plugin, location })
+  throw errorA
 }
 
 const getExit = async function(exitPromise, { plugin, location }) {
@@ -114,21 +115,22 @@ const sendEventToParent = async function(callId, payload) {
 // Errors are not serializable through `child_process` `ipc` so we need to
 // convert from/to plain objects.
 // TODO: use `child_process.spawn()` `serialization: 'advanced'` option after
-// dropping support for Node.js <=13.2.0
-const serializePayload = function({ error: { name, message, stack, ...errorProps } = {}, ...payload }) {
+// dropping support for Node.js <=12.6.0
+const serializePayload = function({ error = {}, error: { name } = {}, ...payload }) {
   if (name === undefined) {
     return payload
   }
 
-  return { ...payload, error: { name, message, stack, errorProps } }
+  const errorA = errorToJson(error)
+  return { ...payload, error: errorA }
 }
 
-const parsePayload = function({ error = {}, ...payload }) {
-  if (error.name === undefined) {
+const parsePayload = function({ error = {}, error: { name } = {}, ...payload }) {
+  if (name === undefined) {
     return payload
   }
 
-  const errorA = buildError(error)
+  const errorA = jsonToError(error)
   return { ...payload, error: errorA }
 }
 

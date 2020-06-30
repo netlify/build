@@ -1,7 +1,7 @@
 const isPlainObj = require('is-plain-obj')
 const mapObj = require('map-obj')
 
-const { ERROR_TYPE_SYM } = require('../error')
+const { addErrorInfo } = require('../../error/info')
 
 // Report status information to the UI
 const show = function(runState, showArgs) {
@@ -35,7 +35,7 @@ const validateShowArgs = function(showArgs) {
     }
   } catch (error) {
     error.message = `utils.status.show() ${error.message}`
-    error[ERROR_TYPE_SYM] = 'pluginValidation'
+    addErrorInfo(error, { type: 'pluginValidation' })
     throw error
   }
 }

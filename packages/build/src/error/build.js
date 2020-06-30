@@ -1,8 +1,10 @@
-const { addErrorInfo } = require('./info')
+const safeJsonStringify = require('safe-json-stringify')
+
+const { addErrorInfo, getErrorInfo } = require('./info')
 
 // Retrieve error information from child process and re-build it in current
 // process. We need this since errors are not JSON-serializable.
-const buildError = function({ name, message, stack, type, errorProps = {}, plugin, location }) {
+const jsonToError = function({ name, message, stack, info = {}, errorProps = {} }, defaultInfo = {}) {
   const error = new Error('')
 
   assignErrorProps(error, { name, message, stack })
@@ -10,9 +12,8 @@ const buildError = function({ name, message, stack, type, errorProps = {}, plugi
   Object.assign(error, errorProps)
 
   // Distinguish between utils.build.*() errors and uncaught exceptions / bugs
-  if (type !== undefined) {
-    addErrorInfo(error, { type, plugin, location })
-  }
+  addErrorInfo(error, { ...defaultInfo, ...info })
+
   return error
 }
 
@@ -29,4 +30,16 @@ const assignErrorProp = function(error, name, value) {
   Object.defineProperty(error, name, { value, enumerable: false, writable: true, configurable: true })
 }
 
-module.exports = { buildError }
+// Inverse of `jsonToError()`. We do not keep `plugin` and `location` since not
+// needed at the moment.
+const errorToJson = function({ name, message, stack, ...errorProps }, defaultInfo = {}) {
+  const info = getErrorInfo(errorProps)
+  const infoA = { ...defaultInfo, ...info }
+  const errorPayload = { name, message, stack, info: infoA, errorProps }
+  // IPC uses JSON for the payload. We ensure there are not circular references
+  // as those would make the message sending fail.
+  const errorPayloadA = safeJsonStringify.ensureProperties(errorPayload)
+  return errorPayloadA
+}
+
+module.exports = { jsonToError, errorToJson }
