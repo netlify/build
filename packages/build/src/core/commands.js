@@ -74,6 +74,7 @@ const runCommands = async function({
   buildDir,
   nodePath,
   childEnv,
+  mode,
   api,
   errorMonitor,
   deployId,
@@ -104,6 +105,7 @@ const runCommands = async function({
           childEnv,
           envChanges,
           commands,
+          mode,
           api,
           errorMonitor,
           deployId,
@@ -153,6 +155,7 @@ const runCommand = async function({
   childEnv,
   envChanges,
   commands,
+  mode,
   api,
   errorMonitor,
   deployId,
@@ -195,6 +198,7 @@ const runCommand = async function({
       : await handleCommandError({
           newError,
           childEnv,
+          mode,
           api,
           errorMonitor,
           deployId,
@@ -392,6 +396,7 @@ const handleCommandSuccess = function({ event, package, newEnvChanges, newStatus
 const handleCommandError = async function({
   newError,
   childEnv,
+  mode,
   api,
   errorMonitor,
   deployId,
@@ -414,7 +419,17 @@ const handleCommandError = async function({
   }
 
   if (type === 'failPlugin' || event === 'onSuccess') {
-    return handleFailPlugin({ newStatus, package, newError, childEnv, errorMonitor, netlifyConfig, logs, testOpts })
+    return handleFailPlugin({
+      newStatus,
+      package,
+      newError,
+      childEnv,
+      mode,
+      errorMonitor,
+      netlifyConfig,
+      logs,
+      testOpts,
+    })
   }
 
   return { newError, newStatus }
@@ -424,12 +439,13 @@ const handleFailPlugin = async function({
   package,
   newError,
   childEnv,
+  mode,
   errorMonitor,
   netlifyConfig,
   logs,
   testOpts,
 }) {
-  logBuildError({ error: newError, netlifyConfig, logs })
+  logBuildError({ error: newError, mode, netlifyConfig, logs, testOpts })
   await reportBuildError({ error: newError, errorMonitor, childEnv, logs, testOpts })
   return { failedPlugin: [package], newStatus }
 }

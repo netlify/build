@@ -6,7 +6,6 @@ const { reportBuildError } = require('../error/monitor/report')
 const { startErrorMonitor } = require('../error/monitor/start')
 const { getBufferLogs } = require('../log/logger')
 const { logBuildStart, logBuildError, logBuildSuccess } = require('../log/main')
-const { logOldCliVersionError } = require('../log/old_version')
 const { startTimer, endTimer } = require('../log/timer')
 const { loadPlugins } = require('../plugins/load')
 const { getPluginsOptions } = require('../plugins/options')
@@ -214,6 +213,7 @@ const initAndRunBuild = async function({
       childEnv,
       dry,
       constants,
+      mode,
       api,
       errorMonitor,
       deployId,
@@ -237,6 +237,7 @@ const runBuild = async function({
   childEnv,
   dry,
   constants,
+  mode,
   api,
   errorMonitor,
   deployId,
@@ -258,6 +259,7 @@ const runBuild = async function({
     buildDir,
     nodePath,
     childEnv,
+    mode,
     api,
     errorMonitor,
     deployId,
@@ -293,8 +295,7 @@ const handleBuildSuccess = async function({
 // Logs and reports that a build failed
 const handleBuildFailure = async function({ error, errorMonitor, netlifyConfig, childEnv, mode, logs, testOpts }) {
   removeErrorColors(error)
-  logBuildError({ error, netlifyConfig, logs })
-  logOldCliVersionError({ mode, testOpts })
+  logBuildError({ error, netlifyConfig, mode, logs, testOpts })
   await reportBuildError({ error, errorMonitor, childEnv, logs, testOpts })
 }
 
