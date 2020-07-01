@@ -41,25 +41,31 @@ const { doDryRun } = require('./dry')
  * @returns {string[]} buildResult.logs - When using the `buffer` option, all log messages
  */
 const build = async function(flags = {}) {
-  const { flags: flagsA, errorMonitor, logs, testOpts, buildTimer } = startBuild(flags)
+  const {
+    nodePath,
+    buildImagePluginsDir,
+    dry,
+    mode,
+    deployId,
+    telemetry,
+    testOpts,
+    errorMonitor,
+    logs,
+    buildTimer,
+    ...flagsA
+  } = startBuild(flags)
 
   try {
     const {
       netlifyConfig,
       configPath,
       buildDir,
-      nodePath,
       childEnv,
       sitePackageJson,
       api,
-      dry,
       siteInfo,
-      deployId,
       constants,
-      telemetry,
-      mode,
-      buildImagePluginsDir,
-    } = await loadConfig(flagsA, logs, testOpts)
+    } = await loadConfig({ ...flagsA, mode, deployId, logs, testOpts })
 
     try {
       const { commandsCount } = await runAndReportBuild({
@@ -115,9 +121,9 @@ const startBuild = function(flags) {
   const logs = getBufferLogs(flags)
   logBuildStart(logs)
 
-  const { testOpts, bugsnagKey, ...flagsA } = normalizeFlags(flags, logs)
+  const { bugsnagKey, ...flagsA } = normalizeFlags(flags, logs)
   const errorMonitor = startErrorMonitor({ flags: flagsA, logs, bugsnagKey })
-  return { flags: flagsA, errorMonitor, logs, testOpts, buildTimer }
+  return { ...flagsA, errorMonitor, logs, buildTimer }
 }
 
 // Runs a build then report any plugin statuses
