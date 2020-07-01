@@ -24,13 +24,23 @@ const { doDryRun } = require('./dry')
 /**
  * Main entry point of Netlify Build.
  * Runs a builds and returns whether it succeeded or not.
- * @param  {object} flags - build configuration CLI flags
- * @param  {string} [flags.config] - Netlify config file path
- * @param  {string} [flags.cwd] - Current directory
+ *
+ * @param  {object} [flags] - build configuration CLI flags
+ * @param  {string} [flags.config] - Path to the configuration file
+ * @param  {string} [flags.cwd] - Current directory. Used to retrieve the configuration file
+ * @param  {string} [flags.repositoryRoot] - Git repository root directory. Used to retrieve the configuration file.
  * @param  {string} [flags.token] - Netlify API token for authentication
  * @param  {string} [flags.siteId] - Netlify Site ID
+ * @param  {string} [flags.deployId] - Netlify Deploy ID
  * @param  {string} [flags.context] - Build context
- * @param  {boolean} [flags.dry] - printing commands without executing them
+ * @param  {string} [flags.branch] - Repository branch
+ * @param  {boolean} [flags.dry=false] - Run in dry mode, i.e. printing commands without executing them
+ * @param  {string} [flags.nodePath] - Path to the Node.js binary to use in user commands and build plugins
+ * @param  {boolean} [flags.buffer=false] - Buffer output instead of printing it
+ *
+ * @returns {object} buildResult
+ * @returns {boolean} buildResult.success - Whether build succeeded or failed
+ * @returns {string[]} buildResult.logs - When using the `buffer` option, all log messages
  */
 const build = async function(flags = {}) {
   const buildTimer = startTimer()

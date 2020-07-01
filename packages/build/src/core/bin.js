@@ -91,8 +91,7 @@ Default: true`,
   dry: {
     alias: 'dry-run',
     boolean: true,
-    describe: `Run in dry mode, i.e. printing commands without
-executing them.
+    describe: `Run in dry mode, i.e. printing commands without executing them.
 Default: false`,
   },
   nodePath: {
@@ -136,8 +135,7 @@ Default: true`,
   },
   buffer: {
     boolean: true,
-    describe: 'Buffer output instead of streaming it',
-    hidden: true,
+    describe: 'Buffer output instead of printing it',
   },
 }
 
