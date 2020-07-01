@@ -2,9 +2,11 @@ const { env, execPath } = require('process')
 
 const resolveConfig = require('@netlify/config')
 
+const { getChildEnv } = require('../env/main')
 const { addApiErrorHandlers } = require('../error/api')
 const { addErrorInfo } = require('../error/info')
 const { logFlags, logBuildDir, logConfigPath, logConfig, logContext } = require('../log/main')
+const { getPackageJson } = require('../utils/package')
 const { removeFalsy } = require('../utils/remove_falsy')
 
 const { getConstants } = require('./constants')
@@ -95,27 +97,24 @@ const loadConfig = async function(
   logContext(logs, contextA)
 
   const apiA = addApiErrorHandlers(api)
-  const constants = await getConstants({
-    configPath,
-    buildDir,
-    functionsDistDir,
-    netlifyConfig,
-    siteInfo,
-    mode,
-  })
+  const [constants, childEnv, { packageJson: sitePackageJson }] = await Promise.all([
+    getConstants({ configPath, buildDir, functionsDistDir, netlifyConfig, siteInfo, mode }),
+    getChildEnv({ netlifyConfig, buildDir, context: contextA, branch: branchA, siteInfo, deployId, envOpt, mode }),
+    getPackageJson(buildDir, { normalize: false }),
+  ])
+
   return {
     netlifyConfig,
     configPath,
     buildDir,
     nodePath,
+    childEnv,
+    sitePackageJson,
     api: apiA,
     dry,
     siteInfo,
     deployId,
     constants,
-    context: contextA,
-    branch: branchA,
-    envOpt,
     telemetry,
     mode,
     buildImagePluginsDir,

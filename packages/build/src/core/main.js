@@ -1,6 +1,5 @@
 require('../utils/polyfills')
 
-const { getChildEnv } = require('../env/main')
 const { maybeCancelBuild } = require('../error/cancel')
 const { removeErrorColors } = require('../error/colors')
 const { reportBuildError } = require('../error/monitor/report')
@@ -15,7 +14,6 @@ const { startPlugins, stopPlugins } = require('../plugins/spawn')
 const { getErrorStatuses } = require('../status/add')
 const { reportStatuses } = require('../status/report')
 const { trackBuildComplete } = require('../telemetry/complete')
-const { getPackageJson } = require('../utils/package')
 
 const { getCommands, runCommands } = require('./commands')
 const { normalizeFlags, loadConfig } = require('./config')
@@ -47,20 +45,17 @@ const build = async function(flags = {}) {
       configPath,
       buildDir,
       nodePath,
+      childEnv,
+      sitePackageJson,
       api,
       dry,
       siteInfo,
       deployId,
       constants,
-      context,
-      branch,
-      envOpt,
       telemetry,
       mode,
       buildImagePluginsDir,
     } = await loadConfig(flagsA, logs, testOpts)
-    const childEnv = await getChildEnv({ netlifyConfig, buildDir, context, branch, siteInfo, deployId, envOpt, mode })
-    const { packageJson: sitePackageJson } = await getPackageJson(buildDir, { normalize: false })
 
     try {
       const { commandsCount } = await runAndReportBuild({
