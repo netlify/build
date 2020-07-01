@@ -19,6 +19,7 @@ const { startTimer, endTimer } = require('../log/timer')
 const { EVENTS } = require('../plugins/events')
 const { callChild } = require('../plugins/ipc')
 const { getSuccessStatus, addStatus } = require('../status/add')
+const { getPackageJson } = require('../utils/package')
 
 // Get commands for all events
 const getCommands = function(pluginsCommands, netlifyConfig) {
@@ -72,7 +73,6 @@ const runCommands = async function({
   buildDir,
   nodePath,
   childEnv,
-  sitePackageJson,
   errorMonitor,
   netlifyConfig,
   logs,
@@ -100,7 +100,6 @@ const runCommands = async function({
           index,
           childEnv,
           envChanges,
-          sitePackageJson,
           commands,
           errorMonitor,
           error,
@@ -140,7 +139,6 @@ const runCommand = async function({
   index,
   childEnv,
   envChanges,
-  sitePackageJson,
   commands,
   errorMonitor,
   error,
@@ -171,7 +169,6 @@ const runCommand = async function({
     nodePath,
     childEnv,
     envChanges,
-    sitePackageJson,
     commands,
     error,
     logs,
@@ -210,7 +207,6 @@ const fireCommand = function({
   nodePath,
   childEnv,
   envChanges,
-  sitePackageJson,
   commands,
   error,
   logs,
@@ -225,7 +221,6 @@ const fireCommand = function({
       childEnv,
       envChanges,
       logs,
-      sitePackageJson,
     })
   }
 
@@ -253,7 +248,6 @@ const fireBuildCommand = async function({
   childEnv,
   envChanges,
   logs,
-  sitePackageJson,
 }) {
   logBuildCommandStart(logs, buildCommand)
 
@@ -275,13 +269,13 @@ const fireBuildCommand = async function({
     return {}
   } catch (newError) {
     handleBuildCommandOutput(newError, logs)
-    handleBuildCommandError({
+    await handleBuildCommandError({
       error: newError,
       buildCommand,
       buildCommandOrigin,
       configPath,
+      buildDir,
       env,
-      sitePackageJson,
       logs,
     })
     return { newError }
@@ -292,29 +286,31 @@ const fireBuildCommand = async function({
 const SHELL = platform === 'win32' ? true : 'bash'
 
 // When `build.command` fails
-const handleBuildCommandError = function({
+const handleBuildCommandError = async function({
   error,
   buildCommand,
   buildCommandOrigin,
   configPath,
+  buildDir,
   env,
-  sitePackageJson,
   logs,
 }) {
   addErrorInfo(error, { type: 'buildCommand', location: { buildCommand, buildCommandOrigin, configPath } })
 
-  if (isCiReactError({ error, env, sitePackageJson })) {
+  if (await isCiReactError({ error, env, buildDir })) {
     logCiReactWarning(logs)
   }
 }
 
-const isCiReactError = function({ error, env: { CI }, sitePackageJson }) {
+const isCiReactError = async function({ error, env: { CI }, buildDir }) {
   return (
-    error.exitCode === 1 && typeof CI === 'string' && CI.toLowerCase() !== 'false' && isCreateReactApp(sitePackageJson)
+    error.exitCode === 1 && typeof CI === 'string' && CI.toLowerCase() !== 'false' && (await isCreateReactApp(buildDir))
   )
 }
 
-const isCreateReactApp = function({ scripts }) {
+const isCreateReactApp = async function(buildDir) {
+  const { packageJson: sitePackageJson } = await getPackageJson(buildDir, { normalize: false })
+  const { scripts } = sitePackageJson
   return isPlainObj(scripts) && typeof scripts.build === 'string' && scripts.build.startsWith(CREATE_REACT_APP_BUILD)
 }
 

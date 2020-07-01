@@ -4,7 +4,6 @@ const { getChildEnv } = require('../env/main')
 const { addApiErrorHandlers } = require('../error/api')
 const { addErrorInfo } = require('../error/info')
 const { logBuildDir, logConfigPath, logConfig, logContext } = require('../log/main')
-const { getPackageJson } = require('../utils/package')
 
 // Retrieve configuration object
 const loadConfig = async function({
@@ -51,12 +50,17 @@ const loadConfig = async function({
   logConfigInfo({ logs, configPath, buildDir, netlifyConfig, context: contextA, debug })
 
   const apiA = addApiErrorHandlers(api)
-  const [childEnv, { packageJson: sitePackageJson }] = await Promise.all([
-    getChildEnv({ netlifyConfig, buildDir, context: contextA, branch: branchA, siteInfo, deployId, envOpt, mode }),
-    getPackageJson(buildDir, { normalize: false }),
-  ])
-
-  return { netlifyConfig, configPath, buildDir, childEnv, sitePackageJson, api: apiA, siteInfo }
+  const childEnv = await getChildEnv({
+    netlifyConfig,
+    buildDir,
+    context: contextA,
+    branch: branchA,
+    siteInfo,
+    deployId,
+    envOpt,
+    mode,
+  })
+  return { netlifyConfig, configPath, buildDir, childEnv, api: apiA, siteInfo }
 }
 
 const logConfigInfo = function({ logs, configPath, buildDir, netlifyConfig, context, debug }) {

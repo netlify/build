@@ -59,7 +59,7 @@ const build = async function(flags = {}) {
   } = startBuild(flags)
 
   try {
-    const { netlifyConfig, configPath, buildDir, childEnv, sitePackageJson, api, siteInfo } = await loadConfig({
+    const { netlifyConfig, configPath, buildDir, childEnv, api, siteInfo } = await loadConfig({
       ...flagsA,
       mode,
       deployId,
@@ -74,7 +74,6 @@ const build = async function(flags = {}) {
         buildDir,
         nodePath,
         childEnv,
-        sitePackageJson,
         functionsDistDir,
         buildImagePluginsDir,
         dry,
@@ -134,7 +133,6 @@ const runAndReportBuild = async function({
   buildDir,
   nodePath,
   childEnv,
-  sitePackageJson,
   functionsDistDir,
   buildImagePluginsDir,
   dry,
@@ -153,7 +151,6 @@ const runAndReportBuild = async function({
       buildDir,
       nodePath,
       childEnv,
-      sitePackageJson,
       functionsDistDir,
       buildImagePluginsDir,
       dry,
@@ -186,7 +183,6 @@ const initAndRunBuild = async function({
   buildDir,
   nodePath,
   childEnv,
-  sitePackageJson,
   functionsDistDir,
   buildImagePluginsDir,
   dry,
@@ -217,7 +213,6 @@ const initAndRunBuild = async function({
       buildDir,
       nodePath,
       childEnv,
-      sitePackageJson,
       dry,
       constants,
       errorMonitor,
@@ -240,7 +235,6 @@ const runBuild = async function({
   buildDir,
   nodePath,
   childEnv,
-  sitePackageJson,
   dry,
   constants,
   errorMonitor,
@@ -262,7 +256,6 @@ const runBuild = async function({
     buildDir,
     nodePath,
     childEnv,
-    sitePackageJson,
     errorMonitor,
     netlifyConfig,
     logs,
