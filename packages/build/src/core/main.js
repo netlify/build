@@ -105,9 +105,7 @@ const build = async function(flags = {}) {
       throw error
     }
   } catch (error) {
-    removeErrorColors(error)
-    await reportBuildError({ error, errorMonitor, logs, testOpts })
-    logBuildError({ error, logs })
+    await handleBuildFailure({ error, errorMonitor, logs, testOpts })
     return { success: false, logs }
   }
 }
@@ -272,6 +270,13 @@ const handleBuildSuccess = async function({
 
   const duration = endTimer(logs, buildTimer, 'Netlify Build')
   await trackBuildComplete({ commandsCount, netlifyConfig, duration, siteInfo, telemetry, mode, testOpts })
+}
+
+// Logs and reports that a build failed
+const handleBuildFailure = async function({ error, errorMonitor, logs, testOpts }) {
+  removeErrorColors(error)
+  await reportBuildError({ error, errorMonitor, logs, testOpts })
+  logBuildError({ error, logs })
 }
 
 module.exports = build
