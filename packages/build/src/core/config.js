@@ -9,8 +9,6 @@ const { logFlags, logBuildDir, logConfigPath, logConfig, logContext } = require(
 const { getPackageJson } = require('../utils/package')
 const { removeFalsy } = require('../utils/remove_falsy')
 
-const { getConstants } = require('./constants')
-
 // Normalize CLI flags
 const normalizeFlags = function(flags, logs) {
   const rawFlags = removeFalsy(flags)
@@ -49,7 +47,6 @@ const loadConfig = async function({
   cachedConfig,
   cwd,
   repositoryRoot,
-  functionsDistDir,
   token,
   siteId,
   context,
@@ -88,13 +85,12 @@ const loadConfig = async function({
   logConfigInfo({ logs, configPath, buildDir, netlifyConfig, context: contextA, debug })
 
   const apiA = addApiErrorHandlers(api)
-  const [constants, childEnv, { packageJson: sitePackageJson }] = await Promise.all([
-    getConstants({ configPath, buildDir, functionsDistDir, netlifyConfig, siteInfo, mode }),
+  const [childEnv, { packageJson: sitePackageJson }] = await Promise.all([
     getChildEnv({ netlifyConfig, buildDir, context: contextA, branch: branchA, siteInfo, deployId, envOpt, mode }),
     getPackageJson(buildDir, { normalize: false }),
   ])
 
-  return { netlifyConfig, configPath, buildDir, childEnv, sitePackageJson, api: apiA, siteInfo, constants }
+  return { netlifyConfig, configPath, buildDir, childEnv, sitePackageJson, api: apiA, siteInfo }
 }
 
 const logConfigInfo = function({ logs, configPath, buildDir, netlifyConfig, context, debug }) {

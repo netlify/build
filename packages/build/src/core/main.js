@@ -17,6 +17,7 @@ const { trackBuildComplete } = require('../telemetry/complete')
 
 const { getCommands, runCommands } = require('./commands')
 const { normalizeFlags, loadConfig } = require('./config')
+const { getConstants } = require('./constants')
 const { doDryRun } = require('./dry')
 
 /**
@@ -43,6 +44,7 @@ const { doDryRun } = require('./dry')
 const build = async function(flags = {}) {
   const {
     nodePath,
+    functionsDistDir,
     buildImagePluginsDir,
     dry,
     mode,
@@ -56,16 +58,13 @@ const build = async function(flags = {}) {
   } = startBuild(flags)
 
   try {
-    const {
-      netlifyConfig,
-      configPath,
-      buildDir,
-      childEnv,
-      sitePackageJson,
-      api,
-      siteInfo,
-      constants,
-    } = await loadConfig({ ...flagsA, mode, deployId, logs, testOpts })
+    const { netlifyConfig, configPath, buildDir, childEnv, sitePackageJson, api, siteInfo } = await loadConfig({
+      ...flagsA,
+      mode,
+      deployId,
+      logs,
+      testOpts,
+    })
 
     try {
       const { commandsCount } = await runAndReportBuild({
@@ -75,9 +74,10 @@ const build = async function(flags = {}) {
         nodePath,
         childEnv,
         sitePackageJson,
+        functionsDistDir,
         buildImagePluginsDir,
         dry,
-        constants,
+        siteInfo,
         mode,
         api,
         errorMonitor,
@@ -134,9 +134,10 @@ const runAndReportBuild = async function({
   nodePath,
   childEnv,
   sitePackageJson,
+  functionsDistDir,
   buildImagePluginsDir,
   dry,
-  constants,
+  siteInfo,
   mode,
   api,
   errorMonitor,
@@ -152,9 +153,10 @@ const runAndReportBuild = async function({
       nodePath,
       childEnv,
       sitePackageJson,
+      functionsDistDir,
       buildImagePluginsDir,
       dry,
-      constants,
+      siteInfo,
       mode,
       errorMonitor,
       logs,
@@ -184,14 +186,16 @@ const initAndRunBuild = async function({
   nodePath,
   childEnv,
   sitePackageJson,
+  functionsDistDir,
   buildImagePluginsDir,
   dry,
-  constants,
+  siteInfo,
   mode,
   errorMonitor,
   logs,
   testOpts,
 }) {
+  const constants = await getConstants({ configPath, buildDir, functionsDistDir, netlifyConfig, siteInfo, mode })
   const pluginsOptions = await getPluginsOptions({
     netlifyConfig,
     buildDir,
