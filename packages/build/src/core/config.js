@@ -91,10 +91,7 @@ const loadConfig = async function(
     envOpt,
     testOpts,
   })
-  logBuildDir(logs, buildDir)
-  logConfigPath(logs, configPath)
-  logConfig({ logs, netlifyConfig, debug })
-  logContext(logs, contextA)
+  logConfigInfo({ logs, configPath, buildDir, netlifyConfig, context: contextA, debug })
 
   const apiA = addApiErrorHandlers(api)
   const [constants, childEnv, { packageJson: sitePackageJson }] = await Promise.all([
@@ -119,6 +116,13 @@ const loadConfig = async function(
     mode,
     buildImagePluginsDir,
   }
+}
+
+const logConfigInfo = function({ logs, configPath, buildDir, netlifyConfig, context, debug }) {
+  logBuildDir(logs, buildDir)
+  logConfigPath(logs, configPath)
+  logConfig({ logs, netlifyConfig, debug })
+  logContext(logs, context)
 }
 
 // Retrieve configuration file and related information
