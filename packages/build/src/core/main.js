@@ -80,13 +80,17 @@ const build = async function(flags = {}) {
         logs,
         testOpts,
       })
-
-      if (!dry) {
-        logBuildSuccess(logs)
-        const duration = endTimer(logs, buildTimer, 'Netlify Build')
-        await trackBuildComplete({ commandsCount, netlifyConfig, duration, siteInfo, telemetry, mode, testOpts })
-      }
-
+      await handleBuildSuccess({
+        commandsCount,
+        buildTimer,
+        netlifyConfig,
+        dry,
+        siteInfo,
+        telemetry,
+        mode,
+        logs,
+        testOpts,
+      })
       return { success: true, logs }
     } catch (error) {
       await maybeCancelBuild({ error, api, deployId })
@@ -241,6 +245,28 @@ const runBuild = async function({
     testOpts,
   })
   return { commandsCount, error, statuses }
+}
+
+// Logs and reports that a build successfully ended
+const handleBuildSuccess = async function({
+  commandsCount,
+  buildTimer,
+  netlifyConfig,
+  dry,
+  siteInfo,
+  telemetry,
+  mode,
+  logs,
+  testOpts,
+}) {
+  if (dry) {
+    return
+  }
+
+  logBuildSuccess(logs)
+
+  const duration = endTimer(logs, buildTimer, 'Netlify Build')
+  await trackBuildComplete({ commandsCount, netlifyConfig, duration, siteInfo, telemetry, mode, testOpts })
 }
 
 module.exports = build
