@@ -99,13 +99,12 @@ const build = async function(flags = {}) {
       return { success: true, logs }
     } catch (error) {
       await maybeCancelBuild({ error, api, deployId })
-      logOldCliVersionError({ mode, testOpts })
       error.netlifyConfig = netlifyConfig
       error.childEnv = childEnv
       throw error
     }
   } catch (error) {
-    await handleBuildFailure({ error, errorMonitor, logs, testOpts })
+    await handleBuildFailure({ error, errorMonitor, mode, logs, testOpts })
     return { success: false, logs }
   }
 }
@@ -285,10 +284,11 @@ const handleBuildSuccess = async function({
 }
 
 // Logs and reports that a build failed
-const handleBuildFailure = async function({ error, errorMonitor, logs, testOpts }) {
+const handleBuildFailure = async function({ error, errorMonitor, mode, logs, testOpts }) {
   removeErrorColors(error)
   await reportBuildError({ error, errorMonitor, logs, testOpts })
   logBuildError({ error, logs })
+  logOldCliVersionError({ mode, testOpts })
 }
 
 module.exports = build
