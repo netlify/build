@@ -5,6 +5,7 @@ const isPlainObj = require('is-plain-obj')
 const pReduce = require('p-reduce')
 
 const { setEnvChanges } = require('../env/changes.js')
+const { cancelBuild } = require('../error/cancel')
 const { addErrorInfo, getErrorInfo } = require('../error/info')
 const { reportBuildError } = require('../error/monitor/report')
 const { serializeErrorStatus } = require('../error/parse/serialize_status')
@@ -73,7 +74,9 @@ const runCommands = async function({
   buildDir,
   nodePath,
   childEnv,
+  api,
   errorMonitor,
+  deployId,
   netlifyConfig,
   logs,
   testOpts,
@@ -101,7 +104,9 @@ const runCommands = async function({
           childEnv,
           envChanges,
           commands,
+          api,
           errorMonitor,
+          deployId,
           error,
           failedPlugins,
           netlifyConfig,
@@ -140,7 +145,9 @@ const runCommand = async function({
   childEnv,
   envChanges,
   commands,
+  api,
   errorMonitor,
+  deployId,
   error,
   failedPlugins,
   netlifyConfig,
@@ -177,7 +184,17 @@ const runCommand = async function({
   const newValues =
     newError === undefined
       ? handleCommandSuccess({ event, package, newEnvChanges, newStatus, methodTimer, logs })
-      : await handleCommandError({ newError, errorMonitor, event, buildCommand, netlifyConfig, logs, testOpts })
+      : await handleCommandError({
+          newError,
+          api,
+          errorMonitor,
+          deployId,
+          event,
+          buildCommand,
+          netlifyConfig,
+          logs,
+          testOpts,
+        })
   return { ...newValues, newIndex: index + 1 }
 }
 
@@ -365,7 +382,9 @@ const handleCommandSuccess = function({ event, package, newEnvChanges, newStatus
 //    handlers of that plugin. But do not stop build.
 const handleCommandError = async function({
   newError,
+  api,
   errorMonitor,
+  deployId,
   event,
   buildCommand,
   netlifyConfig,
@@ -379,6 +398,10 @@ const handleCommandError = async function({
 
   const { type, location: { package } = {} } = getErrorInfo(newError)
   const newStatus = serializeErrorStatus(newError)
+
+  if (type === 'cancelBuild') {
+    await cancelBuild({ api, deployId })
+  }
 
   if (type === 'failPlugin' || event === 'onSuccess') {
     return handleFailPlugin({ newStatus, package, newError, errorMonitor, netlifyConfig, logs, testOpts })
