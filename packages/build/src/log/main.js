@@ -246,8 +246,8 @@ const logStatus = function(logs, { package, title = `Plugin ${package} ran succe
   logMessage(logs, body)
 }
 
-const logBuildError = function({ error, netlifyConfig: netlifyConfigArg, logs }) {
-  const { title, body, isSuccess, netlifyConfig = netlifyConfigArg } = serializeLogError(error)
+const logBuildError = function({ error, netlifyConfig, logs }) {
+  const { title, body, isSuccess } = serializeLogError(error)
   const logFunction = isSuccess ? logHeader : logErrorHeader
   logFunction(logs, title)
   logMessage(logs, `\n${body}\n`)

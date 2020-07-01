@@ -70,7 +70,7 @@ const build = async function(flags = {}) {
   }
 
   try {
-    const { commandsCount } = await runAndHandleBuild({
+    const { commandsCount } = await runAndReportBuild({
       netlifyConfig,
       configPath,
       buildDir,
@@ -100,7 +100,7 @@ const build = async function(flags = {}) {
     })
     return { success: true, logs }
   } catch (error) {
-    await handleBuildFailure({ error, errorMonitor, childEnv, mode, logs, testOpts })
+    await handleBuildFailure({ error, errorMonitor, netlifyConfig, childEnv, mode, logs, testOpts })
     return { success: false, logs }
   }
 }
@@ -124,48 +124,6 @@ const resolveConfig = async function(opts) {
     return await loadConfig(opts)
   } catch (error) {
     return { error }
-  }
-}
-
-// Runs a build and handle it on failure
-const runAndHandleBuild = async function({
-  netlifyConfig,
-  configPath,
-  buildDir,
-  nodePath,
-  childEnv,
-  functionsDistDir,
-  buildImagePluginsDir,
-  dry,
-  siteInfo,
-  mode,
-  api,
-  errorMonitor,
-  deployId,
-  logs,
-  testOpts,
-}) {
-  try {
-    return await runAndReportBuild({
-      netlifyConfig,
-      configPath,
-      buildDir,
-      nodePath,
-      childEnv,
-      functionsDistDir,
-      buildImagePluginsDir,
-      dry,
-      siteInfo,
-      mode,
-      api,
-      errorMonitor,
-      deployId,
-      logs,
-      testOpts,
-    })
-  } catch (error) {
-    Object.assign(error, { netlifyConfig })
-    throw error
   }
 }
 
@@ -340,10 +298,10 @@ const handleBuildSuccess = async function({
 }
 
 // Logs and reports that a build failed
-const handleBuildFailure = async function({ error, errorMonitor, childEnv, mode, logs, testOpts }) {
+const handleBuildFailure = async function({ error, errorMonitor, netlifyConfig, childEnv, mode, logs, testOpts }) {
   removeErrorColors(error)
   await reportBuildError({ error, errorMonitor, childEnv, logs, testOpts })
-  logBuildError({ error, logs })
+  logBuildError({ error, netlifyConfig, logs })
   logOldCliVersionError({ mode, testOpts })
 }
 
