@@ -1,4 +1,4 @@
-const { addErrorInfo, getErrorInfo } = require('../error/info')
+const { addErrorInfo } = require('../error/info')
 const { serializeErrorStatus } = require('../error/parse/serialize_status')
 
 // The last event handler of a plugin (except for `onError` and `onEnd`)
@@ -64,9 +64,4 @@ const addPluginLoadErrorStatus = function({ error, package, version }) {
   return error
 }
 
-const getErrorStatuses = function(error) {
-  const { statuses } = getErrorInfo(error)
-  return statuses
-}
-
-module.exports = { getSuccessStatus, addStatus, addPluginLoadErrorStatus, getErrorStatuses }
+module.exports = { getSuccessStatus, addStatus, addPluginLoadErrorStatus }
