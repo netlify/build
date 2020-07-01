@@ -9,7 +9,11 @@ require('../utils/polyfills')
 
 const build = require('./main')
 
-// CLI entry point
+// CLI entry point.
+// Before adding logic to this file, please consider adding it to the main
+// programmatic command instead, so that the new logic is available when run
+// programmatically as well. This file should only contain logic that makes
+// sense only in CLI, such as CLI flags parsing and exit code.
 const runCli = async function() {
   const flags = parseFlags()
   const flagsA = filterObj(flags, isUserFlag)
