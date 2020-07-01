@@ -63,13 +63,6 @@ const loadConfig = async function({
   return { netlifyConfig, configPath, buildDir, childEnv, api: apiA, siteInfo }
 }
 
-const logConfigInfo = function({ logs, configPath, buildDir, netlifyConfig, context, debug }) {
-  logBuildDir(logs, buildDir)
-  logConfigPath(logs, configPath)
-  logConfig({ logs, netlifyConfig, debug })
-  logContext(logs, context)
-}
-
 // Retrieve configuration file and related information
 // (path, build directory, etc.)
 const resolveFullConfig = async function({
@@ -110,6 +103,13 @@ const resolveFullConfig = async function({
     }
     throw error
   }
+}
+
+const logConfigInfo = function({ logs, configPath, buildDir, netlifyConfig, context, debug }) {
+  logBuildDir(logs, buildDir)
+  logConfigPath(logs, configPath)
+  logConfig({ logs, netlifyConfig, debug })
+  logContext(logs, context)
 }
 
 module.exports = { loadConfig }
