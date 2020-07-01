@@ -43,31 +43,25 @@ const getDefaultFlags = function({ env: envOpt = {} }) {
 const DEFAULT_FUNCTIONS_DIST = '.netlify/functions/'
 
 // Retrieve configuration object
-const loadConfig = async function(
-  {
-    config,
-    defaultConfig,
-    cachedConfig,
-    cwd,
-    repositoryRoot,
-    dry,
-    nodePath,
-    functionsDistDir,
-    token,
-    siteId,
-    deployId,
-    context,
-    branch,
-    baseRelDir,
-    env: envOpt,
-    telemetry,
-    mode,
-    buildImagePluginsDir,
-    debug,
-  },
+const loadConfig = async function({
+  config,
+  defaultConfig,
+  cachedConfig,
+  cwd,
+  repositoryRoot,
+  functionsDistDir,
+  token,
+  siteId,
+  context,
+  branch,
+  baseRelDir,
+  env: envOpt,
+  debug,
+  mode,
+  deployId,
   logs,
   testOpts,
-) {
+}) {
   const {
     configPath,
     buildDir,
@@ -100,22 +94,7 @@ const loadConfig = async function(
     getPackageJson(buildDir, { normalize: false }),
   ])
 
-  return {
-    netlifyConfig,
-    configPath,
-    buildDir,
-    nodePath,
-    childEnv,
-    sitePackageJson,
-    api: apiA,
-    dry,
-    siteInfo,
-    deployId,
-    constants,
-    telemetry,
-    mode,
-    buildImagePluginsDir,
-  }
+  return { netlifyConfig, configPath, buildDir, childEnv, sitePackageJson, api: apiA, siteInfo, constants }
 }
 
 const logConfigInfo = function({ logs, configPath, buildDir, netlifyConfig, context, debug }) {
