@@ -14,7 +14,7 @@ const { normalizeGroupingMessage } = require('./normalize')
 const { printEventForTest } = require('./print')
 
 // Report a build failure for monitoring purpose
-const reportBuildError = async function({ error, errorMonitor, logs, testOpts }) {
+const reportBuildError = async function({ error, errorMonitor, childEnv, logs, testOpts }) {
   if (errorMonitor === undefined) {
     return
   }
@@ -24,7 +24,7 @@ const reportBuildError = async function({ error, errorMonitor, logs, testOpts })
   const severityA = getSeverity(severity, errorInfo)
   const groupA = getGroup(group, errorInfo)
   const groupingHash = getGroupingHash(groupA, error, type)
-  const metadata = getMetadata(errorInfo, groupingHash)
+  const metadata = getMetadata(errorInfo, childEnv, groupingHash)
   const app = getApp()
   const eventProps = getEventProps({ severity: severityA, group: groupA, groupingHash, metadata, app })
 
@@ -60,7 +60,7 @@ const getGroupingHash = function(group, error, type) {
   return `${group}\n${messageA}`
 }
 
-const getMetadata = function({ location, plugin, childEnv }, groupingHash) {
+const getMetadata = function({ location, plugin }, childEnv, groupingHash) {
   const pluginMetadata = getPluginMetadata(plugin)
   const envMetadata = getEnvMetadata(childEnv)
   const locationMetadata = getLocationMetadata(location, envMetadata)

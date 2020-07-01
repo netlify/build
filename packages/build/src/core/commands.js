@@ -186,6 +186,7 @@ const runCommand = async function({
       ? handleCommandSuccess({ event, package, newEnvChanges, newStatus, methodTimer, logs })
       : await handleCommandError({
           newError,
+          childEnv,
           api,
           errorMonitor,
           deployId,
@@ -382,6 +383,7 @@ const handleCommandSuccess = function({ event, package, newEnvChanges, newStatus
 //    handlers of that plugin. But do not stop build.
 const handleCommandError = async function({
   newError,
+  childEnv,
   api,
   errorMonitor,
   deployId,
@@ -404,14 +406,23 @@ const handleCommandError = async function({
   }
 
   if (type === 'failPlugin' || event === 'onSuccess') {
-    return handleFailPlugin({ newStatus, package, newError, errorMonitor, netlifyConfig, logs, testOpts })
+    return handleFailPlugin({ newStatus, package, newError, childEnv, errorMonitor, netlifyConfig, logs, testOpts })
   }
 
   return { newError, newStatus }
 }
-const handleFailPlugin = async function({ newStatus, package, newError, errorMonitor, netlifyConfig, logs, testOpts }) {
+const handleFailPlugin = async function({
+  newStatus,
+  package,
+  newError,
+  childEnv,
+  errorMonitor,
+  netlifyConfig,
+  logs,
+  testOpts,
+}) {
   logBuildError({ error: newError, netlifyConfig, logs })
-  await reportBuildError({ error: newError, errorMonitor, logs, testOpts })
+  await reportBuildError({ error: newError, errorMonitor, childEnv, logs, testOpts })
   return { failedPlugin: [package], newStatus }
 }
 

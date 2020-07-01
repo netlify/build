@@ -57,14 +57,19 @@ const build = async function(flags = {}) {
     ...flagsA
   } = startBuild(flags)
 
+  const { netlifyConfig, configPath, buildDir, childEnv, api, siteInfo, error } = await resolveConfig({
+    ...flagsA,
+    mode,
+    deployId,
+    logs,
+    testOpts,
+  })
+  if (error !== undefined) {
+    await handleBuildFailure({ error, errorMonitor, mode, logs, testOpts })
+    return { success: false, logs }
+  }
+
   try {
-    const { netlifyConfig, configPath, buildDir, childEnv, api, siteInfo } = await loadConfig({
-      ...flagsA,
-      mode,
-      deployId,
-      logs,
-      testOpts,
-    })
     const { commandsCount } = await runAndHandleBuild({
       netlifyConfig,
       configPath,
@@ -95,7 +100,7 @@ const build = async function(flags = {}) {
     })
     return { success: true, logs }
   } catch (error) {
-    await handleBuildFailure({ error, errorMonitor, mode, logs, testOpts })
+    await handleBuildFailure({ error, errorMonitor, childEnv, mode, logs, testOpts })
     return { success: false, logs }
   }
 }
@@ -112,6 +117,14 @@ const startBuild = function(flags) {
   const { bugsnagKey, ...flagsA } = normalizeFlags(flags, logs)
   const errorMonitor = startErrorMonitor({ flags: flagsA, logs, bugsnagKey })
   return { ...flagsA, errorMonitor, logs, buildTimer }
+}
+
+const resolveConfig = async function(opts) {
+  try {
+    return await loadConfig(opts)
+  } catch (error) {
+    return { error }
+  }
 }
 
 // Runs a build and handle it on failure
@@ -151,7 +164,7 @@ const runAndHandleBuild = async function({
       testOpts,
     })
   } catch (error) {
-    Object.assign(error, { netlifyConfig, childEnv })
+    Object.assign(error, { netlifyConfig })
     throw error
   }
 }
@@ -192,7 +205,7 @@ const runAndReportBuild = async function({
       logs,
       testOpts,
     })
-    await reportStatuses({ statuses, api, mode, netlifyConfig, errorMonitor, deployId, logs, testOpts })
+    await reportStatuses({ statuses, childEnv, api, mode, netlifyConfig, errorMonitor, deployId, logs, testOpts })
 
     if (error !== undefined) {
       throw error
@@ -203,7 +216,7 @@ const runAndReportBuild = async function({
     // However returned `error` should return `statuses` instead.
   } catch (error) {
     const statuses = getErrorStatuses(error)
-    await reportStatuses({ statuses, api, mode, netlifyConfig, errorMonitor, deployId, logs, testOpts })
+    await reportStatuses({ statuses, childEnv, api, mode, netlifyConfig, errorMonitor, deployId, logs, testOpts })
     throw error
   }
 }
@@ -327,9 +340,9 @@ const handleBuildSuccess = async function({
 }
 
 // Logs and reports that a build failed
-const handleBuildFailure = async function({ error, errorMonitor, mode, logs, testOpts }) {
+const handleBuildFailure = async function({ error, errorMonitor, childEnv, mode, logs, testOpts }) {
   removeErrorColors(error)
-  await reportBuildError({ error, errorMonitor, logs, testOpts })
+  await reportBuildError({ error, errorMonitor, childEnv, logs, testOpts })
   logBuildError({ error, logs })
   logOldCliVersionError({ mode, testOpts })
 }
