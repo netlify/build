@@ -66,43 +66,35 @@ const build = async function(flags = {}) {
       logs,
       testOpts,
     })
-
-    try {
-      const { commandsCount } = await runAndReportBuild({
-        netlifyConfig,
-        configPath,
-        buildDir,
-        nodePath,
-        childEnv,
-        functionsDistDir,
-        buildImagePluginsDir,
-        dry,
-        siteInfo,
-        mode,
-        api,
-        errorMonitor,
-        deployId,
-        logs,
-        testOpts,
-      })
-      await handleBuildSuccess({
-        commandsCount,
-        buildTimer,
-        netlifyConfig,
-        dry,
-        siteInfo,
-        telemetry,
-        mode,
-        logs,
-        testOpts,
-      })
-      return { success: true, logs }
-    } catch (error) {
-      await maybeCancelBuild({ error, api, deployId })
-      error.netlifyConfig = netlifyConfig
-      error.childEnv = childEnv
-      throw error
-    }
+    const { commandsCount } = await runAndHandleBuild({
+      netlifyConfig,
+      configPath,
+      buildDir,
+      nodePath,
+      childEnv,
+      functionsDistDir,
+      buildImagePluginsDir,
+      dry,
+      siteInfo,
+      mode,
+      api,
+      errorMonitor,
+      deployId,
+      logs,
+      testOpts,
+    })
+    await handleBuildSuccess({
+      commandsCount,
+      buildTimer,
+      netlifyConfig,
+      dry,
+      siteInfo,
+      telemetry,
+      mode,
+      logs,
+      testOpts,
+    })
+    return { success: true, logs }
   } catch (error) {
     await handleBuildFailure({ error, errorMonitor, mode, logs, testOpts })
     return { success: false, logs }
@@ -121,6 +113,49 @@ const startBuild = function(flags) {
   const { bugsnagKey, ...flagsA } = normalizeFlags(flags, logs)
   const errorMonitor = startErrorMonitor({ flags: flagsA, logs, bugsnagKey })
   return { ...flagsA, errorMonitor, logs, buildTimer }
+}
+
+// Runs a build and handle it on failure
+const runAndHandleBuild = async function({
+  netlifyConfig,
+  configPath,
+  buildDir,
+  nodePath,
+  childEnv,
+  functionsDistDir,
+  buildImagePluginsDir,
+  dry,
+  siteInfo,
+  mode,
+  api,
+  errorMonitor,
+  deployId,
+  logs,
+  testOpts,
+}) {
+  try {
+    return await runAndReportBuild({
+      netlifyConfig,
+      configPath,
+      buildDir,
+      nodePath,
+      childEnv,
+      functionsDistDir,
+      buildImagePluginsDir,
+      dry,
+      siteInfo,
+      mode,
+      api,
+      errorMonitor,
+      deployId,
+      logs,
+      testOpts,
+    })
+  } catch (error) {
+    Object.assign(error, { netlifyConfig, childEnv })
+    await maybeCancelBuild({ error, api, deployId })
+    throw error
+  }
 }
 
 // Runs a build then report any plugin statuses
