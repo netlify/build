@@ -6,10 +6,10 @@ const pReduce = require('p-reduce')
 
 const { setEnvChanges } = require('../env/changes.js')
 const { cancelBuild } = require('../error/cancel')
+const { handleBuildError } = require('../error/handle')
 const { addErrorInfo, getErrorInfo } = require('../error/info')
-const { reportBuildError } = require('../error/monitor/report')
 const { serializeErrorStatus } = require('../error/parse/serialize_status')
-const { logCommand, logBuildCommandStart, logCommandSuccess, logCiReactWarning, logBuildError } = require('../log/main')
+const { logCommand, logBuildCommandStart, logCommandSuccess, logCiReactWarning } = require('../log/main')
 const {
   getBuildCommandStdio,
   handleBuildCommandOutput,
@@ -434,6 +434,7 @@ const handleCommandError = async function({
 
   return { newError, newStatus }
 }
+
 const handleFailPlugin = async function({
   newStatus,
   package,
@@ -445,8 +446,7 @@ const handleFailPlugin = async function({
   logs,
   testOpts,
 }) {
-  logBuildError({ error: newError, mode, netlifyConfig, logs, testOpts })
-  await reportBuildError({ error: newError, errorMonitor, childEnv, logs, testOpts })
+  await handleBuildError({ error: newError, errorMonitor, netlifyConfig, childEnv, mode, logs, testOpts })
   return { failedPlugin: [package], newStatus }
 }
 

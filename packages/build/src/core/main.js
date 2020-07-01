@@ -1,11 +1,10 @@
 require('../utils/polyfills')
 
-const { removeErrorColors } = require('../error/colors')
+const { handleBuildError } = require('../error/handle')
 const { getErrorInfo } = require('../error/info')
-const { reportBuildError } = require('../error/monitor/report')
 const { startErrorMonitor } = require('../error/monitor/start')
 const { getBufferLogs } = require('../log/logger')
-const { logBuildStart, logBuildError, logBuildSuccess } = require('../log/main')
+const { logBuildStart, logBuildSuccess } = require('../log/main')
 const { startTimer, endTimer } = require('../log/timer')
 const { loadPlugins } = require('../plugins/load')
 const { getPluginsOptions } = require('../plugins/options')
@@ -64,7 +63,7 @@ const build = async function(flags = {}) {
     testOpts,
   })
   if (error !== undefined) {
-    await handleBuildFailure({ error, errorMonitor, mode, logs, testOpts })
+    await handleBuildError({ error, errorMonitor, netlifyConfig, childEnv, mode, logs, testOpts })
     return { success: false, logs }
   }
 
@@ -99,7 +98,7 @@ const build = async function(flags = {}) {
     })
     return { success: true, logs }
   } catch (error) {
-    await handleBuildFailure({ error, errorMonitor, netlifyConfig, childEnv, mode, logs, testOpts })
+    await handleBuildError({ error, errorMonitor, netlifyConfig, childEnv, mode, logs, testOpts })
     return { success: false, logs }
   }
 }
@@ -290,13 +289,6 @@ const handleBuildSuccess = async function({
 
   const duration = endTimer(logs, buildTimer, 'Netlify Build')
   await trackBuildComplete({ commandsCount, netlifyConfig, duration, siteInfo, telemetry, mode, testOpts })
-}
-
-// Logs and reports that a build failed
-const handleBuildFailure = async function({ error, errorMonitor, netlifyConfig, childEnv, mode, logs, testOpts }) {
-  removeErrorColors(error)
-  logBuildError({ error, netlifyConfig, mode, logs, testOpts })
-  await reportBuildError({ error, errorMonitor, childEnv, logs, testOpts })
 }
 
 module.exports = build
