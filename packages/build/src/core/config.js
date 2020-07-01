@@ -1,44 +1,10 @@
-const { env, execPath } = require('process')
-
 const resolveConfig = require('@netlify/config')
 
 const { getChildEnv } = require('../env/main')
 const { addApiErrorHandlers } = require('../error/api')
 const { addErrorInfo } = require('../error/info')
-const { logFlags, logBuildDir, logConfigPath, logConfig, logContext } = require('../log/main')
+const { logBuildDir, logConfigPath, logConfig, logContext } = require('../log/main')
 const { getPackageJson } = require('../utils/package')
-const { removeFalsy } = require('../utils/remove_falsy')
-
-// Normalize CLI flags
-const normalizeFlags = function(flags, logs) {
-  const rawFlags = removeFalsy(flags)
-  const defaultFlags = getDefaultFlags(rawFlags)
-  const mergedFlags = { ...defaultFlags, ...rawFlags }
-  const normalizedFlags = removeFalsy(mergedFlags)
-
-  logFlags(logs, rawFlags, normalizedFlags)
-
-  return normalizedFlags
-}
-
-// Default values of CLI flags
-const getDefaultFlags = function({ env: envOpt = {} }) {
-  const combinedEnv = { ...env, ...envOpt }
-  return {
-    env: envOpt,
-    nodePath: execPath,
-    token: combinedEnv.NETLIFY_AUTH_TOKEN,
-    mode: 'require',
-    functionsDistDir: DEFAULT_FUNCTIONS_DIST,
-    deployId: combinedEnv.DEPLOY_ID,
-    debug: Boolean(combinedEnv.NETLIFY_BUILD_DEBUG),
-    bugsnagKey: combinedEnv.BUGSNAG_KEY,
-    telemetry: !combinedEnv.BUILD_TELEMETRY_DISABLED,
-    testOpts: {},
-  }
-}
-
-const DEFAULT_FUNCTIONS_DIST = '.netlify/functions/'
 
 // Retrieve configuration object
 const loadConfig = async function({
@@ -142,4 +108,4 @@ const resolveFullConfig = async function({
   }
 }
 
-module.exports = { normalizeFlags, loadConfig }
+module.exports = { loadConfig }

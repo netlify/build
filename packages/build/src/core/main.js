@@ -16,9 +16,10 @@ const { reportStatuses } = require('../status/report')
 const { trackBuildComplete } = require('../telemetry/complete')
 
 const { getCommands, runCommands } = require('./commands')
-const { normalizeFlags, loadConfig } = require('./config')
+const { loadConfig } = require('./config')
 const { getConstants } = require('./constants')
 const { doDryRun } = require('./dry')
+const { normalizeFlags } = require('./flags')
 
 /**
  * Main entry point of Netlify Build.
