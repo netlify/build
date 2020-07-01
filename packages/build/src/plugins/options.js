@@ -11,28 +11,19 @@ const { resolvePluginsPath } = require('./resolve')
 // Load plugin options (specified by user in `config.plugins`)
 // Do not allow user override of core plugins
 const getPluginsOptions = async function({
-  netlifyConfig,
   netlifyConfig: { plugins },
   buildDir,
   constants: { FUNCTIONS_SRC },
   mode,
   buildImagePluginsDir,
-  api,
-  errorMonitor,
-  deployId,
   logs,
-  testOpts,
 }) {
   const corePlugins = getCorePlugins(FUNCTIONS_SRC).map(addCoreProperties)
   const allCorePlugins = corePlugins.filter(corePlugin => !isOptionalCore(corePlugin, plugins))
   const userPlugins = plugins.filter(isUserPlugin)
   const pluginsOptions = [...allCorePlugins, ...userPlugins].map(normalizePluginOptions)
   const pluginsOptionsA = await resolvePluginsPath({ pluginsOptions, buildDir, mode, logs, buildImagePluginsDir })
-  const pluginsOptionsB = await Promise.all(
-    pluginsOptionsA.map(pluginOptions =>
-      loadPluginFiles({ pluginOptions, mode, api, netlifyConfig, errorMonitor, deployId, logs, testOpts }),
-    ),
-  )
+  const pluginsOptionsB = await Promise.all(pluginsOptionsA.map(loadPluginFiles))
   await installLocalPluginsDependencies({ plugins, pluginsOptions: pluginsOptionsB, buildDir, mode, logs })
   return pluginsOptionsB
 }
@@ -56,30 +47,10 @@ const normalizePluginOptions = function({ package, pluginPath, loadedFrom, origi
 
 // Retrieve plugin's main file path.
 // Then load plugin's `package.json` and `manifest.yml`.
-const loadPluginFiles = async function({
-  pluginOptions: { pluginPath, ...pluginOptions },
-  mode,
-  api,
-  netlifyConfig,
-  errorMonitor,
-  deployId,
-  logs,
-  testOpts,
-}) {
+const loadPluginFiles = async function({ pluginPath, ...pluginOptions }) {
   const pluginDir = dirname(pluginPath)
   const { packageDir, packageJson: pluginPackageJson } = await getPackageJson(pluginDir)
-  const inputs = await useManifest(pluginOptions, {
-    pluginDir,
-    packageDir,
-    pluginPackageJson,
-    mode,
-    api,
-    netlifyConfig,
-    errorMonitor,
-    deployId,
-    logs,
-    testOpts,
-  })
+  const inputs = await useManifest(pluginOptions, { pluginDir, packageDir, pluginPackageJson })
   return { ...pluginOptions, pluginPath, pluginDir, packageDir, pluginPackageJson, inputs }
 }
 

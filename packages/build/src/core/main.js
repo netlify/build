@@ -12,6 +12,7 @@ const { startTimer, endTimer } = require('../log/timer')
 const { loadPlugins } = require('../plugins/load')
 const { getPluginsOptions } = require('../plugins/options')
 const { startPlugins, stopPlugins } = require('../plugins/spawn')
+const { getErrorStatuses } = require('../status/add')
 const { reportStatuses } = require('../status/report')
 const { trackBuildComplete } = require('../telemetry/complete')
 const { getPackageJson } = require('../utils/package')
@@ -21,7 +22,8 @@ const { normalizeFlags, loadConfig } = require('./config')
 const { doDryRun } = require('./dry')
 
 /**
- * Netlify Build
+ * Main entry point of Netlify Build.
+ * Runs a builds and returns whether it succeeded or not.
  * @param  {object} flags - build configuration CLI flags
  * @param  {string} [flags.config] - Netlify config file path
  * @param  {string} [flags.cwd] - Current directory
@@ -61,27 +63,14 @@ const build = async function(flags = {}) {
     const { packageJson: sitePackageJson } = await getPackageJson(buildDir, { normalize: false })
 
     try {
-      const pluginsOptions = await getPluginsOptions({
-        netlifyConfig,
-        buildDir,
-        constants,
-        mode,
-        buildImagePluginsDir,
-        api,
-        errorMonitor,
-        deployId,
-        logs,
-        testOpts,
-      })
-
-      const { commandsCount, error, statuses } = await buildRun({
-        pluginsOptions,
+      const { commandsCount } = await runAndReportBuild({
         netlifyConfig,
         configPath,
         buildDir,
         nodePath,
         childEnv,
         sitePackageJson,
+        buildImagePluginsDir,
         dry,
         constants,
         mode,
@@ -92,19 +81,12 @@ const build = async function(flags = {}) {
         testOpts,
       })
 
-      if (dry) {
-        return { success: true, logs }
+      if (!dry) {
+        logBuildSuccess(logs)
+        const duration = endTimer(logs, buildTimer, 'Netlify Build')
+        await trackBuildComplete({ commandsCount, netlifyConfig, duration, siteInfo, telemetry, mode, testOpts })
       }
 
-      await reportStatuses({ statuses, api, mode, netlifyConfig, errorMonitor, deployId, logs, testOpts })
-
-      if (error !== undefined) {
-        throw error
-      }
-
-      logBuildSuccess(logs)
-      const duration = endTimer(logs, buildTimer, 'Netlify Build')
-      await trackBuildComplete({ commandsCount, netlifyConfig, duration, siteInfo, telemetry, mode, testOpts })
       return { success: true, logs }
     } catch (error) {
       await maybeCancelBuild({ error, api, deployId })
@@ -121,14 +103,15 @@ const build = async function(flags = {}) {
   }
 }
 
-const buildRun = async function({
-  pluginsOptions,
+// Runs a build then report any plugin statuses
+const runAndReportBuild = async function({
   netlifyConfig,
   configPath,
   buildDir,
   nodePath,
   childEnv,
   sitePackageJson,
+  buildImagePluginsDir,
   dry,
   constants,
   mode,
@@ -138,12 +121,69 @@ const buildRun = async function({
   logs,
   testOpts,
 }) {
+  try {
+    const { commandsCount, error, statuses } = await initAndRunBuild({
+      netlifyConfig,
+      configPath,
+      buildDir,
+      nodePath,
+      childEnv,
+      sitePackageJson,
+      buildImagePluginsDir,
+      dry,
+      constants,
+      mode,
+      errorMonitor,
+      logs,
+      testOpts,
+    })
+    await reportStatuses({ statuses, api, mode, netlifyConfig, errorMonitor, deployId, logs, testOpts })
+
+    if (error !== undefined) {
+      throw error
+    }
+
+    return { commandsCount }
+    // Thrown errors can have statuses attached to them.
+    // However returned `error` should return `statuses` instead.
+  } catch (error) {
+    const statuses = getErrorStatuses(error)
+    await reportStatuses({ statuses, api, mode, netlifyConfig, errorMonitor, deployId, logs, testOpts })
+    throw error
+  }
+}
+
+// Initialize plugin processes then runs a build
+const initAndRunBuild = async function({
+  netlifyConfig,
+  configPath,
+  buildDir,
+  nodePath,
+  childEnv,
+  sitePackageJson,
+  buildImagePluginsDir,
+  dry,
+  constants,
+  mode,
+  errorMonitor,
+  logs,
+  testOpts,
+}) {
+  const pluginsOptions = await getPluginsOptions({
+    netlifyConfig,
+    buildDir,
+    constants,
+    mode,
+    buildImagePluginsDir,
+    logs,
+  })
+
   const childProcesses = await startPlugins({ pluginsOptions, buildDir, nodePath, childEnv, mode, logs })
 
   try {
-    return await executeCommands({
-      pluginsOptions,
+    const { commandsCount, error, statuses } = await runBuild({
       childProcesses,
+      pluginsOptions,
       netlifyConfig,
       configPath,
       buildDir,
@@ -152,21 +192,21 @@ const buildRun = async function({
       sitePackageJson,
       dry,
       constants,
-      mode,
-      api,
       errorMonitor,
-      deployId,
       logs,
       testOpts,
     })
+    return { commandsCount, error, statuses }
   } finally {
     await stopPlugins(childProcesses)
   }
 }
 
-const executeCommands = async function({
-  pluginsOptions,
+// Load plugin main files, retrieve their event handlers then runs them,
+// together with the build command
+const runBuild = async function({
   childProcesses,
+  pluginsOptions,
   netlifyConfig,
   configPath,
   buildDir,
@@ -175,25 +215,11 @@ const executeCommands = async function({
   sitePackageJson,
   dry,
   constants,
-  mode,
-  api,
   errorMonitor,
-  deployId,
   logs,
   testOpts,
 }) {
-  const pluginsCommands = await loadPlugins({
-    pluginsOptions,
-    childProcesses,
-    netlifyConfig,
-    constants,
-    mode,
-    api,
-    errorMonitor,
-    deployId,
-    logs,
-    testOpts,
-  })
+  const pluginsCommands = await loadPlugins({ pluginsOptions, childProcesses, netlifyConfig, constants })
 
   const { commands, commandsCount } = getCommands(pluginsCommands, netlifyConfig)
 
@@ -202,7 +228,7 @@ const executeCommands = async function({
     return {}
   }
 
-  return runCommands({
+  const { error, statuses } = await runCommands({
     commands,
     configPath,
     buildDir,
@@ -214,6 +240,7 @@ const executeCommands = async function({
     logs,
     testOpts,
   })
+  return { commandsCount, error, statuses }
 }
 
 module.exports = build

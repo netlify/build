@@ -1,29 +1,14 @@
 const { reportBuildError } = require('../error/monitor/report')
-const { serializeErrorStatus } = require('../error/parse/serialize_status')
 const { logStatuses, logBuildError } = require('../log/main')
 
 const { removeStatusesColors } = require('./colors')
 
-// Errors that happen during plugin loads should be reported as error statuses
-const reportPluginLoadError = async function({
-  error,
-  api,
-  mode,
-  event,
-  package,
-  version,
-  netlifyConfig,
-  errorMonitor,
-  deployId,
-  logs,
-  testOpts,
-}) {
-  const errorStatus = serializeErrorStatus(error)
-  const statuses = [{ ...errorStatus, event, package, version }]
-  await reportStatuses({ statuses, api, mode, netlifyConfig, errorMonitor, deployId, logs, testOpts })
-}
-
+// Report plugin statuses to the console and API
 const reportStatuses = async function({ statuses, api, mode, netlifyConfig, errorMonitor, deployId, logs, testOpts }) {
+  if (statuses === undefined) {
+    return
+  }
+
   const statusesA = removeStatusesColors(statuses)
   printStatuses({ statuses: statusesA, mode, logs })
   await sendStatuses({ statuses: statusesA, api, mode, netlifyConfig, errorMonitor, deployId, logs, testOpts })
@@ -83,4 +68,4 @@ const sendStatus = async function({
   }
 }
 
-module.exports = { reportPluginLoadError, reportStatuses }
+module.exports = { reportStatuses }

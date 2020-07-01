@@ -1,4 +1,4 @@
-const { reportPluginLoadError } = require('../../status/report')
+const { addPluginLoadErrorStatus } = require('../../status/add')
 
 const { checkInputs } = require('./check')
 const { loadManifest } = require('./load')
@@ -7,19 +7,7 @@ const { getManifestPath } = require('./path')
 // Load plugin's `manifest.yml`
 const useManifest = async function(
   { package, loadedFrom, origin, inputs },
-  {
-    pluginDir,
-    packageDir,
-    pluginPackageJson,
-    pluginPackageJson: { version },
-    mode,
-    api,
-    netlifyConfig,
-    errorMonitor,
-    deployId,
-    logs,
-    testOpts,
-  },
+  { pluginDir, packageDir, pluginPackageJson, pluginPackageJson: { version } },
 ) {
   const manifestPath = await getManifestPath(pluginDir, packageDir)
 
@@ -28,20 +16,8 @@ const useManifest = async function(
     const inputsA = checkInputs({ inputs, manifest, package, pluginPackageJson, loadedFrom, origin })
     return inputsA
   } catch (error) {
-    await reportPluginLoadError({
-      error,
-      api,
-      mode,
-      event: 'load',
-      package,
-      version,
-      netlifyConfig,
-      errorMonitor,
-      deployId,
-      logs,
-      testOpts,
-    })
-    throw error
+    const errorA = addPluginLoadErrorStatus({ error, package, version })
+    throw errorA
   }
 }
 

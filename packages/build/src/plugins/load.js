@@ -1,35 +1,13 @@
-const { reportPluginLoadError } = require('../status/report')
+const { addPluginLoadErrorStatus } = require('../status/add')
 
 const { callChild } = require('./ipc')
 
 // Retrieve all plugins commands
 // Can use either a module name or a file path to the plugin.
-const loadPlugins = async function({
-  pluginsOptions,
-  childProcesses,
-  netlifyConfig,
-  constants,
-  mode,
-  api,
-  errorMonitor,
-  deployId,
-  logs,
-  testOpts,
-}) {
+const loadPlugins = async function({ pluginsOptions, childProcesses, netlifyConfig, constants }) {
   const pluginsCommands = await Promise.all(
     pluginsOptions.map((pluginOptions, index) =>
-      loadPlugin(pluginOptions, {
-        childProcesses,
-        index,
-        netlifyConfig,
-        constants,
-        mode,
-        api,
-        errorMonitor,
-        deployId,
-        logs,
-        testOpts,
-      }),
+      loadPlugin(pluginOptions, { childProcesses, index, netlifyConfig, constants }),
     ),
   )
   const pluginsCommandsA = pluginsCommands.flat()
@@ -40,7 +18,7 @@ const loadPlugins = async function({
 // Do it by executing the plugin `load` event handler.
 const loadPlugin = async function(
   { package, pluginPackageJson, pluginPackageJson: { version } = {}, pluginPath, inputs, loadedFrom, origin },
-  { childProcesses, index, netlifyConfig, constants, mode, api, errorMonitor, deployId, logs, testOpts },
+  { childProcesses, index, netlifyConfig, constants },
 ) {
   const { childProcess } = childProcesses[index]
   const event = 'load'
@@ -62,20 +40,8 @@ const loadPlugin = async function(
     }))
     return pluginCommandsA
   } catch (error) {
-    await reportPluginLoadError({
-      error,
-      api,
-      mode,
-      event,
-      package,
-      version,
-      netlifyConfig,
-      errorMonitor,
-      deployId,
-      logs,
-      testOpts,
-    })
-    throw error
+    const errorA = addPluginLoadErrorStatus({ error, package, version })
+    throw errorA
   }
 }
 
