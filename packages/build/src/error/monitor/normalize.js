@@ -48,7 +48,7 @@ const NORMALIZE_REGEXPS = [
   // Numbers, e.g. number of issues/problems
   [/\d+/g, '0'],
   // Hexadecimal strings
-  [/[0-9a-fA-F]{6,}/, 'hex'],
+  [/[0-9a-fA-F]{6,}/g, 'hex'],
   // On unknown inputs, we print the inputs
   [/(does not accept any inputs but you specified: ).*/, '$1'],
   [/(Unknown inputs for plugin).*/, '$1'],
