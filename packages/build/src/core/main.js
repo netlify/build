@@ -41,13 +41,7 @@ const { doDryRun } = require('./dry')
  * @returns {string[]} buildResult.logs - When using the `buffer` option, all log messages
  */
 const build = async function(flags = {}) {
-  const buildTimer = startTimer()
-
-  const logs = getBufferLogs(flags)
-  logBuildStart(logs)
-
-  const { testOpts, bugsnagKey, ...flagsA } = normalizeFlags(flags, logs)
-  const errorMonitor = startErrorMonitor({ flags: flagsA, logs, bugsnagKey })
+  const { flags: flagsA, errorMonitor, logs, testOpts, buildTimer } = startBuild(flags)
 
   try {
     const {
@@ -110,6 +104,20 @@ const build = async function(flags = {}) {
     logBuildError({ error, logs })
     return { success: false, logs }
   }
+}
+
+// Performed on build start. Must be kept small and unlikely to fail since it
+// does not have proper error handling. Error handling relies on `errorMonitor`
+// being built, which relies itself on flags being normalized.
+const startBuild = function(flags) {
+  const buildTimer = startTimer()
+
+  const logs = getBufferLogs(flags)
+  logBuildStart(logs)
+
+  const { testOpts, bugsnagKey, ...flagsA } = normalizeFlags(flags, logs)
+  const errorMonitor = startErrorMonitor({ flags: flagsA, logs, bugsnagKey })
+  return { flags: flagsA, errorMonitor, logs, testOpts, buildTimer }
 }
 
 // Runs a build then report any plugin statuses
