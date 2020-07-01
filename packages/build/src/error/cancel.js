@@ -2,14 +2,8 @@ const { getErrorInfo } = require('./info')
 const { getTypeInfo } = require('./type')
 
 // Cancel builds, for example when a plugin uses `utils.build.cancelBuild()`
-const maybeCancelBuild = async function({ error, api, deployId }) {
+const cancelBuild = async function({ api, deployId }) {
   if (api === undefined || !deployId) {
-    return
-  }
-
-  const { type } = getErrorInfo(error)
-
-  if (type !== 'cancelBuild') {
     return
   }
 
@@ -23,4 +17,4 @@ const isSuccessException = function(error) {
   return Boolean(isSuccess)
 }
 
-module.exports = { maybeCancelBuild, isSuccessException }
+module.exports = { cancelBuild, isSuccessException }

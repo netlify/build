@@ -1,6 +1,5 @@
 require('../utils/polyfills')
 
-const { maybeCancelBuild } = require('../error/cancel')
 const { removeErrorColors } = require('../error/colors')
 const { reportBuildError } = require('../error/monitor/report')
 const { startErrorMonitor } = require('../error/monitor/start')
@@ -153,7 +152,6 @@ const runAndHandleBuild = async function({
     })
   } catch (error) {
     Object.assign(error, { netlifyConfig, childEnv })
-    await maybeCancelBuild({ error, api, deployId })
     throw error
   }
 }
@@ -188,7 +186,9 @@ const runAndReportBuild = async function({
       dry,
       siteInfo,
       mode,
+      api,
       errorMonitor,
+      deployId,
       logs,
       testOpts,
     })
@@ -220,7 +220,9 @@ const initAndRunBuild = async function({
   dry,
   siteInfo,
   mode,
+  api,
   errorMonitor,
+  deployId,
   logs,
   testOpts,
 }) {
@@ -247,7 +249,9 @@ const initAndRunBuild = async function({
       childEnv,
       dry,
       constants,
+      api,
       errorMonitor,
+      deployId,
       logs,
       testOpts,
     })
@@ -269,7 +273,9 @@ const runBuild = async function({
   childEnv,
   dry,
   constants,
+  api,
   errorMonitor,
+  deployId,
   logs,
   testOpts,
 }) {
@@ -288,7 +294,9 @@ const runBuild = async function({
     buildDir,
     nodePath,
     childEnv,
+    api,
     errorMonitor,
+    deployId,
     netlifyConfig,
     logs,
     testOpts,
