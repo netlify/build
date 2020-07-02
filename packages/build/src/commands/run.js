@@ -241,7 +241,6 @@ const getNewValues = function({
       api,
       errorMonitor,
       deployId,
-      event,
       buildCommand,
       netlifyConfig,
       logs,
