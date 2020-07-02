@@ -288,7 +288,7 @@ const runBuild = async function({
     return {}
   }
 
-  const { error, statuses } = await runCommands({
+  const { commandsCount: commandsCountA, error, statuses } = await runCommands({
     commands,
     configPath,
     buildDir,
@@ -301,7 +301,7 @@ const runBuild = async function({
     logs,
     testOpts,
   })
-  return { commandsCount, error, statuses }
+  return { commandsCount: commandsCountA, error, statuses }
 }
 
 // Logs and reports that a build successfully ended
