@@ -1,5 +1,5 @@
-const { reportBuildError } = require('../error/monitor/report')
-const { logStatuses, logBuildError } = require('../log/main')
+const { handleBuildError } = require('../error/handle')
+const { logStatuses } = require('../log/main')
 
 const { removeStatusesColors } = require('./colors')
 
@@ -97,8 +97,7 @@ const sendStatus = async function({
     // Builds should be successful when this API call fails, but we still want
     // to report the error both in logs and in error monitoring.
   } catch (error) {
-    logBuildError({ error, mode, netlifyConfig, logs, testOpts })
-    await reportBuildError({ error, errorMonitor, childEnv, logs, testOpts })
+    await handleBuildError({ error, errorMonitor, netlifyConfig, childEnv, mode, logs, testOpts })
   }
 }
 
