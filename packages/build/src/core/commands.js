@@ -125,7 +125,15 @@ const runCommands = async function({
     },
     { index: 0, failedPlugins: [], envChanges: {}, statuses: [] },
   )
-  return { commandsCount, error: errorA, statuses: statusesB }
+
+  // Instead of throwing any build failure right away, we wait for `onError`,
+  // etc. to complete. This is why we are throwing only now.
+  if (errorA !== undefined) {
+    addErrorInfo(errorA, { statuses: statusesB })
+    throw errorA
+  }
+
+  return { commandsCount, statuses: statusesB }
 }
 
 // Run a command (shell or plugin)

@@ -1,6 +1,7 @@
 require('../utils/polyfills')
 
 const { removeErrorColors } = require('../error/colors')
+const { getErrorInfo } = require('../error/info')
 const { reportBuildError } = require('../error/monitor/report')
 const { startErrorMonitor } = require('../error/monitor/start')
 const { getBufferLogs } = require('../log/logger')
@@ -10,7 +11,6 @@ const { startTimer, endTimer } = require('../log/timer')
 const { loadPlugins } = require('../plugins/load')
 const { getPluginsOptions } = require('../plugins/options')
 const { startPlugins, stopPlugins } = require('../plugins/spawn')
-const { getErrorStatuses } = require('../status/add')
 const { reportStatuses } = require('../status/report')
 const { trackBuildComplete } = require('../telemetry/complete')
 
@@ -146,7 +146,7 @@ const runAndReportBuild = async function({
   testOpts,
 }) {
   try {
-    const { commandsCount, error, statuses } = await initAndRunBuild({
+    const { commandsCount, statuses } = await initAndRunBuild({
       netlifyConfig,
       configPath,
       buildDir,
@@ -165,15 +165,9 @@ const runAndReportBuild = async function({
     })
     await reportStatuses({ statuses, childEnv, api, mode, netlifyConfig, errorMonitor, deployId, logs, testOpts })
 
-    if (error !== undefined) {
-      throw error
-    }
-
     return { commandsCount }
-    // Thrown errors can have statuses attached to them.
-    // However returned `error` should return `statuses` instead.
   } catch (error) {
-    const statuses = getErrorStatuses(error)
+    const { statuses } = getErrorInfo(error)
     await reportStatuses({ statuses, childEnv, api, mode, netlifyConfig, errorMonitor, deployId, logs, testOpts })
     throw error
   }
@@ -210,7 +204,7 @@ const initAndRunBuild = async function({
   const childProcesses = await startPlugins({ pluginsOptions, buildDir, nodePath, childEnv, mode, logs })
 
   try {
-    const { commandsCount, error, statuses } = await runBuild({
+    return await runBuild({
       childProcesses,
       pluginsOptions,
       netlifyConfig,
@@ -226,7 +220,6 @@ const initAndRunBuild = async function({
       logs,
       testOpts,
     })
-    return { commandsCount, error, statuses }
   } finally {
     await stopPlugins(childProcesses)
   }
@@ -259,7 +252,7 @@ const runBuild = async function({
     return {}
   }
 
-  const { commandsCount: commandsCountA, error, statuses } = await runCommands({
+  const { commandsCount: commandsCountA, statuses } = await runCommands({
     commands,
     configPath,
     buildDir,
@@ -272,7 +265,7 @@ const runBuild = async function({
     logs,
     testOpts,
   })
-  return { commandsCount: commandsCountA, error, statuses }
+  return { commandsCount: commandsCountA, statuses }
 }
 
 // Logs and reports that a build successfully ended
