@@ -16,7 +16,6 @@ const handleCommandError = async function({
   api,
   errorMonitor,
   deployId,
-  event,
   buildCommand,
   netlifyConfig,
   logs,
@@ -34,7 +33,7 @@ const handleCommandError = async function({
     await cancelBuild({ api, deployId })
   }
 
-  if (type === 'failPlugin' || event === 'onSuccess') {
+  if (type === 'failPlugin') {
     return handleFailPlugin({
       newStatus,
       package,
