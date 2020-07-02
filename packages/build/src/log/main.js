@@ -18,6 +18,7 @@ const {
   logSubHeader,
   logErrorSubHeader,
 } = require('./logger')
+const { logOldCliVersionError } = require('./old_version')
 const { THEME } = require('./theme')
 
 const logBuildStart = function(logs) {
@@ -246,12 +247,13 @@ const logStatus = function(logs, { package, title = `Plugin ${package} ran succe
   logMessage(logs, body)
 }
 
-const logBuildError = function({ error, netlifyConfig, logs }) {
+const logBuildError = function({ error, netlifyConfig, mode, logs, testOpts }) {
   const { title, body, isSuccess } = serializeLogError(error)
   const logFunction = isSuccess ? logHeader : logErrorHeader
   logFunction(logs, title)
   logMessage(logs, `\n${body}\n`)
   logConfigOnError({ logs, error, netlifyConfig })
+  logOldCliVersionError({ mode, testOpts })
 }
 
 const logBuildSuccess = function(logs) {
