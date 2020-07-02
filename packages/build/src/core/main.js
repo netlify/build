@@ -1,5 +1,7 @@
 require('../utils/polyfills')
 
+const { getCommands } = require('../commands/get')
+const { runCommands } = require('../commands/run')
 const { handleBuildError } = require('../error/handle')
 const { getErrorInfo } = require('../error/info')
 const { startErrorMonitor } = require('../error/monitor/start')
@@ -12,7 +14,6 @@ const { startPlugins, stopPlugins } = require('../plugins/spawn')
 const { reportStatuses } = require('../status/report')
 const { trackBuildComplete } = require('../telemetry/complete')
 
-const { getCommands, runCommands } = require('./commands')
 const { loadConfig } = require('./config')
 const { getConstants } = require('./constants')
 const { doDryRun } = require('./dry')
