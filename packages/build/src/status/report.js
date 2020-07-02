@@ -4,14 +4,34 @@ const { logStatuses, logBuildError } = require('../log/main')
 const { removeStatusesColors } = require('./colors')
 
 // Report plugin statuses to the console and API
-const reportStatuses = async function({ statuses, api, mode, netlifyConfig, errorMonitor, deployId, logs, testOpts }) {
+const reportStatuses = async function({
+  statuses,
+  childEnv,
+  api,
+  mode,
+  netlifyConfig,
+  errorMonitor,
+  deployId,
+  logs,
+  testOpts,
+}) {
   if (statuses === undefined) {
     return
   }
 
   const statusesA = removeStatusesColors(statuses)
   printStatuses({ statuses: statusesA, mode, logs })
-  await sendStatuses({ statuses: statusesA, api, mode, netlifyConfig, errorMonitor, deployId, logs, testOpts })
+  await sendStatuses({
+    statuses: statusesA,
+    childEnv,
+    api,
+    mode,
+    netlifyConfig,
+    errorMonitor,
+    deployId,
+    logs,
+    testOpts,
+  })
 }
 
 // When not in production, print statuses to console.
@@ -35,17 +55,30 @@ const shouldPrintStatus = function({ state, summary }) {
 }
 
 // In production, send statuses to the API
-const sendStatuses = async function({ statuses, api, mode, netlifyConfig, errorMonitor, deployId, logs, testOpts }) {
+const sendStatuses = async function({
+  statuses,
+  childEnv,
+  api,
+  mode,
+  netlifyConfig,
+  errorMonitor,
+  deployId,
+  logs,
+  testOpts,
+}) {
   if ((mode !== 'buildbot' && !testOpts.sendStatus) || api === undefined || !deployId) {
     return
   }
 
   await Promise.all(
-    statuses.map(status => sendStatus({ api, status, netlifyConfig, errorMonitor, deployId, logs, testOpts })),
+    statuses.map(status =>
+      sendStatus({ childEnv, api, status, netlifyConfig, errorMonitor, deployId, logs, testOpts }),
+    ),
   )
 }
 
 const sendStatus = async function({
+  childEnv,
   api,
   status: { package, version, state, event, title, summary, text },
   netlifyConfig,
@@ -64,7 +97,7 @@ const sendStatus = async function({
     // to report the error both in logs and in error monitoring.
   } catch (error) {
     logBuildError({ error, netlifyConfig, logs })
-    await reportBuildError({ error, errorMonitor, logs, testOpts })
+    await reportBuildError({ error, errorMonitor, childEnv, logs, testOpts })
   }
 }
 
