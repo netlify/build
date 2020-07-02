@@ -300,9 +300,9 @@ const handleBuildSuccess = async function({
 // Logs and reports that a build failed
 const handleBuildFailure = async function({ error, errorMonitor, netlifyConfig, childEnv, mode, logs, testOpts }) {
   removeErrorColors(error)
-  await reportBuildError({ error, errorMonitor, childEnv, logs, testOpts })
   logBuildError({ error, netlifyConfig, logs })
   logOldCliVersionError({ mode, testOpts })
+  await reportBuildError({ error, errorMonitor, childEnv, logs, testOpts })
 }
 
 module.exports = build
