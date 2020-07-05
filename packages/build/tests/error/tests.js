@@ -132,7 +132,8 @@ test('Do not log secret values on build errors', async t => {
   await runFixture(t, 'log_secret')
 })
 
-const flags = { testOpts: { errorMonitor: true }, bugsnagKey: '00000000000000000000000000000000' }
+const BUGSNAG_TEST_KEY = '00000000000000000000000000000000'
+const flags = { testOpts: { errorMonitor: true }, bugsnagKey: BUGSNAG_TEST_KEY }
 
 test('Report build.command failure', async t => {
   await runFixture(t, 'command', { flags })

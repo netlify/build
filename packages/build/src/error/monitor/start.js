@@ -13,7 +13,7 @@ const startErrorMonitor = function({ flags: { mode }, logs, bugsnagKey }) {
   }
 
   const releaseStage = getReleaseStage(mode)
-  const logger = getLogger(logs)
+  const logger = getLogger(logs, bugsnagKey)
   try {
     const errorMonitor = startBugsnag({
       apiKey: bugsnagKey,
@@ -49,9 +49,14 @@ const DEFAULT_RELEASE_STAGE = 'unknown'
 
 // We don't want Bugsnag logs except on warnings/errors.
 // We also want to use our own `log` utility, unprefixed.
-const getLogger = function(logs) {
-  const logFunc = log.bind(null, logs)
-  return { debug() {}, info() {}, warn: logFunc, error: logFunc }
+// In tests, we don't print Bugsnag because it sometimes randomly fails to
+// send sessions, which prints warning messags in test snapshots.
+const getLogger = function(logs, bugsnagKey) {
+  const logFunc = bugsnagKey === BUGSNAG_TEST_KEY ? noop : log.bind(null, logs)
+  return { debug: noop, info: noop, warn: logFunc, error: logFunc }
 }
+
+const BUGSNAG_TEST_KEY = '00000000000000000000000000000000'
+const noop = function() {}
 
 module.exports = { startErrorMonitor }
