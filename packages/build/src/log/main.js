@@ -257,7 +257,7 @@ const logBuildError = function({ error, netlifyConfig, mode, logs, testOpts }) {
 }
 
 const logBuildSuccess = function(logs) {
-  logHeader(logs, 'Netlify Build Complete')
+  logHeader(logs, 'Build Script Complete')
   logMessage(logs, '')
 }
 
