@@ -43,7 +43,7 @@ const deploySite = async function({ buildbotServerSocket }) {
   const nextResponsePromise = getNextParsedResponsePromise(client)
 
   await writeDeployPayload({
-    action: 'deployFiles',
+    action: 'deploySite',
   })
 
   const response = await nextResponsePromise
