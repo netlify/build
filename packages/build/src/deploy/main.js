@@ -52,6 +52,8 @@ const deploySite = async function({ buildbotServerSocket }) {
     throw new Error(`Deploy did not succeed: ${response.values.error}`)
   }
 
+  client.end()
+
   return
 }
 
