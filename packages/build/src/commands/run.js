@@ -6,8 +6,9 @@ const { startTimer, endTimer } = require('../log/timer')
 const { addStatus } = require('../status/add')
 
 const { fireBuildCommand } = require('./build_command')
+const { fireDeploySiteCommand } = require('./deploy_site_command.js')
 const { handleCommandError } = require('./error')
-const { isMainCommand, isErrorCommand } = require('./get')
+const { isMainCommand, isErrorCommand, isDeployCommand } = require('./get')
 const { firePluginCommand } = require('./plugin')
 
 // Run all commands.
@@ -166,9 +167,13 @@ const runCommand = async function({
 //   - run `onError` event (otherwise not run)
 //   - run `onEnd` event (always run regardless)
 //   - skip other events
-const shouldSkipCommand = function({ event, package, error, failedPlugins }) {
+const shouldSkipCommand = function({ event, isDeploySiteCommand, package, error, failedPlugins }) {
   const isError = error !== undefined || failedPlugins.includes(package)
-  return (isMainCommand({ event }) && isError) || (isErrorCommand({ event }) && !isError)
+  return (
+    (isMainCommand({ event }) && isError) ||
+    (isDeployCommand({ event, isDeploySiteCommand }) && isError) ||
+    (isErrorCommand({ event }) && !isError)
+  )
 }
 
 const fireCommand = function({
@@ -180,6 +185,7 @@ const fireCommand = function({
   origin,
   buildCommand,
   buildCommandOrigin,
+  isDeploySiteCommand,
   configPath,
   buildDir,
   nodePath,
@@ -200,6 +206,10 @@ const fireCommand = function({
       envChanges,
       logs,
     })
+  }
+
+  if (isDeploySiteCommand) {
+    return fireDeploySiteCommand()
   }
 
   return firePluginCommand({
