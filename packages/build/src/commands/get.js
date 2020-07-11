@@ -58,4 +58,4 @@ const isSuccessCommand = function({ event }) {
   return isMainCommand({ event }) || isEndCommand({ event })
 }
 
-module.exports = { getCommands, isMainCommand, isErrorCommand, isSuccessCommand }
+module.exports = { getCommands, isMainCommand, isErrorCommand, isSuccessCommand, isDeployCommand }

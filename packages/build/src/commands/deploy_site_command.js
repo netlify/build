@@ -2,7 +2,7 @@ const net = require('net')
 
 const { addErrorInfo } = require('../error/info')
 
-const connectToBuildbotServer = function({ buildbotServerSocket }) {
+const connectToBuildbotServer = function(buildbotServerSocket) {
   return new Promise((resolve, reject) => {
     try {
       const client = net.createConnection(buildbotServerSocket)
@@ -16,7 +16,7 @@ const connectToBuildbotServer = function({ buildbotServerSocket }) {
 const writeDeployPayload = function(client, payload) {
   return new Promise((resolve, reject) => {
     try {
-      client.write(JSON.stringify(payload), (...args) => resolve(...args))
+      client.write(JSON.stringify(payload), resolve)
     } catch (e) {
       reject(e)
     }
@@ -39,11 +39,11 @@ const getNextParsedResponsePromise = function(client) {
   })
 }
 
-const deploySite = async function({ buildbotServerSocket }) {
+const deploySite = async function(buildbotServerSocket) {
   const client = await connectToBuildbotServer(buildbotServerSocket)
 
   const nextResponsePromise = getNextParsedResponsePromise(client)
-  await writeDeployPayload({ action: 'deploySite' })
+  await writeDeployPayload(client, { action: 'deploySite' })
   const response = await nextResponsePromise
 
   if (!response.succeeded) {
@@ -59,6 +59,7 @@ const fireDeploySiteCommand = async function() {
   const buildbotServerSocket = '/tmp/netlify-buildbot-socket'
   try {
     await deploySite(buildbotServerSocket)
+    return {}
   } catch (newError) {
     addErrorInfo(newError, { type: 'deploySiteCommand' })
     return { newError }
