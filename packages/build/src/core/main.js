@@ -53,6 +53,8 @@ const build = async function(flags = {}) {
     errorMonitor,
     logs,
     buildTimer,
+    triggerDeployWithBuildbotServer,
+    buildbotServerSocket,
     ...flagsA
   } = startBuild(flags)
 
@@ -85,6 +87,8 @@ const build = async function(flags = {}) {
       deployId,
       logs,
       testOpts,
+      triggerDeployWithBuildbotServer,
+      buildbotServerSocket,
     })
     await handleBuildSuccess({
       commandsCount,
@@ -143,6 +147,8 @@ const runAndReportBuild = async function({
   deployId,
   logs,
   testOpts,
+  triggerDeployWithBuildbotServer,
+  buildbotServerSocket,
 }) {
   try {
     const { commandsCount, statuses } = await initAndRunBuild({
@@ -161,6 +167,8 @@ const runAndReportBuild = async function({
       deployId,
       logs,
       testOpts,
+      triggerDeployWithBuildbotServer,
+      buildbotServerSocket,
     })
     await reportStatuses({ statuses, childEnv, api, mode, netlifyConfig, errorMonitor, deployId, logs, testOpts })
 
@@ -189,6 +197,8 @@ const initAndRunBuild = async function({
   deployId,
   logs,
   testOpts,
+  triggerDeployWithBuildbotServer,
+  buildbotServerSocket,
 }) {
   const constants = await getConstants({ configPath, buildDir, functionsDistDir, netlifyConfig, siteInfo, mode })
   const pluginsOptions = await getPluginsOptions({
@@ -219,6 +229,8 @@ const initAndRunBuild = async function({
       deployId,
       logs,
       testOpts,
+      triggerDeployWithBuildbotServer,
+      buildbotServerSocket,
     })
   } finally {
     await stopPlugins(childProcesses)
@@ -243,10 +255,12 @@ const runBuild = async function({
   deployId,
   logs,
   testOpts,
+  triggerDeployWithBuildbotServer,
+  buildbotServerSocket,
 }) {
   const pluginsCommands = await loadPlugins({ pluginsOptions, childProcesses, netlifyConfig, constants })
 
-  const { commands, commandsCount } = getCommands(pluginsCommands, netlifyConfig)
+  const { commands, commandsCount } = getCommands(pluginsCommands, netlifyConfig, triggerDeployWithBuildbotServer)
 
   if (dry) {
     doDryRun({ commands, commandsCount, logs })
@@ -266,6 +280,7 @@ const runBuild = async function({
     netlifyConfig,
     logs,
     testOpts,
+    buildbotServerSocket,
   })
   return { commandsCount: commandsCountA, statuses }
 }

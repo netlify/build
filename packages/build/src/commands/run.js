@@ -29,6 +29,7 @@ const runCommands = async function({
   netlifyConfig,
   logs,
   testOpts,
+  buildbotServerSocket,
 }) {
   const { index: commandsCount, error: errorA, statuses: statusesB } = await pReduce(
     commands,
@@ -63,6 +64,7 @@ const runCommands = async function({
           netlifyConfig,
           logs,
           testOpts,
+          buildbotServerSocket,
         },
       )
       const statusesA = addStatus({ newStatus, statuses, event, package, pluginPackageJson })
@@ -98,6 +100,7 @@ const runCommand = async function({
   buildCommand,
   buildCommandOrigin,
   isDeploySiteCommand,
+  buildbotServerSocket,
   configPath,
   buildDir,
   nodePath,
@@ -133,6 +136,7 @@ const runCommand = async function({
     buildCommand,
     buildCommandOrigin,
     isDeploySiteCommand,
+    buildbotServerSocket,
     configPath,
     buildDir,
     nodePath,
@@ -189,6 +193,7 @@ const fireCommand = function({
   buildCommand,
   buildCommandOrigin,
   isDeploySiteCommand,
+  buildbotServerSocket,
   configPath,
   buildDir,
   nodePath,
@@ -212,7 +217,7 @@ const fireCommand = function({
   }
 
   if (isDeploySiteCommand) {
-    return fireDeploySiteCommand()
+    return fireDeploySiteCommand(buildbotServerSocket)
   }
 
   return firePluginCommand({

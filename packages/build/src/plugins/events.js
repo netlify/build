@@ -20,16 +20,15 @@ const EVENTS = [
    * `onError` - Runs on build error
    */
   'onError',
-
-  /**
-   * `onDeploy` - Runs after site has been deployed
-   */
-  'onDeploy',
-
   /**
    * `onEnd` - Runs on build error or success
    */
   'onEnd',
+
+  /**
+   * `onDeploy` - Runs after build has finished and site has been deployed
+   */
+  'onDeploy',
 ]
 
 module.exports = { EVENTS }

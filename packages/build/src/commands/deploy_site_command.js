@@ -55,8 +55,7 @@ const deploySite = async function(buildbotServerSocket) {
   return
 }
 
-const fireDeploySiteCommand = async function() {
-  const buildbotServerSocket = '/tmp/netlify-buildbot-socket'
+const fireDeploySiteCommand = async function(buildbotServerSocket) {
   try {
     await deploySite(buildbotServerSocket)
     return {}
