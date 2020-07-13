@@ -1,5 +1,7 @@
-const test = require('ava')
 const path = require('path')
+
+const test = require('ava')
+
 const { parseHeadersFile, objectForPath } = require('./headers.js')
 const sitePath = path.join(__dirname, '..', '..', 'tests', 'dummy-site')
 

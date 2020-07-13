@@ -23,12 +23,12 @@ const parseConfig = async function(configPath) {
   const configString = await readConfig(configPath)
 
   try {
-    const config =  parseToml(configString)
+    const config = parseToml(configString)
 
     const headersFilePath = path.join(path.dirname(configPath), '_headers')
     if (!(await pathExists(headersFilePath))) {
       const headers = parseHeadersFile(headersFilePath)
-      config.headers = { ...config.headers, ...headers, }
+      config.headers = { ...config.headers, ...headers }
     }
 
     return config
