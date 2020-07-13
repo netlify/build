@@ -1,10 +1,12 @@
 const { readFile } = require('fs')
+const path = require('path')
 const { promisify } = require('util')
 
 const pathExists = require('path-exists')
 const { parse: loadToml } = require('toml')
 
 const { throwError } = require('./error')
+const { parseHeadersFile } = require('./headers')
 
 const pReadFile = promisify(readFile)
 
@@ -21,7 +23,15 @@ const parseConfig = async function(configPath) {
   const configString = await readConfig(configPath)
 
   try {
-    return parseToml(configString)
+    const config =  parseToml(configString)
+
+    const headersFilePath = path.join(path.dirname(configPath), '_headers')
+    if (!(await pathExists(headersFilePath))) {
+      const headers = parseHeadersFile(headersFilePath)
+      config.headers = { ...config.headers, ...headers, }
+    }
+
+    return config
   } catch (error) {
     throwError('Could not parse configuration file', error)
   }
