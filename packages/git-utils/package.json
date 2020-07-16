@@ -19,7 +19,7 @@
     "execa": "^3.4.0",
     "map-obj": "^4.1.0",
     "micromatch": "^4.0.2",
-    "moize": "^5.4.5",
+    "moize": "^5.4.7",
     "path-exists": "^4.0.0"
   },
   "devDependencies": {
