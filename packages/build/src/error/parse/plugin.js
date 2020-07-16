@@ -1,19 +1,19 @@
 // Retrieve plugin's package.json details to include in error messages.
 // Please note `pluginPackageJson` has been normalized by `normalize-package-data`.
-const getPluginInfo = function({ pluginPackageJson = {} }, { package }) {
+const getPluginInfo = function({ pluginPackageJson = {} }, { package, loadedFrom }) {
   if (Object.keys(pluginPackageJson).length === 0) {
     return
   }
 
   return Object.entries(FIELDS)
-    .map(([name, getField]) => serializeField({ name, getField, pluginPackageJson, package }))
+    .map(([name, getField]) => serializeField({ name, getField, pluginPackageJson, package, loadedFrom }))
     .filter(Boolean)
     .join('\n')
 }
 
 // Serialize a single package.json field
-const serializeField = function({ name, getField, pluginPackageJson, package }) {
-  const field = getField(pluginPackageJson, package)
+const serializeField = function({ name, getField, pluginPackageJson, package, loadedFrom }) {
+  const field = getField(pluginPackageJson, { package, loadedFrom })
   if (field === undefined) {
     return
   }
@@ -24,7 +24,7 @@ const serializeField = function({ name, getField, pluginPackageJson, package }) 
 
 const NAME_PADDING = 16
 
-const getPackage = function(pluginPackageJson, package) {
+const getPackage = function(pluginPackageJson, { package }) {
   return package
 }
 
@@ -44,8 +44,8 @@ const getRepository = function({ repository: { url } = {} }) {
   return url
 }
 
-const getNpmLink = function({ name }) {
-  if (!name) {
+const getNpmLink = function({ name }, { loadedFrom }) {
+  if (!name || loadedFrom === 'local') {
     return
   }
 
