@@ -102,7 +102,11 @@ const build = async function(flags = {}) {
       telemetry,
       mode,
       logs,
+<<<<<<< HEAD
       timers: timersA,
+=======
+      timers,
+>>>>>>> Add `--timersFile` CLI flag
       timersFile,
       testOpts,
     })
