@@ -66,7 +66,7 @@ const sendStatuses = async function({
   logs,
   testOpts,
 }) {
-  if ((mode !== 'buildbot' && !testOpts.sendStatus) || api === undefined || !deployId) {
+  if (mode !== 'buildbot' || !testOpts.sendStatus || api === undefined || !deployId) {
     return
   }
 
