@@ -14,6 +14,7 @@ const { getPluginsOptions } = require('../plugins/options')
 const { startPlugins, stopPlugins } = require('../plugins/spawn')
 const { reportStatuses } = require('../status/report')
 const { trackBuildComplete } = require('../telemetry/complete')
+const { initTimers, addTimer, reportTimers } = require('../time/report')
 
 const { loadConfig } = require('./config')
 const { getConstants } = require('./constants')
@@ -53,6 +54,8 @@ const build = async function(flags = {}) {
     testOpts,
     errorMonitor,
     logs,
+    timers,
+    timersFile,
     buildTimer,
     buildbotServerSocket,
     ...flagsA
@@ -98,6 +101,8 @@ const build = async function(flags = {}) {
       telemetry,
       mode,
       logs,
+      timers,
+      timersFile,
       testOpts,
     })
     return { success: true, logs }
@@ -111,6 +116,7 @@ const build = async function(flags = {}) {
 // does not have proper error handling. Error handling relies on `errorMonitor`
 // being built, which relies itself on flags being normalized.
 const startBuild = function(flags) {
+  const timers = initTimers()
   const buildTimer = startTimer()
 
   const logs = getBufferLogs(flags)
@@ -118,7 +124,7 @@ const startBuild = function(flags) {
 
   const { bugsnagKey, ...flagsA } = normalizeFlags(flags, logs)
   const errorMonitor = startErrorMonitor({ flags: flagsA, logs, bugsnagKey })
-  return { ...flagsA, errorMonitor, logs, buildTimer }
+  return { ...flagsA, errorMonitor, logs, timers, buildTimer }
 }
 
 const resolveConfig = async function(opts) {
@@ -285,6 +291,8 @@ const handleBuildSuccess = async function({
   telemetry,
   mode,
   logs,
+  timers,
+  timersFile,
   testOpts,
 }) {
   if (dry) {
@@ -295,6 +303,10 @@ const handleBuildSuccess = async function({
 
   const durationMs = endTimer(buildTimer)
   logTimer(logs, durationMs, 'Netlify Build')
+  const timersA = addTimer(timers, 'buildbot.build.commands', durationMs)
+
+  reportTimers(timersA, timersFile)
+
   await trackBuildComplete({ commandsCount, netlifyConfig, durationMs, siteInfo, telemetry, mode, testOpts })
 }
 
