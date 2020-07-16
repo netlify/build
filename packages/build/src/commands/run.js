@@ -2,6 +2,7 @@ const pReduce = require('p-reduce')
 
 const { addErrorInfo } = require('../error/info')
 const { logCommand, logCommandSuccess } = require('../log/main')
+const { logTimer } = require('../log/main')
 const { startTimer, endTimer } = require('../log/timer')
 const { addStatus } = require('../status/add')
 
@@ -250,8 +251,9 @@ const getNewValues = function({
 
   logCommandSuccess(logs)
 
+  const durationMs = endTimer(methodTimer)
   const timerName = package === undefined ? 'build.command' : `${package} ${event}`
-  endTimer(logs, methodTimer, timerName)
+  logTimer(logs, durationMs, timerName)
 
   return { newEnvChanges, newStatus }
 }
