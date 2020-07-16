@@ -13,6 +13,7 @@ const { getPluginsOptions } = require('../plugins/options')
 const { startPlugins, stopPlugins } = require('../plugins/spawn')
 const { reportStatuses } = require('../status/report')
 const { trackBuildComplete } = require('../telemetry/complete')
+const { startBuildbotClient, closeBuildbotClient } = require('../buildbot_client/main')
 
 const { loadConfig } = require('./config')
 const { getConstants } = require('./constants')
@@ -210,6 +211,16 @@ const initAndRunBuild = async function({
     logs,
   })
 
+  var buildbotClient
+  if (triggerDeployWithBuildbotServer) {
+    try {
+      buildbotClient = startBuildbotClient(buildbotServerSocket)
+    } catch (error) {
+      addErrorInfo(error, { type: 'buildbotServerClientStartup' })
+      throw error
+    }
+  }
+
   const childProcesses = await startPlugins({ pluginsOptions, buildDir, nodePath, childEnv, mode, logs })
 
   try {
@@ -230,10 +241,11 @@ const initAndRunBuild = async function({
       logs,
       testOpts,
       triggerDeployWithBuildbotServer,
-      buildbotServerSocket,
+      buildbotClient,
     })
   } finally {
     await stopPlugins(childProcesses)
+    closeBuildbotClient(buildbotClient)
   }
 }
 
