@@ -74,7 +74,7 @@ const build = async function(flags = {}) {
   }
 
   try {
-    const { commandsCount } = await runAndReportBuild({
+    const { commandsCount, timers: timersA } = await runAndReportBuild({
       netlifyConfig,
       configPath,
       buildDir,
@@ -89,6 +89,7 @@ const build = async function(flags = {}) {
       errorMonitor,
       deployId,
       logs,
+      timers,
       testOpts,
       buildbotServerSocket,
     })
@@ -101,7 +102,7 @@ const build = async function(flags = {}) {
       telemetry,
       mode,
       logs,
-      timers,
+      timers: timersA,
       timersFile,
       testOpts,
     })
@@ -152,10 +153,11 @@ const runAndReportBuild = async function({
   errorMonitor,
   deployId,
   logs,
+  timers,
   testOpts,
 }) {
   try {
-    const { commandsCount, statuses } = await initAndRunBuild({
+    const { commandsCount, statuses, timers: timersA } = await initAndRunBuild({
       netlifyConfig,
       configPath,
       buildDir,
@@ -170,12 +172,13 @@ const runAndReportBuild = async function({
       errorMonitor,
       deployId,
       logs,
+      timers,
       testOpts,
       buildbotServerSocket,
     })
     await reportStatuses({ statuses, childEnv, api, mode, netlifyConfig, errorMonitor, deployId, logs, testOpts })
 
-    return { commandsCount }
+    return { commandsCount, timers: timersA }
   } catch (error) {
     const { statuses } = getErrorInfo(error)
     await reportStatuses({ statuses, childEnv, api, mode, netlifyConfig, errorMonitor, deployId, logs, testOpts })
@@ -199,6 +202,7 @@ const initAndRunBuild = async function({
   errorMonitor,
   deployId,
   logs,
+  timers,
   testOpts,
 }) {
   const constants = await getConstants({ configPath, buildDir, functionsDistDir, netlifyConfig, siteInfo, mode })
@@ -229,6 +233,7 @@ const initAndRunBuild = async function({
       errorMonitor,
       deployId,
       logs,
+      timers,
       testOpts,
     })
   } finally {
@@ -253,6 +258,7 @@ const runBuild = async function({
   errorMonitor,
   deployId,
   logs,
+  timers,
   testOpts,
 }) {
   const pluginsCommands = await loadPlugins({ pluginsOptions, childProcesses, netlifyConfig, constants })
@@ -264,7 +270,7 @@ const runBuild = async function({
     return {}
   }
 
-  const { commandsCount: commandsCountA, statuses } = await runCommands({
+  const { commandsCount: commandsCountA, statuses, timers: timersA } = await runCommands({
     commands,
     configPath,
     buildDir,
@@ -276,9 +282,10 @@ const runBuild = async function({
     deployId,
     netlifyConfig,
     logs,
+    timers,
     testOpts,
   })
-  return { commandsCount: commandsCountA, statuses }
+  return { commandsCount: commandsCountA, statuses, timers: timersA }
 }
 
 // Logs and reports that a build successfully ended
