@@ -3,7 +3,7 @@ require('../utils/polyfills')
 const { getCommands } = require('../commands/get')
 const { runCommands } = require('../commands/run')
 const { handleBuildError } = require('../error/handle')
-const { getErrorInfo } = require('../error/info')
+const { addErrorInfo, getErrorInfo } = require('../error/info')
 const { startErrorMonitor } = require('../error/monitor/start')
 const { getBufferLogs } = require('../log/logger')
 const { logBuildStart, logBuildSuccess } = require('../log/main')
@@ -214,9 +214,9 @@ const initAndRunBuild = async function({
   var buildbotClient
   if (triggerDeployWithBuildbotServer) {
     try {
-      buildbotClient = startBuildbotClient(buildbotServerSocket)
+      buildbotClient = await startBuildbotClient(buildbotServerSocket)
     } catch (error) {
-      addErrorInfo(error, { type: 'buildbotServerClientStartup' })
+      addErrorInfo(error, { type: 'buildbotClientStartup' })
       throw error
     }
   }
@@ -268,7 +268,7 @@ const runBuild = async function({
   logs,
   testOpts,
   triggerDeployWithBuildbotServer,
-  buildbotServerSocket,
+  buildbotClient
 }) {
   const pluginsCommands = await loadPlugins({ pluginsOptions, childProcesses, netlifyConfig, constants })
 
@@ -292,7 +292,7 @@ const runBuild = async function({
     netlifyConfig,
     logs,
     testOpts,
-    buildbotServerSocket,
+    buildbotClient,
   })
   return { commandsCount: commandsCountA, statuses }
 }

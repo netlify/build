@@ -1,19 +1,22 @@
 const net = require('net')
 const { addErrorInfo } = require('../error/info')
 
-const getBuildbotClient = function(buildbotServerSocket) {
+const startBuildbotClient = function(buildbotServerSocket) {
   return new Promise((resolve, reject) => {
     try {
       const client = net.createConnection(buildbotServerSocket)
       client.on('connect', () => resolve(client))
     } catch (e) {
-      addErrorInfo(error, { type: 'buildbotServerClientStartup' })
+      addErrorInfo(error, {
+        type: 'buildbotClientStartup',
+        location: { buildbotServerSocket },
+      })
       reject(e)
     }
   })
 }
 
-const closeBuildbotClient = function(buildbotClient) {
+const closeBuildbotClient = function(client) {
   client.end()
   return
 }
@@ -44,17 +47,21 @@ const getNextParsedResponsePromise = function(client) {
   })
 }
 
-const deploySiteWithBuildbotClient = async function(buildbotClient) {
+const deploySiteWithBuildbotClient = async function(client) {
+  const payload = { action: 'deploySite' }
   try {
     const nextResponsePromise = getNextParsedResponsePromise(client)
-    await writeDeployPayload(buildbotClient, { action: 'deploySite' })
+    await writeDeployPayload(client, payload)
     const response = await nextResponsePromise
 
     if (!response.succeeded) {
       throw new Error(`Deploy did not succeed: ${response.values.error}`)
     }
   } catch (error) {
-    addErrorInfo(error, { type: 'buildbotServer' })
+    addErrorInfo(error, {
+      type: 'buildbotClient',
+      location: { payload },
+    })
     throw error
   }
 
@@ -62,7 +69,7 @@ const deploySiteWithBuildbotClient = async function(buildbotClient) {
 }
 
 module.exports = {
-  getBuildbotClient,
+  startBuildbotClient,
   closeBuildbotClient,
   deploySiteWithBuildbotClient,
 }

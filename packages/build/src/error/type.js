@@ -125,18 +125,18 @@ const TYPES = {
   },
 
   // Error while communicating to the buildbot via its socket
-  buildbotServerClientStartup: {
+  buildbotClientStartup: {
     title: 'Buildbot server client startup error',
     stackType: 'message',
-    locationType: 'buildbot',
+    locationType: 'buildbotClientStartup',
     severity: 'error',
   },
 
   // Error while communicating to the buildbot via its socket
-  buildbotServer: {
-    title: 'Buildbot server communication error',
+  buildbotClient: {
+    title: 'Buildbot communication error',
     stackType: 'message',
-    locationType: 'buildbot',
+    locationType: 'buildbotClientMessage',
     severity: 'error',
   },
 
