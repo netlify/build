@@ -245,7 +245,9 @@ const initAndRunBuild = async function({
     })
   } finally {
     await stopPlugins(childProcesses)
-    closeBuildbotClient(buildbotClient)
+    if (buildbotClient) {
+      closeBuildbotClient(buildbotClient)
+    }
   }
 }
 
