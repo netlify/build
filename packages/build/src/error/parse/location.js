@@ -42,7 +42,7 @@ const getApiLocation = function({ endpoint, parameters }) {
 }
 
 const getBuildbotClientStartupLocation = function() {
-  return "While starting the client for the buildbot helper server."
+  return 'While starting the client for the buildbot helper server.'
 }
 
 const getBuildbotClientMessageLocation = function({ payload: { action } }) {

@@ -1,4 +1,5 @@
 const net = require('net')
+
 const { addErrorInfo } = require('../error/info')
 
 const startBuildbotClient = function(buildbotServerSocket) {
@@ -6,12 +7,12 @@ const startBuildbotClient = function(buildbotServerSocket) {
     try {
       const client = net.createConnection(buildbotServerSocket)
       client.on('connect', () => resolve(client))
-    } catch (e) {
+    } catch (error) {
       addErrorInfo(error, {
         type: 'buildbotClientStartup',
         location: { buildbotServerSocket },
       })
-      reject(e)
+      reject(error)
     }
   })
 }

@@ -1,5 +1,6 @@
 require('../utils/polyfills')
 
+const { startBuildbotClient, closeBuildbotClient } = require('../buildbot_client/main')
 const { getCommands } = require('../commands/get')
 const { runCommands } = require('../commands/run')
 const { handleBuildError } = require('../error/handle')
@@ -13,7 +14,6 @@ const { getPluginsOptions } = require('../plugins/options')
 const { startPlugins, stopPlugins } = require('../plugins/spawn')
 const { reportStatuses } = require('../status/report')
 const { trackBuildComplete } = require('../telemetry/complete')
-const { startBuildbotClient, closeBuildbotClient } = require('../buildbot_client/main')
 
 const { loadConfig } = require('./config')
 const { getConstants } = require('./constants')
@@ -268,7 +268,7 @@ const runBuild = async function({
   logs,
   testOpts,
   triggerDeployWithBuildbotServer,
-  buildbotClient
+  buildbotClient,
 }) {
   const pluginsCommands = await loadPlugins({ pluginsOptions, childProcesses, netlifyConfig, constants })
 

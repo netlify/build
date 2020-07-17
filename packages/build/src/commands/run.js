@@ -35,7 +35,17 @@ const runCommands = async function({
     commands,
     async (
       { index, error, failedPlugins, envChanges, statuses },
-      { event, childProcess, package, pluginPackageJson, loadedFrom, origin, buildCommand, buildCommandOrigin, isDeploySiteCommand },
+      {
+        event,
+        childProcess,
+        package,
+        pluginPackageJson,
+        loadedFrom,
+        origin,
+        buildCommand,
+        buildCommandOrigin,
+        isDeploySiteCommand,
+      },
     ) => {
       const { newIndex = index, newError = error, failedPlugin = [], newEnvChanges = {}, newStatus } = await runCommand(
         {
@@ -124,7 +134,7 @@ const runCommand = async function({
 
   const methodTimer = startTimer()
 
-  logCommand({ logs, event, buildCommandOrigin, package, index, error })
+  logCommand({ logs, event, buildCommandOrigin, package, index, error, isDeploySiteCommand })
 
   const { newEnvChanges, newError, newStatus } = await fireCommand({
     event,
