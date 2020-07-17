@@ -215,7 +215,10 @@ const initAndRunBuild = async function({
     logs,
   })
 
+  const startPluginsTimer = startTimer()
   const childProcesses = await startPlugins({ pluginsOptions, buildDir, nodePath, childEnv, mode, logs })
+  const startPluginsDurationMs = endTimer(startPluginsTimer)
+  const timersA = addTimer(timers, 'buildbot.build.commands.startPlugins', startPluginsDurationMs)
 
   try {
     return await runBuild({
@@ -233,7 +236,7 @@ const initAndRunBuild = async function({
       errorMonitor,
       deployId,
       logs,
-      timers,
+      timers: timersA,
       testOpts,
     })
   } finally {
