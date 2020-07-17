@@ -51,4 +51,8 @@ test('Prints all timings', async t => {
   }
 })
 
-const TIMINGS = ['buildbot.build.commands.plugin.onBuild', 'buildbot.build.commands']
+const TIMINGS = [
+  'buildbot.build.commands.loadPlugins',
+  'buildbot.build.commands.plugin.onBuild',
+  'buildbot.build.commands',
+]
