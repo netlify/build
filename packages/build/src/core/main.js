@@ -61,6 +61,7 @@ const build = async function(flags = {}) {
     ...flagsA
   } = startBuild(flags)
 
+  const configTimer = startTimer()
   const { netlifyConfig, configPath, buildDir, childEnv, api, siteInfo, error } = await resolveConfig({
     ...flagsA,
     mode,
@@ -68,13 +69,16 @@ const build = async function(flags = {}) {
     logs,
     testOpts,
   })
+  const durationMs = endTimer(configTimer)
+  const timersA = addTimer(timers, 'buildbot.build.commands.resolveConfig', durationMs)
+
   if (error !== undefined) {
     await handleBuildError({ error, errorMonitor, netlifyConfig, childEnv, mode, logs, testOpts })
     return { success: false, logs }
   }
 
   try {
-    const { commandsCount, timers: timersA } = await runAndReportBuild({
+    const { commandsCount, timers: timersB } = await runAndReportBuild({
       netlifyConfig,
       configPath,
       buildDir,
@@ -89,7 +93,7 @@ const build = async function(flags = {}) {
       errorMonitor,
       deployId,
       logs,
-      timers,
+      timers: timersA,
       testOpts,
       buildbotServerSocket,
     })
@@ -102,7 +106,7 @@ const build = async function(flags = {}) {
       telemetry,
       mode,
       logs,
-      timers: timersA,
+      timers: timersB,
       timersFile,
       testOpts,
     })
