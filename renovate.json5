@@ -1,0 +1,25 @@
+{
+  extends: ['github>netlify/renovate-config:default'],
+  ignorePresets: [':prHourlyLimit2'],
+  semanticCommits: true,
+  masterIssue: true,
+  automerge: false,
+  ignoreDeps: [
+    // Those cannot be upgraded until we drop support for Node 8
+    'ava',
+    'chalk',
+    'clean-stack',
+    'cp-file',
+    'eslint',
+    'execa',
+    'get-bin-path',
+    'get-node',
+    'global-cache-dir',
+    'got',
+    'log-process-errors',
+    'move-file',
+    'nock',
+    'prettier',
+    'pretty-ms',
+  ],
+}
