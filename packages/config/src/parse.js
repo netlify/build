@@ -27,8 +27,10 @@ const parseConfig = async function(configPath) {
 
     const headersFilePath = path.join(path.dirname(configPath), '_headers')
     if (!(await pathExists(headersFilePath))) {
-      const headers = parseHeadersFile(headersFilePath)
-      config.headers = { ...config.headers, ...headers }
+      const fileHeaders = parseHeadersFile(headersFilePath)
+      const configHeaders = config.headers || {}
+      const paths = Array.from(new Set(Object.keys(configHeaders).concat(Object.keys(fileHeaders))))
+      config.headers = paths.reduce((prev, k) => ({ ...prev, [k]: [...configHeaders[k], ...fileHeaders[k]] }), {})
     }
 
     return config
