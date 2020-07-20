@@ -13,7 +13,13 @@ const BUILD_BIN_DIR = normalize(`${ROOT_DIR}/node_modules/.bin`)
 
 const runFixture = async function(t, fixtureName, { flags = {}, env: envOption = {}, ...opts } = {}) {
   const binaryPath = await BINARY_PATH
-  const flagsA = { debug: true, telemetry: false, buffer: true, ...flags }
+  const flagsA = {
+    debug: true,
+    telemetry: false,
+    buffer: true,
+    testOpts: { sendStatus: false, ...flags.testOpts },
+    ...flags,
+  }
   const envOptionA = {
     // Ensure local environment variables aren't used during development
     BUILD_TELEMETRY_DISABLED: '',

@@ -296,7 +296,12 @@ test('Print stack trace of validation errors', async t => {
 if (!version.startsWith('v8.')) {
   test('Redact API token on errors', async t => {
     await runFixture(t, 'api_token_redact', {
-      flags: { token: '0123456789abcdef', deployId: 'test', mode: 'buildbot', testOpts: { host: '...' } },
+      flags: {
+        token: '0123456789abcdef',
+        deployId: 'test',
+        mode: 'buildbot',
+        testOpts: { host: '...', sendStatus: true },
+      },
     })
   })
 }
