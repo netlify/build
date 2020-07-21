@@ -1,9 +1,10 @@
 require('../utils/polyfills')
 
+const { startBuildbotClient } = require('../buildbot_client/main')
 const { getCommands } = require('../commands/get')
 const { runCommands } = require('../commands/run')
 const { handleBuildError } = require('../error/handle')
-const { getErrorInfo } = require('../error/info')
+const { getErrorInfo, addErrorInfo } = require('../error/info')
 const { startErrorMonitor } = require('../error/monitor/start')
 const { getBufferLogs } = require('../log/logger')
 const { logBuildStart, logBuildSuccess } = require('../log/main')
@@ -248,8 +249,19 @@ const initAndRunBuild = async function({
   logs,
   timers,
   testOpts,
+  buildbotServerSocket,
 }) {
   const constants = await getConstants({ configPath, buildDir, functionsDistDir, netlifyConfig, siteInfo, mode })
+
+  var buildbotClient
+  if (buildbotServerSocket) {
+    try {
+      buildbotClient = await startBuildbotClient(buildbotServerSocket)
+    } catch (error) {
+      addErrorInfo(error, { type: 'buildbotClientStartup' })
+      throw error
+    }
+  }
 
   const { pluginsOptions, timers: timersA } = await getPluginsOptions({
     netlifyConfig,
@@ -275,6 +287,7 @@ const initAndRunBuild = async function({
     return await runBuild({
       childProcesses,
       pluginsOptions,
+      buildbotClient,
       netlifyConfig,
       configPath,
       buildDir,
@@ -300,6 +313,7 @@ const initAndRunBuild = async function({
 const runBuild = async function({
   childProcesses,
   pluginsOptions,
+  buildbotClient,
   netlifyConfig,
   configPath,
   buildDir,
@@ -331,6 +345,7 @@ const runBuild = async function({
   }
 
   const { commandsCount: commandsCountA, statuses, timers: timersB } = await runCommands({
+    buildbotClient,
     commands,
     configPath,
     buildDir,
