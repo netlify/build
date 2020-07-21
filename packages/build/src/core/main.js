@@ -206,6 +206,8 @@ const initAndRunBuild = async function({
   testOpts,
 }) {
   const constants = await getConstants({ configPath, buildDir, functionsDistDir, netlifyConfig, siteInfo, mode })
+
+  const pluginsOptionsTimer = startTimer()
   const pluginsOptions = await getPluginsOptions({
     netlifyConfig,
     buildDir,
@@ -214,11 +216,13 @@ const initAndRunBuild = async function({
     buildImagePluginsDir,
     logs,
   })
+  const pluginsOptionsDurationMs = endTimer(pluginsOptionsTimer)
+  const timersA = addTimer(timers, 'buildbot.build.commands.getPluginsOptions', pluginsOptionsDurationMs)
 
   const startPluginsTimer = startTimer()
   const childProcesses = await startPlugins({ pluginsOptions, buildDir, nodePath, childEnv, mode, logs })
   const startPluginsDurationMs = endTimer(startPluginsTimer)
-  const timersA = addTimer(timers, 'buildbot.build.commands.startPlugins', startPluginsDurationMs)
+  const timersB = addTimer(timersA, 'buildbot.build.commands.startPlugins', startPluginsDurationMs)
 
   try {
     return await runBuild({
@@ -236,7 +240,7 @@ const initAndRunBuild = async function({
       errorMonitor,
       deployId,
       logs,
-      timers: timersA,
+      timers: timersB,
       testOpts,
     })
   } finally {

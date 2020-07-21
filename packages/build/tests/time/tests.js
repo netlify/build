@@ -52,6 +52,7 @@ test('Prints all timings', async t => {
 })
 
 const TIMINGS = [
+  'buildbot.build.commands.getPluginsOptions',
   'buildbot.build.commands.startPlugins',
   'buildbot.build.commands.loadPlugins',
   'buildbot.build.commands.plugin.onBuild',
