@@ -1,6 +1,6 @@
 {
   "name": "@netlify/run-utils",
-  "version": "0.1.2",
+  "version": "1.0.0",
   "description": "Utility for running commands inside Netlify Build",
   "main": "src/main.js",
   "files": [
