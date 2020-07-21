@@ -11,11 +11,17 @@ const pRealpath = promisify(realpath)
 
 // Create and retrieve a new temporary sub-directory
 const getTempDir = async function() {
-  const id = String(Math.random()).replace('.', '')
-  const tempDir = normalize(`${tmpdir()}/netlify-build-${id}`)
+  const tempDir = await getTempName()
   await makeDir(tempDir)
+  return tempDir
+}
+
+const getTempName = async function() {
+  const tempDir = tmpdir()
   const tempDirA = await pRealpath(tempDir)
-  return tempDirA
+  const id = String(Math.random()).replace('.', '')
+  const tempName = normalize(`${tempDirA}/netlify-build-${id}`)
+  return tempName
 }
 
 module.exports = { getTempDir }
