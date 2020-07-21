@@ -120,6 +120,12 @@ Default: none`,
     describe: `Path to the buildbot server socket. This is used to connect to the buildbot to trigger deploys.`,
     hidden: true,
   },
+  timersFile: {
+    string: true,
+    describe: `Path to the file recording timings.
+Default: none`,
+    hidden: true,
+  },
   telemetry: {
     boolean: true,
     describe: `Enable telemetry.

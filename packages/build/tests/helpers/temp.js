@@ -24,4 +24,4 @@ const getTempName = async function() {
   return tempName
 }
 
-module.exports = { getTempDir }
+module.exports = { getTempDir, getTempName }
