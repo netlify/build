@@ -28,6 +28,7 @@ const getDefaultFlags = function({ env: envOpt = {} }) {
     debug: Boolean(combinedEnv.NETLIFY_BUILD_DEBUG),
     bugsnagKey: combinedEnv.BUGSNAG_KEY,
     telemetry: !combinedEnv.BUILD_TELEMETRY_DISABLED,
+    sendStatus: false,
     testOpts: {},
   }
 }
