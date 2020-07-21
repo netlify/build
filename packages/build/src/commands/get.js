@@ -34,8 +34,17 @@ const sortCommands = function(commands) {
   return EVENTS.flatMap(event => commands.filter(command => command.event === event))
 }
 
-const isMainCommand = function({ event }) {
-  return event !== 'onEnd' && event !== 'onError'
+const isDeployEvent = function(event) {
+  return event === 'onDeploy'
+}
+
+const isDeployCommand = function({ event, isDeploySiteCommand }) {
+  return isDeploySiteCommand || isDeployEvent(event)
+}
+
+const isMainCommand = function(command) {
+  const { event } = command
+  return event !== 'onEnd' && event !== 'onError' && !isDeployCommand(command)
 }
 
 const isEndCommand = function({ event }) {
@@ -50,4 +59,4 @@ const isSuccessCommand = function({ event }) {
   return isMainCommand({ event }) || isEndCommand({ event })
 }
 
-module.exports = { getCommands, isMainCommand, isErrorCommand, isSuccessCommand }
+module.exports = { getCommands, isMainCommand, isErrorCommand, isSuccessCommand, isDeployCommand }

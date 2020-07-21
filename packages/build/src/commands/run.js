@@ -9,7 +9,7 @@ const { timeAsyncFunction } = require('../time/report')
 
 const { fireBuildCommand } = require('./build_command')
 const { handleCommandError } = require('./error')
-const { isMainCommand, isErrorCommand } = require('./get')
+const { isMainCommand, isErrorCommand, isDeployCommand } = require('./get')
 const { firePluginCommand } = require('./plugin')
 
 // Run all commands.
@@ -18,8 +18,9 @@ const { firePluginCommand } = require('./plugin')
 // If an error arises, runs `onError` events.
 // Runs `onEnd` events at the end, whether an error was thrown or not.
 const runCommands = async function({
-  buildbotClient,
   commands,
+  buildbotClient,
+  triggerDeployWithBuildbotServer,
   configPath,
   buildDir,
   nodePath,
@@ -50,6 +51,7 @@ const runCommands = async function({
         event,
         childProcess,
         buildbotClient,
+        triggerDeployWithBuildbotServer,
         package,
         pluginPackageJson,
         loadedFrom,
@@ -102,6 +104,7 @@ const runCommand = async function({
   event,
   childProcess,
   buildbotClient,
+  triggerDeployWithBuildbotServer,
   package,
   pluginPackageJson,
   loadedFrom,
@@ -126,7 +129,9 @@ const runCommand = async function({
   timers,
   testOpts,
 }) {
-  if (shouldSkipCommand({ event, package, error, failedPlugins })) {
+  if (
+    shouldSkipCommand({ event, package, error, failedPlugins, skipDeployCommands: !triggerDeployWithBuildbotServer })
+  ) {
     return {}
   }
 
@@ -182,9 +187,13 @@ const runCommand = async function({
 //   - run `onError` event (otherwise not run)
 //   - run `onEnd` event (always run regardless)
 //   - skip other events
-const shouldSkipCommand = function({ event, package, error, failedPlugins }) {
+const shouldSkipCommand = function({ event, package, error, failedPlugins, skipDeployCommands = true }) {
   const isError = error !== undefined || failedPlugins.includes(package)
-  return (isMainCommand({ event }) && isError) || (isErrorCommand({ event }) && !isError)
+  return (
+    (isMainCommand({ event }) && isError) ||
+    (isErrorCommand({ event }) && !isError) ||
+    (isDeployCommand({ event }) && skipDeployCommands)
+  )
 }
 
 // Wrap command function to measure its time

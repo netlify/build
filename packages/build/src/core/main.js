@@ -341,7 +341,7 @@ const runBuild = async function({
     timers,
   })
 
-  const { commands, commandsCount } = getCommands(pluginsCommands, netlifyConfig)
+  const { commands, commandsCount } = getCommands(pluginsCommands, netlifyConfig, triggerDeployWithBuildbotServer)
 
   if (dry) {
     doDryRun({ commands, commandsCount, logs })
