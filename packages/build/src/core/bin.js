@@ -120,6 +120,15 @@ Default: none`,
     describe: `Path to the buildbot server socket. This is used to connect to the buildbot to trigger deploys.`,
     hidden: true,
   },
+  triggerDeployWithBuildbotServer: {
+    boolean: true,
+    describe: `Feature flag.
+When enabled, triggers a deploy by connecting to the buildbot deploy server and
+passing it a "deploySite" command. After the deploy is finished, it triggers the
+"onDeploy" event.
+Default: false`,
+    hidden: true,
+  },
   timersFile: {
     string: true,
     describe: `Path to the file recording timings.
