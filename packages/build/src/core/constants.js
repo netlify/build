@@ -17,6 +17,7 @@ const getConstants = async function({
   siteInfo: { id: siteId },
   token,
   mode,
+  buildbotServerSocket,
 }) {
   const isLocal = mode !== 'buildbot'
   const [cacheDir, edgeHandlersSrc] = await Promise.all([
@@ -65,6 +66,10 @@ const getConstants = async function({
      * The Netlify API access token
      */
     NETLIFY_API_TOKEN: token,
+    /**
+     * The path to the buildbot server socket
+     */
+    BUILDBOT_SERVER_SOCKET: buildbotServerSocket,
   }
   const constantsA = mapObj(constants, (key, path) => [key, normalizePath(path, buildDir, key)])
   return constantsA

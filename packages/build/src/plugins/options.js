@@ -20,10 +20,11 @@ const tGetPluginsOptions = async function({
   constants,
   mode,
   buildImagePluginsDir,
+  triggerDeployWithBuildbotServer,
   logs,
   debug,
 }) {
-  const corePlugins = await getCorePlugins({ constants, buildDir })
+  const corePlugins = await getCorePlugins({ constants, buildDir, triggerDeployWithBuildbotServer })
   const allCorePlugins = corePlugins
     .map(corePlugin => addCoreProperties(corePlugin, plugins))
     .filter(corePlugin => !isOptionalCore(corePlugin, plugins))

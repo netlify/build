@@ -4,26 +4,34 @@ const { LOCAL_INSTALL_PLUGIN_NAME } = require('../install/local')
 
 const FUNCTIONS_INSTALL_PLUGIN = `${__dirname}/functions_install/index.js`
 const FUNCTIONS_PLUGIN = `${__dirname}/functions/index.js`
+const DEPLOY_PLUGIN = `${__dirname}/deploy/index.js`
 
 // List of core plugin names
 const FUNCTIONS_PLUGIN_NAME = '@netlify/plugin-functions-core'
 const FUNCTIONS_INSTALL_PLUGIN_NAME = '@netlify/plugin-functions-install-core'
 const EDGE_HANDLERS_PLUGIN_NAME = '@netlify/plugin-edge-handlers'
+const DEPLOY_PLUGIN_NAME = '@netlify/plugin-deploy-core'
 const CORE_PLUGINS = [
   FUNCTIONS_PLUGIN_NAME,
   FUNCTIONS_INSTALL_PLUGIN_NAME,
   LOCAL_INSTALL_PLUGIN_NAME,
   EDGE_HANDLERS_PLUGIN_NAME,
+  DEPLOY_PLUGIN_NAME,
 ]
 
 const EDGE_HANDLERS_PLUGIN_PATH = require.resolve(EDGE_HANDLERS_PLUGIN_NAME)
 
 // Plugins that are installed and enabled by default
-const getCorePlugins = async function({ constants: { FUNCTIONS_SRC, EDGE_HANDLERS_SRC }, buildDir }) {
+const getCorePlugins = async function({
+  constants: { FUNCTIONS_SRC, EDGE_HANDLERS_SRC, BUILDBOT_SERVER_SOCKET },
+  buildDir,
+  triggerDeployWithBuildbotServer,
+}) {
   const functionsPlugin = getFunctionsPlugin(FUNCTIONS_SRC)
   const functionsInstallPlugin = getFunctionsInstallPlugin(FUNCTIONS_SRC)
   const edgeHandlersPlugin = await getEdgeHandlersPlugin({ buildDir, EDGE_HANDLERS_SRC })
-  return [functionsPlugin, functionsInstallPlugin, edgeHandlersPlugin].filter(Boolean)
+  const deployPlugin = getDeployPlugin(triggerDeployWithBuildbotServer, BUILDBOT_SERVER_SOCKET)
+  return [functionsPlugin, functionsInstallPlugin, edgeHandlersPlugin, deployPlugin].filter(Boolean)
 }
 
 // When no "Functions directory" is defined, it means users does not use
@@ -61,6 +69,14 @@ const getEdgeHandlersPlugin = async function({ buildDir, EDGE_HANDLERS_SRC }) {
 // `netlify.toml`.
 const usesEdgeHandlers = function({ buildDir, EDGE_HANDLERS_SRC }) {
   return isDirectory(`${buildDir}/${EDGE_HANDLERS_SRC}`)
+}
+
+const getDeployPlugin = function(triggerDeployWithBuildbotServer, BUILDBOT_SERVER_SOCKET) {
+  if (!triggerDeployWithBuildbotServer || BUILDBOT_SERVER_SOCKET === undefined) {
+    return
+  }
+
+  return { package: DEPLOY_PLUGIN_NAME, pluginPath: DEPLOY_PLUGIN }
 }
 
 const isCorePlugin = function(package) {
