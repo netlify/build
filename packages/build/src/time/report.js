@@ -1,6 +1,8 @@
 const { appendFile } = require('fs')
 const { promisify } = require('util')
 
+const slugify = require('slugify')
+
 const pAppendFile = promisify(appendFile)
 
 // Initialize the `timers` array
@@ -11,6 +13,12 @@ const initTimers = function() {
 // Keep a specific timer duration in memory
 const addTimer = function(timers, name, durationMs) {
   return [...timers, { name, durationMs }]
+}
+
+// Make sure the timer name does not include special characters.
+// For example, the `package` of local plugins includes dots.
+const normalizeTimerName = function(name) {
+  return slugify(name, { strict: true })
 }
 
 // Record the duration of a build phase, for monitoring.
@@ -30,4 +38,4 @@ const getTimerLine = function({ name, durationMs }) {
   return `${name} ${durationMs}ms\n`
 }
 
-module.exports = { initTimers, addTimer, reportTimers }
+module.exports = { initTimers, addTimer, normalizeTimerName, reportTimers }

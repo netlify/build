@@ -5,6 +5,7 @@ const { logCommand, logCommandSuccess } = require('../log/main')
 const { logTimer } = require('../log/main')
 const { startTimer, endTimer } = require('../log/timer')
 const { addStatus } = require('../status/add')
+const { addTimer, normalizeTimerName } = require('../time/report')
 
 const { fireBuildCommand } = require('./build_command')
 const { handleCommandError } = require('./error')
@@ -28,42 +29,49 @@ const runCommands = async function({
   deployId,
   netlifyConfig,
   logs,
+  timers,
   testOpts,
 }) {
-  const { index: commandsCount, error: errorA, statuses: statusesB } = await pReduce(
+  const { index: commandsCount, error: errorA, statuses: statusesB, timers: timersC } = await pReduce(
     commands,
     async (
-      { index, error, failedPlugins, envChanges, statuses },
+      { index, error, failedPlugins, envChanges, statuses, timers: timersA },
       { event, childProcess, package, pluginPackageJson, loadedFrom, origin, buildCommand, buildCommandOrigin },
     ) => {
-      const { newIndex = index, newError = error, failedPlugin = [], newEnvChanges = {}, newStatus } = await runCommand(
-        {
-          event,
-          childProcess,
-          package,
-          pluginPackageJson,
-          loadedFrom,
-          origin,
-          buildCommand,
-          buildCommandOrigin,
-          configPath,
-          buildDir,
-          nodePath,
-          index,
-          childEnv,
-          envChanges,
-          commands,
-          mode,
-          api,
-          errorMonitor,
-          deployId,
-          error,
-          failedPlugins,
-          netlifyConfig,
-          logs,
-          testOpts,
-        },
-      )
+      const {
+        newIndex = index,
+        newError = error,
+        failedPlugin = [],
+        newEnvChanges = {},
+        newStatus,
+        timers: timersB = timersA,
+      } = await runCommand({
+        event,
+        childProcess,
+        package,
+        pluginPackageJson,
+        loadedFrom,
+        origin,
+        buildCommand,
+        buildCommandOrigin,
+        configPath,
+        buildDir,
+        nodePath,
+        index,
+        childEnv,
+        envChanges,
+        commands,
+        mode,
+        api,
+        errorMonitor,
+        deployId,
+        error,
+        failedPlugins,
+        netlifyConfig,
+        logs,
+        timers: timersA,
+        testOpts,
+      })
       const statusesA = addStatus({ newStatus, statuses, event, package, pluginPackageJson })
       return {
         index: newIndex,
@@ -71,9 +79,10 @@ const runCommands = async function({
         failedPlugins: [...failedPlugins, ...failedPlugin],
         envChanges: { ...envChanges, ...newEnvChanges },
         statuses: statusesA,
+        timers: timersB,
       }
     },
-    { index: 0, failedPlugins: [], envChanges: {}, statuses: [] },
+    { index: 0, failedPlugins: [], envChanges: {}, statuses: [], timers },
   )
 
   // Instead of throwing any build failure right away, we wait for `onError`,
@@ -83,7 +92,7 @@ const runCommands = async function({
     throw errorA
   }
 
-  return { commandsCount, statuses: statusesB }
+  return { commandsCount, statuses: statusesB, timers: timersC }
 }
 
 // Run a command (shell or plugin)
@@ -111,6 +120,7 @@ const runCommand = async function({
   failedPlugins,
   netlifyConfig,
   logs,
+  timers,
   testOpts,
 }) {
   if (shouldSkipCommand({ event, package, error, failedPlugins })) {
@@ -155,6 +165,7 @@ const runCommand = async function({
     deployId,
     netlifyConfig,
     logs,
+    timers,
     testOpts,
   })
   return { ...newValues, newIndex: index + 1 }
@@ -232,6 +243,7 @@ const getNewValues = function({
   deployId,
   netlifyConfig,
   logs,
+  timers,
   testOpts,
 }) {
   if (newError !== undefined) {
@@ -254,8 +266,10 @@ const getNewValues = function({
   const durationMs = endTimer(methodTimer)
   const timerName = package === undefined ? 'build.command' : `${package} ${event}`
   logTimer(logs, durationMs, timerName)
+  const metricName = package === undefined ? 'command' : `${normalizeTimerName(package)}.${event}`
+  const timersA = addTimer(timers, `buildbot.build.commands.${metricName}`, durationMs)
 
-  return { newEnvChanges, newStatus }
+  return { newEnvChanges, newStatus, timers: timersA }
 }
 
 module.exports = { runCommands }
