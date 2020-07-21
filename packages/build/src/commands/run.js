@@ -138,7 +138,7 @@ const runCommand = async function({
     return {}
   }
 
-  logCommand({ logs, event, buildCommandOrigin, package, index, error })
+  logCommand({ logs, event, buildCommandOrigin, isDeploySiteCommand, package, index, error })
 
   const fireCommand = getFireCommand({ package, event })
   const { newEnvChanges, newError, newStatus, timers: timersA, durationMs } = await fireCommand({
