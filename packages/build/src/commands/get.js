@@ -1,11 +1,15 @@
 const { EVENTS } = require('../plugins/events')
 
 // Get commands for all events
-const getCommands = function(pluginsCommands, netlifyConfig) {
-  const commands = addBuildCommand(pluginsCommands, netlifyConfig)
+const getCommands = function(pluginsCommands, netlifyConfig, shouldAddDeployCommand) {
+  const commands = addBuiltInCommands(pluginsCommands, netlifyConfig, shouldAddDeployCommand)
   const commandsA = sortCommands(commands)
   const commandsCount = commandsA.filter(isSuccessCommand).length
   return { commands: commandsA, commandsCount }
+}
+
+const addBuiltInCommands = function(pluginsCommands, netlifyConfig, shouldAddDeployCommand) {
+  return addBuildCommand(shouldAddDeployCommand ? addDeployCommand(pluginsCommands) : pluginsCommands, netlifyConfig)
 }
 
 // Merge `build.command` with plugin event handlers
@@ -18,6 +22,11 @@ const addBuildCommand = function(
   }
 
   return [{ event: 'onBuild', buildCommand, buildCommandOrigin }, ...pluginsCommands]
+}
+
+// Schedule the deploy command as the first 'onDeploy' action
+const addDeployCommand = function(pluginsCommands) {
+  return [{ event: 'onDeploy', isDeploySiteCommand: true }, ...pluginsCommands]
 }
 
 // Sort plugin commands by event order.
