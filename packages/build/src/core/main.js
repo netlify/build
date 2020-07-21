@@ -53,6 +53,7 @@ const build = async function(flags = {}) {
     errorMonitor,
     logs,
     buildTimer,
+    buildbotServerSocket,
     ...flagsA
   } = startBuild(flags)
 
@@ -85,6 +86,7 @@ const build = async function(flags = {}) {
       deployId,
       logs,
       testOpts,
+      buildbotServerSocket,
     })
     await handleBuildSuccess({
       commandsCount,
@@ -135,6 +137,7 @@ const runAndReportBuild = async function({
   childEnv,
   functionsDistDir,
   buildImagePluginsDir,
+  buildbotServerSocket,
   dry,
   siteInfo,
   mode,
@@ -161,6 +164,7 @@ const runAndReportBuild = async function({
       deployId,
       logs,
       testOpts,
+      buildbotServerSocket,
     })
     await reportStatuses({ statuses, childEnv, api, mode, netlifyConfig, errorMonitor, deployId, logs, testOpts })
 
