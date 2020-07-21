@@ -261,7 +261,10 @@ const runBuild = async function({
   timers,
   testOpts,
 }) {
+  const loadPluginsTimer = startTimer()
   const pluginsCommands = await loadPlugins({ pluginsOptions, childProcesses, netlifyConfig, constants })
+  const durationMs = endTimer(loadPluginsTimer)
+  const timersA = addTimer(timers, 'buildbot.build.commands.loadPlugins', durationMs)
 
   const { commands, commandsCount } = getCommands(pluginsCommands, netlifyConfig)
 
@@ -270,7 +273,7 @@ const runBuild = async function({
     return {}
   }
 
-  const { commandsCount: commandsCountA, statuses, timers: timersA } = await runCommands({
+  const { commandsCount: commandsCountA, statuses, timers: timersB } = await runCommands({
     commands,
     configPath,
     buildDir,
@@ -282,10 +285,10 @@ const runBuild = async function({
     deployId,
     netlifyConfig,
     logs,
-    timers,
+    timers: timersA,
     testOpts,
   })
-  return { commandsCount: commandsCountA, statuses, timers: timersA }
+  return { commandsCount: commandsCountA, statuses, timers: timersB }
 }
 
 // Logs and reports that a build successfully ended
