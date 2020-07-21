@@ -258,7 +258,7 @@ const initAndRunBuild = async function({
     try {
       buildbotClient = await startBuildbotClient(buildbotServerSocket)
     } catch (error) {
-      addErrorInfo(error, { type: 'buildbotClientStartup' })
+      addErrorInfo(error, { type: 'buildbotClientConnection' })
       throw error
     }
   }

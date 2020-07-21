@@ -14,7 +14,7 @@ const startBuildbotClient = async function(buildbotServerSocket) {
     await pEvent(buildbotClient, 'connect')
     return buildbotClient
   } catch (error) {
-    addErrorInfo(error, { type: 'buildbotClientStartup' })
+    addErrorInfo(error, { type: 'buildbotClientConnection' })
     throw error
   }
 }
@@ -23,7 +23,12 @@ const closeBuildbotClient = async function(buildbotClient) {
   if (buildbotClient === undefined) {
     return
   }
-  await promisify(buildbotClient.end.bind(buildbotClient))()
+  try {
+    await promisify(buildbotClient.end.bind(buildbotClient))()
+  } catch (error) {
+    addErrorInfo(error, { type: 'buildbotClientConnection' })
+    throw error
+  }
 }
 
 module.exports = {
