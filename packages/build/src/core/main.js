@@ -58,6 +58,7 @@ const build = async function(flags = {}) {
     timersFile,
     buildTimer,
     buildbotServerSocket,
+    sendStatus,
     ...flagsA
   } = startBuild(flags)
 
@@ -94,6 +95,7 @@ const build = async function(flags = {}) {
       deployId,
       logs,
       timers: timersA,
+      sendStatus,
       testOpts,
       buildbotServerSocket,
     })
@@ -158,6 +160,7 @@ const runAndReportBuild = async function({
   deployId,
   logs,
   timers,
+  sendStatus,
   testOpts,
 }) {
   try {
@@ -180,12 +183,34 @@ const runAndReportBuild = async function({
       testOpts,
       buildbotServerSocket,
     })
-    await reportStatuses({ statuses, childEnv, api, mode, netlifyConfig, errorMonitor, deployId, logs, testOpts })
+    await reportStatuses({
+      statuses,
+      childEnv,
+      api,
+      mode,
+      netlifyConfig,
+      errorMonitor,
+      deployId,
+      logs,
+      sendStatus,
+      testOpts,
+    })
 
     return { commandsCount, timers: timersA }
   } catch (error) {
     const { statuses } = getErrorInfo(error)
-    await reportStatuses({ statuses, childEnv, api, mode, netlifyConfig, errorMonitor, deployId, logs, testOpts })
+    await reportStatuses({
+      statuses,
+      childEnv,
+      api,
+      mode,
+      netlifyConfig,
+      errorMonitor,
+      deployId,
+      logs,
+      sendStatus,
+      testOpts,
+    })
     throw error
   }
 }

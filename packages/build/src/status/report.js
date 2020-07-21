@@ -13,6 +13,7 @@ const reportStatuses = async function({
   errorMonitor,
   deployId,
   logs,
+  sendStatus,
   testOpts,
 }) {
   if (statuses === undefined) {
@@ -21,7 +22,7 @@ const reportStatuses = async function({
 
   const statusesA = removeStatusesColors(statuses)
   printStatuses({ statuses: statusesA, mode, logs })
-  await sendStatuses({
+  await sendApiStatuses({
     statuses: statusesA,
     childEnv,
     api,
@@ -30,6 +31,7 @@ const reportStatuses = async function({
     errorMonitor,
     deployId,
     logs,
+    sendStatus,
     testOpts,
   })
 }
@@ -55,7 +57,7 @@ const shouldPrintStatus = function({ state, summary }) {
 }
 
 // In production, send statuses to the API
-const sendStatuses = async function({
+const sendApiStatuses = async function({
   statuses,
   childEnv,
   api,
@@ -64,20 +66,21 @@ const sendStatuses = async function({
   errorMonitor,
   deployId,
   logs,
+  sendStatus,
   testOpts,
 }) {
-  if ((mode !== 'buildbot' && !testOpts.sendStatus) || api === undefined || !deployId) {
+  if ((mode !== 'buildbot' && !sendStatus) || api === undefined || !deployId) {
     return
   }
 
   await Promise.all(
     statuses.map(status =>
-      sendStatus({ api, status, childEnv, mode, netlifyConfig, errorMonitor, deployId, logs, testOpts }),
+      sendApiStatus({ api, status, childEnv, mode, netlifyConfig, errorMonitor, deployId, logs, testOpts }),
     ),
   )
 }
 
-const sendStatus = async function({
+const sendApiStatus = async function({
   api,
   status: { package, version, state, event, title, summary, text },
   childEnv,

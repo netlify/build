@@ -34,7 +34,7 @@ const comparePackage = function({ body: { package: packageA } }, { body: { packa
 const runWithApiMock = async function(t, fixture, { flags = { token: 'test' }, status } = {}) {
   const { scheme, host, requests, stopServer } = await startServer(STATUS_PATH, {}, { status })
   await runFixture(t, fixture, {
-    flags: { deployId: 'test', ...flags, testOpts: { scheme, host, sendStatus: true } },
+    flags: { deployId: 'test', ...flags, sendStatus: true, testOpts: { scheme, host } },
   })
   await stopServer()
   const snapshots = requests.map(normalizeRequest).sort(comparePackage)
