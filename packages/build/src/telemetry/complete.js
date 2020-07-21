@@ -11,22 +11,22 @@ const { analytics } = require('./track')
 const trackBuildComplete = async function({
   commandsCount,
   netlifyConfig,
-  duration,
+  durationMs,
   siteInfo,
   telemetry,
   mode,
   testOpts,
 }) {
-  const payload = getPayload({ commandsCount, netlifyConfig, duration, siteInfo, mode })
+  const payload = getPayload({ commandsCount, netlifyConfig, durationMs, siteInfo, mode })
   await analytics.track('netlifyCI:buildComplete', { payload, telemetry, testOpts })
 }
 
 // Retrieve telemetry information
-const getPayload = function({ commandsCount, netlifyConfig, duration, siteInfo: { id: siteId }, mode }) {
+const getPayload = function({ commandsCount, netlifyConfig, durationMs, siteInfo: { id: siteId }, mode }) {
   const plugins = Object.values(netlifyConfig.plugins).map(getPluginPackage)
   return {
     steps: commandsCount,
-    duration,
+    duration: durationMs,
     pluginCount: plugins.length,
     plugins,
     siteId,

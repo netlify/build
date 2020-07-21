@@ -7,6 +7,7 @@ const { getErrorInfo } = require('../error/info')
 const { startErrorMonitor } = require('../error/monitor/start')
 const { getBufferLogs } = require('../log/logger')
 const { logBuildStart, logBuildSuccess } = require('../log/main')
+const { logTimer } = require('../log/main')
 const { startTimer, endTimer } = require('../log/timer')
 const { loadPlugins } = require('../plugins/load')
 const { getPluginsOptions } = require('../plugins/options')
@@ -292,8 +293,9 @@ const handleBuildSuccess = async function({
 
   logBuildSuccess(logs)
 
-  const duration = endTimer(logs, buildTimer, 'Netlify Build')
-  await trackBuildComplete({ commandsCount, netlifyConfig, duration, siteInfo, telemetry, mode, testOpts })
+  const durationMs = endTimer(buildTimer)
+  logTimer(logs, durationMs, 'Netlify Build')
+  await trackBuildComplete({ commandsCount, netlifyConfig, durationMs, siteInfo, telemetry, mode, testOpts })
 }
 
 module.exports = build
