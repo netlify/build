@@ -13,7 +13,7 @@ This allows plugins to:
 ```js
 module.exports = {
   // Add a Netlify Functions file or directory to a build
-  async onPostBuild({ utils }) {
+  async onPreBuild({ utils }) {
     await utils.functions.add('./path/to/function')
   },
 }
