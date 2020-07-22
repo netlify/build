@@ -125,7 +125,7 @@ Default: none`,
     describe: `Feature flag.
 When enabled, triggers a deploy by connecting to the buildbot deploy server and
 passing it a "deploySite" command. After the deploy is finished, it triggers the
-"onDeploy" event.
+"onPostDeploy" event.
 Default: false`,
     hidden: true,
   },

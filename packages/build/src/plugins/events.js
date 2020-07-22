@@ -26,9 +26,9 @@ const EVENTS = [
   'onEnd',
 
   /**
-   * `onDeploy` - Runs after build has finished and site has been deployed
+   * `onPostDeploy` - Runs after build has finished and site has been deployed
    */
-  'onDeploy',
+  'onPostDeploy',
 ]
 
 module.exports = { EVENTS }
