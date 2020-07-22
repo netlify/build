@@ -100,7 +100,7 @@ const sendApiStatus = async function({
     // Builds should be successful when this API call fails, but we still want
     // to report the error both in logs and in error monitoring.
   } catch (error) {
-    await handleBuildError({ error, errorMonitor, netlifyConfig, childEnv, mode, logs, testOpts })
+    await handleBuildError(error, { errorMonitor, netlifyConfig, childEnv, mode, logs, testOpts })
   }
 }
 
