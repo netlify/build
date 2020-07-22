@@ -18,6 +18,7 @@ const { firePluginCommand } = require('./plugin')
 // If an error arises, runs `onError` events.
 // Runs `onEnd` events at the end, whether an error was thrown or not.
 const runCommands = async function({
+  buildbotClient,
   commands,
   configPath,
   buildDir,
@@ -48,6 +49,7 @@ const runCommands = async function({
       } = await runCommand({
         event,
         childProcess,
+        buildbotClient,
         package,
         pluginPackageJson,
         loadedFrom,
@@ -99,6 +101,7 @@ const runCommands = async function({
 const runCommand = async function({
   event,
   childProcess,
+  buildbotClient,
   package,
   pluginPackageJson,
   loadedFrom,
@@ -139,6 +142,7 @@ const runCommand = async function({
     origin,
     buildCommand,
     buildCommandOrigin,
+    buildbotClient,
     configPath,
     buildDir,
     nodePath,
