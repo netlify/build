@@ -3,6 +3,7 @@ const { execPath } = require('process')
 const execa = require('execa')
 
 const { logLoadingPlugins } = require('../log/main')
+const { timeAsyncFunction } = require('../time/report')
 
 const { getEventFromChild } = require('./ipc')
 const { getUserNodeVersion, getCurrentNodeVersion, checkNodeVersion } = require('./node_version')
@@ -16,12 +17,12 @@ const CHILD_MAIN_FILE = `${__dirname}/child/main.js`
 //    (for both security and safety reasons)
 //  - logs can be buffered which allows manipulating them for log shipping,
 //    transforming and parallel plugins
-const startPlugins = async function({ pluginsOptions, buildDir, nodePath, childEnv, mode, logs }) {
+const tStartPlugins = async function({ pluginsOptions, buildDir, nodePath, childEnv, mode, logs }) {
   logLoadingPlugins(logs, pluginsOptions)
 
   const spawnInfo = getSpawnInfo()
   const userNodeVersion = await getUserNodeVersion(nodePath)
-  return Promise.all(
+  const childProcesses = await Promise.all(
     pluginsOptions.map(({ package, pluginPackageJson, loadedFrom, pluginDir }) =>
       startPlugin({
         buildDir,
@@ -37,7 +38,10 @@ const startPlugins = async function({ pluginsOptions, buildDir, nodePath, childE
       }),
     ),
   )
+  return { childProcesses }
 }
+
+const startPlugins = timeAsyncFunction(tStartPlugins, 'buildbot.build.commands.startPlugins')
 
 const startPlugin = async function({
   buildDir,

@@ -3,6 +3,7 @@ const { dirname } = require('path')
 const corePackageJson = require('../../package.json')
 const { installLocalPluginsDependencies } = require('../install/local')
 const { getCorePlugins, CORE_PLUGINS, EARLY_CORE_PLUGINS } = require('../plugins_core/main')
+const { timeAsyncFunction } = require('../time/report')
 const { getPackageJson } = require('../utils/package')
 
 const { useManifest } = require('./manifest/main')
@@ -10,7 +11,7 @@ const { resolvePluginsPath } = require('./resolve')
 
 // Load plugin options (specified by user in `config.plugins`)
 // Do not allow user override of core plugins
-const getPluginsOptions = async function({
+const tGetPluginsOptions = async function({
   netlifyConfig: { plugins },
   buildDir,
   constants: { FUNCTIONS_SRC },
@@ -25,8 +26,10 @@ const getPluginsOptions = async function({
   const pluginsOptionsA = await resolvePluginsPath({ pluginsOptions, buildDir, mode, logs, buildImagePluginsDir })
   const pluginsOptionsB = await Promise.all(pluginsOptionsA.map(loadPluginFiles))
   await installLocalPluginsDependencies({ plugins, pluginsOptions: pluginsOptionsB, buildDir, mode, logs })
-  return pluginsOptionsB
+  return { pluginsOptions: pluginsOptionsB }
 }
+
+const getPluginsOptions = timeAsyncFunction(tGetPluginsOptions, 'buildbot.build.commands.getPluginsOptions')
 
 const addCoreProperties = function(corePlugin) {
   return { ...corePlugin, loadedFrom: 'core', origin: 'core' }

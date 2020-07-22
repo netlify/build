@@ -1,18 +1,21 @@
 const { addPluginLoadErrorStatus } = require('../status/add')
+const { timeAsyncFunction } = require('../time/report')
 
 const { callChild } = require('./ipc')
 
 // Retrieve all plugins commands
 // Can use either a module name or a file path to the plugin.
-const loadPlugins = async function({ pluginsOptions, childProcesses, netlifyConfig, constants }) {
+const tLoadPlugins = async function({ pluginsOptions, childProcesses, netlifyConfig, constants }) {
   const pluginsCommands = await Promise.all(
     pluginsOptions.map((pluginOptions, index) =>
       loadPlugin(pluginOptions, { childProcesses, index, netlifyConfig, constants }),
     ),
   )
   const pluginsCommandsA = pluginsCommands.flat()
-  return pluginsCommandsA
+  return { pluginsCommands: pluginsCommandsA }
 }
+
+const loadPlugins = timeAsyncFunction(tLoadPlugins, 'buildbot.build.commands.loadPlugins')
 
 // Retrieve plugin commands for one plugin.
 // Do it by executing the plugin `load` event handler.
