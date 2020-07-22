@@ -34,7 +34,7 @@ test('No TTY', async t => {
 
 // In GitHub actions, `update-notifier` is never enabled
 if (!isCI) {
-  test('Print a warning when using an old version through Netlify CLI', async t => {
+  test.skip('Print a warning when using an old version through Netlify CLI', async t => {
     // We need to unset some environment variables which would otherwise disable `update-notifier`
     await runFixture(t, 'error', {
       flags: { mode: 'cli', testOpts: { oldCliLogs: true } },
