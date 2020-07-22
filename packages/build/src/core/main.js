@@ -1,6 +1,6 @@
 require('../utils/polyfills')
 
-const { startBuildbotClient } = require('../buildbot_client/main')
+const { startBuildbotClient, closeBuildbotClient } = require('../buildbot_client/main')
 const { getCommands } = require('../commands/get')
 const { runCommands } = require('../commands/run')
 const { handleBuildError } = require('../error/handle')
@@ -304,7 +304,7 @@ const initAndRunBuild = async function({
       testOpts,
     })
   } finally {
-    await stopPlugins(childProcesses)
+    await Promise.all([stopPlugins(childProcesses), closeBuildbotClient(buildbotClient)])
   }
 }
 
