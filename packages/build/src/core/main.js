@@ -6,15 +6,13 @@ const { handleBuildError } = require('../error/handle')
 const { getErrorInfo } = require('../error/info')
 const { startErrorMonitor } = require('../error/monitor/start')
 const { getBufferLogs } = require('../log/logger')
-const { logBuildStart, logBuildSuccess } = require('../log/main')
-const { logTimer } = require('../log/main')
-const { startTimer, endTimer } = require('../log/timer')
+const { logBuildStart, logTimer, logBuildSuccess } = require('../log/main')
 const { loadPlugins } = require('../plugins/load')
 const { getPluginsOptions } = require('../plugins/options')
 const { startPlugins, stopPlugins } = require('../plugins/spawn')
 const { reportStatuses } = require('../status/report')
 const { trackBuildComplete } = require('../telemetry/complete')
-const { initTimers, addTimer, reportTimers } = require('../time/report')
+const { initTimers, timeAsyncFunction, reportTimers } = require('../time/report')
 
 const { loadConfig } = require('./config')
 const { getConstants } = require('./constants')
@@ -43,11 +41,32 @@ const { normalizeFlags } = require('./flags')
  * @returns {string[]} buildResult.logs - When using the `buffer` option, all log messages
  */
 const build = async function(flags = {}) {
-  const { errorMonitor, mode, logs, testOpts, ...flagsA } = startBuild(flags)
+  const { errorMonitor, mode, logs, testOpts, dry, telemetry, timersFile, ...flagsA } = startBuild(flags)
   const errorParams = { errorMonitor, mode, logs, testOpts }
 
   try {
-    await execBuild({ ...flagsA, errorMonitor, mode, logs, testOpts, errorParams })
+    const { netlifyConfig, siteInfo, commandsCount, timers, durationMs } = await execBuild({
+      ...flagsA,
+      dry,
+      errorMonitor,
+      mode,
+      logs,
+      testOpts,
+      errorParams,
+    })
+    await handleBuildSuccess({
+      commandsCount,
+      netlifyConfig,
+      dry,
+      siteInfo,
+      telemetry,
+      mode,
+      logs,
+      timers,
+      timersFile,
+      durationMs,
+      testOpts,
+    })
     return { success: true, logs }
   } catch (error) {
     await handleBuildError(error, errorParams)
@@ -60,17 +79,17 @@ const build = async function(flags = {}) {
 // being built, which relies itself on flags being normalized.
 const startBuild = function(flags) {
   const timers = initTimers()
-  const buildTimer = startTimer()
 
   const logs = getBufferLogs(flags)
   logBuildStart(logs)
 
   const { bugsnagKey, ...flagsA } = normalizeFlags(flags, logs)
   const errorMonitor = startErrorMonitor({ flags: flagsA, logs, bugsnagKey })
-  return { ...flagsA, errorMonitor, logs, timers, buildTimer }
+
+  return { ...flagsA, errorMonitor, logs, timers }
 }
 
-const execBuild = async function({
+const tExecBuild = async function({
   config,
   defaultConfig,
   cachedConfig,
@@ -89,14 +108,11 @@ const execBuild = async function({
   dry,
   mode,
   deployId,
-  telemetry,
   testOpts,
   errorMonitor,
   errorParams,
   logs,
   timers,
-  timersFile,
-  buildTimer,
   buildbotServerSocket,
   sendStatus,
 }) {
@@ -141,21 +157,10 @@ const execBuild = async function({
     testOpts,
     buildbotServerSocket,
   })
-
-  await handleBuildSuccess({
-    commandsCount,
-    buildTimer,
-    netlifyConfig,
-    dry,
-    siteInfo,
-    telemetry,
-    mode,
-    logs,
-    timers: timersB,
-    timersFile,
-    testOpts,
-  })
+  return { netlifyConfig, siteInfo, commandsCount, timers: timersB }
 }
+
+const execBuild = timeAsyncFunction(tExecBuild, 'buildbot.build.commands')
 
 // Runs a build then report any plugin statuses
 const runAndReportBuild = async function({
@@ -351,7 +356,6 @@ const runBuild = async function({
 // Logs and reports that a build successfully ended
 const handleBuildSuccess = async function({
   commandsCount,
-  buildTimer,
   netlifyConfig,
   dry,
   siteInfo,
@@ -360,6 +364,7 @@ const handleBuildSuccess = async function({
   logs,
   timers,
   timersFile,
+  durationMs,
   testOpts,
 }) {
   if (dry) {
@@ -368,12 +373,8 @@ const handleBuildSuccess = async function({
 
   logBuildSuccess(logs)
 
-  const durationMs = endTimer(buildTimer)
   logTimer(logs, durationMs, 'Netlify Build')
-  const timersA = addTimer(timers, 'buildbot.build.commands', durationMs)
-
-  reportTimers(timersA, timersFile)
-
+  await reportTimers(timers, timersFile)
   await trackBuildComplete({ commandsCount, netlifyConfig, durationMs, siteInfo, telemetry, mode, testOpts })
 }
 

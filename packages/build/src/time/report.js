@@ -28,10 +28,10 @@ const normalizeTimerName = function(name) {
 const kTimeAsyncFunction = function(func, name) {
   return async function({ timers, ...opts }, ...args) {
     const timer = startTimer()
-    const returnObject = await func({ timers, ...opts }, ...args)
+    const { timers: timersA = timers, ...returnObject } = await func({ timers, ...opts }, ...args)
     const durationMs = endTimer(timer)
-    const timersA = addTimer(timers, name, durationMs)
-    return { ...returnObject, timers: timersA, durationMs }
+    const timersB = addTimer(timersA, name, durationMs)
+    return { ...returnObject, timers: timersB, durationMs }
   }
 }
 
@@ -55,4 +55,4 @@ const getTimerLine = function({ name, durationMs }) {
   return `${name} ${durationMs}ms\n`
 }
 
-module.exports = { initTimers, addTimer, timeAsyncFunction, normalizeTimerName, reportTimers }
+module.exports = { initTimers, timeAsyncFunction, normalizeTimerName, reportTimers }
