@@ -4,7 +4,7 @@ const { getChildEnv } = require('../env/main')
 const { addApiErrorHandlers } = require('../error/api')
 const { addErrorInfo } = require('../error/info')
 const { logBuildDir, logConfigPath, logConfig, logContext } = require('../log/main')
-const { timeAsyncFunction } = require('../time/report')
+const { measureDuration } = require('../time/main')
 
 // Retrieve configuration object
 const tLoadConfig = async function({
@@ -64,7 +64,7 @@ const tLoadConfig = async function({
   return { netlifyConfig, configPath, buildDir, childEnv, api: apiA, siteInfo }
 }
 
-const loadConfig = timeAsyncFunction(tLoadConfig, 'buildbot.build.commands.resolveConfig')
+const loadConfig = measureDuration(tLoadConfig, 'buildbot.build.commands.resolveConfig')
 
 // Retrieve configuration file and related information
 // (path, build directory, etc.)

@@ -1,5 +1,5 @@
 const { addPluginLoadErrorStatus } = require('../status/add')
-const { timeAsyncFunction } = require('../time/report')
+const { measureDuration } = require('../time/main')
 
 const { callChild } = require('./ipc')
 
@@ -15,7 +15,7 @@ const tLoadPlugins = async function({ pluginsOptions, childProcesses, netlifyCon
   return { pluginsCommands: pluginsCommandsA }
 }
 
-const loadPlugins = timeAsyncFunction(tLoadPlugins, 'buildbot.build.commands.loadPlugins')
+const loadPlugins = measureDuration(tLoadPlugins, 'buildbot.build.commands.loadPlugins')
 
 // Retrieve plugin commands for one plugin.
 // Do it by executing the plugin `load` event handler.

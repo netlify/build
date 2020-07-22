@@ -3,7 +3,7 @@ const { execPath } = require('process')
 const execa = require('execa')
 
 const { logLoadingPlugins } = require('../log/main')
-const { timeAsyncFunction } = require('../time/report')
+const { measureDuration } = require('../time/main')
 
 const { getEventFromChild } = require('./ipc')
 const { getUserNodeVersion, getCurrentNodeVersion, checkNodeVersion } = require('./node_version')
@@ -41,7 +41,7 @@ const tStartPlugins = async function({ pluginsOptions, buildDir, nodePath, child
   return { childProcesses }
 }
 
-const startPlugins = timeAsyncFunction(tStartPlugins, 'buildbot.build.commands.startPlugins')
+const startPlugins = measureDuration(tStartPlugins, 'buildbot.build.commands.startPlugins')
 
 const startPlugin = async function({
   buildDir,

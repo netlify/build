@@ -1,42 +1,7 @@
 const { appendFile } = require('fs')
 const { promisify } = require('util')
 
-const keepFuncProps = require('keep-func-props')
-const slugify = require('slugify')
-
-const { startTimer, endTimer } = require('../log/timer')
-
 const pAppendFile = promisify(appendFile)
-
-// Initialize the `timers` array
-const initTimers = function() {
-  return []
-}
-
-// Keep a specific timer duration in memory
-const addTimer = function(timers, name, durationMs) {
-  return [...timers, { name, durationMs }]
-}
-
-// Make sure the timer name does not include special characters.
-// For example, the `package` of local plugins includes dots.
-const normalizeTimerName = function(name) {
-  return slugify(name, { strict: true })
-}
-
-// Wrap an async function to measure how long it takes
-const kTimeAsyncFunction = function(func, name) {
-  return async function({ timers, ...opts }, ...args) {
-    const timer = startTimer()
-    const { timers: timersA = timers, ...returnObject } = await func({ timers, ...opts }, ...args)
-    const durationMs = endTimer(timer)
-    const timersB = addTimer(timersA, name, durationMs)
-    return { ...returnObject, timers: timersB, durationMs }
-  }
-}
-
-// Ensure the wrapped function `name` is not `anonymous` in stack traces
-const timeAsyncFunction = keepFuncProps(kTimeAsyncFunction)
 
 // Record the duration of a build phase, for monitoring.
 // We use a file for IPC.
@@ -55,4 +20,4 @@ const getTimerLine = function({ name, durationMs }) {
   return `${name} ${durationMs}ms\n`
 }
 
-module.exports = { initTimers, timeAsyncFunction, normalizeTimerName, reportTimers }
+module.exports = { reportTimers }
