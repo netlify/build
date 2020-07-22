@@ -4,7 +4,7 @@ const { startBuildbotClient, closeBuildbotClient } = require('../buildbot_client
 const { getCommands } = require('../commands/get')
 const { runCommands } = require('../commands/run')
 const { handleBuildError } = require('../error/handle')
-const { getErrorInfo, addErrorInfo } = require('../error/info')
+const { getErrorInfo } = require('../error/info')
 const { startErrorMonitor } = require('../error/monitor/start')
 const { getBufferLogs } = require('../log/logger')
 const { logBuildStart, logBuildSuccess } = require('../log/main')
@@ -253,15 +253,7 @@ const initAndRunBuild = async function({
 }) {
   const constants = await getConstants({ configPath, buildDir, functionsDistDir, netlifyConfig, siteInfo, mode })
 
-  var buildbotClient
-  if (buildbotServerSocket) {
-    try {
-      buildbotClient = await startBuildbotClient(buildbotServerSocket)
-    } catch (error) {
-      addErrorInfo(error, { type: 'buildbotClientConnection' })
-      throw error
-    }
-  }
+  const buildbotClient = await startBuildbotClient(buildbotServerSocket)
 
   const { pluginsOptions, timers: timersA } = await getPluginsOptions({
     netlifyConfig,
