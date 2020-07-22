@@ -61,58 +61,31 @@ const build = async function(flags = {}) {
     sendStatus,
     ...flagsA
   } = startBuild(flags)
-
-  const { netlifyConfig, configPath, buildDir, childEnv, api, siteInfo, error, timers: timersA } = await resolveConfig({
-    ...flagsA,
-    mode,
-    deployId,
-    logs,
-    testOpts,
-    timers,
-  })
-
-  if (error !== undefined) {
-    await handleBuildError({ error, errorMonitor, netlifyConfig, childEnv, mode, logs, testOpts })
-    return { success: false, logs }
-  }
+  const errorParams = { errorMonitor, mode, logs, testOpts }
 
   try {
-    const { commandsCount, timers: timersB } = await runAndReportBuild({
-      netlifyConfig,
-      configPath,
-      buildDir,
+    await execBuild({
       nodePath,
-      childEnv,
       functionsDistDir,
       buildImagePluginsDir,
       dry,
-      siteInfo,
       mode,
-      api,
-      errorMonitor,
       deployId,
-      logs,
-      timers: timersA,
-      sendStatus,
-      testOpts,
-      buildbotServerSocket,
-    })
-    await handleBuildSuccess({
-      commandsCount,
-      buildTimer,
-      netlifyConfig,
-      dry,
-      siteInfo,
       telemetry,
-      mode,
-      logs,
-      timers: timersB,
-      timersFile,
       testOpts,
+      errorMonitor,
+      errorParams,
+      logs,
+      timers,
+      timersFile,
+      buildTimer,
+      buildbotServerSocket,
+      sendStatus,
+      flags: flagsA,
     })
     return { success: true, logs }
   } catch (error) {
-    await handleBuildError({ error, errorMonitor, netlifyConfig, childEnv, mode, logs, testOpts })
+    await handleBuildError(error, errorParams)
     return { success: false, logs }
   }
 }
@@ -132,12 +105,69 @@ const startBuild = function(flags) {
   return { ...flagsA, errorMonitor, logs, timers, buildTimer }
 }
 
-const resolveConfig = async function(opts) {
-  try {
-    return await loadConfig(opts)
-  } catch (error) {
-    return { error }
-  }
+const execBuild = async function({
+  nodePath,
+  functionsDistDir,
+  buildImagePluginsDir,
+  dry,
+  mode,
+  deployId,
+  telemetry,
+  testOpts,
+  errorMonitor,
+  errorParams,
+  logs,
+  timers,
+  timersFile,
+  buildTimer,
+  buildbotServerSocket,
+  sendStatus,
+  flags,
+}) {
+  const { netlifyConfig, configPath, buildDir, childEnv, api, siteInfo, timers: timersA } = await loadConfig({
+    ...flags,
+    mode,
+    deployId,
+    logs,
+    testOpts,
+    timers,
+  })
+  Object.assign(errorParams, { netlifyConfig, childEnv })
+
+  const { commandsCount, timers: timersB } = await runAndReportBuild({
+    netlifyConfig,
+    configPath,
+    buildDir,
+    nodePath,
+    childEnv,
+    functionsDistDir,
+    buildImagePluginsDir,
+    dry,
+    siteInfo,
+    mode,
+    api,
+    errorMonitor,
+    deployId,
+    logs,
+    timers: timersA,
+    sendStatus,
+    testOpts,
+    buildbotServerSocket,
+  })
+
+  await handleBuildSuccess({
+    commandsCount,
+    buildTimer,
+    netlifyConfig,
+    dry,
+    siteInfo,
+    telemetry,
+    mode,
+    logs,
+    timers: timersB,
+    timersFile,
+    testOpts,
+  })
 }
 
 // Runs a build then report any plugin statuses

@@ -61,7 +61,7 @@ const handleFailPlugin = async function({
   logs,
   testOpts,
 }) {
-  await handleBuildError({ error: newError, errorMonitor, netlifyConfig, childEnv, mode, logs, testOpts })
+  await handleBuildError(newError, { errorMonitor, netlifyConfig, childEnv, mode, logs, testOpts })
   return { failedPlugin: [package], newStatus }
 }
 
