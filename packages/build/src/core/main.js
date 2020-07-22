@@ -62,16 +62,14 @@ const build = async function(flags = {}) {
     ...flagsA
   } = startBuild(flags)
 
-  const configTimer = startTimer()
-  const { netlifyConfig, configPath, buildDir, childEnv, api, siteInfo, error } = await resolveConfig({
+  const { netlifyConfig, configPath, buildDir, childEnv, api, siteInfo, error, timers: timersA } = await resolveConfig({
     ...flagsA,
     mode,
     deployId,
     logs,
     testOpts,
+    timers,
   })
-  const durationMs = endTimer(configTimer)
-  const timersA = addTimer(timers, 'buildbot.build.commands.resolveConfig', durationMs)
 
   if (error !== undefined) {
     await handleBuildError({ error, errorMonitor, netlifyConfig, childEnv, mode, logs, testOpts })
@@ -236,22 +234,25 @@ const initAndRunBuild = async function({
 }) {
   const constants = await getConstants({ configPath, buildDir, functionsDistDir, netlifyConfig, siteInfo, mode })
 
-  const pluginsOptionsTimer = startTimer()
-  const pluginsOptions = await getPluginsOptions({
+  const { pluginsOptions, timers: timersA } = await getPluginsOptions({
     netlifyConfig,
     buildDir,
     constants,
     mode,
     buildImagePluginsDir,
     logs,
+    timers,
   })
-  const pluginsOptionsDurationMs = endTimer(pluginsOptionsTimer)
-  const timersA = addTimer(timers, 'buildbot.build.commands.getPluginsOptions', pluginsOptionsDurationMs)
 
-  const startPluginsTimer = startTimer()
-  const childProcesses = await startPlugins({ pluginsOptions, buildDir, nodePath, childEnv, mode, logs })
-  const startPluginsDurationMs = endTimer(startPluginsTimer)
-  const timersB = addTimer(timersA, 'buildbot.build.commands.startPlugins', startPluginsDurationMs)
+  const { childProcesses, timers: timersB } = await startPlugins({
+    pluginsOptions,
+    buildDir,
+    nodePath,
+    childEnv,
+    mode,
+    logs,
+    timers: timersA,
+  })
 
   try {
     return await runBuild({
@@ -297,10 +298,13 @@ const runBuild = async function({
   timers,
   testOpts,
 }) {
-  const loadPluginsTimer = startTimer()
-  const pluginsCommands = await loadPlugins({ pluginsOptions, childProcesses, netlifyConfig, constants })
-  const durationMs = endTimer(loadPluginsTimer)
-  const timersA = addTimer(timers, 'buildbot.build.commands.loadPlugins', durationMs)
+  const { pluginsCommands, timers: timersA } = await loadPlugins({
+    pluginsOptions,
+    childProcesses,
+    netlifyConfig,
+    constants,
+    timers,
+  })
 
   const { commands, commandsCount } = getCommands(pluginsCommands, netlifyConfig)
 

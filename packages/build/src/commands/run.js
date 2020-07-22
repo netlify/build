@@ -3,9 +3,9 @@ const pReduce = require('p-reduce')
 const { addErrorInfo } = require('../error/info')
 const { logCommand, logCommandSuccess } = require('../log/main')
 const { logTimer } = require('../log/main')
-const { startTimer, endTimer } = require('../log/timer')
 const { addStatus } = require('../status/add')
-const { addTimer, normalizeTimerName } = require('../time/report')
+const { normalizeTimerName } = require('../time/report')
+const { timeAsyncFunction } = require('../time/report')
 
 const { fireBuildCommand } = require('./build_command')
 const { handleCommandError } = require('./error')
@@ -127,11 +127,10 @@ const runCommand = async function({
     return {}
   }
 
-  const methodTimer = startTimer()
-
   logCommand({ logs, event, buildCommandOrigin, package, index, error })
 
-  const { newEnvChanges, newError, newStatus } = await fireCommand({
+  const fireCommand = getFireCommand({ package, event })
+  const { newEnvChanges, newError, newStatus, timers: timersA, durationMs } = await fireCommand({
     event,
     childProcess,
     package,
@@ -148,6 +147,7 @@ const runCommand = async function({
     commands,
     error,
     logs,
+    timers,
   })
 
   const newValues = await getNewValues({
@@ -156,7 +156,6 @@ const runCommand = async function({
     newError,
     newEnvChanges,
     newStatus,
-    methodTimer,
     buildCommand,
     childEnv,
     mode,
@@ -165,7 +164,8 @@ const runCommand = async function({
     deployId,
     netlifyConfig,
     logs,
-    timers,
+    timers: timersA,
+    durationMs,
     testOpts,
   })
   return { ...newValues, newIndex: index + 1 }
@@ -183,7 +183,13 @@ const shouldSkipCommand = function({ event, package, error, failedPlugins }) {
   return (isMainCommand({ event }) && isError) || (isErrorCommand({ event }) && !isError)
 }
 
-const fireCommand = function({
+// Wrap command function to measure its time
+const getFireCommand = function({ package, event }) {
+  const metricName = package === undefined ? 'command' : `${normalizeTimerName(package)}.${event}`
+  return timeAsyncFunction(tFireCommand, `buildbot.build.commands.${metricName}`)
+}
+
+const tFireCommand = function({
   event,
   childProcess,
   package,
@@ -234,7 +240,6 @@ const getNewValues = function({
   newError,
   newEnvChanges,
   newStatus,
-  methodTimer,
   buildCommand,
   childEnv,
   mode,
@@ -244,6 +249,7 @@ const getNewValues = function({
   netlifyConfig,
   logs,
   timers,
+  durationMs,
   testOpts,
 }) {
   if (newError !== undefined) {
@@ -263,13 +269,10 @@ const getNewValues = function({
 
   logCommandSuccess(logs)
 
-  const durationMs = endTimer(methodTimer)
   const timerName = package === undefined ? 'build.command' : `${package} ${event}`
   logTimer(logs, durationMs, timerName)
-  const metricName = package === undefined ? 'command' : `${normalizeTimerName(package)}.${event}`
-  const timersA = addTimer(timers, `buildbot.build.commands.${metricName}`, durationMs)
 
-  return { newEnvChanges, newStatus, timers: timersA }
+  return { newEnvChanges, newStatus, timers }
 }
 
 module.exports = { runCommands }
