@@ -43,46 +43,11 @@ const { normalizeFlags } = require('./flags')
  * @returns {string[]} buildResult.logs - When using the `buffer` option, all log messages
  */
 const build = async function(flags = {}) {
-  const {
-    nodePath,
-    functionsDistDir,
-    buildImagePluginsDir,
-    dry,
-    mode,
-    deployId,
-    telemetry,
-    testOpts,
-    errorMonitor,
-    logs,
-    timers,
-    timersFile,
-    buildTimer,
-    buildbotServerSocket,
-    sendStatus,
-    ...flagsA
-  } = startBuild(flags)
+  const { errorMonitor, mode, logs, testOpts, ...flagsA } = startBuild(flags)
   const errorParams = { errorMonitor, mode, logs, testOpts }
 
   try {
-    await execBuild({
-      nodePath,
-      functionsDistDir,
-      buildImagePluginsDir,
-      dry,
-      mode,
-      deployId,
-      telemetry,
-      testOpts,
-      errorMonitor,
-      errorParams,
-      logs,
-      timers,
-      timersFile,
-      buildTimer,
-      buildbotServerSocket,
-      sendStatus,
-      flags: flagsA,
-    })
+    await execBuild({ ...flagsA, errorMonitor, mode, logs, testOpts, errorParams })
     return { success: true, logs }
   } catch (error) {
     await handleBuildError(error, errorParams)
@@ -106,6 +71,18 @@ const startBuild = function(flags) {
 }
 
 const execBuild = async function({
+  config,
+  defaultConfig,
+  cachedConfig,
+  cwd,
+  repositoryRoot,
+  token,
+  siteId,
+  context,
+  branch,
+  baseRelDir,
+  env: envOpt,
+  debug,
   nodePath,
   functionsDistDir,
   buildImagePluginsDir,
@@ -122,10 +99,20 @@ const execBuild = async function({
   buildTimer,
   buildbotServerSocket,
   sendStatus,
-  flags,
 }) {
   const { netlifyConfig, configPath, buildDir, childEnv, api, siteInfo, timers: timersA } = await loadConfig({
-    ...flags,
+    config,
+    defaultConfig,
+    cachedConfig,
+    cwd,
+    repositoryRoot,
+    token,
+    siteId,
+    context,
+    branch,
+    baseRelDir,
+    envOpt,
+    debug,
     mode,
     deployId,
     logs,

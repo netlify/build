@@ -18,7 +18,7 @@ const tLoadConfig = async function({
   context,
   branch,
   baseRelDir,
-  env: envOpt,
+  envOpt,
   debug,
   mode,
   deployId,
