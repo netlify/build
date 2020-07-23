@@ -77,8 +77,9 @@ test('build.environment readonly', async t => {
   await runFixture(t, 'build_readonly')
 })
 
+const BUGSNAG_TEST_KEY = '00000000000000000000000000000000'
 test('Does not pass BUGSNAG_KEY to build command and plugins', async t => {
-  await runFixture(t, 'bugsnag_key', { env: { BUGSNAG_KEY: 'test' } })
+  await runFixture(t, 'bugsnag_key', { env: { BUGSNAG_KEY: BUGSNAG_TEST_KEY } })
 })
 
 // Process exit handling is different in Windows
