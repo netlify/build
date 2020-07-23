@@ -4,8 +4,7 @@ const { addErrorInfo } = require('../error/info')
 const { logCommand, logCommandSuccess } = require('../log/main')
 const { logTimer } = require('../log/main')
 const { addStatus } = require('../status/add')
-const { normalizeTimerName } = require('../time/report')
-const { timeAsyncFunction } = require('../time/report')
+const { measureDuration, normalizeTimerName } = require('../time/main')
 
 const { fireBuildCommand } = require('./build_command')
 const { handleCommandError } = require('./error')
@@ -190,7 +189,7 @@ const shouldSkipCommand = function({ event, package, error, failedPlugins }) {
 // Wrap command function to measure its time
 const getFireCommand = function({ package, event }) {
   const metricName = package === undefined ? 'command' : `${normalizeTimerName(package)}.${event}`
-  return timeAsyncFunction(tFireCommand, `buildbot.build.commands.${metricName}`)
+  return measureDuration(tFireCommand, `buildbot.build.commands.${metricName}`)
 }
 
 const tFireCommand = function({

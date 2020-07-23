@@ -13,7 +13,8 @@ const { getPluginsOptions } = require('../plugins/options')
 const { startPlugins, stopPlugins } = require('../plugins/spawn')
 const { reportStatuses } = require('../status/report')
 const { trackBuildComplete } = require('../telemetry/complete')
-const { initTimers, timeAsyncFunction, reportTimers } = require('../time/report')
+const { initTimers, measureDuration } = require('../time/main')
+const { reportTimers } = require('../time/report')
 
 const { loadConfig } = require('./config')
 const { getConstants } = require('./constants')
@@ -161,7 +162,7 @@ const tExecBuild = async function({
   return { netlifyConfig, siteInfo, commandsCount, timers: timersB }
 }
 
-const execBuild = timeAsyncFunction(tExecBuild, 'buildbot.build.commands')
+const execBuild = measureDuration(tExecBuild, 'buildbot.build.commands')
 
 // Runs a build then report any plugin statuses
 const runAndReportBuild = async function({

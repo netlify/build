@@ -3,7 +3,7 @@ const { dirname } = require('path')
 const corePackageJson = require('../../package.json')
 const { installLocalPluginsDependencies } = require('../install/local')
 const { getCorePlugins, CORE_PLUGINS, EARLY_CORE_PLUGINS } = require('../plugins_core/main')
-const { timeAsyncFunction } = require('../time/report')
+const { measureDuration } = require('../time/main')
 const { getPackageJson } = require('../utils/package')
 
 const { useManifest } = require('./manifest/main')
@@ -29,7 +29,7 @@ const tGetPluginsOptions = async function({
   return { pluginsOptions: pluginsOptionsB }
 }
 
-const getPluginsOptions = timeAsyncFunction(tGetPluginsOptions, 'buildbot.build.commands.getPluginsOptions')
+const getPluginsOptions = measureDuration(tGetPluginsOptions, 'buildbot.build.commands.getPluginsOptions')
 
 const addCoreProperties = function(corePlugin) {
   return { ...corePlugin, loadedFrom: 'core', origin: 'core' }
