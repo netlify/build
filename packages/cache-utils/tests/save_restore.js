@@ -1,4 +1,5 @@
 const test = require('ava')
+const makeDir = require('make-dir')
 const pathExists = require('path-exists')
 
 const cacheUtils = require('..')
@@ -85,4 +86,54 @@ test('Should skip non-existing files on save', async t => {
 
 test('Should skip non-existing files on restore', async t => {
   t.false(await cacheUtils.restore('nonExisting'))
+})
+
+test('Should skip empty directories on save', async t => {
+  const [cacheDir, srcDir] = await Promise.all([createTmpDir(), createTmpDir()])
+  try {
+    t.false(await cacheUtils.save(srcDir, { cacheDir }))
+  } finally {
+    await removeFiles([cacheDir, srcDir])
+  }
+})
+
+test('Should skip empty directories on restore', async t => {
+  const cacheDir = await createTmpDir()
+
+  try {
+    const srcDir = 'test'
+    const cacheSubDir = `${cacheDir}/cwd/${srcDir}`
+    await makeDir(cacheSubDir)
+
+    t.false(await cacheUtils.restore(srcDir, { cacheDir }))
+  } finally {
+    await removeFiles([cacheDir])
+  }
+})
+
+test('Should skip deep empty directories on save', async t => {
+  const [cacheDir, srcDir] = await Promise.all([createTmpDir(), createTmpDir()])
+  try {
+    const srcSubDir = `${srcDir}/test`
+    await makeDir(srcSubDir)
+
+    t.false(await cacheUtils.save(srcSubDir, { cacheDir }))
+  } finally {
+    await removeFiles([cacheDir, srcDir])
+  }
+})
+
+test('Should skip deep empty directories on restore', async t => {
+  const cacheDir = await createTmpDir()
+
+  try {
+    const srcDir = 'test'
+    const srcSubDir = `${srcDir}/test`
+    const cacheSubDir = `${cacheDir}/cwd/${srcSubDir}`
+    await makeDir(cacheSubDir)
+
+    t.false(await cacheUtils.restore(srcDir, { cacheDir }))
+  } finally {
+    await removeFiles([cacheDir])
+  }
 })
