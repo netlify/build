@@ -1,10 +1,9 @@
 require('./utils/polyfills')
 
 const del = require('del')
-const pathExists = require('path-exists')
 
 const { getCacheDir } = require('./dir')
-const { moveCacheFile } = require('./fs')
+const { moveCacheFile, hasFiles } = require('./fs')
 const { list } = require('./list')
 const { getManifestInfo, writeManifest, removeManifest, isExpired } = require('./manifest')
 const { parsePath } = require('./path')
@@ -16,7 +15,7 @@ const saveOne = async function(
 ) {
   const { srcPath, cachePath } = await parsePath({ path, cacheDir, cwdOpt, mode })
 
-  if (!(await pathExists(srcPath))) {
+  if (!(await hasFiles(srcPath))) {
     return false
   }
 
@@ -36,7 +35,7 @@ const saveOne = async function(
 const restoreOne = async function(path, { move = DEFAULT_MOVE, cacheDir, cwd: cwdOpt, mode } = {}) {
   const { srcPath, cachePath } = await parsePath({ path, cacheDir, cwdOpt, mode })
 
-  if (!(await pathExists(cachePath))) {
+  if (!(await hasFiles(cachePath))) {
     return false
   }
 
@@ -54,7 +53,7 @@ const restoreOne = async function(path, { move = DEFAULT_MOVE, cacheDir, cwd: cw
 const removeOne = async function(path, { cacheDir, cwd: cwdOpt, mode } = {}) {
   const { cachePath } = await parsePath({ path, cacheDir, cwdOpt, mode })
 
-  if (!(await pathExists(cachePath))) {
+  if (!(await hasFiles(cachePath))) {
     return false
   }
 
@@ -68,7 +67,7 @@ const removeOne = async function(path, { cacheDir, cwd: cwdOpt, mode } = {}) {
 const hasOne = async function(path, { cacheDir, cwd: cwdOpt, mode } = {}) {
   const { cachePath } = await parsePath({ path, cacheDir, cwdOpt, mode })
 
-  return (await pathExists(cachePath)) && !(await isExpired(cachePath))
+  return (await hasFiles(cachePath)) && !(await isExpired(cachePath))
 }
 
 const DEFAULT_MOVE = false

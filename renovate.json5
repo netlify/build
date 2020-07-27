@@ -15,6 +15,7 @@
     'get-bin-path',
     'get-node',
     'global-cache-dir',
+    'globby',
     'got',
     'log-process-errors',
     'move-file',
