@@ -1,3 +1,4 @@
+const { normalize } = require('path')
 const process = require('process')
 
 const pathExists = require('path-exists')
@@ -18,7 +19,7 @@ const safeGetCwd = async function(cwdOpt) {
 }
 
 const getCwdValue = function(cwdOpt = process.cwd()) {
-  return cwdOpt
+  return normalize(cwdOpt)
 }
 
 module.exports = { safeGetCwd }
