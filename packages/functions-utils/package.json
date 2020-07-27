@@ -22,7 +22,7 @@
   "devDependencies": {
     "ava": "^2.4.0",
     "del": "^5.1.0",
-    "tmp-promise": "^2.0.2"
+    "tmp-promise": "^3.0.0"
   },
   "repository": {
     "type": "git",
