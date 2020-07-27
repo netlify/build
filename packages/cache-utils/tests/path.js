@@ -8,7 +8,7 @@ const cacheUtils = require('..')
 const { createTmpDir, createTmpFile, removeFiles } = require('./helpers/main')
 
 test('Should allow caching files in home directory', async t => {
-  const [cacheDir, [srcFile, srcDir]] = await Promise.all([createTmpDir(), createTmpFile({ dir: homedir() })])
+  const [cacheDir, [srcFile, srcDir]] = await Promise.all([createTmpDir(), createTmpFile({ tmpdir: homedir() })])
   try {
     t.true(await cacheUtils.save(srcFile, { cacheDir }))
     await removeFiles(srcFile)
