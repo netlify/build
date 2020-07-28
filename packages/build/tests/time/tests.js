@@ -52,10 +52,10 @@ test('Prints all timings', async t => {
 })
 
 const TIMINGS = [
-  'buildbot.build.commands.resolveConfig',
-  'buildbot.build.commands.getPluginsOptions',
-  'buildbot.build.commands.startPlugins',
-  'buildbot.build.commands.loadPlugins',
-  'buildbot.build.commands.plugin.onBuild',
-  'buildbot.build.commands',
+  'run_netlify_build.resolve_config',
+  'run_netlify_build.get_plugins_options',
+  'run_netlify_build.start_plugins',
+  'run_netlify_build.load_plugins',
+  'run_netlify_build.plugin.onBuild',
+  'run_netlify_build.total',
 ]
