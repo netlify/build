@@ -209,6 +209,10 @@ test('Report plugin homepage', async t => {
   await runFixture(t, 'plugin_homepage', { flags })
 })
 
+test('Report plugin homepage without a repository', async t => {
+  await runFixture(t, 'plugin_homepage_no_repo', { flags })
+})
+
 test('Report plugin origin', async t => {
   const defaultConfig = JSON.stringify({ plugins: [{ package: './plugin.js' }] })
   await runFixture(t, 'plugin_origin', { flags: { ...flags, defaultConfig } })
