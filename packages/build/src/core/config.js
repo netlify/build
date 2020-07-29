@@ -64,7 +64,7 @@ const tLoadConfig = async function({
   return { netlifyConfig, configPath, buildDir, childEnv, api: apiA, siteInfo }
 }
 
-const loadConfig = measureDuration(tLoadConfig, 'buildbot.build.commands.resolveConfig')
+const loadConfig = measureDuration(tLoadConfig, 'run_netlify_build.resolve_config')
 
 // Retrieve configuration file and related information
 // (path, build directory, etc.)

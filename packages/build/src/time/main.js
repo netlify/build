@@ -1,5 +1,5 @@
+const slugify = require('@sindresorhus/slugify')
 const keepFuncProps = require('keep-func-props')
-const slugify = require('slugify')
 
 const { startTimer, endTimer } = require('./measure')
 
@@ -30,7 +30,7 @@ const measureDuration = keepFuncProps(kMeasureDuration)
 // Make sure the timer name does not include special characters.
 // For example, the `package` of local plugins includes dots.
 const normalizeTimerName = function(name) {
-  return slugify(name, { strict: true })
+  return slugify(name, { separator: '_' })
 }
 
 module.exports = { initTimers, measureDuration, normalizeTimerName }

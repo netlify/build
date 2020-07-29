@@ -41,7 +41,7 @@ const tStartPlugins = async function({ pluginsOptions, buildDir, nodePath, child
   return { childProcesses }
 }
 
-const startPlugins = measureDuration(tStartPlugins, 'buildbot.build.commands.startPlugins')
+const startPlugins = measureDuration(tStartPlugins, 'run_netlify_build.start_plugins')
 
 const startPlugin = async function({
   buildDir,
