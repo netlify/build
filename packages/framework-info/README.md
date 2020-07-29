@@ -5,6 +5,67 @@
 
 Framework detection utility.
 
+Guesses which framework a specific website is using. The framework's build command, publish directory and server port
+are also returned.
+
+The following frameworks are detected:
+
+- Static site generators: Gatsby, Hugo, Jekyll, Next.js, Nuxt, Hexo, Gridsome, Docusaurus, Eleventy, Middleman,
+  Phenomic, React-static, Stencil, Vuepress
+- Front-end frameworks: create-react-app, Vue, Sapper, Angular, Ember, Svelte, Expo, Quasar
+- Build tools: Parcel, Brunch
+
+[Additions and updates are welcome!](#add-or-update-a-framework)
+
+# Example (Node.js)
+
+```js
+const { listFrameworks } = require('@netlify/framework-info')
+
+console.log(await listFrameworks({ projectDir: './path/to/gatsby/website' }))
+// [
+//   {
+//     name: 'gatsby',
+//     category: 'static_site_generator',
+//     commands: ['gatsby develop'],
+//     publish: 'public',
+//     port: 8000,
+//     env: { GATSBY_LOGGER: 'yurnalist' }
+//   }
+// ]
+
+console.log(await listFrameworks({ projectDir: './path/to/vue/website' }))
+// [
+//   {
+//     name: 'vue',
+//     category: 'frontend_framework',
+//     commands: ['npm run serve'],
+//     publish: 'dist',
+//     port: 8080,
+//     env: {}
+//   }
+// ]
+```
+
+# Example (CLI)
+
+```bash
+$ framework-info ./path/to/gatsby/website
+gatsby
+
+$ framework-info --long ./path/to/vue/website
+[
+  {
+    "name": "vue",
+    "category": "frontend_framework",
+    "commands": ["npm run serve"],
+    "publish": "dist",
+    "port": 8080,
+    "env": {}
+  }
+]
+```
+
 # Installation
 
 ```bash
@@ -13,37 +74,154 @@ npm install @netlify/framework-info
 
 # Usage (Node.js)
 
-## listAll(options?)
+## listFrameworks(options?)
 
 `options`: `object?`\
 _Return value_: `Promise<object[]>`
 
-```js
-const { listAll } = require('@netlify/framework-info')
-
-const frameworks = await listAll()
-```
-
 ### Options
 
-#### example
+#### projectDir
 
-_Type_: `boolean`\
-_Default value_: `false`
+_Type_: `string`\
+_Default value_: `process.cwd()`
+
+Path to the website's directory.
+
+#### ignoredCommand
+
+_Type_: `string`\
+
+When guessing the build command, ignore `package.json` `scripts` whose command includes this string.
 
 ### Return value
 
-This returns a `Promise` resolving to an array of objects describing each framework. Each object has the following
-properties.
+This returns a `Promise` resolving to an array of objects describing each framework. The array can be empty, contain a
+single object or several objects.
 
-#### path
+Each object has the following properties.
+
+#### name
 
 _Type_: `string`
 
-Absolute file path to the archive file.
+Name such as `"gatsby"`.
+
+#### category
+
+_Type_: `string`
+
+Category among `"static_site_generator"`, `"frontend_framework"` and `"build_tool"`.
+
+#### commands
+
+_Type_: `string[]`
+
+Build command. There might be several alternatives.
+
+#### publish
+
+_Type_: `string`
+
+Relative path to the directory where files are built.
+
+#### port
+
+_Type_: `number`
+
+Server port.
+
+#### env
+
+_Type_: `object`
+
+Environment variables that should be set when calling the build command.
 
 # Usage (CLI)
 
 ```bash
-$ framework-info [directory]
+$ framework-info [projectDirectory]
 ```
+
+This prints the names of each framework.
+
+Available flags:
+
+- `--long`: Show more information about each framework. The output will be a JSON array.
+- `--ignoredCommand string`
+
+# Add or update a framework
+
+Each framework is a JSON file in the `/src/frameworks/` directory, with the following properties. All properties are
+required.
+
+## name
+
+_Type_: `string`
+
+Name of the framework, lowercase.
+
+## category
+
+_Type_: `string`
+
+One of `"static_site_generator"`, `"frontend_framework"` or `"build_tool"`.
+
+## npmDependencies
+
+_Type_: `string[]`
+
+Framework's npm packages. Any project with one of those packages in their `package.json` (`dependencies` or
+`devDependencies`) will be considered as using the framework.
+
+If empty, this is ignored.
+
+## excludedNpmDependencies
+
+_Type_: `string[]`
+
+Inverse of `npmDependencies`. If any project is using one of those packages, it will not be considered as using the
+framework.
+
+If empty, this is ignored.
+
+## configFiles
+
+_Type_: `string[]`
+
+Framework's configuration files. Those should be paths relative to the [project's directory](#projectdir). Any project
+with one of configuration files will be considered as using the framework.
+
+If empty, this is ignored.
+
+## packageScripts
+
+_Type_: `string[]`
+
+Names of `scripts` in `package.json` which should be returned as build commands.
+
+Any `scripts` whose command includes [`command`](#command) will also be returned as build command.
+
+## command
+
+_Type_: `string`
+
+Default build command. Used if no [`packageScripts`](#packagescripts) was found.
+
+## publish
+
+_Type_: `string`
+
+Directory where built files are written to.
+
+## port
+
+_Type_: `number`
+
+Local server port.
+
+## env
+
+_Type_: `object`
+
+Environment variables that should be set when running the build command.

@@ -1,0 +1,12 @@
+{
+  "name": "hugo",
+  "category": "static_site_generator",
+  "npmDependencies": [],
+  "excludedNpmDependencies": [],
+  "configFiles": ["config.toml", "config.yaml"],
+  "command": "hugo server -w",
+  "packageScripts": [],
+  "publish": "public",
+  "port": 1313,
+  "env": {}
+}

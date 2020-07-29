@@ -1,0 +1,12 @@
+{
+  "name": "react-static",
+  "category": "static_site_generator",
+  "npmDependencies": ["react-static"],
+  "excludedNpmDependencies": [],
+  "configFiles": ["static.config.js"],
+  "command": "react-static start",
+  "packageScripts": ["start", "develop", "dev"],
+  "publish": "dist",
+  "port": 3000,
+  "env": {}
+}

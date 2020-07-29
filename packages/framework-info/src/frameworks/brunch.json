@@ -1,0 +1,12 @@
+{
+  "name": "brunch",
+  "category": "build_tool",
+  "npmDependencies": ["brunch"],
+  "excludedNpmDependencies": [],
+  "configFiles": ["brunch-config.js"],
+  "command": "brunch watch --server",
+  "packageScripts": ["start"],
+  "publish": "app/assets",
+  "port": 3333,
+  "env": {}
+}

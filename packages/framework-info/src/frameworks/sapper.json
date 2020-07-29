@@ -1,0 +1,12 @@
+{
+  "name": "sapper",
+  "category": "frontend_framework",
+  "npmDependencies": ["sapper"],
+  "excludedNpmDependencies": [],
+  "configFiles": [],
+  "command": "sapper dev",
+  "packageScripts": ["dev", "start"],
+  "publish": "static",
+  "port": 3000,
+  "env": {}
+}

@@ -1,0 +1,12 @@
+{
+  "name": "eleventy",
+  "category": "static_site_generator",
+  "npmDependencies": ["@11ty/eleventy"],
+  "excludedNpmDependencies": [],
+  "configFiles": [".eleventy.js"],
+  "command": "npx eleventy --serve --watch",
+  "packageScripts": [],
+  "publish": "_site",
+  "port": 8080,
+  "env": {}
+}

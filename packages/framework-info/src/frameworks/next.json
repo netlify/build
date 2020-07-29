@@ -1,0 +1,12 @@
+{
+  "name": "next",
+  "category": "static_site_generator",
+  "npmDependencies": ["next"],
+  "excludedNpmDependencies": [],
+  "configFiles": [],
+  "command": "next",
+  "packageScripts": ["dev", "develop", "start"],
+  "publish": "out",
+  "port": 3000,
+  "env": {}
+}

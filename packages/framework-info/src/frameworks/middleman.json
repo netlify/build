@@ -1,0 +1,12 @@
+{
+  "name": "middleman",
+  "category": "static_site_generator",
+  "npmDependencies": [],
+  "excludedNpmDependencies": [],
+  "configFiles": ["config.rb"],
+  "command": "bundle exec middleman server",
+  "packageScripts": [],
+  "publish": "build",
+  "port": 4567,
+  "env": {}
+}

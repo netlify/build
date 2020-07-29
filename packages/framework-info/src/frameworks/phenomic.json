@@ -1,0 +1,12 @@
+{
+  "name": "phenomic",
+  "category": "static_site_generator",
+  "npmDependencies": ["@phenomic/core"],
+  "excludedNpmDependencies": [],
+  "configFiles": [],
+  "command": "phenomic start",
+  "packageScripts": ["start"],
+  "publish": "public",
+  "port": 3333,
+  "env": {}
+}

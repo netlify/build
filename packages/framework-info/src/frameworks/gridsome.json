@@ -1,0 +1,12 @@
+{
+  "name": "gridsome",
+  "category": "static_site_generator",
+  "npmDependencies": ["gridsome"],
+  "excludedNpmDependencies": [],
+  "configFiles": ["gridsome.config.js"],
+  "command": "gridsome develop",
+  "packageScripts": ["develop"],
+  "publish": "dist",
+  "port": 8080,
+  "env": {}
+}

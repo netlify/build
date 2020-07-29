@@ -8,6 +8,10 @@
     // Those cannot be upgraded until we drop support for Node 8
     'ava',
     'eslint',
+    'execa',
+    'get-bin-path',
+    'husky',
+    'nyc',
     'prettier'
   ]
 }

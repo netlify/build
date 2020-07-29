@@ -1,0 +1,12 @@
+{
+  "name": "ember",
+  "category": "frontend_framework",
+  "npmDependencies": ["ember-cli"],
+  "excludedNpmDependencies": [],
+  "configFiles": ["ember-cli-build.js"],
+  "command": "ember serve",
+  "packageScripts": ["serve", "start", "run"],
+  "publish": "dist",
+  "port": 4200,
+  "env": {}
+}

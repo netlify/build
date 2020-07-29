@@ -1,0 +1,12 @@
+{
+  "name": "parcel",
+  "category": "build_tool",
+  "npmDependencies": ["parcel-bundler", "parcel"],
+  "excludedNpmDependencies": [],
+  "configFiles": [],
+  "command": "parcel",
+  "packageScripts": ["start", "dev", "run"],
+  "publish": "dist",
+  "port": 1234,
+  "env": {}
+}

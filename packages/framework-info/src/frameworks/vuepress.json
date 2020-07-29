@@ -1,0 +1,12 @@
+{
+  "name": "vuepress",
+  "category": "static_site_generator",
+  "npmDependencies": ["vuepress"],
+  "excludedNpmDependencies": [],
+  "configFiles": [],
+  "command": "vuepress dev",
+  "packageScripts": ["docs:dev", "dev", "run"],
+  "publish": ".vuepress/dist",
+  "port": 8080,
+  "env": {}
+}

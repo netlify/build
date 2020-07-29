@@ -1,0 +1,12 @@
+{
+  "name": "expo",
+  "category": "frontend_framework",
+  "npmDependencies": ["expo"],
+  "excludedNpmDependencies": [],
+  "configFiles": ["app.json"],
+  "command": "expo start --web",
+  "packageScripts": ["web"],
+  "publish": "web-build",
+  "port": 19006,
+  "env": {}
+}

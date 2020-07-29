@@ -1,0 +1,12 @@
+{
+  "name": "angular",
+  "category": "frontend_framework",
+  "npmDependencies": ["@angular/cli"],
+  "excludedNpmDependencies": [],
+  "configFiles": ["angular.json"],
+  "command": "ng build --prod",
+  "packageScripts": ["serve", "start", "build"],
+  "publish": "dist",
+  "port": 4200,
+  "env": {}
+}

@@ -1,0 +1,12 @@
+{
+  "name": "create-react-app",
+  "category": "frontend_framework",
+  "npmDependencies": ["react-scripts"],
+  "excludedNpmDependencies": [],
+  "configFiles": [],
+  "command": "react-scripts start",
+  "packageScripts": ["start", "serve", "run"],
+  "publish": "public",
+  "port": 3000,
+  "env": { "BROWSER": "none", "PORT": "3000" }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "stencil",
+  "category": "static_site_generator",
+  "npmDependencies": ["@stencil/core"],
+  "excludedNpmDependencies": [],
+  "configFiles": ["stencil.config.ts"],
+  "command": "stencil build --dev --watch --serve",
+  "packageScripts": ["start"],
+  "publish": "www",
+  "port": 3333,
+  "env": { "BROWSER": "none", "PORT": "3000" }
+}

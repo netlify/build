@@ -1,0 +1,12 @@
+{
+  "name": "quasar",
+  "category": "frontend_framework",
+  "npmDependencies": ["@quasar/app"],
+  "excludedNpmDependencies": [],
+  "configFiles": [],
+  "command": "quasar dev -p 8081",
+  "packageScripts": ["serve", "start", "run", "dev"],
+  "publish": ".quasar",
+  "port": 8081,
+  "env": {}
+}

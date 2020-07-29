@@ -1,0 +1,12 @@
+{
+  "name": "svelte",
+  "category": "frontend_framework",
+  "npmDependencies": ["svelte"],
+  "excludedNpmDependencies": ["sapper"],
+  "configFiles": [],
+  "command": "npm run dev",
+  "packageScripts": ["dev", "start", "run"],
+  "publish": "public",
+  "port": 5000,
+  "env": {}
+}

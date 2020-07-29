@@ -1,0 +1,12 @@
+{
+  "name": "jekyll",
+  "category": "static_site_generator",
+  "npmDependencies": [],
+  "excludedNpmDependencies": [],
+  "configFiles": ["_config.yml"],
+  "command": "bundle exec jekyll serve -w",
+  "packageScripts": [],
+  "publish": "_site",
+  "port": 4000,
+  "env": {}
+}

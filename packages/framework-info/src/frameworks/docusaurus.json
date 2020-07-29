@@ -1,0 +1,12 @@
+{
+  "name": "docusaurus",
+  "category": "static_site_generator",
+  "npmDependencies": ["docusaurus"],
+  "excludedNpmDependencies": [],
+  "configFiles": ["siteConfig.js"],
+  "command": "docusaurus-start",
+  "packageScripts": ["start"],
+  "publish": "static",
+  "port": 3000,
+  "env": {}
+}
