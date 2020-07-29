@@ -61,19 +61,19 @@ const getGroupingHash = function(group, error, type) {
 }
 
 const getMetadata = function({ location, plugin }, childEnv, groupingHash) {
-  const pluginMetadata = getPluginMetadata(plugin)
+  const pluginMetadata = getPluginMetadata({ location, plugin })
   const envMetadata = getEnvMetadata(childEnv)
   const locationMetadata = getLocationMetadata(location, envMetadata)
   return { location: locationMetadata, ...pluginMetadata, env: envMetadata, other: { groupingHash } }
 }
 
-const getPluginMetadata = function(plugin) {
+const getPluginMetadata = function({ location, plugin }) {
   if (plugin === undefined) {
     return {}
   }
 
   const { pluginPackageJson, ...pluginA } = plugin
-  const homepage = getHomepage(pluginPackageJson)
+  const homepage = getHomepage(pluginPackageJson, location)
   return { plugin: { ...pluginA, homepage }, pluginPackageJson }
 }
 

@@ -36,8 +36,12 @@ const getVersion = function({ version }) {
   return version
 }
 
-const getHomepage = function(pluginPackageJson = {}) {
-  return getRepository(pluginPackageJson) || getNpmLink(pluginPackageJson) || getIssuesLink(pluginPackageJson)
+const getHomepage = function(pluginPackageJson = {}, { loadedFrom }) {
+  return (
+    getRepository(pluginPackageJson) ||
+    getNpmLink(pluginPackageJson, { loadedFrom }) ||
+    getIssuesLink(pluginPackageJson)
+  )
 }
 
 const getRepository = function({ repository: { url } = {} }) {
