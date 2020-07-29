@@ -36,7 +36,7 @@ const getVersion = function({ version }) {
   return version
 }
 
-const getHomepage = function(pluginPackageJson = {}, { loadedFrom }) {
+const getHomepage = function(pluginPackageJson = {}, { loadedFrom } = {}) {
   return (
     getRepository(pluginPackageJson) ||
     getNpmLink(pluginPackageJson, { loadedFrom }) ||
