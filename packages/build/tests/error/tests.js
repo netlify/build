@@ -86,6 +86,14 @@ test('exception with circular references', async t => {
   await runFixture(t, 'exception_circular')
 })
 
+test('exception that are strings', async t => {
+  await runFixture(t, 'exception_string')
+})
+
+test('exception that are arrays', async t => {
+  await runFixture(t, 'exception_array')
+})
+
 test('Clean stack traces of build.command', async t => {
   const { returnValue } = await runFixture(t, 'build_command', { snapshot: false, normalize: false })
   const count = getStackLinesCount(returnValue)

@@ -3,11 +3,13 @@ const logProcessErrors = require('log-process-errors')
 
 const { errorToJson } = require('../../error/build')
 const { isBuildError } = require('../../error/info')
+const { normalizeError } = require('../../error/parse/normalize')
 const { sendEventToParent } = require('../ipc')
 
 // Handle any top-level error and communicate it back to parent
 const handleError = async function(error) {
-  const errorPayload = errorToJson(error, { type: 'pluginInternal' })
+  const errorA = normalizeError(error)
+  const errorPayload = errorToJson(errorA, { type: 'pluginInternal' })
   await sendEventToParent('error', errorPayload)
 }
 
