@@ -20,7 +20,7 @@ The following frameworks are detected:
 # Example (Node.js)
 
 ```js
-const { listFrameworks } = require('@netlify/framework-info')
+const { listFrameworks, getFramework } = require('@netlify/framework-info')
 
 console.log(await listFrameworks({ projectDir: './path/to/gatsby/website' }))
 // [
@@ -45,6 +45,16 @@ console.log(await listFrameworks({ projectDir: './path/to/vue/website' }))
 //     env: {}
 //   }
 // ]
+
+console.log(await getFramework('vue', { projectDir: './path/to/vue/website' }))
+// {
+//   name: 'vue',
+//   category: 'frontend_framework',
+//   watchCommands: ['npm run serve'],
+//   publish: 'dist',
+//   port: 8080,
+//   env: {}
+// }
 ```
 
 # Example (CLI)
@@ -136,6 +146,14 @@ Server port.
 _Type_: `object`
 
 Environment variables that should be set when calling the watch command.
+
+## getFramework(frameworkName, options?)
+
+`options`: `object?`\
+_Return value_: `Promise<object>`
+
+Same as [`listFramework()`](#listframeworksoptions) except the framework is passed as argument instead of being
+detected. A single framework object is returned.
 
 # Usage (CLI)
 

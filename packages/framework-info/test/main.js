@@ -1,10 +1,6 @@
-const process = require('process')
-
 const test = require('ava')
 
-const { listFrameworks } = require('../src/main.js')
-
-const { getFrameworks, FIXTURES_DIR } = require('./helpers/main.js')
+const { getFrameworks, getFramework } = require('./helpers/main.js')
 
 test('Should detect frameworks', async t => {
   const frameworks = await getFrameworks('simple')
@@ -21,24 +17,11 @@ test('Should return several items when multiple frameworks are detected', async 
   t.is(frameworks.length, 2)
 })
 
-test.serial('projectDir option defaults to process.cwd()', async t => {
-  const oldCwd = process.cwd()
-  process.chdir(`${FIXTURES_DIR}/simple`)
-  try {
-    const frameworks = await listFrameworks({})
-    t.is(frameworks.length, 1)
-  } finally {
-    process.chdir(oldCwd)
-  }
+test('Should allow getting a specific framework', async t => {
+  const framework = await getFramework('simple', 'sapper')
+  t.snapshot(framework)
 })
 
-test.serial('Cannot trigger with no options', async t => {
-  const oldCwd = process.cwd()
-  process.chdir(`${FIXTURES_DIR}/simple`)
-  try {
-    const frameworks = await listFrameworks()
-    t.is(frameworks.length, 1)
-  } finally {
-    process.chdir(oldCwd)
-  }
+test('Should throw when passing an inva;lid framework', async t => {
+  await t.throwsAsync(getFramework('simple', 'doesNotExist'))
 })
