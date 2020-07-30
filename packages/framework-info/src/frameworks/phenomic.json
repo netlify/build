@@ -4,8 +4,8 @@
   "npmDependencies": ["@phenomic/core"],
   "excludedNpmDependencies": [],
   "configFiles": [],
-  "command": "phenomic start",
-  "packageScripts": ["start"],
+  "watchCommand": "phenomic start",
+  "watchPackageScripts": ["start"],
   "publish": "public",
   "port": 3333,
   "env": {}

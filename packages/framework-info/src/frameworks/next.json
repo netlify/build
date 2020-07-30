@@ -4,8 +4,8 @@
   "npmDependencies": ["next"],
   "excludedNpmDependencies": [],
   "configFiles": [],
-  "command": "next",
-  "packageScripts": ["dev", "develop", "start"],
+  "watchCommand": "next",
+  "watchPackageScripts": ["dev", "develop", "start"],
   "publish": "out",
   "port": 3000,
   "env": {}

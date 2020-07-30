@@ -4,8 +4,8 @@
   "npmDependencies": ["expo"],
   "excludedNpmDependencies": [],
   "configFiles": ["app.json"],
-  "command": "expo start --web",
-  "packageScripts": ["web"],
+  "watchCommand": "expo start --web",
+  "watchPackageScripts": ["web"],
   "publish": "web-build",
   "port": 19006,
   "env": {}

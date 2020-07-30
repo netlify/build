@@ -4,14 +4,14 @@ const readPkgUp = require('read-pkg-up')
 
 // Find the `package.json` (if there is one) and loads its
 // `dependencies|devDependencies` and `scripts` fields
-const getPackageJsonContent = async function({ projectDir, ignoredCommand }) {
+const getPackageJsonContent = async function({ projectDir, ignoredWatchCommand }) {
   const { packageJson, packageJsonPath } = await getPackageJson(projectDir)
   if (packageJson === undefined) {
     return { packageJsonPath, npmDependencies: [], scripts: {} }
   }
 
   const npmDependencies = getNpmDependencies(packageJson)
-  const scripts = getScripts(packageJson, ignoredCommand)
+  const scripts = getScripts(packageJson, ignoredWatchCommand)
   return { packageJsonPath, npmDependencies, scripts }
 }
 
@@ -48,13 +48,13 @@ const getObjectKeys = function(value) {
 }
 
 // Retrieve `package.json` `scripts`
-const getScripts = function({ scripts }, ignoredCommand) {
+const getScripts = function({ scripts }, ignoredWatchCommand) {
   if (!isPlainObj(scripts)) {
     return {}
   }
 
   const scriptsA = filterObj(scripts, isValidScript)
-  const scriptsB = removeIgnoredCommand(scriptsA, ignoredCommand)
+  const scriptsB = removeIgnoredWatchCommand(scriptsA, ignoredWatchCommand)
   return scriptsB
 }
 
@@ -62,13 +62,13 @@ const isValidScript = function(key, value) {
   return typeof value === 'string'
 }
 
-// Exclude any script that includes `ignoredCommand`
-const removeIgnoredCommand = function(scripts, ignoredCommand) {
-  if (ignoredCommand === undefined) {
+// Exclude any script that includes `ignoredWatchCommand`
+const removeIgnoredWatchCommand = function(scripts, ignoredWatchCommand) {
+  if (ignoredWatchCommand === undefined) {
     return scripts
   }
 
-  return filterObj(scripts, (key, value) => !value.includes(ignoredCommand))
+  return filterObj(scripts, (key, value) => !value.includes(ignoredWatchCommand))
 }
 
 module.exports = { getPackageJsonContent }

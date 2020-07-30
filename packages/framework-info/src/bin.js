@@ -7,10 +7,10 @@ const { listFrameworks } = require('./main.js')
 
 // CLI entry point
 const runCli = async function() {
-  const { projectDir, long, ignoredCommand } = parseArgs()
+  const { projectDir, long, ignoredWatchCommand } = parseArgs()
 
   try {
-    const frameworks = await listFrameworks({ projectDir, ignoredCommand })
+    const frameworks = await listFrameworks({ projectDir, ignoredWatchCommand })
     const frameworksStr = serializeFrameworks(frameworks, long)
     console.log(frameworksStr)
   } catch (error) {
@@ -35,7 +35,7 @@ const OPTIONS = {
     describe: `Show more information about each framework.
 The output will be a JSON array.`
   },
-  ignoredCommand: {
+  ignoredWatchCommand: {
     string: true,
     describe: 'Whether Go binaries should be zipped or copied as is'
   }

@@ -4,8 +4,8 @@
   "npmDependencies": ["vuepress"],
   "excludedNpmDependencies": [],
   "configFiles": [],
-  "command": "vuepress dev",
-  "packageScripts": ["docs:dev", "dev", "run"],
+  "watchCommand": "vuepress dev",
+  "watchPackageScripts": ["docs:dev", "dev", "run"],
   "publish": ".vuepress/dist",
   "port": 8080,
   "env": {}

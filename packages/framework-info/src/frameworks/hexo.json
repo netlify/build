@@ -4,8 +4,8 @@
   "npmDependencies": ["hexo"],
   "excludedNpmDependencies": [],
   "configFiles": ["_config.yml"],
-  "command": "hexo server",
-  "packageScripts": ["start", "dev", "develop"],
+  "watchCommand": "hexo server",
+  "watchPackageScripts": ["start", "dev", "develop"],
   "publish": "public",
   "port": 4000,
   "env": {}

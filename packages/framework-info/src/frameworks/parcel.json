@@ -4,8 +4,8 @@
   "npmDependencies": ["parcel-bundler", "parcel"],
   "excludedNpmDependencies": [],
   "configFiles": [],
-  "command": "parcel",
-  "packageScripts": ["start", "dev", "run"],
+  "watchCommand": "parcel",
+  "watchPackageScripts": ["start", "dev", "run"],
   "publish": "dist",
   "port": 1234,
   "env": {}

@@ -4,8 +4,8 @@
   "npmDependencies": ["gatsby"],
   "excludedNpmDependencies": [],
   "configFiles": ["gatsby-config.js"],
-  "command": "gatsby develop",
-  "packageScripts": ["start", "develop", "dev"],
+  "watchCommand": "gatsby develop",
+  "watchPackageScripts": ["start", "develop", "dev"],
   "publish": "public",
   "port": 8000,
   "env": { "GATSBY_LOGGER": "yurnalist" }

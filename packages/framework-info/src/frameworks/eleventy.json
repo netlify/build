@@ -4,8 +4,8 @@
   "npmDependencies": ["@11ty/eleventy"],
   "excludedNpmDependencies": [],
   "configFiles": [".eleventy.js"],
-  "command": "npx eleventy --serve --watch",
-  "packageScripts": [],
+  "watchCommand": "npx eleventy --serve --watch",
+  "watchPackageScripts": [],
   "publish": "_site",
   "port": 8080,
   "env": {}

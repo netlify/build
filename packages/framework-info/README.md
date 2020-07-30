@@ -5,8 +5,8 @@
 
 Framework detection utility.
 
-Detects which framework a specific website is using. The framework's build command, publish directory and server port
-are also returned.
+Detects which framework a specific website is using. The framework's build/watch commands, publish directory and server
+port are also returned.
 
 The following frameworks are detected:
 
@@ -27,7 +27,7 @@ console.log(await listFrameworks({ projectDir: './path/to/gatsby/website' }))
 //   {
 //     name: 'gatsby',
 //     category: 'static_site_generator',
-//     commands: ['gatsby develop'],
+//     watchCommands: ['gatsby develop'],
 //     publish: 'public',
 //     port: 8000,
 //     env: { GATSBY_LOGGER: 'yurnalist' }
@@ -39,7 +39,7 @@ console.log(await listFrameworks({ projectDir: './path/to/vue/website' }))
 //   {
 //     name: 'vue',
 //     category: 'frontend_framework',
-//     commands: ['npm run serve'],
+//     watchCommands: ['npm run serve'],
 //     publish: 'dist',
 //     port: 8080,
 //     env: {}
@@ -58,7 +58,7 @@ $ framework-info --long ./path/to/vue/website
   {
     "name": "vue",
     "category": "frontend_framework",
-    "commands": ["npm run serve"],
+    "watchCommands": ["npm run serve"],
     "publish": "dist",
     "port": 8080,
     "env": {}
@@ -88,11 +88,11 @@ _Default value_: `process.cwd()`
 
 Path to the website's directory.
 
-#### ignoredCommand
+#### ignoredWatchCommand
 
 _Type_: `string`
 
-When detecting the build command, ignore `package.json` `scripts` whose command includes this string.
+When detecting the watch command, ignore `package.json` `scripts` whose value includes this string.
 
 ### Return value
 
@@ -113,11 +113,11 @@ _Type_: `string`
 
 Category among `"static_site_generator"`, `"frontend_framework"` and `"build_tool"`.
 
-#### commands
+#### watchCommands
 
 _Type_: `string[]`
 
-Build command. There might be several alternatives.
+Build command, in watch mode. There might be several alternatives.
 
 #### publish
 
@@ -135,7 +135,7 @@ Server port.
 
 _Type_: `object`
 
-Environment variables that should be set when calling the build command.
+Environment variables that should be set when calling the watch command.
 
 # Usage (CLI)
 
@@ -148,7 +148,7 @@ This prints the names of each framework.
 Available flags:
 
 - `--long`: Show more information about each framework. The output will be a JSON array.
-- `--ignoredCommand string`
+- `--ignoredWatchCommand string`
 
 # Add or update a framework
 
@@ -194,19 +194,19 @@ with one of configuration files will be considered as using the framework.
 
 If empty, this is ignored.
 
-## packageScripts
+## watchPackageScripts
 
 _Type_: `string[]`
 
-Names of `scripts` in `package.json` which should be returned as build commands.
+Names of `scripts` in `package.json` which should be returned as watch commands.
 
-Any `scripts` whose command includes [`command`](#command) will also be returned as build command.
+Any `scripts` whose value includes [`watchCommand`](#watchcommand) will also be returned as watch command.
 
-## command
+## watchCommand
 
 _Type_: `string`
 
-Default build command. Used if no [`packageScripts`](#packagescripts) was found.
+Default watch command. Used if no [`watchPackageScripts`](#watchpackagescripts) was found.
 
 ## publish
 
@@ -224,4 +224,4 @@ Local server port.
 
 _Type_: `object`
 
-Environment variables that should be set when running the build command.
+Environment variables that should be set when running the watch command.

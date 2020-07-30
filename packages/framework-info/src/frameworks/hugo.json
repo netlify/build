@@ -4,8 +4,8 @@
   "npmDependencies": [],
   "excludedNpmDependencies": [],
   "configFiles": ["config.toml", "config.yaml"],
-  "command": "hugo server -w",
-  "packageScripts": [],
+  "watchCommand": "hugo server -w",
+  "watchPackageScripts": [],
   "publish": "public",
   "port": 1313,
   "env": {}

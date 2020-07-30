@@ -4,8 +4,8 @@
   "npmDependencies": [],
   "excludedNpmDependencies": [],
   "configFiles": ["config.rb"],
-  "command": "bundle exec middleman server",
-  "packageScripts": [],
+  "watchCommand": "bundle exec middleman server",
+  "watchPackageScripts": [],
   "publish": "build",
   "port": 4567,
   "env": {}
