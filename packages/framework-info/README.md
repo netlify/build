@@ -5,7 +5,7 @@
 
 Framework detection utility.
 
-Guesses which framework a specific website is using. The framework's build command, publish directory and server port
+Detects which framework a specific website is using. The framework's build command, publish directory and server port
 are also returned.
 
 The following frameworks are detected:
@@ -90,9 +90,9 @@ Path to the website's directory.
 
 #### ignoredCommand
 
-_Type_: `string`\
+_Type_: `string`
 
-When guessing the build command, ignore `package.json` `scripts` whose command includes this string.
+When detecting the build command, ignore `package.json` `scripts` whose command includes this string.
 
 ### Return value
 
