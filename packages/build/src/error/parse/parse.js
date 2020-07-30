@@ -2,6 +2,7 @@ const { getErrorInfo } = require('../info')
 const { getTypeInfo } = require('../type')
 
 const { getLocationInfo } = require('./location')
+const { normalizeError } = require('./normalize')
 const { getPluginInfo } = require('./plugin')
 const { getErrorProps } = require('./properties')
 const { getStackInfo } = require('./stack')
@@ -59,14 +60,6 @@ const parseErrorInfo = function(error) {
     showErrorProps,
     rawStack,
   }
-}
-
-const normalizeError = function(error) {
-  if (error instanceof Error && typeof error.message === 'string' && typeof error.stack === 'string') {
-    return error
-  }
-
-  return new Error(String(error))
 }
 
 // Retrieve title to print in logs
