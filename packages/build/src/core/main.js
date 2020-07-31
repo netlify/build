@@ -114,7 +114,6 @@ const tExecBuild = async function({
   errorParams,
   logs,
   timers,
-  buildbotServerSocket,
   sendStatus,
 }) {
   const { netlifyConfig, configPath, buildDir, childEnv, api, siteInfo, timers: timersA } = await loadConfig({
@@ -156,7 +155,6 @@ const tExecBuild = async function({
     timers: timersA,
     sendStatus,
     testOpts,
-    buildbotServerSocket,
   })
   return { netlifyConfig, siteInfo, commandsCount, timers: timersB }
 }
@@ -172,7 +170,6 @@ const runAndReportBuild = async function({
   childEnv,
   functionsDistDir,
   buildImagePluginsDir,
-  buildbotServerSocket,
   dry,
   siteInfo,
   mode,
@@ -202,7 +199,6 @@ const runAndReportBuild = async function({
       logs,
       timers,
       testOpts,
-      buildbotServerSocket,
     })
     await reportStatuses({
       statuses,
