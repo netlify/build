@@ -170,8 +170,24 @@ Available flags:
 
 # Add or update a framework
 
-Each framework is a JSON file in the `/src/frameworks/` directory, with the following properties. All properties are
-required.
+Each framework is a JSON file in the `/src/frameworks/` directory. For example:
+
+```json
+{
+  "name": "gatsby",
+  "category": "static_site_generator",
+  "npmDependencies": ["gatsby"],
+  "excludedNpmDependencies": [],
+  "configFiles": ["gatsby-config.js"],
+  "watchCommand": "gatsby develop",
+  "watchPackageScripts": ["start", "develop", "dev"],
+  "publish": "public",
+  "port": 8000,
+  "env": { "GATSBY_LOGGER": "yurnalist" }
+}
+```
+
+All properties are required.
 
 ## name
 
