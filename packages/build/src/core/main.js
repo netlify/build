@@ -1,6 +1,5 @@
 require('../utils/polyfills')
 
-const { startBuildbotClient, closeBuildbotClient } = require('../buildbot_client/main')
 const { getCommands } = require('../commands/get')
 const { runCommands } = require('../commands/run')
 const { handleBuildError } = require('../error/handle')
@@ -255,11 +254,8 @@ const initAndRunBuild = async function({
   logs,
   timers,
   testOpts,
-  buildbotServerSocket,
 }) {
   const constants = await getConstants({ configPath, buildDir, functionsDistDir, netlifyConfig, siteInfo, mode })
-
-  const buildbotClient = await startBuildbotClient(buildbotServerSocket)
 
   const { pluginsOptions, timers: timersA } = await getPluginsOptions({
     netlifyConfig,
@@ -285,7 +281,6 @@ const initAndRunBuild = async function({
     return await runBuild({
       childProcesses,
       pluginsOptions,
-      buildbotClient,
       netlifyConfig,
       configPath,
       buildDir,
@@ -302,7 +297,7 @@ const initAndRunBuild = async function({
       testOpts,
     })
   } finally {
-    await Promise.all([stopPlugins(childProcesses), closeBuildbotClient(buildbotClient)])
+    await stopPlugins(childProcesses)
   }
 }
 
@@ -311,7 +306,6 @@ const initAndRunBuild = async function({
 const runBuild = async function({
   childProcesses,
   pluginsOptions,
-  buildbotClient,
   netlifyConfig,
   configPath,
   buildDir,
@@ -343,7 +337,6 @@ const runBuild = async function({
   }
 
   const { commandsCount: commandsCountA, statuses, timers: timersB } = await runCommands({
-    buildbotClient,
     commands,
     configPath,
     buildDir,
