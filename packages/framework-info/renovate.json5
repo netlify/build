@@ -12,6 +12,7 @@
     'get-bin-path',
     'husky',
     'nyc',
-    'prettier'
+    'prettier',
+    'test-each'
   ]
 }
