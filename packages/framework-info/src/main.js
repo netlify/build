@@ -19,8 +19,8 @@ const { getWatchCommands } = require('./watch.js')
  * @returns {string} frameworks[].category -Category among `"static_site_generator"`, `"frontend_framework"` and `"build_tool"`
  * @returns {object} frameworks[].watch - Information about the build command, in watch mode.
  * @returns {string[]} frameworks[].watch.commands - Build command, in watch mode. There might be several alternatives
+ * @returns {number} frameworks[].watch.port - Server port
  * @returns {string} frameworks[].publish - Relative path to the directory where files are built
- * @returns {number} frameworks[].port - Server port
  * @returns {object} frameworks[].env - Environment variables that should be set when calling the watch command
  */
 const listFrameworks = async function(opts) {
@@ -43,8 +43,8 @@ const listFrameworks = async function(opts) {
  * @returns {string} framework.category -Category among `"static_site_generator"`, `"frontend_framework"` and `"build_tool"`
  * @returns {object} framework.watch - Information about the build command, in watch mode.
  * @returns {string[]} framework.watch.commands - Build command, in watch mode. There might be several alternatives
+ * @returns {number} framework.watch.port - Server port
  * @returns {string} framework.publish - Relative path to the directory where files are built
- * @returns {number} framework.port - Server port
  * @returns {object} framework.env - Environment variables that should be set when calling the watch command
  */
 const getFramework = async function(frameworkName, opts) {
@@ -79,7 +79,7 @@ const getFrameworkInfo = function(
   { scripts, runScriptCommand }
 ) {
   const watchCommands = getWatchCommands({ frameworkWatchCommand, scripts, runScriptCommand })
-  return { name, category, watch: { commands: watchCommands }, publish, port, env }
+  return { name, category, watch: { commands: watchCommands, port }, publish, env }
 }
 
 module.exports = { listFrameworks, getFramework }

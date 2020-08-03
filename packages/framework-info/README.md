@@ -28,10 +28,10 @@ console.log(await listFrameworks({ projectDir: './path/to/gatsby/website' }))
 //     name: 'gatsby',
 //     category: 'static_site_generator',
 //     watch: {
-//       commands: ['gatsby develop']
+//       commands: ['gatsby develop'],
+//       port: 8000
 //     },
 //     publish: 'public',
-//     port: 8000,
 //     env: { GATSBY_LOGGER: 'yurnalist' }
 //   }
 // ]
@@ -42,10 +42,10 @@ console.log(await listFrameworks({ projectDir: './path/to/vue/website' }))
 //     name: 'vue',
 //     category: 'frontend_framework',
 //     watch: {
-//       commands: ['npm run serve']
+//       commands: ['npm run serve'],
+//       port: 8080
 //     },
 //     publish: 'dist',
-//     port: 8080,
 //     env: {}
 //   }
 // ]
@@ -55,10 +55,10 @@ console.log(await getFramework('vue', { projectDir: './path/to/vue/website' }))
 //   name: 'vue',
 //   category: 'frontend_framework',
 //   watch: {
-//     commands: ['npm run serve']
+//     commands: ['npm run serve'],
+//     port: 8080
 //   },
 //   publish: 'dist',
-//   port: 8080,
 //   env: {}
 // }
 ```
@@ -76,9 +76,9 @@ $ framework-info --long ./path/to/vue/website
     "category": "frontend_framework",
     "watch": {
       "commands": ["npm run serve"],
+      "port": 8080
     },
     "publish": "dist",
-    "port": 8080,
     "env": {}
   }
 ]
@@ -143,17 +143,17 @@ _Type_: `string[]`
 
 Build command, in watch mode. There might be several alternatives.
 
+##### port
+
+_Type_: `number`
+
+Server port.
+
 #### publish
 
 _Type_: `string`
 
 Relative path to the directory where files are built.
-
-#### port
-
-_Type_: `number`
-
-Server port.
 
 #### env
 
