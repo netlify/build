@@ -4,7 +4,9 @@
   "npmDependencies": ["@vue/cli-service"],
   "excludedNpmDependencies": [],
   "configFiles": [],
-  "watchCommand": "vue-cli-service serve",
+  "watch": {
+    "command": "vue-cli-service serve"
+  },
   "publish": "dist",
   "port": 8080,
   "env": {}

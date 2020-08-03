@@ -4,7 +4,9 @@
   "npmDependencies": ["hexo"],
   "excludedNpmDependencies": [],
   "configFiles": ["_config.yml"],
-  "watchCommand": "hexo server",
+  "watch": {
+    "command": "hexo server"
+  },
   "publish": "public",
   "port": 4000,
   "env": {}

@@ -1,8 +1,8 @@
 // Retrieve framework's watch commands.
 // We use, in priority order:
-//   - `package.json` `scripts` containing `framework.watchCommand`
+//   - `package.json` `scripts` containing `framework.watch.command`
 //   - `package.json` `scripts` whose names are among `NPM_WATCH_SCRIPTS`
-//   - `framework.watchCommand`
+//   - `framework.watch.command`
 const getWatchCommands = function({ frameworkWatchCommand, scripts, runScriptCommand }) {
   const scriptWatchCommands = getScriptWatchCommands(scripts, frameworkWatchCommand).map(
     scriptName => `${runScriptCommand} ${scriptName}`

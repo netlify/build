@@ -4,7 +4,9 @@
   "npmDependencies": ["@quasar/app"],
   "excludedNpmDependencies": [],
   "configFiles": [],
-  "watchCommand": "quasar dev -p 8081",
+  "watch": {
+    "command": "quasar dev -p 8081"
+  },
   "publish": ".quasar",
   "port": 8081,
   "env": {}

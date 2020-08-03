@@ -4,7 +4,9 @@
   "npmDependencies": ["react-scripts"],
   "excludedNpmDependencies": [],
   "configFiles": [],
-  "watchCommand": "react-scripts start",
+  "watch": {
+    "command": "react-scripts start"
+  },
   "publish": "public",
   "port": 3000,
   "env": { "BROWSER": "none", "PORT": "3000" }

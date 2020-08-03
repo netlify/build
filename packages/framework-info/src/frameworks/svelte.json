@@ -4,7 +4,9 @@
   "npmDependencies": ["svelte"],
   "excludedNpmDependencies": ["sapper"],
   "configFiles": [],
-  "watchCommand": "npm run dev",
+  "watch": {
+    "command": "npm run dev"
+  },
   "publish": "public",
   "port": 5000,
   "env": {}

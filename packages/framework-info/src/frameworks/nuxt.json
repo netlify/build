@@ -4,7 +4,9 @@
   "npmDependencies": ["nuxt"],
   "excludedNpmDependencies": [],
   "configFiles": [],
-  "watchCommand": "nuxt",
+  "watch": {
+    "command": "nuxt"
+  },
   "publish": "dist",
   "port": 3000,
   "env": {}

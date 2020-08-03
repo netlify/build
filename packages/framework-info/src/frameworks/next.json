@@ -4,7 +4,9 @@
   "npmDependencies": ["next"],
   "excludedNpmDependencies": [],
   "configFiles": [],
-  "watchCommand": "next",
+  "watch": {
+    "command": "next"
+  },
   "publish": "out",
   "port": 3000,
   "env": {}

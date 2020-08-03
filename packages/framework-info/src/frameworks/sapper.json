@@ -4,7 +4,9 @@
   "npmDependencies": ["sapper"],
   "excludedNpmDependencies": [],
   "configFiles": [],
-  "watchCommand": "sapper dev",
+  "watch": {
+    "command": "sapper dev"
+  },
   "publish": "static",
   "port": 3000,
   "env": {}

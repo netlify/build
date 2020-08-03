@@ -29,7 +29,7 @@ const FRAMEWORK_JSON_SCHEMA = {
     'npmDependencies',
     'excludedNpmDependencies',
     'configFiles',
-    'watchCommand',
+    'watch',
     'publish',
     'port',
     'env'
@@ -53,7 +53,13 @@ const FRAMEWORK_JSON_SCHEMA = {
       type: 'array',
       items: RELATIVE_PATH_SCHEMA
     },
-    watchCommand: { type: 'string', minLength: 1 },
+    watch: {
+      type: 'object',
+      additionalProperties: false,
+      properties: {
+        command: { type: 'string', minLength: 1 }
+      }
+    },
     publish: RELATIVE_PATH_SCHEMA,
     port: { type: 'integer', minimum: 1, maximum: 65535 },
     env: {

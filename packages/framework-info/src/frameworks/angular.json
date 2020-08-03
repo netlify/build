@@ -4,7 +4,9 @@
   "npmDependencies": ["@angular/cli"],
   "excludedNpmDependencies": [],
   "configFiles": ["angular.json"],
-  "watchCommand": "ng build --prod",
+  "watch": {
+    "command": "ng build --prod"
+  },
   "publish": "dist",
   "port": 4200,
   "env": {}

@@ -4,7 +4,9 @@
   "npmDependencies": ["ember-cli"],
   "excludedNpmDependencies": [],
   "configFiles": ["ember-cli-build.js"],
-  "watchCommand": "ember serve",
+  "watch": {
+    "command": "ember serve"
+  },
   "publish": "dist",
   "port": 4200,
   "env": {}
