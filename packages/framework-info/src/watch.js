@@ -1,25 +1,36 @@
 // Retrieve framework's watch commands.
-// If the `package.json` has some `scripts` and it contains the watch command,
-// it is used. A script is considered as containing the watch command if its
-// name is among `NPM_WATCH_SCRIPTS` or its value includes
-// `framework.watchCommand`.
-// Otherwise, `framework.watchCommand` is the default value.
+// We use, in priority order:
+//   - `package.json` `scripts` containing `framework.watchCommand`
+//   - `package.json` `scripts` whose names are among `NPM_WATCH_SCRIPTS`
+//   - `framework.watchCommand`
 const getWatchCommands = function({ frameworkWatchCommand, scripts, runScriptCommand }) {
-  const watchCommands = getScriptWatchCommands({ frameworkWatchCommand, scripts, runScriptCommand })
-  if (watchCommands.length === 0) {
-    return [frameworkWatchCommand]
+  const scriptWatchCommands = getScriptWatchCommands(scripts, frameworkWatchCommand).map(
+    scriptName => `${runScriptCommand} ${scriptName}`
+  )
+  if (scriptWatchCommands.length !== 0) {
+    return scriptWatchCommands
   }
-  return watchCommands
+
+  return [frameworkWatchCommand]
 }
 
-const getScriptWatchCommands = function({ frameworkWatchCommand, scripts, runScriptCommand }) {
+const getScriptWatchCommands = function(scripts, frameworkWatchCommand) {
+  const preferredScripts = getPreferredScripts(scripts, frameworkWatchCommand)
+  if (preferredScripts.length !== 0) {
+    return preferredScripts
+  }
+
+  return Object.keys(scripts).filter(isNpmWatchScript)
+}
+
+const getPreferredScripts = function(scripts, frameworkWatchCommand) {
   return Object.entries(scripts)
-    .filter(([scriptName, scriptValue]) => isFrameworkScript({ scriptName, scriptValue, frameworkWatchCommand }))
-    .map(([scriptName]) => `${runScriptCommand} ${scriptName}`)
+    .filter(([, scriptValue]) => scriptValue.includes(frameworkWatchCommand))
+    .map(getEntryKey)
 }
 
-const isFrameworkScript = function({ scriptName, scriptValue, frameworkWatchCommand }) {
-  return isNpmWatchScript(scriptName) || scriptValue.includes(frameworkWatchCommand)
+const getEntryKey = function([key]) {
+  return key
 }
 
 // Check if the npm script is likely to contain a watch command
@@ -32,7 +43,6 @@ const matchesNpmWatchScript = function(scriptName, watchScriptName) {
   return scriptName === watchScriptName || scriptName.endsWith(`:${watchScriptName}`)
 }
 
-// TODO: frameworkWatchCommand has priority
 const NPM_WATCH_SCRIPTS = ['serve', 'dev', 'develop', 'start', 'run', 'build', 'web']
 
 module.exports = { getWatchCommands }
