@@ -6,7 +6,7 @@
   "configFiles": [".eleventy.js"],
   "watch": {
     "command": "npx eleventy --serve --watch",
-    "publish": "_site",
+    "directory": "_site",
     "port": 8080
   },
   "env": {}

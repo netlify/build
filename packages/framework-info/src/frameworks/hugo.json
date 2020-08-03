@@ -6,7 +6,7 @@
   "configFiles": ["config.toml", "config.yaml"],
   "watch": {
     "command": "hugo server -w",
-    "publish": "public",
+    "directory": "public",
     "port": 1313
   },
   "env": {}

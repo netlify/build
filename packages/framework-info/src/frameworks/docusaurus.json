@@ -6,7 +6,7 @@
   "configFiles": ["siteConfig.js"],
   "watch": {
     "command": "docusaurus-start",
-    "publish": "static",
+    "directory": "static",
     "port": 3000
   },
   "env": {}

@@ -6,7 +6,7 @@
   "configFiles": ["static.config.js"],
   "watch": {
     "command": "react-static start",
-    "publish": "dist",
+    "directory": "dist",
     "port": 3000
   },
   "env": {}

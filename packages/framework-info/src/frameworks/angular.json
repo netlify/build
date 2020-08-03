@@ -6,7 +6,7 @@
   "configFiles": ["angular.json"],
   "watch": {
     "command": "ng build --prod",
-    "publish": "dist",
+    "directory": "dist",
     "port": 4200
   },
   "env": {}

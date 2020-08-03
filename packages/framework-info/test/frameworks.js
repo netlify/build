@@ -45,11 +45,11 @@ const FRAMEWORK_JSON_SCHEMA = {
     },
     watch: {
       type: 'object',
-      required: ['command', 'publish', 'port'],
+      required: ['command', 'directory', 'port'],
       additionalProperties: false,
       properties: {
         command: { type: 'string', minLength: 1 },
-        publish: RELATIVE_PATH_SCHEMA,
+        directory: RELATIVE_PATH_SCHEMA,
         port: { type: 'integer', minimum: 1, maximum: 65535 }
       }
     },

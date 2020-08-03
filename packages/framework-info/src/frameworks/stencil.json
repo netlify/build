@@ -6,7 +6,7 @@
   "configFiles": ["stencil.config.ts"],
   "watch": {
     "command": "stencil build --dev --watch --serve",
-    "publish": "www",
+    "directory": "www",
     "port": 3333
   },
   "env": { "BROWSER": "none", "PORT": "3000" }

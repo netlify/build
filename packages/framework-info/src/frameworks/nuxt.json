@@ -6,7 +6,7 @@
   "configFiles": [],
   "watch": {
     "command": "nuxt",
-    "publish": "dist",
+    "directory": "dist",
     "port": 3000
   },
   "env": {}

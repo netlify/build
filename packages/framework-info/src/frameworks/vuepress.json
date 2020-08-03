@@ -6,7 +6,7 @@
   "configFiles": [],
   "watch": {
     "command": "vuepress dev",
-    "publish": ".vuepress/dist",
+    "directory": ".vuepress/dist",
     "port": 8080
   },
   "env": {}

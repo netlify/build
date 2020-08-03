@@ -6,7 +6,7 @@
   "configFiles": ["config.rb"],
   "watch": {
     "command": "bundle exec middleman server",
-    "publish": "build",
+    "directory": "build",
     "port": 4567
   },
   "env": {}

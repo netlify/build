@@ -6,7 +6,7 @@
   "configFiles": [],
   "watch": {
     "command": "react-scripts start",
-    "publish": "public",
+    "directory": "public",
     "port": 3000
   },
   "env": { "BROWSER": "none", "PORT": "3000" }

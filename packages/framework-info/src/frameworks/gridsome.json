@@ -6,7 +6,7 @@
   "configFiles": ["gridsome.config.js"],
   "watch": {
     "command": "gridsome develop",
-    "publish": "dist",
+    "directory": "dist",
     "port": 8080
   },
   "env": {}

@@ -5,8 +5,8 @@
 
 Framework detection utility.
 
-Detects which framework a specific website is using. The framework's build/watch commands, publish directory and server
-port are also returned.
+Detects which framework a specific website is using. The framework's build/watch commands, directories and server port
+are also returned.
 
 The following frameworks are detected:
 
@@ -29,7 +29,7 @@ console.log(await listFrameworks({ projectDir: './path/to/gatsby/website' }))
 //     category: 'static_site_generator',
 //     watch: {
 //       commands: ['gatsby develop'],
-//       publish: 'public',
+//       directory: 'public',
 //       port: 8000
 //     },
 //     env: { GATSBY_LOGGER: 'yurnalist' }
@@ -43,7 +43,7 @@ console.log(await listFrameworks({ projectDir: './path/to/vue/website' }))
 //     category: 'frontend_framework',
 //     watch: {
 //       commands: ['npm run serve'],
-//       publish: 'dist',
+//       directory: 'dist',
 //       port: 8080
 //     },
 //     env: {}
@@ -56,7 +56,7 @@ console.log(await getFramework('vue', { projectDir: './path/to/vue/website' }))
 //   category: 'frontend_framework',
 //   watch: {
 //     commands: ['npm run serve'],
-//     publish: 'dist',
+//     directory: 'dist',
 //     port: 8080
 //   },
 //   env: {}
@@ -76,7 +76,7 @@ $ framework-info --long ./path/to/vue/website
     "category": "frontend_framework",
     "watch": {
       "commands": ["npm run serve"],
-      "publish": "dist",
+      "directory": "dist",
       "port": 8080
     },
     "env": {}
@@ -143,7 +143,7 @@ _Type_: `string[]`
 
 Build command, in watch mode. There might be several alternatives.
 
-##### publish
+##### directory
 
 _Type_: `string`
 
@@ -195,7 +195,7 @@ Each framework is a JSON file in the `/src/frameworks/` directory. For example:
   "configFiles": ["gatsby-config.js"],
   "watch": {
     "command": "gatsby develop",
-    "publish": "public",
+    "directory": "public",
     "port": 8000
   },
   "env": { "GATSBY_LOGGER": "yurnalist" }
@@ -255,7 +255,7 @@ _Type_: `string`
 
 Default watch command.
 
-### publish
+### directory
 
 _Type_: `string`
 

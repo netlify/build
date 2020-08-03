@@ -19,7 +19,7 @@ const { getWatchCommands } = require('./watch.js')
  * @returns {string} frameworks[].category -Category among `"static_site_generator"`, `"frontend_framework"` and `"build_tool"`
  * @returns {object} frameworks[].watch - Information about the build command, in watch mode.
  * @returns {string[]} frameworks[].watch.commands - Build command, in watch mode. There might be several alternatives
- * @returns {string} frameworks[].watch.publish - Relative path to the directory where files are built, in watch mode
+ * @returns {string} frameworks[].watch.directory - Relative path to the directory where files are built, in watch mode
  * @returns {number} frameworks[].watch.port - Server port
  * @returns {object} frameworks[].env - Environment variables that should be set when calling the watch command
  */
@@ -43,7 +43,7 @@ const listFrameworks = async function(opts) {
  * @returns {string} framework.category -Category among `"static_site_generator"`, `"frontend_framework"` and `"build_tool"`
  * @returns {object} framework.watch - Information about the build command, in watch mode.
  * @returns {string[]} framework.watch.commands - Build command, in watch mode. There might be several alternatives
- * @returns {string} framework.watch.publish - Relative path to the directory where files are built, in watch mode
+ * @returns {string} framework.watch.directory - Relative path to the directory where files are built, in watch mode
  * @returns {number} framework.watch.port - Server port
  * @returns {object} framework.env - Environment variables that should be set when calling the watch command
  */
@@ -75,11 +75,11 @@ const getProjectInfo = async function({ projectDir, ignoredWatchCommand }) {
 }
 
 const getFrameworkInfo = function(
-  { name, category, watch: { command: frameworkWatchCommand, publish, port }, env },
+  { name, category, watch: { command: frameworkWatchCommand, directory, port }, env },
   { scripts, runScriptCommand }
 ) {
   const watchCommands = getWatchCommands({ frameworkWatchCommand, scripts, runScriptCommand })
-  return { name, category, watch: { commands: watchCommands, publish, port }, env }
+  return { name, category, watch: { commands: watchCommands, directory, port }, env }
 }
 
 module.exports = { listFrameworks, getFramework }
