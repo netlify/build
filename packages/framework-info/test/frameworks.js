@@ -23,7 +23,7 @@ const RELATIVE_PATH_SCHEMA = {
 }
 const FRAMEWORK_JSON_SCHEMA = {
   type: 'object',
-  required: ['name', 'category', 'npmDependencies', 'excludedNpmDependencies', 'configFiles', 'watch', 'env'],
+  required: ['name', 'category', 'detect', 'watch', 'env'],
   additionalProperties: false,
   properties: {
     name: { type: 'string', pattern: '^[a-z\\d_]+', minLength: 1 },
@@ -31,17 +31,24 @@ const FRAMEWORK_JSON_SCHEMA = {
       type: 'string',
       enum: ['static_site_generator', 'frontend_framework', 'build_tool']
     },
-    npmDependencies: {
-      type: 'array',
-      items: { type: 'string', minLength: 1 }
-    },
-    excludedNpmDependencies: {
-      type: 'array',
-      items: { type: 'string', minLength: 1 }
-    },
-    configFiles: {
-      type: 'array',
-      items: RELATIVE_PATH_SCHEMA
+    detect: {
+      type: 'object',
+      required: ['npmDependencies', 'excludedNpmDependencies', 'configFiles'],
+      additionalProperties: false,
+      properties: {
+        npmDependencies: {
+          type: 'array',
+          items: { type: 'string', minLength: 1 }
+        },
+        excludedNpmDependencies: {
+          type: 'array',
+          items: { type: 'string', minLength: 1 }
+        },
+        configFiles: {
+          type: 'array',
+          items: RELATIVE_PATH_SCHEMA
+        }
+      }
     },
     watch: {
       type: 'object',

@@ -1,9 +1,11 @@
 {
   "name": "next",
   "category": "static_site_generator",
-  "npmDependencies": ["next"],
-  "excludedNpmDependencies": [],
-  "configFiles": [],
+  "detect": {
+    "npmDependencies": ["next"],
+    "excludedNpmDependencies": [],
+    "configFiles": []
+  },
   "watch": {
     "command": "next",
     "directory": "out",

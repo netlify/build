@@ -1,9 +1,11 @@
 {
   "name": "quasar",
   "category": "frontend_framework",
-  "npmDependencies": ["@quasar/app"],
-  "excludedNpmDependencies": [],
-  "configFiles": [],
+  "detect": {
+    "npmDependencies": ["@quasar/app"],
+    "excludedNpmDependencies": [],
+    "configFiles": []
+  },
   "watch": {
     "command": "quasar dev -p 8081",
     "directory": ".quasar",

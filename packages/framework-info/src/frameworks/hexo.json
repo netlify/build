@@ -1,9 +1,11 @@
 {
   "name": "hexo",
   "category": "static_site_generator",
-  "npmDependencies": ["hexo"],
-  "excludedNpmDependencies": [],
-  "configFiles": ["_config.yml"],
+  "detect": {
+    "npmDependencies": ["hexo"],
+    "excludedNpmDependencies": [],
+    "configFiles": ["_config.yml"]
+  },
   "watch": {
     "command": "hexo server",
     "directory": "public",

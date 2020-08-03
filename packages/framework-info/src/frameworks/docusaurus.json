@@ -1,9 +1,11 @@
 {
   "name": "docusaurus",
   "category": "static_site_generator",
-  "npmDependencies": ["docusaurus"],
-  "excludedNpmDependencies": [],
-  "configFiles": ["siteConfig.js"],
+  "detect": {
+    "npmDependencies": ["docusaurus"],
+    "excludedNpmDependencies": [],
+    "configFiles": ["siteConfig.js"]
+  },
   "watch": {
     "command": "docusaurus-start",
     "directory": "static",

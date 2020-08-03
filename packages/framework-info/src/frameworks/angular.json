@@ -1,9 +1,11 @@
 {
   "name": "angular",
   "category": "frontend_framework",
-  "npmDependencies": ["@angular/cli"],
-  "excludedNpmDependencies": [],
-  "configFiles": ["angular.json"],
+  "detect": {
+    "npmDependencies": ["@angular/cli"],
+    "excludedNpmDependencies": [],
+    "configFiles": ["angular.json"]
+  },
   "watch": {
     "command": "ng build --prod",
     "directory": "dist",

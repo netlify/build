@@ -1,9 +1,11 @@
 {
   "name": "create-react-app",
   "category": "frontend_framework",
-  "npmDependencies": ["react-scripts"],
-  "excludedNpmDependencies": [],
-  "configFiles": [],
+  "detect": {
+    "npmDependencies": ["react-scripts"],
+    "excludedNpmDependencies": [],
+    "configFiles": []
+  },
   "watch": {
     "command": "react-scripts start",
     "directory": "public",

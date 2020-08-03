@@ -1,9 +1,11 @@
 {
   "name": "middleman",
   "category": "static_site_generator",
-  "npmDependencies": [],
-  "excludedNpmDependencies": [],
-  "configFiles": ["config.rb"],
+  "detect": {
+    "npmDependencies": [],
+    "excludedNpmDependencies": [],
+    "configFiles": ["config.rb"]
+  },
   "watch": {
     "command": "bundle exec middleman server",
     "directory": "build",

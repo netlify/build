@@ -1,9 +1,11 @@
 {
   "name": "ember",
   "category": "frontend_framework",
-  "npmDependencies": ["ember-cli"],
-  "excludedNpmDependencies": [],
-  "configFiles": ["ember-cli-build.js"],
+  "detect": {
+    "npmDependencies": ["ember-cli"],
+    "excludedNpmDependencies": [],
+    "configFiles": ["ember-cli-build.js"]
+  },
   "watch": {
     "command": "ember serve",
     "directory": "dist",

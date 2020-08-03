@@ -1,9 +1,11 @@
 {
   "name": "stencil",
   "category": "static_site_generator",
-  "npmDependencies": ["@stencil/core"],
-  "excludedNpmDependencies": [],
-  "configFiles": ["stencil.config.ts"],
+  "detect": {
+    "npmDependencies": ["@stencil/core"],
+    "excludedNpmDependencies": [],
+    "configFiles": ["stencil.config.ts"]
+  },
   "watch": {
     "command": "stencil build --dev --watch --serve",
     "directory": "www",

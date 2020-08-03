@@ -1,9 +1,11 @@
 {
   "name": "phenomic",
   "category": "static_site_generator",
-  "npmDependencies": ["@phenomic/core"],
-  "excludedNpmDependencies": [],
-  "configFiles": [],
+  "detect": {
+    "npmDependencies": ["@phenomic/core"],
+    "excludedNpmDependencies": [],
+    "configFiles": []
+  },
   "watch": {
     "command": "phenomic start",
     "directory": "public",

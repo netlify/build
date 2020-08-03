@@ -1,9 +1,11 @@
 {
   "name": "brunch",
   "category": "build_tool",
-  "npmDependencies": ["brunch"],
-  "excludedNpmDependencies": [],
-  "configFiles": ["brunch-config.js"],
+  "detect": {
+    "npmDependencies": ["brunch"],
+    "excludedNpmDependencies": [],
+    "configFiles": ["brunch-config.js"]
+  },
   "watch": {
     "command": "brunch watch --server",
     "directory": "app/assets",

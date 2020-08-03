@@ -1,9 +1,11 @@
 {
   "name": "hugo",
   "category": "static_site_generator",
-  "npmDependencies": [],
-  "excludedNpmDependencies": [],
-  "configFiles": ["config.toml", "config.yaml"],
+  "detect": {
+    "npmDependencies": [],
+    "excludedNpmDependencies": [],
+    "configFiles": ["config.toml", "config.yaml"]
+  },
   "watch": {
     "command": "hugo server -w",
     "directory": "public",

@@ -1,9 +1,11 @@
 {
   "name": "expo",
   "category": "frontend_framework",
-  "npmDependencies": ["expo"],
-  "excludedNpmDependencies": [],
-  "configFiles": ["app.json"],
+  "detect": {
+    "npmDependencies": ["expo"],
+    "excludedNpmDependencies": [],
+    "configFiles": ["app.json"]
+  },
   "watch": {
     "command": "expo start --web",
     "directory": "web-build",

@@ -1,9 +1,11 @@
 {
   "name": "gridsome",
   "category": "static_site_generator",
-  "npmDependencies": ["gridsome"],
-  "excludedNpmDependencies": [],
-  "configFiles": ["gridsome.config.js"],
+  "detect": {
+    "npmDependencies": ["gridsome"],
+    "excludedNpmDependencies": [],
+    "configFiles": ["gridsome.config.js"]
+  },
   "watch": {
     "command": "gridsome develop",
     "directory": "dist",

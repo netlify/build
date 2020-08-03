@@ -7,7 +7,13 @@ const locatePath = require('locate-path')
 //    present in the `package.json` `dependencies|devDependencies`
 //  - if `framework.configFiles` is set, one of the files must exist
 const usesFramework = async function(
-  { npmDependencies: frameworkNpmDependencies, excludedNpmDependencies: frameworkExcludedNpmDependencies, configFiles },
+  {
+    detect: {
+      npmDependencies: frameworkNpmDependencies,
+      excludedNpmDependencies: frameworkExcludedNpmDependencies,
+      configFiles
+    }
+  },
   { projectDir, npmDependencies }
 ) {
   return (

@@ -190,9 +190,11 @@ Each framework is a JSON file in the `/src/frameworks/` directory. For example:
 {
   "name": "gatsby",
   "category": "static_site_generator",
-  "npmDependencies": ["gatsby"],
-  "excludedNpmDependencies": [],
-  "configFiles": ["gatsby-config.js"],
+  "detect": {
+    "npmDependencies": ["gatsby"],
+    "excludedNpmDependencies": [],
+    "configFiles": ["gatsby-config.js"],
+  }
   "watch": {
     "command": "gatsby develop",
     "directory": "public",
@@ -216,7 +218,13 @@ _Type_: `string`
 
 One of `"static_site_generator"`, `"frontend_framework"` or `"build_tool"`.
 
-## npmDependencies
+## detect
+
+_Type_: `object`
+
+Information used to detect this framework
+
+### npmDependencies
 
 _Type_: `string[]`
 
@@ -225,7 +233,7 @@ Framework's npm packages. Any project with one of those packages in their `packa
 
 If empty, this is ignored.
 
-## excludedNpmDependencies
+### excludedNpmDependencies
 
 _Type_: `string[]`
 
@@ -234,7 +242,7 @@ framework.
 
 If empty, this is ignored.
 
-## configFiles
+### configFiles
 
 _Type_: `string[]`
 

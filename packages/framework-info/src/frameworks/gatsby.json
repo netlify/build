@@ -1,9 +1,11 @@
 {
   "name": "gatsby",
   "category": "static_site_generator",
-  "npmDependencies": ["gatsby"],
-  "excludedNpmDependencies": [],
-  "configFiles": ["gatsby-config.js"],
+  "detect": {
+    "npmDependencies": ["gatsby"],
+    "excludedNpmDependencies": [],
+    "configFiles": ["gatsby-config.js"]
+  },
   "watch": {
     "command": "gatsby develop",
     "directory": "public",

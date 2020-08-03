@@ -1,9 +1,11 @@
 {
   "name": "nuxt",
   "category": "static_site_generator",
-  "npmDependencies": ["nuxt"],
-  "excludedNpmDependencies": [],
-  "configFiles": [],
+  "detect": {
+    "npmDependencies": ["nuxt"],
+    "excludedNpmDependencies": [],
+    "configFiles": []
+  },
   "watch": {
     "command": "nuxt",
     "directory": "dist",

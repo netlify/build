@@ -1,9 +1,11 @@
 {
   "name": "jekyll",
   "category": "static_site_generator",
-  "npmDependencies": [],
-  "excludedNpmDependencies": [],
-  "configFiles": ["_config.yml"],
+  "detect": {
+    "npmDependencies": [],
+    "excludedNpmDependencies": [],
+    "configFiles": ["_config.yml"]
+  },
   "watch": {
     "command": "bundle exec jekyll serve -w",
     "directory": "_site",

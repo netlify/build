@@ -1,9 +1,11 @@
 {
   "name": "parcel",
   "category": "build_tool",
-  "npmDependencies": ["parcel-bundler", "parcel"],
-  "excludedNpmDependencies": [],
-  "configFiles": [],
+  "detect": {
+    "npmDependencies": ["parcel-bundler", "parcel"],
+    "excludedNpmDependencies": [],
+    "configFiles": []
+  },
   "watch": {
     "command": "parcel",
     "directory": "dist",

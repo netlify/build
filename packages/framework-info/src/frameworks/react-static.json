@@ -1,9 +1,11 @@
 {
   "name": "react-static",
   "category": "static_site_generator",
-  "npmDependencies": ["react-static"],
-  "excludedNpmDependencies": [],
-  "configFiles": ["static.config.js"],
+  "detect": {
+    "npmDependencies": ["react-static"],
+    "excludedNpmDependencies": [],
+    "configFiles": ["static.config.js"]
+  },
   "watch": {
     "command": "react-static start",
     "directory": "dist",

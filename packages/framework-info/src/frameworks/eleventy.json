@@ -1,9 +1,11 @@
 {
   "name": "eleventy",
   "category": "static_site_generator",
-  "npmDependencies": ["@11ty/eleventy"],
-  "excludedNpmDependencies": [],
-  "configFiles": [".eleventy.js"],
+  "detect": {
+    "npmDependencies": ["@11ty/eleventy"],
+    "excludedNpmDependencies": [],
+    "configFiles": [".eleventy.js"]
+  },
   "watch": {
     "command": "npx eleventy --serve --watch",
     "directory": "_site",

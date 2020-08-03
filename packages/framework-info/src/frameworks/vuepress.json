@@ -1,9 +1,11 @@
 {
   "name": "vuepress",
   "category": "static_site_generator",
-  "npmDependencies": ["vuepress"],
-  "excludedNpmDependencies": [],
-  "configFiles": [],
+  "detect": {
+    "npmDependencies": ["vuepress"],
+    "excludedNpmDependencies": [],
+    "configFiles": []
+  },
   "watch": {
     "command": "vuepress dev",
     "directory": ".vuepress/dist",

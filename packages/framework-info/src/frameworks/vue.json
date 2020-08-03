@@ -1,9 +1,11 @@
 {
   "name": "vue",
   "category": "frontend_framework",
-  "npmDependencies": ["@vue/cli-service"],
-  "excludedNpmDependencies": [],
-  "configFiles": [],
+  "detect": {
+    "npmDependencies": ["@vue/cli-service"],
+    "excludedNpmDependencies": [],
+    "configFiles": []
+  },
   "watch": {
     "command": "vue-cli-service serve",
     "directory": "dist",

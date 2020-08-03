@@ -1,9 +1,11 @@
 {
   "name": "svelte",
   "category": "frontend_framework",
-  "npmDependencies": ["svelte"],
-  "excludedNpmDependencies": ["sapper"],
-  "configFiles": [],
+  "detect": {
+    "npmDependencies": ["svelte"],
+    "excludedNpmDependencies": ["sapper"],
+    "configFiles": []
+  },
   "watch": {
     "command": "npm run dev",
     "directory": "public",

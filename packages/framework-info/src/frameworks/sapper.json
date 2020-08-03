@@ -1,9 +1,11 @@
 {
   "name": "sapper",
   "category": "frontend_framework",
-  "npmDependencies": ["sapper"],
-  "excludedNpmDependencies": [],
-  "configFiles": [],
+  "detect": {
+    "npmDependencies": ["sapper"],
+    "excludedNpmDependencies": [],
+    "configFiles": []
+  },
   "watch": {
     "command": "sapper dev",
     "directory": "static",
