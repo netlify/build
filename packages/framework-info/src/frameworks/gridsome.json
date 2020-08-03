@@ -5,7 +5,6 @@
   "excludedNpmDependencies": [],
   "configFiles": ["gridsome.config.js"],
   "watchCommand": "gridsome develop",
-  "watchPackageScripts": ["develop"],
   "publish": "dist",
   "port": 8080,
   "env": {}

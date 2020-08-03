@@ -5,7 +5,6 @@
   "excludedNpmDependencies": [],
   "configFiles": [],
   "watchCommand": "sapper dev",
-  "watchPackageScripts": ["dev", "start"],
   "publish": "static",
   "port": 3000,
   "env": {}

@@ -5,7 +5,6 @@
   "excludedNpmDependencies": [],
   "configFiles": [],
   "watchCommand": "parcel",
-  "watchPackageScripts": ["start", "dev", "run"],
   "publish": "dist",
   "port": 1234,
   "env": {}

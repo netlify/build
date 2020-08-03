@@ -5,7 +5,6 @@
   "excludedNpmDependencies": [],
   "configFiles": ["static.config.js"],
   "watchCommand": "react-static start",
-  "watchPackageScripts": ["start", "develop", "dev"],
   "publish": "dist",
   "port": 3000,
   "env": {}

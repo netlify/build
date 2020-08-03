@@ -73,18 +73,10 @@ const getProjectInfo = async function({ projectDir, ignoredWatchCommand }) {
 }
 
 const getFrameworkInfo = function(
-  {
-    name,
-    category,
-    watchCommand: frameworkWatchCommand,
-    watchPackageScripts: frameworkWatchScripts,
-    publish,
-    port,
-    env
-  },
+  { name, category, watchCommand: frameworkWatchCommand, publish, port, env },
   { scripts, runScriptCommand }
 ) {
-  const watchCommands = getWatchCommands({ frameworkWatchCommand, frameworkWatchScripts, scripts, runScriptCommand })
+  const watchCommands = getWatchCommands({ frameworkWatchCommand, scripts, runScriptCommand })
   return { name, category, watchCommands, publish, port, env }
 }
 

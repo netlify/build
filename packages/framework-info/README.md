@@ -180,7 +180,6 @@ Each framework is a JSON file in the `/src/frameworks/` directory. For example:
   "excludedNpmDependencies": [],
   "configFiles": ["gatsby-config.js"],
   "watchCommand": "gatsby develop",
-  "watchPackageScripts": ["start", "develop", "dev"],
   "publish": "public",
   "port": 8000,
   "env": { "GATSBY_LOGGER": "yurnalist" }
@@ -228,19 +227,11 @@ with one of configuration files will be considered as using the framework.
 
 If empty, this is ignored.
 
-## watchPackageScripts
-
-_Type_: `string[]`
-
-Names of `scripts` in `package.json` which should be returned as watch commands.
-
-Any `scripts` whose value includes [`watchCommand`](#watchcommand) will also be returned as watch command.
-
 ## watchCommand
 
 _Type_: `string`
 
-Default watch command. Used if no [`watchPackageScripts`](#watchpackagescripts) was found.
+Default watch command.
 
 ## publish
 

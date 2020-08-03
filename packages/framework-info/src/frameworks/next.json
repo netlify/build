@@ -5,7 +5,6 @@
   "excludedNpmDependencies": [],
   "configFiles": [],
   "watchCommand": "next",
-  "watchPackageScripts": ["dev", "develop", "start"],
   "publish": "out",
   "port": 3000,
   "env": {}

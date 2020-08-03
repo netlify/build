@@ -5,7 +5,6 @@
   "excludedNpmDependencies": [],
   "configFiles": ["config.rb"],
   "watchCommand": "bundle exec middleman server",
-  "watchPackageScripts": [],
   "publish": "build",
   "port": 4567,
   "env": {}

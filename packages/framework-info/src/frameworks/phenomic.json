@@ -5,7 +5,6 @@
   "excludedNpmDependencies": [],
   "configFiles": [],
   "watchCommand": "phenomic start",
-  "watchPackageScripts": ["start"],
   "publish": "public",
   "port": 3333,
   "env": {}

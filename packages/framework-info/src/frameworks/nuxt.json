@@ -5,7 +5,6 @@
   "excludedNpmDependencies": [],
   "configFiles": [],
   "watchCommand": "nuxt",
-  "watchPackageScripts": ["dev", "start"],
   "publish": "dist",
   "port": 3000,
   "env": {}
