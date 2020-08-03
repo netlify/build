@@ -17,7 +17,8 @@ const { getWatchCommands } = require('./watch.js')
  * @returns {object[]} frameworks - Frameworks used by a project
  * @returns {string} frameworks[].name - Name such as `"gatsby"`
  * @returns {string} frameworks[].category -Category among `"static_site_generator"`, `"frontend_framework"` and `"build_tool"`
- * @returns {string[]} frameworks[].watchCommands - Build command, in watch mode. There might be several alternatives
+ * @returns {object} frameworks[].watch - Information about the build command, in watch mode.
+ * @returns {string[]} frameworks[].watch.commands - Build command, in watch mode. There might be several alternatives
  * @returns {string} frameworks[].publish - Relative path to the directory where files are built
  * @returns {number} frameworks[].port - Server port
  * @returns {object} frameworks[].env - Environment variables that should be set when calling the watch command
@@ -40,7 +41,8 @@ const listFrameworks = async function(opts) {
  * @returns {object} framework - Framework used by a project
  * @returns {string} framework.name - Name such as `"gatsby"`
  * @returns {string} framework.category -Category among `"static_site_generator"`, `"frontend_framework"` and `"build_tool"`
- * @returns {string[]} framework.watchCommands - Build command, in watch mode. There might be several alternatives
+ * @returns {object} framework.watch - Information about the build command, in watch mode.
+ * @returns {string[]} framework.watch.commands - Build command, in watch mode. There might be several alternatives
  * @returns {string} framework.publish - Relative path to the directory where files are built
  * @returns {number} framework.port - Server port
  * @returns {object} framework.env - Environment variables that should be set when calling the watch command
@@ -77,7 +79,7 @@ const getFrameworkInfo = function(
   { scripts, runScriptCommand }
 ) {
   const watchCommands = getWatchCommands({ frameworkWatchCommand, scripts, runScriptCommand })
-  return { name, category, watchCommands, publish, port, env }
+  return { name, category, watch: { commands: watchCommands }, publish, port, env }
 }
 
 module.exports = { listFrameworks, getFramework }

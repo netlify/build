@@ -27,7 +27,9 @@ console.log(await listFrameworks({ projectDir: './path/to/gatsby/website' }))
 //   {
 //     name: 'gatsby',
 //     category: 'static_site_generator',
-//     watchCommands: ['gatsby develop'],
+//     watch: {
+//       commands: ['gatsby develop']
+//     },
 //     publish: 'public',
 //     port: 8000,
 //     env: { GATSBY_LOGGER: 'yurnalist' }
@@ -39,7 +41,9 @@ console.log(await listFrameworks({ projectDir: './path/to/vue/website' }))
 //   {
 //     name: 'vue',
 //     category: 'frontend_framework',
-//     watchCommands: ['npm run serve'],
+//     watch: {
+//       commands: ['npm run serve']
+//     },
 //     publish: 'dist',
 //     port: 8080,
 //     env: {}
@@ -50,7 +54,9 @@ console.log(await getFramework('vue', { projectDir: './path/to/vue/website' }))
 // {
 //   name: 'vue',
 //   category: 'frontend_framework',
-//   watchCommands: ['npm run serve'],
+//   watch: {
+//     commands: ['npm run serve']
+//   },
 //   publish: 'dist',
 //   port: 8080,
 //   env: {}
@@ -68,7 +74,9 @@ $ framework-info --long ./path/to/vue/website
   {
     "name": "vue",
     "category": "frontend_framework",
-    "watchCommands": ["npm run serve"],
+    "watch": {
+      "commands": ["npm run serve"],
+    },
     "publish": "dist",
     "port": 8080,
     "env": {}
@@ -123,7 +131,13 @@ _Type_: `string`
 
 Category among `"static_site_generator"`, `"frontend_framework"` and `"build_tool"`.
 
-#### watchCommands
+#### watch
+
+_Type_: `object`
+
+Information about the build command, in watch mode.
+
+##### commands
 
 _Type_: `string[]`
 
