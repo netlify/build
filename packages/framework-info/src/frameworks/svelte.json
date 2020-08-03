@@ -5,9 +5,9 @@
   "excludedNpmDependencies": ["sapper"],
   "configFiles": [],
   "watch": {
-    "command": "npm run dev"
+    "command": "npm run dev",
+    "port": 5000
   },
   "publish": "public",
-  "port": 5000,
   "env": {}
 }

@@ -180,10 +180,10 @@ Each framework is a JSON file in the `/src/frameworks/` directory. For example:
   "excludedNpmDependencies": [],
   "configFiles": ["gatsby-config.js"],
   "watch": {
-    "command": "gatsby develop"
+    "command": "gatsby develop",
+    "port": 8000
   },
   "publish": "public",
-  "port": 8000,
   "env": { "GATSBY_LOGGER": "yurnalist" }
 }
 ```
@@ -241,17 +241,17 @@ _Type_: `string`
 
 Default watch command.
 
+### port
+
+_Type_: `number`
+
+Local watch server port.
+
 ## publish
 
 _Type_: `string`
 
 Directory where built files are written to.
-
-## port
-
-_Type_: `number`
-
-Local server port.
 
 ## env
 

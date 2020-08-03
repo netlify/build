@@ -5,9 +5,9 @@
   "excludedNpmDependencies": [],
   "configFiles": ["brunch-config.js"],
   "watch": {
-    "command": "brunch watch --server"
+    "command": "brunch watch --server",
+    "port": 3333
   },
   "publish": "app/assets",
-  "port": 3333,
   "env": {}
 }

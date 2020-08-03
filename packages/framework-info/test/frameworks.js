@@ -31,7 +31,6 @@ const FRAMEWORK_JSON_SCHEMA = {
     'configFiles',
     'watch',
     'publish',
-    'port',
     'env'
   ],
   additionalProperties: false,
@@ -55,13 +54,14 @@ const FRAMEWORK_JSON_SCHEMA = {
     },
     watch: {
       type: 'object',
+      required: ['command', 'port'],
       additionalProperties: false,
       properties: {
-        command: { type: 'string', minLength: 1 }
+        command: { type: 'string', minLength: 1 },
+        port: { type: 'integer', minimum: 1, maximum: 65535 }
       }
     },
     publish: RELATIVE_PATH_SCHEMA,
-    port: { type: 'integer', minimum: 1, maximum: 65535 },
     env: {
       type: 'object',
       additionalProperties: { type: 'string' }

@@ -5,9 +5,9 @@
   "excludedNpmDependencies": [],
   "configFiles": [],
   "watch": {
-    "command": "parcel"
+    "command": "parcel",
+    "port": 1234
   },
   "publish": "dist",
-  "port": 1234,
   "env": {}
 }

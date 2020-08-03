@@ -5,9 +5,9 @@
   "excludedNpmDependencies": [],
   "configFiles": ["_config.yml"],
   "watch": {
-    "command": "bundle exec jekyll serve -w"
+    "command": "bundle exec jekyll serve -w",
+    "port": 4000
   },
   "publish": "_site",
-  "port": 4000,
   "env": {}
 }

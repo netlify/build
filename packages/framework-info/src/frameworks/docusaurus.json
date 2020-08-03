@@ -5,9 +5,9 @@
   "excludedNpmDependencies": [],
   "configFiles": ["siteConfig.js"],
   "watch": {
-    "command": "docusaurus-start"
+    "command": "docusaurus-start",
+    "port": 3000
   },
   "publish": "static",
-  "port": 3000,
   "env": {}
 }

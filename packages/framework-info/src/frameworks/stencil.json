@@ -5,9 +5,9 @@
   "excludedNpmDependencies": [],
   "configFiles": ["stencil.config.ts"],
   "watch": {
-    "command": "stencil build --dev --watch --serve"
+    "command": "stencil build --dev --watch --serve",
+    "port": 3333
   },
   "publish": "www",
-  "port": 3333,
   "env": { "BROWSER": "none", "PORT": "3000" }
 }

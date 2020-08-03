@@ -5,9 +5,9 @@
   "excludedNpmDependencies": [],
   "configFiles": ["angular.json"],
   "watch": {
-    "command": "ng build --prod"
+    "command": "ng build --prod",
+    "port": 4200
   },
   "publish": "dist",
-  "port": 4200,
   "env": {}
 }
