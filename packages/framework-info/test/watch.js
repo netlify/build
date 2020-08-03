@@ -8,6 +8,12 @@ test('Should use package scripts as watch command', async t => {
   t.deepEqual(frameworks[0].watchCommands, ['npm run start', 'npm run dev'])
 })
 
+test('Should allow package scripts names with colons', async t => {
+  const frameworks = await getFrameworks('colon_scripts')
+  t.is(frameworks.length, 1)
+  t.deepEqual(frameworks[0].watchCommands, ['npm run docs:dev'])
+})
+
 test('Should use package scripts if it includes framework.watchCommand', async t => {
   const frameworks = await getFrameworks('watch_command_scripts')
   t.is(frameworks.length, 1)

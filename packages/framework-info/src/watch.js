@@ -19,11 +19,20 @@ const getScriptWatchCommands = function({ frameworkWatchCommand, scripts, runScr
 }
 
 const isFrameworkScript = function({ scriptName, scriptValue, frameworkWatchCommand }) {
-  return NPM_WATCH_SCRIPTS.includes(scriptName) || scriptValue.includes(frameworkWatchCommand)
+  return isNpmWatchScript(scriptName) || scriptValue.includes(frameworkWatchCommand)
+}
+
+// Check if the npm script is likely to contain a watch command
+const isNpmWatchScript = function(scriptName) {
+  return NPM_WATCH_SCRIPTS.some(watchScriptName => matchesNpmWatchScript(scriptName, watchScriptName))
+}
+
+// We also match script names like `docs:dev`
+const matchesNpmWatchScript = function(scriptName, watchScriptName) {
+  return scriptName === watchScriptName || scriptName.endsWith(`:${watchScriptName}`)
 }
 
 // TODO: frameworkWatchCommand has priority
-// TODO: Include anything that ends with :...
 const NPM_WATCH_SCRIPTS = ['serve', 'dev', 'develop', 'start', 'run', 'build', 'web']
 
 module.exports = { getWatchCommands }
