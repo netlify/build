@@ -124,23 +124,6 @@ const TYPES = {
     severity: 'error',
   },
 
-  // Error while communicating to the buildbot via its socket
-  buildbotClientConnection: {
-    title: 'Buildbot server client connection error',
-    stackType: 'message',
-    showErrorProps: true,
-    severity: 'error',
-  },
-
-  // Error while communicating to the buildbot via its socket
-  buildbotClient: {
-    title: 'Buildbot communication error',
-    stackType: 'message',
-    locationType: 'buildbotClientMessage',
-    showErrorProps: true,
-    severity: 'error',
-  },
-
   // `@netlify/build` threw an uncaught exception
   exception: {
     title: 'Core internal error',

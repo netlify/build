@@ -41,15 +41,10 @@ const getApiLocation = function({ endpoint, parameters }) {
   return `While calling the Netlify API endpoint '${endpoint}' with:\n${JSON.stringify(parameters, null, 2)}`
 }
 
-const getBuildbotClientMessageLocation = function({ payload: { action } }) {
-  return `While sending the action "${action}" to the buildbot server.`
-}
-
 const LOCATIONS = {
   buildCommand: getBuildCommandLocation,
   buildFail: getBuildFailLocation,
   api: getApiLocation,
-  buildbotClientMessage: getBuildbotClientMessageLocation,
 }
 
 module.exports = { getLocationInfo }
