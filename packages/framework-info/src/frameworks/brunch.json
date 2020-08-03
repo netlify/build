@@ -6,8 +6,8 @@
   "configFiles": ["brunch-config.js"],
   "watch": {
     "command": "brunch watch --server",
+    "publish": "app/assets",
     "port": 3333
   },
-  "publish": "app/assets",
   "env": {}
 }

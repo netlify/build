@@ -6,8 +6,8 @@
   "configFiles": ["gridsome.config.js"],
   "watch": {
     "command": "gridsome develop",
+    "publish": "dist",
     "port": 8080
   },
-  "publish": "dist",
   "env": {}
 }

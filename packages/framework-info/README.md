@@ -29,9 +29,9 @@ console.log(await listFrameworks({ projectDir: './path/to/gatsby/website' }))
 //     category: 'static_site_generator',
 //     watch: {
 //       commands: ['gatsby develop'],
+//       publish: 'public',
 //       port: 8000
 //     },
-//     publish: 'public',
 //     env: { GATSBY_LOGGER: 'yurnalist' }
 //   }
 // ]
@@ -43,9 +43,9 @@ console.log(await listFrameworks({ projectDir: './path/to/vue/website' }))
 //     category: 'frontend_framework',
 //     watch: {
 //       commands: ['npm run serve'],
+//       publish: 'dist',
 //       port: 8080
 //     },
-//     publish: 'dist',
 //     env: {}
 //   }
 // ]
@@ -56,9 +56,9 @@ console.log(await getFramework('vue', { projectDir: './path/to/vue/website' }))
 //   category: 'frontend_framework',
 //   watch: {
 //     commands: ['npm run serve'],
+//     publish: 'dist',
 //     port: 8080
 //   },
-//   publish: 'dist',
 //   env: {}
 // }
 ```
@@ -76,9 +76,9 @@ $ framework-info --long ./path/to/vue/website
     "category": "frontend_framework",
     "watch": {
       "commands": ["npm run serve"],
+      "publish": "dist",
       "port": 8080
     },
-    "publish": "dist",
     "env": {}
   }
 ]
@@ -143,17 +143,17 @@ _Type_: `string[]`
 
 Build command, in watch mode. There might be several alternatives.
 
+##### publish
+
+_Type_: `string`
+
+Relative path to the directory where files are built, in watch mode.
+
 ##### port
 
 _Type_: `number`
 
 Server port.
-
-#### publish
-
-_Type_: `string`
-
-Relative path to the directory where files are built.
 
 #### env
 
@@ -195,9 +195,9 @@ Each framework is a JSON file in the `/src/frameworks/` directory. For example:
   "configFiles": ["gatsby-config.js"],
   "watch": {
     "command": "gatsby develop",
+    "publish": "public",
     "port": 8000
   },
-  "publish": "public",
   "env": { "GATSBY_LOGGER": "yurnalist" }
 }
 ```
@@ -255,17 +255,17 @@ _Type_: `string`
 
 Default watch command.
 
+### publish
+
+_Type_: `string`
+
+Directory where built files are written to, in watch mode.
+
 ### port
 
 _Type_: `number`
 
 Local watch server port.
-
-## publish
-
-_Type_: `string`
-
-Directory where built files are written to.
 
 ## env
 

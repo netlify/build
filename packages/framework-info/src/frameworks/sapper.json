@@ -6,8 +6,8 @@
   "configFiles": [],
   "watch": {
     "command": "sapper dev",
+    "publish": "static",
     "port": 3000
   },
-  "publish": "static",
   "env": {}
 }

@@ -6,8 +6,8 @@
   "configFiles": [],
   "watch": {
     "command": "vue-cli-service serve",
+    "publish": "dist",
     "port": 8080
   },
-  "publish": "dist",
   "env": {}
 }

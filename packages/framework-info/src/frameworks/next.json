@@ -6,8 +6,8 @@
   "configFiles": [],
   "watch": {
     "command": "next",
+    "publish": "out",
     "port": 3000
   },
-  "publish": "out",
   "env": {}
 }

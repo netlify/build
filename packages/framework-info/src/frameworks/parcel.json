@@ -6,8 +6,8 @@
   "configFiles": [],
   "watch": {
     "command": "parcel",
+    "publish": "dist",
     "port": 1234
   },
-  "publish": "dist",
   "env": {}
 }

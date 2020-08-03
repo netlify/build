@@ -6,8 +6,8 @@
   "configFiles": [],
   "watch": {
     "command": "phenomic start",
+    "publish": "public",
     "port": 3333
   },
-  "publish": "public",
   "env": {}
 }

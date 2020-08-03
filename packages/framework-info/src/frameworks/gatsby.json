@@ -6,8 +6,8 @@
   "configFiles": ["gatsby-config.js"],
   "watch": {
     "command": "gatsby develop",
+    "publish": "public",
     "port": 8000
   },
-  "publish": "public",
   "env": { "GATSBY_LOGGER": "yurnalist" }
 }

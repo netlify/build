@@ -23,16 +23,7 @@ const RELATIVE_PATH_SCHEMA = {
 }
 const FRAMEWORK_JSON_SCHEMA = {
   type: 'object',
-  required: [
-    'name',
-    'category',
-    'npmDependencies',
-    'excludedNpmDependencies',
-    'configFiles',
-    'watch',
-    'publish',
-    'env'
-  ],
+  required: ['name', 'category', 'npmDependencies', 'excludedNpmDependencies', 'configFiles', 'watch', 'env'],
   additionalProperties: false,
   properties: {
     name: { type: 'string', pattern: '^[a-z\\d_]+', minLength: 1 },
@@ -54,14 +45,14 @@ const FRAMEWORK_JSON_SCHEMA = {
     },
     watch: {
       type: 'object',
-      required: ['command', 'port'],
+      required: ['command', 'publish', 'port'],
       additionalProperties: false,
       properties: {
         command: { type: 'string', minLength: 1 },
+        publish: RELATIVE_PATH_SCHEMA,
         port: { type: 'integer', minimum: 1, maximum: 65535 }
       }
     },
-    publish: RELATIVE_PATH_SCHEMA,
     env: {
       type: 'object',
       additionalProperties: { type: 'string' }

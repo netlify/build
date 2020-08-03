@@ -6,8 +6,8 @@
   "configFiles": [],
   "watch": {
     "command": "npm run dev",
+    "publish": "public",
     "port": 5000
   },
-  "publish": "public",
   "env": {}
 }

@@ -6,8 +6,8 @@
   "configFiles": ["app.json"],
   "watch": {
     "command": "expo start --web",
+    "publish": "web-build",
     "port": 19006
   },
-  "publish": "web-build",
   "env": {}
 }

@@ -6,8 +6,8 @@
   "configFiles": ["_config.yml"],
   "watch": {
     "command": "hexo server",
+    "publish": "public",
     "port": 4000
   },
-  "publish": "public",
   "env": {}
 }

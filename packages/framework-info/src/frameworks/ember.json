@@ -6,8 +6,8 @@
   "configFiles": ["ember-cli-build.js"],
   "watch": {
     "command": "ember serve",
+    "publish": "dist",
     "port": 4200
   },
-  "publish": "dist",
   "env": {}
 }

@@ -6,8 +6,8 @@
   "configFiles": ["_config.yml"],
   "watch": {
     "command": "bundle exec jekyll serve -w",
+    "publish": "_site",
     "port": 4000
   },
-  "publish": "_site",
   "env": {}
 }
