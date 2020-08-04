@@ -14,12 +14,12 @@ const initTimers = function() {
 //   - return a plain object. This may or may not contain a modified `timers`.
 // The `durationMs` will be returned by the function. A new `timers` with the
 // additional duration timer will be returned as well.
-const kMeasureDuration = function(func, name) {
+const kMeasureDuration = function(func, tag) {
   return async function({ timers, ...opts }, ...args) {
     const timer = startTimer()
     const { timers: timersA = timers, ...returnObject } = await func({ timers, ...opts }, ...args)
     const durationMs = endTimer(timer)
-    const timersB = [...timersA, { name, durationMs }]
+    const timersB = [...timersA, { tag, durationMs }]
     return { ...returnObject, timers: timersB, durationMs }
   }
 }
