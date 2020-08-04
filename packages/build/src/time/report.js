@@ -16,8 +16,8 @@ const reportTimers = async function(timers, timersFile) {
   await pAppendFile(timersFile, timersLines)
 }
 
-const getTimerLine = function({ name, durationMs }) {
-  return `${name} ${durationMs}ms\n`
+const getTimerLine = function({ tag, durationMs }) {
+  return `${tag} ${durationMs}ms\n`
 }
 
 module.exports = { reportTimers }

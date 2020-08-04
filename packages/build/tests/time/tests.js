@@ -27,8 +27,8 @@ const getTimerLines = async function(t, timersFile) {
 }
 
 const isTimerLine = function(timerLine) {
-  const [name, durationMs] = timerLine.split(' ')
-  return [name, durationMs].every(isDefinedString) && DURATION_REGEXP.test(durationMs)
+  const [tag, durationMs] = timerLine.split(' ')
+  return [tag, durationMs].every(isDefinedString) && DURATION_REGEXP.test(durationMs)
 }
 
 const isDefinedString = function(string) {
@@ -43,8 +43,8 @@ test('Prints all timings', async t => {
     await runFixture(t, 'plugin', { flags: { timersFile }, snapshot: false })
 
     const timersFileContent = await pReadFile(timersFile, 'utf8')
-    TIMINGS.forEach(timing => {
-      t.true(timersFileContent.includes(`${timing} `))
+    TIMINGS.forEach(tag => {
+      t.true(timersFileContent.includes(`${tag} `))
     })
   } finally {
     await del(timersFile, { force: true })
