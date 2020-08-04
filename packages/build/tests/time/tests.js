@@ -14,22 +14,17 @@ test('Prints timings to --timersFile', async t => {
   try {
     await runFixture(t, 'simple', { flags: { timersFile }, snapshot: false })
 
-    const timerLines = await getTimerLines(t, timersFile)
-    t.true(timerLines.every(isTimerLine))
+    const timerLines = await getTimerLines(timersFile)
+
+    timerLines.forEach(({ tag, durationMs }) => {
+      t.true(isDefinedString(tag))
+      t.true(isDefinedString(durationMs))
+      t.true(DURATION_REGEXP.test(durationMs))
+    })
   } finally {
     await del(timersFile, { force: true })
   }
 })
-
-const getTimerLines = async function(t, timersFile) {
-  const timersFileContent = await pReadFile(timersFile, 'utf8')
-  return timersFileContent.trim().split('\n')
-}
-
-const isTimerLine = function(timerLine) {
-  const [tag, durationMs] = timerLine.split(' ')
-  return [tag, durationMs].every(isDefinedString) && DURATION_REGEXP.test(durationMs)
-}
 
 const isDefinedString = function(string) {
   return typeof string === 'string' && string.trim() !== ''
@@ -42,9 +37,9 @@ test('Prints all timings', async t => {
   try {
     await runFixture(t, 'plugin', { flags: { timersFile }, snapshot: false })
 
-    const timersFileContent = await pReadFile(timersFile, 'utf8')
+    const timerLines = await getTimerLines(timersFile)
     TIMINGS.forEach(tag => {
-      t.true(timersFileContent.includes(`${tag} `))
+      t.true(timerLines.some(timerLine => timerLine.tag === tag))
     })
   } finally {
     await del(timersFile, { force: true })
@@ -60,3 +55,16 @@ const TIMINGS = [
   'run_netlify_build.total',
   'plugin.onBuild',
 ]
+
+const getTimerLines = async function(timersFile) {
+  const timersFileContent = await pReadFile(timersFile, 'utf8')
+  return timersFileContent
+    .trim()
+    .split('\n')
+    .map(parseTimerLine)
+}
+
+const parseTimerLine = function(timerLine) {
+  const [tag, durationMs] = timerLine.split(' ')
+  return { tag, durationMs }
+}
