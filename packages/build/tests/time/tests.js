@@ -56,6 +56,7 @@ const TIMINGS = [
   'run_netlify_build.get_plugins_options',
   'run_netlify_build.start_plugins',
   'run_netlify_build.load_plugins',
-  'plugin.onBuild',
+  'run_netlify_build.command',
   'run_netlify_build.total',
+  'plugin.onBuild',
 ]
