@@ -14,14 +14,14 @@ test('Prints timings to --timersFile', async t => {
   try {
     await runFixture(t, 'simple', { flags: { timersFile }, snapshot: false })
 
-    const timerLines = await getTimerLines(t, timersFile)
+    const timerLines = await getTimerLines(timersFile)
     t.true(timerLines.every(isTimerLine))
   } finally {
     await del(timersFile, { force: true })
   }
 })
 
-const getTimerLines = async function(t, timersFile) {
+const getTimerLines = async function(timersFile) {
   const timersFileContent = await pReadFile(timersFile, 'utf8')
   return timersFileContent.trim().split('\n')
 }
