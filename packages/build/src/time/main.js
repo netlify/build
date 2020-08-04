@@ -14,12 +14,12 @@ const initTimers = function() {
 //   - return a plain object. This may or may not contain a modified `timers`.
 // The `durationMs` will be returned by the function. A new `timers` with the
 // additional duration timer will be returned as well.
-const kMeasureDuration = function(func, tag) {
+const kMeasureDuration = function(func, metric, tag) {
   return async function({ timers, ...opts }, ...args) {
     const timer = startTimer()
     const { timers: timersA = timers, ...returnObject } = await func({ timers, ...opts }, ...args)
     const durationMs = endTimer(timer)
-    const timersB = [...timersA, { tag, durationMs }]
+    const timersB = [...timersA, { metric, tag, durationMs }]
     return { ...returnObject, timers: timersB, durationMs }
   }
 }
@@ -27,7 +27,7 @@ const kMeasureDuration = function(func, tag) {
 // Ensure the wrapped function `name` is not `anonymous` in stack traces
 const measureDuration = keepFuncProps(kMeasureDuration)
 
-// Make sure the timer name does not include special characters.
+// Make sure the timer tag/metric name does not include special characters.
 // For example, the `package` of local plugins includes dots.
 const normalizeTimerName = function(name) {
   return slugify(name, { separator: '_' })

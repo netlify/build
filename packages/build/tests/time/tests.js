@@ -16,7 +16,8 @@ test('Prints timings to --timersFile', async t => {
 
     const timerLines = await getTimerLines(timersFile)
 
-    timerLines.forEach(({ tag, durationMs }) => {
+    timerLines.forEach(({ metric, tag, durationMs }) => {
+      t.true(isDefinedString(metric))
       t.true(isDefinedString(tag))
       t.true(isDefinedString(durationMs))
       t.true(DURATION_REGEXP.test(durationMs))
@@ -38,8 +39,8 @@ test('Prints all timings', async t => {
     await runFixture(t, 'plugin', { flags: { timersFile }, snapshot: false })
 
     const timerLines = await getTimerLines(timersFile)
-    TIMINGS.forEach(tag => {
-      t.true(timerLines.some(timerLine => timerLine.tag === tag))
+    TIMINGS.forEach(({ metric, tag }) => {
+      t.true(timerLines.some(timerLine => timerLine.metric === metric && timerLine.tag === tag))
     })
   } finally {
     await del(timersFile, { force: true })
@@ -47,13 +48,13 @@ test('Prints all timings', async t => {
 })
 
 const TIMINGS = [
-  'run_netlify_build.resolve_config',
-  'run_netlify_build.get_plugins_options',
-  'run_netlify_build.start_plugins',
-  'run_netlify_build.load_plugins',
-  'run_netlify_build.command',
-  'run_netlify_build.total',
-  'plugin.onBuild',
+  { metric: 'build.substage.duration', tag: 'run_netlify_build.resolve_config' },
+  { metric: 'build.substage.duration', tag: 'run_netlify_build.get_plugins_options' },
+  { metric: 'build.substage.duration', tag: 'run_netlify_build.start_plugins' },
+  { metric: 'build.substage.duration', tag: 'run_netlify_build.load_plugins' },
+  { metric: 'build.substage.duration', tag: 'run_netlify_build.command' },
+  { metric: 'build.substage.duration', tag: 'run_netlify_build.total' },
+  { metric: 'build.plugins', tag: 'plugin.onBuild' },
 ]
 
 const getTimerLines = async function(timersFile) {
@@ -65,6 +66,6 @@ const getTimerLines = async function(timersFile) {
 }
 
 const parseTimerLine = function(timerLine) {
-  const [tag, durationMs] = timerLine.split(' ')
-  return { tag, durationMs }
+  const [metric, tag, durationMs] = timerLine.split('\t')
+  return { metric, tag, durationMs }
 }

@@ -159,7 +159,7 @@ const tExecBuild = async function({
   return { netlifyConfig, siteInfo, commandsCount, timers: timersB }
 }
 
-const execBuild = measureDuration(tExecBuild, 'run_netlify_build.total')
+const execBuild = measureDuration(tExecBuild, 'build.substage.duration', 'run_netlify_build.total')
 
 // Runs a build then report any plugin statuses
 const runAndReportBuild = async function({
