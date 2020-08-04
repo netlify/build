@@ -193,8 +193,8 @@ Each framework is a JSON file in the `/src/frameworks/` directory. For example:
   "detect": {
     "npmDependencies": ["gatsby"],
     "excludedNpmDependencies": [],
-    "configFiles": ["gatsby-config.js"],
-  }
+    "configFiles": ["gatsby-config.js"]
+  },
   "watch": {
     "command": "gatsby develop",
     "directory": "public",
