@@ -15,7 +15,7 @@ Learn more about Build Plugins in [Netlify documentation](https://docs.netlify.c
 
 Community-created plugins are listed in the Netlify App.
 
-Build plugins are simple Node.js packages. If you'd like to create one, please see our documentation about
+Netlify Build Plugins are simple Node.js packages. If you'd like to create one, see our documentation about
 [creating](https://docs.netlify.com/configure-builds/build-plugins/create-plugins/) and
 [sharing](https://docs.netlify.com/configure-builds/build-plugins/share-plugins/) them.
 
