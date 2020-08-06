@@ -3,7 +3,7 @@
 [![Coverage Status](https://codecov.io/gh/netlify/build/branch/master/graph/badge.svg)](https://codecov.io/gh/netlify/build)
 [![Build](https://github.com/netlify/build/workflows/Build/badge.svg)](https://github.com/netlify/build/actions)
 
-Netlify Build runs the build command, Build plugins and bundles Netlify Functions.
+Netlify Build runs the build command and Build Plugins and bundles Netlify Functions.
 
 Build Plugins extend the functionality of the Netlify Build process. You can install plugins made by others, or write
 your own. You can save them locally in your repository, or share them with others via npm and the Netlify plugins
