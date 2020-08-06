@@ -9,7 +9,7 @@ Build Plugins extend the functionality of the Netlify Build process. You can ins
 your own. You can save them locally in your repository or share them with others via npm and the Netlify plugins
 directory.
 
-Learn more about Build plugins in [Netlify documentation](https://docs.netlify.com/configure-builds/build-plugins).
+Learn more about Build Plugins in [Netlify documentation](https://docs.netlify.com/configure-builds/build-plugins).
 
 ## Community plugins
 
