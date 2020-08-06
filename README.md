@@ -5,7 +5,7 @@
 
 Netlify Build runs the build command and Build Plugins and bundles Netlify Functions.
 
-Build Plugins extend the functionality of the Netlify Build process. You can install plugins made by others, or write
+Build Plugins extend the functionality of the Netlify Build process. You can install plugins made by others or write
 your own. You can save them locally in your repository or share them with others via npm and the Netlify plugins
 directory.
 
