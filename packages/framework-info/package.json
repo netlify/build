@@ -27,8 +27,8 @@
     }
   },
   "keywords": [
-    "continuous-integration",
     "dependency-management",
+    "continuous-integration",
     "deployment",
     "es6",
     "framework",
