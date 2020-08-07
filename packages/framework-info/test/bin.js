@@ -18,6 +18,12 @@ test('CLI print framework names', async t => {
   t.snapshot(stdout)
 })
 
+test('CLI print "unknown" when none found', async t => {
+  const binPath = await BINARY_PATH
+  const { stdout } = await execa(binPath, [`${FIXTURES_DIR}/empty`])
+  t.is(stdout, 'unknown')
+})
+
 test('CLI --long flag', async t => {
   const binPath = await BINARY_PATH
   const { stdout } = await execa(binPath, ['--long', `${FIXTURES_DIR}/multiple`])

@@ -177,6 +177,8 @@ $ framework-info [projectDirectory]
 
 This prints the names of each framework.
 
+If known is found, `unknown` is printed.
+
 Available flags:
 
 - `--long`: Show more information about each framework. The output will be a JSON array.

@@ -46,12 +46,18 @@ const USAGE = `$0 [OPTIONS...] [PROJECT_DIRECTORY]
 Prints all the frameworks used by a project.`
 
 const serializeFrameworks = function(frameworks, long) {
-  if (!long) {
-    return frameworks.map(getName).join('\n')
+  if (long) {
+    return JSON.stringify(frameworks, null, 2)
   }
 
-  return JSON.stringify(frameworks, null, 2)
+  if (frameworks.length === 0) {
+    return NO_FRAMEWORKS
+  }
+
+  return frameworks.map(getName).join('\n')
 }
+
+const NO_FRAMEWORKS = 'unknown'
 
 const getName = function({ name }) {
   return name
