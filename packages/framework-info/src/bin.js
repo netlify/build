@@ -37,7 +37,7 @@ The output will be a JSON array.`
   },
   ignoredWatchCommand: {
     string: true,
-    describe: 'Whether Go binaries should be zipped or copied as is'
+    describe: 'When detecting the watch command, ignore `package.json` `scripts` whose value includes this string.'
   }
 }
 
