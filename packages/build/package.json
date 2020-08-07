@@ -21,7 +21,34 @@
     "release:minor": "npm version minor && npm publish",
     "release:major": "npm version major && npm publish"
   },
-  "repository": "https://github.com/netlify/build",
+  "keywords": [
+    "nodejs",
+    "javascript",
+    "windows",
+    "macos",
+    "linux",
+    "shell",
+    "bash",
+    "build",
+    "terminal",
+    "deployment",
+    "es6",
+    "serverless",
+    "continuous-integration",
+    "continuous-delivery",
+    "ci",
+    "continuous-deployment",
+    "plugins",
+    "continuous-testing",
+    "netlify-plugin",
+    "netlify"
+  ],
+  "homepage": "https://github.com/netlify/build",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/netlify/build.git",
+    "directory": "packages/build"
+  },
   "bugs": {
     "url": "https://github.com/netlify/build/issues"
   },
