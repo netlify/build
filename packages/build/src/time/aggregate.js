@@ -15,8 +15,8 @@ const addAggregatedTimers = function(timers) {
 }
 
 // Check if a timer relates to a Build plugin
-const isPluginTimer = function({ tag }) {
-  return !tag.startsWith(NON_PLUGIN_PREFIX)
+const isPluginTimer = function({ stageTag }) {
+  return !stageTag.startsWith(NON_PLUGIN_PREFIX)
 }
 
 const NON_PLUGIN_PREFIX = 'run_netlify_build.'
@@ -40,15 +40,15 @@ const getWholePluginTimer = function(pluginPackage, pluginsTimers) {
   return wholePluginsTimer
 }
 
-const getPluginTimerPackage = function({ tag }) {
-  const [pluginPackage] = tag.split('.')
+const getPluginTimerPackage = function({ stageTag }) {
+  const [pluginPackage] = stageTag.split('.')
   return pluginPackage
 }
 
 // Creates a timer that sums up the duration of several others
-const createSumTimer = function(timers, tag, parentTag) {
+const createSumTimer = function(timers, stageTag, parentTag) {
   const durationMs = computeTimersDuration(timers)
-  const timer = createTimer(tag, durationMs, { parentTag })
+  const timer = createTimer(stageTag, durationMs, { parentTag })
   return timer
 }
 
