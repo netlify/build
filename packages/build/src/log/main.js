@@ -5,6 +5,7 @@ const prettyMs = require('pretty-ms')
 const { name, version } = require('../../package.json')
 const { isSuccessException } = require('../error/cancel')
 const { serializeLogError } = require('../error/parse/serialize_log')
+const { roundTimerToMillisecs } = require('../time/measure')
 const { omit } = require('../utils/omit')
 
 const { getCommandDescription, getBuildCommandDescription, getPluginOrigin } = require('./description')
@@ -219,7 +220,8 @@ More information can be found at https://docs.netlify.com/configure-builds/troub
   )
 }
 
-const logTimer = function(logs, durationMs, timerName) {
+const logTimer = function(logs, durationNs, timerName) {
+  const durationMs = roundTimerToMillisecs(durationNs)
   const duration = prettyMs(durationMs)
   log(logs, THEME.dimWords(`(${timerName} completed in ${duration})`))
 }

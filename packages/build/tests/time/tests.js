@@ -16,10 +16,10 @@ test('Prints timings to --timersFile', async t => {
 
     const timerLines = await getTimerLines(timersFile)
 
-    timerLines.forEach(({ stageTag, durationMs }) => {
+    timerLines.forEach(({ stageTag, durationNs }) => {
       t.true(isDefinedString(stageTag))
-      t.true(isDefinedString(durationMs))
-      t.true(DURATION_REGEXP.test(durationMs))
+      t.true(isDefinedString(durationNs))
+      t.true(DURATION_REGEXP.test(durationNs))
     })
   } finally {
     await del(timersFile, { force: true })
@@ -69,6 +69,6 @@ const getTimerLines = async function(timersFile) {
 }
 
 const parseTimerLine = function(timerLine) {
-  const [stageTag, durationMs] = timerLine.split(' ')
-  return { stageTag, durationMs }
+  const [stageTag, durationNs] = timerLine.split(' ')
+  return { stageTag, durationNs }
 }
