@@ -1,3 +1,5 @@
+const { createTimer } = require('./main')
+
 // Some timers are computed based on others:
 //   - `run_plugins` is the sum of all plugins
 //   - each plugin timer is the sum of its event handlers
@@ -34,7 +36,7 @@ const getPluginPackages = function(pluginsTimers) {
 
 const getWholePluginTimer = function(pluginPackage, pluginsTimers) {
   const pluginTimers = pluginsTimers.filter(pluginTimer => getPluginTimerPackage(pluginTimer) === pluginPackage)
-  const wholePluginsTimer = createSumTimer(pluginTimers, pluginPackage)
+  const wholePluginsTimer = createSumTimer(pluginTimers, pluginPackage, RUN_PLUGINS_TAG)
   return wholePluginsTimer
 }
 
@@ -44,9 +46,10 @@ const getPluginTimerPackage = function({ tag }) {
 }
 
 // Creates a timer that sums up the duration of several others
-const createSumTimer = function(timers, tag) {
+const createSumTimer = function(timers, tag, parentTag) {
   const durationMs = computeTimersDuration(timers)
-  return { tag, durationMs }
+  const timer = createTimer(tag, durationMs, { parentTag })
+  return timer
 }
 
 const computeTimersDuration = function(timers) {
