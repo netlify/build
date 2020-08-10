@@ -1,15 +1,50 @@
-const { createTimer } = require('./main')
+const { createTimer, TOP_PARENT_TAG } = require('./main')
 
 // Some timers are computed based on others:
+//   - `others` is `total` minus the other timers
 //   - `run_plugins` is the sum of all plugins
 //   - each plugin timer is the sum of its event handlers
 const addAggregatedTimers = function(timers) {
+  const timersA = addPluginTimers(timers)
+  const timersB = addOthersTimers(timersA)
+  return timersB
+}
+
+// Having a `total` timer is redundant since the buildbot already measures this.
+// The buildbot measurement is better since it includes the time to load Node.
+// Instead, we only use `total` to measure what did not get `measureDuration()`.
+const addOthersTimers = function(timers) {
+  const totalTimer = timers.find(isTotalTimer)
+  const timersA = timers.filter(timer => !isTotalTimer(timer))
+  const topTimers = timersA.filter(isTopTimer)
+  const othersTimer = createOthersTimer(topTimers, totalTimer)
+  return [...timersA, othersTimer]
+}
+
+const isTotalTimer = function({ stageTag, parentTag }) {
+  return stageTag === 'total' && parentTag === 'build_site'
+}
+
+const isTopTimer = function({ parentTag }) {
+  return parentTag === TOP_PARENT_TAG
+}
+
+const createOthersTimer = function(topTimers, { durationMs: totalTimerDurationMs }) {
+  const topTimersDurationMs = computeTimersDuration(topTimers)
+  const otherTimersDurationMs = Math.max(0, totalTimerDurationMs - topTimersDurationMs)
+  const othersTimer = createTimer(OTHERS_STAGE_TAG, otherTimersDurationMs)
+  return othersTimer
+}
+
+const OTHERS_STAGE_TAG = 'others'
+
+const addPluginTimers = function(timers) {
   const pluginsTimers = timers.filter(isPluginTimer)
   if (pluginsTimers.length === 0) {
     return timers
   }
 
-  const runPluginsTimer = createSumTimer(pluginsTimers, RUN_PLUGINS_TAG)
+  const runPluginsTimer = createSumTimer(pluginsTimers, RUN_PLUGINS_STAGE_TAG)
   const wholePluginsTimers = getWholePluginsTimers(pluginsTimers)
   return [...timers, runPluginsTimer, ...wholePluginsTimers]
 }
@@ -19,7 +54,7 @@ const isPluginTimer = function({ category }) {
   return category === 'pluginEvent'
 }
 
-const RUN_PLUGINS_TAG = 'run_plugins'
+const RUN_PLUGINS_STAGE_TAG = 'run_plugins'
 
 // Retrieve one timer for each plugin, summing all its individual timers
 // (one per event handler)
@@ -35,7 +70,7 @@ const getPluginPackages = function(pluginsTimers) {
 
 const getWholePluginTimer = function(pluginPackage, pluginsTimers) {
   const pluginTimers = pluginsTimers.filter(pluginTimer => getPluginTimerPackage(pluginTimer) === pluginPackage)
-  const wholePluginsTimer = createSumTimer(pluginTimers, pluginPackage, RUN_PLUGINS_TAG)
+  const wholePluginsTimer = createSumTimer(pluginTimers, pluginPackage, RUN_PLUGINS_STAGE_TAG)
   return wholePluginsTimer
 }
 

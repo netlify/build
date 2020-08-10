@@ -53,7 +53,7 @@ const TIMINGS = [
   'load_plugins',
   'run_plugins',
   'build_command',
-  'total',
+  'others',
   'one',
   'two',
   'onBuild',
