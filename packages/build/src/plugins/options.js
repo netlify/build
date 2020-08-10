@@ -29,7 +29,7 @@ const tGetPluginsOptions = async function({
   return { pluginsOptions: pluginsOptionsB }
 }
 
-const getPluginsOptions = measureDuration(tGetPluginsOptions, 'run_netlify_build.get_plugins_options')
+const getPluginsOptions = measureDuration(tGetPluginsOptions, 'get_plugins_options')
 
 const addCoreProperties = function(corePlugin) {
   return { ...corePlugin, loadedFrom: 'core', origin: 'core' }

@@ -185,11 +185,11 @@ const shouldSkipCommand = function({ event, package, error, failedPlugins }) {
 // Wrap command function to measure its time
 const getFireCommand = function({ package, event }) {
   if (package === undefined) {
-    return measureDuration(tFireCommand, 'run_netlify_build.command')
+    return measureDuration(tFireCommand, 'build_command')
   }
 
   const parentTag = normalizeTimerName(package)
-  return measureDuration(tFireCommand, `${parentTag}.${event}`, parentTag)
+  return measureDuration(tFireCommand, event, { parentTag, category: 'pluginEvent' })
 }
 
 const tFireCommand = function({
