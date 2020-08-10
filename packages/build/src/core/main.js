@@ -42,7 +42,7 @@ const { normalizeFlags } = require('./flags')
  * @returns {string[]} buildResult.logs - When using the `buffer` option, all log messages
  */
 const build = async function(flags = {}) {
-  const { errorMonitor, mode, logs, testOpts, dry, telemetry, timersFile, ...flagsA } = startBuild(flags)
+  const { errorMonitor, mode, logs, testOpts, statsdOpts, dry, telemetry, ...flagsA } = startBuild(flags)
   const errorParams = { errorMonitor, mode, logs, testOpts }
 
   try {
@@ -64,9 +64,9 @@ const build = async function(flags = {}) {
       mode,
       logs,
       timers,
-      timersFile,
       durationNs,
       testOpts,
+      statsdOpts,
     })
     return { success: true, logs }
   } catch (error) {
@@ -360,9 +360,9 @@ const handleBuildSuccess = async function({
   mode,
   logs,
   timers,
-  timersFile,
   durationNs,
   testOpts,
+  statsdOpts,
 }) {
   if (dry) {
     return
@@ -371,7 +371,7 @@ const handleBuildSuccess = async function({
   logBuildSuccess(logs)
 
   logTimer(logs, durationNs, 'Netlify Build')
-  await reportTimers(timers, timersFile)
+  await reportTimers({ timers, statsdOpts })
   await trackBuildComplete({ commandsCount, netlifyConfig, durationNs, siteInfo, telemetry, mode, testOpts })
 }
 

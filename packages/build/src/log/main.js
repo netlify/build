@@ -40,7 +40,7 @@ const SECURE_FLAGS = ['token', 'bugsnagKey', 'env', 'cachedConfig', 'defaultConf
 // Hidden because those are used in tests
 const TEST_FLAGS = ['buffer', 'telemetry']
 // Hidden because those are only used internally
-const INTERNAL_FLAGS = ['nodePath', 'functionsDistDir', 'buildImagePluginsDir', 'sendStatus', 'timersFile']
+const INTERNAL_FLAGS = ['nodePath', 'functionsDistDir', 'buildImagePluginsDir', 'sendStatus', 'statsd']
 const HIDDEN_FLAGS = [...SECURE_FLAGS, ...TEST_FLAGS, ...INTERNAL_FLAGS]
 const HIDDEN_DEBUG_FLAGS = [...SECURE_FLAGS, ...TEST_FLAGS]
 

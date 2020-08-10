@@ -29,10 +29,15 @@ const kMeasureDuration = function(func, stageTag, { parentTag, category } = {}) 
 const measureDuration = keepFuncProps(kMeasureDuration)
 
 // Create a new object representing a completed timer
-const createTimer = function(stageTag, durationNs, { parentTag = TOP_PARENT_TAG, category } = {}) {
-  return { stageTag, parentTag, durationNs, category }
+const createTimer = function(
+  stageTag,
+  durationNs,
+  { metricName = DEFAULT_METRIC_NAME, parentTag = TOP_PARENT_TAG, category } = {},
+) {
+  return { metricName, stageTag, parentTag, durationNs, category }
 }
 
+const DEFAULT_METRIC_NAME = 'buildbot.build.stage.duration'
 const TOP_PARENT_TAG = 'run_netlify_build'
 
 // Make sure the timer name does not include special characters.

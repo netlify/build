@@ -115,12 +115,6 @@ Default: automatically guessed`,
 Default: none`,
     hidden: true,
   },
-  timersFile: {
-    string: true,
-    describe: `Path to the file recording timings.
-Default: none`,
-    hidden: true,
-  },
   telemetry: {
     boolean: true,
     describe: `Enable telemetry.
@@ -146,6 +140,20 @@ Default: true`,
   },
   testOpts: {
     describe: 'Options for testing only',
+    hidden: true,
+  },
+  statsd: {
+    describe: 'Statsd-related options, for performance measuring',
+    hidden: true,
+  },
+  'statsd.host': {
+    type: 'string',
+    describe: 'Statsd host',
+    hidden: true,
+  },
+  'statsd.port': {
+    type: 'number',
+    describe: 'Statsd port',
     hidden: true,
   },
   buffer: {

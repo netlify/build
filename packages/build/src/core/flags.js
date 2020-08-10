@@ -7,7 +7,11 @@ const { removeFalsy } = require('../utils/remove_falsy')
 const normalizeFlags = function(flags, logs) {
   const rawFlags = removeFalsy(flags)
   const defaultFlags = getDefaultFlags(rawFlags)
-  const mergedFlags = { ...defaultFlags, ...rawFlags }
+  const mergedFlags = {
+    ...defaultFlags,
+    ...rawFlags,
+    statsdOpts: { ...defaultFlags.statsd, ...rawFlags.statsd },
+  }
   const normalizedFlags = removeFalsy(mergedFlags)
 
   logFlags(logs, rawFlags, normalizedFlags)
@@ -30,9 +34,11 @@ const getDefaultFlags = function({ env: envOpt = {} }) {
     telemetry: !combinedEnv.BUILD_TELEMETRY_DISABLED,
     sendStatus: false,
     testOpts: {},
+    statsd: { port: DEFAULT_STATSD_PORT },
   }
 }
 
 const DEFAULT_FUNCTIONS_DIST = '.netlify/functions/'
+const DEFAULT_STATSD_PORT = 8125
 
 module.exports = { normalizeFlags }
