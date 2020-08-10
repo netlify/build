@@ -2,4 +2,7 @@
 command = "node --version"
 
 [[plugins]]
-package = "./plugin"
+package = "./one"
+
+[[plugins]]
+package = "./two"

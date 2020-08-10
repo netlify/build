@@ -1,6 +1,8 @@
 const { appendFile } = require('fs')
 const { promisify } = require('util')
 
+const { addAggregatedTimers } = require('./aggregate')
+
 const pAppendFile = promisify(appendFile)
 
 // Record the duration of a build phase, for monitoring.
@@ -12,7 +14,8 @@ const reportTimers = async function(timers, timersFile) {
     return
   }
 
-  const timersLines = timers.map(getTimerLine).join('')
+  const timersA = addAggregatedTimers(timers)
+  const timersLines = timersA.map(getTimerLine).join('')
   await pAppendFile(timersFile, timersLines)
 }
 

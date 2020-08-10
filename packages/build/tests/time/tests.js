@@ -51,9 +51,13 @@ const TIMINGS = [
   'run_netlify_build.get_plugins_options',
   'run_netlify_build.start_plugins',
   'run_netlify_build.load_plugins',
+  'run_netlify_build.run_plugins',
   'run_netlify_build.command',
   'run_netlify_build.total',
-  'plugin.onBuild',
+  'one',
+  'one.onBuild',
+  'two.onBuild',
+  'two.onPostBuild',
 ]
 
 const getTimerLines = async function(timersFile) {
