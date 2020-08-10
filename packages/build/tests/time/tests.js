@@ -47,17 +47,17 @@ test('Prints all timings', async t => {
 })
 
 const TIMINGS = [
-  'run_netlify_build.resolve_config',
-  'run_netlify_build.get_plugins_options',
-  'run_netlify_build.start_plugins',
-  'run_netlify_build.load_plugins',
-  'run_netlify_build.run_plugins',
-  'run_netlify_build.command',
-  'run_netlify_build.total',
+  'resolve_config',
+  'get_plugins_options',
+  'start_plugins',
+  'load_plugins',
+  'run_plugins',
+  'build_command',
+  'total',
   'one',
-  'one.onBuild',
-  'two.onBuild',
-  'two.onPostBuild',
+  'two',
+  'onBuild',
+  'onPostBuild',
 ]
 
 const getTimerLines = async function(timersFile) {

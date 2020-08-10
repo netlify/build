@@ -15,7 +15,7 @@ const tLoadPlugins = async function({ pluginsOptions, childProcesses, netlifyCon
   return { pluginsCommands: pluginsCommandsA }
 }
 
-const loadPlugins = measureDuration(tLoadPlugins, 'run_netlify_build.load_plugins')
+const loadPlugins = measureDuration(tLoadPlugins, 'load_plugins')
 
 // Retrieve plugin commands for one plugin.
 // Do it by executing the plugin `load` event handler.

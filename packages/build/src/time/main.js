@@ -14,12 +14,12 @@ const initTimers = function() {
 //   - return a plain object. This may or may not contain a modified `timers`.
 // The `durationMs` will be returned by the function. A new `timers` with the
 // additional duration timer will be returned as well.
-const kMeasureDuration = function(func, stageTag, parentTag) {
+const kMeasureDuration = function(func, stageTag, { parentTag, category } = {}) {
   return async function({ timers, ...opts }, ...args) {
     const timerMs = startTimer()
     const { timers: timersA = timers, ...returnObject } = await func({ timers, ...opts }, ...args)
     const durationMs = endTimer(timerMs)
-    const timer = createTimer(stageTag, durationMs, { parentTag })
+    const timer = createTimer(stageTag, durationMs, { parentTag, category })
     const timersB = [...timersA, timer]
     return { ...returnObject, timers: timersB, durationMs }
   }
@@ -29,8 +29,8 @@ const kMeasureDuration = function(func, stageTag, parentTag) {
 const measureDuration = keepFuncProps(kMeasureDuration)
 
 // Create a new object representing a completed timer
-const createTimer = function(stageTag, durationMs, { parentTag = DEFAULT_PARENT_TAG } = {}) {
-  return { stageTag, parentTag, durationMs }
+const createTimer = function(stageTag, durationMs, { parentTag = DEFAULT_PARENT_TAG, category } = {}) {
+  return { stageTag, parentTag, durationMs, category }
 }
 
 const DEFAULT_PARENT_TAG = 'run_netlify_build'
