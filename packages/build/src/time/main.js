@@ -29,11 +29,11 @@ const kMeasureDuration = function(func, stageTag, { parentTag, category } = {}) 
 const measureDuration = keepFuncProps(kMeasureDuration)
 
 // Create a new object representing a completed timer
-const createTimer = function(stageTag, durationMs, { parentTag = DEFAULT_PARENT_TAG, category } = {}) {
+const createTimer = function(stageTag, durationMs, { parentTag = TOP_PARENT_TAG, category } = {}) {
   return { stageTag, parentTag, durationMs, category }
 }
 
-const DEFAULT_PARENT_TAG = 'run_netlify_build'
+const TOP_PARENT_TAG = 'run_netlify_build'
 
 // Make sure the timer name does not include special characters.
 // For example, the `package` of local plugins includes dots.
@@ -41,4 +41,4 @@ const normalizeTimerName = function(name) {
   return slugify(name, { separator: '_' })
 }
 
-module.exports = { initTimers, measureDuration, normalizeTimerName, createTimer }
+module.exports = { initTimers, measureDuration, normalizeTimerName, createTimer, TOP_PARENT_TAG }
