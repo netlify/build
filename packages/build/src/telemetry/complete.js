@@ -4,6 +4,7 @@ const isCI = require('is-ci')
 const osName = require('os-name')
 
 const { version } = require('../../package.json')
+const { roundTimerToMillisecs } = require('../time/measure')
 
 const { analytics } = require('./track')
 
@@ -11,18 +12,19 @@ const { analytics } = require('./track')
 const trackBuildComplete = async function({
   commandsCount,
   netlifyConfig,
-  durationMs,
+  durationNs,
   siteInfo,
   telemetry,
   mode,
   testOpts,
 }) {
-  const payload = getPayload({ commandsCount, netlifyConfig, durationMs, siteInfo, mode })
+  const payload = getPayload({ commandsCount, netlifyConfig, durationNs, siteInfo, mode })
   await analytics.track('netlifyCI:buildComplete', { payload, telemetry, testOpts })
 }
 
 // Retrieve telemetry information
-const getPayload = function({ commandsCount, netlifyConfig, durationMs, siteInfo: { id: siteId }, mode }) {
+const getPayload = function({ commandsCount, netlifyConfig, durationNs, siteInfo: { id: siteId }, mode }) {
+  const durationMs = roundTimerToMillisecs(durationNs)
   const plugins = Object.values(netlifyConfig.plugins).map(getPluginPackage)
   return {
     steps: commandsCount,

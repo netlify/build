@@ -2,6 +2,7 @@ const { appendFile } = require('fs')
 const { promisify } = require('util')
 
 const { addAggregatedTimers } = require('./aggregate')
+const { roundTimerToMillisecs } = require('./measure')
 
 const pAppendFile = promisify(appendFile)
 
@@ -19,7 +20,8 @@ const reportTimers = async function(timers, timersFile) {
   await pAppendFile(timersFile, timersLines)
 }
 
-const getTimerLine = function({ stageTag, durationMs }) {
+const getTimerLine = function({ stageTag, durationNs }) {
+  const durationMs = roundTimerToMillisecs(durationNs)
   return `${stageTag} ${durationMs}ms\n`
 }
 

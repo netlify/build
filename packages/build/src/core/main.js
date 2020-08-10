@@ -46,7 +46,7 @@ const build = async function(flags = {}) {
   const errorParams = { errorMonitor, mode, logs, testOpts }
 
   try {
-    const { netlifyConfig, siteInfo, commandsCount, timers, durationMs } = await execBuild({
+    const { netlifyConfig, siteInfo, commandsCount, timers, durationNs } = await execBuild({
       ...flagsA,
       dry,
       errorMonitor,
@@ -65,7 +65,7 @@ const build = async function(flags = {}) {
       logs,
       timers,
       timersFile,
-      durationMs,
+      durationNs,
       testOpts,
     })
     return { success: true, logs }
@@ -361,7 +361,7 @@ const handleBuildSuccess = async function({
   logs,
   timers,
   timersFile,
-  durationMs,
+  durationNs,
   testOpts,
 }) {
   if (dry) {
@@ -370,9 +370,9 @@ const handleBuildSuccess = async function({
 
   logBuildSuccess(logs)
 
-  logTimer(logs, durationMs, 'Netlify Build')
+  logTimer(logs, durationNs, 'Netlify Build')
   await reportTimers(timers, timersFile)
-  await trackBuildComplete({ commandsCount, netlifyConfig, durationMs, siteInfo, telemetry, mode, testOpts })
+  await trackBuildComplete({ commandsCount, netlifyConfig, durationNs, siteInfo, telemetry, mode, testOpts })
 }
 
 module.exports = build

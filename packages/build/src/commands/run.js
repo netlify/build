@@ -129,7 +129,7 @@ const runCommand = async function({
   logCommand({ logs, event, buildCommandOrigin, package, index, error })
 
   const fireCommand = getFireCommand({ package, event })
-  const { newEnvChanges, newError, newStatus, timers: timersA, durationMs } = await fireCommand({
+  const { newEnvChanges, newError, newStatus, timers: timersA, durationNs } = await fireCommand({
     event,
     childProcess,
     package,
@@ -164,7 +164,7 @@ const runCommand = async function({
     netlifyConfig,
     logs,
     timers: timersA,
-    durationMs,
+    durationNs,
     testOpts,
   })
   return { ...newValues, newIndex: index + 1 }
@@ -252,7 +252,7 @@ const getNewValues = function({
   netlifyConfig,
   logs,
   timers,
-  durationMs,
+  durationNs,
   testOpts,
 }) {
   if (newError !== undefined) {
@@ -273,7 +273,7 @@ const getNewValues = function({
   logCommandSuccess(logs)
 
   const timerName = package === undefined ? 'build.command' : `${package} ${event}`
-  logTimer(logs, durationMs, timerName)
+  logTimer(logs, durationNs, timerName)
 
   return { newEnvChanges, newStatus, timers }
 }

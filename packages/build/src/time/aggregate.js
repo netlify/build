@@ -29,10 +29,10 @@ const isTopTimer = function({ parentTag }) {
   return parentTag === TOP_PARENT_TAG
 }
 
-const createOthersTimer = function(topTimers, { durationMs: totalTimerDurationMs }) {
-  const topTimersDurationMs = computeTimersDuration(topTimers)
-  const otherTimersDurationMs = Math.max(0, totalTimerDurationMs - topTimersDurationMs)
-  const othersTimer = createTimer(OTHERS_STAGE_TAG, otherTimersDurationMs)
+const createOthersTimer = function(topTimers, { durationNs: totalTimerDurationNs }) {
+  const topTimersDurationNs = computeTimersDuration(topTimers)
+  const otherTimersDurationNs = Math.max(0, totalTimerDurationNs - topTimersDurationNs)
+  const othersTimer = createTimer(OTHERS_STAGE_TAG, otherTimersDurationNs)
   return othersTimer
 }
 
@@ -80,8 +80,8 @@ const getPluginTimerPackage = function({ parentTag }) {
 
 // Creates a timer that sums up the duration of several others
 const createSumTimer = function(timers, stageTag, parentTag) {
-  const durationMs = computeTimersDuration(timers)
-  const timer = createTimer(stageTag, durationMs, { parentTag })
+  const durationNs = computeTimersDuration(timers)
+  const timer = createTimer(stageTag, durationNs, { parentTag })
   return timer
 }
 
@@ -89,8 +89,8 @@ const computeTimersDuration = function(timers) {
   return timers.map(getTimerDuration).reduce(reduceSum, 0)
 }
 
-const getTimerDuration = function({ durationMs }) {
-  return durationMs
+const getTimerDuration = function({ durationNs }) {
+  return durationNs
 }
 
 const reduceSum = function(sum, number) {
