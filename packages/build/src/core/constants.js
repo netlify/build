@@ -61,7 +61,7 @@ const getConstants = async function({
 // Instead of passing absolute paths, we pass paths relative to `buildDir`, so
 // that logs are less verbose.
 const normalizePath = function(path, buildDir, key) {
-  if (path === undefined || NOT_PATHS.includes(key)) {
+  if (path === undefined || !CONSTANT_PATHS.includes(key)) {
     return path
   }
 
@@ -74,6 +74,6 @@ const normalizePath = function(path, buildDir, key) {
   return pathA
 }
 
-const NOT_PATHS = ['IS_LOCAL', 'NETLIFY_BUILD_VERSION', 'SITE_ID']
+const CONSTANT_PATHS = ['CONFIG_PATH', 'PUBLISH_DIR', 'FUNCTIONS_SRC', 'FUNCTIONS_DIST', 'CACHE_DIR']
 
 module.exports = { getConstants }
