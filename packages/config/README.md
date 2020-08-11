@@ -24,7 +24,7 @@ _Return value_: `Promise<object>`
 ```js
 const getNetlifyConfig = require('@netlify/config')
 
-const { config, configPath, buildDir, context, branch, siteInfo } = await getNetlifyConfig(options)
+const { config, configPath, buildDir, context, branch, token, siteInfo } = await getNetlifyConfig(options)
 /*
   {
     "config": {
@@ -78,7 +78,8 @@ const { config, configPath, buildDir, context, branch, siteInfo } = await getNet
         "base": "",
       },
       ...
-    }
+    },
+    "token": "564194bc-12cd-511a-037a-be4c734f17c4"
   }
 */
 ```
@@ -262,6 +263,13 @@ in the Netlify App: plugins, Build command, Publish directory, Functions directo
 variables.
 
 This might not be available depending on the options passed.
+
+#### token
+
+_Type_: `string`
+
+Netlify API token. This takes into account the [`token`](#token) option but also some Netlify-specific environment
+variables.
 
 #### api
 

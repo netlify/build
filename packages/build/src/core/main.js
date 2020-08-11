@@ -116,7 +116,16 @@ const tExecBuild = async function({
   timers,
   sendStatus,
 }) {
-  const { netlifyConfig, configPath, buildDir, childEnv, api, siteInfo, timers: timersA } = await loadConfig({
+  const {
+    netlifyConfig,
+    configPath,
+    buildDir,
+    childEnv,
+    token: tokenA,
+    api,
+    siteInfo,
+    timers: timersA,
+  } = await loadConfig({
     config,
     defaultConfig,
     cachedConfig,
@@ -148,6 +157,7 @@ const tExecBuild = async function({
     dry,
     siteInfo,
     mode,
+    token: tokenA,
     api,
     errorMonitor,
     deployId,
@@ -173,6 +183,7 @@ const runAndReportBuild = async function({
   dry,
   siteInfo,
   mode,
+  token,
   api,
   errorMonitor,
   deployId,
@@ -193,6 +204,7 @@ const runAndReportBuild = async function({
       dry,
       siteInfo,
       mode,
+      token,
       api,
       errorMonitor,
       deployId,
@@ -244,6 +256,7 @@ const initAndRunBuild = async function({
   dry,
   siteInfo,
   mode,
+  token,
   api,
   errorMonitor,
   deployId,
@@ -251,7 +264,7 @@ const initAndRunBuild = async function({
   timers,
   testOpts,
 }) {
-  const constants = await getConstants({ configPath, buildDir, functionsDistDir, netlifyConfig, siteInfo, mode })
+  const constants = await getConstants({ configPath, buildDir, functionsDistDir, netlifyConfig, siteInfo, token, mode })
 
   const { pluginsOptions, timers: timersA } = await getPluginsOptions({
     netlifyConfig,

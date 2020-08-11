@@ -14,6 +14,7 @@ const getConstants = async function({
     build: { publish = buildDir, functions },
   },
   siteInfo: { id: siteId },
+  token,
   mode,
 }) {
   const isLocal = mode !== 'buildbot'
@@ -52,6 +53,10 @@ const getConstants = async function({
      * The Netlify Site ID
      */
     SITE_ID: siteId,
+    /**
+     * The Netlify API access token
+     */
+    NETLIFY_API_TOKEN: token,
   }
   const constantsA = mapObj(constants, (key, path) => [key, normalizePath(path, buildDir, key)])
   return constantsA

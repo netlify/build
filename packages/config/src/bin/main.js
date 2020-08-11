@@ -2,6 +2,7 @@
 const process = require('process')
 
 const { stableStringify } = require('fast-safe-stringify')
+const omit = require('omit.js').default
 
 require('../utils/polyfills')
 
@@ -24,8 +25,9 @@ const runCli = async function() {
 // The result is printed as JSON on stdout on success (exit code 0)
 const handleCliSuccess = function(result, stable) {
   const resultA = serializeApi(result)
+  const resultB = omit(resultA, SECRET_PROPERTIES)
   const stringifyFunc = stable ? stableStringify : JSON.stringify
-  const resultJson = stringifyFunc(resultA, null, 2)
+  const resultJson = stringifyFunc(resultB, null, 2)
   console.log(resultJson)
   process.exitCode = 0
 }
@@ -39,6 +41,8 @@ const serializeApi = function({ api, ...result }) {
 
   return { ...result, hasApi: true }
 }
+
+const SECRET_PROPERTIES = ['token']
 
 const handleCliError = function(error) {
   // Errors caused by users do not show stack traces and have exit code 1
