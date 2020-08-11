@@ -31,6 +31,7 @@ const tLoadConfig = async function({
     config: netlifyConfig,
     context: contextA,
     branch: branchA,
+    token: tokenA,
     api,
     siteInfo,
   } = await resolveFullConfig({
@@ -61,7 +62,7 @@ const tLoadConfig = async function({
     envOpt,
     mode,
   })
-  return { netlifyConfig, configPath, buildDir, childEnv, api: apiA, siteInfo }
+  return { netlifyConfig, configPath, buildDir, childEnv, token: tokenA, api: apiA, siteInfo }
 }
 
 const loadConfig = measureDuration(tLoadConfig, 'resolve_config')

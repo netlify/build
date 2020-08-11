@@ -72,6 +72,10 @@ test('constants.NETLIFY_BUILD_VERSION', async t => {
   await runFixture(t, 'netlify_build_version')
 })
 
+test('constants.NETLIFY_API_TOKEN', async t => {
+  await runFixture(t, 'netlify_api_token', { flags: { token: 'test' } })
+})
+
 test('Functions: simple setup', async t => {
   await removeDir(`${FIXTURES_DIR}/simple/.netlify/functions/`)
   await runFixture(t, 'simple')

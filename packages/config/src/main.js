@@ -50,6 +50,7 @@ const resolveConfig = async function(opts) {
     branch,
     siteId,
     baseRelDir,
+    token,
     mode,
     debug,
     logs,
@@ -80,7 +81,7 @@ const resolveConfig = async function(opts) {
 
   const { config: configA, buildDir } = await handleFiles({ config, repositoryRoot, baseRelDir: baseRelDirA })
 
-  const result = { siteInfo, configPath, buildDir, config: configA, context, branch, api, logs }
+  const result = { siteInfo, configPath, buildDir, config: configA, context, branch, token, api, logs }
   logResult(result, { logs, debug })
   return result
 }

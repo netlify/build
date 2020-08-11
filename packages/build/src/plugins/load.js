@@ -25,12 +25,13 @@ const loadPlugin = async function(
 ) {
   const { childProcess } = childProcesses[index]
   const event = 'load'
+  const constantsA = cleanConstants(constants, loadedFrom)
 
   try {
     const { pluginCommands } = await callChild(
       childProcess,
       'load',
-      { pluginPath, inputs, netlifyConfig, constants },
+      { pluginPath, inputs, netlifyConfig, constants: constantsA },
       { plugin: { package, pluginPackageJson }, location: { event, package, loadedFrom, origin } },
     )
     const pluginCommandsA = pluginCommands.map(({ event }) => ({
@@ -46,6 +47,15 @@ const loadPlugin = async function(
     const errorA = addPluginLoadErrorStatus({ error, package, version })
     throw errorA
   }
+}
+
+// Only core plugins can use `constants.NETLIFY_API_TOKEN` at the moment
+const cleanConstants = function({ NETLIFY_API_TOKEN, ...constants }, loadedFrom) {
+  if (loadedFrom !== 'core') {
+    return constants
+  }
+
+  return { ...constants, NETLIFY_API_TOKEN }
 }
 
 module.exports = { loadPlugins }
