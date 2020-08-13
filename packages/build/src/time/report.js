@@ -9,18 +9,18 @@ const pSetTimeout = promisify(setTimeout)
 
 // Record the duration of a build phase, for monitoring.
 // Sends to statsd daemon.
-const reportTimers = async function({ timers, statsdOpts: { host, port } }) {
+const reportTimers = async function({ timers, statsdOpts: { host, port }, framework }) {
   if (host === undefined) {
     return
   }
 
   const timersA = addAggregatedTimers(timers)
-  await sendTimers(timersA, host, port)
+  await sendTimers({ timers: timersA, host, port, framework })
 }
 
-const sendTimers = async function(timers, host, port) {
+const sendTimers = async function({ timers, host, port, framework }) {
   const client = await startClient(host, port)
-  timers.forEach(timer => sendTimer(timer, client))
+  timers.forEach(timer => sendTimer({ timer, client, framework }))
   await closeClient(client)
 }
 
@@ -34,9 +34,10 @@ const startClient = async function(host, port) {
   return client
 }
 
-const sendTimer = function({ metricName, stageTag, parentTag, durationNs }, client) {
+const sendTimer = function({ timer: { metricName, stageTag, parentTag, durationNs }, client, framework }) {
   const durationMs = roundTimerToMillisecs(durationNs)
-  client.timing(metricName, durationMs, { stage: stageTag, parent: parentTag })
+  const frameworkTag = framework === undefined ? {} : { framework }
+  client.timing(metricName, durationMs, { stage: stageTag, parent: parentTag, ...frameworkTag })
 }
 
 // UDP packets are buffered and flushed at regular intervals by statsd-client.

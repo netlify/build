@@ -84,6 +84,11 @@ Default: 'production'`,
     describe: `Repository branch.
 Default: automatically guessed`,
   },
+  framework: {
+    string: true,
+    describe: 'Front-end framework.',
+    hidden: true,
+  },
   baseRelDir: {
     boolean: true,
     describe: `Feature flag meant for backward compatibility.
