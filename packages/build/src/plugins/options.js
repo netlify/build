@@ -20,8 +20,10 @@ const tGetPluginsOptions = async function({
   logs,
   debug,
 }) {
-  const corePlugins = getCorePlugins({ constants }).map(addCoreProperties)
-  const allCorePlugins = corePlugins.filter(corePlugin => !isOptionalCore(corePlugin, plugins))
+  const corePlugins = await getCorePlugins({ constants, buildDir, plugins })
+  const allCorePlugins = corePlugins
+    .map(corePlugin => addCoreProperties(corePlugin, plugins))
+    .filter(corePlugin => !isOptionalCore(corePlugin, plugins))
   const userPlugins = plugins.filter(isUserPlugin)
   const pluginsOptions = [...allCorePlugins, ...userPlugins].map(normalizePluginOptions)
   const pluginsOptionsA = await resolvePluginsPath({ pluginsOptions, buildDir, mode, logs, buildImagePluginsDir })
@@ -34,8 +36,19 @@ const tGetPluginsOptions = async function({
 
 const getPluginsOptions = measureDuration(tGetPluginsOptions, 'get_plugins_options')
 
-const addCoreProperties = function(corePlugin) {
-  return { ...corePlugin, loadedFrom: 'core', origin: 'core' }
+const addCoreProperties = function(corePlugin, plugins) {
+  const inputs = getCorePluginInputs(corePlugin, plugins)
+  return { ...corePlugin, inputs, loadedFrom: 'core', origin: 'core' }
+}
+
+// Core plugins can get inputs too
+const getCorePluginInputs = function(corePlugin, plugins) {
+  const configuredCorePlugin = plugins.find(plugin => plugin.package === corePlugin.package)
+  if (configuredCorePlugin === undefined) {
+    return {}
+  }
+
+  return configuredCorePlugin.inputs
 }
 
 // Optional core plugins requires user opt-in
