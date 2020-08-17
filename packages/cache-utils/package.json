@@ -49,7 +49,7 @@
     "array-flat-polyfill": "^1.0.1",
     "cpy": "^8.1.0",
     "del": "^5.1.0",
-    "get-stream": "^5.1.0",
+    "get-stream": "^6.0.0",
     "global-cache-dir": "^1.0.1",
     "globby": "^10.0.2",
     "locate-path": "^5.0.0",
