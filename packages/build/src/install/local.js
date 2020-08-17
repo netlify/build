@@ -32,10 +32,10 @@ const installLocalPluginsDependencies = async function({ plugins, pluginsOptions
 }
 
 const isLocalInstallOptIn = function({ package }) {
-  return package === LOCAL_INSTALL_NAME
+  return package === LOCAL_INSTALL_PLUGIN_NAME
 }
 
-const LOCAL_INSTALL_NAME = '@netlify/plugin-local-install-core'
+const LOCAL_INSTALL_PLUGIN_NAME = '@netlify/plugin-local-install-core'
 
 // Core plugins and non-local plugins already have their dependencies installed
 const getLocalPluginsOptions = function(pluginsOptions) {
@@ -64,4 +64,4 @@ const removeMainRoot = async function(localPluginsOptions, buildDir) {
   return localPluginsOptions.filter(({ packageDir }) => packageDir !== mainPackageDir)
 }
 
-module.exports = { installLocalPluginsDependencies, LOCAL_INSTALL_NAME }
+module.exports = { installLocalPluginsDependencies, LOCAL_INSTALL_PLUGIN_NAME }

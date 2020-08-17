@@ -2,7 +2,7 @@ const { dirname } = require('path')
 
 const corePackageJson = require('../../package.json')
 const { installLocalPluginsDependencies } = require('../install/local')
-const { getCorePlugins, CORE_PLUGINS, EARLY_CORE_PLUGINS } = require('../plugins_core/main')
+const { getCorePlugins, isCorePlugin } = require('../plugins_core/main')
 const { measureDuration } = require('../time/main')
 const { getPackageJson } = require('../utils/package')
 
@@ -14,12 +14,12 @@ const { resolvePluginsPath } = require('./resolve')
 const tGetPluginsOptions = async function({
   netlifyConfig: { plugins },
   buildDir,
-  constants: { FUNCTIONS_SRC },
+  constants,
   mode,
   buildImagePluginsDir,
   logs,
 }) {
-  const corePlugins = getCorePlugins(FUNCTIONS_SRC).map(addCoreProperties)
+  const corePlugins = getCorePlugins({ constants }).map(addCoreProperties)
   const allCorePlugins = corePlugins.filter(corePlugin => !isOptionalCore(corePlugin, plugins))
   const userPlugins = plugins.filter(isUserPlugin)
   const pluginsOptions = [...allCorePlugins, ...userPlugins].map(normalizePluginOptions)
@@ -41,7 +41,7 @@ const isOptionalCore = function({ package, optional }, plugins) {
 }
 
 const isUserPlugin = function({ package }) {
-  return !CORE_PLUGINS.includes(package) && !EARLY_CORE_PLUGINS.includes(package)
+  return !isCorePlugin(package)
 }
 
 const normalizePluginOptions = function({ package, pluginPath, loadedFrom, origin, inputs }) {
