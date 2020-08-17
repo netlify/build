@@ -52,7 +52,7 @@
     "get-stream": "^5.1.0",
     "global-cache-dir": "^1.0.1",
     "globby": "^10.0.2",
-    "locate-path": "^5.0.0",
+    "locate-path": "^6.0.0",
     "move-file": "^1.2.0",
     "path-exists": "^4.0.0",
     "readdirp": "^3.4.0"
