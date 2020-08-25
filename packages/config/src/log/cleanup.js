@@ -10,11 +10,12 @@ const cleanupConfig = function({
   headers,
   plugins = [],
   redirects,
+  baseRelDir,
 }) {
   const environmentA = cleanupEnvironment(environment)
   const build = { base, command, commandOrigin, environment: environmentA, functions, ignore, processing, publish }
   const pluginsA = plugins.map(cleanupPlugin)
-  const netlifyConfig = simplifyConfig({ build, plugins: pluginsA, headers, redirects })
+  const netlifyConfig = simplifyConfig({ build, plugins: pluginsA, headers, redirects, baseRelDir })
   return netlifyConfig
 }
 
