@@ -53,13 +53,13 @@
     "global-cache-dir": "^1.0.1",
     "globby": "^10.0.2",
     "locate-path": "^5.0.0",
+    "make-dir": "^3.1.0",
     "move-file": "^1.2.0",
     "path-exists": "^4.0.0",
     "readdirp": "^3.4.0"
   },
   "devDependencies": {
     "ava": "^2.4.0",
-    "make-dir": "^3.1.0",
     "tmp-promise": "^3.0.0"
   },
   "engines": {

@@ -1,7 +1,9 @@
 const { writeFile, readFile } = require('fs')
+const { dirname } = require('path')
 const { promisify } = require('util')
 
 const del = require('del')
+const makeDir = require('make-dir')
 const pathExists = require('path-exists')
 
 const { getExpires, checkExpires } = require('./expire')
@@ -34,6 +36,7 @@ const isIdentical = async function({ hash, manifestPath, manifestString }) {
 
 // Persist the cache manifest to filesystem
 const writeManifest = async function({ manifestPath, manifestString }) {
+  await makeDir(dirname(manifestPath))
   await pWriteFile(manifestPath, manifestString)
 }
 
