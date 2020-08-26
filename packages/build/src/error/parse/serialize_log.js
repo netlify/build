@@ -3,10 +3,11 @@ const { THEME } = require('../../log/theme')
 const { parseError } = require('./parse')
 
 // Serialize an error object into a title|body string to print in logs
-const serializeLogError = function(error) {
+const serializeLogError = function(error, { debug }) {
   const { title, message, pluginInfo, locationInfo, errorProps, isSuccess } = parseError({
     error,
     colors: true,
+    debug,
   })
   const body = getBody({ message, pluginInfo, locationInfo, errorProps, isSuccess })
   return { title, body, isSuccess }

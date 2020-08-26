@@ -57,8 +57,8 @@ const canOverrideStatus = function(formerStatus, newStatus) {
 }
 
 // Errors that happen during plugin loads should be reported as error statuses
-const addPluginLoadErrorStatus = function({ error, package, version }) {
-  const errorStatus = serializeErrorStatus(error)
+const addPluginLoadErrorStatus = function({ error, package, version, debug }) {
+  const errorStatus = serializeErrorStatus(error, { debug })
   const statuses = [{ ...errorStatus, event: 'load', package, version }]
   addErrorInfo(error, { statuses })
   return error

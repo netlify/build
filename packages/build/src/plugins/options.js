@@ -18,13 +18,16 @@ const tGetPluginsOptions = async function({
   mode,
   buildImagePluginsDir,
   logs,
+  debug,
 }) {
   const corePlugins = getCorePlugins({ constants }).map(addCoreProperties)
   const allCorePlugins = corePlugins.filter(corePlugin => !isOptionalCore(corePlugin, plugins))
   const userPlugins = plugins.filter(isUserPlugin)
   const pluginsOptions = [...allCorePlugins, ...userPlugins].map(normalizePluginOptions)
   const pluginsOptionsA = await resolvePluginsPath({ pluginsOptions, buildDir, mode, logs, buildImagePluginsDir })
-  const pluginsOptionsB = await Promise.all(pluginsOptionsA.map(loadPluginFiles))
+  const pluginsOptionsB = await Promise.all(
+    pluginsOptionsA.map(pluginOptions => loadPluginFiles({ pluginOptions, debug })),
+  )
   await installLocalPluginsDependencies({ plugins, pluginsOptions: pluginsOptionsB, buildDir, mode, logs })
   return { pluginsOptions: pluginsOptionsB }
 }
@@ -50,10 +53,10 @@ const normalizePluginOptions = function({ package, pluginPath, loadedFrom, origi
 
 // Retrieve plugin's main file path.
 // Then load plugin's `package.json` and `manifest.yml`.
-const loadPluginFiles = async function({ pluginPath, ...pluginOptions }) {
+const loadPluginFiles = async function({ pluginOptions: { pluginPath, ...pluginOptions }, debug }) {
   const pluginDir = dirname(pluginPath)
   const { packageDir, packageJson: pluginPackageJson } = await getPackageJson(pluginDir)
-  const inputs = await useManifest(pluginOptions, { pluginDir, packageDir, pluginPackageJson })
+  const inputs = await useManifest(pluginOptions, { pluginDir, packageDir, pluginPackageJson, debug })
   return { ...pluginOptions, pluginPath, pluginDir, packageDir, pluginPackageJson, inputs }
 }
 

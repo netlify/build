@@ -8,7 +8,7 @@ const { getErrorProps } = require('./properties')
 const { getStackInfo } = require('./stack')
 
 // Parse all error information into a normalized sets of properties
-const parseError = function({ error, colors }) {
+const parseError = function({ error, colors, debug }) {
   const {
     message,
     stack,
@@ -26,7 +26,7 @@ const parseError = function({ error, colors }) {
 
   const titleA = getTitle(title, errorInfo)
 
-  const { message: messageA, stack: stackA } = getStackInfo({ message, stack, stackType, rawStack, isSuccess })
+  const { message: messageA, stack: stackA } = getStackInfo({ message, stack, stackType, rawStack, isSuccess, debug })
 
   const pluginInfo = getPluginInfo(plugin, location)
   const locationInfo = getLocationInfo({ stack: stackA, location, locationType })

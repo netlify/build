@@ -10,13 +10,13 @@ const { removeErrorColors } = require('./colors')
 const { reportBuildError } = require('./monitor/report')
 
 // Logs and reports a build failure
-const handleBuildError = async function(error, { errorMonitor, netlifyConfig, childEnv, mode, logs, testOpts }) {
+const handleBuildError = async function(error, { errorMonitor, netlifyConfig, childEnv, mode, logs, debug, testOpts }) {
   if (await isCancelCrash(error)) {
     return
   }
 
   removeErrorColors(error)
-  logBuildError({ error, netlifyConfig, mode, logs, testOpts })
+  logBuildError({ error, netlifyConfig, mode, logs, debug, testOpts })
   logOldCliVersionError({ mode, testOpts })
   await reportBuildError({ error, errorMonitor, childEnv, logs, testOpts })
 }

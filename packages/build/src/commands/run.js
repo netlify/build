@@ -28,6 +28,7 @@ const runCommands = async function({
   deployId,
   netlifyConfig,
   logs,
+  debug,
   timers,
   testOpts,
 }) {
@@ -68,6 +69,7 @@ const runCommands = async function({
         failedPlugins,
         netlifyConfig,
         logs,
+        debug,
         timers: timersA,
         testOpts,
       })
@@ -119,6 +121,7 @@ const runCommand = async function({
   failedPlugins,
   netlifyConfig,
   logs,
+  debug,
   timers,
   testOpts,
 }) {
@@ -163,6 +166,7 @@ const runCommand = async function({
     deployId,
     netlifyConfig,
     logs,
+    debug,
     timers: timersA,
     durationNs,
     testOpts,
@@ -251,6 +255,7 @@ const getNewValues = function({
   deployId,
   netlifyConfig,
   logs,
+  debug,
   timers,
   durationNs,
   testOpts,
@@ -266,6 +271,7 @@ const getNewValues = function({
       buildCommand,
       netlifyConfig,
       logs,
+      debug,
       testOpts,
     })
   }

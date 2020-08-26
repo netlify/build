@@ -13,6 +13,7 @@ const reportStatuses = async function({
   errorMonitor,
   deployId,
   logs,
+  debug,
   sendStatus,
   testOpts,
 }) {
@@ -31,6 +32,7 @@ const reportStatuses = async function({
     errorMonitor,
     deployId,
     logs,
+    debug,
     sendStatus,
     testOpts,
   })
@@ -66,6 +68,7 @@ const sendApiStatuses = async function({
   errorMonitor,
   deployId,
   logs,
+  debug,
   sendStatus,
   testOpts,
 }) {
@@ -75,7 +78,7 @@ const sendApiStatuses = async function({
 
   await Promise.all(
     statuses.map(status =>
-      sendApiStatus({ api, status, childEnv, mode, netlifyConfig, errorMonitor, deployId, logs, testOpts }),
+      sendApiStatus({ api, status, childEnv, mode, netlifyConfig, errorMonitor, deployId, logs, debug, testOpts }),
     ),
   )
 }
@@ -89,6 +92,7 @@ const sendApiStatus = async function({
   errorMonitor,
   deployId,
   logs,
+  debug,
   testOpts,
 }) {
   try {
@@ -100,7 +104,7 @@ const sendApiStatus = async function({
     // Builds should be successful when this API call fails, but we still want
     // to report the error both in logs and in error monitoring.
   } catch (error) {
-    await handleBuildError(error, { errorMonitor, netlifyConfig, childEnv, mode, logs, testOpts })
+    await handleBuildError(error, { errorMonitor, netlifyConfig, childEnv, mode, logs, debug, testOpts })
   }
 }
 

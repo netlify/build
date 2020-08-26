@@ -42,8 +42,10 @@ const { normalizeFlags } = require('./flags')
  * @returns {string[]} buildResult.logs - When using the `buffer` option, all log messages
  */
 const build = async function(flags = {}) {
-  const { errorMonitor, framework, mode, logs, testOpts, statsdOpts, dry, telemetry, ...flagsA } = startBuild(flags)
-  const errorParams = { errorMonitor, mode, logs, testOpts }
+  const { errorMonitor, framework, mode, logs, debug, testOpts, statsdOpts, dry, telemetry, ...flagsA } = startBuild(
+    flags,
+  )
+  const errorParams = { errorMonitor, mode, logs, debug, testOpts }
 
   try {
     const { netlifyConfig, siteInfo, commandsCount, timers, durationNs } = await execBuild({
@@ -52,6 +54,7 @@ const build = async function(flags = {}) {
       errorMonitor,
       mode,
       logs,
+      debug,
       testOpts,
       errorParams,
     })
@@ -163,6 +166,7 @@ const tExecBuild = async function({
     errorMonitor,
     deployId,
     logs,
+    debug,
     timers: timersA,
     sendStatus,
     testOpts,
@@ -189,6 +193,7 @@ const runAndReportBuild = async function({
   errorMonitor,
   deployId,
   logs,
+  debug,
   timers,
   sendStatus,
   testOpts,
@@ -210,6 +215,7 @@ const runAndReportBuild = async function({
       errorMonitor,
       deployId,
       logs,
+      debug,
       timers,
       testOpts,
     })
@@ -222,6 +228,7 @@ const runAndReportBuild = async function({
       errorMonitor,
       deployId,
       logs,
+      debug,
       sendStatus,
       testOpts,
     })
@@ -238,6 +245,7 @@ const runAndReportBuild = async function({
       errorMonitor,
       deployId,
       logs,
+      debug,
       sendStatus,
       testOpts,
     })
@@ -262,6 +270,7 @@ const initAndRunBuild = async function({
   errorMonitor,
   deployId,
   logs,
+  debug,
   timers,
   testOpts,
 }) {
@@ -274,6 +283,7 @@ const initAndRunBuild = async function({
     mode,
     buildImagePluginsDir,
     logs,
+    debug,
     timers,
   })
 
@@ -303,6 +313,7 @@ const initAndRunBuild = async function({
       errorMonitor,
       deployId,
       logs,
+      debug,
       timers: timersB,
       testOpts,
     })
@@ -328,6 +339,7 @@ const runBuild = async function({
   errorMonitor,
   deployId,
   logs,
+  debug,
   timers,
   testOpts,
 }) {
@@ -337,6 +349,7 @@ const runBuild = async function({
     netlifyConfig,
     constants,
     timers,
+    debug,
   })
 
   const { commands, commandsCount } = getCommands(pluginsCommands, netlifyConfig)
@@ -358,6 +371,7 @@ const runBuild = async function({
     deployId,
     netlifyConfig,
     logs,
+    debug,
     timers: timersA,
     testOpts,
   })

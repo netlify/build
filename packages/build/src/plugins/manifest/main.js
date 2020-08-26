@@ -7,7 +7,7 @@ const { getManifestPath } = require('./path')
 // Load plugin's `manifest.yml`
 const useManifest = async function(
   { package, loadedFrom, origin, inputs },
-  { pluginDir, packageDir, pluginPackageJson, pluginPackageJson: { version } },
+  { pluginDir, packageDir, pluginPackageJson, pluginPackageJson: { version }, debug },
 ) {
   const manifestPath = await getManifestPath(pluginDir, packageDir)
 
@@ -16,7 +16,7 @@ const useManifest = async function(
     const inputsA = checkInputs({ inputs, manifest, package, pluginPackageJson, loadedFrom, origin })
     return inputsA
   } catch (error) {
-    const errorA = addPluginLoadErrorStatus({ error, package, version })
+    const errorA = addPluginLoadErrorStatus({ error, package, version, debug })
     throw errorA
   }
 }
