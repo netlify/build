@@ -12,7 +12,7 @@ const parseDefaultConfig = function({ defaultConfig, base, baseRelDir, siteInfo,
     baseRelDir,
     siteInfo,
   })
-  logDefaultConfig(defaultConfigC, { logs, debug })
+  logDefaultConfig(defaultConfigC, { logs, debug, baseRelDir: baseRelDirA })
   return { defaultConfig: defaultConfigC, baseRelDir: baseRelDirA }
 }
 

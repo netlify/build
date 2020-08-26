@@ -15,13 +15,13 @@ const logOpts = function(opts, { logs, debug, cachedConfig }) {
 }
 
 // Log `defaultConfig` option in debug mode
-const logDefaultConfig = function(defaultConfig, { logs, debug }) {
+const logDefaultConfig = function(defaultConfig, { logs, debug, baseRelDir }) {
   if (!debug || defaultConfig === undefined) {
     return
   }
 
   logSubHeader(logs, 'UI build settings')
-  logObject(logs, cleanupConfig(defaultConfig))
+  logObject(logs, cleanupConfig({ ...defaultConfig, baseRelDir }))
 }
 
 // Log `inlineConfig` option in debug mode
