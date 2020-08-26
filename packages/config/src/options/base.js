@@ -11,10 +11,10 @@ const pRealpath = promisify(realpath)
 // `cwd` that has a `.netlify` or `netlify.toml`. This allows Netlify CLI users
 // to `cd` into monorepo directories to change their base and build directories.
 // Do all checks in parallel for speed
-const getBase = async function({ repositoryRoot, cwd }) {
+const getBaseOverride = async function({ repositoryRoot, cwd }) {
   // Performance optimization
   if (repositoryRoot === cwd) {
-    return
+    return {}
   }
 
   const [repositoryRootA, cwdA] = await Promise.all([pRealpath(repositoryRoot), pRealpath(cwd)])
@@ -22,12 +22,15 @@ const getBase = async function({ repositoryRoot, cwd }) {
   const basePath = await locatePath(basePaths)
 
   if (basePath === undefined) {
-    return
+    return {}
   }
 
   // `base` starting with a `/` are relative to `repositoryRoot`, so we cannot
   // return an absolute path
-  return relative(repositoryRoot, dirname(basePath))
+  const base = relative(repositoryRoot, dirname(basePath))
+  // When `base` is explicitely overridden, `baseRelDir: true` makes more sense
+  // since we want `publish` and `functions` to be relative to it.
+  return { base, baseRelDir: true }
 }
 
 // Returns list of files to check for the existence of a `base`
@@ -65,4 +68,4 @@ const returnIfExists = async function(path) {
   return path
 }
 
-module.exports = { getBase }
+module.exports = { getBaseOverride }

@@ -7,7 +7,7 @@ const { getBufferLogs } = require('../log/logger')
 const { logOpts } = require('../log/main')
 const { removeFalsy } = require('../utils/remove_falsy')
 
-const { getBase } = require('./base')
+const { getBaseOverride } = require('./base')
 const { getBranch } = require('./branch')
 const { getRepositoryRoot } = require('./repository_root')
 
@@ -77,8 +77,8 @@ const normalizeOpts = async function(opts) {
   const optsC = removeFalsy(optsB)
   await checkDirs(optsC)
 
-  const base = await getBase(optsC)
-  const optsD = { ...optsC, base }
+  const baseOverride = await getBaseOverride(optsC)
+  const optsD = { ...baseOverride, ...optsC }
   return optsD
 }
 

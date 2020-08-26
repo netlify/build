@@ -1,6 +1,6 @@
 const test = require('ava')
 
-const { runFixture, startServer } = require('../helpers/main')
+const { runFixture, FIXTURES_DIR, startServer } = require('../helpers/main')
 
 test('--token', async t => {
   await runFixture(t, 'empty', { flags: { token: 'test' } })
@@ -120,4 +120,25 @@ test('Build settings are not used in CI', async t => {
     flags: { token: 'test', siteId: 'test', mode: 'buildbot', testOpts: { scheme, host } },
   })
   await stopServer()
+})
+
+const SITE_INFO_BASE_REL_DIR = {
+  url: 'test',
+  build_settings: { base_rel_dir: false },
+}
+
+test('baseRelDir is true if build.base is overridden', async t => {
+  const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_BASE_REL_DIR)
+  try {
+    await runFixture(t, 'build_base_override', {
+      flags: {
+        cwd: `${FIXTURES_DIR}/build_base_override/subdir`,
+        token: 'test',
+        siteId: 'test',
+        testOpts: { scheme, host },
+      },
+    })
+  } finally {
+    await stopServer()
+  }
 })
