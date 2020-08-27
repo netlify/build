@@ -174,13 +174,19 @@ const runCommand = async function({
   return { ...newValues, newIndex: index + 1 }
 }
 
-// If either:
-//   - an error was thrown by the current plugin or another one
-//   - the current plugin previously ran `utils.build.failPlugin()`, `failBuild()` or `cancelBuild()`
-// Then:
-//   - run `onError` event (otherwise not run)
-//   - run `onEnd` event (always run regardless)
-//   - skip other events
+// If a plugin throws an uncaught exception, uses `utils.build.failBuild()` or
+// uses `utils.build.cancelBuild()`:
+//   - the build and the plugin fail
+//   - all events for all plugins are skipped, except `onError` and `onEnd`
+//   - the `onError` events for all plugins are run
+// If a plugin uses `utils.build.failPlugin()`:
+//   - the build does not fail, but the plugin does
+//   - all events for the current plugin are skipped, except `onError` and `onEnd`
+//   - the `onError` event for the current plugin is run
+//   - other plugins are not impacted
+// `onError()` is not run otherwise.
+// `onEnd()` is always run, regardless of whether the current or other plugins
+// failed.
 const shouldSkipCommand = function({ event, package, error, failedPlugins }) {
   const isError = error !== undefined || failedPlugins.includes(package)
   return (isMainCommand({ event }) && isError) || (isErrorCommand({ event }) && !isError)
