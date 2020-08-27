@@ -1,8 +1,8 @@
 const { parseError } = require('./parse')
 
 // Serialize an error object to `statuses` properties
-const serializeErrorStatus = function(error) {
-  const { state, title, message, locationInfo, errorProps } = parseError({ error, colors: false })
+const serializeErrorStatus = function(error, { debug }) {
+  const { state, title, message, locationInfo, errorProps } = parseError({ error, colors: false, debug })
   const text = getText({ locationInfo, errorProps })
   return { state, title, summary: message, text }
 }

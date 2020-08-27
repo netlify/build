@@ -5,10 +5,10 @@ const { callChild } = require('./ipc')
 
 // Retrieve all plugins commands
 // Can use either a module name or a file path to the plugin.
-const tLoadPlugins = async function({ pluginsOptions, childProcesses, netlifyConfig, constants }) {
+const tLoadPlugins = async function({ pluginsOptions, childProcesses, netlifyConfig, constants, debug }) {
   const pluginsCommands = await Promise.all(
     pluginsOptions.map((pluginOptions, index) =>
-      loadPlugin(pluginOptions, { childProcesses, index, netlifyConfig, constants }),
+      loadPlugin(pluginOptions, { childProcesses, index, netlifyConfig, constants, debug }),
     ),
   )
   const pluginsCommandsA = pluginsCommands.flat()
@@ -21,7 +21,7 @@ const loadPlugins = measureDuration(tLoadPlugins, 'load_plugins')
 // Do it by executing the plugin `load` event handler.
 const loadPlugin = async function(
   { package, pluginPackageJson, pluginPackageJson: { version } = {}, pluginPath, inputs, loadedFrom, origin },
-  { childProcesses, index, netlifyConfig, constants },
+  { childProcesses, index, netlifyConfig, constants, debug },
 ) {
   const { childProcess } = childProcesses[index]
   const event = 'load'
@@ -44,7 +44,7 @@ const loadPlugin = async function(
     }))
     return pluginCommandsA
   } catch (error) {
-    const errorA = addPluginLoadErrorStatus({ error, package, version })
+    const errorA = addPluginLoadErrorStatus({ error, package, version, debug })
     throw errorA
   }
 }

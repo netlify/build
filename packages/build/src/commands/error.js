@@ -19,6 +19,7 @@ const handleCommandError = async function({
   buildCommand,
   netlifyConfig,
   logs,
+  debug,
   testOpts,
 }) {
   // `build.command` do not report error statuses
@@ -27,7 +28,7 @@ const handleCommandError = async function({
   }
 
   const { type, location: { package } = {} } = getErrorInfo(newError)
-  const newStatus = serializeErrorStatus(newError)
+  const newStatus = serializeErrorStatus(newError, { debug })
 
   if (type === 'cancelBuild') {
     await cancelBuild({ api, deployId })
@@ -43,6 +44,7 @@ const handleCommandError = async function({
       errorMonitor,
       netlifyConfig,
       logs,
+      debug,
       testOpts,
     })
   }
@@ -59,9 +61,10 @@ const handleFailPlugin = async function({
   errorMonitor,
   netlifyConfig,
   logs,
+  debug,
   testOpts,
 }) {
-  await handleBuildError(newError, { errorMonitor, netlifyConfig, childEnv, mode, logs, testOpts })
+  await handleBuildError(newError, { errorMonitor, netlifyConfig, childEnv, mode, logs, debug, testOpts })
   return { failedPlugin: [package], newStatus }
 }
 

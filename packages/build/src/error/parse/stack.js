@@ -1,10 +1,10 @@
 const { cleanStacks } = require('./clean_stack')
 
 // Retrieve the stack trace
-const getStackInfo = function({ message, stack, stackType, rawStack, isSuccess }) {
+const getStackInfo = function({ message, stack, stackType, rawStack, isSuccess, debug }) {
   const { message: messageA, stack: stackA } = splitStackInfo({ message, stack, stackType })
   const messageB = isSuccess ? messageA.replace(SUCCESS_ERROR_NAME, '') : messageA
-  const stackB = cleanStacks(stackA, rawStack)
+  const stackB = cleanStacks({ stack: stackA, rawStack, debug })
   return { message: messageB, stack: stackB }
 }
 
