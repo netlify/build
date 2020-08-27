@@ -120,6 +120,8 @@ const getEventProps = function({ severity, group, groupingHash, metadata, app })
 
 // Add more information to Bugsnag events
 const onError = function(event, eventProps) {
+  // Bugsnag client requires directly mutating the `event`
+  // eslint-disable-next-line fp/no-mutating-assign
   Object.assign(event, {
     ...eventProps,
     unhandled: event.unhandled || eventProps.unhandled,

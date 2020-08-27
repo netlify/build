@@ -17,7 +17,12 @@ ${indentString(serializeToml(exampleA), 2)}`
 }
 
 const getInvalidValue = function(value, prevPath) {
-  const invalidValue = prevPath.reverse().reduce(setInvalidValuePart, value)
+  // slice() is temporary, so it does not mutate
+  // eslint-disable-next-line fp/no-mutating-methods
+  const invalidValue = prevPath
+    .slice()
+    .reverse()
+    .reduce(setInvalidValuePart, value)
   const invalidValueA = serializeToml(invalidValue)
   return invalidValueA
 }

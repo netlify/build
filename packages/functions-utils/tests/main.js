@@ -2,6 +2,7 @@ const { normalize } = require('path')
 
 const test = require('ava')
 const pathExists = require('path-exists')
+const { spy } = require('sinon')
 
 const { add, list, listAll } = require('..')
 
@@ -72,12 +73,10 @@ test('Should throw if dist file already exists', async t => {
 })
 
 test('Should allow "fail" option to customize failures', async t => {
-  let failMessage
-  const fail = message => {
-    failMessage = message
-  }
+  const fail = spy()
   await add(undefined, undefined, { fail })
-  t.is(typeof failMessage, 'string')
+  t.true(fail.calledOnce)
+  t.is(typeof fail.firstCall.firstArg, 'string')
 })
 
 const normalizeFiles = function(fixtureDir, { mainFile, runtime, extension, srcFile }) {

@@ -43,6 +43,8 @@ const redirectOutput = function(childProcess, { stdio, stdout, stderr }) {
   childProcess.stderr.pipe(process.stderr)
 }
 
+// Needed to add a property to the function
+// eslint-disable-next-line fp/no-mutation
 run.command = runCommand
 
 module.exports = run

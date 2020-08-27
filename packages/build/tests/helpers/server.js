@@ -21,6 +21,8 @@ const getHost = function(server) {
 }
 
 const requestHandler = function({ req, res, requests, response, status, path }) {
+  // A stateful variable is required due to `http` using events
+  // eslint-disable-next-line fp/no-let
   let rawBody = ''
   req.on('data', data => {
     rawBody += data.toString()
