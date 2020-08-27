@@ -209,17 +209,6 @@ const logCommandSuccess = function(logs) {
   logMessage(logs, '')
 }
 
-const logCiReactWarning = function(logs) {
-  logMessage(
-    logs,
-    THEME.errorSubHeader(`
-If the build failed with a warning about "process.env.CI = true", this is due to "create-react-app" treating warnings as errors when in CI. In order to fix this problem, please either:
-  - Fix the issues highlighted by the warnings above.
-  - Or modify the "scripts.build" command in your "package.json" from "react-scripts build" to "CI= react-scripts build"
-More information can be found at https://docs.netlify.com/configure-builds/troubleshooting-tips/#build-fails-on-warning-message`),
-  )
-}
-
 const logTimer = function(logs, durationNs, timerName) {
   const durationMs = roundTimerToMillisecs(durationNs)
   const duration = prettyMs(durationMs)
@@ -281,7 +270,6 @@ module.exports = {
   logCommand,
   logBuildCommandStart,
   logCommandSuccess,
-  logCiReactWarning,
   logTimer,
   logStatuses,
   logFunctionsToBundle,
