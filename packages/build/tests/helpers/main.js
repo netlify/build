@@ -17,7 +17,13 @@ const runFixture = async function(
   { flags = {}, env: envOption = {}, programmatic = false, ...opts } = {},
 ) {
   const binaryPath = await BINARY_PATH
-  const flagsA = { debug: true, telemetry: false, buffer: true, ...flags }
+  const flagsA = {
+    debug: true,
+    telemetry: false,
+    buffer: true,
+    ...flags,
+    testOpts: { silentLingeringProcesses: true, ...flags.testOpts },
+  }
   const envOptionA = {
     // Ensure local environment variables aren't used during development
     BUILD_TELEMETRY_DISABLED: '',

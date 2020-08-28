@@ -1,4 +1,4 @@
-const { execPath } = require('process')
+const { platform, execPath } = require('process')
 
 const test = require('ava')
 const getNode = require('get-node')
@@ -227,6 +227,24 @@ const normalizeBody = function({
       osName: typeof osName,
     },
   }
+}
+
+if (platform !== 'win32') {
+  test('Print warning on lingering processes', async t => {
+    const { returnValue } = await runFixture(t, 'lingering', {
+      flags: { testOpts: { silentLingeringProcesses: false }, mode: 'buildbot' },
+      snapshot: false,
+    })
+
+    // Cleanup the lingering process
+    const [, pid] = PID_LINE_REGEXP.exec(returnValue)
+    process.kill(pid)
+
+    t.true(returnValue.includes('There are some lingering processes'))
+    t.true(returnValue.includes('forever.js'))
+  })
+
+  const PID_LINE_REGEXP = /^PID: (\d+)$/m
 }
 
 const TELEMETRY_PATH = '/collect'
