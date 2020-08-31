@@ -25,6 +25,7 @@
         'log-process-errors',
         'move-file',
         'nock',
+        'os-name',
         'p-locate',
         'prettier',
         'pretty-ms',
