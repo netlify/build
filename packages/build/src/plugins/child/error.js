@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/order
 const logProcessErrors = require('log-process-errors')
 
 const { errorToJson } = require('../../error/build')

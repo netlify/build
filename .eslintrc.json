@@ -10,8 +10,10 @@
     "eslint:recommended",
     "plugin:node/recommended",
     "prettier",
+    "plugin:eslint-comments/recommended",
     "plugin:fp/recommended"
   ],
+  "reportUnusedDisableDirectives": true,
   "rules": {
     "no-console": 0,
     "no-unused-vars": 2,
@@ -28,6 +30,11 @@
     "no-process-exit": 0,
     "require-atomic-updates": 0,
     "no-undef": [2, { "typeof": true }],
+    "eslint-comments/no-unused-disable": 0,
+    "eslint-comments/no-use": [
+      2,
+      { "allow": ["eslint-disable-next-line", "eslint-disable", "eslint-enable", "eslint-env"] }
+    ],
     "fp/no-rest-parameters": 0,
     "fp/no-unused-expression": 0,
     "fp/no-nil": 0,
