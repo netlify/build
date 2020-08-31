@@ -26,6 +26,8 @@ const setInspectColors = function() {
     return
   }
 
+  // `inspect.defaultOptions` requires direct mutation
+  // eslint-disable-next-line fp/no-mutation
   defaultOptions.colors = true
 }
 

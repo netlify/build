@@ -34,6 +34,8 @@ const setEnvChange = function(name, value, currentEnv) {
   }
 
   if (value === null) {
+    // `currentEnv` is a mutable variable
+    // eslint-disable-next-line fp/no-delete
     delete currentEnv[name]
     return
   }

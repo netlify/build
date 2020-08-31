@@ -148,6 +148,8 @@ const tExecBuild = async function({
     testOpts,
     timers,
   })
+  // `errorParams` is purposely stateful
+  // eslint-disable-next-line fp/no-mutating-assign
   Object.assign(errorParams, { netlifyConfig, childEnv })
 
   const { commandsCount, timers: timersB } = await runAndReportBuild({

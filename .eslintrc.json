@@ -1,6 +1,6 @@
 {
   "parser": "babel-eslint",
-  "plugins": ["node", "prettier"],
+  "plugins": ["node", "prettier", "fp"],
   "env": {
     "node": true,
     "es6": true
@@ -10,7 +10,8 @@
     "plugin:import/warnings",
     "eslint:recommended",
     "plugin:node/recommended",
-    "prettier"
+    "prettier",
+    "plugin:fp/recommended"
   ],
   "rules": {
     "no-console": 0,
@@ -27,14 +28,42 @@
     ],
     "no-process-exit": 0,
     "require-atomic-updates": 0,
-    "no-undef": [2, { "typeof": true }]
+    "no-undef": [2, { "typeof": true }],
+    "fp/no-rest-parameters": 0,
+    "fp/no-unused-expression": 0,
+    "fp/no-nil": 0,
+    "fp/no-throw": 0,
+    "fp/no-mutating-methods": [
+      2,
+      { "allowedObjects": ["error", "errorA", "res", "state", "runState", "logs", "logsArray", "currentEnv"] }
+    ],
+    "fp/no-mutation": [
+      2,
+      {
+        "commonjs": true,
+        "exceptions": [
+          { "object": "error" },
+          { "object": "errorA" },
+          { "object": "res" },
+          { "object": "state" },
+          { "object": "runState" },
+          { "object": "logs" },
+          { "object": "logsArray" },
+          { "object": "currentEnv" },
+          { "object": "process", "property": "exitCode" }
+        ]
+      }
+    ]
   },
   "overrides": [
     {
-      "files": ["**/*.test.js"],
+      "files": ["**/tests.js", "**/tests/**/*.js"],
       "rules": {
         "node/no-unpublished-require": 0,
-        "node/no-missing-require": 0
+        "node/no-missing-require": 0,
+        "fp/no-mutating-methods": 0,
+        "fp/no-mutation": 0,
+        "fp/no-delete": 0
       }
     }
   ]

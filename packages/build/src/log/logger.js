@@ -20,6 +20,8 @@ const log = function(logs, string) {
   const stringA = String(string).replace(EMPTY_LINES_REGEXP, EMPTY_LINE)
 
   if (logs !== undefined) {
+    // `logs` is a stateful variable
+    // eslint-disable-next-line fp/no-mutating-methods
     logs.stdout.push(stringA)
     return
   }

@@ -9,6 +9,8 @@ const jsonToError = function({ name, message, stack, info = {}, errorProps = {} 
 
   assignErrorProps(error, { name, message, stack })
   // Assign static error properties (if any)
+  // We need to mutate the `error` directly to preserve its `name`, `stack`, etc.
+  // eslint-disable-next-line fp/no-mutating-assign
   Object.assign(error, errorProps)
 
   // Distinguish between utils.build.*() errors and uncaught exceptions / bugs
@@ -27,6 +29,8 @@ const assignErrorProps = function(error, values) {
 const ERROR_PROPS = ['name', 'message', 'stack']
 
 const assignErrorProp = function(error, name, value) {
+  // `Object.defineProperty()` requires direct mutation
+  // eslint-disable-next-line fp/no-mutating-methods
   Object.defineProperty(error, name, { value, enumerable: false, writable: true, configurable: true })
 }
 

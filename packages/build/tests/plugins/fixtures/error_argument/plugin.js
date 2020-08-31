@@ -1,14 +1,9 @@
-class TestError extends Error {
-  constructor(...args) {
-    super(...args)
-    this.name = 'TestError'
-  }
-}
-
 module.exports = {
   onBuild() {
     console.log('test')
-    throw new TestError('test')
+    const error = new Error('test')
+    error.name = 'TestError'
+    throw error
   },
   onError({ error: { name, message, stack } }) {
     console.log(name)

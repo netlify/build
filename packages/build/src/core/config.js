@@ -102,6 +102,8 @@ const resolveFullConfig = async function({
     })
   } catch (error) {
     if (error.type === 'userError') {
+      // We need to mutate the `error` directly to preserve its `name`, `stack`, etc.
+      // eslint-disable-next-line fp/no-delete
       delete error.type
       addErrorInfo(error, { type: 'resolveConfig' })
     }
