@@ -272,6 +272,7 @@ const getNewValues = function({
 }) {
   if (newError !== undefined) {
     return handleCommandError({
+      event,
       newError,
       childEnv,
       mode,

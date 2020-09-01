@@ -29,10 +29,13 @@ const isAmongEvents = function(events, event) {
   return events.includes(event)
 }
 
+// Check if failure of the event should not make the build fail
+const isSoftFailEvent = isAmongEvents.bind(null, ['onSuccess', 'onError', 'onEnd'])
+
 // Check if the event is triggered even when an error happens
 const isErrorEvent = isAmongEvents.bind(null, ['onError', 'onEnd'])
 
 // Check if the event is only triggered when an error happens
 const isErrorOnlyEvent = isAmongEvents.bind(null, ['onError'])
 
-module.exports = { getCommands, isErrorEvent, isErrorOnlyEvent }
+module.exports = { getCommands, isSoftFailEvent, isErrorEvent, isErrorOnlyEvent }

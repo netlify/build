@@ -49,7 +49,7 @@ test('utils.status.show() cannot override an error status with a success status'
   await runWithApiMock(t, 'error_status_override')
 })
 
-test('utils.status.show() can override an error status with another error status', async t => {
+test('utils.status.show() can override an error status but not with another error status', async t => {
   await runWithApiMock(t, 'error_status_error_override')
 })
 
