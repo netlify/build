@@ -63,7 +63,7 @@
     "indent-string": "^4.0.0",
     "is-plain-obj": "^2.1.0",
     "js-yaml": "^3.14.0",
-    "netlify": "^4.3.12",
+    "netlify": "^4.3.13",
     "omit.js": "^2.0.2",
     "p-locate": "^4.1.0",
     "path-exists": "^4.0.0",
