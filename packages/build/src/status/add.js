@@ -1,23 +1,20 @@
+const { isErrorEvent } = require('../commands/get')
 const { addErrorInfo } = require('../error/info')
 const { serializeErrorStatus } = require('../error/parse/serialize_status')
 
 // The last event handler of a plugin (except for `onError` and `onEnd`)
 // defaults to `utils.status.show({ state: 'success' })` without any `summary`.
 const getSuccessStatus = function(newStatus, { commands, event, package }) {
-  if (newStatus === undefined && isLastMainCommand({ commands, event, package })) {
+  if (newStatus === undefined && isLastNonErrorCommand({ commands, event, package })) {
     return IMPLICIT_STATUS
   }
 
   return newStatus
 }
 
-const isLastMainCommand = function({ commands, event, package }) {
-  const mainCommands = commands.filter(command => command.package === package && isMainCommand(command))
-  return mainCommands.length === 0 || mainCommands[mainCommands.length - 1].event === event
-}
-
-const isMainCommand = function({ event }) {
-  return event !== 'onEnd' && event !== 'onError'
+const isLastNonErrorCommand = function({ commands, event, package }) {
+  const nonErrorCommands = commands.filter(command => command.package === package && !isErrorEvent(command.event))
+  return nonErrorCommands.length === 0 || nonErrorCommands[nonErrorCommands.length - 1].event === event
 }
 
 const IMPLICIT_STATUS = { state: 'success', implicit: true }

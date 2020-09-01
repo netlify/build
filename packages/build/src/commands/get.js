@@ -4,7 +4,7 @@ const { EVENTS } = require('../plugins/events')
 const getCommands = function(pluginsCommands, netlifyConfig) {
   const commands = addBuildCommand(pluginsCommands, netlifyConfig)
   const commandsA = sortCommands(commands)
-  const commandsCount = commandsA.filter(isSuccessCommand).length
+  const commandsCount = commandsA.filter(({ event }) => !isErrorOnlyEvent(event)).length
   return { commands: commandsA, commandsCount }
 }
 
@@ -25,20 +25,14 @@ const sortCommands = function(commands) {
   return EVENTS.flatMap(event => commands.filter(command => command.event === event))
 }
 
-const isMainCommand = function({ event }) {
-  return event !== 'onEnd' && event !== 'onError'
+const isAmongEvents = function(events, event) {
+  return events.includes(event)
 }
 
-const isEndCommand = function({ event }) {
-  return event === 'onEnd'
-}
+// Check if the event is triggered even when an error happens
+const isErrorEvent = isAmongEvents.bind(null, ['onError', 'onEnd'])
 
-const isErrorCommand = function({ event }) {
-  return event === 'onError'
-}
+// Check if the event is only triggered when an error happens
+const isErrorOnlyEvent = isAmongEvents.bind(null, ['onError'])
 
-const isSuccessCommand = function({ event }) {
-  return isMainCommand({ event }) || isEndCommand({ event })
-}
-
-module.exports = { getCommands, isMainCommand, isErrorCommand, isSuccessCommand }
+module.exports = { getCommands, isErrorEvent, isErrorOnlyEvent }
