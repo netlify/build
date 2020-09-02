@@ -3,6 +3,8 @@ const { handleBuildError } = require('../error/handle')
 const { getErrorInfo } = require('../error/info')
 const { serializeErrorStatus } = require('../error/parse/serialize_status')
 
+const { isSoftFailEvent } = require('./get')
+
 // Handle shell or plugin error:
 //  - usually (`failFast`), propagate the error to make the build stop.
 //  - if onError and onEnd events (not `failFast`), wait until all event
@@ -10,6 +12,7 @@ const { serializeErrorStatus } = require('../error/parse/serialize_status')
 //  - if `utils.build.failPlugin()` was used, print an error and skip next event
 //    handlers of that plugin. But do not stop build.
 const handleCommandError = async function({
+  event,
   newError,
   childEnv,
   mode,
@@ -30,11 +33,7 @@ const handleCommandError = async function({
   const { type, location: { package } = {} } = getErrorInfo(newError)
   const newStatus = serializeErrorStatus(newError, { debug })
 
-  if (type === 'cancelBuild') {
-    await cancelBuild({ api, deployId })
-  }
-
-  if (type === 'failPlugin') {
+  if (type === 'failPlugin' || isSoftFailEvent(event)) {
     return handleFailPlugin({
       newStatus,
       package,
@@ -47,6 +46,10 @@ const handleCommandError = async function({
       debug,
       testOpts,
     })
+  }
+
+  if (type === 'cancelBuild') {
+    await cancelBuild({ api, deployId })
   }
 
   return { newError, newStatus }

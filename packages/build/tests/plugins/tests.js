@@ -166,7 +166,7 @@ test('plugin.onEnd is triggered on cancelBuild()', async t => {
   await runFixture(t, 'end_cancel_build')
 })
 
-test('plugin.onEnd can fail', async t => {
+test('plugin.onEnd can fail but it does not stop builds', async t => {
   await runFixture(t, 'end_fail')
 })
 

@@ -20,6 +20,10 @@ test('build.failBuild() inside a callback', async t => {
   await runFixture(t, 'fail_build_callback')
 })
 
+test('build.failBuild() is not available within post-deploy events', async t => {
+  await runFixture(t, 'fail_build_post_deploy')
+})
+
 test('build.failPlugin()', async t => {
   await runFixture(t, 'fail_plugin')
 })
@@ -73,6 +77,10 @@ if (!version.startsWith('v8.')) {
     await runFixture(t, 'cancel', { flags: { token: 'test', deployId: 'test', testOpts: { host: '...' } } })
   })
 }
+
+test('build.cancelBuild() is not available within post-deploy events', async t => {
+  await runFixture(t, 'cancel_post_deploy')
+})
 
 test('exception', async t => {
   await runFixture(t, 'exception')
