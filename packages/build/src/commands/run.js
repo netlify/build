@@ -8,7 +8,7 @@ const { measureDuration, normalizeTimerName } = require('../time/main')
 
 const { fireBuildCommand } = require('./build_command')
 const { handleCommandError } = require('./error')
-const { isMainCommand, isErrorCommand } = require('./get')
+const { isErrorEvent, isErrorOnlyEvent } = require('./get')
 const { firePluginCommand } = require('./plugin')
 
 // Run all commands.
@@ -125,7 +125,7 @@ const runCommand = async function({
   timers,
   testOpts,
 }) {
-  if (shouldSkipCommand({ event, package, error, failedPlugins })) {
+  if (!shouldRunCommand({ event, package, error, failedPlugins })) {
     return {}
   }
 
@@ -187,9 +187,13 @@ const runCommand = async function({
 // `onError()` is not run otherwise.
 // `onEnd()` is always run, regardless of whether the current or other plugins
 // failed.
-const shouldSkipCommand = function({ event, package, error, failedPlugins }) {
+const shouldRunCommand = function({ event, package, error, failedPlugins }) {
   const isError = error !== undefined || failedPlugins.includes(package)
-  return (isMainCommand({ event }) && isError) || (isErrorCommand({ event }) && !isError)
+  if (isError) {
+    return isErrorEvent(event)
+  }
+
+  return !isErrorOnlyEvent(event)
 }
 
 // Wrap command function to measure its time
