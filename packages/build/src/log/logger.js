@@ -15,59 +15,64 @@ const getBufferLogs = function({ buffer = false }) {
   return { stdout: [], stderr: [] }
 }
 
-// This should be used instead of `console.log()`
-const log = function(logs, string) {
-  const stringA = String(string).replace(EMPTY_LINES_REGEXP, EMPTY_LINE)
+// Core logging utility, used by the other methods.
+// This should be used instead of `console.log()` as it allows us to instrument
+// how any build logs is being printed.
+const log = function(logs, string, { indent = false, color } = {}) {
+  const stringA = indent ? indentString(string, INDENT_SIZE) : string
+  const stringB = String(stringA).replace(EMPTY_LINES_REGEXP, EMPTY_LINE)
+  const stringC = color === undefined ? stringB : color(stringB)
 
   if (logs !== undefined) {
     // `logs` is a stateful variable
     // eslint-disable-next-line fp/no-mutating-methods
-    logs.stdout.push(stringA)
+    logs.stdout.push(stringC)
     return
   }
 
-  console.log(stringA)
+  console.log(stringC)
 }
+
+const INDENT_SIZE = 2
 
 // We need to add a zero width space character in empty lines. Otherwise the
 // buildbot removes those due to a bug: https://github.com/netlify/buildbot/issues/595
 const EMPTY_LINES_REGEXP = /^\s*$/gm
 const EMPTY_LINE = '\u{200b}'
 
-const logMessage = function(logs, string, { indent = true } = {}) {
-  const stringA = indent ? indentString(string, INDENT_SIZE) : string
-  log(logs, stringA)
+// Print a message that is under a header/subheader, i.e. indented
+const logMessage = function(logs, string, opts) {
+  log(logs, string, { indent: true, ...opts })
 }
 
-const INDENT_SIZE = 2
-
-const logObject = function(logs, object) {
-  const string = serializeObject(object)
-  logMessage(logs, string)
+// Print an object
+const logObject = function(logs, object, opts) {
+  logMessage(logs, serializeObject(object), opts)
 }
 
-const logArray = function(logs, array, { color = THEME.none, indent } = {}) {
-  const string = color(serializeArray(array))
-  logMessage(logs, string, { indent })
+// Print an array
+const logArray = function(logs, array, opts) {
+  logMessage(logs, serializeArray(array), { color: THEME.none, ...opts })
 }
 
-const logHeader = function(logs, string, { color = THEME.header } = {}) {
-  const stringA = `\n${color(getHeader(string))}`
-  log(logs, stringA)
+// Print a main section header
+const logHeader = function(logs, string, opts) {
+  log(logs, `\n${getHeader(string)}`, { color: THEME.header, ...opts })
 }
 
-const logErrorHeader = function(logs, string) {
-  return logHeader(logs, string, { color: THEME.errorHeader })
+// Print a main section header, when an error happened
+const logErrorHeader = function(logs, string, opts) {
+  logHeader(logs, string, { color: THEME.errorHeader, ...opts })
 }
 
-const logSubHeader = function(logs, string) {
-  const stringA = `\n${THEME.subHeader(`${pointer} ${string}`)}`
-  log(logs, stringA)
+// Print a sub-section header
+const logSubHeader = function(logs, string, opts) {
+  log(logs, `\n${pointer} ${string}`, { color: THEME.subHeader, ...opts })
 }
 
-const logErrorSubHeader = function(logs, string) {
-  const stringA = `\n${THEME.errorSubHeader(`${pointer} ${string}`)}`
-  log(logs, stringA)
+// Print a sub-section header, when an error happened
+const logErrorSubHeader = function(logs, string, opts) {
+  logSubHeader(logs, string, { color: THEME.errorSubHeader, ...opts })
 }
 
 module.exports = {
