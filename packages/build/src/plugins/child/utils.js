@@ -1,5 +1,5 @@
 const { isSoftFailEvent } = require('../../commands/get')
-const { failBuild, failPlugin, cancelBuild } = require('../error')
+const { failBuild, failPlugin, cancelBuild, failPluginWithWarning } = require('../error')
 
 const { addLazyProp } = require('./lazy')
 const { show } = require('./status')
@@ -18,9 +18,11 @@ const getUtils = function({ event, constants: { FUNCTIONS_SRC, CACHE_DIR }, runS
 
 const getBuildUtils = function(event) {
   if (isSoftFailEvent(event)) {
-    // TODO: remove `failBuild()` and `cancelBuild()` after migrating plugins
-    // that use those during `onSuccess`, `onEnd` or `onError`
-    return { failBuild: failPlugin, failPlugin, cancelBuild: failPlugin }
+    return {
+      failPlugin,
+      failBuild: failPluginWithWarning.bind(null, 'failBuild', event),
+      cancelBuild: failPluginWithWarning.bind(null, 'cancelBuild', event),
+    }
   }
 
   return { failBuild, failPlugin, cancelBuild }

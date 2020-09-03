@@ -40,6 +40,10 @@ const INDENT_SIZE = 2
 const EMPTY_LINES_REGEXP = /^\s*$/gm
 const EMPTY_LINE = '\u{200b}'
 
+const logError = function(logs, string, opts) {
+  log(logs, string, { color: THEME.errorLine, ...opts })
+}
+
 // Print a message that is under a header/subheader, i.e. indented
 const logMessage = function(logs, string, opts) {
   log(logs, string, { indent: true, ...opts })
@@ -78,6 +82,7 @@ const logErrorSubHeader = function(logs, string, opts) {
 module.exports = {
   getBufferLogs,
   log,
+  logError,
   logMessage,
   logObject,
   logArray,

@@ -11,6 +11,7 @@ const { omit } = require('../utils/omit')
 const { getCommandDescription, getBuildCommandDescription, getPluginOrigin } = require('./description')
 const {
   log,
+  logError,
   logMessage,
   logObject,
   logArray,
@@ -215,6 +216,13 @@ const logTimer = function(logs, durationNs, timerName) {
   log(logs, THEME.dimWords(`(${timerName} completed in ${duration})`))
 }
 
+const logFailPluginWarning = function(methodName, event) {
+  logError(
+    undefined,
+    `Plugin error: Inside "${event}", utils.build.failPlugin() should be used instead of utils.build.${methodName}()`,
+  )
+}
+
 // Print the list of Netlify Functions about to be bundled
 const logFunctionsToBundle = async function(functions, FUNCTIONS_SRC) {
   if (functions.length === 0) {
@@ -271,6 +279,7 @@ module.exports = {
   logBuildCommandStart,
   logCommandSuccess,
   logTimer,
+  logFailPluginWarning,
   logStatuses,
   logFunctionsToBundle,
   logBuildError,
