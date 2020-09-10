@@ -219,7 +219,9 @@ const logTimer = function(logs, durationNs, timerName) {
 const logFailPluginWarning = function(methodName, event) {
   logError(
     undefined,
-    `Plugin error: Inside "${event}", utils.build.failPlugin() should be used instead of utils.build.${methodName}()`,
+    `Plugin error: since "${event}" happens after deploy, the build has already succeeded and cannot fail anymore. This plugin should either:
+- use utils.build.failPlugin() instead of utils.build.${methodName}() to clarify that the plugin failed, but not the build.
+- use "onPostBuild" instead of "${event}" if the plugin failure should make the build fail too. Please note that "onPostBuild" (unlike "${event}") happens before deploy.`,
   )
 }
 
