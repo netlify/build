@@ -3,6 +3,7 @@ const { cwd: getCwd } = require('process')
 const pathExists = require('path-exists')
 
 const { getErrorInfo } = require('../error/info')
+const { parseErrorInfo } = require('../error/parse/parse')
 const { logBuildError } = require('../log/main')
 const { logOldCliVersionError } = require('../log/old_version')
 
@@ -11,14 +12,18 @@ const { reportBuildError } = require('./monitor/report')
 
 // Logs and reports a build failure
 const handleBuildError = async function(error, { errorMonitor, netlifyConfig, childEnv, mode, logs, debug, testOpts }) {
+  const basicErrorInfo = parseErrorInfo(error)
+
   if (await isCancelCrash(error)) {
-    return
+    return basicErrorInfo
   }
 
   removeErrorColors(error)
   logBuildError({ error, netlifyConfig, mode, logs, debug, testOpts })
   logOldCliVersionError({ mode, testOpts })
   await reportBuildError({ error, errorMonitor, childEnv, logs, testOpts })
+
+  return basicErrorInfo
 }
 
 // When builds are canceled, the whole filesystem is being deleted.
