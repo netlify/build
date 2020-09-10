@@ -1,6 +1,6 @@
 const { cancelBuild } = require('../error/cancel')
 const { handleBuildError } = require('../error/handle')
-const { getErrorInfo } = require('../error/info')
+const { parseErrorInfo } = require('../error/parse/parse')
 const { serializeErrorStatus } = require('../error/parse/serialize_status')
 
 const { isSoftFailEvent } = require('./get')
@@ -30,7 +30,10 @@ const handleCommandError = async function({
     return { newError }
   }
 
-  const { type, location: { package } = {} } = getErrorInfo(newError)
+  const {
+    type,
+    errorInfo: { location: { package } = {} },
+  } = parseErrorInfo(newError)
   const newStatus = serializeErrorStatus(newError, { debug })
 
   if (type === 'failPlugin' || isSoftFailEvent(event)) {
