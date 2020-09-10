@@ -1,4 +1,7 @@
 const { dirname } = require('path')
+const {
+  env: { NETLIFY_BUILD_EVENTS_ORDER },
+} = require('process')
 
 const corePackageJson = require('../../package.json')
 const { installLocalPluginsDependencies } = require('../install/local')
@@ -25,7 +28,10 @@ const tGetPluginsOptions = async function({
     .map(corePlugin => addCoreProperties(corePlugin, plugins))
     .filter(corePlugin => !isOptionalCore(corePlugin, plugins))
   const userPlugins = plugins.filter(isUserPlugin)
-  const pluginsOptions = [...allCorePlugins, ...userPlugins].map(normalizePluginOptions)
+  // TODO: remove feature flag, and keep only [...userPlugins, ...allCorePlugins]
+  const allPlugins =
+    NETLIFY_BUILD_EVENTS_ORDER === '1' ? [...userPlugins, ...allCorePlugins] : [...allCorePlugins, ...userPlugins]
+  const pluginsOptions = allPlugins.map(normalizePluginOptions)
   const pluginsOptionsA = await resolvePluginsPath({ pluginsOptions, buildDir, mode, logs, buildImagePluginsDir })
   const pluginsOptionsB = await Promise.all(
     pluginsOptionsA.map(pluginOptions => loadPluginFiles({ pluginOptions, debug })),
