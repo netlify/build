@@ -1,5 +1,6 @@
 const { isErrorEvent } = require('../commands/get')
 const { addErrorInfo } = require('../error/info')
+const { getFullErrorInfo } = require('../error/parse/parse')
 const { serializeErrorStatus } = require('../error/parse/serialize_status')
 
 // The last event handler of a plugin (except for `onError` and `onEnd`)
@@ -55,7 +56,8 @@ const canOverrideStatus = function(formerStatus, newStatus) {
 
 // Errors that happen during plugin loads should be reported as error statuses
 const addPluginLoadErrorStatus = function({ error, package, version, debug }) {
-  const errorStatus = serializeErrorStatus(error, { debug })
+  const fullErrorInfo = getFullErrorInfo({ error, colors: false, debug })
+  const errorStatus = serializeErrorStatus({ fullErrorInfo })
   const statuses = [{ ...errorStatus, event: 'load', package, version }]
   addErrorInfo(error, { statuses })
   return error
