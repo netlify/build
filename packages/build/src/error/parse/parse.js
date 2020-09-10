@@ -46,14 +46,28 @@ const parseError = function({ error, colors, debug }) {
 const parseErrorInfo = function(error) {
   const { message, stack, ...errorProps } = normalizeError(error)
   const errorInfo = getErrorInfo(errorProps)
-  const { state, title, isSuccess, stackType, locationType, showErrorProps, rawStack } = getTypeInfo(errorInfo)
+  const {
+    type,
+    state,
+    severity,
+    title,
+    group,
+    isSuccess,
+    stackType,
+    locationType,
+    showErrorProps,
+    rawStack,
+  } = getTypeInfo(errorInfo)
   return {
     message,
     stack,
     errorProps,
     errorInfo,
+    type,
     state,
+    severity,
     title,
+    group,
     isSuccess,
     stackType,
     locationType,
@@ -71,4 +85,4 @@ const getTitle = function(title, errorInfo) {
   return title(errorInfo)
 }
 
-module.exports = { parseError }
+module.exports = { parseError, parseErrorInfo }
