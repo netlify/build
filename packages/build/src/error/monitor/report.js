@@ -5,9 +5,8 @@ const osName = require('os-name')
 
 const { getEnvMetadata } = require('../../env/metadata')
 const { log } = require('../../log/logger.js')
-const { getErrorInfo } = require('../info')
+const { parseErrorInfo } = require('../parse/parse')
 const { getHomepage } = require('../parse/plugin')
-const { getTypeInfo } = require('../type')
 
 const { getLocationMetadata } = require('./location')
 const { normalizeGroupingMessage } = require('./normalize')
@@ -19,8 +18,7 @@ const reportBuildError = async function({ error, errorMonitor, childEnv, logs, t
     return
   }
 
-  const errorInfo = getErrorInfo(error)
-  const { type, severity, title, group = title } = getTypeInfo(errorInfo)
+  const { errorInfo, type, severity, title, group = title } = parseErrorInfo(error)
   const severityA = getSeverity(severity, errorInfo)
   const groupA = getGroup(group, errorInfo)
   const groupingHash = getGroupingHash(groupA, error, type)
