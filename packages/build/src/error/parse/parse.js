@@ -16,8 +16,8 @@ const getFullErrorInfo = function({ error, colors, debug }) {
     errorProps,
     errorInfo,
     errorInfo: { location = {}, plugin = {} },
+    severity,
     title,
-    isSuccess,
     stackType,
     locationType,
     showErrorProps,
@@ -26,7 +26,7 @@ const getFullErrorInfo = function({ error, colors, debug }) {
 
   const titleA = getTitle(title, errorInfo)
 
-  const { message: messageA, stack: stackA } = getStackInfo({ message, stack, stackType, rawStack, isSuccess, debug })
+  const { message: messageA, stack: stackA } = getStackInfo({ message, stack, stackType, rawStack, severity, debug })
 
   const pluginInfo = getPluginInfo(plugin, location)
   const locationInfo = getLocationInfo({ stack: stackA, location, locationType })
@@ -39,18 +39,9 @@ const getFullErrorInfo = function({ error, colors, debug }) {
 const parseErrorInfo = function(error) {
   const { message, stack, ...errorProps } = normalizeError(error)
   const errorInfo = getErrorInfo(errorProps)
-  const {
-    type,
-    state,
-    severity,
-    title,
-    group,
-    isSuccess,
-    stackType,
-    locationType,
-    showErrorProps,
-    rawStack,
-  } = getTypeInfo(errorInfo)
+  const { type, state, severity, title, group, stackType, locationType, showErrorProps, rawStack } = getTypeInfo(
+    errorInfo,
+  )
   const basicErrorInfo = {
     message,
     stack,
@@ -61,7 +52,6 @@ const parseErrorInfo = function(error) {
     severity,
     title,
     group,
-    isSuccess,
     stackType,
     locationType,
     showErrorProps,

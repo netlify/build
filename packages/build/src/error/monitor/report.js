@@ -37,7 +37,7 @@ const reportBuildError = async function({ error, errorMonitor, childEnv, logs, t
 // Plugin authors test their plugins as local plugins. Errors there are more
 // like development errors, and should be reported as `info` only.
 const getSeverity = function(severity, { location: { loadedFrom } = {} }) {
-  if (loadedFrom === 'local') {
+  if (loadedFrom === 'local' || severity === 'none') {
     return 'info'
   }
 

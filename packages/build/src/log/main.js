@@ -3,8 +3,7 @@ const { arrowDown } = require('figures')
 const prettyMs = require('pretty-ms')
 
 const { name, version } = require('../../package.json')
-const { isSuccessException } = require('../error/cancel')
-const { getFullErrorInfo } = require('../error/parse/parse')
+const { getFullErrorInfo, parseErrorInfo } = require('../error/parse/parse')
 const { serializeLogError } = require('../error/parse/serialize_log')
 const { roundTimerToMillisecs } = require('../time/measure')
 const { omit } = require('../utils/omit')
@@ -67,8 +66,8 @@ const logConfig = function({ logs, netlifyConfig, debug }) {
   logObject(logs, cleanupConfig(netlifyConfig))
 }
 
-const logConfigOnError = function({ logs, error, netlifyConfig }) {
-  if (netlifyConfig === undefined || isSuccessException(error)) {
+const logConfigOnError = function({ logs, netlifyConfig, severity }) {
+  if (netlifyConfig === undefined || severity === 'none') {
     return
   }
 
@@ -198,7 +197,7 @@ const logDryRunEnd = function(logs) {
 
 const logCommand = function({ logs, event, buildCommandOrigin, package, index, error }) {
   const description = getCommandDescription({ event, buildCommandOrigin, package })
-  const logHeaderFunc = error && !isSuccessException(error) ? logErrorHeader : logHeader
+  const logHeaderFunc = getLogHeaderFunc(error)
   logHeaderFunc(logs, `${index + 1}. ${description}`)
   logMessage(logs, '')
 }
@@ -251,17 +250,31 @@ const logStatus = function(logs, { package, title = `Plugin ${package} ran succe
 
 const logBuildError = function({ error, netlifyConfig, mode, logs, debug, testOpts }) {
   const fullErrorInfo = getFullErrorInfo({ error, colors: true, debug })
-  const { title, body, isSuccess } = serializeLogError({ fullErrorInfo })
-  const logFunction = isSuccess ? logHeader : logErrorHeader
-  logFunction(logs, title)
+  const { severity } = fullErrorInfo
+  const { title, body } = serializeLogError({ fullErrorInfo })
+  const logHeaderFunc = getLogHeaderFunc(error)
+  logHeaderFunc(logs, title)
   logMessage(logs, `\n${body}\n`)
-  logConfigOnError({ logs, error, netlifyConfig })
+  logConfigOnError({ logs, netlifyConfig, severity })
   logOldCliVersionError({ mode, testOpts })
 }
 
 const logBuildSuccess = function(logs) {
   logHeader(logs, 'Netlify Build Complete')
   logMessage(logs, '')
+}
+
+const getLogHeaderFunc = function(error) {
+  if (error === undefined) {
+    return logHeader
+  }
+
+  const { severity } = parseErrorInfo(error)
+  if (severity === 'none') {
+    return logHeader
+  }
+
+  return logErrorHeader
 }
 
 module.exports = {
