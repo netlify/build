@@ -1,4 +1,7 @@
 const { relative } = require('path')
+const {
+  env: { NETLIFY_BUILD_EVENTS_ORDER },
+} = require('process')
 
 const { zipFunctions, listFunctions } = require('@netlify/zip-it-and-ship-it')
 const pathExists = require('path-exists')
@@ -9,7 +12,7 @@ const { logFunctionsToBundle } = require('../../log/main')
 const { getZipError } = require('./error')
 
 // Plugin to package Netlify functions with @netlify/zip-it-and-ship-it
-const onPostBuild = async function({
+const onBuild = async function({
   constants: { FUNCTIONS_SRC, FUNCTIONS_DIST },
   utils: {
     build: { failBuild },
@@ -42,4 +45,5 @@ const getFunctionPaths = async function(FUNCTIONS_SRC) {
   return functions.map(({ mainFile }) => relative(FUNCTIONS_SRC, mainFile))
 }
 
-module.exports = { onPostBuild }
+// TODO: remove feature flag, and keep only { onBuild }
+module.exports = NETLIFY_BUILD_EVENTS_ORDER === '1' ? { onBuild } : { onPostBuild: onBuild }
