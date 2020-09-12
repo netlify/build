@@ -1,0 +1,4 @@
+[[plugins]]
+package = "@netlify/plugin-edge-handlers"
+  [plugins.inputs]
+  sourceDir = "custom-edge-handlers"

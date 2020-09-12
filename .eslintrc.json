@@ -71,6 +71,15 @@
         "fp/no-mutation": 0,
         "fp/no-delete": 0
       }
+    },
+    {
+      "files": ["**/fixtures/handlers_*/**/*.js"],
+      "parserOptions": {
+        "sourceType": "module"
+      },
+      "rules": {
+        "node/no-unsupported-features/es-syntax": 0
+      }
     }
   ]
 }

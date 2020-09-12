@@ -1,4 +1,8 @@
+const { version, platform } = require('process')
+
 const test = require('ava')
+const del = require('del')
+const { spy } = require('sinon')
 
 const { removeDir } = require('../helpers/dir')
 const { runFixture, FIXTURES_DIR } = require('../helpers/main')
@@ -105,6 +109,66 @@ test('Functions: --functionsDistDir', async t => {
     await removeDir(functionsDistDir)
   }
 })
+
+const EDGE_HANDLERS_LOCAL_DIR = '.netlify/edge-handlers'
+const EDGE_HANDLERS_MANIFEST = 'manifest.json'
+
+const getEdgeHandlersPaths = function(fixtureName) {
+  const outputDir = `${FIXTURES_DIR}/${fixtureName}/${EDGE_HANDLERS_LOCAL_DIR}`
+  const manifestPath = `${outputDir}/${EDGE_HANDLERS_MANIFEST}`
+  return { outputDir, manifestPath }
+}
+
+const loadEdgeHandlerBundle = async function({ outputDir, manifestPath }) {
+  const bundlePath = getEdgeHandlerBundlePath({ outputDir, manifestPath })
+
+  try {
+    return requireEdgeHandleBundle(bundlePath)
+  } finally {
+    await del(bundlePath, { force: true })
+  }
+}
+
+const getEdgeHandlerBundlePath = function({ outputDir, manifestPath }) {
+  const { sha } = require(manifestPath)
+  return `${outputDir}/${sha}`
+}
+
+const requireEdgeHandleBundle = function(bundlePath) {
+  const set = spy()
+  global.netlifyRegistry = { set }
+  require(bundlePath)
+  delete global.netlifyRegistry
+  return set.args.map(normalizeEdgeHandler)
+}
+
+const normalizeEdgeHandler = function([handlerName, { onRequest }]) {
+  return { handlerName, onRequest }
+}
+
+// Edge handlers are not supported in Node 8
+// TODO: remove once Node 8 support is removed
+// Edge hqandlers are not supported in Windows due to a bug
+// See https://github.com/netlify/netlify-plugin-edge-handlers/issues/36
+// TODO: remove once Windows is supported
+if (!version.startsWith('v8.') && platform !== 'win32') {
+  test('Edge handlers: simple setup', async t => {
+    const { outputDir, manifestPath } = getEdgeHandlersPaths('handlers_simple')
+    await runFixture(t, 'handlers_simple')
+
+    const [{ handlerName, onRequest }] = await loadEdgeHandlerBundle({ outputDir, manifestPath })
+    t.is(handlerName, 'test')
+    t.deepEqual(onRequest('test'), [true, 'test', 'test'])
+  })
+
+  test('Edge handlers: can configure directory', async t => {
+    const { outputDir, manifestPath } = getEdgeHandlersPaths('handlers_custom_dir')
+    await runFixture(t, 'handlers_custom_dir')
+
+    const [{ handlerName }] = await loadEdgeHandlerBundle({ outputDir, manifestPath })
+    t.is(handlerName, 'test')
+  })
+}
 
 test('plugin.onSuccess is triggered on success', async t => {
   await runFixture(t, 'success_ok')
