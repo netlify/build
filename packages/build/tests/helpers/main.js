@@ -11,7 +11,11 @@ const { runFixtureCommon, FIXTURES_DIR } = require('./common')
 const ROOT_DIR = `${__dirname}/../..`
 const BUILD_BIN_DIR = normalize(`${ROOT_DIR}/node_modules/.bin`)
 
-const runFixture = async function(t, fixtureName, { flags = {}, env: envOption = {}, ...opts } = {}) {
+const runFixture = async function(
+  t,
+  fixtureName,
+  { flags = {}, env: envOption = {}, programmatic = false, ...opts } = {},
+) {
   const binaryPath = await BINARY_PATH
   const flagsA = { debug: true, telemetry: false, buffer: true, ...flags }
   const envOptionA = {
@@ -25,10 +29,11 @@ const runFixture = async function(t, fixtureName, { flags = {}, env: envOption =
     [pathKey()]: `${env[pathKey()]}${delimiter}${BUILD_BIN_DIR}`,
     ...envOption,
   }
+  const mainFunc = programmatic ? netlifyBuild : getNetlifyBuildLogs
   return runFixtureCommon(t, fixtureName, { ...opts, flags: flagsA, env: envOptionA, mainFunc, binaryPath })
 }
 
-const mainFunc = async function(flags) {
+const getNetlifyBuildLogs = async function(flags) {
   const { logs } = await netlifyBuild(flags)
   return [logs.stdout.join('\n'), logs.stderr.join('\n')].filter(Boolean).join('\n\n')
 }

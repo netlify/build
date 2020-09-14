@@ -38,6 +38,55 @@ test('Exit code is 2 on plugin error', async t => {
   t.is(exitCode, 2)
 })
 
+test('Success is true on success', async t => {
+  const {
+    returnValue: { success },
+  } = await runFixture(t, 'empty', { programmatic: true, snapshot: false })
+  t.true(success)
+})
+
+test('Success is true on build cancellation', async t => {
+  const {
+    returnValue: { success },
+  } = await runFixture(t, 'cancel', { programmatic: true, snapshot: false })
+  t.true(success)
+})
+
+test('Success is false on failure', async t => {
+  const {
+    returnValue: { success },
+  } = await runFixture(t, 'plugin_error', { programmatic: true, snapshot: false })
+  t.false(success)
+})
+
+test('severityCode is 0 on success', async t => {
+  const {
+    returnValue: { severityCode },
+  } = await runFixture(t, 'empty', { programmatic: true, snapshot: false })
+  t.is(severityCode, 0)
+})
+
+test('severityCode is 0 on build cancellation', async t => {
+  const {
+    returnValue: { severityCode },
+  } = await runFixture(t, 'cancel', { programmatic: true, snapshot: false })
+  t.is(severityCode, 0)
+})
+
+test('severityCode is 1 on user error', async t => {
+  const {
+    returnValue: { severityCode },
+  } = await runFixture(t, '', { flags: { config: '/invalid' }, programmatic: true, snapshot: false })
+  t.is(severityCode, 1)
+})
+
+test('severityCode is 2 on plugin error', async t => {
+  const {
+    returnValue: { severityCode },
+  } = await runFixture(t, 'plugin_error', { programmatic: true, snapshot: false })
+  t.is(severityCode, 2)
+})
+
 test('--cwd', async t => {
   await runFixture(t, '', { flags: { cwd: `${FIXTURES_DIR}/empty` } })
 })
