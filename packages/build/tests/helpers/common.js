@@ -38,7 +38,7 @@ const runFixtureCommon = async function(
   const commandEnv = { ...forceColor, ...envOption }
   const copyRootDir = await getCopyRootDir({ copyRoot })
   const mainFlags = getMainFlags({ fixtureName, copyRoot, copyRootDir, repositoryRoot, flags })
-  const { returnValue, failed } = await runCommand({
+  const { returnValue, exitCode } = await runCommand({
     mainFunc,
     binaryPath,
     useBinary,
@@ -51,7 +51,7 @@ const runFixtureCommon = async function(
 
   doTestAction({ t, returnValue, normalize, snapshot })
 
-  return { returnValue, failed }
+  return { returnValue, exitCode }
 }
 
 // Retrieve flags to the main entry point
@@ -124,12 +124,12 @@ const execCommand = async function({ mainFunc, binaryPath, useBinary, mainFlags,
 
 const execCliCommand = async function({ binaryPath, mainFlags, commandEnv }) {
   const cliFlags = getCliFlags(mainFlags)
-  const { all, failed } = await execa.command(`${binaryPath} ${cliFlags}`, {
+  const { all, exitCode } = await execa.command(`${binaryPath} ${cliFlags}`, {
     all: true,
     reject: false,
     env: commandEnv,
   })
-  return { returnValue: all, failed }
+  return { returnValue: all, exitCode }
 }
 
 const getCliFlags = function(mainFlags, prefix = []) {
@@ -150,10 +150,10 @@ const getCliFlag = function({ name, value, prefix }) {
 const execMainFunc = async function({ mainFunc, mainFlags, commandEnv }) {
   try {
     const returnValue = await mainFunc({ ...mainFlags, env: commandEnv })
-    return { returnValue, failed: false }
+    return { returnValue }
   } catch (error) {
     const returnValue = error.message
-    return { returnValue, failed: true }
+    return { returnValue }
   }
 }
 

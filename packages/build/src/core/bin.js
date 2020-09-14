@@ -18,9 +18,9 @@ const runCli = async function() {
   const flags = parseFlags()
   const flagsA = filterObj(flags, isUserFlag)
 
-  const { success, logs } = await build(flagsA)
+  const { severity = DEFAULT_SEVERITY, logs } = await build(flagsA)
   printLogs(logs)
-  process.exitCode = success ? 0 : 1
+  process.exitCode = EXIT_CODES[severity]
 }
 
 const parseFlags = function() {
@@ -191,5 +191,14 @@ const printLogs = function(logs) {
   const allLogs = [logs.stdout.join('\n'), logs.stderr.join('\n')].filter(Boolean).join('\n\n')
   console.log(allLogs)
 }
+
+// The exit codes 1|2|3 indicates whether this was a user|plugin|system error
+const EXIT_CODES = {
+  none: 0,
+  info: 1,
+  warning: 2,
+  error: 3,
+}
+const DEFAULT_SEVERITY = 'error'
 
 runCli()

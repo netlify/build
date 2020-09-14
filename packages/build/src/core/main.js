@@ -39,6 +39,7 @@ const { normalizeFlags } = require('./flags')
  *
  * @returns {object} buildResult
  * @returns {boolean} buildResult.success - Whether build succeeded or failed
+ * @returns {string} buildResult.severity - Build success/failure status among: 'none', 'info' (user error), 'warning' (plugin error), 'error' (system error)
  * @returns {string[]} buildResult.logs - When using the `buffer` option, all log messages
  */
 const build = async function(flags = {}) {
@@ -72,10 +73,10 @@ const build = async function(flags = {}) {
       testOpts,
       statsdOpts,
     })
-    return { success: true, logs }
+    return { success: true, severity: 'none', logs }
   } catch (error) {
-    await handleBuildError(error, errorParams)
-    return { success: false, logs }
+    const { severity } = await handleBuildError(error, errorParams)
+    return { success: severity !== 'none', severity, logs }
   }
 }
 

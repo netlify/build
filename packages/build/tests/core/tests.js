@@ -19,13 +19,23 @@ test('--version', async t => {
 })
 
 test('Exit code is 0 on success', async t => {
-  const { failed } = await runFixture(t, 'empty', { useBinary: true })
-  t.not(failed)
+  const { exitCode } = await runFixture(t, 'empty', { useBinary: true, snapshot: false })
+  t.is(exitCode, 0)
 })
 
-test('Exit code is 1 on error', async t => {
-  const { failed } = await runFixture(t, '', { flags: { config: '/invalid' }, useBinary: true })
-  t.true(failed)
+test('Exit code is 0 on build cancellation', async t => {
+  const { exitCode } = await runFixture(t, 'cancel', { useBinary: true, snapshot: false })
+  t.is(exitCode, 0)
+})
+
+test('Exit code is 1 on user error', async t => {
+  const { exitCode } = await runFixture(t, '', { flags: { config: '/invalid' }, useBinary: true, snapshot: false })
+  t.is(exitCode, 1)
+})
+
+test('Exit code is 2 on plugin error', async t => {
+  const { exitCode } = await runFixture(t, 'plugin_error', { useBinary: true, snapshot: false })
+  t.is(exitCode, 2)
 })
 
 test('--cwd', async t => {
