@@ -7,22 +7,22 @@ const { getPluginInfo } = require('./plugin')
 const { getErrorProps } = require('./properties')
 const { getStackInfo } = require('./stack')
 
-// Parse all error information into a normalized sets of properties
-const parseError = function({ error, colors, debug }) {
+// Add additional type-specific error information
+const getFullErrorInfo = function({ error, colors, debug }) {
+  const basicErrorInfo = parseErrorInfo(error)
   const {
     message,
     stack,
     errorProps,
     errorInfo,
     errorInfo: { location = {}, plugin = {} },
-    state,
     title,
     isSuccess,
     stackType,
     locationType,
     showErrorProps,
     rawStack,
-  } = parseErrorInfo(error)
+  } = basicErrorInfo
 
   const titleA = getTitle(title, errorInfo)
 
@@ -31,15 +31,8 @@ const parseError = function({ error, colors, debug }) {
   const pluginInfo = getPluginInfo(plugin, location)
   const locationInfo = getLocationInfo({ stack: stackA, location, locationType })
   const errorPropsA = getErrorProps({ errorProps, showErrorProps, colors })
-  return {
-    state,
-    title: titleA,
-    message: messageA,
-    pluginInfo,
-    locationInfo,
-    errorProps: errorPropsA,
-    isSuccess,
-  }
+
+  return { ...basicErrorInfo, title: titleA, message: messageA, pluginInfo, locationInfo, errorProps: errorPropsA }
 }
 
 // Parse error instance into all the basic properties containing information
@@ -58,7 +51,7 @@ const parseErrorInfo = function(error) {
     showErrorProps,
     rawStack,
   } = getTypeInfo(errorInfo)
-  return {
+  const basicErrorInfo = {
     message,
     stack,
     errorProps,
@@ -74,6 +67,7 @@ const parseErrorInfo = function(error) {
     showErrorProps,
     rawStack,
   }
+  return basicErrorInfo
 }
 
 // Retrieve title to print in logs
@@ -85,4 +79,4 @@ const getTitle = function(title, errorInfo) {
   return title(errorInfo)
 }
 
-module.exports = { parseError, parseErrorInfo }
+module.exports = { getFullErrorInfo, parseErrorInfo }

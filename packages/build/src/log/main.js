@@ -4,6 +4,7 @@ const prettyMs = require('pretty-ms')
 
 const { name, version } = require('../../package.json')
 const { isSuccessException } = require('../error/cancel')
+const { getFullErrorInfo } = require('../error/parse/parse')
 const { serializeLogError } = require('../error/parse/serialize_log')
 const { roundTimerToMillisecs } = require('../time/measure')
 const { omit } = require('../utils/omit')
@@ -249,7 +250,8 @@ const logStatus = function(logs, { package, title = `Plugin ${package} ran succe
 }
 
 const logBuildError = function({ error, netlifyConfig, mode, logs, debug, testOpts }) {
-  const { title, body, isSuccess } = serializeLogError(error, { debug })
+  const fullErrorInfo = getFullErrorInfo({ error, colors: true, debug })
+  const { title, body, isSuccess } = serializeLogError({ fullErrorInfo })
   const logFunction = isSuccess ? logHeader : logErrorHeader
   logFunction(logs, title)
   logMessage(logs, `\n${body}\n`)
