@@ -29,6 +29,7 @@
         'p-locate',
         'prettier',
         'pretty-ms',
+        'yargs',
       ],
       major: {
         enabled: false,
