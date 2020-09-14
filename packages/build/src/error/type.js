@@ -9,7 +9,6 @@ const getTypeInfo = function({ type }) {
 //  - `title`: main title shown in build error logs and in the UI (statuses)
 //  - `locationType`: retrieve a human-friendly location of the error, printed
 //    in build error logs
-//  - `isSuccess`: `true` when this should not be reported as an error
 //  - `showErrorProps`: `true` when the `Error` instance static properties
 //    should be printed in build error logs. Only useful when the `Error`
 //    instance was not created by us.
@@ -20,17 +19,27 @@ const getTypeInfo = function({ type }) {
 //      - `message`: printed as is, but taken from `error.message`.
 //        Used when `error.stack` is not being correct due to the error being
 //        passed between different processes.
+//  - `severity`: error severity (also used by Bugsnag):
+//      - `none`: not an error, e.g. build cancellation
+//      - `info`: user error
+//      - `warning`: plugin author error, or possible system error
+//      - `error`: likely system error
 // Related to error statuses:
 //  - `state`: error status state. Defaults to `failed_build`
 // Related to Bugsnag:
 //  - `group`: main title shown in Bugsnag. Also used to group errors together
 //    in Bugsnag, combined with `error.message`.
 //    Defaults to `title`.
-//  - `severity`: Bugsnag error severity:
-//      - `info`: user error
-//      - `warning`: plugin author error, or possible system error
-//      - `error`: likely system error
 const TYPES = {
+  // Plugin called `utils.build.cancelBuild()`
+  cancelBuild: {
+    title: ({ location: { package } }) => `Build canceled by ${package}`,
+    stackType: 'stack',
+    locationType: 'buildFail',
+    severity: 'none',
+    state: 'canceled_build',
+  },
+
   // User configuration error (`@netlify/config`, wrong Node.js version)
   resolveConfig: {
     title: 'Configuration error',
@@ -70,16 +79,6 @@ const TYPES = {
     locationType: 'buildFail',
     severity: 'info',
     state: 'failed_plugin',
-  },
-
-  // Plugin called `utils.build.cancelBuild()`
-  cancelBuild: {
-    title: ({ location: { package } }) => `Build canceled by ${package}`,
-    stackType: 'stack',
-    locationType: 'buildFail',
-    isSuccess: true,
-    severity: 'info',
-    state: 'canceled_build',
   },
 
   // Plugin has an invalid shape
