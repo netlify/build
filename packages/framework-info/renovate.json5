@@ -13,6 +13,7 @@
     'husky',
     'nyc',
     'prettier',
-    'test-each'
+    'test-each',
+    'yargs'
   ]
 }
