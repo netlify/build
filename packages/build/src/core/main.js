@@ -19,6 +19,7 @@ const { loadConfig } = require('./config')
 const { getConstants } = require('./constants')
 const { doDryRun } = require('./dry')
 const { normalizeFlags } = require('./flags')
+const { getSeverity } = require('./severity')
 
 /**
  * Main entry point of Netlify Build.
@@ -73,10 +74,12 @@ const build = async function(flags = {}) {
       testOpts,
       statsdOpts,
     })
-    return { success: true, severity: 'none', logs }
+    const { success, severityCode } = getSeverity('none')
+    return { success, severityCode, logs }
   } catch (error) {
     const { severity } = await handleBuildError(error, errorParams)
-    return { success: severity !== 'none', severity, logs }
+    const { success, severityCode } = getSeverity(severity)
+    return { success, severityCode, logs }
   }
 }
 
