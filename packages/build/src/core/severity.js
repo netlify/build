@@ -7,12 +7,13 @@ const getSeverity = function(severity = FALLBACK_SEVERITY) {
 }
 
 const SEVERITY_CODES = {
-  none: 0,
-  info: 1,
-  warning: 2,
-  error: 3,
+  success: 0,
+  none: 1,
+  info: 2,
+  warning: 3,
+  error: 4,
 }
-const SUCCESS_SEVERITY = 'none'
+const SUCCESS_SEVERITY = 'success'
 // Indicates a bug in our codebase
 const FALLBACK_SEVERITY = 'error'
 

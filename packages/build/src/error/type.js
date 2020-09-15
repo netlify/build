@@ -20,6 +20,7 @@ const getTypeInfo = function({ type }) {
 //        Used when `error.stack` is not being correct due to the error being
 //        passed between different processes.
 //  - `severity`: error severity (also used by Bugsnag):
+//      - `success`: build success
 //      - `none`: not an error, e.g. build cancellation
 //      - `info`: user error
 //      - `warning`: plugin author error, or possible system error

@@ -40,7 +40,7 @@ const { getSeverity } = require('./severity')
  *
  * @returns {object} buildResult
  * @returns {boolean} buildResult.success - Whether build succeeded or failed
- * @returns {string} buildResult.severity - Build success/failure status among: 'none', 'info' (user error), 'warning' (plugin error), 'error' (system error)
+ * @returns {number} buildResult.severityCode - Build success/failure status among: 0 (success), 1 (build cancelled), 2 (user error), 3 (plugin error), 4 (system error). Can be used as exit code.
  * @returns {string[]} buildResult.logs - When using the `buffer` option, all log messages
  */
 const build = async function(flags = {}) {
@@ -74,7 +74,7 @@ const build = async function(flags = {}) {
       testOpts,
       statsdOpts,
     })
-    const { success, severityCode } = getSeverity('none')
+    const { success, severityCode } = getSeverity('success')
     return { success, severityCode, logs }
   } catch (error) {
     const { severity } = await handleBuildError(error, errorParams)
