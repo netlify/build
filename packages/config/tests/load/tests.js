@@ -80,7 +80,7 @@ test('--cachedConfig with an invalid path', async t => {
 })
 
 test('--cachedConfig with a token', async t => {
-  const { returnValue } = await runFixture(t, 'cached_config', { snapshot: false, flags: { token: 'test' } })
+  const { returnValue } = await runFixture(t, 'cached_config', { snapshot: false })
   await runFixture(t, 'cached_config', { flags: { cachedConfig: returnValue, token: 'test' } })
 })
 
