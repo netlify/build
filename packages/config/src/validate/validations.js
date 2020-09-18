@@ -132,6 +132,17 @@ const POST_NORMALIZE_VALIDATIONS = [
     ...insideRootCheck,
     example: functions => ({ build: { functions: removeParentDots(functions) } }),
   },
+  {
+    property: 'build.edge_handlers',
+    check: isString,
+    message: 'must be a string.',
+    example: () => ({ build: { edge_handlers: 'edge-handlers' } }),
+  },
+  {
+    property: 'build.edge_handlers',
+    ...insideRootCheck,
+    example: edgeHandlers => ({ build: { edge_handlers: removeParentDots(edgeHandlers) } }),
+  },
 ]
 
 module.exports = {

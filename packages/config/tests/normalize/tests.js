@@ -16,6 +16,7 @@ test('Some properties can be capitalized even when merged with defaultConfig', a
       base: 'baseDefault',
       command: 'gulp build default',
       functions: 'functionsDefault',
+      edge_handlers: 'edgeHandlersDefault',
       ignore: 'doIgnoreDefault',
       publish: 'publishDefault',
       environment: { TEST: 'testDefault' },

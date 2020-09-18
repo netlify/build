@@ -11,6 +11,8 @@ const normalizeBuildCase = function({
   base = Base,
   Command,
   command = Command,
+  Edge_handlers,
+  edge_handlers = Edge_handlers,
   Environment,
   environment = Environment,
   Functions,
@@ -23,7 +25,7 @@ const normalizeBuildCase = function({
   publish = Publish,
   ...build
 } = {}) {
-  return removeFalsy({ ...build, base, command, environment, functions, ignore, processing, publish })
+  return removeFalsy({ ...build, base, command, edge_handlers, environment, functions, ignore, processing, publish })
 }
 
 module.exports = { normalizeConfigCase, normalizeBuildCase }

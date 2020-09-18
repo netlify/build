@@ -37,6 +37,7 @@ const { config, configPath, buildDir, context, branch, token, siteInfo } = await
           "AWS_LAMBDA_JS_RUNTIME": "nodejs10.x"
         },
         "functions": "/home/me/cv-website/functions",
+        "edge_handlers": "/home/me/cv-website/edge-handlers",
         "publish": "/home/me/cv-website/build",
         "processing": {
           "css": {
@@ -128,8 +129,8 @@ Repository root directory. This is used in the following cases:
 
 - Searching for the `netlify.toml` (see [`config`](#config))
 - When a `base` directory was specified, its path is relative to the repository root directory
-- The `functions` and `publish` directories are relative to the repository root directory or (if specified) the `base`
-  directory
+- The `functions`, `edge_handlers` and `publish` directories are relative to the repository root directory or (if
+  specified) the `base` directory
 - Determining the [build directory](#builddir)
 
 If not specified, it is automatically guessed by looking for any `.git` directory from the [`cwd`](#cwd), and up. If
