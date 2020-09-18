@@ -19,10 +19,10 @@ const CORE_PLUGINS = [
 const EDGE_HANDLERS_PLUGIN_PATH = require.resolve(EDGE_HANDLERS_PLUGIN_NAME)
 
 // Plugins that are installed and enabled by default
-const getCorePlugins = async function({ constants: { FUNCTIONS_SRC }, buildDir, plugins }) {
+const getCorePlugins = async function({ constants: { FUNCTIONS_SRC, EDGE_HANDLERS_SRC }, buildDir, plugins }) {
   const functionsPlugin = getFunctionsPlugin(FUNCTIONS_SRC)
   const functionsInstallPlugin = getFunctionsInstallPlugin(FUNCTIONS_SRC)
-  const edgeHandlersPlugin = await getEdgeHandlersPlugin({ buildDir, plugins })
+  const edgeHandlersPlugin = await getEdgeHandlersPlugin({ buildDir, EDGE_HANDLERS_SRC, plugins })
   return [functionsPlugin, functionsInstallPlugin, edgeHandlersPlugin].filter(Boolean)
 }
 
@@ -47,27 +47,25 @@ const getFunctionsInstallPlugin = function(FUNCTIONS_SRC) {
   return { package: FUNCTIONS_INSTALL_PLUGIN_NAME, pluginPath: FUNCTIONS_INSTALL_PLUGIN, optional: true }
 }
 
-const getEdgeHandlersPlugin = async function({ buildDir, plugins }) {
-  if (!(await usesEdgeHandlers({ buildDir, plugins }))) {
+const getEdgeHandlersPlugin = async function({ buildDir, EDGE_HANDLERS_SRC, plugins }) {
+  if (!(await usesEdgeHandlers({ buildDir, EDGE_HANDLERS_SRC, plugins }))) {
     return
   }
 
   return { package: EDGE_HANDLERS_PLUGIN_NAME, pluginPath: EDGE_HANDLERS_PLUGIN_PATH }
 }
 
-// To enable Edge handlers, either:
-//   - create a `edge-handlers` directory in the build directory
-//   - add the plugin in `netlify.toml`
-const usesEdgeHandlers = async function({ buildDir, plugins }) {
-  const edgeHandlersDir = `${buildDir}/${EDGE_HANDLERS_LOCATION}`
-  return plugins.some(isEdgeHandlersPlugin) || (await isDirectory(edgeHandlersDir))
+// To enable Edge handlers, create a `edge-handlers` directory in the build
+// directory.
+// The location can be overridden using the `build.edge_handlers` property in
+// `netlify.toml`.
+const usesEdgeHandlers = async function({ buildDir, EDGE_HANDLERS_SRC, plugins }) {
+  return plugins.some(isEdgeHandlersPlugin) || (await isDirectory(`${buildDir}/${EDGE_HANDLERS_SRC}`))
 }
 
 const isEdgeHandlersPlugin = function({ package }) {
   return package === EDGE_HANDLERS_PLUGIN_NAME
 }
-
-const EDGE_HANDLERS_LOCATION = 'edge-handlers'
 
 const isCorePlugin = function(package) {
   return CORE_PLUGINS.includes(package)

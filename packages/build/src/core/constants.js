@@ -11,7 +11,7 @@ const getConstants = async function({
   buildDir,
   functionsDistDir,
   netlifyConfig: {
-    build: { publish = buildDir, functions },
+    build: { publish = buildDir, functions, edge_handlers: edgeHandlers = DEFAULT_EDGE_HANDLERS_SRC },
   },
   siteInfo: { id: siteId },
   token,
@@ -38,6 +38,10 @@ const getConstants = async function({
      */
     FUNCTIONS_DIST: functionsDistDir,
     /**
+     * The directory where edge handlers source code lives
+     */
+    EDGE_HANDLERS_SRC: edgeHandlers,
+    /**
      * Path to the Netlify build cache folder
      */
     CACHE_DIR: cacheDir,
@@ -62,6 +66,8 @@ const getConstants = async function({
   return constantsA
 }
 
+const DEFAULT_EDGE_HANDLERS_SRC = 'edge-handlers'
+
 // The current directory is `buildDir`. Most constants are inside this `buildDir`.
 // Instead of passing absolute paths, we pass paths relative to `buildDir`, so
 // that logs are less verbose.
@@ -79,6 +85,13 @@ const normalizePath = function(path, buildDir, key) {
   return pathA
 }
 
-const CONSTANT_PATHS = ['CONFIG_PATH', 'PUBLISH_DIR', 'FUNCTIONS_SRC', 'FUNCTIONS_DIST', 'CACHE_DIR']
+const CONSTANT_PATHS = [
+  'CONFIG_PATH',
+  'PUBLISH_DIR',
+  'FUNCTIONS_SRC',
+  'FUNCTIONS_DIST',
+  'EDGE_HANDLERS_SRC',
+  'CACHE_DIR',
+]
 
 module.exports = { getConstants }
