@@ -52,6 +52,10 @@ test('constants.FUNCTIONS_DIST', async t => {
   await runFixture(t, 'functions_dist')
 })
 
+test('constants.EDGE_HANDLERS_DIST', async t => {
+  await runFixture(t, 'edge_handlers_dist')
+})
+
 test('constants.CACHE_DIR local', async t => {
   await runFixture(t, 'cache')
 })
