@@ -23,8 +23,8 @@ const getTypeInfo = function({ type }) {
 //      - `success`: build success
 //      - `none`: not an error, e.g. build cancellation
 //      - `info`: user error
-//      - `warning`: plugin author error, or possible system error
-//      - `error`: likely system error
+//      - `warning`: community plugin error
+//      - `error`: system error, including core plugin error
 // Related to error statuses:
 //  - `state`: error status state. Defaults to `failed_build`
 // Related to Bugsnag:
@@ -113,6 +113,16 @@ const TYPES = {
     stackType: 'none',
     locationType: 'buildFail',
     severity: 'warning',
+  },
+
+  // Core plugin internal error
+  corePlugin: {
+    title: ({ location: { package } }) => `Plugin "${package}" internal error`,
+    stackType: 'stack',
+    showErrorProps: true,
+    rawStack: true,
+    locationType: 'buildFail',
+    severity: 'error',
   },
 
   // Request error when `@netlify/build` was calling Netlify API

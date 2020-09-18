@@ -2,6 +2,8 @@ const { pipePluginOutput, unpipePluginOutput } = require('../log/stream')
 const { callChild } = require('../plugins/ipc')
 const { getSuccessStatus } = require('../status/add')
 
+const { handlePluginError } = require('./error')
+
 // Fire a plugin command
 const firePluginCommand = async function({
   event,
@@ -27,6 +29,7 @@ const firePluginCommand = async function({
     const newStatus = getSuccessStatus(status, { commands, event, package })
     return { newEnvChanges, newStatus }
   } catch (newError) {
+    handlePluginError(newError, loadedFrom)
     return { newError }
   } finally {
     await unpipePluginOutput(childProcess, logs, listeners)
