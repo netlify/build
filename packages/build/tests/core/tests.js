@@ -198,6 +198,10 @@ test('--node-path is not used by build-image cached plugins', async t => {
   })
 })
 
+test('--featureFlags can be used', async t => {
+  await runFixture(t, 'empty', { flags: { featureFlags: 'test,test,testTwo' } })
+})
+
 // Normalize telemetry request so it can be snapshot
 const normalizeSnapshot = function({ body, ...request }) {
   return { ...request, body: normalizeBody(body) }

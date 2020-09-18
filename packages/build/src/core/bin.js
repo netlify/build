@@ -147,6 +147,10 @@ Default: true`,
     describe: 'Options for testing only',
     hidden: true,
   },
+  featureFlags: {
+    describe: 'Comma-separated list of feature flags to enable unreleased features',
+    hidden: true,
+  },
   statsd: {
     describe: 'Statsd-related options, for performance measuring',
     hidden: true,
