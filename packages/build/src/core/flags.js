@@ -3,18 +3,22 @@ const { env, execPath } = require('process')
 const { logFlags } = require('../log/main')
 const { removeFalsy } = require('../utils/remove_falsy')
 
+const { normalizeFeatureFlags } = require('./feature_flags')
+
 // Normalize CLI flags
 const normalizeFlags = function(flags, logs) {
   const rawFlags = removeFalsy(flags)
-  const defaultFlags = getDefaultFlags(rawFlags)
+  const rawFlagsA = normalizeFeatureFlags(rawFlags)
+  const defaultFlags = getDefaultFlags(rawFlagsA)
   const mergedFlags = {
     ...defaultFlags,
-    ...rawFlags,
-    statsdOpts: { ...defaultFlags.statsd, ...rawFlags.statsd },
+    ...rawFlagsA,
+    statsdOpts: { ...defaultFlags.statsd, ...rawFlagsA.statsd },
+    featureFlags: { ...defaultFlags.featureFlags, ...rawFlagsA.featureFlags },
   }
   const normalizedFlags = removeFalsy(mergedFlags)
 
-  logFlags(logs, rawFlags, normalizedFlags)
+  logFlags(logs, rawFlagsA, normalizedFlags)
 
   return normalizedFlags
 }
@@ -34,6 +38,7 @@ const getDefaultFlags = function({ env: envOpt = {} }) {
     telemetry: !combinedEnv.BUILD_TELEMETRY_DISABLED,
     sendStatus: false,
     testOpts: {},
+    featureFlags: {},
     statsd: { port: DEFAULT_STATSD_PORT },
   }
 }
