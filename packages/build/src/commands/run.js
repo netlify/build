@@ -31,6 +31,7 @@ const runCommands = async function({
   debug,
   timers,
   testOpts,
+  featureFlags,
 }) {
   const { index: commandsCount, error: errorA, statuses: statusesB, timers: timersC } = await pReduce(
     commands,
@@ -72,6 +73,7 @@ const runCommands = async function({
         debug,
         timers: timersA,
         testOpts,
+        featureFlags,
       })
       const statusesA = addStatus({ newStatus, statuses, event, package, pluginPackageJson })
       return {
@@ -124,6 +126,7 @@ const runCommand = async function({
   debug,
   timers,
   testOpts,
+  featureFlags,
 }) {
   if (!shouldRunCommand({ event, package, error, failedPlugins })) {
     return {}
@@ -170,6 +173,7 @@ const runCommand = async function({
     timers: timersA,
     durationNs,
     testOpts,
+    featureFlags,
   })
   return { ...newValues, newIndex: index + 1 }
 }
@@ -269,6 +273,7 @@ const getNewValues = function({
   timers,
   durationNs,
   testOpts,
+  featureFlags,
 }) {
   if (newError !== undefined) {
     return handleCommandError({
@@ -284,6 +289,7 @@ const getNewValues = function({
       logs,
       debug,
       testOpts,
+      featureFlags,
     })
   }
 

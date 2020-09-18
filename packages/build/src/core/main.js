@@ -118,6 +118,7 @@ const tExecBuild = async function({
   mode,
   deployId,
   testOpts,
+  featureFlags,
   errorMonitor,
   errorParams,
   logs,
@@ -176,6 +177,7 @@ const tExecBuild = async function({
     timers: timersA,
     sendStatus,
     testOpts,
+    featureFlags,
   })
   return { netlifyConfig, siteInfo, commandsCount, timers: timersB }
 }
@@ -203,6 +205,7 @@ const runAndReportBuild = async function({
   timers,
   sendStatus,
   testOpts,
+  featureFlags,
 }) {
   try {
     const { commandsCount, statuses, timers: timersA } = await initAndRunBuild({
@@ -224,6 +227,7 @@ const runAndReportBuild = async function({
       debug,
       timers,
       testOpts,
+      featureFlags,
     })
     await reportStatuses({
       statuses,
@@ -279,6 +283,7 @@ const initAndRunBuild = async function({
   debug,
   timers,
   testOpts,
+  featureFlags,
 }) {
   const constants = await getConstants({ configPath, buildDir, functionsDistDir, netlifyConfig, siteInfo, token, mode })
 
@@ -322,6 +327,7 @@ const initAndRunBuild = async function({
       debug,
       timers: timersB,
       testOpts,
+      featureFlags,
     })
   } finally {
     await stopPlugins(childProcesses)
@@ -348,6 +354,7 @@ const runBuild = async function({
   debug,
   timers,
   testOpts,
+  featureFlags,
 }) {
   const { pluginsCommands, timers: timersA } = await loadPlugins({
     pluginsOptions,
@@ -356,6 +363,7 @@ const runBuild = async function({
     constants,
     timers,
     debug,
+    featureFlags,
   })
 
   const { commands, commandsCount } = getCommands(pluginsCommands, netlifyConfig)
@@ -380,6 +388,7 @@ const runBuild = async function({
     debug,
     timers: timersA,
     testOpts,
+    featureFlags,
   })
   return { commandsCount: commandsCountA, statuses, timers: timersB }
 }

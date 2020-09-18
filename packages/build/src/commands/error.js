@@ -24,6 +24,7 @@ const handleCommandError = async function({
   logs,
   debug,
   testOpts,
+  featureFlags,
 }) {
   // `build.command` do not report error statuses
   if (buildCommand !== undefined) {
@@ -37,7 +38,7 @@ const handleCommandError = async function({
   } = fullErrorInfo
   const newStatus = serializeErrorStatus({ fullErrorInfo })
 
-  if (type === 'failPlugin' || isSoftFailEvent(event)) {
+  if (type === 'failPlugin' || isSoftFailEvent(event, featureFlags)) {
     return handleFailPlugin({
       newStatus,
       package,

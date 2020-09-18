@@ -1,7 +1,3 @@
-const {
-  env: { NETLIFY_POST_DEPLOY_ERRORS },
-} = require('process')
-
 const { EVENTS } = require('../plugins/events')
 
 // Get commands for all events
@@ -34,11 +30,9 @@ const isAmongEvents = function(events, event) {
 }
 
 // Check if failure of the event should not make the build fail
-const isSoftFailEvent =
-  NETLIFY_POST_DEPLOY_ERRORS === 'true'
-    ? isAmongEvents.bind(null, ['onSuccess', 'onError', 'onEnd'])
-    : // We currently feature flag this using an environment variable
-      () => false
+const isSoftFailEvent = function(event, featureFlags) {
+  return featureFlags.postDeployErrors && isAmongEvents(['onSuccess', 'onError', 'onEnd'], event)
+}
 
 // Check if the event is triggered even when an error happens
 const isErrorEvent = isAmongEvents.bind(null, ['onError', 'onEnd'])
