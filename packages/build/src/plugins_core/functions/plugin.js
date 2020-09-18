@@ -19,6 +19,9 @@ const onBuild = async function({
   },
 }) {
   if (!(await pathExists(FUNCTIONS_SRC))) {
+    // TODO: use `utils.build.warn()` when available
+    // See https://github.com/netlify/build/issues/1248
+    console.log(`The Netlify Functions setting target a non-exiting directory: ${FUNCTIONS_SRC}`)
     return
   }
 
