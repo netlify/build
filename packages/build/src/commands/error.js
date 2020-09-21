@@ -1,6 +1,7 @@
 const { cancelBuild } = require('../error/cancel')
 const { handleBuildError } = require('../error/handle')
-const { getFullErrorInfo } = require('../error/parse/parse')
+const { addErrorInfo } = require('../error/info')
+const { getFullErrorInfo, parseErrorInfo } = require('../error/parse/parse')
 const { serializeErrorStatus } = require('../error/parse/serialize_status')
 
 const { isSoftFailEvent } = require('./get')
@@ -75,4 +76,18 @@ const handleFailPlugin = async function({
   return { failedPlugin: [package], newStatus }
 }
 
-module.exports = { handleCommandError }
+// Unlike community plugins, core plugin bugs should be handled as system errors
+const handlePluginError = function(error, loadedFrom) {
+  if (!isCorePluginBug(error, loadedFrom)) {
+    return
+  }
+
+  addErrorInfo(error, { type: 'corePlugin' })
+}
+
+const isCorePluginBug = function(error, loadedFrom) {
+  const { severity } = parseErrorInfo(error)
+  return severity === 'warning' && loadedFrom === 'core'
+}
+
+module.exports = { handleCommandError, handlePluginError }
