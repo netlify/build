@@ -152,6 +152,18 @@ const normalizeEdgeHandler = function([handlerName, { onRequest }]) {
 // See https://github.com/netlify/netlify-plugin-edge-handlers/issues/36
 // TODO: remove once Windows is supported
 if (!version.startsWith('v8.') && platform !== 'win32') {
+  test('constants.EDGE_HANDLERS_SRC default value', async t => {
+    await runFixture(t, 'edge_handlers_src_default')
+  })
+
+  test('constants.EDGE_HANDLERS_SRC relative path', async t => {
+    await runFixture(t, 'edge_handlers_src_relative')
+  })
+
+  test('constants.EDGE_HANDLERS_SRC missing path', async t => {
+    await runFixture(t, 'edge_handlers_src_missing')
+  })
+
   test('Edge handlers: simple setup', async t => {
     const { outputDir, manifestPath } = getEdgeHandlersPaths('handlers_simple')
     await runFixture(t, 'handlers_simple')

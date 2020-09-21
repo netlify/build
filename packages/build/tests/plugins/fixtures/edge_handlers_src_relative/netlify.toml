@@ -1,0 +1,5 @@
+[build]
+edge_handlers = "custom-edge-handlers"
+
+[[plugins]]
+package = "./plugin"
