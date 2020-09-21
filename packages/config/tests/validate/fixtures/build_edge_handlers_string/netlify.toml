@@ -1,0 +1,3 @@
+[build]
+publish = "publish"
+edge_handlers = true

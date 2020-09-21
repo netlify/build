@@ -18,7 +18,7 @@ const handleFiles = async function({ config: { build, ...config }, repositoryRoo
 // Most are relative to `buildDir` (if `baseRelDir` is `true`). But `build.base`
 // itself is never relative to `buildDir` since it is contained in it.
 const REPOSITORY_RELATIVE_PROPS = ['base']
-const BUILD_DIR_RELATIVE_PROPS = ['publish', 'functions']
+const BUILD_DIR_RELATIVE_PROPS = ['publish', 'functions', 'edge_handlers']
 
 const resolvePaths = function(build, propNames, baseRel) {
   return propNames.reduce((buildA, propName) => resolvePathProp(buildA, propName, baseRel), build)
