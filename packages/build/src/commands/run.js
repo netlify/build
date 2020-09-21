@@ -1,3 +1,5 @@
+/* eslint-disable max-lines */
+// TODO: fix linting
 const pReduce = require('p-reduce')
 
 const { addErrorInfo } = require('../error/info')
@@ -302,3 +304,4 @@ const getNewValues = function({
 }
 
 module.exports = { runCommands }
+/* eslint-enable max-lines */

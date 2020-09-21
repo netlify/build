@@ -24,6 +24,8 @@ const resolvePluginsPath = async function({ pluginsOptions, buildDir, mode, logs
   return pluginsOptionsB
 }
 
+// TODO: fix linting
+// eslint-disable-next-line complexity
 const resolvePluginPath = async function({
   pluginOptions,
   pluginOptions: { package, loadedFrom },
