@@ -48,6 +48,13 @@ const TYPES = {
     severity: 'info',
   },
 
+  // Error while installing user packages (missing plugins, local plugins or functions dependencies)
+  dependencies: {
+    title: 'Dependencies installation error',
+    stackType: 'none',
+    severity: 'info',
+  },
+
   // User misconfigured a plugin
   pluginInput: {
     title: ({ location: { package, input } }) => `Plugin "${package}" invalid input "${input}"`,
@@ -105,13 +112,6 @@ const TYPES = {
     title: ({ location: { package } }) => `Plugin "${package}" internal error`,
     stackType: 'none',
     locationType: 'buildFail',
-    severity: 'warning',
-  },
-
-  // Error while installing user packages (missing plugins, local plugins or functions dependencies)
-  dependencies: {
-    title: 'Dependencies installation error',
-    stackType: 'none',
     severity: 'warning',
   },
 
