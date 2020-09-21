@@ -18,4 +18,10 @@ const getFeatureFlag = function(name) {
   return { [name]: true }
 }
 
-module.exports = { normalizeFeatureFlags }
+const DEFAULT_FEATURE_FLAGS = {
+  // When `true`, errors in `onSuccess`, `onEnd` and `onError` happening after
+  // deploy do not make the build fail. They only make the plugin fail.
+  postDeployErrors: false,
+}
+
+module.exports = { normalizeFeatureFlags, DEFAULT_FEATURE_FLAGS }
