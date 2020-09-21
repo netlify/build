@@ -1,3 +1,5 @@
+/* eslint-disable max-lines */
+// TODO: fix linting
 const { cleanupConfig } = require('@netlify/config')
 const { arrowDown } = require('figures')
 const prettyMs = require('pretty-ms')
@@ -310,3 +312,4 @@ module.exports = {
   logBuildError,
   logBuildSuccess,
 }
+/* eslint-enable max-lines */

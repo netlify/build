@@ -146,6 +146,8 @@ const loadConfig = async function({
 }
 
 // Load configuration file and normalize it, merge contexts, etc.
+// TODO: fix linting
+// eslint-disable-next-line max-statements
 const getFullConfig = async function({
   configOpt,
   cwd,

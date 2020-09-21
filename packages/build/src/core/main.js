@@ -1,3 +1,5 @@
+/* eslint-disable max-lines */
+// TODO: fix linting
 require('../utils/polyfills')
 
 const { getCommands } = require('../commands/get')
@@ -18,7 +20,7 @@ const { reportTimers } = require('../time/report')
 const { loadConfig } = require('./config')
 const { getConstants } = require('./constants')
 const { doDryRun } = require('./dry')
-const { normalizeFlags } = require('./flags')
+const { normalizeFlags } = require('./normalize_flags')
 const { getSeverity } = require('./severity')
 
 /**
@@ -40,7 +42,8 @@ const { getSeverity } = require('./severity')
  *
  * @returns {object} buildResult
  * @returns {boolean} buildResult.success - Whether build succeeded or failed
- * @returns {number} buildResult.severityCode - Build success/failure status among: 0 (success), 1 (build cancelled), 2 (user error), 3 (plugin error), 4 (system error). Can be used as exit code.
+ * @returns {number} buildResult.severityCode - Build success/failure status among:
+ * 0 (success), 1 (build cancelled), 2 (user error), 3 (plugin error), 4 (system error). Can be used as exit code.
  * @returns {string[]} buildResult.logs - When using the `buffer` option, all log messages
  */
 const build = async function(flags = {}) {
@@ -420,3 +423,4 @@ const handleBuildSuccess = async function({
 }
 
 module.exports = build
+/* eslint-enable max-lines */

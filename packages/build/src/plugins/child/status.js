@@ -11,6 +11,8 @@ const show = function(runState, showArgs) {
 }
 
 // Validate arguments of `utils.status.show()`
+// TODO: fix linting
+// eslint-disable-next-line complexity
 const validateShowArgs = function(showArgs) {
   try {
     if (showArgs === undefined) {
