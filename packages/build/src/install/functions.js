@@ -2,7 +2,7 @@ const { dirname } = require('path')
 
 const readdirp = require('readdirp')
 
-const { logInstallFunctionDependencies } = require('../log/main')
+const { logInstallFunctionDependencies } = require('../log/messages/install')
 
 const { installDependencies } = require('./main')
 

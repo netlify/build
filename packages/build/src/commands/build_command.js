@@ -4,7 +4,7 @@ const execa = require('execa')
 
 const { setEnvChanges } = require('../env/changes.js')
 const { addErrorInfo } = require('../error/info')
-const { logBuildCommandStart } = require('../log/main')
+const { logBuildCommandStart } = require('../log/messages/commands')
 const { getBuildCommandStdio, handleBuildCommandOutput } = require('../log/stream')
 
 // Fire `build.command`

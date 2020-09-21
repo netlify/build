@@ -4,7 +4,7 @@ const { promisify } = require('util')
 const makeDir = require('make-dir')
 const pathExists = require('path-exists')
 
-const { logInstallMissingPlugins, logMissingPluginsWarning } = require('../log/main')
+const { logInstallMissingPlugins, logMissingPluginsWarning } = require('../log/messages/install')
 
 const { addLatestDependencies } = require('./main')
 

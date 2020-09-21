@@ -7,7 +7,7 @@ const { zipFunctions, listFunctions } = require('@netlify/zip-it-and-ship-it')
 const pathExists = require('path-exists')
 const { isDirectory } = require('path-type')
 
-const { logFunctionsToBundle } = require('../../log/main')
+const { logFunctionsToBundle } = require('../../log/messages/plugins')
 
 const { getZipError } = require('./error')
 

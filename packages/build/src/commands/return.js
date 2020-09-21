@@ -1,5 +1,5 @@
-const { logCommandSuccess } = require('../log/main')
-const { logTimer } = require('../log/main')
+const { logCommandSuccess } = require('../log/messages/commands')
+const { logTimer } = require('../log/messages/core')
 
 const { handleCommandError } = require('./error')
 

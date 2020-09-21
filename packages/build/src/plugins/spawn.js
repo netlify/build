@@ -2,7 +2,7 @@ const { execPath } = require('process')
 
 const execa = require('execa')
 
-const { logLoadingPlugins } = require('../log/main')
+const { logLoadingPlugins } = require('../log/messages/plugins')
 const { measureDuration } = require('../time/main')
 
 const { getEventFromChild } = require('./ipc')

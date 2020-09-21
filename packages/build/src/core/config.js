@@ -3,7 +3,7 @@ const resolveConfig = require('@netlify/config')
 const { getChildEnv } = require('../env/main')
 const { addApiErrorHandlers } = require('../error/api')
 const { addErrorInfo } = require('../error/info')
-const { logBuildDir, logConfigPath, logConfig, logContext } = require('../log/main')
+const { logBuildDir, logConfigPath, logConfig, logContext } = require('../log/messages/config')
 const { measureDuration } = require('../time/main')
 
 // Retrieve configuration object

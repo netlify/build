@@ -1,5 +1,5 @@
 const { handleBuildError } = require('../error/handle')
-const { logStatuses } = require('../log/main')
+const { logStatuses } = require('../log/messages/status')
 
 const { removeStatusesColors } = require('./colors')
 
