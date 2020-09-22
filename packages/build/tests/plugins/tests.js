@@ -160,6 +160,10 @@ if (!version.startsWith('v8.') && platform !== 'win32') {
     await runFixture(t, 'edge_handlers_src_default')
   })
 
+  test('constants.EDGE_HANDLERS_SRC automatic value', async t => {
+    await runFixture(t, 'edge_handlers_src_auto')
+  })
+
   test('constants.EDGE_HANDLERS_SRC relative path', async t => {
     await runFixture(t, 'edge_handlers_src_relative')
   })

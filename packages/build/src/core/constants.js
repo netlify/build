@@ -2,6 +2,7 @@ const { relative, normalize } = require('path')
 
 const { getCacheDir } = require('@netlify/cache-utils')
 const mapObj = require('map-obj')
+const { isDirectory } = require('path-type')
 
 const { version } = require('../../package.json')
 
@@ -11,14 +12,17 @@ const getConstants = async function({
   buildDir,
   functionsDistDir,
   netlifyConfig: {
-    build: { publish = buildDir, functions, edge_handlers: edgeHandlers = DEFAULT_EDGE_HANDLERS_SRC },
+    build: { publish = buildDir, functions, edge_handlers: edgeHandlers },
   },
   siteInfo: { id: siteId },
   token,
   mode,
 }) {
   const isLocal = mode !== 'buildbot'
-  const cacheDir = await getCacheDir({ mode })
+  const [cacheDir, edgeHandlersSrc] = await Promise.all([
+    getCacheDir({ mode }),
+    getEdgeHandlersSrc(edgeHandlers, buildDir),
+  ])
 
   const constants = {
     /**
@@ -40,7 +44,7 @@ const getConstants = async function({
     /**
      * The directory where edge handlers source code lives
      */
-    EDGE_HANDLERS_SRC: edgeHandlers,
+    EDGE_HANDLERS_SRC: edgeHandlersSrc,
     /**
      * Path to the Netlify build cache folder
      */
@@ -64,6 +68,18 @@ const getConstants = async function({
   }
   const constantsA = mapObj(constants, (key, path) => [key, normalizePath(path, buildDir, key)])
   return constantsA
+}
+
+// The default `edge-handlers` is only set to `constants.EDGE_HANDLERS_SRC` if
+// that directory exists
+const getEdgeHandlersSrc = async function(edgeHandlers, buildDir) {
+  if (edgeHandlers !== undefined) {
+    return edgeHandlers
+  }
+
+  if (await isDirectory(`${buildDir}/${DEFAULT_EDGE_HANDLERS_SRC}`)) {
+    return DEFAULT_EDGE_HANDLERS_SRC
+  }
 }
 
 const DEFAULT_EDGE_HANDLERS_SRC = 'edge-handlers'
