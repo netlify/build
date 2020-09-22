@@ -146,8 +146,6 @@ const loadConfig = async function({
 }
 
 // Load configuration file and normalize it, merge contexts, etc.
-// TODO: fix linting
-// eslint-disable-next-line max-statements
 const getFullConfig = async function({
   configOpt,
   cwd,
@@ -162,27 +160,31 @@ const getFullConfig = async function({
 
   try {
     const config = await parseConfig(configPath)
-
-    validatePreCaseNormalize(config)
-    const configA = normalizeConfigCase(config)
-
-    validatePreMergeConfig(defaultConfig, configA, inlineConfig)
-    const configB = mergeConfigs(defaultConfig, configA, inlineConfig)
-
-    validatePreContextConfig(configB)
-    const configC = mergeContext(configB, context, branch)
-
-    validatePreNormalizeConfig(configC)
-    const configD = normalizeConfig(configC)
-
-    validatePostNormalizeConfig(configD)
-
-    return { configPath, config: configD }
+    const configA = mergeAndNormalizeConfig({ config, defaultConfig, inlineConfig, context, branch })
+    return { configPath, config: configA }
   } catch (error) {
     const configName = configPath === undefined ? '' : ` file ${configPath}`
     error.message = `When resolving config${configName}:\n${error.message}`
     throw error
   }
+}
+
+const mergeAndNormalizeConfig = function({ config, defaultConfig, inlineConfig, context, branch }) {
+  validatePreCaseNormalize(config)
+  const configA = normalizeConfigCase(config)
+
+  validatePreMergeConfig(defaultConfig, configA, inlineConfig)
+  const configB = mergeConfigs(defaultConfig, configA, inlineConfig)
+
+  validatePreContextConfig(configB)
+  const configC = mergeContext(configB, context, branch)
+
+  validatePreNormalizeConfig(configC)
+  const configD = normalizeConfig(configC)
+
+  validatePostNormalizeConfig(configD)
+
+  return configD
 }
 
 module.exports = resolveConfig
