@@ -2,8 +2,8 @@ const { isDirectory } = require('path-type')
 
 const { LOCAL_INSTALL_PLUGIN_NAME } = require('../install/local')
 
-const FUNCTIONS_INSTALL_PLUGIN = `${__dirname}/functions_install/plugin.js`
-const FUNCTIONS_PLUGIN = `${__dirname}/functions/plugin.js`
+const FUNCTIONS_INSTALL_PLUGIN = `${__dirname}/functions_install/index.js`
+const FUNCTIONS_PLUGIN = `${__dirname}/functions/index.js`
 
 // List of core plugin names
 const FUNCTIONS_PLUGIN_NAME = '@netlify/plugin-functions-core'
