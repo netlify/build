@@ -1,5 +1,5 @@
 const { addErrorInfo } = require('../error/info')
-const { logFailPluginWarning } = require('../log/main')
+const { logFailPluginWarning } = require('../log/messages/plugins')
 
 // Stop build.
 // As opposed to throwing an error directly or to uncaught exceptions, this is

@@ -1,5 +1,5 @@
 const { isErrorOnlyEvent } = require('../commands/get')
-const { logDryRunStart, logDryRunCommand, logDryRunEnd } = require('../log/main')
+const { logDryRunStart, logDryRunCommand, logDryRunEnd } = require('../log/messages/dry')
 
 // If the `dry` flag is specified, do a dry run
 const doDryRun = function({ commands, commandsCount, logs }) {

@@ -1,6 +1,6 @@
 const { env, execPath } = require('process')
 
-const { logFlags } = require('../log/main')
+const { logFlags } = require('../log/messages/config')
 const { removeFalsy } = require('../utils/remove_falsy')
 
 const { normalizeFeatureFlags, DEFAULT_FEATURE_FLAGS } = require('./feature_flags')
