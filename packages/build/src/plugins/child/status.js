@@ -11,30 +11,13 @@ const show = function(runState, showArgs) {
 }
 
 // Validate arguments of `utils.status.show()`
-// TODO: fix linting
-// eslint-disable-next-line complexity
 const validateShowArgs = function(showArgs) {
   try {
-    if (showArgs === undefined) {
-      throw new Error('requires an argument')
-    }
-
-    if (!isPlainObj(showArgs)) {
-      throw new Error('argument must be a plain object')
-    }
-
+    validateShowArgsObject(showArgs)
     const { title, summary, text, ...otherArgs } = showArgs
-    const otherKeys = Object.keys(otherArgs).map(arg => `"${arg}"`)
-
-    if (otherKeys.length !== 0) {
-      throw new Error(`must only contain "title", "summary" or "text" properties, not ${otherKeys.join(', ')}`)
-    }
-
+    validateShowArgsKeys(otherArgs)
     Object.entries({ title, summary, text }).forEach(validateStringArg)
-
-    if (summary === undefined || summary.trim() === '') {
-      throw new Error('requires specifying a "summary" property')
-    }
+    validateShowArgsSummary(summary)
   } catch (error) {
     error.message = `utils.status.show() ${error.message}`
     addErrorInfo(error, { type: 'pluginValidation' })
@@ -42,9 +25,32 @@ const validateShowArgs = function(showArgs) {
   }
 }
 
+const validateShowArgsObject = function(showArgs) {
+  if (showArgs === undefined) {
+    throw new Error('requires an argument')
+  }
+
+  if (!isPlainObj(showArgs)) {
+    throw new Error('argument must be a plain object')
+  }
+}
+
+const validateShowArgsKeys = function(otherArgs) {
+  const otherKeys = Object.keys(otherArgs).map(arg => `"${arg}"`)
+  if (otherKeys.length !== 0) {
+    throw new Error(`must only contain "title", "summary" or "text" properties, not ${otherKeys.join(', ')}`)
+  }
+}
+
 const validateStringArg = function([key, value]) {
   if (value !== undefined && typeof value !== 'string') {
     throw new Error(`"${key}" property must be a string`)
+  }
+}
+
+const validateShowArgsSummary = function(summary) {
+  if (summary === undefined || summary.trim() === '') {
+    throw new Error('requires specifying a "summary" property')
   }
 }
 
