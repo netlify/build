@@ -1,5 +1,5 @@
 [build]
-functions = "missing"
+edge_handlers = "missing"
 
 [[plugins]]
 package = "./plugin"
