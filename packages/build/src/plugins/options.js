@@ -36,8 +36,9 @@ const tGetPluginsOptions = async function({
   const pluginsOptionsB = await Promise.all(
     pluginsOptionsA.map(pluginOptions => loadPluginFiles({ pluginOptions, debug })),
   )
-  await installLocalPluginsDependencies({ plugins, pluginsOptions: pluginsOptionsB, buildDir, mode, logs })
-  return { pluginsOptions: pluginsOptionsB }
+  const pluginsOptionsC = pluginsOptionsB.filter(isNotRedundantCorePlugin)
+  await installLocalPluginsDependencies({ plugins, pluginsOptions: pluginsOptionsC, buildDir, mode, logs })
+  return { pluginsOptions: pluginsOptionsC }
 }
 
 const getPluginsOptions = measureDuration(tGetPluginsOptions, 'get_plugins_options')
@@ -75,8 +76,21 @@ const normalizePluginOptions = function({ package, pluginPath, loadedFrom, origi
 const loadPluginFiles = async function({ pluginOptions: { pluginPath, ...pluginOptions }, debug }) {
   const pluginDir = dirname(pluginPath)
   const { packageDir, packageJson: pluginPackageJson } = await getPackageJson(pluginDir)
-  const inputs = await useManifest(pluginOptions, { pluginDir, packageDir, pluginPackageJson, debug })
-  return { ...pluginOptions, pluginPath, pluginDir, packageDir, pluginPackageJson, inputs }
+  const { manifest, inputs } = await useManifest(pluginOptions, { pluginDir, packageDir, pluginPackageJson, debug })
+  return { ...pluginOptions, pluginPath, pluginDir, packageDir, pluginPackageJson, manifest, inputs }
+}
+
+// Core plugins can only be included once.
+// For example, when testing core plugins, they might be included as local plugins,
+// in which case they should not be included twice.
+const isNotRedundantCorePlugin = function(pluginOptionsA, index, pluginsOptions) {
+  return (
+    pluginOptionsA.loadedFrom !== 'core' ||
+    pluginsOptions.every(
+      pluginOptionsB =>
+        pluginOptionsA.manifest.name !== pluginOptionsB.manifest.name || pluginOptionsA === pluginOptionsB,
+    )
+  )
 }
 
 // Retrieve information about @netlify/build when an error happens there and not
