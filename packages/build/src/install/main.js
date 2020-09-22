@@ -15,11 +15,10 @@ const addLatestDependencies = function({ packageRoot, isLocal, packages }) {
   return runCommand({ packageRoot, packages, isLocal, type: 'add' })
 }
 
-const runCommand = async function({ packageRoot, packages, isLocal, type }) {
+const runCommand = async function({ packageRoot, packages = [], isLocal, type }) {
   try {
-    const command = await getCommand({ packageRoot, type, isLocal })
-    const packagesList = packages === undefined ? '' : ` ${packages.join(' ')}`
-    await execa.command(`${command}${packagesList}`, { cwd: packageRoot, all: true })
+    const [command, ...args] = await getCommand({ packageRoot, type, isLocal })
+    await execa(command, [...args, ...packages], { cwd: packageRoot, all: true })
   } catch (error) {
     const message = getErrorMessage(error.all)
     const errorA = new Error(`Error while installing dependencies in ${packageRoot}\n${message}`)
@@ -51,11 +50,11 @@ const getManager = async function(type, packageRoot) {
 
 const COMMANDS = {
   npm: {
-    add: 'npm install --no-progress --no-audit --no-fund --no-save',
-    install: 'npm install --no-progress --no-audit --no-fund',
+    add: ['npm', 'install', '--no-progress', '--no-audit', '--no-fund', '--no-save'],
+    install: ['npm', 'install', '--no-progress', '--no-audit', '--no-fund'],
   },
   yarn: {
-    install: 'yarn install --no-progress --non-interactive',
+    install: ['yarn', 'install', '--no-progress', '--non-interactive'],
   },
 }
 
@@ -65,7 +64,7 @@ const addYarnCustomCache = function(command, manager, isLocal) {
     return command
   }
 
-  return `${command} --cache-folder=${YARN_CI_CACHE_DIR}`
+  return [...command, '--cache-folder', YARN_CI_CACHE_DIR]
 }
 
 const YARN_CI_CACHE_DIR = `${homedir()}/.yarn_cache`
