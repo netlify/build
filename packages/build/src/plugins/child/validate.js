@@ -2,7 +2,6 @@ const isPlainObj = require('is-plain-obj')
 
 const { addErrorInfo } = require('../../error/info')
 const { serializeArray } = require('../../log/serialize')
-const { validateOldProperty } = require('../error')
 const { EVENTS } = require('../events')
 
 // Validate the shape of a plugin return value
@@ -11,14 +10,6 @@ const validatePlugin = function(logic) {
     if (!isPlainObj(logic)) {
       throw new Error('Plugin must be an object or a function')
     }
-
-    // Backward compatibility warning.
-    // TODO: remove once no plugins is doing this anymore.
-    validateOldProperty(
-      logic,
-      'name',
-      'The "name" plugin property has moved from the main plugin file to a "manifest.yml" instead',
-    )
 
     Object.entries(logic).forEach(([propName, value]) => validateEventHandler(value, propName))
   } catch (error) {
