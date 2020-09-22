@@ -19,10 +19,10 @@ const CORE_PLUGINS = [
 const EDGE_HANDLERS_PLUGIN_PATH = require.resolve(EDGE_HANDLERS_PLUGIN_NAME)
 
 // Plugins that are installed and enabled by default
-const getCorePlugins = async function({ constants: { FUNCTIONS_SRC, EDGE_HANDLERS_SRC }, buildDir, plugins }) {
+const getCorePlugins = async function({ constants: { FUNCTIONS_SRC, EDGE_HANDLERS_SRC }, buildDir }) {
   const functionsPlugin = getFunctionsPlugin(FUNCTIONS_SRC)
   const functionsInstallPlugin = getFunctionsInstallPlugin(FUNCTIONS_SRC)
-  const edgeHandlersPlugin = await getEdgeHandlersPlugin({ buildDir, EDGE_HANDLERS_SRC, plugins })
+  const edgeHandlersPlugin = await getEdgeHandlersPlugin({ buildDir, EDGE_HANDLERS_SRC })
   return [functionsPlugin, functionsInstallPlugin, edgeHandlersPlugin].filter(Boolean)
 }
 
@@ -47,8 +47,8 @@ const getFunctionsInstallPlugin = function(FUNCTIONS_SRC) {
   return { package: FUNCTIONS_INSTALL_PLUGIN_NAME, pluginPath: FUNCTIONS_INSTALL_PLUGIN, optional: true }
 }
 
-const getEdgeHandlersPlugin = async function({ buildDir, EDGE_HANDLERS_SRC, plugins }) {
-  if (!(await usesEdgeHandlers({ buildDir, EDGE_HANDLERS_SRC, plugins }))) {
+const getEdgeHandlersPlugin = async function({ buildDir, EDGE_HANDLERS_SRC }) {
+  if (!(await usesEdgeHandlers({ buildDir, EDGE_HANDLERS_SRC }))) {
     return
   }
 
@@ -59,12 +59,8 @@ const getEdgeHandlersPlugin = async function({ buildDir, EDGE_HANDLERS_SRC, plug
 // directory.
 // The location can be overridden using the `build.edge_handlers` property in
 // `netlify.toml`.
-const usesEdgeHandlers = async function({ buildDir, EDGE_HANDLERS_SRC, plugins }) {
-  return plugins.some(isEdgeHandlersPlugin) || (await isDirectory(`${buildDir}/${EDGE_HANDLERS_SRC}`))
-}
-
-const isEdgeHandlersPlugin = function({ package }) {
-  return package === EDGE_HANDLERS_PLUGIN_NAME
+const usesEdgeHandlers = function({ buildDir, EDGE_HANDLERS_SRC }) {
+  return isDirectory(`${buildDir}/${EDGE_HANDLERS_SRC}`)
 }
 
 const isCorePlugin = function(package) {
