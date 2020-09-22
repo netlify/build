@@ -3,7 +3,7 @@
 require('../utils/polyfills')
 
 const { getCommands } = require('../commands/get')
-const { runCommands } = require('../commands/run')
+const { runCommands } = require('../commands/run_commands')
 const { handleBuildError } = require('../error/handle')
 const { getErrorInfo } = require('../error/info')
 const { startErrorMonitor } = require('../error/monitor/start')
