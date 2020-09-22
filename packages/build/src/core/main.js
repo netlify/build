@@ -1,5 +1,4 @@
 /* eslint-disable max-lines */
-// TODO: fix linting
 require('../utils/polyfills')
 
 const { getCommands } = require('../commands/get')
