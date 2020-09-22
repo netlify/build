@@ -24,8 +24,6 @@ const resolvePluginsPath = async function({ pluginsOptions, buildDir, mode, logs
   return pluginsOptionsB
 }
 
-// TODO: fix linting
-// eslint-disable-next-line complexity
 const resolvePluginPath = async function({
   pluginOptions,
   pluginOptions: { package, loadedFrom },
@@ -37,8 +35,7 @@ const resolvePluginPath = async function({
     return pluginOptions
   }
 
-  // `package` starting with `/` are relative to the build directory
-  const packageA = package.startsWith('/') ? `.${package}` : package
+  const packageA = resolvePackagePath(package)
 
   // Local plugins
   if (packageA.startsWith('.')) {
@@ -61,6 +58,15 @@ const resolvePluginPath = async function({
 
   // Otherwise, it must be automatically installed, as a fallback
   return pluginOptions
+}
+
+// `package` starting with `/` are relative to the build directory
+const resolvePackagePath = function(package) {
+  if (package.startsWith('/')) {
+    return `.${package}`
+  }
+
+  return package
 }
 
 // Try to `resolve()` a local plugin
