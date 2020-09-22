@@ -1,7 +1,5 @@
-const Analytics = require('analytics').default
 const execa = require('execa')
 
-const { version } = require('../../package.json')
 const REQUEST_FILE = `${__dirname}/request.js`
 
 // Send HTTP request to telemetry.
@@ -9,19 +7,9 @@ const REQUEST_FILE = `${__dirname}/request.js`
 // to complete, by using a child process.
 // We also ignore any errors. Those might happen for example if the current
 // directory was removed by the build command.
-const track = async function({
-  payload: {
-    properties: { telemetry, testOpts: { telemetryOrigin = '' } = {}, payload: properties } = {},
-    ...payload
-  } = {},
-}) {
-  if (!telemetry) {
-    return
-  }
-
-  const payloadA = { ...payload, properties }
+const track = async function({ payload, testOpts: { telemetryOrigin = '' } = {} }) {
   try {
-    const childProcess = execa('node', [REQUEST_FILE, JSON.stringify(payloadA), telemetryOrigin], {
+    const childProcess = execa('node', [REQUEST_FILE, JSON.stringify(payload), telemetryOrigin], {
       detached: true,
       stdio: 'ignore',
     })
@@ -37,10 +25,4 @@ const track = async function({
   }
 }
 
-const analytics = Analytics({
-  app: 'netlifyCI',
-  version,
-  plugins: [{ NAMESPACE: 'netlify-telemetry', track }],
-})
-
-module.exports = { analytics }
+module.exports = { track }
