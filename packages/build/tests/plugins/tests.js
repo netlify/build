@@ -405,7 +405,3 @@ test('Validate plugin event handler names', async t => {
 test('Validate plugin event handler function', async t => {
   await runFixture(t, 'handler_function')
 })
-
-test('Validate plugin backward compatibility from manifest.yml with "name"', async t => {
-  await runFixture(t, 'backward_compat_name')
-})

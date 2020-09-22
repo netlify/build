@@ -46,20 +46,9 @@ const getError = function(error, message, func) {
   return errorA
 }
 
-const validateOldProperty = function(obj, propName, message) {
-  if (obj[propName] === undefined) {
-    return
-  }
-
-  const error = new Error(message)
-  addErrorInfo(error, { type: 'pluginValidation' })
-  throw error
-}
-
 module.exports = {
   failBuild,
   failPlugin,
   failPluginWithWarning,
   cancelBuild,
-  validateOldProperty,
 }
