@@ -263,6 +263,16 @@ test('Telemetry disabled with flag', async t => {
   t.is(requests.length, 0)
 })
 
+test('Telemetry disabled with mode', async t => {
+  const { scheme, host, requests, stopServer } = await startServer(TELEMETRY_PATH)
+  await runFixture(t, 'success', {
+    flags: { siteId: 'test', testOpts: { telemetryOrigin: `${scheme}://${host}` }, telemetry: undefined },
+    snapshot: false,
+  })
+  await stopServer()
+  t.is(requests.length, 0)
+})
+
 test('Telemetry error', async t => {
   const { stopServer } = await startServer(TELEMETRY_PATH)
   await runFixture(t, 'success', {

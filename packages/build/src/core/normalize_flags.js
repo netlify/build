@@ -24,18 +24,18 @@ const normalizeFlags = function(flags, logs) {
 }
 
 // Default values of CLI flags
-const getDefaultFlags = function({ env: envOpt = {} }) {
+const getDefaultFlags = function({ env: envOpt = {}, mode = REQUIRE_MODE }) {
   const combinedEnv = { ...env, ...envOpt }
   return {
     env: envOpt,
     nodePath: execPath,
     token: combinedEnv.NETLIFY_AUTH_TOKEN,
-    mode: 'require',
+    mode: REQUIRE_MODE,
     functionsDistDir: DEFAULT_FUNCTIONS_DIST,
     deployId: combinedEnv.DEPLOY_ID,
     debug: Boolean(combinedEnv.NETLIFY_BUILD_DEBUG),
     bugsnagKey: combinedEnv.BUGSNAG_KEY,
-    telemetry: !combinedEnv.BUILD_TELEMETRY_DISABLED,
+    telemetry: !combinedEnv.BUILD_TELEMETRY_DISABLED && mode !== REQUIRE_MODE,
     sendStatus: false,
     testOpts: {},
     featureFlags: DEFAULT_FEATURE_FLAGS,
@@ -43,6 +43,7 @@ const getDefaultFlags = function({ env: envOpt = {} }) {
   }
 }
 
+const REQUIRE_MODE = 'require'
 const DEFAULT_FUNCTIONS_DIST = '.netlify/functions/'
 const DEFAULT_STATSD_PORT = 8125
 
