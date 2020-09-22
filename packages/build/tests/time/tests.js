@@ -49,6 +49,7 @@ const serializeTimerRequests = function(timerRequests) {
     .map(normalizeRequest)
     .sort()
     .join('\n')
+    .trim()
 }
 
 const normalizeRequest = function(request) {
