@@ -20,6 +20,7 @@ const NORMALIZE_REGEXPS = [
   [/\\/gu, '/'],
   [/[A-Z]:\//g, '/'],
   [/Program Files/gu, 'ProgramFiles'],
+  [/Users\/([^/])+\//gu, 'Users/User/'],
   [new RegExp(tick, 'g'), '√'],
   [new RegExp(pointer, 'g'), '>'],
   [new RegExp(arrowDown, 'g'), '↓'],
