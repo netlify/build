@@ -8,14 +8,20 @@ const { addErrorInfo } = require('../../error/info')
 const BUILDBOT_CLIENT_TIMEOUT_PERIOD = 60 * 1000
 
 const createBuildbotClient = function(buildbotServerSocket) {
-  return net.createConnection(buildbotServerSocket)
+  const client = net.createConnection(buildbotServerSocket)
+  client.setTimeout(BUILDBOT_CLIENT_TIMEOUT_PERIOD, () => {
+    onBuildbotClientTimeout(client)
+  })
+  return client
+}
+
+const onBuildbotClientTimeout = function(client) {
+  client.end()
+  client.emit('error', `The TCP connection with the buildbot timed out after ${BUILDBOT_CLIENT_TIMEOUT_PERIOD}ms`)
 }
 
 const connectBuildbotClient = async function(client) {
   try {
-    client.setTimeout(BUILDBOT_CLIENT_TIMEOUT_PERIOD, () => {
-      client.end()
-    })
     await pEvent(client, 'connect')
     return client
   } catch (error) {
