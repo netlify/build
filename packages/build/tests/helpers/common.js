@@ -114,7 +114,7 @@ const runCommand = async function({
   }
 }
 
-const execCommand = async function({ mainFunc, binaryPath, useBinary, mainFlags, commandEnv }) {
+const execCommand = function({ mainFunc, binaryPath, useBinary, mainFlags, commandEnv }) {
   if (useBinary) {
     return execCliCommand({ binaryPath, mainFlags, commandEnv })
   }

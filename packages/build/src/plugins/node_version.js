@@ -39,7 +39,7 @@ const getCurrentNodeVersion = function() {
 }
 
 // Ensure Node.js version is recent enough to run this plugin
-const checkNodeVersion = async function({
+const checkNodeVersion = function({
   childNodeVersion,
   package,
   pluginPackageJson: { engines: { node: pluginNodeVersionRange } = {} } = {},

@@ -1,5 +1,5 @@
 module.exports = {
-  async onEnd({
+  onEnd({
     utils: {
       build: { failBuild },
     },

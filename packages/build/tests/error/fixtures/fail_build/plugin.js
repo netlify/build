@@ -1,5 +1,5 @@
 module.exports = {
-  async onPreBuild({
+  onPreBuild({
     utils: {
       build: { failBuild },
     },

@@ -10,6 +10,6 @@ module.exports = {
   },
 }
 
-const unhandledPromise = async function() {
-  throw new Error('test')
+const unhandledPromise = function() {
+  return Promise.reject(new Error('test'))
 }

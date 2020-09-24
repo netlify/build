@@ -57,7 +57,7 @@ const startPlugin = async function({
 }) {
   const { childNodePath, childNodeVersion } = getChildNodePath({ loadedFrom, nodePath, userNodeVersion, mode })
 
-  await checkNodeVersion({ childNodeVersion, package, pluginPackageJson })
+  checkNodeVersion({ childNodeVersion, package, pluginPackageJson })
 
   const childProcess = execa.node(CHILD_MAIN_FILE, {
     cwd: buildDir,
@@ -84,11 +84,11 @@ const getChildNodePath = function({ loadedFrom, nodePath, userNodeVersion, mode 
 }
 
 // Stop all plugins child processes
-const stopPlugins = async function(childProcesses) {
-  await Promise.all(childProcesses.map(stopPlugin))
+const stopPlugins = function(childProcesses) {
+  childProcesses.forEach(stopPlugin)
 }
 
-const stopPlugin = async function({ childProcess }) {
+const stopPlugin = function({ childProcess }) {
   if (childProcess.connected) {
     childProcess.disconnect()
   }

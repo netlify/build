@@ -54,6 +54,7 @@
     "complexity": [2, 5],
     "max-depth": [2, 2],
     "max-nested-callbacks": [2, 2],
+    "require-await": 2,
 
     "eslint-comments/no-unused-disable": 0,
     "eslint-comments/no-use": [

@@ -2,7 +2,7 @@ const del = require('del')
 const { tmpName, dir: tmpDir } = require('tmp-promise')
 
 // Retrieve name of a temporary directory
-const getDist = async function() {
+const getDist = function() {
   return tmpName({ prefix: PREFIX })
 }
 

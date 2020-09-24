@@ -1,5 +1,5 @@
 module.exports = {
-  async onPreBuild() {
+  onPreBuild() {
     const error = new Error('test')
     error.test = true
     error.prop = null

@@ -353,7 +353,7 @@ const initAndRunBuild = async function({
       featureFlags,
     })
   } finally {
-    await stopPlugins(childProcesses)
+    stopPlugins(childProcesses)
   }
 }
 

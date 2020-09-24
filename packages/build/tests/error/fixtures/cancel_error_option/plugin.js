@@ -3,7 +3,7 @@ const getError = function() {
 }
 
 module.exports = {
-  async onPreBuild({
+  onPreBuild({
     utils: {
       build: { cancelBuild },
     },
