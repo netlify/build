@@ -45,7 +45,7 @@ The following directories are searched (from highest to lowest priority):
 - The current directory
 - Any parent directory to the current directory
 
-If the `netlify.toml` specifies a `base` directory, the configuration file is searched a second time but using that
+If the `netlify.toml` specifies a `base` directory, the configuration file is searched for a second time using the
 `base` directory instead (\*).
 
 ## Absolute paths
