@@ -19,6 +19,8 @@ const getFeatureFlag = function(name) {
 }
 
 const DEFAULT_FEATURE_FLAGS = {
+  // When `true`, core plugins are run after user plugins instead of before
+  eventsOrder: false,
   // When `true`, errors in `onSuccess`, `onEnd` and `onError` happening after
   // deploy do not make the build fail. They only make the plugin fail.
   postDeployErrors: false,

@@ -315,6 +315,7 @@ const initAndRunBuild = async function({
     mode,
     buildImagePluginsDir,
     triggerDeployWithBuildbotServer,
+    featureFlags,
     logs,
     debug,
     timers,

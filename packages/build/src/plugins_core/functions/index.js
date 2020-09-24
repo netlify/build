@@ -1,7 +1,4 @@
 const { relative } = require('path')
-const {
-  env: { NETLIFY_BUILD_EVENTS_ORDER },
-} = require('process')
 
 const { zipFunctions, listFunctions } = require('@netlify/zip-it-and-ship-it')
 const pathExists = require('path-exists')
@@ -48,5 +45,4 @@ const getFunctionPaths = async function(FUNCTIONS_SRC) {
   return functions.map(({ mainFile }) => relative(FUNCTIONS_SRC, mainFile))
 }
 
-// TODO: remove feature flag, and keep only { onBuild }
-module.exports = NETLIFY_BUILD_EVENTS_ORDER === '1' ? { onBuild } : { onPostBuild: onBuild }
+module.exports = { onBuild }

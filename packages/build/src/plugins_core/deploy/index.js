@@ -1,8 +1,4 @@
 const {
-  env: { NETLIFY_BUILD_EVENTS_ORDER },
-} = require('process')
-
-const {
   createBuildbotClient,
   connectBuildbotClient,
   closeBuildbotClient,
@@ -19,4 +15,4 @@ const onBuild = async function({ constants: { BUILDBOT_SERVER_SOCKET } }) {
   }
 }
 
-module.exports = NETLIFY_BUILD_EVENTS_ORDER === '1' ? { onBuild } : { onPostBuild: onBuild }
+module.exports = { onBuild }
