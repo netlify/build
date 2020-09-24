@@ -25,12 +25,12 @@ const EDGE_HANDLERS_PLUGIN_PATH = require.resolve(EDGE_HANDLERS_PLUGIN_NAME)
 const getCorePlugins = async function({
   constants: { FUNCTIONS_SRC, EDGE_HANDLERS_SRC, BUILDBOT_SERVER_SOCKET },
   buildDir,
-  triggerDeployWithBuildbotServer,
+  featureFlags,
 }) {
   const functionsPlugin = getFunctionsPlugin(FUNCTIONS_SRC)
   const functionsInstallPlugin = getFunctionsInstallPlugin(FUNCTIONS_SRC)
   const edgeHandlersPlugin = await getEdgeHandlersPlugin({ buildDir, EDGE_HANDLERS_SRC })
-  const deployPlugin = getDeployPlugin(triggerDeployWithBuildbotServer, BUILDBOT_SERVER_SOCKET)
+  const deployPlugin = getDeployPlugin(featureFlags, BUILDBOT_SERVER_SOCKET)
   return [functionsPlugin, functionsInstallPlugin, edgeHandlersPlugin, deployPlugin].filter(Boolean)
 }
 
@@ -71,8 +71,8 @@ const usesEdgeHandlers = function({ buildDir, EDGE_HANDLERS_SRC }) {
   return isDirectory(`${buildDir}/${EDGE_HANDLERS_SRC}`)
 }
 
-const getDeployPlugin = function(triggerDeployWithBuildbotServer, BUILDBOT_SERVER_SOCKET) {
-  if (!triggerDeployWithBuildbotServer || BUILDBOT_SERVER_SOCKET === undefined) {
+const getDeployPlugin = function(featureFlags, BUILDBOT_SERVER_SOCKET) {
+  if (!featureFlags.triggerDeploy || BUILDBOT_SERVER_SOCKET === undefined) {
     return
   }
 
