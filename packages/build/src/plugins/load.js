@@ -50,12 +50,12 @@ const loadPlugin = async function(
 }
 
 // Only core plugins can use `constants.NETLIFY_API_TOKEN` at the moment
-const cleanConstants = function({ NETLIFY_API_TOKEN, ...constants }, loadedFrom) {
+const cleanConstants = function({ NETLIFY_API_TOKEN, BUILDBOT_SERVER_SOCKET, ...constants }, loadedFrom) {
   if (loadedFrom !== 'core') {
     return constants
   }
 
-  return { ...constants, NETLIFY_API_TOKEN }
+  return { ...constants, NETLIFY_API_TOKEN, BUILDBOT_SERVER_SOCKET }
 }
 
 module.exports = { loadPlugins }
