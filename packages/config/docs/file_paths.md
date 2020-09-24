@@ -1,4 +1,4 @@
-This document explains some of the main file paths used in a Netlify Site. This is mostly intended for code
+This document explains some of the main file paths used in a Netlify site. This is mostly intended for code
 contributors.
 
 ## Current directory
@@ -20,14 +20,14 @@ This is used as the current directory when running the build command and Build p
 This is also used to resolve any file paths inside `netlify.toml` or the UI build settings, except for the `base`
 configuration property (which is relative to the repository root instead).
 
-We sometimes refer to this as the "base directory" or the "Site root" instead.
+We sometimes refer to this as the "base directory" or the "site root" instead.
 
 Its value is (from highest to lowest priority):
 
 - The `base` property specified in `netlify.toml` or UI build settings. This is useful when targetting specific
   directories inside a monorepo.
-- In the Netlify CLI: if a project has multiple Netlify Sites, the user can step into it inside a terminal (using `cd`
-  for example). The closest parent with a `netlify.toml` or `.netlify` will be used.
+- In the Netlify CLI: if a project has multiple Netlify sites, the user can change directories to this build directory
+  inside the terminal (using `cd` for example). The closest parent with a `netlify.toml` or `.netlify` will be used.
 - The repository root.
 
 ## Configuration path
@@ -57,7 +57,7 @@ Prepending `./` is not required and does not do anything.
 
 ## baseRelDir
 
-Boolean flag intended for backward compatibility. This is set for any Sites created since the end of 2019.
+Boolean flag intended for backward compatibility. This is set for any sites created since the end of 2019.
 
 When unset:
 
@@ -66,7 +66,7 @@ When unset:
 
 ## Publish directory
 
-Directory where the Site built assets are output
+Directory where the site's built assets are output
 
 Set using the `build.publish` property in `netlify.toml` or the UI build setting.
 
