@@ -93,7 +93,7 @@ const sendEventToChild = async function(childProcess, callId, eventName, payload
 
 // Respond to events from parent to child process.
 // This runs forever until `childProcess.kill()` is called.
-const getEventsFromParent = async function(callback) {
+const getEventsFromParent = function(callback) {
   return new Promise((resolve, reject) => {
     process.on('message', async message => {
       try {
