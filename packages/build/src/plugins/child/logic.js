@@ -3,7 +3,7 @@
 const getLogic = function({ pluginPath, inputs, loadedFrom, featureFlags }) {
   const logic = requireLogic(pluginPath)
   const logicA = loadLogic({ logic, inputs })
-  const logicB = applyEventsOrder({ logic: logicA, loadedFrom, featureFlags })
+  const logicB = applyRunCorePluginsLast({ logic: logicA, loadedFrom, featureFlags })
   return logicB
 }
 
@@ -29,8 +29,8 @@ const loadLogic = function({ logic, inputs }) {
   }
 }
 
-const applyEventsOrder = function({ logic, loadedFrom, featureFlags }) {
-  if (featureFlags.eventsOrder || loadedFrom !== 'core' || logic.onBuild === undefined) {
+const applyRunCorePluginsLast = function({ logic, loadedFrom, featureFlags }) {
+  if (featureFlags.runCorePluginsLast || loadedFrom !== 'core' || logic.onBuild === undefined) {
     return logic
   }
 

@@ -27,7 +27,7 @@ const tGetPluginsOptions = async function({
     .map(corePlugin => addCoreProperties(corePlugin, plugins))
     .filter(corePlugin => !isOptionalCore(corePlugin, plugins))
   const userPlugins = plugins.filter(isUserPlugin)
-  const allPlugins = featureFlags.eventsOrder
+  const allPlugins = featureFlags.runCorePluginsLast
     ? [...userPlugins, ...allCorePlugins]
     : [...allCorePlugins, ...userPlugins]
   const pluginsOptions = allPlugins.map(normalizePluginOptions)
