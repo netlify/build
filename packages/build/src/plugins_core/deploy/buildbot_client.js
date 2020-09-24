@@ -3,8 +3,6 @@ const { promisify } = require('util')
 
 const pEvent = require('p-event')
 
-const { addErrorInfo } = require('../../error/info')
-
 const BUILDBOT_CLIENT_TIMEOUT_PERIOD = 60 * 1000
 
 const createBuildbotClient = function(buildbotServerSocket) {
@@ -21,22 +19,11 @@ const onBuildbotClientTimeout = function(client) {
 }
 
 const connectBuildbotClient = async function(client) {
-  try {
-    await pEvent(client, 'connect')
-    return client
-  } catch (error) {
-    addErrorInfo(error, { type: 'buildbotClient' })
-    throw error
-  }
+  await pEvent(client, 'connect')
 }
 
 const closeBuildbotClient = async function(client) {
-  try {
-    await promisify(client.end.bind(client))()
-  } catch (error) {
-    addErrorInfo(error, { type: 'buildbotClient' })
-    throw error
-  }
+  await promisify(client.end.bind(client))()
 }
 
 const writePayload = async function(buildbotClient, payload) {
@@ -50,21 +37,11 @@ const getNextParsedResponsePromise = async function(buildbotClient) {
 
 const deploySiteWithBuildbotClient = async function(client) {
   const payload = { action: 'deploySite' }
-  try {
-    const [response] = await Promise.all([getNextParsedResponsePromise(client), writePayload(client, payload)])
+  const [response] = await Promise.all([getNextParsedResponsePromise(client), writePayload(client, payload)])
 
-    if (!response.succeeded) {
-      throw new Error(`Deploy did not succeed: ${response.values.error}`)
-    }
-  } catch (error) {
-    addErrorInfo(error, {
-      type: 'buildbotClient',
-      location: { payload },
-    })
-    throw error
+  if (!response.succeeded) {
+    throw new Error(`Deploy did not succeed: ${response.values.error}`)
   }
-
-  return
 }
 
 module.exports = {
