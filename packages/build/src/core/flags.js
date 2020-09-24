@@ -1,5 +1,3 @@
-/* eslint-disable max-lines */
-
 // All CLI flags
 const FLAGS = {
   config: {
@@ -96,15 +94,6 @@ Default: none`,
     describe: `Path to the buildbot server socket. This is used to connect to the buildbot to trigger deploys.`,
     hidden: true,
   },
-  triggerDeployWithBuildbotServer: {
-    boolean: true,
-    describe: `Feature flag.
-When enabled, triggers a deploy by connecting to the buildbot deploy server and
-passing it a "deploySite" command. Netlify Build then waits for the buildbot to
-finish its deploy before running the "onSuccess" and "onEnd" hooks.
-Default: false`,
-    hidden: true,
-  },
   telemetry: {
     boolean: true,
     describe: `Enable telemetry.
@@ -157,4 +146,3 @@ Default: true`,
 }
 
 module.exports = { FLAGS }
-/* eslint-enable max-lines */
