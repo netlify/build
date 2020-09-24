@@ -1,4 +1,4 @@
-const { version, platform } = require('process')
+const { version } = require('process')
 
 const test = require('ava')
 const del = require('del')
@@ -152,10 +152,7 @@ const normalizeEdgeHandler = function([handlerName, { onRequest }]) {
 
 // Edge handlers are not supported in Node 8
 // TODO: remove once Node 8 support is removed
-// Edge hqandlers are not supported in Windows due to a bug
-// See https://github.com/netlify/netlify-plugin-edge-handlers/issues/36
-// TODO: remove once Windows is supported
-if (!version.startsWith('v8.') && platform !== 'win32') {
+if (!version.startsWith('v8.')) {
   test('constants.EDGE_HANDLERS_SRC default value', async t => {
     await runFixture(t, 'edge_handlers_src_default')
   })
