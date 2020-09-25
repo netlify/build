@@ -301,6 +301,7 @@ const initAndRunBuild = async function({
     token,
     mode,
     buildbotServerSocket,
+    testOpts,
   })
 
   const { pluginsOptions, timers: timersA } = await getPluginsOptions({
