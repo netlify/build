@@ -1,4 +1,4 @@
-const { version } = require('process')
+const { platform, version } = require('process')
 
 const test = require('ava')
 const del = require('del')
@@ -6,6 +6,7 @@ const { spy } = require('sinon')
 
 const { removeDir } = require('../helpers/dir')
 const { runFixture, FIXTURES_DIR } = require('../helpers/main')
+const { startTcpServer } = require('../helpers/tcp_server')
 const { getTempDir } = require('../helpers/temp')
 
 test('constants.CONFIG_PATH', async t => {
@@ -185,6 +186,95 @@ if (!version.startsWith('v8.')) {
     const [{ handlerName }] = await loadEdgeHandlerBundle({ outputDir, manifestPath })
     t.is(handlerName, 'test')
   })
+}
+
+// The deploy core plugin is not supported on Windows at the moment.
+// This is because it uses Unix sockets.
+// TODO: remove once Windows is supported
+// The deploy core plugin tests on Node 8 fail in CI but not locally
+// TODO: remove once this is fixed
+if (!version.startsWith('v8.') && platform !== 'win32') {
+  test('Deploy plugin succeeds', async t => {
+    const { socketPath, requests, stopServer } = await startDeployServer()
+    try {
+      await runFixture(t, 'empty', { flags: { buildbotServerSocket: socketPath, featureFlags: 'triggerDeploy' } })
+    } finally {
+      await stopServer()
+    }
+
+    t.true(requests.every(isValidDeployReponse))
+  })
+
+  test('Deploy plugin is not run unless --buildbotServerSocket is passed', async t => {
+    const { requests, stopServer } = await startDeployServer()
+    try {
+      await runFixture(t, 'empty', { flags: { featureFlags: 'triggerDeploy' }, snapshot: false })
+    } finally {
+      await stopServer()
+    }
+
+    t.is(requests.length, 0)
+  })
+
+  test('Deploy plugin is not run unless --featureFlags=triggerDeploy is passed', async t => {
+    const { socketPath, requests, stopServer } = await startDeployServer()
+    try {
+      await runFixture(t, 'empty', { flags: { buildbotServerSocket: socketPath }, snapshot: false })
+    } finally {
+      await stopServer()
+    }
+
+    t.is(requests.length, 0)
+  })
+
+  test('Deploy plugin connection error', async t => {
+    const { socketPath, stopServer } = await startDeployServer()
+    await stopServer()
+    await runFixture(t, 'empty', { flags: { buildbotServerSocket: socketPath, featureFlags: 'triggerDeploy' } })
+  })
+
+  test('Deploy plugin response syntax error', async t => {
+    const { socketPath, stopServer } = await startDeployServer({ response: 'test' })
+    try {
+      await runFixture(t, 'empty', { flags: { buildbotServerSocket: socketPath, featureFlags: 'triggerDeploy' } })
+    } finally {
+      await stopServer()
+    }
+  })
+
+  test('Deploy plugin response payload error', async t => {
+    const { socketPath, stopServer } = await startDeployServer({
+      response: { succeeded: false, values: { error: 'test' } },
+    })
+    try {
+      await runFixture(t, 'empty', { flags: { buildbotServerSocket: socketPath, featureFlags: 'triggerDeploy' } })
+    } finally {
+      await stopServer()
+    }
+  })
+
+  test('Deploy plugin response timeout', async t => {
+    const { socketPath, stopServer } = await startDeployServer({ timeout: true })
+    try {
+      await runFixture(t, 'empty', {
+        flags: {
+          buildbotServerSocket: socketPath,
+          featureFlags: 'triggerDeploy',
+          testOpts: { buildbotServerSocketTimeout: 1 },
+        },
+      })
+    } finally {
+      await stopServer()
+    }
+  })
+
+  const startDeployServer = function(opts = {}) {
+    return startTcpServer({ response: { succeeded: true, ...opts.response }, ...opts })
+  }
+
+  const isValidDeployReponse = function(request) {
+    return request.action === 'deploySite'
+  }
 }
 
 test('plugin.onSuccess is triggered on success', async t => {
