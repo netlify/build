@@ -12,6 +12,7 @@
         'chalk',
         'clean-stack',
         'cp-file',
+        'del',
         'eslint',
         'execa',
         'find-up',
