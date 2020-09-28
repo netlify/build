@@ -3,6 +3,8 @@ const { promisify } = require('util')
 
 const pEvent = require('p-event')
 
+const { addAsyncErrorMessage } = require('../../utils/errors')
+
 const BUILDBOT_CLIENT_TIMEOUT_PERIOD = 60 * 1000
 
 const createBuildbotClient = function(buildbotServerSocket) {
@@ -18,9 +20,11 @@ const onBuildbotClientTimeout = function(client) {
   client.emit('error', `The TCP connection with the buildbot timed out after ${BUILDBOT_CLIENT_TIMEOUT_PERIOD}ms`)
 }
 
-const connectBuildbotClient = async function(client) {
+const eConnectBuildbotClient = async function(client) {
   await pEvent(client, 'connect')
 }
+
+const connectBuildbotClient = addAsyncErrorMessage(eConnectBuildbotClient, 'Could not connect to buildbot')
 
 const closeBuildbotClient = async function(client) {
   if (client.destroyed) {
@@ -30,14 +34,21 @@ const closeBuildbotClient = async function(client) {
   await promisify(client.end.bind(client))()
 }
 
-const writePayload = async function(buildbotClient, payload) {
+const cWritePayload = async function(buildbotClient, payload) {
   await promisify(buildbotClient.write.bind(buildbotClient))(JSON.stringify(payload))
 }
 
-const getNextParsedResponsePromise = async function(buildbotClient) {
+const writePayload = addAsyncErrorMessage(cWritePayload, 'Could not send payload to buildbot')
+
+const cGetNextParsedResponsePromise = async function(buildbotClient) {
   const data = await pEvent(buildbotClient, 'data')
   return JSON.parse(data)
 }
+
+const getNextParsedResponsePromise = addAsyncErrorMessage(
+  cGetNextParsedResponsePromise,
+  'Invalid response from buildbot',
+)
 
 const deploySiteWithBuildbotClient = async function(client) {
   const payload = { action: 'deploySite' }
