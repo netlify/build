@@ -7,8 +7,8 @@ const {
   deploySiteWithBuildbotClient,
 } = require('./buildbot_client')
 
-const onPostBuild = async function({ constants: { BUILDBOT_SERVER_SOCKET } }) {
-  const client = createBuildbotClient(BUILDBOT_SERVER_SOCKET)
+const onPostBuild = async function({ constants: { BUILDBOT_SERVER_SOCKET, BUILDBOT_SERVER_SOCKET_TIMEOUT } }) {
+  const client = createBuildbotClient({ BUILDBOT_SERVER_SOCKET, BUILDBOT_SERVER_SOCKET_TIMEOUT })
   try {
     await connectBuildbotClient(client)
     await deploySiteWithBuildbotClient(client)
