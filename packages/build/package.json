@@ -97,6 +97,7 @@
     "string-width": "^4.2.0",
     "strip-ansi": "^6.0.0",
     "supports-color": "^7.1.0",
+    "tmp-promise": "^3.0.2",
     "update-notifier": "^4.1.0",
     "uuid": "^8.0.0",
     "yargs": "^15.3.1"
