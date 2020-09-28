@@ -1,3 +1,5 @@
+const { logDeploySuccess } = require('../../log/messages/plugins')
+
 const {
   createBuildbotClient,
   connectBuildbotClient,
@@ -10,6 +12,7 @@ const onBuild = async function({ constants: { BUILDBOT_SERVER_SOCKET } }) {
   try {
     await connectBuildbotClient(client)
     await deploySiteWithBuildbotClient(client)
+    logDeploySuccess()
   } finally {
     await closeBuildbotClient(client)
   }

@@ -44,8 +44,13 @@ const logFunctionsToBundle = function(functions, FUNCTIONS_SRC) {
   logArray(undefined, functions, { indent: false })
 }
 
+const logDeploySuccess = function() {
+  log(undefined, 'Site was successfully deployed')
+}
+
 module.exports = {
   logLoadingPlugins,
   logFailPluginWarning,
   logFunctionsToBundle,
+  logDeploySuccess,
 }
