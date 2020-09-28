@@ -191,9 +191,7 @@ if (!version.startsWith('v8.')) {
 // The deploy core plugin is not supported on Windows at the moment.
 // This is because it uses Unix sockets.
 // TODO: remove once Windows is supported
-// The deploy core plugin tests on Node 8 fail in CI but not locally
-// TODO: remove once this is fixed
-if (!version.startsWith('v8.') && platform !== 'win32') {
+if (platform !== 'win32') {
   test('Deploy plugin succeeds', async t => {
     const { socketPath, requests, stopServer } = await startDeployServer()
     try {
@@ -227,11 +225,15 @@ if (!version.startsWith('v8.') && platform !== 'win32') {
     t.is(requests.length, 0)
   })
 
-  test('Deploy plugin connection error', async t => {
-    const { socketPath, stopServer } = await startDeployServer()
-    await stopServer()
-    await runFixture(t, 'empty', { flags: { buildbotServerSocket: socketPath, featureFlags: 'triggerDeploy' } })
-  })
+  // This test currently fails on Node 8
+  // TODO: fix
+  if (!version.startsWith('v8.')) {
+    test('Deploy plugin connection error', async t => {
+      const { socketPath, stopServer } = await startDeployServer()
+      await stopServer()
+      await runFixture(t, 'empty', { flags: { buildbotServerSocket: socketPath, featureFlags: 'triggerDeploy' } })
+    })
+  }
 
   test('Deploy plugin response syntax error', async t => {
     const { socketPath, stopServer } = await startDeployServer({ response: 'test' })

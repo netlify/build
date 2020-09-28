@@ -14,8 +14,7 @@ const createBuildbotClient = function({ BUILDBOT_SERVER_SOCKET, BUILDBOT_SERVER_
 }
 
 const onBuildbotClientTimeout = function({ client, BUILDBOT_SERVER_SOCKET_TIMEOUT }) {
-  client.end()
-  client.emit('error', `The TCP connection with the buildbot timed out after ${BUILDBOT_SERVER_SOCKET_TIMEOUT}ms`)
+  client.destroy(new Error(`The TCP connection with the buildbot timed out after ${BUILDBOT_SERVER_SOCKET_TIMEOUT}ms`))
 }
 
 const eConnectBuildbotClient = async function(client) {
