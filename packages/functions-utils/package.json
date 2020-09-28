@@ -52,7 +52,7 @@
   },
   "devDependencies": {
     "ava": "^2.4.0",
-    "del": "^5.1.0",
+    "del": "^6.0.0",
     "sinon": "^9.0.3",
     "tmp-promise": "^3.0.0"
   },
