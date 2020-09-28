@@ -23,6 +23,10 @@ const connectBuildbotClient = async function(client) {
 }
 
 const closeBuildbotClient = async function(client) {
+  if (client.destroyed) {
+    return
+  }
+
   await promisify(client.end.bind(client))()
 }
 
