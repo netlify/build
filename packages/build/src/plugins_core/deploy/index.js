@@ -7,7 +7,7 @@ const {
   deploySiteWithBuildbotClient,
 } = require('./buildbot_client')
 
-const onBuild = async function({ constants: { BUILDBOT_SERVER_SOCKET } }) {
+const onPostBuild = async function({ constants: { BUILDBOT_SERVER_SOCKET } }) {
   const client = createBuildbotClient(BUILDBOT_SERVER_SOCKET)
   try {
     await connectBuildbotClient(client)
@@ -18,4 +18,4 @@ const onBuild = async function({ constants: { BUILDBOT_SERVER_SOCKET } }) {
   }
 }
 
-module.exports = { onBuild }
+module.exports = { onPostBuild }
