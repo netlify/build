@@ -4,7 +4,7 @@ const { EVENTS } = require('../plugins/events')
 const getCommands = function(pluginsCommands, netlifyConfig) {
   const commands = addBuildCommand(pluginsCommands, netlifyConfig)
   const commandsA = sortCommands(commands)
-  const commandsCount = commandsA.filter(({ event }) => !isErrorOnlyEvent(event)).length
+  const commandsCount = commandsA.filter(({ event }) => !runsOnlyOnBuildFailure(event)).length
   return { commands: commandsA, commandsCount }
 }
 
@@ -34,10 +34,10 @@ const isSoftFailEvent = function(event, featureFlags) {
   return featureFlags.postDeployErrors && isAmongEvents(['onSuccess', 'onError', 'onEnd'], event)
 }
 
-// Check if the event is triggered even when an error happens
-const isErrorEvent = isAmongEvents.bind(null, ['onError', 'onEnd'])
+// Check if the event is triggered even when the build fails
+const runsAlsoOnBuildFailure = isAmongEvents.bind(null, ['onError', 'onEnd'])
 
-// Check if the event is only triggered when an error happens
-const isErrorOnlyEvent = isAmongEvents.bind(null, ['onError'])
+// Check if the event is only triggered when the build fails
+const runsOnlyOnBuildFailure = isAmongEvents.bind(null, ['onError'])
 
-module.exports = { getCommands, isSoftFailEvent, isErrorEvent, isErrorOnlyEvent }
+module.exports = { getCommands, isSoftFailEvent, runsAlsoOnBuildFailure, runsOnlyOnBuildFailure }
