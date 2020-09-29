@@ -307,7 +307,7 @@ test('plugin.onError is triggered on failure', async t => {
   await runFixture(t, 'error_not_ok')
 })
 
-test('plugin.onError is triggered on failPlugin()', async t => {
+test('plugin.onError is not triggered on failPlugin()', async t => {
   await runFixture(t, 'error_fail_plugin')
 })
 
@@ -331,7 +331,7 @@ test('plugin.onEnd is triggered on failure', async t => {
   await runFixture(t, 'end_not_ok')
 })
 
-test('plugin.onEnd is triggered on failPlugin()', async t => {
+test('plugin.onEnd is not triggered on failPlugin()', async t => {
   await runFixture(t, 'end_fail_plugin')
 })
 
