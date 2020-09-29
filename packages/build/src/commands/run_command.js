@@ -86,22 +86,35 @@ const runCommand = async function({
   return { ...newValues, newIndex: index + 1 }
 }
 
-// If a plugin throws an uncaught exception, uses `utils.build.failBuild()` or
-// uses `utils.build.cancelBuild()`:
-//   - the build and the plugin fail
-//   - all events for all plugins are skipped, except `onError` and `onEnd`
-//   - the `onError` events for all plugins are run
-// If a plugin uses `utils.build.failPlugin()`:
-//   - the build does not fail, but the plugin does
-//   - all events for the current plugin are skipped, except `onError` and `onEnd`
-//   - the `onError` event for the current plugin is run
-//   - other plugins are not impacted
-// `onError()` is not run otherwise.
-// `onEnd()` is always run, regardless of whether the current or other plugins
-// failed.
+// A plugin fails _without making the build fail_ when either:
+//   - using `utils.build.failPlugin()`
+//   - the failure happens after deploy. This means: inside any `onError`,
+//     `onSuccess` or `onEnd` event handler.
+//
+// When that happens, no other events for that specific plugin is run.
+// Not even `onError` and `onEnd`.
+// Plugins should use `try`/`catch`/`finally` blocks to handle exceptions,
+// not `onError` nor `onEnd`.
+//
+// Otherwise, most failures will make the build fail. This includes:
+//   - the build command failed
+//   - Functions or Edge handlers bundling failed
+//   - the deploy failed (deploying files to our CDN)
+//   - a plugin `onPreBuild`, `onBuild` or `onPostBuild` event handler failed.
+//     This includes uncaught exceptions and using `utils.build.failBuild()`
+//     or `utils.build.cancelBuild()`.
+//
+// `onError` is triggered when the build failed.
+// It means "on build failure" not "on plugin failure".
+// `onSuccess` is the opposite. It is triggered after the build succeeded.
+// `onEnd` is triggered after the build either failed or succeeded.
+// It is useful for resources cleanup.
 const shouldRunCommand = function({ event, package, error, failedPlugins }) {
-  const isError = error !== undefined || failedPlugins.includes(package)
-  if (isError) {
+  if (failedPlugins.includes(package)) {
+    return false
+  }
+
+  if (error !== undefined) {
     return runsAlsoOnBuildFailure(event)
   }
 
