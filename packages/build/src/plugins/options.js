@@ -26,9 +26,7 @@ const tGetPluginsOptions = async function({
     .map(corePlugin => addCoreProperties(corePlugin, plugins))
     .filter(corePlugin => !isOptionalCore(corePlugin, plugins))
   const userPlugins = plugins.filter(isUserPlugin)
-  const allPlugins = featureFlags.runCorePluginsLast
-    ? [...userPlugins, ...allCorePlugins]
-    : [...allCorePlugins, ...userPlugins]
+  const allPlugins = [...userPlugins, ...allCorePlugins]
   const pluginsOptions = allPlugins.map(normalizePluginOptions)
   const pluginsOptionsA = await resolvePluginsPath({ pluginsOptions, buildDir, mode, logs, buildImagePluginsDir })
   const pluginsOptionsB = await Promise.all(
