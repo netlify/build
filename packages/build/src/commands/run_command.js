@@ -2,7 +2,7 @@ const { logCommand } = require('../log/messages/commands')
 const { measureDuration, normalizeTimerName } = require('../time/main')
 
 const { fireBuildCommand } = require('./build_command')
-const { isErrorEvent, isErrorOnlyEvent } = require('./get')
+const { runsAlsoOnBuildFailure, runsOnlyOnBuildFailure } = require('./get')
 const { firePluginCommand } = require('./plugin')
 const { getCommandReturn } = require('./return')
 
@@ -102,10 +102,10 @@ const runCommand = async function({
 const shouldRunCommand = function({ event, package, error, failedPlugins }) {
   const isError = error !== undefined || failedPlugins.includes(package)
   if (isError) {
-    return isErrorEvent(event)
+    return runsAlsoOnBuildFailure(event)
   }
 
-  return !isErrorOnlyEvent(event)
+  return !runsOnlyOnBuildFailure(event)
 }
 
 // Wrap command function to measure its time
