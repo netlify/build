@@ -225,15 +225,16 @@ if (platform !== 'win32') {
     t.is(requests.length, 0)
   })
 
-  // This test currently fails on Node 8
-  // TODO: fix
-  if (!version.startsWith('v8.')) {
-    test('Deploy plugin connection error', async t => {
-      const { socketPath, stopServer } = await startDeployServer()
-      await stopServer()
-      await runFixture(t, 'empty', { flags: { buildbotServerSocket: socketPath, featureFlags: 'triggerDeploy' } })
+  test('Deploy plugin connection error', async t => {
+    const { socketPath, stopServer } = await startDeployServer()
+    await stopServer()
+    const { returnValue, exitCode } = await runFixture(t, 'empty', {
+      flags: { buildbotServerSocket: socketPath, featureFlags: 'triggerDeploy' },
+      snapshot: false,
     })
-  }
+    t.not(exitCode, 0)
+    t.true(returnValue.includes('Could not connect to buildbot: Error: connect'))
+  })
 
   test('Deploy plugin response syntax error', async t => {
     const { socketPath, stopServer } = await startDeployServer({ response: 'test' })
