@@ -6,11 +6,22 @@ const pEvent = require('p-event')
 const { addAsyncErrorMessage } = require('../../utils/errors')
 
 const createBuildbotClient = function({ BUILDBOT_SERVER_SOCKET, BUILDBOT_SERVER_SOCKET_TIMEOUT }) {
-  const client = net.createConnection(BUILDBOT_SERVER_SOCKET)
+  const connectionOpts = getConnectionOpts(BUILDBOT_SERVER_SOCKET)
+  const client = net.createConnection(connectionOpts)
   client.setTimeout(BUILDBOT_SERVER_SOCKET_TIMEOUT, () => {
     onBuildbotClientTimeout({ client, BUILDBOT_SERVER_SOCKET_TIMEOUT })
   })
   return client
+}
+
+// Windows does not support Unix sockets well, so we also support `host:port`
+const getConnectionOpts = function(BUILDBOT_SERVER_SOCKET) {
+  if (!BUILDBOT_SERVER_SOCKET.includes(':')) {
+    return { path: BUILDBOT_SERVER_SOCKET }
+  }
+
+  const [host, port] = BUILDBOT_SERVER_SOCKET.split(':')
+  return { host, port }
 }
 
 const onBuildbotClientTimeout = function({ client, BUILDBOT_SERVER_SOCKET_TIMEOUT }) {
