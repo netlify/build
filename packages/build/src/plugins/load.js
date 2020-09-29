@@ -31,7 +31,7 @@ const loadPlugin = async function(
     const { pluginCommands } = await callChild(
       childProcess,
       'load',
-      { pluginPath, inputs, netlifyConfig, constants: constantsA, loadedFrom, featureFlags },
+      { pluginPath, inputs, netlifyConfig, constants: constantsA, featureFlags },
       { plugin: { package, pluginPackageJson }, location: { event, package, loadedFrom, origin } },
     )
     const pluginCommandsA = pluginCommands.map(({ event }) => ({
