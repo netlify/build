@@ -270,13 +270,63 @@ test('Deploy plugin response timeout', async t => {
   }
 })
 
+test('Deploy plugin does not wait for post-processing if not using onSuccess nor onEnd', async t => {
+  const { address, requests, stopServer } = await startDeployServer()
+  try {
+    await runFixture(t, 'empty', {
+      flags: { buildbotServerSocket: address, featureFlags: 'triggerDeploy' },
+      snapshot: false,
+    })
+  } finally {
+    await stopServer()
+  }
+
+  t.true(requests.every(doesNotWaitForPostProcessing))
+})
+
+test('Deploy plugin waits for post-processing if using onSuccess', async t => {
+  const { address, requests, stopServer } = await startDeployServer()
+  try {
+    await runFixture(t, 'success', {
+      flags: { buildbotServerSocket: address, featureFlags: 'triggerDeploy' },
+      snapshot: false,
+    })
+  } finally {
+    await stopServer()
+  }
+
+  t.true(requests.every(waitsForPostProcessing))
+})
+
+test('Deploy plugin waits for post-processing if using onEnd', async t => {
+  const { address, requests, stopServer } = await startDeployServer()
+  try {
+    await runFixture(t, 'end', {
+      flags: { buildbotServerSocket: address, featureFlags: 'triggerDeploy' },
+      snapshot: false,
+    })
+  } finally {
+    await stopServer()
+  }
+
+  t.true(requests.every(waitsForPostProcessing))
+})
+
 const startDeployServer = function(opts = {}) {
   const useUnixSocket = platform !== 'win32'
   return startTcpServer({ useUnixSocket, response: { succeeded: true, ...opts.response }, ...opts })
 }
 
 const isValidDeployReponse = function(request) {
+  return ['deploySite', 'deploySiteAndAwaitLive'].includes(request.action)
+}
+
+const doesNotWaitForPostProcessing = function(request) {
   return request.action === 'deploySite'
+}
+
+const waitsForPostProcessing = function(request) {
+  return request.action === 'deploySiteAndAwaitLive'
 }
 
 test('plugin.onSuccess is triggered on success', async t => {

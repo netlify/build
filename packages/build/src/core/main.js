@@ -389,7 +389,7 @@ const runBuild = async function({
     featureFlags,
   })
 
-  const { commands, commandsCount } = getCommands(pluginsCommands, netlifyConfig)
+  const { commands, commandsCount, events } = getCommands(pluginsCommands, netlifyConfig)
 
   if (dry) {
     doDryRun({ commands, commandsCount, logs })
@@ -398,6 +398,7 @@ const runBuild = async function({
 
   const { commandsCount: commandsCountA, statuses, timers: timersB } = await runCommands({
     commands,
+    events,
     configPath,
     buildDir,
     nodePath,

@@ -3,6 +3,7 @@ const { promisify } = require('util')
 
 const pEvent = require('p-event')
 
+const { runsAfterDeploy } = require('../../commands/get')
 const { addAsyncErrorMessage } = require('../../utils/errors')
 
 const createBuildbotClient = function({ BUILDBOT_SERVER_SOCKET, BUILDBOT_SERVER_SOCKET_TIMEOUT }) {
@@ -58,13 +59,24 @@ const getNextParsedResponsePromise = addAsyncErrorMessage(
   'Invalid response from buildbot',
 )
 
-const deploySiteWithBuildbotClient = async function(client) {
-  const payload = { action: 'deploySite' }
+const deploySiteWithBuildbotClient = async function({ client, events }) {
+  const action = shouldWaitForPostProcessing(events) ? 'deploySiteAndAwaitLive' : 'deploySite'
+  const payload = { action }
   const [response] = await Promise.all([getNextParsedResponsePromise(client), writePayload(client, payload)])
 
   if (!response.succeeded) {
     throw new Error(`Deploy did not succeed: ${response.values.error}`)
   }
+}
+
+// We only wait for post-processing (last stage before site deploy) if the build
+// has some plugins that do post-deploy logic
+const shouldWaitForPostProcessing = function(events) {
+  return events.some(hasPostDeployLogic)
+}
+
+const hasPostDeployLogic = function(event) {
+  return runsAfterDeploy(event)
 }
 
 module.exports = {
