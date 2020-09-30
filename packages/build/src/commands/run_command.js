@@ -23,6 +23,7 @@ const runCommand = async function({
   childEnv,
   envChanges,
   commands,
+  events,
   mode,
   api,
   errorMonitor,
@@ -58,6 +59,7 @@ const runCommand = async function({
     childEnv,
     envChanges,
     commands,
+    events,
     error,
     logs,
     timers,
@@ -146,6 +148,7 @@ const tFireCommand = function({
   childEnv,
   envChanges,
   commands,
+  events,
   error,
   logs,
 }) {
@@ -171,6 +174,7 @@ const tFireCommand = function({
     origin,
     envChanges,
     commands,
+    events,
     error,
     logs,
   })

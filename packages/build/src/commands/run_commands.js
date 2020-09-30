@@ -12,6 +12,7 @@ const { runCommand } = require('./run_command')
 // Runs `onEnd` events at the end, whether an error was thrown or not.
 const runCommands = async function({
   commands,
+  events,
   configPath,
   buildDir,
   nodePath,
@@ -56,6 +57,7 @@ const runCommands = async function({
         childEnv,
         envChanges,
         commands,
+        events,
         mode,
         api,
         errorMonitor,

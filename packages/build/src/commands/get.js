@@ -5,7 +5,8 @@ const getCommands = function(pluginsCommands, netlifyConfig) {
   const commands = addBuildCommand(pluginsCommands, netlifyConfig)
   const commandsA = sortCommands(commands)
   const commandsCount = commandsA.filter(({ event }) => !runsOnlyOnBuildFailure(event)).length
-  return { commands: commandsA, commandsCount }
+  const events = getEvents(commandsA)
+  return { commands: commandsA, commandsCount, events }
 }
 
 // Merge `build.command` with plugin event handlers
@@ -25,6 +26,16 @@ const sortCommands = function(commands) {
   return EVENTS.flatMap(event => commands.filter(command => command.event === event))
 }
 
+// Retrieve list of unique events
+const getEvents = function(commands) {
+  const events = commands.map(getEvent)
+  return [...new Set(events)]
+}
+
+const getEvent = function({ event }) {
+  return event
+}
+
 const isAmongEvents = function(events, event) {
   return events.includes(event)
 }
@@ -40,4 +51,7 @@ const runsAlsoOnBuildFailure = isAmongEvents.bind(null, ['onError', 'onEnd'])
 // Check if the event is only triggered when the build fails
 const runsOnlyOnBuildFailure = isAmongEvents.bind(null, ['onError'])
 
-module.exports = { getCommands, isSoftFailEvent, runsAlsoOnBuildFailure, runsOnlyOnBuildFailure }
+// Check if the event is happening after deploy
+const runsAfterDeploy = isAmongEvents.bind(null, ['onSuccess', 'onEnd'])
+
+module.exports = { getCommands, isSoftFailEvent, runsAlsoOnBuildFailure, runsOnlyOnBuildFailure, runsAfterDeploy }

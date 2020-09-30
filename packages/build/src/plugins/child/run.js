@@ -4,14 +4,14 @@ const { getUtils } = require('./utils')
 
 // Run a specific plugin event handler
 const run = async function(
-  { event, error, envChanges, loadedFrom },
+  { event, events, error, envChanges, loadedFrom },
   { pluginCommands, constants, inputs, netlifyConfig, featureFlags },
 ) {
   const { method } = pluginCommands.find(pluginCommand => pluginCommand.event === event)
   const runState = {}
   const utils = getUtils({ event, constants, runState, featureFlags })
-  const runOptions = { utils, constants, inputs, netlifyConfig, error }
 
+  const runOptions = { utils, constants, inputs, netlifyConfig, error, events }
   const runOptionsA = cleanRunOptions({ loadedFrom, runOptions })
 
   const envBefore = setEnvChanges(envChanges)
@@ -25,6 +25,7 @@ const cleanRunOptions = function({
   loadedFrom,
   runOptions: {
     constants: { BUILDBOT_SERVER_SOCKET, ...constants },
+    events,
     ...runOptions
   },
 }) {
@@ -32,7 +33,7 @@ const cleanRunOptions = function({
     return { ...runOptions, constants }
   }
 
-  return { ...runOptions, constants: { ...constants, BUILDBOT_SERVER_SOCKET } }
+  return { ...runOptions, constants: { ...constants, BUILDBOT_SERVER_SOCKET }, events }
 }
 
 module.exports = { run }
