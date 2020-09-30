@@ -45,7 +45,7 @@ const logFunctionsToBundle = function(functions, FUNCTIONS_SRC) {
 }
 
 const logDeploySuccess = function() {
-  log(undefined, 'Site was successfully deployed')
+  log(undefined, 'Site deploy was successfully initiated')
 }
 
 module.exports = {
