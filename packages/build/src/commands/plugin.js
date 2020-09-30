@@ -23,7 +23,7 @@ const firePluginCommand = async function({
     const { newEnvChanges, status } = await callChild(
       childProcess,
       'run',
-      { event, error, envChanges },
+      { event, error, envChanges, loadedFrom },
       { plugin: { pluginPackageJson, package }, location: { event, package, loadedFrom, origin } },
     )
     const newStatus = getSuccessStatus(status, { commands, event, package })
