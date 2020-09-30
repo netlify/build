@@ -25,13 +25,12 @@ const loadPlugin = async function(
 ) {
   const { childProcess } = childProcesses[index]
   const event = 'load'
-  const constantsA = cleanConstants(constants, loadedFrom)
 
   try {
     const { pluginCommands } = await callChild(
       childProcess,
       'load',
-      { pluginPath, inputs, netlifyConfig, constants: constantsA, featureFlags },
+      { pluginPath, inputs, netlifyConfig, constants, featureFlags },
       { plugin: { package, pluginPackageJson }, location: { event, package, loadedFrom, origin } },
     )
     const pluginCommandsA = pluginCommands.map(({ event }) => ({
@@ -47,15 +46,6 @@ const loadPlugin = async function(
     const errorA = addPluginLoadErrorStatus({ error, package, version, debug })
     throw errorA
   }
-}
-
-// Only core plugins can use `constants.BUILDBOT_SERVER_SOCKET` at the moment
-const cleanConstants = function({ BUILDBOT_SERVER_SOCKET, ...constants }, loadedFrom) {
-  if (loadedFrom !== 'core') {
-    return constants
-  }
-
-  return { ...constants, BUILDBOT_SERVER_SOCKET }
 }
 
 module.exports = { loadPlugins }
