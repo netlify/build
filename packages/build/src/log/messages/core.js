@@ -39,9 +39,25 @@ const logTimer = function(logs, durationNs, timerName) {
   log(logs, THEME.dimWords(`(${timerName} completed in ${duration})`))
 }
 
+const logLingeringProcesses = function(logs, processList) {
+  log(
+    logs,
+    THEME.errorLine(`
+** WARNING **
+There are some lingering processes even after the build process finished:
+
+${processList}
+
+Our builds do not kill your processes automatically, so please make sure
+that nothing is running after your build finishes, or it will be marked as
+failed since something is still running.`),
+  )
+}
+
 module.exports = {
   logBuildStart,
   logBuildError,
   logBuildSuccess,
   logTimer,
+  logLingeringProcesses,
 }

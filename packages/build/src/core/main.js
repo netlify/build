@@ -1,4 +1,4 @@
-/* eslint-disable max-lines */
+/* eslint-disable max-lines, import/max-dependencies */
 require('../utils/polyfills')
 
 const { getCommands } = require('../commands/get')
@@ -19,6 +19,7 @@ const { reportTimers } = require('../time/report')
 const { loadConfig } = require('./config')
 const { getConstants } = require('./constants')
 const { doDryRun } = require('./dry')
+const { warnOnLingeringProcesses } = require('./lingering')
 const { normalizeFlags } = require('./normalize_flags')
 const { getSeverity } = require('./severity')
 
@@ -327,7 +328,7 @@ const initAndRunBuild = async function({
   })
 
   try {
-    return await runBuild({
+    const { commandsCount, statuses, timers: timersC } = await runBuild({
       childProcesses,
       pluginsOptions,
       netlifyConfig,
@@ -347,6 +348,10 @@ const initAndRunBuild = async function({
       testOpts,
       featureFlags,
     })
+
+    await warnOnLingeringProcesses({ mode, logs, testOpts })
+
+    return { commandsCount, statuses, timers: timersC }
   } finally {
     stopPlugins(childProcesses)
   }
@@ -438,4 +443,4 @@ const handleBuildSuccess = async function({
 }
 
 module.exports = build
-/* eslint-enable max-lines */
+/* eslint-enable max-lines, import/max-dependencies */
