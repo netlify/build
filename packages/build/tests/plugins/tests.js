@@ -365,6 +365,10 @@ test('plugin.onError is triggered on cancelBuild()', async t => {
   await runFixture(t, 'error_cancel_build')
 })
 
+test('plugin.onError can fail', async t => {
+  await runFixture(t, 'error_fail')
+})
+
 test('plugin.onError gets an error argument', async t => {
   await runFixture(t, 'error_argument')
 })
@@ -395,10 +399,6 @@ test('plugin.onEnd can fail but it does not stop builds', async t => {
 
 test('plugin.onEnd and plugin.onError can be used together', async t => {
   await runFixture(t, 'end_error')
-})
-
-test('plugin.onEnd and plugin.onError can fail', async t => {
-  await runFixture(t, 'end_error_fail')
 })
 
 test('plugin.onEnd can be used in several plugins', async t => {

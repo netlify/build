@@ -26,7 +26,6 @@ const runCommands = async function({
   debug,
   timers,
   testOpts,
-  featureFlags,
 }) {
   const { index: commandsCount, error: errorA, statuses: statusesB, timers: timersC } = await pReduce(
     commands,
@@ -69,7 +68,6 @@ const runCommands = async function({
         debug,
         timers: timersA,
         testOpts,
-        featureFlags,
       })
       const statusesA = addStatus({ newStatus, statuses, event, package, pluginPackageJson })
       return {

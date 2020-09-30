@@ -35,7 +35,6 @@ const runCommand = async function({
   debug,
   timers,
   testOpts,
-  featureFlags,
 }) {
   if (!shouldRunCommand({ event, package, error, failedPlugins })) {
     return {}
@@ -83,7 +82,6 @@ const runCommand = async function({
     timers: timersA,
     durationNs,
     testOpts,
-    featureFlags,
   })
   return { ...newValues, newIndex: index + 1 }
 }

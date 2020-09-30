@@ -22,7 +22,6 @@ const getCommandReturn = function({
   timers,
   durationNs,
   testOpts,
-  featureFlags,
 }) {
   if (newError !== undefined) {
     return handleCommandError({
@@ -38,7 +37,6 @@ const getCommandReturn = function({
       logs,
       debug,
       testOpts,
-      featureFlags,
     })
   }
 

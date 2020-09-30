@@ -41,9 +41,7 @@ const isAmongEvents = function(events, event) {
 }
 
 // Check if failure of the event should not make the build fail
-const isSoftFailEvent = function(event, featureFlags) {
-  return featureFlags.postDeployErrors && isAmongEvents(['onSuccess', 'onError', 'onEnd'], event)
-}
+const isSoftFailEvent = isAmongEvents.bind(null, ['onSuccess', 'onError', 'onEnd'])
 
 // Check if the event is triggered even when the build fails
 const runsAlsoOnBuildFailure = isAmongEvents.bind(null, ['onError', 'onEnd'])
