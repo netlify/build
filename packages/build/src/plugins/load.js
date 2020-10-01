@@ -1,4 +1,4 @@
-const { addPluginLoadErrorStatus } = require('../status/add')
+const { addPluginLoadErrorStatus } = require('../status/load_error')
 const { measureDuration } = require('../time/main')
 
 const { callChild } = require('./ipc')

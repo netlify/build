@@ -1,4 +1,4 @@
-const { addPluginLoadErrorStatus } = require('../../status/add')
+const { addPluginLoadErrorStatus } = require('../../status/load_error')
 
 const { checkInputs } = require('./check')
 const { loadManifest } = require('./load')
