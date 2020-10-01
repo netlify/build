@@ -1,4 +1,4 @@
-const { runsAlsoOnBuildFailure } = require('../commands/get')
+const { runsOnlyOnBuildFailure } = require('../commands/get')
 const { addErrorInfo } = require('../error/info')
 const { getFullErrorInfo } = require('../error/parse/parse')
 const { serializeErrorStatus } = require('../error/parse/serialize_status')
@@ -15,7 +15,7 @@ const getSuccessStatus = function(newStatus, { commands, event, packageName }) {
 
 const isLastNonErrorCommand = function({ commands, event, packageName }) {
   const nonErrorCommands = commands.filter(
-    command => command.packageName === packageName && !runsAlsoOnBuildFailure(command.event),
+    command => command.packageName === packageName && !runsOnlyOnBuildFailure(command.event),
   )
   return nonErrorCommands.length === 0 || nonErrorCommands[nonErrorCommands.length - 1].event === event
 }
