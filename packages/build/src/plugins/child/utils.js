@@ -5,8 +5,8 @@ const { addLazyProp } = require('./lazy')
 const { show } = require('./status')
 
 // Retrieve the `utils` argument.
-const getUtils = function({ event, constants: { FUNCTIONS_SRC, CACHE_DIR }, runState, featureFlags }) {
-  const build = getBuildUtils(event, featureFlags)
+const getUtils = function({ event, constants: { FUNCTIONS_SRC, CACHE_DIR }, runState }) {
+  const build = getBuildUtils(event)
   const utils = { build }
   addLazyProp(utils, 'git', getGitUtils)
   addLazyProp(utils, 'cache', getCacheUtils.bind(null, CACHE_DIR))
@@ -16,8 +16,8 @@ const getUtils = function({ event, constants: { FUNCTIONS_SRC, CACHE_DIR }, runS
   return utils
 }
 
-const getBuildUtils = function(event, featureFlags) {
-  if (isSoftFailEvent(event, featureFlags)) {
+const getBuildUtils = function(event) {
+  if (isSoftFailEvent(event)) {
     return {
       failPlugin,
       failBuild: failPluginWithWarning.bind(null, 'failBuild', event),

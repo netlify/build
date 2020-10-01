@@ -346,7 +346,6 @@ const initAndRunBuild = async function({
       debug,
       timers: timersB,
       testOpts,
-      featureFlags,
     })
 
     await warnOnLingeringProcesses({ mode, logs, testOpts })
@@ -377,7 +376,6 @@ const runBuild = async function({
   debug,
   timers,
   testOpts,
-  featureFlags,
 }) {
   const { pluginsCommands, timers: timersA } = await loadPlugins({
     pluginsOptions,
@@ -386,7 +384,6 @@ const runBuild = async function({
     constants,
     timers,
     debug,
-    featureFlags,
   })
 
   const { commands, commandsCount, events } = getCommands(pluginsCommands, netlifyConfig)
@@ -412,7 +409,6 @@ const runBuild = async function({
     debug,
     timers: timersA,
     testOpts,
-    featureFlags,
   })
   return { commandsCount: commandsCountA, statuses, timers: timersB }
 }

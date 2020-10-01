@@ -5,7 +5,4 @@ module.exports = {
   onError() {
     throw new Error('onError')
   },
-  onEnd() {
-    console.log('onEnd')
-  },
 }

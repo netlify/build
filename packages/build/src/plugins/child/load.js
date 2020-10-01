@@ -6,7 +6,7 @@ const { validatePlugin } = require('./validate')
 // This also validates the plugin.
 // Do it when parent requests it using the `load` event.
 // Also figure out the list of plugin commands. This is also passed to the parent.
-const load = function({ pluginPath, inputs, constants, netlifyConfig, featureFlags }) {
+const load = function({ pluginPath, inputs, constants, netlifyConfig }) {
   const logic = getLogic({ pluginPath, inputs })
 
   validatePlugin(logic)
@@ -14,7 +14,7 @@ const load = function({ pluginPath, inputs, constants, netlifyConfig, featureFla
   const pluginCommands = getPluginCommands(logic)
 
   // Context passed to every event handler
-  const context = { pluginCommands, constants, inputs, netlifyConfig, featureFlags }
+  const context = { pluginCommands, constants, inputs, netlifyConfig }
 
   return { pluginCommands, context }
 }
