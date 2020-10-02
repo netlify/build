@@ -8,7 +8,7 @@ const { handlePluginError } = require('./error')
 const firePluginCommand = async function({
   event,
   childProcess,
-  package,
+  packageName,
   pluginPackageJson,
   loadedFrom,
   origin,
@@ -25,9 +25,9 @@ const firePluginCommand = async function({
       childProcess,
       'run',
       { event, events, error, envChanges, loadedFrom },
-      { plugin: { pluginPackageJson, package }, location: { event, package, loadedFrom, origin } },
+      { plugin: { pluginPackageJson, packageName }, location: { event, packageName, loadedFrom, origin } },
     )
-    const newStatus = getSuccessStatus(status, { commands, event, package })
+    const newStatus = getSuccessStatus(status, { commands, event, packageName })
     return { newEnvChanges, newStatus }
   } catch (newError) {
     handlePluginError(newError, loadedFrom)

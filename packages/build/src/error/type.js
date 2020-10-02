@@ -34,7 +34,7 @@ const getTypeInfo = function({ type }) {
 const TYPES = {
   // Plugin called `utils.build.cancelBuild()`
   cancelBuild: {
-    title: ({ location: { package } }) => `Build canceled by ${package}`,
+    title: ({ location: { packageName } }) => `Build canceled by ${packageName}`,
     stackType: 'stack',
     locationType: 'buildFail',
     severity: 'none',
@@ -57,7 +57,7 @@ const TYPES = {
 
   // User misconfigured a plugin
   pluginInput: {
-    title: ({ location: { package, input } }) => `Plugin "${package}" invalid input "${input}"`,
+    title: ({ location: { packageName, input } }) => `Plugin "${packageName}" invalid input "${input}"`,
     stackType: 'none',
     locationType: 'buildFail',
     severity: 'info',
@@ -74,7 +74,7 @@ const TYPES = {
 
   // Plugin called `utils.build.failBuild()`
   failBuild: {
-    title: ({ location: { package } }) => `Plugin "${package}" failed`,
+    title: ({ location: { packageName } }) => `Plugin "${packageName}" failed`,
     stackType: 'stack',
     locationType: 'buildFail',
     severity: 'info',
@@ -82,7 +82,7 @@ const TYPES = {
 
   // Plugin called `utils.build.failPlugin()`
   failPlugin: {
-    title: ({ location: { package } }) => `Plugin "${package}" failed`,
+    title: ({ location: { packageName } }) => `Plugin "${packageName}" failed`,
     stackType: 'stack',
     locationType: 'buildFail',
     severity: 'info',
@@ -91,7 +91,7 @@ const TYPES = {
 
   // Plugin has an invalid shape
   pluginValidation: {
-    title: ({ location: { package } }) => `Plugin "${package}" internal error`,
+    title: ({ location: { packageName } }) => `Plugin "${packageName}" internal error`,
     stackType: 'stack',
     locationType: 'buildFail',
     severity: 'warning',
@@ -99,7 +99,7 @@ const TYPES = {
 
   // Plugin threw an uncaught exception
   pluginInternal: {
-    title: ({ location: { package } }) => `Plugin "${package}" internal error`,
+    title: ({ location: { packageName } }) => `Plugin "${packageName}" internal error`,
     stackType: 'stack',
     showErrorProps: true,
     rawStack: true,
@@ -109,7 +109,7 @@ const TYPES = {
 
   // Bug while orchestrating child processes
   ipc: {
-    title: ({ location: { package } }) => `Plugin "${package}" internal error`,
+    title: ({ location: { packageName } }) => `Plugin "${packageName}" internal error`,
     stackType: 'none',
     locationType: 'buildFail',
     severity: 'warning',
@@ -117,7 +117,7 @@ const TYPES = {
 
   // Core plugin internal error
   corePlugin: {
-    title: ({ location: { package } }) => `Plugin "${package}" internal error`,
+    title: ({ location: { packageName } }) => `Plugin "${packageName}" internal error`,
     stackType: 'stack',
     showErrorProps: true,
     rawStack: true,

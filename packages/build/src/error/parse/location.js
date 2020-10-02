@@ -23,10 +23,10 @@ const getBuildCommandLocation = function({ buildCommand, buildCommandOrigin }) {
 ${buildCommand}`
 }
 
-const getBuildFailLocation = function({ event, package, loadedFrom, origin }) {
+const getBuildFailLocation = function({ event, packageName, loadedFrom, origin }) {
   const eventMessage = getEventMessage(event)
   const pluginOrigin = getPluginOrigin(loadedFrom, origin)
-  return `${eventMessage} "${package}" ${pluginOrigin}`
+  return `${eventMessage} "${packageName}" ${pluginOrigin}`
 }
 
 const getEventMessage = function(event) {

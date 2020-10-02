@@ -5,17 +5,17 @@ const { serializeErrorStatus } = require('../error/parse/serialize_status')
 
 // The last event handler of a plugin (except for `onError` and `onEnd`)
 // defaults to `utils.status.show({ state: 'success' })` without any `summary`.
-const getSuccessStatus = function(newStatus, { commands, event, package }) {
-  if (newStatus === undefined && isLastNonErrorCommand({ commands, event, package })) {
+const getSuccessStatus = function(newStatus, { commands, event, packageName }) {
+  if (newStatus === undefined && isLastNonErrorCommand({ commands, event, packageName })) {
     return IMPLICIT_STATUS
   }
 
   return newStatus
 }
 
-const isLastNonErrorCommand = function({ commands, event, package }) {
+const isLastNonErrorCommand = function({ commands, event, packageName }) {
   const nonErrorCommands = commands.filter(
-    command => command.package === package && !runsAlsoOnBuildFailure(command.event),
+    command => command.packageName === packageName && !runsAlsoOnBuildFailure(command.event),
   )
   return nonErrorCommands.length === 0 || nonErrorCommands[nonErrorCommands.length - 1].event === event
 }
@@ -23,7 +23,7 @@ const isLastNonErrorCommand = function({ commands, event, package }) {
 const IMPLICIT_STATUS = { state: 'success', implicit: true }
 
 // Merge plugin status to the list of plugin statuses.
-const addStatus = function({ newStatus, statuses, event, package, pluginPackageJson: { version } = {} }) {
+const addStatus = function({ newStatus, statuses, event, packageName, pluginPackageJson: { version } = {} }) {
   // Either:
   //  - `build.command`
   //  - no status was set
@@ -31,14 +31,14 @@ const addStatus = function({ newStatus, statuses, event, package, pluginPackageJ
     return statuses
   }
 
-  const formerStatus = statuses.find(status => status.package === package)
+  const formerStatus = statuses.find(status => status.packageName === packageName)
   if (!canOverrideStatus(formerStatus, newStatus)) {
     return statuses
   }
 
   // Overrides plugin's previous status and add more information
   const newStatuses = statuses.filter(status => status !== formerStatus)
-  return [...newStatuses, { ...newStatus, event, package, version }]
+  return [...newStatuses, { ...newStatus, event, packageName, version }]
 }
 
 const canOverrideStatus = function(formerStatus, newStatus) {
@@ -57,10 +57,10 @@ const canOverrideStatus = function(formerStatus, newStatus) {
 }
 
 // Errors that happen during plugin loads should be reported as error statuses
-const addPluginLoadErrorStatus = function({ error, package, version, debug }) {
+const addPluginLoadErrorStatus = function({ error, packageName, version, debug }) {
   const fullErrorInfo = getFullErrorInfo({ error, colors: false, debug })
   const errorStatus = serializeErrorStatus({ fullErrorInfo })
-  const statuses = [{ ...errorStatus, event: 'load', package, version }]
+  const statuses = [{ ...errorStatus, event: 'load', packageName, version }]
   addErrorInfo(error, { statuses })
   return error
 }

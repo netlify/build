@@ -1,19 +1,19 @@
 // Retrieve plugin's package.json details to include in error messages.
 // Please note `pluginPackageJson` has been normalized by `normalize-package-data`.
-const getPluginInfo = function({ pluginPackageJson = {} }, { package, loadedFrom }) {
+const getPluginInfo = function({ pluginPackageJson = {} }, { packageName, loadedFrom }) {
   if (Object.keys(pluginPackageJson).length === 0) {
     return
   }
 
   return Object.entries(FIELDS)
-    .map(([name, getField]) => serializeField({ name, getField, pluginPackageJson, package, loadedFrom }))
+    .map(([name, getField]) => serializeField({ name, getField, pluginPackageJson, packageName, loadedFrom }))
     .filter(Boolean)
     .join('\n')
 }
 
 // Serialize a single package.json field
-const serializeField = function({ name, getField, pluginPackageJson, package, loadedFrom }) {
-  const field = getField(pluginPackageJson, { package, loadedFrom })
+const serializeField = function({ name, getField, pluginPackageJson, packageName, loadedFrom }) {
+  const field = getField(pluginPackageJson, { packageName, loadedFrom })
   if (field === undefined) {
     return
   }
@@ -24,8 +24,8 @@ const serializeField = function({ name, getField, pluginPackageJson, package, lo
 
 const NAME_PADDING = 16
 
-const getPackage = function(pluginPackageJson, { package }) {
-  return package
+const getPackage = function(pluginPackageJson, { packageName }) {
+  return packageName
 }
 
 const getVersion = function({ version }) {

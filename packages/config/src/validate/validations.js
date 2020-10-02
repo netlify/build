@@ -70,7 +70,7 @@ const POST_NORMALIZE_VALIDATIONS = [
 
   {
     property: 'plugins.*',
-    check: ({ package }) => package !== undefined,
+    check: plugin => plugin.package !== undefined,
     message: '"package" property is required.',
     example: () => ({ plugins: [{ package: 'netlify-plugin-one' }] }),
   },
@@ -87,8 +87,10 @@ const POST_NORMALIZE_VALIDATIONS = [
   // We ensure @scope/plugin still work.
   {
     property: 'plugins.*.package',
-    check: package =>
-      package.startsWith('.') || package.startsWith('/') || validateNpmPackageName(package).validForOldPackages,
+    check: packageName =>
+      packageName.startsWith('.') ||
+      packageName.startsWith('/') ||
+      validateNpmPackageName(packageName).validForOldPackages,
     message: 'must be a npm package name only.',
     example: () => ({ plugins: [{ package: 'netlify-plugin-one' }] }),
   },

@@ -41,7 +41,7 @@ const DEFAULT_METRIC_NAME = 'buildbot.build.stage.duration'
 const TOP_PARENT_TAG = 'run_netlify_build'
 
 // Make sure the timer name does not include special characters.
-// For example, the `package` of local plugins includes dots.
+// For example, the `packageName` of local plugins includes dots.
 const normalizeTimerName = function(name) {
   return slugify(name, { separator: '_' })
 }

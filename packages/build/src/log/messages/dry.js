@@ -24,7 +24,7 @@ ${THEME.header(`┌─${line}─┬─${secondLine}─┐
 
 const logDryRunCommand = function({
   logs,
-  command: { event, package, buildCommandOrigin },
+  command: { event, packageName, buildCommandOrigin },
   index,
   eventWidth,
   commandsCount,
@@ -34,7 +34,7 @@ const logDryRunCommand = function({
   const countText = `${index + 1}. `
   const downArrow = commandsCount === index + 1 ? '  ' : ` ${arrowDown}`
   const eventWidthA = columnWidth - countText.length - downArrow.length
-  const fullName = getPluginFullName({ package, buildCommandOrigin })
+  const fullName = getPluginFullName({ packageName, buildCommandOrigin })
 
   logMessage(
     logs,
@@ -44,12 +44,12 @@ ${THEME.header(`└─${line}─┘ `)}`,
   )
 }
 
-const getPluginFullName = function({ package, buildCommandOrigin }) {
+const getPluginFullName = function({ packageName, buildCommandOrigin }) {
   if (buildCommandOrigin !== undefined) {
     return getBuildCommandDescription(buildCommandOrigin)
   }
 
-  return `Plugin ${THEME.highlightWords(package)}`
+  return `Plugin ${THEME.highlightWords(packageName)}`
 }
 
 const getDryColumnWidth = function(eventWidth, commandsCount) {

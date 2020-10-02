@@ -85,7 +85,7 @@ const sendApiStatuses = async function({
 
 const sendApiStatus = async function({
   api,
-  status: { package, version, state, event, title, summary, text },
+  status: { packageName, version, state, event, title, summary, text },
   childEnv,
   mode,
   netlifyConfig,
@@ -98,7 +98,7 @@ const sendApiStatus = async function({
   try {
     await api.createPluginRun({
       deploy_id: deployId,
-      body: { package, version, state, reporting_event: event, title, summary, text },
+      body: { package: packageName, version, state, reporting_event: event, title, summary, text },
     })
     // Bitballoon API randomly fails with 502.
     // Builds should be successful when this API call fails, but we still want

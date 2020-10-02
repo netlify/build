@@ -6,8 +6,8 @@ const logStatuses = function(logs, statuses) {
   statuses.forEach(status => logStatus(logs, status))
 }
 
-const logStatus = function(logs, { package, title = `Plugin ${package} ran successfully`, summary, text }) {
-  const titleA = title.includes(package) ? title : `${package}: ${title}`
+const logStatus = function(logs, { packageName, title = `Plugin ${packageName} ran successfully`, summary, text }) {
+  const titleA = title.includes(packageName) ? title : `${packageName}: ${title}`
   const body = text === undefined ? summary : `${summary}\n${THEME.dimWords(text)}`
   logSubHeader(logs, titleA)
   logMessage(logs, body)

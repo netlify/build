@@ -10,7 +10,7 @@ const { getCommandReturn } = require('./return')
 const runCommand = async function({
   event,
   childProcess,
-  package,
+  packageName,
   pluginPackageJson,
   loadedFrom,
   origin,
@@ -36,17 +36,17 @@ const runCommand = async function({
   timers,
   testOpts,
 }) {
-  if (!shouldRunCommand({ event, package, error, failedPlugins })) {
+  if (!shouldRunCommand({ event, packageName, error, failedPlugins })) {
     return {}
   }
 
-  logCommand({ logs, event, buildCommandOrigin, package, index, error })
+  logCommand({ logs, event, buildCommandOrigin, packageName, index, error })
 
-  const fireCommand = getFireCommand({ package, event })
+  const fireCommand = getFireCommand({ packageName, event })
   const { newEnvChanges, newError, newStatus, timers: timersA, durationNs } = await fireCommand({
     event,
     childProcess,
-    package,
+    packageName,
     pluginPackageJson,
     loadedFrom,
     origin,
@@ -66,7 +66,7 @@ const runCommand = async function({
 
   const newValues = await getCommandReturn({
     event,
-    package,
+    packageName,
     newError,
     newEnvChanges,
     newStatus,
@@ -109,8 +109,8 @@ const runCommand = async function({
 // `onSuccess` is the opposite. It is triggered after the build succeeded.
 // `onEnd` is triggered after the build either failed or succeeded.
 // It is useful for resources cleanup.
-const shouldRunCommand = function({ event, package, error, failedPlugins }) {
-  if (failedPlugins.includes(package)) {
+const shouldRunCommand = function({ event, packageName, error, failedPlugins }) {
+  if (failedPlugins.includes(packageName)) {
     return false
   }
 
@@ -122,19 +122,19 @@ const shouldRunCommand = function({ event, package, error, failedPlugins }) {
 }
 
 // Wrap command function to measure its time
-const getFireCommand = function({ package, event }) {
-  if (package === undefined) {
+const getFireCommand = function({ packageName, event }) {
+  if (packageName === undefined) {
     return measureDuration(tFireCommand, 'build_command')
   }
 
-  const parentTag = normalizeTimerName(package)
+  const parentTag = normalizeTimerName(packageName)
   return measureDuration(tFireCommand, event, { parentTag, category: 'pluginEvent' })
 }
 
 const tFireCommand = function({
   event,
   childProcess,
-  package,
+  packageName,
   pluginPackageJson,
   loadedFrom,
   origin,
@@ -166,7 +166,7 @@ const tFireCommand = function({
   return firePluginCommand({
     event,
     childProcess,
-    package,
+    packageName,
     pluginPackageJson,
     loadedFrom,
     origin,

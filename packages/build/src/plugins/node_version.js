@@ -41,7 +41,7 @@ const getCurrentNodeVersion = function() {
 // Ensure Node.js version is recent enough to run this plugin
 const checkNodeVersion = function({
   childNodeVersion,
-  package,
+  packageName,
   pluginPackageJson: { engines: { node: pluginNodeVersionRange } = {} } = {},
 }) {
   // Build plugins are instrumented with a wrapper code which has a minimal
@@ -60,7 +60,7 @@ const checkNodeVersion = function({
   // Plugins can also set a minimal version using `engines.node`
   if (pluginNodeVersionRange && !satisfies(childNodeVersion, pluginNodeVersionRange)) {
     throwUserError(
-      `The Node.js version is ${childNodeVersion} but the plugin "${package}" requires ${pluginNodeVersionRange}`,
+      `The Node.js version is ${childNodeVersion} but the plugin "${packageName}" requires ${pluginNodeVersionRange}`,
     )
   }
 }

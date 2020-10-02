@@ -57,9 +57,9 @@ const BUILDBOT_ENVIRONMENT = [
   'URL',
 ]
 
-const cleanupPlugin = function({ package, origin, inputs }) {
+const cleanupPlugin = function({ package: packageName, origin, inputs }) {
   const inputsA = filterObj(inputs, isPublicInput)
-  return { package, origin, inputs: inputsA }
+  return { package: packageName, origin, inputs: inputsA }
 }
 
 const isPublicInput = function(key, input) {

@@ -26,7 +26,7 @@ const resolvePluginsPath = async function({ pluginsOptions, buildDir, mode, logs
 
 const resolvePluginPath = async function({
   pluginOptions,
-  pluginOptions: { package, loadedFrom },
+  pluginOptions: { packageName, loadedFrom },
   buildDir,
   buildImagePluginsDir,
 }) {
@@ -35,23 +35,23 @@ const resolvePluginPath = async function({
     return pluginOptions
   }
 
-  const packageA = resolvePackagePath(package)
+  const packageNameA = resolvePackagePath(packageName)
 
   // Local plugins
-  if (packageA.startsWith('.')) {
-    const localPath = await tryLocalPath(packageA, buildDir)
+  if (packageNameA.startsWith('.')) {
+    const localPath = await tryLocalPath(packageNameA, buildDir)
     return { ...pluginOptions, pluginPath: localPath, loadedFrom: 'local' }
   }
 
   // Plugin already installed in the project, most likely either local plugins,
   // or external plugins added to `package.json`
-  const manualPath = await tryResolvePath(packageA, buildDir)
+  const manualPath = await tryResolvePath(packageNameA, buildDir)
   if (manualPath !== undefined) {
     return { ...pluginOptions, pluginPath: manualPath, loadedFrom: 'package.json' }
   }
 
   // Cached in the build image
-  const buildImagePath = await tryBuildImagePath({ package: packageA, buildDir, buildImagePluginsDir })
+  const buildImagePath = await tryBuildImagePath({ packageName: packageNameA, buildDir, buildImagePluginsDir })
   if (buildImagePath !== undefined) {
     return { ...pluginOptions, pluginPath: buildImagePath, loadedFrom: 'image_cache' }
   }
@@ -60,21 +60,21 @@ const resolvePluginPath = async function({
   return pluginOptions
 }
 
-// `package` starting with `/` are relative to the build directory
-const resolvePackagePath = function(package) {
-  if (package.startsWith('/')) {
-    return `.${package}`
+// `packageName` starting with `/` are relative to the build directory
+const resolvePackagePath = function(packageName) {
+  if (packageName.startsWith('/')) {
+    return `.${packageName}`
   }
 
-  return package
+  return packageName
 }
 
 // Try to `resolve()` a local plugin
-const tryLocalPath = async function(package, baseDir) {
+const tryLocalPath = async function(packageName, baseDir) {
   try {
-    return await resolvePath(package, baseDir)
+    return await resolvePath(packageName, baseDir)
   } catch (error) {
-    error.message = `Plugin could not be found using local path: ${package}\n${error.message}`
+    error.message = `Plugin could not be found using local path: ${packageName}\n${error.message}`
     addErrorInfo(error, { type: 'resolveConfig' })
     throw error
   }
@@ -82,12 +82,12 @@ const tryLocalPath = async function(package, baseDir) {
 
 // In production, we pre-install most Build plugins to that directory, for
 // performance reasons
-const tryBuildImagePath = async function({ package, buildDir, buildImagePluginsDir }) {
+const tryBuildImagePath = async function({ packageName, buildDir, buildImagePluginsDir }) {
   if (buildImagePluginsDir === undefined) {
     return
   }
 
-  const buildImagePath = `${buildImagePluginsDir}/${package}`
+  const buildImagePath = `${buildImagePluginsDir}/${packageName}`
   if (!(await pathExists(buildImagePath))) {
     return
   }
@@ -96,9 +96,9 @@ const tryBuildImagePath = async function({ package, buildDir, buildImagePluginsD
 }
 
 // Try to `resolve()` the plugin from the build directory
-const tryResolvePath = async function(package, baseDir) {
+const tryResolvePath = async function(packageName, baseDir) {
   try {
-    return await resolvePath(package, baseDir)
+    return await resolvePath(packageName, baseDir)
   } catch (error) {}
 }
 
@@ -117,14 +117,14 @@ const handleMissingPlugins = async function({ pluginsOptions, buildDir, mode, bu
 // Resolve the plugins that just got automatically installed
 const resolveMissingPluginPath = async function({
   pluginOptions,
-  pluginOptions: { package, pluginPath },
+  pluginOptions: { packageName, pluginPath },
   autoPluginsDir,
 }) {
   if (pluginPath !== undefined) {
     return pluginOptions
   }
 
-  const automaticPath = await resolvePath(package, autoPluginsDir)
+  const automaticPath = await resolvePath(packageName, autoPluginsDir)
   return { ...pluginOptions, pluginPath: automaticPath, loadedFrom: 'auto_install' }
 }
 

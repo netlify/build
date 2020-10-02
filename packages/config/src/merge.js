@@ -29,7 +29,7 @@ const mergePlugins = function(defaultPlugins, plugins, inlinePlugins) {
 // When a plugin is specified both in the UI and netlify.toml, we only keep
 // the netlify.toml one.
 const isNotOverridenPlugin = function(plugin, index, plugins) {
-  const overridingPlugin = plugins.slice(index + 1).find(({ package }) => plugin.package === package)
+  const overridingPlugin = plugins.slice(index + 1).find(pluginA => plugin.package === pluginA.package)
 
   if (overridingPlugin !== undefined && overridingPlugin.origin === 'config' && plugin.origin === 'config') {
     throwError(`Plugin "${plugin.package}" must not be specified twice in netlify.toml`)

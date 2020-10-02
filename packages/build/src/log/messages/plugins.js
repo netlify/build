@@ -18,10 +18,10 @@ const isNotCorePlugin = function({ origin }) {
   return origin !== 'core'
 }
 
-const getPluginDescription = function({ package, pluginPackageJson: { version }, loadedFrom, origin }) {
+const getPluginDescription = function({ packageName, pluginPackageJson: { version }, loadedFrom, origin }) {
   const versionA = version === undefined ? '' : `@${version}`
   const pluginOrigin = getPluginOrigin(loadedFrom, origin)
-  return `${THEME.highlightWords(package)}${versionA} ${pluginOrigin}`
+  return `${THEME.highlightWords(packageName)}${versionA} ${pluginOrigin}`
 }
 
 const logFailPluginWarning = function(methodName, event) {
