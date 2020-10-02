@@ -30,7 +30,6 @@ const createGit = async function(cwd, git) {
 const removeDir = async function(dir) {
   try {
     await del(dir, { force: true })
-    // eslint-disable-next-line no-empty
   } catch (error) {}
 }
 

@@ -57,9 +57,7 @@ const getSrcGlob = async function(src) {
 const getStat = async function(src) {
   try {
     return await pStat(src)
-  } catch (error) {
-    return
-  }
+  } catch (error) {}
 }
 
 module.exports = { moveCacheFile, hasFiles }

@@ -20,9 +20,7 @@ const track = async function({ payload, testOpts: { telemetryOrigin = '' } = {} 
     }
 
     await childProcess
-  } catch (error) {
-    return
-  }
+  } catch (error) {}
 }
 
 module.exports = { track }

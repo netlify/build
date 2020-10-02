@@ -34,7 +34,6 @@ const startErrorMonitor = function({ flags: { mode }, logs, bugsnagKey }) {
     // Failsafe
   } catch (error) {
     log(logs, `Error monitor could not start\n${error.stack}`)
-    return
   }
 }
 
