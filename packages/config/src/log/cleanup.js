@@ -6,7 +6,17 @@ const { removeEmptyObject, removeEmptyArray } = require('./remove')
 
 // Make sure we are not printing secret values. Use an allow list.
 const cleanupConfig = function({
-  build: { base, command, commandOrigin, environment = {}, functions, edge_handlers, ignore, processing, publish } = {},
+  build: {
+    base,
+    command,
+    commandOrigin,
+    environment = {},
+    functions,
+    edge_handlers: edgeHandlers,
+    ignore,
+    processing,
+    publish,
+  } = {},
   headers,
   plugins = [],
   redirects,
@@ -19,7 +29,7 @@ const cleanupConfig = function({
     commandOrigin,
     environment: environmentA,
     functions,
-    edge_handlers,
+    edge_handlers: edgeHandlers,
     ignore,
     processing,
     publish,
