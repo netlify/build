@@ -252,24 +252,6 @@ test('Deploy plugin response payload error', async t => {
   }
 })
 
-test('Deploy plugin response timeout', async t => {
-  const { address, stopServer } = await startDeployServer({ timeout: true })
-  try {
-    const { exitCode, returnValue } = await runFixture(t, 'empty', {
-      flags: {
-        buildbotServerSocket: address,
-        featureFlags: 'triggerDeploy',
-        testOpts: { buildbotServerSocketTimeout: 1 },
-      },
-      snapshot: false,
-    })
-    t.not(exitCode, 0)
-    t.true(returnValue.includes('The TCP connection with the buildbot timed out'))
-  } finally {
-    await stopServer()
-  }
-})
-
 test('Deploy plugin does not wait for post-processing if not using onSuccess nor onEnd', async t => {
   const { address, requests, stopServer } = await startDeployServer()
   try {

@@ -18,7 +18,6 @@ const getConstants = async function({
   token,
   mode,
   buildbotServerSocket,
-  testOpts: { buildbotServerSocketTimeout = BUILDBOT_SERVER_SOCKET_TIMEOUT },
 }) {
   const isLocal = mode !== 'buildbot'
   const [cacheDir, edgeHandlersSrc] = await Promise.all([
@@ -71,17 +70,10 @@ const getConstants = async function({
      * The path to the buildbot server socket
      */
     BUILDBOT_SERVER_SOCKET: buildbotServerSocket,
-    /**
-     * The buildbot server socket timeout. For testing only.
-     */
-    BUILDBOT_SERVER_SOCKET_TIMEOUT: buildbotServerSocketTimeout,
   }
   const constantsA = mapObj(constants, (key, path) => [key, normalizePath(path, buildDir, key)])
   return constantsA
 }
-
-// One minute
-const BUILDBOT_SERVER_SOCKET_TIMEOUT = 6e4
 
 // The default `edge-handlers` is only set to `constants.EDGE_HANDLERS_SRC` if
 // that directory exists

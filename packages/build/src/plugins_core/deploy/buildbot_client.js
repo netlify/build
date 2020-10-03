@@ -6,12 +6,9 @@ const pEvent = require('p-event')
 const { runsAfterDeploy } = require('../../commands/get')
 const { addAsyncErrorMessage } = require('../../utils/errors')
 
-const createBuildbotClient = function({ BUILDBOT_SERVER_SOCKET, BUILDBOT_SERVER_SOCKET_TIMEOUT }) {
+const createBuildbotClient = function(BUILDBOT_SERVER_SOCKET) {
   const connectionOpts = getConnectionOpts(BUILDBOT_SERVER_SOCKET)
   const client = net.createConnection(connectionOpts)
-  client.setTimeout(BUILDBOT_SERVER_SOCKET_TIMEOUT, () => {
-    onBuildbotClientTimeout({ client, BUILDBOT_SERVER_SOCKET_TIMEOUT })
-  })
   return client
 }
 
@@ -23,10 +20,6 @@ const getConnectionOpts = function(BUILDBOT_SERVER_SOCKET) {
 
   const [host, port] = BUILDBOT_SERVER_SOCKET.split(':')
   return { host, port }
-}
-
-const onBuildbotClientTimeout = function({ client, BUILDBOT_SERVER_SOCKET_TIMEOUT }) {
-  client.destroy(new Error(`The TCP connection with the buildbot timed out after ${BUILDBOT_SERVER_SOCKET_TIMEOUT}ms`))
 }
 
 const eConnectBuildbotClient = async function(client) {
