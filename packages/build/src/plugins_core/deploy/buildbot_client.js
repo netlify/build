@@ -2,6 +2,7 @@ const net = require('net')
 const { promisify } = require('util')
 
 const pEvent = require('p-event')
+const { isDirectory } = require('path-type')
 
 const { runsAfterDeploy } = require('../../commands/get')
 const { addAsyncErrorMessage } = require('../../utils/errors')
@@ -52,7 +53,11 @@ const getNextParsedResponsePromise = addAsyncErrorMessage(
   'Invalid response from buildbot',
 )
 
-const deploySiteWithBuildbotClient = async function({ client, events }) {
+const deploySiteWithBuildbotClient = async function({ client, events, PUBLISH_DIR, failBuild }) {
+  if (!(await isDirectory(PUBLISH_DIR))) {
+    return failBuild(`Publish directory does not exist: ${PUBLISH_DIR}`)
+  }
+
   const action = shouldWaitForPostProcessing(events) ? 'deploySiteAndAwaitLive' : 'deploySite'
   const payload = { action }
   const [response] = await Promise.all([getNextParsedResponsePromise(client), writePayload(client, payload)])
