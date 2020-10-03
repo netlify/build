@@ -7,11 +7,17 @@ const {
   deploySiteWithBuildbotClient,
 } = require('./buildbot_client')
 
-const onPostBuild = async function({ constants: { BUILDBOT_SERVER_SOCKET }, events }) {
+const onPostBuild = async function({
+  constants: { BUILDBOT_SERVER_SOCKET, PUBLISH_DIR },
+  events,
+  utils: {
+    build: { failBuild },
+  },
+}) {
   const client = createBuildbotClient(BUILDBOT_SERVER_SOCKET)
   try {
     await connectBuildbotClient(client)
-    await deploySiteWithBuildbotClient({ client, events })
+    await deploySiteWithBuildbotClient({ client, events, PUBLISH_DIR, failBuild })
     logDeploySuccess()
   } finally {
     await closeBuildbotClient(client)

@@ -294,6 +294,20 @@ test('Deploy plugin waits for post-processing if using onEnd', async t => {
   t.true(requests.every(waitsForPostProcessing))
 })
 
+test('Deploy plugin when publish directory does not exist', async t => {
+  const { address, stopServer } = await startDeployServer()
+  try {
+    const { exitCode, returnValue } = await runFixture(t, 'invalid_publish', {
+      flags: { buildbotServerSocket: address, featureFlags: 'triggerDeploy' },
+      snapshot: false,
+    })
+    t.not(exitCode, 0)
+    t.true(returnValue.includes('Publish directory does not exist'))
+  } finally {
+    await stopServer()
+  }
+})
+
 const startDeployServer = function(opts = {}) {
   const useUnixSocket = platform !== 'win32'
   return startTcpServer({ useUnixSocket, response: { succeeded: true, ...opts.response }, ...opts })
