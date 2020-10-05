@@ -1,6 +1,6 @@
 const { pipePluginOutput, unpipePluginOutput } = require('../log/stream')
 const { callChild } = require('../plugins/ipc')
-const { getSuccessStatus } = require('../status/add')
+const { getSuccessStatus } = require('../status/success')
 
 const { handlePluginError } = require('./error')
 
