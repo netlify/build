@@ -6,7 +6,7 @@ const { handleCommandError } = require('./error')
 // Retrieve the return value of a build command or plugin event handler
 const getCommandReturn = function({
   event,
-  package,
+  packageName,
   newError,
   newEnvChanges,
   newStatus,
@@ -42,7 +42,7 @@ const getCommandReturn = function({
 
   logCommandSuccess(logs)
 
-  const timerName = package === undefined ? 'build.command' : `${package} ${event}`
+  const timerName = packageName === undefined ? 'build.command' : `${packageName} ${event}`
   logTimer(logs, durationNs, timerName)
 
   return { newEnvChanges, newStatus, timers }

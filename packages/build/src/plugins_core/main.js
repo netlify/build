@@ -79,8 +79,8 @@ const getDeployPlugin = function(featureFlags, BUILDBOT_SERVER_SOCKET) {
   return { package: DEPLOY_PLUGIN_NAME, pluginPath: DEPLOY_PLUGIN }
 }
 
-const isCorePlugin = function(package) {
-  return CORE_PLUGINS.includes(package)
+const isCorePlugin = function(packageName) {
+  return CORE_PLUGINS.includes(packageName)
 }
 
 module.exports = { getCorePlugins, isCorePlugin }

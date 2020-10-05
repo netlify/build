@@ -34,14 +34,14 @@ const handleCommandError = async function({
   const fullErrorInfo = getFullErrorInfo({ error: newError, colors: false, debug })
   const {
     type,
-    errorInfo: { location: { package } = {} },
+    errorInfo: { location: { packageName } = {} },
   } = fullErrorInfo
   const newStatus = serializeErrorStatus({ fullErrorInfo })
 
   if (type === 'failPlugin' || isSoftFailEvent(event)) {
     return handleFailPlugin({
       newStatus,
-      package,
+      packageName,
       newError,
       childEnv,
       mode,
@@ -62,7 +62,7 @@ const handleCommandError = async function({
 
 const handleFailPlugin = async function({
   newStatus,
-  package,
+  packageName,
   newError,
   childEnv,
   mode,
@@ -73,7 +73,7 @@ const handleFailPlugin = async function({
   testOpts,
 }) {
   await handleBuildError(newError, { errorMonitor, netlifyConfig, childEnv, mode, logs, debug, testOpts })
-  return { failedPlugin: [package], newStatus }
+  return { failedPlugin: [packageName], newStatus }
 }
 
 // Unlike community plugins, core plugin bugs should be handled as system errors

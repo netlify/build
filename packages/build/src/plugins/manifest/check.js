@@ -7,15 +7,15 @@ const { THEME } = require('../../log/theme')
 const checkInputs = function({
   inputs,
   manifest: { inputs: rules = [] },
-  package,
+  packageName,
   pluginPackageJson,
   loadedFrom,
   origin,
 }) {
   try {
     const inputsA = addDefaults(inputs, rules)
-    checkRequiredInputs({ inputs: inputsA, rules, package, pluginPackageJson, loadedFrom, origin })
-    checkUnknownInputs({ inputs: inputsA, rules, package, pluginPackageJson, loadedFrom, origin })
+    checkRequiredInputs({ inputs: inputsA, rules, packageName, pluginPackageJson, loadedFrom, origin })
+    checkUnknownInputs({ inputs: inputsA, rules, packageName, pluginPackageJson, loadedFrom, origin })
     return inputsA
   } catch (error) {
     error.message = `${error.message}
@@ -41,15 +41,15 @@ const getDefault = function({ name, default: defaultValue }) {
 }
 
 // Check "inputs[*].required"
-const checkRequiredInputs = function({ inputs, rules, package, pluginPackageJson, loadedFrom, origin }) {
+const checkRequiredInputs = function({ inputs, rules, packageName, pluginPackageJson, loadedFrom, origin }) {
   const missingInputs = rules.filter(rule => isMissingRequired(inputs, rule))
   if (missingInputs.length === 0) {
     return
   }
 
   const names = missingInputs.map(getName)
-  const error = new Error(`Required inputs for plugin "${package}": ${names.join(', ')}`)
-  addInputError({ error, name: names[0], package, pluginPackageJson, loadedFrom, origin })
+  const error = new Error(`Required inputs for plugin "${packageName}": ${names.join(', ')}`)
+  addInputError({ error, name: names[0], packageName, pluginPackageJson, loadedFrom, origin })
   throw error
 }
 
@@ -62,33 +62,33 @@ const getName = function({ name }) {
 }
 
 // Check each "inputs[*].*" property for a specific input
-const checkUnknownInputs = function({ inputs, rules, package, pluginPackageJson, loadedFrom, origin }) {
+const checkUnknownInputs = function({ inputs, rules, packageName, pluginPackageJson, loadedFrom, origin }) {
   const knownInputs = rules.map(getName)
   const unknownInputs = Object.keys(inputs).filter(name => !knownInputs.includes(name))
   if (unknownInputs.length === 0) {
     return
   }
 
-  const unknownInputsMessage = getUnknownInputsMessage({ package, knownInputs, unknownInputs })
+  const unknownInputsMessage = getUnknownInputsMessage({ packageName, knownInputs, unknownInputs })
   const error = new Error(`${unknownInputsMessage}
 Check your plugin configuration to be sure that:
   - the input name is spelled correctly
   - the input is included in the plugin's available configuration options
   - the plugin's input requirements have not changed`)
   const [name] = unknownInputs
-  addInputError({ error, name, package, pluginPackageJson, loadedFrom, origin })
+  addInputError({ error, name, packageName, pluginPackageJson, loadedFrom, origin })
   throw error
 }
 
-const getUnknownInputsMessage = function({ package, knownInputs, unknownInputs }) {
+const getUnknownInputsMessage = function({ packageName, knownInputs, unknownInputs }) {
   const unknownInputsStr = unknownInputs.map(quoteWord).join(', ')
 
   if (knownInputs.length === 0) {
-    return `Plugin "${package}" does not accept any inputs but you specified: ${unknownInputsStr}`
+    return `Plugin "${packageName}" does not accept any inputs but you specified: ${unknownInputsStr}`
   }
 
   const knownInputsStr = knownInputs.map(quoteWord).join(', ')
-  return `Unknown inputs for plugin "${package}": ${unknownInputsStr}
+  return `Unknown inputs for plugin "${packageName}": ${unknownInputsStr}
 Plugin inputs should be one of: ${knownInputsStr}`
 }
 
@@ -97,11 +97,11 @@ const quoteWord = function(word) {
 }
 
 // Add error information
-const addInputError = function({ error, name, package, pluginPackageJson, loadedFrom, origin }) {
+const addInputError = function({ error, name, packageName, pluginPackageJson, loadedFrom, origin }) {
   addErrorInfo(error, {
     type: 'pluginInput',
-    plugin: { package, pluginPackageJson },
-    location: { event: 'load', package, input: name, loadedFrom, origin },
+    plugin: { packageName, pluginPackageJson },
+    location: { event: 'load', packageName, input: name, loadedFrom, origin },
   })
 }
 

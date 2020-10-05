@@ -18,7 +18,7 @@ const logMissingPluginsWarning = function(logs, packages) {
 }
 
 const logInstallLocalPluginsDeps = function(logs, localPluginsOptions) {
-  const packages = localPluginsOptions.map(getPackage)
+  const packages = localPluginsOptions.map(getPackageName)
   logSubHeader(logs, 'Installing local plugins dependencies')
   logArray(logs, packages)
 }
@@ -27,8 +27,8 @@ const logInstallFunctionDependencies = function() {
   log(undefined, 'Installing functions dependencies')
 }
 
-const getPackage = function({ package }) {
-  return package
+const getPackageName = function({ packageName }) {
+  return packageName
 }
 
 module.exports = {

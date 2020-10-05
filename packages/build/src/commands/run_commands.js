@@ -31,7 +31,7 @@ const runCommands = async function({
     commands,
     async (
       { index, error, failedPlugins, envChanges, statuses, timers: timersA },
-      { event, childProcess, package, pluginPackageJson, loadedFrom, origin, buildCommand, buildCommandOrigin },
+      { event, childProcess, packageName, pluginPackageJson, loadedFrom, origin, buildCommand, buildCommandOrigin },
     ) => {
       const {
         newIndex = index,
@@ -43,7 +43,7 @@ const runCommands = async function({
       } = await runCommand({
         event,
         childProcess,
-        package,
+        packageName,
         pluginPackageJson,
         loadedFrom,
         origin,
@@ -69,7 +69,7 @@ const runCommands = async function({
         timers: timersA,
         testOpts,
       })
-      const statusesA = addStatus({ newStatus, statuses, event, package, pluginPackageJson })
+      const statusesA = addStatus({ newStatus, statuses, event, packageName, pluginPackageJson })
       return {
         index: newIndex,
         error: newError,

@@ -20,7 +20,7 @@ const loadPlugins = measureDuration(tLoadPlugins, 'load_plugins')
 // Retrieve plugin commands for one plugin.
 // Do it by executing the plugin `load` event handler.
 const loadPlugin = async function(
-  { package, pluginPackageJson, pluginPackageJson: { version } = {}, pluginPath, inputs, loadedFrom, origin },
+  { packageName, pluginPackageJson, pluginPackageJson: { version } = {}, pluginPath, inputs, loadedFrom, origin },
   { childProcesses, index, netlifyConfig, constants, debug },
 ) {
   const { childProcess } = childProcesses[index]
@@ -31,11 +31,11 @@ const loadPlugin = async function(
       childProcess,
       'load',
       { pluginPath, inputs, netlifyConfig, constants },
-      { plugin: { package, pluginPackageJson }, location: { event, package, loadedFrom, origin } },
+      { plugin: { packageName, pluginPackageJson }, location: { event, packageName, loadedFrom, origin } },
     )
     const pluginCommandsA = pluginCommands.map(({ event }) => ({
       event,
-      package,
+      packageName,
       loadedFrom,
       origin,
       pluginPackageJson,
@@ -43,7 +43,7 @@ const loadPlugin = async function(
     }))
     return pluginCommandsA
   } catch (error) {
-    const errorA = addPluginLoadErrorStatus({ error, package, version, debug })
+    const errorA = addPluginLoadErrorStatus({ error, packageName, version, debug })
     throw errorA
   }
 }

@@ -30,7 +30,7 @@ const trackBuildComplete = async function({
 // Retrieve telemetry information
 const getPayload = function({ commandsCount, netlifyConfig, durationNs, siteInfo: { id: siteId }, mode }) {
   const durationMs = roundTimerToMillisecs(durationNs)
-  const plugins = Object.values(netlifyConfig.plugins).map(getPluginPackage)
+  const plugins = Object.values(netlifyConfig.plugins).map(getPluginPackageName)
   return {
     type: 'track',
     event: 'netlifyCI:buildComplete',
@@ -56,8 +56,8 @@ const getPayload = function({ commandsCount, netlifyConfig, durationNs, siteInfo
   }
 }
 
-const getPluginPackage = function({ package }) {
-  return package
+const getPluginPackageName = function({ packageName }) {
+  return packageName
 }
 
 const OS_TYPES = {

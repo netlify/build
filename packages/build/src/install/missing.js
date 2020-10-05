@@ -38,15 +38,15 @@ const installMissingPlugins = async function({ pluginsOptions, autoPluginsDir, m
 }
 
 const getMissingPlugins = function(pluginsOptions) {
-  return pluginsOptions.filter(isMissingPlugin).map(getPackage)
+  return pluginsOptions.filter(isMissingPlugin).map(getPackageName)
 }
 
 const isMissingPlugin = function({ pluginPath }) {
   return pluginPath === undefined
 }
 
-const getPackage = function({ package }) {
-  return package
+const getPackageName = function({ packageName }) {
+  return packageName
 }
 
 const createAutoPluginsDir = async function(autoPluginsDir) {
@@ -99,7 +99,7 @@ const warnOnMissingPlugins = function({ pluginsOptions, buildImagePluginsDir, lo
     return
   }
 
-  const packages = pluginsOptions.filter(isAutomaticallyInstalled).map(getPackage)
+  const packages = pluginsOptions.filter(isAutomaticallyInstalled).map(getPackageName)
   if (packages.length === 0) {
     return
   }

@@ -55,16 +55,16 @@ const getCorePluginInputs = function(corePlugin, plugins) {
 }
 
 // Optional core plugins requires user opt-in
-const isOptionalCore = function({ package, optional }, plugins) {
-  return optional && plugins.every(plugin => plugin.package !== package)
+const isOptionalCore = function(pluginA, plugins) {
+  return pluginA.optional && plugins.every(pluginB => pluginB.package !== pluginA.package)
 }
 
-const isUserPlugin = function({ package }) {
-  return !isCorePlugin(package)
+const isUserPlugin = function(plugin) {
+  return !isCorePlugin(plugin.package)
 }
 
-const normalizePluginOptions = function({ package, pluginPath, loadedFrom, origin, inputs }) {
-  return { package, pluginPath, loadedFrom, origin, inputs }
+const normalizePluginOptions = function({ package: packageName, pluginPath, loadedFrom, origin, inputs }) {
+  return { packageName, pluginPath, loadedFrom, origin, inputs }
 }
 
 // Retrieve plugin's main file path.
@@ -94,8 +94,8 @@ const isNotRedundantCorePlugin = function(pluginOptionsA, index, pluginsOptions)
 const getSpawnInfo = function() {
   const { name } = corePackageJson
   return {
-    plugin: { package: name, pluginPackageJson: corePackageJson },
-    location: { event: 'load', package: name, loadedFrom: 'core', origin: 'core' },
+    plugin: { packageName: name, pluginPackageJson: corePackageJson },
+    location: { event: 'load', packageName: name, loadedFrom: 'core', origin: 'core' },
   }
 }
 

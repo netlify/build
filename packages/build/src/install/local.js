@@ -31,8 +31,8 @@ const installLocalPluginsDependencies = async function({ plugins, pluginsOptions
   )
 }
 
-const isLocalInstallOptIn = function({ package }) {
-  return package === LOCAL_INSTALL_PLUGIN_NAME
+const isLocalInstallOptIn = function(plugin) {
+  return plugin.package === LOCAL_INSTALL_PLUGIN_NAME
 }
 
 const LOCAL_INSTALL_PLUGIN_NAME = '@netlify/plugin-local-install-core'

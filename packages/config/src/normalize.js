@@ -13,8 +13,8 @@ const DEFAULT_CONFIG = {
   plugins: [],
 }
 
-const normalizePlugin = function({ package, inputs = {}, origin, ...plugin }) {
-  return removeFalsy({ ...plugin, package, inputs, origin })
+const normalizePlugin = function({ package: packageName, inputs = {}, origin, ...plugin }) {
+  return removeFalsy({ ...plugin, package: packageName, inputs, origin })
 }
 
 module.exports = { normalizeConfig }
