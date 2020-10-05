@@ -60,11 +60,26 @@ const deploySiteWithBuildbotClient = async function({ client, events, PUBLISH_DI
 
   const action = shouldWaitForPostProcessing(events) ? 'deploySiteAndAwaitLive' : 'deploySite'
   const payload = { action }
-  const [response] = await Promise.all([getNextParsedResponsePromise(client), writePayload(client, payload)])
 
-  if (!response.succeeded) {
-    throw new Error(`Deploy did not succeed: ${response.values.error}`)
+  const [{ succeeded, values: { error, error_type: errorType } = {} }] = await Promise.all([
+    getNextParsedResponsePromise(client),
+    writePayload(client, payload),
+  ])
+
+  if (!succeeded) {
+    return handleDeployError({ error, errorType, failBuild })
   }
+}
+
+// We distinguish between user errors and system errors during deploys
+const handleDeployError = function({ error, errorType, failBuild }) {
+  const errorMessage = `Deploy did not succeed: ${error}`
+
+  if (errorType === 'user') {
+    return failBuild(errorMessage)
+  }
+
+  throw new Error(errorMessage)
 }
 
 // We only wait for post-processing (last stage before site deploy) if the build

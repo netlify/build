@@ -241,9 +241,20 @@ test('Deploy plugin response syntax error', async t => {
   }
 })
 
-test('Deploy plugin response payload error', async t => {
+test('Deploy plugin response system error', async t => {
   const { address, stopServer } = await startDeployServer({
-    response: { succeeded: false, values: { error: 'test' } },
+    response: { succeeded: false, values: { error: 'test', error_type: 'system' } },
+  })
+  try {
+    await runFixture(t, 'empty', { flags: { buildbotServerSocket: address, featureFlags: 'triggerDeploy' } })
+  } finally {
+    await stopServer()
+  }
+})
+
+test('Deploy plugin response user error', async t => {
+  const { address, stopServer } = await startDeployServer({
+    response: { succeeded: false, values: { error: 'test', error_type: 'user' } },
   })
   try {
     await runFixture(t, 'empty', { flags: { buildbotServerSocket: address, featureFlags: 'triggerDeploy' } })
