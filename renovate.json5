@@ -30,6 +30,7 @@
         'p-locate',
         'prettier',
         'pretty-ms',
+        'update-notifier',
         'yargs',
       ],
       major: {
