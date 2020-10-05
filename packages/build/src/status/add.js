@@ -52,14 +52,17 @@ const canOverrideStatus = function(formerStatus, newStatus) {
     return false
   }
 
-  // Error statuses can only be overwritten by other error statuses
-  return formerStatus.state === 'success' || newStatus.state !== 'success'
+  // Error statuses can only be overwritten by more severe error statuses
+  return STATES.indexOf(formerStatus.state) <= STATES.indexOf(newStatus.state)
 }
+
+// Possible status states, ordered by severity.
+const STATES = ['success', 'canceled_plugin', 'failed_plugin', 'failed_build']
 
 // Errors that happen during plugin loads should be reported as error statuses
 const addPluginLoadErrorStatus = function({ error, packageName, version, debug }) {
   const fullErrorInfo = getFullErrorInfo({ error, colors: false, debug })
-  const errorStatus = serializeErrorStatus({ fullErrorInfo })
+  const errorStatus = serializeErrorStatus({ fullErrorInfo, state: 'failed_build' })
   const statuses = [{ ...errorStatus, event: 'load', packageName, version }]
   addErrorInfo(error, { statuses })
   return error

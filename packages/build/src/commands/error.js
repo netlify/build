@@ -6,13 +6,14 @@ const { serializeErrorStatus } = require('../error/parse/serialize_status')
 
 const { isSoftFailEvent } = require('./get')
 
-// Handle shell or plugin error:
-//  - usually (`failFast`), propagate the error to make the build stop.
-//  - if onError and onEnd events (not `failFast`), wait until all event
-//    handlers of the same type have been triggered before propagating
-//  - if `utils.build.failPlugin()` was used, print an error and skip next event
-//    handlers of that plugin. But do not stop build.
-const handleCommandError = async function({
+// Handle build command errors and plugin errors:
+//  - usually, propagate the error to make the build stop.
+//  - `utils.build.cancelBuild()` also cancels the build by calling the API
+//  - `utils.build.failPlugin()` or post-deploy errors do not make the build
+//    stop, but are still reported, and prevent future events from the same
+//    plugin.
+// This also computes error statuses that are sent to the API.
+const handleCommandError = function({
   event,
   newError,
   childEnv,
@@ -32,16 +33,11 @@ const handleCommandError = async function({
   }
 
   const fullErrorInfo = getFullErrorInfo({ error: newError, colors: false, debug })
-  const {
-    type,
-    errorInfo: { location: { packageName } = {} },
-  } = fullErrorInfo
-  const newStatus = serializeErrorStatus({ fullErrorInfo })
+  const { type } = fullErrorInfo
 
   if (type === 'failPlugin' || isSoftFailEvent(event)) {
     return handleFailPlugin({
-      newStatus,
-      packageName,
+      fullErrorInfo,
       newError,
       childEnv,
       mode,
@@ -54,15 +50,18 @@ const handleCommandError = async function({
   }
 
   if (type === 'cancelBuild') {
-    await cancelBuild({ api, deployId })
+    return handleCancelBuild({ fullErrorInfo, newError, api, deployId })
   }
 
-  return { newError, newStatus }
+  return handleFailBuild({ fullErrorInfo, newError })
 }
 
+// On `utils.build.failPlugin()` or during `onSuccess` or `onEnd`
 const handleFailPlugin = async function({
-  newStatus,
-  packageName,
+  fullErrorInfo,
+  fullErrorInfo: {
+    errorInfo: { location: { packageName } = {} },
+  },
   newError,
   childEnv,
   mode,
@@ -72,8 +71,22 @@ const handleFailPlugin = async function({
   debug,
   testOpts,
 }) {
+  const newStatus = serializeErrorStatus({ fullErrorInfo, state: 'failed_plugin' })
   await handleBuildError(newError, { errorMonitor, netlifyConfig, childEnv, mode, logs, debug, testOpts })
   return { failedPlugin: [packageName], newStatus }
+}
+
+// On `utils.build.cancelBuild()`
+const handleCancelBuild = async function({ fullErrorInfo, newError, api, deployId }) {
+  const newStatus = serializeErrorStatus({ fullErrorInfo, state: 'canceled_build' })
+  await cancelBuild({ api, deployId })
+  return { newError, newStatus }
+}
+
+// On `utils.build.failBuild()` or uncaught exception
+const handleFailBuild = function({ fullErrorInfo, newError }) {
+  const newStatus = serializeErrorStatus({ fullErrorInfo, state: 'failed_build' })
+  return { newError, newStatus }
 }
 
 // Unlike community plugins, core plugin bugs should be handled as system errors

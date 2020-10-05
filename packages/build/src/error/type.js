@@ -1,7 +1,7 @@
 // Retrieve error-type specific information
 const getTypeInfo = function({ type }) {
   const typeA = TYPES[type] === undefined ? DEFAULT_TYPE : type
-  return { type: typeA, state: DEFAULT_STATE, ...TYPES[typeA] }
+  return { type: typeA, ...TYPES[typeA] }
 }
 
 // List of error types, and their related properties
@@ -25,8 +25,6 @@ const getTypeInfo = function({ type }) {
 //      - `info`: user error
 //      - `warning`: community plugin error
 //      - `error`: system error, including core plugin error
-// Related to error statuses:
-//  - `state`: error status state. Defaults to `failed_build`
 // Related to Bugsnag:
 //  - `group`: main title shown in Bugsnag. Also used to group errors together
 //    in Bugsnag, combined with `error.message`.
@@ -38,7 +36,6 @@ const TYPES = {
     stackType: 'stack',
     locationType: 'buildFail',
     severity: 'none',
-    state: 'canceled_build',
   },
 
   // User configuration error (`@netlify/config`, wrong Node.js version)
@@ -86,7 +83,6 @@ const TYPES = {
     stackType: 'stack',
     locationType: 'buildFail',
     severity: 'info',
-    state: 'failed_plugin',
   },
 
   // Plugin has an invalid shape
@@ -146,8 +142,5 @@ const TYPES = {
 
 // When no error type matches, it's an uncaught exception, i.e. a bug
 const DEFAULT_TYPE = 'exception'
-
-// When no `state` is provided
-const DEFAULT_STATE = 'failed_build'
 
 module.exports = { getTypeInfo }
