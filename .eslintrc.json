@@ -1,15 +1,10 @@
 {
-  "plugins": ["node", "prettier", "fp"],
-  "env": {
-    "node": true,
-    "es6": true
-  },
+  "plugins": ["prettier", "fp"],
   "extends": [
-    "plugin:import/errors",
-    "plugin:import/warnings",
     "eslint:recommended",
-    "plugin:node/recommended",
+    "standard",
     "prettier",
+    "prettier/standard",
     "plugin:eslint-comments/recommended",
     "plugin:fp/recommended",
     "plugin:you-dont-need-lodash-underscore/all"

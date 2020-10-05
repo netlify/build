@@ -1,2 +1,2 @@
-// eslint-disable-next-line fp/no-loops, no-constant-condition, no-empty
+// eslint-disable-next-line fp/no-loops, no-empty
 while (true) {}
