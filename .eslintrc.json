@@ -11,7 +11,8 @@
     "plugin:node/recommended",
     "prettier",
     "plugin:eslint-comments/recommended",
-    "plugin:fp/recommended"
+    "plugin:fp/recommended",
+    "plugin:you-dont-need-lodash-underscore/all"
   ],
   "reportUnusedDisableDirectives": true,
   "rules": {
