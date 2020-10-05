@@ -104,7 +104,6 @@ const reportError = async function({ errorMonitor, error, logs, testOpts, eventP
     // Failsafe
   } catch (error) {
     log(logs, `Error monitor could not notify\n${error.stack}`)
-    return
   }
 }
 

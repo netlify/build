@@ -99,9 +99,7 @@ const tryBuildImagePath = async function({ package, buildDir, buildImagePluginsD
 const tryResolvePath = async function(package, baseDir) {
   try {
     return await resolvePath(package, baseDir)
-  } catch (error) {
-    return
-  }
+  } catch (error) {}
 }
 
 // Handle plugins that were neither local, in the build image cache nor in
