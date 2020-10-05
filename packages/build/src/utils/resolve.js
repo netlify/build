@@ -1,6 +1,6 @@
 const { version: nodeVersion } = require('process')
 
-const resolve = require('resolve')
+const resolveLib = require('resolve')
 const { gte: gteVersion } = require('semver')
 
 // This throws if the package cannot be found
@@ -25,13 +25,13 @@ const REQUEST_RESOLVE_MIN_VERSION = '8.9.0'
 // `resolve`:
 //   https://github.com/browserify/resolve/issues/151#issuecomment-368210310
 const resolvePathFallback = function(path, basedir) {
-  return new Promise((success, reject) => {
-    resolve(path, { basedir }, (error, resolvedPath) => {
+  return new Promise((resolve, reject) => {
+    resolveLib(path, { basedir }, (error, resolvedPath) => {
       if (error) {
         return reject(error)
       }
 
-      success(resolvedPath)
+      resolve(resolvedPath)
     })
   })
 }
