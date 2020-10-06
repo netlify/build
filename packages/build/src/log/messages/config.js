@@ -24,6 +24,7 @@ const INTERNAL_FLAGS = [
   'statsd',
   'framework',
   'featureFlags',
+  'buildbotServerSocket',
 ]
 const HIDDEN_FLAGS = [...SECURE_FLAGS, ...TEST_FLAGS, ...INTERNAL_FLAGS]
 const HIDDEN_DEBUG_FLAGS = [...SECURE_FLAGS, ...TEST_FLAGS]
