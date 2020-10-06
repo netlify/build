@@ -11,6 +11,11 @@ test('Allow printing undefined in debug mode', async t => {
   await runFixture(t, 'empty', { flags: { debug: true } })
 })
 
+test('Allow printing plugins with no inputs in debug mode', async t => {
+  const defaultConfig = JSON.stringify({ plugins: [{ package: 'test' }] })
+  await runFixture(t, 'empty', { flags: { debug: true, defaultConfig } })
+})
+
 test('Does not print confidential information in debug mode', async t => {
   const defaultConfig = JSON.stringify({ build: { environment: { SECRET: 'true' } } })
   const inlineConfig = { build: { environment: { SECRET_TWO: 'true' } } }
