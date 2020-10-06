@@ -1,3 +1,0 @@
-# Netlify Build
-
-Coming soon

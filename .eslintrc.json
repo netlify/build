@@ -1,5 +1,5 @@
 {
-  "plugins": ["prettier", "fp"],
+  "plugins": ["prettier", "fp", "markdown", "html"],
   "extends": [
     "eslint:recommended",
     "standard",
@@ -94,6 +94,13 @@
         "fp/no-mutating-methods": 0,
         "fp/no-mutation": 0,
         "fp/no-delete": 0
+      }
+    },
+    {
+      "files": ["**/*.md"],
+      "rules": {
+        "no-undef": 0,
+        "no-unused-vars": 0
       }
     },
     {
