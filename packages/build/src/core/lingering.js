@@ -12,7 +12,7 @@ const warnOnLingeringProcesses = async function({ mode, logs, testOpts: { silent
   const {
     stdout: processList,
   } = await execa(
-    'ps aux | grep -v [p]s | grep -v [g]rep | grep -v [b]ash | grep -v "/opt/build-bin/buildbot" | grep -v [d]efunct | grep -vw \'[build]\' | grep -v "@netlify/build" | grep -v "gatsby-telemetry" | grep -v "jest-worker" | grep -v "broccoli-babel-transpiler"',
+    'ps aux | grep -v [p]s | grep -v [g]rep | grep -v [b]ash | grep -v "/opt/build-bin/buildbot" | grep -v [d]efunct | grep -vw \'[build]\' | grep -v "@netlify/build" | grep -v "buildbot.*\\[node\\]" | grep -v "gatsby-telemetry" | grep -v "jest-worker" | grep -v "broccoli-babel-transpiler"',
     { shell: 'bash' },
   )
 
