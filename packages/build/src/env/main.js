@@ -36,10 +36,10 @@ const getParentEnv = function(envOpt) {
 }
 
 const shouldKeepEnv = function(key) {
-  return !REMOVED_PARENT_ENV.includes(key.toLowerCase())
+  return !REMOVED_PARENT_ENV.has(key.toLowerCase())
 }
 
-const REMOVED_PARENT_ENV = ['bugsnag_key']
+const REMOVED_PARENT_ENV = new Set(['bugsnag_key'])
 
 // Environment variables that can be unset by local ones or configuration ones
 const getDefaultEnv = function() {

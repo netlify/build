@@ -11,13 +11,13 @@ const FUNCTIONS_PLUGIN_NAME = '@netlify/plugin-functions-core'
 const FUNCTIONS_INSTALL_PLUGIN_NAME = '@netlify/plugin-functions-install-core'
 const EDGE_HANDLERS_PLUGIN_NAME = '@netlify/plugin-edge-handlers'
 const DEPLOY_PLUGIN_NAME = '@netlify/plugin-deploy-core'
-const CORE_PLUGINS = [
+const CORE_PLUGINS = new Set([
   FUNCTIONS_PLUGIN_NAME,
   FUNCTIONS_INSTALL_PLUGIN_NAME,
   LOCAL_INSTALL_PLUGIN_NAME,
   EDGE_HANDLERS_PLUGIN_NAME,
   DEPLOY_PLUGIN_NAME,
-]
+])
 
 const EDGE_HANDLERS_PLUGIN_PATH = require.resolve(EDGE_HANDLERS_PLUGIN_NAME)
 
@@ -80,7 +80,7 @@ const getDeployPlugin = function(featureFlags, BUILDBOT_SERVER_SOCKET) {
 }
 
 const isCorePlugin = function(packageName) {
-  return CORE_PLUGINS.includes(packageName)
+  return CORE_PLUGINS.has(packageName)
 }
 
 module.exports = { getCorePlugins, isCorePlugin }

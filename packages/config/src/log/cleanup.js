@@ -40,12 +40,12 @@ const cleanupConfig = function({
 }
 
 const cleanupEnvironment = function(environment) {
-  return Object.keys(environment).filter(key => !BUILDBOT_ENVIRONMENT.includes(key))
+  return Object.keys(environment).filter(key => !BUILDBOT_ENVIRONMENT.has(key))
 }
 
 // Added by the buildbot. We only want to print environment variables specified
 // by the user.
-const BUILDBOT_ENVIRONMENT = [
+const BUILDBOT_ENVIRONMENT = new Set([
   'BRANCH',
   'CONTEXT',
   'DEPLOY_PRIME_URL',
@@ -55,7 +55,7 @@ const BUILDBOT_ENVIRONMENT = [
   'SITE_ID',
   'SITE_NAME',
   'URL',
-]
+])
 
 const cleanupPlugin = function({ package: packageName, origin, inputs = {} }) {
   const inputsA = filterObj(inputs, isPublicInput)

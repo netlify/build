@@ -25,13 +25,13 @@ const validateBasic = function(manifest) {
 }
 
 const validateUnknownProps = function(manifest) {
-  const unknownProp = Object.keys(manifest).find(key => !VALID_PROPS.includes(key))
+  const unknownProp = Object.keys(manifest).find(key => !VALID_PROPS.has(key))
   if (unknownProp !== undefined) {
     throw new Error(`unknown property "${unknownProp}"`)
   }
 }
 
-const VALID_PROPS = ['name', 'inputs']
+const VALID_PROPS = new Set(['name', 'inputs'])
 
 const validateName = function({ name }) {
   if (name === undefined) {
@@ -73,13 +73,13 @@ Input at position ${index} ${error.message}.`
 }
 
 const validateUnknownInputProps = function(input) {
-  const unknownProp = Object.keys(input).find(key => !VALID_INPUT_PROPS.includes(key))
+  const unknownProp = Object.keys(input).find(key => !VALID_INPUT_PROPS.has(key))
   if (unknownProp !== undefined) {
     throw new Error(`has an unknown property "${unknownProp}"`)
   }
 }
 
-const VALID_INPUT_PROPS = ['name', 'description', 'required', 'default']
+const VALID_INPUT_PROPS = new Set(['name', 'description', 'required', 'default'])
 
 const validateInputName = function({ name }) {
   if (name === undefined) {

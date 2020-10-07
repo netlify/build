@@ -8,11 +8,11 @@ const getEnvMetadata = function(childEnv = env) {
 }
 
 const isEnvMetadata = function(name) {
-  return ENVIRONMENT_VARIABLES.includes(name)
+  return ENVIRONMENT_VARIABLES.has(name)
 }
 
 // This is sorted by most useful in debugging to least
-const ENVIRONMENT_VARIABLES = [
+const ENVIRONMENT_VARIABLES = new Set([
   // URL and IDs
   'BUILD_ID',
   'DEPLOY_ID',
@@ -78,6 +78,6 @@ const ENVIRONMENT_VARIABLES = [
   // Git LFS
   'GIT_LFS_ENABLED',
   'GIT_LFS_FETCH_INCLUDE',
-]
+])
 
 module.exports = { getEnvMetadata }
