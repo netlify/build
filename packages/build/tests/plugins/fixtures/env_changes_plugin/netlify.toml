@@ -2,4 +2,4 @@
 package = "./plugin"
 
 [[plugins]]
-package = "./pluginTwo"
+package = "./plugin_two"
