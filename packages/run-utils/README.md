@@ -38,7 +38,7 @@ const exampleNetlifyPlugin = {
 ```js
 // Streaming mode
 const exampleNetlifyPlugin = {
-  async onBuild({ utils: { run } }) {
+  onBuild({ utils: { run } }) {
     const { stdout } = run('eslint', ['src/', 'test/'])
     stdout.pipe(fs.createWriteStream('stdout.txt'))
   },

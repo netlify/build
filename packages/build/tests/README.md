@@ -59,6 +59,7 @@ Every test follows this template:
 
 ```js
 const test = require('ava')
+
 const { runFixture } = require('../../helpers/main')
 
 test('test title', async t => {
@@ -71,7 +72,10 @@ This calls under the hood:
 ```js
 const netlifyBuild = require('@netlify/build')
 
-const output = await netlifyBuild({ repositoryRoot: './fixtures/fixture_name' })
+const runTest = async function() {
+  const output = await netlifyBuild({ repositoryRoot: './fixtures/fixture_name' })
+  return output
+}
 ```
 
 Then snapshots the output.
@@ -149,7 +153,9 @@ This basically performs a series of regular expressions replacements.
 If you want to remove the normalization during debugging, use the `normalize` option:
 
 ```js
-await runFixture(t, 'fixture_name', { normalize: false })
+test('test title', async t => {
+  await runFixture(t, 'fixture_name', { normalize: false })
+})
 ```
 
 `normalize` is `false` when `PRINT=1` is used, `true` otherwise.

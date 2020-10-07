@@ -15,13 +15,13 @@ module.exports = {
   //  - the file/directory has not been cached yet
   async onPreBuild({ utils }) {
     await utils.cache.restore('./path/to/file')
-  }
+  },
   // Cache file/directory for future builds.
   // Does not do anything if:
   //  - the file/directory does not exist locally
   async onPostBuild({ utils }) {
     await utils.cache.save('./path/to/file')
-  }
+  },
 }
 ```
 
@@ -32,10 +32,10 @@ module.exports = {
 module.exports = {
   async onPreBuild({ utils }) {
     await utils.cache.restore(['./path/to/file', './path/to/other'])
-  }
+  },
   async onPostBuild({ utils }) {
     await utils.cache.save(['./path/to/file', './path/to/other'])
-  }
+  },
 }
 ```
 
@@ -67,10 +67,10 @@ Only cache the file/directory for a specific amount of time.
 module.exports = {
   async onPreBuild({ utils }) {
     await utils.cache.restore('./path/to/file')
-  }
+  },
   async onPostBuild({ utils }) {
     await utils.cache.save('./path/to/file', { ttl: 3600 })
-  }
+  },
 }
 ```
 
@@ -90,12 +90,12 @@ speeds up caching.
 module.exports = {
   async onPreBuild({ utils }) {
     await utils.cache.restore('node_modules')
-  }
+  },
   async onPostBuild({ utils }) {
     await utils.cache.save('node_modules', {
-      digests: ['package-lock.json', 'yarn.lock']
+      digests: ['package-lock.json', 'yarn.lock'],
     })
-  }
+  },
 }
 ```
 
