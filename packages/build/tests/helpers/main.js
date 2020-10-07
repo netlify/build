@@ -4,7 +4,7 @@ const { env } = require('process')
 const { getBinPath } = require('get-bin-path')
 const pathKey = require('path-key')
 
-const netlifyBuild = require('../../')
+const netlifyBuild = require('../..')
 
 const { runFixtureCommon, FIXTURES_DIR } = require('./common')
 
