@@ -1,6 +1,6 @@
 // Ensure error is an `Error` instance
 const normalizeError = function(error) {
-  if (error instanceof Array) {
+  if (Array.isArray(error)) {
     return normalizeArray(error)
   }
 
