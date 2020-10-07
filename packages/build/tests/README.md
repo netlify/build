@@ -57,6 +57,8 @@ On the other hand, it has the following upsides:
 
 Every test follows this template:
 
+<!-- eslint-disable-next-line ava/no-ignored-test-files -->
+
 ```js
 const test = require('ava')
 

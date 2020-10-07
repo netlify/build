@@ -3,9 +3,7 @@ require('log-process-errors/build/register/ava')
 const { normalize } = require('path')
 const { env } = require('process')
 
-const {
-  meta: { file: testFile },
-} = require('ava')
+const test = require('ava')
 const { magentaBright } = require('chalk')
 const cpy = require('cpy')
 const execa = require('execa')
@@ -15,6 +13,7 @@ const { createRepoDir, removeDir } = require('./dir')
 const { normalizeOutput } = require('./normalize')
 const { startServer } = require('./server')
 
+const testFile = test.meta.file
 const FIXTURES_DIR = normalize(`${testFile}/../fixtures`)
 
 // Run a CLI using a fixture directory, then snapshot the output.

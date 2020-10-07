@@ -7,6 +7,7 @@
     "prettier/standard",
     "plugin:eslint-comments/recommended",
     "plugin:fp/recommended",
+    "plugin:ava/recommended",
     "plugin:you-dont-need-lodash-underscore/all"
   ],
   "reportUnusedDisableDirectives": true,
@@ -82,7 +83,10 @@
           { "object": "process", "property": "exitCode" }
         ]
       }
-    ]
+    ],
+    "ava/no-ignored-test-files": [2, { "files": ["tests/**/*.js", "!tests/{helpers,fixtures}/**/*.{js,json}"] }],
+    "ava/no-import-test-files": [2, { "files": ["tests/**/*.js", "!tests/{helpers,fixtures}/**/*.{js,json}"] }],
+    "ava/no-skip-test": 0
   },
   "overrides": [
     {

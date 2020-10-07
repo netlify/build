@@ -39,7 +39,7 @@ test('Does not stabilitize output without the --stable flag', async t => {
 
 // This test is too slow in local development
 if (isCI) {
-  test.only('Handles big outputs', async t => {
+  test('Handles big outputs', async t => {
     const bigNetlify = `${FIXTURES_DIR}/big/netlify.toml`
     await del(bigNetlify, { force: true })
     try {
