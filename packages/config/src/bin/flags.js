@@ -112,9 +112,9 @@ The result is printed as a JSON object on stdout with the following properties:
 
 // Remove `yargs`-specific options, shortcuts, dash-cased and aliases
 const isUserFlag = function(key, value) {
-  return value !== undefined && !INTERNAL_KEYS.includes(key) && key.length !== 1 && !key.includes('-')
+  return value !== undefined && !INTERNAL_KEYS.has(key) && key.length !== 1 && !key.includes('-')
 }
 
-const INTERNAL_KEYS = ['help', 'version', '_', '$0']
+const INTERNAL_KEYS = new Set(['help', 'version', '_', '$0'])
 
 module.exports = { parseFlags }

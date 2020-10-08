@@ -93,7 +93,7 @@ const DEFAULT_EDGE_HANDLERS_SRC = 'edge-handlers'
 // Instead of passing absolute paths, we pass paths relative to `buildDir`, so
 // that logs are less verbose.
 const normalizePath = function(path, buildDir, key) {
-  if (path === undefined || !CONSTANT_PATHS.includes(key)) {
+  if (path === undefined || !CONSTANT_PATHS.has(key)) {
     return path
   }
 
@@ -106,13 +106,13 @@ const normalizePath = function(path, buildDir, key) {
   return pathA
 }
 
-const CONSTANT_PATHS = [
+const CONSTANT_PATHS = new Set([
   'CONFIG_PATH',
   'PUBLISH_DIR',
   'FUNCTIONS_SRC',
   'FUNCTIONS_DIST',
   'EDGE_HANDLERS_SRC',
   'CACHE_DIR',
-]
+])
 
 module.exports = { getConstants }

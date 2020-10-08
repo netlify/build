@@ -41,10 +41,10 @@ be used instead of the CLI flag --dry.`
 
 // Remove `yargs`-specific options, shortcuts, dash-cased and aliases
 const isUserFlag = function(key, value) {
-  return value !== undefined && !INTERNAL_KEYS.includes(key) && key.length !== 1 && !key.includes('-')
+  return value !== undefined && !INTERNAL_KEYS.has(key) && key.length !== 1 && !key.includes('-')
 }
 
-const INTERNAL_KEYS = ['help', 'version', '_', '$0', 'dryRun']
+const INTERNAL_KEYS = new Set(['help', 'version', '_', '$0', 'dryRun'])
 
 // Used mostly for testing
 const printLogs = function(logs) {
