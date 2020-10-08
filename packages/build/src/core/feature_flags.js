@@ -23,7 +23,7 @@ const DEFAULT_FEATURE_FLAGS = {
   // and passing it a "deploySite" command. Netlify Build then waits for the
   // buildbot to finish its deploy before running the "onSuccess" and
   // "onEnd" hooks.
-  triggerDeploy: false,
+  service_buildbot_enable_deploy_server: false,
 }
 
 module.exports = { normalizeFeatureFlags, DEFAULT_FEATURE_FLAGS }
