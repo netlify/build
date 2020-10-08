@@ -27,7 +27,7 @@ ${serializeArray(EVENTS)}`)
   }
 
   if (typeof value !== 'function') {
-    throw new Error(`Invalid event handler '${propName}': must be a function`)
+    throw new TypeError(`Invalid event handler '${propName}': must be a function`)
   }
 }
 

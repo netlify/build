@@ -39,7 +39,7 @@ const validateName = function({ name }) {
   }
 
   if (typeof name !== 'string') {
-    throw new Error('"name" property must be a string')
+    throw new TypeError('"name" property must be a string')
   }
 }
 
@@ -87,7 +87,7 @@ const validateInputName = function({ name }) {
   }
 
   if (typeof name !== 'string') {
-    throw new Error('"name" property must be a string')
+    throw new TypeError('"name" property must be a string')
   }
 }
 
@@ -97,7 +97,7 @@ const validateInputDescription = function({ description }) {
   }
 
   if (typeof description !== 'string') {
-    throw new Error('"description" property must be a string')
+    throw new TypeError('"description" property must be a string')
   }
 }
 
