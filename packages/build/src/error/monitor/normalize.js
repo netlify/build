@@ -44,11 +44,11 @@ const NORMALIZE_REGEXPS = [
   // Cypress plugin prints the user's platform
   [/^Platform: .*/gm, ''],
   // URLs
-  [/https?:[\w.+_~!$&'()*,;=:@/?#]+/g, 'https://domain.com'],
+  [/https?:[\w.+~!$&'()*,;=:@/?#]+/g, 'https://domain.com'],
   // Numbers, e.g. number of issues/problems
   [/\d+/g, '0'],
   // Hexadecimal strings
-  [/[0-9a-fA-F]{6,}/g, 'hex'],
+  [/[\da-fA-F]{6,}/g, 'hex'],
   // On unknown inputs, we print the inputs
   [/(does not accept any inputs but you specified: ).*/, '$1'],
   [/(Unknown inputs for plugin).*/, '$1'],
@@ -68,8 +68,8 @@ const NORMALIZE_REGEXPS = [
   [/(is not supported yet): .*/, '$1'],
   // netlify-plugin-subfont prints generic information in every error that
   // is highly build-specific
-  [/^(vers?ions|Plugin configuration|Subfont called with): \{[^}]+\}/gm, ''],
-  [/^Resolved entry points: \[[^\]]+\]/gm, ''],
+  [/^(vers?ions|Plugin configuration|Subfont called with): {[^}]+}/gm, ''],
+  [/^Resolved entry points: \[[^\]]+]/gm, ''],
   // netlify-plugin-minify-html parse error
   [/(Parse Error):[^]*/, '$1'],
   // Multiple empty lines
