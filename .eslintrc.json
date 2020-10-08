@@ -13,7 +13,7 @@
   "reportUnusedDisableDirectives": true,
   "rules": {
     "no-console": 0,
-    "no-unused-vars": 2,
+    "no-unused-vars": [2, {}],
     "no-empty": [2, { "allowEmptyCatch": true }],
     "import/order": [
       2,
