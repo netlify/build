@@ -14,7 +14,7 @@ module.exports = {
     const { git } = utils
 
     /* Do stuff if files modified */
-    if (git.modifiedFiles.length) {
+    if (git.modifiedFiles.length !== 0) {
       console.log('Modified files:', git.modifiedFiles)
     }
 
