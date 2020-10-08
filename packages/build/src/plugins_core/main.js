@@ -72,7 +72,7 @@ const usesEdgeHandlers = function({ buildDir, EDGE_HANDLERS_SRC }) {
 }
 
 const getDeployPlugin = function(featureFlags, BUILDBOT_SERVER_SOCKET) {
-  if (!featureFlags.triggerDeploy || BUILDBOT_SERVER_SOCKET === undefined) {
+  if (!featureFlags.service_buildbot_enable_deploy_server || BUILDBOT_SERVER_SOCKET === undefined) {
     return
   }
 

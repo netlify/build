@@ -191,7 +191,9 @@ if (!version.startsWith('v8.')) {
 test('Deploy plugin succeeds', async t => {
   const { address, requests, stopServer } = await startDeployServer()
   try {
-    await runFixture(t, 'empty', { flags: { buildbotServerSocket: address, featureFlags: 'triggerDeploy' } })
+    await runFixture(t, 'empty', {
+      flags: { buildbotServerSocket: address, featureFlags: 'service_buildbot_enable_deploy_server' },
+    })
   } finally {
     await stopServer()
   }
@@ -202,7 +204,7 @@ test('Deploy plugin succeeds', async t => {
 test('Deploy plugin is not run unless --buildbotServerSocket is passed', async t => {
   const { requests, stopServer } = await startDeployServer()
   try {
-    await runFixture(t, 'empty', { flags: { featureFlags: 'triggerDeploy' }, snapshot: false })
+    await runFixture(t, 'empty', { flags: { featureFlags: 'service_buildbot_enable_deploy_server' }, snapshot: false })
   } finally {
     await stopServer()
   }
@@ -210,7 +212,7 @@ test('Deploy plugin is not run unless --buildbotServerSocket is passed', async t
   t.is(requests.length, 0)
 })
 
-test('Deploy plugin is not run unless --featureFlags=triggerDeploy is passed', async t => {
+test('Deploy plugin is not run unless --featureFlags=service_buildbot_enable_deploy_server is passed', async t => {
   const { address, requests, stopServer } = await startDeployServer()
   try {
     await runFixture(t, 'empty', { flags: { buildbotServerSocket: address }, snapshot: false })
@@ -225,7 +227,7 @@ test('Deploy plugin connection error', async t => {
   const { address, stopServer } = await startDeployServer()
   await stopServer()
   const { exitCode, returnValue } = await runFixture(t, 'empty', {
-    flags: { buildbotServerSocket: address, featureFlags: 'triggerDeploy' },
+    flags: { buildbotServerSocket: address, featureFlags: 'service_buildbot_enable_deploy_server' },
     snapshot: false,
   })
   t.not(exitCode, 0)
@@ -235,7 +237,9 @@ test('Deploy plugin connection error', async t => {
 test('Deploy plugin response syntax error', async t => {
   const { address, stopServer } = await startDeployServer({ response: 'test' })
   try {
-    await runFixture(t, 'empty', { flags: { buildbotServerSocket: address, featureFlags: 'triggerDeploy' } })
+    await runFixture(t, 'empty', {
+      flags: { buildbotServerSocket: address, featureFlags: 'service_buildbot_enable_deploy_server' },
+    })
   } finally {
     await stopServer()
   }
@@ -246,7 +250,9 @@ test('Deploy plugin response system error', async t => {
     response: { succeeded: false, values: { error: 'test', error_type: 'system' } },
   })
   try {
-    await runFixture(t, 'empty', { flags: { buildbotServerSocket: address, featureFlags: 'triggerDeploy' } })
+    await runFixture(t, 'empty', {
+      flags: { buildbotServerSocket: address, featureFlags: 'service_buildbot_enable_deploy_server' },
+    })
   } finally {
     await stopServer()
   }
@@ -257,7 +263,9 @@ test('Deploy plugin response user error', async t => {
     response: { succeeded: false, values: { error: 'test', error_type: 'user' } },
   })
   try {
-    await runFixture(t, 'empty', { flags: { buildbotServerSocket: address, featureFlags: 'triggerDeploy' } })
+    await runFixture(t, 'empty', {
+      flags: { buildbotServerSocket: address, featureFlags: 'service_buildbot_enable_deploy_server' },
+    })
   } finally {
     await stopServer()
   }
@@ -267,7 +275,7 @@ test('Deploy plugin does not wait for post-processing if not using onSuccess nor
   const { address, requests, stopServer } = await startDeployServer()
   try {
     await runFixture(t, 'empty', {
-      flags: { buildbotServerSocket: address, featureFlags: 'triggerDeploy' },
+      flags: { buildbotServerSocket: address, featureFlags: 'service_buildbot_enable_deploy_server' },
       snapshot: false,
     })
   } finally {
@@ -281,7 +289,7 @@ test('Deploy plugin waits for post-processing if using onSuccess', async t => {
   const { address, requests, stopServer } = await startDeployServer()
   try {
     await runFixture(t, 'success', {
-      flags: { buildbotServerSocket: address, featureFlags: 'triggerDeploy' },
+      flags: { buildbotServerSocket: address, featureFlags: 'service_buildbot_enable_deploy_server' },
       snapshot: false,
     })
   } finally {
@@ -295,7 +303,7 @@ test('Deploy plugin waits for post-processing if using onEnd', async t => {
   const { address, requests, stopServer } = await startDeployServer()
   try {
     await runFixture(t, 'end', {
-      flags: { buildbotServerSocket: address, featureFlags: 'triggerDeploy' },
+      flags: { buildbotServerSocket: address, featureFlags: 'service_buildbot_enable_deploy_server' },
       snapshot: false,
     })
   } finally {
@@ -309,7 +317,7 @@ test('Deploy plugin when publish directory does not exist', async t => {
   const { address, stopServer } = await startDeployServer()
   try {
     const { exitCode, returnValue } = await runFixture(t, 'invalid_publish', {
-      flags: { buildbotServerSocket: address, featureFlags: 'triggerDeploy' },
+      flags: { buildbotServerSocket: address, featureFlags: 'service_buildbot_enable_deploy_server' },
       snapshot: false,
     })
     t.not(exitCode, 0)
