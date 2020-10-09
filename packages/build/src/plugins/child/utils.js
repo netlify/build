@@ -29,19 +29,23 @@ const getBuildUtils = function(event) {
 }
 
 const getGitUtils = function() {
+  // eslint-disable-next-line node/global-require
   return require('@netlify/git-utils')()
 }
 
 const getCacheUtils = function(CACHE_DIR) {
+  // eslint-disable-next-line node/global-require
   const cacheUtils = require('@netlify/cache-utils')
   return cacheUtils.bindOpts({ cacheDir: CACHE_DIR })
 }
 
 const getRunUtils = function() {
+  // eslint-disable-next-line node/global-require
   return require('@netlify/run-utils')
 }
 
 const getFunctionsUtils = function(FUNCTIONS_SRC) {
+  // eslint-disable-next-line node/global-require
   const functionsUtils = require('@netlify/functions-utils')
   const add = src => functionsUtils.add(src, FUNCTIONS_SRC, { fail: failBuild })
   const list = functionsUtils.list.bind(null, FUNCTIONS_SRC, { fail: failBuild })

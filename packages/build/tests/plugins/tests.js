@@ -135,6 +135,7 @@ const loadEdgeHandlerBundle = async function({ outputDir, manifestPath }) {
 }
 
 const getEdgeHandlerBundlePath = function({ outputDir, manifestPath }) {
+  // eslint-disable-next-line node/global-require
   const { sha } = require(manifestPath)
   return `${outputDir}/${sha}`
 }
@@ -142,6 +143,7 @@ const getEdgeHandlerBundlePath = function({ outputDir, manifestPath }) {
 const requireEdgeHandleBundle = function(bundlePath) {
   const set = spy()
   global.netlifyRegistry = { set }
+  // eslint-disable-next-line node/global-require
   require(bundlePath)
   delete global.netlifyRegistry
   return set.args.map(normalizeEdgeHandler)
