@@ -100,7 +100,7 @@ const getEventsFromParent = function(callback) {
       try {
         const [callId, eventName, payload] = message
         const payloadA = parsePayload(payload)
-        await callback(callId, eventName, payloadA)
+        return await callback(callId, eventName, payloadA)
       } catch (error) {
         reject(error)
       }

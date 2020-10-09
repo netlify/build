@@ -14,6 +14,7 @@ module.exports = {
     'prettier',
     'prettier/standard',
     'plugin:eslint-comments/recommended',
+    'plugin:node/recommended',
     'plugin:fp/recommended',
     'plugin:ava/recommended',
     'plugin:you-dont-need-lodash-underscore/all',
@@ -62,9 +63,25 @@ module.exports = {
     'max-nested-callbacks': [2, 2],
     'require-await': 2,
 
+    'node/no-sync': 2,
+    'node/handle-callback-err': 2,
+    'node/no-new-require': 2,
+    'node/callback-return': 2,
+    'node/exports-style': 2,
+    'node/file-extension-in-import': 2,
     'node/global-require': 2,
     'node/no-mixed-requires': 2,
+    // Browser globals should not use `require()`. Non-browser globals should
+    'node/prefer-global/console': 2,
+    'node/prefer-global/url-search-params': 2,
+    'node/prefer-global/text-decoder': 2,
+    'node/prefer-global/text-encoder': 2,
+    'node/prefer-global/url': 2,
+    'node/prefer-global/buffer': [2, 'never'],
     'node/prefer-global/process': [2, 'never'],
+    // TODO: enable after dropping support for Node <11.4.0
+    'node/prefer-promises/fs': 2,
+    'node/prefer-promises/dns': 2,
 
     'eslint-comments/no-unused-disable': 0,
     'eslint-comments/no-use': [
@@ -154,6 +171,7 @@ module.exports = {
       rules: {
         'no-undef': 0,
         'no-unused-vars': 0,
+        'node/no-missing-require': 0,
       },
     },
     {
