@@ -1,3 +1,5 @@
+const process = require('process')
+
 const execa = require('execa')
 
 // Run a command, with arguments being an array

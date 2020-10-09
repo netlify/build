@@ -1,1 +1,3 @@
-console.log('Contains TEST environment variable', 'TEST' in process.env)
+const { env } = require('process')
+
+console.log('Contains TEST environment variable', 'TEST' in env)

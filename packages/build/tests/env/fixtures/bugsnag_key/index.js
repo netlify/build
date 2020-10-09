@@ -1,1 +1,3 @@
-console.log(process.env.BUGSNAG_KEY)
+const { env } = require('process')
+
+console.log(env.BUGSNAG_KEY)

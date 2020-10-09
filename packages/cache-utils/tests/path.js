@@ -1,4 +1,5 @@
 const { homedir } = require('os')
+const { platform } = require('process')
 
 const test = require('ava')
 const pathExists = require('path-exists')
@@ -28,7 +29,7 @@ test('Should not allow caching a direct parent directory', async t => {
 })
 
 // Windows does not allow deleting directory uses as current directory
-if (process.platform !== 'win32') {
+if (platform !== 'win32') {
   test('Should not allow invalid cwd with relative paths', async t => {
     const tmpDir = await createTmpDir()
     await removeFiles(tmpDir)

@@ -1,3 +1,5 @@
+const { env, chdir, cwd: getCwd } = require('process')
+
 const test = require('ava')
 
 const getGitUtils = require('..')
@@ -49,22 +51,22 @@ test('Should error when the option "head" points to an unknown commit', t => {
 
 test.serial('Should allow using the environment variable CACHED_COMMIT_REF', t => {
   try {
-    process.env.CACHED_COMMIT_REF = BASE
+    env.CACHED_COMMIT_REF = BASE
     const { linesOfCode } = getGitUtils({ head: HEAD })
     t.is(linesOfCode, 163)
   } finally {
-    delete process.env.CACHED_COMMIT_REF
+    delete env.CACHED_COMMIT_REF
   }
 })
 
 test.serial('Should allow overriding the current directory', t => {
-  const currentCwd = process.cwd()
+  const currentCwd = getCwd()
   try {
-    process.chdir('/')
+    chdir('/')
     const { linesOfCode } = getGitUtils({ ...DEFAULT_OPTS, cwd: currentCwd })
     t.is(linesOfCode, 163)
   } finally {
-    process.chdir(currentCwd)
+    chdir(currentCwd)
   }
 })
 
