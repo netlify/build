@@ -48,6 +48,7 @@ const closeClient = async function(client) {
   // statsd-clent does not provide with a way of knowing when the socket is done
   // closing, so we need to use the following hack.
   await pSetTimeout(CLOSE_TIMEOUT)
+  await pSetTimeout(CLOSE_TIMEOUT)
 }
 
 // See https://github.com/msiebuhr/node-statsd-client/blob/45a93ee4c94ca72f244a40b06cb542d4bd7c3766/lib/EphemeralSocket.js#L81
