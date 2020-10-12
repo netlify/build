@@ -8,6 +8,7 @@ const getLogic = function({ pluginPath, inputs }) {
 
 const requireLogic = function(pluginPath) {
   try {
+    // eslint-disable-next-line node/global-require
     return require(pluginPath)
   } catch (error) {
     error.message = `Could not import plugin:\n${error.message}`
