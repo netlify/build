@@ -62,6 +62,8 @@ module.exports = {
     'max-nested-callbacks': [2, 2],
     'require-await': 2,
 
+    'node/prefer-global/process': [2, 'never'],
+
     'eslint-comments/no-unused-disable': 0,
     'eslint-comments/no-use': [
       2,

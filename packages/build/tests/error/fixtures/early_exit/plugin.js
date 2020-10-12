@@ -1,6 +1,8 @@
+const { env, pid } = require('process')
+
 module.exports = {
   onPreBuild() {
-    process.env.TEST_PID = process.pid
+    env.TEST_PID = pid
   },
   onPostBuild() {},
 }

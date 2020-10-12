@@ -1,3 +1,4 @@
+const process = require('process')
 const { promisify } = require('util')
 
 const pEvent = require('p-event')

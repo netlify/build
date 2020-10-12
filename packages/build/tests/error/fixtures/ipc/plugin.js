@@ -1,6 +1,8 @@
+const { exit } = require('process')
+
 module.exports = {
   onPreBuild() {
-    process.exit()
+    exit()
   },
   onBuild() {},
 }

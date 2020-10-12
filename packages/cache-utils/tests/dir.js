@@ -1,3 +1,5 @@
+const { cwd: getCwd, chdir } = require('process')
+
 const test = require('ava')
 const pathExists = require('path-exists')
 
@@ -7,8 +9,8 @@ const { pWriteFile, createTmpDir, removeFiles } = require('./helpers/main')
 
 test('Should allow not changing the cache directory', async t => {
   const [cacheDir, srcDir] = await Promise.all([createTmpDir(), createTmpDir()])
-  const currentDir = process.cwd()
-  process.chdir(srcDir)
+  const currentDir = getCwd()
+  chdir(srcDir)
   try {
     const srcFile = `${srcDir}/test`
     await pWriteFile(srcFile, '')
@@ -17,7 +19,7 @@ test('Should allow not changing the cache directory', async t => {
     t.true(await cacheUtils.restore(srcFile))
     t.true(await pathExists(srcFile))
   } finally {
-    process.chdir(currentDir)
+    chdir(currentDir)
     await removeFiles([cacheDir, srcDir])
   }
 })

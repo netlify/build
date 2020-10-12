@@ -1,4 +1,4 @@
-const { platform, execPath } = require('process')
+const { platform, execPath, kill } = require('process')
 
 const test = require('ava')
 const getNode = require('get-node')
@@ -238,7 +238,7 @@ if (platform !== 'win32') {
 
     // Cleanup the lingering process
     const [, pid] = PID_LINE_REGEXP.exec(returnValue)
-    process.kill(pid)
+    kill(pid)
 
     t.true(returnValue.includes('There are some lingering processes'))
     t.true(returnValue.includes('forever.js'))
