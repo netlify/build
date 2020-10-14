@@ -7,7 +7,7 @@ const REQUEST_FILE = `${__dirname}/request.js`
 // to complete, by using a child process.
 // We also ignore any errors. Those might happen for example if the current
 // directory was removed by the build command.
-const track = async function({ payload, testOpts: { telemetryOrigin = '' } = {} }) {
+const track = async function ({ payload, testOpts: { telemetryOrigin = '' } = {} }) {
   try {
     const childProcess = execa('node', [REQUEST_FILE, JSON.stringify(payload), telemetryOrigin], {
       detached: true,

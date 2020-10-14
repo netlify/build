@@ -26,7 +26,7 @@ const THEME = {
   // One of several words that should be dimmed inside a line
   dimWords: gray,
   // No colors
-  none: string => string,
+  none: (string) => string,
 }
 
 module.exports = { THEME }

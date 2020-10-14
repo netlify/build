@@ -12,7 +12,7 @@ const resolveConfig = require('../main')
 const { parseFlags } = require('./flags')
 
 // CLI entry point
-const runCli = async function() {
+const runCli = async function () {
   try {
     const { stable, ...flags } = parseFlags()
     const result = await resolveConfig(flags)
@@ -23,7 +23,7 @@ const runCli = async function() {
 }
 
 // The result is printed as JSON on stdout on success (exit code 0)
-const handleCliSuccess = function(result, stable) {
+const handleCliSuccess = function (result, stable) {
   const resultA = serializeApi(result)
   const resultB = omit(resultA, SECRET_PROPERTIES)
   const stringifyFunc = stable ? stableStringify : JSON.stringify
@@ -34,7 +34,7 @@ const handleCliSuccess = function(result, stable) {
 
 // `api` is not JSON-serializable, so we remove it
 // We still indicate it as a boolean
-const serializeApi = function({ api, ...result }) {
+const serializeApi = function ({ api, ...result }) {
   if (api === undefined) {
     return result
   }
@@ -44,7 +44,7 @@ const serializeApi = function({ api, ...result }) {
 
 const SECRET_PROPERTIES = ['token']
 
-const handleCliError = function(error) {
+const handleCliError = function (error) {
   // Errors caused by users do not show stack traces and have exit code 1
   if (isUserError(error)) {
     console.error(error.message)

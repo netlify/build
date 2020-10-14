@@ -2,7 +2,7 @@ const { runsOnlyOnBuildFailure } = require('../commands/get')
 const { logDryRunStart, logDryRunCommand, logDryRunEnd } = require('../log/messages/dry')
 
 // If the `dry` flag is specified, do a dry run
-const doDryRun = function({ commands, commandsCount, logs }) {
+const doDryRun = function ({ commands, commandsCount, logs }) {
   const successCommands = commands.filter(({ event }) => !runsOnlyOnBuildFailure(event))
   const eventWidth = Math.max(...successCommands.map(getEventLength))
 
@@ -15,7 +15,7 @@ const doDryRun = function({ commands, commandsCount, logs }) {
   logDryRunEnd(logs)
 }
 
-const getEventLength = function({ event }) {
+const getEventLength = function ({ event }) {
   return event.length
 }
 

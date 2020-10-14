@@ -22,7 +22,7 @@ const CORE_PLUGINS = new Set([
 const EDGE_HANDLERS_PLUGIN_PATH = require.resolve(EDGE_HANDLERS_PLUGIN_NAME)
 
 // Plugins that are installed and enabled by default
-const getCorePlugins = async function({
+const getCorePlugins = async function ({
   constants: { FUNCTIONS_SRC, EDGE_HANDLERS_SRC, BUILDBOT_SERVER_SOCKET },
   buildDir,
   featureFlags,
@@ -39,7 +39,7 @@ const getCorePlugins = async function({
 // However when it is defined but points to a non-existing directory, this
 // might mean the directory is created later one, so we cannot do that check
 // yet.
-const getFunctionsPlugin = function(FUNCTIONS_SRC) {
+const getFunctionsPlugin = function (FUNCTIONS_SRC) {
   if (FUNCTIONS_SRC === undefined) {
     return
   }
@@ -47,7 +47,7 @@ const getFunctionsPlugin = function(FUNCTIONS_SRC) {
   return { package: FUNCTIONS_PLUGIN_NAME, pluginPath: FUNCTIONS_PLUGIN }
 }
 
-const getFunctionsInstallPlugin = function(FUNCTIONS_SRC) {
+const getFunctionsInstallPlugin = function (FUNCTIONS_SRC) {
   if (FUNCTIONS_SRC === undefined) {
     return
   }
@@ -55,7 +55,7 @@ const getFunctionsInstallPlugin = function(FUNCTIONS_SRC) {
   return { package: FUNCTIONS_INSTALL_PLUGIN_NAME, pluginPath: FUNCTIONS_INSTALL_PLUGIN, optional: true }
 }
 
-const getEdgeHandlersPlugin = async function({ buildDir, EDGE_HANDLERS_SRC }) {
+const getEdgeHandlersPlugin = async function ({ buildDir, EDGE_HANDLERS_SRC }) {
   if (!(await usesEdgeHandlers({ buildDir, EDGE_HANDLERS_SRC }))) {
     return
   }
@@ -67,11 +67,11 @@ const getEdgeHandlersPlugin = async function({ buildDir, EDGE_HANDLERS_SRC }) {
 // directory.
 // The location can be overridden using the `build.edge_handlers` property in
 // `netlify.toml`.
-const usesEdgeHandlers = function({ buildDir, EDGE_HANDLERS_SRC }) {
+const usesEdgeHandlers = function ({ buildDir, EDGE_HANDLERS_SRC }) {
   return isDirectory(`${buildDir}/${EDGE_HANDLERS_SRC}`)
 }
 
-const getDeployPlugin = function(featureFlags, BUILDBOT_SERVER_SOCKET) {
+const getDeployPlugin = function (featureFlags, BUILDBOT_SERVER_SOCKET) {
   if (!featureFlags.service_buildbot_enable_deploy_server || BUILDBOT_SERVER_SOCKET === undefined) {
     return
   }
@@ -79,7 +79,7 @@ const getDeployPlugin = function(featureFlags, BUILDBOT_SERVER_SOCKET) {
   return { package: DEPLOY_PLUGIN_NAME, pluginPath: DEPLOY_PLUGIN }
 }
 
-const isCorePlugin = function(packageName) {
+const isCorePlugin = function (packageName) {
   return CORE_PLUGINS.has(packageName)
 }
 

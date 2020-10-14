@@ -4,14 +4,14 @@ const mapObj = require('map-obj')
 const { addErrorInfo } = require('../../error/info')
 
 // Report status information to the UI
-const show = function(runState, showArgs) {
+const show = function (runState, showArgs) {
   validateShowArgs(showArgs)
   const { title, summary, text } = removeEmptyStrings(showArgs)
   runState.status = { state: 'success', title, summary, text }
 }
 
 // Validate arguments of `utils.status.show()`
-const validateShowArgs = function(showArgs) {
+const validateShowArgs = function (showArgs) {
   try {
     validateShowArgsObject(showArgs)
     const { title, summary, text, ...otherArgs } = showArgs
@@ -25,7 +25,7 @@ const validateShowArgs = function(showArgs) {
   }
 }
 
-const validateShowArgsObject = function(showArgs) {
+const validateShowArgsObject = function (showArgs) {
   if (showArgs === undefined) {
     throw new Error('requires an argument')
   }
@@ -35,30 +35,30 @@ const validateShowArgsObject = function(showArgs) {
   }
 }
 
-const validateShowArgsKeys = function(otherArgs) {
-  const otherKeys = Object.keys(otherArgs).map(arg => `"${arg}"`)
+const validateShowArgsKeys = function (otherArgs) {
+  const otherKeys = Object.keys(otherArgs).map((arg) => `"${arg}"`)
   if (otherKeys.length !== 0) {
     throw new Error(`must only contain "title", "summary" or "text" properties, not ${otherKeys.join(', ')}`)
   }
 }
 
-const validateStringArg = function([key, value]) {
+const validateStringArg = function ([key, value]) {
   if (value !== undefined && typeof value !== 'string') {
     throw new Error(`"${key}" property must be a string`)
   }
 }
 
-const validateShowArgsSummary = function(summary) {
+const validateShowArgsSummary = function (summary) {
   if (summary === undefined || summary.trim() === '') {
     throw new Error('requires specifying a "summary" property')
   }
 }
 
-const removeEmptyStrings = function(showArgs) {
+const removeEmptyStrings = function (showArgs) {
   return mapObj(showArgs, removeEmptyString)
 }
 
-const removeEmptyString = function(key, value) {
+const removeEmptyString = function (key, value) {
   if (typeof value === 'string' && value.trim() === '') {
     return [key]
   }

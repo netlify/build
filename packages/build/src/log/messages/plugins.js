@@ -2,7 +2,7 @@ const { getPluginOrigin } = require('../description')
 const { log, logArray, logError, logSubHeader } = require('../logger')
 const { THEME } = require('../theme')
 
-const logLoadingPlugins = function(logs, pluginsOptions) {
+const logLoadingPlugins = function (logs, pluginsOptions) {
   const loadingPlugins = pluginsOptions.filter(isNotCorePlugin).map(getPluginDescription)
 
   if (loadingPlugins.length === 0) {
@@ -14,17 +14,17 @@ const logLoadingPlugins = function(logs, pluginsOptions) {
 }
 
 // We only logs plugins explicitly enabled by users
-const isNotCorePlugin = function({ origin }) {
+const isNotCorePlugin = function ({ origin }) {
   return origin !== 'core'
 }
 
-const getPluginDescription = function({ packageName, pluginPackageJson: { version }, loadedFrom, origin }) {
+const getPluginDescription = function ({ packageName, pluginPackageJson: { version }, loadedFrom, origin }) {
   const versionA = version === undefined ? '' : `@${version}`
   const pluginOrigin = getPluginOrigin(loadedFrom, origin)
   return `${THEME.highlightWords(packageName)}${versionA} ${pluginOrigin}`
 }
 
-const logFailPluginWarning = function(methodName, event) {
+const logFailPluginWarning = function (methodName, event) {
   logError(
     undefined,
     `Plugin error: since "${event}" happens after deploy, the build has already succeeded and cannot fail anymore. This plugin should either:
@@ -34,7 +34,7 @@ const logFailPluginWarning = function(methodName, event) {
 }
 
 // Print the list of Netlify Functions about to be bundled
-const logFunctionsToBundle = function(functions, FUNCTIONS_SRC) {
+const logFunctionsToBundle = function (functions, FUNCTIONS_SRC) {
   if (functions.length === 0) {
     log(undefined, `No Functions were found in ${THEME.highlightWords(FUNCTIONS_SRC)} directory`)
     return
@@ -44,7 +44,7 @@ const logFunctionsToBundle = function(functions, FUNCTIONS_SRC) {
   logArray(undefined, functions, { indent: false })
 }
 
-const logDeploySuccess = function() {
+const logDeploySuccess = function () {
   log(undefined, 'Site deploy was successfully initiated')
 }
 

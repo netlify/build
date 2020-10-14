@@ -3,7 +3,7 @@ const { removeFalsy } = require('../utils/remove_falsy')
 const { removeEmptyArray } = require('./remove')
 
 // Use an allowlist to prevent printing confidential values.
-const cleanupConfigOpts = function({
+const cleanupConfigOpts = function ({
   config,
   cwd,
   context,

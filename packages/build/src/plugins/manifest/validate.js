@@ -3,7 +3,7 @@ const isPlainObj = require('is-plain-obj')
 const { THEME } = require('../../log/theme')
 
 // Validate `manifest.yml` syntax
-const validateManifest = function(manifest, rawManifest) {
+const validateManifest = function (manifest, rawManifest) {
   try {
     validateBasic(manifest)
     validateUnknownProps(manifest)
@@ -18,14 +18,14 @@ ${rawManifest.trim()}`
   }
 }
 
-const validateBasic = function(manifest) {
+const validateBasic = function (manifest) {
   if (!isPlainObj(manifest)) {
     throw new Error('must be a plain object')
   }
 }
 
-const validateUnknownProps = function(manifest) {
-  const unknownProp = Object.keys(manifest).find(key => !VALID_PROPS.has(key))
+const validateUnknownProps = function (manifest) {
+  const unknownProp = Object.keys(manifest).find((key) => !VALID_PROPS.has(key))
   if (unknownProp !== undefined) {
     throw new Error(`unknown property "${unknownProp}"`)
   }
@@ -33,7 +33,7 @@ const validateUnknownProps = function(manifest) {
 
 const VALID_PROPS = new Set(['name', 'inputs'])
 
-const validateName = function({ name }) {
+const validateName = function ({ name }) {
   if (name === undefined) {
     throw new Error('must contain a "name" property')
   }
@@ -43,7 +43,7 @@ const validateName = function({ name }) {
   }
 }
 
-const validateInputs = function({ inputs }) {
+const validateInputs = function ({ inputs }) {
   if (inputs === undefined) {
     return
   }
@@ -55,11 +55,11 @@ const validateInputs = function({ inputs }) {
   inputs.forEach(validateInput)
 }
 
-const isArrayOfObjects = function(objects) {
+const isArrayOfObjects = function (objects) {
   return Array.isArray(objects) && objects.every(isPlainObj)
 }
 
-const validateInput = function(input, index) {
+const validateInput = function (input, index) {
   try {
     validateUnknownInputProps(input)
     validateInputName(input)
@@ -72,8 +72,8 @@ Input at position ${index} ${error.message}.`
   }
 }
 
-const validateUnknownInputProps = function(input) {
-  const unknownProp = Object.keys(input).find(key => !VALID_INPUT_PROPS.has(key))
+const validateUnknownInputProps = function (input) {
+  const unknownProp = Object.keys(input).find((key) => !VALID_INPUT_PROPS.has(key))
   if (unknownProp !== undefined) {
     throw new Error(`has an unknown property "${unknownProp}"`)
   }
@@ -81,7 +81,7 @@ const validateUnknownInputProps = function(input) {
 
 const VALID_INPUT_PROPS = new Set(['name', 'description', 'required', 'default'])
 
-const validateInputName = function({ name }) {
+const validateInputName = function ({ name }) {
   if (name === undefined) {
     throw new Error('must contain a "name" property')
   }
@@ -91,7 +91,7 @@ const validateInputName = function({ name }) {
   }
 }
 
-const validateInputDescription = function({ description }) {
+const validateInputDescription = function ({ description }) {
   if (description === undefined) {
     return
   }
@@ -101,7 +101,7 @@ const validateInputDescription = function({ description }) {
   }
 }
 
-const validateInputRequired = function({ required }) {
+const validateInputRequired = function ({ required }) {
   if (required !== undefined && typeof required !== 'boolean') {
     throw new Error('"required" property must be a boolean')
   }

@@ -3,11 +3,11 @@ const { getNewEnvChanges, setEnvChanges } = require('../../env/changes.js')
 const { getUtils } = require('./utils')
 
 // Run a specific plugin event handler
-const run = async function(
+const run = async function (
   { event, events, error, envChanges, loadedFrom },
   { pluginCommands, constants, inputs, netlifyConfig },
 ) {
-  const { method } = pluginCommands.find(pluginCommand => pluginCommand.event === event)
+  const { method } = pluginCommands.find((pluginCommand) => pluginCommand.event === event)
   const runState = {}
   const utils = getUtils({ event, constants, runState })
   const runOptions = { utils, constants, inputs, netlifyConfig, error, events }
@@ -20,7 +20,7 @@ const run = async function(
 }
 
 // Remove any runOptions that is only intended for core plugins
-const cleanRunOptions = function({
+const cleanRunOptions = function ({
   loadedFrom,
   runOptions: {
     constants: { BUILDBOT_SERVER_SOCKET, ...constants },

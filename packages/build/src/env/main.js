@@ -9,7 +9,7 @@ const { getGitEnv } = require('./git')
 
 // Retrieve the environment variables passed to plugins and `build.command`
 // When run locally, this tries to emulate the production environment.
-const getChildEnv = async function({ netlifyConfig, buildDir, branch, context, siteInfo, deployId, envOpt, mode }) {
+const getChildEnv = async function ({ netlifyConfig, buildDir, branch, context, siteInfo, deployId, envOpt, mode }) {
   const parentEnv = getParentEnv(envOpt)
 
   if (mode === 'buildbot') {
@@ -30,24 +30,24 @@ const getChildEnv = async function({ netlifyConfig, buildDir, branch, context, s
 }
 
 // Current process's environment variables, with some of them removed
-const getParentEnv = function(envOpt) {
+const getParentEnv = function (envOpt) {
   const parentEnv = { ...env, ...envOpt }
   return filterObj(parentEnv, shouldKeepEnv)
 }
 
-const shouldKeepEnv = function(key) {
+const shouldKeepEnv = function (key) {
   return !REMOVED_PARENT_ENV.has(key.toLowerCase())
 }
 
 const REMOVED_PARENT_ENV = new Set(['bugsnag_key'])
 
 // Environment variables that can be unset by local ones or configuration ones
-const getDefaultEnv = function() {
+const getDefaultEnv = function () {
   return {}
 }
 
 // Environment variables that can be unset by configuration ones but not local
-const getConfigurableEnv = function() {
+const getConfigurableEnv = function () {
   const parentColorEnv = getParentColorEnv()
   return {
     // Localization
@@ -64,7 +64,7 @@ const getConfigurableEnv = function() {
 
 // Environment variables specified in UI settings, in `build.environment` or
 // in CLI flags
-const getConfigEnv = function({ build: { environment } }, deployId) {
+const getConfigEnv = function ({ build: { environment } }, deployId) {
   const deployIdEnv = deployId === undefined ? {} : { DEPLOY_ID: deployId }
   const configEnv = omit(environment, READONLY_ENV)
   return { ...deployIdEnv, ...configEnv }
@@ -100,7 +100,7 @@ const READONLY_ENV = [
 ]
 
 // Environment variables that can be unset by neither local nor configuration
-const getForcedEnv = async function({
+const getForcedEnv = async function ({
   buildDir,
   branch,
   context,

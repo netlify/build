@@ -8,7 +8,7 @@ const { gte: gteVersion } = require('semver')
 //   https://github.com/browserify/resolve/issues/223
 // Ideally we would use async I/O but that is not an option with
 // `require.resolve()`
-const resolvePath = function(path, basedir) {
+const resolvePath = function (path, basedir) {
   if (gteVersion(nodeVersion, REQUEST_RESOLVE_MIN_VERSION)) {
     return require.resolve(path, { paths: [basedir] })
   }
@@ -24,7 +24,7 @@ const REQUEST_RESOLVE_MIN_VERSION = '8.9.0'
 // We need to use `new Promise()` due to a bug with `utils.promisify()` on
 // `resolve`:
 //   https://github.com/browserify/resolve/issues/151#issuecomment-368210310
-const resolvePathFallback = function(path, basedir) {
+const resolvePathFallback = function (path, basedir) {
   return new Promise((resolve, reject) => {
     resolveLib(path, { basedir }, (error, resolvedPath) => {
       if (error) {

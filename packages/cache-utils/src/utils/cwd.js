@@ -4,7 +4,7 @@ const process = require('process')
 const pathExists = require('path-exists')
 
 // Like `process.cwd()` but safer when current directory is wrong
-const safeGetCwd = async function(cwdOpt) {
+const safeGetCwd = async function (cwdOpt) {
   try {
     const cwd = getCwdValue(cwdOpt)
 
@@ -18,7 +18,7 @@ const safeGetCwd = async function(cwdOpt) {
   }
 }
 
-const getCwdValue = function(cwdOpt = process.cwd()) {
+const getCwdValue = function (cwdOpt = process.cwd()) {
   return normalize(cwdOpt)
 }
 

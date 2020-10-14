@@ -10,7 +10,7 @@ const pStat = promisify(stat)
 
 // Add a Netlify Function file to the `functions` directory so it is processed
 // by `@netlify/plugin-functions-core`
-const add = async function(src, dist, { fail = defaultFail } = {}) {
+const add = async function (src, dist, { fail = defaultFail } = {}) {
   if (src === undefined) {
     return fail('No function source directory was specified')
   }
@@ -33,7 +33,7 @@ const add = async function(src, dist, { fail = defaultFail } = {}) {
   await cpy(srcGlob, dist, { cwd: dirname(src), parents: true, overwrite: false })
 }
 
-const getSrcGlob = async function(src, srcBasename) {
+const getSrcGlob = async function (src, srcBasename) {
   const stat = await pStat(src)
 
   if (stat.isDirectory()) {
@@ -43,7 +43,7 @@ const getSrcGlob = async function(src, srcBasename) {
   return srcBasename
 }
 
-const list = async function(functionsSrc, { fail = defaultFail } = {}) {
+const list = async function (functionsSrc, { fail = defaultFail } = {}) {
   if (functionsSrc === undefined) {
     return fail('No function directory was specified')
   }
@@ -55,7 +55,7 @@ const list = async function(functionsSrc, { fail = defaultFail } = {}) {
   }
 }
 
-const listAll = async function(functionsSrc, { fail = defaultFail } = {}) {
+const listAll = async function (functionsSrc, { fail = defaultFail } = {}) {
   if (functionsSrc === undefined) {
     return fail('No function directory was specified')
   }
@@ -67,7 +67,7 @@ const listAll = async function(functionsSrc, { fail = defaultFail } = {}) {
   }
 }
 
-const defaultFail = function(message) {
+const defaultFail = function (message) {
   throw new Error(message)
 }
 

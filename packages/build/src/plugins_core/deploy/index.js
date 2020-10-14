@@ -7,7 +7,7 @@ const {
   deploySiteWithBuildbotClient,
 } = require('./buildbot_client')
 
-const onPostBuild = async function({
+const onPostBuild = async function ({
   constants: { BUILDBOT_SERVER_SOCKET, PUBLISH_DIR },
   events,
   utils: {

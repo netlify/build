@@ -4,7 +4,7 @@ const { omit } = require('../../utils/omit')
 const { INFO_SYM } = require('../info')
 
 // In uncaught exceptions, print error static properties
-const getErrorProps = function({ errorProps, showErrorProps, colors }) {
+const getErrorProps = function ({ errorProps, showErrorProps, colors }) {
   const errorPropsA = omit(errorProps, CLEANED_ERROR_PROPS)
 
   if (!showErrorProps || Object.keys(errorPropsA).length === 0) {

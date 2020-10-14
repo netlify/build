@@ -7,7 +7,7 @@ const { log } = require('../../log/logger.js')
 const projectRoot = `${__dirname}/../../..`
 
 // Start a client to monitor errors
-const startErrorMonitor = function({ flags: { mode }, logs, bugsnagKey }) {
+const startErrorMonitor = function ({ flags: { mode }, logs, bugsnagKey }) {
   if (!bugsnagKey) {
     return
   }
@@ -37,7 +37,7 @@ const startErrorMonitor = function({ flags: { mode }, logs, bugsnagKey }) {
   }
 }
 
-const isBugsnagTest = function(bugsnagKey) {
+const isBugsnagTest = function (bugsnagKey) {
   return bugsnagKey === BUGSNAG_TEST_KEY
 }
 
@@ -49,7 +49,7 @@ const BUGSNAG_TEST_KEY = '00000000000000000000000000000000'
 const startBugsnag = memoizeOne(Bugsnag.start.bind(Bugsnag), () => true)
 
 // Based the release stage on the `mode`
-const getReleaseStage = function(mode = DEFAULT_RELEASE_STAGE) {
+const getReleaseStage = function (mode = DEFAULT_RELEASE_STAGE) {
   return mode
 }
 
@@ -59,11 +59,11 @@ const DEFAULT_RELEASE_STAGE = 'unknown'
 // We also want to use our own `log` utility, unprefixed.
 // In tests, we don't print Bugsnag because it sometimes randomly fails to
 // send sessions, which prints warning messags in test snapshots.
-const getLogger = function(logs, isTest) {
+const getLogger = function (logs, isTest) {
   const logFunc = isTest ? noop : log.bind(null, logs)
   return { debug: noop, info: noop, warn: logFunc, error: logFunc }
 }
 
-const noop = function() {}
+const noop = function () {}
 
 module.exports = { startErrorMonitor }

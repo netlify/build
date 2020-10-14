@@ -11,13 +11,13 @@ const { THEME } = require('../theme')
 
 const { logConfigOnError } = require('./config')
 
-const logBuildStart = function(logs) {
+const logBuildStart = function (logs) {
   logHeader(logs, 'Netlify Build')
   logSubHeader(logs, 'Version')
   logMessage(logs, `${name} ${version}`)
 }
 
-const logBuildError = function({ error, netlifyConfig, mode, logs, debug, testOpts }) {
+const logBuildError = function ({ error, netlifyConfig, mode, logs, debug, testOpts }) {
   const fullErrorInfo = getFullErrorInfo({ error, colors: true, debug })
   const { severity } = fullErrorInfo
   const { title, body } = serializeLogError({ fullErrorInfo })
@@ -28,18 +28,18 @@ const logBuildError = function({ error, netlifyConfig, mode, logs, debug, testOp
   logOldCliVersionError({ mode, testOpts })
 }
 
-const logBuildSuccess = function(logs) {
+const logBuildSuccess = function (logs) {
   logHeader(logs, 'Netlify Build Complete')
   logMessage(logs, '')
 }
 
-const logTimer = function(logs, durationNs, timerName) {
+const logTimer = function (logs, durationNs, timerName) {
   const durationMs = roundTimerToMillisecs(durationNs)
   const duration = prettyMs(durationMs)
   log(logs, THEME.dimWords(`(${timerName} completed in ${duration})`))
 }
 
-const logLingeringProcesses = function(logs, processList) {
+const logLingeringProcesses = function (logs, processList) {
   log(
     logs,
     THEME.errorLine(`

@@ -13,7 +13,7 @@ const { isSoftFailEvent } = require('./get')
 //    stop, but are still reported, and prevent future events from the same
 //    plugin.
 // This also computes error statuses that are sent to the API.
-const handleCommandError = function({
+const handleCommandError = function ({
   event,
   newError,
   childEnv,
@@ -57,7 +57,7 @@ const handleCommandError = function({
 }
 
 // On `utils.build.failPlugin()` or during `onSuccess` or `onEnd`
-const handleFailPlugin = async function({
+const handleFailPlugin = async function ({
   fullErrorInfo,
   fullErrorInfo: {
     errorInfo: { location: { packageName } = {} },
@@ -77,20 +77,20 @@ const handleFailPlugin = async function({
 }
 
 // On `utils.build.cancelBuild()`
-const handleCancelBuild = async function({ fullErrorInfo, newError, api, deployId }) {
+const handleCancelBuild = async function ({ fullErrorInfo, newError, api, deployId }) {
   const newStatus = serializeErrorStatus({ fullErrorInfo, state: 'canceled_build' })
   await cancelBuild({ api, deployId })
   return { newError, newStatus }
 }
 
 // On `utils.build.failBuild()` or uncaught exception
-const handleFailBuild = function({ fullErrorInfo, newError }) {
+const handleFailBuild = function ({ fullErrorInfo, newError }) {
   const newStatus = serializeErrorStatus({ fullErrorInfo, state: 'failed_build' })
   return { newError, newStatus }
 }
 
 // Unlike community plugins, core plugin bugs should be handled as system errors
-const handlePluginError = function(error, loadedFrom) {
+const handlePluginError = function (error, loadedFrom) {
   if (!isCorePluginBug(error, loadedFrom)) {
     return
   }
@@ -98,7 +98,7 @@ const handlePluginError = function(error, loadedFrom) {
   addErrorInfo(error, { type: 'corePlugin' })
 }
 
-const isCorePluginBug = function(error, loadedFrom) {
+const isCorePluginBug = function (error, loadedFrom) {
   const { severity } = parseErrorInfo(error)
   return severity === 'warning' && loadedFrom === 'core'
 }

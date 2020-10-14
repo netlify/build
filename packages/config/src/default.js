@@ -4,7 +4,7 @@ const { logDefaultConfig } = require('./log/main')
 
 // Retrieve default configuration file. It has less priority and it also does
 // not get normalized, merged with contexts, etc.
-const parseDefaultConfig = function({ defaultConfig, base, baseRelDir, siteInfo, logs, debug }) {
+const parseDefaultConfig = function ({ defaultConfig, base, baseRelDir, siteInfo, logs, debug }) {
   const defaultConfigA = getConfig(defaultConfig, 'default')
   const defaultConfigB = addDefaultConfigBase(defaultConfigA, base)
   const { defaultConfig: defaultConfigC, baseRelDir: baseRelDirA = DEFAULT_BASE_REL_DIR } = addBuildSettings({
@@ -18,7 +18,7 @@ const parseDefaultConfig = function({ defaultConfig, base, baseRelDir, siteInfo,
 
 // Load a configuration file passed as a JSON object.
 // The logic is much simpler: it does not normalize nor validate it.
-const getConfig = function(config, name) {
+const getConfig = function (config, name) {
   if (config === undefined) {
     return {}
   }
@@ -32,7 +32,7 @@ const getConfig = function(config, name) {
 
 // When the `base` was overridden, add it to `defaultConfig` so it behaves
 // as if it had been specified in the UI settings
-const addDefaultConfigBase = function(defaultConfig, base) {
+const addDefaultConfigBase = function (defaultConfig, base) {
   if (base === undefined) {
     return defaultConfig
   }

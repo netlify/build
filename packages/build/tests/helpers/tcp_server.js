@@ -5,7 +5,7 @@ const getPort = require('get-port')
 const { tmpName } = require('tmp-promise')
 
 // Start a TCP server to mock calls.
-const startTcpServer = async function({ response = '', useUnixSocket = true } = {}) {
+const startTcpServer = async function ({ response = '', useUnixSocket = true } = {}) {
   const requests = []
   const { connectionOpts, address } = await getConnectionOpts({ useUnixSocket })
   const server = createServer(onConnection.bind(null, { response, requests }))
@@ -15,7 +15,7 @@ const startTcpServer = async function({ response = '', useUnixSocket = true } = 
   return { address, requests, stopServer }
 }
 
-const getConnectionOpts = async function({ useUnixSocket }) {
+const getConnectionOpts = async function ({ useUnixSocket }) {
   if (useUnixSocket) {
     const path = await tmpName()
     return { connectionOpts: { path }, address: path }
@@ -26,11 +26,11 @@ const getConnectionOpts = async function({ useUnixSocket }) {
   return { connectionOpts: { host, port }, address: `${host}:${port}` }
 }
 
-const onConnection = function({ response, requests }, socket) {
+const onConnection = function ({ response, requests }, socket) {
   socket.on('data', onRequest.bind(null, { response, requests, socket }))
 }
 
-const onRequest = function({ response, requests, socket }, data) {
+const onRequest = function ({ response, requests, socket }, data) {
   const json = typeof response !== 'string'
   const dataString = data.toString()
   const parsedData = json ? JSON.parse(dataString) : dataString

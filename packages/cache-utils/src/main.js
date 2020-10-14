@@ -9,7 +9,7 @@ const { getManifestInfo, writeManifest, removeManifest, isExpired } = require('.
 const { parsePath } = require('./path')
 
 // Cache a file
-const saveOne = async function(
+const saveOne = async function (
   path,
   { move = DEFAULT_MOVE, ttl = DEFAULT_TTL, digests = [], cacheDir, cwd: cwdOpt, mode } = {},
 ) {
@@ -32,7 +32,7 @@ const saveOne = async function(
 }
 
 // Restore a cached file
-const restoreOne = async function(path, { move = DEFAULT_MOVE, cacheDir, cwd: cwdOpt, mode } = {}) {
+const restoreOne = async function (path, { move = DEFAULT_MOVE, cacheDir, cwd: cwdOpt, mode } = {}) {
   const { srcPath, cachePath } = await parsePath({ path, cacheDir, cwdOpt, mode })
 
   if (!(await hasFiles(cachePath))) {
@@ -50,7 +50,7 @@ const restoreOne = async function(path, { move = DEFAULT_MOVE, cacheDir, cwd: cw
 }
 
 // Remove the cache of a file
-const removeOne = async function(path, { cacheDir, cwd: cwdOpt, mode } = {}) {
+const removeOne = async function (path, { cacheDir, cwd: cwdOpt, mode } = {}) {
   const { cachePath } = await parsePath({ path, cacheDir, cwdOpt, mode })
 
   if (!(await hasFiles(cachePath))) {
@@ -64,7 +64,7 @@ const removeOne = async function(path, { cacheDir, cwd: cwdOpt, mode } = {}) {
 }
 
 // Check if a file is cached
-const hasOne = async function(path, { cacheDir, cwd: cwdOpt, mode } = {}) {
+const hasOne = async function (path, { cacheDir, cwd: cwdOpt, mode } = {}) {
   const { cachePath } = await parsePath({ path, cacheDir, cwdOpt, mode })
 
   return (await hasFiles(cachePath)) && !(await isExpired(cachePath))
@@ -75,12 +75,12 @@ const DEFAULT_TTL = undefined
 
 // Allow each of the main functions to take either a single path or an array of
 // paths as arguments
-const allowMany = async function(func, paths, ...args) {
+const allowMany = async function (func, paths, ...args) {
   if (!Array.isArray(paths)) {
     return func(paths, ...args)
   }
 
-  const results = await Promise.all(paths.map(path => func(path, ...args)))
+  const results = await Promise.all(paths.map((path) => func(path, ...args)))
   return results.some(Boolean)
 }
 
@@ -90,14 +90,14 @@ const remove = allowMany.bind(null, removeOne)
 const has = allowMany.bind(null, hasOne)
 
 // Change `opts` default values
-const bindOpts = function(opts) {
+const bindOpts = function (opts) {
   return {
     save: (paths, optsA) => save(paths, { ...opts, ...optsA }),
     restore: (paths, optsA) => restore(paths, { ...opts, ...optsA }),
     remove: (paths, optsA) => remove(paths, { ...opts, ...optsA }),
     has: (paths, optsA) => has(paths, { ...opts, ...optsA }),
-    list: optsA => list({ ...opts, ...optsA }),
-    getCacheDir: optsA => getCacheDir({ ...opts, ...optsA }),
+    list: (optsA) => list({ ...opts, ...optsA }),
+    getCacheDir: (optsA) => getCacheDir({ ...opts, ...optsA }),
   }
 }
 

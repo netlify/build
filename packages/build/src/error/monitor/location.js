@@ -1,5 +1,5 @@
 // Retrieve plugin's location and build logs
-const getLocationMetadata = function(location, envMetadata) {
+const getLocationMetadata = function (location, envMetadata) {
   const buildLogs = getBuildLogs(envMetadata)
 
   if (buildLogs === undefined && location === undefined) {
@@ -10,7 +10,7 @@ const getLocationMetadata = function(location, envMetadata) {
 }
 
 // Retrieve the URL to the build logs
-const getBuildLogs = function({ SITE_NAME, DEPLOY_ID }) {
+const getBuildLogs = function ({ SITE_NAME, DEPLOY_ID }) {
   if (SITE_NAME === undefined || DEPLOY_ID === undefined) {
     return
   }

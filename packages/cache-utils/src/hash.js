@@ -7,7 +7,7 @@ const locatePath = require('locate-path')
 // Caching a big directory like `node_modules` is slow. However those can
 // sometime be represented by a digest file such as `package-lock.json`. If this
 // has not changed, we don't need to save cache again.
-const getHash = async function(digests, move) {
+const getHash = async function (digests, move) {
   // Moving files is faster than computing hashes
   if (move || digests.length === 0) {
     return
@@ -23,7 +23,7 @@ const getHash = async function(digests, move) {
 }
 
 // Hash a file's contents
-const hashFile = async function(path) {
+const hashFile = async function (path) {
   const contentStream = createReadStream(path, 'utf8')
   const hashStream = createHash(HASH_ALGO, { encoding: 'hex' })
   contentStream.pipe(hashStream)

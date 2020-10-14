@@ -9,7 +9,7 @@ const {
 const { addErrorInfo } = require('../error/info')
 
 // Retrieve Node.js version from `--node-path`
-const getUserNodeVersion = async function(nodePath) {
+const getUserNodeVersion = async function (nodePath) {
   // No `--node-path` CLI flag
   if (nodePath === execPath) {
     return getCurrentNodeVersion()
@@ -34,12 +34,12 @@ const getUserNodeVersion = async function(nodePath) {
 const NVM_NODE_VERSION_REGEXP = /[/\\]v(\d+\.\d+\.\d+)[/\\](bin[/\\]node|node.exe)$/
 
 // Retrieve Node.js version from current process
-const getCurrentNodeVersion = function() {
+const getCurrentNodeVersion = function () {
   return cleanVersion(currentVersion)
 }
 
 // Ensure Node.js version is recent enough to run this plugin
-const checkNodeVersion = function({
+const checkNodeVersion = function ({
   childNodeVersion,
   packageName,
   pluginPackageJson: { engines: { node: pluginNodeVersionRange } = {} } = {},
@@ -65,7 +65,7 @@ const checkNodeVersion = function({
   }
 }
 
-const throwUserError = function(message) {
+const throwUserError = function (message) {
   const error = new Error(message)
   addErrorInfo(error, { type: 'resolveConfig' })
   throw error

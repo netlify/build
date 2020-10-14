@@ -10,7 +10,7 @@ const { validateManifest } = require('./validate')
 const pReadFile = promisify(readFile)
 
 // Load "manifest.yml" using its file path
-const loadManifest = async function({ manifestPath, packageName, pluginPackageJson, loadedFrom, origin }) {
+const loadManifest = async function ({ manifestPath, packageName, pluginPackageJson, loadedFrom, origin }) {
   try {
     if (manifestPath === undefined) {
       throw new Error(
@@ -33,7 +33,7 @@ Please see the documentation at https://github.com/netlify/build#anatomy-of-a-pl
   }
 }
 
-const loadRawManifest = async function(manifestPath) {
+const loadRawManifest = async function (manifestPath) {
   try {
     return await pReadFile(manifestPath, 'utf8')
   } catch (error) {
@@ -42,7 +42,7 @@ const loadRawManifest = async function(manifestPath) {
   }
 }
 
-const parseManifest = async function(rawManifest) {
+const parseManifest = async function (rawManifest) {
   try {
     return await loadYaml(rawManifest, { schema: JSON_SCHEMA, json: true })
   } catch (error) {

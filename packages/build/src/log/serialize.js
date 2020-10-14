@@ -1,14 +1,14 @@
 const { dump } = require('js-yaml')
 
-const serializeObject = function(object) {
+const serializeObject = function (object) {
   return dump(object, { noRefs: true, sortKeys: true, lineWidth: Infinity }).trimRight()
 }
 
-const serializeArray = function(array) {
+const serializeArray = function (array) {
   return array.map(addDash).join('\n')
 }
 
-const addDash = function(string) {
+const addDash = function (string) {
   return ` - ${string}`
 }
 

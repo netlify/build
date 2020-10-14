@@ -7,7 +7,7 @@ const { isDirectory } = require('path-type')
 const { version } = require('../../package.json')
 
 // Retrieve constants passed to plugins
-const getConstants = async function({
+const getConstants = async function ({
   configPath,
   buildDir,
   functionsDistDir,
@@ -77,7 +77,7 @@ const getConstants = async function({
 
 // The default `edge-handlers` is only set to `constants.EDGE_HANDLERS_SRC` if
 // that directory exists
-const getEdgeHandlersSrc = async function(edgeHandlers, buildDir) {
+const getEdgeHandlersSrc = async function (edgeHandlers, buildDir) {
   if (edgeHandlers !== undefined) {
     return edgeHandlers
   }
@@ -92,7 +92,7 @@ const DEFAULT_EDGE_HANDLERS_SRC = 'edge-handlers'
 // The current directory is `buildDir`. Most constants are inside this `buildDir`.
 // Instead of passing absolute paths, we pass paths relative to `buildDir`, so
 // that logs are less verbose.
-const normalizePath = function(path, buildDir, key) {
+const normalizePath = function (path, buildDir, key) {
   if (path === undefined || !CONSTANT_PATHS.has(key)) {
     return path
   }

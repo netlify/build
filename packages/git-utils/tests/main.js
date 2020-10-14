@@ -11,7 +11,7 @@ const HEAD = '152867c2'
 const UNKNOWN_COMMIT = 'aaaaaaaa'
 const DEFAULT_OPTS = { base: BASE, head: HEAD }
 
-test('Should define all its methods and properties', t => {
+test('Should define all its methods and properties', (t) => {
   const git = getGitUtils(DEFAULT_OPTS)
   t.deepEqual(Object.keys(git).sort(), [
     'commits',
@@ -23,17 +23,17 @@ test('Should define all its methods and properties', t => {
   ])
 })
 
-test('Should be callable with no options', t => {
+test('Should be callable with no options', (t) => {
   const { linesOfCode } = getGitUtils()
   t.true(Number.isInteger(linesOfCode))
 })
 
-test('Option "head" should have a default value', t => {
+test('Option "head" should have a default value', (t) => {
   const { linesOfCode } = getGitUtils({ base: BASE })
   t.true(Number.isInteger(linesOfCode))
 })
 
-test('Options "base" and "head" can be the same commit', t => {
+test('Options "base" and "head" can be the same commit', (t) => {
   const { linesOfCode, modifiedFiles, createdFiles, deletedFiles } = getGitUtils({ base: HEAD, head: HEAD })
   t.is(linesOfCode, 0)
   t.deepEqual(modifiedFiles, [])
@@ -41,15 +41,15 @@ test('Options "base" and "head" can be the same commit', t => {
   t.deepEqual(deletedFiles, [])
 })
 
-test('Should error when the option "base" points to an unknown commit', t => {
+test('Should error when the option "base" points to an unknown commit', (t) => {
   t.throws(() => getGitUtils({ base: UNKNOWN_COMMIT, head: HEAD }), { message: /Invalid base commit/ })
 })
 
-test('Should error when the option "head" points to an unknown commit', t => {
+test('Should error when the option "head" points to an unknown commit', (t) => {
   t.throws(() => getGitUtils({ base: BASE, head: UNKNOWN_COMMIT }), { message: /Invalid head commit/ })
 })
 
-test.serial('Should allow using the environment variable CACHED_COMMIT_REF', t => {
+test.serial('Should allow using the environment variable CACHED_COMMIT_REF', (t) => {
   try {
     env.CACHED_COMMIT_REF = BASE
     const { linesOfCode } = getGitUtils({ head: HEAD })
@@ -59,7 +59,7 @@ test.serial('Should allow using the environment variable CACHED_COMMIT_REF', t =
   }
 })
 
-test.serial('Should allow overriding the current directory', t => {
+test.serial('Should allow overriding the current directory', (t) => {
   const currentCwd = getCwd()
   try {
     chdir('/')
@@ -70,18 +70,18 @@ test.serial('Should allow overriding the current directory', t => {
   }
 })
 
-test('Should throw when the current directory is invalid', t => {
+test('Should throw when the current directory is invalid', (t) => {
   t.throws(() => {
     getGitUtils({ ...DEFAULT_OPTS, cwd: '/does/not/exist' })
   })
 })
 
-test('Should return the number of lines of code', t => {
+test('Should return the number of lines of code', (t) => {
   const { linesOfCode } = getGitUtils(DEFAULT_OPTS)
   t.is(linesOfCode, 163)
 })
 
-test('Should return the commits', t => {
+test('Should return the commits', (t) => {
   const { commits } = getGitUtils(DEFAULT_OPTS)
   t.is(commits.length, 3)
   const [{ sha, author, committer, message }] = commits
@@ -96,14 +96,14 @@ test('Should return the commits', t => {
   )
 })
 
-test('Should return the modified/created/deleted files', t => {
+test('Should return the modified/created/deleted files', (t) => {
   const { modifiedFiles, createdFiles, deletedFiles } = getGitUtils(DEFAULT_OPTS)
   t.deepEqual(modifiedFiles, ['src/install/node/bower.js'])
   t.deepEqual(createdFiles, ['src/install/node/install-node.js', 'src/install/node/run-npm.js'])
   t.deepEqual(deletedFiles, ['src/install/node/index.js', 'src/install/node/npm.js'])
 })
 
-test('Should return whether specific files are modified/created/deleted/edited', t => {
+test('Should return whether specific files are modified/created/deleted/edited', (t) => {
   const { fileMatch } = getGitUtils(DEFAULT_OPTS)
   const { modified, created, deleted, edited } = fileMatch('**/*npm*', '!**/*run-npm*')
   t.deepEqual(modified, [])

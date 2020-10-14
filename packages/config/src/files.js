@@ -6,7 +6,7 @@ const { throwError } = require('./error')
 
 // Make configuration paths relative to `buildDir` and converts them to
 // absolute paths
-const handleFiles = async function({ config: { build, ...config }, repositoryRoot, baseRelDir }) {
+const handleFiles = async function ({ config: { build, ...config }, repositoryRoot, baseRelDir }) {
   const buildA = resolvePaths(build, REPOSITORY_RELATIVE_PROPS, repositoryRoot)
   const buildDir = await getBuildDir(repositoryRoot, buildA)
   const baseRel = baseRelDir ? buildDir : repositoryRoot
@@ -20,16 +20,16 @@ const handleFiles = async function({ config: { build, ...config }, repositoryRoo
 const REPOSITORY_RELATIVE_PROPS = ['base']
 const BUILD_DIR_RELATIVE_PROPS = ['publish', 'functions', 'edge_handlers']
 
-const resolvePaths = function(build, propNames, baseRel) {
+const resolvePaths = function (build, propNames, baseRel) {
   return propNames.reduce((buildA, propName) => resolvePathProp(buildA, propName, baseRel), build)
 }
 
-const resolvePathProp = function(build, propName, baseRel) {
+const resolvePathProp = function (build, propName, baseRel) {
   const path = resolvePath(baseRel, build[propName])
   return path === undefined ? build : { ...build, [propName]: path }
 }
 
-const resolvePath = function(baseRel, path) {
+const resolvePath = function (baseRel, path) {
   if (path === undefined) {
     return
   }
@@ -48,7 +48,7 @@ const LEADING_SLASH_REGEXP = /^\/+/
 //  - `build.base`
 //  - `--repositoryRoot`
 //  - the current directory (default value of `--repositoryRoot`)
-const getBuildDir = async function(repositoryRoot, { base = repositoryRoot }) {
+const getBuildDir = async function (repositoryRoot, { base = repositoryRoot }) {
   const buildDir = resolve(repositoryRoot, base)
   await checkBuildDir(buildDir, repositoryRoot)
   return buildDir
@@ -58,7 +58,7 @@ const getBuildDir = async function(repositoryRoot, { base = repositoryRoot }) {
 // build plugins. Therefore it must exist.
 // We already check `repositoryRoot` earlier in the code, so only need to check
 // `buildDir` when it is the base directory instead.
-const checkBuildDir = async function(buildDir, repositoryRoot) {
+const checkBuildDir = async function (buildDir, repositoryRoot) {
   if (buildDir === repositoryRoot || (await isDirectory(buildDir))) {
     return
   }

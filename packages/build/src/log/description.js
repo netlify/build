@@ -1,5 +1,5 @@
 // Retrieve description of `build.command` or of an event handler
-const getCommandDescription = function({ event, buildCommandOrigin, packageName }) {
+const getCommandDescription = function ({ event, buildCommandOrigin, packageName }) {
   if (buildCommandOrigin !== undefined) {
     return getBuildCommandDescription(buildCommandOrigin)
   }
@@ -8,7 +8,7 @@ const getCommandDescription = function({ event, buildCommandOrigin, packageName 
 }
 
 // Retrieve description of `build.command`
-const getBuildCommandDescription = function(buildCommandOrigin) {
+const getBuildCommandDescription = function (buildCommandOrigin) {
   return BUILD_COMMAND_DESCRIPTIONS[buildCommandOrigin]
 }
 
@@ -18,7 +18,7 @@ const BUILD_COMMAND_DESCRIPTIONS = {
 }
 
 // Retrieve human-friendly plugin origin
-const getPluginOrigin = function(loadedFrom, origin) {
+const getPluginOrigin = function (loadedFrom, origin) {
   const originName = PLUGIN_ORIGINS[origin]
 
   if (loadedFrom === 'package.json') {

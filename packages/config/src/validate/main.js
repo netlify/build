@@ -11,33 +11,33 @@ const {
 } = require('./validations')
 
 // Validate the configuration file, before case normalization.
-const validatePreCaseNormalize = function(config) {
+const validatePreCaseNormalize = function (config) {
   validateConfig(config, PRE_CASE_NORMALIZE_VALIDATIONS)
 }
 
 // Validate the configuration file, before `defaultConfig` merge.
-const validatePreMergeConfig = function(defaultConfig, config, inlineConfig) {
+const validatePreMergeConfig = function (defaultConfig, config, inlineConfig) {
   validateConfig(defaultConfig, PRE_MERGE_VALIDATIONS)
   validateConfig(config, PRE_MERGE_VALIDATIONS)
   validateConfig(inlineConfig, PRE_MERGE_VALIDATIONS)
 }
 
 // Validate the configuration file, before context merge.
-const validatePreContextConfig = function(config) {
+const validatePreContextConfig = function (config) {
   validateConfig(config, PRE_CONTEXT_VALIDATIONS)
 }
 
 // Validate the configuration file, before normalization.
-const validatePreNormalizeConfig = function(config) {
+const validatePreNormalizeConfig = function (config) {
   validateConfig(config, PRE_NORMALIZE_VALIDATIONS)
 }
 
 // Validate the configuration file, after normalization.
-const validatePostNormalizeConfig = function(config) {
+const validatePostNormalizeConfig = function (config) {
   validateConfig(config, POST_NORMALIZE_VALIDATIONS)
 }
 
-const validateConfig = function(config, validations) {
+const validateConfig = function (config, validations) {
   try {
     validations.forEach(({ property, ...validation }) => {
       validateProperty(config, { ...validation, nextPath: property.split('.') })
@@ -48,7 +48,7 @@ const validateConfig = function(config, validations) {
 }
 
 // Validate a single property in the configuration file.
-const validateProperty = function(
+const validateProperty = function (
   parent,
   {
     nextPath: [propName, nextPropName, ...nextPath],
@@ -83,13 +83,13 @@ const validateProperty = function(
   reportError({ prevPath, propPath, message, example, value, key })
 }
 
-const reportError = function({ prevPath, propPath, message, example, value, key }) {
+const reportError = function ({ prevPath, propPath, message, example, value, key }) {
   throwError(`${THEME.highlightWords('Configuration property')} ${propPath} ${message}
 ${getExample({ value, key, prevPath, example })}`)
 }
 
 // Recurse over children (each part of the `property` array).
-const validateChild = function({ value, nextPropName, prevPath, nextPath, propPath, ...rest }) {
+const validateChild = function ({ value, nextPropName, prevPath, nextPath, propPath, ...rest }) {
   if (value === undefined) {
     return
   }
@@ -104,13 +104,13 @@ const validateChild = function({ value, nextPropName, prevPath, nextPath, propPa
     })
   }
 
-  return Object.keys(value).forEach(childProp =>
+  return Object.keys(value).forEach((childProp) =>
     validateChildProp({ childProp, value, nextPath, propPath, prevPath, ...rest }),
   )
 }
 
 // Can use * to recurse over array|object elements.
-const validateChildProp = function({ childProp, value, nextPath, propPath, prevPath, ...rest }) {
+const validateChildProp = function ({ childProp, value, nextPath, propPath, prevPath, ...rest }) {
   if (Array.isArray(value)) {
     const key = Number(childProp)
     return validateProperty(value, {

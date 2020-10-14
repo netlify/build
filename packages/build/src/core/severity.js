@@ -1,6 +1,6 @@
 // Used for example as exit codes.
 // 1|2|3 indicate whether this was a user|plugin|system error.
-const getSeverity = function(severity = FALLBACK_SEVERITY) {
+const getSeverity = function (severity = FALLBACK_SEVERITY) {
   const severityCode = severity in SEVERITY_CODES ? SEVERITY_CODES[severity] : SEVERITY_CODES[FALLBACK_SEVERITY]
   const success = severity === SUCCESS_SEVERITY
   return { success, severityCode }

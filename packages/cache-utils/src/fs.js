@@ -9,7 +9,7 @@ const moveFile = require('move-file')
 const pStat = promisify(stat)
 
 // Move or copy a cached file/directory from/to a local one
-const moveCacheFile = async function(src, dest, move) {
+const moveCacheFile = async function (src, dest, move) {
   // Moving is faster but removes the source files locally
   if (move) {
     return moveFile(src, dest, { overwrite: false })
@@ -20,13 +20,13 @@ const moveCacheFile = async function(src, dest, move) {
 }
 
 // Non-existing files and empty directories are always skipped
-const hasFiles = async function(src) {
+const hasFiles = async function (src) {
   const { srcGlob, cwd, isDir } = await getSrcGlob(src)
   return srcGlob !== undefined && !(await isEmptyDir({ srcGlob, cwd, isDir }))
 }
 
 // Replicates what `cpy` is doing under the hood.
-const isEmptyDir = async function({ srcGlob, cwd, isDir }) {
+const isEmptyDir = async function ({ srcGlob, cwd, isDir }) {
   if (!isDir) {
     return false
   }
@@ -36,7 +36,7 @@ const isEmptyDir = async function({ srcGlob, cwd, isDir }) {
 }
 
 // Get globbing pattern with files to move/copy
-const getSrcGlob = async function(src) {
+const getSrcGlob = async function (src) {
   const stat = await getStat(src)
 
   if (stat === undefined) {
@@ -54,7 +54,7 @@ const getSrcGlob = async function(src) {
   return { srcGlob: srcBasename, cwd, isDir }
 }
 
-const getStat = async function(src) {
+const getStat = async function (src) {
   try {
     return await pStat(src)
   } catch (error) {}

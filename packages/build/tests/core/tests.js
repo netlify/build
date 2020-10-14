@@ -9,139 +9,139 @@ const { version } = require('../../package.json')
 const { runFixture, FIXTURES_DIR } = require('../helpers/main')
 const { startServer } = require('../helpers/server.js')
 
-test('--help', async t => {
+test('--help', async (t) => {
   await runFixture(t, '', { flags: { help: true }, useBinary: true })
 })
 
-test('--version', async t => {
+test('--version', async (t) => {
   const { returnValue } = await runFixture(t, '', { flags: { version: true }, useBinary: true })
   t.is(returnValue, version)
 })
 
-test('Exit code is 0 on success', async t => {
+test('Exit code is 0 on success', async (t) => {
   const { exitCode } = await runFixture(t, 'empty', { useBinary: true, snapshot: false })
   t.is(exitCode, 0)
 })
 
-test('Exit code is 1 on build cancellation', async t => {
+test('Exit code is 1 on build cancellation', async (t) => {
   const { exitCode } = await runFixture(t, 'cancel', { useBinary: true, snapshot: false })
   t.is(exitCode, 1)
 })
 
-test('Exit code is 2 on user error', async t => {
+test('Exit code is 2 on user error', async (t) => {
   const { exitCode } = await runFixture(t, '', { flags: { config: '/invalid' }, useBinary: true, snapshot: false })
   t.is(exitCode, 2)
 })
 
-test('Exit code is 3 on plugin error', async t => {
+test('Exit code is 3 on plugin error', async (t) => {
   const { exitCode } = await runFixture(t, 'plugin_error', { useBinary: true, snapshot: false })
   t.is(exitCode, 3)
 })
 
-test('Success is true on success', async t => {
+test('Success is true on success', async (t) => {
   const {
     returnValue: { success },
   } = await runFixture(t, 'empty', { programmatic: true, snapshot: false })
   t.true(success)
 })
 
-test('Success is false on build cancellation', async t => {
+test('Success is false on build cancellation', async (t) => {
   const {
     returnValue: { success },
   } = await runFixture(t, 'cancel', { programmatic: true, snapshot: false })
   t.false(success)
 })
 
-test('Success is false on failure', async t => {
+test('Success is false on failure', async (t) => {
   const {
     returnValue: { success },
   } = await runFixture(t, 'plugin_error', { programmatic: true, snapshot: false })
   t.false(success)
 })
 
-test('severityCode is 0 on success', async t => {
+test('severityCode is 0 on success', async (t) => {
   const {
     returnValue: { severityCode },
   } = await runFixture(t, 'empty', { programmatic: true, snapshot: false })
   t.is(severityCode, 0)
 })
 
-test('severityCode is 1 on build cancellation', async t => {
+test('severityCode is 1 on build cancellation', async (t) => {
   const {
     returnValue: { severityCode },
   } = await runFixture(t, 'cancel', { programmatic: true, snapshot: false })
   t.is(severityCode, 1)
 })
 
-test('severityCode is 2 on user error', async t => {
+test('severityCode is 2 on user error', async (t) => {
   const {
     returnValue: { severityCode },
   } = await runFixture(t, '', { flags: { config: '/invalid' }, programmatic: true, snapshot: false })
   t.is(severityCode, 2)
 })
 
-test('severityCode is 3 on plugin error', async t => {
+test('severityCode is 3 on plugin error', async (t) => {
   const {
     returnValue: { severityCode },
   } = await runFixture(t, 'plugin_error', { programmatic: true, snapshot: false })
   t.is(severityCode, 3)
 })
 
-test('--cwd', async t => {
+test('--cwd', async (t) => {
   await runFixture(t, '', { flags: { cwd: `${FIXTURES_DIR}/empty` } })
 })
 
-test('--repository-root', async t => {
+test('--repository-root', async (t) => {
   await runFixture(t, '', { flags: { repositoryRoot: `${FIXTURES_DIR}/empty` } })
 })
 
-test('--config', async t => {
+test('--config', async (t) => {
   await runFixture(t, '', { flags: { config: `${FIXTURES_DIR}/empty/netlify.toml` } })
 })
 
-test('--defaultConfig', async t => {
+test('--defaultConfig', async (t) => {
   const defaultConfig = JSON.stringify({ build: { command: 'echo commandDefault' } })
   await runFixture(t, 'empty', { flags: { defaultConfig } })
 })
 
-test('--cachedConfig', async t => {
+test('--cachedConfig', async (t) => {
   const { returnValue } = await runFixtureConfig(t, 'cached_config', { snapshot: false })
   await runFixture(t, 'cached_config', { flags: { cachedConfig: returnValue } })
 })
 
-test('--context', async t => {
+test('--context', async (t) => {
   await runFixture(t, 'context', { flags: { context: 'testContext' } })
 })
 
-test('--branch', async t => {
+test('--branch', async (t) => {
   await runFixture(t, 'context', { flags: { branch: 'testContext' } })
 })
 
-test('--baseRelDir', async t => {
+test('--baseRelDir', async (t) => {
   await runFixtureConfig(t, 'basereldir', { flags: { baseRelDir: false } })
 })
 
-test('User error', async t => {
+test('User error', async (t) => {
   await runFixture(t, '', { flags: { config: '/invalid' } })
 })
 
-test('No configuration file', async t => {
+test('No configuration file', async (t) => {
   await runFixture(t, 'none')
 })
 
-test('--dry with one event', async t => {
+test('--dry with one event', async (t) => {
   await runFixture(t, 'single', { flags: { dry: true } })
 })
 
-test('--dry with several events', async t => {
+test('--dry with several events', async (t) => {
   await runFixture(t, 'several', { flags: { dry: true } })
 })
 
-test('--dry-run', async t => {
+test('--dry-run', async (t) => {
   await runFixture(t, 'single', { flags: { dryRun: true }, useBinary: true })
 })
 
-test('--dry with build.command but no netlify.toml', async t => {
+test('--dry with build.command but no netlify.toml', async (t) => {
   await runFixture(t, 'none', { flags: { dry: true, defaultConfig: '{"build":{"command":"echo"}}' } })
 })
 
@@ -149,7 +149,7 @@ const CHILD_NODE_VERSION = '8.3.0'
 const VERY_OLD_NODE_VERSION = '4.0.0'
 
 // Try `get-node` several times because it sometimes fails due to network failures
-const getNodeBinary = async function(version, retries = 1) {
+const getNodeBinary = async function (version, retries = 1) {
   try {
     return await getNode(version)
   } catch (error) {
@@ -166,27 +166,27 @@ const MAX_RETRIES = 10
 // Memoize `get-node`
 const mGetNode = moize(getNodeBinary, { isPromise: true })
 
-test('--node-path is used by build.command', async t => {
+test('--node-path is used by build.command', async (t) => {
   const { path } = await mGetNode(CHILD_NODE_VERSION)
   await runFixture(t, 'build_command', { flags: { nodePath: path }, env: { TEST_NODE_PATH: path } })
 })
 
-test('--node-path is used by local plugins', async t => {
+test('--node-path is used by local plugins', async (t) => {
   const { path } = await mGetNode(CHILD_NODE_VERSION)
   await runFixture(t, 'local_node_path', { flags: { nodePath: path }, env: { TEST_NODE_PATH: path } })
 })
 
-test('--node-path is used by plugins added to package.json', async t => {
+test('--node-path is used by plugins added to package.json', async (t) => {
   const { path } = await mGetNode(CHILD_NODE_VERSION)
   await runFixture(t, 'package', { flags: { nodePath: path }, env: { TEST_NODE_PATH: path } })
 })
 
-test('--node-path is not used by core plugins', async t => {
+test('--node-path is not used by core plugins', async (t) => {
   const { path } = await mGetNode(VERY_OLD_NODE_VERSION)
   await runFixture(t, 'core', { flags: { nodePath: path } })
 })
 
-test('--node-path is not used by build-image cached plugins', async t => {
+test('--node-path is not used by build-image cached plugins', async (t) => {
   const { path } = await mGetNode(CHILD_NODE_VERSION)
   await runFixture(t, 'build_image', {
     flags: {
@@ -198,16 +198,16 @@ test('--node-path is not used by build-image cached plugins', async t => {
   })
 })
 
-test('--featureFlags can be used', async t => {
+test('--featureFlags can be used', async (t) => {
   await runFixture(t, 'empty', { flags: { featureFlags: 'test,test,testTwo' } })
 })
 
 // Normalize telemetry request so it can be snapshot
-const normalizeSnapshot = function({ body, ...request }) {
+const normalizeSnapshot = function ({ body, ...request }) {
   return { ...request, body: normalizeBody(body) }
 }
 
-const normalizeBody = function({
+const normalizeBody = function ({
   anonymousId,
   meta: { timestamp, ...meta } = {},
   properties: { duration, isCI, buildVersion, nodeVersion, osPlatform, osName, ...properties } = {},
@@ -230,7 +230,7 @@ const normalizeBody = function({
 }
 
 if (platform !== 'win32') {
-  test('Print warning on lingering processes', async t => {
+  test('Print warning on lingering processes', async (t) => {
     const { returnValue } = await runFixture(t, 'lingering', {
       flags: { testOpts: { silentLingeringProcesses: false }, mode: 'buildbot' },
       snapshot: false,
@@ -249,7 +249,7 @@ if (platform !== 'win32') {
 
 const TELEMETRY_PATH = '/collect'
 
-test('Telemetry success', async t => {
+test('Telemetry success', async (t) => {
   const { scheme, host, requests, stopServer } = await startServer(TELEMETRY_PATH)
   await runFixture(t, 'success', {
     flags: { siteId: 'test', testOpts: { telemetryOrigin: `${scheme}://${host}` }, telemetry: true },
@@ -260,7 +260,7 @@ test('Telemetry success', async t => {
   t.snapshot(snapshot)
 })
 
-test('Telemetry disabled', async t => {
+test('Telemetry disabled', async (t) => {
   const { scheme, host, requests, stopServer } = await startServer(TELEMETRY_PATH)
   await runFixture(t, 'success', {
     flags: { siteId: 'test', testOpts: { telemetryOrigin: `${scheme}://${host}` } },
@@ -271,7 +271,7 @@ test('Telemetry disabled', async t => {
   t.is(requests.length, 0)
 })
 
-test('Telemetry disabled with flag', async t => {
+test('Telemetry disabled with flag', async (t) => {
   const { scheme, host, requests, stopServer } = await startServer(TELEMETRY_PATH)
   await runFixture(t, 'success', {
     flags: { siteId: 'test', testOpts: { telemetryOrigin: `${scheme}://${host}` }, telemetry: false },
@@ -281,7 +281,7 @@ test('Telemetry disabled with flag', async t => {
   t.is(requests.length, 0)
 })
 
-test('Telemetry disabled with mode', async t => {
+test('Telemetry disabled with mode', async (t) => {
   const { scheme, host, requests, stopServer } = await startServer(TELEMETRY_PATH)
   await runFixture(t, 'success', {
     flags: { siteId: 'test', testOpts: { telemetryOrigin: `${scheme}://${host}` }, telemetry: undefined },
@@ -291,7 +291,7 @@ test('Telemetry disabled with mode', async t => {
   t.is(requests.length, 0)
 })
 
-test('Telemetry error', async t => {
+test('Telemetry error', async (t) => {
   const { stopServer } = await startServer(TELEMETRY_PATH)
   await runFixture(t, 'success', {
     flags: { siteId: 'test', testOpts: { telemetryOrigin: `https://...` }, telemetry: true },

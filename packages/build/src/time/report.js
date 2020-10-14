@@ -9,7 +9,7 @@ const pSetTimeout = promisify(setTimeout)
 
 // Record the duration of a build phase, for monitoring.
 // Sends to statsd daemon.
-const reportTimers = async function({ timers, statsdOpts: { host, port }, framework }) {
+const reportTimers = async function ({ timers, statsdOpts: { host, port }, framework }) {
   if (host === undefined) {
     return
   }
@@ -18,9 +18,9 @@ const reportTimers = async function({ timers, statsdOpts: { host, port }, framew
   await sendTimers({ timers: timersA, host, port, framework })
 }
 
-const sendTimers = async function({ timers, host, port, framework }) {
+const sendTimers = async function ({ timers, host, port, framework }) {
   const client = await startClient(host, port)
-  timers.forEach(timer => sendTimer({ timer, client, framework }))
+  timers.forEach((timer) => sendTimer({ timer, client, framework }))
   await closeClient(client)
 }
 
@@ -28,13 +28,13 @@ const sendTimers = async function({ timers, host, port, framework }) {
 // case, this happens just before `client.close()` is called, which is too
 // late and make it not send anything. We need to manually create it using
 // the internal API.
-const startClient = async function(host, port) {
+const startClient = async function (host, port) {
   const client = new StatsdClient({ host, port, socketTimeout: 0 })
   await promisify(client._socket._createSocket.bind(client._socket))()
   return client
 }
 
-const sendTimer = function({ timer: { metricName, stageTag, parentTag, durationNs }, client, framework }) {
+const sendTimer = function ({ timer: { metricName, stageTag, parentTag, durationNs }, client, framework }) {
   const durationMs = roundTimerToMillisecs(durationNs)
   const frameworkTag = framework === undefined ? {} : { framework }
   client.timing(metricName, durationMs, { stage: stageTag, parent: parentTag, ...frameworkTag })
@@ -42,7 +42,7 @@ const sendTimer = function({ timer: { metricName, stageTag, parentTag, durationN
 
 // UDP packets are buffered and flushed at regular intervals by statsd-client.
 // Closing force flushing all of them.
-const closeClient = async function(client) {
+const closeClient = async function (client) {
   client.close()
 
   // statsd-clent does not provide with a way of knowing when the socket is done

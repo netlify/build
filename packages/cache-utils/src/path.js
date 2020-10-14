@@ -5,21 +5,21 @@ const { getCacheDir } = require('./dir')
 const { safeGetCwd } = require('./utils/cwd')
 
 // Find the paths of the file before/after caching
-const parsePath = async function({ path, cacheDir, cwdOpt, mode }) {
+const parsePath = async function ({ path, cacheDir, cwdOpt, mode }) {
   const srcPath = await getSrcPath(path, cwdOpt)
   const cachePath = await getCachePath({ srcPath, cacheDir, cwdOpt, mode })
   return { srcPath, cachePath }
 }
 
 // Retrieve absolute path to the local file to cache/restore
-const getSrcPath = async function(path, cwdOpt) {
+const getSrcPath = async function (path, cwdOpt) {
   const cwd = await safeGetCwd(cwdOpt)
   const srcPath = resolvePath(path, cwd)
   checkSrcPath(srcPath, cwd)
   return srcPath
 }
 
-const resolvePath = function(path, cwd) {
+const resolvePath = function (path, cwd) {
   if (isAbsolute(path)) {
     return resolve(path)
   }
@@ -39,18 +39,18 @@ const resolvePath = function(path, cwd) {
 //  - It undoes any build operations inside the repository that might have
 //    happened before this plugin starts restoring the cache, leading to
 //    conflicts with other plugins, Netlify Build or the buildbot.
-const checkSrcPath = function(srcPath, cwd) {
+const checkSrcPath = function (srcPath, cwd) {
   if (cwd !== '' && isParentPath(srcPath, cwd)) {
     throw new Error(`Cannot cache ${srcPath} because it is the current directory (${cwd}) or a parent directory`)
   }
 }
 
 // Note: srcPath and cwd are already normalized and absolute
-const isParentPath = function(srcPath, cwd) {
+const isParentPath = function (srcPath, cwd) {
   return `${cwd}${sep}`.startsWith(`${srcPath}${sep}`)
 }
 
-const getCachePath = async function({ srcPath, cacheDir, cwdOpt, mode }) {
+const getCachePath = async function ({ srcPath, cacheDir, cwdOpt, mode }) {
   const cacheDirA = await getCacheDir({ cacheDir, mode })
   const { name, relPath } = await findBase(srcPath, cwdOpt)
   const cachePath = join(cacheDirA, name, relPath)
@@ -60,7 +60,7 @@ const getCachePath = async function({ srcPath, cacheDir, cwdOpt, mode }) {
 // The cached path is the path relative to the base which can be either the
 // current directory, the home directory or the root directory. Each is tried
 // in order.
-const findBase = async function(srcPath, cwdOpt) {
+const findBase = async function (srcPath, cwdOpt) {
   const bases = await getBases(cwdOpt)
   const srcPathA = normalizeWindows(srcPath)
   return bases.map(({ name, base }) => parseBase(name, base, srcPathA)).find(Boolean)
@@ -76,14 +76,14 @@ const findBase = async function(srcPath, cwdOpt) {
 // This also means `cache.list()` always assumes the source files are on the
 // current drive.
 // TODO: fix it.
-const normalizeWindows = function(srcPath) {
+const normalizeWindows = function (srcPath) {
   return srcPath.replace(WINDOWS_DRIVE_REGEX, '\\')
 }
 
 const WINDOWS_DRIVE_REGEX = /^[a-zA-Z]:\\/
 
 // This logic works when `base` and `path` are on different Windows drives
-const parseBase = function(name, base, srcPath) {
+const parseBase = function (name, base, srcPath) {
   if (srcPath === base || !srcPath.startsWith(base)) {
     return
   }
@@ -92,12 +92,12 @@ const parseBase = function(name, base, srcPath) {
   return { name, relPath }
 }
 
-const getBases = async function(cwdOpt) {
+const getBases = async function (cwdOpt) {
   const cwdBase = await getCwdBase(cwdOpt)
   return [...cwdBase, { name: 'home', base: homedir() }, { name: 'root', base: sep }]
 }
 
-const getCwdBase = async function(cwdOpt) {
+const getCwdBase = async function (cwdOpt) {
   const cwd = await safeGetCwd(cwdOpt)
   if (cwd === '') {
     return []

@@ -9,7 +9,7 @@ const { logFunctionsToBundle } = require('../../log/messages/plugins')
 const { getZipError } = require('./error')
 
 // Plugin to package Netlify functions with @netlify/zip-it-and-ship-it
-const onBuild = async function({
+const onBuild = async function ({
   constants: { FUNCTIONS_SRC, FUNCTIONS_DIST },
   utils: {
     build: { failBuild },
@@ -40,7 +40,7 @@ const onBuild = async function({
   }
 }
 
-const getFunctionPaths = async function(FUNCTIONS_SRC) {
+const getFunctionPaths = async function (FUNCTIONS_SRC) {
   const functions = await listFunctions(FUNCTIONS_SRC)
   return functions.map(({ mainFile }) => relative(FUNCTIONS_SRC, mainFile))
 }

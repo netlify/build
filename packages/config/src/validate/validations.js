@@ -28,7 +28,7 @@ const PRE_CASE_NORMALIZE_VALIDATIONS = [
 const PRE_MERGE_VALIDATIONS = [
   {
     property: 'plugins',
-    check: value => Array.isArray(value) && value.every(isPlainObj),
+    check: (value) => Array.isArray(value) && value.every(isPlainObj),
     message: 'must be an array of objects.',
     example: () => ({ plugins: [{ package: 'netlify-plugin-one' }, { package: 'netlify-plugin-two' }] }),
   },
@@ -70,7 +70,7 @@ const POST_NORMALIZE_VALIDATIONS = [
 
   {
     property: 'plugins.*',
-    check: plugin => plugin.package !== undefined,
+    check: (plugin) => plugin.package !== undefined,
     message: '"package" property is required.',
     example: () => ({ plugins: [{ package: 'netlify-plugin-one' }] }),
   },
@@ -87,7 +87,7 @@ const POST_NORMALIZE_VALIDATIONS = [
   // We ensure @scope/plugin still work.
   {
     property: 'plugins.*.package',
-    check: packageName =>
+    check: (packageName) =>
       packageName.startsWith('.') ||
       packageName.startsWith('/') ||
       validateNpmPackageName(packageName).validForOldPackages,
@@ -110,7 +110,7 @@ const POST_NORMALIZE_VALIDATIONS = [
   {
     property: 'build.base',
     ...insideRootCheck,
-    example: base => ({ build: { base: removeParentDots(base) } }),
+    example: (base) => ({ build: { base: removeParentDots(base) } }),
   },
   {
     property: 'build.publish',
@@ -121,7 +121,7 @@ const POST_NORMALIZE_VALIDATIONS = [
   {
     property: 'build.publish',
     ...insideRootCheck,
-    example: publish => ({ build: { publish: removeParentDots(publish) } }),
+    example: (publish) => ({ build: { publish: removeParentDots(publish) } }),
   },
   {
     property: 'build.functions',
@@ -132,7 +132,7 @@ const POST_NORMALIZE_VALIDATIONS = [
   {
     property: 'build.functions',
     ...insideRootCheck,
-    example: functions => ({ build: { functions: removeParentDots(functions) } }),
+    example: (functions) => ({ build: { functions: removeParentDots(functions) } }),
   },
   {
     property: 'build.edge_handlers',
@@ -143,7 +143,7 @@ const POST_NORMALIZE_VALIDATIONS = [
   {
     property: 'build.edge_handlers',
     ...insideRootCheck,
-    example: edgeHandlers => ({ build: { edge_handlers: removeParentDots(edgeHandlers) } }),
+    example: (edgeHandlers) => ({ build: { edge_handlers: removeParentDots(edgeHandlers) } }),
   },
 ]
 

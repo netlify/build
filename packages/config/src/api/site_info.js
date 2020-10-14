@@ -3,7 +3,7 @@
 // This is not used in production builds since the buildbot passes this
 // information instead.
 // Requires knowing the `siteId` and having the access `token`.
-const getSiteInfo = async function(api, siteId, mode) {
+const getSiteInfo = async function (api, siteId, mode) {
   if (api === undefined || siteId === undefined || mode === 'buildbot') {
     return { id: siteId }
   }
@@ -12,7 +12,7 @@ const getSiteInfo = async function(api, siteId, mode) {
   return { ...siteInfo, id: siteId }
 }
 
-const getSite = async function(siteId, api) {
+const getSite = async function (siteId, api) {
   try {
     return await api.getSite({ site_id: siteId })
     // Silently ignore errors. For example the network connection might be down,

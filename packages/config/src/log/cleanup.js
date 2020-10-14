@@ -5,7 +5,7 @@ const { removeFalsy } = require('../utils/remove_falsy')
 const { removeEmptyObject, removeEmptyArray } = require('./remove')
 
 // Make sure we are not printing secret values. Use an allow list.
-const cleanupConfig = function({
+const cleanupConfig = function ({
   build: {
     base,
     command,
@@ -39,8 +39,8 @@ const cleanupConfig = function({
   return netlifyConfig
 }
 
-const cleanupEnvironment = function(environment) {
-  return Object.keys(environment).filter(key => !BUILDBOT_ENVIRONMENT.has(key))
+const cleanupEnvironment = function (environment) {
+  return Object.keys(environment).filter((key) => !BUILDBOT_ENVIRONMENT.has(key))
 }
 
 // Added by the buildbot. We only want to print environment variables specified
@@ -57,19 +57,19 @@ const BUILDBOT_ENVIRONMENT = new Set([
   'URL',
 ])
 
-const cleanupPlugin = function({ package: packageName, origin, inputs = {} }) {
+const cleanupPlugin = function ({ package: packageName, origin, inputs = {} }) {
   const inputsA = filterObj(inputs, isPublicInput)
   return { package: packageName, origin, inputs: inputsA }
 }
 
-const isPublicInput = function(key, input) {
+const isPublicInput = function (key, input) {
   return typeof input === 'boolean'
 }
 
 // The resolved configuration gets assigned some default values (empty objects and arrays)
 // to make it more convenient to use without checking for `undefined`.
 // However those empty values are not useful to users, so we don't log them.
-const simplifyConfig = function({ build: { environment, ...build }, plugins, ...netlifyConfig }) {
+const simplifyConfig = function ({ build: { environment, ...build }, plugins, ...netlifyConfig }) {
   const buildA = {
     ...build,
     ...removeEmptyArray(environment, 'environment'),

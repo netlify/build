@@ -1,7 +1,7 @@
 const stripAnsi = require('strip-ansi')
 
 // Remove ANSI sequences from `error.message`
-const removeErrorColors = function(error) {
+const removeErrorColors = function (error) {
   if (!(error instanceof Error)) {
     return
   }

@@ -5,7 +5,7 @@ const cacheUtils = require('..')
 
 const { createTmpDir, createTmpFile, removeFiles } = require('./helpers/main')
 
-test('Should allow moving files instead of copying them', async t => {
+test('Should allow moving files instead of copying them', async (t) => {
   const [cacheDir, [srcFile, srcDir]] = await Promise.all([createTmpDir(), createTmpFile()])
   try {
     t.true(await cacheUtils.save(srcFile, { cacheDir, move: true }))

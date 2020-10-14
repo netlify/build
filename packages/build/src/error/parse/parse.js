@@ -8,7 +8,7 @@ const { getErrorProps } = require('./properties')
 const { getStackInfo } = require('./stack')
 
 // Add additional type-specific error information
-const getFullErrorInfo = function({ error, colors, debug }) {
+const getFullErrorInfo = function ({ error, colors, debug }) {
   const basicErrorInfo = parseErrorInfo(error)
   const {
     message,
@@ -36,7 +36,7 @@ const getFullErrorInfo = function({ error, colors, debug }) {
 }
 
 // Parse error instance into all the basic properties containing information
-const parseErrorInfo = function(error) {
+const parseErrorInfo = function (error) {
   const { message, stack, ...errorProps } = normalizeError(error)
   const errorInfo = getErrorInfo(errorProps)
   const { type, severity, title, group, stackType, locationType, showErrorProps, rawStack } = getTypeInfo(errorInfo)
@@ -58,7 +58,7 @@ const parseErrorInfo = function(error) {
 }
 
 // Retrieve title to print in logs
-const getTitle = function(title, errorInfo) {
+const getTitle = function (title, errorInfo) {
   if (typeof title !== 'function') {
     return title
   }

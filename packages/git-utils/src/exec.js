@@ -5,7 +5,7 @@ const moize = require('moize').default
 const pathExists = require('path-exists')
 
 // Fires the `git` binary. Memoized.
-const mGit = function(args, cwd) {
+const mGit = function (args, cwd) {
   const cwdA = safeGetCwd(cwd)
   const { stdout } = execa.sync('git', args, { cwd: cwdA })
   return stdout
@@ -13,7 +13,7 @@ const mGit = function(args, cwd) {
 
 const git = moize(mGit, { isDeepEqual: true })
 
-const safeGetCwd = function(cwd) {
+const safeGetCwd = function (cwd) {
   const cwdA = getCwdValue(cwd)
 
   if (!pathExists.sync(cwdA)) {
@@ -23,7 +23,7 @@ const safeGetCwd = function(cwd) {
   return cwdA
 }
 
-const getCwdValue = function(cwd) {
+const getCwdValue = function (cwd) {
   if (cwd !== undefined) {
     return cwd
   }

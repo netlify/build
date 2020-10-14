@@ -4,7 +4,7 @@ const mapObj = require('map-obj')
 const { addErrorInfo } = require('./info')
 
 // Wrap `api.*` methods so that they add more error information
-const addApiErrorHandlers = function(api) {
+const addApiErrorHandlers = function (api) {
   if (api === undefined) {
     return
   }
@@ -12,7 +12,7 @@ const addApiErrorHandlers = function(api) {
   return mapObj(api, addErrorHandler)
 }
 
-const addErrorHandler = function(key, value) {
+const addErrorHandler = function (key, value) {
   if (typeof value !== 'function') {
     return [key, value]
   }
@@ -21,7 +21,7 @@ const addErrorHandler = function(key, value) {
   return [key, valueA]
 }
 
-const apiMethodHandler = async function(endpoint, method, parameters, ...args) {
+const apiMethodHandler = async function (endpoint, method, parameters, ...args) {
   try {
     return await method(parameters, ...args)
   } catch (error) {
@@ -32,7 +32,7 @@ const apiMethodHandler = async function(endpoint, method, parameters, ...args) {
 }
 
 // Redact API token from the build logs
-const redactError = function(error) {
+const redactError = function (error) {
   if (
     error instanceof Error &&
     isPlainObj(error.data) &&

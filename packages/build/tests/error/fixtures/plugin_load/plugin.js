@@ -1,4 +1,4 @@
-const test = function() {
+const test = function () {
   throw new Error('test')
 }
 

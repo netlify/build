@@ -3,7 +3,7 @@ const pathExists = require('path-exists')
 const { installFunctionDependencies } = require('../../install/functions')
 
 // Plugin to package Netlify functions with @netlify/zip-it-and-ship-it
-const onPreBuild = async function({ constants: { FUNCTIONS_SRC, IS_LOCAL } }) {
+const onPreBuild = async function ({ constants: { FUNCTIONS_SRC, IS_LOCAL } }) {
   if (!(await pathExists(FUNCTIONS_SRC))) {
     return
   }

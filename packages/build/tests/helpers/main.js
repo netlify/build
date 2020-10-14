@@ -11,7 +11,7 @@ const { runFixtureCommon, FIXTURES_DIR } = require('./common')
 const ROOT_DIR = `${__dirname}/../..`
 const BUILD_BIN_DIR = normalize(`${ROOT_DIR}/node_modules/.bin`)
 
-const runFixture = async function(
+const runFixture = async function (
   t,
   fixtureName,
   { flags = {}, env: envOption = {}, programmatic = false, ...opts } = {},
@@ -39,7 +39,7 @@ const runFixture = async function(
   return runFixtureCommon(t, fixtureName, { ...opts, flags: flagsA, env: envOptionA, mainFunc, binaryPath })
 }
 
-const getNetlifyBuildLogs = async function(flags) {
+const getNetlifyBuildLogs = async function (flags) {
   const { logs } = await netlifyBuild(flags)
   return [logs.stdout.join('\n'), logs.stderr.join('\n')].filter(Boolean).join('\n\n')
 }

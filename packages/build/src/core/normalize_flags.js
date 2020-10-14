@@ -6,7 +6,7 @@ const { removeFalsy } = require('../utils/remove_falsy')
 const { normalizeFeatureFlags, DEFAULT_FEATURE_FLAGS } = require('./feature_flags')
 
 // Normalize CLI flags
-const normalizeFlags = function(flags, logs) {
+const normalizeFlags = function (flags, logs) {
   const rawFlags = removeFalsy(flags)
   const rawFlagsA = normalizeFeatureFlags(rawFlags)
   const defaultFlags = getDefaultFlags(rawFlagsA)
@@ -24,7 +24,7 @@ const normalizeFlags = function(flags, logs) {
 }
 
 // Default values of CLI flags
-const getDefaultFlags = function({ env: envOpt = {}, mode = REQUIRE_MODE }) {
+const getDefaultFlags = function ({ env: envOpt = {}, mode = REQUIRE_MODE }) {
   const combinedEnv = { ...env, ...envOpt }
   return {
     env: envOpt,

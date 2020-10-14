@@ -11,7 +11,7 @@ const { resolvePluginsPath } = require('./resolve')
 
 // Load plugin options (specified by user in `config.plugins`)
 // Do not allow user override of core plugins
-const tGetPluginsOptions = async function({
+const tGetPluginsOptions = async function ({
   netlifyConfig: { plugins },
   buildDir,
   constants,
@@ -23,14 +23,14 @@ const tGetPluginsOptions = async function({
 }) {
   const corePlugins = await getCorePlugins({ constants, buildDir, featureFlags })
   const allCorePlugins = corePlugins
-    .map(corePlugin => addCoreProperties(corePlugin, plugins))
-    .filter(corePlugin => !isOptionalCore(corePlugin, plugins))
+    .map((corePlugin) => addCoreProperties(corePlugin, plugins))
+    .filter((corePlugin) => !isOptionalCore(corePlugin, plugins))
   const userPlugins = plugins.filter(isUserPlugin)
   const allPlugins = [...userPlugins, ...allCorePlugins]
   const pluginsOptions = allPlugins.map(normalizePluginOptions)
   const pluginsOptionsA = await resolvePluginsPath({ pluginsOptions, buildDir, mode, logs, buildImagePluginsDir })
   const pluginsOptionsB = await Promise.all(
-    pluginsOptionsA.map(pluginOptions => loadPluginFiles({ pluginOptions, debug })),
+    pluginsOptionsA.map((pluginOptions) => loadPluginFiles({ pluginOptions, debug })),
   )
   const pluginsOptionsC = pluginsOptionsB.filter(isNotRedundantCorePlugin)
   await installLocalPluginsDependencies({ plugins, pluginsOptions: pluginsOptionsC, buildDir, mode, logs })
@@ -39,14 +39,14 @@ const tGetPluginsOptions = async function({
 
 const getPluginsOptions = measureDuration(tGetPluginsOptions, 'get_plugins_options')
 
-const addCoreProperties = function(corePlugin, plugins) {
+const addCoreProperties = function (corePlugin, plugins) {
   const inputs = getCorePluginInputs(corePlugin, plugins)
   return { ...corePlugin, inputs, loadedFrom: 'core', origin: 'core' }
 }
 
 // Core plugins can get inputs too
-const getCorePluginInputs = function(corePlugin, plugins) {
-  const configuredCorePlugin = plugins.find(plugin => plugin.package === corePlugin.package)
+const getCorePluginInputs = function (corePlugin, plugins) {
+  const configuredCorePlugin = plugins.find((plugin) => plugin.package === corePlugin.package)
   if (configuredCorePlugin === undefined) {
     return {}
   }
@@ -55,21 +55,21 @@ const getCorePluginInputs = function(corePlugin, plugins) {
 }
 
 // Optional core plugins requires user opt-in
-const isOptionalCore = function(pluginA, plugins) {
-  return pluginA.optional && plugins.every(pluginB => pluginB.package !== pluginA.package)
+const isOptionalCore = function (pluginA, plugins) {
+  return pluginA.optional && plugins.every((pluginB) => pluginB.package !== pluginA.package)
 }
 
-const isUserPlugin = function(plugin) {
+const isUserPlugin = function (plugin) {
   return !isCorePlugin(plugin.package)
 }
 
-const normalizePluginOptions = function({ package: packageName, pluginPath, loadedFrom, origin, inputs }) {
+const normalizePluginOptions = function ({ package: packageName, pluginPath, loadedFrom, origin, inputs }) {
   return { packageName, pluginPath, loadedFrom, origin, inputs }
 }
 
 // Retrieve plugin's main file path.
 // Then load plugin's `package.json` and `manifest.yml`.
-const loadPluginFiles = async function({ pluginOptions: { pluginPath, ...pluginOptions }, debug }) {
+const loadPluginFiles = async function ({ pluginOptions: { pluginPath, ...pluginOptions }, debug }) {
   const pluginDir = dirname(pluginPath)
   const { packageDir, packageJson: pluginPackageJson } = await getPackageJson(pluginDir)
   const { manifest, inputs } = await useManifest(pluginOptions, { pluginDir, packageDir, pluginPackageJson, debug })
@@ -79,11 +79,11 @@ const loadPluginFiles = async function({ pluginOptions: { pluginPath, ...pluginO
 // Core plugins can only be included once.
 // For example, when testing core plugins, they might be included as local plugins,
 // in which case they should not be included twice.
-const isNotRedundantCorePlugin = function(pluginOptionsA, index, pluginsOptions) {
+const isNotRedundantCorePlugin = function (pluginOptionsA, index, pluginsOptions) {
   return (
     pluginOptionsA.loadedFrom !== 'core' ||
     pluginsOptions.every(
-      pluginOptionsB =>
+      (pluginOptionsB) =>
         pluginOptionsA.manifest.name !== pluginOptionsB.manifest.name || pluginOptionsA === pluginOptionsB,
     )
   )
@@ -91,7 +91,7 @@ const isNotRedundantCorePlugin = function(pluginOptionsA, index, pluginsOptions)
 
 // Retrieve information about @netlify/build when an error happens there and not
 // in a plugin
-const getSpawnInfo = function() {
+const getSpawnInfo = function () {
   const { name } = corePackageJson
   return {
     plugin: { packageName: name, pluginPackageJson: corePackageJson },

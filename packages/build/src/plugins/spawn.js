@@ -17,7 +17,7 @@ const CHILD_MAIN_FILE = `${__dirname}/child/main.js`
 //    (for both security and safety reasons)
 //  - logs can be buffered which allows manipulating them for log shipping,
 //    transforming and parallel plugins
-const tStartPlugins = async function({ pluginsOptions, buildDir, nodePath, childEnv, mode, logs }) {
+const tStartPlugins = async function ({ pluginsOptions, buildDir, nodePath, childEnv, mode, logs }) {
   logLoadingPlugins(logs, pluginsOptions)
 
   const spawnInfo = getSpawnInfo()
@@ -43,7 +43,7 @@ const tStartPlugins = async function({ pluginsOptions, buildDir, nodePath, child
 
 const startPlugins = measureDuration(tStartPlugins, 'start_plugins')
 
-const startPlugin = async function({
+const startPlugin = async function ({
   buildDir,
   nodePath,
   childEnv,
@@ -75,7 +75,7 @@ const startPlugin = async function({
 // Local plugins, `package.json`-installed plugins and local builds use user's
 // preferred Node.js version.
 // Other plugins use `@netlify/build` Node.js version.
-const getChildNodePath = function({ loadedFrom, nodePath, userNodeVersion, mode }) {
+const getChildNodePath = function ({ loadedFrom, nodePath, userNodeVersion, mode }) {
   if (loadedFrom === 'local' || loadedFrom === 'package.json' || (loadedFrom !== 'core' && mode !== 'buildbot')) {
     return { childNodePath: nodePath, childNodeVersion: userNodeVersion }
   }
@@ -84,11 +84,11 @@ const getChildNodePath = function({ loadedFrom, nodePath, userNodeVersion, mode 
 }
 
 // Stop all plugins child processes
-const stopPlugins = function(childProcesses) {
+const stopPlugins = function (childProcesses) {
   childProcesses.forEach(stopPlugin)
 }
 
-const stopPlugin = function({ childProcess }) {
+const stopPlugin = function ({ childProcess }) {
   if (childProcess.connected) {
     childProcess.disconnect()
   }

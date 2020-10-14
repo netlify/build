@@ -6,7 +6,7 @@ const findUp = require('find-up')
 //  - `repositoryRoot` option
 //  - find a `.git` directory up from `cwd`
 //  - `cwd` (fallback)
-const getRepositoryRoot = async function({ repositoryRoot, cwd }) {
+const getRepositoryRoot = async function ({ repositoryRoot, cwd }) {
   if (repositoryRoot !== undefined) {
     return repositoryRoot
   }

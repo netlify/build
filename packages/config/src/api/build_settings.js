@@ -4,7 +4,11 @@ const { removeFalsy } = require('../utils/remove_falsy')
 // production. In local builds, we retrieve them with `getSite` (`siteInfo`)
 // instead.
 // This also includes UI-installed plugins.
-const addBuildSettings = function({ defaultConfig, baseRelDir, siteInfo: { build_settings: buildSettings, plugins } }) {
+const addBuildSettings = function ({
+  defaultConfig,
+  baseRelDir,
+  siteInfo: { build_settings: buildSettings, plugins },
+}) {
   if (buildSettings === undefined) {
     return { defaultConfig, baseRelDir }
   }
@@ -15,7 +19,7 @@ const addBuildSettings = function({ defaultConfig, baseRelDir, siteInfo: { build
 }
 
 // From the `getSite` API response to the corresponding configuration properties
-const getDefaultConfig = function(
+const getDefaultConfig = function (
   uiPlugins = [],
   { cmd: command, dir: publish, functions_dir: functions, base, env: environment },
   { build, plugins = [], ...defaultConfig },
@@ -27,11 +31,11 @@ const getDefaultConfig = function(
 }
 
 // Make sure we know which fields we are picking from the API
-const normalizeUiPlugin = function({ package: packageName, inputs }) {
+const normalizeUiPlugin = function ({ package: packageName, inputs }) {
   return { package: packageName, inputs }
 }
 
-const getBaseRelDir = function({ base_rel_dir: siteBaseRelDir }, baseRelDir = siteBaseRelDir) {
+const getBaseRelDir = function ({ base_rel_dir: siteBaseRelDir }, baseRelDir = siteBaseRelDir) {
   return Boolean(baseRelDir)
 }
 

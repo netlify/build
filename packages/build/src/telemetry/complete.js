@@ -10,7 +10,7 @@ const { roundTimerToMillisecs } = require('../time/measure')
 const { track } = require('./track')
 
 // Send telemetry request when build completes
-const trackBuildComplete = async function({
+const trackBuildComplete = async function ({
   commandsCount,
   netlifyConfig,
   durationNs,
@@ -28,7 +28,7 @@ const trackBuildComplete = async function({
 }
 
 // Retrieve telemetry information
-const getPayload = function({ commandsCount, netlifyConfig, durationNs, siteInfo: { id: siteId }, mode }) {
+const getPayload = function ({ commandsCount, netlifyConfig, durationNs, siteInfo: { id: siteId }, mode }) {
   const durationMs = roundTimerToMillisecs(durationNs)
   const plugins = Object.values(netlifyConfig.plugins).map(getPluginPackageName)
   return {
@@ -56,7 +56,7 @@ const getPayload = function({ commandsCount, netlifyConfig, durationNs, siteInfo
   }
 }
 
-const getPluginPackageName = function({ packageName }) {
+const getPluginPackageName = function ({ packageName }) {
   return packageName
 }
 

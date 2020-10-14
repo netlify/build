@@ -9,12 +9,12 @@ const pSetTimeout = promisify(setTimeout)
 const pWriteFile = promisify(writeFile)
 const pReadFile = promisify(readFile)
 
-const createTmpDir = async function(opts) {
+const createTmpDir = async function (opts) {
   const { path } = await getTmpDir({ ...opts, prefix: PREFIX })
   return path
 }
 
-const createTmpFile = async function(opts) {
+const createTmpFile = async function (opts) {
   const tmpDir = await createTmpDir(opts)
   const filename = basename(await tmpName())
   const tmpFile = join(tmpDir, filename)
@@ -24,7 +24,7 @@ const createTmpFile = async function(opts) {
 
 const PREFIX = 'test-cache-utils-'
 
-const removeFiles = function(paths) {
+const removeFiles = function (paths) {
   return del(paths, { force: true })
 }
 

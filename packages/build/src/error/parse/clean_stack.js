@@ -11,7 +11,7 @@ const stripAnsi = require('strip-ansi')
 // Keep non stack trace lines as is.
 // We do not use libraries that patch `Error.prepareStackTrace()` because they
 // tend to create issues.
-const cleanStacks = function({ stack, rawStack, debug }) {
+const cleanStacks = function ({ stack, rawStack, debug }) {
   if (stack === undefined) {
     return
   }
@@ -22,13 +22,10 @@ const cleanStacks = function({ stack, rawStack, debug }) {
     return stack
   }
 
-  return stack
-    .split('\n')
-    .reduce(cleanStackLine, '')
-    .replace(INITIAL_NEWLINES, '')
+  return stack.split('\n').reduce(cleanStackLine, '').replace(INITIAL_NEWLINES, '')
 }
 
-const cleanStackLine = function(lines, line) {
+const cleanStackLine = function (lines, line) {
   const lineA = line.replace(getCwd(), '')
   const lineB = stripAnsi(lineA)
 
@@ -55,7 +52,7 @@ const cleanStackLine = function(lines, line) {
 
 // `process.cwd()` can sometimes fail: directory name too long, current
 // directory has been removed, access denied.
-const getCwd = function() {
+const getCwd = function () {
   try {
     return cwd()
   } catch (error) {
@@ -66,7 +63,7 @@ const getCwd = function() {
 // Check if a line is part of a stack trace
 const STACK_LINE_REGEXP = /^\s+at /
 
-const isUselessStack = function(line) {
+const isUselessStack = function (line) {
   const lineA = normalizePathSlashes(line)
   return (
     // Anonymous function
@@ -79,7 +76,7 @@ const isUselessStack = function(line) {
 }
 
 // This is only needed for local builds and tests
-const isInternalStack = function(line) {
+const isInternalStack = function (line) {
   const lineA = normalizePathSlashes(line)
   return INTERNAL_STACK_REGEXP.test(lineA)
 }
@@ -88,7 +85,7 @@ const INTERNAL_STACK_REGEXP = /(packages|@netlify)\/build\/(src\/|tests\/helpers
 
 const INITIAL_NEWLINES = /^\n+/
 
-const normalizePathSlashes = function(line) {
+const normalizePathSlashes = function (line) {
   return line.replace(BACKLASH_REGEXP, '/')
 }
 
