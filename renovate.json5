@@ -28,7 +28,6 @@
         'nock',
         'os-name',
         'p-locate',
-        'prettier',
         'pretty-ms',
         'update-notifier',
         'yargs',
