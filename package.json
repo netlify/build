@@ -8,13 +8,23 @@
   "scripts": {
     "postinstall": "npm run bootstrap",
     "bootstrap": "lerna bootstrap",
-    "test": "npm run format && npm run test:dev",
-    "format": "run-s format:*",
-    "format:lint": "eslint --ignore-path .gitignore --fix --cache --format=codeframe --max-warnings=0 \"{.github,packages,scripts}/**/*.{js,md,html}\"",
-    "format:prettier": "prettier --ignore-path .gitignore --write --loglevel warn \"{.github,packages,scripts}/**/*.{js,md,html,yml,json}\" \"*.{js,md,htm,yml,json}\" \"!**/package-lock.json\" \"!package-lock.json\"",
-    "test:dev": "ava",
-    "test:ci": "nyc -r lcovonly -r text -r json ava",
-    "update-snapshots": "ava -u"
+    "test": "run-s format test:dev",
+    "format": "run-s format:check-fix:*",
+    "format:ci": "run-s format:check:*",
+    "format:check-fix:lint": "./scripts/run_on_error.js format:check:lint format:fix:lint",
+    "format:check:lint": "cross-env-shell eslint $npm_package_scriptsArgs_eslint",
+    "format:fix:lint": "cross-env-shell eslint --fix $npm_package_scriptsArgs_eslint",
+    "format:check-fix:prettier": "./scripts/run_on_error.js format:check:prettier format:fix:prettier",
+    "format:check:prettier": "cross-env-shell prettier --check $npm_package_scriptsArgs_prettier",
+    "format:fix:prettier": "cross-env-shell prettier --write $npm_package_scriptsArgs_prettier",
+    "test:dev": "run-s test:dev:*",
+    "test:ci": "run-s test:ci:*",
+    "test:dev:ava": "ava",
+    "test:ci:ava": "nyc -r lcovonly -r text -r json ava"
+  },
+  "scriptsArgs": {
+    "eslint": "--ignore-path .gitignore --cache --format=codeframe --max-warnings=0 \"{packages,scripts,.github}/**/*.{js,md,html}\"",
+    "prettier": "--ignore-path .gitignore --loglevel=warn \"{packages,scripts,.github}/**/*.{js,md,yml,json,html}\" \"*.{js,yml,json,html}\" \"!**/package-lock.json\" \"!package-lock.json\""
   },
   "husky": {
     "hooks": {
@@ -52,6 +62,7 @@
   "dependencies": {},
   "devDependencies": {
     "ava": "^2.4.0",
+    "cross-env": "^7.0.2",
     "eslint": "^7.11.0",
     "eslint-config-prettier": "^6.10.1",
     "eslint-config-standard": "^14.1.1",
@@ -67,6 +78,7 @@
     "eslint-plugin-standard": "^4.0.1",
     "eslint-plugin-unicorn": "^22.0.0",
     "eslint-plugin-you-dont-need-lodash-underscore": "^6.10.0",
+    "execa": "^4.0.3",
     "husky": "^4.2.3",
     "lerna": "^3.20.2",
     "npm-run-all": "^4.1.5",

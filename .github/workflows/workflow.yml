@@ -6,34 +6,33 @@ on:
     tags: ['*']
   pull_request:
     types: [opened, synchronize, reopened]
-env:
-  CI: 'true'
 jobs:
   build:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
     strategy:
       matrix:
         os: [ubuntu-latest, macOS-latest, windows-latest]
-        node: [8.17.0, 14]
+        node-version: [8.17.0, 14.x]
         exclude:
           - os: macOS-latest
-            node: 8.17.0
+            node-version: 8.17.0
           - os: windows-latest
-            node: 8.17.0
+            node-version: 8.17.0
       fail-fast: false
-    runs-on: ${{ matrix.os }}
     steps:
       - name: Git checkout
         uses: actions/checkout@v1
-      - name: Node.js ${{ matrix.node }}
+      - name: Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node }}
+          node-version: ${{ matrix.node-version }}
       - name: Install dependencies
-        run: npm install
+        run: npm ci
       - name: Linting
-        run: npm run format
-        if: ${{ matrix.node == 14 }}
+        run: npm run format:ci
+        if: "${{ matrix.node-version == '14.x' }}"
       - name: Tests
         run: npm run test:ci
       - name: Codecov test coverage
-        run: bash scripts/coverage.sh "${{ matrix.os }}" "${{ matrix.node }}"
+        run: bash scripts/coverage.sh "${{ matrix.os }}" "${{ matrix.node-version }}"
