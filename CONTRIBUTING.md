@@ -46,9 +46,6 @@ This is a monorepo. You can find the included packages in the [packages](package
 
 See our [testing documentation](packages/build/tests/README.md) to learn about our integration tests setup.
 
-To test a beta release of `@netlify/build` in a site on Netlify, set the environment variable
-`NETLIFY_BUILD_CLI_VERSION` to the NPM tag you wish to use.
-
 After submitting the pull request, please make sure the Continuous Integration checks (GitHub actions) are passing.
 
 ## Releasing
@@ -102,3 +99,14 @@ netlify api updateSite --data='{ "site_id": "{{siteId}}", "body": { "build_image
 ```
 
 The `{{buildImage}}` can be the buildbot commit hash or `git` branch name.
+
+## Beta release
+
+To test a beta release of `@netlify/build` in a site:
+
+- Make a prerelease: `npm version prerelease`
+- Publish on npm using a `beta` tag: `npm publish --tag=beta`
+- Make a PR in the buildbot to use this prerelease
+- Update the `build_image` of a site to use this PR
+
+This is especially useful to test how an ongoing PR in `@netlify/build` would behave in production.
