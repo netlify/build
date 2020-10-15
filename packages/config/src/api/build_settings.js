@@ -13,16 +13,16 @@ const addBuildSettings = function ({
     return { defaultConfig, baseRelDir }
   }
 
-  const defaultConfigA = getDefaultConfig(plugins, buildSettings, defaultConfig)
+  const defaultConfigA = getDefaultConfig(buildSettings, defaultConfig, plugins)
   const baseRelDirA = getBaseRelDir(buildSettings, baseRelDir)
   return { defaultConfig: defaultConfigA, baseRelDir: baseRelDirA }
 }
 
 // From the `getSite` API response to the corresponding configuration properties
 const getDefaultConfig = function (
-  uiPlugins = [],
   { cmd: command, dir: publish, functions_dir: functions, base, env: environment },
   { build, plugins = [], ...defaultConfig },
+  uiPlugins = [],
 ) {
   const siteBuild = removeFalsy({ command, publish, functions, base, environment })
   const uiPluginsA = uiPlugins.map(normalizeUiPlugin)
