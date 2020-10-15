@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 const { version } = require('process')
 
 const isNode8 = version.startsWith('v8.')
@@ -193,3 +194,4 @@ module.exports = {
     },
   ],
 }
+/* eslint-enable max-lines */
