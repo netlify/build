@@ -24,7 +24,9 @@ const setToNull = function (name) {
 // Set `process.env` changes from a previous different plugin.
 // Can also merge with a `currentEnv` plain object instead of `process.env`.
 const setEnvChanges = function (envChanges, currentEnv = env) {
-  Object.entries(envChanges).forEach(([name, value]) => setEnvChange(name, value, currentEnv))
+  Object.entries(envChanges).forEach(([name, value]) => {
+    setEnvChange(name, value, currentEnv)
+  })
   return { ...currentEnv }
 }
 

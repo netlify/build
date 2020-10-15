@@ -11,7 +11,9 @@ const validatePlugin = function (logic) {
       throw new Error('Plugin must be an object or a function')
     }
 
-    Object.entries(logic).forEach(([propName, value]) => validateEventHandler(value, propName))
+    Object.entries(logic).forEach(([propName, value]) => {
+      validateEventHandler(value, propName)
+    })
   } catch (error) {
     addErrorInfo(error, { type: 'pluginValidation' })
     throw error
