@@ -25,14 +25,16 @@ Run:
 npm install
 ```
 
-Make sure everything is correctly setup with:
+Tests are run with:
 
 ```bash
 npm test
 ```
 
-Linting and prettification is performed automatically on `git push`. However you should run them before any `git commit`
-using:
+Make sure everything is correctly setup by running those tests first.
+
+ESLint and Prettier are performed automatically on `git push`. However, we recommend you setup your IDE or text editor
+to run ESLint and Prettier automatically on file save. Otherwise, you should run them manually using:
 
 ```bash
 npm run format
