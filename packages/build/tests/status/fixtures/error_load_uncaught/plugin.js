@@ -1,4 +1,4 @@
-const throwError = function() {
+const throwError = function () {
   throw new Error('test')
 }
 

@@ -4,7 +4,7 @@ const cacheUtils = require('..')
 
 const { createTmpDir, createTmpFile, removeFiles } = require('./helpers/main')
 
-test('Should allow checking if one file is cached', async t => {
+test('Should allow checking if one file is cached', async (t) => {
   const [cacheDir, [srcFile, srcDir]] = await Promise.all([createTmpDir(), createTmpFile()])
   try {
     t.false(await cacheUtils.has(srcFile, { cacheDir }))
@@ -15,7 +15,7 @@ test('Should allow checking if one file is cached', async t => {
   }
 })
 
-test('Should allow checking if several files are cached', async t => {
+test('Should allow checking if several files are cached', async (t) => {
   const [cacheDir, [srcFile, srcDir], [otherSrcFile, otherSrcDir]] = await Promise.all([
     createTmpDir(),
     createTmpFile(),
@@ -30,6 +30,6 @@ test('Should allow checking if several files are cached', async t => {
   }
 })
 
-test('Should allow checking if one file is cached without an options object', async t => {
+test('Should allow checking if one file is cached without an options object', async (t) => {
   t.is(typeof (await cacheUtils.has('doesNotExist')), 'boolean')
 })

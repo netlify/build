@@ -4,7 +4,7 @@ const { logStatuses } = require('../log/messages/status')
 const { removeStatusesColors } = require('./colors')
 
 // Report plugin statuses to the console and API
-const reportStatuses = async function({
+const reportStatuses = async function ({
   statuses,
   childEnv,
   api,
@@ -40,7 +40,7 @@ const reportStatuses = async function({
 
 // When not in production, print statuses to console.
 // Only print successful ones, since errors are logged afterwards.
-const printStatuses = function({ statuses, mode, logs }) {
+const printStatuses = function ({ statuses, mode, logs }) {
   if (mode === 'buildbot') {
     return
   }
@@ -54,12 +54,12 @@ const printStatuses = function({ statuses, mode, logs }) {
   logStatuses(logs, successStatuses)
 }
 
-const shouldPrintStatus = function({ state, summary }) {
+const shouldPrintStatus = function ({ state, summary }) {
   return state === 'success' && summary !== undefined
 }
 
 // In production, send statuses to the API
-const sendApiStatuses = async function({
+const sendApiStatuses = async function ({
   statuses,
   childEnv,
   api,
@@ -77,13 +77,13 @@ const sendApiStatuses = async function({
   }
 
   await Promise.all(
-    statuses.map(status =>
+    statuses.map((status) =>
       sendApiStatus({ api, status, childEnv, mode, netlifyConfig, errorMonitor, deployId, logs, debug, testOpts }),
     ),
   )
 }
 
-const sendApiStatus = async function({
+const sendApiStatus = async function ({
   api,
   status: { packageName, version, state, event, title, summary, text },
   childEnv,

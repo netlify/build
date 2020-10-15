@@ -1,6 +1,6 @@
 const { exit } = require('process')
 
-const test = function() {
+const test = function () {
   console.log(new Error('test'))
   exit(2)
 }

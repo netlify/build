@@ -1,13 +1,13 @@
 // We distinguish between errors thrown intentionally and uncaught exceptions
 // (such as bugs) with a `type` property.
-const throwError = function(messageOrError, error) {
+const throwError = function (messageOrError, error) {
   const errorA = getError(messageOrError, error)
   errorA.type = USER_ERROR_TYPE
   throw errorA
 }
 
 // Can pass either `message`, `error` or `message, error`
-const getError = function(messageOrError, error) {
+const getError = function (messageOrError, error) {
   if (messageOrError instanceof Error) {
     return messageOrError
   }
@@ -21,7 +21,7 @@ const getError = function(messageOrError, error) {
 }
 
 // Check `error.type`
-const isUserError = function(error) {
+const isUserError = function (error) {
   return error instanceof Error && error.type === USER_ERROR_TYPE
 }
 

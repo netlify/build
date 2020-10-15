@@ -9,37 +9,37 @@ const { runFixture, FIXTURES_DIR } = require('../helpers/main')
 
 const pWriteFile = promisify(writeFile)
 
-test('--help', async t => {
+test('--help', async (t) => {
   await runFixture(t, '', { flags: { help: true }, useBinary: true })
 })
 
-test('--version', async t => {
+test('--version', async (t) => {
   await runFixture(t, '', { flags: { version: true }, useBinary: true })
 })
 
-test('Success', async t => {
+test('Success', async (t) => {
   await runFixture(t, 'empty', { useBinary: true })
 })
 
-test('User error', async t => {
+test('User error', async (t) => {
   await runFixture(t, 'empty', { flags: { config: '/invalid' }, useBinary: true })
 })
 
-test('CLI flags', async t => {
+test('CLI flags', async (t) => {
   await runFixture(t, 'empty', { flags: { branch: 'test' }, useBinary: true })
 })
 
-test('Stabilitize output with the --stable flag', async t => {
+test('Stabilitize output with the --stable flag', async (t) => {
   await runFixture(t, 'empty', { flags: { stable: true }, useBinary: true })
 })
 
-test('Does not stabilitize output without the --stable flag', async t => {
+test('Does not stabilitize output without the --stable flag', async (t) => {
   await runFixture(t, 'empty', { flags: { stable: false }, useBinary: true })
 })
 
 // This test is too slow in local development
 if (isCI) {
-  test('Handles big outputs', async t => {
+  test('Handles big outputs', async (t) => {
     const bigNetlify = `${FIXTURES_DIR}/big/netlify.toml`
     await del(bigNetlify, { force: true })
     try {
@@ -54,7 +54,7 @@ if (isCI) {
     }
   })
 
-  const getBigNetlifyContent = function() {
+  const getBigNetlifyContent = function () {
     const envVars = Array.from({ length: BIG_NUMBER }, getEnvVar).join('\n')
     return `[build.environment]\n${envVars}`
   }
@@ -62,6 +62,6 @@ if (isCI) {
   const BIG_NUMBER = 1e4
 }
 
-const getEnvVar = function(value, index) {
+const getEnvVar = function (value, index) {
   return `TEST${index} = ${index}`
 }

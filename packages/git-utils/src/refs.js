@@ -3,7 +3,7 @@ const { env } = require('process')
 const { git } = require('./exec')
 
 // Retrieve the `head` commit
-const getHead = function(head = 'HEAD', cwd) {
+const getHead = function (head = 'HEAD', cwd) {
   const result = checkRef(head, cwd)
   if (result.error !== undefined) {
     throwError('head', result)
@@ -12,13 +12,13 @@ const getHead = function(head = 'HEAD', cwd) {
 }
 
 // Retrieve the `base` commit
-const getBase = function(base, head, cwd) {
+const getBase = function (base, head, cwd) {
   const refs = getBaseRefs(base, head)
   const { ref } = findRef(refs, cwd)
   return ref
 }
 
-const getBaseRefs = function(base, head) {
+const getBaseRefs = function (base, head) {
   if (base !== undefined) {
     return [base]
   }
@@ -33,8 +33,8 @@ const getBaseRefs = function(base, head) {
 }
 
 // Use the first commit that exists
-const findRef = function(refs, cwd) {
-  const results = refs.map(ref => checkRef(ref, cwd))
+const findRef = function (refs, cwd) {
+  const results = refs.map((ref) => checkRef(ref, cwd))
   const result = results.find(refExists)
   if (result === undefined) {
     throwError('base', results[0])
@@ -43,7 +43,7 @@ const findRef = function(refs, cwd) {
 }
 
 // Check if a commit exists
-const checkRef = function(ref, cwd) {
+const checkRef = function (ref, cwd) {
   try {
     git(['rev-parse', ref], cwd)
     return { ref }
@@ -52,11 +52,11 @@ const checkRef = function(ref, cwd) {
   }
 }
 
-const refExists = function({ error }) {
+const refExists = function ({ error }) {
   return error === undefined
 }
 
-const throwError = function(name, { ref, error: { message, stderr } }) {
+const throwError = function (name, { ref, error: { message, stderr } }) {
   const messages = [message, stderr].filter(Boolean).join('\n')
   const messageA = `Invalid ${name} commit ${ref}\n${messages}`
   throw new Error(messageA)

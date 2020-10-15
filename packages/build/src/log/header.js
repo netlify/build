@@ -1,7 +1,7 @@
 const stringWidth = require('string-width')
 
 // Print a rectangular header
-const getHeader = function(message) {
+const getHeader = function (message) {
   const messageWidth = stringWidth(message)
   const headerWidth = Math.max(HEADER_MIN_WIDTH, messageWidth + MIN_PADDING * 2)
   const line = '─'.repeat(headerWidth)

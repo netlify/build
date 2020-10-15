@@ -7,7 +7,7 @@ const cacheUtils = require('..')
 
 const { pWriteFile, createTmpDir, removeFiles } = require('./helpers/main')
 
-test('Should allow not changing the cache directory', async t => {
+test('Should allow not changing the cache directory', async (t) => {
   const [cacheDir, srcDir] = await Promise.all([createTmpDir(), createTmpDir()])
   const currentDir = getCwd()
   chdir(srcDir)
@@ -24,7 +24,7 @@ test('Should allow not changing the cache directory', async t => {
   }
 })
 
-test('Should allow not changing the cache directory in CI', async t => {
+test('Should allow not changing the cache directory in CI', async (t) => {
   const cacheDir = await cacheUtils.getCacheDir({ mode: 'buildbot', isTest: true })
   t.true(await pathExists(cacheDir))
 })

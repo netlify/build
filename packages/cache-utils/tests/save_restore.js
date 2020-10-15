@@ -6,11 +6,11 @@ const cacheUtils = require('..')
 
 const { pWriteFile, pReadFile, createTmpDir, createTmpFile, removeFiles } = require('./helpers/main')
 
-test('Should expose several methods', t => {
+test('Should expose several methods', (t) => {
   t.deepEqual(Object.keys(cacheUtils).sort(), ['bindOpts', 'getCacheDir', 'has', 'list', 'remove', 'restore', 'save'])
 })
 
-test('Should cache and restore one file', async t => {
+test('Should cache and restore one file', async (t) => {
   const [cacheDir, [srcFile, srcDir]] = await Promise.all([createTmpDir(), createTmpFile()])
   try {
     t.true(await cacheUtils.save(srcFile, { cacheDir }))
@@ -22,7 +22,7 @@ test('Should cache and restore one file', async t => {
   }
 })
 
-test('Should cache and restore several files', async t => {
+test('Should cache and restore several files', async (t) => {
   const [cacheDir, [srcFile, srcDir], [otherSrcFile, otherSrcDir]] = await Promise.all([
     createTmpDir(),
     createTmpFile(),
@@ -38,7 +38,7 @@ test('Should cache and restore several files', async t => {
   }
 })
 
-test('Should cache and restore one directory', async t => {
+test('Should cache and restore one directory', async (t) => {
   const [cacheDir, srcDir] = await Promise.all([createTmpDir(), createTmpDir()])
   try {
     const srcFile = `${srcDir}/test`
@@ -52,7 +52,7 @@ test('Should cache and restore one directory', async t => {
   }
 })
 
-test('Should keep file contents when caching files', async t => {
+test('Should keep file contents when caching files', async (t) => {
   const [cacheDir, [srcFile, srcDir]] = await Promise.all([createTmpDir(), createTmpFile()])
   try {
     await pWriteFile(srcFile, 'test')
@@ -66,7 +66,7 @@ test('Should keep file contents when caching files', async t => {
   }
 })
 
-test('Should overwrite files on restore', async t => {
+test('Should overwrite files on restore', async (t) => {
   const [cacheDir, [srcFile, srcDir]] = await Promise.all([createTmpDir(), createTmpFile()])
   try {
     await pWriteFile(srcFile, 'test')
@@ -80,15 +80,15 @@ test('Should overwrite files on restore', async t => {
   }
 })
 
-test('Should skip non-existing files on save', async t => {
+test('Should skip non-existing files on save', async (t) => {
   t.false(await cacheUtils.save('nonExisting'))
 })
 
-test('Should skip non-existing files on restore', async t => {
+test('Should skip non-existing files on restore', async (t) => {
   t.false(await cacheUtils.restore('nonExisting'))
 })
 
-test('Should skip empty directories on save', async t => {
+test('Should skip empty directories on save', async (t) => {
   const [cacheDir, srcDir] = await Promise.all([createTmpDir(), createTmpDir()])
   try {
     t.false(await cacheUtils.save(srcDir, { cacheDir }))
@@ -97,7 +97,7 @@ test('Should skip empty directories on save', async t => {
   }
 })
 
-test('Should skip empty directories on restore', async t => {
+test('Should skip empty directories on restore', async (t) => {
   const cacheDir = await createTmpDir()
 
   try {
@@ -111,7 +111,7 @@ test('Should skip empty directories on restore', async t => {
   }
 })
 
-test('Should skip deep empty directories on save', async t => {
+test('Should skip deep empty directories on save', async (t) => {
   const [cacheDir, srcDir] = await Promise.all([createTmpDir(), createTmpDir()])
   try {
     const srcSubDir = `${srcDir}/test`
@@ -123,7 +123,7 @@ test('Should skip deep empty directories on save', async t => {
   }
 })
 
-test('Should skip deep empty directories on restore', async t => {
+test('Should skip deep empty directories on restore', async (t) => {
   const cacheDir = await createTmpDir()
 
   try {

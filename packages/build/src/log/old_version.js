@@ -9,7 +9,7 @@ const corePackageJson = require('../../package.json')
 // We only print this when Netlify CLI has been used. Programmatic usage might
 // come from a deep dependency calling `@netlify/build` and user might not be
 // able to take any upgrade action, making the message noisy.
-const logOldCliVersionError = function({ mode, testOpts }) {
+const logOldCliVersionError = function ({ mode, testOpts }) {
   if (mode !== 'cli') {
     return
   }
@@ -21,7 +21,7 @@ const logOldCliVersionError = function({ mode, testOpts }) {
   })
 }
 
-const getCorePackageJson = function(testOpts) {
+const getCorePackageJson = function (testOpts) {
   // TODO: Find a way to test this without injecting code in the `src/`
   if (testOpts.oldCliLogs) {
     // `update-notifier` does not do anything if not in a TTY.

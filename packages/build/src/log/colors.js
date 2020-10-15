@@ -8,7 +8,7 @@ const supportsColor = require('supports-color')
 // non-interactive even if the parent is an interactive TTY. This means they
 // would normally lose colors. If the parent has colors, we pass an environment
 // variable to the child process to force colors.
-const getParentColorEnv = function() {
+const getParentColorEnv = function () {
   if (!hasColors()) {
     return {}
   }
@@ -21,7 +21,7 @@ const getParentColorEnv = function() {
 // `process.stdout.hasColors` which is always `undefined` when the TTY is
 // non-interactive. So we need to set `util.inspect.defaultOptions.colors`
 // manually both in plugin processes.
-const setInspectColors = function() {
+const setInspectColors = function () {
   if (!hasColors()) {
     return
   }
@@ -31,7 +31,7 @@ const setInspectColors = function() {
   defaultOptions.colors = true
 }
 
-const hasColors = function() {
+const hasColors = function () {
   return supportsColor.stdout !== false
 }
 

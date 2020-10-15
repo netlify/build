@@ -1,12 +1,12 @@
 const { hrtime } = require('process')
 
 // Starts a timer
-const startTimer = function() {
+const startTimer = function () {
   return hrtime()
 }
 
 // Stops a timer
-const endTimer = function([startSecs, startNsecs]) {
+const endTimer = function ([startSecs, startNsecs]) {
   const [endSecs, endNsecs] = hrtime()
   const durationNs = (endSecs - startSecs) * NANOSECS_TO_SECS + endNsecs - startNsecs
   return durationNs
@@ -14,7 +14,7 @@ const endTimer = function([startSecs, startNsecs]) {
 
 // statsd expects milliseconds integers.
 // To prevent double rounding errors, rounding should only be applied once.
-const roundTimerToMillisecs = function(durationNs) {
+const roundTimerToMillisecs = function (durationNs) {
   return Math.round(durationNs / NANOSECS_TO_MSECS)
 }
 

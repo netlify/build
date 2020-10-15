@@ -2,11 +2,8 @@ const filterObj = require('filter-obj')
 const yargs = require('yargs')
 
 // Parse CLI flags
-const parseFlags = function() {
-  const flags = yargs
-    .options(FLAGS)
-    .usage(USAGE)
-    .parse()
+const parseFlags = function () {
+  const flags = yargs.options(FLAGS).usage(USAGE).parse()
   const flagsA = filterObj(flags, isUserFlag)
   return flagsA
 }
@@ -111,7 +108,7 @@ The result is printed as a JSON object on stdout with the following properties:
   - branch     {string}  Repository branch`
 
 // Remove `yargs`-specific options, shortcuts, dash-cased and aliases
-const isUserFlag = function(key, value) {
+const isUserFlag = function (key, value) {
   return value !== undefined && !INTERNAL_KEYS.has(key) && key.length !== 1 && !key.includes('-')
 }
 

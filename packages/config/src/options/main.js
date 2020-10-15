@@ -12,7 +12,7 @@ const { getBranch } = require('./branch')
 const { getRepositoryRoot } = require('./repository_root')
 
 // Assign default options
-const addDefaultOpts = function(opts = {}) {
+const addDefaultOpts = function (opts = {}) {
   const rawOpts = removeFalsy(opts)
   const defaultOpts = getDefaultOpts(rawOpts)
   const mergedOpts = { ...defaultOpts, ...rawOpts }
@@ -26,7 +26,7 @@ const addDefaultOpts = function(opts = {}) {
   return normalizedOptsA
 }
 
-const getDefaultOpts = function({ env: envOpt = {}, cwd: cwdOpt, defaultConfig }) {
+const getDefaultOpts = function ({ env: envOpt = {}, cwd: cwdOpt, defaultConfig }) {
   const combinedEnv = { ...process.env, ...envOpt }
   return {
     ...getDefaultCwd(cwdOpt),
@@ -43,7 +43,7 @@ const getDefaultOpts = function({ env: envOpt = {}, cwd: cwdOpt, defaultConfig }
 
 // --debug can be set using an environment variable `NETLIFY_BUILD_DEBUG` either
 // locally or in the UI build settings
-const getDefaultDebug = function(combinedEnv, defaultConfig) {
+const getDefaultDebug = function (combinedEnv, defaultConfig) {
   if (combinedEnv.NETLIFY_BUILD_DEBUG) {
     return true
   }
@@ -57,7 +57,7 @@ const getDefaultDebug = function(combinedEnv, defaultConfig) {
 }
 
 // `process.cwd()` can throw, so only call it when needed
-const getDefaultCwd = function(cwdOpt) {
+const getDefaultCwd = function (cwdOpt) {
   if (cwdOpt !== undefined) {
     return {}
   }
@@ -67,7 +67,7 @@ const getDefaultCwd = function(cwdOpt) {
 }
 
 // Normalize options
-const normalizeOpts = async function(opts) {
+const normalizeOpts = async function (opts) {
   const repositoryRoot = await getRepositoryRoot(opts)
   const optsA = { ...opts, repositoryRoot }
 
@@ -83,13 +83,13 @@ const normalizeOpts = async function(opts) {
 }
 
 // Verify that options point to existing directories
-const checkDirs = async function(opts) {
-  await Promise.all(DIR_OPTIONS.map(optName => checkDir(opts, optName)))
+const checkDirs = async function (opts) {
+  await Promise.all(DIR_OPTIONS.map((optName) => checkDir(opts, optName)))
 }
 
 const DIR_OPTIONS = ['cwd', 'repositoryRoot']
 
-const checkDir = async function(opts, optName) {
+const checkDir = async function (opts, optName) {
   const path = opts[optName]
   if (!(await isDirectory(path))) {
     throwError(`Option '${optName}' points to a non-existing directory: ${path}`)

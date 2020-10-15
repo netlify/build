@@ -8,7 +8,7 @@ const { runFixtureCommon, FIXTURES_DIR, startServer } = require('../../../build/
 
 const ROOT_DIR = `${__dirname}/../..`
 
-const runFixture = async function(t, fixtureName, { flags = {}, env, ...opts } = {}) {
+const runFixture = async function (t, fixtureName, { flags = {}, env, ...opts } = {}) {
   const binaryPath = await BINARY_PATH
   const flagsA = { stable: true, buffer: true, branch: 'branch', ...flags }
   // Ensure local environment variables aren't used during development
@@ -17,7 +17,7 @@ const runFixture = async function(t, fixtureName, { flags = {}, env, ...opts } =
 }
 
 // In tests, make the return value stable so it can be snapshot
-const mainFunc = async function(flags) {
+const mainFunc = async function (flags) {
   const { logs: { stdout = [], stderr = [] } = {}, ...result } = await resolveConfig(flags)
   const resultA = serializeApi(result)
   const resultB = stableStringify(resultA, null, 2)
@@ -25,7 +25,7 @@ const mainFunc = async function(flags) {
   return resultC
 }
 
-const serializeApi = function({ api, ...result }) {
+const serializeApi = function ({ api, ...result }) {
   if (api === undefined) {
     return result
   }

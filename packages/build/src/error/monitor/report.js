@@ -13,7 +13,7 @@ const { normalizeGroupingMessage } = require('./normalize')
 const { printEventForTest } = require('./print')
 
 // Report a build failure for monitoring purpose
-const reportBuildError = async function({ error, errorMonitor, childEnv, logs, testOpts }) {
+const reportBuildError = async function ({ error, errorMonitor, childEnv, logs, testOpts }) {
   if (errorMonitor === undefined) {
     return
   }
@@ -36,7 +36,7 @@ const reportBuildError = async function({ error, errorMonitor, childEnv, logs, t
 
 // Plugin authors test their plugins as local plugins. Errors there are more
 // like development errors, and should be reported as `info` only.
-const getSeverity = function(severity, { location: { loadedFrom } = {} }) {
+const getSeverity = function (severity, { location: { loadedFrom } = {} }) {
   if (loadedFrom === 'local' || severity === 'none') {
     return 'info'
   }
@@ -44,7 +44,7 @@ const getSeverity = function(severity, { location: { loadedFrom } = {} }) {
   return severity
 }
 
-const getGroup = function(group, errorInfo) {
+const getGroup = function (group, errorInfo) {
   if (typeof group !== 'function') {
     return group
   }
@@ -52,20 +52,20 @@ const getGroup = function(group, errorInfo) {
   return group(errorInfo)
 }
 
-const getGroupingHash = function(group, error, type) {
+const getGroupingHash = function (group, error, type) {
   const message = error instanceof Error && typeof error.message === 'string' ? error.message : String(error)
   const messageA = normalizeGroupingMessage(message, type)
   return `${group}\n${messageA}`
 }
 
-const getMetadata = function({ location, plugin }, childEnv, groupingHash) {
+const getMetadata = function ({ location, plugin }, childEnv, groupingHash) {
   const pluginMetadata = getPluginMetadata({ location, plugin })
   const envMetadata = getEnvMetadata(childEnv)
   const locationMetadata = getLocationMetadata(location, envMetadata)
   return { location: locationMetadata, ...pluginMetadata, env: envMetadata, other: { groupingHash } }
 }
 
-const getPluginMetadata = function({ location, plugin }) {
+const getPluginMetadata = function ({ location, plugin }) {
   if (plugin === undefined) {
     return {}
   }
@@ -75,7 +75,7 @@ const getPluginMetadata = function({ location, plugin }) {
   return { plugin: { ...pluginA, homepage }, pluginPackageJson }
 }
 
-const getApp = function() {
+const getApp = function () {
   return {
     osName: type(),
     osVersion: osName(),
@@ -87,27 +87,27 @@ const getApp = function() {
 // `error.name` is shown proeminently in the Bugsnag UI. We need to update it to
 // match error `type` since it is more granular and useful.
 // But we change it back after Bugsnag is done reporting.
-const updateErrorName = function(error, type) {
+const updateErrorName = function (error, type) {
   const { name } = error
   error.name = type
   return name
 }
 
-const reportError = async function({ errorMonitor, error, logs, testOpts, eventProps }) {
+const reportError = async function ({ errorMonitor, error, logs, testOpts, eventProps }) {
   if (testOpts.errorMonitor) {
     printEventForTest(error, eventProps, logs)
     return
   }
 
   try {
-    await promisify(errorMonitor.notify)(error, event => onError(event, eventProps))
+    await promisify(errorMonitor.notify)(error, (event) => onError(event, eventProps))
     // Failsafe
   } catch (error) {
     log(logs, `Error monitor could not notify\n${error.stack}`)
   }
 }
 
-const getEventProps = function({ severity, group, groupingHash, metadata, app }) {
+const getEventProps = function ({ severity, group, groupingHash, metadata, app }) {
   // `unhandled` is used to calculate Releases "stabiity score", which is
   // basically the percentage of unhandled errors. Since we handle all errors,
   // we need to implement this according to error types.
@@ -116,7 +116,7 @@ const getEventProps = function({ severity, group, groupingHash, metadata, app })
 }
 
 // Add more information to Bugsnag events
-const onError = function(event, eventProps) {
+const onError = function (event, eventProps) {
   // Bugsnag client requires directly mutating the `event`
   // eslint-disable-next-line fp/no-mutating-assign
   Object.assign(event, {

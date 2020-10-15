@@ -1,12 +1,12 @@
 // Require the plugin file and fire its top-level function.
 // The returned object is the `logic` which includes all event handlers.
-const getLogic = function({ pluginPath, inputs }) {
+const getLogic = function ({ pluginPath, inputs }) {
   const logic = requireLogic(pluginPath)
   const logicA = loadLogic({ logic, inputs })
   return logicA
 }
 
-const requireLogic = function(pluginPath) {
+const requireLogic = function (pluginPath) {
   try {
     // eslint-disable-next-line node/global-require
     return require(pluginPath)
@@ -16,7 +16,7 @@ const requireLogic = function(pluginPath) {
   }
 }
 
-const loadLogic = function({ logic, inputs }) {
+const loadLogic = function ({ logic, inputs }) {
   if (typeof logic !== 'function') {
     return logic
   }

@@ -4,7 +4,7 @@ const cacheUtils = require('..')
 
 const { pWriteFile, pReadFile, createTmpDir, removeFiles } = require('./helpers/main')
 
-test('Should allow caching according to a digest file', async t => {
+test('Should allow caching according to a digest file', async (t) => {
   const [cacheDir, srcDir] = await Promise.all([createTmpDir(), createTmpDir()])
   try {
     const srcFile = `${srcDir}/test`
@@ -21,7 +21,7 @@ test('Should allow caching according to a digest file', async t => {
   }
 })
 
-test('Should allow caching according to several potential digests files', async t => {
+test('Should allow caching according to several potential digests files', async (t) => {
   const [cacheDir, srcDir] = await Promise.all([createTmpDir(), createTmpDir()])
   try {
     const srcFile = `${srcDir}/test`
@@ -39,7 +39,7 @@ test('Should allow caching according to several potential digests files', async 
   }
 })
 
-test('Should ignore non-existing digests files', async t => {
+test('Should ignore non-existing digests files', async (t) => {
   const [cacheDir, srcDir] = await Promise.all([createTmpDir(), createTmpDir()])
   try {
     const srcFile = `${srcDir}/test`

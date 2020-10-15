@@ -24,7 +24,7 @@ _Return value_: `Promise<object>`
 ```js
 const getNetlifyConfig = require('@netlify/config')
 
-const exampleFunction = async function() {
+const exampleFunction = async function () {
   const { config, configPath, buildDir, context, branch, token, siteInfo } = await getNetlifyConfig(options)
   /*
   {

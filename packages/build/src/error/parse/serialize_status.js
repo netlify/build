@@ -1,10 +1,10 @@
 // Serialize an error object to `statuses` properties
-const serializeErrorStatus = function({ fullErrorInfo: { title, message, locationInfo, errorProps }, state }) {
+const serializeErrorStatus = function ({ fullErrorInfo: { title, message, locationInfo, errorProps }, state }) {
   const text = getText({ locationInfo, errorProps })
   return { state, title, summary: message, text }
 }
 
-const getText = function({ locationInfo, errorProps }) {
+const getText = function ({ locationInfo, errorProps }) {
   const parts = [locationInfo, getErrorProps(errorProps)].filter(Boolean)
 
   if (parts.length === 0) {
@@ -14,7 +14,7 @@ const getText = function({ locationInfo, errorProps }) {
   return parts.join('\n\n')
 }
 
-const getErrorProps = function(errorProps) {
+const getErrorProps = function (errorProps) {
   if (errorProps === undefined) {
     return
   }

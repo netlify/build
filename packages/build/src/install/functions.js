@@ -7,7 +7,7 @@ const { logInstallFunctionDependencies } = require('../log/messages/install')
 const { installDependencies } = require('./main')
 
 // Install dependencies of Netlify Functions
-const installFunctionDependencies = async function(functionsSrc, isLocal) {
+const installFunctionDependencies = async function (functionsSrc, isLocal) {
   const packagePaths = await getPackagePaths(functionsSrc)
   if (packagePaths.length === 0) {
     return
@@ -16,14 +16,14 @@ const installFunctionDependencies = async function(functionsSrc, isLocal) {
   logInstallFunctionDependencies()
 
   const packageRoots = packagePaths.map(getPackageRoot)
-  await Promise.all(packageRoots.map(packageRoot => installDependencies({ packageRoot, isLocal })))
+  await Promise.all(packageRoots.map((packageRoot) => installDependencies({ packageRoot, isLocal })))
 }
 
-const getPackagePaths = function(functionsSrc) {
+const getPackagePaths = function (functionsSrc) {
   return readdirp.promise(functionsSrc, { depth: 1, fileFilter: 'package.json' })
 }
 
-const getPackageRoot = function({ fullPath }) {
+const getPackageRoot = function ({ fullPath }) {
   return dirname(fullPath)
 }
 

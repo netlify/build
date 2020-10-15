@@ -8,7 +8,7 @@ const cacheUtils = require('..')
 
 const { createTmpDir, createTmpFile, removeFiles } = require('./helpers/main')
 
-test('Should allow caching files in home directory', async t => {
+test('Should allow caching files in home directory', async (t) => {
   const [cacheDir, [srcFile, srcDir]] = await Promise.all([createTmpDir(), createTmpFile({ tmpdir: homedir() })])
   try {
     t.true(await cacheUtils.save(srcFile, { cacheDir }))
@@ -20,23 +20,23 @@ test('Should allow caching files in home directory', async t => {
   }
 })
 
-test('Should not allow caching the current directory', async t => {
+test('Should not allow caching the current directory', async (t) => {
   await t.throwsAsync(cacheUtils.save('.'))
 })
 
-test('Should not allow caching a direct parent directory', async t => {
+test('Should not allow caching a direct parent directory', async (t) => {
   await t.throwsAsync(cacheUtils.save('..'))
 })
 
 // Windows does not allow deleting directory uses as current directory
 if (platform !== 'win32') {
-  test('Should not allow invalid cwd with relative paths', async t => {
+  test('Should not allow invalid cwd with relative paths', async (t) => {
     const tmpDir = await createTmpDir()
     await removeFiles(tmpDir)
     await t.throwsAsync(cacheUtils.save('test', { cwd: tmpDir }))
   })
 
-  test('Should allow invalid cwd with absolute paths', async t => {
+  test('Should allow invalid cwd with absolute paths', async (t) => {
     const [tmpDir, [srcFile, srcDir]] = await Promise.all([createTmpDir(), createTmpFile()])
     await removeFiles(tmpDir)
     try {

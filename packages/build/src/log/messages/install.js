@@ -1,12 +1,12 @@
 const { log, logMessage, logArray, logSubHeader, logErrorSubHeader } = require('../logger')
 const { THEME } = require('../theme')
 
-const logInstallMissingPlugins = function(logs, packages) {
+const logInstallMissingPlugins = function (logs, packages) {
   logSubHeader(logs, 'Installing plugins')
   logArray(logs, packages)
 }
 
-const logMissingPluginsWarning = function(logs, packages) {
+const logMissingPluginsWarning = function (logs, packages) {
   logErrorSubHeader(logs, 'Missing plugins')
   logMessage(
     logs,
@@ -17,17 +17,17 @@ const logMissingPluginsWarning = function(logs, packages) {
   logArray(logs, packages, { color: THEME.errorSubHeader })
 }
 
-const logInstallLocalPluginsDeps = function(logs, localPluginsOptions) {
+const logInstallLocalPluginsDeps = function (logs, localPluginsOptions) {
   const packages = localPluginsOptions.map(getPackageName)
   logSubHeader(logs, 'Installing local plugins dependencies')
   logArray(logs, packages)
 }
 
-const logInstallFunctionDependencies = function() {
+const logInstallFunctionDependencies = function () {
   log(undefined, 'Installing functions dependencies')
 }
 
-const getPackageName = function({ packageName }) {
+const getPackageName = function ({ packageName }) {
   return packageName
 }
 

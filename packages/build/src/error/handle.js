@@ -11,7 +11,10 @@ const { removeErrorColors } = require('./colors')
 const { reportBuildError } = require('./monitor/report')
 
 // Logs and reports a build failure
-const handleBuildError = async function(error, { errorMonitor, netlifyConfig, childEnv, mode, logs, debug, testOpts }) {
+const handleBuildError = async function (
+  error,
+  { errorMonitor, netlifyConfig, childEnv, mode, logs, debug, testOpts },
+) {
   const basicErrorInfo = parseErrorInfo(error)
 
   if (await isCancelCrash(error)) {
@@ -32,7 +35,7 @@ const handleBuildError = async function(error, { errorMonitor, netlifyConfig, ch
 // logged nor reported.
 // However builds canceled with `utils.build.cancelBuild()` should still show
 // "Build canceled by ..."
-const isCancelCrash = async function(error) {
+const isCancelCrash = async function (error) {
   const { type } = getErrorInfo(error)
   if (type === 'cancelBuild') {
     return false

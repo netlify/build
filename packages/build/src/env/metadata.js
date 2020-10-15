@@ -3,11 +3,11 @@ const { env } = require('process')
 const filterObj = require('filter-obj')
 
 // Retrieve enviroment variables used in error monitoring
-const getEnvMetadata = function(childEnv = env) {
+const getEnvMetadata = function (childEnv = env) {
   return filterObj(childEnv, isEnvMetadata)
 }
 
-const isEnvMetadata = function(name) {
+const isEnvMetadata = function (name) {
   return ENVIRONMENT_VARIABLES.has(name)
 }
 

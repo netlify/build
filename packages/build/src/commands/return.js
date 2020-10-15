@@ -4,7 +4,7 @@ const { logTimer } = require('../log/messages/core')
 const { handleCommandError } = require('./error')
 
 // Retrieve the return value of a build command or plugin event handler
-const getCommandReturn = function({
+const getCommandReturn = function ({
   event,
   packageName,
   newError,

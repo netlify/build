@@ -1,5 +1,5 @@
 // Ensure error is an `Error` instance
-const normalizeError = function(error) {
+const normalizeError = function (error) {
   if (Array.isArray(error)) {
     return normalizeArray(error)
   }
@@ -12,7 +12,7 @@ const normalizeError = function(error) {
 }
 
 // Some libraries throw arrays of Errors
-const normalizeArray = function(errorArray) {
+const normalizeArray = function (errorArray) {
   const [error, ...errors] = errorArray.map(normalizeError)
   error.errors = errors
   return error

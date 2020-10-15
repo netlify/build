@@ -5,7 +5,7 @@ const { addLazyProp } = require('./lazy')
 const { show } = require('./status')
 
 // Retrieve the `utils` argument.
-const getUtils = function({ event, constants: { FUNCTIONS_SRC, CACHE_DIR }, runState }) {
+const getUtils = function ({ event, constants: { FUNCTIONS_SRC, CACHE_DIR }, runState }) {
   const build = getBuildUtils(event)
   const utils = { build }
   addLazyProp(utils, 'git', getGitUtils)
@@ -16,7 +16,7 @@ const getUtils = function({ event, constants: { FUNCTIONS_SRC, CACHE_DIR }, runS
   return utils
 }
 
-const getBuildUtils = function(event) {
+const getBuildUtils = function (event) {
   if (isSoftFailEvent(event)) {
     return {
       failPlugin,
@@ -28,32 +28,32 @@ const getBuildUtils = function(event) {
   return { failBuild, failPlugin, cancelBuild }
 }
 
-const getGitUtils = function() {
+const getGitUtils = function () {
   // eslint-disable-next-line node/global-require
   return require('@netlify/git-utils')()
 }
 
-const getCacheUtils = function(CACHE_DIR) {
+const getCacheUtils = function (CACHE_DIR) {
   // eslint-disable-next-line node/global-require
   const cacheUtils = require('@netlify/cache-utils')
   return cacheUtils.bindOpts({ cacheDir: CACHE_DIR })
 }
 
-const getRunUtils = function() {
+const getRunUtils = function () {
   // eslint-disable-next-line node/global-require
   return require('@netlify/run-utils')
 }
 
-const getFunctionsUtils = function(FUNCTIONS_SRC) {
+const getFunctionsUtils = function (FUNCTIONS_SRC) {
   // eslint-disable-next-line node/global-require
   const functionsUtils = require('@netlify/functions-utils')
-  const add = src => functionsUtils.add(src, FUNCTIONS_SRC, { fail: failBuild })
+  const add = (src) => functionsUtils.add(src, FUNCTIONS_SRC, { fail: failBuild })
   const list = functionsUtils.list.bind(null, FUNCTIONS_SRC, { fail: failBuild })
   const listAll = functionsUtils.listAll.bind(null, FUNCTIONS_SRC, { fail: failBuild })
   return { add, list, listAll }
 }
 
-const getStatusUtils = function(runState) {
+const getStatusUtils = function (runState) {
   return { show: show.bind(undefined, runState) }
 }
 

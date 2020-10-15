@@ -9,7 +9,7 @@ const { throwError } = require('./error')
 const pReadFile = promisify(readFile)
 
 // Load the configuration file and parse it (TOML)
-const parseConfig = async function(configPath) {
+const parseConfig = async function (configPath) {
   if (configPath === undefined) {
     return {}
   }
@@ -28,7 +28,7 @@ const parseConfig = async function(configPath) {
 }
 
 // Reach the configuration file's raw content
-const readConfig = async function(configPath) {
+const readConfig = async function (configPath) {
   try {
     return await pReadFile(configPath, 'utf8')
   } catch (error) {
@@ -36,7 +36,7 @@ const readConfig = async function(configPath) {
   }
 }
 
-const parseToml = function(configString) {
+const parseToml = function (configString) {
   const config = loadToml(configString)
   // `toml.parse()` returns a object with `null` prototype deeply, which can
   // sometimes create problems with some utilities. We convert it.

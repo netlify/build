@@ -6,16 +6,16 @@ const pathExists = require('path-exists')
 const { addErrorInfo } = require('../error/info')
 
 // Install Node.js dependencies in a specific directory
-const installDependencies = function({ packageRoot, isLocal }) {
+const installDependencies = function ({ packageRoot, isLocal }) {
   return runCommand({ packageRoot, isLocal, type: 'install' })
 }
 
 // Add new Node.js dependencies
-const addLatestDependencies = function({ packageRoot, isLocal, packages }) {
+const addLatestDependencies = function ({ packageRoot, isLocal, packages }) {
   return runCommand({ packageRoot, packages, isLocal, type: 'add' })
 }
 
-const runCommand = async function({ packageRoot, packages = [], isLocal, type }) {
+const runCommand = async function ({ packageRoot, packages = [], isLocal, type }) {
   try {
     const [command, ...args] = await getCommand({ packageRoot, type, isLocal })
     await execa(command, [...args, ...packages], { cwd: packageRoot, all: true })
@@ -28,14 +28,14 @@ const runCommand = async function({ packageRoot, packages = [], isLocal, type })
 }
 
 // Retrieve the shell command to install or add dependencies
-const getCommand = async function({ packageRoot, type, isLocal }) {
+const getCommand = async function ({ packageRoot, type, isLocal }) {
   const manager = await getManager(type, packageRoot)
   const command = COMMANDS[manager][type]
   const commandA = addYarnCustomCache(command, manager, isLocal)
   return commandA
 }
 
-const getManager = async function(type, packageRoot) {
+const getManager = async function (type, packageRoot) {
   // `addLatestDependencies()` is only supported with npm at the moment
   if (type === 'add') {
     return 'npm'
@@ -59,7 +59,7 @@ const COMMANDS = {
 }
 
 // In CI, yarn uses a custom cache folder
-const addYarnCustomCache = function(command, manager, isLocal) {
+const addYarnCustomCache = function (command, manager, isLocal) {
   if (manager !== 'yarn' || isLocal) {
     return command
   }
@@ -70,16 +70,13 @@ const addYarnCustomCache = function(command, manager, isLocal) {
 const YARN_CI_CACHE_DIR = `${homedir()}/.yarn_cache`
 
 // Retrieve message to add to install errors
-const getErrorMessage = function(allOutput) {
-  return allOutput
-    .split('\n')
-    .filter(isNotNpmLogMessage)
-    .join('\n')
+const getErrorMessage = function (allOutput) {
+  return allOutput.split('\n').filter(isNotNpmLogMessage).join('\n')
 }
 
 // Debug logs shown at the end of npm errors is not useful in Netlify Build
-const isNotNpmLogMessage = function(line) {
-  return NPM_LOG_MESSAGES.every(message => !line.includes(message))
+const isNotNpmLogMessage = function (line) {
+  return NPM_LOG_MESSAGES.every((message) => !line.includes(message))
 }
 const NPM_LOG_MESSAGES = ['complete log of this run', '-debug.log']
 

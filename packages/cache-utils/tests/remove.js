@@ -4,7 +4,7 @@ const cacheUtils = require('..')
 
 const { createTmpDir, createTmpFile, removeFiles } = require('./helpers/main')
 
-test('Should allow removing one cached file', async t => {
+test('Should allow removing one cached file', async (t) => {
   const [cacheDir, [srcFile, srcDir]] = await Promise.all([createTmpDir(), createTmpFile()])
   try {
     t.true(await cacheUtils.save(srcFile, { cacheDir }))
@@ -15,7 +15,7 @@ test('Should allow removing one cached file', async t => {
   }
 })
 
-test('Should allow removing several cached files', async t => {
+test('Should allow removing several cached files', async (t) => {
   const [cacheDir, [srcFile, srcDir], [otherSrcFile, otherSrcDir]] = await Promise.all([
     createTmpDir(),
     createTmpFile(),
@@ -30,6 +30,6 @@ test('Should allow removing several cached files', async t => {
   }
 })
 
-test('Should ignore when trying to remove non-cached files', async t => {
+test('Should ignore when trying to remove non-cached files', async (t) => {
   t.false(await cacheUtils.remove('nonExisting'))
 })

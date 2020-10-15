@@ -5,7 +5,7 @@ const cacheUtils = require('..')
 const { pSetTimeout, createTmpDir, createTmpFile, removeFiles } = require('./helpers/main')
 
 // Relies on timing
-test.serial('Should allow a TTL on cached files', async t => {
+test.serial('Should allow a TTL on cached files', async (t) => {
   const [cacheDir, [srcFile, srcDir]] = await Promise.all([createTmpDir(), createTmpFile()])
   try {
     t.true(await cacheUtils.save(srcFile, { cacheDir, ttl: 1 }))
@@ -17,7 +17,7 @@ test.serial('Should allow a TTL on cached files', async t => {
   }
 })
 
-test.serial('Should skip TTL when the value is invalid', async t => {
+test.serial('Should skip TTL when the value is invalid', async (t) => {
   const [cacheDir, [srcFile, srcDir]] = await Promise.all([createTmpDir(), createTmpFile()])
   try {
     t.true(await cacheUtils.save(srcFile, { cacheDir, ttl: '1' }))
@@ -28,7 +28,7 @@ test.serial('Should skip TTL when the value is invalid', async t => {
   }
 })
 
-test.serial('Should skip TTL when the value is negative', async t => {
+test.serial('Should skip TTL when the value is negative', async (t) => {
   const [cacheDir, [srcFile, srcDir]] = await Promise.all([createTmpDir(), createTmpFile()])
   try {
     t.true(await cacheUtils.save(srcFile, { cacheDir, ttl: -1 }))

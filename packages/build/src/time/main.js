@@ -4,7 +4,7 @@ const keepFuncProps = require('keep-func-props')
 const { startTimer, endTimer } = require('./measure')
 
 // Initialize the `timers` array
-const initTimers = function() {
+const initTimers = function () {
   return []
 }
 
@@ -14,8 +14,8 @@ const initTimers = function() {
 //   - return a plain object. This may or may not contain a modified `timers`.
 // The `durationNs` will be returned by the function. A new `timers` with the
 // additional duration timer will be returned as well.
-const kMeasureDuration = function(func, stageTag, { parentTag, category } = {}) {
-  return async function({ timers, ...opts }, ...args) {
+const kMeasureDuration = function (func, stageTag, { parentTag, category } = {}) {
+  return async function ({ timers, ...opts }, ...args) {
     const timerNs = startTimer()
     const { timers: timersA = timers, ...returnObject } = await func({ timers, ...opts }, ...args)
     const durationNs = endTimer(timerNs)
@@ -29,7 +29,7 @@ const kMeasureDuration = function(func, stageTag, { parentTag, category } = {}) 
 const measureDuration = keepFuncProps(kMeasureDuration)
 
 // Create a new object representing a completed timer
-const createTimer = function(
+const createTimer = function (
   stageTag,
   durationNs,
   { metricName = DEFAULT_METRIC_NAME, parentTag = TOP_PARENT_TAG, category } = {},
@@ -42,7 +42,7 @@ const TOP_PARENT_TAG = 'run_netlify_build'
 
 // Make sure the timer name does not include special characters.
 // For example, the `packageName` of local plugins includes dots.
-const normalizeTimerName = function(name) {
+const normalizeTimerName = function (name) {
   return slugify(name, { separator: '_' })
 }
 

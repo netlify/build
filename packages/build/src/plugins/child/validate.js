@@ -5,7 +5,7 @@ const { serializeArray } = require('../../log/serialize')
 const { EVENTS } = require('../events')
 
 // Validate the shape of a plugin return value
-const validatePlugin = function(logic) {
+const validatePlugin = function (logic) {
   try {
     if (!isPlainObj(logic)) {
       throw new Error('Plugin must be an object or a function')
@@ -19,7 +19,7 @@ const validatePlugin = function(logic) {
 }
 
 // All other properties are event handlers
-const validateEventHandler = function(value, propName) {
+const validateEventHandler = function (value, propName) {
   if (!EVENTS.includes(propName)) {
     throw new Error(`Invalid event '${propName}'.
 Please use a valid event name. One of:

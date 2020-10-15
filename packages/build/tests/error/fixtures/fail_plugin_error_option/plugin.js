@@ -1,4 +1,4 @@
-const getError = function() {
+const getError = function () {
   return new Error('innerTest')
 }
 

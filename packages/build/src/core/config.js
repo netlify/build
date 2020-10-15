@@ -7,7 +7,7 @@ const { logBuildDir, logConfigPath, logConfig, logContext } = require('../log/me
 const { measureDuration } = require('../time/main')
 
 // Retrieve configuration object
-const tLoadConfig = async function({
+const tLoadConfig = async function ({
   config,
   defaultConfig,
   cachedConfig,
@@ -69,7 +69,7 @@ const loadConfig = measureDuration(tLoadConfig, 'resolve_config')
 
 // Retrieve configuration file and related information
 // (path, build directory, etc.)
-const resolveFullConfig = async function({
+const resolveFullConfig = async function ({
   config,
   defaultConfig,
   cachedConfig,
@@ -111,7 +111,7 @@ const resolveFullConfig = async function({
   }
 }
 
-const logConfigInfo = function({ logs, configPath, buildDir, netlifyConfig, context, debug }) {
+const logConfigInfo = function ({ logs, configPath, buildDir, netlifyConfig, context, debug }) {
   logBuildDir(logs, buildDir)
   logConfigPath(logs, configPath)
   logConfig({ logs, netlifyConfig, debug })

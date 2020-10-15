@@ -1,7 +1,7 @@
 const { log } = require('../../log/logger.js')
 
 // Print event payload instead of sending actual request during tests
-const printEventForTest = function(
+const printEventForTest = function (
   { name: errorClass, message: errorMessage },
   {
     context,

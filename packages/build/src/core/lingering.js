@@ -4,7 +4,7 @@ const { logLingeringProcesses } = require('../log/messages/core')
 
 // Print a warning when some build processes are still running.
 // This is only run in the buildbot at the moment (Linux only).
-const warnOnLingeringProcesses = async function({ mode, logs, testOpts: { silentLingeringProcesses = false } }) {
+const warnOnLingeringProcesses = async function ({ mode, logs, testOpts: { silentLingeringProcesses = false } }) {
   if (mode !== 'buildbot' || silentLingeringProcesses) {
     return
   }
@@ -24,11 +24,11 @@ const warnOnLingeringProcesses = async function({ mode, logs, testOpts: { silent
 }
 
 // Note that `ps aux` has a header line which is always printed.
-const hasLingeringProcesses = function(processList) {
+const hasLingeringProcesses = function (processList) {
   return processList.split('\n').filter(isNotEmptyLine).length > 1
 }
 
-const isNotEmptyLine = function(line) {
+const isNotEmptyLine = function (line) {
   return line.trim() !== ''
 }
 

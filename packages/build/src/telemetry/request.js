@@ -5,7 +5,7 @@ const got = require('got')
 const { version } = require('../../package.json')
 
 // Send HTTP request to telemetry.
-const sendRequest = async function() {
+const sendRequest = async function () {
   const json = JSON.parse(argv[2])
   const origin = argv[3] || DEFAULT_ORIGIN
   const url = `${origin}/collect`

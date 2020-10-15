@@ -18,7 +18,7 @@ const FIXTURES_DIR = normalize(`${testFile}/../fixtures`)
 
 // Run a CLI using a fixture directory, then snapshot the output.
 // Options: see tests/README.md
-const runFixtureCommon = async function(
+const runFixtureCommon = async function (
   t,
   fixtureName,
   {
@@ -54,14 +54,14 @@ const runFixtureCommon = async function(
 }
 
 // Retrieve flags to the main entry point
-const getMainFlags = function({ fixtureName, copyRoot, copyRootDir, repositoryRoot, flags }) {
+const getMainFlags = function ({ fixtureName, copyRoot, copyRootDir, repositoryRoot, flags }) {
   const repositoryRootFlag = getRepositoryRootFlag({ fixtureName, copyRoot, copyRootDir, repositoryRoot })
   return { ...repositoryRootFlag, ...flags }
 }
 
 // The `repositoryRoot` flag can be overriden, but defaults to the fixture
 // directory
-const getRepositoryRootFlag = function({ fixtureName, copyRoot: { cwd } = {}, copyRootDir, repositoryRoot }) {
+const getRepositoryRootFlag = function ({ fixtureName, copyRoot: { cwd } = {}, copyRootDir, repositoryRoot }) {
   if (fixtureName === '') {
     return {}
   }
@@ -77,7 +77,7 @@ const getRepositoryRootFlag = function({ fixtureName, copyRoot: { cwd } = {}, co
   return { repositoryRoot: normalize(copyRootDir) }
 }
 
-const getCopyRootDir = function({ copyRoot, copyRoot: { git } = {} }) {
+const getCopyRootDir = function ({ copyRoot, copyRoot: { git } = {} }) {
   if (copyRoot === undefined) {
     return
   }
@@ -85,7 +85,7 @@ const getCopyRootDir = function({ copyRoot, copyRoot: { git } = {} }) {
   return createRepoDir({ git })
 }
 
-const runCommand = async function({
+const runCommand = async function ({
   mainFunc,
   binaryPath,
   useBinary,
@@ -113,7 +113,7 @@ const runCommand = async function({
   }
 }
 
-const execCommand = function({ mainFunc, binaryPath, useBinary, mainFlags, commandEnv }) {
+const execCommand = function ({ mainFunc, binaryPath, useBinary, mainFlags, commandEnv }) {
   if (useBinary) {
     return execCliCommand({ binaryPath, mainFlags, commandEnv })
   }
@@ -121,7 +121,7 @@ const execCommand = function({ mainFunc, binaryPath, useBinary, mainFlags, comma
   return execMainFunc({ mainFunc, mainFlags, commandEnv })
 }
 
-const execCliCommand = async function({ binaryPath, mainFlags, commandEnv }) {
+const execCliCommand = async function ({ binaryPath, mainFlags, commandEnv }) {
   const cliFlags = getCliFlags(mainFlags)
   const { all, exitCode } = await execa.command(`${binaryPath} ${cliFlags}`, {
     all: true,
@@ -131,13 +131,13 @@ const execCliCommand = async function({ binaryPath, mainFlags, commandEnv }) {
   return { returnValue: all, exitCode }
 }
 
-const getCliFlags = function(mainFlags, prefix = []) {
+const getCliFlags = function (mainFlags, prefix = []) {
   return Object.entries(mainFlags)
     .flatMap(([name, value]) => getCliFlag({ name, value, prefix }))
     .join(' ')
 }
 
-const getCliFlag = function({ name, value, prefix }) {
+const getCliFlag = function ({ name, value, prefix }) {
   if (isPlainObj(value)) {
     return getCliFlags(value, [...prefix, name])
   }
@@ -146,7 +146,7 @@ const getCliFlag = function({ name, value, prefix }) {
   return [`--${key}=${value}`]
 }
 
-const execMainFunc = async function({ mainFunc, mainFlags, commandEnv }) {
+const execMainFunc = async function ({ mainFunc, mainFlags, commandEnv }) {
   try {
     const returnValue = await mainFunc({ ...mainFlags, env: commandEnv })
     return { returnValue }
@@ -159,7 +159,7 @@ const execMainFunc = async function({ mainFunc, mainFlags, commandEnv }) {
 // The `PRINT` environment variable can be set to `1` to run the test in print
 // mode. Print mode is a debugging mode which shows the test output but does
 // not create nor compare its snapshot.
-const doTestAction = function({ t, returnValue, normalize, snapshot }) {
+const doTestAction = function ({ t, returnValue, normalize, snapshot }) {
   if (!snapshot) {
     return
   }
@@ -178,7 +178,7 @@ const doTestAction = function({ t, returnValue, normalize, snapshot }) {
   t.snapshot(normalizedReturn)
 }
 
-const normalizeOutputString = function(outputString, normalize) {
+const normalizeOutputString = function (outputString, normalize) {
   if (!normalize) {
     return outputString
   }
@@ -186,7 +186,7 @@ const normalizeOutputString = function(outputString, normalize) {
   return normalizeOutput(outputString)
 }
 
-const printOutput = function(t, normalizedReturn) {
+const printOutput = function (t, normalizedReturn) {
   console.log(`
 ${magentaBright.bold(`${LINE}
   ${t.title}
@@ -198,8 +198,8 @@ ${normalizedReturn}`)
 
 const LINE = '='.repeat(50)
 
-const shouldIgnoreSnapshot = function(normalizedReturn) {
-  return IGNORE_REGEXPS.some(regExp => regExp.test(normalizedReturn))
+const shouldIgnoreSnapshot = function (normalizedReturn) {
+  return IGNORE_REGEXPS.some((regExp) => regExp.test(normalizedReturn))
 }
 
 const IGNORE_REGEXPS = [
@@ -208,7 +208,7 @@ const IGNORE_REGEXPS = [
 ]
 
 // When running tests with PRINT=1, print the results instead of snapshotting
-const isPrint = function() {
+const isPrint = function () {
   return env.PRINT === '1'
 }
 

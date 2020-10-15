@@ -8,7 +8,7 @@ const { logBuildCommandStart } = require('../log/messages/commands')
 const { getBuildCommandStdio, handleBuildCommandOutput } = require('../log/stream')
 
 // Fire `build.command`
-const fireBuildCommand = async function({
+const fireBuildCommand = async function ({
   buildCommand,
   buildCommandOrigin,
   configPath,

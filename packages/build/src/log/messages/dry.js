@@ -4,7 +4,7 @@ const { getBuildCommandDescription } = require('../description')
 const { logMessage, logSubHeader } = require('../logger')
 const { THEME } = require('../theme')
 
-const logDryRunStart = function({ logs, eventWidth, commandsCount }) {
+const logDryRunStart = function ({ logs, eventWidth, commandsCount }) {
   const columnWidth = getDryColumnWidth(eventWidth, commandsCount)
   const line = '─'.repeat(columnWidth)
   const secondLine = '─'.repeat(columnWidth)
@@ -22,7 +22,7 @@ ${THEME.header(`┌─${line}─┬─${secondLine}─┐
   )
 }
 
-const logDryRunCommand = function({
+const logDryRunCommand = function ({
   logs,
   command: { event, packageName, buildCommandOrigin },
   index,
@@ -44,7 +44,7 @@ ${THEME.header(`└─${line}─┘ `)}`,
   )
 }
 
-const getPluginFullName = function({ packageName, buildCommandOrigin }) {
+const getPluginFullName = function ({ packageName, buildCommandOrigin }) {
   if (buildCommandOrigin !== undefined) {
     return getBuildCommandDescription(buildCommandOrigin)
   }
@@ -52,14 +52,14 @@ const getPluginFullName = function({ packageName, buildCommandOrigin }) {
   return `Plugin ${THEME.highlightWords(packageName)}`
 }
 
-const getDryColumnWidth = function(eventWidth, commandsCount) {
+const getDryColumnWidth = function (eventWidth, commandsCount) {
   const symbolsWidth = `${commandsCount}`.length + 4
   return Math.max(eventWidth + symbolsWidth, DRY_HEADER_NAMES[1].length)
 }
 
 const DRY_HEADER_NAMES = ['Event', 'Location']
 
-const logDryRunEnd = function(logs) {
+const logDryRunEnd = function (logs) {
   logMessage(logs, `\nIf this looks good to you, run \`netlify build\` to execute the build\n`)
 }
 

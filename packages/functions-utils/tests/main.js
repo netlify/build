@@ -10,7 +10,7 @@ const { getDist, createDist, removeDist } = require('./helpers/main')
 
 const FIXTURES_DIR = `${__dirname}/fixtures`
 
-test('Should copy a source file to a dist directory', async t => {
+test('Should copy a source file to a dist directory', async (t) => {
   const dist = await getDist()
   try {
     await add(`${FIXTURES_DIR}/file/test.js`, dist)
@@ -20,7 +20,7 @@ test('Should copy a source file to a dist directory', async t => {
   }
 })
 
-test('Should copy a source directory to a dist directory', async t => {
+test('Should copy a source directory to a dist directory', async (t) => {
   const dist = await getDist()
   try {
     await add(`${FIXTURES_DIR}/directory/test`, dist)
@@ -30,7 +30,7 @@ test('Should copy a source directory to a dist directory', async t => {
   }
 })
 
-test('Should throw when source is undefined', async t => {
+test('Should throw when source is undefined', async (t) => {
   const dist = await getDist()
   try {
     await t.throwsAsync(add(undefined, dist))
@@ -39,7 +39,7 @@ test('Should throw when source is undefined', async t => {
   }
 })
 
-test('Should throw when source points to non-existing file', async t => {
+test('Should throw when source points to non-existing file', async (t) => {
   const dist = await getDist()
   try {
     await t.throwsAsync(add(`${FIXTURES_DIR}/file/doesNotExist.js`, dist))
@@ -48,11 +48,11 @@ test('Should throw when source points to non-existing file', async t => {
   }
 })
 
-test('Should throw when dist is undefined', async t => {
+test('Should throw when dist is undefined', async (t) => {
   await t.throwsAsync(add(`${FIXTURES_DIR}/file/test.js`))
 })
 
-test('Should copy a source file even if dist directory already exists', async t => {
+test('Should copy a source file even if dist directory already exists', async (t) => {
   const dist = await createDist()
   try {
     await add(`${FIXTURES_DIR}/file/test.js`, dist)
@@ -62,7 +62,7 @@ test('Should copy a source file even if dist directory already exists', async t 
   }
 })
 
-test('Should throw if dist file already exists', async t => {
+test('Should throw if dist file already exists', async (t) => {
   const dist = await getDist()
   try {
     await add(`${FIXTURES_DIR}/file/test.js`, dist)
@@ -72,20 +72,20 @@ test('Should throw if dist file already exists', async t => {
   }
 })
 
-test('Should allow "fail" option to customize failures', async t => {
+test('Should allow "fail" option to customize failures', async (t) => {
   const fail = spy()
   await add(undefined, undefined, { fail })
   t.true(fail.calledOnce)
   t.is(typeof fail.firstCall.firstArg, 'string')
 })
 
-const normalizeFiles = function(fixtureDir, { mainFile, runtime, extension, srcFile }) {
+const normalizeFiles = function (fixtureDir, { mainFile, runtime, extension, srcFile }) {
   const mainFileA = normalize(`${fixtureDir}/${mainFile}`)
   const srcFileA = srcFile === undefined ? {} : { srcFile: normalize(`${fixtureDir}/${srcFile}`) }
   return { mainFile: mainFileA, runtime, extension, ...srcFileA }
 }
 
-test('Can list function main files with list()', async t => {
+test('Can list function main files with list()', async (t) => {
   const fixtureDir = `${FIXTURES_DIR}/list`
   const functions = await list(fixtureDir)
   t.deepEqual(
@@ -100,7 +100,7 @@ test('Can list function main files with list()', async t => {
   )
 })
 
-test('Can list all function files with listAll()', async t => {
+test('Can list all function files with listAll()', async (t) => {
   const fixtureDir = `${FIXTURES_DIR}/list`
   const functions = await listAll(fixtureDir)
   t.deepEqual(

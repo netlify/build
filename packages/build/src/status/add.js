@@ -1,5 +1,5 @@
 // Merge plugin status to the list of plugin statuses.
-const addStatus = function({ newStatus, statuses, event, packageName, pluginPackageJson: { version } = {} }) {
+const addStatus = function ({ newStatus, statuses, event, packageName, pluginPackageJson: { version } = {} }) {
   // Either:
   //  - `build.command`
   //  - no status was set
@@ -7,17 +7,17 @@ const addStatus = function({ newStatus, statuses, event, packageName, pluginPack
     return statuses
   }
 
-  const formerStatus = statuses.find(status => status.packageName === packageName)
+  const formerStatus = statuses.find((status) => status.packageName === packageName)
   if (!canOverrideStatus(formerStatus, newStatus)) {
     return statuses
   }
 
   // Overrides plugin's previous status and add more information
-  const newStatuses = statuses.filter(status => status !== formerStatus)
+  const newStatuses = statuses.filter((status) => status !== formerStatus)
   return [...newStatuses, { ...newStatus, event, packageName, version }]
 }
 
-const canOverrideStatus = function(formerStatus, newStatus) {
+const canOverrideStatus = function (formerStatus, newStatus) {
   // No previous status
   if (formerStatus === undefined) {
     return true

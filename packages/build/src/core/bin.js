@@ -15,7 +15,7 @@ const build = require('./main')
 // programmatic command instead, so that the new logic is available when run
 // programmatically as well. This file should only contain logic that makes
 // sense only in CLI, such as CLI flags parsing and exit code.
-const runCli = async function() {
+const runCli = async function () {
   const flags = parseFlags()
   const flagsA = filterObj(flags, isUserFlag)
 
@@ -24,11 +24,8 @@ const runCli = async function() {
   process.exitCode = severityCode
 }
 
-const parseFlags = function() {
-  return yargs
-    .options(FLAGS)
-    .usage(USAGE)
-    .parse()
+const parseFlags = function () {
+  return yargs.options(FLAGS).usage(USAGE).parse()
 }
 
 const USAGE = `netlify-build [OPTIONS...]
@@ -40,14 +37,14 @@ NETLIFY_BUILD_. For example the environment variable NETLIFY_BUILD_DRY=true can
 be used instead of the CLI flag --dry.`
 
 // Remove `yargs`-specific options, shortcuts, dash-cased and aliases
-const isUserFlag = function(key, value) {
+const isUserFlag = function (key, value) {
   return value !== undefined && !INTERNAL_KEYS.has(key) && key.length !== 1 && !key.includes('-')
 }
 
 const INTERNAL_KEYS = new Set(['help', 'version', '_', '$0', 'dryRun'])
 
 // Used mostly for testing
-const printLogs = function(logs) {
+const printLogs = function (logs) {
   if (logs === undefined) {
     return
   }

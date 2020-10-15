@@ -25,7 +25,7 @@ const {
 // Load the configuration file.
 // Takes an optional configuration file path as input and return the resolved
 // `config` together with related properties such as the `configPath`.
-const resolveConfig = async function(opts) {
+const resolveConfig = async function (opts) {
   const { cachedConfig, token, ...optsA } = addDefaultOpts(opts)
   // `api` is not JSON-serializable, so we cannot cache it inside `cachedConfig`
   const api = getApiClient({ ...optsA, token })
@@ -91,7 +91,7 @@ const resolveConfig = async function(opts) {
 // Try to load the configuration file in two passes.
 // The first pass uses the `defaultConfig`'s `build.base` (if defined).
 // The second pass uses the `build.base` from the first pass (if defined).
-const loadConfig = async function({
+const loadConfig = async function ({
   configOpt,
   cwd,
   context,
@@ -146,7 +146,7 @@ const loadConfig = async function({
 }
 
 // Load configuration file and normalize it, merge contexts, etc.
-const getFullConfig = async function({
+const getFullConfig = async function ({
   configOpt,
   cwd,
   context,
@@ -169,7 +169,7 @@ const getFullConfig = async function({
   }
 }
 
-const mergeAndNormalizeConfig = function({ config, defaultConfig, inlineConfig, context, branch }) {
+const mergeAndNormalizeConfig = function ({ config, defaultConfig, inlineConfig, context, branch }) {
   validatePreCaseNormalize(config)
   const configA = normalizeConfigCase(config)
 

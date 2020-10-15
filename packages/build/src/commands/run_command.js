@@ -7,7 +7,7 @@ const { firePluginCommand } = require('./plugin')
 const { getCommandReturn } = require('./return')
 
 // Run a command (shell or plugin)
-const runCommand = async function({
+const runCommand = async function ({
   event,
   childProcess,
   packageName,
@@ -109,7 +109,7 @@ const runCommand = async function({
 // `onSuccess` is the opposite. It is triggered after the build succeeded.
 // `onEnd` is triggered after the build either failed or succeeded.
 // It is useful for resources cleanup.
-const shouldRunCommand = function({ event, packageName, error, failedPlugins }) {
+const shouldRunCommand = function ({ event, packageName, error, failedPlugins }) {
   if (failedPlugins.includes(packageName)) {
     return false
   }
@@ -122,7 +122,7 @@ const shouldRunCommand = function({ event, packageName, error, failedPlugins }) 
 }
 
 // Wrap command function to measure its time
-const getFireCommand = function({ packageName, event }) {
+const getFireCommand = function ({ packageName, event }) {
   if (packageName === undefined) {
     return measureDuration(tFireCommand, 'build_command')
   }
@@ -131,7 +131,7 @@ const getFireCommand = function({ packageName, event }) {
   return measureDuration(tFireCommand, event, { parentTag, category: 'pluginEvent' })
 }
 
-const tFireCommand = function({
+const tFireCommand = function ({
   event,
   childProcess,
   packageName,

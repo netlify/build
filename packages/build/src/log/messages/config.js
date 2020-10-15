@@ -4,7 +4,7 @@ const { omit } = require('../../utils/omit')
 const { logMessage, logObject, logSubHeader } = require('../logger')
 const { THEME } = require('../theme')
 
-const logFlags = function(logs, flags, { debug }) {
+const logFlags = function (logs, flags, { debug }) {
   const hiddenFlags = debug ? HIDDEN_DEBUG_FLAGS : HIDDEN_FLAGS
   const flagsA = omit(flags, hiddenFlags)
   logSubHeader(logs, 'Flags')
@@ -29,19 +29,19 @@ const INTERNAL_FLAGS = [
 const HIDDEN_FLAGS = [...SECURE_FLAGS, ...TEST_FLAGS, ...INTERNAL_FLAGS]
 const HIDDEN_DEBUG_FLAGS = [...SECURE_FLAGS, ...TEST_FLAGS]
 
-const logBuildDir = function(logs, buildDir) {
+const logBuildDir = function (logs, buildDir) {
   logSubHeader(logs, 'Current directory')
   logMessage(logs, buildDir)
 }
 
-const logConfigPath = function(logs, configPath = NO_CONFIG_MESSAGE) {
+const logConfigPath = function (logs, configPath = NO_CONFIG_MESSAGE) {
   logSubHeader(logs, 'Config file')
   logMessage(logs, configPath)
 }
 
 const NO_CONFIG_MESSAGE = 'No config file was defined: using default values.'
 
-const logConfig = function({ logs, netlifyConfig, debug }) {
+const logConfig = function ({ logs, netlifyConfig, debug }) {
   if (!debug) {
     return
   }
@@ -50,7 +50,7 @@ const logConfig = function({ logs, netlifyConfig, debug }) {
   logObject(logs, cleanupConfig(netlifyConfig))
 }
 
-const logConfigOnError = function({ logs, netlifyConfig, severity }) {
+const logConfigOnError = function ({ logs, netlifyConfig, severity }) {
   if (netlifyConfig === undefined || severity === 'none') {
     return
   }
@@ -59,7 +59,7 @@ const logConfigOnError = function({ logs, netlifyConfig, severity }) {
   logObject(logs, cleanupConfig(netlifyConfig))
 }
 
-const logContext = function(logs, context) {
+const logContext = function (logs, context) {
   if (context === undefined) {
     return
   }

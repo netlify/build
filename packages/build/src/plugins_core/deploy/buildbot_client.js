@@ -7,14 +7,14 @@ const { isDirectory } = require('path-type')
 const { runsAfterDeploy } = require('../../commands/get')
 const { addAsyncErrorMessage } = require('../../utils/errors')
 
-const createBuildbotClient = function(BUILDBOT_SERVER_SOCKET) {
+const createBuildbotClient = function (BUILDBOT_SERVER_SOCKET) {
   const connectionOpts = getConnectionOpts(BUILDBOT_SERVER_SOCKET)
   const client = net.createConnection(connectionOpts)
   return client
 }
 
 // Windows does not support Unix sockets well, so we also support `host:port`
-const getConnectionOpts = function(BUILDBOT_SERVER_SOCKET) {
+const getConnectionOpts = function (BUILDBOT_SERVER_SOCKET) {
   if (!BUILDBOT_SERVER_SOCKET.includes(':')) {
     return { path: BUILDBOT_SERVER_SOCKET }
   }
@@ -23,13 +23,13 @@ const getConnectionOpts = function(BUILDBOT_SERVER_SOCKET) {
   return { host, port }
 }
 
-const eConnectBuildbotClient = async function(client) {
+const eConnectBuildbotClient = async function (client) {
   await pEvent(client, 'connect')
 }
 
 const connectBuildbotClient = addAsyncErrorMessage(eConnectBuildbotClient, 'Could not connect to buildbot')
 
-const closeBuildbotClient = async function(client) {
+const closeBuildbotClient = async function (client) {
   if (client.destroyed) {
     return
   }
@@ -37,13 +37,13 @@ const closeBuildbotClient = async function(client) {
   await promisify(client.end.bind(client))()
 }
 
-const cWritePayload = async function(buildbotClient, payload) {
+const cWritePayload = async function (buildbotClient, payload) {
   await promisify(buildbotClient.write.bind(buildbotClient))(JSON.stringify(payload))
 }
 
 const writePayload = addAsyncErrorMessage(cWritePayload, 'Could not send payload to buildbot')
 
-const cGetNextParsedResponsePromise = async function(buildbotClient) {
+const cGetNextParsedResponsePromise = async function (buildbotClient) {
   const data = await pEvent(buildbotClient, 'data')
   return JSON.parse(data)
 }
@@ -53,7 +53,7 @@ const getNextParsedResponsePromise = addAsyncErrorMessage(
   'Invalid response from buildbot',
 )
 
-const deploySiteWithBuildbotClient = async function({ client, events, PUBLISH_DIR, failBuild }) {
+const deploySiteWithBuildbotClient = async function ({ client, events, PUBLISH_DIR, failBuild }) {
   if (!(await isDirectory(PUBLISH_DIR))) {
     return failBuild(`Publish directory does not exist: ${PUBLISH_DIR}`)
   }
@@ -72,7 +72,7 @@ const deploySiteWithBuildbotClient = async function({ client, events, PUBLISH_DI
 }
 
 // We distinguish between user errors and system errors during deploys
-const handleDeployError = function({ error, errorType, failBuild }) {
+const handleDeployError = function ({ error, errorType, failBuild }) {
   const errorMessage = `Deploy did not succeed: ${error}`
 
   if (errorType === 'user') {
@@ -84,11 +84,11 @@ const handleDeployError = function({ error, errorType, failBuild }) {
 
 // We only wait for post-processing (last stage before site deploy) if the build
 // has some plugins that do post-deploy logic
-const shouldWaitForPostProcessing = function(events) {
+const shouldWaitForPostProcessing = function (events) {
   return events.some(hasPostDeployLogic)
 }
 
-const hasPostDeployLogic = function(event) {
+const hasPostDeployLogic = function (event) {
   return runsAfterDeploy(event)
 }
 

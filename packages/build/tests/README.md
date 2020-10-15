@@ -64,7 +64,7 @@ const test = require('ava')
 
 const { runFixture } = require('../../helpers/main')
 
-test('test title', async t => {
+test('test title', async (t) => {
   await runFixture(t, 'fixture_name')
 })
 ```
@@ -74,7 +74,7 @@ This calls under the hood:
 ```js
 const netlifyBuild = require('@netlify/build')
 
-const runTest = async function() {
+const runTest = async function () {
   const output = await netlifyBuild({ repositoryRoot: './fixtures/fixture_name' })
   return output
 }
@@ -155,7 +155,7 @@ This basically performs a series of regular expressions replacements.
 If you want to remove the normalization during debugging, use the `normalize` option:
 
 ```js
-test('test title', async t => {
+test('test title', async (t) => {
   await runFixture(t, 'fixture_name', { normalize: false })
 })
 ```

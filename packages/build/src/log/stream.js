@@ -7,7 +7,7 @@ const pSetTimeout = promisify(setTimeout)
 // which solves many problems. However we can only do it in build.command.
 // Plugins have several events, so need to be switch on and off instead.
 // In buffer mode (`logs` not `undefined`), `pipe` is necessary.
-const getBuildCommandStdio = function(logs) {
+const getBuildCommandStdio = function (logs) {
   if (logs !== undefined) {
     return 'pipe'
   }
@@ -16,7 +16,7 @@ const getBuildCommandStdio = function(logs) {
 }
 
 // Add build command output
-const handleBuildCommandOutput = function({ stdout, stderr }, logs) {
+const handleBuildCommandOutput = function ({ stdout, stderr }, logs) {
   if (logs === undefined) {
     return
   }
@@ -25,7 +25,7 @@ const handleBuildCommandOutput = function({ stdout, stderr }, logs) {
   pushBuildCommandOutput(stderr, logs.stderr)
 }
 
-const pushBuildCommandOutput = function(output, logsArray) {
+const pushBuildCommandOutput = function (output, logsArray) {
   if (output === '') {
     return
   }
@@ -34,7 +34,7 @@ const pushBuildCommandOutput = function(output, logsArray) {
 }
 
 // Start plugin command output
-const pipePluginOutput = function(childProcess, logs) {
+const pipePluginOutput = function (childProcess, logs) {
   if (logs === undefined) {
     return streamOutput(childProcess)
   }
@@ -43,7 +43,7 @@ const pipePluginOutput = function(childProcess, logs) {
 }
 
 // Stop streaming/buffering plugin command output
-const unpipePluginOutput = async function(childProcess, logs, listeners) {
+const unpipePluginOutput = async function (childProcess, logs, listeners) {
   // Let `childProcess` `stdout` and `stderr` flush before stopping redirecting
   await pSetTimeout(0)
 
@@ -55,18 +55,18 @@ const unpipePluginOutput = async function(childProcess, logs, listeners) {
 }
 
 // Usually, we stream stdout/stderr because it is more efficient
-const streamOutput = function(childProcess) {
+const streamOutput = function (childProcess) {
   childProcess.stdout.pipe(stdout)
   childProcess.stderr.pipe(stderr)
 }
 
-const unstreamOutput = function(childProcess) {
+const unstreamOutput = function (childProcess) {
   childProcess.stdout.unpipe(stdout)
   childProcess.stderr.unpipe(stderr)
 }
 
 // In tests, we push to the `logs` array instead
-const pushOutputToLogs = function(childProcess, logs) {
+const pushOutputToLogs = function (childProcess, logs) {
   const stdoutListener = logsListener.bind(null, logs.stdout)
   const stderrListener = logsListener.bind(null, logs.stderr)
   childProcess.stdout.on('data', stdoutListener)
@@ -74,11 +74,11 @@ const pushOutputToLogs = function(childProcess, logs) {
   return { stdoutListener, stderrListener }
 }
 
-const logsListener = function(logs, chunk) {
+const logsListener = function (logs, chunk) {
   logs.push(chunk.toString().trimRight())
 }
 
-const unpushOutputToLogs = function(childProcess, logs, { stdoutListener, stderrListener }) {
+const unpushOutputToLogs = function (childProcess, logs, { stdoutListener, stderrListener }) {
   childProcess.stdout.removeListener('data', stdoutListener)
   childProcess.stderr.removeListener('data', stderrListener)
 }

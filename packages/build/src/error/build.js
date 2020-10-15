@@ -4,7 +4,7 @@ const { addErrorInfo, getErrorInfo } = require('./info')
 
 // Retrieve error information from child process and re-build it in current
 // process. We need this since errors are not JSON-serializable.
-const jsonToError = function({ name, message, stack, info = {}, errorProps = {} }, defaultInfo = {}) {
+const jsonToError = function ({ name, message, stack, info = {}, errorProps = {} }, defaultInfo = {}) {
   const error = new Error('')
 
   assignErrorProps(error, { name, message, stack })
@@ -20,15 +20,15 @@ const jsonToError = function({ name, message, stack, info = {}, errorProps = {} 
 }
 
 // Make sure `name`, `message` and `stack` are not enumerable
-const assignErrorProps = function(error, values) {
-  ERROR_PROPS.forEach(name => {
+const assignErrorProps = function (error, values) {
+  ERROR_PROPS.forEach((name) => {
     assignErrorProp(error, name, values[name])
   })
 }
 
 const ERROR_PROPS = ['name', 'message', 'stack']
 
-const assignErrorProp = function(error, name, value) {
+const assignErrorProp = function (error, name, value) {
   // `Object.defineProperty()` requires direct mutation
   // eslint-disable-next-line fp/no-mutating-methods
   Object.defineProperty(error, name, { value, enumerable: false, writable: true, configurable: true })
@@ -36,7 +36,7 @@ const assignErrorProp = function(error, name, value) {
 
 // Inverse of `jsonToError()`. We do not keep `plugin` and `location` since not
 // needed at the moment.
-const errorToJson = function({ name, message, stack, ...errorProps }, defaultInfo = {}) {
+const errorToJson = function ({ name, message, stack, ...errorProps }, defaultInfo = {}) {
   const info = getErrorInfo(errorProps)
   const infoA = { ...defaultInfo, ...info }
   const errorPayload = { name, message, stack, info: infoA, errorProps }

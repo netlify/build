@@ -46,7 +46,7 @@ const { getSeverity } = require('./severity')
  * 0 (success), 1 (build cancelled), 2 (user error), 3 (plugin error), 4 (system error). Can be used as exit code.
  * @returns {string[]} buildResult.logs - When using the `buffer` option, all log messages
  */
-const build = async function(flags = {}) {
+const build = async function (flags = {}) {
   const { errorMonitor, framework, mode, logs, debug, testOpts, statsdOpts, dry, telemetry, ...flagsA } = startBuild(
     flags,
   )
@@ -89,7 +89,7 @@ const build = async function(flags = {}) {
 // Performed on build start. Must be kept small and unlikely to fail since it
 // does not have proper error handling. Error handling relies on `errorMonitor`
 // being built, which relies itself on flags being normalized.
-const startBuild = function(flags) {
+const startBuild = function (flags) {
   const timers = initTimers()
 
   const logs = getBufferLogs(flags)
@@ -101,7 +101,7 @@ const startBuild = function(flags) {
   return { ...flagsA, errorMonitor, logs, timers }
 }
 
-const tExecBuild = async function({
+const tExecBuild = async function ({
   config,
   defaultConfig,
   cachedConfig,
@@ -190,7 +190,7 @@ const tExecBuild = async function({
 const execBuild = measureDuration(tExecBuild, 'total', { parentTag: 'build_site' })
 
 // Runs a build then report any plugin statuses
-const runAndReportBuild = async function({
+const runAndReportBuild = async function ({
   netlifyConfig,
   configPath,
   buildDir,
@@ -271,7 +271,7 @@ const runAndReportBuild = async function({
 }
 
 // Initialize plugin processes then runs a build
-const initAndRunBuild = async function({
+const initAndRunBuild = async function ({
   netlifyConfig,
   configPath,
   buildDir,
@@ -358,7 +358,7 @@ const initAndRunBuild = async function({
 
 // Load plugin main files, retrieve their event handlers then runs them,
 // together with the build command
-const runBuild = async function({
+const runBuild = async function ({
   childProcesses,
   pluginsOptions,
   netlifyConfig,
@@ -414,7 +414,7 @@ const runBuild = async function({
 }
 
 // Logs and reports that a build successfully ended
-const handleBuildSuccess = async function({
+const handleBuildSuccess = async function ({
   commandsCount,
   netlifyConfig,
   framework,

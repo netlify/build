@@ -5,7 +5,7 @@ const { getSuccessStatus } = require('../status/success')
 const { handlePluginError } = require('./error')
 
 // Fire a plugin command
-const firePluginCommand = async function({
+const firePluginCommand = async function ({
   event,
   childProcess,
   packageName,

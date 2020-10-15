@@ -2,7 +2,7 @@ const { getBuildCommandDescription, getPluginOrigin } = require('../../log/descr
 
 // Retrieve an error's location to print in logs.
 // Each error type has its own logic (or none if there's no location to print).
-const getLocationInfo = function({ stack, location, locationType }) {
+const getLocationInfo = function ({ stack, location, locationType }) {
   // No location to print
   if (locationType === undefined && stack === undefined) {
     return
@@ -17,19 +17,19 @@ const getLocationInfo = function({ stack, location, locationType }) {
   return [locationString, stack].filter(Boolean).join('\n')
 }
 
-const getBuildCommandLocation = function({ buildCommand, buildCommandOrigin }) {
+const getBuildCommandLocation = function ({ buildCommand, buildCommandOrigin }) {
   const description = getBuildCommandDescription(buildCommandOrigin)
   return `In ${description}:
 ${buildCommand}`
 }
 
-const getBuildFailLocation = function({ event, packageName, loadedFrom, origin }) {
+const getBuildFailLocation = function ({ event, packageName, loadedFrom, origin }) {
   const eventMessage = getEventMessage(event)
   const pluginOrigin = getPluginOrigin(loadedFrom, origin)
   return `${eventMessage} "${packageName}" ${pluginOrigin}`
 }
 
-const getEventMessage = function(event) {
+const getEventMessage = function (event) {
   if (event === 'load') {
     return `While loading`
   }
@@ -37,7 +37,7 @@ const getEventMessage = function(event) {
   return `In "${event}" event in`
 }
 
-const getApiLocation = function({ endpoint, parameters }) {
+const getApiLocation = function ({ endpoint, parameters }) {
   return `While calling the Netlify API endpoint '${endpoint}' with:\n${JSON.stringify(parameters, null, 2)}`
 }
 

@@ -4,7 +4,7 @@ const { platform } = require('process')
 const globalCacheDir = require('global-cache-dir')
 
 // Retrieve the cache directory location
-const getCacheDir = function({ cacheDir, mode, isTest } = {}) {
+const getCacheDir = function ({ cacheDir, mode, isTest } = {}) {
   if (cacheDir !== undefined) {
     return resolve(cacheDir)
   }

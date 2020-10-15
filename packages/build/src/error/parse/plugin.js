@@ -1,6 +1,6 @@
 // Retrieve plugin's package.json details to include in error messages.
 // Please note `pluginPackageJson` has been normalized by `normalize-package-data`.
-const getPluginInfo = function({ pluginPackageJson = {} }, { packageName, loadedFrom }) {
+const getPluginInfo = function ({ pluginPackageJson = {} }, { packageName, loadedFrom }) {
   if (Object.keys(pluginPackageJson).length === 0) {
     return
   }
@@ -12,7 +12,7 @@ const getPluginInfo = function({ pluginPackageJson = {} }, { packageName, loaded
 }
 
 // Serialize a single package.json field
-const serializeField = function({ name, getField, pluginPackageJson, packageName, loadedFrom }) {
+const serializeField = function ({ name, getField, pluginPackageJson, packageName, loadedFrom }) {
   const field = getField(pluginPackageJson, { packageName, loadedFrom })
   if (field === undefined) {
     return
@@ -24,11 +24,11 @@ const serializeField = function({ name, getField, pluginPackageJson, packageName
 
 const NAME_PADDING = 16
 
-const getPackage = function(pluginPackageJson, { packageName }) {
+const getPackage = function (pluginPackageJson, { packageName }) {
   return packageName
 }
 
-const getVersion = function({ version }) {
+const getVersion = function ({ version }) {
   if (version === '') {
     return
   }
@@ -36,7 +36,7 @@ const getVersion = function({ version }) {
   return version
 }
 
-const getHomepage = function(pluginPackageJson = {}, { loadedFrom } = {}) {
+const getHomepage = function (pluginPackageJson = {}, { loadedFrom } = {}) {
   return (
     getRepository(pluginPackageJson) ||
     getNpmLink(pluginPackageJson, { loadedFrom }) ||
@@ -44,11 +44,11 @@ const getHomepage = function(pluginPackageJson = {}, { loadedFrom } = {}) {
   )
 }
 
-const getRepository = function({ repository: { url } = {} }) {
+const getRepository = function ({ repository: { url } = {} }) {
   return url
 }
 
-const getNpmLink = function({ name }, { loadedFrom }) {
+const getNpmLink = function ({ name }, { loadedFrom }) {
   if (!name || loadedFrom === 'local') {
     return
   }
@@ -56,7 +56,7 @@ const getNpmLink = function({ name }, { loadedFrom }) {
   return `https://www.npmjs.com/package/${name}`
 }
 
-const getIssuesLink = function({ bugs: { url } = {} }) {
+const getIssuesLink = function ({ bugs: { url } = {} }) {
   return url
 }
 

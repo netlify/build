@@ -10,7 +10,7 @@ const { runCommand } = require('./run_command')
 // list of `failedPlugins` (that ran `utils.build.failPlugin()`).
 // If an error arises, runs `onError` events.
 // Runs `onEnd` events at the end, whether an error was thrown or not.
-const runCommands = async function({
+const runCommands = async function ({
   commands,
   events,
   configPath,

@@ -10,9 +10,9 @@ const { resolvePath } = require('../utils/resolve')
 //  - external plugin already installed in `node_modules`, most likely through `package.json`
 //  - cached in the build image
 //  - automatically installed by us (fallback)
-const resolvePluginsPath = async function({ pluginsOptions, buildDir, mode, logs, buildImagePluginsDir }) {
+const resolvePluginsPath = async function ({ pluginsOptions, buildDir, mode, logs, buildImagePluginsDir }) {
   const pluginsOptionsA = await Promise.all(
-    pluginsOptions.map(pluginOptions => resolvePluginPath({ pluginOptions, buildDir, buildImagePluginsDir })),
+    pluginsOptions.map((pluginOptions) => resolvePluginPath({ pluginOptions, buildDir, buildImagePluginsDir })),
   )
   const pluginsOptionsB = await handleMissingPlugins({
     pluginsOptions: pluginsOptionsA,
@@ -24,7 +24,7 @@ const resolvePluginsPath = async function({ pluginsOptions, buildDir, mode, logs
   return pluginsOptionsB
 }
 
-const resolvePluginPath = async function({
+const resolvePluginPath = async function ({
   pluginOptions,
   pluginOptions: { packageName, loadedFrom },
   buildDir,
@@ -61,7 +61,7 @@ const resolvePluginPath = async function({
 }
 
 // `packageName` starting with `/` are relative to the build directory
-const resolvePackagePath = function(packageName) {
+const resolvePackagePath = function (packageName) {
   if (packageName.startsWith('/')) {
     return `.${packageName}`
   }
@@ -70,7 +70,7 @@ const resolvePackagePath = function(packageName) {
 }
 
 // Try to `resolve()` a local plugin
-const tryLocalPath = async function(packageName, baseDir) {
+const tryLocalPath = async function (packageName, baseDir) {
   try {
     return await resolvePath(packageName, baseDir)
   } catch (error) {
@@ -82,7 +82,7 @@ const tryLocalPath = async function(packageName, baseDir) {
 
 // In production, we pre-install most Build plugins to that directory, for
 // performance reasons
-const tryBuildImagePath = async function({ packageName, buildDir, buildImagePluginsDir }) {
+const tryBuildImagePath = async function ({ packageName, buildDir, buildImagePluginsDir }) {
   if (buildImagePluginsDir === undefined) {
     return
   }
@@ -96,7 +96,7 @@ const tryBuildImagePath = async function({ packageName, buildDir, buildImagePlug
 }
 
 // Try to `resolve()` the plugin from the build directory
-const tryResolvePath = async function(packageName, baseDir) {
+const tryResolvePath = async function (packageName, baseDir) {
   try {
     return await resolvePath(packageName, baseDir)
   } catch (error) {}
@@ -104,18 +104,18 @@ const tryResolvePath = async function(packageName, baseDir) {
 
 // Handle plugins that were neither local, in the build image cache nor in
 // node_modules. We automatically install those, with a warning.
-const handleMissingPlugins = async function({ pluginsOptions, buildDir, mode, buildImagePluginsDir, logs }) {
+const handleMissingPlugins = async function ({ pluginsOptions, buildDir, mode, buildImagePluginsDir, logs }) {
   const autoPluginsDir = getAutoPluginsDirPath(buildDir)
   await installMissingPlugins({ pluginsOptions, autoPluginsDir, mode, logs })
   const pluginsOptionsA = await Promise.all(
-    pluginsOptions.map(pluginOptions => resolveMissingPluginPath({ pluginOptions, autoPluginsDir })),
+    pluginsOptions.map((pluginOptions) => resolveMissingPluginPath({ pluginOptions, autoPluginsDir })),
   )
   warnOnMissingPlugins({ pluginsOptions: pluginsOptionsA, buildImagePluginsDir, logs })
   return pluginsOptionsA
 }
 
 // Resolve the plugins that just got automatically installed
-const resolveMissingPluginPath = async function({
+const resolveMissingPluginPath = async function ({
   pluginOptions,
   pluginOptions: { packageName, pluginPath },
   autoPluginsDir,

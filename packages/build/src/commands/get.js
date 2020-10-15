@@ -1,7 +1,7 @@
 const { EVENTS } = require('../plugins/events')
 
 // Get commands for all events
-const getCommands = function(pluginsCommands, netlifyConfig) {
+const getCommands = function (pluginsCommands, netlifyConfig) {
   const commands = addBuildCommand(pluginsCommands, netlifyConfig)
   const commandsA = sortCommands(commands)
   const commandsCount = commandsA.filter(({ event }) => !runsOnlyOnBuildFailure(event)).length
@@ -10,7 +10,7 @@ const getCommands = function(pluginsCommands, netlifyConfig) {
 }
 
 // Merge `build.command` with plugin event handlers
-const addBuildCommand = function(
+const addBuildCommand = function (
   pluginsCommands,
   { build: { command: buildCommand, commandOrigin: buildCommandOrigin } },
 ) {
@@ -22,21 +22,21 @@ const addBuildCommand = function(
 }
 
 // Sort plugin commands by event order.
-const sortCommands = function(commands) {
-  return EVENTS.flatMap(event => commands.filter(command => command.event === event))
+const sortCommands = function (commands) {
+  return EVENTS.flatMap((event) => commands.filter((command) => command.event === event))
 }
 
 // Retrieve list of unique events
-const getEvents = function(commands) {
+const getEvents = function (commands) {
   const events = commands.map(getEvent)
   return [...new Set(events)]
 }
 
-const getEvent = function({ event }) {
+const getEvent = function ({ event }) {
   return event
 }
 
-const isAmongEvents = function(events, event) {
+const isAmongEvents = function (events, event) {
   return events.includes(event)
 }
 
