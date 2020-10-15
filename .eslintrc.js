@@ -82,6 +82,8 @@ module.exports = {
     // TODO: enable after dropping support for Node <11.4.0
     'node/prefer-promises/fs': 2,
     'node/prefer-promises/dns': 2,
+    // This does not work well in a monorepo
+    'node/shebang': 0,
 
     'eslint-comments/no-unused-disable': 0,
     'eslint-comments/no-use': [
@@ -164,6 +166,12 @@ module.exports = {
         'fp/no-mutating-methods': 0,
         'fp/no-mutation': 0,
         'fp/no-delete': 0,
+      },
+    },
+    {
+      files: ['scripts/**/*.js'],
+      rules: {
+        'node/no-unpublished-require': 0,
       },
     },
     {
