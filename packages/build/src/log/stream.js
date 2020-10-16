@@ -16,13 +16,13 @@ const getBuildCommandStdio = function (logs) {
 }
 
 // Add build command output
-const handleBuildCommandOutput = function ({ stdout, stderr }, logs) {
+const handleBuildCommandOutput = function ({ stdout: commandStdout, stderr: commandStderr }, logs) {
   if (logs === undefined) {
     return
   }
 
-  pushBuildCommandOutput(stdout, logs.stdout)
-  pushBuildCommandOutput(stderr, logs.stderr)
+  pushBuildCommandOutput(commandStdout, logs.stdout)
+  pushBuildCommandOutput(commandStderr, logs.stderr)
 }
 
 const pushBuildCommandOutput = function (output, logsArray) {

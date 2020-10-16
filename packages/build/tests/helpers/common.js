@@ -24,7 +24,7 @@ const runFixtureCommon = async function (
   {
     flags = {},
     env: envOption = {},
-    normalize = !isPrint(),
+    normalize: normalizeOption = !isPrint(),
     snapshot = true,
     repositoryRoot = `${FIXTURES_DIR}/${fixtureName}`,
     copyRoot,
@@ -48,7 +48,7 @@ const runFixtureCommon = async function (
     copyRootDir,
   })
 
-  doTestAction({ t, returnValue, normalize, snapshot })
+  doTestAction({ t, returnValue, normalizeOption, snapshot })
 
   return { returnValue, exitCode }
 }
@@ -159,12 +159,12 @@ const execMainFunc = async function ({ mainFunc, mainFlags, commandEnv }) {
 // The `PRINT` environment variable can be set to `1` to run the test in print
 // mode. Print mode is a debugging mode which shows the test output but does
 // not create nor compare its snapshot.
-const doTestAction = function ({ t, returnValue, normalize, snapshot }) {
+const doTestAction = function ({ t, returnValue, normalizeOption, snapshot }) {
   if (!snapshot) {
     return
   }
 
-  const normalizedReturn = normalizeOutputString(returnValue, normalize)
+  const normalizedReturn = normalizeOutputString(returnValue, normalizeOption)
 
   if (isPrint()) {
     return printOutput(t, normalizedReturn)
@@ -178,8 +178,8 @@ const doTestAction = function ({ t, returnValue, normalize, snapshot }) {
   t.snapshot(normalizedReturn)
 }
 
-const normalizeOutputString = function (outputString, normalize) {
-  if (!normalize) {
+const normalizeOutputString = function (outputString, normalizeOption) {
+  if (!normalizeOption) {
     return outputString
   }
 

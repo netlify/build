@@ -461,8 +461,8 @@ test('Can execute local binaries when using plugins cached in the build image', 
   })
 })
 
-const getNodePath = function (version) {
-  return `/home/ether/.nvm/versions/node/v${version}/bin/node`
+const getNodePath = function (nodeVersion) {
+  return `/home/ether/.nvm/versions/node/v${nodeVersion}/bin/node`
 }
 
 test('Validate --node-path version is supported by our codebase', async (t) => {

@@ -24,14 +24,14 @@ const loadPlugin = async function (
   { childProcesses, index, netlifyConfig, constants, debug },
 ) {
   const { childProcess } = childProcesses[index]
-  const event = 'load'
+  const loadEvent = 'load'
 
   try {
     const { pluginCommands } = await callChild(
       childProcess,
       'load',
       { pluginPath, inputs, netlifyConfig, constants },
-      { plugin: { packageName, pluginPackageJson }, location: { event, packageName, loadedFrom, origin } },
+      { plugin: { packageName, pluginPackageJson }, location: { event: loadEvent, packageName, loadedFrom, origin } },
     )
     const pluginCommandsA = pluginCommands.map(({ event }) => ({
       event,

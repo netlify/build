@@ -37,13 +37,13 @@ const isEmptyDir = async function ({ srcGlob, cwd, isDir }) {
 
 // Get globbing pattern with files to move/copy
 const getSrcGlob = async function (src) {
-  const stat = await getStat(src)
+  const srcStat = await getStat(src)
 
-  if (stat === undefined) {
+  if (srcStat === undefined) {
     return {}
   }
 
-  const isDir = stat.isDirectory()
+  const isDir = srcStat.isDirectory()
   const srcBasename = basename(src)
   const cwd = dirname(src)
 
