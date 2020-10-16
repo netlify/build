@@ -154,7 +154,9 @@ module.exports = {
 
     'ava/no-ignored-test-files': [2, { files: ['tests/**/*.js', '!tests/{helpers,fixtures}/**/*.{js,json}'] }],
     'ava/no-import-test-files': [2, { files: ['tests/**/*.js', '!tests/{helpers,fixtures}/**/*.{js,json}'] }],
+    // The autofix makes it impossible to use those in debugging
     'ava/no-skip-test': 0,
+    'ava/no-only-test': 0,
   },
   overrides: [
     {
