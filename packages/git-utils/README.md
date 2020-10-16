@@ -52,16 +52,15 @@ The `git` util includes the following signature.
 module.exports = {
   onPreBuild: ({ utils }) => {
     console.log(utils.git)
-    /*
-    {
-      fileMatch: [Function], <-- Lookup function. See below
-      modifiedFiles: [ Array of all modified files ],
-      createdFiles: [ Array of all created files ],
-      deletedFiles: [ Array of all deleted files ],
-      commits: [ Array of commits with details ],
-      linesOfCode: [AsyncFunction: linesOfCode] <-- how many lines of code have changed
-    }
-    */
+    // {
+    // fileMatch: [Function], <-- Lookup function. See below
+    // modifiedFiles: [ Array of all modified files ],
+    // createdFiles: [ Array of all created files ],
+    // deletedFiles: [ Array of all deleted files ],
+    // commits: [ Array of commits with details ],
+    // linesOfCode: [AsyncFunction: linesOfCode] <-- how many lines of code have changed
+    // }
+    //
   },
 }
 ```
@@ -73,14 +72,13 @@ Example:
 ```js
 const cssFiles = git.fileMatch('**/*.css')
 console.log('cssFiles', cssFiles)
-/*
-{
-  modified: [ 'just-changed.css', 'just-changed-two.css' ],
-  created: [ 'just-added.css' ],
-  deleted: [ 'just-deleted.css' ],
-  edited: [ 'just-changed.css', 'just-changed-two.css', 'just-added.css', 'just-deleted.css' ]
-}
-*/
+// {
+// modified: [ 'just-changed.css', 'just-changed-two.css' ],
+// created: [ 'just-added.css' ],
+// deleted: [ 'just-deleted.css' ],
+// edited: [ 'just-changed.css', 'just-changed-two.css', 'just-added.css', 'just-deleted.css' ]
+// }
+//
 ```
 
 ## Prior art

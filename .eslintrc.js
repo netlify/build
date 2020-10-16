@@ -66,6 +66,7 @@ module.exports = {
 
     // Those ESLint rules are not enabled by Prettier, ESLint recommended rules
     // nor standard JavaScript. However, they are still useful
+    'multiline-comment-style': [2, 'separate-lines'],
     'no-await-in-loop': 2,
 
     'node/no-sync': 2,
