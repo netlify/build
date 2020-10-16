@@ -53,10 +53,11 @@ const getPluginFullName = function ({ packageName, buildCommandOrigin }) {
 }
 
 const getDryColumnWidth = function (eventWidth, commandsCount) {
-  const symbolsWidth = `${commandsCount}`.length + 4
+  const symbolsWidth = `${commandsCount}`.length + COLUMN_EXTRA_WIDTH
   return Math.max(eventWidth + symbolsWidth, DRY_HEADER_NAMES[1].length)
 }
 
+const COLUMN_EXTRA_WIDTH = 4
 const DRY_HEADER_NAMES = ['Event', 'Location']
 
 const logDryRunEnd = function (logs) {

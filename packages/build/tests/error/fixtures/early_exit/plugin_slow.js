@@ -5,6 +5,9 @@ const processExists = require('process-exists')
 
 const pSetTimeout = promisify(setTimeout)
 
+// 100ms
+const PROCESS_TIMEOUT = 1e2
+
 module.exports = {
   async onBuild() {
     kill(env.TEST_PID)
@@ -14,7 +17,7 @@ module.exports = {
     // eslint-disable-next-line fp/no-loops, no-await-in-loop
     while (await processExists(env.TEST_PID)) {
       // eslint-disable-next-line no-await-in-loop
-      await pSetTimeout(1e2)
+      await pSetTimeout(PROCESS_TIMEOUT)
     }
   },
 }

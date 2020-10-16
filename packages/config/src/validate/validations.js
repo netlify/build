@@ -60,12 +60,14 @@ const PRE_NORMALIZE_VALIDATIONS = [
   },
 ]
 
+const EXAMPLE_PORT = 80
+
 // Validations done after normalization
 const POST_NORMALIZE_VALIDATIONS = [
   {
     property: 'plugins.*',
     ...validProperties(['package', 'inputs'], ['origin']),
-    example: { plugins: [{ package: 'netlify-plugin-one', inputs: { port: 80 } }] },
+    example: { plugins: [{ package: 'netlify-plugin-one', inputs: { port: EXAMPLE_PORT } }] },
   },
 
   {
@@ -99,7 +101,7 @@ const POST_NORMALIZE_VALIDATIONS = [
     property: 'plugins.*.inputs',
     check: isPlainObj,
     message: 'must be a plain object.',
-    example: () => ({ plugins: [{ package: 'netlify-plugin-one', inputs: { port: 80 } }] }),
+    example: () => ({ plugins: [{ package: 'netlify-plugin-one', inputs: { port: EXAMPLE_PORT } }] }),
   },
   {
     property: 'build.base',

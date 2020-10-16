@@ -49,11 +49,13 @@ test('Should error when the option "head" points to an unknown commit', (t) => {
   t.throws(() => getGitUtils({ base: BASE, head: UNKNOWN_COMMIT }), { message: /Invalid head commit/ })
 })
 
+const LINES_OF_CODE = 163
+
 test.serial('Should allow using the environment variable CACHED_COMMIT_REF', (t) => {
   try {
     env.CACHED_COMMIT_REF = BASE
     const { linesOfCode } = getGitUtils({ head: HEAD })
-    t.is(linesOfCode, 163)
+    t.is(linesOfCode, LINES_OF_CODE)
   } finally {
     delete env.CACHED_COMMIT_REF
   }
@@ -64,7 +66,7 @@ test.serial('Should allow overriding the current directory', (t) => {
   try {
     chdir('/')
     const { linesOfCode } = getGitUtils({ ...DEFAULT_OPTS, cwd: currentCwd })
-    t.is(linesOfCode, 163)
+    t.is(linesOfCode, LINES_OF_CODE)
   } finally {
     chdir(currentCwd)
   }
@@ -78,7 +80,7 @@ test('Should throw when the current directory is invalid', (t) => {
 
 test('Should return the number of lines of code', (t) => {
   const { linesOfCode } = getGitUtils(DEFAULT_OPTS)
-  t.is(linesOfCode, 163)
+  t.is(linesOfCode, LINES_OF_CODE)
 })
 
 test('Should return the commits', (t) => {

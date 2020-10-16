@@ -6,6 +6,7 @@ const getSeverity = function (severity = FALLBACK_SEVERITY) {
   return { success, severityCode }
 }
 
+/* eslint-disable no-magic-numbers */
 const SEVERITY_CODES = {
   success: 0,
   none: 1,
@@ -13,6 +14,7 @@ const SEVERITY_CODES = {
   warning: 3,
   error: 4,
 }
+/* eslint-enable no-magic-numbers */
 const SUCCESS_SEVERITY = 'success'
 // Indicates a bug in our codebase
 const FALLBACK_SEVERITY = 'error'

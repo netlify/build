@@ -196,7 +196,8 @@ ${normalizedReturn}`)
   t.pass()
 }
 
-const LINE = '='.repeat(50)
+const LINE_LENGTH = 50
+const LINE = '='.repeat(LINE_LENGTH)
 
 const shouldIgnoreSnapshot = function (normalizedReturn) {
   return IGNORE_REGEXPS.some((regExp) => regExp.test(normalizedReturn))
