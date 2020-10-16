@@ -32,6 +32,7 @@ const sendTimers = async function ({ timers, host, port, framework }) {
 // the internal API.
 const startClient = async function (host, port) {
   const client = new StatsdClient({ host, port, socketTimeout: 0 })
+  // eslint-disable-next-line no-underscore-dangle
   await promisify(client._socket._createSocket.bind(client._socket))()
   return client
 }

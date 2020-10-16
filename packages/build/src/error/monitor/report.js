@@ -122,6 +122,7 @@ const onError = function (event, eventProps) {
   Object.assign(event, {
     ...eventProps,
     unhandled: event.unhandled || eventProps.unhandled,
+    // eslint-disable-next-line no-underscore-dangle
     _metadata: { ...event._metadata, ...eventProps._metadata },
     app: { ...event.app, ...eventProps.app },
   })
