@@ -11,12 +11,12 @@ const getZipError = async function (error, FUNCTIONS_SRC) {
 
 // A common mistake is to assume Netlify Functions dependencies are
 // automatically installed. This checks for this pattern.
-const isModuleNotFound = async function (error, FUNCTIONS_SRC) {
+const isModuleNotFound = function (error, FUNCTIONS_SRC) {
   return (
     error instanceof Error &&
     error.code === MODULE_NOT_FOUND_CODE &&
     getModuleName(error) !== undefined &&
-    (await lacksNodeModules(FUNCTIONS_SRC))
+    lacksNodeModules(FUNCTIONS_SRC)
   )
 }
 
