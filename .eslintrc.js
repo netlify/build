@@ -71,6 +71,7 @@ module.exports = {
     'func-style': 2,
     'multiline-comment-style': [2, 'separate-lines'],
     'no-await-in-loop': 2,
+    'prefer-destructuring': 2,
 
     'node/no-sync': 2,
     'node/handle-callback-err': 2,
