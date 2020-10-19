@@ -12,6 +12,7 @@
     'execa',
     'get-bin-path',
     'husky',
+    'is-plain-obj',
     'nyc',
     'prettier',
     'test-each',
