@@ -73,7 +73,7 @@
     "got": "^9.6.0",
     "indent-string": "^4.0.0",
     "is-ci": "^2.0.0",
-    "is-plain-obj": "^2.1.0",
+    "is-plain-obj": "^3.0.0",
     "js-yaml": "^3.13.1",
     "keep-func-props": "^3.0.0",
     "locate-path": "^5.0.0",
