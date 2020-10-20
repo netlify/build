@@ -26,64 +26,62 @@ const getNetlifyConfig = require('@netlify/config')
 
 const exampleFunction = async function () {
   const { config, configPath, buildDir, context, branch, token, siteInfo } = await getNetlifyConfig(options)
-  /*
-  {
-    "config": {
-      "build": {
-        "command": "gulp build",
-        "commandOrigin": "config",
-        "environment": {
-          "NETLIFY_BUILD_DEBUG": "true",
-          "NODE_VERSION": "12",
-          "AWS_LAMBDA_JS_RUNTIME": "nodejs10.x"
-        },
-        "functions": "/home/me/cv-website/functions",
-        "edge_handlers": "/home/me/cv-website/edge-handlers",
-        "publish": "/home/me/cv-website/build",
-        "processing": {
-          "css": {
-            "bundle": true,
-            "minify": true
-          },
-          "js": {
-            "bundle": true,
-            "minify": true
-          },
-          "html": {
-            "pretty_urls": true
-          },
-          "images": {
-            "compress": true
-          }
-        }
-      },
-      "plugins": [
-        {
-          "package": "@netlify/plugin-sitemap",
-          "inputs": {},
-          "origin": "config"
-        }
-      ]
-    },
-    "configPath": "/home/me/cv-website/netlify.toml",
-    "buildDir": "/home/me/cv-website",
-    "context": "production",
-    "branch": "master",
-    "siteInfo": {
-      "id": "418b94bc-93cd-411a-937a-ae4c734f17c4",
-      "name": "mick",
-      "build_settings": {
-        "cmd": "",
-        "dir": "",
-        "env": { ... },
-        "functions_dir": "",
-        "base": "",
-      },
-      ...
-    },
-    "token": "564194bc-12cd-511a-037a-be4c734f17c4"
-  }
-  */
+  // {
+  // "config": {
+  //     "build": {
+  //       "command": "gulp build",
+  //       "commandOrigin": "config",
+  //       "environment": {
+  //         "NETLIFY_BUILD_DEBUG": "true",
+  //         "NODE_VERSION": "12",
+  //         "AWS_LAMBDA_JS_RUNTIME": "nodejs10.x"
+  //       },
+  //       "functions": "/home/me/cv-website/functions",
+  //       "edge_handlers": "/home/me/cv-website/edge-handlers",
+  //       "publish": "/home/me/cv-website/build",
+  //       "processing": {
+  //         "css": {
+  //           "bundle": true,
+  //           "minify": true
+  //         },
+  //         "js": {
+  //           "bundle": true,
+  //           "minify": true
+  //         },
+  //         "html": {
+  //           "pretty_urls": true
+  //         },
+  //         "images": {
+  //           "compress": true
+  //         }
+  //       }
+  //     },
+  //     "plugins": [
+  //       {
+  //         "package": "@netlify/plugin-sitemap",
+  //         "inputs": {},
+  //         "origin": "config"
+  //       }
+  //     ]
+  // },
+  // "configPath": "/home/me/cv-website/netlify.toml",
+  // "buildDir": "/home/me/cv-website",
+  // "context": "production",
+  // "branch": "master",
+  // "siteInfo": {
+  //     "id": "418b94bc-93cd-411a-937a-ae4c734f17c4",
+  //     "name": "mick",
+  //     "build_settings": {
+  //       "cmd": "",
+  //       "dir": "",
+  //       "env": { ... },
+  //       "functions_dir": "",
+  //       "base": "",
+  //     },
+  //     ...
+  // },
+  // "token": "564194bc-12cd-511a-037a-be4c734f17c4"
+  // }
 }
 ```
 
