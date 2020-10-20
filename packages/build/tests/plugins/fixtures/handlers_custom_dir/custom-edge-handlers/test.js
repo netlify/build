@@ -1,1 +1,1 @@
-export function onRequest() {}
+export const onRequest = function () {}
