@@ -64,6 +64,10 @@ module.exports = {
     'max-nested-callbacks': [2, 2],
     'require-await': 2,
 
+    // Those ESLint rules are not enabled by Prettier, ESLint recommended rules
+    // nor standard JavaScript. However, they are still useful
+    'no-await-in-loop': 2,
+
     'node/no-sync': 2,
     'node/handle-callback-err': 2,
     'node/no-new-require': 2,
