@@ -3,7 +3,7 @@ const { env } = require('process')
 const { git } = require('./exec')
 
 // Retrieve the `head` commit
-const getHead = function (head = 'HEAD', cwd) {
+const getHead = function (cwd, head = 'HEAD') {
   const result = checkRef(head, cwd)
   if (result.error !== undefined) {
     throwError('head', result)

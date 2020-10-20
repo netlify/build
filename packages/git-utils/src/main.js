@@ -6,7 +6,7 @@ const { getLinesOfCode } = require('./stats')
 
 // Main entry point to the git utilities
 const getGitUtils = function ({ base, head, cwd } = {}) {
-  const headA = getHead(head)
+  const headA = getHead(cwd, head)
   const baseA = getBase(base, headA, cwd)
   const { modifiedFiles, createdFiles, deletedFiles } = getDiffFiles(baseA, headA, cwd)
   const commits = getCommits(baseA, headA, cwd)

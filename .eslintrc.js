@@ -66,6 +66,7 @@ module.exports = {
 
     // Those ESLint rules are not enabled by Prettier, ESLint recommended rules
     // nor standard JavaScript. However, they are still useful
+    'default-param-last': 2,
     'func-names': [2, 'as-needed'],
     'func-style': 2,
     'multiline-comment-style': [2, 'separate-lines'],
