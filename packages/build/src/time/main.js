@@ -15,7 +15,7 @@ const initTimers = function () {
 // The `durationNs` will be returned by the function. A new `timers` with the
 // additional duration timer will be returned as well.
 const kMeasureDuration = function (func, stageTag, { parentTag, category } = {}) {
-  return async function ({ timers, ...opts }, ...args) {
+  return async function measuredFunc({ timers, ...opts }, ...args) {
     const timerNs = startTimer()
     const { timers: timersA = timers, ...returnObject } = await func({ timers, ...opts }, ...args)
     const durationNs = endTimer(timerNs)
