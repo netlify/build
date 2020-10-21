@@ -1,20 +1,13 @@
 /* eslint-disable max-lines */
-const { version } = require('process')
-
-const isNode8 = version.startsWith('v8.')
-
 module.exports = {
   plugins: ['prettier', 'fp', 'markdown', 'html'],
   extends: [
-    // This version of eslint-plugin-unicorn requires Node 10
-    // TODO: remove after dropping Node 8 support
-    ...(isNode8 ? [] : ['plugin:unicorn/recommended']),
-
     'eslint:recommended',
     'standard',
     'prettier',
     'prettier/standard',
     'plugin:eslint-comments/recommended',
+    'plugin:unicorn/recommended',
     'plugin:node/recommended',
     'plugin:fp/recommended',
     'plugin:ava/recommended',
@@ -100,39 +93,33 @@ module.exports = {
       { allow: ['eslint-disable-next-line', 'eslint-disable', 'eslint-enable', 'eslint-env'] },
     ],
 
-    // This version of eslint-plugin-unicorn requires Node 10
-    // TODO: remove after dropping Node 8 support
-    ...(isNode8
-      ? {}
-      : {
-          // Not enabled by default in unicorn/recommended, but still pretty useful
-          'unicorn/custom-error-definition': 2,
-          'unicorn/no-unused-properties': 2,
-          // The additional `non-zero` option is useful for code consistency
-          'unicorn/explicit-length-check': [2, { 'non-zero': 'not-equal' }],
-          // TODO: harmonize with filename snake_case in other Netlify Dev projects
-          'unicorn/filename-case': [2, { case: 'snakeCase', ignore: ['.*.md'] }],
-          // The `sortCharacterClasses` option is not very useful
-          'unicorn/better-regex': [2, { sortCharacterClasses: false }],
-          // Too strict
-          'unicorn/no-null': 0,
-          'unicorn/no-reduce': 0,
-          // This rule gives too many false positives
-          'unicorn/prevent-abbreviations': 0,
-          // Conflicts with Prettier sometimes
-          'unicorn/number-literal-case': 0,
-          // Conflicts with the core ESLint `prefer-destructuring` rule
-          'unicorn/no-unreadable-array-destructuring': 0,
-          // Not useful for us
-          'unicorn/expiring-todo-comments': 0,
-          'unicorn/no-fn-reference-in-iterator': 0,
-          // TODO: enable those rules
-          'unicorn/no-process-exit': 0,
-          'unicorn/import-style': 0,
-          // TODO: enable after dropping Node 8 support
-          'unicorn/prefer-optional-catch-binding': 0,
-          'unicorn/prefer-trim-start-end': 0,
-        }),
+    // Not enabled by default in unicorn/recommended, but still pretty useful
+    'unicorn/custom-error-definition': 2,
+    'unicorn/no-unused-properties': 2,
+    // The additional `non-zero` option is useful for code consistency
+    'unicorn/explicit-length-check': [2, { 'non-zero': 'not-equal' }],
+    // TODO: harmonize with filename snake_case in other Netlify Dev projects
+    'unicorn/filename-case': [2, { case: 'snakeCase', ignore: ['.*.md'] }],
+    // The `sortCharacterClasses` option is not very useful
+    'unicorn/better-regex': [2, { sortCharacterClasses: false }],
+    // Too strict
+    'unicorn/no-null': 0,
+    'unicorn/no-reduce': 0,
+    // This rule gives too many false positives
+    'unicorn/prevent-abbreviations': 0,
+    // Conflicts with Prettier sometimes
+    'unicorn/number-literal-case': 0,
+    // Conflicts with the core ESLint `prefer-destructuring` rule
+    'unicorn/no-unreadable-array-destructuring': 0,
+    // Not useful for us
+    'unicorn/expiring-todo-comments': 0,
+    'unicorn/no-fn-reference-in-iterator': 0,
+    // TODO: enable those rules
+    'unicorn/no-process-exit': 0,
+    'unicorn/import-style': 0,
+    // TODO: enable after dropping Node 8 support
+    'unicorn/prefer-optional-catch-binding': 0,
+    'unicorn/prefer-trim-start-end': 0,
 
     'fp/no-rest-parameters': 0,
     'fp/no-unused-expression': 0,
