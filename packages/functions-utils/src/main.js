@@ -34,9 +34,9 @@ const add = async function (src, dist, { fail = defaultFail } = {}) {
 }
 
 const getSrcGlob = async function (src, srcBasename) {
-  const stat = await pStat(src)
+  const srcStat = await pStat(src)
 
-  if (stat.isDirectory()) {
+  if (srcStat.isDirectory()) {
     return `${srcBasename}/**`
   }
 

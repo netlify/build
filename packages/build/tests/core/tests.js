@@ -149,12 +149,12 @@ const CHILD_NODE_VERSION = '8.3.0'
 const VERY_OLD_NODE_VERSION = '4.0.0'
 
 // Try `get-node` several times because it sometimes fails due to network failures
-const getNodeBinary = async function (version, retries = 1) {
+const getNodeBinary = async function (nodeVersion, retries = 1) {
   try {
-    return await getNode(version)
+    return await getNode(nodeVersion)
   } catch (error) {
     if (retries < MAX_RETRIES) {
-      return getNodeBinary(version, retries + 1)
+      return getNodeBinary(nodeVersion, retries + 1)
     }
 
     throw error

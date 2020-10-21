@@ -1,4 +1,4 @@
-const { type, freemem, totalmem } = require('os')
+const { type: osType, freemem, totalmem } = require('os')
 const { promisify } = require('util')
 
 const osName = require('os-name')
@@ -77,7 +77,7 @@ const getPluginMetadata = function ({ location, plugin }) {
 
 const getApp = function () {
   return {
-    osName: type(),
+    osName: osType(),
     osVersion: osName(),
     freeMemory: freemem(),
     totalMemory: totalmem(),
@@ -102,7 +102,7 @@ const reportError = async function ({ errorMonitor, error, logs, testOpts, event
   try {
     await promisify(errorMonitor.notify)(error, (event) => onError(event, eventProps))
     // Failsafe
-  } catch (error) {
+  } catch (error_) {
     log(logs, `Error monitor could not notify\n${error.stack}`)
   }
 }
