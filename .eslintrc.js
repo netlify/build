@@ -28,7 +28,6 @@ module.exports = {
         },
       },
     ],
-    'no-process-exit': 0,
     'require-atomic-updates': 0,
     'no-undef': [2, { typeof: true }],
 
