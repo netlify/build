@@ -66,6 +66,7 @@ module.exports = {
     'func-name-matching': [2, { considerPropertyDescriptor: true }],
     'func-names': [2, 'as-needed'],
     'func-style': 2,
+    'id-length': [2, { exceptions: ['t', '_'] }],
     'line-comment-position': 2,
     'max-classes-per-file': 2,
     'max-params': [2, { max: 4 }],
