@@ -69,7 +69,8 @@ module.exports = {
     await utils.cache.restore('./path/to/file')
   },
   async onPostBuild({ utils }) {
-    await utils.cache.save('./path/to/file', { ttl: 3600 })
+    const ttl = 3600
+    await utils.cache.save('./path/to/file', { ttl })
   },
 }
 ```
