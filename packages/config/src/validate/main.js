@@ -104,9 +104,9 @@ const validateChild = function ({ value, nextPropName, prevPath, nextPath, propP
     })
   }
 
-  return Object.keys(value).forEach((childProp) =>
-    validateChildProp({ childProp, value, nextPath, propPath, prevPath, ...rest }),
-  )
+  return Object.keys(value).forEach((childProp) => {
+    validateChildProp({ childProp, value, nextPath, propPath, prevPath, ...rest })
+  })
 }
 
 // Can use * to recurse over array|object elements.

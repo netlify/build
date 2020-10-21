@@ -3,7 +3,9 @@ const { THEME } = require('../theme')
 
 const logStatuses = function (logs, statuses) {
   logHeader(logs, 'Summary')
-  statuses.forEach((status) => logStatus(logs, status))
+  statuses.forEach((status) => {
+    logStatus(logs, status)
+  })
 }
 
 const logStatus = function (logs, { packageName, title = `Plugin ${packageName} ran successfully`, summary, text }) {

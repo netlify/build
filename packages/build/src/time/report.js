@@ -20,7 +20,9 @@ const reportTimers = async function ({ timers, statsdOpts: { host, port }, frame
 
 const sendTimers = async function ({ timers, host, port, framework }) {
   const client = await startClient(host, port)
-  timers.forEach((timer) => sendTimer({ timer, client, framework }))
+  timers.forEach((timer) => {
+    sendTimer({ timer, client, framework })
+  })
   await closeClient(client)
 }
 

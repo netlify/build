@@ -56,6 +56,7 @@ module.exports = {
 
     // Those ESLint rules are not enabled by Prettier, ESLint recommended rules
     // nor standard JavaScript. However, they are still useful
+    'array-callback-return': [2, { allowImplicit: true, checkForEach: true }],
     'block-scoped-var': 2,
     'class-methods-use-this': 2,
     'consistent-this': 2,
