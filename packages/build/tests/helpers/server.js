@@ -16,7 +16,7 @@ const startServer = async function (path, response = {}, { status = 200 } = {}) 
 }
 
 const getHost = function (server) {
-  const port = server.address().port
+  const { port } = server.address()
   return `localhost:${port}`
 }
 
