@@ -1,7 +1,6 @@
 {
   "semi": false,
   "singleQuote": true,
-  "endOfLine": "lf",
   "proseWrap": "always",
   "trailingComma": "all"
 }
