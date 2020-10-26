@@ -24,7 +24,7 @@ jobs:
       - name: Git checkout
         uses: actions/checkout@v2
         with:
-          depth: 0
+          fetch-depth: 0
       - name: Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
