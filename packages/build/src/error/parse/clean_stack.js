@@ -33,11 +33,7 @@ const cleanStackLine = function (lines, line) {
     return `${lines}\n${lineA}`
   }
 
-  if (isUselessStack(lineB)) {
-    return lines
-  }
-
-  if (isInternalStack(lineB)) {
+  if (shouldRemoveStackLine(lineB)) {
     return lines
   }
 
@@ -63,24 +59,23 @@ const getCwd = function () {
 // Check if a line is part of a stack trace
 const STACK_LINE_REGEXP = /^\s+at /
 
-const isUselessStack = function (line) {
+const shouldRemoveStackLine = function (line) {
   const lineA = normalizePathSlashes(line)
-  return (
-    // Anonymous function
-    lineA.includes('<anonymous>') ||
-    lineA.includes('(index 0)') ||
-    // nyc internal code
-    lineA.includes('node_modules/append-transform') ||
-    lineA.includes('node_modules/signal-exit')
-  )
+  return INTERNAL_STACK_STRINGS.some((stackString) => lineA.includes(stackString)) || INTERNAL_STACK_REGEXP.test(lineA)
 }
+
+const INTERNAL_STACK_STRINGS = [
+  // Anonymous function
+  '<anonymous>',
+  '(index 0)',
+  // nyc internal code
+  'node_modules/append-transform',
+  'node_modules/signal-exit',
+  // Node internals
+  '(node:',
+]
 
 // This is only needed for local builds and tests
-const isInternalStack = function (line) {
-  const lineA = normalizePathSlashes(line)
-  return INTERNAL_STACK_REGEXP.test(lineA)
-}
-
 const INTERNAL_STACK_REGEXP = /(packages|@netlify)\/build\/(src\/|tests\/helpers\/|tests\/.*\/tests.js|node_modules)/
 
 const INITIAL_NEWLINES = /^\n+/
