@@ -7,6 +7,7 @@ const StatsdClient = require('statsd-client')
 const { addAggregatedTimers } = require('./aggregate')
 const { roundTimerToMillisecs } = require('./measure')
 
+// TODO: replace with `timers/promises` after dropping Node < 15.0.0
 const pSetTimeout = promisify(setTimeout)
 
 // Record the duration of a build phase, for monitoring.
