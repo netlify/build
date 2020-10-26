@@ -317,6 +317,7 @@ const initAndRunBuild = async function ({
     mode,
     buildImagePluginsDir,
     featureFlags,
+    childEnv,
     logs,
     debug,
     timers,
