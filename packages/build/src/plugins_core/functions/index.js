@@ -1,5 +1,3 @@
-const { relative } = require('path')
-
 const { zipFunctions, listFunctions } = require('@netlify/zip-it-and-ship-it')
 const pathExists = require('path-exists')
 const { isDirectory } = require('path-type')
@@ -42,7 +40,11 @@ const onBuild = async function ({
 
 const getFunctionPaths = async function (FUNCTIONS_SRC) {
   const functions = await listFunctions(FUNCTIONS_SRC)
-  return functions.map(({ mainFile }) => relative(FUNCTIONS_SRC, mainFile))
+  return functions.map(getFunctionName)
+}
+
+const getFunctionName = function ({ name }) {
+  return name
 }
 
 module.exports = { onBuild }
