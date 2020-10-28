@@ -1,6 +1,6 @@
 const test = require('ava')
 
-const { getFrameworks, getFramework } = require('./helpers/main.js')
+const { getFrameworks, getFramework, hasFramework } = require('./helpers/main.js')
 
 test('Should detect frameworks', async t => {
   const frameworks = await getFrameworks('simple')
@@ -22,6 +22,18 @@ test('Should allow getting a specific framework', async t => {
   t.snapshot(framework)
 })
 
-test('Should throw when passing an inva;lid framework', async t => {
+test('Should throw when passing an invalid framework', async t => {
   await t.throwsAsync(getFramework('simple', 'doesNotExist'))
+})
+
+test('Should allow testing a specific framework', async t => {
+  const trueResult = await hasFramework('simple', 'sapper')
+  t.true(trueResult)
+
+  const falseResult = await hasFramework('simple', 'nuxt')
+  t.false(falseResult)
+})
+
+test('Should throw when testing an invalid framework', async t => {
+  await t.throwsAsync(hasFramework('simple', 'doesNotExist'))
 })

@@ -32,8 +32,27 @@ const listFrameworks = async function(opts) {
 }
 
 /**
+ * Return whether a project uses a specific framework
+ *
+ * @param {string} frameworkName - Name such as `"gatsby"`
+ * @param  {object} [options] - Options
+ * @param  {string} [flags.projectDir=process.cwd()] - Project's directory
+ * @param  {string} [flags.ignoredWatchCommand] - When guessing the watch command, ignore `package.json` `scripts` whose value includes this string
+ *
+ * @returns {boolean} result - Whether the project uses this framework
+ */
+const hasFramework = async function(frameworkName, opts) {
+  const framework = getFrameworkByName(frameworkName)
+  const { projectDir, ignoredWatchCommand } = getOptions(opts)
+  const { npmDependencies } = await getProjectInfo({ projectDir, ignoredWatchCommand })
+  const result = await usesFramework(framework, { projectDir, npmDependencies })
+  return result
+}
+
+/**
  * Return some information about a framework used by a project.
  *
+ * @param {string} frameworkName - Name such as `"gatsby"`
  * @param  {object} [options] - Options
  * @param  {string} [flags.projectDir=process.cwd()] - Project's directory
  * @param  {string} [flags.ignoredWatchCommand] - When guessing the watch command, ignore `package.json` `scripts` whose value includes this string
@@ -82,4 +101,4 @@ const getFrameworkInfo = function(
   return { name, category, watch: { commands: watchCommands, directory, port }, env }
 }
 
-module.exports = { listFrameworks, getFramework }
+module.exports = { listFrameworks, hasFramework, getFramework }

@@ -1,4 +1,4 @@
-const { listFrameworks, getFramework: getFrameworkLib } = require('../../src/main.js')
+const { listFrameworks, getFramework: getFrameworkLib, hasFramework: hasFrameworkLib } = require('../../src/main.js')
 
 const FIXTURES_DIR = `${__dirname}/../fixtures`
 
@@ -11,4 +11,8 @@ const getFramework = function(fixtureName, frameworkName, opts = {}) {
   return getFrameworkLib(frameworkName, { projectDir: `${FIXTURES_DIR}/${fixtureName}`, ...opts })
 }
 
-module.exports = { getFrameworks, getFramework, FIXTURES_DIR }
+const hasFramework = function(fixtureName, frameworkName, opts = {}) {
+  return hasFrameworkLib(frameworkName, { projectDir: `${FIXTURES_DIR}/${fixtureName}`, ...opts })
+}
+
+module.exports = { getFrameworks, getFramework, hasFramework, FIXTURES_DIR }
