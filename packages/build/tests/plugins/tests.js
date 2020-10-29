@@ -9,8 +9,12 @@ const { runFixture, FIXTURES_DIR } = require('../helpers/main')
 const { startTcpServer } = require('../helpers/tcp_server')
 const { getTempDir } = require('../helpers/temp')
 
+test('Pass netlifyConfig to plugins', async (t) => {
+  await runFixture(t, 'config_valid')
+})
+
 test('constants.CONFIG_PATH', async (t) => {
-  await runFixture(t, 'config')
+  await runFixture(t, 'config_path')
 })
 
 test('constants.PUBLISH_DIR default value', async (t) => {
