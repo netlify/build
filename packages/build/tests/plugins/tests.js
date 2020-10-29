@@ -81,6 +81,18 @@ test('constants.NETLIFY_API_TOKEN', async (t) => {
   await runFixture(t, 'netlify_api_token', { flags: { token: 'test' } })
 })
 
+test('Pass packageJson to plugins', async (t) => {
+  await runFixture(t, 'package_json_valid')
+})
+
+test('Pass empty packageJson to plugins if no package.json', async (t) => {
+  await runFixture(t, 'package_json_none', { copyRoot: { git: false } })
+})
+
+test('Pass empty packageJson to plugins if package.json invalid', async (t) => {
+  await runFixture(t, 'package_json_invalid')
+})
+
 test('Functions: simple setup', async (t) => {
   await removeDir(`${FIXTURES_DIR}/simple/.netlify/functions/`)
   await runFixture(t, 'simple')

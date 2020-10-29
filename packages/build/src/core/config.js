@@ -5,6 +5,7 @@ const { addApiErrorHandlers } = require('../error/api')
 const { addErrorInfo } = require('../error/info')
 const { logBuildDir, logConfigPath, logConfig, logContext } = require('../log/messages/config')
 const { measureDuration } = require('../time/main')
+const { getPackageJson } = require('../utils/package')
 
 // Retrieve configuration object
 const tLoadConfig = async function ({
@@ -52,17 +53,20 @@ const tLoadConfig = async function ({
   logConfigInfo({ logs, configPath, buildDir, netlifyConfig, context: contextA, debug })
 
   const apiA = addApiErrorHandlers(api)
-  const childEnv = await getChildEnv({
-    netlifyConfig,
-    buildDir,
-    context: contextA,
-    branch: branchA,
-    siteInfo,
-    deployId,
-    envOpt,
-    mode,
-  })
-  return { netlifyConfig, configPath, buildDir, childEnv, token: tokenA, api: apiA, siteInfo }
+  const [childEnv, { packageJson }] = await Promise.all([
+    getChildEnv({
+      netlifyConfig,
+      buildDir,
+      context: contextA,
+      branch: branchA,
+      siteInfo,
+      deployId,
+      envOpt,
+      mode,
+    }),
+    getPackageJson(buildDir),
+  ])
+  return { netlifyConfig, configPath, buildDir, packageJson, childEnv, token: tokenA, api: apiA, siteInfo }
 }
 
 const loadConfig = measureDuration(tLoadConfig, 'resolve_config')
