@@ -65,6 +65,12 @@ test('Environment variable siteInfo success', async (t) => {
   await stopServer()
 })
 
+test('Environment variable siteInfo empty', async (t) => {
+  const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, {})
+  await runFixture(t, 'site_info', { flags: { token: 'test', siteId: 'test', testOpts: { scheme, host } } })
+  await stopServer()
+})
+
 test('Empty string environment variables', async (t) => {
   await runFixture(t, 'empty_string')
 })

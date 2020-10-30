@@ -109,8 +109,8 @@ const getForcedEnv = async function ({
   const gitEnv = await getGitEnv(buildDir, branch)
   return {
     // Netlify Site information
-    URL: url,
-    REPOSITORY_URL,
+    ...(url === undefined ? {} : { URL: url }),
+    ...(REPOSITORY_URL === undefined ? {} : { REPOSITORY_URL }),
     // Configuration file context
     CONTEXT: context,
     // Git-related environment variables
