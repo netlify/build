@@ -1,3 +1,5 @@
+'use strict'
+
 const { stat } = require('fs')
 const { basename, dirname } = require('path')
 const { promisify } = require('util')

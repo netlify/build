@@ -1,3 +1,5 @@
+'use strict'
+
 // From `--featureFlags=a,b,c` to `{ a: true, b: true, c: true }`
 const normalizeFeatureFlags = function ({ featureFlags = '', ...rawFlags }) {
   const normalizedFeatureFlags = Object.assign({}, ...featureFlags.split(',').filter(isNotEmpty).map(getFeatureFlag))

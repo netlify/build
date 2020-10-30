@@ -1,3 +1,5 @@
+'use strict'
+
 const { homedir } = require('os')
 const { platform } = require('process')
 

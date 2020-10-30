@@ -1,3 +1,5 @@
+'use strict'
+
 const test = require('ava')
 const makeDir = require('make-dir')
 const pathExists = require('path-exists')

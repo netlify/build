@@ -1,3 +1,5 @@
+'use strict'
+
 const { dirname } = require('path')
 
 const readPkgUp = require('read-pkg-up')

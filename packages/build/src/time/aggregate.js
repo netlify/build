@@ -1,3 +1,5 @@
+'use strict'
+
 const { createTimer, TOP_PARENT_TAG } = require('./main')
 
 // Some timers are computed based on others:

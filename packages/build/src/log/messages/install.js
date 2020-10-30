@@ -1,3 +1,5 @@
+'use strict'
+
 const { log, logMessage, logArray, logSubHeader, logErrorSubHeader } = require('../logger')
 const { THEME } = require('../theme')
 

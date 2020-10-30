@@ -1,3 +1,5 @@
+'use strict'
+
 const filterObj = require('filter-obj')
 
 // lodash.omit is 1400 lines of codes. filter-obj is much smaller and simpler.

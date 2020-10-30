@@ -1,3 +1,5 @@
+'use strict'
+
 const del = require('del')
 const execa = require('execa')
 

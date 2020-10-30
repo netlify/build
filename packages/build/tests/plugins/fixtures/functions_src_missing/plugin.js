@@ -1,3 +1,5 @@
+'use strict'
+
 const pathExists = require('path-exists')
 
 module.exports = {

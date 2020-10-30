@@ -1,3 +1,5 @@
+'use strict'
+
 const { getLogic } = require('./logic')
 const { validatePlugin } = require('./validate')
 

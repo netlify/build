@@ -1,3 +1,5 @@
+'use strict'
+
 // Require the plugin file and fire its top-level function.
 // The returned object is the `logic` which includes all event handlers.
 const getLogic = function ({ pluginPath, inputs }) {

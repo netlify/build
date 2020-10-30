@@ -1,3 +1,5 @@
+'use strict'
+
 // Add information related to an error without colliding with existing properties
 const addErrorInfo = function (error, info) {
   if (!canHaveErrorInfo(error)) {

@@ -1,3 +1,5 @@
+'use strict'
+
 const net = require('net')
 const { promisify } = require('util')
 

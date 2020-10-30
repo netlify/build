@@ -1,3 +1,5 @@
+'use strict'
+
 const readdirp = require('readdirp')
 
 // Handle errors coming from zip-it-and-ship-it

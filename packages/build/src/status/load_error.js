@@ -1,3 +1,5 @@
+'use strict'
+
 const { addErrorInfo } = require('../error/info')
 const { getFullErrorInfo } = require('../error/parse/parse')
 const { serializeErrorStatus } = require('../error/parse/serialize_status')

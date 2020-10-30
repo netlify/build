@@ -1,3 +1,5 @@
+'use strict'
+
 const { exit } = require('process')
 
 const test = function () {

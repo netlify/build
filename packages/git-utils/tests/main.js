@@ -1,3 +1,5 @@
+'use strict'
+
 const { env, chdir, cwd: getCwd } = require('process')
 
 const test = require('ava')

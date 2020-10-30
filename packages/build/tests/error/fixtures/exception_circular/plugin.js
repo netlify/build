@@ -1,3 +1,5 @@
+'use strict'
+
 module.exports = {
   onPreBuild() {
     const error = new Error('test')

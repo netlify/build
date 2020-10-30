@@ -1,3 +1,5 @@
+'use strict'
+
 const logProcessErrors = require('log-process-errors')
 
 const { errorToJson } = require('../../error/build')

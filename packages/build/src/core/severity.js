@@ -1,3 +1,5 @@
+'use strict'
+
 // Used for example as exit codes.
 // 1|2|3 indicate whether this was a user|plugin|system error.
 const getSeverity = function (severity = FALLBACK_SEVERITY) {

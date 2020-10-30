@@ -1,3 +1,5 @@
+'use strict'
+
 const { argv } = require('process')
 
 const got = require('got')

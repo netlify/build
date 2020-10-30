@@ -1,3 +1,5 @@
+'use strict'
+
 // Retrieve Netlify Site information, if availabled.
 // Used to retrieve local build environment variables and UI build settings.
 // This is not used in production builds since the buildbot passes this

@@ -1,3 +1,5 @@
+'use strict'
+
 const { deepMerge } = require('./utils/merge')
 const { removeFalsy } = require('./utils/remove_falsy')
 

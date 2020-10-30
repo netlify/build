@@ -1,3 +1,5 @@
+'use strict'
+
 // Retrieve error-type specific information
 const getTypeInfo = function ({ type }) {
   const typeA = TYPES[type] === undefined ? DEFAULT_TYPE : type

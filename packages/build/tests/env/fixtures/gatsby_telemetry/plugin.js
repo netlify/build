@@ -1,3 +1,5 @@
+'use strict'
+
 const {
   env: { GATSBY_TELEMETRY_DISABLED },
 } = require('process')

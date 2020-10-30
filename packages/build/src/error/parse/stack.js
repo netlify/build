@@ -1,3 +1,5 @@
+'use strict'
+
 const { cleanStacks } = require('./clean_stack')
 
 // Retrieve the stack trace

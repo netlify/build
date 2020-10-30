@@ -1,3 +1,5 @@
+'use strict'
+
 const { inspect } = require('util')
 
 const { omit } = require('../../utils/omit')

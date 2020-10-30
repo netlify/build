@@ -1,3 +1,5 @@
+'use strict'
+
 const mapObj = require('map-obj')
 const micromatch = require('micromatch')
 

@@ -1,3 +1,5 @@
+'use strict'
+
 const { platform, version } = require('process')
 
 const test = require('ava')

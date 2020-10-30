@@ -1,3 +1,5 @@
+'use strict'
+
 const { dump } = require('js-yaml')
 
 const serializeObject = function (object) {

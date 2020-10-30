@@ -1,3 +1,5 @@
+'use strict'
+
 const { createSocket } = require('dgram')
 const { promisify } = require('util')
 

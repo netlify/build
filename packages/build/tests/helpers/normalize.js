@@ -1,3 +1,5 @@
+'use strict'
+
 const { tick, pointer, arrowDown } = require('figures')
 const stripAnsi = require('strip-ansi')
 

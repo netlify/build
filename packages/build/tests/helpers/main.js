@@ -1,3 +1,5 @@
+'use strict'
+
 const { delimiter, normalize } = require('path')
 const { env } = require('process')
 

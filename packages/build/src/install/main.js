@@ -1,3 +1,5 @@
+'use strict'
+
 const { homedir } = require('os')
 
 const execa = require('execa')

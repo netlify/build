@@ -1,3 +1,5 @@
+'use strict'
+
 const { createServer } = require('http')
 const { promisify } = require('util')
 

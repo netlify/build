@@ -1,3 +1,5 @@
+'use strict'
+
 // We group errors by `error.message`. However some `error.message` contain
 // unique IDs, etc. which defeats that grouping. So we normalize those to make
 // them consistent

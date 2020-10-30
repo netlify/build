@@ -1,3 +1,5 @@
+'use strict'
+
 const { type: osType, freemem, totalmem } = require('os')
 const { promisify } = require('util')
 

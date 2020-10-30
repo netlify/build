@@ -1,3 +1,5 @@
+'use strict'
+
 const execa = require('execa')
 
 const { removeFalsy } = require('../utils/remove_falsy')

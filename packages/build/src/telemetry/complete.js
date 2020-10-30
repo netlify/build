@@ -1,3 +1,5 @@
+'use strict'
+
 const { platform, version: nodeVersion } = require('process')
 
 const isCI = require('is-ci')

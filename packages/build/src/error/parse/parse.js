@@ -1,3 +1,5 @@
+'use strict'
+
 const { getErrorInfo } = require('../info')
 const { getTypeInfo } = require('../type')
 

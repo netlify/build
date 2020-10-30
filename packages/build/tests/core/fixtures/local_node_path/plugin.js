@@ -1,3 +1,5 @@
+'use strict'
+
 const {
   execPath,
   env: { TEST_NODE_PATH },

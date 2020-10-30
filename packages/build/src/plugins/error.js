@@ -1,3 +1,5 @@
+'use strict'
+
 const { addErrorInfo } = require('../error/info')
 const { logFailPluginWarning } = require('../log/messages/plugins')
 

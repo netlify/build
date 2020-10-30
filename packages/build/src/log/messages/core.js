@@ -1,3 +1,5 @@
+'use strict'
+
 const prettyMs = require('pretty-ms')
 
 const { name, version } = require('../../../package.json')

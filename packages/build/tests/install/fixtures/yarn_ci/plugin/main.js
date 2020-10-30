@@ -1,3 +1,5 @@
+'use strict'
+
 const avg = require('math-avg')
 
 module.exports = {

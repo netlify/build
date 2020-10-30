@@ -1,3 +1,5 @@
+'use strict'
+
 const { isSoftFailEvent } = require('../../commands/get')
 const { failBuild, failPlugin, cancelBuild, failPluginWithWarning } = require('../error')
 

@@ -1,3 +1,5 @@
+'use strict'
+
 const { nextTick } = require('process')
 const { promisify } = require('util')
 

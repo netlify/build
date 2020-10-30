@@ -1,3 +1,5 @@
+'use strict'
+
 const memoizeOne = require('memoize-one')
 
 // Add a `object[propName]` whose value is the return value of `getFunc()`, but

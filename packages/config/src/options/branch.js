@@ -1,3 +1,5 @@
+'use strict'
+
 const execa = require('execa')
 
 // Find out git branch among (in priority order):

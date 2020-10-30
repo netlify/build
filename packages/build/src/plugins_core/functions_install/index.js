@@ -1,3 +1,5 @@
+'use strict'
+
 const pathExists = require('path-exists')
 
 const { installFunctionDependencies } = require('../../install/functions')

@@ -1,3 +1,5 @@
+'use strict'
+
 const EVENTS = [
   /**
    * `onPreBuild` - Before build commands are executed

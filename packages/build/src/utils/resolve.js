@@ -1,3 +1,5 @@
+'use strict'
+
 const { version: nodeVersion } = require('process')
 
 const resolveLib = require('resolve')

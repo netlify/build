@@ -1,3 +1,5 @@
+'use strict'
+
 const { platform, execPath, kill } = require('process')
 
 const test = require('ava')

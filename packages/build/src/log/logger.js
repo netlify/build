@@ -1,3 +1,5 @@
+'use strict'
+
 const { pointer } = require('figures')
 const indentString = require('indent-string')
 

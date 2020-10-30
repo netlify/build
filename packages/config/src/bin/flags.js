@@ -1,3 +1,5 @@
+'use strict'
+
 const filterObj = require('filter-obj')
 const yargs = require('yargs')
 

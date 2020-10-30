@@ -1,3 +1,5 @@
+'use strict'
+
 const { cancelBuild } = require('../error/cancel')
 const { handleBuildError } = require('../error/handle')
 const { addErrorInfo } = require('../error/info')

@@ -1,3 +1,5 @@
+'use strict'
+
 const pReduce = require('p-reduce')
 
 const { addErrorInfo } = require('../error/info')

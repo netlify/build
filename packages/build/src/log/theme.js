@@ -1,3 +1,5 @@
+'use strict'
+
 const {
   cyanBright: { bold: cyanBrightBold },
   cyan: { bold: cyanBold },

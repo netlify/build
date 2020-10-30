@@ -1,3 +1,5 @@
+'use strict'
+
 const { logInlineConfig } = require('./log/main')
 const { removeFalsy } = require('./utils/remove_falsy')
 

@@ -1,3 +1,5 @@
+'use strict'
+
 const { overrides } = require('@netlify/eslint-config-node')
 
 module.exports = {
@@ -20,6 +22,12 @@ module.exports = {
   },
   overrides: [
     ...overrides,
+    {
+      files: ['**/*.md'],
+      rules: {
+        strict: 0,
+      },
+    },
     {
       files: ['**/fixtures/handlers_*/**/*.js'],
       parserOptions: {

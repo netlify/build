@@ -1,3 +1,5 @@
+'use strict'
+
 const { relative } = require('path')
 
 const { zipFunctions, listFunctions } = require('@netlify/zip-it-and-ship-it')

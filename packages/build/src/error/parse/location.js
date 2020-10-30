@@ -1,3 +1,5 @@
+'use strict'
+
 const { getBuildCommandDescription, getPluginOrigin } = require('../../log/description')
 
 // Retrieve an error's location to print in logs.

@@ -1,3 +1,5 @@
+'use strict'
+
 const { addBuildSettings } = require('./api/build_settings')
 const { throwError } = require('./error')
 const { logDefaultConfig } = require('./log/main')

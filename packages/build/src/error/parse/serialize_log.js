@@ -1,3 +1,5 @@
+'use strict'
+
 const { THEME } = require('../../log/theme')
 
 // Serialize an error object into a title|body string to print in logs

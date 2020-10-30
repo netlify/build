@@ -1,3 +1,5 @@
+'use strict'
+
 const safeJsonStringify = require('safe-json-stringify')
 
 const { addErrorInfo, getErrorInfo } = require('./info')

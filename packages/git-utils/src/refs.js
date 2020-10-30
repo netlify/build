@@ -1,3 +1,5 @@
+'use strict'
+
 const { env } = require('process')
 
 const { git } = require('./exec')

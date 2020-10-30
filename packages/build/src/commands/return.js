@@ -1,3 +1,5 @@
+'use strict'
+
 const { logCommandSuccess } = require('../log/messages/commands')
 const { logTimer } = require('../log/messages/core')
 

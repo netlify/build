@@ -1,3 +1,5 @@
+'use strict'
+
 const { arrowDown } = require('figures')
 
 const { getBuildCommandDescription } = require('../description')

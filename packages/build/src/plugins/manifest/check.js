@@ -1,3 +1,5 @@
+'use strict'
+
 const { addErrorInfo } = require('../../error/info')
 const { serializeObject } = require('../../log/serialize')
 const { THEME } = require('../../log/theme')

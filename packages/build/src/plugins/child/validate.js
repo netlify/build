@@ -1,3 +1,5 @@
+'use strict'
+
 const isPlainObj = require('is-plain-obj')
 
 const { addErrorInfo } = require('../../error/info')

@@ -1,3 +1,5 @@
+'use strict'
+
 const test = require('ava')
 
 const { runFixture, FIXTURES_DIR, startServer } = require('../helpers/main')

@@ -1,3 +1,5 @@
+'use strict'
+
 const filterObj = require('filter-obj')
 
 // Remove falsy values from object

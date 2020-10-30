@@ -1,3 +1,5 @@
+'use strict'
+
 const { cleanupConfig } = require('@netlify/config')
 
 const { omit } = require('../../utils/omit')

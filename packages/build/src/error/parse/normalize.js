@@ -1,3 +1,5 @@
+'use strict'
+
 // Ensure error is an `Error` instance
 const normalizeError = function (error) {
   if (Array.isArray(error)) {

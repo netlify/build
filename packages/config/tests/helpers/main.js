@@ -1,3 +1,5 @@
+'use strict'
+
 const { stableStringify } = require('fast-safe-stringify')
 const { getBinPath } = require('get-bin-path')
 

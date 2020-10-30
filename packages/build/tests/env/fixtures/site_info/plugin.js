@@ -1,3 +1,5 @@
+'use strict'
+
 const {
   env: { URL, REPOSITORY_URL },
 } = require('process')

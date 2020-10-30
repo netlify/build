@@ -1,3 +1,5 @@
+'use strict'
+
 const test = require('ava')
 const { red } = require('chalk')
 const hasAnsi = require('has-ansi')

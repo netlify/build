@@ -1,3 +1,5 @@
+'use strict'
+
 // Merge plugin status to the list of plugin statuses.
 const addStatus = function ({ newStatus, statuses, event, packageName, pluginPackageJson: { version } = {} }) {
   // Either:

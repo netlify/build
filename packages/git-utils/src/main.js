@@ -1,3 +1,5 @@
+'use strict'
+
 const { getCommits } = require('./commits')
 const { getDiffFiles } = require('./diff')
 const { fileMatch } = require('./match')

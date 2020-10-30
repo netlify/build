@@ -1,3 +1,5 @@
+'use strict'
+
 // Retrieve plugin's location and build logs
 const getLocationMetadata = function (location, envMetadata) {
   const buildLogs = getBuildLogs(envMetadata)
