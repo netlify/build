@@ -4,13 +4,13 @@ const { cwd: getCwd } = require('process')
 
 const pathExists = require('path-exists')
 
-const { getErrorInfo } = require('../error/info')
-const { parseErrorInfo } = require('../error/parse/parse')
 const { logBuildError } = require('../log/messages/core')
 const { logOldCliVersionError } = require('../log/old_version')
 
 const { removeErrorColors } = require('./colors')
+const { getErrorInfo } = require('./info')
 const { reportBuildError } = require('./monitor/report')
+const { parseErrorInfo } = require('./parse/parse')
 
 // Logs and reports a build failure
 const handleBuildError = async function (
