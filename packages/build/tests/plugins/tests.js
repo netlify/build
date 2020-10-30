@@ -348,6 +348,50 @@ const waitsForPostProcessing = function (request) {
   return request.action === 'deploySiteAndAwaitLive'
 }
 
+test('DPC plugin is not used on other contexts', async (t) => {
+  await runFixture(t, 'empty', { flags: { featureFlags: 'dpc' } })
+})
+
+test('DPC plugin is only used if the feature flag is enabled', async (t) => {
+  await runFixture(t, 'empty', { env: { CONTEXT: 'deploy-preview' } })
+})
+
+test('DPC plugin shows a URL as a plugin status', async (t) => {
+  await runFixture(t, 'empty', { flags: { featureFlags: 'dpc' }, env: { CONTEXT: 'deploy-preview' } })
+})
+
+test('DPC plugin should modify netlify.toml headers', async (t) => {
+  await runFixture(t, 'dpc_headers_toml', {
+    flags: { featureFlags: 'dpc' },
+    env: { CONTEXT: 'deploy-preview' },
+    copyRoot: { git: false },
+  })
+})
+
+test('DPC plugin should modify headers file', async (t) => {
+  await runFixture(t, 'dpc_headers_file', {
+    flags: { featureFlags: 'dpc' },
+    env: { CONTEXT: 'deploy-preview' },
+    copyRoot: { git: false },
+  })
+})
+
+test('DPC plugin should inject HTML', async (t) => {
+  await runFixture(t, 'dpc_inject_html', {
+    flags: { featureFlags: 'dpc' },
+    env: { CONTEXT: 'deploy-preview' },
+    copyRoot: { git: false },
+  })
+})
+
+test('DPC plugin works without a netlify.toml', async (t) => {
+  await runFixture(t, 'no_config', {
+    flags: { featureFlags: 'dpc' },
+    env: { CONTEXT: 'deploy-preview' },
+    copyRoot: { git: false },
+  })
+})
+
 test('plugin.onSuccess is triggered on success', async (t) => {
   await runFixture(t, 'success_ok')
 })

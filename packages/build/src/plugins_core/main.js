@@ -11,27 +11,32 @@ const FUNCTIONS_PLUGIN_NAME = '@netlify/plugin-functions-core'
 const FUNCTIONS_INSTALL_PLUGIN_NAME = '@netlify/plugin-functions-install-core'
 const EDGE_HANDLERS_PLUGIN_NAME = '@netlify/plugin-edge-handlers'
 const DEPLOY_PLUGIN_NAME = '@netlify/plugin-deploy-core'
+const DPC_PLUGIN_NAME = 'netlify-plugin-deploy-preview-commenting'
 const CORE_PLUGINS = new Set([
   FUNCTIONS_PLUGIN_NAME,
   FUNCTIONS_INSTALL_PLUGIN_NAME,
   LOCAL_INSTALL_PLUGIN_NAME,
   EDGE_HANDLERS_PLUGIN_NAME,
   DEPLOY_PLUGIN_NAME,
+  DPC_PLUGIN_NAME,
 ])
 
 const EDGE_HANDLERS_PLUGIN_PATH = require.resolve(EDGE_HANDLERS_PLUGIN_NAME)
+const DPC_PLUGIN_PATH = require.resolve(DPC_PLUGIN_NAME)
 
 // Plugins that are installed and enabled by default
 const getCorePlugins = async function ({
   constants: { FUNCTIONS_SRC, EDGE_HANDLERS_SRC, BUILDBOT_SERVER_SOCKET },
   buildDir,
   featureFlags,
+  childEnv,
 }) {
   const functionsPlugin = getFunctionsPlugin(FUNCTIONS_SRC)
   const functionsInstallPlugin = getFunctionsInstallPlugin(FUNCTIONS_SRC)
   const edgeHandlersPlugin = await getEdgeHandlersPlugin({ buildDir, EDGE_HANDLERS_SRC })
   const deployPlugin = getDeployPlugin(featureFlags, BUILDBOT_SERVER_SOCKET)
-  return [functionsPlugin, functionsInstallPlugin, edgeHandlersPlugin, deployPlugin].filter(Boolean)
+  const dpcPlugin = getDpcPlugin({ featureFlags, childEnv })
+  return [functionsPlugin, functionsInstallPlugin, edgeHandlersPlugin, deployPlugin, dpcPlugin].filter(Boolean)
 }
 
 // When no "Functions directory" is defined, it means users does not use
@@ -77,6 +82,14 @@ const getDeployPlugin = function (featureFlags, BUILDBOT_SERVER_SOCKET) {
   }
 
   return { package: DEPLOY_PLUGIN_NAME, pluginPath: DEPLOY_PLUGIN }
+}
+
+const getDpcPlugin = function ({ featureFlags, childEnv: { CONTEXT } }) {
+  if (!featureFlags.dpc || CONTEXT !== 'deploy-preview') {
+    return
+  }
+
+  return { package: DPC_PLUGIN_NAME, pluginPath: DPC_PLUGIN_PATH }
 }
 
 const isCorePlugin = function (packageName) {

@@ -18,6 +18,8 @@ const DEFAULT_FEATURE_FLAGS = {
   // buildbot to finish its deploy before running the "onSuccess" and
   // "onEnd" hooks.
   service_buildbot_enable_deploy_server: false,
+  // When `true`, the Deploy preview commenting core plugin is enabled
+  dpc: false,
 }
 
 module.exports = { normalizeFeatureFlags, DEFAULT_FEATURE_FLAGS }
