@@ -96,12 +96,15 @@ const sendEventToChild = async function (childProcess, callId, eventName, payloa
 
 // Respond to events from parent to child process.
 // This runs forever until `childProcess.kill()` is called.
+// We need to use `new Promise()` and callbacks because this runs forever.
+// eslint-disable-next-line promise/prefer-await-to-callbacks
 const getEventsFromParent = function (callback) {
   return new Promise((resolve, reject) => {
     process.on('message', async (message) => {
       try {
         const [callId, eventName, payload] = message
         const payloadA = parsePayload(payload)
+        // eslint-disable-next-line promise/prefer-await-to-callbacks
         return await callback(callId, eventName, payloadA)
       } catch (error) {
         reject(error)
