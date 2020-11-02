@@ -1,3 +1,5 @@
+'use strict'
+
 const tomlify = require('tomlify-j0.4')
 
 // Serialize JavaScript object to TOML

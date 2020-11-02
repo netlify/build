@@ -1,3 +1,5 @@
+'use strict'
+
 const { removeFalsy } = require('../utils/remove_falsy')
 
 const removeEmptyObject = function (object, propName) {

@@ -1,3 +1,5 @@
+'use strict'
+
 const { removeFalsy } = require('../utils/remove_falsy')
 
 // Netlify UI build settings are used as default configuration values in

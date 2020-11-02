@@ -1,3 +1,5 @@
+'use strict'
+
 const { throwError } = require('../error')
 const { THEME } = require('../log/theme')
 

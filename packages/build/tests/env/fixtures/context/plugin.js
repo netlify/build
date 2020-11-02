@@ -1,3 +1,5 @@
+'use strict'
+
 const {
   env: { CONTEXT },
 } = require('process')

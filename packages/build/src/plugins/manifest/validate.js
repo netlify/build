@@ -1,3 +1,5 @@
+'use strict'
+
 const isPlainObj = require('is-plain-obj')
 
 const { THEME } = require('../../log/theme')

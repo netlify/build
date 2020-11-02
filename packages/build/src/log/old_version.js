@@ -1,3 +1,5 @@
+'use strict'
+
 const { stdout } = require('process')
 
 const UpdateNotifier = require('update-notifier')

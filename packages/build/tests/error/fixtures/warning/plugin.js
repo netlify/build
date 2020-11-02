@@ -1,3 +1,5 @@
+'use strict'
+
 const { emitWarning } = require('process')
 const { promisify } = require('util')
 

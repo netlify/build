@@ -1,3 +1,5 @@
+'use strict'
+
 // We distinguish between errors thrown intentionally and uncaught exceptions
 // (such as bugs) with a `type` property.
 const throwError = function (messageOrError, error) {

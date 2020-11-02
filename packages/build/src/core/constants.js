@@ -1,3 +1,5 @@
+'use strict'
+
 const { relative, normalize } = require('path')
 
 const { getCacheDir } = require('@netlify/cache-utils')

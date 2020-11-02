@@ -1,3 +1,5 @@
+'use strict'
+
 const { throwError } = require('./error')
 const { addBuildCommandOrigins, addPluginsOrigins } = require('./origin')
 const { deepMerge } = require('./utils/merge')

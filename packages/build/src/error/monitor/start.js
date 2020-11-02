@@ -1,3 +1,5 @@
+'use strict'
+
 const Bugsnag = require('@bugsnag/js')
 const memoizeOne = require('memoize-one')
 

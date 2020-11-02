@@ -1,3 +1,5 @@
+'use strict'
+
 // All CLI flags
 const FLAGS = {
   config: {

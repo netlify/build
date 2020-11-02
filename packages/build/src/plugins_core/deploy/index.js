@@ -1,3 +1,5 @@
+'use strict'
+
 const { logDeploySuccess } = require('../../log/messages/plugins')
 
 const {

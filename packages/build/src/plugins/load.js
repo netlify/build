@@ -1,3 +1,5 @@
+'use strict'
+
 const { addPluginLoadErrorStatus } = require('../status/load_error')
 const { measureDuration } = require('../time/main')
 

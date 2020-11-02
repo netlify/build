@@ -1,3 +1,5 @@
+'use strict'
+
 const indentString = require('indent-string')
 
 const { THEME } = require('../log/theme')

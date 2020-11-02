@@ -1,3 +1,5 @@
+'use strict'
+
 const deepmerge = require('deepmerge')
 const isPlainObj = require('is-plain-obj')
 

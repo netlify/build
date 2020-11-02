@@ -1,3 +1,5 @@
+'use strict'
+
 const { hrtime } = require('process')
 
 // Starts a timer

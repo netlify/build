@@ -1,3 +1,5 @@
+'use strict'
+
 const { env, kill } = require('process')
 const { promisify } = require('util')
 

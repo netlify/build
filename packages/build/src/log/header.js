@@ -1,3 +1,5 @@
+'use strict'
+
 const stringWidth = require('string-width')
 
 // Print a rectangular header

@@ -1,3 +1,5 @@
+'use strict'
+
 const pkgDir = require('pkg-dir')
 
 const { logInstallLocalPluginsDeps } = require('../log/messages/install')

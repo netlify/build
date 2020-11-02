@@ -1,3 +1,5 @@
+'use strict'
+
 const NetlifyAPI = require('netlify')
 
 const { removeFalsy } = require('../utils/remove_falsy')

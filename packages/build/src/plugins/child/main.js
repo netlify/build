@@ -1,3 +1,5 @@
+'use strict'
+
 require('../../utils/polyfills')
 
 const { setInspectColors } = require('../../log/colors')

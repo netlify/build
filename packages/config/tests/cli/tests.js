@@ -1,3 +1,5 @@
+'use strict'
+
 const { writeFile } = require('fs')
 const { promisify } = require('util')
 

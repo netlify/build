@@ -1,3 +1,5 @@
+'use strict'
+
 module.exports = {
   onBuild() {
     const error = new Error('test')

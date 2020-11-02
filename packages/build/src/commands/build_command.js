@@ -1,3 +1,5 @@
+'use strict'
+
 const { platform } = require('process')
 
 const execa = require('execa')

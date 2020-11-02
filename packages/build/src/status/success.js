@@ -1,3 +1,5 @@
+'use strict'
+
 const { runsOnlyOnBuildFailure } = require('../commands/get')
 
 // The last event handler of a plugin (except for `onError` and `onEnd`)

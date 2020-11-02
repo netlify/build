@@ -1,3 +1,5 @@
+'use strict'
+
 const {
   env: { BRANCH, HEAD, COMMIT_REF, CACHED_COMMIT_REF, PULL_REQUEST },
 } = require('process')

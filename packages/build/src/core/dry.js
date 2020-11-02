@@ -1,3 +1,5 @@
+'use strict'
+
 const { runsOnlyOnBuildFailure } = require('../commands/get')
 const { logDryRunStart, logDryRunCommand, logDryRunEnd } = require('../log/messages/dry')
 

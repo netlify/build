@@ -1,3 +1,5 @@
+'use strict'
+
 const { parseErrorInfo } = require('../error/parse/parse')
 
 const { logHeader, logErrorHeader } = require('./logger')

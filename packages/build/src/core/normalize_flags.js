@@ -1,3 +1,5 @@
+'use strict'
+
 const { env, execPath } = require('process')
 
 const { logFlags } = require('../log/messages/config')

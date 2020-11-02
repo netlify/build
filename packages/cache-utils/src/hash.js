@@ -1,3 +1,5 @@
+'use strict'
+
 const { createHash } = require('crypto')
 const { createReadStream } = require('fs')
 

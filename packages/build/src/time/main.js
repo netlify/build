@@ -1,3 +1,5 @@
+'use strict'
+
 const slugify = require('@sindresorhus/slugify')
 const keepFuncProps = require('keep-func-props')
 

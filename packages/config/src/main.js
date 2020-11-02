@@ -1,3 +1,5 @@
+'use strict'
+
 require('./utils/polyfills')
 
 const { getApiClient } = require('./api/client')

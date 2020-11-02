@@ -1,3 +1,5 @@
+'use strict'
+
 /* eslint-disable max-lines, import/max-dependencies */
 require('../utils/polyfills')
 

@@ -1,3 +1,5 @@
+'use strict'
+
 const { logCommand } = require('../log/messages/commands')
 const { measureDuration, normalizeTimerName } = require('../time/main')
 

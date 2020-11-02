@@ -1,3 +1,5 @@
+'use strict'
+
 const stripAnsi = require('strip-ansi')
 
 // Remove colors from statuses

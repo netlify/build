@@ -1,3 +1,5 @@
+'use strict'
+
 const { isDirectory } = require('path-type')
 
 const { LOCAL_INSTALL_PLUGIN_NAME } = require('../install/local')

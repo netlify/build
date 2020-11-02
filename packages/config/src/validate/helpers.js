@@ -1,3 +1,5 @@
+'use strict'
+
 const { normalize } = require('path')
 
 const isString = function (value) {

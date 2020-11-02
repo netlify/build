@@ -1,3 +1,5 @@
+'use strict'
+
 // Wrap an async function so it prepends an error message on exceptions.
 // This helps locate errors.
 const addAsyncErrorMessage = function (asyncFunc, message) {

@@ -1,3 +1,5 @@
+'use strict'
+
 const { getCommandDescription } = require('../description')
 const { getLogHeaderFunc } = require('../header_func')
 const { log, logMessage } = require('../logger')

@@ -1,3 +1,5 @@
+'use strict'
+
 const { getNewEnvChanges, setEnvChanges } = require('../../env/changes.js')
 
 const { getUtils } = require('./utils')

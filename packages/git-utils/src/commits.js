@@ -1,3 +1,5 @@
+'use strict'
+
 const { git } = require('./exec')
 
 // Return information on each commit since the `base` commit, such as SHA,

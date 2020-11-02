@@ -1,3 +1,5 @@
+'use strict'
+
 const { env, pid } = require('process')
 
 module.exports = {

@@ -1,3 +1,5 @@
+'use strict'
+
 const {
   env: { LC_ALL },
 } = require('process')

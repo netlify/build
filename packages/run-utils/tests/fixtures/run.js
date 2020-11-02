@@ -1,3 +1,5 @@
+'use strict'
+
 const {
   argv: [, , command, options],
 } = require('process')

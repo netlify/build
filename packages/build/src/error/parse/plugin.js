@@ -1,3 +1,5 @@
+'use strict'
+
 // Retrieve plugin's package.json details to include in error messages.
 // Please note `pluginPackageJson` has been normalized by `normalize-package-data`.
 const getPluginInfo = function ({ pluginPackageJson = {} }, { packageName, loadedFrom }) {

@@ -1,3 +1,5 @@
+'use strict'
+
 const { cleanupConfig } = require('./cleanup')
 const { logObject, logSubHeader } = require('./logger')
 const { cleanupConfigOpts } = require('./options')

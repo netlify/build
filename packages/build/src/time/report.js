@@ -1,3 +1,5 @@
+'use strict'
+
 const { promisify } = require('util')
 
 const StatsdClient = require('statsd-client')

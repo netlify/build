@@ -1,3 +1,5 @@
+'use strict'
+
 const { git } = require('./exec')
 
 // Returns the number of lines of code added, removed or modified since the

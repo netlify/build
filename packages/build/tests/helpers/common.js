@@ -1,3 +1,5 @@
+'use strict'
+
 require('log-process-errors/build/register/ava')
 
 const { normalize } = require('path')

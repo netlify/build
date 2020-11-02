@@ -1,3 +1,5 @@
+'use strict'
+
 const { relative } = require('path')
 const { cwd } = require('process')
 

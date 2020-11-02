@@ -1,3 +1,5 @@
+'use strict'
+
 // `build.commandOrigin` and `plugins[*].origin` constants
 const UI_ORIGIN = 'ui'
 const CONFIG_ORIGIN = 'config'

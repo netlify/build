@@ -1,3 +1,5 @@
+'use strict'
+
 const { removeFalsy } = require('./utils/remove_falsy')
 
 // Some properties can be optionally capitalized. We normalize them to lowercase

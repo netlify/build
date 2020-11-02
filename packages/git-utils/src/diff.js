@@ -1,3 +1,5 @@
+'use strict'
+
 const { git } = require('./exec')
 
 // Return the list of modified|created|deleted files according to git, between

@@ -1,3 +1,5 @@
+'use strict'
+
 const { realpath } = require('fs')
 const { dirname, relative, sep } = require('path')
 const { promisify } = require('util')

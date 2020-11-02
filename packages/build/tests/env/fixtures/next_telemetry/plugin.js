@@ -1,3 +1,5 @@
+'use strict'
+
 const {
   env: { NEXT_TELEMETRY_DISABLED },
 } = require('process')

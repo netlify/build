@@ -1,3 +1,5 @@
+'use strict'
+
 const resolveConfig = require('@netlify/config')
 
 const { getChildEnv } = require('../env/main')

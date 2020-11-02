@@ -1,3 +1,5 @@
+'use strict'
+
 const { cwd } = require('process')
 
 const cleanStack = require('clean-stack')

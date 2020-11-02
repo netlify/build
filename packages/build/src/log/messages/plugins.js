@@ -1,3 +1,5 @@
+'use strict'
+
 const { getPluginOrigin } = require('../description')
 const { log, logArray, logError, logSubHeader } = require('../logger')
 const { THEME } = require('../theme')

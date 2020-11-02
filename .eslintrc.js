@@ -1,8 +1,15 @@
+'use strict'
+
 const { overrides } = require('@netlify/eslint-config-node')
 
 module.exports = {
   extends: ['@netlify/eslint-config-node', 'plugin:fp/recommended'],
+  parserOptions: {
+    sourceType: 'script',
+  },
   rules: {
+    strict: 2,
+
     // eslint-plugin-ava needs to know where test files are located
     'ava/no-ignored-test-files': [2, { files: ['tests/**/*.js', '!tests/{helpers,fixtures}/**/*.{js,json}'] }],
     'ava/no-import-test-files': [2, { files: ['tests/**/*.js', '!tests/{helpers,fixtures}/**/*.{js,json}'] }],
@@ -15,6 +22,12 @@ module.exports = {
   },
   overrides: [
     ...overrides,
+    {
+      files: ['**/*.md'],
+      rules: {
+        strict: 0,
+      },
+    },
     {
       files: ['**/fixtures/handlers_*/**/*.js'],
       parserOptions: {

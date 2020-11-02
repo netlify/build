@@ -1,3 +1,5 @@
+'use strict'
+
 const { version: currentVersion, execPath } = require('process')
 
 const execa = require('execa')

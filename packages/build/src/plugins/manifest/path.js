@@ -1,3 +1,5 @@
+'use strict'
+
 const locatePath = require('locate-path')
 
 // Retrieve "manifest.yml" path for a specific plugin

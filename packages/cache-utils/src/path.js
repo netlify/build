@@ -1,3 +1,5 @@
+'use strict'
+
 const { homedir } = require('os')
 const { resolve, isAbsolute, join, sep } = require('path')
 

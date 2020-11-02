@@ -1,3 +1,5 @@
+'use strict'
+
 const { cwd: getCwd } = require('process')
 
 const pathExists = require('path-exists')

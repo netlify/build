@@ -1,3 +1,5 @@
+'use strict'
+
 const { dirname } = require('path')
 
 const corePackageJson = require('../../package.json')

@@ -1,3 +1,5 @@
+'use strict'
+
 const { handleBuildError } = require('../error/handle')
 const { logStatuses } = require('../log/messages/status')
 

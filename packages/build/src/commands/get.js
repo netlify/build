@@ -1,3 +1,5 @@
+'use strict'
+
 const { EVENTS } = require('../plugins/events')
 
 // Get commands for all events

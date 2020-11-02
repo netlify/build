@@ -1,3 +1,5 @@
+'use strict'
+
 const { env } = require('process')
 
 const filterObj = require('filter-obj')

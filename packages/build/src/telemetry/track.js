@@ -1,3 +1,5 @@
+'use strict'
+
 const execa = require('execa')
 
 const REQUEST_FILE = `${__dirname}/request.js`

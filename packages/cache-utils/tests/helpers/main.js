@@ -1,3 +1,5 @@
+'use strict'
+
 const { writeFile, readFile } = require('fs')
 const { join, basename } = require('path')
 const { promisify } = require('util')

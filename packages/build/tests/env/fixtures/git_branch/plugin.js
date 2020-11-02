@@ -1,3 +1,5 @@
+'use strict'
+
 const {
   env: { BRANCH, HEAD },
 } = require('process')

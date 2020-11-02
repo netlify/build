@@ -1,3 +1,5 @@
+'use strict'
+
 module.exports = {
   onPreBuild() {
     // eslint-disable-next-line no-throw-literal

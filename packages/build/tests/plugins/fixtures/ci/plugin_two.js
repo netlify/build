@@ -1,3 +1,5 @@
+'use strict'
+
 const STRING_LENGTH = 1e3
 
 module.exports = {
