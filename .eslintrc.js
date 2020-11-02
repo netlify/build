@@ -3,7 +3,12 @@
 const { overrides } = require('@netlify/eslint-config-node')
 
 module.exports = {
-  extends: ['@netlify/eslint-config-node', 'plugin:promise/recommended', 'plugin:fp/recommended'],
+  extends: [
+    '@netlify/eslint-config-node',
+    'plugin:import/recommended',
+    'plugin:promise/recommended',
+    'plugin:fp/recommended',
+  ],
   parserOptions: {
     sourceType: 'script',
   },
@@ -27,6 +32,22 @@ module.exports = {
     'fp/no-unused-expression': 0,
     'fp/no-nil': 0,
     'fp/no-throw': 0,
+
+    'import/extensions': [2, 'always', { ignorePackages: true }],
+    'import/newline-after-import': 2,
+    'import/no-amd': 2,
+    'import/no-anonymous-default-export': 2,
+    'import/no-cycle': [2, { commonjs: true }],
+    'import/no-deprecated': 2,
+    'import/no-dynamic-require': 2,
+    'import/no-extraneous-dependencies': 2,
+    'import/no-mutable-exports': 2,
+    'import/no-named-default': 2,
+    'import/no-namespace': 2,
+    'import/no-self-import': 2,
+    'import/no-unassigned-import': [2, { allow: ['*polyfill*', '**/*polyfill*', 'log-process-errors/**'] }],
+    'import/no-unresolved': [2, { commonjs: true }],
+    'import/no-useless-path-segments': [2, { commonjs: true }],
   },
   overrides: [
     ...overrides,
@@ -34,6 +55,13 @@ module.exports = {
       files: ['**/*.md'],
       rules: {
         strict: 0,
+        'import/no-unresolved': 0,
+      },
+    },
+    {
+      files: ['**/fixtures/**/*.js'],
+      rules: {
+        'import/no-unresolved': 0,
       },
     },
     {
