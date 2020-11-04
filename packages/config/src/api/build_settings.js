@@ -22,11 +22,11 @@ const addBuildSettings = function ({
 
 // From the `getSite` API response to the corresponding configuration properties
 const getDefaultConfig = function (
-  { cmd: command, dir: publish, functions_dir: functions, base, env: environment },
+  { cmd: command, dir: publish, functions_dir: functions, base },
   { build, plugins = [], ...defaultConfig },
   uiPlugins = [],
 ) {
-  const siteBuild = removeFalsy({ command, publish, functions, base, environment })
+  const siteBuild = removeFalsy({ command, publish, functions, base })
   const uiPluginsA = uiPlugins.map(normalizeUiPlugin)
   const pluginsA = [...uiPluginsA, ...plugins]
   return { ...defaultConfig, build: { ...siteBuild, ...build }, plugins: pluginsA }

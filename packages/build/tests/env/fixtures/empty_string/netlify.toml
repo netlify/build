@@ -1,5 +1,0 @@
-[build]
-command = "node index.js"
-
-[build.environment]
-TEST = ""

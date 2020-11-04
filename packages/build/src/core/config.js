@@ -24,6 +24,7 @@ const tLoadConfig = async function ({
   envOpt,
   debug,
   mode,
+  offline,
   deployId,
   logs,
   testOpts,
@@ -33,10 +34,10 @@ const tLoadConfig = async function ({
     buildDir,
     config: netlifyConfig,
     context: contextA,
-    branch: branchA,
     token: tokenA,
     api,
     siteInfo,
+    env,
   } = await resolveFullConfig({
     config,
     defaultConfig,
@@ -48,26 +49,17 @@ const tLoadConfig = async function ({
     baseRelDir,
     token,
     siteId,
+    deployId,
     mode,
+    offline,
     envOpt,
     testOpts,
   })
   logConfigInfo({ logs, configPath, buildDir, netlifyConfig, context: contextA, debug })
 
   const apiA = addApiErrorHandlers(api)
-  const [childEnv, { packageJson }] = await Promise.all([
-    getChildEnv({
-      netlifyConfig,
-      buildDir,
-      context: contextA,
-      branch: branchA,
-      siteInfo,
-      deployId,
-      envOpt,
-      mode,
-    }),
-    getPackageJson(buildDir),
-  ])
+  const childEnv = getChildEnv({ envOpt, env })
+  const { packageJson } = await getPackageJson(buildDir)
   return { netlifyConfig, configPath, buildDir, packageJson, childEnv, token: tokenA, api: apiA, siteInfo }
 }
 
@@ -86,7 +78,9 @@ const resolveFullConfig = async function ({
   baseRelDir,
   token,
   siteId,
+  deployId,
   mode,
+  offline,
   envOpt,
   testOpts,
 }) {
@@ -102,7 +96,9 @@ const resolveFullConfig = async function ({
       baseRelDir,
       token,
       siteId,
+      deployId,
       mode,
+      offline,
       env: envOpt,
       testOpts,
     })

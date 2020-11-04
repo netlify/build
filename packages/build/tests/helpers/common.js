@@ -145,6 +145,11 @@ const getCliFlag = function ({ name, value, prefix }) {
   }
 
   const key = [...prefix, name].join('.')
+
+  if (value === false) {
+    return [`--no-${key}`]
+  }
+
   return [`--${key}=${value}`]
 }
 

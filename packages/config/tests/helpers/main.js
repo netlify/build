@@ -10,6 +10,15 @@ const { runFixtureCommon, FIXTURES_DIR, startServer } = require('../../../build/
 
 const ROOT_DIR = `${__dirname}/../..`
 
+const getFixtureConfig = async function (t, fixtureName, opts) {
+  const { returnValue } = await runFixture(t, fixtureName, { snapshot: false, ...opts })
+  try {
+    return JSON.parse(returnValue)
+  } catch (error) {
+    return returnValue
+  }
+}
+
 const runFixture = async function (t, fixtureName, { flags = {}, env, ...opts } = {}) {
   const binaryPath = await BINARY_PATH
   const flagsA = { stable: true, buffer: true, branch: 'branch', ...flags }
@@ -38,4 +47,4 @@ const serializeApi = function ({ api, ...result }) {
 // Use a top-level promise so it's only performed once at load time
 const BINARY_PATH = getBinPath({ cwd: ROOT_DIR })
 
-module.exports = { runFixture, FIXTURES_DIR, startServer }
+module.exports = { getFixtureConfig, runFixture, FIXTURES_DIR, startServer }

@@ -1,11 +1,11 @@
 'use strict'
 
 const {
-  env: { NETLIFY },
+  env: { DEPLOY_ID },
 } = require('process')
 
 module.exports = {
   onPreBuild() {
-    console.log(NETLIFY)
+    console.log(DEPLOY_ID)
   },
 }

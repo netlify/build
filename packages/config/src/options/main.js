@@ -37,7 +37,9 @@ const getDefaultOpts = function ({ env: envOpt = {}, cwd: cwdOpt, defaultConfig 
     branch: combinedEnv.BRANCH,
     token: combinedEnv.NETLIFY_AUTH_TOKEN,
     siteId: combinedEnv.NETLIFY_SITE_ID,
+    deployId: combinedEnv.DEPLOY_ID,
     mode: 'require',
+    offline: false,
     debug: getDefaultDebug(combinedEnv, defaultConfig),
     buffer: false,
   }

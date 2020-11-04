@@ -80,6 +80,17 @@ const exampleFunction = async function () {
   //     },
   //     ...
   // },
+  // "env": {
+  //   "general": {
+  //     "CONTEXT": "production",
+  //     ...
+  //   },
+  //   "accounts": { ... },
+  //   "addons": { ... },
+  //   "ui": { ... },
+  //   "configFile": { ... },
+  //   "all": { ... },
+  // }
   // "token": "564194bc-12cd-511a-037a-be4c734f17c4"
   // }
 }
@@ -97,6 +108,13 @@ _Type_: `boolean`\
 _Default value_: `false` unless the `NETLIFY_BUILD_DEBUG` environment variable is set.
 
 Prints debugging information showing the configuration being resolved.
+
+#### offline
+
+_Type_: `boolean`\
+_Default value_: `false`
+
+Do not send requests to the Netlify API to retrieve site settings.
 
 #### buffer
 
@@ -283,6 +301,19 @@ Netlify [JavaScript client instance](https://github.com/netlify/js-client) used 
 _Type_: `object?`
 
 When the [`buffer`](#buffer) option is used, this contains two arrays `stdout` and `stderr` with the logs.
+
+#### env
+
+_Type_: `object?`
+
+Site's environment variables. Each property is an object of key-value pairs:
+
+- `general`: general environment variables set for all sites
+- `account`: environment variables set in the Netlify UI for a specific account
+- `addons`: addon-specific environment variables
+- `ui`: environment variables set in the Netlify UI for a specific site
+- `configFile`: environment variables set in `netlify.toml`
+- `all`: all of the above, merged
 
 # Usage (CLI)
 

@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 'use strict'
 
 require('./utils/polyfills')
@@ -7,6 +8,7 @@ const { getSiteInfo } = require('./api/site_info')
 const { normalizeConfigCase } = require('./case')
 const { mergeContext } = require('./context')
 const { getConfig, parseDefaultConfig } = require('./default')
+const { getEnv } = require('./env/main')
 const { handleFiles } = require('./files')
 const { getInlineConfig } = require('./inline_config')
 const { cleanupConfig } = require('./log/cleanup')
@@ -28,9 +30,9 @@ const {
 // Takes an optional configuration file path as input and return the resolved
 // `config` together with related properties such as the `configPath`.
 const resolveConfig = async function (opts) {
-  const { cachedConfig, token, ...optsA } = addDefaultOpts(opts)
+  const { cachedConfig, token, offline, ...optsA } = addDefaultOpts(opts)
   // `api` is not JSON-serializable, so we cannot cache it inside `cachedConfig`
-  const api = getApiClient({ ...optsA, token })
+  const api = getApiClient({ ...optsA, token, offline })
 
   // Performance optimization when @netlify/config caller has already previously
   // called it and cached the result.
@@ -54,13 +56,15 @@ const resolveConfig = async function (opts) {
     base,
     branch,
     siteId,
+    deployId,
     baseRelDir,
     mode,
     debug,
     logs,
+    testOpts,
   } = await normalizeOpts(optsA)
 
-  const siteInfo = await getSiteInfo(api, siteId, mode)
+  const { siteInfo, accounts, addons } = await getSiteInfo({ api, siteId, mode, testOpts })
 
   const { defaultConfig: defaultConfigA, baseRelDir: baseRelDirA } = parseDefaultConfig({
     defaultConfig,
@@ -85,7 +89,19 @@ const resolveConfig = async function (opts) {
 
   const { config: configA, buildDir } = await handleFiles({ config, repositoryRoot, baseRelDir: baseRelDirA })
 
-  const result = { siteInfo, configPath, buildDir, config: configA, context, branch, token, api, logs }
+  const env = await getEnv({
+    mode,
+    config: configA,
+    siteInfo,
+    accounts,
+    addons,
+    buildDir,
+    branch,
+    deployId,
+    context,
+  })
+
+  const result = { siteInfo, env, configPath, buildDir, config: configA, context, branch, token, api, logs }
   logResult(result, { logs, debug })
   return result
 }
@@ -193,3 +209,4 @@ module.exports = resolveConfig
 // TODO: on next major release, export a single object instead of mutating the
 // top-level function
 module.exports.cleanupConfig = cleanupConfig
+/* eslint-enable max-lines */
