@@ -251,52 +251,42 @@ if (platform !== 'win32') {
 
 const TELEMETRY_PATH = '/collect'
 
-test('Telemetry success', async (t) => {
+const runWithApiMock = async function (t, { telemetry, origin, env = {}, snapshot = false } = {}) {
   const { scheme, host, requests, stopServer } = await startServer({ path: TELEMETRY_PATH })
-  await runFixture(t, 'success', {
-    flags: { siteId: 'test', testOpts: { telemetryOrigin: `${scheme}://${host}` }, telemetry: true },
-    snapshot: false,
-  })
-  await stopServer()
+  const telemetryOrigin = origin || `${scheme}://${host}`
+  try {
+    await runFixture(t, 'success', {
+      flags: { siteId: 'test', testOpts: { telemetryOrigin }, telemetry },
+      env,
+      snapshot,
+    })
+  } finally {
+    await stopServer()
+  }
+  return requests
+}
+
+test('Telemetry success', async (t) => {
+  const requests = await runWithApiMock(t, { telemetry: true })
   const snapshot = requests.map(normalizeSnapshot)
   t.snapshot(snapshot)
 })
 
 test('Telemetry disabled', async (t) => {
-  const { scheme, host, requests, stopServer } = await startServer({ path: TELEMETRY_PATH })
-  await runFixture(t, 'success', {
-    flags: { siteId: 'test', testOpts: { telemetryOrigin: `${scheme}://${host}` } },
-    env: { BUILD_TELEMETRY_DISABLED: 'true' },
-    snapshot: false,
-  })
-  await stopServer()
+  const requests = await runWithApiMock(t, { env: { BUILD_TELEMETRY_DISABLED: 'true' } })
   t.is(requests.length, 0)
 })
 
 test('Telemetry disabled with flag', async (t) => {
-  const { scheme, host, requests, stopServer } = await startServer({ path: TELEMETRY_PATH })
-  await runFixture(t, 'success', {
-    flags: { siteId: 'test', testOpts: { telemetryOrigin: `${scheme}://${host}` }, telemetry: false },
-    snapshot: false,
-  })
-  await stopServer()
+  const requests = await runWithApiMock(t, { telemetry: false })
   t.is(requests.length, 0)
 })
 
 test('Telemetry disabled with mode', async (t) => {
-  const { scheme, host, requests, stopServer } = await startServer({ path: TELEMETRY_PATH })
-  await runFixture(t, 'success', {
-    flags: { siteId: 'test', testOpts: { telemetryOrigin: `${scheme}://${host}` }, telemetry: undefined },
-    snapshot: false,
-  })
-  await stopServer()
+  const requests = await runWithApiMock(t)
   t.is(requests.length, 0)
 })
 
 test('Telemetry error', async (t) => {
-  const { stopServer } = await startServer({ path: TELEMETRY_PATH })
-  await runFixture(t, 'success', {
-    flags: { siteId: 'test', testOpts: { telemetryOrigin: `https://...` }, telemetry: true },
-  })
-  await stopServer()
+  await runWithApiMock(t, { origin: 'https://...', telemetry: true, snapshot: true })
 })
