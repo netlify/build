@@ -252,7 +252,7 @@ if (platform !== 'win32') {
 const TELEMETRY_PATH = '/collect'
 
 test('Telemetry success', async (t) => {
-  const { scheme, host, requests, stopServer } = await startServer(TELEMETRY_PATH)
+  const { scheme, host, requests, stopServer } = await startServer({ path: TELEMETRY_PATH })
   await runFixture(t, 'success', {
     flags: { siteId: 'test', testOpts: { telemetryOrigin: `${scheme}://${host}` }, telemetry: true },
     snapshot: false,
@@ -263,7 +263,7 @@ test('Telemetry success', async (t) => {
 })
 
 test('Telemetry disabled', async (t) => {
-  const { scheme, host, requests, stopServer } = await startServer(TELEMETRY_PATH)
+  const { scheme, host, requests, stopServer } = await startServer({ path: TELEMETRY_PATH })
   await runFixture(t, 'success', {
     flags: { siteId: 'test', testOpts: { telemetryOrigin: `${scheme}://${host}` } },
     env: { BUILD_TELEMETRY_DISABLED: 'true' },
@@ -274,7 +274,7 @@ test('Telemetry disabled', async (t) => {
 })
 
 test('Telemetry disabled with flag', async (t) => {
-  const { scheme, host, requests, stopServer } = await startServer(TELEMETRY_PATH)
+  const { scheme, host, requests, stopServer } = await startServer({ path: TELEMETRY_PATH })
   await runFixture(t, 'success', {
     flags: { siteId: 'test', testOpts: { telemetryOrigin: `${scheme}://${host}` }, telemetry: false },
     snapshot: false,
@@ -284,7 +284,7 @@ test('Telemetry disabled with flag', async (t) => {
 })
 
 test('Telemetry disabled with mode', async (t) => {
-  const { scheme, host, requests, stopServer } = await startServer(TELEMETRY_PATH)
+  const { scheme, host, requests, stopServer } = await startServer({ path: TELEMETRY_PATH })
   await runFixture(t, 'success', {
     flags: { siteId: 'test', testOpts: { telemetryOrigin: `${scheme}://${host}` }, telemetry: undefined },
     snapshot: false,
@@ -294,7 +294,7 @@ test('Telemetry disabled with mode', async (t) => {
 })
 
 test('Telemetry error', async (t) => {
-  const { stopServer } = await startServer(TELEMETRY_PATH)
+  const { stopServer } = await startServer({ path: TELEMETRY_PATH })
   await runFixture(t, 'success', {
     flags: { siteId: 'test', testOpts: { telemetryOrigin: `https://...` }, telemetry: true },
   })

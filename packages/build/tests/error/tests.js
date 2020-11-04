@@ -51,21 +51,21 @@ test('build.cancelBuild() error option', async (t) => {
 })
 
 test('build.cancelBuild() API call', async (t) => {
-  const { scheme, host, requests, stopServer } = await startServer(CANCEL_PATH)
+  const { scheme, host, requests, stopServer } = await startServer({ path: CANCEL_PATH })
   await runFixture(t, 'cancel', { flags: { token: 'test', deployId: 'test', testOpts: { scheme, host } } })
   await stopServer()
   t.snapshot(requests)
 })
 
 test('build.cancelBuild() API call no DEPLOY_ID', async (t) => {
-  const { scheme, host, requests, stopServer } = await startServer(CANCEL_PATH)
+  const { scheme, host, requests, stopServer } = await startServer({ path: CANCEL_PATH })
   await runFixture(t, 'cancel', { flags: { token: 'test', testOpts: { scheme, host } } })
   await stopServer()
   t.is(requests.length, 0)
 })
 
 test('build.cancelBuild() API call no token', async (t) => {
-  const { scheme, host, requests, stopServer } = await startServer(CANCEL_PATH)
+  const { scheme, host, requests, stopServer } = await startServer({ path: CANCEL_PATH })
   await runFixture(t, 'cancel', { flags: { deployId: 'test', testOpts: { scheme, host } } })
   await stopServer()
   t.is(requests.length, 0)

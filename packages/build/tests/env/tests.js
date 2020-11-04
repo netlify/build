@@ -62,13 +62,13 @@ const SITE_INFO_PATH = '/api/v1/sites/test'
 const SITE_INFO_DATA = { url: 'test', build_settings: { repo_url: 'test' } }
 
 test('Environment variable siteInfo success', async (t) => {
-  const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_DATA)
+  const { scheme, host, stopServer } = await startServer({ path: SITE_INFO_PATH, response: SITE_INFO_DATA })
   await runFixture(t, 'site_info', { flags: { token: 'test', siteId: 'test', testOpts: { scheme, host } } })
   await stopServer()
 })
 
 test('Environment variable siteInfo empty', async (t) => {
-  const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, {})
+  const { scheme, host, stopServer } = await startServer({ path: SITE_INFO_PATH })
   await runFixture(t, 'site_info', { flags: { token: 'test', siteId: 'test', testOpts: { scheme, host } } })
   await stopServer()
 })
