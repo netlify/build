@@ -29,31 +29,35 @@ const SITE_INFO_DATA = { url: 'test', build_settings: { repo_url: 'test' } }
 const SITE_INFO_ERROR = { error: 'invalid' }
 
 test('Environment variable siteInfo success', async (t) => {
-  const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_DATA)
+  const { scheme, host, stopServer } = await startServer({ path: SITE_INFO_PATH, response: SITE_INFO_DATA })
   await runFixture(t, 'empty', { flags: { token: 'test', siteId: 'test', testOpts: { scheme, host } } })
   await stopServer()
 })
 
 test('Environment variable siteInfo API error', async (t) => {
-  const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_ERROR, { status: 400 })
+  const { scheme, host, stopServer } = await startServer({
+    path: SITE_INFO_PATH,
+    response: SITE_INFO_ERROR,
+    status: 400,
+  })
   await runFixture(t, 'empty', { flags: { token: 'test', siteId: 'test', testOpts: { scheme, host } } })
   await stopServer()
 })
 
 test('Environment variable siteInfo no token', async (t) => {
-  const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_DATA)
+  const { scheme, host, stopServer } = await startServer({ path: SITE_INFO_PATH, response: SITE_INFO_DATA })
   await runFixture(t, 'empty', { flags: { siteId: 'test', testOpts: { scheme, host } } })
   await stopServer()
 })
 
 test('Environment variable siteInfo no siteId', async (t) => {
-  const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_DATA)
+  const { scheme, host, stopServer } = await startServer({ path: SITE_INFO_PATH, response: SITE_INFO_DATA })
   await runFixture(t, 'empty', { flags: { token: 'test', testOpts: { scheme, host } } })
   await stopServer()
 })
 
 test('Environment variable siteInfo CI', async (t) => {
-  const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_DATA)
+  const { scheme, host, stopServer } = await startServer({ path: SITE_INFO_PATH, response: SITE_INFO_DATA })
   await runFixture(t, 'empty', {
     flags: { token: 'test', siteId: 'test', mode: 'buildbot', testOpts: { scheme, host } },
   })
@@ -66,7 +70,10 @@ const SITE_INFO_BUILD_SETTINGS_NULL = {
 }
 
 test('Build settings can be null', async (t) => {
-  const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_BUILD_SETTINGS_NULL)
+  const { scheme, host, stopServer } = await startServer({
+    path: SITE_INFO_PATH,
+    response: SITE_INFO_BUILD_SETTINGS_NULL,
+  })
   await runFixture(t, 'empty', { flags: { token: 'test', siteId: 'test', testOpts: { scheme, host } } })
   await stopServer()
 })
@@ -85,13 +92,13 @@ const SITE_INFO_BUILD_SETTINGS = {
 }
 
 test('Use build settings if a siteId and token are provided', async (t) => {
-  const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_BUILD_SETTINGS)
+  const { scheme, host, stopServer } = await startServer({ path: SITE_INFO_PATH, response: SITE_INFO_BUILD_SETTINGS })
   await runFixture(t, 'base', { flags: { token: 'test', siteId: 'test', testOpts: { scheme, host } } })
   await stopServer()
 })
 
 test('Build settings have low merging priority', async (t) => {
-  const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_BUILD_SETTINGS)
+  const { scheme, host, stopServer } = await startServer({ path: SITE_INFO_PATH, response: SITE_INFO_BUILD_SETTINGS })
   await runFixture(t, 'build_settings', {
     flags: { token: 'test', siteId: 'test', baseRelDir: true, testOpts: { scheme, host } },
   })
@@ -99,25 +106,29 @@ test('Build settings have low merging priority', async (t) => {
 })
 
 test('Build settings are not used if getSite call fails', async (t) => {
-  const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_BUILD_SETTINGS, { status: 400 })
+  const { scheme, host, stopServer } = await startServer({
+    path: SITE_INFO_PATH,
+    response: SITE_INFO_BUILD_SETTINGS,
+    status: 400,
+  })
   await runFixture(t, 'base', { flags: { token: 'test', siteId: 'test', testOpts: { scheme, host } } })
   await stopServer()
 })
 
 test('Build settings are not used without a token', async (t) => {
-  const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_BUILD_SETTINGS)
+  const { scheme, host, stopServer } = await startServer({ path: SITE_INFO_PATH, response: SITE_INFO_BUILD_SETTINGS })
   await runFixture(t, 'base', { flags: { siteId: 'test', testOpts: { scheme, host } } })
   await stopServer()
 })
 
 test('Build settings are not used without a siteId', async (t) => {
-  const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_BUILD_SETTINGS)
+  const { scheme, host, stopServer } = await startServer({ path: SITE_INFO_PATH, response: SITE_INFO_BUILD_SETTINGS })
   await runFixture(t, 'base', { flags: { token: 'test', testOpts: { scheme, host } } })
   await stopServer()
 })
 
 test('Build settings are not used in CI', async (t) => {
-  const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_BUILD_SETTINGS)
+  const { scheme, host, stopServer } = await startServer({ path: SITE_INFO_PATH, response: SITE_INFO_BUILD_SETTINGS })
   await runFixture(t, 'base', {
     flags: { token: 'test', siteId: 'test', mode: 'buildbot', testOpts: { scheme, host } },
   })
@@ -130,7 +141,7 @@ const SITE_INFO_BASE_REL_DIR = {
 }
 
 test('baseRelDir is true if build.base is overridden', async (t) => {
-  const { scheme, host, stopServer } = await startServer(SITE_INFO_PATH, SITE_INFO_BASE_REL_DIR)
+  const { scheme, host, stopServer } = await startServer({ path: SITE_INFO_PATH, response: SITE_INFO_BASE_REL_DIR })
   try {
     await runFixture(t, 'build_base_override', {
       flags: {
