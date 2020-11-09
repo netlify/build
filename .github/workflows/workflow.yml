@@ -36,5 +36,15 @@ jobs:
         if: "${{ matrix.node-version == '14.x' }}"
       - name: Tests
         run: npm run test:ci
-      - name: Codecov test coverage
-        run: bash scripts/coverage.sh "${{ matrix.os }}" "${{ matrix.node-version }}"
+      - name: Get test coverage flags
+        id: test-coverage-flags
+        run: |-
+          os=${{ matrix.os }}
+          node=${{ matrix.node-version }}
+          echo "::set-output name=os::${os/-latest/}"
+          echo "::set-output name=node::node_${node//./}"
+        shell: bash
+      - uses: codecov/codecov-action@v1
+        with:
+          file: coverage/coverage-final.json
+          flags: ${{ steps.test-coverage-flags.outputs.os }},${{ steps.test-coverage-flags.outputs.node }}

@@ -23,8 +23,8 @@
     "test:ci:ava": "nyc -r lcovonly -r text -r json ava"
   },
   "scriptsArgs": {
-    "eslint": "--ignore-path .gitignore --cache --format=codeframe --max-warnings=0 \"{packages,scripts,.github}/**/*.{js,md,html}\" \"*.{js,md,html}\" \".*.{js,md,html}\"",
-    "prettier": "--ignore-path .gitignore --loglevel=warn \"{packages,scripts,.github}/**/*.{js,md,yml,json,html}\" \"*.{js,yml,json,html}\" \".*.{js,yml,json,html}\" \"!**/package-lock.json\" \"!package-lock.json\""
+    "eslint": "--ignore-path .gitignore --cache --format=codeframe --max-warnings=0 \"{packages,.github}/**/*.{js,md,html}\" \"*.{js,md,html}\" \".*.{js,md,html}\"",
+    "prettier": "--ignore-path .gitignore --loglevel=warn \"{packages,.github}/**/*.{js,md,yml,json,html}\" \"*.{js,yml,json,html}\" \".*.{js,yml,json,html}\" \"!**/package-lock.json\" \"!package-lock.json\""
   },
   "ava": {
     "files": [
@@ -70,7 +70,7 @@
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
-    "@netlify/eslint-config-node": "^0.6.0",
+    "@netlify/eslint-config-node": "^0.6.2",
     "ava": "^2.4.0",
     "lerna": "^3.20.2",
     "nyc": "^15.0.0"
