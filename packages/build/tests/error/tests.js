@@ -50,24 +50,28 @@ test('build.cancelBuild() error option', async (t) => {
   await runFixture(t, 'cancel_error_option')
 })
 
-test('build.cancelBuild() API call', async (t) => {
+const runWithApiMock = async function (t, flags) {
   const { scheme, host, requests, stopServer } = await startServer({ path: CANCEL_PATH })
-  await runFixture(t, 'cancel', { flags: { token: 'test', deployId: 'test', testOpts: { scheme, host } } })
-  await stopServer()
+  try {
+    await runFixture(t, 'cancel', { flags: { testOpts: { scheme, host }, ...flags } })
+  } finally {
+    await stopServer()
+  }
+  return requests
+}
+
+test('build.cancelBuild() API call', async (t) => {
+  const requests = await runWithApiMock(t, { token: 'test', deployId: 'test' })
   t.snapshot(requests)
 })
 
 test('build.cancelBuild() API call no DEPLOY_ID', async (t) => {
-  const { scheme, host, requests, stopServer } = await startServer({ path: CANCEL_PATH })
-  await runFixture(t, 'cancel', { flags: { token: 'test', testOpts: { scheme, host } } })
-  await stopServer()
+  const requests = await runWithApiMock(t, { token: 'test' })
   t.is(requests.length, 0)
 })
 
 test('build.cancelBuild() API call no token', async (t) => {
-  const { scheme, host, requests, stopServer } = await startServer({ path: CANCEL_PATH })
-  await runFixture(t, 'cancel', { flags: { deployId: 'test', testOpts: { scheme, host } } })
-  await stopServer()
+  const requests = await runWithApiMock(t, { deployId: 'test' })
   t.is(requests.length, 0)
 })
 
