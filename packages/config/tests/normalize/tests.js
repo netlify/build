@@ -52,3 +52,11 @@ test('Add build.commandOrigin ui if it came from defaultConfig', async (t) => {
   const defaultConfig = JSON.stringify({ build: { command: 'test' } })
   await runFixture(t, 'empty', { flags: { defaultConfig } })
 })
+
+test('Assign default edge-handlers if build.edge_handlers is not defined', async (t) => {
+  await runFixture(t, 'default_handlers_not_defined')
+})
+
+test('Does not assign default edge-handlers if build.edge_handlers is defined', async (t) => {
+  await runFixture(t, 'default_handlers_defined')
+})

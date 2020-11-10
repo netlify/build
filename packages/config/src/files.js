@@ -2,6 +2,7 @@
 
 const { resolve } = require('path')
 
+const pathExists = require('path-exists')
 const { isDirectory } = require('path-type')
 
 const { throwError } = require('./error')
@@ -13,7 +14,8 @@ const handleFiles = async function ({ config: { build, ...config }, repositoryRo
   const buildDir = await getBuildDir(repositoryRoot, buildA)
   const baseRel = baseRelDir ? buildDir : repositoryRoot
   const buildB = resolvePaths(buildA, BUILD_DIR_RELATIVE_PROPS, baseRel)
-  return { config: { ...config, build: buildB }, buildDir }
+  const buildC = await addDefaultPaths(buildB, baseRel)
+  return { config: { ...config, build: buildC }, buildDir }
 }
 
 // All file paths in the configuration file.
@@ -66,6 +68,30 @@ const checkBuildDir = async function (buildDir, repositoryRoot) {
   }
 
   throwError(`Base directory does not exist: ${buildDir}`)
+}
+
+// Some configuration properties have default values that are only set if a
+// specific directory/file exists in the build directory
+const addDefaultPaths = async function (build, baseRel) {
+  const props = await Promise.all(
+    DEFAULT_PATHS.map(({ property, defaultPath }) => addDefaultPath({ build, property, baseRel, defaultPath })),
+  )
+  return Object.assign({}, build, ...props)
+}
+
+const DEFAULT_PATHS = [{ property: 'edge_handlers', defaultPath: 'edge-handlers' }]
+
+const addDefaultPath = async function ({ build, property, baseRel, defaultPath }) {
+  if (build[property] !== undefined) {
+    return {}
+  }
+
+  const absolutePath = resolvePath(baseRel, defaultPath)
+  if (!(await pathExists(absolutePath))) {
+    return {}
+  }
+
+  return { [property]: absolutePath }
 }
 
 module.exports = { handleFiles, resolvePath }
