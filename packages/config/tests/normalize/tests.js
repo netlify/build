@@ -53,6 +53,14 @@ test('Add build.commandOrigin ui if it came from defaultConfig', async (t) => {
   await runFixture(t, 'empty', { flags: { defaultConfig } })
 })
 
+test('Assign default functions if build.functions is not defined', async (t) => {
+  await runFixture(t, 'default_functions_not_defined')
+})
+
+test('Does not assign default functions if build.functions is defined', async (t) => {
+  await runFixture(t, 'default_functions_defined')
+})
+
 test('Assign default edge-handlers if build.edge_handlers is not defined', async (t) => {
   await runFixture(t, 'default_handlers_not_defined')
 })

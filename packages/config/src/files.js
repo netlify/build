@@ -83,7 +83,10 @@ const addDefaultPaths = async function (build, baseRel) {
   return Object.assign({}, build, ...props)
 }
 
-const DEFAULT_PATHS = [{ property: 'edge_handlers', defaultPath: 'edge-handlers' }]
+const DEFAULT_PATHS = [
+  { property: 'functions', defaultPath: 'netlify-automatic-functions' },
+  { property: 'edge_handlers', defaultPath: 'edge-handlers' },
+]
 
 const addDefaultPath = async function ({ build, property, baseRel, defaultPath }) {
   if (build[property] !== undefined) {
