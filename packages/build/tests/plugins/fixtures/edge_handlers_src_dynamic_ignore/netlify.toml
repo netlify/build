@@ -1,0 +1,5 @@
+[build]
+edge_handlers = "test"
+
+[[plugins]]
+package = "./plugin"

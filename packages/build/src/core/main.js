@@ -392,7 +392,6 @@ const runBuild = async function ({
     childProcesses,
     netlifyConfig,
     packageJson,
-    constants,
     timers,
     debug,
   })
@@ -411,6 +410,7 @@ const runBuild = async function ({
     buildDir,
     nodePath,
     childEnv,
+    constants,
     mode,
     api,
     errorMonitor,
