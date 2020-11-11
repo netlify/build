@@ -7,10 +7,10 @@ const { callChild } = require('./ipc')
 
 // Retrieve all plugins commands
 // Can use either a module name or a file path to the plugin.
-const tLoadPlugins = async function ({ pluginsOptions, childProcesses, netlifyConfig, packageJson, constants, debug }) {
+const tLoadPlugins = async function ({ pluginsOptions, childProcesses, netlifyConfig, packageJson, debug }) {
   const pluginsCommands = await Promise.all(
     pluginsOptions.map((pluginOptions, index) =>
-      loadPlugin(pluginOptions, { childProcesses, index, netlifyConfig, packageJson, constants, debug }),
+      loadPlugin(pluginOptions, { childProcesses, index, netlifyConfig, packageJson, debug }),
     ),
   )
   const pluginsCommandsA = pluginsCommands.flat()
@@ -23,7 +23,7 @@ const loadPlugins = measureDuration(tLoadPlugins, 'load_plugins')
 // Do it by executing the plugin `load` event handler.
 const loadPlugin = async function (
   { packageName, pluginPackageJson, pluginPackageJson: { version } = {}, pluginPath, inputs, loadedFrom, origin },
-  { childProcesses, index, netlifyConfig, packageJson, constants, debug },
+  { childProcesses, index, netlifyConfig, packageJson, debug },
 ) {
   const { childProcess } = childProcesses[index]
   const loadEvent = 'load'
@@ -32,7 +32,7 @@ const loadPlugin = async function (
     const { pluginCommands } = await callChild(
       childProcess,
       'load',
-      { pluginPath, inputs, netlifyConfig, packageJson, constants },
+      { pluginPath, inputs, netlifyConfig, packageJson },
       { plugin: { packageName, pluginPackageJson }, location: { event: loadEvent, packageName, loadedFrom, origin } },
     )
     const pluginCommandsA = pluginCommands.map(({ event }) => ({

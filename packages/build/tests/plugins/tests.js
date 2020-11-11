@@ -55,6 +55,14 @@ test('constants.FUNCTIONS_SRC missing path', async (t) => {
   await runFixture(t, 'functions_src_missing')
 })
 
+test('constants.FUNCTIONS_SRC created dynamically', async (t) => {
+  await runFixture(t, 'functions_src_dynamic', { copyRoot: { git: false } })
+})
+
+test('constants.FUNCTIONS_SRC dynamic is ignored if FUNCTIONS_SRC is specified', async (t) => {
+  await runFixture(t, 'functions_src_dynamic_ignore', { copyRoot: { git: false } })
+})
+
 test('constants.FUNCTIONS_DIST', async (t) => {
   await runFixture(t, 'functions_dist')
 })
@@ -188,6 +196,14 @@ if (!version.startsWith('v8.')) {
 
   test('constants.EDGE_HANDLERS_SRC missing path', async (t) => {
     await runFixture(t, 'edge_handlers_src_missing')
+  })
+
+  test('constants.EDGE_HANDLERS_SRC created dynamically', async (t) => {
+    await runFixture(t, 'edge_handlers_src_dynamic', { copyRoot: { git: false } })
+  })
+
+  test('constants.EDGE_HANDLERS_SRC dynamic is ignored if EDGE_HANDLERS_SRC is specified', async (t) => {
+    await runFixture(t, 'edge_handlers_src_dynamic_ignore', { copyRoot: { git: false } })
   })
 
   test('Edge handlers: simple setup', async (t) => {

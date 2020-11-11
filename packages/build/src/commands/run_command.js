@@ -4,6 +4,7 @@ const { logCommand } = require('../log/messages/commands')
 const { measureDuration, normalizeTimerName } = require('../time/main')
 
 const { fireBuildCommand } = require('./build_command')
+const { getConstants } = require('./constants')
 const { runsAlsoOnBuildFailure, runsOnlyOnBuildFailure } = require('./get')
 const { firePluginCommand } = require('./plugin')
 const { getCommandReturn } = require('./return')
@@ -24,6 +25,7 @@ const runCommand = async function ({
   index,
   childEnv,
   envChanges,
+  constants,
   commands,
   events,
   mode,
@@ -38,6 +40,8 @@ const runCommand = async function ({
   timers,
   testOpts,
 }) {
+  const constantsA = await getConstants({ constants, buildDir })
+
   if (!shouldRunCommand({ event, packageName, error, failedPlugins })) {
     return {}
   }
@@ -59,6 +63,7 @@ const runCommand = async function ({
     nodePath,
     childEnv,
     envChanges,
+    constants: constantsA,
     commands,
     events,
     error,
@@ -147,6 +152,7 @@ const tFireCommand = function ({
   nodePath,
   childEnv,
   envChanges,
+  constants,
   commands,
   events,
   error,
@@ -173,6 +179,7 @@ const tFireCommand = function ({
     loadedFrom,
     origin,
     envChanges,
+    constants,
     commands,
     events,
     error,
