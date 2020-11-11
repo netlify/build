@@ -24,7 +24,7 @@ const tGetPluginsOptions = async function ({
   logs,
   debug,
 }) {
-  const corePlugins = await getCorePlugins({ constants, buildDir, featureFlags, childEnv })
+  const corePlugins = getCorePlugins({ constants, featureFlags, childEnv })
   const allCorePlugins = corePlugins
     .map((corePlugin) => addCoreProperties(corePlugin, plugins))
     .filter((corePlugin) => !isOptionalCore(corePlugin, plugins))
