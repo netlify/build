@@ -22,6 +22,7 @@ const runCommand = async function ({
   pluginPackageJson,
   loadedFrom,
   origin,
+  condition,
   buildCommand,
   buildCommandOrigin,
   configPath,
@@ -47,7 +48,7 @@ const runCommand = async function ({
 }) {
   const constantsA = await getConstants({ constants, buildDir })
 
-  if (!shouldRunCommand({ event, packageName, error, failedPlugins })) {
+  if (!shouldRunCommand({ event, packageName, error, failedPlugins, condition, constants: constantsA })) {
     return {}
   }
 
@@ -124,8 +125,16 @@ const runCommand = async function ({
 // `onSuccess` is the opposite. It is triggered after the build succeeded.
 // `onEnd` is triggered after the build either failed or succeeded.
 // It is useful for resources cleanup.
-const shouldRunCommand = function ({ event, packageName, error, failedPlugins }) {
-  if (failedPlugins.includes(packageName)) {
+//
+// Finally, some plugins (only core plugins for the moment) might be enabled or
+// not depending on whether a specific action is happening during the build,
+// such as creating a file. For example, the Functions and Edge handlers core
+// plugins are disabled if no Functions or Edge handlers directory is specified
+// or available. However, one might be created by a build plugin, in which case,
+// those core plugins should be triggered. We use a dynamic `condition()` to
+// model this behavior.
+const shouldRunCommand = function ({ event, packageName, error, failedPlugins, condition, constants }) {
+  if (failedPlugins.includes(packageName) || (condition !== undefined && !condition({ constants }))) {
     return false
   }
 

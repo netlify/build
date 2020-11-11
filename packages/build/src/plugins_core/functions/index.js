@@ -58,11 +58,18 @@ const getFunctionPaths = async function (functionsSrc) {
   return functions.map(({ mainFile }) => relative(functionsSrc, mainFile))
 }
 
+// We use a dynamic `condition` because the functions directory might be created
+// by the build command or plugins
+const hasFunctionsDir = function ({ constants: { FUNCTIONS_SRC } }) {
+  return FUNCTIONS_SRC !== undefined
+}
+
 const bundleFunctions = {
   event: 'onBuild',
   coreCommand,
   coreCommandId: 'functions_bundling',
   coreCommandName: 'Functions bundling',
+  condition: hasFunctionsDir,
 }
 
 module.exports = { bundleFunctions }

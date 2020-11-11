@@ -396,10 +396,10 @@ const runBuild = async function ({
     debug,
   })
 
-  const { commands, events } = getCommands({ pluginsCommands, netlifyConfig, constants })
+  const { commands, events } = getCommands({ pluginsCommands, netlifyConfig })
 
   if (dry) {
-    doDryRun({ commands, logs })
+    doDryRun({ commands, constants, logs })
     return {}
   }
 
