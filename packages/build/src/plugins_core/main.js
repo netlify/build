@@ -1,7 +1,5 @@
 'use strict'
 
-const { isDirectory } = require('path-type')
-
 const { LOCAL_INSTALL_PLUGIN_NAME } = require('../install/local')
 
 const FUNCTIONS_INSTALL_PLUGIN = `${__dirname}/functions_install/index.js`
@@ -27,15 +25,14 @@ const EDGE_HANDLERS_PLUGIN_PATH = require.resolve(EDGE_HANDLERS_PLUGIN_NAME)
 const DPC_PLUGIN_PATH = require.resolve(DPC_PLUGIN_NAME)
 
 // Plugins that are installed and enabled by default
-const getCorePlugins = async function ({
+const getCorePlugins = function ({
   constants: { FUNCTIONS_SRC, EDGE_HANDLERS_SRC, BUILDBOT_SERVER_SOCKET },
-  buildDir,
   featureFlags,
   childEnv,
 }) {
   const functionsPlugin = getFunctionsPlugin(FUNCTIONS_SRC)
   const functionsInstallPlugin = getFunctionsInstallPlugin(FUNCTIONS_SRC)
-  const edgeHandlersPlugin = await getEdgeHandlersPlugin({ buildDir, EDGE_HANDLERS_SRC })
+  const edgeHandlersPlugin = getEdgeHandlersPlugin(EDGE_HANDLERS_SRC)
   const deployPlugin = getDeployPlugin(featureFlags, BUILDBOT_SERVER_SOCKET)
   const dpcPlugin = getDpcPlugin({ featureFlags, childEnv })
   return [functionsPlugin, functionsInstallPlugin, edgeHandlersPlugin, deployPlugin, dpcPlugin].filter(Boolean)
@@ -62,20 +59,16 @@ const getFunctionsInstallPlugin = function (FUNCTIONS_SRC) {
   return { package: FUNCTIONS_INSTALL_PLUGIN_NAME, pluginPath: FUNCTIONS_INSTALL_PLUGIN, optional: true }
 }
 
-const getEdgeHandlersPlugin = async function ({ buildDir, EDGE_HANDLERS_SRC }) {
-  if (!(await usesEdgeHandlers({ buildDir, EDGE_HANDLERS_SRC }))) {
-    return
-  }
-
-  return { package: EDGE_HANDLERS_PLUGIN_NAME, pluginPath: EDGE_HANDLERS_PLUGIN_PATH }
-}
-
 // To enable Edge handlers, create a `edge-handlers` directory in the build
 // directory.
 // The location can be overridden using the `build.edge_handlers` property in
 // `netlify.toml`.
-const usesEdgeHandlers = function ({ buildDir, EDGE_HANDLERS_SRC }) {
-  return isDirectory(`${buildDir}/${EDGE_HANDLERS_SRC}`)
+const getEdgeHandlersPlugin = function (EDGE_HANDLERS_SRC) {
+  if (EDGE_HANDLERS_SRC === undefined) {
+    return
+  }
+
+  return { package: EDGE_HANDLERS_PLUGIN_NAME, pluginPath: EDGE_HANDLERS_PLUGIN_PATH }
 }
 
 const getDeployPlugin = function (featureFlags, BUILDBOT_SERVER_SOCKET) {
