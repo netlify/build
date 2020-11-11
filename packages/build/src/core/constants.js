@@ -4,7 +4,6 @@ const { relative, normalize } = require('path')
 
 const { getCacheDir } = require('@netlify/cache-utils')
 const mapObj = require('map-obj')
-const { isDirectory } = require('path-type')
 
 const { version } = require('../../package.json')
 
@@ -22,10 +21,7 @@ const getConstants = async function ({
   buildbotServerSocket,
 }) {
   const isLocal = mode !== 'buildbot'
-  const [cacheDir, edgeHandlersSrc] = await Promise.all([
-    getCacheDir({ mode }),
-    getEdgeHandlersSrc(edgeHandlers, buildDir),
-  ])
+  const cacheDir = await getCacheDir({ mode })
 
   const constants = {
     /**
@@ -47,7 +43,7 @@ const getConstants = async function ({
     /**
      * The directory where edge handlers source code lives
      */
-    EDGE_HANDLERS_SRC: edgeHandlersSrc,
+    EDGE_HANDLERS_SRC: edgeHandlers,
     /**
      * Path to the Netlify build cache folder
      */
@@ -76,20 +72,6 @@ const getConstants = async function ({
   const constantsA = mapObj(constants, (key, path) => [key, normalizePath(path, buildDir, key)])
   return constantsA
 }
-
-// The default `edge-handlers` is only set to `constants.EDGE_HANDLERS_SRC` if
-// that directory exists
-const getEdgeHandlersSrc = async function (edgeHandlers, buildDir) {
-  if (edgeHandlers !== undefined) {
-    return edgeHandlers
-  }
-
-  if (await isDirectory(`${buildDir}/${DEFAULT_EDGE_HANDLERS_SRC}`)) {
-    return DEFAULT_EDGE_HANDLERS_SRC
-  }
-}
-
-const DEFAULT_EDGE_HANDLERS_SRC = 'edge-handlers'
 
 // The current directory is `buildDir`. Most constants are inside this `buildDir`.
 // Instead of passing absolute paths, we pass paths relative to `buildDir`, so

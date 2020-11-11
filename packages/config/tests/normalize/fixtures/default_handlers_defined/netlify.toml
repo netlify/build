@@ -1,0 +1,2 @@
+[build]
+edge_handlers = "test"
