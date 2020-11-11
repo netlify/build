@@ -396,14 +396,14 @@ const runBuild = async function ({
     debug,
   })
 
-  const { commands, commandsCount, events } = getCommands(pluginsCommands, netlifyConfig)
+  const { commands, events } = getCommands(pluginsCommands, netlifyConfig)
 
   if (dry) {
-    doDryRun({ commands, commandsCount, logs })
+    doDryRun({ commands, logs })
     return {}
   }
 
-  const { commandsCount: commandsCountA, statuses, timers: timersB } = await runCommands({
+  const { commandsCount, statuses, timers: timersB } = await runCommands({
     commands,
     events,
     configPath,
@@ -421,7 +421,7 @@ const runBuild = async function ({
     timers: timersA,
     testOpts,
   })
-  return { commandsCount: commandsCountA, statuses, timers: timersB }
+  return { commandsCount, statuses, timers: timersB }
 }
 
 // Logs and reports that a build successfully ended
