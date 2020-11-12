@@ -10,7 +10,6 @@ const addPluginLoadErrorStatus = function ({ error, packageName, version, debug 
   const errorStatus = serializeErrorStatus({ fullErrorInfo, state: 'failed_build' })
   const statuses = [{ ...errorStatus, event: 'load', packageName, version }]
   addErrorInfo(error, { statuses })
-  return error
 }
 
 module.exports = { addPluginLoadErrorStatus }

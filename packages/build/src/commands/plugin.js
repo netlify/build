@@ -1,10 +1,11 @@
 'use strict'
 
+const { addErrorInfo } = require('../error/info')
 const { pipePluginOutput, unpipePluginOutput } = require('../log/stream')
 const { callChild } = require('../plugins/ipc')
 const { getSuccessStatus } = require('../status/success')
 
-const { handlePluginError } = require('./error')
+const { getPluginErrorType } = require('./error')
 
 // Fire a plugin command
 const firePluginCommand = async function ({
@@ -24,16 +25,23 @@ const firePluginCommand = async function ({
   const listeners = pipePluginOutput(childProcess, logs)
 
   try {
-    const { newEnvChanges, status } = await callChild(
-      childProcess,
-      'run',
-      { event, events, error, envChanges, constants, loadedFrom },
-      { plugin: { pluginPackageJson, packageName }, location: { event, packageName, loadedFrom, origin } },
-    )
+    const { newEnvChanges, status } = await callChild(childProcess, 'run', {
+      event,
+      events,
+      error,
+      envChanges,
+      constants,
+      loadedFrom,
+    })
     const newStatus = getSuccessStatus(status, { commands, event, packageName })
     return { newEnvChanges, newStatus }
   } catch (newError) {
-    handlePluginError(newError, loadedFrom)
+    const errorType = getPluginErrorType(newError, loadedFrom)
+    addErrorInfo(newError, {
+      ...errorType,
+      plugin: { pluginPackageJson, packageName },
+      location: { event, packageName, loadedFrom, origin },
+    })
     return { newError }
   } finally {
     await unpipePluginOutput(childProcess, logs, listeners)

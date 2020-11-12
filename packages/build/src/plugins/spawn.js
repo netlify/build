@@ -4,6 +4,7 @@ const { execPath } = require('process')
 
 const execa = require('execa')
 
+const { addErrorInfo } = require('../error/info')
 const { logLoadingPlugins } = require('../log/messages/plugins')
 const { measureDuration } = require('../time/main')
 
@@ -22,7 +23,6 @@ const CHILD_MAIN_FILE = `${__dirname}/child/main.js`
 const tStartPlugins = async function ({ pluginsOptions, buildDir, nodePath, childEnv, mode, logs }) {
   logLoadingPlugins(logs, pluginsOptions)
 
-  const spawnInfo = getSpawnInfo()
   const userNodeVersion = await getUserNodeVersion(nodePath)
   const childProcesses = await Promise.all(
     pluginsOptions.map(({ packageName, pluginPackageJson, loadedFrom, pluginDir }) =>
@@ -35,7 +35,6 @@ const tStartPlugins = async function ({ pluginsOptions, buildDir, nodePath, chil
         loadedFrom,
         pluginDir,
         mode,
-        spawnInfo,
         userNodeVersion,
       }),
     ),
@@ -54,7 +53,6 @@ const startPlugin = async function ({
   loadedFrom,
   pluginDir,
   mode,
-  spawnInfo,
   userNodeVersion,
 }) {
   const { childNodePath, childNodeVersion } = getChildNodePath({ loadedFrom, nodePath, userNodeVersion, mode })
@@ -70,8 +68,15 @@ const startPlugin = async function ({
     env: childEnv,
     extendEnv: false,
   })
-  await getEventFromChild(childProcess, 'ready', spawnInfo)
-  return { childProcess }
+
+  try {
+    await getEventFromChild(childProcess, 'ready')
+    return { childProcess }
+  } catch (error) {
+    const spawnInfo = getSpawnInfo()
+    addErrorInfo(error, spawnInfo)
+    throw error
+  }
 }
 
 // Local plugins, `package.json`-installed plugins and local builds use user's
