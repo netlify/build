@@ -123,6 +123,16 @@ const TYPES = {
     severity: 'error',
   },
 
+  // Core command internal error
+  coreCommand: {
+    title: ({ location: { coreCommandName } }) => `Internal error during "${coreCommandName}"`,
+    stackType: 'stack',
+    showErrorProps: true,
+    rawStack: true,
+    locationType: 'coreCommand',
+    severity: 'error',
+  },
+
   // Request error when `@netlify/build` was calling Netlify API
   api: {
     title: ({ location: { endpoint } }) => `API error on "${endpoint}"`,

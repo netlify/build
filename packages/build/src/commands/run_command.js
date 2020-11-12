@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 'use strict'
 
 const { logCommand } = require('../log/messages/commands')
@@ -5,6 +6,7 @@ const { measureDuration, normalizeTimerName } = require('../time/main')
 
 const { fireBuildCommand } = require('./build_command')
 const { getConstants } = require('./constants')
+const { fireCoreCommand } = require('./core_command')
 const { runsAlsoOnBuildFailure, runsOnlyOnBuildFailure } = require('./get')
 const { firePluginCommand } = require('./plugin')
 const { getCommandReturn } = require('./return')
@@ -14,6 +16,9 @@ const runCommand = async function ({
   event,
   childProcess,
   packageName,
+  coreCommand,
+  coreCommandId,
+  coreCommandName,
   pluginPackageJson,
   loadedFrom,
   origin,
@@ -46,9 +51,9 @@ const runCommand = async function ({
     return {}
   }
 
-  logCommand({ logs, event, buildCommandOrigin, packageName, index, error })
+  logCommand({ logs, event, buildCommandOrigin, packageName, coreCommandName, index, error })
 
-  const fireCommand = getFireCommand({ packageName, event })
+  const fireCommand = getFireCommand({ packageName, buildCommand, coreCommandId, event })
   const { newEnvChanges, newError, newStatus, timers: timersA, durationNs } = await fireCommand({
     event,
     childProcess,
@@ -56,6 +61,8 @@ const runCommand = async function ({
     pluginPackageJson,
     loadedFrom,
     origin,
+    coreCommand,
+    coreCommandName,
     buildCommand,
     buildCommandOrigin,
     configPath,
@@ -77,6 +84,7 @@ const runCommand = async function ({
     newError,
     newEnvChanges,
     newStatus,
+    coreCommandName,
     buildCommand,
     childEnv,
     mode,
@@ -129,8 +137,12 @@ const shouldRunCommand = function ({ event, packageName, error, failedPlugins })
 }
 
 // Wrap command function to measure its time
-const getFireCommand = function ({ packageName, event }) {
-  if (packageName === undefined) {
+const getFireCommand = function ({ packageName, buildCommand, coreCommandId, event }) {
+  if (coreCommandId !== undefined) {
+    return measureDuration(tFireCommand, coreCommandId)
+  }
+
+  if (buildCommand !== undefined) {
     return measureDuration(tFireCommand, 'build_command')
   }
 
@@ -145,6 +157,8 @@ const tFireCommand = function ({
   pluginPackageJson,
   loadedFrom,
   origin,
+  coreCommand,
+  coreCommandName,
   buildCommand,
   buildCommandOrigin,
   configPath,
@@ -158,6 +172,10 @@ const tFireCommand = function ({
   error,
   logs,
 }) {
+  if (coreCommand !== undefined) {
+    return fireCoreCommand({ coreCommand, coreCommandName, buildDir, constants, logs })
+  }
+
   if (buildCommand !== undefined) {
     return fireBuildCommand({
       buildCommand,
@@ -188,3 +206,4 @@ const tFireCommand = function ({
 }
 
 module.exports = { runCommand }
+/* eslint-enable max-lines */

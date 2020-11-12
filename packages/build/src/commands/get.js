@@ -1,13 +1,15 @@
 'use strict'
 
 const { EVENTS } = require('../plugins/events')
+const { bundleFunctions } = require('../plugins_core/functions')
 
 // Get commands for all events
-const getCommands = function (pluginsCommands, netlifyConfig) {
+const getCommands = function ({ pluginsCommands, netlifyConfig, constants }) {
   const commands = addBuildCommand(pluginsCommands, netlifyConfig)
-  const commandsA = sortCommands(commands)
-  const events = getEvents(commandsA)
-  return { commands: commandsA, events }
+  const commandsA = addCoreCommands({ commands, constants })
+  const commandsB = sortCommands(commandsA)
+  const events = getEvents(commandsB)
+  return { commands: commandsB, events }
 }
 
 // Merge `build.command` with plugin event handlers
@@ -20,6 +22,19 @@ const addBuildCommand = function (
   }
 
   return [{ event: 'onBuild', buildCommand, buildCommandOrigin }, ...pluginsCommands]
+}
+
+// When no "Functions directory" is defined, it means users does not use
+// Netlify Functions.
+// However when it is defined but points to a non-existing directory, this
+// might mean the directory is created later one, so we cannot do that check
+// yet.
+const addCoreCommands = function ({ commands, constants: { FUNCTIONS_SRC } }) {
+  if (FUNCTIONS_SRC === undefined) {
+    return commands
+  }
+
+  return [...commands, bundleFunctions]
 }
 
 // Sort plugin commands by event order.

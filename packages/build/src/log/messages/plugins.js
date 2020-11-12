@@ -35,17 +35,6 @@ const logFailPluginWarning = function (methodName, event) {
   )
 }
 
-// Print the list of Netlify Functions about to be bundled
-const logFunctionsToBundle = function (functions, FUNCTIONS_SRC) {
-  if (functions.length === 0) {
-    log(undefined, `No Functions were found in ${THEME.highlightWords(FUNCTIONS_SRC)} directory`)
-    return
-  }
-
-  log(undefined, `Packaging Functions from ${THEME.highlightWords(FUNCTIONS_SRC)} directory:`)
-  logArray(undefined, functions, { indent: false })
-}
-
 const logDeploySuccess = function () {
   log(undefined, 'Site deploy was successfully initiated')
 }
@@ -53,6 +42,5 @@ const logDeploySuccess = function () {
 module.exports = {
   logLoadingPlugins,
   logFailPluginWarning,
-  logFunctionsToBundle,
   logDeploySuccess,
 }

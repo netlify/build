@@ -34,7 +34,19 @@ const runCommands = async function ({
     commands,
     async (
       { index, error, failedPlugins, envChanges, statuses, timers: timersA },
-      { event, childProcess, packageName, pluginPackageJson, loadedFrom, origin, buildCommand, buildCommandOrigin },
+      {
+        event,
+        childProcess,
+        packageName,
+        coreCommand,
+        coreCommandId,
+        coreCommandName,
+        pluginPackageJson,
+        loadedFrom,
+        origin,
+        buildCommand,
+        buildCommandOrigin,
+      },
     ) => {
       const {
         newIndex = index,
@@ -47,6 +59,9 @@ const runCommands = async function ({
         event,
         childProcess,
         packageName,
+        coreCommand,
+        coreCommandId,
+        coreCommandName,
         pluginPackageJson,
         loadedFrom,
         origin,
