@@ -25,7 +25,7 @@ const tStartPlugins = async function ({ pluginsOptions, buildDir, nodePath, chil
 
   const userNodeVersion = await getUserNodeVersion(nodePath)
   const childProcesses = await Promise.all(
-    pluginsOptions.map(({ packageName, pluginPackageJson, loadedFrom, pluginDir }) =>
+    pluginsOptions.map(({ packageName, pluginPackageJson, loadedFrom, sameProcess, pluginDir }) =>
       startPlugin({
         buildDir,
         nodePath,
@@ -33,6 +33,7 @@ const tStartPlugins = async function ({ pluginsOptions, buildDir, nodePath, chil
         packageName,
         pluginPackageJson,
         loadedFrom,
+        sameProcess,
         pluginDir,
         mode,
         userNodeVersion,
@@ -51,6 +52,7 @@ const startPlugin = async function ({
   packageName,
   pluginPackageJson,
   loadedFrom,
+  sameProcess,
   pluginDir,
   mode,
   userNodeVersion,
@@ -58,6 +60,10 @@ const startPlugin = async function ({
   const { childNodePath, childNodeVersion } = getChildNodePath({ loadedFrom, nodePath, userNodeVersion, mode })
 
   checkNodeVersion({ childNodeVersion, packageName, pluginPackageJson })
+
+  if (sameProcess) {
+    return {}
+  }
 
   const childProcess = execa.node(CHILD_MAIN_FILE, {
     cwd: buildDir,
@@ -92,7 +98,11 @@ const getChildNodePath = function ({ loadedFrom, nodePath, userNodeVersion, mode
 
 // Stop all plugins child processes
 const stopPlugins = function (childProcesses) {
-  childProcesses.forEach(stopPlugin)
+  childProcesses.filter(hasChildProcess).forEach(stopPlugin)
+}
+
+const hasChildProcess = function ({ childProcess }) {
+  return childProcess !== undefined
 }
 
 const stopPlugin = function ({ childProcess }) {

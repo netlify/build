@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 'use strict'
 
 const { logCommand } = require('../log/messages/commands')
@@ -13,10 +14,12 @@ const { getCommandReturn } = require('./return')
 const runCommand = async function ({
   event,
   childProcess,
+  context,
   packageName,
   pluginPackageJson,
   loadedFrom,
   origin,
+  sameProcess,
   buildCommand,
   buildCommandOrigin,
   configPath,
@@ -52,10 +55,12 @@ const runCommand = async function ({
   const { newEnvChanges, newError, newStatus, timers: timersA, durationNs } = await fireCommand({
     event,
     childProcess,
+    context,
     packageName,
     pluginPackageJson,
     loadedFrom,
     origin,
+    sameProcess,
     buildCommand,
     buildCommandOrigin,
     configPath,
@@ -141,10 +146,12 @@ const getFireCommand = function ({ packageName, event }) {
 const tFireCommand = function ({
   event,
   childProcess,
+  context,
   packageName,
   pluginPackageJson,
   loadedFrom,
   origin,
+  sameProcess,
   buildCommand,
   buildCommandOrigin,
   configPath,
@@ -174,10 +181,13 @@ const tFireCommand = function ({
   return firePluginCommand({
     event,
     childProcess,
+    context,
     packageName,
     pluginPackageJson,
     loadedFrom,
     origin,
+    sameProcess,
+    buildDir,
     envChanges,
     constants,
     commands,
@@ -188,3 +198,4 @@ const tFireCommand = function ({
 }
 
 module.exports = { runCommand }
+/* eslint-enable max-lines */

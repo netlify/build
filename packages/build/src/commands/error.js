@@ -101,7 +101,7 @@ const getPluginErrorType = function (error, loadedFrom) {
 
 const isCorePluginBug = function (error, loadedFrom) {
   const { severity } = parseErrorInfo(error)
-  return severity === 'warning' && loadedFrom === 'core'
+  return (severity === 'warning' || severity === 'error') && loadedFrom === 'core'
 }
 
 module.exports = { handleCommandError, getPluginErrorType }

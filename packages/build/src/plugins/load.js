@@ -4,6 +4,7 @@ const { addErrorInfo } = require('../error/info')
 const { addPluginLoadErrorStatus } = require('../status/load_error')
 const { measureDuration } = require('../time/main')
 
+const { load } = require('./child/load')
 const { callChild } = require('./ipc')
 
 // Retrieve all plugins commands
@@ -23,21 +24,38 @@ const loadPlugins = measureDuration(tLoadPlugins, 'load_plugins')
 // Retrieve plugin commands for one plugin.
 // Do it by executing the plugin `load` event handler.
 const loadPlugin = async function (
-  { packageName, pluginPackageJson, pluginPackageJson: { version } = {}, pluginPath, inputs, loadedFrom, origin },
+  {
+    packageName,
+    pluginPackageJson,
+    pluginPackageJson: { version } = {},
+    pluginPath,
+    inputs,
+    loadedFrom,
+    sameProcess,
+    origin,
+  },
   { childProcesses, index, netlifyConfig, packageJson, debug },
 ) {
   const { childProcess } = childProcesses[index]
   const loadEvent = 'load'
 
   try {
-    const { pluginCommands } = await callChild(childProcess, 'load', { pluginPath, inputs, netlifyConfig, packageJson })
+    const getPluginCommands = sameProcess ? load : callChild.bind(null, childProcess, loadEvent)
+    const { pluginCommands, context } = await getPluginCommands({
+      pluginPath,
+      inputs,
+      netlifyConfig,
+      packageJson,
+    })
     const pluginCommandsA = pluginCommands.map(({ event }) => ({
       event,
       packageName,
       loadedFrom,
       origin,
+      sameProcess,
       pluginPackageJson,
       childProcess,
+      context,
     }))
     return pluginCommandsA
   } catch (error) {

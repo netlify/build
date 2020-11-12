@@ -48,7 +48,7 @@ const getFunctionsPlugin = function (FUNCTIONS_SRC) {
     return
   }
 
-  return { package: FUNCTIONS_PLUGIN_NAME, pluginPath: FUNCTIONS_PLUGIN }
+  return { package: FUNCTIONS_PLUGIN_NAME, pluginPath: FUNCTIONS_PLUGIN, sameProcess: true }
 }
 
 const getFunctionsInstallPlugin = function (FUNCTIONS_SRC) {

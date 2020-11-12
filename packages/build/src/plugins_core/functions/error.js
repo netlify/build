@@ -3,8 +3,8 @@
 const readdirp = require('readdirp')
 
 // Handle errors coming from zip-it-and-ship-it
-const getZipError = async function (error, FUNCTIONS_SRC) {
-  if (await isModuleNotFound(error, FUNCTIONS_SRC)) {
+const getZipError = async function (error, functionsSrc) {
+  if (await isModuleNotFound(error, functionsSrc)) {
     return getModuleNotFoundError(error)
   }
 
@@ -13,29 +13,29 @@ const getZipError = async function (error, FUNCTIONS_SRC) {
 
 // A common mistake is to assume Netlify Functions dependencies are
 // automatically installed. This checks for this pattern.
-const isModuleNotFound = function (error, FUNCTIONS_SRC) {
+const isModuleNotFound = function (error, functionsSrc) {
   return (
     error instanceof Error &&
     error.code === MODULE_NOT_FOUND_CODE &&
     getModuleName(error) !== undefined &&
-    lacksNodeModules(FUNCTIONS_SRC)
+    lacksNodeModules(functionsSrc)
   )
 }
 
 const MODULE_NOT_FOUND_CODE = 'MODULE_NOT_FOUND'
 
 // Netlify Functions has a `package.json` but no `node_modules`
-const lacksNodeModules = async function (FUNCTIONS_SRC) {
+const lacksNodeModules = async function (functionsSrc) {
   return (
-    (await hasFunctionRootFile('package.json', FUNCTIONS_SRC)) &&
-    !(await hasFunctionRootFile('node_modules', FUNCTIONS_SRC))
+    (await hasFunctionRootFile('package.json', functionsSrc)) &&
+    !(await hasFunctionRootFile('node_modules', functionsSrc))
   )
 }
 
 // Functions can be either files or directories, so we need to check on two
 // depth levels
-const hasFunctionRootFile = async function (filename, FUNCTIONS_SRC) {
-  const files = await readdirp.promise(FUNCTIONS_SRC, { depth: 1, fileFilter: filename })
+const hasFunctionRootFile = async function (filename, functionsSrc) {
+  const files = await readdirp.promise(functionsSrc, { depth: 1, fileFilter: filename })
   return files.length !== 0
 }
 

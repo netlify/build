@@ -1,50 +1,55 @@
 'use strict'
 
-const { relative } = require('path')
+const { resolve, relative } = require('path')
 
 const { zipFunctions, listFunctions } = require('@netlify/zip-it-and-ship-it')
 const pathExists = require('path-exists')
 const { isDirectory } = require('path-type')
 
+const { log } = require('../../log/logger')
 const { logFunctionsToBundle } = require('../../log/messages/plugins')
 
 const { getZipError } = require('./error')
 
 // Plugin to package Netlify functions with @netlify/zip-it-and-ship-it
 const onBuild = async function ({
-  constants: { FUNCTIONS_SRC, FUNCTIONS_DIST },
+  constants: { FUNCTIONS_SRC, FUNCTIONS_DIST, BUILD_DIR = '.' },
   utils: {
     build: { failBuild },
+    logs,
   },
 }) {
-  if (!(await pathExists(FUNCTIONS_SRC))) {
+  const functionsSrc = resolve(BUILD_DIR, FUNCTIONS_SRC)
+  const functionsDist = resolve(BUILD_DIR, FUNCTIONS_DIST)
+
+  if (!(await pathExists(functionsSrc))) {
     // TODO: use `utils.build.warn()` when available
     // See https://github.com/netlify/build/issues/1248
-    console.log(`The Netlify Functions setting targets a non-exiting directory: ${FUNCTIONS_SRC}`)
+    log(logs, `The Netlify Functions setting targets a non-exiting directory: ${FUNCTIONS_SRC}`)
     return
   }
 
-  if (!(await isDirectory(FUNCTIONS_SRC))) {
+  if (!(await isDirectory(functionsSrc))) {
     failBuild(`The Netlify Functions setting should target a directory, not a regular file: ${FUNCTIONS_SRC}`)
   }
 
-  const functions = await getFunctionPaths(FUNCTIONS_SRC)
-  logFunctionsToBundle(functions, FUNCTIONS_SRC)
+  const functions = await getFunctionPaths(functionsSrc)
+  logFunctionsToBundle({ functions, FUNCTIONS_SRC, logs })
 
   if (functions.length === 0) {
     return
   }
 
   try {
-    await zipFunctions(FUNCTIONS_SRC, FUNCTIONS_DIST)
+    await zipFunctions(functionsSrc, functionsDist)
   } catch (error) {
-    throw await getZipError(error, FUNCTIONS_SRC)
+    throw await getZipError(error, functionsSrc)
   }
 }
 
-const getFunctionPaths = async function (FUNCTIONS_SRC) {
-  const functions = await listFunctions(FUNCTIONS_SRC)
-  return functions.map(({ mainFile }) => relative(FUNCTIONS_SRC, mainFile))
+const getFunctionPaths = async function (functionsSrc) {
+  const functions = await listFunctions(functionsSrc)
+  return functions.map(({ mainFile }) => relative(functionsSrc, mainFile))
 }
 
 module.exports = { onBuild }

@@ -6,12 +6,12 @@ const { getUtils } = require('./utils')
 
 // Run a specific plugin event handler
 const run = async function (
-  { event, events, error, envChanges, constants, loadedFrom },
+  { event, events, error, envChanges, constants, loadedFrom, logs },
   { pluginCommands, inputs, netlifyConfig, packageJson },
 ) {
   const { method } = pluginCommands.find((pluginCommand) => pluginCommand.event === event)
   const runState = {}
-  const utils = getUtils({ event, constants, runState })
+  const utils = getUtils({ event, constants, runState, logs })
   const runOptions = { utils, constants, inputs, netlifyConfig, packageJson, error, events }
   const runOptionsA = cleanRunOptions({ loadedFrom, runOptions })
 

@@ -66,8 +66,15 @@ const isUserPlugin = function (plugin) {
   return !isCorePlugin(plugin.package)
 }
 
-const normalizePluginOptions = function ({ package: packageName, pluginPath, loadedFrom, origin, inputs }) {
-  return { packageName, pluginPath, loadedFrom, origin, inputs }
+const normalizePluginOptions = function ({
+  package: packageName,
+  pluginPath,
+  loadedFrom,
+  origin,
+  inputs,
+  sameProcess,
+}) {
+  return { packageName, pluginPath, loadedFrom, origin, inputs, sameProcess }
 }
 
 // Retrieve plugin's main file path.
