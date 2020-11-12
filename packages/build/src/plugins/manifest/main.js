@@ -18,8 +18,8 @@ const useManifest = async function (
     const inputsA = checkInputs({ inputs, manifest, packageName, pluginPackageJson, loadedFrom, origin })
     return { manifest, inputs: inputsA }
   } catch (error) {
-    const errorA = addPluginLoadErrorStatus({ error, packageName, version, debug })
-    throw errorA
+    addPluginLoadErrorStatus({ error, packageName, version, debug })
+    throw error
   }
 }
 

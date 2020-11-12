@@ -12,10 +12,10 @@ const { addErrorInfo } = require('../error/info')
 // Send event from child to parent process then wait for response
 // We need to fire them in parallel because `process.send()` can be slow
 // to await, i.e. child might send response before parent start listening for it
-const callChild = async function (childProcess, eventName, payload, { plugin, location }) {
+const callChild = async function (childProcess, eventName, payload) {
   const callId = uuidv4()
   const [response] = await Promise.all([
-    getEventFromChild(childProcess, callId, { plugin, location }),
+    getEventFromChild(childProcess, callId),
     sendEventToChild(childProcess, callId, eventName, payload),
   ])
   return response
@@ -29,20 +29,16 @@ const callChild = async function (childProcess, eventName, payload, { plugin, lo
 //  - child process `exit`
 // In the later two cases, we propagate the error.
 // We need to make `p-event` listeners are properly cleaned up too.
-const getEventFromChild = async function (childProcess, callId, { plugin, location }) {
+const getEventFromChild = async function (childProcess, callId) {
   if (childProcessHasExited(childProcess)) {
-    throwChildExit('Could not receive event from child process because it already exited.', { plugin, location })
+    throw getChildExitError('Could not receive event from child process because it already exited.')
   }
 
   const messagePromise = pEvent(childProcess, 'message', { filter: ([actualCallId]) => actualCallId === callId })
   const errorPromise = pEvent(childProcess, 'message', { filter: ([actualCallId]) => actualCallId === 'error' })
   const exitPromise = pEvent(childProcess, 'exit', { multiArgs: true })
   try {
-    return await Promise.race([
-      getMessage(messagePromise),
-      getError(errorPromise, { plugin, location }),
-      getExit(exitPromise, { plugin, location }),
-    ])
+    return await Promise.race([getMessage(messagePromise), getError(errorPromise), getExit(exitPromise)])
   } finally {
     messagePromise.cancel()
     errorPromise.cancel()
@@ -59,15 +55,14 @@ const getMessage = async function (messagePromise) {
   return response
 }
 
-const getError = async function (errorPromise, { plugin, location }) {
+const getError = async function (errorPromise) {
   const [, error] = await errorPromise
-  const errorA = jsonToError(error, { plugin, location })
-  throw errorA
+  throw jsonToError(error)
 }
 
-const getExit = async function (exitPromise, { plugin, location }) {
+const getExit = async function (exitPromise) {
   const [exitCode, signal] = await exitPromise
-  throwChildExit(`Plugin exited with exit code ${exitCode} and signal ${signal}.`, { plugin, location })
+  throw getChildExitError(`Plugin exited with exit code ${exitCode} and signal ${signal}.`)
 }
 
 // Plugins should not terminate processes explicitly:
@@ -76,10 +71,10 @@ const getExit = async function (exitPromise, { plugin, location }) {
 //  - It complicates child process orchestration. For example if an async operation
 //    of a previous event handler is still running, it would be aborted if another
 //    is terminating the process.
-const throwChildExit = function (message, { plugin, location }) {
+const getChildExitError = function (message) {
   const error = new Error(`${message}\n${EXIT_WARNING}`)
-  addErrorInfo(error, { type: 'ipc', plugin, location })
-  throw error
+  addErrorInfo(error, { type: 'ipc' })
+  return error
 }
 
 const EXIT_WARNING = `The plugin might have exited due to a bug terminating the process, such as an infinite loop.

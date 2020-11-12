@@ -1,5 +1,6 @@
 'use strict'
 
+const { addErrorInfo } = require('../error/info')
 const { addPluginLoadErrorStatus } = require('../status/load_error')
 const { measureDuration } = require('../time/main')
 
@@ -29,12 +30,7 @@ const loadPlugin = async function (
   const loadEvent = 'load'
 
   try {
-    const { pluginCommands } = await callChild(
-      childProcess,
-      'load',
-      { pluginPath, inputs, netlifyConfig, packageJson },
-      { plugin: { packageName, pluginPackageJson }, location: { event: loadEvent, packageName, loadedFrom, origin } },
-    )
+    const { pluginCommands } = await callChild(childProcess, 'load', { pluginPath, inputs, netlifyConfig, packageJson })
     const pluginCommandsA = pluginCommands.map(({ event }) => ({
       event,
       packageName,
@@ -45,8 +41,12 @@ const loadPlugin = async function (
     }))
     return pluginCommandsA
   } catch (error) {
-    const errorA = addPluginLoadErrorStatus({ error, packageName, version, debug })
-    throw errorA
+    addErrorInfo(error, {
+      plugin: { packageName, pluginPackageJson },
+      location: { event: loadEvent, packageName, loadedFrom, origin },
+    })
+    addPluginLoadErrorStatus({ error, packageName, version, debug })
+    throw error
   }
 }
 
