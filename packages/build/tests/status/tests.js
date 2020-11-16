@@ -100,6 +100,10 @@ test('utils.status.show() statuses are not sent to the API without a DEPLOY_ID',
   await runWithApiMock(t, 'print', { flags: { deployId: '' } })
 })
 
+test('utils.status.show() statuses are sent to the API for core commands', async (t) => {
+  await runWithApiMock(t, 'core_command_error')
+})
+
 const STATUS_ERROR_CODE = 502
 
 test('utils.status.show() statuses API errors are handled', async (t) => {

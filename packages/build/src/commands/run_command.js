@@ -85,6 +85,7 @@ const runCommand = async function ({
     newError,
     newEnvChanges,
     newStatus,
+    coreCommand,
     coreCommandName,
     buildCommand,
     childEnv,
