@@ -26,7 +26,7 @@ ${THEME.header(`┌─${line}─┬─${secondLine}─┐
 
 const logDryRunCommand = function ({
   logs,
-  command: { event, packageName, buildCommandOrigin },
+  command: { event, packageName, buildCommandOrigin, coreCommandName },
   index,
   eventWidth,
   commandsCount,
@@ -36,7 +36,7 @@ const logDryRunCommand = function ({
   const countText = `${index + 1}. `
   const downArrow = commandsCount === index + 1 ? '  ' : ` ${arrowDown}`
   const eventWidthA = columnWidth - countText.length - downArrow.length
-  const fullName = getPluginFullName({ packageName, buildCommandOrigin })
+  const fullName = getPluginFullName({ packageName, buildCommandOrigin, coreCommandName })
 
   logMessage(
     logs,
@@ -46,7 +46,11 @@ ${THEME.header(`└─${line}─┘ `)}`,
   )
 }
 
-const getPluginFullName = function ({ packageName, buildCommandOrigin }) {
+const getPluginFullName = function ({ packageName, buildCommandOrigin, coreCommandName }) {
+  if (coreCommandName !== undefined) {
+    return coreCommandName
+  }
+
   if (buildCommandOrigin !== undefined) {
     return getBuildCommandDescription(buildCommandOrigin)
   }

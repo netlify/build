@@ -1,7 +1,11 @@
 'use strict'
 
 // Retrieve description of `build.command` or of an event handler
-const getCommandDescription = function ({ event, buildCommandOrigin, packageName }) {
+const getCommandDescription = function ({ event, buildCommandOrigin, packageName, coreCommandName }) {
+  if (coreCommandName !== undefined) {
+    return coreCommandName
+  }
+
   if (buildCommandOrigin !== undefined) {
     return getBuildCommandDescription(buildCommandOrigin)
   }

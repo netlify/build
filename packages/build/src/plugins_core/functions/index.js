@@ -1,50 +1,68 @@
 'use strict'
 
-const { relative } = require('path')
+const { resolve, relative } = require('path')
 
 const { zipFunctions, listFunctions } = require('@netlify/zip-it-and-ship-it')
 const pathExists = require('path-exists')
 const { isDirectory } = require('path-type')
 
-const { logFunctionsToBundle } = require('../../log/messages/plugins')
+const { addErrorInfo } = require('../../error/info')
+const { logFunctionsNonExistingDir, logFunctionsToBundle } = require('../../log/messages/core_commands')
 
 const { getZipError } = require('./error')
 
 // Plugin to package Netlify functions with @netlify/zip-it-and-ship-it
-const onBuild = async function ({
-  constants: { FUNCTIONS_SRC, FUNCTIONS_DIST },
-  utils: {
-    build: { failBuild },
-  },
+const coreCommand = async function ({
+  constants: { FUNCTIONS_SRC: relativeFunctionsSrc, FUNCTIONS_DIST: relativeFunctionsDist },
+  buildDir,
+  logs,
 }) {
-  if (!(await pathExists(FUNCTIONS_SRC))) {
-    // TODO: use `utils.build.warn()` when available
-    // See https://github.com/netlify/build/issues/1248
-    console.log(`The Netlify Functions setting targets a non-exiting directory: ${FUNCTIONS_SRC}`)
+  const functionsSrc = resolve(buildDir, relativeFunctionsSrc)
+  const functionsDist = resolve(buildDir, relativeFunctionsDist)
+
+  if (!(await pathExists(functionsSrc))) {
+    logFunctionsNonExistingDir(logs, relativeFunctionsSrc)
     return
   }
 
-  if (!(await isDirectory(FUNCTIONS_SRC))) {
-    failBuild(`The Netlify Functions setting should target a directory, not a regular file: ${FUNCTIONS_SRC}`)
-  }
+  await validateFunctionsSrc({ functionsSrc, relativeFunctionsSrc })
 
-  const functions = await getFunctionPaths(FUNCTIONS_SRC)
-  logFunctionsToBundle(functions, FUNCTIONS_SRC)
+  const functions = await getFunctionPaths(functionsSrc)
+  logFunctionsToBundle(logs, functions, relativeFunctionsSrc)
 
   if (functions.length === 0) {
     return
   }
 
   try {
-    await zipFunctions(FUNCTIONS_SRC, FUNCTIONS_DIST)
+    await zipFunctions(functionsSrc, functionsDist)
   } catch (error) {
-    throw await getZipError(error, FUNCTIONS_SRC)
+    throw await getZipError(error, functionsSrc)
   }
 }
 
-const getFunctionPaths = async function (FUNCTIONS_SRC) {
-  const functions = await listFunctions(FUNCTIONS_SRC)
-  return functions.map(({ mainFile }) => relative(FUNCTIONS_SRC, mainFile))
+const validateFunctionsSrc = async function ({ functionsSrc, relativeFunctionsSrc }) {
+  if (await isDirectory(functionsSrc)) {
+    return
+  }
+
+  const error = new Error(
+    `The Netlify Functions setting should target a directory, not a regular file: ${relativeFunctionsSrc}`,
+  )
+  addErrorInfo(error, { type: 'resolveConfig' })
+  throw error
 }
 
-module.exports = { onBuild }
+const getFunctionPaths = async function (functionsSrc) {
+  const functions = await listFunctions(functionsSrc)
+  return functions.map(({ mainFile }) => relative(functionsSrc, mainFile))
+}
+
+const bundleFunctions = {
+  event: 'onBuild',
+  coreCommand,
+  coreCommandId: 'functions_bundling',
+  coreCommandName: 'Functions bundling',
+}
+
+module.exports = { bundleFunctions }

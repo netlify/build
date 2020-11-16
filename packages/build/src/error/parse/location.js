@@ -25,6 +25,10 @@ const getBuildCommandLocation = function ({ buildCommand, buildCommandOrigin }) 
 ${buildCommand}`
 }
 
+const getCoreCommandLocation = function ({ coreCommandName }) {
+  return `During ${coreCommandName}`
+}
+
 const getBuildFailLocation = function ({ event, packageName, loadedFrom, origin }) {
   const eventMessage = getEventMessage(event)
   const pluginOrigin = getPluginOrigin(loadedFrom, origin)
@@ -45,6 +49,7 @@ const getApiLocation = function ({ endpoint, parameters }) {
 
 const LOCATIONS = {
   buildCommand: getBuildCommandLocation,
+  coreCommand: getCoreCommandLocation,
   buildFail: getBuildFailLocation,
   api: getApiLocation,
 }

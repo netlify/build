@@ -137,10 +137,6 @@ test('Functions: --functionsDistDir', async (t) => {
   }
 })
 
-test('Functions: not included twice', async (t) => {
-  await runFixture(t, 'functions_twice')
-})
-
 const EDGE_HANDLERS_LOCAL_DIR = '.netlify/edge-handlers'
 const EDGE_HANDLERS_MANIFEST = 'manifest.json'
 

@@ -1,7 +1,0 @@
-[build]
-functions = "functions"
-
-# Simulates when a core plugin is a separate repository and is testing itself
-# using @netlify/build. For example the Edge handlers plugin does this.
-[[plugins]]
-package = "../../../../src/plugins_core/functions"

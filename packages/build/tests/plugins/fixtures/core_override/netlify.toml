@@ -1,2 +1,2 @@
 [[plugins]]
-package = "@netlify/plugin-functions-core"
+package = "@netlify/plugin-edge-handlers"
