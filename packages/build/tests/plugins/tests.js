@@ -63,6 +63,10 @@ test('constants.FUNCTIONS_SRC dynamic is ignored if FUNCTIONS_SRC is specified',
   await runFixture(t, 'functions_src_dynamic_ignore', { copyRoot: { git: false } })
 })
 
+test('constants.FUNCTIONS_SRC dynamic should bundle Functions', async (t) => {
+  await runFixture(t, 'functions_src_dynamic_bundle', { copyRoot: { git: false } })
+})
+
 test('constants.FUNCTIONS_DIST', async (t) => {
   await runFixture(t, 'functions_dist')
 })
