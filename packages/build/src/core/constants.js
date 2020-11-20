@@ -13,7 +13,7 @@ const getConstants = async function ({
   buildDir,
   functionsDistDir,
   netlifyConfig: {
-    build: { publish = buildDir, functions, edge_handlers: edgeHandlers },
+    build: { publish, functions, edge_handlers: edgeHandlers },
   },
   siteInfo: { id: siteId },
   token,

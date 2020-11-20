@@ -11,7 +11,7 @@ const normalizeConfig = function (config) {
 }
 
 const DEFAULT_CONFIG = {
-  build: { environment: {} },
+  build: { environment: {}, publish: '.' },
   plugins: [],
 }
 
