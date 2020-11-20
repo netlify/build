@@ -17,7 +17,10 @@ const loadManifest = async function ({ manifestPath, packageName, pluginPackageJ
     if (manifestPath === undefined) {
       throw new Error(
         `This plugin is missing a "manifest.yml".
-Please see the documentation at https://github.com/netlify/build#anatomy-of-a-plugin`,
+This might mean:
+  - The plugin "package" name is misspelled
+  - The plugin "package" points to a Node module that is not a Netlify Build plugin
+  - If you're developing a plugin, please see the documentation at https://github.com/netlify/build#anatomy-of-a-plugin`,
       )
     }
 
