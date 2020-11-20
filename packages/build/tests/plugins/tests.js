@@ -1,6 +1,8 @@
 'use strict'
 
+const { writeFile } = require('fs')
 const { platform, version } = require('process')
+const { promisify } = require('util')
 
 const test = require('ava')
 const del = require('del')
@@ -10,6 +12,8 @@ const { removeDir } = require('../helpers/dir')
 const { runFixture, FIXTURES_DIR } = require('../helpers/main')
 const { startTcpServer } = require('../helpers/tcp_server')
 const { getTempDir } = require('../helpers/temp')
+
+const pWriteFile = promisify(writeFile)
 
 test('Pass netlifyConfig to plugins', async (t) => {
   await runFixture(t, 'config_valid')
@@ -130,6 +134,19 @@ test('Functions: no functions', async (t) => {
 
 test('Functions: default directory', async (t) => {
   await runFixture(t, 'default')
+})
+
+test('Functions: invalid package.json', async (t) => {
+  const fixtureName = 'functions_package_json_invalid'
+  const packageJsonPath = `${FIXTURES_DIR}/${fixtureName}/package.json`
+  // We need to create that file during tests. Otherwise, ESLint fails when
+  // detecting an invalid *.json file.
+  await pWriteFile(packageJsonPath, '{{}')
+  try {
+    await runFixture(t, fixtureName)
+  } finally {
+    await del(packageJsonPath)
+  }
 })
 
 test('Functions: --functionsDistDir', async (t) => {
