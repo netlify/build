@@ -14,16 +14,6 @@ const pReadFile = promisify(readFile)
 // Load "manifest.yml" using its file path
 const loadManifest = async function ({ manifestPath, packageName, pluginPackageJson, loadedFrom, origin }) {
   try {
-    if (manifestPath === undefined) {
-      throw new Error(
-        `This plugin is missing a "manifest.yml".
-This might mean:
-  - The plugin "package" name is misspelled
-  - The plugin "package" points to a Node module that is not a Netlify Build plugin
-  - If you're developing a plugin, please see the documentation at https://github.com/netlify/build#anatomy-of-a-plugin`,
-      )
-    }
-
     const rawManifest = await loadRawManifest(manifestPath)
     const manifest = await parseManifest(rawManifest)
     validateManifest(manifest, rawManifest)
