@@ -20,8 +20,8 @@ const isNotCorePlugin = function ({ origin }) {
   return origin !== 'core'
 }
 
-const getPluginDescription = function ({ packageName, pluginPackageJson: { version }, loadedFrom, origin }) {
-  const versionA = version === undefined ? '' : `@${version}`
+const getPluginDescription = function ({ packageName, pluginPackageJson: { version = '' }, loadedFrom, origin }) {
+  const versionA = version === '' ? '' : `@${version}`
   const pluginOrigin = getPluginOrigin(loadedFrom, origin)
   return `${THEME.highlightWords(packageName)}${versionA} ${pluginOrigin}`
 }
