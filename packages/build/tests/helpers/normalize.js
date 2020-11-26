@@ -67,6 +67,9 @@ const NORMALIZE_REGEXPS = [
   [/^ +$/gm, ''],
   // HTTP errors are shown differently in Node 8
   [/ \.\.\.:443/g, ''],
+  // List of available plugins from `plugins.json`.
+  // That list changes all the time, so we need to remove it.
+  [/(Available plugins)[^]*Loading plugins/m, '$1'],
 ]
 
 module.exports = { normalizeOutput }

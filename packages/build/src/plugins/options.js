@@ -23,6 +23,7 @@ const tGetPluginsOptions = async function ({
   childEnv,
   logs,
   debug,
+  testOpts,
 }) {
   const corePlugins = getCorePlugins({ constants, featureFlags, childEnv })
   const allCorePlugins = corePlugins
@@ -31,7 +32,16 @@ const tGetPluginsOptions = async function ({
   const userPlugins = plugins.filter(isUserPlugin)
   const allPlugins = [...userPlugins, ...allCorePlugins]
   const pluginsOptions = allPlugins.map(normalizePluginOptions)
-  const pluginsOptionsA = await resolvePluginsPath({ pluginsOptions, buildDir, mode, logs, buildImagePluginsDir })
+  const pluginsOptionsA = await resolvePluginsPath({
+    pluginsOptions,
+    buildDir,
+    mode,
+    logs,
+    buildImagePluginsDir,
+    debug,
+    featureFlags,
+    testOpts,
+  })
   const pluginsOptionsB = await Promise.all(
     pluginsOptionsA.map((pluginOptions) => loadPluginFiles({ pluginOptions, debug })),
   )
