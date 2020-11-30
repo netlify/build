@@ -22,6 +22,8 @@ const DEFAULT_FEATURE_FLAGS = {
   service_buildbot_enable_deploy_server: false,
   // When `true`, the Deploy preview commenting core plugin is enabled
   dpc: false,
+  // When `true`, the `plugins.json` list is fetched
+  pluginsList: false,
 }
 
 module.exports = { normalizeFeatureFlags, DEFAULT_FEATURE_FLAGS }

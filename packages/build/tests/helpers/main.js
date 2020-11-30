@@ -24,7 +24,7 @@ const runFixture = async function (
     telemetry: false,
     buffer: true,
     ...flags,
-    testOpts: { silentLingeringProcesses: true, ...flags.testOpts },
+    testOpts: { silentLingeringProcesses: true, pluginsListUrl: 'test', ...flags.testOpts },
   }
   const envOptionA = {
     // Ensure local environment variables aren't used during development

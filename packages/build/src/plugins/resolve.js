@@ -4,7 +4,10 @@ const pathExists = require('path-exists')
 
 const { addErrorInfo } = require('../error/info')
 const { installMissingPlugins, getAutoPluginsDirPath, warnOnMissingPlugins } = require('../install/missing')
+const { logPluginsList } = require('../log/messages/plugins')
 const { resolvePath } = require('../utils/resolve')
+
+const { getPluginsList } = require('./list.js')
 
 // Try to find plugins in four places, by priority order:
 //  - already loaded (core plugins)
@@ -12,9 +15,20 @@ const { resolvePath } = require('../utils/resolve')
 //  - external plugin already installed in `node_modules`, most likely through `package.json`
 //  - cached in the build image
 //  - automatically installed by us (fallback)
-const resolvePluginsPath = async function ({ pluginsOptions, buildDir, mode, logs, buildImagePluginsDir }) {
+const resolvePluginsPath = async function ({
+  pluginsOptions,
+  buildDir,
+  mode,
+  logs,
+  buildImagePluginsDir,
+  debug,
+  featureFlags,
+  testOpts,
+}) {
   const pluginsOptionsA = await Promise.all(
-    pluginsOptions.map((pluginOptions) => resolvePluginPath({ pluginOptions, buildDir, buildImagePluginsDir })),
+    pluginsOptions.map((pluginOptions) =>
+      resolvePluginPath({ pluginOptions, buildDir, buildImagePluginsDir, debug, logs, featureFlags, testOpts }),
+    ),
   )
   const pluginsOptionsB = await handleMissingPlugins({
     pluginsOptions: pluginsOptionsA,
@@ -31,6 +45,10 @@ const resolvePluginPath = async function ({
   pluginOptions: { packageName, loadedFrom },
   buildDir,
   buildImagePluginsDir,
+  debug,
+  logs,
+  featureFlags,
+  testOpts,
 }) {
   // Core plugins
   if (loadedFrom !== undefined) {
@@ -51,6 +69,9 @@ const resolvePluginPath = async function ({
   if (manualPath !== undefined) {
     return { ...pluginOptions, pluginPath: manualPath, loadedFrom: 'package.json' }
   }
+
+  const pluginsList = await getPluginsList({ logs, featureFlags, testOpts })
+  logPluginsList({ pluginsList, debug, logs })
 
   // Cached in the build image
   const buildImagePath = await tryBuildImagePath({ packageName: packageNameA, buildDir, buildImagePluginsDir })

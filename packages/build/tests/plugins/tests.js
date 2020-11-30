@@ -4,12 +4,14 @@ const { writeFile } = require('fs')
 const { platform, version } = require('process')
 const { promisify } = require('util')
 
+const pluginsList = require('@netlify/plugins-list')
 const test = require('ava')
 const del = require('del')
 const { spy } = require('sinon')
 
 const { removeDir } = require('../helpers/dir')
 const { runFixture, FIXTURES_DIR } = require('../helpers/main')
+const { startServer } = require('../helpers/server')
 const { startTcpServer } = require('../helpers/tcp_server')
 const { getTempDir } = require('../helpers/temp')
 
@@ -548,6 +550,45 @@ test('Can use plugins cached in the build image', async (t) => {
 
 test('Does not use plugins cached in the build image in local builds', async (t) => {
   await runFixture(t, 'build_image')
+})
+
+const runWithApiMock = async function (t, flags, status) {
+  const { scheme, host, stopServer } = await startServer({
+    path: PLUGINS_LIST_URL,
+    response: PLUGINS_LIST_DATA,
+    status,
+  })
+  try {
+    await runFixture(t, 'build_image', {
+      flags: {
+        buildImagePluginsDir: `${FIXTURES_DIR}/build_image_cache/node_modules`,
+        testOpts: { pluginsListUrl: `${scheme}://${host}`, ...flags.testOpts },
+        featureFlags: 'pluginsList',
+        ...flags,
+      },
+    })
+  } finally {
+    await stopServer()
+  }
+}
+
+const PLUGINS_LIST_URL = '/'
+const PLUGINS_LIST_DATA = pluginsList
+
+test('Fetches the list of plugin versions', async (t) => {
+  await runWithApiMock(t, {})
+})
+
+test('Only prints the list of plugin versions in verbose mode', async (t) => {
+  await runWithApiMock(t, { debug: false })
+})
+
+test('Only fetches the list of plugin versions with a feature flag', async (t) => {
+  await runWithApiMock(t, { featureFlags: '' })
+})
+
+test('Uses fallback when the plugins fetch fails', async (t) => {
+  await runWithApiMock(t, {}, 500)
 })
 
 test('Can execute local binaries when using plugins cached in the build image', async (t) => {

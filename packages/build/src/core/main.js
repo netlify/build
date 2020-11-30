@@ -323,6 +323,7 @@ const initAndRunBuild = async function ({
     logs,
     debug,
     timers,
+    testOpts,
   })
 
   const { childProcesses, timers: timersB } = await startPlugins({

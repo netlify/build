@@ -4,6 +4,32 @@ const { getPluginOrigin } = require('../description')
 const { log, logArray, logError, logSubHeader } = require('../logger')
 const { THEME } = require('../theme')
 
+const logPluginsFetchError = function (logs, message) {
+  logError(
+    logs,
+    `
+Warning: could not fetch latest plugins list. Plugins versions might not be the latest.
+${message}`,
+  )
+}
+
+const logPluginsList = function ({ pluginsList, debug, logs }) {
+  // `pluginsList` is empty when mocked in tests
+  if (!debug || Object.keys(pluginsList).length === 0) {
+    return
+  }
+
+  // eslint-disable-next-line fp/no-mutating-methods
+  const pluginsListArray = Object.entries(pluginsList).map(getPluginsListItem).sort()
+
+  logSubHeader(logs, 'Available plugins')
+  logArray(logs, pluginsListArray)
+}
+
+const getPluginsListItem = function ([packageName, version]) {
+  return `${packageName}@${version}`
+}
+
 const logLoadingPlugins = function (logs, pluginsOptions) {
   const loadingPlugins = pluginsOptions.filter(isNotCorePlugin).map(getPluginDescription)
 
@@ -40,6 +66,8 @@ const logDeploySuccess = function () {
 }
 
 module.exports = {
+  logPluginsFetchError,
+  logPluginsList,
   logLoadingPlugins,
   logFailPluginWarning,
   logDeploySuccess,
