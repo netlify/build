@@ -35,6 +35,7 @@
         'p-locate',
         'pkg-dir',
         'pretty-ms',
+        'supports-color',
         'update-notifier',
         'yargs',
       ],
