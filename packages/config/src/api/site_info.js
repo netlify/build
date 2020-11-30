@@ -6,7 +6,10 @@
 // information instead.
 // Requires knowing the `siteId` and having the access `token`.
 const getSiteInfo = async function (api, siteId, mode) {
-  if (api === undefined || siteId === undefined || mode === 'buildbot') {
+  if (siteId === undefined) {
+    return {}
+  }
+  if (api === undefined || mode === 'buildbot') {
     return { id: siteId }
   }
 
