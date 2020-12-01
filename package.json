@@ -1,7 +1,7 @@
 {
   "name": "netlify-build",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.0.0",
   "description": "Netlify build module",
   "main": "index.js",
   "author": "Netlify Inc.",
