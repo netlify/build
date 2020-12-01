@@ -11,7 +11,7 @@ const useManifest = async function (
   { packageName, loadedFrom, origin, inputs },
   { pluginDir, packageDir, pluginPackageJson, pluginPackageJson: { version }, debug },
 ) {
-  const manifestPath = await getManifestPath(pluginDir, packageDir)
+  const manifestPath = await getManifestPath({ pluginDir, packageDir, packageName })
 
   try {
     const manifest = await loadManifest({ manifestPath, packageName, pluginPackageJson, loadedFrom, origin })
