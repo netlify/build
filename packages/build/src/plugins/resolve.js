@@ -62,18 +62,18 @@ const resolvePluginPath = async function ({
     return pluginOptions
   }
 
-  const packageNameA = resolvePackagePath(packageName)
+  const localPackageName = normalizeLocalPackageName(packageName)
 
   // Local plugins
-  if (packageNameA.startsWith('.')) {
-    const { path: localPath, error } = await tryResolvePath(packageNameA, buildDir)
-    validateLocalPluginPath(error, packageNameA)
+  if (localPackageName.startsWith('.')) {
+    const { path: localPath, error } = await tryResolvePath(localPackageName, buildDir)
+    validateLocalPluginPath(error, localPackageName)
     return { ...pluginOptions, pluginPath: localPath, loadedFrom: 'local' }
   }
 
   // Plugin already installed in the project, most likely either local plugins,
   // or external plugins added to `package.json`
-  const { path: manualPath } = await tryResolvePath(packageNameA, buildDir)
+  const { path: manualPath } = await tryResolvePath(packageName, buildDir)
   if (manualPath !== undefined) {
     return { ...pluginOptions, pluginPath: manualPath, loadedFrom: 'package.json' }
   }
@@ -81,7 +81,7 @@ const resolvePluginPath = async function ({
   await getPluginsList({ debug, logs, testOpts })
 
   // Cached in the build image
-  const buildImagePath = await tryBuildImagePath({ packageName: packageNameA, buildDir, buildImagePluginsDir })
+  const buildImagePath = await tryBuildImagePath({ packageName, buildDir, buildImagePluginsDir })
   if (buildImagePath !== undefined) {
     return { ...pluginOptions, pluginPath: buildImagePath, loadedFrom: 'image_cache' }
   }
@@ -93,7 +93,7 @@ const resolvePluginPath = async function ({
 }
 
 // `packageName` starting with `/` are relative to the build directory
-const resolvePackagePath = function (packageName) {
+const normalizeLocalPackageName = function (packageName) {
   if (packageName.startsWith('/')) {
     return `.${packageName}`
   }
