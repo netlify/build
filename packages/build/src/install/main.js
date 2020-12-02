@@ -13,7 +13,7 @@ const installDependencies = function ({ packageRoot, isLocal }) {
 }
 
 // Add new Node.js dependencies
-const addLatestDependencies = function ({ packageRoot, isLocal, packages }) {
+const addDependencies = function ({ packageRoot, isLocal, packages }) {
   return runCommand({ packageRoot, packages, isLocal, type: 'add' })
 }
 
@@ -38,7 +38,7 @@ const getCommand = async function ({ packageRoot, type, isLocal }) {
 }
 
 const getManager = async function (type, packageRoot) {
-  // `addLatestDependencies()` is only supported with npm at the moment
+  // `addDependencies()` always uses npm
   if (type === 'add') {
     return 'npm'
   }
@@ -82,4 +82,4 @@ const isNotNpmLogMessage = function (line) {
 }
 const NPM_LOG_MESSAGES = ['complete log of this run', '-debug.log']
 
-module.exports = { installDependencies, addLatestDependencies }
+module.exports = { installDependencies, addDependencies }
