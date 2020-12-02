@@ -3,7 +3,7 @@
 const pathExists = require('path-exists')
 
 const { addErrorInfo } = require('../error/info')
-const { installMissingPlugins, getAutoPluginsDirPath, warnOnMissingPlugins } = require('../install/missing')
+const { installMissingPlugins, warnOnMissingPlugins } = require('../install/missing')
 const { resolvePath } = require('../utils/resolve')
 
 const { getPluginsList } = require('./list.js')
@@ -24,6 +24,7 @@ const resolvePluginsPath = async function ({
   featureFlags,
   testOpts,
 }) {
+  const autoPluginsDir = getAutoPluginsDir(buildDir)
   const pluginsOptionsA = await Promise.all(
     pluginsOptions.map((pluginOptions) =>
       resolvePluginPath({ pluginOptions, buildDir, buildImagePluginsDir, debug, logs, featureFlags, testOpts }),
@@ -31,13 +32,22 @@ const resolvePluginsPath = async function ({
   )
   const pluginsOptionsB = await handleMissingPlugins({
     pluginsOptions: pluginsOptionsA,
-    buildDir,
+    autoPluginsDir,
     mode,
     buildImagePluginsDir,
     logs,
   })
   return pluginsOptionsB
 }
+
+// Find the path to the directory used to install plugins automatically.
+// It is a subdirectory of `buildDir`, so that the plugin can require the
+// project's dependencies (peer dependencies).
+const getAutoPluginsDir = function (buildDir) {
+  return `${buildDir}/${AUTO_PLUGINS_DIR}`
+}
+
+const AUTO_PLUGINS_DIR = '.netlify/plugins/'
 
 const resolvePluginPath = async function ({
   pluginOptions,
@@ -125,8 +135,7 @@ const tryResolvePath = async function (packageName, baseDir) {
 
 // Handle plugins that were neither local, in the build image cache nor in
 // node_modules. We automatically install those, with a warning.
-const handleMissingPlugins = async function ({ pluginsOptions, buildDir, mode, buildImagePluginsDir, logs }) {
-  const autoPluginsDir = getAutoPluginsDirPath(buildDir)
+const handleMissingPlugins = async function ({ pluginsOptions, autoPluginsDir, mode, buildImagePluginsDir, logs }) {
   await installMissingPlugins({ pluginsOptions, autoPluginsDir, mode, logs })
   const pluginsOptionsA = await Promise.all(
     pluginsOptions.map((pluginOptions) => resolveMissingPluginPath({ pluginOptions, autoPluginsDir })),
