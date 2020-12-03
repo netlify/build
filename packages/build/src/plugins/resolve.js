@@ -86,8 +86,10 @@ const resolvePluginPath = async function ({
     return { ...pluginOptions, pluginPath: buildImagePath, loadedFrom: 'image_cache' }
   }
 
-  // Otherwise, it must be automatically installed, as a fallback
-  return pluginOptions
+  // Happens if the plugin:
+  //  - name is mispelled
+  //  - is not in our official list
+  return { ...pluginOptions, loadedFrom: 'auto_install' }
 }
 
 // `packageName` starting with `/` are relative to the build directory
@@ -145,7 +147,7 @@ const resolveMissingPluginPath = async function ({
   }
 
   const automaticPath = await resolvePath(packageName, autoPluginsDir)
-  return { ...pluginOptions, pluginPath: automaticPath, loadedFrom: 'auto_install' }
+  return { ...pluginOptions, pluginPath: automaticPath }
 }
 
 module.exports = { resolvePluginsPath }
