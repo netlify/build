@@ -14,8 +14,7 @@ ${message}`,
 }
 
 const logPluginsList = function ({ pluginsList, debug, logs }) {
-  // `pluginsList` is empty when mocked in tests
-  if (!debug || Object.keys(pluginsList).length === 0) {
+  if (!debug) {
     return
   }
 
