@@ -30,7 +30,7 @@ const getPluginsList = async function ({ debug, logs, testOpts: { pluginsListUrl
 
 const fetchPluginsList = async function ({ logs, pluginsListUrl }) {
   try {
-    const { body } = await got(pluginsListUrl, { json: true })
+    const { body } = await got(pluginsListUrl, { json: true, timeout: PLUGINS_LIST_TIMEOUT })
     return body
     // The Netlify Site should be up. This is a fallback.
     // `oldPluginsList` might not contain the latest plugins versions:
@@ -45,6 +45,8 @@ const fetchPluginsList = async function ({ logs, pluginsListUrl }) {
 }
 
 const PLUGINS_LIST_URL = 'https://netlify-plugins.netlify.app/plugins.json'
+// 10 seconds HTTP request timeout
+const PLUGINS_LIST_TIMEOUT = 1e4
 
 const normalizePluginsList = function (pluginsList) {
   return fromEntries(pluginsList.map(normalizePluginItem))
