@@ -33,7 +33,6 @@ const resolvePluginsPath = async function ({
     pluginsOptions: pluginsOptionsA,
     autoPluginsDir,
     mode,
-    buildImagePluginsDir,
     logs,
   })
   return pluginsOptionsB
@@ -127,12 +126,12 @@ const tryBuildImagePath = async function ({ packageName, buildDir, buildImagePlu
 
 // Handle plugins that were neither local, in the build image cache nor in
 // node_modules. We automatically install those, with a warning.
-const handleMissingPlugins = async function ({ pluginsOptions, autoPluginsDir, mode, buildImagePluginsDir, logs }) {
+const handleMissingPlugins = async function ({ pluginsOptions, autoPluginsDir, mode, logs }) {
   await installMissingPlugins({ pluginsOptions, autoPluginsDir, mode, logs })
   const pluginsOptionsA = await Promise.all(
     pluginsOptions.map((pluginOptions) => resolveMissingPluginPath({ pluginOptions, autoPluginsDir })),
   )
-  warnOnConfigOnlyPlugins({ pluginsOptions: pluginsOptionsA, buildImagePluginsDir, logs })
+  warnOnConfigOnlyPlugins({ pluginsOptions: pluginsOptionsA, logs })
   return pluginsOptionsA
 }
 
