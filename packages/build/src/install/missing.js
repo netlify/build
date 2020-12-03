@@ -12,15 +12,6 @@ const { addDependencies } = require('./main')
 
 const pWriteFile = promisify(writeFile)
 
-// Find the path to the directory used to install plugins automatically.
-// It is a subdirectory of `buildDir`, so that the plugin can require the
-// project's dependencies (peer dependencies).
-const getAutoPluginsDirPath = function (buildDir) {
-  return `${buildDir}/${AUTO_PLUGINS_DIR}`
-}
-
-const AUTO_PLUGINS_DIR = '.netlify/plugins/'
-
 // Automatically install plugins if not already installed nor cached in the
 // build image.
 // This is a fallback that is discouraged.
@@ -113,4 +104,4 @@ const isAutomaticallyInstalled = function ({ loadedFrom, origin }) {
   return loadedFrom === 'auto_install' && origin === 'config'
 }
 
-module.exports = { getAutoPluginsDirPath, installMissingPlugins, warnOnMissingPlugins }
+module.exports = { installMissingPlugins, warnOnMissingPlugins }
