@@ -6,6 +6,7 @@ const { addErrorInfo } = require('../error/info')
 const { installMissingPlugins, warnOnConfigOnlyPlugins } = require('../install/missing')
 const { resolvePath, tryResolvePath } = require('../utils/resolve')
 
+const { addExpectedVersions } = require('./expected_version')
 const { getPluginsList } = require('./list.js')
 
 // Try to find plugins in four places, by priority order:
@@ -29,13 +30,14 @@ const resolvePluginsPath = async function ({
       resolvePluginPath({ pluginOptions, buildDir, buildImagePluginsDir, debug, logs, testOpts }),
     ),
   )
-  const pluginsOptionsB = await handleMissingPlugins({
-    pluginsOptions: pluginsOptionsA,
+  const pluginsOptionsB = addExpectedVersions({ pluginsOptions: pluginsOptionsA })
+  const pluginsOptionsC = await handleMissingPlugins({
+    pluginsOptions: pluginsOptionsB,
     autoPluginsDir,
     mode,
     logs,
   })
-  return pluginsOptionsB
+  return pluginsOptionsC
 }
 
 // Find the path to the directory used to install plugins automatically.
@@ -70,8 +72,7 @@ const resolvePluginPath = async function ({
     return { ...pluginOptions, pluginPath: localPath, loadedFrom: 'local' }
   }
 
-  // Plugin already installed in the project, most likely either local plugins,
-  // or external plugins added to `package.json`
+  // Plugin added to `package.json`
   const { path: manualPath } = await tryResolvePath(packageName, buildDir)
   if (manualPath !== undefined) {
     return { ...pluginOptions, pluginPath: manualPath, loadedFrom: 'package.json' }
@@ -138,10 +139,10 @@ const handleMissingPlugins = async function ({ pluginsOptions, autoPluginsDir, m
 // Resolve the plugins that just got automatically installed
 const resolveMissingPluginPath = async function ({
   pluginOptions,
-  pluginOptions: { packageName, pluginPath },
+  pluginOptions: { packageName, expectedVersion },
   autoPluginsDir,
 }) {
-  if (pluginPath !== undefined) {
+  if (expectedVersion === undefined) {
     return pluginOptions
   }
 
