@@ -4,7 +4,7 @@ const pathExists = require('path-exists')
 
 const { addErrorInfo } = require('../error/info')
 const { installMissingPlugins, warnOnMissingPlugins } = require('../install/missing')
-const { resolvePath } = require('../utils/resolve')
+const { resolvePath, tryResolvePath } = require('../utils/resolve')
 
 const { getPluginsList } = require('./list.js')
 
@@ -66,13 +66,14 @@ const resolvePluginPath = async function ({
 
   // Local plugins
   if (packageNameA.startsWith('.')) {
-    const localPath = await tryLocalPath(packageNameA, buildDir)
+    const { path: localPath, error } = await tryResolvePath(packageNameA, buildDir)
+    validateLocalPluginPath(error, packageNameA)
     return { ...pluginOptions, pluginPath: localPath, loadedFrom: 'local' }
   }
 
   // Plugin already installed in the project, most likely either local plugins,
   // or external plugins added to `package.json`
-  const manualPath = await tryResolvePath(packageNameA, buildDir)
+  const { path: manualPath } = await tryResolvePath(packageNameA, buildDir)
   if (manualPath !== undefined) {
     return { ...pluginOptions, pluginPath: manualPath, loadedFrom: 'package.json' }
   }
@@ -98,12 +99,10 @@ const resolvePackagePath = function (packageName) {
   return packageName
 }
 
-// Try to `resolve()` a local plugin
-const tryLocalPath = async function (packageName, baseDir) {
-  try {
-    return await resolvePath(packageName, baseDir)
-  } catch (error) {
-    error.message = `Plugin could not be found using local path: ${packageName}\n${error.message}`
+// When requiring a local plugin with an invalid file path
+const validateLocalPluginPath = function (error, localPackageName) {
+  if (error !== undefined) {
+    error.message = `Plugin could not be found using local path: ${localPackageName}\n${error.message}`
     addErrorInfo(error, { type: 'resolveConfig' })
     throw error
   }
@@ -122,13 +121,6 @@ const tryBuildImagePath = async function ({ packageName, buildDir, buildImagePlu
   }
 
   return resolvePath(buildImagePath, buildDir)
-}
-
-// Try to `resolve()` the plugin from the build directory
-const tryResolvePath = async function (packageName, baseDir) {
-  try {
-    return await resolvePath(packageName, baseDir)
-  } catch (error) {}
 }
 
 // Handle plugins that were neither local, in the build image cache nor in
