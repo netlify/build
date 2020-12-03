@@ -84,13 +84,7 @@ const AUTO_PLUGINS_PACKAGE_JSON = {
 // We deprecate this third way because:
 //  - having fewer ways of installing plugins is simpler
 //  - using `package.json` is faster and more reliable
-// Not done for local builds, since they cannot use the alternative
-// (build-image cached plugins).
-const warnOnConfigOnlyPlugins = function ({ pluginsOptions, buildImagePluginsDir, logs }) {
-  if (buildImagePluginsDir === undefined) {
-    return
-  }
-
+const warnOnConfigOnlyPlugins = function ({ pluginsOptions, logs }) {
   const packages = pluginsOptions.filter(isConfigOnlyPlugin).map(getPackageName)
   if (packages.length === 0) {
     return
