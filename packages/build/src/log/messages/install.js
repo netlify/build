@@ -8,7 +8,7 @@ const logInstallMissingPlugins = function (logs, packages) {
   logArray(logs, packages)
 }
 
-const logMissingPluginsWarning = function (logs, packages) {
+const logConfigOnlyPlugins = function (logs, packages) {
   logErrorSubHeader(logs, 'Missing plugins')
   logMessage(
     logs,
@@ -35,7 +35,7 @@ const getPackageName = function ({ packageName }) {
 
 module.exports = {
   logInstallMissingPlugins,
-  logMissingPluginsWarning,
+  logConfigOnlyPlugins,
   logInstallLocalPluginsDeps,
   logInstallFunctionDependencies,
 }

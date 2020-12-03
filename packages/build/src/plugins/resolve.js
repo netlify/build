@@ -3,7 +3,7 @@
 const pathExists = require('path-exists')
 
 const { addErrorInfo } = require('../error/info')
-const { installMissingPlugins, warnOnMissingPlugins } = require('../install/missing')
+const { installMissingPlugins, warnOnConfigOnlyPlugins } = require('../install/missing')
 const { resolvePath, tryResolvePath } = require('../utils/resolve')
 
 const { getPluginsList } = require('./list.js')
@@ -132,7 +132,7 @@ const handleMissingPlugins = async function ({ pluginsOptions, autoPluginsDir, m
   const pluginsOptionsA = await Promise.all(
     pluginsOptions.map((pluginOptions) => resolveMissingPluginPath({ pluginOptions, autoPluginsDir })),
   )
-  warnOnMissingPlugins({ pluginsOptions: pluginsOptionsA, buildImagePluginsDir, logs })
+  warnOnConfigOnlyPlugins({ pluginsOptions: pluginsOptionsA, buildImagePluginsDir, logs })
   return pluginsOptionsA
 }
 
