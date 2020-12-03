@@ -5,6 +5,16 @@ const { version: nodeVersion } = require('process')
 const resolveLib = require('resolve')
 const { gte: gteVersion } = require('semver')
 
+// Like `resolvePath()` but does not throw
+const tryResolvePath = async function (path, basedir) {
+  try {
+    const resolvedPath = await resolvePath(path, basedir)
+    return { path: resolvedPath }
+  } catch (error) {
+    return { error }
+  }
+}
+
 // This throws if the package cannot be found
 // We try not to use `resolve` because it gives unhelpful error messages.
 //   https://github.com/browserify/resolve/issues/223
@@ -38,4 +48,4 @@ const resolvePathFallback = function (path, basedir) {
   })
 }
 
-module.exports = { resolvePath }
+module.exports = { tryResolvePath, resolvePath }
