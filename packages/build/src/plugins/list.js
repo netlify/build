@@ -5,6 +5,7 @@ const oldPluginsList = require('@netlify/plugins-list')
 const fromEntries = require('@ungap/from-entries')
 const got = require('got')
 
+const { logPluginsList } = require('../log/messages/plugins')
 const { logPluginsFetchError } = require('../log/messages/plugins')
 
 // Retrieve the list of plugins officially vetted by us and displayed in our
@@ -12,7 +13,9 @@ const { logPluginsFetchError } = require('../log/messages/plugins')
 // We fetch this list during each build (no caching) because we want new
 // versions of plugins to be available instantly to all users. The time to
 // make this request is somewhat ok (in the 100ms range).
-const getPluginsList = async function ({ logs, featureFlags, testOpts: { pluginsListUrl = PLUGINS_LIST_URL } }) {
+// We only fetch this plugins list when needed, i.e. we defer it as much as
+// possible.
+const getPluginsList = async function ({ debug, logs, featureFlags, testOpts: { pluginsListUrl = PLUGINS_LIST_URL } }) {
   // We try not to mock in integration tests. However, sending a request for
   // each test would be too slow and make tests unreliable.
   if (!featureFlags.pluginsList || pluginsListUrl === 'test') {
@@ -20,7 +23,9 @@ const getPluginsList = async function ({ logs, featureFlags, testOpts: { plugins
   }
 
   const pluginsList = await fetchPluginsList({ logs, pluginsListUrl })
-  return normalizePluginsList(pluginsList)
+  const pluginsListA = normalizePluginsList(pluginsList)
+  logPluginsList({ pluginsList: pluginsListA, debug, logs })
+  return pluginsListA
 }
 
 const fetchPluginsList = async function ({ logs, pluginsListUrl }) {

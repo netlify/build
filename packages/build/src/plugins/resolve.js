@@ -4,7 +4,6 @@ const pathExists = require('path-exists')
 
 const { addErrorInfo } = require('../error/info')
 const { installMissingPlugins, getAutoPluginsDirPath, warnOnMissingPlugins } = require('../install/missing')
-const { logPluginsList } = require('../log/messages/plugins')
 const { resolvePath } = require('../utils/resolve')
 
 const { getPluginsList } = require('./list.js')
@@ -70,8 +69,7 @@ const resolvePluginPath = async function ({
     return { ...pluginOptions, pluginPath: manualPath, loadedFrom: 'package.json' }
   }
 
-  const pluginsList = await getPluginsList({ logs, featureFlags, testOpts })
-  logPluginsList({ pluginsList, debug, logs })
+  await getPluginsList({ debug, logs, featureFlags, testOpts })
 
   // Cached in the build image
   const buildImagePath = await tryBuildImagePath({ packageName: packageNameA, buildDir, buildImagePluginsDir })
