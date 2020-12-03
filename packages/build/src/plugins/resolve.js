@@ -21,13 +21,12 @@ const resolvePluginsPath = async function ({
   logs,
   buildImagePluginsDir,
   debug,
-  featureFlags,
   testOpts,
 }) {
   const autoPluginsDir = getAutoPluginsDir(buildDir)
   const pluginsOptionsA = await Promise.all(
     pluginsOptions.map((pluginOptions) =>
-      resolvePluginPath({ pluginOptions, buildDir, buildImagePluginsDir, debug, logs, featureFlags, testOpts }),
+      resolvePluginPath({ pluginOptions, buildDir, buildImagePluginsDir, debug, logs, testOpts }),
     ),
   )
   const pluginsOptionsB = await handleMissingPlugins({
@@ -56,7 +55,6 @@ const resolvePluginPath = async function ({
   buildImagePluginsDir,
   debug,
   logs,
-  featureFlags,
   testOpts,
 }) {
   // Core plugins
@@ -79,7 +77,7 @@ const resolvePluginPath = async function ({
     return { ...pluginOptions, pluginPath: manualPath, loadedFrom: 'package.json' }
   }
 
-  await getPluginsList({ debug, logs, featureFlags, testOpts })
+  await getPluginsList({ debug, logs, testOpts })
 
   // Cached in the build image
   const buildImagePath = await tryBuildImagePath({ packageName: packageNameA, buildDir, buildImagePluginsDir })

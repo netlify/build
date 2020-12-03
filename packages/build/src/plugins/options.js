@@ -39,7 +39,6 @@ const tGetPluginsOptions = async function ({
     logs,
     buildImagePluginsDir,
     debug,
-    featureFlags,
     testOpts,
   })
   const pluginsOptionsB = await Promise.all(
