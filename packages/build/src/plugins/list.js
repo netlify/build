@@ -15,10 +15,10 @@ const { logPluginsFetchError } = require('../log/messages/plugins')
 // make this request is somewhat ok (in the 100ms range).
 // We only fetch this plugins list when needed, i.e. we defer it as much as
 // possible.
-const getPluginsList = async function ({ debug, logs, featureFlags, testOpts: { pluginsListUrl = PLUGINS_LIST_URL } }) {
+const getPluginsList = async function ({ debug, logs, testOpts: { pluginsListUrl = PLUGINS_LIST_URL } }) {
   // We try not to mock in integration tests. However, sending a request for
   // each test would be too slow and make tests unreliable.
-  if (!featureFlags.pluginsList || pluginsListUrl === 'test') {
+  if (pluginsListUrl === 'test') {
     return []
   }
 

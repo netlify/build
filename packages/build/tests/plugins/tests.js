@@ -563,7 +563,6 @@ const runWithApiMock = async function (t, flags, status) {
       flags: {
         buildImagePluginsDir: `${FIXTURES_DIR}/build_image_cache/node_modules`,
         testOpts: { pluginsListUrl: `${scheme}://${host}`, ...flags.testOpts },
-        featureFlags: 'pluginsList',
         ...flags,
       },
     })
@@ -581,10 +580,6 @@ test('Fetches the list of plugin versions', async (t) => {
 
 test('Only prints the list of plugin versions in verbose mode', async (t) => {
   await runWithApiMock(t, { debug: false })
-})
-
-test('Only fetches the list of plugin versions with a feature flag', async (t) => {
-  await runWithApiMock(t, { featureFlags: '' })
 })
 
 test('Uses fallback when the plugins fetch fails', async (t) => {
