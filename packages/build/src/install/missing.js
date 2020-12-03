@@ -30,15 +30,19 @@ const installMissingPlugins = async function ({ pluginsOptions, autoPluginsDir, 
 }
 
 const getMissingPlugins = function (pluginsOptions) {
-  return pluginsOptions.filter(isMissingPlugin).map(getPackageName)
+  return pluginsOptions.filter(isMissingPlugin).map(getPackage)
 }
 
-const isMissingPlugin = function ({ pluginPath }) {
-  return pluginPath === undefined
+const isMissingPlugin = function ({ expectedVersion }) {
+  return expectedVersion !== undefined
 }
 
 const getPackageName = function ({ packageName }) {
   return packageName
+}
+
+const getPackage = function ({ packageName, expectedVersion }) {
+  return `${packageName}@${expectedVersion}`
 }
 
 const createAutoPluginsDir = async function (autoPluginsDir) {
