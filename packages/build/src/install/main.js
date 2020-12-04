@@ -12,9 +12,9 @@ const installDependencies = function ({ packageRoot, isLocal }) {
   return runCommand({ packageRoot, isLocal, type: 'install' })
 }
 
-// Add new Node.js dependencies
-const addDependencies = function ({ packageRoot, isLocal, packages }) {
-  return runCommand({ packageRoot, packages, isLocal, type: 'add' })
+// Add new Node.js dependencies, with exact semver ranges
+const addExactDependencies = function ({ packageRoot, isLocal, packages }) {
+  return runCommand({ packageRoot, packages, isLocal, type: 'addExact' })
 }
 
 const runCommand = async function ({ packageRoot, packages = [], isLocal, type }) {
@@ -39,7 +39,7 @@ const getCommand = async function ({ packageRoot, type, isLocal }) {
 
 const getManager = async function (type, packageRoot) {
   // `addDependencies()` always uses npm
-  if (type === 'add') {
+  if (type === 'addExact') {
     return 'npm'
   }
 
@@ -52,7 +52,7 @@ const getManager = async function (type, packageRoot) {
 
 const COMMANDS = {
   npm: {
-    add: ['npm', 'install', '--no-progress', '--no-audit', '--no-fund', '--no-save'],
+    addExact: ['npm', 'install', '--no-progress', '--no-audit', '--no-fund', '--save-exact'],
     install: ['npm', 'install', '--no-progress', '--no-audit', '--no-fund'],
   },
   yarn: {
@@ -82,4 +82,4 @@ const isNotNpmLogMessage = function (line) {
 }
 const NPM_LOG_MESSAGES = ['complete log of this run', '-debug.log']
 
-module.exports = { installDependencies, addDependencies }
+module.exports = { installDependencies, addExactDependencies }

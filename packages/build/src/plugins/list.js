@@ -45,8 +45,8 @@ const fetchPluginsList = async function ({ logs, pluginsListUrl }) {
 }
 
 const PLUGINS_LIST_URL = 'https://netlify-plugins.netlify.app/plugins.json'
-// 10 seconds HTTP request timeout
-const PLUGINS_LIST_TIMEOUT = 1e4
+// 1 minute HTTP request timeout
+const PLUGINS_LIST_TIMEOUT = 6e4
 
 const normalizePluginsList = function (pluginsList) {
   return fromEntries(pluginsList.map(normalizePluginItem))

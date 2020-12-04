@@ -7,18 +7,17 @@ const { installMissingPlugins, warnOnConfigOnlyPlugins } = require('../install/m
 const { resolvePath, tryResolvePath } = require('../utils/resolve')
 
 const { addExpectedVersions } = require('./expected_version')
-const { getPluginsList } = require('./list.js')
 
 // Try to find plugins in four places, by priority order:
 //  - already loaded (core plugins)
 //  - local plugin
 //  - external plugin already installed in `node_modules`, most likely through `package.json`
-//  - cached in the build image
-//  - automatically installed by us (fallback)
+//  - automatically installed by us, to `.netlify/plugins/`
 const resolvePluginsPath = async function ({
   pluginsOptions,
   buildDir,
   mode,
+  featureFlags,
   logs,
   buildImagePluginsDir,
   debug,
@@ -27,13 +26,21 @@ const resolvePluginsPath = async function ({
   const autoPluginsDir = getAutoPluginsDir(buildDir)
   const pluginsOptionsA = await Promise.all(
     pluginsOptions.map((pluginOptions) =>
-      resolvePluginPath({ pluginOptions, buildDir, buildImagePluginsDir, debug, logs, testOpts }),
+      resolvePluginPath({ pluginOptions, buildDir, buildImagePluginsDir, featureFlags, autoPluginsDir }),
     ),
   )
-  const pluginsOptionsB = addExpectedVersions({ pluginsOptions: pluginsOptionsA })
+  const pluginsOptionsB = await addExpectedVersions({
+    pluginsOptions: pluginsOptionsA,
+    autoPluginsDir,
+    featureFlags,
+    debug,
+    logs,
+    testOpts,
+  })
   const pluginsOptionsC = await handleMissingPlugins({
     pluginsOptions: pluginsOptionsB,
     autoPluginsDir,
+    featureFlags,
     mode,
     logs,
   })
@@ -49,14 +56,14 @@ const getAutoPluginsDir = function (buildDir) {
 
 const AUTO_PLUGINS_DIR = '.netlify/plugins/'
 
+// eslint-disable-next-line complexity, max-statements
 const resolvePluginPath = async function ({
   pluginOptions,
   pluginOptions: { packageName, loadedFrom },
   buildDir,
   buildImagePluginsDir,
-  debug,
-  logs,
-  testOpts,
+  featureFlags,
+  autoPluginsDir,
 }) {
   // Core plugins
   if (loadedFrom !== undefined) {
@@ -78,17 +85,24 @@ const resolvePluginPath = async function ({
     return { ...pluginOptions, pluginPath: manualPath, loadedFrom: 'package.json' }
   }
 
-  await getPluginsList({ debug, logs, testOpts })
-
-  // Cached in the build image
-  const buildImagePath = await tryBuildImagePath({ packageName, buildDir, buildImagePluginsDir })
-  if (buildImagePath !== undefined) {
-    return { ...pluginOptions, pluginPath: buildImagePath, loadedFrom: 'image_cache' }
+  if (featureFlags.new_plugins_install) {
+    // Previously automatically installed
+    const { path: automaticPath } = await tryResolvePath(packageName, autoPluginsDir)
+    if (automaticPath !== undefined) {
+      return { ...pluginOptions, pluginPath: automaticPath, loadedFrom: 'auto_install' }
+    }
+  } else {
+    // Cached in the build image
+    const buildImagePath = await tryBuildImagePath({ packageName, buildDir, buildImagePluginsDir })
+    if (buildImagePath !== undefined) {
+      return { ...pluginOptions, pluginPath: buildImagePath, loadedFrom: 'image_cache' }
+    }
   }
 
   // Happens if the plugin:
   //  - name is mispelled
   //  - is not in our official list
+  //  - is in our official list but has not been installed by this site yet
   return { ...pluginOptions, loadedFrom: 'auto_install' }
 }
 
@@ -125,14 +139,14 @@ const tryBuildImagePath = async function ({ packageName, buildDir, buildImagePlu
   return resolvePath(buildImagePath, buildDir)
 }
 
-// Handle plugins that were neither local, in the build image cache nor in
-// node_modules. We automatically install those, with a warning.
-const handleMissingPlugins = async function ({ pluginsOptions, autoPluginsDir, mode, logs }) {
+// Install plugins from the official list that have not been previously installed.
+// Print a warning if they have not been installed through the UI.
+const handleMissingPlugins = async function ({ pluginsOptions, autoPluginsDir, featureFlags, mode, logs }) {
   await installMissingPlugins({ pluginsOptions, autoPluginsDir, mode, logs })
   const pluginsOptionsA = await Promise.all(
     pluginsOptions.map((pluginOptions) => resolveMissingPluginPath({ pluginOptions, autoPluginsDir })),
   )
-  warnOnConfigOnlyPlugins({ pluginsOptions: pluginsOptionsA, logs })
+  warnOnConfigOnlyPlugins({ pluginsOptions: pluginsOptionsA, featureFlags, logs })
   return pluginsOptionsA
 }
 
