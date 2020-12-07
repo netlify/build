@@ -8,8 +8,8 @@ Contributions are always welcome, no matter how large or small. Before contribut
 > Install Node.js + npm on your system: https://nodejs.org/en/download/
 
 ```sh
-$ git clone https://github.com/netlify/zip-it-and-ship-it
-$ cd zip-it-and-ship-it
+$ git clone git@github.com:netlify/framework-info.git
+$ cd framework-info
 $ npm install
 $ npm test
 ```
