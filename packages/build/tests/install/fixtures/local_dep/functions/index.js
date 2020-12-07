@@ -2,6 +2,4 @@
 
 const missing = require('./missing')
 
-module.exports = () => {
-  return missing()
-}
+module.exports = () => missing()
