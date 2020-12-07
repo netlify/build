@@ -2,6 +2,4 @@
 
 const mathAvg = require('math-avg-mispelled')
 
-module.exports = () => {
-  return mathAvg([])
-}
+module.exports = () => mathAvg([])
