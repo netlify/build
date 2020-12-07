@@ -6,7 +6,7 @@ const { listFrameworks } = require('../src/main.js')
 
 const { FIXTURES_DIR } = require('./helpers/main.js')
 
-test.serial('projectDir option defaults to process.cwd()', async t => {
+test.serial('projectDir option defaults to process.cwd()', async (t) => {
   const oldCwd = process.cwd()
   process.chdir(`${FIXTURES_DIR}/simple`)
   try {
@@ -17,7 +17,7 @@ test.serial('projectDir option defaults to process.cwd()', async t => {
   }
 })
 
-test.serial('Cannot trigger with no options', async t => {
+test.serial('Cannot trigger with no options', async (t) => {
   const oldCwd = process.cwd()
   process.chdir(`${FIXTURES_DIR}/simple`)
   try {

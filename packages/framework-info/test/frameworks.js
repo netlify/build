@@ -6,7 +6,7 @@ const { FRAMEWORKS } = require('../src/frameworks/main.js')
 
 const ajv = new Ajv({})
 
-const validate = function(value, schema) {
+const validate = function (value, schema) {
   const isValid = ajv.validate(schema, value)
 
   if (isValid) {
@@ -19,7 +19,7 @@ const validate = function(value, schema) {
 const RELATIVE_PATH_SCHEMA = {
   type: 'string',
   minLength: 1,
-  allOf: [{ not: { pattern: '^/' } }, { not: { pattern: '^\\.\\.?\\/' } }]
+  allOf: [{ not: { pattern: '^/' } }, { not: { pattern: '^\\.\\.?\\/' } }],
 }
 const FRAMEWORK_JSON_SCHEMA = {
   type: 'object',
@@ -29,7 +29,7 @@ const FRAMEWORK_JSON_SCHEMA = {
     name: { type: 'string', pattern: '^[a-z\\d_]+', minLength: 1 },
     category: {
       type: 'string',
-      enum: ['static_site_generator', 'frontend_framework', 'build_tool']
+      enum: ['static_site_generator', 'frontend_framework', 'build_tool'],
     },
     detect: {
       type: 'object',
@@ -38,17 +38,17 @@ const FRAMEWORK_JSON_SCHEMA = {
       properties: {
         npmDependencies: {
           type: 'array',
-          items: { type: 'string', minLength: 1 }
+          items: { type: 'string', minLength: 1 },
         },
         excludedNpmDependencies: {
           type: 'array',
-          items: { type: 'string', minLength: 1 }
+          items: { type: 'string', minLength: 1 },
         },
         configFiles: {
           type: 'array',
-          items: RELATIVE_PATH_SCHEMA
-        }
-      }
+          items: RELATIVE_PATH_SCHEMA,
+        },
+      },
     },
     watch: {
       type: 'object',
@@ -57,18 +57,18 @@ const FRAMEWORK_JSON_SCHEMA = {
       properties: {
         command: { type: 'string', minLength: 1 },
         directory: RELATIVE_PATH_SCHEMA,
-        port: { type: 'integer', minimum: 1, maximum: 65535 }
-      }
+        port: { type: 'integer', minimum: 1, maximum: 65535 },
+      },
     },
     env: {
       type: 'object',
-      additionalProperties: { type: 'string' }
-    }
-  }
+      additionalProperties: { type: 'string' },
+    },
+  },
 }
 
 each(FRAMEWORKS, (info, framework) => {
-  test(`Framework "${framework.name}" should have a valid shape`, t => {
+  test(`Framework "${framework.name}" should have a valid shape`, (t) => {
     t.is(validate(framework, FRAMEWORK_JSON_SCHEMA), true)
   })
 })

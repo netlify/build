@@ -30,7 +30,7 @@ const FRAMEWORKS = [
 
   // Build tools
   require('./brunch.json'),
-  require('./parcel.json')
+  require('./parcel.json'),
 ]
 
 module.exports = { FRAMEWORKS }

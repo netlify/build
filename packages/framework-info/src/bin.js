@@ -6,7 +6,7 @@ const yargs = require('yargs')
 const { listFrameworks } = require('./main.js')
 
 // CLI entry point
-const runCli = async function() {
+const runCli = async function () {
   const { projectDir, long, ignoredWatchCommand } = parseArgs()
 
   try {
@@ -19,13 +19,8 @@ const runCli = async function() {
   }
 }
 
-const parseArgs = function() {
-  return yargs
-    .command('* [projectDir]')
-    .options(OPTIONS)
-    .usage(USAGE)
-    .strict()
-    .parse()
+const parseArgs = function () {
+  return yargs.command('* [projectDir]').options(OPTIONS).usage(USAGE).strict().parse()
 }
 
 const OPTIONS = {
@@ -33,19 +28,19 @@ const OPTIONS = {
     boolean: true,
     default: false,
     describe: `Show more information about each framework.
-The output will be a JSON array.`
+The output will be a JSON array.`,
   },
   ignoredWatchCommand: {
     string: true,
-    describe: 'When detecting the watch command, ignore `package.json` `scripts` whose value includes this string.'
-  }
+    describe: 'When detecting the watch command, ignore `package.json` `scripts` whose value includes this string.',
+  },
 }
 
 const USAGE = `$0 [OPTIONS...] [PROJECT_DIRECTORY]
 
 Prints all the frameworks used by a project.`
 
-const serializeFrameworks = function(frameworks, long) {
+const serializeFrameworks = function (frameworks, long) {
   if (long) {
     return JSON.stringify(frameworks, null, 2)
   }
@@ -59,7 +54,7 @@ const serializeFrameworks = function(frameworks, long) {
 
 const NO_FRAMEWORKS = 'unknown'
 
-const getName = function({ name }) {
+const getName = function ({ name }) {
   return name
 }
 

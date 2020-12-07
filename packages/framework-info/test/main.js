@@ -2,31 +2,31 @@ const test = require('ava')
 
 const { getFrameworks, getFramework, hasFramework } = require('./helpers/main.js')
 
-test('Should detect frameworks', async t => {
+test('Should detect frameworks', async (t) => {
   const frameworks = await getFrameworks('simple')
   t.snapshot(frameworks)
 })
 
-test('Should return an empty array when no framework is detected', async t => {
+test('Should return an empty array when no framework is detected', async (t) => {
   const frameworks = await getFrameworks('empty')
   t.is(frameworks.length, 0)
 })
 
-test('Should return several items when multiple frameworks are detected', async t => {
+test('Should return several items when multiple frameworks are detected', async (t) => {
   const frameworks = await getFrameworks('multiple')
   t.is(frameworks.length, 2)
 })
 
-test('Should allow getting a specific framework', async t => {
+test('Should allow getting a specific framework', async (t) => {
   const framework = await getFramework('simple', 'sapper')
   t.snapshot(framework)
 })
 
-test('Should throw when passing an invalid framework', async t => {
+test('Should throw when passing an invalid framework', async (t) => {
   await t.throwsAsync(getFramework('simple', 'doesNotExist'))
 })
 
-test('Should allow testing a specific framework', async t => {
+test('Should allow testing a specific framework', async (t) => {
   const trueResult = await hasFramework('simple', 'sapper')
   t.true(trueResult)
 
@@ -34,6 +34,6 @@ test('Should allow testing a specific framework', async t => {
   t.false(falseResult)
 })
 
-test('Should throw when testing an invalid framework', async t => {
+test('Should throw when testing an invalid framework', async (t) => {
   await t.throwsAsync(hasFramework('simple', 'doesNotExist'))
 })

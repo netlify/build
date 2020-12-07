@@ -6,13 +6,13 @@ const locatePath = require('locate-path')
 //  - if `framework.excludedNpmDependencies` is set, none of them must be
 //    present in the `package.json` `dependencies|devDependencies`
 //  - if `framework.configFiles` is set, one of the files must exist
-const usesFramework = async function(
+const usesFramework = async function (
   {
     detect: {
       npmDependencies: frameworkNpmDependencies,
       excludedNpmDependencies: frameworkExcludedNpmDependencies,
-      configFiles
-    }
+      configFiles,
+    },
   },
   { projectDir, npmDependencies }
 ) {
@@ -23,21 +23,23 @@ const usesFramework = async function(
   )
 }
 
-const usesNpmDependencies = function(frameworkNpmDependencies, npmDependencies) {
+const usesNpmDependencies = function (frameworkNpmDependencies, npmDependencies) {
   return (
     frameworkNpmDependencies.length === 0 ||
-    frameworkNpmDependencies.some(frameworkNpmDependency => npmDependencies.includes(frameworkNpmDependency))
+    frameworkNpmDependencies.some((frameworkNpmDependency) => npmDependencies.includes(frameworkNpmDependency))
   )
 }
 
-const lacksExcludedNpmDependencies = function(frameworkExcludedNpmDependencies, npmDependencies) {
+const lacksExcludedNpmDependencies = function (frameworkExcludedNpmDependencies, npmDependencies) {
   return (
     frameworkExcludedNpmDependencies.length === 0 ||
-    frameworkExcludedNpmDependencies.every(frameworkNpmDependency => !npmDependencies.includes(frameworkNpmDependency))
+    frameworkExcludedNpmDependencies.every(
+      (frameworkNpmDependency) => !npmDependencies.includes(frameworkNpmDependency)
+    )
   )
 }
 
-const usesConfigFiles = async function(configFiles, projectDir) {
+const usesConfigFiles = async function (configFiles, projectDir) {
   return configFiles.length === 0 || (await locatePath(configFiles, { type: 'file', cwd: projectDir })) !== undefined
 }
 

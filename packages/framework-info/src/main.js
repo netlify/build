@@ -23,11 +23,11 @@ const { getWatchCommands } = require('./watch.js')
  * @returns {number} frameworks[].watch.port - Server port
  * @returns {object} frameworks[].env - Environment variables that should be set when calling the watch command
  */
-const listFrameworks = async function(opts) {
+const listFrameworks = async function (opts) {
   const { projectDir, ignoredWatchCommand } = getOptions(opts)
   const { npmDependencies, scripts, runScriptCommand } = await getProjectInfo({ projectDir, ignoredWatchCommand })
-  const frameworks = await pFilter(FRAMEWORKS, framework => usesFramework(framework, { projectDir, npmDependencies }))
-  const frameworkInfos = frameworks.map(framework => getFrameworkInfo(framework, { scripts, runScriptCommand }))
+  const frameworks = await pFilter(FRAMEWORKS, (framework) => usesFramework(framework, { projectDir, npmDependencies }))
+  const frameworkInfos = frameworks.map((framework) => getFrameworkInfo(framework, { scripts, runScriptCommand }))
   return frameworkInfos
 }
 
@@ -41,7 +41,7 @@ const listFrameworks = async function(opts) {
  *
  * @returns {boolean} result - Whether the project uses this framework
  */
-const hasFramework = async function(frameworkName, opts) {
+const hasFramework = async function (frameworkName, opts) {
   const framework = getFrameworkByName(frameworkName)
   const { projectDir, ignoredWatchCommand } = getOptions(opts)
   const { npmDependencies } = await getProjectInfo({ projectDir, ignoredWatchCommand })
@@ -66,7 +66,7 @@ const hasFramework = async function(frameworkName, opts) {
  * @returns {number} framework.watch.port - Server port
  * @returns {object} framework.env - Environment variables that should be set when calling the watch command
  */
-const getFramework = async function(frameworkName, opts) {
+const getFramework = async function (frameworkName, opts) {
   const framework = getFrameworkByName(frameworkName)
   const { projectDir, ignoredWatchCommand } = getOptions(opts)
   const { scripts, runScriptCommand } = await getProjectInfo({ projectDir, ignoredWatchCommand })
@@ -74,7 +74,7 @@ const getFramework = async function(frameworkName, opts) {
   return frameworkInfo
 }
 
-const getFrameworkByName = function(frameworkName) {
+const getFrameworkByName = function (frameworkName) {
   const framework = FRAMEWORKS.find(({ name }) => name === frameworkName)
   if (framework === undefined) {
     const frameworkNames = FRAMEWORKS.map(getFrameworkName).join(', ')
@@ -83,17 +83,17 @@ const getFrameworkByName = function(frameworkName) {
   return framework
 }
 
-const getFrameworkName = function({ name }) {
+const getFrameworkName = function ({ name }) {
   return name
 }
 
-const getProjectInfo = async function({ projectDir, ignoredWatchCommand }) {
+const getProjectInfo = async function ({ projectDir, ignoredWatchCommand }) {
   const { packageJsonPath, npmDependencies, scripts } = await getPackageJsonContent({ projectDir, ignoredWatchCommand })
   const runScriptCommand = await getRunScriptCommand({ projectDir, packageJsonPath })
   return { npmDependencies, scripts, runScriptCommand }
 }
 
-const getFrameworkInfo = function(
+const getFrameworkInfo = function (
   { name, category, watch: { command: frameworkWatchCommand, directory, port }, env },
   { scripts, runScriptCommand }
 ) {
