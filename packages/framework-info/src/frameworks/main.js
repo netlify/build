@@ -1,4 +1,4 @@
-/* eslint-disable import/order */
+/* eslint-disable node/global-require,import/order,import/max-dependencies */
 // We purposely order the following array to ensure the most relevant framework
 // is always first, if several frameworks are detected at once
 const FRAMEWORKS = [
@@ -32,5 +32,7 @@ const FRAMEWORKS = [
   require('./brunch.json'),
   require('./parcel.json'),
 ]
+
+/* eslint-enable node/global-require,import/order,import/max-dependencies */
 
 module.exports = { FRAMEWORKS }

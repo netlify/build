@@ -14,7 +14,7 @@ const usesFramework = async function (
       configFiles,
     },
   },
-  { projectDir, npmDependencies }
+  { projectDir, npmDependencies },
 ) {
   return (
     usesNpmDependencies(frameworkNpmDependencies, npmDependencies) &&
@@ -34,7 +34,7 @@ const lacksExcludedNpmDependencies = function (frameworkExcludedNpmDependencies,
   return (
     frameworkExcludedNpmDependencies.length === 0 ||
     frameworkExcludedNpmDependencies.every(
-      (frameworkNpmDependency) => !npmDependencies.includes(frameworkNpmDependency)
+      (frameworkNpmDependency) => !npmDependencies.includes(frameworkNpmDependency),
     )
   )
 }

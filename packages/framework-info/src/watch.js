@@ -5,7 +5,7 @@
 //   - `framework.watch.command`
 const getWatchCommands = function ({ frameworkWatchCommand, scripts, runScriptCommand }) {
   const scriptWatchCommands = getScriptWatchCommands(scripts, frameworkWatchCommand).map(
-    (scriptName) => `${runScriptCommand} ${scriptName}`
+    (scriptName) => `${runScriptCommand} ${scriptName}`,
   )
   if (scriptWatchCommands.length !== 0) {
     return scriptWatchCommands

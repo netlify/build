@@ -21,6 +21,8 @@ const RELATIVE_PATH_SCHEMA = {
   minLength: 1,
   allOf: [{ not: { pattern: '^/' } }, { not: { pattern: '^\\.\\.?\\/' } }],
 }
+
+const MAX_PORT = 65535
 const FRAMEWORK_JSON_SCHEMA = {
   type: 'object',
   required: ['name', 'category', 'detect', 'watch', 'env'],
@@ -57,7 +59,7 @@ const FRAMEWORK_JSON_SCHEMA = {
       properties: {
         command: { type: 'string', minLength: 1 },
         directory: RELATIVE_PATH_SCHEMA,
-        port: { type: 'integer', minimum: 1, maximum: 65535 },
+        port: { type: 'integer', minimum: 1, maximum: MAX_PORT },
       },
     },
     env: {
