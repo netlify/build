@@ -13,7 +13,7 @@ const logConfigOnlyPlugins = function (logs, packages) {
   logMessage(
     logs,
     THEME.errorSubHeader(
-      `The following plugins should be installed either via the Netlify app or as a "dependency" inside your project's "package.json"`,
+      `Please install the following plugins using "npm install -D netlify-plugin-package-name" or "yarn add -D netlify-plugin-package-name"`,
     ),
   )
   logArray(logs, packages, { color: THEME.errorSubHeader })
