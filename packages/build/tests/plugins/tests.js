@@ -6,6 +6,7 @@ const { promisify } = require('util')
 
 const pluginsList = require('@netlify/plugins-list')
 const test = require('ava')
+const cpy = require('cpy')
 const del = require('del')
 const { spy } = require('sinon')
 
@@ -175,7 +176,7 @@ const loadEdgeHandlerBundle = async function ({ outputDir, manifestPath }) {
   try {
     return requireEdgeHandleBundle(bundlePath)
   } finally {
-    await del(bundlePath, { force: true })
+    await removeDir(bundlePath)
   }
 }
 
@@ -552,17 +553,17 @@ test('Does not use plugins cached in the build image in local builds', async (t)
   await runFixture(t, 'build_image')
 })
 
-const runWithApiMock = async function (t, flags, status) {
+const runWithApiMock = async function (t, fixtureName, flags = {}, status = 200) {
   const { scheme, host, stopServer } = await startServer({
     path: PLUGINS_LIST_URL,
     response: PLUGINS_LIST_DATA,
     status,
   })
   try {
-    await runFixture(t, 'build_image', {
+    await runFixture(t, fixtureName, {
       flags: {
-        buildImagePluginsDir: `${FIXTURES_DIR}/build_image_cache/node_modules`,
         testOpts: { pluginsListUrl: `${scheme}://${host}`, ...flags.testOpts },
+        featureFlags: 'new_plugins_install',
         ...flags,
       },
     })
@@ -571,19 +572,75 @@ const runWithApiMock = async function (t, flags, status) {
   }
 }
 
+// We use a specific plugin in tests. We hardcode its version to keep the tests
+// stable even when new versions of that plugin are published.
+const getPluginsList = function () {
+  return pluginsList.map(getPlugin)
+}
+
+const getPlugin = function (plugin) {
+  if (plugin.packageName !== TEST_PLUGIN_NAME) {
+    return plugin
+  }
+
+  return { ...plugin, version: '0.3.0' }
+}
+
+const TEST_PLUGIN_NAME = 'netlify-plugin-contextual-env'
+
 const PLUGINS_LIST_URL = '/'
-const PLUGINS_LIST_DATA = pluginsList
+const PLUGINS_LIST_DATA = getPluginsList()
+
+test('Install plugins in .netlify/plugins/ when not cached', async (t) => {
+  await removeDir(`${FIXTURES_DIR}/valid_package/.netlify`)
+  try {
+    await runWithApiMock(t, 'valid_package')
+  } finally {
+    await removeDir(`${FIXTURES_DIR}/valid_package/.netlify`)
+  }
+})
+
+test('Use plugins cached in .netlify/plugins/', async (t) => {
+  await runWithApiMock(t, 'plugins_cache')
+})
+
+test('Do not use plugins cached in .netlify/plugins/ if outdated', async (t) => {
+  const pluginsDir = `${FIXTURES_DIR}/plugins_cache_outdated/.netlify/plugins`
+  await removeDir(pluginsDir)
+  await cpy('**', '../plugins', { cwd: `${pluginsDir}-old`, parents: true })
+  try {
+    await runWithApiMock(t, 'plugins_cache_outdated')
+  } finally {
+    await removeDir(pluginsDir)
+  }
+})
 
 test('Fetches the list of plugin versions', async (t) => {
-  await runWithApiMock(t, {})
+  await runWithApiMock(t, 'plugins_cache')
 })
 
 test('Only prints the list of plugin versions in verbose mode', async (t) => {
-  await runWithApiMock(t, { debug: false })
+  await runWithApiMock(t, 'plugins_cache', { debug: false })
 })
 
 test('Uses fallback when the plugins fetch fails', async (t) => {
-  await runWithApiMock(t, {}, 500)
+  await runWithApiMock(t, 'plugins_cache', {}, 500)
+})
+
+test('Can execute local binaries when using .netlify/plugins/', async (t) => {
+  await runWithApiMock(t, 'plugins_cache_bin')
+})
+
+test('Can require site dependencies when using .netlify/plugins/', async (t) => {
+  await runWithApiMock(t, 'plugins_cache_site_deps')
+})
+
+test('Print a warning when using plugins not in plugins.json nor package.json', async (t) => {
+  await runWithApiMock(t, 'invalid_package')
+})
+
+test('Can use local plugins even when some plugins are cached', async (t) => {
+  await runWithApiMock(t, 'plugins_cache_local')
 })
 
 test('Can execute local binaries when using plugins cached in the build image', async (t) => {

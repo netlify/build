@@ -1,0 +1,5 @@
+[[plugins]]
+package = "netlify-plugin-contextual-env"
+
+[[plugins]]
+package = "./plugin.js"

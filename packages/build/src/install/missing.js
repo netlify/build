@@ -8,7 +8,7 @@ const pathExists = require('path-exists')
 
 const { logInstallMissingPlugins, logConfigOnlyPlugins } = require('../log/messages/install')
 
-const { addDependencies } = require('./main')
+const { addExactDependencies } = require('./main')
 
 const pWriteFile = promisify(writeFile)
 
@@ -26,7 +26,7 @@ const installMissingPlugins = async function ({ pluginsOptions, autoPluginsDir, 
   logInstallMissingPlugins(logs, packages)
 
   await createAutoPluginsDir(autoPluginsDir)
-  await addDependencies({ packageRoot: autoPluginsDir, isLocal: mode !== 'buildbot', packages })
+  await addExactDependencies({ packageRoot: autoPluginsDir, isLocal: mode !== 'buildbot', packages })
 }
 
 const getMissingPlugins = function (pluginsOptions) {
@@ -41,6 +41,7 @@ const getPackageName = function ({ packageName }) {
   return packageName
 }
 
+// We pin the version without using semver ranges ^ nor ~
 const getPackage = function ({ packageName, expectedVersion }) {
   return `${packageName}@${expectedVersion}`
 }
@@ -80,16 +81,18 @@ const AUTO_PLUGINS_PACKAGE_JSON = {
 }
 
 // External plugins must be installed either in the UI or in `package.json`.
-// A third way is deprecated: adding it to `netlify.toml` but not in
-// `package.json`. In that case, the plugin will be automatically installed
-// like UI plugins.
-// We still support this for backward compatibility but print a warning on each
-// build (even if the plugin was installed in a previous build).
-// We deprecate this third way because:
-//  - having fewer ways of installing plugins is simpler
-//  - using `package.json` is faster and more reliable
-const warnOnConfigOnlyPlugins = function ({ pluginsOptions, logs }) {
-  const packages = pluginsOptions.filter(isConfigOnlyPlugin).map(getPackageName)
+// A third way is supported but undocumented: adding it to `netlify.toml` but
+// not in `package.json`. In that case, the plugin will be automatically
+// installed.
+// This is only supported for plugins listed in `plugins.json`. Otherwise,
+// we should fail the build. At the moment, we only print a warning for
+// backward compatibility.
+const warnOnConfigOnlyPlugins = function ({ pluginsOptions, featureFlags, logs }) {
+  const packages = pluginsOptions
+    .filter(({ loadedFrom, origin, expectedVersion }) =>
+      isConfigOnlyPlugin({ loadedFrom, origin, expectedVersion, featureFlags }),
+    )
+    .map(getPackageName)
   if (packages.length === 0) {
     return
   }
@@ -97,7 +100,11 @@ const warnOnConfigOnlyPlugins = function ({ pluginsOptions, logs }) {
   logConfigOnlyPlugins(logs, packages)
 }
 
-const isConfigOnlyPlugin = function ({ loadedFrom, origin }) {
+const isConfigOnlyPlugin = function ({ loadedFrom, origin, expectedVersion, featureFlags }) {
+  if (featureFlags.new_plugins_install) {
+    return expectedVersion === 'latest'
+  }
+
   return loadedFrom === 'auto_install' && origin === 'config'
 }
 

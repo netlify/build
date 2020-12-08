@@ -1,5 +1,4 @@
 node_modules
-!**/fixtures/**/node_modules
 research
 .DS_Store
 terraform
@@ -11,3 +10,5 @@ coverage
 .eslintcache
 .cache
 .vscode
+!**/fixtures/**/node_modules
+!**/fixtures/**/plugins_cache*/.netlify
