@@ -8,20 +8,32 @@ const { getRunScriptCommand } = require('./run_script.js')
 const { getWatchCommands } = require('./watch.js')
 
 /**
+ * @typedef {object} Options
+ * @property {string} [projectDir=process.cwd()] - Project's directory
+ * @property {string} [ignoredWatchCommand] - When guessing the watch command, ignore `package.json` `scripts` whose value includes this string
+ */
+
+/**
+ * @typedef {object} Watch
+ * @property {string} commands - Build command, in watch mode. There might be several alternatives
+ * @property {string} directory - Relative path to the directory where files are built, in watch mode
+ * @property {number} port - Server port
+ */
+
+/**
+ * @typedef {object} Framework
+ * @property {string} name - Name such as `"gatsby"`
+ * @property {string} category - Category among `"static_site_generator"`, `"frontend_framework"` and `"build_tool"`
+ * @property {Watch} watch - Information about the build command, in watch mode.
+ * @property {object} env - Environment variables that should be set when calling the watch command
+ */
+
+/**
  * Return all the frameworks used by a project.
  *
- * @param  {object} [options] - Options
- * @param  {string} [flags.projectDir=process.cwd()] - Project's directory
- * @param  {string} [flags.ignoredWatchCommand] - When guessing the watch command, ignore `package.json` `scripts` whose value includes this string
+ * @param  {Options} [options] - Options
  *
- * @returns {object[]} frameworks - Frameworks used by a project
- * @returns {string} frameworks[].name - Name such as `"gatsby"`
- * @returns {string} frameworks[].category -Category among `"static_site_generator"`, `"frontend_framework"` and `"build_tool"`
- * @returns {object} frameworks[].watch - Information about the build command, in watch mode.
- * @returns {string[]} frameworks[].watch.commands - Build command, in watch mode. There might be several alternatives
- * @returns {string} frameworks[].watch.directory - Relative path to the directory where files are built, in watch mode
- * @returns {number} frameworks[].watch.port - Server port
- * @returns {object} frameworks[].env - Environment variables that should be set when calling the watch command
+ * @returns {Framework[]} frameworks - Frameworks used by a project
  */
 const listFrameworks = async function (opts) {
   const { projectDir, ignoredWatchCommand } = getOptions(opts)
@@ -35,9 +47,7 @@ const listFrameworks = async function (opts) {
  * Return whether a project uses a specific framework
  *
  * @param {string} frameworkName - Name such as `"gatsby"`
- * @param  {object} [options] - Options
- * @param  {string} [flags.projectDir=process.cwd()] - Project's directory
- * @param  {string} [flags.ignoredWatchCommand] - When guessing the watch command, ignore `package.json` `scripts` whose value includes this string
+ * @param  {Options} [options] - Options
  *
  * @returns {boolean} result - Whether the project uses this framework
  */
@@ -53,18 +63,9 @@ const hasFramework = async function (frameworkName, opts) {
  * Return some information about a framework used by a project.
  *
  * @param {string} frameworkName - Name such as `"gatsby"`
- * @param  {object} [options] - Options
- * @param  {string} [flags.projectDir=process.cwd()] - Project's directory
- * @param  {string} [flags.ignoredWatchCommand] - When guessing the watch command, ignore `package.json` `scripts` whose value includes this string
+ * @param  {Options} [options] - Options
  *
- * @returns {object} framework - Framework used by a project
- * @returns {string} framework.name - Name such as `"gatsby"`
- * @returns {string} framework.category -Category among `"static_site_generator"`, `"frontend_framework"` and `"build_tool"`
- * @returns {object} framework.watch - Information about the build command, in watch mode.
- * @returns {string[]} framework.watch.commands - Build command, in watch mode. There might be several alternatives
- * @returns {string} framework.watch.directory - Relative path to the directory where files are built, in watch mode
- * @returns {number} framework.watch.port - Server port
- * @returns {object} framework.env - Environment variables that should be set when calling the watch command
+ * @returns {Framework} framework - Framework used by a project
  */
 const getFramework = async function (frameworkName, opts) {
   const framework = getFrameworkByName(frameworkName)
