@@ -91,3 +91,7 @@ test('manifest.yml inputs required is a boolean', async (t) => {
 test('manifest.yml node module', async (t) => {
   await runFixture(t, 'module')
 })
+
+test('manifest.yaml is a valid filename', async (t) => {
+  await runFixture(t, 'manifest_yaml')
+})

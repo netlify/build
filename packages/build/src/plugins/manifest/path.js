@@ -6,7 +6,9 @@ const { addErrorInfo } = require('../../error/info')
 
 // Retrieve "manifest.yml" path for a specific plugin
 const getManifestPath = async function ({ pluginDir, packageDir, packageName }) {
-  const dirs = [pluginDir, packageDir].filter(Boolean).map((dir) => `${dir}/${MANIFEST_FILENAME}`)
+  const dirs = [pluginDir, packageDir]
+    .filter(Boolean)
+    .flatMap((dir) => MANIFEST_FILENAMES.map((filename) => `${dir}/${filename}`))
   const manifestPath = await locatePath(dirs)
   validateManifestExists(manifestPath, packageName)
   return manifestPath
@@ -28,6 +30,6 @@ This might mean:
   throw error
 }
 
-const MANIFEST_FILENAME = 'manifest.yml'
+const MANIFEST_FILENAMES = ['manifest.yml', 'manifest.yaml']
 
 module.exports = { getManifestPath }
