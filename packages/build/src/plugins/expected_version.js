@@ -7,19 +7,15 @@ const { getPluginsList } = require('./list')
 // When using plugins in our official list, those are installed in .netlify/plugins/
 // We ensure that the last version that's been approved is always the one being used.
 // We also ensure that the plugin is our official list.
-const addExpectedVersions = async function ({ pluginsOptions, autoPluginsDir, featureFlags, debug, logs, testOpts }) {
+const addExpectedVersions = async function ({ pluginsOptions, autoPluginsDir, debug, logs, testOpts }) {
   if (!pluginsOptions.some(isAutoPlugin)) {
     return pluginsOptions
   }
 
-  if (featureFlags.new_plugins_install) {
-    const pluginsList = await getPluginsList({ debug, logs, testOpts })
-    return await Promise.all(
-      pluginsOptions.map((pluginOptions) => addExpectedVersion({ pluginsList, autoPluginsDir, pluginOptions })),
-    )
-  }
-
-  return pluginsOptions.map(addExpectedVersionUnlessPath)
+  const pluginsList = await getPluginsList({ debug, logs, testOpts })
+  return await Promise.all(
+    pluginsOptions.map((pluginOptions) => addExpectedVersion({ pluginsList, autoPluginsDir, pluginOptions })),
+  )
 }
 
 // Any `pluginOptions` with `expectedVersion` set will be automatically installed
@@ -62,14 +58,6 @@ const addExpectedVersion = async function ({
 
 const isAutoPlugin = function ({ loadedFrom }) {
   return loadedFrom === 'auto_install'
-}
-
-const addExpectedVersionUnlessPath = function ({ pluginPath, ...pluginOptions }) {
-  if (pluginPath !== undefined) {
-    return { ...pluginOptions, pluginPath }
-  }
-
-  return { ...pluginOptions, expectedVersion: 'latest' }
 }
 
 module.exports = { addExpectedVersions }

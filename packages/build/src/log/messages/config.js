@@ -21,7 +21,6 @@ const TEST_FLAGS = ['buffer', 'telemetry']
 const INTERNAL_FLAGS = [
   'nodePath',
   'functionsDistDir',
-  'buildImagePluginsDir',
   'sendStatus',
   'statsd',
   'framework',

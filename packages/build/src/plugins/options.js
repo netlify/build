@@ -18,7 +18,6 @@ const tGetPluginsOptions = async function ({
   buildDir,
   constants,
   mode,
-  buildImagePluginsDir,
   featureFlags,
   childEnv,
   logs,
@@ -36,9 +35,7 @@ const tGetPluginsOptions = async function ({
     pluginsOptions,
     buildDir,
     mode,
-    featureFlags,
     logs,
-    buildImagePluginsDir,
     debug,
     testOpts,
   })

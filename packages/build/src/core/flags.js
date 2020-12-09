@@ -85,12 +85,6 @@ Default: Current Node.js binary`,
 Default: automatically guessed`,
     hidden: true,
   },
-  buildImagePluginsDir: {
-    string: true,
-    describe: `Path to the directory when build plugins are pre-installed.
-Default: none`,
-    hidden: true,
-  },
   buildbotServerSocket: {
     string: true,
     describe: `Path to the buildbot server socket. This is used to connect to the buildbot to trigger deploys.`,
