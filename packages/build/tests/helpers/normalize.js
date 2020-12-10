@@ -69,7 +69,7 @@ const NORMALIZE_REGEXPS = [
   [/ \.\.\.:443/g, ''],
   // List of available plugins from `plugins.json`.
   // That list changes all the time, so we need to remove it.
-  [/(Available plugins)[^]*(Missing|Loading|Installing) plugins/m, '$1'],
+  [/(Available plugins)[^>]*/m, '$1\n\n'],
 ]
 
 module.exports = { normalizeOutput }
