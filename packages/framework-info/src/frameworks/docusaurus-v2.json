@@ -1,0 +1,15 @@
+{
+  "name": "docusaurus-v2",
+  "category": "static_site_generator",
+  "detect": {
+    "npmDependencies": ["@docusaurus/core"],
+    "excludedNpmDependencies": [],
+    "configFiles": ["docusaurus.config.js"]
+  },
+  "watch": {
+    "command": "docusaurus start",
+    "directory": "static",
+    "port": 3000
+  },
+  "env": { "BROWSER": "none" }
+}
