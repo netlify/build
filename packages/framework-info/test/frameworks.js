@@ -1,8 +1,15 @@
+const fs = require('fs')
+const path = require('path')
+const util = require('util')
+
 const Ajv = require('ajv')
 const test = require('ava')
 const { each } = require('test-each')
 
 const { FRAMEWORKS } = require('../src/frameworks/main.js')
+
+const pReadDir = util.promisify(fs.readdir)
+const pReadFile = util.promisify(fs.readFile)
 
 const ajv = new Ajv({})
 
@@ -73,4 +80,14 @@ each(FRAMEWORKS, (info, framework) => {
   test(`Framework "${framework.name}" should have a valid shape`, (t) => {
     t.is(validate(framework, FRAMEWORK_JSON_SCHEMA), true)
   })
+})
+
+test('each json file should be required in main.js FRAMEWORKS', async (t) => {
+  const dir = `${__dirname}/../src/frameworks`
+  const jsonFiles = (await pReadDir(dir)).filter((file) => path.extname(file) === '.json')
+
+  const mainFile = await pReadFile(`${dir}/main.js`, 'utf8')
+
+  const missing = jsonFiles.filter((file) => !mainFile.includes(`./${file}`))
+  t.deepEqual(missing, [])
 })

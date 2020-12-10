@@ -4,6 +4,7 @@
 const FRAMEWORKS = [
   // Static site generators
   require('./docusaurus.json'),
+  require('./docusaurus-v2.json'),
   require('./eleventy.json'),
   require('./gatsby.json'),
   require('./gridsome.json'),
@@ -24,6 +25,7 @@ const FRAMEWORKS = [
   require('./ember.json'),
   require('./expo.json'),
   require('./quasar.json'),
+  require('./quasar-v0.17.json'),
   require('./sapper.json'),
   require('./svelte.json'),
   require('./vue.json'),
