@@ -11,5 +11,5 @@
     "directory": "static",
     "port": 3000
   },
-  "env": {}
+  "env": { "BROWSER": "none" }
 }
