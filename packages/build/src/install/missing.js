@@ -1,16 +1,19 @@
 'use strict'
 
-const { writeFile } = require('fs')
+const { writeFile, unlink } = require('fs')
+const { normalize } = require('path')
 const { promisify } = require('util')
 
 const makeDir = require('make-dir')
 const pathExists = require('path-exists')
+const { isFile } = require('path-type')
 
-const { logInstallMissingPlugins, logConfigOnlyPlugins } = require('../log/messages/install')
+const { logInstallMissingPlugins, logConfigOnlyPlugins, logPluginsFileWarning } = require('../log/messages/install')
 
 const { addExactDependencies } = require('./main')
 
 const pWriteFile = promisify(writeFile)
+const pUnlink = promisify(unlink)
 
 // Automatically install plugins if not already installed.
 // Since this is done under the hood, we always use `npm` with specific `npm`
@@ -25,7 +28,7 @@ const installMissingPlugins = async function ({ pluginsOptions, autoPluginsDir, 
 
   logInstallMissingPlugins(logs, packages)
 
-  await createAutoPluginsDir(autoPluginsDir)
+  await createAutoPluginsDir(logs, autoPluginsDir)
   await addExactDependencies({ packageRoot: autoPluginsDir, isLocal: mode !== 'buildbot', packages })
 }
 
@@ -46,15 +49,22 @@ const getPackage = function ({ packageName, expectedVersion }) {
   return `${packageName}@${expectedVersion}`
 }
 
-const createAutoPluginsDir = async function (autoPluginsDir) {
-  await ensureDir(autoPluginsDir)
+const createAutoPluginsDir = async function (logs, autoPluginsDir) {
+  await ensureDir(logs, autoPluginsDir)
   await createPackageJson(autoPluginsDir)
 }
 
 // Create the directory if it does not exist
-const ensureDir = async function (autoPluginsDir) {
+const ensureDir = async function (logs, autoPluginsDir) {
   if (await pathExists(autoPluginsDir)) {
     return
+  }
+
+  // If `.netlify` exists but is not a directory, we remove it first
+  const autoPluginsParent = normalize(`${autoPluginsDir}/..`)
+  if (await isFile(autoPluginsParent)) {
+    logPluginsFileWarning(logs, autoPluginsParent)
+    await pUnlink(autoPluginsParent)
   }
 
   await makeDir(autoPluginsDir)

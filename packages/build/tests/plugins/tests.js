@@ -635,6 +635,16 @@ test('Can require site dependencies when using .netlify/plugins/', async (t) => 
   await runWithApiMock(t, 'plugins_cache_site_deps')
 })
 
+test('Works with .netlify being a regular file', async (t) => {
+  const dotNetlifyFile = `${FIXTURES_DIR}/plugins_cache_regular_file/.netlify`
+  await pWriteFile(dotNetlifyFile, '')
+  try {
+    await runWithApiMock(t, 'plugins_cache_regular_file')
+  } finally {
+    await removeDir(dotNetlifyFile)
+  }
+})
+
 test('Print a warning when using plugins not in plugins.json nor package.json', async (t) => {
   await runWithApiMock(t, 'invalid_package')
 })

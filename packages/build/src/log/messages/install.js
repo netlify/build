@@ -1,5 +1,7 @@
 'use strict'
 
+const { basename } = require('path')
+
 const { log, logMessage, logArray, logSubHeader, logErrorSubHeader } = require('../logger')
 const { THEME } = require('../theme')
 
@@ -19,6 +21,17 @@ const logConfigOnlyPlugins = function (logs, packages) {
   logArray(logs, packages, { color: THEME.errorSubHeader })
 }
 
+const logPluginsFileWarning = function (logs, autoPluginsParent) {
+  const filename = basename(autoPluginsParent)
+  logErrorSubHeader(logs, `Invalid "${filename}" file`)
+  logMessage(
+    logs,
+    THEME.errorSubHeader(
+      `Please rename the "${filename}" file to prevent any conflict with Netlify core logic. This file has been removed from this build.`,
+    ),
+  )
+}
+
 const logInstallLocalPluginsDeps = function (logs, localPluginsOptions) {
   const packages = localPluginsOptions.map(getPackageName)
   logSubHeader(logs, 'Installing local plugins dependencies')
@@ -36,6 +49,7 @@ const getPackageName = function ({ packageName }) {
 module.exports = {
   logInstallMissingPlugins,
   logConfigOnlyPlugins,
+  logPluginsFileWarning,
   logInstallLocalPluginsDeps,
   logInstallFunctionDependencies,
 }
