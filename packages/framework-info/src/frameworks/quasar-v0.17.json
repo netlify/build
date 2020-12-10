@@ -1,0 +1,15 @@
+{
+  "name": "quasar-v0.17",
+  "category": "frontend_framework",
+  "detect": {
+    "npmDependencies": ["quasar-cli"],
+    "excludedNpmDependencies": [],
+    "configFiles": []
+  },
+  "watch": {
+    "command": "quasar dev -p 8080",
+    "directory": ".quasar",
+    "port": 8080
+  },
+  "env": {}
+}
