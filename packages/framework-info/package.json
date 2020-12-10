@@ -24,7 +24,9 @@
     "format:fix:prettier": "cross-env-shell prettier --write $npm_package_scriptsArgs_prettier",
     "test:dev": "ava",
     "test:ci": "nyc -r lcovonly -r text -r json ava",
-    "version": "auto-changelog -p --template keepachangelog --breaking-pattern breaking && npm run format:prettier && git add CHANGELOG.md"
+    "changelog:create": "auto-changelog -p --template keepachangelog --breaking-pattern breaking",
+    "changelog:add": "git add CHANGELOG.md",
+    "version": "run-s changelog:create format:fix:* changelog:add"
   },
   "husky": {
     "hooks": {
