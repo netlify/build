@@ -1,10 +1,10 @@
 {
   "name": "@netlify/build",
-  "version": "6.0.1",
+  "version": "6.0.2",
   "description": "Netlify build module",
   "main": "src/core/main.js",
   "bin": {
-    "netlify-build": "./src/core/bin.js"
+    "netlify-build": "src/core/bin.js"
   },
   "files": [
     "src",
@@ -62,7 +62,7 @@
     "@netlify/plugin-edge-handlers": "^1.8.0",
     "@netlify/plugins-list": "^2.0.0",
     "@netlify/run-utils": "^1.0.5",
-    "@netlify/zip-it-and-ship-it": "^1.4.0",
+    "@netlify/zip-it-and-ship-it": "^1.6.0",
     "@sindresorhus/slugify": "^1.1.0",
     "@ungap/from-entries": "^0.2.1",
     "array-flat-polyfill": "^1.0.1",
