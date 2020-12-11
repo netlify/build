@@ -543,16 +543,6 @@ test('Do not allow overriding core plugins', async (t) => {
   await runFixture(t, 'core_override')
 })
 
-test('Can use plugins cached in the build image', async (t) => {
-  await runFixture(t, 'build_image', {
-    flags: { buildImagePluginsDir: `${FIXTURES_DIR}/build_image_cache/node_modules` },
-  })
-})
-
-test('Does not use plugins cached in the build image in local builds', async (t) => {
-  await runFixture(t, 'build_image')
-})
-
 const runWithApiMock = async function (t, fixtureName, flags = {}, status = 200) {
   const { scheme, host, stopServer } = await startServer({
     path: PLUGINS_LIST_URL,
@@ -563,7 +553,6 @@ const runWithApiMock = async function (t, fixtureName, flags = {}, status = 200)
     await runFixture(t, fixtureName, {
       flags: {
         testOpts: { pluginsListUrl: `${scheme}://${host}`, ...flags.testOpts },
-        featureFlags: 'new_plugins_install',
         ...flags,
       },
     })
@@ -651,12 +640,6 @@ test('Print a warning when using plugins not in plugins.json nor package.json', 
 
 test('Can use local plugins even when some plugins are cached', async (t) => {
   await runWithApiMock(t, 'plugins_cache_local')
-})
-
-test('Can execute local binaries when using plugins cached in the build image', async (t) => {
-  await runFixture(t, 'build_image_bin', {
-    flags: { buildImagePluginsDir: `${FIXTURES_DIR}/build_image_cache_bin/node_modules` },
-  })
 })
 
 const getNodePath = function (nodeVersion) {

@@ -5,7 +5,6 @@ const pathExists = require('path-exists')
 
 const { removeDir } = require('../helpers/dir')
 const { runFixture, FIXTURES_DIR } = require('../helpers/main')
-const { getTempDir } = require('../helpers/temp')
 
 // Run fixture and ensure:
 //  - specific directories exist after run
@@ -114,15 +113,6 @@ test('Install local plugin dependencies: missing plugin in netlify.toml', async 
 
 test('Automatically install missing plugins locally', async (t) => {
   await runFixture(t, 'missing', { copyRoot: {} })
-})
-
-test('Automatically install missing plugins in CI', async (t) => {
-  const buildImagePluginsDir = await getTempDir()
-  try {
-    await runFixture(t, 'missing', { copyRoot: {}, flags: { buildImagePluginsDir } })
-  } finally {
-    await removeDir(buildImagePluginsDir)
-  }
 })
 
 test('Automatically install missing plugins locally when picked in UI', async (t) => {

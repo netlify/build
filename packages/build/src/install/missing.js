@@ -97,12 +97,8 @@ const AUTO_PLUGINS_PACKAGE_JSON = {
 // This is only supported for plugins listed in `plugins.json`. Otherwise,
 // we should fail the build. At the moment, we only print a warning for
 // backward compatibility.
-const warnOnConfigOnlyPlugins = function ({ pluginsOptions, featureFlags, logs }) {
-  const packages = pluginsOptions
-    .filter(({ loadedFrom, origin, expectedVersion }) =>
-      isConfigOnlyPlugin({ loadedFrom, origin, expectedVersion, featureFlags }),
-    )
-    .map(getPackageName)
+const warnOnConfigOnlyPlugins = function ({ pluginsOptions, logs }) {
+  const packages = pluginsOptions.filter(isConfigOnlyPlugin).map(getPackageName)
   if (packages.length === 0) {
     return
   }
@@ -110,12 +106,8 @@ const warnOnConfigOnlyPlugins = function ({ pluginsOptions, featureFlags, logs }
   logConfigOnlyPlugins(logs, packages)
 }
 
-const isConfigOnlyPlugin = function ({ loadedFrom, origin, expectedVersion, featureFlags }) {
-  if (featureFlags.new_plugins_install) {
-    return expectedVersion === 'latest'
-  }
-
-  return loadedFrom === 'auto_install' && origin === 'config'
+const isConfigOnlyPlugin = function ({ expectedVersion }) {
+  return expectedVersion === 'latest'
 }
 
 module.exports = { installMissingPlugins, warnOnConfigOnlyPlugins }
