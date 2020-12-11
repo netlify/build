@@ -10,17 +10,6 @@ const logInstallMissingPlugins = function (logs, packages) {
   logArray(logs, packages)
 }
 
-const logConfigOnlyPlugins = function (logs, packages) {
-  logErrorSubHeader(logs, 'Missing plugins')
-  logMessage(
-    logs,
-    THEME.errorSubHeader(
-      `Please install the following plugins using "npm install -D netlify-plugin-package-name" or "yarn add -D netlify-plugin-package-name"`,
-    ),
-  )
-  logArray(logs, packages, { color: THEME.errorSubHeader })
-}
-
 const logPluginsFileWarning = function (logs, autoPluginsParent) {
   const filename = basename(autoPluginsParent)
   logErrorSubHeader(logs, `Invalid "${filename}" file`)
@@ -48,7 +37,6 @@ const getPackageName = function ({ packageName }) {
 
 module.exports = {
   logInstallMissingPlugins,
-  logConfigOnlyPlugins,
   logPluginsFileWarning,
   logInstallLocalPluginsDeps,
   logInstallFunctionDependencies,

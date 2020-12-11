@@ -1,7 +1,7 @@
 'use strict'
 
 const { addErrorInfo } = require('../error/info')
-const { installMissingPlugins, warnOnConfigOnlyPlugins } = require('../install/missing')
+const { installMissingPlugins } = require('../install/missing')
 const { resolvePath, tryResolvePath } = require('../utils/resolve')
 
 const { addExpectedVersions } = require('./expected_version')
@@ -102,11 +102,9 @@ const validateLocalPluginPath = function (error, localPackageName) {
 // Print a warning if they have not been installed through the UI.
 const handleMissingPlugins = async function ({ pluginsOptions, autoPluginsDir, mode, logs }) {
   await installMissingPlugins({ pluginsOptions, autoPluginsDir, mode, logs })
-  const pluginsOptionsA = await Promise.all(
+  return await Promise.all(
     pluginsOptions.map((pluginOptions) => resolveMissingPluginPath({ pluginOptions, autoPluginsDir })),
   )
-  warnOnConfigOnlyPlugins({ pluginsOptions: pluginsOptionsA, logs })
-  return pluginsOptionsA
 }
 
 // Resolve the plugins that just got automatically installed

@@ -532,7 +532,7 @@ test('UI plugins', async (t) => {
 })
 
 test('Resolution is relative to the build directory', async (t) => {
-  await runFixture(t, 'basedir', { flags: { config: `${FIXTURES_DIR}/basedir/base/netlify.toml` } })
+  await runFixture(t, 'module_base', { flags: { config: `${FIXTURES_DIR}/module_base/netlify.toml` } })
 })
 
 test('Non-existing plugins', async (t) => {

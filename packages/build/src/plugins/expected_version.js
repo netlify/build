@@ -1,5 +1,6 @@
 'use strict'
 
+const { addErrorInfo } = require('../error/info')
 const { resolvePath } = require('../utils/resolve')
 
 const { getPluginsList } = require('./list')
@@ -31,13 +32,7 @@ const addExpectedVersion = async function ({
 
   const expectedVersion = pluginsList[packageName]
 
-  // Plugins that are not in our official list can only be specified in
-  // `netlify.toml` providing they are also installed in the site's package.json.
-  // Otherwise, the build should fail. For backward compatibility, we only print
-  // a warning message at the moment.
-  if (expectedVersion === undefined) {
-    return { ...pluginOptions, expectedVersion: 'latest' }
-  }
+  validateUnlistedPlugin(expectedVersion, packageName)
 
   // Plugin was not previously installed
   if (pluginPath === undefined) {
@@ -58,6 +53,22 @@ const addExpectedVersion = async function ({
 
 const isAutoPlugin = function ({ loadedFrom }) {
   return loadedFrom === 'auto_install'
+}
+
+// Plugins that are not in our official list can only be specified in
+// `netlify.toml` providing they are also installed in the site's package.json.
+// Otherwise, the build should fail.
+const validateUnlistedPlugin = function (expectedVersion, packageName) {
+  if (expectedVersion !== undefined) {
+    return
+  }
+
+  const error = new Error(
+    `Plugins must be installed either in the Netlify App or in "package.json".
+Please run "npm install -D ${packageName}" or "yarn add -D ${packageName}".`,
+  )
+  addErrorInfo(error, { type: 'resolveConfig' })
+  throw error
 }
 
 module.exports = { addExpectedVersions }
