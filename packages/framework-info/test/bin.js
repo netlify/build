@@ -29,9 +29,3 @@ test('CLI --long flag', async (t) => {
   const { stdout } = await execa(binPath, ['--long', `${FIXTURES_DIR}/multiple`])
   t.snapshot(stdout)
 })
-
-test('CLI --ignored-watch-command flag', async (t) => {
-  const binPath = await BINARY_PATH
-  const { stdout } = await execa(binPath, ['--long', '--ignored-watch-command=testTwo', `${FIXTURES_DIR}/use_scripts`])
-  t.snapshot(stdout)
-})

@@ -10,7 +10,6 @@ const { getWatchCommands } = require('./watch.js')
 /**
  * @typedef {object} Options
  * @property {string} [projectDir=process.cwd()] - Project's directory
- * @property {string} [ignoredWatchCommand] - When guessing the watch command, ignore `package.json` `scripts` whose value includes this string
  */
 
 /**
@@ -36,8 +35,8 @@ const { getWatchCommands } = require('./watch.js')
  * @returns {Framework[]} frameworks - Frameworks used by a project
  */
 const listFrameworks = async function (opts) {
-  const { projectDir, ignoredWatchCommand } = getOptions(opts)
-  const { npmDependencies, scripts, runScriptCommand } = await getProjectInfo({ projectDir, ignoredWatchCommand })
+  const { projectDir } = getOptions(opts)
+  const { npmDependencies, scripts, runScriptCommand } = await getProjectInfo({ projectDir })
   const frameworks = await pFilter(FRAMEWORKS, (framework) => usesFramework(framework, { projectDir, npmDependencies }))
   const frameworkInfos = frameworks.map((framework) => getFrameworkInfo(framework, { scripts, runScriptCommand }))
   return frameworkInfos
@@ -53,8 +52,8 @@ const listFrameworks = async function (opts) {
  */
 const hasFramework = async function (frameworkName, opts) {
   const framework = getFrameworkByName(frameworkName)
-  const { projectDir, ignoredWatchCommand } = getOptions(opts)
-  const { npmDependencies } = await getProjectInfo({ projectDir, ignoredWatchCommand })
+  const { projectDir } = getOptions(opts)
+  const { npmDependencies } = await getProjectInfo({ projectDir })
   const result = await usesFramework(framework, { projectDir, npmDependencies })
   return result
 }
@@ -69,8 +68,8 @@ const hasFramework = async function (frameworkName, opts) {
  */
 const getFramework = async function (frameworkName, opts) {
   const framework = getFrameworkByName(frameworkName)
-  const { projectDir, ignoredWatchCommand } = getOptions(opts)
-  const { scripts, runScriptCommand } = await getProjectInfo({ projectDir, ignoredWatchCommand })
+  const { projectDir } = getOptions(opts)
+  const { scripts, runScriptCommand } = await getProjectInfo({ projectDir })
   const frameworkInfo = getFrameworkInfo(framework, { scripts, runScriptCommand })
   return frameworkInfo
 }
@@ -88,8 +87,8 @@ const getFrameworkName = function ({ name }) {
   return name
 }
 
-const getProjectInfo = async function ({ projectDir, ignoredWatchCommand }) {
-  const { packageJsonPath, npmDependencies, scripts } = await getPackageJsonContent({ projectDir, ignoredWatchCommand })
+const getProjectInfo = async function ({ projectDir }) {
+  const { packageJsonPath, npmDependencies, scripts } = await getPackageJsonContent({ projectDir })
   const runScriptCommand = await getRunScriptCommand({ projectDir, packageJsonPath })
   return { npmDependencies, scripts, runScriptCommand }
 }

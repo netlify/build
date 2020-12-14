@@ -25,9 +25,3 @@ test('Should default watch.commands to framework.watch.command', async (t) => {
   t.is(frameworks.length, 1)
   t.deepEqual(frameworks[0].watch.commands, ['sapper dev'])
 })
-
-test('Should ignore package scripts with ignoredWatchCommand option', async (t) => {
-  const frameworks = await getFrameworks('use_scripts', { ignoredWatchCommand: 'testTwo' })
-  t.is(frameworks.length, 1)
-  t.deepEqual(frameworks[0].watch.commands, ['npm run dev'])
-})

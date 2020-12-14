@@ -7,10 +7,10 @@ const { listFrameworks } = require('./main.js')
 
 // CLI entry point
 const runCli = async function () {
-  const { projectDir, long, ignoredWatchCommand } = parseArgs()
+  const { projectDir, long } = parseArgs()
 
   try {
-    const frameworks = await listFrameworks({ projectDir, ignoredWatchCommand })
+    const frameworks = await listFrameworks({ projectDir })
     const frameworksStr = serializeFrameworks(frameworks, long)
     console.log(frameworksStr)
   } catch (error) {
@@ -29,10 +29,6 @@ const OPTIONS = {
     default: false,
     describe: `Show more information about each framework.
 The output will be a JSON array.`,
-  },
-  ignoredWatchCommand: {
-    string: true,
-    describe: 'When detecting the watch command, ignore `package.json` `scripts` whose value includes this string.',
   },
 }
 

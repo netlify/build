@@ -109,12 +109,6 @@ _Default value_: `process.cwd()`
 
 Path to the website's directory.
 
-#### ignoredWatchCommand
-
-_Type_: `string`
-
-When detecting the watch command, ignore `package.json` `scripts` whose value includes this string.
-
 ### Return value
 
 This returns a `Promise` resolving to an array of objects describing each framework. The array can be empty, contain a
@@ -192,7 +186,6 @@ If known is found, `unknown` is printed.
 Available flags:
 
 - `--long`: Show more information about each framework. The output will be a JSON array.
-- `--ignoredWatchCommand string`
 
 # Add or update a framework
 
