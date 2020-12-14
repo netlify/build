@@ -8,7 +8,7 @@ const makeDir = require('make-dir')
 const pathExists = require('path-exists')
 const { isFile } = require('path-type')
 
-const { logInstallMissingPlugins, logConfigOnlyPlugins, logPluginsFileWarning } = require('../log/messages/install')
+const { logInstallMissingPlugins, logPluginsFileWarning } = require('../log/messages/install')
 
 const { addExactDependencies } = require('./main')
 
@@ -38,10 +38,6 @@ const getMissingPlugins = function (pluginsOptions) {
 
 const isMissingPlugin = function ({ expectedVersion }) {
   return expectedVersion !== undefined
-}
-
-const getPackageName = function ({ packageName }) {
-  return packageName
 }
 
 // We pin the version without using semver ranges ^ nor ~
@@ -90,24 +86,4 @@ const AUTO_PLUGINS_PACKAGE_JSON = {
   license: 'MIT',
 }
 
-// External plugins must be installed either in the UI or in `package.json`.
-// A third way is supported but undocumented: adding it to `netlify.toml` but
-// not in `package.json`. In that case, the plugin will be automatically
-// installed.
-// This is only supported for plugins listed in `plugins.json`. Otherwise,
-// we should fail the build. At the moment, we only print a warning for
-// backward compatibility.
-const warnOnConfigOnlyPlugins = function ({ pluginsOptions, logs }) {
-  const packages = pluginsOptions.filter(isConfigOnlyPlugin).map(getPackageName)
-  if (packages.length === 0) {
-    return
-  }
-
-  logConfigOnlyPlugins(logs, packages)
-}
-
-const isConfigOnlyPlugin = function ({ expectedVersion }) {
-  return expectedVersion === 'latest'
-}
-
-module.exports = { installMissingPlugins, warnOnConfigOnlyPlugins }
+module.exports = { installMissingPlugins }

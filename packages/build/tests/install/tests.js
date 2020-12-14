@@ -110,17 +110,3 @@ test('Install local plugin dependencies: no root package.json', async (t) => {
 test('Install local plugin dependencies: missing plugin in netlify.toml', async (t) => {
   await runFixture(t, 'local_missing')
 })
-
-test('Automatically install missing plugins locally', async (t) => {
-  await runFixture(t, 'missing', { copyRoot: {} })
-})
-
-test('Automatically install missing plugins locally when picked in UI', async (t) => {
-  const defaultConfig = JSON.stringify({ plugins: [{ package: 'netlify-plugin-contextual-env' }] })
-  await runFixture(t, 'empty', { copyRoot: {}, flags: { mode: 'buildbot', defaultConfig } })
-})
-
-test('Re-use previously automatically installed plugins', async (t) => {
-  await runFixture(t, 'already_installed', { snapshot: false })
-  await runFixture(t, 'already_installed')
-})
