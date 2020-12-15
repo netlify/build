@@ -12,7 +12,6 @@
     "!*~"
   ],
   "scripts": {
-    "prepublishOnly": "git push && git push --tags && gh-release",
     "test": "npm run format && npm run test:dev",
     "format": "run-s format:check-fix:*",
     "format:ci": "run-s format:check:*",
@@ -23,10 +22,7 @@
     "format:check:prettier": "cross-env-shell prettier --check $npm_package_scriptsArgs_prettier",
     "format:fix:prettier": "cross-env-shell prettier --write $npm_package_scriptsArgs_prettier",
     "test:dev": "ava",
-    "test:ci": "nyc -r lcovonly -r text -r json ava",
-    "changelog:create": "auto-changelog -p --template keepachangelog --breaking-pattern breaking",
-    "changelog:add": "git add CHANGELOG.md",
-    "version": "run-s changelog:create format:fix:* changelog:add"
+    "test:ci": "nyc -r lcovonly -r text -r json ava"
   },
   "husky": {
     "hooks": {
@@ -65,7 +61,7 @@
   },
   "scriptsArgs": {
     "eslint": "--ignore-path .gitignore --cache --format=codeframe --max-warnings=0 \"src/**/*.js\" \"test/*.js\" \"test/helpers/**/*.js\"",
-    "prettier": "--ignore-path .gitignore --loglevel warn \"{src,test}/**/*.js\" \"*.{js,md,yml,json}\" \"!package-lock.json\""
+    "prettier": "--ignore-path .gitignore --loglevel warn \"{src,test}/**/*.js\" \"*.{js,md,yml,json}\" \"!package-lock.json\" \"!CHANGELOG.md\""
   },
   "dependencies": {
     "filter-obj": "^2.0.1",
