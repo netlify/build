@@ -17,7 +17,7 @@ test.serial('projectDir option defaults to process.cwd()', async (t) => {
   }
 })
 
-test.serial('Cannot trigger with no options', async (t) => {
+test.serial('Can trigger with no options', async (t) => {
   const oldCwd = process.cwd()
   process.chdir(`${FIXTURES_DIR}/simple`)
   try {

@@ -1,4 +1,4 @@
-const locatePath = require('locate-path')
+const pLocate = require('p-locate')
 
 // Checks if the project is using a specific framework:
 //  - if `framework.npmDependencies` is set, one of them must be present in the
@@ -14,12 +14,12 @@ const usesFramework = async function (
       configFiles,
     },
   },
-  { projectDir, npmDependencies },
+  { pathExists, npmDependencies },
 ) {
   return (
     usesNpmDependencies(frameworkNpmDependencies, npmDependencies) &&
     lacksExcludedNpmDependencies(frameworkExcludedNpmDependencies, npmDependencies) &&
-    (await usesConfigFiles(configFiles, projectDir))
+    (await usesConfigFiles(configFiles, pathExists))
   )
 }
 
@@ -39,8 +39,13 @@ const lacksExcludedNpmDependencies = function (frameworkExcludedNpmDependencies,
   )
 }
 
-const usesConfigFiles = async function (configFiles, projectDir) {
-  return configFiles.length === 0 || (await locatePath(configFiles, { type: 'file', cwd: projectDir })) !== undefined
+const configExists = async (configFiles, pathExists) => {
+  const exists = await pLocate(configFiles, (file) => pathExists(file))
+  return exists
+}
+
+const usesConfigFiles = async function (configFiles, pathExists) {
+  return configFiles.length === 0 || (await configExists(configFiles, pathExists))
 }
 
 module.exports = { usesFramework }

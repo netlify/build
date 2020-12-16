@@ -1,11 +1,5 @@
-const pFilter = require('p-filter')
-
-const { usesFramework } = require('./detect.js')
-const { FRAMEWORKS } = require('./frameworks/main.js')
-const { getOptions } = require('./options.js')
-const { getPackageJsonContent } = require('./package.js')
-const { getRunScriptCommand } = require('./run_script.js')
-const { getWatchCommands } = require('./watch.js')
+const { getContext } = require('./context')
+const { listFrameworks: list, hasFramework: has, getFramework: get } = require('./core.js')
 
 /**
  * @typedef {object} Options
@@ -30,75 +24,39 @@ const { getWatchCommands } = require('./watch.js')
 /**
  * Return all the frameworks used by a project.
  *
- * @param  {Options} [options] - Options
+ * @param  {Options} options - Options
  *
  * @returns {Framework[]} frameworks - Frameworks used by a project
  */
 const listFrameworks = async function (opts) {
-  const { projectDir } = getOptions(opts)
-  const { npmDependencies, scripts, runScriptCommand } = await getProjectInfo({ projectDir })
-  const frameworks = await pFilter(FRAMEWORKS, (framework) => usesFramework(framework, { projectDir, npmDependencies }))
-  const frameworkInfos = frameworks.map((framework) => getFrameworkInfo(framework, { scripts, runScriptCommand }))
-  return frameworkInfos
+  const context = await getContext(opts)
+  return await list(context)
 }
 
 /**
  * Return whether a project uses a specific framework
  *
  * @param {string} frameworkName - Name such as `"gatsby"`
- * @param  {Options} [options] - Options
+ * @param  {Options} [options] - Context
  *
  * @returns {boolean} result - Whether the project uses this framework
  */
-const hasFramework = async function (frameworkName, opts) {
-  const framework = getFrameworkByName(frameworkName)
-  const { projectDir } = getOptions(opts)
-  const { npmDependencies } = await getProjectInfo({ projectDir })
-  const result = await usesFramework(framework, { projectDir, npmDependencies })
-  return result
+const hasFramework = async function (frameworkName, options) {
+  const context = await getContext(options)
+  return await has(frameworkName, context)
 }
 
 /**
  * Return some information about a framework used by a project.
  *
  * @param {string} frameworkName - Name such as `"gatsby"`
- * @param  {Options} [options] - Options
+ * @param  {Context} [context] - Context
  *
  * @returns {Framework} framework - Framework used by a project
  */
-const getFramework = async function (frameworkName, opts) {
-  const framework = getFrameworkByName(frameworkName)
-  const { projectDir } = getOptions(opts)
-  const { scripts, runScriptCommand } = await getProjectInfo({ projectDir })
-  const frameworkInfo = getFrameworkInfo(framework, { scripts, runScriptCommand })
-  return frameworkInfo
-}
-
-const getFrameworkByName = function (frameworkName) {
-  const framework = FRAMEWORKS.find(({ name }) => name === frameworkName)
-  if (framework === undefined) {
-    const frameworkNames = FRAMEWORKS.map(getFrameworkName).join(', ')
-    throw new Error(`Invalid framework "${frameworkName}". It should be one of: ${frameworkNames}`)
-  }
-  return framework
-}
-
-const getFrameworkName = function ({ name }) {
-  return name
-}
-
-const getProjectInfo = async function ({ projectDir }) {
-  const { packageJsonPath, npmDependencies, scripts } = await getPackageJsonContent({ projectDir })
-  const runScriptCommand = await getRunScriptCommand({ projectDir, packageJsonPath })
-  return { npmDependencies, scripts, runScriptCommand }
-}
-
-const getFrameworkInfo = function (
-  { name, category, watch: { command: frameworkWatchCommand, directory, port }, env },
-  { scripts, runScriptCommand },
-) {
-  const watchCommands = getWatchCommands({ frameworkWatchCommand, scripts, runScriptCommand })
-  return { name, category, watch: { commands: watchCommands, directory, port }, env }
+const getFramework = async function (frameworkName, options) {
+  const context = await getContext(options)
+  return await get(frameworkName, context)
 }
 
 module.exports = { listFrameworks, hasFramework, getFramework }
