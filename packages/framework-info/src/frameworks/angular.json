@@ -7,7 +7,7 @@
     "configFiles": ["angular.json"]
   },
   "watch": {
-    "command": "ng build --prod",
+    "command": "ng serve",
     "directory": "dist",
     "port": 4200
   },
