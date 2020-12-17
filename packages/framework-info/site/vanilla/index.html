@@ -15,8 +15,8 @@
       }
 
       const listFiles = async () => {
-        const { default_branch } = await get()
-        const { tree } = await get(`/git/trees/${default_branch}?recursive=1`)
+        const { default_branch: defaultBranch } = await get()
+        const { tree } = await get(`/git/trees/${defaultBranch}?recursive=1`)
         return tree.map(({ path }) => path)
       }
 
@@ -41,15 +41,21 @@
         return frameworks
       }
 
-      getFrameworks().then((frameworks) => {
-        const body = document.getElementsByTagName('body')[0]
-        frameworks.forEach((framework) => {
-          const div = document.createElement('div')
-          div.setAttribute('id', framework.name)
-          div.innerText = JSON.stringify(framework)
-          body.appendChild(div)
+      getFrameworks()
+        .then((frameworks) => {
+          const body = document.querySelector('body')
+          frameworks.forEach((framework) => {
+            const div = document.createElement('div')
+            div.setAttribute('id', framework.name)
+            // eslint-disable-next-line fp/no-mutation
+            div.textContent = JSON.stringify(framework)
+            body.append(div)
+          })
+          return frameworks
         })
-      })
+        .catch((error) => {
+          console.log(error)
+        })
     </script>
   </body>
 </html>

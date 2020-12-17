@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import { listFrameworks } from '../../dist'
+import { listFrameworks } from '../../dist/index.js'
 
 const repo = 'netlify-templates/gatsby-starter-netlify-cms'
 
@@ -10,8 +10,8 @@ const get = async (path = '') => {
 }
 
 const listFiles = async () => {
-  const { default_branch } = await get()
-  const { tree } = await get(`/git/trees/${default_branch}?recursive=1`)
+  const { default_branch: defaultBranch } = await get()
+  const { tree } = await get(`/git/trees/${defaultBranch}?recursive=1`)
   return tree.map(({ path }) => path)
 }
 
@@ -30,29 +30,27 @@ const getContext = async () => {
   return { pathExists, packageJson }
 }
 
-const Framework = (framework) => {
-  return <div key={framework.name}>{JSON.stringify(framework)}</div>
-}
+const Framework = (framework) => <div>{JSON.stringify(framework)}</div>
 
 export const App = () => {
   const [frameworks, setFrameworks] = useState([])
 
   useEffect(() => {
-    let canceled = false
+    const state = { canceled: false }
 
     const fetchFrameworks = async () => {
       const context = await getContext()
-      const frameworks = await listFrameworks(context)
-      if (!canceled) {
-        setFrameworks(frameworks)
+      const receivedFrameworks = await listFrameworks(context)
+      if (!state.canceled) {
+        setFrameworks(receivedFrameworks)
       }
     }
 
     fetchFrameworks()
     return () => {
-      canceled = true
+      state.canceled = true
     }
   }, [])
 
-  return frameworks.map((framework) => <Framework {...framework} />)
+  return frameworks.map((framework) => <Framework key={framework.name} {...framework} />)
 }

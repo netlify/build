@@ -8,10 +8,11 @@ Contributions are always welcome, no matter how large or small. Before contribut
 > Install Node.js + npm on your system: https://nodejs.org/en/download/
 
 ```sh
-$ git clone git@github.com:netlify/framework-info.git
-$ cd framework-info
-$ npm install
-$ npm test
+git clone git@github.com:netlify/framework-info.git
+cd framework-info
+npm install
+npm run build
+npm test
 ```
 
 You can also use yarn.

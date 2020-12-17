@@ -69,7 +69,7 @@
     "url": "https://github.com/netlify/framework-info/issues"
   },
   "scriptsArgs": {
-    "eslint": "--ignore-path .gitignore --cache --format=codeframe --max-warnings=0 \"src/**/*.js\" \"test/*.js\" \"test/helpers/**/*.js\"",
+    "eslint": "--ignore-path .gitignore --cache --format=codeframe --max-warnings=0 \"{src,site,scripts,test}/**/*.{js,jsx,html}\" --ignore-pattern \"test/fixtures/**/*\"",
     "prettier": "--ignore-path .gitignore --loglevel warn \"{src,site,scripts,test}/**/*.js\" \"*.{js,md,yml,json}\" \"!package-lock.json\" \"!CHANGELOG.md\""
   },
   "dependencies": {
@@ -87,7 +87,7 @@
     "@babel/preset-react": "^7.12.10",
     "@commitlint/cli": "^11.0.0",
     "@commitlint/config-conventional": "^11.0.0",
-    "@netlify/eslint-config-node": "^2.0.0",
+    "@netlify/eslint-config-node": "^2.2.2",
     "ajv": "^6.12.3",
     "ava": "^2.4.0",
     "babel-loader": "^8.2.2",
