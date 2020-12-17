@@ -85,8 +85,6 @@
     "@babel/core": "^7.12.10",
     "@babel/preset-env": "^7.12.10",
     "@babel/preset-react": "^7.12.10",
-    "@commitlint/cli": "^11.0.0",
-    "@commitlint/config-conventional": "^11.0.0",
     "@netlify/eslint-config-node": "^2.2.2",
     "ajv": "^6.12.3",
     "ava": "^2.4.0",
