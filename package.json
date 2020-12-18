@@ -31,8 +31,8 @@
       "packages/**/tests/*.js",
       "packages/**/tests/**/tests.js"
     ],
-    "compileEnhancements": false,
     "babel": false,
+    "compileEnhancements": false,
     "verbose": true
   },
   "husky": {
