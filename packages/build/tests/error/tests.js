@@ -211,7 +211,7 @@ test('Report IPC error', async (t) => {
   await runFixture(t, 'ipc', { flags })
 })
 
-test('Report API error', async (t) => {
+test.serial('Report API error', async (t) => {
   await runFixture(t, 'cancel_build', { flags: { ...flags, token: 'test', deployId: 'test' } })
 })
 
