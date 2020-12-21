@@ -7,6 +7,7 @@ const { addErrorInfo, getErrorInfo } = require('./info')
 // Retrieve error information from child process and re-build it in current
 // process. We need this since errors are not JSON-serializable.
 const jsonToError = function ({ name, message, stack, info = {}, errorProps = {} }) {
+  // eslint-disable-next-line unicorn/error-message
   const error = new Error('')
 
   assignErrorProps(error, { name, message, stack })
