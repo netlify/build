@@ -2,7 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const util = require('util')
 
-const Ajv = require('ajv')
+const Ajv = require('ajv').default
 const test = require('ava')
 const { each } = require('test-each')
 
