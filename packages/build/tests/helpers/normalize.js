@@ -53,7 +53,7 @@ const NORMALIZE_REGEXPS = [
   // Ports
   [/:\d{2,}/, ':80'],
   // Windows uses host:port instead of Unix sockets for TCP
-  [/'localhost:80'/g, '/file/path'],
+  [/(http:\/\/)?localhost:80/g, '/file/path'],
   // Durations
   [/(\d[\d.]*(ms|m|s)( )?)+/g, '1ms'],
   // Package versions
