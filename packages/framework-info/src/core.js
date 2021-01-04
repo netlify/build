@@ -99,7 +99,7 @@ const getFramework = async function (frameworkName, context) {
 const getFrameworkByName = function (frameworkName) {
   const framework = FRAMEWORKS.find(({ name }) => name === frameworkName)
   if (framework === undefined) {
-    const frameworkNames = FRAMEWORKS.map(getFrameworkName).join(', ')
+    const frameworkNames = FRAMEWORKS.map((knownFramework) => getFrameworkName(knownFramework)).join(', ')
     throw new Error(`Invalid framework "${frameworkName}". It should be one of: ${frameworkNames}`)
   }
   return framework

@@ -45,7 +45,7 @@ const serializeFrameworks = function (frameworks, long) {
     return NO_FRAMEWORKS
   }
 
-  return frameworks.map(getName).join('\n')
+  return frameworks.map((framework) => getName(framework)).join('\n')
 }
 
 const NO_FRAMEWORKS = 'unknown'
