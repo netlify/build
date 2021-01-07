@@ -12,7 +12,7 @@
   },
   "build": {
     "command": "react-scripts build",
-    "directory": "public"
+    "directory": "build"
   },
   "env": { "BROWSER": "none", "PORT": "3000" }
 }
