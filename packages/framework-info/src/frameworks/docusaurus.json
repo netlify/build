@@ -6,7 +6,7 @@
     "excludedNpmDependencies": [],
     "configFiles": ["siteConfig.js"]
   },
-  "watch": {
+  "dev": {
     "command": "docusaurus-start",
     "port": 3000
   },

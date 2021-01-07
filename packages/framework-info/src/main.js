@@ -7,8 +7,8 @@ const { listFrameworks: list, hasFramework: has, getFramework: get } = require('
  */
 
 /**
- * @typedef {object} Watch
- * @property {string} commands - Watch command. There might be several alternatives or empty
+ * @typedef {object} Dev
+ * @property {string} commands - Dev command. There might be several alternatives or empty
  * @property {number} port - Server port
  */
 
@@ -22,9 +22,9 @@ const { listFrameworks: list, hasFramework: has, getFramework: get } = require('
  * @typedef {object} Framework
  * @property {string} name - Name such as `"gatsby"`
  * @property {string} category - Category among `"static_site_generator"`, `"frontend_framework"` and `"build_tool"`
- * @property {Watch} watch - Information about the watch command
+ * @property {Dev} dev - Information about the dev command
  * @property {Build} build - Information about the build command
- * @property {object} env - Environment variables that should be set when calling the watch command
+ * @property {object} env - Environment variables that should be set when calling the dev command
  */
 
 /**

@@ -37,7 +37,7 @@ const COMMAND_SCHEMA = {
 const MAX_PORT = 65535
 const FRAMEWORK_JSON_SCHEMA = {
   type: 'object',
-  required: ['name', 'category', 'detect', 'watch', 'build', 'env'],
+  required: ['name', 'category', 'detect', 'dev', 'build', 'env'],
   additionalProperties: false,
   properties: {
     name: { type: 'string', pattern: '^[a-z\\d_]+', minLength: 1 },
@@ -64,7 +64,7 @@ const FRAMEWORK_JSON_SCHEMA = {
         },
       },
     },
-    watch: {
+    dev: {
       type: 'object',
       dependencies: { command: ['port'], port: ['command'] },
       additionalProperties: false,

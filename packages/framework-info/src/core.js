@@ -1,10 +1,10 @@
 const pFilter = require('p-filter')
 
 const { usesFramework } = require('./detect.js')
+const { getDevCommands } = require('./dev.js')
 const { FRAMEWORKS } = require('./frameworks/main.js')
 const { getPackageJsonContent } = require('./package.js')
 const { getRunScriptCommand } = require('./run_script.js')
-const { getWatchCommands } = require('./watch.js')
 
 const getContext = (context) => {
   const { pathExists, packageJson, packageJsonPath = '.' } = context
@@ -27,8 +27,8 @@ const getContext = (context) => {
  */
 
 /**
- * @typedef {object} Watch
- * @property {string} commands - Watch command. There might be several alternatives or empty
+ * @typedef {object} Dev
+ * @property {string} commands - Dev command. There might be several alternatives or empty
  * @property {number} port - Server port
  */
 
@@ -42,9 +42,9 @@ const getContext = (context) => {
  * @typedef {object} Framework
  * @property {string} name - Name such as `"gatsby"`
  * @property {string} category - Category among `"static_site_generator"`, `"frontend_framework"` and `"build_tool"`
- * @property {Watch} watch - Information about the watch command
+ * @property {Dev} dev - Information about the dev command
  * @property {Build} build - Information about the build command
- * @property {object} env - Environment variables that should be set when calling the watch command
+ * @property {object} env - Environment variables that should be set when calling the dev command
  */
 
 /**
@@ -127,17 +127,17 @@ const getFrameworkInfo = function (
   {
     name,
     category,
-    watch: { command: frameworkWatchCommand, port },
+    dev: { command: frameworkDevCommand, port },
     build: { command: frameworkBuildCommand, directory },
     env,
   },
   { scripts, runScriptCommand },
 ) {
-  const watchCommands = getWatchCommands({ frameworkWatchCommand, scripts, runScriptCommand })
+  const devCommands = getDevCommands({ frameworkDevCommand, scripts, runScriptCommand })
   return {
     name,
     category,
-    watch: { commands: watchCommands, port },
+    dev: { commands: devCommands, port },
     build: { commands: [frameworkBuildCommand], directory },
     env,
   }

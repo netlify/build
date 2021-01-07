@@ -6,7 +6,7 @@
     "excludedNpmDependencies": [],
     "configFiles": []
   },
-  "watch": {
+  "dev": {
     "command": "vuepress dev",
     "port": 8080
   },

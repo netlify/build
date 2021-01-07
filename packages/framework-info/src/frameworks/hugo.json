@@ -6,7 +6,7 @@
     "excludedNpmDependencies": [],
     "configFiles": ["config.toml", "config.yaml"]
   },
-  "watch": {
+  "dev": {
     "command": "hugo server -w",
     "port": 1313
   },

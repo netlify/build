@@ -6,7 +6,7 @@
     "excludedNpmDependencies": [],
     "configFiles": []
   },
-  "watch": {
+  "dev": {
     "command": "roots watch",
     "port": 1111
   },

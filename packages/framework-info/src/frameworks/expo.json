@@ -6,7 +6,7 @@
     "excludedNpmDependencies": [],
     "configFiles": ["app.json"]
   },
-  "watch": {
+  "dev": {
     "command": "expo start --web",
     "port": 19006
   },

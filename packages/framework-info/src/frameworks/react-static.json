@@ -6,7 +6,7 @@
     "excludedNpmDependencies": [],
     "configFiles": ["static.config.js"]
   },
-  "watch": {
+  "dev": {
     "command": "react-static start",
     "port": 3000
   },

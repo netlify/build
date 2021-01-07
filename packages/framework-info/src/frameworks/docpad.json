@@ -6,7 +6,7 @@
     "excludedNpmDependencies": [],
     "configFiles": []
   },
-  "watch": {
+  "dev": {
     "command": "docpad run",
     "port": 9778
   },

@@ -5,8 +5,8 @@
 
 Framework detection utility.
 
-Detects which framework a specific website is using. The framework's build/watch commands, directories and server port
-are also returned.
+Detects which framework a specific website is using. The framework's build/dev commands, directories and server port are
+also returned.
 
 The following frameworks are detected:
 
@@ -27,7 +27,7 @@ console.log(await listFrameworks({ projectDir: './path/to/gatsby/website' }))
 //   {
 //     name: 'gatsby',
 //     category: 'static_site_generator',
-//     watch: {
+//     dev: {
 //       commands: ['gatsby develop'],
 //       directory: 'public',
 //       port: 8000
@@ -41,7 +41,7 @@ console.log(await listFrameworks({ projectDir: './path/to/vue/website' }))
 //   {
 //     name: 'vue',
 //     category: 'frontend_framework',
-//     watch: {
+//     dev: {
 //       commands: ['npm run serve'],
 //       directory: 'dist',
 //       port: 8080
@@ -57,7 +57,7 @@ console.log(await getFramework('vue', { projectDir: './path/to/vue/website' }))
 // {
 //   name: 'vue',
 //   category: 'frontend_framework',
-//   watch: {
+//   dev: {
 //     commands: ['npm run serve'],
 //     directory: 'dist',
 //     port: 8080
@@ -77,7 +77,7 @@ $ framework-info --long ./path/to/vue/website
   {
     "name": "vue",
     "category": "frontend_framework",
-    "watch": {
+    "dev": {
       "commands": ["npm run serve"],
       "directory": "dist",
       "port": 8080
@@ -128,23 +128,23 @@ _Type_: `string`
 
 Category among `"static_site_generator"`, `"frontend_framework"` and `"build_tool"`.
 
-#### watch
+#### dev
 
 _Type_: `object`
 
-Information about the build command, in watch mode.
+Information about the dev command.
 
 ##### commands
 
 _Type_: `string[]`
 
-Build command, in watch mode. There might be several alternatives.
+Dev command. There might be several alternatives.
 
 ##### directory
 
 _Type_: `string`
 
-Relative path to the directory where files are built, in watch mode.
+Relative path to the directory where files are built.
 
 ##### port
 
@@ -156,7 +156,7 @@ Server port.
 
 _Type_: `object`
 
-Environment variables that should be set when calling the watch command.
+Environment variables that should be set when calling the dev command.
 
 ## hasFramework(frameworkName, options?)
 
@@ -200,7 +200,7 @@ Each framework is a JSON file in the `/src/frameworks/` directory. For example:
     "excludedNpmDependencies": [],
     "configFiles": ["gatsby-config.js"]
   },
-  "watch": {
+  "dev": {
     "command": "gatsby develop",
     "directory": "public",
     "port": 8000
@@ -256,32 +256,32 @@ with one of configuration files will be considered as using the framework.
 
 If empty, this is ignored.
 
-## watch
+## dev
 
 _Type_: `object`
 
-Parameters to detect the watch command.
+Parameters to detect the dev command.
 
 ### command
 
 _Type_: `string`
 
-Default watch command.
+Default dev command.
 
 ### directory
 
 _Type_: `string`
 
-Directory where built files are written to, in watch mode.
+Directory where built files are written to.
 
 ### port
 
 _Type_: `number`
 
-Local watch server port.
+Local dev server port.
 
 ## env
 
 _Type_: `object`
 
-Environment variables that should be set when running the watch command.
+Environment variables that should be set when running the dev command.

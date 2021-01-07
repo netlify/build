@@ -6,7 +6,7 @@
     "excludedNpmDependencies": [],
     "configFiles": []
   },
-  "watch": {
+  "dev": {
     "command": "sapper dev",
     "port": 3000
   },

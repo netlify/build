@@ -6,7 +6,7 @@
     "excludedNpmDependencies": [],
     "configFiles": ["ember-cli-build.js"]
   },
-  "watch": {
+  "dev": {
     "command": "ember serve",
     "port": 4200
   },
