@@ -9,6 +9,6 @@ jobs:
     steps:
       - uses: GoogleCloudPlatform/release-please-action@v2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.NODE_PKG_RELEASE_TOKEN }}
           release-type: node
-          package-name: "@netlify/framework-info"
+          package-name: '@netlify/framework-info'
