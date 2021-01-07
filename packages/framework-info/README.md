@@ -11,9 +11,9 @@ also returned.
 The following frameworks are detected:
 
 - Static site generators: Gatsby, Hugo, Jekyll, Next.js, Nuxt, Hexo, Gridsome, Docusaurus, Eleventy, Middleman,
-  Phenomic, React-static, Stencil, Vuepress
+  Phenomic, React-static, Stencil, Vuepress, Assemble, DocPad, Harp, Metalsmith, Roots, Wintersmith
 - Front-end frameworks: create-react-app, Vue, Sapper, Angular, Ember, Svelte, Expo, Quasar
-- Build tools: Parcel, Brunch
+- Build tools: Parcel, Brunch, Grunt, Gulp
 
 [Additions and updates are welcome!](#add-or-update-a-framework)
 
@@ -29,8 +29,11 @@ console.log(await listFrameworks({ projectDir: './path/to/gatsby/website' }))
 //     category: 'static_site_generator',
 //     dev: {
 //       commands: ['gatsby develop'],
-//       directory: 'public',
 //       port: 8000
+//     },
+//     build: {
+//       commands: ['gatsby build'],
+//       directory: 'public'
 //     },
 //     env: { GATSBY_LOGGER: 'yurnalist' }
 //   }
@@ -43,8 +46,11 @@ console.log(await listFrameworks({ projectDir: './path/to/vue/website' }))
 //     category: 'frontend_framework',
 //     dev: {
 //       commands: ['npm run serve'],
-//       directory: 'dist',
 //       port: 8080
+//     },
+//     build: {
+//       commands: ['vue-cli-service build'],
+//       directory: 'dist'
 //     },
 //     env: {}
 //   }
@@ -59,8 +65,11 @@ console.log(await getFramework('vue', { projectDir: './path/to/vue/website' }))
 //   category: 'frontend_framework',
 //   dev: {
 //     commands: ['npm run serve'],
-//     directory: 'dist',
 //     port: 8080
+//   },
+//   build: {
+//     commands: ['vue-cli-service build'],
+//     directory: 'dist'
 //   },
 //   env: {}
 // }
@@ -79,8 +88,11 @@ $ framework-info --long ./path/to/vue/website
     "category": "frontend_framework",
     "dev": {
       "commands": ["npm run serve"],
-      "directory": "dist",
       "port": 8080
+    },
+    "build": {
+      "commands": ["vue-cli-service build"],
+      "directory": "dist"
     },
     "env": {}
   }
@@ -140,17 +152,29 @@ _Type_: `string[]`
 
 Dev command. There might be several alternatives.
 
-##### directory
-
-_Type_: `string`
-
-Relative path to the directory where files are built.
-
 ##### port
 
 _Type_: `number`
 
 Server port.
+
+#### build
+
+_Type_: `object`
+
+Information about the build command.
+
+##### commands
+
+_Type_: `string[]`
+
+Build command. There might be several alternatives.
+
+##### directory
+
+_Type_: `string`
+
+Relative path to the directory where files are built.
 
 #### env
 
@@ -202,8 +226,11 @@ Each framework is a JSON file in the `/src/frameworks/` directory. For example:
   },
   "dev": {
     "command": "gatsby develop",
-    "directory": "public",
     "port": 8000
+  },
+  "build": {
+    "command": "gatsby build",
+    "directory": "public"
   },
   "env": { "GATSBY_LOGGER": "yurnalist" }
 }
@@ -268,17 +295,29 @@ _Type_: `string`
 
 Default dev command.
 
-### directory
-
-_Type_: `string`
-
-Directory where built files are written to.
-
 ### port
 
 _Type_: `number`
 
 Local dev server port.
+
+## build
+
+_Type_: `object`
+
+Parameters to detect the build command.
+
+### command
+
+_Type_: `string`
+
+Default build command.
+
+### directory
+
+_Type_: `string`
+
+Directory where built files are written to.
 
 ## env
 
