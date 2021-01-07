@@ -1,0 +1,15 @@
+{
+  "name": "metalsmith",
+  "category": "static_site_generator",
+  "detect": {
+    "npmDependencies": ["metalsmith"],
+    "excludedNpmDependencies": [],
+    "configFiles": []
+  },
+  "watch": {},
+  "build": {
+    "command": "metalsmith",
+    "directory": "build"
+  },
+  "env": {}
+}

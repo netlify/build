@@ -1,0 +1,15 @@
+{
+  "name": "gulp",
+  "category": "build_tool",
+  "detect": {
+    "npmDependencies": ["gulp"],
+    "excludedNpmDependencies": [],
+    "configFiles": []
+  },
+  "watch": {},
+  "build": {
+    "command": "gulp build",
+    "directory": "dist"
+  },
+  "env": {}
+}

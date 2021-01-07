@@ -8,8 +8,11 @@
   },
   "watch": {
     "command": "hexo server",
-    "directory": "public",
     "port": 4000
+  },
+  "build": {
+    "command": "hexo generate",
+    "directory": "public"
   },
   "env": {}
 }

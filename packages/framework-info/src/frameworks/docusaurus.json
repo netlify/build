@@ -8,8 +8,11 @@
   },
   "watch": {
     "command": "docusaurus-start",
-    "directory": "static",
     "port": 3000
+  },
+  "build": {
+    "command": "docusaurus-build",
+    "directory": "build/<project-name>"
   },
   "env": { "BROWSER": "none" }
 }

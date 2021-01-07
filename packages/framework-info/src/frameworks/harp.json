@@ -1,18 +1,18 @@
 {
-  "name": "nuxt",
+  "name": "harp",
   "category": "static_site_generator",
   "detect": {
-    "npmDependencies": ["nuxt"],
+    "npmDependencies": ["harp"],
     "excludedNpmDependencies": [],
     "configFiles": []
   },
   "watch": {
-    "command": "nuxt",
-    "port": 3000
+    "command": "harp server",
+    "port": 9000
   },
   "build": {
-    "command": "nuxt generate",
-    "directory": "dist"
+    "command": "harp compile",
+    "directory": "www"
   },
   "env": {}
 }

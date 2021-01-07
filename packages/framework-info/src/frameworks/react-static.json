@@ -8,8 +8,11 @@
   },
   "watch": {
     "command": "react-static start",
-    "directory": "dist",
     "port": 3000
+  },
+  "build": {
+    "command": "react-static build",
+    "directory": "dist"
   },
   "env": {}
 }

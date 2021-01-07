@@ -8,8 +8,11 @@
   },
   "watch": {
     "command": "sapper dev",
-    "directory": "static",
     "port": 3000
+  },
+  "build": {
+    "command": "sapper export",
+    "directory": "__sapper__/export"
   },
   "env": {}
 }

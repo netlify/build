@@ -8,8 +8,11 @@
   },
   "watch": {
     "command": "gridsome develop",
-    "directory": "dist",
     "port": 8080
+  },
+  "build": {
+    "command": "gridsome build",
+    "directory": "dist"
   },
   "env": {}
 }

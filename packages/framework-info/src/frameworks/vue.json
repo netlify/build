@@ -8,8 +8,11 @@
   },
   "watch": {
     "command": "vue-cli-service serve",
-    "directory": "dist",
     "port": 8080
+  },
+  "build": {
+    "command": "vue-cli-service build",
+    "directory": "dist"
   },
   "env": {}
 }

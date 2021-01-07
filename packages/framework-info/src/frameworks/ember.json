@@ -8,8 +8,11 @@
   },
   "watch": {
     "command": "ember serve",
-    "directory": "dist",
     "port": 4200
+  },
+  "build": {
+    "command": "ember build",
+    "directory": "dist"
   },
   "env": {}
 }

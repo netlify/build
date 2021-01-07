@@ -8,8 +8,11 @@
   },
   "watch": {
     "command": "phenomic start",
-    "directory": "public",
     "port": 3333
+  },
+  "build": {
+    "command": "phenomic build",
+    "directory": "public"
   },
   "env": {}
 }

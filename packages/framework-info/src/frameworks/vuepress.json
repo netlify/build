@@ -8,8 +8,11 @@
   },
   "watch": {
     "command": "vuepress dev",
-    "directory": ".vuepress/dist",
     "port": 8080
+  },
+  "build": {
+    "command": "vuepress build",
+    "directory": ".vuepress/dist"
   },
   "env": {}
 }

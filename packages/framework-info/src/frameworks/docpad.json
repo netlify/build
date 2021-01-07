@@ -1,18 +1,18 @@
 {
-  "name": "nuxt",
+  "name": "docpad",
   "category": "static_site_generator",
   "detect": {
-    "npmDependencies": ["nuxt"],
+    "npmDependencies": ["docpad"],
     "excludedNpmDependencies": [],
     "configFiles": []
   },
   "watch": {
-    "command": "nuxt",
-    "port": 3000
+    "command": "docpad run",
+    "port": 9778
   },
   "build": {
-    "command": "nuxt generate",
-    "directory": "dist"
+    "command": "docpad generate",
+    "directory": "out"
   },
   "env": {}
 }

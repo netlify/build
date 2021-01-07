@@ -8,8 +8,11 @@
   },
   "watch": {
     "command": "react-scripts start",
-    "directory": "public",
     "port": 3000
+  },
+  "build": {
+    "command": "react-scripts build",
+    "directory": "public"
   },
   "env": { "BROWSER": "none", "PORT": "3000" }
 }

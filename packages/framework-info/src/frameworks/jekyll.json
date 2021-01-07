@@ -8,8 +8,11 @@
   },
   "watch": {
     "command": "bundle exec jekyll serve -w",
-    "directory": "_site",
     "port": 4000
+  },
+  "build": {
+    "command": "bundle exec jekyll build",
+    "directory": "_site"
   },
   "env": {}
 }

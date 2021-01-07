@@ -1,18 +1,18 @@
 {
-  "name": "nuxt",
+  "name": "roots",
   "category": "static_site_generator",
   "detect": {
-    "npmDependencies": ["nuxt"],
+    "npmDependencies": ["roots"],
     "excludedNpmDependencies": [],
     "configFiles": []
   },
   "watch": {
-    "command": "nuxt",
-    "port": 3000
+    "command": "roots watch",
+    "port": 1111
   },
   "build": {
-    "command": "nuxt generate",
-    "directory": "dist"
+    "command": "roots compile",
+    "directory": "public"
   },
   "env": {}
 }

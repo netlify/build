@@ -1,0 +1,15 @@
+{
+  "name": "grunt",
+  "category": "build_tool",
+  "detect": {
+    "npmDependencies": ["grunt"],
+    "excludedNpmDependencies": [],
+    "configFiles": []
+  },
+  "watch": {},
+  "build": {
+    "command": "grunt build",
+    "directory": "dist"
+  },
+  "env": {}
+}

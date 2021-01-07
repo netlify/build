@@ -8,8 +8,11 @@
   },
   "watch": {
     "command": "bundle exec middleman server",
-    "directory": "build",
     "port": 4567
+  },
+  "build": {
+    "command": "bundle exec middleman build",
+    "directory": "build"
   },
   "env": {}
 }

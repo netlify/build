@@ -8,8 +8,11 @@
   },
   "watch": {
     "command": "gatsby develop",
-    "directory": "public",
     "port": 8000
+  },
+  "build": {
+    "command": "gatsby build",
+    "directory": "public"
   },
   "env": { "GATSBY_LOGGER": "yurnalist" }
 }

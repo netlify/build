@@ -8,8 +8,11 @@
   },
   "watch": {
     "command": "next",
-    "directory": "out",
     "port": 3000
+  },
+  "build": {
+    "command": "next build",
+    "directory": "out"
   },
   "env": {}
 }

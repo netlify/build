@@ -8,8 +8,11 @@
   },
   "watch": {
     "command": "npm run dev",
-    "directory": "public",
     "port": 5000
+  },
+  "build": {
+    "command": "npm run build",
+    "directory": "public"
   },
   "env": {}
 }

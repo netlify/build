@@ -8,8 +8,11 @@
   },
   "watch": {
     "command": "stencil build --dev --watch --serve",
-    "directory": "www",
     "port": 3333
+  },
+  "build": {
+    "command": "stencil build",
+    "directory": "www"
   },
   "env": { "BROWSER": "none", "PORT": "3000" }
 }

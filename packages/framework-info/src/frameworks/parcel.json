@@ -8,8 +8,11 @@
   },
   "watch": {
     "command": "parcel",
-    "directory": "dist",
     "port": 1234
+  },
+  "build": {
+    "command": "parcel build",
+    "directory": "dist"
   },
   "env": {}
 }

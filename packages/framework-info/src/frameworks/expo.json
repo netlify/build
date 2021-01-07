@@ -8,8 +8,11 @@
   },
   "watch": {
     "command": "expo start --web",
-    "directory": "web-build",
     "port": 19006
+  },
+  "build": {
+    "command": "expo build:web",
+    "directory": "web-build"
   },
   "env": {}
 }

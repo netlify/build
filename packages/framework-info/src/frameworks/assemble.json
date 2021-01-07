@@ -1,17 +1,14 @@
 {
-  "name": "nuxt",
+  "name": "assemble",
   "category": "static_site_generator",
   "detect": {
-    "npmDependencies": ["nuxt"],
+    "npmDependencies": ["assemble"],
     "excludedNpmDependencies": [],
     "configFiles": []
   },
-  "watch": {
-    "command": "nuxt",
-    "port": 3000
-  },
+  "watch": {},
   "build": {
-    "command": "nuxt generate",
+    "command": "grunt build",
     "directory": "dist"
   },
   "env": {}

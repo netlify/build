@@ -8,8 +8,11 @@
   },
   "watch": {
     "command": "brunch watch --server",
-    "directory": "app/assets",
     "port": 3333
+  },
+  "build": {
+    "command": "brunch build",
+    "directory": "public"
   },
   "env": {}
 }

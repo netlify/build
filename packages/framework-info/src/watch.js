@@ -4,6 +4,9 @@
 //   - `package.json` `scripts` whose names are among `NPM_WATCH_SCRIPTS`
 //   - `framework.watch.command`
 const getWatchCommands = function ({ frameworkWatchCommand, scripts, runScriptCommand }) {
+  if (frameworkWatchCommand === undefined) {
+    return []
+  }
   const scriptWatchCommands = getScriptWatchCommands(scripts, frameworkWatchCommand).map(
     (scriptName) => `${runScriptCommand} ${scriptName}`,
   )

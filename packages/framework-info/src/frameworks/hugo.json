@@ -8,8 +8,11 @@
   },
   "watch": {
     "command": "hugo server -w",
-    "directory": "public",
     "port": 1313
+  },
+  "build": {
+    "command": "hugo",
+    "directory": "public"
   },
   "env": {}
 }

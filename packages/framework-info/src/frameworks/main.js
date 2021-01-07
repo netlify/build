@@ -18,6 +18,12 @@ const FRAMEWORKS = [
   require('./react-static.json'),
   require('./stencil.json'),
   require('./vuepress.json'),
+  require('./assemble.json'),
+  require('./docpad.json'),
+  require('./harp.json'),
+  require('./metalsmith.json'),
+  require('./roots.json'),
+  require('./wintersmith.json'),
 
   // Front-end frameworks
   require('./angular.json'),
@@ -33,6 +39,8 @@ const FRAMEWORKS = [
   // Build tools
   require('./brunch.json'),
   require('./parcel.json'),
+  require('./grunt.json'),
+  require('./gulp.json'),
 ]
 
 /* eslint-enable node/global-require,import/order,import/max-dependencies */

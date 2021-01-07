@@ -28,16 +28,22 @@ const getContext = (context) => {
 
 /**
  * @typedef {object} Watch
- * @property {string} commands - Build command, in watch mode. There might be several alternatives
- * @property {string} directory - Relative path to the directory where files are built, in watch mode
+ * @property {string} commands - Watch command. There might be several alternatives or empty
  * @property {number} port - Server port
+ */
+
+/**
+ * @typedef {object} Build
+ * @property {string} commands - Build command. There might be several alternatives
+ * @property {string} directory - Relative path to the directory where files are built
  */
 
 /**
  * @typedef {object} Framework
  * @property {string} name - Name such as `"gatsby"`
  * @property {string} category - Category among `"static_site_generator"`, `"frontend_framework"` and `"build_tool"`
- * @property {Watch} watch - Information about the build command, in watch mode.
+ * @property {Watch} watch - Information about the watch command
+ * @property {Build} build - Information about the build command
  * @property {object} env - Environment variables that should be set when calling the watch command
  */
 
@@ -118,11 +124,23 @@ const getProjectInfo = async function ({ pathExists, packageJson, packageJsonPat
 }
 
 const getFrameworkInfo = function (
-  { name, category, watch: { command: frameworkWatchCommand, directory, port }, env },
+  {
+    name,
+    category,
+    watch: { command: frameworkWatchCommand, port },
+    build: { command: frameworkBuildCommand, directory },
+    env,
+  },
   { scripts, runScriptCommand },
 ) {
   const watchCommands = getWatchCommands({ frameworkWatchCommand, scripts, runScriptCommand })
-  return { name, category, watch: { commands: watchCommands, directory, port }, env }
+  return {
+    name,
+    category,
+    watch: { commands: watchCommands, port },
+    build: { commands: [frameworkBuildCommand], directory },
+    env,
+  }
 }
 
 module.exports = { listFrameworks, hasFramework, getFramework }

@@ -8,8 +8,11 @@
   },
   "watch": {
     "command": "quasar dev -p 8080",
-    "directory": ".quasar",
     "port": 8080
+  },
+  "build": {
+    "command": "quasar build",
+    "directory": ".quasar"
   },
   "env": {}
 }
