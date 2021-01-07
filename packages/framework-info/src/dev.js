@@ -28,17 +28,21 @@ const getScriptDevCommands = function (scripts, frameworkDevCommand) {
   return devScripts.sort(scriptsSorter)
 }
 
+const getSortIndex = (index) => (index === -1 ? Number.MAX_SAFE_INTEGER : index)
+
 const scriptsSorter = (script1, script2) => {
   const index1 = NPM_DEV_SCRIPTS.findIndex((devScriptName) => matchesNpmWDevScript(script1, devScriptName))
   const index2 = NPM_DEV_SCRIPTS.findIndex((devScriptName) => matchesNpmWDevScript(script2, devScriptName))
 
-  return index1 - index2
+  return getSortIndex(index1) - getSortIndex(index2)
 }
 
 const getPreferredScripts = function (scripts, frameworkDevCommand) {
+  // eslint-disable-next-line fp/no-mutating-methods
   return Object.entries(scripts)
     .filter(([, scriptValue]) => scriptValue.includes(frameworkDevCommand))
     .map((script) => getEntryKey(script))
+    .sort(scriptsSorter)
 }
 
 const getEntryKey = function ([key]) {
