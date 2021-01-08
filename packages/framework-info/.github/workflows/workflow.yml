@@ -6,8 +6,6 @@ on:
     tags: ['*']
   pull_request:
     types: [opened, synchronize, reopened]
-env:
-  CI: 'true'
 jobs:
   build:
     strategy:
@@ -28,8 +26,11 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
+      - name: Update npm
+        run: npm install -g npm@5
+        if: "${{ matrix.node-version == '8.3.0' }}"
       - name: Install dependencies
-        run: npm install
+        run: npm ci
       - name: Build For Browser
         run: npm run build
         if: "${{ matrix.node-version == '14' }}"
