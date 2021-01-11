@@ -90,182 +90,161 @@ const isDefinedString = function (string) {
 }
 
 test('Does not set environment variable in the buildbot', async (t) => {
-  const {
-    env: { all },
-  } = await getFixtureConfig(t, 'empty', { flags: { mode: 'buildbot' } })
-  t.is(Object.keys(all).length, 0)
+  const { env } = await getFixtureConfig(t, 'empty', { flags: { mode: 'buildbot' } })
+  t.is(Object.keys(env).length, 0)
 })
 
 test('Sets LANG environment variable', async (t) => {
   const {
-    env: {
-      general: { LANG },
-    },
+    env: { LANG },
   } = await getFixtureConfig(t, 'empty')
-  t.true(isDefinedString(LANG))
+  t.deepEqual(LANG.sources, ['general'])
+  t.true(isDefinedString(LANG.value))
 })
 
 test('Sets LANGUAGE environment variable', async (t) => {
   const {
-    env: {
-      general: { LANGUAGE },
-    },
+    env: { LANGUAGE },
   } = await getFixtureConfig(t, 'empty')
-  t.true(isDefinedString(LANGUAGE))
+  t.deepEqual(LANGUAGE.sources, ['general'])
+  t.true(isDefinedString(LANGUAGE.value))
 })
 
 test('Sets LC_ALL environment variable', async (t) => {
   const {
-    env: {
-      general: { LC_ALL },
-    },
+    env: { LC_ALL },
   } = await getFixtureConfig(t, 'empty')
-  t.true(isDefinedString(LC_ALL))
+  t.deepEqual(LC_ALL.sources, ['general'])
+  t.true(isDefinedString(LC_ALL.value))
 })
 
 test('Sets GATSBY_TELEMETRY_DISABLED environment variable', async (t) => {
   const {
-    env: {
-      general: { GATSBY_TELEMETRY_DISABLED },
-    },
+    env: { GATSBY_TELEMETRY_DISABLED },
   } = await getFixtureConfig(t, 'empty')
-  t.true(isDefinedString(GATSBY_TELEMETRY_DISABLED))
+  t.deepEqual(GATSBY_TELEMETRY_DISABLED.sources, ['general'])
+  t.true(isDefinedString(GATSBY_TELEMETRY_DISABLED.value))
 })
 
 test('Sets NEXT_TELEMETRY_DISABLED environment variable', async (t) => {
   const {
-    env: {
-      general: { NEXT_TELEMETRY_DISABLED },
-    },
+    env: { NEXT_TELEMETRY_DISABLED },
   } = await getFixtureConfig(t, 'empty')
-  t.true(isDefinedString(NEXT_TELEMETRY_DISABLED))
+  t.deepEqual(NEXT_TELEMETRY_DISABLED.sources, ['general'])
+  t.true(isDefinedString(NEXT_TELEMETRY_DISABLED.value))
 })
 
 test('Sets PULL_REQUEST environment variable', async (t) => {
   const {
-    env: {
-      general: { PULL_REQUEST },
-    },
+    env: { PULL_REQUEST },
   } = await getFixtureConfig(t, 'empty')
-  t.true(isDefinedString(PULL_REQUEST))
+  t.deepEqual(PULL_REQUEST.sources, ['general'])
+  t.true(isDefinedString(PULL_REQUEST.value))
 })
 
 test('Sets COMMIT_REF environment variable', async (t) => {
   const {
-    env: {
-      general: { COMMIT_REF },
-    },
+    env: { COMMIT_REF },
   } = await getFixtureConfig(t, 'empty')
-  t.true(isDefinedString(COMMIT_REF))
+  t.deepEqual(COMMIT_REF.sources, ['general'])
+  t.true(isDefinedString(COMMIT_REF.value))
 })
 
 test('Sets CACHED_COMMIT_REF environment variable', async (t) => {
   const {
-    env: {
-      general: { CACHED_COMMIT_REF },
-    },
+    env: { CACHED_COMMIT_REF },
   } = await getFixtureConfig(t, 'empty')
-  t.true(isDefinedString(CACHED_COMMIT_REF))
+  t.deepEqual(CACHED_COMMIT_REF.sources, ['general'])
+  t.true(isDefinedString(CACHED_COMMIT_REF.value))
 })
 
 test('Sets HEAD environment variable', async (t) => {
   const {
-    env: {
-      general: { HEAD },
-    },
+    env: { HEAD },
   } = await getFixtureConfig(t, 'empty')
-  t.true(isDefinedString(HEAD))
+  t.deepEqual(HEAD.sources, ['general'])
+  t.true(isDefinedString(HEAD.value))
 })
 
 test('Sets BRANCH environment variable', async (t) => {
   const {
-    env: {
-      general: { BRANCH },
-    },
+    env: { BRANCH },
   } = await getFixtureConfig(t, 'empty', { flags: { branch: 'test' } })
-  t.is(BRANCH, 'test')
+  t.deepEqual(BRANCH.sources, ['general'])
+  t.is(BRANCH.value, 'test')
 })
 
 test('Does not set some git-related environment variables if no repository', async (t) => {
   const {
-    env: {
-      general: { COMMIT_REF },
-    },
+    env: { COMMIT_REF },
   } = await getFixtureConfig(t, 'empty', { copyRoot: { git: false } })
   t.is(COMMIT_REF, undefined)
 })
 
 test('Sets CONTEXT environment variable', async (t) => {
   const {
-    env: {
-      general: { CONTEXT },
-    },
+    env: { CONTEXT },
   } = await getFixtureConfig(t, 'empty', { flags: { context: 'test' } })
-  t.is(CONTEXT, 'test')
+  t.deepEqual(CONTEXT.sources, ['general'])
+  t.is(CONTEXT.value, 'test')
 })
 
 test('Sets DEPLOY_ID environment variable', async (t) => {
   const {
-    env: {
-      general: { DEPLOY_ID },
-    },
+    env: { DEPLOY_ID },
   } = await getFixtureConfig(t, 'empty', { flags: { deployId: 'test' } })
-  t.is(DEPLOY_ID, 'test')
+  t.deepEqual(DEPLOY_ID.sources, ['general'])
+  t.is(DEPLOY_ID.value, 'test')
 })
 
 test('Sets URL environment variable', async (t) => {
   const {
-    env: {
-      general: { URL },
-    },
+    env: { URL },
   } = await runWithMockServer(t, SITE_INFO_RESPONSE_URL, { flags: AUTH_FLAGS })
-  t.is(URL, 'test')
+  t.deepEqual(URL.sources, ['general'])
+  t.is(URL.value, 'test')
 })
 
 test('Sets REPOSITORY_URL environment variable', async (t) => {
   const {
-    env: {
-      general: { REPOSITORY_URL },
-    },
+    env: { REPOSITORY_URL },
   } = await runWithMockServer(t, SITE_INFO_RESPONSE_REPO_URL, { flags: AUTH_FLAGS })
-  t.is(REPOSITORY_URL, 'test')
+  t.deepEqual(REPOSITORY_URL.sources, ['general'])
+  t.is(REPOSITORY_URL.value, 'test')
 })
 
 test('Sets config file environment variables', async (t) => {
   const {
-    env: {
-      configFile: { TEST },
-    },
+    env: { TEST },
   } = await getFixtureConfig(t, 'file_env')
-  t.is(TEST, 'testFile')
+  t.deepEqual(TEST.sources, ['configFile'])
+  t.is(TEST.value, 'testFile')
 })
 
 test('Sets config file empty environment variables', async (t) => {
   const {
-    env: {
-      configFile: { TEST },
-    },
+    env: { TEST },
   } = await getFixtureConfig(t, 'file_env_empty')
-  t.is(TEST, '')
+  t.deepEqual(TEST.sources, ['configFile'])
+  t.is(TEST.value, '')
 })
 
 test('Merges all environment variables', async (t) => {
   const {
-    env: {
-      all: { TEST, LANG },
-    },
+    env: { TEST, LANG },
   } = await runWithMockServer(t, SITE_INFO_RESPONSE_ENV, { flags: AUTH_FLAGS, fixtureName: 'file_env' })
-  t.is(TEST, 'testFile')
-  t.true(isDefinedString(LANG))
+  t.deepEqual(TEST.sources, ['configFile', 'ui'])
+  t.is(TEST.value, 'testFile')
+  t.deepEqual(LANG.sources, ['general'])
+  t.true(isDefinedString(LANG.value))
 })
 
 test('Sets site environment variables', async (t) => {
   const {
-    env: {
-      ui: { TEST },
-    },
+    env: { TEST },
   } = await runWithMockServer(t, SITE_INFO_RESPONSE_ENV, { flags: AUTH_FLAGS })
-  t.is(TEST, 'test')
+  t.deepEqual(TEST.sources, ['ui'])
+  t.is(TEST.value, 'test')
 })
 
 test('Does not set site environment variables on API error', async (t) => {
@@ -275,54 +254,43 @@ test('Does not set site environment variables on API error', async (t) => {
 
 test('Does not set site environment variables in the buildbot', async (t) => {
   const {
-    env: {
-      ui: { TEST },
-    },
+    env: { TEST },
   } = await runWithMockServer(t, SITE_INFO_RESPONSE_ENV, { flags: AUTH_FLAGS_BUILDBOT })
   t.is(TEST, undefined)
 })
 
 test('Does not set site environment variables if offline', async (t) => {
   const {
-    env: {
-      ui: { TEST },
-    },
+    env: { TEST },
   } = await runWithMockServer(t, SITE_INFO_RESPONSE_ENV, { flags: AUTH_FLAGS_OFFLINE })
   t.is(TEST, undefined)
 })
 
 test('Does not set site environment variables without a siteId', async (t) => {
   const {
-    env: {
-      ui: { TEST },
-    },
+    env: { TEST },
   } = await runWithMockServer(t, SITE_INFO_RESPONSE_ENV, { flags: AUTH_FLAGS_NO_SITE_ID })
   t.is(TEST, undefined)
 })
 
 test('Does not set site environment variables without a token', async (t) => {
   const {
-    env: {
-      ui: { TEST },
-    },
+    env: { TEST },
   } = await runWithMockServer(t, SITE_INFO_RESPONSE_ENV, { flags: AUTH_FLAGS_NO_TOKEN })
   t.is(TEST, undefined)
 })
 
 test('Sets accounts environment variables', async (t) => {
   const {
-    env: {
-      account: { TEST },
-    },
+    env: { TEST },
   } = await runWithMockServer(t, LIST_ACCOUNTS_RESPONSE_SUCCESS, { flags: AUTH_FLAGS })
-  t.is(TEST, 'test')
+  t.deepEqual(TEST.sources, ['account'])
+  t.is(TEST.value, 'test')
 })
 
 test('Does not set accounts environment variables if no matching account', async (t) => {
   const {
-    env: {
-      account: { TEST },
-    },
+    env: { TEST },
   } = await runWithMockServer(t, LIST_ACCOUNTS_RESPONSE_MISMATCH, { flags: AUTH_FLAGS })
   t.is(TEST, undefined)
 })
@@ -334,56 +302,45 @@ test('Does not set accounts environment variables on API error', async (t) => {
 
 test('Does not set accounts environment variables on API wrong response shape', async (t) => {
   const {
-    env: {
-      account: { TEST },
-    },
+    env: { TEST },
   } = await runWithMockServer(t, LIST_ACCOUNTS_RESPONSE_WRONG_SHAPE, { flags: AUTH_FLAGS })
   t.is(TEST, undefined)
 })
 
 test('Does not set accounts environment variables in the buildbot', async (t) => {
   const {
-    env: {
-      account: { TEST },
-    },
+    env: { TEST },
   } = await runWithMockServer(t, LIST_ACCOUNTS_RESPONSE_SUCCESS, { flags: AUTH_FLAGS_BUILDBOT })
   t.is(TEST, undefined)
 })
 
 test('Does not set accounts environment variables if offline', async (t) => {
   const {
-    env: {
-      account: { TEST },
-    },
+    env: { TEST },
   } = await runWithMockServer(t, LIST_ACCOUNTS_RESPONSE_SUCCESS, { flags: AUTH_FLAGS_OFFLINE })
   t.is(TEST, undefined)
 })
 
 test('Does not set accounts environment variables without a siteId', async (t) => {
   const {
-    env: {
-      account: { TEST },
-    },
+    env: { TEST },
   } = await runWithMockServer(t, LIST_ACCOUNTS_RESPONSE_SUCCESS, { flags: AUTH_FLAGS_NO_SITE_ID })
   t.is(TEST, undefined)
 })
 
 test('Does not set accounts environment variables without a token', async (t) => {
   const {
-    env: {
-      account: { TEST },
-    },
+    env: { TEST },
   } = await runWithMockServer(t, LIST_ACCOUNTS_RESPONSE_SUCCESS, { flags: AUTH_FLAGS_NO_TOKEN })
   t.is(TEST, undefined)
 })
 
 test('Sets addons environment variables', async (t) => {
   const {
-    env: {
-      addons: { TEST },
-    },
+    env: { TEST },
   } = await runWithMockServer(t, LIST_ADDONS_RESPONSE_SUCCESS, { flags: AUTH_FLAGS })
-  t.is(TEST, 'test')
+  t.deepEqual(TEST.sources, ['addons'])
+  t.is(TEST.value, 'test')
 })
 
 test('Does not set addons environment variables on API error', async (t) => {
@@ -393,45 +350,35 @@ test('Does not set addons environment variables on API error', async (t) => {
 
 test('Does not set addons environment variables on API wrong response shape', async (t) => {
   const {
-    env: {
-      addons: { TEST },
-    },
+    env: { TEST },
   } = await runWithMockServer(t, LIST_ADDONS_RESPONSE_WRONG_SHAPE, { flags: AUTH_FLAGS })
   t.is(TEST, undefined)
 })
 
 test('Does not set addons environment variables if offline', async (t) => {
   const {
-    env: {
-      addons: { TEST },
-    },
+    env: { TEST },
   } = await runWithMockServer(t, LIST_ADDONS_RESPONSE_SUCCESS, { flags: AUTH_FLAGS_OFFLINE })
   t.is(TEST, undefined)
 })
 
 test('Does not set addons environment variables without a siteId', async (t) => {
   const {
-    env: {
-      addons: { TEST },
-    },
+    env: { TEST },
   } = await runWithMockServer(t, LIST_ADDONS_RESPONSE_SUCCESS, { flags: AUTH_FLAGS_NO_SITE_ID })
   t.is(TEST, undefined)
 })
 
 test('Does not set addons environment variables without a token', async (t) => {
   const {
-    env: {
-      addons: { TEST },
-    },
+    env: { TEST },
   } = await runWithMockServer(t, LIST_ADDONS_RESPONSE_SUCCESS, { flags: AUTH_FLAGS_NO_TOKEN })
   t.is(TEST, undefined)
 })
 
 test('Does not allow overridding readonly environment variables', async (t) => {
   const {
-    env: {
-      addons: { REVIEW_ID },
-    },
+    env: { REVIEW_ID },
   } = await getFixtureConfig(t, 'readonly')
   t.is(REVIEW_ID, undefined)
 })

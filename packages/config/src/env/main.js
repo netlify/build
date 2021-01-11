@@ -12,20 +12,48 @@ const { getGitEnv } = require('./git')
 // TODO: add `CONTEXT` and others
 const getEnv = async function ({ mode, config, siteInfo, accounts, addons, buildDir, branch, deployId, context }) {
   if (mode === 'buildbot') {
-    return { general: {}, account: {}, addons: {}, ui: {}, configFile: {}, all: {} }
+    return {}
   }
 
   const generalEnv = await getGeneralEnv({ siteInfo, buildDir, branch, deployId, context })
   const [accountEnv, addonsEnv, uiEnv, configFileEnv] = getUserEnv({ config, siteInfo, accounts, addons })
-  return {
-    general: generalEnv,
-    account: accountEnv,
-    addons: addonsEnv,
-    ui: uiEnv,
-    configFile: configFileEnv,
-    // Merging priority matters
-    all: { ...generalEnv, ...accountEnv, ...addonsEnv, ...uiEnv, ...configFileEnv },
-  }
+
+  // Sources of environment variables, in descending order of precedence.
+  const sources = [
+    { key: 'configFile', values: configFileEnv },
+    { key: 'ui', values: uiEnv },
+    { key: 'addons', values: addonsEnv },
+    { key: 'account', values: accountEnv },
+    { key: 'general', values: generalEnv },
+  ]
+
+  // A hash mapping names of environment variables to objects containing the following properties:
+  // - sources: Array of sources where the environment variable was found. The first element is the source that
+  //   actually provided the variable (i.e. the one with the highest precedence).
+  // - values: The value of the environment variable.
+  const environment = {}
+
+  sources.forEach((source) => {
+    Object.keys(source.values).forEach((key) => {
+      if (environment[key] === undefined) {
+        // Local mutation. Alternatives hinder simplicity and readibility.
+        // eslint-disable-next-line fp/no-mutation
+        environment[key] = {
+          sources: [source.key],
+          value: source.values[key],
+        }
+      } else {
+        // Local mutation. Alternatives hinder simplicity and readibility.
+        // eslint-disable-next-line fp/no-mutation
+        environment[key] = {
+          ...environment[key],
+          sources: [...environment[key].sources, source.key],
+        }
+      }
+    })
+  })
+
+  return environment
 }
 
 // Environment variables not set by users, but meant to mimic the production

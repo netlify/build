@@ -1,4 +1,4 @@
-# Snapshot report for `packages/config/tests/validate/tests.js`
+# Snapshot report for `tests/validate/tests.js`
 
 The actual snapshot is saved in `tests.js.snap`.
 
