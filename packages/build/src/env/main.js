@@ -8,7 +8,7 @@ const { getParentColorEnv } = require('../log/colors')
 
 // Retrieve the environment variables passed to plugins and `build.command`
 // When run locally, this tries to emulate the production environment.
-const getChildEnv = function ({ envOpt, env: { all: allConfigEnv } }) {
+const getChildEnv = function ({ envOpt, env: allConfigEnv }) {
   const parentColorEnv = getParentColorEnv()
   const parentEnv = { ...env, ...allConfigEnv, ...envOpt, ...parentColorEnv }
   return filterObj(parentEnv, shouldKeepEnv)
