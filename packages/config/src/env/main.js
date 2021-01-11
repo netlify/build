@@ -28,9 +28,9 @@ const getEnv = async function ({ mode, config, siteInfo, accounts, addons, build
   ]
 
   // A hash mapping names of environment variables to objects containing the following properties:
-  // - sources: Array of sources where the environment variable was found. The first element is the source that
+  // - sources: List of sources where the environment variable was found. The first element is the source that
   //   actually provided the variable (i.e. the one with the highest precedence).
-  // - values: The value of the environment variable.
+  // - value: The value of the environment variable.
   const environment = {}
 
   sources.forEach((source) => {
