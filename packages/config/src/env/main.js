@@ -31,29 +31,35 @@ const getEnv = async function ({ mode, config, siteInfo, accounts, addons, build
   // - sources: List of sources where the environment variable was found. The first element is the source that
   //   actually provided the variable (i.e. the one with the highest precedence).
   // - value: The value of the environment variable.
-  const environment = {}
+  const env = new Map()
 
   sources.forEach((source) => {
     Object.keys(source.values).forEach((key) => {
-      if (environment[key] === undefined) {
-        // Local mutation. Alternatives hinder simplicity and readibility.
-        // eslint-disable-next-line fp/no-mutation
-        environment[key] = {
+      if (env.has(key)) {
+        const { sources: envSources, value } = env.get(key)
+
+        env.set(key, {
+          sources: [...envSources, source.key],
+          value,
+        })
+      } else {
+        env.set(key, {
           sources: [source.key],
           value: source.values[key],
-        }
-      } else {
-        // Local mutation. Alternatives hinder simplicity and readibility.
-        // eslint-disable-next-line fp/no-mutation
-        environment[key] = {
-          ...environment[key],
-          sources: [...environment[key].sources, source.key],
-        }
+        })
       }
     })
   })
 
-  return environment
+  // Converting Map to plain object.
+  // TODO: Replace with `return Object.fromEntries(environment)` once we drop support for Node versions below 12.
+  return [...env].reduce(
+    (obj, [key, value]) => ({
+      ...obj,
+      [key]: value,
+    }),
+    {},
+  )
 }
 
 // Environment variables not set by users, but meant to mimic the production
