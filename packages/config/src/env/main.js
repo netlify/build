@@ -1,5 +1,6 @@
 'use strict'
 
+const fromEntries = require('@ungap/from-entries')
 const omit = require('omit.js').default
 
 const { getGitEnv } = require('./git')
@@ -51,15 +52,7 @@ const getEnv = async function ({ mode, config, siteInfo, accounts, addons, build
     })
   })
 
-  // Converting Map to plain object.
-  // TODO: Replace with `return Object.fromEntries(environment)` once we drop support for Node versions below 12.
-  return [...env].reduce(
-    (obj, [key, value]) => ({
-      ...obj,
-      [key]: value,
-    }),
-    {},
-  )
+  return fromEntries(env)
 }
 
 // Environment variables not set by users, but meant to mimic the production

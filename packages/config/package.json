@@ -52,6 +52,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@ungap/from-entries": "^0.2.1",
     "array-flat-polyfill": "^1.0.1",
     "chalk": "^3.0.0",
     "deepmerge": "^4.2.2",
