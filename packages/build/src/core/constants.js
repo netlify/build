@@ -4,8 +4,10 @@ const { relative, normalize } = require('path')
 
 const { getCacheDir } = require('@netlify/cache-utils')
 const mapObj = require('map-obj')
+const pathExists = require('path-exists')
 
 const { version } = require('../../package.json')
+const { logDefaultFunctionsSrcWarning, logNetlifyDirWarning } = require('../log/messages/core')
 
 // Retrieve constants passed to plugins
 const getConstants = async function ({
@@ -18,8 +20,11 @@ const getConstants = async function ({
   siteInfo: { id: siteId },
   token,
   mode,
+  logs,
   buildbotServerSocket,
 }) {
+  await validateNetlifyDir(logs, buildDir)
+
   const isLocal = mode !== 'buildbot'
   const cacheDir = await getCacheDir({ mode })
 
@@ -72,6 +77,22 @@ const getConstants = async function ({
   const constantsA = mapObj(constants, (key, path) => [key, normalizePath(path, buildDir, key)])
   return constantsA
 }
+
+// Temporary warning until we launch this feature in February 2021
+// TODO: remove once the feature is launched
+const validateNetlifyDir = async function (logs, buildDir) {
+  if (await pathExists(`${buildDir}/${DEFAULT_FUNCTIONS_SRC}`)) {
+    logDefaultFunctionsSrcWarning(logs, NETLIFY_DIR, DEFAULT_FUNCTIONS_SRC)
+    return
+  }
+
+  if (await pathExists(`${buildDir}/${NETLIFY_DIR}`)) {
+    logNetlifyDirWarning(logs, NETLIFY_DIR, DEFAULT_FUNCTIONS_SRC)
+  }
+}
+
+const NETLIFY_DIR = 'netlify'
+const DEFAULT_FUNCTIONS_SRC = `${NETLIFY_DIR}/functions`
 
 // The current directory is `buildDir`. Most constants are inside this `buildDir`.
 // Instead of passing absolute paths, we pass paths relative to `buildDir`, so

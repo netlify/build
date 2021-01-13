@@ -305,6 +305,7 @@ const initAndRunBuild = async function ({
     siteInfo,
     token,
     mode,
+    logs,
     buildbotServerSocket,
     testOpts,
   })
