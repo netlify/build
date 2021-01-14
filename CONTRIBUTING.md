@@ -54,21 +54,13 @@ After submitting the pull request, please make sure the Continuous Integration c
 
 To release a specific package:
 
-```bash
-# On the root directory.
-# Do not release if linting or tests are failing. This might indicate a bug.
-$ npm test
-
-# Go inside the package directory
-$ cd packages/packageName
-
-# Replace "patch" with "minor" or "major" or "prerelease" depending on the case
-$ npm version patch
-$ git add -p
-$ git commit
-
-$ npm publish
-```
+1. Merge the relevant package release PR
+2. Switch to the default branch `git checkout master`
+3. Pull latest changes `git pull`
+4. Inside the root run `npm install`
+5. Inside the root directory run `npm test` - do not release if linting or tests are failing. This might indicate a bug
+6. Navigate to the specific package directory via `cd packages/packageName`
+7. Run `npm publish`
 
 If a package is released, the other packages that depend on it should increment their version of that package inside
 their own `package.json`, and a new release of them should be made. This means releasing one package usually ends up
