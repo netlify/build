@@ -103,7 +103,7 @@ test('constants.NETLIFY_BUILD_VERSION', async (t) => {
 })
 
 test('constants.NETLIFY_API_TOKEN', async (t) => {
-  await runFixture(t, 'netlify_api_token', { flags: { token: 'test' } })
+  await runFixture(t, 'netlify_api_token', { flags: { token: 'test', testOpts: { env: false } } })
 })
 
 test('Pass packageJson to plugins', async (t) => {

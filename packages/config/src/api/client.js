@@ -5,8 +5,8 @@ const NetlifyAPI = require('netlify')
 const { removeFalsy } = require('../utils/remove_falsy')
 
 // Retrieve Netlify API client, if an access token was passed
-const getApiClient = function ({ token, testOpts: { scheme, host } = {} }) {
-  if (!token) {
+const getApiClient = function ({ token, offline, testOpts: { scheme, host } = {} }) {
+  if (!token || offline) {
     return
   }
 

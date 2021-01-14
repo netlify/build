@@ -120,6 +120,7 @@ const tExecBuild = async function ({
   functionsDistDir,
   dry,
   mode,
+  offline,
   deployId,
   testOpts,
   featureFlags,
@@ -154,6 +155,7 @@ const tExecBuild = async function ({
     envOpt,
     debug,
     mode,
+    offline,
     deployId,
     logs,
     testOpts,
@@ -303,6 +305,7 @@ const initAndRunBuild = async function ({
     siteInfo,
     token,
     mode,
+    logs,
     buildbotServerSocket,
     testOpts,
   })

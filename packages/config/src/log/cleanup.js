@@ -83,4 +83,4 @@ const simplifyConfig = function ({ build: { environment, ...build }, plugins, ..
   })
 }
 
-module.exports = { cleanupConfig }
+module.exports = { cleanupConfig, cleanupEnvironment }

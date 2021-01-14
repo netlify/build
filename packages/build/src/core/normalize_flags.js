@@ -33,6 +33,7 @@ const getDefaultFlags = function ({ env: envOpt = {}, mode = REQUIRE_MODE }) {
     nodePath: execPath,
     token: combinedEnv.NETLIFY_AUTH_TOKEN,
     mode: REQUIRE_MODE,
+    offline: false,
     functionsDistDir: DEFAULT_FUNCTIONS_DIST,
     deployId: combinedEnv.DEPLOY_ID,
     debug: Boolean(combinedEnv.NETLIFY_BUILD_DEBUG),

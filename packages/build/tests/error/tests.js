@@ -80,7 +80,9 @@ test('build.cancelBuild() API call no token', async (t) => {
 // TODO: remove once dropping Node 8
 if (!version.startsWith('v8.')) {
   test('build.cancelBuild() API call failure', async (t) => {
-    await runFixture(t, 'cancel', { flags: { token: 'test', deployId: 'test', testOpts: { host: '...' } } })
+    await runFixture(t, 'cancel', {
+      flags: { token: 'test', deployId: 'test', testOpts: { host: '...', env: false } },
+    })
   })
 }
 
@@ -212,7 +214,9 @@ test('Report IPC error', async (t) => {
 })
 
 test.serial('Report API error', async (t) => {
-  await runFixture(t, 'cancel_build', { flags: { ...flags, token: 'test', deployId: 'test' } })
+  await runFixture(t, 'cancel_build', {
+    flags: { ...flags, token: 'test', deployId: 'test', testOpts: { ...flags.testOpts, env: false } },
+  })
 })
 
 // Node v8 uses a different error message format

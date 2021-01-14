@@ -1,11 +1,11 @@
 'use strict'
 
 const {
-  env: { NETLIFY },
+  env: { BRANCH },
 } = require('process')
 
 module.exports = {
   onPreBuild() {
-    console.log(NETLIFY === undefined)
+    console.log(BRANCH)
   },
 }

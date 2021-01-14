@@ -92,6 +92,15 @@ Default: true`,
     describe: 'Print debugging information',
     hidden: true,
   },
+  testOpts: {
+    describe: 'Options for testing only',
+    hidden: true,
+  },
+  offline: {
+    boolean: true,
+    describe: `Do not send requests to the Netlify API to retrieve site settings.
+Default: false`,
+  },
   buffer: {
     boolean: true,
     describe: 'Buffer output instead of streaming it',
