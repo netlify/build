@@ -1,6 +1,6 @@
 'use strict'
 
-const { cleanupConfig } = require('./cleanup')
+const { cleanupConfig, cleanupEnvironment } = require('./cleanup')
 const { logObject, logSubHeader } = require('./logger')
 const { cleanupConfigOpts } = require('./options')
 
@@ -37,13 +37,13 @@ const logInlineConfig = function (initialConfig, { logs, debug }) {
 }
 
 // Log return value of `@netlify/config` in debug mode
-const logResult = function ({ configPath, buildDir, config, context, branch }, { logs, debug }) {
+const logResult = function ({ configPath, buildDir, config, context, branch, env }, { logs, debug }) {
   if (!debug) {
     return
   }
 
   logSubHeader(logs, 'Resolved build environment')
-  logObject(logs, { configPath, buildDir, context, branch })
+  logObject(logs, { configPath, buildDir, context, branch, env: cleanupEnvironment(env) })
 
   logSubHeader(logs, 'Resolved config')
   logObject(logs, cleanupConfig(config))
