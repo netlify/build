@@ -1,6 +1,6 @@
 'use strict'
 
-const { relative, normalize } = require('path')
+const { relative, normalize, join } = require('path')
 
 const { getCacheDir } = require('@netlify/cache-utils')
 const mapObj = require('map-obj')
@@ -92,7 +92,7 @@ const validateNetlifyDir = async function (logs, buildDir) {
 }
 
 const NETLIFY_DIR = 'netlify'
-const DEFAULT_FUNCTIONS_SRC = `${NETLIFY_DIR}/functions`
+const DEFAULT_FUNCTIONS_SRC = join(NETLIFY_DIR, 'functions')
 
 // The current directory is `buildDir`. Most constants are inside this `buildDir`.
 // Instead of passing absolute paths, we pass paths relative to `buildDir`, so
