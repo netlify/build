@@ -1,0 +1,21 @@
+name: release-please
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  release-package:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package: [build, cache-utils, config, functions-utils, git-utils, run-utils]
+      fail-fast: false
+    steps:
+      - uses: GoogleCloudPlatform/release-please-action@v2
+        with:
+          token: ${{ secrets.NODE_PKG_RELEASE_TOKEN }}
+          release-type: node
+          package-name: '@netlify/${{ matrix.package }}'
+          monorepo-tags: true
+          path: packages/${{ matrix.package }}
