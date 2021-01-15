@@ -15,7 +15,6 @@ const firePluginCommand = async function ({
   pluginPackageJson,
   loadedFrom,
   origin,
-  envChanges,
   constants,
   commands,
   events,
@@ -29,7 +28,6 @@ const firePluginCommand = async function ({
       event,
       events,
       error,
-      envChanges,
       constants,
       loadedFrom,
     })

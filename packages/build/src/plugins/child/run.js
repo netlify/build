@@ -1,12 +1,12 @@
 'use strict'
 
-const { getNewEnvChanges, setEnvChanges } = require('../../env/changes.js')
+const { getEnvBefore, getNewEnvChanges } = require('../../env/changes.js')
 
 const { getUtils } = require('./utils')
 
 // Run a specific plugin event handler
 const run = async function (
-  { event, events, error, envChanges, constants, loadedFrom },
+  { event, events, error, constants, loadedFrom },
   { pluginCommands, inputs, netlifyConfig, packageJson },
 ) {
   const { method } = pluginCommands.find((pluginCommand) => pluginCommand.event === event)
@@ -15,7 +15,7 @@ const run = async function (
   const runOptions = { utils, constants, inputs, netlifyConfig, packageJson, error, events }
   const runOptionsA = cleanRunOptions({ loadedFrom, runOptions })
 
-  const envBefore = setEnvChanges(envChanges)
+  const envBefore = getEnvBefore()
   await method(runOptionsA)
   const newEnvChanges = getNewEnvChanges(envBefore)
   return { ...runState, newEnvChanges }
