@@ -17,9 +17,7 @@
     "Swyx <swyx@netlify.com> (https://www.swyx.io)"
   ],
   "scripts": {
-    "release:patch": "npm version patch && npm publish",
-    "release:minor": "npm version minor && npm publish",
-    "release:major": "npm version major && npm publish"
+    "prepublishOnly": "cd ../../ && npm run prepublishOnly"
   },
   "keywords": [
     "nodejs",
