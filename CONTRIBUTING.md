@@ -54,39 +54,36 @@ After submitting the pull request, please make sure the Continuous Integration c
 
 To release a specific package:
 
-1. Merge the relevant package release PR
-2. Switch to the default branch `git checkout master`
-3. Pull latest changes `git pull`
-4. Inside the root run `npm install`
-5. Inside the root directory run `npm test` - do not release if linting or tests are failing. This might indicate a bug
-6. Navigate to the specific package directory via `cd packages/packageName`
-7. Run `npm publish`
+1. Merge the relevant package release PR created by `release-please`
+2. Run `npm publish packages/packageName`
 
-If a package is released, the other packages that depend on it should increment their version of that package inside
-their own `package.json`, and a new release of them should be made. This means releasing one package usually ends up
-releasing all upstream packages in order.
+Linting and tests will automatically run before publish.
+
+Packages dependencies graph:
 
 ```
 @netlify/zip-it-and-ship-it -> js-client
                             -> @netlify/function-utils
                             -> @netlify/build
-                            -> @netlify/cli
+                            -> netlify-cli
 js-client                   -> @netlify/config
-                            -> @netlify/cli
+                            -> netlify-cli
 any @netlify/*-utils        -> @netlify/build
 @netlify/config             -> @netlify/build
-                            -> @netlify/cli
+                            -> netlify-cli
                             -> buildbot
-@netlify/build              -> @netlify/cli
+@netlify/build              -> netlify-cli
                             -> buildbot
 build-image                 -> buildbot
 netlify/plugins             -> buildbot
+@netlify/framework-info     -> buildbot
+                            -> netlify-cli
 ```
 
-To upgrade Netlify Build in the buildbot, a PR must be created that increments the version of `@netlify/build` and
-`@netlify/cli`. An example can be found [here](https://github.com/netlify/buildbot/pull/852). Once the Jenkins build has
-passed and finished building, the PR can be tested in production by updating the `Site.build_image` property of any test
-Site. This can be done with the following Netlify CLI commands:
+When `@netlify/build` or `@netlify/config` is published to npm, Renovate will automatically create a release PR in the
+buildbot after a short while. Once the Jenkins build has passed and finished building, the PR can be tested in
+production by updating the `Site.build_image` property of any test Site. This can be done with the following Netlify CLI
+commands:
 
 ```bash
 netlify api updateSite --data='{ "site_id": "{{siteId}}", "body": { "build_image": "{{buildImage}}" }}'
