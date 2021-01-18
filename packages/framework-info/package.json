@@ -14,7 +14,7 @@
     "!*~"
   ],
   "scripts": {
-    "prepublishOnly": "run-s build:core",
+    "prepublishOnly": "npm ci && run-s test build:core",
     "build": "run-s build:*",
     "build:core": "webpack --config scripts/webpack.config.core.js",
     "build:site-react": "webpack --config scripts/webpack.config.site.js",
