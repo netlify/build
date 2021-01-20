@@ -7,7 +7,7 @@ const { getFullErrorInfo } = require('../../error/parse/parse')
 const { serializeLogError } = require('../../error/parse/serialize_log')
 const { roundTimerToMillisecs } = require('../../time/measure')
 const { getLogHeaderFunc } = require('../header_func')
-const { log, logError, logMessage, logHeader, logSubHeader } = require('../logger')
+const { log, logMessage, logHeader, logSubHeader } = require('../logger')
 const { logOldCliVersionError } = require('../old_version')
 const { THEME } = require('../theme')
 
@@ -17,28 +17,6 @@ const logBuildStart = function (logs) {
   logHeader(logs, 'Netlify Build')
   logSubHeader(logs, 'Version')
   logMessage(logs, `${name} ${version}`)
-}
-
-const logDefaultFunctionsSrcWarning = function (logs, netlifyDir, defaultFunctionsSrc) {
-  logError(
-    logs,
-    `
-Detected site repository path: "${defaultFunctionsSrc}"
-Starting in February 2021, this path will be used to detect and deploy Netlify functions.
-To avoid potential build failures or irregularities, we recommend changing the name of the "${netlifyDir}" directory.
-For more information, visit the Community update notification: community.netlify.com/t/upcoming-change-netlify-functions-as-zero-config-default-folder-for-deploying-netlify-functions/28789`,
-  )
-}
-
-const logNetlifyDirWarning = function (logs, netlifyDir, defaultFunctionsSrc) {
-  logError(
-    logs,
-    `
-Detected site repository path: "${netlifyDir}"
-Netlify will begin using this path for detecting default deployment features, starting with "${defaultFunctionsSrc}" in February 2021.
-To avoid potential build failures or irregularities in the future, we recommend changing the name of the "${netlifyDir}" directory.
-For more information, visit the Community update notification: community.netlify.com/t/upcoming-change-netlify-functions-as-zero-config-default-folder-for-deploying-netlify-functions/28789`,
-  )
 }
 
 const logBuildError = function ({ error, netlifyConfig, mode, logs, debug, testOpts }) {
@@ -80,8 +58,6 @@ failed since something is still running.`),
 
 module.exports = {
   logBuildStart,
-  logDefaultFunctionsSrcWarning,
-  logNetlifyDirWarning,
   logBuildError,
   logBuildSuccess,
   logTimer,

@@ -84,7 +84,7 @@ const addDefaultPaths = async function (build, baseRel) {
 }
 
 const DEFAULT_PATHS = [
-  { property: 'functions', defaultPath: 'netlify-automatic-functions' },
+  { property: 'functions', defaultPath: 'netlify/functions' },
   { property: 'edge_handlers', defaultPath: 'edge-handlers' },
 ]
 
