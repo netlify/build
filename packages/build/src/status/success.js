@@ -1,6 +1,6 @@
 'use strict'
 
-const { runsOnlyOnBuildFailure } = require('../commands/get')
+const { runsOnlyOnBuildFailure } = require('../plugins/events')
 
 // The last event handler of a plugin (except for `onError` and `onEnd`)
 // defaults to `utils.status.show({ state: 'success' })` without any `summary`.

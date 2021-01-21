@@ -1,7 +1,7 @@
 'use strict'
 
-const { runsOnlyOnBuildFailure } = require('../commands/get')
 const { logDryRunStart, logDryRunCommand, logDryRunEnd } = require('../log/messages/dry')
+const { runsOnlyOnBuildFailure } = require('../plugins/events')
 
 // If the `dry` flag is specified, do a dry run
 const doDryRun = function ({ commands, constants, logs }) {
