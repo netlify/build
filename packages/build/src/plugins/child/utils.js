@@ -1,7 +1,7 @@
 'use strict'
 
-const { isSoftFailEvent } = require('../../commands/get')
 const { failBuild, failPlugin, cancelBuild, failPluginWithWarning } = require('../error')
+const { isSoftFailEvent } = require('../events')
 
 const { addLazyProp } = require('./lazy')
 const { show } = require('./status')

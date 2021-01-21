@@ -2,12 +2,12 @@
 'use strict'
 
 const { logCommand } = require('../log/messages/commands')
+const { runsAlsoOnBuildFailure, runsOnlyOnBuildFailure } = require('../plugins/events')
 const { measureDuration, normalizeTimerName } = require('../time/main')
 
 const { fireBuildCommand } = require('./build_command')
 const { getConstants } = require('./constants')
 const { fireCoreCommand } = require('./core_command')
-const { runsAlsoOnBuildFailure, runsOnlyOnBuildFailure } = require('./get')
 const { firePluginCommand } = require('./plugin')
 const { getCommandReturn } = require('./return')
 

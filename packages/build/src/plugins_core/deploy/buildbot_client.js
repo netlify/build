@@ -5,7 +5,7 @@ const { promisify } = require('util')
 
 const pEvent = require('p-event')
 
-const { runsAfterDeploy } = require('../../commands/get')
+const { runsAfterDeploy } = require('../../plugins/events')
 const { addAsyncErrorMessage } = require('../../utils/errors')
 
 const createBuildbotClient = function (BUILDBOT_SERVER_SOCKET) {

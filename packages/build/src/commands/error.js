@@ -4,8 +4,7 @@ const { cancelBuild } = require('../error/cancel')
 const { handleBuildError } = require('../error/handle')
 const { getFullErrorInfo, parseErrorInfo } = require('../error/parse/parse')
 const { serializeErrorStatus } = require('../error/parse/serialize_status')
-
-const { isSoftFailEvent } = require('./get')
+const { isSoftFailEvent } = require('../plugins/events')
 
 // Handle build command errors and plugin errors:
 //  - usually, propagate the error to make the build stop.
