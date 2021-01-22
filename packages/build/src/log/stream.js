@@ -3,6 +3,7 @@
 const { stdout, stderr } = require('process')
 const { promisify } = require('util')
 
+// TODO: replace with `timers/promises` after dropping Node < 15.0.0
 const pSetTimeout = promisify(setTimeout)
 
 // We try to use `stdio: inherit` because it keeps `stdout/stderr` as `TTY`,

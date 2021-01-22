@@ -5,6 +5,7 @@ const { promisify } = require('util')
 
 const processExists = require('process-exists')
 
+// TODO: replace with `timers/promises` after dropping Node < 15.0.0
 const pSetTimeout = promisify(setTimeout)
 
 // 100ms

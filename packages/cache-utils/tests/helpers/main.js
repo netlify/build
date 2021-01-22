@@ -7,6 +7,7 @@ const { promisify } = require('util')
 const del = require('del')
 const { dir: getTmpDir, tmpName } = require('tmp-promise')
 
+// TODO: replace with `timers/promises` after dropping Node < 15.0.0
 const pSetTimeout = promisify(setTimeout)
 const pWriteFile = promisify(writeFile)
 const pReadFile = promisify(readFile)
