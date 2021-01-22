@@ -7,7 +7,7 @@ const { getFullErrorInfo } = require('../../error/parse/parse')
 const { serializeLogError } = require('../../error/parse/serialize_log')
 const { roundTimerToMillisecs } = require('../../time/measure')
 const { getLogHeaderFunc } = require('../header_func')
-const { log, logMessage, logHeader, logSubHeader } = require('../logger')
+const { log, logError, logMessage, logHeader, logSubHeader } = require('../logger')
 const { logOldCliVersionError } = require('../old_version')
 const { THEME } = require('../theme')
 
@@ -56,10 +56,21 @@ failed since something is still running.`),
   )
 }
 
+const logLegacyDefaultFunctionsSrcWarning = function (logs, legacyDefaultFunctionsSrc) {
+  logError(
+    logs,
+    `
+You or one of your plugins seem to be relying on a default directory for Netlify functions: "${legacyDefaultFunctionsSrc}"
+This behavior has been deprecated and our builds will stop automatically bundling functions from this directory.
+We recommend renaming this directory to "netlify/functions", or explicitly setting "${legacyDefaultFunctionsSrc}" as the functions directory in your build settings if you wish to continue using it.`,
+  )
+}
+
 module.exports = {
   logBuildStart,
   logBuildError,
   logBuildSuccess,
   logTimer,
   logLingeringProcesses,
+  logLegacyDefaultFunctionsSrcWarning,
 }

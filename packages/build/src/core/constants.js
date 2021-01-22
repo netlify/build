@@ -4,8 +4,18 @@ const { relative, normalize } = require('path')
 
 const { getCacheDir } = require('@netlify/cache-utils')
 const mapObj = require('map-obj')
+const pathExists = require('path-exists')
 
 const { version } = require('../../package.json')
+const { logLegacyDefaultFunctionsSrcWarning } = require('../log/messages/core')
+
+// @todo Remove once we drop support for the legact default functions directory.
+const LEGACY_DEFAULT_FUNCTIONS_DIR = 'netlify-automatic-functions'
+const checkForLegacyDefaultFunctionsDir = async function (logs, buildDir) {
+  if (await pathExists(`${buildDir}/${LEGACY_DEFAULT_FUNCTIONS_DIR}`)) {
+    logLegacyDefaultFunctionsSrcWarning(logs, LEGACY_DEFAULT_FUNCTIONS_DIR)
+  }
+}
 
 // Retrieve constants passed to plugins
 const getConstants = async function ({
@@ -19,7 +29,11 @@ const getConstants = async function ({
   token,
   mode,
   buildbotServerSocket,
+  logs,
 }) {
+  // @todo Remove once we drop support for the legact default functions directory.
+  await checkForLegacyDefaultFunctionsDir(logs, buildDir)
+
   const isLocal = mode !== 'buildbot'
   const cacheDir = await getCacheDir({ mode })
 
@@ -99,4 +113,9 @@ const CONSTANT_PATHS = new Set([
   'CACHE_DIR',
 ])
 
-module.exports = { getConstants }
+module.exports = {
+  getConstants,
+
+  // @todo Remove once we drop support for the legact default functions directory.
+  LEGACY_DEFAULT_FUNCTIONS_DIR,
+}
