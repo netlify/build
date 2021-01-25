@@ -57,6 +57,21 @@ Default: false`,
     describe: `Netlify API token for authentication.
 The NETLIFY_AUTH_TOKEN environment variable can be used as well.`,
   },
+  host: {
+    string: true,
+    describe: `Host of the Netlify API.`,
+    hidden: true,
+  },
+  scheme: {
+    string: true,
+    describe: `Scheme/protocol of the Netlify API.`,
+    hidden: true,
+  },
+  pathPrefix: {
+    string: true,
+    describe: `Base path prefix of the Netlify API.`,
+    hidden: true,
+  },
   siteId: {
     string: true,
     describe: `Netlify Site ID.`,
