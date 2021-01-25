@@ -1,5 +1,12 @@
 # Changelog
 
+## [8.2.0](https://www.github.com/netlify/build/compare/v8.1.1...v8.2.0) (2021-01-25)
+
+
+### Features
+
+* run deploy logic as core instead of plugin ([#2192](https://www.github.com/netlify/build/issues/2192)) ([157767b](https://www.github.com/netlify/build/commit/157767b9e5e3857344efd16def9495e7d8bff939))
+
 ### [8.1.1](https://www.github.com/netlify/build/compare/build-v8.1.0...v8.1.1) (2021-01-25)
 
 
