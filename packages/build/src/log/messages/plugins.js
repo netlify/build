@@ -60,8 +60,8 @@ const logFailPluginWarning = function (methodName, event) {
   )
 }
 
-const logDeploySuccess = function () {
-  log(undefined, 'Site deploy was successfully initiated')
+const logDeploySuccess = function (logs) {
+  log(logs, 'Site deploy was successfully initiated')
 }
 
 module.exports = {

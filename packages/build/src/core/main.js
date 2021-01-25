@@ -306,7 +306,6 @@ const initAndRunBuild = async function ({
     token,
     mode,
     logs,
-    buildbotServerSocket,
     testOpts,
   })
 
@@ -344,6 +343,8 @@ const initAndRunBuild = async function ({
       nodePath,
       childEnv,
       dry,
+      featureFlags,
+      buildbotServerSocket,
       constants,
       mode,
       api,
@@ -375,6 +376,8 @@ const runBuild = async function ({
   nodePath,
   childEnv,
   dry,
+  featureFlags,
+  buildbotServerSocket,
   constants,
   mode,
   api,
@@ -397,12 +400,14 @@ const runBuild = async function ({
   const { commands, events } = getCommands({ pluginsCommands, netlifyConfig })
 
   if (dry) {
-    doDryRun({ commands, constants, logs })
+    doDryRun({ commands, constants, featureFlags, buildbotServerSocket, logs })
     return {}
   }
 
   const { commandsCount, statuses, timers: timersB } = await runCommands({
     commands,
+    featureFlags,
+    buildbotServerSocket,
     events,
     configPath,
     buildDir,

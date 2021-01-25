@@ -21,7 +21,6 @@ const getConstants = async function ({
   token,
   mode,
   logs,
-  buildbotServerSocket,
 }) {
   await validateNetlifyDir(logs, buildDir)
 
@@ -69,10 +68,6 @@ const getConstants = async function ({
      * The Netlify API access token
      */
     NETLIFY_API_TOKEN: token,
-    /**
-     * The path to the buildbot server socket
-     */
-    BUILDBOT_SERVER_SOCKET: buildbotServerSocket,
   }
   const constantsA = mapObj(constants, (key, path) => [key, normalizePath(path, buildDir, key)])
   return constantsA
