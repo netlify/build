@@ -14,5 +14,6 @@
     "command": "vue-cli-service build",
     "directory": "dist"
   },
-  "env": {}
+  "env": {},
+  "plugins": []
 }

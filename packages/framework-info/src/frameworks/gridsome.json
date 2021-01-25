@@ -14,5 +14,6 @@
     "command": "gridsome build",
     "directory": "dist"
   },
-  "env": {}
+  "env": {},
+  "plugins": []
 }

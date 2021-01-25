@@ -11,5 +11,6 @@
     "command": "grunt build",
     "directory": "dist"
   },
-  "env": {}
+  "env": {},
+  "plugins": []
 }

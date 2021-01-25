@@ -14,5 +14,6 @@
     "command": "bundle exec jekyll build",
     "directory": "_site"
   },
-  "env": {}
+  "env": {},
+  "plugins": []
 }

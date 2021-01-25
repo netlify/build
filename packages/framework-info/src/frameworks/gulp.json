@@ -11,5 +11,6 @@
     "command": "gulp build",
     "directory": "dist"
   },
-  "env": {}
+  "env": {},
+  "plugins": []
 }

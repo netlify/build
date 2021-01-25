@@ -14,5 +14,6 @@
     "command": "harp compile",
     "directory": "www"
   },
-  "env": {}
+  "env": {},
+  "plugins": []
 }

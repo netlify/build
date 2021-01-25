@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 import { listFrameworks } from '../../dist/index.js'
 
-const repo = 'netlify-templates/gatsby-starter-netlify-cms'
+const repo = 'cassidoo/next-contentful-starter'
 
 const get = async (path = '') => {
   const response = await fetch(`https://api.github.com/repos/${repo}${path}`)
@@ -27,7 +27,7 @@ const getContext = async () => {
     const normalizedPath = path.startsWith('./') ? path.slice(2) : path
     return repoFiles.includes(normalizedPath)
   }
-  return { pathExists, packageJson }
+  return { pathExists, packageJson, nodeVersion: 'v10.13.0' }
 }
 
 const Framework = (framework) => <div>{JSON.stringify(framework)}</div>

@@ -14,5 +14,6 @@
     "command": "ng build",
     "directory": "dist"
   },
-  "env": {}
+  "env": {},
+  "plugins": []
 }

@@ -14,5 +14,6 @@
     "command": "sapper export",
     "directory": "__sapper__/export"
   },
-  "env": {}
+  "env": {},
+  "plugins": []
 }

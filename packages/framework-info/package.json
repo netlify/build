@@ -73,12 +73,14 @@
     "prettier": "--ignore-path .gitignore --loglevel warn \"{src,site,scripts,test}/**/*.js\" \"*.{js,md,yml,json}\" \"!package-lock.json\" \"!CHANGELOG.md\""
   },
   "dependencies": {
+    "ajv": "^7.0.0",
     "filter-obj": "^2.0.1",
     "is-plain-obj": "^2.1.0",
     "locate-path": "^5.0.0",
     "p-filter": "^2.1.0",
     "p-locate": "^4.1.0",
     "read-pkg-up": "^7.0.1",
+    "semver": "^7.3.4",
     "yargs": "^15.4.1"
   },
   "devDependencies": {
@@ -86,7 +88,6 @@
     "@babel/preset-env": "^7.12.10",
     "@babel/preset-react": "^7.12.10",
     "@netlify/eslint-config-node": "^2.2.2",
-    "ajv": "^7.0.0",
     "ava": "^2.4.0",
     "babel-loader": "^8.2.2",
     "cpy": "^8.1.0",

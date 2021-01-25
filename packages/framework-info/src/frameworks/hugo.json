@@ -14,5 +14,6 @@
     "command": "hugo",
     "directory": "public"
   },
-  "env": {}
+  "env": {},
+  "plugins": []
 }

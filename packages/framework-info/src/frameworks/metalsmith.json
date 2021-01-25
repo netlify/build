@@ -11,5 +11,6 @@
     "command": "metalsmith",
     "directory": "build"
   },
-  "env": {}
+  "env": {},
+  "plugins": []
 }

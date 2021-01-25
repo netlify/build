@@ -14,5 +14,6 @@
     "command": "bundle exec middleman build",
     "directory": "build"
   },
-  "env": {}
+  "env": {},
+  "plugins": []
 }

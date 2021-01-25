@@ -14,5 +14,6 @@
     "command": "vuepress build",
     "directory": ".vuepress/dist"
   },
-  "env": {}
+  "env": {},
+  "plugins": []
 }

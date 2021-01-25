@@ -1,3 +1,5 @@
+const { version: nodeVersion } = require('process')
+
 const test = require('ava')
 
 const { getFrameworks } = require('./helpers/main.js')
@@ -31,3 +33,19 @@ test('Should detect config files', async (t) => {
   const frameworks = await getFrameworks('config_files')
   t.is(frameworks.length, 1)
 })
+
+if (nodeVersion !== 'v8.3.0') {
+  test('Should detect Next.js plugin for Next.js if when Node version >= 10.13.0', async (t) => {
+    const frameworks = await getFrameworks('next-plugin')
+    t.is(frameworks[0].name, 'next')
+    t.deepEqual(frameworks[0].plugins, ['@netlify/plugin-nextjs'])
+  })
+}
+
+if (nodeVersion === 'v8.3.0') {
+  test('Should not detect Next.js plugin for Next.js if when Node version < 10.13.0', async (t) => {
+    const frameworks = await getFrameworks('next-plugin')
+    t.is(frameworks[0].name, 'next')
+    t.is(frameworks[0].plugins.length, 0)
+  })
+}

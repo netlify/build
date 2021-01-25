@@ -14,5 +14,6 @@
     "command": "hexo generate",
     "directory": "public"
   },
-  "env": {}
+  "env": {},
+  "plugins": []
 }

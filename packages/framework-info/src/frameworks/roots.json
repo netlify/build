@@ -14,5 +14,6 @@
     "command": "roots compile",
     "directory": "public"
   },
-  "env": {}
+  "env": {},
+  "plugins": []
 }

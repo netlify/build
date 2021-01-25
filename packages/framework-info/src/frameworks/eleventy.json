@@ -14,5 +14,6 @@
     "command": "eleventy",
     "directory": "_site"
   },
-  "env": {}
+  "env": {},
+  "plugins": []
 }

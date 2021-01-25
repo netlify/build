@@ -1,4 +1,4 @@
-const { cwd } = require('process')
+const { cwd, version } = require('process')
 
 const isPlainObj = require('is-plain-obj')
 const locatePath = require('locate-path')
@@ -29,6 +29,7 @@ const getContext = async ({ projectDir = cwd() } = {}) => {
     pathExists: async (path) => (await locatePath([path], { type: 'file', cwd: projectDir })) !== undefined,
     packageJson,
     packageJsonPath,
+    nodeVersion: version,
   }
 }
 

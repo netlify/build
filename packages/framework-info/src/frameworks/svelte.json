@@ -14,5 +14,6 @@
     "command": "npm run build",
     "directory": "public"
   },
-  "env": {}
+  "env": {},
+  "plugins": []
 }

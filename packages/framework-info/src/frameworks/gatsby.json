@@ -14,5 +14,6 @@
     "command": "gatsby build",
     "directory": "public"
   },
-  "env": { "GATSBY_LOGGER": "yurnalist" }
+  "env": { "GATSBY_LOGGER": "yurnalist" },
+  "plugins": []
 }

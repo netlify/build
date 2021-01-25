@@ -14,5 +14,6 @@
     "command": "phenomic build",
     "directory": "public"
   },
-  "env": {}
+  "env": {},
+  "plugins": []
 }

@@ -14,5 +14,6 @@
     "command": "wintersmith build",
     "directory": "build"
   },
-  "env": {}
+  "env": {},
+  "plugins": []
 }

@@ -14,5 +14,6 @@
     "command": "ember build",
     "directory": "dist"
   },
-  "env": {}
+  "env": {},
+  "plugins": []
 }

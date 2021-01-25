@@ -4,12 +4,13 @@ const { usesFramework } = require('./detect.js')
 const { getDevCommands } = require('./dev.js')
 const { FRAMEWORKS } = require('./frameworks/main.js')
 const { getPackageJsonContent } = require('./package.js')
+const { getPlugins } = require('./plugins')
 const { getRunScriptCommand } = require('./run_script.js')
 
 const getContext = (context) => {
-  const { pathExists, packageJson, packageJsonPath = '.' } = context
+  const { pathExists, packageJson, packageJsonPath = '.', nodeVersion } = context
 
-  return { pathExists, packageJson, packageJsonPath }
+  return { pathExists, packageJson, packageJsonPath, nodeVersion }
 }
 
 /**
@@ -24,6 +25,7 @@ const getContext = (context) => {
  * @property {PathExists} pathExists - Checks if a path exists
  * @property {object} packageJson - Content of package.json
  * @property {string} [packageJsonPath='.'] - Path of package.json
+ * @property {nodeVersion} [nodeVersion] - Node.js version of the runtime environment. Used to recommend Netlify build plugins
  */
 
 /**
@@ -45,6 +47,7 @@ const getContext = (context) => {
  * @property {Dev} dev - Information about the dev command
  * @property {Build} build - Information about the build command
  * @property {object} env - Environment variables that should be set when calling the dev command
+ * @property {string[]} plugins - A list of recommend Netlify build plugins to install for the framework
  */
 
 /**
@@ -55,14 +58,16 @@ const getContext = (context) => {
  * @returns {Framework[]} frameworks - Frameworks used by a project
  */
 const listFrameworks = async function (context) {
-  const { pathExists, packageJson, packageJsonPath } = getContext(context)
+  const { pathExists, packageJson, packageJsonPath, nodeVersion } = getContext(context)
   const { npmDependencies, scripts, runScriptCommand } = await getProjectInfo({
     pathExists,
     packageJson,
     packageJsonPath,
   })
   const frameworks = await pFilter(FRAMEWORKS, (framework) => usesFramework(framework, { pathExists, npmDependencies }))
-  const frameworkInfos = frameworks.map((framework) => getFrameworkInfo(framework, { scripts, runScriptCommand }))
+  const frameworkInfos = frameworks.map((framework) =>
+    getFrameworkInfo(framework, { scripts, runScriptCommand, nodeVersion }),
+  )
   return frameworkInfos
 }
 
@@ -92,13 +97,13 @@ const hasFramework = async function (frameworkName, context) {
  */
 const getFramework = async function (frameworkName, context) {
   const framework = getFrameworkByName(frameworkName)
-  const { pathExists, packageJson, packageJsonPath } = getContext(context)
+  const { pathExists, packageJson, packageJsonPath, nodeVersion } = getContext(context)
   const { scripts, runScriptCommand } = await getProjectInfo({
     pathExists,
     packageJson,
     packageJsonPath,
   })
-  const frameworkInfo = getFrameworkInfo(framework, { scripts, runScriptCommand })
+  const frameworkInfo = getFrameworkInfo(framework, { scripts, runScriptCommand, nodeVersion })
   return frameworkInfo
 }
 
@@ -130,16 +135,19 @@ const getFrameworkInfo = function (
     dev: { command: frameworkDevCommand, port },
     build: { command: frameworkBuildCommand, directory },
     env,
+    plugins,
   },
-  { scripts, runScriptCommand },
+  { scripts, runScriptCommand, nodeVersion },
 ) {
   const devCommands = getDevCommands({ frameworkDevCommand, scripts, runScriptCommand })
+  const recommendedPlugins = getPlugins(plugins, { nodeVersion })
   return {
     name,
     category,
     dev: { commands: devCommands, port },
     build: { commands: [frameworkBuildCommand], directory },
     env,
+    plugins: recommendedPlugins,
   }
 }
 

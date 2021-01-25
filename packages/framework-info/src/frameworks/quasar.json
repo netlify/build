@@ -14,5 +14,6 @@
     "command": "quasar build",
     "directory": "dist/spa"
   },
-  "env": {}
+  "env": {},
+  "plugins": []
 }

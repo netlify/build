@@ -35,7 +35,8 @@ console.log(await listFrameworks({ projectDir: './path/to/gatsby/website' }))
 //       commands: ['gatsby build'],
 //       directory: 'public'
 //     },
-//     env: { GATSBY_LOGGER: 'yurnalist' }
+//     env: { GATSBY_LOGGER: 'yurnalist' },
+//     plugins: []
 //   }
 // ]
 
@@ -52,7 +53,8 @@ console.log(await listFrameworks({ projectDir: './path/to/vue/website' }))
 //       commands: ['vue-cli-service build'],
 //       directory: 'dist'
 //     },
-//     env: {}
+//     env: {},
+//     plugins: []
 //   }
 // ]
 
@@ -71,7 +73,8 @@ console.log(await getFramework('vue', { projectDir: './path/to/vue/website' }))
 //     commands: ['vue-cli-service build'],
 //     directory: 'dist'
 //   },
-//   env: {}
+//   env: {},
+//   plugins: []
 // }
 ```
 
@@ -94,7 +97,8 @@ $ framework-info --long ./path/to/vue/website
       "commands": ["vue-cli-service build"],
       "directory": "dist"
     },
-    "env": {}
+    "env": {},
+    "plugins": []
   }
 ]
 ```
@@ -182,6 +186,12 @@ _Type_: `object`
 
 Environment variables that should be set when calling the dev command.
 
+#### plugins
+
+_Type_: `string[]`
+
+A list of recommend Netlify build plugins to install for the framework.
+
 ## hasFramework(frameworkName, options?)
 
 `options`: `object?`\
@@ -232,7 +242,8 @@ Each framework is a JSON file in the `/src/frameworks/` directory. For example:
     "command": "gatsby build",
     "directory": "public"
   },
-  "env": { "GATSBY_LOGGER": "yurnalist" }
+  "env": { "GATSBY_LOGGER": "yurnalist" },
+  "plugins": []
 }
 ```
 
@@ -324,3 +335,23 @@ Directory where built files are written to.
 _Type_: `object`
 
 Environment variables that should be set when running the dev command.
+
+## plugins
+
+_Type_: `object[]`
+
+A list of Netlify build plugins package names and conditions. If a condition is met for a plugin it will be returned in
+the framework's plugin's list.
+
+For example
+
+```json
+{
+  "plugins": [
+    {
+      "packageName": "@netlify/plugin-nextjs",
+      "condition": { "minNodeVersion": "10.13.0" }
+    }
+  ]
+}
+```

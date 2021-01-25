@@ -14,5 +14,6 @@
     "command": "stencil build",
     "directory": "www"
   },
-  "env": { "BROWSER": "none", "PORT": "3000" }
+  "env": { "BROWSER": "none", "PORT": "3000" },
+  "plugins": []
 }

@@ -14,5 +14,6 @@
     "command": "expo build:web",
     "directory": "web-build"
   },
-  "env": {}
+  "env": {},
+  "plugins": []
 }

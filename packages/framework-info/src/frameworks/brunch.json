@@ -14,5 +14,6 @@
     "command": "brunch build",
     "directory": "public"
   },
-  "env": {}
+  "env": {},
+  "plugins": []
 }

@@ -14,5 +14,6 @@
     "command": "quasar build",
     "directory": ".quasar"
   },
-  "env": {}
+  "env": {},
+  "plugins": []
 }

@@ -25,6 +25,7 @@ const { listFrameworks: list, hasFramework: has, getFramework: get } = require('
  * @property {Dev} dev - Information about the dev command
  * @property {Build} build - Information about the build command
  * @property {object} env - Environment variables that should be set when calling the dev command
+ * @property {string[]} plugins - A list of recommend Netlify build plugins to install for the framework
  */
 
 /**

@@ -14,5 +14,6 @@
     "command": "docusaurus build",
     "directory": "build"
   },
-  "env": { "BROWSER": "none" }
+  "env": { "BROWSER": "none" },
+  "plugins": []
 }

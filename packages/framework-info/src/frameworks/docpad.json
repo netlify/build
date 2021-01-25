@@ -14,5 +14,6 @@
     "command": "docpad generate",
     "directory": "out"
   },
-  "env": {}
+  "env": {},
+  "plugins": []
 }
