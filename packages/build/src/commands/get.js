@@ -1,6 +1,7 @@
 'use strict'
 
 const { EVENTS } = require('../plugins/events')
+const { deploySite } = require('../plugins_core/deploy')
 const { bundleFunctions } = require('../plugins_core/functions')
 
 // Get commands for all events
@@ -25,7 +26,7 @@ const addBuildCommand = function (
 }
 
 const addCoreCommands = function (commands) {
-  return [...commands, bundleFunctions]
+  return [...commands, bundleFunctions, deploySite]
 }
 
 // Sort plugin commands by event order.
