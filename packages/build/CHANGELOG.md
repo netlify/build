@@ -1,5 +1,12 @@
 # Changelog
 
+## [8.3.0](https://www.github.com/netlify/build/compare/v8.2.0...v8.3.0) (2021-01-26)
+
+
+### Features
+
+* add back `process.env` plugins communication ([#2212](https://www.github.com/netlify/build/issues/2212)) ([d815ef9](https://www.github.com/netlify/build/commit/d815ef9cfb68af90691f705b0c21abb7415fd5b9))
+
 ## [8.2.0](https://www.github.com/netlify/build/compare/v8.1.1...v8.2.0) (2021-01-25)
 
 
