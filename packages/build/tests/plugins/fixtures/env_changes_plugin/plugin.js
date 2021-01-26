@@ -8,9 +8,9 @@ module.exports = {
     env.TEST_TWO = 'two'
   },
   onBuild() {
-    console.log(env.TEST_ONE, env.TEST_TWO)
+    console.log(env.TEST_ONE, env.TEST_TWO, env.LANG)
   },
   onPostBuild() {
-    console.log(typeof env.TEST_ONE, env.TEST_TWO)
+    console.log(typeof env.TEST_ONE, env.TEST_TWO, env.LANG)
   },
 }
