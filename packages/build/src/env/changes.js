@@ -5,13 +5,8 @@ const { env } = require('process')
 const filterObj = require('filter-obj')
 const mapObj = require('map-obj')
 
-// Keep a copy of `process.env` before running any plugin method
-const getEnvBefore = function () {
-  return { ...env }
-}
-
-// If plugins modify `process.env`, this is propagated to the build command.
-// Since those are different processes, we figure out when they
+// If plugins modify `process.env`, this is propagated in other plugins and in
+// `build.command`. Since those are different processes, we figure out when they
 // do this and communicate the new `process.env` to other processes.
 const getNewEnvChanges = function (envBefore) {
   const envChanges = filterObj(env, (name, value) => value !== envBefore[name])
@@ -28,14 +23,28 @@ const setToNull = function (name) {
   return [name, null]
 }
 
-// Retrieve build command environment variables after applying any
-// `process.env` changes from plugins.
-const getBuildCommandEnv = function (childEnv, envChanges) {
-  return filterObj({ ...childEnv, ...envChanges }, isNotNull)
+// Set `process.env` changes from a previous different plugin.
+// Can also merge with a `currentEnv` plain object instead of `process.env`.
+const setEnvChanges = function (envChanges, currentEnv = env) {
+  Object.entries(envChanges).forEach(([name, value]) => {
+    setEnvChange(name, value, currentEnv)
+  })
+  return { ...currentEnv }
 }
 
-const isNotNull = function (name, value) {
-  return value !== null
+const setEnvChange = function (name, value, currentEnv) {
+  if (currentEnv[name] === value) {
+    return
+  }
+
+  if (value === null) {
+    // `currentEnv` is a mutable variable
+    // eslint-disable-next-line fp/no-delete
+    delete currentEnv[name]
+    return
+  }
+
+  currentEnv[name] = value
 }
 
-module.exports = { getEnvBefore, getNewEnvChanges, getBuildCommandEnv }
+module.exports = { getNewEnvChanges, setEnvChanges }

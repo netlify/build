@@ -4,7 +4,7 @@ const { platform } = require('process')
 
 const execa = require('execa')
 
-const { getBuildCommandEnv } = require('../env/changes.js')
+const { setEnvChanges } = require('../env/changes.js')
 const { addErrorInfo } = require('../error/info')
 const { logBuildCommandStart } = require('../log/messages/commands')
 const { getBuildCommandStdio, handleBuildCommandOutput } = require('../log/stream')
@@ -22,7 +22,7 @@ const fireBuildCommand = async function ({
 }) {
   logBuildCommandStart(logs, buildCommand)
 
-  const env = getBuildCommandEnv(childEnv, envChanges)
+  const env = setEnvChanges(envChanges, { ...childEnv })
   const stdio = getBuildCommandStdio(logs)
   const childProcess = execa(buildCommand, {
     shell: SHELL,
