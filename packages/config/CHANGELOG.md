@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.0](https://www.github.com/netlify/build/compare/v3.0.5...v3.1.0) (2021-01-27)
+
+
+### Features
+
+* allow override of API URL ([#2190](https://www.github.com/netlify/build/issues/2190)) ([3e1be70](https://www.github.com/netlify/build/commit/3e1be7057ac9f217405b2cbe15f39e1ecd7496e6))
+
 ### [3.0.5](https://www.github.com/netlify/build/compare/v3.0.4...v3.0.5) (2021-01-27)
 
 
