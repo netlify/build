@@ -1,5 +1,19 @@
 # Changelog
 
+### [3.0.5](https://www.github.com/netlify/build/compare/v3.0.4...v3.0.5) (2021-01-27)
+
+
+### Bug Fixes
+
+* **deps:** update dependency netlify to v6.1.4 ([#2219](https://www.github.com/netlify/build/issues/2219)) ([3a75574](https://www.github.com/netlify/build/commit/3a7557400d46388aad42250f6d9751f1617f3cd0))
+
+### [3.0.4](https://www.github.com/netlify/build/compare/v3.0.3...v3.0.4) (2021-01-25)
+
+
+### Bug Fixes
+
+* **deps:** update dependency netlify to v6.1.3 ([#2210](https://www.github.com/netlify/build/issues/2210)) ([b7c2c40](https://www.github.com/netlify/build/commit/b7c2c4049e9037cf855475543b13e33c32ceb4a6))
+
 ### [3.0.3](https://www.github.com/netlify/build/compare/v3.0.2...v3.0.3) (2021-01-25)
 
 
