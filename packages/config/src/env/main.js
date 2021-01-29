@@ -58,7 +58,7 @@ const getEnv = async function ({ mode, config, siteInfo, accounts, addons, build
 // Environment variables not set by users, but meant to mimic the production
 // environment.
 const getGeneralEnv = async function ({
-  siteInfo: { url, build_settings: { repo_url: REPOSITORY_URL } = {} },
+  siteInfo: { id, name, url, build_settings: { repo_url: REPOSITORY_URL } = {} },
   buildDir,
   branch,
   deployId,
@@ -66,6 +66,8 @@ const getGeneralEnv = async function ({
 }) {
   const gitEnv = await getGitEnv(buildDir, branch)
   return {
+    SITE_ID: id,
+    SITE_NAME: name,
     ...(deployId === undefined ? {} : { DEPLOY_ID: deployId }),
     // The API sometimes returns `null`, not only `undefined`
     ...(url == null ? {} : { URL: url }),
