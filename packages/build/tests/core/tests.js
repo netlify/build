@@ -4,7 +4,7 @@ const { platform, kill } = require('process')
 
 const test = require('ava')
 const getNode = require('get-node')
-const moize = require('moize').default
+const moize = require('moize')
 
 const { runFixture: runFixtureConfig } = require('../../../config/tests/helpers/main')
 const { version } = require('../../package.json')
@@ -166,7 +166,8 @@ const getNodeBinary = async function (nodeVersion, retries = 1) {
 const MAX_RETRIES = 10
 
 // Memoize `get-node`
-const mGetNode = moize(getNodeBinary, { isPromise: true })
+// eslint-disable-next-line no-magic-numbers
+const mGetNode = moize(getNodeBinary, { isPromise: true, maxSize: 1e3 })
 
 test('--node-path is used by build.command', async (t) => {
   const { path } = await mGetNode(CHILD_NODE_VERSION)

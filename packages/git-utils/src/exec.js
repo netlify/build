@@ -3,7 +3,7 @@
 const process = require('process')
 
 const execa = require('execa')
-const moize = require('moize').default
+const moize = require('moize')
 const pathExists = require('path-exists')
 
 // Fires the `git` binary. Memoized.
@@ -13,7 +13,8 @@ const mGit = function (args, cwd) {
   return stdout
 }
 
-const git = moize(mGit, { isDeepEqual: true })
+// eslint-disable-next-line no-magic-numbers
+const git = moize(mGit, { isDeepEqual: true, maxSize: 1e3 })
 
 const safeGetCwd = function (cwd) {
   const cwdA = getCwdValue(cwd)
