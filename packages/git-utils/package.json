@@ -48,7 +48,7 @@
     "execa": "^3.4.0",
     "map-obj": "^4.1.0",
     "micromatch": "^4.0.2",
-    "moize": "^5.4.7",
+    "moize": "^6.0.0",
     "path-exists": "^4.0.0"
   },
   "devDependencies": {
