@@ -14,6 +14,10 @@ const SITE_INFO_RESPONSE_URL = {
   path: SITE_INFO_PATH,
   response: { url: 'test' },
 }
+const SITE_INFO_RESPONSE_NAME = {
+  path: SITE_INFO_PATH,
+  response: { name: 'test-name' },
+}
 const SITE_INFO_RESPONSE_REPO_URL = {
   path: SITE_INFO_PATH,
   response: { build_settings: { repo_url: 'test' } },
@@ -195,6 +199,36 @@ test('Sets DEPLOY_ID environment variable', async (t) => {
   } = await getFixtureConfig(t, 'empty', { flags: { deployId: 'test' } })
   t.deepEqual(DEPLOY_ID.sources, ['general'])
   t.is(DEPLOY_ID.value, 'test')
+})
+
+test('Sets SITE_ID environment variable', async (t) => {
+  const {
+    env: { SITE_ID },
+  } = await getFixtureConfig(t, 'empty', { flags: { siteId: 'test' } })
+  t.deepEqual(SITE_ID.sources, ['general'])
+  t.is(SITE_ID.value, 'test')
+})
+
+test('Does not set SITE_ID environment variable if no flag is provided', async (t) => {
+  const {
+    env: { SITE_ID },
+  } = await getFixtureConfig(t, 'empty')
+  t.is(SITE_ID, undefined)
+})
+
+test('Sets SITE_NAME environment variable', async (t) => {
+  const {
+    env: { SITE_NAME },
+  } = await runWithMockServer(t, SITE_INFO_RESPONSE_NAME, { flags: AUTH_FLAGS })
+  t.deepEqual(SITE_NAME.sources, ['general'])
+  t.is(SITE_NAME.value, 'test-name')
+})
+
+test('Does not set SITE_NAME environment variable if offline', async (t) => {
+  const {
+    env: { SITE_NAME },
+  } = await runWithMockServer(t, SITE_INFO_RESPONSE_ENV, { flags: AUTH_FLAGS_OFFLINE })
+  t.is(SITE_NAME, undefined)
 })
 
 test('Sets URL environment variable', async (t) => {

@@ -55,6 +55,14 @@ const getEnv = async function ({ mode, config, siteInfo, accounts, addons, build
   return fromEntries(env)
 }
 
+// Utility function, if any prop value is undefined or null return an empty object
+const emptyIfUnsetValues = function (obj) {
+  if (Object.values(obj).some((value) => value == null)) {
+    return {}
+  }
+  return obj
+}
+
 // Environment variables not set by users, but meant to mimic the production
 // environment.
 const getGeneralEnv = async function ({
@@ -66,12 +74,12 @@ const getGeneralEnv = async function ({
 }) {
   const gitEnv = await getGitEnv(buildDir, branch)
   return {
-    SITE_ID: id,
-    SITE_NAME: name,
-    ...(deployId === undefined ? {} : { DEPLOY_ID: deployId }),
+    ...emptyIfUnsetValues({ SITE_ID: id }),
+    ...emptyIfUnsetValues({ SITE_NAME: name }),
+    ...emptyIfUnsetValues({ DEPLOY_ID: deployId }),
     // The API sometimes returns `null`, not only `undefined`
-    ...(url == null ? {} : { URL: url }),
-    ...(REPOSITORY_URL == null ? {} : { REPOSITORY_URL }),
+    ...emptyIfUnsetValues({ URL: url }),
+    ...emptyIfUnsetValues({ REPOSITORY_URL }),
     CONTEXT: context,
     ...gitEnv,
     // Localization
