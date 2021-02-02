@@ -3,6 +3,8 @@
 const fromEntries = require('@ungap/from-entries')
 const omit = require('omit.js').default
 
+const { removeFalsy } = require('../utils/remove_falsy')
+
 const { getGitEnv } = require('./git')
 
 // Retrieve this site's environment variable. Also take into account team-wide
@@ -55,14 +57,6 @@ const getEnv = async function ({ mode, config, siteInfo, accounts, addons, build
   return fromEntries(env)
 }
 
-// Utility function, if any prop value is undefined or null return an empty object
-const emptyIfUnsetValues = function (obj) {
-  if (Object.values(obj).some((value) => value == null)) {
-    return {}
-  }
-  return obj
-}
-
 // Environment variables not set by users, but meant to mimic the production
 // environment.
 const getGeneralEnv = async function ({
@@ -73,13 +67,12 @@ const getGeneralEnv = async function ({
   context,
 }) {
   const gitEnv = await getGitEnv(buildDir, branch)
-  return {
-    ...emptyIfUnsetValues({ SITE_ID: id }),
-    ...emptyIfUnsetValues({ SITE_NAME: name }),
-    ...emptyIfUnsetValues({ DEPLOY_ID: deployId }),
-    // The API sometimes returns `null`, not only `undefined`
-    ...emptyIfUnsetValues({ URL: url }),
-    ...emptyIfUnsetValues({ REPOSITORY_URL }),
+  return removeFalsy({
+    SITE_ID: id,
+    SITE_NAME: name,
+    DEPLOY_ID: deployId,
+    URL: url,
+    REPOSITORY_URL,
     CONTEXT: context,
     ...gitEnv,
     // Localization
@@ -89,7 +82,7 @@ const getGeneralEnv = async function ({
     // Disable telemetry of some tools
     GATSBY_TELEMETRY_DISABLED: '1',
     NEXT_TELEMETRY_DISABLED: '1',
-  }
+  })
 }
 
 // Environment variables specified by the user
