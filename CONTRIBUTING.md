@@ -91,6 +91,8 @@ netlify api updateSite --data='{ "site_id": "{{siteId}}", "body": { "build_image
 
 The `{{buildImage}}` can be the buildbot commit hash or `git` branch name.
 
+Note that `@netlify/config` is a dependency of `@netlify/build`, so if you've just updated the former you should first start by updating `@netlify/build` and let renovate bundle those two changes together when updating buildbot.
+
 ## Beta release
 
 To test a beta release of `@netlify/build` in a site:
