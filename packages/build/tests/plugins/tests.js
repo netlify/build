@@ -691,7 +691,7 @@ test('Plugins can have inputs', async (t) => {
   await runFixture(t, 'inputs')
 })
 
-test("process.env changes aren't propagated to other plugins", async (t) => {
+test('process.env changes are propagated to other plugins', async (t) => {
   await runFixture(t, 'env_changes_plugin')
 })
 

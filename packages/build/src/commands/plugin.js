@@ -15,9 +15,9 @@ const firePluginCommand = async function ({
   pluginPackageJson,
   loadedFrom,
   origin,
+  envChanges,
   constants,
   commands,
-  events,
   error,
   logs,
 }) {
@@ -26,10 +26,9 @@ const firePluginCommand = async function ({
   try {
     const { newEnvChanges, status } = await callChild(childProcess, 'run', {
       event,
-      events,
       error,
+      envChanges,
       constants,
-      loadedFrom,
     })
     const newStatus = getSuccessStatus(status, { commands, event, packageName })
     return { newEnvChanges, newStatus }

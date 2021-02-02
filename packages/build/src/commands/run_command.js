@@ -33,6 +33,8 @@ const runCommand = async function ({
   envChanges,
   constants,
   commands,
+  featureFlags,
+  buildbotServerSocket,
   events,
   mode,
   api,
@@ -48,7 +50,18 @@ const runCommand = async function ({
 }) {
   const constantsA = await getConstants({ constants, buildDir })
 
-  if (!shouldRunCommand({ event, packageName, error, failedPlugins, condition, constants: constantsA })) {
+  if (
+    !shouldRunCommand({
+      event,
+      packageName,
+      error,
+      failedPlugins,
+      condition,
+      constants: constantsA,
+      featureFlags,
+      buildbotServerSocket,
+    })
+  ) {
     return {}
   }
 
@@ -73,6 +86,7 @@ const runCommand = async function ({
     envChanges,
     constants: constantsA,
     commands,
+    buildbotServerSocket,
     events,
     error,
     logs,
@@ -134,8 +148,20 @@ const runCommand = async function ({
 // or available. However, one might be created by a build plugin, in which case,
 // those core plugins should be triggered. We use a dynamic `condition()` to
 // model this behavior.
-const shouldRunCommand = function ({ event, packageName, error, failedPlugins, condition, constants }) {
-  if (failedPlugins.includes(packageName) || (condition !== undefined && !condition({ constants }))) {
+const shouldRunCommand = function ({
+  event,
+  packageName,
+  error,
+  failedPlugins,
+  condition,
+  constants,
+  featureFlags,
+  buildbotServerSocket,
+}) {
+  if (
+    failedPlugins.includes(packageName) ||
+    (condition !== undefined && !condition({ constants, featureFlags, buildbotServerSocket }))
+  ) {
     return false
   }
 
@@ -178,12 +204,21 @@ const tFireCommand = function ({
   envChanges,
   constants,
   commands,
+  buildbotServerSocket,
   events,
   error,
   logs,
 }) {
   if (coreCommand !== undefined) {
-    return fireCoreCommand({ coreCommand, coreCommandName, buildDir, constants, logs })
+    return fireCoreCommand({
+      coreCommand,
+      coreCommandName,
+      buildDir,
+      constants,
+      buildbotServerSocket,
+      events,
+      logs,
+    })
   }
 
   if (buildCommand !== undefined) {
@@ -206,9 +241,9 @@ const tFireCommand = function ({
     pluginPackageJson,
     loadedFrom,
     origin,
+    envChanges,
     constants,
     commands,
-    events,
     error,
     logs,
   })

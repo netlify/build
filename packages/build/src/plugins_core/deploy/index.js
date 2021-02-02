@@ -9,21 +9,27 @@ const {
   deploySiteWithBuildbotClient,
 } = require('./buildbot_client')
 
-const onPostBuild = async function ({
-  constants: { BUILDBOT_SERVER_SOCKET },
-  events,
-  utils: {
-    build: { failBuild },
-  },
-}) {
-  const client = createBuildbotClient(BUILDBOT_SERVER_SOCKET)
+const coreCommand = async function ({ buildbotServerSocket, events, logs }) {
+  const client = createBuildbotClient(buildbotServerSocket)
   try {
     await connectBuildbotClient(client)
-    await deploySiteWithBuildbotClient({ client, events, failBuild })
-    logDeploySuccess()
+    await deploySiteWithBuildbotClient(client, events)
+    logDeploySuccess(logs)
   } finally {
     await closeBuildbotClient(client)
   }
 }
 
-module.exports = { onPostBuild }
+const shouldDeploy = function ({ featureFlags, buildbotServerSocket }) {
+  return featureFlags.service_buildbot_enable_deploy_server && buildbotServerSocket !== undefined
+}
+
+const deploySite = {
+  event: 'onPostBuild',
+  coreCommand,
+  coreCommandId: 'deploy_site',
+  coreCommandName: 'Deploy site',
+  condition: shouldDeploy,
+}
+
+module.exports = { deploySite }

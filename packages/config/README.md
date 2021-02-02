@@ -192,6 +192,27 @@ Netlify API token.
 
 This is used to retrieve [`siteInfo`](#siteinfo).
 
+#### host
+
+_Type_: `string`\
+_Default value_: `api.netlify.com`
+
+Host of the Netlify API.
+
+#### scheme
+
+_Type_: `string`\
+_Default value_: `https`
+
+Scheme/protocol of the Netlify API.
+
+#### pathPrefix
+
+_Type_: `string`\
+_Default value_: `/api/v1`
+
+Base path prefix of the Netlify API.
+
 #### siteId
 
 _Type_: `string`\
