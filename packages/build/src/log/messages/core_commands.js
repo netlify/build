@@ -4,7 +4,7 @@ const { log, logArray } = require('../logger')
 const { THEME } = require('../theme')
 
 const logFunctionsNonExistingDir = function (logs, relativeFunctionsSrc) {
-  log(logs, `The Netlify Functions setting targets a non-exiting directory: ${relativeFunctionsSrc}`)
+  log(logs, `The Netlify Functions setting targets a non-existing directory: ${relativeFunctionsSrc}`)
 }
 
 // Print the list of Netlify Functions about to be bundled
