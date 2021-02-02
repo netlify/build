@@ -1,5 +1,13 @@
 # Changelog
 
+### [8.3.4](https://www.github.com/netlify/build/compare/v8.3.3...v8.3.4) (2021-02-01)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugin-edge-handlers to v1.11.3 ([#2235](https://www.github.com/netlify/build/issues/2235)) ([27e2a7f](https://www.github.com/netlify/build/commit/27e2a7faf95262198ec1ae9ad2e1c14f5b5b5561))
+* **deps:** update dependency moize to v6 ([#2231](https://www.github.com/netlify/build/issues/2231)) ([e34454c](https://www.github.com/netlify/build/commit/e34454c633bbc541c4074bdaa15361c84f0c8f04))
+
 ### [8.3.3](https://www.github.com/netlify/build/compare/v8.3.2...v8.3.3) (2021-01-29)
 
 
