@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.3.10](https://www.github.com/netlify/build/compare/v1.3.9...v1.3.10) (2021-02-03)
+
+
+### Bug Fixes
+
+* **deps:** force a release for [#2244](https://www.github.com/netlify/build/issues/2244) and bump zip-it-and-ship-it ([#2245](https://www.github.com/netlify/build/issues/2245)) ([25787c2](https://www.github.com/netlify/build/commit/25787c2cf134fbbd8029a142512ff314cbab1951))
+
 ### [1.3.9](https://www.github.com/netlify/build/compare/v1.3.8...v1.3.9) (2021-01-29)
 
 
