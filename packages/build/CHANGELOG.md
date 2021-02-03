@@ -1,5 +1,19 @@
 # Changelog
 
+## [8.4.0](https://www.github.com/netlify/build/compare/v8.3.5...v8.4.0) (2021-02-03)
+
+
+### Features
+
+* remove deploy feature flag ([#2246](https://www.github.com/netlify/build/issues/2246)) ([cbeac56](https://www.github.com/netlify/build/commit/cbeac5653c924265a61d84485e41c0e76427db31))
+
+### [8.3.5](https://www.github.com/netlify/build/compare/v8.3.4...v8.3.5) (2021-02-03)
+
+
+### Bug Fixes
+
+* **deps:** force a release for [#2244](https://www.github.com/netlify/build/issues/2244) and bump zip-it-and-ship-it ([#2245](https://www.github.com/netlify/build/issues/2245)) ([25787c2](https://www.github.com/netlify/build/commit/25787c2cf134fbbd8029a142512ff314cbab1951))
+
 ### [8.3.4](https://www.github.com/netlify/build/compare/v8.3.3...v8.3.4) (2021-02-01)
 
 
