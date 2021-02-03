@@ -24,6 +24,6 @@ Example: Another solution would be [...]
 
 **Checklist**
 
-Please add a `x` inside each checkbox:
+Please add a `x` inside the checkbox:
 
 - [ ] I have read the [contribution guidelines](../blob/master/CONTRIBUTING.md).
