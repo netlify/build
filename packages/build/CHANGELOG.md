@@ -1,5 +1,12 @@
 # Changelog
 
+## [8.4.0](https://www.github.com/netlify/build/compare/v8.3.5...v8.4.0) (2021-02-03)
+
+
+### Features
+
+* remove deploy feature flag ([#2246](https://www.github.com/netlify/build/issues/2246)) ([cbeac56](https://www.github.com/netlify/build/commit/cbeac5653c924265a61d84485e41c0e76427db31))
+
 ### [8.3.5](https://www.github.com/netlify/build/compare/v8.3.4...v8.3.5) (2021-02-03)
 
 
