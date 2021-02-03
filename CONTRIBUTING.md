@@ -80,6 +80,10 @@ netlify/plugins             -> buildbot
                             -> netlify-cli
 ```
 
+Note that renovate should take care of opening PRs to update the relevant packages that depend upon the modules you just published. However, to make good use of your time, make sure to follow the dependency graph above. I.e. `@netlify/config` is a dependency of `@netlify/build`, so if you've just updated the former you should first start by updating `@netlify/build` and let renovate bundle those two changes together when updating buildbot.
+
+### Buildbot
+
 When `@netlify/build` or `@netlify/config` is published to npm, Renovate will automatically create a release PR in the
 buildbot after a short while. Once the Jenkins build has passed and finished building, the PR can be tested in
 production by updating the `Site.build_image` property of any test Site. This can be done with the following Netlify CLI
