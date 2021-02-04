@@ -2,12 +2,12 @@
   extends: ['github>netlify/renovate-config:default'],
   ignorePresets: [':prHourlyLimit2'],
   semanticCommits: true,
-  masterIssue: true,
+  dependencyDashboard: true,
   automerge: false,
   packageRules: [
     {
-      // Those cannot be upgraded to a major version until we drop support for Node 8
       packageNames: [
+        // Those cannot be upgraded to a major version until we drop support for Node 8
         'ava',
         'chalk',
         'clean-stack',
@@ -33,6 +33,8 @@
         'supports-color',
         'update-notifier',
         'yargs',
+        // Those cannot be upgraded to a major version until we drop support for Node 10
+        'path-type',
       ],
       major: {
         enabled: false,

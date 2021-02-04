@@ -20,8 +20,8 @@ const coreCommand = async function ({ buildbotServerSocket, events, logs }) {
   }
 }
 
-const shouldDeploy = function ({ featureFlags, buildbotServerSocket }) {
-  return featureFlags.service_buildbot_enable_deploy_server && buildbotServerSocket !== undefined
+const shouldDeploy = function ({ buildbotServerSocket }) {
+  return buildbotServerSocket !== undefined
 }
 
 const deploySite = {

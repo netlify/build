@@ -5,11 +5,12 @@ const test = require('ava')
 const { runFixture, FIXTURES_DIR, startServer } = require('../helpers/main')
 
 const SITE_INFO_PATH = '/api/v1/sites/test'
-const SITE_INFO_DATA = { url: 'test', build_settings: { repo_url: 'test' } }
+const SITE_INFO_DATA = { url: 'test', name: 'test-name', build_settings: { repo_url: 'test' } }
 const SITE_INFO_ERROR = { error: 'invalid' }
 
 const SITE_INFO_BUILD_SETTINGS = {
   url: 'test',
+  name: 'test-name',
   build_settings: {
     cmd: 'testCommand',
     dir: 'testPublish',

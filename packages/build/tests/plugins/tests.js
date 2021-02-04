@@ -255,9 +255,7 @@ if (!version.startsWith('v8.')) {
 test('Deploy plugin succeeds', async (t) => {
   const { address, requests, stopServer } = await startDeployServer()
   try {
-    await runFixture(t, 'empty', {
-      flags: { buildbotServerSocket: address, featureFlags: 'service_buildbot_enable_deploy_server' },
-    })
+    await runFixture(t, 'empty', { flags: { buildbotServerSocket: address } })
   } finally {
     await stopServer()
   }
@@ -268,18 +266,7 @@ test('Deploy plugin succeeds', async (t) => {
 test('Deploy plugin is not run unless --buildbotServerSocket is passed', async (t) => {
   const { requests, stopServer } = await startDeployServer()
   try {
-    await runFixture(t, 'empty', { flags: { featureFlags: 'service_buildbot_enable_deploy_server' }, snapshot: false })
-  } finally {
-    await stopServer()
-  }
-
-  t.is(requests.length, 0)
-})
-
-test('Deploy plugin is not run unless --featureFlags=service_buildbot_enable_deploy_server is passed', async (t) => {
-  const { address, requests, stopServer } = await startDeployServer()
-  try {
-    await runFixture(t, 'empty', { flags: { buildbotServerSocket: address }, snapshot: false })
+    await runFixture(t, 'empty', { flags: {}, snapshot: false })
   } finally {
     await stopServer()
   }
@@ -291,7 +278,7 @@ test('Deploy plugin connection error', async (t) => {
   const { address, stopServer } = await startDeployServer()
   await stopServer()
   const { exitCode, returnValue } = await runFixture(t, 'empty', {
-    flags: { buildbotServerSocket: address, featureFlags: 'service_buildbot_enable_deploy_server' },
+    flags: { buildbotServerSocket: address },
     snapshot: false,
   })
   t.not(exitCode, 0)
@@ -301,9 +288,7 @@ test('Deploy plugin connection error', async (t) => {
 test('Deploy plugin response syntax error', async (t) => {
   const { address, stopServer } = await startDeployServer({ response: 'test' })
   try {
-    await runFixture(t, 'empty', {
-      flags: { buildbotServerSocket: address, featureFlags: 'service_buildbot_enable_deploy_server' },
-    })
+    await runFixture(t, 'empty', { flags: { buildbotServerSocket: address } })
   } finally {
     await stopServer()
   }
@@ -314,9 +299,7 @@ test('Deploy plugin response system error', async (t) => {
     response: { succeeded: false, values: { error: 'test', error_type: 'system' } },
   })
   try {
-    await runFixture(t, 'empty', {
-      flags: { buildbotServerSocket: address, featureFlags: 'service_buildbot_enable_deploy_server' },
-    })
+    await runFixture(t, 'empty', { flags: { buildbotServerSocket: address } })
   } finally {
     await stopServer()
   }
@@ -327,9 +310,7 @@ test('Deploy plugin response user error', async (t) => {
     response: { succeeded: false, values: { error: 'test', error_type: 'user' } },
   })
   try {
-    await runFixture(t, 'empty', {
-      flags: { buildbotServerSocket: address, featureFlags: 'service_buildbot_enable_deploy_server' },
-    })
+    await runFixture(t, 'empty', { flags: { buildbotServerSocket: address } })
   } finally {
     await stopServer()
   }
@@ -338,10 +319,7 @@ test('Deploy plugin response user error', async (t) => {
 test('Deploy plugin does not wait for post-processing if not using onSuccess nor onEnd', async (t) => {
   const { address, requests, stopServer } = await startDeployServer()
   try {
-    await runFixture(t, 'empty', {
-      flags: { buildbotServerSocket: address, featureFlags: 'service_buildbot_enable_deploy_server' },
-      snapshot: false,
-    })
+    await runFixture(t, 'empty', { flags: { buildbotServerSocket: address }, snapshot: false })
   } finally {
     await stopServer()
   }
@@ -352,10 +330,7 @@ test('Deploy plugin does not wait for post-processing if not using onSuccess nor
 test('Deploy plugin waits for post-processing if using onSuccess', async (t) => {
   const { address, requests, stopServer } = await startDeployServer()
   try {
-    await runFixture(t, 'success', {
-      flags: { buildbotServerSocket: address, featureFlags: 'service_buildbot_enable_deploy_server' },
-      snapshot: false,
-    })
+    await runFixture(t, 'success', { flags: { buildbotServerSocket: address }, snapshot: false })
   } finally {
     await stopServer()
   }
@@ -366,10 +341,7 @@ test('Deploy plugin waits for post-processing if using onSuccess', async (t) => 
 test('Deploy plugin waits for post-processing if using onEnd', async (t) => {
   const { address, requests, stopServer } = await startDeployServer()
   try {
-    await runFixture(t, 'end', {
-      flags: { buildbotServerSocket: address, featureFlags: 'service_buildbot_enable_deploy_server' },
-      snapshot: false,
-    })
+    await runFixture(t, 'end', { flags: { buildbotServerSocket: address }, snapshot: false })
   } finally {
     await stopServer()
   }

@@ -1,5 +1,12 @@
 # Changelog
 
+### [3.1.2](https://www.github.com/netlify/build/compare/v3.1.1...v3.1.2) (2021-02-02)
+
+
+### Bug Fixes
+
+* add SITE_ID and SITE_NAME env vars to local builds ([#2239](https://www.github.com/netlify/build/issues/2239)) ([113e4d2](https://www.github.com/netlify/build/commit/113e4d2c48e0264e48f391e5a7d219332d012fab))
+
 ### [3.1.1](https://www.github.com/netlify/build/compare/v3.1.0...v3.1.1) (2021-01-29)
 
 
