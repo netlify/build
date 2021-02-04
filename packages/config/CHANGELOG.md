@@ -1,5 +1,16 @@
 # Changelog
 
+## [4.0.0](https://www.github.com/netlify/build/compare/v3.1.2...v4.0.0) (2021-02-04)
+
+
+### ⚠ BREAKING CHANGES
+
+* use netlify/functions as the default functions directory (#2188)
+
+### Features
+
+* use netlify/functions as the default functions directory ([#2188](https://www.github.com/netlify/build/issues/2188)) ([84e1e07](https://www.github.com/netlify/build/commit/84e1e075b5efd7ca26ccaf2531511e7737d97f1f))
+
 ### [3.1.2](https://www.github.com/netlify/build/compare/v3.1.1...v3.1.2) (2021-02-02)
 
 
