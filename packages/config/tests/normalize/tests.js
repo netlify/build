@@ -53,8 +53,12 @@ test('Add build.commandOrigin ui if it came from defaultConfig', async (t) => {
   await runFixture(t, 'empty', { flags: { defaultConfig } })
 })
 
-test('Assign default functions if build.functions is not defined', async (t) => {
+test('Assign default functions if build.functions is not defined and default directory exists', async (t) => {
   await runFixture(t, 'default_functions_not_defined')
+})
+
+test('Does not assign default functions if default functions directory does not exist', async (t) => {
+  await runFixture(t, 'default_functions_not_defined_directory_not_found')
 })
 
 test('Does not assign default functions if build.functions is defined', async (t) => {

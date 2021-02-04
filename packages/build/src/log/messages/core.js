@@ -19,28 +19,6 @@ const logBuildStart = function (logs) {
   logMessage(logs, `${name} ${version}`)
 }
 
-const logDefaultFunctionsSrcWarning = function (logs, netlifyDir, defaultFunctionsSrc) {
-  logError(
-    logs,
-    `
-Detected site repository path: "${defaultFunctionsSrc}"
-Starting in February 2021, this path will be used to detect and deploy Netlify functions.
-To avoid potential build failures or irregularities, we recommend changing the name of the "${netlifyDir}" directory.
-For more information, visit the Community update notification: community.netlify.com/t/upcoming-change-netlify-functions-as-zero-config-default-folder-for-deploying-netlify-functions/28789`,
-  )
-}
-
-const logNetlifyDirWarning = function (logs, netlifyDir, defaultFunctionsSrc) {
-  logError(
-    logs,
-    `
-Detected site repository path: "${netlifyDir}"
-Netlify will begin using this path for detecting default deployment features, starting with "${defaultFunctionsSrc}" in February 2021.
-To avoid potential build failures or irregularities in the future, we recommend changing the name of the "${netlifyDir}" directory.
-For more information, visit the Community update notification: community.netlify.com/t/upcoming-change-netlify-functions-as-zero-config-default-folder-for-deploying-netlify-functions/28789`,
-  )
-}
-
 const logBuildError = function ({ error, netlifyConfig, mode, logs, debug, testOpts }) {
   const fullErrorInfo = getFullErrorInfo({ error, colors: true, debug })
   const { severity } = fullErrorInfo
@@ -78,12 +56,25 @@ failed since something is still running.`),
   )
 }
 
+const logLegacyDefaultFunctionsSrcWarning = function (logs, legacyDefaultFunctionsSrc) {
+  logError(
+    logs,
+    `
+Detected site repository path: \`${legacyDefaultFunctionsSrc}\`. Netlify no longer recognizes this path as a default Functions directory location and can’t detect and build serverless functions stored there.
+
+If you created this directory yourself, we recommend that you:
+- rename the Functions directory to \`netlify/functions\`
+- or explicitly set \`${legacyDefaultFunctionsSrc}\` as the Functions directory in your site’s build settings.
+
+If you are using the \`@netlify/plugin-nextjs\` plugin, you should update it by running \`npm install @netlify/plugin-nextjs\` in your project directory.`,
+  )
+}
+
 module.exports = {
   logBuildStart,
-  logDefaultFunctionsSrcWarning,
-  logNetlifyDirWarning,
   logBuildError,
   logBuildSuccess,
   logTimer,
   logLingeringProcesses,
+  logLegacyDefaultFunctionsSrcWarning,
 }

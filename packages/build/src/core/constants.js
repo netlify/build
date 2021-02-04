@@ -1,13 +1,21 @@
 'use strict'
 
-const { relative, normalize, join } = require('path')
+const { relative, normalize } = require('path')
 
 const { getCacheDir } = require('@netlify/cache-utils')
 const mapObj = require('map-obj')
 const pathExists = require('path-exists')
 
 const { version } = require('../../package.json')
-const { logDefaultFunctionsSrcWarning, logNetlifyDirWarning } = require('../log/messages/core')
+const { logLegacyDefaultFunctionsSrcWarning } = require('../log/messages/core')
+
+// @todo Remove once we drop support for the legact default functions directory.
+const LEGACY_DEFAULT_FUNCTIONS_DIR = 'netlify-automatic-functions'
+const checkForLegacyDefaultFunctionsDir = async function (logs, buildDir) {
+  if (await pathExists(`${buildDir}/${LEGACY_DEFAULT_FUNCTIONS_DIR}`)) {
+    logLegacyDefaultFunctionsSrcWarning(logs, LEGACY_DEFAULT_FUNCTIONS_DIR)
+  }
+}
 
 // Retrieve constants passed to plugins
 const getConstants = async function ({
@@ -22,7 +30,8 @@ const getConstants = async function ({
   mode,
   logs,
 }) {
-  await validateNetlifyDir(logs, buildDir)
+  // @todo Remove once we drop support for the legact default functions directory.
+  await checkForLegacyDefaultFunctionsDir(logs, buildDir)
 
   const isLocal = mode !== 'buildbot'
   const cacheDir = await getCacheDir({ mode })
@@ -73,22 +82,6 @@ const getConstants = async function ({
   return constantsA
 }
 
-// Temporary warning until we launch this feature in February 2021
-// TODO: remove once the feature is launched
-const validateNetlifyDir = async function (logs, buildDir) {
-  if (await pathExists(`${buildDir}/${DEFAULT_FUNCTIONS_SRC}`)) {
-    logDefaultFunctionsSrcWarning(logs, NETLIFY_DIR, DEFAULT_FUNCTIONS_SRC)
-    return
-  }
-
-  if (await pathExists(`${buildDir}/${NETLIFY_DIR}`)) {
-    logNetlifyDirWarning(logs, NETLIFY_DIR, DEFAULT_FUNCTIONS_SRC)
-  }
-}
-
-const NETLIFY_DIR = 'netlify'
-const DEFAULT_FUNCTIONS_SRC = join(NETLIFY_DIR, 'functions')
-
 // The current directory is `buildDir`. Most constants are inside this `buildDir`.
 // Instead of passing absolute paths, we pass paths relative to `buildDir`, so
 // that logs are less verbose.
@@ -115,4 +108,9 @@ const CONSTANT_PATHS = new Set([
   'CACHE_DIR',
 ])
 
-module.exports = { getConstants }
+module.exports = {
+  getConstants,
+
+  // @todo Remove once we drop support for the legact default functions directory.
+  LEGACY_DEFAULT_FUNCTIONS_DIR,
+}

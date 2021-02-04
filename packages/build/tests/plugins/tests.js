@@ -50,6 +50,14 @@ test('constants.FUNCTIONS_SRC default value', async (t) => {
   await runFixture(t, 'functions_src_default')
 })
 
+test('constants.FUNCTIONS_SRC uses legacy default functions directory, if it exists, and shows a warning', async (t) => {
+  await runFixture(t, 'functions_src_legacy')
+})
+
+test('constants.FUNCTIONS_SRC ignores the legacy default functions directory if the new default directory exists', async (t) => {
+  await runFixture(t, 'functions_src_default_and_legacy')
+})
+
 test('constants.FUNCTIONS_SRC relative path', async (t) => {
   await runFixture(t, 'functions_src_relative')
 })

@@ -193,14 +193,6 @@ test('--featureFlags can be used', async (t) => {
   await runFixture(t, 'empty', { flags: { featureFlags: 'test,test,testTwo' } })
 })
 
-test('Print a warning message when "netlify" directory is used', async (t) => {
-  await runFixture(t, 'netlify_dir')
-})
-
-test('Print a warning message when "netlify/functions" directory is used', async (t) => {
-  await runFixture(t, 'netlify_functions_dir')
-})
-
 // Normalize telemetry request so it can be snapshot
 const normalizeSnapshot = function ({ body, ...request }) {
   return { ...request, body: normalizeBody(body) }
