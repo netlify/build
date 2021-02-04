@@ -60,9 +60,13 @@ const logLegacyDefaultFunctionsSrcWarning = function (logs, legacyDefaultFunctio
   logError(
     logs,
     `
-You or one of your plugins seem to be relying on a default directory for Netlify functions: "${legacyDefaultFunctionsSrc}"
-This behavior has been deprecated and our builds will stop automatically bundling functions from this directory.
-We recommend renaming this directory to "netlify/functions", or explicitly setting "${legacyDefaultFunctionsSrc}" as the functions directory in your build settings if you wish to continue using it.`,
+Detected site repository path: \`${legacyDefaultFunctionsSrc}\`. Netlify no longer recognizes this path as a default Functions directory location and can’t detect and build serverless functions stored there.
+
+If you created this directory yourself, we recommend that you:
+- rename the Functions directory to \`netlify/functions\`
+- or explicitly set \`${legacyDefaultFunctionsSrc}\` as the Functions directory in your site’s build settings.
+
+If you are using the \`@netlify/plugin-nextjs\` plugin, you should update it by running \`npm install @netlify/plugin-nextjs\` in your project directory.`,
   )
 }
 
