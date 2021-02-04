@@ -1,5 +1,16 @@
 # Changelog
 
+## [9.0.0](https://www.github.com/netlify/build/compare/v8.4.0...v9.0.0) (2021-02-04)
+
+
+### ⚠ BREAKING CHANGES
+
+* use netlify/functions as the default functions directory (#2188)
+
+### Features
+
+* use netlify/functions as the default functions directory ([#2188](https://www.github.com/netlify/build/issues/2188)) ([84e1e07](https://www.github.com/netlify/build/commit/84e1e075b5efd7ca26ccaf2531511e7737d97f1f))
+
 ## [8.4.0](https://www.github.com/netlify/build/compare/v8.3.5...v8.4.0) (2021-02-03)
 
 
