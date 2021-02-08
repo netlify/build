@@ -12,11 +12,11 @@
     "format": "run-s format:check-fix:*",
     "format:ci": "run-s format:check:*",
     "format:check-fix:lint": "run-e format:check:lint format:fix:lint",
-    "format:check:lint": "cross-env-shell eslint $npm_package_scriptsArgs_eslint",
-    "format:fix:lint": "cross-env-shell eslint --fix $npm_package_scriptsArgs_eslint",
+    "format:check:lint": "cross-env-shell eslint $npm_package_config_eslint",
+    "format:fix:lint": "cross-env-shell eslint --fix $npm_package_config_eslint",
     "format:check-fix:prettier": "run-e format:check:prettier format:fix:prettier",
-    "format:check:prettier": "cross-env-shell prettier --check $npm_package_scriptsArgs_prettier",
-    "format:fix:prettier": "cross-env-shell prettier --write $npm_package_scriptsArgs_prettier",
+    "format:check:prettier": "cross-env-shell prettier --check $npm_package_config_prettier",
+    "format:fix:prettier": "cross-env-shell prettier --write $npm_package_config_prettier",
     "test:dev": "run-s test:dev:*",
     "test:ci": "run-s test:ci:*",
     "test:dev:ava": "ava",
@@ -27,7 +27,7 @@
     "prepublishOnly:install": "npm install",
     "prepublishOnly:test": "npm test"
   },
-  "scriptsArgs": {
+  "config": {
     "eslint": "--ignore-path .gitignore --cache --format=codeframe --max-warnings=0 \"{packages,.github}/**/*.{js,md,html}\" \"*.{js,md,html}\" \".*.{js,md,html}\"",
     "prettier": "--ignore-path .gitignore --loglevel=warn \"{packages,.github}/**/*.{js,md,yml,json,html}\" \"*.{js,yml,json,html}\" \".*.{js,yml,json,html}\" \"!**/package-lock.json\" \"!**/CHANGELOG.md\" \"!package-lock.json\""
   },
