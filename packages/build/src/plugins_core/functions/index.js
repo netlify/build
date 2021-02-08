@@ -21,7 +21,7 @@ const coreCommand = async function ({
 }) {
   const functionsSrc = resolve(buildDir, relativeFunctionsSrc)
   const functionsDist = resolve(buildDir, relativeFunctionsDist)
-  const { externalModules } = netlifyConfig.build
+  const { experimentalExternalModules: externalModules } = netlifyConfig.build
 
   if (!(await pathExists(functionsSrc))) {
     logFunctionsNonExistingDir(logs, relativeFunctionsSrc)
