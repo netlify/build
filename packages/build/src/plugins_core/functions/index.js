@@ -53,9 +53,9 @@ const coreCommand = async function ({
     return
   }
 
-  try {
-    const zisiParameters = getZISIParameters({ childEnv, logs, netlifyConfig })
+  const zisiParameters = getZISIParameters({ childEnv, logs, netlifyConfig })
 
+  try {
     await zipFunctions(functionsSrc, functionsDist, zisiParameters)
   } catch (error) {
     throw await getZipError(error, functionsSrc)
