@@ -7,10 +7,10 @@ const { listFrameworks } = require('./main.js')
 
 // CLI entry point
 const runCli = async function () {
-  const { projectDir, long } = parseArgs()
+  const { projectDir, long, nodeVersion } = parseArgs()
 
   try {
-    const frameworks = await listFrameworks({ projectDir })
+    const frameworks = await listFrameworks({ projectDir, nodeVersion })
     const frameworksStr = serializeFrameworks(frameworks, long)
     console.log(frameworksStr)
   } catch (error) {
@@ -29,6 +29,10 @@ const OPTIONS = {
     default: false,
     describe: `Show more information about each framework.
 The output will be a JSON array.`,
+  },
+  'node-version': {
+    string: true,
+    describe: 'Node.js version of the runtime environment. Used to recommend Netlify build plugins',
   },
 }
 

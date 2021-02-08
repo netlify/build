@@ -23,13 +23,13 @@ const getPackageJson = async (projectDir) => {
   }
 }
 
-const getContext = async ({ projectDir = cwd() } = {}) => {
+const getContext = async ({ projectDir = cwd(), nodeVersion = version } = {}) => {
   const { packageJson, packageJsonPath = projectDir } = await getPackageJson(projectDir)
   return {
     pathExists: async (path) => (await locatePath([path], { type: 'file', cwd: projectDir })) !== undefined,
     packageJson,
     packageJsonPath,
-    nodeVersion: version,
+    nodeVersion,
   }
 }
 

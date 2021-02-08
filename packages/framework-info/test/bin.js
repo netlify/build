@@ -29,3 +29,15 @@ test('CLI --long flag', async (t) => {
   const { stdout } = await execa(binPath, ['--long', `${FIXTURES_DIR}/multiple`])
   t.snapshot(stdout)
 })
+
+test('CLI should not recommend Next.js plugin when --node-version flag is less than v10.13.0', async (t) => {
+  const binPath = await BINARY_PATH
+  const { stdout } = await execa(binPath, ['--long', '--node-version', 'v8.0.0', `${FIXTURES_DIR}/next-plugin`])
+  t.snapshot(stdout)
+})
+
+test('CLI should recommend Next.js plugin when --node-version flag is v10.13.0', async (t) => {
+  const binPath = await BINARY_PATH
+  const { stdout } = await execa(binPath, ['--long', '--node-version', 'v10.13.0', `${FIXTURES_DIR}/next-plugin`])
+  t.snapshot(stdout)
+})

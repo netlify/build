@@ -4,6 +4,7 @@ const { listFrameworks: list, hasFramework: has, getFramework: get } = require('
 /**
  * @typedef {object} Options
  * @property {string} [projectDir=process.cwd()] - Project's directory
+ * @property {string} [nodeVersion=process.version] - Node.js version of the runtime environment. Used to recommend Netlify build plugins
  */
 
 /**
