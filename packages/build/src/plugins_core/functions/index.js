@@ -16,9 +16,12 @@ const coreCommand = async function ({
   constants: { FUNCTIONS_SRC: relativeFunctionsSrc, FUNCTIONS_DIST: relativeFunctionsDist },
   buildDir,
   logs,
+  childEnv,
+  netlifyConfig,
 }) {
   const functionsSrc = resolve(buildDir, relativeFunctionsSrc)
   const functionsDist = resolve(buildDir, relativeFunctionsDist)
+  const { externalModules } = netlifyConfig.build
 
   if (!(await pathExists(functionsSrc))) {
     logFunctionsNonExistingDir(logs, relativeFunctionsSrc)
@@ -35,7 +38,10 @@ const coreCommand = async function ({
   }
 
   try {
-    await zipFunctions(functionsSrc, functionsDist)
+    await zipFunctions(functionsSrc, functionsDist, {
+      externalModules,
+      useEsbuild: Boolean(childEnv.NETLIFY_EXPERIMENTAL_ESBUILD),
+    })
   } catch (error) {
     throw await getZipError(error, functionsSrc)
   }
