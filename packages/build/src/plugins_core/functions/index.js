@@ -15,14 +15,16 @@ const {
 
 const { getZipError } = require('./error')
 
-const getZISIParameters = ({ childEnv, logs, netlifyConfig }) => {
+const getZISIParameters = ({ childEnv, logs }) => {
   // @todo Adjust when experimental support for esbuild is replaced by an
   // official implementation.
   const useEsbuild = Boolean(childEnv.NETLIFY_EXPERIMENTAL_ESBUILD)
-  const { experimentalExternalModules: externalModules } = netlifyConfig.build
+  const externalModules = childEnv.NETLIFY_EXPERIMENTAL_EXTERNAL_MODULES
+    ? childEnv.NETLIFY_EXPERIMENTAL_EXTERNAL_MODULES.split(',')
+    : []
 
-  if (useEsbuild || externalModules !== undefined) {
-    logExperimentalEsbuildParameter(logs, externalModules === undefined ? [] : ['build.externalModules'])
+  if (useEsbuild) {
+    logExperimentalEsbuildParameter(logs, 'NETLIFY_EXPERIMENTAL_ESBUILD')
   }
 
   return { externalModules, useEsbuild }
@@ -34,7 +36,6 @@ const coreCommand = async function ({
   buildDir,
   logs,
   childEnv,
-  netlifyConfig,
 }) {
   const functionsSrc = resolve(buildDir, relativeFunctionsSrc)
   const functionsDist = resolve(buildDir, relativeFunctionsDist)
@@ -53,7 +54,7 @@ const coreCommand = async function ({
     return
   }
 
-  const zisiParameters = getZISIParameters({ childEnv, logs, netlifyConfig })
+  const zisiParameters = getZISIParameters({ childEnv, logs })
 
   try {
     await zipFunctions(functionsSrc, functionsDist, zisiParameters)

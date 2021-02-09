@@ -12,7 +12,6 @@ const { firePluginCommand } = require('./plugin')
 const { getCommandReturn } = require('./return')
 
 // Run a command (shell or plugin)
-// eslint-disable-next-line max-lines-per-function
 const runCommand = async function ({
   event,
   childProcess,
@@ -92,7 +91,6 @@ const runCommand = async function ({
     error,
     logs,
     timers,
-    netlifyConfig,
   })
 
   const newValues = await getCommandReturn({
@@ -210,7 +208,6 @@ const tFireCommand = function ({
   events,
   error,
   logs,
-  netlifyConfig,
 }) {
   if (coreCommand !== undefined) {
     return fireCoreCommand({
@@ -222,7 +219,6 @@ const tFireCommand = function ({
       events,
       logs,
       childEnv,
-      netlifyConfig,
     })
   }
 
