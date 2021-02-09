@@ -1,5 +1,12 @@
 # Changelog
 
+## [9.1.0](https://www.github.com/netlify/build/compare/v9.0.1...v9.1.0) (2021-02-09)
+
+
+### Features
+
+* pass esbuild parameters to ZISI ([#2256](https://www.github.com/netlify/build/issues/2256)) ([2483f72](https://www.github.com/netlify/build/commit/2483f72660ac2306fd817b6fa330e28e6709dfbb))
+
 ### [9.0.1](https://www.github.com/netlify/build/compare/v9.0.0...v9.0.1) (2021-02-09)
 
 
