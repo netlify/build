@@ -7,15 +7,35 @@ const pathExists = require('path-exists')
 const { isDirectory } = require('path-type')
 
 const { addErrorInfo } = require('../../error/info')
-const { logFunctionsNonExistingDir, logFunctionsToBundle } = require('../../log/messages/core_commands')
+const {
+  logExperimentalEsbuildParameter,
+  logFunctionsNonExistingDir,
+  logFunctionsToBundle,
+} = require('../../log/messages/core_commands')
 
 const { getZipError } = require('./error')
+
+const getZISIParameters = ({ childEnv, logs }) => {
+  // @todo Adjust when experimental support for esbuild is replaced by an
+  // official implementation.
+  const useEsbuild = Boolean(childEnv.NETLIFY_EXPERIMENTAL_ESBUILD)
+  const externalModules = childEnv.NETLIFY_EXPERIMENTAL_EXTERNAL_MODULES
+    ? childEnv.NETLIFY_EXPERIMENTAL_EXTERNAL_MODULES.split(',')
+    : []
+
+  if (useEsbuild) {
+    logExperimentalEsbuildParameter(logs, 'NETLIFY_EXPERIMENTAL_ESBUILD')
+  }
+
+  return { externalModules, useEsbuild }
+}
 
 // Plugin to package Netlify functions with @netlify/zip-it-and-ship-it
 const coreCommand = async function ({
   constants: { FUNCTIONS_SRC: relativeFunctionsSrc, FUNCTIONS_DIST: relativeFunctionsDist },
   buildDir,
   logs,
+  childEnv,
 }) {
   const functionsSrc = resolve(buildDir, relativeFunctionsSrc)
   const functionsDist = resolve(buildDir, relativeFunctionsDist)
@@ -34,8 +54,10 @@ const coreCommand = async function ({
     return
   }
 
+  const zisiParameters = getZISIParameters({ childEnv, logs })
+
   try {
-    await zipFunctions(functionsSrc, functionsDist)
+    await zipFunctions(functionsSrc, functionsDist, zisiParameters)
   } catch (error) {
     throw await getZipError(error, functionsSrc)
   }

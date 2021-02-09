@@ -218,6 +218,7 @@ const tFireCommand = function ({
       buildbotServerSocket,
       events,
       logs,
+      childEnv,
     })
   }
 
