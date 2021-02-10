@@ -1,6 +1,6 @@
 {
   "id": "metalsmith",
-  "title": "Metalsmith",
+  "name": "Metalsmith",
   "category": "static_site_generator",
   "detect": {
     "npmDependencies": ["metalsmith"],

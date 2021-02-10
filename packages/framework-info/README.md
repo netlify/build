@@ -26,7 +26,7 @@ console.log(await listFrameworks({ projectDir: './path/to/gatsby/website' }))
 // [
 //   {
 //     id: 'gatsby',
-//     title: 'Gatsby',
+//     name: 'Gatsby',
 //     category: 'static_site_generator',
 //     dev: {
 //       commands: ['gatsby develop'],
@@ -45,7 +45,7 @@ console.log(await listFrameworks({ projectDir: './path/to/vue/website' }))
 // [
 //   {
 //     id: 'vue',
-//     title: 'Vue.js',
+//     name: 'Vue.js',
 //     category: 'frontend_framework',
 //     dev: {
 //       commands: ['npm run serve'],
@@ -66,7 +66,7 @@ console.log(await hasFramework('vue', { projectDir: './path/to/vue/website' }))
 console.log(await getFramework('vue', { projectDir: './path/to/vue/website' }))
 // {
 //   id: 'vue',
-//   title: 'Vue.js',
+//   name: 'Vue.js',
 //   category: 'frontend_framework',
 //   dev: {
 //     commands: ['npm run serve'],
@@ -91,7 +91,7 @@ $ framework-info --long ./path/to/vue/website
 [
   {
     "id": "vue",
-    "title": 'Vue.js',
+    "name": 'Vue.js',
     "category": "frontend_framework",
     "dev": {
       "commands": ["npm run serve"],
@@ -142,11 +142,11 @@ _Type_: `string`
 
 Id such as `"gatsby"`.
 
-## title
+## name
 
 _Type_: `string`
 
-Title such as `"Gatsby"`.
+Framework name such as `"Gatsby"`.
 
 #### category
 
@@ -238,7 +238,7 @@ Each framework is a JSON file in the `/src/frameworks/` directory. For example:
 ```json
 {
   "id": "gatsby",
-  "title": "Gatsby",
+  "name": "Gatsby",
   "category": "static_site_generator",
   "detect": {
     "npmDependencies": ["gatsby"],
@@ -266,11 +266,11 @@ _Type_: `string`
 
 Id of the framework.
 
-## title
+## name
 
 _Type_: `string`
 
-Title of the framework.
+Name of the framework.
 
 ## category
 

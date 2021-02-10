@@ -1,6 +1,6 @@
 {
   "id": "gridsome",
-  "title": "Gridsome",
+  "name": "Gridsome",
   "category": "static_site_generator",
   "detect": {
     "npmDependencies": ["gridsome"],

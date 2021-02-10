@@ -1,6 +1,6 @@
 {
   "id": "grunt",
-  "title": "Grunt",
+  "name": "Grunt",
   "category": "build_tool",
   "detect": {
     "npmDependencies": ["grunt"],

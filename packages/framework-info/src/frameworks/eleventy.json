@@ -1,6 +1,6 @@
 {
   "id": "eleventy",
-  "title": "Eleventy",
+  "name": "Eleventy",
   "category": "static_site_generator",
   "detect": {
     "npmDependencies": ["@11ty/eleventy"],

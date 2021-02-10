@@ -1,6 +1,6 @@
 {
   "id": "docpad",
-  "title": "DocPad",
+  "name": "DocPad",
   "category": "static_site_generator",
   "detect": {
     "npmDependencies": ["docpad"],

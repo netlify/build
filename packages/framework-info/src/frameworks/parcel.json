@@ -1,6 +1,6 @@
 {
   "id": "parcel",
-  "title": "Parcel",
+  "name": "Parcel",
   "category": "build_tool",
   "detect": {
     "npmDependencies": ["parcel-bundler", "parcel"],

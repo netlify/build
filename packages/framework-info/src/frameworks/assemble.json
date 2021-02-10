@@ -1,6 +1,6 @@
 {
   "id": "assemble",
-  "title": "Assemble",
+  "name": "Assemble",
   "category": "static_site_generator",
   "detect": {
     "npmDependencies": ["assemble"],

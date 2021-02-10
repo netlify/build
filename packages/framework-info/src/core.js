@@ -43,7 +43,7 @@ const getContext = (context) => {
 /**
  * @typedef {object} Framework
  * @property {string} id - framework id such as `"gatsby"`
- * @property {string} title - framework title as `"Gatsby"`
+ * @property {string} name - framework name such as `"Gatsby"`
  * @property {string} category - Category among `"static_site_generator"`, `"frontend_framework"` and `"build_tool"`
  * @property {Dev} dev - Information about the dev command
  * @property {Build} build - Information about the build command
@@ -132,7 +132,7 @@ const getProjectInfo = async function ({ pathExists, packageJson, packageJsonPat
 const getFrameworkInfo = function (
   {
     id,
-    title,
+    name,
     category,
     dev: { command: frameworkDevCommand, port },
     build: { command: frameworkBuildCommand, directory },
@@ -145,7 +145,7 @@ const getFrameworkInfo = function (
   const recommendedPlugins = getPlugins(plugins, { nodeVersion })
   return {
     id,
-    title,
+    name,
     category,
     dev: { commands: devCommands, port },
     build: { commands: [frameworkBuildCommand], directory },

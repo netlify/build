@@ -1,6 +1,6 @@
 {
   "id": "svelte",
-  "title": "Svelte",
+  "name": "Svelte",
   "category": "frontend_framework",
   "detect": {
     "npmDependencies": ["svelte"],

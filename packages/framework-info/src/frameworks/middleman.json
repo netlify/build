@@ -1,6 +1,6 @@
 {
   "id": "middleman",
-  "title": "Middleman",
+  "name": "Middleman",
   "category": "static_site_generator",
   "detect": {
     "npmDependencies": [],

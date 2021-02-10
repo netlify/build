@@ -1,6 +1,6 @@
 {
   "id": "phenomic",
-  "title": "Phenomic",
+  "name": "Phenomic",
   "category": "static_site_generator",
   "detect": {
     "npmDependencies": ["@phenomic/core"],

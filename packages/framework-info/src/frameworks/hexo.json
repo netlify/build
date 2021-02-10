@@ -1,6 +1,6 @@
 {
   "id": "hexo",
-  "title": "Hexo",
+  "name": "Hexo",
   "category": "static_site_generator",
   "detect": {
     "npmDependencies": ["hexo"],

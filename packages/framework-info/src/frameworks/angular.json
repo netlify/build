@@ -1,6 +1,6 @@
 {
   "id": "angular",
-  "title": "Angular",
+  "name": "Angular",
   "category": "frontend_framework",
   "detect": {
     "npmDependencies": ["@angular/cli"],

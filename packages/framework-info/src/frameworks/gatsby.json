@@ -1,6 +1,6 @@
 {
   "id": "gatsby",
-  "title": "Gatsby",
+  "name": "Gatsby",
   "category": "static_site_generator",
   "detect": {
     "npmDependencies": ["gatsby"],

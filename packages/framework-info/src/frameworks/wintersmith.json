@@ -1,6 +1,6 @@
 {
   "id": "wintersmith",
-  "title": "Wintersmith",
+  "name": "Wintersmith",
   "category": "static_site_generator",
   "detect": {
     "npmDependencies": ["wintersmith"],

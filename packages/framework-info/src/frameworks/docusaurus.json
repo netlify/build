@@ -1,6 +1,6 @@
 {
   "id": "docusaurus",
-  "title": "Docusaurus",
+  "name": "Docusaurus",
   "category": "static_site_generator",
   "detect": {
     "npmDependencies": ["docusaurus"],

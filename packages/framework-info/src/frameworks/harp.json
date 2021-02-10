@@ -1,6 +1,6 @@
 {
   "id": "harp",
-  "title": "Harp",
+  "name": "Harp",
   "category": "static_site_generator",
   "detect": {
     "npmDependencies": ["harp"],

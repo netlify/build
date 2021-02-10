@@ -1,6 +1,6 @@
 {
   "id": "vue",
-  "title": "Vue.js",
+  "name": "Vue.js",
   "category": "frontend_framework",
   "detect": {
     "npmDependencies": ["@vue/cli-service"],
