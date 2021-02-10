@@ -1,5 +1,6 @@
 {
   "name": "expo",
+  "title": "Expo",
   "category": "frontend_framework",
   "detect": {
     "npmDependencies": ["expo"],

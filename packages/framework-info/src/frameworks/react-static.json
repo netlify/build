@@ -1,5 +1,6 @@
 {
   "name": "react-static",
+  "title": "React Static",
   "category": "static_site_generator",
   "detect": {
     "npmDependencies": ["react-static"],

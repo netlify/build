@@ -47,10 +47,11 @@ const PLUGIN_SCHEMA = {
 const MAX_PORT = 65535
 const FRAMEWORK_JSON_SCHEMA = {
   type: 'object',
-  required: ['name', 'category', 'detect', 'dev', 'build', 'env'],
+  required: ['name', 'title', 'category', 'detect', 'dev', 'build', 'env'],
   additionalProperties: false,
   properties: {
     name: { type: 'string', pattern: '^[a-z\\d_]+', minLength: 1 },
+    title: { type: 'string', pattern: '^\\w+', minLength: 1 },
     category: {
       type: 'string',
       enum: ['static_site_generator', 'frontend_framework', 'build_tool'],

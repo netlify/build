@@ -1,5 +1,6 @@
 {
   "name": "vuepress",
+  "title": "VuePress",
   "category": "static_site_generator",
   "detect": {
     "npmDependencies": ["vuepress"],

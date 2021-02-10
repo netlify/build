@@ -1,5 +1,6 @@
 {
   "name": "parcel",
+  "title": "Parcel",
   "category": "build_tool",
   "detect": {
     "npmDependencies": ["parcel-bundler", "parcel"],

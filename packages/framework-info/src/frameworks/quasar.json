@@ -1,5 +1,6 @@
 {
   "name": "quasar",
+  "title": "Quasar",
   "category": "frontend_framework",
   "detect": {
     "npmDependencies": ["@quasar/app"],

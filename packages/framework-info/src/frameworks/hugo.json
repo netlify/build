@@ -1,5 +1,6 @@
 {
   "name": "hugo",
+  "title": "Hugo",
   "category": "static_site_generator",
   "detect": {
     "npmDependencies": [],

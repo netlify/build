@@ -1,5 +1,6 @@
 {
   "name": "docusaurus-v2",
+  "title": "Docusaurus 2",
   "category": "static_site_generator",
   "detect": {
     "npmDependencies": ["@docusaurus/core"],

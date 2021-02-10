@@ -1,5 +1,6 @@
 {
   "name": "sapper",
+  "title": "Sapper",
   "category": "frontend_framework",
   "detect": {
     "npmDependencies": ["sapper"],

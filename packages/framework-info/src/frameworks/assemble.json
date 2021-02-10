@@ -1,5 +1,6 @@
 {
   "name": "assemble",
+  "title": "Assemble",
   "category": "static_site_generator",
   "detect": {
     "npmDependencies": ["assemble"],

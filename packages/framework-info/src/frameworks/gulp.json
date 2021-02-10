@@ -1,5 +1,6 @@
 {
   "name": "gulp",
+  "title": "gulp.js",
   "category": "build_tool",
   "detect": {
     "npmDependencies": ["gulp"],

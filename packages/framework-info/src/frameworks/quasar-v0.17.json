@@ -1,5 +1,6 @@
 {
   "name": "quasar-v0.17",
+  "title": "Quasar",
   "category": "frontend_framework",
   "detect": {
     "npmDependencies": ["quasar-cli"],

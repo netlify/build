@@ -1,5 +1,6 @@
 {
   "name": "brunch",
+  "title": "Brunch",
   "category": "build_tool",
   "detect": {
     "npmDependencies": ["brunch"],

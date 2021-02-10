@@ -1,5 +1,6 @@
 {
   "name": "ember",
+  "title": "Ember.js",
   "category": "frontend_framework",
   "detect": {
     "npmDependencies": ["ember-cli"],

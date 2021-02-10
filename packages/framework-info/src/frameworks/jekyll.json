@@ -1,5 +1,6 @@
 {
   "name": "jekyll",
+  "title": "Jekyll",
   "category": "static_site_generator",
   "detect": {
     "npmDependencies": [],

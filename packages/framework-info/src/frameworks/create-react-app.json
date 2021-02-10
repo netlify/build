@@ -1,5 +1,6 @@
 {
   "name": "create-react-app",
+  "title": "Create React App",
   "category": "frontend_framework",
   "detect": {
     "npmDependencies": ["react-scripts"],

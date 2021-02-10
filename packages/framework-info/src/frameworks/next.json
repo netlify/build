@@ -1,5 +1,6 @@
 {
   "name": "next",
+  "title": "Next.js",
   "category": "static_site_generator",
   "detect": {
     "npmDependencies": ["next"],

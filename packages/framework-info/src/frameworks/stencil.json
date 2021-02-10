@@ -1,5 +1,6 @@
 {
   "name": "stencil",
+  "title": "Stencil",
   "category": "static_site_generator",
   "detect": {
     "npmDependencies": ["@stencil/core"],
