@@ -1,5 +1,5 @@
 {
-  "name": "vue",
+  "id": "vue",
   "title": "Vue.js",
   "category": "frontend_framework",
   "detect": {

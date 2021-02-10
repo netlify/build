@@ -1,5 +1,5 @@
 {
-  "name": "svelte",
+  "id": "svelte",
   "title": "Svelte",
   "category": "frontend_framework",
   "detect": {

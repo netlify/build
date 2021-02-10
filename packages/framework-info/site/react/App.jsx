@@ -52,5 +52,5 @@ export const App = () => {
     }
   }, [])
 
-  return frameworks.map((framework) => <Framework key={framework.name} {...framework} />)
+  return frameworks.map((framework) => <Framework key={framework.id} {...framework} />)
 }

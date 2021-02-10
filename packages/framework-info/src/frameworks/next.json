@@ -1,5 +1,5 @@
 {
-  "name": "next",
+  "id": "next",
   "title": "Next.js",
   "category": "static_site_generator",
   "detect": {

@@ -1,5 +1,5 @@
 {
-  "name": "metalsmith",
+  "id": "metalsmith",
   "title": "Metalsmith",
   "category": "static_site_generator",
   "detect": {

@@ -1,5 +1,5 @@
 {
-  "name": "parcel",
+  "id": "parcel",
   "title": "Parcel",
   "category": "build_tool",
   "detect": {

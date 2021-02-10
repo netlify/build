@@ -1,5 +1,5 @@
 {
-  "name": "nuxt",
+  "id": "nuxt",
   "title": "Next.js",
   "category": "static_site_generator",
   "detect": {

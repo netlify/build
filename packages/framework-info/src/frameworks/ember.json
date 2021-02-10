@@ -1,5 +1,5 @@
 {
-  "name": "ember",
+  "id": "ember",
   "title": "Ember.js",
   "category": "frontend_framework",
   "detect": {

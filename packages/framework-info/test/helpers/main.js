@@ -9,12 +9,12 @@ const getFrameworks = function (fixtureName) {
   return listFrameworks(getOptions(fixtureName))
 }
 
-const getFramework = function (fixtureName, frameworkName) {
-  return getFrameworkLib(frameworkName, getOptions(fixtureName))
+const getFramework = function (fixtureName, frameworkId) {
+  return getFrameworkLib(frameworkId, getOptions(fixtureName))
 }
 
-const hasFramework = function (fixtureName, frameworkName) {
-  return hasFrameworkLib(frameworkName, getOptions(fixtureName))
+const hasFramework = function (fixtureName, frameworkId) {
+  return hasFrameworkLib(frameworkId, getOptions(fixtureName))
 }
 
 module.exports = { getFrameworks, getFramework, hasFramework, FIXTURES_DIR }

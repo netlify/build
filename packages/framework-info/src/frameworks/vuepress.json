@@ -1,5 +1,5 @@
 {
-  "name": "vuepress",
+  "id": "vuepress",
   "title": "VuePress",
   "category": "static_site_generator",
   "detect": {

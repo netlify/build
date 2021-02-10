@@ -1,5 +1,5 @@
 {
-  "name": "jekyll",
+  "id": "jekyll",
   "title": "Jekyll",
   "category": "static_site_generator",
   "detect": {

@@ -1,5 +1,5 @@
 {
-  "name": "create-react-app",
+  "id": "create-react-app",
   "title": "Create React App",
   "category": "frontend_framework",
   "detect": {

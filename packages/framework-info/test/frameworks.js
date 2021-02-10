@@ -47,10 +47,10 @@ const PLUGIN_SCHEMA = {
 const MAX_PORT = 65535
 const FRAMEWORK_JSON_SCHEMA = {
   type: 'object',
-  required: ['name', 'title', 'category', 'detect', 'dev', 'build', 'env'],
+  required: ['id', 'title', 'category', 'detect', 'dev', 'build', 'env'],
   additionalProperties: false,
   properties: {
-    name: { type: 'string', pattern: '^[a-z\\d_]+', minLength: 1 },
+    id: { type: 'string', pattern: '^[a-z\\d_]+', minLength: 1 },
     title: { type: 'string', pattern: '^\\w+', minLength: 1 },
     category: {
       type: 'string',
@@ -105,7 +105,7 @@ const FRAMEWORK_JSON_SCHEMA = {
 }
 
 each(FRAMEWORKS, (info, framework) => {
-  test(`Framework "${framework.name}" should have a valid shape`, (t) => {
+  test(`Framework "${framework.id}" should have a valid shape`, (t) => {
     t.is(validate(framework, FRAMEWORK_JSON_SCHEMA), true)
   })
 })

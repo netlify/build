@@ -12,7 +12,7 @@ test('CLI --help flag', async (t) => {
   t.snapshot(stdout)
 })
 
-test('CLI print framework names', async (t) => {
+test('CLI print framework ids', async (t) => {
   const binPath = await BINARY_PATH
   const { stdout } = await execa(binPath, [`${FIXTURES_DIR}/multiple`])
   t.snapshot(stdout)

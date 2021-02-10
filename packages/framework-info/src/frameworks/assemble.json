@@ -1,5 +1,5 @@
 {
-  "name": "assemble",
+  "id": "assemble",
   "title": "Assemble",
   "category": "static_site_generator",
   "detect": {

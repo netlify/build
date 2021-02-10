@@ -1,5 +1,5 @@
 {
-  "name": "stencil",
+  "id": "stencil",
   "title": "Stencil",
   "category": "static_site_generator",
   "detect": {

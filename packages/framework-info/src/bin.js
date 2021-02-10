@@ -49,13 +49,9 @@ const serializeFrameworks = function (frameworks, long) {
     return NO_FRAMEWORKS
   }
 
-  return frameworks.map((framework) => getName(framework)).join('\n')
+  return frameworks.map(({ id }) => id).join('\n')
 }
 
 const NO_FRAMEWORKS = 'unknown'
-
-const getName = function ({ name }) {
-  return name
-}
 
 runCli()

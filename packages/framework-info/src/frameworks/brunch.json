@@ -1,5 +1,5 @@
 {
-  "name": "brunch",
+  "id": "brunch",
   "title": "Brunch",
   "category": "build_tool",
   "detect": {

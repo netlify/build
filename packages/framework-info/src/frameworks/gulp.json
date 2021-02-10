@@ -1,5 +1,5 @@
 {
-  "name": "gulp",
+  "id": "gulp",
   "title": "gulp.js",
   "category": "build_tool",
   "detect": {

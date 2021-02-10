@@ -37,7 +37,7 @@ test('Should detect config files', async (t) => {
 if (nodeVersion !== 'v8.3.0') {
   test('Should detect Next.js plugin for Next.js if when Node version >= 10.13.0', async (t) => {
     const frameworks = await getFrameworks('next-plugin')
-    t.is(frameworks[0].name, 'next')
+    t.is(frameworks[0].id, 'next')
     t.deepEqual(frameworks[0].plugins, ['@netlify/plugin-nextjs'])
   })
 }
@@ -45,7 +45,7 @@ if (nodeVersion !== 'v8.3.0') {
 if (nodeVersion === 'v8.3.0') {
   test('Should not detect Next.js plugin for Next.js if when Node version < 10.13.0', async (t) => {
     const frameworks = await getFrameworks('next-plugin')
-    t.is(frameworks[0].name, 'next')
+    t.is(frameworks[0].id, 'next')
     t.is(frameworks[0].plugins.length, 0)
   })
 }

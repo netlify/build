@@ -1,5 +1,5 @@
 {
-  "name": "docusaurus",
+  "id": "docusaurus",
   "title": "Docusaurus",
   "category": "static_site_generator",
   "detect": {

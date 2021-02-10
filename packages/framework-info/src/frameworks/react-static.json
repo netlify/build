@@ -1,5 +1,5 @@
 {
-  "name": "react-static",
+  "id": "react-static",
   "title": "React Static",
   "category": "static_site_generator",
   "detect": {

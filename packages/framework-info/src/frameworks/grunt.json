@@ -1,5 +1,5 @@
 {
-  "name": "grunt",
+  "id": "grunt",
   "title": "Grunt",
   "category": "build_tool",
   "detect": {

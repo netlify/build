@@ -1,5 +1,5 @@
 {
-  "name": "roots",
+  "id": "roots",
   "title": "Roots",
   "category": "static_site_generator",
   "detect": {

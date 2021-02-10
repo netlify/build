@@ -1,5 +1,5 @@
 {
-  "name": "docpad",
+  "id": "docpad",
   "title": "DocPad",
   "category": "static_site_generator",
   "detect": {

@@ -21,7 +21,7 @@ const { listFrameworks: list, hasFramework: has, getFramework: get } = require('
 
 /**
  * @typedef {object} Framework
- * @property {string} name - Name such as `"gatsby"`
+ * @property {string} id - Id such as `"gatsby"`
  * @property {string} category - Category among `"static_site_generator"`, `"frontend_framework"` and `"build_tool"`
  * @property {Dev} dev - Information about the dev command
  * @property {Build} build - Information about the build command
@@ -44,27 +44,27 @@ const listFrameworks = async function (opts) {
 /**
  * Return whether a project uses a specific framework
  *
- * @param {string} frameworkName - Name such as `"gatsby"`
+ * @param {string} frameworkId - Id such as `"gatsby"`
  * @param  {Options} [options] - Context
  *
  * @returns {boolean} result - Whether the project uses this framework
  */
-const hasFramework = async function (frameworkName, options) {
+const hasFramework = async function (frameworkId, options) {
   const context = await getContext(options)
-  return await has(frameworkName, context)
+  return await has(frameworkId, context)
 }
 
 /**
  * Return some information about a framework used by a project.
  *
- * @param {string} frameworkName - Name such as `"gatsby"`
+ * @param {string} frameworkId - Id such as `"gatsby"`
  * @param  {Context} [context] - Context
  *
  * @returns {Framework} framework - Framework used by a project
  */
-const getFramework = async function (frameworkName, options) {
+const getFramework = async function (frameworkId, options) {
   const context = await getContext(options)
-  return await get(frameworkName, context)
+  return await get(frameworkId, context)
 }
 
 module.exports = { listFrameworks, hasFramework, getFramework }

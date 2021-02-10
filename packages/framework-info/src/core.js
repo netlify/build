@@ -42,7 +42,7 @@ const getContext = (context) => {
 
 /**
  * @typedef {object} Framework
- * @property {string} name - framework name such as `"gatsby"`
+ * @property {string} id - framework id such as `"gatsby"`
  * @property {string} title - framework title as `"Gatsby"`
  * @property {string} category - Category among `"static_site_generator"`, `"frontend_framework"` and `"build_tool"`
  * @property {Dev} dev - Information about the dev command
@@ -75,13 +75,13 @@ const listFrameworks = async function (context) {
 /**
  * Return whether a project uses a specific framework
  *
- * @param {string} frameworkName - Name such as `"gatsby"`
+ * @param {string} frameworkId - Id such as `"gatsby"`
  * @param  {Context} [context] - Context
  *
  * @returns {boolean} result - Whether the project uses this framework
  */
-const hasFramework = async function (frameworkName, context) {
-  const framework = getFrameworkByName(frameworkName)
+const hasFramework = async function (frameworkId, context) {
+  const framework = getFrameworkById(frameworkId)
   const { pathExists, packageJson, packageJsonPath } = getContext(context)
   const { npmDependencies } = await getProjectInfo({ pathExists, packageJson, packageJsonPath })
   const result = await usesFramework(framework, { pathExists, npmDependencies })
@@ -91,13 +91,13 @@ const hasFramework = async function (frameworkName, context) {
 /**
  * Return some information about a framework used by a project.
  *
- * @param {string} frameworkName - Name such as `"gatsby"`
+ * @param {string} frameworkId - Id such as `"gatsby"`
  * @param  {Context} [context] - Context
  *
  * @returns {Framework} framework - Framework used by a project
  */
-const getFramework = async function (frameworkName, context) {
-  const framework = getFrameworkByName(frameworkName)
+const getFramework = async function (frameworkId, context) {
+  const framework = getFrameworkById(frameworkId)
   const { pathExists, packageJson, packageJsonPath, nodeVersion } = getContext(context)
   const { scripts, runScriptCommand } = await getProjectInfo({
     pathExists,
@@ -108,17 +108,17 @@ const getFramework = async function (frameworkName, context) {
   return frameworkInfo
 }
 
-const getFrameworkByName = function (frameworkName) {
-  const framework = FRAMEWORKS.find(({ name }) => name === frameworkName)
+const getFrameworkById = function (frameworkId) {
+  const framework = FRAMEWORKS.find(({ id }) => id === frameworkId)
   if (framework === undefined) {
-    const frameworkNames = FRAMEWORKS.map((knownFramework) => getFrameworkName(knownFramework)).join(', ')
-    throw new Error(`Invalid framework "${frameworkName}". It should be one of: ${frameworkNames}`)
+    const frameworkIds = FRAMEWORKS.map((knownFramework) => getFrameworkId(knownFramework)).join(', ')
+    throw new Error(`Invalid framework "${frameworkId}". It should be one of: ${frameworkIds}`)
   }
   return framework
 }
 
-const getFrameworkName = function ({ name }) {
-  return name
+const getFrameworkId = function ({ id }) {
+  return id
 }
 
 const getProjectInfo = async function ({ pathExists, packageJson, packageJsonPath }) {
@@ -131,7 +131,7 @@ const getProjectInfo = async function ({ pathExists, packageJson, packageJsonPat
 
 const getFrameworkInfo = function (
   {
-    name,
+    id,
     title,
     category,
     dev: { command: frameworkDevCommand, port },
@@ -144,7 +144,7 @@ const getFrameworkInfo = function (
   const devCommands = getDevCommands({ frameworkDevCommand, scripts, runScriptCommand })
   const recommendedPlugins = getPlugins(plugins, { nodeVersion })
   return {
-    name,
+    id,
     title,
     category,
     dev: { commands: devCommands, port },

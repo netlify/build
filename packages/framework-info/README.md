@@ -25,7 +25,7 @@ const { listFrameworks, hasFramework, getFramework } = require('@netlify/framewo
 console.log(await listFrameworks({ projectDir: './path/to/gatsby/website' }))
 // [
 //   {
-//     name: 'gatsby',
+//     id: 'gatsby',
 //     title: 'Gatsby',
 //     category: 'static_site_generator',
 //     dev: {
@@ -44,7 +44,7 @@ console.log(await listFrameworks({ projectDir: './path/to/gatsby/website' }))
 console.log(await listFrameworks({ projectDir: './path/to/vue/website' }))
 // [
 //   {
-//     name: 'vue',
+//     id: 'vue',
 //     title: 'Vue.js',
 //     category: 'frontend_framework',
 //     dev: {
@@ -65,7 +65,7 @@ console.log(await hasFramework('vue', { projectDir: './path/to/vue/website' }))
 
 console.log(await getFramework('vue', { projectDir: './path/to/vue/website' }))
 // {
-//   name: 'vue',
+//   id: 'vue',
 //   title: 'Vue.js',
 //   category: 'frontend_framework',
 //   dev: {
@@ -90,7 +90,7 @@ gatsby
 $ framework-info --long ./path/to/vue/website
 [
   {
-    "name": "vue",
+    "id": "vue",
     "title": 'Vue.js',
     "category": "frontend_framework",
     "dev": {
@@ -136,11 +136,11 @@ single object or several objects.
 
 Each object has the following properties.
 
-#### name
+#### id
 
 _Type_: `string`
 
-Name such as `"gatsby"`.
+Id such as `"gatsby"`.
 
 ## title
 
@@ -202,14 +202,14 @@ _Type_: `string[]`
 
 A list of recommend Netlify build plugins to install for the framework.
 
-## hasFramework(frameworkName, options?)
+## hasFramework(frameworkId, options?)
 
 `options`: `object?`\
 _Return value_: `Promise<boolean>`
 
 Same as [`listFramework()`](#listframeworksoptions) except only for a specific framework and returns a boolean.
 
-## getFramework(frameworkName, options?)
+## getFramework(frameworkId, options?)
 
 `options`: `object?`\
 _Return value_: `Promise<object>`
@@ -223,7 +223,7 @@ detected. A single framework object is returned.
 $ framework-info [projectDirectory]
 ```
 
-This prints the names of each framework.
+This prints the ids of each framework.
 
 If known is found, `unknown` is printed.
 
@@ -237,7 +237,7 @@ Each framework is a JSON file in the `/src/frameworks/` directory. For example:
 
 ```json
 {
-  "name": "gatsby",
+  "id": "gatsby",
   "title": "Gatsby",
   "category": "static_site_generator",
   "detect": {
@@ -260,11 +260,11 @@ Each framework is a JSON file in the `/src/frameworks/` directory. For example:
 
 All properties are required.
 
-## name
+## id
 
 _Type_: `string`
 
-Name of the framework, lowercase.
+Id of the framework.
 
 ## title
 

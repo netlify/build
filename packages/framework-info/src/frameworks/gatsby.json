@@ -1,5 +1,5 @@
 {
-  "name": "gatsby",
+  "id": "gatsby",
   "title": "Gatsby",
   "category": "static_site_generator",
   "detect": {

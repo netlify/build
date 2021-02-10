@@ -1,5 +1,5 @@
 {
-  "name": "middleman",
+  "id": "middleman",
   "title": "Middleman",
   "category": "static_site_generator",
   "detect": {

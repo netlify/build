@@ -1,5 +1,5 @@
 {
-  "name": "sapper",
+  "id": "sapper",
   "title": "Sapper",
   "category": "frontend_framework",
   "detect": {

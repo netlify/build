@@ -1,5 +1,5 @@
 {
-  "name": "harp",
+  "id": "harp",
   "title": "Harp",
   "category": "static_site_generator",
   "detect": {
