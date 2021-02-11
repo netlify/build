@@ -9,7 +9,8 @@
   },
   "dev": {
     "command": "npm run dev",
-    "port": 5000
+    "port": 5000,
+    "pollingStrategies": [{ "name": "TCP" }, { "name": "HTTP" }]
   },
   "build": {
     "command": "npm run build",

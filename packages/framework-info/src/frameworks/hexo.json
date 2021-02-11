@@ -9,7 +9,8 @@
   },
   "dev": {
     "command": "hexo server",
-    "port": 4000
+    "port": 4000,
+    "pollingStrategies": [{ "name": "TCP" }, { "name": "HTTP" }]
   },
   "build": {
     "command": "hexo generate",

@@ -14,6 +14,11 @@ const getContext = (context) => {
 }
 
 /**
+ * @typedef {object} PollingStrategy
+ * @property {'TCP'|'HTTP'} name - Name of the polling strategy. Possible names - TCP,HTTP
+ */
+
+/**
  * A callback to check if a path exists
  * @callback PathExists
  * @param {string} path
@@ -32,6 +37,7 @@ const getContext = (context) => {
  * @typedef {object} Dev
  * @property {string} commands - Dev command. There might be several alternatives or empty
  * @property {number} port - Server port
+ * @property {PollingStrategy[]} pollingStrategies - Dev Server polling strategies
  */
 
 /**
@@ -134,7 +140,7 @@ const getFrameworkInfo = function (
     id,
     name,
     category,
-    dev: { command: frameworkDevCommand, port },
+    dev: { command: frameworkDevCommand, port, pollingStrategies },
     build: { command: frameworkBuildCommand, directory },
     env,
     plugins,
@@ -147,7 +153,7 @@ const getFrameworkInfo = function (
     id,
     name,
     category,
-    dev: { commands: devCommands, port },
+    dev: { commands: devCommands, port, pollingStrategies },
     build: { commands: [frameworkBuildCommand], directory },
     env,
     plugins: recommendedPlugins,

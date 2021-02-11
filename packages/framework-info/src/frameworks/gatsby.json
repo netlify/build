@@ -9,7 +9,8 @@
   },
   "dev": {
     "command": "gatsby develop",
-    "port": 8000
+    "port": 8000,
+    "pollingStrategies": [{ "name": "TCP" }, { "name": "HTTP" }]
   },
   "build": {
     "command": "gatsby build",

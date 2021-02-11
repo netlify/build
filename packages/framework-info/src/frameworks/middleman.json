@@ -9,7 +9,8 @@
   },
   "dev": {
     "command": "bundle exec middleman server",
-    "port": 4567
+    "port": 4567,
+    "pollingStrategies": [{ "name": "TCP" }, { "name": "HTTP" }]
   },
   "build": {
     "command": "bundle exec middleman build",

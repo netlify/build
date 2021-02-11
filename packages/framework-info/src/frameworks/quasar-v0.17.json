@@ -9,7 +9,8 @@
   },
   "dev": {
     "command": "quasar dev -p 8080",
-    "port": 8080
+    "port": 8080,
+    "pollingStrategies": [{ "name": "TCP" }, { "name": "HTTP" }]
   },
   "build": {
     "command": "quasar build",

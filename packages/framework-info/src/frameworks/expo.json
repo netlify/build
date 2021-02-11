@@ -9,7 +9,8 @@
   },
   "dev": {
     "command": "expo start --web",
-    "port": 19006
+    "port": 19006,
+    "pollingStrategies": [{ "name": "TCP" }, { "name": "HTTP" }]
   },
   "build": {
     "command": "expo build:web",

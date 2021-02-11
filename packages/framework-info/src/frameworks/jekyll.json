@@ -9,7 +9,8 @@
   },
   "dev": {
     "command": "bundle exec jekyll serve -w",
-    "port": 4000
+    "port": 4000,
+    "pollingStrategies": [{ "name": "TCP" }, { "name": "HTTP" }]
   },
   "build": {
     "command": "bundle exec jekyll build",

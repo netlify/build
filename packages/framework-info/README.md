@@ -30,7 +30,8 @@ console.log(await listFrameworks({ projectDir: './path/to/gatsby/website' }))
 //     category: 'static_site_generator',
 //     dev: {
 //       commands: ['gatsby develop'],
-//       port: 8000
+//       port: 8000,
+//       pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }]
 //     },
 //     build: {
 //       commands: ['gatsby build'],
@@ -49,7 +50,8 @@ console.log(await listFrameworks({ projectDir: './path/to/vue/website' }))
 //     category: 'frontend_framework',
 //     dev: {
 //       commands: ['npm run serve'],
-//       port: 8080
+//       port: 8080,
+//       pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }]
 //     },
 //     build: {
 //       commands: ['vue-cli-service build'],
@@ -70,7 +72,8 @@ console.log(await getFramework('vue', { projectDir: './path/to/vue/website' }))
 //   category: 'frontend_framework',
 //   dev: {
 //     commands: ['npm run serve'],
-//     port: 8080
+//     port: 8080,
+//     pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }]
 //   },
 //   build: {
 //     commands: ['vue-cli-service build'],
@@ -95,7 +98,8 @@ $ framework-info --long ./path/to/vue/website
     "category": "frontend_framework",
     "dev": {
       "commands": ["npm run serve"],
-      "port": 8080
+      "port": 8080,
+      "pollingStrategies": [{ "name": "TCP" }, { "name": "HTTP" }]
     },
     "build": {
       "commands": ["vue-cli-service build"],
@@ -172,6 +176,12 @@ _Type_: `number`
 
 Server port.
 
+##### pollingStrategies
+
+_Type_: `object[]`
+
+Polling strategies to use when checking if the dev server is ready.
+
 #### build
 
 _Type_: `object`
@@ -247,7 +257,8 @@ Each framework is a JSON file in the `/src/frameworks/` directory. For example:
   },
   "dev": {
     "command": "gatsby develop",
-    "port": 8000
+    "port": 8000,
+    "pollingStrategies": [{ "name": "TCP" }, { "name": "HTTP" }]
   },
   "build": {
     "command": "gatsby build",
@@ -328,6 +339,12 @@ Default dev command.
 _Type_: `number`
 
 Local dev server port.
+
+### pollingStrategies
+
+_Type_: `object[]`
+
+Polling strategies to use when checking if the dev server is ready.
 
 ## build
 

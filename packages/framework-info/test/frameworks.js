@@ -44,6 +44,15 @@ const PLUGIN_SCHEMA = {
   },
 }
 
+const POLLING_STRATEGY_SCHEMA = {
+  type: 'object',
+  required: ['name'],
+  additionalProperties: false,
+  properties: {
+    name: { enum: ['TCP', 'HTTP'] },
+  },
+}
+
 const MAX_PORT = 65535
 const FRAMEWORK_JSON_SCHEMA = {
   type: 'object',
@@ -76,13 +85,24 @@ const FRAMEWORK_JSON_SCHEMA = {
       },
     },
     dev: {
-      type: 'object',
-      dependencies: { command: ['port'], port: ['command'] },
-      additionalProperties: false,
-      properties: {
-        command: COMMAND_SCHEMA,
-        port: { type: 'integer', minimum: 1, maximum: MAX_PORT },
-      },
+      oneOf: [
+        {
+          type: 'object',
+          required: ['command', 'port', 'pollingStrategies'],
+          additionalProperties: false,
+          properties: {
+            command: COMMAND_SCHEMA,
+            port: { type: 'integer', minimum: 1, maximum: MAX_PORT },
+            pollingStrategies: {
+              type: 'array',
+              items: POLLING_STRATEGY_SCHEMA,
+              minItems: 1,
+              uniqueItems: true,
+            },
+          },
+        },
+        { type: 'object', additionalProperties: false, properties: {} },
+      ],
     },
     build: {
       type: 'object',

@@ -9,7 +9,8 @@
   },
   "dev": {
     "command": "docpad run",
-    "port": 9778
+    "port": 9778,
+    "pollingStrategies": [{ "name": "TCP" }, { "name": "HTTP" }]
   },
   "build": {
     "command": "docpad generate",

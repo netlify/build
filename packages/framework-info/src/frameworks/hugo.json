@@ -9,7 +9,8 @@
   },
   "dev": {
     "command": "hugo server -w",
-    "port": 1313
+    "port": 1313,
+    "pollingStrategies": [{ "name": "TCP" }, { "name": "HTTP" }]
   },
   "build": {
     "command": "hugo",

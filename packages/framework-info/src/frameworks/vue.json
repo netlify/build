@@ -9,7 +9,8 @@
   },
   "dev": {
     "command": "vue-cli-service serve",
-    "port": 8080
+    "port": 8080,
+    "pollingStrategies": [{ "name": "TCP" }, { "name": "HTTP" }]
   },
   "build": {
     "command": "vue-cli-service build",

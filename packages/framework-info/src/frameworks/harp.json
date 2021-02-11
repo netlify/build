@@ -9,7 +9,8 @@
   },
   "dev": {
     "command": "harp server",
-    "port": 9000
+    "port": 9000,
+    "pollingStrategies": [{ "name": "TCP" }, { "name": "HTTP" }]
   },
   "build": {
     "command": "harp compile",

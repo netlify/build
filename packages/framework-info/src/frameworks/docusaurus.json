@@ -9,7 +9,8 @@
   },
   "dev": {
     "command": "docusaurus-start",
-    "port": 3000
+    "port": 3000,
+    "pollingStrategies": [{ "name": "TCP" }, { "name": "HTTP" }]
   },
   "build": {
     "command": "docusaurus-build",

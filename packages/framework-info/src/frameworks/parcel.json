@@ -9,7 +9,8 @@
   },
   "dev": {
     "command": "parcel",
-    "port": 1234
+    "port": 1234,
+    "pollingStrategies": [{ "name": "TCP" }, { "name": "HTTP" }]
   },
   "build": {
     "command": "parcel build",

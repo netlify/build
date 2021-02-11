@@ -9,7 +9,8 @@
   },
   "dev": {
     "command": "ember serve",
-    "port": 4200
+    "port": 4200,
+    "pollingStrategies": [{ "name": "TCP" }, { "name": "HTTP" }]
   },
   "build": {
     "command": "ember build",

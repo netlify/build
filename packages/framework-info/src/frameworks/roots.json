@@ -9,7 +9,8 @@
   },
   "dev": {
     "command": "roots watch",
-    "port": 1111
+    "port": 1111,
+    "pollingStrategies": [{ "name": "TCP" }, { "name": "HTTP" }]
   },
   "build": {
     "command": "roots compile",

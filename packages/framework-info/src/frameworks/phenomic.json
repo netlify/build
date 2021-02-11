@@ -9,7 +9,8 @@
   },
   "dev": {
     "command": "phenomic start",
-    "port": 3333
+    "port": 3333,
+    "pollingStrategies": [{ "name": "TCP" }, { "name": "HTTP" }]
   },
   "build": {
     "command": "phenomic build",
