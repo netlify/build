@@ -1,5 +1,12 @@
 # Changelog
 
+### [9.1.2](https://www.github.com/netlify/build/compare/v9.1.1...v9.1.2) (2021-02-11)
+
+
+### Bug Fixes
+
+* improve Bugsnag reporting of upload errors ([#2267](https://www.github.com/netlify/build/issues/2267)) ([c03985c](https://www.github.com/netlify/build/commit/c03985c83ff0f426f59a85a42f039e0522bc83d5))
+
 ### [9.1.1](https://www.github.com/netlify/build/compare/v9.1.0...v9.1.1) (2021-02-10)
 
 
