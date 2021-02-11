@@ -61,6 +61,9 @@ const NORMALIZE_REGEXPS = [
   // were not installed
   [/(Cannot find module) '([^']+)'/g, "$1 'moduleName'"],
   [/(A Netlify Function is using) "[^"]+"/g, '$1 "moduleName"'],
+  // Deploy upload errors include the filename
+  [/(Upload cancelled).*/g, '$1'],
+  [/(aborting upload of file).*/g, '$1'],
   // netlify-plugin-inline-critical-css errors prints a list of file paths
   [/Searched in: .*/g, ''],
   // netlify-plugin-subfont prints font name in errors
