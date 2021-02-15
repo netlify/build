@@ -8,13 +8,14 @@ const fireCoreCommand = async function ({
   coreCommandName,
   buildDir,
   constants,
+  featureFlags,
   buildbotServerSocket,
   events,
   logs,
   childEnv,
 }) {
   try {
-    await coreCommand({ buildDir, constants, buildbotServerSocket, events, logs, childEnv })
+    await coreCommand({ buildDir, constants, featureFlags, buildbotServerSocket, events, logs, childEnv })
     return {}
   } catch (newError) {
     if (!isBuildError(newError)) {
