@@ -64,6 +64,7 @@ const NORMALIZE_REGEXPS = [
   [/added \d+ package.*/g, 'added packages'],
   // npm install logs look different on Node 8.3.0
   [/\snpm ERR! 404([^]*npm ERR! 404)?.*/g, ''],
+  [/No valid versions/g, 'No versions'],
   // Empty lines
   [/^ +$/gm, ''],
   // Hexadecimal identifiers, like commit hash
