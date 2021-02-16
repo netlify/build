@@ -17,6 +17,8 @@ const getFeatureFlag = function (name) {
 const DEFAULT_FEATURE_FLAGS = {
   // When `true`, the Deploy preview commenting core plugin is enabled
   dpc: false,
+  // When `true`, the Deploy core plugin uses gRPC
+  grpc: false,
 }
 
 module.exports = { normalizeFeatureFlags, DEFAULT_FEATURE_FLAGS }

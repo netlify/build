@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+option go_package = "github.com/netlify/buildbot/buildservice/proto";
+
+package buildservice;
+
+// Service to communicate between Netlify Build and the buildbot
+service BuildService {
+  // Request the buildbot to deploy the site
+  rpc RunPostDeploy(PostDeployRequest) returns (PostDeployResponse) {}
+}
+
+message PostDeployRequest {
+  // Whether the request should wait for the deploy (including post-processing)
+  // to finish before completing
+  bool await_live = 1;
+}
+
+message PostDeployResponse {
+  // If false, `error` and `error_type` should be checked
+  bool succeeded = 1;
+  string error_message = 2;
+  // Either 'user' or 'system'
+  string error_type = 3;
+}

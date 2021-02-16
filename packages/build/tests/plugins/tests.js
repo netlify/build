@@ -11,10 +11,13 @@ const del = require('del')
 const { spy } = require('sinon')
 
 const { removeDir } = require('../helpers/dir')
+const { startGrpcServer } = require('../helpers/grpc_server')
 const { runFixture, FIXTURES_DIR } = require('../helpers/main')
 const { startServer } = require('../helpers/server')
 const { startTcpServer } = require('../helpers/tcp_server')
 const { getTempDir } = require('../helpers/temp')
+
+const SERVICE_PROTO = `${__dirname}/../../src/plugins_core/deploy/build_service.proto`
 
 const pWriteFile = promisify(writeFile)
 
@@ -252,6 +255,103 @@ if (!version.startsWith('v8.')) {
   })
 }
 
+test('Deploy gRPC plugin succeeds', async (t) => {
+  const { address, requests, stopServer } = await startDeployGrpcServer()
+  try {
+    await runFixture(t, 'empty', { flags: { buildbotServerSocket: address, featureFlags: 'grpc' } })
+  } finally {
+    await stopServer()
+  }
+
+  t.true(requests.every(isValidGrpcDeployRequest))
+})
+
+test('Deploy gRPC plugin is not run unless --buildbotServerSocket is passed', async (t) => {
+  const { requests, stopServer } = await startDeployGrpcServer()
+  try {
+    await runFixture(t, 'empty', { flags: { featureFlags: 'grpc', snapshot: false } })
+  } finally {
+    await stopServer()
+  }
+
+  t.is(requests.length, 0)
+})
+
+test('Deploy gRPC plugin connection error', async (t) => {
+  const { address, stopServer } = await startDeployGrpcServer()
+  await stopServer()
+  const start = Date.now()
+  const { exitCode, returnValue } = await runFixture(t, 'empty', {
+    flags: { buildbotServerSocket: address, featureFlags: 'grpc' },
+    snapshot: false,
+  })
+  const duration = Date.now() - start
+  t.not(exitCode, 0)
+  t.true(duration > CONNECT_TIMEOUT)
+  t.true(returnValue.includes('deadline'))
+})
+
+const CONNECT_TIMEOUT = 2e3
+
+test('Deploy gRPC plugin response system error', async (t) => {
+  const { address, stopServer } = await startDeployGrpcServer({
+    succeeded: false,
+    errorMessage: 'test',
+    errorType: 'system',
+  })
+  try {
+    await runFixture(t, 'empty', { flags: { buildbotServerSocket: address, featureFlags: 'grpc' } })
+  } finally {
+    await stopServer()
+  }
+})
+
+test('Deploy gRPC plugin response user error', async (t) => {
+  const { address, stopServer } = await startDeployGrpcServer({
+    succeeded: false,
+    errorMessage: 'test',
+    errorType: 'user',
+  })
+  try {
+    await runFixture(t, 'empty', { flags: { buildbotServerSocket: address, featureFlags: 'grpc' } })
+  } finally {
+    await stopServer()
+  }
+})
+
+test('Deploy gRPC plugin does not wait for post-processing if not using onSuccess nor onEnd', async (t) => {
+  const { address, requests, stopServer } = await startDeployGrpcServer()
+  try {
+    await runFixture(t, 'empty', { flags: { buildbotServerSocket: address, featureFlags: 'grpc' }, snapshot: false })
+  } finally {
+    await stopServer()
+  }
+
+  t.true(requests.every(({ awaitLive }) => !awaitLive))
+})
+
+test('Deploy gRPC plugin waits for post-processing if using onSuccess', async (t) => {
+  const { address, requests, stopServer } = await startDeployGrpcServer()
+  try {
+    await runFixture(t, 'success', { flags: { buildbotServerSocket: address, featureFlags: 'grpc' }, snapshot: false })
+  } finally {
+    await stopServer()
+  }
+
+  t.true(requests.every(({ awaitLive }) => awaitLive))
+})
+
+test('Deploy gRPC plugin waits for post-processing if using onEnd', async (t) => {
+  const { address, requests, stopServer } = await startDeployGrpcServer()
+  try {
+    await runFixture(t, 'end', { flags: { buildbotServerSocket: address, featureFlags: 'grpc' }, snapshot: false })
+  } finally {
+    await stopServer()
+  }
+
+  t.true(requests.every(({ awaitLive }) => awaitLive))
+})
+
 test('Deploy plugin succeeds', async (t) => {
   const { address, requests, stopServer } = await startDeployServer()
   try {
@@ -260,7 +360,7 @@ test('Deploy plugin succeeds', async (t) => {
     await stopServer()
   }
 
-  t.true(requests.every(isValidDeployReponse))
+  t.true(requests.every(isValidDeployResponse))
 })
 
 test('Deploy plugin is not run unless --buildbotServerSocket is passed', async (t) => {
@@ -349,12 +449,27 @@ test('Deploy plugin waits for post-processing if using onEnd', async (t) => {
   t.true(requests.every(waitsForPostProcessing))
 })
 
+const startDeployGrpcServer = async function (response = {}) {
+  const useUnixSocket = platform !== 'win32'
+  return await startGrpcServer({
+    proto: SERVICE_PROTO,
+    serviceName: 'buildservice.BuildService',
+    rpcNames: ['RunPostDeploy'],
+    response: { succeeded: true, ...response },
+    useUnixSocket,
+  })
+}
+
+const isValidGrpcDeployRequest = function ({ awaitLive }) {
+  return typeof awaitLive === 'boolean'
+}
+
 const startDeployServer = function (opts = {}) {
   const useUnixSocket = platform !== 'win32'
   return startTcpServer({ useUnixSocket, response: { succeeded: true, ...opts.response }, ...opts })
 }
 
-const isValidDeployReponse = function (request) {
+const isValidDeployResponse = function (request) {
   return ['deploySite', 'deploySiteAndAwaitLive'].includes(request.action)
 }
 

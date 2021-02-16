@@ -12,6 +12,7 @@ const { firePluginCommand } = require('./plugin')
 const { getCommandReturn } = require('./return')
 
 // Run a command (shell or plugin)
+// eslint-disable-next-line max-lines-per-function
 const runCommand = async function ({
   event,
   childProcess,
@@ -86,6 +87,7 @@ const runCommand = async function ({
     envChanges,
     constants: constantsA,
     commands,
+    featureFlags,
     buildbotServerSocket,
     events,
     error,
@@ -204,6 +206,7 @@ const tFireCommand = function ({
   envChanges,
   constants,
   commands,
+  featureFlags,
   buildbotServerSocket,
   events,
   error,
@@ -215,6 +218,7 @@ const tFireCommand = function ({
       coreCommandName,
       buildDir,
       constants,
+      featureFlags,
       buildbotServerSocket,
       events,
       logs,
