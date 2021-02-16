@@ -42,7 +42,8 @@ npm run format
 
 Alternatively you can setup your IDE to integrate with Prettier and ESLint for JavaScript and Markdown files.
 
-This is a monorepo. You can find the included packages in the [packages](packages) directory.
+This is a monorepo using [npm 7 (or later) workspaces](https://docs.npmjs.com/cli/v7/using-npm/workspaces). You can find
+the included packages in the [packages](packages) directory.
 
 ## Testing
 
@@ -80,7 +81,10 @@ netlify/plugins             -> buildbot
                             -> netlify-cli
 ```
 
-Note that Renovate should take care of opening PRs to update the relevant packages that depend upon the modules you just published. However, to make good use of your time, make sure to follow the dependency graph above. I.e. `@netlify/config` is a dependency of `@netlify/build`, so if you've just updated the former you should first start by updating `@netlify/build` and let Renovate bundle those two changes together when updating buildbot.
+Note that Renovate should take care of opening PRs to update the relevant packages that depend upon the modules you just
+published. However, to make good use of your time, make sure to follow the dependency graph above. I.e.
+`@netlify/config` is a dependency of `@netlify/build`, so if you've just updated the former you should first start by
+updating `@netlify/build` and let Renovate bundle those two changes together when updating buildbot.
 
 ### Buildbot
 
