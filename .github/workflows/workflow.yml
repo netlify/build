@@ -13,12 +13,12 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macOS-latest, windows-latest]
-        node-version: [8.17.0, 15.x]
+        node-version: ['8.17.0', 15.x]
         exclude:
           - os: macOS-latest
-            node-version: 8.17.0
+            node-version: '8.17.0'
           - os: windows-latest
-            node-version: 8.17.0
+            node-version: '8.17.0'
       fail-fast: false
     steps:
       - name: Git checkout
@@ -30,7 +30,11 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install dependencies
+        run: npm run installOldNpm
+        if: "${{ matrix.node-version == '8.17.0' }}"
+      - name: Install dependencies
         run: npm ci
+        if: "${{ matrix.node-version == '15.x' }}"
       - name: Linting
         run: npm run format:ci
         if: "${{ matrix.node-version == '15.x' }}"
