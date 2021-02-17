@@ -10,8 +10,7 @@
   "files": [
     "dist/index.js",
     "src/**/*.js",
-    "src/**/*.json",
-    "!*~"
+    "src/**/*.json"
   ],
   "scripts": {
     "prepublishOnly": "npm ci && run-s test build:core",
