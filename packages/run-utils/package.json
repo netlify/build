@@ -4,8 +4,7 @@
   "description": "Utility for running commands inside Netlify Build",
   "main": "src/main.js",
   "files": [
-    "src",
-    "!*~"
+    "src/**/*.js"
   ],
   "author": "Netlify Inc.",
   "scripts": {

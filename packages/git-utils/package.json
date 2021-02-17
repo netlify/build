@@ -4,9 +4,7 @@
   "description": "Utility for dealing with modified, created, deleted files since a git commit",
   "main": "src/main.js",
   "files": [
-    "src",
-    "!*.test.*",
-    "!*~"
+    "src/**/*.js"
   ],
   "author": "Netlify Inc.",
   "scripts": {
