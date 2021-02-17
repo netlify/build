@@ -24,7 +24,7 @@ const validateManifestExists = function (manifestPath, packageName) {
 This might mean:
   - The plugin "package" name is misspelled
   - The plugin "package" points to a Node module that is not a Netlify Build plugin
-  - If you're developing a plugin, please see the documentation at https://github.com/netlify/build#anatomy-of-a-plugin`,
+  - If you're developing a plugin, please see the documentation at https://docs.netlify.com/configure-builds/build-plugins/create-plugins/#anatomy-of-a-plugin`,
   )
   addErrorInfo(error, { type: 'resolveConfig' })
   throw error
