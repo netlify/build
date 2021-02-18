@@ -33,6 +33,7 @@ const { getSeverity } = require('./severity')
  * @param  {string} [flags.config] - Path to the configuration file
  * @param  {string} [flags.cwd] - Current directory. Used to retrieve the configuration file
  * @param  {string} [flags.repositoryRoot] - Git repository root directory. Used to retrieve the configuration file.
+ * @param  {string} [flags.apiHost] - Netlify API endpoint
  * @param  {string} [flags.token] - Netlify API token for authentication
  * @param  {string} [flags.siteId] - Netlify Site ID
  * @param  {string} [flags.deployId] - Netlify Deploy ID
@@ -106,6 +107,7 @@ const tExecBuild = async function ({
   cachedConfig,
   cwd,
   repositoryRoot,
+  apiHost,
   token,
   siteId,
   context,
@@ -144,6 +146,7 @@ const tExecBuild = async function ({
     cachedConfig,
     cwd,
     repositoryRoot,
+    apiHost,
     token,
     siteId,
     context,
@@ -283,6 +286,7 @@ const initAndRunBuild = async function ({
   dry,
   siteInfo,
   mode,
+  apiHost,
   token,
   api,
   errorMonitor,
@@ -300,6 +304,7 @@ const initAndRunBuild = async function ({
     functionsDistDir,
     netlifyConfig,
     siteInfo,
+    apiHost,
     token,
     mode,
     logs,
