@@ -30,12 +30,14 @@ const addExpectedVersion = async function ({
     return pluginOptions
   }
 
-  const expectedVersion = pluginsList[packageName]
+  const versions = pluginsList[packageName]
 
-  if (expectedVersion === undefined) {
+  if (versions === undefined) {
     validateUnlistedPlugin(packageName, loadedFrom)
     return pluginOptions
   }
+
+  const expectedVersion = getExpectedVersion(versions)
 
   // Plugin was not previously installed
   if (pluginPath === undefined) {
@@ -72,6 +74,11 @@ Please run "npm install -D ${packageName}" or "yarn add -D ${packageName}".`,
   )
   addErrorInfo(error, { type: 'resolveConfig' })
   throw error
+}
+
+// At the moment, we only allow a single `version` per plugin in `plugins.json`
+const getExpectedVersion = function ([{ version }]) {
+  return version
 }
 
 module.exports = { addExpectedVersions }
