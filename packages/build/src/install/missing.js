@@ -20,24 +20,12 @@ const pUnlink = promisify(unlink)
 // options. We do not allow configure the package manager nor its options.
 // Users requiring `yarn` or custom npm/yarn flags should install the plugin in
 // their `package.json`.
-const installMissingPlugins = async function ({ pluginsOptions, autoPluginsDir, mode, logs }) {
-  const packages = getMissingPlugins(pluginsOptions)
-  if (packages.length === 0) {
-    return
-  }
-
+const installMissingPlugins = async function ({ missingPlugins, autoPluginsDir, mode, logs }) {
+  const packages = missingPlugins.map(getPackage)
   logInstallMissingPlugins(logs, packages)
 
   await createAutoPluginsDir(logs, autoPluginsDir)
   await addExactDependencies({ packageRoot: autoPluginsDir, isLocal: mode !== 'buildbot', packages })
-}
-
-const getMissingPlugins = function (pluginsOptions) {
-  return pluginsOptions.filter(isMissingPlugin).map(getPackage)
-}
-
-const isMissingPlugin = function ({ expectedVersion }) {
-  return expectedVersion !== undefined
 }
 
 // We pin the version without using semver ranges ^ nor ~

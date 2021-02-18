@@ -101,24 +101,30 @@ const validateLocalPluginPath = function (error, localPackageName) {
 // Install plugins from the official list that have not been previously installed.
 // Print a warning if they have not been installed through the UI.
 const handleMissingPlugins = async function ({ pluginsOptions, autoPluginsDir, mode, logs }) {
-  await installMissingPlugins({ pluginsOptions, autoPluginsDir, mode, logs })
+  const missingPlugins = pluginsOptions.filter(isMissingPlugin)
+
+  if (missingPlugins.length === 0) {
+    return pluginsOptions
+  }
+
+  await installMissingPlugins({ missingPlugins, autoPluginsDir, mode, logs })
   return await Promise.all(
     pluginsOptions.map((pluginOptions) => resolveMissingPluginPath({ pluginOptions, autoPluginsDir })),
   )
 }
 
 // Resolve the plugins that just got automatically installed
-const resolveMissingPluginPath = async function ({
-  pluginOptions,
-  pluginOptions: { packageName, expectedVersion },
-  autoPluginsDir,
-}) {
-  if (expectedVersion === undefined) {
+const resolveMissingPluginPath = async function ({ pluginOptions, pluginOptions: { packageName }, autoPluginsDir }) {
+  if (!isMissingPlugin(pluginOptions)) {
     return pluginOptions
   }
 
-  const automaticPath = await resolvePath(packageName, autoPluginsDir)
-  return { ...pluginOptions, pluginPath: automaticPath }
+  const pluginPath = await resolvePath(packageName, autoPluginsDir)
+  return { ...pluginOptions, pluginPath }
+}
+
+const isMissingPlugin = function ({ expectedVersion }) {
+  return expectedVersion !== undefined
 }
 
 module.exports = { resolvePluginsPath }
