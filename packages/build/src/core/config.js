@@ -17,6 +17,7 @@ const tLoadConfig = async function ({
   cachedConfig,
   cwd,
   repositoryRoot,
+  apiHost,
   token,
   siteId,
   context,
@@ -35,6 +36,7 @@ const tLoadConfig = async function ({
     buildDir,
     config: netlifyConfig,
     context: contextA,
+    apiHost: apiHostA,
     token: tokenA,
     api,
     siteInfo,
@@ -48,6 +50,7 @@ const tLoadConfig = async function ({
     context,
     branch,
     baseRelDir,
+    apiHost,
     token,
     siteId,
     deployId,
@@ -62,7 +65,17 @@ const tLoadConfig = async function ({
   const envValues = mapObj(env, (key, { value }) => [key, value])
   const childEnv = getChildEnv({ envOpt, env: envValues })
   const { packageJson } = await getPackageJson(buildDir)
-  return { netlifyConfig, configPath, buildDir, packageJson, childEnv, token: tokenA, api: apiA, siteInfo }
+  return {
+    netlifyConfig,
+    configPath,
+    buildDir,
+    packageJson,
+    childEnv,
+    apiHost: apiHostA,
+    token: tokenA,
+    api: apiA,
+    siteInfo,
+  }
 }
 
 const loadConfig = measureDuration(tLoadConfig, 'resolve_config')
@@ -78,6 +91,7 @@ const resolveFullConfig = async function ({
   context,
   branch,
   baseRelDir,
+  apiHost,
   token,
   siteId,
   deployId,
@@ -96,6 +110,7 @@ const resolveFullConfig = async function ({
       context,
       branch,
       baseRelDir,
+      apiHost,
       token,
       siteId,
       deployId,

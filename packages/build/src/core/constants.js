@@ -26,6 +26,7 @@ const getConstants = async function ({
     build: { publish = buildDir, functions, edge_handlers: edgeHandlers },
   },
   siteInfo: { id: siteId },
+  apiHost,
   token,
   mode,
   logs,
@@ -73,6 +74,10 @@ const getConstants = async function ({
      * The Netlify Site ID
      */
     SITE_ID: siteId,
+    /**
+     * The Netlify API endpoint
+     */
+    NETLIFY_API_HOST: apiHost,
     /**
      * The Netlify API access token
      */
