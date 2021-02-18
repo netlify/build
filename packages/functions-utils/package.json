@@ -4,8 +4,7 @@
   "description": "Utility for adding Functions files in Netlify Build",
   "main": "src/main.js",
   "files": [
-    "src",
-    "!*~"
+    "src/**/*.js"
   ],
   "author": "Netlify Inc.",
   "scripts": {

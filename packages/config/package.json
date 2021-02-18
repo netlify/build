@@ -7,8 +7,7 @@
     "netlify-config": "src/bin/main.js"
   },
   "files": [
-    "src",
-    "!*~"
+    "src/**/*.js"
   ],
   "author": "Netlify Inc.",
   "contributors": [
