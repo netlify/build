@@ -53,27 +53,27 @@ const normalizePluginsList = function (pluginsList) {
   return fromEntries(pluginsList.map(normalizePluginItem))
 }
 
-// `version` in `plugins.json` can either be:
-//  - a `string`
-//  - an object with several possible versions. Each version can have conditions
-//    to apply that version.
-// We normalize it to an array of objects, sorted from most to least recent
-const normalizePluginItem = function ({ package: packageName, version }) {
-  const versions = normalizeVersions(version)
-  return [packageName, versions]
+// `version` in `plugins.json` is the latest version.
+// A `compatibility` object can be added to specify conditions to apply
+// different versions.
+// We normalize it to an array of objects, sorted from most to least recent.
+const normalizePluginItem = function ({ package: packageName, version, compatibility = {} }) {
+  const normalizedCompatibility = normalizeCompatibility(compatibility)
+  return [packageName, { version, compatibility: normalizedCompatibility }]
 }
 
-const normalizeVersions = function (version) {
-  if (typeof version === 'string') {
-    return [{ version }]
-  }
-
+const normalizeCompatibility = function (compatibility) {
   // eslint-disable-next-line fp/no-mutating-methods
-  return Object.keys(version).map(normalizeVersion).sort(compareVersion)
+  return Object.entries(compatibility).map(normalizeCompatField).sort(compareVersion)
 }
 
-const normalizeVersion = function (version) {
-  return { version }
+const normalizeCompatField = function ([version, conditions]) {
+  const normalizedConditions = Object.entries(conditions).map(normalizeCondition)
+  return { version, conditions: normalizedConditions }
+}
+
+const normalizeCondition = function ([type, condition]) {
+  return { type, condition }
 }
 
 const compareVersion = function ({ version: versionA }, { version: versionB }) {

@@ -552,7 +552,7 @@ const getPlugin = function (plugin) {
     return plugin
   }
 
-  return { ...plugin, version: { '0.3.0': {}, '0.2.0': {} } }
+  return { ...plugin, version: '0.3.0', compatibility: { '0.3.0': {}, '0.2.0': {} } }
 }
 
 const TEST_PLUGIN_NAME = 'netlify-plugin-contextual-env'
