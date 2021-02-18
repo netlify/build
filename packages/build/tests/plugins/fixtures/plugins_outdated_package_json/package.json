@@ -1,0 +1,10 @@
+{
+  "name": "test",
+  "version": "0.0.1",
+  "description": "test",
+  "license": "MIT",
+  "repository": "test",
+  "dependencies": {
+    "netlify-plugin-contextual-env": "0.2.0"
+  }
+}

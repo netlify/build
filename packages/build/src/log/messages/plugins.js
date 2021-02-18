@@ -1,7 +1,9 @@
 'use strict'
 
+const { lt: ltVersion } = require('semver')
+
 const { getPluginOrigin } = require('../description')
-const { log, logArray, logError, logSubHeader } = require('../logger')
+const { log, logArray, logErrorArray, logError, logSubHeader, logErrorSubHeader } = require('../logger')
 const { THEME } = require('../theme')
 
 const logPluginsFetchError = function (logs, message) {
@@ -45,10 +47,47 @@ const isNotCorePlugin = function ({ origin }) {
   return origin !== 'core'
 }
 
-const getPluginDescription = function ({ packageName, pluginPackageJson: { version = '' }, loadedFrom, origin }) {
-  const versionA = version === '' ? '' : `@${version}`
+const getPluginDescription = function ({ packageName, pluginPackageJson: { version }, loadedFrom, origin }) {
+  const versionedPackage = getVersionedPackage(packageName, version)
   const pluginOrigin = getPluginOrigin(loadedFrom, origin)
-  return `${THEME.highlightWords(packageName)}${versionA} ${pluginOrigin}`
+  return `${THEME.highlightWords(packageName)}${versionedPackage} ${pluginOrigin}`
+}
+
+// Print a warning message when old versions plugins are used.
+// This can only happen when they are installed to `package.json`.
+const logOutdatedPlugins = function (logs, pluginsOptions) {
+  const outdatedPlugins = pluginsOptions.map(getOutdatedPlugin).filter(Boolean)
+
+  if (outdatedPlugins.length === 0) {
+    return
+  }
+
+  logErrorSubHeader(logs, 'Outdated plugins')
+  logErrorArray(logs, outdatedPlugins)
+}
+
+const getOutdatedPlugin = function ({ packageName, pluginPackageJson: { version }, expectedVersion }) {
+  if (!hasOutdatedVersion(version, expectedVersion)) {
+    return
+  }
+
+  const versionedPackage = getVersionedPackage(packageName, version)
+  const outdatedDescription = getOutdatedDescription(expectedVersion)
+  return `${THEME.errorHighlightWords(packageName)}${versionedPackage}: ${outdatedDescription}`
+}
+
+const hasOutdatedVersion = function (version, expectedVersion) {
+  return version !== undefined && expectedVersion !== undefined && ltVersion(version, expectedVersion)
+}
+
+const getOutdatedDescription = function (expectedVersion) {
+  return `latest version is ${expectedVersion}`
+}
+
+// Make sure we handle `package.json` with `version` being either `undefined`
+// or an empty string
+const getVersionedPackage = function (packageName, version = '') {
+  return version === '' ? '' : `@${version}`
 }
 
 const logFailPluginWarning = function (methodName, event) {
@@ -68,6 +107,7 @@ module.exports = {
   logPluginsFetchError,
   logPluginsList,
   logLoadingPlugins,
+  logOutdatedPlugins,
   logFailPluginWarning,
   logDeploySuccess,
 }

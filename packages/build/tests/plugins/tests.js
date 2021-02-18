@@ -622,6 +622,10 @@ test('Can use local plugins even when some plugins are cached', async (t) => {
   await runWithApiMock(t, 'plugins_cache_local')
 })
 
+test('Prints outdated plugins installed in package.json', async (t) => {
+  await runWithApiMock(t, 'plugins_outdated_package_json')
+})
+
 const getNodePath = function (nodeVersion) {
   return `/home/ether/.nvm/versions/node/v${nodeVersion}/bin/node`
 }

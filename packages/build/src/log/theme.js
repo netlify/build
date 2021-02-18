@@ -25,6 +25,7 @@ const THEME = {
   errorLine: redBright,
   // One of several words that should be highlighted inside a line
   highlightWords: cyan,
+  errorHighlightWords: redBrightBold,
   // One of several words that should be dimmed inside a line
   dimWords: gray,
   // No colors

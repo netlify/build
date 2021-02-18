@@ -61,6 +61,11 @@ const logArray = function (logs, array, opts) {
   logMessage(logs, serializeArray(array), { color: THEME.none, ...opts })
 }
 
+// Print an array of errors
+const logErrorArray = function (logs, array, opts) {
+  logMessage(logs, serializeArray(array), { color: THEME.errorLine, ...opts })
+}
+
 // Print a main section header
 const logHeader = function (logs, string, opts) {
   log(logs, `\n${getHeader(string)}`, { color: THEME.header, ...opts })
@@ -88,6 +93,7 @@ module.exports = {
   logMessage,
   logObject,
   logArray,
+  logErrorArray,
   logHeader,
   logErrorHeader,
   logSubHeader,
