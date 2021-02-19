@@ -548,7 +548,7 @@ const getPluginsList = function () {
 }
 
 const getPlugin = function (plugin) {
-  if (plugin.packageName !== TEST_PLUGIN_NAME) {
+  if (plugin.package !== TEST_PLUGIN_NAME) {
     return plugin
   }
 
