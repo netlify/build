@@ -9,7 +9,7 @@ const { getPluginsList } = require('./list')
 // We ensure that the last version that's been approved is always the one being used.
 // We also ensure that the plugin is our official list.
 const addExpectedVersions = async function ({ pluginsOptions, autoPluginsDir, debug, logs, testOpts }) {
-  if (!pluginsOptions.some(isAutoPlugin)) {
+  if (!pluginsOptions.some(needsExpectedVersion)) {
     return pluginsOptions
   }
 
@@ -26,13 +26,16 @@ const addExpectedVersion = async function ({
   pluginOptions,
   pluginOptions: { packageName, pluginPath, loadedFrom },
 }) {
-  if (!isAutoPlugin({ loadedFrom })) {
+  if (!needsExpectedVersion(pluginOptions)) {
     return pluginOptions
   }
 
   const expectedVersion = pluginsList[packageName]
 
-  validateUnlistedPlugin(expectedVersion, packageName)
+  if (expectedVersion === undefined) {
+    validateUnlistedPlugin(packageName, loadedFrom)
+    return pluginOptions
+  }
 
   // Plugin was not previously installed
   if (pluginPath === undefined) {
@@ -51,15 +54,15 @@ const addExpectedVersion = async function ({
   return pluginOptions
 }
 
-const isAutoPlugin = function ({ loadedFrom }) {
-  return loadedFrom === 'auto_install'
+const needsExpectedVersion = function ({ loadedFrom }) {
+  return loadedFrom === 'auto_install' || loadedFrom === 'package.json'
 }
 
 // Plugins that are not in our official list can only be specified in
 // `netlify.toml` providing they are also installed in the site's package.json.
 // Otherwise, the build should fail.
-const validateUnlistedPlugin = function (expectedVersion, packageName) {
-  if (expectedVersion !== undefined) {
+const validateUnlistedPlugin = function (packageName, loadedFrom) {
+  if (loadedFrom === 'package.json') {
     return
   }
 

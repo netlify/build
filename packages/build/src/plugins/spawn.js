@@ -5,7 +5,7 @@ const { execPath } = require('process')
 const execa = require('execa')
 
 const { addErrorInfo } = require('../error/info')
-const { logLoadingPlugins } = require('../log/messages/plugins')
+const { logLoadingPlugins, logOutdatedPlugins } = require('../log/messages/plugins')
 const { measureDuration } = require('../time/main')
 
 const { getEventFromChild } = require('./ipc')
@@ -22,6 +22,7 @@ const CHILD_MAIN_FILE = `${__dirname}/child/main.js`
 //    transforming and parallel plugins
 const tStartPlugins = async function ({ pluginsOptions, buildDir, nodePath, childEnv, mode, logs }) {
   logLoadingPlugins(logs, pluginsOptions)
+  logOutdatedPlugins(logs, pluginsOptions)
 
   const userNodeVersion = await getUserNodeVersion(nodePath)
   const childProcesses = await Promise.all(
