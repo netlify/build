@@ -1,5 +1,12 @@
 # Changelog
 
+## [9.2.0](https://www.github.com/netlify/build/compare/v9.1.4...v9.2.0) (2021-02-23)
+
+
+### Features
+
+* print warnings for outdated plugins ([#2289](https://www.github.com/netlify/build/issues/2289)) ([d8fb63d](https://www.github.com/netlify/build/commit/d8fb63d73881ba5ae2e21961f07ce8e3228e7382))
+
 ### [9.1.4](https://www.github.com/netlify/build/compare/v9.1.3...v9.1.4) (2021-02-22)
 
 
