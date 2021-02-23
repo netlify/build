@@ -622,6 +622,7 @@ test('Can use local plugins even when some plugins are cached', async (t) => {
   await runWithApiMock(t, 'plugins_cache_local')
 })
 
+// Note: the `version` field is normalized to `1.0.0` in the test snapshots
 test('Prints outdated plugins installed in package.json', async (t) => {
   await runWithApiMock(t, 'plugins_outdated_package_json')
 })
