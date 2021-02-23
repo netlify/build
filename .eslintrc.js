@@ -7,6 +7,10 @@ module.exports = {
   rules: {
     strict: 2,
 
+    // Fails with npm 7 monorepos due to the following bug:
+    // https://github.com/benmosher/eslint-plugin-import/issues/1986
+    'import/no-extraneous-dependencies': 0,
+
     // eslint-plugin-ava needs to know where test files are located
     'ava/no-ignored-test-files': [2, { files: ['tests/**/*.js', '!tests/{helpers,fixtures}/**/*.{js,json}'] }],
     'ava/no-import-test-files': [2, { files: ['tests/**/*.js', '!tests/{helpers,fixtures}/**/*.{js,json}'] }],
