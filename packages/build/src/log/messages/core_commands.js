@@ -2,14 +2,14 @@
 
 const path = require('path')
 
-const { log, logArray, logErrorSubHeader } = require('../logger')
+const { log, logArray, logErrorSubHeader, pointer } = require('../logger')
 const { THEME } = require('../theme')
 
 const logBundleErrorObject = ({ logs, object }) => {
   const { location = {}, text } = object
   const { column, file, line, lineText } = location
   const locationMessage = `${file} ${line}:${column}`
-  const logMessage = `> ${lineText}
+  const logMessage = `${pointer} ${lineText}
   (in ${locationMessage})
 
   ${text}
@@ -19,37 +19,21 @@ const logBundleErrorObject = ({ logs, object }) => {
   log(logs, logMessage, { indent: true })
 }
 
-const logEsbuildBundleResult = ({ functionName, logs, result }) => {
+const logBundleResult = ({ errorMessage, logs, result }) => {
   const { bundlerErrors = [], bundlerWarnings = [] } = result
 
-  if (bundlerErrors.length !== 0) {
-    logErrorSubHeader(logs, `Bundling function \`${functionName}\` has failed:`)
-
-    bundlerErrors.forEach((bundlerError) => {
-      logBundleErrorObject({ logs, object: bundlerError })
-    })
-  }
-
-  if (bundlerWarnings.length !== 0) {
-    logErrorSubHeader(logs, `Bundling function \`${functionName}\` has produced some warnings:`)
-
-    bundlerWarnings.forEach((bundlerWarning) => {
-      logBundleErrorObject({ logs, object: bundlerWarning })
-    })
-  }
-}
-
-const logZISIBundleResult = ({ functionName, logs, result }) => {
-  const { bundlerErrors = [] } = result
-
-  if (bundlerErrors.length === 0) {
+  if (bundlerErrors.length === 0 && bundlerWarnings.length === 0) {
     return
   }
 
-  logErrorSubHeader(logs, `Fallback bundler used for function \`${functionName}\`:`)
+  if (errorMessage) {
+    logErrorSubHeader(logs, errorMessage)
+  }
 
-  bundlerErrors.forEach((bundlerError) => {
-    logBundleErrorObject({ logs, object: bundlerError })
+  const bundlerEvents = [...bundlerErrors, ...bundlerWarnings]
+
+  bundlerEvents.forEach((bundlerEvent) => {
+    logBundleErrorObject({ logs, object: bundlerEvent })
   })
 }
 
@@ -62,9 +46,17 @@ const logBundleResults = ({ logs, results = [] }) => {
     const functionName = path.basename(result.path)
 
     if (result.bundler === 'zisi') {
-      logZISIBundleResult({ functionName, logs, result })
+      logBundleResult({
+        errorMessage: `Failed to bundle function \`${functionName}\` (fallback bundler used):`,
+        logs,
+        result,
+      })
     } else if (result.bundler === 'esbuild') {
-      logEsbuildBundleResult({ functionName, logs, result })
+      logBundleResult({
+        errorMessage: `Function \`${functionName}\` bundled with warnings:`,
+        logs,
+        result,
+      })
     }
   })
 }
