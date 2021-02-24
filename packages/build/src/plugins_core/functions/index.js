@@ -8,26 +8,32 @@ const { isDirectory } = require('path-type')
 
 const { addErrorInfo } = require('../../error/info')
 const {
-  logExperimentalEsbuildParameter,
+  logBundleResults,
   logFunctionsNonExistingDir,
   logFunctionsToBundle,
 } = require('../../log/messages/core_commands')
 
 const { getZipError } = require('./error')
 
-const getZISIParameters = ({ childEnv, logs }) => {
-  // @todo Adjust when experimental support for esbuild is replaced by an
-  // official implementation.
-  const useEsbuild = Boolean(childEnv.NETLIFY_EXPERIMENTAL_ESBUILD)
-  const externalModules = childEnv.NETLIFY_EXPERIMENTAL_EXTERNAL_MODULES
-    ? childEnv.NETLIFY_EXPERIMENTAL_EXTERNAL_MODULES.split(',')
-    : []
-
-  if (useEsbuild) {
-    logExperimentalEsbuildParameter(logs, 'NETLIFY_EXPERIMENTAL_ESBUILD')
+const getZISIParameters = ({ featureFlags }) => {
+  // zip-it-and-ship-it accepts a `jsBundler` parameter, which accepts the
+  // following values:
+  // - undefined (defult): Bundles JS function with esbuild, falling back
+  //   to the legacy bundler if it fails.
+  // - 'esbuild': Bundles JS functions with esbuild
+  // - 'zisi': Bundles JS functions with the legacy bundler
+  //
+  // If the `buildbot_esbuild` flag is enabled, we let zip-it-and-ship-it
+  // choose the appropriate bundler, by not setting a `jsBundler` parameter.
+  if (featureFlags.buildbot_esbuild) {
+    return {}
   }
 
-  return { externalModules, useEsbuild }
+  // If the flag is not set, we force zip-it-and-ship-it to use the legacy
+  // bundler to maintain the same behavior.
+  return {
+    jsBundler: 'zisi',
+  }
 }
 
 // Plugin to package Netlify functions with @netlify/zip-it-and-ship-it
@@ -36,6 +42,7 @@ const coreCommand = async function ({
   buildDir,
   logs,
   childEnv,
+  featureFlags,
 }) {
   const functionsSrc = resolve(buildDir, relativeFunctionsSrc)
   const functionsDist = resolve(buildDir, relativeFunctionsDist)
@@ -54,10 +61,12 @@ const coreCommand = async function ({
     return
   }
 
-  const zisiParameters = getZISIParameters({ childEnv, logs })
+  const zisiParameters = getZISIParameters({ childEnv, featureFlags, logs })
 
   try {
-    await zipFunctions(functionsSrc, functionsDist, zisiParameters)
+    const results = await zipFunctions(functionsSrc, functionsDist, zisiParameters)
+
+    logBundleResults({ logs, results })
   } catch (error) {
     throw await getZipError(error, functionsSrc)
   }

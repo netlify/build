@@ -40,7 +40,6 @@ const REQUEST_RESOLVE_MIN_VERSION = '8.9.0'
 //   https://github.com/browserify/resolve/issues/151#issuecomment-368210310
 const resolvePathWithBasedir = function (path, basedir) {
   return new Promise((resolve, reject) => {
-    // eslint-disable-next-line promise/prefer-await-to-callbacks
     resolveLib(path, { basedir }, (error, resolvedPath) => {
       if (error) {
         return reject(error)
