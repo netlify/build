@@ -4,6 +4,7 @@ const oldPluginsList = require('@netlify/plugins-list')
 // TODO: replace with `Object.fromEntries()` after dropping Node <12.0.0
 const fromEntries = require('@ungap/from-entries')
 const got = require('got')
+const { rcompare } = require('semver')
 
 const { logPluginsList } = require('../log/messages/plugins')
 const { logPluginsFetchError } = require('../log/messages/plugins')
@@ -52,8 +53,31 @@ const normalizePluginsList = function (pluginsList) {
   return fromEntries(pluginsList.map(normalizePluginItem))
 }
 
+// `version` in `plugins.json` can either be:
+//  - a `string`
+//  - an object with several possible versions. Each version can have conditions
+//    to apply that version.
+// We normalize it to an array of objects, sorted from most to least recent
 const normalizePluginItem = function ({ package: packageName, version }) {
-  return [packageName, version]
+  const versions = normalizeVersions(version)
+  return [packageName, versions]
+}
+
+const normalizeVersions = function (version) {
+  if (typeof version === 'string') {
+    return [{ version }]
+  }
+
+  // eslint-disable-next-line fp/no-mutating-methods
+  return Object.keys(version).map(normalizeVersion).sort(compareVersion)
+}
+
+const normalizeVersion = function (version) {
+  return { version }
+}
+
+const compareVersion = function ({ version: versionA }, { version: versionB }) {
+  return rcompare(versionA, versionB)
 }
 
 module.exports = { getPluginsList }

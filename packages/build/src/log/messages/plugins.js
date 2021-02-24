@@ -27,7 +27,7 @@ const logPluginsList = function ({ pluginsList, debug, logs }) {
   logArray(logs, pluginsListArray)
 }
 
-const getPluginsListItem = function ([packageName, version]) {
+const getPluginsListItem = function ([packageName, [{ version }]]) {
   return `${packageName}@${version}`
 }
 
