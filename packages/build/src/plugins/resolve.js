@@ -5,31 +5,33 @@ const { installMissingPlugins } = require('../install/missing')
 const { resolvePath, tryResolvePath } = require('../utils/resolve')
 
 const { addExpectedVersions } = require('./expected_version')
+const { addPluginsNodeVersion } = require('./node_version')
 
 // Try to find plugins in four places, by priority order:
 //  - already loaded (core plugins)
 //  - local plugin
 //  - external plugin already installed in `node_modules`, most likely through `package.json`
 //  - automatically installed by us, to `.netlify/plugins/`
-const resolvePluginsPath = async function ({ pluginsOptions, buildDir, mode, logs, debug, testOpts }) {
+const resolvePluginsPath = async function ({ pluginsOptions, buildDir, nodePath, mode, logs, debug, testOpts }) {
   const autoPluginsDir = getAutoPluginsDir(buildDir)
   const pluginsOptionsA = await Promise.all(
     pluginsOptions.map((pluginOptions) => resolvePluginPath({ pluginOptions, buildDir, autoPluginsDir })),
   )
-  const pluginsOptionsB = await addExpectedVersions({
-    pluginsOptions: pluginsOptionsA,
+  const pluginsOptionsB = await addPluginsNodeVersion({ pluginsOptions: pluginsOptionsA, mode, nodePath })
+  const pluginsOptionsC = await addExpectedVersions({
+    pluginsOptions: pluginsOptionsB,
     autoPluginsDir,
     debug,
     logs,
     testOpts,
   })
-  const pluginsOptionsC = await handleMissingPlugins({
-    pluginsOptions: pluginsOptionsB,
+  const pluginsOptionsD = await handleMissingPlugins({
+    pluginsOptions: pluginsOptionsC,
     autoPluginsDir,
     mode,
     logs,
   })
-  return pluginsOptionsC
+  return pluginsOptionsD
 }
 
 // Find the path to the directory used to install plugins automatically.
