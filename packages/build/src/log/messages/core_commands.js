@@ -25,16 +25,16 @@ const logEsbuildBundleResult = ({ functionName, logs, result }) => {
   if (bundlerErrors.length !== 0) {
     logErrorSubHeader(logs, `Bundling function \`${functionName}\` has failed:`)
 
-    bundlerErrors.forEach((error) => {
-      logBundleErrorObject({ logs, object: error })
+    bundlerErrors.forEach((bundlerError) => {
+      logBundleErrorObject({ logs, object: bundlerError })
     })
   }
 
   if (bundlerWarnings.length !== 0) {
     logErrorSubHeader(logs, `Bundling function \`${functionName}\` has produced some warnings:`)
 
-    bundlerWarnings.forEach((error) => {
-      logBundleErrorObject({ logs, object: error })
+    bundlerWarnings.forEach((bundlerWarning) => {
+      logBundleErrorObject({ logs, object: bundlerWarning })
     })
   }
 }
@@ -48,8 +48,8 @@ const logZISIBundleResult = ({ functionName, logs, result }) => {
 
   logErrorSubHeader(logs, `Fallback bundler used for function \`${functionName}\`:`)
 
-  bundlerErrors.forEach((error) => {
-    logBundleErrorObject({ logs, object: error })
+  bundlerErrors.forEach((bundlerError) => {
+    logBundleErrorObject({ logs, object: bundlerError })
   })
 }
 
