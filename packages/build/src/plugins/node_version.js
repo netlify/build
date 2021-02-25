@@ -10,6 +10,14 @@ const {
 } = require('../../package.json')
 const { addErrorInfo } = require('../error/info')
 
+// Local plugins, `package.json`-installed plugins and local builds use user's
+// preferred Node.js version.
+// Other plugins use `@netlify/build` Node.js version.
+const addPluginsNodeVersion = async function ({ pluginsOptions, mode, nodePath }) {
+  const userNodeVersion = await getUserNodeVersion(nodePath)
+  return pluginsOptions.map((pluginOptions) => addPluginNodeVersion({ pluginOptions, userNodeVersion, mode, nodePath }))
+}
+
 // Retrieve Node.js version from `--node-path`
 const getUserNodeVersion = async function (nodePath) {
   // No `--node-path` CLI flag
@@ -40,9 +48,23 @@ const getCurrentNodeVersion = function () {
   return cleanVersion(currentVersion)
 }
 
+const addPluginNodeVersion = function ({
+  pluginOptions,
+  pluginOptions: { loadedFrom },
+  userNodeVersion,
+  mode,
+  nodePath,
+}) {
+  if (loadedFrom === 'local' || loadedFrom === 'package.json' || (loadedFrom !== 'core' && mode !== 'buildbot')) {
+    return { ...pluginOptions, nodePath, nodeVersion: userNodeVersion }
+  }
+
+  return { ...pluginOptions, nodePath: execPath, nodeVersion: getCurrentNodeVersion() }
+}
+
 // Ensure Node.js version is recent enough to run this plugin
 const checkNodeVersion = function ({
-  childNodeVersion,
+  nodeVersion,
   packageName,
   pluginPackageJson: { engines: { node: pluginNodeVersionRange } = {} } = {},
 }) {
@@ -53,16 +75,16 @@ const checkNodeVersion = function ({
   //    plugins added to `package.json`
   //  - Netlify CLI has the same minimal allowed Node.js version as
   //    `@netlify/build`, so if users can run Netlify CLI, everything is good
-  if (!satisfies(childNodeVersion, coreNodeVersionRange)) {
-    throwUserError(`The Node.js version is ${childNodeVersion} but it should be ${coreNodeVersionRange} when using build plugins either:
+  if (!satisfies(nodeVersion, coreNodeVersionRange)) {
+    throwUserError(`The Node.js version is ${nodeVersion} but it should be ${coreNodeVersionRange} when using build plugins either:
   - from the same repository (as opposed to npm modules)
   - or added to "package.json"`)
   }
 
   // Plugins can also set a minimal version using `engines.node`
-  if (pluginNodeVersionRange && !satisfies(childNodeVersion, pluginNodeVersionRange)) {
+  if (pluginNodeVersionRange && !satisfies(nodeVersion, pluginNodeVersionRange)) {
     throwUserError(
-      `The Node.js version is ${childNodeVersion} but the plugin "${packageName}" requires ${pluginNodeVersionRange}`,
+      `The Node.js version is ${nodeVersion} but the plugin "${packageName}" requires ${pluginNodeVersionRange}`,
     )
   }
 }
@@ -73,4 +95,4 @@ const throwUserError = function (message) {
   throw error
 }
 
-module.exports = { getUserNodeVersion, getCurrentNodeVersion, checkNodeVersion }
+module.exports = { addPluginsNodeVersion, checkNodeVersion }
