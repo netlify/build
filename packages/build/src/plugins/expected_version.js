@@ -3,6 +3,7 @@
 const { addErrorInfo } = require('../error/info')
 const { resolvePath } = require('../utils/resolve')
 
+const { getExpectedVersion } = require('./compatibility')
 const { getPluginsList } = require('./list')
 
 // When using plugins in our official list, those are installed in .netlify/plugins/
@@ -30,14 +31,14 @@ const addExpectedVersion = async function ({
     return pluginOptions
   }
 
-  const versions = pluginsList[packageName]
-
-  if (versions === undefined) {
+  if (pluginsList[packageName] === undefined) {
     validateUnlistedPlugin(packageName, loadedFrom)
     return pluginOptions
   }
 
-  const expectedVersion = getExpectedVersion(versions)
+  const { version: latestVersion, compatibility } = pluginsList[packageName]
+
+  const expectedVersion = getExpectedVersion(latestVersion, compatibility)
 
   // Plugin was not previously installed
   if (pluginPath === undefined) {
@@ -74,11 +75,6 @@ Please run "npm install -D ${packageName}" or "yarn add -D ${packageName}".`,
   )
   addErrorInfo(error, { type: 'resolveConfig' })
   throw error
-}
-
-// At the moment, we only allow a single `version` per plugin in `plugins.json`
-const getExpectedVersion = function ([{ version }]) {
-  return version
 }
 
 module.exports = { addExpectedVersions }
