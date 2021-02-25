@@ -1,5 +1,14 @@
 # Changelog
 
+## [9.3.0](https://www.github.com/netlify/build/compare/v9.2.0...v9.3.0) (2021-02-25)
+
+
+### Features
+
+* add `plugin.compatibility` field ([#2310](https://www.github.com/netlify/build/issues/2310)) ([80525cb](https://www.github.com/netlify/build/commit/80525cbbc8ba38fc46daad0d40703d5a69c27dbc))
+* allow `version` in `plugins.json` to be an object ([#2307](https://www.github.com/netlify/build/issues/2307)) ([ce56878](https://www.github.com/netlify/build/commit/ce5687804759539ec43840089822fb9629fbc1fd))
+* move where the plugin Node.js version is resolved ([#2311](https://www.github.com/netlify/build/issues/2311)) ([5ada384](https://www.github.com/netlify/build/commit/5ada384d644661dca9b481d91b7f829acc9b7b00))
+
 ## [9.2.0](https://www.github.com/netlify/build/compare/v9.1.4...v9.2.0) (2021-02-23)
 
 
