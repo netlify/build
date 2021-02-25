@@ -1,6 +1,6 @@
 # Changelog
 
-### [9.3.1](https://www.github.com/netlify/build/compare/v9.3.0...v9.3.1) (2021-02-25)
+### [9.4.0](https://www.github.com/netlify/build/compare/v9.3.0...v9.4.0) (2021-02-25)
 
 
 ### Bug Fixes
