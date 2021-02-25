@@ -1,17 +1,68 @@
 'use strict'
 
-const { log, logArray, logError } = require('../logger')
+const path = require('path')
+
+const { log, logArray, logErrorSubHeader, pointer } = require('../logger')
 const { THEME } = require('../theme')
 
-const logExperimentalEsbuildParameter = function (logs, envVariableName) {
-  logError(
-    logs,
-    `
-You've opted in to an experimental bundling mechanism via the "${envVariableName}" environment variable.
-We recommend against using this functionality in production sites since its behavior may change or it may be removed entirely.
-For the latest updates about function bundling, please visit our Community forum: community.netlify.com.
-`,
-  )
+const logBundleErrorObject = ({ logs, object }) => {
+  const { location = {}, text } = object
+  const { column, file, line, lineText } = location
+  const locationMessage = `${file} ${line}:${column}`
+  const logMessage = `${pointer} ${lineText}
+  (in ${locationMessage})
+
+  ${text}
+  
+  `
+
+  log(logs, logMessage, { indent: true })
+}
+
+const logBundleResult = ({ errorMessage, logs, result }) => {
+  const { bundlerErrors = [], bundlerWarnings = [] } = result
+
+  if (bundlerErrors.length === 0 && bundlerWarnings.length === 0) {
+    return
+  }
+
+  if (errorMessage) {
+    logErrorSubHeader(logs, errorMessage)
+  }
+
+  const bundlerEvents = [...bundlerErrors, ...bundlerWarnings]
+
+  bundlerEvents.forEach((bundlerEvent) => {
+    logBundleErrorObject({ logs, object: bundlerEvent })
+  })
+}
+
+const logBundleResults = ({ logs, results = [], zisiParameters = {} }) => {
+  if (!zisiParameters.jsBundler) {
+    return
+  }
+
+  results.forEach((result) => {
+    if (result.runtime !== 'js' || !result.path) {
+      return
+    }
+
+    const functionName = path.basename(result.path)
+
+    if (result.bundler === 'zisi') {
+      logBundleResult({
+        errorMessage: `Failed to bundle function \`${functionName}\` (fallback bundler used):`,
+        logs,
+        result,
+      })
+    } else if (result.bundler === 'esbuild') {
+      logBundleResult({
+        errorMessage: `Function \`${functionName}\` bundled with warnings:`,
+        logs,
+        result,
+      })
+    }
+  })
 }
 
 const logFunctionsNonExistingDir = function (logs, relativeFunctionsSrc) {
@@ -30,7 +81,7 @@ const logFunctionsToBundle = function (logs, functions, relativeFunctionsSrc) {
 }
 
 module.exports = {
-  logExperimentalEsbuildParameter,
+  logBundleResults,
   logFunctionsToBundle,
   logFunctionsNonExistingDir,
 }

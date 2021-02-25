@@ -91,6 +91,7 @@ const runCommand = async function ({
     error,
     logs,
     timers,
+    featureFlags,
   })
 
   const newValues = await getCommandReturn({
@@ -208,6 +209,7 @@ const tFireCommand = function ({
   events,
   error,
   logs,
+  featureFlags,
 }) {
   if (coreCommand !== undefined) {
     return fireCoreCommand({
@@ -219,6 +221,7 @@ const tFireCommand = function ({
       events,
       logs,
       childEnv,
+      featureFlags,
     })
   }
 

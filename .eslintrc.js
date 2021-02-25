@@ -34,5 +34,15 @@ module.exports = {
         'node/no-unsupported-features/es-syntax': 0,
       },
     },
+
+    // @todo As it stands, this rule is problematic with methods that get+send
+    // many parameters, such as `runCommand` in `src/commands/run_command.js`.
+    // We should discuss whether we want to keep this rule or discontinue it.
+    {
+      files: ['packages/build/**/*.js'],
+      rules: {
+        'max-lines-per-function': 'off',
+      },
+    },
   ],
 }

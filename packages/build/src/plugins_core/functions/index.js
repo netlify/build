@@ -8,26 +8,24 @@ const { isDirectory } = require('path-type')
 
 const { addErrorInfo } = require('../../error/info')
 const {
-  logExperimentalEsbuildParameter,
+  logBundleResults,
   logFunctionsNonExistingDir,
   logFunctionsToBundle,
 } = require('../../log/messages/core_commands')
 
 const { getZipError } = require('./error')
 
-const getZISIParameters = ({ childEnv, logs }) => {
-  // @todo Adjust when experimental support for esbuild is replaced by an
-  // official implementation.
-  const useEsbuild = Boolean(childEnv.NETLIFY_EXPERIMENTAL_ESBUILD)
-  const externalModules = childEnv.NETLIFY_EXPERIMENTAL_EXTERNAL_MODULES
-    ? childEnv.NETLIFY_EXPERIMENTAL_EXTERNAL_MODULES.split(',')
-    : []
-
-  if (useEsbuild) {
-    logExperimentalEsbuildParameter(logs, 'NETLIFY_EXPERIMENTAL_ESBUILD')
+const getZISIParameters = ({ featureFlags }) => {
+  if (!featureFlags.buildbot_esbuild) {
+    return {}
   }
 
-  return { externalModules, useEsbuild }
+  // If the `buildbot_esbuild` flag is enabled, we tell zip-it-and-ship-it to
+  // bundle JS functions with esbuild, with a fallback to the legacy bundler
+  // in case of an error
+  return {
+    jsBundler: 'esbuild_zisi',
+  }
 }
 
 // Plugin to package Netlify functions with @netlify/zip-it-and-ship-it
@@ -36,6 +34,7 @@ const coreCommand = async function ({
   buildDir,
   logs,
   childEnv,
+  featureFlags,
 }) {
   const functionsSrc = resolve(buildDir, relativeFunctionsSrc)
   const functionsDist = resolve(buildDir, relativeFunctionsDist)
@@ -54,10 +53,12 @@ const coreCommand = async function ({
     return
   }
 
-  const zisiParameters = getZISIParameters({ childEnv, logs })
+  const zisiParameters = getZISIParameters({ childEnv, featureFlags, logs })
 
   try {
-    await zipFunctions(functionsSrc, functionsDist, zisiParameters)
+    const results = await zipFunctions(functionsSrc, functionsDist, zisiParameters)
+
+    logBundleResults({ logs, results, zisiParameters })
   } catch (error) {
     throw await getZipError(error, functionsSrc)
   }

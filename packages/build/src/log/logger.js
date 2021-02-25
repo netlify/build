@@ -98,4 +98,5 @@ module.exports = {
   logErrorHeader,
   logSubHeader,
   logErrorSubHeader,
+  pointer,
 }
