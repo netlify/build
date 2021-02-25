@@ -9,6 +9,7 @@ const { measureDuration } = require('../time/main')
 const { getPackageJson } = require('../utils/package')
 
 const { useManifest } = require('./manifest/main')
+const { checkNodeVersion } = require('./node_version')
 const { resolvePluginsPath } = require('./resolve')
 
 // Load plugin options (specified by user in `config.plugins`)
@@ -16,6 +17,7 @@ const { resolvePluginsPath } = require('./resolve')
 const tGetPluginsOptions = async function ({
   netlifyConfig: { plugins },
   buildDir,
+  nodePath,
   constants,
   mode,
   featureFlags,
@@ -34,6 +36,7 @@ const tGetPluginsOptions = async function ({
   const pluginsOptionsA = await resolvePluginsPath({
     pluginsOptions,
     buildDir,
+    nodePath,
     mode,
     logs,
     debug,
@@ -79,11 +82,16 @@ const normalizePluginOptions = function ({ package: packageName, pluginPath, loa
 
 // Retrieve plugin's main file path.
 // Then load plugin's `package.json` and `manifest.yml`.
-const loadPluginFiles = async function ({ pluginOptions: { pluginPath, ...pluginOptions }, debug }) {
+const loadPluginFiles = async function ({
+  pluginOptions,
+  pluginOptions: { pluginPath, nodeVersion, packageName },
+  debug,
+}) {
   const pluginDir = dirname(pluginPath)
   const { packageDir, packageJson: pluginPackageJson } = await getPackageJson(pluginDir)
+  checkNodeVersion({ nodeVersion, packageName, pluginPackageJson })
   const { manifest, inputs } = await useManifest(pluginOptions, { pluginDir, packageDir, pluginPackageJson, debug })
-  return { ...pluginOptions, pluginPath, pluginDir, packageDir, pluginPackageJson, manifest, inputs }
+  return { ...pluginOptions, pluginDir, packageDir, pluginPackageJson, manifest, inputs }
 }
 
 // Core plugins can only be included once.

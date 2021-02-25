@@ -312,6 +312,7 @@ const initAndRunBuild = async function ({
   const { pluginsOptions, timers: timersA } = await getPluginsOptions({
     netlifyConfig,
     buildDir,
+    nodePath,
     constants,
     mode,
     featureFlags,
@@ -325,9 +326,7 @@ const initAndRunBuild = async function ({
   const { childProcesses, timers: timersB } = await startPlugins({
     pluginsOptions,
     buildDir,
-    nodePath,
     childEnv,
-    mode,
     logs,
     timers: timersA,
   })
