@@ -16,23 +16,15 @@ const {
 const { getZipError } = require('./error')
 
 const getZISIParameters = ({ featureFlags }) => {
-  // zip-it-and-ship-it accepts a `jsBundler` parameter, which accepts the
-  // following values:
-  // - undefined (defult): Bundles JS function with esbuild, falling back
-  //   to the legacy bundler if it fails.
-  // - 'esbuild': Bundles JS functions with esbuild
-  // - 'zisi': Bundles JS functions with the legacy bundler
-  //
-  // If the `buildbot_esbuild` flag is enabled, we let zip-it-and-ship-it
-  // choose the appropriate bundler, by not setting a `jsBundler` parameter.
-  if (featureFlags.buildbot_esbuild) {
+  if (!featureFlags.buildbot_esbuild) {
     return {}
   }
 
-  // If the flag is not set, we force zip-it-and-ship-it to use the legacy
-  // bundler to maintain the same behavior.
+  // If the `buildbot_esbuild` flag is enabled, we tell zip-it-and-ship-it to
+  // bundle JS functions with esbuild, with a fallback to the legacy bundler
+  // in case of an error
   return {
-    jsBundler: 'zisi',
+    jsBundler: 'esbuild_zisi',
   }
 }
 
@@ -66,7 +58,7 @@ const coreCommand = async function ({
   try {
     const results = await zipFunctions(functionsSrc, functionsDist, zisiParameters)
 
-    logBundleResults({ logs, results })
+    logBundleResults({ logs, results, zisiParameters })
   } catch (error) {
     throw await getZipError(error, functionsSrc)
   }

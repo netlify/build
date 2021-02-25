@@ -37,7 +37,11 @@ const logBundleResult = ({ errorMessage, logs, result }) => {
   })
 }
 
-const logBundleResults = ({ logs, results = [] }) => {
+const logBundleResults = ({ logs, results = [], zisiParameters = {} }) => {
+  if (!zisiParameters.jsBundler) {
+    return
+  }
+
   results.forEach((result) => {
     if (result.runtime !== 'js' || !result.path) {
       return
