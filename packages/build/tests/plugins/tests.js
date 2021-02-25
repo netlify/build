@@ -523,10 +523,16 @@ test('Do not allow overriding core plugins', async (t) => {
   await runFixture(t, 'core_override')
 })
 
-const runWithApiMock = async function (t, fixtureName, flags = {}, status = 200) {
+const runWithApiMock = async function (
+  t,
+  fixtureName,
+  { testPlugin = DEFAULT_TEST_PLUGIN, ...flags } = {},
+  status = 200,
+) {
+  const response = getPluginsList(testPlugin)
   const { scheme, host, stopServer } = await startServer({
     path: PLUGINS_LIST_URL,
-    response: PLUGINS_LIST_DATA,
+    response,
     status,
   })
   try {
@@ -543,22 +549,25 @@ const runWithApiMock = async function (t, fixtureName, flags = {}, status = 200)
 
 // We use a specific plugin in tests. We hardcode its version to keep the tests
 // stable even when new versions of that plugin are published.
-const getPluginsList = function () {
-  return pluginsList.map(getPlugin)
+const getPluginsList = function (testPlugin) {
+  return pluginsList.map((plugin) => getPlugin(plugin, testPlugin))
 }
 
-const getPlugin = function (plugin) {
+const getPlugin = function (plugin, testPlugin) {
   if (plugin.package !== TEST_PLUGIN_NAME) {
     return plugin
   }
 
-  return { ...plugin, version: '0.3.0', compatibility: { '0.3.0': {}, '0.2.0': {} } }
+  return { ...plugin, ...testPlugin }
 }
 
 const TEST_PLUGIN_NAME = 'netlify-plugin-contextual-env'
 
 const PLUGINS_LIST_URL = '/'
-const PLUGINS_LIST_DATA = getPluginsList()
+const DEFAULT_TEST_PLUGIN = {
+  version: '0.3.0',
+  compatibility: { '0.3.0': {}, '0.2.0': {} },
+}
 
 test('Install plugins in .netlify/plugins/ when not cached', async (t) => {
   await removeDir(`${FIXTURES_DIR}/valid_package/.netlify`)
@@ -625,6 +634,37 @@ test('Can use local plugins even when some plugins are cached', async (t) => {
 // Note: the `version` field is normalized to `1.0.0` in the test snapshots
 test('Prints outdated plugins installed in package.json', async (t) => {
   await runWithApiMock(t, 'plugins_outdated_package_json')
+})
+
+// `serial()` is needed due to the potential of re-installing the dependency
+test.serial('Plugins can specify non-matching compatibility.nodeVersion', async (t) => {
+  await removeDir(`${FIXTURES_DIR}/plugins_compat_node_version/.netlify`)
+  await runWithApiMock(t, 'plugins_compat_node_version', {
+    testPlugin: {
+      version: '0.3.0',
+      compatibility: { '0.3.0': { nodeVersion: '<6.0.0' }, '0.2.0': {} },
+    },
+  })
+})
+
+test.serial('Plugins can specify matching compatibility.nodeVersion', async (t) => {
+  await removeDir(`${FIXTURES_DIR}/plugins_compat_node_version/.netlify`)
+  await runWithApiMock(t, 'plugins_compat_node_version', {
+    testPlugin: {
+      version: '0.3.0',
+      compatibility: { '0.3.0': { nodeVersion: '>6.0.0' }, '0.2.0': {} },
+    },
+  })
+})
+
+test.serial('Plugins compatibility defaults to version field', async (t) => {
+  await removeDir(`${FIXTURES_DIR}/plugins_compat_node_version/.netlify`)
+  await runWithApiMock(t, 'plugins_compat_node_version', {
+    testPlugin: {
+      version: '0.3.0',
+      compatibility: { '0.3.0': { nodeVersion: '<6.0.0' }, '0.2.0': { nodeVersion: '<7.0.0' } },
+    },
+  })
 })
 
 const getNodePath = function (nodeVersion) {
