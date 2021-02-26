@@ -62,9 +62,9 @@ const normalizePluginItem = function ({ package: packageName, version, compatibi
   return [packageName, { version, compatibility: normalizedCompatibility }]
 }
 
-const normalizeCompatVersion = function ({ version, ...conditions }) {
+const normalizeCompatVersion = function ({ version, migrationGuide, ...conditions }) {
   const normalizedConditions = Object.entries(conditions).map(normalizeCondition)
-  return { version, conditions: normalizedConditions }
+  return { version, migrationGuide, conditions: normalizedConditions }
 }
 
 const normalizeCondition = function ([type, condition]) {

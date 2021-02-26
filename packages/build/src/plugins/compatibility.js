@@ -11,8 +11,8 @@ const getExpectedVersion = function ({ latestVersion, compatibility, nodeVersion
     return { expectedVersion: latestVersion }
   }
 
-  const { version: expectedVersion, conditions } = matchingCondition
-  const compatWarning = getCompatWarning(conditions)
+  const { version: expectedVersion, conditions, migrationGuide } = matchingCondition
+  const compatWarning = getCompatWarning(conditions, migrationGuide)
   return { expectedVersion, compatWarning }
 }
 
@@ -21,8 +21,9 @@ const matchesCompatField = function ({ conditions, nodeVersion }) {
 }
 
 // Retrieve warning message shown when using an older version with `compatibility`
-const getCompatWarning = function (conditions) {
-  return conditions.map(getConditionWarning).join(', ')
+const getCompatWarning = function (conditions, migrationGuide) {
+  const compatWarning = conditions.map(getConditionWarning).join(', ')
+  return migrationGuide === undefined ? compatWarning : `${compatWarning}\nMigration guide: ${migrationGuide}`
 }
 
 const getConditionWarning = function ({ type, condition }) {

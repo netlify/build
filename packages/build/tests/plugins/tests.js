@@ -679,6 +679,19 @@ test.serial('Plugins compatibility defaults to version field', async (t) => {
   })
 })
 
+test.serial('Plugins can specify compatibility.migrationGuide', async (t) => {
+  await removeDir(`${FIXTURES_DIR}/plugins_compat_node_version/.netlify`)
+  await runWithApiMock(t, 'plugins_compat_node_version', {
+    testPlugin: {
+      version: '0.3.0',
+      compatibility: [
+        { version: '0.3.0', nodeVersion: '100 - 120' },
+        { version: '0.2.0', nodeVersion: '<100', migrationGuide: 'http://test.com' },
+      ],
+    },
+  })
+})
+
 const getNodePath = function (nodeVersion) {
   return `/home/ether/.nvm/versions/node/v${nodeVersion}/bin/node`
 }
