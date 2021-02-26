@@ -1,5 +1,15 @@
 # Changelog
 
+## [9.4.0](https://www.github.com/netlify/build/compare/v9.3.1...v9.4.0) (2021-02-26)
+
+
+### Features
+
+* add `compatibility[*].nodeVersion` ([#2315](https://www.github.com/netlify/build/issues/2315)) ([8df8c34](https://www.github.com/netlify/build/commit/8df8c3481b8b7009e4ed367844106913463dd0a0))
+* add feature flag for esbuild rollout ([#2308](https://www.github.com/netlify/build/issues/2308)) ([eef6428](https://www.github.com/netlify/build/commit/eef64288fed481c6940dc86fec5a61cbd953d5de))
+* print warnings when using `compatibility` versions ([#2319](https://www.github.com/netlify/build/issues/2319)) ([9beea68](https://www.github.com/netlify/build/commit/9beea68ad168a454b214a149a466d71fe403b74a))
+* turn `compatibility` field into an array ([#2318](https://www.github.com/netlify/build/issues/2318)) ([77243ef](https://www.github.com/netlify/build/commit/77243efaf93924501d2e986267b3b53aa5475153))
+
 ### [9.4.0](https://www.github.com/netlify/build/compare/v9.3.0...v9.4.0) (2021-02-25)
 
 
