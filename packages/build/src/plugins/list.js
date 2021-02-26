@@ -54,20 +54,15 @@ const normalizePluginsList = function (pluginsList) {
 }
 
 // `version` in `plugins.json` is the latest version.
-// A `compatibility` object can be added to specify conditions to apply
-// different versions.
-// We normalize it to an array of objects, sorted from most to least recent.
-const normalizePluginItem = function ({ package: packageName, version, compatibility = {} }) {
-  const normalizedCompatibility = normalizeCompatibility(compatibility)
+// A `compatibility` array of objects can be added to specify conditions to
+// apply different versions.
+const normalizePluginItem = function ({ package: packageName, version, compatibility = [] }) {
+  // eslint-disable-next-line fp/no-mutating-methods
+  const normalizedCompatibility = compatibility.map(normalizeCompatVersion).sort(compareCompatVersion)
   return [packageName, { version, compatibility: normalizedCompatibility }]
 }
 
-const normalizeCompatibility = function (compatibility) {
-  // eslint-disable-next-line fp/no-mutating-methods
-  return Object.entries(compatibility).map(normalizeCompatField).sort(compareVersion)
-}
-
-const normalizeCompatField = function ([version, conditions]) {
+const normalizeCompatVersion = function ({ version, ...conditions }) {
   const normalizedConditions = Object.entries(conditions).map(normalizeCondition)
   return { version, conditions: normalizedConditions }
 }
@@ -76,7 +71,7 @@ const normalizeCondition = function ([type, condition]) {
   return { type, condition }
 }
 
-const compareVersion = function ({ version: versionA }, { version: versionB }) {
+const compareCompatVersion = function ({ version: versionA }, { version: versionB }) {
   return rcompare(versionA, versionB)
 }
 
