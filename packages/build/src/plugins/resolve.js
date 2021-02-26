@@ -12,7 +12,16 @@ const { addPluginsNodeVersion } = require('./node_version')
 //  - local plugin
 //  - external plugin already installed in `node_modules`, most likely through `package.json`
 //  - automatically installed by us, to `.netlify/plugins/`
-const resolvePluginsPath = async function ({ pluginsOptions, buildDir, nodePath, mode, logs, debug, testOpts }) {
+const resolvePluginsPath = async function ({
+  pluginsOptions,
+  buildDir,
+  nodePath,
+  packageJson,
+  mode,
+  logs,
+  debug,
+  testOpts,
+}) {
   const autoPluginsDir = getAutoPluginsDir(buildDir)
   const pluginsOptionsA = await Promise.all(
     pluginsOptions.map((pluginOptions) => resolvePluginPath({ pluginOptions, buildDir, autoPluginsDir })),
@@ -21,6 +30,7 @@ const resolvePluginsPath = async function ({ pluginsOptions, buildDir, nodePath,
   const pluginsOptionsC = await addExpectedVersions({
     pluginsOptions: pluginsOptionsB,
     autoPluginsDir,
+    packageJson,
     debug,
     logs,
     testOpts,

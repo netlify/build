@@ -686,6 +686,56 @@ test.serial('Plugins can specify compatibility.migrationGuide', async (t) => {
   })
 })
 
+test.serial('Plugins can specify matching compatibility.siteDependencies', async (t) => {
+  await removeDir(`${FIXTURES_DIR}/plugins_compat_site_dependencies/.netlify`)
+  await runWithApiMock(t, 'plugins_compat_site_dependencies', {
+    testPlugin: {
+      version: '0.3.0',
+      compatibility: [{ version: '0.2.0', siteDependencies: { 'ansi-styles': '<3' } }],
+    },
+  })
+})
+
+test.serial('Plugins can specify non-matching compatibility.siteDependencies', async (t) => {
+  await removeDir(`${FIXTURES_DIR}/plugins_compat_site_dependencies/.netlify`)
+  await runWithApiMock(t, 'plugins_compat_site_dependencies', {
+    testPlugin: {
+      version: '0.3.0',
+      compatibility: [{ version: '0.2.0', siteDependencies: { 'ansi-styles': '<2' } }],
+    },
+  })
+})
+
+test.serial('Plugins can specify non-existing compatibility.siteDependencies', async (t) => {
+  await removeDir(`${FIXTURES_DIR}/plugins_compat_site_dependencies/.netlify`)
+  await runWithApiMock(t, 'plugins_compat_site_dependencies', {
+    testPlugin: {
+      version: '0.3.0',
+      compatibility: [{ version: '0.2.0', siteDependencies: { 'does-not-exist': '<3' } }],
+    },
+  })
+})
+
+test.serial('Plugins can specify multiple non-matching compatibility conditions', async (t) => {
+  await removeDir(`${FIXTURES_DIR}/plugins_compat_site_dependencies/.netlify`)
+  await runWithApiMock(t, 'plugins_compat_site_dependencies', {
+    testPlugin: {
+      version: '0.3.0',
+      compatibility: [{ version: '0.2.0', siteDependencies: { 'ansi-styles': '<3' }, nodeVersion: '100 - 120' }],
+    },
+  })
+})
+
+test.serial('Plugins can specify multiple matching compatibility conditions', async (t) => {
+  await removeDir(`${FIXTURES_DIR}/plugins_compat_site_dependencies/.netlify`)
+  await runWithApiMock(t, 'plugins_compat_site_dependencies', {
+    testPlugin: {
+      version: '0.3.0',
+      compatibility: [{ version: '0.2.0', siteDependencies: { 'ansi-styles': '<3' }, nodeVersion: '<100' }],
+    },
+  })
+})
+
 const getNodePath = function (nodeVersion) {
   return `/home/ether/.nvm/versions/node/v${nodeVersion}/bin/node`
 }
