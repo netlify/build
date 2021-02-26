@@ -4,7 +4,7 @@ const oldPluginsList = require('@netlify/plugins-list')
 // TODO: replace with `Object.fromEntries()` after dropping Node <12.0.0
 const fromEntries = require('@ungap/from-entries')
 const got = require('got')
-const { rcompare } = require('semver')
+const { compare } = require('semver')
 
 const { logPluginsList } = require('../log/messages/plugins')
 const { logPluginsFetchError } = require('../log/messages/plugins')
@@ -77,7 +77,7 @@ const normalizeCondition = function ([type, condition]) {
 }
 
 const compareVersion = function ({ version: versionA }, { version: versionB }) {
-  return rcompare(versionA, versionB)
+  return compare(versionA, versionB)
 }
 
 module.exports = { getPluginsList }

@@ -564,10 +564,7 @@ const getPlugin = function (plugin, testPlugin) {
 const TEST_PLUGIN_NAME = 'netlify-plugin-contextual-env'
 
 const PLUGINS_LIST_URL = '/'
-const DEFAULT_TEST_PLUGIN = {
-  version: '0.3.0',
-  compatibility: { '0.3.0': {}, '0.2.0': {} },
-}
+const DEFAULT_TEST_PLUGIN = { version: '0.3.0' }
 
 test('Install plugins in .netlify/plugins/ when not cached', async (t) => {
   await removeDir(`${FIXTURES_DIR}/valid_package/.netlify`)
@@ -642,7 +639,7 @@ test.serial('Plugins can specify non-matching compatibility.nodeVersion', async 
   await runWithApiMock(t, 'plugins_compat_node_version', {
     testPlugin: {
       version: '0.3.0',
-      compatibility: { '0.3.0': { nodeVersion: '<6.0.0' }, '0.2.0': {} },
+      compatibility: { '0.2.0': {}, '0.0.7': { nodeVersion: '<6.0.0' } },
     },
   })
 })
@@ -652,7 +649,7 @@ test.serial('Plugins can specify matching compatibility.nodeVersion', async (t) 
   await runWithApiMock(t, 'plugins_compat_node_version', {
     testPlugin: {
       version: '0.3.0',
-      compatibility: { '0.3.0': { nodeVersion: '>6.0.0' }, '0.2.0': {} },
+      compatibility: { '0.2.0': { nodeVersion: '>6.0.0' } },
     },
   })
 })
@@ -662,7 +659,7 @@ test.serial('Plugins compatibility defaults to version field', async (t) => {
   await runWithApiMock(t, 'plugins_compat_node_version', {
     testPlugin: {
       version: '0.3.0',
-      compatibility: { '0.3.0': { nodeVersion: '<6.0.0' }, '0.2.0': { nodeVersion: '<7.0.0' } },
+      compatibility: { '0.2.0': { nodeVersion: '<6.0.0' }, '0.0.7': { nodeVersion: '<7.0.0' } },
     },
   })
 })
