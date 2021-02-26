@@ -566,7 +566,10 @@ const TEST_PLUGIN_NAME = 'netlify-plugin-contextual-env'
 const PLUGINS_LIST_URL = '/'
 const DEFAULT_TEST_PLUGIN = {
   version: '0.3.0',
-  compatibility: [{ version: '0.3.0' }, { version: '0.2.0' }],
+  compatibility: [
+    { version: '0.3.0', nodeVersion: '*' },
+    { version: '0.2.0', nodeVersion: '*' },
+  ],
 }
 
 test('Install plugins in .netlify/plugins/ when not cached', async (t) => {
@@ -642,7 +645,10 @@ test.serial('Plugins can specify non-matching compatibility.nodeVersion', async 
   await runWithApiMock(t, 'plugins_compat_node_version', {
     testPlugin: {
       version: '0.3.0',
-      compatibility: [{ version: '0.3.0', nodeVersion: '<6.0.0' }, { version: '0.2.0' }],
+      compatibility: [
+        { version: '0.3.0', nodeVersion: '<6.0.0' },
+        { version: '0.2.0', nodeVersion: '>6.0.0' },
+      ],
     },
   })
 })
@@ -652,7 +658,10 @@ test.serial('Plugins can specify matching compatibility.nodeVersion', async (t) 
   await runWithApiMock(t, 'plugins_compat_node_version', {
     testPlugin: {
       version: '0.3.0',
-      compatibility: [{ version: '0.3.0', nodeVersion: '>6.0.0' }, { version: '0.2.0' }],
+      compatibility: [
+        { version: '0.3.0', nodeVersion: '>6.0.0' },
+        { version: '0.2.0', nodeVersion: '>6.0.0' },
+      ],
     },
   })
 })

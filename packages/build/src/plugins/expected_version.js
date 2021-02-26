@@ -38,11 +38,11 @@ const addExpectedVersion = async function ({
 
   const { version: latestVersion, compatibility } = pluginsList[packageName]
 
-  const expectedVersion = getExpectedVersion({ latestVersion, compatibility, nodeVersion })
+  const { expectedVersion, compatWarning } = getExpectedVersion({ latestVersion, compatibility, nodeVersion })
 
   // Plugin was not previously installed
   if (pluginPath === undefined) {
-    return { ...pluginOptions, expectedVersion }
+    return { ...pluginOptions, latestVersion, expectedVersion, compatWarning }
   }
 
   const packageJsonPath = await resolvePath(`${packageName}/package.json`, autoPluginsDir)
@@ -51,10 +51,10 @@ const addExpectedVersion = async function ({
 
   // Plugin was previously installed but a new version is available
   if (version !== expectedVersion) {
-    return { ...pluginOptions, expectedVersion }
+    return { ...pluginOptions, latestVersion, expectedVersion, compatWarning }
   }
 
-  return pluginOptions
+  return { ...pluginOptions, latestVersion }
 }
 
 const needsExpectedVersion = function ({ loadedFrom }) {

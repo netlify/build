@@ -66,22 +66,26 @@ const logOutdatedPlugins = function (logs, pluginsOptions) {
   logErrorArray(logs, outdatedPlugins)
 }
 
-const getOutdatedPlugin = function ({ packageName, pluginPackageJson: { version }, expectedVersion }) {
-  if (!hasOutdatedVersion(version, expectedVersion)) {
+const getOutdatedPlugin = function ({ packageName, pluginPackageJson: { version }, latestVersion, compatWarning }) {
+  if (!hasOutdatedVersion(version, latestVersion)) {
     return
   }
 
   const versionedPackage = getVersionedPackage(packageName, version)
-  const outdatedDescription = getOutdatedDescription(expectedVersion)
+  const outdatedDescription = getOutdatedDescription(latestVersion, compatWarning)
   return `${THEME.errorHighlightWords(packageName)}${versionedPackage}: ${outdatedDescription}`
 }
 
-const hasOutdatedVersion = function (version, expectedVersion) {
-  return version !== undefined && expectedVersion !== undefined && ltVersion(version, expectedVersion)
+const hasOutdatedVersion = function (version, latestVersion) {
+  return version !== undefined && latestVersion !== undefined && ltVersion(version, latestVersion)
 }
 
-const getOutdatedDescription = function (expectedVersion) {
-  return `latest version is ${expectedVersion}`
+const getOutdatedDescription = function (latestVersion, compatWarning) {
+  if (compatWarning === undefined) {
+    return `latest version is ${latestVersion}`
+  }
+
+  return `latest version is ${latestVersion} which is incompatible with ${compatWarning}`
 }
 
 // Make sure we handle `package.json` with `version` being either `undefined`
