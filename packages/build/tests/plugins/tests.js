@@ -564,13 +564,7 @@ const getPlugin = function (plugin, testPlugin) {
 const TEST_PLUGIN_NAME = 'netlify-plugin-contextual-env'
 
 const PLUGINS_LIST_URL = '/'
-const DEFAULT_TEST_PLUGIN = {
-  version: '0.3.0',
-  compatibility: [
-    { version: '0.3.0', nodeVersion: '*' },
-    { version: '0.2.0', nodeVersion: '*' },
-  ],
-}
+const DEFAULT_TEST_PLUGIN = { version: '0.3.0' }
 
 test('Install plugins in .netlify/plugins/ when not cached', async (t) => {
   await removeDir(`${FIXTURES_DIR}/valid_package/.netlify`)
@@ -646,8 +640,8 @@ test.serial('Plugins can specify non-matching compatibility.nodeVersion', async 
     testPlugin: {
       version: '0.3.0',
       compatibility: [
-        { version: '0.3.0', nodeVersion: '<6.0.0' },
-        { version: '0.2.0', nodeVersion: '>6.0.0' },
+        { version: '0.2.0', nodeVersion: '100 - 120' },
+        { version: '0.1.0', nodeVersion: '<100' },
       ],
     },
   })
@@ -659,8 +653,8 @@ test.serial('Plugins can specify matching compatibility.nodeVersion', async (t) 
     testPlugin: {
       version: '0.3.0',
       compatibility: [
-        { version: '0.3.0', nodeVersion: '>6.0.0' },
-        { version: '0.2.0', nodeVersion: '>6.0.0' },
+        { version: '0.2.0', nodeVersion: '6 - 120' },
+        { version: '0.1.0', nodeVersion: '<6' },
       ],
     },
   })
@@ -672,8 +666,8 @@ test.serial('Plugins compatibility defaults to version field', async (t) => {
     testPlugin: {
       version: '0.3.0',
       compatibility: [
-        { version: '0.3.0', nodeVersion: '<6.0.0' },
-        { version: '0.2.0', nodeVersion: '<7.0.0' },
+        { version: '0.2.0', nodeVersion: '4 - 6' },
+        { version: '0.1.0', nodeVersion: '<4' },
       ],
     },
   })
