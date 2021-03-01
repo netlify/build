@@ -42,6 +42,14 @@ const INDENT_SIZE = 2
 const EMPTY_LINES_REGEXP = /^\s*$/gm
 const EMPTY_LINE = '\u{200B}'
 
+const serializeIndentedArray = function (array) {
+  return serializeArray(array.map(serializeIndentedItem))
+}
+
+const serializeIndentedItem = function (item) {
+  return indentString(item, INDENT_SIZE + 1).trimLeft()
+}
+
 const logError = function (logs, string, opts) {
   log(logs, string, { color: THEME.errorLine, ...opts })
 }
@@ -58,12 +66,12 @@ const logObject = function (logs, object, opts) {
 
 // Print an array
 const logArray = function (logs, array, opts) {
-  logMessage(logs, serializeArray(array), { color: THEME.none, ...opts })
+  logMessage(logs, serializeIndentedArray(array), { color: THEME.none, ...opts })
 }
 
 // Print an array of errors
 const logErrorArray = function (logs, array, opts) {
-  logMessage(logs, serializeArray(array), { color: THEME.errorLine, ...opts })
+  logMessage(logs, serializeIndentedArray(array), { color: THEME.errorLine, ...opts })
 }
 
 // Print a main section header
