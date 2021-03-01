@@ -8,6 +8,7 @@ module.exports = {
     filename: 'index.js',
     library: 'frameworkInfo',
     libraryTarget: 'umd',
+    globalObject: 'this',
   },
   resolve: {
     fallback: { path: require.resolve('path-browserify') },

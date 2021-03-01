@@ -5,3 +5,5 @@ coverage
 .eslintcache
 .vscode
 dist
+cypress/videos
+cypress/screenshots

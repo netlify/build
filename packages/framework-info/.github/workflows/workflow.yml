@@ -30,7 +30,8 @@ jobs:
         run: npm install -g npm@5
         if: "${{ matrix.node-version == '8.3.0' }}"
       - name: Install dependencies
-        run: npm ci
+        # Cypress has a postinstall script that doesn't work on older Node.js version
+        run: npm ci --ignore-scripts
       - name: Build For Browser
         run: npm run build
         if: "${{ matrix.node-version == '15' }}"
@@ -38,7 +39,7 @@ jobs:
         run: npm run format:ci
         if: "${{ matrix.node-version == '15' }}"
       - name: Tests
-        run: npm run test:ci
+        run: npm run test:ci:ava
       - name: Get test coverage flags
         id: test-coverage-flags
         run: |-
@@ -51,3 +52,38 @@ jobs:
         with:
           file: coverage/coverage-final.json
           flags: ${{ steps.test-coverage-flags.outputs.os }},${{ steps.test-coverage-flags.outputs.node }}
+  cypress-tests:
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node-version: [15]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v2
+      - name: Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+      - uses: actions/cache@v2
+        with:
+          # Browsers are downloaded under node_modules
+          path: |
+            ~/.cache
+            node_modules
+          key: v1-${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Install dependencies
+        run: npm install
+      - name: Build For Browser
+        run: npm run build
+      - name: Tests
+        run: npm run test:ci:cypress
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: cypress-results-node-${{ matrix.node-version }}-os-${{ matrix.os }}
+          path: |
+            cypress/screenshots
+            cypress/videos
