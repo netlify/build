@@ -679,8 +679,8 @@ test.serial('Plugins can specify compatibility.migrationGuide', async (t) => {
     testPlugin: {
       version: '0.3.0',
       compatibility: [
-        { version: '0.3.0', nodeVersion: '100 - 120' },
-        { version: '0.2.0', nodeVersion: '<100', migrationGuide: 'http://test.com' },
+        { version: '0.2.0', nodeVersion: '100 - 120' },
+        { version: '0.1.0', nodeVersion: '<100', migrationGuide: 'http://test.com' },
       ],
     },
   })
