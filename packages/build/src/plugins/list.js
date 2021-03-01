@@ -4,7 +4,6 @@ const oldPluginsList = require('@netlify/plugins-list')
 // TODO: replace with `Object.fromEntries()` after dropping Node <12.0.0
 const fromEntries = require('@ungap/from-entries')
 const got = require('got')
-const { rcompare } = require('semver')
 
 const { logPluginsList } = require('../log/messages/plugins')
 const { logPluginsFetchError } = require('../log/messages/plugins')
@@ -56,9 +55,12 @@ const normalizePluginsList = function (pluginsList) {
 // `version` in `plugins.json` is the latest version.
 // A `compatibility` array of objects can be added to specify conditions to
 // apply different versions.
+// `netlify/plugins` ensures that `compatibility`:
+//  - Has the proper shape.
+//  - Is sorted from the highest to lowest version.
+//  - Does not include the latest `version`.
 const normalizePluginItem = function ({ package: packageName, version, compatibility = [] }) {
-  // eslint-disable-next-line fp/no-mutating-methods
-  const normalizedCompatibility = compatibility.map(normalizeCompatVersion).sort(compareCompatVersion)
+  const normalizedCompatibility = compatibility.map(normalizeCompatVersion)
   return [packageName, { version, compatibility: normalizedCompatibility }]
 }
 
@@ -69,10 +71,6 @@ const normalizeCompatVersion = function ({ version, migrationGuide, ...condition
 
 const normalizeCondition = function ([type, condition]) {
   return { type, condition }
-}
-
-const compareCompatVersion = function ({ version: versionA }, { version: versionB }) {
-  return rcompare(versionA, versionB)
 }
 
 module.exports = { getPluginsList }
