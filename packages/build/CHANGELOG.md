@@ -1,5 +1,13 @@
 # Changelog
 
+## [9.6.0](https://www.github.com/netlify/build/compare/build-v9.5.0...v9.6.0) (2021-03-01)
+
+
+### Features
+
+* improve tests related to `compatibility` ([#2321](https://www.github.com/netlify/build/issues/2321)) ([a5bfb6b](https://www.github.com/netlify/build/commit/a5bfb6b526a4155c5d6f912b03dfff845f5cb4ab))
+* print migration guides ([#2320](https://www.github.com/netlify/build/issues/2320)) ([a701222](https://www.github.com/netlify/build/commit/a7012223a0e45373cfbdb278180c88a7971324a5))
+
 ## [9.5.0](https://www.github.com/netlify/build/compare/v9.4.0...v9.5.0) (2021-02-26)
 
 
