@@ -1,5 +1,12 @@
 # Changelog
 
+## [9.5.0](https://www.github.com/netlify/build/compare/v9.4.0...v9.5.0) (2021-03-01)
+
+
+### Features
+
+* print migration guides ([#2320](https://www.github.com/netlify/build/issues/2320)) ([a701222](https://www.github.com/netlify/build/commit/a7012223a0e45373cfbdb278180c88a7971324a5))
+
 ## [9.5.0](https://www.github.com/netlify/build/compare/v9.4.0...v9.5.0) (2021-02-26)
 
 
