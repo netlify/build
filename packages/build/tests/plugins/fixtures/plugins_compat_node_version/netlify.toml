@@ -1,6 +1,2 @@
-[build.environment]
-TEST = "test"
-PRODUCTION_TEST = "test"
-
 [[plugins]]
 package = "netlify-plugin-contextual-env"
