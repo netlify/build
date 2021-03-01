@@ -78,7 +78,7 @@
     "locate-path": "^5.0.0",
     "log-process-errors": "^5.1.2",
     "make-dir": "^3.0.2",
-    "map-obj": "^4.1.0",
+    "map-obj": "^3.0.0",
     "memoize-one": "^5.1.1",
     "netlify-plugin-deploy-preview-commenting": "^0.0.1-alpha.16",
     "os-name": "^3.1.0",

@@ -44,7 +44,7 @@
   "license": "MIT",
   "dependencies": {
     "execa": "^3.4.0",
-    "map-obj": "^4.1.0",
+    "map-obj": "^3.0.0",
     "micromatch": "^4.0.2",
     "moize": "^6.0.0",
     "path-exists": "^4.0.0"
