@@ -313,6 +313,7 @@ const initAndRunBuild = async function ({
     netlifyConfig,
     buildDir,
     nodePath,
+    packageJson,
     constants,
     mode,
     featureFlags,
