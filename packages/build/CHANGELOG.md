@@ -1,5 +1,19 @@
 # Changelog
 
+## [9.7.0](https://www.github.com/netlify/build/compare/v9.6.0...v9.7.0) (2021-03-03)
+
+
+### Features
+
+* add `compatibility[*].siteDependencies` ([#2322](https://www.github.com/netlify/build/issues/2322)) ([9b1bc5d](https://www.github.com/netlify/build/commit/9b1bc5d4883a5301803cc69f863f1491e92857ed))
+* do not sort `compatibility` field ([#2336](https://www.github.com/netlify/build/issues/2336)) ([455477f](https://www.github.com/netlify/build/commit/455477fc4af7b9d720588d4e4b601e388303a15b))
+* improve `migrationGuide` test ([#2337](https://www.github.com/netlify/build/issues/2337)) ([9776923](https://www.github.com/netlify/build/commit/9776923855ae0baa767ac92ae39786ce77d3e92b))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^2.4.2 ([#2341](https://www.github.com/netlify/build/issues/2341)) ([cbba54d](https://www.github.com/netlify/build/commit/cbba54dea815e61fe40e048de664035fd06df36d))
+
 ## [9.6.0](https://www.github.com/netlify/build/compare/build-v9.5.0...v9.6.0) (2021-03-01)
 
 
