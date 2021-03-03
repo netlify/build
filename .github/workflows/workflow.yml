@@ -34,7 +34,6 @@ jobs:
         if: "${{ matrix.node-version == '14.x' }}"
       - name: Install dependencies
         run: npm ci
-        if: "${{ matrix.node-version == '15.x' }}"
       - name: Linting
         run: npm run format:ci
         if: "${{ matrix.node-version == '15.x' }}"
