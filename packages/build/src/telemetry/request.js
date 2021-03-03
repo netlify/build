@@ -5,6 +5,7 @@ const { argv } = require('process')
 const got = require('got')
 
 const DEFAULT_ORIGIN = 'https://api.segment.io/v1'
+const WRITE_KEY = 'dWhlM1lYSlpNd1k5Uk9rcjFra2JSOEoybnRjZjl0YTI6'
 
 // Send HTTP request to telemetry.
 const sendRequest = async function () {
@@ -14,7 +15,7 @@ const sendRequest = async function () {
   await got.post(url, {
     json: true,
     body: json,
-    headers: { Authorization: 'Basic dWhlM1lYSlpNd1k5Uk9rcjFra2JSOEoybnRjZjl0YTI6' },
+    headers: { Authorization: `Basic ${WRITE_KEY}` },
   })
 }
 
