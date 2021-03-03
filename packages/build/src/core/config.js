@@ -31,6 +31,7 @@ const tLoadConfig = async function ({
   logs,
   testOpts,
 }) {
+  console.log({ apiHost })
   const {
     configPath,
     buildDir,
