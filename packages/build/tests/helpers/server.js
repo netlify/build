@@ -15,6 +15,7 @@ const startServer = async function (handler) {
   await promisify(server.listen.bind(server))(0)
 
   const host = getHost(server)
+  console.log({ host })
 
   const stopServer = promisify(server.close.bind(server))
   return { scheme: 'http', host, requests, stopServer }
@@ -26,6 +27,7 @@ const getHost = function (server) {
 }
 
 const requestHandler = async function ({ req, req: { url, method, headers }, res, requests, handlers }) {
+  console.log({ url })
   const { response, status } = getHandler(handlers, url)
   if (response === undefined) {
     res.end('')
