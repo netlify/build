@@ -79,7 +79,7 @@ const build = async function (flags = {}) {
       statsdOpts,
     })
     const { success, severityCode, status } = getSeverity('success')
-    await trackBuildComplete({ status, commandsCount, netlifyConfig, durationNs, siteInfo, telemetry, mode, testOpts })
+    await trackBuildComplete({ status, commandsCount, netlifyConfig, durationNs, siteInfo, telemetry, testOpts })
     return { success, severityCode, logs }
   } catch (error) {
     const {
@@ -87,7 +87,7 @@ const build = async function (flags = {}) {
       errorInfo: { netlifyConfig, siteInfo },
     } = await handleBuildError(error, errorParams)
     const { success, severityCode, status } = getSeverity(severity)
-    await trackBuildComplete({ status, netlifyConfig, siteInfo, telemetry, mode, testOpts })
+    await trackBuildComplete({ status, netlifyConfig, siteInfo, telemetry, testOpts })
     return { success, severityCode, logs }
   }
 }

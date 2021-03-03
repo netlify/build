@@ -16,13 +16,16 @@ const BUILD_BIN_DIR = normalize(`${ROOT_DIR}/node_modules/.bin`)
 const runFixture = async function (
   t,
   fixtureName,
-  { flags = {}, env: envOption = {}, programmatic = false, ...opts } = {},
+  { flags = {}, env: envOption = {}, programmatic = false, testingTelemetry = false, ...opts } = {},
 ) {
   const binaryPath = await BINARY_PATH
+  // When testing telemetry, we don't want to force telemetry to false in order to exercise
+  // the different code branches
+  const telemetryFlag = testingTelemetry ? {} : { telemetry: false }
   const flagsA = {
     debug: true,
-    telemetry: false,
     buffer: true,
+    ...telemetryFlag,
     ...flags,
     testOpts: { silentLingeringProcesses: true, pluginsListUrl: 'test', ...flags.testOpts },
   }

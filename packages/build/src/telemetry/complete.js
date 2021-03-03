@@ -60,7 +60,7 @@ const addConfigData = function (payload, netlifyConfig = {}) {
     name: packageName,
     origin,
   }))
-  const properties = { properties: { ...payload.properties, plugins, pluginsCount: plugins.length } }
+  const properties = { properties: { ...payload.properties, plugins, pluginCount: plugins.length } }
   return { ...payload, ...properties }
 }
 
