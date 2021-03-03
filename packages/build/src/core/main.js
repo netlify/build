@@ -6,7 +6,7 @@ require('../utils/polyfills')
 const { getCommands } = require('../commands/get')
 const { runCommands } = require('../commands/run_commands')
 const { handleBuildError } = require('../error/handle')
-const { getErrorInfo } = require('../error/info')
+const { getErrorInfo, addErrorInfo } = require('../error/info')
 const { startErrorMonitor } = require('../error/monitor/start')
 const { getBufferLogs } = require('../log/logger')
 const { logBuildStart, logTimer, logBuildSuccess } = require('../log/messages/core')
@@ -71,7 +71,6 @@ const build = async function (flags = {}) {
       framework,
       dry,
       siteInfo,
-      telemetry,
       mode,
       logs,
       timers,
@@ -79,11 +78,16 @@ const build = async function (flags = {}) {
       testOpts,
       statsdOpts,
     })
-    const { success, severityCode } = getSeverity('success')
+    const { success, severityCode, status } = getSeverity('success')
+    await trackBuildComplete({ status, commandsCount, netlifyConfig, durationNs, siteInfo, telemetry, mode, testOpts })
     return { success, severityCode, logs }
   } catch (error) {
-    const { severity } = await handleBuildError(error, errorParams)
-    const { success, severityCode } = getSeverity(severity)
+    const {
+      severity,
+      errorInfo: { netlifyConfig, siteInfo },
+    } = await handleBuildError(error, errorParams)
+    const { success, severityCode, status } = getSeverity(severity)
+    await trackBuildComplete({ status, netlifyConfig, siteInfo, telemetry, mode, testOpts })
     return { success, severityCode, logs }
   }
 }
@@ -165,30 +169,36 @@ const tExecBuild = async function ({
   // eslint-disable-next-line fp/no-mutating-assign
   Object.assign(errorParams, { netlifyConfig, childEnv })
 
-  const { commandsCount, timers: timersB } = await runAndReportBuild({
-    netlifyConfig,
-    configPath,
-    buildDir,
-    nodePath,
-    packageJson,
-    childEnv,
-    functionsDistDir,
-    dry,
-    siteInfo,
-    mode,
-    token: tokenA,
-    api,
-    errorMonitor,
-    deployId,
-    logs,
-    debug,
-    timers: timersA,
-    sendStatus,
-    testOpts,
-    featureFlags,
-    buildbotServerSocket,
-  })
-  return { netlifyConfig, siteInfo, commandsCount, timers: timersB }
+  try {
+    const { commandsCount, timers: timersB } = await runAndReportBuild({
+      netlifyConfig,
+      configPath,
+      buildDir,
+      nodePath,
+      packageJson,
+      childEnv,
+      functionsDistDir,
+      dry,
+      siteInfo,
+      mode,
+      token: tokenA,
+      api,
+      errorMonitor,
+      deployId,
+      logs,
+      debug,
+      timers: timersA,
+      sendStatus,
+      testOpts,
+      featureFlags,
+      buildbotServerSocket,
+    })
+    return { netlifyConfig, siteInfo, commandsCount, timers: timersB }
+  } catch (error) {
+    // Decorate the error with the fetched config and siteInfo
+    addErrorInfo(error, { netlifyConfig, siteInfo })
+    throw error
+  }
 }
 
 const execBuild = measureDuration(tExecBuild, 'total', { parentTag: 'build_site' })
@@ -428,20 +438,7 @@ const runBuild = async function ({
 }
 
 // Logs and reports that a build successfully ended
-const handleBuildSuccess = async function ({
-  commandsCount,
-  netlifyConfig,
-  framework,
-  dry,
-  siteInfo,
-  telemetry,
-  mode,
-  logs,
-  timers,
-  durationNs,
-  testOpts,
-  statsdOpts,
-}) {
+const handleBuildSuccess = async function ({ framework, dry, logs, timers, durationNs, statsdOpts }) {
   if (dry) {
     return
   }
@@ -450,7 +447,6 @@ const handleBuildSuccess = async function ({
 
   logTimer(logs, durationNs, 'Netlify Build')
   await reportTimers({ timers, statsdOpts, framework })
-  await trackBuildComplete({ commandsCount, netlifyConfig, durationNs, siteInfo, telemetry, mode, testOpts })
 }
 
 module.exports = build
