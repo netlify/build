@@ -75,7 +75,6 @@ const runWithApiMock = async function (
     await runFixture(t, fixture, {
       flags: { siteId: 'test', testOpts, ...flags },
       env,
-      testingTelemetry: true,
       snapshot,
     })
   } finally {
@@ -120,33 +119,18 @@ test('Telemetry reports plugin error', async (t) => {
   t.snapshot(snapshot)
 })
 
-test('Telemetry enabled by default with mode cli', async (t) => {
-  const requests = await runWithApiMock(t, 'success', { mode: 'cli' })
-  t.is(requests.length, 1)
-})
-
-test('Telemetry disabled by default with mode require', async (t) => {
-  const requests = await runWithApiMock(t, 'success', { mode: 'require' })
+test('Telemetry is disabled by default', async (t) => {
+  const requests = await runWithApiMock(t, 'success')
   t.is(requests.length, 0)
 })
 
-test('Telemetry enabled with mode require and flag', async (t) => {
-  const requests = await runWithApiMock(t, 'success', { mode: 'buildbot', telemetry: true })
+test('Telemetry can be enabled via flag', async (t) => {
+  const requests = await runWithApiMock(t, 'success', { telemetry: true })
   t.is(requests.length, 1)
 })
 
-test('Telemetry enabled by default with mode buildbot', async (t) => {
-  const requests = await runWithApiMock(t, 'success', { mode: 'buildbot' })
-  t.is(requests.length, 1)
-})
-
-test('Telemetry disabled with mode buildbot and BUILD_TELEMETRY_DISABLED', async (t) => {
-  const requests = await runWithApiMock(t, 'success', { mode: 'buildbot', env: { BUILD_TELEMETRY_DISABLED: 'true' } })
-  t.is(requests.length, 0)
-})
-
-test('Telemetry disabled with mode buildbot and flag', async (t) => {
-  const requests = await runWithApiMock(t, 'success', { mode: 'buildbot', telemetry: false })
+test('Telemetry BUILD_TELEMETRY_DISABLED env var overrides flag usage', async (t) => {
+  const requests = await runWithApiMock(t, 'success', { telemetry: true, env: { BUILD_TELEMETRY_DISABLED: 'true' } })
   t.is(requests.length, 0)
 })
 

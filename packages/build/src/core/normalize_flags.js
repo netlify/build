@@ -11,10 +11,17 @@ const { normalizeFeatureFlags, DEFAULT_FEATURE_FLAGS } = require('./feature_flag
 const normalizeFlags = function (flags, logs) {
   const rawFlags = removeFalsy(flags)
   const rawFlagsA = normalizeFeatureFlags(rawFlags)
-  const defaultFlags = getDefaultFlags(rawFlagsA)
+
+  // Combine the flags object env with the process.env
+  const combinedEnv = { ...env, ...rawFlagsA.env }
+  const defaultFlags = getDefaultFlags(rawFlagsA, combinedEnv)
+
+  // The telemetry flag requires specific logic to compute
+  const telemetryFlag = computeTelemetry(rawFlagsA, combinedEnv)
   const mergedFlags = {
     ...defaultFlags,
     ...rawFlagsA,
+    ...telemetryFlag,
     statsdOpts: { ...defaultFlags.statsd, ...rawFlagsA.statsd },
     featureFlags: { ...defaultFlags.featureFlags, ...rawFlagsA.featureFlags },
   }
@@ -26,8 +33,7 @@ const normalizeFlags = function (flags, logs) {
 }
 
 // Default values of CLI flags
-const getDefaultFlags = function ({ env: envOpt = {}, mode = REQUIRE_MODE }) {
-  const combinedEnv = { ...env, ...envOpt }
+const getDefaultFlags = function ({ env: envOpt = {} }, combinedEnv) {
   return {
     env: envOpt,
     nodePath: execPath,
@@ -38,12 +44,17 @@ const getDefaultFlags = function ({ env: envOpt = {}, mode = REQUIRE_MODE }) {
     deployId: combinedEnv.DEPLOY_ID,
     debug: Boolean(combinedEnv.NETLIFY_BUILD_DEBUG),
     bugsnagKey: combinedEnv.BUGSNAG_KEY,
-    telemetry: !combinedEnv.BUILD_TELEMETRY_DISABLED && mode !== REQUIRE_MODE,
     sendStatus: false,
     testOpts: {},
     featureFlags: DEFAULT_FEATURE_FLAGS,
     statsd: { port: DEFAULT_STATSD_PORT },
   }
+}
+
+// Compute the telemetry flag, it's disabled by default and we want to always disable it
+// if BUILD_TELEMETRY_DISABLED is passed
+const computeTelemetry = function (flags, envOpts) {
+  return envOpts.BUILD_TELEMETRY_DISABLED ? { telemetry: false } : { telemetry: flags.telemetry }
 }
 
 const REQUIRE_MODE = 'require'
