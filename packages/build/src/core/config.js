@@ -102,6 +102,7 @@ const resolveFullConfig = async function ({
   testOpts,
 }) {
   try {
+    console.log(resolveConfig.toString())
     return await resolveConfig({
       config,
       defaultConfig,
