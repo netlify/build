@@ -7,6 +7,7 @@ const { removeFalsy } = require('../utils/remove_falsy')
 // Retrieve Netlify API client, if an access token was passed
 // eslint-disable-next-line complexity
 const getApiClient = function ({ token, offline, testOpts = {}, host, scheme, pathPrefix }) {
+  console.log({ token, offline, testOpts, host, scheme, pathPrefix })
   if (!token || offline) {
     return
   }
