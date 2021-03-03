@@ -50,6 +50,7 @@ const { getSeverity } = require('./severity')
  * @returns {string[]} buildResult.logs - When using the `buffer` option, all log messages
  */
 const build = async function (flags = {}) {
+  console.log({ flags })
   const { errorMonitor, framework, mode, logs, debug, testOpts, statsdOpts, dry, telemetry, ...flagsA } = startBuild(
     flags,
   )
