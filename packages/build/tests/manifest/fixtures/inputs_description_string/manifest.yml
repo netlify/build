@@ -1,4 +1,0 @@
-name: test
-inputs:
-  - name: name
-    description: true

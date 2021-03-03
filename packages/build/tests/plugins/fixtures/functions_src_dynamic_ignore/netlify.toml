@@ -1,5 +1,0 @@
-[build]
-functions = "test"
-
-[[plugins]]
-package = "./plugin"

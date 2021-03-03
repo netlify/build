@@ -1,5 +1,0 @@
-[build]
-functions = "missing"
-
-[[plugins]]
-package = "./plugin"

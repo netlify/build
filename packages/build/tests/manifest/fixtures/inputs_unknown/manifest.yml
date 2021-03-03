@@ -1,4 +1,0 @@
-name: test
-inputs:
-  - name: test
-    unknown: test

@@ -1,8 +1,0 @@
-[build]
-command = "node --version"
-
-[[plugins]]
-package = "./one"
-
-[[plugins]]
-package = "./two"

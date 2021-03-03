@@ -1,5 +1,0 @@
-[[plugins]]
-package = "./one.js"
-
-[[plugins]]
-package = "./two.js"

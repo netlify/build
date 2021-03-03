@@ -1,6 +1,0 @@
-name: test
-inputs:
-  - name: test
-    required: true
-  - name: testTwo
-    required: true

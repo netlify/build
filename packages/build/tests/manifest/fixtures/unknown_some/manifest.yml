@@ -1,4 +1,0 @@
-name: test
-inputs:
-  - name: one
-  - name: two

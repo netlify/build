@@ -41,8 +41,7 @@
   ],
   "ava": {
     "files": [
-      "packages/**/tests/*.js",
-      "packages/**/tests/**/tests.js"
+      "packages/build/tests/**/tests.js"
     ],
     "compileEnhancements": false,
     "babel": false,

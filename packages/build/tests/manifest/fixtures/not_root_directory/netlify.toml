@@ -1,5 +1,0 @@
-[[plugins]]
-package = "./plugin/main.js"
-
-[plugins.inputs]
-one = "test"
