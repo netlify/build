@@ -2,13 +2,15 @@
 
 const { platform, version: nodeVersion } = require('process')
 
+const execa = require('execa')
 const osName = require('os-name')
 const { v4: uuidv4 } = require('uuid')
 
 const { version } = require('../../package.json')
 const { roundTimerToMillisecs } = require('../time/measure')
 
-const { track } = require('./track')
+// Script file that will be responsible for making the actual telemetry request
+const REQUEST_FILE = `${__dirname}/request.js`
 
 // Send telemetry request when build completes
 const trackBuildComplete = async function ({
@@ -25,7 +27,28 @@ const trackBuildComplete = async function ({
   }
 
   const payload = getPayload({ status, commandsCount, netlifyConfig, durationNs, siteInfo })
-  await track({ payload, testOpts })
+  // Ignore errors on purpose, currently we don't want to impact the build in any fashion or log
+  // anything related to telemetry
+  try {
+    await track({ payload, testOpts })
+  } catch (error) {}
+}
+
+// Send HTTP request to telemetry.
+// Telemetry should not impact build speed, so we do not wait for the request
+// to complete, by using a child process.
+const track = async function ({ payload, testOpts: { telemetryOrigin = '' } = {} }) {
+  const childProcess = execa('node', [REQUEST_FILE, JSON.stringify(payload), telemetryOrigin], {
+    detached: true,
+    stdio: 'ignore',
+  })
+
+  // During tests, we wait for the HTTP request to complete
+  if (telemetryOrigin === '') {
+    childProcess.unref()
+  }
+
+  await childProcess
 }
 
 // Retrieve telemetry information
