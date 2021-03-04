@@ -1,5 +1,12 @@
 # Changelog
 
+### [4.0.4](https://www.github.com/netlify/build/compare/v4.0.3...v4.0.4) (2021-03-04)
+
+
+### Bug Fixes
+
+* **deps:** update netlify packages ([#2352](https://www.github.com/netlify/build/issues/2352)) ([c45bdc8](https://www.github.com/netlify/build/commit/c45bdc8e6165751b4294993426ff32e366f0c55a))
+
 ### [4.0.3](https://www.github.com/netlify/build/compare/v4.0.2...v4.0.3) (2021-03-03)
 
 
