@@ -1,5 +1,12 @@
 # Changelog
 
+### [9.8.3](https://www.github.com/netlify/build/compare/v9.8.2...v9.8.3) (2021-03-04)
+
+
+### Bug Fixes
+
+* fix esbuild error reporting ([#2358](https://www.github.com/netlify/build/issues/2358)) ([348d43b](https://www.github.com/netlify/build/commit/348d43bda2698dbdbb2a441a08038e48fadf6715))
+
 ### [9.8.2](https://www.github.com/netlify/build/compare/v9.8.1...v9.8.2) (2021-03-04)
 
 
