@@ -1,5 +1,12 @@
 # Changelog
 
+### [9.8.1](https://www.github.com/netlify/build/compare/v9.8.0...v9.8.1) (2021-03-04)
+
+
+### Bug Fixes
+
+* **deps:** update netlify packages ([#2352](https://www.github.com/netlify/build/issues/2352)) ([c45bdc8](https://www.github.com/netlify/build/commit/c45bdc8e6165751b4294993426ff32e366f0c55a))
+
 ## [9.8.0](https://www.github.com/netlify/build/compare/v9.7.1...v9.8.0) (2021-03-04)
 
 
