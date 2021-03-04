@@ -2,40 +2,8 @@
 
 const path = require('path')
 
-const { log, logArray, logErrorSubHeader, pointer } = require('../logger')
+const { log, logArray, logErrorSubHeader } = require('../logger')
 const { THEME } = require('../theme')
-
-const logBundleErrorObject = ({ logs, object }) => {
-  const { location = {}, text } = object
-  const { column, file, line, lineText } = location
-  const locationMessage = `${file} ${line}:${column}`
-  const logMessage = `${pointer} ${lineText}
-  (in ${locationMessage})
-
-  ${text}
-  
-  `
-
-  log(logs, logMessage, { indent: true })
-}
-
-const logBundleResult = ({ errorMessage, logs, result }) => {
-  const { bundlerErrors = [], bundlerWarnings = [] } = result
-
-  if (bundlerErrors.length === 0 && bundlerWarnings.length === 0) {
-    return
-  }
-
-  if (errorMessage) {
-    logErrorSubHeader(logs, errorMessage)
-  }
-
-  const bundlerEvents = [...bundlerErrors, ...bundlerWarnings]
-
-  bundlerEvents.forEach((bundlerEvent) => {
-    logBundleErrorObject({ logs, object: bundlerEvent })
-  })
-}
 
 const logBundleResults = ({ logs, results = [], zisiParameters = {} }) => {
   if (!zisiParameters.jsBundler) {
@@ -50,17 +18,9 @@ const logBundleResults = ({ logs, results = [], zisiParameters = {} }) => {
     const functionName = path.basename(result.path)
 
     if (result.bundler === 'zisi') {
-      logBundleResult({
-        errorMessage: `Failed to bundle function \`${functionName}\` (fallback bundler used):`,
-        logs,
-        result,
-      })
+      logErrorSubHeader(logs, `Failed to bundle function \`${functionName}\` (fallback bundler used).`)
     } else if (result.bundler === 'esbuild') {
-      logBundleResult({
-        errorMessage: `Function \`${functionName}\` bundled with warnings:`,
-        logs,
-        result,
-      })
+      logErrorSubHeader(logs, `Function \`${functionName}\` bundled with warnings.`)
     }
   })
 }
