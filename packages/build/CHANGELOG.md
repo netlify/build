@@ -1,5 +1,12 @@
 # Changelog
 
+### [9.8.2](https://www.github.com/netlify/build/compare/v9.8.1...v9.8.2) (2021-03-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^2.3.0 ([#2356](https://www.github.com/netlify/build/issues/2356)) ([e4f79e6](https://www.github.com/netlify/build/commit/e4f79e63e786db9e6a511bb4f24297dfc3e0f29d))
+
 ### [9.8.1](https://www.github.com/netlify/build/compare/v9.8.0...v9.8.1) (2021-03-04)
 
 
