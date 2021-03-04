@@ -91,7 +91,7 @@ const addDuration = function (payload, durationNs) {
   if (typeof durationNs !== 'number') return payload
 
   const durationMs = roundTimerToMillisecs(durationNs)
-  return { ...payload, ...{ properties: { ...payload.properties, duration: durationMs } } }
+  return { ...payload, properties: { ...payload.properties, duration: durationMs } }
 }
 
 const OS_TYPES = {

@@ -8,6 +8,7 @@ const getSeverity = function (severity = FALLBACK_SEVERITY) {
   return { success, ...severityEntry }
 }
 
+// Map error severities to exit codes and status (used for telemetry purposes)
 /* eslint-disable no-magic-numbers */
 const SEVERITY_MAP = {
   success: { severityCode: 0, status: 'success' },
