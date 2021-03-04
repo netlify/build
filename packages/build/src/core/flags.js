@@ -91,7 +91,7 @@ Default: automatically guessed`,
     hidden: true,
   },
   telemetry: {
-    boolean: false,
+    boolean: true,
     describe: `Enable telemetry.
 Default: false`,
   },
