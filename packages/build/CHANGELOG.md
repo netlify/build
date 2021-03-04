@@ -1,5 +1,12 @@
 # Changelog
 
+## [9.8.0](https://www.github.com/netlify/build/compare/v9.7.1...v9.8.0) (2021-03-04)
+
+
+### Features
+
+* stop printing output from esbuild ([#2350](https://www.github.com/netlify/build/issues/2350)) ([d225592](https://www.github.com/netlify/build/commit/d225592203a0ebdd8e48ad54ed9da5087991f888))
+
 ### [9.7.1](https://www.github.com/netlify/build/compare/v9.7.0...v9.7.1) (2021-03-03)
 
 
