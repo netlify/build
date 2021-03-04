@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.3.17](https://www.github.com/netlify/build/compare/v1.3.16...v1.3.17) (2021-03-04)
+
+
+### Bug Fixes
+
+* **deps:** update netlify packages ([#2352](https://www.github.com/netlify/build/issues/2352)) ([c45bdc8](https://www.github.com/netlify/build/commit/c45bdc8e6165751b4294993426ff32e366f0c55a))
+
 ### [1.3.16](https://www.github.com/netlify/build/compare/v1.3.15...v1.3.16) (2021-03-03)
 
 
