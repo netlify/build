@@ -7,6 +7,7 @@ const pathExists = require('path-exists')
 const { isDirectory } = require('path-type')
 
 const { addErrorInfo } = require('../../error/info')
+const { log } = require('../../log/logger')
 const {
   logBundleResults,
   logFunctionsNonExistingDir,
@@ -15,16 +16,29 @@ const {
 
 const { getZipError } = require('./error')
 
-const getZISIParameters = ({ featureFlags }) => {
-  if (!featureFlags.buildbot_esbuild) {
-    return {}
-  }
+const zipFunctionsAndLogResults = async ({ featureFlags, functionsDist, functionsSrc, logs }) => {
+  const isEsbuildEnabled = featureFlags.buildbot_esbuild
 
   // If the `buildbot_esbuild` flag is enabled, we tell zip-it-and-ship-it to
   // bundle JS functions with esbuild, with a fallback to the legacy bundler
   // in case of an error
-  return {
-    jsBundler: 'esbuild_zisi',
+  const zisiParameters = isEsbuildEnabled
+    ? {
+        jsBundler: 'esbuild_zisi',
+      }
+    : {}
+
+  try {
+    // Printing an empty line before esbuild output.
+    if (isEsbuildEnabled) {
+      log(logs, '')
+    }
+
+    const results = await zipFunctions(functionsSrc, functionsDist, zisiParameters)
+
+    logBundleResults({ logs, results, zisiParameters })
+  } catch (error) {
+    throw await getZipError(error, functionsSrc)
   }
 }
 
@@ -53,15 +67,7 @@ const coreCommand = async function ({
     return
   }
 
-  const zisiParameters = getZISIParameters({ childEnv, featureFlags, logs })
-
-  try {
-    const results = await zipFunctions(functionsSrc, functionsDist, zisiParameters)
-
-    logBundleResults({ logs, results, zisiParameters })
-  } catch (error) {
-    throw await getZipError(error, functionsSrc)
-  }
+  await zipFunctionsAndLogResults({ childEnv, featureFlags, functionsDist, functionsSrc, logs })
 }
 
 const validateFunctionsSrc = async function ({ functionsSrc, relativeFunctionsSrc }) {

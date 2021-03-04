@@ -5,24 +5,40 @@ const path = require('path')
 const { log, logArray, logErrorSubHeader } = require('../logger')
 const { THEME } = require('../theme')
 
+const logBundleResultFunctions = ({ functions, headerMessage, logs }) => {
+  const functionNames = functions.map(({ path: functionPath }) => path.basename(functionPath))
+
+  logErrorSubHeader(logs, headerMessage)
+  logArray(logs, functionNames)
+}
+
 const logBundleResults = ({ logs, results = [], zisiParameters = {} }) => {
   if (!zisiParameters.jsBundler) {
     return
   }
 
-  results.forEach((result) => {
-    if (result.runtime !== 'js' || !result.path) {
-      return
-    }
+  const resultsWithErrors = results.filter(({ bundlerErrors }) => bundlerErrors && bundlerErrors.length !== 0)
+  const resultsWithWarnings = results.filter(
+    ({ bundler, bundlerWarnings }) => bundler === 'esbuild' && bundlerWarnings && bundlerWarnings.length !== 0,
+  )
 
-    const functionName = path.basename(result.path)
+  log(logs, '')
 
-    if (result.bundler === 'zisi') {
-      logErrorSubHeader(logs, `Failed to bundle function \`${functionName}\` (fallback bundler used).`)
-    } else if (result.bundler === 'esbuild') {
-      logErrorSubHeader(logs, `Function \`${functionName}\` bundled with warnings.`)
-    }
-  })
+  if (resultsWithErrors.length !== 0) {
+    logBundleResultFunctions({
+      functions: resultsWithErrors,
+      headerMessage: 'Failed to bundle functions with default bundler (fallback used):',
+      logs,
+    })
+  }
+
+  if (resultsWithWarnings.length !== 0) {
+    logBundleResultFunctions({
+      functions: resultsWithWarnings,
+      headerMessage: 'Functions bundled with warnings:',
+      logs,
+    })
+  }
 }
 
 const logFunctionsNonExistingDir = function (logs, relativeFunctionsSrc) {
