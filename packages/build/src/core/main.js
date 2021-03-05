@@ -66,16 +66,11 @@ const build = async function (flags = {}) {
       errorParams,
     })
     await handleBuildSuccess({
-      commandsCount,
-      netlifyConfig,
       framework,
       dry,
-      siteInfo,
-      mode,
       logs,
       timers,
       durationNs,
-      testOpts,
       statsdOpts,
     })
     const { success, severityCode, status } = getSeverity('success')
