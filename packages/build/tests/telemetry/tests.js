@@ -78,9 +78,7 @@ const runWithApiMock = async function (
       snapshot,
     })
   } finally {
-    stopServers.forEach((stopServer) => {
-      stopServer()
-    })
+    await Promise.all(stopServers.map((stopServer) => stopServer()))
   }
   return telemetryRequests
 }
