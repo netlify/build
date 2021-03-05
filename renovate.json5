@@ -22,6 +22,7 @@
         'globby',
         'got',
         'is-plain-obj',
+        'lerna',
         'locate-path',
         'log-process-errors',
         'move-file',
