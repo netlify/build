@@ -26,10 +26,10 @@ const trackBuildComplete = async function ({
     return
   }
 
-  const payload = getPayload({ status, commandsCount, netlifyConfig, durationNs, siteInfo })
   // Ignore errors on purpose, currently we don't want to impact the build in any fashion or log
   // anything related to telemetry
   try {
+    const payload = getPayload({ status, commandsCount, netlifyConfig, durationNs, siteInfo })
     await track({ payload, testOpts })
   } catch (error) {}
 }
