@@ -37,7 +37,20 @@ const getModuleNotFoundError = async function (error, functionsSrc) {
   }
 }
 
-const getModuleNotFoundErrorFromEsbuild = async function (error, functionsSrc) {
+const getModuleNotFoundErrorObject = async ({ error, functionsSrc, moduleNames }) => {
+  const isMissingNodeModulesDirectory = await lacksNodeModules(functionsSrc)
+  const message =
+    moduleNames.length !== 0 && isMissingNodeModulesDirectory
+      ? getLocalInstallMessage(moduleNames)
+      : MODULE_NOT_FOUND_MESSAGE
+
+  error.message = `${message}\n\n${error.message}`
+  addErrorInfo(error, { type: 'dependencies' })
+
+  return error
+}
+
+const getModuleNotFoundErrorFromEsbuild = function (error, functionsSrc) {
   const { errors = [] } = error
   const modulesNotFound = errors.reduce((modules, errorObject) => {
     const match = errorObject.text.match(MODULE_NOT_FOUND_ESBUILD_REGEXP)
@@ -53,31 +66,17 @@ const getModuleNotFoundErrorFromEsbuild = async function (error, functionsSrc) {
     return
   }
 
-  const isMissingNodeModulesDirectory = await lacksNodeModules(functionsSrc)
-  const message = isMissingNodeModulesDirectory ? getLocalInstallMessage(modulesNotFound) : MODULE_NOT_FOUND_MESSAGE
-
-  error.message = `${message}\n\n${error.message}`
-  addErrorInfo(error, { type: 'dependencies' })
-
-  return error
+  return getModuleNotFoundErrorObject({ error, functionsSrc, moduleNames: modulesNotFound })
 }
 
-const getModuleNotFoundErrorFromZISI = async function (error, functionsSrc) {
+const getModuleNotFoundErrorFromZISI = function (error, functionsSrc) {
   if (!(error instanceof Error && error.code === MODULE_NOT_FOUND_CODE)) {
     return
   }
 
   const moduleName = getModuleNameFromZISIError(error)
-  const isMissingNodeModulesDirectory = await lacksNodeModules(functionsSrc)
-  const message =
-    moduleName !== undefined && isMissingNodeModulesDirectory
-      ? getLocalInstallMessage([moduleName])
-      : MODULE_NOT_FOUND_MESSAGE
 
-  error.message = `${message}\n\n${error.message}`
-  addErrorInfo(error, { type: 'dependencies' })
-
-  return error
+  return getModuleNotFoundErrorObject({ error, functionsSrc, moduleNames: moduleName ? [moduleName] : [] })
 }
 
 // This error message always include the same words
