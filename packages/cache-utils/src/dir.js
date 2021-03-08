@@ -6,13 +6,13 @@ const { platform } = require('process')
 const globalCacheDir = require('global-cache-dir')
 
 // Retrieve the cache directory location
-const getCacheDir = function ({ cacheDir, mode, isTest } = {}) {
+const getCacheDir = function ({ cacheDir, cwd = '.', mode, isTest } = {}) {
   if (cacheDir !== undefined) {
-    return resolve(cacheDir)
+    return resolve(cwd, cacheDir)
   }
 
   if (mode !== 'buildbot') {
-    return resolve(LOCAL_CACHE_DIR)
+    return resolve(cwd, LOCAL_CACHE_DIR)
   }
 
   // Do not use in tests since /opt might not be writable by current user

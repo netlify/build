@@ -91,7 +91,7 @@ test('constants.CACHE_DIR local', async (t) => {
 })
 
 test('constants.CACHE_DIR CI', async (t) => {
-  await runFixture(t, 'cache', { flags: { mode: 'buildbot' } })
+  await runFixture(t, 'cache', { flags: { cacheDir: '/opt/build/cache' } })
 })
 
 test('constants.IS_LOCAL CI', async (t) => {

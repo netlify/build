@@ -92,6 +92,12 @@ Default: Current Node.js binary`,
 Default: automatically guessed`,
     hidden: true,
   },
+  cacheDir: {
+    string: true,
+    describe: `Path to the cache directory.
+Default: .netlify/cache/`,
+    hidden: true,
+  },
   buildbotServerSocket: {
     string: true,
     describe: `Path to the buildbot server socket. This is used to connect to the buildbot to trigger deploys.`,

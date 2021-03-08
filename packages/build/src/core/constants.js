@@ -22,6 +22,7 @@ const getConstants = async function ({
   configPath,
   buildDir,
   functionsDistDir,
+  cacheDir,
   netlifyConfig: {
     build: { publish = buildDir, functions, edge_handlers: edgeHandlers },
   },
@@ -34,7 +35,7 @@ const getConstants = async function ({
   await checkForLegacyDefaultFunctionsDir(logs, buildDir)
 
   const isLocal = mode !== 'buildbot'
-  const cacheDir = await getCacheDir({ mode })
+  const normalizedCacheDir = await getCacheDir({ mode, cacheDir, cwd: buildDir })
 
   const constants = {
     /**
@@ -60,7 +61,7 @@ const getConstants = async function ({
     /**
      * Path to the Netlify build cache folder
      */
-    CACHE_DIR: cacheDir,
+    CACHE_DIR: normalizedCacheDir,
     /**
      * Boolean indicating whether the build was run locally (Netlify CLI) or in the production CI
      */
