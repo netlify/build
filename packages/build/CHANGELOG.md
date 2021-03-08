@@ -1,5 +1,12 @@
 # Changelog
 
+### [9.8.5](https://www.github.com/netlify/build/compare/v9.8.4...v9.8.5) (2021-03-08)
+
+
+### Bug Fixes
+
+* add dependency error messages for esbuild ([#2361](https://www.github.com/netlify/build/issues/2361)) ([9df783a](https://www.github.com/netlify/build/commit/9df783ace59371e3ada566e713aaabe05afff733))
+
 ### [9.8.4](https://www.github.com/netlify/build/compare/v9.8.3...v9.8.4) (2021-03-05)
 
 
