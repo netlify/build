@@ -21,7 +21,6 @@ const runFixture = async function (
   const binaryPath = await BINARY_PATH
   const flagsA = {
     debug: true,
-    telemetry: false,
     buffer: true,
     ...flags,
     testOpts: { silentLingeringProcesses: true, pluginsListUrl: 'test', ...flags.testOpts },

@@ -14,7 +14,7 @@ const { loadPlugins } = require('../plugins/load')
 const { getPluginsOptions } = require('../plugins/options')
 const { startPlugins, stopPlugins } = require('../plugins/spawn')
 const { reportStatuses } = require('../status/report')
-const { trackBuildComplete } = require('../telemetry/complete')
+const { trackBuildComplete } = require('../telemetry/main')
 const { initTimers, measureDuration } = require('../time/main')
 const { reportTimers } = require('../time/report')
 
@@ -66,24 +66,21 @@ const build = async function (flags = {}) {
       errorParams,
     })
     await handleBuildSuccess({
-      commandsCount,
-      netlifyConfig,
       framework,
       dry,
-      siteInfo,
-      telemetry,
-      mode,
       logs,
       timers,
       durationNs,
-      testOpts,
       statsdOpts,
     })
-    const { success, severityCode } = getSeverity('success')
+    const { success, severityCode, status } = getSeverity('success')
+    await trackBuildComplete({ status, commandsCount, netlifyConfig, durationNs, siteInfo, telemetry, testOpts })
     return { success, severityCode, logs }
   } catch (error) {
     const { severity } = await handleBuildError(error, errorParams)
-    const { success, severityCode } = getSeverity(severity)
+    const { netlifyConfig, siteInfo } = errorParams
+    const { success, severityCode, status } = getSeverity(severity)
+    await trackBuildComplete({ status, netlifyConfig, siteInfo, telemetry, testOpts })
     return { success, severityCode, logs }
   }
 }
@@ -163,7 +160,7 @@ const tExecBuild = async function ({
   })
   // `errorParams` is purposely stateful
   // eslint-disable-next-line fp/no-mutating-assign
-  Object.assign(errorParams, { netlifyConfig, childEnv })
+  Object.assign(errorParams, { netlifyConfig, siteInfo, childEnv })
 
   const { commandsCount, timers: timersB } = await runAndReportBuild({
     netlifyConfig,
@@ -428,20 +425,7 @@ const runBuild = async function ({
 }
 
 // Logs and reports that a build successfully ended
-const handleBuildSuccess = async function ({
-  commandsCount,
-  netlifyConfig,
-  framework,
-  dry,
-  siteInfo,
-  telemetry,
-  mode,
-  logs,
-  timers,
-  durationNs,
-  testOpts,
-  statsdOpts,
-}) {
+const handleBuildSuccess = async function ({ framework, dry, logs, timers, durationNs, statsdOpts }) {
   if (dry) {
     return
   }
@@ -450,7 +434,6 @@ const handleBuildSuccess = async function ({
 
   logTimer(logs, durationNs, 'Netlify Build')
   await reportTimers({ timers, statsdOpts, framework })
-  await trackBuildComplete({ commandsCount, netlifyConfig, durationNs, siteInfo, telemetry, mode, testOpts })
 }
 
 module.exports = build

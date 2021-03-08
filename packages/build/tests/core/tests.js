@@ -9,7 +9,6 @@ const moize = require('moize')
 const { runFixture: runFixtureConfig } = require('../../../config/tests/helpers/main')
 const { version } = require('../../package.json')
 const { runFixture, FIXTURES_DIR } = require('../helpers/main')
-const { startServer } = require('../helpers/server.js')
 
 test('--help', async (t) => {
   await runFixture(t, '', { flags: { help: true }, useBinary: true })
@@ -193,33 +192,6 @@ test('--featureFlags can be used', async (t) => {
   await runFixture(t, 'empty', { flags: { featureFlags: 'test,test,testTwo' } })
 })
 
-// Normalize telemetry request so it can be snapshot
-const normalizeSnapshot = function ({ body, ...request }) {
-  return { ...request, body: normalizeBody(body) }
-}
-
-const normalizeBody = function ({
-  anonymousId,
-  meta: { timestamp, ...meta } = {},
-  properties: { duration, isCI, buildVersion, nodeVersion, osPlatform, osName, ...properties } = {},
-  ...body
-}) {
-  return {
-    ...body,
-    anonymousId: typeof anonymousId,
-    meta: { ...meta, timestamp: typeof timestamp },
-    properties: {
-      ...properties,
-      duration: typeof duration,
-      isCI: typeof isCI,
-      buildVersion: typeof buildVersion,
-      nodeVersion: typeof nodeVersion,
-      osPlatform: typeof osPlatform,
-      osName: typeof osName,
-    },
-  }
-}
-
 if (platform !== 'win32') {
   test('Print warning on lingering processes', async (t) => {
     const { returnValue } = await runFixture(t, 'lingering', {
@@ -237,45 +209,3 @@ if (platform !== 'win32') {
 
   const PID_LINE_REGEXP = /^PID: (\d+)$/m
 }
-
-const TELEMETRY_PATH = '/collect'
-
-const runWithApiMock = async function (t, { telemetry, origin, env = {}, snapshot = false } = {}) {
-  const { scheme, host, requests, stopServer } = await startServer({ path: TELEMETRY_PATH })
-  const telemetryOrigin = origin || `${scheme}://${host}`
-  try {
-    await runFixture(t, 'success', {
-      flags: { siteId: 'test', testOpts: { telemetryOrigin }, telemetry },
-      env,
-      snapshot,
-    })
-  } finally {
-    await stopServer()
-  }
-  return requests
-}
-
-test('Telemetry success', async (t) => {
-  const requests = await runWithApiMock(t, { telemetry: true })
-  const snapshot = requests.map(normalizeSnapshot)
-  t.snapshot(snapshot)
-})
-
-test('Telemetry disabled', async (t) => {
-  const requests = await runWithApiMock(t, { env: { BUILD_TELEMETRY_DISABLED: 'true' } })
-  t.is(requests.length, 0)
-})
-
-test('Telemetry disabled with flag', async (t) => {
-  const requests = await runWithApiMock(t, { telemetry: false })
-  t.is(requests.length, 0)
-})
-
-test('Telemetry disabled with mode', async (t) => {
-  const requests = await runWithApiMock(t)
-  t.is(requests.length, 0)
-})
-
-test('Telemetry error', async (t) => {
-  await runWithApiMock(t, { origin: 'https://...', telemetry: true, snapshot: true })
-})

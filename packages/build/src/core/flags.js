@@ -93,7 +93,7 @@ Default: automatically guessed`,
   telemetry: {
     boolean: true,
     describe: `Enable telemetry.
-Default: true`,
+Default: false`,
   },
   mode: {
     string: true,
