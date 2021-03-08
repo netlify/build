@@ -1,5 +1,12 @@
 # Changelog
 
+### [9.8.6](https://www.github.com/netlify/build/compare/v9.8.5...v9.8.6) (2021-03-08)
+
+
+### Bug Fixes
+
+* telemetry ([#2349](https://www.github.com/netlify/build/issues/2349)) ([3ee7ebf](https://www.github.com/netlify/build/commit/3ee7ebf08a2ac9e21d19f64ff63d7ce20ec031b9))
+
 ### [9.8.5](https://www.github.com/netlify/build/compare/v9.8.4...v9.8.5) (2021-03-08)
 
 
