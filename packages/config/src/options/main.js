@@ -35,6 +35,7 @@ const getDefaultOpts = function ({ env: envOpt = {}, cwd: cwdOpt, defaultConfig 
     env: envOpt,
     context: combinedEnv.CONTEXT || 'production',
     branch: combinedEnv.BRANCH,
+    apiHost: combinedEnv.NETLIFY_API_HOST,
     token: combinedEnv.NETLIFY_AUTH_TOKEN,
     siteId: combinedEnv.NETLIFY_SITE_ID,
     deployId: combinedEnv.DEPLOY_ID,

@@ -1,5 +1,7 @@
 'use strict'
 
+/* eslint eslint-comments/no-use: off, max-lines: off */
+
 // All CLI flags
 const FLAGS = {
   config: {
@@ -29,6 +31,11 @@ Default: current directory`,
   repositoryRoot: {
     string: true,
     describe: `Git repository root directory. Used to retrieve the configuration file.
+Default: automatically guessed`,
+  },
+  apiHost: {
+    string: true,
+    describe: `Netlify API endpoint.
 Default: automatically guessed`,
   },
   token: {

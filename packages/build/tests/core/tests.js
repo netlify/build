@@ -9,6 +9,7 @@ const moize = require('moize')
 const { runFixture: runFixtureConfig } = require('../../../config/tests/helpers/main')
 const { version } = require('../../package.json')
 const { runFixture, FIXTURES_DIR } = require('../helpers/main')
+const { startServer } = require('../helpers/server.js')
 
 test('--help', async (t) => {
   await runFixture(t, '', { flags: { help: true }, useBinary: true })
@@ -192,6 +193,23 @@ test('--featureFlags can be used', async (t) => {
   await runFixture(t, 'empty', { flags: { featureFlags: 'test,test,testTwo' } })
 })
 
+const CANCEL_PATH = '/api/v1/deploys/test/cancel'
+
+const runWithApiMock = async function (t, flags) {
+  const { scheme, host, requests, stopServer } = await startServer({ path: CANCEL_PATH })
+  try {
+    await runFixture(t, 'cancel', { flags: { apiHost: host, testOpts: { scheme }, ...flags } })
+  } finally {
+    await stopServer()
+  }
+  return requests
+}
+
+test('--apiHost is used to set Netlify API host', async (t) => {
+  const requests = await runWithApiMock(t, { token: 'test', deployId: 'test' })
+  t.is(requests.length, 1)
+  t.snapshot(requests)
+})
 if (platform !== 'win32') {
   test('Print warning on lingering processes', async (t) => {
     const { returnValue } = await runFixture(t, 'lingering', {
