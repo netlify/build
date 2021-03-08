@@ -4,10 +4,16 @@ const readdirp = require('readdirp')
 
 const { addErrorInfo } = require('../../error/info')
 
+const MODULE_NOT_FOUND_CODE = 'MODULE_NOT_FOUND'
+const MODULE_NOT_FOUND_ESBUILD_REGEXP = /^Could not resolve "(@[^"/]+\/[^"/]+|[^."/][^"/]*)"/
+const MODULE_NOT_FOUND_REGEXP = /Cannot find module '(@[^'/]+\/[^'/]+|[^.'/][^'/]*)/
+
 // Handle errors coming from zip-it-and-ship-it
-const getZipError = function (error, functionsSrc) {
-  if (isModuleNotFoundError(error)) {
-    return getModuleNotFoundError(error, functionsSrc)
+const getZipError = async function (error, functionsSrc) {
+  const moduleNotFoundError = await getModuleNotFoundError(error, functionsSrc)
+
+  if (moduleNotFoundError) {
+    return moduleNotFoundError
   }
 
   if (isPackageJsonError(error)) {
@@ -17,30 +23,64 @@ const getZipError = function (error, functionsSrc) {
   return error
 }
 
-const isModuleNotFoundError = function (error) {
-  return error instanceof Error && error.code === MODULE_NOT_FOUND_CODE
+const getModuleNotFoundError = async function (error, functionsSrc) {
+  const errorFromZisi = await getModuleNotFoundErrorFromZISI(error, functionsSrc)
+
+  if (errorFromZisi) {
+    return errorFromZisi
+  }
+
+  const errorFromEsbuild = await getModuleNotFoundErrorFromEsbuild(error, functionsSrc)
+
+  if (errorFromEsbuild) {
+    return errorFromEsbuild
+  }
 }
 
-const MODULE_NOT_FOUND_CODE = 'MODULE_NOT_FOUND'
+const getModuleNotFoundErrorObject = async ({ error, functionsSrc, moduleNames }) => {
+  const isMissingNodeModulesDirectory = await lacksNodeModules(functionsSrc)
+  const message =
+    moduleNames.length !== 0 && isMissingNodeModulesDirectory
+      ? getLocalInstallMessage(moduleNames)
+      : MODULE_NOT_FOUND_MESSAGE
 
-const getModuleNotFoundError = async function (error, functionsSrc) {
-  const message = await getModuleNotFoundMessage(error, functionsSrc)
   error.message = `${message}\n\n${error.message}`
   addErrorInfo(error, { type: 'dependencies' })
+
   return error
 }
 
-const getModuleNotFoundMessage = async function (error, functionsSrc) {
-  const moduleName = getModuleName(error)
-  if (moduleName !== undefined && (await lacksNodeModules(functionsSrc))) {
-    return getLocalInstallMessage(moduleName)
+const getModuleNotFoundErrorFromEsbuild = function (error, functionsSrc) {
+  const { errors = [] } = error
+  const modulesNotFound = errors.reduce((modules, errorObject) => {
+    const match = errorObject.text.match(MODULE_NOT_FOUND_ESBUILD_REGEXP)
+
+    if (!match) {
+      return modules
+    }
+
+    return [...modules, match[1]]
+  }, [])
+
+  if (modulesNotFound.length === 0) {
+    return
   }
 
-  return MODULE_NOT_FOUND_MESSAGE
+  return getModuleNotFoundErrorObject({ error, functionsSrc, moduleNames: modulesNotFound })
+}
+
+const getModuleNotFoundErrorFromZISI = function (error, functionsSrc) {
+  if (!(error instanceof Error && error.code === MODULE_NOT_FOUND_CODE)) {
+    return
+  }
+
+  const moduleName = getModuleNameFromZISIError(error)
+
+  return getModuleNotFoundErrorObject({ error, functionsSrc, moduleNames: moduleName ? [moduleName] : [] })
 }
 
 // This error message always include the same words
-const getModuleName = function (error) {
+const getModuleNameFromZISIError = function (error) {
   if (typeof error.message !== 'string') {
     return
   }
@@ -52,8 +92,6 @@ const getModuleName = function (error) {
 
   return result[1]
 }
-
-const MODULE_NOT_FOUND_REGEXP = /Cannot find module '(@[^'/]+\/[^'/]+|[^.'/][^'/]*)/
 
 // Netlify Functions has a `package.json` but no `node_modules`
 const lacksNodeModules = async function (functionsSrc) {
@@ -76,8 +114,8 @@ If it is a local file instead, please make sure the file exists and its filename
 
 // A common mistake is to assume Netlify Functions dependencies are
 // automatically installed. This checks for this pattern.
-const getLocalInstallMessage = function (moduleName) {
-  return `A Netlify Function is using "${moduleName}" but that dependency has not been installed yet.
+const getLocalInstallMessage = function (modules) {
+  const genericMessage = `
 
 By default, dependencies inside a Netlify Function's "package.json" are not automatically installed.
 There are several ways to fix this problem:
@@ -87,7 +125,15 @@ There are several ways to fix this problem:
 
 [[plugins]]
 package = "@netlify/plugin-functions-install-core"
-`
+  `
+
+  if (modules.length === 1) {
+    return `A Netlify Function is using "${modules[0]}" but that dependency has not been installed yet.${genericMessage}`
+  }
+
+  const moduleNames = modules.map((name) => `"${name}"`).join(', ')
+
+  return `A Netlify Function is using dependencies that have not been installed yet: ${moduleNames}${genericMessage}`
 }
 
 // We need to load the site's `package.json` when bundling Functions. This is
