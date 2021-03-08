@@ -9,5 +9,6 @@ coverage
 .eslintcache
 .cache
 .vscode
+packages/*/package-lock.json
 !**/fixtures/**/node_modules
 !**/fixtures/**/plugins_cache*/.netlify

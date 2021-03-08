@@ -6,13 +6,7 @@
   "main": "index.js",
   "author": "Netlify Inc.",
   "scripts": {
-    "installOldNpm": "npm install && run-p installOldNpm:*",
-    "installOldNpm:build": "npm install --prefix=packages/build",
-    "installOldNpm:config": "npm install --prefix=packages/config",
-    "installOldNpm:cache-utils": "npm install --prefix=packages/cache-utils",
-    "installOldNpm:functions-utils": "npm install --prefix=packages/functions-utils",
-    "installOldNpm:git-utils": "npm install --prefix=packages/git-utils",
-    "installOldNpm:run-utils": "npm install --prefix=packages/run-utils",
+    "installOldNpm": "npm install && lerna bootstrap --no-ci",
     "test": "run-s format test:dev",
     "format": "run-s format:check-fix:*",
     "format:ci": "run-s format:check:*",
@@ -87,6 +81,7 @@
     "@commitlint/config-conventional": "^12.0.0",
     "@netlify/eslint-config-node": "^2.5.2",
     "ava": "^2.4.0",
+    "lerna": "^3.22.1",
     "nyc": "^15.0.0"
   },
   "engines": {
