@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.0](https://www.github.com/netlify/build/compare/v4.0.4...v4.1.0) (2021-03-08)
+
+
+### Features
+
+* allow passing Netlify API host to Netlify API client ([#2288](https://www.github.com/netlify/build/issues/2288)) ([5529b1d](https://www.github.com/netlify/build/commit/5529b1dc92eccb6a932f80b006e83acfa0034413))
+
 ### [4.0.4](https://www.github.com/netlify/build/compare/v4.0.3...v4.0.4) (2021-03-04)
 
 
