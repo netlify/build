@@ -30,16 +30,9 @@ const {
 // Takes an optional configuration file path as input and return the resolved
 // `config` together with related properties such as the `configPath`.
 const resolveConfig = async function (opts) {
-  const { cachedConfig, host, token, offline, ...optsA } = addDefaultOpts(opts)
+  const { cachedConfig, host, scheme, pathPrefix, testOpts, token, offline, ...optsA } = addDefaultOpts(opts)
   // `api` is not JSON-serializable, so we cannot cache it inside `cachedConfig`
-  const api = getApiClient({
-    token,
-    offline,
-    host,
-    scheme: optsA.scheme,
-    pathPrefix: optsA.pathPrefix,
-    testOpts: optsA.testOpts,
-  })
+  const api = getApiClient({ token, offline, host, scheme, pathPrefix, testOpts })
 
   // Performance optimization when @netlify/config caller has already previously
   // called it and cached the result.
@@ -68,7 +61,6 @@ const resolveConfig = async function (opts) {
     mode,
     debug,
     logs,
-    testOpts,
   } = await normalizeOpts(optsA)
 
   const { siteInfo, accounts, addons } = await getSiteInfo({ api, siteId, mode, testOpts })
