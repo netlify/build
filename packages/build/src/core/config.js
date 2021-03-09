@@ -110,7 +110,7 @@ const resolveFullConfig = async function ({
       context,
       branch,
       baseRelDir,
-      apiHost,
+      host: apiHost,
       token,
       siteId,
       deployId,
