@@ -192,7 +192,7 @@ Netlify API token.
 
 This is used to retrieve [`siteInfo`](#siteinfo).
 
-#### host
+#### apiHost
 
 _Type_: `string`\
 _Default value_: `api.netlify.com`
