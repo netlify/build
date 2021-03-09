@@ -1,5 +1,13 @@
 # Changelog
 
+### [9.9.1](https://www.github.com/netlify/build/compare/v9.9.0...v9.9.1) (2021-03-09)
+
+
+### Bug Fixes
+
+* fix `host` option in `@netlify/config` ([#2379](https://www.github.com/netlify/build/issues/2379)) ([64d8386](https://www.github.com/netlify/build/commit/64d8386daf5f1f069ea95fb655a593b05f8f8107))
+* fix `semver` version with Node 8 ([#2362](https://www.github.com/netlify/build/issues/2362)) ([c72ecd8](https://www.github.com/netlify/build/commit/c72ecd8c8525e269180b427489991d9ec3238022))
+
 ## [9.9.0](https://www.github.com/netlify/build/compare/v9.8.6...v9.9.0) (2021-03-08)
 
 
