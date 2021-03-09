@@ -5,6 +5,7 @@ const { normalize } = require('path')
 const test = require('ava')
 const pathExists = require('path-exists')
 const { spy } = require('sinon')
+const sortOn = require('sort-on')
 
 const { add, list, listAll } = require('..')
 
@@ -91,7 +92,7 @@ test('Can list function main files with list()', async (t) => {
   const fixtureDir = `${FIXTURES_DIR}/list`
   const functions = await list(fixtureDir)
   t.deepEqual(
-    functions,
+    sortOn(functions, ['mainFile', 'extension']),
     [
       { name: 'four', mainFile: 'four.js/four.js.js', runtime: 'js', extension: '.js' },
       { name: 'one', mainFile: 'one/index.js', runtime: 'js', extension: '.js' },
@@ -107,7 +108,7 @@ test('Can list all function files with listAll()', async (t) => {
   const fixtureDir = `${FIXTURES_DIR}/list`
   const functions = await listAll(fixtureDir)
   t.deepEqual(
-    functions,
+    sortOn(functions, ['mainFile', 'extension']),
     [
       { name: 'four', mainFile: 'four.js/four.js.js', runtime: 'js', extension: '.js', srcFile: 'four.js/four.js.js' },
       { name: 'one', mainFile: 'one/index.js', runtime: 'js', extension: '.js', srcFile: 'one/index.js' },
