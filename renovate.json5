@@ -31,6 +31,7 @@
         'p-locate',
         'pkg-dir',
         'pretty-ms',
+        'semver',
         'supports-color',
         'update-notifier',
         'yargs',
