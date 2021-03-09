@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.0.7](https://www.github.com/netlify/build/compare/v1.0.6...v1.0.7) (2021-03-09)
+
+
+### Bug Fixes
+
+* fix `semver` version with Node 8 ([#2362](https://www.github.com/netlify/build/issues/2362)) ([c72ecd8](https://www.github.com/netlify/build/commit/c72ecd8c8525e269180b427489991d9ec3238022))
+
 ### [1.0.6](https://www.github.com/netlify/build/compare/run-utils-v1.0.5...v1.0.6) (2021-02-18)
 
 
