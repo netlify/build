@@ -1,5 +1,12 @@
 # Changelog
 
+### [4.1.1](https://www.github.com/netlify/build/compare/v4.1.0...v4.1.1) (2021-03-09)
+
+
+### Bug Fixes
+
+* fix `host` option in `@netlify/config` ([#2379](https://www.github.com/netlify/build/issues/2379)) ([64d8386](https://www.github.com/netlify/build/commit/64d8386daf5f1f069ea95fb655a593b05f8f8107))
+
 ## [4.1.0](https://www.github.com/netlify/build/compare/v4.0.4...v4.1.0) (2021-03-08)
 
 
