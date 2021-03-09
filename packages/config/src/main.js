@@ -30,12 +30,12 @@ const {
 // Takes an optional configuration file path as input and return the resolved
 // `config` together with related properties such as the `configPath`.
 const resolveConfig = async function (opts) {
-  const { cachedConfig, apiHost, token, offline, ...optsA } = addDefaultOpts(opts)
+  const { cachedConfig, host, token, offline, ...optsA } = addDefaultOpts(opts)
   // `api` is not JSON-serializable, so we cannot cache it inside `cachedConfig`
   const api = getApiClient({
     token,
     offline,
-    host: apiHost,
+    host,
     scheme: optsA.scheme,
     pathPrefix: optsA.pathPrefix,
     testOpts: optsA.testOpts,
