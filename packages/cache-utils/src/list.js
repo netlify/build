@@ -9,9 +9,9 @@ const { isManifest } = require('./manifest')
 const { getBases } = require('./path')
 
 // List all cached files/directories, at the top-level
-const list = async function ({ cacheDir, cwd: cwdOpt, mode, depth = DEFAULT_DEPTH } = {}) {
+const list = async function ({ cacheDir, cwd: cwdOpt, depth = DEFAULT_DEPTH } = {}) {
   const bases = await getBases(cwdOpt)
-  const cacheDirA = await getCacheDir({ cacheDir, mode })
+  const cacheDirA = getCacheDir({ cacheDir, cwd: cwdOpt })
   const files = await Promise.all(bases.map(({ name, base }) => listBase({ name, base, cacheDir: cacheDirA, depth })))
   const filesA = files.flat()
   return filesA
