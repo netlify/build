@@ -7,9 +7,9 @@ const { getCacheDir } = require('./dir')
 const { safeGetCwd } = require('./utils/cwd')
 
 // Find the paths of the file before/after caching
-const parsePath = async function ({ path, cacheDir, cwdOpt, mode }) {
+const parsePath = async function ({ path, cacheDir, cwdOpt }) {
   const srcPath = await getSrcPath(path, cwdOpt)
-  const cachePath = await getCachePath({ srcPath, cacheDir, cwdOpt, mode })
+  const cachePath = await getCachePath({ srcPath, cacheDir, cwdOpt })
   return { srcPath, cachePath }
 }
 
@@ -52,8 +52,8 @@ const isParentPath = function (srcPath, cwd) {
   return `${cwd}${sep}`.startsWith(`${srcPath}${sep}`)
 }
 
-const getCachePath = async function ({ srcPath, cacheDir, cwdOpt, mode }) {
-  const cacheDirA = await getCacheDir({ cacheDir, mode })
+const getCachePath = async function ({ srcPath, cacheDir, cwdOpt }) {
+  const cacheDirA = getCacheDir({ cacheDir, cwd: cwdOpt })
   const { name, relPath } = await findBase(srcPath, cwdOpt)
   const cachePath = join(cacheDirA, name, relPath)
   return cachePath

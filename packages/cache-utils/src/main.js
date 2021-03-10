@@ -13,9 +13,9 @@ const { parsePath } = require('./path')
 // Cache a file
 const saveOne = async function (
   path,
-  { move = DEFAULT_MOVE, ttl = DEFAULT_TTL, digests = [], cacheDir, cwd: cwdOpt, mode } = {},
+  { move = DEFAULT_MOVE, ttl = DEFAULT_TTL, digests = [], cacheDir, cwd: cwdOpt } = {},
 ) {
-  const { srcPath, cachePath } = await parsePath({ path, cacheDir, cwdOpt, mode })
+  const { srcPath, cachePath } = await parsePath({ path, cacheDir, cwdOpt })
 
   if (!(await hasFiles(srcPath))) {
     return false
@@ -34,8 +34,8 @@ const saveOne = async function (
 }
 
 // Restore a cached file
-const restoreOne = async function (path, { move = DEFAULT_MOVE, cacheDir, cwd: cwdOpt, mode } = {}) {
-  const { srcPath, cachePath } = await parsePath({ path, cacheDir, cwdOpt, mode })
+const restoreOne = async function (path, { move = DEFAULT_MOVE, cacheDir, cwd: cwdOpt } = {}) {
+  const { srcPath, cachePath } = await parsePath({ path, cacheDir, cwdOpt })
 
   if (!(await hasFiles(cachePath))) {
     return false
@@ -52,8 +52,8 @@ const restoreOne = async function (path, { move = DEFAULT_MOVE, cacheDir, cwd: c
 }
 
 // Remove the cache of a file
-const removeOne = async function (path, { cacheDir, cwd: cwdOpt, mode } = {}) {
-  const { cachePath } = await parsePath({ path, cacheDir, cwdOpt, mode })
+const removeOne = async function (path, { cacheDir, cwd: cwdOpt } = {}) {
+  const { cachePath } = await parsePath({ path, cacheDir, cwdOpt })
 
   if (!(await hasFiles(cachePath))) {
     return false
@@ -66,8 +66,8 @@ const removeOne = async function (path, { cacheDir, cwd: cwdOpt, mode } = {}) {
 }
 
 // Check if a file is cached
-const hasOne = async function (path, { cacheDir, cwd: cwdOpt, mode } = {}) {
-  const { cachePath } = await parsePath({ path, cacheDir, cwdOpt, mode })
+const hasOne = async function (path, { cacheDir, cwd: cwdOpt } = {}) {
+  const { cachePath } = await parsePath({ path, cacheDir, cwdOpt })
 
   return (await hasFiles(cachePath)) && !(await isExpired(cachePath))
 }

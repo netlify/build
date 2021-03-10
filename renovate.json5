@@ -18,7 +18,6 @@
         'get-bin-path',
         'get-node',
         'get-stream',
-        'global-cache-dir',
         'globby',
         'got',
         'is-plain-obj',

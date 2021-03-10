@@ -1,6 +1,6 @@
 'use strict'
 
-const { writeFile, readFile } = require('fs')
+const { writeFile, readFile, readdir } = require('fs')
 const { join, basename } = require('path')
 const { promisify } = require('util')
 
@@ -11,6 +11,7 @@ const { dir: getTmpDir, tmpName } = require('tmp-promise')
 const pSetTimeout = promisify(setTimeout)
 const pWriteFile = promisify(writeFile)
 const pReadFile = promisify(readFile)
+const pReaddir = promisify(readdir)
 
 const createTmpDir = async function (opts) {
   const { path } = await getTmpDir({ ...opts, prefix: PREFIX })
@@ -35,6 +36,7 @@ module.exports = {
   pSetTimeout,
   pWriteFile,
   pReadFile,
+  pReaddir,
   createTmpDir,
   createTmpFile,
   removeFiles,

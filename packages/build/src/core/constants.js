@@ -35,7 +35,7 @@ const getConstants = async function ({
   await checkForLegacyDefaultFunctionsDir(logs, buildDir)
 
   const isLocal = mode !== 'buildbot'
-  const normalizedCacheDir = await getCacheDir({ mode, cacheDir, cwd: buildDir })
+  const normalizedCacheDir = getCacheDir({ cacheDir, cwd: buildDir })
 
   const constants = {
     /**
