@@ -108,6 +108,10 @@ test('build.context.CONTEXT: object', async (t) => {
   await runFixture(t, 'build_context_nested_object')
 })
 
+test('functions.*.externalModules: array of strings', async (t) => {
+  await runFixture(t, 'function_config_externalmodules')
+})
+
 test('Validates defaultConfig', async (t) => {
   const defaultConfig = JSON.stringify({ build: { command: false } })
   await runFixture(t, 'empty', { flags: { defaultConfig } })

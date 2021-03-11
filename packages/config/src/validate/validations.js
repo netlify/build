@@ -3,7 +3,14 @@
 const isPlainObj = require('is-plain-obj')
 const validateNpmPackageName = require('validate-npm-package-name')
 
-const { isString, validProperties, insideRootCheck, removeParentDots } = require('./helpers')
+const {
+  isArrayOfObjects,
+  isArrayOfStrings,
+  isString,
+  validProperties,
+  insideRootCheck,
+  removeParentDots,
+} = require('./helpers')
 
 // List of validations performed on the configuration file.
 // Validation are performed in order: parent should be before children.
@@ -30,7 +37,7 @@ const PRE_CASE_NORMALIZE_VALIDATIONS = [
 const PRE_MERGE_VALIDATIONS = [
   {
     property: 'plugins',
-    check: (value) => Array.isArray(value) && value.every(isPlainObj),
+    check: isArrayOfObjects,
     message: 'must be an array of objects.',
     example: () => ({ plugins: [{ package: 'netlify-plugin-one' }, { package: 'netlify-plugin-two' }] }),
   },
@@ -148,6 +155,22 @@ const POST_NORMALIZE_VALIDATIONS = [
     property: 'build.edge_handlers',
     ...insideRootCheck,
     example: (edgeHandlers) => ({ build: { edge_handlers: removeParentDots(edgeHandlers) } }),
+  },
+  {
+    property: 'functions.*.externalModules',
+    check: isArrayOfStrings,
+    message: 'must be an array of strings.',
+    example: (value, key, prevPath) => ({
+      functions: { [prevPath[1]]: { externalModules: ['module-one', 'module-two'] } },
+    }),
+  },
+  {
+    property: 'functions.*.ignoredModules',
+    check: isArrayOfStrings,
+    message: 'must be an array of strings.',
+    example: (value, key, prevPath) => ({
+      functions: { [prevPath[1]]: { ignoredModules: ['module-one', 'module-two'] } },
+    }),
   },
 ]
 

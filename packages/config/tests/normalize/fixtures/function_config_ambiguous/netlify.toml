@@ -1,0 +1,3 @@
+# A function named "externalModules"
+[functions.externalModules]
+externalModules = ["module-three"]

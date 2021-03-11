@@ -44,5 +44,11 @@ module.exports = {
         'max-lines-per-function': 'off',
       },
     },
+    {
+      files: ['packages/config/src/validate/validations.js'],
+      rules: {
+        'max-lines': 'off',
+      },
+    },
   ],
 }
