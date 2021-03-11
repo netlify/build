@@ -1,5 +1,12 @@
 # Changelog
 
+### [9.9.4](https://www.github.com/netlify/build/compare/v9.9.3...v9.9.4) (2021-03-11)
+
+
+### Bug Fixes
+
+* fix error handling when importing a non-existing local file ([#2394](https://www.github.com/netlify/build/issues/2394)) ([881448b](https://www.github.com/netlify/build/commit/881448b9ba6460086c653e7de40e6866f709b979))
+
 ### [9.9.3](https://www.github.com/netlify/build/compare/v9.9.2...v9.9.3) (2021-03-11)
 
 
