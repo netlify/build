@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.3.20](https://www.github.com/netlify/build/compare/v1.3.19...v1.3.20) (2021-03-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^2.7.1 ([#2396](https://www.github.com/netlify/build/issues/2396)) ([b4c070f](https://www.github.com/netlify/build/commit/b4c070fa8ac1406b3f489e5ddb038e4ecbe1f68c))
+
 ### [1.3.19](https://www.github.com/netlify/build/compare/v1.3.18...v1.3.19) (2021-03-11)
 
 
