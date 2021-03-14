@@ -1,6 +1,6 @@
 'use strict'
 
-const { satisfies } = require('semver')
+const { satisfies, valid: validVersion } = require('semver')
 
 // Find a plugin's version using a set of conditions. Default to latest version.
 // `conditions` is sorted from most to least recent version.
@@ -51,7 +51,23 @@ const siteDependenciesTest = function (allowedSiteDependencies, { packageJson: {
 
 const siteDependencyTest = function ({ dependencyName, allowedVersion, siteDependencies }) {
   const siteDependency = siteDependencies[dependencyName]
-  return typeof siteDependency === 'string' && satisfies(siteDependency, allowedVersion)
+  if (typeof siteDependency !== 'string') {
+    return false
+  }
+
+  // if this is a valid version we can apply the rule directly
+  if (validVersion(siteDependency)) {
+    return satisfies(siteDependency, allowedVersion)
+  }
+
+  try {
+    // if this is a range we need to get the exact version
+    // eslint-disable-next-line node/global-require,import/no-dynamic-require
+    const { version } = require(`${dependencyName}/package.json`)
+    return satisfies(version, allowedVersion)
+  } catch (error) {
+    return false
+  }
 }
 
 const siteDependenciesWarning = function (allowedSiteDependencies) {

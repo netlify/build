@@ -736,6 +736,20 @@ test.serial('Plugins can specify multiple matching compatibility conditions', as
   })
 })
 
+test.serial('Plugins can specify non-matching compatibility.siteDependencies range', async (t) => {
+  await removeDir(`${FIXTURES_DIR}/plugins_compat_site_dependencies_range/.netlify`)
+  // We need this since the code dynamically requires the next dependency
+  await cpy(`${FIXTURES_DIR}/plugins_compat_site_dependencies_range/node_modules/next`, './node_modules/next', {
+    overwrite: true,
+  })
+  await runWithApiMock(t, 'plugins_compat_site_dependencies_range', {
+    testPlugin: {
+      version: '0.3.0',
+      compatibility: [{ version: '0.2.0', siteDependencies: { next: '<10' } }],
+    },
+  })
+})
+
 const getNodePath = function (nodeVersion) {
   return `/home/ether/.nvm/versions/node/v${nodeVersion}/bin/node`
 }
