@@ -1,7 +1,7 @@
 'use strict'
 const pEvery = require('p-every')
 const pLocate = require('p-locate')
-const { satisfies, valid: validVersion } = require('semver')
+const { satisfies, clean: cleanVersion } = require('semver')
 
 const { resolvePath } = require('../utils/resolve')
 
@@ -64,7 +64,7 @@ const siteDependencyTest = async function ({ dependencyName, allowedVersion, sit
   }
 
   // if this is a valid version we can apply the rule directly
-  if (validVersion(siteDependency)) {
+  if (cleanVersion(siteDependency) !== null) {
     return satisfies(siteDependency, allowedVersion)
   }
 
