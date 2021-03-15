@@ -5,6 +5,6 @@
   "license": "MIT",
   "repository": "test",
   "dependencies": {
-    "next": "^9.5.4"
+    "dependency-with-range": "^9.5.4"
   }
 }
