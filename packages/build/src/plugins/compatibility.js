@@ -1,12 +1,15 @@
 'use strict'
-
+const pEvery = require('p-every')
+const pFilter = require('p-filter')
 const { satisfies, valid: validVersion } = require('semver')
+
+const { resolvePath } = require('../utils/resolve')
 
 // Find a plugin's version using a set of conditions. Default to latest version.
 // `conditions` is sorted from most to least recent version.
-const getExpectedVersion = function ({ latestVersion, compatibility, nodeVersion, packageJson }) {
-  const matchingCondition = compatibility.find(({ conditions }) =>
-    matchesCompatField({ conditions, nodeVersion, packageJson }),
+const getExpectedVersion = async function ({ latestVersion, compatibility, nodeVersion, packageJson, buildDir }) {
+  const [matchingCondition] = await pFilter(compatibility, ({ conditions }) =>
+    matchesCompatField({ conditions, nodeVersion, packageJson, buildDir }),
   )
 
   if (matchingCondition === undefined) {
@@ -18,8 +21,10 @@ const getExpectedVersion = function ({ latestVersion, compatibility, nodeVersion
   return { expectedVersion, compatWarning }
 }
 
-const matchesCompatField = function ({ conditions, nodeVersion, packageJson }) {
-  return conditions.every(({ type, condition }) => CONDITIONS[type].test(condition, { nodeVersion, packageJson }))
+const matchesCompatField = async function ({ conditions, nodeVersion, packageJson, buildDir }) {
+  return await pEvery(conditions, ({ type, condition }) =>
+    CONDITIONS[type].test(condition, { nodeVersion, packageJson, buildDir }),
+  )
 }
 
 // Retrieve warning message shown when using an older version with `compatibility`
@@ -42,14 +47,17 @@ const nodeVersionWarning = function (allowedNodeVersion) {
   return `Node.js ${allowedNodeVersion}`
 }
 
-const siteDependenciesTest = function (allowedSiteDependencies, { packageJson: { devDependencies, dependencies } }) {
+const siteDependenciesTest = async function (
+  allowedSiteDependencies,
+  { packageJson: { devDependencies, dependencies }, buildDir },
+) {
   const siteDependencies = { ...devDependencies, ...dependencies }
-  return Object.entries(allowedSiteDependencies).every(([dependencyName, allowedVersion]) =>
-    siteDependencyTest({ dependencyName, allowedVersion, siteDependencies }),
+  return await pEvery(Object.entries(allowedSiteDependencies), ([dependencyName, allowedVersion]) =>
+    siteDependencyTest({ dependencyName, allowedVersion, siteDependencies, buildDir }),
   )
 }
 
-const siteDependencyTest = function ({ dependencyName, allowedVersion, siteDependencies }) {
+const siteDependencyTest = async function ({ dependencyName, allowedVersion, siteDependencies, buildDir }) {
   const siteDependency = siteDependencies[dependencyName]
   if (typeof siteDependency !== 'string') {
     return false
@@ -62,8 +70,9 @@ const siteDependencyTest = function ({ dependencyName, allowedVersion, siteDepen
 
   try {
     // if this is a range we need to get the exact version
-    // eslint-disable-next-line node/global-require,import/no-dynamic-require
-    const { version } = require(`${dependencyName}/package.json`)
+    const packageJsonPath = await resolvePath(`${dependencyName}/package.json`, buildDir)
+    // eslint-disable-next-line node/global-require, import/no-dynamic-require
+    const { version } = require(packageJsonPath)
     return satisfies(version, allowedVersion)
   } catch (error) {
     return false

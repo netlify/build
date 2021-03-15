@@ -738,14 +738,6 @@ test.serial('Plugins can specify multiple matching compatibility conditions', as
 
 test.serial('Plugins can specify non-matching compatibility.siteDependencies range', async (t) => {
   await removeDir(`${FIXTURES_DIR}/plugins_compat_site_dependencies_range/.netlify`)
-  // We need this since the code dynamically requires the next dependency
-  await cpy(
-    `${FIXTURES_DIR}/plugins_compat_site_dependencies_range/node_modules/dependency-with-range`,
-    './node_modules/dependency-with-range',
-    {
-      overwrite: true,
-    },
-  )
   await runWithApiMock(t, 'plugins_compat_site_dependencies_range', {
     testPlugin: {
       version: '0.3.0',
