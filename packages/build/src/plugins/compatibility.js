@@ -1,6 +1,6 @@
 'use strict'
 const pEvery = require('p-every')
-const pFilter = require('p-filter')
+const pLocate = require('p-locate')
 const { satisfies, valid: validVersion } = require('semver')
 
 const { resolvePath } = require('../utils/resolve')
@@ -8,7 +8,7 @@ const { resolvePath } = require('../utils/resolve')
 // Find a plugin's version using a set of conditions. Default to latest version.
 // `conditions` is sorted from most to least recent version.
 const getExpectedVersion = async function ({ latestVersion, compatibility, nodeVersion, packageJson, buildDir }) {
-  const [matchingCondition] = await pFilter(compatibility, ({ conditions }) =>
+  const matchingCondition = await pLocate(compatibility, ({ conditions }) =>
     matchesCompatField({ conditions, nodeVersion, packageJson, buildDir }),
   )
 
