@@ -10,34 +10,44 @@ const isConfigLeaf = (obj) => isPlainObj(obj) && Object.keys(obj).every(isConfig
 
 const isConfigProperty = (prop) => configProperties.has(prop)
 
-const normalize = (config) => {
-  if (!config) {
-    return config
-  }
-
-  const normalizedConfig = Object.keys(config).reduce((result, prop) => {
+// Normalizes a functions configuration object, so that the first level of keys
+// represents function expressions mapped to a configuration object.
+//
+// Example input:
+// {
+//   "externalModules": ["one"],
+//   "my-function": { "externalModules": ["two"] }
+// }
+//
+// Example output:
+// {
+//   "*": { "externalModules": ["one"] },
+//   "my-function": { "externalModules": ["two"] }
+// }
+const normalize = (functions) => {
+  const normalizedFunctions = Object.keys(functions).reduce((result, prop) => {
     // If `prop` is one of `configProperties``, we might be dealing with a
     // top-level property (i.e. one that targets all functions). We consider
     // that to be the case if the value is an object where all keys are also
     // config properties. If not, it's simply a function with the same name
     // as one of the config properties.
-    if (isConfigProperty(prop) && !isConfigLeaf(config[prop])) {
+    if (isConfigProperty(prop) && !isConfigLeaf(functions[prop])) {
       return {
         ...result,
         [WILDCARD_ALL]: {
           ...result[WILDCARD_ALL],
-          [prop]: config[prop],
+          [prop]: functions[prop],
         },
       }
     }
 
     return {
       ...result,
-      [prop]: config[prop],
+      [prop]: functions[prop],
     }
   }, {})
 
-  return normalizedConfig
+  return normalizedFunctions
 }
 
 module.exports = { normalize }
