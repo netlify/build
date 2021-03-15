@@ -3,6 +3,7 @@
 const { resolve, relative } = require('path')
 
 const { zipFunctions, listFunctions } = require('@netlify/zip-it-and-ship-it')
+const mapObject = require('map-obj')
 const pathExists = require('path-exists')
 const { isDirectory } = require('path-type')
 
@@ -16,17 +17,37 @@ const {
 
 const { getZipError } = require('./error')
 
-const zipFunctionsAndLogResults = async ({ featureFlags, functionsDist, functionsSrc, logs }) => {
-  const isEsbuildEnabled = featureFlags.buildbot_esbuild
+// The function configuration keys returned by @netlify/config are not an exact
+// match to the properties that @netlify/zip-it-and-ship-it expects. We do that
+// translation according to this map.
+const zisiConfigMap = {
+  js_external_modules: 'jsExternalModules',
+  js_ignored_modules: 'jsIgnoredModules',
+}
 
-  // If the `buildbot_esbuild` flag is enabled, we tell zip-it-and-ship-it to
-  // bundle JS functions with esbuild, with a fallback to the legacy bundler
-  // in case of an error
-  const zisiParameters = isEsbuildEnabled
-    ? {
-        jsBundler: 'esbuild_zisi',
-      }
-    : {}
+const getZisiParameters = ({ isEsbuildEnabled, functionsConfig }) => {
+  const config = mapObject(functionsConfig, (expression, object) => {
+    const normalizedObject = mapObject(object, (key, value) => [zisiConfigMap[key] || key, value])
+
+    return [expression, normalizedObject]
+  })
+  const parameters = {
+    config,
+  }
+
+  if (isEsbuildEnabled) {
+    return {
+      ...parameters,
+      jsBundler: 'esbuild_zisi',
+    }
+  }
+
+  return parameters
+}
+
+const zipFunctionsAndLogResults = async ({ featureFlags, functionsConfig, functionsDist, functionsSrc, logs }) => {
+  const isEsbuildEnabled = featureFlags.buildbot_esbuild
+  const zisiParameters = getZisiParameters({ isEsbuildEnabled, functionsConfig })
 
   try {
     // Printing an empty line before esbuild output.
@@ -49,6 +70,7 @@ const coreCommand = async function ({
   logs,
   childEnv,
   featureFlags,
+  netlifyConfig,
 }) {
   const functionsSrc = resolve(buildDir, relativeFunctionsSrc)
   const functionsDist = resolve(buildDir, relativeFunctionsDist)
@@ -67,7 +89,14 @@ const coreCommand = async function ({
     return
   }
 
-  await zipFunctionsAndLogResults({ childEnv, featureFlags, functionsDist, functionsSrc, logs })
+  await zipFunctionsAndLogResults({
+    childEnv,
+    featureFlags,
+    functionsConfig: netlifyConfig.functions,
+    functionsDist,
+    functionsSrc,
+    logs,
+  })
 }
 
 const validateFunctionsSrc = async function ({ functionsSrc, relativeFunctionsSrc }) {

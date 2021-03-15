@@ -1,0 +1,11 @@
+[build]
+functions = "functions"
+
+[functions]
+js_ignored_modules = ["@netlify/imaginary-module-one"]
+
+[functions.function_one]
+js_external_modules = ["@netlify/imaginary-module-two"]
+
+[functions."function_*"]
+js_external_modules = ["@netlify/imaginary-module-three"]
