@@ -1,5 +1,26 @@
 # Changelog
 
+### [9.9.5](https://www.github.com/netlify/build/compare/v9.9.4...v9.9.5) (2021-03-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^2.7.1 ([#2396](https://www.github.com/netlify/build/issues/2396)) ([b4c070f](https://www.github.com/netlify/build/commit/b4c070fa8ac1406b3f489e5ddb038e4ecbe1f68c))
+
+### [9.9.4](https://www.github.com/netlify/build/compare/v9.9.3...v9.9.4) (2021-03-11)
+
+
+### Bug Fixes
+
+* fix error handling when importing a non-existing local file ([#2394](https://www.github.com/netlify/build/issues/2394)) ([881448b](https://www.github.com/netlify/build/commit/881448b9ba6460086c653e7de40e6866f709b979))
+
+### [9.9.3](https://www.github.com/netlify/build/compare/v9.9.2...v9.9.3) (2021-03-11)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^2.7.0 ([#2391](https://www.github.com/netlify/build/issues/2391)) ([0c1c1dc](https://www.github.com/netlify/build/commit/0c1c1dcce06fc511ba2c26bf2fb52b91e202b670))
+
 ### [9.9.2](https://www.github.com/netlify/build/compare/v9.9.1...v9.9.2) (2021-03-10)
 
 

@@ -5,8 +5,8 @@ const readdirp = require('readdirp')
 const { addErrorInfo } = require('../../error/info')
 
 const MODULE_NOT_FOUND_CODE = 'MODULE_NOT_FOUND'
-const MODULE_NOT_FOUND_ESBUILD_REGEXP = /^Could not resolve "(@[^"/]+\/[^"/]+|[^."/][^"/]*)"/
-const MODULE_NOT_FOUND_REGEXP = /Cannot find module '(@[^'/]+\/[^'/]+|[^.'/][^'/]*)/
+const MODULE_NOT_FOUND_ESBUILD_REGEXP = /^Could not resolve ['"]([^'"]+)/
+const MODULE_NOT_FOUND_REGEXP = /Cannot find module ['"]([^'"]+)/
 
 // Handle errors coming from zip-it-and-ship-it
 const getZipError = async function (error, functionsSrc) {
@@ -38,16 +38,28 @@ const getModuleNotFoundError = async function (error, functionsSrc) {
 }
 
 const getModuleNotFoundErrorObject = async ({ error, functionsSrc, moduleNames }) => {
-  const isMissingNodeModulesDirectory = await lacksNodeModules(functionsSrc)
-  const message =
-    moduleNames.length !== 0 && isMissingNodeModulesDirectory
-      ? getLocalInstallMessage(moduleNames)
-      : MODULE_NOT_FOUND_MESSAGE
+  const message = await getModuleNotFoundMessage(functionsSrc, moduleNames)
 
   error.message = `${message}\n\n${error.message}`
   addErrorInfo(error, { type: 'dependencies' })
 
   return error
+}
+
+const getModuleNotFoundMessage = async function (functionsSrc, moduleNames) {
+  if (moduleNames.length === 0 || !(await lacksNodeModules(functionsSrc))) {
+    return MODULE_NOT_FOUND_MESSAGE
+  }
+
+  if (moduleNames.filter(Boolean).some(isLocalPath)) {
+    return PATH_NOT_FOUND_MESSAGE
+  }
+
+  return getLocalInstallMessage(moduleNames)
+}
+
+const isLocalPath = function (moduleName) {
+  return moduleName.startsWith('.') || moduleName.startsWith('/')
 }
 
 const getModuleNotFoundErrorFromEsbuild = function (error, functionsSrc) {
@@ -109,8 +121,9 @@ const hasFunctionRootFile = async function (filename, functionsSrc) {
 }
 
 const MODULE_NOT_FOUND_MESSAGE = `A Netlify Function failed to require one of its dependencies.
-If the dependency is a Node module, please make sure it is present in the site's top-level "package.json".
-If it is a local file instead, please make sure the file exists and its filename is correctly spelled.`
+Please make sure it is present in the site's top-level "package.json".`
+const PATH_NOT_FOUND_MESSAGE = `A Netlify Function failed to require a local file.
+Please make sure the file exists and its path is correctly spelled.`
 
 // A common mistake is to assume Netlify Functions dependencies are
 // automatically installed. This checks for this pattern.

@@ -1,5 +1,12 @@
 # Changelog
 
+### [4.1.3](https://www.github.com/netlify/build/compare/v4.1.2...v4.1.3) (2021-03-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency netlify to ^6.1.16 ([#2399](https://www.github.com/netlify/build/issues/2399)) ([528d5b9](https://www.github.com/netlify/build/commit/528d5b99e09d38c414bb4daa7c906a72bdd83302))
+
 ### [4.1.2](https://www.github.com/netlify/build/compare/v4.1.1...v4.1.2) (2021-03-10)
 
 
