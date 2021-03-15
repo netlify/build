@@ -46,6 +46,10 @@ const track = async function ({ payload, testOpts: { telemetryOrigin = '' } = {}
   // During tests, we wait for the HTTP request to complete
   if (telemetryOrigin === '') {
     childProcess.unref()
+    // When calling `unref()`, the promise becomes unref'd as well.
+    // Awaiting it would not prevent the main process from exiting, but would
+    // prevent this function from returning. This would result in the main
+    // build function never returning.
     return
   }
 
