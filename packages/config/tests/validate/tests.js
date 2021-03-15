@@ -112,11 +112,11 @@ test('functions: object', async (t) => {
   await runFixture(t, 'function_config_invalid_1')
 })
 
-test('functions.*.externalModules: array of strings', async (t) => {
+test('functions.*.js_external_modules: array of strings', async (t) => {
   await runFixture(t, 'function_config_invalid_2')
 })
 
-test('functions.*.ignoredModules: array of strings', async (t) => {
+test('functions.*.js_ignored_modules: array of strings', async (t) => {
   await runFixture(t, 'function_config_invalid_3')
 })
 

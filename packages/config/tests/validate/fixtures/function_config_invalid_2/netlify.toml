@@ -1,2 +1,2 @@
 [functions]
-externalModules = "not-an-array"
+js_external_modules = "not-an-array"

@@ -73,7 +73,7 @@ const PRE_NORMALIZE_VALIDATIONS = [
     check: isPlainObj,
     message: 'must be an object.',
     example: () => ({
-      functions: { externalModules: ['module-one', 'module-two'] },
+      functions: { js_external_modules: ['module-one', 'module-two'] },
     }),
   },
 ]
@@ -166,19 +166,19 @@ const POST_NORMALIZE_VALIDATIONS = [
     example: (edgeHandlers) => ({ build: { edge_handlers: removeParentDots(edgeHandlers) } }),
   },
   {
-    property: 'functions.*.externalModules',
+    property: 'functions.*.js_external_modules',
     check: isArrayOfStrings,
     message: 'must be an array of strings.',
     example: (value, key, prevPath) => ({
-      functions: { [prevPath[1]]: { externalModules: ['module-one', 'module-two'] } },
+      functions: { [prevPath[1]]: { js_external_modules: ['module-one', 'module-two'] } },
     }),
   },
   {
-    property: 'functions.*.ignoredModules',
+    property: 'functions.*.js_ignored_modules',
     check: isArrayOfStrings,
     message: 'must be an array of strings.',
     example: (value, key, prevPath) => ({
-      functions: { [prevPath[1]]: { ignoredModules: ['module-one', 'module-two'] } },
+      functions: { [prevPath[1]]: { js_ignored_modules: ['module-one', 'module-two'] } },
     }),
   },
 ]

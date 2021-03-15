@@ -1,2 +1,2 @@
 [functions]
-externalModules = ["module-one", "module-two"]
+js_external_modules = ["module-one", "module-two"]
