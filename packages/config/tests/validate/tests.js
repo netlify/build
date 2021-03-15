@@ -112,6 +112,10 @@ test('functions: object', async (t) => {
   await runFixture(t, 'function_config_invalid_1')
 })
 
+test('functions.*: object', async (t) => {
+  await runFixture(t, 'function_config_invalid_4')
+})
+
 test('functions.*.js_external_modules: array of strings', async (t) => {
   await runFixture(t, 'function_config_invalid_2')
 })
