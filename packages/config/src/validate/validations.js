@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 'use strict'
 
 const isPlainObj = require('is-plain-obj')
@@ -189,3 +190,4 @@ module.exports = {
   PRE_NORMALIZE_VALIDATIONS,
   POST_NORMALIZE_VALIDATIONS,
 }
+/* eslint-enable max-lines */
