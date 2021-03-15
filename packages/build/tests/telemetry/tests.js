@@ -81,9 +81,8 @@ const runWithApiMock = async function (
       env,
       snapshot,
     })
-    await Promise.all(stopServers.map((stopServer) => stopServer()))
     return { exitCode, telemetryRequests }
-  } catch (error) {
+  } finally {
     await Promise.all(stopServers.map((stopServer) => stopServer()))
   }
 }
