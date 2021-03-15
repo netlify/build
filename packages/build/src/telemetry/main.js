@@ -46,6 +46,7 @@ const track = async function ({ payload, testOpts: { telemetryOrigin = '' } = {}
   // During tests, we wait for the HTTP request to complete
   if (telemetryOrigin === '') {
     childProcess.unref()
+    return
   }
 
   await childProcess
