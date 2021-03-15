@@ -166,6 +166,14 @@ const POST_NORMALIZE_VALIDATIONS = [
     example: (edgeHandlers) => ({ build: { edge_handlers: removeParentDots(edgeHandlers) } }),
   },
   {
+    property: 'functions.*',
+    check: isPlainObj,
+    message: 'must be an object.',
+    example: (value, key, prevPath) => ({
+      functions: { [prevPath[1]]: { js_external_modules: ['module-one', 'module-two'] } },
+    }),
+  },
+  {
     property: 'functions.*.js_external_modules',
     check: isArrayOfStrings,
     message: 'must be an array of strings.',
