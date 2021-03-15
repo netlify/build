@@ -1,5 +1,12 @@
 # Changelog
 
+### [9.9.7](https://www.github.com/netlify/build/compare/v9.9.6...v9.9.7) (2021-03-15)
+
+
+### Bug Fixes
+
+* fix build process never exits ([#2415](https://www.github.com/netlify/build/issues/2415)) ([d394b2410](https://www.github.com/netlify/build/commit/d394b2410bb4d52053b8a922dfc8075933a3da62))
+
 ### [9.9.6](https://www.github.com/netlify/build/compare/v9.9.5...v9.9.6) (2021-03-15)
 
 
