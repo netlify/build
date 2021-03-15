@@ -67,6 +67,14 @@ const PRE_NORMALIZE_VALIDATIONS = [
     message: 'must be a string',
     example: () => ({ build: { command: 'npm run build' } }),
   },
+  {
+    property: 'functions',
+    check: isPlainObj,
+    message: 'must be an object.',
+    example: () => ({
+      functions: { externalModules: ['module-one', 'module-two'] },
+    }),
+  },
 ]
 
 const EXAMPLE_PORT = 80

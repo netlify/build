@@ -1,5 +1,0 @@
-[functions]
-externalModules = "not-an-array"
-
-[functions.my_function]
-environment = "not-an-object"

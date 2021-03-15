@@ -108,8 +108,16 @@ test('build.context.CONTEXT: object', async (t) => {
   await runFixture(t, 'build_context_nested_object')
 })
 
+test('functions: object', async (t) => {
+  await runFixture(t, 'function_config_invalid_1')
+})
+
 test('functions.*.externalModules: array of strings', async (t) => {
-  await runFixture(t, 'function_config_externalmodules')
+  await runFixture(t, 'function_config_invalid_2')
+})
+
+test('functions.*.ignoredModules: array of strings', async (t) => {
+  await runFixture(t, 'function_config_invalid_3')
 })
 
 test('Validates defaultConfig', async (t) => {
