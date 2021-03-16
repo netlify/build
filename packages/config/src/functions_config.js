@@ -2,7 +2,7 @@
 
 const isPlainObj = require('is-plain-obj')
 
-const configProperties = new Set(['js_external_modules', 'js_ignored_modules'])
+const configProperties = new Set(['external_node_modules', 'ignored_node_modules'])
 
 const WILDCARD_ALL = '*'
 
@@ -15,14 +15,14 @@ const isConfigProperty = (prop) => configProperties.has(prop)
 //
 // Example input:
 // {
-//   "js_external_modules": ["one"],
-//   "my-function": { "js_external_modules": ["two"] }
+//   "external_node_modules": ["one"],
+//   "my-function": { "external_node_modules": ["two"] }
 // }
 //
 // Example output:
 // {
-//   "*": { "js_external_modules": ["one"] },
-//   "my-function": { "js_external_modules": ["two"] }
+//   "*": { "external_node_modules": ["one"] },
+//   "my-function": { "external_node_modules": ["two"] }
 // }
 const normalize = (functions) => {
   const normalizedFunctions = Object.keys(functions).reduce((result, prop) => {

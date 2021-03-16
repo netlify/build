@@ -1,2 +1,2 @@
 [functions]
-js_ignored_modules = 123456
+ignored_node_modules = 123456
