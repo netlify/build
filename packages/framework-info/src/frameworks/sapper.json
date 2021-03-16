@@ -16,6 +16,7 @@
     "command": "sapper export",
     "directory": "__sapper__/export"
   },
+  "staticAssetsDirectory": "static",
   "env": {},
   "plugins": []
 }

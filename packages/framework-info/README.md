@@ -37,6 +37,7 @@ console.log(await listFrameworks({ projectDir: './path/to/gatsby/website' }))
 //       commands: ['gatsby build'],
 //       directory: 'public'
 //     },
+//     staticAssetsDirectory: "static",
 //     env: { GATSBY_LOGGER: 'yurnalist' },
 //     plugins: []
 //   }
@@ -200,6 +201,12 @@ _Type_: `string`
 
 Relative path to the directory where files are built.
 
+#### staticAssetsDirectory
+
+_Type_: `string`
+
+Directory where the framework stores static assets. Can be `undefined`.
+
 #### env
 
 _Type_: `object`
@@ -264,6 +271,7 @@ Each framework is a JSON file in the `/src/frameworks/` directory. For example:
     "command": "gatsby build",
     "directory": "public"
   },
+  "staticAssetsDirectory": "static",
   "env": { "GATSBY_LOGGER": "yurnalist" },
   "plugins": []
 }
@@ -363,6 +371,12 @@ Default build command.
 _Type_: `string`
 
 Directory where built files are written to.
+
+## staticAssetsDirectory
+
+_Type_: `string`
+
+Directory where the framework stores static assets where relevant for the framework.
 
 ## env
 

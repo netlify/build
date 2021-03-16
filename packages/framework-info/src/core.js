@@ -53,6 +53,7 @@ const getContext = (context) => {
  * @property {string} category - Category among `"static_site_generator"`, `"frontend_framework"` and `"build_tool"`
  * @property {Dev} dev - Information about the dev command
  * @property {Build} build - Information about the build command
+ * @property {string} staticAssetsDirectory - Directory where the framework stores static assets. Can be `undefined`
  * @property {object} env - Environment variables that should be set when calling the dev command
  * @property {string[]} plugins - A list of recommend Netlify build plugins to install for the framework
  */
@@ -142,6 +143,7 @@ const getFrameworkInfo = function (
     category,
     dev: { command: frameworkDevCommand, port, pollingStrategies },
     build: { command: frameworkBuildCommand, directory },
+    staticAssetsDirectory,
     env,
     plugins,
   },
@@ -155,6 +157,7 @@ const getFrameworkInfo = function (
     category,
     dev: { commands: devCommands, port, pollingStrategies },
     build: { commands: [frameworkBuildCommand], directory },
+    staticAssetsDirectory,
     env,
     plugins: recommendedPlugins,
   }

@@ -16,6 +16,7 @@
     "command": "react-scripts build",
     "directory": "build"
   },
+  "staticAssetsDirectory": "public",
   "env": { "BROWSER": "none", "PORT": "3000" },
   "plugins": []
 }

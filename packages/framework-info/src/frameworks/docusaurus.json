@@ -16,6 +16,7 @@
     "command": "docusaurus-build",
     "directory": "build/<project-name>"
   },
+  "staticAssetsDirectory": "static",
   "env": { "BROWSER": "none" },
   "plugins": []
 }

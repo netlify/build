@@ -113,6 +113,9 @@ const FRAMEWORK_JSON_SCHEMA = {
         directory: RELATIVE_PATH_SCHEMA,
       },
     },
+    staticAssetsDirectory: {
+      type: 'string',
+    },
     env: {
       type: 'object',
       additionalProperties: { type: 'string' },
