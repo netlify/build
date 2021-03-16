@@ -49,7 +49,6 @@ const addExpectedVersion = async function ({
   }
 
   const { version: latestVersion, compatibility } = pluginsList[packageName]
-
   const { expectedVersion, compatWarning } = await getExpectedVersion({
     latestVersion,
     compatibility,
@@ -57,22 +56,29 @@ const addExpectedVersion = async function ({
     packageJson,
     buildDir,
   })
+  const isMissing = await isMissingVersion({ autoPluginsDir, packageName, pluginPath, loadedFrom, expectedVersion })
+  return { ...pluginOptions, latestVersion, expectedVersion, compatWarning, isMissing }
+}
 
-  // Plugin was not previously installed
-  if (pluginPath === undefined) {
-    return { ...pluginOptions, latestVersion, expectedVersion, compatWarning }
-  }
+// Checks whether plugin should be installed due to the wrong version being used
+// (either outdated, or mismatching compatibility requirements)
+const isMissingVersion = async function ({ autoPluginsDir, packageName, pluginPath, loadedFrom, expectedVersion }) {
+  return (
+    // We always respect the versions specified in `package.json`, as opposed
+    // to auto-installed plugins
+    loadedFrom !== 'package.json' &&
+    // Plugin was not previously installed
+    (pluginPath === undefined ||
+      // Plugin was previously installed but a different version should be used
+      (await getAutoPluginVersion(packageName, autoPluginsDir)) !== expectedVersion)
+  )
+}
 
+const getAutoPluginVersion = async function (packageName, autoPluginsDir) {
   const packageJsonPath = await resolvePath(`${packageName}/package.json`, autoPluginsDir)
   // eslint-disable-next-line node/global-require, import/no-dynamic-require
   const { version } = require(packageJsonPath)
-
-  // Plugin was previously installed but a new version is available
-  if (version !== expectedVersion) {
-    return { ...pluginOptions, latestVersion, expectedVersion, compatWarning }
-  }
-
-  return { ...pluginOptions, latestVersion }
+  return version
 }
 
 const needsExpectedVersion = function ({ loadedFrom }) {
