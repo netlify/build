@@ -260,7 +260,7 @@ const runAndReportBuild = async function ({
 
     return { commandsCount, timers: timersA }
   } catch (error) {
-    const { statuses } = getErrorInfo(error)
+    const [{ statuses }] = getErrorInfo(error)
     await reportStatuses({
       statuses,
       childEnv,

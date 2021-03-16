@@ -1,6 +1,14 @@
 'use strict'
 
 // Add information related to an error without colliding with existing properties
+const addDefaultErrorInfo = function (error, info) {
+  if (!canHaveErrorInfo(error)) {
+    return
+  }
+
+  error[INFO_SYM] = { ...info, ...error[INFO_SYM] }
+}
+
 const addErrorInfo = function (error, info) {
   if (!canHaveErrorInfo(error)) {
     return
@@ -11,10 +19,11 @@ const addErrorInfo = function (error, info) {
 
 const getErrorInfo = function (error) {
   if (!isBuildError(error)) {
-    return {}
+    return [{}, error]
   }
 
-  return error[INFO_SYM]
+  const { [INFO_SYM]: errorInfo, ...errorA } = error
+  return [errorInfo, errorA]
 }
 
 const isBuildError = function (error) {
@@ -27,6 +36,6 @@ const canHaveErrorInfo = function (error) {
   return error != null
 }
 
-const INFO_SYM = Symbol('info')
+const INFO_SYM = 'errorInfo'
 
-module.exports = { addErrorInfo, getErrorInfo, isBuildError, INFO_SYM }
+module.exports = { addDefaultErrorInfo, addErrorInfo, getErrorInfo, isBuildError }
