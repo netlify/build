@@ -9,6 +9,7 @@ const addDefaultErrorInfo = function (error, info) {
   error[INFO_SYM] = { ...info, ...error[INFO_SYM] }
 }
 
+// Retrieve error information added by our system
 const addErrorInfo = function (error, info) {
   if (!canHaveErrorInfo(error)) {
     return
