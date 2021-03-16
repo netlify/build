@@ -109,19 +109,19 @@ test('build.context.CONTEXT: object', async (t) => {
 })
 
 test('functions: object', async (t) => {
-  await runFixture(t, 'function_config_invalid_1')
+  await runFixture(t, 'function_config_invalid_root')
 })
 
 test('functions.*: object', async (t) => {
-  await runFixture(t, 'function_config_invalid_4')
+  await runFixture(t, 'function_config_invalid_function_block')
 })
 
-test('functions.*.js_external_modules: array of strings', async (t) => {
-  await runFixture(t, 'function_config_invalid_2')
+test('functions.*.external_node_modules: array of strings', async (t) => {
+  await runFixture(t, 'function_config_invalid_external_modules')
 })
 
-test('functions.*.js_ignored_modules: array of strings', async (t) => {
-  await runFixture(t, 'function_config_invalid_3')
+test('functions.*.ignored_node_modules: array of strings', async (t) => {
+  await runFixture(t, 'function_config_invalid_ignored_modules')
 })
 
 test('Validates defaultConfig', async (t) => {

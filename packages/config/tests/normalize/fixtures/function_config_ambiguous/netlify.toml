@@ -1,3 +1,3 @@
-# A function named "js_external_modules"
-[functions.js_external_modules]
-js_external_modules = ["module-three"]
+# A function named "external_node_modules"
+[functions.external_node_modules]
+external_node_modules = ["module-three"]

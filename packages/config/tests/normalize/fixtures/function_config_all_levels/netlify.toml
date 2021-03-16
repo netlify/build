@@ -1,8 +1,8 @@
 [functions]
-js_external_modules = ["module-one", "module-two"]
+external_node_modules = ["module-one", "module-two"]
 
 [functions.my_function]
-js_external_modules = ["module-three"]
+external_node_modules = ["module-three"]
 
 [functions."my_prefix_*"]
-js_external_modules = ["module-four"]
+external_node_modules = ["module-four"]

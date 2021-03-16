@@ -73,7 +73,7 @@ const PRE_NORMALIZE_VALIDATIONS = [
     check: isPlainObj,
     message: 'must be an object.',
     example: () => ({
-      functions: { js_external_modules: ['module-one', 'module-two'] },
+      functions: { external_node_modules: ['module-one', 'module-two'] },
     }),
   },
 ]
@@ -170,23 +170,23 @@ const POST_NORMALIZE_VALIDATIONS = [
     check: isPlainObj,
     message: 'must be an object.',
     example: (value, key, prevPath) => ({
-      functions: { [prevPath[1]]: { js_external_modules: ['module-one', 'module-two'] } },
+      functions: { [prevPath[1]]: { external_node_modules: ['module-one', 'module-two'] } },
     }),
   },
   {
-    property: 'functions.*.js_external_modules',
+    property: 'functions.*.external_node_modules',
     check: isArrayOfStrings,
     message: 'must be an array of strings.',
     example: (value, key, prevPath) => ({
-      functions: { [prevPath[1]]: { js_external_modules: ['module-one', 'module-two'] } },
+      functions: { [prevPath[1]]: { external_node_modules: ['module-one', 'module-two'] } },
     }),
   },
   {
-    property: 'functions.*.js_ignored_modules',
+    property: 'functions.*.ignored_node_modules',
     check: isArrayOfStrings,
     message: 'must be an array of strings.',
     example: (value, key, prevPath) => ({
-      functions: { [prevPath[1]]: { js_ignored_modules: ['module-one', 'module-two'] } },
+      functions: { [prevPath[1]]: { ignored_node_modules: ['module-one', 'module-two'] } },
     }),
   },
 ]
