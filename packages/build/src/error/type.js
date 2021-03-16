@@ -71,6 +71,14 @@ const TYPES = {
     severity: 'info',
   },
 
+  // User error during Functions bundling
+  functionsBundling: {
+    title: ({ location: { functionName } }) => `Bundling of Function "${functionName}" failed`,
+    stackType: 'none',
+    locationType: 'functionsBundling',
+    severity: 'info',
+  },
+
   // Plugin called `utils.build.failBuild()`
   failBuild: {
     title: ({ location: { packageName } }) => `Plugin "${packageName}" failed`,
