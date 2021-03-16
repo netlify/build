@@ -1,5 +1,20 @@
 # Changelog
 
+### [9.9.7](https://www.github.com/netlify/build/compare/v9.9.6...v9.9.7) (2021-03-15)
+
+
+### Bug Fixes
+
+* fix build process never exits ([#2415](https://www.github.com/netlify/build/issues/2415)) ([d394b2410](https://www.github.com/netlify/build/commit/d394b2410bb4d52053b8a922dfc8075933a3da62))
+
+### [9.9.6](https://www.github.com/netlify/build/compare/v9.9.5...v9.9.6) (2021-03-15)
+
+
+### Bug Fixes
+
+* **compatibility:** properly handle dependency ranges ([#2408](https://www.github.com/netlify/build/issues/2408)) ([0d14572](https://www.github.com/netlify/build/commit/0d14572d4a6c826b4289b4630b8b04507075d3f4))
+* **deps:** update dependency @netlify/plugins-list to ^2.4.1 ([#2404](https://www.github.com/netlify/build/issues/2404)) ([14cee2d](https://www.github.com/netlify/build/commit/14cee2d4075c998bf41697655ac572d4e1191b14))
+
 ### [9.9.5](https://www.github.com/netlify/build/compare/v9.9.4...v9.9.5) (2021-03-12)
 
 

@@ -9,7 +9,15 @@ const { getPluginsList } = require('./list')
 // When using plugins in our official list, those are installed in .netlify/plugins/
 // We ensure that the last version that's been approved is always the one being used.
 // We also ensure that the plugin is our official list.
-const addExpectedVersions = async function ({ pluginsOptions, autoPluginsDir, packageJson, debug, logs, testOpts }) {
+const addExpectedVersions = async function ({
+  pluginsOptions,
+  autoPluginsDir,
+  packageJson,
+  debug,
+  logs,
+  buildDir,
+  testOpts,
+}) {
   if (!pluginsOptions.some(needsExpectedVersion)) {
     return pluginsOptions
   }
@@ -17,7 +25,7 @@ const addExpectedVersions = async function ({ pluginsOptions, autoPluginsDir, pa
   const pluginsList = await getPluginsList({ debug, logs, testOpts })
   return await Promise.all(
     pluginsOptions.map((pluginOptions) =>
-      addExpectedVersion({ pluginsList, autoPluginsDir, packageJson, pluginOptions }),
+      addExpectedVersion({ pluginsList, autoPluginsDir, packageJson, pluginOptions, buildDir }),
     ),
   )
 }
@@ -29,6 +37,7 @@ const addExpectedVersion = async function ({
   packageJson,
   pluginOptions,
   pluginOptions: { packageName, pluginPath, loadedFrom, nodeVersion },
+  buildDir,
 }) {
   if (!needsExpectedVersion(pluginOptions)) {
     return pluginOptions
@@ -41,11 +50,12 @@ const addExpectedVersion = async function ({
 
   const { version: latestVersion, compatibility } = pluginsList[packageName]
 
-  const { expectedVersion, compatWarning } = getExpectedVersion({
+  const { expectedVersion, compatWarning } = await getExpectedVersion({
     latestVersion,
     compatibility,
     nodeVersion,
     packageJson,
+    buildDir,
   })
 
   // Plugin was not previously installed

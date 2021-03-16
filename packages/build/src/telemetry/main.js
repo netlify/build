@@ -37,15 +37,20 @@ const trackBuildComplete = async function ({
 // Send HTTP request to telemetry.
 // Telemetry should not impact build speed, so we do not wait for the request
 // to complete, by using a child process.
-const track = async function ({ payload, testOpts: { telemetryOrigin = '' } = {} }) {
+const track = async function ({ payload, testOpts: { telemetryOrigin, telemetryUnrefChildProcess = true } = {} }) {
   const childProcess = execa('node', [REQUEST_FILE, JSON.stringify(payload), telemetryOrigin], {
     detached: true,
     stdio: 'ignore',
   })
 
-  // During tests, we wait for the HTTP request to complete
-  if (telemetryOrigin === '') {
+  // During tests, we want to have the ability to wait for the HTTP request to complete
+  if (telemetryUnrefChildProcess) {
     childProcess.unref()
+    // When calling `unref()`, the promise becomes unref'd as well.
+    // Awaiting it would not prevent the main process from exiting, but would
+    // prevent this function from returning. This would result in the main
+    // build function never returning.
+    return
   }
 
   await childProcess

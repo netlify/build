@@ -33,6 +33,7 @@ const resolvePluginsPath = async function ({
     packageJson,
     debug,
     logs,
+    buildDir,
     testOpts,
   })
   const pluginsOptionsD = await handleMissingPlugins({
