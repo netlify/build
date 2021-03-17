@@ -25,6 +25,10 @@ const getBuildCommandLocation = function ({ buildCommand, buildCommandOrigin }) 
 ${buildCommand}`
 }
 
+const getFunctionsBundlingLocation = function ({ functionName }) {
+  return `While bundling Function "${functionName}"`
+}
+
 const getCoreCommandLocation = function ({ coreCommandName }) {
   return `During ${coreCommandName}`
 }
@@ -49,6 +53,7 @@ const getApiLocation = function ({ endpoint, parameters }) {
 
 const LOCATIONS = {
   buildCommand: getBuildCommandLocation,
+  functionsBundling: getFunctionsBundlingLocation,
   coreCommand: getCoreCommandLocation,
   buildFail: getBuildFailLocation,
   api: getApiLocation,

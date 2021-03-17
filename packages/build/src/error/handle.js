@@ -38,7 +38,7 @@ const handleBuildError = async function (
 // However builds canceled with `utils.build.cancelBuild()` should still show
 // "Build canceled by ..."
 const isCancelCrash = async function (error) {
-  const { type } = getErrorInfo(error)
+  const [{ type }] = getErrorInfo(error)
   if (type === 'cancelBuild') {
     return false
   }

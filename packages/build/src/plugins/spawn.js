@@ -3,7 +3,7 @@
 const execa = require('execa')
 
 const { addErrorInfo } = require('../error/info')
-const { logLoadingPlugins, logOutdatedPlugins } = require('../log/messages/plugins')
+const { logLoadingPlugins, logOutdatedPlugins, logIncompatiblePlugins } = require('../log/messages/plugins')
 const { measureDuration } = require('../time/main')
 
 const { getEventFromChild } = require('./ipc')
@@ -20,6 +20,7 @@ const CHILD_MAIN_FILE = `${__dirname}/child/main.js`
 const tStartPlugins = async function ({ pluginsOptions, buildDir, childEnv, logs }) {
   logLoadingPlugins(logs, pluginsOptions)
   logOutdatedPlugins(logs, pluginsOptions)
+  logIncompatiblePlugins(logs, pluginsOptions)
 
   const childProcesses = await Promise.all(
     pluginsOptions.map(({ pluginDir, nodePath }) => startPlugin({ pluginDir, nodePath, buildDir, childEnv })),
