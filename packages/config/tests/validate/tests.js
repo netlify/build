@@ -124,6 +124,10 @@ test('functions.*.ignored_node_modules: array of strings', async (t) => {
   await runFixture(t, 'function_config_invalid_ignored_modules')
 })
 
+test('functions.*.node_bundler: one of supported bundlers', async (t) => {
+  await runFixture(t, 'function_config_invalid_node_bundler')
+})
+
 test('Validates defaultConfig', async (t) => {
   const defaultConfig = JSON.stringify({ build: { command: false } })
   await runFixture(t, 'empty', { flags: { defaultConfig } })

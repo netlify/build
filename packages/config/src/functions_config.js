@@ -2,7 +2,8 @@
 
 const isPlainObj = require('is-plain-obj')
 
-const configProperties = new Set(['external_node_modules', 'ignored_node_modules'])
+const bundlers = ['esbuild', 'zisi']
+const configProperties = new Set(['external_node_modules', 'ignored_node_modules', 'node_bundler'])
 
 const WILDCARD_ALL = '*'
 
@@ -50,4 +51,4 @@ const normalize = (functions) => {
   return normalizedFunctions
 }
 
-module.exports = { normalize }
+module.exports = { bundlers, normalize }

@@ -1,8 +1,10 @@
 [functions]
 external_node_modules = ["module-one", "module-two"]
+node_bundler = "esbuild"
 
 [functions.my_function]
 external_node_modules = ["module-three"]
+node_bundler = "zisi"
 
 [functions."my_prefix_*"]
 external_node_modules = ["module-four"]

@@ -4,6 +4,8 @@
 const isPlainObj = require('is-plain-obj')
 const validateNpmPackageName = require('validate-npm-package-name')
 
+const { bundlers } = require('../functions_config')
+
 const {
   isArrayOfObjects,
   isArrayOfStrings,
@@ -187,6 +189,14 @@ const POST_NORMALIZE_VALIDATIONS = [
     message: 'must be an array of strings.',
     example: (value, key, prevPath) => ({
       functions: { [prevPath[1]]: { ignored_node_modules: ['module-one', 'module-two'] } },
+    }),
+  },
+  {
+    property: 'functions.*.node_bundler',
+    check: (value) => bundlers.includes(value),
+    message: `must be one of: ${bundlers.join(', ')}`,
+    example: (value, key, prevPath) => ({
+      functions: { [prevPath[1]]: { node_bundler: bundlers[0] } },
     }),
   },
 ]
