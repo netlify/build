@@ -40,12 +40,12 @@ const getFullErrorInfo = function ({ error, colors, debug }) {
 // Parse error instance into all the basic properties containing information
 const parseErrorInfo = function (error) {
   const { message, stack, ...errorProps } = normalizeError(error)
-  const errorInfo = getErrorInfo(errorProps)
+  const [errorInfo, errorPropsA] = getErrorInfo(errorProps)
   const { type, severity, title, group, stackType, locationType, showErrorProps, rawStack } = getTypeInfo(errorInfo)
   const basicErrorInfo = {
     message,
     stack,
-    errorProps,
+    errorProps: errorPropsA,
     errorInfo,
     type,
     severity,

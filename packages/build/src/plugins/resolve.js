@@ -33,6 +33,7 @@ const resolvePluginsPath = async function ({
     packageJson,
     debug,
     logs,
+    buildDir,
     testOpts,
   })
   const pluginsOptionsD = await handleMissingPlugins({
@@ -135,8 +136,8 @@ const resolveMissingPluginPath = async function ({ pluginOptions, pluginOptions:
   return { ...pluginOptions, pluginPath }
 }
 
-const isMissingPlugin = function ({ expectedVersion, loadedFrom }) {
-  return expectedVersion !== undefined && loadedFrom === 'auto_install'
+const isMissingPlugin = function ({ isMissing }) {
+  return isMissing
 }
 
 module.exports = { resolvePluginsPath }

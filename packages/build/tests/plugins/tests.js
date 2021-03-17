@@ -633,6 +633,28 @@ test('Prints outdated plugins installed in package.json', async (t) => {
   await runWithApiMock(t, 'plugins_outdated_package_json')
 })
 
+test('Prints incompatible plugins installed in package.json', async (t) => {
+  await runWithApiMock(t, 'plugins_incompatible_package_json', {
+    testPlugin: {
+      version: '0.3.0',
+      compatibility: [{ version: '0.2.0', nodeVersion: '<100' }],
+    },
+  })
+})
+
+test('Does not print incompatible plugins installed in package.json if major version is same', async (t) => {
+  await runWithApiMock(t, 'plugins_incompatible_package_json_same_major', {
+    testPlugin: {
+      version: '0.3.0',
+      compatibility: [{ version: '0.2.0', nodeVersion: '<100' }],
+    },
+  })
+})
+
+test('Does not print incompatible plugins installed in package.json if not using the compatibility field', async (t) => {
+  await runWithApiMock(t, 'plugins_incompatible_package_json')
+})
+
 // `serial()` is needed due to the potential of re-installing the dependency
 test.serial('Plugins can specify non-matching compatibility.nodeVersion', async (t) => {
   await removeDir(`${FIXTURES_DIR}/plugins_compat_node_version/.netlify`)
@@ -732,6 +754,16 @@ test.serial('Plugins can specify multiple matching compatibility conditions', as
     testPlugin: {
       version: '0.3.0',
       compatibility: [{ version: '0.2.0', siteDependencies: { 'ansi-styles': '<3' }, nodeVersion: '<100' }],
+    },
+  })
+})
+
+test.serial('Plugins can specify non-matching compatibility.siteDependencies range', async (t) => {
+  await removeDir(`${FIXTURES_DIR}/plugins_compat_site_dependencies_range/.netlify`)
+  await runWithApiMock(t, 'plugins_compat_site_dependencies_range', {
+    testPlugin: {
+      version: '0.3.0',
+      compatibility: [{ version: '0.2.0', siteDependencies: { 'dependency-with-range': '<10' } }],
     },
   })
 })
