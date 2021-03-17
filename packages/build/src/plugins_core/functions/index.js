@@ -21,8 +21,8 @@ const { getZipError } = require('./error')
 // match to the properties that @netlify/zip-it-and-ship-it expects. We do that
 // translation according to this map.
 const zisiConfigMap = {
-  js_external_modules: 'jsExternalModules',
-  js_ignored_modules: 'jsIgnoredModules',
+  external_node_modules: 'externalNodeModules',
+  ignored_node_modules: 'ignoredNodeModules',
 }
 
 const getZisiParameters = ({ isEsbuildEnabled, functionsConfig }) => {

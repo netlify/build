@@ -2,7 +2,7 @@
 functions = "functions"
 
 [functions]
-js_external_modules = ["@netlify/imaginary-module-one"]
+external_node_modules = ["@netlify/imaginary-module-one"]
 
 [functions.function_one]
-js_external_modules = ["@netlify/imaginary-module-two"]
+external_node_modules = ["@netlify/imaginary-module-two"]
