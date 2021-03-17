@@ -1,5 +1,12 @@
 # Changelog
 
+### [9.10.2](https://www.github.com/netlify/build/compare/v9.10.1...v9.10.2) (2021-03-17)
+
+
+### Bug Fixes
+
+* rename internal variable ([#2425](https://www.github.com/netlify/build/issues/2425)) ([614b5c7](https://www.github.com/netlify/build/commit/614b5c73422b0ad780038c09410f5e17242d1922))
+
 ### [9.10.1](https://www.github.com/netlify/build/compare/v9.10.0...v9.10.1) (2021-03-16)
 
 
