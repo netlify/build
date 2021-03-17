@@ -46,7 +46,7 @@ const TELEMETRY_PATH = '/track'
 const runWithApiMock = async function (
   t,
   fixture,
-  { useBinary = false, telemetryUnrefChildProcess = false, env = {}, snapshot = false, runApi = false, ...flags } = {},
+  { useBinary = false, waitForTelemetry = true, env = {}, snapshot = false, runApi = false, ...flags } = {},
 ) {
   // Start the mock telemetry server
   const {
@@ -60,7 +60,7 @@ const runWithApiMock = async function (
   const stopServers = [stopTelemetryServer]
   const testOpts = {
     telemetryOrigin: `${schemeTelemetry}://${hostTelemetry}`,
-    telemetryUnrefChildProcess,
+    waitForTelemetry,
   }
 
   // Start the Netlify API server mock
@@ -143,20 +143,20 @@ test('Telemetry error generates no logs', async (t) => {
   await runWithApiMock(t, 'success', { origin: 'https://...', telemetry: true, snapshot: true })
 })
 
-test("Telemetry's unref'd child process does not disturb regular build process execution on success", async (t) => {
+test('The build main process can still succeed when the telemetry process is not awaited', async (t) => {
   const { exitCode } = await runWithApiMock(t, 'success', {
     telemetry: true,
-    telemetryUnrefChildProcess: true,
+    waitForTelemetry: false,
     useBinary: true,
     snapshot: true,
   })
   t.is(exitCode, 0)
 })
 
-test("Telemetry's unref'd child process does not disturb regular build process execution on error", async (t) => {
+test('The build main process can still fail when the telemetry process is not awaited', async (t) => {
   const { exitCode } = await runWithApiMock(t, 'invalid', {
     telemetry: true,
-    telemetryUnrefChildProcess: true,
+    waitForTelemetry: false,
     useBinary: true,
     snapshot: true,
   })
