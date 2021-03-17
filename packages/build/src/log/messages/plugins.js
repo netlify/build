@@ -1,6 +1,6 @@
 'use strict'
 
-const { lt: ltVersion } = require('semver')
+const { lt: ltVersion, major } = require('semver')
 
 const { getPluginOrigin } = require('../description')
 const { log, logArray, logErrorArray, logError, logSubHeader, logErrorSubHeader } = require('../logger')
@@ -88,6 +88,49 @@ const getOutdatedDescription = function (latestVersion, compatWarning) {
   return `latest version is ${latestVersion} which is incompatible with ${compatWarning}`
 }
 
+// Print a warning message when plugins are using a version that is too recent
+// and does not meet some `compatibility` expectations.
+// This can only happen when they are installed to `package.json`.
+const logIncompatiblePlugins = function (logs, pluginsOptions) {
+  const incompatiblePlugins = pluginsOptions.map(getIncompatiblePlugin).filter(Boolean)
+
+  if (incompatiblePlugins.length === 0) {
+    return
+  }
+
+  logErrorSubHeader(logs, 'Incompatible plugins')
+  logErrorArray(logs, incompatiblePlugins)
+}
+
+const getIncompatiblePlugin = function ({
+  packageName,
+  pluginPackageJson: { version },
+  expectedVersion,
+  compatWarning,
+}) {
+  if (!hasIncompatibleVersion(version, expectedVersion, compatWarning)) {
+    return
+  }
+
+  const versionedPackage = getVersionedPackage(packageName, version)
+  return `${THEME.errorHighlightWords(
+    packageName,
+  )}${versionedPackage}: expected version ${expectedVersion} which is the last version compatible with ${compatWarning}`
+}
+
+const hasIncompatibleVersion = function (version, expectedVersion, compatWarning) {
+  return (
+    compatWarning !== undefined &&
+    version !== undefined &&
+    expectedVersion !== undefined &&
+    // Using only the major version prevents printing this warning message when
+    // a site is using the right `compatibility` version, but is using the most
+    // recent version due to the time gap between `npm publish` and the
+    // `plugins.json` update
+    major(expectedVersion) < major(version)
+  )
+}
+
 // Make sure we handle `package.json` with `version` being either `undefined`
 // or an empty string
 const getVersionedPackage = function (packageName, version = '') {
@@ -112,6 +155,7 @@ module.exports = {
   logPluginsList,
   logLoadingPlugins,
   logOutdatedPlugins,
+  logIncompatiblePlugins,
   logFailPluginWarning,
   logDeploySuccess,
 }

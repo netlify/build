@@ -1,5 +1,20 @@
 # Changelog
 
+### [9.10.1](https://www.github.com/netlify/build/compare/v9.10.0...v9.10.1) (2021-03-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^2.4.2 ([#2423](https://www.github.com/netlify/build/issues/2423)) ([475ad30](https://www.github.com/netlify/build/commit/475ad302370777741675bb31b7aaa8c62aa58a49))
+
+## [9.10.0](https://www.github.com/netlify/build/compare/v9.9.7...v9.10.0) (2021-03-16)
+
+
+### Features
+
+* add an error type for Functions bundling user errors ([#2420](https://www.github.com/netlify/build/issues/2420)) ([9fe8911](https://www.github.com/netlify/build/commit/9fe8911f22ad88ed38e22734cbcf687b9663fa49))
+* add warning messages when using plugins that are too recent and incompatible ([#2422](https://www.github.com/netlify/build/issues/2422)) ([30bc126](https://www.github.com/netlify/build/commit/30bc1264e590b25a13cb2c53133589721fe45127))
+
 ### [9.9.7](https://www.github.com/netlify/build/compare/v9.9.6...v9.9.7) (2021-03-16)
 
 
