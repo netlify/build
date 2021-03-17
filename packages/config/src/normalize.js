@@ -1,17 +1,20 @@
 'use strict'
 
+const { normalize: normalizeFunctionsConfig } = require('./functions_config')
 const { deepMerge } = require('./utils/merge')
 const { removeFalsy } = require('./utils/remove_falsy')
 
 // Normalize configuration object
 const normalizeConfig = function (config) {
-  const { build, plugins, ...configA } = deepMerge(DEFAULT_CONFIG, config)
+  const { build, functions, plugins, ...configA } = deepMerge(DEFAULT_CONFIG, config)
+  const functionsA = normalizeFunctionsConfig(functions)
   const pluginsA = plugins.map(normalizePlugin)
-  return { ...configA, build, plugins: pluginsA }
+  return { ...configA, build, functions: functionsA, plugins: pluginsA }
 }
 
 const DEFAULT_CONFIG = {
   build: { environment: {} },
+  functions: {},
   plugins: [],
 }
 

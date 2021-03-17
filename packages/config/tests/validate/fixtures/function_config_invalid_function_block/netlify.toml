@@ -1,0 +1,2 @@
+[functions]
+my_function = "I should not be a string"

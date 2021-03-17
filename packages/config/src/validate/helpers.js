@@ -2,6 +2,16 @@
 
 const { normalize } = require('path')
 
+const isPlainObj = require('is-plain-obj')
+
+const isArrayOfObjects = function (value) {
+  return Array.isArray(value) && value.every(isPlainObj)
+}
+
+const isArrayOfStrings = function (value) {
+  return Array.isArray(value) && value.every(isString)
+}
+
 const isString = function (value) {
   return typeof value === 'string'
 }
@@ -37,4 +47,4 @@ const removeParentDots = function (path) {
 
 const PARENT_DOTS_REGEXP = /\.\.[/\\]/g
 
-module.exports = { isString, validProperties, insideRootCheck, removeParentDots }
+module.exports = { isArrayOfObjects, isArrayOfStrings, isString, validProperties, insideRootCheck, removeParentDots }
