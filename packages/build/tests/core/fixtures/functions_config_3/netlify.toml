@@ -3,6 +3,7 @@ functions = "functions"
 
 [functions]
 external_node_modules = ["@netlify/imaginary-module-one"]
+node_bundler = "esbuild"
 
 [functions.function_one]
 external_node_modules = ["@netlify/imaginary-module-two"]

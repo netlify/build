@@ -17,29 +17,36 @@ const {
 
 const { getZipError } = require('./error')
 
-// The function configuration keys returned by @netlify/config are not an exact
-// match to the properties that @netlify/zip-it-and-ship-it expects. We do that
-// translation according to this map.
-const zisiConfigMap = {
-  external_node_modules: 'externalNodeModules',
-  ignored_node_modules: 'ignoredNodeModules',
+const normalizeFunctionConfig = (functionConfig) => {
+  // The function configuration keys returned by @netlify/config are not an
+  // exact match to the properties that @netlify/zip-it-and-ship-it expects.
+  // We do that translation according to this map.
+  const zisiConfigMap = {
+    external_node_modules: 'externalNodeModules',
+    ignored_node_modules: 'ignoredNodeModules',
+    node_bundler: 'nodeBundler',
+  }
+  const normalizedConfig = mapObject(functionConfig, (key, value) => {
+    const normalizedKey = zisiConfigMap[key] || key
+
+    // When the user selects esbuild as the Node bundler, we still want to use
+    // the legacy ZISI bundler as a fallback. Rather than asking the user to
+    // make this decision, we abstract that complexity away by injecting the
+    // fallback behavior ourselves. We do this by transforming the value
+    // `esbuild` into `esbuild_zisi`, which zip-it-and-ship-it understands.
+    if (normalizedKey === 'nodeBundler' && value === 'esbuild') {
+      return [normalizedKey, 'esbuild_zisi']
+    }
+
+    return [normalizedKey, value]
+  })
+
+  return normalizedConfig
 }
 
-const getZisiParameters = ({ isEsbuildEnabled, functionsConfig }) => {
-  const config = mapObject(functionsConfig, (expression, object) => {
-    const normalizedObject = mapObject(object, (key, value) => [zisiConfigMap[key] || key, value])
-
-    return [expression, normalizedObject]
-  })
+const getZisiParameters = ({ functionsConfig }) => {
   const parameters = {
-    config,
-  }
-
-  if (isEsbuildEnabled) {
-    return {
-      ...parameters,
-      jsBundler: 'esbuild_zisi',
-    }
+    config: mapObject(functionsConfig, (expression, object) => [expression, normalizeFunctionConfig(object)]),
   }
 
   return parameters
@@ -50,10 +57,8 @@ const zipFunctionsAndLogResults = async ({ featureFlags, functionsConfig, functi
   const zisiParameters = getZisiParameters({ isEsbuildEnabled, functionsConfig })
 
   try {
-    // Printing an empty line before esbuild output.
-    if (isEsbuildEnabled) {
-      log(logs, '')
-    }
+    // Printing an empty line before bundling output.
+    log(logs, '')
 
     const results = await zipFunctions(functionsSrc, functionsDist, zisiParameters)
 
