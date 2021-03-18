@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.2.0](https://www.github.com/netlify/build/compare/v4.1.3...v4.2.0) (2021-03-18)
+
+
+### Features
+
+* add functions configuration API to @netlify/config ([#2390](https://www.github.com/netlify/build/issues/2390)) ([654d32e](https://www.github.com/netlify/build/commit/654d32eb49bea33816b1adde02f13f0843db9cdd))
+* add functions.*.node_bundler config property ([#2430](https://www.github.com/netlify/build/issues/2430)) ([72bed60](https://www.github.com/netlify/build/commit/72bed606e4395a42861bf0f78c43eb81bcdcc326))
+
 ### [4.1.3](https://www.github.com/netlify/build/compare/v4.1.2...v4.1.3) (2021-03-12)
 
 
