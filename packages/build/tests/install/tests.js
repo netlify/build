@@ -63,13 +63,13 @@ test('Functions: does not install dependencies unless opting in', async (t) => {
 })
 
 test('Functions: does not install dependencies unless opting in (with esbuild)', async (t) => {
-  await runInstallFixture(t, 'optional', [], { flags: { featureFlags: 'buildbot_esbuild' } })
-  t.false(await pathExists(`${FIXTURES_DIR}/optional/functions/node_modules/`))
+  await runInstallFixture(t, 'optional-esbuild', [])
+  t.false(await pathExists(`${FIXTURES_DIR}/optional-esbuild/functions/node_modules/`))
 })
 
 test('Functions: does not install dependencies unless opting in (with esbuild, many dependencies)', async (t) => {
-  await runInstallFixture(t, 'optional-many', [], { flags: { featureFlags: 'buildbot_esbuild' } })
-  t.false(await pathExists(`${FIXTURES_DIR}/optional/functions/node_modules/`))
+  await runInstallFixture(t, 'optional-many-esbuild', [])
+  t.false(await pathExists(`${FIXTURES_DIR}/optional-many-esbuild/functions/node_modules/`))
 })
 
 test('Functions: install dependencies handles errors', async (t) => {
