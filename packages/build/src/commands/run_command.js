@@ -92,6 +92,7 @@ const runCommand = async function ({
     logs,
     timers,
     featureFlags,
+    netlifyConfig,
   })
 
   const newValues = await getCommandReturn({
@@ -210,6 +211,7 @@ const tFireCommand = function ({
   error,
   logs,
   featureFlags,
+  netlifyConfig,
 }) {
   if (coreCommand !== undefined) {
     return fireCoreCommand({
@@ -222,6 +224,7 @@ const tFireCommand = function ({
       logs,
       childEnv,
       featureFlags,
+      netlifyConfig,
     })
   }
 
