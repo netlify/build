@@ -3,6 +3,7 @@
 const { resolve, relative } = require('path')
 
 const { zipFunctions, listFunctions } = require('@netlify/zip-it-and-ship-it')
+const mapObject = require('map-obj')
 const pathExists = require('path-exists')
 const { isDirectory } = require('path-type')
 
@@ -16,23 +17,33 @@ const {
 
 const { getZipError } = require('./error')
 
-const zipFunctionsAndLogResults = async ({ featureFlags, functionsDist, functionsSrc, logs }) => {
-  const isEsbuildEnabled = featureFlags.buildbot_esbuild
+// The function configuration keys returned by @netlify/config are not an exact
+// match to the properties that @netlify/zip-it-and-ship-it expects. We do that
+// translation here.
+const normalizeFunctionConfig = (functionConfig = {}) => ({
+  externalNodeModules: functionConfig.external_node_modules,
+  ignoredNodeModules: functionConfig.ignored_node_modules,
 
-  // If the `buildbot_esbuild` flag is enabled, we tell zip-it-and-ship-it to
-  // bundle JS functions with esbuild, with a fallback to the legacy bundler
-  // in case of an error
-  const zisiParameters = isEsbuildEnabled
-    ? {
-        jsBundler: 'esbuild_zisi',
-      }
-    : {}
+  // When the user selects esbuild as the Node bundler, we still want to use
+  // the legacy ZISI bundler as a fallback. Rather than asking the user to
+  // make this decision, we abstract that complexity away by injecting the
+  // fallback behavior ourselves. We do this by transforming the value
+  // `esbuild` into `esbuild_zisi`, which zip-it-and-ship-it understands.
+  nodeBundler: functionConfig.node_bundler === 'esbuild' ? 'esbuild_zisi' : functionConfig.node_bundler,
+})
+
+const getZisiParameters = ({ functionsConfig }) => {
+  const config = mapObject(functionsConfig, (expression, object) => [expression, normalizeFunctionConfig(object)])
+
+  return { config }
+}
+
+const zipFunctionsAndLogResults = async ({ functionsConfig, functionsDist, functionsSrc, logs }) => {
+  const zisiParameters = getZisiParameters({ functionsConfig })
 
   try {
-    // Printing an empty line before esbuild output.
-    if (isEsbuildEnabled) {
-      log(logs, '')
-    }
+    // Printing an empty line before bundling output.
+    log(logs, '')
 
     const results = await zipFunctions(functionsSrc, functionsDist, zisiParameters)
 
@@ -49,6 +60,7 @@ const coreCommand = async function ({
   logs,
   childEnv,
   featureFlags,
+  netlifyConfig,
 }) {
   const functionsSrc = resolve(buildDir, relativeFunctionsSrc)
   const functionsDist = resolve(buildDir, relativeFunctionsDist)
@@ -67,7 +79,14 @@ const coreCommand = async function ({
     return
   }
 
-  await zipFunctionsAndLogResults({ childEnv, featureFlags, functionsDist, functionsSrc, logs })
+  await zipFunctionsAndLogResults({
+    childEnv,
+    featureFlags,
+    functionsConfig: netlifyConfig.functions,
+    functionsDist,
+    functionsSrc,
+    logs,
+  })
 }
 
 const validateFunctionsSrc = async function ({ functionsSrc, relativeFunctionsSrc }) {

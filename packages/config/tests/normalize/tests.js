@@ -72,3 +72,15 @@ test('Assign default edge-handlers if build.edge_handlers is not defined', async
 test('Does not assign default edge-handlers if build.edge_handlers is defined', async (t) => {
   await runFixture(t, 'default_handlers_defined')
 })
+
+test('Normalizes function configurations defined at the top level', async (t) => {
+  await runFixture(t, 'function_config_top_level')
+})
+
+test('Normalizes function configurations defined at different levels', async (t) => {
+  await runFixture(t, 'function_config_all_levels')
+})
+
+test('Handles function configuration objects for functions with the same name as one of the configuration properties', async (t) => {
+  await runFixture(t, 'function_config_ambiguous')
+})

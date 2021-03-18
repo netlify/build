@@ -13,9 +13,19 @@ const fireCoreCommand = async function ({
   logs,
   childEnv,
   featureFlags,
+  netlifyConfig,
 }) {
   try {
-    await coreCommand({ buildDir, constants, buildbotServerSocket, events, logs, childEnv, featureFlags })
+    await coreCommand({
+      buildDir,
+      constants,
+      buildbotServerSocket,
+      events,
+      logs,
+      childEnv,
+      featureFlags,
+      netlifyConfig,
+    })
     return {}
   } catch (newError) {
     if (!isBuildError(newError)) {

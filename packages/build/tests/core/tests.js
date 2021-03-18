@@ -227,3 +227,15 @@ if (platform !== 'win32') {
 
   const PID_LINE_REGEXP = /^PID: (\d+)$/m
 }
+
+test('Functions config is passed to zip-it-and-ship-it (1)', async (t) => {
+  await runFixture(t, 'functions_config_1')
+})
+
+test('Functions config is passed to zip-it-and-ship-it (2)', async (t) => {
+  await runFixture(t, 'functions_config_2')
+})
+
+test('Functions config is passed to zip-it-and-ship-it (3)', async (t) => {
+  await runFixture(t, 'functions_config_3')
+})

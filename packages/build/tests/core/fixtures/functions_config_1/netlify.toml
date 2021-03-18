@@ -1,0 +1,6 @@
+[build]
+functions = "functions"
+
+[functions]
+external_node_modules = ["@netlify/imaginary-module-one", "@netlify/imaginary-module-two", "@netlify/imaginary-module-three"]
+node_bundler = "esbuild"

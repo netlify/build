@@ -1,9 +1,19 @@
+/* eslint-disable max-lines */
 'use strict'
 
 const isPlainObj = require('is-plain-obj')
 const validateNpmPackageName = require('validate-npm-package-name')
 
-const { isString, validProperties, insideRootCheck, removeParentDots } = require('./helpers')
+const { bundlers } = require('../functions_config')
+
+const {
+  isArrayOfObjects,
+  isArrayOfStrings,
+  isString,
+  validProperties,
+  insideRootCheck,
+  removeParentDots,
+} = require('./helpers')
 
 // List of validations performed on the configuration file.
 // Validation are performed in order: parent should be before children.
@@ -30,7 +40,7 @@ const PRE_CASE_NORMALIZE_VALIDATIONS = [
 const PRE_MERGE_VALIDATIONS = [
   {
     property: 'plugins',
-    check: (value) => Array.isArray(value) && value.every(isPlainObj),
+    check: isArrayOfObjects,
     message: 'must be an array of objects.',
     example: () => ({ plugins: [{ package: 'netlify-plugin-one' }, { package: 'netlify-plugin-two' }] }),
   },
@@ -59,6 +69,14 @@ const PRE_NORMALIZE_VALIDATIONS = [
     check: isString,
     message: 'must be a string',
     example: () => ({ build: { command: 'npm run build' } }),
+  },
+  {
+    property: 'functions',
+    check: isPlainObj,
+    message: 'must be an object.',
+    example: () => ({
+      functions: { external_node_modules: ['module-one', 'module-two'] },
+    }),
   },
 ]
 
@@ -149,6 +167,38 @@ const POST_NORMALIZE_VALIDATIONS = [
     ...insideRootCheck,
     example: (edgeHandlers) => ({ build: { edge_handlers: removeParentDots(edgeHandlers) } }),
   },
+  {
+    property: 'functions.*',
+    check: isPlainObj,
+    message: 'must be an object.',
+    example: (value, key, prevPath) => ({
+      functions: { [prevPath[1]]: { external_node_modules: ['module-one', 'module-two'] } },
+    }),
+  },
+  {
+    property: 'functions.*.external_node_modules',
+    check: isArrayOfStrings,
+    message: 'must be an array of strings.',
+    example: (value, key, prevPath) => ({
+      functions: { [prevPath[1]]: { external_node_modules: ['module-one', 'module-two'] } },
+    }),
+  },
+  {
+    property: 'functions.*.ignored_node_modules',
+    check: isArrayOfStrings,
+    message: 'must be an array of strings.',
+    example: (value, key, prevPath) => ({
+      functions: { [prevPath[1]]: { ignored_node_modules: ['module-one', 'module-two'] } },
+    }),
+  },
+  {
+    property: 'functions.*.node_bundler',
+    check: (value) => bundlers.includes(value),
+    message: `must be one of: ${bundlers.join(', ')}`,
+    example: (value, key, prevPath) => ({
+      functions: { [prevPath[1]]: { node_bundler: bundlers[0] } },
+    }),
+  },
 ]
 
 module.exports = {
@@ -158,3 +208,4 @@ module.exports = {
   PRE_NORMALIZE_VALIDATIONS,
   POST_NORMALIZE_VALIDATIONS,
 }
+/* eslint-enable max-lines */
