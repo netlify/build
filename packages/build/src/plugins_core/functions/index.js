@@ -52,9 +52,8 @@ const getZisiParameters = ({ functionsConfig }) => {
   return parameters
 }
 
-const zipFunctionsAndLogResults = async ({ featureFlags, functionsConfig, functionsDist, functionsSrc, logs }) => {
-  const isEsbuildEnabled = featureFlags.buildbot_esbuild
-  const zisiParameters = getZisiParameters({ isEsbuildEnabled, functionsConfig })
+const zipFunctionsAndLogResults = async ({ functionsConfig, functionsDist, functionsSrc, logs }) => {
+  const zisiParameters = getZisiParameters({ functionsConfig })
 
   try {
     // Printing an empty line before bundling output.

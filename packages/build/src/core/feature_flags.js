@@ -15,10 +15,6 @@ const getFeatureFlag = function (name) {
 }
 
 const DEFAULT_FEATURE_FLAGS = {
-  // When `true`, zip-it-and-ship-it will try to bundle the functions with
-  // esbuild, falling back to the old bundling mechanism if esbuild fails.
-  buildbot_esbuild: false,
-
   // When `true`, the Deploy preview commenting core plugin is enabled
   dpc: false,
 }
