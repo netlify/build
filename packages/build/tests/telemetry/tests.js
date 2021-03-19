@@ -159,7 +159,7 @@ test('Telemetry calls timeout by default', async (t) => {
   // Start the mock telemetry server
   const { telemetryRequests } = await runWithApiMock(t, 'success', {
     // eslint-disable-next-line no-magic-numbers
-    waitTelemetryServer: 6000,
+    waitTelemetryServer: 120000,
   })
   t.is(telemetryRequests.length, 0)
 })
