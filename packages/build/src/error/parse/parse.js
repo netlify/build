@@ -49,7 +49,7 @@ const parseErrorInfo = function (error) {
     stackType,
     locationType,
     showErrorProps,
-    showInBuildLog,
+    showInBuildLog = true,
     rawStack,
   } = getTypeInfo(errorInfo)
   const basicErrorInfo = {
