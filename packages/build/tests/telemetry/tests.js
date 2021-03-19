@@ -173,7 +173,7 @@ test('Telemetry calls timeout in less than 1.3 seconds by default', async (t) =>
   const { scheme: schemeTelemetry, host: hostTelemetry, requests, stopServer } = await startServer({
     path: TELEMETRY_PATH,
     // eslint-disable-next-line no-magic-numbers
-    wait: 1300,
+    wait: 1500,
   })
   const testOpts = {
     telemetryOrigin: `${schemeTelemetry}://${hostTelemetry}`,
