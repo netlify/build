@@ -8,7 +8,7 @@ const getTypeInfo = function ({ type }) {
 
 // List of error types, and their related properties
 // Related to build error logs:
-//  - `showInBuildLog`: `true` when we want this error to show in build logs
+//  - `showInBuildLog`: `true` when we want this error to show in build logs (defaults to true)
 //  - `title`: main title shown in build error logs and in the UI (statuses)
 //  - `locationType`: retrieve a human-friendly location of the error, printed
 //    in build error logs
@@ -35,7 +35,6 @@ const getTypeInfo = function ({ type }) {
 const TYPES = {
   // Plugin called `utils.build.cancelBuild()`
   cancelBuild: {
-    showInBuildLog: true,
     title: ({ location: { packageName } }) => `Build canceled by ${packageName}`,
     stackType: 'stack',
     locationType: 'buildFail',
@@ -44,7 +43,6 @@ const TYPES = {
 
   // User configuration error (`@netlify/config`, wrong Node.js version)
   resolveConfig: {
-    showInBuildLog: true,
     title: 'Configuration error',
     stackType: 'none',
     severity: 'info',
@@ -52,7 +50,6 @@ const TYPES = {
 
   // Error while installing user packages (missing plugins, local plugins or functions dependencies)
   dependencies: {
-    showInBuildLog: true,
     title: 'Dependencies installation error',
     stackType: 'none',
     severity: 'info',
@@ -60,7 +57,6 @@ const TYPES = {
 
   // User misconfigured a plugin
   pluginInput: {
-    showInBuildLog: true,
     title: ({ location: { packageName, input } }) => `Plugin "${packageName}" invalid input "${input}"`,
     stackType: 'none',
     locationType: 'buildFail',
@@ -69,7 +65,6 @@ const TYPES = {
 
   // `build.command` non-0 exit code
   buildCommand: {
-    showInBuildLog: true,
     title: '"build.command" failed',
     group: ({ location: { buildCommand } }) => buildCommand,
     stackType: 'message',
@@ -79,7 +74,6 @@ const TYPES = {
 
   // User error during Functions bundling
   functionsBundling: {
-    showInBuildLog: true,
     title: ({ location: { functionName } }) => `Bundling of Function "${functionName}" failed`,
     stackType: 'none',
     locationType: 'functionsBundling',
@@ -88,7 +82,6 @@ const TYPES = {
 
   // Plugin called `utils.build.failBuild()`
   failBuild: {
-    showInBuildLog: true,
     title: ({ location: { packageName } }) => `Plugin "${packageName}" failed`,
     stackType: 'stack',
     locationType: 'buildFail',
@@ -97,7 +90,6 @@ const TYPES = {
 
   // Plugin called `utils.build.failPlugin()`
   failPlugin: {
-    showInBuildLog: true,
     title: ({ location: { packageName } }) => `Plugin "${packageName}" failed`,
     stackType: 'stack',
     locationType: 'buildFail',
@@ -106,7 +98,6 @@ const TYPES = {
 
   // Plugin has an invalid shape
   pluginValidation: {
-    showInBuildLog: true,
     title: ({ location: { packageName } }) => `Plugin "${packageName}" internal error`,
     stackType: 'stack',
     locationType: 'buildFail',
@@ -115,7 +106,6 @@ const TYPES = {
 
   // Plugin threw an uncaught exception
   pluginInternal: {
-    showInBuildLog: true,
     title: ({ location: { packageName } }) => `Plugin "${packageName}" internal error`,
     stackType: 'stack',
     showErrorProps: true,
@@ -126,7 +116,6 @@ const TYPES = {
 
   // Bug while orchestrating child processes
   ipc: {
-    showInBuildLog: true,
     title: ({ location: { packageName } }) => `Plugin "${packageName}" internal error`,
     stackType: 'none',
     locationType: 'buildFail',
@@ -135,7 +124,6 @@ const TYPES = {
 
   // Core plugin internal error
   corePlugin: {
-    showInBuildLog: true,
     title: ({ location: { packageName } }) => `Plugin "${packageName}" internal error`,
     stackType: 'stack',
     showErrorProps: true,
@@ -146,7 +134,6 @@ const TYPES = {
 
   // Core command internal error
   coreCommand: {
-    showInBuildLog: true,
     title: ({ location: { coreCommandName } }) => `Internal error during "${coreCommandName}"`,
     stackType: 'stack',
     showErrorProps: true,
@@ -157,7 +144,6 @@ const TYPES = {
 
   // Request error when `@netlify/build` was calling Netlify API
   api: {
-    showInBuildLog: true,
     title: ({ location: { endpoint } }) => `API error on "${endpoint}"`,
     stackType: 'message',
     showErrorProps: true,
@@ -167,7 +153,6 @@ const TYPES = {
 
   // `@netlify/build` threw an uncaught exception
   exception: {
-    showInBuildLog: true,
     title: 'Core internal error',
     stackType: 'stack',
     showErrorProps: true,
