@@ -1,0 +1,7 @@
+[build]
+command = "echo command"
+functions = "my-functions"
+
+[context.testBranch]
+command = "echo commandTest"
+functions = "my-branch-functions"

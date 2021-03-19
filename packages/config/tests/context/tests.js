@@ -43,3 +43,7 @@ test('Context array merge', async (t) => {
 test('Context merge priority', async (t) => {
   await runFixture(t, 'priority_merge', { flags: { branch: 'testBranch' } })
 })
+
+test('Context with legacy build.functions property', async (t) => {
+  await runFixture(t, 'legacy_functions_directory', { flags: { branch: 'testBranch' } })
+})
