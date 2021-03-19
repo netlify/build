@@ -179,7 +179,7 @@ const TYPES = {
   telemetry: {
     showInBuildLog: false,
     title: 'Telemetry error',
-    severity: 'error',
+    severity: 'none',
   },
 }
 
