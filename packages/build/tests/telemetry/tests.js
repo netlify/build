@@ -83,7 +83,10 @@ const runWithApiMock = async function (t, fixture, { env = {}, snapshot = false,
 }
 
 test('Telemetry success generates no logs', async (t) => {
-  const { telemetryRequests } = await runWithApiMock(t, 'success', { telemetry: true })
+  const { telemetryRequests } = await runWithApiMock(t, 'success', {
+    telemetry: true,
+    featureFlags: 'buildbot_build_telemetry',
+  })
   const snapshot = telemetryRequests.map(normalizeSnapshot)
   t.snapshot(snapshot)
 })
@@ -93,25 +96,35 @@ test('Telemetry success with user id from site info', async (t) => {
     telemetry: true,
     runApi: true,
     token: 'test',
+    featureFlags: 'buildbot_build_telemetry',
   })
   const snapshot = telemetryRequests.map(normalizeSnapshot)
   t.snapshot(snapshot)
 })
 
 test('Telemetry reports build cancellation', async (t) => {
-  const { telemetryRequests } = await runWithApiMock(t, 'cancel', { telemetry: true })
+  const { telemetryRequests } = await runWithApiMock(t, 'cancel', {
+    telemetry: true,
+    featureFlags: 'buildbot_build_telemetry',
+  })
   const snapshot = telemetryRequests.map(normalizeSnapshot)
   t.snapshot(snapshot)
 })
 
 test('Telemetry reports user error', async (t) => {
-  const { telemetryRequests } = await runWithApiMock(t, 'invalid', { telemetry: true })
+  const { telemetryRequests } = await runWithApiMock(t, 'invalid', {
+    telemetry: true,
+    featureFlags: 'buildbot_build_telemetry',
+  })
   const snapshot = telemetryRequests.map(normalizeSnapshot)
   t.snapshot(snapshot)
 })
 
 test('Telemetry reports plugin error', async (t) => {
-  const { telemetryRequests } = await runWithApiMock(t, 'plugin_error', { telemetry: true })
+  const { telemetryRequests } = await runWithApiMock(t, 'plugin_error', {
+    telemetry: true,
+    featureFlags: 'buildbot_build_telemetry',
+  })
   const snapshot = telemetryRequests.map(normalizeSnapshot)
   t.snapshot(snapshot)
 })
@@ -122,20 +135,37 @@ test('Telemetry is disabled by default', async (t) => {
 })
 
 test('Telemetry can be enabled via flag', async (t) => {
-  const { telemetryRequests } = await runWithApiMock(t, 'success', { telemetry: true })
+  const { telemetryRequests } = await runWithApiMock(t, 'success', {
+    telemetry: true,
+    featureFlags: 'buildbot_build_telemetry',
+  })
   t.is(telemetryRequests.length, 1)
 })
 
-test('Telemetry BUILD_TELEMETRY_DISABLED env var overrides flag usage', async (t) => {
+test('Telemetry cannnot be enabled via flag if the feature flag is disabled', async (t) => {
   const { telemetryRequests } = await runWithApiMock(t, 'success', {
     telemetry: true,
+    flags: {},
+  })
+  t.is(telemetryRequests.length, 0)
+})
+
+test('Telemetry BUILD_TELEMETRY_DISABLED env var overrides flag and feature flag usage', async (t) => {
+  const { telemetryRequests } = await runWithApiMock(t, 'success', {
+    telemetry: true,
+    featureFlags: 'buildbot_build_telemetry',
     env: { BUILD_TELEMETRY_DISABLED: 'true' },
   })
   t.is(telemetryRequests.length, 0)
 })
 
 test('Telemetry error generates no logs', async (t) => {
-  await runWithApiMock(t, 'success', { origin: 'https://...', telemetry: true, snapshot: true })
+  await runWithApiMock(t, 'success', {
+    origin: 'https://...',
+    telemetry: true,
+    featureFlags: 'buildbot_build_telemetry',
+    snapshot: true,
+  })
 })
 
 test('Telemetry calls timeout in less than 1.3 seconds by default', async (t) => {
@@ -148,7 +178,6 @@ test('Telemetry calls timeout in less than 1.3 seconds by default', async (t) =>
   const testOpts = {
     telemetryOrigin: `${schemeTelemetry}://${hostTelemetry}`,
   }
-  // eslint-disable-next-line no-magic-numbers
   await trackBuildComplete({ telemetry: true, testOpts })
   t.is(requests.length, 0)
   await stopServer()
