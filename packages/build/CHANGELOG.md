@@ -1,5 +1,12 @@
 # Changelog
 
+### [9.11.2](https://www.github.com/netlify/build/compare/v9.11.1...v9.11.2) (2021-03-19)
+
+
+### Bug Fixes
+
+* add exit event handler to prevent invalid exit code 0 ([#2432](https://www.github.com/netlify/build/issues/2432)) ([361ed2d](https://www.github.com/netlify/build/commit/361ed2d67b0ae05a5e71692da388f68518188b92))
+
 ### [9.11.1](https://www.github.com/netlify/build/compare/v9.11.0...v9.11.1) (2021-03-19)
 
 
