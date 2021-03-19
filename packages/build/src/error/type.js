@@ -79,6 +79,7 @@ const TYPES = {
 
   // User error during Functions bundling
   functionsBundling: {
+    showInBuildLog: true,
     title: ({ location: { functionName } }) => `Bundling of Function "${functionName}" failed`,
     stackType: 'none',
     locationType: 'functionsBundling',
