@@ -164,6 +164,9 @@ const TYPES = {
   telemetry: {
     showInBuildLog: false,
     title: 'Telemetry error',
+    stackType: 'stack',
+    showErrorProps: true,
+    rawStack: true,
     severity: 'success',
   },
 }
