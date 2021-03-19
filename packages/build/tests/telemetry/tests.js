@@ -3,6 +3,7 @@
 const test = require('ava')
 const uuid = require('uuid')
 
+const { trackBuildComplete } = require('../../src/telemetry/main')
 const { runFixture } = require('../helpers/main')
 const { startServer } = require('../helpers/server.js')
 
@@ -43,11 +44,7 @@ const SITE_INFO_DATA = {
 
 const TELEMETRY_PATH = '/track'
 
-const runWithApiMock = async function (
-  t,
-  fixture,
-  { useBinary = false, telemetryUnrefChildProcess = false, env = {}, snapshot = false, runApi = false, ...flags } = {},
-) {
+const runWithApiMock = async function (t, fixture, { env = {}, snapshot = false, runApi = false, ...flags } = {}) {
   // Start the mock telemetry server
   const {
     scheme: schemeTelemetry,
@@ -60,7 +57,6 @@ const runWithApiMock = async function (
   const stopServers = [stopTelemetryServer]
   const testOpts = {
     telemetryOrigin: `${schemeTelemetry}://${hostTelemetry}`,
-    telemetryUnrefChildProcess,
   }
 
   // Start the Netlify API server mock
@@ -76,7 +72,6 @@ const runWithApiMock = async function (
 
   try {
     const { exitCode } = await runFixture(t, fixture, {
-      useBinary,
       flags: { siteId: 'test', testOpts, ...flags },
       env,
       snapshot,
@@ -143,22 +138,18 @@ test('Telemetry error generates no logs', async (t) => {
   await runWithApiMock(t, 'success', { origin: 'https://...', telemetry: true, snapshot: true })
 })
 
-test("Telemetry's unref'd child process does not disturb regular build process execution on success", async (t) => {
-  const { exitCode } = await runWithApiMock(t, 'success', {
-    telemetry: true,
-    telemetryUnrefChildProcess: true,
-    useBinary: true,
-    snapshot: true,
+test('Telemetry calls timeout in less than 1.3 seconds by default', async (t) => {
+  // Start the mock telemetry server
+  const { scheme: schemeTelemetry, host: hostTelemetry, requests, stopServer } = await startServer({
+    path: TELEMETRY_PATH,
+    // eslint-disable-next-line no-magic-numbers
+    wait: 1300,
   })
-  t.is(exitCode, 0)
-})
-
-test("Telemetry's unref'd child process does not disturb regular build process execution on error", async (t) => {
-  const { exitCode } = await runWithApiMock(t, 'invalid', {
-    telemetry: true,
-    telemetryUnrefChildProcess: true,
-    useBinary: true,
-    snapshot: true,
-  })
-  t.is(exitCode, 2)
+  const testOpts = {
+    telemetryOrigin: `${schemeTelemetry}://${hostTelemetry}`,
+  }
+  // eslint-disable-next-line no-magic-numbers
+  await trackBuildComplete({ telemetry: true, testOpts })
+  t.is(requests.length, 0)
+  await stopServer()
 })
