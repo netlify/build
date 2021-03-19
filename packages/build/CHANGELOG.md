@@ -1,5 +1,25 @@
 # Changelog
 
+### [9.11.1](https://www.github.com/netlify/build/compare/v9.11.0...v9.11.1) (2021-03-19)
+
+
+### Bug Fixes
+
+* reinstate notice about bundling errors and warnings ([#2437](https://www.github.com/netlify/build/issues/2437)) ([b8571d8](https://www.github.com/netlify/build/commit/b8571d8dd0122a90edd7f0f512c3d77505cb42ca))
+
+## [9.11.0](https://www.github.com/netlify/build/compare/v9.10.2...v9.11.0) (2021-03-18)
+
+
+### Features
+
+* add functions configuration API to @netlify/build ([#2414](https://www.github.com/netlify/build/issues/2414)) ([7aa8173](https://www.github.com/netlify/build/commit/7aa8173f9d0bf7553ed3326c5b4aca1ba34d5cda))
+* add functions configuration API to @netlify/config ([#2390](https://www.github.com/netlify/build/issues/2390)) ([654d32e](https://www.github.com/netlify/build/commit/654d32eb49bea33816b1adde02f13f0843db9cdd))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^2.4.3 ([#2436](https://www.github.com/netlify/build/issues/2436)) ([1d96d65](https://www.github.com/netlify/build/commit/1d96d65c073439b5e349963e357780ced48ec59a))
+
 ### [9.10.2](https://www.github.com/netlify/build/compare/v9.10.1...v9.10.2) (2021-03-17)
 
 

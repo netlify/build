@@ -12,22 +12,16 @@ const logBundleResultFunctions = ({ functions, headerMessage, logs }) => {
   logArray(logs, functionNames)
 }
 
-const logBundleResults = ({ logs, results = [], zisiParameters = {} }) => {
-  if (!zisiParameters.jsBundler) {
-    return
-  }
-
+const logBundleResults = ({ logs, results = [] }) => {
   const resultsWithErrors = results.filter(({ bundlerErrors }) => bundlerErrors && bundlerErrors.length !== 0)
   const resultsWithWarnings = results.filter(
     ({ bundler, bundlerWarnings }) => bundler === 'esbuild' && bundlerWarnings && bundlerWarnings.length !== 0,
   )
 
-  log(logs, '')
-
   if (resultsWithErrors.length !== 0) {
     logBundleResultFunctions({
       functions: resultsWithErrors,
-      headerMessage: 'Failed to bundle functions with default bundler (fallback used):',
+      headerMessage: 'Failed to bundle functions with selected bundler (fallback used):',
       logs,
     })
   }

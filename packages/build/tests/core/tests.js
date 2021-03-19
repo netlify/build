@@ -239,3 +239,7 @@ test('Functions config is passed to zip-it-and-ship-it (2)', async (t) => {
 test('Functions config is passed to zip-it-and-ship-it (3)', async (t) => {
   await runFixture(t, 'functions_config_3')
 })
+
+test('Shows notice about bundling errors and warnings coming from esbuild', async (t) => {
+  await runFixture(t, 'esbuild_errors')
+})

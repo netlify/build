@@ -47,7 +47,7 @@ const zipFunctionsAndLogResults = async ({ functionsConfig, functionsDist, funct
 
     const results = await zipFunctions(functionsSrc, functionsDist, zisiParameters)
 
-    logBundleResults({ logs, results, zisiParameters })
+    logBundleResults({ logs, results })
   } catch (error) {
     throw await getZipError(error, functionsSrc)
   }
