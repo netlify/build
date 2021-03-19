@@ -168,12 +168,12 @@ test('Telemetry error generates no logs', async (t) => {
   })
 })
 
-test('Telemetry calls timeout in less than 1.3 seconds by default', async (t) => {
+test('Telemetry calls timeout in less than 3 seconds by default', async (t) => {
   // Start the mock telemetry server
   const { scheme: schemeTelemetry, host: hostTelemetry, requests, stopServer } = await startServer({
     path: TELEMETRY_PATH,
     // eslint-disable-next-line no-magic-numbers
-    wait: 1500,
+    wait: 3000,
   })
   const testOpts = {
     telemetryOrigin: `${schemeTelemetry}://${hostTelemetry}`,
