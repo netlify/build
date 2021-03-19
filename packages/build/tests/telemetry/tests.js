@@ -3,7 +3,6 @@
 const test = require('ava')
 const uuid = require('uuid')
 
-const { trackBuildComplete } = require('../../src/telemetry/main')
 const { runFixture } = require('../helpers/main')
 const { startServer } = require('../helpers/server.js')
 
@@ -44,7 +43,19 @@ const SITE_INFO_DATA = {
 
 const TELEMETRY_PATH = '/track'
 
-const runWithApiMock = async function (t, fixture, { env = {}, snapshot = false, runApi = false, ...flags } = {}) {
+const runWithApiMock = async function (
+  t,
+  fixture,
+  {
+    env = {},
+    snapshot = false,
+    runApi = false,
+    telemetry = true,
+    featureFlags = 'buildbot_build_telemetry',
+    waitTelemetryServer,
+    ...flags
+  } = {},
+) {
   // Start the mock telemetry server
   const {
     scheme: schemeTelemetry,
@@ -53,6 +64,7 @@ const runWithApiMock = async function (t, fixture, { env = {}, snapshot = false,
     stopServer: stopTelemetryServer,
   } = await startServer({
     path: TELEMETRY_PATH,
+    wait: waitTelemetryServer,
   })
   const stopServers = [stopTelemetryServer]
   const testOpts = {
@@ -72,7 +84,7 @@ const runWithApiMock = async function (t, fixture, { env = {}, snapshot = false,
 
   try {
     const { exitCode } = await runFixture(t, fixture, {
-      flags: { siteId: 'test', testOpts, ...flags },
+      flags: { siteId: 'test', testOpts, telemetry, featureFlags, ...flags },
       env,
       snapshot,
     })
@@ -83,68 +95,47 @@ const runWithApiMock = async function (t, fixture, { env = {}, snapshot = false,
 }
 
 test('Telemetry success generates no logs', async (t) => {
-  const { telemetryRequests } = await runWithApiMock(t, 'success', {
-    telemetry: true,
-    featureFlags: 'buildbot_build_telemetry',
-  })
+  const { telemetryRequests } = await runWithApiMock(t, 'success')
   const snapshot = telemetryRequests.map(normalizeSnapshot)
   t.snapshot(snapshot)
 })
 
 test('Telemetry success with user id from site info', async (t) => {
   const { telemetryRequests } = await runWithApiMock(t, 'success', {
-    telemetry: true,
     runApi: true,
     token: 'test',
-    featureFlags: 'buildbot_build_telemetry',
   })
   const snapshot = telemetryRequests.map(normalizeSnapshot)
   t.snapshot(snapshot)
 })
 
 test('Telemetry reports build cancellation', async (t) => {
-  const { telemetryRequests } = await runWithApiMock(t, 'cancel', {
-    telemetry: true,
-    featureFlags: 'buildbot_build_telemetry',
-  })
+  const { telemetryRequests } = await runWithApiMock(t, 'cancel')
   const snapshot = telemetryRequests.map(normalizeSnapshot)
   t.snapshot(snapshot)
 })
 
 test('Telemetry reports user error', async (t) => {
-  const { telemetryRequests } = await runWithApiMock(t, 'invalid', {
-    telemetry: true,
-    featureFlags: 'buildbot_build_telemetry',
-  })
+  const { telemetryRequests } = await runWithApiMock(t, 'invalid')
   const snapshot = telemetryRequests.map(normalizeSnapshot)
   t.snapshot(snapshot)
 })
 
 test('Telemetry reports plugin error', async (t) => {
-  const { telemetryRequests } = await runWithApiMock(t, 'plugin_error', {
-    telemetry: true,
-    featureFlags: 'buildbot_build_telemetry',
-  })
+  const { telemetryRequests } = await runWithApiMock(t, 'plugin_error')
   const snapshot = telemetryRequests.map(normalizeSnapshot)
   t.snapshot(snapshot)
 })
 
 test('Telemetry is disabled by default', async (t) => {
-  const { telemetryRequests } = await runWithApiMock(t, 'success')
+  // We're just overriding our default test harness behaviour
+  const { telemetryRequests } = await runWithApiMock(t, 'success', { telemetry: null })
   t.is(telemetryRequests.length, 0)
-})
-
-test('Telemetry can be enabled via flag', async (t) => {
-  const { telemetryRequests } = await runWithApiMock(t, 'success', {
-    telemetry: true,
-    featureFlags: 'buildbot_build_telemetry',
-  })
-  t.is(telemetryRequests.length, 1)
 })
 
 test('Telemetry cannnot be enabled via flag if the feature flag is disabled', async (t) => {
   const { telemetryRequests } = await runWithApiMock(t, 'success', {
-    telemetry: true,
+    featureFlags: '',
     flags: {},
   })
   t.is(telemetryRequests.length, 0)
@@ -152,8 +143,6 @@ test('Telemetry cannnot be enabled via flag if the feature flag is disabled', as
 
 test('Telemetry BUILD_TELEMETRY_DISABLED env var overrides flag and feature flag usage', async (t) => {
   const { telemetryRequests } = await runWithApiMock(t, 'success', {
-    telemetry: true,
-    featureFlags: 'buildbot_build_telemetry',
     env: { BUILD_TELEMETRY_DISABLED: 'true' },
   })
   t.is(telemetryRequests.length, 0)
@@ -162,23 +151,15 @@ test('Telemetry BUILD_TELEMETRY_DISABLED env var overrides flag and feature flag
 test('Telemetry error generates no logs', async (t) => {
   await runWithApiMock(t, 'success', {
     origin: 'https://...',
-    telemetry: true,
-    featureFlags: 'buildbot_build_telemetry',
     snapshot: true,
   })
 })
 
-test('Telemetry calls timeout in less than 3 seconds by default', async (t) => {
+test('Telemetry calls timeout by default', async (t) => {
   // Start the mock telemetry server
-  const { scheme: schemeTelemetry, host: hostTelemetry, requests, stopServer } = await startServer({
-    path: TELEMETRY_PATH,
+  const { telemetryRequests } = await runWithApiMock(t, 'success', {
     // eslint-disable-next-line no-magic-numbers
-    wait: 3000,
+    waitTelemetryServer: 6000,
   })
-  const testOpts = {
-    telemetryOrigin: `${schemeTelemetry}://${hostTelemetry}`,
-  }
-  await trackBuildComplete({ telemetry: true, testOpts })
-  t.is(requests.length, 0)
-  await stopServer()
+  t.is(telemetryRequests.length, 0)
 })

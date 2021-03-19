@@ -24,7 +24,7 @@ const trackBuildComplete = async function ({
   durationNs,
   siteInfo,
   telemetry,
-  testOpts: { telemetryOrigin } = {},
+  testOpts: { telemetryOrigin },
 }) {
   if (!telemetry) {
     return
