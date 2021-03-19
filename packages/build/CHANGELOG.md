@@ -1,5 +1,12 @@
 # Changelog
 
+### [9.11.1](https://www.github.com/netlify/build/compare/v9.11.0...v9.11.1) (2021-03-19)
+
+
+### Bug Fixes
+
+* reinstate notice about bundling errors and warnings ([#2437](https://www.github.com/netlify/build/issues/2437)) ([b8571d8](https://www.github.com/netlify/build/commit/b8571d8dd0122a90edd7f0f512c3d77505cb42ca))
+
 ## [9.11.0](https://www.github.com/netlify/build/compare/v9.10.2...v9.11.0) (2021-03-18)
 
 
