@@ -10,6 +10,7 @@ require('../utils/polyfills')
 
 const { FLAGS } = require('./flags')
 const build = require('./main')
+const { FALLBACK_SEVERITY_ENTRY } = require('./severity')
 
 // CLI entry point.
 // Before adding logic to this file, please consider adding it to the main
@@ -20,9 +21,14 @@ const runCli = async function () {
   const flags = parseFlags()
   const flagsA = filterObj(flags, isUserFlag)
 
+  const state = { done: false }
+  process.on('exit', onExit.bind(undefined, state))
+
   const { severityCode, logs } = await build(flagsA)
   printLogs(logs)
   process.exitCode = severityCode
+
+  state.done = true
 }
 
 const parseFlags = function () {
@@ -52,6 +58,22 @@ const printLogs = function (logs) {
 
   const allLogs = [logs.stdout.join('\n'), logs.stderr.join('\n')].filter(Boolean).join('\n\n')
   console.log(allLogs)
+}
+
+// In theory, the main process should not exit until the main `build()` function
+// has completed. In practice, this might happen due to bugs.
+// Making the exit code not 0 in that case ensures the caller knows that the
+// build has completed when the exit code is 0. This `exit` event handlers
+// guarantees this.
+const onExit = function ({ done }, exitCode) {
+  if (done || exitCode !== 0) {
+    return
+  }
+
+  const [, processName] = process.argv
+  console.log(`${processName} exited with exit code ${exitCode} without finishing the build.`)
+
+  process.exitCode = FALLBACK_SEVERITY_ENTRY.severityCode
 }
 
 runCli()
