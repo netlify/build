@@ -9,11 +9,11 @@ const { v4: uuidv4 } = require('uuid')
 const { version } = require('../../package.json')
 const { roundTimerToMillisecs } = require('../time/measure')
 
+const DEFAULT_TELEMETRY_TIMEOUT = 1200
 const DEFAULT_TELEMETRY_CONFIG = {
   origin: 'https://api.segment.io/v1',
   writeKey: 'dWhlM1lYSlpNd1k5Uk9rcjFra2JSOEoybnRjZjl0YTI6',
-  // eslint-disable-next-line no-magic-numbers
-  timeout: 1200,
+  timeout: DEFAULT_TELEMETRY_TIMEOUT,
 }
 
 // Send telemetry request when build completes

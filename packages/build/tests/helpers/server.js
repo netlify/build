@@ -42,7 +42,6 @@ const requestHandler = async function ({ req, req: { url, method, headers }, res
   // Induce delays via wait property in handlers
   if (typeof wait === 'number') {
     await setTimeoutPromise(wait)
-    console.log('AFTER WAIT')
   }
 
   const requestBody = await getRequestBody(req)

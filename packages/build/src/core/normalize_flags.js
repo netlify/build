@@ -61,11 +61,11 @@ const getDefaultFlags = function ({ env: envOpt = {} }, combinedEnv) {
 // if BUILD_TELEMETRY_DISABLED is passed. It's also feature flagged currently, meaning it will
 // only look at the cli flag value if the feature flag is true
 const computeTelemetry = function (flags, envOpts, featureFlags) {
-  // Env var takes precendence over any logic here
-  if (envOpts.BUILD_TELEMETRY_DISABLED) {
-    return { telemetry: false }
+  // Env var takes precendence over any value, always disabling telemetry if set
+  if (!envOpts.BUILD_TELEMETRY_DISABLED && featureFlags.buildbot_build_telemetry) {
+    return { telemetry: flags.telemetry }
   }
-  return featureFlags.buildbot_build_telemetry ? { telemetry: flags.telemetry } : { telemetry: false }
+  return { telemetry: false }
 }
 
 const REQUIRE_MODE = 'require'
