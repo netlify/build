@@ -6,3 +6,12 @@ command = "echo commandTest"
 
 [context.testBranch]
 command = "echo commandTestBranch"
+
+[functions]
+external_node_modules = ["module-one"]
+
+[context.production.functions]
+external_node_modules = ["module-two"]
+
+[context.testBranch.functions]
+external_node_modules = ["module-three"]
