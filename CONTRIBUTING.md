@@ -56,7 +56,6 @@ After submitting the pull request, please make sure the Continuous Integration c
 To release a specific package:
 
 1. Merge the relevant package release PR created by `release-please`
-2. Run `npm publish packages/packageName/` (mind the trailing slash)
 
 Linting and tests will automatically run before publish.
 
