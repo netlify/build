@@ -53,9 +53,7 @@ After submitting the pull request, please make sure the Continuous Integration c
 
 ## Releasing
 
-To release a specific package:
-
-1. Merge the relevant package release PR created by `release-please`
+To release a specific simply package merge the relevant package release PR created by `release-please`
 
 Linting and tests will automatically run before publish.
 
