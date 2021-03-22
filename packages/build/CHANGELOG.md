@@ -1,5 +1,12 @@
 # Changelog
 
+### [9.11.3](https://www.github.com/netlify/build/compare/v9.11.2...v9.11.3) (2021-03-22)
+
+
+### Bug Fixes
+
+* **telemetry:** wait for telemetry completion ([#2438](https://www.github.com/netlify/build/issues/2438)) ([ae0b3d5](https://www.github.com/netlify/build/commit/ae0b3d5236a0b4ab341e357d8ddd47ac3491474b))
+
 ### [9.11.2](https://www.github.com/netlify/build/compare/v9.11.1...v9.11.2) (2021-03-19)
 
 
