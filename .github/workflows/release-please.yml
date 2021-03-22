@@ -27,7 +27,7 @@ jobs:
           node-version: '15'
           registry-url: 'https://registry.npmjs.org'
         if: ${{ steps.release.outputs.release_created }}
-      - run: npm publish packages/${{ matrix.package }}
+      - run: npm publish packages/${{ matrix.package }}/
         if: ${{ steps.release.outputs.release_created }}
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
