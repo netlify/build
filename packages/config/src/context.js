@@ -10,8 +10,8 @@ const { deepMerge } = require('./utils/merge')
 // usually `build`, since `context.*.{key}` is merged to `build.{key}`. The
 // only exception to that is for the `functions` key if the value is a plain
 // object, so that `context.*.functions.{key}` is merged to `functions.{key}`.
-const addNamespace = (configObject) => {
-  const namespacedObject = Object.entries(configObject).reduce((result, [key, value]) => {
+const addNamespace = (context) => {
+  const namespacedObject = Object.entries(context).reduce((result, [key, value]) => {
     if (key === 'functions' && isPlainObj(value)) {
       return {
         ...result,
