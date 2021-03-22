@@ -15,6 +15,10 @@ const getFeatureFlag = function (name) {
 }
 
 const DEFAULT_FEATURE_FLAGS = {
+  // When `true`, it allows enabling the telemetry reporting from build
+  // via a --telemetry flag (which defaults to false)
+  buildbot_build_telemetry: false,
+
   // When `true`, the Deploy preview commenting core plugin is enabled
   dpc: false,
 }
