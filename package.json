@@ -21,8 +21,8 @@
     "test:dev:ava": "ava",
     "test:ci:ava": "nyc -r lcovonly -r text -r json ava",
     "prepublishOnly": "run-s prepublishOnly:*",
-    "prepublishOnly:checkout": "git checkout master",
-    "prepublishOnly:pull": "git pull",
+    "prepublishOnly:checkout": "node scripts/run_local 'git checkout master'",
+    "prepublishOnly:pull": "node scripts/run_local 'git pull'",
     "prepublishOnly:install": "npm ci",
     "prepublishOnly:test": "npm test"
   },
@@ -81,6 +81,7 @@
     "@commitlint/config-conventional": "^12.0.0",
     "@netlify/eslint-config-node": "^2.6.0",
     "ava": "^2.4.0",
+    "execa": "^5.0.0",
     "lerna": "^3.22.1",
     "nyc": "^15.0.0"
   },
