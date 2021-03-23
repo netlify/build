@@ -13,6 +13,7 @@ const { logBuildStart, logTimer, logBuildSuccess } = require('../log/messages/co
 const { loadPlugins } = require('../plugins/load')
 const { getPluginsOptions } = require('../plugins/options')
 const { startPlugins, stopPlugins } = require('../plugins/spawn')
+const { addCorePlugins } = require('../plugins_core/add')
 const { reportStatuses } = require('../status/report')
 const { trackBuildComplete } = require('../telemetry/main')
 const { initTimers, measureDuration } = require('../time/main')
@@ -166,19 +167,30 @@ const tExecBuild = async function ({
   // eslint-disable-next-line fp/no-mutating-assign
   Object.assign(errorParams, { netlifyConfig, siteInfo, childEnv })
 
+  const constants = await getConstants({
+    configPath,
+    buildDir,
+    functionsDistDir,
+    cacheDir,
+    netlifyConfig,
+    siteInfo,
+    token: tokenA,
+    mode,
+    logs,
+    testOpts,
+  })
+  const pluginsOptions = addCorePlugins({ netlifyConfig, constants, featureFlags, childEnv })
+
   const { commandsCount, timers: timersB } = await runAndReportBuild({
+    pluginsOptions,
     netlifyConfig,
     configPath,
     buildDir,
     nodePath,
     packageJson,
     childEnv,
-    functionsDistDir,
-    cacheDir,
     dry,
-    siteInfo,
     mode,
-    token: tokenA,
     api,
     errorMonitor,
     deployId,
@@ -189,6 +201,7 @@ const tExecBuild = async function ({
     testOpts,
     featureFlags,
     buildbotServerSocket,
+    constants,
   })
   return { netlifyConfig, siteInfo, commandsCount, timers: timersB }
 }
@@ -197,19 +210,17 @@ const execBuild = measureDuration(tExecBuild, 'total', { parentTag: 'build_site'
 
 // Runs a build then report any plugin statuses
 const runAndReportBuild = async function ({
+  pluginsOptions,
   netlifyConfig,
   configPath,
   buildDir,
   nodePath,
   packageJson,
   childEnv,
-  functionsDistDir,
-  cacheDir,
   buildbotServerSocket,
+  constants,
   dry,
-  siteInfo,
   mode,
-  token,
   api,
   errorMonitor,
   deployId,
@@ -222,18 +233,15 @@ const runAndReportBuild = async function ({
 }) {
   try {
     const { commandsCount, statuses, timers: timersA } = await initAndRunBuild({
+      pluginsOptions,
       netlifyConfig,
       configPath,
       buildDir,
       nodePath,
       packageJson,
       childEnv,
-      functionsDistDir,
-      cacheDir,
       dry,
-      siteInfo,
       mode,
-      token,
       api,
       errorMonitor,
       deployId,
@@ -243,6 +251,7 @@ const runAndReportBuild = async function ({
       testOpts,
       featureFlags,
       buildbotServerSocket,
+      constants,
     })
     await reportStatuses({
       statuses,
@@ -280,19 +289,15 @@ const runAndReportBuild = async function ({
 
 // Initialize plugin processes then runs a build
 const initAndRunBuild = async function ({
+  pluginsOptions,
   netlifyConfig,
   configPath,
   buildDir,
   nodePath,
   packageJson,
   childEnv,
-  functionsDistDir,
-  cacheDir,
   dry,
-  siteInfo,
   mode,
-  apiHost,
-  token,
   api,
   errorMonitor,
   deployId,
@@ -302,30 +307,15 @@ const initAndRunBuild = async function ({
   testOpts,
   featureFlags,
   buildbotServerSocket,
+  constants,
 }) {
-  const constants = await getConstants({
-    configPath,
-    buildDir,
-    functionsDistDir,
-    cacheDir,
-    netlifyConfig,
-    siteInfo,
-    apiHost,
-    token,
-    mode,
-    logs,
-    testOpts,
-  })
-
-  const { pluginsOptions, timers: timersA } = await getPluginsOptions({
+  const { pluginsOptions: pluginsOptionsA, timers: timersA } = await getPluginsOptions({
+    pluginsOptions,
     netlifyConfig,
     buildDir,
     nodePath,
     packageJson,
-    constants,
     mode,
-    featureFlags,
-    childEnv,
     logs,
     debug,
     timers,
@@ -333,7 +323,7 @@ const initAndRunBuild = async function ({
   })
 
   const { childProcesses, timers: timersB } = await startPlugins({
-    pluginsOptions,
+    pluginsOptions: pluginsOptionsA,
     buildDir,
     childEnv,
     logs,
@@ -343,7 +333,7 @@ const initAndRunBuild = async function ({
   try {
     const { commandsCount, statuses, timers: timersC } = await runBuild({
       childProcesses,
-      pluginsOptions,
+      pluginsOptions: pluginsOptionsA,
       netlifyConfig,
       packageJson,
       configPath,

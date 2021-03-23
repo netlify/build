@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.3.0](https://www.github.com/netlify/build/compare/v4.2.0...v4.3.0) (2021-03-23)
+
+
+### Features
+
+* add context support to the functions block ([#2447](https://www.github.com/netlify/build/issues/2447)) ([5813826](https://www.github.com/netlify/build/commit/581382662506b01695fcbedadc0ea4b7d19b7efc))
+
 ## [4.2.0](https://www.github.com/netlify/build/compare/v4.1.3...v4.2.0) (2021-03-18)
 
 

@@ -3,3 +3,9 @@ command = "echo command"
 
 [context.master]
 command = "echo commandTest"
+
+[functions]
+node_bundler = "esbuild"
+
+[context.master.functions]
+node_bundler = "zisi"

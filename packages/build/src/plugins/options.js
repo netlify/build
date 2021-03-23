@@ -4,7 +4,6 @@ const { dirname } = require('path')
 
 const corePackageJson = require('../../package.json')
 const { installLocalPluginsDependencies } = require('../install/local')
-const { getCorePlugins, isCorePlugin } = require('../plugins_core/main')
 const { measureDuration } = require('../time/main')
 const { getPackageJson } = require('../utils/package')
 
@@ -12,28 +11,18 @@ const { useManifest } = require('./manifest/main')
 const { checkNodeVersion } = require('./node_version')
 const { resolvePluginsPath } = require('./resolve')
 
-// Load plugin options (specified by user in `config.plugins`)
-// Do not allow user override of core plugins
+// Load core plugins and user plugins
 const tGetPluginsOptions = async function ({
+  pluginsOptions,
   netlifyConfig: { plugins },
   buildDir,
   nodePath,
   packageJson,
-  constants,
   mode,
-  featureFlags,
-  childEnv,
   logs,
   debug,
   testOpts,
 }) {
-  const corePlugins = getCorePlugins({ constants, featureFlags, childEnv })
-  const allCorePlugins = corePlugins
-    .map((corePlugin) => addCoreProperties(corePlugin, plugins))
-    .filter((corePlugin) => !isOptionalCore(corePlugin, plugins))
-  const userPlugins = plugins.filter(isUserPlugin)
-  const allPlugins = [...userPlugins, ...allCorePlugins]
-  const pluginsOptions = allPlugins.map(normalizePluginOptions)
   const pluginsOptionsA = await resolvePluginsPath({
     pluginsOptions,
     buildDir,
@@ -53,34 +42,6 @@ const tGetPluginsOptions = async function ({
 }
 
 const getPluginsOptions = measureDuration(tGetPluginsOptions, 'get_plugins_options')
-
-const addCoreProperties = function (corePlugin, plugins) {
-  const inputs = getCorePluginInputs(corePlugin, plugins)
-  return { ...corePlugin, inputs, loadedFrom: 'core', origin: 'core' }
-}
-
-// Core plugins can get inputs too
-const getCorePluginInputs = function (corePlugin, plugins) {
-  const configuredCorePlugin = plugins.find((plugin) => plugin.package === corePlugin.package)
-  if (configuredCorePlugin === undefined) {
-    return {}
-  }
-
-  return configuredCorePlugin.inputs
-}
-
-// Optional core plugins requires user opt-in
-const isOptionalCore = function (pluginA, plugins) {
-  return pluginA.optional && plugins.every((pluginB) => pluginB.package !== pluginA.package)
-}
-
-const isUserPlugin = function (plugin) {
-  return !isCorePlugin(plugin.package)
-}
-
-const normalizePluginOptions = function ({ package: packageName, pluginPath, loadedFrom, origin, inputs }) {
-  return { packageName, pluginPath, loadedFrom, origin, inputs }
-}
 
 // Retrieve plugin's main file path.
 // Then load plugin's `package.json` and `manifest.yml`.
