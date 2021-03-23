@@ -9,7 +9,7 @@ const STATUS_PATH = '/api/v1/deploys/test/plugin_runs'
 
 // Normalize API request body so it can be snapshot in a stable way
 const normalizeRequest = function ({ body: { version, text, ...body }, ...request }) {
-  const versionA = version.replace(VERSION_REGEXP, '1.0.0')
+  const versionA = version === undefined ? version : version.replace(VERSION_REGEXP, '1.0.0')
   const textA = normalizeText(text)
   return { ...request, body: { ...body, version: versionA, text: textA } }
 }
