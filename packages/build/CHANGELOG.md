@@ -1,5 +1,12 @@
 # Changelog
 
+## [9.13.0](https://www.github.com/netlify/build/compare/v9.12.0...v9.13.0) (2021-03-23)
+
+
+### Features
+
+* add skipped plugin_runs ([#2457](https://www.github.com/netlify/build/issues/2457)) ([0d4f3fc](https://www.github.com/netlify/build/commit/0d4f3fc2d0f961651c6671739436ea97b9d831fd))
+
 ## [9.12.0](https://www.github.com/netlify/build/compare/v9.11.4...v9.12.0) (2021-03-23)
 
 
