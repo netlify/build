@@ -1,5 +1,12 @@
 # Changelog
 
+### [9.13.1](https://www.github.com/netlify/build/compare/v9.13.0...v9.13.1) (2021-03-23)
+
+
+### Bug Fixes
+
+* **telemetry:** set a default user_id for production builds ([#2458](https://www.github.com/netlify/build/issues/2458)) ([50bd881](https://www.github.com/netlify/build/commit/50bd881b1805bce9cda7cc676f7231f4675fd906))
+
 ## [9.13.0](https://www.github.com/netlify/build/compare/v9.12.0...v9.13.0) (2021-03-23)
 
 
