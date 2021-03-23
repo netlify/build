@@ -12,21 +12,7 @@ const { useManifest } = require('./manifest/main')
 const { checkNodeVersion } = require('./node_version')
 const { resolvePluginsPath } = require('./resolve')
 
-// Load plugin options (specified by user in `config.plugins`)
-// Do not allow user override of core plugins
-const tGetPluginsOptions = async function ({
-  netlifyConfig: { plugins },
-  buildDir,
-  nodePath,
-  packageJson,
-  constants,
-  mode,
-  featureFlags,
-  childEnv,
-  logs,
-  debug,
-  testOpts,
-}) {
+const addCorePlugins = function ({ netlifyConfig: { plugins }, constants, featureFlags, childEnv }) {
   const corePlugins = getCorePlugins({ constants, featureFlags, childEnv })
   const allCorePlugins = corePlugins
     .map((corePlugin) => addCoreProperties(corePlugin, plugins))
@@ -34,6 +20,22 @@ const tGetPluginsOptions = async function ({
   const userPlugins = plugins.filter(isUserPlugin)
   const allPlugins = [...userPlugins, ...allCorePlugins]
   const pluginsOptions = allPlugins.map(normalizePluginOptions)
+  return pluginsOptions
+}
+
+// Load plugin options (specified by user in `config.plugins`)
+// Do not allow user override of core plugins
+const tGetPluginsOptions = async function ({
+  pluginsOptions,
+  netlifyConfig: { plugins },
+  buildDir,
+  nodePath,
+  packageJson,
+  mode,
+  logs,
+  debug,
+  testOpts,
+}) {
   const pluginsOptionsA = await resolvePluginsPath({
     pluginsOptions,
     buildDir,
@@ -119,4 +121,4 @@ const getSpawnInfo = function () {
   }
 }
 
-module.exports = { getPluginsOptions, getSpawnInfo }
+module.exports = { addCorePlugins, getPluginsOptions, getSpawnInfo }
