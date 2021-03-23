@@ -1,7 +1,6 @@
 'use strict'
 
 const test = require('ava')
-const uuid = require('uuid')
 
 const { runFixture } = require('../helpers/main')
 const { startServer } = require('../helpers/server.js')
@@ -13,15 +12,12 @@ const normalizeSnapshot = function ({ body, ...request }) {
 
 const normalizeBody = function ({
   timestamp,
-  anonymousId,
   properties: { duration, buildVersion, nodeVersion, osPlatform, osName, ...properties } = {},
   ...body
 }) {
-  const optAnonymousId = anonymousId ? { anonymousId: uuid.validate(anonymousId) ? 'uuid' : 'invalid' } : {}
   const optDuration = duration ? { duration: typeof duration } : {}
   return {
     ...body,
-    ...optAnonymousId,
     timestamp: typeof timestamp,
     properties: {
       ...properties,
