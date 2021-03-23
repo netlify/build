@@ -38,7 +38,20 @@ const NORMALIZE_REGEXPS = [
   [/packages\/+build/g, '/packages/build'],
   [/Caching [.~]\//g, 'Caching '],
   // Normalizes any paths so that they're relative to process.cwd().
-  [/(^|[ "'(=])(\.{0,2}\/[^ "')\n]+)/gm, (_, prefix, fullPath) => `${prefix}${relative(cwd(), fullPath)}`],
+  [
+    /(^|[ "'(=])(\.{0,2}\/[^ "')\n]+)/gm,
+    (_, prefix, fullPath) => {
+      const tmpDirMatch = fullPath.match(/netlify-build-tmp-dir\d+(.*)/)
+
+      // If this is a temporary directory with a randomly-generated name, we
+      // replace it with the string "tmp-dir" so that the result is consistent.
+      if (tmpDirMatch) {
+        return `${prefix}/tmp-dir${tmpDirMatch[1]}`
+      }
+
+      return `${prefix}${relative(cwd(), fullPath)}`
+    },
+  ],
   // When serializing flags, Windows keep single quotes due to backslashes,
   // but not Unix
   [/: '\/file\/path'$/gm, ': /file/path'],
