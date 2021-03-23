@@ -24,7 +24,7 @@ const trackBuildComplete = async function ({
   durationNs,
   siteInfo,
   telemetry,
-  testOpts: { telemetryOrigin = DEFAULT_TELEMETRY_CONFIG.origin },
+  testOpts: { telemetryOrigin = DEFAULT_TELEMETRY_CONFIG.origin, telemetryTimeout = DEFAULT_TELEMETRY_CONFIG.timeout },
 }) {
   if (!telemetry) {
     return
@@ -32,7 +32,10 @@ const trackBuildComplete = async function ({
 
   try {
     const payload = getPayload({ status, commandsCount, netlifyConfig, durationNs, siteInfo })
-    await track({ payload, config: { ...DEFAULT_TELEMETRY_CONFIG, origin: telemetryOrigin } })
+    await track({
+      payload,
+      config: { ...DEFAULT_TELEMETRY_CONFIG, origin: telemetryOrigin, timeout: telemetryTimeout },
+    })
   } catch (error) {}
 }
 

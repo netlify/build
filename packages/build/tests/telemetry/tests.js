@@ -52,6 +52,8 @@ const runWithApiMock = async function (
     runApi = false,
     telemetry = true,
     featureFlags = 'buildbot_build_telemetry',
+    // Disables the timeout by default because of latency issues in the CI windows boxes
+    disableTelemetryTimeout = true,
     waitTelemetryServer,
     ...flags
   } = {},
@@ -68,6 +70,8 @@ const runWithApiMock = async function (
   })
   const stopServers = [stopTelemetryServer]
   const testOpts = {
+    // null disables the request timeout
+    telemetryTimeout: disableTelemetryTimeout ? null : undefined,
     telemetryOrigin: `${schemeTelemetry}://${hostTelemetry}`,
   }
 
@@ -95,9 +99,15 @@ const runWithApiMock = async function (
 }
 
 test('Telemetry success generates no logs', async (t) => {
-  const { telemetryRequests } = await runWithApiMock(t, 'success')
-  const snapshot = telemetryRequests.map(normalizeSnapshot)
-  t.snapshot(snapshot)
+  const { telemetryRequests } = await runWithApiMock(t, 'success', { snapshot: true })
+  t.is(telemetryRequests.length, 1)
+})
+
+test('Telemetry error generates no logs', async (t) => {
+  await runWithApiMock(t, 'success', {
+    origin: 'https://...',
+    snapshot: true,
+  })
 })
 
 test('Telemetry success with user id from site info', async (t) => {
@@ -148,16 +158,11 @@ test('Telemetry BUILD_TELEMETRY_DISABLED env var overrides flag and feature flag
   t.is(telemetryRequests.length, 0)
 })
 
-test('Telemetry error generates no logs', async (t) => {
-  await runWithApiMock(t, 'success', {
-    origin: 'https://...',
-    snapshot: true,
-  })
-})
-
 test('Telemetry calls timeout by default', async (t) => {
   // Start the mock telemetry server
   const { telemetryRequests } = await runWithApiMock(t, 'success', {
+    // we want to rely on the default timeout value
+    disableTelemetryTimeout: false,
     // eslint-disable-next-line no-magic-numbers
     waitTelemetryServer: 120000,
   })
