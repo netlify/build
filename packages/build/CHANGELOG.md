@@ -1,5 +1,13 @@
 # Changelog
 
+## [9.12.0](https://www.github.com/netlify/build/compare/v9.11.4...v9.12.0) (2021-03-23)
+
+
+### Features
+
+* move core plugins logic ([#2454](https://www.github.com/netlify/build/issues/2454)) ([35e7fa2](https://www.github.com/netlify/build/commit/35e7fa26b4d4280e53dc97b35a520ed4c0219fec))
+* move plugins initialization code ([#2451](https://www.github.com/netlify/build/issues/2451)) ([ffc4a8b](https://www.github.com/netlify/build/commit/ffc4a8bd23b05d6150af90b4811fabed61466a01))
+
 ### [9.11.4](https://www.github.com/netlify/build/compare/v9.11.3...v9.11.4) (2021-03-22)
 
 
