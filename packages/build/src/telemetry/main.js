@@ -51,7 +51,8 @@ const track = async function ({ payload, config: { origin, writeKey, timeout } }
 }
 
 // Retrieve telemetry information
-const getPayload = function ({ status, commandsCount, netlifyConfig, durationNs, siteInfo }) {
+// siteInfo can be empty if the build fails during the get config step
+const getPayload = function ({ status, commandsCount, netlifyConfig, durationNs, siteInfo = {} }) {
   const basePayload = {
     user_id: 'buildbot_user',
     event: 'build:ci_build_process_completed',
@@ -63,15 +64,11 @@ const getPayload = function ({ status, commandsCount, netlifyConfig, durationNs,
       nodeVersion: nodeVersion.replace('v', ''),
       osPlatform: OS_TYPES[platform],
       osName: osName(),
+      siteId: siteInfo.id,
     },
   }
 
-  return addDuration(addConfigData(addSiteInfoData(basePayload, siteInfo), netlifyConfig), durationNs)
-}
-
-const addSiteInfoData = function (payload, siteInfo = {}) {
-  const properties = { properties: { ...payload.properties, siteId: siteInfo.id } }
-  return { ...payload, ...properties }
+  return addDuration(addConfigData(basePayload, netlifyConfig), durationNs)
 }
 
 const addConfigData = function (payload, netlifyConfig = {}) {
