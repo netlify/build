@@ -3,3 +3,9 @@ ignore = ["a", "b"]
 
 [context.production]
 ignore = ["c", "d"]
+
+[functions]
+external_node_modules = ["module-one", "module-two"]
+
+[context.production.functions]
+external_node_modules = ["module-three", "module-four"]
