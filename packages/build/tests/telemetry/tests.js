@@ -46,7 +46,15 @@ const TELEMETRY_PATH = '/track'
 const runWithApiMock = async function (
   t,
   fixture,
-  { useBinary = false, telemetryUnrefChildProcess = false, env = {}, snapshot = false, runApi = false, ...flags } = {},
+  {
+    env = {},
+    snapshot = false,
+    runApi = false,
+    telemetry = true,
+    featureFlags = 'buildbot_build_telemetry',
+    waitTelemetryServer,
+    ...flags
+  } = {},
 ) {
   // Start the mock telemetry server
   const {
@@ -56,11 +64,11 @@ const runWithApiMock = async function (
     stopServer: stopTelemetryServer,
   } = await startServer({
     path: TELEMETRY_PATH,
+    wait: waitTelemetryServer,
   })
   const stopServers = [stopTelemetryServer]
   const testOpts = {
     telemetryOrigin: `${schemeTelemetry}://${hostTelemetry}`,
-    telemetryUnrefChildProcess,
   }
 
   // Start the Netlify API server mock
@@ -76,8 +84,7 @@ const runWithApiMock = async function (
 
   try {
     const { exitCode } = await runFixture(t, fixture, {
-      useBinary,
-      flags: { siteId: 'test', testOpts, ...flags },
+      flags: { siteId: 'test', testOpts, telemetry, featureFlags, ...flags },
       env,
       snapshot,
     })
@@ -88,14 +95,13 @@ const runWithApiMock = async function (
 }
 
 test('Telemetry success generates no logs', async (t) => {
-  const { telemetryRequests } = await runWithApiMock(t, 'success', { telemetry: true })
+  const { telemetryRequests } = await runWithApiMock(t, 'success')
   const snapshot = telemetryRequests.map(normalizeSnapshot)
   t.snapshot(snapshot)
 })
 
 test('Telemetry success with user id from site info', async (t) => {
   const { telemetryRequests } = await runWithApiMock(t, 'success', {
-    telemetry: true,
     runApi: true,
     token: 'test',
   })
@@ -104,61 +110,56 @@ test('Telemetry success with user id from site info', async (t) => {
 })
 
 test('Telemetry reports build cancellation', async (t) => {
-  const { telemetryRequests } = await runWithApiMock(t, 'cancel', { telemetry: true })
+  const { telemetryRequests } = await runWithApiMock(t, 'cancel')
   const snapshot = telemetryRequests.map(normalizeSnapshot)
   t.snapshot(snapshot)
 })
 
 test('Telemetry reports user error', async (t) => {
-  const { telemetryRequests } = await runWithApiMock(t, 'invalid', { telemetry: true })
+  const { telemetryRequests } = await runWithApiMock(t, 'invalid')
   const snapshot = telemetryRequests.map(normalizeSnapshot)
   t.snapshot(snapshot)
 })
 
 test('Telemetry reports plugin error', async (t) => {
-  const { telemetryRequests } = await runWithApiMock(t, 'plugin_error', { telemetry: true })
+  const { telemetryRequests } = await runWithApiMock(t, 'plugin_error')
   const snapshot = telemetryRequests.map(normalizeSnapshot)
   t.snapshot(snapshot)
 })
 
 test('Telemetry is disabled by default', async (t) => {
-  const { telemetryRequests } = await runWithApiMock(t, 'success')
+  // We're just overriding our default test harness behaviour
+  const { telemetryRequests } = await runWithApiMock(t, 'success', { telemetry: null })
   t.is(telemetryRequests.length, 0)
 })
 
-test('Telemetry can be enabled via flag', async (t) => {
-  const { telemetryRequests } = await runWithApiMock(t, 'success', { telemetry: true })
-  t.is(telemetryRequests.length, 1)
+test('Telemetry cannnot be enabled via flag if the feature flag is disabled', async (t) => {
+  const { telemetryRequests } = await runWithApiMock(t, 'success', {
+    featureFlags: '',
+    flags: {},
+  })
+  t.is(telemetryRequests.length, 0)
 })
 
-test('Telemetry BUILD_TELEMETRY_DISABLED env var overrides flag usage', async (t) => {
+test('Telemetry BUILD_TELEMETRY_DISABLED env var overrides flag and feature flag usage', async (t) => {
   const { telemetryRequests } = await runWithApiMock(t, 'success', {
-    telemetry: true,
     env: { BUILD_TELEMETRY_DISABLED: 'true' },
   })
   t.is(telemetryRequests.length, 0)
 })
 
 test('Telemetry error generates no logs', async (t) => {
-  await runWithApiMock(t, 'success', { origin: 'https://...', telemetry: true, snapshot: true })
-})
-
-test("Telemetry's unref'd child process does not disturb regular build process execution on success", async (t) => {
-  const { exitCode } = await runWithApiMock(t, 'success', {
-    telemetry: true,
-    telemetryUnrefChildProcess: true,
-    useBinary: true,
+  await runWithApiMock(t, 'success', {
+    origin: 'https://...',
     snapshot: true,
   })
-  t.is(exitCode, 0)
 })
 
-test("Telemetry's unref'd child process does not disturb regular build process execution on error", async (t) => {
-  const { exitCode } = await runWithApiMock(t, 'invalid', {
-    telemetry: true,
-    telemetryUnrefChildProcess: true,
-    useBinary: true,
-    snapshot: true,
+test('Telemetry calls timeout by default', async (t) => {
+  // Start the mock telemetry server
+  const { telemetryRequests } = await runWithApiMock(t, 'success', {
+    // eslint-disable-next-line no-magic-numbers
+    waitTelemetryServer: 120000,
   })
-  t.is(exitCode, 2)
+  t.is(telemetryRequests.length, 0)
 })

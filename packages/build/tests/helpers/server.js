@@ -5,9 +5,16 @@ const { promisify } = require('util')
 
 const getStream = require('get-stream')
 
+const setTimeoutPromise = promisify(setTimeout)
+
 // Start an HTTP server to mock API calls (telemetry server and Bitballoon)
 // Tests are using child processes, so we cannot use `nock` or similar library
 // that relies on monkey-patching global variables.
+// Handlers can contain:
+// path: path used to match the request
+// response: json payload response (defaults to {})
+// status: http status code (defaults to 200)
+// wait: number used to induce a certain time delay in milliseconds in the response (defaults to undefined)
 const startServer = async function (handler) {
   const handlers = Array.isArray(handler) ? handler : [handler]
   const requests = []
@@ -26,10 +33,15 @@ const getHost = function (server) {
 }
 
 const requestHandler = async function ({ req, req: { url, method, headers }, res, requests, handlers }) {
-  const { response, status } = getHandler(handlers, url)
+  const { response, status, wait } = getHandler(handlers, url)
   if (response === undefined) {
     res.end('')
     return
+  }
+
+  // Induce delays via wait property in handlers
+  if (typeof wait === 'number') {
+    await setTimeoutPromise(wait)
   }
 
   const requestBody = await getRequestBody(req)
@@ -40,6 +52,7 @@ const requestHandler = async function ({ req, req: { url, method, headers }, res
 
   res.statusCode = status
   res.setHeader('Content-Type', 'application/json')
+
   res.end(responseBody)
 }
 
@@ -49,8 +62,8 @@ const getHandler = function (handlers, url) {
     return {}
   }
 
-  const { response = {}, status = DEFAULT_STATUS } = handler
-  return { response, status }
+  const { response = {}, status = DEFAULT_STATUS, wait } = handler
+  return { response, status, wait }
 }
 
 const DEFAULT_STATUS = 200

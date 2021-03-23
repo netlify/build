@@ -1,5 +1,26 @@
 # Changelog
 
+### [9.11.4](https://www.github.com/netlify/build/compare/v9.11.3...v9.11.4) (2021-03-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugin-edge-handlers to ^1.11.6 ([#2449](https://www.github.com/netlify/build/issues/2449)) ([f7613c3](https://www.github.com/netlify/build/commit/f7613c320d223833d853c511a7d8ea3de8bdcc83))
+
+### [9.11.3](https://www.github.com/netlify/build/compare/v9.11.2...v9.11.3) (2021-03-22)
+
+
+### Bug Fixes
+
+* **telemetry:** wait for telemetry completion ([#2438](https://www.github.com/netlify/build/issues/2438)) ([ae0b3d5](https://www.github.com/netlify/build/commit/ae0b3d5236a0b4ab341e357d8ddd47ac3491474b))
+
+### [9.11.2](https://www.github.com/netlify/build/compare/v9.11.1...v9.11.2) (2021-03-19)
+
+
+### Bug Fixes
+
+* add exit event handler to prevent invalid exit code 0 ([#2432](https://www.github.com/netlify/build/issues/2432)) ([361ed2d](https://www.github.com/netlify/build/commit/361ed2d67b0ae05a5e71692da388f68518188b92))
+
 ### [9.11.1](https://www.github.com/netlify/build/compare/v9.11.0...v9.11.1) (2021-03-19)
 
 
