@@ -1,5 +1,8 @@
 'use strict'
 
+const { relative } = require('path')
+const { cwd } = require('process')
+
 const { tick, pointer, arrowDown } = require('figures')
 const stripAnsi = require('strip-ansi')
 
@@ -22,7 +25,6 @@ const NORMALIZE_REGEXPS = [
   [/\\/gu, '/'],
   [/[A-Z]:\//g, '/'],
   [/Program Files/gu, 'ProgramFiles'],
-  [/Users\/([^/])+\//gu, 'Users/User/'],
   [new RegExp(tick, 'g'), '√'],
   [new RegExp(pointer, 'g'), '>'],
   [new RegExp(arrowDown, 'g'), '↓'],
@@ -35,7 +37,8 @@ const NORMALIZE_REGEXPS = [
   // File paths
   [/packages\/+build/g, '/packages/build'],
   [/Caching [.~]\//g, 'Caching '],
-  [/(^|[ "'(=])\.{0,2}\/[^ "')\n]+/gm, '$1/file/path'],
+  // Normalizes any paths so that they're relative to process.cwd().
+  [/(^|[ "'(=])(\.{0,2}\/[^ "')\n]+)/gm, (_, prefix, fullPath) => `${prefix}${relative(cwd(), fullPath)}`],
   // When serializing flags, Windows keep single quotes due to backslashes,
   // but not Unix
   [/: '\/file\/path'$/gm, ': /file/path'],
