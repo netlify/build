@@ -35,8 +35,8 @@ const NORMALIZE_REGEXPS = [
   [/Transformation error for .*\n/g, ''],
   [/EPERM: operation not permitted, rename .*\n/g, ''],
   // File paths
-  [/packages\/+build/g, '/packages/build'],
   [/Caching [.~]\//g, 'Caching '],
+  [/(packages\/.*\/fixtures\/.*\.(?:js|ts))(:(\d)+:(\d)+:)/g, '$1'],
   // Normalizes any paths so that they're relative to process.cwd().
   [
     /(^|[ "'(=])(\.{0,2}\/[^ "')\n]+)/gm,
@@ -49,7 +49,16 @@ const NORMALIZE_REGEXPS = [
         return `${prefix}/tmp-dir${tmpDirMatch[1]}`
       }
 
-      return `${prefix}${relative(cwd(), fullPath)}`
+      const relativePath = relative(cwd(), fullPath)
+
+      // If we're outside the root directory, we're potentially accessing
+      // system directories that may vary from system to system, so we
+      // normalize them to /external/path.
+      if (relativePath.startsWith('..')) {
+        return `${prefix}/external/path`
+      }
+
+      return `${prefix}${relativePath}`
     },
   ],
   // When serializing flags, Windows keep single quotes due to backslashes,
@@ -59,7 +68,7 @@ const NORMALIZE_REGEXPS = [
   [/\/file\/path bad option/g, 'node: bad option'],
   // Stack traces
   [/Cannot find module .*/, ''],
-  [/Require stack:\n(\s*- \/file\/path\n)+/g, ''],
+  [/(Require stack:\n)(\s*- (.*))*/gm, '$1 REQUIRE STACK\n'],
   [/Require stack:\n[^}]*}/g, ''],
   [/{ Error:/g, 'Error:'],
   [/^.*:\d+:\d+\)?$/gm, 'STACK TRACE'],
