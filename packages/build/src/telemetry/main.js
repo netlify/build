@@ -4,7 +4,6 @@ const { platform, version: nodeVersion } = require('process')
 
 const got = require('got')
 const osName = require('os-name')
-const { v4: uuidv4 } = require('uuid')
 
 const { version } = require('../../package.json')
 const { roundTimerToMillisecs } = require('../time/measure')
@@ -54,6 +53,7 @@ const track = async function ({ payload, config: { origin, writeKey, timeout } }
 // Retrieve telemetry information
 const getPayload = function ({ status, commandsCount, netlifyConfig, durationNs, siteInfo }) {
   const basePayload = {
+    user_id: 'buildbot_user',
     event: 'build:ci_build_process_completed',
     timestamp: Date.now(),
     properties: {
@@ -70,9 +70,8 @@ const getPayload = function ({ status, commandsCount, netlifyConfig, durationNs,
 }
 
 const addSiteInfoData = function (payload, siteInfo = {}) {
-  const userData = siteInfo.user_id ? { userId: siteInfo.user_id } : { anonymousId: uuidv4() }
   const properties = { properties: { ...payload.properties, siteId: siteInfo.id } }
-  return { ...userData, ...payload, ...properties }
+  return { ...payload, ...properties }
 }
 
 const addConfigData = function (payload, netlifyConfig = {}) {
