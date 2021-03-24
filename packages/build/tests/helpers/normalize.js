@@ -16,7 +16,7 @@ const replaceOutput = function (output, [regExp, replacement]) {
   return output.replace(regExp, replacement)
 }
 
-const rootPath = cwd().replace(/\\/gu, '/')
+const unixify = (path) => path.replace(/\\/gu, '/')
 
 const NORMALIZE_REGEXPS = [
   // Zero width space characters due to a bug in buildbot:
@@ -44,39 +44,38 @@ const NORMALIZE_REGEXPS = [
     /(^|[ "'(=])(\.{0,2}\/[^ "')\n]+)/gm,
     // eslint-disable-next-line complexity
     (_, prefix, fullPath) => {
-      const normalizedFullPath = fullPath.replace(/\\/gu, '/')
-      const tmpDirMatch = normalizedFullPath.match(/netlify-build-tmp-dir\d+(.*)/)
+      const tmpDirMatch = fullPath.match(/netlify-build-tmp-dir\d+(.*)/)
 
       // If this is a temporary directory with a randomly-generated name, we
       // replace it with the string "tmp-dir" so that the result is consistent.
       if (tmpDirMatch) {
-        return `${prefix}/tmp-dir${tmpDirMatch[1]}`
+        return unixify(`${prefix}/tmp-dir${tmpDirMatch[1]}`)
       }
 
       // If the path is relative inside the root directory, there's no need to
       // transform it.
-      if (normalizedFullPath.startsWith('./')) {
-        return `${prefix}${normalizedFullPath}`
+      if (fullPath.startsWith('./')) {
+        return unixify(`${prefix}${fullPath}`)
       }
 
-      const relativePath = relative(rootPath, normalizedFullPath)
+      const relativePath = relative(cwd(), fullPath)
 
       // If this is a path to a node module, we're probably rendering a stack
       // trace that escaped the regex. We transform it to a deterministic path.
       // The exception is when `node_modules` is the base directory, which is
       // the case with some test fixtures.
       if (relativePath.includes('node_modules/') && basename(dirname(relativePath)) !== 'node_modules') {
-        return `${prefix}/node_module/path`
+        return unixify(`${prefix}/node_module/path`)
       }
 
       // If we're outside the root directory, we're potentially accessing
       // system directories that may vary from system to system, so we
       // normalize them to /external/path.
       if (relativePath.startsWith('..')) {
-        return `${prefix}/external/path`
+        return unixify(`${prefix}/external/path`)
       }
 
-      return `${prefix}${relativePath}`
+      return unixify(`${prefix}${relativePath}`)
     },
   ],
   // When serializing flags, Windows keep single quotes due to backslashes,
