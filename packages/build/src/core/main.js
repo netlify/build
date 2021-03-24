@@ -11,8 +11,9 @@ const { startErrorMonitor } = require('../error/monitor/start')
 const { getBufferLogs } = require('../log/logger')
 const { logBuildStart, logTimer, logBuildSuccess } = require('../log/messages/core')
 const { loadPlugins } = require('../plugins/load')
-const { addCorePlugins, getPluginsOptions } = require('../plugins/options')
+const { getPluginsOptions } = require('../plugins/options')
 const { startPlugins, stopPlugins } = require('../plugins/spawn')
+const { addCorePlugins } = require('../plugins_core/add')
 const { reportStatuses } = require('../status/report')
 const { trackBuildComplete } = require('../telemetry/main')
 const { initTimers, measureDuration } = require('../time/main')
@@ -257,6 +258,7 @@ const runAndReportBuild = async function ({
       childEnv,
       api,
       mode,
+      pluginsOptions,
       netlifyConfig,
       errorMonitor,
       deployId,
@@ -274,6 +276,7 @@ const runAndReportBuild = async function ({
       childEnv,
       api,
       mode,
+      pluginsOptions,
       netlifyConfig,
       errorMonitor,
       deployId,

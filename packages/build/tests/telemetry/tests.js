@@ -1,7 +1,6 @@
 'use strict'
 
 const test = require('ava')
-const uuid = require('uuid')
 
 const { runFixture } = require('../helpers/main')
 const { startServer } = require('../helpers/server.js')
@@ -13,15 +12,12 @@ const normalizeSnapshot = function ({ body, ...request }) {
 
 const normalizeBody = function ({
   timestamp,
-  anonymousId,
   properties: { duration, buildVersion, nodeVersion, osPlatform, osName, ...properties } = {},
   ...body
 }) {
-  const optAnonymousId = anonymousId ? { anonymousId: uuid.validate(anonymousId) ? 'uuid' : 'invalid' } : {}
   const optDuration = duration ? { duration: typeof duration } : {}
   return {
     ...body,
-    ...optAnonymousId,
     timestamp: typeof timestamp,
     properties: {
       ...properties,
@@ -34,13 +30,6 @@ const normalizeBody = function ({
   }
 }
 
-const SITE_INFO_PATH = '/api/v1/sites/test'
-
-const SITE_INFO_DATA = {
-  id: 'test',
-  user_id: 'its-me-test',
-}
-
 const TELEMETRY_PATH = '/track'
 
 const runWithApiMock = async function (
@@ -49,37 +38,23 @@ const runWithApiMock = async function (
   {
     env = {},
     snapshot = false,
-    runApi = false,
     telemetry = true,
     featureFlags = 'buildbot_build_telemetry',
+    // Disables the timeout by default because of latency issues in the CI windows boxes
+    disableTelemetryTimeout = true,
     waitTelemetryServer,
     ...flags
   } = {},
 ) {
   // Start the mock telemetry server
-  const {
-    scheme: schemeTelemetry,
-    host: hostTelemetry,
-    requests: telemetryRequests,
-    stopServer: stopTelemetryServer,
-  } = await startServer({
+  const { scheme: schemeTelemetry, host: hostTelemetry, requests: telemetryRequests, stopServer } = await startServer({
     path: TELEMETRY_PATH,
     wait: waitTelemetryServer,
   })
-  const stopServers = [stopTelemetryServer]
   const testOpts = {
+    // null disables the request timeout
+    telemetryTimeout: disableTelemetryTimeout ? null : undefined,
     telemetryOrigin: `${schemeTelemetry}://${hostTelemetry}`,
-  }
-
-  // Start the Netlify API server mock
-  if (runApi) {
-    const { host, scheme, stopServer: stopAPIServer } = await startServer({
-      path: SITE_INFO_PATH,
-      response: SITE_INFO_DATA,
-    })
-    stopServers.push(stopAPIServer)
-    testOpts.scheme = scheme
-    testOpts.host = host
   }
 
   try {
@@ -90,23 +65,20 @@ const runWithApiMock = async function (
     })
     return { exitCode, telemetryRequests }
   } finally {
-    await Promise.all(stopServers.map((stopServer) => stopServer()))
+    await stopServer()
   }
 }
 
 test('Telemetry success generates no logs', async (t) => {
-  const { telemetryRequests } = await runWithApiMock(t, 'success')
-  const snapshot = telemetryRequests.map(normalizeSnapshot)
-  t.snapshot(snapshot)
+  const { telemetryRequests } = await runWithApiMock(t, 'success', { snapshot: true })
+  t.is(telemetryRequests.length, 1)
 })
 
-test('Telemetry success with user id from site info', async (t) => {
-  const { telemetryRequests } = await runWithApiMock(t, 'success', {
-    runApi: true,
-    token: 'test',
+test('Telemetry error generates no logs', async (t) => {
+  await runWithApiMock(t, 'success', {
+    origin: 'https://...',
+    snapshot: true,
   })
-  const snapshot = telemetryRequests.map(normalizeSnapshot)
-  t.snapshot(snapshot)
 })
 
 test('Telemetry reports build cancellation', async (t) => {
@@ -148,16 +120,11 @@ test('Telemetry BUILD_TELEMETRY_DISABLED env var overrides flag and feature flag
   t.is(telemetryRequests.length, 0)
 })
 
-test('Telemetry error generates no logs', async (t) => {
-  await runWithApiMock(t, 'success', {
-    origin: 'https://...',
-    snapshot: true,
-  })
-})
-
 test('Telemetry calls timeout by default', async (t) => {
   // Start the mock telemetry server
   const { telemetryRequests } = await runWithApiMock(t, 'success', {
+    // we want to rely on the default timeout value
+    disableTelemetryTimeout: false,
     // eslint-disable-next-line no-magic-numbers
     waitTelemetryServer: 120000,
   })
