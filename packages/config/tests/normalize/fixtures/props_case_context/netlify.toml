@@ -1,23 +1,29 @@
 [Build]
 Base = "base"
 Command = "gulp build"
-Functions = "functions"
 Ignore = "doIgnore"
 Publish = "publish"
+
+[functions]
+Directory = "functions"
 
 [context.testContext]
 Base = "base_test_context"
 Command = "gulp buildTestContext"
-Functions = "functionsTestContext"
 Ignore = "doIgnoreTestContext"
 Publish = "publishTestContext"
+
+[context.testContext.functions]
+Directory = "functionsTestContext"
 
 [context.testBranch]
 Base = "base_test_branch"
 Command = "gulp buildTestBranch"
-Functions = "functionsTestBranch"
 Ignore = "doIgnoreTestBranch"
 Publish = "publishTestBranch"
+
+[context.testBranch.functions]
+Directory = "functionsTestBranch"
 
 [Build.Environment]
 TEST = "test"

@@ -1,7 +1,6 @@
 [Build]
 Base = "base"
 Command = "gulp build"
-Functions = "functions"
 Edge_handlers = "edge-handlers"
 Ignore = "doIgnore"
 Publish = "publish"
@@ -11,3 +10,6 @@ TEST = "test"
 
 [Build.Processing.css]
 bundle = true
+
+[functions]
+Directory = "functions"

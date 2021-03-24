@@ -1,0 +1,5 @@
+[build]
+functions = "my-old-functions"
+
+[functions]
+directory = "my-new-functions"

@@ -84,3 +84,11 @@ test('Normalizes function configurations defined at different levels', async (t)
 test('Handles function configuration objects for functions with the same name as one of the configuration properties', async (t) => {
   await runFixture(t, 'function_config_ambiguous')
 })
+
+test('functions.directory takes precedence over build.functions', async (t) => {
+  await runFixture(t, 'functions_directory_precedence')
+})
+
+test('Shows a warning if the legacy build.functions property exists and functions.directory does not', async (t) => {
+  await runFixture(t, 'default_functions_legacy')
+})
