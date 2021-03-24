@@ -49,7 +49,7 @@ const NORMALIZE_REGEXPS = [
         return `${prefix}/tmp-dir${tmpDirMatch[1]}`
       }
 
-      const relativePath = relative(cwd(), fullPath)
+      const relativePath = relative(cwd(), fullPath).replace(/\\/gu, '/')
 
       // If we're outside the root directory, we're potentially accessing
       // system directories that may vary from system to system, so we
