@@ -49,6 +49,12 @@ const NORMALIZE_REGEXPS = [
         return `${prefix}/tmp-dir${tmpDirMatch[1]}`
       }
 
+      // If the path is relative inside the root directory, there's no need to
+      // transform it.
+      if (fullPath.startsWith('./')) {
+        return `${prefix}${fullPath}`
+      }
+
       const relativePath = relative(cwd(), fullPath)
 
       // If we're outside the root directory, we're potentially accessing
