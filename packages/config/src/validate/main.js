@@ -78,7 +78,7 @@ const validateProperty = function (
     })
   }
 
-  if (value === undefined || (check !== undefined && check(value))) {
+  if (value === undefined || (check !== undefined && check(value, key, prevPath))) {
     return
   }
 

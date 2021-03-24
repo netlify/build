@@ -4,7 +4,7 @@
 const isPlainObj = require('is-plain-obj')
 const validateNpmPackageName = require('validate-npm-package-name')
 
-const { bundlers } = require('../functions_config')
+const { bundlers, WILDCARD_ALL: FUNCTIONS_CONFIG_WILDCARD_ALL } = require('../functions_config')
 
 const {
   isArrayOfObjects,
@@ -69,6 +69,14 @@ const PRE_NORMALIZE_VALIDATIONS = [
     check: isString,
     message: 'must be a string',
     example: () => ({ build: { command: 'npm run build' } }),
+  },
+  {
+    property: 'functions',
+    check: isPlainObj,
+    message: 'must be an object.',
+    example: () => ({
+      functions: { external_node_modules: ['module-one', 'module-two'] },
+    }),
   },
   {
     property: 'functions',
@@ -197,6 +205,22 @@ const POST_NORMALIZE_VALIDATIONS = [
     message: `must be one of: ${bundlers.join(', ')}`,
     example: (value, key, prevPath) => ({
       functions: { [prevPath[1]]: { node_bundler: bundlers[0] } },
+    }),
+  },
+  {
+    property: 'functions.*.directory',
+    check: (value, key, prevPath) => prevPath[1] === FUNCTIONS_CONFIG_WILDCARD_ALL,
+    message: 'must be defined on the top-level functions object.',
+    example: () => ({
+      functions: { directory: 'my-functions' },
+    }),
+  },
+  {
+    property: 'functions.*.directory',
+    check: isString,
+    message: 'must be a string.',
+    example: () => ({
+      functions: { directory: 'my-functions' },
     }),
   },
 ]
