@@ -54,7 +54,7 @@ const track = async function ({ payload, config: { origin, writeKey, timeout } }
 // siteInfo can be empty if the build fails during the get config step
 const getPayload = function ({ status, commandsCount, netlifyConfig, durationNs, siteInfo = {} }) {
   const basePayload = {
-    user_id: 'buildbot_user',
+    userId: 'buildbot_user',
     event: 'build:ci_build_process_completed',
     timestamp: Date.now(),
     properties: {
