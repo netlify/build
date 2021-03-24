@@ -57,7 +57,8 @@ const NORMALIZE_REGEXPS = [
         return `${prefix}${normalizedFullPath}`
       }
 
-      const relativePath = relative(cwd(), normalizedFullPath)
+      const rootPath = cwd().replace(/\\/gu, '/')
+      const relativePath = relative(rootPath, normalizedFullPath)
 
       // If this is a path to a node module, we're probably rendering a stack
       // trace that escaped the regex. We transform it to a deterministic path.
