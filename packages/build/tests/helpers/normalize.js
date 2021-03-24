@@ -41,7 +41,8 @@ const NORMALIZE_REGEXPS = [
   [
     /(^|[ "'(=])(\.{0,2}\/[^ "')\n]+)/gm,
     (_, prefix, fullPath) => {
-      const tmpDirMatch = fullPath.match(/netlify-build-tmp-dir\d+(.*)/)
+      const normalizedFullPath = fullPath.replace(/\\/gu, '/')
+      const tmpDirMatch = normalizedFullPath.match(/netlify-build-tmp-dir\d+(.*)/)
 
       // If this is a temporary directory with a randomly-generated name, we
       // replace it with the string "tmp-dir" so that the result is consistent.
@@ -51,11 +52,11 @@ const NORMALIZE_REGEXPS = [
 
       // If the path is relative inside the root directory, there's no need to
       // transform it.
-      if (fullPath.startsWith('./')) {
-        return `${prefix}${fullPath}`
+      if (normalizedFullPath.startsWith('./')) {
+        return `${prefix}${normalizedFullPath}`
       }
 
-      const relativePath = relative(cwd(), fullPath)
+      const relativePath = relative(cwd(), normalizedFullPath)
 
       // If this is a path to a node module, we're probably rendering a stack
       // trace that escaped the regex. We transform it to a deterministic path.
