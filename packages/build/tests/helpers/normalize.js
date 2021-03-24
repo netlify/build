@@ -16,6 +16,8 @@ const replaceOutput = function (output, [regExp, replacement]) {
   return output.replace(regExp, replacement)
 }
 
+const rootPath = cwd().replace(/\\/gu, '/')
+
 const NORMALIZE_REGEXPS = [
   // Zero width space characters due to a bug in buildbot:
   // https://github.com/netlify/buildbot/issues/595
@@ -57,7 +59,6 @@ const NORMALIZE_REGEXPS = [
         return `${prefix}${normalizedFullPath}`
       }
 
-      const rootPath = cwd().replace(/\\/gu, '/')
       const relativePath = relative(rootPath, normalizedFullPath)
 
       // If this is a path to a node module, we're probably rendering a stack
