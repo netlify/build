@@ -1,5 +1,12 @@
 # Changelog
 
+### [9.13.3](https://www.github.com/netlify/build/compare/v9.13.2...v9.13.3) (2021-03-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^2.5.0 ([#2465](https://www.github.com/netlify/build/issues/2465)) ([cdd82f3](https://www.github.com/netlify/build/commit/cdd82f31cf2cf7e43ba6fd0faabcccf1e454ccf1))
+
 ### [9.13.2](https://www.github.com/netlify/build/compare/v9.13.1...v9.13.2) (2021-03-24)
 
 
