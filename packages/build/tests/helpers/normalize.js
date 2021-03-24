@@ -57,6 +57,12 @@ const NORMALIZE_REGEXPS = [
 
       const relativePath = relative(cwd(), fullPath)
 
+      // If this is a path to a node module, we're probably rendering a stack
+      // trace that escaped the regex. We transform it to a deterministic path.
+      if (relativePath.startsWith('node_modules/')) {
+        return `${prefix}/node_module/path`
+      }
+
       // If we're outside the root directory, we're potentially accessing
       // system directories that may vary from system to system, so we
       // normalize them to /external/path.
@@ -73,9 +79,7 @@ const NORMALIZE_REGEXPS = [
   // CI tests show some error messages differently
   [/\/file\/path bad option/g, 'node: bad option'],
   // Stack traces
-  [/Cannot find module .*/, ''],
   [/(Require stack:\n)(\s*- (.*))*/gm, '$1 REQUIRE STACK\n'],
-  [/Require stack:\n[^}]*}/g, ''],
   [/{ Error:/g, 'Error:'],
   [/^.*:\d+:\d+\)?$/gm, 'STACK TRACE'],
   [/^\s+at .*$/gm, 'STACK TRACE'],
