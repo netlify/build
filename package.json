@@ -23,7 +23,7 @@
     "prepublishOnly": "run-s prepublishOnly:*",
     "prepublishOnly:checkout": "git checkout master",
     "prepublishOnly:pull": "git pull",
-    "prepublishOnly:install": "npm install",
+    "prepublishOnly:install": "npm ci",
     "prepublishOnly:test": "npm test"
   },
   "config": {
