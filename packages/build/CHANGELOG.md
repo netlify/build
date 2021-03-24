@@ -1,5 +1,12 @@
 # Changelog
 
+### [9.13.2](https://www.github.com/netlify/build/compare/v9.13.1...v9.13.2) (2021-03-24)
+
+
+### Bug Fixes
+
+* **telemetry:** s/user_id/userId/ ([#2463](https://www.github.com/netlify/build/issues/2463)) ([7793424](https://www.github.com/netlify/build/commit/77934242d563af480121372b533c8cb7de278dc7))
+
 ### [9.13.1](https://www.github.com/netlify/build/compare/v9.13.0...v9.13.1) (2021-03-23)
 
 
