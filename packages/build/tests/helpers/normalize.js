@@ -1,6 +1,6 @@
 'use strict'
 
-const { relative } = require('path')
+const { basename, dirname, relative } = require('path')
 const { cwd } = require('process')
 
 const { tick, pointer, arrowDown } = require('figures')
@@ -40,6 +40,7 @@ const NORMALIZE_REGEXPS = [
   // Normalizes any paths so that they're relative to process.cwd().
   [
     /(^|[ "'(=])(\.{0,2}\/[^ "')\n]+)/gm,
+    // eslint-disable-next-line complexity
     (_, prefix, fullPath) => {
       const normalizedFullPath = fullPath.replace(/\\/gu, '/')
       const tmpDirMatch = normalizedFullPath.match(/netlify-build-tmp-dir\d+(.*)/)
@@ -60,7 +61,9 @@ const NORMALIZE_REGEXPS = [
 
       // If this is a path to a node module, we're probably rendering a stack
       // trace that escaped the regex. We transform it to a deterministic path.
-      if (relativePath.startsWith('node_modules/')) {
+      // The exception is when `node_modules` is the base directory, which is
+      // the case with some test fixtures.
+      if (relativePath.includes('node_modules/') && basename(dirname(relativePath)) !== 'node_modules') {
         return `${prefix}/node_module/path`
       }
 
@@ -80,6 +83,8 @@ const NORMALIZE_REGEXPS = [
   // CI tests show some error messages differently
   [/\/file\/path bad option/g, 'node: bad option'],
   // Stack traces
+  // @todo Remove once we drop support for Node 8.
+  [/\s*Require stack:\s+( *-\s+\S*\s{0,1})*/gm, ''],
   [/(Require stack:\n)(\s*- (.*))*/gm, '$1 REQUIRE STACK\n'],
   [/{ Error:/g, 'Error:'],
   [/^.*:\d+:\d+\)?$/gm, 'STACK TRACE'],
