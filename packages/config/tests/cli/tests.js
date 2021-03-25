@@ -1,6 +1,7 @@
 'use strict'
 
 const { writeFile } = require('fs')
+const { join } = require('path')
 const { promisify } = require('util')
 
 const test = require('ava')
@@ -24,7 +25,7 @@ test('Success', async (t) => {
 })
 
 test('User error', async (t) => {
-  await runFixture(t, 'empty', { flags: { config: '/invalid' }, useBinary: true })
+  await runFixture(t, 'empty', { flags: { config: join(__dirname, 'invalid') }, useBinary: true })
 })
 
 test('CLI flags', async (t) => {

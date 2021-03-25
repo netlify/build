@@ -31,7 +31,7 @@ test('Functions: install dependencies nested', async (t) => {
 })
 
 test('Functions: ignore package.json inside node_modules', async (t) => {
-  await runInstallFixture(t, 'node_modules', [`${FIXTURES_DIR}/node_modules/.netlify/functions/`])
+  await runInstallFixture(t, 'modules', [`${FIXTURES_DIR}/modules/.netlify/functions/`])
 })
 
 test('Functions: install dependencies with npm', async (t) => {
