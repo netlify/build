@@ -167,7 +167,7 @@ const tExecBuild = async function ({
   // eslint-disable-next-line fp/no-mutating-assign
   Object.assign(errorParams, { netlifyConfig, siteInfo, childEnv })
 
-  const constants = await getConstants({
+  const constants = getConstants({
     configPath,
     buildDir,
     functionsDistDir,
@@ -176,7 +176,6 @@ const tExecBuild = async function ({
     siteInfo,
     token: tokenA,
     mode,
-    logs,
     testOpts,
   })
   const pluginsOptions = addCorePlugins({ netlifyConfig, constants, featureFlags, childEnv })
