@@ -1,5 +1,18 @@
 # Changelog
 
+## [9.14.0](https://www.github.com/netlify/build/compare/build-v9.13.2...build-v9.14.0) (2021-03-25)
+
+
+### Features
+
+* remove legacy code related to netlify-automatic-functions ([#2469](https://www.github.com/netlify/build/issues/2469)) ([88b841a](https://www.github.com/netlify/build/commit/88b841ad02bf48f000b6d6250fb519630db1a23c))
+* remove unused warning message ([#2468](https://www.github.com/netlify/build/issues/2468)) ([46a4cba](https://www.github.com/netlify/build/commit/46a4cba90a67d1848655f4e27153e520a513b33f))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^2.5.0 ([#2465](https://www.github.com/netlify/build/issues/2465)) ([cdd82f3](https://www.github.com/netlify/build/commit/cdd82f31cf2cf7e43ba6fd0faabcccf1e454ccf1))
+
 ### [9.13.2](https://www.github.com/netlify/build/compare/v9.13.1...v9.13.2) (2021-03-24)
 
 
