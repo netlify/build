@@ -6,7 +6,6 @@ const { tick, pointer, arrowDown } = require('figures')
 const stripAnsi = require('strip-ansi')
 
 // Normalize log output so it can be snapshot consistently across test runs
-// eslint-disable-next-line no-unused-vars
 const normalizeOutput = function (output) {
   const outputA = stripAnsi(output)
   return NORMALIZE_REGEXPS.reduce(replaceOutput, outputA)
@@ -26,7 +25,6 @@ const NORMALIZE_REGEXPS = [
   // Windows specifics
   [/\r\n/gu, '\n'],
   [/\\/gu, '/'],
-  [/[A-Z]:\//g, '/'],
   [/Program Files/gu, 'ProgramFiles'],
   [new RegExp(tick, 'g'), '√'],
   [new RegExp(pointer, 'g'), '>'],
@@ -42,9 +40,11 @@ const NORMALIZE_REGEXPS = [
   [/(packages\/.*\/fixtures\/.*\.(?:js|ts))(:(\d)+:(\d)+:)/g, '$1'],
   // Normalizes any paths so that they're relative to process.cwd().
   [
-    /(^|[ "'(=])(\.{0,2}\/[^ "')\n]+)/gm,
-    // eslint-disable-next-line complexity
-    (_, prefix, fullPath) => {
+    /(^|[ "'(=])((?:\.{0,2}|([A-Z]:))\/[^ "')\n]+)/gm,
+    // eslint-disable-next-line complexity, max-params
+    (_, prefix, pathMatch, winDrive, pathTrail) => {
+      // If we're dealing with a Windows path, we discard the drive letter.
+      const fullPath = winDrive ? pathTrail : pathMatch
       const tmpDirMatch = fullPath.match(/netlify-build-tmp-dir\d+(.*)/)
 
       // If this is a temporary directory with a randomly-generated name, we
@@ -121,4 +121,4 @@ const NORMALIZE_REGEXPS = [
   [/(Available plugins)[^>]*/m, '$1\n\n'],
 ]
 
-module.exports = { normalizeOutput: (input) => input }
+module.exports = { normalizeOutput }
