@@ -4,7 +4,6 @@ const { platform, version: nodeVersion } = require('process')
 
 const got = require('got')
 const osName = require('os-name')
-const { v4: uuidv4 } = require('uuid')
 
 const { version } = require('../../package.json')
 const { roundTimerToMillisecs } = require('../time/measure')
@@ -52,8 +51,10 @@ const track = async function ({ payload, config: { origin, writeKey, timeout } }
 }
 
 // Retrieve telemetry information
-const getPayload = function ({ status, commandsCount, netlifyConfig, durationNs, siteInfo }) {
+// siteInfo can be empty if the build fails during the get config step
+const getPayload = function ({ status, commandsCount, netlifyConfig, durationNs, siteInfo = {} }) {
   const basePayload = {
+    userId: 'buildbot_user',
     event: 'build:ci_build_process_completed',
     timestamp: Date.now(),
     properties: {
@@ -63,16 +64,11 @@ const getPayload = function ({ status, commandsCount, netlifyConfig, durationNs,
       nodeVersion: nodeVersion.replace('v', ''),
       osPlatform: OS_TYPES[platform],
       osName: osName(),
+      siteId: siteInfo.id,
     },
   }
 
-  return addDuration(addConfigData(addSiteInfoData(basePayload, siteInfo), netlifyConfig), durationNs)
-}
-
-const addSiteInfoData = function (payload, siteInfo = {}) {
-  const userData = siteInfo.user_id ? { userId: siteInfo.user_id } : { anonymousId: uuidv4() }
-  const properties = { properties: { ...payload.properties, siteId: siteInfo.id } }
-  return { ...userData, ...payload, ...properties }
+  return addDuration(addConfigData(basePayload, netlifyConfig), durationNs)
 }
 
 const addConfigData = function (payload, netlifyConfig = {}) {
