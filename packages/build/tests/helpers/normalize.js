@@ -53,6 +53,12 @@ const NORMALIZE_REGEXPS = [
         return unixify(`${prefix}/tmp-dir${tmpDirMatch[1]}`)
       }
 
+      // If this is a socket created for the test suite, we transform it to
+      // "/test/socket".
+      if (/netlify-test-socket-(.{6})$/.test(fullPath)) {
+        return unixify(`${prefix}/test/socket`)
+      }
+
       // If the path is relative inside the root directory, there's no need to
       // transform it.
       if (fullPath.startsWith('./')) {
@@ -96,7 +102,7 @@ const NORMALIZE_REGEXPS = [
   // Ports
   [/:\d{2,}/, ':80'],
   // Windows uses host:port instead of Unix sockets for TCP
-  [/(http:\/\/)?localhost:80/g, '/file/path'],
+  [/(http:\/\/)?localhost:80/g, '/test/socket'],
   // Durations
   [/(\d[\d.]*(ms|m|s)( )?)+/g, '1ms'],
   // Do not normalize some versions used in test
