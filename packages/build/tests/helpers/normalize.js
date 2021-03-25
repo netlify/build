@@ -43,6 +43,7 @@ const NORMALIZE_REGEXPS = [
     /(^|[ "'(=])((?:\.{0,2}|([A-Z]:))\/[^ "')\n]+)/gm,
     // eslint-disable-next-line complexity, max-params
     (_, prefix, pathMatch, winDrive, pathTrail) => {
+      console.log('-> regex:', { _, prefix, pathMatch, winDrive, pathTrail })
       // If we're dealing with a Windows path, we discard the drive letter.
       const fullPath = winDrive ? pathTrail : pathMatch
       const tmpDirMatch = fullPath.match(/netlify-build-tmp-dir\d+(.*)/)
