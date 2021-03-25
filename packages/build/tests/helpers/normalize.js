@@ -61,6 +61,8 @@ const NORMALIZE_REGEXPS = [
 
       const relativePath = relative(rootPath, fullPath)
 
+      console.log('-> regex:', { _, prefix, pathMatch, winDrive, pathTrail, fullPath, rootPath, relativePath })
+
       // If this is a path to a node module, we're probably rendering a stack
       // trace that escaped the regex. We transform it to a deterministic path.
       // The exception is when `node_modules` is the base directory, which is
