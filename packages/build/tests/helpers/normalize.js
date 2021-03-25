@@ -1,7 +1,6 @@
 'use strict'
 
-const { basename, dirname, relative } = require('path')
-const { cwd } = require('process')
+const { basename, dirname, relative, resolve } = require('path')
 
 const { tick, pointer, arrowDown } = require('figures')
 const stripAnsi = require('strip-ansi')
@@ -16,6 +15,7 @@ const replaceOutput = function (output, [regExp, replacement]) {
   return output.replace(regExp, replacement)
 }
 
+const rootPath = resolve(__dirname, '../../../..')
 const unixify = (path) => path.replace(/\\/gu, '/')
 
 const NORMALIZE_REGEXPS = [
@@ -58,7 +58,7 @@ const NORMALIZE_REGEXPS = [
         return unixify(`${prefix}${fullPath}`)
       }
 
-      const relativePath = relative(cwd(), fullPath)
+      const relativePath = relative(rootPath, fullPath)
 
       // If this is a path to a node module, we're probably rendering a stack
       // trace that escaped the regex. We transform it to a deterministic path.
