@@ -1,6 +1,6 @@
 'use strict'
 
-const { basename, dirname, relative, resolve } = require('path')
+const { relative, resolve } = require('path')
 
 const { tick, pointer, arrowDown } = require('figures')
 const stripAnsi = require('strip-ansi')
@@ -69,9 +69,7 @@ const NORMALIZE_REGEXPS = [
 
       // If this is a path to a node module, we're probably rendering a stack
       // trace that escaped the regex. We transform it to a deterministic path.
-      // The exception is when `node_modules` is the base directory, which is
-      // the case with some test fixtures.
-      if (relativePath.includes('node_modules/') && basename(dirname(relativePath)) !== 'node_modules') {
+      if (/node_modules[/\\]/.test(relativePath)) {
         return unixify(`${prefix}/node_module/path`)
       }
 
