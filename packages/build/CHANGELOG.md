@@ -1,5 +1,12 @@
 # Changelog
 
+## [9.17.0](https://www.github.com/netlify/build/compare/build-v9.16.0...build-v9.17.0) (2021-03-26)
+
+
+### Features
+
+* distinguish between warnings and errors in build logs ([#2470](https://www.github.com/netlify/build/issues/2470)) ([73e4998](https://www.github.com/netlify/build/commit/73e4998218d0c243d47e98d2856486466631062c))
+
 ## [9.16.0](https://www.github.com/netlify/build/compare/build-v9.15.1...build-v9.16.0) (2021-03-26)
 
 
