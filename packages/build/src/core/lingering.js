@@ -18,13 +18,17 @@ const warnOnLingeringProcesses = async function ({ mode, logs, testOpts: { silen
     { shell: 'bash', reject: false },
   )
 
-  const processes = stdout.trim().split('\n')
+  const processes = stdout.trim().split('\n').filter(isNotEmptyLine)
 
   if (processes.length === 0) {
     return
   }
 
   logLingeringProcesses(logs, processes)
+}
+
+const isNotEmptyLine = function (line) {
+  return line.trim() !== ''
 }
 
 module.exports = { warnOnLingeringProcesses }
