@@ -3,11 +3,11 @@
 const { lt: ltVersion, major } = require('semver')
 
 const { getPluginOrigin } = require('../description')
-const { log, logArray, logErrorArray, logError, logSubHeader, logErrorSubHeader } = require('../logger')
+const { log, logArray, logWarningArray, logWarning, logSubHeader, logWarningSubHeader } = require('../logger')
 const { THEME } = require('../theme')
 
 const logPluginsFetchError = function (logs, message) {
-  logError(
+  logWarning(
     logs,
     `
 Warning: could not fetch latest plugins list. Plugins versions might not be the latest.
@@ -62,8 +62,8 @@ const logOutdatedPlugins = function (logs, pluginsOptions) {
     return
   }
 
-  logErrorSubHeader(logs, 'Outdated plugins')
-  logErrorArray(logs, outdatedPlugins)
+  logWarningSubHeader(logs, 'Outdated plugins')
+  logWarningArray(logs, outdatedPlugins)
 }
 
 const getOutdatedPlugin = function ({ packageName, pluginPackageJson: { version }, latestVersion, compatWarning }) {
@@ -73,7 +73,7 @@ const getOutdatedPlugin = function ({ packageName, pluginPackageJson: { version 
 
   const versionedPackage = getVersionedPackage(packageName, version)
   const outdatedDescription = getOutdatedDescription(latestVersion, compatWarning)
-  return `${THEME.errorHighlightWords(packageName)}${versionedPackage}: ${outdatedDescription}`
+  return `${THEME.warningHighlightWords(packageName)}${versionedPackage}: ${outdatedDescription}`
 }
 
 const hasOutdatedVersion = function (version, latestVersion) {
@@ -98,8 +98,8 @@ const logIncompatiblePlugins = function (logs, pluginsOptions) {
     return
   }
 
-  logErrorSubHeader(logs, 'Incompatible plugins')
-  logErrorArray(logs, incompatiblePlugins)
+  logWarningSubHeader(logs, 'Incompatible plugins')
+  logWarningArray(logs, incompatiblePlugins)
 }
 
 const getIncompatiblePlugin = function ({
@@ -113,7 +113,7 @@ const getIncompatiblePlugin = function ({
   }
 
   const versionedPackage = getVersionedPackage(packageName, version)
-  return `${THEME.errorHighlightWords(
+  return `${THEME.warningHighlightWords(
     packageName,
   )}${versionedPackage}: expected version ${expectedVersion} which is the last version compatible with ${compatWarning}`
 }
@@ -138,7 +138,7 @@ const getVersionedPackage = function (packageName, version = '') {
 }
 
 const logFailPluginWarning = function (methodName, event) {
-  logError(
+  logWarning(
     undefined,
     `Plugin error: since "${event}" happens after deploy, the build has already succeeded and cannot fail anymore. This plugin should either:
 - use utils.build.failPlugin() instead of utils.build.${methodName}() to clarify that the plugin failed, but not the build.

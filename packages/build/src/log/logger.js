@@ -54,6 +54,10 @@ const logError = function (logs, string, opts) {
   log(logs, string, { color: THEME.errorLine, ...opts })
 }
 
+const logWarning = function (logs, string, opts) {
+  log(logs, string, { color: THEME.warningLine, ...opts })
+}
+
 // Print a message that is under a header/subheader, i.e. indented
 const logMessage = function (logs, string, opts) {
   log(logs, string, { indent: true, ...opts })
@@ -72,6 +76,11 @@ const logArray = function (logs, array, opts) {
 // Print an array of errors
 const logErrorArray = function (logs, array, opts) {
   logMessage(logs, serializeIndentedArray(array), { color: THEME.errorLine, ...opts })
+}
+
+// Print an array of warnings
+const logWarningArray = function (logs, array, opts) {
+  logMessage(logs, serializeIndentedArray(array), { color: THEME.warningLine, ...opts })
 }
 
 // Print a main section header
@@ -94,17 +103,25 @@ const logErrorSubHeader = function (logs, string, opts) {
   logSubHeader(logs, string, { color: THEME.errorSubHeader, ...opts })
 }
 
+// Print a sub-section header, when a warning happened
+const logWarningSubHeader = function (logs, string, opts) {
+  logSubHeader(logs, string, { color: THEME.warningSubHeader, ...opts })
+}
+
 module.exports = {
   getBufferLogs,
   log,
   logError,
+  logWarning,
   logMessage,
   logObject,
   logArray,
   logErrorArray,
+  logWarningArray,
   logHeader,
   logErrorHeader,
   logSubHeader,
   logErrorSubHeader,
+  logWarningSubHeader,
   pointer,
 }

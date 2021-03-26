@@ -2,13 +2,18 @@
 
 const path = require('path')
 
-const { log, logArray, logErrorSubHeader } = require('../logger')
+const { log, logArray, logErrorSubHeader, logWarningSubHeader } = require('../logger')
 const { THEME } = require('../theme')
 
-const logBundleResultFunctions = ({ functions, headerMessage, logs }) => {
+const logBundleResultFunctions = ({ functions, headerMessage, logs, error }) => {
   const functionNames = functions.map(({ path: functionPath }) => path.basename(functionPath))
 
-  logErrorSubHeader(logs, headerMessage)
+  if (error) {
+    logErrorSubHeader(logs, headerMessage)
+  } else {
+    logWarningSubHeader(logs, headerMessage)
+  }
+
   logArray(logs, functionNames)
 }
 
@@ -23,6 +28,7 @@ const logBundleResults = ({ logs, results = [] }) => {
       functions: resultsWithErrors,
       headerMessage: 'Failed to bundle functions with selected bundler (fallback used):',
       logs,
+      error: true,
     })
   }
 
@@ -31,6 +37,7 @@ const logBundleResults = ({ logs, results = [] }) => {
       functions: resultsWithWarnings,
       headerMessage: 'Functions bundled with warnings:',
       logs,
+      error: false,
     })
   }
 }
