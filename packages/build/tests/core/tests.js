@@ -210,6 +210,7 @@ test('--apiHost is used to set Netlify API host', async (t) => {
   t.is(requests.length, 1)
   t.snapshot(requests)
 })
+
 if (platform !== 'win32') {
   test('Print warning on lingering processes', async (t) => {
     const { returnValue } = await runFixture(t, 'lingering', {
