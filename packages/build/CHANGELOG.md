@@ -1,5 +1,12 @@
 # Changelog
 
+## [9.16.0](https://www.github.com/netlify/build/compare/build-v9.15.1...build-v9.16.0) (2021-03-26)
+
+
+### Features
+
+* improve lingering process message to add bullet points ([#2479](https://www.github.com/netlify/build/issues/2479)) ([9376e26](https://www.github.com/netlify/build/commit/9376e2615f7dcf9db556e8305a076ee477fc5387))
+
 ### [9.15.1](https://www.github.com/netlify/build/compare/build-v9.15.0...build-v9.15.1) (2021-03-26)
 
 
