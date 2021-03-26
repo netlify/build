@@ -1,5 +1,12 @@
 # Changelog
 
+## [9.15.0](https://www.github.com/netlify/build/compare/build-v9.14.1...build-v9.15.0) (2021-03-26)
+
+
+### Features
+
+* improve lingering processes list ([#2475](https://www.github.com/netlify/build/issues/2475)) ([d805361](https://www.github.com/netlify/build/commit/d805361b505d130acd7b00b3ab3bb70ba29a0ccd))
+
 ### [9.14.1](https://www.github.com/netlify/build/compare/build-v9.14.0...build-v9.14.1) (2021-03-26)
 
 
