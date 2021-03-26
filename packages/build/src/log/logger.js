@@ -50,6 +50,10 @@ const serializeIndentedItem = function (item) {
   return indentString(item, INDENT_SIZE + 1).trimLeft()
 }
 
+const logError = function (logs, string, opts) {
+  log(logs, string, { color: THEME.errorLine, ...opts })
+}
+
 const logWarning = function (logs, string, opts) {
   log(logs, string, { color: THEME.warningLine, ...opts })
 }
@@ -67,6 +71,11 @@ const logObject = function (logs, object, opts) {
 // Print an array
 const logArray = function (logs, array, opts) {
   logMessage(logs, serializeIndentedArray(array), { color: THEME.none, ...opts })
+}
+
+// Print an array of errors
+const logErrorArray = function (logs, array, opts) {
+  logMessage(logs, serializeIndentedArray(array), { color: THEME.errorLine, ...opts })
 }
 
 // Print an array of warnings
@@ -102,10 +111,12 @@ const logWarningSubHeader = function (logs, string, opts) {
 module.exports = {
   getBufferLogs,
   log,
+  logError,
   logWarning,
   logMessage,
   logObject,
   logArray,
+  logErrorArray,
   logWarningArray,
   logHeader,
   logErrorHeader,
