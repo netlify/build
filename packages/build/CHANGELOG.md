@@ -1,5 +1,12 @@
 # Changelog
 
+### [9.15.1](https://www.github.com/netlify/build/compare/build-v9.15.0...build-v9.15.1) (2021-03-26)
+
+
+### Bug Fixes
+
+* do not fail when there are no lingering processes ([#2480](https://www.github.com/netlify/build/issues/2480)) ([0c1eff1](https://www.github.com/netlify/build/commit/0c1eff1d004feab6dbdebb000e38dc49d0093176))
+
 ## [9.15.0](https://www.github.com/netlify/build/compare/build-v9.14.1...build-v9.15.0) (2021-03-26)
 
 
