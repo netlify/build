@@ -1,5 +1,12 @@
 # Changelog
 
+### [9.14.1](https://www.github.com/netlify/build/compare/build-v9.14.0...build-v9.14.1) (2021-03-26)
+
+
+### Bug Fixes
+
+* improve lingering processes query ([#2473](https://www.github.com/netlify/build/issues/2473)) ([c7e1c58](https://www.github.com/netlify/build/commit/c7e1c5866a56ce00c47efbc4d8a5cbd3ed896343))
+
 ## [9.14.0](https://www.github.com/netlify/build/compare/build-v9.13.2...build-v9.14.0) (2021-03-25)
 
 
