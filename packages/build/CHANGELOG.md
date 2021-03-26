@@ -1,5 +1,47 @@
 # Changelog
 
+## [9.14.0](https://www.github.com/netlify/build/compare/build-v9.13.2...build-v9.14.0) (2021-03-25)
+
+
+### Features
+
+* remove legacy code related to netlify-automatic-functions ([#2469](https://www.github.com/netlify/build/issues/2469)) ([88b841a](https://www.github.com/netlify/build/commit/88b841ad02bf48f000b6d6250fb519630db1a23c))
+* remove unused warning message ([#2468](https://www.github.com/netlify/build/issues/2468)) ([46a4cba](https://www.github.com/netlify/build/commit/46a4cba90a67d1848655f4e27153e520a513b33f))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^2.5.0 ([#2465](https://www.github.com/netlify/build/issues/2465)) ([cdd82f3](https://www.github.com/netlify/build/commit/cdd82f31cf2cf7e43ba6fd0faabcccf1e454ccf1))
+
+### [9.13.2](https://www.github.com/netlify/build/compare/v9.13.1...v9.13.2) (2021-03-24)
+
+
+### Bug Fixes
+
+* **telemetry:** s/user_id/userId/ ([#2463](https://www.github.com/netlify/build/issues/2463)) ([7793424](https://www.github.com/netlify/build/commit/77934242d563af480121372b533c8cb7de278dc7))
+
+### [9.13.1](https://www.github.com/netlify/build/compare/v9.13.0...v9.13.1) (2021-03-23)
+
+
+### Bug Fixes
+
+* **telemetry:** set a default user_id for production builds ([#2458](https://www.github.com/netlify/build/issues/2458)) ([50bd881](https://www.github.com/netlify/build/commit/50bd881b1805bce9cda7cc676f7231f4675fd906))
+
+## [9.13.0](https://www.github.com/netlify/build/compare/v9.12.0...v9.13.0) (2021-03-23)
+
+
+### Features
+
+* add skipped plugin_runs ([#2457](https://www.github.com/netlify/build/issues/2457)) ([0d4f3fc](https://www.github.com/netlify/build/commit/0d4f3fc2d0f961651c6671739436ea97b9d831fd))
+
+## [9.12.0](https://www.github.com/netlify/build/compare/v9.11.4...v9.12.0) (2021-03-23)
+
+
+### Features
+
+* move core plugins logic ([#2454](https://www.github.com/netlify/build/issues/2454)) ([35e7fa2](https://www.github.com/netlify/build/commit/35e7fa26b4d4280e53dc97b35a520ed4c0219fec))
+* move plugins initialization code ([#2451](https://www.github.com/netlify/build/issues/2451)) ([ffc4a8b](https://www.github.com/netlify/build/commit/ffc4a8bd23b05d6150af90b4811fabed61466a01))
+
 ### [9.11.4](https://www.github.com/netlify/build/compare/v9.11.3...v9.11.4) (2021-03-22)
 
 

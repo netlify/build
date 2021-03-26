@@ -11,6 +11,7 @@ const reportStatuses = async function ({
   childEnv,
   api,
   mode,
+  pluginsOptions,
   netlifyConfig,
   errorMonitor,
   deployId,
@@ -19,11 +20,12 @@ const reportStatuses = async function ({
   sendStatus,
   testOpts,
 }) {
-  if (statuses === undefined) {
+  const finalStatuses = getFinalStatuses({ statuses, pluginsOptions })
+  if (finalStatuses.length === 0) {
     return
   }
 
-  const statusesA = removeStatusesColors(statuses)
+  const statusesA = removeStatusesColors(finalStatuses)
   printStatuses({ statuses: statusesA, mode, logs })
   await sendApiStatuses({
     statuses: statusesA,
@@ -38,6 +40,23 @@ const reportStatuses = async function ({
     sendStatus,
     testOpts,
   })
+}
+
+// Some plugins might not have completed due to a build error.
+// In that case, we add a dummy plugin run with state "skipped".
+// This allows the API to know both plugins that have completed and only started
+const getFinalStatuses = function ({ statuses = [], pluginsOptions }) {
+  return pluginsOptions.map(({ packageName }) => getPluginStatus(packageName, statuses))
+}
+
+const getPluginStatus = function (packageName, statuses) {
+  const pluginStatus = statuses.find((status) => status.packageName === packageName)
+
+  if (pluginStatus !== undefined) {
+    return pluginStatus
+  }
+
+  return { packageName, state: 'skipped' }
 }
 
 // When not in production, print statuses to console.

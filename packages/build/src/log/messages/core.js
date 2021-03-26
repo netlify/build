@@ -7,7 +7,7 @@ const { getFullErrorInfo } = require('../../error/parse/parse')
 const { serializeLogError } = require('../../error/parse/serialize_log')
 const { roundTimerToMillisecs } = require('../../time/measure')
 const { getLogHeaderFunc } = require('../header_func')
-const { log, logError, logMessage, logHeader, logSubHeader } = require('../logger')
+const { log, logMessage, logHeader, logSubHeader } = require('../logger')
 const { logOldCliVersionError } = require('../old_version')
 const { THEME } = require('../theme')
 
@@ -56,25 +56,10 @@ failed since something is still running.`),
   )
 }
 
-const logLegacyDefaultFunctionsSrcWarning = function (logs, legacyDefaultFunctionsSrc) {
-  logError(
-    logs,
-    `
-Detected site repository path: \`${legacyDefaultFunctionsSrc}\`. Netlify no longer recognizes this path as a default Functions directory location and can’t detect and build serverless functions stored there.
-
-If you created this directory yourself, we recommend that you:
-- rename the Functions directory to \`netlify/functions\`
-- or explicitly set \`${legacyDefaultFunctionsSrc}\` as the Functions directory in your site’s build settings.
-
-If you are using the \`@netlify/plugin-nextjs\` plugin, you should update it by running \`npm install @netlify/plugin-nextjs\` in your project directory.`,
-  )
-}
-
 module.exports = {
   logBuildStart,
   logBuildError,
   logBuildSuccess,
   logTimer,
   logLingeringProcesses,
-  logLegacyDefaultFunctionsSrcWarning,
 }

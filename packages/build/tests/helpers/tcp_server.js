@@ -19,7 +19,7 @@ const startTcpServer = async function ({ response = '', useUnixSocket = true } =
 
 const getConnectionOpts = async function ({ useUnixSocket }) {
   if (useUnixSocket) {
-    const path = await tmpName()
+    const path = await tmpName({ template: 'netlify-test-socket-XXXXXX' })
     return { connectionOpts: { path }, address: path }
   }
 

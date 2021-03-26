@@ -11,8 +11,9 @@ const { startErrorMonitor } = require('../error/monitor/start')
 const { getBufferLogs } = require('../log/logger')
 const { logBuildStart, logTimer, logBuildSuccess } = require('../log/messages/core')
 const { loadPlugins } = require('../plugins/load')
-const { addCorePlugins, getPluginsOptions } = require('../plugins/options')
+const { getPluginsOptions } = require('../plugins/options')
 const { startPlugins, stopPlugins } = require('../plugins/spawn')
+const { addCorePlugins } = require('../plugins_core/add')
 const { reportStatuses } = require('../status/report')
 const { trackBuildComplete } = require('../telemetry/main')
 const { initTimers, measureDuration } = require('../time/main')
@@ -166,7 +167,7 @@ const tExecBuild = async function ({
   // eslint-disable-next-line fp/no-mutating-assign
   Object.assign(errorParams, { netlifyConfig, siteInfo, childEnv })
 
-  const constants = await getConstants({
+  const constants = getConstants({
     configPath,
     buildDir,
     functionsDistDir,
@@ -175,7 +176,6 @@ const tExecBuild = async function ({
     siteInfo,
     token: tokenA,
     mode,
-    logs,
     testOpts,
   })
   const pluginsOptions = addCorePlugins({ netlifyConfig, constants, featureFlags, childEnv })
@@ -257,6 +257,7 @@ const runAndReportBuild = async function ({
       childEnv,
       api,
       mode,
+      pluginsOptions,
       netlifyConfig,
       errorMonitor,
       deployId,
@@ -274,6 +275,7 @@ const runAndReportBuild = async function ({
       childEnv,
       api,
       mode,
+      pluginsOptions,
       netlifyConfig,
       errorMonitor,
       deployId,

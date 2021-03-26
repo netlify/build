@@ -8,7 +8,7 @@ const makeDir = require('make-dir')
 const pathExists = require('path-exists')
 const { isFile } = require('path-type')
 
-const { logInstallMissingPlugins, logPluginsFileWarning } = require('../log/messages/install')
+const { logInstallMissingPlugins } = require('../log/messages/install')
 
 const { addExactDependencies } = require('./main')
 
@@ -47,7 +47,6 @@ const ensureDir = async function (logs, autoPluginsDir) {
   // If `.netlify` exists but is not a directory, we remove it first
   const autoPluginsParent = normalize(`${autoPluginsDir}/..`)
   if (await isFile(autoPluginsParent)) {
-    logPluginsFileWarning(logs, autoPluginsParent)
     await pUnlink(autoPluginsParent)
   }
 

@@ -19,7 +19,7 @@ const EDGE_HANDLERS_PLUGIN_PATH = require.resolve(EDGE_HANDLERS_PLUGIN_NAME)
 const DPC_PLUGIN_PATH = require.resolve(DPC_PLUGIN_NAME)
 
 // Plugins that are installed and enabled by default
-const getCorePlugins = function ({ constants: { FUNCTIONS_SRC, EDGE_HANDLERS_SRC }, featureFlags, childEnv }) {
+const listCorePlugins = function ({ constants: { FUNCTIONS_SRC, EDGE_HANDLERS_SRC }, featureFlags, childEnv }) {
   const functionsInstallPlugin = getFunctionsInstallPlugin(FUNCTIONS_SRC)
   const edgeHandlersPlugin = getEdgeHandlersPlugin(EDGE_HANDLERS_SRC)
   const dpcPlugin = getDpcPlugin({ featureFlags, childEnv })
@@ -58,4 +58,4 @@ const isCorePlugin = function (packageName) {
   return CORE_PLUGINS.has(packageName)
 }
 
-module.exports = { getCorePlugins, isCorePlugin }
+module.exports = { listCorePlugins, isCorePlugin }
