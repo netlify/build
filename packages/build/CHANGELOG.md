@@ -1,5 +1,12 @@
 # Changelog
 
+### [9.17.1](https://www.github.com/netlify/build/compare/build-v9.17.0...build-v9.17.1) (2021-03-26)
+
+
+### Bug Fixes
+
+* do not show an empty list of lingering processes ([#2486](https://www.github.com/netlify/build/issues/2486)) ([692a043](https://www.github.com/netlify/build/commit/692a043dbfd966e9f806521a33966025bf745337))
+
 ## [9.17.0](https://www.github.com/netlify/build/compare/build-v9.16.0...build-v9.17.0) (2021-03-26)
 
 
