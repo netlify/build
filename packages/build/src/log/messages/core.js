@@ -7,7 +7,7 @@ const { getFullErrorInfo } = require('../../error/parse/parse')
 const { serializeLogError } = require('../../error/parse/serialize_log')
 const { roundTimerToMillisecs } = require('../../time/measure')
 const { getLogHeaderFunc } = require('../header_func')
-const { log, logMessage, logHeader, logSubHeader } = require('../logger')
+const { log, logMessage, logError, logHeader, logSubHeader, logErrorArray } = require('../logger')
 const { logOldCliVersionError } = require('../old_version')
 const { THEME } = require('../theme')
 
@@ -41,18 +41,21 @@ const logTimer = function (logs, durationNs, timerName) {
   log(logs, THEME.dimWords(`(${timerName} completed in ${duration})`))
 }
 
-const logLingeringProcesses = function (logs, processList) {
-  log(
+const logLingeringProcesses = function (logs, processes) {
+  logError(
     logs,
-    THEME.errorLine(`
+    `
 ** WARNING **
 There are some lingering processes even after the build process finished:
-
-${processList}
-
+`,
+  )
+  logErrorArray(logs, processes)
+  logError(
+    logs,
+    `
 Our builds do not kill your processes automatically, so please make sure
 that nothing is running after your build finishes, or it will be marked as
-failed since something is still running.`),
+failed since something is still running.`,
   )
 }
 

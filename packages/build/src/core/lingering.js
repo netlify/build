@@ -12,17 +12,19 @@ const warnOnLingeringProcesses = async function ({ mode, logs, testOpts: { silen
   }
 
   const {
-    stdout: processList,
+    stdout,
   } = await execa(
     'ps axho command | grep -v ps | grep -v grep | grep -v bash | grep -v "/opt/build-bin/buildbot" | grep -v defunct | grep -v "\\[build\\]" | grep -v "@netlify/build" | grep -v "buildbot.*\\[node\\]" | grep -v "gatsby-telemetry" | grep -v "jest-worker" | grep -v "broccoli-babel-transpiler"',
     { shell: 'bash', reject: false },
   )
 
-  if (processList.trim() === '') {
+  const processes = stdout.trim().split('\n')
+
+  if (processes.length === 0) {
     return
   }
 
-  logLingeringProcesses(logs, processList)
+  logLingeringProcesses(logs, processes)
 }
 
 module.exports = { warnOnLingeringProcesses }
