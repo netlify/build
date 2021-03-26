@@ -22,7 +22,7 @@ const getTempName = async function () {
   const tempDir = tmpdir()
   const tempDirA = await pRealpath(tempDir)
   const id = String(Math.random()).replace('.', '')
-  const tempName = normalize(`${tempDirA}/netlify-build-${id}`)
+  const tempName = normalize(`${tempDirA}/netlify-build-tmp-dir${id}`)
   return tempName
 }
 
