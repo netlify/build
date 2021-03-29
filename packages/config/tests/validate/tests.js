@@ -116,6 +116,10 @@ test('functions.*: object', async (t) => {
   await runFixture(t, 'function_config_invalid_function_block')
 })
 
+test('functions.*.directory: string', async (t) => {
+  await runFixture(t, 'function_config_invalid_directory')
+})
+
 test('functions.*.external_node_modules: array of strings', async (t) => {
   await runFixture(t, 'function_config_invalid_external_modules')
 })

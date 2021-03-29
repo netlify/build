@@ -9,7 +9,7 @@ const WILDCARD_ALL = '*'
 
 const isConfigLeaf = (obj) => isPlainObj(obj) && Object.keys(obj).every(isConfigProperty)
 
-const isConfigProperty = (prop) => configProperties.has(prop.toLowerCase())
+const isConfigProperty = (prop) => configProperties.has(prop)
 
 // Normalizes a functions configuration object, so that the first level of keys
 // represents function expressions mapped to a configuration object.
@@ -25,7 +25,8 @@ const isConfigProperty = (prop) => configProperties.has(prop.toLowerCase())
 //   "*": { "external_node_modules": ["one"] },
 //   "my-function": { "external_node_modules": ["two"] }
 // }
-const normalize = (functions) => {
+const normalize = ({ defaultDirectory, functions }) => {
+  const initialObject = defaultDirectory ? { [WILDCARD_ALL]: { directory: defaultDirectory } } : {}
   const normalizedFunctions = Object.keys(functions).reduce((result, prop) => {
     // If `prop` is one of `configProperties``, we might be dealing with a
     // top-level property (i.e. one that targets all functions). We consider
@@ -46,7 +47,7 @@ const normalize = (functions) => {
       ...result,
       [prop]: functions[prop],
     }
-  }, {})
+  }, initialObject)
 
   return normalizedFunctions
 }

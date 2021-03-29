@@ -83,7 +83,7 @@ const PRE_NORMALIZE_VALIDATIONS = [
     check: isPlainObj,
     message: 'must be an object.',
     example: () => ({
-      functions: { external_node_modules: ['module-one', 'module-two'] },
+      functions: { ignored_node_modules: ['module-one', 'module-two'] },
     }),
   },
 ]
@@ -177,7 +177,10 @@ const POST_NORMALIZE_VALIDATIONS = [
   },
   {
     property: 'functions.*',
-    check: isPlainObj,
+    check: (input) => {
+      console.log('-> input:', input)
+      return isPlainObj(input)
+    },
     message: 'must be an object.',
     example: (value, key, prevPath) => ({
       functions: { [prevPath[1]]: { external_node_modules: ['module-one', 'module-two'] } },

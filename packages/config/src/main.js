@@ -139,6 +139,7 @@ const loadConfig = async function ({
     inlineConfig,
     base: initialBase,
     logs,
+    isFirstPass: true,
   })
 
   // No second pass needed if:
@@ -178,12 +179,13 @@ const getFullConfig = async function ({
   inlineConfig,
   base,
   logs,
+  isFirstPass,
 }) {
   const configPath = await getConfigPath({ configOpt, cwd, repositoryRoot, base })
 
   try {
     const config = await parseConfig(configPath)
-    const configA = mergeAndNormalizeConfig({ config, defaultConfig, inlineConfig, context, branch, logs })
+    const configA = mergeAndNormalizeConfig({ config, defaultConfig, inlineConfig, context, branch, logs, isFirstPass })
     return { configPath, config: configA }
   } catch (error) {
     const configName = configPath === undefined ? '' : ` file ${configPath}`
@@ -192,7 +194,7 @@ const getFullConfig = async function ({
   }
 }
 
-const mergeAndNormalizeConfig = function ({ config, defaultConfig, inlineConfig, context, branch, logs }) {
+const mergeAndNormalizeConfig = function ({ config, defaultConfig, inlineConfig, context, branch, logs, isFirstPass }) {
   validatePreCaseNormalize(config)
   const configA = normalizeConfigCase(config)
 
@@ -204,7 +206,9 @@ const mergeAndNormalizeConfig = function ({ config, defaultConfig, inlineConfig,
 
   validatePreNormalizeConfig(configC)
 
-  warnLegacyFunctionsDirectory({ config: configC, logs })
+  if (isFirstPass) {
+    warnLegacyFunctionsDirectory({ config: configC, logs })
+  }
 
   const configD = normalizeConfig(configC)
 

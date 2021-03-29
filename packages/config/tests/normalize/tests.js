@@ -61,7 +61,7 @@ test('Does not assign default functions if default functions directory does not 
   await runFixture(t, 'default_functions_not_defined_directory_not_found')
 })
 
-test('Does not assign default functions if build.functions is defined', async (t) => {
+test('Does not assign default functions if functions.directory is defined', async (t) => {
   await runFixture(t, 'default_functions_defined')
 })
 
