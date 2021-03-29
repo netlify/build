@@ -41,7 +41,7 @@ const logTimer = function (logs, durationNs, timerName) {
   log(logs, THEME.dimWords(`(${timerName} completed in ${duration})`))
 }
 
-const logLingeringProcesses = function (logs, processes) {
+const logLingeringProcesses = function (logs, commands) {
   logWarning(
     logs,
     `
@@ -49,7 +49,7 @@ const logLingeringProcesses = function (logs, processes) {
 There are some lingering processes even after the build process finished:
 `,
   )
-  logWarningArray(logs, processes)
+  logWarningArray(logs, commands)
   logWarning(
     logs,
     `
