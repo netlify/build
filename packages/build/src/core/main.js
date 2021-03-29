@@ -76,13 +76,22 @@ const build = async function (flags = {}) {
       statsdOpts,
     })
     const { success, severityCode, status } = getSeverity('success')
-    await trackBuildComplete({ status, commandsCount, netlifyConfig, durationNs, siteInfo, telemetry, testOpts })
+    await telemetryReport({
+      status,
+      commandsCount,
+      netlifyConfig,
+      durationNs,
+      siteInfo,
+      telemetry,
+      testOpts,
+      errorParams,
+    })
     return { success, severityCode, logs }
   } catch (error) {
     const { severity } = await handleBuildError(error, errorParams)
     const { netlifyConfig, siteInfo } = errorParams
     const { success, severityCode, status } = getSeverity(severity)
-    await trackBuildComplete({ status, netlifyConfig, siteInfo, telemetry, testOpts })
+    await telemetryReport({ status, netlifyConfig, siteInfo, telemetry, testOpts, errorParams })
     return { success, severityCode, logs }
   }
 }
@@ -436,6 +445,24 @@ const handleBuildSuccess = async function ({ framework, dry, logs, timers, durat
 
   logTimer(logs, durationNs, 'Netlify Build')
   await reportTimers({ timers, statsdOpts, framework })
+}
+
+// Handles the calls and errors of telemetry reports
+const telemetryReport = async function ({
+  status,
+  commandsCount,
+  netlifyConfig,
+  durationNs,
+  siteInfo,
+  telemetry,
+  testOpts,
+  errorParams,
+}) {
+  try {
+    await trackBuildComplete({ status, commandsCount, netlifyConfig, durationNs, siteInfo, telemetry, testOpts })
+  } catch (error) {
+    await handleBuildError(error, errorParams)
+  }
 }
 
 module.exports = build

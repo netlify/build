@@ -5,6 +5,9 @@ const test = require('ava')
 const { runFixture } = require('../helpers/main')
 const { startServer } = require('../helpers/server.js')
 
+const TELEMETRY_PATH = '/track'
+const BUGSNAG_TEST_KEY = '00000000000000000000000000000000'
+
 // Normalize telemetry request so it can be snapshot
 const normalizeSnapshot = function ({ body, ...request }) {
   return { ...request, body: normalizeBody(body) }
@@ -30,8 +33,6 @@ const normalizeBody = function ({
   }
 }
 
-const TELEMETRY_PATH = '/track'
-
 const runWithApiMock = async function (
   t,
   fixture,
@@ -55,11 +56,13 @@ const runWithApiMock = async function (
     // null disables the request timeout
     telemetryTimeout: disableTelemetryTimeout ? null : undefined,
     telemetryOrigin: `${schemeTelemetry}://${hostTelemetry}`,
+    // Any telemetry errors will be logged
+    errorMonitor: true,
   }
 
   try {
     const { exitCode } = await runFixture(t, fixture, {
-      flags: { siteId: 'test', testOpts, telemetry, featureFlags, ...flags },
+      flags: { siteId: 'test', testOpts, telemetry, featureFlags, bugsnagKey: BUGSNAG_TEST_KEY, ...flags },
       env,
       snapshot,
     })
@@ -74,11 +77,27 @@ test('Telemetry success generates no logs', async (t) => {
   t.is(telemetryRequests.length, 1)
 })
 
-test('Telemetry error generates no logs', async (t) => {
-  await runWithApiMock(t, 'success', {
-    origin: 'https://...',
+test('Telemetry error only reports to error monitor and does not affect build success', async (t) => {
+  const { exitCode } = await runFixture(t, 'success', {
+    flags: {
+      siteId: 'test',
+      // Inducing the error via an invalid origin
+      testOpts: { errorMonitor: true, telemetryOrigin: 'https://...' },
+      telemetry: true,
+      featureFlags: 'buildbot_build_telemetry',
+      bugsnagKey: BUGSNAG_TEST_KEY,
+    },
+    // Execute via cli so that we can validate the exitCode
+    useBinary: true,
     snapshot: true,
   })
+  t.is(exitCode, 0)
+})
+
+test('Telemetry reports build success', async (t) => {
+  const { telemetryRequests } = await runWithApiMock(t, 'success')
+  const snapshot = telemetryRequests.map(normalizeSnapshot)
+  t.snapshot(snapshot)
 })
 
 test('Telemetry reports build cancellation', async (t) => {
@@ -121,12 +140,14 @@ test('Telemetry BUILD_TELEMETRY_DISABLED env var overrides flag and feature flag
 })
 
 test('Telemetry calls timeout by default', async (t) => {
-  // Start the mock telemetry server
   const { telemetryRequests } = await runWithApiMock(t, 'success', {
-    // we want to rely on the default timeout value
+    // We want to rely on the default timeout value
     disableTelemetryTimeout: false,
+    // Introduce an arbitrary large timeout on the server side so that we can validate the client timeout works
     // eslint-disable-next-line no-magic-numbers
-    waitTelemetryServer: 120000,
+    waitTelemetryServer: 5 * 60 * 1000,
+    // The error monitor snapshot should contain the timeout error
+    snapshot: true,
   })
   t.is(telemetryRequests.length, 0)
 })
