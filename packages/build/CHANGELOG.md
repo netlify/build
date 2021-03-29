@@ -1,5 +1,12 @@
 # Changelog
 
+## [9.19.0](https://www.github.com/netlify/build/compare/build-v9.18.0...build-v9.19.0) (2021-03-29)
+
+
+### Features
+
+* make lingering processes logic work on Windows ([#2500](https://www.github.com/netlify/build/issues/2500)) ([a23f12c](https://www.github.com/netlify/build/commit/a23f12cd25f327f2c757148195dba371702060f3))
+
 ## [9.18.0](https://www.github.com/netlify/build/compare/build-v9.17.1...build-v9.18.0) (2021-03-29)
 
 
