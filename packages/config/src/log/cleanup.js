@@ -13,7 +13,6 @@ const cleanupConfig = function ({
     command,
     commandOrigin,
     environment = {},
-    functions,
     edge_handlers: edgeHandlers,
     ignore,
     processing,
@@ -23,6 +22,7 @@ const cleanupConfig = function ({
   plugins = [],
   redirects,
   baseRelDir,
+  functionsDirectory,
 }) {
   const environmentA = cleanupEnvironment(environment)
   const build = {
@@ -30,14 +30,20 @@ const cleanupConfig = function ({
     command,
     commandOrigin,
     environment: environmentA,
-    functions,
     edge_handlers: edgeHandlers,
     ignore,
     processing,
     publish,
   }
   const pluginsA = plugins.map(cleanupPlugin)
-  const netlifyConfig = simplifyConfig({ build, plugins: pluginsA, headers, redirects, baseRelDir })
+  const netlifyConfig = simplifyConfig({
+    build,
+    plugins: pluginsA,
+    headers,
+    redirects,
+    baseRelDir,
+    functionsDirectory,
+  })
   return netlifyConfig
 }
 
