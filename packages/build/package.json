@@ -88,7 +88,7 @@
     "path-type": "^4.0.0",
     "pkg-dir": "^4.2.0",
     "pretty-ms": "^5.1.0",
-    "read-pkg-up": "^7.0.1",
+    "read-pkg-up": "^8.0.0",
     "readdirp": "^3.4.0",
     "resolve": "^2.0.0-next.1",
     "safe-json-stringify": "^1.2.0",
