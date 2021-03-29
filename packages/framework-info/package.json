@@ -76,7 +76,7 @@
     "prettier": "--ignore-path .gitignore --loglevel warn \"{src,site,scripts,test,cypress}/**/*.js\" \"*.{js,md,yml,json}\" \"!package-lock.json\" \"!CHANGELOG.md\""
   },
   "dependencies": {
-    "ajv": "^7.0.0",
+    "ajv": "^8.0.0",
     "filter-obj": "^2.0.1",
     "is-plain-obj": "^2.1.0",
     "locate-path": "^5.0.0",
