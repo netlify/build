@@ -1,5 +1,12 @@
 # Changelog
 
+## [9.18.0](https://www.github.com/netlify/build/compare/build-v9.17.1...build-v9.18.0) (2021-03-29)
+
+
+### Features
+
+* improve how lingering processes are filtered out ([#2488](https://www.github.com/netlify/build/issues/2488)) ([4cc25e0](https://www.github.com/netlify/build/commit/4cc25e07d48c6edc2138a2d53cb4d39f0a9f93e1))
+
 ### [9.17.1](https://www.github.com/netlify/build/compare/build-v9.17.0...build-v9.17.1) (2021-03-26)
 
 
