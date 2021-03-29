@@ -13,6 +13,7 @@ const { handleFiles } = require('./files')
 const { getInlineConfig } = require('./inline_config')
 const { cleanupConfig } = require('./log/cleanup')
 const { logResult } = require('./log/main')
+const { warnLegacyFunctionsDirectory } = require('./log/messages')
 const { mergeConfigs } = require('./merge')
 const { normalizeConfig } = require('./normalize')
 const { addDefaultOpts, normalizeOpts } = require('./options/main')
@@ -84,6 +85,7 @@ const resolveConfig = async function (opts) {
     defaultConfig: defaultConfigA,
     inlineConfig: inlineConfigA,
     baseRelDir: baseRelDirA,
+    logs,
   })
 
   const { config: configA, buildDir } = await handleFiles({ config, repositoryRoot, baseRelDir: baseRelDirA })
@@ -119,6 +121,7 @@ const loadConfig = async function ({
   inlineConfig,
   inlineConfig: { build: { base: initialBase = defaultBase } = {} },
   baseRelDir,
+  logs,
 }) {
   const {
     configPath,
@@ -135,6 +138,8 @@ const loadConfig = async function ({
     defaultConfig,
     inlineConfig,
     base: initialBase,
+    logs,
+    isFirstPass: true,
   })
 
   // No second pass needed if:
@@ -154,6 +159,7 @@ const loadConfig = async function ({
     defaultConfig,
     inlineConfig,
     base,
+    logs,
   })
 
   // Since we don't recurse anymore, we keep the original `build.base` that was used
@@ -172,12 +178,14 @@ const getFullConfig = async function ({
   defaultConfig,
   inlineConfig,
   base,
+  logs,
+  isFirstPass,
 }) {
   const configPath = await getConfigPath({ configOpt, cwd, repositoryRoot, base })
 
   try {
     const config = await parseConfig(configPath)
-    const configA = mergeAndNormalizeConfig({ config, defaultConfig, inlineConfig, context, branch })
+    const configA = mergeAndNormalizeConfig({ config, defaultConfig, inlineConfig, context, branch, logs, isFirstPass })
     return { configPath, config: configA }
   } catch (error) {
     const configName = configPath === undefined ? '' : ` file ${configPath}`
@@ -186,7 +194,7 @@ const getFullConfig = async function ({
   }
 }
 
-const mergeAndNormalizeConfig = function ({ config, defaultConfig, inlineConfig, context, branch }) {
+const mergeAndNormalizeConfig = function ({ config, defaultConfig, inlineConfig, context, branch, logs, isFirstPass }) {
   validatePreCaseNormalize(config)
   const configA = normalizeConfigCase(config)
 
@@ -197,6 +205,11 @@ const mergeAndNormalizeConfig = function ({ config, defaultConfig, inlineConfig,
   const configC = mergeContext(configB, context, branch)
 
   validatePreNormalizeConfig(configC)
+
+  if (isFirstPass) {
+    warnLegacyFunctionsDirectory({ config: configC, logs })
+  }
+
   const configD = normalizeConfig(configC)
 
   validatePostNormalizeConfig(configD)

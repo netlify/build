@@ -3,13 +3,30 @@
 const isPlainObj = require('is-plain-obj')
 
 const bundlers = ['esbuild', 'zisi']
-const configProperties = new Set(['external_node_modules', 'ignored_node_modules', 'node_bundler'])
+const configProperties = new Set(['directory', 'external_node_modules', 'ignored_node_modules', 'node_bundler'])
 
 const WILDCARD_ALL = '*'
 
 const isConfigLeaf = (obj) => isPlainObj(obj) && Object.keys(obj).every(isConfigProperty)
 
 const isConfigProperty = (prop) => configProperties.has(prop)
+
+// Takes a functions configuration object and looks for the functions directory
+// definition, returning it under the `directory` key. The rest of the config
+// object is returned under the `functions` key.
+const extractFunctionsDirectory = (functions = {}) => {
+  const { [WILDCARD_ALL]: topLevelConfig = {}, ...otherFunctions } = functions
+  const { directory, ...topLevelConfigKeys } = topLevelConfig
+  const newTopLevelConfig = Object.keys(topLevelConfigKeys).length === 0 ? {} : { [WILDCARD_ALL]: topLevelConfigKeys }
+
+  return {
+    directory,
+    functions: {
+      ...otherFunctions,
+      ...newTopLevelConfig,
+    },
+  }
+}
 
 // Normalizes a functions configuration object, so that the first level of keys
 // represents function expressions mapped to a configuration object.
@@ -51,4 +68,4 @@ const normalize = (functions) => {
   return normalizedFunctions
 }
 
-module.exports = { bundlers, normalize }
+module.exports = { bundlers, extractFunctionsDirectory, normalize, WILDCARD_ALL }

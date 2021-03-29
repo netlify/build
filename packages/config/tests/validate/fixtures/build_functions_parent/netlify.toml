@@ -1,2 +1,2 @@
-[build]
-functions = "../../functions_dir"
+[functions]
+directory = "../../functions_dir"

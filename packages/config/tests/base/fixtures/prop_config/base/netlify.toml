@@ -1,5 +1,7 @@
 [build]
-functions = "functions"
+command = "echo commandBase"
 edge_handlers = "edge-handlers"
 publish = "publish"
-command = "echo commandBase"
+
+[functions]
+directory = "functions"
