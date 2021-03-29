@@ -43,14 +43,23 @@ const matchesIgnoredCommand = function (command, ignoredCommand) {
 }
 
 const IGNORED_COMMANDS = [
+  // TODO: Those can most likely be removed
   'ps',
   'grep',
   'bash',
-  '/opt/build-bin/buildbot',
   'defunct',
   '[build]',
-  '@netlify/build',
   /buildbot.*\[node]/,
+
+  // buildbot's main Bash script
+  '/opt/build-bin/build',
+  // `@netlify/build` binary itself
+  'netlify-build',
+  // Plugin child processes spawned by @netlify/build
+  '@netlify/build',
+
+  // Processes often left running. We should report those but don't because of
+  // how common those are in production builds
   'gatsby-telemetry',
   'jest-worker',
   'broccoli-babel-transpiler',
