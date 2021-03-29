@@ -31,32 +31,28 @@ const getCommand = function ({ name, cmd = name }) {
 // We also ignore commands known not to complete properly in builds if they are
 // widely used.
 const isNotIgnoredCommand = function (command) {
-  return !IGNORED_COMMANDS.some((ignoredCommand) => matchesIgnoredCommand(command, ignoredCommand))
-}
-
-const matchesIgnoredCommand = function (command, ignoredCommand) {
-  if (typeof ignoredCommand === 'string') {
-    return command.includes(ignoredCommand)
-  }
-
-  return ignoredCommand.test(command)
+  return !IGNORED_COMMANDS.some((ignoredCommand) => command.includes(ignoredCommand))
 }
 
 const IGNORED_COMMANDS = [
-  // TODO: Those can most likely be removed
-  'ps',
-  'grep',
-  'bash',
-  'defunct',
-  '[build]',
-  /buildbot.*\[node]/,
-
   // buildbot's main Bash script
   '/opt/build-bin/build',
   // `@netlify/build` binary itself
   'netlify-build',
   // Plugin child processes spawned by @netlify/build
   '@netlify/build',
+  // Any command internal to @netlify/build. Includes:
+  //  - `esbuild` uses a Go child process which is not always terminated after
+  //    Functions bundling has ended
+  //  - Plugin child processes. Those are terminated by the parent process.
+  //    However, in tests, builds are run concurrently, so other builds might
+  //    have those child processes running.
+  '/netlify/build/node_modules',
+  '/packages/build/',
+
+  // Shown for parent processes with currently running child processes.
+  // Happens on `ps` itself.
+  'defunct',
 
   // Processes often left running. We should report those but don't because of
   // how common those are in production builds
