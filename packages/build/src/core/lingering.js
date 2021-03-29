@@ -1,6 +1,6 @@
 'use strict'
 
-const execa = require('execa')
+const psList = require('ps-list')
 
 const { logLingeringProcesses } = require('../log/messages/core')
 
@@ -11,9 +11,9 @@ const warnOnLingeringProcesses = async function ({ mode, logs, testOpts: { silen
     return
   }
 
-  const { stdout } = await execa('ps', ['axho', 'command'])
+  const processes = await psList()
 
-  const commands = stdout.trim().split('\n').filter(isNotEmptyLine).filter(isNotIgnoredCommand)
+  const commands = processes.map(getCommand).filter(isNotIgnoredCommand)
 
   if (commands.length === 0) {
     return
@@ -22,8 +22,9 @@ const warnOnLingeringProcesses = async function ({ mode, logs, testOpts: { silen
   logLingeringProcesses(logs, commands)
 }
 
-const isNotEmptyLine = function (line) {
-  return line.trim() !== ''
+// `cmd` is only available on Unix. Unlike `name`, it includes the arguments.
+const getCommand = function ({ name, cmd = name }) {
+  return cmd
 }
 
 // We ignore any command known to be internal to the buildbot.
