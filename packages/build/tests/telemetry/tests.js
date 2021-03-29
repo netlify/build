@@ -43,6 +43,9 @@ const runWithApiMock = async function (
     featureFlags = 'buildbot_build_telemetry',
     // Disables the timeout by default because of latency issues in the CI windows boxes
     disableTelemetryTimeout = true,
+    responseStatusCode = 200,
+    // By default, run build programmatically
+    useBinary = false,
     waitTelemetryServer,
     ...flags
   } = {},
@@ -51,6 +54,7 @@ const runWithApiMock = async function (
   const { scheme: schemeTelemetry, host: hostTelemetry, requests: telemetryRequests, stopServer } = await startServer({
     path: TELEMETRY_PATH,
     wait: waitTelemetryServer,
+    status: responseStatusCode,
   })
   const testOpts = {
     // null disables the request timeout
@@ -65,6 +69,7 @@ const runWithApiMock = async function (
       flags: { siteId: 'test', testOpts, telemetry, featureFlags, bugsnagKey: BUGSNAG_TEST_KEY, ...flags },
       env,
       snapshot,
+      useBinary,
     })
     return { exitCode, telemetryRequests }
   } finally {
@@ -78,15 +83,8 @@ test('Telemetry success generates no logs', async (t) => {
 })
 
 test('Telemetry error only reports to error monitor and does not affect build success', async (t) => {
-  const { exitCode } = await runFixture(t, 'success', {
-    flags: {
-      siteId: 'test',
-      // Inducing the error via an invalid origin
-      testOpts: { errorMonitor: true, telemetryOrigin: 'https://...' },
-      telemetry: true,
-      featureFlags: 'buildbot_build_telemetry',
-      bugsnagKey: BUGSNAG_TEST_KEY,
-    },
+  const { exitCode } = await runWithApiMock(t, 'success', {
+    responseStatusCode: 500,
     // Execute via cli so that we can validate the exitCode
     useBinary: true,
     snapshot: true,
