@@ -17,6 +17,7 @@
         'is-plain-obj',
         'nyc',
         'prettier',
+        'read-pkg-up', // read-pkg-up v8 requires Node.js 12
         'test-each',
         'yargs',
       ],
