@@ -6,6 +6,7 @@ const got = require('got')
 const osName = require('os-name')
 
 const { version } = require('../../package.json')
+const { addErrorInfo } = require('../error/info')
 const { roundTimerToMillisecs } = require('../time/measure')
 
 const DEFAULT_TELEMETRY_TIMEOUT = 1200
@@ -35,7 +36,10 @@ const trackBuildComplete = async function ({
       payload,
       config: { ...DEFAULT_TELEMETRY_CONFIG, origin: telemetryOrigin, timeout: telemetryTimeout },
     })
-  } catch (error) {}
+  } catch (error) {
+    addErrorInfo(error, { type: 'telemetry' })
+    throw error
+  }
 }
 
 // Send track HTTP request to telemetry.
