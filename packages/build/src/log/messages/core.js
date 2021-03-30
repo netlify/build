@@ -45,17 +45,14 @@ const logLingeringProcesses = function (logs, commands) {
   logWarning(
     logs,
     `
-** WARNING **
-There are some lingering processes even after the build process finished:
+The build completed successfully, but the following processes were still running:
 `,
   )
   logWarningArray(logs, commands)
   logWarning(
     logs,
     `
-Our builds do not kill your processes automatically, so please make sure
-that nothing is running after your build finishes, or it will be marked as
-failed since something is still running.`,
+These processes have been terminated.`,
   )
 }
 

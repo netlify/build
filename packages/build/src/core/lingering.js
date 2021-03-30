@@ -5,7 +5,21 @@ const psList = require('ps-list')
 const { logLingeringProcesses } = require('../log/messages/core')
 
 // Print a warning when some build processes are still running.
-// This is only run in the buildbot at the moment (Linux only).
+// We cannot rely on using the process tree:
+//  - This is because it is impossible to know whether a process was a child of
+//    of another once its parent process has exited. When that happens, the s
+//    child becomes inherited by `init`, changing its `ppid`. The information
+//    about the original parent is then lost.
+//  - The only way to implement this would be to repeatedly list processes as
+//    the build command is ongoing. However, this would fail to detect processes
+//    spawned just before the build commands ends.
+// We cannot list processes before and after the build command and use the
+// difference.
+//  - This is because other processes (unrelated to @netlify/build) might be
+//    running at the same time. This includes OS background processes.
+// Therefore, we run this in a controlled environment only (the buildbot) and
+// exclude specific processes manually. This is a lesser evil, although still
+// quite hacky.
 const warnOnLingeringProcesses = async function ({ mode, logs, testOpts: { silentLingeringProcesses = false } }) {
   if (mode !== 'buildbot' || silentLingeringProcesses) {
     return
@@ -47,16 +61,19 @@ const IGNORED_COMMANDS = [
   'ps',
   'grep',
   'bash',
-  'defunct',
+
+  // Internal buildbot commands
   '[build]',
   /buildbot.*\[node]/,
-
   // buildbot's main Bash script
   '/opt/build-bin/build',
   // `@netlify/build` binary itself
   'netlify-build',
   // Plugin child processes spawned by @netlify/build
   '@netlify/build',
+  // Shown for parent processes with currently running child processes.
+  // Happens on `ps` itself.
+  'defunct',
 
   // Processes often left running. We should report those but don't because of
   // how common those are in production builds
