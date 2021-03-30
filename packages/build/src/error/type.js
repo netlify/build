@@ -32,6 +32,15 @@ const getTypeInfo = function ({ type }) {
 //  - `group`: main title shown in Bugsnag. Also used to group errors together
 //    in Bugsnag, combined with `error.message`.
 //    Defaults to `title`.
+// New error types should be added to Bugsnag since we use it for automated
+// monitoring (through its Slack integration). The steps in Bugsnag are:
+//  - Create a new bookmark. Try to re-use the search filter of an existing
+//    bookmark with a similar error type, but only changing the `errorClass`.
+//    Make sure to check the box "Share with my team".
+//  - Add the `errorClass` to the search filter of either the "All warnings" or
+//    "All errors" bookmark depending on whether we should get notified on Slack
+//    for new errors of that type. You must use the bookmark menu action "Update
+//    with current filters"
 const TYPES = {
   // Plugin called `utils.build.cancelBuild()`
   cancelBuild: {
