@@ -213,7 +213,7 @@ test('--apiHost is used to set Netlify API host', async (t) => {
 
 test('Print warning on lingering processes', async (t) => {
   const { returnValue } = await runFixture(t, 'lingering', {
-    flags: { testOpts: { silentLingeringProcesses: false }, mode: 'buildbot' },
+    flags: { testOpts: { silentLingeringProcesses: false, terminateLingeringProcesses: false }, mode: 'buildbot' },
     snapshot: false,
   })
 

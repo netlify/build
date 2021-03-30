@@ -1,8 +1,13 @@
 'use strict'
 
+const { kill } = require('process')
+const { promisify } = require('util')
+
 const psList = require('ps-list')
 
 const { logLingeringProcesses } = require('../log/messages/core')
+
+const pSetTimeout = promisify(setTimeout)
 
 // Print a warning when some build processes are still running.
 // We cannot rely on using the process tree:
@@ -20,7 +25,11 @@ const { logLingeringProcesses } = require('../log/messages/core')
 // Therefore, we run this in a controlled environment only (the buildbot) and
 // exclude specific processes manually. This is a lesser evil, although still
 // quite hacky.
-const warnOnLingeringProcesses = async function ({ mode, logs, testOpts: { silentLingeringProcesses = false } }) {
+const warnOnLingeringProcesses = async function ({
+  mode,
+  logs,
+  testOpts: { silentLingeringProcesses = false, terminateLingeringProcesses = true },
+}) {
   if (mode !== 'buildbot' || silentLingeringProcesses) {
     return
   }
@@ -32,6 +41,8 @@ const warnOnLingeringProcesses = async function ({ mode, logs, testOpts: { silen
   if (lingeringProcesses.length === 0) {
     return
   }
+
+  terminateProcesses(lingeringProcesses, terminateLingeringProcesses)
 
   const commands = lingeringProcesses.map(getCommand)
   logLingeringProcesses(logs, commands)
@@ -86,5 +97,30 @@ const IGNORED_COMMANDS = [
   'jest-worker',
   'broccoli-babel-transpiler',
 ]
+
+// Try to do a graceful termination if possible
+const terminateProcesses = function (lingeringProcesses, terminateLingeringProcesses) {
+  if (!terminateLingeringProcesses) {
+    return
+  }
+
+  lingeringProcesses.forEach(terminateProcess)
+}
+
+const terminateProcess = async function ({ pid }) {
+  safeKill(pid, 'SIGTERM')
+  await pSetTimeout(TERMINATION_GRACEFUL_PERIOD)
+  safeKill(pid, 'SIGKILL')
+}
+
+// This can throw if the process does not exist anymore
+const safeKill = function (pid, signal) {
+  try {
+    kill(pid, signal)
+  } catch (error) {}
+}
+
+// This adds build minutes, so this cannot be too large
+const TERMINATION_GRACEFUL_PERIOD = 1e3
 
 module.exports = { warnOnLingeringProcesses }
