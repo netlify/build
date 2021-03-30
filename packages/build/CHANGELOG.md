@@ -1,5 +1,22 @@
 # Changelog
 
+## [10.0.0](https://www.github.com/netlify/build/compare/build-v9.19.1...build-v10.0.0) (2021-03-30)
+
+
+### ⚠ BREAKING CHANGES
+
+* add functions.directory property (#2496)
+
+### Features
+
+* add functions.directory property ([#2496](https://www.github.com/netlify/build/issues/2496)) ([d72b1d1](https://www.github.com/netlify/build/commit/d72b1d1fb91de3fa23310ed477a6658c5492aed0))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^2.5.1 ([#2510](https://www.github.com/netlify/build/issues/2510)) ([8614122](https://www.github.com/netlify/build/commit/8614122b8c4cb676cece0780e390ef2b98dc08a1))
+* disable 2 Yarn-related tests on Node <14 ([#2511](https://www.github.com/netlify/build/issues/2511)) ([f3b3db2](https://www.github.com/netlify/build/commit/f3b3db254c6c3826ac91b68e284b403cb5bfeedb))
+
 ### [9.19.1](https://www.github.com/netlify/build/compare/build-v9.19.0...build-v9.19.1) (2021-03-30)
 
 
