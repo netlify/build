@@ -88,6 +88,11 @@ const addDefaultPaths = async function (config, baseRel) {
 }
 
 const DEFAULT_PATHS = [
+  // @todo Remove once we drop support for the legact default functions directory.
+  {
+    object: (directory) => ({ functionsDirectory: directory, functionsDirectoryOrigin: 'default-v1' }),
+    defaultPath: 'netlify-automatic-functions',
+  },
   {
     object: (directory) => ({ functionsDirectory: directory, functionsDirectoryOrigin: 'default' }),
     defaultPath: 'netlify/functions',
