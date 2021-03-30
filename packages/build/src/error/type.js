@@ -159,6 +159,16 @@ const TYPES = {
     rawStack: true,
     severity: 'error',
   },
+
+  // Errors related with the telemetry output
+  telemetry: {
+    showInBuildLog: false,
+    title: 'Telemetry error',
+    stackType: 'stack',
+    showErrorProps: true,
+    rawStack: true,
+    severity: 'error',
+  },
 }
 
 // When no error type matches, it's an uncaught exception, i.e. a bug
