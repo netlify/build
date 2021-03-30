@@ -13,9 +13,21 @@ jobs:
       fail-fast: false
     steps:
       - uses: GoogleCloudPlatform/release-please-action@v2
+        id: release
         with:
           token: ${{ secrets.NODE_PKG_RELEASE_TOKEN }}
           release-type: node
           package-name: '@netlify/${{ matrix.package }}'
           monorepo-tags: true
           path: packages/${{ matrix.package }}
+      - uses: actions/checkout@v2
+        if: ${{ steps.release.outputs.release_created }}
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '15'
+          registry-url: 'https://registry.npmjs.org'
+        if: ${{ steps.release.outputs.release_created }}
+      - run: npm publish packages/${{ matrix.package }}/
+        if: ${{ steps.release.outputs.release_created }}
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
