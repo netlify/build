@@ -1,7 +1,10 @@
 'use strict'
 
+const { version } = require('process')
+
 const test = require('ava')
 const pathExists = require('path-exists')
+const { gte: gteVersion } = require('semver')
 
 const { removeDir } = require('../helpers/dir')
 const { runFixture, FIXTURES_DIR } = require('../helpers/main')
@@ -90,16 +93,19 @@ test('Install local plugin dependencies: with npm', async (t) => {
   await runInstallFixture(t, 'npm', [`${FIXTURES_DIR}/npm/plugin/node_modules/`])
 })
 
-test('Install local plugin dependencies: with yarn locally', async (t) => {
-  await runInstallFixture(t, 'yarn', [`${FIXTURES_DIR}/yarn/plugin/node_modules/`], { useBinary: true })
-})
-
-test('Install local plugin dependencies: with yarn in CI', async (t) => {
-  await runInstallFixture(t, 'yarn_ci', [`${FIXTURES_DIR}/yarn_ci/plugin/node_modules/`], {
-    useBinary: true,
-    flags: { mode: 'buildbot' },
+// @todo: enable those tests for Node <14.0.0
+if (gteVersion(version, '14.0.0')) {
+  test('Install local plugin dependencies: with yarn locally', async (t) => {
+    await runInstallFixture(t, 'yarn', [`${FIXTURES_DIR}/yarn/plugin/node_modules/`], { useBinary: true })
   })
-})
+
+  test('Install local plugin dependencies: with yarn in CI', async (t) => {
+    await runInstallFixture(t, 'yarn_ci', [`${FIXTURES_DIR}/yarn_ci/plugin/node_modules/`], {
+      useBinary: true,
+      flags: { mode: 'buildbot' },
+    })
+  })
+}
 
 test('Install local plugin dependencies: propagate errors', async (t) => {
   await runFixture(t, 'error')
