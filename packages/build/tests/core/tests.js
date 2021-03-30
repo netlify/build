@@ -1,6 +1,6 @@
 'use strict'
 
-const { platform, kill } = require('process')
+const { kill, platform } = require('process')
 
 const test = require('ava')
 const getNode = require('get-node')
@@ -211,23 +211,21 @@ test('--apiHost is used to set Netlify API host', async (t) => {
   t.snapshot(requests)
 })
 
-if (platform !== 'win32') {
-  test('Print warning on lingering processes', async (t) => {
-    const { returnValue } = await runFixture(t, 'lingering', {
-      flags: { testOpts: { silentLingeringProcesses: false }, mode: 'buildbot' },
-      snapshot: false,
-    })
-
-    // Cleanup the lingering process
-    const [, pid] = PID_LINE_REGEXP.exec(returnValue)
-    kill(pid)
-
-    t.true(returnValue.includes('There are some lingering processes'))
-    t.true(returnValue.includes('forever.js'))
+test('Print warning on lingering processes', async (t) => {
+  const { returnValue } = await runFixture(t, 'lingering', {
+    flags: { testOpts: { silentLingeringProcesses: false }, mode: 'buildbot' },
+    snapshot: false,
   })
 
-  const PID_LINE_REGEXP = /^PID: (\d+)$/m
-}
+  // Cleanup the lingering process
+  const [, pid] = PID_LINE_REGEXP.exec(returnValue)
+  kill(pid)
+
+  t.true(returnValue.includes('There are some lingering processes'))
+  t.true(returnValue.includes(platform === 'win32' ? 'node.exe' : 'forever.js'))
+})
+
+const PID_LINE_REGEXP = /^PID: (\d+)$/m
 
 test('Functions config is passed to zip-it-and-ship-it (1)', async (t) => {
   await runFixture(t, 'functions_config_1')
