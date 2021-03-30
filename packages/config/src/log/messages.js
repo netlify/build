@@ -1,14 +1,11 @@
 'use strict'
 
-const { extractFunctionsDirectory } = require('../functions_config')
-
 const { log } = require('./logger')
 
 const warnLegacyFunctionsDirectory = ({ config = {}, logs }) => {
-  const { build = {}, functions = {} } = config
-  const { directory } = extractFunctionsDirectory(functions)
+  const { functionsDirectory, functionsDirectoryOrigin } = config
 
-  if (build.functions === undefined || directory !== undefined) {
+  if (functionsDirectoryOrigin !== 'config-v1') {
     return
   }
 
@@ -18,7 +15,7 @@ const warnLegacyFunctionsDirectory = ({ config = {}, logs }) => {
 We recommend updating netlify.toml to set the functions directory under [functions] settings using the directory property. For example,
 
 [functions]
-  directory = "${build.functions}"`,
+  directory = "${functionsDirectory}"`,
   )
 }
 

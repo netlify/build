@@ -4,19 +4,36 @@ const { extractFunctionsDirectory, normalize: normalizeFunctionsConfig } = requi
 const { deepMerge } = require('./utils/merge')
 const { removeFalsy } = require('./utils/remove_falsy')
 
+const addFunctionsDirectory = ({ functionsDirectory, v1FunctionsDirectory }) => {
+  if (functionsDirectory) {
+    return {
+      functionsDirectory,
+      functionsDirectoryOrigin: 'config',
+    }
+  }
+
+  if (v1FunctionsDirectory) {
+    return {
+      functionsDirectory: v1FunctionsDirectory,
+      functionsDirectoryOrigin: 'config-v1',
+    }
+  }
+
+  return {}
+}
+
 // Normalize configuration object
 const normalizeConfig = function (config) {
   const { build, functions, plugins, ...configA } = deepMerge(DEFAULT_CONFIG, config)
 
   // Removing the legacy `functions` from the `build` block.
-  const { functions: legacyFunctionsDirectory, ...buildB } = build
+  const { functions: v1FunctionsDirectory, ...buildB } = build
   const functionsConfig = normalizeFunctionsConfig(functions)
 
   // Looking for a default directory in the `functions` block, separating it
   // from the rest of the configuration if it exists.
-  const { directory: newFunctionsDirectory, functions: functionsConfigA } = extractFunctionsDirectory(functionsConfig)
-  const functionsDirectory = newFunctionsDirectory || legacyFunctionsDirectory
-  const functionsProperties = functionsDirectory ? { functionsDirectory, functionsDirectoryOrigin: 'config' } : {}
+  const { directory: functionsDirectory, functions: functionsConfigA } = extractFunctionsDirectory(functionsConfig)
+  const functionsProperties = addFunctionsDirectory({ functionsDirectory, v1FunctionsDirectory })
   const pluginsA = plugins.map(normalizePlugin)
 
   return { ...configA, build: buildB, functions: functionsConfigA, plugins: pluginsA, ...functionsProperties }
