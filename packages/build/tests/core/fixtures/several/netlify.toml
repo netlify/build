@@ -1,6 +1,8 @@
 [build]
-functions = "functions"
 command = "echo test"
+
+[functions]
+directory = "functions"
 
 [[plugins]]
 package = "./plugin"

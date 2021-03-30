@@ -14,7 +14,8 @@ const getConstants = function ({
   functionsDistDir,
   cacheDir,
   netlifyConfig: {
-    build: { publish = buildDir, functions, edge_handlers: edgeHandlers },
+    build: { publish = buildDir, edge_handlers: edgeHandlers },
+    functionsDirectory,
   },
   siteInfo: { id: siteId },
   token,
@@ -35,7 +36,7 @@ const getConstants = function ({
     /**
      * The directory where function source code lives
      */
-    FUNCTIONS_SRC: functions,
+    FUNCTIONS_SRC: functionsDirectory,
     /**
      * The directory where built serverless functions are placed before deployment
      */
