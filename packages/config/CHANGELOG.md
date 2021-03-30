@@ -1,5 +1,16 @@
 # Changelog
 
+## [5.0.0](https://www.github.com/netlify/build/compare/config-v4.3.0...config-v5.0.0) (2021-03-30)
+
+
+### ⚠ BREAKING CHANGES
+
+* add functions.directory property (#2496)
+
+### Features
+
+* add functions.directory property ([#2496](https://www.github.com/netlify/build/issues/2496)) ([d72b1d1](https://www.github.com/netlify/build/commit/d72b1d1fb91de3fa23310ed477a6658c5492aed0))
+
 ## [4.3.0](https://www.github.com/netlify/build/compare/v4.2.0...v4.3.0) (2021-03-23)
 
 
