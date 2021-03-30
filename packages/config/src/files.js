@@ -6,6 +6,7 @@ const pathExists = require('path-exists')
 const { isDirectory } = require('path-type')
 
 const { throwError } = require('./error')
+const { deepMerge } = require('./utils/merge')
 
 // Make configuration paths relative to `buildDir` and converts them to
 // absolute paths
@@ -14,27 +15,29 @@ const handleFiles = async function ({ config: { build, ...config }, repositoryRo
   const buildDir = await getBuildDir(repositoryRoot, buildA)
   const baseRel = baseRelDir ? buildDir : repositoryRoot
   const buildB = resolvePaths(buildA, BUILD_DIR_RELATIVE_PROPS, baseRel)
-  const buildC = await addDefaultPaths(buildB, baseRel)
-  return { config: { ...config, build: buildC }, buildDir }
+  const configA = resolvePaths(config, ['functionsDirectory'], baseRel)
+  const configB = await addDefaultPaths({ ...configA, build: buildB }, baseRel)
+
+  return { config: configB, buildDir }
 }
 
 // All file paths in the configuration file.
 // Most are relative to `buildDir` (if `baseRelDir` is `true`). But `build.base`
 // itself is never relative to `buildDir` since it is contained in it.
 const REPOSITORY_RELATIVE_PROPS = ['base']
-const BUILD_DIR_RELATIVE_PROPS = ['publish', 'functions', 'edge_handlers']
+const BUILD_DIR_RELATIVE_PROPS = ['publish', 'edge_handlers']
 
 const resolvePaths = function (build, propNames, baseRel) {
   return propNames.reduce((buildA, propName) => resolvePathProp(buildA, propName, baseRel), build)
 }
 
-const resolvePathProp = function (build, propName, baseRel) {
-  if (build[propName] === undefined) {
-    return build
+const resolvePathProp = function (object, propName, baseRel) {
+  if (object[propName] === undefined) {
+    return object
   }
 
-  const path = resolvePath(baseRel, build[propName])
-  return { ...build, [propName]: path }
+  const path = resolvePath(baseRel, object[propName])
+  return { ...object, [propName]: path }
 }
 
 const resolvePath = function (baseRel, path) {
@@ -76,31 +79,35 @@ const checkBuildDir = async function (buildDir, repositoryRoot) {
 
 // Some configuration properties have default values that are only set if a
 // specific directory/file exists in the build directory
-const addDefaultPaths = async function (build, baseRel) {
+const addDefaultPaths = async function (config, baseRel) {
   const props = await Promise.all(
-    DEFAULT_PATHS.map(({ property, defaultPath }) => addDefaultPath({ build, property, baseRel, defaultPath })),
+    DEFAULT_PATHS.map(({ defaultPath, object }) => addDefaultPath({ baseRel, defaultPath, object })),
   )
-  return Object.assign({}, build, ...props)
+
+  return deepMerge(...props, config)
 }
 
 const DEFAULT_PATHS = [
   // @todo Remove once we drop support for the legact default functions directory.
-  { property: 'functions', defaultPath: 'netlify-automatic-functions' },
-  { property: 'functions', defaultPath: 'netlify/functions' },
-  { property: 'edge_handlers', defaultPath: 'edge-handlers' },
+  {
+    object: (directory) => ({ functionsDirectory: directory, functionsDirectoryOrigin: 'default-v1' }),
+    defaultPath: 'netlify-automatic-functions',
+  },
+  {
+    object: (directory) => ({ functionsDirectory: directory, functionsDirectoryOrigin: 'default' }),
+    defaultPath: 'netlify/functions',
+  },
+  { object: (directory) => ({ build: { edge_handlers: directory } }), defaultPath: 'edge-handlers' },
 ]
 
-const addDefaultPath = async function ({ build, property, baseRel, defaultPath }) {
-  if (build[property] !== undefined) {
-    return {}
-  }
-
+const addDefaultPath = async function ({ baseRel, defaultPath, object }) {
   const absolutePath = resolvePath(baseRel, defaultPath)
+
   if (!(await pathExists(absolutePath))) {
-    return {}
+    return
   }
 
-  return { [property]: absolutePath }
+  return object(absolutePath)
 }
 
 module.exports = { handleFiles, resolvePath }

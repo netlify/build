@@ -27,7 +27,7 @@
     "prepublishOnly:test": "npm test"
   },
   "config": {
-    "eslint": "--ignore-path .gitignore --cache --format=codeframe --max-warnings=0 \"{packages,.github}/**/*.{js,md,html}\" \"*.{js,md,html}\" \".*.{js,md,html}\"",
+    "eslint": "--ignore-path .gitignore --ignore-pattern \"packages/*/tests/**/snapshots/*.md\" --cache --format=codeframe --max-warnings=0 \"{packages,.github}/**/*.{js,md,html}\" \"*.{js,md,html}\" \".*.{js,md,html}\"",
     "prettier": "--ignore-path .gitignore --loglevel=warn \"{packages,.github}/**/*.{js,md,yml,json,html}\" \"*.{js,yml,json,html}\" \".*.{js,yml,json,html}\" \"!**/package-lock.json\" \"!**/CHANGELOG.md\" \"!package-lock.json\""
   },
   "workspaces": [

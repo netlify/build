@@ -4,9 +4,10 @@
 const isPlainObj = require('is-plain-obj')
 const validateNpmPackageName = require('validate-npm-package-name')
 
-const { bundlers } = require('../functions_config')
+const { bundlers, WILDCARD_ALL: FUNCTIONS_CONFIG_WILDCARD_ALL } = require('../functions_config')
 
 const {
+  functionsDirectoryCheck,
   isArrayOfObjects,
   isArrayOfStrings,
   isString,
@@ -21,9 +22,13 @@ const {
 //   - `property` {string}: dot-delimited path to the property.
 //     Can contain `*` providing a previous check validates the parent is an
 //     object or an array.
-//   - `check` {(value) => boolean}: validation check function
+//   - `propertyName` {string}: human-friendly property name; overrides the
+//     value of `property` when displaying an error message
+//   - `check` {(value, key, prevPath) => boolean}: validation check function
 //   - `message` {string}: error message
 //   - `example` {string}: example of correct code
+//   - `formatInvalid` {(object) => object}: formats the invalid value when
+//     displaying an error message
 // We use this instead of JSON schema (or others) to get nicer error messages.
 
 // Validations done before case normalization
@@ -76,6 +81,14 @@ const PRE_NORMALIZE_VALIDATIONS = [
     message: 'must be an object.',
     example: () => ({
       functions: { external_node_modules: ['module-one', 'module-two'] },
+    }),
+  },
+  {
+    property: 'functions',
+    check: isPlainObj,
+    message: 'must be an object.',
+    example: () => ({
+      functions: { ignored_node_modules: ['module-one', 'module-two'] },
     }),
   },
 ]
@@ -198,6 +211,29 @@ const POST_NORMALIZE_VALIDATIONS = [
     example: (value, key, prevPath) => ({
       functions: { [prevPath[1]]: { node_bundler: bundlers[0] } },
     }),
+  },
+  {
+    property: 'functions.*.directory',
+    check: (value, key, prevPath) => prevPath[1] === FUNCTIONS_CONFIG_WILDCARD_ALL,
+    message: 'must be defined on the main `functions` object.',
+    example: () => ({
+      functions: { directory: 'my-functions' },
+    }),
+  },
+  {
+    property: 'functionsDirectory',
+    check: isString,
+    message: 'must be a string.',
+    ...functionsDirectoryCheck,
+    example: () => ({
+      functions: { directory: 'my-functions' },
+    }),
+  },
+  {
+    property: 'functionsDirectory',
+    ...insideRootCheck,
+    ...functionsDirectoryCheck,
+    example: (publish) => ({ functions: { directory: removeParentDots(publish) } }),
   },
 ]
 

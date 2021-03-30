@@ -60,6 +60,8 @@ const validateProperty = function (
     check,
     message,
     example,
+    formatInvalid,
+    propertyName,
   },
 ) {
   const value = parent[propName]
@@ -75,19 +77,23 @@ const validateProperty = function (
       check,
       message,
       example,
+      formatInvalid,
+      propertyName,
     })
   }
 
-  if (value === undefined || (check !== undefined && check(value))) {
+  if (value === undefined || (check !== undefined && check(value, key, prevPath))) {
     return
   }
 
-  reportError({ prevPath, propPath, message, example, value, key })
+  reportError({ prevPath, propPath, message, example, value, key, formatInvalid, propertyName })
 }
 
-const reportError = function ({ prevPath, propPath, message, example, value, key }) {
-  throwError(`${THEME.highlightWords('Configuration property')} ${propPath} ${message}
-${getExample({ value, key, prevPath, example })}`)
+const reportError = function ({ prevPath, propPath, message, example, value, key, formatInvalid, propertyName }) {
+  const displayName = propertyName || propPath
+
+  throwError(`${THEME.highlightWords('Configuration property')} ${displayName} ${message}
+${getExample({ value, key, prevPath, example, formatInvalid })}`)
 }
 
 // Recurse over children (each part of the `property` array).

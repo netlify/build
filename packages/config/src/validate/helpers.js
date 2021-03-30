@@ -45,6 +45,19 @@ const removeParentDots = function (path) {
   return normalize(path).replace(PARENT_DOTS_REGEXP, '')
 }
 
+const functionsDirectoryCheck = {
+  formatInvalid: ({ functionsDirectory } = {}) => ({ functions: { directory: functionsDirectory } }),
+  propertyName: 'functions.directory',
+}
+
 const PARENT_DOTS_REGEXP = /\.\.[/\\]/g
 
-module.exports = { isArrayOfObjects, isArrayOfStrings, isString, validProperties, insideRootCheck, removeParentDots }
+module.exports = {
+  isArrayOfObjects,
+  isArrayOfStrings,
+  isString,
+  validProperties,
+  insideRootCheck,
+  removeParentDots,
+  functionsDirectoryCheck,
+}

@@ -1,5 +1,5 @@
-[build]
-functions = "test"
+[functions]
+directory = "test"
 
 [[plugins]]
 package = "./plugin"
