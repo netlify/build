@@ -112,19 +112,19 @@ test('functions: object', async (t) => {
   await runFixture(t, 'function_config_invalid_root')
 })
 
-test('functions.*: object', async (t) => {
+test('functions block: object', async (t) => {
   await runFixture(t, 'function_config_invalid_function_block')
 })
 
-test('functions.*.external_node_modules: array of strings', async (t) => {
+test('functions.external_node_modules: array of strings', async (t) => {
   await runFixture(t, 'function_config_invalid_external_modules')
 })
 
-test('functions.*.ignored_node_modules: array of strings', async (t) => {
+test('functions.ignored_node_modules: array of strings', async (t) => {
   await runFixture(t, 'function_config_invalid_ignored_modules')
 })
 
-test('functions.*.node_bundler: one of supported bundlers', async (t) => {
+test('functions.node_bundler: one of supported bundlers', async (t) => {
   await runFixture(t, 'function_config_invalid_node_bundler')
 })
 
