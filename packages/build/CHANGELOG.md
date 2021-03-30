@@ -1,5 +1,12 @@
 # Changelog
 
+### [9.19.1](https://www.github.com/netlify/build/compare/build-v9.19.0...build-v9.19.1) (2021-03-30)
+
+
+### Bug Fixes
+
+* **telemetry:** report telemetry errors without impacting builds ([#2501](https://www.github.com/netlify/build/issues/2501)) ([9bc15fe](https://www.github.com/netlify/build/commit/9bc15fec1f66e30a1980e52c55701d32ecc08b2f))
+
 ## [9.19.0](https://www.github.com/netlify/build/compare/build-v9.18.0...build-v9.19.0) (2021-03-29)
 
 
