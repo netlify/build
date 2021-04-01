@@ -4,8 +4,8 @@ const { listCorePlugins, isCorePlugin } = require('./list')
 
 // Add core plugins and user plugins together.
 // Do not allow user override of core plugins.
-const addCorePlugins = function ({ netlifyConfig: { plugins }, constants, featureFlags, childEnv }) {
-  const corePlugins = listCorePlugins({ constants, featureFlags, childEnv })
+const addCorePlugins = function ({ netlifyConfig: { plugins }, constants }) {
+  const corePlugins = listCorePlugins(constants)
   const allCorePlugins = corePlugins
     .map((corePlugin) => addCoreProperties(corePlugin, plugins))
     .filter((corePlugin) => !isOptionalCore(corePlugin, plugins))
