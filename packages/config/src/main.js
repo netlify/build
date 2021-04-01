@@ -100,9 +100,28 @@ const resolveConfig = async function (opts) {
     context,
   })
 
-  const result = { siteInfo, env, configPath, buildDir, config: configA, context, branch, token, api, logs }
+  // @todo Remove in the next major version.
+  const configB = addLegacyFunctionsDirectory(configA)
+
+  const result = { siteInfo, env, configPath, buildDir, config: configB, context, branch, token, api, logs }
   logResult(result, { logs, debug })
   return result
+}
+
+// Adds a `build.functions` property that mirrors `functionsDirectory`, for
+// backward compatibility.
+const addLegacyFunctionsDirectory = (config) => {
+  if (!config.functionsDirectory) {
+    return config
+  }
+
+  return {
+    ...config,
+    build: {
+      ...config.build,
+      functions: config.functionsDirectory,
+    },
+  }
 }
 
 // Try to load the configuration file in two passes.
