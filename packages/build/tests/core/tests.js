@@ -221,7 +221,7 @@ test('Print warning on lingering processes', async (t) => {
   const [, pid] = PID_LINE_REGEXP.exec(returnValue)
   kill(pid)
 
-  t.true(returnValue.includes('There are some lingering processes'))
+  t.true(returnValue.includes('the following processes were still running'))
   t.true(returnValue.includes(platform === 'win32' ? 'node.exe' : 'forever.js'))
 })
 
