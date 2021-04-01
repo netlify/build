@@ -22,6 +22,7 @@ const cleanupConfig = function ({
   plugins = [],
   redirects,
   baseRelDir,
+  functions,
   functionsDirectory,
 }) {
   const environmentA = cleanupEnvironment(environment)
@@ -42,6 +43,7 @@ const cleanupConfig = function ({
     headers,
     redirects,
     baseRelDir,
+    functions,
     functionsDirectory,
   })
   return netlifyConfig
@@ -77,13 +79,14 @@ const isPublicInput = function (key, input) {
 // The resolved configuration gets assigned some default values (empty objects and arrays)
 // to make it more convenient to use without checking for `undefined`.
 // However those empty values are not useful to users, so we don't log them.
-const simplifyConfig = function ({ build: { environment, ...build }, plugins, ...netlifyConfig }) {
+const simplifyConfig = function ({ build: { environment, ...build }, functions = {}, plugins, ...netlifyConfig }) {
   const buildA = {
     ...build,
     ...removeEmptyArray(environment, 'environment'),
   }
   return removeFalsy({
     ...netlifyConfig,
+    ...removeEmptyObject(functions, 'functions'),
     ...removeEmptyObject(buildA, 'build'),
     ...removeEmptyArray(plugins, 'plugins'),
   })
