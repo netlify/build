@@ -187,7 +187,7 @@ const tExecBuild = async function ({
     mode,
     testOpts,
   })
-  const pluginsOptions = addCorePlugins({ netlifyConfig, constants, featureFlags, childEnv })
+  const pluginsOptions = addCorePlugins({ netlifyConfig, constants })
 
   const { commandsCount, timers: timersB } = await runAndReportBuild({
     pluginsOptions,
