@@ -1,5 +1,12 @@
 # Changelog
 
+## [10.2.0](https://www.github.com/netlify/build/compare/build-v10.1.0...build-v10.2.0) (2021-04-01)
+
+
+### Features
+
+* improve lingering processes warning message, comments and logic ([#2514](https://www.github.com/netlify/build/issues/2514)) ([e619528](https://www.github.com/netlify/build/commit/e61952833dd27fc2bb711505f820dc54248a29b9))
+
 ## [10.1.0](https://www.github.com/netlify/build/compare/build-v10.0.0...build-v10.1.0) (2021-04-01)
 
 
