@@ -1,5 +1,19 @@
 # Changelog
 
+## [5.1.0](https://www.github.com/netlify/build/compare/config-v5.0.1...config-v5.1.0) (2021-04-01)
+
+
+### Features
+
+* add functions config object to build output ([#2518](https://www.github.com/netlify/build/issues/2518)) ([280834c](https://www.github.com/netlify/build/commit/280834c079995ad3c3b5607f983198fba6b3ac13))
+
+### [5.0.1](https://www.github.com/netlify/build/compare/config-v5.0.0...config-v5.0.1) (2021-04-01)
+
+
+### Bug Fixes
+
+* reinstate legacy build.functions property ([#2519](https://www.github.com/netlify/build/issues/2519)) ([488bea6](https://www.github.com/netlify/build/commit/488bea6f6a75aaf7bdd33b9c5d781b49f2316168))
+
 ## [5.0.0](https://www.github.com/netlify/build/compare/config-v4.3.0...config-v5.0.0) (2021-03-30)
 
 

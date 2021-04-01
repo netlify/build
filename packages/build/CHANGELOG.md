@@ -1,5 +1,12 @@
 # Changelog
 
+## [10.1.0](https://www.github.com/netlify/build/compare/build-v10.0.0...build-v10.1.0) (2021-04-01)
+
+
+### Features
+
+* add functions config object to build output ([#2518](https://www.github.com/netlify/build/issues/2518)) ([280834c](https://www.github.com/netlify/build/commit/280834c079995ad3c3b5607f983198fba6b3ac13))
+
 ## [10.0.0](https://www.github.com/netlify/build/compare/build-v9.19.1...build-v10.0.0) (2021-03-30)
 
 
