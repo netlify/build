@@ -1,5 +1,12 @@
 # Changelog
 
+### [10.2.2](https://www.github.com/netlify/build/compare/build-v10.2.1...build-v10.2.2) (2021-04-02)
+
+
+### Bug Fixes
+
+* do not print internal information in the build logs ([#2527](https://www.github.com/netlify/build/issues/2527)) ([8c2ca4a](https://www.github.com/netlify/build/commit/8c2ca4aa406bd7d16ecb2b9d4aabed95c22dceb3))
+
 ### [10.2.1](https://www.github.com/netlify/build/compare/build-v10.2.0...build-v10.2.1) (2021-04-01)
 
 
