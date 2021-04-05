@@ -40,7 +40,6 @@ const runWithApiMock = async function (
     env = {},
     snapshot = false,
     telemetry = true,
-    featureFlags = 'buildbot_build_telemetry',
     // Disables the timeout by default because of latency issues in the CI windows boxes
     disableTelemetryTimeout = true,
     responseStatusCode = 200,
@@ -66,7 +65,7 @@ const runWithApiMock = async function (
 
   try {
     const { exitCode } = await runFixture(t, fixture, {
-      flags: { siteId: 'test', testOpts, telemetry, featureFlags, bugsnagKey: BUGSNAG_TEST_KEY, ...flags },
+      flags: { siteId: 'test', testOpts, telemetry, bugsnagKey: BUGSNAG_TEST_KEY, ...flags },
       env,
       snapshot,
       useBinary,
@@ -122,15 +121,7 @@ test('Telemetry is disabled by default', async (t) => {
   t.is(telemetryRequests.length, 0)
 })
 
-test('Telemetry cannnot be enabled via flag if the feature flag is disabled', async (t) => {
-  const { telemetryRequests } = await runWithApiMock(t, 'success', {
-    featureFlags: '',
-    flags: {},
-  })
-  t.is(telemetryRequests.length, 0)
-})
-
-test('Telemetry BUILD_TELEMETRY_DISABLED env var overrides flag and feature flag usage', async (t) => {
+test('Telemetry BUILD_TELEMETRY_DISABLED env var overrides flag', async (t) => {
   const { telemetryRequests } = await runWithApiMock(t, 'success', {
     env: { BUILD_TELEMETRY_DISABLED: 'true' },
   })
