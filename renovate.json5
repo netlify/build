@@ -3,7 +3,7 @@
   ignorePresets: [':prHourlyLimit2'],
   semanticCommits: true,
   dependencyDashboard: true,
-  automerge: false,
+  automerge: true,
   packageRules: [
     {
       packageNames: [
