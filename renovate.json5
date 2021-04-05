@@ -30,6 +30,7 @@
         'p-locate',
         'pkg-dir',
         'pretty-ms',
+        'ps-list',
         'semver',
         'supports-color',
         'update-notifier',
