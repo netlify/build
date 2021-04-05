@@ -3,7 +3,7 @@
   ignorePresets: [':prHourlyLimit2'],
   semanticCommits: true,
   dependencyDashboard: true,
-  automerge: false,
+  automerge: true,
   packageRules: [
     {
       packageNames: [
@@ -30,6 +30,7 @@
         'p-locate',
         'pkg-dir',
         'pretty-ms',
+        'ps-list',
         'semver',
         'supports-color',
         'update-notifier',

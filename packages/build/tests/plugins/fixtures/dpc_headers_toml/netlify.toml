@@ -1,5 +1,0 @@
-[[headers]]
-for = "*"
-[headers.values]
-X-FRAME-OPTIONS = "deny"
-TEST = "test"
