@@ -87,7 +87,7 @@
     "path-type": "^4.0.0",
     "pkg-dir": "^4.2.0",
     "pretty-ms": "^5.1.0",
-    "ps-list": "^6.3.0",
+    "ps-list": "^7.0.0",
     "read-pkg-up": "^7.0.1",
     "readdirp": "^3.4.0",
     "resolve": "^2.0.0-next.1",
