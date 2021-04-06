@@ -43,7 +43,7 @@ const PRE_CASE_NORMALIZE_VALIDATIONS = [
 
 // Properties with an `origin` property need to be validated once:
 //  - Before the `origin` property is added
-//  - After `context.*` is merged, since they might contain that propery
+//  - After `context.*` is merged, since they might contain that property
 const ORIGIN_VALIDATIONS = [
   {
     property: 'build.command',
