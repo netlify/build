@@ -92,6 +92,11 @@ test('build.command: array', async (t) => {
   await runFixture(t, 'build_command_array')
 })
 
+test('build.command is validated even when not used due to merging', async (t) => {
+  const defaultConfig = JSON.stringify({ build: { command: false } })
+  await runFixture(t, 'build_command_merge', { flags: { defaultConfig } })
+})
+
 test('build.context: property', async (t) => {
   await runFixture(t, 'build_context_property', { flags: { context: 'development' } })
 })
