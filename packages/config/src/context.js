@@ -3,7 +3,7 @@
 const isPlainObj = require('is-plain-obj')
 
 const { normalizeBuildCase } = require('./case')
-const { addCommandConfigOrigin } = require('./origin')
+const { addBuildCommandOrigin, CONFIG_ORIGIN } = require('./origin')
 const { deepMerge } = require('./utils/merge')
 
 // Takes a config object and adds each key to a namespace. This namespace is
@@ -43,8 +43,8 @@ const mergeContext = function ({ context: contextProps, ...config }, context, br
     .map((key) => contextProps[key])
     .filter(Boolean)
     .map(normalizeBuildCase)
-    .map(addCommandConfigOrigin)
     .map(addNamespace)
+    .map((contextConfig) => addBuildCommandOrigin(contextConfig, CONFIG_ORIGIN))
 
   return deepMerge(config, ...allContextProps)
 }

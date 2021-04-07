@@ -9,29 +9,17 @@ const CONFIG_ORIGIN = 'config'
 // This also removes empty build commands.
 const addBuildCommandOrigins = function (defaultConfig, config, inlineConfig) {
   return [
-    addBuildCommandUiOrigin(defaultConfig),
-    addBuildCommandConfigOrigin(config),
-    addBuildCommandConfigOrigin(inlineConfig),
+    addBuildCommandOrigin(defaultConfig, UI_ORIGIN),
+    addBuildCommandOrigin(config, CONFIG_ORIGIN),
+    addBuildCommandOrigin(inlineConfig, CONFIG_ORIGIN),
   ]
 }
 
-const addBuildCommandOrigin = function (commandOrigin, { build = {}, ...config }) {
-  const buildA = addCommandOrigin(commandOrigin, build)
-  return { ...config, build: buildA }
+const addBuildCommandOrigin = function ({ build: { command, ...build } = {}, ...config }, commandOrigin) {
+  return command === undefined || (typeof command === 'string' && command.trim() === '')
+    ? { ...config, build }
+    : { ...config, build: { ...build, command, commandOrigin } }
 }
-
-const addBuildCommandUiOrigin = addBuildCommandOrigin.bind(null, UI_ORIGIN)
-const addBuildCommandConfigOrigin = addBuildCommandOrigin.bind(null, CONFIG_ORIGIN)
-
-const addCommandOrigin = function (commandOrigin, { command, ...build }) {
-  if (command === undefined || (typeof command === 'string' && command.trim() === '')) {
-    return build
-  }
-
-  return { ...build, command, commandOrigin }
-}
-
-const addCommandConfigOrigin = addCommandOrigin.bind(null, CONFIG_ORIGIN)
 
 // Add `plugins[*].origin`. This is like `build.commandOrigin` but for plugins.
 const addPluginsOrigins = function (defaultConfig, config, inlineConfig) {
@@ -47,4 +35,4 @@ const addConfigPluginOrigin = function ({ plugins = [], ...config }, origin) {
   return { ...config, plugins: pluginsA }
 }
 
-module.exports = { addBuildCommandOrigins, addCommandConfigOrigin, addPluginsOrigins }
+module.exports = { addBuildCommandOrigins, addBuildCommandOrigin, addPluginsOrigins, CONFIG_ORIGIN }
