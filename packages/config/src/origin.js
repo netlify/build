@@ -19,7 +19,11 @@ const addBuildCommandOrigin = function ({ build: { command, ...build } = {}, ...
     : { ...config, build: { ...build, command, commandOrigin } }
 }
 
-const addConfigPluginOrigin = function ({ plugins = [], ...config }, origin) {
+const addConfigPluginOrigin = function ({ plugins, ...config }, origin) {
+  if (plugins === undefined) {
+    return config
+  }
+
   const pluginsA = plugins.map((plugin) => ({ ...plugin, origin }))
   return { ...config, plugins: pluginsA }
 }
