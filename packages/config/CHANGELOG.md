@@ -1,5 +1,12 @@
 # Changelog
 
+### [5.1.1](https://www.github.com/netlify/build/compare/config-v5.1.0...config-v5.1.1) (2021-04-06)
+
+
+### Bug Fixes
+
+* validate build.command even when not used due to config merge ([#2541](https://www.github.com/netlify/build/issues/2541)) ([95c8e70](https://www.github.com/netlify/build/commit/95c8e7088c8956b34535548da4b2c7a3014ff37d))
+
 ## [5.1.0](https://www.github.com/netlify/build/compare/config-v5.0.1...config-v5.1.0) (2021-04-01)
 
 
