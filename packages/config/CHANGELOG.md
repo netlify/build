@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.2.0](https://www.github.com/netlify/build/compare/config-v5.1.1...config-v5.2.0) (2021-04-07)
+
+
+### Features
+
+* refactor plugins[*].origin ([#2540](https://www.github.com/netlify/build/issues/2540)) ([43ad104](https://www.github.com/netlify/build/commit/43ad104928d707b864a6e667270d783ae4e5cbac))
+
 ### [5.1.1](https://www.github.com/netlify/build/compare/config-v5.1.0...config-v5.1.1) (2021-04-06)
 
 
