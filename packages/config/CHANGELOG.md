@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.3.0](https://www.github.com/netlify/build/compare/config-v5.2.0...config-v5.3.0) (2021-04-07)
+
+
+### Features
+
+* refactor how origin is added to context-specific configs ([#2545](https://www.github.com/netlify/build/issues/2545)) ([c3f45b2](https://www.github.com/netlify/build/commit/c3f45b288544200a6408a9af7bdfb955d45ebb81))
+
 ## [5.2.0](https://www.github.com/netlify/build/compare/config-v5.1.1...config-v5.2.0) (2021-04-07)
 
 
