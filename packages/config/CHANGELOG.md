@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.5.0](https://www.github.com/netlify/build/compare/config-v5.4.0...config-v5.5.0) (2021-04-07)
+
+
+### Features
+
+* validate `context.{context}.*` properties ([#2551](https://www.github.com/netlify/build/issues/2551)) ([4559349](https://www.github.com/netlify/build/commit/45593491b6a053c0d256a169d4ff998187c533e9))
+
 ## [5.4.0](https://www.github.com/netlify/build/compare/config-v5.3.1...config-v5.4.0) (2021-04-07)
 
 
