@@ -1,5 +1,12 @@
 # Changelog
 
+### [5.3.1](https://www.github.com/netlify/build/compare/config-v5.3.0...config-v5.3.1) (2021-04-07)
+
+
+### Bug Fixes
+
+* improve config normalization logic ([#2547](https://www.github.com/netlify/build/issues/2547)) ([7945e0a](https://www.github.com/netlify/build/commit/7945e0ab496f48da006392646cf0512f6a564348))
+
 ## [5.3.0](https://www.github.com/netlify/build/compare/config-v5.2.0...config-v5.3.0) (2021-04-07)
 
 
