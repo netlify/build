@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.4.0](https://www.github.com/netlify/build/compare/config-v5.3.1...config-v5.4.0) (2021-04-07)
+
+
+### Features
+
+* refactor configuration property origins ([#2549](https://www.github.com/netlify/build/issues/2549)) ([b1d7c66](https://www.github.com/netlify/build/commit/b1d7c6623a16a62941ddd2f3d406657c4206b096))
+
 ### [5.3.1](https://www.github.com/netlify/build/compare/config-v5.3.0...config-v5.3.1) (2021-04-07)
 
 
