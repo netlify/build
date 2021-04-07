@@ -40,4 +40,4 @@ const normalizeBuildCase = function ({
   })
 }
 
-module.exports = { normalizeConfigCase, normalizeBuildCase }
+module.exports = { normalizeConfigCase }
