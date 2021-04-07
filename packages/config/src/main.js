@@ -15,6 +15,7 @@ const { logResult } = require('./log/main')
 const { mergeConfigs } = require('./merge')
 const { normalizeBeforeConfigMerge, normalizeAfterConfigMerge } = require('./merge_normalize')
 const { addDefaultOpts, normalizeOpts } = require('./options/main')
+const { UI_ORIGIN, CONFIG_ORIGIN } = require('./origin')
 const { parseConfig } = require('./parse')
 const { getConfigPath } = require('./path')
 
@@ -198,9 +199,9 @@ const getFullConfig = async function ({
 }
 
 const mergeAndNormalizeConfig = function ({ config, defaultConfig, inlineConfig, context, branch }) {
-  const configA = normalizeBeforeConfigMerge(config)
-  const defaultConfigA = normalizeBeforeConfigMerge(defaultConfig)
-  const inlineConfigA = normalizeBeforeConfigMerge(inlineConfig)
+  const configA = normalizeBeforeConfigMerge(config, CONFIG_ORIGIN)
+  const defaultConfigA = normalizeBeforeConfigMerge(defaultConfig, UI_ORIGIN)
+  const inlineConfigA = normalizeBeforeConfigMerge(inlineConfig, CONFIG_ORIGIN)
 
   const configB = mergeConfigs(defaultConfigA, configA, inlineConfigA)
   const configC = mergeContext(configB, context, branch)
