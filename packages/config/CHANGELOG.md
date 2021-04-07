@@ -1,5 +1,12 @@
 # Changelog
 
+### [5.5.1](https://www.github.com/netlify/build/compare/config-v5.5.0...config-v5.5.1) (2021-04-07)
+
+
+### Bug Fixes
+
+* context properties should not unset plugins ([#2558](https://www.github.com/netlify/build/issues/2558)) ([32be1bb](https://www.github.com/netlify/build/commit/32be1bb7d052d8e4a0b9bcbf9d5d0dbd428a8535))
+
 ## [5.5.0](https://www.github.com/netlify/build/compare/config-v5.4.0...config-v5.5.0) (2021-04-07)
 
 
