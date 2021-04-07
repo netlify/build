@@ -34,19 +34,17 @@ const addCommandOrigin = function (commandOrigin, { command, ...build }) {
 const addCommandConfigOrigin = addCommandOrigin.bind(null, CONFIG_ORIGIN)
 
 // Add `plugins[*].origin`. This is like `build.commandOrigin` but for plugins.
-const addPluginsOrigins = function (defaultPlugins, plugins, inlinePlugins) {
+const addPluginsOrigins = function (defaultConfig, config, inlineConfig) {
   return [
-    defaultPlugins.map(addPluginUiOrigin),
-    plugins.map(addPluginConfigOrigin),
-    inlinePlugins.map(addPluginConfigOrigin),
+    addConfigPluginOrigin(defaultConfig, UI_ORIGIN),
+    addConfigPluginOrigin(config, CONFIG_ORIGIN),
+    addConfigPluginOrigin(inlineConfig, CONFIG_ORIGIN),
   ]
 }
 
-const addPluginOrigin = function (origin, plugin) {
-  return { ...plugin, origin }
+const addConfigPluginOrigin = function ({ plugins = [], ...config }, origin) {
+  const pluginsA = plugins.map((plugin) => ({ ...plugin, origin }))
+  return { ...config, plugins: pluginsA }
 }
-
-const addPluginUiOrigin = addPluginOrigin.bind(null, UI_ORIGIN)
-const addPluginConfigOrigin = addPluginOrigin.bind(null, CONFIG_ORIGIN)
 
 module.exports = { addBuildCommandOrigins, addCommandConfigOrigin, addPluginsOrigins }
