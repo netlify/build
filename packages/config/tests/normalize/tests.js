@@ -14,22 +14,18 @@ test('Some properties can be capitalized', async (t) => {
 
 test('Some properties can be capitalized even when merged with defaultConfig', async (t) => {
   const defaultConfig = JSON.stringify({
-    build: {
-      base: 'baseDefault',
-      command: 'gulp build default',
-      functions: 'functionsDefault',
-      edge_handlers: 'edgeHandlersDefault',
-      ignore: 'doIgnoreDefault',
-      publish: 'publishDefault',
-      environment: { TEST: 'testDefault' },
-      processing: { css: { bundle: false } },
+    Build: {
+      Base: 'base',
+      Command: 'gulp build default',
+      Functions: 'functions',
+      Edge_handlers: 'edgeHandlers',
+      Ignore: 'doIgnore',
+      Publish: 'publish',
+      Environment: { TEST: 'test' },
+      Processing: { css: { bundle: false } },
     },
   })
-  await runFixture(t, 'props_case', { flags: { defaultConfig } })
-})
-
-test('Some properties can be capitalized even when merged with contexts', async (t) => {
-  await runFixture(t, 'props_case_context', { flags: { context: 'testContext', branch: 'testBranch' } })
+  await runFixture(t, 'props_case_default_config', { flags: { defaultConfig } })
 })
 
 test('Does not add build.commandOrigin config if there are none', async (t) => {

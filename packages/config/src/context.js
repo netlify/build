@@ -2,8 +2,8 @@
 
 const isPlainObj = require('is-plain-obj')
 
-const { normalizeBuildCase } = require('./case')
-const { addOrigins, CONFIG_ORIGIN } = require('./origin')
+const { normalizeBeforeConfigMerge } = require('./merge_normalize.js')
+const { CONFIG_ORIGIN } = require('./origin')
 const { deepMerge } = require('./utils/merge')
 const { validatePreContextConfig } = require('./validate/main')
 
@@ -46,9 +46,8 @@ const mergeContext = function (config, context, branch) {
   const allContextProps = [context, branch]
     .map((key) => contextProps[key])
     .filter(Boolean)
-    .map(normalizeBuildCase)
     .map(addNamespace)
-    .map((contextConfig) => addOrigins(contextConfig, CONFIG_ORIGIN))
+    .map((contextConfig) => normalizeBeforeConfigMerge(contextConfig, CONFIG_ORIGIN))
 
   return deepMerge(configA, ...allContextProps)
 }

@@ -113,6 +113,10 @@ test('build.context.CONTEXT: object', async (t) => {
   await runFixture(t, 'build_context_nested_object')
 })
 
+test('build.context properties are validated like top-level ones', async (t) => {
+  await runFixture(t, 'build_context_validation')
+})
+
 test('functions: object', async (t) => {
   await runFixture(t, 'function_config_invalid_root')
 })
