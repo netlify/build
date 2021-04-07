@@ -87,10 +87,17 @@ const validateProperty = function (
   reportError({ prevPath, propPath, message, example, value, key, formatInvalid, propertyName })
 }
 
-const reportError = function ({ prevPath, propPath, message, example, value, key, formatInvalid, propertyName }) {
-  const displayName = propertyName || propPath
-
-  throwError(`${THEME.highlightWords('Configuration property')} ${displayName} ${message}
+const reportError = function ({
+  prevPath,
+  propPath,
+  message,
+  example,
+  value,
+  key,
+  formatInvalid,
+  propertyName = propPath,
+}) {
+  throwError(`${THEME.highlightWords('Configuration property')} ${propertyName} ${message}
 ${getExample({ value, key, prevPath, example, formatInvalid })}`)
 }
 
