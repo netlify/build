@@ -5,7 +5,6 @@ require('./utils/polyfills')
 
 const { getApiClient } = require('./api/client')
 const { getSiteInfo } = require('./api/site_info')
-const { normalizeConfigCase } = require('./case')
 const { mergeContext } = require('./context')
 const { getConfig, parseDefaultConfig } = require('./default')
 const { getEnv } = require('./env/main')
@@ -14,17 +13,10 @@ const { getInlineConfig } = require('./inline_config')
 const { cleanupConfig } = require('./log/cleanup')
 const { logResult } = require('./log/main')
 const { mergeConfigs } = require('./merge')
-const { normalizeConfig } = require('./normalize')
+const { normalizeBeforeConfigMerge, normalizeAfterConfigMerge } = require('./merge_normalize')
 const { addDefaultOpts, normalizeOpts } = require('./options/main')
 const { parseConfig } = require('./parse')
 const { getConfigPath } = require('./path')
-const {
-  validatePreCaseNormalize,
-  validatePreMergeConfig,
-  validatePreContextConfig,
-  validatePreNormalizeConfig,
-  validatePostNormalizeConfig,
-} = require('./validate/main')
 
 // Load the configuration file.
 // Takes an optional configuration file path as input and return the resolved
@@ -206,20 +198,14 @@ const getFullConfig = async function ({
 }
 
 const mergeAndNormalizeConfig = function ({ config, defaultConfig, inlineConfig, context, branch }) {
-  validatePreCaseNormalize(config)
-  const configA = normalizeConfigCase(config)
+  const configA = normalizeBeforeConfigMerge(config)
+  const defaultConfigA = normalizeBeforeConfigMerge(defaultConfig)
+  const inlineConfigA = normalizeBeforeConfigMerge(inlineConfig)
 
-  validatePreMergeConfig(defaultConfig, configA, inlineConfig)
-  const configB = mergeConfigs(defaultConfig, configA, inlineConfig)
-
-  validatePreContextConfig(configB)
+  const configB = mergeConfigs(defaultConfigA, configA, inlineConfigA)
   const configC = mergeContext(configB, context, branch)
 
-  validatePreNormalizeConfig(configC)
-  const configD = normalizeConfig(configC)
-
-  validatePostNormalizeConfig(configD)
-
+  const configD = normalizeAfterConfigMerge(configC)
   return configD
 }
 

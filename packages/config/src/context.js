@@ -5,6 +5,7 @@ const isPlainObj = require('is-plain-obj')
 const { normalizeBuildCase } = require('./case')
 const { addBuildCommandOrigin, CONFIG_ORIGIN } = require('./origin')
 const { deepMerge } = require('./utils/merge')
+const { validatePreContextConfig } = require('./validate/main')
 
 // Takes a config object and adds each key to a namespace. This namespace is
 // usually `build`, since `context.*.{key}` is merged to `build.{key}`. The
@@ -34,9 +35,12 @@ const addNamespace = (context) => {
 // Merge `config.context.{CONTEXT|BRANCH}.*` to `config.build.*`
 // CONTEXT is the `--context` CLI flag.
 // BRANCH is the `--branch` CLI flag.
-const mergeContext = function ({ context: contextProps, ...config }, context, branch) {
-  if (!isPlainObj(contextProps)) {
-    return config
+const mergeContext = function (config, context, branch) {
+  validatePreContextConfig(config)
+
+  const { context: contextProps, ...configA } = config
+  if (contextProps === undefined) {
+    return configA
   }
 
   const allContextProps = [context, branch]
@@ -46,7 +50,7 @@ const mergeContext = function ({ context: contextProps, ...config }, context, br
     .map(addNamespace)
     .map((contextConfig) => addBuildCommandOrigin(contextConfig, CONFIG_ORIGIN))
 
-  return deepMerge(config, ...allContextProps)
+  return deepMerge(configA, ...allContextProps)
 }
 
 module.exports = { mergeContext }
