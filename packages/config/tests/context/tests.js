@@ -43,3 +43,7 @@ test('Context array merge', async (t) => {
 test('Context merge priority', async (t) => {
   await runFixture(t, 'priority_merge', { flags: { branch: 'testBranch' } })
 })
+
+test('Using context does not reset plugins', async (t) => {
+  await runFixture(t, 'context_reset')
+})

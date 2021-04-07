@@ -1,0 +1,5 @@
+[context.production]
+command = "echo commandTest"
+
+[[plugins]]
+package = "netlify-plugin-test"
