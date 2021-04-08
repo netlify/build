@@ -1,12 +1,13 @@
 'use strict'
 
 const deepmerge = require('deepmerge')
-const isPlainObj = require('is-plain-obj')
 
-// Deep merge utility for configuration objects
-const deepMerge = function (...values) {
-  const objects = values.filter(isPlainObj)
-  return deepmerge.all(objects, { arrayMerge })
+// Merge an array of configuration objects.
+// Last items have higher priority.
+// Configuration objects are deeply merged.
+//   - Arrays are overridden, not concatenated.
+const mergeConfigs = function (configs) {
+  return deepmerge.all(configs, { arrayMerge })
 }
 
 // By default `deepmerge` concatenates arrays. We use the `arrayMerge` option
@@ -15,4 +16,4 @@ const arrayMerge = function (arrayA, arrayB) {
   return arrayB
 }
 
-module.exports = { deepMerge }
+module.exports = { mergeConfigs }

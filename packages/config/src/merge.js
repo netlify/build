@@ -1,14 +1,14 @@
 'use strict'
 
 const { throwError } = require('./error')
-const { deepMerge } = require('./utils/merge')
+const { mergeConfigs } = require('./utils/merge')
 
 // Merge `--defaultConfig` which is used to retrieve UI build settings and
 // UI-installed plugins.
 // Also merge `inlineConfig` which is used for Netlify CLI flags.
-const mergeConfigs = function (defaultConfig, config, inlineConfig) {
+const mergeAllConfigs = function ([defaultConfig, config, inlineConfig]) {
   const plugins = mergePlugins([defaultConfig, config, inlineConfig])
-  const configA = deepMerge(defaultConfig, config, inlineConfig)
+  const configA = mergeConfigs([defaultConfig, config, inlineConfig])
   return { ...configA, plugins }
 }
 
@@ -38,4 +38,4 @@ const isNotOverridenPlugin = function (plugin, index, plugins) {
   return overridingPlugin === undefined
 }
 
-module.exports = { mergeConfigs }
+module.exports = { mergeAllConfigs }

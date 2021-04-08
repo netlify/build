@@ -4,7 +4,7 @@ const isPlainObj = require('is-plain-obj')
 
 const { normalizeBeforeConfigMerge } = require('./merge_normalize.js')
 const { CONFIG_ORIGIN } = require('./origin')
-const { deepMerge } = require('./utils/merge')
+const { mergeConfigs } = require('./utils/merge')
 const { validatePreContextConfig } = require('./validate/main')
 
 // Merge `config.context.{CONTEXT|BRANCH}.*` to `config.build.*` or `config.*`
@@ -24,7 +24,7 @@ const mergeContext = function (config, context, branch) {
     .map(addNamespace)
     .map((contextConfig) => normalizeBeforeConfigMerge(contextConfig, CONFIG_ORIGIN))
 
-  return deepMerge(configA, ...allContextProps)
+  return mergeConfigs([configA, ...allContextProps])
 }
 
 // `config.context.{context}.*` properties are merged either to `config.*` or
