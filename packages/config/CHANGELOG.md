@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.8.0](https://www.github.com/netlify/build/compare/config-v5.7.0...config-v5.8.0) (2021-04-08)
+
+
+### Features
+
+* refactor configuration merge logic ([#2564](https://www.github.com/netlify/build/issues/2564)) ([06ea3fd](https://www.github.com/netlify/build/commit/06ea3fd438c25f8f372b4a111119e116f7d90f6d))
+
 ## [5.7.0](https://www.github.com/netlify/build/compare/config-v5.6.0...config-v5.7.0) (2021-04-08)
 
 
