@@ -7,7 +7,7 @@ const { deepMerge } = require('./utils/merge')
 // UI-installed plugins.
 // Also merge `inlineConfig` which is used for Netlify CLI flags.
 const mergeConfigs = function (defaultConfig, config, inlineConfig) {
-  const plugins = mergePlugins(defaultConfig, config, inlineConfig)
+  const plugins = mergePlugins([defaultConfig, config, inlineConfig])
   const configA = deepMerge(defaultConfig, config, inlineConfig)
   return { ...configA, plugins }
 }
@@ -18,8 +18,12 @@ const mergeConfigs = function (defaultConfig, config, inlineConfig) {
 // `config` (`netlify.toml`)
 // Context-specific plugins can only be specified in the `config`, so it ok to
 // handle them later.
-const mergePlugins = function ({ plugins: defaultPlugins = [] }, { plugins = [] }, { plugins: inlinePlugins = [] }) {
-  return [...defaultPlugins, ...plugins, ...inlinePlugins].filter(isNotOverridenPlugin)
+const mergePlugins = function (configs) {
+  return configs.flatMap(getPlugins).filter(isNotOverridenPlugin)
+}
+
+const getPlugins = function ({ plugins = [] }) {
+  return plugins
 }
 
 // When a plugin is specified both in the UI and netlify.toml, we only keep
