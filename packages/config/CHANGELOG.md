@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.9.0](https://www.github.com/netlify/build/compare/config-v5.8.0...config-v5.9.0) (2021-04-08)
+
+
+### Features
+
+* move validation related to duplicated plugins configuration ([#2566](https://www.github.com/netlify/build/issues/2566)) ([df2e5d5](https://www.github.com/netlify/build/commit/df2e5d563397b90ec79982f264c851e9bd21b2c4))
+
 ## [5.8.0](https://www.github.com/netlify/build/compare/config-v5.7.0...config-v5.8.0) (2021-04-08)
 
 
