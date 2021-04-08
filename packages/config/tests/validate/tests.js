@@ -16,6 +16,11 @@ test('plugins: do not allow duplicates', async (t) => {
   await runFixture(t, 'plugins_duplicate')
 })
 
+test('plugins: do not allow duplicates in the UI', async (t) => {
+  const defaultConfig = JSON.stringify({ plugins: [{ package: 'test' }, { package: 'test' }] })
+  await runFixture(t, 'empty', { flags: { defaultConfig } })
+})
+
 test('plugins.any: unknown property', async (t) => {
   await runFixture(t, 'plugins_unknown')
 })
