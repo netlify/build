@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.6.0](https://www.github.com/netlify/build/compare/config-v5.5.1...config-v5.6.0) (2021-04-08)
+
+
+### Features
+
+* improve how context-specific config are merged ([#2555](https://www.github.com/netlify/build/issues/2555)) ([a642a9d](https://www.github.com/netlify/build/commit/a642a9d36f24dc5c93e43304858007c524035b71))
+
 ### [5.5.1](https://www.github.com/netlify/build/compare/config-v5.5.0...config-v5.5.1) (2021-04-07)
 
 
