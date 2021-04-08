@@ -12,7 +12,7 @@ const { handleFiles } = require('./files')
 const { getInlineConfig } = require('./inline_config')
 const { cleanupConfig } = require('./log/cleanup')
 const { logResult } = require('./log/main')
-const { mergeConfigs } = require('./merge')
+const { mergeAllConfigs } = require('./merge')
 const { normalizeBeforeConfigMerge, normalizeAfterConfigMerge } = require('./merge_normalize')
 const { addDefaultOpts, normalizeOpts } = require('./options/main')
 const { UI_ORIGIN, CONFIG_ORIGIN } = require('./origin')
@@ -203,7 +203,7 @@ const mergeAndNormalizeConfig = function ({ config, defaultConfig, inlineConfig,
   const defaultConfigA = normalizeBeforeConfigMerge(defaultConfig, UI_ORIGIN)
   const inlineConfigA = normalizeBeforeConfigMerge(inlineConfig, CONFIG_ORIGIN)
 
-  const configB = mergeConfigs(defaultConfigA, configA, inlineConfigA)
+  const configB = mergeAllConfigs([defaultConfigA, configA, inlineConfigA])
   const configC = mergeContext(configB, context, branch)
 
   const configD = normalizeAfterConfigMerge(configC)
