@@ -1,5 +1,13 @@
 # Changelog
 
+## [5.7.0](https://www.github.com/netlify/build/compare/config-v5.6.0...config-v5.7.0) (2021-04-08)
+
+
+### Features
+
+* refactor configuration merge logic ([#2561](https://www.github.com/netlify/build/issues/2561)) ([839d400](https://www.github.com/netlify/build/commit/839d4008dd3d515785bdff12174910902d242709))
+* refactors how plugins configurations are currently merged ([#2562](https://www.github.com/netlify/build/issues/2562)) ([7276576](https://www.github.com/netlify/build/commit/7276576020d9bf133f1e50666a614c10e980be3b))
+
 ## [5.6.0](https://www.github.com/netlify/build/compare/config-v5.5.1...config-v5.6.0) (2021-04-08)
 
 
