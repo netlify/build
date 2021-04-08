@@ -1,6 +1,5 @@
 'use strict'
 
-const { throwError } = require('./error')
 const { groupBy } = require('./utils/group')
 const { mergeConfigs } = require('./utils/merge')
 
@@ -37,12 +36,6 @@ const mergePluginConfigs = function (plugins) {
 
 // TODO: use deep merging instead
 const mergePluginsPair = function (pluginA, pluginB) {
-  // This most likely indicates that the user forgot that they already added or
-  // configured a plugin.
-  if (pluginA.origin === 'config' && pluginB.origin === 'config') {
-    throwError(`Plugin "${pluginA.package}" must not be specified twice in netlify.toml`)
-  }
-
   return { ...pluginA, ...pluginB }
 }
 

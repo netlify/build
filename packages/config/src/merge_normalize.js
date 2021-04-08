@@ -3,6 +3,7 @@
 const { normalizeConfigCase } = require('./case')
 const { normalizeConfig } = require('./normalize')
 const { addOrigins } = require('./origin')
+const { validateIdenticalPlugins } = require('./validate/identical.js')
 const {
   validatePreCaseNormalize,
   validatePreMergeConfig,
@@ -19,6 +20,7 @@ const normalizeBeforeConfigMerge = function (config, origin) {
   const configA = normalizeConfigCase(config)
   validatePreMergeConfig(configA)
   const configB = addOrigins(configA, origin)
+  validateIdenticalPlugins(configB)
   return configB
 }
 
