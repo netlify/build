@@ -88,3 +88,20 @@ test('Normalizes function configurations defined at different levels', async (t)
 test('Handles function configuration objects for functions with the same name as one of the configuration properties', async (t) => {
   await runFixture(t, 'function_config_ambiguous')
 })
+
+test('Merges plugins in netlify.toml and defaultConfig', async (t) => {
+  const defaultConfig = JSON.stringify({
+    plugins: [
+      {
+        package: 'netlify-plugin-test',
+        inputs: {
+          boolean: true,
+          unset: true,
+          array: ['a', 'b'],
+          object: { prop: true },
+        },
+      },
+    ],
+  })
+  await runFixture(t, 'merge_netlify_toml_default', { flags: { defaultConfig } })
+})
