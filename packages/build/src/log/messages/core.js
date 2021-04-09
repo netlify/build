@@ -1,5 +1,6 @@
 'use strict'
 
+const { link } = require('ansi-escapes')
 const prettyMs = require('pretty-ms')
 
 const { name, version } = require('../../../package.json')
@@ -41,6 +42,9 @@ const logTimer = function (logs, durationNs, timerName) {
   log(logs, THEME.dimWords(`(${timerName} completed in ${duration})`))
 }
 
+// @todo use `terminal-link` (https://github.com/sindresorhus/terminal-link)
+// instead of `ansi-escapes` once
+// https://github.com/jamestalmage/supports-hyperlinks/pull/12 is fixed
 const logLingeringProcesses = function (logs, commands) {
   logWarning(
     logs,
@@ -52,7 +56,10 @@ The build completed successfully, but the following processes were still running
   logWarning(
     logs,
     `
-These processes have been terminated. In case this creates a problem for your build, refer to [this article](https://answers.netlify.com/t/support-guide-how-to-address-the-warning-message-related-to-terminating-processes-in-builds/35277) for details about why this process termination happens and how to fix it.`,
+These processes have been terminated. In case this creates a problem for your build, refer to this ${link(
+      'article',
+      'https://answers.netlify.com/t/support-guide-how-to-address-the-warning-message-related-to-terminating-processes-in-builds/35277',
+    )} for details about why this process termination happens and how to fix it.`,
   )
 }
 
