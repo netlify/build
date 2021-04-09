@@ -14,7 +14,8 @@ const mergeConfigs = function (configs) {
 }
 
 // By default `deepmerge` concatenates arrays. We use the `arrayMerge` option
-// to remove this behavior.
+// to remove this behavior. Also, we merge some array properties differently,
+// such as `plugins`.
 const arrayMerge = function (arrayA, arrayB) {
   if (isPluginsProperty(arrayA) && isPluginsProperty(arrayB)) {
     return mergePlugins(arrayA, arrayB)
@@ -43,9 +44,8 @@ const mergePluginConfigs = function (plugins) {
   return plugins.reduce(mergePluginsPair, {})
 }
 
-// TODO: use deep merging instead
 const mergePluginsPair = function (pluginA, pluginB) {
-  return { ...pluginA, ...pluginB }
+  return deepmerge(pluginA, pluginB, { arrayMerge })
 }
 
 module.exports = { mergeConfigs }
