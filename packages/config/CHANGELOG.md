@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.10.0](https://www.github.com/netlify/build/compare/config-v5.9.0...config-v5.10.0) (2021-04-09)
+
+
+### Features
+
+* allow context-specific plugins configuration ([#2567](https://www.github.com/netlify/build/issues/2567)) ([dc3b462](https://www.github.com/netlify/build/commit/dc3b46223fe2d965d6a8fb479e41f65bc7c89478))
+
 ## [5.9.0](https://www.github.com/netlify/build/compare/config-v5.8.0...config-v5.9.0) (2021-04-08)
 
 
