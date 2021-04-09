@@ -109,3 +109,7 @@ test('Merges plugins in netlify.toml and defaultConfig', async (t) => {
 test('Merges context-specific plugins', async (t) => {
   await runFixture(t, 'merge_netlify_toml_context')
 })
+
+test('Context-specific plugins config is last in merged array', async (t) => {
+  await runFixture(t, 'merge_netlify_toml_context_last')
+})

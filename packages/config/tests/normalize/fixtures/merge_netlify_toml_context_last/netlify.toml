@@ -1,0 +1,5 @@
+[[context.production.plugins]]
+package = "netlify-plugin-test"
+
+[[plugins]]
+package = "netlify-plugin-test-two"
