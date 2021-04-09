@@ -1,7 +1,7 @@
 'use strict'
 
 const { extractFunctionsDirectory, normalize: normalizeFunctionsConfig } = require('./functions_config')
-const { deepMerge } = require('./utils/merge')
+const { mergeConfigs } = require('./utils/merge')
 const { removeFalsy } = require('./utils/remove_falsy')
 
 const addFunctionsDirectory = ({ functionsDirectory, v1FunctionsDirectory }) => {
@@ -24,7 +24,7 @@ const addFunctionsDirectory = ({ functionsDirectory, v1FunctionsDirectory }) => 
 
 // Normalize configuration object
 const normalizeConfig = function (config) {
-  const { build, functions, plugins, ...configA } = deepMerge(DEFAULT_CONFIG, config)
+  const { build, functions, plugins, ...configA } = mergeConfigs([DEFAULT_CONFIG, config])
 
   // Removing the legacy `functions` from the `build` block.
   const { functions: v1FunctionsDirectory, ...buildB } = build

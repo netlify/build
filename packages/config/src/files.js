@@ -6,7 +6,7 @@ const pathExists = require('path-exists')
 const { isDirectory } = require('path-type')
 
 const { throwError } = require('./error')
-const { deepMerge } = require('./utils/merge')
+const { mergeConfigs } = require('./utils/merge')
 
 // Make configuration paths relative to `buildDir` and converts them to
 // absolute paths
@@ -80,34 +80,34 @@ const checkBuildDir = async function (buildDir, repositoryRoot) {
 // Some configuration properties have default values that are only set if a
 // specific directory/file exists in the build directory
 const addDefaultPaths = async function (config, baseRel) {
-  const props = await Promise.all(
-    DEFAULT_PATHS.map(({ defaultPath, object }) => addDefaultPath({ baseRel, defaultPath, object })),
+  const defaultPathsConfigs = await Promise.all(
+    DEFAULT_PATHS.map(({ defaultPath, getConfig }) => addDefaultPath({ baseRel, defaultPath, getConfig })),
   )
-
-  return deepMerge(...props, config)
+  const defaultPathsConfigsA = defaultPathsConfigs.filter(Boolean)
+  return mergeConfigs([...defaultPathsConfigsA, config])
 }
 
 const DEFAULT_PATHS = [
   // @todo Remove once we drop support for the legact default functions directory.
   {
-    object: (directory) => ({ functionsDirectory: directory, functionsDirectoryOrigin: 'default-v1' }),
+    getConfig: (directory) => ({ functionsDirectory: directory, functionsDirectoryOrigin: 'default-v1' }),
     defaultPath: 'netlify-automatic-functions',
   },
   {
-    object: (directory) => ({ functionsDirectory: directory, functionsDirectoryOrigin: 'default' }),
+    getConfig: (directory) => ({ functionsDirectory: directory, functionsDirectoryOrigin: 'default' }),
     defaultPath: 'netlify/functions',
   },
-  { object: (directory) => ({ build: { edge_handlers: directory } }), defaultPath: 'edge-handlers' },
+  { getConfig: (directory) => ({ build: { edge_handlers: directory } }), defaultPath: 'edge-handlers' },
 ]
 
-const addDefaultPath = async function ({ baseRel, defaultPath, object }) {
+const addDefaultPath = async function ({ baseRel, defaultPath, getConfig }) {
   const absolutePath = resolvePath(baseRel, defaultPath)
 
   if (!(await pathExists(absolutePath))) {
     return
   }
 
-  return object(absolutePath)
+  return getConfig(absolutePath)
 }
 
 module.exports = { handleFiles, resolvePath }

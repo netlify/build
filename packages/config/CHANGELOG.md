@@ -1,5 +1,97 @@
 # Changelog
 
+## [5.11.0](https://www.github.com/netlify/build/compare/config-v5.10.0...config-v5.11.0) (2021-04-09)
+
+
+### Features
+
+* add a test related to context-specific plugins config ([#2570](https://www.github.com/netlify/build/issues/2570)) ([cb23b93](https://www.github.com/netlify/build/commit/cb23b938c32775ff852ce815bc3622b9c0cfcf5a))
+
+## [5.10.0](https://www.github.com/netlify/build/compare/config-v5.9.0...config-v5.10.0) (2021-04-09)
+
+
+### Features
+
+* allow context-specific plugins configuration ([#2567](https://www.github.com/netlify/build/issues/2567)) ([dc3b462](https://www.github.com/netlify/build/commit/dc3b46223fe2d965d6a8fb479e41f65bc7c89478))
+
+## [5.9.0](https://www.github.com/netlify/build/compare/config-v5.8.0...config-v5.9.0) (2021-04-08)
+
+
+### Features
+
+* move validation related to duplicated plugins configuration ([#2566](https://www.github.com/netlify/build/issues/2566)) ([df2e5d5](https://www.github.com/netlify/build/commit/df2e5d563397b90ec79982f264c851e9bd21b2c4))
+
+## [5.8.0](https://www.github.com/netlify/build/compare/config-v5.7.0...config-v5.8.0) (2021-04-08)
+
+
+### Features
+
+* refactor configuration merge logic ([#2564](https://www.github.com/netlify/build/issues/2564)) ([06ea3fd](https://www.github.com/netlify/build/commit/06ea3fd438c25f8f372b4a111119e116f7d90f6d))
+
+## [5.7.0](https://www.github.com/netlify/build/compare/config-v5.6.0...config-v5.7.0) (2021-04-08)
+
+
+### Features
+
+* refactor configuration merge logic ([#2561](https://www.github.com/netlify/build/issues/2561)) ([839d400](https://www.github.com/netlify/build/commit/839d4008dd3d515785bdff12174910902d242709))
+* refactors how plugins configurations are currently merged ([#2562](https://www.github.com/netlify/build/issues/2562)) ([7276576](https://www.github.com/netlify/build/commit/7276576020d9bf133f1e50666a614c10e980be3b))
+
+## [5.6.0](https://www.github.com/netlify/build/compare/config-v5.5.1...config-v5.6.0) (2021-04-08)
+
+
+### Features
+
+* improve how context-specific config are merged ([#2555](https://www.github.com/netlify/build/issues/2555)) ([a642a9d](https://www.github.com/netlify/build/commit/a642a9d36f24dc5c93e43304858007c524035b71))
+
+### [5.5.1](https://www.github.com/netlify/build/compare/config-v5.5.0...config-v5.5.1) (2021-04-07)
+
+
+### Bug Fixes
+
+* context properties should not unset plugins ([#2558](https://www.github.com/netlify/build/issues/2558)) ([32be1bb](https://www.github.com/netlify/build/commit/32be1bb7d052d8e4a0b9bcbf9d5d0dbd428a8535))
+
+## [5.5.0](https://www.github.com/netlify/build/compare/config-v5.4.0...config-v5.5.0) (2021-04-07)
+
+
+### Features
+
+* validate `context.{context}.*` properties ([#2551](https://www.github.com/netlify/build/issues/2551)) ([4559349](https://www.github.com/netlify/build/commit/45593491b6a053c0d256a169d4ff998187c533e9))
+
+## [5.4.0](https://www.github.com/netlify/build/compare/config-v5.3.1...config-v5.4.0) (2021-04-07)
+
+
+### Features
+
+* refactor configuration property origins ([#2549](https://www.github.com/netlify/build/issues/2549)) ([b1d7c66](https://www.github.com/netlify/build/commit/b1d7c6623a16a62941ddd2f3d406657c4206b096))
+
+### [5.3.1](https://www.github.com/netlify/build/compare/config-v5.3.0...config-v5.3.1) (2021-04-07)
+
+
+### Bug Fixes
+
+* improve config normalization logic ([#2547](https://www.github.com/netlify/build/issues/2547)) ([7945e0a](https://www.github.com/netlify/build/commit/7945e0ab496f48da006392646cf0512f6a564348))
+
+## [5.3.0](https://www.github.com/netlify/build/compare/config-v5.2.0...config-v5.3.0) (2021-04-07)
+
+
+### Features
+
+* refactor how origin is added to context-specific configs ([#2545](https://www.github.com/netlify/build/issues/2545)) ([c3f45b2](https://www.github.com/netlify/build/commit/c3f45b288544200a6408a9af7bdfb955d45ebb81))
+
+## [5.2.0](https://www.github.com/netlify/build/compare/config-v5.1.1...config-v5.2.0) (2021-04-07)
+
+
+### Features
+
+* refactor plugins[*].origin ([#2540](https://www.github.com/netlify/build/issues/2540)) ([43ad104](https://www.github.com/netlify/build/commit/43ad104928d707b864a6e667270d783ae4e5cbac))
+
+### [5.1.1](https://www.github.com/netlify/build/compare/config-v5.1.0...config-v5.1.1) (2021-04-06)
+
+
+### Bug Fixes
+
+* validate build.command even when not used due to config merge ([#2541](https://www.github.com/netlify/build/issues/2541)) ([95c8e70](https://www.github.com/netlify/build/commit/95c8e7088c8956b34535548da4b2c7a3014ff37d))
+
 ## [5.1.0](https://www.github.com/netlify/build/compare/config-v5.0.1...config-v5.1.0) (2021-04-01)
 
 

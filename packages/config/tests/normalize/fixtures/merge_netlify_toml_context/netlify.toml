@@ -1,0 +1,21 @@
+[[plugins]]
+package = "netlify-plugin-test"
+  [plugins.inputs]
+  boolean = true
+  unset = true
+  array = ["a", "b"]
+    [plugins.inputs.object]
+    prop = true
+
+[[plugins]]
+package = "netlify-plugin-test-two"
+  [plugins.inputs]
+  boolean = true
+
+[[context.production.plugins]]
+package = "netlify-plugin-test"
+  [context.production.plugins.inputs]
+  boolean = false
+  array = ["c", "d"]
+    [context.production.plugins.inputs.object]
+    prop = false

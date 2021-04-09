@@ -5,7 +5,6 @@ require('./utils/polyfills')
 
 const { getApiClient } = require('./api/client')
 const { getSiteInfo } = require('./api/site_info')
-const { normalizeConfigCase } = require('./case')
 const { mergeContext } = require('./context')
 const { getConfig, parseDefaultConfig } = require('./default')
 const { getEnv } = require('./env/main')
@@ -13,18 +12,12 @@ const { handleFiles } = require('./files')
 const { getInlineConfig } = require('./inline_config')
 const { cleanupConfig } = require('./log/cleanup')
 const { logResult } = require('./log/main')
-const { mergeConfigs } = require('./merge')
-const { normalizeConfig } = require('./normalize')
+const { normalizeBeforeConfigMerge, normalizeAfterConfigMerge } = require('./merge_normalize')
 const { addDefaultOpts, normalizeOpts } = require('./options/main')
+const { UI_ORIGIN, CONFIG_ORIGIN } = require('./origin')
 const { parseConfig } = require('./parse')
 const { getConfigPath } = require('./path')
-const {
-  validatePreCaseNormalize,
-  validatePreMergeConfig,
-  validatePreContextConfig,
-  validatePreNormalizeConfig,
-  validatePostNormalizeConfig,
-} = require('./validate/main')
+const { mergeConfigs } = require('./utils/merge')
 
 // Load the configuration file.
 // Takes an optional configuration file path as input and return the resolved
@@ -205,21 +198,22 @@ const getFullConfig = async function ({
   }
 }
 
+// Merge:
+//  - `--defaultConfig`: UI build settings and UI-installed plugins
+//  - `inlineConfig`: Netlify CLI flags
+// Then merge context-specific configuration.
+// Before and after those steps, also performs validation and normalization.
+// Those need to be done at different stages depending on whether they should
+// happen before/after the merges mentioned above.
 const mergeAndNormalizeConfig = function ({ config, defaultConfig, inlineConfig, context, branch }) {
-  validatePreCaseNormalize(config)
-  const configA = normalizeConfigCase(config)
+  const configA = normalizeBeforeConfigMerge(config, CONFIG_ORIGIN)
+  const defaultConfigA = normalizeBeforeConfigMerge(defaultConfig, UI_ORIGIN)
+  const inlineConfigA = normalizeBeforeConfigMerge(inlineConfig, CONFIG_ORIGIN)
 
-  validatePreMergeConfig(defaultConfig, configA, inlineConfig)
-  const configB = mergeConfigs(defaultConfig, configA, inlineConfig)
-
-  validatePreContextConfig(configB)
+  const configB = mergeConfigs([defaultConfigA, configA, inlineConfigA])
   const configC = mergeContext(configB, context, branch)
 
-  validatePreNormalizeConfig(configC)
-  const configD = normalizeConfig(configC)
-
-  validatePostNormalizeConfig(configD)
-
+  const configD = normalizeAfterConfigMerge(configC)
   return configD
 }
 

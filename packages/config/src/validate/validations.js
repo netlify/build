@@ -41,8 +41,16 @@ const PRE_CASE_NORMALIZE_VALIDATIONS = [
   },
 ]
 
-// Validations done before `defaultConfig` merge
-const PRE_MERGE_VALIDATIONS = [
+// Properties with an `origin` property need to be validated twice:
+//  - Before the `origin` property is added
+//  - After `context.*` is merged, since they might contain that property
+const ORIGIN_VALIDATIONS = [
+  {
+    property: 'build.command',
+    check: isString,
+    message: 'must be a string',
+    example: () => ({ build: { command: 'npm run build' } }),
+  },
   {
     property: 'plugins',
     check: isArrayOfObjects,
@@ -50,6 +58,9 @@ const PRE_MERGE_VALIDATIONS = [
     example: () => ({ plugins: [{ package: 'netlify-plugin-one' }, { package: 'netlify-plugin-two' }] }),
   },
 ]
+
+// Validations done before `defaultConfig` merge
+const PRE_MERGE_VALIDATIONS = [...ORIGIN_VALIDATIONS]
 
 // Validations done before context merge
 const PRE_CONTEXT_VALIDATIONS = [
@@ -69,12 +80,7 @@ const PRE_CONTEXT_VALIDATIONS = [
 
 // Validations done before normalization
 const PRE_NORMALIZE_VALIDATIONS = [
-  {
-    property: 'build.command',
-    check: isString,
-    message: 'must be a string',
-    example: () => ({ build: { command: 'npm run build' } }),
-  },
+  ...ORIGIN_VALIDATIONS,
   {
     property: 'functions',
     check: isPlainObj,

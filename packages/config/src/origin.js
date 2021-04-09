@@ -4,49 +4,28 @@
 const UI_ORIGIN = 'ui'
 const CONFIG_ORIGIN = 'config'
 
-// Add `build.commandOrigin`. This shows whether `build.command` came from the
-// `ui` or from the `config`.
+// Add `build.commandOrigin` and `plugins[*].origin`.
+// This shows whether those properties came from the `ui` or from the `config`.
+const addOrigins = function (config, origin) {
+  const configA = addBuildCommandOrigin(config, origin)
+  const configB = addConfigPluginOrigin(configA, origin)
+  return configB
+}
+
 // This also removes empty build commands.
-const addBuildCommandOrigins = function (defaultConfig, config, inlineConfig) {
-  return [
-    addBuildCommandUiOrigin(defaultConfig),
-    addBuildCommandConfigOrigin(config),
-    addBuildCommandConfigOrigin(inlineConfig),
-  ]
+const addBuildCommandOrigin = function ({ build: { command, ...build } = {}, ...config }, commandOrigin) {
+  return command === undefined || (typeof command === 'string' && command.trim() === '')
+    ? { ...config, build }
+    : { ...config, build: { ...build, command, commandOrigin } }
 }
 
-const addBuildCommandOrigin = function (commandOrigin, { build = {}, ...config }) {
-  const buildA = addCommandOrigin(commandOrigin, build)
-  return { ...config, build: buildA }
-}
-
-const addBuildCommandUiOrigin = addBuildCommandOrigin.bind(null, UI_ORIGIN)
-const addBuildCommandConfigOrigin = addBuildCommandOrigin.bind(null, CONFIG_ORIGIN)
-
-const addCommandOrigin = function (commandOrigin, { command, ...build }) {
-  if (command === undefined || (typeof command === 'string' && command.trim() === '')) {
-    return build
+const addConfigPluginOrigin = function ({ plugins, ...config }, origin) {
+  if (plugins === undefined) {
+    return config
   }
 
-  return { ...build, command, commandOrigin }
+  const pluginsA = plugins.map((plugin) => ({ ...plugin, origin }))
+  return { ...config, plugins: pluginsA }
 }
 
-const addCommandConfigOrigin = addCommandOrigin.bind(null, CONFIG_ORIGIN)
-
-// Add `plugins[*].origin`. This is like `build.commandOrigin` but for plugins.
-const addPluginsOrigins = function (defaultPlugins, plugins, inlinePlugins) {
-  return [
-    defaultPlugins.map(addPluginUiOrigin),
-    plugins.map(addPluginConfigOrigin),
-    inlinePlugins.map(addPluginConfigOrigin),
-  ]
-}
-
-const addPluginOrigin = function (origin, plugin) {
-  return { ...plugin, origin }
-}
-
-const addPluginUiOrigin = addPluginOrigin.bind(null, UI_ORIGIN)
-const addPluginConfigOrigin = addPluginOrigin.bind(null, CONFIG_ORIGIN)
-
-module.exports = { addBuildCommandOrigins, addCommandConfigOrigin, addPluginsOrigins }
+module.exports = { addOrigins, UI_ORIGIN, CONFIG_ORIGIN }

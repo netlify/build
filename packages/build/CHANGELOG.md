@@ -1,5 +1,26 @@
 # Changelog
 
+### [10.2.5](https://www.github.com/netlify/build/compare/build-v10.2.4...build-v10.2.5) (2021-04-07)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^3.2.0 ([#2552](https://www.github.com/netlify/build/issues/2552)) ([26b379e](https://www.github.com/netlify/build/commit/26b379e10feb5ee26c3fd426df05a21c0eafb4f1))
+
+### [10.2.4](https://www.github.com/netlify/build/compare/build-v10.2.3...build-v10.2.4) (2021-04-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^3.1.0 ([#2536](https://www.github.com/netlify/build/issues/2536)) ([fc694be](https://www.github.com/netlify/build/commit/fc694be35a186ef362c3e1e541d0e4c65af7109d))
+
+### [10.2.3](https://www.github.com/netlify/build/compare/build-v10.2.2...build-v10.2.3) (2021-04-06)
+
+
+### Bug Fixes
+
+* **feature_flag:** remove telemetry feature flag code ([#2535](https://www.github.com/netlify/build/issues/2535)) ([69a48b6](https://www.github.com/netlify/build/commit/69a48b669a38c5492cbd7abed13f5d3bcd832dcd))
+
 ### [10.2.2](https://www.github.com/netlify/build/compare/build-v10.2.1...build-v10.2.2) (2021-04-02)
 
 

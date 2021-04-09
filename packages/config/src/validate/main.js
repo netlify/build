@@ -18,10 +18,8 @@ const validatePreCaseNormalize = function (config) {
 }
 
 // Validate the configuration file, before `defaultConfig` merge.
-const validatePreMergeConfig = function (defaultConfig, config, inlineConfig) {
-  validateConfig(defaultConfig, PRE_MERGE_VALIDATIONS)
+const validatePreMergeConfig = function (config) {
   validateConfig(config, PRE_MERGE_VALIDATIONS)
-  validateConfig(inlineConfig, PRE_MERGE_VALIDATIONS)
 }
 
 // Validate the configuration file, before context merge.
@@ -89,10 +87,17 @@ const validateProperty = function (
   reportError({ prevPath, propPath, message, example, value, key, formatInvalid, propertyName })
 }
 
-const reportError = function ({ prevPath, propPath, message, example, value, key, formatInvalid, propertyName }) {
-  const displayName = propertyName || propPath
-
-  throwError(`${THEME.highlightWords('Configuration property')} ${displayName} ${message}
+const reportError = function ({
+  prevPath,
+  propPath,
+  message,
+  example,
+  value,
+  key,
+  formatInvalid,
+  propertyName = propPath,
+}) {
+  throwError(`${THEME.highlightWords('Configuration property')} ${propertyName} ${message}
 ${getExample({ value, key, prevPath, example, formatInvalid })}`)
 }
 

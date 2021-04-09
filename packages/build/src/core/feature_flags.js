@@ -14,10 +14,7 @@ const getFeatureFlag = function (name) {
   return { [name]: true }
 }
 
-const DEFAULT_FEATURE_FLAGS = {
-  // When `true`, it allows enabling the telemetry reporting from build
-  // via a --telemetry flag (which defaults to false)
-  buildbot_build_telemetry: false,
-}
+// Default values for feature flags
+const DEFAULT_FEATURE_FLAGS = {}
 
 module.exports = { normalizeFeatureFlags, DEFAULT_FEATURE_FLAGS }

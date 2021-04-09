@@ -16,6 +16,11 @@ test('plugins: do not allow duplicates', async (t) => {
   await runFixture(t, 'plugins_duplicate')
 })
 
+test('plugins: do not allow duplicates in the UI', async (t) => {
+  const defaultConfig = JSON.stringify({ plugins: [{ package: 'test' }, { package: 'test' }] })
+  await runFixture(t, 'empty', { flags: { defaultConfig } })
+})
+
 test('plugins.any: unknown property', async (t) => {
   await runFixture(t, 'plugins_unknown')
 })
@@ -92,6 +97,11 @@ test('build.command: array', async (t) => {
   await runFixture(t, 'build_command_array')
 })
 
+test('build.command is validated even when not used due to merging', async (t) => {
+  const defaultConfig = JSON.stringify({ build: { command: false } })
+  await runFixture(t, 'build_command_merge', { flags: { defaultConfig } })
+})
+
 test('build.context: property', async (t) => {
   await runFixture(t, 'build_context_property', { flags: { context: 'development' } })
 })
@@ -106,6 +116,10 @@ test('build.context: object', async (t) => {
 
 test('build.context.CONTEXT: object', async (t) => {
   await runFixture(t, 'build_context_nested_object')
+})
+
+test('build.context properties are validated like top-level ones', async (t) => {
+  await runFixture(t, 'build_context_validation')
 })
 
 test('functions: object', async (t) => {
