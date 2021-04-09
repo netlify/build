@@ -203,7 +203,7 @@ const getFullConfig = async function ({
 //  - `inlineConfig`: Netlify CLI flags
 // Then merge context-specific configuration.
 // Before and after those steps, also performs validation and normalization.
-// Those needs to be done at different stages depending on whether they should
+// Those need to be done at different stages depending on whether they should
 // happen before/after the merges mentioned above.
 const mergeAndNormalizeConfig = function ({ config, defaultConfig, inlineConfig, context, branch }) {
   const configA = normalizeBeforeConfigMerge(config, CONFIG_ORIGIN)
