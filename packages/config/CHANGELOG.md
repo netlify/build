@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.11.0](https://www.github.com/netlify/build/compare/config-v5.10.0...config-v5.11.0) (2021-04-09)
+
+
+### Features
+
+* add a test related to context-specific plugins config ([#2570](https://www.github.com/netlify/build/issues/2570)) ([cb23b93](https://www.github.com/netlify/build/commit/cb23b938c32775ff852ce815bc3622b9c0cfcf5a))
+
 ## [5.10.0](https://www.github.com/netlify/build/compare/config-v5.9.0...config-v5.10.0) (2021-04-09)
 
 
