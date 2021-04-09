@@ -52,7 +52,7 @@ The build completed successfully, but the following processes were still running
   logWarning(
     logs,
     `
-These processes have been terminated.`,
+These processes have been terminated. In case this creates a problem for your build, refer to [this article](https://answers.netlify.com/t/support-guide-how-to-address-the-warning-message-related-to-terminating-processes-in-builds/35277) for details about why this process termination happens and how to fix it.`,
   )
 }
 
