@@ -1,5 +1,12 @@
 # Changelog
 
+### [10.2.6](https://www.github.com/netlify/build/compare/build-v10.2.5...build-v10.2.6) (2021-04-09)
+
+
+### Bug Fixes
+
+* improve lingering processes warning message ([#2467](https://www.github.com/netlify/build/issues/2467)) ([d62099b](https://www.github.com/netlify/build/commit/d62099ba424a70bbcb0b7d239d94f63cc03826b5))
+
 ### [10.2.5](https://www.github.com/netlify/build/compare/build-v10.2.4...build-v10.2.5) (2021-04-07)
 
 
