@@ -12,12 +12,12 @@ const { handleFiles } = require('./files')
 const { getInlineConfig } = require('./inline_config')
 const { cleanupConfig } = require('./log/cleanup')
 const { logResult } = require('./log/main')
-const { mergeAllConfigs } = require('./merge')
 const { normalizeBeforeConfigMerge, normalizeAfterConfigMerge } = require('./merge_normalize')
 const { addDefaultOpts, normalizeOpts } = require('./options/main')
 const { UI_ORIGIN, CONFIG_ORIGIN } = require('./origin')
 const { parseConfig } = require('./parse')
 const { getConfigPath } = require('./path')
+const { mergeConfigs } = require('./utils/merge')
 
 // Load the configuration file.
 // Takes an optional configuration file path as input and return the resolved
@@ -198,12 +198,19 @@ const getFullConfig = async function ({
   }
 }
 
+// Merge:
+//  - `--defaultConfig`: UI build settings and UI-installed plugins
+//  - `inlineConfig`: Netlify CLI flags
+// Then merge context-specific configuration.
+// Before and after those steps, also performs validation and normalization.
+// Those need to be done at different stages depending on whether they should
+// happen before/after the merges mentioned above.
 const mergeAndNormalizeConfig = function ({ config, defaultConfig, inlineConfig, context, branch }) {
   const configA = normalizeBeforeConfigMerge(config, CONFIG_ORIGIN)
   const defaultConfigA = normalizeBeforeConfigMerge(defaultConfig, UI_ORIGIN)
   const inlineConfigA = normalizeBeforeConfigMerge(inlineConfig, CONFIG_ORIGIN)
 
-  const configB = mergeAllConfigs([defaultConfigA, configA, inlineConfigA])
+  const configB = mergeConfigs([defaultConfigA, configA, inlineConfigA])
   const configC = mergeContext(configB, context, branch)
 
   const configD = normalizeAfterConfigMerge(configC)

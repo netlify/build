@@ -105,3 +105,7 @@ test('Merges plugins in netlify.toml and defaultConfig', async (t) => {
   })
   await runFixture(t, 'merge_netlify_toml_default', { flags: { defaultConfig } })
 })
+
+test('Merges context-specific plugins', async (t) => {
+  await runFixture(t, 'merge_netlify_toml_context')
+})
