@@ -1,5 +1,12 @@
 # Changelog
 
+### [5.11.1](https://www.github.com/netlify/build/compare/config-v5.11.0...config-v5.11.1) (2021-04-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency netlify to ^6.1.17 ([#2589](https://www.github.com/netlify/build/issues/2589)) ([925a1c4](https://www.github.com/netlify/build/commit/925a1c4613be2d96142caecda9dd452a0fd4f951))
+
 ## [5.11.0](https://www.github.com/netlify/build/compare/config-v5.10.0...config-v5.11.0) (2021-04-09)
 
 
