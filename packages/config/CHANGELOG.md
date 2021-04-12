@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.12.0](https://www.github.com/netlify/build/compare/config-v5.11.1...config-v5.12.0) (2021-04-12)
+
+
+### Features
+
+* deep merge context-specific plugin config ([#2572](https://www.github.com/netlify/build/issues/2572)) ([0a29162](https://www.github.com/netlify/build/commit/0a2916234a14ef0f99f093c8c5cdde0727d0f09f))
+
 ### [5.11.1](https://www.github.com/netlify/build/compare/config-v5.11.0...config-v5.11.1) (2021-04-12)
 
 
