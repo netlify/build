@@ -6,6 +6,7 @@ package = "netlify-plugin-test"
   array = ["a", "b"]
     [plugins.inputs.object]
     prop = true
+    unset = true
 
 [[plugins]]
 package = "netlify-plugin-test-two"

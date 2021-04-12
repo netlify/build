@@ -98,7 +98,7 @@ test('Merges plugins in netlify.toml and defaultConfig', async (t) => {
           boolean: true,
           unset: true,
           array: ['a', 'b'],
-          object: { prop: true },
+          object: { prop: true, unset: true },
         },
       },
     ],
