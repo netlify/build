@@ -36,6 +36,8 @@
         'update-notifier',
         'yargs',
         // Those cannot be upgraded to a major version until we drop support for Node 10
+        'p-reduce',
+        'path-key',
         'path-type',
         'read-pkg-up',
       ],
