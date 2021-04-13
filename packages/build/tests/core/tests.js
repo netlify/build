@@ -101,14 +101,25 @@ test('--config', async (t) => {
   await runFixture(t, '', { flags: { config: `${FIXTURES_DIR}/empty/netlify.toml` } })
 })
 
-test('--defaultConfig', async (t) => {
+test('--defaultConfig CLI flag', async (t) => {
   const defaultConfig = JSON.stringify({ build: { command: 'echo commandDefault' } })
+  await runFixture(t, 'empty', { flags: { defaultConfig }, useBinary: true })
+})
+
+test('--defaultConfig', async (t) => {
+  const defaultConfig = { build: { command: 'echo commandDefault' } }
   await runFixture(t, 'empty', { flags: { defaultConfig } })
+})
+
+test('--cachedConfig CLI flag', async (t) => {
+  const { returnValue } = await runFixtureConfig(t, 'cached_config', { snapshot: false })
+  await runFixture(t, 'cached_config', { flags: { cachedConfig: returnValue }, useBinary: true })
 })
 
 test('--cachedConfig', async (t) => {
   const { returnValue } = await runFixtureConfig(t, 'cached_config', { snapshot: false })
-  await runFixture(t, 'cached_config', { flags: { cachedConfig: returnValue } })
+  const cachedConfig = JSON.parse(returnValue)
+  await runFixture(t, 'cached_config', { flags: { cachedConfig } })
 })
 
 test('--context', async (t) => {
@@ -144,7 +155,7 @@ test('--dry-run', async (t) => {
 })
 
 test('--dry with build.command but no netlify.toml', async (t) => {
-  await runFixture(t, 'none', { flags: { dry: true, defaultConfig: '{"build":{"command":"echo"}}' } })
+  await runFixture(t, 'none', { flags: { dry: true, defaultConfig: { build: { command: 'echo' } } } })
 })
 
 const CHILD_NODE_VERSION = '8.3.0'

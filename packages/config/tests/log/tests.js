@@ -14,12 +14,12 @@ test('Allow printing undefined in debug mode', async (t) => {
 })
 
 test('Allow printing plugins with no inputs in debug mode', async (t) => {
-  const defaultConfig = JSON.stringify({ plugins: [{ package: 'test' }] })
+  const defaultConfig = { plugins: [{ package: 'test' }] }
   await runFixture(t, 'empty', { flags: { debug: true, defaultConfig } })
 })
 
 test('Does not print confidential information in debug mode', async (t) => {
-  const defaultConfig = JSON.stringify({ build: { environment: { SECRET: 'true' } } })
+  const defaultConfig = { build: { environment: { SECRET: 'true' } } }
   const inlineConfig = { build: { environment: { SECRET_TWO: 'true' } } }
   await runFixture(t, 'simple', { flags: { debug: true, defaultConfig, inlineConfig }, env: { SECRET: 'true' } })
 })
@@ -29,7 +29,7 @@ test('Debug mode can be enabled using the NETLIFY_BUILD_DEBUG environment variab
 })
 
 test('Debug mode can be enabled using the NETLIFY_BUILD_DEBUG environment UI setting', async (t) => {
-  const defaultConfig = JSON.stringify({ build: { environment: { NETLIFY_BUILD_DEBUG: 'true' } } })
+  const defaultConfig = { build: { environment: { NETLIFY_BUILD_DEBUG: 'true' } } }
   await runFixture(t, 'simple', { flags: { defaultConfig } })
 })
 

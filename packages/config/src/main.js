@@ -6,7 +6,7 @@ require('./utils/polyfills')
 const { getApiClient } = require('./api/client')
 const { getSiteInfo } = require('./api/site_info')
 const { mergeContext } = require('./context')
-const { getConfig, parseDefaultConfig } = require('./default')
+const { parseDefaultConfig } = require('./default')
 const { getEnv } = require('./env/main')
 const { handleFiles } = require('./files')
 const { getInlineConfig } = require('./inline_config')
@@ -36,7 +36,7 @@ const resolveConfig = async function (opts) {
     // The CLI does not print the API `token` for security reasons, which means
     // it might be missing from `cachedConfig`. We provide the one passed in
     // `opts` as a fallback.
-    return { token, ...getConfig(cachedConfig, 'cached'), api }
+    return { token, ...cachedConfig, api }
   }
 
   const {
