@@ -54,6 +54,7 @@ const getDefaultFlags = function ({ env: envOpt = {} }, combinedEnv) {
     testOpts: {},
     featureFlags: DEFAULT_FEATURE_FLAGS,
     statsd: { port: DEFAULT_STATSD_PORT },
+    uiPlugins: [],
   }
 }
 
