@@ -1,5 +1,18 @@
 # Changelog
 
+## [10.3.0](https://www.github.com/netlify/build/compare/build-v10.2.7...build-v10.3.0) (2021-04-14)
+
+
+### Features
+
+* add `--ui-plugins` CLI flag ([#2597](https://www.github.com/netlify/build/issues/2597)) ([7c9273b](https://www.github.com/netlify/build/commit/7c9273b2ed1e2e47b25c6eed0851bc26b1da037a))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^3.2.1 ([#2592](https://www.github.com/netlify/build/issues/2592)) ([3fae367](https://www.github.com/netlify/build/commit/3fae3679e78734d2dad9e199870419f22cffd9c9))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^3.3.0 ([#2598](https://www.github.com/netlify/build/issues/2598)) ([5eeed10](https://www.github.com/netlify/build/commit/5eeed1075e0b65aa656be065558668b451896ac7))
+
 ### [10.2.7](https://www.github.com/netlify/build/compare/build-v10.2.6...build-v10.2.7) (2021-04-09)
 
 
