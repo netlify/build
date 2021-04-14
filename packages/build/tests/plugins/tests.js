@@ -724,6 +724,10 @@ test.serial('Plugins can specify non-matching compatibility.siteDependencies ran
   })
 })
 
+test('Can specify UI plugins with --ui-plugins flag', async (t) => {
+  await runFixture(t, 'empty', { flags: { uiPlugins: [{ package: 'test', version: '1.0.0' }] } })
+})
+
 const getNodePath = function (nodeVersion) {
   return `/home/ether/.nvm/versions/node/v${nodeVersion}/bin/node`
 }
