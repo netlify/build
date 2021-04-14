@@ -125,7 +125,7 @@ const execCommand = function ({ mainFunc, binaryPath, useBinary, mainFlags, comm
 
 const execCliCommand = async function ({ binaryPath, mainFlags, commandEnv }) {
   const cliFlags = getCliFlags(mainFlags)
-  const { all, exitCode } = await execa.command(`${binaryPath} ${cliFlags}`, {
+  const { all, exitCode } = await execa(binaryPath, cliFlags, {
     all: true,
     reject: false,
     env: commandEnv,
@@ -134,9 +134,7 @@ const execCliCommand = async function ({ binaryPath, mainFlags, commandEnv }) {
 }
 
 const getCliFlags = function (mainFlags, prefix = []) {
-  return Object.entries(mainFlags)
-    .flatMap(([name, value]) => getCliFlag({ name, value, prefix }))
-    .join(' ')
+  return Object.entries(mainFlags).flatMap(([name, value]) => getCliFlag({ name, value, prefix }))
 }
 
 const getCliFlag = function ({ name, value, prefix }) {
