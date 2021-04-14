@@ -17,7 +17,7 @@ test('plugins: do not allow duplicates', async (t) => {
 })
 
 test('plugins: do not allow duplicates in the UI', async (t) => {
-  const defaultConfig = JSON.stringify({ plugins: [{ package: 'test' }, { package: 'test' }] })
+  const defaultConfig = { plugins: [{ package: 'test' }, { package: 'test' }] }
   await runFixture(t, 'empty', { flags: { defaultConfig } })
 })
 
@@ -98,7 +98,7 @@ test('build.command: array', async (t) => {
 })
 
 test('build.command is validated even when not used due to merging', async (t) => {
-  const defaultConfig = JSON.stringify({ build: { command: false } })
+  const defaultConfig = { build: { command: false } }
   await runFixture(t, 'build_command_merge', { flags: { defaultConfig } })
 })
 
@@ -147,7 +147,7 @@ test('functions.directory: defined on the main functions object', async (t) => {
 })
 
 test('Validates defaultConfig', async (t) => {
-  const defaultConfig = JSON.stringify({ build: { command: false } })
+  const defaultConfig = { build: { command: false } }
   await runFixture(t, 'empty', { flags: { defaultConfig } })
 })
 

@@ -13,7 +13,7 @@ test('Some properties can be capitalized', async (t) => {
 })
 
 test('Some properties can be capitalized even when merged with defaultConfig', async (t) => {
-  const defaultConfig = JSON.stringify({
+  const defaultConfig = {
     Build: {
       Base: 'base',
       Command: 'gulp build default',
@@ -24,7 +24,7 @@ test('Some properties can be capitalized even when merged with defaultConfig', a
       Environment: { TEST: 'test' },
       Processing: { css: { bundle: false } },
     },
-  })
+  }
   await runFixture(t, 'props_case_default_config', { flags: { defaultConfig } })
 })
 
@@ -45,7 +45,7 @@ test('Add build.commandOrigin config if it came from contexts', async (t) => {
 })
 
 test('Add build.commandOrigin ui if it came from defaultConfig', async (t) => {
-  const defaultConfig = JSON.stringify({ build: { command: 'test' } })
+  const defaultConfig = { build: { command: 'test' } }
   await runFixture(t, 'empty', { flags: { defaultConfig } })
 })
 
@@ -90,7 +90,7 @@ test('Handles function configuration objects for functions with the same name as
 })
 
 test('Merges plugins in netlify.toml and defaultConfig', async (t) => {
-  const defaultConfig = JSON.stringify({
+  const defaultConfig = {
     plugins: [
       {
         package: 'netlify-plugin-test',
@@ -102,7 +102,7 @@ test('Merges plugins in netlify.toml and defaultConfig', async (t) => {
         },
       },
     ],
-  })
+  }
   await runFixture(t, 'merge_netlify_toml_default', { flags: { defaultConfig } })
 })
 

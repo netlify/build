@@ -463,7 +463,7 @@ test('Node module plugins', async (t) => {
 })
 
 test('UI plugins', async (t) => {
-  const defaultConfig = JSON.stringify({ plugins: [{ package: 'netlify-plugin-test' }] })
+  const defaultConfig = { plugins: [{ package: 'netlify-plugin-test' }] }
   await runFixture(t, 'ui', { flags: { defaultConfig } })
 })
 

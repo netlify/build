@@ -258,7 +258,7 @@ test('Report plugin homepage without a repository', async (t) => {
 })
 
 test('Report plugin origin', async (t) => {
-  const defaultConfig = JSON.stringify({ plugins: [{ package: './plugin.js' }] })
+  const defaultConfig = { plugins: [{ package: './plugin.js' }] }
   await runFixture(t, 'plugin_origin', { flags: { ...flags, defaultConfig } })
 })
 
@@ -331,7 +331,7 @@ test('Print stack trace of build.command errors with stack traces', async (t) =>
 })
 
 test('Print stack trace of Build command UI settings', async (t) => {
-  const defaultConfig = JSON.stringify({ build: { command: 'node --invalid' } })
+  const defaultConfig = { build: { command: 'node --invalid' } }
   await runFixture(t, 'none', { flags: { defaultConfig } })
 })
 

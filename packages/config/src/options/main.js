@@ -28,9 +28,10 @@ const addDefaultOpts = function (opts = {}) {
   return normalizedOptsA
 }
 
-const getDefaultOpts = function ({ env: envOpt = {}, cwd: cwdOpt, defaultConfig }) {
+const getDefaultOpts = function ({ env: envOpt = {}, cwd: cwdOpt, defaultConfig = {} }) {
   const combinedEnv = { ...process.env, ...envOpt }
   return {
+    defaultConfig,
     ...getDefaultCwd(cwdOpt),
     env: envOpt,
     context: combinedEnv.CONTEXT || 'production',
@@ -48,17 +49,8 @@ const getDefaultOpts = function ({ env: envOpt = {}, cwd: cwdOpt, defaultConfig 
 
 // --debug can be set using an environment variable `NETLIFY_BUILD_DEBUG` either
 // locally or in the UI build settings
-const getDefaultDebug = function (combinedEnv, defaultConfig) {
-  if (combinedEnv.NETLIFY_BUILD_DEBUG) {
-    return true
-  }
-
-  try {
-    const { build: { environment: { NETLIFY_BUILD_DEBUG } = {} } = {} } = JSON.parse(defaultConfig)
-    return Boolean(NETLIFY_BUILD_DEBUG)
-  } catch (error) {
-    return false
-  }
+const getDefaultDebug = function (combinedEnv, { build: { environment = {} } = {} }) {
+  return Boolean(combinedEnv.NETLIFY_BUILD_DEBUG || environment.NETLIFY_BUILD_DEBUG)
 }
 
 // `process.cwd()` can throw, so only call it when needed

@@ -5,7 +5,7 @@ const test = require('ava')
 const { runFixture } = require('../helpers/main')
 
 test('Base from defaultConfig', async (t) => {
-  const defaultConfig = JSON.stringify({ build: { base: 'base' } })
+  const defaultConfig = { build: { base: 'base' } }
   await runFixture(t, 'default_config', { flags: { defaultConfig } })
 })
 
