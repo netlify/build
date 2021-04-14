@@ -1,5 +1,12 @@
 # Changelog
 
+### [11.0.1](https://www.github.com/netlify/build/compare/build-v11.0.0...build-v11.0.1) (2021-04-14)
+
+
+### Bug Fixes
+
+* `@netlify/config` major release ([#2603](https://www.github.com/netlify/build/issues/2603)) ([5c53aa8](https://www.github.com/netlify/build/commit/5c53aa895d51a0b99ac8638f54b326fb7ae1a395))
+
 ## [11.0.0](https://www.github.com/netlify/build/compare/build-v10.3.0...build-v11.0.0) (2021-04-14)
 
 
