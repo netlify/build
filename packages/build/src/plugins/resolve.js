@@ -17,6 +17,8 @@ const resolvePluginsPath = async function ({
   buildDir,
   nodePath,
   packageJson,
+  // @todo: use it to pin plugins' versions
+  // uiPlugins,
   mode,
   logs,
   debug,

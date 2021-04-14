@@ -26,6 +26,7 @@ const INTERNAL_FLAGS = [
   'framework',
   'featureFlags',
   'buildbotServerSocket',
+  'uiPlugins',
   'testOpts',
   'mode',
   'apiHost',
