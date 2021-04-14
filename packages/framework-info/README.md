@@ -15,6 +15,9 @@ The following frameworks are detected:
 - Front-end frameworks: create-react-app, Vue, Sapper, Angular, Ember, Svelte, Expo, Quasar
 - Build tools: Parcel, Brunch, Grunt, Gulp
 
+If you're looking for a way to run `framework-info` via CLI check the
+[`build-info`](https://github.com/netlify/build-info) project.
+
 [Additions and updates are welcome!](#add-or-update-a-framework)
 
 # Example (Node.js)
@@ -83,33 +86,6 @@ console.log(await getFramework('vue', { projectDir: './path/to/vue/website' }))
 //   env: {},
 //   plugins: []
 // }
-```
-
-# Example (CLI)
-
-```bash
-$ framework-info ./path/to/gatsby/website
-gatsby
-
-$ framework-info --long ./path/to/vue/website
-[
-  {
-    "id": "vue",
-    "name": 'Vue.js',
-    "category": "frontend_framework",
-    "dev": {
-      "commands": ["npm run serve"],
-      "port": 8080,
-      "pollingStrategies": [{ "name": "TCP" }, { "name": "HTTP" }]
-    },
-    "build": {
-      "commands": ["vue-cli-service build"],
-      "directory": "dist"
-    },
-    "env": {},
-    "plugins": []
-  }
-]
 ```
 
 # Installation
