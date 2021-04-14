@@ -1,5 +1,16 @@
 # Changelog
 
+## [11.0.0](https://www.github.com/netlify/build/compare/build-v10.3.0...build-v11.0.0) (2021-04-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* simplify `inlineConfig`, `defaultConfig` and `cachedConfig` CLI flags (#2595)
+
+### Features
+
+* simplify `inlineConfig`, `defaultConfig` and `cachedConfig` CLI flags ([#2595](https://www.github.com/netlify/build/issues/2595)) ([c272632](https://www.github.com/netlify/build/commit/c272632db8825f85c07bb05cd90eacb1c8ea2544))
+
 ## [10.3.0](https://www.github.com/netlify/build/compare/build-v10.2.7...build-v10.3.0) (2021-04-14)
 
 
