@@ -35,4 +35,4 @@ please copy/paste the deploy logs below instead.
 **Pull requests**
 
 Pull requests are welcome! If you would like to help us fix this bug, please check our
-[contributions guidelines](../blob/master/CONTRIBUTING.md).
+[contributions guidelines](../blob/main/CONTRIBUTING.md).
