@@ -3,7 +3,7 @@
 const { addErrorInfo } = require('../error/info')
 const { resolvePath } = require('../utils/resolve')
 
-const { getExpectedVersion } = require('./compatibility')
+const { getCompatibleVersion } = require('./compatibility')
 const { getPluginsList } = require('./list')
 
 // When using plugins in our official list, those are installed in .netlify/plugins/
@@ -49,15 +49,20 @@ const addExpectedVersion = async function ({
   }
 
   const { version: latestVersion, compatibility } = pluginsList[packageName]
-  const { expectedVersion, compatWarning } = await getExpectedVersion({
+  const { version: compatibleVersion, compatWarning } = await getCompatibleVersion({
     latestVersion,
     compatibility,
     nodeVersion,
     packageJson,
     buildDir,
   })
+
+  // @todo use `getCompatibleVersion()` but if a major version is pinned, only
+  // pass the matching `compatibility` fields
+  const expectedVersion = compatibleVersion
+
   const isMissing = await isMissingVersion({ autoPluginsDir, packageName, pluginPath, loadedFrom, expectedVersion })
-  return { ...pluginOptions, latestVersion, expectedVersion, compatWarning, isMissing }
+  return { ...pluginOptions, latestVersion, expectedVersion, compatibleVersion, compatWarning, isMissing }
 }
 
 // Checks whether plugin should be installed due to the wrong version being used
