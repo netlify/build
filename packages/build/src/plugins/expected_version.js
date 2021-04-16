@@ -3,7 +3,7 @@
 const { addErrorInfo } = require('../error/info')
 const { resolvePath } = require('../utils/resolve')
 
-const { getCompatibleVersion } = require('./compatibility')
+const { getExpectedVersion, getCompatibleVersion } = require('./compatibility')
 const { getPluginsList } = require('./list')
 
 // When using plugins in our official list, those are installed in .netlify/plugins/
@@ -49,17 +49,10 @@ const addExpectedVersion = async function ({
   }
 
   const { version: latestVersion, compatibility } = pluginsList[packageName]
-  const { version: compatibleVersion, compatWarning } = await getCompatibleVersion({
-    latestVersion,
-    compatibility,
-    nodeVersion,
-    packageJson,
-    buildDir,
-  })
-
-  // @todo use `getCompatibleVersion()` but if a major version is pinned, only
-  // pass the matching `compatibility` fields
-  const expectedVersion = compatibleVersion
+  const [expectedVersion, { compatibleVersion, compatWarning }] = await Promise.all([
+    getExpectedVersion({ latestVersion, compatibility, nodeVersion, packageJson, buildDir }),
+    getCompatibleVersion({ latestVersion, compatibility, nodeVersion, packageJson, buildDir }),
+  ])
 
   const isMissing = await isMissingVersion({ autoPluginsDir, packageName, pluginPath, loadedFrom, expectedVersion })
   return { ...pluginOptions, latestVersion, expectedVersion, compatibleVersion, compatWarning, isMissing }
