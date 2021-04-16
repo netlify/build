@@ -2,15 +2,30 @@
 
 const { cleanupConfig } = require('@netlify/config')
 
+const { DEFAULT_FEATURE_FLAGS } = require('../../core/feature_flags')
 const { omit } = require('../../utils/omit')
 const { logMessage, logObject, logSubHeader } = require('../logger')
 const { THEME } = require('../theme')
 
 const logFlags = function (logs, flags, { debug }) {
+  const flagsA = cleanFeatureFlags(flags)
   const hiddenFlags = debug ? HIDDEN_DEBUG_FLAGS : HIDDEN_FLAGS
-  const flagsA = omit(flags, hiddenFlags)
+  const flagsB = omit(flagsA, hiddenFlags)
   logSubHeader(logs, 'Flags')
-  logObject(logs, flagsA)
+  logObject(logs, flagsB)
+}
+
+// We only show feature flags related to `@netlify/build`.
+// Also, we only print enabled feature flags.
+const cleanFeatureFlags = function ({ featureFlags, ...flags }) {
+  const cleanedFeatureFlags = Object.entries(featureFlags)
+    .filter(shouldPrintFeatureFlag)
+    .map(([featureFlagName]) => featureFlagName)
+  return cleanedFeatureFlags.length === 0 ? flags : { ...flags, featureFlags: cleanedFeatureFlags }
+}
+
+const shouldPrintFeatureFlag = function ([featureFlagName, enabled]) {
+  return enabled && DEFAULT_FEATURE_FLAGS[featureFlagName] !== undefined
 }
 
 // Hidden because the value is security-sensitive
