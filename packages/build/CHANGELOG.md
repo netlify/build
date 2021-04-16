@@ -1,5 +1,12 @@
 # Changelog
 
+## [11.1.0](https://www.github.com/netlify/build/compare/build-v11.0.2...build-v11.1.0) (2021-04-16)
+
+
+### Features
+
+* refactor incompatible/outdated plugins warnings ([#2612](https://www.github.com/netlify/build/issues/2612)) ([d2777e9](https://www.github.com/netlify/build/commit/d2777e9b97d8b509c0fd6121e0ae4c6a89a0c408))
+
 ### [11.0.2](https://www.github.com/netlify/build/compare/build-v11.0.1...build-v11.0.2) (2021-04-15)
 
 
