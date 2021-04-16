@@ -56,7 +56,7 @@ const getPluginDescription = function ({ packageName, pluginPackageJson: { versi
 // Print a warning message when old versions plugins are used.
 // This can only happen when they are installed to `package.json`.
 const logOutdatedPlugins = function (logs, pluginsOptions) {
-  const outdatedPlugins = pluginsOptions.map(getOutdatedPlugin).filter(Boolean)
+  const outdatedPlugins = pluginsOptions.filter(hasOutdatedVersion).map(getOutdatedPlugin)
 
   if (outdatedPlugins.length === 0) {
     return
@@ -66,18 +66,14 @@ const logOutdatedPlugins = function (logs, pluginsOptions) {
   logWarningArray(logs, outdatedPlugins)
 }
 
-const getOutdatedPlugin = function ({ packageName, pluginPackageJson: { version }, latestVersion, compatWarning }) {
-  if (!hasOutdatedVersion(version, latestVersion)) {
-    return
-  }
+const hasOutdatedVersion = function ({ pluginPackageJson: { version }, latestVersion }) {
+  return version !== undefined && latestVersion !== undefined && ltVersion(version, latestVersion)
+}
 
+const getOutdatedPlugin = function ({ packageName, pluginPackageJson: { version }, latestVersion, compatWarning }) {
   const versionedPackage = getVersionedPackage(packageName, version)
   const outdatedDescription = getOutdatedDescription(latestVersion, compatWarning)
   return `${THEME.warningHighlightWords(packageName)}${versionedPackage}: ${outdatedDescription}`
-}
-
-const hasOutdatedVersion = function (version, latestVersion) {
-  return version !== undefined && latestVersion !== undefined && ltVersion(version, latestVersion)
 }
 
 const getOutdatedDescription = function (latestVersion, compatWarning) {
@@ -92,7 +88,7 @@ const getOutdatedDescription = function (latestVersion, compatWarning) {
 // and does not meet some `compatibility` expectations.
 // This can only happen when they are installed to `package.json`.
 const logIncompatiblePlugins = function (logs, pluginsOptions) {
-  const incompatiblePlugins = pluginsOptions.map(getIncompatiblePlugin).filter(Boolean)
+  const incompatiblePlugins = pluginsOptions.filter(hasIncompatibleVersion).map(getIncompatiblePlugin)
 
   if (incompatiblePlugins.length === 0) {
     return
@@ -102,23 +98,7 @@ const logIncompatiblePlugins = function (logs, pluginsOptions) {
   logWarningArray(logs, incompatiblePlugins)
 }
 
-const getIncompatiblePlugin = function ({
-  packageName,
-  pluginPackageJson: { version },
-  expectedVersion,
-  compatWarning,
-}) {
-  if (!hasIncompatibleVersion(version, expectedVersion, compatWarning)) {
-    return
-  }
-
-  const versionedPackage = getVersionedPackage(packageName, version)
-  return `${THEME.warningHighlightWords(
-    packageName,
-  )}${versionedPackage}: expected version ${expectedVersion} which is the last version compatible with ${compatWarning}`
-}
-
-const hasIncompatibleVersion = function (version, expectedVersion, compatWarning) {
+const hasIncompatibleVersion = function ({ pluginPackageJson: { version }, expectedVersion, compatWarning }) {
   return (
     compatWarning !== undefined &&
     version !== undefined &&
@@ -129,6 +109,18 @@ const hasIncompatibleVersion = function (version, expectedVersion, compatWarning
     // `plugins.json` update
     major(expectedVersion) < major(version)
   )
+}
+
+const getIncompatiblePlugin = function ({
+  packageName,
+  pluginPackageJson: { version },
+  expectedVersion,
+  compatWarning,
+}) {
+  const versionedPackage = getVersionedPackage(packageName, version)
+  return `${THEME.warningHighlightWords(
+    packageName,
+  )}${versionedPackage}: expected version ${expectedVersion} which is the last version compatible with ${compatWarning}`
 }
 
 // Make sure we handle `package.json` with `version` being either `undefined`
