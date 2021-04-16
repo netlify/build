@@ -123,6 +123,8 @@ const NORMALIZE_REGEXPS = [
   // List of available plugins from `plugins.json`.
   // That list changes all the time, so we need to remove it.
   [/(Available plugins)[^>]*/m, '$1\n\n'],
+  // esbuild error messages
+  [/(Could not resolve "[^"]+") \([^)]+\)/g, '$1'],
 ]
 
 module.exports = { normalizeOutput }
