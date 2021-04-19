@@ -1,13 +1,13 @@
 'use strict'
 
-const { kill, platform } = require('process')
+const { kill, platform, version } = require('process')
 
 const test = require('ava')
 const getNode = require('get-node')
 const moize = require('moize')
 
 const { runFixture: runFixtureConfig } = require('../../../config/tests/helpers/main')
-const { version } = require('../../package.json')
+const { version: netlifyBuildVersion } = require('../../package.json')
 const { runFixture, FIXTURES_DIR } = require('../helpers/main')
 const { startServer } = require('../helpers/server.js')
 
@@ -17,7 +17,7 @@ test('--help', async (t) => {
 
 test('--version', async (t) => {
   const { returnValue } = await runFixture(t, '', { flags: { version: true }, useBinary: true })
-  t.is(returnValue, version)
+  t.is(returnValue, netlifyBuildVersion)
 })
 
 test('Exit code is 0 on success', async (t) => {
@@ -250,6 +250,9 @@ test('Functions config is passed to zip-it-and-ship-it (3)', async (t) => {
   await runFixture(t, 'functions_config_3')
 })
 
-test('Shows notice about bundling errors and warnings coming from esbuild', async (t) => {
-  await runFixture(t, 'esbuild_errors')
-})
+// @todo remove once we drop support for Node 8
+if (!version.startsWith('v8.')) {
+  test('Shows notice about bundling errors and warnings coming from esbuild', async (t) => {
+    await runFixture(t, 'esbuild_errors')
+  })
+}
