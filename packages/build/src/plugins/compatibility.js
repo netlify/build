@@ -5,15 +5,62 @@ const { satisfies, clean: cleanVersion } = require('semver')
 
 const { resolvePath } = require('../utils/resolve')
 
+// Retrieve the `expectedVersion` of a plugin, i.e. the version which should
+// be run, taking version pinning into account.
+// If this does not match the currently cached version, it is installed first.
+const getExpectedVersion = async function ({
+  latestVersion,
+  compatibility,
+  nodeVersion,
+  packageJson,
+  buildDir,
+  pinnedVersion,
+}) {
+  const pinnedCompatibility = getPinnedCompatibility(pinnedVersion, compatibility)
+  const { version: expectedVersion = pinnedVersion } = await findCompatibleVersion({
+    compatibility: pinnedCompatibility,
+    nodeVersion,
+    packageJson,
+    buildDir,
+  })
+  return expectedVersion === undefined ? latestVersion : expectedVersion
+}
+
+// Major versions are pinned using `pinnedVersion`.
+// Plugins should define each major version in `compatibility`. However, as a
+// failsafe, we default to the most recent version satisying `pinnedVersion`.
+// If no `pinnedVersion` is defined, it defaults to the most recent version
+// specified in `plugins.json` instead.
+const getPinnedCompatibility = function (pinnedVersion, compatibility) {
+  return pinnedVersion === undefined
+    ? compatibility
+    : compatibility.filter(({ version }) => satisfies(version, pinnedVersion))
+}
+
+// Retrieve the `compatibleVersion` of a plugin, i.e. the most recent version
+// compatible with this site. This does not take version pinning into account.
+// This is only used to print a warning message when the `compatibleVersion`
+// is older than the currently used version.
+// This defaults to the most recent version specified in `plugins.json`.
+const getCompatibleVersion = async function ({ latestVersion, compatibility, nodeVersion, packageJson, buildDir }) {
+  const { version: compatibleVersion = latestVersion, compatWarning } = await findCompatibleVersion({
+    compatibility,
+    nodeVersion,
+    packageJson,
+    buildDir,
+  })
+  return { compatibleVersion, compatWarning }
+}
+
 // Find a plugin's version using a set of conditions. Default to latest version.
 // `conditions` is sorted from most to least recent version.
-const getCompatibleVersion = async function ({ latestVersion, compatibility, nodeVersion, packageJson, buildDir }) {
+const findCompatibleVersion = async function ({ compatibility, nodeVersion, packageJson, buildDir }) {
   const matchingCondition = await pLocate(compatibility, ({ conditions }) =>
     matchesCompatField({ conditions, nodeVersion, packageJson, buildDir }),
   )
 
   if (matchingCondition === undefined) {
-    return { version: latestVersion }
+    return {}
   }
 
   const { version, conditions, migrationGuide } = matchingCondition
@@ -92,4 +139,4 @@ const CONDITIONS = {
   siteDependencies: { test: siteDependenciesTest, warning: siteDependenciesWarning },
 }
 
-module.exports = { getCompatibleVersion }
+module.exports = { getExpectedVersion, getCompatibleVersion }
