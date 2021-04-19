@@ -1,5 +1,13 @@
 # Changelog
 
+### [11.1.1](https://www.github.com/netlify/build/compare/build-v11.1.0...build-v11.1.1) (2021-04-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^2.7.0 ([#2619](https://www.github.com/netlify/build/issues/2619)) ([ae1e4ae](https://www.github.com/netlify/build/commit/ae1e4ae4624d8510f8838d6f3a190bc515d92925))
+* failing esbuild tests ([#2615](https://www.github.com/netlify/build/issues/2615)) ([6f50566](https://www.github.com/netlify/build/commit/6f505662083672975eff9f745a68c7ec6702fd6d))
+
 ## [11.1.0](https://www.github.com/netlify/build/compare/build-v11.0.2...build-v11.1.0) (2021-04-16)
 
 
