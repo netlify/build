@@ -7,18 +7,18 @@ const { resolvePath } = require('../utils/resolve')
 
 // Find a plugin's version using a set of conditions. Default to latest version.
 // `conditions` is sorted from most to least recent version.
-const getExpectedVersion = async function ({ latestVersion, compatibility, nodeVersion, packageJson, buildDir }) {
+const getCompatibleVersion = async function ({ latestVersion, compatibility, nodeVersion, packageJson, buildDir }) {
   const matchingCondition = await pLocate(compatibility, ({ conditions }) =>
     matchesCompatField({ conditions, nodeVersion, packageJson, buildDir }),
   )
 
   if (matchingCondition === undefined) {
-    return { expectedVersion: latestVersion }
+    return { version: latestVersion }
   }
 
-  const { version: expectedVersion, conditions, migrationGuide } = matchingCondition
+  const { version, conditions, migrationGuide } = matchingCondition
   const compatWarning = getCompatWarning(conditions, migrationGuide)
-  return { expectedVersion, compatWarning }
+  return { version, compatWarning }
 }
 
 const matchesCompatField = async function ({ conditions, nodeVersion, packageJson, buildDir }) {
@@ -92,4 +92,4 @@ const CONDITIONS = {
   siteDependencies: { test: siteDependenciesTest, warning: siteDependenciesWarning },
 }
 
-module.exports = { getExpectedVersion }
+module.exports = { getCompatibleVersion }

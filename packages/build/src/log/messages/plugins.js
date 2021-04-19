@@ -98,29 +98,29 @@ const logIncompatiblePlugins = function (logs, pluginsOptions) {
   logWarningArray(logs, incompatiblePlugins)
 }
 
-const hasIncompatibleVersion = function ({ pluginPackageJson: { version }, expectedVersion, compatWarning }) {
+const hasIncompatibleVersion = function ({ pluginPackageJson: { version }, compatibleVersion, compatWarning }) {
   return (
     compatWarning !== undefined &&
     version !== undefined &&
-    expectedVersion !== undefined &&
+    compatibleVersion !== undefined &&
     // Using only the major version prevents printing this warning message when
     // a site is using the right `compatibility` version, but is using the most
     // recent version due to the time gap between `npm publish` and the
     // `plugins.json` update
-    major(expectedVersion) < major(version)
+    major(compatibleVersion) < major(version)
   )
 }
 
 const getIncompatiblePlugin = function ({
   packageName,
   pluginPackageJson: { version },
-  expectedVersion,
+  compatibleVersion,
   compatWarning,
 }) {
   const versionedPackage = getVersionedPackage(packageName, version)
   return `${THEME.warningHighlightWords(
     packageName,
-  )}${versionedPackage}: expected version ${expectedVersion} which is the last version compatible with ${compatWarning}`
+  )}${versionedPackage}: version ${compatibleVersion} is the most recent version compatible with ${compatWarning}`
 }
 
 // Make sure we handle `package.json` with `version` being either `undefined`
