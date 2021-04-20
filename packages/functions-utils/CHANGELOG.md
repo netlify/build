@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.3.26](https://www.github.com/netlify/build/compare/functions-utils-v1.3.25...functions-utils-v1.3.26) (2021-04-20)
+
+
+### Bug Fixes
+
+* **deps:** update netlify packages ([#2622](https://www.github.com/netlify/build/issues/2622)) ([4d35de4](https://www.github.com/netlify/build/commit/4d35de4d4d8d49b460080480c6e5b3610e6ef023))
+
 ### [1.3.25](https://www.github.com/netlify/build/compare/functions-utils-v1.3.24...functions-utils-v1.3.25) (2021-04-16)
 
 
