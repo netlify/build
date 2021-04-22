@@ -1,6 +1,7 @@
 'use strict'
 
 const isPlainObj = require('is-plain-obj')
+const mapObj = require('map-obj')
 
 const { normalizeBeforeConfigMerge } = require('./merge_normalize.js')
 const { CONFIG_ORIGIN } = require('./origin')
@@ -18,24 +19,26 @@ const mergeContext = function (config, context, branch) {
     return configA
   }
 
-  const allContextProps = [context, branch]
-    .map((key) => contextProps[key])
-    .filter(Boolean)
-    .map(addNamespace)
-    .map((contextConfig) => normalizeBeforeConfigMerge(contextConfig, CONFIG_ORIGIN))
+  const allContextProps = mapObj(contextProps, (key, contextConfig) => [key, addNamespace(contextConfig)])
+  const normalizedContextProps = mapObj(allContextProps, (key, contextConfig) => [
+    key,
+    normalizeBeforeConfigMerge(contextConfig, CONFIG_ORIGIN),
+  ])
+  const contexts = [context, branch]
+  const filteredContextProps = contexts.map((key) => normalizedContextProps[key]).filter(Boolean)
 
-  return mergeConfigs([configA, ...allContextProps])
+  return mergeConfigs([configA, ...filteredContextProps])
 }
 
 // `config.context.{context}.*` properties are merged either to `config.*` or
 // to `config.build.*`. We distinguish between both by checking the property
 // name.
-const addNamespace = (contextProps) => Object.entries(contextProps).reduce(addNamespacedProperty, {})
+const addNamespace = (contextConfig) => Object.entries(contextConfig).reduce(addNamespacedProperty, {})
 
-const addNamespacedProperty = function (contextProps, [key, value]) {
+const addNamespacedProperty = function (contextConfig, [key, value]) {
   return isBuildProperty(key, value)
-    ? { ...contextProps, build: { ...contextProps.build, [key]: value } }
-    : { ...contextProps, [key]: value }
+    ? { ...contextConfig, build: { ...contextConfig.build, [key]: value } }
+    : { ...contextConfig, [key]: value }
 }
 
 const isBuildProperty = function (key, value) {

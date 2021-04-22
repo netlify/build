@@ -61,6 +61,7 @@
     "indent-string": "^4.0.0",
     "is-plain-obj": "^2.1.0",
     "js-yaml": "^4.0.0",
+    "map-obj": "^4.2.1",
     "netlify": "^6.1.20",
     "omit.js": "^2.0.2",
     "p-locate": "^4.1.0",
