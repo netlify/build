@@ -67,7 +67,7 @@ const exampleFunction = async function () {
   // "configPath": "/home/me/cv-website/netlify.toml",
   // "buildDir": "/home/me/cv-website",
   // "context": "production",
-  // "branch": "master",
+  // "branch": "main",
   // "siteInfo": {
   //     "id": "418b94bc-93cd-411a-937a-ae4c734f17c4",
   //     "name": "mick",
@@ -179,7 +179,7 @@ The `netlify.toml` can contain `contexts.{CONTEXT}` properties, which are like `
 #### branch
 
 _Type_: `string`\
-_Default value_: environment variable `BRANCH`, current `git` branch, or `"master"`
+_Default value_: environment variable `BRANCH`, current `git` branch, `"main"` or `"master"`.
 
 Same as [`context`](#context) but using a `git` branch name.
 
