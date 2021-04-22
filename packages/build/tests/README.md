@@ -13,7 +13,7 @@ Everything below also applies to `@netlify/config` which follows the same patter
 ## Snapshot testing
 
 Snapshot testing is a recent alternative to assertion testing. We use
-[Ava snapshots](https://github.com/avajs/ava/blob/master/docs/04-snapshot-testing.md). The idea is to:
+[Ava snapshots](https://github.com/avajs/ava/blob/main/docs/04-snapshot-testing.md). The idea is to:
 
 - save a command's output the first time the test is run
 - compare the commmand's output with the previous snapshot the next time the test is run
@@ -113,7 +113,7 @@ npx ava /path/to/tests.js
 ```
 
 To run a single test, use the command above combined with
-[`test.only()`](https://github.com/avajs/ava/blob/master/docs/01-writing-tests.md#running-specific-tests).
+[`test.only()`](https://github.com/avajs/ava/blob/main/docs/01-writing-tests.md#running-specific-tests).
 
 Add the `-u` flag to update snapshots.
 
@@ -136,8 +136,8 @@ To activate it, set the `PRINT=1` environment variable:
 PRINT=1 npx ava /path/to/tests.js
 ```
 
-Using [`test.only()`](https://github.com/avajs/ava/blob/master/docs/01-writing-tests.md#running-specific-tests) to
-target a specific test is recommended.
+Using [`test.only()`](https://github.com/avajs/ava/blob/main/docs/01-writing-tests.md#running-specific-tests) to target
+a specific test is recommended.
 
 ## Output normalization
 
