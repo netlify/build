@@ -15,7 +15,7 @@ const normalizeSnapshot = function ({ body, ...request }) {
 
 const normalizeBody = function ({
   timestamp,
-  properties: { duration, buildVersion, nodeVersion, osPlatform, osName, ...properties } = {},
+  properties: { duration, buildVersion, osPlatform, osName, ...properties } = {},
   ...body
 }) {
   const optDuration = duration ? { duration: typeof duration } : {}
@@ -26,7 +26,6 @@ const normalizeBody = function ({
       ...properties,
       ...optDuration,
       buildVersion: typeof buildVersion,
-      nodeVersion: typeof nodeVersion,
       osPlatform: typeof osPlatform,
       osName: typeof osName,
     },
@@ -126,6 +125,14 @@ test('Telemetry BUILD_TELEMETRY_DISABLED env var overrides flag', async (t) => {
     env: { BUILD_TELEMETRY_DISABLED: 'true' },
   })
   t.is(telemetryRequests.length, 0)
+})
+
+test('Telemetry node version reported is based on the NODE_VERSION env var', async (t) => {
+  const { telemetryRequests } = await runWithApiMock(t, 'success', {
+    env: { NODE_VERSION: '12.0.0' },
+  })
+  const snapshot = telemetryRequests.map(normalizeSnapshot)
+  t.snapshot(snapshot)
 })
 
 test('Telemetry calls timeout by default', async (t) => {

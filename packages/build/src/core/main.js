@@ -466,7 +466,16 @@ const telemetryReport = async function ({
   errorParams,
 }) {
   try {
-    await trackBuildComplete({ status, commandsCount, netlifyConfig, durationNs, siteInfo, telemetry, testOpts })
+    await trackBuildComplete({
+      status,
+      commandsCount,
+      netlifyConfig,
+      durationNs,
+      siteInfo,
+      telemetry,
+      testOpts,
+      childEnv: errorParams.childEnv,
+    })
   } catch (error) {
     await handleBuildError(error, errorParams)
   }
