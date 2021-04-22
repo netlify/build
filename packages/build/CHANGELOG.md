@@ -1,5 +1,13 @@
 # Changelog
 
+### [11.2.3](https://www.github.com/netlify/build/compare/build-v11.2.2...build-v11.2.3) (2021-04-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^2.8.0 ([#2631](https://www.github.com/netlify/build/issues/2631)) ([fbc235e](https://www.github.com/netlify/build/commit/fbc235e407ac100957a53fe5a151c02bde58bb7f))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^3.7.0 ([#2633](https://www.github.com/netlify/build/issues/2633)) ([4938a1c](https://www.github.com/netlify/build/commit/4938a1ca36a8dffcec5fb2b10a4e08ac451a8ba7))
+
 ### [11.2.2](https://www.github.com/netlify/build/compare/build-v11.2.1...build-v11.2.2) (2021-04-21)
 
 
