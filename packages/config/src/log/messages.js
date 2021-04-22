@@ -1,6 +1,8 @@
 'use strict'
 
-const { log } = require('./logger')
+const { throwError } = require('../error')
+
+const { log, logWarning } = require('./logger')
 
 const warnLegacyFunctionsDirectory = ({ config = {}, logs }) => {
   const { functionsDirectory, functionsDirectoryOrigin } = config
@@ -19,4 +21,24 @@ We recommend updating netlify.toml to set the functions directory under [functio
   )
 }
 
-module.exports = { warnLegacyFunctionsDirectory }
+const warnContextPluginConfig = function (logs, packageName, context) {
+  logWarning(
+    logs,
+    `"${packageName}" is installed in the UI, which means that it runs in all deploy contexts, regardless of file-based configuration.
+To run "${packageName}" in the ${context} context only, uninstall the plugin from the site plugins list.`,
+  )
+}
+
+const throwContextPluginsConfig = function (packageName, context) {
+  throwError(
+    `"${packageName}" is installed in the UI, which means that it runs in all deploy contexts, regardless of file-based configuration.
+To run "${packageName}" in the ${context} context only, uninstall the plugin from the site plugins list.
+To run "${packageName}" in all contexts, please remove the following section from "netlify.toml".
+
+  [[context.${context}.plugins]]
+  package = "${packageName}"
+`,
+  )
+}
+
+module.exports = { warnLegacyFunctionsDirectory, warnContextPluginConfig, throwContextPluginsConfig }
