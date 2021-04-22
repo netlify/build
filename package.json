@@ -21,7 +21,7 @@
     "test:dev:ava": "ava",
     "test:ci:ava": "nyc -r lcovonly -r text -r json ava",
     "prepublishOnly": "run-s prepublishOnly:*",
-    "prepublishOnly:checkout": "run-local \"git checkout master\"",
+    "prepublishOnly:checkout": "run-local \"git checkout main\"",
     "prepublishOnly:pull": "run-local \"git pull\"",
     "prepublishOnly:install": "run-local \"npm ci\"",
     "prepublishOnly:test": "npm test"
