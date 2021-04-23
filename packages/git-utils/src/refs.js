@@ -29,9 +29,9 @@ const getBaseRefs = function (base, head) {
     return [env.CACHED_COMMIT_REF]
   }
 
-  // Some git repositories are missing `master` branches, so we also try HEAD^.
+  // Some git repositories are missing `master` or `main` branches, so we also try HEAD^.
   // We end with HEAD as a failsafe.
-  return ['master', `${head}^`, head]
+  return ['main', 'master', `${head}^`, head]
 }
 
 // Use the first commit that exists
