@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.2.0](https://www.github.com/netlify/build/compare/config-v6.1.0...config-v6.2.0) (2021-04-23)
+
+
+### Features
+
+* improve context-specific configuration validation ([#2648](https://www.github.com/netlify/build/issues/2648)) ([e5059f9](https://www.github.com/netlify/build/commit/e5059f999488e9833c129f4a26d10811e7541878))
+
 ## [6.1.0](https://www.github.com/netlify/build/compare/config-v6.0.3...config-v6.1.0) (2021-04-23)
 
 
