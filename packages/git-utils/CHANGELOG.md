@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.0.9](https://www.github.com/netlify/build/compare/git-utils-v1.0.8...git-utils-v1.0.9) (2021-04-23)
+
+
+### Bug Fixes
+
+* fix `utils.git` for repositories with `main` branch ([#2638](https://www.github.com/netlify/build/issues/2638)) ([5f80961](https://www.github.com/netlify/build/commit/5f80961e25387deee9b37bba07379adc1fed44c3))
+
 ### [1.0.8](https://www.github.com/netlify/build/compare/v1.0.7...v1.0.8) (2021-02-18)
 
 
