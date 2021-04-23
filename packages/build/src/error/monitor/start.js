@@ -1,7 +1,7 @@
 'use strict'
 
 const Bugsnag = require('@bugsnag/js')
-const memoizeOne = require('memoize-one')
+const { memoizeOne } = require('memoize-one')
 
 const { name, version } = require('../../../package.json')
 const { log } = require('../../log/logger.js')
