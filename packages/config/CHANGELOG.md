@@ -1,5 +1,12 @@
 # Changelog
 
+### [6.0.3](https://www.github.com/netlify/build/compare/config-v6.0.2...config-v6.0.3) (2021-04-23)
+
+
+### Bug Fixes
+
+* support `main` branch in `@netlify/config` ([#2639](https://www.github.com/netlify/build/issues/2639)) ([7728c60](https://www.github.com/netlify/build/commit/7728c60aed1e7c3bf0bb7a95aeef8b6686ca7478))
+
 ### [6.0.2](https://www.github.com/netlify/build/compare/config-v6.0.1...config-v6.0.2) (2021-04-20)
 
 
