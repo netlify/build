@@ -122,6 +122,10 @@ test('build.context properties are validated like top-level ones', async (t) => 
   await runFixture(t, 'build_context_validation')
 })
 
+test('build.context properties are validated like top-level ones even on different context', async (t) => {
+  await runFixture(t, 'build_context_validation', { flags: { context: 'development' } })
+})
+
 test('functions: object', async (t) => {
   await runFixture(t, 'function_config_invalid_root')
 })
