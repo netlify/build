@@ -126,6 +126,32 @@ test('build.context properties are validated like top-level ones even on differe
   await runFixture(t, 'build_context_validation', { flags: { context: 'development' } })
 })
 
+test('Warns when using UI plugins together with context-specific plugin configuration', async (t) => {
+  await runFixture(t, 'build_context_plugins_warn', {
+    flags: { defaultConfig: { plugins: [{ package: 'netlify-plugin-test' }] } },
+  })
+})
+
+test('Does not warn when using context-free plugin configuration together with context-specific plugin configuration', async (t) => {
+  await runFixture(t, 'build_context_plugins_nowarn_global')
+})
+
+test('Does not warn when using no context-free plugin configuration together with context-specific plugin configuration', async (t) => {
+  await runFixture(t, 'build_context_plugins_nowarn_none')
+})
+
+test('Throws when using UI plugins together with context-specific plugin configuration in a different context', async (t) => {
+  await runFixture(t, 'build_context_plugins_warn', {
+    flags: { context: 'development', defaultConfig: { plugins: [{ package: 'netlify-plugin-test' }] } },
+  })
+})
+
+test('Does not throw when using UI plugins together with context-specific plugin configuration in a different context but with inputs', async (t) => {
+  await runFixture(t, 'build_context_plugins_warn_inputs', {
+    flags: { context: 'development', defaultConfig: { plugins: [{ package: 'netlify-plugin-test' }] } },
+  })
+})
+
 test('functions: object', async (t) => {
   await runFixture(t, 'function_config_invalid_root')
 })

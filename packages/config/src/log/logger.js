@@ -35,6 +35,10 @@ const log = function (logs, string) {
 const EMPTY_LINES_REGEXP = /^\s*$/gm
 const EMPTY_LINE = '\u{200B}'
 
+const logWarning = function (logs, string, opts) {
+  log(logs, string, { color: THEME.warningLine, ...opts })
+}
+
 const logObject = function (logs, object) {
   const string = serializeObject(object)
   log(logs, string)
@@ -45,4 +49,4 @@ const logSubHeader = function (logs, string) {
   log(logs, stringA)
 }
 
-module.exports = { getBufferLogs, log, logObject, logSubHeader }
+module.exports = { getBufferLogs, log, logWarning, logObject, logSubHeader }

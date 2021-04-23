@@ -1,0 +1,4 @@
+[[context.production.plugins]]
+package = "netlify-plugin-test"
+  [context.production.plugins.inputs]
+  test = true
