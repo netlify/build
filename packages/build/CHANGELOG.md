@@ -1,5 +1,12 @@
 # Changelog
 
+### [11.2.4](https://www.github.com/netlify/build/compare/build-v11.2.3...build-v11.2.4) (2021-04-23)
+
+
+### Bug Fixes
+
+* **deps:** memoize-one cjs exports breaking changes ([#2643](https://www.github.com/netlify/build/issues/2643)) ([eafdaa0](https://www.github.com/netlify/build/commit/eafdaa04b60ae1753e3752748aaa4d2b6a5994e7))
+
 ### [11.2.3](https://www.github.com/netlify/build/compare/build-v11.2.2...build-v11.2.3) (2021-04-22)
 
 
