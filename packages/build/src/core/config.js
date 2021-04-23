@@ -10,6 +10,8 @@ const { logBuildDir, logConfigPath, logConfig, logContext } = require('../log/me
 const { measureDuration } = require('../time/main')
 const { getPackageJson } = require('../utils/package')
 
+const { getUserNodeVersion } = require('./user_node_version')
+
 // Retrieve configuration object
 const tLoadConfig = async function ({
   config,
@@ -30,6 +32,7 @@ const tLoadConfig = async function ({
   deployId,
   logs,
   testOpts,
+  nodePath,
 }) {
   const {
     configPath,
@@ -65,11 +68,13 @@ const tLoadConfig = async function ({
   const envValues = mapObj(env, (key, { value }) => [key, value])
   const childEnv = getChildEnv({ envOpt, env: envValues })
   const { packageJson } = await getPackageJson(buildDir)
+  const userNodeVersion = await getUserNodeVersion(nodePath)
   return {
     netlifyConfig,
     configPath,
     buildDir,
     packageJson,
+    userNodeVersion,
     childEnv,
     apiHost: apiHostA,
     token: tokenA,

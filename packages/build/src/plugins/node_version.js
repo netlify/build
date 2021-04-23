@@ -2,7 +2,6 @@
 
 const { version: currentVersion, execPath } = require('process')
 
-const execa = require('execa')
 const { satisfies, clean: cleanVersion } = require('semver')
 
 const {
@@ -13,44 +12,17 @@ const { addErrorInfo } = require('../error/info')
 // Local plugins, `package.json`-installed plugins and local builds use user's
 // preferred Node.js version.
 // Other plugins use `@netlify/build` Node.js version.
-const addPluginsNodeVersion = async function ({ pluginsOptions, mode, nodePath }) {
-  const userNodeVersion = await getUserNodeVersion(nodePath)
-  return pluginsOptions.map((pluginOptions) => addPluginNodeVersion({ pluginOptions, userNodeVersion, mode, nodePath }))
-}
-
-// Retrieve Node.js version from `--node-path`
-const getUserNodeVersion = async function (nodePath) {
-  // No `--node-path` CLI flag
-  if (nodePath === execPath) {
-    return getCurrentNodeVersion()
-  }
-
-  const result = NVM_NODE_VERSION_REGEXP.exec(nodePath)
-  if (result !== null) {
-    return result[1]
-  }
-
-  const { stdout } = await execa(nodePath, ['--version'], { reject: false })
-  const version = cleanVersion(stdout)
-  if (version === null) {
-    throwUserError(`Invalid --node-path CLI flag: ${nodePath}`)
-  }
-
-  return version
-}
-
-// Retrieve Node.js version if the Node.js path is using nvm.
-// `node.exe` on Windows, `bin/node` on Unix.
-const NVM_NODE_VERSION_REGEXP = /[/\\]v(\d+\.\d+\.\d+)[/\\](bin[/\\]node|node.exe)$/
-
-// Retrieve Node.js version from current process
-const getCurrentNodeVersion = function () {
-  return cleanVersion(currentVersion)
+const addPluginsNodeVersion = function ({ pluginsOptions, mode, nodePath, userNodeVersion }) {
+  const currentNodeVersion = cleanVersion(currentVersion)
+  return pluginsOptions.map((pluginOptions) =>
+    addPluginNodeVersion({ pluginOptions, currentNodeVersion, userNodeVersion, mode, nodePath }),
+  )
 }
 
 const addPluginNodeVersion = function ({
   pluginOptions,
   pluginOptions: { loadedFrom },
+  currentNodeVersion,
   userNodeVersion,
   mode,
   nodePath,
@@ -59,7 +31,7 @@ const addPluginNodeVersion = function ({
     return { ...pluginOptions, nodePath, nodeVersion: userNodeVersion }
   }
 
-  return { ...pluginOptions, nodePath: execPath, nodeVersion: getCurrentNodeVersion() }
+  return { ...pluginOptions, nodePath: execPath, nodeVersion: currentNodeVersion }
 }
 
 // Ensure Node.js version is recent enough to run this plugin
