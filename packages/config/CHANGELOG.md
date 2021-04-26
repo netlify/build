@@ -1,5 +1,14 @@
 # Changelog
 
+### [6.2.1](https://www.github.com/netlify/build/compare/config-v6.2.0...config-v6.2.1) (2021-04-26)
+
+
+### Bug Fixes
+
+* add some newlines before some warning message ([#2652](https://www.github.com/netlify/build/issues/2652)) ([fc96155](https://www.github.com/netlify/build/commit/fc96155d137fb9a772dda25586007d04a30bf448))
+* **deps:** update dependency map-obj to v3.1.0 ([#2656](https://www.github.com/netlify/build/issues/2656)) ([89e497a](https://www.github.com/netlify/build/commit/89e497a37a892f203a601a510e0e24ae037ad146))
+* missing colors in `@netlify/config` warnings ([#2651](https://www.github.com/netlify/build/issues/2651)) ([5133c2a](https://www.github.com/netlify/build/commit/5133c2a8c95af70b928b6f7b3e3de702b0570bd8))
+
 ## [6.2.0](https://www.github.com/netlify/build/compare/config-v6.1.0...config-v6.2.0) (2021-04-23)
 
 
