@@ -67,8 +67,7 @@ const tLoadConfig = async function ({
   const apiA = addApiErrorHandlers(api)
   const envValues = mapObj(env, (key, { value }) => [key, value])
   const childEnv = getChildEnv({ envOpt, env: envValues })
-  const { packageJson } = await getPackageJson(buildDir)
-  const userNodeVersion = await getUserNodeVersion(nodePath)
+  const [{ packageJson }, userNodeVersion] = await Promise.all([getPackageJson(buildDir), getUserNodeVersion(nodePath)])
   return {
     netlifyConfig,
     configPath,
