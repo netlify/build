@@ -40,6 +40,13 @@
         'path-key',
         'path-type',
         'read-pkg-up',
+        // Those cannot be upgraded to using ES modules
+        'ansi-escapes',
+        'has-ansi',
+        'indent-string',
+        'string-width',
+        'strip-ansi',
+        '@sindresorhus/slugify',
       ],
       major: {
         enabled: false,
