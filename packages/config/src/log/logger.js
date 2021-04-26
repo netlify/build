@@ -17,17 +17,18 @@ const getBufferLogs = function ({ buffer }) {
 
 // This should be used instead of `console.log()`
 // Printed on stderr because stdout is reserved for the JSON output
-const log = function (logs, string) {
+const log = function (logs, string, { color } = {}) {
   const stringA = String(string).replace(EMPTY_LINES_REGEXP, EMPTY_LINE)
+  const stringB = color === undefined ? stringA : color(stringA)
 
   if (logs !== undefined) {
     // `logs` is a stateful variable
     // eslint-disable-next-line fp/no-mutating-methods
-    logs.stderr.push(stringA)
+    logs.stderr.push(stringB)
     return
   }
 
-  console.warn(stringA)
+  console.warn(stringB)
 }
 
 // We need to add a zero width space character in empty lines. Otherwise the
@@ -39,14 +40,12 @@ const logWarning = function (logs, string, opts) {
   log(logs, string, { color: THEME.warningLine, ...opts })
 }
 
-const logObject = function (logs, object) {
-  const string = serializeObject(object)
-  log(logs, string)
+const logObject = function (logs, object, opts) {
+  log(logs, serializeObject(object), opts)
 }
 
-const logSubHeader = function (logs, string) {
-  const stringA = `\n${THEME.subHeader(`${pointer} ${string}`)}`
-  log(logs, stringA)
+const logSubHeader = function (logs, string, opts) {
+  log(logs, `\n${pointer} ${string}`, { color: THEME.subHeader, ...opts })
 }
 
 module.exports = { getBufferLogs, log, logWarning, logObject, logSubHeader }
