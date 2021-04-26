@@ -1,5 +1,14 @@
 # Changelog
 
+### [11.2.6](https://www.github.com/netlify/build/compare/build-v11.2.5...build-v11.2.6) (2021-04-26)
+
+
+### Bug Fixes
+
+* **deps:** update dependency map-obj to v3.1.0 ([#2656](https://www.github.com/netlify/build/issues/2656)) ([89e497a](https://www.github.com/netlify/build/commit/89e497a37a892f203a601a510e0e24ae037ad146))
+* **deps:** update dependency statsd-client to v0.4.6 ([#2658](https://www.github.com/netlify/build/issues/2658)) ([be366a2](https://www.github.com/netlify/build/commit/be366a264d1e4db2a71ee8b233d65889cee3992c))
+* **deps:** update dependency uuid to v7.0.3 ([#2659](https://www.github.com/netlify/build/issues/2659)) ([e7e9ea8](https://www.github.com/netlify/build/commit/e7e9ea8d0cb0a9c3cd9e16aeda2bd300c7057509))
+
 ### [11.2.5](https://www.github.com/netlify/build/compare/build-v11.2.4...build-v11.2.5) (2021-04-24)
 
 
