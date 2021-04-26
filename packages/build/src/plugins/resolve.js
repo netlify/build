@@ -17,6 +17,7 @@ const resolvePluginsPath = async function ({
   buildDir,
   nodePath,
   packageJson,
+  userNodeVersion,
   // @todo: use it to pin plugins' versions
   // uiPlugins,
   mode,
@@ -28,7 +29,12 @@ const resolvePluginsPath = async function ({
   const pluginsOptionsA = await Promise.all(
     pluginsOptions.map((pluginOptions) => resolvePluginPath({ pluginOptions, buildDir, autoPluginsDir })),
   )
-  const pluginsOptionsB = await addPluginsNodeVersion({ pluginsOptions: pluginsOptionsA, mode, nodePath })
+  const pluginsOptionsB = await addPluginsNodeVersion({
+    pluginsOptions: pluginsOptionsA,
+    mode,
+    nodePath,
+    userNodeVersion,
+  })
   const pluginsOptionsC = await addExpectedVersions({
     pluginsOptions: pluginsOptionsB,
     autoPluginsDir,
