@@ -1,6 +1,6 @@
 {
   "name": "@netlify/build",
-  "version": "11.2.4",
+  "version": "11.2.5",
   "description": "Netlify build module",
   "main": "src/core/main.js",
   "bin": {
@@ -59,7 +59,7 @@
     "@netlify/plugin-edge-handlers": "^1.11.6",
     "@netlify/plugins-list": "^2.8.0",
     "@netlify/run-utils": "^1.0.6",
-    "@netlify/zip-it-and-ship-it": "^3.7.0",
+    "@netlify/zip-it-and-ship-it": "^3.8.0",
     "@sindresorhus/slugify": "^1.1.0",
     "@ungap/from-entries": "^0.2.1",
     "ansi-escapes": "^4.3.2",
@@ -77,8 +77,8 @@
     "locate-path": "^5.0.0",
     "log-process-errors": "^5.1.2",
     "make-dir": "^3.0.2",
-    "map-obj": "^4.1.0",
-    "memoize-one": "^5.2.0",
+    "map-obj": "^3.1.0",
+    "memoize-one": "^5.2.1",
     "os-name": "^3.1.0",
     "p-event": "^4.1.0",
     "p-every": "^2.0.0",
@@ -94,13 +94,13 @@
     "resolve": "^2.0.0-next.1",
     "safe-json-stringify": "^1.2.0",
     "semver": "^6.3.0",
-    "statsd-client": "0.4.5",
+    "statsd-client": "0.4.6",
     "string-width": "^4.2.0",
     "strip-ansi": "^6.0.0",
     "supports-color": "^7.1.0",
     "tmp-promise": "^3.0.2",
     "update-notifier": "^4.1.0",
-    "uuid": "^8.0.0",
+    "uuid": "^7.0.3",
     "yargs": "^15.3.1"
   },
   "devDependencies": {
