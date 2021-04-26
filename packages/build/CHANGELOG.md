@@ -1,5 +1,12 @@
 # Changelog
 
+### [11.2.5](https://www.github.com/netlify/build/compare/build-v11.2.4...build-v11.2.5) (2021-04-24)
+
+
+### Bug Fixes
+
+* **deps:** memoize-one breaking change in exports ([#2653](https://www.github.com/netlify/build/issues/2653)) ([7a10098](https://www.github.com/netlify/build/commit/7a10098382f3a35bbe1a0dc62a6d7b7416479d53))
+
 ### [11.2.4](https://www.github.com/netlify/build/compare/build-v11.2.3...build-v11.2.4) (2021-04-23)
 
 
