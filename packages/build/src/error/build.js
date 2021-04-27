@@ -2,6 +2,8 @@
 
 const safeJsonStringify = require('safe-json-stringify')
 
+const { CUSTOM_ERROR_KEY } = require('./info')
+
 // Retrieve error information from child process and re-build it in current
 // process. We need this since errors are not JSON-serializable.
 const jsonToError = function ({ name, message, stack, ...errorProps }) {
@@ -35,8 +37,11 @@ const assignErrorProp = function (error, name, value) {
 // Inverse of `jsonToError()`.
 // IPC uses JSON for the payload. We ensure there are not circular references
 // as those would make the message sending fail.
-const errorToJson = function ({ name, message, stack, ...errorProps }) {
-  return safeJsonStringify.ensureProperties({ name, message, stack, ...errorProps })
+const errorToJson = function ({ name, message, stack, [CUSTOM_ERROR_KEY]: customError, ...errorProps }) {
+  return {
+    ...safeJsonStringify.ensureProperties(errorProps),
+    ...safeJsonStringify.ensureProperties({ name, message, stack, [CUSTOM_ERROR_KEY]: customError }),
+  }
 }
 
 module.exports = { jsonToError, errorToJson }

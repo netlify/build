@@ -306,6 +306,10 @@ test('Exits in plugins', async (t) => {
   await runFixture(t, 'plugin_exit')
 })
 
+test('Plugin errors can have a toJSON() method', async (t) => {
+  await runFixture(t, 'plugin_error_to_json')
+})
+
 // Process exit is different on Windows
 // TODO: re-enable. This test is currently randomly failing.
 if (platform !== 'win32') {
