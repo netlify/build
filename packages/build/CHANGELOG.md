@@ -1,5 +1,12 @@
 # Changelog
 
+### [11.3.1](https://www.github.com/netlify/build/compare/build-v11.3.0...build-v11.3.1) (2021-04-27)
+
+
+### Bug Fixes
+
+* do not fail when plugin error has `toJSON()` method ([#2677](https://www.github.com/netlify/build/issues/2677)) ([6363758](https://www.github.com/netlify/build/commit/6363758cb4cc2ef232ac5ff21298126ab7318e30))
+
 ## [11.3.0](https://www.github.com/netlify/build/compare/build-v11.2.6...build-v11.3.0) (2021-04-27)
 
 
