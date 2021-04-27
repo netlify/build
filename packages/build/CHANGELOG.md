@@ -1,5 +1,12 @@
 # Changelog
 
+## [11.3.0](https://www.github.com/netlify/build/compare/build-v11.2.6...build-v11.3.0) (2021-04-27)
+
+
+### Features
+
+* remove `--ui-plugins` CLI flag ([#2673](https://www.github.com/netlify/build/issues/2673)) ([a1cbf78](https://www.github.com/netlify/build/commit/a1cbf789bac18a83232a29c70390691442527693))
+
 ### [11.2.6](https://www.github.com/netlify/build/compare/build-v11.2.5...build-v11.2.6) (2021-04-26)
 
 
