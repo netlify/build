@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.3.0](https://www.github.com/netlify/build/compare/config-v6.2.1...config-v6.3.0) (2021-04-27)
+
+
+### Features
+
+* allow buildbot to pin plugin versions in `@netlify/config` ([#2674](https://www.github.com/netlify/build/issues/2674)) ([2e8a086](https://www.github.com/netlify/build/commit/2e8a0866b6bc60dfbeaccc54edc093c82d5aef7a))
+
 ### [6.2.1](https://www.github.com/netlify/build/compare/config-v6.2.0...config-v6.2.1) (2021-04-26)
 
 
