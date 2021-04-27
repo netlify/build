@@ -39,4 +39,4 @@ const canHaveErrorInfo = function (error) {
 
 const CUSTOM_ERROR_KEY = 'customErrorInfo'
 
-module.exports = { addDefaultErrorInfo, addErrorInfo, getErrorInfo, isBuildError }
+module.exports = { addDefaultErrorInfo, addErrorInfo, getErrorInfo, isBuildError, CUSTOM_ERROR_KEY }
