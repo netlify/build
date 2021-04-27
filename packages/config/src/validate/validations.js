@@ -105,7 +105,7 @@ const EXAMPLE_PORT = 80
 const POST_NORMALIZE_VALIDATIONS = [
   {
     property: 'plugins.*',
-    ...validProperties(['package', 'inputs'], ['origin']),
+    ...validProperties(['package', 'pinned_version', 'inputs'], ['origin']),
     example: { plugins: [{ package: 'netlify-plugin-one', inputs: { port: EXAMPLE_PORT } }] },
   },
 
@@ -136,6 +136,12 @@ const POST_NORMALIZE_VALIDATIONS = [
     example: () => ({ plugins: [{ package: 'netlify-plugin-one' }] }),
   },
 
+  {
+    property: 'plugins.*.pinned_version',
+    check: isString,
+    message: 'must be a string.',
+    example: () => ({ plugins: [{ package: 'netlify-plugin-one', pinned_version: '1' }] }),
+  },
   {
     property: 'plugins.*.inputs',
     check: isPlainObj,

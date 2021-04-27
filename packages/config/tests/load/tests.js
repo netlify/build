@@ -48,6 +48,10 @@ test('--defaultConfig merges UI plugins with config plugins', async (t) => {
   await runFixture(t, 'plugins_merge', { flags: { defaultConfig } })
 })
 
+test('--defaultConfig can specify pinned versions', async (t) => {
+  await runFixture(t, 'empty', { flags: { defaultConfig: { plugins: [{ package: 'one', pinned_version: '1' }] } } })
+})
+
 test('--inlineConfig CLI flag', async (t) => {
   const inlineConfig = JSON.stringify({ build: { publish: 'publish' } })
   await runFixture(t, 'default_merge', { flags: { inlineConfig }, useBinary: true })
