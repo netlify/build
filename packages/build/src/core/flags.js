@@ -105,14 +105,6 @@ Default: .netlify/cache/`,
     describe: `Path to the buildbot server socket. This is used to connect to the buildbot to trigger deploys.`,
     hidden: true,
   },
-  uiPlugins: {
-    string: true,
-    describe: `List of UI-installed plugins.
-This is a JSON array with properties "package" and "version".
-Default: none.`,
-    coerce: JSON.parse,
-    hidden: true,
-  },
   telemetry: {
     boolean: true,
     describe: `Enable telemetry.
