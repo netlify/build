@@ -89,6 +89,10 @@ test('Handles function configuration objects for functions with the same name as
   await runFixture(t, 'function_config_ambiguous')
 })
 
+test('Collects paths from `included_files` defined at different levels', async (t) => {
+  await runFixture(t, 'function_config_included_files')
+})
+
 test('Merges plugins in netlify.toml and defaultConfig', async (t) => {
   const defaultConfig = {
     plugins: [

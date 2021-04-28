@@ -10,6 +10,7 @@ const {
   functionsDirectoryCheck,
   isArrayOfObjects,
   isArrayOfStrings,
+  isInsideRoot,
   isString,
   validProperties,
   insideRootCheck,
@@ -214,6 +215,22 @@ const POST_NORMALIZE_VALIDATIONS = [
     message: 'must be an array of strings.',
     example: (value, key, prevPath) => ({
       functions: { [prevPath[1]]: { ignored_node_modules: ['module-one', 'module-two'] } },
+    }),
+  },
+  {
+    property: 'functions.*.included_files',
+    check: isArrayOfStrings,
+    message: 'must be an array of strings.',
+    example: (value, key, prevPath) => ({
+      functions: { [prevPath[1]]: { included_files: ['directory-one/file1', 'directory-two/**/*.jpg'] } },
+    }),
+  },
+  {
+    property: 'functions.*.included_files',
+    check: (value) => value.every(isInsideRoot),
+    message: 'must only contain paths that are inside the root directory.',
+    example: (value, key, prevPath) => ({
+      functions: { [prevPath[1]]: { included_files: ['directory-one/file1', 'directory-two/**/*.jpg'] } },
     }),
   },
   {

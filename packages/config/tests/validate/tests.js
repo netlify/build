@@ -168,6 +168,14 @@ test('functions.external_node_modules: array of strings', async (t) => {
   await runFixture(t, 'function_config_invalid_external_modules')
 })
 
+test('functions.ignored_node_modules: is array of strings', async (t) => {
+  await runFixture(t, 'function_config_invalid_included_files_1')
+})
+
+test('functions.ignored_node_modules: does not contain paths outside of the root directory', async (t) => {
+  await runFixture(t, 'function_config_invalid_included_files_2')
+})
+
 test('functions.ignored_node_modules: array of strings', async (t) => {
   await runFixture(t, 'function_config_invalid_ignored_modules')
 })
