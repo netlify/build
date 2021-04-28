@@ -1,5 +1,7 @@
 'use strict'
 
+const { versions } = require('process')
+
 const test = require('ava')
 
 const { runFixture } = require('../helpers/main')
@@ -15,7 +17,7 @@ const normalizeSnapshot = function ({ body, ...request }) {
 
 const normalizeBody = function ({
   timestamp,
-  properties: { duration, buildVersion, osPlatform, osName, ...properties } = {},
+  properties: { duration, buildVersion, osPlatform, osName, nodeVersion, ...properties } = {},
   ...body
 }) {
   const optDuration = duration ? { duration: typeof duration } : {}
@@ -25,6 +27,7 @@ const normalizeBody = function ({
     properties: {
       ...properties,
       ...optDuration,
+      nodeVersion: typeof nodeVersion,
       buildVersion: typeof buildVersion,
       osPlatform: typeof osPlatform,
       osName: typeof osName,
@@ -127,12 +130,19 @@ test('Telemetry BUILD_TELEMETRY_DISABLED env var overrides flag', async (t) => {
   t.is(telemetryRequests.length, 0)
 })
 
-test('Telemetry node version reported is based on the NODE_VERSION env var', async (t) => {
+test('Telemetry node version reported is based on the version provided by the user', async (t) => {
+  const nodeVersion = '8.8.0'
   const { telemetryRequests } = await runWithApiMock(t, 'success', {
-    env: { NODE_VERSION: '12.0.0' },
+    nodePath: `/test/.nvm/versions/node/v${nodeVersion}/bin/node`,
   })
-  const snapshot = telemetryRequests.map(normalizeSnapshot)
-  t.snapshot(snapshot)
+  t.is(telemetryRequests.length, 1)
+  t.is(telemetryRequests[0].body.properties.nodeVersion, nodeVersion)
+})
+
+test('Telemetry node version reported is based on the current process version if none is provided', async (t) => {
+  const { telemetryRequests } = await runWithApiMock(t, 'success')
+  t.is(telemetryRequests.length, 1)
+  t.is(telemetryRequests[0].body.properties.nodeVersion, versions.node)
 })
 
 test('Telemetry calls timeout by default', async (t) => {

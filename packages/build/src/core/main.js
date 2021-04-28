@@ -176,7 +176,7 @@ const tExecBuild = async function ({
   })
   // `errorParams` is purposely stateful
   // eslint-disable-next-line fp/no-mutating-assign
-  Object.assign(errorParams, { netlifyConfig, siteInfo, childEnv })
+  Object.assign(errorParams, { netlifyConfig, siteInfo, childEnv, userNodeVersion })
 
   const constants = getConstants({
     configPath,
@@ -473,8 +473,8 @@ const telemetryReport = async function ({
       durationNs,
       siteInfo,
       telemetry,
+      userNodeVersion: errorParams.userNodeVersion,
       testOpts,
-      childEnv: errorParams.childEnv,
     })
   } catch (error) {
     await handleBuildError(error, errorParams)

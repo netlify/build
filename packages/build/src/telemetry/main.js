@@ -24,8 +24,7 @@ const trackBuildComplete = async function ({
   durationNs,
   siteInfo,
   telemetry,
-  // childEnv can be undefined if build fails before the config has been loaded
-  childEnv = {},
+  userNodeVersion,
   testOpts: { telemetryOrigin = DEFAULT_TELEMETRY_CONFIG.origin, telemetryTimeout = DEFAULT_TELEMETRY_CONFIG.timeout },
 }) {
   if (!telemetry) {
@@ -33,7 +32,7 @@ const trackBuildComplete = async function ({
   }
 
   try {
-    const payload = getPayload({ status, commandsCount, netlifyConfig, durationNs, siteInfo, childEnv })
+    const payload = getPayload({ status, commandsCount, netlifyConfig, durationNs, siteInfo, userNodeVersion })
     await track({
       payload,
       config: { ...DEFAULT_TELEMETRY_CONFIG, origin: telemetryOrigin, timeout: telemetryTimeout },
@@ -58,7 +57,7 @@ const track = async function ({ payload, config: { origin, writeKey, timeout } }
 
 // Retrieve telemetry information
 // siteInfo can be empty if the build fails during the get config step
-const getPayload = function ({ status, commandsCount, netlifyConfig, durationNs, childEnv, siteInfo = {} }) {
+const getPayload = function ({ status, commandsCount, netlifyConfig, durationNs, userNodeVersion, siteInfo = {} }) {
   const basePayload = {
     userId: 'buildbot_user',
     event: 'build:ci_build_process_completed',
@@ -67,9 +66,9 @@ const getPayload = function ({ status, commandsCount, netlifyConfig, durationNs,
       status,
       steps: commandsCount,
       buildVersion: version,
-      // We're passing the NODE_VESION set by the buildbot which will run the `build.command` and
+      // We're passing the node version set by the buildbot/user which will run the `build.command` and
       // the `package.json`/locally defined plugins
-      nodeVersion: childEnv.NODE_VERSION,
+      nodeVersion: userNodeVersion,
       osPlatform: OS_TYPES[platform],
       osName: osName(),
       siteId: siteInfo.id,
