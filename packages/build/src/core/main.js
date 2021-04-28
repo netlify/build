@@ -12,6 +12,7 @@ const { getBufferLogs } = require('../log/logger')
 const { logBuildStart, logTimer, logBuildSuccess } = require('../log/messages/core')
 const { loadPlugins } = require('../plugins/load')
 const { getPluginsOptions } = require('../plugins/options')
+const { pinPlugins } = require('../plugins/pinned_version')
 const { startPlugins, stopPlugins } = require('../plugins/spawn')
 const { addCorePlugins } = require('../plugins_core/add')
 const { reportStatuses } = require('../status/report')
@@ -194,6 +195,7 @@ const tExecBuild = async function ({
   const { commandsCount, timers: timersB } = await runAndReportBuild({
     pluginsOptions,
     netlifyConfig,
+    siteInfo,
     configPath,
     buildDir,
     nodePath,
@@ -223,6 +225,7 @@ const execBuild = measureDuration(tExecBuild, 'total', { parentTag: 'build_site'
 const runAndReportBuild = async function ({
   pluginsOptions,
   netlifyConfig,
+  siteInfo,
   configPath,
   buildDir,
   nodePath,
@@ -244,7 +247,13 @@ const runAndReportBuild = async function ({
   featureFlags,
 }) {
   try {
-    const { commandsCount, statuses, timers: timersA } = await initAndRunBuild({
+    const {
+      commandsCount,
+      statuses,
+      pluginsOptions: pluginsOptionsA,
+      failedPlugins,
+      timers: timersA,
+    } = await initAndRunBuild({
       pluginsOptions,
       netlifyConfig,
       configPath,
@@ -266,20 +275,36 @@ const runAndReportBuild = async function ({
       buildbotServerSocket,
       constants,
     })
-    await reportStatuses({
-      statuses,
-      childEnv,
-      api,
-      mode,
-      pluginsOptions,
-      netlifyConfig,
-      errorMonitor,
-      deployId,
-      logs,
-      debug,
-      sendStatus,
-      testOpts,
-    })
+    await Promise.all([
+      reportStatuses({
+        statuses,
+        childEnv,
+        api,
+        mode,
+        pluginsOptions: pluginsOptionsA,
+        netlifyConfig,
+        errorMonitor,
+        deployId,
+        logs,
+        debug,
+        sendStatus,
+        testOpts,
+      }),
+      pinPlugins({
+        pluginsOptions: pluginsOptionsA,
+        failedPlugins,
+        api,
+        siteInfo,
+        childEnv,
+        mode,
+        netlifyConfig,
+        errorMonitor,
+        logs,
+        debug,
+        testOpts,
+        sendStatus,
+      }),
+    ])
 
     return { commandsCount, timers: timersA }
   } catch (error) {
@@ -349,7 +374,7 @@ const initAndRunBuild = async function ({
   })
 
   try {
-    const { commandsCount, statuses, timers: timersC } = await runBuild({
+    const { commandsCount, statuses, failedPlugins, timers: timersC } = await runBuild({
       childProcesses,
       pluginsOptions: pluginsOptionsA,
       netlifyConfig,
@@ -374,7 +399,7 @@ const initAndRunBuild = async function ({
 
     await warnOnLingeringProcesses({ mode, logs, testOpts })
 
-    return { commandsCount, statuses, timers: timersC }
+    return { commandsCount, statuses, pluginsOptions: pluginsOptionsA, failedPlugins, timers: timersC }
   } finally {
     stopPlugins(childProcesses)
   }
@@ -420,7 +445,7 @@ const runBuild = async function ({
     return {}
   }
 
-  const { commandsCount, statuses, timers: timersB } = await runCommands({
+  const { commandsCount, statuses, failedPlugins, timers: timersB } = await runCommands({
     commands,
     featureFlags,
     buildbotServerSocket,
@@ -440,7 +465,7 @@ const runBuild = async function ({
     timers: timersA,
     testOpts,
   })
-  return { commandsCount, statuses, timers: timersB }
+  return { commandsCount, statuses, failedPlugins, timers: timersB }
 }
 
 // Logs and reports that a build successfully ended

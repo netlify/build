@@ -32,7 +32,13 @@ const runCommands = async function ({
   timers,
   testOpts,
 }) {
-  const { index: commandsCount, error: errorA, statuses: statusesB, timers: timersC } = await pReduce(
+  const {
+    index: commandsCount,
+    error: errorA,
+    statuses: statusesB,
+    failedPlugins: failedPluginsA,
+    timers: timersC,
+  } = await pReduce(
     commands,
     async (
       { index, error, failedPlugins, envChanges, statuses, timers: timersA },
@@ -114,7 +120,7 @@ const runCommands = async function ({
     throw errorA
   }
 
-  return { commandsCount, statuses: statusesB, timers: timersC }
+  return { commandsCount, statuses: statusesB, failedPlugins: failedPluginsA, timers: timersC }
 }
 
 module.exports = { runCommands }

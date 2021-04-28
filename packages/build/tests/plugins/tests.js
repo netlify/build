@@ -479,12 +479,7 @@ test('Do not allow overriding core plugins', async (t) => {
   await runFixture(t, 'core_override')
 })
 
-const runWithApiMock = async function (
-  t,
-  fixtureName,
-  { testPlugin = DEFAULT_TEST_PLUGIN, ...flags } = {},
-  status = 200,
-) {
+const runWithApiMock = async function (t, fixtureName, { testPlugin, ...flags } = {}, status = 200) {
   const response = getPluginsList(testPlugin)
   const { scheme, host, stopServer } = await startServer({
     path: PLUGINS_LIST_URL,
@@ -505,7 +500,7 @@ const runWithApiMock = async function (
 
 // We use a specific plugin in tests. We hardcode its version to keep the tests
 // stable even when new versions of that plugin are published.
-const getPluginsList = function (testPlugin) {
+const getPluginsList = function (testPlugin = DEFAULT_TEST_PLUGIN) {
   return pluginsList.map((plugin) => getPlugin(plugin, testPlugin))
 }
 
@@ -727,6 +722,67 @@ test.serial('Plugins can specify non-matching compatibility.siteDependencies ran
 const getNodePath = function (nodeVersion) {
   return `/home/ether/.nvm/versions/node/v${nodeVersion}/bin/node`
 }
+
+const runWithUpdatePluginMock = async function (t, fixture, { flags, status, sendStatus = true } = {}) {
+  const { scheme, host, requests, stopServer } = await startServer([
+    { path: UPDATE_PLUGIN_PATH, status },
+    { path: PLUGINS_LIST_URL, response: getPluginsList(), status: 200 },
+  ])
+  try {
+    await runFixture(t, fixture, {
+      flags: {
+        siteId: 'test',
+        token: 'test',
+        sendStatus,
+        testOpts: { scheme, host, pluginsListUrl: `${scheme}://${host}` },
+        ...flags,
+      },
+    })
+  } finally {
+    await stopServer()
+  }
+  t.snapshot(requests)
+}
+
+const UPDATE_PLUGIN_PATH = `/api/v1/sites/test/plugins/${TEST_PLUGIN_NAME}`
+
+test('Pin plugin versions', async (t) => {
+  await runWithUpdatePluginMock(t, 'pin_success')
+})
+
+test('Report updatePlugin API error without failing the build', async (t) => {
+  await runWithUpdatePluginMock(t, 'pin_success', { status: 500 })
+})
+
+test('Only pin plugin versions in production', async (t) => {
+  await runWithUpdatePluginMock(t, 'pin_success', { sendStatus: false })
+})
+
+test('Do not pin plugin versions without an API token', async (t) => {
+  await runWithUpdatePluginMock(t, 'pin_success', { flags: { token: '' } })
+})
+
+test('Do not pin plugin versions without a siteId', async (t) => {
+  await runWithUpdatePluginMock(t, 'pin_success', { flags: { siteId: '' } })
+})
+
+test('Do not pin plugin versions if the build failed', async (t) => {
+  await runWithUpdatePluginMock(t, 'pin_build_failed')
+})
+
+test('Do not pin plugin versions if the plugin failed', async (t) => {
+  await runWithUpdatePluginMock(t, 'pin_plugin_failed')
+})
+
+test('Do not pin plugin versions if the build was installed in package.json', async (t) => {
+  await runWithUpdatePluginMock(t, 'pin_module')
+})
+
+test('Do not pin plugin versions if already pinned', async (t) => {
+  await runWithUpdatePluginMock(t, 'pin_success', {
+    flags: { defaultConfig: { plugins: [{ package: TEST_PLUGIN_NAME, pinned_version: '1' }] } },
+  })
+})
 
 test('Validate --node-path version is supported by our codebase', async (t) => {
   const nodePath = getNodePath('8.2.0')
