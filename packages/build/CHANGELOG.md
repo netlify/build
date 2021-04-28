@@ -1,5 +1,12 @@
 # Changelog
 
+### [11.3.2](https://www.github.com/netlify/build/compare/build-v11.3.1...build-v11.3.2) (2021-04-28)
+
+
+### Bug Fixes
+
+* **telemetry:** fwd relevant `nodeVersion` information ([#2634](https://www.github.com/netlify/build/issues/2634)) ([caec0d6](https://www.github.com/netlify/build/commit/caec0d66f7649856cdad749545fdbe084b1549e8))
+
 ### [11.3.1](https://www.github.com/netlify/build/compare/build-v11.3.0...build-v11.3.1) (2021-04-27)
 
 
