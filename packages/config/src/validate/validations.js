@@ -10,7 +10,6 @@ const {
   functionsDirectoryCheck,
   isArrayOfObjects,
   isArrayOfStrings,
-  isInsideRoot,
   isString,
   validProperties,
   insideRootCheck,
@@ -226,9 +225,8 @@ const POST_NORMALIZE_VALIDATIONS = [
     }),
   },
   {
-    property: 'functions.*.included_files',
-    check: (value) => value.every(isInsideRoot),
-    message: 'must only contain paths that are inside the root directory.',
+    property: 'functions.*.included_files.*',
+    ...insideRootCheck,
     example: (value, key, prevPath) => ({
       functions: { [prevPath[1]]: { included_files: ['directory-one/file1', 'directory-two/**/*.jpg'] } },
     }),

@@ -55,7 +55,6 @@ const PARENT_DOTS_REGEXP = /\.\.[/\\]/g
 module.exports = {
   isArrayOfObjects,
   isArrayOfStrings,
-  isInsideRoot,
   isString,
   validProperties,
   insideRootCheck,
