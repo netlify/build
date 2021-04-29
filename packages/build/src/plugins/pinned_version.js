@@ -5,6 +5,7 @@ const { major } = require('semver')
 const { handleBuildError } = require('../error/handle')
 
 // Send an API request to pin plugins' major versions
+// eslint-disable-next-line complexity
 const pinPlugins = async function ({
   pluginsOptions,
   failedPlugins,
@@ -19,6 +20,11 @@ const pinPlugins = async function ({
   testOpts,
   sendStatus,
 }) {
+  // @todo remove this after the API bug with `updateSite` is fixed
+  if (mode !== 'require' && siteId !== 'test') {
+    return
+  }
+
   if ((mode !== 'buildbot' && !sendStatus) || api === undefined || !siteId) {
     return
   }
