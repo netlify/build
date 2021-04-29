@@ -73,7 +73,11 @@ const pinPlugin = async function ({
 }) {
   const pinnedVersion = String(major(version))
   try {
-    await api.updatePlugin({ package: packageName, site_id: siteId, body: { pinned_version: pinnedVersion } })
+    await api.updatePlugin({
+      package: encodeURIComponent(packageName),
+      site_id: siteId,
+      body: { pinned_version: pinnedVersion },
+    })
     // Bitballoon API randomly fails with 502.
     // Builds should be successful when this API call fails, but we still want
     // to report the error both in logs and in error monitoring.
