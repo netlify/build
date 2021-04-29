@@ -1,5 +1,13 @@
 # Changelog
 
+## [11.4.0](https://www.github.com/netlify/build/compare/build-v11.3.2...build-v11.4.0) (2021-04-29)
+
+
+### Features
+
+* call `updatePlugin` to pin plugins' versions ([#2683](https://www.github.com/netlify/build/issues/2683)) ([1d0ce63](https://www.github.com/netlify/build/commit/1d0ce6342f6e00376be51a05d906b7867fc8f9a0))
+* improve debugging of plugins versioning ([#2691](https://www.github.com/netlify/build/issues/2691)) ([4659410](https://www.github.com/netlify/build/commit/46594109dcbc713d9ba3041e7a2a1013b4e406df))
+
 ### [11.3.2](https://www.github.com/netlify/build/compare/build-v11.3.1...build-v11.3.2) (2021-04-28)
 
 
