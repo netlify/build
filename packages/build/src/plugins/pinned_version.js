@@ -21,7 +21,7 @@ const pinPlugins = async function ({
   sendStatus,
 }) {
   // @todo remove this after the API bug with `updateSite` is fixed
-  if (mode !== 'require' && siteId !== 'test') {
+  if (siteId !== 'test' && mode !== 'require') {
     return
   }
 
