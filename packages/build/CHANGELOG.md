@@ -1,5 +1,12 @@
 # Changelog
 
+### [11.4.2](https://www.github.com/netlify/build/compare/build-v11.4.1...build-v11.4.2) (2021-04-29)
+
+
+### Bug Fixes
+
+* improve temporary fix for the `updatePlugin` bug ([#2696](https://www.github.com/netlify/build/issues/2696)) ([87fde4a](https://www.github.com/netlify/build/commit/87fde4accae7dc6d4ab8a1b09ef2c4c3a7152f25))
+
 ### [11.4.1](https://www.github.com/netlify/build/compare/build-v11.4.0...build-v11.4.1) (2021-04-29)
 
 
