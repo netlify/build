@@ -1,5 +1,13 @@
 # Changelog
 
+### [11.4.3](https://www.github.com/netlify/build/compare/build-v11.4.2...build-v11.4.3) (2021-04-29)
+
+
+### Bug Fixes
+
+* do not run `updateSite` for `netlify.toml`-only plugins ([#2703](https://www.github.com/netlify/build/issues/2703)) ([0580c8f](https://www.github.com/netlify/build/commit/0580c8fa0b1dfcd9fe8eaac6596e84d3ab38b980))
+* percent-encode the `package` parameter of the `updatePlugin` endpoint ([#2702](https://www.github.com/netlify/build/issues/2702)) ([d2edef2](https://www.github.com/netlify/build/commit/d2edef2a8ca27dc996a2c7db50d66a623fcb1d08))
+
 ### [11.4.2](https://www.github.com/netlify/build/compare/build-v11.4.1...build-v11.4.2) (2021-04-29)
 
 
