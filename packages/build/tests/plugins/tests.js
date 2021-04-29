@@ -735,6 +735,7 @@ const runWithUpdatePluginMock = async function (t, fixture, { flags, status, sen
         token: 'test',
         sendStatus,
         testOpts: { scheme, host, pluginsListUrl: `${scheme}://${host}` },
+        defaultConfig: { plugins: [{ package: TEST_PLUGIN_NAME }] },
         ...flags,
       },
     })
@@ -775,7 +776,7 @@ test('Do not pin plugin versions if the plugin failed', async (t) => {
 })
 
 test('Do not pin plugin versions if the build was installed in package.json', async (t) => {
-  await runWithUpdatePluginMock(t, 'pin_module')
+  await runWithUpdatePluginMock(t, 'pin_module', { flags: { defaultConfig: {} } })
 })
 
 test('Do not pin plugin versions if already pinned', async (t) => {

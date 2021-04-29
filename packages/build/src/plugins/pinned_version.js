@@ -44,10 +44,18 @@ const pinPlugins = async function ({
 
 // Only pin version if:
 //  - the plugin's version has not been pinned yet
-//  - the plugin was installed in the UI or in `netlify.toml` (not `package.json`)
+//  - the plugin was installed in the UI
 //  - both the build and the plugin succeeded
-const shouldPinVersion = function ({ pluginOptions: { packageName, pinnedVersion, loadedFrom }, failedPlugins }) {
-  return pinnedVersion === undefined && loadedFrom === 'auto_install' && !failedPlugins.includes(packageName)
+const shouldPinVersion = function ({
+  pluginOptions: { packageName, pinnedVersion, loadedFrom, origin },
+  failedPlugins,
+}) {
+  return (
+    pinnedVersion === undefined &&
+    loadedFrom === 'auto_install' &&
+    origin === 'ui' &&
+    !failedPlugins.includes(packageName)
+  )
 }
 
 const pinPlugin = async function ({
@@ -67,7 +75,11 @@ const pinPlugin = async function ({
 }) {
   const pinnedVersion = String(major(version))
   try {
-    await api.updatePlugin({ package: packageName, site_id: siteId, body: { pinned_version: pinnedVersion } })
+    await api.updatePlugin({
+      package: encodeURIComponent(packageName),
+      site_id: siteId,
+      body: { pinned_version: pinnedVersion },
+    })
     // Bitballoon API randomly fails with 502.
     // Builds should be successful when this API call fails, but we still want
     // to report the error both in logs and in error monitoring.
