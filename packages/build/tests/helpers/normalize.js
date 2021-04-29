@@ -98,7 +98,7 @@ const NORMALIZE_REGEXPS = [
   [/(STACK TRACE\n)+/g, 'STACK TRACE\n'],
   [/( \/file\/path){2,}/g, ' /file/path'],
   // Ports
-  [/:\d{2,}/, ':80'],
+  [/:\d{2,}/g, ':80'],
   // Windows uses host:port instead of Unix sockets for TCP
   [/(http:\/\/)?localhost:80/g, '/test/socket'],
   // Durations
