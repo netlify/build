@@ -50,10 +50,18 @@ const pinPlugins = async function ({
 
 // Only pin version if:
 //  - the plugin's version has not been pinned yet
-//  - the plugin was installed in the UI or in `netlify.toml` (not `package.json`)
+//  - the plugin was installed in the UI
 //  - both the build and the plugin succeeded
-const shouldPinVersion = function ({ pluginOptions: { packageName, pinnedVersion, loadedFrom }, failedPlugins }) {
-  return pinnedVersion === undefined && loadedFrom === 'auto_install' && !failedPlugins.includes(packageName)
+const shouldPinVersion = function ({
+  pluginOptions: { packageName, pinnedVersion, loadedFrom, origin },
+  failedPlugins,
+}) {
+  return (
+    pinnedVersion === undefined &&
+    loadedFrom === 'auto_install' &&
+    origin === 'ui' &&
+    !failedPlugins.includes(packageName)
+  )
 }
 
 const pinPlugin = async function ({
