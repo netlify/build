@@ -1,5 +1,12 @@
 # Changelog
 
+### [11.4.1](https://www.github.com/netlify/build/compare/build-v11.4.0...build-v11.4.1) (2021-04-29)
+
+
+### Bug Fixes
+
+* use the proper conventional commit in PR title ([#2694](https://www.github.com/netlify/build/issues/2694)) ([6829fe4](https://www.github.com/netlify/build/commit/6829fe432d9a2e1288c7eb931e052c12b302b703))
+
 ## [11.4.0](https://www.github.com/netlify/build/compare/build-v11.3.2...build-v11.4.0) (2021-04-29)
 
 
