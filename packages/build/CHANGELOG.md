@@ -1,5 +1,12 @@
 # Changelog
 
+### [11.4.4](https://www.github.com/netlify/build/compare/build-v11.4.3...build-v11.4.4) (2021-04-29)
+
+
+### Bug Fixes
+
+* re-enable `updateSite` endpoint ([#2704](https://www.github.com/netlify/build/issues/2704)) ([aa704af](https://www.github.com/netlify/build/commit/aa704af603b21fec4d99d2163f884e0a6f776761))
+
 ### [11.4.3](https://www.github.com/netlify/build/compare/build-v11.4.2...build-v11.4.3) (2021-04-29)
 
 
