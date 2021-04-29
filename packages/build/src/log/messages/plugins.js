@@ -31,8 +31,10 @@ const getPluginsListItem = function ([packageName, { version }]) {
   return `${packageName}@${version}`
 }
 
-const logLoadingPlugins = function (logs, pluginsOptions) {
-  const loadingPlugins = pluginsOptions.filter(isNotCorePlugin).map(getPluginDescription)
+const logLoadingPlugins = function (logs, pluginsOptions, debug) {
+  const loadingPlugins = pluginsOptions
+    .filter(isNotCorePlugin)
+    .map((pluginOptions) => getPluginDescription(pluginOptions, debug))
 
   if (loadingPlugins.length === 0) {
     return
@@ -47,10 +49,48 @@ const isNotCorePlugin = function ({ origin }) {
   return origin !== 'core'
 }
 
-const getPluginDescription = function ({ packageName, pluginPackageJson: { version }, loadedFrom, origin }) {
+const getPluginDescription = function (
+  {
+    packageName,
+    pluginPackageJson: { version },
+    loadedFrom,
+    origin,
+    pinnedVersion,
+    latestVersion,
+    expectedVersion,
+    compatibleVersion,
+  },
+  debug,
+) {
   const versionedPackage = getVersionedPackage(packageName, version)
   const pluginOrigin = getPluginOrigin(loadedFrom, origin)
-  return `${THEME.highlightWords(packageName)}${versionedPackage} ${pluginOrigin}`
+  const description = `${THEME.highlightWords(packageName)}${versionedPackage} ${pluginOrigin}`
+  if (!debug) {
+    return description
+  }
+
+  const versions = Object.entries({
+    pinned: pinnedVersion,
+    latest: latestVersion,
+    expected: expectedVersion,
+    compatible: compatibleVersion,
+  })
+    .filter(hasVersion)
+    .map(getVersionField)
+
+  if (versions.length === 0) {
+    return description
+  }
+
+  return `${description} (${versions.join(', ')})`
+}
+
+const hasVersion = function ([, version]) {
+  return version !== undefined
+}
+
+const getVersionField = function ([versionFieldName, version]) {
+  return `${versionFieldName} ${version}`
 }
 
 // Print a warning message when old versions plugins are used.
