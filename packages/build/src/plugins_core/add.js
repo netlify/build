@@ -39,8 +39,15 @@ const isUserPlugin = function (plugin) {
   return !isCorePlugin(plugin.package)
 }
 
-const normalizePluginOptions = function ({ package: packageName, pluginPath, loadedFrom, origin, inputs }) {
-  return { packageName, pluginPath, loadedFrom, origin, inputs }
+const normalizePluginOptions = function ({
+  package: packageName,
+  pluginPath,
+  pinned_version: pinnedVersion,
+  loadedFrom,
+  origin,
+  inputs,
+}) {
+  return { packageName, pluginPath, pinnedVersion, loadedFrom, origin, inputs }
 }
 
 module.exports = { addCorePlugins }

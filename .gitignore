@@ -12,3 +12,4 @@ coverage
 packages/*/package-lock.json
 !**/fixtures/**/node_modules
 !**/fixtures/**/plugins_cache*/.netlify
+!**/fixtures/**/pin_*/.netlify
