@@ -105,6 +105,7 @@ const NORMALIZE_REGEXPS = [
   [/(\d[\d.]*(ms|m|s)( )?)+/g, '1ms'],
   // Do not normalize some versions used in test
   [/(netlify-plugin-contextual-env)@(\d+)\.(\d+)\.(\d+)/g, '$1 $2-$3-$4'],
+  [/(latest|expected|compatible) (\d+)\.(\d+)\.(\d+)/g, '$1 $2-$3-$4'],
   // Package versions
   [/([@v])[\d.]+/g, '$11.0.0'],
   // Semantic versions
