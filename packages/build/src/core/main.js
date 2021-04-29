@@ -344,6 +344,7 @@ const initAndRunBuild = async function ({
     buildDir,
     childEnv,
     logs,
+    debug,
     timers: timersA,
   })
 

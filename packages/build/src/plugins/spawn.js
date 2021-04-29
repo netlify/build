@@ -17,8 +17,8 @@ const CHILD_MAIN_FILE = `${__dirname}/child/main.js`
 //    (for both security and safety reasons)
 //  - logs can be buffered which allows manipulating them for log shipping,
 //    transforming and parallel plugins
-const tStartPlugins = async function ({ pluginsOptions, buildDir, childEnv, logs }) {
-  logLoadingPlugins(logs, pluginsOptions)
+const tStartPlugins = async function ({ pluginsOptions, buildDir, childEnv, logs, debug }) {
+  logLoadingPlugins(logs, pluginsOptions, debug)
   logOutdatedPlugins(logs, pluginsOptions)
   logIncompatiblePlugins(logs, pluginsOptions)
 
