@@ -67,7 +67,7 @@ const getConstants = function ({
      */
     NETLIFY_API_TOKEN: token,
     /**
-     * The Netlify API access token
+     * The Netlify API host
      */
     NETLIFY_API_HOST: apiHost,
   }
