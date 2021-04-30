@@ -1,5 +1,7 @@
 'use strict'
 
+const { satisfies } = require('semver')
+
 const { addErrorInfo } = require('../error/info')
 const { resolvePath } = require('../utils/resolve')
 
@@ -36,7 +38,7 @@ const addExpectedVersion = async function ({
   autoPluginsDir,
   packageJson,
   pluginOptions,
-  pluginOptions: { packageName, pluginPath, loadedFrom, nodeVersion },
+  pluginOptions: { packageName, pluginPath, loadedFrom, nodeVersion, pinnedVersion },
   buildDir,
 }) {
   if (!needsExpectedVersion(pluginOptions)) {
@@ -50,7 +52,7 @@ const addExpectedVersion = async function ({
 
   const { version: latestVersion, compatibility } = pluginsList[packageName]
   const [expectedVersion, { compatibleVersion, compatWarning }] = await Promise.all([
-    getExpectedVersion({ latestVersion, compatibility, nodeVersion, packageJson, buildDir }),
+    getExpectedVersion({ latestVersion, compatibility, nodeVersion, packageJson, buildDir, pinnedVersion }),
     getCompatibleVersion({ latestVersion, compatibility, nodeVersion, packageJson, buildDir }),
   ])
 
@@ -68,7 +70,7 @@ const isMissingVersion = async function ({ autoPluginsDir, packageName, pluginPa
     // Plugin was not previously installed
     (pluginPath === undefined ||
       // Plugin was previously installed but a different version should be used
-      (await getAutoPluginVersion(packageName, autoPluginsDir)) !== expectedVersion)
+      !satisfies(await getAutoPluginVersion(packageName, autoPluginsDir), expectedVersion))
   )
 }
 

@@ -731,10 +731,10 @@ const getNodePath = function (nodeVersion) {
   return `/home/ether/.nvm/versions/node/v${nodeVersion}/bin/node`
 }
 
-const runWithUpdatePluginMock = async function (t, fixture, { flags, status, sendStatus = true } = {}) {
+const runWithUpdatePluginMock = async function (t, fixture, { flags, status, sendStatus = true, testPlugin } = {}) {
   const { scheme, host, requests, stopServer } = await startServer([
     { path: UPDATE_PLUGIN_PATH, status },
-    { path: PLUGINS_LIST_URL, response: getPluginsList(), status: 200 },
+    { path: PLUGINS_LIST_URL, response: getPluginsList(testPlugin), status: 200 },
   ])
   try {
     await runFixture(t, fixture, {
@@ -789,7 +789,21 @@ test('Do not pin plugin versions if the build was installed in package.json', as
 
 test('Do not pin plugin versions if already pinned', async (t) => {
   await runWithUpdatePluginMock(t, 'pin_success', {
-    flags: { defaultConfig: { plugins: [{ package: TEST_PLUGIN_NAME, pinned_version: '1' }] } },
+    flags: { defaultConfig: { plugins: [{ package: TEST_PLUGIN_NAME, pinned_version: '0' }] } },
+    testPlugin: { version: '1.0.0' },
+  })
+})
+
+test('Pinning plugin versions takes into account the compatibility field', async (t) => {
+  await runWithUpdatePluginMock(t, 'pin_success', {
+    flags: { defaultConfig: { plugins: [{ package: TEST_PLUGIN_NAME, pinned_version: '0' }] } },
+    testPlugin: {
+      version: '1.0.0',
+      compatibility: [
+        { version: '100.0.0', nodeVersion: '<100' },
+        { version: '0.3.0', nodeVersion: '<100' },
+      ],
+    },
   })
 })
 
