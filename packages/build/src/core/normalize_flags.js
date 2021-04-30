@@ -51,6 +51,7 @@ const getDefaultFlags = function ({ env: envOpt = {} }, combinedEnv) {
     debug: Boolean(combinedEnv.NETLIFY_BUILD_DEBUG),
     bugsnagKey: combinedEnv.BUGSNAG_KEY,
     sendStatus: false,
+    apiHost: 'api.netlify.com',
     testOpts: {},
     featureFlags: DEFAULT_FEATURE_FLAGS,
     statsd: { port: DEFAULT_STATSD_PORT },
