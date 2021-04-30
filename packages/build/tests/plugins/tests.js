@@ -114,6 +114,10 @@ test('constants.NETLIFY_API_TOKEN', async (t) => {
   await runFixture(t, 'netlify_api_token', { flags: { token: 'test', testOpts: { env: false } } })
 })
 
+test('constants.NETLIFY_API_HOST', async (t) => {
+  await runFixture(t, 'netlify_api_host', { flags: { apiHost: 'test.api.netlify.com' } })
+})
+
 test('Pass packageJson to plugins', async (t) => {
   await runFixture(t, 'package_json_valid')
 })

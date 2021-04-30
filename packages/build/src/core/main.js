@@ -186,6 +186,7 @@ const tExecBuild = async function ({
     cacheDir,
     netlifyConfig,
     siteInfo,
+    apiHost,
     token: tokenA,
     mode,
     testOpts,
