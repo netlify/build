@@ -1,5 +1,12 @@
 # Changelog
 
+## [11.5.0](https://www.github.com/netlify/build/compare/build-v11.4.4...build-v11.5.0) (2021-04-30)
+
+
+### Features
+
+* **plugins:** expose NETLIFY_API_HOST constant to plugins ([#2709](https://www.github.com/netlify/build/issues/2709)) ([8b56399](https://www.github.com/netlify/build/commit/8b5639916f7dffba4bb74e776db060f2cc4e0993))
+
 ### [11.4.4](https://www.github.com/netlify/build/compare/build-v11.4.3...build-v11.4.4) (2021-04-29)
 
 
