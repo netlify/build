@@ -118,6 +118,10 @@ test('constants.NETLIFY_API_HOST', async (t) => {
   await runFixture(t, 'netlify_api_host', { flags: { apiHost: 'test.api.netlify.com' } })
 })
 
+test('constants.NETLIFY_API_HOST default value is set to api.netlify.com', async (t) => {
+  await runFixture(t, 'netlify_api_host')
+})
+
 test('Pass packageJson to plugins', async (t) => {
   await runFixture(t, 'package_json_valid')
 })
