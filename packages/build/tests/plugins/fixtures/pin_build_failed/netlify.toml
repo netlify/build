@@ -1,5 +1,2 @@
 [build]
 command = "node --invalid"
-
-[[plugins]]
-package = "netlify-plugin-contextual-env"
