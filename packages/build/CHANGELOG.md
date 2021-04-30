@@ -1,5 +1,12 @@
 # Changelog
 
+## [11.6.0](https://www.github.com/netlify/build/compare/build-v11.5.1...build-v11.6.0) (2021-04-30)
+
+
+### Features
+
+* pin plugins versions ([#2714](https://www.github.com/netlify/build/issues/2714)) ([0857f65](https://www.github.com/netlify/build/commit/0857f652ccaa8f38f5af68e7e65348e7a8e25fd8))
+
 ### [11.5.1](https://www.github.com/netlify/build/compare/build-v11.5.0...build-v11.5.1) (2021-04-30)
 
 
