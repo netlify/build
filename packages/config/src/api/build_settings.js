@@ -34,8 +34,8 @@ const getDefaultConfig = function (
 }
 
 // Make sure we know which fields we are picking from the API
-const normalizeUiPlugin = function ({ package: packageName, inputs }) {
-  return { package: packageName, inputs }
+const normalizeUiPlugin = function ({ package: packageName, inputs, pinned_version: pinnedVersion }) {
+  return { package: packageName, inputs, pinned_version: pinnedVersion }
 }
 
 const getBaseRelDir = function ({ base_rel_dir: siteBaseRelDir }, baseRelDir = siteBaseRelDir) {
