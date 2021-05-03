@@ -1,5 +1,12 @@
 # Changelog
 
+### [11.7.1](https://www.github.com/netlify/build/compare/build-v11.7.0...build-v11.7.1) (2021-05-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency map-obj to v4 ([#2721](https://www.github.com/netlify/build/issues/2721)) ([17559dc](https://www.github.com/netlify/build/commit/17559dcc75dd9f9a73f2a604c9f8ef3140a91b42))
+
 ## [11.7.0](https://www.github.com/netlify/build/compare/build-v11.6.0...build-v11.7.0) (2021-05-03)
 
 
