@@ -5,7 +5,7 @@ const { platform } = require('process')
 const got = require('got')
 const osName = require('os-name')
 
-const { version } = require('../../package.json')
+const { version: buildVersion } = require('../../package.json')
 const { addErrorInfo } = require('../error/info')
 const { roundTimerToMillisecs } = require('../time/measure')
 
@@ -20,7 +20,7 @@ const DEFAULT_TELEMETRY_CONFIG = {
 const trackBuildComplete = async function ({
   status,
   commandsCount,
-  netlifyConfig,
+  pluginsOptions,
   durationNs,
   siteInfo,
   telemetry,
@@ -32,7 +32,7 @@ const trackBuildComplete = async function ({
   }
 
   try {
-    const payload = getPayload({ status, commandsCount, netlifyConfig, durationNs, siteInfo, userNodeVersion })
+    const payload = getPayload({ status, commandsCount, pluginsOptions, durationNs, siteInfo, userNodeVersion })
     await track({
       payload,
       config: { ...DEFAULT_TELEMETRY_CONFIG, origin: telemetryOrigin, timeout: telemetryTimeout },
@@ -57,44 +57,28 @@ const track = async function ({ payload, config: { origin, writeKey, timeout } }
 
 // Retrieve telemetry information
 // siteInfo can be empty if the build fails during the get config step
-const getPayload = function ({ status, commandsCount, netlifyConfig, durationNs, userNodeVersion, siteInfo = {} }) {
-  const basePayload = {
+const getPayload = function ({ status, commandsCount, pluginsOptions, durationNs, userNodeVersion, siteInfo = {} }) {
+  return {
     userId: 'buildbot_user',
     event: 'build:ci_build_process_completed',
     timestamp: Date.now(),
     properties: {
       status,
       steps: commandsCount,
-      buildVersion: version,
+      buildVersion,
       // We're passing the node version set by the buildbot/user which will run the `build.command` and
       // the `package.json`/locally defined plugins
       nodeVersion: userNodeVersion,
       osPlatform: OS_TYPES[platform],
       osName: osName(),
       siteId: siteInfo.id,
+      ...(pluginsOptions !== undefined && {
+        plugins: pluginsOptions.map(getPlugin),
+        pluginCount: pluginsOptions.length,
+      }),
+      ...(durationNs !== undefined && { duration: roundTimerToMillisecs(durationNs) }),
     },
   }
-
-  return addDuration(addConfigData(basePayload, netlifyConfig), durationNs)
-}
-
-const addConfigData = function (payload, netlifyConfig = {}) {
-  if (netlifyConfig.plugins === undefined) return payload
-
-  // Only extract package name and its origin
-  const plugins = Object.values(netlifyConfig.plugins).map(({ package: packageName, origin }) => ({
-    name: packageName,
-    origin,
-  }))
-  const properties = { properties: { ...payload.properties, plugins, pluginCount: plugins.length } }
-  return { ...payload, ...properties }
-}
-
-const addDuration = function (payload, durationNs) {
-  if (typeof durationNs !== 'number') return payload
-
-  const durationMs = roundTimerToMillisecs(durationNs)
-  return { ...payload, properties: { ...payload.properties, duration: durationMs } }
 }
 
 const OS_TYPES = {
@@ -106,6 +90,17 @@ const OS_TYPES = {
   aix: 'AIX',
   freebsd: 'FreeBSD',
   openbsd: 'OpenBSD',
+}
+
+const getPlugin = function ({
+  packageName,
+  origin,
+  loadedFrom,
+  nodeVersion,
+  pinnedVersion,
+  pluginPackageJson: { version } = {},
+}) {
+  return { name: packageName, origin, loadedFrom, nodeVersion, pinnedVersion, version }
 }
 
 module.exports = { trackBuildComplete }

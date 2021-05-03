@@ -17,7 +17,7 @@ const normalizeSnapshot = function ({ body, ...request }) {
 
 const normalizeBody = function ({
   timestamp,
-  properties: { duration, buildVersion, osPlatform, osName, nodeVersion, ...properties } = {},
+  properties: { duration, buildVersion, osPlatform, osName, nodeVersion, plugins, ...properties } = {},
   ...body
 }) {
   const optDuration = duration ? { duration: typeof duration } : {}
@@ -31,8 +31,13 @@ const normalizeBody = function ({
       buildVersion: typeof buildVersion,
       osPlatform: typeof osPlatform,
       osName: typeof osName,
+      ...(plugins !== undefined && { plugins: plugins.map(normalizePlugin) }),
     },
   }
+}
+
+const normalizePlugin = function ({ nodeVersion, version, ...plugin }) {
+  return { ...plugin, nodeVersion: typeof nodeVersion, version: typeof version }
 }
 
 const runWithApiMock = async function (

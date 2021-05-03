@@ -58,7 +58,7 @@ const build = async function (flags = {}) {
   const errorParams = { errorMonitor, mode, logs, debug, testOpts }
 
   try {
-    const { netlifyConfig, siteInfo, commandsCount, timers, durationNs } = await execBuild({
+    const { pluginsOptions, siteInfo, userNodeVersion, commandsCount, timers, durationNs } = await execBuild({
       ...flagsA,
       dry,
       errorMonitor,
@@ -80,19 +80,20 @@ const build = async function (flags = {}) {
     await telemetryReport({
       status,
       commandsCount,
-      netlifyConfig,
+      pluginsOptions,
       durationNs,
       siteInfo,
       telemetry,
+      userNodeVersion,
       testOpts,
       errorParams,
     })
     return { success, severityCode, logs }
   } catch (error) {
     const { severity } = await handleBuildError(error, errorParams)
-    const { netlifyConfig, siteInfo } = errorParams
+    const { pluginsOptions, siteInfo, userNodeVersion } = errorParams
     const { success, severityCode, status } = getSeverity(severity)
-    await telemetryReport({ status, netlifyConfig, siteInfo, telemetry, testOpts, errorParams })
+    await telemetryReport({ status, pluginsOptions, siteInfo, telemetry, userNodeVersion, testOpts, errorParams })
     return { success, severityCode, logs }
   }
 }
@@ -175,10 +176,6 @@ const tExecBuild = async function ({
     nodePath,
     timers,
   })
-  // `errorParams` is purposely stateful
-  // eslint-disable-next-line fp/no-mutating-assign
-  Object.assign(errorParams, { netlifyConfig, siteInfo, childEnv, userNodeVersion })
-
   const constants = getConstants({
     configPath,
     buildDir,
@@ -192,8 +189,11 @@ const tExecBuild = async function ({
     testOpts,
   })
   const pluginsOptions = addCorePlugins({ netlifyConfig, constants })
+  // `errorParams` is purposely stateful
+  // eslint-disable-next-line fp/no-mutating-assign
+  Object.assign(errorParams, { netlifyConfig, pluginsOptions, siteInfo, childEnv, userNodeVersion })
 
-  const { commandsCount, timers: timersB } = await runAndReportBuild({
+  const { pluginsOptions: pluginsOptionsA, commandsCount, timers: timersB } = await runAndReportBuild({
     pluginsOptions,
     netlifyConfig,
     siteInfo,
@@ -208,6 +208,7 @@ const tExecBuild = async function ({
     api,
     errorMonitor,
     deployId,
+    errorParams,
     logs,
     debug,
     timers: timersA,
@@ -217,7 +218,7 @@ const tExecBuild = async function ({
     buildbotServerSocket,
     constants,
   })
-  return { netlifyConfig, siteInfo, commandsCount, timers: timersB }
+  return { pluginsOptions: pluginsOptionsA, siteInfo, userNodeVersion, commandsCount, timers: timersB }
 }
 
 const execBuild = measureDuration(tExecBuild, 'total', { parentTag: 'build_site' })
@@ -240,6 +241,7 @@ const runAndReportBuild = async function ({
   api,
   errorMonitor,
   deployId,
+  errorParams,
   logs,
   debug,
   timers,
@@ -268,6 +270,7 @@ const runAndReportBuild = async function ({
       api,
       errorMonitor,
       deployId,
+      errorParams,
       logs,
       debug,
       timers,
@@ -307,7 +310,7 @@ const runAndReportBuild = async function ({
       }),
     ])
 
-    return { commandsCount, timers: timersA }
+    return { pluginsOptions: pluginsOptionsA, commandsCount, timers: timersA }
   } catch (error) {
     const [{ statuses }] = getErrorInfo(error)
     await reportStatuses({
@@ -343,6 +346,7 @@ const initAndRunBuild = async function ({
   api,
   errorMonitor,
   deployId,
+  errorParams,
   logs,
   debug,
   timers,
@@ -364,6 +368,8 @@ const initAndRunBuild = async function ({
     timers,
     testOpts,
   })
+  // eslint-disable-next-line fp/no-mutation, no-param-reassign
+  errorParams.pluginsOptions = pluginsOptionsA
 
   const { childProcesses, timers: timersB } = await startPlugins({
     pluginsOptions: pluginsOptionsA,
@@ -485,10 +491,11 @@ const handleBuildSuccess = async function ({ framework, dry, logs, timers, durat
 const telemetryReport = async function ({
   status,
   commandsCount,
-  netlifyConfig,
+  pluginsOptions,
   durationNs,
   siteInfo,
   telemetry,
+  userNodeVersion,
   testOpts,
   errorParams,
 }) {
@@ -496,11 +503,11 @@ const telemetryReport = async function ({
     await trackBuildComplete({
       status,
       commandsCount,
-      netlifyConfig,
+      pluginsOptions,
       durationNs,
       siteInfo,
       telemetry,
-      userNodeVersion: errorParams.userNodeVersion,
+      userNodeVersion,
       testOpts,
     })
   } catch (error) {
