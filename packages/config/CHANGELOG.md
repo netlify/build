@@ -1,5 +1,12 @@
 # Changelog
 
+### [6.4.2](https://www.github.com/netlify/build/compare/config-v6.4.1...config-v6.4.2) (2021-05-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency netlify to ^6.1.25 ([#2733](https://www.github.com/netlify/build/issues/2733)) ([0a06086](https://www.github.com/netlify/build/commit/0a060867d3896adf61daf4ddd875e872a1ae956d))
+
 ### [6.4.1](https://www.github.com/netlify/build/compare/config-v6.4.0...config-v6.4.1) (2021-05-03)
 
 
