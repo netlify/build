@@ -1,5 +1,63 @@
 # Changelog
 
+## [11.6.0](https://www.github.com/netlify/build/compare/build-v11.5.1...build-v11.6.0) (2021-04-30)
+
+
+### Features
+
+* pin plugins versions ([#2714](https://www.github.com/netlify/build/issues/2714)) ([0857f65](https://www.github.com/netlify/build/commit/0857f652ccaa8f38f5af68e7e65348e7a8e25fd8))
+
+### [11.5.1](https://www.github.com/netlify/build/compare/build-v11.5.0...build-v11.5.1) (2021-04-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugin-edge-handlers to ^1.11.7 ([#2711](https://www.github.com/netlify/build/issues/2711)) ([66d9f53](https://www.github.com/netlify/build/commit/66d9f538dc226e569424d7c72f26c808e54e6987))
+
+## [11.5.0](https://www.github.com/netlify/build/compare/build-v11.4.4...build-v11.5.0) (2021-04-30)
+
+
+### Features
+
+* **plugins:** expose NETLIFY_API_HOST constant to plugins ([#2709](https://www.github.com/netlify/build/issues/2709)) ([8b56399](https://www.github.com/netlify/build/commit/8b5639916f7dffba4bb74e776db060f2cc4e0993))
+
+### [11.4.4](https://www.github.com/netlify/build/compare/build-v11.4.3...build-v11.4.4) (2021-04-29)
+
+
+### Bug Fixes
+
+* re-enable `updateSite` endpoint ([#2704](https://www.github.com/netlify/build/issues/2704)) ([aa704af](https://www.github.com/netlify/build/commit/aa704af603b21fec4d99d2163f884e0a6f776761))
+
+### [11.4.3](https://www.github.com/netlify/build/compare/build-v11.4.2...build-v11.4.3) (2021-04-29)
+
+
+### Bug Fixes
+
+* do not run `updateSite` for `netlify.toml`-only plugins ([#2703](https://www.github.com/netlify/build/issues/2703)) ([0580c8f](https://www.github.com/netlify/build/commit/0580c8fa0b1dfcd9fe8eaac6596e84d3ab38b980))
+* percent-encode the `package` parameter of the `updatePlugin` endpoint ([#2702](https://www.github.com/netlify/build/issues/2702)) ([d2edef2](https://www.github.com/netlify/build/commit/d2edef2a8ca27dc996a2c7db50d66a623fcb1d08))
+
+### [11.4.2](https://www.github.com/netlify/build/compare/build-v11.4.1...build-v11.4.2) (2021-04-29)
+
+
+### Bug Fixes
+
+* improve temporary fix for the `updatePlugin` bug ([#2696](https://www.github.com/netlify/build/issues/2696)) ([87fde4a](https://www.github.com/netlify/build/commit/87fde4accae7dc6d4ab8a1b09ef2c4c3a7152f25))
+
+### [11.4.1](https://www.github.com/netlify/build/compare/build-v11.4.0...build-v11.4.1) (2021-04-29)
+
+
+### Bug Fixes
+
+* use the proper conventional commit in PR title ([#2694](https://www.github.com/netlify/build/issues/2694)) ([6829fe4](https://www.github.com/netlify/build/commit/6829fe432d9a2e1288c7eb931e052c12b302b703))
+
+## [11.4.0](https://www.github.com/netlify/build/compare/build-v11.3.2...build-v11.4.0) (2021-04-29)
+
+
+### Features
+
+* call `updatePlugin` to pin plugins' versions ([#2683](https://www.github.com/netlify/build/issues/2683)) ([1d0ce63](https://www.github.com/netlify/build/commit/1d0ce6342f6e00376be51a05d906b7867fc8f9a0))
+* improve debugging of plugins versioning ([#2691](https://www.github.com/netlify/build/issues/2691)) ([4659410](https://www.github.com/netlify/build/commit/46594109dcbc713d9ba3041e7a2a1013b4e406df))
+
 ### [11.3.2](https://www.github.com/netlify/build/compare/build-v11.3.1...build-v11.3.2) (2021-04-28)
 
 

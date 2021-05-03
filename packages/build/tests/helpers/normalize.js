@@ -98,13 +98,14 @@ const NORMALIZE_REGEXPS = [
   [/(STACK TRACE\n)+/g, 'STACK TRACE\n'],
   [/( \/file\/path){2,}/g, ' /file/path'],
   // Ports
-  [/:\d{2,}/, ':80'],
+  [/:\d{2,}/g, ':80'],
   // Windows uses host:port instead of Unix sockets for TCP
   [/(http:\/\/)?localhost:80/g, '/test/socket'],
   // Durations
   [/(\d[\d.]*(ms|m|s)( )?)+/g, '1ms'],
   // Do not normalize some versions used in test
   [/(netlify-plugin-contextual-env)@(\d+)\.(\d+)\.(\d+)/g, '$1 $2-$3-$4'],
+  [/(latest|expected|compatible) (\d+)\.(\d+)\.(\d+)/g, '$1 $2-$3-$4'],
   // Package versions
   [/([@v])[\d.]+/g, '$11.0.0'],
   // Semantic versions

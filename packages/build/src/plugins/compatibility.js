@@ -17,13 +17,22 @@ const getExpectedVersion = async function ({
   pinnedVersion,
 }) {
   const pinnedCompatibility = getPinnedCompatibility(pinnedVersion, compatibility)
-  const { version: expectedVersion = pinnedVersion } = await findCompatibleVersion({
+  const { version } = await findCompatibleVersion({
     compatibility: pinnedCompatibility,
     nodeVersion,
     packageJson,
     buildDir,
   })
-  return expectedVersion === undefined ? latestVersion : expectedVersion
+
+  if (version !== undefined) {
+    return version
+  }
+
+  if (pinnedVersion === undefined || satisfies(latestVersion, pinnedVersion)) {
+    return latestVersion
+  }
+
+  return pinnedVersion
 }
 
 // Major versions are pinned using `pinnedVersion`.

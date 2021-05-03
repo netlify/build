@@ -46,7 +46,7 @@ const requestHandler = async function ({ req, req: { url, method, headers }, res
 
   const requestBody = await getRequestBody(req)
 
-  addRequestInfo({ method, headers, requests, requestBody })
+  addRequestInfo({ url, method, headers, requests, requestBody })
 
   const responseBody = getResponseBody({ response, requestBody })
 
@@ -77,9 +77,9 @@ const getRequestBody = async function (req) {
   }
 }
 
-const addRequestInfo = function ({ method, headers, requests, requestBody }) {
+const addRequestInfo = function ({ url, method, headers, requests, requestBody }) {
   const headersA = Object.keys(headers).sort().join(' ')
-  requests.push({ method, headers: headersA, body: requestBody })
+  requests.push({ url, method, headers: headersA, body: requestBody })
 }
 
 const getResponseBody = function ({ response, requestBody }) {

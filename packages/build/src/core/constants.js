@@ -18,6 +18,7 @@ const getConstants = function ({
     functionsDirectory,
   },
   siteInfo: { id: siteId },
+  apiHost,
   token,
   mode,
 }) {
@@ -65,6 +66,10 @@ const getConstants = function ({
      * The Netlify API access token
      */
     NETLIFY_API_TOKEN: token,
+    /**
+     * The Netlify API host
+     */
+    NETLIFY_API_HOST: apiHost,
   }
   const constantsA = mapObj(constants, (key, path) => [key, normalizePath(path, buildDir, key)])
   return constantsA
