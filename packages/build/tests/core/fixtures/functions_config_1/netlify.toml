@@ -1,4 +1,5 @@
 [functions]
 directory = "functions"
 external_node_modules = ["@netlify/imaginary-module-one", "@netlify/imaginary-module-two", "@netlify/imaginary-module-three"]
+included_files = ["directory-1", "directory-2/file-1", "directory-3/**/*.jpg"]
 node_bundler = "esbuild"
