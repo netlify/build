@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.0.11](https://www.github.com/netlify/build/compare/git-utils-v1.0.10...git-utils-v1.0.11) (2021-05-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency map-obj to v4 ([#2721](https://www.github.com/netlify/build/issues/2721)) ([17559dc](https://www.github.com/netlify/build/commit/17559dcc75dd9f9a73f2a604c9f8ef3140a91b42))
+
 ### [1.0.10](https://www.github.com/netlify/build/compare/git-utils-v1.0.9...git-utils-v1.0.10) (2021-04-26)
 
 
