@@ -1,5 +1,13 @@
 # Changelog
 
+### [6.4.1](https://www.github.com/netlify/build/compare/config-v6.4.0...config-v6.4.1) (2021-05-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency map-obj to v4 ([#2721](https://www.github.com/netlify/build/issues/2721)) ([17559dc](https://www.github.com/netlify/build/commit/17559dcc75dd9f9a73f2a604c9f8ef3140a91b42))
+* local builds version pinning ([#2717](https://www.github.com/netlify/build/issues/2717)) ([f3a8c17](https://www.github.com/netlify/build/commit/f3a8c17dbcbc9c4f44ba97acf9e886e1cb03da71))
+
 ## [6.4.0](https://www.github.com/netlify/build/compare/config-v6.3.2...config-v6.4.0) (2021-05-03)
 
 
