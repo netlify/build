@@ -3,7 +3,13 @@
 const isPlainObj = require('is-plain-obj')
 
 const bundlers = ['esbuild', 'zisi']
-const configProperties = new Set(['directory', 'external_node_modules', 'ignored_node_modules', 'node_bundler'])
+const configProperties = new Set([
+  'directory',
+  'external_node_modules',
+  'ignored_node_modules',
+  'included_files',
+  'node_bundler',
+])
 
 const WILDCARD_ALL = '*'
 

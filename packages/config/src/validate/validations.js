@@ -217,6 +217,21 @@ const POST_NORMALIZE_VALIDATIONS = [
     }),
   },
   {
+    property: 'functions.*.included_files',
+    check: isArrayOfStrings,
+    message: 'must be an array of strings.',
+    example: (value, key, prevPath) => ({
+      functions: { [prevPath[1]]: { included_files: ['directory-one/file1', 'directory-two/**/*.jpg'] } },
+    }),
+  },
+  {
+    property: 'functions.*.included_files.*',
+    ...insideRootCheck,
+    example: (value, key, prevPath) => ({
+      functions: { [prevPath[1]]: { included_files: ['directory-one/file1', 'directory-two/**/*.jpg'] } },
+    }),
+  },
+  {
     property: 'functions.*.node_bundler',
     check: (value) => bundlers.includes(value),
     message: `must be one of: ${bundlers.join(', ')}`,

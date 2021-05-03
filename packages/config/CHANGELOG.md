@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.4.0](https://www.github.com/netlify/build/compare/config-v6.3.2...config-v6.4.0) (2021-05-03)
+
+
+### Features
+
+* add support for `functions.included_files` config property ([#2681](https://www.github.com/netlify/build/issues/2681)) ([d75dc74](https://www.github.com/netlify/build/commit/d75dc74d9bbe9b542b17afce37419bed575c8651))
+
 ### [6.3.2](https://www.github.com/netlify/build/compare/config-v6.3.1...config-v6.3.2) (2021-04-29)
 
 

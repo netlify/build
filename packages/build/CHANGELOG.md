@@ -1,5 +1,12 @@
 # Changelog
 
+## [11.7.0](https://www.github.com/netlify/build/compare/build-v11.6.0...build-v11.7.0) (2021-05-03)
+
+
+### Features
+
+* add support for `functions.included_files` config property ([#2681](https://www.github.com/netlify/build/issues/2681)) ([d75dc74](https://www.github.com/netlify/build/commit/d75dc74d9bbe9b542b17afce37419bed575c8651))
+
 ## [11.6.0](https://www.github.com/netlify/build/compare/build-v11.5.1...build-v11.6.0) (2021-04-30)
 
 

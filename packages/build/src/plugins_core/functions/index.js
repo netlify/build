@@ -20,8 +20,10 @@ const { getZipError } = require('./error')
 // The function configuration keys returned by @netlify/config are not an exact
 // match to the properties that @netlify/zip-it-and-ship-it expects. We do that
 // translation here.
-const normalizeFunctionConfig = (functionConfig = {}) => ({
+const normalizeFunctionConfig = ({ buildDir, functionConfig = {} }) => ({
   externalNodeModules: functionConfig.external_node_modules,
+  includedFiles: functionConfig.included_files,
+  includedFilesBasePath: buildDir,
   ignoredNodeModules: functionConfig.ignored_node_modules,
 
   // When the user selects esbuild as the Node bundler, we still want to use
@@ -32,14 +34,17 @@ const normalizeFunctionConfig = (functionConfig = {}) => ({
   nodeBundler: functionConfig.node_bundler === 'esbuild' ? 'esbuild_zisi' : functionConfig.node_bundler,
 })
 
-const getZisiParameters = ({ functionsConfig }) => {
-  const config = mapObject(functionsConfig, (expression, object) => [expression, normalizeFunctionConfig(object)])
+const getZisiParameters = ({ buildDir, functionsConfig }) => {
+  const config = mapObject(functionsConfig, (expression, object) => [
+    expression,
+    normalizeFunctionConfig({ buildDir, functionConfig: object }),
+  ])
 
   return { config }
 }
 
-const zipFunctionsAndLogResults = async ({ functionsConfig, functionsDist, functionsSrc, logs }) => {
-  const zisiParameters = getZisiParameters({ functionsConfig })
+const zipFunctionsAndLogResults = async ({ buildDir, functionsConfig, functionsDist, functionsSrc, logs }) => {
+  const zisiParameters = getZisiParameters({ buildDir, functionsConfig })
 
   try {
     // Printing an empty line before bundling output.
@@ -80,6 +85,7 @@ const coreCommand = async function ({
   }
 
   await zipFunctionsAndLogResults({
+    buildDir,
     childEnv,
     featureFlags,
     functionsConfig: netlifyConfig.functions,
