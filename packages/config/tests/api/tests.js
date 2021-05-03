@@ -19,7 +19,7 @@ const SITE_INFO_BUILD_SETTINGS = {
     env: { TEST_ENV: 'test' },
     base_rel_dir: false,
   },
-  plugins: [{ package: 'netlify-plugin-test', version: '1.0.0', inputs: { test: true } }],
+  plugins: [{ package: 'netlify-plugin-test', pinned_version: '1', inputs: { test: true } }],
 }
 const SITE_INFO_BASE_REL_DIR = {
   url: 'test',
