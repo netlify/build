@@ -27,7 +27,7 @@ const resolvePluginsPath = async function ({
   const pluginsOptionsA = await Promise.all(
     pluginsOptions.map((pluginOptions) => resolvePluginPath({ pluginOptions, buildDir, autoPluginsDir })),
   )
-  const pluginsOptionsB = await addPluginsNodeVersion({
+  const pluginsOptionsB = addPluginsNodeVersion({
     pluginsOptions: pluginsOptionsA,
     mode,
     nodePath,
