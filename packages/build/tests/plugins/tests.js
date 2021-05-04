@@ -521,9 +521,11 @@ const getPlugin = function (plugin, testPlugin) {
 }
 
 const TEST_PLUGIN_NAME = 'netlify-plugin-contextual-env'
+const TEST_PLUGIN_VERSION = '0.3.0'
 
 const PLUGINS_LIST_URL = '/'
-const DEFAULT_TEST_PLUGIN = { version: '0.3.0' }
+const DEFAULT_TEST_PLUGIN = { version: TEST_PLUGIN_VERSION }
+const DEFAULT_TEST_PLUGIN_RUNS = [{ package: TEST_PLUGIN_NAME, version: TEST_PLUGIN_VERSION }]
 
 test('Install plugins in .netlify/plugins/ when not cached', async (t) => {
   await removeDir(`${FIXTURES_DIR}/valid_package/.netlify`)
@@ -805,6 +807,81 @@ test('Pinning plugin versions takes into account the compatibility field', async
       ],
     },
   })
+})
+
+const runWithPluginRunsMock = async function (
+  t,
+  fixture,
+  { flags, status, sendStatus = true, testPlugin, pluginRuns = DEFAULT_TEST_PLUGIN_RUNS } = {},
+) {
+  const { scheme, host, requests, stopServer } = await startServer([
+    { path: PLUGIN_RUNS_PATH, response: pluginRuns, status },
+    { path: PLUGINS_LIST_URL, response: getPluginsList(testPlugin), status: 200 },
+  ])
+  try {
+    await runFixture(t, fixture, {
+      flags: {
+        siteId: 'test',
+        token: 'test',
+        sendStatus,
+        testOpts: { scheme, host, pluginsListUrl: `${scheme}://${host}` },
+        ...flags,
+      },
+    })
+  } finally {
+    await stopServer()
+  }
+  t.snapshot(requests)
+}
+
+const PLUGIN_RUNS_PATH = `/api/v1/sites/test/plugin_runs/latest`
+
+test('Pin netlify.toml-only plugin versions', async (t) => {
+  await runWithPluginRunsMock(t, 'pin_config_success')
+})
+
+test('Does not pin netlify.toml-only plugin versions if there are no matching plugin runs', async (t) => {
+  await runWithPluginRunsMock(t, 'pin_config_success', { pluginRuns: [{ package: `${TEST_PLUGIN_NAME}-test` }] })
+})
+
+test('Does not pin netlify.toml-only plugin versions if there are no plugin runs', async (t) => {
+  await runWithPluginRunsMock(t, 'pin_config_success', { pluginRuns: [] })
+})
+
+test('Does not pin netlify.toml-only plugin versions if there are no matching plugin runs version', async (t) => {
+  await runWithPluginRunsMock(t, 'pin_config_success', { pluginRuns: [{ package: TEST_PLUGIN_NAME }] })
+})
+
+// Node 8 `util.inspect()` prints the API error differently
+// @todo remove after removing support for Node 8
+if (!version.startsWith('v8.')) {
+  test('Fails the build when pinning netlify.toml-only plugin versions and the API request fails', async (t) => {
+    await runWithPluginRunsMock(t, 'pin_config_success', { status: 500 })
+  })
+}
+
+test('Does not pin netlify.toml-only plugin versions if already pinned', async (t) => {
+  await runWithPluginRunsMock(t, 'pin_config_success', {
+    flags: { defaultConfig: { plugins: [{ package: TEST_PLUGIN_NAME, pinned_version: '0' }] } },
+  })
+})
+
+test('Does not pin netlify.toml-only plugin versions if installed in UI', async (t) => {
+  await runWithPluginRunsMock(t, 'pin_config_ui', {
+    flags: { defaultConfig: { plugins: [{ package: TEST_PLUGIN_NAME }] } },
+  })
+})
+
+test('Does not pin netlify.toml-only plugin versions if installed in package.json', async (t) => {
+  await runWithPluginRunsMock(t, 'pin_config_module')
+})
+
+test('Does not pin netlify.toml-only plugin versions if there are no API token', async (t) => {
+  await runWithPluginRunsMock(t, 'pin_config_success', { flags: { token: '' } })
+})
+
+test('Does not pin netlify.toml-only plugin versions if there are no site ID', async (t) => {
+  await runWithPluginRunsMock(t, 'pin_config_success', { flags: { siteId: '' } })
 })
 
 test('Validate --node-path version is supported by our codebase', async (t) => {

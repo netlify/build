@@ -4,7 +4,40 @@ const { major } = require('semver')
 
 const { handleBuildError } = require('../error/handle')
 
-// Send an API request to pin plugins' major versions
+// Retrieve plugin's pinned major versions by fetching the latest `PluginRun`
+// Only applies to `netlify.toml`-only installed plugins.
+const addPinnedVersions = async function ({ pluginsOptions, api, siteInfo: { id: siteId }, sendStatus }) {
+  if (!sendStatus || api === undefined || !siteId) {
+    return pluginsOptions
+  }
+
+  const packages = pluginsOptions.filter(shouldFetchPinVersion).map(getPackageName)
+  if (packages.length === 0) {
+    return pluginsOptions
+  }
+
+  const pluginRuns = await api.getLatestPluginRuns({ site_id: siteId, packages, state: 'success' })
+  const pluginsOptionsA = pluginsOptions.map((pluginOption) => addPinnedVersion(pluginOption, pluginRuns))
+  return pluginsOptionsA
+}
+
+const shouldFetchPinVersion = function ({ pinnedVersion, loadedFrom, origin }) {
+  return pinnedVersion === undefined && loadedFrom === 'auto_install' && origin === 'config'
+}
+
+const getPackageName = function ({ packageName }) {
+  return packageName
+}
+
+const addPinnedVersion = function (pluginOptions, pluginRuns) {
+  const foundPluginRun = pluginRuns.find((pluginRun) => pluginRun.package === pluginOptions.packageName)
+  return foundPluginRun === undefined || !foundPluginRun.version
+    ? pluginOptions
+    : { ...pluginOptions, pinnedVersion: foundPluginRun.version }
+}
+
+// Send an API request to pin plugins' major versions.
+// Only applies to UI-installed plugins.
 const pinPlugins = async function ({
   pluginsOptions,
   failedPlugins,
@@ -88,4 +121,4 @@ const pinPlugin = async function ({
   }
 }
 
-module.exports = { pinPlugins }
+module.exports = { addPinnedVersions, pinPlugins }

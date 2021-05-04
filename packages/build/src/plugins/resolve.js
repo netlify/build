@@ -6,6 +6,7 @@ const { resolvePath, tryResolvePath } = require('../utils/resolve')
 
 const { addExpectedVersions } = require('./expected_version')
 const { addPluginsNodeVersion } = require('./node_version')
+const { addPinnedVersions } = require('./pinned_version')
 
 // Try to find plugins in four places, by priority order:
 //  - already loaded (core plugins)
@@ -14,13 +15,16 @@ const { addPluginsNodeVersion } = require('./node_version')
 //  - automatically installed by us, to `.netlify/plugins/`
 const resolvePluginsPath = async function ({
   pluginsOptions,
+  siteInfo,
   buildDir,
   nodePath,
   packageJson,
   userNodeVersion,
   mode,
+  api,
   logs,
   debug,
+  sendStatus,
   testOpts,
 }) {
   const autoPluginsDir = getAutoPluginsDir(buildDir)
@@ -33,8 +37,9 @@ const resolvePluginsPath = async function ({
     nodePath,
     userNodeVersion,
   })
-  const pluginsOptionsC = await addExpectedVersions({
-    pluginsOptions: pluginsOptionsB,
+  const pluginsOptionsC = await addPinnedVersions({ pluginsOptions: pluginsOptionsB, api, siteInfo, sendStatus })
+  const pluginsOptionsD = await addExpectedVersions({
+    pluginsOptions: pluginsOptionsC,
     autoPluginsDir,
     packageJson,
     debug,
@@ -42,13 +47,13 @@ const resolvePluginsPath = async function ({
     buildDir,
     testOpts,
   })
-  const pluginsOptionsD = await handleMissingPlugins({
-    pluginsOptions: pluginsOptionsC,
+  const pluginsOptionsE = await handleMissingPlugins({
+    pluginsOptions: pluginsOptionsD,
     autoPluginsDir,
     mode,
     logs,
   })
-  return pluginsOptionsD
+  return pluginsOptionsE
 }
 
 // Find the path to the directory used to install plugins automatically.

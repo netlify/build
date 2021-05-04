@@ -57,7 +57,7 @@ const requestHandler = async function ({ req, req: { url, method, headers }, res
 }
 
 const getHandler = function (handlers, url) {
-  const handler = handlers.find(({ path }) => url === path)
+  const handler = handlers.find(({ path }) => url === path || url.startsWith(`${path}?`))
   if (handler === undefined) {
     return {}
   }
