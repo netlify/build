@@ -1,5 +1,12 @@
 # Changelog
 
+## [11.9.0](https://www.github.com/netlify/build/compare/build-v11.8.0...build-v11.9.0) (2021-05-05)
+
+
+### Features
+
+* pin `netlify.toml`-installed plugins versions ([#2740](https://www.github.com/netlify/build/issues/2740)) ([7ebab6b](https://www.github.com/netlify/build/commit/7ebab6bd89506d7fb0c60e8f698d07367e02822c))
+
 ## [11.8.0](https://www.github.com/netlify/build/compare/build-v11.7.3...build-v11.8.0) (2021-05-05)
 
 
