@@ -1,6 +1,6 @@
 {
   "name": "@netlify/git-utils",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "Utility for dealing with modified, created, deleted files since a git commit",
   "main": "src/main.js",
   "files": [
@@ -44,7 +44,7 @@
   "license": "MIT",
   "dependencies": {
     "execa": "^3.4.0",
-    "map-obj": "^3.1.0",
+    "map-obj": "^4.0.0",
     "micromatch": "^4.0.2",
     "moize": "^6.0.0",
     "path-exists": "^4.0.0"

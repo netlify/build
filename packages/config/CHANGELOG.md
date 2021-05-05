@@ -1,5 +1,34 @@
 # Changelog
 
+### [6.4.3](https://www.github.com/netlify/build/compare/config-v6.4.2...config-v6.4.3) (2021-05-04)
+
+
+### Bug Fixes
+
+* **deps:** update netlify packages ([#2735](https://www.github.com/netlify/build/issues/2735)) ([6060bab](https://www.github.com/netlify/build/commit/6060babcee003881df46f45eda1118b7737cc4e1))
+
+### [6.4.2](https://www.github.com/netlify/build/compare/config-v6.4.1...config-v6.4.2) (2021-05-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency netlify to ^6.1.25 ([#2733](https://www.github.com/netlify/build/issues/2733)) ([0a06086](https://www.github.com/netlify/build/commit/0a060867d3896adf61daf4ddd875e872a1ae956d))
+
+### [6.4.1](https://www.github.com/netlify/build/compare/config-v6.4.0...config-v6.4.1) (2021-05-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency map-obj to v4 ([#2721](https://www.github.com/netlify/build/issues/2721)) ([17559dc](https://www.github.com/netlify/build/commit/17559dcc75dd9f9a73f2a604c9f8ef3140a91b42))
+* local builds version pinning ([#2717](https://www.github.com/netlify/build/issues/2717)) ([f3a8c17](https://www.github.com/netlify/build/commit/f3a8c17dbcbc9c4f44ba97acf9e886e1cb03da71))
+
+## [6.4.0](https://www.github.com/netlify/build/compare/config-v6.3.2...config-v6.4.0) (2021-05-03)
+
+
+### Features
+
+* add support for `functions.included_files` config property ([#2681](https://www.github.com/netlify/build/issues/2681)) ([d75dc74](https://www.github.com/netlify/build/commit/d75dc74d9bbe9b542b17afce37419bed575c8651))
+
 ### [6.3.2](https://www.github.com/netlify/build/compare/config-v6.3.1...config-v6.3.2) (2021-04-29)
 
 
