@@ -259,6 +259,7 @@ const runAndReportBuild = async function ({
     } = await initAndRunBuild({
       pluginsOptions,
       netlifyConfig,
+      siteInfo,
       configPath,
       buildDir,
       nodePath,
@@ -274,6 +275,7 @@ const runAndReportBuild = async function ({
       logs,
       debug,
       timers,
+      sendStatus,
       testOpts,
       featureFlags,
       buildbotServerSocket,
@@ -335,6 +337,7 @@ const runAndReportBuild = async function ({
 const initAndRunBuild = async function ({
   pluginsOptions,
   netlifyConfig,
+  siteInfo,
   configPath,
   buildDir,
   nodePath,
@@ -349,6 +352,7 @@ const initAndRunBuild = async function ({
   errorParams,
   logs,
   debug,
+  sendStatus,
   timers,
   testOpts,
   featureFlags,
@@ -358,13 +362,16 @@ const initAndRunBuild = async function ({
   const { pluginsOptions: pluginsOptionsA, timers: timersA } = await getPluginsOptions({
     pluginsOptions,
     netlifyConfig,
+    siteInfo,
     buildDir,
     nodePath,
     packageJson,
     userNodeVersion,
     mode,
+    api,
     logs,
     debug,
+    sendStatus,
     timers,
     testOpts,
   })

@@ -15,24 +15,30 @@ const { resolvePluginsPath } = require('./resolve')
 const tGetPluginsOptions = async function ({
   pluginsOptions,
   netlifyConfig: { plugins },
+  siteInfo,
   buildDir,
   nodePath,
   packageJson,
   userNodeVersion,
   mode,
+  api,
   logs,
   debug,
+  sendStatus,
   testOpts,
 }) {
   const pluginsOptionsA = await resolvePluginsPath({
     pluginsOptions,
+    siteInfo,
     buildDir,
     nodePath,
     packageJson,
     userNodeVersion,
     mode,
+    api,
     logs,
     debug,
+    sendStatus,
     testOpts,
   })
   const pluginsOptionsB = await Promise.all(
