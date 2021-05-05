@@ -1,5 +1,12 @@
 # Changelog
 
+### [11.9.1](https://www.github.com/netlify/build/compare/build-v11.9.0...build-v11.9.1) (2021-05-05)
+
+
+### Bug Fixes
+
+* **deps:** lock file maintenance ([#2744](https://www.github.com/netlify/build/issues/2744)) ([52f47a4](https://www.github.com/netlify/build/commit/52f47a4ff2787c5b8256bbe89e572c12c8912f84))
+
 ## [11.9.0](https://www.github.com/netlify/build/compare/build-v11.8.0...build-v11.9.0) (2021-05-05)
 
 
