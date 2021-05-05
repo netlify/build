@@ -1,5 +1,12 @@
 # Changelog
 
+## [11.8.0](https://www.github.com/netlify/build/compare/build-v11.7.3...build-v11.8.0) (2021-05-05)
+
+
+### Features
+
+* add more plugin metrics ([#2732](https://www.github.com/netlify/build/issues/2732)) ([77efcaa](https://www.github.com/netlify/build/commit/77efcaabedb0f6866dcbffc95d84d8f200942233))
+
 ### [11.7.3](https://www.github.com/netlify/build/compare/build-v11.7.2...build-v11.7.3) (2021-05-04)
 
 
