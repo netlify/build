@@ -5,9 +5,15 @@ const { satisfies, clean: cleanVersion } = require('semver')
 
 const { resolvePath } = require('../utils/resolve')
 
-// Retrieve the `expectedVersion` of a plugin, i.e. the version which should
-// be run, taking version pinning into account.
-// If this does not match the currently cached version, it is installed first.
+// Retrieve the `expectedVersion` of a plugin:
+//  - This is the version which should be run
+//  - This takes version pinning into account
+//  - If this does not match the currently cached version, it is installed first
+// This is also used to retrieve the `compatibleVersion` of a plugin
+//  - This is the most recent version compatible with this site
+//  - This is the same logic except it does not use version pinning
+//  - This is only used to print a warning message when the `compatibleVersion`
+//    is older than the currently used version.
 const getExpectedVersion = async function ({
   latestVersion,
   compatibility,
@@ -17,7 +23,7 @@ const getExpectedVersion = async function ({
   pinnedVersion,
 }) {
   const pinnedCompatibility = getPinnedCompatibility(pinnedVersion, compatibility)
-  const { version } = await findCompatibleVersion({
+  const { version, compatWarning } = await findCompatibleVersion({
     compatibility: pinnedCompatibility,
     nodeVersion,
     packageJson,
@@ -25,14 +31,14 @@ const getExpectedVersion = async function ({
   })
 
   if (version !== undefined) {
-    return version
+    return { version, compatWarning }
   }
 
   if (pinnedVersion === undefined || satisfies(latestVersion, pinnedVersion)) {
-    return latestVersion
+    return { version: latestVersion }
   }
 
-  return pinnedVersion
+  return { version: pinnedVersion }
 }
 
 // Major versions are pinned using `pinnedVersion`.
@@ -44,21 +50,6 @@ const getPinnedCompatibility = function (pinnedVersion, compatibility) {
   return pinnedVersion === undefined
     ? compatibility
     : compatibility.filter(({ version }) => satisfies(version, pinnedVersion))
-}
-
-// Retrieve the `compatibleVersion` of a plugin, i.e. the most recent version
-// compatible with this site. This does not take version pinning into account.
-// This is only used to print a warning message when the `compatibleVersion`
-// is older than the currently used version.
-// This defaults to the most recent version specified in `plugins.json`.
-const getCompatibleVersion = async function ({ latestVersion, compatibility, nodeVersion, packageJson, buildDir }) {
-  const { version: compatibleVersion = latestVersion, compatWarning } = await findCompatibleVersion({
-    compatibility,
-    nodeVersion,
-    packageJson,
-    buildDir,
-  })
-  return { compatibleVersion, compatWarning }
 }
 
 // Find a plugin's version using a set of conditions. Default to latest version.
@@ -148,4 +139,4 @@ const CONDITIONS = {
   siteDependencies: { test: siteDependenciesTest, warning: siteDependenciesWarning },
 }
 
-module.exports = { getExpectedVersion, getCompatibleVersion }
+module.exports = { getExpectedVersion }
