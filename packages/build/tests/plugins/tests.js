@@ -765,6 +765,10 @@ test('Report updatePlugin API error without failing the build', async (t) => {
   await runWithUpdatePluginMock(t, 'pin_success', { status: 500 })
 })
 
+test('Does not report 404 updatePlugin API error', async (t) => {
+  await runWithUpdatePluginMock(t, 'pin_success', { status: 404 })
+})
+
 test('Only pin plugin versions in production', async (t) => {
   await runWithUpdatePluginMock(t, 'pin_success', { sendStatus: false })
 })
