@@ -117,8 +117,17 @@ const pinPlugin = async function ({
     // Builds should be successful when this API call fails, but we still want
     // to report the error both in logs and in error monitoring.
   } catch (error) {
+    if (shouldIgnoreError(error)) {
+      return
+    }
+
     await handleBuildError(error, { errorMonitor, netlifyConfig, childEnv, mode, logs, debug, testOpts })
   }
+}
+
+// Status is 404 if the plugin is uninstalled while the build is ongoing.
+const shouldIgnoreError = function ({ status }) {
+  return status === 404
 }
 
 module.exports = { addPinnedVersions, pinPlugins }
