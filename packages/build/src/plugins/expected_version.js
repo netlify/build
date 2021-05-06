@@ -5,7 +5,7 @@ const { satisfies } = require('semver')
 const { addErrorInfo } = require('../error/info')
 const { resolvePath } = require('../utils/resolve')
 
-const { getExpectedVersion, getCompatibleVersion } = require('./compatibility')
+const { getExpectedVersion } = require('./compatibility')
 const { getPluginsList } = require('./list')
 
 // When using plugins in our official list, those are installed in .netlify/plugins/
@@ -51,9 +51,9 @@ const addExpectedVersion = async function ({
   }
 
   const { version: latestVersion, compatibility } = pluginsList[packageName]
-  const [expectedVersion, { compatibleVersion, compatWarning }] = await Promise.all([
+  const [{ version: expectedVersion }, { version: compatibleVersion, compatWarning }] = await Promise.all([
     getExpectedVersion({ latestVersion, compatibility, nodeVersion, packageJson, buildDir, pinnedVersion }),
-    getCompatibleVersion({ latestVersion, compatibility, nodeVersion, packageJson, buildDir }),
+    getExpectedVersion({ latestVersion, compatibility, nodeVersion, packageJson, buildDir }),
   ])
 
   const isMissing = await isMissingVersion({ autoPluginsDir, packageName, pluginPath, loadedFrom, expectedVersion })
