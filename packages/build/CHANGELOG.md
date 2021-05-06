@@ -1,5 +1,12 @@
 # Changelog
 
+### [11.9.4](https://www.github.com/netlify/build/compare/build-v11.9.3...build-v11.9.4) (2021-05-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^2.10.0 ([#2759](https://www.github.com/netlify/build/issues/2759)) ([3cf77d9](https://www.github.com/netlify/build/commit/3cf77d941a0d83b6ba7987c95d0442dfe1a2a615))
+
 ### [11.9.3](https://www.github.com/netlify/build/compare/build-v11.9.2...build-v11.9.3) (2021-05-06)
 
 
