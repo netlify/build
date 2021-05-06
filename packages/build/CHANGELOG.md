@@ -1,5 +1,12 @@
 # Changelog
 
+### [11.9.3](https://www.github.com/netlify/build/compare/build-v11.9.2...build-v11.9.3) (2021-05-06)
+
+
+### Bug Fixes
+
+* simplify version pinning logic ([#2753](https://www.github.com/netlify/build/issues/2753)) ([c0c34c0](https://www.github.com/netlify/build/commit/c0c34c062349ccec92163586a69ea112f8d461e8))
+
 ### [11.9.2](https://www.github.com/netlify/build/compare/build-v11.9.1...build-v11.9.2) (2021-05-06)
 
 
