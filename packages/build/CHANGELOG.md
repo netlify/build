@@ -1,5 +1,12 @@
 # Changelog
 
+### [11.9.2](https://www.github.com/netlify/build/compare/build-v11.9.1...build-v11.9.2) (2021-05-06)
+
+
+### Bug Fixes
+
+* 404 in production with `updatePlugin` ([#2749](https://www.github.com/netlify/build/issues/2749)) ([6ed8ab9](https://www.github.com/netlify/build/commit/6ed8ab9f55690981d8f6c1216ebb1b5bc0efd8c4))
+
 ### [11.9.1](https://www.github.com/netlify/build/compare/build-v11.9.0...build-v11.9.1) (2021-05-05)
 
 
