@@ -1,5 +1,13 @@
 # Changelog
 
+## [11.10.0](https://www.github.com/netlify/build/compare/build-v11.9.4...build-v11.10.0) (2021-05-07)
+
+
+### Features
+
+* add support for `0.*` versions in outdated plugins message ([#2756](https://www.github.com/netlify/build/issues/2756)) ([69a0ea1](https://www.github.com/netlify/build/commit/69a0ea13e655535c113ec37374a99a5b7b3308c3))
+* add support for `0.*` versions when pinning versions ([#2758](https://www.github.com/netlify/build/issues/2758)) ([6210e36](https://www.github.com/netlify/build/commit/6210e36dafc4f7deda44d8ab3e4a76c44e3e1a5d))
+
 ### [11.9.4](https://www.github.com/netlify/build/compare/build-v11.9.3...build-v11.9.4) (2021-05-06)
 
 
