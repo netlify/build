@@ -606,8 +606,8 @@ test('Prints incompatible plugins installed in package.json', async (t) => {
 test('Does not print incompatible plugins installed in package.json if major version is same', async (t) => {
   await runWithApiMock(t, 'plugins_incompatible_package_json_same_major', {
     testPlugin: {
-      version: '0.3.0',
-      compatibility: [{ version: '0.2.0', nodeVersion: '<100' }],
+      version: '0.4.0',
+      compatibility: [{ version: '0.4.1', nodeVersion: '<100' }],
     },
   })
 })

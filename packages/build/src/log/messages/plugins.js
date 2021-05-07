@@ -1,7 +1,8 @@
 'use strict'
 
-const { lt: ltVersion, major } = require('semver')
+const { lt: ltVersion } = require('semver')
 
+const { isPreviousMajor } = require('../../utils/semver')
 const { getPluginOrigin } = require('../description')
 const { log, logArray, logWarningArray, logWarning, logSubHeader, logWarningSubHeader } = require('../logger')
 const { THEME } = require('../theme')
@@ -147,7 +148,7 @@ const hasIncompatibleVersion = function ({ pluginPackageJson: { version }, compa
     // a site is using the right `compatibility` version, but is using the most
     // recent version due to the time gap between `npm publish` and the
     // `plugins.json` update
-    major(compatibleVersion) < major(version)
+    isPreviousMajor(compatibleVersion, version)
   )
 }
 
