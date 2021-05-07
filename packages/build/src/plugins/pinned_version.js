@@ -1,8 +1,7 @@
 'use strict'
 
-const { major } = require('semver')
-
 const { handleBuildError } = require('../error/handle')
+const { getMajorVersion } = require('../utils/semver.js')
 
 // Retrieve plugin's pinned major versions by fetching the latest `PluginRun`
 // Only applies to `netlify.toml`-only installed plugins.
@@ -31,9 +30,12 @@ const getPackageName = function ({ packageName }) {
 
 const addPinnedVersion = function (pluginOptions, pluginRuns) {
   const foundPluginRun = pluginRuns.find((pluginRun) => pluginRun.package === pluginOptions.packageName)
-  return foundPluginRun === undefined || !foundPluginRun.version
-    ? pluginOptions
-    : { ...pluginOptions, pinnedVersion: foundPluginRun.version }
+  if (foundPluginRun === undefined) {
+    return pluginOptions
+  }
+
+  const pinnedVersion = getMajorVersion(foundPluginRun.version)
+  return pinnedVersion === undefined ? pluginOptions : { ...pluginOptions, pinnedVersion }
 }
 
 // Send an API request to pin plugins' major versions.
@@ -106,7 +108,7 @@ const pinPlugin = async function ({
   testOpts,
   siteId,
 }) {
-  const pinnedVersion = String(major(version))
+  const pinnedVersion = getMajorVersion(version)
   try {
     await api.updatePlugin({
       package: encodeURIComponent(packageName),
