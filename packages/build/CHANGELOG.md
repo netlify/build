@@ -1,5 +1,12 @@
 # Changelog
 
+## [11.12.0](https://www.github.com/netlify/build/compare/build-v11.11.0...build-v11.12.0) (2021-05-10)
+
+
+### Features
+
+* improve version pinning ([#2762](https://www.github.com/netlify/build/issues/2762)) ([940b19e](https://www.github.com/netlify/build/commit/940b19eb10747f33f67d4eecec834471c0455cc0))
+
 ## [11.11.0](https://www.github.com/netlify/build/compare/build-v11.10.0...build-v11.11.0) (2021-05-10)
 
 
