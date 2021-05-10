@@ -630,6 +630,38 @@ test.serial('Plugins can specify non-matching compatibility.nodeVersion', async 
   })
 })
 
+test.serial('Plugins ignore compatibility entries without conditions unless pinned', async (t) => {
+  await removeDir(`${FIXTURES_DIR}/plugins_compat_node_version/.netlify`)
+  await runWithApiMock(t, 'plugins_compat_node_version', {
+    testPlugin: {
+      version: '0.3.0',
+      compatibility: [{ version: '0.2.0' }, { version: '0.1.0', nodeVersion: '<100' }],
+    },
+  })
+})
+
+test.serial('Plugins does not ignore compatibility entries without conditions if pinned', async (t) => {
+  await removeDir(`${FIXTURES_DIR}/plugins_compat_node_version/.netlify`)
+  await runWithApiMock(t, 'plugins_compat_node_version', {
+    testPlugin: {
+      version: '0.3.0',
+      compatibility: [{ version: '0.2.0' }, { version: '0.1.0' }],
+    },
+    defaultConfig: { plugins: [{ package: TEST_PLUGIN_NAME, pinned_version: '0.2.0' }] },
+  })
+})
+
+test.serial('Plugins ignore compatibility conditions if pinned', async (t) => {
+  await removeDir(`${FIXTURES_DIR}/plugins_compat_node_version/.netlify`)
+  await runWithApiMock(t, 'plugins_compat_node_version', {
+    testPlugin: {
+      version: '0.3.0',
+      compatibility: [{ version: '0.2.0', nodeVersion: '100 - 200' }, { version: '0.1.0' }],
+    },
+    defaultConfig: { plugins: [{ package: TEST_PLUGIN_NAME, pinned_version: '0.2.0' }] },
+  })
+})
+
 test.serial('Plugins can specify matching compatibility.nodeVersion', async (t) => {
   await removeDir(`${FIXTURES_DIR}/plugins_compat_node_version/.netlify`)
   await runWithApiMock(t, 'plugins_compat_node_version', {

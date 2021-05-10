@@ -22,15 +22,11 @@ const getExpectedVersion = async function ({
   buildDir,
   pinnedVersion,
 }) {
-  const pinnedCompatibility = getPinnedCompatibility(pinnedVersion, compatibility)
-  const { version, compatWarning } = await findCompatibleVersion({
-    compatibility: pinnedCompatibility,
-    nodeVersion,
-    packageJson,
-    buildDir,
-  })
+  const compatibleEntry = await getCompatibleEntry({ compatibility, nodeVersion, packageJson, buildDir, pinnedVersion })
 
-  if (version !== undefined) {
+  if (compatibleEntry !== undefined) {
+    const { version, conditions, migrationGuide } = compatibleEntry
+    const compatWarning = getCompatWarning(conditions, migrationGuide)
     return { version, compatWarning }
   }
 
@@ -41,31 +37,35 @@ const getExpectedVersion = async function ({
   return { version: pinnedVersion }
 }
 
-// Major versions are pinned using `pinnedVersion`.
-// Plugins should define each major version in `compatibility`. However, as a
-// failsafe, we default to the most recent version satisying `pinnedVersion`.
-// If no `pinnedVersion` is defined, it defaults to the most recent version
-// specified in `plugins.json` instead.
-const getPinnedCompatibility = function (pinnedVersion, compatibility) {
-  return pinnedVersion === undefined
-    ? compatibility
-    : compatibility.filter(({ version }) => satisfies(version, pinnedVersion))
-}
-
-// Find a plugin's version using a set of conditions. Default to latest version.
-// `conditions` is sorted from most to least recent version.
-const findCompatibleVersion = async function ({ compatibility, nodeVersion, packageJson, buildDir }) {
-  const matchingCondition = await pLocate(compatibility, ({ conditions }) =>
-    matchesCompatField({ conditions, nodeVersion, packageJson, buildDir }),
-  )
-
-  if (matchingCondition === undefined) {
-    return {}
+// This function finds the right `compatibility` entry to use with the plugin.
+//  - `compatibitlity` entries are meant for backward compatibility
+//    Plugins should define each major version in `compatibility`.
+//  - The entries are sorted from most to least recent version.
+//  - After their first successful run, plugins are pinned by their major
+//    version which is passed as `pinnedVersion` to the next builds.
+// When the plugin does not have a `pinnedVersion`, we use the most recent
+// `compatibility` entry whith a successful condition.
+// When the plugin has a `pinnedVersion`, we do not use the `compatibility`
+// conditions. Instead, we just use the most recent entry with a `version`
+// matching `pinnedVersion`.
+// When no `compatibility` entry matches, we use:
+//  - If there is a `pinnedVersion`, use it unless `latestVersion` matches it
+//  - Otherwise, use `latestVersion`
+const getCompatibleEntry = async function ({ compatibility, nodeVersion, packageJson, buildDir, pinnedVersion }) {
+  if (pinnedVersion !== undefined) {
+    return compatibility.find(({ version }) => satisfies(version, pinnedVersion))
   }
 
-  const { version, conditions, migrationGuide } = matchingCondition
-  const compatWarning = getCompatWarning(conditions, migrationGuide)
-  return { version, compatWarning }
+  const compatibilityWithConditions = compatibility.filter(hasConditions)
+  return await pLocate(compatibilityWithConditions, ({ conditions }) =>
+    matchesCompatField({ conditions, nodeVersion, packageJson, buildDir }),
+  )
+}
+
+// Ignore entries without conditions. Those are used to specify breaking
+// changes, i.e. meant to be used for version pinning instead.
+const hasConditions = function ({ conditions }) {
+  return conditions.length !== 0
 }
 
 const matchesCompatField = async function ({ conditions, nodeVersion, packageJson, buildDir }) {
