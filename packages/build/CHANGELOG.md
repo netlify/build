@@ -1,5 +1,12 @@
 # Changelog
 
+## [11.11.0](https://www.github.com/netlify/build/compare/build-v11.10.0...build-v11.11.0) (2021-05-10)
+
+
+### Features
+
+* fix test snapshots related to version pinning ([#2764](https://www.github.com/netlify/build/issues/2764)) ([0ce49e0](https://www.github.com/netlify/build/commit/0ce49e001e9f7fb980b3de3e22bbcc047e4f5d4e))
+
 ## [11.10.0](https://www.github.com/netlify/build/compare/build-v11.9.4...build-v11.10.0) (2021-05-07)
 
 
