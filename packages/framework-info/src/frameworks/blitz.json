@@ -1,0 +1,21 @@
+{
+  "id": "blitz",
+  "name": "Blitz.js",
+  "category": "static_site_generator",
+  "detect": {
+    "npmDependencies": ["blitz"],
+    "excludedNpmDependencies": [],
+    "configFiles": []
+  },
+  "dev": {
+    "command": "blitz dev",
+    "port": 3000,
+    "pollingStrategies": [{ "name": "TCP" }]
+  },
+  "build": {
+    "command": "blitz build",
+    "directory": "out"
+  },
+  "env": {},
+  "plugins": []
+}

@@ -13,6 +13,7 @@ const FRAMEWORKS = [
   require('./jekyll.json'),
   require('./middleman.json'),
   require('./next.json'),
+  require('./blitz.json'),
   require('./nuxt.json'),
   require('./phenomic.json'),
   require('./react-static.json'),
