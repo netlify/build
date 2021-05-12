@@ -40,10 +40,10 @@ const startClient = async function (host, port) {
   return client
 }
 
-const sendTimer = function ({ timer: { metricName, stageTag, parentTag, durationNs }, client, framework }) {
+const sendTimer = function ({ timer: { metricName, stageTag, parentTag, durationNs, tags }, client, framework }) {
   const durationMs = roundTimerToMillisecs(durationNs)
   const frameworkTag = framework === undefined ? {} : { framework }
-  client.timing(metricName, durationMs, { stage: stageTag, parent: parentTag, ...frameworkTag })
+  client.timing(metricName, durationMs, { stage: stageTag, parent: parentTag, ...tags, ...frameworkTag })
 }
 
 // UDP packets are buffered and flushed at regular intervals by statsd-client.
