@@ -16,7 +16,7 @@ const fireCoreCommand = async function ({
   netlifyConfig,
 }) {
   try {
-    const commandResult = await coreCommand({
+    return await coreCommand({
       buildDir,
       constants,
       buildbotServerSocket,
@@ -26,9 +26,6 @@ const fireCoreCommand = async function ({
       featureFlags,
       netlifyConfig,
     })
-    const { tags = {} } = commandResult || {}
-
-    return { tags }
   } catch (newError) {
     if (!isBuildError(newError)) {
       addErrorInfo(newError, { type: 'coreCommand', location: { coreCommandName } })
