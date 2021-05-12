@@ -20,8 +20,9 @@ const kMeasureDuration = function (func, stageTag, { parentTag, category } = {})
   return async function measuredFunc({ timers, ...opts }, ...args) {
     const timerNs = startTimer()
     const { timers: timersA = timers, ...returnObject } = await func({ timers, ...opts }, ...args)
+    const { tags = {} } = returnObject
     const durationNs = endTimer(timerNs)
-    const timer = createTimer(stageTag, durationNs, { parentTag, category })
+    const timer = createTimer(stageTag, durationNs, { parentTag, category, tags })
     const timersB = [...timersA, timer]
     return { ...returnObject, timers: timersB, durationNs }
   }
@@ -34,9 +35,9 @@ const measureDuration = keepFuncProps(kMeasureDuration)
 const createTimer = function (
   stageTag,
   durationNs,
-  { metricName = DEFAULT_METRIC_NAME, parentTag = TOP_PARENT_TAG, category } = {},
+  { metricName = DEFAULT_METRIC_NAME, parentTag = TOP_PARENT_TAG, category, tags } = {},
 ) {
-  return { metricName, stageTag, parentTag, durationNs, category }
+  return { metricName, stageTag, parentTag, durationNs, category, tags }
 }
 
 const DEFAULT_METRIC_NAME = 'buildbot.build.stage.duration'

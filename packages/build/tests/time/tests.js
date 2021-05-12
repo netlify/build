@@ -23,6 +23,24 @@ test('Default --framework CLI flag to nothing', async (t) => {
   t.true(timerRequests.every((timerRequest) => !timerRequest.includes('framework:')))
 })
 
+test('Sends a `bundler: "zisi"` tag when no functions use the esbuild bundler', async (t) => {
+  const timerRequests = await getAllTimerRequests(t, 'functions_zisi')
+  const functionsBundlingRequest = timerRequests.find((timerRequest) =>
+    timerRequest.includes('stage:functions_bundling'),
+  )
+
+  t.true(functionsBundlingRequest.includes('bundler:zisi'))
+})
+
+test('Sends a `bundler: "esbuild"` tag when at least one function uses the esbuild bundler', async (t) => {
+  const timerRequests = await getAllTimerRequests(t, 'functions_esbuild')
+  const functionsBundlingRequest = timerRequests.find((timerRequest) =>
+    timerRequest.includes('stage:functions_bundling'),
+  )
+
+  t.true(functionsBundlingRequest.includes('bundler:esbuild'))
+})
+
 // Retrieve statsd packets sent to --statsd.host|port, and get their snapshot
 const getTimerRequestsString = async function (t, fixtureName, flags) {
   const timerRequests = await getAllTimerRequests(t, fixtureName, flags)

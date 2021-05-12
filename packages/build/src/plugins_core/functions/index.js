@@ -17,6 +17,11 @@ const {
 
 const { getZipError } = require('./error')
 
+// Returns `true` if at least one of the functions has been configured to use
+// esbuild.
+const isUsingEsbuild = (functionsConfig = {}) =>
+  Object.values(functionsConfig).some((configObject) => configObject.node_bundler === 'esbuild')
+
 // The function configuration keys returned by @netlify/config are not an exact
 // match to the properties that @netlify/zip-it-and-ship-it expects. We do that
 // translation here.
@@ -45,6 +50,7 @@ const getZisiParameters = ({ buildDir, functionsConfig }) => {
 
 const zipFunctionsAndLogResults = async ({ buildDir, functionsConfig, functionsDist, functionsSrc, logs }) => {
   const zisiParameters = getZisiParameters({ buildDir, functionsConfig })
+  const bundler = isUsingEsbuild(functionsConfig) ? 'esbuild' : 'zisi'
 
   try {
     // Printing an empty line before bundling output.
@@ -53,6 +59,8 @@ const zipFunctionsAndLogResults = async ({ buildDir, functionsConfig, functionsD
     const results = await zipFunctions(functionsSrc, functionsDist, zisiParameters)
 
     logBundleResults({ logs, results })
+
+    return { bundler }
   } catch (error) {
     throw await getZipError(error, functionsSrc)
   }
@@ -84,7 +92,7 @@ const coreCommand = async function ({
     return
   }
 
-  await zipFunctionsAndLogResults({
+  const { bundler } = await zipFunctionsAndLogResults({
     buildDir,
     childEnv,
     featureFlags,
@@ -93,6 +101,12 @@ const coreCommand = async function ({
     functionsSrc,
     logs,
   })
+
+  return {
+    tags: {
+      bundler,
+    },
+  }
 }
 
 const validateFunctionsSrc = async function ({ functionsSrc, relativeFunctionsSrc }) {
