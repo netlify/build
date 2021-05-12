@@ -794,7 +794,7 @@ test('Pin plugin versions', async (t) => {
 })
 
 test('Report updatePlugin API error without failing the build', async (t) => {
-  await runWithUpdatePluginMock(t, 'pin_success', { status: 500 })
+  await runWithUpdatePluginMock(t, 'pin_success', { status: 400 })
 })
 
 test('Does not report 404 updatePlugin API error', async (t) => {
@@ -892,7 +892,7 @@ test('Does not pin netlify.toml-only plugin versions if there are no matching pl
 // @todo remove after removing support for Node 8
 if (!version.startsWith('v8.')) {
   test('Fails the build when pinning netlify.toml-only plugin versions and the API request fails', async (t) => {
-    await runWithPluginRunsMock(t, 'pin_config_success', { status: 500 })
+    await runWithPluginRunsMock(t, 'pin_config_success', { status: 400 })
   })
 }
 
