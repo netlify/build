@@ -97,7 +97,19 @@ const resolveConfig = async function (opts) {
   // @todo Remove in the next major version.
   const configB = addLegacyFunctionsDirectory(configA)
 
-  const result = { siteInfo, env, configPath, buildDir, config: configB, context, branch, token, api, logs }
+  const result = {
+    siteInfo,
+    env,
+    configPath,
+    buildDir,
+    repositoryRoot,
+    config: configB,
+    context,
+    branch,
+    token,
+    api,
+    logs,
+  }
   logResult(result, { logs, debug })
   return result
 }

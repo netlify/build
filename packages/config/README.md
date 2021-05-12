@@ -282,6 +282,12 @@ Absolute path to the build directory.
 The build directory is the current directory in which most build operations, including the build command, execute. It is
 usually either the [`repositoryRoot`](#repositoryRoot) or (if specified) the `base` directory.
 
+#### repositoryRoot
+
+_Type_: `string`
+
+The computed value of [`repositoryRoot`](#repositoryRoot).
+
 #### context
 
 _Type_: `string`
