@@ -52,8 +52,9 @@ const { getSeverity } = require('./severity')
  * @returns {string[]} buildResult.logs - When using the `buffer` option, all log messages
  */
 const build = async function (flags = {}) {
-  const { errorMonitor, framework, mode, logs, debug, testOpts, statsdOpts, dry, telemetry, ...flagsA } =
-    startBuild(flags)
+  const { errorMonitor, framework, mode, logs, debug, testOpts, statsdOpts, dry, telemetry, ...flagsA } = startBuild(
+    flags,
+  )
   const errorParams = { errorMonitor, mode, logs, debug, testOpts }
 
   try {
@@ -192,11 +193,7 @@ const tExecBuild = async function ({
   // eslint-disable-next-line fp/no-mutating-assign
   Object.assign(errorParams, { netlifyConfig, pluginsOptions, siteInfo, childEnv, userNodeVersion })
 
-  const {
-    pluginsOptions: pluginsOptionsA,
-    commandsCount,
-    timers: timersB,
-  } = await runAndReportBuild({
+  const { pluginsOptions: pluginsOptionsA, commandsCount, timers: timersB } = await runAndReportBuild({
     pluginsOptions,
     netlifyConfig,
     siteInfo,
@@ -391,12 +388,7 @@ const initAndRunBuild = async function ({
   })
 
   try {
-    const {
-      commandsCount,
-      statuses,
-      failedPlugins,
-      timers: timersC,
-    } = await runBuild({
+    const { commandsCount, statuses, failedPlugins, timers: timersC } = await runBuild({
       childProcesses,
       pluginsOptions: pluginsOptionsA,
       netlifyConfig,
@@ -467,12 +459,7 @@ const runBuild = async function ({
     return {}
   }
 
-  const {
-    commandsCount,
-    statuses,
-    failedPlugins,
-    timers: timersB,
-  } = await runCommands({
+  const { commandsCount, statuses, failedPlugins, timers: timersB } = await runCommands({
     commands,
     featureFlags,
     buildbotServerSocket,

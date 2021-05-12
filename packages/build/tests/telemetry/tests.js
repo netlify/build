@@ -57,12 +57,7 @@ const runWithApiMock = async function (
   } = {},
 ) {
   // Start the mock telemetry server
-  const {
-    scheme: schemeTelemetry,
-    host: hostTelemetry,
-    requests: telemetryRequests,
-    stopServer,
-  } = await startServer({
+  const { scheme: schemeTelemetry, host: hostTelemetry, requests: telemetryRequests, stopServer } = await startServer({
     path: TELEMETRY_PATH,
     wait: waitTelemetryServer,
     status: responseStatusCode,

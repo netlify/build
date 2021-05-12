@@ -68,13 +68,7 @@ const runCommand = async function ({
   logCommand({ logs, event, buildCommandOrigin, packageName, coreCommandName, index, error })
 
   const fireCommand = getFireCommand({ packageName, buildCommand, coreCommandId, event })
-  const {
-    newEnvChanges,
-    newError,
-    newStatus,
-    timers: timersA,
-    durationNs,
-  } = await fireCommand({
+  const { newEnvChanges, newError, newStatus, timers: timersA, durationNs } = await fireCommand({
     event,
     childProcess,
     packageName,
