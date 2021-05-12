@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.5.0](https://www.github.com/netlify/build/compare/config-v6.4.4...config-v6.5.0) (2021-05-12)
+
+
+### Features
+
+* **config:** return repository root ([#2785](https://www.github.com/netlify/build/issues/2785)) ([9a05786](https://www.github.com/netlify/build/commit/9a05786266c51031ccaef1f216f21c5821ec92fb))
+
 ### [6.4.4](https://www.github.com/netlify/build/compare/config-v6.4.3...config-v6.4.4) (2021-05-05)
 
 

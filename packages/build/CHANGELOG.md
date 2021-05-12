@@ -1,5 +1,18 @@
 # Changelog
 
+## [11.13.0](https://www.github.com/netlify/build/compare/build-v11.12.1...build-v11.13.0) (2021-05-12)
+
+
+### Features
+
+* show warning about modules with dynamic imports ([#2773](https://www.github.com/netlify/build/issues/2773)) ([b49efe5](https://www.github.com/netlify/build/commit/b49efe54e81b1cd35b912b1980ba6cd1bd04539c))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^2.11.2 ([#2779](https://www.github.com/netlify/build/issues/2779)) ([83cfde7](https://www.github.com/netlify/build/commit/83cfde78abda0c782b3a9979d60f06d8eb07ce5f))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^3.10.0 ([#2776](https://www.github.com/netlify/build/issues/2776)) ([e8599eb](https://www.github.com/netlify/build/commit/e8599ebaac5828fbd143dc54bd14abeb1aee6732))
+
 ### [11.12.1](https://www.github.com/netlify/build/compare/build-v11.12.0...build-v11.12.1) (2021-05-12)
 
 
