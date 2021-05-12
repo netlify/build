@@ -1,5 +1,12 @@
 # Changelog
 
+### [11.12.1](https://www.github.com/netlify/build/compare/build-v11.12.0...build-v11.12.1) (2021-05-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^2.11.1 ([#2775](https://www.github.com/netlify/build/issues/2775)) ([982944b](https://www.github.com/netlify/build/commit/982944b5c90b39ce838c0849294d9787dc141ab9))
+
 ## [11.12.0](https://www.github.com/netlify/build/compare/build-v11.11.0...build-v11.12.0) (2021-05-10)
 
 
