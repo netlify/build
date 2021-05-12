@@ -253,6 +253,10 @@ test('Functions config is passed to zip-it-and-ship-it (3)', async (t) => {
 // @todo remove once we drop support for Node 8
 if (!version.startsWith('v8.')) {
   test('Shows notice about bundling errors and warnings coming from esbuild', async (t) => {
-    await runFixture(t, 'esbuild_errors')
+    await runFixture(t, 'esbuild_errors_1')
+  })
+
+  test('Shows notice about modules with dynamic imports and suggests the usage of `functions.external_node_modules`', async (t) => {
+    await runFixture(t, 'esbuild_errors_2')
   })
 }

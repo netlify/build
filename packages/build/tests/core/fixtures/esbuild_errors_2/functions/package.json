@@ -1,0 +1,8 @@
+{
+  "name": "local-node-module",
+  "version": "1.0.0",
+  "dependencies": {
+    "@org/another-test": "1.0.0",
+    "test": "1.0.0"
+  }
+}
