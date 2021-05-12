@@ -104,7 +104,7 @@ test('utils.status.show() statuses are sent to the API for core commands', async
   await runWithApiMock(t, 'core_command_error')
 })
 
-const STATUS_ERROR_CODE = 502
+const STATUS_ERROR_CODE = 400
 
 test('utils.status.show() statuses API errors are handled', async (t) => {
   await runWithApiMock(t, 'simple', { status: STATUS_ERROR_CODE })
