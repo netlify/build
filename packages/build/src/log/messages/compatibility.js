@@ -91,22 +91,22 @@ const getOutdatedPlugin = function ({
   packageName,
   pluginPackageJson: { version },
   latestVersion,
-  compatWarning,
+  migrationGuide,
   loadedFrom,
   origin,
 }) {
   const versionedPackage = getVersionedPackage(packageName, version)
-  const outdatedDescription = getOutdatedDescription({ latestVersion, compatWarning, loadedFrom, origin })
+  const outdatedDescription = getOutdatedDescription({ latestVersion, migrationGuide, loadedFrom, origin })
   return `${THEME.warningHighlightWords(packageName)}${versionedPackage}: ${outdatedDescription}`
 }
 
-const getOutdatedDescription = function ({ latestVersion, compatWarning, loadedFrom, origin }) {
+const getOutdatedDescription = function ({ latestVersion, migrationGuide, loadedFrom, origin }) {
   const upgradeInstruction = getUpgradeInstruction(loadedFrom, origin)
-  if (compatWarning === '') {
+  if (migrationGuide === undefined) {
     return `latest version is ${latestVersion}\n${upgradeInstruction}`
   }
 
-  return `latest version is ${latestVersion} which is incompatible with ${compatWarning}\n${upgradeInstruction}`
+  return `latest version is ${latestVersion}\nMigration guide: ${migrationGuide}\n${upgradeInstruction}`
 }
 
 const getUpgradeInstruction = function (loadedFrom, origin) {

@@ -15,12 +15,14 @@ const { resolvePath } = require('../utils/resolve')
 //  - This is only used to print a warning message when the `compatibleVersion`
 //    is older than the currently used version.
 const getExpectedVersion = async function ({ versions, nodeVersion, packageJson, buildDir, pinnedVersion }) {
-  const {
-    version,
-    conditions = [],
-    migrationGuide,
-  } = await getCompatibleEntry({ versions, nodeVersion, packageJson, buildDir, pinnedVersion })
-  const compatWarning = getCompatWarning(conditions, migrationGuide)
+  const { version, conditions } = await getCompatibleEntry({
+    versions,
+    nodeVersion,
+    packageJson,
+    buildDir,
+    pinnedVersion,
+  })
+  const compatWarning = getCompatWarning(conditions)
   return { version, compatWarning }
 }
 
@@ -63,9 +65,8 @@ const matchesCompatField = async function ({ conditions, nodeVersion, packageJso
 }
 
 // Retrieve warning message shown when using an older version with `compatibility`
-const getCompatWarning = function (conditions, migrationGuide) {
-  const compatWarning = conditions.map(getConditionWarning).join(', ')
-  return migrationGuide === undefined ? compatWarning : `${compatWarning}\nMigration guide: ${migrationGuide}`
+const getCompatWarning = function (conditions = []) {
+  return conditions.map(getConditionWarning).join(', ')
 }
 
 const getConditionWarning = function ({ type, condition }) {
