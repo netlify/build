@@ -1,5 +1,12 @@
 # Changelog
 
+## [11.15.0](https://www.github.com/netlify/build/compare/build-v11.14.0...build-v11.15.0) (2021-05-13)
+
+
+### Features
+
+* change shape of `compatibility` field ([#2791](https://www.github.com/netlify/build/issues/2791)) ([f43d3f6](https://www.github.com/netlify/build/commit/f43d3f6682aa46e2d442b4d94a787629507945af))
+
 ## [11.14.0](https://www.github.com/netlify/build/compare/build-v11.13.0...build-v11.14.0) (2021-05-12)
 
 
