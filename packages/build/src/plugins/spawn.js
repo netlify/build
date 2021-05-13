@@ -3,7 +3,7 @@
 const execa = require('execa')
 
 const { addErrorInfo } = require('../error/info')
-const { logLoadingPlugins, logOutdatedPlugins, logIncompatiblePlugins } = require('../log/messages/plugins')
+const { logLoadingPlugins, logOutdatedPlugins, logIncompatiblePlugins } = require('../log/messages/compatibility')
 const { measureDuration } = require('../time/main')
 
 const { getEventFromChild } = require('./ipc')
