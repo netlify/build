@@ -60,8 +60,16 @@ const normalizePluginsList = function (pluginsList) {
 //  - Is sorted from the highest to lowest version.
 //  - Does not include the latest `version`.
 const normalizePluginItem = function ({ package: packageName, version, compatibility = [] }) {
-  const normalizedCompatibility = compatibility.map(normalizeCompatVersion)
-  return [packageName, { version, compatibility: normalizedCompatibility }]
+  const normalizedCompatibility = addLatestVersion(compatibility, version)
+  const normalizedCompatibilityA = normalizedCompatibility.map(normalizeCompatVersion)
+  return [packageName, { version, compatibility: normalizedCompatibilityA }]
+}
+
+// TODO: remove once `netlify/plugins` validates that `compatibility` includes
+// the latest `version`
+const addLatestVersion = function (compatibility, version) {
+  const hasLastestVersion = compatibility.some((compatibleEntry) => compatibleEntry.version === version)
+  return hasLastestVersion ? compatibility : [{ version }, ...compatibility]
 }
 
 const normalizeCompatVersion = function ({ version, migrationGuide, ...conditions }) {
