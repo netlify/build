@@ -597,8 +597,7 @@ test('Prints outdated plugins installed in package.json', async (t) => {
 test('Prints incompatible plugins installed in package.json', async (t) => {
   await runWithApiMock(t, 'plugins_incompatible_package_json', {
     testPlugin: {
-      version: '0.3.0',
-      compatibility: [{ version: '0.2.0', nodeVersion: '<100' }],
+      compatibility: [{ version: '0.3.0' }, { version: '0.2.0', nodeVersion: '<100' }],
     },
   })
 })
@@ -606,8 +605,7 @@ test('Prints incompatible plugins installed in package.json', async (t) => {
 test('Does not print incompatible plugins installed in package.json if major version is same', async (t) => {
   await runWithApiMock(t, 'plugins_incompatible_package_json_same_major', {
     testPlugin: {
-      version: '0.4.0',
-      compatibility: [{ version: '0.4.1', nodeVersion: '<100' }],
+      compatibility: [{ version: '0.4.0' }, { version: '0.4.1', nodeVersion: '<100' }],
     },
   })
 })
@@ -621,8 +619,8 @@ test.serial('Plugins can specify non-matching compatibility.nodeVersion', async 
   await removeDir(`${FIXTURES_DIR}/plugins_compat_node_version/.netlify`)
   await runWithApiMock(t, 'plugins_compat_node_version', {
     testPlugin: {
-      version: '0.3.0',
       compatibility: [
+        { version: '0.3.0' },
         { version: '0.2.0', nodeVersion: '100 - 120' },
         { version: '0.1.0', nodeVersion: '<100' },
       ],
@@ -634,8 +632,7 @@ test.serial('Plugins ignore compatibility entries without conditions unless pinn
   await removeDir(`${FIXTURES_DIR}/plugins_compat_node_version/.netlify`)
   await runWithApiMock(t, 'plugins_compat_node_version', {
     testPlugin: {
-      version: '0.3.0',
-      compatibility: [{ version: '0.2.0' }, { version: '0.1.0', nodeVersion: '<100' }],
+      compatibility: [{ version: '0.3.0' }, { version: '0.2.0' }, { version: '0.1.0', nodeVersion: '<100' }],
     },
   })
 })
@@ -644,8 +641,7 @@ test.serial('Plugins does not ignore compatibility entries without conditions if
   await removeDir(`${FIXTURES_DIR}/plugins_compat_node_version/.netlify`)
   await runWithApiMock(t, 'plugins_compat_node_version', {
     testPlugin: {
-      version: '0.3.0',
-      compatibility: [{ version: '0.2.0' }, { version: '0.1.0' }],
+      compatibility: [{ version: '0.3.0' }, { version: '0.2.0' }, { version: '0.1.0' }],
     },
     defaultConfig: { plugins: [{ package: TEST_PLUGIN_NAME, pinned_version: '0.2.0' }] },
   })
@@ -655,8 +651,7 @@ test.serial('Plugins ignore compatibility conditions if pinned', async (t) => {
   await removeDir(`${FIXTURES_DIR}/plugins_compat_node_version/.netlify`)
   await runWithApiMock(t, 'plugins_compat_node_version', {
     testPlugin: {
-      version: '0.3.0',
-      compatibility: [{ version: '0.2.0', nodeVersion: '100 - 200' }, { version: '0.1.0' }],
+      compatibility: [{ version: '0.3.0' }, { version: '0.2.0', nodeVersion: '100 - 200' }, { version: '0.1.0' }],
     },
     defaultConfig: { plugins: [{ package: TEST_PLUGIN_NAME, pinned_version: '0.2.0' }] },
   })
@@ -666,8 +661,8 @@ test.serial('Plugins can specify matching compatibility.nodeVersion', async (t) 
   await removeDir(`${FIXTURES_DIR}/plugins_compat_node_version/.netlify`)
   await runWithApiMock(t, 'plugins_compat_node_version', {
     testPlugin: {
-      version: '0.3.0',
       compatibility: [
+        { version: '0.3.0' },
         { version: '0.2.0', nodeVersion: '6 - 120' },
         { version: '0.1.0', nodeVersion: '<6' },
       ],
@@ -679,8 +674,8 @@ test.serial('Plugins compatibility defaults to version field', async (t) => {
   await removeDir(`${FIXTURES_DIR}/plugins_compat_node_version/.netlify`)
   await runWithApiMock(t, 'plugins_compat_node_version', {
     testPlugin: {
-      version: '0.3.0',
       compatibility: [
+        { version: '0.3.0' },
         { version: '0.2.0', nodeVersion: '4 - 6' },
         { version: '0.1.0', nodeVersion: '<4' },
       ],
@@ -692,8 +687,8 @@ test.serial('Plugins can specify compatibility.migrationGuide', async (t) => {
   await removeDir(`${FIXTURES_DIR}/plugins_compat_node_version/.netlify`)
   await runWithApiMock(t, 'plugins_compat_node_version', {
     testPlugin: {
-      version: '0.3.0',
       compatibility: [
+        { version: '0.3.0' },
         { version: '0.2.0', nodeVersion: '100 - 120' },
         { version: '0.1.0', nodeVersion: '<100', migrationGuide: 'http://test.com' },
       ],
@@ -705,8 +700,7 @@ test.serial('Plugins can specify matching compatibility.siteDependencies', async
   await removeDir(`${FIXTURES_DIR}/plugins_compat_site_dependencies/.netlify`)
   await runWithApiMock(t, 'plugins_compat_site_dependencies', {
     testPlugin: {
-      version: '0.3.0',
-      compatibility: [{ version: '0.2.0', siteDependencies: { 'ansi-styles': '<3' } }],
+      compatibility: [{ version: '0.3.0' }, { version: '0.2.0', siteDependencies: { 'ansi-styles': '<3' } }],
     },
   })
 })
@@ -715,8 +709,7 @@ test.serial('Plugins can specify non-matching compatibility.siteDependencies', a
   await removeDir(`${FIXTURES_DIR}/plugins_compat_site_dependencies/.netlify`)
   await runWithApiMock(t, 'plugins_compat_site_dependencies', {
     testPlugin: {
-      version: '0.3.0',
-      compatibility: [{ version: '0.2.0', siteDependencies: { 'ansi-styles': '<2' } }],
+      compatibility: [{ version: '0.3.0' }, { version: '0.2.0', siteDependencies: { 'ansi-styles': '<2' } }],
     },
   })
 })
@@ -725,8 +718,7 @@ test.serial('Plugins can specify non-existing compatibility.siteDependencies', a
   await removeDir(`${FIXTURES_DIR}/plugins_compat_site_dependencies/.netlify`)
   await runWithApiMock(t, 'plugins_compat_site_dependencies', {
     testPlugin: {
-      version: '0.3.0',
-      compatibility: [{ version: '0.2.0', siteDependencies: { 'does-not-exist': '<3' } }],
+      compatibility: [{ version: '0.3.0' }, { version: '0.2.0', siteDependencies: { 'does-not-exist': '<3' } }],
     },
   })
 })
@@ -735,8 +727,10 @@ test.serial('Plugins can specify multiple non-matching compatibility conditions'
   await removeDir(`${FIXTURES_DIR}/plugins_compat_site_dependencies/.netlify`)
   await runWithApiMock(t, 'plugins_compat_site_dependencies', {
     testPlugin: {
-      version: '0.3.0',
-      compatibility: [{ version: '0.2.0', siteDependencies: { 'ansi-styles': '<3' }, nodeVersion: '100 - 120' }],
+      compatibility: [
+        { version: '0.3.0' },
+        { version: '0.2.0', siteDependencies: { 'ansi-styles': '<3' }, nodeVersion: '100 - 120' },
+      ],
     },
   })
 })
@@ -745,8 +739,10 @@ test.serial('Plugins can specify multiple matching compatibility conditions', as
   await removeDir(`${FIXTURES_DIR}/plugins_compat_site_dependencies/.netlify`)
   await runWithApiMock(t, 'plugins_compat_site_dependencies', {
     testPlugin: {
-      version: '0.3.0',
-      compatibility: [{ version: '0.2.0', siteDependencies: { 'ansi-styles': '<3' }, nodeVersion: '<100' }],
+      compatibility: [
+        { version: '0.3.0' },
+        { version: '0.2.0', siteDependencies: { 'ansi-styles': '<3' }, nodeVersion: '<100' },
+      ],
     },
   })
 })
@@ -755,8 +751,7 @@ test.serial('Plugins can specify non-matching compatibility.siteDependencies ran
   await removeDir(`${FIXTURES_DIR}/plugins_compat_site_dependencies_range/.netlify`)
   await runWithApiMock(t, 'plugins_compat_site_dependencies_range', {
     testPlugin: {
-      version: '0.3.0',
-      compatibility: [{ version: '0.2.0', siteDependencies: { 'dependency-with-range': '<10' } }],
+      compatibility: [{ version: '0.3.0' }, { version: '0.2.0', siteDependencies: { 'dependency-with-range': '<10' } }],
     },
   })
 })
@@ -836,8 +831,8 @@ test('Pinning plugin versions takes into account the compatibility field', async
   await runWithUpdatePluginMock(t, 'pin_success', {
     flags: { defaultConfig: { plugins: [{ package: TEST_PLUGIN_NAME, pinned_version: '0' }] } },
     testPlugin: {
-      version: '1.0.0',
       compatibility: [
+        { version: '1.0.0' },
         { version: '100.0.0', nodeVersion: '<100' },
         { version: '0.3.0', nodeVersion: '<100' },
       ],

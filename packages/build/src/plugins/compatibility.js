@@ -14,27 +14,14 @@ const { resolvePath } = require('../utils/resolve')
 //  - This is the same logic except it does not use version pinning
 //  - This is only used to print a warning message when the `compatibleVersion`
 //    is older than the currently used version.
-const getExpectedVersion = async function ({
-  latestVersion,
-  compatibility,
-  nodeVersion,
-  packageJson,
-  buildDir,
-  pinnedVersion,
-}) {
-  const compatibleEntry = await getCompatibleEntry({ compatibility, nodeVersion, packageJson, buildDir, pinnedVersion })
-
-  if (compatibleEntry !== undefined) {
-    const { version, conditions, migrationGuide } = compatibleEntry
-    const compatWarning = getCompatWarning(conditions, migrationGuide)
-    return { version, compatWarning }
-  }
-
-  if (pinnedVersion === undefined || satisfies(latestVersion, pinnedVersion)) {
-    return { version: latestVersion }
-  }
-
-  return { version: pinnedVersion }
+const getExpectedVersion = async function ({ versions, nodeVersion, packageJson, buildDir, pinnedVersion }) {
+  const {
+    version,
+    conditions = [],
+    migrationGuide,
+  } = await getCompatibleEntry({ versions, nodeVersion, packageJson, buildDir, pinnedVersion })
+  const compatWarning = getCompatWarning(conditions, migrationGuide)
+  return { version, compatWarning }
 }
 
 // This function finds the right `compatibility` entry to use with the plugin.
@@ -51,15 +38,16 @@ const getExpectedVersion = async function ({
 // When no `compatibility` entry matches, we use:
 //  - If there is a `pinnedVersion`, use it unless `latestVersion` matches it
 //  - Otherwise, use `latestVersion`
-const getCompatibleEntry = async function ({ compatibility, nodeVersion, packageJson, buildDir, pinnedVersion }) {
+const getCompatibleEntry = async function ({ versions, nodeVersion, packageJson, buildDir, pinnedVersion }) {
   if (pinnedVersion !== undefined) {
-    return compatibility.find(({ version }) => satisfies(version, pinnedVersion))
+    return versions.find(({ version }) => satisfies(version, pinnedVersion)) || { version: pinnedVersion }
   }
 
-  const compatibilityWithConditions = compatibility.filter(hasConditions)
-  return await pLocate(compatibilityWithConditions, ({ conditions }) =>
+  const versionsWithConditions = versions.filter(hasConditions)
+  const compatibleEntry = await pLocate(versionsWithConditions, ({ conditions }) =>
     matchesCompatField({ conditions, nodeVersion, packageJson, buildDir }),
   )
+  return compatibleEntry || { version: versions[0].version }
 }
 
 // Ignore entries without conditions. Those are used to specify breaking

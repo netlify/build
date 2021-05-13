@@ -28,8 +28,8 @@ const logPluginsList = function ({ pluginsList, debug, logs }) {
   logArray(logs, pluginsListArray)
 }
 
-const getPluginsListItem = function ([packageName, { version }]) {
-  return `${packageName}@${version}`
+const getPluginsListItem = function ([packageName, versions]) {
+  return `${packageName}@${versions[0].version}`
 }
 
 const logLoadingPlugins = function (logs, pluginsOptions, debug) {
@@ -118,7 +118,7 @@ const getOutdatedPlugin = function ({ packageName, pluginPackageJson: { version 
 }
 
 const getOutdatedDescription = function (latestVersion, compatWarning) {
-  if (compatWarning === undefined) {
+  if (compatWarning === '') {
     return `latest version is ${latestVersion}`
   }
 
@@ -141,7 +141,7 @@ const logIncompatiblePlugins = function (logs, pluginsOptions) {
 
 const hasIncompatibleVersion = function ({ pluginPackageJson: { version }, compatibleVersion, compatWarning }) {
   return (
-    compatWarning !== undefined &&
+    compatWarning !== '' &&
     version !== undefined &&
     compatibleVersion !== undefined &&
     // Using only the major version prevents printing this warning message when

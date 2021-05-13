@@ -50,10 +50,11 @@ const addExpectedVersion = async function ({
     return pluginOptions
   }
 
-  const { version: latestVersion, compatibility } = pluginsList[packageName]
+  const versions = pluginsList[packageName]
+  const latestVersion = versions[0].version
   const [{ version: expectedVersion }, { version: compatibleVersion, compatWarning }] = await Promise.all([
-    getExpectedVersion({ latestVersion, compatibility, nodeVersion, packageJson, buildDir, pinnedVersion }),
-    getExpectedVersion({ latestVersion, compatibility, nodeVersion, packageJson, buildDir }),
+    getExpectedVersion({ versions, nodeVersion, packageJson, buildDir, pinnedVersion }),
+    getExpectedVersion({ versions, nodeVersion, packageJson, buildDir }),
   ])
 
   const isMissing = await isMissingVersion({ autoPluginsDir, packageName, pluginPath, loadedFrom, expectedVersion })
