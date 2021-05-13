@@ -1,5 +1,13 @@
 # Changelog
 
+## [11.14.0](https://www.github.com/netlify/build/compare/build-v11.13.0...build-v11.14.0) (2021-05-12)
+
+
+### Features
+
+* allow commands to add tags to the metrics + `bundler` tag ([#2783](https://www.github.com/netlify/build/issues/2783)) ([345e433](https://www.github.com/netlify/build/commit/345e433244b4c27e8d9a333e52e056d7f51e4bea))
+* **config:** return repository root ([#2785](https://www.github.com/netlify/build/issues/2785)) ([9a05786](https://www.github.com/netlify/build/commit/9a05786266c51031ccaef1f216f21c5821ec92fb))
+
 ## [11.13.0](https://www.github.com/netlify/build/compare/build-v11.12.1...build-v11.13.0) (2021-05-12)
 
 
