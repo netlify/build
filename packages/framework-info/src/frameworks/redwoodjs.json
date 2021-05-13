@@ -1,0 +1,26 @@
+{
+  "id": "redwoodjs",
+  "name": "RedwoodJS",
+  "category": "static_site_generator",
+  "detect": {
+    "configFiles": [
+      "redwood.toml"
+    ]
+  },
+  "dev": {
+    "command": "rw dev",
+    "port": 8910,
+    "pollingStrategies": [
+      {
+        "name": "TCP"
+      }
+    ]
+  },
+  "build": {
+    "command": "yarn rw deploy netlify",
+    "directory": "web/dist"
+  },
+  "staticAssetsDirectory": "public",
+  "env": {},
+  "plugins": []
+}
