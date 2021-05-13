@@ -1,5 +1,17 @@
 # Changelog
 
+## [11.16.0](https://www.github.com/netlify/build/compare/build-v11.15.0...build-v11.16.0) (2021-05-13)
+
+
+### Features
+
+* simplify version pinning logic ([#2795](https://www.github.com/netlify/build/issues/2795)) ([7c0d61b](https://www.github.com/netlify/build/commit/7c0d61b896b50be42272d489bd04b09097fbc752))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^2.12.0 ([#2793](https://www.github.com/netlify/build/issues/2793)) ([f2b4bad](https://www.github.com/netlify/build/commit/f2b4bad006d9185ff2ee0c09c101d69873fc0ffa))
+
 ## [11.15.0](https://www.github.com/netlify/build/compare/build-v11.14.0...build-v11.15.0) (2021-05-13)
 
 
