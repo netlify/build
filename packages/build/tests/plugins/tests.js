@@ -134,10 +134,14 @@ test('Pass empty packageJson to plugins if package.json invalid', async (t) => {
   await runFixture(t, 'package_json_invalid')
 })
 
-test('Functions: simple setup', async (t) => {
-  await removeDir(`${FIXTURES_DIR}/simple/.netlify/functions/`)
-  await runFixture(t, 'simple')
-})
+// @netlify/zip-it-and-ship-it does not support Node 8 during bundling
+// TODO: remove once we drop support for Node 8
+if (!version.startsWith('v8.')) {
+  test('Functions: simple setup', async (t) => {
+    await removeDir(`${FIXTURES_DIR}/simple/.netlify/functions/`)
+    await runFixture(t, 'simple')
+  })
+}
 
 test('Functions: missing source directory', async (t) => {
   await runFixture(t, 'missing')
@@ -168,14 +172,18 @@ test('Functions: invalid package.json', async (t) => {
   }
 })
 
-test('Functions: --functionsDistDir', async (t) => {
-  const functionsDistDir = await getTempDir()
-  try {
-    await runFixture(t, 'simple', { flags: { functionsDistDir } })
-  } finally {
-    await removeDir(functionsDistDir)
-  }
-})
+// @netlify/zip-it-and-ship-it does not support Node 8 during bundling
+// TODO: remove once we drop support for Node 8
+if (!version.startsWith('v8.')) {
+  test('Functions: --functionsDistDir', async (t) => {
+    const functionsDistDir = await getTempDir()
+    try {
+      await runFixture(t, 'simple', { flags: { functionsDistDir } })
+    } finally {
+      await removeDir(functionsDistDir)
+    }
+  })
+}
 
 const EDGE_HANDLERS_LOCAL_DIR = '.netlify/edge-handlers'
 const EDGE_HANDLERS_MANIFEST = 'manifest.json'
@@ -972,11 +980,15 @@ test('Utils are defined', async (t) => {
   await runFixture(t, 'defined')
 })
 
-test('Can run utils', async (t) => {
-  await removeDir(`${FIXTURES_DIR}/functions/functions`)
-  await runFixture(t, 'functions')
-  await removeDir(`${FIXTURES_DIR}/functions/functions`)
-})
+// @netlify/zip-it-and-ship-it does not support Node 8 during bundling
+// TODO: remove once we drop support for Node 8
+if (!version.startsWith('v8.')) {
+  test('Can run utils', async (t) => {
+    await removeDir(`${FIXTURES_DIR}/functions/functions`)
+    await runFixture(t, 'functions')
+    await removeDir(`${FIXTURES_DIR}/functions/functions`)
+  })
+}
 
 test('Git utils fails if no root', async (t) => {
   await runFixture(t, 'git_no_root', { copyRoot: { git: false } })

@@ -195,10 +195,14 @@ test('--node-path is used by plugins added to package.json', async (t) => {
   await runFixture(t, 'package', { flags: { nodePath: path }, env: { TEST_NODE_PATH: path } })
 })
 
-test('--node-path is not used by core plugins', async (t) => {
-  const { path } = await mGetNode(VERY_OLD_NODE_VERSION)
-  await runFixture(t, 'core', { flags: { nodePath: path } })
-})
+// @netlify/zip-it-and-ship-it does not support Node 8 during bundling
+// TODO: remove once we drop support for Node 8
+if (!version.startsWith('v8.')) {
+  test('--node-path is not used by core plugins', async (t) => {
+    const { path } = await mGetNode(VERY_OLD_NODE_VERSION)
+    await runFixture(t, 'core', { flags: { nodePath: path } })
+  })
+}
 
 test('--featureFlags can be used', async (t) => {
   await runFixture(t, 'empty', { flags: { featureFlags: 'test,test,testTwo' } })
@@ -238,20 +242,21 @@ test('Print warning on lingering processes', async (t) => {
 
 const PID_LINE_REGEXP = /^PID: (\d+)$/m
 
-test('Functions config is passed to zip-it-and-ship-it (1)', async (t) => {
-  await runFixture(t, 'functions_config_1')
-})
-
-test('Functions config is passed to zip-it-and-ship-it (2)', async (t) => {
-  await runFixture(t, 'functions_config_2')
-})
-
-test('Functions config is passed to zip-it-and-ship-it (3)', async (t) => {
-  await runFixture(t, 'functions_config_3')
-})
-
-// @todo remove once we drop support for Node 8
+// @netlify/zip-it-and-ship-it does not support Node 8 during bundling
+// TODO: remove once we drop support for Node 8
 if (!version.startsWith('v8.')) {
+  test('Functions config is passed to zip-it-and-ship-it (1)', async (t) => {
+    await runFixture(t, 'functions_config_1')
+  })
+
+  test('Functions config is passed to zip-it-and-ship-it (2)', async (t) => {
+    await runFixture(t, 'functions_config_2')
+  })
+
+  test('Functions config is passed to zip-it-and-ship-it (3)', async (t) => {
+    await runFixture(t, 'functions_config_3')
+  })
+
   test('Shows notice about bundling errors and warnings coming from esbuild', async (t) => {
     await runFixture(t, 'esbuild_errors_1')
   })
