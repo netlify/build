@@ -51,14 +51,22 @@ const addExpectedVersion = async function ({
   }
 
   const versions = pluginsList[packageName]
-  const latestVersion = versions[0].version
+  const [{ version: latestVersion, migrationGuide }] = versions
   const [{ version: expectedVersion }, { version: compatibleVersion, compatWarning }] = await Promise.all([
     getExpectedVersion({ versions, nodeVersion, packageJson, buildDir, pinnedVersion }),
     getExpectedVersion({ versions, nodeVersion, packageJson, buildDir }),
   ])
 
   const isMissing = await isMissingVersion({ autoPluginsDir, packageName, pluginPath, loadedFrom, expectedVersion })
-  return { ...pluginOptions, latestVersion, expectedVersion, compatibleVersion, compatWarning, isMissing }
+  return {
+    ...pluginOptions,
+    latestVersion,
+    expectedVersion,
+    compatibleVersion,
+    migrationGuide,
+    compatWarning,
+    isMissing,
+  }
 }
 
 // Checks whether plugin should be installed due to the wrong version being used
