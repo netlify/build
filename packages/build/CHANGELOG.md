@@ -1,5 +1,17 @@
 # Changelog
 
+## [11.17.0](https://www.github.com/netlify/build/compare/build-v11.16.0...build-v11.17.0) (2021-05-14)
+
+
+### Features
+
+* add build logs to explain how to upgrade plugins ([#2798](https://www.github.com/netlify/build/issues/2798)) ([7e054ae](https://www.github.com/netlify/build/commit/7e054ae16d815b89f6a4ea2984a4c21dc4c75a4e))
+
+
+### Bug Fixes
+
+* improve `compatibility`-related warning messages ([#2797](https://www.github.com/netlify/build/issues/2797)) ([7f34aa5](https://www.github.com/netlify/build/commit/7f34aa59909dce6fa5fa6cd7f9721c8203745da6))
+
 ## [11.16.0](https://www.github.com/netlify/build/compare/build-v11.15.0...build-v11.16.0) (2021-05-13)
 
 
