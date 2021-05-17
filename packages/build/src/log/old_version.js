@@ -4,7 +4,6 @@ const { stdout } = require('process')
 
 const UpdateNotifier = require('update-notifier')
 
-// eslint-disable-next-line import/extensions
 const CORE_PACKAGE_JSON = require('../../package.json')
 
 // Many build errors happen in local builds that do not use the latest version

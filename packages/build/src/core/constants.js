@@ -5,7 +5,6 @@ const { relative, normalize } = require('path')
 const { getCacheDir } = require('@netlify/cache-utils')
 const mapObj = require('map-obj')
 
-// eslint-disable-next-line import/extensions
 const { version } = require('../../package.json')
 
 // Retrieve constants passed to plugins
