@@ -6,7 +6,6 @@ const { satisfies, clean: cleanVersion } = require('semver')
 
 const {
   engines: { node: coreNodeVersionRange },
-  // eslint-disable-next-line import/extensions
 } = require('../../package.json')
 const { addErrorInfo } = require('../error/info')
 
