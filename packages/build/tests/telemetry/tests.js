@@ -5,7 +5,7 @@ const { versions } = require('process')
 const test = require('ava')
 
 const { runFixture } = require('../helpers/main')
-const { startServer } = require('../helpers/server.js')
+const { startServer } = require('../helpers/server')
 
 const TELEMETRY_PATH = '/track'
 const BUGSNAG_TEST_KEY = '00000000000000000000000000000000'

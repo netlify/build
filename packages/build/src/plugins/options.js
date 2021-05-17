@@ -2,6 +2,7 @@
 
 const { dirname } = require('path')
 
+// eslint-disable-next-line import/extensions
 const corePackageJson = require('../../package.json')
 const { installLocalPluginsDependencies } = require('../install/local')
 const { measureDuration } = require('../time/main')

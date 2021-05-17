@@ -3,6 +3,7 @@
 const { link } = require('ansi-escapes')
 const prettyMs = require('pretty-ms')
 
+// eslint-disable-next-line import/extensions
 const { name, version } = require('../../../package.json')
 const { getFullErrorInfo } = require('../../error/parse/parse')
 const { serializeLogError } = require('../../error/parse/serialize_log')

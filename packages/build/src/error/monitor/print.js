@@ -1,6 +1,6 @@
 'use strict'
 
-const { log } = require('../../log/logger.js')
+const { log } = require('../../log/logger')
 
 // Print event payload instead of sending actual request during tests
 const printEventForTest = function (

@@ -4,7 +4,7 @@ const { platform } = require('process')
 
 const execa = require('execa')
 
-const { setEnvChanges } = require('../env/changes.js')
+const { setEnvChanges } = require('../env/changes')
 const { addErrorInfo } = require('../error/info')
 const { logBuildCommandStart } = require('../log/messages/commands')
 const { getBuildCommandStdio, handleBuildCommandOutput } = require('../log/stream')

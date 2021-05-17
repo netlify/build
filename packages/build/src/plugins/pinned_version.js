@@ -1,7 +1,7 @@
 'use strict'
 
 const { handleBuildError } = require('../error/handle')
-const { getMajorVersion } = require('../utils/semver.js')
+const { getMajorVersion } = require('../utils/semver')
 
 // Retrieve plugin's pinned major versions by fetching the latest `PluginRun`
 // Only applies to `netlify.toml`-only installed plugins.

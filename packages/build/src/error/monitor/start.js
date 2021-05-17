@@ -3,8 +3,9 @@
 const Bugsnag = require('@bugsnag/js')
 const memoizeOne = require('memoize-one')
 
+// eslint-disable-next-line import/extensions
 const { name, version } = require('../../../package.json')
-const { log } = require('../../log/logger.js')
+const { log } = require('../../log/logger')
 
 const projectRoot = `${__dirname}/../../..`
 

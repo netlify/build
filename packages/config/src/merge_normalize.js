@@ -3,7 +3,7 @@
 const { normalizeConfigCase } = require('./case')
 const { normalizeConfig } = require('./normalize')
 const { addOrigins } = require('./origin')
-const { validateIdenticalPlugins } = require('./validate/identical.js')
+const { validateIdenticalPlugins } = require('./validate/identical')
 const {
   validatePreCaseNormalize,
   validatePreMergeConfig,
