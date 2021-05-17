@@ -7,9 +7,10 @@ const getNode = require('get-node')
 const moize = require('moize')
 
 const { runFixture: runFixtureConfig } = require('../../../config/tests/helpers/main')
+// eslint-disable-next-line import/extensions
 const { version: netlifyBuildVersion } = require('../../package.json')
 const { runFixture, FIXTURES_DIR } = require('../helpers/main')
-const { startServer } = require('../helpers/server.js')
+const { startServer } = require('../helpers/server')
 
 test('--help', async (t) => {
   await runFixture(t, '', { flags: { help: true }, useBinary: true })

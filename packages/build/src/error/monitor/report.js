@@ -6,7 +6,7 @@ const { promisify } = require('util')
 const osName = require('os-name')
 
 const { getEnvMetadata } = require('../../env/metadata')
-const { log } = require('../../log/logger.js')
+const { log } = require('../../log/logger')
 const { parseErrorInfo } = require('../parse/parse')
 const { getHomepage } = require('../parse/plugin')
 

@@ -3,7 +3,7 @@
 const isPlainObj = require('is-plain-obj')
 const mapObj = require('map-obj')
 
-const { normalizeBeforeConfigMerge } = require('./merge_normalize.js')
+const { normalizeBeforeConfigMerge } = require('./merge_normalize')
 const { CONFIG_ORIGIN } = require('./origin')
 const { mergeConfigs } = require('./utils/merge')
 const { validateContextsPluginsConfig } = require('./validate/context')

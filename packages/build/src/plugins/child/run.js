@@ -1,6 +1,6 @@
 'use strict'
 
-const { getNewEnvChanges, setEnvChanges } = require('../../env/changes.js')
+const { getNewEnvChanges, setEnvChanges } = require('../../env/changes')
 
 const { getUtils } = require('./utils')
 

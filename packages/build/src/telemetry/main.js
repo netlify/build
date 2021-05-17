@@ -5,6 +5,7 @@ const { platform } = require('process')
 const got = require('got')
 const osName = require('os-name')
 
+// eslint-disable-next-line import/extensions
 const { version: buildVersion } = require('../../package.json')
 const { addErrorInfo } = require('../error/info')
 const { roundTimerToMillisecs } = require('../time/measure')

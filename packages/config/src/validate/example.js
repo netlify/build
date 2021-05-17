@@ -3,7 +3,7 @@
 const indentString = require('indent-string')
 
 const { THEME } = require('../log/theme')
-const { serializeToml } = require('../utils/toml.js')
+const { serializeToml } = require('../utils/toml')
 
 // Print invalid value and example netlify.toml
 const getExample = function ({ value, key, prevPath, example, formatInvalid }) {
