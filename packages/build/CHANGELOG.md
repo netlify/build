@@ -1,5 +1,12 @@
 # Changelog
 
+### [11.17.4](https://www.github.com/netlify/build/compare/build-v11.17.3...build-v11.17.4) (2021-05-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugin-edge-handlers to ^1.11.10 ([#2822](https://www.github.com/netlify/build/issues/2822)) ([47c8e05](https://www.github.com/netlify/build/commit/47c8e05269f3735d1988e46ac80ddfec2ff7c930))
+
 ### [11.17.3](https://www.github.com/netlify/build/compare/build-v11.17.2...build-v11.17.3) (2021-05-19)
 
 
