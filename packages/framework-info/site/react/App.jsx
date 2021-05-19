@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import { listFrameworks } from '../../dist/index.js'
+import { listFrameworks } from '../../dist/index'
 
 const repo = 'cassidoo/next-contentful-starter'
 
