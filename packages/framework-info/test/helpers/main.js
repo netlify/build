@@ -1,4 +1,4 @@
-const { listFrameworks, getFramework: getFrameworkLib, hasFramework: hasFrameworkLib } = require('../../src/main.js')
+const { listFrameworks, getFramework: getFrameworkLib, hasFramework: hasFrameworkLib } = require('../../src/main')
 
 const FIXTURES_DIR = `${__dirname}/../fixtures`
 

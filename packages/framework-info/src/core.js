@@ -1,11 +1,11 @@
 const pFilter = require('p-filter')
 
-const { usesFramework } = require('./detect.js')
-const { getDevCommands } = require('./dev.js')
-const { FRAMEWORKS } = require('./frameworks/main.js')
-const { getPackageJsonContent } = require('./package.js')
+const { usesFramework } = require('./detect')
+const { getDevCommands } = require('./dev')
+const { FRAMEWORKS } = require('./frameworks/main')
+const { getPackageJsonContent } = require('./package')
 const { getPlugins } = require('./plugins')
-const { getRunScriptCommand } = require('./run_script.js')
+const { getRunScriptCommand } = require('./run_script')
 
 const getContext = (context) => {
   const { pathExists, packageJson, packageJsonPath = '.', nodeVersion } = context

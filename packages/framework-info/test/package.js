@@ -3,9 +3,9 @@ const cpy = require('cpy')
 const del = require('del')
 const { dir: getTmpDir } = require('tmp-promise')
 
-const { listFrameworks } = require('../src/main.js')
+const { listFrameworks } = require('../src/main')
 
-const { getFrameworks, FIXTURES_DIR } = require('./helpers/main.js')
+const { getFrameworks, FIXTURES_DIR } = require('./helpers/main')
 
 test('Should detect package.json in parent directories', async (t) => {
   const frameworks = await getFrameworks('parent_package/parent')

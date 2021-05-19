@@ -6,7 +6,7 @@ const Ajv = require('ajv').default
 const test = require('ava')
 const { each } = require('test-each')
 
-const { FRAMEWORKS } = require('../src/frameworks/main.js')
+const { FRAMEWORKS } = require('../src/frameworks/main')
 
 const pReadDir = util.promisify(fs.readdir)
 const pReadFile = util.promisify(fs.readFile)

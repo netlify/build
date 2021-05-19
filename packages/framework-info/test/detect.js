@@ -2,7 +2,7 @@ const { version: nodeVersion } = require('process')
 
 const test = require('ava')
 
-const { getFrameworks } = require('./helpers/main.js')
+const { getFrameworks } = require('./helpers/main')
 
 test('Should detect dependencies', async (t) => {
   const frameworks = await getFrameworks('dependencies')

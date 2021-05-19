@@ -2,9 +2,9 @@ const process = require('process')
 
 const test = require('ava')
 
-const { listFrameworks } = require('../src/main.js')
+const { listFrameworks } = require('../src/main')
 
-const { FIXTURES_DIR } = require('./helpers/main.js')
+const { FIXTURES_DIR } = require('./helpers/main')
 
 test.serial('projectDir option defaults to process.cwd()', async (t) => {
   const oldCwd = process.cwd()

@@ -1,6 +1,6 @@
 const test = require('ava')
 
-const { getFrameworks } = require('./helpers/main.js')
+const { getFrameworks } = require('./helpers/main')
 
 test('Should use package scripts as dev command', async (t) => {
   const frameworks = await getFrameworks('use_scripts')

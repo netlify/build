@@ -1,6 +1,6 @@
 const test = require('ava')
 
-const { getFrameworks, getFramework, hasFramework } = require('./helpers/main.js')
+const { getFrameworks, getFramework, hasFramework } = require('./helpers/main')
 
 test('Should detect frameworks', async (t) => {
   const frameworks = await getFrameworks('simple')

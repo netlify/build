@@ -1,5 +1,5 @@
 const { getContext } = require('./context')
-const { listFrameworks: list, hasFramework: has, getFramework: get } = require('./core.js')
+const { listFrameworks: list, hasFramework: has, getFramework: get } = require('./core')
 
 /**
  * @typedef {object} Options

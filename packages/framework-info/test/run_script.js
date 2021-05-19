@@ -1,6 +1,6 @@
 const test = require('ava')
 
-const { getFrameworks } = require('./helpers/main.js')
+const { getFrameworks } = require('./helpers/main')
 
 test('Should use Yarn when there is a yarn.lock', async (t) => {
   const frameworks = await getFrameworks('yarn_scripts')
