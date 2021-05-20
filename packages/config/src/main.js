@@ -80,7 +80,7 @@ const resolveConfig = async function (opts) {
     logs,
   })
 
-  const { config: configA, buildDir } = await handleFiles({ config, repositoryRoot, baseRelDir: baseRelDirA })
+  const { config: configA, buildDir } = await handleFiles({ config, repositoryRoot, baseRelDir: baseRelDirA, logs })
 
   const env = await getEnv({
     mode,

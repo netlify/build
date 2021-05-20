@@ -8,7 +8,7 @@ const test = require('ava')
 const { runFixture, FIXTURES_DIR } = require('../helpers/main')
 
 test('--cwd with no config', async (t) => {
-  await runFixture(t, '', { flags: { cwd: `${FIXTURES_DIR}/empty` } })
+  await runFixture(t, '', { flags: { cwd: `${FIXTURES_DIR}/empty`, defaultConfig: { build: { publish: '/' } } } })
 })
 
 test('--cwd with a relative path config', async (t) => {

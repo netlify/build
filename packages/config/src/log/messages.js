@@ -44,4 +44,27 @@ To run "${packageName}" in all contexts, please remove the following section fro
   )
 }
 
-module.exports = { warnLegacyFunctionsDirectory, warnContextPluginConfig, throwContextPluginsConfig }
+// At the moment, the publish directory defaults to the repository root
+// directory even when there is a base directory, which might confuse some users
+// See https://github.com/netlify/build/issues/2075
+const warnBaseWithoutPublish = function (logs, { base, publish }) {
+  if (!base || base === '/' || publish) {
+    return
+  }
+
+  logWarning(
+    logs,
+    `
+Warning: the "publish" directory was not set and will default to the repository root directory.
+To publish the root directory, please set the "publish" directory to "/"
+To publish the "base" directory instead, please set the "publish" directory to "${base}"
+`,
+  )
+}
+
+module.exports = {
+  warnLegacyFunctionsDirectory,
+  warnContextPluginConfig,
+  throwContextPluginsConfig,
+  warnBaseWithoutPublish,
+}

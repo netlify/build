@@ -1,2 +1,3 @@
 [build]
 base = "baseTest"
+publish = "/"

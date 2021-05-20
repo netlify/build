@@ -90,7 +90,7 @@ test('severityCode is 3 on plugin error', async (t) => {
 })
 
 test('--cwd', async (t) => {
-  await runFixture(t, '', { flags: { cwd: `${FIXTURES_DIR}/empty` } })
+  await runFixture(t, '', { flags: { cwd: `${FIXTURES_DIR}/publish` } })
 })
 
 test('--repository-root', async (t) => {

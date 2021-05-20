@@ -6,11 +6,13 @@ const pathExists = require('path-exists')
 const { isDirectory } = require('path-type')
 
 const { throwError } = require('./error')
+const { warnBaseWithoutPublish } = require('./log/messages')
 const { mergeConfigs } = require('./utils/merge')
 
 // Make configuration paths relative to `buildDir` and converts them to
 // absolute paths
-const handleFiles = async function ({ config: { build, ...config }, repositoryRoot, baseRelDir }) {
+const handleFiles = async function ({ config: { build, ...config }, repositoryRoot, baseRelDir, logs }) {
+  warnBaseWithoutPublish(logs, build)
   const buildA = resolvePaths(build, REPOSITORY_RELATIVE_PROPS, repositoryRoot)
   const buildDir = await getBuildDir(repositoryRoot, buildA)
   const baseRel = baseRelDir ? buildDir : repositoryRoot

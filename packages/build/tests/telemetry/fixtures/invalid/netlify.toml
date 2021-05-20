@@ -1,2 +1,3 @@
 [build]
-  base = "super-invalid-path-that-will-not-exist"
+base = "super-invalid-path-that-will-not-exist"
+publish = "/"
