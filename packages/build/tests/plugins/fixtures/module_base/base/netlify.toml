@@ -1,2 +1,5 @@
+[build]
+publish = "/"
+
 [[plugins]]
 package = "netlify-plugin-test"

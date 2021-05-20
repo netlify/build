@@ -46,3 +46,19 @@ test('BaseRelDir feature flag', async (t) => {
 test('Base directory does not exist', async (t) => {
   await runFixture(t, 'base_invalid')
 })
+
+test('Warns when "base" is used without "publish"', async (t) => {
+  await runFixture(t, 'base_without_publish')
+})
+
+test('Warns when "base" is used with empty "publish"', async (t) => {
+  await runFixture(t, 'base_without_publish', { flags: { defaultConfig: { build: { publish: '' } } } })
+})
+
+test('Does not warn when "base" is used with "publish"', async (t) => {
+  await runFixture(t, 'base_without_publish', { flags: { defaultConfig: { build: { publish: '/' } } } })
+})
+
+test('Does not warn when "base" is "/"', async (t) => {
+  await runFixture(t, 'base_without_publish', { flags: { inlineConfig: { build: { base: '/' } } } })
+})
