@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.6.0](https://www.github.com/netlify/build/compare/config-v6.5.0...config-v6.6.0) (2021-05-21)
+
+
+### Features
+
+* print a warning message when `base` is set but not `publish` ([#2827](https://www.github.com/netlify/build/issues/2827)) ([a9fb807](https://www.github.com/netlify/build/commit/a9fb807be477bcd2419520b92d8a7c7d7ee03088))
+
 ## [6.5.0](https://www.github.com/netlify/build/compare/config-v6.4.4...config-v6.5.0) (2021-05-12)
 
 

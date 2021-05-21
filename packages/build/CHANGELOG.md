@@ -1,5 +1,17 @@
 # Changelog
 
+## [11.18.0](https://www.github.com/netlify/build/compare/build-v11.17.4...build-v11.18.0) (2021-05-21)
+
+
+### Features
+
+* print a warning message when `base` is set but not `publish` ([#2827](https://www.github.com/netlify/build/issues/2827)) ([a9fb807](https://www.github.com/netlify/build/commit/a9fb807be477bcd2419520b92d8a7c7d7ee03088))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^2.14.1 ([#2830](https://www.github.com/netlify/build/issues/2830)) ([1ee3998](https://www.github.com/netlify/build/commit/1ee3998a8aaa0d2e1cb07285e6853c37e5b64ca1))
+
 ### [11.17.4](https://www.github.com/netlify/build/compare/build-v11.17.3...build-v11.17.4) (2021-05-19)
 
 
