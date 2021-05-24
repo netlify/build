@@ -48,3 +48,7 @@ test('--repositoryRoot non-existing', async (t) => {
 test('--repositoryRoot points to a non-directory file', async (t) => {
   await runFixture(t, '', { flags: { repositoryRoot: `${FIXTURES_DIR}/empty/netlify.toml` } })
 })
+
+test('should detect base directory using package.json in sub dir', async (t) => {
+  await runFixture(t, 'build_base_package_json', { flags: { cwd: `${FIXTURES_DIR}/build_base_package_json/subdir` } })
+})
