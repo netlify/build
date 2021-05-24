@@ -1,6 +1,7 @@
 'use strict'
 
 const { getLogic } = require('./logic')
+const { preventConfigMutations } = require('./mutations')
 const { validatePlugin } = require('./validate')
 
 // Load context passed to every plugin method.
@@ -15,8 +16,10 @@ const load = function ({ pluginPath, inputs, netlifyConfig, packageJson }) {
 
   const pluginCommands = getPluginCommands(logic)
 
+  const netlifyConfigA = preventConfigMutations(netlifyConfig)
+
   // Context passed to every event handler
-  const context = { pluginCommands, inputs, netlifyConfig, packageJson }
+  const context = { pluginCommands, inputs, netlifyConfig: netlifyConfigA, packageJson }
 
   return { pluginCommands, context }
 }

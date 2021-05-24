@@ -22,6 +22,30 @@ test('Pass netlifyConfig to plugins', async (t) => {
   await runFixture(t, 'config_valid')
 })
 
+test('netlifyConfig properties are readonly (set) by default', async (t) => {
+  await runFixture(t, 'config_readonly_set')
+})
+
+test('netlifyConfig properties are readonly (delete) by default', async (t) => {
+  await runFixture(t, 'config_readonly_delete')
+})
+
+test('netlifyConfig properties are readonly (defineProperty) by default', async (t) => {
+  await runFixture(t, 'config_readonly_define')
+})
+
+test('netlifyConfig properties are readonly (preventExtensions) by default', async (t) => {
+  await runFixture(t, 'config_readonly_prevent')
+})
+
+test('netlifyConfig properties are readonly (setPrototypeOf) by default', async (t) => {
+  await runFixture(t, 'config_readonly_proto')
+})
+
+test('netlifyConfig properties are deeply readonly by default', async (t) => {
+  await runFixture(t, 'config_readonly_deep')
+})
+
 test('constants.CONFIG_PATH', async (t) => {
   await runFixture(t, 'config_path')
 })
