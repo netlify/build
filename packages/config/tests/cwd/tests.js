@@ -12,7 +12,9 @@ test('--cwd with no config', async (t) => {
 })
 
 test('--cwd with a relative path config', async (t) => {
-  await runFixture(t, '', { flags: { cwd: `${relative(cwd(), FIXTURES_DIR)}`, config: 'empty/netlify.toml' } })
+  await runFixture(t, '', {
+    flags: { cwd: relative(cwd(), FIXTURES_DIR), config: 'relative_cwd/netlify.toml' },
+  })
 })
 
 test('build.base current directory', async (t) => {
