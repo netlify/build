@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macOS-latest, windows-latest]
-        node-version: [8.3.0, 15]
+        node-version: [8.3.0, '*']
         exclude:
           - os: macOS-latest
             node-version: 8.3.0
@@ -26,6 +26,7 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
+          check-latest: true
       - name: Update npm
         run: npm install -g npm@5
         if: "${{ matrix.node-version == '8.3.0' }}"
@@ -34,10 +35,10 @@ jobs:
         run: npm ci --ignore-scripts
       - name: Build For Browser
         run: npm run build
-        if: "${{ matrix.node-version == '15' }}"
+        if: "${{ matrix.node-version == '*' }}"
       - name: Linting
         run: npm run format:ci
-        if: "${{ matrix.node-version == '15' }}"
+        if: "${{ matrix.node-version == '*' }}"
       - name: Tests
         run: npm run test:ci:ava
       - name: Get test coverage flags
@@ -53,18 +54,15 @@ jobs:
           file: coverage/coverage-final.json
           flags: ${{ steps.test-coverage-flags.outputs.os }},${{ steps.test-coverage-flags.outputs.node }}
   cypress-tests:
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        node-version: [15]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     steps:
       - name: Git checkout
         uses: actions/checkout@v2
-      - name: Node.js ${{ matrix.node-version }}
+      - name: Using Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: '*'
+          check-latest: true
       - uses: actions/cache@v2
         with:
           # Browsers are downloaded under node_modules
@@ -83,7 +81,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         if: always()
         with:
-          name: cypress-results-node-${{ matrix.node-version }}-os-${{ matrix.os }}
+          name: cypress-results
           path: |
             cypress/screenshots
             cypress/videos
