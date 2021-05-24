@@ -52,7 +52,7 @@ const getSubdirs = function (repositoryRoot, dir, subdirs = []) {
   return getSubdirs(repositoryRoot, dirname(dir), [...subdirs, dir])
 }
 
-const BASE_FILENAMES = ['.netlify', 'netlify.toml']
+const BASE_FILENAMES = ['.netlify', 'netlify.toml', 'package.json']
 
 // Returns the first path that exists.
 // Like `locate-path` library but works with mixed files/directories

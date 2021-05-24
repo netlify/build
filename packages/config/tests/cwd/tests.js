@@ -12,7 +12,9 @@ test('--cwd with no config', async (t) => {
 })
 
 test('--cwd with a relative path config', async (t) => {
-  await runFixture(t, '', { flags: { cwd: `${relative(cwd(), FIXTURES_DIR)}`, config: 'empty/netlify.toml' } })
+  await runFixture(t, '', {
+    flags: { cwd: relative(cwd(), FIXTURES_DIR), config: 'relative_cwd/netlify.toml' },
+  })
 })
 
 test('build.base current directory', async (t) => {
@@ -47,4 +49,8 @@ test('--repositoryRoot non-existing', async (t) => {
 
 test('--repositoryRoot points to a non-directory file', async (t) => {
   await runFixture(t, '', { flags: { repositoryRoot: `${FIXTURES_DIR}/empty/netlify.toml` } })
+})
+
+test('should detect base directory using package.json in sub dir', async (t) => {
+  await runFixture(t, 'build_base_package_json', { flags: { cwd: `${FIXTURES_DIR}/build_base_package_json/subdir` } })
 })
