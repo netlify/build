@@ -1,5 +1,12 @@
 # Changelog
 
+## [11.20.0](https://www.github.com/netlify/build/compare/build-v11.19.1...build-v11.20.0) (2021-05-25)
+
+
+### Features
+
+* make `netlifyConfig` readonly ([#2840](https://www.github.com/netlify/build/issues/2840)) ([a8e8e31](https://www.github.com/netlify/build/commit/a8e8e3173e8c58c3c0cdc2b956aa588c445c2f27))
+
 ### [11.19.1](https://www.github.com/netlify/build/compare/build-v11.19.0...build-v11.19.1) (2021-05-25)
 
 
