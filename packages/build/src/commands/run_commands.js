@@ -26,6 +26,7 @@ const runCommands = async function ({
   api,
   errorMonitor,
   deployId,
+  errorParams,
   netlifyConfig,
   logs,
   debug,
@@ -35,13 +36,14 @@ const runCommands = async function ({
   const {
     index: commandsCount,
     error: errorA,
+    netlifyConfig: netlifyConfigC,
     statuses: statusesB,
     failedPlugins: failedPluginsA,
     timers: timersC,
   } = await pReduce(
     commands,
     async (
-      { index, error, failedPlugins, envChanges, statuses, timers: timersA },
+      { index, error, failedPlugins, envChanges, netlifyConfig: netlifyConfigA, statuses, timers: timersA },
       {
         event,
         childProcess,
@@ -62,6 +64,7 @@ const runCommands = async function ({
         newError = error,
         failedPlugin = [],
         newEnvChanges = {},
+        netlifyConfig: netlifyConfigB = netlifyConfigA,
         newStatus,
         timers: timersB = timersA,
       } = await runCommand({
@@ -92,9 +95,10 @@ const runCommands = async function ({
         api,
         errorMonitor,
         deployId,
+        errorParams,
         error,
         failedPlugins,
-        netlifyConfig,
+        netlifyConfig: netlifyConfigA,
         logs,
         debug,
         timers: timersA,
@@ -106,11 +110,12 @@ const runCommands = async function ({
         error: newError,
         failedPlugins: [...failedPlugins, ...failedPlugin],
         envChanges: { ...envChanges, ...newEnvChanges },
+        netlifyConfig: netlifyConfigB,
         statuses: statusesA,
         timers: timersB,
       }
     },
-    { index: 0, failedPlugins: [], envChanges: {}, statuses: [], timers },
+    { index: 0, failedPlugins: [], envChanges: {}, netlifyConfig, statuses: [], timers },
   )
 
   // Instead of throwing any build failure right away, we wait for `onError`,
@@ -120,7 +125,13 @@ const runCommands = async function ({
     throw errorA
   }
 
-  return { commandsCount, statuses: statusesB, failedPlugins: failedPluginsA, timers: timersC }
+  return {
+    commandsCount,
+    netlifyConfig: netlifyConfigC,
+    statuses: statusesB,
+    failedPlugins: failedPluginsA,
+    timers: timersC,
+  }
 }
 
 module.exports = { runCommands }

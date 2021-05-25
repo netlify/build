@@ -57,7 +57,15 @@ const build = async function (flags = {}) {
   const errorParams = { errorMonitor, mode, logs, debug, testOpts }
 
   try {
-    const { pluginsOptions, siteInfo, userNodeVersion, commandsCount, timers, durationNs } = await execBuild({
+    const {
+      pluginsOptions,
+      netlifyConfig: netlifyConfigA,
+      siteInfo,
+      userNodeVersion,
+      commandsCount,
+      timers,
+      durationNs,
+    } = await execBuild({
       ...flagsA,
       dry,
       errorMonitor,
@@ -87,7 +95,7 @@ const build = async function (flags = {}) {
       testOpts,
       errorParams,
     })
-    return { success, severityCode, logs }
+    return { success, severityCode, netlifyConfig: netlifyConfigA, logs }
   } catch (error) {
     const { severity } = await handleBuildError(error, errorParams)
     const { pluginsOptions, siteInfo, userNodeVersion } = errorParams
@@ -194,6 +202,7 @@ const tExecBuild = async function ({
 
   const {
     pluginsOptions: pluginsOptionsA,
+    netlifyConfig: netlifyConfigA,
     commandsCount,
     timers: timersB,
   } = await runAndReportBuild({
@@ -221,7 +230,14 @@ const tExecBuild = async function ({
     buildbotServerSocket,
     constants,
   })
-  return { pluginsOptions: pluginsOptionsA, siteInfo, userNodeVersion, commandsCount, timers: timersB }
+  return {
+    pluginsOptions: pluginsOptionsA,
+    netlifyConfig: netlifyConfigA,
+    siteInfo,
+    userNodeVersion,
+    commandsCount,
+    timers: timersB,
+  }
 }
 
 const execBuild = measureDuration(tExecBuild, 'total', { parentTag: 'build_site' })
@@ -255,6 +271,7 @@ const runAndReportBuild = async function ({
   try {
     const {
       commandsCount,
+      netlifyConfig: netlifyConfigA,
       statuses,
       pluginsOptions: pluginsOptionsA,
       failedPlugins,
@@ -291,7 +308,7 @@ const runAndReportBuild = async function ({
         api,
         mode,
         pluginsOptions: pluginsOptionsA,
-        netlifyConfig,
+        netlifyConfig: netlifyConfigA,
         errorMonitor,
         deployId,
         logs,
@@ -306,7 +323,7 @@ const runAndReportBuild = async function ({
         siteInfo,
         childEnv,
         mode,
-        netlifyConfig,
+        netlifyConfig: netlifyConfigA,
         errorMonitor,
         logs,
         debug,
@@ -315,7 +332,7 @@ const runAndReportBuild = async function ({
       }),
     ])
 
-    return { pluginsOptions: pluginsOptionsA, commandsCount, timers: timersA }
+    return { pluginsOptions: pluginsOptionsA, netlifyConfig: netlifyConfigA, commandsCount, timers: timersA }
   } catch (error) {
     const [{ statuses }] = getErrorInfo(error)
     await reportStatuses({
@@ -393,6 +410,7 @@ const initAndRunBuild = async function ({
   try {
     const {
       commandsCount,
+      netlifyConfig: netlifyConfigA,
       statuses,
       failedPlugins,
       timers: timersC,
@@ -413,6 +431,7 @@ const initAndRunBuild = async function ({
       api,
       errorMonitor,
       deployId,
+      errorParams,
       logs,
       debug,
       timers: timersB,
@@ -421,7 +440,14 @@ const initAndRunBuild = async function ({
 
     await warnOnLingeringProcesses({ mode, logs, testOpts })
 
-    return { commandsCount, statuses, pluginsOptions: pluginsOptionsA, failedPlugins, timers: timersC }
+    return {
+      commandsCount,
+      netlifyConfig: netlifyConfigA,
+      statuses,
+      pluginsOptions: pluginsOptionsA,
+      failedPlugins,
+      timers: timersC,
+    }
   } finally {
     stopPlugins(childProcesses)
   }
@@ -446,6 +472,7 @@ const runBuild = async function ({
   api,
   errorMonitor,
   deployId,
+  errorParams,
   logs,
   debug,
   timers,
@@ -463,11 +490,12 @@ const runBuild = async function ({
 
   if (dry) {
     doDryRun({ commands, constants, featureFlags, buildbotServerSocket, logs })
-    return {}
+    return { netlifyConfig }
   }
 
   const {
     commandsCount,
+    netlifyConfig: netlifyConfigA,
     statuses,
     failedPlugins,
     timers: timersB,
@@ -485,13 +513,14 @@ const runBuild = async function ({
     api,
     errorMonitor,
     deployId,
+    errorParams,
     netlifyConfig,
     logs,
     debug,
     timers: timersA,
     testOpts,
   })
-  return { commandsCount, statuses, failedPlugins, timers: timersB }
+  return { commandsCount, netlifyConfig: netlifyConfigA, statuses, failedPlugins, timers: timersB }
 }
 
 // Logs and reports that a build successfully ended

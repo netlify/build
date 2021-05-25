@@ -50,7 +50,7 @@ const getCommandReturn = function ({
   const timerName = getTimerName({ coreCommandName, buildCommand, packageName, event })
   logTimer(logs, durationNs, timerName)
 
-  return { newEnvChanges, newStatus, timers }
+  return { newEnvChanges, netlifyConfig, newStatus, timers }
 }
 
 const getTimerName = function ({ coreCommandName, buildCommand, packageName, event }) {

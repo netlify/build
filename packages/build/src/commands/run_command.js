@@ -40,6 +40,7 @@ const runCommand = async function ({
   api,
   errorMonitor,
   deployId,
+  errorParams,
   error,
   failedPlugins,
   netlifyConfig,
@@ -70,6 +71,7 @@ const runCommand = async function ({
   const fireCommand = getFireCommand({ packageName, buildCommand, coreCommandId, event })
   const {
     newEnvChanges,
+    netlifyConfig: netlifyConfigA = netlifyConfig,
     newError,
     newStatus,
     timers: timersA,
@@ -98,6 +100,7 @@ const runCommand = async function ({
     logs,
     timers,
     featureFlags,
+    errorParams,
     netlifyConfig,
   })
 
@@ -115,7 +118,7 @@ const runCommand = async function ({
     api,
     errorMonitor,
     deployId,
-    netlifyConfig,
+    netlifyConfig: netlifyConfigA,
     logs,
     debug,
     timers: timersA,
@@ -217,6 +220,7 @@ const tFireCommand = function ({
   error,
   logs,
   featureFlags,
+  errorParams,
   netlifyConfig,
 }) {
   if (coreCommand !== undefined) {
@@ -255,6 +259,7 @@ const tFireCommand = function ({
     loadedFrom,
     origin,
     envChanges,
+    errorParams,
     netlifyConfig,
     constants,
     commands,

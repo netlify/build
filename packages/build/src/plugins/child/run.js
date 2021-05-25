@@ -19,7 +19,7 @@ const run = async function (
   const envBefore = setEnvChanges(envChanges)
   await method(runOptions)
   const newEnvChanges = getNewEnvChanges(envBefore)
-  return { ...runState, newEnvChanges }
+  return { ...runState, newEnvChanges, netlifyConfig: netlifyConfigA }
 }
 
 module.exports = { run }
