@@ -454,7 +454,6 @@ const runBuild = async function ({
   const { pluginsCommands, timers: timersA } = await loadPlugins({
     pluginsOptions,
     childProcesses,
-    netlifyConfig,
     packageJson,
     timers,
     debug,
