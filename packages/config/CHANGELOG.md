@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.7.0](https://www.github.com/netlify/build/compare/config-v6.6.0...config-v6.7.0) (2021-05-24)
+
+
+### Features
+
+* **config:** consider package.json when detecting base directory ([#2838](https://www.github.com/netlify/build/issues/2838)) ([9172222](https://www.github.com/netlify/build/commit/9172222dea8458bf32119788fc89c17264757e5f))
+
 ## [6.6.0](https://www.github.com/netlify/build/compare/config-v6.5.0...config-v6.6.0) (2021-05-21)
 
 

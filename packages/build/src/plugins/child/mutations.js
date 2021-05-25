@@ -1,7 +1,7 @@
 'use strict'
 
-const fromEntries = require('@ungap/from-entries')
 const isPlainObj = require('is-plain-obj')
+const mapObj = require('map-obj')
 
 const { addErrorInfo } = require('../../error/info')
 
@@ -23,9 +23,7 @@ const preventObjectMutations = function (value, keys) {
   }
 
   if (isPlainObj(value)) {
-    const object = fromEntries(
-      Object.entries(value).map(([key, item]) => [key, preventObjectMutations(item, [...keys, key])]),
-    )
+    const object = mapObj(value, (key, item) => [key, preventObjectMutations(item, [...keys, key])])
     return addProxy(object, keys)
   }
 
@@ -35,6 +33,16 @@ const preventObjectMutations = function (value, keys) {
 const addProxy = function (value, keys) {
   // eslint-disable-next-line fp/no-proxy
   return new Proxy(value, getReadonlyProxyHandlers(keys))
+}
+
+// Retrieve the proxy validating function for each property
+const getReadonlyProxyHandlers = function (keys) {
+  return {
+    ...proxyHandlers,
+    set: validateReadonlyProperty.bind(undefined, 'set', keys),
+    defineProperty: validateReadonlyProperty.bind(undefined, 'defineProperty', keys),
+    deleteProperty: validateReadonlyProperty.bind(undefined, 'deleteProperty', keys),
+  }
 }
 
 // This is called when a plugin author tries to set a `netlifyConfig` property
@@ -64,16 +72,6 @@ const validateAnyProperty = function (method) {
 const proxyHandlers = {
   preventExtensions: validateAnyProperty.bind(undefined, 'validateAnyProperty'),
   setPrototypeOf: validateAnyProperty.bind(undefined, 'setPrototypeOf'),
-}
-
-// Retrieve the proxy validating function for each property
-const getReadonlyProxyHandlers = function (keys) {
-  return {
-    ...proxyHandlers,
-    set: validateReadonlyProperty.bind(undefined, 'set', keys),
-    defineProperty: validateReadonlyProperty.bind(undefined, 'defineProperty', keys),
-    deleteProperty: validateReadonlyProperty.bind(undefined, 'deleteProperty', keys),
-  }
 }
 
 const throwValidationError = function (message) {
