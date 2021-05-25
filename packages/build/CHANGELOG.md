@@ -1,5 +1,12 @@
 # Changelog
 
+## [11.22.0](https://www.github.com/netlify/build/compare/build-v11.21.0...build-v11.22.0) (2021-05-25)
+
+
+### Features
+
+* pass mutated `netlifyConfig` everywhere ([#2847](https://www.github.com/netlify/build/issues/2847)) ([7191b57](https://www.github.com/netlify/build/commit/7191b57e1a9cbc8d599db24b20996b568609c875))
+
 ## [11.21.0](https://www.github.com/netlify/build/compare/build-v11.20.0...build-v11.21.0) (2021-05-25)
 
 
