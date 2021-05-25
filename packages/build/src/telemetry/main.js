@@ -100,7 +100,16 @@ const getPlugin = function ({
   pinnedVersion,
   pluginPackageJson: { version } = {},
 }) {
-  return { name: packageName, origin, loadedFrom, nodeVersion, pinnedVersion, version }
+  const installType = getInstallType(origin, loadedFrom)
+  return { name: packageName, installType, nodeVersion, pinnedVersion, version }
+}
+
+const getInstallType = function (origin, loadedFrom) {
+  if (loadedFrom === 'auto_install') {
+    return origin === 'ui' ? 'ui' : 'netlify_toml'
+  }
+
+  return loadedFrom
 }
 
 module.exports = { trackBuildComplete }

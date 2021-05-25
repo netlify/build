@@ -1,5 +1,19 @@
 # Changelog
 
+### [11.19.1](https://www.github.com/netlify/build/compare/build-v11.19.0...build-v11.19.1) (2021-05-25)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugin-edge-handlers to ^1.11.12 ([#2841](https://www.github.com/netlify/build/issues/2841)) ([9933438](https://www.github.com/netlify/build/commit/99334380f0057d37680695852019f4ad0561cb61))
+
+## [11.19.0](https://www.github.com/netlify/build/compare/build-v11.18.1...build-v11.19.0) (2021-05-25)
+
+
+### Features
+
+* add `installType` to telemetry ([#2837](https://www.github.com/netlify/build/issues/2837)) ([de0f18f](https://www.github.com/netlify/build/commit/de0f18f1b1172fb3353bbc1e325c3bf7b551e601))
+
 ### [11.18.1](https://www.github.com/netlify/build/compare/build-v11.18.0...build-v11.18.1) (2021-05-24)
 
 
