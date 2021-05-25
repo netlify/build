@@ -73,6 +73,7 @@ const runWithApiMock = async function (
     telemetryOrigin: `${schemeTelemetry}://${hostTelemetry}`,
     // Any telemetry errors will be logged
     errorMonitor: true,
+    ...flags.testOps,
   }
 
   try {
@@ -105,6 +106,35 @@ test('Telemetry error only reports to error monitor and does not affect build su
 
 test('Telemetry reports build success', async (t) => {
   const { telemetryRequests } = await runWithApiMock(t, 'success')
+  const snapshot = telemetryRequests.map(normalizeSnapshot)
+  t.snapshot(snapshot)
+})
+
+test('Telemetry reports local plugins success', async (t) => {
+  const { telemetryRequests } = await runWithApiMock(t, 'plugin_success')
+  const snapshot = telemetryRequests.map(normalizeSnapshot)
+  t.snapshot(snapshot)
+})
+
+test('Telemetry reports package.json plugins success', async (t) => {
+  const { telemetryRequests } = await runWithApiMock(t, 'plugin_package')
+  const snapshot = telemetryRequests.map(normalizeSnapshot)
+  t.snapshot(snapshot)
+})
+
+test('Telemetry reports netlify.toml-only plugins success', async (t) => {
+  const { telemetryRequests } = await runWithApiMock(t, 'plugins_cache_config', {
+    testOps: { pluginsListUrl: undefined },
+  })
+  const snapshot = telemetryRequests.map(normalizeSnapshot)
+  t.snapshot(snapshot)
+})
+
+test('Telemetry reports UI plugins success', async (t) => {
+  const { telemetryRequests } = await runWithApiMock(t, 'plugins_cache_ui', {
+    defaultConfig: { plugins: [{ package: 'netlify-plugin-contextual-env' }] },
+    testOps: { pluginsListUrl: undefined },
+  })
   const snapshot = telemetryRequests.map(normalizeSnapshot)
   t.snapshot(snapshot)
 })
