@@ -16,6 +16,7 @@ const firePluginCommand = async function ({
   loadedFrom,
   origin,
   envChanges,
+  errorParams,
   netlifyConfig,
   constants,
   commands,
@@ -25,15 +26,21 @@ const firePluginCommand = async function ({
   const listeners = pipePluginOutput(childProcess, logs)
 
   try {
-    const { newEnvChanges, status } = await callChild(childProcess, 'run', {
+    const {
+      newEnvChanges,
+      netlifyConfig: netlifyConfigA,
+      status,
+    } = await callChild(childProcess, 'run', {
       event,
       error,
       envChanges,
       netlifyConfig,
       constants,
     })
+    // eslint-disable-next-line fp/no-mutation,no-param-reassign
+    errorParams.netlifyConfig = netlifyConfigA
     const newStatus = getSuccessStatus(status, { commands, event, packageName })
-    return { newEnvChanges, newStatus }
+    return { newEnvChanges, netlifyConfig: netlifyConfigA, newStatus }
   } catch (newError) {
     const errorType = getPluginErrorType(newError, loadedFrom)
     addErrorInfo(newError, {
