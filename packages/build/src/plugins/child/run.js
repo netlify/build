@@ -2,17 +2,19 @@
 
 const { getNewEnvChanges, setEnvChanges } = require('../../env/changes')
 
+const { preventConfigMutations } = require('./mutations')
 const { getUtils } = require('./utils')
 
 // Run a specific plugin event handler
 const run = async function (
-  { event, error, constants, envChanges },
-  { pluginCommands, inputs, netlifyConfig, packageJson },
+  { event, error, constants, envChanges, netlifyConfig },
+  { pluginCommands, inputs, packageJson },
 ) {
   const { method } = pluginCommands.find((pluginCommand) => pluginCommand.event === event)
   const runState = {}
   const utils = getUtils({ event, constants, runState })
-  const runOptions = { utils, constants, inputs, netlifyConfig, packageJson, error }
+  const netlifyConfigA = preventConfigMutations(netlifyConfig)
+  const runOptions = { utils, constants, inputs, netlifyConfig: netlifyConfigA, packageJson, error }
 
   const envBefore = setEnvChanges(envChanges)
   await method(runOptions)

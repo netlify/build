@@ -255,6 +255,7 @@ const tFireCommand = function ({
     loadedFrom,
     origin,
     envChanges,
+    netlifyConfig,
     constants,
     commands,
     error,

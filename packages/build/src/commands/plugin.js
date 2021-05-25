@@ -16,6 +16,7 @@ const firePluginCommand = async function ({
   loadedFrom,
   origin,
   envChanges,
+  netlifyConfig,
   constants,
   commands,
   error,
@@ -28,6 +29,7 @@ const firePluginCommand = async function ({
       event,
       error,
       envChanges,
+      netlifyConfig,
       constants,
     })
     const newStatus = getSuccessStatus(status, { commands, event, packageName })
