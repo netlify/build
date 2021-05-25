@@ -1,5 +1,12 @@
 # Changelog
 
+## [11.21.0](https://www.github.com/netlify/build/compare/build-v11.20.0...build-v11.21.0) (2021-05-25)
+
+
+### Features
+
+* pass `netlifyConfig` to each event handler ([#2845](https://www.github.com/netlify/build/issues/2845)) ([16ea9e4](https://www.github.com/netlify/build/commit/16ea9e401ec7045a091d70ff3724023eab3261fc))
+
 ## [11.20.0](https://www.github.com/netlify/build/compare/build-v11.19.1...build-v11.20.0) (2021-05-25)
 
 
