@@ -1,5 +1,17 @@
 # Changelog
 
+## [11.23.0](https://www.github.com/netlify/build/compare/build-v11.22.0...build-v11.23.0) (2021-05-26)
+
+
+### Features
+
+* allow `constants` to be mutated during builds ([#2850](https://www.github.com/netlify/build/issues/2850)) ([b7a51aa](https://www.github.com/netlify/build/commit/b7a51aa61e86e51a8b074f5472fbd578aa2ca3a0))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.1.0 ([#2853](https://www.github.com/netlify/build/issues/2853)) ([8269428](https://www.github.com/netlify/build/commit/826942805e8b02aa2462fa547890a263d5b4fbd8))
+
 ## [11.22.0](https://www.github.com/netlify/build/compare/build-v11.21.0...build-v11.22.0) (2021-05-25)
 
 
