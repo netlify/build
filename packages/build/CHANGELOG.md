@@ -1,5 +1,12 @@
 # Changelog
 
+## [11.24.0](https://www.github.com/netlify/build/compare/build-v11.23.0...build-v11.24.0) (2021-05-26)
+
+
+### Features
+
+* allow mutating `netlifyConfig.functionsDirectory` ([#2852](https://www.github.com/netlify/build/issues/2852)) ([c81904e](https://www.github.com/netlify/build/commit/c81904e9a89f0bc09f1dfda3f430e2ed14f1409b))
+
 ## [11.23.0](https://www.github.com/netlify/build/compare/build-v11.22.0...build-v11.23.0) (2021-05-26)
 
 
