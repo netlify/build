@@ -183,7 +183,7 @@ const tExecBuild = async function ({
     nodePath,
     timers,
   })
-  const constants = getConstants({
+  const constants = await getConstants({
     configPath,
     buildDir,
     functionsDistDir,
