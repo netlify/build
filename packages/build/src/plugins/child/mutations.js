@@ -54,7 +54,25 @@ const validateReadonlyProperty = function (method, keys, proxy, key, ...args) {
   }
 
   const propName = keysA.join('.')
-  throwValidationError(`"netlifyConfig.${propName}" is read-only.`)
+  const readonlyErrorMessage = READONLY_ERROR_MESSAGES[propName] || getDefaultReadonlyError
+  throwValidationError(readonlyErrorMessage(propName))
+}
+
+// Several configuration properties can be used to specify the functions directory.
+// `netlifyConfig` is the normalized configuration object, i.e. plugin authors
+// must use the normalized property `functionsDirectory` instead.
+const getFunctionsDirectoryError = function (propName) {
+  return `"netlifyConfig.${propName}" is read-only. Please modify "netlifyConfig.functionsDirectory" instead.`
+}
+
+const READONLY_ERROR_MESSAGES = {
+  'build.functions': getFunctionsDirectoryError,
+  'functions.directory': getFunctionsDirectoryError,
+  'functions.*.directory': getFunctionsDirectoryError,
+}
+
+const getDefaultReadonlyError = function (propName) {
+  return `"netlifyConfig.${propName}" is read-only.`
 }
 
 const isMutable = function (keys) {
@@ -62,7 +80,7 @@ const isMutable = function (keys) {
 }
 
 // List of properties that are not read-only
-const MUTABLE_KEYS = new Set([])
+const MUTABLE_KEYS = new Set(['functionsDirectory'])
 
 const validateAnyProperty = function (method) {
   throwValidationError(`Using the "${method}()" method on "netlifyConfig" is not allowed.`)
