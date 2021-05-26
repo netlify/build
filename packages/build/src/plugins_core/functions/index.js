@@ -2,7 +2,6 @@
 
 const { resolve, relative } = require('path')
 
-const { zipFunctions, listFunctions } = require('@netlify/zip-it-and-ship-it')
 const mapObject = require('map-obj')
 const pathExists = require('path-exists')
 const { isDirectory } = require('path-type')
@@ -56,6 +55,11 @@ const zipFunctionsAndLogResults = async ({ buildDir, functionsConfig, functionsD
     // Printing an empty line before bundling output.
     log(logs, '')
 
+    // This package currently supports Node 8 but not zip-it-and-ship-it
+    // @todo put the `require()` to the top-level scope again once Node 8 support
+    // is removed
+    // eslint-disable-next-line node/global-require
+    const { zipFunctions } = require('@netlify/zip-it-and-ship-it')
     const results = await zipFunctions(functionsSrc, functionsDist, zisiParameters)
 
     logBundleResults({ logs, results })
@@ -122,6 +126,11 @@ const validateFunctionsSrc = async function ({ functionsSrc, relativeFunctionsSr
 }
 
 const getFunctionPaths = async function (functionsSrc) {
+  // This package currently supports Node 8 but not zip-it-and-ship-it
+  // @todo put the `require()` to the top-level scope again once Node 8 support
+  // is removed
+  // eslint-disable-next-line node/global-require
+  const { listFunctions } = require('@netlify/zip-it-and-ship-it')
   const functions = await listFunctions(functionsSrc)
   return functions.map(({ mainFile }) => relative(functionsSrc, mainFile))
 }
