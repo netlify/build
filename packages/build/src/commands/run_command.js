@@ -1,12 +1,12 @@
 /* eslint-disable max-lines */
 'use strict'
 
+const { addMutableConstants } = require('../core/constants')
 const { logCommand } = require('../log/messages/commands')
 const { runsAlsoOnBuildFailure, runsOnlyOnBuildFailure } = require('../plugins/events')
 const { measureDuration, normalizeTimerName } = require('../time/main')
 
 const { fireBuildCommand } = require('./build_command')
-const { getConstants } = require('./constants')
 const { fireCoreCommand } = require('./core_command')
 const { firePluginCommand } = require('./plugin')
 const { getCommandReturn } = require('./return')
@@ -49,7 +49,7 @@ const runCommand = async function ({
   timers,
   testOpts,
 }) {
-  const constantsA = await getConstants({ constants, buildDir })
+  const constantsA = await addMutableConstants({ constants, buildDir, netlifyConfig })
 
   if (
     !shouldRunCommand({
