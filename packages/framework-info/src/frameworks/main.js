@@ -17,6 +17,7 @@ const FRAMEWORKS = [
   require('./nuxt.json'),
   require('./phenomic.json'),
   require('./react-static.json'),
+  require('./redwoodjs.json'),
   require('./stencil.json'),
   require('./vuepress.json'),
   require('./assemble.json'),

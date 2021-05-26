@@ -8,7 +8,7 @@
     ]
   },
   "dev": {
-    "command": "rw dev",
+    "command": "yarn rw dev",
     "port": 8910,
     "pollingStrategies": [
       {
@@ -17,7 +17,7 @@
     ]
   },
   "build": {
-    "command": "yarn rw deploy netlify",
+    "command": "rw deploy netlify",
     "directory": "web/dist"
   },
   "staticAssetsDirectory": "public",
