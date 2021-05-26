@@ -46,6 +46,46 @@ test('netlifyConfig properties are deeply readonly by default', async (t) => {
   await runFixture(t, 'config_readonly_deep')
 })
 
+// This package currently supports Node 8 but not zip-it-and-ship-it
+// @todo remove once Node 8 support is removed
+if (!version.startsWith('v8.')) {
+  test('Some netlifyConfig properties can be mutated', async (t) => {
+    await runFixture(t, 'config_mutate_general')
+  })
+
+  test('netlifyConfig.functionsDirectory mutations are used during functions bundling', async (t) => {
+    await runFixture(t, 'config_mutate_functions_directory_bundling')
+  })
+
+  test('netlifyConfig.functionsDirectory deletion skips functions bundling', async (t) => {
+    await runFixture(t, 'config_mutate_functions_directory_skip')
+  })
+
+  test('netlifyConfig.functionsDirectory mutations are used by utils.functions', async (t) => {
+    await runFixture(t, 'config_mutate_functions_directory_utils')
+  })
+
+  test('netlifyConfig.functionsDirectory mutations are used by constants.FUNCTIONS_SRC', async (t) => {
+    await runFixture(t, 'config_mutate_functions_directory_constants')
+  })
+
+  test('netlifyConfig.functionsDirectory mutations are taken into account by default constants.FUNCTIONS_SRC', async (t) => {
+    await runFixture(t, 'config_mutate_functions_directory_default')
+  })
+
+  test('netlifyConfig.functions.star.directory mutations fail', async (t) => {
+    await runFixture(t, 'config_mutate_functions_directory_star')
+  })
+
+  test('netlifyConfig.functions.directory mutations fail', async (t) => {
+    await runFixture(t, 'config_mutate_functions_directory_nested')
+  })
+
+  test('netlifyConfig.build.functions mutations fail', async (t) => {
+    await runFixture(t, 'config_mutate_functions_directory_build')
+  })
+}
+
 test('constants.CONFIG_PATH', async (t) => {
   await runFixture(t, 'config_path')
 })
