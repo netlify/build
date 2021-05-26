@@ -17,7 +17,7 @@
     ]
   },
   "build": {
-    "command": "rw deploy netlify",
+    "command": "yarn rw deploy netlify",
     "directory": "web/dist"
   },
   "staticAssetsDirectory": "public",
