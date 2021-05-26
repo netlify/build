@@ -84,6 +84,14 @@ if (!version.startsWith('v8.')) {
   test('netlifyConfig.build.functions mutations fail', async (t) => {
     await runFixture(t, 'config_mutate_functions_directory_build')
   })
+
+  test('netlifyConfig.functions mutations are used during functions bundling', async (t) => {
+    await runFixture(t, 'config_mutate_functions_bundling')
+  })
+
+  test('netlifyConfig.functions mutations on any property can be used', async (t) => {
+    await runFixture(t, 'config_mutate_functions_any')
+  })
 }
 
 test('constants.CONFIG_PATH', async (t) => {

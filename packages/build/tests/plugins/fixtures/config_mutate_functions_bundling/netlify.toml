@@ -1,0 +1,5 @@
+[[plugins]]
+package = "./plugin"
+
+[functions.test]
+node_bundler = "esbuild"
