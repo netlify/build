@@ -3,6 +3,10 @@
   "name": "RedwoodJS",
   "category": "static_site_generator",
   "detect": {
+    "npmDependencies": [
+      "@redwoodjs/core"
+    ],
+    "excludedNpmDependencies": [],
     "configFiles": [
       "redwood.toml"
     ]
