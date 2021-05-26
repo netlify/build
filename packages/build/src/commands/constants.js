@@ -19,7 +19,7 @@ const getConstants = async function ({ constants, buildDir }) {
 // The current directory is the build directory, which is correct, so we don't
 // need to resolve paths
 const DEFAULT_PATHS = [
-  // @todo Remove once we drop support for the legact default functions directory.
+  // @todo Remove once we drop support for the legacy default functions directory.
   { constantName: 'FUNCTIONS_SRC', defaultPath: 'netlify-automatic-functions' },
   { constantName: 'FUNCTIONS_SRC', defaultPath: 'netlify/functions' },
   { constantName: 'EDGE_HANDLERS_SRC', defaultPath: 'edge-handlers' },
