@@ -1,5 +1,7 @@
 'use strict'
 
+const { version: nodeVersion } = require('process')
+
 const test = require('ava')
 
 const { runFixture } = require('../helpers/main')
@@ -100,9 +102,13 @@ test('utils.status.show() statuses are not sent to the API without a DEPLOY_ID',
   await runWithApiMock(t, 'print', { flags: { deployId: '' } })
 })
 
-test('utils.status.show() statuses are sent to the API for core commands', async (t) => {
-  await runWithApiMock(t, 'core_command_error')
-})
+// This package currently supports Node 8 but not zip-it-and-ship-it
+// @todo remove once Node 8 support is removed
+if (!nodeVersion.startsWith('v8.')) {
+  test('utils.status.show() statuses are sent to the API for core commands', async (t) => {
+    await runWithApiMock(t, 'core_command_error')
+  })
+}
 
 const STATUS_ERROR_CODE = 400
 

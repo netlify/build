@@ -74,17 +74,29 @@ test('constants.FUNCTIONS_SRC default value', async (t) => {
   await runFixture(t, 'functions_src_default')
 })
 
-test('constants.FUNCTIONS_SRC uses legacy default functions directory if it exists', async (t) => {
-  await runFixture(t, 'functions_src_legacy')
-})
+// This package currently supports Node 8 but not zip-it-and-ship-it
+// @todo remove once Node 8 support is removed
+if (!version.startsWith('v8.')) {
+  test('constants.FUNCTIONS_SRC uses legacy default functions directory if it exists', async (t) => {
+    await runFixture(t, 'functions_src_legacy')
+  })
 
-test('constants.FUNCTIONS_SRC ignores the legacy default functions directory if the new default directory exists', async (t) => {
-  await runFixture(t, 'functions_src_default_and_legacy')
-})
+  test('constants.FUNCTIONS_SRC ignores the legacy default functions directory if the new default directory exists', async (t) => {
+    await runFixture(t, 'functions_src_default_and_legacy')
+  })
 
-test('constants.FUNCTIONS_SRC relative path', async (t) => {
-  await runFixture(t, 'functions_src_relative')
-})
+  test('constants.FUNCTIONS_SRC relative path', async (t) => {
+    await runFixture(t, 'functions_src_relative')
+  })
+
+  test('constants.FUNCTIONS_SRC dynamic is ignored if FUNCTIONS_SRC is specified', async (t) => {
+    await runFixture(t, 'functions_src_dynamic_ignore', { copyRoot: { git: false } })
+  })
+
+  test('constants.FUNCTIONS_SRC dynamic should bundle Functions', async (t) => {
+    await runFixture(t, 'functions_src_dynamic_bundle', { copyRoot: { git: false } })
+  })
+}
 
 test('constants.FUNCTIONS_SRC automatic value', async (t) => {
   await runFixture(t, 'functions_src_auto')
@@ -96,14 +108,6 @@ test('constants.FUNCTIONS_SRC missing path', async (t) => {
 
 test('constants.FUNCTIONS_SRC created dynamically', async (t) => {
   await runFixture(t, 'functions_src_dynamic', { copyRoot: { git: false } })
-})
-
-test('constants.FUNCTIONS_SRC dynamic is ignored if FUNCTIONS_SRC is specified', async (t) => {
-  await runFixture(t, 'functions_src_dynamic_ignore', { copyRoot: { git: false } })
-})
-
-test('constants.FUNCTIONS_SRC dynamic should bundle Functions', async (t) => {
-  await runFixture(t, 'functions_src_dynamic_bundle', { copyRoot: { git: false } })
 })
 
 test('constants.FUNCTIONS_DIST', async (t) => {
@@ -158,15 +162,6 @@ test('Pass empty packageJson to plugins if package.json invalid', async (t) => {
   await runFixture(t, 'package_json_invalid')
 })
 
-// @netlify/zip-it-and-ship-it does not support Node 8 during bundling
-// TODO: remove once we drop support for Node 8
-if (!version.startsWith('v8.')) {
-  test('Functions: simple setup', async (t) => {
-    await removeDir(`${FIXTURES_DIR}/simple/.netlify/functions/`)
-    await runFixture(t, 'simple')
-  })
-}
-
 test('Functions: missing source directory', async (t) => {
   await runFixture(t, 'missing')
 })
@@ -175,30 +170,35 @@ test('Functions: must not be a regular file', async (t) => {
   await runFixture(t, 'regular_file')
 })
 
-test('Functions: no functions', async (t) => {
-  await runFixture(t, 'none')
-})
-
 test('Functions: default directory', async (t) => {
   await runFixture(t, 'default')
 })
 
-test('Functions: invalid package.json', async (t) => {
-  const fixtureName = 'functions_package_json_invalid'
-  const packageJsonPath = `${FIXTURES_DIR}/${fixtureName}/package.json`
-  // We need to create that file during tests. Otherwise, ESLint fails when
-  // detecting an invalid *.json file.
-  await pWriteFile(packageJsonPath, '{{}')
-  try {
-    await runFixture(t, fixtureName)
-  } finally {
-    await del(packageJsonPath)
-  }
-})
-
-// @netlify/zip-it-and-ship-it does not support Node 8 during bundling
-// TODO: remove once we drop support for Node 8
+// This package currently supports Node 8 but not zip-it-and-ship-it
+// @todo remove once Node 8 support is removed
 if (!version.startsWith('v8.')) {
+  test('Functions: simple setup', async (t) => {
+    await removeDir(`${FIXTURES_DIR}/simple/.netlify/functions/`)
+    await runFixture(t, 'simple')
+  })
+
+  test('Functions: no functions', async (t) => {
+    await runFixture(t, 'none')
+  })
+
+  test('Functions: invalid package.json', async (t) => {
+    const fixtureName = 'functions_package_json_invalid'
+    const packageJsonPath = `${FIXTURES_DIR}/${fixtureName}/package.json`
+    // We need to create that file during tests. Otherwise, ESLint fails when
+    // detecting an invalid *.json file.
+    await pWriteFile(packageJsonPath, '{{}')
+    try {
+      await runFixture(t, fixtureName)
+    } finally {
+      await del(packageJsonPath)
+    }
+  })
+
   test('Functions: --functionsDistDir', async (t) => {
     const functionsDistDir = await getTempDir()
     try {
