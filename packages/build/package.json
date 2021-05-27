@@ -1,6 +1,6 @@
 {
   "name": "@netlify/build",
-  "version": "11.25.0",
+  "version": "11.25.1",
   "description": "Netlify build module",
   "main": "src/core/main.js",
   "bin": {
@@ -59,7 +59,7 @@
     "@netlify/plugin-edge-handlers": "^1.11.12",
     "@netlify/plugins-list": "^2.14.2",
     "@netlify/run-utils": "^1.0.6",
-    "@netlify/zip-it-and-ship-it": "^4.1.0",
+    "@netlify/zip-it-and-ship-it": "^4.2.0",
     "@sindresorhus/slugify": "^1.1.0",
     "@ungap/from-entries": "^0.2.1",
     "ansi-escapes": "^4.3.2",

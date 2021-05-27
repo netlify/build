@@ -60,8 +60,7 @@ Linting and tests will automatically run before publish.
 Packages dependencies graph:
 
 ```
-@netlify/zip-it-and-ship-it -> js-client
-                            -> @netlify/function-utils
+@netlify/zip-it-and-ship-it -> @netlify/function-utils
                             -> @netlify/build
                             -> netlify-cli
 js-client                   -> @netlify/config
