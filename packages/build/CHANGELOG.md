@@ -1,5 +1,13 @@
 # Changelog
 
+## [11.26.0](https://www.github.com/netlify/build/compare/build-v11.25.1...build-v11.26.0) (2021-05-27)
+
+
+### Features
+
+* allow mutating `build.publish` and `build.edge_handlers` ([#2866](https://www.github.com/netlify/build/issues/2866)) ([c27557e](https://www.github.com/netlify/build/commit/c27557e0aadb8b9241358e2d5a77fc24fb7faed0))
+* improve normalization of `constants` ([#2865](https://www.github.com/netlify/build/issues/2865)) ([9dc4fdd](https://www.github.com/netlify/build/commit/9dc4fddfa351e9230387316af6c8386cb63ffea2))
+
 ### [11.25.1](https://www.github.com/netlify/build/compare/build-v11.25.0...build-v11.25.1) (2021-05-27)
 
 
