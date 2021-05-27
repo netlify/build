@@ -1,7 +1,9 @@
 'use strict'
 
+const { resolve } = require('path')
+
 module.exports = {
   onPreBuild({ constants: { PUBLISH_DIR } }) {
-    console.log(PUBLISH_DIR, PUBLISH_DIR.endsWith('base'))
+    console.log(PUBLISH_DIR, resolve(PUBLISH_DIR).endsWith('base'))
   },
 }

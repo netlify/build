@@ -118,7 +118,11 @@ const normalizePath = function (path, buildDir, key) {
 
   const pathA = normalize(path)
 
-  if (pathA.startsWith(buildDir) && pathA !== buildDir) {
+  if (pathA === buildDir) {
+    return '.'
+  }
+
+  if (pathA.startsWith(buildDir)) {
     return relative(buildDir, pathA)
   }
 
