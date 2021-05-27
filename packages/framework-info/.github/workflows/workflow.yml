@@ -11,12 +11,12 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macOS-latest, windows-latest]
-        node-version: [8.3.0, '*']
+        node-version: ['10.x', '*']
         exclude:
           - os: macOS-latest
-            node-version: 8.3.0
+            node-version: '10.x'
           - os: windows-latest
-            node-version: 8.3.0
+            node-version: '10.x'
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
@@ -27,11 +27,8 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           check-latest: true
-      - name: Update npm
-        run: npm install -g npm@5
-        if: "${{ matrix.node-version == '8.3.0' }}"
       - name: Install dependencies
-        # Cypress has a postinstall script that doesn't work on older Node.js version
+        # Cypress has a postinstall script that doesn't work on older Node.js versions
         run: npm ci --ignore-scripts
       - name: Build For Browser
         run: npm run build

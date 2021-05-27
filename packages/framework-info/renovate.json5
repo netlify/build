@@ -6,21 +6,8 @@
   automerge: true,
   packageRules: [
     {
-      // Those cannot be upgraded to a major version until we drop support for Node 8
-      packageNames: [
-        'ava',
-        'del',
-        'eslint',
-        'execa',
-        'get-bin-path',
-        'husky',
-        'is-plain-obj',
-        'nyc',
-        'prettier',
-        'read-pkg-up', // read-pkg-up v8 requires Node.js 12
-        'test-each',
-        'yargs',
-      ],
+      // Those cannot be upgraded to a major version until we drop support for Node 10
+      packageNames: ['read-pkg-up'],
       major: {
         enabled: false,
       },
