@@ -1,5 +1,12 @@
 # Changelog
 
+## [11.25.0](https://www.github.com/netlify/build/compare/build-v11.24.0...build-v11.25.0) (2021-05-27)
+
+
+### Features
+
+* allow mutating `netlifyConfig.functions` ([#2857](https://www.github.com/netlify/build/issues/2857)) ([0ea57a5](https://www.github.com/netlify/build/commit/0ea57a5d868afcc7abbbd65f11e843c4938035d4))
+
 ## [11.24.0](https://www.github.com/netlify/build/compare/build-v11.23.0...build-v11.24.0) (2021-05-26)
 
 
