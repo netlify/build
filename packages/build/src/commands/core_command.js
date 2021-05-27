@@ -11,8 +11,6 @@ const fireCoreCommand = async function ({
   buildbotServerSocket,
   events,
   logs,
-  childEnv,
-  featureFlags,
   netlifyConfig,
 }) {
   try {
@@ -22,8 +20,6 @@ const fireCoreCommand = async function ({
       buildbotServerSocket,
       events,
       logs,
-      childEnv,
-      featureFlags,
       netlifyConfig,
     })
 
