@@ -22,13 +22,13 @@ const handleCommandError = function ({
   errorMonitor,
   deployId,
   coreCommand,
-  buildCommand,
   netlifyConfig,
   logs,
   debug,
   testOpts,
 }) {
-  if (!shouldReportStatus({ buildCommand, coreCommand })) {
+  // Core commands do not report error statuses
+  if (coreCommand !== undefined) {
     return { newError }
   }
 
@@ -54,11 +54,6 @@ const handleCommandError = function ({
   }
 
   return handleFailBuild({ fullErrorInfo, newError })
-}
-
-// `build.command` and core commands do not report error statuses
-const shouldReportStatus = function ({ buildCommand, coreCommand }) {
-  return buildCommand === undefined && coreCommand === undefined
 }
 
 // On `utils.build.failPlugin()` or during `onSuccess` or `onEnd`

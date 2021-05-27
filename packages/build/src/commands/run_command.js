@@ -6,7 +6,6 @@ const { logCommand } = require('../log/messages/commands')
 const { runsAlsoOnBuildFailure, runsOnlyOnBuildFailure } = require('../plugins/events')
 const { measureDuration, normalizeTimerName } = require('../time/main')
 
-const { fireBuildCommand } = require('./build_command')
 const { fireCoreCommand } = require('./core_command')
 const { firePluginCommand } = require('./plugin')
 const { getCommandReturn } = require('./return')
@@ -19,12 +18,11 @@ const runCommand = async function ({
   coreCommand,
   coreCommandId,
   coreCommandName,
+  coreCommandDescription,
   pluginPackageJson,
   loadedFrom,
   origin,
   condition,
-  buildCommand,
-  buildCommandOrigin,
   configPath,
   buildDir,
   nodePath,
@@ -56,6 +54,7 @@ const runCommand = async function ({
       packageName,
       error,
       failedPlugins,
+      netlifyConfig,
       condition,
       constants: constantsA,
       buildbotServerSocket,
@@ -64,9 +63,9 @@ const runCommand = async function ({
     return {}
   }
 
-  logCommand({ logs, event, buildCommandOrigin, packageName, coreCommandName, index, error })
+  logCommand({ logs, event, packageName, coreCommandDescription, index, error })
 
-  const fireCommand = getFireCommand({ packageName, buildCommand, coreCommandId, event })
+  const fireCommand = getFireCommand(packageName, coreCommandId, event)
   const {
     newEnvChanges,
     netlifyConfig: netlifyConfigA = netlifyConfig,
@@ -83,8 +82,6 @@ const runCommand = async function ({
     origin,
     coreCommand,
     coreCommandName,
-    buildCommand,
-    buildCommandOrigin,
     configPath,
     buildDir,
     nodePath,
@@ -109,7 +106,6 @@ const runCommand = async function ({
     newStatus,
     coreCommand,
     coreCommandName,
-    buildCommand,
     childEnv,
     mode,
     api,
@@ -161,13 +157,14 @@ const shouldRunCommand = function ({
   packageName,
   error,
   failedPlugins,
+  netlifyConfig,
   condition,
   constants,
   buildbotServerSocket,
 }) {
   if (
     failedPlugins.includes(packageName) ||
-    (condition !== undefined && !condition({ constants, buildbotServerSocket }))
+    (condition !== undefined && !condition({ constants, buildbotServerSocket, netlifyConfig }))
   ) {
     return false
   }
@@ -180,13 +177,9 @@ const shouldRunCommand = function ({
 }
 
 // Wrap command function to measure its time
-const getFireCommand = function ({ packageName, buildCommand, coreCommandId, event }) {
+const getFireCommand = function (packageName, coreCommandId, event) {
   if (coreCommandId !== undefined) {
     return measureDuration(tFireCommand, coreCommandId)
-  }
-
-  if (buildCommand !== undefined) {
-    return measureDuration(tFireCommand, 'build_command')
   }
 
   const parentTag = normalizeTimerName(packageName)
@@ -202,8 +195,6 @@ const tFireCommand = function ({
   origin,
   coreCommand,
   coreCommandName,
-  buildCommand,
-  buildCommandOrigin,
   configPath,
   buildDir,
   nodePath,
@@ -222,25 +213,16 @@ const tFireCommand = function ({
     return fireCoreCommand({
       coreCommand,
       coreCommandName,
+      configPath,
       buildDir,
       constants,
       buildbotServerSocket,
       events,
       logs,
-      netlifyConfig,
-    })
-  }
-
-  if (buildCommand !== undefined) {
-    return fireBuildCommand({
-      buildCommand,
-      buildCommandOrigin,
-      configPath,
-      buildDir,
       nodePath,
       childEnv,
       envChanges,
-      logs,
+      netlifyConfig,
     })
   }
 

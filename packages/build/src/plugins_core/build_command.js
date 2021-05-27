@@ -4,32 +4,31 @@ const { platform } = require('process')
 
 const execa = require('execa')
 
-const { setEnvChanges } = require('../env/changes')
 const { addErrorInfo } = require('../error/info')
+const { getBuildCommandDescription } = require('../log/description')
 const { logBuildCommandStart } = require('../log/messages/commands')
 const { getBuildCommandStdio, handleBuildCommandOutput } = require('../log/stream')
 
 // Fire `build.command`
-const fireBuildCommand = async function ({
-  buildCommand,
-  buildCommandOrigin,
+const coreCommand = async function ({
   configPath,
   buildDir,
   nodePath,
   childEnv,
-  envChanges,
   logs,
+  netlifyConfig: {
+    build: { command: buildCommand, commandOrigin: buildCommandOrigin },
+  },
 }) {
   logBuildCommandStart(logs, buildCommand)
 
-  const env = setEnvChanges(envChanges, { ...childEnv })
   const stdio = getBuildCommandStdio(logs)
   const childProcess = execa(buildCommand, {
     shell: SHELL,
     cwd: buildDir,
     preferLocal: true,
     execPath: nodePath,
-    env,
+    env: childEnv,
     extendEnv: false,
     stdio,
   })
@@ -48,4 +47,21 @@ const fireBuildCommand = async function ({
 // We use Bash on Unix and `cmd.exe` on Windows
 const SHELL = platform === 'win32' ? true : 'bash'
 
-module.exports = { fireBuildCommand }
+const hasBuildCommand = function ({
+  netlifyConfig: {
+    build: { command: buildCommand },
+  },
+}) {
+  return buildCommand !== undefined
+}
+
+const getBuildCommandCore = ({ build: { commandOrigin: buildCommandOrigin } }) => ({
+  event: 'onBuild',
+  coreCommand,
+  coreCommandId: 'build_command',
+  coreCommandName: 'build.command',
+  coreCommandDescription: getBuildCommandDescription(buildCommandOrigin),
+  condition: hasBuildCommand,
+})
+
+module.exports = { getBuildCommandCore }

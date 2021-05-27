@@ -82,7 +82,7 @@ const coreCommand = async function ({
 
   if (!(await pathExists(functionsSrc))) {
     logFunctionsNonExistingDir(logs, relativeFunctionsSrc)
-    return
+    return {}
   }
 
   await validateFunctionsSrc({ functionsSrc, relativeFunctionsSrc })
@@ -91,7 +91,7 @@ const coreCommand = async function ({
   logFunctionsToBundle(logs, functions, relativeFunctionsSrc)
 
   if (functions.length === 0) {
-    return
+    return {}
   }
 
   const { bundler } = await zipFunctionsAndLogResults({
@@ -142,6 +142,7 @@ const bundleFunctions = {
   coreCommand,
   coreCommandId: 'functions_bundling',
   coreCommandName: 'Functions bundling',
+  coreCommandDescription: 'Functions bundling',
   condition: hasFunctionsDir,
 }
 

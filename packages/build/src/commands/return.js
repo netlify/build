@@ -13,8 +13,7 @@ const getCommandReturn = function ({
   newEnvChanges,
   newStatus,
   coreCommand,
-  coreCommandName,
-  buildCommand,
+  coreCommandName: timerName = `${packageName} ${event}`,
   childEnv,
   mode,
   api,
@@ -37,7 +36,6 @@ const getCommandReturn = function ({
       errorMonitor,
       deployId,
       coreCommand,
-      buildCommand,
       netlifyConfig,
       logs,
       debug,
@@ -47,22 +45,9 @@ const getCommandReturn = function ({
 
   logCommandSuccess(logs)
 
-  const timerName = getTimerName({ coreCommandName, buildCommand, packageName, event })
   logTimer(logs, durationNs, timerName)
 
   return { newEnvChanges, netlifyConfig, newStatus, timers }
-}
-
-const getTimerName = function ({ coreCommandName, buildCommand, packageName, event }) {
-  if (coreCommandName !== undefined) {
-    return coreCommandName
-  }
-
-  if (buildCommand !== undefined) {
-    return 'build.command'
-  }
-
-  return `${packageName} ${event}`
 }
 
 module.exports = { getCommandReturn }

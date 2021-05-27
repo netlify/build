@@ -15,6 +15,7 @@ const coreCommand = async function ({ buildbotServerSocket, events, logs }) {
     await connectBuildbotClient(client)
     await deploySiteWithBuildbotClient(client, events)
     logDeploySuccess(logs)
+    return {}
   } finally {
     await closeBuildbotClient(client)
   }
@@ -29,6 +30,7 @@ const deploySite = {
   coreCommand,
   coreCommandId: 'deploy_site',
   coreCommandName: 'Deploy site',
+  coreCommandDescription: 'Deploy site',
   condition: shouldDeploy,
 }
 
