@@ -91,6 +91,8 @@ const isMutable = function (keys) {
 
 // List of properties that are not read-only
 const MUTABLE_KEYS = new Set([
+  'build.publish',
+  'build.edge_handlers',
   'functionsDirectory',
   'functions.*.external_node_modules',
   'functions.*.ignored_node_modules',

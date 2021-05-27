@@ -94,6 +94,14 @@ if (!version.startsWith('v8.')) {
   })
 }
 
+test('netlifyConfig.build.publish mutations are used by constants.PUBLISH_DIR', async (t) => {
+  await runFixture(t, 'config_mutate_publish_constants')
+})
+
+test('netlifyConfig.build.edge_handlers mutations are used by constants.EDGE_HANDLERS_SRC', async (t) => {
+  await runFixture(t, 'config_mutate_edge_handlers_constants')
+})
+
 test('constants.CONFIG_PATH', async (t) => {
   await runFixture(t, 'config_path')
 })
