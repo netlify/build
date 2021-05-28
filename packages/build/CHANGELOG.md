@@ -1,5 +1,12 @@
 # Changelog
 
+## [11.27.0](https://www.github.com/netlify/build/compare/build-v11.26.1...build-v11.27.0) (2021-05-28)
+
+
+### Features
+
+* make build command a core command ([#2868](https://www.github.com/netlify/build/issues/2868)) ([5149c87](https://www.github.com/netlify/build/commit/5149c87574f2dead8a4c6e8c1ef9056d35f91639))
+
 ### [11.26.1](https://www.github.com/netlify/build/compare/build-v11.26.0...build-v11.26.1) (2021-05-28)
 
 
