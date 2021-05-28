@@ -14,7 +14,7 @@ const doDryRun = function ({ commands, netlifyConfig, constants, buildbotServerS
   logDryRunStart({ logs, eventWidth, commandsCount })
 
   successCommands.forEach((command, index) => {
-    logDryRunCommand({ logs, command, index, eventWidth, commandsCount })
+    logDryRunCommand({ logs, command, index, netlifyConfig, eventWidth, commandsCount })
   })
 
   logDryRunEnd(logs)

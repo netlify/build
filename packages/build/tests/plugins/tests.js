@@ -94,6 +94,18 @@ if (!version.startsWith('v8.')) {
   })
 }
 
+test('netlifyConfig.build.command can be changed', async (t) => {
+  await runFixture(t, 'config_mutate_build_command_change')
+})
+
+test('netlifyConfig.build.command can be added', async (t) => {
+  await runFixture(t, 'config_mutate_build_command_add')
+})
+
+test('netlifyConfig.build.command can be removed', async (t) => {
+  await runFixture(t, 'config_mutate_build_command_remove')
+})
+
 test('netlifyConfig.build.publish mutations are used by constants.PUBLISH_DIR', async (t) => {
   await runFixture(t, 'config_mutate_publish_constants')
 })

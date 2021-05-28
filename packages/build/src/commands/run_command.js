@@ -63,7 +63,7 @@ const runCommand = async function ({
     return {}
   }
 
-  logCommand({ logs, event, packageName, coreCommandDescription, index, error })
+  logCommand({ logs, event, packageName, coreCommandDescription, index, error, netlifyConfig })
 
   const fireCommand = getFireCommand(packageName, coreCommandId, event)
   const {

@@ -47,6 +47,14 @@ const coreCommand = async function ({
 // We use Bash on Unix and `cmd.exe` on Windows
 const SHELL = platform === 'win32' ? true : 'bash'
 
+const coreCommandDescription = function ({
+  netlifyConfig: {
+    build: { commandOrigin: buildCommandOrigin },
+  },
+}) {
+  return getBuildCommandDescription(buildCommandOrigin)
+}
+
 const hasBuildCommand = function ({
   netlifyConfig: {
     build: { command: buildCommand },
@@ -55,13 +63,13 @@ const hasBuildCommand = function ({
   return buildCommand !== undefined
 }
 
-const getBuildCommandCore = ({ build: { commandOrigin: buildCommandOrigin } }) => ({
+const buildCommandCore = {
   event: 'onBuild',
   coreCommand,
   coreCommandId: 'build_command',
   coreCommandName: 'build.command',
-  coreCommandDescription: getBuildCommandDescription(buildCommandOrigin),
+  coreCommandDescription,
   condition: hasBuildCommand,
-})
+}
 
-module.exports = { getBuildCommandCore }
+module.exports = { buildCommandCore }

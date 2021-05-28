@@ -85,6 +85,12 @@ const callPropertySpecificLogic = function (propName, topProxy, ...args) {
   propertySpecificLogic(topProxy, ...args)
 }
 
+// When setting `build.command`, `build.commandOrigin` is set to "plugin"
+const setBuildCommandOrigin = function (topProxy) {
+  // eslint-disable-next-line fp/no-mutation, no-param-reassign
+  topProxy.build.commandOrigin = 'plugin'
+}
+
 // Several configuration properties can be used to specify the functions directory.
 // `netlifyConfig.functionsDirectory` is the normalized property which must be set.
 // We allow plugin authors to set any of the other properties for convenience.
@@ -94,6 +100,7 @@ const setFunctionsDirectory = function (topProxy, descriptor) {
 }
 
 const PROPERTY_SPECIFIC_LOGIC = {
+  'build.command': setBuildCommandOrigin,
   'build.functions': setFunctionsDirectory,
   'functions.directory': setFunctionsDirectory,
   'functions.*.directory': setFunctionsDirectory,
@@ -105,6 +112,8 @@ const isMutable = function (keys) {
 
 // List of properties that are not read-only
 const MUTABLE_KEYS = new Set([
+  'build.command',
+  'build.commandOrigin',
   'build.functions',
   'build.publish',
   'build.edge_handlers',

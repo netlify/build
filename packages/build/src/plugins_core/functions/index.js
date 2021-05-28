@@ -142,7 +142,7 @@ const bundleFunctions = {
   coreCommand,
   coreCommandId: 'functions_bundling',
   coreCommandName: 'Functions bundling',
-  coreCommandDescription: 'Functions bundling',
+  coreCommandDescription: () => 'Functions bundling',
   condition: hasFunctionsDir,
 }
 

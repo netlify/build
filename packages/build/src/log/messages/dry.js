@@ -25,12 +25,14 @@ ${THEME.header(`┌─${line}─┬─${secondLine}─┐
 
 const logDryRunCommand = function ({
   logs,
-  command: { event, packageName, coreCommandDescription: fullName = `Plugin ${THEME.highlightWords(packageName)}` },
+  command: { event, packageName, coreCommandDescription },
   index,
+  netlifyConfig,
   eventWidth,
   commandsCount,
 }) {
   const columnWidth = getDryColumnWidth(eventWidth, commandsCount)
+  const fullName = getFullName(coreCommandDescription, netlifyConfig, packageName)
   const line = '─'.repeat(columnWidth)
   const countText = `${index + 1}. `
   const downArrow = commandsCount === index + 1 ? '  ' : ` ${arrowDown}`
@@ -42,6 +44,12 @@ const logDryRunCommand = function ({
 ${THEME.header(`│ ${countText}${event.padEnd(eventWidthA)}${downArrow} │`)} ${fullName}
 ${THEME.header(`└─${line}─┘ `)}`,
   )
+}
+
+const getFullName = function (coreCommandDescription, netlifyConfig, packageName) {
+  return coreCommandDescription === undefined
+    ? `Plugin ${THEME.highlightWords(packageName)}`
+    : coreCommandDescription({ netlifyConfig })
 }
 
 const getDryColumnWidth = function (eventWidth, commandsCount) {
