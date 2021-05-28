@@ -1,5 +1,12 @@
 # Changelog
 
+## [11.28.0](https://www.github.com/netlify/build/compare/build-v11.27.0...build-v11.28.0) (2021-05-28)
+
+
+### Features
+
+* allow mutating `build.functions`, `functions.directory` and `functions.*.directory` ([#2875](https://www.github.com/netlify/build/issues/2875)) ([39804f2](https://www.github.com/netlify/build/commit/39804f214a4de40b1eb573c7b405079df528b5ec))
+
 ## [11.27.0](https://www.github.com/netlify/build/compare/build-v11.26.1...build-v11.27.0) (2021-05-28)
 
 
