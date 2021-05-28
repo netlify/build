@@ -1,20 +1,20 @@
 'use strict'
 
 const { EVENTS } = require('../plugins/events')
-const { getBuildCommandCore } = require('../plugins_core/build_command')
+const { buildCommandCore } = require('../plugins_core/build_command')
 const { deploySite } = require('../plugins_core/deploy')
 const { bundleFunctions } = require('../plugins_core/functions')
 
 // Get commands for all events
-const getCommands = function (commands, netlifyConfig) {
-  const commandsA = addCoreCommands(commands, netlifyConfig)
+const getCommands = function (commands) {
+  const commandsA = addCoreCommands(commands)
   const commandsB = sortCommands(commandsA)
   const events = getEvents(commandsB)
   return { commands: commandsB, events }
 }
 
-const addCoreCommands = function (commands, netlifyConfig) {
-  return [getBuildCommandCore(netlifyConfig), ...commands, bundleFunctions, deploySite]
+const addCoreCommands = function (commands) {
+  return [buildCommandCore, ...commands, bundleFunctions, deploySite]
 }
 
 // Sort plugin commands by event order.

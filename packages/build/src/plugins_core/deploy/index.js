@@ -30,7 +30,7 @@ const deploySite = {
   coreCommand,
   coreCommandId: 'deploy_site',
   coreCommandName: 'Deploy site',
-  coreCommandDescription: 'Deploy site',
+  coreCommandDescription: () => 'Deploy site',
   condition: shouldDeploy,
 }
 
