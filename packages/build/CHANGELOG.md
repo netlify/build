@@ -1,5 +1,12 @@
 # Changelog
 
+## [11.29.0](https://www.github.com/netlify/build/compare/build-v11.28.0...build-v11.29.0) (2021-05-28)
+
+
+### Features
+
+* allow mutating `build.command` ([#2874](https://www.github.com/netlify/build/issues/2874)) ([e55dd94](https://www.github.com/netlify/build/commit/e55dd94e375c805fa923cd9bdccd184928d0790c))
+
 ## [11.28.0](https://www.github.com/netlify/build/compare/build-v11.27.0...build-v11.28.0) (2021-05-28)
 
 
