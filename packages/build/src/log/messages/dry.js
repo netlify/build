@@ -2,7 +2,6 @@
 
 const { arrowDown } = require('figures')
 
-const { getBuildCommandDescription } = require('../description')
 const { logMessage, logSubHeader } = require('../logger')
 const { THEME } = require('../theme')
 
@@ -26,7 +25,7 @@ ${THEME.header(`┌─${line}─┬─${secondLine}─┐
 
 const logDryRunCommand = function ({
   logs,
-  command: { event, packageName, buildCommandOrigin, coreCommandName },
+  command: { event, packageName, coreCommandDescription: fullName = `Plugin ${THEME.highlightWords(packageName)}` },
   index,
   eventWidth,
   commandsCount,
@@ -36,7 +35,6 @@ const logDryRunCommand = function ({
   const countText = `${index + 1}. `
   const downArrow = commandsCount === index + 1 ? '  ' : ` ${arrowDown}`
   const eventWidthA = columnWidth - countText.length - downArrow.length
-  const fullName = getPluginFullName({ packageName, buildCommandOrigin, coreCommandName })
 
   logMessage(
     logs,
@@ -44,18 +42,6 @@ const logDryRunCommand = function ({
 ${THEME.header(`│ ${countText}${event.padEnd(eventWidthA)}${downArrow} │`)} ${fullName}
 ${THEME.header(`└─${line}─┘ `)}`,
   )
-}
-
-const getPluginFullName = function ({ packageName, buildCommandOrigin, coreCommandName }) {
-  if (coreCommandName !== undefined) {
-    return coreCommandName
-  }
-
-  if (buildCommandOrigin !== undefined) {
-    return getBuildCommandDescription(buildCommandOrigin)
-  }
-
-  return `Plugin ${THEME.highlightWords(packageName)}`
 }
 
 const getDryColumnWidth = function (eventWidth, commandsCount) {
