@@ -4,9 +4,9 @@ const { logDryRunStart, logDryRunCommand, logDryRunEnd } = require('../log/messa
 const { runsOnlyOnBuildFailure } = require('../plugins/events')
 
 // If the `dry` flag is specified, do a dry run
-const doDryRun = function ({ commands, constants, featureFlags, buildbotServerSocket, logs }) {
+const doDryRun = function ({ commands, constants, buildbotServerSocket, logs }) {
   const successCommands = commands.filter(({ event, condition }) =>
-    shouldIncludeCommand({ event, condition, constants, featureFlags, buildbotServerSocket }),
+    shouldIncludeCommand({ event, condition, constants, buildbotServerSocket }),
   )
   const eventWidth = Math.max(...successCommands.map(getEventLength))
   const commandsCount = successCommands.length
@@ -20,11 +20,8 @@ const doDryRun = function ({ commands, constants, featureFlags, buildbotServerSo
   logDryRunEnd(logs)
 }
 
-const shouldIncludeCommand = function ({ event, condition, constants, featureFlags, buildbotServerSocket }) {
-  return (
-    !runsOnlyOnBuildFailure(event) &&
-    (condition === undefined || condition({ constants, featureFlags, buildbotServerSocket }))
-  )
+const shouldIncludeCommand = function ({ event, condition, constants, buildbotServerSocket }) {
+  return !runsOnlyOnBuildFailure(event) && (condition === undefined || condition({ constants, buildbotServerSocket }))
 }
 
 const getEventLength = function ({ event }) {

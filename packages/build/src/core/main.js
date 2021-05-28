@@ -142,7 +142,6 @@ const tExecBuild = async function ({
   offline,
   deployId,
   testOpts,
-  featureFlags,
   errorMonitor,
   errorParams,
   logs,
@@ -226,7 +225,6 @@ const tExecBuild = async function ({
     timers: timersA,
     sendStatus,
     testOpts,
-    featureFlags,
     buildbotServerSocket,
     constants,
   })
@@ -266,7 +264,6 @@ const runAndReportBuild = async function ({
   timers,
   sendStatus,
   testOpts,
-  featureFlags,
 }) {
   try {
     const {
@@ -297,7 +294,6 @@ const runAndReportBuild = async function ({
       timers,
       sendStatus,
       testOpts,
-      featureFlags,
       buildbotServerSocket,
       constants,
     })
@@ -375,7 +371,6 @@ const initAndRunBuild = async function ({
   sendStatus,
   timers,
   testOpts,
-  featureFlags,
   buildbotServerSocket,
   constants,
 }) {
@@ -424,7 +419,6 @@ const initAndRunBuild = async function ({
       nodePath,
       childEnv,
       dry,
-      featureFlags,
       buildbotServerSocket,
       constants,
       mode,
@@ -465,7 +459,6 @@ const runBuild = async function ({
   nodePath,
   childEnv,
   dry,
-  featureFlags,
   buildbotServerSocket,
   constants,
   mode,
@@ -489,7 +482,7 @@ const runBuild = async function ({
   const { commands, events } = getCommands({ pluginsCommands, netlifyConfig })
 
   if (dry) {
-    doDryRun({ commands, constants, featureFlags, buildbotServerSocket, logs })
+    doDryRun({ commands, constants, buildbotServerSocket, logs })
     return { netlifyConfig }
   }
 
@@ -501,7 +494,6 @@ const runBuild = async function ({
     timers: timersB,
   } = await runCommands({
     commands,
-    featureFlags,
     buildbotServerSocket,
     events,
     configPath,

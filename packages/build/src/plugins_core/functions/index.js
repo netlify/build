@@ -75,8 +75,6 @@ const coreCommand = async function ({
   constants: { FUNCTIONS_SRC: relativeFunctionsSrc, FUNCTIONS_DIST: relativeFunctionsDist },
   buildDir,
   logs,
-  childEnv,
-  featureFlags,
   netlifyConfig,
 }) {
   const functionsSrc = resolve(buildDir, relativeFunctionsSrc)
@@ -98,8 +96,6 @@ const coreCommand = async function ({
 
   const { bundler } = await zipFunctionsAndLogResults({
     buildDir,
-    childEnv,
-    featureFlags,
     functionsConfig: netlifyConfig.functions,
     functionsDist,
     functionsSrc,

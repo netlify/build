@@ -33,7 +33,6 @@ const runCommand = async function ({
   envChanges,
   constants,
   commands,
-  featureFlags,
   buildbotServerSocket,
   events,
   mode,
@@ -59,7 +58,6 @@ const runCommand = async function ({
       failedPlugins,
       condition,
       constants: constantsA,
-      featureFlags,
       buildbotServerSocket,
     })
   ) {
@@ -99,7 +97,6 @@ const runCommand = async function ({
     error,
     logs,
     timers,
-    featureFlags,
     errorParams,
     netlifyConfig,
   })
@@ -166,12 +163,11 @@ const shouldRunCommand = function ({
   failedPlugins,
   condition,
   constants,
-  featureFlags,
   buildbotServerSocket,
 }) {
   if (
     failedPlugins.includes(packageName) ||
-    (condition !== undefined && !condition({ constants, featureFlags, buildbotServerSocket }))
+    (condition !== undefined && !condition({ constants, buildbotServerSocket }))
   ) {
     return false
   }
@@ -219,7 +215,6 @@ const tFireCommand = function ({
   events,
   error,
   logs,
-  featureFlags,
   errorParams,
   netlifyConfig,
 }) {
@@ -232,8 +227,6 @@ const tFireCommand = function ({
       buildbotServerSocket,
       events,
       logs,
-      childEnv,
-      featureFlags,
       netlifyConfig,
     })
   }

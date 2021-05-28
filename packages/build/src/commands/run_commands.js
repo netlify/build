@@ -14,7 +14,6 @@ const { runCommand } = require('./run_command')
 // Runs `onEnd` events at the end, whether an error was thrown or not.
 const runCommands = async function ({
   commands,
-  featureFlags,
   buildbotServerSocket,
   events,
   configPath,
@@ -88,7 +87,6 @@ const runCommands = async function ({
         envChanges,
         constants,
         commands,
-        featureFlags,
         buildbotServerSocket,
         events,
         mode,
