@@ -3,7 +3,7 @@
 const { overrides } = require('@netlify/eslint-config-node')
 
 module.exports = {
-  extends: '@netlify/eslint-config-node',
+  extends: ['plugin:fp/recommended', '@netlify/eslint-config-node'],
   rules: {
     strict: 2,
 
@@ -16,6 +16,44 @@ module.exports = {
     // eslint-plugin-ava needs to know where test files are located
     'ava/no-ignored-test-files': [2, { files: ['tests/**/*.js', '!tests/{helpers,fixtures}/**/*.{js,json}'] }],
     'ava/no-import-test-files': [2, { files: ['tests/**/*.js', '!tests/{helpers,fixtures}/**/*.{js,json}'] }],
+
+    // Avoid state mutation except for some known state variables
+    'fp/no-mutating-methods': [
+      2,
+      {
+        allowedObjects: [
+          'error',
+          'errorA',
+          'req',
+          'request',
+          'res',
+          'response',
+          'state',
+          'runState',
+          'logs',
+          'logsArray',
+          'currentEnv',
+          't',
+        ],
+      },
+    ],
+    'fp/no-mutation': [
+      2,
+      {
+        commonjs: true,
+        exceptions: [
+          { object: 'error' },
+          { object: 'errorA' },
+          { object: 'res' },
+          { object: 'state' },
+          { object: 'runState' },
+          { object: 'logs' },
+          { object: 'logsArray' },
+          { object: 'currentEnv' },
+          { object: 'process', property: 'exitCode' },
+        ],
+      },
+    ],
   },
   overrides: [
     ...overrides,
