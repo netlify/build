@@ -55,13 +55,11 @@ const runSpecs = async () => {
   const server = await getServer()
 
   const errors = []
-  // eslint-disable-next-line fp/no-loops
   for (const version of versions) {
     try {
       // eslint-disable-next-line no-await-in-loop
       await runCypress(version)
     } catch (error) {
-      // eslint-disable-next-line fp/no-mutating-methods
       errors.push(errors)
     }
   }
@@ -71,7 +69,6 @@ const runSpecs = async () => {
   if (errors.length === 0) {
     process.exitCode = 0
   } else {
-    // eslint-disable-next-line fp/no-loops
     for (const error of errors) {
       console.error(error)
     }

@@ -24,7 +24,6 @@ const getScriptDevCommands = function (scripts, frameworkDevCommand) {
   }
 
   const devScripts = Object.keys(scripts).filter((script) => isNpmDevScript(script))
-  // eslint-disable-next-line fp/no-mutating-methods
   return devScripts.sort(scriptsSorter)
 }
 
@@ -38,7 +37,6 @@ const scriptsSorter = (script1, script2) => {
 }
 
 const getPreferredScripts = function (scripts, frameworkDevCommand) {
-  // eslint-disable-next-line fp/no-mutating-methods
   return Object.entries(scripts)
     .filter(([, scriptValue]) => scriptValue.includes(frameworkDevCommand))
     .map((script) => getEntryKey(script))

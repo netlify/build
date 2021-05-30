@@ -43,7 +43,6 @@
           frameworks.forEach((framework) => {
             const div = document.createElement('div')
             div.setAttribute('id', framework.id)
-            // eslint-disable-next-line fp/no-mutation
             div.textContent = JSON.stringify(framework)
             body.append(div)
           })
