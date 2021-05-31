@@ -1,5 +1,14 @@
 # Changelog
 
+### [11.29.1](https://www.github.com/netlify/build/compare/build-v11.29.0...build-v11.29.1) (2021-05-31)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugin-edge-handlers to ^1.11.13 ([#2885](https://www.github.com/netlify/build/issues/2885)) ([3a2f6ff](https://www.github.com/netlify/build/commit/3a2f6ff14013e0791ce21f51393b36c7e799cd42))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.2.2 ([#2886](https://www.github.com/netlify/build/issues/2886)) ([a4a0549](https://www.github.com/netlify/build/commit/a4a05497ba9809bc6420b31514f690badba4bc53))
+* **deps:** update dependency uuid to v8 ([#2882](https://www.github.com/netlify/build/issues/2882)) ([1d06463](https://www.github.com/netlify/build/commit/1d06463d9e4a15bfddb14b4be271411f29ed709a))
+
 ## [11.29.0](https://www.github.com/netlify/build/compare/build-v11.28.0...build-v11.29.0) (2021-05-28)
 
 
