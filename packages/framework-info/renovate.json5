@@ -4,13 +4,15 @@
   semanticCommits: true,
   dependencyDashboard: true,
   automerge: true,
+  // Those cannot be upgraded until we drop support for Node 10
   packageRules: [
     {
-      // Those cannot be upgraded to a major version until we drop support for Node 10
-      packageNames: ['read-pkg-up'],
-      major: {
-        enabled: false,
-      },
+      matchPackageNames: ['read-pkg-up'],
+      allowedVersions: '<8',
+    },
+    {
+      matchPackageNames: ['is-plain-obj'],
+      allowedVersions: '<4',
     },
   ],
 }
