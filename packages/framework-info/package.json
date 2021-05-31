@@ -92,7 +92,7 @@
     "cpy": "^8.1.0",
     "cpy-cli": "^3.1.1",
     "cypress": "^7.0.0",
-    "del": "^5.1.0",
+    "del": "^6.0.0",
     "eslint-plugin-cypress": "^2.11.2",
     "eslint-plugin-react": "^7.21.5",
     "execa": "^5.0.0",
