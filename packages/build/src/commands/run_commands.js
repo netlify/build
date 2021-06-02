@@ -31,6 +31,7 @@ const runCommands = async function ({
   debug,
   timers,
   testOpts,
+  featureFlags,
 }) {
   const {
     index: commandsCount,
@@ -99,6 +100,7 @@ const runCommands = async function ({
         debug,
         timers: timersA,
         testOpts,
+        featureFlags,
       })
       const statusesA = addStatus({ newStatus, statuses, event, packageName, pluginPackageJson })
       return {

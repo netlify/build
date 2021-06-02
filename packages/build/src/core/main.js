@@ -148,6 +148,7 @@ const tExecBuild = async function ({
   timers,
   buildbotServerSocket,
   sendStatus,
+  featureFlags,
 }) {
   const {
     netlifyConfig,
@@ -227,6 +228,7 @@ const tExecBuild = async function ({
     testOpts,
     buildbotServerSocket,
     constants,
+    featureFlags,
   })
   return {
     pluginsOptions: pluginsOptionsA,
@@ -264,6 +266,7 @@ const runAndReportBuild = async function ({
   timers,
   sendStatus,
   testOpts,
+  featureFlags,
 }) {
   try {
     const {
@@ -296,6 +299,7 @@ const runAndReportBuild = async function ({
       testOpts,
       buildbotServerSocket,
       constants,
+      featureFlags,
     })
     await Promise.all([
       reportStatuses({
@@ -373,6 +377,7 @@ const initAndRunBuild = async function ({
   testOpts,
   buildbotServerSocket,
   constants,
+  featureFlags,
 }) {
   const { pluginsOptions: pluginsOptionsA, timers: timersA } = await getPluginsOptions({
     pluginsOptions,
@@ -430,6 +435,7 @@ const initAndRunBuild = async function ({
       debug,
       timers: timersB,
       testOpts,
+      featureFlags,
     })
 
     await warnOnLingeringProcesses({ mode, logs, testOpts })
@@ -470,6 +476,7 @@ const runBuild = async function ({
   debug,
   timers,
   testOpts,
+  featureFlags,
 }) {
   const { pluginsCommands, timers: timersA } = await loadPlugins({
     pluginsOptions,
@@ -511,6 +518,7 @@ const runBuild = async function ({
     debug,
     timers: timersA,
     testOpts,
+    featureFlags,
   })
   return { commandsCount, netlifyConfig: netlifyConfigA, statuses, failedPlugins, timers: timersB }
 }

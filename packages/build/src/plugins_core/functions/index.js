@@ -24,7 +24,7 @@ const isUsingEsbuild = (functionsConfig = {}) =>
 // The function configuration keys returned by @netlify/config are not an exact
 // match to the properties that @netlify/zip-it-and-ship-it expects. We do that
 // translation here.
-const normalizeFunctionConfig = ({ buildDir, functionConfig = {} }) => ({
+const normalizeFunctionConfig = ({ buildDir, featureFlags, functionConfig = {} }) => ({
   externalNodeModules: functionConfig.external_node_modules,
   includedFiles: functionConfig.included_files,
   includedFilesBasePath: buildDir,
@@ -36,19 +36,31 @@ const normalizeFunctionConfig = ({ buildDir, functionConfig = {} }) => ({
   // fallback behavior ourselves. We do this by transforming the value
   // `esbuild` into `esbuild_zisi`, which zip-it-and-ship-it understands.
   nodeBundler: functionConfig.node_bundler === 'esbuild' ? 'esbuild_zisi' : functionConfig.node_bundler,
+
+  // When the `zisiHandlerV2` feature flag is present, zip-it-and-ship-it will
+  // use the experimental function handler changes introduced in v4.2.0.
+  basePath: featureFlags.zisiHandlerV2 ? buildDir : undefined,
+  experimentalHandlerV2: Boolean(featureFlags.zisiHandlerV2),
 })
 
-const getZisiParameters = ({ buildDir, functionsConfig }) => {
+const getZisiParameters = ({ buildDir, featureFlags, functionsConfig }) => {
   const config = mapObject(functionsConfig, (expression, object) => [
     expression,
-    normalizeFunctionConfig({ buildDir, functionConfig: object }),
+    normalizeFunctionConfig({ buildDir, featureFlags, functionConfig: object }),
   ])
 
   return { config }
 }
 
-const zipFunctionsAndLogResults = async ({ buildDir, functionsConfig, functionsDist, functionsSrc, logs }) => {
-  const zisiParameters = getZisiParameters({ buildDir, functionsConfig })
+const zipFunctionsAndLogResults = async ({
+  buildDir,
+  featureFlags,
+  functionsConfig,
+  functionsDist,
+  functionsSrc,
+  logs,
+}) => {
+  const zisiParameters = getZisiParameters({ buildDir, featureFlags, functionsConfig })
   const bundler = isUsingEsbuild(functionsConfig) ? 'esbuild' : 'zisi'
 
   try {
@@ -76,6 +88,7 @@ const coreCommand = async function ({
   buildDir,
   logs,
   netlifyConfig,
+  featureFlags,
 }) {
   const functionsSrc = resolve(buildDir, relativeFunctionsSrc)
   const functionsDist = resolve(buildDir, relativeFunctionsDist)
@@ -96,6 +109,7 @@ const coreCommand = async function ({
 
   const { bundler } = await zipFunctionsAndLogResults({
     buildDir,
+    featureFlags,
     functionsConfig: netlifyConfig.functions,
     functionsDist,
     functionsSrc,

@@ -45,6 +45,7 @@ const runCommand = async function ({
   debug,
   timers,
   testOpts,
+  featureFlags,
 }) {
   const constantsA = await addMutableConstants({ constants, buildDir, netlifyConfig })
 
@@ -96,6 +97,7 @@ const runCommand = async function ({
     timers,
     errorParams,
     netlifyConfig,
+    featureFlags,
   })
 
   const newValues = await getCommandReturn({
@@ -208,6 +210,7 @@ const tFireCommand = function ({
   logs,
   errorParams,
   netlifyConfig,
+  featureFlags,
 }) {
   if (coreCommand !== undefined) {
     return fireCoreCommand({
@@ -223,6 +226,7 @@ const tFireCommand = function ({
       childEnv,
       envChanges,
       netlifyConfig,
+      featureFlags,
     })
   }
 

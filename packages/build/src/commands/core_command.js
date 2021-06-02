@@ -17,6 +17,7 @@ const fireCoreCommand = async function ({
   childEnv,
   envChanges,
   netlifyConfig,
+  featureFlags,
 }) {
   try {
     const childEnvA = setEnvChanges(envChanges, { ...childEnv })
@@ -30,6 +31,7 @@ const fireCoreCommand = async function ({
       childEnv: childEnvA,
       netlifyConfig,
       nodePath,
+      featureFlags,
     })
   } catch (newError) {
     if (!isBuildError(newError)) {
