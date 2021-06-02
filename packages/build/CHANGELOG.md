@@ -1,5 +1,12 @@
 # Changelog
 
+## [11.30.0](https://www.github.com/netlify/build/compare/build-v11.29.2...build-v11.30.0) (2021-06-02)
+
+
+### Features
+
+* add support for experimental ZISI v2 handler ([#2895](https://www.github.com/netlify/build/issues/2895)) ([7fea341](https://www.github.com/netlify/build/commit/7fea34122cd2ab8a1c56a177c5dffa83618542fe))
+
 ### [11.29.2](https://www.github.com/netlify/build/compare/build-v11.29.1...build-v11.29.2) (2021-05-31)
 
 
