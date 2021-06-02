@@ -1,6 +1,6 @@
 {
   "id": "nuxt",
-  "name": "Next.js",
+  "name": "Nuxt",
   "category": "static_site_generator",
   "detect": {
     "npmDependencies": ["nuxt"],
