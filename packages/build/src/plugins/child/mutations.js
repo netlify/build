@@ -4,33 +4,35 @@ const isPlainObj = require('is-plain-obj')
 const mapObj = require('map-obj')
 
 const { addErrorInfo } = require('../../error/info')
+const { EVENTS } = require('../events')
 
 // `netlifyConfig` is read-only except for specific properties.
 // This requires a `Proxy` to warn plugin authors when mutating properties.
-const preventConfigMutations = function (netlifyConfig) {
+const preventConfigMutations = function (netlifyConfig, event) {
   const state = {}
-  const topProxy = preventObjectMutations(netlifyConfig, [], state)
+  const topProxy = preventObjectMutations(netlifyConfig, [], { state, event })
   state.topProxy = topProxy
   return topProxy
 }
 
 // A `proxy` is recursively applied to readonly properties in `netlifyConfig`
-const preventObjectMutations = function (value, keys, state) {
-  if (isMutable(keys)) {
+const preventObjectMutations = function (value, keys, { state, event }) {
+  const propName = keys.join('.')
+  if (propName in MUTABLE_PROPS) {
     return value
   }
 
   if (Array.isArray(value)) {
-    const array = value.map((item) => preventObjectMutations(item, [...keys, '*'], state))
-    return addProxy(array, keys, state)
+    const array = value.map((item) => preventObjectMutations(item, [...keys, '*'], { state, event }))
+    return addProxy(array, keys, { state, event })
   }
 
   if (isPlainObj(value)) {
     const object = mapObj(value, (key, item) => [
       key,
-      preventObjectMutations(item, [...keys, getPropertyKeys(key, keys)], state),
+      preventObjectMutations(item, [...keys, getPropertyKeys(key, keys)], { state, event }),
     ])
-    return addProxy(object, keys, state)
+    return addProxy(object, keys, { state, event })
   }
 
   return value
@@ -45,44 +47,41 @@ const getPropertyKeys = function (key, keys) {
 // Some properties are user-defined, i.e. we need to replace them with a "*" token
 const DYNAMIC_OBJECT_PROPS = new Set(['functions'])
 
-const addProxy = function (value, keys, state) {
+const addProxy = function (value, keys, { state, event }) {
   // eslint-disable-next-line fp/no-proxy
-  return new Proxy(value, getReadonlyProxyHandlers(keys, state))
+  return new Proxy(value, getReadonlyProxyHandlers({ keys, state, event }))
 }
 
 // Retrieve the proxy validating function for each property
-const getReadonlyProxyHandlers = function (keys, state) {
+const getReadonlyProxyHandlers = function ({ keys, state, event }) {
   return {
     ...proxyHandlers,
-    set: validateReadonlyProperty.bind(undefined, 'set', keys, state),
-    defineProperty: validateReadonlyProperty.bind(undefined, 'defineProperty', keys, state),
-    deleteProperty: validateReadonlyProperty.bind(undefined, 'deleteProperty', keys, state),
+    set: validateReadonlyProperty.bind(undefined, { method: 'set', keys, state, event }),
+    defineProperty: validateReadonlyProperty.bind(undefined, { method: 'defineProperty', keys, state, event }),
+    deleteProperty: validateReadonlyProperty.bind(undefined, { method: 'deleteProperty', keys, state, event }),
   }
 }
 
 // This is called when a plugin author tries to set a `netlifyConfig` property
-// eslint-disable-next-line max-params
-const validateReadonlyProperty = function (method, keys, { topProxy }, proxy, key, ...args) {
+const validateReadonlyProperty = function ({ method, keys, state: { topProxy }, event }, proxy, key, ...args) {
   const keysA = [...keys, key]
   const propName = keysA.join('.')
 
-  callPropertySpecificLogic(propName, topProxy, ...args)
-
-  if (isMutable(keysA)) {
-    return Reflect[method](proxy, key, ...args)
+  if (!(propName in MUTABLE_PROPS)) {
+    throwValidationError(`"netlifyConfig.${propName}" is read-only.`)
   }
 
-  throwValidationError(`"netlifyConfig.${propName}" is read-only.`)
-}
+  const { lastEvent, handler } = MUTABLE_PROPS[propName]
 
-// Property-specific handlers for additional logic when they are being set
-const callPropertySpecificLogic = function (propName, topProxy, ...args) {
-  const propertySpecificLogic = PROPERTY_SPECIFIC_LOGIC[propName]
-  if (propertySpecificLogic === undefined) {
-    return
+  if (EVENTS.indexOf(lastEvent) < EVENTS.indexOf(event)) {
+    throwValidationError(`"netlifyConfig.${propName}" cannot be modified after "${lastEvent}".`)
   }
 
-  propertySpecificLogic(topProxy, ...args)
+  if (handler !== undefined) {
+    handler(topProxy, ...args)
+  }
+
+  return Reflect[method](proxy, key, ...args)
 }
 
 // When setting `build.command`, `build.commandOrigin` is set to "plugin"
@@ -99,32 +98,21 @@ const setFunctionsDirectory = function (topProxy, descriptor) {
   topProxy.functionsDirectory = descriptor.value
 }
 
-const PROPERTY_SPECIFIC_LOGIC = {
-  'build.command': setBuildCommandOrigin,
-  'build.functions': setFunctionsDirectory,
-  'functions.directory': setFunctionsDirectory,
-  'functions.*.directory': setFunctionsDirectory,
+// List of properties that are not read-only.
+const MUTABLE_PROPS = {
+  'build.command': { lastEvent: 'onPreBuild', handler: setBuildCommandOrigin },
+  'build.commandOrigin': { lastEvent: 'onPreBuild' },
+  'build.functions': { lastEvent: 'onBuild', handler: setFunctionsDirectory },
+  'build.publish': { lastEvent: 'onPostBuild' },
+  'build.edge_handlers': { lastEvent: 'onPostBuild' },
+  functionsDirectory: { lastEvent: 'onBuild' },
+  'functions.directory': { lastEvent: 'onBuild', handler: setFunctionsDirectory },
+  'functions.*.directory': { lastEvent: 'onBuild', handler: setFunctionsDirectory },
+  'functions.*.external_node_modules': { lastEvent: 'onBuild' },
+  'functions.*.ignored_node_modules': { lastEvent: 'onBuild' },
+  'functions.*.included_files': { lastEvent: 'onBuild' },
+  'functions.*.node_bundler': { lastEvent: 'onBuild' },
 }
-
-const isMutable = function (keys) {
-  return MUTABLE_KEYS.has(keys.join('.'))
-}
-
-// List of properties that are not read-only
-const MUTABLE_KEYS = new Set([
-  'build.command',
-  'build.commandOrigin',
-  'build.functions',
-  'build.publish',
-  'build.edge_handlers',
-  'functionsDirectory',
-  'functions.directory',
-  'functions.*.directory',
-  'functions.*.external_node_modules',
-  'functions.*.ignored_node_modules',
-  'functions.*.included_files',
-  'functions.*.node_bundler',
-])
 
 const validateAnyProperty = function (method) {
   throwValidationError(`Using the "${method}()" method on "netlifyConfig" is not allowed.`)

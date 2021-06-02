@@ -13,7 +13,7 @@ const run = async function (
   const { method } = pluginCommands.find((pluginCommand) => pluginCommand.event === event)
   const runState = {}
   const utils = getUtils({ event, constants, runState })
-  const netlifyConfigA = preventConfigMutations(netlifyConfig)
+  const netlifyConfigA = preventConfigMutations(netlifyConfig, event)
   const runOptions = { utils, constants, inputs, netlifyConfig: netlifyConfigA, packageJson, error }
 
   const envBefore = setEnvChanges(envChanges)

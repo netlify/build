@@ -114,6 +114,10 @@ test('netlifyConfig.build.edge_handlers mutations are used by constants.EDGE_HAN
   await runFixture(t, 'config_mutate_edge_handlers_constants')
 })
 
+test('netlifyConfig mutations fail if done in an event that is too late', async (t) => {
+  await runFixture(t, 'config_mutate_too_late')
+})
+
 test('constants.CONFIG_PATH', async (t) => {
   await runFixture(t, 'config_path')
 })
