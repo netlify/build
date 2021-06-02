@@ -1,5 +1,12 @@
 # Changelog
 
+## [11.31.0](https://www.github.com/netlify/build/compare/build-v11.30.0...build-v11.31.0) (2021-06-02)
+
+
+### Features
+
+* validate when mutating a property too late ([#2894](https://www.github.com/netlify/build/issues/2894)) ([fa2d870](https://www.github.com/netlify/build/commit/fa2d87073fed71cf0219ebac70056f4e91f67f73))
+
 ## [11.30.0](https://www.github.com/netlify/build/compare/build-v11.29.2...build-v11.30.0) (2021-06-02)
 
 
