@@ -92,6 +92,10 @@ if (!version.startsWith('v8.')) {
   test('netlifyConfig.functions mutations on any property can be used', async (t) => {
     await runFixture(t, 'config_mutate_functions_any')
   })
+
+  test('netlifyConfig.functions mutations can add new functions configs', async (t) => {
+    await runFixture(t, 'config_mutate_functions_new')
+  })
 }
 
 test('netlifyConfig.build.command can be changed', async (t) => {
