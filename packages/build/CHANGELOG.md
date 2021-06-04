@@ -1,5 +1,12 @@
 # Changelog
 
+### [11.32.2](https://www.github.com/netlify/build/compare/build-v11.32.1...build-v11.32.2) (2021-06-04)
+
+
+### Bug Fixes
+
+* configuration mutation of object values ([#2915](https://www.github.com/netlify/build/issues/2915)) ([5560199](https://www.github.com/netlify/build/commit/5560199e9b47e05b6ff514af127020fed9eecaa1))
+
 ### [11.32.1](https://www.github.com/netlify/build/compare/build-v11.32.0...build-v11.32.1) (2021-06-04)
 
 
