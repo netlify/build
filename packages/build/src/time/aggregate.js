@@ -5,11 +5,13 @@ const { createTimer, TOP_PARENT_TAG } = require('./main')
 // Some timers are computed based on others:
 //   - `others` is `total` minus the other timers
 //   - `run_plugins` is the sum of all plugins
+//   - `run_netlify_build_per_type` aggregates timers but per system/plugin/user
 //   - each plugin timer is the sum of its event handlers
 const addAggregatedTimers = function (timers) {
   const timersA = addPluginTimers(timers)
   const timersB = addOthersTimers(timersA)
-  return timersB
+  const timersC = addTypeTimers(timersB)
+  return timersC
 }
 
 // Having a `total` timer is redundant since the buildbot already measures this.
@@ -25,10 +27,6 @@ const addOthersTimers = function (timers) {
 
 const isTotalTimer = function ({ stageTag, parentTag }) {
   return stageTag === 'total' && parentTag === 'build_site'
-}
-
-const isTopTimer = function ({ parentTag }) {
-  return parentTag === TOP_PARENT_TAG
 }
 
 const createOthersTimer = function (topTimers, { durationNs: totalTimerDurationNs }) {
@@ -78,6 +76,29 @@ const getWholePluginTimer = function (pluginPackage, pluginsTimers) {
 
 const getPluginTimerPackage = function ({ parentTag }) {
   return parentTag
+}
+
+// Reports total time depending on whether it was system, plugin or user
+const addTypeTimers = function (timers) {
+  const topTimers = timers.filter(isTopTimer)
+  const typeTimers = TYPE_TIMERS.flatMap(({ name, stages }) => getTypeTimer(name, stages, topTimers))
+  return [...timers, ...typeTimers]
+}
+
+const TYPE_TIMERS = [
+  { name: 'system', stages: ['resolve_config', 'get_plugins_options', 'start_plugins', 'others'] },
+  { name: 'plugin', stages: ['load_plugins', 'run_plugins'] },
+  { name: 'user', stages: ['build_command', 'functions_bundling', 'deploy_site'] },
+]
+
+const getTypeTimer = function (name, stages, topTimers) {
+  const topTimersA = topTimers.filter(({ stageTag }) => stages.includes(stageTag))
+  const typeTimer = createSumTimer(topTimersA, name, 'run_netlify_build_per_type')
+  return typeTimer
+}
+
+const isTopTimer = function ({ parentTag }) {
+  return parentTag === TOP_PARENT_TAG
 }
 
 // Creates a timer that sums up the duration of several others
