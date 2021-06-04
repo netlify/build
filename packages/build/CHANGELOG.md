@@ -1,5 +1,12 @@
 # Changelog
 
+## [11.32.0](https://www.github.com/netlify/build/compare/build-v11.31.1...build-v11.32.0) (2021-06-04)
+
+
+### Features
+
+* monitor total time for user/system/plugin code ([#2911](https://www.github.com/netlify/build/issues/2911)) ([ef33e9f](https://www.github.com/netlify/build/commit/ef33e9f2cb6bafa0cc861ee7c45d52187048132a))
+
 ### [11.31.1](https://www.github.com/netlify/build/compare/build-v11.31.0...build-v11.31.1) (2021-06-02)
 
 
