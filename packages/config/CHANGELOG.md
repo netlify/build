@@ -1,5 +1,12 @@
 # Changelog
 
+### [6.7.2](https://www.github.com/netlify/build/compare/config-v6.7.1...config-v6.7.2) (2021-06-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency netlify to ^7.0.1 ([#2908](https://www.github.com/netlify/build/issues/2908)) ([28f1366](https://www.github.com/netlify/build/commit/28f13666a0dec4625c221619175f554aa7c8b761))
+
 ### [6.7.1](https://www.github.com/netlify/build/compare/config-v6.7.0...config-v6.7.1) (2021-05-27)
 
 
