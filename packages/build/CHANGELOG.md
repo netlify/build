@@ -1,5 +1,12 @@
 # Changelog
 
+### [11.32.5](https://www.github.com/netlify/build/compare/build-v11.32.4...build-v11.32.5) (2021-06-07)
+
+
+### Bug Fixes
+
+* correct usage of ZISI's basePath property ([#2927](https://www.github.com/netlify/build/issues/2927)) ([c354944](https://www.github.com/netlify/build/commit/c3549448740f504308ffb50d2897054f29b83d65))
+
 ### [11.32.4](https://www.github.com/netlify/build/compare/build-v11.32.3...build-v11.32.4) (2021-06-07)
 
 
