@@ -126,7 +126,7 @@ const validateReadonlyProperty = function ({
 
   try {
     if (handler !== undefined) {
-      handler(topProxy, value)
+      handler(topProxy, value, key)
     }
 
     return Reflect[method](...reflectArgs)
@@ -202,6 +202,18 @@ const setBuildCommandOrigin = function (topProxy) {
   topProxy.build.commandOrigin = 'plugin'
 }
 
+const setTopFunctionsDirectory = function (topProxy, value, key) {
+  setFunctionsDirectory(topProxy, value)
+  setFunctionsCatchAll(topProxy, value, key)
+}
+
+// When settings `functions.{propName}`, we also set `functions.*.{propName}`,
+// emulating the normalization performed by `@netlify/config`.
+const setFunctionsCatchAll = function (topProxy, value, key) {
+  // eslint-disable-next-line fp/no-mutation, no-param-reassign
+  topProxy.functions['*'][key] = value
+}
+
 // Several configuration properties can be used to specify the functions directory.
 // `netlifyConfig.functionsDirectory` is the normalized property which must be set.
 // We allow plugin authors to set any of the other properties for convenience.
@@ -219,7 +231,11 @@ const MUTABLE_PROPS = {
   'build.edge_handlers': { lastEvent: 'onPostBuild' },
   functionsDirectory: { lastEvent: 'onBuild' },
   'functions.*': { lastEvent: 'onBuild' },
-  'functions.directory': { lastEvent: 'onBuild', handler: setFunctionsDirectory },
+  'functions.directory': { lastEvent: 'onBuild', handler: setTopFunctionsDirectory },
+  'functions.external_node_modules': { lastEvent: 'onBuild', handler: setFunctionsCatchAll },
+  'functions.ignored_node_modules': { lastEvent: 'onBuild', handler: setFunctionsCatchAll },
+  'functions.included_files': { lastEvent: 'onBuild', handler: setFunctionsCatchAll },
+  'functions.node_bundler': { lastEvent: 'onBuild', handler: setFunctionsCatchAll },
   'functions.*.directory': { lastEvent: 'onBuild', handler: setFunctionsDirectory },
   'functions.*.external_node_modules': { lastEvent: 'onBuild' },
   'functions.*.external_node_modules.*': { lastEvent: 'onBuild' },
