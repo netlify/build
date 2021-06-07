@@ -1,5 +1,14 @@
 # Changelog
 
+### [11.32.4](https://www.github.com/netlify/build/compare/build-v11.32.3...build-v11.32.4) (2021-06-07)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugin-edge-handlers to ^1.11.15 ([#2929](https://www.github.com/netlify/build/issues/2929)) ([87df6cb](https://www.github.com/netlify/build/commit/87df6cb9c6855bf6506290a7099a84022d3a0e93))
+* **deps:** update dependency @netlify/plugins-list to ^2.15.0 ([#2931](https://www.github.com/netlify/build/issues/2931)) ([efef14b](https://www.github.com/netlify/build/commit/efef14b09b907b08cd659de51f8e74e9c2b83b5f))
+* **deps:** update dependency statsd-client to v0.4.7 ([#2920](https://www.github.com/netlify/build/issues/2920)) ([a789aec](https://www.github.com/netlify/build/commit/a789aecaa20803e81822248d56312aa2b64c1419))
+
 ### [11.32.3](https://www.github.com/netlify/build/compare/build-v11.32.2...build-v11.32.3) (2021-06-06)
 
 
