@@ -1,5 +1,12 @@
 # Changelog
 
+## [11.33.0](https://www.github.com/netlify/build/compare/build-v11.32.5...build-v11.33.0) (2021-06-07)
+
+
+### Features
+
+* **metrics:** report distribution metrics under a feature flag ([#2933](https://www.github.com/netlify/build/issues/2933)) ([5a2e2f2](https://www.github.com/netlify/build/commit/5a2e2f2dc96112f32a31ae1dba3c46fd9f23de82))
+
 ### [11.32.5](https://www.github.com/netlify/build/compare/build-v11.32.4...build-v11.32.5) (2021-06-07)
 
 
