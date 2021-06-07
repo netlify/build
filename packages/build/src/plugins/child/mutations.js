@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 'use strict'
 
 const isPlainObj = require('is-plain-obj')
@@ -58,26 +59,47 @@ const getReadonlyProxyHandlers = function ({ keys, state, event }) {
 // eslint-disable-next-line max-params
 const validateSet = function ({ keys, state, event }, proxy, key, value, receiver) {
   const valueA = preventObjectMutations(value, [...keys, key], { state, event })
-  return validateReadonlyProperty({ method: 'set', keys, state, event }, proxy, key, valueA, receiver)
+  return validateReadonlyProperty({
+    method: 'set',
+    keys,
+    key,
+    value: valueA,
+    state,
+    event,
+    reflectArgs: [proxy, key, valueA, receiver],
+  })
 }
 
 // Triggered when calling `Object.defineProperty(netlifyConfig, key, { value })`
-// eslint-disable-next-line max-params
-const validateDefineProperty = function ({ keys, state, event }, proxy, key, descriptor, receiver) {
-  const descriptorA = {
-    ...descriptor,
-    value: preventObjectMutations(descriptor.value, [...keys, key], { state, event }),
-  }
-  return validateReadonlyProperty({ method: 'defineProperty', keys, state, event }, proxy, key, descriptorA, receiver)
+const validateDefineProperty = function ({ keys, state, event }, proxy, key, descriptor) {
+  const valueA = preventObjectMutations(descriptor.value, [...keys, key], { state, event })
+  const descriptorA = { ...descriptor, value: valueA }
+  return validateReadonlyProperty({
+    method: 'defineProperty',
+    keys,
+    key,
+    value: valueA,
+    state,
+    event,
+    reflectArgs: [proxy, key, descriptorA],
+  })
 }
 
 // Triggered when calling `delete netlifyConfig.{key}`
-const validateDelete = function ({ keys, state, event }, ...args) {
-  return validateReadonlyProperty({ method: 'deleteProperty', keys, state, event }, ...args)
+const validateDelete = function ({ keys, state, event }, proxy, key) {
+  return validateReadonlyProperty({
+    method: 'deleteProperty',
+    keys,
+    key,
+    value: undefined,
+    state,
+    event,
+    reflectArgs: [proxy, key],
+  })
 }
 
 // This is called when a plugin author tries to set a `netlifyConfig` property
-const validateReadonlyProperty = function ({ method, keys, state: { topProxy }, event }, proxy, key, ...args) {
+const validateReadonlyProperty = function ({ method, keys, key, value, state: { topProxy }, event, reflectArgs }) {
   const propName = getPropName(keys, key)
 
   if (!(propName in MUTABLE_PROPS)) {
@@ -91,10 +113,10 @@ const validateReadonlyProperty = function ({ method, keys, state: { topProxy }, 
   }
 
   if (handler !== undefined) {
-    handler(topProxy, ...args)
+    handler(topProxy, value)
   }
 
-  return Reflect[method](proxy, key, ...args)
+  return Reflect[method](...reflectArgs)
 }
 
 // Retrieve normalized property name
@@ -145,9 +167,9 @@ const setBuildCommandOrigin = function (topProxy) {
 // Several configuration properties can be used to specify the functions directory.
 // `netlifyConfig.functionsDirectory` is the normalized property which must be set.
 // We allow plugin authors to set any of the other properties for convenience.
-const setFunctionsDirectory = function (topProxy, descriptor) {
+const setFunctionsDirectory = function (topProxy, value) {
   // eslint-disable-next-line fp/no-mutation, no-param-reassign
-  topProxy.functionsDirectory = descriptor.value
+  topProxy.functionsDirectory = value
 }
 
 // List of properties that are not read-only.
@@ -191,3 +213,4 @@ const throwValidationError = function (message) {
 }
 
 module.exports = { preventConfigMutations }
+/* eslint-enable max-lines */
