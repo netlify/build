@@ -12,19 +12,19 @@ const pSetTimeout = promisify(setTimeout)
 
 // Record the duration of a build phase, for monitoring.
 // Sends to statsd daemon.
-const reportTimers = async function ({ timers, statsdOpts: { host, port }, framework }) {
+const reportTimers = async function ({ timers, statsdOpts: { host, port }, framework, featureFlags }) {
   if (host === undefined) {
     return
   }
 
   const timersA = addAggregatedTimers(timers)
-  await sendTimers({ timers: timersA, host, port, framework })
+  await sendTimers({ timers: timersA, host, port, framework, featureFlags })
 }
 
-const sendTimers = async function ({ timers, host, port, framework }) {
+const sendTimers = async function ({ timers, host, port, framework, featureFlags }) {
   const client = await startClient(host, port)
   timers.forEach((timer) => {
-    sendTimer({ timer, client, framework })
+    sendTimer({ timer, client, framework, featureFlags })
   })
   await closeClient(client)
 }
@@ -40,10 +40,18 @@ const startClient = async function (host, port) {
   return client
 }
 
-const sendTimer = function ({ timer: { metricName, stageTag, parentTag, durationNs, tags }, client, framework }) {
+const sendTimer = function ({
+  timer: { metricName, stageTag, parentTag, durationNs, tags },
+  client,
+  framework,
+  featureFlags,
+}) {
   const durationMs = roundTimerToMillisecs(durationNs)
   const frameworkTag = framework === undefined ? {} : { framework }
   client.timing(metricName, durationMs, { stage: stageTag, parent: parentTag, ...tags, ...frameworkTag })
+  if (featureFlags.buildbot_build_distribution_metrics) {
+    client.distribution(metricName, durationMs, { stage: stageTag, parent: parentTag, ...tags, ...frameworkTag })
+  }
 }
 
 // UDP packets are buffered and flushed at regular intervals by statsd-client.

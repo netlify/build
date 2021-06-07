@@ -15,6 +15,17 @@ test('Sends timings of plugins', async (t) => {
   t.snapshot(await getTimerRequestsString(t, 'plugin'))
 })
 
+test('Sends timing and distribution metrics if buildbot_build_distribution_metrics feature flag is enabled', async (t) => {
+  const timerRequests = await getAllTimerRequests(t, 'simple', {
+    featureFlags: 'buildbot_build_distribution_metrics',
+  })
+  const includesTimingRequests = timerRequests.some((timerRequest) => timerRequest.includes('|ms|'))
+  const includesDistributionRequests = timerRequests.some((timerRequest) => timerRequest.includes('|d|'))
+
+  t.true(includesDistributionRequests)
+  t.true(includesTimingRequests)
+})
+
 test('Allow passing --framework CLI flag', async (t) => {
   const timerRequests = await getAllTimerRequests(t, 'simple', { framework: 'test' })
   t.true(timerRequests.every((timerRequest) => timerRequest.includes('framework:test')))
