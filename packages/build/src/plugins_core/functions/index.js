@@ -39,17 +39,17 @@ const normalizeFunctionConfig = ({ buildDir, featureFlags, functionConfig = {} }
 
   // When the `zisiHandlerV2` feature flag is present, zip-it-and-ship-it will
   // use the experimental function handler changes introduced in v4.2.0.
-  basePath: featureFlags.zisiHandlerV2 ? buildDir : undefined,
   experimentalHandlerV2: Boolean(featureFlags.zisiHandlerV2),
 })
 
 const getZisiParameters = ({ buildDir, featureFlags, functionsConfig }) => {
+  const basePath = featureFlags.zisiHandlerV2 ? buildDir : undefined
   const config = mapObject(functionsConfig, (expression, object) => [
     expression,
     normalizeFunctionConfig({ buildDir, featureFlags, functionConfig: object }),
   ])
 
-  return { config }
+  return { basePath, config }
 }
 
 const zipFunctionsAndLogResults = async ({
