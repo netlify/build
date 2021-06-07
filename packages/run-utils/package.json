@@ -43,7 +43,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "execa": "^3.4.0"
+    "execa": "^5.0.1"
   },
   "devDependencies": {
     "ava": "^2.4.0",

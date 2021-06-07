@@ -66,7 +66,7 @@
     "array-flat-polyfill": "^1.0.1",
     "chalk": "^3.0.0",
     "clean-stack": "^2.2.0",
-    "execa": "^3.3.0",
+    "execa": "^5.0.1",
     "figures": "^3.2.0",
     "filter-obj": "^2.0.1",
     "got": "^9.6.0",
