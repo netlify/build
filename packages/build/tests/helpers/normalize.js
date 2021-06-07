@@ -41,7 +41,7 @@ const NORMALIZE_REGEXPS = [
   // Normalizes any paths so that they're relative to process.cwd().
   [
     /(^|[ "'(=])((?:\.{0,2}|([A-Z]:))(\/[^ "')\n]+))/gm,
-    // eslint-disable-next-line complexity, max-params
+    // eslint-disable-next-line complexity, max-params, max-statements
     (_, prefix, pathMatch, winDrive, pathTrail) => {
       // If we're dealing with a Windows path, we discard the drive letter.
       const fullPath = winDrive ? pathTrail : pathMatch
@@ -66,6 +66,10 @@ const NORMALIZE_REGEXPS = [
       }
 
       const relativePath = relative(rootPath, fullPath)
+
+      if (relativePath === '') {
+        return `${prefix}/`
+      }
 
       // If this is a path to a node module, we're probably rendering a stack
       // trace that escaped the regex. We transform it to a deterministic path.
