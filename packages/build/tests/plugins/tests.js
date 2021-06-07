@@ -122,6 +122,10 @@ test('netlifyConfig mutations fail if done in an event that is too late', async 
   await runFixture(t, 'config_mutate_too_late')
 })
 
+test('netlifyConfig mutations fail correctly on symbols', async (t) => {
+  await runFixture(t, 'config_mutate_symbol')
+})
+
 test('constants.CONFIG_PATH', async (t) => {
   await runFixture(t, 'config_path')
 })
