@@ -27,70 +27,45 @@ const getNetlifyConfig = require('@netlify/config')
 const exampleFunction = async function () {
   const { config, configPath, buildDir, context, branch, token, siteInfo } = await getNetlifyConfig(options)
   // {
-  // "config": {
-  //     "build": {
-  //       "command": "gulp build",
-  //       "commandOrigin": "config",
-  //       "environment": {
-  //         "NETLIFY_BUILD_DEBUG": "true",
-  //         "NODE_VERSION": "12",
-  //         "AWS_LAMBDA_JS_RUNTIME": "nodejs10.x"
-  //       },
-  //       "functions": "/home/me/cv-website/functions",
-  //       "edge_handlers": "/home/me/cv-website/edge-handlers",
-  //       "publish": "/home/me/cv-website/build",
-  //       "processing": {
-  //         "css": {
-  //           "bundle": true,
-  //           "minify": true
-  //         },
-  //         "js": {
-  //           "bundle": true,
-  //           "minify": true
-  //         },
-  //         "html": {
-  //           "pretty_urls": true
-  //         },
-  //         "images": {
-  //           "compress": true
-  //         }
-  //       }
-  //     },
-  //     "plugins": [
-  //       {
-  //         "package": "@netlify/plugin-sitemap",
-  //         "inputs": {},
-  //         "origin": "config"
-  //       }
-  //     ]
-  // },
-  // "configPath": "/home/me/cv-website/netlify.toml",
-  // "buildDir": "/home/me/cv-website",
-  // "context": "production",
-  // "branch": "main",
   // "siteInfo": {
-  //     "id": "418b94bc-93cd-411a-937a-ae4c734f17c4",
-  //     "name": "mick",
-  //     "build_settings": {
-  //       "cmd": "",
-  //       "dir": "",
-  //       "env": { ... },
-  //       "functions_dir": "",
-  //       "base": "",
-  //     },
-  //     ...
+  //   "id": "418b94bc-93cd-411a-937a-ae4c734f17c4",
+  //   "name": "mick",
+  //   "build_settings": {
+  //     "cmd": "",
+  //     "dir": "",
+  //     "env": { ... },
+  //     "functions_dir": "",
+  //     "base": "",
+  //   },
+  //   ...
   // },
   // "env": {
-  //   "general": {
-  //     "CONTEXT": "production",
-  //     ...
-  //   },
-  //   "accounts": { ... },
-  //   "addons": { ... },
-  //   "ui": { ... },
-  //   "configFile": { ... },
-  //   "all": { ... },
-  // }
+  //   "NODE_VERSION": { "sources": ["configFile"], "value": "16" },
+  //   ...
+  // },
+  // "configPath": "/home/me/code/cv-website/netlify.toml",
+  // "buildDir": "/home/me/code/cv-website",
+  // "repositoryRoot": "/home/me/code/cv-website",
+  // "config": {
+  //   "functionsDirectory": "/home/me/code/cv-website/netlify/functions",
+  //   "functionsDirectoryOrigin": "default",
+  //   "functions": { "*": { "node_bundler": "esbuild" } },
+  //   "plugins": [
+  //     {
+  //       "package": "@netlify/plugin-sitemap",
+  //       "inputs": {},
+  //       "origin": "config"
+  //     }
+  //   ],
+  //   "build": {
+  //     "publish": "/home/me/code/cv-website/build",
+  //     "command": "gulp build",
+  //     "commandOrigin": "config",
+  //     "functions": "/home/me/code/cv-website/netlify/functions"
+  //   }
+  // },
+  // "context": "production",
+  // "branch": "main",
   // "token": "564194bc-12cd-511a-037a-be4c734f17c4"
   // }
 }
@@ -302,13 +277,13 @@ Resolved git branch. See the [`branch`](#branch) option.
 
 #### siteInfo
 
-_Type_: `string?`
+_Type_: `object`
 
 Netlify Site information retrieved using the `getSite` Netlify API endpoint. This is used to retrieve Build settings set
 in the Netlify App: plugins, Build command, Publish directory, Functions directory, Base directory, Environment
 variables.
 
-This might not be available depending on the options passed.
+This might be empty depending on the options passed.
 
 #### token
 
@@ -333,14 +308,15 @@ When the [`buffer`](#buffer) option is used, this contains two arrays `stdout` a
 
 _Type_: `object?`
 
-Site's environment variables. Each property is an object of key-value pairs:
+Site's environment variables. Each environment variable value is an object with the following properties:
 
-- `general`: general environment variables set for all sites
-- `account`: environment variables set in the Netlify UI for a specific account
-- `addons`: addon-specific environment variables
-- `ui`: environment variables set in the Netlify UI for a specific site
-- `configFile`: environment variables set in `netlify.toml`
-- `all`: all of the above, merged
+- `value` `string`
+- `sources` `string[]` among:
+  - `general`: general environment variables set for all sites
+  - `account`: environment variables set in the Netlify UI for a specific account
+  - `addons`: addon-specific environment variables
+  - `ui`: environment variables set in the Netlify UI for a specific site
+  - `configFile`: environment variables set in `netlify.toml`
 
 # Usage (CLI)
 
