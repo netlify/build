@@ -1,5 +1,12 @@
 # Changelog
 
+## [11.35.0](https://www.github.com/netlify/build/compare/build-v11.34.0...build-v11.35.0) (2021-06-08)
+
+
+### Features
+
+* log when `netlifyConfig` is mutated ([#2945](https://www.github.com/netlify/build/issues/2945)) ([fd98db3](https://www.github.com/netlify/build/commit/fd98db331096e75ef3812d6e9a901a8841aafbc4))
+
 ## [11.34.0](https://www.github.com/netlify/build/compare/build-v11.33.0...build-v11.34.0) (2021-06-08)
 
 
