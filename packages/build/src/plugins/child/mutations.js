@@ -131,7 +131,7 @@ const normalizeDynamicProp = function (key, index, keys) {
 
 // Check it the value is a value item. In that case, we replace its indice by "*"
 const isArrayItem = function (key) {
-  return Number.isInteger(Number(key))
+  return typeof key !== 'symbol' && Number.isInteger(Number(key))
 }
 
 // Check if a property name is dynamic, such as `functions.{functionName}`
@@ -155,7 +155,7 @@ const NON_DYNAMIC_OBJECT_PROPS = new Set([
 ])
 
 const serializeKeys = function (keys) {
-  return keys.join('.')
+  return keys.map(String).join('.')
 }
 
 // When setting `build.command`, `build.commandOrigin` is set to "plugin"
