@@ -1,5 +1,12 @@
 # Changelog
 
+## [11.36.0](https://www.github.com/netlify/build/compare/build-v11.35.0...build-v11.36.0) (2021-06-08)
+
+
+### Features
+
+* allow mutating `functions.*` top-level properties ([#2944](https://www.github.com/netlify/build/issues/2944)) ([0b4b58b](https://www.github.com/netlify/build/commit/0b4b58bbdd1e5a9aa82b185404920f3c353b54f5))
+
 ## [11.35.0](https://www.github.com/netlify/build/compare/build-v11.34.0...build-v11.35.0) (2021-06-08)
 
 
