@@ -73,15 +73,15 @@ if (!version.startsWith('v8.')) {
     await runFixture(t, 'config_mutate_functions_directory_default')
   })
 
-  test('netlifyConfig.functions.star.directory mutations fail', async (t) => {
+  test('netlifyConfig.functions.star.directory mutations work', async (t) => {
     await runFixture(t, 'config_mutate_functions_directory_star')
   })
 
-  test('netlifyConfig.functions.directory mutations fail', async (t) => {
+  test('netlifyConfig.functions.directory mutations work', async (t) => {
     await runFixture(t, 'config_mutate_functions_directory_nested')
   })
 
-  test('netlifyConfig.build.functions mutations fail', async (t) => {
+  test('netlifyConfig.build.functions mutations work', async (t) => {
     await runFixture(t, 'config_mutate_functions_directory_build')
   })
 
@@ -120,6 +120,10 @@ test('netlifyConfig.build.edge_handlers mutations are used by constants.EDGE_HAN
 
 test('netlifyConfig mutations fail if done in an event that is too late', async (t) => {
   await runFixture(t, 'config_mutate_too_late')
+})
+
+test('netlifyConfig mutations fail correctly on symbols', async (t) => {
+  await runFixture(t, 'config_mutate_symbol')
 })
 
 test('constants.CONFIG_PATH', async (t) => {

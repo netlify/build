@@ -1,5 +1,18 @@
 # Changelog
 
+## [11.34.0](https://www.github.com/netlify/build/compare/build-v11.33.0...build-v11.34.0) (2021-06-08)
+
+
+### Features
+
+* fix `functions.directory` mutation ([#2940](https://www.github.com/netlify/build/issues/2940)) ([29f71be](https://www.github.com/netlify/build/commit/29f71beae04fed1b365504d3d7144618d222f720))
+* handle symbols mutations on `netlifyConfig` ([#2941](https://www.github.com/netlify/build/issues/2941)) ([58f9f8f](https://www.github.com/netlify/build/commit/58f9f8f3f2f7a69441049b95159362507f7bfc40))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugin-edge-handlers to ^1.11.16 ([#2942](https://www.github.com/netlify/build/issues/2942)) ([29728b5](https://www.github.com/netlify/build/commit/29728b58ab2d6334d6cc2a0722ff7bff2a701c90))
+
 ## [11.33.0](https://www.github.com/netlify/build/compare/build-v11.32.5...build-v11.33.0) (2021-06-07)
 
 
