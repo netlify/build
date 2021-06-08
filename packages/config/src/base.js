@@ -4,10 +4,11 @@ const { resolvePath } = require('./files')
 
 // Retrieve the first `base` directory used to load the first config file.
 const getInitialBase = function ({
+  repositoryRoot,
   defaultConfig: { build: { base: defaultBase } = {} },
   inlineConfig: { build: { base: initialBase = defaultBase } = {} },
 }) {
-  return initialBase
+  return resolvePath(repositoryRoot, initialBase)
 }
 
 // Two config files can be used:
@@ -21,11 +22,13 @@ const getInitialBase = function ({
 //  - To resolve file paths
 // If the second file has a `base` property, it is ignored, i.e. it is not
 // recursive.
-// Also add it to `config.build.base`.
-const addBase = function (repositoryRoot, config) {
-  const base = resolvePath(repositoryRoot, config.build.base)
-  const configA = { ...config, build: { ...config.build, base } }
-  return { base, config: configA }
+const getBase = function (base, repositoryRoot, config) {
+  return base === undefined ? resolvePath(repositoryRoot, config.build.base) : base
 }
 
-module.exports = { getInitialBase, addBase }
+// Also `config.build.base`.
+const addBase = function (config, base) {
+  return { ...config, build: { ...config.build, base } }
+}
+
+module.exports = { getInitialBase, getBase, addBase }
