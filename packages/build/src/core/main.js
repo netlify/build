@@ -52,7 +52,7 @@ const { getSeverity } = require('./severity')
  * @returns {string[]} buildResult.logs - When using the `buffer` option, all log messages
  */
 const build = async function (flags = {}) {
-  const { errorMonitor, framework, mode, logs, debug, testOpts, statsdOpts, dry, telemetry, ...flagsA } =
+  const { errorMonitor, framework, mode, logs, debug, testOpts, statsdOpts, dry, telemetry, featureFlags, ...flagsA } =
     startBuild(flags)
   const errorParams = { errorMonitor, mode, logs, debug, testOpts }
 
@@ -67,6 +67,7 @@ const build = async function (flags = {}) {
       durationNs,
     } = await execBuild({
       ...flagsA,
+      featureFlags,
       dry,
       errorMonitor,
       mode,
@@ -81,6 +82,7 @@ const build = async function (flags = {}) {
       logs,
       timers,
       durationNs,
+      featureFlags,
       statsdOpts,
     })
     const { success, severityCode, status } = getSeverity('success')
@@ -524,7 +526,7 @@ const runBuild = async function ({
 }
 
 // Logs and reports that a build successfully ended
-const handleBuildSuccess = async function ({ framework, dry, logs, timers, durationNs, statsdOpts }) {
+const handleBuildSuccess = async function ({ framework, dry, logs, timers, durationNs, statsdOpts, featureFlags }) {
   if (dry) {
     return
   }
@@ -532,7 +534,7 @@ const handleBuildSuccess = async function ({ framework, dry, logs, timers, durat
   logBuildSuccess(logs)
 
   logTimer(logs, durationNs, 'Netlify Build')
-  await reportTimers({ timers, statsdOpts, framework })
+  await reportTimers({ timers, statsdOpts, framework, featureFlags })
 }
 
 // Handles the calls and errors of telemetry reports
