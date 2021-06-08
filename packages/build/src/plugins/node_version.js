@@ -8,15 +8,33 @@ const {
   engines: { node: coreNodeVersionRange },
 } = require('../../package.json')
 const { addErrorInfo } = require('../error/info')
+const { logPluginNodeVersionWarning } = require('../log/messages/plugins')
 
 // Local plugins, `package.json`-installed plugins and local builds use user's
 // preferred Node.js version.
 // Other plugins use `@netlify/build` Node.js version.
-const addPluginsNodeVersion = function ({ pluginsOptions, mode, nodePath, userNodeVersion }) {
+const addPluginsNodeVersion = function ({ pluginsOptions, mode, nodePath, userNodeVersion, logs }) {
   const currentNodeVersion = cleanVersion(currentVersion)
+  checkForOldNodeVersions({ pluginsOptions, userNodeVersion, currentNodeVersion, logs, mode })
   return pluginsOptions.map((pluginOptions) =>
-    addPluginNodeVersion({ pluginOptions, currentNodeVersion, userNodeVersion, mode, nodePath }),
+    addPluginNodeVersion({ pluginOptions, currentNodeVersion, userNodeVersion, mode, nodePath, logs }),
   )
+}
+
+// We want to log a warning message for users relying on local or package.json installed plugins whose Node.js
+// versions are lower than the system version we're currently relying (v12). This is part of our effort to decouple
+// the Node.js versions our build system supports and the Node.js versions @netlify/build supports -
+// https://github.com/netlify/pod-workflow/issues/219
+const checkForOldNodeVersions = function ({ pluginsOptions, userNodeVersion, currentNodeVersion, logs, mode }) {
+  if (satisfies(userNodeVersion, '>=12')) return
+
+  const affectedPlugins = pluginsOptions
+    .filter(({ loadedFrom }) => (loadedFrom === 'local' || loadedFrom === 'package.json') && mode === 'buildbot')
+    .map(({ packageName }) => packageName)
+
+  if (affectedPlugins.length === 0) return
+
+  logPluginNodeVersionWarning({ logs, pluginNames: affectedPlugins, userNodeVersion, currentNodeVersion })
 }
 
 const addPluginNodeVersion = function ({

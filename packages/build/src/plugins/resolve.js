@@ -36,6 +36,7 @@ const resolvePluginsPath = async function ({
     mode,
     nodePath,
     userNodeVersion,
+    logs,
   })
   const pluginsOptionsC = await addPinnedVersions({ pluginsOptions: pluginsOptionsB, api, siteInfo, sendStatus })
   const pluginsOptionsD = await addExpectedVersions({

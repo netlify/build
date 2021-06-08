@@ -1054,6 +1054,22 @@ test('Validate --node-path', async (t) => {
   await runFixture(t, 'node_version_simple', { flags: { nodePath: '/doesNotExist' } })
 })
 
+test('Provided --node-path version produces a node version warning if the build is being run in buildbot with local plugins', async (t) => {
+  const nodePath = getNodePath('9.0.0')
+  await runFixture(t, 'engines', { flags: { nodePath, mode: 'buildbot' } })
+})
+
+test('Provided --node-path version does not produce a node version warning if the build is being run locally', async (t) => {
+  const nodePath = getNodePath('9.0.0')
+  await runFixture(t, 'engines', { flags: { nodePath, mode: 'require' } })
+})
+
+test('Provided --node-path version does not produce a node version warning if plugins were installed via the UI', async (t) => {
+  const nodePath = getNodePath('8.2.0')
+  const defaultConfig = { plugins: [{ package: 'netlify-plugin-test' }] }
+  await runFixture(t, 'ui', { flags: { nodePath, defaultConfig } })
+})
+
 test('Plugins can execute local binaries', async (t) => {
   await runFixture(t, 'local_bin')
 })
