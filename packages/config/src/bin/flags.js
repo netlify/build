@@ -134,12 +134,7 @@ Default: false`,
 const USAGE = `netlify-config [OPTIONS...]
 
 Retrieve and resolve the Netlify configuration.
-The result is printed as a JSON object on stdout with the following properties:
-  - config     {object}  Resolved configuration object
-  - configPath {string?} Path to the configuration file (if any)
-  - buildDir   {string}  Absolute path to the build directory
-  - context    {string}  Build context
-  - branch     {string}  Repository branch`
+The result is printed as a JSON object on stdout.`
 
 // Remove `yargs`-specific options, shortcuts, dash-cased and aliases
 const isUserFlag = function (key, value) {
