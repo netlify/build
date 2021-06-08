@@ -5,6 +5,7 @@ const isPlainObj = require('is-plain-obj')
 const mapObj = require('map-obj')
 
 const { addErrorInfo } = require('../../error/info')
+const { logConfigMutation } = require('../../log/messages/plugins')
 const { EVENTS } = require('../events')
 
 // `netlifyConfig` is read-only except for specific properties.
@@ -13,7 +14,7 @@ const { EVENTS } = require('../events')
 //  - Execute custom logic, e.g. setting normalized properties when denormalized
 //    ones are being modified
 const preventConfigMutations = function (netlifyConfig, event) {
-  const state = {}
+  const state = { ongoingMutation: false }
   const topProxy = preventObjectMutations(netlifyConfig, [], { state, event })
   state.topProxy = topProxy
   return topProxy
@@ -99,7 +100,16 @@ const validateDelete = function ({ keys, state, event }, proxy, key) {
 }
 
 // This is called when a plugin author tries to set a `netlifyConfig` property
-const validateReadonlyProperty = function ({ method, keys, key, value, state: { topProxy }, event, reflectArgs }) {
+const validateReadonlyProperty = function ({
+  method,
+  keys,
+  key,
+  value,
+  state,
+  state: { topProxy, ongoingMutation },
+  event,
+  reflectArgs,
+}) {
   const propName = getPropName(keys, key)
 
   if (!(propName in MUTABLE_PROPS)) {
@@ -112,11 +122,17 @@ const validateReadonlyProperty = function ({ method, keys, key, value, state: { 
     throwValidationError(`"netlifyConfig.${propName}" cannot be modified after "${lastEvent}".`)
   }
 
-  if (handler !== undefined) {
-    handler(topProxy, value)
-  }
+  startLogConfigMutation({ state, ongoingMutation, value, propName })
 
-  return Reflect[method](...reflectArgs)
+  try {
+    if (handler !== undefined) {
+      handler(topProxy, value)
+    }
+
+    return Reflect[method](...reflectArgs)
+  } finally {
+    stopLogConfigMutation(state, ongoingMutation)
+  }
 }
 
 // Retrieve normalized property name
@@ -156,6 +172,28 @@ const NON_DYNAMIC_OBJECT_PROPS = new Set([
 
 const serializeKeys = function (keys) {
   return keys.map(String).join('.')
+}
+
+// Mutating a property often mutates others because:
+//  - Proxy handlers trigger each other, e.g. `set` triggers `defineProperty`
+//  - The `handler()` function might set another property
+// We only want to print the top-level mutation since this is the user-facing
+// one. Therefore, we keep track of whether a `Proxy` mutation is ongoing.
+const startLogConfigMutation = function ({ state, ongoingMutation, value, propName }) {
+  if (ongoingMutation) {
+    return
+  }
+
+  state.ongoingMutation = true
+  logConfigMutation(propName, value)
+}
+
+const stopLogConfigMutation = function (state, ongoingMutation) {
+  if (ongoingMutation) {
+    return
+  }
+
+  state.ongoingMutation = false
 }
 
 // When setting `build.command`, `build.commandOrigin` is set to "plugin"

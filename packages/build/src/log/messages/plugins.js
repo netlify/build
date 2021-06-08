@@ -1,5 +1,7 @@
 'use strict'
 
+const { inspect } = require('util')
+
 const { log, logArray, logWarning, logSubHeader } = require('../logger')
 
 const logPluginsFetchError = function (logs, message) {
@@ -40,9 +42,18 @@ const logDeploySuccess = function (logs) {
   log(logs, 'Site deploy was successfully initiated')
 }
 
+const logConfigMutation = function (propName, value) {
+  const mutationText =
+    value === undefined
+      ? `Netlify configuration property "${propName}" deleted.`
+      : `Netlify configuration property "${propName}" value changed to ${inspect(value, { colors: false })}.`
+  log(undefined, mutationText)
+}
+
 module.exports = {
   logPluginsFetchError,
   logPluginsList,
   logFailPluginWarning,
   logDeploySuccess,
+  logConfigMutation,
 }
