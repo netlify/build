@@ -1,5 +1,12 @@
 # Changelog
 
+### [6.7.3](https://www.github.com/netlify/build/compare/config-v6.7.2...config-v6.7.3) (2021-06-08)
+
+
+### Bug Fixes
+
+* `@netlify/config` `README` update ([#2946](https://www.github.com/netlify/build/issues/2946)) ([baf5a9a](https://www.github.com/netlify/build/commit/baf5a9aff5eb8a5040930189fc0406e46980a994))
+
 ### [6.7.2](https://www.github.com/netlify/build/compare/config-v6.7.1...config-v6.7.2) (2021-06-04)
 
 
