@@ -73,15 +73,15 @@ if (!version.startsWith('v8.')) {
     await runFixture(t, 'config_mutate_functions_directory_default')
   })
 
-  test('netlifyConfig.functions.star.directory mutations fail', async (t) => {
+  test('netlifyConfig.functions.star.directory mutations work', async (t) => {
     await runFixture(t, 'config_mutate_functions_directory_star')
   })
 
-  test('netlifyConfig.functions.directory mutations fail', async (t) => {
+  test('netlifyConfig.functions.directory mutations work', async (t) => {
     await runFixture(t, 'config_mutate_functions_directory_nested')
   })
 
-  test('netlifyConfig.build.functions mutations fail', async (t) => {
+  test('netlifyConfig.build.functions mutations work', async (t) => {
     await runFixture(t, 'config_mutate_functions_directory_build')
   })
 
