@@ -16,18 +16,15 @@ const normalizeFlags = function (flags, logs) {
   const combinedEnv = { ...env, ...rawFlagsA.env }
   const defaultFlags = getDefaultFlags(rawFlagsA, combinedEnv)
 
-  // Combine feature flags with their default values
-  const featureFlags = { ...defaultFlags.featureFlags, ...rawFlagsA.featureFlags }
-
   // The telemetry flag requires specific logic to compute
-  const telemetryFlag = computeTelemetry(rawFlagsA, combinedEnv, featureFlags)
+  const telemetryFlag = computeTelemetry(rawFlagsA, combinedEnv)
 
   const mergedFlags = {
     ...defaultFlags,
     ...rawFlagsA,
     ...telemetryFlag,
     statsdOpts: { ...defaultFlags.statsd, ...rawFlagsA.statsd },
-    featureFlags,
+    featureFlags: { ...defaultFlags.featureFlags, ...rawFlagsA.featureFlags },
   }
   const normalizedFlags = removeFalsy(mergedFlags)
 

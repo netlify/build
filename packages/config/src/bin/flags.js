@@ -115,6 +115,10 @@ Default: true`,
     describe: 'Options for testing only',
     hidden: true,
   },
+  featureFlags: {
+    describe: 'Comma-separated list of feature flags to enable unreleased features',
+    hidden: true,
+  },
   offline: {
     boolean: true,
     describe: `Do not send requests to the Netlify API to retrieve site settings.
