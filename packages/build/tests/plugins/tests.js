@@ -599,8 +599,12 @@ test('Do not allow overriding core plugins', async (t) => {
   await runFixture(t, 'core_override')
 })
 
-const runWithApiMock = async function (t, fixtureName, { testPlugin, ...flags } = {}, status = 200) {
-  const response = getPluginsList(testPlugin)
+const runWithApiMock = async function (
+  t,
+  fixtureName,
+  { testPlugin, response = getPluginsList(testPlugin), ...flags } = {},
+  status = 200,
+) {
   const { scheme, host, stopServer } = await startServer({
     path: PLUGINS_LIST_URL,
     response,
@@ -673,6 +677,10 @@ test('Only prints the list of plugin versions in verbose mode', async (t) => {
 
 test('Uses fallback when the plugins fetch fails', async (t) => {
   await runWithApiMock(t, 'plugins_cache', {}, 500)
+})
+
+test('Uses fallback when the plugins fetch succeeds with an invalid response', async (t) => {
+  await runWithApiMock(t, 'plugins_cache', { response: { error: 'test' } })
 })
 
 test('Can execute local binaries when using .netlify/plugins/', async (t) => {
