@@ -29,7 +29,12 @@ const checkForOldNodeVersions = function ({ pluginsOptions, userNodeVersion, cur
   if (mode !== 'buildbot' || satisfies(userNodeVersion, '>=12')) return
 
   const affectedPlugins = pluginsOptions
-    .filter(({ loadedFrom }) => (loadedFrom === 'local' || loadedFrom === 'package.json') && mode === 'buildbot')
+    // `expectedVersion` is only undefined when the plugin is not coming from our plugins directory, those are the cases
+    // where we want to log the warning
+    .filter(
+      ({ loadedFrom, expectedVersion }) =>
+        (loadedFrom === 'local' || loadedFrom === 'package.json') && expectedVersion === undefined,
+    )
     .map(({ packageName }) => packageName)
 
   if (affectedPlugins.length === 0) return
