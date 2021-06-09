@@ -19,16 +19,21 @@ const getFixtureConfig = async function (t, fixtureName, opts) {
   }
 }
 
-const runFixture = async function (t, fixtureName, { flags: { featureFlags = [], ...flags } = {}, env, ...opts } = {}) {
+const runFixture = async function (t, fixtureName, { flags = {}, env, ...opts } = {}) {
   const binaryPath = await BINARY_PATH
-  const featureFlagsA = [...DEFAULT_TEST_FEATURE_FLAGS, ...featureFlags].join(',')
-  const flagsA = { stable: true, buffer: true, branch: 'branch', featureFlags: featureFlagsA, ...flags }
+  const flagsA = {
+    stable: true,
+    buffer: true,
+    branch: 'branch',
+    featureFlags: { ...DEFAULT_TEST_FEATURE_FLAGS, ...flags.featureFlags },
+    ...flags,
+  }
   // Ensure local environment variables aren't used during development
   const envA = { NETLIFY_AUTH_TOKEN: '', ...env }
   return runFixtureCommon(t, fixtureName, { ...opts, flags: flagsA, env: envA, mainFunc, binaryPath })
 }
 
-const DEFAULT_TEST_FEATURE_FLAGS = ['netlify_config_default_publish']
+const DEFAULT_TEST_FEATURE_FLAGS = { netlify_config_default_publish: true }
 
 // In tests, make the return value stable so it can be snapshot
 const mainFunc = async function (flags) {

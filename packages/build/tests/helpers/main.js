@@ -22,6 +22,7 @@ const runFixture = async function (
   const flagsA = {
     debug: true,
     buffer: true,
+    featureFlags: { ...DEFAULT_TEST_FEATURE_FLAGS, ...flags.featureFlags },
     ...flags,
     testOpts: { silentLingeringProcesses: true, pluginsListUrl: 'test', ...flags.testOpts },
   }
@@ -39,6 +40,8 @@ const runFixture = async function (
   const mainFunc = programmatic ? netlifyBuild : getNetlifyBuildLogs
   return runFixtureCommon(t, fixtureName, { ...opts, flags: flagsA, env: envOptionA, mainFunc, binaryPath })
 }
+
+const DEFAULT_TEST_FEATURE_FLAGS = { netlify_config_default_publish: true }
 
 const getNetlifyBuildLogs = async function (flags) {
   const { logs } = await netlifyBuild(flags)

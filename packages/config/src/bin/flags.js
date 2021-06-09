@@ -3,11 +3,15 @@
 const filterObj = require('filter-obj')
 const yargs = require('yargs')
 
+const { normalizeCliFeatureFlags } = require('../options/feature_flags')
+
 // Parse CLI flags
 const parseFlags = function () {
-  const flags = yargs.options(FLAGS).usage(USAGE).parse()
-  const flagsA = filterObj(flags, isUserFlag)
-  return flagsA
+  const { featureFlags: cliFeatureFlags = '', ...flags } = yargs.options(FLAGS).usage(USAGE).parse()
+  const featureFlags = normalizeCliFeatureFlags(cliFeatureFlags)
+  const flagsA = { ...flags, featureFlags }
+  const flagsB = filterObj(flagsA, isUserFlag)
+  return flagsB
 }
 
 // List of CLI flags

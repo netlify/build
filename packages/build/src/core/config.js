@@ -33,6 +33,7 @@ const tLoadConfig = async function ({
   logs,
   testOpts,
   nodePath,
+  featureFlags,
 }) {
   const {
     configPath,
@@ -61,6 +62,7 @@ const tLoadConfig = async function ({
     offline,
     envOpt,
     testOpts,
+    featureFlags,
   })
   logConfigInfo({ logs, configPath, buildDir, netlifyConfig, context: contextA, debug })
 
@@ -103,6 +105,7 @@ const resolveFullConfig = async function ({
   offline,
   envOpt,
   testOpts,
+  featureFlags,
 }) {
   try {
     return await resolveConfig({
@@ -122,6 +125,7 @@ const resolveFullConfig = async function ({
       offline,
       env: envOpt,
       testOpts,
+      featureFlags,
     })
   } catch (error) {
     if (error.type === 'userError') {

@@ -2,10 +2,9 @@
 
 const { env } = require('process')
 
-// From `--featureFlags=a,b,c` to `{ a: true, b: true, c: true }`
-const normalizeFeatureFlags = function ({ featureFlags = '', ...rawFlags }) {
-  const normalizedFeatureFlags = Object.assign({}, ...featureFlags.split(',').filter(isNotEmpty).map(getFeatureFlag))
-  return { ...rawFlags, featureFlags: normalizedFeatureFlags }
+// From CLI `--featureFlags=a,b,c` to programmatic `{ a: true, b: true, c: true }`
+const normalizeCliFeatureFlags = function (cliFeatureFlags) {
+  return Object.assign({}, ...cliFeatureFlags.split(',').filter(isNotEmpty).map(getFeatureFlag))
 }
 
 const isNotEmpty = function (name) {
@@ -22,4 +21,4 @@ const DEFAULT_FEATURE_FLAGS = {
   buildbot_build_distribution_metrics: false,
 }
 
-module.exports = { normalizeFeatureFlags, DEFAULT_FEATURE_FLAGS }
+module.exports = { normalizeCliFeatureFlags, DEFAULT_FEATURE_FLAGS }

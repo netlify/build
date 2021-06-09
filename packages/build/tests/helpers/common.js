@@ -138,6 +138,10 @@ const getCliFlags = function (mainFlags, prefix = []) {
 }
 
 const getCliFlag = function ({ name, value, prefix }) {
+  if (name === 'featureFlags') {
+    return [`--${name}=${Object.entries(value).filter(isEnabledFeatureFlag).join(',')}`]
+  }
+
   if (isPlainObj(value)) {
     return getCliFlags(value, [...prefix, name])
   }
@@ -149,6 +153,10 @@ const getCliFlag = function ({ name, value, prefix }) {
   }
 
   return [`--${key}=${value}`]
+}
+
+const isEnabledFeatureFlag = function ([, enabled]) {
+  return enabled
 }
 
 const execMainFunc = async function ({ mainFunc, mainFlags, commandEnv }) {
