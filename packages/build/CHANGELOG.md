@@ -1,5 +1,12 @@
 # Changelog
 
+### [11.36.1](https://www.github.com/netlify/build/compare/build-v11.36.0...build-v11.36.1) (2021-06-09)
+
+
+### Bug Fixes
+
+* improve error handling of plugins list fetch error ([#2957](https://www.github.com/netlify/build/issues/2957)) ([414d405](https://www.github.com/netlify/build/commit/414d405845a8fd28e9cc46b706bec4f1662ebe61))
+
 ## [11.36.0](https://www.github.com/netlify/build/compare/build-v11.35.0...build-v11.36.0) (2021-06-08)
 
 
