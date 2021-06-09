@@ -5,6 +5,7 @@ const { resolve } = require('path')
 const { isDirectory } = require('path-type')
 
 const { throwError } = require('./error')
+const { warnBaseWithoutPublish } = require('./log/messages')
 
 // Retrieve the build directory used to resolve most paths.
 // This is (in priority order):
@@ -12,11 +13,14 @@ const { throwError } = require('./error')
 //  - `--repositoryRoot`
 //  - the current directory (default value of `--repositoryRoot`)
 const getBuildDir = async function ({
-  repositoryRoot,
   config: {
+    build,
     build: { base },
   },
+  repositoryRoot,
+  logs,
 }) {
+  warnBaseWithoutPublish({ logs, repositoryRoot, base, build })
   const buildDir = base === undefined ? repositoryRoot : resolve(repositoryRoot, base)
   await checkBuildDir(buildDir, repositoryRoot)
   return buildDir
