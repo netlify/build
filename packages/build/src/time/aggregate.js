@@ -8,10 +8,11 @@ const { createTimer, TOP_PARENT_TAG } = require('./main')
 //   - `run_netlify_build_per_type` aggregates timers but per system/plugin/user
 //   - each plugin timer is the sum of its event handlers
 const addAggregatedTimers = function (timers) {
-  const timersA = addPluginTimers(timers)
-  const timersB = addOthersTimers(timersA)
-  const timersC = addTypeTimers(timersB)
-  return timersC
+  const timersA = addRunPluginsTimer(timers)
+  const timersB = addPluginTimers(timersA)
+  const timersC = addOthersTimers(timersB)
+  const timersD = addTypeTimers(timersC)
+  return timersD
 }
 
 // Having a `total` timer is redundant since the buildbot already measures this.
@@ -38,30 +39,46 @@ const createOthersTimer = function (topTimers, { durationNs: totalTimerDurationN
 
 const OTHERS_STAGE_TAG = 'others'
 
-const addPluginTimers = function (timers) {
+// Measure the total time running plugins
+const addRunPluginsTimer = function (timers) {
   const pluginsTimers = timers.filter(isPluginTimer)
-  if (pluginsTimers.length === 0) {
-    return timers
-  }
-
-  const runPluginsTimer = createSumTimer(pluginsTimers, RUN_PLUGINS_STAGE_TAG)
-  const wholePluginsTimers = getWholePluginsTimers(pluginsTimers)
-  return [...timers, runPluginsTimer, ...wholePluginsTimers]
-}
-
-// Check if a timer relates to a Build plugin
-const isPluginTimer = function ({ category }) {
-  return category === 'pluginEvent'
+  return pluginsTimers.length === 0 ? timers : [...timers, createSumTimer(pluginsTimers, RUN_PLUGINS_STAGE_TAG)]
 }
 
 const RUN_PLUGINS_STAGE_TAG = 'run_plugins'
 
 // Retrieve one timer for each plugin, summing all its individual timers
 // (one per event handler)
-const getWholePluginsTimers = function (pluginsTimers) {
+const addPluginTimers = function (timers) {
+  const timersA = timers.filter((timer) => !isCommunityPluginTimer(timer))
+  const pluginsTimers = timersA.filter(isPluginTimer)
+  if (pluginsTimers.length === 0) {
+    return timersA
+  }
+
   const pluginPackages = getPluginPackages(pluginsTimers)
-  return pluginPackages.map((pluginPackage) => getWholePluginTimer(pluginPackage, pluginsTimers))
+  const wholePluginsTimers = pluginPackages.map((pluginPackage) => getWholePluginTimer(pluginPackage, pluginsTimers))
+  return [...timersA, ...wholePluginsTimers]
 }
+
+// We only measure plugins maintained by us, not community
+const isCommunityPluginTimer = function (timer) {
+  return isPluginTimer(timer) && !isNetlifyMaintainedPlugin(getPluginTimerPackage(timer))
+}
+
+const isNetlifyMaintainedPlugin = function (pluginPackage) {
+  return NETLIFY_MAINTAINED_PLUGINS.has(pluginPackage)
+}
+
+const NETLIFY_MAINTAINED_PLUGINS = new Set([
+  'netlify_plugin_gatsby_cache',
+  'netlify_plugin_sitemap',
+  'netlify_plugin_debug_cache',
+  'netlify_plugin_is_website_vulnerable',
+  'netlify_plugin_lighthouse',
+  'netlify_plugin_nextjs',
+  'netlify_plugin_gatsby',
+])
 
 const getPluginPackages = function (pluginsTimers) {
   const pluginPackages = pluginsTimers.map(getPluginTimerPackage)
@@ -76,6 +93,11 @@ const getWholePluginTimer = function (pluginPackage, pluginsTimers) {
 
 const getPluginTimerPackage = function ({ parentTag }) {
   return parentTag
+}
+
+// Check if a timer relates to a Build plugin
+const isPluginTimer = function ({ category }) {
+  return category === 'pluginEvent'
 }
 
 // Reports total time depending on whether it was system, plugin or user

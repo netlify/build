@@ -11,8 +11,12 @@ test('Does not send plugin timings if no plugins', async (t) => {
   t.snapshot(await getTimerRequestsString(t, 'simple'))
 })
 
-test('Sends timings of plugins', async (t) => {
-  t.snapshot(await getTimerRequestsString(t, 'plugin'))
+test('Sends timings of Netlify maintained plugins', async (t) => {
+  t.snapshot(await getTimerRequestsString(t, 'system_plugin'))
+})
+
+test('Does not send timings of community plugins', async (t) => {
+  t.snapshot(await getTimerRequestsString(t, 'community_plugin'))
 })
 
 test('Sends timing and distribution metrics if buildbot_build_distribution_metrics feature flag is enabled', async (t) => {
