@@ -12,8 +12,8 @@ const { mergeConfigs } = require('./utils/merge')
 // Make configuration paths relative to `buildDir` and converts them to
 // absolute paths
 const resolveConfigPaths = async function ({ config, repositoryRoot, baseRelDir, logs }) {
-  warnBaseWithoutPublish(logs, config)
   const configA = resolvePaths(config, REPOSITORY_RELATIVE_PROPS, repositoryRoot)
+  warnBaseWithoutPublish({ logs, repositoryRoot, config: configA })
   const buildDir = await getBuildDir({ repositoryRoot, config: configA })
   const baseRel = baseRelDir ? buildDir : repositoryRoot
   const configB = resolvePaths(configA, FILE_PATH_CONFIG_PROPS, baseRel)
