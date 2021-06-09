@@ -1,5 +1,12 @@
 # Changelog
 
+### [11.36.3](https://www.github.com/netlify/build/compare/build-v11.36.2...build-v11.36.3) (2021-06-09)
+
+
+### Bug Fixes
+
+* do not record plugins duration if no plugins ([#2962](https://www.github.com/netlify/build/issues/2962)) ([dee54bf](https://www.github.com/netlify/build/commit/dee54bf8c0bf28aa17b37144da282ca3f4f4b637))
+
 ### [11.36.2](https://www.github.com/netlify/build/compare/build-v11.36.1...build-v11.36.2) (2021-06-09)
 
 
