@@ -26,7 +26,7 @@ const addPluginsNodeVersion = function ({ pluginsOptions, mode, nodePath, userNo
 // the Node.js versions our build system supports and the Node.js versions @netlify/build supports -
 // https://github.com/netlify/pod-workflow/issues/219
 const checkForOldNodeVersions = function ({ pluginsOptions, userNodeVersion, currentNodeVersion, logs, mode }) {
-  if (satisfies(userNodeVersion, '>=12')) return
+  if (mode !== 'buildbot' || satisfies(userNodeVersion, '>=12')) return
 
   const affectedPlugins = pluginsOptions
     .filter(({ loadedFrom }) => (loadedFrom === 'local' || loadedFrom === 'package.json') && mode === 'buildbot')
