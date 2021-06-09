@@ -41,10 +41,9 @@ const logFailPluginWarning = function (methodName, event) {
 const logPluginNodeVersionWarning = function ({ logs, pluginNames, userNodeVersion, currentNodeVersion }) {
   logWarning(
     logs,
-    `Warning: we have detected the following plugins ${pluginNames.join(
+    `Warning: please ensure the following build plugins are compatible with Node.js ${currentNodeVersion}: ${pluginNames.join(
       ', ',
-    )} have been installed locally or via package.json. The Node.js version used for the execution of this types of plugins in our build system will be changing soon (in your case ${userNodeVersion}) to always rely on the version we set for our system (version ${currentNodeVersion}). If you're relying on a plugin from our plugin list it almost certainly supports this, however if that is not the case please double check the plugin compatibility.
-For more info or questions see - https://answers.netlify.com/t/breaking-change-using-system-node-version-to-run-build-plugins/38680`,
+    )}. Those plugins are currently run with Node.js ${userNodeVersion} and we will soon be changing it to always rely on our system's Node.js version (currently ${currentNodeVersion}). For more info see - https://answers.netlify.com/t/breaking-change-using-system-node-version-to-run-build-plugins/38680`,
   )
 }
 
