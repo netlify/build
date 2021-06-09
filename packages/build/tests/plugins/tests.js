@@ -1061,7 +1061,7 @@ test('Provided --node-path version produces a node version warning if the build 
 
 test('Provided --node-path version does not produce a node version warning if the build is being run locally', async (t) => {
   const nodePath = getNodePath('9.0.0')
-  await runFixture(t, 'engines', { flags: { nodePath, mode: 'require' } })
+  await runFixture(t, 'engines', { flags: { nodePath, mode: 'cli' } })
 })
 
 test('Provided --node-path version does not produce a node version warning if plugins were installed via the UI', async (t) => {
