@@ -4,9 +4,8 @@ const { resolve } = require('path')
 
 const { get, set } = require('dot-prop')
 const pathExists = require('path-exists')
-const { isDirectory } = require('path-type')
 
-const { throwError } = require('./error')
+const { getBuildDir } = require('./build_dir')
 const { warnBaseWithoutPublish } = require('./log/messages')
 const { mergeConfigs } = require('./utils/merge')
 
@@ -15,7 +14,7 @@ const { mergeConfigs } = require('./utils/merge')
 const resolveConfigPaths = async function ({ config, repositoryRoot, baseRelDir, logs }) {
   warnBaseWithoutPublish(logs, config)
   const configA = resolvePaths(config, REPOSITORY_RELATIVE_PROPS, repositoryRoot)
-  const buildDir = await getBuildDir(repositoryRoot, configA)
+  const buildDir = await getBuildDir({ repositoryRoot, config: configA })
   const baseRel = baseRelDir ? buildDir : repositoryRoot
   const configB = resolvePaths(configA, FILE_PATH_CONFIG_PROPS, baseRel)
   const configC = await addDefaultPaths(configB, baseRel)
@@ -50,29 +49,6 @@ const resolvePath = function (baseRel, path) {
 // We allow paths in configuration file to start with /
 // In that case, those are actually relative paths not absolute.
 const LEADING_SLASH_REGEXP = /^\/+/
-
-// Retrieve the build directory used to resolve most paths.
-// This is (in priority order):
-//  - `build.base`
-//  - `--repositoryRoot`
-//  - the current directory (default value of `--repositoryRoot`)
-const getBuildDir = async function (repositoryRoot, { build: { base = repositoryRoot } }) {
-  const buildDir = resolve(repositoryRoot, base)
-  await checkBuildDir(buildDir, repositoryRoot)
-  return buildDir
-}
-
-// The build directory is used as the current directory of build commands and
-// build plugins. Therefore it must exist.
-// We already check `repositoryRoot` earlier in the code, so only need to check
-// `buildDir` when it is the base directory instead.
-const checkBuildDir = async function (buildDir, repositoryRoot) {
-  if (buildDir === repositoryRoot || (await isDirectory(buildDir))) {
-    return
-  }
-
-  throwError(`Base directory does not exist: ${buildDir}`)
-}
 
 // Some configuration properties have default values that are only set if a
 // specific directory/file exists in the build directory
