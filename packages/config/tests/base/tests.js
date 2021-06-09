@@ -47,18 +47,14 @@ test('Base directory does not exist', async (t) => {
   await runFixture(t, 'base_invalid')
 })
 
-test('Warns when "base" is used without "publish"', async (t) => {
+test('Use "base" as default value for "publish"', async (t) => {
   await runFixture(t, 'base_without_publish')
 })
 
-test('Warns when "base" is used with empty "publish"', async (t) => {
+test('Use "base" as "publish" when it is an empty string', async (t) => {
   await runFixture(t, 'base_without_publish', { flags: { defaultConfig: { build: { publish: '' } } } })
 })
 
-test('Does not warn when "base" is used with "publish"', async (t) => {
+test('Use "base" as "publish" when it is /', async (t) => {
   await runFixture(t, 'base_without_publish', { flags: { defaultConfig: { build: { publish: '/' } } } })
-})
-
-test('Does not warn when "base" is "/"', async (t) => {
-  await runFixture(t, 'base_without_publish', { flags: { inlineConfig: { build: { base: '/' } } } })
 })

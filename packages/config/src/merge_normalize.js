@@ -25,9 +25,9 @@ const normalizeBeforeConfigMerge = function (config, origin) {
 }
 
 // Validation and normalization logic performed after merging
-const normalizeAfterConfigMerge = function (config) {
+const normalizeAfterConfigMerge = function (config, featureFlags) {
   validatePreNormalizeConfig(config)
-  const configA = normalizeConfig(config)
+  const configA = normalizeConfig(config, featureFlags)
   validatePostNormalizeConfig(configA)
   return configA
 }
