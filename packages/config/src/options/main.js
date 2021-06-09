@@ -1,5 +1,6 @@
 'use strict'
 
+const { resolve } = require('path')
 const process = require('process')
 
 const { isDirectory } = require('path-type')
@@ -80,25 +81,29 @@ const normalizeOpts = async function (opts) {
   const optsB = { ...optsA, branch }
 
   const optsC = removeFalsy(optsB)
-  await checkDirs(optsC)
+  const optsD = await normalizeDirs(optsC)
 
-  const baseOverride = await getBaseOverride(optsC)
-  const optsD = { ...baseOverride, ...optsC }
-  return optsD
+  const baseOverride = await getBaseOverride(optsD)
+  const optsE = { ...baseOverride, ...optsD }
+  return optsE
 }
 
-// Verify that options point to existing directories
-const checkDirs = async function (opts) {
-  await Promise.all(DIR_OPTIONS.map((optName) => checkDir(opts, optName)))
+// Verify that options point to existing directories.
+// Also resolve them to absolute file paths.
+const normalizeDirs = async function (opts) {
+  const dirOpts = await Promise.all(DIR_OPTIONS.map((optName) => normalizeDir(opts, optName)))
+  return Object.assign({}, opts, ...dirOpts)
 }
 
 const DIR_OPTIONS = ['cwd', 'repositoryRoot']
 
-const checkDir = async function (opts, optName) {
+const normalizeDir = async function (opts, optName) {
   const path = opts[optName]
+  const resolvedPath = resolve(path)
   if (!(await isDirectory(path))) {
-    throwError(`Option '${optName}' points to a non-existing directory: ${path}`)
+    throwError(`Option '${optName}' points to a non-existing directory: ${resolvedPath}`)
   }
+  return { [optName]: resolvedPath }
 }
 
 module.exports = { addDefaultOpts, normalizeOpts }
