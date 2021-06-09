@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.9.0](https://www.github.com/netlify/build/compare/config-v6.8.0...config-v6.9.0) (2021-06-09)
+
+
+### Features
+
+* simplify code related to `base` directory ([#2951](https://www.github.com/netlify/build/issues/2951)) ([bfffc2e](https://www.github.com/netlify/build/commit/bfffc2e86a82ded738074b1ed32ce2bf0d8d4a91))
+
 ## [6.8.0](https://www.github.com/netlify/build/compare/config-v6.7.3...config-v6.8.0) (2021-06-09)
 
 
