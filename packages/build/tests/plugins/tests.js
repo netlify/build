@@ -202,9 +202,14 @@ test('constants.CACHE_DIR CI', async (t) => {
   await runFixture(t, 'cache', { flags: { cacheDir: '/opt/build/cache' } })
 })
 
-test('constants.IS_LOCAL CI', async (t) => {
-  await runFixture(t, 'is_local', { flags: { mode: 'buildbot' } })
-})
+// Node.js v8 test executions trigger a plugin warning when run with mode buildbot related with the Node.js version used
+// to execute the plugins. Not too critical given production executions always run with Node v12.x
+// @TODO remove once we drop Node v8 support or remove the plugin Node.js version warning - https://github.com/netlify/build/blob/6e718e3f040397ba30da5c32b275b914381685e0/packages/build/src/log/messages/plugins.js#L41-L48
+if (!version.startsWith('v8.')) {
+  test('constants.IS_LOCAL CI', async (t) => {
+    await runFixture(t, 'is_local', { flags: { mode: 'buildbot' } })
+  })
+}
 
 test('constants.SITE_ID', async (t) => {
   await runFixture(t, 'site_id', { flags: { siteId: 'test' } })

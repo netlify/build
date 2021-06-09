@@ -86,9 +86,14 @@ test('utils.status.show() are printed locally', async (t) => {
   await runFixture(t, 'print')
 })
 
-test('utils.status.show() are not printed in production', async (t) => {
-  await runFixture(t, 'print', { flags: { mode: 'buildbot' } })
-})
+// Node.js v8 test executions trigger a plugin warning when run with mode buildbot related with the Node.js version used
+// to execute the plugins. Not too critical given production executions always run with Node v12.x
+// @TODO remove once we drop Node v8 support or remove the plugin Node.js version warning - https://github.com/netlify/build/blob/6e718e3f040397ba30da5c32b275b914381685e0/packages/build/src/log/messages/plugins.js#L41-L48
+if (!nodeVersion.startsWith('v8.')) {
+  test('utils.status.show() are not printed in production', async (t) => {
+    await runFixture(t, 'print', { flags: { mode: 'buildbot' } })
+  })
+}
 
 test('utils.status.show() statuses are sent to the API', async (t) => {
   await runWithApiMock(t, 'print')
