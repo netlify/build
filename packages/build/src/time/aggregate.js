@@ -81,7 +81,7 @@ const getPluginTimerPackage = function ({ parentTag }) {
 // Reports total time depending on whether it was system, plugin or user
 const addTypeTimers = function (timers) {
   const topTimers = timers.filter(isTopTimer)
-  const typeTimers = TYPE_TIMERS.flatMap(({ name, stages }) => getTypeTimer(name, stages, topTimers))
+  const typeTimers = TYPE_TIMERS.map(({ name, stages }) => getTypeTimer(name, stages, topTimers)).filter(Boolean)
   return [...timers, ...typeTimers]
 }
 
@@ -93,6 +93,11 @@ const TYPE_TIMERS = [
 
 const getTypeTimer = function (name, stages, topTimers) {
   const topTimersA = topTimers.filter(({ stageTag }) => stages.includes(stageTag))
+
+  if (topTimersA.length === 0) {
+    return
+  }
+
   const typeTimer = createSumTimer(topTimersA, name, 'run_netlify_build_per_type')
   return typeTimer
 }

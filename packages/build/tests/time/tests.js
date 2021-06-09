@@ -7,7 +7,7 @@ const test = require('ava')
 const { runFixture } = require('../helpers/main')
 const { startUdpServer } = require('../helpers/udp_server')
 
-test('Sends timings to --statsd.host|port', async (t) => {
+test('Does not send plugin timings if no plugins', async (t) => {
   t.snapshot(await getTimerRequestsString(t, 'simple'))
 })
 
