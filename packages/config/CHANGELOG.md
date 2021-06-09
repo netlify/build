@@ -1,5 +1,12 @@
 # Changelog
 
+### [6.9.1](https://www.github.com/netlify/build/compare/config-v6.9.0...config-v6.9.1) (2021-06-09)
+
+
+### Bug Fixes
+
+* move build directory logic to its own file ([#2969](https://www.github.com/netlify/build/issues/2969)) ([db6eba3](https://www.github.com/netlify/build/commit/db6eba3ad9b72662ee23615b97408d064fcccd21))
+
 ## [6.9.0](https://www.github.com/netlify/build/compare/config-v6.8.0...config-v6.9.0) (2021-06-09)
 
 
