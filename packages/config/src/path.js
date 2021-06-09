@@ -13,11 +13,11 @@ const { resolvePath } = require('./files')
 //  - a `netlify.*` file in the `repositoryRoot/{base}`
 //  - a `netlify.*` file in the `repositoryRoot`
 //  - a `netlify.*` file in the current directory or any parent
-const getConfigPath = async function ({ configOpt, cwd, repositoryRoot, base }) {
+const getConfigPath = async function ({ configOpt, cwd, repositoryRoot, configBase }) {
   const configPath = await pLocate(
     [
       searchConfigOpt(cwd, configOpt),
-      searchBaseConfigFile(repositoryRoot, base),
+      searchBaseConfigFile(repositoryRoot, configBase),
       searchConfigFile(repositoryRoot),
       findUp(FILENAME, { cwd }),
     ],
@@ -36,12 +36,12 @@ const searchConfigOpt = function (cwd, configOpt) {
 }
 
 // Look for `repositoryRoot/{base}/netlify.*`
-const searchBaseConfigFile = function (repositoryRoot, base) {
-  if (base === undefined) {
+const searchBaseConfigFile = function (repositoryRoot, configBase) {
+  if (configBase === undefined) {
     return
   }
 
-  const basePath = resolvePath(repositoryRoot, base)
+  const basePath = resolvePath(repositoryRoot, configBase)
   return searchConfigFile(basePath)
 }
 
