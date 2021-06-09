@@ -2,6 +2,7 @@
 
 const { resolve } = require('path')
 
+const { get, set } = require('dot-prop')
 const pathExists = require('path-exists')
 const { isDirectory } = require('path-type')
 
@@ -11,35 +12,29 @@ const { mergeConfigs } = require('./utils/merge')
 
 // Make configuration paths relative to `buildDir` and converts them to
 // absolute paths
-const handleFiles = async function ({ config: { build, ...config }, repositoryRoot, baseRelDir, logs }) {
-  warnBaseWithoutPublish(logs, build)
-  const buildA = resolvePaths(build, REPOSITORY_RELATIVE_PROPS, repositoryRoot)
-  const buildDir = await getBuildDir(repositoryRoot, buildA)
+const handleFiles = async function ({ config, repositoryRoot, baseRelDir, logs }) {
+  warnBaseWithoutPublish(logs, config)
+  const configA = resolvePaths(config, REPOSITORY_RELATIVE_PROPS, repositoryRoot)
+  const buildDir = await getBuildDir(repositoryRoot, configA)
   const baseRel = baseRelDir ? buildDir : repositoryRoot
-  const buildB = resolvePaths(buildA, BUILD_DIR_RELATIVE_PROPS, baseRel)
-  const configA = resolvePaths(config, ['functionsDirectory'], baseRel)
-  const configB = await addDefaultPaths({ ...configA, build: buildB }, baseRel)
-
-  return { config: configB, buildDir }
+  const configB = resolvePaths(configA, FILE_PATH_CONFIG_PROPS, baseRel)
+  const configC = await addDefaultPaths(configB, baseRel)
+  return { config: configC, buildDir }
 }
 
 // All file paths in the configuration file.
 // Most are relative to `buildDir` (if `baseRelDir` is `true`). But `build.base`
 // itself is never relative to `buildDir` since it is contained in it.
-const REPOSITORY_RELATIVE_PROPS = ['base']
-const BUILD_DIR_RELATIVE_PROPS = ['publish', 'edge_handlers']
+const REPOSITORY_RELATIVE_PROPS = ['build.base']
+const FILE_PATH_CONFIG_PROPS = ['functionsDirectory', 'build.publish', 'build.edge_handlers']
 
-const resolvePaths = function (build, propNames, baseRel) {
-  return propNames.reduce((buildA, propName) => resolvePathProp(buildA, propName, baseRel), build)
+const resolvePaths = function (config, propNames, baseRel) {
+  return propNames.reduce((configA, propName) => resolvePathProp(configA, propName, baseRel), config)
 }
 
-const resolvePathProp = function (object, propName, baseRel) {
-  if (object[propName] === undefined) {
-    return object
-  }
-
-  const path = resolvePath(baseRel, object[propName])
-  return { ...object, [propName]: path }
+const resolvePathProp = function (config, propName, baseRel) {
+  const path = get(config, propName)
+  return path === undefined ? config : set(config, propName, resolvePath(baseRel, path))
 }
 
 const resolvePath = function (baseRel, path) {
@@ -61,7 +56,7 @@ const LEADING_SLASH_REGEXP = /^\/+/
 //  - `build.base`
 //  - `--repositoryRoot`
 //  - the current directory (default value of `--repositoryRoot`)
-const getBuildDir = async function (repositoryRoot, { base = repositoryRoot }) {
+const getBuildDir = async function (repositoryRoot, { build: { base = repositoryRoot } }) {
   const buildDir = resolve(repositoryRoot, base)
   await checkBuildDir(buildDir, repositoryRoot)
   return buildDir
