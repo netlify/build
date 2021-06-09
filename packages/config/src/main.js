@@ -5,10 +5,11 @@ require('./utils/polyfills')
 
 const { getApiClient } = require('./api/client')
 const { getSiteInfo } = require('./api/site_info')
+const { getInitialBase } = require('./base')
 const { mergeContext } = require('./context')
 const { parseDefaultConfig } = require('./default')
 const { getEnv } = require('./env/main')
-const { handleFiles } = require('./files')
+const { resolveConfigPaths } = require('./files')
 const { getInlineConfig } = require('./inline_config')
 const { cleanupConfig } = require('./log/cleanup')
 const { logResult } = require('./log/main')
@@ -80,7 +81,12 @@ const resolveConfig = async function (opts) {
     logs,
   })
 
-  const { config: configA, buildDir } = await handleFiles({ config, repositoryRoot, baseRelDir: baseRelDirA, logs })
+  const { config: configA, buildDir } = await resolveConfigPaths({
+    config,
+    repositoryRoot,
+    baseRelDir: baseRelDirA,
+    logs,
+  })
 
   const env = await getEnv({
     mode,
@@ -140,12 +146,11 @@ const loadConfig = async function ({
   repositoryRoot,
   branch,
   defaultConfig,
-  defaultConfig: { build: { base: defaultBase } = {} },
   inlineConfig,
-  inlineConfig: { build: { base: initialBase = defaultBase } = {} },
   baseRelDir,
   logs,
 }) {
+  const initialBase = getInitialBase({ defaultConfig, inlineConfig })
   const {
     configPath,
     config,

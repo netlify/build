@@ -1,5 +1,19 @@
 # Changelog
 
+### [6.9.2](https://www.github.com/netlify/build/compare/config-v6.9.1...config-v6.9.2) (2021-06-09)
+
+
+### Bug Fixes
+
+* refactor warning message related to monorepo `publish` default value ([#2970](https://www.github.com/netlify/build/issues/2970)) ([09b50ac](https://www.github.com/netlify/build/commit/09b50acb82c10eccbf96752e76e47907e50c029f))
+
+### [6.9.1](https://www.github.com/netlify/build/compare/config-v6.9.0...config-v6.9.1) (2021-06-09)
+
+
+### Bug Fixes
+
+* move build directory logic to its own file ([#2969](https://www.github.com/netlify/build/issues/2969)) ([db6eba3](https://www.github.com/netlify/build/commit/db6eba3ad9b72662ee23615b97408d064fcccd21))
+
 ## [6.9.0](https://www.github.com/netlify/build/compare/config-v6.8.0...config-v6.9.0) (2021-06-09)
 
 
