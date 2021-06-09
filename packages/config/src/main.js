@@ -165,11 +165,13 @@ const loadConfig = async function ({
   })
 
   // No second pass needed if:
-  //  - there is no `build.base`
-  //  - `build.base` is the same as the `Base directory` UI setting (already used in the first round)
-  //  - `baseRelDir` feature flag is not used. This feature flag was introduced to ensure
-  //    backward compatibility.
-  if (!baseRelDir || base === undefined || base === initialBase) {
+  //  - there is no `build.base` (in which case both `base` and `initialBase`
+  //    are `undefined`)
+  //  - `build.base` is the same as the `Base directory` UI setting (already
+  //    used in the first round)
+  //  - `baseRelDir` feature flag is not used. This feature flag was introduced
+  //    to ensure backward compatibility.
+  if (!baseRelDir || base === initialBase) {
     return { configPath, config }
   }
 
