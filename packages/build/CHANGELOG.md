@@ -1,5 +1,12 @@
 # Changelog
 
+## [11.37.0](https://www.github.com/netlify/build/compare/build-v11.36.3...build-v11.37.0) (2021-06-09)
+
+
+### Features
+
+* only monitor the duration of Netlify maintained plugins ([#2967](https://www.github.com/netlify/build/issues/2967)) ([1968e34](https://www.github.com/netlify/build/commit/1968e344512ea2ff231f18cb608f88ef37c58278))
+
 ### [11.36.3](https://www.github.com/netlify/build/compare/build-v11.36.2...build-v11.36.3) (2021-06-09)
 
 
