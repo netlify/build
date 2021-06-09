@@ -4,6 +4,7 @@ const oldPluginsList = require('@netlify/plugins-list')
 // TODO: replace with `Object.fromEntries()` after dropping Node <12.0.0
 const fromEntries = require('@ungap/from-entries')
 const got = require('got')
+const isPlainObj = require('is-plain-obj')
 
 const { logPluginsList } = require('../log/messages/plugins')
 const { logPluginsFetchError } = require('../log/messages/plugins')
@@ -31,6 +32,11 @@ const getPluginsList = async function ({ debug, logs, testOpts: { pluginsListUrl
 const fetchPluginsList = async function ({ logs, pluginsListUrl }) {
   try {
     const { body } = await got(pluginsListUrl, { json: true, timeout: PLUGINS_LIST_TIMEOUT })
+
+    if (!isValidPluginsList(body)) {
+      throw new Error(`Request succeeded but with an invalid response:\n${JSON.stringify(body, null, 2)}`)
+    }
+
     return body
     // The Netlify Site should be up. This is a fallback.
     // `oldPluginsList` might not contain the latest plugins versions:
@@ -47,6 +53,10 @@ const fetchPluginsList = async function ({ logs, pluginsListUrl }) {
 const PLUGINS_LIST_URL = 'https://netlify-plugins.netlify.app/plugins.json'
 // 1 minute HTTP request timeout
 const PLUGINS_LIST_TIMEOUT = 6e4
+
+const isValidPluginsList = function (pluginsList) {
+  return Array.isArray(pluginsList) && pluginsList.every(isPlainObj)
+}
 
 const normalizePluginsList = function (pluginsList) {
   return fromEntries(pluginsList.map(normalizePluginItem))
