@@ -43,7 +43,7 @@ const logPluginNodeVersionWarning = function ({ logs, pluginNames, userNodeVersi
     logs,
     `Warning: please ensure the following Build Plugins are compatible with Node.js ${currentNodeVersion}: ${pluginNames.join(
       ', ',
-    )}. These plugins currently run on Node.js ${userNodeVersion}. Due to upcoming changes, they will soon run on the build system's Node.js version (currently ${currentNodeVersion}). For more info: https://answers.netlify.com/t/breaking-change-using-system-node-version-to-run-build-plugins/38680`,
+    )}. These plugins currently run on Node.js ${userNodeVersion}. Due to upcoming changes, they will soon run on the build system's Node.js version (currently ${currentNodeVersion}). For more info: http://ntl.fyi/build-plugins-node-versions`,
   )
 }
 
