@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.8.0](https://www.github.com/netlify/build/compare/config-v6.7.3...config-v6.8.0) (2021-06-09)
+
+
+### Features
+
+* refactor configuration file paths resolution ([#2954](https://www.github.com/netlify/build/issues/2954)) ([d059450](https://www.github.com/netlify/build/commit/d0594507501936a2eaba2b59c912d51962f738b8))
+
 ### [6.7.3](https://www.github.com/netlify/build/compare/config-v6.7.2...config-v6.7.3) (2021-06-08)
 
 
