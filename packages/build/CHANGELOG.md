@@ -1,5 +1,12 @@
 # Changelog
 
+### [11.37.1](https://www.github.com/netlify/build/compare/build-v11.37.0...build-v11.37.1) (2021-06-10)
+
+
+### Bug Fixes
+
+* force release of Build ([#2981](https://www.github.com/netlify/build/issues/2981)) ([a64994b](https://www.github.com/netlify/build/commit/a64994b5bc296056bf9bc51a1c21fcb157c86edd))
+
 ## [11.37.0](https://www.github.com/netlify/build/compare/build-v11.36.3...build-v11.37.0) (2021-06-09)
 
 
