@@ -1,5 +1,12 @@
 # Changelog
 
+### [7.0.1](https://www.github.com/netlify/build/compare/config-v7.0.0...config-v7.0.1) (2021-06-10)
+
+
+### Bug Fixes
+
+* feature flags logging in `@netlify/config` ([#2993](https://www.github.com/netlify/build/issues/2993)) ([03e2978](https://www.github.com/netlify/build/commit/03e2978174ce6e357b66d6df054a441facbfd52d))
+
 ## [7.0.0](https://www.github.com/netlify/build/compare/config-v6.10.0...config-v7.0.0) (2021-06-10)
 
 
