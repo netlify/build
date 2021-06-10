@@ -1,5 +1,16 @@
 # Changelog
 
+## [7.0.0](https://www.github.com/netlify/build/compare/config-v6.10.0...config-v7.0.0) (2021-06-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* improve support for monorepo sites without a `publish` directory (#2988)
+
+### Features
+
+* improve support for monorepo sites without a `publish` directory ([#2988](https://www.github.com/netlify/build/issues/2988)) ([1fcad8a](https://www.github.com/netlify/build/commit/1fcad8a81c35060fbc3ec8cb15ade9762579a166))
+
 ## [6.10.0](https://www.github.com/netlify/build/compare/config-v6.9.2...config-v6.10.0) (2021-06-10)
 
 
