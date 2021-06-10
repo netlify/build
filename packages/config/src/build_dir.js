@@ -19,8 +19,9 @@ const getBuildDir = async function ({
   },
   repositoryRoot,
   logs,
+  featureFlags,
 }) {
-  warnBaseWithoutPublish({ logs, repositoryRoot, base, build })
+  warnBaseWithoutPublish({ logs, repositoryRoot, base, build, featureFlags })
   const buildDir = base === undefined ? repositoryRoot : resolve(repositoryRoot, base)
   await checkBuildDir(buildDir, repositoryRoot)
   return buildDir
