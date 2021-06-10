@@ -55,6 +55,7 @@ const resolveConfig = async function (opts) {
     mode,
     debug,
     logs,
+    featureFlags,
   } = await normalizeOpts(optsA)
 
   const { siteInfo, accounts, addons } = await getSiteInfo({ api, siteId, mode, testOpts })
@@ -79,6 +80,7 @@ const resolveConfig = async function (opts) {
     inlineConfig: inlineConfigA,
     baseRelDir: baseRelDirA,
     logs,
+    featureFlags,
   })
 
   const { config: configA, buildDir } = await resolveConfigPaths({
@@ -86,6 +88,7 @@ const resolveConfig = async function (opts) {
     repositoryRoot,
     baseRelDir: baseRelDirA,
     logs,
+    featureFlags,
   })
 
   const env = await getEnv({
@@ -149,6 +152,7 @@ const loadConfig = async function ({
   inlineConfig,
   baseRelDir,
   logs,
+  featureFlags,
 }) {
   const initialBase = getInitialBase({ defaultConfig, inlineConfig })
   const {
@@ -167,6 +171,7 @@ const loadConfig = async function ({
     inlineConfig,
     base: initialBase,
     logs,
+    featureFlags,
   })
 
   // No second pass needed if:
@@ -189,6 +194,7 @@ const loadConfig = async function ({
     inlineConfig,
     base,
     logs,
+    featureFlags,
   })
 
   // Since we don't recurse anymore, we keep the original `build.base` that was used
@@ -208,12 +214,21 @@ const getFullConfig = async function ({
   inlineConfig,
   base,
   logs,
+  featureFlags,
 }) {
   const configPath = await getConfigPath({ configOpt, cwd, repositoryRoot, base })
 
   try {
     const config = await parseConfig(configPath)
-    const configA = mergeAndNormalizeConfig({ config, defaultConfig, inlineConfig, context, branch, logs })
+    const configA = mergeAndNormalizeConfig({
+      config,
+      defaultConfig,
+      inlineConfig,
+      context,
+      branch,
+      logs,
+      featureFlags,
+    })
     return { configPath, config: configA }
   } catch (error) {
     const configName = configPath === undefined ? '' : ` file ${configPath}`
@@ -229,7 +244,15 @@ const getFullConfig = async function ({
 // Before and after those steps, also performs validation and normalization.
 // Those need to be done at different stages depending on whether they should
 // happen before/after the merges mentioned above.
-const mergeAndNormalizeConfig = function ({ config, defaultConfig, inlineConfig, context, branch, logs }) {
+const mergeAndNormalizeConfig = function ({
+  config,
+  defaultConfig,
+  inlineConfig,
+  context,
+  branch,
+  logs,
+  featureFlags,
+}) {
   const configA = normalizeBeforeConfigMerge(config, CONFIG_ORIGIN)
   const defaultConfigA = normalizeBeforeConfigMerge(defaultConfig, UI_ORIGIN)
   const inlineConfigA = normalizeBeforeConfigMerge(inlineConfig, CONFIG_ORIGIN)
@@ -237,7 +260,7 @@ const mergeAndNormalizeConfig = function ({ config, defaultConfig, inlineConfig,
   const configB = mergeConfigs([defaultConfigA, configA, inlineConfigA])
   const configC = mergeContext({ config: configB, context, branch, logs })
 
-  const configD = normalizeAfterConfigMerge(configC)
+  const configD = normalizeAfterConfigMerge(configC, featureFlags)
   return configD
 }
 
