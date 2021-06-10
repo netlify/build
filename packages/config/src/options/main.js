@@ -12,26 +12,25 @@ const { removeFalsy } = require('../utils/remove_falsy')
 
 const { getBaseOverride } = require('./base')
 const { getBranch } = require('./branch')
-const { normalizeFeatureFlags, DEFAULT_FEATURE_FLAGS } = require('./feature_flags')
+const { DEFAULT_FEATURE_FLAGS } = require('./feature_flags')
 const { getRepositoryRoot } = require('./repository_root')
 
 // Assign default options
 const addDefaultOpts = function (opts = {}) {
   const rawOpts = removeFalsy(opts)
-  const rawOptsA = normalizeFeatureFlags(rawOpts)
 
-  const defaultOpts = getDefaultOpts(rawOptsA)
+  const defaultOpts = getDefaultOpts(rawOpts)
   const mergedOpts = {
     ...defaultOpts,
-    ...rawOptsA,
-    featureFlags: { ...defaultOpts.featureFlags, ...rawOptsA.featureFlags },
+    ...rawOpts,
+    featureFlags: { ...defaultOpts.featureFlags, ...rawOpts.featureFlags },
   }
   const normalizedOpts = removeFalsy(mergedOpts)
 
   const logs = getBufferLogs(normalizedOpts)
   const normalizedOptsA = { ...normalizedOpts, logs }
 
-  logOpts(rawOptsA, normalizedOptsA)
+  logOpts(rawOpts, normalizedOptsA)
 
   return normalizedOptsA
 }

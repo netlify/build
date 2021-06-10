@@ -8,6 +8,7 @@ const yargs = require('yargs')
 
 require('../utils/polyfills')
 
+const { normalizeCliFeatureFlags } = require('./feature_flags')
 const { FLAGS } = require('./flags')
 const build = require('./main')
 const { FALLBACK_SEVERITY_ENTRY } = require('./severity')
@@ -32,7 +33,9 @@ const runCli = async function () {
 }
 
 const parseFlags = function () {
-  return yargs.options(FLAGS).usage(USAGE).parse()
+  const { featureFlags: cliFeatureFlags = '', ...flags } = yargs.options(FLAGS).usage(USAGE).parse()
+  const featureFlags = normalizeCliFeatureFlags(cliFeatureFlags)
+  return { ...flags, featureFlags }
 }
 
 const USAGE = `netlify-build [OPTIONS...]

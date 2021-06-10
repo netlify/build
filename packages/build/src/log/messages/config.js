@@ -25,7 +25,7 @@ const cleanFeatureFlags = function ({ featureFlags, ...flags }) {
 }
 
 const shouldPrintFeatureFlag = function ([featureFlagName, enabled]) {
-  return enabled && DEFAULT_FEATURE_FLAGS[featureFlagName] !== undefined
+  return enabled && featureFlagName in DEFAULT_FEATURE_FLAGS
 }
 
 // Hidden because the value is security-sensitive

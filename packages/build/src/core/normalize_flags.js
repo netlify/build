@@ -5,30 +5,29 @@ const { env, execPath } = require('process')
 const { logFlags } = require('../log/messages/config')
 const { removeFalsy } = require('../utils/remove_falsy')
 
-const { normalizeFeatureFlags, DEFAULT_FEATURE_FLAGS } = require('./feature_flags')
+const { DEFAULT_FEATURE_FLAGS } = require('./feature_flags')
 
 // Normalize CLI flags
 const normalizeFlags = function (flags, logs) {
   const rawFlags = removeFalsy(flags)
-  const rawFlagsA = normalizeFeatureFlags(rawFlags)
 
   // Combine the flags object env with the process.env
-  const combinedEnv = { ...env, ...rawFlagsA.env }
-  const defaultFlags = getDefaultFlags(rawFlagsA, combinedEnv)
+  const combinedEnv = { ...env, ...rawFlags.env }
+  const defaultFlags = getDefaultFlags(rawFlags, combinedEnv)
 
   // The telemetry flag requires specific logic to compute
-  const telemetryFlag = computeTelemetry(rawFlagsA, combinedEnv)
+  const telemetryFlag = computeTelemetry(rawFlags, combinedEnv)
 
   const mergedFlags = {
     ...defaultFlags,
-    ...rawFlagsA,
+    ...rawFlags,
     ...telemetryFlag,
-    statsdOpts: { ...defaultFlags.statsd, ...rawFlagsA.statsd },
-    featureFlags: { ...defaultFlags.featureFlags, ...rawFlagsA.featureFlags },
+    statsdOpts: { ...defaultFlags.statsd, ...rawFlags.statsd },
+    featureFlags: { ...defaultFlags.featureFlags, ...rawFlags.featureFlags },
   }
   const normalizedFlags = removeFalsy(mergedFlags)
 
-  logFlags(logs, rawFlagsA, normalizedFlags)
+  logFlags(logs, rawFlags, normalizedFlags)
 
   return normalizedFlags
 }
