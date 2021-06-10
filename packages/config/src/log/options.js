@@ -16,7 +16,7 @@ const cleanupConfigOpts = function ({
   siteId,
   baseRelDir,
   env = {},
-  featureFlags,
+  featureFlags = {},
 }) {
   const envA = Object.keys(env)
   return removeFalsy({
