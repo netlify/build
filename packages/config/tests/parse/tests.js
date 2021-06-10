@@ -22,3 +22,27 @@ if (platform !== 'win32' && !version.startsWith('v8.')) {
 test('Configuration file - parsing error', async (t) => {
   await runFixture(t, 'parse_error')
 })
+
+test('Redirects - redirects file', async (t) => {
+  await runFixture(t, 'redirects_file')
+})
+
+test('Redirects - redirects field', async (t) => {
+  await runFixture(t, 'redirects_field')
+})
+
+test('Redirects - redirects file and redirects field', async (t) => {
+  await runFixture(t, 'redirects_both')
+})
+
+test('Redirects - redirects file syntax error', async (t) => {
+  await runFixture(t, 'redirects_file_error')
+})
+
+test('Redirects - redirects field syntax error', async (t) => {
+  await runFixture(t, 'redirects_field_error')
+})
+
+test('Redirects - no publish field', async (t) => {
+  await runFixture(t, 'redirects_no_publish')
+})

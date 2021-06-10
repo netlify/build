@@ -19,6 +19,7 @@ const { addDefaultOpts, normalizeOpts } = require('./options/main')
 const { UI_ORIGIN, CONFIG_ORIGIN } = require('./origin')
 const { parseConfig } = require('./parse')
 const { getConfigPath } = require('./path')
+const { addRedirects } = require('./redirects')
 const { mergeConfigs } = require('./utils/merge')
 
 // Load the configuration file.
@@ -233,7 +234,8 @@ const getFullConfig = async function ({
       logs,
       featureFlags,
     })
-    return { configPath, config: configB, buildDir, base: baseA }
+    const configC = await addRedirects(configB, buildDir, logs)
+    return { configPath, config: configC, buildDir, base: baseA }
   } catch (error) {
     const configName = configPath === undefined ? '' : ` file ${configPath}`
     error.message = `When resolving config${configName}:\n${error.message}`
