@@ -6,15 +6,13 @@ const { get, set } = require('dot-prop')
 const pathExists = require('path-exists')
 
 const { getBuildDir } = require('./build_dir')
-const { warnBaseWithoutPublish } = require('./log/messages')
 const { mergeConfigs } = require('./utils/merge')
 
 // Make configuration paths relative to `buildDir` and converts them to
 // absolute paths
 const resolveConfigPaths = async function ({ config, repositoryRoot, baseRelDir, logs, featureFlags }) {
   const configA = resolvePaths(config, REPOSITORY_RELATIVE_PROPS, repositoryRoot)
-  warnBaseWithoutPublish({ logs, repositoryRoot, config: configA, featureFlags })
-  const buildDir = await getBuildDir({ repositoryRoot, config: configA })
+  const buildDir = await getBuildDir({ config: configA, repositoryRoot, logs, featureFlags })
   const baseRel = baseRelDir ? buildDir : repositoryRoot
   const configB = resolvePaths(configA, FILE_PATH_CONFIG_PROPS, baseRel)
   const configC = await addDefaultPaths(configB, baseRel)

@@ -49,14 +49,7 @@ To run "${packageName}" in all contexts, please remove the following section fro
 // At the moment, the publish directory defaults to the repository root
 // directory even when there is a base directory, which might confuse some users
 // See https://github.com/netlify/build/issues/2075
-const warnBaseWithoutPublish = function ({
-  logs,
-  repositoryRoot,
-  config: {
-    build: { base, publish },
-  },
-  featureFlags,
-}) {
+const warnBaseWithoutPublish = function ({ logs, repositoryRoot, base, build: { publish }, featureFlags }) {
   if (!base || base === repositoryRoot || publish || featureFlags.netlify_config_default_publish) {
     return
   }
