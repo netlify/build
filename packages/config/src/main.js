@@ -169,7 +169,7 @@ const loadConfig = async function ({
     branch,
     defaultConfig,
     inlineConfig,
-    base: initialBase,
+    configBase: initialBase,
     logs,
     featureFlags,
   })
@@ -192,7 +192,7 @@ const loadConfig = async function ({
     branch,
     defaultConfig,
     inlineConfig,
-    base,
+    configBase: base,
     logs,
     featureFlags,
   })
@@ -212,11 +212,11 @@ const getFullConfig = async function ({
   branch,
   defaultConfig,
   inlineConfig,
-  base,
+  configBase,
   logs,
   featureFlags,
 }) {
-  const configPath = await getConfigPath({ configOpt, cwd, repositoryRoot, base })
+  const configPath = await getConfigPath({ configOpt, cwd, repositoryRoot, configBase })
 
   try {
     const config = await parseConfig(configPath)
