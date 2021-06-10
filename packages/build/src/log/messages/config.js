@@ -17,7 +17,7 @@ const logFlags = function (logs, flags, { debug }) {
 
 // We only show feature flags related to `@netlify/build`.
 // Also, we only print enabled feature flags.
-const cleanFeatureFlags = function ({ featureFlags, ...flags }) {
+const cleanFeatureFlags = function ({ featureFlags = {}, ...flags }) {
   const cleanedFeatureFlags = Object.entries(featureFlags)
     .filter(shouldPrintFeatureFlag)
     .map(([featureFlagName]) => featureFlagName)
