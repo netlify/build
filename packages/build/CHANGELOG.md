@@ -1,5 +1,12 @@
 # Changelog
 
+### [11.37.2](https://www.github.com/netlify/build/compare/build-v11.37.1...build-v11.37.2) (2021-06-10)
+
+
+### Bug Fixes
+
+* pin ZISI to v4.2.7 ([#2983](https://www.github.com/netlify/build/issues/2983)) ([29a8b19](https://www.github.com/netlify/build/commit/29a8b199b7d4db780b237a838e6495b4259bdfcc))
+
 ### [11.37.1](https://www.github.com/netlify/build/compare/build-v11.37.0...build-v11.37.1) (2021-06-10)
 
 
