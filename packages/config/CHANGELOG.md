@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.10.0](https://www.github.com/netlify/build/compare/config-v6.9.2...config-v6.10.0) (2021-06-10)
+
+
+### Features
+
+* improve feature flags logic ([#2960](https://www.github.com/netlify/build/issues/2960)) ([6df6360](https://www.github.com/netlify/build/commit/6df63603ee3822229d1504e95f4622d47387ddfb))
+
 ### [6.9.2](https://www.github.com/netlify/build/compare/config-v6.9.1...config-v6.9.2) (2021-06-09)
 
 
