@@ -6,6 +6,7 @@ require('./utils/polyfills')
 const { getApiClient } = require('./api/client')
 const { getSiteInfo } = require('./api/site_info')
 const { getInitialBase, addBase } = require('./base')
+const { getBuildDir } = require('./build_dir')
 const { mergeContext } = require('./context')
 const { parseDefaultConfig } = require('./default')
 const { getEnv } = require('./env/main')
@@ -85,14 +86,8 @@ const resolveConfig = async function (opts) {
   })
 
   const { base: baseA, config: configA } = await addBase(repositoryRoot, config)
-  const { config: configB, buildDir } = await resolveConfigPaths({
-    config: configA,
-    repositoryRoot,
-    baseRelDir: baseRelDirA,
-    base: baseA,
-    logs,
-    featureFlags,
-  })
+  const buildDir = await getBuildDir({ config: configA, repositoryRoot, base: baseA, logs, featureFlags })
+  const configB = await resolveConfigPaths({ config: configA, repositoryRoot, buildDir, baseRelDir: baseRelDirA })
 
   const env = await getEnv({
     mode,
