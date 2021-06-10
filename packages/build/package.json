@@ -59,7 +59,7 @@
     "@netlify/plugin-edge-handlers": "^1.11.16",
     "@netlify/plugins-list": "^2.15.0",
     "@netlify/run-utils": "^1.0.6",
-    "@netlify/zip-it-and-ship-it": "^4.3.0",
+    "@netlify/zip-it-and-ship-it": "^4.2.7",
     "@sindresorhus/slugify": "^1.1.0",
     "@ungap/from-entries": "^0.2.1",
     "ansi-escapes": "^4.3.2",
