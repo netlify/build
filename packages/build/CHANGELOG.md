@@ -1,5 +1,12 @@
 # Changelog
 
+## [11.38.0](https://www.github.com/netlify/build/compare/build-v11.37.2...build-v11.38.0) (2021-06-10)
+
+
+### Features
+
+* improve feature flags logic ([#2960](https://www.github.com/netlify/build/issues/2960)) ([6df6360](https://www.github.com/netlify/build/commit/6df63603ee3822229d1504e95f4622d47387ddfb))
+
 ### [11.37.2](https://www.github.com/netlify/build/compare/build-v11.37.1...build-v11.37.2) (2021-06-10)
 
 
