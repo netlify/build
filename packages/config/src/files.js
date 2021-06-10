@@ -10,19 +10,16 @@ const { mergeConfigs } = require('./utils/merge')
 
 // Make configuration paths relative to `buildDir` and converts them to
 // absolute paths
-const resolveConfigPaths = async function ({ config, repositoryRoot, baseRelDir, logs, featureFlags }) {
-  const configA = resolvePaths(config, REPOSITORY_RELATIVE_PROPS, repositoryRoot)
-  const buildDir = await getBuildDir({ config: configA, repositoryRoot, logs, featureFlags })
+const resolveConfigPaths = async function ({ config, repositoryRoot, baseRelDir, base, logs, featureFlags }) {
+  const buildDir = await getBuildDir({ config, repositoryRoot, base, logs, featureFlags })
   const baseRel = baseRelDir ? buildDir : repositoryRoot
-  const configB = resolvePaths(configA, FILE_PATH_CONFIG_PROPS, baseRel)
+  const configB = resolvePaths(config, FILE_PATH_CONFIG_PROPS, baseRel)
   const configC = await addDefaultPaths(configB, baseRel)
   return { config: configC, buildDir }
 }
 
-// All file paths in the configuration file.
-// Most are relative to `buildDir` (if `baseRelDir` is `true`). But `build.base`
-// itself is never relative to `buildDir` since it is contained in it.
-const REPOSITORY_RELATIVE_PROPS = ['build.base']
+// All file paths in the configuration file are are relative to `buildDir`
+// (if `baseRelDir` is `true`).
 const FILE_PATH_CONFIG_PROPS = ['functionsDirectory', 'build.publish', 'build.edge_handlers']
 
 const resolvePaths = function (config, propNames, baseRel) {

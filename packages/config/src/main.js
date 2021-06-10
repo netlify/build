@@ -5,7 +5,7 @@ require('./utils/polyfills')
 
 const { getApiClient } = require('./api/client')
 const { getSiteInfo } = require('./api/site_info')
-const { getInitialBase } = require('./base')
+const { getInitialBase, addBase } = require('./base')
 const { mergeContext } = require('./context')
 const { parseDefaultConfig } = require('./default')
 const { getEnv } = require('./env/main')
@@ -23,6 +23,7 @@ const { mergeConfigs } = require('./utils/merge')
 // Load the configuration file.
 // Takes an optional configuration file path as input and return the resolved
 // `config` together with related properties such as the `configPath`.
+// eslint-disable-next-line max-statements
 const resolveConfig = async function (opts) {
   const { cachedConfig, host, scheme, pathPrefix, testOpts, token, offline, ...optsA } = addDefaultOpts(opts)
   // `api` is not JSON-serializable, so we cannot cache it inside `cachedConfig`
@@ -83,17 +84,19 @@ const resolveConfig = async function (opts) {
     featureFlags,
   })
 
-  const { config: configA, buildDir } = await resolveConfigPaths({
-    config,
+  const { base: baseA, config: configA } = await addBase(repositoryRoot, config)
+  const { config: configB, buildDir } = await resolveConfigPaths({
+    config: configA,
     repositoryRoot,
     baseRelDir: baseRelDirA,
+    base: baseA,
     logs,
     featureFlags,
   })
 
   const env = await getEnv({
     mode,
-    config: configA,
+    config: configB,
     siteInfo,
     accounts,
     addons,
@@ -104,7 +107,7 @@ const resolveConfig = async function (opts) {
   })
 
   // @todo Remove in the next major version.
-  const configB = addLegacyFunctionsDirectory(configA)
+  const configC = addLegacyFunctionsDirectory(configB)
 
   const result = {
     siteInfo,
@@ -112,7 +115,7 @@ const resolveConfig = async function (opts) {
     configPath,
     buildDir,
     repositoryRoot,
-    config: configB,
+    config: configC,
     context,
     branch,
     token,
