@@ -1,5 +1,12 @@
 # Changelog
 
+### [7.0.2](https://www.github.com/netlify/build/compare/config-v7.0.1...config-v7.0.2) (2021-06-10)
+
+
+### Bug Fixes
+
+* refactor a warning message ([#2973](https://www.github.com/netlify/build/issues/2973)) ([dee5bd8](https://www.github.com/netlify/build/commit/dee5bd8c68e77aa027894599e6c30a3eaf6f3c2a))
+
 ### [7.0.1](https://www.github.com/netlify/build/compare/config-v7.0.0...config-v7.0.1) (2021-06-10)
 
 
