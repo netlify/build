@@ -1,5 +1,12 @@
 # Changelog
 
+### [12.0.1](https://www.github.com/netlify/build/compare/build-v12.0.0...build-v12.0.1) (2021-06-10)
+
+
+### Bug Fixes
+
+* allow using no feature flags ([#2991](https://www.github.com/netlify/build/issues/2991)) ([f25ca43](https://www.github.com/netlify/build/commit/f25ca434df6bba362112d3a1c881c7391988ae58))
+
 ## [12.0.0](https://www.github.com/netlify/build/compare/build-v11.38.0...build-v12.0.0) (2021-06-10)
 
 
