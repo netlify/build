@@ -1,5 +1,12 @@
 # Changelog
 
+### [7.0.3](https://www.github.com/netlify/build/compare/config-v7.0.2...config-v7.0.3) (2021-06-10)
+
+
+### Bug Fixes
+
+* merge conflict ([e1fcf01](https://www.github.com/netlify/build/commit/e1fcf017549a084f7b024a6b7cdceb9154c6462e))
+
 ### [7.0.2](https://www.github.com/netlify/build/compare/config-v7.0.1...config-v7.0.2) (2021-06-10)
 
 
