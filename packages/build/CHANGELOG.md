@@ -1,5 +1,44 @@
 # Changelog
 
+### [12.0.1](https://www.github.com/netlify/build/compare/build-v12.0.0...build-v12.0.1) (2021-06-10)
+
+
+### Bug Fixes
+
+* allow using no feature flags ([#2991](https://www.github.com/netlify/build/issues/2991)) ([f25ca43](https://www.github.com/netlify/build/commit/f25ca434df6bba362112d3a1c881c7391988ae58))
+
+## [12.0.0](https://www.github.com/netlify/build/compare/build-v11.38.0...build-v12.0.0) (2021-06-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* improve support for monorepo sites without a `publish` directory (#2988)
+
+### Features
+
+* improve support for monorepo sites without a `publish` directory ([#2988](https://www.github.com/netlify/build/issues/2988)) ([1fcad8a](https://www.github.com/netlify/build/commit/1fcad8a81c35060fbc3ec8cb15ade9762579a166))
+
+## [11.38.0](https://www.github.com/netlify/build/compare/build-v11.37.2...build-v11.38.0) (2021-06-10)
+
+
+### Features
+
+* improve feature flags logic ([#2960](https://www.github.com/netlify/build/issues/2960)) ([6df6360](https://www.github.com/netlify/build/commit/6df63603ee3822229d1504e95f4622d47387ddfb))
+
+### [11.37.2](https://www.github.com/netlify/build/compare/build-v11.37.1...build-v11.37.2) (2021-06-10)
+
+
+### Bug Fixes
+
+* pin ZISI to v4.2.7 ([#2983](https://www.github.com/netlify/build/issues/2983)) ([29a8b19](https://www.github.com/netlify/build/commit/29a8b199b7d4db780b237a838e6495b4259bdfcc))
+
+### [11.37.1](https://www.github.com/netlify/build/compare/build-v11.37.0...build-v11.37.1) (2021-06-10)
+
+
+### Bug Fixes
+
+* force release of Build ([#2981](https://www.github.com/netlify/build/issues/2981)) ([a64994b](https://www.github.com/netlify/build/commit/a64994b5bc296056bf9bc51a1c21fcb157c86edd))
+
 ## [11.37.0](https://www.github.com/netlify/build/compare/build-v11.36.3...build-v11.37.0) (2021-06-09)
 
 

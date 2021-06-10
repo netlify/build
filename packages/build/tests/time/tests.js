@@ -21,7 +21,7 @@ test('Does not send timings of community plugins', async (t) => {
 
 test('Sends timing and distribution metrics if buildbot_build_distribution_metrics feature flag is enabled', async (t) => {
   const timerRequests = await getAllTimerRequests(t, 'simple', {
-    featureFlags: 'buildbot_build_distribution_metrics',
+    featureFlags: { buildbot_build_distribution_metrics: true },
   })
   const includesTimingRequests = timerRequests.some((timerRequest) => timerRequest.includes('|ms|'))
   const includesDistributionRequests = timerRequests.some((timerRequest) => timerRequest.includes('|d|'))

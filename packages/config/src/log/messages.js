@@ -55,8 +55,9 @@ const warnBaseWithoutPublish = function ({
   config: {
     build: { base, publish },
   },
+  featureFlags,
 }) {
-  if (!base || base === repositoryRoot || publish) {
+  if (!base || base === repositoryRoot || publish || featureFlags.netlify_config_default_publish) {
     return
   }
 

@@ -39,6 +39,7 @@ const normalizeFunctionConfig = ({ buildDir, featureFlags, functionConfig = {} }
 
   // When the `zisiHandlerV2` feature flag is present, zip-it-and-ship-it will
   // use the experimental function handler changes introduced in v4.2.0.
+  // We can remove this soon since the rollout has been completed.
   experimentalHandlerV2: Boolean(featureFlags.zisiHandlerV2),
 })
 

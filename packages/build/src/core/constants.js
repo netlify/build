@@ -52,6 +52,8 @@ const addMutableConstants = async function ({
   constants,
   buildDir,
   netlifyConfig: {
+    // TODO: remove `= buildDir` default value once the new `publish` behavior
+    // described at https://github.com/netlify/build/issues/2075 is released
     build: { publish = buildDir, edge_handlers: edgeHandlers },
     functionsDirectory,
   },

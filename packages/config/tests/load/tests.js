@@ -110,3 +110,15 @@ test('Programmatic no options', async (t) => {
   const { config } = await resolveConfig()
   t.not(config.build.environment, undefined)
 })
+
+test('featureFlags can be used programmatically', async (t) => {
+  await runFixture(t, 'empty', { flags: { featureFlags: { test: true, testTwo: false } } })
+})
+
+test('featureFlags can be used in the CLI', async (t) => {
+  await runFixture(t, 'empty', { flags: { featureFlags: { test: true, testTwo: false } }, useBinary: true })
+})
+
+test('featureFlags can be not used', async (t) => {
+  await runFixture(t, 'empty', { flags: { featureFlags: undefined, debug: true } })
+})

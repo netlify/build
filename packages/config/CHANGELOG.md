@@ -1,5 +1,30 @@
 # Changelog
 
+### [7.0.1](https://www.github.com/netlify/build/compare/config-v7.0.0...config-v7.0.1) (2021-06-10)
+
+
+### Bug Fixes
+
+* feature flags logging in `@netlify/config` ([#2993](https://www.github.com/netlify/build/issues/2993)) ([03e2978](https://www.github.com/netlify/build/commit/03e2978174ce6e357b66d6df054a441facbfd52d))
+
+## [7.0.0](https://www.github.com/netlify/build/compare/config-v6.10.0...config-v7.0.0) (2021-06-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* improve support for monorepo sites without a `publish` directory (#2988)
+
+### Features
+
+* improve support for monorepo sites without a `publish` directory ([#2988](https://www.github.com/netlify/build/issues/2988)) ([1fcad8a](https://www.github.com/netlify/build/commit/1fcad8a81c35060fbc3ec8cb15ade9762579a166))
+
+## [6.10.0](https://www.github.com/netlify/build/compare/config-v6.9.2...config-v6.10.0) (2021-06-10)
+
+
+### Features
+
+* improve feature flags logic ([#2960](https://www.github.com/netlify/build/issues/2960)) ([6df6360](https://www.github.com/netlify/build/commit/6df63603ee3822229d1504e95f4622d47387ddfb))
+
 ### [6.9.2](https://www.github.com/netlify/build/compare/config-v6.9.1...config-v6.9.2) (2021-06-09)
 
 

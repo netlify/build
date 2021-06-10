@@ -183,6 +183,7 @@ const tExecBuild = async function ({
     logs,
     testOpts,
     nodePath,
+    featureFlags,
     timers,
   })
   const constants = await getConstants({
