@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.2.0](https://www.github.com/netlify/build/compare/config-v7.1.2...config-v7.2.0) (2021-06-11)
+
+
+### Features
+
+* add `config.redirects` ([#3003](https://www.github.com/netlify/build/issues/3003)) ([ec3c177](https://www.github.com/netlify/build/commit/ec3c177fcc6a90a99fb7a584d2402b004704bc7e))
+
 ### [7.1.2](https://www.github.com/netlify/build/compare/config-v7.1.1...config-v7.1.2) (2021-06-11)
 
 
