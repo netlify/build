@@ -1,5 +1,12 @@
 # Changelog
 
+### [7.1.2](https://www.github.com/netlify/build/compare/config-v7.1.1...config-v7.1.2) (2021-06-11)
+
+
+### Bug Fixes
+
+* refactor some logic related to the `base` directory ([#3001](https://www.github.com/netlify/build/issues/3001)) ([2fa3b43](https://www.github.com/netlify/build/commit/2fa3b43ddc13829505776b21631803a5009de4ea))
+
 ### [7.1.1](https://www.github.com/netlify/build/compare/config-v7.1.0...config-v7.1.1) (2021-06-11)
 
 
