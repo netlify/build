@@ -1,0 +1,6 @@
+[build]
+publish = "publish"
+
+[[redirects]]
+from = "/from"
+to = "/to"

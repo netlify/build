@@ -65,9 +65,20 @@ To publish the "base" directory instead, please set the "publish" directory to "
   )
 }
 
+const warnRedirectsParsing = function (logs, errorMessage) {
+  logWarning(
+    logs,
+    `
+Warning: some redirects have syntax errors:
+
+${errorMessage}`,
+  )
+}
+
 module.exports = {
   warnLegacyFunctionsDirectory,
   warnContextPluginConfig,
   throwContextPluginsConfig,
   warnBaseWithoutPublish,
+  warnRedirectsParsing,
 }

@@ -79,7 +79,13 @@ const isPublicInput = function (key, input) {
 // The resolved configuration gets assigned some default values (empty objects and arrays)
 // to make it more convenient to use without checking for `undefined`.
 // However those empty values are not useful to users, so we don't log them.
-const simplifyConfig = function ({ build: { environment, ...build }, functions = {}, plugins, ...netlifyConfig }) {
+const simplifyConfig = function ({
+  build: { environment, ...build },
+  functions,
+  plugins,
+  redirects,
+  ...netlifyConfig
+}) {
   const buildA = {
     ...build,
     ...removeEmptyArray(environment, 'environment'),
@@ -89,6 +95,7 @@ const simplifyConfig = function ({ build: { environment, ...build }, functions =
     ...removeEmptyObject(functions, 'functions'),
     ...removeEmptyObject(buildA, 'build'),
     ...removeEmptyArray(plugins, 'plugins'),
+    ...removeEmptyArray(redirects, 'redirects'),
   })
 }
 
