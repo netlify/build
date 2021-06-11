@@ -5,7 +5,7 @@ require('./utils/polyfills')
 
 const { getApiClient } = require('./api/client')
 const { getSiteInfo } = require('./api/site_info')
-const { getInitialBase, addBase } = require('./base')
+const { getInitialBase, getBase, addBase } = require('./base')
 const { getBuildDir } = require('./build_dir')
 const { mergeContext } = require('./context')
 const { parseDefaultConfig } = require('./default')
@@ -24,7 +24,6 @@ const { mergeConfigs } = require('./utils/merge')
 // Load the configuration file.
 // Takes an optional configuration file path as input and return the resolved
 // `config` together with related properties such as the `configPath`.
-// eslint-disable-next-line max-statements
 const resolveConfig = async function (opts) {
   const { cachedConfig, host, scheme, pathPrefix, testOpts, token, offline, ...optsA } = addDefaultOpts(opts)
   // `api` is not JSON-serializable, so we cannot cache it inside `cachedConfig`
@@ -72,7 +71,7 @@ const resolveConfig = async function (opts) {
   })
   const inlineConfigA = getInlineConfig({ inlineConfig, logs, debug })
 
-  const { configPath, config } = await loadConfig({
+  const { configPath, config, buildDir } = await loadConfig({
     configOpt,
     cwd,
     context,
@@ -85,13 +84,9 @@ const resolveConfig = async function (opts) {
     featureFlags,
   })
 
-  const { base: baseA, config: configA } = await addBase(repositoryRoot, config)
-  const buildDir = await getBuildDir({ config: configA, repositoryRoot, base: baseA, logs, featureFlags })
-  const configB = await resolveConfigPaths({ config: configA, repositoryRoot, buildDir, baseRelDir: baseRelDirA })
-
   const env = await getEnv({
     mode,
-    config: configB,
+    config,
     siteInfo,
     accounts,
     addons,
@@ -102,7 +97,7 @@ const resolveConfig = async function (opts) {
   })
 
   // @todo Remove in the next major version.
-  const configC = addLegacyFunctionsDirectory(configB)
+  const configA = addLegacyFunctionsDirectory(config)
 
   const result = {
     siteInfo,
@@ -110,7 +105,7 @@ const resolveConfig = async function (opts) {
     configPath,
     buildDir,
     repositoryRoot,
-    config: configC,
+    config: configA,
     context,
     branch,
     token,
@@ -152,14 +147,8 @@ const loadConfig = async function ({
   logs,
   featureFlags,
 }) {
-  const initialBase = getInitialBase({ defaultConfig, inlineConfig })
-  const {
-    configPath,
-    config,
-    config: {
-      build: { base },
-    },
-  } = await getFullConfig({
+  const initialBase = getInitialBase({ repositoryRoot, defaultConfig, inlineConfig })
+  const { configPath, config, buildDir, base } = await getFullConfig({
     configOpt,
     cwd,
     context,
@@ -167,6 +156,7 @@ const loadConfig = async function ({
     branch,
     defaultConfig,
     inlineConfig,
+    baseRelDir,
     configBase: initialBase,
     logs,
     featureFlags,
@@ -180,25 +170,27 @@ const loadConfig = async function ({
   //  - `baseRelDir` feature flag is not used. This feature flag was introduced
   //    to ensure backward compatibility.
   if (!baseRelDir || base === initialBase) {
-    return { configPath, config }
+    return { configPath, config, buildDir }
   }
 
-  const { configPath: configPathA, config: configA } = await getFullConfig({
+  const {
+    configPath: configPathA,
+    config: configA,
+    buildDir: buildDirA,
+  } = await getFullConfig({
     cwd,
     context,
     repositoryRoot,
     branch,
     defaultConfig,
     inlineConfig,
+    baseRelDir,
     configBase: base,
+    base,
     logs,
     featureFlags,
   })
-
-  // Since we don't recurse anymore, we keep the original `build.base` that was used
-  const configB = { ...configA, build: { ...configA.build, base } }
-
-  return { configPath: configPathA, config: configB }
+  return { configPath: configPathA, config: configA, buildDir: buildDirA }
 }
 
 // Load configuration file and normalize it, merge contexts, etc.
@@ -210,7 +202,9 @@ const getFullConfig = async function ({
   branch,
   defaultConfig,
   inlineConfig,
+  baseRelDir,
   configBase,
+  base,
   logs,
   featureFlags,
 }) {
@@ -227,7 +221,19 @@ const getFullConfig = async function ({
       logs,
       featureFlags,
     })
-    return { configPath, config: configA }
+    const {
+      config: configB,
+      buildDir,
+      base: baseA,
+    } = await resolveFiles({
+      config: configA,
+      repositoryRoot,
+      base,
+      baseRelDir,
+      logs,
+      featureFlags,
+    })
+    return { configPath, config: configB, buildDir, base: baseA }
   } catch (error) {
     const configName = configPath === undefined ? '' : ` file ${configPath}`
     error.message = `When resolving config${configName}:\n${error.message}`
@@ -260,6 +266,15 @@ const mergeAndNormalizeConfig = function ({
 
   const configD = normalizeAfterConfigMerge(configC, featureFlags)
   return configD
+}
+
+// Find base directory, build directory and resolve all paths to absolute paths
+const resolveFiles = async function ({ config, repositoryRoot, base, baseRelDir, logs, featureFlags }) {
+  const baseA = getBase(base, repositoryRoot, config)
+  const buildDir = await getBuildDir({ config, repositoryRoot, base: baseA, logs, featureFlags })
+  const configA = await resolveConfigPaths({ config, repositoryRoot, buildDir, baseRelDir })
+  const configB = addBase(configA, baseA)
+  return { config: configB, buildDir, base: baseA }
 }
 
 module.exports = resolveConfig

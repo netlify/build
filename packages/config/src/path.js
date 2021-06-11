@@ -6,8 +6,6 @@ const findUp = require('find-up')
 const pLocate = require('p-locate')
 const pathExists = require('path-exists')
 
-const { resolvePath } = require('./files')
-
 // Configuration location can be:
 //  - a local path with the --config CLI flag
 //  - a `netlify.*` file in the `repositoryRoot/{base}`
@@ -41,8 +39,7 @@ const searchBaseConfigFile = function (repositoryRoot, configBase) {
     return
   }
 
-  const basePath = resolvePath(repositoryRoot, configBase)
-  return searchConfigFile(basePath)
+  return searchConfigFile(configBase)
 }
 
 // Look for several file extensions for `netlify.*`
