@@ -1,5 +1,12 @@
 # Changelog
 
+### [7.1.1](https://www.github.com/netlify/build/compare/config-v7.1.0...config-v7.1.1) (2021-06-11)
+
+
+### Bug Fixes
+
+* move some lines of code ([#2999](https://www.github.com/netlify/build/issues/2999)) ([857787f](https://www.github.com/netlify/build/commit/857787fec08612f4e53687d4cbba0374fc4022bf))
+
 ## [7.1.0](https://www.github.com/netlify/build/compare/config-v7.0.3...config-v7.1.0) (2021-06-11)
 
 
