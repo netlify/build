@@ -11,9 +11,9 @@ const { mergeConfigs } = require('./utils/merge')
 // absolute paths
 const resolveConfigPaths = async function ({ config, repositoryRoot, buildDir, baseRelDir }) {
   const baseRel = baseRelDir ? buildDir : repositoryRoot
-  const configB = resolvePaths(config, FILE_PATH_CONFIG_PROPS, baseRel)
-  const configC = await addDefaultPaths(configB, baseRel)
-  return configC
+  const configA = resolvePaths(config, FILE_PATH_CONFIG_PROPS, baseRel)
+  const configB = await addDefaultPaths(configA, baseRel)
+  return configB
 }
 
 // All file paths in the configuration file are are relative to `buildDir`
