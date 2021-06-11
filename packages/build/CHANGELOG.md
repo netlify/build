@@ -1,5 +1,12 @@
 # Changelog
 
+## [12.1.0](https://www.github.com/netlify/build/compare/build-v12.0.1...build-v12.1.0) (2021-06-11)
+
+
+### Features
+
+* add `config.redirects` ([#3003](https://www.github.com/netlify/build/issues/3003)) ([ec3c177](https://www.github.com/netlify/build/commit/ec3c177fcc6a90a99fb7a584d2402b004704bc7e))
+
 ### [12.0.1](https://www.github.com/netlify/build/compare/build-v12.0.0...build-v12.0.1) (2021-06-10)
 
 
