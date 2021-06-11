@@ -1,7 +1,5 @@
 'use strict'
 
-const { resolve } = require('path')
-
 const { isDirectory } = require('path-type')
 
 const { throwError } = require('./error')
@@ -12,17 +10,9 @@ const { warnBaseWithoutPublish } = require('./log/messages')
 //  - `build.base`
 //  - `--repositoryRoot`
 //  - the current directory (default value of `--repositoryRoot`)
-const getBuildDir = async function ({
-  config: {
-    build,
-    build: { base },
-  },
-  repositoryRoot,
-  logs,
-  featureFlags,
-}) {
+const getBuildDir = async function ({ config: { build }, repositoryRoot, base, logs, featureFlags }) {
   warnBaseWithoutPublish({ logs, repositoryRoot, base, build, featureFlags })
-  const buildDir = base === undefined ? repositoryRoot : resolve(repositoryRoot, base)
+  const buildDir = base === undefined ? repositoryRoot : base
   await checkBuildDir(buildDir, repositoryRoot)
   return buildDir
 }
