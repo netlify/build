@@ -10,7 +10,12 @@ const getInitialBase = function ({
   return initialBase
 }
 
-// Retrieve the final `base` directory used:
+// Two config files can be used:
+//  - The first one, using the `config` property or doing a default lookup
+//    of `netlify.toml`
+//  - If the first one has a `base` property pointing to a directory with
+//    another `netlify.toml`, that second config file is used instead.
+// This retrieves the final `base` directory used:
 //  - To load the second config file
 //  - As the `buildDir`
 //  - To resolve file paths
