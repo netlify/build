@@ -1,0 +1,21 @@
+{
+  "id": "cecil",
+  "name": "Cecil",
+  "category": "static_site_generator",
+  "detect": {
+    "npmDependencies": [],
+    "excludedNpmDependencies": [],
+    "configFiles": ["config.yml"]
+  },
+  "dev": {
+    "command": "cecil serve",
+    "port": 8000,
+    "pollingStrategies": [{ "name": "TCP" }, { "name": "HTTP" }]
+  },
+  "build": {
+    "command": "cecil build",
+    "directory": "_site"
+  },
+  "env": {},
+  "plugins": []
+}
