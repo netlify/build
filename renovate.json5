@@ -35,6 +35,7 @@
         'supports-color',
         'update-notifier',
         'yargs',
+        'dot-prop',
         // Those cannot be upgraded to a major version until we drop support for Node 10
         'p-reduce',
         'path-key',
