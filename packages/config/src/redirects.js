@@ -5,7 +5,11 @@ const { parseFileRedirects, mergeRedirects, normalizeRedirects } = require('netl
 const { warnRedirectsParsing } = require('./log/messages')
 
 // Add `config.redirects`
-const addRedirects = async function (config, buildDir, logs) {
+const addRedirects = async function ({ config, buildDir, logs, featureFlags }) {
+  if (!featureFlags.netlify_config_redirects_parsing) {
+    return { ...config, redirects: [] }
+  }
+
   const publishDir = getPublishDir(buildDir, config)
   try {
     const fileRedirects = await parseFileRedirects(`${publishDir}/_redirects`)
