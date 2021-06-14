@@ -1,5 +1,12 @@
 # Changelog
 
+### [7.2.2](https://www.github.com/netlify/build/compare/config-v7.2.1...config-v7.2.2) (2021-06-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency netlify-redirect-parser to ^5.2.0 ([#3018](https://www.github.com/netlify/build/issues/3018)) ([374b1cc](https://www.github.com/netlify/build/commit/374b1ccaede449a79d366b75bc38dbdb90d2a9ff))
+
 ### [7.2.1](https://www.github.com/netlify/build/compare/config-v7.2.0...config-v7.2.1) (2021-06-14)
 
 
