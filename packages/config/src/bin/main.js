@@ -1,9 +1,13 @@
 #!/usr/bin/env node
 'use strict'
 
+const { writeFile } = require('fs')
+const { dirname } = require('path')
 const process = require('process')
+const { promisify } = require('util')
 
 const { stableStringify } = require('fast-safe-stringify')
+const makeDir = require('make-dir')
 const omit = require('omit.js').default
 
 require('../utils/polyfills')
@@ -13,25 +17,42 @@ const resolveConfig = require('../main')
 
 const { parseFlags } = require('./flags')
 
+const pWriteFile = promisify(writeFile)
+
 // CLI entry point
 const runCli = async function () {
   try {
-    const { stable, ...flags } = parseFlags()
+    const { stable, output = DEFAULT_OUTPUT, ...flags } = parseFlags()
     const result = await resolveConfig(flags)
-    handleCliSuccess(result, stable)
+    await handleCliSuccess(result, stable, output)
   } catch (error) {
     handleCliError(error)
   }
 }
 
-// The result is printed as JSON on stdout on success (exit code 0)
-const handleCliSuccess = function (result, stable) {
+const DEFAULT_OUTPUT = '-'
+
+// The result is output as JSON on success (exit code 0)
+const handleCliSuccess = async function (result, stable, output) {
   const resultA = serializeApi(result)
   const resultB = omit(resultA, SECRET_PROPERTIES)
   const stringifyFunc = stable ? stableStringify : JSON.stringify
   const resultJson = stringifyFunc(resultB, null, 2)
-  console.log(resultJson)
+  await outputResult(resultJson, output)
   process.exitCode = 0
+}
+
+const outputResult = async function (resultJson, output) {
+  if (output === '-') {
+    console.log(resultJson)
+    return
+  }
+
+  // TODO: remove `console.log()` once the buildbot stops using stdout
+  console.log(resultJson)
+
+  await makeDir(dirname(output))
+  await pWriteFile(output, resultJson)
 }
 
 // `api` is not JSON-serializable, so we remove it
