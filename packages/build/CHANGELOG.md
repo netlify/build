@@ -1,5 +1,12 @@
 # Changelog
 
+### [12.1.2](https://www.github.com/netlify/build/compare/build-v12.1.1...build-v12.1.2) (2021-06-14)
+
+
+### Bug Fixes
+
+* **feature_flags:** remove distribution metrics feature flag ([#3015](https://www.github.com/netlify/build/issues/3015)) ([36e11a2](https://www.github.com/netlify/build/commit/36e11a299a626d918a009f9d8038572bd12d19ad))
+
 ### [12.1.1](https://www.github.com/netlify/build/compare/build-v12.1.0...build-v12.1.1) (2021-06-14)
 
 
