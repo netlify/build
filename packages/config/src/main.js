@@ -234,7 +234,7 @@ const getFullConfig = async function ({
       logs,
       featureFlags,
     })
-    const configC = await addRedirects(configB, buildDir, logs)
+    const configC = await addRedirects({ config: configB, buildDir, logs, featureFlags })
     return { configPath, config: configC, buildDir, base: baseA }
   } catch (error) {
     const configName = configPath === undefined ? '' : ` file ${configPath}`

@@ -1,5 +1,14 @@
 # Changelog
 
+### [12.1.1](https://www.github.com/netlify/build/compare/build-v12.1.0...build-v12.1.1) (2021-06-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugin-edge-handlers to ^1.11.17 ([#3010](https://www.github.com/netlify/build/issues/3010)) ([8e35944](https://www.github.com/netlify/build/commit/8e35944e4974e026c600dfbc46758985b9d9cb2e))
+* **deps:** update dependency @netlify/plugins-list to ^2.15.1 ([#3014](https://www.github.com/netlify/build/issues/3014)) ([1b7bfa6](https://www.github.com/netlify/build/commit/1b7bfa61d1c7fe689268d1a10442609dc220fa44))
+* revert `redirects` parsing ([#3016](https://www.github.com/netlify/build/issues/3016)) ([39613cf](https://www.github.com/netlify/build/commit/39613cfd04281e51264ef61a75c3bd4880158a11))
+
 ## [12.1.0](https://www.github.com/netlify/build/compare/build-v12.0.1...build-v12.1.0) (2021-06-11)
 
 
