@@ -1,5 +1,12 @@
 # Changelog
 
+### [7.2.1](https://www.github.com/netlify/build/compare/config-v7.2.0...config-v7.2.1) (2021-06-14)
+
+
+### Bug Fixes
+
+* revert `redirects` parsing ([#3016](https://www.github.com/netlify/build/issues/3016)) ([39613cf](https://www.github.com/netlify/build/commit/39613cfd04281e51264ef61a75c3bd4880158a11))
+
 ## [7.2.0](https://www.github.com/netlify/build/compare/config-v7.1.2...config-v7.2.0) (2021-06-11)
 
 
