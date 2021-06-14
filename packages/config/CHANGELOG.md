@@ -1,5 +1,13 @@
 # Changelog
 
+### [7.2.3](https://www.github.com/netlify/build/compare/config-v7.2.2...config-v7.2.3) (2021-06-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency netlify-redirect-parser to v5.2.1 ([#3021](https://www.github.com/netlify/build/issues/3021)) ([be298a1](https://www.github.com/netlify/build/commit/be298a1315f89f02fb38ba99762ab029cde20a68))
+* pin zisi version in functions utils ([#3023](https://www.github.com/netlify/build/issues/3023)) ([9c6b09b](https://www.github.com/netlify/build/commit/9c6b09b89d5b3e1552eb848aea016092c6abcf5e))
+
 ### [7.2.2](https://www.github.com/netlify/build/compare/config-v7.2.1...config-v7.2.2) (2021-06-14)
 
 
