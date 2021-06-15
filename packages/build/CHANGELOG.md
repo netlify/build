@@ -1,5 +1,12 @@
 # Changelog
 
+### [12.1.4](https://www.github.com/netlify/build/compare/build-v12.1.3...build-v12.1.4) (2021-06-15)
+
+
+### Bug Fixes
+
+* **metrics:** remove timing metrics report ([#3022](https://www.github.com/netlify/build/issues/3022)) ([12424ff](https://www.github.com/netlify/build/commit/12424fffab992497d718549ac2a19129e8281073))
+
 ### [12.1.3](https://www.github.com/netlify/build/compare/build-v12.1.2...build-v12.1.3) (2021-06-15)
 
 
