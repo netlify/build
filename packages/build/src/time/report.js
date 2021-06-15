@@ -43,7 +43,6 @@ const startClient = async function (host, port) {
 const sendTimer = function ({ timer: { metricName, stageTag, parentTag, durationNs, tags }, client, framework }) {
   const durationMs = roundTimerToMillisecs(durationNs)
   const frameworkTag = framework === undefined ? {} : { framework }
-  client.timing(metricName, durationMs, { stage: stageTag, parent: parentTag, ...tags, ...frameworkTag })
   client.distribution(metricName, durationMs, { stage: stageTag, parent: parentTag, ...tags, ...frameworkTag })
 }
 
