@@ -1,5 +1,12 @@
 # Changelog
 
+### [12.1.5](https://www.github.com/netlify/build/compare/build-v12.1.4...build-v12.1.5) (2021-06-15)
+
+
+### Bug Fixes
+
+* **plugins:** add warning message for local/package.json plugins relying on old node versions ([#2952](https://www.github.com/netlify/build/issues/2952)) ([5e9b101](https://www.github.com/netlify/build/commit/5e9b101629b5f7f261f985495c7ca17d3c17d8c1))
+
 ### [12.1.4](https://www.github.com/netlify/build/compare/build-v12.1.3...build-v12.1.4) (2021-06-15)
 
 
