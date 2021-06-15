@@ -202,9 +202,14 @@ test('constants.CACHE_DIR CI', async (t) => {
   await runFixture(t, 'cache', { flags: { cacheDir: '/opt/build/cache' } })
 })
 
-test('constants.IS_LOCAL CI', async (t) => {
-  await runFixture(t, 'is_local', { flags: { mode: 'buildbot' } })
-})
+// Node.js v8 test executions trigger a plugin warning when run with mode buildbot related with the Node.js version used
+// to execute the plugins. Not too critical given production executions always run with Node v12.x
+// @TODO remove once we drop Node v8 support or remove the plugin Node.js version warning - https://github.com/netlify/build/blob/6e718e3f040397ba30da5c32b275b914381685e0/packages/build/src/log/messages/plugins.js#L41-L48
+if (!version.startsWith('v8.')) {
+  test('constants.IS_LOCAL CI', async (t) => {
+    await runFixture(t, 'is_local', { flags: { mode: 'buildbot' } })
+  })
+}
 
 test('constants.SITE_ID', async (t) => {
   await runFixture(t, 'site_id', { flags: { siteId: 'test' } })
@@ -1052,6 +1057,22 @@ test('Validate --node-path version is supported by the plugin', async (t) => {
 
 test('Validate --node-path', async (t) => {
   await runFixture(t, 'node_version_simple', { flags: { nodePath: '/doesNotExist' } })
+})
+
+test('Provided --node-path version produces a node version warning if the build is being run in buildbot with local plugins', async (t) => {
+  const nodePath = getNodePath('9.0.0')
+  await runFixture(t, 'engines', { flags: { nodePath, mode: 'buildbot' } })
+})
+
+test('Provided --node-path version does not produce a node version warning if the build is being run locally', async (t) => {
+  const nodePath = getNodePath('9.0.0')
+  await runFixture(t, 'engines', { flags: { nodePath, mode: 'cli' } })
+})
+
+test('Provided --node-path version does not produce a node version warning if plugins were installed via the UI', async (t) => {
+  const nodePath = getNodePath('8.2.0')
+  const defaultConfig = { plugins: [{ package: 'netlify-plugin-test' }] }
+  await runFixture(t, 'ui', { flags: { nodePath, defaultConfig } })
 })
 
 test('Plugins can execute local binaries', async (t) => {

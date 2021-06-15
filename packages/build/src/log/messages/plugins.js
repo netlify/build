@@ -38,6 +38,15 @@ const logFailPluginWarning = function (methodName, event) {
   )
 }
 
+const logPluginNodeVersionWarning = function ({ logs, pluginNames, userNodeVersion, currentNodeVersion }) {
+  logWarning(
+    logs,
+    `Warning: please ensure the following Build Plugins are compatible with Node.js ${currentNodeVersion}: ${pluginNames.join(
+      ', ',
+    )}. These plugins currently run on Node.js ${userNodeVersion}. Due to upcoming changes, they will soon run on the build system's Node.js version (currently ${currentNodeVersion}). For more info: http://ntl.fyi/build-plugins-node-versions`,
+  )
+}
+
 const logDeploySuccess = function (logs) {
   log(logs, 'Site deploy was successfully initiated')
 }
@@ -56,4 +65,5 @@ module.exports = {
   logFailPluginWarning,
   logDeploySuccess,
   logConfigMutation,
+  logPluginNodeVersionWarning,
 }
