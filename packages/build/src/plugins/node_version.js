@@ -15,7 +15,6 @@ const { logPluginNodeVersionWarning } = require('../log/messages/plugins')
 // Other plugins use `@netlify/build` Node.js version.
 const addPluginsNodeVersion = function ({ pluginsOptions, mode, nodePath, userNodeVersion, logs }) {
   const currentNodeVersion = cleanVersion(currentVersion)
-  checkForOldNodeVersions({ pluginsOptions, userNodeVersion, currentNodeVersion, logs, mode })
   return pluginsOptions.map((pluginOptions) =>
     addPluginNodeVersion({ pluginOptions, currentNodeVersion, userNodeVersion, mode, nodePath, logs }),
   )
@@ -25,7 +24,7 @@ const addPluginsNodeVersion = function ({ pluginsOptions, mode, nodePath, userNo
 // versions are lower than the system version we're currently relying (v12). This is part of our effort to decouple
 // the Node.js versions our build system supports and the Node.js versions @netlify/build supports -
 // https://github.com/netlify/pod-workflow/issues/219
-const checkForOldNodeVersions = function ({ pluginsOptions, userNodeVersion, currentNodeVersion, logs, mode }) {
+const checkForOldNodeVersions = function ({ pluginsOptions, userNodeVersion, logs, mode }) {
   if (mode !== 'buildbot' || satisfies(userNodeVersion, '>=12')) return
 
   const affectedPlugins = pluginsOptions
@@ -39,6 +38,7 @@ const checkForOldNodeVersions = function ({ pluginsOptions, userNodeVersion, cur
 
   if (affectedPlugins.length === 0) return
 
+  const currentNodeVersion = cleanVersion(currentVersion)
   logPluginNodeVersionWarning({ logs, pluginNames: affectedPlugins, userNodeVersion, currentNodeVersion })
 }
 
@@ -90,4 +90,4 @@ const throwUserError = function (message) {
   throw error
 }
 
-module.exports = { addPluginsNodeVersion, checkNodeVersion }
+module.exports = { addPluginsNodeVersion, checkForOldNodeVersions, checkNodeVersion }
