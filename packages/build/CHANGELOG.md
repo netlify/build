@@ -1,5 +1,12 @@
 # Changelog
 
+## [12.2.0](https://www.github.com/netlify/build/compare/build-v12.1.7...build-v12.2.0) (2021-06-15)
+
+
+### Features
+
+* add `--cachedConfigPath` CLI flag ([#3037](https://www.github.com/netlify/build/issues/3037)) ([e317a36](https://www.github.com/netlify/build/commit/e317a36b7c7028fcab6bb0fb0d026e0da522b692))
+
 ### [12.1.7](https://www.github.com/netlify/build/compare/build-v12.1.6...build-v12.1.7) (2021-06-15)
 
 
