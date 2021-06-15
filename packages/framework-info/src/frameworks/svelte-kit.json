@@ -1,0 +1,21 @@
+{
+  "id": "svelte-kit",
+  "name": "SvelteKit",
+  "category": "frontend_framework",
+  "detect": {
+    "npmDependencies": ["@sveltejs/kit"],
+    "excludedNpmDependencies": [],
+    "configFiles": []
+  },
+  "dev": {
+    "command": "svelte-kit dev",
+    "port": 3000,
+    "pollingStrategies": [{ "name": "TCP" }, { "name": "HTTP" }]
+  },
+  "build": {
+    "command": "svelte-kit build",
+    "directory": "static"
+  },
+  "env": {},
+  "plugins": []
+}

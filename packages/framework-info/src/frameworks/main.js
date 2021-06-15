@@ -37,6 +37,7 @@ const FRAMEWORKS = [
   require('./quasar-v0.17.json'),
   require('./sapper.json'),
   require('./svelte.json'),
+  require('./svelte-kit.json'),
   require('./vue.json'),
 
   // Build tools

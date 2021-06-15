@@ -4,7 +4,7 @@
   "category": "frontend_framework",
   "detect": {
     "npmDependencies": ["svelte"],
-    "excludedNpmDependencies": ["sapper"],
+    "excludedNpmDependencies": ["sapper", "@sveltejs/kit"],
     "configFiles": []
   },
   "dev": {
