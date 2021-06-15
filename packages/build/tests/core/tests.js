@@ -130,7 +130,7 @@ test('--cachedConfigPath CLI flag', async (t) => {
       snapshot: false,
       useBinary: true,
     })
-    await runFixture(t, 'cached_config', { flags: { cachedConfigPath, context: 'test', useBinary: true } })
+    await runFixture(t, 'cached_config', { flags: { cachedConfigPath, context: 'test' }, useBinary: true })
   } finally {
     await pUnlink(cachedConfigPath)
   }
