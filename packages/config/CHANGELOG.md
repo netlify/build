@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.3.0](https://www.github.com/netlify/build/compare/config-v7.2.4...config-v7.3.0) (2021-06-15)
+
+
+### Features
+
+* add `--output` CLI flag to `@netlify/config` ([#3028](https://www.github.com/netlify/build/issues/3028)) ([5a07b84](https://www.github.com/netlify/build/commit/5a07b84c501c36b696f017d585d79d149577dbb2))
+
 ### [7.2.4](https://www.github.com/netlify/build/compare/config-v7.2.3...config-v7.2.4) (2021-06-14)
 
 
