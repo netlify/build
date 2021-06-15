@@ -54,6 +54,11 @@ Default: current directory`,
     describe: `Git repository root directory. Used to retrieve the configuration file.
 Default: automatically guessed`,
   },
+  output: {
+    string: true,
+    describe: `Where to output the JSON result.
+Default: "-" (stdout)`,
+  },
   stable: {
     boolean: true,
     describe: `Sort keys printed in the output.

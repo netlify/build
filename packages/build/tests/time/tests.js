@@ -19,13 +19,11 @@ test('Does not send timings of community plugins', async (t) => {
   t.snapshot(await getTimerRequestsString(t, 'community_plugin'))
 })
 
-test('Sends timing and distribution metrics', async (t) => {
+test('Sends distribution metrics', async (t) => {
   const timerRequests = await getAllTimerRequests(t, 'simple')
-  const includesTimingRequests = timerRequests.some((timerRequest) => timerRequest.includes('|ms|'))
   const includesDistributionRequests = timerRequests.some((timerRequest) => timerRequest.includes('|d|'))
 
   t.true(includesDistributionRequests)
-  t.true(includesTimingRequests)
 })
 
 test('Allow passing --framework CLI flag', async (t) => {

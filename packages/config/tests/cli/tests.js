@@ -1,16 +1,19 @@
 'use strict'
 
-const { writeFile } = require('fs')
+const { writeFile, readFile, unlink } = require('fs')
 const { join } = require('path')
 const { promisify } = require('util')
 
 const test = require('ava')
 const del = require('del')
 const isCI = require('is-ci')
+const { tmpName: getTmpName } = require('tmp-promise')
 
 const { runFixture, FIXTURES_DIR } = require('../helpers/main')
 
 const pWriteFile = promisify(writeFile)
+const pReadFile = promisify(readFile)
+const pUnlink = promisify(unlink)
 
 test('--help', async (t) => {
   await runFixture(t, '', { flags: { help: true }, useBinary: true })
@@ -38,6 +41,31 @@ test('Stabilitize output with the --stable flag', async (t) => {
 
 test('Does not stabilitize output without the --stable flag', async (t) => {
   await runFixture(t, 'empty', { flags: { stable: false }, useBinary: true })
+})
+
+test('Write on file with the --output flag', async (t) => {
+  const output = await getTmpName({ dir: 'netlify-build-test' })
+  try {
+    await runFixture(t, 'empty', { flags: { output }, useBinary: true, snapshot: false })
+    const content = await pReadFile(output)
+    const { context } = JSON.parse(content)
+    t.is(context, 'production')
+  } finally {
+    await pUnlink(output)
+  }
+})
+
+test('Write on stdout with the --output flag', async (t) => {
+  const output = await getTmpName({ dir: 'netlify-build-test' })
+  try {
+    await runFixture(t, 'empty', { flags: { output }, useBinary: true })
+  } finally {
+    await pUnlink(output)
+  }
+})
+
+test('Write on stdout with the --output=- flag', async (t) => {
+  await runFixture(t, 'empty', { flags: { output: '-' }, useBinary: true })
 })
 
 // This test is too slow in local development
