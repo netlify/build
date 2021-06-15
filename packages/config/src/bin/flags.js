@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 'use strict'
 
 const filterObj = require('filter-obj')
@@ -31,10 +32,19 @@ Default: none.`,
   },
   cachedConfig: {
     string: true,
-    describe: `JSON configuration object returned by @netlify/config.
+    describe: `JSON configuration object returned by @netlify/config when --output=/ is used
+or when using @netlify/config programmatically.
 This is done as a performance optimization to cache the configuration loading logic.
 Default: none.`,
     coerce: JSON.parse,
+    hidden: true,
+  },
+  cachedConfigPath: {
+    string: true,
+    describe: `File path to the JSON configuration object returned by @netlify/config
+when --output=/path is used.
+This is done as a performance optimization to cache the configuration loading logic.
+Default: none.`,
     hidden: true,
   },
   inlineConfig: {
@@ -153,3 +163,4 @@ const isUserFlag = function (key, value) {
 const INTERNAL_KEYS = new Set(['help', 'version', '_', '$0'])
 
 module.exports = { parseFlags }
+/* eslint-enable max-lines */

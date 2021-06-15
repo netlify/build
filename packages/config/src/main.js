@@ -7,6 +7,7 @@ const { getApiClient } = require('./api/client')
 const { getSiteInfo } = require('./api/site_info')
 const { getInitialBase, getBase, addBase } = require('./base')
 const { getBuildDir } = require('./build_dir')
+const { getCachedConfig } = require('./cached_config')
 const { mergeContext } = require('./context')
 const { parseDefaultConfig } = require('./default')
 const { getEnv } = require('./env/main')
@@ -26,20 +27,14 @@ const { mergeConfigs } = require('./utils/merge')
 // Takes an optional configuration file path as input and return the resolved
 // `config` together with related properties such as the `configPath`.
 const resolveConfig = async function (opts) {
-  const { cachedConfig, host, scheme, pathPrefix, testOpts, token, offline, ...optsA } = addDefaultOpts(opts)
+  const { cachedConfig, cachedConfigPath, host, scheme, pathPrefix, testOpts, token, offline, ...optsA } =
+    addDefaultOpts(opts)
   // `api` is not JSON-serializable, so we cannot cache it inside `cachedConfig`
   const api = getApiClient({ token, offline, host, scheme, pathPrefix, testOpts })
 
-  // Performance optimization when @netlify/config caller has already previously
-  // called it and cached the result.
-  // This is used by the buildbot which:
-  //  - first calls @netlify/config since it needs configuration property
-  //  - later calls @netlify/build, which runs @netlify/config under the hood
-  if (cachedConfig !== undefined) {
-    // The CLI does not print the API `token` for security reasons, which means
-    // it might be missing from `cachedConfig`. We provide the one passed in
-    // `opts` as a fallback.
-    return { token, ...cachedConfig, api }
+  const parsedCachedConfig = await getCachedConfig({ cachedConfig, cachedConfigPath, token, api })
+  if (parsedCachedConfig !== undefined) {
+    return parsedCachedConfig
   }
 
   const {

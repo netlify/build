@@ -19,10 +19,19 @@ Default: none.`,
   },
   cachedConfig: {
     string: true,
-    describe: `JSON configuration object returned by @netlify/config.
+    describe: `JSON configuration object returned by @netlify/config when --output=/ is used
+or when using @netlify/config programmatically.
 This is done as a performance optimization to cache the configuration loading logic.
 Default: none.`,
     coerce: JSON.parse,
+    hidden: true,
+  },
+  cachedConfigPath: {
+    string: true,
+    describe: `File path to the JSON configuration object returned by @netlify/config
+when --output=/path is used.
+This is done as a performance optimization to cache the configuration loading logic.
+Default: none.`,
     hidden: true,
   },
   cwd: {
