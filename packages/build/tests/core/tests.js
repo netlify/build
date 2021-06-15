@@ -1,15 +1,21 @@
 'use strict'
 
+const { unlink, writeFile } = require('fs')
 const { kill, platform, version } = require('process')
+const { promisify } = require('util')
 
 const test = require('ava')
 const getNode = require('get-node')
 const moize = require('moize')
+const { tmpName } = require('tmp-promise')
 
 const { runFixture: runFixtureConfig } = require('../../../config/tests/helpers/main')
 const { version: netlifyBuildVersion } = require('../../package.json')
 const { runFixture, FIXTURES_DIR } = require('../helpers/main')
 const { startServer } = require('../helpers/server')
+
+const pWriteFile = promisify(writeFile)
+const pUnlink = promisify(unlink)
 
 test('--help', async (t) => {
   await runFixture(t, '', { flags: { help: true }, useBinary: true })
@@ -116,10 +122,35 @@ test('--cachedConfig CLI flag', async (t) => {
   await runFixture(t, 'cached_config', { flags: { cachedConfig: returnValue }, useBinary: true })
 })
 
+test('--cachedConfigPath CLI flag', async (t) => {
+  const cachedConfigPath = await tmpName()
+  try {
+    await runFixtureConfig(t, 'cached_config', {
+      flags: { output: cachedConfigPath },
+      snapshot: false,
+      useBinary: true,
+    })
+    await runFixture(t, 'cached_config', { flags: { cachedConfigPath, context: 'test', useBinary: true } })
+  } finally {
+    await pUnlink(cachedConfigPath)
+  }
+})
+
 test('--cachedConfig', async (t) => {
   const { returnValue } = await runFixtureConfig(t, 'cached_config', { snapshot: false })
   const cachedConfig = JSON.parse(returnValue)
   await runFixture(t, 'cached_config', { flags: { cachedConfig } })
+})
+
+test('--cachedConfigPath', async (t) => {
+  const cachedConfigPath = await tmpName()
+  try {
+    const { returnValue } = await runFixtureConfig(t, 'cached_config', { snapshot: false })
+    await pWriteFile(cachedConfigPath, returnValue)
+    await runFixture(t, 'cached_config', { flags: { cachedConfigPath, context: 'test' } })
+  } finally {
+    await pUnlink(cachedConfigPath)
+  }
 })
 
 test('--context', async (t) => {

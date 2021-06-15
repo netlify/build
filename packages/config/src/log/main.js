@@ -5,10 +5,10 @@ const { logObject, logSubHeader } = require('./logger')
 const { cleanupConfigOpts } = require('./options')
 
 // Log options in debug mode.
-const logOpts = function (opts, { logs, debug, cachedConfig }) {
+const logOpts = function (opts, { logs, debug, cachedConfig, cachedConfigPath }) {
   // In production, print those in the first call to `@netlify/config`, not the
   // second one done inside `@netlify/build`
-  if (!debug || cachedConfig !== undefined) {
+  if (!debug || cachedConfig !== undefined || cachedConfigPath !== undefined) {
     return
   }
 
