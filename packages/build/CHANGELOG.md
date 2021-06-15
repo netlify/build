@@ -1,5 +1,12 @@
 # Changelog
 
+### [12.1.7](https://www.github.com/netlify/build/compare/build-v12.1.6...build-v12.1.7) (2021-06-15)
+
+
+### Bug Fixes
+
+* do not print warning messages for plugins from the directory ([#3038](https://www.github.com/netlify/build/issues/3038)) ([12c36b2](https://www.github.com/netlify/build/commit/12c36b24cba72dbc6421c231599c073d5e04b3c7))
+
 ### [12.1.6](https://www.github.com/netlify/build/compare/build-v12.1.5...build-v12.1.6) (2021-06-15)
 
 
