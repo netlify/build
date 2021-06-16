@@ -1,7 +1,5 @@
 'use strict'
 
-const { relative } = require('path')
-
 const { throwError } = require('../error')
 
 const { logWarning } = require('./logger')
@@ -46,25 +44,6 @@ To run "${packageName}" in all contexts, please remove the following section fro
   )
 }
 
-// At the moment, the publish directory defaults to the repository root
-// directory even when there is a base directory, which might confuse some users
-// See https://github.com/netlify/build/issues/2075
-const warnBaseWithoutPublish = function ({ logs, repositoryRoot, base, build: { publish }, featureFlags }) {
-  if (!base || base === repositoryRoot || publish || featureFlags.netlify_config_default_publish) {
-    return
-  }
-
-  const relativeBase = relative(repositoryRoot, base)
-  logWarning(
-    logs,
-    `
-Warning: the "publish" directory was not set and will default to the repository root directory.
-To publish the root directory, please set the "publish" directory to "/"
-To publish the "base" directory instead, please set the "publish" directory to "${relativeBase}"
-`,
-  )
-}
-
 const warnRedirectsParsing = function (logs, errorMessage) {
   logWarning(
     logs,
@@ -79,6 +58,5 @@ module.exports = {
   warnLegacyFunctionsDirectory,
   warnContextPluginConfig,
   throwContextPluginsConfig,
-  warnBaseWithoutPublish,
   warnRedirectsParsing,
 }

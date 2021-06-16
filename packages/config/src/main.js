@@ -215,21 +215,13 @@ const getFullConfig = async function ({
       context,
       branch,
       logs,
-      featureFlags,
     })
     const {
       config: configB,
       buildDir,
       base: baseA,
-    } = await resolveFiles({
-      config: configA,
-      repositoryRoot,
-      base,
-      baseRelDir,
-      logs,
-      featureFlags,
-    })
-    const configC = await addRedirects({ config: configB, buildDir, logs, featureFlags })
+    } = await resolveFiles({ config: configA, repositoryRoot, base, baseRelDir })
+    const configC = await addRedirects({ config: configB, logs, featureFlags })
     return { configPath, config: configC, buildDir, base: baseA }
   } catch (error) {
     const configName = configPath === undefined ? '' : ` file ${configPath}`
@@ -245,15 +237,7 @@ const getFullConfig = async function ({
 // Before and after those steps, also performs validation and normalization.
 // Those need to be done at different stages depending on whether they should
 // happen before/after the merges mentioned above.
-const mergeAndNormalizeConfig = function ({
-  config,
-  defaultConfig,
-  inlineConfig,
-  context,
-  branch,
-  logs,
-  featureFlags,
-}) {
+const mergeAndNormalizeConfig = function ({ config, defaultConfig, inlineConfig, context, branch, logs }) {
   const configA = normalizeBeforeConfigMerge(config, CONFIG_ORIGIN)
   const defaultConfigA = normalizeBeforeConfigMerge(defaultConfig, UI_ORIGIN)
   const inlineConfigA = normalizeBeforeConfigMerge(inlineConfig, CONFIG_ORIGIN)
@@ -261,14 +245,14 @@ const mergeAndNormalizeConfig = function ({
   const configB = mergeConfigs([defaultConfigA, configA, inlineConfigA])
   const configC = mergeContext({ config: configB, context, branch, logs })
 
-  const configD = normalizeAfterConfigMerge(configC, featureFlags)
+  const configD = normalizeAfterConfigMerge(configC)
   return configD
 }
 
 // Find base directory, build directory and resolve all paths to absolute paths
-const resolveFiles = async function ({ config, repositoryRoot, base, baseRelDir, logs, featureFlags }) {
+const resolveFiles = async function ({ config, repositoryRoot, base, baseRelDir }) {
   const baseA = getBase(base, repositoryRoot, config)
-  const buildDir = await getBuildDir({ config, repositoryRoot, base: baseA, logs, featureFlags })
+  const buildDir = await getBuildDir(repositoryRoot, baseA)
   const configA = await resolveConfigPaths({ config, repositoryRoot, buildDir, baseRelDir })
   const configB = addBase(configA, baseA)
   return { config: configB, buildDir, base: baseA }

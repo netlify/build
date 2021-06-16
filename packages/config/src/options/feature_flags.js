@@ -15,7 +15,6 @@ const getFeatureFlag = function (name) {
 
 // Default values for feature flags
 const DEFAULT_FEATURE_FLAGS = {
-  netlify_config_default_publish: false,
   netlify_config_redirects_parsing: false,
 }
 
