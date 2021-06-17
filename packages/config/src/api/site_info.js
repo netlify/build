@@ -9,8 +9,16 @@ const { throwError } = require('../error')
 // Requires knowing the `siteId` and having the access `token`.
 // Silently ignore API errors. For example the network connection might be down,
 // but local builds should still work regardless.
-const getSiteInfo = async function ({ api, siteId, mode, testOpts: { env: testEnv = true } = {} }) {
-  if (api === undefined || mode === 'buildbot' || !testEnv) {
+const getSiteInfo = async function ({ api, siteId, mode, previousResult, testOpts: { env: testEnv = true } = {} }) {
+  // Performance optimization when `@netlify/config` is called multiple times
+  if (previousResult !== undefined) {
+    // @todo remove the default `= []` once `accounts` and `addons` are returned
+    // from `@netlify/config`
+    const { siteInfo, accounts = [], addons = [] } = previousResult
+    return { siteInfo, accounts, addons }
+  }
+
+  if (!shouldFetchSiteInfo(api, mode, testEnv)) {
     const siteInfo = siteId === undefined ? {} : { id: siteId }
     return { siteInfo, accounts: [], addons: [] }
   }
@@ -21,6 +29,10 @@ const getSiteInfo = async function ({ api, siteId, mode, testOpts: { env: testEn
     getAddons(api, siteId),
   ])
   return { siteInfo, accounts, addons }
+}
+
+const shouldFetchSiteInfo = function (api, mode, testEnv) {
+  return api !== undefined && mode !== 'buildbot' && testEnv
 }
 
 const getSite = async function (api, siteId) {

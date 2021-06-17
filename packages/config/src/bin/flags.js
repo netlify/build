@@ -47,6 +47,12 @@ This is done as a performance optimization to cache the configuration loading lo
 Default: none.`,
     hidden: true,
   },
+  previousResult: {
+    string: true,
+    describe: `Like "cachedConfig" except configuration files are still reloaded in case they changed.`,
+    coerce: JSON.parse,
+    hidden: true,
+  },
   inlineConfig: {
     string: true,
     describe: `JSON configuration object overriding the configuration file and other settings.

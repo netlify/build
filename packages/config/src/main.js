@@ -50,12 +50,13 @@ const resolveConfig = async function (opts) {
     deployId,
     baseRelDir,
     mode,
+    previousResult,
     debug,
     logs,
     featureFlags,
   } = await normalizeOpts(optsA)
 
-  const { siteInfo, accounts, addons } = await getSiteInfo({ api, siteId, mode, testOpts })
+  const { siteInfo, accounts, addons } = await getSiteInfo({ api, siteId, mode, previousResult, testOpts })
 
   const { defaultConfig: defaultConfigA, baseRelDir: baseRelDirA } = parseDefaultConfig({
     defaultConfig,

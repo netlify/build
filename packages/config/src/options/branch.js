@@ -8,9 +8,14 @@ const execa = require('execa')
 //   - `HEAD` branch (using `git`)
 //   - `main` (using `git`)
 //   - 'master' (fallback)
-const getBranch = async function ({ branch, repositoryRoot }) {
+const getBranch = async function ({ branch, repositoryRoot, previousResult }) {
   if (branch) {
     return branch
+  }
+
+  // Performance optimization when `@netlify/config` is called multiple times
+  if (previousResult !== undefined) {
+    return previousResult.branch
   }
 
   const headBranch = await getGitBranch(repositoryRoot, 'HEAD')

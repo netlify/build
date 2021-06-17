@@ -128,6 +128,17 @@ test('--cachedConfig with a siteId', async (t) => {
   await runFixture(t, 'cached_config', { flags: { cachedConfig, siteId: 'test' } })
 })
 
+test('--previousResult CLI flags', async (t) => {
+  const { returnValue } = await runFixture(t, 'cached_config', { snapshot: false })
+  await runFixture(t, 'cached_config', { flags: { previousResult: returnValue }, useBinary: true })
+})
+
+test('--previousResult', async (t) => {
+  const { returnValue } = await runFixture(t, 'cached_config', { snapshot: false })
+  const previousResult = JSON.parse(returnValue)
+  await runFixture(t, 'cached_config', { flags: { previousResult } })
+})
+
 test('Programmatic', async (t) => {
   const { config } = await resolveConfig({ repositoryRoot: `${FIXTURES_DIR}/empty` })
   t.not(config.build.environment, undefined)

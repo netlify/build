@@ -178,6 +178,14 @@ test('Sets BRANCH environment variable', async (t) => {
   t.is(BRANCH.value, 'test')
 })
 
+test('Do not recompute branch when using previousResult', async (t) => {
+  const previousResult = await getFixtureConfig(t, 'empty', { flags: { branch: 'test' } })
+  const {
+    env: { BRANCH },
+  } = await getFixtureConfig(t, 'empty', { flags: { branch: undefined, previousResult } })
+  t.is(BRANCH.value, 'test')
+})
+
 test('Does not set some git-related environment variables if no repository', async (t) => {
   const {
     env: { COMMIT_REF },

@@ -30,10 +30,10 @@ const SITE_INFO_BUILD_SETTINGS_NULL = {
   build_settings: { cmd: null, dir: null, functions_dir: null, base: null, env: null, base_rel_dir: null },
 }
 
-const runWithMockServer = async function (t, fixtureName, { response, status, flags }) {
+const runWithMockServer = async function (t, fixtureName, { response, status, flags, snapshot }) {
   const { scheme, host, stopServer } = await startServer({ path: SITE_INFO_PATH, response, status })
   try {
-    await runFixture(t, fixtureName, { flags: { testOpts: { scheme, host }, ...flags } })
+    return await runFixture(t, fixtureName, { flags: { testOpts: { scheme, host }, ...flags }, snapshot })
   } finally {
     await stopServer()
   }
@@ -61,6 +61,16 @@ test('NETLIFY_SITE_ID environment variable', async (t) => {
 
 test('Environment variable siteInfo success', async (t) => {
   await runWithMockServer(t, 'empty', { response: SITE_INFO_DATA, flags: { token: 'test', siteId: 'test' } })
+})
+
+test('siteInfo is not re-fetched when using previousResult', async (t) => {
+  const { returnValue } = await runWithMockServer(t, 'empty', {
+    response: SITE_INFO_DATA,
+    flags: { token: 'test', siteId: 'test' },
+    snapshot: false,
+  })
+  const previousResult = JSON.parse(returnValue)
+  await runWithMockServer(t, 'empty', { flags: { previousResult } })
 })
 
 test('Environment variable siteInfo API error', async (t) => {
