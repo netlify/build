@@ -1,5 +1,12 @@
 # Changelog
 
+## [12.4.0](https://www.github.com/netlify/build/compare/build-v12.3.0...build-v12.4.0) (2021-06-17)
+
+
+### Features
+
+* pass `publish` directory to the buildbot during deploys ([#3056](https://www.github.com/netlify/build/issues/3056)) ([7d57080](https://www.github.com/netlify/build/commit/7d570801dc9fd469638b938e62c76433b861ff55))
+
 ## [12.3.0](https://www.github.com/netlify/build/compare/build-v12.2.2...build-v12.3.0) (2021-06-17)
 
 
