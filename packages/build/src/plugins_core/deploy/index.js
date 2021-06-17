@@ -9,11 +9,11 @@ const {
   deploySiteWithBuildbotClient,
 } = require('./buildbot_client')
 
-const coreCommand = async function ({ buildbotServerSocket, events, logs }) {
+const coreCommand = async function ({ buildbotServerSocket, events, constants, logs }) {
   const client = createBuildbotClient(buildbotServerSocket)
   try {
     await connectBuildbotClient(client)
-    await deploySiteWithBuildbotClient(client, events)
+    await deploySiteWithBuildbotClient(client, events, constants)
     logDeploySuccess(logs)
     return {}
   } finally {

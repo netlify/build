@@ -55,9 +55,9 @@ const getNextParsedResponsePromise = addAsyncErrorMessage(
   'Invalid response from buildbot',
 )
 
-const deploySiteWithBuildbotClient = async function (client, events) {
+const deploySiteWithBuildbotClient = async function (client, events, { PUBLISH_DIR }) {
   const action = shouldWaitForPostProcessing(events) ? 'deploySiteAndAwaitLive' : 'deploySite'
-  const payload = { action }
+  const payload = { action, values: { deployDir: PUBLISH_DIR } }
 
   const [{ succeeded, values: { error, error_type: errorType } = {} }] = await Promise.all([
     getNextParsedResponsePromise(client),
