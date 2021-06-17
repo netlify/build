@@ -1,5 +1,13 @@
 # Changelog
 
+### [12.2.1](https://www.github.com/netlify/build/compare/build-v12.2.0...build-v12.2.1) (2021-06-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugin-edge-handlers to ^1.11.18 ([#3044](https://www.github.com/netlify/build/issues/3044)) ([68828d6](https://www.github.com/netlify/build/commit/68828d688a25959ae37966510ae0d43c0d532e7a))
+* remove `netlify_config_default_publish` feature flag ([#3047](https://www.github.com/netlify/build/issues/3047)) ([0e2c137](https://www.github.com/netlify/build/commit/0e2c137fffae8ad3d4d8243ade3e5f46c0e96e21))
+
 ## [12.2.0](https://www.github.com/netlify/build/compare/build-v12.1.7...build-v12.2.0) (2021-06-15)
 
 
