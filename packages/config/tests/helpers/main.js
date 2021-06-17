@@ -33,7 +33,7 @@ const runFixture = async function (t, fixtureName, { flags = {}, env, ...opts } 
   return runFixtureCommon(t, fixtureName, { ...opts, flags: flagsA, env: envA, mainFunc, binaryPath })
 }
 
-const DEFAULT_TEST_FEATURE_FLAGS = { netlify_config_default_publish: true, netlify_config_redirects_parsing: true }
+const DEFAULT_TEST_FEATURE_FLAGS = { netlify_config_redirects_parsing: true }
 
 // In tests, make the return value stable so it can be snapshot
 const mainFunc = async function (flags) {
