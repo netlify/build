@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.5.0](https://www.github.com/netlify/build/compare/config-v7.4.1...config-v7.5.0) (2021-06-17)
+
+
+### Features
+
+* return `accounts` and `addons` from `@netlify/config` ([#3057](https://www.github.com/netlify/build/issues/3057)) ([661f79c](https://www.github.com/netlify/build/commit/661f79cf9ca6eaee03f25a24a6569bc6cc9302a3))
+
 ### [7.4.1](https://www.github.com/netlify/build/compare/config-v7.4.0...config-v7.4.1) (2021-06-17)
 
 
