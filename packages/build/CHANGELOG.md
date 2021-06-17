@@ -1,5 +1,12 @@
 # Changelog
 
+### [12.2.2](https://www.github.com/netlify/build/compare/build-v12.2.1...build-v12.2.2) (2021-06-17)
+
+
+### Bug Fixes
+
+* log `--cachedConfigPath` in verbose mode ([#3046](https://www.github.com/netlify/build/issues/3046)) ([dc4028f](https://www.github.com/netlify/build/commit/dc4028f1ea84435f62c461be3367015f8be75817))
+
 ### [12.2.1](https://www.github.com/netlify/build/compare/build-v12.2.0...build-v12.2.1) (2021-06-17)
 
 
