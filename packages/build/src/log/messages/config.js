@@ -29,13 +29,14 @@ const shouldPrintFeatureFlag = function ([featureFlagName, enabled]) {
 }
 
 // Hidden because the value is security-sensitive
-const SECURE_FLAGS = ['token', 'bugsnagKey', 'env', 'cachedConfig', 'cachedConfigPath', 'defaultConfig']
+const SECURE_FLAGS = ['token', 'bugsnagKey', 'env', 'cachedConfig', 'defaultConfig']
 // Hidden because those are used in tests
 const TEST_FLAGS = ['buffer', 'telemetry']
 // Hidden because those are only used internally
 const INTERNAL_FLAGS = [
   'nodePath',
   'functionsDistDir',
+  'cachedConfigPath',
   'sendStatus',
   'statsd',
   'framework',
