@@ -1,8 +1,8 @@
 'use strict'
 
 module.exports = {
-  onPreBuild({ netlifyConfig: { build } }) {
+  onPreBuild({ netlifyConfig }) {
     // eslint-disable-next-line no-param-reassign
-    build.command = ''
+    delete netlifyConfig.build.command
   },
 }

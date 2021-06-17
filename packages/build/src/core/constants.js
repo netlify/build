@@ -95,7 +95,7 @@ const DEFAULT_PATHS = [
 
 const addDefaultConstant = async function ({ constants, constantName, defaultPath, buildDir }) {
   // Configuration paths are relative to the build directory.
-  if (constants[constantName] !== undefined || !(await pathExists(`${buildDir}/${defaultPath}`))) {
+  if (!isEmptyValue(constants[constantName]) || !(await pathExists(`${buildDir}/${defaultPath}`))) {
     return {}
   }
 
@@ -112,7 +112,7 @@ const normalizeConstantsPaths = function (constants, buildDir) {
 // Instead of passing absolute paths, we pass paths relative to `buildDir`, so
 // that logs are less verbose.
 const normalizePath = function (path, buildDir, key) {
-  if (path === undefined || !CONSTANT_PATHS.has(key)) {
+  if (isEmptyValue(path) || !CONSTANT_PATHS.has(key)) {
     return path
   }
 
@@ -127,6 +127,10 @@ const normalizePath = function (path, buildDir, key) {
   }
 
   return pathA
+}
+
+const isEmptyValue = function (path) {
+  return path === undefined || path === ''
 }
 
 const CONSTANT_PATHS = new Set([
