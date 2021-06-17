@@ -1,5 +1,12 @@
 # Changelog
 
+### [7.4.1](https://www.github.com/netlify/build/compare/config-v7.4.0...config-v7.4.1) (2021-06-17)
+
+
+### Bug Fixes
+
+* remove `netlify_config_default_publish` feature flag ([#3047](https://www.github.com/netlify/build/issues/3047)) ([0e2c137](https://www.github.com/netlify/build/commit/0e2c137fffae8ad3d4d8243ade3e5f46c0e96e21))
+
 ## [7.4.0](https://www.github.com/netlify/build/compare/config-v7.3.0...config-v7.4.0) (2021-06-15)
 
 
