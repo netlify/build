@@ -1,5 +1,12 @@
 # Changelog
 
+## [12.3.0](https://www.github.com/netlify/build/compare/build-v12.2.2...build-v12.3.0) (2021-06-17)
+
+
+### Features
+
+* return `accounts` and `addons` from `@netlify/config` ([#3057](https://www.github.com/netlify/build/issues/3057)) ([661f79c](https://www.github.com/netlify/build/commit/661f79cf9ca6eaee03f25a24a6569bc6cc9302a3))
+
 ### [12.2.2](https://www.github.com/netlify/build/compare/build-v12.2.1...build-v12.2.2) (2021-06-17)
 
 
