@@ -97,6 +97,8 @@ const resolveConfig = async function (opts) {
 
   const result = {
     siteInfo,
+    accounts,
+    addons,
     env,
     configPath,
     buildDir,
