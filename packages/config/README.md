@@ -39,6 +39,15 @@ const exampleFunction = async function () {
   //   },
   //   ...
   // },
+  // "accounts": [
+  //   {
+  //     "name": "my team",
+  //     "slug": "me",
+  //     ...
+  //   },
+  //   ...
+  // ],
+  // "addons": [],
   // "env": {
   //   "NODE_VERSION": { "sources": ["configFile"], "value": "16" },
   //   ...
@@ -195,7 +204,7 @@ _Default value_: environment variable `NETLIFY_SITE_ID`
 
 Netlify Site ID.
 
-This is used to retrieve [`siteInfo`](#siteinfo).
+This is used to retrieve [`siteInfo`](#siteinfo), [`accounts`](#accounts) and [`addons`](#addons).
 
 #### env
 
@@ -217,8 +226,8 @@ What is calling `@netlify/config`. Can be:
 
 This is used for the following cases:
 
-- if `mode` is `buildbot`, the [`siteInfo`](#siteinfo) is not retrieved because it is also passed using another internal
-  option.
+- if `mode` is `buildbot`, [`siteInfo`](#siteinfo), [`accounts`](#accounts) and [`addons`](#addons) are not retrieved
+  because they are also passed using another internal option.
 
 #### defaultConfig
 
@@ -285,6 +294,24 @@ variables.
 
 This might be empty depending on the options passed.
 
+#### accounts
+
+_Type_: `object[]`
+
+Netlify accounts retrieved using the `listAccountsForUser` Netlify API endpoint. This is used to retrieve account-level
+environment variables.
+
+This might be empty depending on the options passed.
+
+#### addons
+
+_Type_: `object[]`
+
+Netlify addons retrieved using the `listServiceInstancesForSite` Netlify API endpoint. This is used to retrieve
+addon-specific environment variables.
+
+This might be empty depending on the options passed.
+
 #### token
 
 _Type_: `string`
@@ -296,7 +323,8 @@ variables.
 
 _Type_: `NetlifyClient?`
 
-Netlify [JavaScript client instance](https://github.com/netlify/js-client) used to retrieve the [`siteInfo`](#siteinfo).
+Netlify [JavaScript client instance](https://github.com/netlify/js-client) used to retrieve [`siteInfo`](#siteinfo),
+[`accounts`](#accounts) and [`addons`](#addons).
 
 #### logs
 
