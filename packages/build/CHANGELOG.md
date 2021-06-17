@@ -1,5 +1,12 @@
 # Changelog
 
+### [12.4.1](https://www.github.com/netlify/build/compare/build-v12.4.0...build-v12.4.1) (2021-06-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^2.16.0 ([#3064](https://www.github.com/netlify/build/issues/3064)) ([a01bea3](https://www.github.com/netlify/build/commit/a01bea386b5a2a4f60a2d1c36ed6ebb778c7ff50))
+
 ## [12.4.0](https://www.github.com/netlify/build/compare/build-v12.3.0...build-v12.4.0) (2021-06-17)
 
 
