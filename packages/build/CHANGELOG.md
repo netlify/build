@@ -1,5 +1,12 @@
 # Changelog
 
+## [12.6.0](https://www.github.com/netlify/build/compare/build-v12.5.2...build-v12.6.0) (2021-06-22)
+
+
+### Features
+
+* add `build.publishOrigin` to `@netlify/config` ([#3078](https://www.github.com/netlify/build/issues/3078)) ([b5badfd](https://www.github.com/netlify/build/commit/b5badfdda2c7bada76d21583f6f57465b12b16cb))
+
 ### [12.5.2](https://www.github.com/netlify/build/compare/build-v12.5.1...build-v12.5.2) (2021-06-22)
 
 
