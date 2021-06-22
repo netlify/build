@@ -1,5 +1,26 @@
 # Changelog
 
+### [12.5.2](https://www.github.com/netlify/build/compare/build-v12.5.1...build-v12.5.2) (2021-06-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.4.2 ([#3070](https://www.github.com/netlify/build/issues/3070)) ([673f684](https://www.github.com/netlify/build/commit/673f68442849774c62969049e3f0bd7e22ed40b0))
+
+### [12.5.1](https://www.github.com/netlify/build/compare/build-v12.5.0...build-v12.5.1) (2021-06-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugin-edge-handlers to ^1.11.19 ([#3073](https://www.github.com/netlify/build/issues/3073)) ([e5f68ab](https://www.github.com/netlify/build/commit/e5f68abbc2b3121c8866e32105ee66fb6d60d136))
+
+## [12.5.0](https://www.github.com/netlify/build/compare/build-v12.4.1...build-v12.5.0) (2021-06-22)
+
+
+### Features
+
+* improve verbose logging ([#3066](https://www.github.com/netlify/build/issues/3066)) ([6cb567b](https://www.github.com/netlify/build/commit/6cb567b9c4ca3a5abd9cc967df1d5812b0989602))
+
 ### [12.4.1](https://www.github.com/netlify/build/compare/build-v12.4.0...build-v12.4.1) (2021-06-17)
 
 
