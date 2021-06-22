@@ -1,5 +1,12 @@
 # Changelog
 
+## [12.5.0](https://www.github.com/netlify/build/compare/build-v12.4.1...build-v12.5.0) (2021-06-22)
+
+
+### Features
+
+* improve verbose logging ([#3066](https://www.github.com/netlify/build/issues/3066)) ([6cb567b](https://www.github.com/netlify/build/commit/6cb567b9c4ca3a5abd9cc967df1d5812b0989602))
+
 ### [12.4.1](https://www.github.com/netlify/build/compare/build-v12.4.0...build-v12.4.1) (2021-06-17)
 
 
