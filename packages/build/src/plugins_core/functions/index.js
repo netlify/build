@@ -149,7 +149,7 @@ const getFunctionPaths = async function (functionsSrc) {
 // We use a dynamic `condition` because the functions directory might be created
 // by the build command or plugins
 const hasFunctionsDir = function ({ constants: { FUNCTIONS_SRC } }) {
-  return FUNCTIONS_SRC !== undefined
+  return FUNCTIONS_SRC !== undefined && FUNCTIONS_SRC !== ''
 }
 
 const bundleFunctions = {

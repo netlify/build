@@ -49,10 +49,11 @@ const addProxy = function (value, keys, { state, event }) {
 // Retrieve the proxy validating function for each property
 const getReadonlyProxyHandlers = function ({ keys, state, event }) {
   return {
-    ...proxyHandlers,
+    preventExtensions: forbidMethod.bind(undefined, keys, 'validateAnyProperty'),
+    setPrototypeOf: forbidMethod.bind(undefined, keys, 'setPrototypeOf'),
+    deleteProperty: forbidDelete.bind(undefined, keys),
     set: validateSet.bind(undefined, { keys, state, event }),
     defineProperty: validateDefineProperty.bind(undefined, { keys, state, event }),
-    deleteProperty: validateDelete.bind(undefined, { keys, state, event }),
   }
 }
 
@@ -86,19 +87,6 @@ const validateDefineProperty = function ({ keys, state, event }, proxy, key, des
   })
 }
 
-// Triggered when calling `delete netlifyConfig.{key}`
-const validateDelete = function ({ keys, state, event }, proxy, key) {
-  return validateReadonlyProperty({
-    method: 'deleteProperty',
-    keys,
-    key,
-    value: undefined,
-    state,
-    event,
-    reflectArgs: [proxy, key],
-  })
-}
-
 // This is called when a plugin author tries to set a `netlifyConfig` property
 const validateReadonlyProperty = function ({
   method,
@@ -110,7 +98,9 @@ const validateReadonlyProperty = function ({
   event,
   reflectArgs,
 }) {
-  const propName = getPropName(keys, key)
+  const propName = getPropName([...keys, key])
+
+  forbidEmptyAssign(value, propName)
 
   if (!(propName in MUTABLE_PROPS)) {
     throwValidationError(`"netlifyConfig.${propName}" is read-only.`)
@@ -136,8 +126,8 @@ const validateReadonlyProperty = function ({
 }
 
 // Retrieve normalized property name
-const getPropName = function (keys, key) {
-  return serializeKeys([...keys, key].map(normalizeDynamicProp))
+const getPropName = function (keys) {
+  return serializeKeys(keys.map(normalizeDynamicProp))
 }
 
 // Some properties are user-defined, i.e. we need to replace them with a "*" token
@@ -246,14 +236,27 @@ const MUTABLE_PROPS = {
   'functions.*.node_bundler': { lastEvent: 'onBuild' },
 }
 
-const validateAnyProperty = function (method) {
-  throwValidationError(`Using the "${method}()" method on "netlifyConfig" is not allowed.`)
+// Triggered when calling `delete netlifyConfig.{key}`
+// We do not allow this because the back-end
+// only receives mutations as a `netlify.toml`, i.e. cannot apply property
+// deletions since `undefined` is not serializable in TOML.
+const forbidDelete = function (keys, proxy, key) {
+  const propName = getPropName([...keys, key])
+  throwValidationError(`Deleting "netlifyConfig.${propName}" is not allowed.
+Please set this property to a specific value instead.`)
 }
 
-// Using those exotic methods is never allowed
-const proxyHandlers = {
-  preventExtensions: validateAnyProperty.bind(undefined, 'validateAnyProperty'),
-  setPrototypeOf: validateAnyProperty.bind(undefined, 'setPrototypeOf'),
+// Triggered when calling `netlifyConfig.{key} = undefined | null`
+const forbidEmptyAssign = function (value, propName) {
+  if (value === undefined || value === null) {
+    throwValidationError(`Setting "netlifyConfig.${propName}" to ${value} is not allowed.
+Please set this property to a specific value instead.`)
+  }
+}
+
+const forbidMethod = function (keys, method) {
+  const propName = getPropName(keys)
+  throwValidationError(`Using the "${method}()" method on "netlifyConfig.${propName}" is not allowed.`)
 }
 
 // Keep track of all config `Proxy` so that we can avoid wrapping a value twice
