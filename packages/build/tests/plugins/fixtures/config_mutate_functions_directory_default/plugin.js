@@ -9,7 +9,7 @@ module.exports = {
   onBuild({ netlifyConfig, constants: { FUNCTIONS_SRC } }) {
     console.log(FUNCTIONS_SRC)
     // eslint-disable-next-line no-param-reassign
-    delete netlifyConfig.functionsDirectory
+    netlifyConfig.functionsDirectory = ''
   },
   onPostBuild({ constants: { FUNCTIONS_SRC } }) {
     console.log(FUNCTIONS_SRC)
