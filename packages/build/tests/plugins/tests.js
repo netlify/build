@@ -53,6 +53,22 @@ if (!version.startsWith('v8.')) {
     await runFixture(t, 'config_mutate_general')
   })
 
+  test('netlifyConfig properties cannot be deleted', async (t) => {
+    await runFixture(t, 'config_mutate_delete')
+  })
+
+  test('netlifyConfig properties cannot be assigned to undefined', async (t) => {
+    await runFixture(t, 'config_mutate_set_undefined')
+  })
+
+  test('netlifyConfig properties cannot be assigned to null', async (t) => {
+    await runFixture(t, 'config_mutate_set_null')
+  })
+
+  test('netlifyConfig properties cannot be assigned to undefined with defineProperty', async (t) => {
+    await runFixture(t, 'config_mutate_define_undefined')
+  })
+
   test('netlifyConfig.functionsDirectory mutations are used during functions bundling', async (t) => {
     await runFixture(t, 'config_mutate_functions_directory_bundling')
   })

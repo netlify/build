@@ -1,5 +1,12 @@
 # Changelog
 
+### [7.7.1](https://www.github.com/netlify/build/compare/config-v7.7.0...config-v7.7.1) (2021-06-22)
+
+
+### Bug Fixes
+
+* set `redirects` to an empty array with `@netlify/config` binary output ([#3083](https://www.github.com/netlify/build/issues/3083)) ([7543c21](https://www.github.com/netlify/build/commit/7543c217b5b89c978b5178b938b633affe00f1db))
+
 ## [7.7.0](https://www.github.com/netlify/build/compare/config-v7.6.0...config-v7.7.0) (2021-06-22)
 
 

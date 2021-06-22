@@ -60,7 +60,7 @@ const hasBuildCommand = function ({
     build: { command: buildCommand },
   },
 }) {
-  return buildCommand !== undefined
+  return buildCommand !== undefined && buildCommand !== ''
 }
 
 const buildCommandCore = {
