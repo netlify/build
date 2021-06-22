@@ -1,5 +1,16 @@
 # Changelog
 
+## [8.0.0](https://www.github.com/netlify/build/compare/config-v7.7.1...config-v8.0.0) (2021-06-22)
+
+
+### ⚠ BREAKING CHANGES
+
+* update dependency netlify-redirect-parser to v8 (#3091)
+
+### Bug Fixes
+
+* update dependency netlify-redirect-parser to v8 ([#3091](https://www.github.com/netlify/build/issues/3091)) ([bf21959](https://www.github.com/netlify/build/commit/bf2195937ae7c33f4a74d64fd8c1cdc2e327a58e))
+
 ### [7.7.1](https://www.github.com/netlify/build/compare/config-v7.7.0...config-v7.7.1) (2021-06-22)
 
 
