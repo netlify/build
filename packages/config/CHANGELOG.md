@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.7.0](https://www.github.com/netlify/build/compare/config-v7.6.0...config-v7.7.0) (2021-06-22)
+
+
+### Features
+
+* do not print `redirects` with the `@netlify/config` CLI ([#3059](https://www.github.com/netlify/build/issues/3059)) ([ccaa12d](https://www.github.com/netlify/build/commit/ccaa12dffc6701c7d8a2eee176a81b92e330b9c7))
+
 ## [7.6.0](https://www.github.com/netlify/build/compare/config-v7.5.0...config-v7.6.0) (2021-06-22)
 
 
