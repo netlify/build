@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.6.0](https://www.github.com/netlify/build/compare/config-v7.5.0...config-v7.6.0) (2021-06-22)
+
+
+### Features
+
+* add `build.publishOrigin` to `@netlify/config` ([#3078](https://www.github.com/netlify/build/issues/3078)) ([b5badfd](https://www.github.com/netlify/build/commit/b5badfdda2c7bada76d21583f6f57465b12b16cb))
+
 ## [7.5.0](https://www.github.com/netlify/build/compare/config-v7.4.1...config-v7.5.0) (2021-06-17)
 
 
