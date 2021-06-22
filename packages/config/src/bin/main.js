@@ -65,19 +65,18 @@ const serializeApi = function ({ api, ...result }) {
   return { ...result, hasApi: true }
 }
 
-const omitProperties = function ({ config, ...result }) {
-  const resultA = omit(result, SECRET_PROPERTIES)
-  const configA = omit(config, OMITTED_CONFIG_PROPERTIES)
-  return { ...resultA, config: configA }
-}
-
-const SECRET_PROPERTIES = ['token']
 // Redirects in plugins (`netlifyConfig.redirects`) should have the same shape
 // as in `netlify.toml`. This leads to `@netlify/config` returning the same
 // shape as well. However, the buildbot uses a different shape. Therefore the
 // CLI does not output those to avoid the buildbot crashing due to different
 // `redirects` shapes.
-const OMITTED_CONFIG_PROPERTIES = ['redirects']
+const omitProperties = function ({ config, ...result }) {
+  const resultA = omit(result, SECRET_PROPERTIES)
+  const configA = { ...config, redirects: [] }
+  return { ...resultA, config: configA }
+}
+
+const SECRET_PROPERTIES = ['token']
 
 const handleCliError = function (error) {
   // Errors caused by users do not show stack traces and have exit code 1
