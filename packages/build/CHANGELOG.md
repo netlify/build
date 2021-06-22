@@ -1,5 +1,17 @@
 # Changelog
 
+## [12.7.0](https://www.github.com/netlify/build/compare/build-v12.6.0...build-v12.7.0) (2021-06-22)
+
+
+### Features
+
+* do not allow deleting configuration properties ([#3067](https://www.github.com/netlify/build/issues/3067)) ([aea876a](https://www.github.com/netlify/build/commit/aea876a63bfaf483a9b74018fb68a2604b760354))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^2.17.0 ([#3085](https://www.github.com/netlify/build/issues/3085)) ([104aebf](https://www.github.com/netlify/build/commit/104aebf0595d1c75e860714bbc9b6b82bd7ace7a))
+
 ## [12.6.0](https://www.github.com/netlify/build/compare/build-v12.5.2...build-v12.6.0) (2021-06-22)
 
 
