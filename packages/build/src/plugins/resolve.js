@@ -26,6 +26,7 @@ const resolvePluginsPath = async function ({
   debug,
   sendStatus,
   testOpts,
+  featureFlags,
 }) {
   const autoPluginsDir = getAutoPluginsDir(buildDir)
   const pluginsOptionsA = await Promise.all(
@@ -37,6 +38,7 @@ const resolvePluginsPath = async function ({
     nodePath,
     userNodeVersion,
     logs,
+    featureFlags,
   })
   const pluginsOptionsC = await addPinnedVersions({ pluginsOptions: pluginsOptionsB, api, siteInfo, sendStatus })
   const pluginsOptionsD = await addExpectedVersions({
@@ -48,7 +50,10 @@ const resolvePluginsPath = async function ({
     buildDir,
     testOpts,
   })
-  checkForOldNodeVersions({ pluginsOptions: pluginsOptionsD, mode, userNodeVersion, logs })
+  // Don't log the warning if the feature flag is already set
+  if (!featureFlags.buildbot_build_plugins_system_node_version) {
+    checkForOldNodeVersions({ pluginsOptions: pluginsOptionsD, mode, userNodeVersion, logs })
+  }
   const pluginsOptionsE = await handleMissingPlugins({
     pluginsOptions: pluginsOptionsD,
     autoPluginsDir,

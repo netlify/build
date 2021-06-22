@@ -397,6 +397,7 @@ const initAndRunBuild = async function ({
     sendStatus,
     timers,
     testOpts,
+    featureFlags,
   })
   // eslint-disable-next-line fp/no-mutation, no-param-reassign
   errorParams.pluginsOptions = pluginsOptionsA

@@ -18,6 +18,7 @@ const getFeatureFlag = function (name) {
 // Default values for feature flags
 const DEFAULT_FEATURE_FLAGS = {
   zisiHandlerV2: env.NETLIFY_EXPERIMENTAL_FUNCTION_HANDLER_V2 === 'true',
+  buildbot_build_plugins_system_node_version: false,
 }
 
 module.exports = { normalizeCliFeatureFlags, DEFAULT_FEATURE_FLAGS }
