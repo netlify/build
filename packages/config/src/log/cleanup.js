@@ -17,6 +17,7 @@ const cleanupConfig = function ({
     ignore,
     processing,
     publish,
+    publishOrigin,
   } = {},
   headers,
   plugins = [],
@@ -35,6 +36,7 @@ const cleanupConfig = function ({
     ignore,
     processing,
     publish,
+    publishOrigin,
   }
   const pluginsA = plugins.map(cleanupPlugin)
   const netlifyConfig = simplifyConfig({

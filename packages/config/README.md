@@ -68,6 +68,7 @@ const exampleFunction = async function () {
   //   ],
   //   "build": {
   //     "publish": "/home/me/code/cv-website/build",
+  //     "publishOrigin": "default",
   //     "command": "gulp build",
   //     "commandOrigin": "config",
   //     "functions": "/home/me/code/cv-website/netlify/functions"

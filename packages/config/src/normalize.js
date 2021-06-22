@@ -1,6 +1,7 @@
 'use strict'
 
 const { normalizeFunctionsProps, WILDCARD_ALL } = require('./functions_config')
+const { DEFAULT_ORIGIN } = require('./origin')
 const { mergeConfigs } = require('./utils/merge')
 const { removeFalsy } = require('./utils/remove_falsy')
 
@@ -13,7 +14,7 @@ const normalizeConfig = function (config) {
 }
 
 const DEFAULT_CONFIG = {
-  build: { environment: {}, publish: '.' },
+  build: { environment: {}, publish: '.', publishOrigin: DEFAULT_ORIGIN },
   functions: { [WILDCARD_ALL]: {} },
   plugins: [],
 }
