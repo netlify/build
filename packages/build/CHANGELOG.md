@@ -1,5 +1,12 @@
 # Changelog
 
+### [12.7.2](https://www.github.com/netlify/build/compare/build-v12.7.1...build-v12.7.2) (2021-06-23)
+
+
+### Bug Fixes
+
+* pin zip-it-and-ship-it to version 4.4.2 ([#3095](https://www.github.com/netlify/build/issues/3095)) ([86a00ce](https://www.github.com/netlify/build/commit/86a00ce3d5ee0bb5e9158ce81531459215ac0015))
+
 ### [12.7.1](https://www.github.com/netlify/build/compare/build-v12.7.0...build-v12.7.1) (2021-06-22)
 
 
