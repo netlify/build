@@ -84,6 +84,54 @@ test('--inlineConfig can override the "base"', async (t) => {
   await runFixture(t, 'merge_base', { flags: { defaultConfig, inlineConfig } })
 })
 
+test('--inlineConfig can use contexts', async (t) => {
+  const inlineConfig = { context: { testContext: { build: { command: 'echo commandPriority' } } } }
+  await runFixture(t, 'default_priority', { flags: { context: 'testContext', inlineConfig } })
+})
+
+test('--inlineConfig can be overridden by contexts', async (t) => {
+  const defaultConfig = { context: { testContext: { build: { command: 'echo commandDefault' } } } }
+  const inlineConfig = { build: { command: 'echo commandPriority' } }
+  await runFixture(t, 'default_priority', { flags: { context: 'testContext', defaultConfig, inlineConfig } })
+})
+
+test('--priorityConfig CLI flag', async (t) => {
+  const priorityConfig = JSON.stringify({ build: { publish: 'publish' } })
+  await runFixture(t, 'default_merge', { flags: { priorityConfig }, useBinary: true })
+})
+
+test('--priorityConfig is merged', async (t) => {
+  const priorityConfig = { build: { publish: 'publish' } }
+  await runFixture(t, 'default_merge', { flags: { priorityConfig } })
+})
+
+test('--priorityConfig is merged with priority', async (t) => {
+  const priorityConfig = { build: { command: 'echo commandPriority' } }
+  await runFixture(t, 'default_priority', { flags: { priorityConfig } })
+})
+
+test('--priorityConfig falsy values are ignored', async (t) => {
+  const priorityConfig = { build: { command: '', publish: undefined } }
+  await runFixture(t, 'default_priority', { flags: { priorityConfig } })
+})
+
+test('--priorityConfig can override the "base"', async (t) => {
+  const defaultConfig = { build: { base: 'defaultBase' } }
+  const priorityConfig = { build: { base: 'base' } }
+  await runFixture(t, 'merge_base', { flags: { defaultConfig, priorityConfig } })
+})
+
+test('--priorityConfig cannot use contexts', async (t) => {
+  const priorityConfig = { context: { testContext: { build: { command: 'echo commandPriority' } } } }
+  await runFixture(t, 'default_priority', { flags: { context: 'testContext', priorityConfig } })
+})
+
+test('--priorityConfig cannot be overridden by contexts', async (t) => {
+  const defaultConfig = { context: { testContext: { build: { command: 'echo commandDefault' } } } }
+  const priorityConfig = { build: { command: 'echo commandPriority' } }
+  await runFixture(t, 'default_priority', { flags: { context: 'testContext', defaultConfig, priorityConfig } })
+})
+
 test('--cachedConfig CLI flags', async (t) => {
   const { returnValue } = await runFixture(t, 'cached_config', { snapshot: false })
   await runFixture(t, 'cached_config', { flags: { cachedConfig: returnValue }, useBinary: true })

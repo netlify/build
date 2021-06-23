@@ -197,3 +197,8 @@ test('Validates inlineConfig', async (t) => {
   const inlineConfig = { build: { command: false } }
   await runFixture(t, 'empty', { flags: { inlineConfig } })
 })
+
+test('Validates priorityConfig', async (t) => {
+  const priorityConfig = { build: { command: false } }
+  await runFixture(t, 'empty', { flags: { priorityConfig } })
+})

@@ -6,7 +6,8 @@ const { resolvePath } = require('./files')
 const getInitialBase = function ({
   repositoryRoot,
   defaultConfig: { build: { base: defaultBase } = {} },
-  inlineConfig: { build: { base: initialBase = defaultBase } = {} },
+  inlineConfig: { build: { base: inlineBase = defaultBase } = {} },
+  priorityConfig: { build: { base: initialBase = inlineBase } = {} },
 }) {
   return resolvePath(repositoryRoot, initialBase)
 }
