@@ -1087,13 +1087,6 @@ test('Validate --node-path version is supported by the plugin', async (t) => {
   })
 })
 
-test('No --node-path version validation is performed against the plugin engines if the plugins_system_node_version feature flag is set', async (t) => {
-  const nodePath = getNodePath('9.0.0')
-  await runFixture(t, 'engines', {
-    flags: { nodePath, featureFlags: { buildbot_build_plugins_system_node_version: true } },
-  })
-})
-
 test('Validate --node-path', async (t) => {
   await runFixture(t, 'node_version_simple', {
     flags: { nodePath: '/doesNotExist', featureFlags: { buildbot_build_plugins_system_node_version: false } },
@@ -1104,13 +1097,6 @@ test('Provided --node-path version produces a node version warning if the build 
   const nodePath = getNodePath('9.0.0')
   await runFixture(t, 'engines', {
     flags: { nodePath, mode: 'buildbot', featureFlags: { buildbot_build_plugins_system_node_version: false } },
-  })
-})
-
-test('Provided --node-path version has no effect for plugin executions when the feature flag plugins_system_node_version is set', async (t) => {
-  const nodePath = getNodePath('9.0.0')
-  await runFixture(t, 'engines', {
-    flags: { nodePath, mode: 'buildbot', featureFlags: { buildbot_build_plugins_system_node_version: true } },
   })
 })
 
@@ -1128,6 +1114,24 @@ test('Provided --node-path version does not produce a node version warning if pl
     flags: { nodePath, defaultConfig, featureFlags: { buildbot_build_plugins_system_node_version: false } },
   })
 })
+
+// Node 8 execution triggers inconsistent snapshots. The feature flag will only be set in production where we run Node
+// 12. @TODO remove once we remove node 8 support.
+if (!version.startsWith('v8.')) {
+  test('No --node-path version validation is performed against the plugin engines if the plugins_system_node_version feature flag is set', async (t) => {
+    const nodePath = getNodePath('9.0.0')
+    await runFixture(t, 'engines', {
+      flags: { nodePath, featureFlags: { buildbot_build_plugins_system_node_version: true } },
+    })
+  })
+
+  test('Provided --node-path version has no effect for plugin executions when the feature flag plugins_system_node_version is set', async (t) => {
+    const nodePath = getNodePath('9.0.0')
+    await runFixture(t, 'engines', {
+      flags: { nodePath, mode: 'buildbot', featureFlags: { buildbot_build_plugins_system_node_version: true } },
+    })
+  })
+}
 
 test('Plugins can execute local binaries', async (t) => {
   await runFixture(t, 'local_bin')
