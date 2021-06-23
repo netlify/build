@@ -1,5 +1,12 @@
 # Changelog
 
+## [12.8.0](https://www.github.com/netlify/build/compare/build-v12.7.2...build-v12.8.0) (2021-06-23)
+
+
+### Features
+
+* add `configMutations` internal variable ([#3093](https://www.github.com/netlify/build/issues/3093)) ([629d32e](https://www.github.com/netlify/build/commit/629d32e3c5205ce555de579bbe349e56355a48d4))
+
 ### [12.7.2](https://www.github.com/netlify/build/compare/build-v12.7.1...build-v12.7.2) (2021-06-23)
 
 
