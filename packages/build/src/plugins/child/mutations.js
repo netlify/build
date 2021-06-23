@@ -13,77 +13,84 @@ const { EVENTS } = require('../events')
 //  - Warn plugin authors when mutating read-only properties
 //  - Execute custom logic, e.g. setting normalized properties when denormalized
 //    ones are being modified
-const preventConfigMutations = function (netlifyConfig, event) {
+const preventConfigMutations = function (netlifyConfig, event, configMutations) {
   const state = { ongoingMutation: false }
-  const topProxy = preventObjectMutations(netlifyConfig, [], { state, event })
+  const topProxy = preventObjectMutations(netlifyConfig, [], { state, configMutations, event })
   state.topProxy = topProxy
   return topProxy
 }
 
 // A `proxy` is recursively applied to readonly properties in `netlifyConfig`
-const preventObjectMutations = function (value, keys, { state, event }) {
+const preventObjectMutations = function (value, keys, { state, configMutations, event }) {
   if (PROXIES.has(value)) {
     return value
   }
 
   if (Array.isArray(value)) {
-    const array = value.map((item, index) => preventObjectMutations(item, [...keys, String(index)], { state, event }))
-    return addProxy(array, keys, { state, event })
+    const array = value.map((item, index) =>
+      preventObjectMutations(item, [...keys, String(index)], { state, configMutations, event }),
+    )
+    return addProxy(array, keys, { state, configMutations, event })
   }
 
   if (isPlainObj(value)) {
-    const object = mapObj(value, (key, item) => [key, preventObjectMutations(item, [...keys, key], { state, event })])
-    return addProxy(object, keys, { state, event })
+    const object = mapObj(value, (key, item) => [
+      key,
+      preventObjectMutations(item, [...keys, key], { state, configMutations, event }),
+    ])
+    return addProxy(object, keys, { state, configMutations, event })
   }
 
   return value
 }
 
-const addProxy = function (value, keys, { state, event }) {
+const addProxy = function (value, keys, { state, configMutations, event }) {
   // eslint-disable-next-line fp/no-proxy
-  const proxy = new Proxy(value, getReadonlyProxyHandlers({ keys, state, event }))
+  const proxy = new Proxy(value, getReadonlyProxyHandlers({ keys, state, configMutations, event }))
   PROXIES.add(proxy)
   return proxy
 }
 
 // Retrieve the proxy validating function for each property
-const getReadonlyProxyHandlers = function ({ keys, state, event }) {
+const getReadonlyProxyHandlers = function ({ keys, state, configMutations, event }) {
   return {
     preventExtensions: forbidMethod.bind(undefined, keys, 'validateAnyProperty'),
     setPrototypeOf: forbidMethod.bind(undefined, keys, 'setPrototypeOf'),
     deleteProperty: forbidDelete.bind(undefined, keys),
-    set: validateSet.bind(undefined, { keys, state, event }),
-    defineProperty: validateDefineProperty.bind(undefined, { keys, state, event }),
+    set: validateSet.bind(undefined, { parentKeys: keys, state, configMutations, event }),
+    defineProperty: validateDefineProperty.bind(undefined, { parentKeys: keys, state, configMutations, event }),
   }
 }
 
 // Triggered when calling `netlifyConfig.{key} = value`
 // eslint-disable-next-line max-params
-const validateSet = function ({ keys, state, event }, proxy, key, value, receiver) {
-  const valueA = preventObjectMutations(value, [...keys, key], { state, event })
+const validateSet = function ({ parentKeys, state, configMutations, event }, proxy, lastKey, value, receiver) {
+  const keys = [...parentKeys, lastKey]
+  const valueA = preventObjectMutations(value, keys, { state, configMutations, event })
   return validateReadonlyProperty({
     method: 'set',
     keys,
-    key,
     value: valueA,
     state,
+    configMutations,
     event,
-    reflectArgs: [proxy, key, valueA, receiver],
+    reflectArgs: [proxy, lastKey, valueA, receiver],
   })
 }
 
 // Triggered when calling `Object.defineProperty(netlifyConfig, key, { value })`
-const validateDefineProperty = function ({ keys, state, event }, proxy, key, descriptor) {
-  const valueA = preventObjectMutations(descriptor.value, [...keys, key], { state, event })
+const validateDefineProperty = function ({ parentKeys, state, configMutations, event }, proxy, lastKey, descriptor) {
+  const keys = [...parentKeys, lastKey]
+  const valueA = preventObjectMutations(descriptor.value, keys, { state, configMutations, event })
   const descriptorA = { ...descriptor, value: valueA }
   return validateReadonlyProperty({
     method: 'defineProperty',
     keys,
-    key,
     value: valueA,
     state,
+    configMutations,
     event,
-    reflectArgs: [proxy, key, descriptorA],
+    reflectArgs: [proxy, lastKey, descriptorA],
   })
 }
 
@@ -91,14 +98,21 @@ const validateDefineProperty = function ({ keys, state, event }, proxy, key, des
 const validateReadonlyProperty = function ({
   method,
   keys,
-  key,
   value,
   state,
   state: { topProxy, ongoingMutation },
+  configMutations,
   event,
   reflectArgs,
 }) {
-  const propName = getPropName([...keys, key])
+  const propName = getPropName(keys)
+
+  // `method: set` calls `method: defineProperty` internally, so we avoid
+  // duplicates here
+  if (method === 'defineProperty') {
+    // eslint-disable-next-line fp/no-mutating-methods
+    configMutations.push({ keys, propName, value, method })
+  }
 
   forbidEmptyAssign(value, propName)
 
@@ -116,7 +130,7 @@ const validateReadonlyProperty = function ({
 
   try {
     if (handler !== undefined) {
-      handler(topProxy, value, key)
+      handler(topProxy, value, keys[keys.length - 1])
     }
 
     return Reflect[method](...reflectArgs)
