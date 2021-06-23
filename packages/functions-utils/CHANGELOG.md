@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.3.46](https://www.github.com/netlify/build/compare/functions-utils-v1.3.45...functions-utils-v1.3.46) (2021-06-23)
+
+
+### Bug Fixes
+
+* pin zip-it-and-ship-it to version 4.4.2 ([#3095](https://www.github.com/netlify/build/issues/3095)) ([86a00ce](https://www.github.com/netlify/build/commit/86a00ce3d5ee0bb5e9158ce81531459215ac0015))
+
 ### [1.3.45](https://www.github.com/netlify/build/compare/functions-utils-v1.3.44...functions-utils-v1.3.45) (2021-06-22)
 
 
