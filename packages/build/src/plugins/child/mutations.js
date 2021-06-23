@@ -1,6 +1,7 @@
 /* eslint-disable max-lines */
 'use strict'
 
+const { set } = require('dot-prop')
 const isPlainObj = require('is-plain-obj')
 const mapObj = require('map-obj')
 
@@ -13,11 +14,9 @@ const { EVENTS } = require('../events')
 //  - Warn plugin authors when mutating read-only properties
 //  - Execute custom logic, e.g. setting normalized properties when denormalized
 //    ones are being modified
-const preventConfigMutations = function (netlifyConfig, event, configMutations) {
+const preventConfigMutations = function (netlifyConfig, configMutations, event) {
   const state = { ongoingMutation: false }
-  const topProxy = preventObjectMutations(netlifyConfig, [], { state, configMutations, event })
-  state.topProxy = topProxy
-  return topProxy
+  return preventObjectMutations(netlifyConfig, [], { state, configMutations, event })
 }
 
 // A `proxy` is recursively applied to readonly properties in `netlifyConfig`
@@ -44,10 +43,28 @@ const preventObjectMutations = function (value, keys, { state, configMutations, 
   return value
 }
 
+// Inverse of `preventObjectMutations()`
+const removeProxies = function (value) {
+  if (!PROXIES.has(value)) {
+    return value
+  }
+
+  const originalValue = PROXIES.get(value)
+  if (Array.isArray(originalValue)) {
+    return originalValue.map(removeProxies)
+  }
+
+  if (isPlainObj(originalValue)) {
+    return mapObj(value, (key, item) => [key, removeProxies(item)])
+  }
+
+  return originalValue
+}
+
 const addProxy = function (value, keys, { state, configMutations, event }) {
   // eslint-disable-next-line fp/no-proxy
   const proxy = new Proxy(value, getReadonlyProxyHandlers({ keys, state, configMutations, event }))
-  PROXIES.add(proxy)
+  PROXIES.set(proxy, value)
   return proxy
 }
 
@@ -66,31 +83,38 @@ const getReadonlyProxyHandlers = function ({ keys, state, configMutations, event
 // eslint-disable-next-line max-params
 const validateSet = function ({ parentKeys, state, configMutations, event }, proxy, lastKey, value, receiver) {
   const keys = [...parentKeys, lastKey]
-  const valueA = preventObjectMutations(value, keys, { state, configMutations, event })
+  const proxyValue = preventObjectMutations(value, keys, { state, configMutations, event })
   return validateReadonlyProperty({
     method: 'set',
     keys,
-    value: valueA,
+    value,
     state,
     configMutations,
     event,
-    reflectArgs: [proxy, lastKey, valueA, receiver],
+    reflectArgs: [proxy, lastKey, proxyValue, receiver],
   })
 }
 
 // Triggered when calling `Object.defineProperty(netlifyConfig, key, { value })`
-const validateDefineProperty = function ({ parentKeys, state, configMutations, event }, proxy, lastKey, descriptor) {
+const validateDefineProperty = function (
+  { parentKeys, state, configMutations, event },
+  proxy,
+  lastKey,
+  { value, ...descriptor },
+) {
   const keys = [...parentKeys, lastKey]
-  const valueA = preventObjectMutations(descriptor.value, keys, { state, configMutations, event })
-  const descriptorA = { ...descriptor, value: valueA }
+  const proxyDescriptor = {
+    ...descriptor,
+    value: preventObjectMutations(value, keys, { state, configMutations, event }),
+  }
   return validateReadonlyProperty({
     method: 'defineProperty',
     keys,
-    value: valueA,
+    value,
     state,
     configMutations,
     event,
-    reflectArgs: [proxy, lastKey, descriptorA],
+    reflectArgs: [proxy, lastKey, proxyDescriptor],
   })
 }
 
@@ -100,7 +124,7 @@ const validateReadonlyProperty = function ({
   keys,
   value,
   state,
-  state: { topProxy, ongoingMutation },
+  state: { ongoingMutation },
   configMutations,
   event,
   reflectArgs,
@@ -111,7 +135,7 @@ const validateReadonlyProperty = function ({
   // duplicates here
   if (method === 'defineProperty') {
     // eslint-disable-next-line fp/no-mutating-methods
-    configMutations.push({ keys, propName, value, method })
+    configMutations.push({ keys, propName, value })
   }
 
   forbidEmptyAssign(value, propName)
@@ -120,7 +144,7 @@ const validateReadonlyProperty = function ({
     throwValidationError(`"netlifyConfig.${propName}" is read-only.`)
   }
 
-  const { lastEvent, handler } = MUTABLE_PROPS[propName]
+  const { lastEvent } = MUTABLE_PROPS[propName]
 
   if (EVENTS.indexOf(lastEvent) < EVENTS.indexOf(event)) {
     throwValidationError(`"netlifyConfig.${propName}" cannot be modified after "${lastEvent}".`)
@@ -129,10 +153,6 @@ const validateReadonlyProperty = function ({
   startLogConfigMutation({ state, ongoingMutation, value, propName })
 
   try {
-    if (handler !== undefined) {
-      handler(topProxy, value, keys[keys.length - 1])
-    }
-
     return Reflect[method](...reflectArgs)
   } finally {
     stopLogConfigMutation(state, ongoingMutation)
@@ -201,29 +221,30 @@ const stopLogConfigMutation = function (state, ongoingMutation) {
 }
 
 // When setting `build.command`, `build.commandOrigin` is set to "plugin"
-const setBuildCommandOrigin = function (topProxy) {
+const setBuildCommandOrigin = function (netlifyConfig) {
   // eslint-disable-next-line fp/no-mutation, no-param-reassign
-  topProxy.build.commandOrigin = 'plugin'
+  netlifyConfig.build.commandOrigin = 'plugin'
 }
 
-const setTopFunctionsDirectory = function (topProxy, value, key) {
-  setFunctionsDirectory(topProxy, value)
-  setFunctionsCatchAll(topProxy, value, key)
+const setTopFunctionsDirectory = function (netlifyConfig, value, keys) {
+  setFunctionsDirectory(netlifyConfig, value)
+  setFunctionsCatchAll(netlifyConfig, value, keys)
 }
 
 // When settings `functions.{propName}`, we also set `functions.*.{propName}`,
 // emulating the normalization performed by `@netlify/config`.
-const setFunctionsCatchAll = function (topProxy, value, key) {
+const setFunctionsCatchAll = function (netlifyConfig, value, keys) {
+  const lastKey = keys[keys.length - 1]
   // eslint-disable-next-line fp/no-mutation, no-param-reassign
-  topProxy.functions['*'][key] = value
+  netlifyConfig.functions['*'][lastKey] = value
 }
 
 // Several configuration properties can be used to specify the functions directory.
 // `netlifyConfig.functionsDirectory` is the normalized property which must be set.
 // We allow plugin authors to set any of the other properties for convenience.
-const setFunctionsDirectory = function (topProxy, value) {
+const setFunctionsDirectory = function (netlifyConfig, value) {
   // eslint-disable-next-line fp/no-mutation, no-param-reassign
-  topProxy.functionsDirectory = value
+  netlifyConfig.functionsDirectory = value
 }
 
 // List of properties that are not read-only.
@@ -275,7 +296,7 @@ const forbidMethod = function (keys, method) {
 
 // Keep track of all config `Proxy` so that we can avoid wrapping a value twice
 // in a `Proxy`
-const PROXIES = new WeakSet()
+const PROXIES = new WeakMap()
 
 const throwValidationError = function (message) {
   const error = new Error(message)
@@ -283,5 +304,24 @@ const throwValidationError = function (message) {
   throw error
 }
 
-module.exports = { preventConfigMutations }
+const applyMutations = function (netlifyConfig, configMutations) {
+  configMutations.forEach(({ keys, propName, value }) => {
+    applyMutation({ netlifyConfig, keys, propName, value })
+  })
+}
+
+// Apply all proxy mutations to the original `netlifyConfig`. Also normalize it.
+const applyMutation = function ({ netlifyConfig, keys, propName, value }) {
+  const originalValue = removeProxies(value)
+  set(netlifyConfig, serializeKeys(keys), originalValue)
+
+  const { handler } = MUTABLE_PROPS[propName]
+  if (handler === undefined) {
+    return
+  }
+
+  handler(netlifyConfig, originalValue, keys)
+}
+
+module.exports = { preventConfigMutations, applyMutations }
 /* eslint-enable max-lines */
