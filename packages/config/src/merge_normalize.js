@@ -12,7 +12,7 @@ const {
 } = require('./validate/main')
 
 // Perform validation and normalization logic to apply to all of:
-//  - config, defaultConfig, inlineConfig
+//  - config, defaultConfig, inlineConfig, priorityConfig
 //  - context-specific configs
 // Therefore, this is performing before merging those together.
 const normalizeBeforeConfigMerge = function (config, origin) {

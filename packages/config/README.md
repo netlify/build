@@ -242,6 +242,12 @@ _Type_: `object`
 
 Configuration object overriding any properties. This is a JavaScript object.
 
+#### priorityConfig
+
+_Type_: `object`
+
+Like `inlineConfig` except it has higher priority and cannot use nor be overridden by contexts.
+
 ### Return value
 
 The return value is a `Promise` resolving to an `object` with the following properties.

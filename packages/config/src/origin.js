@@ -4,6 +4,7 @@
 const UI_ORIGIN = 'ui'
 const CONFIG_ORIGIN = 'config'
 const DEFAULT_ORIGIN = 'default'
+const PLUGIN_ORIGIN = 'plugin'
 
 // Add `build.commandOrigin`, `build.publishOrigin` and `plugins[*].origin`.
 // This shows whether those properties came from the `ui` or from the `config`.
@@ -34,4 +35,4 @@ const addConfigPluginOrigin = function ({ plugins, ...config }, origin) {
   return { ...config, plugins: pluginsA }
 }
 
-module.exports = { addOrigins, UI_ORIGIN, CONFIG_ORIGIN, DEFAULT_ORIGIN }
+module.exports = { addOrigins, UI_ORIGIN, CONFIG_ORIGIN, DEFAULT_ORIGIN, PLUGIN_ORIGIN }
