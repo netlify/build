@@ -1,5 +1,12 @@
 # Changelog
 
+## [12.10.0](https://www.github.com/netlify/build/compare/build-v12.9.0...build-v12.10.0) (2021-06-24)
+
+
+### Features
+
+* move `netlifyConfig` mutations validation logic ([#3113](https://www.github.com/netlify/build/issues/3113)) ([a962fd0](https://www.github.com/netlify/build/commit/a962fd0c0a97c56199dd00d117c44f787fdbed03))
+
 ## [12.9.0](https://www.github.com/netlify/build/compare/build-v12.8.3...build-v12.9.0) (2021-06-24)
 
 
