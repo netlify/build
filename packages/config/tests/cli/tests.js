@@ -55,10 +55,11 @@ test('Write on file with the --output flag', async (t) => {
   }
 })
 
-test('Write on stdout with the --output flag', async (t) => {
+test('Do not write on stdout with the --output flag', async (t) => {
   const output = await getTmpName({ dir: 'netlify-build-test' })
   try {
-    await runFixture(t, 'empty', { flags: { output }, useBinary: true })
+    const { returnValue } = await runFixture(t, 'empty', { flags: { output }, useBinary: true, snapshot: false })
+    t.is(returnValue, '')
   } finally {
     await pUnlink(output)
   }
