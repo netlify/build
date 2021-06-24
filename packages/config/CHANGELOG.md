@@ -1,5 +1,16 @@
 # Changelog
 
+## [9.0.0](https://www.github.com/netlify/build/compare/config-v8.0.1...config-v9.0.0) (2021-06-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* do not print `@netlify/config` return value when `output` is defined (#3109)
+
+### Features
+
+* do not print `@netlify/config` return value when `output` is defined ([#3109](https://www.github.com/netlify/build/issues/3109)) ([38363fd](https://www.github.com/netlify/build/commit/38363fd173428b57c948c1ea9329265f013c8007))
+
 ### [8.0.1](https://www.github.com/netlify/build/compare/config-v8.0.0...config-v8.0.1) (2021-06-24)
 
 
