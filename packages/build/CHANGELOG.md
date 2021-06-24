@@ -1,5 +1,19 @@
 # Changelog
 
+## [12.9.0](https://www.github.com/netlify/build/compare/build-v12.8.3...build-v12.9.0) (2021-06-24)
+
+
+### Features
+
+* move proxy handler logic ([#3101](https://www.github.com/netlify/build/issues/3101)) ([6773d58](https://www.github.com/netlify/build/commit/6773d58b9eece26a0b56811ea92b0a6bc59847ba))
+
+### [12.8.3](https://www.github.com/netlify/build/compare/build-v12.8.2...build-v12.8.3) (2021-06-24)
+
+
+### Bug Fixes
+
+* dependencies ([67cae98](https://www.github.com/netlify/build/commit/67cae981597b0b2dea6ab2a1856a134705adee89))
+
 ### [12.8.2](https://www.github.com/netlify/build/compare/build-v12.8.1...build-v12.8.2) (2021-06-24)
 
 
