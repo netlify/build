@@ -1,5 +1,12 @@
 # Changelog
 
+### [8.0.1](https://www.github.com/netlify/build/compare/config-v8.0.0...config-v8.0.1) (2021-06-24)
+
+
+### Bug Fixes
+
+* **plugins:** feature flag plugin execution with the system node version ([#3081](https://www.github.com/netlify/build/issues/3081)) ([d1d5b58](https://www.github.com/netlify/build/commit/d1d5b58925fbe156591de0cf7123276fb910332d))
+
 ## [8.0.0](https://www.github.com/netlify/build/compare/config-v7.7.1...config-v8.0.0) (2021-06-22)
 
 
