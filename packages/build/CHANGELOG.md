@@ -1,5 +1,12 @@
 # Changelog
 
+### [12.8.3](https://www.github.com/netlify/build/compare/build-v12.8.2...build-v12.8.3) (2021-06-24)
+
+
+### Bug Fixes
+
+* dependencies ([67cae98](https://www.github.com/netlify/build/commit/67cae981597b0b2dea6ab2a1856a134705adee89))
+
 ### [12.8.2](https://www.github.com/netlify/build/compare/build-v12.8.1...build-v12.8.2) (2021-06-24)
 
 
