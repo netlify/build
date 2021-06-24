@@ -1,5 +1,12 @@
 # Changelog
 
+### [12.8.1](https://www.github.com/netlify/build/compare/build-v12.8.0...build-v12.8.1) (2021-06-24)
+
+
+### Bug Fixes
+
+* **plugins:** feature flag plugin execution with the system node version ([#3081](https://www.github.com/netlify/build/issues/3081)) ([d1d5b58](https://www.github.com/netlify/build/commit/d1d5b58925fbe156591de0cf7123276fb910332d))
+
 ## [12.8.0](https://www.github.com/netlify/build/compare/build-v12.7.2...build-v12.8.0) (2021-06-23)
 
 
