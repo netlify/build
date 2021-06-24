@@ -1,5 +1,12 @@
 # Changelog
 
+### [12.8.2](https://www.github.com/netlify/build/compare/build-v12.8.1...build-v12.8.2) (2021-06-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v4.6.0 ([#3105](https://www.github.com/netlify/build/issues/3105)) ([b2c53c7](https://www.github.com/netlify/build/commit/b2c53c789faa5c29295bb2f0209020cd0d9af7b6))
+
 ### [12.8.1](https://www.github.com/netlify/build/compare/build-v12.8.0...build-v12.8.1) (2021-06-24)
 
 
