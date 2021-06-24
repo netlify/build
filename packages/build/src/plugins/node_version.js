@@ -13,10 +13,10 @@ const { logPluginNodeVersionWarning } = require('../log/messages/plugins')
 // Local plugins, `package.json`-installed plugins and local builds use user's
 // preferred Node.js version.
 // Other plugins use `@netlify/build` Node.js version.
-const addPluginsNodeVersion = function ({ pluginsOptions, mode, nodePath, userNodeVersion, logs }) {
+const addPluginsNodeVersion = function ({ pluginsOptions, mode, nodePath, userNodeVersion, featureFlags }) {
   const currentNodeVersion = cleanVersion(currentVersion)
   return pluginsOptions.map((pluginOptions) =>
-    addPluginNodeVersion({ pluginOptions, currentNodeVersion, userNodeVersion, mode, nodePath, logs }),
+    addPluginNodeVersion({ pluginOptions, currentNodeVersion, userNodeVersion, mode, nodePath, featureFlags }),
   )
 }
 
@@ -43,6 +43,21 @@ const checkForOldNodeVersions = function ({ pluginsOptions, userNodeVersion, log
 }
 
 const addPluginNodeVersion = function ({
+  pluginOptions,
+  currentNodeVersion,
+  userNodeVersion,
+  mode,
+  nodePath,
+  featureFlags,
+}) {
+  // We want to slowly change all the production plugin executions to use our system node version
+  if (featureFlags.buildbot_build_plugins_system_node_version) {
+    return { ...pluginOptions, nodePath: execPath, nodeVersion: currentNodeVersion }
+  }
+  return legacyPluginNodeVersion({ pluginOptions, currentNodeVersion, userNodeVersion, mode, nodePath })
+}
+
+const legacyPluginNodeVersion = function ({
   pluginOptions,
   pluginOptions: { loadedFrom },
   currentNodeVersion,

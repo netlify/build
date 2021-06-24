@@ -216,14 +216,30 @@ test('--node-path is used by build.command', async (t) => {
   await runFixture(t, 'build_command', { flags: { nodePath: path }, env: { TEST_NODE_PATH: path } })
 })
 
-test('--node-path is used by local plugins', async (t) => {
+test('--node-path is not used by local plugins', async (t) => {
   const { path } = await mGetNode(CHILD_NODE_VERSION)
-  await runFixture(t, 'local_node_path', { flags: { nodePath: path }, env: { TEST_NODE_PATH: path } })
+  await runFixture(t, 'local_node_path_unused', { flags: { nodePath: path }, env: { TEST_NODE_PATH: path } })
 })
 
-test('--node-path is used by plugins added to package.json', async (t) => {
+test('--node-path is used by local plugins if the feature flag plugins_system_node_version is set to false', async (t) => {
   const { path } = await mGetNode(CHILD_NODE_VERSION)
-  await runFixture(t, 'package', { flags: { nodePath: path }, env: { TEST_NODE_PATH: path } })
+  await runFixture(t, 'local_node_path', {
+    flags: { nodePath: path, featureFlags: { buildbot_build_plugins_system_node_version: false } },
+    env: { TEST_NODE_PATH: path },
+  })
+})
+
+test('--node-path is not used by plugins added to package.json', async (t) => {
+  const { path } = await mGetNode(CHILD_NODE_VERSION)
+  await runFixture(t, 'package_node_path_unused', { flags: { nodePath: path }, env: { TEST_NODE_PATH: path } })
+})
+
+test('--node-path is used by plugins added to package.json if the feature flag plugins_system_node_version is set to false', async (t) => {
+  const { path } = await mGetNode(CHILD_NODE_VERSION)
+  await runFixture(t, 'package', {
+    flags: { nodePath: path, featureFlags: { buildbot_build_plugins_system_node_version: false } },
+    env: { TEST_NODE_PATH: path },
+  })
 })
 
 // @netlify/zip-it-and-ship-it does not support Node 8 during bundling
