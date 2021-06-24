@@ -48,9 +48,6 @@ const outputResult = async function (resultJson, output) {
     return
   }
 
-  // TODO: remove `console.log()` once the buildbot stops using stdout
-  console.log(resultJson)
-
   await makeDir(dirname(output))
   await pWriteFile(output, resultJson)
 }
