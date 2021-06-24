@@ -1,5 +1,12 @@
 # Changelog
 
+## [9.1.0](https://www.github.com/netlify/build/compare/config-v9.0.0...config-v9.1.0) (2021-06-24)
+
+
+### Features
+
+* add `priorityConfig` to `@netlify/config` ([#3102](https://www.github.com/netlify/build/issues/3102)) ([013ca1d](https://www.github.com/netlify/build/commit/013ca1d2efbde3547373f17f1550fe9cf60b9826))
+
 ## [9.0.0](https://www.github.com/netlify/build/compare/config-v8.0.1...config-v9.0.0) (2021-06-24)
 
 
