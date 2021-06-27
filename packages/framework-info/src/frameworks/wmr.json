@@ -1,0 +1,21 @@
+{
+  "id": "wmr",
+  "name": "WMR",
+  "category": "build_tool",
+  "detect": {
+    "npmDependencies": ["wmr"],
+    "excludedNpmDependencies": [],
+    "configFiles": []
+  },
+  "dev": {
+    "command": "wmr",
+    "port": 8080,
+    "pollingStrategies": [{ "name": "TCP" }, { "name": "HTTP" }]
+  },
+  "build": {
+    "command": "wmr build",
+    "directory": "dist"
+  },
+  "env": {},
+  "plugins": []
+}

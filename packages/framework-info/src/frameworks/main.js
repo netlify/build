@@ -46,6 +46,7 @@ const FRAMEWORKS = [
   require('./grunt.json'),
   require('./gulp.json'),
   require('./vite.json'),
+  require('./wmr.json'),
 ]
 
 /* eslint-enable node/global-require,import/max-dependencies */
