@@ -2,7 +2,8 @@
 
 const { getNewEnvChanges, setEnvChanges } = require('../../env/changes')
 
-const { trackConfigMutations, applyMutations } = require('./mutations')
+const { applyMutations } = require('./mutations')
+const { trackConfigMutations } = require('./track')
 const { getUtils } = require('./utils')
 
 // Run a specific plugin event handler

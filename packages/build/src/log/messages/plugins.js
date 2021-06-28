@@ -51,11 +51,11 @@ const logDeploySuccess = function (logs) {
   log(logs, 'Site deploy was successfully initiated')
 }
 
-const logConfigMutation = function (propName, value) {
+const logConfigMutation = function (keysString, value) {
   const mutationText =
     value === undefined
-      ? `Netlify configuration property "${propName}" deleted.`
-      : `Netlify configuration property "${propName}" value changed to ${inspect(value, { colors: false })}.`
+      ? `Netlify configuration property "${keysString}" deleted.`
+      : `Netlify configuration property "${keysString}" value changed to ${inspect(value, { colors: false })}.`
   log(undefined, mutationText)
 }
 
