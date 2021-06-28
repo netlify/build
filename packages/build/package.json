@@ -74,7 +74,7 @@
     "indent-string": "^4.0.0",
     "is-plain-obj": "^2.1.0",
     "js-yaml": "^4.0.0",
-    "keep-func-props": "^3.0.0",
+    "keep-func-props": "^4.0.0",
     "locate-path": "^5.0.0",
     "log-process-errors": "^5.1.2",
     "make-dir": "^3.0.2",
