@@ -12,7 +12,8 @@ const addOrigins = function (config, origin) {
   const configA = addBuildCommandOrigin(config, origin)
   const configB = addBuildPublishOrigin(configA, origin)
   const configC = addConfigPluginOrigin(configB, origin)
-  return configC
+  const configD = addRedirectsOrigin(configC, origin)
+  return configD
 }
 
 // This also removes empty build commands.
@@ -33,6 +34,10 @@ const addConfigPluginOrigin = function ({ plugins, ...config }, origin) {
 
   const pluginsA = plugins.map((plugin) => ({ ...plugin, origin }))
   return { ...config, plugins: pluginsA }
+}
+
+const addRedirectsOrigin = function (config, redirectsOrigin) {
+  return config.redirects === undefined ? config : { ...config, redirectsOrigin }
 }
 
 module.exports = { addOrigins, UI_ORIGIN, CONFIG_ORIGIN, DEFAULT_ORIGIN, PLUGIN_ORIGIN }
