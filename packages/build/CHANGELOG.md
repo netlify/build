@@ -1,5 +1,12 @@
 # Changelog
 
+## [12.13.0](https://www.github.com/netlify/build/compare/build-v12.12.0...build-v12.13.0) (2021-06-28)
+
+
+### Features
+
+* split mutations logic ([#3132](https://www.github.com/netlify/build/issues/3132)) ([6da5a40](https://www.github.com/netlify/build/commit/6da5a405b9d92e95edd67150f9adaf24dd06d749))
+
 ## [12.12.0](https://www.github.com/netlify/build/compare/build-v12.11.0...build-v12.12.0) (2021-06-28)
 
 
