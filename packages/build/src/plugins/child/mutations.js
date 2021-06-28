@@ -11,33 +11,34 @@ const { EVENTS } = require('../events')
 
 // `netlifyConfig` is read-only except for specific properties.
 // This requires a `Proxy` to:
-//  - Warn plugin authors when mutating read-only properties
-//  - Execute custom logic, e.g. setting normalized properties when denormalized
-//    ones are being modified
-const preventConfigMutations = function (netlifyConfig, configMutations, event) {
-  const state = { ongoingMutation: false }
-  return preventObjectMutations(netlifyConfig, [], { state, configMutations, event })
+//  - Log the change on the console
+//  - Keep track of the changes so they can be processed later to:
+//     - Warn plugin authors when mutating read-only properties
+//     - Apply the change to `netlifyConfig` in the parent process so it can
+//       run `@netlify/config` to normalize and validate the new values
+const trackConfigMutations = function (netlifyConfig, configMutations, event) {
+  return trackObjectMutations(netlifyConfig, [], { configMutations, event })
 }
 
 // A `proxy` is recursively applied to readonly properties in `netlifyConfig`
-const preventObjectMutations = function (value, keys, { state, configMutations, event }) {
+const trackObjectMutations = function (value, keys, { configMutations, event }) {
   if (PROXIES.has(value)) {
     return value
   }
 
   if (Array.isArray(value)) {
     const array = value.map((item, index) =>
-      preventObjectMutations(item, [...keys, String(index)], { state, configMutations, event }),
+      trackObjectMutations(item, [...keys, String(index)], { configMutations, event }),
     )
-    return addProxy(array, keys, { state, configMutations, event })
+    return addProxy(array, keys, { configMutations, event })
   }
 
   if (isPlainObj(value)) {
     const object = mapObj(value, (key, item) => [
       key,
-      preventObjectMutations(item, [...keys, key], { state, configMutations, event }),
+      trackObjectMutations(item, [...keys, key], { configMutations, event }),
     ])
-    return addProxy(object, keys, { state, configMutations, event })
+    return addProxy(object, keys, { configMutations, event })
   }
 
   return value
@@ -61,43 +62,24 @@ const removeProxies = function (value) {
   return originalValue
 }
 
-const addProxy = function (value, keys, { state, configMutations, event }) {
+const addProxy = function (value, keys, { configMutations, event }) {
   // eslint-disable-next-line fp/no-proxy
-  const proxy = new Proxy(value, getReadonlyProxyHandlers({ keys, state, configMutations, event }))
+  const proxy = new Proxy(value, {
+    preventExtensions: forbidMethod.bind(undefined, keys, 'validateAnyProperty'),
+    setPrototypeOf: forbidMethod.bind(undefined, keys, 'setPrototypeOf'),
+    deleteProperty: forbidDelete.bind(undefined, keys),
+    defineProperty: trackDefineProperty.bind(undefined, { parentKeys: keys, configMutations, event }),
+  })
   PROXIES.set(proxy, value)
   return proxy
 }
 
-// Retrieve the proxy validating function for each property
-const getReadonlyProxyHandlers = function ({ keys, state, configMutations, event }) {
-  return {
-    preventExtensions: forbidMethod.bind(undefined, keys, 'validateAnyProperty'),
-    setPrototypeOf: forbidMethod.bind(undefined, keys, 'setPrototypeOf'),
-    deleteProperty: forbidDelete.bind(undefined, keys),
-    set: validateSet.bind(undefined, { parentKeys: keys, state, configMutations, event }),
-    defineProperty: validateDefineProperty.bind(undefined, { parentKeys: keys, state, configMutations, event }),
-  }
-}
-
-// Triggered when calling `netlifyConfig.{key} = value`
-// eslint-disable-next-line max-params
-const validateSet = function ({ parentKeys, state, configMutations, event }, proxy, lastKey, value, receiver) {
-  const keys = [...parentKeys, lastKey]
-  const proxyValue = preventObjectMutations(value, keys, { state, configMutations, event })
-  return validateReadonlyProperty({
-    method: 'set',
-    keys,
-    value,
-    state,
-    configMutations,
-    event,
-    reflectArgs: [proxy, lastKey, proxyValue, receiver],
-  })
-}
-
-// Triggered when calling `Object.defineProperty(netlifyConfig, key, { value })`
-const validateDefineProperty = function (
-  { parentKeys, state, configMutations, event },
+// Triggered when calling either
+// `Object.defineProperty(netlifyConfig, key, { value })` or
+// `netlifyConfig.{key} = value`
+// New values are wrapped in a `Proxy` to listen for changes on them as well.
+const trackDefineProperty = function (
+  { parentKeys, configMutations, event },
   proxy,
   lastKey,
   { value, ...descriptor },
@@ -105,46 +87,13 @@ const validateDefineProperty = function (
   const keys = [...parentKeys, lastKey]
   const proxyDescriptor = {
     ...descriptor,
-    value: preventObjectMutations(value, keys, { state, configMutations, event }),
+    value: trackObjectMutations(value, keys, { configMutations, event }),
   }
-  return validateReadonlyProperty({
-    method: 'defineProperty',
-    keys,
-    value,
-    state,
-    configMutations,
-    event,
-    reflectArgs: [proxy, lastKey, proxyDescriptor],
-  })
-}
-
-// This is called when a plugin author tries to set a `netlifyConfig` property
-const validateReadonlyProperty = function ({
-  method,
-  keys,
-  value,
-  state,
-  state: { ongoingMutation },
-  configMutations,
-  event,
-  reflectArgs,
-}) {
   const propName = getPropName(keys)
-
-  // `method: set` calls `method: defineProperty` internally, so we avoid
-  // duplicates here
-  if (method === 'defineProperty') {
-    // eslint-disable-next-line fp/no-mutating-methods
-    configMutations.push({ keys, propName, value, event })
-  }
-
-  startLogConfigMutation({ state, ongoingMutation, value, propName })
-
-  try {
-    return Reflect[method](...reflectArgs)
-  } finally {
-    stopLogConfigMutation(state, ongoingMutation)
-  }
+  // eslint-disable-next-line fp/no-mutating-methods
+  configMutations.push({ keys, propName, value, event })
+  logConfigMutation(propName, value)
+  return Reflect.defineProperty(proxy, lastKey, proxyDescriptor)
 }
 
 // Retrieve normalized property name
@@ -184,28 +133,6 @@ const NON_DYNAMIC_OBJECT_PROPS = new Set([
 
 const serializeKeys = function (keys) {
   return keys.map(String).join('.')
-}
-
-// Mutating a property often mutates others because:
-//  - Proxy handlers trigger each other, e.g. `set` triggers `defineProperty`
-//  - The `handler()` function might set another property
-// We only want to print the top-level mutation since this is the user-facing
-// one. Therefore, we keep track of whether a `Proxy` mutation is ongoing.
-const startLogConfigMutation = function ({ state, ongoingMutation, value, propName }) {
-  if (ongoingMutation) {
-    return
-  }
-
-  state.ongoingMutation = true
-  logConfigMutation(propName, value)
-}
-
-const stopLogConfigMutation = function (state, ongoingMutation) {
-  if (ongoingMutation) {
-    return
-  }
-
-  state.ongoingMutation = false
 }
 
 // When setting `build.command`, `build.commandOrigin` is set to "plugin"
@@ -329,5 +256,5 @@ const triggerHandler = function ({ netlifyConfig, keys, propName, originalValue 
   handler(netlifyConfig, originalValue, keys)
 }
 
-module.exports = { preventConfigMutations, applyMutations }
+module.exports = { trackConfigMutations, applyMutations }
 /* eslint-enable max-lines */
