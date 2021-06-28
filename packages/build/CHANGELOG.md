@@ -1,5 +1,12 @@
 # Changelog
 
+## [12.12.0](https://www.github.com/netlify/build/compare/build-v12.11.0...build-v12.12.0) (2021-06-28)
+
+
+### Features
+
+* update dependency @netlify/zip-it-and-ship-it to v4.7.0 ([#3123](https://www.github.com/netlify/build/issues/3123)) ([c70b708](https://www.github.com/netlify/build/commit/c70b70881f836693dff6994287f23bcfe3d25bb9))
+
 ## [12.11.0](https://www.github.com/netlify/build/compare/build-v12.10.0...build-v12.11.0) (2021-06-28)
 
 

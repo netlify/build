@@ -41,6 +41,11 @@ const normalizeFunctionConfig = ({ buildDir, featureFlags, functionConfig = {} }
   // use the experimental function handler changes introduced in v4.2.0.
   // We can remove this soon since the rollout has been completed.
   experimentalHandlerV2: Boolean(featureFlags.zisiHandlerV2),
+
+  // With the `zisiEsbuildDynamicImports` feature flag, zip-it-and-ship-it will
+  // resolve dynamic import expressions by injecting shim files to make the
+  // expressions resolve to the right paths at runtime.
+  processDynamicNodeImports: Boolean(featureFlags.zisiEsbuildDynamicImports),
 })
 
 const getZisiParameters = ({ buildDir, featureFlags, functionsConfig }) => {
