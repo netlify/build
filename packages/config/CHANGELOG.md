@@ -1,5 +1,12 @@
 # Changelog
 
+## [9.2.0](https://www.github.com/netlify/build/compare/config-v9.1.0...config-v9.2.0) (2021-06-28)
+
+
+### Features
+
+* add `config.redirectsOrigin` ([#3115](https://www.github.com/netlify/build/issues/3115)) ([50a783f](https://www.github.com/netlify/build/commit/50a783ff434d24b528c94d761863f1227a47e9de))
+
 ## [9.1.0](https://www.github.com/netlify/build/compare/config-v9.0.0...config-v9.1.0) (2021-06-24)
 
 
