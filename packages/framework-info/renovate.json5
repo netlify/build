@@ -14,5 +14,9 @@
       matchPackageNames: ['is-plain-obj'],
       allowedVersions: '<4',
     },
+    {
+      matchPackageNames: ['test-each'],
+      allowedVersions: '<3',
+    },
   ],
 }
