@@ -135,19 +135,7 @@ const validateReadonlyProperty = function ({
   // duplicates here
   if (method === 'defineProperty') {
     // eslint-disable-next-line fp/no-mutating-methods
-    configMutations.push({ keys, propName, value })
-  }
-
-  forbidEmptyAssign(value, propName)
-
-  if (!(propName in MUTABLE_PROPS)) {
-    throwValidationError(`"netlifyConfig.${propName}" is read-only.`)
-  }
-
-  const { lastEvent } = MUTABLE_PROPS[propName]
-
-  if (EVENTS.indexOf(lastEvent) < EVENTS.indexOf(event)) {
-    throwValidationError(`"netlifyConfig.${propName}" cannot be modified after "${lastEvent}".`)
+    configMutations.push({ keys, propName, value, event })
   }
 
   startLogConfigMutation({ state, ongoingMutation, value, propName })
@@ -305,16 +293,34 @@ const throwValidationError = function (message) {
 }
 
 const applyMutations = function (netlifyConfig, configMutations) {
-  configMutations.forEach(({ keys, propName, value }) => {
-    applyMutation({ netlifyConfig, keys, propName, value })
+  configMutations.forEach(({ keys, propName, value, event }) => {
+    applyMutation({ netlifyConfig, keys, propName, value, event })
   })
 }
 
 // Apply all proxy mutations to the original `netlifyConfig`. Also normalize it.
-const applyMutation = function ({ netlifyConfig, keys, propName, value }) {
+const applyMutation = function ({ netlifyConfig, keys, propName, value, event }) {
   const originalValue = removeProxies(value)
   set(netlifyConfig, serializeKeys(keys), originalValue)
+  validateMutation({ propName, originalValue, event })
+  triggerHandler({ netlifyConfig, keys, propName, originalValue })
+}
 
+const validateMutation = function ({ propName, originalValue, event }) {
+  forbidEmptyAssign(originalValue, propName)
+
+  if (!(propName in MUTABLE_PROPS)) {
+    throwValidationError(`"netlifyConfig.${propName}" is read-only.`)
+  }
+
+  const { lastEvent } = MUTABLE_PROPS[propName]
+
+  if (EVENTS.indexOf(lastEvent) < EVENTS.indexOf(event)) {
+    throwValidationError(`"netlifyConfig.${propName}" cannot be modified after "${lastEvent}".`)
+  }
+}
+
+const triggerHandler = function ({ netlifyConfig, keys, propName, originalValue }) {
   const { handler } = MUTABLE_PROPS[propName]
   if (handler === undefined) {
     return
