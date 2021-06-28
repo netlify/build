@@ -1093,9 +1093,16 @@ test('Validate --node-path', async (t) => {
   })
 })
 
-test('Provided --node-path version produces a node version warning if the build is being run in buildbot with local plugins and the plugins_system_node_version ff is set to false', async (t) => {
+test('Provided --node-path 9.0.0 version produces a node version warning if the build is being run in buildbot with local plugins and the plugins_system_node_version ff is set to false', async (t) => {
   const nodePath = getNodePath('9.0.0')
   await runFixture(t, 'engines', {
+    flags: { nodePath, mode: 'buildbot', featureFlags: { buildbot_build_plugins_system_node_version: false } },
+  })
+})
+
+test('Provided --node-path 14.0.0 version produces a node version warning if the build is being run in buildbot with local plugins and the plugins_system_node_version ff is set to false', async (t) => {
+  const nodePath = getNodePath('14.0.0')
+  await runFixture(t, 'engines_v16', {
     flags: { nodePath, mode: 'buildbot', featureFlags: { buildbot_build_plugins_system_node_version: false } },
   })
 })

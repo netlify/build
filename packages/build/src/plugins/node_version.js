@@ -21,11 +21,11 @@ const addPluginsNodeVersion = function ({ pluginsOptions, mode, nodePath, userNo
 }
 
 // We want to log a warning message for users relying on local or package.json installed plugins whose Node.js
-// versions are lower than the system version we're currently relying (v12). This is part of our effort to decouple
+// versions are different from the system version we're currently relying (v12). This is part of our effort to decouple
 // the Node.js versions our build system supports and the Node.js versions @netlify/build supports -
 // https://github.com/netlify/pod-workflow/issues/219
 const checkForOldNodeVersions = function ({ pluginsOptions, userNodeVersion, logs, mode }) {
-  if (mode !== 'buildbot' || satisfies(userNodeVersion, '>=12')) return
+  if (mode !== 'buildbot' || satisfies(userNodeVersion, '12.*.*')) return
 
   const affectedPlugins = pluginsOptions
     // `expectedVersion` is only undefined when the plugin is not coming from our plugins directory, those are the cases
