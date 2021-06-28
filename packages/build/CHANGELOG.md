@@ -1,5 +1,12 @@
 # Changelog
 
+## [12.11.0](https://www.github.com/netlify/build/compare/build-v12.10.0...build-v12.11.0) (2021-06-28)
+
+
+### Features
+
+* simplify proxy logic ([#3117](https://www.github.com/netlify/build/issues/3117)) ([f833a21](https://www.github.com/netlify/build/commit/f833a219eafb174786695e59691215215a3e6db6))
+
 ## [12.10.0](https://www.github.com/netlify/build/compare/build-v12.9.0...build-v12.10.0) (2021-06-24)
 
 
