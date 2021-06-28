@@ -41,10 +41,11 @@
         'path-key',
         'path-type',
         'read-pkg-up',
-        // Those cannot be upgraded to using ES modules
+        // Those cannot be upgraded until we use ES modules natively (requires Node >=10.20.0)
         'ansi-escapes',
         'has-ansi',
         'indent-string',
+        'keep-func-props',
         'string-width',
         'strip-ansi',
         '@sindresorhus/slugify',
