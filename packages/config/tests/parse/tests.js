@@ -46,3 +46,15 @@ test('Redirects - redirects field syntax error', async (t) => {
 test('Redirects - no publish field', async (t) => {
   await runFixture(t, 'redirects_no_publish')
 })
+
+test('Redirects - add redirectsOrigin', async (t) => {
+  await runFixture(t, 'empty', { flags: { defaultConfig: { redirects: [] } } })
+})
+
+test('Redirects - use redirects file when using inlineConfig', async (t) => {
+  await runFixture(t, 'redirects_file', { flags: { inlineConfig: { redirects: [] } } })
+})
+
+test('Redirects - does not use redirects file when using priorityConfig', async (t) => {
+  await runFixture(t, 'redirects_file', { flags: { priorityConfig: { redirects: [] } } })
+})
