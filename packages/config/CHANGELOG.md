@@ -1,5 +1,12 @@
 # Changelog
 
+## [9.3.0](https://www.github.com/netlify/build/compare/config-v9.2.0...config-v9.3.0) (2021-06-28)
+
+
+### Features
+
+* log `redirectsOrigin` in debug mode ([#3128](https://www.github.com/netlify/build/issues/3128)) ([d18601c](https://www.github.com/netlify/build/commit/d18601c04e96ea87e29bac4d6eaf0bf8b5753988))
+
 ## [9.2.0](https://www.github.com/netlify/build/compare/config-v9.1.0...config-v9.2.0) (2021-06-28)
 
 
