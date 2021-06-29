@@ -7,6 +7,13 @@
 
 * apply `netlifyConfig` modifications in the parent process ([#3135](https://www.github.com/netlify/build/issues/3135)) ([44f107f](https://www.github.com/netlify/build/commit/44f107fbc34653b97359681f1a8d763d29b81ce2))
 
+## [12.14.0](https://www.github.com/netlify/build/compare/build-v12.13.1...build-v12.14.0) (2021-06-29)
+
+
+### Features
+
+* apply `netlifyConfig` modifications in the parent process ([#3135](https://www.github.com/netlify/build/issues/3135)) ([44f107f](https://www.github.com/netlify/build/commit/44f107fbc34653b97359681f1a8d763d29b81ce2))
+
 ### [12.13.1](https://www.github.com/netlify/build/compare/build-v12.13.0...build-v12.13.1) (2021-06-29)
 
 
