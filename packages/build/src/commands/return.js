@@ -20,6 +20,7 @@ const getCommandReturn = function ({
   errorMonitor,
   deployId,
   netlifyConfig,
+  priorityConfig,
   logs,
   debug,
   timers,
@@ -47,7 +48,7 @@ const getCommandReturn = function ({
 
   logTimer(logs, durationNs, timerName)
 
-  return { newEnvChanges, netlifyConfig, newStatus, timers }
+  return { newEnvChanges, netlifyConfig, priorityConfig, newStatus, timers }
 }
 
 module.exports = { getCommandReturn }
