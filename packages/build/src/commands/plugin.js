@@ -3,6 +3,7 @@
 const { addErrorInfo } = require('../error/info')
 const { pipePluginOutput, unpipePluginOutput } = require('../log/stream')
 const { callChild } = require('../plugins/ipc')
+const { applyMutations } = require('../plugins/mutations')
 const { getSuccessStatus } = require('../status/success')
 
 const { getPluginErrorType } = require('./error')
@@ -26,17 +27,14 @@ const firePluginCommand = async function ({
   const listeners = pipePluginOutput(childProcess, logs)
 
   try {
-    const {
-      newEnvChanges,
-      netlifyConfig: netlifyConfigA,
-      status,
-    } = await callChild(childProcess, 'run', {
+    const { newEnvChanges, configMutations, status } = await callChild(childProcess, 'run', {
       event,
       error,
       envChanges,
       netlifyConfig,
       constants,
     })
+    const netlifyConfigA = applyMutations(netlifyConfig, configMutations)
     // eslint-disable-next-line fp/no-mutation,no-param-reassign
     errorParams.netlifyConfig = netlifyConfigA
     const newStatus = getSuccessStatus(status, { commands, event, packageName })

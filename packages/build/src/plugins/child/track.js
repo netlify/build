@@ -41,24 +41,6 @@ const trackObjectMutations = function (value, keys, { configMutations, event }) 
   return value
 }
 
-// Inverse of `trackObjectMutations()`
-const removeProxies = function (value) {
-  if (!PROXIES.has(value)) {
-    return value
-  }
-
-  const originalValue = PROXIES.get(value)
-  if (Array.isArray(originalValue)) {
-    return originalValue.map(removeProxies)
-  }
-
-  if (isPlainObj(originalValue)) {
-    return mapObj(value, (key, item) => [key, removeProxies(item)])
-  }
-
-  return originalValue
-}
-
 const addProxy = function (value, keys, { configMutations, event }) {
   // eslint-disable-next-line fp/no-proxy
   const proxy = new Proxy(value, {
@@ -133,4 +115,4 @@ const throwValidationError = function (message) {
 // in a `Proxy`
 const PROXIES = new WeakMap()
 
-module.exports = { trackConfigMutations, removeProxies }
+module.exports = { trackConfigMutations }

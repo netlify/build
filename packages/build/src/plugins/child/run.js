@@ -2,7 +2,6 @@
 
 const { getNewEnvChanges, setEnvChanges } = require('../../env/changes')
 
-const { applyMutations } = require('./mutations')
 const { trackConfigMutations } = require('./track')
 const { getUtils } = require('./utils')
 
@@ -22,8 +21,7 @@ const run = async function (
   await method(runOptions)
   const newEnvChanges = getNewEnvChanges(envBefore)
 
-  applyMutations(netlifyConfig, configMutations)
-  return { ...runState, newEnvChanges, netlifyConfig }
+  return { ...runState, newEnvChanges, configMutations }
 }
 
 module.exports = { run }
