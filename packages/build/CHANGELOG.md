@@ -1,5 +1,12 @@
 # Changelog
 
+## [12.16.0](https://www.github.com/netlify/build/compare/build-v12.15.0...build-v12.16.0) (2021-06-29)
+
+
+### Features
+
+* remove zisiHandlerV2 feature flag ([#3145](https://www.github.com/netlify/build/issues/3145)) ([239fb4b](https://www.github.com/netlify/build/commit/239fb4b7ed41636f7c3814a5f61a7676d4242256))
+
 ## [12.15.0](https://www.github.com/netlify/build/compare/build-v12.14.0...build-v12.15.0) (2021-06-29)
 
 
