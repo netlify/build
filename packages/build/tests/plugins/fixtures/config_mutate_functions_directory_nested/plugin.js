@@ -7,6 +7,5 @@ module.exports = {
   },
   onBuild({ netlifyConfig }) {
     console.log(netlifyConfig.functionsDirectory)
-    console.log(netlifyConfig.functions['*'].directory)
   },
 }
