@@ -1,5 +1,12 @@
 # Changelog
 
+## [12.17.0](https://www.github.com/netlify/build/compare/build-v12.16.0...build-v12.17.0) (2021-06-29)
+
+
+### Features
+
+* call `@netlify/config` when the configuration is modified ([#3147](https://www.github.com/netlify/build/issues/3147)) ([afc73a4](https://www.github.com/netlify/build/commit/afc73a4afa2f6b765bfb6043358c5e9af27314f7))
+
 ## [12.16.0](https://www.github.com/netlify/build/compare/build-v12.15.0...build-v12.16.0) (2021-06-29)
 
 
