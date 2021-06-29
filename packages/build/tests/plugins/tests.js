@@ -69,6 +69,10 @@ if (!version.startsWith('v8.')) {
     await runFixture(t, 'config_mutate_define_undefined')
   })
 
+  test('netlifyConfig properties mutations is persisted', async (t) => {
+    await runFixture(t, 'config_mutate_persist')
+  })
+
   test('netlifyConfig.functionsDirectory mutations are used during functions bundling', async (t) => {
     await runFixture(t, 'config_mutate_functions_directory_bundling')
   })

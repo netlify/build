@@ -1,5 +1,7 @@
 'use strict'
 
+const deepmerge = require('deepmerge')
+
 const { addErrorInfo } = require('../error/info')
 const { pipePluginOutput, unpipePluginOutput } = require('../log/stream')
 const { callChild } = require('../plugins/ipc')
@@ -18,7 +20,9 @@ const firePluginCommand = async function ({
   origin,
   envChanges,
   errorParams,
+  originalConfig,
   netlifyConfig,
+  priorityConfig,
   constants,
   commands,
   error,
@@ -34,11 +38,15 @@ const firePluginCommand = async function ({
       netlifyConfig,
       constants,
     })
-    const netlifyConfigA = applyMutations(netlifyConfig, configMutations)
-    // eslint-disable-next-line fp/no-mutation,no-param-reassign
-    errorParams.netlifyConfig = netlifyConfigA
+    const { netlifyConfig: netlifyConfigA, priorityConfig: priorityConfigA } = updateNetlifyConfig({
+      originalConfig,
+      priorityConfig,
+      netlifyConfig,
+      configMutations,
+      errorParams,
+    })
     const newStatus = getSuccessStatus(status, { commands, event, packageName })
-    return { newEnvChanges, netlifyConfig: netlifyConfigA, newStatus }
+    return { newEnvChanges, netlifyConfig: netlifyConfigA, priorityConfig: priorityConfigA, newStatus }
   } catch (newError) {
     const errorType = getPluginErrorType(newError, loadedFrom)
     addErrorInfo(newError, {
@@ -50,6 +58,18 @@ const firePluginCommand = async function ({
   } finally {
     await unpipePluginOutput(childProcess, logs, listeners)
   }
+}
+
+const updateNetlifyConfig = function ({ originalConfig, priorityConfig, netlifyConfig, configMutations, errorParams }) {
+  if (configMutations.length === 0) {
+    return { netlifyConfig, priorityConfig }
+  }
+
+  const priorityConfigA = applyMutations(priorityConfig, configMutations)
+  const netlifyConfigA = deepmerge(originalConfig, priorityConfigA)
+  // eslint-disable-next-line fp/no-mutation,no-param-reassign
+  errorParams.netlifyConfig = netlifyConfigA
+  return { netlifyConfig: netlifyConfigA, priorityConfig: priorityConfigA }
 }
 
 module.exports = { firePluginCommand }

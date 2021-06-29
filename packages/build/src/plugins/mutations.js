@@ -9,14 +9,14 @@ const { EVENTS } = require('./events')
 
 // Apply a series of mutations to `netlifyConfig`.
 // Also normalize it.
-const applyMutations = function (netlifyConfig, configMutations) {
+const applyMutations = function (priorityConfig, configMutations) {
   configMutations.forEach(({ keys, value, event }) => {
-    applyMutation({ netlifyConfig, keys, value, event })
+    applyMutation({ priorityConfig, keys, value, event })
   })
-  return netlifyConfig
+  return priorityConfig
 }
 
-const applyMutation = function ({ netlifyConfig, keys, value, event }) {
+const applyMutation = function ({ priorityConfig, keys, value, event }) {
   const keysString = serializeKeys(keys)
   const propName = getPropName(keys)
   if (!(propName in MUTABLE_PROPS)) {
@@ -26,10 +26,10 @@ const applyMutation = function ({ netlifyConfig, keys, value, event }) {
   const { lastEvent, handler } = MUTABLE_PROPS[propName]
   validateEvent(lastEvent, event, propName)
 
-  set(netlifyConfig, keysString, value)
+  set(priorityConfig, keysString, value)
 
   if (handler !== undefined) {
-    handler(netlifyConfig, value, keys)
+    handler(priorityConfig, value, keys)
   }
 }
 
@@ -50,30 +50,30 @@ const serializeKeys = function (keys) {
 }
 
 // When setting `build.command`, `build.commandOrigin` is set to "plugin"
-const setBuildCommandOrigin = function (netlifyConfig) {
+const setBuildCommandOrigin = function (priorityConfig) {
   // eslint-disable-next-line fp/no-mutation, no-param-reassign
-  netlifyConfig.build.commandOrigin = 'plugin'
+  priorityConfig.build.commandOrigin = 'plugin'
 }
 
-const setTopFunctionsDirectory = function (netlifyConfig, value, keys) {
-  setFunctionsDirectory(netlifyConfig, value)
-  setFunctionsCatchAll(netlifyConfig, value, keys)
+const setTopFunctionsDirectory = function (priorityConfig, value, keys) {
+  setFunctionsDirectory(priorityConfig, value)
+  setFunctionsCatchAll(priorityConfig, value, keys)
 }
 
 // When settings `functions.{propName}`, we also set `functions.*.{propName}`,
 // emulating the normalization performed by `@netlify/config`.
-const setFunctionsCatchAll = function (netlifyConfig, value, keys) {
+const setFunctionsCatchAll = function (priorityConfig, value, keys) {
   const lastKey = keys[keys.length - 1]
   // eslint-disable-next-line fp/no-mutation, no-param-reassign
-  netlifyConfig.functions['*'][lastKey] = value
+  priorityConfig.functions['*'][lastKey] = value
 }
 
 // Several configuration properties can be used to specify the functions directory.
 // `netlifyConfig.functionsDirectory` is the normalized property which must be set.
 // We allow plugin authors to set any of the other properties for convenience.
-const setFunctionsDirectory = function (netlifyConfig, value) {
+const setFunctionsDirectory = function (priorityConfig, value) {
   // eslint-disable-next-line fp/no-mutation, no-param-reassign
-  netlifyConfig.functionsDirectory = value
+  priorityConfig.functionsDirectory = value
 }
 
 // List of properties that are not read-only.
