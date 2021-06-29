@@ -1,0 +1,61 @@
+name: prerelease
+on:
+  push:
+    branches:
+      # releases/<package>/<tag>/<version>
+      - releases/*/*/*
+jobs:
+  prerelease:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '*'
+          check-latest: true
+          registry-url: 'https://registry.npmjs.org'
+      - name: Extract tag, version and package
+        id: extract
+        run: |-
+          ref=${{ github.ref }}
+          branch=${ref:11}
+          info=${branch:9}
+          package_tag=${info%/*}
+          package=${package_tag%/*}
+          tag=${package_tag#*/}
+          version=${info##*/}
+          echo "::set-output name=package::${package}"
+          echo "::set-output name=tag::${tag}"
+          echo "::set-output name=version::${version}"
+      - name: Log extracted information
+        run: |-
+          echo package=${{ steps.extract.outputs.package }}
+          echo tag=${{ steps.extract.outputs.tag }}
+          echo version=${{ steps.extract.outputs.version }}
+      - name: Setup git user
+        run: git config --global user.name github-actions
+      - name: Setup git email
+        run: git config --global user.email github-actions@github.com
+      - name: Create fake .git in package subdirectory
+        # See https://github.com/npm/cli/issues/2010,https://github.com/npm/npm/issues/9111
+        run: mkdir packages/${{ steps.extract.outputs.package }}/.git
+      - name: Run npm version
+        run:
+          'npm version --workspace packages/${{ steps.extract.outputs.package }} ${{ steps.extract.outputs.version
+          }}-${{ steps.extract.outputs.tag }} -m "chore: release @netlify/${{ steps.extract.outputs.package }} ${{
+          steps.extract.outputs.version }}-${{ steps.extract.outputs.tag }}"'
+      - name: Prefix package to git tag
+        run: |-
+          old_git_tag=v${{ steps.extract.outputs.version}}-${{ steps.extract.outputs.tag }}
+          new_git_tag=${{ steps.extract.outputs.package }}-${old_git_tag}
+          git tag ${new_git_tag} ${old_git_tag}
+          git tag -d ${old_git_tag}
+      - name: Push changes
+        run: git push --follow-tags
+      - name: Install dependencies
+        run: npm ci
+      - run: npm publish packages/${{ steps.extract.outputs.package }}/ --tag=${{ steps.extract.outputs.tag }}
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}

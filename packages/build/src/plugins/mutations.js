@@ -2,11 +2,10 @@
 
 const { set } = require('dot-prop')
 
-const { addErrorInfo } = require('../../error/info')
-const { EVENTS } = require('../events')
+const { addErrorInfo } = require('../error/info')
 
 const { getPropName } = require('./config_prop_name')
-const { removeProxies } = require('./track')
+const { EVENTS } = require('./events')
 
 // Apply a series of mutations to `netlifyConfig`.
 // Also normalize it.
@@ -14,6 +13,7 @@ const applyMutations = function (netlifyConfig, configMutations) {
   configMutations.forEach(({ keys, value, event }) => {
     applyMutation({ netlifyConfig, keys, value, event })
   })
+  return netlifyConfig
 }
 
 const applyMutation = function ({ netlifyConfig, keys, value, event }) {
@@ -26,11 +26,10 @@ const applyMutation = function ({ netlifyConfig, keys, value, event }) {
   const { lastEvent, handler } = MUTABLE_PROPS[propName]
   validateEvent(lastEvent, event, propName)
 
-  const originalValue = removeProxies(value)
-  set(netlifyConfig, keysString, originalValue)
+  set(netlifyConfig, keysString, value)
 
   if (handler !== undefined) {
-    handler(netlifyConfig, originalValue, keys)
+    handler(netlifyConfig, value, keys)
   }
 }
 

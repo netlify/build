@@ -1,5 +1,19 @@
 # Changelog
 
+## [12.14.0](https://www.github.com/netlify/build/compare/build-v12.13.1...build-v12.14.0) (2021-06-29)
+
+
+### Features
+
+* apply `netlifyConfig` modifications in the parent process ([#3135](https://www.github.com/netlify/build/issues/3135)) ([44f107f](https://www.github.com/netlify/build/commit/44f107fbc34653b97359681f1a8d763d29b81ce2))
+
+### [12.13.1](https://www.github.com/netlify/build/compare/build-v12.13.0...build-v12.13.1) (2021-06-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.8.0 ([#3137](https://www.github.com/netlify/build/issues/3137)) ([872db54](https://www.github.com/netlify/build/commit/872db544c2d1b798e8a93024c2c8b7fb87bf3f04))
+
 ## [12.13.0](https://www.github.com/netlify/build/compare/build-v12.12.0...build-v12.13.0) (2021-06-28)
 
 
