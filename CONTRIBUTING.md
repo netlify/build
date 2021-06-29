@@ -99,9 +99,11 @@ The `{{buildImage}}` can be the buildbot commit hash or `git` branch name.
 
 To test a beta release of `@netlify/build` in a site:
 
-- Make a prerelease: `npm version prerelease`
-- Publish on npm using a `beta` tag: `npm publish --tag=beta`
-- Make a PR in the buildbot to use this prerelease
+- Create a branch named `releases/<package>/<tag>/<version>` with the package and version you'd like to release. For
+  example, a branch named `releases/cache-utils/rc/2.0.0` will create the version `v2.0.0-rc` and publish it under the
+  `rc` tag.
+- Push the branch to the repo
+- Make a PR in the buildbot to use this version
 - Update the `build_image` of a site to use this PR
 
 This is especially useful to test how an ongoing PR in `@netlify/build` would behave in production.
