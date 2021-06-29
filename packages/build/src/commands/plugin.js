@@ -2,6 +2,7 @@
 
 const deepmerge = require('deepmerge')
 
+const { resolveUpdatedConfig } = require('../core/config')
 const { addErrorInfo } = require('../error/info')
 const { pipePluginOutput, unpipePluginOutput } = require('../log/stream')
 const { callChild } = require('../plugins/ipc')
@@ -20,7 +21,7 @@ const firePluginCommand = async function ({
   origin,
   envChanges,
   errorParams,
-  originalConfig,
+  configOpts,
   netlifyConfig,
   priorityConfig,
   constants,
@@ -38,8 +39,8 @@ const firePluginCommand = async function ({
       netlifyConfig,
       constants,
     })
-    const { netlifyConfig: netlifyConfigA, priorityConfig: priorityConfigA } = updateNetlifyConfig({
-      originalConfig,
+    const { netlifyConfig: netlifyConfigA, priorityConfig: priorityConfigA } = await updateNetlifyConfig({
+      configOpts,
       priorityConfig,
       netlifyConfig,
       configMutations,
@@ -60,12 +61,19 @@ const firePluginCommand = async function ({
   }
 }
 
-const updateNetlifyConfig = function ({ originalConfig, priorityConfig, netlifyConfig, configMutations, errorParams }) {
+const updateNetlifyConfig = async function ({
+  configOpts,
+  priorityConfig,
+  netlifyConfig,
+  configMutations,
+  errorParams,
+}) {
   if (configMutations.length === 0) {
     return { netlifyConfig, priorityConfig }
   }
 
   const priorityConfigA = applyMutations(priorityConfig, configMutations)
+  const originalConfig = await resolveUpdatedConfig(configOpts)
   const netlifyConfigA = deepmerge(originalConfig, priorityConfigA)
   // eslint-disable-next-line fp/no-mutation,no-param-reassign
   errorParams.netlifyConfig = netlifyConfigA
