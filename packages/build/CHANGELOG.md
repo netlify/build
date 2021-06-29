@@ -1,5 +1,12 @@
 # Changelog
 
+## [12.15.0](https://www.github.com/netlify/build/compare/build-v12.14.0...build-v12.15.0) (2021-06-29)
+
+
+### Features
+
+* add `priorityConfig` to `@netlify/build` ([#3143](https://www.github.com/netlify/build/issues/3143)) ([61a5fca](https://www.github.com/netlify/build/commit/61a5fcadb2c15e62accf9e1c97e40f8e3a73170f))
+
 ## [12.14.0](https://www.github.com/netlify/build/compare/build-v12.13.1...build-v12.14.0) (2021-06-29)
 
 
