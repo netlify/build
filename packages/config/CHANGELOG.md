@@ -1,5 +1,12 @@
 # Changelog
 
+## [9.5.0](https://www.github.com/netlify/build/compare/config-v9.4.0...config-v9.5.0) (2021-06-30)
+
+
+### Features
+
+* allow plugins to unset configuration properties ([#3158](https://www.github.com/netlify/build/issues/3158)) ([64e1235](https://www.github.com/netlify/build/commit/64e1235079356f5936638cde812a17027e627b9f))
+
 ## [9.4.0](https://www.github.com/netlify/build/compare/config-v9.3.0...config-v9.4.0) (2021-06-30)
 
 
