@@ -1,0 +1,26 @@
+{
+  "id": "next-nx",
+  "name": "Next.js with Nx",
+  "category": "static_site_generator",
+  "detect": {
+    "npmDependencies": ["@nrwl/next"],
+    "excludedNpmDependencies": [],
+    "configFiles": []
+  },
+  "dev": {
+    "command": "nx serve",
+    "port": 4200,
+    "pollingStrategies": [{ "name": "TCP" }, { "name": "HTTP" }]
+  },
+  "build": {
+    "command": "nx build",
+    "directory": "apps/<app name>/out"
+  },
+  "env": {},
+  "plugins": [
+    {
+      "packageName": "@netlify/plugin-nextjs",
+      "condition": { "minNodeVersion": "10.13.0" }
+    }
+  ]
+}

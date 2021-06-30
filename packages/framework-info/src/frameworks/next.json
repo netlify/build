@@ -4,7 +4,7 @@
   "category": "static_site_generator",
   "detect": {
     "npmDependencies": ["next"],
-    "excludedNpmDependencies": [],
+    "excludedNpmDependencies": ["@nrwl/next"],
     "configFiles": []
   },
   "dev": {
