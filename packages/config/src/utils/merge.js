@@ -4,13 +4,19 @@ const deepmerge = require('deepmerge')
 const isPlainObj = require('is-plain-obj')
 
 const { groupBy } = require('./group')
+const { removeUndefined } = require('./remove_falsy')
 
 // Merge an array of configuration objects.
 // Last items have higher priority.
 // Configuration objects are deeply merged.
 //   - Arrays are overridden, not concatenated.
 const mergeConfigs = function (configs) {
-  return deepmerge.all(configs, { arrayMerge })
+  const cleanedConfigs = configs.map(removeUndefinedProps)
+  return deepmerge.all(cleanedConfigs, { arrayMerge })
+}
+
+const removeUndefinedProps = function ({ build = {}, ...config }) {
+  return removeUndefined({ ...config, build: removeUndefined(build) })
 }
 
 // By default `deepmerge` concatenates arrays. We use the `arrayMerge` option

@@ -77,7 +77,7 @@ if (!version.startsWith('v8.')) {
     await runFixture(t, 'config_mutate_functions_directory_bundling')
   })
 
-  test.skip('netlifyConfig.functionsDirectory deletion skips functions bundling', async (t) => {
+  test('netlifyConfig.functionsDirectory deletion skips functions bundling', async (t) => {
     await runFixture(t, 'config_mutate_functions_directory_skip')
   })
 
@@ -126,7 +126,7 @@ test('netlifyConfig.build.command can be added', async (t) => {
   await runFixture(t, 'config_mutate_build_command_add')
 })
 
-test.skip('netlifyConfig.build.command can be removed', async (t) => {
+test('netlifyConfig.build.command can be removed', async (t) => {
   await runFixture(t, 'config_mutate_build_command_remove')
 })
 

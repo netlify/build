@@ -2,6 +2,8 @@
 
 const isPlainObj = require('is-plain-obj')
 
+const { isDefined } = require('./utils/remove_falsy')
+
 const bundlers = ['esbuild', 'zisi']
 const WILDCARD_ALL = '*'
 
@@ -61,14 +63,14 @@ const extractFunctionsDirectory = ({ [WILDCARD_ALL]: { directory, ...wildcardFun
 })
 
 const getFunctionsDirectoryProps = ({ functionsDirectory, v1FunctionsDirectory }) => {
-  if (functionsDirectory) {
+  if (isDefined(functionsDirectory)) {
     return {
       functionsDirectory,
       functionsDirectoryOrigin: 'config',
     }
   }
 
-  if (v1FunctionsDirectory) {
+  if (isDefined(v1FunctionsDirectory)) {
     return {
       functionsDirectory: v1FunctionsDirectory,
       functionsDirectoryOrigin: 'config-v1',
