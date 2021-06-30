@@ -1,7 +1,5 @@
 'use strict'
 
-const { removeFalsy } = require('./utils/remove_falsy')
-
 // Some properties can be optionally capitalized. We normalize them to lowercase
 const normalizeConfigCase = function ({ Build, build = Build, ...config }) {
   const buildA = normalizeBuildCase(build)
@@ -27,7 +25,7 @@ const normalizeBuildCase = function ({
   publish = Publish,
   ...build
 } = {}) {
-  return removeFalsy({
+  return {
     ...build,
     base,
     command,
@@ -37,7 +35,7 @@ const normalizeBuildCase = function ({
     ignore,
     processing,
     publish,
-  })
+  }
 }
 
 module.exports = { normalizeConfigCase }

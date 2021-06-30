@@ -4,11 +4,19 @@ const filterObj = require('filter-obj')
 
 // Remove falsy values from object
 const removeFalsy = function (obj) {
-  return filterObj(obj, isDefined)
+  return filterObj(obj, (key, value) => isTruthy(value))
 }
 
-const isDefined = function (key, value) {
-  return value !== undefined && value !== null && value !== ''
+const removeUndefined = function (obj) {
+  return filterObj(obj, (key, value) => isDefined(value))
 }
 
-module.exports = { removeFalsy }
+const isTruthy = function (value) {
+  return isDefined(value) && (typeof value !== 'string' || value.trim() !== '')
+}
+
+const isDefined = function (value) {
+  return value !== undefined && value !== null
+}
+
+module.exports = { removeFalsy, removeUndefined, isTruthy, isDefined }

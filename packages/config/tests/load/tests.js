@@ -74,7 +74,7 @@ test('--inlineConfig is merged with priority', async (t) => {
 })
 
 test('--inlineConfig falsy values are ignored', async (t) => {
-  const inlineConfig = { build: { command: '', publish: undefined } }
+  const inlineConfig = { build: { command: undefined, publish: undefined } }
   await runFixture(t, 'default_priority', { flags: { inlineConfig } })
 })
 
@@ -111,7 +111,7 @@ test('--priorityConfig is merged with priority', async (t) => {
 })
 
 test('--priorityConfig falsy values are ignored', async (t) => {
-  const priorityConfig = { build: { command: '', publish: undefined } }
+  const priorityConfig = { build: { command: undefined, publish: undefined } }
   await runFixture(t, 'default_priority', { flags: { priorityConfig } })
 })
 

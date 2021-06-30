@@ -2,10 +2,11 @@
 
 const { resolve } = require('path')
 
-const { get, set } = require('dot-prop')
+const { get, set, delete: deleteProp } = require('dot-prop')
 const pathExists = require('path-exists')
 
 const { mergeConfigs } = require('./utils/merge')
+const { isTruthy } = require('./utils/remove_falsy')
 
 // Make configuration paths relative to `buildDir` and converts them to
 // absolute paths
@@ -26,11 +27,17 @@ const resolvePaths = function (config, propNames, baseRel) {
 
 const resolvePathProp = function (config, propName, baseRel) {
   const path = get(config, propName)
-  return path === undefined ? config : set(config, propName, resolvePath(baseRel, path))
+
+  if (!isTruthy(path)) {
+    deleteProp(config, propName)
+    return config
+  }
+
+  return set(config, propName, resolvePath(baseRel, path))
 }
 
 const resolvePath = function (baseRel, path) {
-  if (path === undefined) {
+  if (!isTruthy(path)) {
     return
   }
 
