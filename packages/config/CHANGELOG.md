@@ -1,5 +1,12 @@
 # Changelog
 
+## [9.4.0](https://www.github.com/netlify/build/compare/config-v9.3.0...config-v9.4.0) (2021-06-30)
+
+
+### Features
+
+* remove redirects parsing feature flag ([#3150](https://www.github.com/netlify/build/issues/3150)) ([1f297c9](https://www.github.com/netlify/build/commit/1f297c9845bc3a1f3ba4725c9f97aadf0d541e45))
+
 ## [9.3.0](https://www.github.com/netlify/build/compare/config-v9.2.0...config-v9.3.0) (2021-06-28)
 
 
