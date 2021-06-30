@@ -14,12 +14,7 @@ const addRedirects = async function ({
     redirectsOrigin,
   },
   logs,
-  featureFlags,
 }) {
-  if (!featureFlags.netlify_config_redirects_parsing) {
-    return { ...config, redirects: [] }
-  }
-
   try {
     const fileRedirects = await getFileRedirects(publish, redirectsOrigin)
     const rawRedirects = mergeRedirects({ fileRedirects, configRedirects })

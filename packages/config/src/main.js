@@ -54,7 +54,6 @@ const resolveConfig = async function (opts) {
     mode,
     debug,
     logs,
-    featureFlags,
   } = await normalizeOpts(optsA)
 
   const { siteInfo, accounts, addons } = await getSiteInfo({ api, siteId, mode, testOpts })
@@ -81,7 +80,6 @@ const resolveConfig = async function (opts) {
     priorityConfig: priorityConfigA,
     baseRelDir: baseRelDirA,
     logs,
-    featureFlags,
   })
 
   const env = await getEnv({
@@ -148,7 +146,6 @@ const loadConfig = async function ({
   priorityConfig,
   baseRelDir,
   logs,
-  featureFlags,
 }) {
   const initialBase = getInitialBase({ repositoryRoot, defaultConfig, inlineConfig, priorityConfig })
   const { configPath, config, buildDir, base } = await getFullConfig({
@@ -163,7 +160,6 @@ const loadConfig = async function ({
     baseRelDir,
     configBase: initialBase,
     logs,
-    featureFlags,
   })
 
   // No second pass needed if:
@@ -193,7 +189,6 @@ const loadConfig = async function ({
     configBase: base,
     base,
     logs,
-    featureFlags,
   })
   return { configPath: configPathA, config: configA, buildDir: buildDirA }
 }
@@ -212,7 +207,6 @@ const getFullConfig = async function ({
   configBase,
   base,
   logs,
-  featureFlags,
 }) {
   const configPath = await getConfigPath({ configOpt, cwd, repositoryRoot, configBase })
 
@@ -232,7 +226,7 @@ const getFullConfig = async function ({
       buildDir,
       base: baseA,
     } = await resolveFiles({ config: configA, repositoryRoot, base, baseRelDir })
-    const configC = await addRedirects({ config: configB, logs, featureFlags })
+    const configC = await addRedirects({ config: configB, logs })
     return { configPath, config: configC, buildDir, base: baseA }
   } catch (error) {
     const configName = configPath === undefined ? '' : ` file ${configPath}`
