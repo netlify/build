@@ -24,9 +24,7 @@ const trackObjectMutations = function (value, keys, { configMutations, event }) 
   }
 
   if (Array.isArray(value)) {
-    const array = value.map((item, index) =>
-      trackObjectMutations(item, [...keys, String(index)], { configMutations, event }),
-    )
+    const array = value.map((item, index) => trackObjectMutations(item, [...keys, index], { configMutations, event }))
     return addProxy(array, keys, { configMutations, event })
   }
 
@@ -72,15 +70,12 @@ const forbidMethod = function (keys, method) {
 // `Object.defineProperty(netlifyConfig, key, { value })` or
 // `netlifyConfig.{key} = value`
 // New values are wrapped in a `Proxy` to listen for changes on them as well.
-const trackDefineProperty = function (
-  { parentKeys, configMutations, event },
-  proxy,
-  lastKey,
-  { value, ...descriptor },
-) {
-  const keys = [...parentKeys, lastKey]
+const trackDefineProperty = function ({ parentKeys, configMutations, event }, proxy, key, { value, ...descriptor }) {
+  const keys = [...parentKeys, key]
   const keysString = serializeKeys(keys)
+  const jsonKeys = keys.map(jsonNormalizeKey)
 
+  forbidArrayElementAssign(key, keysString)
   forbidEmptyAssign(value, keysString)
 
   const proxyDescriptor = {
@@ -88,13 +83,26 @@ const trackDefineProperty = function (
     value: trackObjectMutations(value, keys, { configMutations, event }),
   }
   // eslint-disable-next-line fp/no-mutating-methods
-  configMutations.push({ keys, value, event })
+  configMutations.push({ keys: jsonKeys, value, event })
   logConfigMutation(keysString, value)
-  return Reflect.defineProperty(proxy, lastKey, proxyDescriptor)
+  return Reflect.defineProperty(proxy, key, proxyDescriptor)
 }
 
 const serializeKeys = function (keys) {
   return keys.map(String).join('.')
+}
+
+// `configMutations` is passed to parent process as JSON
+const jsonNormalizeKey = function (key) {
+  return typeof key === 'symbol' ? String(key) : key
+}
+
+const forbidArrayElementAssign = function (key, keyString) {
+  const index = typeof key === 'string' ? Number(key) : key
+  if (Number.isInteger(index)) {
+    throwValidationError(`Setting "netlifyConfig.${keyString}" individual array element is not allowed.
+Please set the full array instead.`)
+  }
 }
 
 // Triggered when calling `netlifyConfig.{key} = undefined | null`

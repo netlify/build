@@ -6,19 +6,12 @@ const getPropName = function (keys) {
 }
 
 // Some properties are user-defined, i.e. we need to replace them with a "*" token
+// Check if a property name is dynamic, such as `functions.{functionName}`, or
+// is an array index.
+// In those cases, we replace it by "*".
 const normalizeDynamicProp = function (propName, key) {
-  const normalizedKey = isDynamicObjectProp(propName, key) ? '*' : String(key)
+  const normalizedKey = Number.isInteger(key) || DYNAMIC_OBJECT_PROPS.has(propName) ? '*' : String(key)
   return propName === '' ? normalizedKey : `${propName}.${normalizedKey}`
-}
-
-// Check if a property name is dynamic, such as `functions.{functionName}`
-const isDynamicObjectProp = function (propName, key) {
-  return isArrayItem(key) || DYNAMIC_OBJECT_PROPS.has(propName)
-}
-
-// Check it the value is a value item. In that case, we replace its indice by "*"
-const isArrayItem = function (key) {
-  return typeof key !== 'symbol' && Number.isInteger(Number(key))
 }
 
 // Properties with dynamic children
