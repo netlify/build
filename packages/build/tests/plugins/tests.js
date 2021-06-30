@@ -139,6 +139,18 @@ if (!version.startsWith('v8.')) {
       await del(redirectsFile)
     }
   })
+
+  test('netlifyConfig.processing can be assigned all at once', async (t) => {
+    await runFixture(t, 'config_mutate_processing_all')
+  })
+
+  test('netlifyConfig.processing can be assigned individually', async (t) => {
+    await runFixture(t, 'config_mutate_processing_prop')
+  })
+
+  test('netlifyConfig.redirects can be assigned all at once', async (t) => {
+    await runFixture(t, 'config_mutate_redirects_all')
+  })
 }
 
 test('netlifyConfig.build.command can be changed', async (t) => {
@@ -159,6 +171,18 @@ test('netlifyConfig.build.publish mutations are used by constants.PUBLISH_DIR', 
 
 test('netlifyConfig.build.edge_handlers mutations are used by constants.EDGE_HANDLERS_SRC', async (t) => {
   await runFixture(t, 'config_mutate_edge_handlers_constants')
+})
+
+test('netlifyConfig.edge_handlers can be assigned all at once', async (t) => {
+  await runFixture(t, 'config_mutate_edge_handlers_all')
+})
+
+test('netlifyConfig.services can be assigned all at once', async (t) => {
+  await runFixture(t, 'config_mutate_services_all')
+})
+
+test('netlifyConfig.services can be assigned individually', async (t) => {
+  await runFixture(t, 'config_mutate_services_prop')
 })
 
 test('netlifyConfig mutations fail if done in an event that is too late', async (t) => {
