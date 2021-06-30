@@ -7,10 +7,10 @@ module.exports = {
   },
   onBuild({ netlifyConfig }) {
     // eslint-disable-next-line no-param-reassign
-    netlifyConfig.functions.external_node_modules = 'test'
+    netlifyConfig.functions['*'].external_node_modules = ['test']
   },
   onPostBuild({ netlifyConfig }) {
     console.log(netlifyConfig.build.command)
-    console.log(netlifyConfig.functions.external_node_modules)
+    console.log(netlifyConfig.functions['*'].external_node_modules)
   },
 }

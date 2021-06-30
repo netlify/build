@@ -123,8 +123,8 @@ const logConfigInfo = function ({ logs, configPath, buildDir, netlifyConfig, con
 // change would create logs (e.g. warnings) which would be too verbose. Errors
 // are still propagated though and assigned to the specific plugin or core
 // command which changed the configuration.
-const resolveUpdatedConfig = async function (configOpts) {
-  const { config } = await resolveConfig({ ...configOpts, buffer: false })
+const resolveUpdatedConfig = async function (configOpts, priorityConfig) {
+  const { config } = await resolveConfig({ ...configOpts, priorityConfig, buffer: false })
   return config
 }
 
