@@ -1,5 +1,12 @@
 # Changelog
 
+## [12.18.0](https://www.github.com/netlify/build/compare/build-v12.17.0...build-v12.18.0) (2021-06-30)
+
+
+### Features
+
+* validate and normalize config properties modified by plugins ([#3153](https://www.github.com/netlify/build/issues/3153)) ([daf5c91](https://www.github.com/netlify/build/commit/daf5c91c080e41c7c5371f6fd6ca2ffa2c965f6f))
+
 ## [12.17.0](https://www.github.com/netlify/build/compare/build-v12.16.0...build-v12.17.0) (2021-06-29)
 
 
