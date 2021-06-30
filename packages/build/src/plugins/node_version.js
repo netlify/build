@@ -10,8 +10,12 @@ const {
 const { addErrorInfo } = require('../error/info')
 const { logPluginNodeVersionWarning } = require('../log/messages/plugins')
 
-// Local plugins, `package.json`-installed plugins and local builds use user's
-// preferred Node.js version.
+// TODO rely on package.json.engines entry once the rollout is complete
+const MINIMUM_NODE_VERSION_SUPPORTED = '10.18.0'
+
+// Local plugins and `package.json`-installed plugins use user's preferred Node.js version if higher than our minimum
+// supported version (Node v10). Else default to the system Node version.
+// Local builds use user's preferred Node.js version.
 // Other plugins use `@netlify/build` Node.js version.
 const addPluginsNodeVersion = function ({ pluginsOptions, mode, nodePath, userNodeVersion, featureFlags }) {
   const currentNodeVersion = cleanVersion(currentVersion)
@@ -25,7 +29,7 @@ const addPluginsNodeVersion = function ({ pluginsOptions, mode, nodePath, userNo
 // the Node.js versions our build system supports and the Node.js versions @netlify/build supports -
 // https://github.com/netlify/pod-workflow/issues/219
 const checkForOldNodeVersions = function ({ pluginsOptions, userNodeVersion, logs, mode }) {
-  if (mode !== 'buildbot' || satisfies(userNodeVersion, '>=12')) return
+  if (mode !== 'buildbot' || satisfies(userNodeVersion, `>=${MINIMUM_NODE_VERSION_SUPPORTED}`)) return
 
   const affectedPlugins = pluginsOptions
     // `expectedVersion` is only undefined when the plugin is not coming from our plugins directory, those are the cases
@@ -44,32 +48,38 @@ const checkForOldNodeVersions = function ({ pluginsOptions, userNodeVersion, log
 
 const addPluginNodeVersion = function ({
   pluginOptions,
+  pluginOptions: { loadedFrom },
   currentNodeVersion,
   userNodeVersion,
   mode,
   nodePath,
   featureFlags,
 }) {
-  // We want to slowly change all the production plugin executions to use our system node version
-  if (featureFlags.buildbot_build_plugins_system_node_version) {
-    return { ...pluginOptions, nodePath: execPath, nodeVersion: currentNodeVersion }
+  if (loadedFrom === 'local' || loadedFrom === 'package.json') {
+    return nonUIPluginNodeVersion({ pluginOptions, currentNodeVersion, userNodeVersion, nodePath, featureFlags })
   }
-  return legacyPluginNodeVersion({ pluginOptions, currentNodeVersion, userNodeVersion, mode, nodePath })
-}
-
-const legacyPluginNodeVersion = function ({
-  pluginOptions,
-  pluginOptions: { loadedFrom },
-  currentNodeVersion,
-  userNodeVersion,
-  mode,
-  nodePath,
-}) {
-  if (loadedFrom === 'local' || loadedFrom === 'package.json' || (loadedFrom !== 'core' && mode !== 'buildbot')) {
+  if (loadedFrom !== 'core' && mode !== 'buildbot') {
     return { ...pluginOptions, nodePath, nodeVersion: userNodeVersion }
   }
 
   return { ...pluginOptions, nodePath: execPath, nodeVersion: currentNodeVersion }
+}
+
+const nonUIPluginNodeVersion = function ({
+  pluginOptions,
+  currentNodeVersion,
+  userNodeVersion,
+  nodePath,
+  featureFlags,
+}) {
+  // We want to slowly move node.js <10 plugin executions to use our system node version
+  if (
+    featureFlags.buildbot_build_plugins_system_node_version &&
+    satisfies(userNodeVersion, `<${MINIMUM_NODE_VERSION_SUPPORTED}`)
+  ) {
+    return { ...pluginOptions, nodePath: execPath, nodeVersion: currentNodeVersion }
+  }
+  return { ...pluginOptions, nodePath, nodeVersion: userNodeVersion }
 }
 
 // Ensure Node.js version is recent enough to run this plugin

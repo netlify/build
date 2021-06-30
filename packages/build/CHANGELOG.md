@@ -1,5 +1,19 @@
 # Changelog
 
+### [12.19.1](https://www.github.com/netlify/build/compare/build-v12.19.0...build-v12.19.1) (2021-06-30)
+
+
+### Bug Fixes
+
+* **plugins:** only rely in the system node version for plugins running Node <10 ([#3144](https://www.github.com/netlify/build/issues/3144)) ([74bbff2](https://www.github.com/netlify/build/commit/74bbff231ec49277a1900b1ac19c2390094a1d0f))
+
+## [12.19.0](https://www.github.com/netlify/build/compare/build-v12.18.0...build-v12.19.0) (2021-06-30)
+
+
+### Features
+
+* remove redirects parsing feature flag ([#3150](https://www.github.com/netlify/build/issues/3150)) ([1f297c9](https://www.github.com/netlify/build/commit/1f297c9845bc3a1f3ba4725c9f97aadf0d541e45))
+
 ## [12.18.0](https://www.github.com/netlify/build/compare/build-v12.17.0...build-v12.18.0) (2021-06-30)
 
 
