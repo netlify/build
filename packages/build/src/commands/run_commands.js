@@ -27,6 +27,7 @@ const runCommands = async function ({
   deployId,
   errorParams,
   netlifyConfig,
+  configOpts,
   logs,
   debug,
   timers,
@@ -43,7 +44,16 @@ const runCommands = async function ({
   } = await pReduce(
     commands,
     async (
-      { index, error, failedPlugins, envChanges, netlifyConfig: netlifyConfigA, statuses, timers: timersA },
+      {
+        index,
+        error,
+        failedPlugins,
+        envChanges,
+        netlifyConfig: netlifyConfigA,
+        priorityConfig,
+        statuses,
+        timers: timersA,
+      },
       {
         event,
         childProcess,
@@ -64,6 +74,7 @@ const runCommands = async function ({
         failedPlugin = [],
         newEnvChanges = {},
         netlifyConfig: netlifyConfigB = netlifyConfigA,
+        priorityConfig: priorityConfigA = priorityConfig,
         newStatus,
         timers: timersB = timersA,
       } = await runCommand({
@@ -95,7 +106,9 @@ const runCommands = async function ({
         errorParams,
         error,
         failedPlugins,
+        configOpts,
         netlifyConfig: netlifyConfigA,
+        priorityConfig,
         logs,
         debug,
         timers: timersA,
@@ -109,11 +122,20 @@ const runCommands = async function ({
         failedPlugins: [...failedPlugins, ...failedPlugin],
         envChanges: { ...envChanges, ...newEnvChanges },
         netlifyConfig: netlifyConfigB,
+        priorityConfig: priorityConfigA,
         statuses: statusesA,
         timers: timersB,
       }
     },
-    { index: 0, failedPlugins: [], envChanges: {}, netlifyConfig, statuses: [], timers },
+    {
+      index: 0,
+      failedPlugins: [],
+      envChanges: {},
+      netlifyConfig,
+      priorityConfig: {},
+      statuses: [],
+      timers,
+    },
   )
 
   // Instead of throwing any build failure right away, we wait for `onError`,

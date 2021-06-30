@@ -20,7 +20,7 @@ const { trackBuildComplete } = require('../telemetry/main')
 const { initTimers, measureDuration } = require('../time/main')
 const { reportTimers } = require('../time/report')
 
-const { loadConfig } = require('./config')
+const { getConfigOpts, loadConfig } = require('./config')
 const { getConstants } = require('./constants')
 const { doDryRun } = require('./dry')
 const { warnOnLingeringProcesses } = require('./lingering')
@@ -151,6 +151,24 @@ const tExecBuild = async function ({
   sendStatus,
   featureFlags,
 }) {
+  const configOpts = getConfigOpts({
+    config,
+    defaultConfig,
+    cwd,
+    repositoryRoot,
+    apiHost,
+    token,
+    siteId,
+    context,
+    branch,
+    baseRelDir,
+    envOpt,
+    mode,
+    offline,
+    deployId,
+    testOpts,
+    featureFlags,
+  })
   const {
     netlifyConfig,
     configPath,
@@ -163,27 +181,13 @@ const tExecBuild = async function ({
     siteInfo,
     timers: timersA,
   } = await loadConfig({
-    config,
-    defaultConfig,
+    configOpts,
     cachedConfig,
     cachedConfigPath,
-    cwd,
-    repositoryRoot,
-    apiHost,
-    token,
-    siteId,
-    context,
-    branch,
-    baseRelDir,
     envOpt,
     debug,
-    mode,
-    offline,
-    deployId,
     logs,
-    testOpts,
     nodePath,
-    featureFlags,
     timers,
   })
   const constants = await getConstants({
@@ -211,6 +215,7 @@ const tExecBuild = async function ({
   } = await runAndReportBuild({
     pluginsOptions,
     netlifyConfig,
+    configOpts,
     siteInfo,
     configPath,
     buildDir,
@@ -249,6 +254,7 @@ const execBuild = measureDuration(tExecBuild, 'total', { parentTag: 'build_site'
 const runAndReportBuild = async function ({
   pluginsOptions,
   netlifyConfig,
+  configOpts,
   siteInfo,
   configPath,
   buildDir,
@@ -282,6 +288,7 @@ const runAndReportBuild = async function ({
     } = await initAndRunBuild({
       pluginsOptions,
       netlifyConfig,
+      configOpts,
       siteInfo,
       configPath,
       buildDir,
@@ -360,6 +367,7 @@ const runAndReportBuild = async function ({
 const initAndRunBuild = async function ({
   pluginsOptions,
   netlifyConfig,
+  configOpts,
   siteInfo,
   configPath,
   buildDir,
@@ -422,6 +430,7 @@ const initAndRunBuild = async function ({
       childProcesses,
       pluginsOptions: pluginsOptionsA,
       netlifyConfig,
+      configOpts,
       packageJson,
       configPath,
       buildDir,
@@ -463,6 +472,7 @@ const runBuild = async function ({
   childProcesses,
   pluginsOptions,
   netlifyConfig,
+  configOpts,
   packageJson,
   configPath,
   buildDir,
@@ -518,6 +528,7 @@ const runBuild = async function ({
     deployId,
     errorParams,
     netlifyConfig,
+    configOpts,
     logs,
     debug,
     timers: timersA,

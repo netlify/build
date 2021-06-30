@@ -37,11 +37,6 @@ const normalizeFunctionConfig = ({ buildDir, featureFlags, functionConfig = {} }
   // `esbuild` into `esbuild_zisi`, which zip-it-and-ship-it understands.
   nodeBundler: functionConfig.node_bundler === 'esbuild' ? 'esbuild_zisi' : functionConfig.node_bundler,
 
-  // When the `zisiHandlerV2` feature flag is present, zip-it-and-ship-it will
-  // use the experimental function handler changes introduced in v4.2.0.
-  // We can remove this soon since the rollout has been completed.
-  experimentalHandlerV2: Boolean(featureFlags.zisiHandlerV2),
-
   // With the `zisiEsbuildDynamicImports` feature flag, zip-it-and-ship-it will
   // resolve dynamic import expressions by injecting shim files to make the
   // expressions resolve to the right paths at runtime.
@@ -49,13 +44,12 @@ const normalizeFunctionConfig = ({ buildDir, featureFlags, functionConfig = {} }
 })
 
 const getZisiParameters = ({ buildDir, featureFlags, functionsConfig }) => {
-  const basePath = featureFlags.zisiHandlerV2 ? buildDir : undefined
   const config = mapObject(functionsConfig, (expression, object) => [
     expression,
     normalizeFunctionConfig({ buildDir, featureFlags, functionConfig: object }),
   ])
 
-  return { basePath, config }
+  return { basePath: buildDir, config }
 }
 
 const zipFunctionsAndLogResults = async ({

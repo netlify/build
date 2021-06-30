@@ -12,12 +12,16 @@ const { getPackageJson } = require('../utils/package')
 
 const { getUserNodeVersion } = require('./user_node_version')
 
-// Retrieve configuration object
-const tLoadConfig = async function ({
+// Retrieve immutable options passed to `@netlify/config`.
+// This does not include options which might change during the course of the
+// build:
+//  - `cachedConfig` and `cachedConfigPath` are only used at the beginning of
+//    the build
+//  - If plugins change the configuration, `priorityConfig` is used instead
+// In both cases, almost all options should remain the same.
+const getConfigOpts = function ({
   config,
   defaultConfig,
-  cachedConfig,
-  cachedConfigPath,
   cwd,
   repositoryRoot,
   apiHost,
@@ -27,15 +31,34 @@ const tLoadConfig = async function ({
   branch,
   baseRelDir,
   envOpt,
-  debug,
   mode,
   offline,
   deployId,
-  logs,
   testOpts,
-  nodePath,
   featureFlags,
 }) {
+  return {
+    config,
+    defaultConfig,
+    cwd,
+    repositoryRoot,
+    context,
+    branch,
+    baseRelDir,
+    host: apiHost,
+    token,
+    siteId,
+    deployId,
+    mode,
+    offline,
+    env: envOpt,
+    testOpts,
+    featureFlags,
+  }
+}
+
+// Retrieve configuration object
+const tLoadConfig = async function ({ configOpts, cachedConfig, cachedConfigPath, envOpt, debug, logs, nodePath }) {
   const {
     configPath,
     buildDir,
@@ -46,26 +69,7 @@ const tLoadConfig = async function ({
     api,
     siteInfo,
     env,
-  } = await resolveFullConfig({
-    config,
-    defaultConfig,
-    cachedConfig,
-    cachedConfigPath,
-    cwd,
-    repositoryRoot,
-    context,
-    branch,
-    baseRelDir,
-    apiHost,
-    token,
-    siteId,
-    deployId,
-    mode,
-    offline,
-    envOpt,
-    testOpts,
-    featureFlags,
-  })
+  } = await resolveInitialConfig(configOpts, cachedConfig, cachedConfigPath)
   logConfigInfo({ logs, configPath, buildDir, netlifyConfig, context: contextA, debug })
 
   const apiA = addApiErrorHandlers(api)
@@ -88,49 +92,12 @@ const tLoadConfig = async function ({
 
 const loadConfig = measureDuration(tLoadConfig, 'resolve_config')
 
-// Retrieve configuration file and related information
-// (path, build directory, etc.)
-const resolveFullConfig = async function ({
-  config,
-  defaultConfig,
-  cachedConfig,
-  cachedConfigPath,
-  cwd,
-  repositoryRoot,
-  context,
-  branch,
-  baseRelDir,
-  apiHost,
-  token,
-  siteId,
-  deployId,
-  mode,
-  offline,
-  envOpt,
-  testOpts,
-  featureFlags,
-}) {
+// Retrieve initial configuration.
+// In the buildbot and CLI, we re-use the already parsed `@netlify/config`
+// return value which is passed as `cachedConfig`/`cachedConfigPath`.
+const resolveInitialConfig = async function (configOpts, cachedConfig, cachedConfigPath) {
   try {
-    return await resolveConfig({
-      config,
-      defaultConfig,
-      cachedConfig,
-      cachedConfigPath,
-      cwd,
-      repositoryRoot,
-      context,
-      branch,
-      baseRelDir,
-      host: apiHost,
-      token,
-      siteId,
-      deployId,
-      mode,
-      offline,
-      env: envOpt,
-      testOpts,
-      featureFlags,
-    })
+    return await resolveConfig({ ...configOpts, cachedConfig, cachedConfigPath })
   } catch (error) {
     if (error.type === 'userError') {
       // We need to mutate the `error` directly to preserve its `name`, `stack`, etc.
@@ -149,4 +116,16 @@ const logConfigInfo = function ({ logs, configPath, buildDir, netlifyConfig, con
   logContext(logs, context)
 }
 
-module.exports = { loadConfig }
+// Retrieve the configuration after it's been changed.
+// This ensures any configuration changes done by plugins is validated and
+// normalized.
+// We use `buffer: false` to avoid any logs. Otherwise every configuration
+// change would create logs (e.g. warnings) which would be too verbose. Errors
+// are still propagated though and assigned to the specific plugin or core
+// command which changed the configuration.
+const resolveUpdatedConfig = async function (configOpts, priorityConfig) {
+  const { config } = await resolveConfig({ ...configOpts, priorityConfig, buffer: false })
+  return config
+}
+
+module.exports = { getConfigOpts, loadConfig, resolveUpdatedConfig }

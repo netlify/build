@@ -1,5 +1,33 @@
 # Changelog
 
+## [12.18.0](https://www.github.com/netlify/build/compare/build-v12.17.0...build-v12.18.0) (2021-06-30)
+
+
+### Features
+
+* validate and normalize config properties modified by plugins ([#3153](https://www.github.com/netlify/build/issues/3153)) ([daf5c91](https://www.github.com/netlify/build/commit/daf5c91c080e41c7c5371f6fd6ca2ffa2c965f6f))
+
+## [12.17.0](https://www.github.com/netlify/build/compare/build-v12.16.0...build-v12.17.0) (2021-06-29)
+
+
+### Features
+
+* call `@netlify/config` when the configuration is modified ([#3147](https://www.github.com/netlify/build/issues/3147)) ([afc73a4](https://www.github.com/netlify/build/commit/afc73a4afa2f6b765bfb6043358c5e9af27314f7))
+
+## [12.16.0](https://www.github.com/netlify/build/compare/build-v12.15.0...build-v12.16.0) (2021-06-29)
+
+
+### Features
+
+* remove zisiHandlerV2 feature flag ([#3145](https://www.github.com/netlify/build/issues/3145)) ([239fb4b](https://www.github.com/netlify/build/commit/239fb4b7ed41636f7c3814a5f61a7676d4242256))
+
+## [12.15.0](https://www.github.com/netlify/build/compare/build-v12.14.0...build-v12.15.0) (2021-06-29)
+
+
+### Features
+
+* add `priorityConfig` to `@netlify/build` ([#3143](https://www.github.com/netlify/build/issues/3143)) ([61a5fca](https://www.github.com/netlify/build/commit/61a5fcadb2c15e62accf9e1c97e40f8e3a73170f))
+
 ## [12.14.0](https://www.github.com/netlify/build/compare/build-v12.13.1...build-v12.14.0) (2021-06-29)
 
 
