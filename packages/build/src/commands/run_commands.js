@@ -132,7 +132,7 @@ const runCommands = async function ({
       failedPlugins: [],
       envChanges: {},
       netlifyConfig,
-      priorityConfig: { build: {}, functions: { '*': {} } },
+      priorityConfig: {},
       statuses: [],
       timers,
     },

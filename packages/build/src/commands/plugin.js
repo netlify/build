@@ -1,7 +1,5 @@
 'use strict'
 
-const deepmerge = require('deepmerge')
-
 const { resolveUpdatedConfig } = require('../core/config')
 const { addErrorInfo } = require('../error/info')
 const { pipePluginOutput, unpipePluginOutput } = require('../log/stream')
@@ -73,8 +71,7 @@ const updateNetlifyConfig = async function ({
   }
 
   const priorityConfigA = applyMutations(priorityConfig, configMutations)
-  const originalConfig = await resolveUpdatedConfig(configOpts)
-  const netlifyConfigA = deepmerge(originalConfig, priorityConfigA)
+  const netlifyConfigA = await resolveUpdatedConfig(configOpts, priorityConfigA)
   // eslint-disable-next-line fp/no-mutation,no-param-reassign
   errorParams.netlifyConfig = netlifyConfigA
   return { netlifyConfig: netlifyConfigA, priorityConfig: priorityConfigA }
