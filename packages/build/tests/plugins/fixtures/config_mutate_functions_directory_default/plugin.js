@@ -4,12 +4,12 @@ module.exports = {
   onPreBuild({ netlifyConfig, constants: { FUNCTIONS_SRC } }) {
     console.log(FUNCTIONS_SRC)
     // eslint-disable-next-line no-param-reassign
-    netlifyConfig.functionsDirectory = 'test_functions'
+    netlifyConfig.functions.directory = 'test_functions'
   },
   onBuild({ netlifyConfig, constants: { FUNCTIONS_SRC } }) {
     console.log(FUNCTIONS_SRC)
     // eslint-disable-next-line no-param-reassign
-    netlifyConfig.functionsDirectory = ''
+    netlifyConfig.functions.directory = ''
   },
   onPostBuild({ constants: { FUNCTIONS_SRC } }) {
     console.log(FUNCTIONS_SRC)

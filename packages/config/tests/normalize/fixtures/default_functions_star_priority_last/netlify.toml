@@ -1,0 +1,7 @@
+[functions]
+directory = "two"
+ignored_node_modules = ["testTwo"]
+
+[functions."*"]
+directory = "one"
+external_node_modules = ["testOne"]

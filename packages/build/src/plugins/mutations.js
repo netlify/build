@@ -21,7 +21,7 @@ const applyMutation = function (inlineConfig, { keys, value, event }) {
   const { lastEvent, denormalize } = MUTABLE_PROPS[propName]
   validateEvent(lastEvent, event, propName)
 
-  return denormalize === undefined ? setProp(inlineConfig, keys, value) : denormalize(inlineConfig, value)
+  return denormalize === undefined ? setProp(inlineConfig, keys, value) : denormalize(inlineConfig, value, keys)
 }
 
 const validateEvent = function (lastEvent, event, propName) {
@@ -36,11 +36,30 @@ const throwValidationError = function (message) {
   throw error
 }
 
-// `functionsDirectory` is created by `@netlify/config`.
-// We denormalize it to `functions.directory` which is user-facing.
-const denormalizeFunctionsDirectory = function ({ functions, ...inlineConfig }, functionsDirectory) {
-  return { ...inlineConfig, functions: { ...functions, directory: functionsDirectory } }
+// `functions['*'].*` has higher priority than `functions.*` so we convert the
+// latter to the former.
+const denormalizeFunctionsTopProps = function (
+  { functions, functions: { [WILDCARD_ALL]: wildcardProps } = {}, ...inlineConfig },
+  value,
+  [, key],
+) {
+  return FUNCTION_CONFIG_PROPERTIES.has(key)
+    ? {
+        ...inlineConfig,
+        functions: { ...functions, [WILDCARD_ALL]: { ...wildcardProps, [key]: value } },
+      }
+    : { ...inlineConfig, functions: { ...functions, [key]: value } }
 }
+
+// @todo: use @netlify/config definitions instead
+const WILDCARD_ALL = '*'
+const FUNCTION_CONFIG_PROPERTIES = new Set([
+  'directory',
+  'external_node_modules',
+  'ignored_node_modules',
+  'included_files',
+  'node_bundler',
+])
 
 // List of properties that are not read-only.
 const MUTABLE_PROPS = {
@@ -62,8 +81,7 @@ const MUTABLE_PROPS = {
   'build.publish': { lastEvent: 'onPostBuild' },
   'build.services': { lastEvent: 'onPostBuild' },
   'build.services.*': { lastEvent: 'onPostBuild' },
-  functionsDirectory: { lastEvent: 'onBuild', denormalize: denormalizeFunctionsDirectory },
-  'functions.*': { lastEvent: 'onBuild' },
+  'functions.*': { lastEvent: 'onBuild', denormalize: denormalizeFunctionsTopProps },
   'functions.*.*': { lastEvent: 'onBuild' },
   redirects: { lastEvent: 'onPostBuild' },
 }

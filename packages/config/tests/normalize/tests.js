@@ -69,6 +69,14 @@ test('Does not assign default functions if build.functions is defined', async (t
   await runFixture(t, 'default_functions_defined_legacy')
 })
 
+test('Gives priority to functions.star over functions when defined first', async (t) => {
+  await runFixture(t, 'default_functions_star_priority_first')
+})
+
+test('Gives priority to functions.star over functions when defined last', async (t) => {
+  await runFixture(t, 'default_functions_star_priority_last')
+})
+
 test('Assign default edge-handlers if build.edge_handlers is not defined', async (t) => {
   await runFixture(t, 'default_handlers_not_defined')
 })
