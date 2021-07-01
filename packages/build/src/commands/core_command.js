@@ -3,6 +3,8 @@
 const { setEnvChanges } = require('../env/changes')
 const { addErrorInfo, isBuildError } = require('../error/info')
 
+const { listConfigSideFiles, updateNetlifyConfig } = require('./update_config')
+
 // Fire a core command
 const fireCoreCommand = async function ({
   coreCommand,
@@ -16,12 +18,21 @@ const fireCoreCommand = async function ({
   nodePath,
   childEnv,
   envChanges,
+  errorParams,
+  configOpts,
   netlifyConfig,
+  priorityConfig,
   featureFlags,
+  debug,
 }) {
   try {
+    const configSideFiles = await listConfigSideFiles(netlifyConfig, buildDir)
     const childEnvA = setEnvChanges(envChanges, { ...childEnv })
-    return await coreCommand({
+    const {
+      newEnvChanges = {},
+      configMutations = [],
+      tags,
+    } = await coreCommand({
       configPath,
       buildDir,
       constants,
@@ -33,6 +44,18 @@ const fireCoreCommand = async function ({
       nodePath,
       featureFlags,
     })
+    const { netlifyConfig: netlifyConfigA, priorityConfig: priorityConfigA } = await updateNetlifyConfig({
+      configOpts,
+      priorityConfig,
+      netlifyConfig,
+      buildDir,
+      configMutations,
+      configSideFiles,
+      errorParams,
+      logs,
+      debug,
+    })
+    return { newEnvChanges, netlifyConfig: netlifyConfigA, priorityConfig: priorityConfigA, tags }
   } catch (newError) {
     if (!isBuildError(newError)) {
       addErrorInfo(newError, { type: 'coreCommand', location: { coreCommandName } })

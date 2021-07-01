@@ -130,11 +130,21 @@ if (!version.startsWith('v8.')) {
 // `util.inspect()`
 // @todo remove once Node 8 support is removed
 if (!version.startsWith('v8.')) {
-  test('netlifyConfig is updated when redirects file is created', async (t) => {
-    const redirectsFile = `${FIXTURES_DIR}/config_create_redirects/_redirects`
+  test('netlifyConfig is updated when redirects file is created by a plugin', async (t) => {
+    const redirectsFile = `${FIXTURES_DIR}/config_create_redirects_plugin/_redirects`
     await del(redirectsFile)
     try {
-      await runFixture(t, 'config_create_redirects')
+      await runFixture(t, 'config_create_redirects_plugin')
+    } finally {
+      await del(redirectsFile)
+    }
+  })
+
+  test('netlifyConfig is updated when redirects file is created by a build command', async (t) => {
+    const redirectsFile = `${FIXTURES_DIR}/config_create_redirects_command/_redirects`
+    await del(redirectsFile)
+    try {
+      await runFixture(t, 'config_create_redirects_command')
     } finally {
       await del(redirectsFile)
     }
