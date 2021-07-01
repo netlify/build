@@ -97,6 +97,7 @@ const runCommand = async function ({
     events,
     error,
     logs,
+    debug,
     timers,
     errorParams,
     configOpts,
@@ -214,6 +215,7 @@ const tFireCommand = function ({
   events,
   error,
   logs,
+  debug,
   errorParams,
   configOpts,
   netlifyConfig,
@@ -254,6 +256,7 @@ const tFireCommand = function ({
     commands,
     error,
     logs,
+    debug,
   })
 }
 

@@ -77,6 +77,15 @@ const logConfig = function ({ logs, netlifyConfig, debug }) {
   logObject(logs, cleanupConfig(netlifyConfig))
 }
 
+const logConfigOnUpdate = function ({ logs, netlifyConfig, debug }) {
+  if (!debug) {
+    return
+  }
+
+  logSubHeader(logs, 'Updated config')
+  logObject(logs, cleanupConfig(netlifyConfig))
+}
+
 const logConfigOnError = function ({ logs, netlifyConfig, severity }) {
   if (netlifyConfig === undefined || severity === 'none') {
     return
@@ -100,6 +109,7 @@ module.exports = {
   logBuildDir,
   logConfigPath,
   logConfig,
+  logConfigOnUpdate,
   logConfigOnError,
   logContext,
 }
