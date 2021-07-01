@@ -54,14 +54,6 @@ Default: none.`,
     coerce: JSON.parse,
     hidden: true,
   },
-  priorityConfig: {
-    string: true,
-    describe: `JSON configuration object overriding the configuration file and other settings.
-It has higher priority than inlineConfig.
-Default: none.`,
-    coerce: JSON.parse,
-    hidden: true,
-  },
   cwd: {
     string: true,
     describe: `Current directory. Used to retrieve the configuration file.

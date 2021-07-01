@@ -17,7 +17,7 @@ const { getUserNodeVersion } = require('./user_node_version')
 // build:
 //  - `cachedConfig` and `cachedConfigPath` are only used at the beginning of
 //    the build
-//  - If plugins change the configuration, `priorityConfig` is used instead
+//  - If plugins change the configuration, `inlineConfig` is used instead
 // In both cases, almost all options should remain the same.
 const getConfigOpts = function ({
   config,
@@ -126,15 +126,15 @@ const logConfigInfo = function ({ logs, configPath, buildDir, netlifyConfig, con
 // change would create logs (e.g. warnings) which would be too verbose. Errors
 // are still propagated though and assigned to the specific plugin or core
 // command which changed the configuration.
-const resolveUpdatedConfig = async function ({ configOpts, priorityConfig, context, branch }) {
-  const normalizedPriorityConfig = normalizePriorityConfig({ priorityConfig, context, branch })
-  const { config } = await resolveConfig({ ...configOpts, priorityConfig: normalizedPriorityConfig, buffer: true })
+const resolveUpdatedConfig = async function ({ configOpts, inlineConfig, context, branch }) {
+  const normalizedInlineConfig = normalizeInlineConfig({ inlineConfig, context, branch })
+  const { config } = await resolveConfig({ ...configOpts, inlineConfig: normalizedInlineConfig, buffer: true })
   return config
 }
 
-// Ensure `priorityConfig` has a higher priority than `context` properties
-const normalizePriorityConfig = function ({ priorityConfig, context, branch }) {
-  return { context: { [context]: priorityConfig, [branch]: priorityConfig } }
+// Ensure `inlineConfig` has a higher priority than `context` properties
+const normalizeInlineConfig = function ({ inlineConfig, context, branch }) {
+  return { context: { [context]: inlineConfig, [branch]: inlineConfig } }
 }
 
 module.exports = { getConfigOpts, loadConfig, resolveUpdatedConfig }

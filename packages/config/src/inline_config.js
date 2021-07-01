@@ -2,13 +2,13 @@
 
 const { logInlineConfig } = require('./log/main')
 
-// Retrieve the `--inlineConfig` and `--priorityConfig` CLI flags
-const getInlineConfig = function (inlineConfig, { configType, logs, debug }) {
+// Retrieve the `--inlineConfig` CLI flag
+const getInlineConfig = function (inlineConfig, { logs, debug }) {
   if (inlineConfig === undefined) {
     return {}
   }
 
-  logInlineConfig(inlineConfig, { configType, logs, debug })
+  logInlineConfig(inlineConfig, { logs, debug })
   return inlineConfig
 }
 

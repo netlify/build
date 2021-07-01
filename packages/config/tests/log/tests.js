@@ -21,9 +21,8 @@ test('Allow printing plugins with no inputs in debug mode', async (t) => {
 test('Does not print confidential information in debug mode', async (t) => {
   const defaultConfig = { build: { environment: { SECRET: 'true' } } }
   const inlineConfig = { build: { environment: { SECRET_TWO: 'true' } } }
-  const priorityConfig = { build: { environment: { SECRET_THREE: 'true' } } }
   await runFixture(t, 'simple', {
-    flags: { debug: true, defaultConfig, inlineConfig, priorityConfig },
+    flags: { debug: true, defaultConfig, inlineConfig },
     env: { SECRET: 'true' },
   })
 })

@@ -21,7 +21,7 @@ const fireCoreCommand = async function ({
   errorParams,
   configOpts,
   netlifyConfig,
-  priorityConfig,
+  inlineConfig,
   context,
   branch,
   featureFlags,
@@ -46,9 +46,9 @@ const fireCoreCommand = async function ({
       nodePath,
       featureFlags,
     })
-    const { netlifyConfig: netlifyConfigA, priorityConfig: priorityConfigA } = await updateNetlifyConfig({
+    const { netlifyConfig: netlifyConfigA, inlineConfig: inlineConfigA } = await updateNetlifyConfig({
       configOpts,
-      priorityConfig,
+      inlineConfig,
       netlifyConfig,
       context,
       branch,
@@ -59,7 +59,7 @@ const fireCoreCommand = async function ({
       logs,
       debug,
     })
-    return { newEnvChanges, netlifyConfig: netlifyConfigA, priorityConfig: priorityConfigA, tags }
+    return { newEnvChanges, netlifyConfig: netlifyConfigA, inlineConfig: inlineConfigA, tags }
   } catch (newError) {
     if (!isBuildError(newError)) {
       addErrorInfo(newError, { type: 'coreCommand', location: { coreCommandName } })

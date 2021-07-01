@@ -13,7 +13,7 @@ const { applyMutations } = require('../plugins/mutations')
 // is updated by calling `@netlify/config` again.
 const updateNetlifyConfig = async function ({
   configOpts,
-  priorityConfig,
+  inlineConfig,
   netlifyConfig,
   context,
   branch,
@@ -25,15 +25,15 @@ const updateNetlifyConfig = async function ({
   debug,
 }) {
   if (!(await shouldUpdateConfig({ configMutations, configSideFiles, netlifyConfig, buildDir }))) {
-    return { netlifyConfig, priorityConfig }
+    return { netlifyConfig, inlineConfig }
   }
 
-  const priorityConfigA = applyMutations(priorityConfig, configMutations)
-  const netlifyConfigA = await resolveUpdatedConfig({ configOpts, priorityConfig: priorityConfigA, context, branch })
+  const inlineConfigA = applyMutations(inlineConfig, configMutations)
+  const netlifyConfigA = await resolveUpdatedConfig({ configOpts, inlineConfig: inlineConfigA, context, branch })
   logConfigOnUpdate({ logs, netlifyConfig: netlifyConfigA, debug })
   // eslint-disable-next-line fp/no-mutation,no-param-reassign
   errorParams.netlifyConfig = netlifyConfigA
-  return { netlifyConfig: netlifyConfigA, priorityConfig: priorityConfigA }
+  return { netlifyConfig: netlifyConfigA, inlineConfig: inlineConfigA }
 }
 
 const shouldUpdateConfig = async function ({ configMutations, configSideFiles, netlifyConfig, buildDir }) {

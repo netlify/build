@@ -27,10 +27,10 @@ const addRedirects = async function ({
   }
 }
 
-// When redirects are overridden with `priorityConfig`, they override
+// When redirects are overridden with `inlineConfig`, they override
 // everything, including file-based configuration like `_redirects`.
 // This is useful when plugins change the configuration, since
-// `priorityConfig.redirects` already include `_redirects` which was
+// `inlineConfig.redirects` already include `_redirects` which was
 // previously parsed
 const getFileRedirects = async function (publish, redirectsOrigin) {
   if (redirectsOrigin === INLINE_ORIGIN) {
