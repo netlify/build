@@ -1,5 +1,12 @@
 # Changelog
 
+## [12.21.0](https://www.github.com/netlify/build/compare/build-v12.20.0...build-v12.21.0) (2021-07-01)
+
+
+### Features
+
+* allow array configuration property to be modified ([#3161](https://www.github.com/netlify/build/issues/3161)) ([f4f2982](https://www.github.com/netlify/build/commit/f4f298207d27ca00c785fc0e4b4837258c1db8ff))
+
 ## [12.20.0](https://www.github.com/netlify/build/compare/build-v12.19.1...build-v12.20.0) (2021-06-30)
 
 
