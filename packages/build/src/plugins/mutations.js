@@ -45,13 +45,28 @@ const denormalizeFunctionsDirectory = function ({ functions, ...priorityConfig }
 // List of properties that are not read-only.
 const MUTABLE_PROPS = {
   'build.command': { lastEvent: 'onPreBuild' },
-  'build.functions': { lastEvent: 'onBuild' },
-  'build.publish': { lastEvent: 'onPostBuild' },
   'build.edge_handlers': { lastEvent: 'onPostBuild' },
+  'build.functions': { lastEvent: 'onBuild' },
+  'build.processing': { lastEvent: 'onPostBuild' },
+  'build.processing.css': { lastEvent: 'onPostBuild' },
+  'build.processing.css.bundle': { lastEvent: 'onPostBuild' },
+  'build.processing.css.minify': { lastEvent: 'onPostBuild' },
+  'build.processing.html': { lastEvent: 'onPostBuild' },
+  'build.processing.html.pretty_urls': { lastEvent: 'onPostBuild' },
+  'build.processing.images': { lastEvent: 'onPostBuild' },
+  'build.processing.images.compress': { lastEvent: 'onPostBuild' },
+  'build.processing.js': { lastEvent: 'onPostBuild' },
+  'build.processing.js.bundle': { lastEvent: 'onPostBuild' },
+  'build.processing.js.minify': { lastEvent: 'onPostBuild' },
+  'build.processing.skip_processing': { lastEvent: 'onPostBuild' },
+  'build.publish': { lastEvent: 'onPostBuild' },
+  'build.services': { lastEvent: 'onPostBuild' },
+  'build.services.*': { lastEvent: 'onPostBuild' },
+  edge_handlers: { lastEvent: 'onPostBuild' },
   functionsDirectory: { lastEvent: 'onBuild', denormalize: denormalizeFunctionsDirectory },
   'functions.*': { lastEvent: 'onBuild' },
   'functions.*.*': { lastEvent: 'onBuild' },
-  'functions.*.*.*': { lastEvent: 'onBuild' },
+  redirects: { lastEvent: 'onPostBuild' },
 }
 
 module.exports = { applyMutations }

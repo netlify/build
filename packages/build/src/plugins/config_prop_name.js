@@ -15,6 +15,6 @@ const normalizeDynamicProp = function (propName, key) {
 }
 
 // Properties with dynamic children
-const DYNAMIC_OBJECT_PROPS = new Set(['functions', 'functions.*'])
+const DYNAMIC_OBJECT_PROPS = new Set(['build.services', 'functions', 'functions.*'])
 
 module.exports = { getPropName }
