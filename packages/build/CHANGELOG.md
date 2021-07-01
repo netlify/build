@@ -1,5 +1,12 @@
 # Changelog
 
+## [12.25.0](https://www.github.com/netlify/build/compare/build-v12.24.0...build-v12.25.0) (2021-07-01)
+
+
+### Features
+
+* allow mutating more configuration properties ([#3163](https://www.github.com/netlify/build/issues/3163)) ([7357fa8](https://www.github.com/netlify/build/commit/7357fa89cd2824e03ae3c1fe654537f4218d4f52))
+
 ## [12.24.0](https://www.github.com/netlify/build/compare/build-v12.23.0...build-v12.24.0) (2021-07-01)
 
 
