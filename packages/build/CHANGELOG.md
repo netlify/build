@@ -1,5 +1,12 @@
 # Changelog
 
+## [12.22.0](https://www.github.com/netlify/build/compare/build-v12.21.0...build-v12.22.0) (2021-07-01)
+
+
+### Features
+
+* log updated config when changed, in debug mode ([#3162](https://www.github.com/netlify/build/issues/3162)) ([83c53f8](https://www.github.com/netlify/build/commit/83c53f89d9da42e029f5f23c3b62c3e55a60c5e5))
+
 ## [12.21.0](https://www.github.com/netlify/build/compare/build-v12.20.0...build-v12.21.0) (2021-07-01)
 
 
