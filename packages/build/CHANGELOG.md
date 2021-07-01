@@ -1,5 +1,12 @@
 # Changelog
 
+## [12.26.0](https://www.github.com/netlify/build/compare/build-v12.25.0...build-v12.26.0) (2021-07-01)
+
+
+### Features
+
+* detect when build command adds `_redirects` file ([#3171](https://www.github.com/netlify/build/issues/3171)) ([ddf93d5](https://www.github.com/netlify/build/commit/ddf93d5dea00f5f86320be8eb353b75853ba1409))
+
 ## [12.25.0](https://www.github.com/netlify/build/compare/build-v12.24.0...build-v12.25.0) (2021-07-01)
 
 
