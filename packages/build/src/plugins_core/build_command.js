@@ -37,10 +37,10 @@ const coreCommand = async function ({
     const buildCommandOutput = await childProcess
     handleBuildCommandOutput(buildCommandOutput, logs)
     return {}
-  } catch (newError) {
-    handleBuildCommandOutput(newError, logs)
-    addErrorInfo(newError, { type: 'buildCommand', location: { buildCommand, buildCommandOrigin, configPath } })
-    return { newError }
+  } catch (error) {
+    handleBuildCommandOutput(error, logs)
+    addErrorInfo(error, { type: 'buildCommand', location: { buildCommand, buildCommandOrigin, configPath } })
+    throw error
   }
 }
 

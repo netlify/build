@@ -235,8 +235,12 @@ const tFireCommand = function ({
       nodePath,
       childEnv,
       envChanges,
+      errorParams,
+      configOpts,
       netlifyConfig,
+      priorityConfig,
       featureFlags,
+      debug,
     })
   }
 
