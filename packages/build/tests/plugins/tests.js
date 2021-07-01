@@ -73,6 +73,14 @@ if (!version.startsWith('v8.')) {
     await runFixture(t, 'config_mutate_persist')
   })
 
+  test('netlifyConfig array properties cannot be mutated per index', async (t) => {
+    await runFixture(t, 'config_mutate_array_index')
+  })
+
+  test('netlifyConfig array properties cannot be pushed', async (t) => {
+    await runFixture(t, 'config_mutate_array_push')
+  })
+
   test('netlifyConfig.functionsDirectory mutations are used during functions bundling', async (t) => {
     await runFixture(t, 'config_mutate_functions_directory_bundling')
   })

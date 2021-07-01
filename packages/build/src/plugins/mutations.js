@@ -1,23 +1,18 @@
 'use strict'
 
-const { set } = require('dot-prop')
-
 const { addErrorInfo } = require('../error/info')
+const { setProp } = require('../utils/set')
 
 const { getPropName } = require('./config_prop_name')
 const { EVENTS } = require('./events')
 
 // Apply a series of mutations to `netlifyConfig`.
-// Also normalize it.
+// Also denormalize it.
 const applyMutations = function (priorityConfig, configMutations) {
-  configMutations.forEach(({ keys, value, event }) => {
-    applyMutation({ priorityConfig, keys, value, event })
-  })
-  return priorityConfig
+  return configMutations.reduce(applyMutation, priorityConfig)
 }
 
-const applyMutation = function ({ priorityConfig, keys, value, event }) {
-  const keysString = serializeKeys(keys)
+const applyMutation = function (priorityConfig, { keys, value, event }) {
   const propName = getPropName(keys)
   if (!(propName in MUTABLE_PROPS)) {
     throwValidationError(`"netlifyConfig.${propName}" is read-only.`)
@@ -26,11 +21,7 @@ const applyMutation = function ({ priorityConfig, keys, value, event }) {
   const { lastEvent, denormalize } = MUTABLE_PROPS[propName]
   validateEvent(lastEvent, event, propName)
 
-  if (denormalize === undefined) {
-    set(priorityConfig, keysString, value)
-  } else {
-    denormalize(priorityConfig, value)
-  }
+  return denormalize === undefined ? setProp(priorityConfig, keys, value) : denormalize(priorityConfig, value)
 }
 
 const validateEvent = function (lastEvent, event, propName) {
@@ -45,17 +36,10 @@ const throwValidationError = function (message) {
   throw error
 }
 
-const serializeKeys = function (keys) {
-  return keys.map(String).join('.')
-}
-
 // `functionsDirectory` is created by `@netlify/config`.
 // We denormalize it to `functions.directory` which is user-facing.
-const denormalizeFunctionsDirectory = function (priorityConfig, functionsDirectory) {
-  // eslint-disable-next-line fp/no-mutation, no-param-reassign
-  priorityConfig.functions = priorityConfig.functions || {}
-  // eslint-disable-next-line fp/no-mutation, no-param-reassign
-  priorityConfig.functions.directory = functionsDirectory
+const denormalizeFunctionsDirectory = function ({ functions, ...priorityConfig }, functionsDirectory) {
+  return { ...priorityConfig, functions: { ...functions, directory: functionsDirectory } }
 }
 
 // List of properties that are not read-only.
