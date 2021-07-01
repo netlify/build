@@ -14,27 +14,27 @@ const { UI_ORIGIN } = require('../origin')
 //  - `package` is the only property in `[[contexts.{context}.plugins]]`, i.e.
 //    there are no context-specific `inputs`
 //  - The current build is not in `context`
-const validateContextsPluginsConfig = function ({ normalizedContextProps, config, contexts, logs }) {
-  Object.entries(normalizedContextProps).forEach(([givenContext, givenContextProps]) => {
-    validateContextPluginsConfig({ givenContextProps, config, givenContext, contexts, logs })
+const validateContextsPluginsConfig = function ({ contextProps, plugins, contexts, logs }) {
+  Object.entries(contextProps).forEach(([givenContext, givenContextProps]) => {
+    validateContextPluginsConfig({ givenContextProps, plugins, givenContext, contexts, logs })
   })
 }
 
 const validateContextPluginsConfig = function ({
   givenContextProps: { plugins: contextPlugins = [] },
-  config,
+  plugins,
   givenContext,
   contexts,
   logs,
 }) {
   contextPlugins.forEach((pluginConfig) => {
-    validateContextPluginConfig({ pluginConfig, config, givenContext, contexts, logs })
+    validateContextPluginConfig({ pluginConfig, plugins, givenContext, contexts, logs })
   })
 }
 
 const validateContextPluginConfig = function ({
   pluginConfig: { package: packageName, inputs = {} },
-  config: { plugins = [] },
+  plugins = [],
   givenContext,
   contexts,
   logs,

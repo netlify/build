@@ -4,32 +4,44 @@ const isPlainObj = require('is-plain-obj')
 const mapObj = require('map-obj')
 
 const { normalizeBeforeConfigMerge } = require('./merge_normalize')
-const { CONFIG_ORIGIN } = require('./origin')
 const { mergeConfigs } = require('./utils/merge')
 const { validateContextsPluginsConfig } = require('./validate/context')
 const { validatePreContextConfig } = require('./validate/main')
 
-// Merge `config.context.{CONTEXT|BRANCH}.*` to `config.build.*` or `config.*`
-// CONTEXT is the `--context` CLI flag.
-// BRANCH is the `--branch` CLI flag.
-const mergeContext = function ({ config, context, branch, logs }) {
-  validatePreContextConfig(config)
-
-  const { context: contextProps, ...configA } = config
+// Validate and normalize `config.context.*`
+const normalizeContextProps = function ({ config, config: { context: contextProps }, origin }) {
   if (contextProps === undefined) {
-    return configA
+    return config
   }
+
+  validatePreContextConfig(config)
 
   const allContextProps = mapObj(contextProps, (key, contextConfig) => [key, addNamespace(contextConfig)])
   const normalizedContextProps = mapObj(allContextProps, (key, contextConfig) => [
     key,
-    normalizeBeforeConfigMerge(contextConfig, CONFIG_ORIGIN),
+    normalizeBeforeConfigMerge(contextConfig, origin),
   ])
-  const contexts = [context, branch]
-  validateContextsPluginsConfig({ normalizedContextProps, config: configA, contexts, logs })
-  const filteredContextProps = contexts.map((key) => normalizedContextProps[key]).filter(Boolean)
+  return { ...config, context: normalizedContextProps }
+}
 
-  return mergeConfigs([configA, ...filteredContextProps])
+// Merge `config.context.{CONTEXT|BRANCH}.*` to `config.build.*` or `config.*`
+// CONTEXT is the `--context` CLI flag.
+// BRANCH is the `--branch` CLI flag.
+const mergeContext = function ({
+  config: { context: contextProps, ...config },
+  config: { plugins },
+  context,
+  branch,
+  logs,
+}) {
+  if (contextProps === undefined) {
+    return config
+  }
+
+  const contexts = [context, branch]
+  validateContextsPluginsConfig({ contextProps, plugins, contexts, logs })
+  const filteredContextProps = contexts.map((key) => contextProps[key]).filter(Boolean)
+  return mergeConfigs([config, ...filteredContextProps])
 }
 
 // `config.context.{context}.*` properties are merged either to `config.*` or
@@ -65,4 +77,4 @@ const isFunctionsConfig = function (key, value) {
   return key === 'functions' && isPlainObj(value)
 }
 
-module.exports = { mergeContext }
+module.exports = { normalizeContextProps, mergeContext }

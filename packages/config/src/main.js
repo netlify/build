@@ -8,7 +8,7 @@ const { getSiteInfo } = require('./api/site_info')
 const { getInitialBase, getBase, addBase } = require('./base')
 const { getBuildDir } = require('./build_dir')
 const { getCachedConfig } = require('./cached_config')
-const { mergeContext } = require('./context')
+const { normalizeContextProps, mergeContext } = require('./context')
 const { parseDefaultConfig } = require('./default')
 const { getEnv } = require('./env/main')
 const { resolveConfigPaths } = require('./files')
@@ -251,10 +251,10 @@ const mergeAndNormalizeConfig = function ({
   branch,
   logs,
 }) {
-  const configA = normalizeBeforeConfigMerge(config, CONFIG_ORIGIN)
-  const defaultConfigA = normalizeBeforeConfigMerge(defaultConfig, UI_ORIGIN)
-  const inlineConfigA = normalizeBeforeConfigMerge(inlineConfig, CONFIG_ORIGIN)
-  const priorityConfigA = normalizeBeforeConfigMerge(priorityConfig, PLUGIN_ORIGIN)
+  const configA = normalizeConfigAndContext(config, CONFIG_ORIGIN)
+  const defaultConfigA = normalizeConfigAndContext(defaultConfig, UI_ORIGIN)
+  const inlineConfigA = normalizeConfigAndContext(inlineConfig, CONFIG_ORIGIN)
+  const priorityConfigA = normalizeConfigAndContext(priorityConfig, PLUGIN_ORIGIN)
 
   const configB = mergeConfigs([defaultConfigA, configA, inlineConfigA])
   const configC = mergeContext({ config: configB, context, branch, logs })
@@ -262,6 +262,12 @@ const mergeAndNormalizeConfig = function ({
 
   const configE = normalizeAfterConfigMerge(configD)
   return configE
+}
+
+const normalizeConfigAndContext = function (config, origin) {
+  const configA = normalizeBeforeConfigMerge(config, origin)
+  const configB = normalizeContextProps({ config: configA, origin })
+  return configB
 }
 
 // Find base directory, build directory and resolve all paths to absolute paths
