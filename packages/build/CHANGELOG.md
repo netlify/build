@@ -1,5 +1,12 @@
 # Changelog
 
+## [12.23.0](https://www.github.com/netlify/build/compare/build-v12.22.0...build-v12.23.0) (2021-07-01)
+
+
+### Features
+
+* reduce verbose logs when changing `netlifyConfig` ([#3167](https://www.github.com/netlify/build/issues/3167)) ([6f3413d](https://www.github.com/netlify/build/commit/6f3413ded8c06da9a81425ee5de0f3208983d64a))
+
 ## [12.22.0](https://www.github.com/netlify/build/compare/build-v12.21.0...build-v12.22.0) (2021-07-01)
 
 
