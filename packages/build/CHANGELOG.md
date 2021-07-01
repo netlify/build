@@ -1,5 +1,12 @@
 # Changelog
 
+## [12.24.0](https://www.github.com/netlify/build/compare/build-v12.23.0...build-v12.24.0) (2021-07-01)
+
+
+### Features
+
+* detect when `_redirects` are created during builds ([#3168](https://www.github.com/netlify/build/issues/3168)) ([82746f4](https://www.github.com/netlify/build/commit/82746f48c21817c41228d782db6266226cb02ba2))
+
 ## [12.23.0](https://www.github.com/netlify/build/compare/build-v12.22.0...build-v12.23.0) (2021-07-01)
 
 
