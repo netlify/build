@@ -1,5 +1,10 @@
 'use strict'
 
+const { resolve } = require('path')
+
+const pFilter = require('p-filter')
+const pathExists = require('path-exists')
+
 const { resolveUpdatedConfig } = require('../core/config')
 const { addErrorInfo } = require('../error/info')
 const { logConfigOnUpdate } = require('../log/messages/config')
@@ -18,6 +23,7 @@ const firePluginCommand = async function ({
   pluginPackageJson,
   loadedFrom,
   origin,
+  buildDir,
   envChanges,
   errorParams,
   configOpts,
@@ -32,6 +38,7 @@ const firePluginCommand = async function ({
   const listeners = pipePluginOutput(childProcess, logs)
 
   try {
+    const configSideFiles = await listConfigSideFiles(netlifyConfig, buildDir)
     const { newEnvChanges, configMutations, status } = await callChild(childProcess, 'run', {
       event,
       error,
@@ -43,7 +50,9 @@ const firePluginCommand = async function ({
       configOpts,
       priorityConfig,
       netlifyConfig,
+      buildDir,
       configMutations,
+      configSideFiles,
       errorParams,
       logs,
       debug,
@@ -67,12 +76,14 @@ const updateNetlifyConfig = async function ({
   configOpts,
   priorityConfig,
   netlifyConfig,
+  buildDir,
   configMutations,
+  configSideFiles,
   errorParams,
   logs,
   debug,
 }) {
-  if (configMutations.length === 0) {
+  if (!(await shouldUpdateConfig({ configMutations, configSideFiles, netlifyConfig, buildDir }))) {
     return { netlifyConfig, priorityConfig }
   }
 
@@ -83,5 +94,32 @@ const updateNetlifyConfig = async function ({
   errorParams.netlifyConfig = netlifyConfigA
   return { netlifyConfig: netlifyConfigA, priorityConfig: priorityConfigA }
 }
+
+const shouldUpdateConfig = async function ({ configMutations, configSideFiles, netlifyConfig, buildDir }) {
+  return (
+    configMutations.length !== 0 || (await haveConfigSideFilesChanged({ configSideFiles, netlifyConfig, buildDir }))
+  )
+}
+
+// The configuration mostly depends on `netlify.toml` and UI build settings.
+// However, it also uses some additional optional side files:
+// `_redirects` in the publish directory.
+// Those are often created by the build command. When those are created, we need
+// to update the configuration. We detect this by checking for file existence
+// before and after running plugins and the build command.
+const haveConfigSideFilesChanged = async function ({ configSideFiles, netlifyConfig, buildDir }) {
+  const newSideFiles = await listConfigSideFiles(netlifyConfig, buildDir)
+  // @todo: use `util.isDeepStrictEqual()` after dropping support for Node 8
+  return newSideFiles.join(',') !== configSideFiles.join(',')
+}
+
+const listConfigSideFiles = async function ({ build: { publish } }, buildDir) {
+  const publishSideFiles = PUBLISH_SIDE_FILES.map((publishSideFile) => resolve(buildDir, publish, publishSideFile))
+  const configSideFiles = await pFilter(publishSideFiles, pathExists)
+  // eslint-disable-next-line fp/no-mutating-methods
+  return configSideFiles.sort()
+}
+
+const PUBLISH_SIDE_FILES = ['_redirects']
 
 module.exports = { firePluginCommand }

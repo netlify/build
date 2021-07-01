@@ -126,6 +126,21 @@ if (!version.startsWith('v8.')) {
   })
 }
 
+// Node 8 prints different snapshots due to change of behavior with
+// `util.inspect()`
+// @todo remove once Node 8 support is removed
+if (!version.startsWith('v8.')) {
+  test('netlifyConfig is updated when redirects file is created', async (t) => {
+    const redirectsFile = `${FIXTURES_DIR}/config_create_redirects/_redirects`
+    await del(redirectsFile)
+    try {
+      await runFixture(t, 'config_create_redirects')
+    } finally {
+      await del(redirectsFile)
+    }
+  })
+}
+
 test('netlifyConfig.build.command can be changed', async (t) => {
   await runFixture(t, 'config_mutate_build_command_change')
 })
