@@ -7,7 +7,7 @@ const getBuildCommandDescription = function (buildCommandOrigin) {
 const BUILD_COMMAND_DESCRIPTIONS = {
   ui: 'Build command from Netlify app',
   config: 'build.command from netlify.toml',
-  plugin: 'build.command from a plugin',
+  inline: 'build.command from a plugin',
 }
 
 // Retrieve human-friendly plugin origin

@@ -6,7 +6,7 @@ const { isTruthy } = require('./utils/remove_falsy')
 const UI_ORIGIN = 'ui'
 const CONFIG_ORIGIN = 'config'
 const DEFAULT_ORIGIN = 'default'
-const PLUGIN_ORIGIN = 'plugin'
+const INLINE_ORIGIN = 'inline'
 
 // Add `build.commandOrigin`, `build.publishOrigin` and `plugins[*].origin`.
 // This shows whether those properties came from the `ui` or from the `config`.
@@ -34,4 +34,4 @@ const addRedirectsOrigin = function ({ config, config: { redirects }, origin }) 
   return isTruthy(redirects) ? { ...config, redirectsOrigin: origin } : config
 }
 
-module.exports = { addOrigins, UI_ORIGIN, CONFIG_ORIGIN, DEFAULT_ORIGIN, PLUGIN_ORIGIN }
+module.exports = { addOrigins, UI_ORIGIN, CONFIG_ORIGIN, DEFAULT_ORIGIN, INLINE_ORIGIN }
