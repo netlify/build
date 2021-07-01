@@ -247,6 +247,7 @@ const tFireCommand = function ({
     pluginPackageJson,
     loadedFrom,
     origin,
+    buildDir,
     envChanges,
     errorParams,
     configOpts,
