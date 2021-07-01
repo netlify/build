@@ -246,7 +246,7 @@ Configuration object overriding any properties. This is a JavaScript object.
 
 _Type_: `object`
 
-Like `inlineConfig` except it has higher priority and cannot use nor be overridden by contexts.
+Like `inlineConfig` except it has higher priority.
 
 ### Return value
 

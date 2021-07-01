@@ -43,6 +43,8 @@ const runCommand = async function ({
   configOpts,
   netlifyConfig,
   priorityConfig,
+  context,
+  branch,
   logs,
   debug,
   timers,
@@ -103,6 +105,8 @@ const runCommand = async function ({
     configOpts,
     netlifyConfig,
     priorityConfig,
+    context,
+    branch,
     featureFlags,
   })
 
@@ -220,6 +224,8 @@ const tFireCommand = function ({
   configOpts,
   netlifyConfig,
   priorityConfig,
+  context,
+  branch,
   featureFlags,
 }) {
   if (coreCommand !== undefined) {
@@ -239,6 +245,8 @@ const tFireCommand = function ({
       configOpts,
       netlifyConfig,
       priorityConfig,
+      context,
+      branch,
       featureFlags,
       debug,
     })
@@ -257,6 +265,8 @@ const tFireCommand = function ({
     configOpts,
     netlifyConfig,
     priorityConfig,
+    context,
+    branch,
     constants,
     commands,
     error,

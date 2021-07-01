@@ -22,6 +22,8 @@ const fireCoreCommand = async function ({
   configOpts,
   netlifyConfig,
   priorityConfig,
+  context,
+  branch,
   featureFlags,
   debug,
 }) {
@@ -48,6 +50,8 @@ const fireCoreCommand = async function ({
       configOpts,
       priorityConfig,
       netlifyConfig,
+      context,
+      branch,
       buildDir,
       configMutations,
       configSideFiles,

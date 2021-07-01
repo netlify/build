@@ -256,11 +256,10 @@ const mergeAndNormalizeConfig = function ({
   const inlineConfigA = normalizeConfigAndContext(inlineConfig, CONFIG_ORIGIN)
   const priorityConfigA = normalizeConfigAndContext(priorityConfig, PLUGIN_ORIGIN)
 
-  const configB = mergeConfigs([defaultConfigA, configA, inlineConfigA])
+  const configB = mergeConfigs([defaultConfigA, configA, inlineConfigA, priorityConfigA])
   const configC = mergeContext({ config: configB, context, branch, logs })
-  const configD = mergeConfigs([configC, priorityConfigA])
 
-  const configE = normalizeAfterConfigMerge(configD)
+  const configE = normalizeAfterConfigMerge(configC)
   return configE
 }
 

@@ -57,7 +57,7 @@ Default: none.`,
   priorityConfig: {
     string: true,
     describe: `JSON configuration object overriding the configuration file and other settings.
-It has higher priority than inlineConfig and cannot use nor be overridden by contexts.
+It has higher priority than inlineConfig.
 Default: none.`,
     coerce: JSON.parse,
     hidden: true,

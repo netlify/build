@@ -64,6 +64,7 @@ const tLoadConfig = async function ({ configOpts, cachedConfig, cachedConfigPath
     buildDir,
     config: netlifyConfig,
     context: contextA,
+    branch: branchA,
     apiHost: apiHostA,
     token: tokenA,
     api,
@@ -83,6 +84,8 @@ const tLoadConfig = async function ({ configOpts, cachedConfig, cachedConfigPath
     packageJson,
     userNodeVersion,
     childEnv,
+    context: contextA,
+    branch: branchA,
     apiHost: apiHostA,
     token: tokenA,
     api: apiA,
@@ -123,9 +126,15 @@ const logConfigInfo = function ({ logs, configPath, buildDir, netlifyConfig, con
 // change would create logs (e.g. warnings) which would be too verbose. Errors
 // are still propagated though and assigned to the specific plugin or core
 // command which changed the configuration.
-const resolveUpdatedConfig = async function (configOpts, priorityConfig) {
-  const { config } = await resolveConfig({ ...configOpts, priorityConfig, buffer: true })
+const resolveUpdatedConfig = async function ({ configOpts, priorityConfig, context, branch }) {
+  const normalizedPriorityConfig = normalizePriorityConfig({ priorityConfig, context, branch })
+  const { config } = await resolveConfig({ ...configOpts, priorityConfig: normalizedPriorityConfig, buffer: true })
   return config
+}
+
+// Ensure `priorityConfig` has a higher priority than `context` properties
+const normalizePriorityConfig = function ({ priorityConfig, context, branch }) {
+  return { context: { [context]: priorityConfig, [branch]: priorityConfig } }
 }
 
 module.exports = { getConfigOpts, loadConfig, resolveUpdatedConfig }
