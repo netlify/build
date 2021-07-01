@@ -124,7 +124,7 @@ const logConfigInfo = function ({ logs, configPath, buildDir, netlifyConfig, con
 // are still propagated though and assigned to the specific plugin or core
 // command which changed the configuration.
 const resolveUpdatedConfig = async function (configOpts, priorityConfig) {
-  const { config } = await resolveConfig({ ...configOpts, priorityConfig, buffer: false })
+  const { config } = await resolveConfig({ ...configOpts, priorityConfig, buffer: true })
   return config
 }
 
