@@ -1,5 +1,12 @@
 # Changelog
 
+## [12.28.0](https://www.github.com/netlify/build/compare/build-v12.27.0...build-v12.28.0) (2021-07-05)
+
+
+### Features
+
+* change `origin` of `inlineConfig` and `priorityConfig` ([#3190](https://www.github.com/netlify/build/issues/3190)) ([5ea2439](https://www.github.com/netlify/build/commit/5ea2439ae8f7de11ba15059820466456ee8df196))
+
 ## [12.27.0](https://www.github.com/netlify/build/compare/build-v12.26.1...build-v12.27.0) (2021-07-05)
 
 
