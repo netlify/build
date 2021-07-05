@@ -1,5 +1,13 @@
 # Changelog
 
+### [12.26.1](https://www.github.com/netlify/build/compare/build-v12.26.0...build-v12.26.1) (2021-07-05)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugin-edge-handlers to ^1.11.20 ([#3182](https://www.github.com/netlify/build/issues/3182)) ([0c19650](https://www.github.com/netlify/build/commit/0c19650bd88be78ba291dd19d9e800dbf08db1aa))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.9.0 ([#3181](https://www.github.com/netlify/build/issues/3181)) ([1d733f6](https://www.github.com/netlify/build/commit/1d733f69f30db1e06722c1e0b7cd167e1e8ddad9))
+
 ## [12.26.0](https://www.github.com/netlify/build/compare/build-v12.25.0...build-v12.26.0) (2021-07-01)
 
 
