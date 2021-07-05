@@ -1,5 +1,16 @@
 # Changelog
 
+## [10.0.0](https://www.github.com/netlify/build/compare/config-v9.8.0...config-v10.0.0) (2021-07-05)
+
+
+### ⚠ BREAKING CHANGES
+
+* merge `priorityConfig` with `inlineConfig` (#3193)
+
+### Features
+
+* merge `priorityConfig` with `inlineConfig` ([#3193](https://www.github.com/netlify/build/issues/3193)) ([35989ef](https://www.github.com/netlify/build/commit/35989ef8fe8196c1da2d36c2f73e4ff82efba6c5))
+
 ## [9.8.0](https://www.github.com/netlify/build/compare/config-v9.7.0...config-v9.8.0) (2021-07-05)
 
 
