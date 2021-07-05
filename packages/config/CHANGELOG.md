@@ -1,5 +1,12 @@
 # Changelog
 
+## [10.1.0](https://www.github.com/netlify/build/compare/config-v10.0.0...config-v10.1.0) (2021-07-05)
+
+
+### Features
+
+* improve `functions` configuration logic ([#3175](https://www.github.com/netlify/build/issues/3175)) ([7085d77](https://www.github.com/netlify/build/commit/7085d7720191c399d8fd9d560ce30a76b483e30a))
+
 ## [10.0.0](https://www.github.com/netlify/build/compare/config-v9.8.0...config-v10.0.0) (2021-07-05)
 
 
