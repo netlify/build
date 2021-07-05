@@ -67,6 +67,7 @@
     "netlify": "^7.0.1",
     "netlify-redirect-parser": "^8.0.0",
     "omit.js": "^2.0.2",
+    "p-filter": "^2.1.0",
     "p-locate": "^4.1.0",
     "path-exists": "^4.0.0",
     "path-type": "^4.0.0",

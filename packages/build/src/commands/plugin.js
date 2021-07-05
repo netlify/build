@@ -1,12 +1,14 @@
 'use strict'
 
+const { listConfigSideFiles } = require('@netlify/config')
+
 const { addErrorInfo } = require('../error/info')
 const { pipePluginOutput, unpipePluginOutput } = require('../log/stream')
 const { callChild } = require('../plugins/ipc')
 const { getSuccessStatus } = require('../status/success')
 
 const { getPluginErrorType } = require('./error')
-const { listConfigSideFiles, updateNetlifyConfig } = require('./update_config')
+const { updateNetlifyConfig } = require('./update_config')
 
 // Fire a plugin command
 const firePluginCommand = async function ({

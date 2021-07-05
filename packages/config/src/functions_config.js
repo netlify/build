@@ -47,9 +47,9 @@ const normalizeFunctionsProp = (functions, [propName, propValue]) =>
 const isConfigLeaf = (functionConfig) =>
   isPlainObj(functionConfig) && Object.keys(functionConfig).every(isConfigProperty)
 
-const isConfigProperty = (propName) => configProperties.has(propName)
+const isConfigProperty = (propName) => FUNCTION_CONFIG_PROPERTIES.has(propName)
 
-const configProperties = new Set([
+const FUNCTION_CONFIG_PROPERTIES = new Set([
   'directory',
   'external_node_modules',
   'ignored_node_modules',
@@ -83,4 +83,4 @@ const getFunctionsDirectoryProps = ({ functionsDirectory, v1FunctionsDirectory }
   return {}
 }
 
-module.exports = { normalizeFunctionsProps, bundlers, WILDCARD_ALL }
+module.exports = { normalizeFunctionsProps, bundlers, WILDCARD_ALL, FUNCTION_CONFIG_PROPERTIES }
