@@ -1,5 +1,12 @@
 # Changelog
 
+## [10.3.0](https://www.github.com/netlify/build/compare/config-v10.2.0...config-v10.3.0) (2021-07-05)
+
+
+### Features
+
+* move some mutation logic to `@netlify/config` ([#3203](https://www.github.com/netlify/build/issues/3203)) ([9ce4725](https://www.github.com/netlify/build/commit/9ce47250e806379db93528913c298bc57f3d23a6))
+
 ## [10.2.0](https://www.github.com/netlify/build/compare/config-v10.1.0...config-v10.2.0) (2021-07-05)
 
 
