@@ -81,6 +81,7 @@ const MUTABLE_PROPS = {
   'build.publish': { lastEvent: 'onPostBuild' },
   'build.services': { lastEvent: 'onPostBuild' },
   'build.services.*': { lastEvent: 'onPostBuild' },
+  edge_handlers: { lastEvent: 'onPostBuild' },
   'functions.*': { lastEvent: 'onBuild', denormalize: denormalizeFunctionsTopProps },
   'functions.*.*': { lastEvent: 'onBuild' },
   redirects: { lastEvent: 'onPostBuild' },

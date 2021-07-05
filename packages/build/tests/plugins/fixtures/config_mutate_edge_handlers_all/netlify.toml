@@ -1,0 +1,6 @@
+[[plugins]]
+package = "./plugin"
+
+[[edge_handlers]]
+path = "/one"
+handler = "one"
