@@ -10,8 +10,11 @@ const WILDCARD_ALL = '*'
 // Removing the legacy `functions` from the `build` block.
 // Looking for a default directory in the `functions` block, separating it
 // from the rest of the configuration if it exists.
-const normalizeFunctionsProps = function ({ functions: v1FunctionsDirectory, ...build }, functions) {
-  const functionsA = Object.entries(functions).reduce(normalizeFunctionsProp, {})
+const normalizeFunctionsProps = function (
+  { functions: v1FunctionsDirectory, ...build },
+  { [WILDCARD_ALL]: wildcardProps, ...functions },
+) {
+  const functionsA = Object.entries(functions).reduce(normalizeFunctionsProp, { [WILDCARD_ALL]: wildcardProps })
   const { directory: functionsDirectory, functions: functionsB } = extractFunctionsDirectory(functionsA)
   const functionsDirectoryProps = getFunctionsDirectoryProps({ functionsDirectory, v1FunctionsDirectory })
   return { build, functions: functionsB, functionsDirectoryProps }
@@ -38,7 +41,7 @@ const normalizeFunctionsProps = function ({ functions: v1FunctionsDirectory, ...
 // as one of the config properties.
 const normalizeFunctionsProp = (functions, [propName, propValue]) =>
   isConfigProperty(propName) && !isConfigLeaf(propValue)
-    ? { ...functions, [WILDCARD_ALL]: { ...functions[WILDCARD_ALL], [propName]: propValue } }
+    ? { ...functions, [WILDCARD_ALL]: { [propName]: propValue, ...functions[WILDCARD_ALL] } }
     : { ...functions, [propName]: propValue }
 
 const isConfigLeaf = (functionConfig) =>
