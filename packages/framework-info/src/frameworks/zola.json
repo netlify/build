@@ -1,0 +1,22 @@
+{
+    "id": "zola",
+    "name": "Zola",
+    "category": "static_site_generator",
+    "detect": {
+      "npmDependencies": [],
+      "excludedNpmDependencies": [],
+      "configFiles": ["config.toml"]
+    },
+    "dev": {
+      "command": "zola serve",
+      "port": 1111,
+      "pollingStrategies": [{ "name": "TCP" }, { "name": "HTTP" }]
+    },
+    "build": {
+      "command": "zola build",
+      "directory": "public"
+    },
+    "env": {},
+    "plugins": []
+  }
+  

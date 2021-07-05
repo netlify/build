@@ -28,6 +28,7 @@ const FRAMEWORKS = [
   require('./roots.json'),
   require('./wintersmith.json'),
   require('./cecil.json'),
+  require('./zola.json'),
 
   // Front-end frameworks
   require('./angular.json'),
