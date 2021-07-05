@@ -56,7 +56,7 @@ const addNamespacedProperty = function (contextConfig, [key, value]) {
 }
 
 const isBuildProperty = function (key, value) {
-  return BUILD_PROPERTIES.has(key) && !isFunctionsConfig(key, value)
+  return BUILD_PROPERTIES.has(key) && !isFunctionsConfig(key, value) && !isEdgeHandlersConfig(key, value)
 }
 
 // All properties in `config.build.*`
@@ -75,6 +75,12 @@ const BUILD_PROPERTIES = new Set([
 // string.
 const isFunctionsConfig = function (key, value) {
   return key === 'functions' && isPlainObj(value)
+}
+
+// `config.edge_handlers` is an array of objects while
+// `config.build.edge_handlers` is a string.
+const isEdgeHandlersConfig = function (key, value) {
+  return key === 'edge_handlers' && Array.isArray(value)
 }
 
 module.exports = { normalizeContextProps, mergeContext }

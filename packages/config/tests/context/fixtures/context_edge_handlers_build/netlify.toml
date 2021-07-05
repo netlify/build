@@ -1,0 +1,5 @@
+[build]
+edge_handlers = "/src"
+
+[context.production]
+edge_handlers = "/srcTest"
