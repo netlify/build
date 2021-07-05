@@ -15,6 +15,8 @@ const updateNetlifyConfig = async function ({
   configOpts,
   priorityConfig,
   netlifyConfig,
+  context,
+  branch,
   buildDir,
   configMutations,
   configSideFiles,
@@ -27,7 +29,7 @@ const updateNetlifyConfig = async function ({
   }
 
   const priorityConfigA = applyMutations(priorityConfig, configMutations)
-  const netlifyConfigA = await resolveUpdatedConfig(configOpts, priorityConfigA)
+  const netlifyConfigA = await resolveUpdatedConfig({ configOpts, priorityConfig: priorityConfigA, context, branch })
   logConfigOnUpdate({ logs, netlifyConfig: netlifyConfigA, debug })
   // eslint-disable-next-line fp/no-mutation,no-param-reassign
   errorParams.netlifyConfig = netlifyConfigA

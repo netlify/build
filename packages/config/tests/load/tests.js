@@ -121,12 +121,12 @@ test('--priorityConfig can override the "base"', async (t) => {
   await runFixture(t, 'merge_base', { flags: { defaultConfig, priorityConfig } })
 })
 
-test('--priorityConfig cannot use contexts', async (t) => {
+test('--priorityConfig can use contexts', async (t) => {
   const priorityConfig = { context: { testContext: { build: { command: 'echo commandPriority' } } } }
   await runFixture(t, 'default_priority', { flags: { context: 'testContext', priorityConfig } })
 })
 
-test('--priorityConfig cannot be overridden by contexts', async (t) => {
+test('--priorityConfig can be overridden by contexts', async (t) => {
   const defaultConfig = { context: { testContext: { build: { command: 'echo commandDefault' } } } }
   const priorityConfig = { build: { command: 'echo commandPriority' } }
   await runFixture(t, 'default_priority', { flags: { context: 'testContext', defaultConfig, priorityConfig } })
