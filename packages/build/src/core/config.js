@@ -1,7 +1,6 @@
 'use strict'
 
 const resolveConfig = require('@netlify/config')
-const { normalizeConfigPriority } = require('@netlify/config')
 const mapObj = require('map-obj')
 
 const { getChildEnv } = require('../env/main')
@@ -18,7 +17,7 @@ const { getUserNodeVersion } = require('./user_node_version')
 // build:
 //  - `cachedConfig` and `cachedConfigPath` are only used at the beginning of
 //    the build
-//  - If plugins change the configuration, `inlineConfig` is used instead
+//  - If plugins change the configuration, `configMutations` is used instead
 // In both cases, almost all options should remain the same.
 const getConfigOpts = function ({
   config,
@@ -65,7 +64,6 @@ const tLoadConfig = async function ({ configOpts, cachedConfig, cachedConfigPath
     buildDir,
     config: netlifyConfig,
     context: contextA,
-    branch: branchA,
     apiHost: apiHostA,
     token: tokenA,
     api,
@@ -85,8 +83,6 @@ const tLoadConfig = async function ({ configOpts, cachedConfig, cachedConfigPath
     packageJson,
     userNodeVersion,
     childEnv,
-    context: contextA,
-    branch: branchA,
     apiHost: apiHostA,
     token: tokenA,
     api: apiA,
@@ -127,10 +123,18 @@ const logConfigInfo = function ({ logs, configPath, buildDir, netlifyConfig, con
 // change would create logs (e.g. warnings) which would be too verbose. Errors
 // are still propagated though and assigned to the specific plugin or core
 // command which changed the configuration.
-const resolveUpdatedConfig = async function ({ configOpts, inlineConfig, context, branch }) {
-  const normalizedInlineConfig = normalizeConfigPriority(inlineConfig, { context, branch })
-  const { config } = await resolveConfig({ ...configOpts, inlineConfig: normalizedInlineConfig, buffer: true })
-  return config
+const resolveUpdatedConfig = async function (configOpts, configMutations) {
+  try {
+    return await resolveConfig({ ...configOpts, configMutations, buffer: true })
+  } catch (error) {
+    if (error.type === 'configMutation') {
+      // We need to mutate the `error` directly to preserve its `name`, `stack`, etc.
+      // eslint-disable-next-line fp/no-delete
+      delete error.type
+      addErrorInfo(error, { type: 'pluginValidation' })
+    }
+    throw error
+  }
 }
 
 module.exports = { getConfigOpts, loadConfig, resolveUpdatedConfig }

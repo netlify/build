@@ -23,9 +23,7 @@ const firePluginCommand = async function ({
   errorParams,
   configOpts,
   netlifyConfig,
-  inlineConfig,
-  context,
-  branch,
+  configMutations,
   constants,
   commands,
   error,
@@ -36,28 +34,30 @@ const firePluginCommand = async function ({
 
   try {
     const configSideFiles = await listConfigSideFiles(netlifyConfig, buildDir)
-    const { newEnvChanges, configMutations, status } = await callChild(childProcess, 'run', {
+    const {
+      newEnvChanges,
+      configMutations: newConfigMutations,
+      status,
+    } = await callChild(childProcess, 'run', {
       event,
       error,
       envChanges,
       netlifyConfig,
       constants,
     })
-    const { netlifyConfig: netlifyConfigA, inlineConfig: inlineConfigA } = await updateNetlifyConfig({
+    const { netlifyConfig: netlifyConfigA, configMutations: configMutationsA } = await updateNetlifyConfig({
       configOpts,
-      inlineConfig,
       netlifyConfig,
-      context,
-      branch,
       buildDir,
       configMutations,
+      newConfigMutations,
       configSideFiles,
       errorParams,
       logs,
       debug,
     })
     const newStatus = getSuccessStatus(status, { commands, event, packageName })
-    return { newEnvChanges, netlifyConfig: netlifyConfigA, inlineConfig: inlineConfigA, newStatus }
+    return { newEnvChanges, netlifyConfig: netlifyConfigA, configMutations: configMutationsA, newStatus }
   } catch (newError) {
     const errorType = getPluginErrorType(newError, loadedFrom)
     addErrorInfo(newError, {

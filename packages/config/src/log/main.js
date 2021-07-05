@@ -28,7 +28,7 @@ const logDefaultConfig = function (defaultConfig, { logs, debug, baseRelDir }) {
 
 // Log `inlineConfig` option in debug mode
 const logInlineConfig = function (initialConfig, { logs, debug }) {
-  if (!debug) {
+  if (!debug || Object.keys(initialConfig).length === 0) {
     return
   }
 

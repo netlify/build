@@ -54,6 +54,17 @@ Default: none.`,
     coerce: JSON.parse,
     hidden: true,
   },
+  configMutations: {
+    array: true,
+    describe: `Array of changes to apply to the configuration.
+Each change must be an object with three properties:
+  - "keys": array of keys targetting the property to change
+  - "value": new value of that property
+  - "event": build event when this change was applied, e.g. "onPreBuild"
+Default: empty array.`,
+    coerce: JSON.parse,
+    hidden: true,
+  },
   cwd: {
     string: true,
     describe: `Current directory. Used to retrieve the configuration file.
