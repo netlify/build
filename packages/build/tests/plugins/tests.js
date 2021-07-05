@@ -105,8 +105,16 @@ if (!version.startsWith('v8.')) {
     await runFixture(t, 'config_mutate_functions_directory_star')
   })
 
+  test('netlifyConfig.functions.star.directory has priority over functions.directory', async (t) => {
+    await runFixture(t, 'config_mutate_functions_directory_star_priority')
+  })
+
   test('netlifyConfig.functions.directory mutations work', async (t) => {
     await runFixture(t, 'config_mutate_functions_directory_nested')
+  })
+
+  test('netlifyConfig.functions.directory has priority over functions.star.directory', async (t) => {
+    await runFixture(t, 'config_mutate_functions_directory_nested_priority')
   })
 
   test('netlifyConfig.build.functions mutations work', async (t) => {
