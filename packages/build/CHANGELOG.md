@@ -1,5 +1,12 @@
 # Changelog
 
+## [13.3.0](https://www.github.com/netlify/build/compare/build-v13.2.0...build-v13.3.0) (2021-07-05)
+
+
+### Features
+
+* move some mutation logic to `@netlify/config` ([#3203](https://www.github.com/netlify/build/issues/3203)) ([9ce4725](https://www.github.com/netlify/build/commit/9ce47250e806379db93528913c298bc57f3d23a6))
+
 ## [13.2.0](https://www.github.com/netlify/build/compare/build-v13.1.0...build-v13.2.0) (2021-07-05)
 
 
