@@ -79,7 +79,7 @@
   "devDependencies": {
     "@commitlint/cli": "^12.0.0",
     "@commitlint/config-conventional": "^12.0.0",
-    "@netlify/eslint-config-node": "^3.1.6",
+    "@netlify/eslint-config-node": "^3.1.7",
     "ava": "^2.4.0",
     "lerna": "^3.22.1",
     "nyc": "^15.0.0"
