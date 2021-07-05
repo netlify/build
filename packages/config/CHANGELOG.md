@@ -1,5 +1,12 @@
 # Changelog
 
+## [10.2.0](https://www.github.com/netlify/build/compare/config-v10.1.0...config-v10.2.0) (2021-07-05)
+
+
+### Features
+
+* fix `context` override for `edge_handlers` ([#3199](https://www.github.com/netlify/build/issues/3199)) ([54f52e1](https://www.github.com/netlify/build/commit/54f52e19481d528b1660743038aaa747cd439384))
+
 ## [10.1.0](https://www.github.com/netlify/build/compare/config-v10.0.0...config-v10.1.0) (2021-07-05)
 
 
