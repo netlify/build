@@ -6,7 +6,7 @@ const { promisify } = require('util')
 const pathExists = require('path-exists')
 const { parse: loadToml } = require('toml')
 
-const { throwError } = require('./error')
+const { throwUserError } = require('./error')
 
 const pReadFile = promisify(readFile)
 
@@ -17,7 +17,7 @@ const parseConfig = async function (configPath) {
   }
 
   if (!(await pathExists(configPath))) {
-    throwError('Configuration file does not exist')
+    throwUserError('Configuration file does not exist')
   }
 
   const configString = await readConfig(configPath)
@@ -25,7 +25,7 @@ const parseConfig = async function (configPath) {
   try {
     return parseToml(configString)
   } catch (error) {
-    throwError('Could not parse configuration file', error)
+    throwUserError('Could not parse configuration file', error)
   }
 }
 
@@ -34,7 +34,7 @@ const readConfig = async function (configPath) {
   try {
     return await pReadFile(configPath, 'utf8')
   } catch (error) {
-    throwError('Could not read configuration file', error)
+    throwUserError('Could not read configuration file', error)
   }
 }
 

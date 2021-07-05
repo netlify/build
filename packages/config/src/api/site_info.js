@@ -1,6 +1,6 @@
 'use strict'
 
-const { throwError } = require('../error')
+const { throwUserError } = require('../error')
 
 // Retrieve Netlify Site information, if available.
 // Used to retrieve local build environment variables and UI build settings.
@@ -32,7 +32,7 @@ const getSite = async function (api, siteId) {
     const site = await api.getSite({ siteId })
     return { ...site, id: siteId }
   } catch (error) {
-    throwError(`Failed retrieving site data for site ${siteId}: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
+    throwUserError(`Failed retrieving site data for site ${siteId}: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
   }
 }
 
@@ -41,7 +41,7 @@ const getAccounts = async function (api) {
     const accounts = await api.listAccountsForUser()
     return Array.isArray(accounts) ? accounts : []
   } catch (error) {
-    throwError(`Failed retrieving user account: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
+    throwUserError(`Failed retrieving user account: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
   }
 }
 
@@ -54,7 +54,7 @@ const getAddons = async function (api, siteId) {
     const addons = await api.listServiceInstancesForSite({ siteId })
     return Array.isArray(addons) ? addons : []
   } catch (error) {
-    throwError(`Failed retrieving addons for site ${siteId}: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
+    throwUserError(`Failed retrieving addons for site ${siteId}: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
   }
 }
 

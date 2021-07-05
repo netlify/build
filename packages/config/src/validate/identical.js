@@ -1,6 +1,6 @@
 'use strict'
 
-const { throwError } = require('../error')
+const { throwUserError } = require('../error')
 
 // Validate that plugin are configured only once per origin
 // (`netlify.toml` or UI).
@@ -16,7 +16,7 @@ const hasIdenticalPlugin = function ({ package: packageName, origin }, index, pl
 }
 
 const throwIndenticalPlugin = function ({ package: packageName, origin }) {
-  throwError(`Plugin "${packageName}" must not be specified twice in ${ORIGINS[origin]}`)
+  throwUserError(`Plugin "${packageName}" must not be specified twice in ${ORIGINS[origin]}`)
 }
 
 const ORIGINS = { config: 'netlify.toml', ui: 'the app' }

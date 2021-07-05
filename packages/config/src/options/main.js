@@ -5,7 +5,7 @@ const process = require('process')
 
 const { isDirectory } = require('path-type')
 
-const { throwError } = require('../error')
+const { throwUserError } = require('../error')
 const { getBufferLogs } = require('../log/logger')
 const { logOpts } = require('../log/main')
 const { removeFalsy } = require('../utils/remove_falsy')
@@ -102,7 +102,7 @@ const normalizeDir = async function (opts, optName) {
   const path = opts[optName]
   const resolvedPath = resolve(path)
   if (!(await isDirectory(path))) {
-    throwError(`Option '${optName}' points to a non-existing directory: ${resolvedPath}`)
+    throwUserError(`Option '${optName}' points to a non-existing directory: ${resolvedPath}`)
   }
   return { [optName]: resolvedPath }
 }

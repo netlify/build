@@ -2,7 +2,7 @@
 
 // We distinguish between errors thrown intentionally and uncaught exceptions
 // (such as bugs) with a `type` property.
-const throwError = function (messageOrError, error) {
+const throwUserError = function (messageOrError, error) {
   const errorA = getError(messageOrError, error)
   errorA.type = USER_ERROR_TYPE
   throw errorA
@@ -37,4 +37,4 @@ const USER_ERROR_TYPE = 'userError'
 const CONFIG_MUTATION_ERROR_TYPE = 'configMutation'
 const NON_SYSTEM_ERROR_TYPES = new Set([USER_ERROR_TYPE, CONFIG_MUTATION_ERROR_TYPE])
 
-module.exports = { throwError, throwConfigMutationError, isUserError }
+module.exports = { throwUserError, throwConfigMutationError, isUserError }
