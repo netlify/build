@@ -21,7 +21,7 @@ const firePluginCommand = async function ({
   errorParams,
   configOpts,
   netlifyConfig,
-  priorityConfig,
+  inlineConfig,
   context,
   branch,
   constants,
@@ -41,9 +41,9 @@ const firePluginCommand = async function ({
       netlifyConfig,
       constants,
     })
-    const { netlifyConfig: netlifyConfigA, priorityConfig: priorityConfigA } = await updateNetlifyConfig({
+    const { netlifyConfig: netlifyConfigA, inlineConfig: inlineConfigA } = await updateNetlifyConfig({
       configOpts,
-      priorityConfig,
+      inlineConfig,
       netlifyConfig,
       context,
       branch,
@@ -55,7 +55,7 @@ const firePluginCommand = async function ({
       debug,
     })
     const newStatus = getSuccessStatus(status, { commands, event, packageName })
-    return { newEnvChanges, netlifyConfig: netlifyConfigA, priorityConfig: priorityConfigA, newStatus }
+    return { newEnvChanges, netlifyConfig: netlifyConfigA, inlineConfig: inlineConfigA, newStatus }
   } catch (newError) {
     const errorType = getPluginErrorType(newError, loadedFrom)
     addErrorInfo(newError, {

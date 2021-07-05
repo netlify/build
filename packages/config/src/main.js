@@ -26,7 +26,6 @@ const { mergeConfigs } = require('./utils/merge')
 // Load the configuration file.
 // Takes an optional configuration file path as input and return the resolved
 // `config` together with related properties such as the `configPath`.
-// eslint-disable-next-line max-statements
 const resolveConfig = async function (opts) {
   const { cachedConfig, cachedConfigPath, host, scheme, pathPrefix, testOpts, token, offline, ...optsA } =
     addDefaultOpts(opts)
@@ -42,7 +41,6 @@ const resolveConfig = async function (opts) {
     config: configOpt,
     defaultConfig,
     inlineConfig,
-    priorityConfig,
     cwd,
     context,
     repositoryRoot,
@@ -66,8 +64,7 @@ const resolveConfig = async function (opts) {
     logs,
     debug,
   })
-  const inlineConfigA = getInlineConfig(inlineConfig, { configType: 'inlineConfig', logs, debug })
-  const priorityConfigA = getInlineConfig(priorityConfig, { configType: 'priorityConfig', logs, debug })
+  const inlineConfigA = getInlineConfig(inlineConfig, { logs, debug })
 
   const { configPath, config, buildDir } = await loadConfig({
     configOpt,
@@ -77,7 +74,6 @@ const resolveConfig = async function (opts) {
     branch,
     defaultConfig: defaultConfigA,
     inlineConfig: inlineConfigA,
-    priorityConfig: priorityConfigA,
     baseRelDir: baseRelDirA,
     logs,
   })
@@ -143,11 +139,10 @@ const loadConfig = async function ({
   branch,
   defaultConfig,
   inlineConfig,
-  priorityConfig,
   baseRelDir,
   logs,
 }) {
-  const initialBase = getInitialBase({ repositoryRoot, defaultConfig, inlineConfig, priorityConfig })
+  const initialBase = getInitialBase({ repositoryRoot, defaultConfig, inlineConfig })
   const { configPath, config, buildDir, base } = await getFullConfig({
     configOpt,
     cwd,
@@ -156,7 +151,6 @@ const loadConfig = async function ({
     branch,
     defaultConfig,
     inlineConfig,
-    priorityConfig,
     baseRelDir,
     configBase: initialBase,
     logs,
@@ -184,7 +178,6 @@ const loadConfig = async function ({
     branch,
     defaultConfig,
     inlineConfig,
-    priorityConfig,
     baseRelDir,
     configBase: base,
     base,
@@ -202,7 +195,6 @@ const getFullConfig = async function ({
   branch,
   defaultConfig,
   inlineConfig,
-  priorityConfig,
   baseRelDir,
   configBase,
   base,
@@ -216,7 +208,6 @@ const getFullConfig = async function ({
       config,
       defaultConfig,
       inlineConfig,
-      priorityConfig,
       context,
       branch,
       logs,
@@ -242,21 +233,12 @@ const getFullConfig = async function ({
 // Before and after those steps, also performs validation and normalization.
 // Those need to be done at different stages depending on whether they should
 // happen before/after the merges mentioned above.
-const mergeAndNormalizeConfig = function ({
-  config,
-  defaultConfig,
-  inlineConfig,
-  priorityConfig,
-  context,
-  branch,
-  logs,
-}) {
+const mergeAndNormalizeConfig = function ({ config, defaultConfig, inlineConfig, context, branch, logs }) {
   const configA = normalizeConfigAndContext(config, CONFIG_ORIGIN)
   const defaultConfigA = normalizeConfigAndContext(defaultConfig, UI_ORIGIN)
   const inlineConfigA = normalizeConfigAndContext(inlineConfig, INLINE_ORIGIN)
-  const priorityConfigA = normalizeConfigAndContext(priorityConfig, INLINE_ORIGIN)
 
-  const configB = mergeConfigs([defaultConfigA, configA, inlineConfigA, priorityConfigA])
+  const configB = mergeConfigs([defaultConfigA, configA, inlineConfigA])
   const configC = mergeContext({ config: configB, context, branch, logs })
 
   const configE = normalizeAfterConfigMerge(configC)

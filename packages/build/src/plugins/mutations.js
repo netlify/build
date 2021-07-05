@@ -8,11 +8,11 @@ const { EVENTS } = require('./events')
 
 // Apply a series of mutations to `netlifyConfig`.
 // Also denormalize it.
-const applyMutations = function (priorityConfig, configMutations) {
-  return configMutations.reduce(applyMutation, priorityConfig)
+const applyMutations = function (inlineConfig, configMutations) {
+  return configMutations.reduce(applyMutation, inlineConfig)
 }
 
-const applyMutation = function (priorityConfig, { keys, value, event }) {
+const applyMutation = function (inlineConfig, { keys, value, event }) {
   const propName = getPropName(keys)
   if (!(propName in MUTABLE_PROPS)) {
     throwValidationError(`"netlifyConfig.${propName}" is read-only.`)
@@ -21,7 +21,7 @@ const applyMutation = function (priorityConfig, { keys, value, event }) {
   const { lastEvent, denormalize } = MUTABLE_PROPS[propName]
   validateEvent(lastEvent, event, propName)
 
-  return denormalize === undefined ? setProp(priorityConfig, keys, value) : denormalize(priorityConfig, value)
+  return denormalize === undefined ? setProp(inlineConfig, keys, value) : denormalize(inlineConfig, value)
 }
 
 const validateEvent = function (lastEvent, event, propName) {
@@ -38,8 +38,8 @@ const throwValidationError = function (message) {
 
 // `functionsDirectory` is created by `@netlify/config`.
 // We denormalize it to `functions.directory` which is user-facing.
-const denormalizeFunctionsDirectory = function ({ functions, ...priorityConfig }, functionsDirectory) {
-  return { ...priorityConfig, functions: { ...functions, directory: functionsDirectory } }
+const denormalizeFunctionsDirectory = function ({ functions, ...inlineConfig }, functionsDirectory) {
+  return { ...inlineConfig, functions: { ...functions, directory: functionsDirectory } }
 }
 
 // List of properties that are not read-only.

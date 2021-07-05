@@ -26,19 +26,14 @@ const logDefaultConfig = function (defaultConfig, { logs, debug, baseRelDir }) {
   logObject(logs, cleanupConfig({ ...defaultConfig, baseRelDir }))
 }
 
-// Log `inlineConfig` and `priorityConfig` options in debug mode
-const logInlineConfig = function (initialConfig, { configType, logs, debug }) {
+// Log `inlineConfig` option in debug mode
+const logInlineConfig = function (initialConfig, { logs, debug }) {
   if (!debug) {
     return
   }
 
-  logSubHeader(logs, INLINE_CONFIG_NAME[configType])
+  logSubHeader(logs, 'Configuration override')
   logObject(logs, cleanupConfig(initialConfig))
-}
-
-const INLINE_CONFIG_NAME = {
-  inlineConfig: 'CLI flags',
-  priorityConfig: 'Plugins configuration changes',
 }
 
 // Log return value of `@netlify/config` in debug mode
