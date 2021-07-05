@@ -1,5 +1,12 @@
 # Changelog
 
+## [13.2.0](https://www.github.com/netlify/build/compare/build-v13.1.0...build-v13.2.0) (2021-07-05)
+
+
+### Features
+
+* allow mutating `edge_handlers` in plugins ([#3200](https://www.github.com/netlify/build/issues/3200)) ([896b795](https://www.github.com/netlify/build/commit/896b795e4f97186c35d76f60cbd012bf76d1d31e))
+
 ## [13.1.0](https://www.github.com/netlify/build/compare/build-v13.0.0...build-v13.1.0) (2021-07-05)
 
 
