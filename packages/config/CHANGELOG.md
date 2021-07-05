@@ -1,5 +1,12 @@
 # Changelog
 
+## [9.8.0](https://www.github.com/netlify/build/compare/config-v9.7.0...config-v9.8.0) (2021-07-05)
+
+
+### Features
+
+* change `origin` of `inlineConfig` and `priorityConfig` ([#3190](https://www.github.com/netlify/build/issues/3190)) ([5ea2439](https://www.github.com/netlify/build/commit/5ea2439ae8f7de11ba15059820466456ee8df196))
+
 ## [9.7.0](https://www.github.com/netlify/build/compare/config-v9.6.0...config-v9.7.0) (2021-07-05)
 
 
