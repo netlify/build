@@ -1,5 +1,16 @@
 # Changelog
 
+## [13.0.0](https://www.github.com/netlify/build/compare/build-v12.28.0...build-v13.0.0) (2021-07-05)
+
+
+### ⚠ BREAKING CHANGES
+
+* merge `priorityConfig` with `inlineConfig` (#3193)
+
+### Features
+
+* merge `priorityConfig` with `inlineConfig` ([#3193](https://www.github.com/netlify/build/issues/3193)) ([35989ef](https://www.github.com/netlify/build/commit/35989ef8fe8196c1da2d36c2f73e4ff82efba6c5))
+
 ## [12.28.0](https://www.github.com/netlify/build/compare/build-v12.27.0...build-v12.28.0) (2021-07-05)
 
 
