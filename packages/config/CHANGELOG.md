@@ -1,5 +1,12 @@
 # Changelog
 
+## [9.7.0](https://www.github.com/netlify/build/compare/config-v9.6.0...config-v9.7.0) (2021-07-05)
+
+
+### Features
+
+* change how `priorityConfig` interacts with contexts ([#3187](https://www.github.com/netlify/build/issues/3187)) ([736c269](https://www.github.com/netlify/build/commit/736c26993385173e37110b8e26c2cf389344de3e))
+
 ## [9.6.0](https://www.github.com/netlify/build/compare/config-v9.5.0...config-v9.6.0) (2021-07-05)
 
 
