@@ -47,3 +47,11 @@ test('Context merge priority', async (t) => {
 test('Using context does not reset plugins', async (t) => {
   await runFixture(t, 'context_reset')
 })
+
+test('Can use context properties for build.edge_handlers', async (t) => {
+  await runFixture(t, 'context_edge_handlers_build')
+})
+
+test('Can use context properties for edge_handlers', async (t) => {
+  await runFixture(t, 'context_edge_handlers_top')
+})

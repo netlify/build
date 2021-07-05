@@ -1,0 +1,7 @@
+[[edge_handlers]]
+path = "/src"
+handler = "log"
+
+[[context.production.edge_handlers]]
+path = "/srcTest"
+handler = "logTest"
