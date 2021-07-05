@@ -1,5 +1,12 @@
 # Changelog
 
+## [9.6.0](https://www.github.com/netlify/build/compare/config-v9.5.0...config-v9.6.0) (2021-07-05)
+
+
+### Features
+
+* refactor config contexts logic ([#3174](https://www.github.com/netlify/build/issues/3174)) ([2815d8e](https://www.github.com/netlify/build/commit/2815d8ec46558ab87fb5c7f30e34a3f66c13ac0c))
+
 ## [9.5.0](https://www.github.com/netlify/build/compare/config-v9.4.0...config-v9.5.0) (2021-06-30)
 
 
