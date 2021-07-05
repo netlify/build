@@ -17,7 +17,6 @@ const { getInlineConfig } = require('./inline_config')
 const { cleanupConfig } = require('./log/cleanup')
 const { logResult } = require('./log/main')
 const { normalizeBeforeConfigMerge, normalizeAfterConfigMerge } = require('./merge_normalize')
-const { listConfigSideFiles } = require('./mutations/side_files')
 const { addDefaultOpts, normalizeOpts } = require('./options/main')
 const { UI_ORIGIN, CONFIG_ORIGIN, INLINE_ORIGIN } = require('./origin')
 const { parseConfig } = require('./parse')
@@ -70,7 +69,7 @@ const resolveConfig = async function (opts) {
   })
   const inlineConfigA = getInlineConfig({ inlineConfig, configMutations, logs, debug })
 
-  const { configPath, config, buildDir } = await loadConfig({
+  const { configPath, config, buildDir, redirectsPath } = await loadConfig({
     configOpt,
     cwd,
     context,
@@ -103,6 +102,7 @@ const resolveConfig = async function (opts) {
     addons,
     env,
     configPath,
+    redirectsPath,
     buildDir,
     repositoryRoot,
     config: configA,
@@ -147,7 +147,7 @@ const loadConfig = async function ({
   logs,
 }) {
   const initialBase = getInitialBase({ repositoryRoot, defaultConfig, inlineConfig })
-  const { configPath, config, buildDir, base } = await getFullConfig({
+  const { configPath, config, buildDir, base, redirectsPath } = await getFullConfig({
     configOpt,
     cwd,
     context,
@@ -168,13 +168,14 @@ const loadConfig = async function ({
   //  - `baseRelDir` feature flag is not used. This feature flag was introduced
   //    to ensure backward compatibility.
   if (!baseRelDir || base === initialBase) {
-    return { configPath, config, buildDir }
+    return { configPath, config, buildDir, redirectsPath }
   }
 
   const {
     configPath: configPathA,
     config: configA,
     buildDir: buildDirA,
+    redirectsPath: redirectsPathA,
   } = await getFullConfig({
     cwd,
     context,
@@ -187,7 +188,7 @@ const loadConfig = async function ({
     base,
     logs,
   })
-  return { configPath: configPathA, config: configA, buildDir: buildDirA }
+  return { configPath: configPathA, config: configA, buildDir: buildDirA, redirectsPath: redirectsPathA }
 }
 
 // Load configuration file and normalize it, merge contexts, etc.
@@ -221,8 +222,8 @@ const getFullConfig = async function ({
       buildDir,
       base: baseA,
     } = await resolveFiles({ config: configA, repositoryRoot, base, baseRelDir })
-    const configC = await addRedirects({ config: configB, logs })
-    return { configPath, config: configC, buildDir, base: baseA }
+    const { config: configC, redirectsPath } = await addRedirects({ config: configB, logs })
+    return { configPath, config: configC, buildDir, base: baseA, redirectsPath }
   } catch (error) {
     const configName = configPath === undefined ? '' : ` file ${configPath}`
     error.message = `When resolving config${configName}:\n${error.message}`
@@ -269,6 +270,5 @@ module.exports = resolveConfig
 // TODO: on next major release, export a single object instead of mutating the
 // top-level function
 module.exports.cleanupConfig = cleanupConfig
-module.exports.listConfigSideFiles = listConfigSideFiles
 module.exports.EVENTS = EVENTS
 /* eslint-enable max-lines */
