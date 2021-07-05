@@ -3,7 +3,7 @@
 const { parseFileRedirects, mergeRedirects, normalizeRedirects } = require('netlify-redirect-parser')
 
 const { warnRedirectsParsing } = require('./log/messages')
-const { PLUGIN_ORIGIN } = require('./origin')
+const { INLINE_ORIGIN } = require('./origin')
 
 // Add `config.redirects`
 const addRedirects = async function ({
@@ -33,7 +33,7 @@ const addRedirects = async function ({
 // `priorityConfig.redirects` already include `_redirects` which was
 // previously parsed
 const getFileRedirects = async function (publish, redirectsOrigin) {
-  if (redirectsOrigin === PLUGIN_ORIGIN) {
+  if (redirectsOrigin === INLINE_ORIGIN) {
     return []
   }
 
