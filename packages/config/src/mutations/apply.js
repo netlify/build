@@ -1,65 +1,53 @@
 'use strict'
 
-const { addErrorInfo } = require('../error/info')
+const { EVENTS } = require('../events')
+const { WILDCARD_ALL, FUNCTION_CONFIG_PROPERTIES } = require('../functions_config')
 const { setProp } = require('../utils/set')
 
 const { getPropName } = require('./config_prop_name')
-const { EVENTS } = require('./events')
 
-// Apply a series of mutations to `netlifyConfig`.
-// Also denormalize it.
-const applyMutations = function (inlineConfig, configMutations) {
-  return configMutations.reduce(applyMutation, inlineConfig)
+// Apply a series of mutations to `config`.
+// Meant to be used to apply configuration changes at build time.
+// Those are applied on the `config` object after `@netlify/config`
+// normalization. Therefore, this function also denormalizes (reverts that
+// normalization) so that the final `config` object can be serialized back to
+// a `netlify.toml`.
+const applyMutations = function (config, configMutations) {
+  return configMutations.reduce(applyMutation, config)
 }
 
-const applyMutation = function (inlineConfig, { keys, value, event }) {
+const applyMutation = function (config, { keys, value, event }) {
   const propName = getPropName(keys)
   if (!(propName in MUTABLE_PROPS)) {
-    throwValidationError(`"netlifyConfig.${propName}" is read-only.`)
+    throw new Error(`"netlifyConfig.${propName}" is read-only.`)
   }
 
   const { lastEvent, denormalize } = MUTABLE_PROPS[propName]
   validateEvent(lastEvent, event, propName)
 
-  return denormalize === undefined ? setProp(inlineConfig, keys, value) : denormalize(inlineConfig, value, keys)
+  return denormalize === undefined ? setProp(config, keys, value) : denormalize(config, value, keys)
 }
 
 const validateEvent = function (lastEvent, event, propName) {
   if (EVENTS.indexOf(lastEvent) < EVENTS.indexOf(event)) {
-    throwValidationError(`"netlifyConfig.${propName}" cannot be modified after "${lastEvent}".`)
+    throw new Error(`"netlifyConfig.${propName}" cannot be modified after "${lastEvent}".`)
   }
-}
-
-const throwValidationError = function (message) {
-  const error = new Error(message)
-  addErrorInfo(error, { type: 'pluginValidation' })
-  throw error
 }
 
 // `functions['*'].*` has higher priority than `functions.*` so we convert the
 // latter to the former.
 const denormalizeFunctionsTopProps = function (
-  { functions, functions: { [WILDCARD_ALL]: wildcardProps } = {}, ...inlineConfig },
+  { functions, functions: { [WILDCARD_ALL]: wildcardProps } = {}, ...config },
   value,
   [, key],
 ) {
   return FUNCTION_CONFIG_PROPERTIES.has(key)
     ? {
-        ...inlineConfig,
+        ...config,
         functions: { ...functions, [WILDCARD_ALL]: { ...wildcardProps, [key]: value } },
       }
-    : { ...inlineConfig, functions: { ...functions, [key]: value } }
+    : { ...config, functions: { ...functions, [key]: value } }
 }
-
-// @todo: use @netlify/config definitions instead
-const WILDCARD_ALL = '*'
-const FUNCTION_CONFIG_PROPERTIES = new Set([
-  'directory',
-  'external_node_modules',
-  'ignored_node_modules',
-  'included_files',
-  'node_bundler',
-])
 
 // List of properties that are not read-only.
 const MUTABLE_PROPS = {

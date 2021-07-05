@@ -1,13 +1,10 @@
 'use strict'
 
-const { resolve } = require('path')
-
-const pFilter = require('p-filter')
-const pathExists = require('path-exists')
+const { applyMutations, listConfigSideFiles } = require('@netlify/config')
 
 const { resolveUpdatedConfig } = require('../core/config')
+const { addErrorInfo } = require('../error/info')
 const { logConfigOnUpdate } = require('../log/messages/config')
-const { applyMutations } = require('../plugins/mutations')
 
 // If `netlifyConfig` was updated or `_redirects` was created, the configuration
 // is updated by calling `@netlify/config` again.
@@ -28,7 +25,7 @@ const updateNetlifyConfig = async function ({
     return { netlifyConfig, inlineConfig }
   }
 
-  const inlineConfigA = applyMutations(inlineConfig, configMutations)
+  const inlineConfigA = applyConfigMutations(inlineConfig, configMutations)
   const netlifyConfigA = await resolveUpdatedConfig({ configOpts, inlineConfig: inlineConfigA, context, branch })
   logConfigOnUpdate({ logs, netlifyConfig: netlifyConfigA, debug })
   // eslint-disable-next-line fp/no-mutation,no-param-reassign
@@ -43,8 +40,7 @@ const shouldUpdateConfig = async function ({ configMutations, configSideFiles, n
 }
 
 // The configuration mostly depends on `netlify.toml` and UI build settings.
-// However, it also uses some additional optional side files:
-// `_redirects` in the publish directory.
+// However, it also uses some additional optional side files like `_redirects`.
 // Those are often created by the build command. When those are created, we need
 // to update the configuration. We detect this by checking for file existence
 // before and after running plugins and the build command.
@@ -54,13 +50,13 @@ const haveConfigSideFilesChanged = async function ({ configSideFiles, netlifyCon
   return newSideFiles.join(',') !== configSideFiles.join(',')
 }
 
-const listConfigSideFiles = async function ({ build: { publish } }, buildDir) {
-  const publishSideFiles = PUBLISH_SIDE_FILES.map((publishSideFile) => resolve(buildDir, publish, publishSideFile))
-  const configSideFiles = await pFilter(publishSideFiles, pathExists)
-  // eslint-disable-next-line fp/no-mutating-methods
-  return configSideFiles.sort()
+const applyConfigMutations = function (inlineConfig, configMutations) {
+  try {
+    return applyMutations(inlineConfig, configMutations)
+  } catch (error) {
+    addErrorInfo(error, { type: 'pluginValidation' })
+    throw error
+  }
 }
 
-const PUBLISH_SIDE_FILES = ['_redirects']
-
-module.exports = { updateNetlifyConfig, listConfigSideFiles }
+module.exports = { updateNetlifyConfig }

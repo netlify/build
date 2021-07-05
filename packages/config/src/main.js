@@ -11,16 +11,21 @@ const { getCachedConfig } = require('./cached_config')
 const { normalizeContextProps, mergeContext } = require('./context')
 const { parseDefaultConfig } = require('./default')
 const { getEnv } = require('./env/main')
+const { EVENTS } = require('./events')
 const { resolveConfigPaths } = require('./files')
 const { getInlineConfig } = require('./inline_config')
 const { cleanupConfig } = require('./log/cleanup')
 const { logResult } = require('./log/main')
 const { normalizeBeforeConfigMerge, normalizeAfterConfigMerge } = require('./merge_normalize')
+const { applyMutations } = require('./mutations/apply')
+const { normalizeConfigPriority } = require('./mutations/normalize_priority')
+const { listConfigSideFiles } = require('./mutations/side_files')
 const { addDefaultOpts, normalizeOpts } = require('./options/main')
 const { UI_ORIGIN, CONFIG_ORIGIN, INLINE_ORIGIN } = require('./origin')
 const { parseConfig } = require('./parse')
 const { getConfigPath } = require('./path')
 const { addRedirects } = require('./redirects')
+// eslint-disable-next-line import/max-dependencies
 const { mergeConfigs } = require('./utils/merge')
 
 // Load the configuration file.
@@ -264,4 +269,8 @@ module.exports = resolveConfig
 // TODO: on next major release, export a single object instead of mutating the
 // top-level function
 module.exports.cleanupConfig = cleanupConfig
+module.exports.applyMutations = applyMutations
+module.exports.listConfigSideFiles = listConfigSideFiles
+module.exports.normalizeConfigPriority = normalizeConfigPriority
+module.exports.EVENTS = EVENTS
 /* eslint-enable max-lines */

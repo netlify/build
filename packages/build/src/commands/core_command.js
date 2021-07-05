@@ -1,9 +1,11 @@
 'use strict'
 
+const { listConfigSideFiles } = require('@netlify/config')
+
 const { setEnvChanges } = require('../env/changes')
 const { addErrorInfo, isBuildError } = require('../error/info')
 
-const { listConfigSideFiles, updateNetlifyConfig } = require('./update_config')
+const { updateNetlifyConfig } = require('./update_config')
 
 // Fire a core command
 const fireCoreCommand = async function ({
