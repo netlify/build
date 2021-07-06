@@ -84,15 +84,49 @@ test('--inlineConfig can override the "base"', async (t) => {
   await runFixture(t, 'merge_base', { flags: { defaultConfig, inlineConfig } })
 })
 
-test('--inlineConfig can use contexts', async (t) => {
+test('--inlineConfig cannot use contexts', async (t) => {
   const inlineConfig = { context: { testContext: { build: { command: 'echo commandPriority' } } } }
   await runFixture(t, 'default_priority', { flags: { context: 'testContext', inlineConfig } })
 })
 
-test('--inlineConfig can be overridden by contexts', async (t) => {
+test('--inlineConfig cannot be overridden by contexts', async (t) => {
   const defaultConfig = { context: { testContext: { build: { command: 'echo commandDefault' } } } }
   const inlineConfig = { build: { command: 'echo commandPriority' } }
   await runFixture(t, 'default_priority', { flags: { context: 'testContext', defaultConfig, inlineConfig } })
+})
+
+test('--configMutations can override properties', async (t) => {
+  await runFixture(t, 'default_priority', {
+    flags: { configMutations: [{ keys: ['build', 'command'], value: 'testMutation', event: 'onPreBuild' }] },
+  })
+})
+
+test('--configMutations cannot be overridden by contexts', async (t) => {
+  const defaultConfig = { context: { testContext: { build: { command: 'echo commandDefault' } } } }
+  await runFixture(t, 'default_priority', {
+    flags: {
+      defaultConfig,
+      configMutations: [{ keys: ['build', 'command'], value: 'testMutation', event: 'onPreBuild' }],
+    },
+  })
+})
+
+test('--configMutations events are validated', async (t) => {
+  await runFixture(t, 'default_priority', {
+    flags: { configMutations: [{ keys: ['build', 'command'], value: 'testMutation', event: 'onBuild' }] },
+  })
+})
+
+test('--configMutations cannot be applied on readonly properties', async (t) => {
+  await runFixture(t, 'empty', {
+    flags: { configMutations: [{ keys: ['build', 'base'], value: 'testMutation', event: 'onPreBuild' }] },
+  })
+})
+
+test('--configMutations can mutate functions top-level properties', async (t) => {
+  await runFixture(t, 'empty', {
+    flags: { configMutations: [{ keys: ['functions', 'directory'], value: 'testMutation', event: 'onPreBuild' }] },
+  })
 })
 
 test('--cachedConfig CLI flags', async (t) => {

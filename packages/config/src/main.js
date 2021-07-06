@@ -17,8 +17,6 @@ const { getInlineConfig } = require('./inline_config')
 const { cleanupConfig } = require('./log/cleanup')
 const { logResult } = require('./log/main')
 const { normalizeBeforeConfigMerge, normalizeAfterConfigMerge } = require('./merge_normalize')
-const { applyMutations } = require('./mutations/apply')
-const { normalizeConfigPriority } = require('./mutations/normalize_priority')
 const { listConfigSideFiles } = require('./mutations/side_files')
 const { addDefaultOpts, normalizeOpts } = require('./options/main')
 const { UI_ORIGIN, CONFIG_ORIGIN, INLINE_ORIGIN } = require('./origin')
@@ -46,6 +44,7 @@ const resolveConfig = async function (opts) {
     config: configOpt,
     defaultConfig,
     inlineConfig,
+    configMutations,
     cwd,
     context,
     repositoryRoot,
@@ -69,7 +68,7 @@ const resolveConfig = async function (opts) {
     logs,
     debug,
   })
-  const inlineConfigA = getInlineConfig(inlineConfig, { logs, debug })
+  const inlineConfigA = getInlineConfig({ inlineConfig, configMutations, logs, debug })
 
   const { configPath, config, buildDir } = await loadConfig({
     configOpt,
@@ -243,10 +242,11 @@ const mergeAndNormalizeConfig = function ({ config, defaultConfig, inlineConfig,
   const defaultConfigA = normalizeConfigAndContext(defaultConfig, UI_ORIGIN)
   const inlineConfigA = normalizeConfigAndContext(inlineConfig, INLINE_ORIGIN)
 
-  const configB = mergeConfigs([defaultConfigA, configA, inlineConfigA])
+  const configB = mergeConfigs([defaultConfigA, configA])
   const configC = mergeContext({ config: configB, context, branch, logs })
+  const configD = mergeConfigs([configC, inlineConfigA])
 
-  const configE = normalizeAfterConfigMerge(configC)
+  const configE = normalizeAfterConfigMerge(configD)
   return configE
 }
 
@@ -269,8 +269,6 @@ module.exports = resolveConfig
 // TODO: on next major release, export a single object instead of mutating the
 // top-level function
 module.exports.cleanupConfig = cleanupConfig
-module.exports.applyMutations = applyMutations
 module.exports.listConfigSideFiles = listConfigSideFiles
-module.exports.normalizeConfigPriority = normalizeConfigPriority
 module.exports.EVENTS = EVENTS
 /* eslint-enable max-lines */

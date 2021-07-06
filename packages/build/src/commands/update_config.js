@@ -1,41 +1,38 @@
 'use strict'
 
-const { applyMutations, listConfigSideFiles } = require('@netlify/config')
+const { listConfigSideFiles } = require('@netlify/config')
 
 const { resolveUpdatedConfig } = require('../core/config')
-const { addErrorInfo } = require('../error/info')
 const { logConfigOnUpdate } = require('../log/messages/config')
 
 // If `netlifyConfig` was updated or `_redirects` was created, the configuration
 // is updated by calling `@netlify/config` again.
 const updateNetlifyConfig = async function ({
   configOpts,
-  inlineConfig,
   netlifyConfig,
-  context,
-  branch,
   buildDir,
   configMutations,
+  newConfigMutations,
   configSideFiles,
   errorParams,
   logs,
   debug,
 }) {
-  if (!(await shouldUpdateConfig({ configMutations, configSideFiles, netlifyConfig, buildDir }))) {
-    return { netlifyConfig, inlineConfig }
+  if (!(await shouldUpdateConfig({ newConfigMutations, configSideFiles, netlifyConfig, buildDir }))) {
+    return { netlifyConfig, configMutations }
   }
 
-  const inlineConfigA = applyConfigMutations(inlineConfig, configMutations)
-  const netlifyConfigA = await resolveUpdatedConfig({ configOpts, inlineConfig: inlineConfigA, context, branch })
+  const configMutationsA = [...configMutations, ...newConfigMutations]
+  const { config: netlifyConfigA } = await resolveUpdatedConfig(configOpts, configMutationsA)
   logConfigOnUpdate({ logs, netlifyConfig: netlifyConfigA, debug })
   // eslint-disable-next-line fp/no-mutation,no-param-reassign
   errorParams.netlifyConfig = netlifyConfigA
-  return { netlifyConfig: netlifyConfigA, inlineConfig: inlineConfigA }
+  return { netlifyConfig: netlifyConfigA, configMutations: configMutationsA }
 }
 
-const shouldUpdateConfig = async function ({ configMutations, configSideFiles, netlifyConfig, buildDir }) {
+const shouldUpdateConfig = async function ({ newConfigMutations, configSideFiles, netlifyConfig, buildDir }) {
   return (
-    configMutations.length !== 0 || (await haveConfigSideFilesChanged({ configSideFiles, netlifyConfig, buildDir }))
+    newConfigMutations.length !== 0 || (await haveConfigSideFilesChanged({ configSideFiles, netlifyConfig, buildDir }))
   )
 }
 
@@ -48,15 +45,6 @@ const haveConfigSideFilesChanged = async function ({ configSideFiles, netlifyCon
   const newSideFiles = await listConfigSideFiles(netlifyConfig, buildDir)
   // @todo: use `util.isDeepStrictEqual()` after dropping support for Node 8
   return newSideFiles.join(',') !== configSideFiles.join(',')
-}
-
-const applyConfigMutations = function (inlineConfig, configMutations) {
-  try {
-    return applyMutations(inlineConfig, configMutations)
-  } catch (error) {
-    addErrorInfo(error, { type: 'pluginValidation' })
-    throw error
-  }
 }
 
 module.exports = { updateNetlifyConfig }

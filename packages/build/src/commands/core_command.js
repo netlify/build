@@ -23,9 +23,7 @@ const fireCoreCommand = async function ({
   errorParams,
   configOpts,
   netlifyConfig,
-  inlineConfig,
-  context,
-  branch,
+  configMutations,
   featureFlags,
   debug,
 }) {
@@ -34,7 +32,7 @@ const fireCoreCommand = async function ({
     const childEnvA = setEnvChanges(envChanges, { ...childEnv })
     const {
       newEnvChanges = {},
-      configMutations = [],
+      configMutations: newConfigMutations = [],
       tags,
     } = await coreCommand({
       configPath,
@@ -48,20 +46,18 @@ const fireCoreCommand = async function ({
       nodePath,
       featureFlags,
     })
-    const { netlifyConfig: netlifyConfigA, inlineConfig: inlineConfigA } = await updateNetlifyConfig({
+    const { netlifyConfig: netlifyConfigA, configMutations: configMutationsA } = await updateNetlifyConfig({
       configOpts,
-      inlineConfig,
       netlifyConfig,
-      context,
-      branch,
       buildDir,
       configMutations,
+      newConfigMutations,
       configSideFiles,
       errorParams,
       logs,
       debug,
     })
-    return { newEnvChanges, netlifyConfig: netlifyConfigA, inlineConfig: inlineConfigA, tags }
+    return { newEnvChanges, netlifyConfig: netlifyConfigA, configMutations: configMutationsA, tags }
   } catch (newError) {
     if (!isBuildError(newError)) {
       addErrorInfo(newError, { type: 'coreCommand', location: { coreCommandName } })

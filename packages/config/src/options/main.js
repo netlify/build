@@ -52,6 +52,8 @@ const getDefaultOpts = function ({ env: envOpt = {}, cwd: cwdOpt, defaultConfig 
     debug: getDefaultDebug(combinedEnv, defaultConfig),
     buffer: false,
     featureFlags: DEFAULT_FEATURE_FLAGS,
+    inlineConfig: {},
+    configMutations: [],
   }
 }
 

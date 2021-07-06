@@ -1,52 +1,53 @@
 'use strict'
 
+const { throwConfigMutationError } = require('../error')
 const { EVENTS } = require('../events')
 const { WILDCARD_ALL, FUNCTION_CONFIG_PROPERTIES } = require('../functions_config')
 const { setProp } = require('../utils/set')
 
 const { getPropName } = require('./config_prop_name')
 
-// Apply a series of mutations to `config`.
+// Apply a series of mutations to `inlineConfig`.
 // Meant to be used to apply configuration changes at build time.
-// Those are applied on the `config` object after `@netlify/config`
+// Those are applied on the `inlineConfig` object after `@netlify/config`
 // normalization. Therefore, this function also denormalizes (reverts that
 // normalization) so that the final `config` object can be serialized back to
 // a `netlify.toml`.
-const applyMutations = function (config, configMutations) {
-  return configMutations.reduce(applyMutation, config)
+const applyMutations = function (inlineConfig, configMutations) {
+  return configMutations.reduce(applyMutation, inlineConfig)
 }
 
-const applyMutation = function (config, { keys, value, event }) {
+const applyMutation = function (inlineConfig, { keys, value, event }) {
   const propName = getPropName(keys)
   if (!(propName in MUTABLE_PROPS)) {
-    throw new Error(`"netlifyConfig.${propName}" is read-only.`)
+    throwConfigMutationError(`"netlifyConfig.${propName}" is read-only.`)
   }
 
   const { lastEvent, denormalize } = MUTABLE_PROPS[propName]
   validateEvent(lastEvent, event, propName)
 
-  return denormalize === undefined ? setProp(config, keys, value) : denormalize(config, value, keys)
+  return denormalize === undefined ? setProp(inlineConfig, keys, value) : denormalize(inlineConfig, value, keys)
 }
 
 const validateEvent = function (lastEvent, event, propName) {
   if (EVENTS.indexOf(lastEvent) < EVENTS.indexOf(event)) {
-    throw new Error(`"netlifyConfig.${propName}" cannot be modified after "${lastEvent}".`)
+    throwConfigMutationError(`"netlifyConfig.${propName}" cannot be modified after "${lastEvent}".`)
   }
 }
 
 // `functions['*'].*` has higher priority than `functions.*` so we convert the
 // latter to the former.
 const denormalizeFunctionsTopProps = function (
-  { functions, functions: { [WILDCARD_ALL]: wildcardProps } = {}, ...config },
+  { functions, functions: { [WILDCARD_ALL]: wildcardProps } = {}, ...inlineConfig },
   value,
   [, key],
 ) {
   return FUNCTION_CONFIG_PROPERTIES.has(key)
     ? {
-        ...config,
+        ...inlineConfig,
         functions: { ...functions, [WILDCARD_ALL]: { ...wildcardProps, [key]: value } },
       }
-    : { ...config, functions: { ...functions, [key]: value } }
+    : { ...inlineConfig, functions: { ...functions, [key]: value } }
 }
 
 // List of properties that are not read-only.

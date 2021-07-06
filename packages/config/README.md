@@ -242,6 +242,16 @@ _Type_: `object`
 
 Configuration object overriding any properties. This is a JavaScript object.
 
+#### configMutations
+
+_Type_: `array`
+
+Array of changes to apply to the configuration. Each change must be an object with three properties:
+
+- `keys`: array of keys targetting the property to change
+- `value`: new value of that property
+- `event`: build event when this change was applied, e.g. `onPreBuild`
+
 ### Return value
 
 The return value is a `Promise` resolving to an `object` with the following properties.
