@@ -58,6 +58,10 @@ test('--defaultConfig can specify pinned versions', async (t) => {
   await runFixture(t, 'empty', { flags: { defaultConfig: { plugins: [{ package: 'one', pinned_version: '1' }] } } })
 })
 
+test('--defaultConfig ignores pinned versions that are empty strings', async (t) => {
+  await runFixture(t, 'empty', { flags: { defaultConfig: { plugins: [{ package: 'one', pinned_version: '' }] } } })
+})
+
 test('--inlineConfig CLI flag', async (t) => {
   const inlineConfig = JSON.stringify({ build: { publish: 'publish' } })
   await runFixture(t, 'default_merge', { flags: { inlineConfig }, useBinary: true })
