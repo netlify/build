@@ -1,5 +1,16 @@
 # Changelog
 
+## [12.0.0](https://www.github.com/netlify/build/compare/config-v11.0.0...config-v12.0.0) (2021-07-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* return `redirectsPath` from `@netlify/config` (#3207)
+
+### Features
+
+* return `redirectsPath` from `@netlify/config` ([#3207](https://www.github.com/netlify/build/issues/3207)) ([35dd205](https://www.github.com/netlify/build/commit/35dd205ca35a393dbb3cff50e79ba1cdad8f8755))
+
 ## [11.0.0](https://www.github.com/netlify/build/compare/config-v10.3.0...config-v11.0.0) (2021-07-06)
 
 
