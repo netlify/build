@@ -2,7 +2,7 @@
 
 const { isDirectory } = require('path-type')
 
-const { throwError } = require('./error')
+const { throwUserError } = require('./error')
 
 // Retrieve the build directory used to resolve most paths.
 // This is (in priority order):
@@ -24,7 +24,7 @@ const checkBuildDir = async function (buildDir, repositoryRoot) {
     return
   }
 
-  throwError(`Base directory does not exist: ${buildDir}`)
+  throwUserError(`Base directory does not exist: ${buildDir}`)
 }
 
 module.exports = { getBuildDir }

@@ -1,6 +1,6 @@
 'use strict'
 
-const { throwError } = require('../error')
+const { throwUserError } = require('../error')
 const { THEME } = require('../log/theme')
 
 const { getExample } = require('./example')
@@ -43,7 +43,7 @@ const validateConfig = function (config, validations) {
       validateProperty(config, { ...validation, nextPath: property.split('.') })
     })
   } catch (error) {
-    throwError(error)
+    throwUserError(error)
   }
 }
 
@@ -97,7 +97,7 @@ const reportError = function ({
   formatInvalid,
   propertyName = propPath,
 }) {
-  throwError(`${THEME.highlightWords('Configuration property')} ${propertyName} ${message}
+  throwUserError(`${THEME.highlightWords('Configuration property')} ${propertyName} ${message}
 ${getExample({ value, key, prevPath, example, formatInvalid })}`)
 }
 

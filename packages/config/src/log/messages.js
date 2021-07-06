@@ -1,6 +1,6 @@
 'use strict'
 
-const { throwError } = require('../error')
+const { throwUserError } = require('../error')
 
 const { logWarning } = require('./logger')
 
@@ -32,7 +32,7 @@ To run "${packageName}" in the ${context} context only, uninstall the plugin fro
 }
 
 const throwContextPluginsConfig = function (packageName, context) {
-  throwError(
+  throwUserError(
     `
 "${packageName}" is installed in the UI, which means that it runs in all deploy contexts, regardless of file-based configuration.
 To run "${packageName}" in the ${context} context only, uninstall the plugin from the site plugins list.
