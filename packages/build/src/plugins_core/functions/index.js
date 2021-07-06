@@ -1,6 +1,6 @@
 'use strict'
 
-const { resolve, relative } = require('path')
+const { join, resolve, relative } = require('path')
 
 const mapObject = require('map-obj')
 const pathExists = require('path-exists')
@@ -15,6 +15,8 @@ const {
 } = require('../../log/messages/core_commands')
 
 const { getZipError } = require('./error')
+
+const INTERNAL_FUNCTIONS_PATH = '.netlify/functions-internal'
 
 // Returns `true` if at least one of the functions has been configured to use
 // esbuild.
@@ -58,6 +60,7 @@ const zipFunctionsAndLogResults = async ({
   functionsConfig,
   functionsDist,
   functionsSrc,
+  internalFunctionsSrc,
   logs,
 }) => {
   const zisiParameters = getZisiParameters({ buildDir, featureFlags, functionsConfig })
@@ -72,7 +75,7 @@ const zipFunctionsAndLogResults = async ({
     // is removed
     // eslint-disable-next-line node/global-require
     const { zipFunctions } = require('@netlify/zip-it-and-ship-it')
-    const results = await zipFunctions(functionsSrc, functionsDist, zisiParameters)
+    const results = await zipFunctions([internalFunctionsSrc, functionsSrc], functionsDist, zisiParameters)
 
     logBundleResults({ logs, results })
 
@@ -80,6 +83,16 @@ const zipFunctionsAndLogResults = async ({
   } catch (error) {
     throw await getZipError(error, functionsSrc)
   }
+}
+
+const listInternalFunctions = async (internalFunctionsSrc) => {
+  try {
+    return await getFunctionPaths(internalFunctionsSrc)
+  } catch (_) {
+    // no-op
+  }
+
+  return []
 }
 
 // Plugin to package Netlify functions with @netlify/zip-it-and-ship-it
@@ -92,6 +105,7 @@ const coreCommand = async function ({
 }) {
   const functionsSrc = resolve(buildDir, relativeFunctionsSrc)
   const functionsDist = resolve(buildDir, relativeFunctionsDist)
+  const internalFunctionsSrc = join(buildDir, INTERNAL_FUNCTIONS_PATH)
 
   if (!(await pathExists(functionsSrc))) {
     logFunctionsNonExistingDir(logs, relativeFunctionsSrc)
@@ -100,10 +114,18 @@ const coreCommand = async function ({
 
   await validateFunctionsSrc({ functionsSrc, relativeFunctionsSrc })
 
-  const functions = await getFunctionPaths(functionsSrc)
-  logFunctionsToBundle(logs, functions, relativeFunctionsSrc)
+  const userFunctions = await getFunctionPaths(functionsSrc)
+  const internalFunctions = await listInternalFunctions(internalFunctionsSrc)
 
-  if (functions.length === 0) {
+  logFunctionsToBundle({
+    logs,
+    userFunctions,
+    userFunctionsSrc: relativeFunctionsSrc,
+    internalFunctions,
+    internalFunctionsSrc: INTERNAL_FUNCTIONS_PATH,
+  })
+
+  if (userFunctions.length === 0 && internalFunctions.length === 0) {
     return {}
   }
 
@@ -113,6 +135,7 @@ const coreCommand = async function ({
     functionsConfig: netlifyConfig.functions,
     functionsDist,
     functionsSrc,
+    internalFunctionsSrc,
     logs,
   })
 
