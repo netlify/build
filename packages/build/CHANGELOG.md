@@ -1,5 +1,12 @@
 # Changelog
 
+## [15.1.0](https://www.github.com/netlify/build/compare/build-v15.0.0...build-v15.1.0) (2021-07-06)
+
+
+### Features
+
+* fix the payload sent during deploy to the buildbot ([#3218](https://www.github.com/netlify/build/issues/3218)) ([55d5fc4](https://www.github.com/netlify/build/commit/55d5fc4a71d7d7055a679371ff588d9e6c2ea200))
+
 ## [15.0.0](https://www.github.com/netlify/build/compare/build-v14.0.0...build-v15.0.0) (2021-07-06)
 
 
