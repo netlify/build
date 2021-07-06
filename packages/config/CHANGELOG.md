@@ -1,5 +1,16 @@
 # Changelog
 
+## [11.0.0](https://www.github.com/netlify/build/compare/config-v10.3.0...config-v11.0.0) (2021-07-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* add `configMutations` flag to `@netlify/config` (#3211)
+
+### Features
+
+* add `configMutations` flag to `@netlify/config` ([#3211](https://www.github.com/netlify/build/issues/3211)) ([9037f03](https://www.github.com/netlify/build/commit/9037f03b6d288d136007f0c2c964c04aed3f33f7))
+
 ## [10.3.0](https://www.github.com/netlify/build/compare/config-v10.2.0...config-v10.3.0) (2021-07-05)
 
 
