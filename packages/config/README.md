@@ -266,7 +266,13 @@ Resolved configuration object.
 
 _Type_: `string?`
 
-Absolute path to the `netlify.toml`, if any.
+Absolute path to the `netlify.toml`, if this file exists.
+
+#### redirectsPath
+
+_Type_: `string`
+
+Absolute path to the `_redirects`, even if this file does not exist.
 
 #### buildDir
 

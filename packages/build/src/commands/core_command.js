@@ -1,11 +1,9 @@
 'use strict'
 
-const { listConfigSideFiles } = require('@netlify/config')
-
 const { setEnvChanges } = require('../env/changes')
 const { addErrorInfo, isBuildError } = require('../error/info')
 
-const { updateNetlifyConfig } = require('./update_config')
+const { updateNetlifyConfig, listConfigSideFiles } = require('./update_config')
 
 // Fire a core command
 const fireCoreCommand = async function ({
@@ -24,11 +22,12 @@ const fireCoreCommand = async function ({
   configOpts,
   netlifyConfig,
   configMutations,
+  redirectsPath,
   featureFlags,
   debug,
 }) {
   try {
-    const configSideFiles = await listConfigSideFiles(netlifyConfig, buildDir)
+    const configSideFiles = await listConfigSideFiles(redirectsPath)
     const childEnvA = setEnvChanges(envChanges, { ...childEnv })
     const {
       newEnvChanges = {},
@@ -46,10 +45,14 @@ const fireCoreCommand = async function ({
       nodePath,
       featureFlags,
     })
-    const { netlifyConfig: netlifyConfigA, configMutations: configMutationsA } = await updateNetlifyConfig({
+    const {
+      netlifyConfig: netlifyConfigA,
+      configMutations: configMutationsA,
+      redirectsPath: redirectsPathA,
+    } = await updateNetlifyConfig({
       configOpts,
       netlifyConfig,
-      buildDir,
+      redirectsPath,
       configMutations,
       newConfigMutations,
       configSideFiles,
@@ -57,7 +60,13 @@ const fireCoreCommand = async function ({
       logs,
       debug,
     })
-    return { newEnvChanges, netlifyConfig: netlifyConfigA, configMutations: configMutationsA, tags }
+    return {
+      newEnvChanges,
+      netlifyConfig: netlifyConfigA,
+      configMutations: configMutationsA,
+      redirectsPath: redirectsPathA,
+      tags,
+    }
   } catch (newError) {
     if (!isBuildError(newError)) {
       addErrorInfo(newError, { type: 'coreCommand', location: { coreCommandName } })

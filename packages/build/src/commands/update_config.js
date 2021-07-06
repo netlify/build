@@ -1,6 +1,7 @@
 'use strict'
 
-const { listConfigSideFiles } = require('@netlify/config')
+const pFilter = require('p-filter')
+const pathExists = require('path-exists')
 
 const { resolveUpdatedConfig } = require('../core/config')
 const { logConfigOnUpdate } = require('../log/messages/config')
@@ -10,7 +11,7 @@ const { logConfigOnUpdate } = require('../log/messages/config')
 const updateNetlifyConfig = async function ({
   configOpts,
   netlifyConfig,
-  buildDir,
+  redirectsPath,
   configMutations,
   newConfigMutations,
   configSideFiles,
@@ -18,22 +19,23 @@ const updateNetlifyConfig = async function ({
   logs,
   debug,
 }) {
-  if (!(await shouldUpdateConfig({ newConfigMutations, configSideFiles, netlifyConfig, buildDir }))) {
+  if (!(await shouldUpdateConfig({ newConfigMutations, configSideFiles, redirectsPath }))) {
     return { netlifyConfig, configMutations }
   }
 
   const configMutationsA = [...configMutations, ...newConfigMutations]
-  const { config: netlifyConfigA } = await resolveUpdatedConfig(configOpts, configMutationsA)
+  const { config: netlifyConfigA, redirectsPath: redirectsPathA } = await resolveUpdatedConfig(
+    configOpts,
+    configMutationsA,
+  )
   logConfigOnUpdate({ logs, netlifyConfig: netlifyConfigA, debug })
   // eslint-disable-next-line fp/no-mutation,no-param-reassign
   errorParams.netlifyConfig = netlifyConfigA
-  return { netlifyConfig: netlifyConfigA, configMutations: configMutationsA }
+  return { netlifyConfig: netlifyConfigA, configMutations: configMutationsA, redirectsPath: redirectsPathA }
 }
 
-const shouldUpdateConfig = async function ({ newConfigMutations, configSideFiles, netlifyConfig, buildDir }) {
-  return (
-    newConfigMutations.length !== 0 || (await haveConfigSideFilesChanged({ configSideFiles, netlifyConfig, buildDir }))
-  )
+const shouldUpdateConfig = async function ({ newConfigMutations, configSideFiles, redirectsPath }) {
+  return newConfigMutations.length !== 0 || (await haveConfigSideFilesChanged(configSideFiles, redirectsPath))
 }
 
 // The configuration mostly depends on `netlify.toml` and UI build settings.
@@ -41,10 +43,20 @@ const shouldUpdateConfig = async function ({ newConfigMutations, configSideFiles
 // Those are often created by the build command. When those are created, we need
 // to update the configuration. We detect this by checking for file existence
 // before and after running plugins and the build command.
-const haveConfigSideFilesChanged = async function ({ configSideFiles, netlifyConfig, buildDir }) {
-  const newSideFiles = await listConfigSideFiles(netlifyConfig, buildDir)
+const haveConfigSideFilesChanged = async function (configSideFiles, redirectsPath) {
+  const newSideFiles = await listConfigSideFiles(redirectsPath)
   // @todo: use `util.isDeepStrictEqual()` after dropping support for Node 8
   return newSideFiles.join(',') !== configSideFiles.join(',')
 }
 
-module.exports = { updateNetlifyConfig }
+// List all the files used for configuration besides `netlify.toml`.
+// This is useful when applying configuration mutations since those files
+// sometimes have higher priority and should therefore be deleted in order to
+// apply any configuration update on `netlify.toml`.
+const listConfigSideFiles = async function (redirectsPath) {
+  const configSideFiles = await pFilter([redirectsPath], pathExists)
+  // eslint-disable-next-line fp/no-mutating-methods
+  return configSideFiles.sort()
+}
+
+module.exports = { updateNetlifyConfig, listConfigSideFiles }

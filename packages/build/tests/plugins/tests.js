@@ -148,11 +148,31 @@ if (!version.startsWith('v8.')) {
     }
   })
 
+  test('netlifyConfig is updated when redirects file is created by a plugin and publish was changed', async (t) => {
+    const redirectsFile = `${FIXTURES_DIR}/config_create_redirects_plugin_dynamic/test/_redirects`
+    await del(redirectsFile)
+    try {
+      await runFixture(t, 'config_create_redirects_plugin_dynamic')
+    } finally {
+      await del(redirectsFile)
+    }
+  })
+
   test('netlifyConfig is updated when redirects file is created by a build command', async (t) => {
     const redirectsFile = `${FIXTURES_DIR}/config_create_redirects_command/_redirects`
     await del(redirectsFile)
     try {
       await runFixture(t, 'config_create_redirects_command')
+    } finally {
+      await del(redirectsFile)
+    }
+  })
+
+  test('netlifyConfig is updated when redirects file is created by a build command and publish was changed', async (t) => {
+    const redirectsFile = `${FIXTURES_DIR}/config_create_redirects_command_dynamic/test/_redirects`
+    await del(redirectsFile)
+    try {
+      await runFixture(t, 'config_create_redirects_command_dynamic')
     } finally {
       await del(redirectsFile)
     }

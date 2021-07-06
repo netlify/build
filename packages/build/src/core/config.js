@@ -61,6 +61,7 @@ const getConfigOpts = function ({
 const tLoadConfig = async function ({ configOpts, cachedConfig, cachedConfigPath, envOpt, debug, logs, nodePath }) {
   const {
     configPath,
+    redirectsPath,
     buildDir,
     config: netlifyConfig,
     context: contextA,
@@ -79,6 +80,7 @@ const tLoadConfig = async function ({ configOpts, cachedConfig, cachedConfigPath
   return {
     netlifyConfig,
     configPath,
+    redirectsPath,
     buildDir,
     packageJson,
     userNodeVersion,

@@ -43,6 +43,7 @@ const runCommand = async function ({
   configOpts,
   netlifyConfig,
   configMutations,
+  redirectsPath,
   logs,
   debug,
   timers,
@@ -73,6 +74,7 @@ const runCommand = async function ({
     newEnvChanges,
     netlifyConfig: netlifyConfigA = netlifyConfig,
     configMutations: configMutationsA = configMutations,
+    redirectsPath: redirectsPathA = redirectsPath,
     newError,
     newStatus,
     timers: timersA,
@@ -103,6 +105,7 @@ const runCommand = async function ({
     configOpts,
     netlifyConfig,
     configMutations,
+    redirectsPath,
     featureFlags,
   })
 
@@ -121,6 +124,7 @@ const runCommand = async function ({
     deployId,
     netlifyConfig: netlifyConfigA,
     configMutations: configMutationsA,
+    redirectsPath: redirectsPathA,
     logs,
     debug,
     timers: timersA,
@@ -220,6 +224,7 @@ const tFireCommand = function ({
   configOpts,
   netlifyConfig,
   configMutations,
+  redirectsPath,
   featureFlags,
 }) {
   if (coreCommand !== undefined) {
@@ -239,6 +244,7 @@ const tFireCommand = function ({
       configOpts,
       netlifyConfig,
       configMutations,
+      redirectsPath,
       featureFlags,
       debug,
     })
@@ -251,12 +257,12 @@ const tFireCommand = function ({
     pluginPackageJson,
     loadedFrom,
     origin,
-    buildDir,
     envChanges,
     errorParams,
     configOpts,
     netlifyConfig,
     configMutations,
+    redirectsPath,
     constants,
     commands,
     error,
