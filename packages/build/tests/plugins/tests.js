@@ -584,7 +584,7 @@ const startDeployServer = function (opts = {}) {
   return startTcpServer({ useUnixSocket, response: { succeeded: true, ...opts.response }, ...opts })
 }
 
-const isValidDeployReponse = function ({ action, values: { deployDir } }) {
+const isValidDeployReponse = function ({ action, deployDir }) {
   return ['deploySite', 'deploySiteAndAwaitLive'].includes(action) && typeof deployDir === 'string' && deployDir !== ''
 }
 
