@@ -1,5 +1,12 @@
 # Changelog
 
+### [12.0.1](https://www.github.com/netlify/build/compare/config-v12.0.0...config-v12.0.1) (2021-07-06)
+
+
+### Bug Fixes
+
+* handle `plugins[*].pinned_version` being an empty string ([#3221](https://www.github.com/netlify/build/issues/3221)) ([46c43b4](https://www.github.com/netlify/build/commit/46c43b4eca36cd7ad866617e2ce721e45a26abd1))
+
 ## [12.0.0](https://www.github.com/netlify/build/compare/config-v11.0.0...config-v12.0.0) (2021-07-06)
 
 
