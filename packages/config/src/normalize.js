@@ -28,7 +28,7 @@ const DEFAULT_CONFIG = {
 }
 
 const normalizePlugin = function ({ inputs = {}, ...plugin }) {
-  return { ...plugin, inputs }
+  return removeFalsy({ ...plugin, inputs })
 }
 
 module.exports = { normalizeConfig }
