@@ -85,6 +85,11 @@ const zipFunctionsAndLogResults = async ({
   }
 }
 
+// `getFunctionPaths` will throw if the directory doesn't exist. This is the
+// expected behavior when dealing with the functions directory defined in the
+// config, but we don't want to throw if the internal functions directory does
+// not exist. To that effect, we wrap it with this try/catch and simply return
+// an empty array if `getFunctionPaths` fails.
 const listInternalFunctions = async (internalFunctionsSrc) => {
   try {
     return await getFunctionPaths(internalFunctionsSrc)
