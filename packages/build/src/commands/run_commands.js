@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 'use strict'
 
 const pReduce = require('p-reduce')
@@ -39,6 +40,8 @@ const runCommands = async function ({
     index: commandsCount,
     error: errorA,
     netlifyConfig: netlifyConfigC,
+    configMutations: configMutationsB,
+    redirectsPath: redirectsPathC,
     statuses: statusesB,
     failedPlugins: failedPluginsA,
     timers: timersC,
@@ -154,6 +157,8 @@ const runCommands = async function ({
   return {
     commandsCount,
     netlifyConfig: netlifyConfigC,
+    configMutations: configMutationsB,
+    redirectsPath: redirectsPathC,
     statuses: statusesB,
     failedPlugins: failedPluginsA,
     timers: timersC,
@@ -161,3 +166,4 @@ const runCommands = async function ({
 }
 
 module.exports = { runCommands }
+/* eslint-enable max-lines */

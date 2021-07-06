@@ -4,9 +4,9 @@ const { readFile } = require('fs')
 const { promisify } = require('util')
 
 const pathExists = require('path-exists')
-const { parse: loadToml } = require('toml')
 
 const { throwUserError } = require('./error')
+const { parseToml } = require('./utils/toml')
 
 const pReadFile = promisify(readFile)
 
@@ -20,6 +20,20 @@ const parseConfig = async function (configPath) {
     throwUserError('Configuration file does not exist')
   }
 
+  return await readConfigPath(configPath)
+}
+
+// Same but `configPath` is required and `configPath` might point to a
+// non-existing file.
+const parseOptionalConfig = async function (configPath) {
+  if (!(await pathExists(configPath))) {
+    return {}
+  }
+
+  return await readConfigPath(configPath)
+}
+
+const readConfigPath = async function (configPath) {
   const configString = await readConfig(configPath)
 
   try {
@@ -38,13 +52,4 @@ const readConfig = async function (configPath) {
   }
 }
 
-const parseToml = function (configString) {
-  const config = loadToml(configString)
-  // `toml.parse()` returns a object with `null` prototype deeply, which can
-  // sometimes create problems with some utilities. We convert it.
-  // TOML can return Date instances, but JSON will stringify those, and we
-  // don't use Date in netlify.toml, so this should be ok.
-  return JSON.parse(JSON.stringify(config))
-}
-
-module.exports = { parseConfig }
+module.exports = { parseConfig, parseOptionalConfig }
