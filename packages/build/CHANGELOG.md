@@ -1,5 +1,16 @@
 # Changelog
 
+## [15.0.0](https://www.github.com/netlify/build/compare/build-v14.0.0...build-v15.0.0) (2021-07-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* return `redirectsPath` from `@netlify/config` (#3207)
+
+### Features
+
+* return `redirectsPath` from `@netlify/config` ([#3207](https://www.github.com/netlify/build/issues/3207)) ([35dd205](https://www.github.com/netlify/build/commit/35dd205ca35a393dbb3cff50e79ba1cdad8f8755))
+
 ## [14.0.0](https://www.github.com/netlify/build/compare/build-v13.3.1...build-v14.0.0) (2021-07-06)
 
 
