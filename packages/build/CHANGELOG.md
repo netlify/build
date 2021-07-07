@@ -1,5 +1,12 @@
 # Changelog
 
+### [15.2.2](https://www.github.com/netlify/build/compare/build-v15.2.1...build-v15.2.2) (2021-07-07)
+
+
+### Bug Fixes
+
+* save the `netlify.toml` earlier ([#3233](https://www.github.com/netlify/build/issues/3233)) ([d4bfb25](https://www.github.com/netlify/build/commit/d4bfb25e362ebf3aea0ba2830d79cfc178b355a9))
+
 ### [15.2.1](https://www.github.com/netlify/build/compare/build-v15.2.0...build-v15.2.1) (2021-07-07)
 
 
