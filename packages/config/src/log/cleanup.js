@@ -84,7 +84,7 @@ const isPublicInput = function (key, input) {
 // to make it more convenient to use without checking for `undefined`.
 // However those empty values are not useful to users, so we don't log them.
 const simplifyConfig = function ({
-  build: { environment, ...build },
+  build: { environment, processing: { css, html, images, js, ...processing } = {}, services, ...build },
   functions,
   plugins,
   redirects,
@@ -93,6 +93,17 @@ const simplifyConfig = function ({
   const buildA = {
     ...build,
     ...removeEmptyArray(environment, 'environment'),
+    ...removeEmptyObject(
+      {
+        ...processing,
+        ...removeEmptyObject(css, 'css'),
+        ...removeEmptyObject(html, 'html'),
+        ...removeEmptyObject(images, 'images'),
+        ...removeEmptyObject(js, 'js'),
+      },
+      'processing',
+    ),
+    ...removeEmptyObject(services, 'services'),
   }
   return removeFalsy({
     ...netlifyConfig,
