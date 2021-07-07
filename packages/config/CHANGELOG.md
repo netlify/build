@@ -1,5 +1,12 @@
 # Changelog
 
+### [12.1.1](https://www.github.com/netlify/build/compare/config-v12.1.0...config-v12.1.1) (2021-07-07)
+
+
+### Bug Fixes
+
+* return `redirects` with `@netlify/config` ([#3231](https://www.github.com/netlify/build/issues/3231)) ([be511fa](https://www.github.com/netlify/build/commit/be511fa06e09a6589f06f2943ee06de1062c88ec))
+
 ## [12.1.0](https://www.github.com/netlify/build/compare/config-v12.0.1...config-v12.1.0) (2021-07-07)
 
 
