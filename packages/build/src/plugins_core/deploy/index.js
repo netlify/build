@@ -1,5 +1,6 @@
 'use strict'
 
+const { saveUpdatedConfig } = require('../../core/config')
 const { logDeploySuccess } = require('../../log/messages/plugins')
 
 const {
@@ -9,10 +10,31 @@ const {
   deploySiteWithBuildbotClient,
 } = require('./buildbot_client')
 
-const coreCommand = async function ({ buildbotServerSocket, events, constants, logs }) {
+const coreCommand = async function ({
+  configPath,
+  repositoryRoot,
+  constants,
+  buildbotServerSocket,
+  events,
+  logs,
+  context,
+  branch,
+  configMutations,
+  redirectsPath,
+  saveConfig,
+}) {
   const client = createBuildbotClient(buildbotServerSocket)
   try {
     await connectBuildbotClient(client)
+    await saveUpdatedConfig({
+      configMutations,
+      repositoryRoot,
+      configPath,
+      redirectsPath,
+      context,
+      branch,
+      saveConfig,
+    })
     await deploySiteWithBuildbotClient(client, events, constants)
     logDeploySuccess(logs)
     return {}

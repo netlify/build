@@ -11,12 +11,15 @@ const fireCoreCommand = async function ({
   coreCommandName,
   configPath,
   buildDir,
+  repositoryRoot,
   constants,
   buildbotServerSocket,
   events,
   logs,
   nodePath,
   childEnv,
+  context,
+  branch,
   envChanges,
   errorParams,
   configOpts,
@@ -25,6 +28,7 @@ const fireCoreCommand = async function ({
   redirectsPath,
   featureFlags,
   debug,
+  saveConfig,
 }) {
   try {
     const configSideFiles = await listConfigSideFiles(redirectsPath)
@@ -36,14 +40,20 @@ const fireCoreCommand = async function ({
     } = await coreCommand({
       configPath,
       buildDir,
+      repositoryRoot,
       constants,
       buildbotServerSocket,
       events,
       logs,
+      context,
+      branch,
       childEnv: childEnvA,
       netlifyConfig,
       nodePath,
+      configMutations,
+      redirectsPath,
       featureFlags,
+      saveConfig,
     })
     const {
       netlifyConfig: netlifyConfigA,
