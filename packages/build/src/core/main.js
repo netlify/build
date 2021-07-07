@@ -20,7 +20,7 @@ const { trackBuildComplete } = require('../telemetry/main')
 const { initTimers, measureDuration } = require('../time/main')
 const { reportTimers } = require('../time/report')
 
-const { getConfigOpts, loadConfig, saveUpdatedConfig } = require('./config')
+const { getConfigOpts, loadConfig } = require('./config')
 const { getConstants } = require('./constants')
 const { doDryRun } = require('./dry')
 const { warnOnLingeringProcesses } = require('./lingering')
@@ -545,8 +545,6 @@ const runBuild = async function ({
   const {
     commandsCount,
     netlifyConfig: netlifyConfigA,
-    configMutations: configMutationsA,
-    redirectsPath: redirectsPathA,
     statuses,
     failedPlugins,
     timers: timersB,
@@ -557,8 +555,11 @@ const runBuild = async function ({
     configPath,
     redirectsPath,
     buildDir,
+    repositoryRoot,
     nodePath,
     childEnv,
+    context,
+    branch,
     constants,
     mode,
     api,
@@ -569,18 +570,10 @@ const runBuild = async function ({
     configOpts,
     logs,
     debug,
+    saveConfig,
     timers: timersA,
     testOpts,
     featureFlags,
-  })
-  await saveUpdatedConfig({
-    configMutations: configMutationsA,
-    repositoryRoot,
-    configPath,
-    redirectsPath: redirectsPathA,
-    context,
-    branch,
-    saveConfig,
   })
   return { commandsCount, netlifyConfig: netlifyConfigA, statuses, failedPlugins, timers: timersB }
 }
