@@ -35,7 +35,7 @@ const DEFAULT_OUTPUT = '-'
 // The result is output as JSON on success (exit code 0)
 const handleCliSuccess = async function (result, stable, output) {
   const resultA = serializeApi(result)
-  const resultB = omitProperties(resultA)
+  const resultB = omit(resultA, SECRET_PROPERTIES)
   const stringifyFunc = stable ? stableStringify : JSON.stringify
   const resultJson = stringifyFunc(resultB, null, 2)
   await outputResult(resultJson, output)
@@ -60,17 +60,6 @@ const serializeApi = function ({ api, ...result }) {
   }
 
   return { ...result, hasApi: true }
-}
-
-// Redirects in plugins (`netlifyConfig.redirects`) should have the same shape
-// as in `netlify.toml`. This leads to `@netlify/config` returning the same
-// shape as well. However, the buildbot uses a different shape. Therefore the
-// CLI does not output those to avoid the buildbot crashing due to different
-// `redirects` shapes.
-const omitProperties = function ({ config, ...result }) {
-  const resultA = omit(result, SECRET_PROPERTIES)
-  const configA = { ...config, redirects: [] }
-  return { ...resultA, config: configA }
 }
 
 const SECRET_PROPERTIES = ['token']
