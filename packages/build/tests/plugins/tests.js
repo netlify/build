@@ -181,10 +181,6 @@ if (!version.startsWith('v8.')) {
     }
   })
 
-  test('netlifyConfig.processing can be assigned all at once', async (t) => {
-    await runFixture(t, 'config_mutate_processing_all')
-  })
-
   test('netlifyConfig.processing can be assigned individually', async (t) => {
     await runFixture(t, 'config_mutate_processing_prop')
   })
@@ -216,10 +212,6 @@ test('netlifyConfig.build.edge_handlers mutations are used by constants.EDGE_HAN
 
 test('netlifyConfig.edge_handlers can be assigned all at once', async (t) => {
   await runFixture(t, 'config_mutate_edge_handlers_all')
-})
-
-test('netlifyConfig.services can be assigned all at once', async (t) => {
-  await runFixture(t, 'config_mutate_services_all')
 })
 
 test('netlifyConfig.services can be assigned individually', async (t) => {
