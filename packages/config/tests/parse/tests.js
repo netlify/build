@@ -55,6 +55,6 @@ test('Redirects - log redirectsOrigin in debug mode', async (t) => {
   await runFixture(t, 'empty', { flags: { defaultConfig: { redirects: [] }, debug: true } })
 })
 
-test('Redirects - does not use redirects file when using inlineConfig', async (t) => {
-  await runFixture(t, 'redirects_file', { flags: { inlineConfig: { redirects: [] } } })
+test('Redirects - does not use redirects file when using inlineConfig with identical redirects', async (t) => {
+  await runFixture(t, 'redirects_file', { flags: { inlineConfig: { redirects: [{ from: '/from', to: '/to' }] } } })
 })
