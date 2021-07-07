@@ -1,5 +1,12 @@
 # Changelog
 
+## [12.1.0](https://www.github.com/netlify/build/compare/config-v12.0.1...config-v12.1.0) (2021-07-07)
+
+
+### Features
+
+* persist configuration changes to `netlify.toml` ([#3224](https://www.github.com/netlify/build/issues/3224)) ([f924661](https://www.github.com/netlify/build/commit/f924661f94d04af1e90e1023e385e35587ae301c))
+
 ### [12.0.1](https://www.github.com/netlify/build/compare/config-v12.0.0...config-v12.0.1) (2021-07-06)
 
 
