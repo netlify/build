@@ -94,10 +94,8 @@ const listInternalFunctions = async (internalFunctionsSrc) => {
   try {
     return await getFunctionPaths(internalFunctionsSrc)
   } catch (_) {
-    // no-op
+    return []
   }
-
-  return []
 }
 
 // Plugin to package Netlify functions with @netlify/zip-it-and-ship-it
@@ -119,8 +117,10 @@ const coreCommand = async function ({
 
   await validateFunctionsSrc({ functionsSrc, relativeFunctionsSrc })
 
-  const userFunctions = await getFunctionPaths(functionsSrc)
-  const internalFunctions = await listInternalFunctions(internalFunctionsSrc)
+  const [userFunctions, internalFunctions] = await Promise.all([
+    getFunctionPaths(functionsSrc),
+    listInternalFunctions(internalFunctionsSrc),
+  ])
 
   logFunctionsToBundle({
     logs,
