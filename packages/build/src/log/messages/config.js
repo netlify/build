@@ -39,6 +39,7 @@ const INTERNAL_FLAGS = [
   'defaultConfig',
   'cachedConfigPath',
   'sendStatus',
+  'saveConfig',
   'statsd',
   'framework',
   'featureFlags',

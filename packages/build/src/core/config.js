@@ -1,6 +1,7 @@
 'use strict'
 
 const resolveConfig = require('@netlify/config')
+const { updateConfig } = require('@netlify/config')
 const mapObj = require('map-obj')
 
 const { getChildEnv } = require('../env/main')
@@ -63,9 +64,11 @@ const tLoadConfig = async function ({ configOpts, cachedConfig, cachedConfigPath
     configPath,
     redirectsPath,
     buildDir,
+    repositoryRoot,
     config: netlifyConfig,
     context: contextA,
     apiHost: apiHostA,
+    branch: branchA,
     token: tokenA,
     api,
     siteInfo,
@@ -82,10 +85,13 @@ const tLoadConfig = async function ({ configOpts, cachedConfig, cachedConfigPath
     configPath,
     redirectsPath,
     buildDir,
+    repositoryRoot,
     packageJson,
     userNodeVersion,
     childEnv,
     apiHost: apiHostA,
+    context: contextA,
+    branch: branchA,
     token: tokenA,
     api: apiA,
     siteInfo,
@@ -139,4 +145,25 @@ const resolveUpdatedConfig = async function (configOpts, configMutations) {
   }
 }
 
-module.exports = { getConfigOpts, loadConfig, resolveUpdatedConfig }
+// If the configuration was changed, persist it to `netlify.toml`.
+// If `netlify.toml` does not exist, create it inside repository root.
+// This is only done when `saveConfig` is `true`. This allows performing this
+// in the buildbot but not in local builds, since only the latter run in a
+// container and we want to avoid saving files on local machines.
+const saveUpdatedConfig = async function ({
+  configMutations,
+  repositoryRoot,
+  configPath = `${repositoryRoot}/netlify.toml`,
+  redirectsPath,
+  context,
+  branch,
+  saveConfig,
+}) {
+  if (!saveConfig) {
+    return
+  }
+
+  await updateConfig(configMutations, { configPath, redirectsPath, context, branch })
+}
+
+module.exports = { getConfigOpts, loadConfig, resolveUpdatedConfig, saveUpdatedConfig }

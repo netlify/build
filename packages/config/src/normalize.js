@@ -1,8 +1,8 @@
 'use strict'
 
 const { normalizeFunctionsProps, WILDCARD_ALL } = require('./functions_config')
+const { mergeConfigs } = require('./merge')
 const { DEFAULT_ORIGIN } = require('./origin')
-const { mergeConfigs } = require('./utils/merge')
 const { removeFalsy } = require('./utils/remove_falsy')
 
 // Normalize configuration object

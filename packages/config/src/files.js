@@ -5,7 +5,7 @@ const { resolve } = require('path')
 const { get, set, delete: deleteProp } = require('dot-prop')
 const pathExists = require('path-exists')
 
-const { mergeConfigs } = require('./utils/merge')
+const { mergeConfigs } = require('./merge')
 const { isTruthy } = require('./utils/remove_falsy')
 
 // Make configuration paths relative to `buildDir` and converts them to
