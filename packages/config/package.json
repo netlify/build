@@ -1,6 +1,6 @@
 {
   "name": "@netlify/config",
-  "version": "12.0.1",
+  "version": "12.1.0",
   "description": "Netlify config module",
   "main": "src/main.js",
   "bin": {
