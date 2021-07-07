@@ -2,10 +2,14 @@
 
 const { version } = require('process')
 
+const { intercept, cleanAll } = require('@netlify/nock-udp')
 const test = require('ava')
 
 const { runFixture } = require('../helpers/main')
-const { startUdpServer } = require('../helpers/udp_server')
+
+test.after(() => {
+  cleanAll()
+})
 
 test('Does not send plugin timings if no plugins', async (t) => {
   t.snapshot(await getTimerRequestsString(t, 'simple'))
@@ -66,19 +70,26 @@ const getTimerRequestsString = async function (t, fixtureName, flags) {
 }
 
 const getAllTimerRequests = async function (t, fixtureName, flags = {}) {
-  const { host, port, requests, stopServer } = await startUdpServer()
-  try {
-    await runFixture(t, fixtureName, { flags: { statsd: { host, port }, ...flags }, snapshot: false })
-  } finally {
-    await stopServer()
-  }
+  // Ensure there's no conflict between each test scope
+  const host = encodeURI(t.title)
+  const port = '1234'
+  const scope = intercept(`${host}:${port}`, { persist: true, allowUnknown: true })
 
-  const timerRequests = requests.flatMap(flattenRequest)
+  // Since we're overriding globals via `nock-udp` our `runFixture` needs to run programmatically. `useBinary` here
+  // won't work
+  await runFixture(t, fixtureName, {
+    flags: { statsd: { host, port }, ...flags },
+    snapshot: false,
+  })
+
+  const timerRequests = scope.buffers.flatMap(flattenRequest)
+  t.true(scope.used)
+  scope.clean()
   return timerRequests
 }
 
 const flattenRequest = function (request) {
-  return request.trim().split('\n')
+  return request.toString().trim().split('\n')
 }
 
 const serializeTimerRequests = function (timerRequests) {
