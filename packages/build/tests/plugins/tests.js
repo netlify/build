@@ -6,10 +6,13 @@ const { promisify } = require('util')
 
 const pluginsList = require('@netlify/plugins-list')
 const test = require('ava')
+const cpFile = require('cp-file')
 const cpy = require('cpy')
 const del = require('del')
+const pathExists = require('path-exists')
 const { spy } = require('sinon')
 
+const { runFixture: runFixtureConfig } = require('../../../config/tests/helpers/main')
 const { removeDir } = require('../helpers/dir')
 const { runFixture, FIXTURES_DIR } = require('../helpers/main')
 const { startServer } = require('../helpers/server')
@@ -229,6 +232,67 @@ test('netlifyConfig mutations fail if done in an event that is too late', async 
 
 test('netlifyConfig mutations fail correctly on symbols', async (t) => {
   await runFixture(t, 'config_mutate_symbol')
+})
+
+test('--saveConfig saves the configuration changes as netlify.toml', async (t) => {
+  const fixtureDir = `${FIXTURES_DIR}/config_save_changes`
+  const fixtureConfigPath = `${fixtureDir}/netlify.toml`
+  const configPath = `${fixtureDir}/test_netlify.toml`
+  await cpFile(fixtureConfigPath, configPath)
+  await runFixture(t, 'config_save_changes', { snapshot: false, flags: { config: configPath, saveConfig: true } })
+  await runFixtureConfig(t, 'config_save_changes', { flags: { config: configPath } })
+})
+
+test('--saveConfig is required to save the configuration changes as netlify.toml', async (t) => {
+  const fixtureDir = `${FIXTURES_DIR}/config_save_none`
+  const fixtureConfigPath = `${fixtureDir}/netlify.toml`
+  const configPath = `${fixtureDir}/test_netlify.toml`
+  await cpFile(fixtureConfigPath, configPath)
+  await runFixture(t, 'config_save_none', { snapshot: false, flags: { config: configPath } })
+  await runFixtureConfig(t, 'config_save_none', { flags: { config: configPath } })
+})
+
+test('--saveConfig creates netlify.toml if it does not exist', async (t) => {
+  const fixtureDir = `${FIXTURES_DIR}/config_save_empty`
+  const configPath = `${fixtureDir}/netlify.toml`
+  await del(configPath)
+  try {
+    await runFixture(t, 'config_save_empty', {
+      snapshot: false,
+      flags: {
+        saveConfig: true,
+        defaultConfig: { plugins: [{ package: './plugin.js' }] },
+      },
+    })
+    t.true(await pathExists(configPath))
+    await runFixtureConfig(t, 'config_save_empty', { flags: { config: configPath } })
+  } finally {
+    await del(configPath)
+  }
+})
+
+test('--saveConfig deletes redirects file if redirects were changed', async (t) => {
+  const fixtureDir = `${FIXTURES_DIR}/config_save_redirects`
+  const fixtureConfigPath = `${fixtureDir}/netlify.toml`
+  const configPath = `${fixtureDir}/test_netlify.toml`
+  const fixtureRedirectsPath = `${fixtureDir}/_redirects_file`
+  const redirectsPath = `${fixtureDir}/_redirects`
+  await Promise.all([cpFile(fixtureConfigPath, configPath), cpFile(fixtureRedirectsPath, redirectsPath)])
+  await runFixture(t, 'config_save_redirects', { snapshot: false, flags: { config: configPath, saveConfig: true } })
+  t.false(await pathExists(redirectsPath))
+  await runFixtureConfig(t, 'config_save_redirects', { flags: { config: configPath } })
+})
+
+test('--saveConfig gives higher priority to configuration changes than context properties', async (t) => {
+  const fixtureDir = `${FIXTURES_DIR}/config_save_context`
+  const fixtureConfigPath = `${fixtureDir}/netlify.toml`
+  const configPath = `${fixtureDir}/test_netlify.toml`
+  await cpFile(fixtureConfigPath, configPath)
+  await runFixture(t, 'config_save_context', {
+    snapshot: false,
+    flags: { config: configPath, saveConfig: true, context: 'production', branch: 'main' },
+  })
+  await runFixtureConfig(t, 'config_save_context', { flags: { config: configPath } })
 })
 
 test('constants.CONFIG_PATH', async (t) => {

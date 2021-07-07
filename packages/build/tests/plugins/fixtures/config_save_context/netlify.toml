@@ -1,0 +1,8 @@
+[[plugins]]
+package = "./plugin"
+
+[context.production]
+command = "productionCommand"
+
+[context.main]
+command = "mainCommand"

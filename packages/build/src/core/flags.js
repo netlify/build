@@ -137,6 +137,11 @@ Default: false`,
     describe: 'Whether plugin statuses should be sent to the Netlify API',
     hidden: true,
   },
+  saveConfig: {
+    boolean: true,
+    describe: 'Whether configuration changes should be saved to netlify.toml',
+    hidden: true,
+  },
   testOpts: {
     describe: 'Options for testing only',
     hidden: true,

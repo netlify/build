@@ -3,8 +3,8 @@
 const deepmerge = require('deepmerge')
 const isPlainObj = require('is-plain-obj')
 
-const { groupBy } = require('./group')
-const { removeUndefined } = require('./remove_falsy')
+const { groupBy } = require('./utils/group')
+const { removeUndefined } = require('./utils/remove_falsy')
 
 // Merge an array of configuration objects.
 // Last items have higher priority.

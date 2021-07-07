@@ -3,8 +3,8 @@
 const isPlainObj = require('is-plain-obj')
 const mapObj = require('map-obj')
 
+const { mergeConfigs } = require('./merge')
 const { normalizeBeforeConfigMerge } = require('./merge_normalize')
-const { mergeConfigs } = require('./utils/merge')
 const { validateContextsPluginsConfig } = require('./validate/context')
 const { validatePreContextConfig } = require('./validate/main')
 
@@ -83,4 +83,21 @@ const isEdgeHandlersConfig = function (key, value) {
   return key === 'edge_handlers' && Array.isArray(value)
 }
 
-module.exports = { normalizeContextProps, mergeContext }
+// Ensure that `inlineConfig` has higher priority than context properties by
+// assigining it to `context.*`. Still keep it at the top-level as well since
+// some properties are not handled context-sensitively by the API.
+// Takes into account that `context.{context}.build.*` is the same as
+// `context.{context}.*`
+const ensureConfigPriority = function ({ build = {}, ...inlineConfig }, context, branch) {
+  return {
+    ...inlineConfig,
+    build,
+    context: {
+      ...inlineConfig.context,
+      [context]: { ...inlineConfig, ...build, build },
+      [branch]: { ...inlineConfig, ...build, build },
+    },
+  }
+}
+
+module.exports = { normalizeContextProps, mergeContext, ensureConfigPriority }

@@ -16,14 +16,15 @@ const { resolveConfigPaths } = require('./files')
 const { getInlineConfig } = require('./inline_config')
 const { cleanupConfig } = require('./log/cleanup')
 const { logResult } = require('./log/main')
+const { mergeConfigs } = require('./merge')
 const { normalizeBeforeConfigMerge, normalizeAfterConfigMerge } = require('./merge_normalize')
+const { updateConfig } = require('./mutations/update')
 const { addDefaultOpts, normalizeOpts } = require('./options/main')
 const { UI_ORIGIN, CONFIG_ORIGIN, INLINE_ORIGIN } = require('./origin')
 const { parseConfig } = require('./parse')
 const { getConfigPath } = require('./path')
-const { addRedirects } = require('./redirects')
 // eslint-disable-next-line import/max-dependencies
-const { mergeConfigs } = require('./utils/merge')
+const { addRedirects } = require('./redirects')
 
 // Load the configuration file.
 // Takes an optional configuration file path as input and return the resolved
@@ -270,5 +271,6 @@ module.exports = resolveConfig
 // TODO: on next major release, export a single object instead of mutating the
 // top-level function
 module.exports.cleanupConfig = cleanupConfig
+module.exports.updateConfig = updateConfig
 module.exports.EVENTS = EVENTS
 /* eslint-enable max-lines */
