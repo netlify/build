@@ -1,5 +1,17 @@
 # Changelog
 
+## [15.2.0](https://www.github.com/netlify/build/compare/build-v15.1.0...build-v15.2.0) (2021-07-07)
+
+
+### Features
+
+* persist configuration changes to `netlify.toml` ([#3224](https://www.github.com/netlify/build/issues/3224)) ([f924661](https://www.github.com/netlify/build/commit/f924661f94d04af1e90e1023e385e35587ae301c))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^2.19.0 ([#3227](https://www.github.com/netlify/build/issues/3227)) ([571bcb4](https://www.github.com/netlify/build/commit/571bcb4821faece491c9f1b7392a364317e3d571))
+
 ## [15.1.0](https://www.github.com/netlify/build/compare/build-v15.0.0...build-v15.1.0) (2021-07-06)
 
 
