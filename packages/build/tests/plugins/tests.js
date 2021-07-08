@@ -37,14 +37,6 @@ test('netlifyConfig properties are readonly (defineProperty) by default', async 
   await runFixture(t, 'config_readonly_define')
 })
 
-test('netlifyConfig properties are readonly (preventExtensions) by default', async (t) => {
-  await runFixture(t, 'config_readonly_prevent')
-})
-
-test('netlifyConfig properties are readonly (setPrototypeOf) by default', async (t) => {
-  await runFixture(t, 'config_readonly_proto')
-})
-
 test('netlifyConfig properties are deeply readonly by default', async (t) => {
   await runFixture(t, 'config_readonly_deep')
 })

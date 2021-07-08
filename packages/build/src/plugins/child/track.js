@@ -43,8 +43,6 @@ const addProxy = function (value, keys, { configMutations, event }) {
   // eslint-disable-next-line fp/no-proxy
   const proxy = new Proxy(value, {
     deleteProperty: forbidDelete.bind(undefined, keys),
-    preventExtensions: forbidMethod.bind(undefined, keys, 'validateAnyProperty'),
-    setPrototypeOf: forbidMethod.bind(undefined, keys, 'setPrototypeOf'),
     defineProperty: trackDefineProperty.bind(undefined, { parentKeys: keys, configMutations, event }),
   })
   PROXIES.set(proxy, value)
@@ -59,11 +57,6 @@ const forbidDelete = function (keys, proxy, key) {
   const keysString = serializeKeys([...keys, key])
   throwValidationError(`Deleting "netlifyConfig.${keysString}" is not allowed.
 Please set this property to a specific value instead.`)
-}
-
-const forbidMethod = function (keys, method) {
-  const keysString = serializeKeys(keys)
-  throwValidationError(`Using the "${method}()" method on "netlifyConfig.${keysString}" is not allowed.`)
 }
 
 // Triggered when calling either
