@@ -1,5 +1,12 @@
 # Changelog
 
+## [15.9.0](https://www.github.com/netlify/build/compare/build-v15.8.0...build-v15.9.0) (2021-07-08)
+
+
+### Features
+
+* restore `netlify.toml` and `_redirects` after deploy ([#3265](https://www.github.com/netlify/build/issues/3265)) ([2441d6a](https://www.github.com/netlify/build/commit/2441d6a8b2be81212384816a0686221d4a6a2577))
+
 ## [15.8.0](https://www.github.com/netlify/build/compare/build-v15.7.0...build-v15.8.0) (2021-07-08)
 
 
