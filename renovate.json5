@@ -25,7 +25,6 @@
         'locate-path',
         'log-process-errors',
         'move-file',
-        'nock',
         'os-name',
         'p-locate',
         'pkg-dir',
