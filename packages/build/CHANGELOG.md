@@ -1,5 +1,12 @@
 # Changelog
 
+## [15.3.0](https://www.github.com/netlify/build/compare/build-v15.2.2...build-v15.3.0) (2021-07-08)
+
+
+### Features
+
+* add default values for `build.processing` and `build.services` ([#3235](https://www.github.com/netlify/build/issues/3235)) ([2ba263b](https://www.github.com/netlify/build/commit/2ba263ba9ebc54c38410245f021deb906b8a8aa2))
+
 ### [15.2.2](https://www.github.com/netlify/build/compare/build-v15.2.1...build-v15.2.2) (2021-07-07)
 
 

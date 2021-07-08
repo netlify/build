@@ -1,5 +1,12 @@
 # Changelog
 
+## [12.2.0](https://www.github.com/netlify/build/compare/config-v12.1.1...config-v12.2.0) (2021-07-08)
+
+
+### Features
+
+* add default values for `build.processing` and `build.services` ([#3235](https://www.github.com/netlify/build/issues/3235)) ([2ba263b](https://www.github.com/netlify/build/commit/2ba263ba9ebc54c38410245f021deb906b8a8aa2))
+
 ### [12.1.1](https://www.github.com/netlify/build/compare/config-v12.1.0...config-v12.1.1) (2021-07-07)
 
 
