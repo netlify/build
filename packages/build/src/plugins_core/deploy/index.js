@@ -21,6 +21,7 @@ const coreCommand = async function ({
   branch,
   configMutations,
   redirectsPath,
+  debug,
   saveConfig,
 }) {
   const client = createBuildbotClient(buildbotServerSocket)
@@ -31,8 +32,10 @@ const coreCommand = async function ({
       repositoryRoot,
       configPath,
       redirectsPath,
+      logs,
       context,
       branch,
+      debug,
       saveConfig,
     })
     await deploySiteWithBuildbotClient(client, events, constants)

@@ -7,7 +7,14 @@ const mapObj = require('map-obj')
 const { getChildEnv } = require('../env/main')
 const { addApiErrorHandlers } = require('../error/api')
 const { addErrorInfo } = require('../error/info')
-const { logBuildDir, logConfigPath, logConfig, logContext } = require('../log/messages/config')
+const {
+  logBuildDir,
+  logConfigPath,
+  logConfig,
+  logContext,
+  logConfigOnUpload,
+  logRedirectsOnUpload,
+} = require('../log/messages/config')
 const { measureDuration } = require('../time/main')
 const { getPackageJson } = require('../utils/package')
 
@@ -153,8 +160,10 @@ const saveUpdatedConfig = async function ({
   repositoryRoot,
   configPath = `${repositoryRoot}/netlify.toml`,
   redirectsPath,
+  logs,
   context,
   branch,
+  debug,
   saveConfig,
 }) {
   if (!saveConfig) {
@@ -162,6 +171,13 @@ const saveUpdatedConfig = async function ({
   }
 
   await updateConfig(configMutations, { configPath, redirectsPath, context, branch })
+  await logConfigOnUpload({ logs, configPath, debug })
+  await logRedirectsOnUpload({ logs, redirectsPath, debug })
 }
 
-module.exports = { getConfigOpts, loadConfig, resolveUpdatedConfig, saveUpdatedConfig }
+module.exports = {
+  getConfigOpts,
+  loadConfig,
+  resolveUpdatedConfig,
+  saveUpdatedConfig,
+}
