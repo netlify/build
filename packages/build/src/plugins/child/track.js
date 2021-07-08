@@ -67,9 +67,6 @@ const trackDefineProperty = function ({ parentKeys, configMutations, event }, pr
   const keysString = serializeKeys(keys)
   const jsonKeys = keys.map(jsonNormalizeKey)
 
-  forbidArrayElementAssign(key, keysString)
-  forbidEmptyAssign(value, keysString)
-
   const proxyDescriptor = {
     ...descriptor,
     value: trackObjectMutations(value, keys, { configMutations, event }),
@@ -86,22 +83,6 @@ const serializeKeys = function (keys) {
 // `configMutations` is passed to parent process as JSON
 const jsonNormalizeKey = function (key) {
   return typeof key === 'symbol' ? String(key) : key
-}
-
-const forbidArrayElementAssign = function (key, keyString) {
-  const index = typeof key === 'string' ? Number(key) : key
-  if (Number.isInteger(index)) {
-    throwValidationError(`Setting "netlifyConfig.${keyString}" individual array element is not allowed.
-Please set the full array instead.`)
-  }
-}
-
-// Triggered when calling `netlifyConfig.{key} = undefined | null`
-const forbidEmptyAssign = function (value, keysString) {
-  if (value === undefined || value === null) {
-    throwValidationError(`Setting "netlifyConfig.${keysString}" to ${value} is not allowed.
-Please set this property to a specific value instead.`)
-  }
 }
 
 const throwValidationError = function (message) {
