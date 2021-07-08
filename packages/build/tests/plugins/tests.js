@@ -307,13 +307,18 @@ test('--saveConfig deletes redirects file if redirects were changed', async (t) 
   const redirectsPath = `${fixtureDir}/_redirects`
   await Promise.all([cpFile(fixtureConfigPath, configPath), cpFile(fixtureRedirectsPath, redirectsPath)])
   const { address, stopServer } = await startDeployServer()
+  await del(redirectsPath)
   try {
-    await runFixture(t, 'config_save_redirects', {
-      snapshot: false,
-      flags: { buildbotServerSocket: address, config: configPath, saveConfig: true },
-    })
+    try {
+      await runFixture(t, 'config_save_redirects', {
+        snapshot: false,
+        flags: { buildbotServerSocket: address, config: configPath, saveConfig: true },
+      })
+    } finally {
+      await stopServer()
+    }
   } finally {
-    await stopServer()
+    await del(redirectsPath)
   }
   t.false(await pathExists(redirectsPath))
   await runFixtureConfig(t, 'config_save_redirects', { flags: { config: configPath } })
