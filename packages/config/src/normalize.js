@@ -22,7 +22,13 @@ const removeEmpty = function ({ build, ...config }) {
 }
 
 const DEFAULT_CONFIG = {
-  build: { environment: {}, publish: '.', publishOrigin: DEFAULT_ORIGIN },
+  build: {
+    environment: {},
+    publish: '.',
+    publishOrigin: DEFAULT_ORIGIN,
+    processing: { css: {}, html: {}, images: {}, js: {} },
+    services: {},
+  },
   functions: { [WILDCARD_ALL]: {} },
   plugins: [],
 }
