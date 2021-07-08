@@ -3,6 +3,6 @@
 module.exports = {
   onPreBuild({ netlifyConfig }) {
     // eslint-disable-next-line no-param-reassign
-    delete netlifyConfig.build.ignore
+    delete netlifyConfig.build.command
   },
 }

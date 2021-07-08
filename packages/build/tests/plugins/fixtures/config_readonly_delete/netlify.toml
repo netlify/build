@@ -1,2 +1,5 @@
 [[plugins]]
 package = "./plugin"
+
+[build]
+command = "test"
