@@ -53,6 +53,7 @@ const fireCoreCommand = async function ({
       configMutations,
       redirectsPath,
       featureFlags,
+      debug,
       saveConfig,
     })
     const {
