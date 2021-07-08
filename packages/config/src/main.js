@@ -223,7 +223,7 @@ const getFullConfig = async function ({
       buildDir,
       base: baseA,
     } = await resolveFiles({ config: configA, repositoryRoot, base, baseRelDir })
-    const { config: configC, redirectsPath } = await addRedirects({ config: configB, logs })
+    const { config: configC, redirectsPath } = await addRedirects(configB, logs)
     return { configPath, config: configC, buildDir, base: baseA, redirectsPath }
   } catch (error) {
     const configName = configPath === undefined ? '' : ` file ${configPath}`

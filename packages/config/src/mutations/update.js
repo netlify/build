@@ -8,6 +8,7 @@ const pathExists = require('path-exists')
 const { ensureConfigPriority } = require('../context')
 const { mergeConfigs } = require('../merge')
 const { parseOptionalConfig } = require('../parse')
+const { addConfigRedirects } = require('../redirects')
 const { serializeToml } = require('../utils/toml')
 
 const { applyMutations } = require('./apply')
@@ -25,7 +26,8 @@ const updateConfig = async function (configMutations, { configPath, redirectsPat
   const inlineConfig = applyMutations({}, configMutations)
   const normalizedInlineConfig = ensureConfigPriority(inlineConfig, context, branch)
   const updatedConfig = await mergeWithConfig(normalizedInlineConfig, configPath)
-  await Promise.all([saveConfig(configPath, updatedConfig), deleteRedirectsFile(redirectsPath, normalizedInlineConfig)])
+  const finalConfig = await addConfigRedirects(updatedConfig, redirectsPath)
+  await Promise.all([saveConfig(configPath, finalConfig), deleteRedirectsFile(redirectsPath, normalizedInlineConfig)])
 }
 
 // If `netlify.toml` exists, deeply merges the configuration changes.
@@ -36,8 +38,8 @@ const mergeWithConfig = async function (normalizedInlineConfig, configPath) {
 }
 
 // Serialize the changes to `netlify.toml`
-const saveConfig = async function (configPath, updatedConfig) {
-  const serializedConfig = serializeToml(updatedConfig)
+const saveConfig = async function (configPath, finalConfig) {
+  const serializedConfig = serializeToml(finalConfig)
   await pWriteFile(configPath, serializedConfig)
 }
 
