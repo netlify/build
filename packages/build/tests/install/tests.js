@@ -103,11 +103,11 @@ test('Install local plugin dependencies: with npm', async (t) => {
 
 // @todo: enable those tests for Node <14.0.0
 if (gteVersion(version, '14.0.0')) {
-  test('Install local plugin dependencies: with yarn locally', async (t) => {
+  test.skip('Install local plugin dependencies: with yarn locally', async (t) => {
     await runInstallFixture(t, 'yarn', [`${FIXTURES_DIR}/yarn/plugin/node_modules/`], { useBinary: true })
   })
 
-  test('Install local plugin dependencies: with yarn in CI', async (t) => {
+  test.skip('Install local plugin dependencies: with yarn in CI', async (t) => {
     await runInstallFixture(t, 'yarn_ci', [`${FIXTURES_DIR}/yarn_ci/plugin/node_modules/`], {
       useBinary: true,
       flags: { mode: 'buildbot' },
