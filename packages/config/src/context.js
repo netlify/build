@@ -88,14 +88,14 @@ const isEdgeHandlersConfig = function (key, value) {
 // some properties are not handled context-sensitively by the API.
 // Takes into account that `context.{context}.build.*` is the same as
 // `context.{context}.*`
-const ensureConfigPriority = function ({ build = {}, ...inlineConfig }, context, branch) {
+const ensureConfigPriority = function ({ build = {}, ...config }, context, branch) {
   return {
-    ...inlineConfig,
+    ...config,
     build,
     context: {
-      ...inlineConfig.context,
-      [context]: { ...inlineConfig, ...build, build },
-      [branch]: { ...inlineConfig, ...build, build },
+      ...config.context,
+      [context]: { ...config, ...build, build },
+      [branch]: { ...config, ...build, build },
     },
   }
 }

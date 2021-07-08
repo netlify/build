@@ -11,6 +11,7 @@ const { ensureConfigPriority } = require('../context')
 const { mergeConfigs } = require('../merge')
 const { parseOptionalConfig } = require('../parse')
 const { addConfigRedirects } = require('../redirects')
+const { simplifyConfig } = require('../simplify')
 const { serializeToml } = require('../utils/toml')
 
 const { applyMutations } = require('./apply')
@@ -26,7 +27,8 @@ const updateConfig = async function (configMutations, { buildDir, configPath, re
   }
 
   const inlineConfig = applyMutations({}, configMutations)
-  const normalizedInlineConfig = ensureConfigPriority(inlineConfig, context, branch)
+  const simplifiedConfig = simplifyConfig(inlineConfig)
+  const normalizedInlineConfig = ensureConfigPriority(simplifiedConfig, context, branch)
   const updatedConfig = await mergeWithConfig(normalizedInlineConfig, configPath)
   const finalConfig = await addConfigRedirects(updatedConfig, redirectsPath)
   await backupConfig({ buildDir, configPath, redirectsPath })

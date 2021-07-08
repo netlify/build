@@ -2,9 +2,7 @@
 
 const filterObj = require('filter-obj')
 
-const { removeFalsy } = require('../utils/remove_falsy')
-
-const { removeEmptyObject, removeEmptyArray } = require('./remove')
+const { simplifyConfig } = require('../simplify')
 
 // Make sure we are not printing secret values. Use an allow list.
 const cleanupConfig = function ({
@@ -78,40 +76,6 @@ const cleanupPlugin = function ({ package: packageName, origin, inputs = {} }) {
 
 const isPublicInput = function (key, input) {
   return typeof input === 'boolean'
-}
-
-// The resolved configuration gets assigned some default values (empty objects and arrays)
-// to make it more convenient to use without checking for `undefined`.
-// However those empty values are not useful to users, so we don't log them.
-const simplifyConfig = function ({
-  build: { environment, processing: { css, html, images, js, ...processing } = {}, services, ...build },
-  functions,
-  plugins,
-  redirects,
-  ...netlifyConfig
-}) {
-  const buildA = {
-    ...build,
-    ...removeEmptyArray(environment, 'environment'),
-    ...removeEmptyObject(
-      {
-        ...processing,
-        ...removeEmptyObject(css, 'css'),
-        ...removeEmptyObject(html, 'html'),
-        ...removeEmptyObject(images, 'images'),
-        ...removeEmptyObject(js, 'js'),
-      },
-      'processing',
-    ),
-    ...removeEmptyObject(services, 'services'),
-  }
-  return removeFalsy({
-    ...netlifyConfig,
-    ...removeEmptyObject(functions, 'functions'),
-    ...removeEmptyObject(buildA, 'build'),
-    ...removeEmptyArray(plugins, 'plugins'),
-    ...removeEmptyArray(redirects, 'redirects'),
-  })
 }
 
 module.exports = { cleanupConfig, cleanupEnvironment }

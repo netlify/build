@@ -20,7 +20,7 @@ const runUpdateConfig = async function (fixtureName, { configMutations = [buildC
 
 // `configMutations` used for testing
 const buildCommandMutation = { keys: ['build', 'command'], value: 'test', event: 'onPreBuild' }
-const redirectsMutation = { keys: ['redirects'], value: [], event: 'onPreBuild' }
+const redirectsMutation = { keys: ['redirects'], value: [{ from: '/one', to: '/two' }], event: 'onPreBuild' }
 
 // Initialize the fixture directory
 const initFixtureDir = async function (fixtureName) {
