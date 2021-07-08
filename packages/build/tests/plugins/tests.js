@@ -37,10 +37,6 @@ test('netlifyConfig properties are readonly (defineProperty) by default', async 
   await runFixture(t, 'config_readonly_define')
 })
 
-test('netlifyConfig properties are deeply readonly by default', async (t) => {
-  await runFixture(t, 'config_readonly_deep')
-})
-
 // This package currently supports Node 8 but not zip-it-and-ship-it
 // @todo remove once Node 8 support is removed
 if (!version.startsWith('v8.')) {
@@ -68,11 +64,11 @@ if (!version.startsWith('v8.')) {
     await runFixture(t, 'config_mutate_persist')
   })
 
-  test('netlifyConfig array properties cannot be mutated per index', async (t) => {
+  test('netlifyConfig array properties can be mutated per index', async (t) => {
     await runFixture(t, 'config_mutate_array_index')
   })
 
-  test('netlifyConfig array properties cannot be pushed', async (t) => {
+  test('netlifyConfig array properties can be pushed', async (t) => {
     await runFixture(t, 'config_mutate_array_push')
   })
 
@@ -133,6 +129,10 @@ if (!version.startsWith('v8.')) {
 // `util.inspect()`
 // @todo remove once Node 8 support is removed
 if (!version.startsWith('v8.')) {
+  test('netlifyConfig properties are deeply readonly by default', async (t) => {
+    await runFixture(t, 'config_readonly_deep')
+  })
+
   test('netlifyConfig is updated when redirects file is created by a plugin', async (t) => {
     const redirectsFile = `${FIXTURES_DIR}/config_create_redirects_plugin/_redirects`
     await del(redirectsFile)
