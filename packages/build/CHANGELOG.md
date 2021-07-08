@@ -1,5 +1,12 @@
 # Changelog
 
+## [15.7.0](https://www.github.com/netlify/build/compare/build-v15.6.0...build-v15.7.0) (2021-07-08)
+
+
+### Features
+
+* fix `_redirects` to `netlify.toml` before deploy ([#3259](https://www.github.com/netlify/build/issues/3259)) ([e32d076](https://www.github.com/netlify/build/commit/e32d076ab642b8a0df72c96d8726e161b65b182f))
+
 ## [15.6.0](https://www.github.com/netlify/build/compare/build-v15.5.0...build-v15.6.0) (2021-07-08)
 
 
