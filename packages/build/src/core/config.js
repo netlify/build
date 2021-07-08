@@ -1,7 +1,8 @@
+/* eslint-disable max-lines */
 'use strict'
 
 const resolveConfig = require('@netlify/config')
-const { updateConfig } = require('@netlify/config')
+const { updateConfig, restoreConfig } = require('@netlify/config')
 const mapObj = require('map-obj')
 
 const { getChildEnv } = require('../env/main')
@@ -157,6 +158,7 @@ const resolveUpdatedConfig = async function (configOpts, configMutations) {
 // container and we want to avoid saving files on local machines.
 const saveUpdatedConfig = async function ({
   configMutations,
+  buildDir,
   repositoryRoot,
   configPath = `${repositoryRoot}/netlify.toml`,
   redirectsPath,
@@ -170,9 +172,23 @@ const saveUpdatedConfig = async function ({
     return
   }
 
-  await updateConfig(configMutations, { configPath, redirectsPath, context, branch })
+  await updateConfig(configMutations, { buildDir, configPath, redirectsPath, context, branch })
   await logConfigOnUpload({ logs, configPath, debug })
   await logRedirectsOnUpload({ logs, redirectsPath, debug })
+}
+
+const restoreUpdatedConfig = async function ({
+  buildDir,
+  repositoryRoot,
+  configPath = `${repositoryRoot}/netlify.toml`,
+  redirectsPath,
+  saveConfig,
+}) {
+  if (!saveConfig) {
+    return
+  }
+
+  await restoreConfig({ buildDir, configPath, redirectsPath })
 }
 
 module.exports = {
@@ -180,4 +196,6 @@ module.exports = {
   loadConfig,
   resolveUpdatedConfig,
   saveUpdatedConfig,
+  restoreUpdatedConfig,
 }
+/* eslint-enable max-lines */

@@ -18,7 +18,7 @@ const { cleanupConfig } = require('./log/cleanup')
 const { logResult } = require('./log/main')
 const { mergeConfigs } = require('./merge')
 const { normalizeBeforeConfigMerge, normalizeAfterConfigMerge } = require('./merge_normalize')
-const { updateConfig } = require('./mutations/update')
+const { updateConfig, restoreConfig } = require('./mutations/update')
 const { addDefaultOpts, normalizeOpts } = require('./options/main')
 const { UI_ORIGIN, CONFIG_ORIGIN, INLINE_ORIGIN } = require('./origin')
 const { parseConfig } = require('./parse')
@@ -272,5 +272,6 @@ module.exports = resolveConfig
 // top-level function
 module.exports.cleanupConfig = cleanupConfig
 module.exports.updateConfig = updateConfig
+module.exports.restoreConfig = restoreConfig
 module.exports.EVENTS = EVENTS
 /* eslint-enable max-lines */
