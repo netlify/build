@@ -192,6 +192,20 @@ if (!version.startsWith('v8.')) {
   test('netlifyConfig.redirects can be assigned all at once', async (t) => {
     await runFixture(t, 'config_mutate_redirects_all')
   })
+
+  test('netlifyConfig.redirects can be modified before redirects file has been added', async (t) => {
+    const redirectsPath = `${FIXTURES_DIR}/config_mutate_redirects_before/_redirects`
+    await del(redirectsPath)
+    try {
+      await runFixture(t, 'config_mutate_redirects_before')
+    } finally {
+      await del(redirectsPath)
+    }
+  })
+
+  test('netlifyConfig.redirects can be modified after redirects file has been added', async (t) => {
+    await runFixture(t, 'config_mutate_redirects_after')
+  })
 }
 
 test('netlifyConfig.build.command can be changed', async (t) => {

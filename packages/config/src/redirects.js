@@ -2,10 +2,11 @@
 
 const { resolve } = require('path')
 
+// @todo: use `util.isDeepStrictEqual()` after dropping support for Node 8
+const fastDeepEqual = require('fast-deep-equal')
 const { parseFileRedirects, mergeRedirects, normalizeRedirects } = require('netlify-redirect-parser')
 
 const { warnRedirectsParsing } = require('./log/messages')
-const { INLINE_ORIGIN } = require('./origin')
 
 // Add `config.redirects`
 const addRedirects = async function ({
@@ -13,15 +14,17 @@ const addRedirects = async function ({
   config: {
     build: { publish },
     redirects: configRedirects = [],
-    redirectsOrigin,
   },
   logs,
 }) {
   const redirectsPath = resolve(publish, REDIRECTS_FILENAME)
   try {
-    const fileRedirects = await getFileRedirects(redirectsPath, redirectsOrigin)
-    const rawRedirects = mergeRedirects({ fileRedirects, configRedirects })
-    const redirects = normalizeRedirects(rawRedirects)
+    const normalizedConfigRedirects = normalizeRedirects(configRedirects)
+    const normalizedFileRedirects = await getFileRedirects(redirectsPath, normalizedConfigRedirects)
+    const redirects = mergeRedirects({
+      fileRedirects: normalizedFileRedirects,
+      configRedirects: normalizedConfigRedirects,
+    })
     return { config: { ...config, redirects }, redirectsPath }
     // @todo remove this failsafe once the code is stable
   } catch (error) {
@@ -32,13 +35,23 @@ const addRedirects = async function ({
 
 const REDIRECTS_FILENAME = '_redirects'
 
-// When redirects are overridden with `inlineConfig`, they override
-// everything, including file-based configuration like `_redirects`.
-// This is useful when plugins change the configuration, since
-// `inlineConfig.redirects` already include `_redirects` which was
-// previously parsed
-const getFileRedirects = async function (redirectsPath, redirectsOrigin) {
-  return redirectsOrigin === INLINE_ORIGIN ? [] : await parseFileRedirects(redirectsPath)
+const getFileRedirects = async function (redirectsPath, normalizedConfigRedirects) {
+  const fileRedirects = await parseFileRedirects(redirectsPath)
+  const normalizedFileRedirects = normalizeRedirects(fileRedirects)
+  return hasMergedFileRedirects(normalizedFileRedirects, normalizedConfigRedirects) ? [] : normalizedFileRedirects
+}
+
+// `configRedirects` might contain the content of `_redirects` already.
+// This happens when a plugin appends to `netlifyConfig.redirects` which already
+// contains `_redirects` rules and is transformed to an `inlineConfig` object,
+// which is itself parsed as `configRedirects`. In that case, we do not want
+// duplicate so we ignore `fileRedirects`.
+// The current logic works with the case where `_redirects` is added both before
+// and after modifying `netlifyConfig.redirects`.
+const hasMergedFileRedirects = function (normalizedFileRedirects, normalizedConfigRedirects) {
+  return normalizedConfigRedirects.some((configRedirect) =>
+    normalizedFileRedirects.some((fileRedirect) => fastDeepEqual(configRedirect, fileRedirect)),
+  )
 }
 
 module.exports = { addRedirects }
