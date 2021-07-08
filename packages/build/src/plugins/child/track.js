@@ -4,7 +4,6 @@ const isPlainObj = require('is-plain-obj')
 const mapObj = require('map-obj')
 
 const { addErrorInfo } = require('../../error/info')
-const { logConfigMutation } = require('../../log/messages/plugins')
 
 // `netlifyConfig` is read-only except for specific properties.
 // This requires a `Proxy` to:
@@ -83,8 +82,7 @@ const trackDefineProperty = function ({ parentKeys, configMutations, event }, pr
     value: trackObjectMutations(value, keys, { configMutations, event }),
   }
   // eslint-disable-next-line fp/no-mutating-methods
-  configMutations.push({ keys: jsonKeys, value, event })
-  logConfigMutation(keysString, value)
+  configMutations.push({ keys: jsonKeys, keysString, value, event })
   return Reflect.defineProperty(proxy, key, proxyDescriptor)
 }
 
