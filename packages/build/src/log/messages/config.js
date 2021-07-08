@@ -1,10 +1,12 @@
 'use strict'
 
+const { inspect } = require('util')
+
 const { cleanupConfig } = require('@netlify/config')
 
 const { DEFAULT_FEATURE_FLAGS } = require('../../core/feature_flags')
 const { omit } = require('../../utils/omit')
-const { logMessage, logObject, logSubHeader } = require('../logger')
+const { log, logMessage, logObject, logSubHeader } = require('../logger')
 const { THEME } = require('../theme')
 
 const logFlags = function (logs, flags, { debug }) {
@@ -105,6 +107,16 @@ const logContext = function (logs, context) {
   logMessage(logs, context)
 }
 
+const logConfigMutations = function (logs, newConfigMutations) {
+  newConfigMutations.forEach(({ keysString, value }) => {
+    logConfigMutation(logs, keysString, value)
+  })
+}
+
+const logConfigMutation = function (logs, keysString, value) {
+  log(logs, `Netlify configuration property "${keysString}" value changed to ${inspect(value, { colors: false })}.`)
+}
+
 module.exports = {
   logFlags,
   logBuildDir,
@@ -113,4 +125,5 @@ module.exports = {
   logConfigOnUpdate,
   logConfigOnError,
   logContext,
+  logConfigMutations,
 }

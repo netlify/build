@@ -6,7 +6,7 @@ const pFilter = require('p-filter')
 const pathExists = require('path-exists')
 
 const { resolveUpdatedConfig } = require('../core/config')
-const { logConfigOnUpdate } = require('../log/messages/config')
+const { logConfigMutations, logConfigOnUpdate } = require('../log/messages/config')
 
 // If `netlifyConfig` was updated or `_redirects` was created, the configuration
 // is updated by calling `@netlify/config` again.
@@ -25,6 +25,7 @@ const updateNetlifyConfig = async function ({
     return { netlifyConfig, configMutations }
   }
 
+  logConfigMutations(logs, newConfigMutations)
   const configMutationsA = [...configMutations, ...newConfigMutations]
   const { config: netlifyConfigA, redirectsPath: redirectsPathA } = await resolveUpdatedConfig(
     configOpts,
