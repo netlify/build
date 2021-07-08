@@ -9,6 +9,7 @@ const test = require('ava')
 const cpFile = require('cp-file')
 const cpy = require('cpy')
 const del = require('del')
+const pathExists = require('path-exists')
 const { spy } = require('sinon')
 
 const { removeDir } = require('../helpers/dir')
@@ -306,23 +307,20 @@ test('--saveConfig creates netlify.toml if it does not exist', async (t) => {
   const fixtureDir = `${FIXTURES_DIR}/config_save_empty`
   const configPath = `${fixtureDir}/netlify.toml`
   await del(configPath)
+  const { address, stopServer } = await startDeployServer()
   try {
-    const { address, stopServer } = await startDeployServer()
-    try {
-      await runFixture(t, 'config_save_empty', {
-        flags: {
-          buildbotServerSocket: address,
-          saveConfig: true,
-          context: 'production',
-          branch: 'main',
-          defaultConfig: { plugins: [{ package: './plugin.js' }] },
-        },
-      })
-    } finally {
-      await stopServer()
-    }
+    await runFixture(t, 'config_save_empty', {
+      flags: {
+        buildbotServerSocket: address,
+        saveConfig: true,
+        context: 'production',
+        branch: 'main',
+        defaultConfig: { plugins: [{ package: './plugin.js' }] },
+      },
+    })
+    t.false(await pathExists(configPath))
   } finally {
-    await del(configPath)
+    await stopServer()
   }
 })
 
@@ -351,23 +349,19 @@ test('--saveConfig is performed before deploy', async (t) => {
   const fixtureDir = `${FIXTURES_DIR}/config_save_deploy`
   const configPath = `${fixtureDir}/netlify.toml`
   await del(configPath)
+  const { address, stopServer } = await startDeployServer()
   try {
-    const { address, stopServer } = await startDeployServer()
-    try {
-      await runFixture(t, 'config_save_deploy', {
-        flags: {
-          buildbotServerSocket: address,
-          saveConfig: true,
-          context: 'production',
-          branch: 'main',
-          defaultConfig: { plugins: [{ package: './plugin.js' }] },
-        },
-      })
-    } finally {
-      await stopServer()
-    }
+    await runFixture(t, 'config_save_deploy', {
+      flags: {
+        buildbotServerSocket: address,
+        saveConfig: true,
+        context: 'production',
+        branch: 'main',
+        defaultConfig: { plugins: [{ package: './plugin.js' }] },
+      },
+    })
   } finally {
-    await del(configPath)
+    await stopServer()
   }
 })
 
