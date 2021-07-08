@@ -1,5 +1,12 @@
 # Changelog
 
+## [12.3.0](https://www.github.com/netlify/build/compare/config-v12.2.1...config-v12.3.0) (2021-07-08)
+
+
+### Features
+
+* fix `_redirects` to `netlify.toml` before deploy ([#3259](https://www.github.com/netlify/build/issues/3259)) ([e32d076](https://www.github.com/netlify/build/commit/e32d076ab642b8a0df72c96d8726e161b65b182f))
+
 ### [12.2.1](https://www.github.com/netlify/build/compare/config-v12.2.0...config-v12.2.1) (2021-07-08)
 
 
