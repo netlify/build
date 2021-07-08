@@ -6,6 +6,7 @@ const pFilter = require('p-filter')
 const pathExists = require('path-exists')
 
 const { resolveUpdatedConfig } = require('../core/config')
+const { addErrorInfo } = require('../error/info')
 const { logConfigMutations, logConfigOnUpdate } = require('../log/messages/config')
 
 // If `netlifyConfig` was updated or `_redirects` was created, the configuration
@@ -25,6 +26,7 @@ const updateNetlifyConfig = async function ({
     return { netlifyConfig, configMutations }
   }
 
+  validateConfigMutations(newConfigMutations)
   logConfigMutations(logs, newConfigMutations)
   const configMutationsA = [...configMutations, ...newConfigMutations]
   const { config: netlifyConfigA, redirectsPath: redirectsPathA } = await resolveUpdatedConfig(
@@ -59,6 +61,39 @@ const listConfigSideFiles = async function (redirectsPath) {
   const configSideFiles = await pFilter([redirectsPath], pathExists)
   // eslint-disable-next-line fp/no-mutating-methods
   return configSideFiles.sort()
+}
+
+// Validate each new configuration change
+const validateConfigMutations = function (newConfigMutations) {
+  try {
+    newConfigMutations.forEach(validateConfigMutation)
+  } catch (error) {
+    addErrorInfo(error, { type: 'pluginValidation' })
+    throw error
+  }
+}
+
+const validateConfigMutation = function ({ keysString, keys, value }) {
+  forbidArrayElementAssign(keys, keysString)
+  forbidEmptyAssign(value, keysString)
+}
+
+const forbidArrayElementAssign = function (keys, keyString) {
+  const key = keys[keys.length - 1]
+  const index = typeof key === 'string' ? Number(key) : key
+  const isArrayIndex = Number.isInteger(index)
+  if (isArrayIndex) {
+    throw new Error(`Setting "netlifyConfig.${keyString}" individual array element is not allowed.
+Please set the full array instead.`)
+  }
+}
+
+// Triggered when calling `netlifyConfig.{key} = undefined | null`
+const forbidEmptyAssign = function (value, keysString) {
+  if (value === undefined || value === null) {
+    throw new Error(`Setting "netlifyConfig.${keysString}" to ${value} is not allowed.
+Please set this property to a specific value instead.`)
+  }
 }
 
 module.exports = { updateNetlifyConfig, listConfigSideFiles }
