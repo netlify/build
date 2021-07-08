@@ -1,5 +1,12 @@
 # Changelog
 
+## [15.11.0](https://www.github.com/netlify/build/compare/build-v15.10.0...build-v15.11.0) (2021-07-08)
+
+
+### Features
+
+* delete `netlify.toml` after deploy if it was created due to configuration changes ([#3271](https://www.github.com/netlify/build/issues/3271)) ([444087d](https://www.github.com/netlify/build/commit/444087d528a0e8450031eda65cd5877980a5fa70))
+
 ## [15.10.0](https://www.github.com/netlify/build/compare/build-v15.9.0...build-v15.10.0) (2021-07-08)
 
 
