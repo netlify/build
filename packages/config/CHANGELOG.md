@@ -1,5 +1,12 @@
 # Changelog
 
+## [12.6.0](https://www.github.com/netlify/build/compare/config-v12.5.0...config-v12.6.0) (2021-07-08)
+
+
+### Features
+
+* delete `netlify.toml` after deploy if it was created due to configuration changes ([#3271](https://www.github.com/netlify/build/issues/3271)) ([444087d](https://www.github.com/netlify/build/commit/444087d528a0e8450031eda65cd5877980a5fa70))
+
 ## [12.5.0](https://www.github.com/netlify/build/compare/config-v12.4.0...config-v12.5.0) (2021-07-08)
 
 
