@@ -75,8 +75,8 @@ const backupConfig = async function ({ buildDir, configPath, redirectsPath }) {
 const restoreConfig = async function ({ buildDir, configPath, redirectsPath }) {
   const tempDir = getTempDir(buildDir)
   await Promise.all([
-    copyIfExists(`${tempDir}/netlify.toml`, configPath),
-    copyIfExists(`${tempDir}/_redirects`, redirectsPath),
+    copyOrDelete(`${tempDir}/netlify.toml`, configPath),
+    copyOrDelete(`${tempDir}/_redirects`, redirectsPath),
   ])
 }
 
@@ -90,6 +90,17 @@ const copyIfExists = async function (src, dest) {
   }
 
   await cpFile(src, dest)
+}
+
+const copyOrDelete = async function (src, dest) {
+  if (await pathExists(src)) {
+    await cpFile(src, dest)
+    return
+  }
+
+  if (await pathExists(dest)) {
+    await pUnlink(dest)
+  }
 }
 
 module.exports = { updateConfig, restoreConfig }
