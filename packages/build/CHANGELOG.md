@@ -1,5 +1,12 @@
 # Changelog
 
+## [15.5.0](https://www.github.com/netlify/build/compare/build-v15.4.0...build-v15.5.0) (2021-07-08)
+
+
+### Features
+
+* move configMutations validation logic ([#3252](https://www.github.com/netlify/build/issues/3252)) ([db11947](https://www.github.com/netlify/build/commit/db119472d6f8105409ac8b560bd51a140b84226d))
+
 ## [15.4.0](https://www.github.com/netlify/build/compare/build-v15.3.1...build-v15.4.0) (2021-07-08)
 
 
