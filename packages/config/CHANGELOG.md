@@ -1,5 +1,12 @@
 # Changelog
 
+## [12.4.0](https://www.github.com/netlify/build/compare/config-v12.3.0...config-v12.4.0) (2021-07-08)
+
+
+### Features
+
+* restore `netlify.toml` and `_redirects` after deploy ([#3265](https://www.github.com/netlify/build/issues/3265)) ([2441d6a](https://www.github.com/netlify/build/commit/2441d6a8b2be81212384816a0686221d4a6a2577))
+
 ## [12.3.0](https://www.github.com/netlify/build/compare/config-v12.2.1...config-v12.3.0) (2021-07-08)
 
 
