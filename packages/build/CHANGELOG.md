@@ -1,5 +1,12 @@
 # Changelog
 
+### [15.3.1](https://www.github.com/netlify/build/compare/build-v15.3.0...build-v15.3.1) (2021-07-08)
+
+
+### Bug Fixes
+
+* allow `netlifyConfig.redirects` to be modified before `_redirects` is added ([#3242](https://www.github.com/netlify/build/issues/3242)) ([f3330a6](https://www.github.com/netlify/build/commit/f3330a685aeb0320e1ac445bbe7a908e7a83dbda))
+
 ## [15.3.0](https://www.github.com/netlify/build/compare/build-v15.2.2...build-v15.3.0) (2021-07-08)
 
 
