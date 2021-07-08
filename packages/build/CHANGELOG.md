@@ -1,5 +1,13 @@
 # Changelog
 
+## [15.4.0](https://www.github.com/netlify/build/compare/build-v15.3.1...build-v15.4.0) (2021-07-08)
+
+
+### Features
+
+* do not validate against `preventExtensions()` nor `setPrototypeOf()` ([#3250](https://www.github.com/netlify/build/issues/3250)) ([6fed537](https://www.github.com/netlify/build/commit/6fed537e071617f7f6acbe84b8fb98d39f7e2677))
+* move configMutations logging logic ([#3249](https://www.github.com/netlify/build/issues/3249)) ([8764874](https://www.github.com/netlify/build/commit/8764874f09b82a336700366b0fca6407a1dacb8c))
+
 ### [15.3.1](https://www.github.com/netlify/build/compare/build-v15.3.0...build-v15.3.1) (2021-07-08)
 
 
