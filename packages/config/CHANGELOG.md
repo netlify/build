@@ -1,5 +1,13 @@
 # Changelog
 
+### [12.2.1](https://www.github.com/netlify/build/compare/config-v12.2.0...config-v12.2.1) (2021-07-08)
+
+
+### Bug Fixes
+
+* allow `netlifyConfig.redirects` to be modified before `_redirects` is added ([#3242](https://www.github.com/netlify/build/issues/3242)) ([f3330a6](https://www.github.com/netlify/build/commit/f3330a685aeb0320e1ac445bbe7a908e7a83dbda))
+* **deps:** update dependency netlify-redirect-parser to ^8.1.0 ([#3246](https://www.github.com/netlify/build/issues/3246)) ([2f0b9b1](https://www.github.com/netlify/build/commit/2f0b9b1d8350caafee48d38cd05dabf7037a6c20))
+
 ## [12.2.0](https://www.github.com/netlify/build/compare/config-v12.1.1...config-v12.2.0) (2021-07-08)
 
 
