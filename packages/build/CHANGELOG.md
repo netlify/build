@@ -1,5 +1,12 @@
 # Changelog
 
+## [15.10.0](https://www.github.com/netlify/build/compare/build-v15.9.0...build-v15.10.0) (2021-07-08)
+
+
+### Features
+
+* simplify the `netlify.toml` being saved on configuration changes ([#3268](https://www.github.com/netlify/build/issues/3268)) ([15987fe](https://www.github.com/netlify/build/commit/15987fe0d869f01110d4d97c8e8395580eb1a9f7))
+
 ## [15.9.0](https://www.github.com/netlify/build/compare/build-v15.8.0...build-v15.9.0) (2021-07-08)
 
 
