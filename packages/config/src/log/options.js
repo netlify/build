@@ -1,9 +1,8 @@
 'use strict'
 
 const { DEFAULT_FEATURE_FLAGS } = require('../options/feature_flags')
+const { removeEmptyArray } = require('../simplify')
 const { removeFalsy } = require('../utils/remove_falsy')
-
-const { removeEmptyArray } = require('./remove')
 
 // Use an allowlist to prevent printing confidential values.
 const cleanupConfigOpts = function ({
