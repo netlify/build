@@ -1,3 +1,3 @@
-.github/CODEOWNERS    @netlify/docs
+.github/CODEOWNERS    @netlify/netlify-dev
 docs/                 @netlify/docs
 docs.js               @netlify/docs
