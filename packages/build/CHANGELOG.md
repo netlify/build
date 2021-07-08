@@ -1,5 +1,12 @@
 # Changelog
 
+## [15.8.0](https://www.github.com/netlify/build/compare/build-v15.7.0...build-v15.8.0) (2021-07-08)
+
+
+### Features
+
+* add debug logs to deploys ([#3262](https://www.github.com/netlify/build/issues/3262)) ([5748f92](https://www.github.com/netlify/build/commit/5748f92fa82efd0a892f45a015f39a03dbf41159))
+
 ## [15.7.0](https://www.github.com/netlify/build/compare/build-v15.6.0...build-v15.7.0) (2021-07-08)
 
 
