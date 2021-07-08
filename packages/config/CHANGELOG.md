@@ -1,5 +1,12 @@
 # Changelog
 
+## [12.5.0](https://www.github.com/netlify/build/compare/config-v12.4.0...config-v12.5.0) (2021-07-08)
+
+
+### Features
+
+* simplify the `netlify.toml` being saved on configuration changes ([#3268](https://www.github.com/netlify/build/issues/3268)) ([15987fe](https://www.github.com/netlify/build/commit/15987fe0d869f01110d4d97c8e8395580eb1a9f7))
+
 ## [12.4.0](https://www.github.com/netlify/build/compare/config-v12.3.0...config-v12.4.0) (2021-07-08)
 
 
