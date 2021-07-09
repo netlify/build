@@ -1,13 +1,17 @@
 'use strict'
 
-const { inspect } = require('util')
+const { readFile } = require('fs')
+const { inspect, promisify } = require('util')
 
 const { cleanupConfig } = require('@netlify/config')
+const pathExists = require('path-exists')
 
 const { DEFAULT_FEATURE_FLAGS } = require('../../core/feature_flags')
 const { omit } = require('../../utils/omit')
 const { log, logMessage, logObject, logSubHeader } = require('../logger')
 const { THEME } = require('../theme')
+
+const pReadFile = promisify(readFile)
 
 const logFlags = function (logs, flags, { debug }) {
   const flagsA = cleanFeatureFlags(flags)
@@ -117,6 +121,38 @@ const logConfigMutation = function (logs, keysString, value) {
   log(logs, `Netlify configuration property "${keysString}" value changed to ${inspect(value, { colors: false })}.`)
 }
 
+const logConfigOnUpload = async function ({ logs, configPath, debug }) {
+  if (!debug) {
+    return
+  }
+
+  logSubHeader(logs, 'Uploaded config')
+
+  if (!(await pathExists(configPath))) {
+    logMessage(logs, 'No netlify.toml')
+    return
+  }
+
+  const configContents = await pReadFile(configPath, 'utf8')
+  logMessage(logs, configContents)
+}
+
+const logRedirectsOnUpload = async function ({ logs, redirectsPath, debug }) {
+  if (!debug) {
+    return
+  }
+
+  logSubHeader(logs, 'Uploaded _redirects')
+
+  if (!(await pathExists(redirectsPath))) {
+    logMessage(logs, 'No _redirects\n')
+    return
+  }
+
+  const redirectsContents = await pReadFile(redirectsPath, 'utf8')
+  logMessage(logs, `${redirectsContents}\n`)
+}
+
 module.exports = {
   logFlags,
   logBuildDir,
@@ -126,4 +162,6 @@ module.exports = {
   logConfigOnError,
   logContext,
   logConfigMutations,
+  logConfigOnUpload,
+  logRedirectsOnUpload,
 }

@@ -1,13 +1,21 @@
+/* eslint-disable max-lines */
 'use strict'
 
 const resolveConfig = require('@netlify/config')
-const { updateConfig } = require('@netlify/config')
+const { updateConfig, restoreConfig } = require('@netlify/config')
 const mapObj = require('map-obj')
 
 const { getChildEnv } = require('../env/main')
 const { addApiErrorHandlers } = require('../error/api')
 const { addErrorInfo } = require('../error/info')
-const { logBuildDir, logConfigPath, logConfig, logContext } = require('../log/messages/config')
+const {
+  logBuildDir,
+  logConfigPath,
+  logConfig,
+  logContext,
+  logConfigOnUpload,
+  logRedirectsOnUpload,
+} = require('../log/messages/config')
 const { measureDuration } = require('../time/main')
 const { getPackageJson } = require('../utils/package')
 
@@ -150,18 +158,44 @@ const resolveUpdatedConfig = async function (configOpts, configMutations) {
 // container and we want to avoid saving files on local machines.
 const saveUpdatedConfig = async function ({
   configMutations,
+  buildDir,
   repositoryRoot,
   configPath = `${repositoryRoot}/netlify.toml`,
   redirectsPath,
+  logs,
   context,
   branch,
+  debug,
   saveConfig,
 }) {
   if (!saveConfig) {
     return
   }
 
-  await updateConfig(configMutations, { configPath, redirectsPath, context, branch })
+  await updateConfig(configMutations, { buildDir, configPath, redirectsPath, context, branch })
+  await logConfigOnUpload({ logs, configPath, debug })
+  await logRedirectsOnUpload({ logs, redirectsPath, debug })
 }
 
-module.exports = { getConfigOpts, loadConfig, resolveUpdatedConfig, saveUpdatedConfig }
+const restoreUpdatedConfig = async function ({
+  buildDir,
+  repositoryRoot,
+  configPath = `${repositoryRoot}/netlify.toml`,
+  redirectsPath,
+  saveConfig,
+}) {
+  if (!saveConfig) {
+    return
+  }
+
+  await restoreConfig({ buildDir, configPath, redirectsPath })
+}
+
+module.exports = {
+  getConfigOpts,
+  loadConfig,
+  resolveUpdatedConfig,
+  saveUpdatedConfig,
+  restoreUpdatedConfig,
+}
+/* eslint-enable max-lines */

@@ -9,23 +9,11 @@ const { parseFileRedirects, mergeRedirects, normalizeRedirects } = require('netl
 const { warnRedirectsParsing } = require('./log/messages')
 
 // Add `config.redirects`
-const addRedirects = async function ({
-  config,
-  config: {
-    build: { publish },
-    redirects: configRedirects = [],
-  },
-  logs,
-}) {
-  const redirectsPath = resolve(publish, REDIRECTS_FILENAME)
+const addRedirects = async function (config, logs) {
+  const redirectsPath = resolve(config.build.publish, REDIRECTS_FILENAME)
   try {
-    const normalizedConfigRedirects = normalizeRedirects(configRedirects)
-    const normalizedFileRedirects = await getFileRedirects(redirectsPath, normalizedConfigRedirects)
-    const redirects = mergeRedirects({
-      fileRedirects: normalizedFileRedirects,
-      configRedirects: normalizedConfigRedirects,
-    })
-    return { config: { ...config, redirects }, redirectsPath }
+    const configWithRedirects = await addConfigRedirects(config, redirectsPath)
+    return { config: configWithRedirects, redirectsPath }
     // @todo remove this failsafe once the code is stable
   } catch (error) {
     warnRedirectsParsing(logs, error.message)
@@ -34,6 +22,16 @@ const addRedirects = async function ({
 }
 
 const REDIRECTS_FILENAME = '_redirects'
+
+const addConfigRedirects = async function ({ redirects: configRedirects = [], ...config }, redirectsPath) {
+  const normalizedConfigRedirects = normalizeRedirects(configRedirects)
+  const normalizedFileRedirects = await getFileRedirects(redirectsPath, normalizedConfigRedirects)
+  const redirects = mergeRedirects({
+    fileRedirects: normalizedFileRedirects,
+    configRedirects: normalizedConfigRedirects,
+  })
+  return { ...config, redirects }
+}
 
 const getFileRedirects = async function (redirectsPath, normalizedConfigRedirects) {
   const fileRedirects = await parseFileRedirects(redirectsPath)
@@ -54,4 +52,4 @@ const hasMergedFileRedirects = function (normalizedFileRedirects, normalizedConf
   )
 }
 
-module.exports = { addRedirects }
+module.exports = { addRedirects, addConfigRedirects }

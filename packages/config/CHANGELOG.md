@@ -1,5 +1,33 @@
 # Changelog
 
+## [12.6.0](https://www.github.com/netlify/build/compare/config-v12.5.0...config-v12.6.0) (2021-07-08)
+
+
+### Features
+
+* delete `netlify.toml` after deploy if it was created due to configuration changes ([#3271](https://www.github.com/netlify/build/issues/3271)) ([444087d](https://www.github.com/netlify/build/commit/444087d528a0e8450031eda65cd5877980a5fa70))
+
+## [12.5.0](https://www.github.com/netlify/build/compare/config-v12.4.0...config-v12.5.0) (2021-07-08)
+
+
+### Features
+
+* simplify the `netlify.toml` being saved on configuration changes ([#3268](https://www.github.com/netlify/build/issues/3268)) ([15987fe](https://www.github.com/netlify/build/commit/15987fe0d869f01110d4d97c8e8395580eb1a9f7))
+
+## [12.4.0](https://www.github.com/netlify/build/compare/config-v12.3.0...config-v12.4.0) (2021-07-08)
+
+
+### Features
+
+* restore `netlify.toml` and `_redirects` after deploy ([#3265](https://www.github.com/netlify/build/issues/3265)) ([2441d6a](https://www.github.com/netlify/build/commit/2441d6a8b2be81212384816a0686221d4a6a2577))
+
+## [12.3.0](https://www.github.com/netlify/build/compare/config-v12.2.1...config-v12.3.0) (2021-07-08)
+
+
+### Features
+
+* fix `_redirects` to `netlify.toml` before deploy ([#3259](https://www.github.com/netlify/build/issues/3259)) ([e32d076](https://www.github.com/netlify/build/commit/e32d076ab642b8a0df72c96d8726e161b65b182f))
+
 ### [12.2.1](https://www.github.com/netlify/build/compare/config-v12.2.0...config-v12.2.1) (2021-07-08)
 
 

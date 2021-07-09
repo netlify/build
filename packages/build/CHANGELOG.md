@@ -1,5 +1,40 @@
 # Changelog
 
+## [15.11.0](https://www.github.com/netlify/build/compare/build-v15.10.0...build-v15.11.0) (2021-07-08)
+
+
+### Features
+
+* delete `netlify.toml` after deploy if it was created due to configuration changes ([#3271](https://www.github.com/netlify/build/issues/3271)) ([444087d](https://www.github.com/netlify/build/commit/444087d528a0e8450031eda65cd5877980a5fa70))
+
+## [15.10.0](https://www.github.com/netlify/build/compare/build-v15.9.0...build-v15.10.0) (2021-07-08)
+
+
+### Features
+
+* simplify the `netlify.toml` being saved on configuration changes ([#3268](https://www.github.com/netlify/build/issues/3268)) ([15987fe](https://www.github.com/netlify/build/commit/15987fe0d869f01110d4d97c8e8395580eb1a9f7))
+
+## [15.9.0](https://www.github.com/netlify/build/compare/build-v15.8.0...build-v15.9.0) (2021-07-08)
+
+
+### Features
+
+* restore `netlify.toml` and `_redirects` after deploy ([#3265](https://www.github.com/netlify/build/issues/3265)) ([2441d6a](https://www.github.com/netlify/build/commit/2441d6a8b2be81212384816a0686221d4a6a2577))
+
+## [15.8.0](https://www.github.com/netlify/build/compare/build-v15.7.0...build-v15.8.0) (2021-07-08)
+
+
+### Features
+
+* add debug logs to deploys ([#3262](https://www.github.com/netlify/build/issues/3262)) ([5748f92](https://www.github.com/netlify/build/commit/5748f92fa82efd0a892f45a015f39a03dbf41159))
+
+## [15.7.0](https://www.github.com/netlify/build/compare/build-v15.6.0...build-v15.7.0) (2021-07-08)
+
+
+### Features
+
+* fix `_redirects` to `netlify.toml` before deploy ([#3259](https://www.github.com/netlify/build/issues/3259)) ([e32d076](https://www.github.com/netlify/build/commit/e32d076ab642b8a0df72c96d8726e161b65b182f))
+
 ## [15.6.0](https://www.github.com/netlify/build/compare/build-v15.5.0...build-v15.6.0) (2021-07-08)
 
 

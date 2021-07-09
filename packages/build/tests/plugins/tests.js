@@ -12,7 +12,6 @@ const del = require('del')
 const pathExists = require('path-exists')
 const { spy } = require('sinon')
 
-const { runFixture: runFixtureConfig } = require('../../../config/tests/helpers/main')
 const { removeDir } = require('../helpers/dir')
 const { runFixture, FIXTURES_DIR } = require('../helpers/main')
 const { startServer } = require('../helpers/server')
@@ -198,6 +197,34 @@ if (!version.startsWith('v8.')) {
   test('netlifyConfig.redirects can be modified after redirects file has been added', async (t) => {
     await runFixture(t, 'config_mutate_redirects_after')
   })
+
+  test('--saveConfig deletes redirects file if redirects were changed', async (t) => {
+    const fixtureDir = `${FIXTURES_DIR}/config_save_redirects`
+    const fixtureConfigPath = `${fixtureDir}/netlify.toml`
+    const configPath = `${fixtureDir}/test_netlify.toml`
+    const fixtureRedirectsPath = `${fixtureDir}/_redirects_file`
+    const redirectsPath = `${fixtureDir}/_redirects`
+    await Promise.all([cpFile(fixtureConfigPath, configPath), cpFile(fixtureRedirectsPath, redirectsPath)])
+    const { address, stopServer } = await startDeployServer()
+    await del(redirectsPath)
+    try {
+      try {
+        await runFixture(t, 'config_save_redirects', {
+          flags: {
+            buildbotServerSocket: address,
+            config: configPath,
+            saveConfig: true,
+            context: 'production',
+            branch: 'main',
+          },
+        })
+      } finally {
+        await stopServer()
+      }
+    } finally {
+      await del(redirectsPath)
+    }
+  })
 }
 
 test('netlifyConfig.build.command can be changed', async (t) => {
@@ -248,86 +275,6 @@ test('--saveConfig saves the configuration changes as netlify.toml', async (t) =
   const { address, stopServer } = await startDeployServer()
   try {
     await runFixture(t, 'config_save_changes', {
-      snapshot: false,
-      flags: { buildbotServerSocket: address, config: configPath, saveConfig: true },
-    })
-  } finally {
-    await stopServer()
-  }
-  await runFixtureConfig(t, 'config_save_changes', { flags: { config: configPath } })
-})
-
-test('--saveConfig is required to save the configuration changes as netlify.toml', async (t) => {
-  const fixtureDir = `${FIXTURES_DIR}/config_save_none`
-  const fixtureConfigPath = `${fixtureDir}/netlify.toml`
-  const configPath = `${fixtureDir}/test_netlify.toml`
-  await cpFile(fixtureConfigPath, configPath)
-  const { address, stopServer } = await startDeployServer()
-  try {
-    await runFixture(t, 'config_save_none', {
-      snapshot: false,
-      flags: { buildbotServerSocket: address, config: configPath },
-    })
-  } finally {
-    await stopServer()
-  }
-  await runFixtureConfig(t, 'config_save_none', { flags: { config: configPath } })
-})
-
-test('--saveConfig creates netlify.toml if it does not exist', async (t) => {
-  const fixtureDir = `${FIXTURES_DIR}/config_save_empty`
-  const configPath = `${fixtureDir}/netlify.toml`
-  await del(configPath)
-  try {
-    const { address, stopServer } = await startDeployServer()
-    try {
-      await runFixture(t, 'config_save_empty', {
-        snapshot: false,
-        flags: {
-          buildbotServerSocket: address,
-          saveConfig: true,
-          defaultConfig: { plugins: [{ package: './plugin.js' }] },
-        },
-      })
-    } finally {
-      await stopServer()
-    }
-    t.true(await pathExists(configPath))
-    await runFixtureConfig(t, 'config_save_empty', { flags: { config: configPath } })
-  } finally {
-    await del(configPath)
-  }
-})
-
-test('--saveConfig deletes redirects file if redirects were changed', async (t) => {
-  const fixtureDir = `${FIXTURES_DIR}/config_save_redirects`
-  const fixtureConfigPath = `${fixtureDir}/netlify.toml`
-  const configPath = `${fixtureDir}/test_netlify.toml`
-  const fixtureRedirectsPath = `${fixtureDir}/_redirects_file`
-  const redirectsPath = `${fixtureDir}/_redirects`
-  await Promise.all([cpFile(fixtureConfigPath, configPath), cpFile(fixtureRedirectsPath, redirectsPath)])
-  const { address, stopServer } = await startDeployServer()
-  try {
-    await runFixture(t, 'config_save_redirects', {
-      snapshot: false,
-      flags: { buildbotServerSocket: address, config: configPath, saveConfig: true },
-    })
-  } finally {
-    await stopServer()
-  }
-  t.false(await pathExists(redirectsPath))
-  await runFixtureConfig(t, 'config_save_redirects', { flags: { config: configPath } })
-})
-
-test('--saveConfig gives higher priority to configuration changes than context properties', async (t) => {
-  const fixtureDir = `${FIXTURES_DIR}/config_save_context`
-  const fixtureConfigPath = `${fixtureDir}/netlify.toml`
-  const configPath = `${fixtureDir}/test_netlify.toml`
-  await cpFile(fixtureConfigPath, configPath)
-  const { address, stopServer } = await startDeployServer()
-  try {
-    await runFixture(t, 'config_save_context', {
-      snapshot: false,
       flags: {
         buildbotServerSocket: address,
         config: configPath,
@@ -339,33 +286,82 @@ test('--saveConfig gives higher priority to configuration changes than context p
   } finally {
     await stopServer()
   }
-  await runFixtureConfig(t, 'config_save_context', { flags: { config: configPath } })
+})
+
+test('--saveConfig is required to save the configuration changes as netlify.toml', async (t) => {
+  const fixtureDir = `${FIXTURES_DIR}/config_save_none`
+  const fixtureConfigPath = `${fixtureDir}/netlify.toml`
+  const configPath = `${fixtureDir}/test_netlify.toml`
+  await cpFile(fixtureConfigPath, configPath)
+  const { address, stopServer } = await startDeployServer()
+  try {
+    await runFixture(t, 'config_save_none', {
+      flags: { buildbotServerSocket: address, config: configPath, context: 'production', branch: 'main' },
+    })
+  } finally {
+    await stopServer()
+  }
+})
+
+test('--saveConfig creates netlify.toml if it does not exist', async (t) => {
+  const fixtureDir = `${FIXTURES_DIR}/config_save_empty`
+  const configPath = `${fixtureDir}/netlify.toml`
+  await del(configPath)
+  const { address, stopServer } = await startDeployServer()
+  try {
+    await runFixture(t, 'config_save_empty', {
+      flags: {
+        buildbotServerSocket: address,
+        saveConfig: true,
+        context: 'production',
+        branch: 'main',
+        defaultConfig: { plugins: [{ package: './plugin.js' }] },
+      },
+    })
+    t.false(await pathExists(configPath))
+  } finally {
+    await stopServer()
+  }
+})
+
+test('--saveConfig gives higher priority to configuration changes than context properties', async (t) => {
+  const fixtureDir = `${FIXTURES_DIR}/config_save_context`
+  const fixtureConfigPath = `${fixtureDir}/netlify.toml`
+  const configPath = `${fixtureDir}/test_netlify.toml`
+  await cpFile(fixtureConfigPath, configPath)
+  const { address, stopServer } = await startDeployServer()
+  try {
+    await runFixture(t, 'config_save_context', {
+      flags: {
+        buildbotServerSocket: address,
+        config: configPath,
+        saveConfig: true,
+        context: 'production',
+        branch: 'main',
+      },
+    })
+  } finally {
+    await stopServer()
+  }
 })
 
 test('--saveConfig is performed before deploy', async (t) => {
   const fixtureDir = `${FIXTURES_DIR}/config_save_deploy`
   const configPath = `${fixtureDir}/netlify.toml`
   await del(configPath)
+  const { address, stopServer } = await startDeployServer()
   try {
-    const { address, stopServer } = await startDeployServer({
-      onRequest() {
-        t.true(pathExists.sync(configPath))
+    await runFixture(t, 'config_save_deploy', {
+      flags: {
+        buildbotServerSocket: address,
+        saveConfig: true,
+        context: 'production',
+        branch: 'main',
+        defaultConfig: { plugins: [{ package: './plugin.js' }] },
       },
     })
-    try {
-      await runFixture(t, 'config_save_deploy', {
-        snapshot: false,
-        flags: {
-          buildbotServerSocket: address,
-          saveConfig: true,
-          defaultConfig: { plugins: [{ package: './plugin.js' }] },
-        },
-      })
-    } finally {
-      await stopServer()
-    }
   } finally {
-    await del(configPath)
+    await stopServer()
   }
 })
 
