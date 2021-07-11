@@ -1,0 +1,22 @@
+{
+  "id": "astro",
+  "name": "Astro",
+  "category": "static_site_generator",
+  "detect": {
+    "npmDependencies": ["astro"],
+    "excludedNpmDependencies": [],
+    "configFiles": ["astro.config.mjs"]
+  },
+  "dev": {
+    "command": "astro dev",
+    "port": 3000,
+    "pollingStrategies": [{ "name": "TCP" }, { "name": "HTTP" }]
+  },
+  "build": {
+    "command": "astro build",
+    "directory": "dist"
+  },
+  "staticAssetsDirectory": "public",
+  "env": {},
+  "plugins": []
+}

@@ -3,6 +3,7 @@
 // is always first, if several frameworks are detected at once
 const FRAMEWORKS = [
   // Static site generators
+  require('./astro.json'),
   require('./docusaurus.json'),
   require('./docusaurus-v2.json'),
   require('./eleventy.json'),
