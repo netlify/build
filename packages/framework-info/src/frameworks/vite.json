@@ -3,18 +3,18 @@
   "name": "Vite",
   "category": "build_tool",
   "detect": {
-      "npmDependencies": ["vite"],
-      "excludedNpmDependencies": [],
-      "configFiles": []
+    "npmDependencies": ["vite"],
+    "excludedNpmDependencies": [],
+    "configFiles": []
   },
   "dev": {
-      "command": "vite",
-      "port": 3000,
-      "pollingStrategies": [{ "name": "TCP" }, { "name": "HTTP" }]
+    "command": "vite",
+    "port": 3000,
+    "pollingStrategies": [{ "name": "TCP" }]
   },
   "build": {
-      "command": "vite build",
-      "directory": "dist"
+    "command": "vite build",
+    "directory": "dist"
   },
   "env": {},
   "plugins": []
