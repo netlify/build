@@ -118,7 +118,9 @@ const getFramework = async function (frameworkId, context) {
 const getFrameworkById = function (frameworkId) {
   const framework = FRAMEWORKS.find(({ id }) => id === frameworkId)
   if (framework === undefined) {
-    const frameworkIds = FRAMEWORKS.map((knownFramework) => getFrameworkId(knownFramework)).join(', ')
+    const frameworkIds = FRAMEWORKS.map((knownFramework) => getFrameworkId(knownFramework))
+      .sort()
+      .join(', ')
     throw new Error(`Invalid framework "${frameworkId}". It should be one of: ${frameworkIds}`)
   }
   return framework

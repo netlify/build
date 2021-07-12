@@ -37,3 +37,13 @@ test('Should allow testing a specific framework', async (t) => {
 test('Should throw when testing an invalid framework', async (t) => {
   await t.throwsAsync(hasFramework('simple', 'doesNotExist'))
 })
+
+test('Should sort framework ids in invalid framework error message', async (t) => {
+  const error = await t.throwsAsync(hasFramework('simple', 'doesNotExist'))
+
+  // we don't use a hardcoded string here, since it will change when a new framework is added
+  const [, frameworksFromMessage] = error.message.match(/It should be one of: (.+)/)
+  const frameworksArray = frameworksFromMessage.split(', ')
+
+  t.deepEqual(frameworksArray, [...frameworksArray].sort())
+})
