@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.4.5](https://www.github.com/netlify/build/compare/functions-utils-v1.4.4...functions-utils-v1.4.5) (2021-07-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.13.0 ([#3280](https://www.github.com/netlify/build/issues/3280)) ([8249fe1](https://www.github.com/netlify/build/commit/8249fe19d1edab64fad2362757d59d33fabe18c2))
+
 ### [1.4.4](https://www.github.com/netlify/build/compare/functions-utils-v1.4.3...functions-utils-v1.4.4) (2021-07-07)
 
 
