@@ -64,7 +64,6 @@ const logFunctionsToBundle = function ({
   if (internalFunctions.length !== 0) {
     log(logs, `Packaging Functions from ${THEME.highlightWords(internalFunctionsSrc)} directory:`)
     logArray(logs, internalFunctions, { indent: false })
-    log(logs, '')
   }
 
   if (userFunctionsSrc === undefined) {
@@ -75,6 +74,10 @@ const logFunctionsToBundle = function ({
     log(logs, `No Functions were found in ${THEME.highlightWords(userFunctionsSrc)} directory`)
 
     return
+  }
+
+  if (internalFunctions.length !== 0) {
+    log(logs, '')
   }
 
   log(logs, `Packaging Functions from ${THEME.highlightWords(userFunctionsSrc)} directory:`)
