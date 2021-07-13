@@ -57,7 +57,7 @@ const runCommand = async function ({
   const constantsA = await addMutableConstants({ constants, buildDir, netlifyConfig })
 
   if (
-    !shouldRunCommand({
+    !(await shouldRunCommand({
       event,
       packageName,
       error,
@@ -66,7 +66,7 @@ const runCommand = async function ({
       condition,
       constants: constantsA,
       buildbotServerSocket,
-    })
+    }))
   ) {
     return {}
   }
@@ -173,7 +173,7 @@ const runCommand = async function ({
 // or available. However, one might be created by a build plugin, in which case,
 // those core plugins should be triggered. We use a dynamic `condition()` to
 // model this behavior.
-const shouldRunCommand = function ({
+const shouldRunCommand = async function ({
   event,
   packageName,
   error,
@@ -185,7 +185,7 @@ const shouldRunCommand = function ({
 }) {
   if (
     failedPlugins.includes(packageName) ||
-    (condition !== undefined && !condition({ constants, buildbotServerSocket, netlifyConfig }))
+    (condition !== undefined && !(await condition({ constants, buildbotServerSocket, netlifyConfig })))
   ) {
     return false
   }
