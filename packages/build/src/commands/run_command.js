@@ -66,6 +66,7 @@ const runCommand = async function ({
       condition,
       constants: constantsA,
       buildbotServerSocket,
+      buildDir,
     }))
   ) {
     return {}
@@ -182,10 +183,11 @@ const shouldRunCommand = async function ({
   condition,
   constants,
   buildbotServerSocket,
+  buildDir,
 }) {
   if (
     failedPlugins.includes(packageName) ||
-    (condition !== undefined && !(await condition({ constants, buildbotServerSocket, netlifyConfig })))
+    (condition !== undefined && !(await condition({ buildDir, constants, buildbotServerSocket, netlifyConfig })))
   ) {
     return false
   }

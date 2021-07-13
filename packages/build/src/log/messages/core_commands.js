@@ -67,6 +67,10 @@ const logFunctionsToBundle = function ({
     log(logs, '')
   }
 
+  if (userFunctionsSrc === undefined) {
+    return
+  }
+
   if (userFunctions.length === 0) {
     log(logs, `No Functions were found in ${THEME.highlightWords(userFunctionsSrc)} directory`)
 

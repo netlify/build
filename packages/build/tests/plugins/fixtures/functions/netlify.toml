@@ -1,5 +1,2 @@
-[functions]
-directory = "functions"
-
 [[plugins]]
 package = "./plugin"

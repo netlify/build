@@ -4,10 +4,10 @@ const { logDryRunStart, logDryRunCommand, logDryRunEnd } = require('../log/messa
 const { runsOnlyOnBuildFailure } = require('../plugins/events')
 
 // If the `dry` flag is specified, do a dry run
-const doDryRun = async function ({ commands, netlifyConfig, constants, buildbotServerSocket, logs }) {
+const doDryRun = async function ({ buildDir, commands, netlifyConfig, constants, buildbotServerSocket, logs }) {
   const evaluatedConditions = await Promise.all(
     commands.map(({ event, condition }) =>
-      shouldIncludeCommand({ event, condition, netlifyConfig, constants, buildbotServerSocket }),
+      shouldIncludeCommand({ buildDir, event, condition, netlifyConfig, constants, buildbotServerSocket }),
     ),
   )
   const successCommands = commands.filter((_, index) => evaluatedConditions[index] === true)
@@ -23,10 +23,17 @@ const doDryRun = async function ({ commands, netlifyConfig, constants, buildbotS
   logDryRunEnd(logs)
 }
 
-const shouldIncludeCommand = async function ({ event, condition, netlifyConfig, constants, buildbotServerSocket }) {
+const shouldIncludeCommand = async function ({
+  buildDir,
+  event,
+  condition,
+  netlifyConfig,
+  constants,
+  buildbotServerSocket,
+}) {
   return (
     !runsOnlyOnBuildFailure(event) &&
-    (condition === undefined || (await condition({ constants, netlifyConfig, buildbotServerSocket })))
+    (condition === undefined || (await condition({ buildDir, constants, netlifyConfig, buildbotServerSocket })))
   )
 }
 

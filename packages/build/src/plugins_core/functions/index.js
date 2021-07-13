@@ -1,6 +1,6 @@
 'use strict'
 
-const { join, resolve, relative } = require('path')
+const { resolve, relative } = require('path')
 
 const mapObject = require('map-obj')
 const pathExists = require('path-exists')
@@ -15,8 +15,6 @@ const {
 } = require('../../log/messages/core_commands')
 
 const { getZipError } = require('./error')
-
-const INTERNAL_FUNCTIONS_PATH = '.netlify/functions-internal'
 
 // Returns `true` if at least one of the functions has been configured to use
 // esbuild.
@@ -75,7 +73,8 @@ const zipFunctionsAndLogResults = async ({
     // is removed
     // eslint-disable-next-line node/global-require
     const { zipFunctions } = require('@netlify/zip-it-and-ship-it')
-    const results = await zipFunctions([internalFunctionsSrc, functionsSrc], functionsDist, zisiParameters)
+    const sourceDirectories = [internalFunctionsSrc, functionsSrc].filter(Boolean)
+    const results = await zipFunctions(sourceDirectories, functionsDist, zisiParameters)
 
     logBundleResults({ logs, results })
 
@@ -99,23 +98,31 @@ const listInternalFunctions = async (internalFunctionsSrc) => {
 }
 
 // Plugin to package Netlify functions with @netlify/zip-it-and-ship-it
+// eslint-disable-next-line complexity
 const coreCommand = async function ({
-  constants: { FUNCTIONS_SRC: relativeFunctionsSrc, FUNCTIONS_DIST: relativeFunctionsDist },
+  constants: {
+    INTERNAL_FUNCTIONS_SRC: relativeInternalFunctionsSrc,
+    FUNCTIONS_SRC: relativeFunctionsSrc,
+    FUNCTIONS_DIST: relativeFunctionsDist,
+  },
   buildDir,
   logs,
   netlifyConfig,
   featureFlags,
 }) {
-  const functionsSrc = resolve(buildDir, relativeFunctionsSrc)
+  const functionsSrc = relativeFunctionsSrc === undefined ? undefined : resolve(buildDir, relativeFunctionsSrc)
   const functionsDist = resolve(buildDir, relativeFunctionsDist)
-  const internalFunctionsSrc = join(buildDir, INTERNAL_FUNCTIONS_PATH)
+  const internalFunctionsSrc =
+    relativeInternalFunctionsSrc === undefined ? undefined : resolve(buildDir, relativeInternalFunctionsSrc)
 
-  if (!(await pathExists(functionsSrc))) {
-    logFunctionsNonExistingDir(logs, relativeFunctionsSrc)
-    return {}
+  if (functionsSrc !== undefined) {
+    if (!(await pathExists(functionsSrc))) {
+      logFunctionsNonExistingDir(logs, relativeFunctionsSrc)
+      return {}
+    }
+
+    await validateFunctionsSrc({ functionsSrc, relativeFunctionsSrc })
   }
-
-  await validateFunctionsSrc({ functionsSrc, relativeFunctionsSrc })
 
   const [userFunctions, internalFunctions] = await Promise.all([
     getFunctionPaths(functionsSrc),
@@ -127,7 +134,7 @@ const coreCommand = async function ({
     userFunctions,
     userFunctionsSrc: relativeFunctionsSrc,
     internalFunctions,
-    internalFunctionsSrc: INTERNAL_FUNCTIONS_PATH,
+    internalFunctionsSrc: relativeInternalFunctionsSrc,
   })
 
   if (userFunctions.length === 0 && internalFunctions.length === 0) {
@@ -164,6 +171,10 @@ const validateFunctionsSrc = async function ({ functionsSrc, relativeFunctionsSr
 }
 
 const getFunctionPaths = async function (functionsSrc) {
+  if (functionsSrc === undefined) {
+    return []
+  }
+
   // This package currently supports Node 8 but not zip-it-and-ship-it
   // @todo put the `require()` to the top-level scope again once Node 8 support
   // is removed
@@ -175,8 +186,16 @@ const getFunctionPaths = async function (functionsSrc) {
 
 // We use a dynamic `condition` because the functions directory might be created
 // by the build command or plugins
-const hasFunctionsDir = function ({ constants: { FUNCTIONS_SRC } }) {
-  return FUNCTIONS_SRC !== undefined && FUNCTIONS_SRC !== ''
+const hasFunctionsDir = async function ({ buildDir, constants: { INTERNAL_FUNCTIONS_SRC, FUNCTIONS_SRC } }) {
+  const hasFunctionsSrc = FUNCTIONS_SRC !== undefined && FUNCTIONS_SRC !== ''
+
+  if (hasFunctionsSrc) {
+    return true
+  }
+
+  const internalFunctionsSrc = resolve(buildDir, INTERNAL_FUNCTIONS_SRC)
+
+  return await pathExists(internalFunctionsSrc)
 }
 
 const bundleFunctions = {
