@@ -52,3 +52,11 @@ test('Should sort scripts when dev command is a substring of build command', asy
 
   t.deepEqual(frameworks[0].dev.commands, ['npm run dev', 'npm run build'])
 })
+
+test('Should prioritize dev over serve', async (t) => {
+  const frameworks = await getFrameworks('scripts-order/vite-framework')
+
+  t.is(frameworks.length, 1)
+
+  t.deepEqual(frameworks[0].dev.commands, ['npm run dev', 'npm run serve', 'npm run build'])
+})

@@ -57,6 +57,6 @@ const matchesNpmWDevScript = function (scriptName, devScriptName) {
   return scriptName === devScriptName || scriptName.endsWith(`:${devScriptName}`)
 }
 
-const NPM_DEV_SCRIPTS = ['serve', 'dev', 'develop', 'start', 'run', 'build', 'web']
+const NPM_DEV_SCRIPTS = ['dev', 'serve', 'develop', 'start', 'run', 'build', 'web']
 
 module.exports = { getDevCommands }
