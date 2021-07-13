@@ -50,8 +50,8 @@ const getFunctionsUtils = function (FUNCTIONS_SRC, INTERNAL_FUNCTIONS_SRC) {
   // eslint-disable-next-line node/global-require
   const functionsUtils = require('@netlify/functions-utils')
   const add = (src) => functionsUtils.add(src, INTERNAL_FUNCTIONS_SRC, { fail: failBuild })
-  const list = functionsUtils.list.bind(null, [FUNCTIONS_SRC, INTERNAL_FUNCTIONS_SRC], { fail: failBuild })
-  const listAll = functionsUtils.listAll.bind(null, [FUNCTIONS_SRC, INTERNAL_FUNCTIONS_SRC], { fail: failBuild })
+  const list = functionsUtils.list.bind(null, [INTERNAL_FUNCTIONS_SRC, FUNCTIONS_SRC], { fail: failBuild })
+  const listAll = functionsUtils.listAll.bind(null, [INTERNAL_FUNCTIONS_SRC, FUNCTIONS_SRC], { fail: failBuild })
   return { add, list, listAll }
 }
 
