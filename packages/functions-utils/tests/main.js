@@ -4,6 +4,8 @@ const { normalize } = require('path')
 const { version } = require('process')
 
 const test = require('ava')
+const cpy = require('cpy')
+const del = require('del')
 const pathExists = require('path-exists')
 const { spy } = require('sinon')
 const sortOn = require('sort-on')
@@ -43,6 +45,15 @@ test('Should throw when source is undefined', async (t) => {
   }
 })
 
+test('Should throw when source is empty array', async (t) => {
+  const dist = await getDist()
+  try {
+    await t.throwsAsync(add([], dist))
+  } finally {
+    await removeDist(dist)
+  }
+})
+
 test('Should throw when source points to non-existing file', async (t) => {
   const dist = await getDist()
   try {
@@ -66,12 +77,31 @@ test('Should copy a source file even if dist directory already exists', async (t
   }
 })
 
-test('Should throw if dist file already exists', async (t) => {
+test('Should overwrite dist file if it already exists', async (t) => {
   const dist = await getDist()
+  const fixtureDir = `${FIXTURES_DIR}/file`
+
+  await cpy(`${fixtureDir}/test.js`, fixtureDir, { rename: 'test.js.backup' })
+
   try {
-    await add(`${FIXTURES_DIR}/file/test.js`, dist)
-    await t.throwsAsync(add(`${FIXTURES_DIR}/file/test.js`, dist))
+    await add(`${fixtureDir}/test.js`, dist)
+
+    // eslint-disable-next-line import/no-dynamic-require, node/global-require
+    const func1 = require(`${dist}/test.js`)
+
+    await cpy(`${fixtureDir}/test_2.js`, fixtureDir, { rename: 'test.js' })
+    await add(`${fixtureDir}/test.js`, dist)
+
+    delete require.cache[require.resolve(`${dist}/test.js`)]
+
+    // eslint-disable-next-line import/no-dynamic-require, node/global-require
+    const func2 = require(`${dist}/test.js`)
+
+    t.is(func1(), 'one')
+    t.is(func2(), 'two')
   } finally {
+    await cpy(`${fixtureDir}/test.js.backup`, fixtureDir, { rename: 'test.js' })
+    await del(`${fixtureDir}/test.js.backup`, { force: true })
     await removeDist(dist)
   }
 })
