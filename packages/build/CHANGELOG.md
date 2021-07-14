@@ -1,5 +1,12 @@
 # Changelog
 
+### [15.11.4](https://www.github.com/netlify/build/compare/build-v15.11.3...build-v15.11.4) (2021-07-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.13.1 ([#3288](https://www.github.com/netlify/build/issues/3288)) ([f5e5b6b](https://www.github.com/netlify/build/commit/f5e5b6ba91a8ad9e95d4dea5c18078a8e334313a))
+
 ### [15.11.3](https://www.github.com/netlify/build/compare/build-v15.11.2...build-v15.11.3) (2021-07-14)
 
 
