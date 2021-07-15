@@ -21,9 +21,10 @@ jobs:
             node-version: '8.17.0'
       fail-fast: false
     steps:
-      # Sets an environment variable if this is a release PR
+      # Sets an output parameter if this is a release PR
       - name: Check for release
-        run: echo "IS_RELEASE=1" >> $GITHUB_ENV
+        id: release-check
+        run: echo "::set-output name=IS_RELEASE::true"
         if: "${{ startsWith(github.head_ref, 'release-') }}"
       - name: Git checkout
         uses: actions/checkout@v2
@@ -42,13 +43,13 @@ jobs:
         if: "${{ matrix.node-version == '*' }}"
       - name: Linting
         run: npm run format:ci
-        if: "${{ matrix.node-version == '*' && !env.IS_RELEASE }}"
+        if: "${{ matrix.node-version == '*' && !steps.release-check.outputs.IS_RELEASE }}"
       - name: Tests
         run: npm run test:ci
-        if: '${{ !env.IS_RELEASE }}'
+        if: '${{ !steps.release-check.outputs.IS_RELEASE }}'
       - name: Get test coverage flags
         id: test-coverage-flags
-        if: '${{ !env.IS_RELEASE }}'
+        if: '${{ !steps.release-check.outputs.IS_RELEASE }}'
         run: |-
           os=${{ matrix.os }}
           node=${{ matrix.node-version }}
@@ -56,7 +57,7 @@ jobs:
           echo "::set-output name=node::node_${node//[.*]/}"
         shell: bash
       - uses: codecov/codecov-action@v1
-        if: '${{ !env.IS_RELEASE }}'
+        if: '${{ !steps.release-check.outputs.IS_RELEASE }}'
         with:
           file: coverage/coverage-final.json
           flags: ${{ steps.test-coverage-flags.outputs.os }},${{ steps.test-coverage-flags.outputs.node }}
