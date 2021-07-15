@@ -24,7 +24,7 @@ const normalizeText = function (text) {
   return text.replace(STACK_TRACE_REGEXP, '').replace(WHITESPACE_REGEXP, ' ').trim()
 }
 
-const VERSION_REGEXP = /\d+\.\d+\.\d+/g
+const VERSION_REGEXP = /\d+\.\d+\.\d+(-\w+)?/g
 const STACK_TRACE_REGEXP = /^\s+at .*/gm
 const WHITESPACE_REGEXP = /\s+/g
 

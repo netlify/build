@@ -113,7 +113,7 @@ const NORMALIZE_REGEXPS = [
   // Package versions
   [/([@v])[\d.]+/g, '$11.0.0'],
   // Semantic versions
-  [/\d+\.\d+\.\d+(-\d+)?/g, '1.0.0'],
+  [/\d+\.\d+\.\d+(-\w+)?/g, '1.0.0'],
   // npm install logs
   [/added \d+ package.*/g, 'added packages'],
   // npm install logs look different on Node 8.3.0
