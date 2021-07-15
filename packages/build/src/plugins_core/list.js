@@ -26,7 +26,7 @@ const getFunctionsInstallPlugin = function (FUNCTIONS_SRC) {
   return { package: FUNCTIONS_INSTALL_PLUGIN_NAME, pluginPath: FUNCTIONS_INSTALL_PLUGIN, optional: true }
 }
 
-// To enable Edge handlers, create a `edge-handlers` directory in the build
+// To enable Edge handlers, create a `netlify/edge-handlers` directory in the build
 // directory.
 // The location can be overridden using the `build.edge_handlers` property in
 // `netlify.toml`.

@@ -70,7 +70,7 @@ const DEFAULT_PATHS = [
     getConfig: (directory) => ({ functionsDirectory: directory, functionsDirectoryOrigin: 'default' }),
     defaultPath: 'netlify/functions',
   },
-  { getConfig: (directory) => ({ build: { edge_handlers: directory } }), defaultPath: 'edge-handlers' },
+  { getConfig: (directory) => ({ build: { edge_handlers: directory } }), defaultPath: 'netlify/edge-handlers' },
 ]
 
 const addDefaultPath = async function ({ baseRel, defaultPath, getConfig }) {

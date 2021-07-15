@@ -96,7 +96,7 @@ Location of the Edge handlers source files.
 Its value is (from highest to lowest priority):
 
 - `build.edge_handlers` property in `netlify.toml`
-- `./edge-handlers`, providing this directory exists
+- `netlify/edge-handlers`, providing this directory exists
 
 Can be `undefined`.
 
