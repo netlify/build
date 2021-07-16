@@ -1,5 +1,12 @@
 # Changelog
 
+### [15.11.6](https://www.github.com/netlify/build/compare/build-v15.11.5...build-v15.11.6) (2021-07-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^2.19.3 ([#3297](https://www.github.com/netlify/build/issues/3297)) ([1a9d614](https://www.github.com/netlify/build/commit/1a9d614dae066568017c882719379ceccf8118eb))
+
 ### [15.11.5](https://www.github.com/netlify/build/compare/build-v15.11.4...build-v15.11.5) (2021-07-15)
 
 
