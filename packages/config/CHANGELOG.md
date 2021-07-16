@@ -1,5 +1,16 @@
 # Changelog
 
+## [13.0.0](https://www.github.com/netlify/build/compare/config-v12.6.0...config-v13.0.0) (2021-07-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* change edge-handler default directory (#3296)
+
+### Features
+
+* change edge-handler default directory ([#3296](https://www.github.com/netlify/build/issues/3296)) ([86b02da](https://www.github.com/netlify/build/commit/86b02dae85bbd879f107606487853ad3cd2fc147))
+
 ## [12.6.0](https://www.github.com/netlify/build/compare/config-v12.5.0...config-v12.6.0) (2021-07-08)
 
 
