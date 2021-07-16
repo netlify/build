@@ -90,7 +90,7 @@ const DEFAULT_PATHS = [
   // @todo Remove once we drop support for the legacy default functions directory.
   { constantName: 'FUNCTIONS_SRC', defaultPath: 'netlify-automatic-functions' },
   { constantName: 'FUNCTIONS_SRC', defaultPath: 'netlify/functions' },
-  { constantName: 'EDGE_HANDLERS_SRC', defaultPath: 'edge-handlers' },
+  { constantName: 'EDGE_HANDLERS_SRC', defaultPath: 'netlify/edge-handlers' },
 ]
 
 const addDefaultConstant = async function ({ constants, constantName, defaultPath, buildDir }) {
