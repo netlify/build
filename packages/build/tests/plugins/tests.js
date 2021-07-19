@@ -1398,9 +1398,9 @@ test('Utils are defined', async (t) => {
 // TODO: remove once we drop support for Node 8
 if (!version.startsWith('v8.')) {
   test('Can run utils', async (t) => {
-    await removeDir(`${FIXTURES_DIR}/functions/.netlify`)
+    await removeDir(`${FIXTURES_DIR}/functions/functions`)
     await runFixture(t, 'functions')
-    await removeDir(`${FIXTURES_DIR}/functions/.netlify`)
+    await removeDir(`${FIXTURES_DIR}/functions/functions`)
   })
 
   test('Can run list util', async (t) => {
