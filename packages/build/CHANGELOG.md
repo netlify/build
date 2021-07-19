@@ -1,5 +1,21 @@
 # Changelog
 
+## [16.0.0](https://www.github.com/netlify/build/compare/build-v15.11.5...build-v16.0.0) (2021-07-19)
+
+
+### ⚠ BREAKING CHANGES
+
+* change edge-handler default directory (#3296)
+
+### Features
+
+* change edge-handler default directory ([#3296](https://www.github.com/netlify/build/issues/3296)) ([86b02da](https://www.github.com/netlify/build/commit/86b02dae85bbd879f107606487853ad3cd2fc147))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^2.19.3 ([#3297](https://www.github.com/netlify/build/issues/3297)) ([1a9d614](https://www.github.com/netlify/build/commit/1a9d614dae066568017c882719379ceccf8118eb))
+
 ### [15.11.5](https://www.github.com/netlify/build/compare/build-v15.11.4...build-v15.11.5) (2021-07-15)
 
 
