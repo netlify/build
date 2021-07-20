@@ -14,9 +14,17 @@ const { resolvePath } = require('../utils/resolve')
 //  - This is the same logic except it does not use version pinning
 //  - This is only used to print a warning message when the `compatibleVersion`
 //    is older than the currently used version.
-const getExpectedVersion = async function ({ versions, nodeVersion, packageJson, buildDir, pinnedVersion }) {
+const getExpectedVersion = async function ({
+  versions,
+  nodeVersion,
+  packageJson,
+  buildDir,
+  pinnedVersion,
+  featureFlags,
+}) {
+  const versionsAfterFeatureFlags = filterVersionsByFeatureFlag({ featureFlags, versions })
   const { version, conditions } = await getCompatibleEntry({
-    versions,
+    versions: versionsAfterFeatureFlags,
     nodeVersion,
     packageJson,
     buildDir,
@@ -50,6 +58,27 @@ const getCompatibleEntry = async function ({ versions, nodeVersion, packageJson,
     matchesCompatField({ conditions, nodeVersion, packageJson, buildDir }),
   )
   return compatibleEntry || { version: versions[0].version }
+}
+
+// Takes an array of versions and an object containing all the enabled feature
+// flags. It finds the first entry in versions that contains a `featureFlag`
+// field that matches one of the enabled feature flags — if one is found, that
+// version entry is bumped to the first slot, which effectively makes it the
+// new default version; if none is found, the default version is not changed.
+// Either way, any versions with a `featureFlag` field are filtered out before
+// returning, so that normal evaluation of conditions can take place downstream
+// without any concern for feature flags.
+const filterVersionsByFeatureFlag = ({ featureFlags = {}, versions }) => {
+  const match = versions.find(({ featureFlag }) => featureFlag !== undefined && featureFlags[featureFlag] === true)
+  const versionsWithoutFeatureFlags = versions.filter(({ featureFlag }) => featureFlag === undefined)
+
+  if (match === undefined) {
+    return versionsWithoutFeatureFlags
+  }
+
+  const newDefaultVersion = { ...match, featureFlag: undefined }
+
+  return [newDefaultVersion, ...versionsWithoutFeatureFlags]
 }
 
 // Ignore entries without conditions. Those are used to specify breaking

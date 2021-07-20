@@ -49,6 +49,7 @@ const resolvePluginsPath = async function ({
     logs,
     buildDir,
     testOpts,
+    featureFlags,
   })
   // Don't log the warning if the feature flag is already set
   if (!featureFlags.buildbot_build_plugins_system_node_version) {
