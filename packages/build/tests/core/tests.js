@@ -319,4 +319,16 @@ if (!version.startsWith('v8.')) {
   test('Shows notice about modules with dynamic imports and suggests the usage of `functions.external_node_modules`', async (t) => {
     await runFixture(t, 'esbuild_errors_2')
   })
+
+  test('Bundles functions from the `.netlify/functions-internal` directory', async (t) => {
+    await runFixture(t, 'functions_internal')
+  })
+
+  test('Does not require the `.netlify/functions-internal` directory to exist', async (t) => {
+    await runFixture(t, 'functions_internal_missing')
+  })
+
+  test('Does not require the `.netlify/functions-internal` or the main functions directory to exist', async (t) => {
+    await runFixture(t, 'functions_internal_main_missing')
+  })
 }

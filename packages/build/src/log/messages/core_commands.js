@@ -54,14 +54,34 @@ const logFunctionsNonExistingDir = function (logs, relativeFunctionsSrc) {
 }
 
 // Print the list of Netlify Functions about to be bundled
-const logFunctionsToBundle = function (logs, functions, relativeFunctionsSrc) {
-  if (functions.length === 0) {
-    log(logs, `No Functions were found in ${THEME.highlightWords(relativeFunctionsSrc)} directory`)
+const logFunctionsToBundle = function ({
+  logs,
+  userFunctions,
+  userFunctionsSrc,
+  internalFunctions,
+  internalFunctionsSrc,
+}) {
+  if (internalFunctions.length !== 0) {
+    log(logs, `Packaging Functions from ${THEME.highlightWords(internalFunctionsSrc)} directory:`)
+    logArray(logs, internalFunctions, { indent: false })
+  }
+
+  if (userFunctionsSrc === undefined) {
     return
   }
 
-  log(logs, `Packaging Functions from ${THEME.highlightWords(relativeFunctionsSrc)} directory:`)
-  logArray(logs, functions, { indent: false })
+  if (userFunctions.length === 0) {
+    log(logs, `No Functions were found in ${THEME.highlightWords(userFunctionsSrc)} directory`)
+
+    return
+  }
+
+  if (internalFunctions.length !== 0) {
+    log(logs, '')
+  }
+
+  log(logs, `Packaging Functions from ${THEME.highlightWords(userFunctionsSrc)} directory:`)
+  logArray(logs, userFunctions, { indent: false })
 }
 
 const logModulesWithDynamicImports = ({ logs, modulesWithDynamicImports }) => {

@@ -58,6 +58,7 @@ const zipFunctionsAndLogResults = async ({
   functionsConfig,
   functionsDist,
   functionsSrc,
+  internalFunctionsSrc,
   logs,
 }) => {
   const zisiParameters = getZisiParameters({ buildDir, featureFlags, functionsConfig })
@@ -72,7 +73,8 @@ const zipFunctionsAndLogResults = async ({
     // is removed
     // eslint-disable-next-line node/global-require
     const { zipFunctions } = require('@netlify/zip-it-and-ship-it')
-    const results = await zipFunctions(functionsSrc, functionsDist, zisiParameters)
+    const sourceDirectories = [internalFunctionsSrc, functionsSrc].filter(Boolean)
+    const results = await zipFunctions(sourceDirectories, functionsDist, zisiParameters)
 
     logBundleResults({ logs, results })
 
@@ -82,28 +84,60 @@ const zipFunctionsAndLogResults = async ({
   }
 }
 
+// `getFunctionPaths` will throw if the directory doesn't exist. This is the
+// expected behavior when dealing with the functions directory defined in the
+// config, but we don't want to throw if the internal functions directory does
+// not exist. To that effect, we wrap it with this try/catch and simply return
+// an empty array if `getFunctionPaths` fails.
+const listInternalFunctions = async (internalFunctionsSrc) => {
+  try {
+    return await getFunctionPaths(internalFunctionsSrc)
+  } catch (_) {
+    return []
+  }
+}
+
 // Plugin to package Netlify functions with @netlify/zip-it-and-ship-it
+// eslint-disable-next-line complexity
 const coreCommand = async function ({
-  constants: { FUNCTIONS_SRC: relativeFunctionsSrc, FUNCTIONS_DIST: relativeFunctionsDist },
+  constants: {
+    INTERNAL_FUNCTIONS_SRC: relativeInternalFunctionsSrc,
+    FUNCTIONS_SRC: relativeFunctionsSrc,
+    FUNCTIONS_DIST: relativeFunctionsDist,
+  },
   buildDir,
   logs,
   netlifyConfig,
   featureFlags,
 }) {
-  const functionsSrc = resolve(buildDir, relativeFunctionsSrc)
+  const functionsSrc = relativeFunctionsSrc === undefined ? undefined : resolve(buildDir, relativeFunctionsSrc)
   const functionsDist = resolve(buildDir, relativeFunctionsDist)
+  const internalFunctionsSrc =
+    relativeInternalFunctionsSrc === undefined ? undefined : resolve(buildDir, relativeInternalFunctionsSrc)
 
-  if (!(await pathExists(functionsSrc))) {
-    logFunctionsNonExistingDir(logs, relativeFunctionsSrc)
-    return {}
+  if (functionsSrc !== undefined) {
+    if (!(await pathExists(functionsSrc))) {
+      logFunctionsNonExistingDir(logs, relativeFunctionsSrc)
+      return {}
+    }
+
+    await validateFunctionsSrc({ functionsSrc, relativeFunctionsSrc })
   }
 
-  await validateFunctionsSrc({ functionsSrc, relativeFunctionsSrc })
+  const [userFunctions, internalFunctions] = await Promise.all([
+    getFunctionPaths(functionsSrc),
+    listInternalFunctions(internalFunctionsSrc),
+  ])
 
-  const functions = await getFunctionPaths(functionsSrc)
-  logFunctionsToBundle(logs, functions, relativeFunctionsSrc)
+  logFunctionsToBundle({
+    logs,
+    userFunctions,
+    userFunctionsSrc: relativeFunctionsSrc,
+    internalFunctions,
+    internalFunctionsSrc: relativeInternalFunctionsSrc,
+  })
 
-  if (functions.length === 0) {
+  if (userFunctions.length === 0 && internalFunctions.length === 0) {
     return {}
   }
 
@@ -113,6 +147,7 @@ const coreCommand = async function ({
     functionsConfig: netlifyConfig.functions,
     functionsDist,
     functionsSrc,
+    internalFunctionsSrc,
     logs,
   })
 
@@ -136,6 +171,10 @@ const validateFunctionsSrc = async function ({ functionsSrc, relativeFunctionsSr
 }
 
 const getFunctionPaths = async function (functionsSrc) {
+  if (functionsSrc === undefined) {
+    return []
+  }
+
   // This package currently supports Node 8 but not zip-it-and-ship-it
   // @todo put the `require()` to the top-level scope again once Node 8 support
   // is removed
@@ -145,10 +184,20 @@ const getFunctionPaths = async function (functionsSrc) {
   return functions.map(({ mainFile }) => relative(functionsSrc, mainFile))
 }
 
-// We use a dynamic `condition` because the functions directory might be created
-// by the build command or plugins
-const hasFunctionsDir = function ({ constants: { FUNCTIONS_SRC } }) {
-  return FUNCTIONS_SRC !== undefined && FUNCTIONS_SRC !== ''
+// We run this core command if at least one of the functions directories (the
+// one configured by the user or the internal one) exists. We use a dynamic
+// `condition` because the directories might be created by the build command
+// or plugins.
+const hasFunctionsDirectories = async function ({ buildDir, constants: { INTERNAL_FUNCTIONS_SRC, FUNCTIONS_SRC } }) {
+  const hasFunctionsSrc = FUNCTIONS_SRC !== undefined && FUNCTIONS_SRC !== ''
+
+  if (hasFunctionsSrc) {
+    return true
+  }
+
+  const internalFunctionsSrc = resolve(buildDir, INTERNAL_FUNCTIONS_SRC)
+
+  return await pathExists(internalFunctionsSrc)
 }
 
 const bundleFunctions = {
@@ -157,7 +206,7 @@ const bundleFunctions = {
   coreCommandId: 'functions_bundling',
   coreCommandName: 'Functions bundling',
   coreCommandDescription: () => 'Functions bundling',
-  condition: hasFunctionsDir,
+  condition: hasFunctionsDirectories,
 }
 
 module.exports = { bundleFunctions }

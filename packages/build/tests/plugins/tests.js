@@ -1402,6 +1402,10 @@ if (!version.startsWith('v8.')) {
     await runFixture(t, 'functions')
     await removeDir(`${FIXTURES_DIR}/functions/functions`)
   })
+
+  test('Can run list util', async (t) => {
+    await runFixture(t, 'functions_list')
+  })
 }
 
 test('Git utils fails if no root', async (t) => {

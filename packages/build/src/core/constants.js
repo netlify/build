@@ -40,6 +40,9 @@ const getConstants = async function ({
     NETLIFY_API_TOKEN: token,
     // The Netlify API host
     NETLIFY_API_HOST: apiHost,
+    // The directory where internal functions (i.e. generated programmatically
+    // via plugins or others) live.
+    INTERNAL_FUNCTIONS_SRC: '.netlify/functions-internal',
   }
   const constantsA = await addMutableConstants({ constants, buildDir, netlifyConfig })
   return constantsA

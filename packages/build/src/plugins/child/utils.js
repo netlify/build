@@ -7,13 +7,13 @@ const { addLazyProp } = require('./lazy')
 const { show } = require('./status')
 
 // Retrieve the `utils` argument.
-const getUtils = function ({ event, constants: { FUNCTIONS_SRC, CACHE_DIR }, runState }) {
+const getUtils = function ({ event, constants: { FUNCTIONS_SRC, INTERNAL_FUNCTIONS_SRC, CACHE_DIR }, runState }) {
   const build = getBuildUtils(event)
   const utils = { build }
   addLazyProp(utils, 'git', getGitUtils)
   addLazyProp(utils, 'cache', getCacheUtils.bind(null, CACHE_DIR))
   addLazyProp(utils, 'run', getRunUtils)
-  addLazyProp(utils, 'functions', getFunctionsUtils.bind(null, FUNCTIONS_SRC))
+  addLazyProp(utils, 'functions', getFunctionsUtils.bind(null, FUNCTIONS_SRC, INTERNAL_FUNCTIONS_SRC))
   addLazyProp(utils, 'status', getStatusUtils.bind(null, runState))
   return utils
 }
