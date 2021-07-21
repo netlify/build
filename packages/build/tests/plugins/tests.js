@@ -1279,82 +1279,32 @@ test('Does not pin netlify.toml-only plugin versions if there are no site ID', a
   await runWithPluginRunsMock(t, 'pin_config_success', { flags: { siteId: '' } })
 })
 
-// For some tests of the `node-path` flag we have to disable the buildbot_build_plugins_system_node_version feature flag
-// as with it we always rely on the system node version (and is currently set to true by default)
-
-test('Validate --node-path version is supported by our codebase', async (t) => {
-  const nodePath = getNodePath('8.2.0')
-  await runFixture(t, 'node_version_simple', {
-    flags: { nodePath, featureFlags: { buildbot_build_plugins_system_node_version: false } },
-  })
-})
-
-test('No --node-path version validation is performed if the plugins_system_node_version feature flag is set', async (t) => {
-  const nodePath = getNodePath('8.2.0')
-  await runFixture(t, 'node_version_simple', {
-    flags: { nodePath, featureFlags: { buildbot_build_plugins_system_node_version: true } },
-  })
-})
-
 test('Validate --node-path unsupported version does not fail when no plugins are used', async (t) => {
   const nodePath = getNodePath('8.2.0')
   await runFixture(t, 'empty', {
-    flags: { nodePath, featureFlags: { buildbot_build_plugins_system_node_version: false } },
+    flags: { nodePath },
   })
 })
 
 test('Validate --node-path version is supported by the plugin', async (t) => {
-  const nodePath = getNodePath('9.0.0')
+  const nodePath = getNodePath('12.0.0')
   await runFixture(t, 'engines', {
-    flags: { nodePath, featureFlags: { buildbot_build_plugins_system_node_version: false } },
+    flags: { nodePath },
   })
 })
 
-test('Validate --node-path', async (t) => {
+test('Validate --node-path exists', async (t) => {
   await runFixture(t, 'node_version_simple', {
-    flags: { nodePath: '/doesNotExist', featureFlags: { buildbot_build_plugins_system_node_version: false } },
+    flags: { nodePath: '/doesNotExist' },
   })
 })
 
-test('Provided --node-path version produces a node version warning if the build is being run in buildbot with local plugins and the plugins_system_node_version ff is set to false', async (t) => {
-  const nodePath = getNodePath('9.0.0')
-  await runFixture(t, 'engines', {
-    flags: { nodePath, mode: 'buildbot', featureFlags: { buildbot_build_plugins_system_node_version: false } },
+test('Provided --node-path version is unused in buildbot for local plugin executions if <10.18.0', async (t) => {
+  const nodePath = getNodePath('10.17.0')
+  await runFixture(t, 'version_greater_than_minimum', {
+    flags: { nodePath, mode: 'buildbot' },
   })
 })
-
-test('Provided --node-path version does not produce a node version warning if the build is being run locally', async (t) => {
-  const nodePath = getNodePath('9.0.0')
-  await runFixture(t, 'engines', {
-    flags: { nodePath, mode: 'cli', featureFlags: { buildbot_build_plugins_system_node_version: false } },
-  })
-})
-
-test('Provided --node-path version does not produce a node version warning if plugins were installed via the UI', async (t) => {
-  const nodePath = getNodePath('8.2.0')
-  const defaultConfig = { plugins: [{ package: 'netlify-plugin-test' }] }
-  await runFixture(t, 'ui', {
-    flags: { nodePath, defaultConfig, featureFlags: { buildbot_build_plugins_system_node_version: false } },
-  })
-})
-
-// Node 8 execution triggers inconsistent snapshots. The feature flag will only be set in production where we run Node
-// 12. @TODO remove once we remove node 8 support.
-if (!version.startsWith('v8.')) {
-  test('No --node-path version validation is performed against the plugin engines if the plugins_system_node_version feature flag is set', async (t) => {
-    const nodePath = getNodePath('9.0.0')
-    await runFixture(t, 'engines', {
-      flags: { nodePath, featureFlags: { buildbot_build_plugins_system_node_version: true } },
-    })
-  })
-
-  test('Provided --node-path version has no effect for plugin executions when the feature flag plugins_system_node_version is set', async (t) => {
-    const nodePath = getNodePath('9.0.0')
-    await runFixture(t, 'engines', {
-      flags: { nodePath, mode: 'buildbot', featureFlags: { buildbot_build_plugins_system_node_version: true } },
-    })
-  })
-}
 
 test('Plugins can execute local binaries', async (t) => {
   await runFixture(t, 'local_bin')

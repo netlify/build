@@ -5,7 +5,7 @@ const { installMissingPlugins } = require('../install/missing')
 const { resolvePath, tryResolvePath } = require('../utils/resolve')
 
 const { addExpectedVersions } = require('./expected_version')
-const { addPluginsNodeVersion, checkForOldNodeVersions } = require('./node_version')
+const { addPluginsNodeVersion } = require('./node_version')
 const { addPinnedVersions } = require('./pinned_version')
 
 // Try to find plugins in four places, by priority order:
@@ -38,7 +38,6 @@ const resolvePluginsPath = async function ({
     nodePath,
     userNodeVersion,
     logs,
-    featureFlags,
   })
   const pluginsOptionsC = await addPinnedVersions({ pluginsOptions: pluginsOptionsB, api, siteInfo, sendStatus })
   const pluginsOptionsD = await addExpectedVersions({
@@ -50,10 +49,6 @@ const resolvePluginsPath = async function ({
     buildDir,
     testOpts,
   })
-  // Don't log the warning if the feature flag is already set
-  if (!featureFlags.buildbot_build_plugins_system_node_version) {
-    checkForOldNodeVersions({ pluginsOptions: pluginsOptionsD, mode, userNodeVersion, logs })
-  }
   const pluginsOptionsE = await handleMissingPlugins({
     pluginsOptions: pluginsOptionsD,
     autoPluginsDir,
