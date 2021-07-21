@@ -1,5 +1,12 @@
 # Changelog
 
+## [16.1.0](https://www.github.com/netlify/build/compare/build-v16.0.1...build-v16.1.0) (2021-07-21)
+
+
+### Features
+
+* bundle functions from `.netlify/functions-internal` ([#3213](https://www.github.com/netlify/build/issues/3213)) ([9ff3b9c](https://www.github.com/netlify/build/commit/9ff3b9cec1008a117bc687ba5a55d0fb8aecd91a))
+
 ### [16.0.1](https://www.github.com/netlify/build/compare/build-v16.0.0...build-v16.0.1) (2021-07-20)
 
 
