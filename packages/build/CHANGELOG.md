@@ -1,5 +1,18 @@
 # Changelog
 
+## [16.2.0](https://www.github.com/netlify/build/compare/build-v16.1.1...build-v16.2.0) (2021-07-22)
+
+
+### Features
+
+* add support for feature-flagging plugin versions ([#3304](https://www.github.com/netlify/build/issues/3304)) ([157c03c](https://www.github.com/netlify/build/commit/157c03c70ab33ffd4ecc659b3437a113009729dd))
+* **plugins:** remove feature flag responsible plugin node version execution changes ([#3311](https://www.github.com/netlify/build/issues/3311)) ([8c94faf](https://www.github.com/netlify/build/commit/8c94faf8d1e7cbf830b1cbc722949198759f9f8c))
+
+
+### Bug Fixes
+
+* revert "feat: add support for feature-flagging plugin versions ([#3304](https://www.github.com/netlify/build/issues/3304))" ([#3318](https://www.github.com/netlify/build/issues/3318)) ([226ff8e](https://www.github.com/netlify/build/commit/226ff8ead52642961bdba8c0f445879e67b2bbaf))
+
 ### [16.1.1](https://www.github.com/netlify/build/compare/build-v16.1.0...build-v16.1.1) (2021-07-22)
 
 
