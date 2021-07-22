@@ -1299,12 +1299,16 @@ test('Validate --node-path exists', async (t) => {
   })
 })
 
-test('Provided --node-path version is unused in buildbot for local plugin executions if <10.18.0', async (t) => {
-  const nodePath = getNodePath('10.17.0')
-  await runFixture(t, 'version_greater_than_minimum', {
-    flags: { nodePath, mode: 'buildbot' },
+// We need to run a minimum version of 10.18.0 for this test, as it relies on the plugin engines.node property
+// @todo remove once Node 8 support is removed
+if (!version.startsWith('v8.')) {
+  test('Provided --node-path version is unused in buildbot for local plugin executions if <10.18.0', async (t) => {
+    const nodePath = getNodePath('10.17.0')
+    await runFixture(t, 'version_greater_than_minimum', {
+      flags: { nodePath, mode: 'buildbot' },
+    })
   })
-})
+}
 
 test('Plugins can execute local binaries', async (t) => {
   await runFixture(t, 'local_bin')
