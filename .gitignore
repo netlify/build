@@ -16,5 +16,4 @@ packages/*/package-lock.json
 !**/fixtures/**/node_modules
 !**/fixtures/**/plugins_cache*/.netlify
 !**/fixtures/**/pin_*/.netlify
-!**/fixtures/**/functions_internal*/.netlify
-!**/fixtures/**/functions_list/.netlify
+!**/fixtures/**/functions_*/.netlify
