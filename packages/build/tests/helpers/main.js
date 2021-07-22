@@ -41,9 +41,7 @@ const runFixture = async function (
   return runFixtureCommon(t, fixtureName, { ...opts, flags: flagsA, env: envOptionA, mainFunc, binaryPath })
 }
 
-const DEFAULT_TEST_FEATURE_FLAGS = {
-  buildbot_build_plugins_system_node_version: true,
-}
+const DEFAULT_TEST_FEATURE_FLAGS = {}
 
 const getNetlifyBuildLogs = async function (flags) {
   const { logs } = await netlifyBuild(flags)
