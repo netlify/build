@@ -1120,54 +1120,6 @@ test.serial('Plugins can specify non-matching compatibility.siteDependencies ran
   })
 })
 
-test.serial(
-  'Plugins can specify a `featureFlag` condition, which will be used as the default version if a matching feature flag is enabled',
-  async (t) => {
-    await removeDir(`${FIXTURES_DIR}/plugins_compat_node_version/.netlify`)
-    await runWithApiMock(t, 'plugins_compat_node_version', {
-      featureFlags: { some_feature_flag: true },
-      testPlugin: {
-        compatibility: [{ version: '0.2.0' }, { version: '0.3.0', featureFlag: 'some_feature_flag' }],
-      },
-    })
-  },
-)
-
-test.serial('Plugins ignore the `featureFlag` property if no matching feature flag is enabled', async (t) => {
-  await removeDir(`${FIXTURES_DIR}/plugins_compat_node_version/.netlify`)
-  await runWithApiMock(t, 'plugins_compat_node_version', {
-    featureFlags: { some_other_flag: true },
-    testPlugin: {
-      compatibility: [{ version: '0.2.0' }, { version: '0.3.0', featureFlag: 'some_feature_flag' }],
-    },
-  })
-})
-
-test.serial('Plugins ignore the `featureFlag` property if the plugin version is pinned', async (t) => {
-  await removeDir(`${FIXTURES_DIR}/plugins_compat_node_version/.netlify`)
-  await runWithApiMock(t, 'plugins_compat_node_version', {
-    featureFlags: { some_feature_flag: true },
-    testPlugin: {
-      compatibility: [{ version: '0.2.0' }, { version: '0.3.0', featureFlag: 'some_feature_flag' }],
-    },
-    defaultConfig: { plugins: [{ package: TEST_PLUGIN_NAME, pinned_version: '0.2.0' }] },
-  })
-})
-
-test.serial('Entries in `conditions` take precedence over the `featureFlag` property', async (t) => {
-  await removeDir(`${FIXTURES_DIR}/plugins_compat_node_version/.netlify`)
-  await runWithApiMock(t, 'plugins_compat_node_version', {
-    featureFlags: { some_feature_flag: true },
-    testPlugin: {
-      compatibility: [
-        { version: '0.2.0' },
-        { version: '0.3.0', featureFlag: 'some_feature_flag' },
-        { version: '0.1.0', nodeVersion: '<100' },
-      ],
-    },
-  })
-})
-
 const getNodePath = function (nodeVersion) {
   return `/home/ether/.nvm/versions/node/v${nodeVersion}/bin/node`
 }

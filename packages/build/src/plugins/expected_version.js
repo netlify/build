@@ -19,7 +19,6 @@ const addExpectedVersions = async function ({
   logs,
   buildDir,
   testOpts,
-  featureFlags,
 }) {
   if (!pluginsOptions.some(needsExpectedVersion)) {
     return pluginsOptions
@@ -28,7 +27,7 @@ const addExpectedVersions = async function ({
   const pluginsList = await getPluginsList({ debug, logs, testOpts })
   return await Promise.all(
     pluginsOptions.map((pluginOptions) =>
-      addExpectedVersion({ pluginsList, autoPluginsDir, packageJson, pluginOptions, buildDir, featureFlags }),
+      addExpectedVersion({ pluginsList, autoPluginsDir, packageJson, pluginOptions, buildDir }),
     ),
   )
 }
@@ -41,7 +40,6 @@ const addExpectedVersion = async function ({
   pluginOptions,
   pluginOptions: { packageName, pluginPath, loadedFrom, nodeVersion, pinnedVersion },
   buildDir,
-  featureFlags,
 }) {
   if (!needsExpectedVersion(pluginOptions)) {
     return pluginOptions
@@ -55,8 +53,8 @@ const addExpectedVersion = async function ({
   const versions = pluginsList[packageName]
   const [{ version: latestVersion, migrationGuide }] = versions
   const [{ version: expectedVersion }, { version: compatibleVersion, compatWarning }] = await Promise.all([
-    getExpectedVersion({ versions, nodeVersion, packageJson, buildDir, pinnedVersion, featureFlags }),
-    getExpectedVersion({ versions, nodeVersion, packageJson, buildDir, featureFlags }),
+    getExpectedVersion({ versions, nodeVersion, packageJson, buildDir, pinnedVersion }),
+    getExpectedVersion({ versions, nodeVersion, packageJson, buildDir }),
   ])
 
   const isMissing = await isMissingVersion({ autoPluginsDir, packageName, pluginPath, loadedFrom, expectedVersion })
