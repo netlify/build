@@ -19,6 +19,7 @@ const addExpectedVersions = async function ({
   logs,
   buildDir,
   testOpts,
+  featureFlags,
 }) {
   if (!pluginsOptions.some(needsExpectedVersion)) {
     return pluginsOptions
@@ -27,7 +28,7 @@ const addExpectedVersions = async function ({
   const pluginsList = await getPluginsList({ debug, logs, testOpts })
   return await Promise.all(
     pluginsOptions.map((pluginOptions) =>
-      addExpectedVersion({ pluginsList, autoPluginsDir, packageJson, pluginOptions, buildDir }),
+      addExpectedVersion({ pluginsList, autoPluginsDir, packageJson, pluginOptions, buildDir, featureFlags }),
     ),
   )
 }
@@ -40,6 +41,7 @@ const addExpectedVersion = async function ({
   pluginOptions,
   pluginOptions: { packageName, pluginPath, loadedFrom, nodeVersion, pinnedVersion },
   buildDir,
+  featureFlags,
 }) {
   if (!needsExpectedVersion(pluginOptions)) {
     return pluginOptions
@@ -50,7 +52,8 @@ const addExpectedVersion = async function ({
     return pluginOptions
   }
 
-  const versions = pluginsList[packageName]
+  const unfilteredVersions = pluginsList[packageName]
+  const versions = filterVersions(unfilteredVersions, featureFlags)
   const [{ version: latestVersion, migrationGuide }] = versions
   const [{ version: expectedVersion }, { version: compatibleVersion, compatWarning }] = await Promise.all([
     getExpectedVersion({ versions, nodeVersion, packageJson, buildDir, pinnedVersion }),
@@ -67,6 +70,13 @@ const addExpectedVersion = async function ({
     compatWarning,
     isMissing,
   }
+}
+
+// Feature flagged versions are removed unless the feature flag is present.
+//  - This is done before conditions are applied since, unlike conditions,
+//    users cannot always choose to enable a feature flag.
+const filterVersions = function (unfilteredVersions, featureFlags) {
+  return unfilteredVersions.filter(({ featureFlag }) => featureFlag === undefined || featureFlags[featureFlag])
 }
 
 // Checks whether plugin should be installed due to the wrong version being used
