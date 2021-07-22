@@ -1,5 +1,12 @@
 # Changelog
 
+### [16.1.1](https://www.github.com/netlify/build/compare/build-v16.1.0...build-v16.1.1) (2021-07-22)
+
+
+### Bug Fixes
+
+* bundle functions from internal directory if configured user dire… ([#3314](https://www.github.com/netlify/build/issues/3314)) ([b58afc3](https://www.github.com/netlify/build/commit/b58afc31fdfe4c412605e11b2f9261d2ed412c93))
+
 ## [16.1.0](https://www.github.com/netlify/build/compare/build-v16.0.1...build-v16.1.0) (2021-07-21)
 
 
