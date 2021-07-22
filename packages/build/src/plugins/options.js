@@ -26,7 +26,6 @@ const tGetPluginsOptions = async function ({
   debug,
   sendStatus,
   testOpts,
-  featureFlags,
 }) {
   const pluginsOptionsA = await resolvePluginsPath({
     pluginsOptions,
@@ -41,7 +40,6 @@ const tGetPluginsOptions = async function ({
     debug,
     sendStatus,
     testOpts,
-    featureFlags,
   })
   const pluginsOptionsB = await Promise.all(
     pluginsOptionsA.map((pluginOptions) => loadPluginFiles({ pluginOptions, debug })),
