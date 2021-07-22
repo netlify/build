@@ -328,7 +328,11 @@ if (!version.startsWith('v8.')) {
     await runFixture(t, 'functions_internal_missing')
   })
 
-  test('Does not require the `.netlify/functions-internal` or the main functions directory to exist', async (t) => {
-    await runFixture(t, 'functions_internal_main_missing')
+  test('Does not require the `.netlify/functions-internal` or the user functions directory to exist', async (t) => {
+    await runFixture(t, 'functions_internal_user_missing')
+  })
+
+  test('Bundles functions from the `.netlify/functions-internal` directory even if the configured user functions directory is missing', async (t) => {
+    await runFixture(t, 'functions_user_missing')
   })
 }

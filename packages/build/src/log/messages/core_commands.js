@@ -58,6 +58,7 @@ const logFunctionsToBundle = function ({
   logs,
   userFunctions,
   userFunctionsSrc,
+  userFunctionsSrcExists,
   internalFunctions,
   internalFunctionsSrc,
 }) {
@@ -66,7 +67,7 @@ const logFunctionsToBundle = function ({
     logArray(logs, internalFunctions, { indent: false })
   }
 
-  if (userFunctionsSrc === undefined) {
+  if (!userFunctionsSrcExists) {
     return
   }
 
