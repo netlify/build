@@ -8,6 +8,6 @@ module.exports = {
   }) {
     const functions = await list()
 
-    console.log(functions)
+    console.log(JSON.stringify(functions, null, 2))
   },
 }

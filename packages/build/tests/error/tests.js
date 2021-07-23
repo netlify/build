@@ -75,10 +75,10 @@ test('build.cancelBuild() API call no token', async (t) => {
   t.is(requests.length, 0)
 })
 
-// Node 10 `util.inspect()` output is different from Node 8, leading to
+// Node `util.inspect()` output is different from Node 10, leading to
 // inconsistent test snapshots
-// TODO: remove once dropping Node 8
-if (!version.startsWith('v8.')) {
+// TODO: remove once dropping Node 10
+if (!version.startsWith('v10.')) {
   test('build.cancelBuild() API call failure', async (t) => {
     await runFixture(t, 'cancel', {
       flags: { token: 'test', deployId: 'test', testOpts: { host: '...', env: false } },
@@ -219,9 +219,9 @@ test.serial('Report API error', async (t) => {
   })
 })
 
-// Node v8 uses a different error message format
-// TODO: remove once dropping Node 8
-if (!version.startsWith('v8.')) {
+// Node v10 uses a different error message format
+// TODO: remove once dropping Node 10
+if (!version.startsWith('v10.')) {
   test('Report dependencies error', async (t) => {
     await runFixture(t, 'dependencies', { flags })
   })
@@ -343,10 +343,10 @@ test('Print stack trace of validation errors', async (t) => {
   await runFixture(t, '', { flags: { config: '/invalid' } })
 })
 
-// Node 10 `util.inspect()` output is different from Node 8, leading to
+// Node `util.inspect()` output is different from Node 10, leading to
 // inconsistent test snapshots
-// TODO: remove once dropping Node 8
-if (!version.startsWith('v8.')) {
+// TODO: remove once dropping Node 10
+if (!version.startsWith('v10.')) {
   test('Redact API token on errors', async (t) => {
     await runFixture(t, 'api_token_redact', {
       flags: { token: '0123456789abcdef', deployId: 'test', mode: 'buildbot', testOpts: { host: '...' } },

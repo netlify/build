@@ -124,10 +124,10 @@ if (!version.startsWith('v8.')) {
   })
 }
 
-// Node 8 prints different snapshots due to change of behavior with
+// Node 10 prints different snapshots due to change of behavior with
 // `util.inspect()`
-// @todo remove once Node 8 support is removed
-if (!version.startsWith('v8.')) {
+// @todo remove once Node 10 support is removed
+if (!version.startsWith('v10.')) {
   test('netlifyConfig properties are deeply readonly by default', async (t) => {
     await runFixture(t, 'config_readonly_deep')
   })
@@ -1255,9 +1255,9 @@ test('Does not pin netlify.toml-only plugin versions if there are no matching pl
   await runWithPluginRunsMock(t, 'pin_config_success', { pluginRuns: [{ package: TEST_PLUGIN_NAME }] })
 })
 
-// Node 8 `util.inspect()` prints the API error differently
-// @todo remove after removing support for Node 8
-if (!version.startsWith('v8.')) {
+// Node 10 `util.inspect()` prints the API error differently
+// @todo remove after removing support for Node 10
+if (!version.startsWith('v10.')) {
   test('Fails the build when pinning netlify.toml-only plugin versions and the API request fails', async (t) => {
     await runWithPluginRunsMock(t, 'pin_config_success', { status: 400 })
   })
@@ -1356,19 +1356,15 @@ test('Utils are defined', async (t) => {
   await runFixture(t, 'defined')
 })
 
-// @netlify/zip-it-and-ship-it does not support Node 8 during bundling
-// TODO: remove once we drop support for Node 8
-if (!version.startsWith('v8.')) {
-  test('Can run utils', async (t) => {
-    await removeDir(`${FIXTURES_DIR}/functions/functions`)
-    await runFixture(t, 'functions')
-    await removeDir(`${FIXTURES_DIR}/functions/functions`)
-  })
+test('Can run utils', async (t) => {
+  await removeDir(`${FIXTURES_DIR}/functions/functions`)
+  await runFixture(t, 'functions')
+  await removeDir(`${FIXTURES_DIR}/functions/functions`)
+})
 
-  test('Can run list util', async (t) => {
-    await runFixture(t, 'functions_list')
-  })
-}
+test('Can run list util', async (t) => {
+  await runFixture(t, 'functions_list')
+})
 
 test('Git utils fails if no root', async (t) => {
   await runFixture(t, 'git_no_root', { copyRoot: { git: false } })
