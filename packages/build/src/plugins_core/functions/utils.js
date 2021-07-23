@@ -1,10 +1,10 @@
 'use strict'
 
-const { lstat } = require('fs')
+const { stat } = require('fs')
 const { relative } = require('path')
 const { promisify } = require('util')
 
-const pLstat = promisify(lstat)
+const pStat = promisify(stat)
 
 const { addErrorInfo } = require('../../error/info')
 
@@ -45,7 +45,7 @@ const validateFunctionsSrc = async function ({ functionsSrc, relativeFunctionsSr
   }
 
   try {
-    const stats = await pLstat(functionsSrc)
+    const stats = await pStat(functionsSrc)
 
     if (stats.isDirectory()) {
       return true

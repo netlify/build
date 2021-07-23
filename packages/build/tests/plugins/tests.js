@@ -494,6 +494,10 @@ test('Functions: must not be a regular file', async (t) => {
   await runFixture(t, 'regular_file')
 })
 
+test('Functions: can be a symbolic link', async (t) => {
+  await runFixture(t, 'symlink')
+})
+
 test('Functions: default directory', async (t) => {
   await runFixture(t, 'default')
 })
