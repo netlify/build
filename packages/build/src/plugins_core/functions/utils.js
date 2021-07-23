@@ -47,7 +47,7 @@ const validateFunctionsSrc = async function ({ functionsSrc, relativeFunctionsSr
   try {
     const stats = await pLstat(functionsSrc)
 
-    if (stats.isDirectory()) {
+    if (stats.isDirectory() || stats.isSymbolicLink()) {
       return true
     }
 
