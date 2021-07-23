@@ -185,6 +185,19 @@ test('Telemetry node version reported is based on the current process version if
   t.is(telemetryRequests[0].body.properties.nodeVersion, versions.node)
 })
 
+test('Telemetry reports a framework if any is given', async (t) => {
+  const framework = 'gatsby'
+  const { telemetryRequests } = await runWithApiMock(t, 'success', { framework })
+  t.is(telemetryRequests.length, 1)
+  t.is(telemetryRequests[0].body.properties.framework, framework)
+})
+
+test('Telemetry reports no framework if none is provided', async (t) => {
+  const { telemetryRequests } = await runWithApiMock(t, 'success')
+  t.is(telemetryRequests.length, 1)
+  t.is(telemetryRequests[0].body.properties.framework, undefined)
+})
+
 test('Telemetry calls timeout by default', async (t) => {
   const { telemetryRequests } = await runWithApiMock(t, 'success', {
     // We want to rely on the default timeout value
