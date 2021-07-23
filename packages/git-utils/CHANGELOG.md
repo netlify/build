@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://www.github.com/netlify/build/compare/git-utils-v1.0.11...git-utils-v2.0.0) (2021-07-23)
+
+
+### ⚠ BREAKING CHANGES
+
+* deprecate Node 8 (#3322)
+
+### Miscellaneous Chores
+
+* deprecate Node 8 ([#3322](https://www.github.com/netlify/build/issues/3322)) ([9cc108a](https://www.github.com/netlify/build/commit/9cc108aab825558204ffef6b8034f456d8d11879))
+
 ### [1.0.11](https://www.github.com/netlify/build/compare/git-utils-v1.0.10...git-utils-v1.0.11) (2021-05-03)
 
 
