@@ -1,5 +1,12 @@
 # Changelog
 
+### [16.2.1](https://www.github.com/netlify/build/compare/build-v16.2.0...build-v16.2.1) (2021-07-23)
+
+
+### Bug Fixes
+
+* allow functions directory to be a symlink ([#3326](https://www.github.com/netlify/build/issues/3326)) ([1b98e50](https://www.github.com/netlify/build/commit/1b98e50c8bedc1a15855ab5ede42b8f5305ef263))
+
 ## [16.2.0](https://www.github.com/netlify/build/compare/build-v16.1.1...build-v16.2.0) (2021-07-22)
 
 
