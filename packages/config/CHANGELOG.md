@@ -1,5 +1,12 @@
 # Changelog
 
+## [13.1.0](https://www.github.com/netlify/build/compare/config-v13.0.0...config-v13.1.0) (2021-07-23)
+
+
+### Features
+
+* **plugins:** remove feature flag responsible plugin node version execution changes ([#3311](https://www.github.com/netlify/build/issues/3311)) ([8c94faf](https://www.github.com/netlify/build/commit/8c94faf8d1e7cbf830b1cbc722949198759f9f8c))
+
 ## [13.0.0](https://www.github.com/netlify/build/compare/config-v12.6.0...config-v13.0.0) (2021-07-16)
 
 
