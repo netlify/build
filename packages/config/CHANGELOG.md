@@ -1,5 +1,26 @@
 # Changelog
 
+## [14.0.0](https://www.github.com/netlify/build/compare/config-v13.0.0...config-v14.0.0) (2021-07-26)
+
+
+### ⚠ BREAKING CHANGES
+
+* deprecate Node 8 (#3322)
+
+### Features
+
+* **plugins:** remove feature flag responsible plugin node version execution changes ([#3311](https://www.github.com/netlify/build/issues/3311)) ([8c94faf](https://www.github.com/netlify/build/commit/8c94faf8d1e7cbf830b1cbc722949198759f9f8c))
+
+
+### Bug Fixes
+
+* **deps:** update dependency netlify to v8 ([#3338](https://www.github.com/netlify/build/issues/3338)) ([6912475](https://www.github.com/netlify/build/commit/6912475b307be67dd003df26d0bf28ae21e3d172))
+
+
+### Miscellaneous Chores
+
+* deprecate Node 8 ([#3322](https://www.github.com/netlify/build/issues/3322)) ([9cc108a](https://www.github.com/netlify/build/commit/9cc108aab825558204ffef6b8034f456d8d11879))
+
 ## [13.0.0](https://www.github.com/netlify/build/compare/config-v12.6.0...config-v13.0.0) (2021-07-16)
 
 
