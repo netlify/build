@@ -1,5 +1,21 @@
 # Changelog
 
+## [17.0.0](https://www.github.com/netlify/build/compare/build-v16.2.1...build-v17.0.0) (2021-07-26)
+
+
+### ⚠ BREAKING CHANGES
+
+* deprecate Node 8 (#3322)
+
+### Features
+
+* **deps:** bump @netlify/*-utils and @netlify/config to latest ([d57c7c3](https://www.github.com/netlify/build/commit/d57c7c3cadb79b96f6e96052fbd261b2a1e77f41))
+
+
+### Miscellaneous Chores
+
+* deprecate Node 8 ([#3322](https://www.github.com/netlify/build/issues/3322)) ([9cc108a](https://www.github.com/netlify/build/commit/9cc108aab825558204ffef6b8034f456d8d11879))
+
 ### [16.2.1](https://www.github.com/netlify/build/compare/build-v16.2.0...build-v16.2.1) (2021-07-23)
 
 
