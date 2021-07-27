@@ -19,8 +19,6 @@ jobs:
           token: ${{ steps.get-token.outputs.token }}
           command: manifest
       - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
         if: ${{ steps.release.outputs.release_created }}
       - uses: actions/setup-node@v2
         with:
