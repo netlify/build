@@ -1,5 +1,12 @@
 # Changelog
 
+## [17.1.0](https://www.github.com/netlify/build/compare/build-v17.0.1...build-v17.1.0) (2021-07-27)
+
+
+### Features
+
+* **telemetry:** report the framework provided ([#3328](https://www.github.com/netlify/build/issues/3328)) ([bc64b5c](https://www.github.com/netlify/build/commit/bc64b5c163ef8a4b303fa6e44491cc250a6092c8))
+
 ### [17.0.1](https://www.github.com/netlify/build/compare/build-v17.0.0...build-v17.0.1) (2021-07-27)
 
 
