@@ -7,10 +7,6 @@ on:
 jobs:
   release-package:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        package: [build, cache-utils, config, functions-utils, git-utils, run-utils]
-      fail-fast: false
     steps:
       - uses: navikt/github-app-token-generator@2d70c12368d1958155af4d283f9f21c9a2a8cb98
         id: get-token
@@ -21,10 +17,7 @@ jobs:
         id: release
         with:
           token: ${{ steps.get-token.outputs.token }}
-          release-type: node
-          package-name: '@netlify/${{ matrix.package }}'
-          monorepo-tags: true
-          path: packages/${{ matrix.package }}
+          command: manifest
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
@@ -38,7 +31,28 @@ jobs:
       - name: Install dependencies
         run: npm ci
         if: ${{ steps.release.outputs.release_created }}
-      - run: npm publish packages/${{ matrix.package }}/
-        if: ${{ steps.release.outputs.release_created }}
+      # Publish new releases in order of dependencies
+      - run: npm publish packages/git-utils/
+        if: ${{ steps.release.outputs['packages/git-utils--version'] }}
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - run: npm publish packages/run-utils/
+        if: ${{ steps.release.outputs['packages/run-utils--version'] }}
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - run: npm publish packages/function-utils/
+        if: ${{ steps.release.outputs['packages/function-utils--version'] }}
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - run: npm publish packages/cache-utils/
+        if: ${{ steps.release.outputs['packages/cache-utils--version'] }}
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - run: npm publish packages/config/
+        if: ${{ steps.release.outputs['packages/config--version'] }}
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - run: npm publish packages/build/
+        if: ${{ steps.release.outputs['packages/build--version'] }}
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
