@@ -1,5 +1,12 @@
 # Changelog
 
+## [14.1.0](https://www.github.com/netlify/build/compare/config-v14.0.0...config-v14.1.0) (2021-07-27)
+
+
+### Features
+
+* test config changes ([7791ae6](https://www.github.com/netlify/build/commit/7791ae6898344c5fa8a816d04f644a300d9e9e3f))
+
 ## [14.0.0](https://www.github.com/netlify/build/compare/config-v13.0.0...config-v14.0.0) (2021-07-26)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.0.1](https://www.github.com/netlify/build/compare/git-utils-v2.0.0...git-utils-v2.0.1) (2021-07-27)
+
+
+### Bug Fixes
+
+* test git-utils changes ([0b8660c](https://www.github.com/netlify/build/commit/0b8660caeb30b91140059ba38300a568bf500ea0))
+
 ## [2.0.0](https://www.github.com/netlify/build/compare/git-utils-v1.0.11...git-utils-v2.0.0) (2021-07-23)
 
 
