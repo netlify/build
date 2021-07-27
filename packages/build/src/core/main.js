@@ -92,6 +92,7 @@ const build = async function (flags = {}) {
       siteInfo,
       telemetry,
       userNodeVersion,
+      framework,
       testOpts,
       errorParams,
     })
@@ -100,7 +101,16 @@ const build = async function (flags = {}) {
     const { severity } = await handleBuildError(error, errorParams)
     const { pluginsOptions, siteInfo, userNodeVersion } = errorParams
     const { success, severityCode, status } = getSeverity(severity)
-    await telemetryReport({ status, pluginsOptions, siteInfo, telemetry, userNodeVersion, testOpts, errorParams })
+    await telemetryReport({
+      status,
+      pluginsOptions,
+      siteInfo,
+      telemetry,
+      userNodeVersion,
+      framework,
+      testOpts,
+      errorParams,
+    })
     return { success, severityCode, logs }
   }
 }
@@ -598,6 +608,7 @@ const telemetryReport = async function ({
   siteInfo,
   telemetry,
   userNodeVersion,
+  framework,
   testOpts,
   errorParams,
 }) {
@@ -610,6 +621,7 @@ const telemetryReport = async function ({
       siteInfo,
       telemetry,
       userNodeVersion,
+      framework,
       testOpts,
     })
   } catch (error) {

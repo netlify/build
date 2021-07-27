@@ -25,6 +25,7 @@ const trackBuildComplete = async function ({
   siteInfo,
   telemetry,
   userNodeVersion,
+  framework,
   testOpts: { telemetryOrigin = DEFAULT_TELEMETRY_CONFIG.origin, telemetryTimeout = DEFAULT_TELEMETRY_CONFIG.timeout },
 }) {
   if (!telemetry) {
@@ -32,7 +33,15 @@ const trackBuildComplete = async function ({
   }
 
   try {
-    const payload = getPayload({ status, commandsCount, pluginsOptions, durationNs, siteInfo, userNodeVersion })
+    const payload = getPayload({
+      status,
+      commandsCount,
+      pluginsOptions,
+      durationNs,
+      siteInfo,
+      userNodeVersion,
+      framework,
+    })
     await track({
       payload,
       config: { ...DEFAULT_TELEMETRY_CONFIG, origin: telemetryOrigin, timeout: telemetryTimeout },
@@ -57,7 +66,15 @@ const track = async function ({ payload, config: { origin, writeKey, timeout } }
 
 // Retrieve telemetry information
 // siteInfo can be empty if the build fails during the get config step
-const getPayload = function ({ status, commandsCount, pluginsOptions, durationNs, userNodeVersion, siteInfo = {} }) {
+const getPayload = function ({
+  status,
+  commandsCount,
+  pluginsOptions,
+  durationNs,
+  userNodeVersion,
+  siteInfo = {},
+  framework,
+}) {
   return {
     userId: 'buildbot_user',
     event: 'build:ci_build_process_completed',
@@ -71,6 +88,7 @@ const getPayload = function ({ status, commandsCount, pluginsOptions, durationNs
       nodeVersion: userNodeVersion,
       osPlatform: OS_TYPES[platform],
       osName: osName(),
+      framework,
       siteId: siteInfo.id,
       ...(pluginsOptions !== undefined && {
         plugins: pluginsOptions.map(getPlugin),
