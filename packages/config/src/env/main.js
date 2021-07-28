@@ -74,6 +74,7 @@ const getGeneralEnv = async function ({
     URL: url,
     REPOSITORY_URL,
     CONTEXT: context,
+    NETLIFY_LOCAL: 'true',
     ...gitEnv,
     // Localization
     LANG: 'en_US.UTF-8',
@@ -139,8 +140,10 @@ const READONLY_ENV = [
   'REPOSITORY_URL',
   'URL',
 
-  // Purposely left unset in local builds
+  // CI builds set NETLIFY=true while CLI and programmatic builds set
+  // NETLIFY_LOCAL=true
   'NETLIFY',
+  'NETLIFY_LOCAL',
 
   // Not set in local builds because there is CI build/deploy, incoming hooks nor PR
   'BUILD_ID',

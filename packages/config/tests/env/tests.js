@@ -247,6 +247,27 @@ test('Sets REPOSITORY_URL environment variable', async (t) => {
   t.is(REPOSITORY_URL.value, 'test')
 })
 
+test('Does not set NETLIFY_LOCAL environment variable in production', async (t) => {
+  const {
+    env: { NETLIFY_LOCAL },
+  } = await getFixtureConfig(t, 'empty', { flags: { mode: 'buildbot' } })
+  t.is(NETLIFY_LOCAL, undefined)
+})
+
+test('Sets NETLIFY_LOCAL environment variable in CLI builds', async (t) => {
+  const {
+    env: { NETLIFY_LOCAL },
+  } = await getFixtureConfig(t, 'empty', { flags: { mode: 'cli' } })
+  t.is(NETLIFY_LOCAL.value, 'true')
+})
+
+test('Sets NETLIFY_LOCAL environment variable in programmatic builds', async (t) => {
+  const {
+    env: { NETLIFY_LOCAL },
+  } = await getFixtureConfig(t, 'empty', { flags: { mode: 'require' } })
+  t.is(NETLIFY_LOCAL.value, 'true')
+})
+
 test('Sets config file environment variables', async (t) => {
   const {
     env: { TEST },
