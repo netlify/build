@@ -1,5 +1,12 @@
 # Changelog
 
+## [17.2.0](https://www.github.com/netlify/build/compare/build-v17.1.1...build-v17.2.0) (2021-07-28)
+
+
+### Features
+
+* add `NETLIFY_LOCAL` environment variable ([#3351](https://www.github.com/netlify/build/issues/3351)) ([c3c0716](https://www.github.com/netlify/build/commit/c3c07169ba922010d7233de868a52b6ccd6bcd20))
+
 ### [17.1.1](https://www.github.com/netlify/build/compare/build-v17.1.0...build-v17.1.1) (2021-07-27)
 
 
