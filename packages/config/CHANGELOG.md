@@ -1,5 +1,12 @@
 # Changelog
 
+## [14.1.0](https://www.github.com/netlify/build/compare/config-v14.0.0...config-v14.1.0) (2021-07-28)
+
+
+### Features
+
+* add `NETLIFY_LOCAL` environment variable ([#3351](https://www.github.com/netlify/build/issues/3351)) ([c3c0716](https://www.github.com/netlify/build/commit/c3c07169ba922010d7233de868a52b6ccd6bcd20))
+
 ## [14.0.0](https://www.github.com/netlify/build/compare/config-v13.0.0...config-v14.0.0) (2021-07-26)
 
 
