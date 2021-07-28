@@ -24,7 +24,7 @@
     "prepublishOnly:checkout": "run-local \"git checkout main\"",
     "prepublishOnly:pull": "run-local \"git pull\"",
     "prepublishOnly:install": "run-local \"npm ci\"",
-    "prepublishOnly:test": "npm test"
+    "prepublishOnly:test": "run-local \"npm test\""
   },
   "config": {
     "eslint": "--ignore-path .gitignore --ignore-pattern \"packages/*/tests/**/snapshots/*.md\" --cache --format=codeframe --max-warnings=0 \"{packages,.github}/**/*.{js,md,html}\" \"*.{js,md,html}\" \".*.{js,md,html}\"",

@@ -53,13 +53,12 @@ After submitting the pull request, please make sure the Continuous Integration c
 
 ## Releasing
 
-To release a specific simply package merge the relevant package release PR created by `release-please`
-
-Linting and tests will automatically run before publish.
+`release-please` creates an aggregated release PR that contains all packages that were changed from the last release.
+When you merge this PR, it will automatically publish the relevant packages to `npm` in the correct order.
 
 Packages dependencies graph:
 
-```
+```sh
 @netlify/zip-it-and-ship-it -> @netlify/function-utils
                             -> @netlify/build
                             -> netlify-cli
