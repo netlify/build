@@ -1,5 +1,12 @@
 # Changelog
 
+## [17.3.0](https://www.github.com/netlify/build/compare/build-v17.2.0...build-v17.3.0) (2021-07-29)
+
+
+### Features
+
+* add versioning to `plugins.json` ([#3355](https://www.github.com/netlify/build/issues/3355)) ([034ac01](https://www.github.com/netlify/build/commit/034ac0106327c2aeccc6b3358e1d3e0b25c48af5))
+
 ## [17.2.0](https://www.github.com/netlify/build/compare/build-v17.1.1...build-v17.2.0) (2021-07-28)
 
 
