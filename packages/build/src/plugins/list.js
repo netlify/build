@@ -50,7 +50,8 @@ const fetchPluginsList = async function ({ logs, pluginsListUrl }) {
   }
 }
 
-const PLUGINS_LIST_URL = 'https://netlify-plugins.netlify.app/plugins.json'
+const PLUGINS_LIST_VERSION = 'v1'
+const PLUGINS_LIST_URL = `https://${PLUGINS_LIST_VERSION}--netlify-plugins.netlify.app/plugins.json`
 // 1 minute HTTP request timeout
 const PLUGINS_LIST_TIMEOUT = 6e4
 
