@@ -1,6 +1,7 @@
 'use strict'
 
 const net = require('net')
+const { normalize, resolve, relative } = require('path')
 const { promisify } = require('util')
 
 const pEvent = require('p-event')
@@ -55,9 +56,10 @@ const getNextParsedResponsePromise = addAsyncErrorMessage(
   'Invalid response from buildbot',
 )
 
-const deploySiteWithBuildbotClient = async function (client, events, { PUBLISH_DIR }) {
+const deploySiteWithBuildbotClient = async function ({ client, events, buildDir, repositoryRoot, constants }) {
   const action = shouldWaitForPostProcessing(events) ? 'deploySiteAndAwaitLive' : 'deploySite'
-  const payload = { action, deployDir: PUBLISH_DIR }
+  const deployDir = getDeployDir({ buildDir, repositoryRoot, constants })
+  const payload = { action, deployDir }
 
   const [{ succeeded, values: { error, error_type: errorType } = {} }] = await Promise.all([
     getNextParsedResponsePromise(client),
@@ -67,6 +69,19 @@ const deploySiteWithBuildbotClient = async function (client, events, { PUBLISH_D
   if (!succeeded) {
     return handleDeployError(error, errorType)
   }
+}
+
+// The file paths in the buildbot are relative to the repository root.
+// However, the file paths in Build plugins, including `constants.PUBLISH_DIR`
+// are relative to the build directory, which is different when there is a
+// base directory. This converts it.
+// We need to call `normalize()` in case the publish directory is the
+// repository root, so `deployDir` is "." not ""
+const getDeployDir = function ({ buildDir, repositoryRoot, constants: { PUBLISH_DIR } }) {
+  const absolutePublishDir = resolve(buildDir, PUBLISH_DIR)
+  const relativePublishDir = relative(repositoryRoot, absolutePublishDir)
+  const deployDir = normalize(relativePublishDir)
+  return deployDir
 }
 
 // We distinguish between user errors and system errors during deploys
