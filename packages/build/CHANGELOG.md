@@ -1,5 +1,12 @@
 # Changelog
 
+## [17.4.0](https://www.github.com/netlify/build/compare/build-v17.3.1...build-v17.4.0) (2021-07-30)
+
+
+### Features
+
+* allow adding new properties to `compatibility` ([#3361](https://www.github.com/netlify/build/issues/3361)) ([24d1541](https://www.github.com/netlify/build/commit/24d15419e64b5d7b291b154fd9363660e468416d))
+
 ### [17.3.1](https://www.github.com/netlify/build/compare/build-v17.3.0...build-v17.3.1) (2021-07-29)
 
 
