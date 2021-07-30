@@ -1,5 +1,12 @@
 # Changelog
 
+### [17.4.1](https://www.github.com/netlify/build/compare/build-v17.4.0...build-v17.4.1) (2021-07-30)
+
+
+### Bug Fixes
+
+* `deployDir` parameter sent to buildbot during deploys ([#3363](https://www.github.com/netlify/build/issues/3363)) ([5c39e70](https://www.github.com/netlify/build/commit/5c39e70c3a5b8ceecad448593b1095c093b093ff))
+
 ## [17.4.0](https://www.github.com/netlify/build/compare/build-v17.3.1...build-v17.4.0) (2021-07-30)
 
 
