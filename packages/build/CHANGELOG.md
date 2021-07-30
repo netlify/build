@@ -1,5 +1,13 @@
 # Changelog
 
+### [17.3.1](https://www.github.com/netlify/build/compare/build-v17.3.0...build-v17.3.1) (2021-07-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^2.21.0 ([#3359](https://www.github.com/netlify/build/issues/3359)) ([2b34de5](https://www.github.com/netlify/build/commit/2b34de56e7561c915c840c9070ad0fe6edbcfe2c))
+* update `plugins.json` version ([#3358](https://www.github.com/netlify/build/issues/3358)) ([511da72](https://www.github.com/netlify/build/commit/511da7264f0369aebec0e5cc975164d04c736a83))
+
 ## [17.3.0](https://www.github.com/netlify/build/compare/build-v17.2.0...build-v17.3.0) (2021-07-29)
 
 
