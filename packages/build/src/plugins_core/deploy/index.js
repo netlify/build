@@ -40,7 +40,7 @@ const coreCommand = async function ({
       debug,
       saveConfig,
     })
-    await deploySiteWithBuildbotClient(client, events, constants)
+    await deploySiteWithBuildbotClient({ client, events, buildDir, repositoryRoot, constants })
     await restoreUpdatedConfig({
       buildDir,
       repositoryRoot,

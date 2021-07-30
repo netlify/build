@@ -1,6 +1,7 @@
 'use strict'
 
 const { writeFile } = require('fs')
+const { normalize } = require('path')
 const { platform, version } = require('process')
 const { promisify } = require('util')
 
@@ -633,6 +634,18 @@ test('Deploy plugin succeeds', async (t) => {
   }
 
   t.true(requests.every(isValidDeployReponse))
+})
+
+test('Deploy plugin sends deployDir as a path relative to repositoryRoot', async (t) => {
+  const { address, requests, stopServer } = await startDeployServer()
+  try {
+    await runFixture(t, 'deploy_dir_path', { flags: { buildbotServerSocket: address }, snapshot: false })
+  } finally {
+    await stopServer()
+  }
+
+  const [{ deployDir }] = requests
+  t.is(deployDir, normalize('base/publish'))
 })
 
 test('Deploy plugin is not run unless --buildbotServerSocket is passed', async (t) => {
