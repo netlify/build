@@ -9,6 +9,8 @@ const isPlainObj = require('is-plain-obj')
 const { logPluginsList } = require('../log/messages/plugins')
 const { logPluginsFetchError } = require('../log/messages/plugins')
 
+const { CONDITIONS } = require('./compatibility')
+
 // Retrieve the list of plugins officially vetted by us and displayed in our
 // plugins directory UI.
 // We fetch this list during each build (no caching) because we want new
@@ -76,9 +78,13 @@ const normalizePluginItem = function ({ package: packageName, version, compatibi
   return [packageName, versionsA]
 }
 
-const normalizeCompatVersion = function ({ version, migrationGuide, ...conditions }) {
-  const normalizedConditions = Object.entries(conditions).map(normalizeCondition)
-  return { version, migrationGuide, conditions: normalizedConditions }
+const normalizeCompatVersion = function ({ version, migrationGuide, ...otherProperties }) {
+  const conditions = Object.entries(otherProperties).filter(isCondition).map(normalizeCondition)
+  return { version, migrationGuide, conditions }
+}
+
+const isCondition = function ([type]) {
+  return type in CONDITIONS
 }
 
 const normalizeCondition = function ([type, condition]) {

@@ -128,4 +128,4 @@ const CONDITIONS = {
   siteDependencies: { test: siteDependenciesTest, warning: siteDependenciesWarning },
 }
 
-module.exports = { getExpectedVersion }
+module.exports = { getExpectedVersion, CONDITIONS }
