@@ -5,7 +5,7 @@ const { normalize } = require('path')
 const { platform, version } = require('process')
 const { promisify } = require('util')
 
-const pluginsList = require('@netlify/plugins-list')
+const { pluginsList } = require('@netlify/plugins-list')
 const test = require('ava')
 const cpFile = require('cp-file')
 const cpy = require('cpy')

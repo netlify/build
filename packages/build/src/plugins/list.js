@@ -1,6 +1,6 @@
 'use strict'
 
-const oldPluginsList = require('@netlify/plugins-list')
+const { pluginsList: oldPluginsList, pluginsUrl } = require('@netlify/plugins-list')
 // TODO: replace with `Object.fromEntries()` after dropping Node <12.0.0
 const fromEntries = require('@ungap/from-entries')
 const got = require('got')
@@ -18,7 +18,7 @@ const { CONDITIONS } = require('./compatibility')
 // make this request is somewhat ok (in the 100ms range).
 // We only fetch this plugins list when needed, i.e. we defer it as much as
 // possible.
-const getPluginsList = async function ({ debug, logs, testOpts: { pluginsListUrl = PLUGINS_LIST_URL } }) {
+const getPluginsList = async function ({ debug, logs, testOpts: { pluginsListUrl = pluginsUrl } }) {
   // We try not to mock in integration tests. However, sending a request for
   // each test would be too slow and make tests unreliable.
   if (pluginsListUrl === 'test') {
@@ -52,8 +52,6 @@ const fetchPluginsList = async function ({ logs, pluginsListUrl }) {
   }
 }
 
-const PLUGINS_LIST_VERSION = 'list-v1'
-const PLUGINS_LIST_URL = `https://${PLUGINS_LIST_VERSION}--netlify-plugins.netlify.app/plugins.json`
 // 1 minute HTTP request timeout
 const PLUGINS_LIST_TIMEOUT = 6e4
 
