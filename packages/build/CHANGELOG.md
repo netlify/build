@@ -1,5 +1,12 @@
 # Changelog
 
+### [17.4.3](https://www.github.com/netlify/build/compare/build-v17.4.2...build-v17.4.3) (2021-08-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to v3 ([#3372](https://www.github.com/netlify/build/issues/3372)) ([c911b2d](https://www.github.com/netlify/build/commit/c911b2d3c02dddaf38183cc9499a0b0d976723da))
+
 ### [17.4.2](https://www.github.com/netlify/build/compare/build-v17.4.1...build-v17.4.2) (2021-08-02)
 
 
