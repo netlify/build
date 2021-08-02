@@ -1,5 +1,12 @@
 # Changelog
 
+### [17.4.4](https://www.github.com/netlify/build/compare/build-v17.4.3...build-v17.4.4) (2021-08-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.16.0 ([#3375](https://www.github.com/netlify/build/issues/3375)) ([4d1c90d](https://www.github.com/netlify/build/commit/4d1c90d5218c8d60373a50043ac6cfa6bda1aa9e))
+
 ### [17.4.3](https://www.github.com/netlify/build/compare/build-v17.4.2...build-v17.4.3) (2021-08-02)
 
 
