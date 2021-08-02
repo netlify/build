@@ -1141,6 +1141,48 @@ test.serial('Plugins can specify non-matching compatibility.siteDependencies ran
   })
 })
 
+test.serial('Plugin versions can be feature flagged', async (t) => {
+  await removeDir(`${FIXTURES_DIR}/plugins_compat_node_version/.netlify`)
+  await runWithApiMock(t, 'plugins_compat_node_version', {
+    featureFlags: { some_feature_flag: true },
+    testPlugin: {
+      compatibility: [{ version: '0.3.0', featureFlag: 'some_feature_flag' }, { version: '0.2.0' }],
+    },
+  })
+})
+
+test.serial('Plugin versions that are feature flagged are ignored if no matching feature flag', async (t) => {
+  await removeDir(`${FIXTURES_DIR}/plugins_compat_node_version/.netlify`)
+  await runWithApiMock(t, 'plugins_compat_node_version', {
+    testPlugin: {
+      compatibility: [{ version: '0.3.0', featureFlag: 'some_feature_flag' }, { version: '0.2.0' }],
+    },
+  })
+})
+
+test.serial(
+  'Plugin pinned versions that are feature flagged are not ignored if pinned but no matching feature flag',
+  async (t) => {
+    await removeDir(`${FIXTURES_DIR}/plugins_compat_node_version/.netlify`)
+    await runWithApiMock(t, 'plugins_compat_node_version', {
+      testPlugin: {
+        compatibility: [{ version: '0.3.0', featureFlag: 'some_feature_flag' }, { version: '0.2.0' }],
+      },
+      defaultConfig: { plugins: [{ package: TEST_PLUGIN_NAME, pinned_version: '0.3.0' }] },
+    })
+  },
+)
+
+test.serial('Compatibility order take precedence over the `featureFlag` property', async (t) => {
+  await removeDir(`${FIXTURES_DIR}/plugins_compat_node_version/.netlify`)
+  await runWithApiMock(t, 'plugins_compat_node_version', {
+    featureFlags: { some_feature_flag: true },
+    testPlugin: {
+      compatibility: [{ version: '0.3.0' }, { version: '0.2.0', featureFlag: 'some_feature_flag' }],
+    },
+  })
+})
+
 const getNodePath = function (nodeVersion) {
   return `/home/ether/.nvm/versions/node/v${nodeVersion}/bin/node`
 }

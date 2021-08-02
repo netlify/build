@@ -26,6 +26,7 @@ const resolvePluginsPath = async function ({
   debug,
   sendStatus,
   testOpts,
+  featureFlags,
 }) {
   const autoPluginsDir = getAutoPluginsDir(buildDir)
   const pluginsOptionsA = await Promise.all(
@@ -47,6 +48,7 @@ const resolvePluginsPath = async function ({
     logs,
     buildDir,
     testOpts,
+    featureFlags,
   })
   const pluginsOptionsE = await handleMissingPlugins({
     pluginsOptions: pluginsOptionsD,
