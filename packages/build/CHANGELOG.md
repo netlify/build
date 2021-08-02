@@ -1,5 +1,12 @@
 # Changelog
 
+## [17.5.0](https://www.github.com/netlify/build/compare/build-v17.4.4...build-v17.5.0) (2021-08-02)
+
+
+### Features
+
+* re-add support for feature-flagging plugin versions ([#3373](https://www.github.com/netlify/build/issues/3373)) ([85b739c](https://www.github.com/netlify/build/commit/85b739c0b48d36c76429f02ddcc32e5c3c51e28d))
+
 ### [17.4.4](https://www.github.com/netlify/build/compare/build-v17.4.3...build-v17.4.4) (2021-08-02)
 
 
