@@ -23,7 +23,7 @@ const getScriptDevCommands = function (scripts, frameworkDevCommand) {
     return preferredScripts
   }
 
-  const devScripts = Object.keys(scripts).filter((script) => isNpmDevScript(script))
+  const devScripts = Object.keys(scripts).filter((script) => isNpmDevScript(script, scripts[script]))
   return devScripts.sort(scriptsSorter)
 }
 
@@ -48,8 +48,10 @@ const getEntryKey = function ([key]) {
 }
 
 // Check if the npm script is likely to contain a dev command
-const isNpmDevScript = function (scriptName) {
-  return NPM_DEV_SCRIPTS.some((devScriptName) => matchesNpmWDevScript(scriptName, devScriptName))
+const isNpmDevScript = function (scriptName, scriptValue) {
+  return NPM_DEV_SCRIPTS.some(
+    (devScriptName) => matchesNpmWDevScript(scriptName, devScriptName) && !isExcludedScript(scriptValue),
+  )
 }
 
 // We also match script names like `docs:dev`
@@ -58,5 +60,11 @@ const matchesNpmWDevScript = function (scriptName, devScriptName) {
 }
 
 const NPM_DEV_SCRIPTS = ['dev', 'serve', 'develop', 'start', 'run', 'build', 'web']
+
+const isExcludedScript = function (scriptValue) {
+  return EXCLUDED_SCRIPTS.some((excluded) => scriptValue.includes(excluded))
+}
+
+const EXCLUDED_SCRIPTS = ['netlify dev']
 
 module.exports = { getDevCommands }

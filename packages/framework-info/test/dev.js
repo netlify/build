@@ -60,3 +60,11 @@ test('Should prioritize dev over serve', async (t) => {
 
   t.deepEqual(frameworks[0].dev.commands, ['npm run dev', 'npm run serve', 'npm run build'])
 })
+
+test(`Should exclude 'netlify dev' script`, async (t) => {
+  const frameworks = await getFrameworks('excluded_script')
+
+  t.is(frameworks.length, 1)
+
+  t.deepEqual(frameworks[0].dev.commands, ['npm run build'])
+})
