@@ -1,5 +1,12 @@
 # Changelog
 
+### [14.1.1](https://www.github.com/netlify/build/compare/config-v14.1.0...config-v14.1.1) (2021-08-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency chalk to ^4.1.1 ([#3367](https://www.github.com/netlify/build/issues/3367)) ([dd258ec](https://www.github.com/netlify/build/commit/dd258ecd758824e56b15fc5f6c73a3180ac0af66))
+
 ## [14.1.0](https://www.github.com/netlify/build/compare/config-v14.0.0...config-v14.1.0) (2021-07-28)
 
 
