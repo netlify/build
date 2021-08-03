@@ -1,5 +1,26 @@
 # Changelog
 
+### [17.7.1](https://www.github.com/netlify/build/compare/build-v17.7.0...build-v17.7.1) (2021-08-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^3.2.0 ([#3381](https://www.github.com/netlify/build/issues/3381)) ([b02dc7f](https://www.github.com/netlify/build/commit/b02dc7fd3fec933be3ca204508a4906a78e22b94))
+
+## [17.7.0](https://www.github.com/netlify/build/compare/build-v17.6.0...build-v17.7.0) (2021-08-03)
+
+
+### Features
+
+* enable functions bundling manifest ([#3378](https://www.github.com/netlify/build/issues/3378)) ([c03c4ac](https://www.github.com/netlify/build/commit/c03c4ac64f79020d732488014f4cb337cb6363a7))
+
+## [17.6.0](https://www.github.com/netlify/build/compare/build-v17.5.0...build-v17.6.0) (2021-08-03)
+
+
+### Features
+
+* **build:** return config mutations ([#3379](https://www.github.com/netlify/build/issues/3379)) ([8eb39b5](https://www.github.com/netlify/build/commit/8eb39b5ee3fae124498f87046a7776ad5574e011))
+
 ## [17.5.0](https://www.github.com/netlify/build/compare/build-v17.4.4...build-v17.5.0) (2021-08-02)
 
 

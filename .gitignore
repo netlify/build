@@ -13,6 +13,7 @@ packages/*/package-lock.json
 **/fixtures/**/test_netlify.toml
 **/fixtures/**/test_redirects
 **/fixtures/**/.netlify/**/*.zip
+**/fixtures/**/manifest.json
 !**/fixtures/**/node_modules
 !**/fixtures/**/plugins_cache*/.netlify
 !**/fixtures/**/pin_*/.netlify

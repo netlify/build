@@ -47,6 +47,7 @@ const runCommands = async function ({
     statuses: statusesB,
     failedPlugins: failedPluginsA,
     timers: timersC,
+    configMutations: configMutationsB,
   } = await pReduce(
     commands,
     async (
@@ -166,6 +167,7 @@ const runCommands = async function ({
     statuses: statusesB,
     failedPlugins: failedPluginsA,
     timers: timersC,
+    configMutations: configMutationsB,
   }
 }
 

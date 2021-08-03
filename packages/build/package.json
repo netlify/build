@@ -1,6 +1,6 @@
 {
   "name": "@netlify/build",
-  "version": "17.5.0",
+  "version": "17.7.1",
   "description": "Netlify build module",
   "main": "src/core/main.js",
   "bin": {
@@ -57,7 +57,7 @@
     "@netlify/functions-utils": "^2.0.0",
     "@netlify/git-utils": "^2.0.0",
     "@netlify/plugin-edge-handlers": "^1.11.22",
-    "@netlify/plugins-list": "^3.0.1",
+    "@netlify/plugins-list": "^3.2.0",
     "@netlify/run-utils": "^2.0.0",
     "@netlify/zip-it-and-ship-it": "^4.16.0",
     "@sindresorhus/slugify": "^1.1.0",
