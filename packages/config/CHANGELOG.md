@@ -1,5 +1,12 @@
 # Changelog
 
+## [14.3.0](https://www.github.com/netlify/build/compare/config-v14.2.0...config-v14.3.0) (2021-08-03)
+
+
+### Features
+
+* improve config simplification ([#3384](https://www.github.com/netlify/build/issues/3384)) ([b9f7d7a](https://www.github.com/netlify/build/commit/b9f7d7ad1baf063bd3919a16b961007cb94da2e2))
+
 ## [14.2.0](https://www.github.com/netlify/build/compare/config-v14.1.1...config-v14.2.0) (2021-08-03)
 
 
