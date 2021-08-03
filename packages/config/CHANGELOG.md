@@ -1,5 +1,12 @@
 # Changelog
 
+## [14.2.0](https://www.github.com/netlify/build/compare/config-v14.1.1...config-v14.2.0) (2021-08-03)
+
+
+### Features
+
+* **build:** return config mutations ([#3379](https://www.github.com/netlify/build/issues/3379)) ([8eb39b5](https://www.github.com/netlify/build/commit/8eb39b5ee3fae124498f87046a7776ad5574e011))
+
 ### [14.1.1](https://www.github.com/netlify/build/compare/config-v14.1.0...config-v14.1.1) (2021-08-02)
 
 

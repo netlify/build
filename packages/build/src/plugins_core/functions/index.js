@@ -1,6 +1,6 @@
 'use strict'
 
-const { resolve } = require('path')
+const { join, resolve } = require('path')
 
 const mapObject = require('map-obj')
 const pathExists = require('path-exists')
@@ -42,13 +42,15 @@ const normalizeFunctionConfig = ({ buildDir, featureFlags, functionConfig = {} }
   processDynamicNodeImports: Boolean(featureFlags.zisiEsbuildDynamicImports),
 })
 
-const getZisiParameters = ({ buildDir, featureFlags, functionsConfig }) => {
+const getZisiParameters = ({ buildDir, featureFlags, functionsConfig, functionsDist, isRunningLocally }) => {
+  const isManifestEnabled = featureFlags.functionsBundlingManifest === true
+  const manifest = isManifestEnabled && isRunningLocally ? join(functionsDist, 'manifest.json') : undefined
   const config = mapObject(functionsConfig, (expression, object) => [
     expression,
     normalizeFunctionConfig({ buildDir, featureFlags, functionConfig: object }),
   ])
 
-  return { basePath: buildDir, config }
+  return { basePath: buildDir, config, manifest }
 }
 
 const zipFunctionsAndLogResults = async ({
@@ -58,9 +60,10 @@ const zipFunctionsAndLogResults = async ({
   functionsDist,
   functionsSrc,
   internalFunctionsSrc,
+  isRunningLocally,
   logs,
 }) => {
-  const zisiParameters = getZisiParameters({ buildDir, featureFlags, functionsConfig })
+  const zisiParameters = getZisiParameters({ buildDir, featureFlags, functionsConfig, functionsDist, isRunningLocally })
   const bundler = isUsingEsbuild(functionsConfig) ? 'esbuild' : 'zisi'
 
   try {
@@ -88,6 +91,7 @@ const zipFunctionsAndLogResults = async ({
 const coreCommand = async function ({
   constants: {
     INTERNAL_FUNCTIONS_SRC: relativeInternalFunctionsSrc,
+    IS_LOCAL: isRunningLocally,
     FUNCTIONS_SRC: relativeFunctionsSrc,
     FUNCTIONS_DIST: relativeFunctionsDist,
   },
@@ -136,6 +140,7 @@ const coreCommand = async function ({
     functionsDist,
     functionsSrc,
     internalFunctionsSrc,
+    isRunningLocally,
     logs,
   })
 
