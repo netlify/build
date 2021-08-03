@@ -1,6 +1,7 @@
 'use strict'
 
 const isPlainObj = require('is-plain-obj')
+const mapObj = require('map-obj')
 
 const { removeFalsy } = require('./utils/remove_falsy')
 
@@ -10,6 +11,7 @@ const simplifyConfig = function ({
   functions,
   plugins,
   redirects,
+  context = {},
   ...config
 }) {
   const buildA = {
@@ -33,7 +35,16 @@ const simplifyConfig = function ({
     ...removeEmptyObject(buildA, 'build'),
     ...removeEmptyArray(plugins, 'plugins'),
     ...removeEmptyArray(simplifyRedirects(redirects), 'redirects'),
+    ...removeEmptyObject(simplifyContexts(context), 'context'),
   })
+}
+
+const simplifyContexts = function (contextProps) {
+  return mapObj(contextProps, simplifyContextProps)
+}
+
+const simplifyContextProps = function (context, contextConfig) {
+  return [context, simplifyConfig(contextConfig)]
 }
 
 const simplifyFunctions = function (functions) {

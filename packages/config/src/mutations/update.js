@@ -27,12 +27,15 @@ const updateConfig = async function (configMutations, { buildDir, configPath, re
   }
 
   const inlineConfig = applyMutations({}, configMutations)
-  const simplifiedConfig = simplifyConfig(inlineConfig)
-  const normalizedInlineConfig = ensureConfigPriority(simplifiedConfig, context, branch)
+  const normalizedInlineConfig = ensureConfigPriority(inlineConfig, context, branch)
   const updatedConfig = await mergeWithConfig(normalizedInlineConfig, configPath)
   const finalConfig = await addConfigRedirects(updatedConfig, redirectsPath)
+  const simplifiedConfig = simplifyConfig(finalConfig)
   await backupConfig({ buildDir, configPath, redirectsPath })
-  await Promise.all([saveConfig(configPath, finalConfig), deleteRedirectsFile(redirectsPath, normalizedInlineConfig)])
+  await Promise.all([
+    saveConfig(configPath, simplifiedConfig),
+    deleteRedirectsFile(redirectsPath, normalizedInlineConfig),
+  ])
 }
 
 // If `netlify.toml` exists, deeply merges the configuration changes.
@@ -43,8 +46,8 @@ const mergeWithConfig = async function (normalizedInlineConfig, configPath) {
 }
 
 // Serialize the changes to `netlify.toml`
-const saveConfig = async function (configPath, finalConfig) {
-  const serializedConfig = serializeToml(finalConfig)
+const saveConfig = async function (configPath, simplifiedConfig) {
+  const serializedConfig = serializeToml(simplifiedConfig)
   await pWriteFile(configPath, serializedConfig)
 }
 
