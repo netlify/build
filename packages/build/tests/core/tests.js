@@ -347,5 +347,14 @@ test('Generates a `manifest.json` file when running outside of buildbot', async 
   await removeDir(`${FIXTURES_DIR}/${fixtureName}/.netlify/functions`)
   await runFixture(t, fixtureName, { flags: { featureFlags: { functionsBundlingManifest: true }, mode: 'cli' } })
 
-  t.true(await pathExists(`${FIXTURES_DIR}/${fixtureName}/.netlify/functions/manifest.json`))
+  const manifestPath = `${FIXTURES_DIR}/${fixtureName}/.netlify/functions/manifest.json`
+
+  t.true(await pathExists(manifestPath))
+
+  // eslint-disable-next-line import/no-dynamic-require, node/global-require
+  const { functions, timestamp, version: manifestVersion } = require(manifestPath)
+
+  t.is(functions.length, 3)
+  t.is(typeof timestamp, 'number')
+  t.is(manifestVersion, 1)
 })
