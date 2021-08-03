@@ -327,7 +327,7 @@ test('Does not generate a `manifest.json` file when the feature flag is not enab
   const fixtureName = 'functions_internal_no_manifest_2'
 
   await removeDir(`${FIXTURES_DIR}/${fixtureName}/.netlify/functions`)
-  await runFixture(t, fixtureName, { flags: { mode: 'buildbot' } })
+  await runFixture(t, fixtureName, { flags: { mode: 'buildbot' }, snapshot: false })
 
   t.false(await pathExists(`${FIXTURES_DIR}/${fixtureName}/.netlify/functions/manifest.json`))
 })
@@ -336,7 +336,10 @@ test('Does not generate a `manifest.json` file when running in buildbot', async 
   const fixtureName = 'functions_internal_no_manifest_1'
 
   await removeDir(`${FIXTURES_DIR}/${fixtureName}/.netlify/functions`)
-  await runFixture(t, fixtureName, { flags: { featureFlags: { functionsBundlingManifest: true }, mode: 'buildbot' } })
+  await runFixture(t, fixtureName, {
+    flags: { featureFlags: { functionsBundlingManifest: true }, mode: 'buildbot' },
+    snapshot: false,
+  })
 
   t.false(await pathExists(`${FIXTURES_DIR}/${fixtureName}/.netlify/functions/manifest.json`))
 })
