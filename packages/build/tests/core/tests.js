@@ -7,10 +7,12 @@ const { promisify } = require('util')
 const test = require('ava')
 const getNode = require('get-node')
 const moize = require('moize')
+const pathExists = require('path-exists')
 const { tmpName } = require('tmp-promise')
 
 const { runFixture: runFixtureConfig } = require('../../../config/tests/helpers/main')
 const { version: netlifyBuildVersion } = require('../../package.json')
+const { removeDir } = require('../helpers/dir')
 const { runFixture, FIXTURES_DIR } = require('../helpers/main')
 const { startServer } = require('../helpers/server')
 
@@ -320,3 +322,30 @@ if (!version.startsWith('v8.')) {
     await runFixture(t, 'functions_user_missing')
   })
 }
+
+test('Does not generate a `manifest.json` file when the feature flag is not enabled', async (t) => {
+  const fixtureName = 'functions_internal_no_manifest_2'
+
+  await removeDir(`${FIXTURES_DIR}/${fixtureName}/.netlify/functions`)
+  await runFixture(t, fixtureName, { flags: { mode: 'buildbot' } })
+
+  t.false(await pathExists(`${FIXTURES_DIR}/${fixtureName}/.netlify/functions/manifest.json`))
+})
+
+test('Does not generate a `manifest.json` file when running in buildbot', async (t) => {
+  const fixtureName = 'functions_internal_no_manifest_1'
+
+  await removeDir(`${FIXTURES_DIR}/${fixtureName}/.netlify/functions`)
+  await runFixture(t, fixtureName, { flags: { featureFlags: { functionsBundlingManifest: true }, mode: 'buildbot' } })
+
+  t.false(await pathExists(`${FIXTURES_DIR}/${fixtureName}/.netlify/functions/manifest.json`))
+})
+
+test('Generates a `manifest.json` file when running outside of buildbot', async (t) => {
+  const fixtureName = 'functions_internal_manifest'
+
+  await removeDir(`${FIXTURES_DIR}/${fixtureName}/.netlify/functions`)
+  await runFixture(t, fixtureName, { flags: { featureFlags: { functionsBundlingManifest: true }, mode: 'cli' } })
+
+  t.true(await pathExists(`${FIXTURES_DIR}/${fixtureName}/.netlify/functions/manifest.json`))
+})
