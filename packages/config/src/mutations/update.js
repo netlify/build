@@ -67,7 +67,7 @@ const deleteRedirectsFile = async function (redirectsPath, normalizedInlineConfi
 // We do this by backing them up inside some sibling directory.
 const backupConfig = async function ({ buildDir, configPath, redirectsPath }) {
   const tempDir = getTempDir(buildDir)
-  await makeDir(tempDir, {})
+  await makeDir(tempDir)
   // this makes sure we don't restore stale files
   await Promise.all([deleteNoError(`${tempDir}/netlify.toml`), deleteNoError(`${tempDir}/_redirects`)])
   await Promise.all([
