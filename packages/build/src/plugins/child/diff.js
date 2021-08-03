@@ -6,7 +6,7 @@ const rfdc = require('rfdc')
 
 const clone = rfdc()
 
-// Copy `neltifyConfig` so we can compare before/after mutating it
+// Copy `netlifyConfig` so we can compare before/after mutating it
 const cloneNetlifyConfig = function (netlifyConfig) {
   return clone(netlifyConfig)
 }
