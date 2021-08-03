@@ -1,5 +1,12 @@
 # Changelog
 
+## [17.7.0](https://www.github.com/netlify/build/compare/build-v17.6.0...build-v17.7.0) (2021-08-03)
+
+
+### Features
+
+* enable functions bundling manifest ([#3378](https://www.github.com/netlify/build/issues/3378)) ([c03c4ac](https://www.github.com/netlify/build/commit/c03c4ac64f79020d732488014f4cb337cb6363a7))
+
 ## [17.6.0](https://www.github.com/netlify/build/compare/build-v17.5.0...build-v17.6.0) (2021-08-03)
 
 
