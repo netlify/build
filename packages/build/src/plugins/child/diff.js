@@ -6,7 +6,7 @@ const rfdc = require('rfdc')
 
 const clone = rfdc()
 
-// Copy `neltifyConfig` so we can compare before/after mutating it
+// Copy `netlifyConfig` so we can compare before/after mutating it
 const cloneNetlifyConfig = function (netlifyConfig) {
   return clone(netlifyConfig)
 }
@@ -18,14 +18,10 @@ const cloneNetlifyConfig = function (netlifyConfig) {
 //  - Warn plugin authors when mutating read-only properties
 //  - Apply the change to `netlifyConfig` in the parent process so it can
 //    run `@netlify/config` to normalize and validate the new values
+// `configMutations` is passed to parent process as JSON
 const getConfigMutations = function (netlifyConfig, netlifyConfigCopy, event) {
   const configMutations = diffObjects(netlifyConfig, netlifyConfigCopy, [])
-  return configMutations.map(({ keys, value }) => ({
-    keys: keys.map(jsonNormalizeKey),
-    keysString: serializeKeys(keys),
-    value,
-    event,
-  }))
+  return configMutations.map((configMutation) => getConfigMutation(configMutation, event))
 }
 
 // We only recurse over plain objects, not arrays. Which means array properties
@@ -49,13 +45,14 @@ const diffObjects = function (objA, objB, parentKeys) {
   })
 }
 
-const serializeKeys = function (keys) {
-  return keys.map(String).join('.')
-}
-
-// `configMutations` is passed to parent process as JSON
-const jsonNormalizeKey = function (key) {
-  return typeof key === 'symbol' ? String(key) : key
+const getConfigMutation = function ({ keys, value }, event) {
+  const serializedKeys = keys.map(String)
+  return {
+    keys: serializedKeys,
+    keysString: serializedKeys.join('.'),
+    value,
+    event,
+  }
 }
 
 module.exports = { cloneNetlifyConfig, getConfigMutations }
