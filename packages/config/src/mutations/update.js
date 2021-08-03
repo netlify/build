@@ -67,7 +67,9 @@ const deleteRedirectsFile = async function (redirectsPath, normalizedInlineConfi
 // We do this by backing them up inside some sibling directory.
 const backupConfig = async function ({ buildDir, configPath, redirectsPath }) {
   const tempDir = getTempDir(buildDir)
-  await makeDir(tempDir)
+  await makeDir(tempDir, {})
+  // this makes sure we don't restore stale files
+  await Promise.all([deleteNoError(`${tempDir}/netlify.toml`), deleteNoError(`${tempDir}/_redirects`)])
   await Promise.all([
     copyIfExists(configPath, `${tempDir}/netlify.toml`),
     copyIfExists(redirectsPath, `${tempDir}/_redirects`),
@@ -94,15 +96,19 @@ const copyIfExists = async function (src, dest) {
   await cpFile(src, dest)
 }
 
+const deleteNoError = async (path) => {
+  try {
+    await pUnlink(path)
+  } catch (_) {}
+}
+
 const copyOrDelete = async function (src, dest) {
   if (await pathExists(src)) {
     await cpFile(src, dest)
     return
   }
 
-  if (await pathExists(dest)) {
-    await pUnlink(dest)
-  }
+  await deleteNoError(dest)
 }
 
 module.exports = { updateConfig, restoreConfig }

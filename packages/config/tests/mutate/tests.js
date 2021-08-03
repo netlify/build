@@ -13,8 +13,15 @@ const FIXTURES_DIR = `${__dirname}/fixtures`
 
 // Call the main function
 const runUpdateConfig = async function (fixtureName, { configMutations = [buildCommandMutation], ...opts } = {}) {
-  const { configPath, redirectsPath } = await initFixtureDir(fixtureName)
-  await updateConfig(configMutations, { configPath, redirectsPath, context: 'production', branch: 'main', ...opts })
+  const { configPath, redirectsPath, buildDir } = await initFixtureDir(fixtureName)
+  await updateConfig(configMutations, {
+    buildDir,
+    configPath,
+    redirectsPath,
+    context: 'production',
+    branch: 'main',
+    ...opts,
+  })
   return { configPath, redirectsPath }
 }
 
@@ -30,7 +37,7 @@ const initFixtureDir = async function (fixtureName) {
   const fixtureRedirectsPath = `${fixtureDir}/_redirects`
   const redirectsPath = `${fixtureDir}/test_redirects`
   await Promise.all([copyIfExists(fixtureConfigPath, configPath), copyIfExists(fixtureRedirectsPath, redirectsPath)])
-  return { configPath, redirectsPath }
+  return { configPath, redirectsPath, buildDir: fixtureDir }
 }
 
 // Create temporary copies of `netlify.toml` and `redirects` from the fixture

@@ -65,6 +65,7 @@ const build = async function (flags = {}) {
       commandsCount,
       timers,
       durationNs,
+      configMutations,
     } = await execBuild({
       ...flagsA,
       dry,
@@ -96,7 +97,7 @@ const build = async function (flags = {}) {
       testOpts,
       errorParams,
     })
-    return { success, severityCode, netlifyConfig: netlifyConfigA, logs }
+    return { success, severityCode, netlifyConfig: netlifyConfigA, logs, configMutations }
   } catch (error) {
     const { severity } = await handleBuildError(error, errorParams)
     const { pluginsOptions, siteInfo, userNodeVersion } = errorParams
@@ -227,6 +228,7 @@ const tExecBuild = async function ({
     netlifyConfig: netlifyConfigA,
     commandsCount,
     timers: timersB,
+    configMutations,
   } = await runAndReportBuild({
     pluginsOptions,
     netlifyConfig,
@@ -265,6 +267,7 @@ const tExecBuild = async function ({
     userNodeVersion,
     commandsCount,
     timers: timersB,
+    configMutations,
   }
 }
 
@@ -310,6 +313,7 @@ const runAndReportBuild = async function ({
       pluginsOptions: pluginsOptionsA,
       failedPlugins,
       timers: timersA,
+      configMutations,
     } = await initAndRunBuild({
       pluginsOptions,
       netlifyConfig,
@@ -372,7 +376,13 @@ const runAndReportBuild = async function ({
       }),
     ])
 
-    return { pluginsOptions: pluginsOptionsA, netlifyConfig: netlifyConfigA, commandsCount, timers: timersA }
+    return {
+      pluginsOptions: pluginsOptionsA,
+      netlifyConfig: netlifyConfigA,
+      commandsCount,
+      timers: timersA,
+      configMutations,
+    }
   } catch (error) {
     const [{ statuses }] = getErrorInfo(error)
     await reportStatuses({
@@ -461,6 +471,7 @@ const initAndRunBuild = async function ({
       statuses,
       failedPlugins,
       timers: timersC,
+      configMutations,
     } = await runBuild({
       childProcesses,
       pluginsOptions: pluginsOptionsA,
@@ -500,6 +511,7 @@ const initAndRunBuild = async function ({
       pluginsOptions: pluginsOptionsA,
       failedPlugins,
       timers: timersC,
+      configMutations,
     }
   } finally {
     stopPlugins(childProcesses)
@@ -558,6 +570,7 @@ const runBuild = async function ({
     statuses,
     failedPlugins,
     timers: timersB,
+    configMutations,
   } = await runCommands({
     commands,
     buildbotServerSocket,
@@ -585,7 +598,8 @@ const runBuild = async function ({
     testOpts,
     featureFlags,
   })
-  return { commandsCount, netlifyConfig: netlifyConfigA, statuses, failedPlugins, timers: timersB }
+
+  return { commandsCount, netlifyConfig: netlifyConfigA, statuses, failedPlugins, timers: timersB, configMutations }
 }
 
 // Logs and reports that a build successfully ended

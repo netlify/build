@@ -95,6 +95,21 @@ test('severityCode is 3 on plugin error', async (t) => {
   t.is(severityCode, 3)
 })
 
+test('returns config mutations', async (t) => {
+  const {
+    returnValue: { configMutations },
+  } = await runFixture(t, 'plugin_mutations', { programmatic: true, snapshot: false })
+
+  t.deepEqual(configMutations, [
+    {
+      keys: ['redirects'],
+      keysString: 'redirects',
+      value: [{ from: 'api/*', to: '.netlify/functions/:splat', status: 200 }],
+      event: 'onPreBuild',
+    },
+  ])
+})
+
 test('--cwd', async (t) => {
   await runFixture(t, '', { flags: { cwd: `${FIXTURES_DIR}/publish` } })
 })
