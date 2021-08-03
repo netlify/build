@@ -1,5 +1,12 @@
 # Changelog
 
+## [17.8.0](https://www.github.com/netlify/build/compare/build-v17.7.1...build-v17.8.0) (2021-08-03)
+
+
+### Features
+
+* improve config simplification ([#3384](https://www.github.com/netlify/build/issues/3384)) ([b9f7d7a](https://www.github.com/netlify/build/commit/b9f7d7ad1baf063bd3919a16b961007cb94da2e2))
+
 ### [17.7.1](https://www.github.com/netlify/build/compare/build-v17.7.0...build-v17.7.1) (2021-08-03)
 
 
