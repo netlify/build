@@ -73,26 +73,11 @@ const validateConfigMutations = function (newConfigMutations) {
   }
 }
 
-const validateConfigMutation = function ({ keysString, keys, value }) {
-  forbidArrayElementAssign(keys, keysString)
-  forbidEmptyAssign(value, keysString)
-}
-
-const forbidArrayElementAssign = function (keys, keyString) {
-  const key = keys[keys.length - 1]
-  const index = typeof key === 'string' ? Number(key) : key
-  const isArrayIndex = Number.isInteger(index)
-  if (isArrayIndex) {
-    throw new Error(`Setting "netlifyConfig.${keyString}" individual array element is not allowed.
-Please set the full array instead.`)
-  }
-}
-
 // Triggered when calling `netlifyConfig.{key} = undefined | null`
 // We do not allow this because the back-end only receives mutations as a
 // `netlify.toml`, i.e. cannot apply property deletions since `undefined` is
 // not serializable in TOML.
-const forbidEmptyAssign = function (value, keysString) {
+const validateConfigMutation = function ({ value, keysString }) {
   if (value === undefined || value === null) {
     throw new Error(`Setting "netlifyConfig.${keysString}" to ${value} is not allowed.
 Please set this property to a specific value instead.`)
