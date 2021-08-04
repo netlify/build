@@ -54,6 +54,8 @@ const denormalizeFunctionsTopProps = function (
 const MUTABLE_PROPS = {
   'build.command': { lastEvent: 'onPreBuild' },
   'build.edge_handlers': { lastEvent: 'onPostBuild' },
+  'build.environment': { lastEvent: 'onPostBuild' },
+  'build.environment.*': { lastEvent: 'onPostBuild' },
   'build.functions': { lastEvent: 'onBuild' },
   'build.processing': { lastEvent: 'onPostBuild' },
   'build.processing.css': { lastEvent: 'onPostBuild' },
