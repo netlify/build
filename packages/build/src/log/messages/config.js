@@ -118,8 +118,15 @@ const logConfigMutations = function (logs, newConfigMutations) {
 }
 
 const logConfigMutation = function (logs, keysString, value) {
-  log(logs, `Netlify configuration property "${keysString}" value changed to ${inspect(value, { colors: false })}.`)
+  const newValue = shouldHideConfigValue(keysString) ? '' : ` to ${inspect(value, { colors: false })}`
+  log(logs, `Netlify configuration property "${keysString}" value changed${newValue}.`)
 }
+
+const shouldHideConfigValue = function (keysString) {
+  return SECRET_PROPS.some((secretProp) => keysString.startsWith(secretProp))
+}
+
+const SECRET_PROPS = ['build.environment']
 
 const logConfigOnUpload = async function ({ logs, configPath, debug }) {
   if (!debug) {
