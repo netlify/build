@@ -1411,6 +1411,22 @@ test('process.env changes are propagated to build.command', async (t) => {
   await runFixture(t, 'env_changes_command')
 })
 
+test('build.environment changes are propagated to other plugins', async (t) => {
+  await runFixture(t, 'env_changes_build_plugin')
+})
+
+test('build.environment changes are propagated to onError and onEnd', async (t) => {
+  await runFixture(t, 'env_changes_build_on_error')
+})
+
+test('build.environment changes are propagated to build.command', async (t) => {
+  await runFixture(t, 'env_changes_build_command')
+})
+
+test('build.environment and process.env changes can be mixed', async (t) => {
+  await runFixture(t, 'env_changes_build_mix')
+})
+
 test('Expose some utils', async (t) => {
   await runFixture(t, 'keys')
 })
