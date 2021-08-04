@@ -1,5 +1,12 @@
 # Changelog
 
+### [14.4.1](https://www.github.com/netlify/build/compare/config-v14.4.0...config-v14.4.1) (2021-08-04)
+
+
+### Bug Fixes
+
+* persist `build.environment` changes to `netlify.toml` ([#3394](https://www.github.com/netlify/build/issues/3394)) ([101f99e](https://www.github.com/netlify/build/commit/101f99e0ee65eafc577241711c01e142d6b80444))
+
 ## [14.4.0](https://www.github.com/netlify/build/compare/config-v14.3.0...config-v14.4.0) (2021-08-04)
 
 
