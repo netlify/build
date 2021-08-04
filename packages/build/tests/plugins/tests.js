@@ -240,6 +240,14 @@ test('netlifyConfig.build.command can be removed', async (t) => {
   await runFixture(t, 'config_mutate_build_command_remove')
 })
 
+test('netlifyConfig.build.environment can be assigned all at once', async (t) => {
+  await runFixture(t, 'config_mutate_env_all')
+})
+
+test('netlifyConfig.build.environment can be assigned individually', async (t) => {
+  await runFixture(t, 'config_mutate_env_prop')
+})
+
 test('netlifyConfig.build.publish mutations are used by constants.PUBLISH_DIR', async (t) => {
   await runFixture(t, 'config_mutate_publish_constants')
 })

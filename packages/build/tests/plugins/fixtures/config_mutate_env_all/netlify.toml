@@ -1,0 +1,5 @@
+[[plugins]]
+package = "./plugin"
+
+[build.environment]
+TEST_ONE = "one"
