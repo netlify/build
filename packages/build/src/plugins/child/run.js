@@ -18,7 +18,7 @@ const run = async function (
 
   const envBefore = setEnvChanges(envChanges)
   await method(runOptions)
-  const newEnvChanges = getNewEnvChanges(envBefore)
+  const newEnvChanges = getNewEnvChanges(envBefore, netlifyConfig, netlifyConfigCopy)
 
   const configMutations = getConfigMutations(netlifyConfig, netlifyConfigCopy, event)
   return { ...runState, newEnvChanges, configMutations }

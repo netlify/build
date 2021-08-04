@@ -8,9 +8,15 @@ const mapObj = require('map-obj')
 // If plugins modify `process.env`, this is propagated in other plugins and in
 // `build.command`. Since those are different processes, we figure out when they
 // do this and communicate the new `process.env` to other processes.
-const getNewEnvChanges = function (envBefore) {
-  const envChanges = filterObj(env, (name, value) => value !== envBefore[name])
-  const deletedEnv = filterObj(envBefore, (name) => env[name] === undefined)
+const getNewEnvChanges = function (envBefore, netlifyConfig, netlifyConfigCopy) {
+  const processEnvChanges = diffEnv(envBefore, env)
+  const netlifyConfigEnvChanges = diffEnv(netlifyConfig.build.environment, netlifyConfigCopy.build.environment)
+  return { ...processEnvChanges, ...netlifyConfigEnvChanges }
+}
+
+const diffEnv = function (envBefore, envAfter) {
+  const envChanges = filterObj(envAfter, (name, value) => value !== envBefore[name])
+  const deletedEnv = filterObj(envBefore, (name) => envAfter[name] === undefined)
   const deletedEnvA = mapObj(deletedEnv, setToNull)
   return { ...envChanges, ...deletedEnvA }
 }
