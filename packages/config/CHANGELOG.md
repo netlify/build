@@ -1,5 +1,12 @@
 # Changelog
 
+## [14.4.0](https://www.github.com/netlify/build/compare/config-v14.3.0...config-v14.4.0) (2021-08-04)
+
+
+### Features
+
+* allow modifying `build.environment` ([#3389](https://www.github.com/netlify/build/issues/3389)) ([76d3bc9](https://www.github.com/netlify/build/commit/76d3bc9c77e28cf500ada47289c01d394d6da6db))
+
 ## [14.3.0](https://www.github.com/netlify/build/compare/config-v14.2.0...config-v14.3.0) (2021-08-03)
 
 

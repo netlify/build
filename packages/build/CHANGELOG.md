@@ -1,5 +1,19 @@
 # Changelog
 
+## [17.9.0](https://www.github.com/netlify/build/compare/build-v17.8.0...build-v17.9.0) (2021-08-04)
+
+
+### Features
+
+* allow modifying `build.environment` ([#3389](https://www.github.com/netlify/build/issues/3389)) ([76d3bc9](https://www.github.com/netlify/build/commit/76d3bc9c77e28cf500ada47289c01d394d6da6db))
+* do not log modified `build.environment` ([#3392](https://www.github.com/netlify/build/issues/3392)) ([cb734f3](https://www.github.com/netlify/build/commit/cb734f372279ad15472b0de7e04a8dda417925e3))
+* update environment variables with `netlifyConfig.build.environment` ([#3393](https://www.github.com/netlify/build/issues/3393)) ([9ef37af](https://www.github.com/netlify/build/commit/9ef37af440df8701917f68e70d104b117b8ae5c5))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^3.2.1 ([#3390](https://www.github.com/netlify/build/issues/3390)) ([32da36a](https://www.github.com/netlify/build/commit/32da36ad02c8e33ffcfb18a6c867be702fa858af))
+
 ## [17.8.0](https://www.github.com/netlify/build/compare/build-v17.7.1...build-v17.8.0) (2021-08-03)
 
 
