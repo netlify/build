@@ -16,7 +16,7 @@ const simplifyConfig = function ({
 }) {
   const buildA = {
     ...build,
-    ...removeEmptyArray(environment, 'environment'),
+    ...simplifyEnvironment(environment),
     ...removeEmptyObject(
       {
         ...processing,
@@ -37,6 +37,12 @@ const simplifyConfig = function ({
     ...removeEmptyArray(simplifyRedirects(redirects), 'redirects'),
     ...removeEmptyObject(simplifyContexts(context), 'context'),
   })
+}
+
+const simplifyEnvironment = function (environment) {
+  return Array.isArray(environment)
+    ? removeEmptyArray(environment, 'environment')
+    : removeEmptyObject(environment, 'environment')
 }
 
 const simplifyContexts = function (contextProps) {
