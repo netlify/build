@@ -1,5 +1,12 @@
 # Changelog
 
+### [17.9.1](https://www.github.com/netlify/build/compare/build-v17.9.0...build-v17.9.1) (2021-08-05)
+
+
+### Bug Fixes
+
+* `redirects[*].status` should not be a float in `netlify.toml` ([#3396](https://www.github.com/netlify/build/issues/3396)) ([1c006ea](https://www.github.com/netlify/build/commit/1c006eae3de54e034dbcd87de5e011b6bfa843e6))
+
 ## [17.9.0](https://www.github.com/netlify/build/compare/build-v17.8.0...build-v17.9.0) (2021-08-04)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+### [14.4.2](https://www.github.com/netlify/build/compare/config-v14.4.1...config-v14.4.2) (2021-08-05)
+
+
+### Bug Fixes
+
+* `redirects[*].status` should not be a float in `netlify.toml` ([#3396](https://www.github.com/netlify/build/issues/3396)) ([1c006ea](https://www.github.com/netlify/build/commit/1c006eae3de54e034dbcd87de5e011b6bfa843e6))
+
 ### [14.4.1](https://www.github.com/netlify/build/compare/config-v14.4.0...config-v14.4.1) (2021-08-04)
 
 
