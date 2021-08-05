@@ -24,7 +24,7 @@ const addRedirects = async function (config, logs) {
 const REDIRECTS_FILENAME = '_redirects'
 
 const addConfigRedirects = async function ({ redirects: configRedirects = [], ...config }, redirectsPath) {
-  const normalizedConfigRedirects = normalizeRedirects(configRedirects)
+  const normalizedConfigRedirects = normalizeAllRedirects(configRedirects)
   const normalizedFileRedirects = await getFileRedirects(redirectsPath, normalizedConfigRedirects)
   const redirects = mergeRedirects({
     fileRedirects: normalizedFileRedirects,
@@ -35,8 +35,12 @@ const addConfigRedirects = async function ({ redirects: configRedirects = [], ..
 
 const getFileRedirects = async function (redirectsPath, normalizedConfigRedirects) {
   const fileRedirects = await parseFileRedirects(redirectsPath)
-  const normalizedFileRedirects = normalizeRedirects(fileRedirects)
+  const normalizedFileRedirects = normalizeAllRedirects(fileRedirects)
   return hasMergedFileRedirects(normalizedFileRedirects, normalizedConfigRedirects) ? [] : normalizedFileRedirects
+}
+
+const normalizeAllRedirects = function (redirects) {
+  return normalizeRedirects(redirects, { minimal: true })
 }
 
 // `configRedirects` might contain the content of `_redirects` already.
