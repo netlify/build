@@ -1,5 +1,12 @@
 # Changelog
 
+### [17.9.2](https://www.github.com/netlify/build/compare/build-v17.9.1...build-v17.9.2) (2021-08-05)
+
+
+### Bug Fixes
+
+* **deps:** update dependency netlify-redirect-parser to ^8.2.0 ([#3399](https://www.github.com/netlify/build/issues/3399)) ([70911c9](https://www.github.com/netlify/build/commit/70911c91729d02475684b179febe9b07e23df293))
+
 ### [17.9.1](https://www.github.com/netlify/build/compare/build-v17.9.0...build-v17.9.1) (2021-08-05)
 
 

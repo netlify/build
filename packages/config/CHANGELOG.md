@@ -1,5 +1,12 @@
 # Changelog
 
+### [14.4.3](https://www.github.com/netlify/build/compare/config-v14.4.2...config-v14.4.3) (2021-08-05)
+
+
+### Bug Fixes
+
+* **deps:** update dependency netlify-redirect-parser to ^8.2.0 ([#3399](https://www.github.com/netlify/build/issues/3399)) ([70911c9](https://www.github.com/netlify/build/commit/70911c91729d02475684b179febe9b07e23df293))
+
 ### [14.4.2](https://www.github.com/netlify/build/compare/config-v14.4.1...config-v14.4.2) (2021-08-05)
 
 
