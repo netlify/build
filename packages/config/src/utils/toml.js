@@ -15,7 +15,13 @@ const parseToml = function (configString) {
 
 // Serialize JavaScript object to TOML
 const serializeToml = function (object) {
-  return tomlify.toToml(object, { space: 2 })
+  return tomlify.toToml(object, { space: 2, replace: replaceTomlValue })
+}
+
+// `tomlify-j0.4` serializes integers as floats, e.g. `200.0`.
+// This is a problem with `redirects[*].status`.
+const replaceTomlValue = function (key, value) {
+  return Number.isInteger(value) ? String(value) : false
 }
 
 module.exports = { parseToml, serializeToml }
