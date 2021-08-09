@@ -31,11 +31,8 @@ const usesNpmDependencies = function (frameworkNpmDependencies, npmDependencies)
 }
 
 const lacksExcludedNpmDependencies = function (frameworkExcludedNpmDependencies, npmDependencies) {
-  return (
-    frameworkExcludedNpmDependencies.length === 0 ||
-    frameworkExcludedNpmDependencies.every(
-      (frameworkNpmDependency) => !npmDependencies.includes(frameworkNpmDependency),
-    )
+  return frameworkExcludedNpmDependencies.every(
+    (frameworkNpmDependency) => !npmDependencies.includes(frameworkNpmDependency),
   )
 }
 
