@@ -104,7 +104,7 @@
     "tmp-promise": "^3.0.2",
     "update-notifier": "^4.1.0",
     "uuid": "^8.0.0",
-    "yargs": "^15.3.1"
+    "yargs": "^17.1.0"
   },
   "devDependencies": {
     "atob": "^2.1.2",
