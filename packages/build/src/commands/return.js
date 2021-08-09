@@ -21,6 +21,7 @@ const getCommandReturn = function ({
   deployId,
   netlifyConfig,
   configMutations,
+  headersPath,
   redirectsPath,
   logs,
   debug,
@@ -49,7 +50,7 @@ const getCommandReturn = function ({
 
   logTimer(logs, durationNs, timerName)
 
-  return { newEnvChanges, netlifyConfig, configMutations, redirectsPath, newStatus, timers }
+  return { newEnvChanges, netlifyConfig, configMutations, headersPath, redirectsPath, newStatus, timers }
 }
 
 module.exports = { getCommandReturn }

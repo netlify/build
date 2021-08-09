@@ -1,0 +1,7 @@
+[[plugins]]
+package = "./plugin"
+
+[[headers]]
+for = "/path"
+  [headers.values]
+  test = "one"

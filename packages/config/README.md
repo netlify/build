@@ -268,6 +268,12 @@ _Type_: `string?`
 
 Absolute path to the `netlify.toml`, if this file exists.
 
+#### headersPath
+
+_Type_: `string`
+
+Absolute path to the `_headers`, even if this file does not exist.
+
 #### redirectsPath
 
 _Type_: `string`

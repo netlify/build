@@ -75,6 +75,7 @@ const MUTABLE_PROPS = {
   edge_handlers: { lastEvent: 'onPostBuild' },
   'functions.*': { lastEvent: 'onBuild', denormalize: denormalizeFunctionsTopProps },
   'functions.*.*': { lastEvent: 'onBuild' },
+  headers: { lastEvent: 'onPostBuild' },
   redirects: { lastEvent: 'onPostBuild' },
 }
 

@@ -11,6 +11,7 @@ coverage
 .vscode
 packages/*/package-lock.json
 **/fixtures/**/test_netlify.toml
+**/fixtures/**/test_headers
 **/fixtures/**/test_redirects
 **/fixtures/**/.netlify/**/*.zip
 **/fixtures/**/manifest.json

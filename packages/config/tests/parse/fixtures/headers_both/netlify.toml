@@ -1,0 +1,8 @@
+[build]
+publish = "publish"
+
+[[headers]]
+for = "/path"
+  [headers.values]
+  test = "override"
+  testTwo = "two"
