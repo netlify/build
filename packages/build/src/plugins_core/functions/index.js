@@ -23,7 +23,7 @@ const isUsingEsbuild = (functionsConfig = {}) =>
 // The function configuration keys returned by @netlify/config are not an exact
 // match to the properties that @netlify/zip-it-and-ship-it expects. We do that
 // translation here.
-const normalizeFunctionConfig = ({ buildDir, featureFlags, functionConfig = {} }) => ({
+const normalizeFunctionConfig = ({ buildDir, featureFlags, functionConfig = {}, isRunningLocally }) => ({
   externalNodeModules: functionConfig.external_node_modules,
   includedFiles: functionConfig.included_files,
   includedFilesBasePath: buildDir,
@@ -40,6 +40,13 @@ const normalizeFunctionConfig = ({ buildDir, featureFlags, functionConfig = {} }
   // resolve dynamic import expressions by injecting shim files to make the
   // expressions resolve to the right paths at runtime.
   processDynamicNodeImports: Boolean(featureFlags.zisiEsbuildDynamicImports),
+
+  // If the build is running in buildbot, we set the Rust target directory to a
+  // path that will get cached in between builds, allowing us to speed up the
+  // build process.
+  rustTargetDirectory: isRunningLocally
+    ? undefined
+    : resolve(buildDir, '.netlify', 'rust-functions-cache', 'functions', '[name]'),
 })
 
 const getZisiParameters = ({ buildDir, featureFlags, functionsConfig, functionsDist, isRunningLocally }) => {
@@ -47,7 +54,7 @@ const getZisiParameters = ({ buildDir, featureFlags, functionsConfig, functionsD
   const manifest = isManifestEnabled && isRunningLocally ? join(functionsDist, 'manifest.json') : undefined
   const config = mapObject(functionsConfig, (expression, object) => [
     expression,
-    normalizeFunctionConfig({ buildDir, featureFlags, functionConfig: object }),
+    normalizeFunctionConfig({ buildDir, featureFlags, functionConfig: object, isRunningLocally }),
   ])
 
   return { basePath: buildDir, config, manifest }
