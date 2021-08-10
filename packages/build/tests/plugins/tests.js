@@ -207,7 +207,6 @@ if (!version.startsWith('v10.')) {
     const redirectsPath = `${fixtureDir}/_redirects`
     await Promise.all([cpFile(fixtureConfigPath, configPath), cpFile(fixtureRedirectsPath, redirectsPath)])
     const { address, stopServer } = await startDeployServer()
-    await del(redirectsPath)
     try {
       try {
         await runFixture(t, 'config_save_redirects', {
