@@ -4,10 +4,12 @@ const { unlink, writeFile } = require('fs')
 const { kill, platform, version } = require('process')
 const { promisify } = require('util')
 
+const zipItAndShipIt = require('@netlify/zip-it-and-ship-it')
 const test = require('ava')
 const getNode = require('get-node')
 const moize = require('moize')
 const pathExists = require('path-exists')
+const sinon = require('sinon')
 const { tmpName } = require('tmp-promise')
 
 const { runFixture: runFixtureConfig } = require('../../../config/tests/helpers/main')
@@ -335,6 +337,25 @@ if (!version.startsWith('v8.')) {
 
   test('Bundles functions from the `.netlify/functions-internal` directory even if the configured user functions directory is missing', async (t) => {
     await runFixture(t, 'functions_user_missing')
+  })
+
+  test.serial('`rustTargetDirectory` is passed to zip-it-and-ship-it only when running in buildbot', async (t) => {
+    const fixtureName = 'functions_config_1'
+    const spy = sinon.spy(zipItAndShipIt, 'zipFunctions')
+
+    await runFixture(t, fixtureName, { flags: { mode: 'buildbot' }, snapshot: false })
+    await runFixture(t, fixtureName, { snapshot: false })
+
+    t.is(spy.callCount, 2)
+
+    const { args: call1Args } = spy.getCall(0)
+    const { args: call2Args } = spy.getCall(1)
+
+    t.is(
+      call1Args[2].config['*'].rustTargetDirectory,
+      `${FIXTURES_DIR}/${fixtureName}/.netlify/rust-functions-cache/functions/[name]`,
+    )
+    t.is(call2Args[2].config['*'].rustTargetDirectory, undefined)
   })
 }
 
