@@ -149,10 +149,10 @@ const logRedirectsOnUpload = async function ({ logs, redirectsPath, debug }) {
     return
   }
 
-  logSubHeader(logs, 'Uploaded _redirects')
+  logSubHeader(logs, 'Uploaded redirects')
 
   if (!(await pathExists(redirectsPath))) {
-    logMessage(logs, 'No _redirects\n')
+    logMessage(logs, 'No redirects\n')
     return
   }
 
