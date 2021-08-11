@@ -141,7 +141,7 @@ const logConfigOnUpload = async function ({ logs, configPath, debug }) {
   }
 
   const configContents = await pReadFile(configPath, 'utf8')
-  logMessage(logs, configContents)
+  logMessage(logs, configContents.trim())
 }
 
 const logHeadersOnUpload = async function ({ logs, headersPath, debug }) {
@@ -157,7 +157,7 @@ const logHeadersOnUpload = async function ({ logs, headersPath, debug }) {
   }
 
   const headersContents = await pReadFile(headersPath, 'utf8')
-  logMessage(logs, headersContents)
+  logMessage(logs, headersContents.trim())
 }
 
 const logRedirectsOnUpload = async function ({ logs, redirectsPath, debug }) {
@@ -173,7 +173,7 @@ const logRedirectsOnUpload = async function ({ logs, redirectsPath, debug }) {
   }
 
   const redirectsContents = await pReadFile(redirectsPath, 'utf8')
-  logMessage(logs, `${redirectsContents}\n`)
+  logMessage(logs, `${redirectsContents.trim()}\n`)
 }
 
 module.exports = {
