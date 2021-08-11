@@ -1,5 +1,12 @@
 # Changelog
 
+### [15.0.2](https://www.github.com/netlify/build/compare/config-v15.0.1...config-v15.0.2) (2021-08-11)
+
+
+### Bug Fixes
+
+* bump `netlify-headers-parser` ([77177fc](https://www.github.com/netlify/build/commit/77177fcbc2668dc829bac8b8325063cc557c7ed1))
+
 ### [15.0.1](https://www.github.com/netlify/build/compare/config-v15.0.0...config-v15.0.1) (2021-08-11)
 
 
