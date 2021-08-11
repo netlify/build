@@ -14,8 +14,9 @@ const addOrigins = function (config, origin) {
   const configA = addBuildCommandOrigin({ config, origin })
   const configB = addBuildPublishOrigin({ config: configA, origin })
   const configC = addConfigPluginOrigin({ config: configB, origin })
-  const configD = addRedirectsOrigin({ config: configC, origin })
-  return configD
+  const configD = addHeadersOrigin({ config: configC, origin })
+  const configE = addRedirectsOrigin({ config: configD, origin })
+  return configE
 }
 
 const addBuildCommandOrigin = function ({ config, config: { build = {} }, origin }) {
@@ -28,6 +29,10 @@ const addBuildPublishOrigin = function ({ config, config: { build = {} }, origin
 
 const addConfigPluginOrigin = function ({ config, config: { plugins }, origin }) {
   return Array.isArray(plugins) ? { ...config, plugins: plugins.map((plugin) => ({ ...plugin, origin })) } : config
+}
+
+const addHeadersOrigin = function ({ config, config: { headers }, origin }) {
+  return isTruthy(headers) ? { ...config, headersOrigin: origin } : config
 }
 
 const addRedirectsOrigin = function ({ config, config: { redirects }, origin }) {

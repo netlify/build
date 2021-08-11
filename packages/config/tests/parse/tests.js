@@ -56,3 +56,41 @@ test('Redirects - log redirectsOrigin in debug mode', async (t) => {
 test('Redirects - does not use redirects file when using inlineConfig with identical redirects', async (t) => {
   await runFixture(t, 'redirects_file', { flags: { inlineConfig: { redirects: [{ from: '/from', to: '/to' }] } } })
 })
+
+test('Headers - file', async (t) => {
+  await runFixture(t, 'headers_file')
+})
+
+test('Headers - field', async (t) => {
+  await runFixture(t, 'headers_field')
+})
+
+test('Headers - file and field', async (t) => {
+  await runFixture(t, 'headers_both')
+})
+
+test('Headers - file syntax error', async (t) => {
+  await runFixture(t, 'headers_file_error')
+})
+
+test('Headers - field syntax error', async (t) => {
+  await runFixture(t, 'headers_field_error')
+})
+
+test('Headers - no publish field', async (t) => {
+  await runFixture(t, 'headers_no_publish')
+})
+
+test('Headers - add headersOrigin', async (t) => {
+  await runFixture(t, 'empty', { flags: { defaultConfig: { headers: [] } } })
+})
+
+test('Headers - log headersOrigin in debug mode', async (t) => {
+  await runFixture(t, 'empty', { flags: { defaultConfig: { headers: [] }, debug: true } })
+})
+
+test('Headers - does not use headers file when using inlineConfig with identical headers', async (t) => {
+  await runFixture(t, 'headers_file', {
+    flags: { inlineConfig: { headers: [{ for: '/path', values: { test: 'one' } }] } },
+  })
+})

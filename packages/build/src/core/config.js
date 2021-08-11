@@ -14,6 +14,7 @@ const {
   logConfig,
   logContext,
   logConfigOnUpload,
+  logHeadersOnUpload,
   logRedirectsOnUpload,
 } = require('../log/messages/config')
 const { measureDuration } = require('../time/main')
@@ -70,6 +71,7 @@ const getConfigOpts = function ({
 const tLoadConfig = async function ({ configOpts, cachedConfig, cachedConfigPath, envOpt, debug, logs, nodePath }) {
   const {
     configPath,
+    headersPath,
     redirectsPath,
     buildDir,
     repositoryRoot,
@@ -90,6 +92,7 @@ const tLoadConfig = async function ({ configOpts, cachedConfig, cachedConfigPath
   return {
     netlifyConfig,
     configPath,
+    headersPath,
     redirectsPath,
     buildDir,
     repositoryRoot,
@@ -161,6 +164,7 @@ const saveUpdatedConfig = async function ({
   buildDir,
   repositoryRoot,
   configPath = `${repositoryRoot}/netlify.toml`,
+  headersPath,
   redirectsPath,
   logs,
   context,
@@ -172,8 +176,9 @@ const saveUpdatedConfig = async function ({
     return
   }
 
-  await updateConfig(configMutations, { buildDir, configPath, redirectsPath, context, branch })
+  await updateConfig(configMutations, { buildDir, configPath, headersPath, redirectsPath, context, branch })
   await logConfigOnUpload({ logs, configPath, debug })
+  await logHeadersOnUpload({ logs, headersPath, debug })
   await logRedirectsOnUpload({ logs, redirectsPath, debug })
 }
 
@@ -181,6 +186,7 @@ const restoreUpdatedConfig = async function ({
   buildDir,
   repositoryRoot,
   configPath = `${repositoryRoot}/netlify.toml`,
+  headersPath,
   redirectsPath,
   saveConfig,
 }) {
@@ -188,7 +194,7 @@ const restoreUpdatedConfig = async function ({
     return
   }
 
-  await restoreConfig({ buildDir, configPath, redirectsPath })
+  await restoreConfig({ buildDir, configPath, headersPath, redirectsPath })
 }
 
 module.exports = {

@@ -13,6 +13,7 @@ const { parseDefaultConfig } = require('./default')
 const { getEnv } = require('./env/main')
 const { EVENTS } = require('./events')
 const { resolveConfigPaths } = require('./files')
+const { addHeaders } = require('./headers')
 const { getInlineConfig } = require('./inline_config')
 const { cleanupConfig } = require('./log/cleanup')
 const { logResult } = require('./log/main')
@@ -70,7 +71,7 @@ const resolveConfig = async function (opts) {
   })
   const inlineConfigA = getInlineConfig({ inlineConfig, configMutations, logs, debug })
 
-  const { configPath, config, buildDir, redirectsPath } = await loadConfig({
+  const { configPath, config, buildDir, redirectsPath, headersPath } = await loadConfig({
     configOpt,
     cwd,
     context,
@@ -104,6 +105,7 @@ const resolveConfig = async function (opts) {
     env,
     configPath,
     redirectsPath,
+    headersPath,
     buildDir,
     repositoryRoot,
     config: configA,
@@ -148,7 +150,7 @@ const loadConfig = async function ({
   logs,
 }) {
   const initialBase = getInitialBase({ repositoryRoot, defaultConfig, inlineConfig })
-  const { configPath, config, buildDir, base, redirectsPath } = await getFullConfig({
+  const { configPath, config, buildDir, base, redirectsPath, headersPath } = await getFullConfig({
     configOpt,
     cwd,
     context,
@@ -169,7 +171,7 @@ const loadConfig = async function ({
   //  - `baseRelDir` feature flag is not used. This feature flag was introduced
   //    to ensure backward compatibility.
   if (!baseRelDir || base === initialBase) {
-    return { configPath, config, buildDir, redirectsPath }
+    return { configPath, config, buildDir, redirectsPath, headersPath }
   }
 
   const {
@@ -177,6 +179,7 @@ const loadConfig = async function ({
     config: configA,
     buildDir: buildDirA,
     redirectsPath: redirectsPathA,
+    headersPath: headersPathA,
   } = await getFullConfig({
     cwd,
     context,
@@ -189,7 +192,13 @@ const loadConfig = async function ({
     base,
     logs,
   })
-  return { configPath: configPathA, config: configA, buildDir: buildDirA, redirectsPath: redirectsPathA }
+  return {
+    configPath: configPathA,
+    config: configA,
+    buildDir: buildDirA,
+    redirectsPath: redirectsPathA,
+    headersPath: headersPathA,
+  }
 }
 
 // Load configuration file and normalize it, merge contexts, etc.
@@ -223,8 +232,9 @@ const getFullConfig = async function ({
       buildDir,
       base: baseA,
     } = await resolveFiles({ config: configA, repositoryRoot, base, baseRelDir })
-    const { config: configC, redirectsPath } = await addRedirects(configB, logs)
-    return { configPath, config: configC, buildDir, base: baseA, redirectsPath }
+    const { config: configC, headersPath } = await addHeaders(configB, logs)
+    const { config: configD, redirectsPath } = await addRedirects(configC, logs)
+    return { configPath, config: configD, buildDir, base: baseA, redirectsPath, headersPath }
   } catch (error) {
     const configName = configPath === undefined ? '' : ` file ${configPath}`
     error.message = `When resolving config${configName}:\n${error.message}`

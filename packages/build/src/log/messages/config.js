@@ -144,6 +144,22 @@ const logConfigOnUpload = async function ({ logs, configPath, debug }) {
   logMessage(logs, configContents)
 }
 
+const logHeadersOnUpload = async function ({ logs, headersPath, debug }) {
+  if (!debug) {
+    return
+  }
+
+  logSubHeader(logs, 'Uploaded headers')
+
+  if (!(await pathExists(headersPath))) {
+    logMessage(logs, 'No headers')
+    return
+  }
+
+  const headersContents = await pReadFile(headersPath, 'utf8')
+  logMessage(logs, headersContents)
+}
+
 const logRedirectsOnUpload = async function ({ logs, redirectsPath, debug }) {
   if (!debug) {
     return
@@ -170,5 +186,6 @@ module.exports = {
   logContext,
   logConfigMutations,
   logConfigOnUpload,
+  logHeadersOnUpload,
   logRedirectsOnUpload,
 }

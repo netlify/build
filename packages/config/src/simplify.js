@@ -10,6 +10,7 @@ const simplifyConfig = function ({
   build: { environment, processing: { css, html, images, js, ...processing } = {}, services, ...build } = {},
   functions,
   plugins,
+  headers,
   redirects,
   context = {},
   ...config
@@ -34,6 +35,7 @@ const simplifyConfig = function ({
     ...removeEmptyObject(simplifyFunctions(functions), 'functions'),
     ...removeEmptyObject(buildA, 'build'),
     ...removeEmptyArray(plugins, 'plugins'),
+    ...removeEmptyArray(headers, 'headers'),
     ...removeEmptyArray(simplifyRedirects(redirects), 'redirects'),
     ...removeEmptyObject(simplifyContexts(context), 'context'),
   })

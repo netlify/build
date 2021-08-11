@@ -8,6 +8,7 @@ const makeDir = require('make-dir')
 const pathExists = require('path-exists')
 
 const { ensureConfigPriority } = require('../context')
+const { addConfigHeaders } = require('../headers')
 const { mergeConfigs } = require('../merge')
 const { parseOptionalConfig } = require('../parse')
 const { addConfigRedirects } = require('../redirects')
@@ -21,7 +22,10 @@ const pUnlink = promisify(unlink)
 
 // Persist configuration changes to `netlify.toml`.
 // If `netlify.toml` does not exist, creates it. Otherwise, merges the changes.
-const updateConfig = async function (configMutations, { buildDir, configPath, redirectsPath, context, branch }) {
+const updateConfig = async function (
+  configMutations,
+  { buildDir, configPath, headersPath, redirectsPath, context, branch },
+) {
   if (configMutations.length === 0) {
     return
   }
@@ -29,12 +33,14 @@ const updateConfig = async function (configMutations, { buildDir, configPath, re
   const inlineConfig = applyMutations({}, configMutations)
   const normalizedInlineConfig = ensureConfigPriority(inlineConfig, context, branch)
   const updatedConfig = await mergeWithConfig(normalizedInlineConfig, configPath)
-  const finalConfig = await addConfigRedirects(updatedConfig, redirectsPath)
+  const configWithHeaders = await addConfigHeaders(updatedConfig, headersPath)
+  const finalConfig = await addConfigRedirects(configWithHeaders, redirectsPath)
   const simplifiedConfig = simplifyConfig(finalConfig)
-  await backupConfig({ buildDir, configPath, redirectsPath })
+  await backupConfig({ buildDir, configPath, headersPath, redirectsPath })
   await Promise.all([
     saveConfig(configPath, simplifiedConfig),
-    deleteRedirectsFile(redirectsPath, normalizedInlineConfig),
+    deleteSideFile(headersPath, 'headers', normalizedInlineConfig),
+    deleteSideFile(redirectsPath, 'redirects', normalizedInlineConfig),
   ])
 }
 
@@ -51,36 +57,35 @@ const saveConfig = async function (configPath, simplifiedConfig) {
   await pWriteFile(configPath, serializedConfig)
 }
 
-// Deletes `_redirects` if redirects were changed, since `_redirects` has higher
-// priority than `netlify.toml`.
-const deleteRedirectsFile = async function (redirectsPath, normalizedInlineConfig) {
-  if (
-    normalizedInlineConfig.redirects === undefined ||
-    redirectsPath === undefined ||
-    !(await pathExists(redirectsPath))
-  ) {
+// Deletes `_headers/_redirects` if redirects were changed, to fix any priority
+// problem with `netlify.toml`
+const deleteSideFile = async function (filePath, propName, normalizedInlineConfig) {
+  if (normalizedInlineConfig[propName] === undefined || filePath === undefined || !(await pathExists(filePath))) {
     return
   }
 
-  await pUnlink(redirectsPath)
+  await pUnlink(filePath)
 }
 
-// Modifications to `netlify.toml` and `_redirects` are only meant for the
-// deploy API call. After it's been performed, we restore their former state.
+// Modifications to `netlify.toml` and `_headers/_redirects` are only meant for
+// the deploy API call. After it's been performed, we restore their former
+// state.
 // We do this by backing them up inside some sibling directory.
-const backupConfig = async function ({ buildDir, configPath, redirectsPath }) {
+const backupConfig = async function ({ buildDir, configPath, headersPath, redirectsPath }) {
   const tempDir = getTempDir(buildDir)
   await makeDir(tempDir)
   await Promise.all([
     backupFile(configPath, `${tempDir}/netlify.toml`),
+    backupFile(headersPath, `${tempDir}/_headers`),
     backupFile(redirectsPath, `${tempDir}/_redirects`),
   ])
 }
 
-const restoreConfig = async function ({ buildDir, configPath, redirectsPath }) {
+const restoreConfig = async function ({ buildDir, configPath, headersPath, redirectsPath }) {
   const tempDir = getTempDir(buildDir)
   await Promise.all([
     copyOrDelete(`${tempDir}/netlify.toml`, configPath),
+    copyOrDelete(`${tempDir}/_headers`, headersPath),
     copyOrDelete(`${tempDir}/_redirects`, redirectsPath),
   ])
 }
