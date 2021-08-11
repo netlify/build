@@ -21,6 +21,7 @@ const firePluginCommand = async function ({
   configOpts,
   netlifyConfig,
   configMutations,
+  headersPath,
   redirectsPath,
   constants,
   commands,
@@ -31,7 +32,7 @@ const firePluginCommand = async function ({
   const listeners = pipePluginOutput(childProcess, logs)
 
   try {
-    const configSideFiles = await listConfigSideFiles(redirectsPath)
+    const configSideFiles = await listConfigSideFiles([headersPath, redirectsPath])
     const {
       newEnvChanges,
       configMutations: newConfigMutations,
@@ -46,10 +47,12 @@ const firePluginCommand = async function ({
     const {
       netlifyConfig: netlifyConfigA,
       configMutations: configMutationsA,
+      headersPath: headersPathA,
       redirectsPath: redirectsPathA,
     } = await updateNetlifyConfig({
       configOpts,
       netlifyConfig,
+      headersPath,
       redirectsPath,
       configMutations,
       newConfigMutations,
@@ -63,6 +66,7 @@ const firePluginCommand = async function ({
       newEnvChanges,
       netlifyConfig: netlifyConfigA,
       configMutations: configMutationsA,
+      headersPath: headersPathA,
       redirectsPath: redirectsPathA,
       newStatus,
     }

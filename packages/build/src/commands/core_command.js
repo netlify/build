@@ -25,13 +25,14 @@ const fireCoreCommand = async function ({
   configOpts,
   netlifyConfig,
   configMutations,
+  headersPath,
   redirectsPath,
   featureFlags,
   debug,
   saveConfig,
 }) {
   try {
-    const configSideFiles = await listConfigSideFiles(redirectsPath)
+    const configSideFiles = await listConfigSideFiles([headersPath, redirectsPath])
     const childEnvA = setEnvChanges(envChanges, { ...childEnv })
     const {
       newEnvChanges = {},
@@ -51,6 +52,7 @@ const fireCoreCommand = async function ({
       netlifyConfig,
       nodePath,
       configMutations,
+      headersPath,
       redirectsPath,
       featureFlags,
       debug,
@@ -59,10 +61,12 @@ const fireCoreCommand = async function ({
     const {
       netlifyConfig: netlifyConfigA,
       configMutations: configMutationsA,
+      headersPath: headersPathA,
       redirectsPath: redirectsPathA,
     } = await updateNetlifyConfig({
       configOpts,
       netlifyConfig,
+      headersPath,
       redirectsPath,
       configMutations,
       newConfigMutations,
@@ -75,6 +79,7 @@ const fireCoreCommand = async function ({
       newEnvChanges,
       netlifyConfig: netlifyConfigA,
       configMutations: configMutationsA,
+      headersPath: headersPathA,
       redirectsPath: redirectsPathA,
       tags,
     }

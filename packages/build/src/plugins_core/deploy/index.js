@@ -21,6 +21,7 @@ const coreCommand = async function ({
   context,
   branch,
   configMutations,
+  headersPath,
   redirectsPath,
   debug,
   saveConfig,
@@ -33,6 +34,7 @@ const coreCommand = async function ({
       buildDir,
       repositoryRoot,
       configPath,
+      headersPath,
       redirectsPath,
       logs,
       context,
@@ -45,6 +47,7 @@ const coreCommand = async function ({
       buildDir,
       repositoryRoot,
       configPath,
+      headersPath,
       redirectsPath,
       saveConfig,
     })
