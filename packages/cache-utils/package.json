@@ -55,7 +55,7 @@
     "readdirp": "^3.4.0"
   },
   "devDependencies": {
-    "ava": "^2.4.0",
+    "ava": "^3.15.0",
     "tmp-promise": "^3.0.0"
   },
   "engines": {
