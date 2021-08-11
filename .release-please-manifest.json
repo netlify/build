@@ -1,5 +1,5 @@
 {
-  "packages/build": "18.0.0",
+  "packages/build": "18.0.1",
   "packages/cache-utils": "2.0.0",
   "packages/config": "15.0.0",
   "packages/functions-utils": "2.0.4",

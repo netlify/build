@@ -1,5 +1,12 @@
 # Changelog
 
+### [18.0.1](https://www.github.com/netlify/build/compare/build-v18.0.0...build-v18.0.1) (2021-08-11)
+
+
+### Bug Fixes
+
+* `@netlify/config` upgrade ([bd118ed](https://www.github.com/netlify/build/commit/bd118edfd083bdae19da984cb78e2a7a35335d3e))
+
 ## [18.0.0](https://www.github.com/netlify/build/compare/build-v17.11.0...build-v18.0.0) (2021-08-11)
 
 
