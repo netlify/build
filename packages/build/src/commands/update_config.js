@@ -1,7 +1,7 @@
 'use strict'
 
-// @todo: use `util.isDeepStrictEqual()` after dropping support for Node 8
-const fastDeepEqual = require('fast-deep-equal')
+const { isDeepStrictEqual } = require('util')
+
 const pFilter = require('p-filter')
 const pathExists = require('path-exists')
 
@@ -59,7 +59,7 @@ const shouldUpdateConfig = async function ({ newConfigMutations, configSideFiles
 // before and after running plugins and the build command.
 const haveConfigSideFilesChanged = async function (configSideFiles, headersPath, redirectsPath) {
   const newSideFiles = await listConfigSideFiles([headersPath, redirectsPath])
-  return !fastDeepEqual(newSideFiles, configSideFiles)
+  return !isDeepStrictEqual(newSideFiles, configSideFiles)
 }
 
 // List all the files used for configuration besides `netlify.toml`.

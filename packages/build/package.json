@@ -67,7 +67,6 @@
     "chalk": "^4.1.1",
     "clean-stack": "^2.2.0",
     "execa": "^3.3.0",
-    "fast-deep-equal": "^3.1.3",
     "figures": "^3.2.0",
     "filter-obj": "^2.0.1",
     "got": "^9.6.0",
@@ -107,6 +106,7 @@
     "yargs": "^15.3.1"
   },
   "devDependencies": {
+    "@netlify/nock-udp": "^1.0.0",
     "atob": "^2.1.2",
     "ava": "^2.4.0",
     "cp-file": "^7.0.0",
@@ -119,7 +119,6 @@
     "has-ansi": "^4.0.0",
     "is-ci": "^3.0.0",
     "moize": "^6.0.0",
-    "@netlify/nock-udp": "^1.0.0",
     "path-key": "^3.1.1",
     "process-exists": "^4.0.0",
     "sinon": "^11.0.0",

@@ -1,9 +1,8 @@
 'use strict'
 
 const { resolve } = require('path')
+const { isDeepStrictEqual } = require('util')
 
-// @todo: use `util.isDeepStrictEqual()` after dropping support for Node 8
-const fastDeepEqual = require('fast-deep-equal')
 const { parseFileHeaders, mergeHeaders, normalizeHeaders } = require('netlify-headers-parser')
 
 const { warnHeadersParsing } = require('./log/messages')
@@ -45,7 +44,7 @@ const getFileHeaders = async function (headersPath, normalizedConfigHeaders) {
 // and after modifying `netlifyConfig.headers`.
 const hasMergedFileHeaders = function (normalizedFileHeaders, normalizedConfigHeaders) {
   return normalizedConfigHeaders.some((configHeader) =>
-    normalizedFileHeaders.some((fileHeader) => fastDeepEqual(configHeader, fileHeader)),
+    normalizedFileHeaders.some((fileHeader) => isDeepStrictEqual(configHeader, fileHeader)),
   )
 }
 
