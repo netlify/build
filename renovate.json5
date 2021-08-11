@@ -9,7 +9,6 @@
       packageNames: [
         // Those cannot be upgraded to a major version until we drop support for Node 8
         'ava',
-        'chalk',
         'clean-stack',
         'execa',
         'find-up',
