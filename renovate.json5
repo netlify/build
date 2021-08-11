@@ -11,8 +11,6 @@
         'ava',
         'chalk',
         'clean-stack',
-        'cp-file',
-        'del',
         'execa',
         'find-up',
         'get-bin-path',
