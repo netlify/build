@@ -24,7 +24,7 @@ const pUnlink = promisify(unlink)
 // If `netlify.toml` does not exist, creates it. Otherwise, merges the changes.
 const updateConfig = async function (
   configMutations,
-  { buildDir, configPath, headersPath, redirectsPath, context, branch },
+  { buildDir, configPath, headersPath, redirectsPath, context, branch, logs },
 ) {
   if (configMutations.length === 0) {
     return
@@ -33,8 +33,8 @@ const updateConfig = async function (
   const inlineConfig = applyMutations({}, configMutations)
   const normalizedInlineConfig = ensureConfigPriority(inlineConfig, context, branch)
   const updatedConfig = await mergeWithConfig(normalizedInlineConfig, configPath)
-  const configWithHeaders = await addConfigHeaders(updatedConfig, headersPath)
-  const finalConfig = await addConfigRedirects(configWithHeaders, redirectsPath)
+  const configWithHeaders = await addConfigHeaders(updatedConfig, headersPath, logs)
+  const finalConfig = await addConfigRedirects(configWithHeaders, redirectsPath, logs)
   const simplifiedConfig = simplifyConfig(finalConfig)
   await backupConfig({ buildDir, configPath, headersPath, redirectsPath })
   await Promise.all([
@@ -81,7 +81,11 @@ const backupConfig = async function ({ buildDir, configPath, headersPath, redire
   ])
 }
 
-const restoreConfig = async function ({ buildDir, configPath, headersPath, redirectsPath }) {
+const restoreConfig = async function (configMutations, { buildDir, configPath, headersPath, redirectsPath }) {
+  if (configMutations.length === 0) {
+    return
+  }
+
   const tempDir = getTempDir(buildDir)
   await Promise.all([
     copyOrDelete(`${tempDir}/netlify.toml`, configPath),

@@ -11,26 +11,26 @@ const { warnRedirectsParsing } = require('./log/messages')
 // Add `config.redirects`
 const addRedirects = async function (config, logs) {
   const redirectsPath = resolve(config.build.publish, REDIRECTS_FILENAME)
-  try {
-    const configWithRedirects = await addConfigRedirects(config, redirectsPath)
-    return { config: configWithRedirects, redirectsPath }
-    // @todo remove this failsafe once the code is stable
-  } catch (error) {
-    warnRedirectsParsing(logs, error.message)
-    return { config: { ...config, redirects: [] }, redirectsPath }
-  }
+  const configWithRedirects = await addConfigRedirects(config, redirectsPath, logs)
+  return { config: configWithRedirects, redirectsPath }
 }
 
 const REDIRECTS_FILENAME = '_redirects'
 
-const addConfigRedirects = async function ({ redirects: configRedirects = [], ...config }, redirectsPath) {
-  const normalizedConfigRedirects = normalizeAllRedirects(configRedirects)
-  const normalizedFileRedirects = await getFileRedirects(redirectsPath, normalizedConfigRedirects)
-  const redirects = mergeRedirects({
-    fileRedirects: normalizedFileRedirects,
-    configRedirects: normalizedConfigRedirects,
-  })
-  return { ...config, redirects }
+const addConfigRedirects = async function ({ redirects: configRedirects = [], ...config }, redirectsPath, logs) {
+  try {
+    const normalizedConfigRedirects = normalizeAllRedirects(configRedirects)
+    const normalizedFileRedirects = await getFileRedirects(redirectsPath, normalizedConfigRedirects)
+    const redirects = mergeRedirects({
+      fileRedirects: normalizedFileRedirects,
+      configRedirects: normalizedConfigRedirects,
+    })
+    return { ...config, redirects }
+    // @todo remove this failsafe once the code is stable
+  } catch (error) {
+    warnRedirectsParsing(logs, error.message)
+    return { ...config, redirects: [] }
+  }
 }
 
 const getFileRedirects = async function (redirectsPath, normalizedConfigRedirects) {

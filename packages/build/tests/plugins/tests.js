@@ -266,6 +266,58 @@ if (!version.startsWith('v10.')) {
     }
   })
 
+  test('Erroneous headers created by a build command are handled', async (t) => {
+    const fixtureDir = `${FIXTURES_DIR}/config_create_headers_command_error`
+    const fixtureConfigPath = `${fixtureDir}/netlify.toml`
+    const configPath = `${fixtureDir}/test_netlify.toml`
+    const headersPath = `${fixtureDir}/_headers`
+    await cpFile(fixtureConfigPath, configPath)
+    const { address, stopServer } = await startDeployServer()
+    try {
+      try {
+        await runFixture(t, 'config_create_headers_command_error', {
+          flags: {
+            buildbotServerSocket: address,
+            config: configPath,
+            saveConfig: true,
+            context: 'production',
+            branch: 'main',
+          },
+        })
+      } finally {
+        await stopServer()
+      }
+    } finally {
+      await del(headersPath)
+    }
+  })
+
+  test('Erroneous headers created by a plugin are handled', async (t) => {
+    const fixtureDir = `${FIXTURES_DIR}/config_create_headers_plugin_error`
+    const fixtureConfigPath = `${fixtureDir}/netlify.toml`
+    const configPath = `${fixtureDir}/test_netlify.toml`
+    const headersPath = `${fixtureDir}/_headers`
+    await cpFile(fixtureConfigPath, configPath)
+    const { address, stopServer } = await startDeployServer()
+    try {
+      try {
+        await runFixture(t, 'config_create_headers_plugin_error', {
+          flags: {
+            buildbotServerSocket: address,
+            config: configPath,
+            saveConfig: true,
+            context: 'production',
+            branch: 'main',
+          },
+        })
+      } finally {
+        await stopServer()
+      }
+    } finally {
+      await del(headersPath)
+    }
+  })
+
   test('netlifyConfig.redirects can be assigned all at once', async (t) => {
     await runFixture(t, 'config_mutate_redirects_all')
   })
