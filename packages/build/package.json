@@ -112,7 +112,7 @@
     "cp-file": "^9.1.0",
     "cpy": "^8.1.0",
     "del": "^6.0.0",
-    "get-bin-path": "^4.0.1",
+    "get-bin-path": "^5.1.0",
     "get-node": "^6.6.0",
     "get-port": "^5.1.1",
     "get-stream": "^5.2.0",
