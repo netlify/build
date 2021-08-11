@@ -1,5 +1,16 @@
 # Changelog
 
+## [18.0.0](https://www.github.com/netlify/build/compare/build-v17.11.0...build-v18.0.0) (2021-08-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* add `netlifyConfig.headers` (#3407)
+
+### Features
+
+* add `netlifyConfig.headers` ([#3407](https://www.github.com/netlify/build/issues/3407)) ([14888c7](https://www.github.com/netlify/build/commit/14888c73278b6c68538ecaa385e5ce01932b7e09))
+
 ## [17.11.0](https://www.github.com/netlify/build/compare/build-v17.10.0...build-v17.11.0) (2021-08-11)
 
 
