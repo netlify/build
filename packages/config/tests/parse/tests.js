@@ -1,6 +1,6 @@
 'use strict'
 
-const { platform, version } = require('process')
+const { platform } = require('process')
 
 const test = require('ava')
 
@@ -11,9 +11,7 @@ test('Configuration file - netlify.toml', async (t) => {
 })
 
 // Windows directory permissions work differently than Unix.
-// Node 10 also changed errors there, so Node 8 shows different error messages.
-// TODO: remove once dropping support for Node 8
-if (platform !== 'win32' && !version.startsWith('v8.')) {
+if (platform !== 'win32') {
   test('Configuration file - read permission error', async (t) => {
     await runFixture(t, '', { flags: { config: `${FIXTURES_DIR}/read_error/netlify.toml` } })
   })

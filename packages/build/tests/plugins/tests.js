@@ -37,93 +37,89 @@ test('netlifyConfig properties are readonly (defineProperty) by default', async 
   await runFixture(t, 'config_readonly_define')
 })
 
-// This package currently supports Node 8 but not zip-it-and-ship-it
-// @todo remove once Node 8 support is removed
-if (!version.startsWith('v8.')) {
-  test('Some netlifyConfig properties can be mutated', async (t) => {
-    await runFixture(t, 'config_mutate_general')
-  })
+test('Some netlifyConfig properties can be mutated', async (t) => {
+  await runFixture(t, 'config_mutate_general')
+})
 
-  test('netlifyConfig properties cannot be deleted', async (t) => {
-    await runFixture(t, 'config_mutate_delete')
-  })
+test('netlifyConfig properties cannot be deleted', async (t) => {
+  await runFixture(t, 'config_mutate_delete')
+})
 
-  test('netlifyConfig properties cannot be assigned to undefined', async (t) => {
-    await runFixture(t, 'config_mutate_set_undefined')
-  })
+test('netlifyConfig properties cannot be assigned to undefined', async (t) => {
+  await runFixture(t, 'config_mutate_set_undefined')
+})
 
-  test('netlifyConfig properties cannot be assigned to null', async (t) => {
-    await runFixture(t, 'config_mutate_set_null')
-  })
+test('netlifyConfig properties cannot be assigned to null', async (t) => {
+  await runFixture(t, 'config_mutate_set_null')
+})
 
-  test('netlifyConfig properties cannot be assigned to undefined with defineProperty', async (t) => {
-    await runFixture(t, 'config_mutate_define_undefined')
-  })
+test('netlifyConfig properties cannot be assigned to undefined with defineProperty', async (t) => {
+  await runFixture(t, 'config_mutate_define_undefined')
+})
 
-  test('netlifyConfig properties mutations is persisted', async (t) => {
-    await runFixture(t, 'config_mutate_persist')
-  })
+test('netlifyConfig properties mutations is persisted', async (t) => {
+  await runFixture(t, 'config_mutate_persist')
+})
 
-  test('netlifyConfig array properties can be mutated per index', async (t) => {
-    await runFixture(t, 'config_mutate_array_index')
-  })
+test('netlifyConfig array properties can be mutated per index', async (t) => {
+  await runFixture(t, 'config_mutate_array_index')
+})
 
-  test('netlifyConfig array properties can be pushed', async (t) => {
-    await runFixture(t, 'config_mutate_array_push')
-  })
+test('netlifyConfig array properties can be pushed', async (t) => {
+  await runFixture(t, 'config_mutate_array_push')
+})
 
-  test('netlifyConfig.functionsDirectory mutations are used during functions bundling', async (t) => {
-    await runFixture(t, 'config_mutate_functions_directory_bundling')
-  })
+test('netlifyConfig.functionsDirectory mutations are used during functions bundling', async (t) => {
+  await runFixture(t, 'config_mutate_functions_directory_bundling')
+})
 
-  test('netlifyConfig.functionsDirectory deletion skips functions bundling', async (t) => {
-    await runFixture(t, 'config_mutate_functions_directory_skip')
-  })
+test('netlifyConfig.functionsDirectory deletion skips functions bundling', async (t) => {
+  await runFixture(t, 'config_mutate_functions_directory_skip')
+})
 
-  test('netlifyConfig.functionsDirectory mutations are used by utils.functions', async (t) => {
-    await runFixture(t, 'config_mutate_functions_directory_utils')
-  })
+test('netlifyConfig.functionsDirectory mutations are used by utils.functions', async (t) => {
+  await runFixture(t, 'config_mutate_functions_directory_utils')
+})
 
-  test('netlifyConfig.functionsDirectory mutations are used by constants.FUNCTIONS_SRC', async (t) => {
-    await runFixture(t, 'config_mutate_functions_directory_constants')
-  })
+test('netlifyConfig.functionsDirectory mutations are used by constants.FUNCTIONS_SRC', async (t) => {
+  await runFixture(t, 'config_mutate_functions_directory_constants')
+})
 
-  test('netlifyConfig.functionsDirectory mutations are taken into account by default constants.FUNCTIONS_SRC', async (t) => {
-    await runFixture(t, 'config_mutate_functions_directory_default')
-  })
+test('netlifyConfig.functionsDirectory mutations are taken into account by default constants.FUNCTIONS_SRC', async (t) => {
+  await runFixture(t, 'config_mutate_functions_directory_default')
+})
 
-  test('netlifyConfig.functions.star.directory mutations work', async (t) => {
-    await runFixture(t, 'config_mutate_functions_directory_star')
-  })
+test('netlifyConfig.functions.star.directory mutations work', async (t) => {
+  await runFixture(t, 'config_mutate_functions_directory_star')
+})
 
-  test('netlifyConfig.functions.star.directory has priority over functions.directory', async (t) => {
-    await runFixture(t, 'config_mutate_functions_directory_star_priority')
-  })
+test('netlifyConfig.functions.star.directory has priority over functions.directory', async (t) => {
+  await runFixture(t, 'config_mutate_functions_directory_star_priority')
+})
 
-  test('netlifyConfig.functions.directory mutations work', async (t) => {
-    await runFixture(t, 'config_mutate_functions_directory_nested')
-  })
+test('netlifyConfig.functions.directory mutations work', async (t) => {
+  await runFixture(t, 'config_mutate_functions_directory_nested')
+})
 
-  test('netlifyConfig.functions.directory has priority over functions.star.directory', async (t) => {
-    await runFixture(t, 'config_mutate_functions_directory_nested_priority')
-  })
+test('netlifyConfig.functions.directory has priority over functions.star.directory', async (t) => {
+  await runFixture(t, 'config_mutate_functions_directory_nested_priority')
+})
 
-  test('netlifyConfig.build.functions mutations work', async (t) => {
-    await runFixture(t, 'config_mutate_functions_directory_build')
-  })
+test('netlifyConfig.build.functions mutations work', async (t) => {
+  await runFixture(t, 'config_mutate_functions_directory_build')
+})
 
-  test('netlifyConfig.functions mutations are used during functions bundling', async (t) => {
-    await runFixture(t, 'config_mutate_functions_bundling')
-  })
+test('netlifyConfig.functions mutations are used during functions bundling', async (t) => {
+  await runFixture(t, 'config_mutate_functions_bundling')
+})
 
-  test('netlifyConfig.functions mutations on any property can be used', async (t) => {
-    await runFixture(t, 'config_mutate_functions_any')
-  })
+test('netlifyConfig.functions mutations on any property can be used', async (t) => {
+  await runFixture(t, 'config_mutate_functions_any')
+})
 
-  test('netlifyConfig.functions mutations can add new functions configs', async (t) => {
-    await runFixture(t, 'config_mutate_functions_new')
-  })
-}
+test('netlifyConfig.functions mutations can add new functions configs', async (t) => {
+  await runFixture(t, 'config_mutate_functions_new')
+})
 
 // Node 10 prints different snapshots due to change of behavior with
 // `util.inspect()`
@@ -401,29 +397,25 @@ test('constants.FUNCTIONS_SRC default value', async (t) => {
   await runFixture(t, 'functions_src_default')
 })
 
-// This package currently supports Node 8 but not zip-it-and-ship-it
-// @todo remove once Node 8 support is removed
-if (!version.startsWith('v8.')) {
-  test('constants.FUNCTIONS_SRC uses legacy default functions directory if it exists', async (t) => {
-    await runFixture(t, 'functions_src_legacy')
-  })
+test('constants.FUNCTIONS_SRC uses legacy default functions directory if it exists', async (t) => {
+  await runFixture(t, 'functions_src_legacy')
+})
 
-  test('constants.FUNCTIONS_SRC ignores the legacy default functions directory if the new default directory exists', async (t) => {
-    await runFixture(t, 'functions_src_default_and_legacy')
-  })
+test('constants.FUNCTIONS_SRC ignores the legacy default functions directory if the new default directory exists', async (t) => {
+  await runFixture(t, 'functions_src_default_and_legacy')
+})
 
-  test('constants.FUNCTIONS_SRC relative path', async (t) => {
-    await runFixture(t, 'functions_src_relative')
-  })
+test('constants.FUNCTIONS_SRC relative path', async (t) => {
+  await runFixture(t, 'functions_src_relative')
+})
 
-  test('constants.FUNCTIONS_SRC dynamic is ignored if FUNCTIONS_SRC is specified', async (t) => {
-    await runFixture(t, 'functions_src_dynamic_ignore', { copyRoot: { git: false } })
-  })
+test('constants.FUNCTIONS_SRC dynamic is ignored if FUNCTIONS_SRC is specified', async (t) => {
+  await runFixture(t, 'functions_src_dynamic_ignore', { copyRoot: { git: false } })
+})
 
-  test('constants.FUNCTIONS_SRC dynamic should bundle Functions', async (t) => {
-    await runFixture(t, 'functions_src_dynamic_bundle', { copyRoot: { git: false } })
-  })
-}
+test('constants.FUNCTIONS_SRC dynamic should bundle Functions', async (t) => {
+  await runFixture(t, 'functions_src_dynamic_bundle', { copyRoot: { git: false } })
+})
 
 test('constants.FUNCTIONS_SRC automatic value', async (t) => {
   await runFixture(t, 'functions_src_auto')
@@ -449,14 +441,9 @@ test('constants.CACHE_DIR CI', async (t) => {
   await runFixture(t, 'cache', { flags: { cacheDir: '/opt/build/cache' } })
 })
 
-// Node.js v8 test executions trigger a plugin warning when run with mode buildbot related with the Node.js version used
-// to execute the plugins. Not too critical given production executions always run with Node v12.x
-// @TODO remove once we drop Node v8 support or remove the plugin Node.js version warning - https://github.com/netlify/build/blob/6e718e3f040397ba30da5c32b275b914381685e0/packages/build/src/log/messages/plugins.js#L41-L48
-if (!version.startsWith('v8.')) {
-  test('constants.IS_LOCAL CI', async (t) => {
-    await runFixture(t, 'is_local', { flags: { mode: 'buildbot' } })
-  })
-}
+test('constants.IS_LOCAL CI', async (t) => {
+  await runFixture(t, 'is_local', { flags: { mode: 'buildbot' } })
+})
 
 test('constants.SITE_ID', async (t) => {
   await runFixture(t, 'site_id', { flags: { siteId: 'test' } })
@@ -502,52 +489,44 @@ test('Functions: must not be a regular file', async (t) => {
   await runFixture(t, 'regular_file')
 })
 
-// This package currently supports Node 8 but not zip-it-and-ship-it
-// @todo remove once Node 8 support is removed
-if (!version.startsWith('v8.')) {
-  test('Functions: can be a symbolic link', async (t) => {
-    await runFixture(t, 'symlink')
-  })
-}
+test('Functions: can be a symbolic link', async (t) => {
+  await runFixture(t, 'symlink')
+})
 
 test('Functions: default directory', async (t) => {
   await runFixture(t, 'default')
 })
 
-// This package currently supports Node 8 but not zip-it-and-ship-it
-// @todo remove once Node 8 support is removed
-if (!version.startsWith('v8.')) {
-  test('Functions: simple setup', async (t) => {
-    await removeDir(`${FIXTURES_DIR}/simple/.netlify/functions/`)
-    await runFixture(t, 'simple')
-  })
+test('Functions: simple setup', async (t) => {
+  await removeDir(`${FIXTURES_DIR}/simple/.netlify/functions/`)
+  await runFixture(t, 'simple')
+})
 
-  test('Functions: no functions', async (t) => {
-    await runFixture(t, 'none')
-  })
+test('Functions: no functions', async (t) => {
+  await runFixture(t, 'none')
+})
 
-  test('Functions: invalid package.json', async (t) => {
-    const fixtureName = 'functions_package_json_invalid'
-    const packageJsonPath = `${FIXTURES_DIR}/${fixtureName}/package.json`
-    // We need to create that file during tests. Otherwise, ESLint fails when
-    // detecting an invalid *.json file.
-    await pWriteFile(packageJsonPath, '{{}')
-    try {
-      await runFixture(t, fixtureName)
-    } finally {
-      await del(packageJsonPath)
-    }
-  })
+test('Functions: invalid package.json', async (t) => {
+  const fixtureName = 'functions_package_json_invalid'
+  const packageJsonPath = `${FIXTURES_DIR}/${fixtureName}/package.json`
+  // We need to create that file during tests. Otherwise, ESLint fails when
+  // detecting an invalid *.json file.
+  await pWriteFile(packageJsonPath, '{{}')
+  try {
+    await runFixture(t, fixtureName)
+  } finally {
+    await del(packageJsonPath)
+  }
+})
 
-  test('Functions: --functionsDistDir', async (t) => {
-    const functionsDistDir = await getTempDir()
-    try {
-      await runFixture(t, 'simple', { flags: { functionsDistDir } })
-    } finally {
-      await removeDir(functionsDistDir)
-    }
-  })
-}
+test('Functions: --functionsDistDir', async (t) => {
+  const functionsDistDir = await getTempDir()
+  try {
+    await runFixture(t, 'simple', { flags: { functionsDistDir } })
+  } finally {
+    await removeDir(functionsDistDir)
+  }
+})
 
 const EDGE_HANDLERS_LOCAL_DIR = '.netlify/edge-handlers'
 const EDGE_HANDLERS_MANIFEST = 'manifest.json'
@@ -587,50 +566,46 @@ const normalizeEdgeHandler = function ([handlerName, { onRequest }]) {
   return { handlerName, onRequest }
 }
 
-// Edge handlers are not supported in Node 8
-// TODO: remove once Node 8 support is removed
-if (!version.startsWith('v8.')) {
-  test('constants.EDGE_HANDLERS_SRC default value', async (t) => {
-    await runFixture(t, 'edge_handlers_src_default')
-  })
+test('constants.EDGE_HANDLERS_SRC default value', async (t) => {
+  await runFixture(t, 'edge_handlers_src_default')
+})
 
-  test('constants.EDGE_HANDLERS_SRC automatic value', async (t) => {
-    await runFixture(t, 'edge_handlers_src_auto')
-  })
+test('constants.EDGE_HANDLERS_SRC automatic value', async (t) => {
+  await runFixture(t, 'edge_handlers_src_auto')
+})
 
-  test('constants.EDGE_HANDLERS_SRC relative path', async (t) => {
-    await runFixture(t, 'edge_handlers_src_relative')
-  })
+test('constants.EDGE_HANDLERS_SRC relative path', async (t) => {
+  await runFixture(t, 'edge_handlers_src_relative')
+})
 
-  test('constants.EDGE_HANDLERS_SRC missing path', async (t) => {
-    await runFixture(t, 'edge_handlers_src_missing')
-  })
+test('constants.EDGE_HANDLERS_SRC missing path', async (t) => {
+  await runFixture(t, 'edge_handlers_src_missing')
+})
 
-  test('constants.EDGE_HANDLERS_SRC created dynamically', async (t) => {
-    await runFixture(t, 'edge_handlers_src_dynamic', { copyRoot: { git: false } })
-  })
+test('constants.EDGE_HANDLERS_SRC created dynamically', async (t) => {
+  await runFixture(t, 'edge_handlers_src_dynamic', { copyRoot: { git: false } })
+})
 
-  test('constants.EDGE_HANDLERS_SRC dynamic is ignored if EDGE_HANDLERS_SRC is specified', async (t) => {
-    await runFixture(t, 'edge_handlers_src_dynamic_ignore', { copyRoot: { git: false } })
-  })
+test('constants.EDGE_HANDLERS_SRC dynamic is ignored if EDGE_HANDLERS_SRC is specified', async (t) => {
+  await runFixture(t, 'edge_handlers_src_dynamic_ignore', { copyRoot: { git: false } })
+})
 
-  test('Edge handlers: simple setup', async (t) => {
-    const { outputDir, manifestPath } = getEdgeHandlersPaths('handlers_simple')
-    await runFixture(t, 'handlers_simple')
+test('Edge handlers: simple setup', async (t) => {
+  const { outputDir, manifestPath } = getEdgeHandlersPaths('handlers_simple')
+  await runFixture(t, 'handlers_simple')
 
-    const [{ handlerName, onRequest }] = await loadEdgeHandlerBundle({ outputDir, manifestPath })
-    t.is(handlerName, 'test')
-    t.deepEqual(onRequest('test'), [true, 'test', 'test'])
-  })
+  const [{ handlerName, onRequest }] = await loadEdgeHandlerBundle({ outputDir, manifestPath })
+  t.is(handlerName, 'test')
+  t.deepEqual(onRequest('test'), [true, 'test', 'test'])
+})
 
-  test('Edge handlers: can configure directory', async (t) => {
-    const { outputDir, manifestPath } = getEdgeHandlersPaths('handlers_custom_dir')
-    await runFixture(t, 'handlers_custom_dir')
+test('Edge handlers: can configure directory', async (t) => {
+  const { outputDir, manifestPath } = getEdgeHandlersPaths('handlers_custom_dir')
+  await runFixture(t, 'handlers_custom_dir')
 
-    const [{ handlerName }] = await loadEdgeHandlerBundle({ outputDir, manifestPath })
-    t.is(handlerName, 'test')
-  })
-}
+  const [{ handlerName }] = await loadEdgeHandlerBundle({ outputDir, manifestPath })
+  t.is(handlerName, 'test')
+})
 
 test('Deploy plugin succeeds', async (t) => {
   const { address, requests, stopServer } = await startDeployServer()
@@ -1369,16 +1344,12 @@ test('Validate --node-path exists', async (t) => {
   })
 })
 
-// We need to run a minimum version of 10.18.0 for this test, as it relies on the plugin engines.node property
-// @todo remove once Node 8 support is removed
-if (!version.startsWith('v8.')) {
-  test('Provided --node-path version is unused in buildbot for local plugin executions if <10.18.0', async (t) => {
-    const nodePath = getNodePath('10.17.0')
-    await runFixture(t, 'version_greater_than_minimum', {
-      flags: { nodePath, mode: 'buildbot' },
-    })
+test('Provided --node-path version is unused in buildbot for local plugin executions if <10.18.0', async (t) => {
+  const nodePath = getNodePath('10.17.0')
+  await runFixture(t, 'version_greater_than_minimum', {
+    flags: { nodePath, mode: 'buildbot' },
   })
-}
+})
 
 test('Plugins can execute local binaries', async (t) => {
   await runFixture(t, 'local_bin')

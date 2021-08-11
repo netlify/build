@@ -2,7 +2,7 @@
 
 const { unlink, writeFile } = require('fs')
 const { join } = require('path')
-const { kill, platform, version } = require('process')
+const { kill, platform } = require('process')
 const { promisify } = require('util')
 
 const zipItAndShipIt = require('@netlify/zip-it-and-ship-it')
@@ -246,14 +246,10 @@ test('--node-path is not used by plugins added to package.json', async (t) => {
   await runFixture(t, 'package_node_path_unused', { flags: { nodePath: path }, env: { TEST_NODE_PATH: path } })
 })
 
-// @netlify/zip-it-and-ship-it does not support Node 8 during bundling
-// TODO: remove once we drop support for Node 8
-if (!version.startsWith('v8.')) {
-  test('--node-path is not used by core plugins', async (t) => {
-    const { path } = await mGetNode(VERY_OLD_NODE_VERSION)
-    await runFixture(t, 'core', { flags: { nodePath: path } })
-  })
-}
+test('--node-path is not used by core plugins', async (t) => {
+  const { path } = await mGetNode(VERY_OLD_NODE_VERSION)
+  await runFixture(t, 'core', { flags: { nodePath: path } })
+})
 
 test('featureFlags can be used programmatically', async (t) => {
   await runFixture(t, 'empty', { flags: { featureFlags: { test: true, testTwo: false } } })
@@ -301,76 +297,72 @@ test('Print warning on lingering processes', async (t) => {
 
 const PID_LINE_REGEXP = /^PID: (\d+)$/m
 
-// @netlify/zip-it-and-ship-it does not support Node 8 during bundling
-// TODO: remove once we drop support for Node 8
-if (!version.startsWith('v8.')) {
-  test('Functions config is passed to zip-it-and-ship-it (1)', async (t) => {
-    await runFixture(t, 'functions_config_1')
-  })
+test('Functions config is passed to zip-it-and-ship-it (1)', async (t) => {
+  await runFixture(t, 'functions_config_1')
+})
 
-  test('Functions config is passed to zip-it-and-ship-it (2)', async (t) => {
-    await runFixture(t, 'functions_config_2')
-  })
+test('Functions config is passed to zip-it-and-ship-it (2)', async (t) => {
+  await runFixture(t, 'functions_config_2')
+})
 
-  test('Functions config is passed to zip-it-and-ship-it (3)', async (t) => {
-    await runFixture(t, 'functions_config_3')
-  })
+test('Functions config is passed to zip-it-and-ship-it (3)', async (t) => {
+  await runFixture(t, 'functions_config_3')
+})
 
-  test('Shows notice about bundling errors and warnings coming from esbuild', async (t) => {
-    await runFixture(t, 'esbuild_errors_1')
-  })
+test('Shows notice about bundling errors and warnings coming from esbuild', async (t) => {
+  await runFixture(t, 'esbuild_errors_1')
+})
 
-  test('Shows notice about modules with dynamic imports and suggests the usage of `functions.external_node_modules`', async (t) => {
-    await runFixture(t, 'esbuild_errors_2')
-  })
+test('Shows notice about modules with dynamic imports and suggests the usage of `functions.external_node_modules`', async (t) => {
+  await runFixture(t, 'esbuild_errors_2')
+})
 
-  test('Bundles functions from the `.netlify/functions-internal` directory', async (t) => {
-    await runFixture(t, 'functions_internal')
-  })
+test('Bundles functions from the `.netlify/functions-internal` directory', async (t) => {
+  await runFixture(t, 'functions_internal')
+})
 
-  test('Does not require the `.netlify/functions-internal` directory to exist', async (t) => {
-    await runFixture(t, 'functions_internal_missing')
-  })
+test('Does not require the `.netlify/functions-internal` directory to exist', async (t) => {
+  await runFixture(t, 'functions_internal_missing')
+})
 
-  test('Does not require the `.netlify/functions-internal` or the user functions directory to exist', async (t) => {
-    await runFixture(t, 'functions_internal_user_missing')
-  })
+test('Does not require the `.netlify/functions-internal` or the user functions directory to exist', async (t) => {
+  await runFixture(t, 'functions_internal_user_missing')
+})
 
-  test('Bundles functions from the `.netlify/functions-internal` directory even if the configured user functions directory is missing', async (t) => {
-    await runFixture(t, 'functions_user_missing')
-  })
+test('Bundles functions from the `.netlify/functions-internal` directory even if the configured user functions directory is missing', async (t) => {
+  await runFixture(t, 'functions_user_missing')
+})
 
-  // eslint-disable-next-line max-statements
-  test.serial('`rustTargetDirectory` is passed to zip-it-and-ship-it only when running in buildbot', async (t) => {
-    const fixtureWithConfig = 'functions_config_1'
-    const fixtureWithoutConfig = 'functions_internal_missing'
-    const runCount = 4
-    const spy = sinon.spy(zipItAndShipIt, 'zipFunctions')
+// eslint-disable-next-line max-statements
+test.serial('`rustTargetDirectory` is passed to zip-it-and-ship-it only when running in buildbot', async (t) => {
+  const fixtureWithConfig = 'functions_config_1'
+  const fixtureWithoutConfig = 'functions_internal_missing'
+  const runCount = 4
+  const spy = sinon.spy(zipItAndShipIt, 'zipFunctions')
 
-    await runFixture(t, fixtureWithConfig, { flags: { mode: 'buildbot' }, snapshot: false })
-    await runFixture(t, fixtureWithConfig, { snapshot: false })
-    await runFixture(t, fixtureWithoutConfig, { flags: { mode: 'buildbot' }, snapshot: false })
-    await runFixture(t, fixtureWithoutConfig, { snapshot: false })
+  await runFixture(t, fixtureWithConfig, { flags: { mode: 'buildbot' }, snapshot: false })
+  await runFixture(t, fixtureWithConfig, { snapshot: false })
+  await runFixture(t, fixtureWithoutConfig, { flags: { mode: 'buildbot' }, snapshot: false })
+  await runFixture(t, fixtureWithoutConfig, { snapshot: false })
 
-    t.is(spy.callCount, runCount)
+  t.is(spy.callCount, runCount)
 
-    const { args: call1Args } = spy.getCall(0)
-    const { args: call2Args } = spy.getCall(1)
-    const { args: call3Args } = spy.getCall(2)
-    const { args: call4Args } = spy.getCall(3)
+  const { args: call1Args } = spy.getCall(0)
+  const { args: call2Args } = spy.getCall(1)
+  const { args: call3Args } = spy.getCall(2)
+  const { args: call4Args } = spy.getCall(3)
 
-    t.is(
-      call1Args[2].config['*'].rustTargetDirectory,
-      join(FIXTURES_DIR, fixtureWithConfig, '.netlify', 'rust-functions-cache', '[name]'),
-    )
-    t.is(call2Args[2].config['*'].rustTargetDirectory, undefined)
-    t.is(
-      call3Args[2].config['*'].rustTargetDirectory,
-      join(FIXTURES_DIR, fixtureWithoutConfig, '.netlify', 'rust-functions-cache', '[name]'),
-    )
-    t.is(call4Args[2].config['*'].rustTargetDirectory, undefined)
-  })
-}
+  t.is(
+    call1Args[2].config['*'].rustTargetDirectory,
+    join(FIXTURES_DIR, fixtureWithConfig, '.netlify', 'rust-functions-cache', '[name]'),
+  )
+  t.is(call2Args[2].config['*'].rustTargetDirectory, undefined)
+  t.is(
+    call3Args[2].config['*'].rustTargetDirectory,
+    join(FIXTURES_DIR, fixtureWithoutConfig, '.netlify', 'rust-functions-cache', '[name]'),
+  )
+  t.is(call4Args[2].config['*'].rustTargetDirectory, undefined)
+})
 
 test('Does not generate a `manifest.json` file when the feature flag is not enabled', async (t) => {
   const fixtureName = 'functions_internal_no_manifest_2'
