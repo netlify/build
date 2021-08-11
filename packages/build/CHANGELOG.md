@@ -1,5 +1,12 @@
 # Changelog
 
+## [17.11.0](https://www.github.com/netlify/build/compare/build-v17.10.0...build-v17.11.0) (2021-08-11)
+
+
+### Features
+
+* pass `rustTargetDirectory` to ZISI ([#3411](https://www.github.com/netlify/build/issues/3411)) ([0287d22](https://www.github.com/netlify/build/commit/0287d221d804f0cbe5036ce7d170c3f7271a32b3))
+
 ## [17.10.0](https://www.github.com/netlify/build/compare/build-v17.9.2...build-v17.10.0) (2021-08-10)
 
 

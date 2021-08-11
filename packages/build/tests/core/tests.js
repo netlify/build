@@ -1,13 +1,16 @@
 'use strict'
 
 const { unlink, writeFile } = require('fs')
+const { join } = require('path')
 const { kill, platform, version } = require('process')
 const { promisify } = require('util')
 
+const zipItAndShipIt = require('@netlify/zip-it-and-ship-it')
 const test = require('ava')
 const getNode = require('get-node')
 const moize = require('moize')
 const pathExists = require('path-exists')
+const sinon = require('sinon')
 const { tmpName } = require('tmp-promise')
 
 const { runFixture: runFixtureConfig } = require('../../../config/tests/helpers/main')
@@ -335,6 +338,37 @@ if (!version.startsWith('v8.')) {
 
   test('Bundles functions from the `.netlify/functions-internal` directory even if the configured user functions directory is missing', async (t) => {
     await runFixture(t, 'functions_user_missing')
+  })
+
+  // eslint-disable-next-line max-statements
+  test.serial('`rustTargetDirectory` is passed to zip-it-and-ship-it only when running in buildbot', async (t) => {
+    const fixtureWithConfig = 'functions_config_1'
+    const fixtureWithoutConfig = 'functions_internal_missing'
+    const runCount = 4
+    const spy = sinon.spy(zipItAndShipIt, 'zipFunctions')
+
+    await runFixture(t, fixtureWithConfig, { flags: { mode: 'buildbot' }, snapshot: false })
+    await runFixture(t, fixtureWithConfig, { snapshot: false })
+    await runFixture(t, fixtureWithoutConfig, { flags: { mode: 'buildbot' }, snapshot: false })
+    await runFixture(t, fixtureWithoutConfig, { snapshot: false })
+
+    t.is(spy.callCount, runCount)
+
+    const { args: call1Args } = spy.getCall(0)
+    const { args: call2Args } = spy.getCall(1)
+    const { args: call3Args } = spy.getCall(2)
+    const { args: call4Args } = spy.getCall(3)
+
+    t.is(
+      call1Args[2].config['*'].rustTargetDirectory,
+      join(FIXTURES_DIR, fixtureWithConfig, '.netlify', 'rust-functions-cache', '[name]'),
+    )
+    t.is(call2Args[2].config['*'].rustTargetDirectory, undefined)
+    t.is(
+      call3Args[2].config['*'].rustTargetDirectory,
+      join(FIXTURES_DIR, fixtureWithoutConfig, '.netlify', 'rust-functions-cache', '[name]'),
+    )
+    t.is(call4Args[2].config['*'].rustTargetDirectory, undefined)
   })
 }
 
