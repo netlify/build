@@ -1,7 +1,6 @@
 'use strict'
 
 const { normalize } = require('path')
-const { version } = require('process')
 
 const test = require('ava')
 const pathExists = require('path-exists')
@@ -89,45 +88,41 @@ const normalizeFiles = function (fixtureDir, { name, mainFile, runtime, extensio
   return { name, mainFile: mainFileA, runtime, extension, ...srcFileA }
 }
 
-// This package currently supports Node 8 but not zip-it-and-ship-it
-// @todo remove once Node 8 support is removed
-if (!version.startsWith('v8.')) {
-  test('Can list function main files with list()', async (t) => {
-    const fixtureDir = `${FIXTURES_DIR}/list`
-    const functions = await list(fixtureDir)
-    t.deepEqual(
-      sortOn(functions, ['mainFile', 'extension']),
-      [
-        { name: 'four', mainFile: 'four.js/four.js.js', runtime: 'js', extension: '.js' },
-        { name: 'one', mainFile: 'one/index.js', runtime: 'js', extension: '.js' },
-        { name: 'test', mainFile: 'test', runtime: 'go', extension: '' },
-        { name: 'test', mainFile: 'test.js', runtime: 'js', extension: '.js' },
-        { name: 'test', mainFile: 'test.zip', runtime: 'js', extension: '.zip' },
-        { name: 'two', mainFile: 'two/two.js', runtime: 'js', extension: '.js' },
-      ].map(normalizeFiles.bind(null, fixtureDir)),
-    )
-  })
+test('Can list function main files with list()', async (t) => {
+  const fixtureDir = `${FIXTURES_DIR}/list`
+  const functions = await list(fixtureDir)
+  t.deepEqual(
+    sortOn(functions, ['mainFile', 'extension']),
+    [
+      { name: 'four', mainFile: 'four.js/four.js.js', runtime: 'js', extension: '.js' },
+      { name: 'one', mainFile: 'one/index.js', runtime: 'js', extension: '.js' },
+      { name: 'test', mainFile: 'test', runtime: 'go', extension: '' },
+      { name: 'test', mainFile: 'test.js', runtime: 'js', extension: '.js' },
+      { name: 'test', mainFile: 'test.zip', runtime: 'js', extension: '.zip' },
+      { name: 'two', mainFile: 'two/two.js', runtime: 'js', extension: '.js' },
+    ].map(normalizeFiles.bind(null, fixtureDir)),
+  )
+})
 
-  test('Can list all function files with listAll()', async (t) => {
-    const fixtureDir = `${FIXTURES_DIR}/list`
-    const functions = await listAll(fixtureDir)
-    t.deepEqual(
-      sortOn(functions, ['mainFile', 'extension']),
-      [
-        {
-          name: 'four',
-          mainFile: 'four.js/four.js.js',
-          runtime: 'js',
-          extension: '.js',
-          srcFile: 'four.js/four.js.js',
-        },
-        { name: 'one', mainFile: 'one/index.js', runtime: 'js', extension: '.js', srcFile: 'one/index.js' },
-        { name: 'test', mainFile: 'test', runtime: 'go', extension: '', srcFile: 'test' },
-        { name: 'test', mainFile: 'test.js', runtime: 'js', extension: '.js', srcFile: 'test.js' },
-        { name: 'test', mainFile: 'test.zip', runtime: 'js', extension: '.zip', srcFile: 'test.zip' },
-        { name: 'two', mainFile: 'two/two.js', runtime: 'js', extension: '.js', srcFile: 'two/three.js' },
-        { name: 'two', mainFile: 'two/two.js', runtime: 'js', extension: '.js', srcFile: 'two/two.js' },
-      ].map(normalizeFiles.bind(null, fixtureDir)),
-    )
-  })
-}
+test('Can list all function files with listAll()', async (t) => {
+  const fixtureDir = `${FIXTURES_DIR}/list`
+  const functions = await listAll(fixtureDir)
+  t.deepEqual(
+    sortOn(functions, ['mainFile', 'extension']),
+    [
+      {
+        name: 'four',
+        mainFile: 'four.js/four.js.js',
+        runtime: 'js',
+        extension: '.js',
+        srcFile: 'four.js/four.js.js',
+      },
+      { name: 'one', mainFile: 'one/index.js', runtime: 'js', extension: '.js', srcFile: 'one/index.js' },
+      { name: 'test', mainFile: 'test', runtime: 'go', extension: '', srcFile: 'test' },
+      { name: 'test', mainFile: 'test.js', runtime: 'js', extension: '.js', srcFile: 'test.js' },
+      { name: 'test', mainFile: 'test.zip', runtime: 'js', extension: '.zip', srcFile: 'test.zip' },
+      { name: 'two', mainFile: 'two/two.js', runtime: 'js', extension: '.js', srcFile: 'two/three.js' },
+      { name: 'two', mainFile: 'two/two.js', runtime: 'js', extension: '.js', srcFile: 'two/two.js' },
+    ].map(normalizeFiles.bind(null, fixtureDir)),
+  )
+})
