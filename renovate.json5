@@ -13,7 +13,6 @@
         'clean-stack',
         'execa',
         'find-up',
-        'get-node',
         'get-stream',
         'globby',
         'got',
@@ -33,6 +32,7 @@
         'yargs',
         'dot-prop',
         // Those cannot be upgraded to a major version until we drop support for Node 10
+        'get-node',
         'get-bin-path',
         'p-reduce',
         'path-key',
