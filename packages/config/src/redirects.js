@@ -1,9 +1,8 @@
 'use strict'
 
 const { resolve } = require('path')
+const { isDeepStrictEqual } = require('util')
 
-// @todo: use `util.isDeepStrictEqual()` after dropping support for Node 8
-const fastDeepEqual = require('fast-deep-equal')
 const { parseFileRedirects, mergeRedirects, normalizeRedirects } = require('netlify-redirect-parser')
 
 const { warnRedirectsParsing } = require('./log/messages')
@@ -52,7 +51,7 @@ const normalizeAllRedirects = function (redirects) {
 // and after modifying `netlifyConfig.redirects`.
 const hasMergedFileRedirects = function (normalizedFileRedirects, normalizedConfigRedirects) {
   return normalizedConfigRedirects.some((configRedirect) =>
-    normalizedFileRedirects.some((fileRedirect) => fastDeepEqual(configRedirect, fileRedirect)),
+    normalizedFileRedirects.some((fileRedirect) => isDeepStrictEqual(configRedirect, fileRedirect)),
   )
 }
 

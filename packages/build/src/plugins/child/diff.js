@@ -1,6 +1,7 @@
 'use strict'
 
-const fastDeepEqual = require('fast-deep-equal')
+const { isDeepStrictEqual } = require('util')
+
 const isPlainObj = require('is-plain-obj')
 const rfdc = require('rfdc')
 
@@ -37,7 +38,7 @@ const diffObjects = function (objA, objB, parentKeys) {
       return diffObjects(valueA, valueB, keys)
     }
 
-    if (fastDeepEqual(valueA, valueB)) {
+    if (isDeepStrictEqual(valueA, valueB)) {
       return []
     }
 
