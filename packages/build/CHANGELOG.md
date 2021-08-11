@@ -1,5 +1,18 @@
 # Changelog
 
+## [17.10.0](https://www.github.com/netlify/build/compare/build-v17.9.2...build-v17.10.0) (2021-08-10)
+
+
+### Features
+
+* fix log messages related to redirects upload ([#3412](https://www.github.com/netlify/build/issues/3412)) ([8a2fcc1](https://www.github.com/netlify/build/commit/8a2fcc1eb87430f3bcb5f6cfa8a7a87d952a089e))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^3.3.0 ([#3405](https://www.github.com/netlify/build/issues/3405)) ([64e3a62](https://www.github.com/netlify/build/commit/64e3a626881f2116a5c27571fb5110f35035c508))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.17.0 ([#3409](https://www.github.com/netlify/build/issues/3409)) ([6942dcd](https://www.github.com/netlify/build/commit/6942dcd83b7908710e994b39b5ef4323cf88f039))
+
 ### [17.9.2](https://www.github.com/netlify/build/compare/build-v17.9.1...build-v17.9.2) (2021-08-05)
 
 

@@ -61,3 +61,4 @@ jobs:
         with:
           file: coverage/coverage-final.json
           flags: ${{ steps.test-coverage-flags.outputs.os }},${{ steps.test-coverage-flags.outputs.node }}
+        continue-on-error: true
