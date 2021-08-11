@@ -1,5 +1,12 @@
 # Changelog
 
+### [15.0.1](https://www.github.com/netlify/build/compare/config-v15.0.0...config-v15.0.1) (2021-08-11)
+
+
+### Bug Fixes
+
+* error handling of headers and redirects ([#3422](https://www.github.com/netlify/build/issues/3422)) ([add5417](https://www.github.com/netlify/build/commit/add54178e5b046d6ec8d7cc44ac626135a25b9e6))
+
 ## [15.0.0](https://www.github.com/netlify/build/compare/config-v14.4.3...config-v15.0.0) (2021-08-11)
 
 

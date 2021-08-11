@@ -1,5 +1,12 @@
 # Changelog
 
+### [18.0.2](https://www.github.com/netlify/build/compare/build-v18.0.1...build-v18.0.2) (2021-08-11)
+
+
+### Bug Fixes
+
+* error handling of headers and redirects ([#3422](https://www.github.com/netlify/build/issues/3422)) ([add5417](https://www.github.com/netlify/build/commit/add54178e5b046d6ec8d7cc44ac626135a25b9e6))
+
 ### [18.0.1](https://www.github.com/netlify/build/compare/build-v18.0.0...build-v18.0.1) (2021-08-11)
 
 
