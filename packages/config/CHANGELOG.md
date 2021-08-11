@@ -1,5 +1,16 @@
 # Changelog
 
+## [15.0.0](https://www.github.com/netlify/build/compare/config-v14.4.3...config-v15.0.0) (2021-08-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* add `netlifyConfig.headers` (#3407)
+
+### Features
+
+* add `netlifyConfig.headers` ([#3407](https://www.github.com/netlify/build/issues/3407)) ([14888c7](https://www.github.com/netlify/build/commit/14888c73278b6c68538ecaa385e5ce01932b7e09))
+
 ### [14.4.3](https://www.github.com/netlify/build/compare/config-v14.4.2...config-v14.4.3) (2021-08-05)
 
 
