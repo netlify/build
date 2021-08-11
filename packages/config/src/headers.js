@@ -19,9 +19,10 @@ const HEADERS_FILENAME = '_headers'
 const addConfigHeaders = async function ({ headers: configHeaders = [], ...config }, headersPath, logs) {
   try {
     const normalizedConfigHeaders = normalizeHeaders(configHeaders)
-    const normalizedFileHeaders = await getFileHeaders(headersPath, normalizedConfigHeaders)
+    const normalizedFileHeaders = await getFileHeaders(headersPath)
     const headers = mergeHeaders({ fileHeaders: normalizedFileHeaders, configHeaders: normalizedConfigHeaders })
-    return { ...config, headers }
+    const uniqueHeaders = headers.filter(isUniqueHeader)
+    return { ...config, headers: uniqueHeaders }
     // @todo remove this failsafe once the code is stable
   } catch (error) {
     warnHeadersParsing(logs, error.message)
@@ -29,23 +30,19 @@ const addConfigHeaders = async function ({ headers: configHeaders = [], ...confi
   }
 }
 
-const getFileHeaders = async function (headersPath, normalizedConfigHeaders) {
+const getFileHeaders = async function (headersPath) {
   const fileHeaders = await parseFileHeaders(headersPath)
   const normalizedFileHeaders = normalizeHeaders(fileHeaders)
-  return hasMergedFileHeaders(normalizedFileHeaders, normalizedConfigHeaders) ? [] : normalizedFileHeaders
+  return normalizedFileHeaders
 }
 
 // `configHeaders` might contain the content of `_headers` already.
 // This happens when a plugin appends to `netlifyConfig.headers` which already
 // contains `_headers` rules and is transformed to an `inlineConfig` object,
 // which is itself parsed as `configHeaders`. In that case, we do not want
-// duplicate so we ignore `fileHeaders`.
-// The current logic works with the case where `_headers` is added both before
-// and after modifying `netlifyConfig.headers`.
-const hasMergedFileHeaders = function (normalizedFileHeaders, normalizedConfigHeaders) {
-  return normalizedConfigHeaders.some((configHeader) =>
-    normalizedFileHeaders.some((fileHeader) => isDeepStrictEqual(configHeader, fileHeader)),
-  )
+// duplicates.
+const isUniqueHeader = function (header, index, headers) {
+  return !headers.slice(index + 1).some((otherHeader) => isDeepStrictEqual(header, otherHeader))
 }
 
 module.exports = { addHeaders, addConfigHeaders }

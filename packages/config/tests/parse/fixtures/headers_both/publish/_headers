@@ -1,3 +1,6 @@
 /path
   test: one
   testThree: three
+/path
+  test: override
+  testTwo: two
