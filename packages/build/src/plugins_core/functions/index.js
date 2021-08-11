@@ -44,9 +44,7 @@ const normalizeFunctionConfig = ({ buildDir, featureFlags, functionConfig = {}, 
   // If the build is running in buildbot, we set the Rust target directory to a
   // path that will get cached in between builds, allowing us to speed up the
   // build process.
-  rustTargetDirectory: isRunningLocally
-    ? undefined
-    : resolve(buildDir, '.netlify', 'rust-functions-cache', 'functions', '[name]'),
+  rustTargetDirectory: isRunningLocally ? undefined : resolve(buildDir, '.netlify', 'rust-functions-cache', '[name]'),
 })
 
 const getZisiParameters = ({ buildDir, featureFlags, functionsConfig, functionsDist, isRunningLocally }) => {

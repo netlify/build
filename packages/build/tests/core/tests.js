@@ -1,6 +1,7 @@
 'use strict'
 
 const { unlink, writeFile } = require('fs')
+const { join } = require('path')
 const { kill, platform, version } = require('process')
 const { promisify } = require('util')
 
@@ -360,12 +361,12 @@ if (!version.startsWith('v8.')) {
 
     t.is(
       call1Args[2].config['*'].rustTargetDirectory,
-      `${FIXTURES_DIR}/${fixtureWithConfig}/.netlify/rust-functions-cache/functions/[name]`,
+      join(FIXTURES_DIR, fixtureWithConfig, '.netlify', 'rust-functions-cache', '[name]'),
     )
     t.is(call2Args[2].config['*'].rustTargetDirectory, undefined)
     t.is(
       call3Args[2].config['*'].rustTargetDirectory,
-      `${FIXTURES_DIR}/${fixtureWithoutConfig}/.netlify/rust-functions-cache/functions/[name]`,
+      join(FIXTURES_DIR, fixtureWithoutConfig, '.netlify', 'rust-functions-cache', '[name]'),
     )
     t.is(call4Args[2].config['*'].rustTargetDirectory, undefined)
   })
