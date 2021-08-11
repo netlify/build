@@ -11,23 +11,23 @@ const { warnHeadersParsing } = require('./log/messages')
 // Add `config.headers`
 const addHeaders = async function (config, logs) {
   const headersPath = resolve(config.build.publish, HEADERS_FILENAME)
-  try {
-    const configWithHeaders = await addConfigHeaders(config, headersPath)
-    return { config: configWithHeaders, headersPath }
-    // @todo remove this failsafe once the code is stable
-  } catch (error) {
-    warnHeadersParsing(logs, error.message)
-    return { config: { ...config, headers: [] }, headersPath }
-  }
+  const configWithHeaders = await addConfigHeaders(config, headersPath, logs)
+  return { config: configWithHeaders, headersPath }
 }
 
 const HEADERS_FILENAME = '_headers'
 
-const addConfigHeaders = async function ({ headers: configHeaders = [], ...config }, headersPath) {
-  const normalizedConfigHeaders = normalizeHeaders(configHeaders)
-  const normalizedFileHeaders = await getFileHeaders(headersPath, normalizedConfigHeaders)
-  const headers = mergeHeaders({ fileHeaders: normalizedFileHeaders, configHeaders: normalizedConfigHeaders })
-  return { ...config, headers }
+const addConfigHeaders = async function ({ headers: configHeaders = [], ...config }, headersPath, logs) {
+  try {
+    const normalizedConfigHeaders = normalizeHeaders(configHeaders)
+    const normalizedFileHeaders = await getFileHeaders(headersPath, normalizedConfigHeaders)
+    const headers = mergeHeaders({ fileHeaders: normalizedFileHeaders, configHeaders: normalizedConfigHeaders })
+    return { ...config, headers }
+    // @todo remove this failsafe once the code is stable
+  } catch (error) {
+    warnHeadersParsing(logs, error.message)
+    return { ...config, headers: [] }
+  }
 }
 
 const getFileHeaders = async function (headersPath, normalizedConfigHeaders) {

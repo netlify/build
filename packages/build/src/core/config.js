@@ -176,13 +176,15 @@ const saveUpdatedConfig = async function ({
     return
   }
 
-  await updateConfig(configMutations, { buildDir, configPath, headersPath, redirectsPath, context, branch })
+  await updateConfig(configMutations, { buildDir, configPath, headersPath, redirectsPath, context, branch, logs })
+
   await logConfigOnUpload({ logs, configPath, debug })
   await logHeadersOnUpload({ logs, headersPath, debug })
   await logRedirectsOnUpload({ logs, redirectsPath, debug })
 }
 
 const restoreUpdatedConfig = async function ({
+  configMutations,
   buildDir,
   repositoryRoot,
   configPath = `${repositoryRoot}/netlify.toml`,
@@ -194,7 +196,7 @@ const restoreUpdatedConfig = async function ({
     return
   }
 
-  await restoreConfig({ buildDir, configPath, headersPath, redirectsPath })
+  await restoreConfig(configMutations, { buildDir, configPath, headersPath, redirectsPath })
 }
 
 module.exports = {
