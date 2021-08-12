@@ -1,5 +1,12 @@
 # Changelog
 
+### [15.0.3](https://www.github.com/netlify/build/compare/config-v15.0.2...config-v15.0.3) (2021-08-12)
+
+
+### Bug Fixes
+
+* fix how redirects/headers check for duplicates ([#3424](https://www.github.com/netlify/build/issues/3424)) ([c44f35c](https://www.github.com/netlify/build/commit/c44f35c9562ea42a210ab2f83133b76534543f4d))
+
 ### [15.0.2](https://www.github.com/netlify/build/compare/config-v15.0.1...config-v15.0.2) (2021-08-11)
 
 
