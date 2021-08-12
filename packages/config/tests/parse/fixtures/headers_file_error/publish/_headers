@@ -1,2 +1,4 @@
-  test: one
 /path
+  test: one
+  test:
+  : one
