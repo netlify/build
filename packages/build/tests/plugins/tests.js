@@ -279,6 +279,7 @@ if (!version.startsWith('v10.')) {
             context: 'production',
             branch: 'main',
           },
+          useBinary: true,
         })
       } finally {
         await stopServer()
@@ -305,6 +306,7 @@ if (!version.startsWith('v10.')) {
             context: 'production',
             branch: 'main',
           },
+          useBinary: true,
         })
       } finally {
         await stopServer()
