@@ -38,6 +38,9 @@ const coreCommand = async function ({
     handleBuildCommandOutput(buildCommandOutput, logs)
     return {}
   } catch (error) {
+    // The child process `error.message` includes stderr and stdout output which most of the times contains duplicate
+    // information. We rely on `error.shortMessage` instead.
+    error.message = error.shortMessage
     handleBuildCommandOutput(error, logs)
     addErrorInfo(error, { type: 'buildCommand', location: { buildCommand, buildCommandOrigin, configPath } })
     throw error
