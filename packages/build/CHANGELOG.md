@@ -1,5 +1,12 @@
 # Changelog
 
+### [18.0.3](https://www.github.com/netlify/build/compare/build-v18.0.2...build-v18.0.3) (2021-08-12)
+
+
+### Bug Fixes
+
+* **deps:** bump clean-stack to 3.x ([#3429](https://www.github.com/netlify/build/issues/3429)) ([eb94887](https://www.github.com/netlify/build/commit/eb94887298428ca27c28131439cfaf5284f609f8))
+
 ### [18.0.2](https://www.github.com/netlify/build/compare/build-v18.0.1...build-v18.0.2) (2021-08-11)
 
 
