@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.0.1](https://www.github.com/netlify/build/compare/git-utils-v2.0.0...git-utils-v2.0.1) (2021-08-12)
+
+
+### Bug Fixes
+
+* **deps:** bump execa to the latest version (5.x) ([#3440](https://www.github.com/netlify/build/issues/3440)) ([3e8bd01](https://www.github.com/netlify/build/commit/3e8bd019eddca738a664af9590c313dd5fcd20df))
+
 ## [2.0.0](https://www.github.com/netlify/build/compare/git-utils-v1.0.11...git-utils-v2.0.0) (2021-07-23)
 
 
