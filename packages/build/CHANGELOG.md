@@ -1,5 +1,12 @@
 # Changelog
 
+## [18.1.0](https://www.github.com/netlify/build/compare/build-v18.0.3...build-v18.1.0) (2021-08-12)
+
+
+### Features
+
+* remove some double newlines in the build logs ([#3425](https://www.github.com/netlify/build/issues/3425)) ([d17af96](https://www.github.com/netlify/build/commit/d17af96445a142aeb57256af33cbe854ead93a6d))
+
 ### [18.0.3](https://www.github.com/netlify/build/compare/build-v18.0.2...build-v18.0.3) (2021-08-12)
 
 
