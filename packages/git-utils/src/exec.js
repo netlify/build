@@ -9,8 +9,15 @@ const pathExists = require('path-exists')
 // Fires the `git` binary. Memoized.
 const mGit = function (args, cwd) {
   const cwdA = safeGetCwd(cwd)
-  const { stdout } = execa.sync('git', args, { cwd: cwdA })
-  return stdout
+  // The child process `error.message` includes stderr and stdout output which most of the times contains duplicate
+  // information. We rely on `error.shortMessage` instead.
+  try {
+    const { stdout } = execa.sync('git', args, { cwd: cwdA })
+    return stdout
+  } catch (error) {
+    error.message = error.shortMessage
+    throw error
+  }
 }
 
 // eslint-disable-next-line no-magic-numbers
