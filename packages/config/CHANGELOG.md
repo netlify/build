@@ -1,5 +1,12 @@
 # Changelog
 
+## [15.1.0](https://www.github.com/netlify/build/compare/config-v15.0.5...config-v15.1.0) (2021-08-12)
+
+
+### Features
+
+* remove headers/redirects duplicate filtering ([#3439](https://www.github.com/netlify/build/issues/3439)) ([ebc88c1](https://www.github.com/netlify/build/commit/ebc88c12eea2a8f47ee02415e94d7c4e451fb356))
+
 ### [15.0.5](https://www.github.com/netlify/build/compare/config-v15.0.4...config-v15.0.5) (2021-08-12)
 
 
