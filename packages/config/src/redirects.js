@@ -1,7 +1,6 @@
 'use strict'
 
 const { resolve } = require('path')
-const { isDeepStrictEqual } = require('util')
 
 const { parseFileRedirects, mergeRedirects, normalizeRedirects } = require('netlify-redirect-parser')
 
@@ -24,8 +23,7 @@ const addConfigRedirects = async function ({ redirects: configRedirects = [], ..
       fileRedirects: normalizedFileRedirects,
       configRedirects: normalizedConfigRedirects,
     })
-    const uniqueRedirects = redirects.filter(isUniqueRedirects)
-    return { ...config, redirects: uniqueRedirects }
+    return { ...config, redirects }
     // @todo remove this failsafe once the code is stable
   } catch (error) {
     warnRedirectsParsing(logs, error.message)
@@ -41,15 +39,6 @@ const getFileRedirects = async function (redirectsPath) {
 
 const normalizeAllRedirects = function (redirects) {
   return normalizeRedirects(redirects, { minimal: true })
-}
-
-// `configRedirects` might contain the content of `_redirects` already.
-// This happens when a plugin appends to `netlifyConfig.redirects` which already
-// contains `_redirects` rules and is transformed to an `inlineConfig` object,
-// which is itself parsed as `configRedirects`. In that case, we do not want
-// duplicates.
-const isUniqueRedirects = function (redirect, index, redirects) {
-  return !redirects.slice(index + 1).some((otherRedirect) => isDeepStrictEqual(redirect, otherRedirect))
 }
 
 module.exports = { addRedirects, addConfigRedirects }
