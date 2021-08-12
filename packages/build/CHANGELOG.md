@@ -1,5 +1,12 @@
 # Changelog
 
+### [18.2.2](https://www.github.com/netlify/build/compare/build-v18.2.1...build-v18.2.2) (2021-08-12)
+
+
+### Bug Fixes
+
+* **deps:** bump execa to the latest version (5.x) ([#3440](https://www.github.com/netlify/build/issues/3440)) ([3e8bd01](https://www.github.com/netlify/build/commit/3e8bd019eddca738a664af9590c313dd5fcd20df))
+
 ### [18.2.1](https://www.github.com/netlify/build/compare/build-v18.2.0...build-v18.2.1) (2021-08-12)
 
 
