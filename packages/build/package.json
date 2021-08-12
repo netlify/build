@@ -1,6 +1,6 @@
 {
   "name": "@netlify/build",
-  "version": "18.0.2",
+  "version": "18.0.3",
   "description": "Netlify build module",
   "main": "src/core/main.js",
   "bin": {
@@ -65,7 +65,7 @@
     "ansi-escapes": "^4.3.2",
     "array-flat-polyfill": "^1.0.1",
     "chalk": "^4.1.2",
-    "clean-stack": "^2.2.0",
+    "clean-stack": "^3.0.1",
     "execa": "^3.3.0",
     "figures": "^3.2.0",
     "filter-obj": "^2.0.1",
@@ -108,7 +108,7 @@
   "devDependencies": {
     "@netlify/nock-udp": "^1.0.0",
     "atob": "^2.1.2",
-    "ava": "^2.4.0",
+    "ava": "^3.15.0",
     "cp-file": "^9.1.0",
     "cpy": "^8.1.0",
     "del": "^6.0.0",
