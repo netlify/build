@@ -92,10 +92,10 @@ test('updateConfig() deletes _redirects when redirects were changed', async (t) 
   t.false(await pathExists(redirectsPath))
 })
 
-test('updateConfig() does not delete _redirects when redirects were not changed', async (t) => {
+test('updateConfig() deletes _redirects on changes even if redirects were not changed', async (t) => {
   const { redirectsPath } = await runUpdateConfig('redirects_no_change')
   t.is(typeof redirectsPath, 'string')
-  t.true(await pathExists(redirectsPath))
+  t.false(await pathExists(redirectsPath))
 })
 
 test('updateConfig() does not delete _redirects if it does not exist', async (t) => {
@@ -119,10 +119,10 @@ test('updateConfig() deletes _headers when headers were changed', async (t) => {
   t.false(await pathExists(headersPath))
 })
 
-test('updateConfig() does not delete _headers when headers were not changed', async (t) => {
+test('updateConfig() deletes _headers on changes even if headers were not changed', async (t) => {
   const { headersPath } = await runUpdateConfig('headers_no_change')
   t.is(typeof headersPath, 'string')
-  t.true(await pathExists(headersPath))
+  t.false(await pathExists(headersPath))
 })
 
 test('updateConfig() does not delete _headers if it does not exist', async (t) => {

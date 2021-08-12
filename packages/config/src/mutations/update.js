@@ -39,8 +39,8 @@ const updateConfig = async function (
   await backupConfig({ buildDir, configPath, headersPath, redirectsPath })
   await Promise.all([
     saveConfig(configPath, simplifiedConfig),
-    deleteSideFile(headersPath, 'headers', normalizedInlineConfig),
-    deleteSideFile(redirectsPath, 'redirects', normalizedInlineConfig),
+    deleteSideFile(headersPath),
+    deleteSideFile(redirectsPath),
   ])
 }
 
@@ -57,10 +57,10 @@ const saveConfig = async function (configPath, simplifiedConfig) {
   await pWriteFile(configPath, serializedConfig)
 }
 
-// Deletes `_headers/_redirects` if redirects were changed, to fix any priority
-// problem with `netlify.toml`
-const deleteSideFile = async function (filePath, propName, normalizedInlineConfig) {
-  if (normalizedInlineConfig[propName] === undefined || filePath === undefined || !(await pathExists(filePath))) {
+// Deletes `_headers/_redirects` since they are merged to `netlify.toml`,
+// to fix any priority problem.
+const deleteSideFile = async function (filePath) {
+  if (filePath === undefined || !(await pathExists(filePath))) {
     return
   }
 

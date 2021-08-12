@@ -1,0 +1,6 @@
+[[plugins]]
+package = "./plugin"
+
+[[redirects]]
+from = "/five"
+to = "/six"

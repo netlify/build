@@ -262,6 +262,33 @@ if (!version.startsWith('v10.')) {
     }
   })
 
+  test('--saveConfig deletes headers file if any configuration property was changed', async (t) => {
+    const fixtureDir = `${FIXTURES_DIR}/config_delete_headers`
+    const fixtureConfigPath = `${fixtureDir}/netlify.toml`
+    const configPath = `${fixtureDir}/test_netlify.toml`
+    const fixtureHeadersPath = `${fixtureDir}/_headers_file`
+    const headersPath = `${fixtureDir}/_headers`
+    await Promise.all([cpFile(fixtureConfigPath, configPath), cpFile(fixtureHeadersPath, headersPath)])
+    const { address, stopServer } = await startDeployServer()
+    try {
+      try {
+        await runFixture(t, 'config_delete_headers', {
+          flags: {
+            buildbotServerSocket: address,
+            config: configPath,
+            saveConfig: true,
+            context: 'production',
+            branch: 'main',
+          },
+        })
+      } finally {
+        await stopServer()
+      }
+    } finally {
+      await del(headersPath)
+    }
+  })
+
   test('Erroneous headers created by a build command are handled', async (t) => {
     const fixtureDir = `${FIXTURES_DIR}/config_create_headers_command_error`
     const fixtureConfigPath = `${fixtureDir}/netlify.toml`
@@ -345,6 +372,33 @@ if (!version.startsWith('v10.')) {
     try {
       try {
         await runFixture(t, 'config_save_redirects', {
+          flags: {
+            buildbotServerSocket: address,
+            config: configPath,
+            saveConfig: true,
+            context: 'production',
+            branch: 'main',
+          },
+        })
+      } finally {
+        await stopServer()
+      }
+    } finally {
+      await del(redirectsPath)
+    }
+  })
+
+  test('--saveConfig deletes redirects file if any configuration property was changed', async (t) => {
+    const fixtureDir = `${FIXTURES_DIR}/config_delete_redirects`
+    const fixtureConfigPath = `${fixtureDir}/netlify.toml`
+    const configPath = `${fixtureDir}/test_netlify.toml`
+    const fixtureRedirectsPath = `${fixtureDir}/_redirects_file`
+    const redirectsPath = `${fixtureDir}/_redirects`
+    await Promise.all([cpFile(fixtureConfigPath, configPath), cpFile(fixtureRedirectsPath, redirectsPath)])
+    const { address, stopServer } = await startDeployServer()
+    try {
+      try {
+        await runFixture(t, 'config_delete_redirects', {
           flags: {
             buildbotServerSocket: address,
             config: configPath,
