@@ -136,13 +136,11 @@ const logConfigInfo = function ({ logs, configPath, buildDir, netlifyConfig, con
 // Retrieve the configuration after it's been changed.
 // This ensures any configuration changes done by plugins is validated and
 // normalized.
-// We use `buffer: false` to avoid any logs. Otherwise every configuration
-// change would create logs (e.g. warnings) which would be too verbose. Errors
-// are still propagated though and assigned to the specific plugin or core
-// command which changed the configuration.
+// Errors are propagated and assigned to the specific plugin or core command
+// which changed the configuration.
 const resolveUpdatedConfig = async function (configOpts, configMutations) {
   try {
-    return await resolveConfig({ ...configOpts, configMutations, buffer: true })
+    return await resolveConfig({ ...configOpts, configMutations })
   } catch (error) {
     if (error.type === 'configMutation') {
       // We need to mutate the `error` directly to preserve its `name`, `stack`, etc.

@@ -1,5 +1,12 @@
 # Changelog
 
+## [18.2.0](https://www.github.com/netlify/build/compare/build-v18.1.0...build-v18.2.0) (2021-08-12)
+
+
+### Features
+
+* improve warning messages shown with invalid redirects/headers ([#3426](https://www.github.com/netlify/build/issues/3426)) ([6eb42ce](https://www.github.com/netlify/build/commit/6eb42ced66873e3bd95226d6ad6937cdb71536d6))
+
 ## [18.1.0](https://www.github.com/netlify/build/compare/build-v18.0.3...build-v18.1.0) (2021-08-12)
 
 
