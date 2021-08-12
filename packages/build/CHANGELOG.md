@@ -1,5 +1,12 @@
 # Changelog
 
+### [18.2.3](https://www.github.com/netlify/build/compare/build-v18.2.2...build-v18.2.3) (2021-08-12)
+
+
+### Bug Fixes
+
+* delete `_redirects`/`_headers` when persisted to `netlify.toml` ([#3446](https://www.github.com/netlify/build/issues/3446)) ([4bdf2cc](https://www.github.com/netlify/build/commit/4bdf2ccb64edae4254a9b7832f46e2cbeeb322eb))
+
 ### [18.2.2](https://www.github.com/netlify/build/compare/build-v18.2.1...build-v18.2.2) (2021-08-12)
 
 
