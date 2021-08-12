@@ -108,7 +108,7 @@
   "devDependencies": {
     "@netlify/nock-udp": "^1.0.0",
     "atob": "^2.1.2",
-    "ava": "^2.4.0",
+    "ava": "^3.15.0",
     "cp-file": "^9.1.0",
     "cpy": "^8.1.0",
     "del": "^6.0.0",

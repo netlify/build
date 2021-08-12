@@ -78,7 +78,7 @@
     "yargs": "^15.3.0"
   },
   "devDependencies": {
-    "ava": "^2.4.0",
+    "ava": "^3.15.0",
     "del": "^5.1.0",
     "get-bin-path": "^5.1.0",
     "has-ansi": "^4.0.0",

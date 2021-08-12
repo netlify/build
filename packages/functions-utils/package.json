@@ -48,7 +48,7 @@
     "path-exists": "^4.0.0"
   },
   "devDependencies": {
-    "ava": "^2.4.0",
+    "ava": "^3.15.0",
     "del": "^5.1.0",
     "sinon": "^11.0.0",
     "sort-on": "^4.1.0",
