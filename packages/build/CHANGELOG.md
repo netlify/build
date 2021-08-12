@@ -1,5 +1,12 @@
 # Changelog
 
+### [18.2.1](https://www.github.com/netlify/build/compare/build-v18.2.0...build-v18.2.1) (2021-08-12)
+
+
+### Bug Fixes
+
+* avoid debug mode to be too verbose ([#3437](https://www.github.com/netlify/build/issues/3437)) ([23dc159](https://www.github.com/netlify/build/commit/23dc1591d8a2de3ffb2b2e1f54e5068ea361c681))
+
 ## [18.2.0](https://www.github.com/netlify/build/compare/build-v18.1.0...build-v18.2.0) (2021-08-12)
 
 
