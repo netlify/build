@@ -4,7 +4,7 @@ const { resolve } = require('path')
 
 const { parseFileHeaders, mergeHeaders, normalizeHeaders } = require('netlify-headers-parser')
 
-const { warnHeadersParsing } = require('./log/messages')
+const { warnHeadersParsing, warnHeadersException } = require('./log/messages')
 
 // Add `config.headers`
 const addHeaders = async function (config, logs) {
@@ -17,21 +17,26 @@ const HEADERS_FILENAME = '_headers'
 
 const addConfigHeaders = async function ({ headers: configHeaders = [], ...config }, headersPath, logs) {
   try {
-    const normalizedConfigHeaders = normalizeHeaders(configHeaders)
-    const normalizedFileHeaders = await getFileHeaders(headersPath)
-    const headers = mergeHeaders({ fileHeaders: normalizedFileHeaders, configHeaders: normalizedConfigHeaders })
+    const { headers: normalizedConfigHeaders, errors: configNormalizeErrors } = normalizeHeaders(configHeaders)
+    const { normalizedFileHeaders, fileParseErrors, fileNormalizeErrors } = await getFileHeaders(headersPath)
+    const { headers, errors: mergeErrors } = mergeHeaders({
+      fileHeaders: normalizedFileHeaders,
+      configHeaders: normalizedConfigHeaders,
+    })
+    const errors = [...configNormalizeErrors, ...fileParseErrors, ...fileNormalizeErrors, ...mergeErrors]
+    warnHeadersParsing(logs, errors)
     return { ...config, headers }
     // @todo remove this failsafe once the code is stable
   } catch (error) {
-    warnHeadersParsing(logs, error.message)
+    warnHeadersException(logs, error.message)
     return { ...config, headers: [] }
   }
 }
 
 const getFileHeaders = async function (headersPath) {
-  const fileHeaders = await parseFileHeaders(headersPath)
-  const normalizedFileHeaders = normalizeHeaders(fileHeaders)
-  return normalizedFileHeaders
+  const { headers: fileHeaders, errors: fileParseErrors } = await parseFileHeaders(headersPath)
+  const { headers: normalizedFileHeaders, errors: fileNormalizeErrors } = normalizeHeaders(fileHeaders)
+  return { normalizedFileHeaders, fileParseErrors, fileNormalizeErrors }
 }
 
 module.exports = { addHeaders, addConfigHeaders }

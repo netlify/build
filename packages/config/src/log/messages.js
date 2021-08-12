@@ -44,7 +44,12 @@ To run "${packageName}" in all contexts, please remove the following section fro
   )
 }
 
-const warnHeadersParsing = function (logs, errorMessage) {
+const warnHeadersParsing = function (logs, errors) {
+  if (errors.length === 0) {
+    return
+  }
+
+  const errorMessage = errors.map(getErrorMessage).join('\n\n')
   logWarning(
     logs,
     `
@@ -52,6 +57,14 @@ Warning: some headers have syntax errors:
 
 ${errorMessage}`,
   )
+}
+
+const getErrorMessage = function ({ message }) {
+  return message
+}
+
+const warnHeadersException = function (logs, errorMessage) {
+  logWarning(logs, `Error while parsing headers: ${errorMessage}`)
 }
 
 const warnRedirectsParsing = function (logs, errorMessage) {
@@ -69,5 +82,6 @@ module.exports = {
   warnContextPluginConfig,
   throwContextPluginsConfig,
   warnHeadersParsing,
+  warnHeadersException,
   warnRedirectsParsing,
 }
