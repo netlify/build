@@ -19,12 +19,13 @@ const REDIRECTS_FILENAME = '_redirects'
 const addConfigRedirects = async function ({ redirects: configRedirects = [], ...config }, redirectsPath, logs) {
   try {
     const normalizedConfigRedirects = normalizeAllRedirects(configRedirects)
-    const normalizedFileRedirects = await getFileRedirects(redirectsPath, normalizedConfigRedirects)
+    const normalizedFileRedirects = await getFileRedirects(redirectsPath)
     const redirects = mergeRedirects({
       fileRedirects: normalizedFileRedirects,
       configRedirects: normalizedConfigRedirects,
     })
-    return { ...config, redirects }
+    const uniqueRedirects = redirects.filter(isUniqueRedirects)
+    return { ...config, redirects: uniqueRedirects }
     // @todo remove this failsafe once the code is stable
   } catch (error) {
     warnRedirectsParsing(logs, error.message)
@@ -32,10 +33,10 @@ const addConfigRedirects = async function ({ redirects: configRedirects = [], ..
   }
 }
 
-const getFileRedirects = async function (redirectsPath, normalizedConfigRedirects) {
+const getFileRedirects = async function (redirectsPath) {
   const fileRedirects = await parseFileRedirects(redirectsPath)
   const normalizedFileRedirects = normalizeAllRedirects(fileRedirects)
-  return hasMergedFileRedirects(normalizedFileRedirects, normalizedConfigRedirects) ? [] : normalizedFileRedirects
+  return normalizedFileRedirects
 }
 
 const normalizeAllRedirects = function (redirects) {
@@ -46,13 +47,9 @@ const normalizeAllRedirects = function (redirects) {
 // This happens when a plugin appends to `netlifyConfig.redirects` which already
 // contains `_redirects` rules and is transformed to an `inlineConfig` object,
 // which is itself parsed as `configRedirects`. In that case, we do not want
-// duplicate so we ignore `fileRedirects`.
-// The current logic works with the case where `_redirects` is added both before
-// and after modifying `netlifyConfig.redirects`.
-const hasMergedFileRedirects = function (normalizedFileRedirects, normalizedConfigRedirects) {
-  return normalizedConfigRedirects.some((configRedirect) =>
-    normalizedFileRedirects.some((fileRedirect) => isDeepStrictEqual(configRedirect, fileRedirect)),
-  )
+// duplicates.
+const isUniqueRedirects = function (redirect, index, redirects) {
+  return !redirects.slice(index + 1).some((otherRedirect) => isDeepStrictEqual(redirect, otherRedirect))
 }
 
 module.exports = { addRedirects, addConfigRedirects }
