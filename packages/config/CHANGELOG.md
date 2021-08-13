@@ -1,5 +1,12 @@
 # Changelog
 
+### [15.1.8](https://www.github.com/netlify/build/compare/config-v15.1.7...config-v15.1.8) (2021-08-13)
+
+
+### Bug Fixes
+
+* **deps:** remove cp-file usage ([#3470](https://www.github.com/netlify/build/issues/3470)) ([5b98fb4](https://www.github.com/netlify/build/commit/5b98fb494478cc0e7676856ce38f980b406306b9))
+
 ### [15.1.7](https://www.github.com/netlify/build/compare/config-v15.1.6...config-v15.1.7) (2021-08-13)
 
 

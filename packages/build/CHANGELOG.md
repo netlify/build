@@ -1,5 +1,12 @@
 # Changelog
 
+### [18.2.6](https://www.github.com/netlify/build/compare/build-v18.2.5...build-v18.2.6) (2021-08-13)
+
+
+### Bug Fixes
+
+* **deps:** remove cp-file usage ([#3470](https://www.github.com/netlify/build/issues/3470)) ([5b98fb4](https://www.github.com/netlify/build/commit/5b98fb494478cc0e7676856ce38f980b406306b9))
+
 ### [18.2.5](https://www.github.com/netlify/build/compare/build-v18.2.4...build-v18.2.5) (2021-08-13)
 
 
