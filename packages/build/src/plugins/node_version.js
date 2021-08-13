@@ -4,10 +4,10 @@ const { version: currentVersion, execPath } = require('process')
 
 const { satisfies, clean: cleanVersion } = require('semver')
 
+const {
+  engines: { node: nodeVersionSupportedRange },
+} = require('../../package.json')
 const { addErrorInfo } = require('../error/info')
-
-// TODO rely on package.json.engines entry once the rollout is complete
-const MINIMUM_NODE_VERSION_SUPPORTED = '10.18.0'
 
 // Local plugins and `package.json`-installed plugins use user's preferred Node.js version if higher than our minimum
 // supported version (Node v10). Else default to the system Node version.
@@ -39,7 +39,8 @@ const addPluginNodeVersion = function ({
 }
 
 const nonUIPluginNodeVersion = function ({ pluginOptions, currentNodeVersion, userNodeVersion, nodePath }) {
-  if (satisfies(userNodeVersion, `<${MINIMUM_NODE_VERSION_SUPPORTED}`)) {
+  // If the user Node version does not satisfy our supported engine range use our own system Node version
+  if (!satisfies(userNodeVersion, nodeVersionSupportedRange)) {
     return { ...pluginOptions, nodePath: execPath, nodeVersion: currentNodeVersion }
   }
   return { ...pluginOptions, nodePath, nodeVersion: userNodeVersion }
