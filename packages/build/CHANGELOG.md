@@ -1,5 +1,12 @@
 # Changelog
 
+### [18.2.4](https://www.github.com/netlify/build/compare/build-v18.2.3...build-v18.2.4) (2021-08-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency netlify-headers-parser to v2 ([#3448](https://www.github.com/netlify/build/issues/3448)) ([3d83dce](https://www.github.com/netlify/build/commit/3d83dce6efa68df5ef090e57958eff6f78c8f065))
+
 ### [18.2.3](https://www.github.com/netlify/build/compare/build-v18.2.2...build-v18.2.3) (2021-08-12)
 
 
