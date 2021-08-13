@@ -1,6 +1,6 @@
 {
   "name": "@netlify/build",
-  "version": "18.2.5",
+  "version": "18.2.7",
   "description": "Netlify build module",
   "main": "src/core/main.js",
   "bin": {
@@ -89,7 +89,7 @@
     "path-type": "^4.0.0",
     "pkg-dir": "^4.2.0",
     "pretty-ms": "^5.1.0",
-    "ps-list": "^6.3.0",
+    "ps-list": "^7.0.0",
     "read-pkg-up": "^7.0.1",
     "readdirp": "^3.4.0",
     "resolve": "^2.0.0-next.1",
@@ -99,9 +99,9 @@
     "statsd-client": "0.4.7",
     "string-width": "^4.2.0",
     "strip-ansi": "^6.0.0",
-    "supports-color": "^7.1.0",
+    "supports-color": "^8.0.0",
     "tmp-promise": "^3.0.2",
-    "update-notifier": "^4.1.0",
+    "update-notifier": "^5.0.0",
     "uuid": "^8.0.0",
     "yargs": "^15.3.1"
   },
@@ -109,7 +109,6 @@
     "@netlify/nock-udp": "^1.0.0",
     "atob": "^2.1.2",
     "ava": "^3.15.0",
-    "cp-file": "^9.1.0",
     "cpy": "^8.1.0",
     "del": "^6.0.0",
     "get-bin-path": "^5.1.0",

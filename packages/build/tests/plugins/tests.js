@@ -1,13 +1,12 @@
 'use strict'
 
-const { writeFile } = require('fs')
+const { writeFile, copyFile } = require('fs')
 const { normalize } = require('path')
 const { platform, version } = require('process')
 const { promisify } = require('util')
 
 const { pluginsList } = require('@netlify/plugins-list')
 const test = require('ava')
-const cpFile = require('cp-file')
 const cpy = require('cpy')
 const del = require('del')
 const pathExists = require('path-exists')
@@ -20,6 +19,7 @@ const { startTcpServer } = require('../helpers/tcp_server')
 const { getTempDir } = require('../helpers/temp')
 
 const pWriteFile = promisify(writeFile)
+const pCopyFile = promisify(copyFile)
 
 test('Pass netlifyConfig to plugins', async (t) => {
   await runFixture(t, 'config_valid')
@@ -241,7 +241,7 @@ if (!version.startsWith('v10.')) {
     const configPath = `${fixtureDir}/test_netlify.toml`
     const fixtureHeadersPath = `${fixtureDir}/_headers_file`
     const headersPath = `${fixtureDir}/_headers`
-    await Promise.all([cpFile(fixtureConfigPath, configPath), cpFile(fixtureHeadersPath, headersPath)])
+    await Promise.all([pCopyFile(fixtureConfigPath, configPath), pCopyFile(fixtureHeadersPath, headersPath)])
     const { address, stopServer } = await startDeployServer()
     try {
       try {
@@ -268,7 +268,7 @@ if (!version.startsWith('v10.')) {
     const configPath = `${fixtureDir}/test_netlify.toml`
     const fixtureHeadersPath = `${fixtureDir}/_headers_file`
     const headersPath = `${fixtureDir}/_headers`
-    await Promise.all([cpFile(fixtureConfigPath, configPath), cpFile(fixtureHeadersPath, headersPath)])
+    await Promise.all([pCopyFile(fixtureConfigPath, configPath), pCopyFile(fixtureHeadersPath, headersPath)])
     const { address, stopServer } = await startDeployServer()
     try {
       try {
@@ -294,7 +294,7 @@ if (!version.startsWith('v10.')) {
     const fixtureConfigPath = `${fixtureDir}/netlify.toml`
     const configPath = `${fixtureDir}/test_netlify.toml`
     const headersPath = `${fixtureDir}/_headers`
-    await cpFile(fixtureConfigPath, configPath)
+    await pCopyFile(fixtureConfigPath, configPath)
     const { address, stopServer } = await startDeployServer()
     try {
       try {
@@ -321,7 +321,7 @@ if (!version.startsWith('v10.')) {
     const fixtureConfigPath = `${fixtureDir}/netlify.toml`
     const configPath = `${fixtureDir}/test_netlify.toml`
     const headersPath = `${fixtureDir}/_headers`
-    await cpFile(fixtureConfigPath, configPath)
+    await pCopyFile(fixtureConfigPath, configPath)
     const { address, stopServer } = await startDeployServer()
     try {
       try {
@@ -367,7 +367,7 @@ if (!version.startsWith('v10.')) {
     const configPath = `${fixtureDir}/test_netlify.toml`
     const fixtureRedirectsPath = `${fixtureDir}/_redirects_file`
     const redirectsPath = `${fixtureDir}/_redirects`
-    await Promise.all([cpFile(fixtureConfigPath, configPath), cpFile(fixtureRedirectsPath, redirectsPath)])
+    await Promise.all([pCopyFile(fixtureConfigPath, configPath), pCopyFile(fixtureRedirectsPath, redirectsPath)])
     const { address, stopServer } = await startDeployServer()
     try {
       try {
@@ -394,7 +394,7 @@ if (!version.startsWith('v10.')) {
     const configPath = `${fixtureDir}/test_netlify.toml`
     const fixtureRedirectsPath = `${fixtureDir}/_redirects_file`
     const redirectsPath = `${fixtureDir}/_redirects`
-    await Promise.all([cpFile(fixtureConfigPath, configPath), cpFile(fixtureRedirectsPath, redirectsPath)])
+    await Promise.all([pCopyFile(fixtureConfigPath, configPath), pCopyFile(fixtureRedirectsPath, redirectsPath)])
     const { address, stopServer } = await startDeployServer()
     try {
       try {
@@ -468,7 +468,7 @@ test('--saveConfig saves the configuration changes as netlify.toml', async (t) =
   const fixtureDir = `${FIXTURES_DIR}/config_save_changes`
   const fixtureConfigPath = `${fixtureDir}/netlify.toml`
   const configPath = `${fixtureDir}/test_netlify.toml`
-  await cpFile(fixtureConfigPath, configPath)
+  await pCopyFile(fixtureConfigPath, configPath)
   const { address, stopServer } = await startDeployServer()
   try {
     await runFixture(t, 'config_save_changes', {
@@ -489,7 +489,7 @@ test('--saveConfig is required to save the configuration changes as netlify.toml
   const fixtureDir = `${FIXTURES_DIR}/config_save_none`
   const fixtureConfigPath = `${fixtureDir}/netlify.toml`
   const configPath = `${fixtureDir}/test_netlify.toml`
-  await cpFile(fixtureConfigPath, configPath)
+  await pCopyFile(fixtureConfigPath, configPath)
   const { address, stopServer } = await startDeployServer()
   try {
     await runFixture(t, 'config_save_none', {
@@ -525,7 +525,7 @@ test('--saveConfig gives higher priority to configuration changes than context p
   const fixtureDir = `${FIXTURES_DIR}/config_save_context`
   const fixtureConfigPath = `${fixtureDir}/netlify.toml`
   const configPath = `${fixtureDir}/test_netlify.toml`
-  await cpFile(fixtureConfigPath, configPath)
+  await pCopyFile(fixtureConfigPath, configPath)
   const { address, stopServer } = await startDeployServer()
   try {
     await runFixture(t, 'config_save_context', {

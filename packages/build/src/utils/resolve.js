@@ -1,9 +1,6 @@
 'use strict'
 
-const { version: nodeVersion } = require('process')
-
 const resolveLib = require('resolve')
-const { gte: gteVersion } = require('semver')
 
 // Like `resolvePath()` but does not throw
 const tryResolvePath = async function (path, basedir) {
@@ -23,16 +20,9 @@ const resolvePath = async function (path, basedir) {
     // `resolve` sometimes gives unhelpful error messages.
     // https://github.com/browserify/resolve/issues/223
   } catch (error) {
-    if (gteVersion(nodeVersion, REQUEST_RESOLVE_MIN_VERSION)) {
-      return require.resolve(path, { paths: [basedir] })
-    }
-
-    throw error
+    return require.resolve(path, { paths: [basedir] })
   }
 }
-
-// `require.resolve()` option `paths` was introduced in Node 8.9.0
-const REQUEST_RESOLVE_MIN_VERSION = '8.9.0'
 
 // Like `require.resolve()` but as an external library.
 // We need to use `new Promise()` due to a bug with `utils.promisify()` on

@@ -1,9 +1,8 @@
 'use strict'
 
-const { writeFile, unlink } = require('fs')
+const { writeFile, unlink, copyFile } = require('fs')
 const { promisify } = require('util')
 
-const cpFile = require('cp-file')
 const makeDir = require('make-dir')
 const pathExists = require('path-exists')
 
@@ -19,6 +18,7 @@ const { applyMutations } = require('./apply')
 
 const pWriteFile = promisify(writeFile)
 const pUnlink = promisify(unlink)
+const pCopyFile = promisify(copyFile)
 
 // Persist configuration changes to `netlify.toml`.
 // If `netlify.toml` does not exist, creates it. Otherwise, merges the changes.
@@ -106,7 +106,7 @@ const backupFile = async function (original, backup) {
     return
   }
 
-  await cpFile(original, backup)
+  await pCopyFile(original, backup)
 }
 
 const deleteNoError = async (path) => {
@@ -117,7 +117,7 @@ const deleteNoError = async (path) => {
 
 const copyOrDelete = async function (src, dest) {
   if (await pathExists(src)) {
-    await cpFile(src, dest)
+    await pCopyFile(src, dest)
     return
   }
 
