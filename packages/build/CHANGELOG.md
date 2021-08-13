@@ -1,5 +1,15 @@
 # Changelog
 
+### [18.2.8](https://www.github.com/netlify/build/compare/build-v18.2.7...build-v18.2.8) (2021-08-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency supports-color to v8 ([#3466](https://www.github.com/netlify/build/issues/3466)) ([2cdf370](https://www.github.com/netlify/build/commit/2cdf370a5347772ec6437b41679bec5eceb3311f))
+* **deps:** update dependency update-notifier to v5 ([#3467](https://www.github.com/netlify/build/issues/3467)) ([d34a0d7](https://www.github.com/netlify/build/commit/d34a0d76721d551d1a3bf6dc8a77ea123c92b3e5))
+* rely on `package.engines.node` for plugin version support instead of a hardcoded var ([#3474](https://www.github.com/netlify/build/issues/3474)) ([3c8c7b2](https://www.github.com/netlify/build/commit/3c8c7b2714f65755ec14ca2d19396a7f6836ca66))
+* **utils:** remove condition around `require.resolve` invocation ([#3480](https://www.github.com/netlify/build/issues/3480)) ([f29d7c1](https://www.github.com/netlify/build/commit/f29d7c1badd2467fef8d13920d1199e7988abde2))
+
 ### [18.2.7](https://www.github.com/netlify/build/compare/build-v18.2.6...build-v18.2.7) (2021-08-13)
 
 
