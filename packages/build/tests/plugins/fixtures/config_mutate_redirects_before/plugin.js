@@ -1,9 +1,12 @@
 'use strict'
 
-const cpFile = require('cp-file')
+const { copyFile } = require('fs')
+const { promisify } = require('util')
 
 const fixtureRedirectsPath = `${__dirname}/redirects_file`
 const redirectsPath = `${__dirname}/_redirects`
+
+const pCopyFile = promisify(copyFile)
 
 module.exports = {
   onPreBuild({ netlifyConfig }) {
@@ -11,7 +14,7 @@ module.exports = {
     netlifyConfig.redirects = [...netlifyConfig.redirects, { from: '/three', to: '/four' }]
   },
   async onBuild() {
-    await cpFile(fixtureRedirectsPath, redirectsPath)
+    await pCopyFile(fixtureRedirectsPath, redirectsPath)
   },
   onPostBuild({ netlifyConfig: { redirects } }) {
     console.log(redirects)
