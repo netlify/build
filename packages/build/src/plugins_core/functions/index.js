@@ -2,6 +2,7 @@
 
 const { join, resolve } = require('path')
 
+const { zipFunctions } = require('@netlify/zip-it-and-ship-it')
 const mapObject = require('map-obj')
 const pathExists = require('path-exists')
 
@@ -75,11 +76,6 @@ const zipFunctionsAndLogResults = async ({
     // Printing an empty line before bundling output.
     log(logs, '')
 
-    // This package currently supports Node 8 but not zip-it-and-ship-it
-    // @todo put the `require()` to the top-level scope again once Node 8 support
-    // is removed
-    // eslint-disable-next-line node/global-require
-    const { zipFunctions } = require('@netlify/zip-it-and-ship-it')
     const sourceDirectories = [internalFunctionsSrc, functionsSrc].filter(Boolean)
     const results = await zipFunctions(sourceDirectories, functionsDist, zisiParameters)
 

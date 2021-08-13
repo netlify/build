@@ -4,6 +4,7 @@ const { stat } = require('fs')
 const { basename, dirname } = require('path')
 const { promisify } = require('util')
 
+const { listFunctions, listFunctionsFiles } = require('@netlify/zip-it-and-ship-it')
 const cpy = require('cpy')
 const pathExists = require('path-exists')
 
@@ -49,11 +50,6 @@ const list = async function (functionsSrc, { fail = defaultFail } = {}) {
     return fail('No function directory was specified')
   }
 
-  // This package currently supports Node 8 but not zip-it-and-ship-it
-  // @todo put the `require()` to the top-level scope again once Node 8 support
-  // is removed
-  // eslint-disable-next-line node/global-require
-  const { listFunctions } = require('@netlify/zip-it-and-ship-it')
   try {
     return await listFunctions(functionsSrc)
   } catch (error) {
@@ -66,11 +62,6 @@ const listAll = async function (functionsSrc, { fail = defaultFail } = {}) {
     return fail('No function directory was specified')
   }
 
-  // This package currently supports Node 8 but not zip-it-and-ship-it
-  // @todo put the `require()` to the top-level scope again once Node 8 support
-  // is removed
-  // eslint-disable-next-line node/global-require
-  const { listFunctionsFiles } = require('@netlify/zip-it-and-ship-it')
   try {
     return await listFunctionsFiles(functionsSrc)
   } catch (error) {

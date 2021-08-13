@@ -4,6 +4,8 @@ const { stat } = require('fs')
 const { relative } = require('path')
 const { promisify } = require('util')
 
+const { listFunctions } = require('@netlify/zip-it-and-ship-it')
+
 const pStat = promisify(stat)
 
 const { addErrorInfo } = require('../../error/info')
@@ -13,11 +15,6 @@ const getFunctionPaths = async function (functionsSrc) {
     return []
   }
 
-  // This package currently supports Node 8 but not zip-it-and-ship-it
-  // @todo put the `require()` to the top-level scope again once Node 8 support
-  // is removed
-  // eslint-disable-next-line node/global-require
-  const { listFunctions } = require('@netlify/zip-it-and-ship-it')
   const functions = await listFunctions(functionsSrc)
   return functions.map(({ mainFile }) => relative(functionsSrc, mainFile))
 }
