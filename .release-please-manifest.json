@@ -1,6 +1,6 @@
 {
-  "packages/build": "18.2.4",
-  "packages/cache-utils": "2.0.0",
+  "packages/build": "18.2.5",
+  "packages/cache-utils": "2.0.1",
   "packages/config": "15.1.4",
   "packages/functions-utils": "2.0.4",
   "packages/git-utils": "2.0.1",

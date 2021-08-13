@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.0.1](https://www.github.com/netlify/build/compare/cache-utils-v2.0.0...cache-utils-v2.0.1) (2021-08-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency get-stream to v6 ([#3456](https://www.github.com/netlify/build/issues/3456)) ([478a039](https://www.github.com/netlify/build/commit/478a03946579729a5796eb1a395389eafcc9168e))
+
 ## [2.0.0](https://www.github.com/netlify/build/compare/cache-utils-v1.0.7...cache-utils-v2.0.0) (2021-07-23)
 
 

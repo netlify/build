@@ -1,5 +1,12 @@
 # Changelog
 
+### [18.2.5](https://www.github.com/netlify/build/compare/build-v18.2.4...build-v18.2.5) (2021-08-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency get-stream to v6 ([#3456](https://www.github.com/netlify/build/issues/3456)) ([478a039](https://www.github.com/netlify/build/commit/478a03946579729a5796eb1a395389eafcc9168e))
+
 ### [18.2.4](https://www.github.com/netlify/build/compare/build-v18.2.3...build-v18.2.4) (2021-08-12)
 
 
