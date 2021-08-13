@@ -1,5 +1,12 @@
 # Changelog
 
+### [18.2.7](https://www.github.com/netlify/build/compare/build-v18.2.6...build-v18.2.7) (2021-08-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency ps-list to v7 ([#3465](https://www.github.com/netlify/build/issues/3465)) ([05398cc](https://www.github.com/netlify/build/commit/05398ccb97c986e4c7ec88df4ac108c8ec17142c))
+
 ### [18.2.6](https://www.github.com/netlify/build/compare/build-v18.2.5...build-v18.2.6) (2021-08-13)
 
 
