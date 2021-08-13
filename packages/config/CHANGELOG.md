@@ -1,5 +1,12 @@
 # Changelog
 
+## [15.2.0](https://www.github.com/netlify/build/compare/config-v15.1.9...config-v15.2.0) (2021-08-13)
+
+
+### Features
+
+* simplify headers parsing ([#3468](https://www.github.com/netlify/build/issues/3468)) ([ff601ff](https://www.github.com/netlify/build/commit/ff601ffbabafb0ebe28695b3135d5a922e06a57d))
+
 ### [15.1.9](https://www.github.com/netlify/build/compare/config-v15.1.8...config-v15.1.9) (2021-08-13)
 
 
