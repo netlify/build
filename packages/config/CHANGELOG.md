@@ -1,5 +1,12 @@
 # Changelog
 
+### [15.1.4](https://www.github.com/netlify/build/compare/config-v15.1.3...config-v15.1.4) (2021-08-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency find-up to v5 ([#3455](https://www.github.com/netlify/build/issues/3455)) ([e540ec2](https://www.github.com/netlify/build/commit/e540ec26863f0cfaba3736bade0ce7b4aecbe36a))
+
 ### [15.1.3](https://www.github.com/netlify/build/compare/config-v15.1.2...config-v15.1.3) (2021-08-12)
 
 
