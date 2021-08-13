@@ -1,6 +1,6 @@
 {
   "name": "@netlify/config",
-  "version": "15.1.4",
+  "version": "15.1.7",
   "description": "Netlify config module",
   "main": "src/main.js",
   "bin": {
@@ -66,8 +66,8 @@
     "make-dir": "^3.1.0",
     "map-obj": "^4.0.0",
     "netlify": "^8.0.0",
-    "netlify-headers-parser": "^2.0.0",
-    "netlify-redirect-parser": "^9.1.0",
+    "netlify-headers-parser": "^2.1.1",
+    "netlify-redirect-parser": "^10.0.0",
     "omit.js": "^2.0.2",
     "p-locate": "^4.1.0",
     "path-exists": "^4.0.0",

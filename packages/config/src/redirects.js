@@ -4,7 +4,7 @@ const { resolve } = require('path')
 
 const { parseFileRedirects, mergeRedirects, normalizeRedirects } = require('netlify-redirect-parser')
 
-const { warnRedirectsParsing } = require('./log/messages')
+const { warnRedirectsParsing, warnRedirectsException } = require('./log/messages')
 
 // Add `config.redirects`
 const addRedirects = async function (config, logs) {
@@ -17,24 +17,27 @@ const REDIRECTS_FILENAME = '_redirects'
 
 const addConfigRedirects = async function ({ redirects: configRedirects = [], ...config }, redirectsPath, logs) {
   try {
-    const normalizedConfigRedirects = normalizeAllRedirects(configRedirects)
-    const normalizedFileRedirects = await getFileRedirects(redirectsPath)
-    const redirects = mergeRedirects({
+    const { redirects: normalizedConfigRedirects, errors: configNormalizeErrors } =
+      normalizeAllRedirects(configRedirects)
+    const { normalizedFileRedirects, fileParseErrors, fileNormalizeErrors } = await getFileRedirects(redirectsPath)
+    const { redirects, errors: mergeErrors } = mergeRedirects({
       fileRedirects: normalizedFileRedirects,
       configRedirects: normalizedConfigRedirects,
     })
+    const errors = [...configNormalizeErrors, ...fileParseErrors, ...fileNormalizeErrors, ...mergeErrors]
+    warnRedirectsParsing(logs, errors)
     return { ...config, redirects }
     // @todo remove this failsafe once the code is stable
   } catch (error) {
-    warnRedirectsParsing(logs, error.message)
+    warnRedirectsException(logs, error.message)
     return { ...config, redirects: [] }
   }
 }
 
 const getFileRedirects = async function (redirectsPath) {
-  const fileRedirects = await parseFileRedirects(redirectsPath)
-  const normalizedFileRedirects = normalizeAllRedirects(fileRedirects)
-  return normalizedFileRedirects
+  const { redirects: fileRedirects, errors: fileParseErrors } = await parseFileRedirects(redirectsPath)
+  const { redirects: normalizedFileRedirects, errors: fileNormalizeErrors } = normalizeAllRedirects(fileRedirects)
+  return { normalizedFileRedirects, fileParseErrors, fileNormalizeErrors }
 }
 
 const normalizeAllRedirects = function (redirects) {
