@@ -1,5 +1,12 @@
 # Changelog
 
+## [15.3.0](https://www.github.com/netlify/build/compare/config-v15.2.0...config-v15.3.0) (2021-08-13)
+
+
+### Features
+
+* simplify redirects parsing ([#3475](https://www.github.com/netlify/build/issues/3475)) ([21e33a3](https://www.github.com/netlify/build/commit/21e33a3fde17d5c698c73b16778d3e06ec1cafae))
+
 ## [15.2.0](https://www.github.com/netlify/build/compare/config-v15.1.9...config-v15.2.0) (2021-08-13)
 
 
