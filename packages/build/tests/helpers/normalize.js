@@ -93,9 +93,7 @@ const NORMALIZE_REGEXPS = [
   // CI tests show some error messages differently
   [/\/file\/path bad option/g, 'node: bad option'],
   // Stack traces
-  // @todo Remove once we drop support for Node 8.
   [/Require stack:\s+( *-\s+\S*\s{0,1})*/gm, ''],
-  [/(Require stack:\n)(\s*- (.*))*/gm, '$1 REQUIRE STACK\n'],
   [/{ Error:/g, 'Error:'],
   [/^.*:\d+:\d+\)?$/gm, 'STACK TRACE'],
   [/^\s+at .*$/gm, 'STACK TRACE'],
