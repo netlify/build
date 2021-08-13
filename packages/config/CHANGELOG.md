@@ -1,5 +1,12 @@
 # Changelog
 
+### [15.1.6](https://www.github.com/netlify/build/compare/config-v15.1.5...config-v15.1.6) (2021-08-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency netlify-redirect-parser to v10 ([#3460](https://www.github.com/netlify/build/issues/3460)) ([c9a9ecc](https://www.github.com/netlify/build/commit/c9a9ecc960ca73039d1e28d5f1413fb4f530dbb8))
+
 ### [15.1.5](https://www.github.com/netlify/build/compare/config-v15.1.4...config-v15.1.5) (2021-08-13)
 
 
