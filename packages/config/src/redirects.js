@@ -2,7 +2,7 @@
 
 const { resolve } = require('path')
 
-const { parseFileRedirects, mergeRedirects, normalizeRedirects } = require('netlify-redirect-parser')
+const { parseAllRedirects } = require('netlify-redirect-parser')
 
 const { warnRedirectsParsing, warnRedirectsException } = require('./log/messages')
 
@@ -17,14 +17,11 @@ const REDIRECTS_FILENAME = '_redirects'
 
 const addConfigRedirects = async function ({ redirects: configRedirects = [], ...config }, redirectsPath, logs) {
   try {
-    const { redirects: normalizedConfigRedirects, errors: configNormalizeErrors } =
-      normalizeAllRedirects(configRedirects)
-    const { normalizedFileRedirects, fileParseErrors, fileNormalizeErrors } = await getFileRedirects(redirectsPath)
-    const { redirects, errors: mergeErrors } = mergeRedirects({
-      fileRedirects: normalizedFileRedirects,
-      configRedirects: normalizedConfigRedirects,
+    const { redirects, errors } = await parseAllRedirects({
+      redirectsFiles: [redirectsPath],
+      configRedirects,
+      minimal: true,
     })
-    const errors = [...configNormalizeErrors, ...fileParseErrors, ...fileNormalizeErrors, ...mergeErrors]
     warnRedirectsParsing(logs, errors)
     return { ...config, redirects }
     // @todo remove this failsafe once the code is stable
@@ -32,16 +29,6 @@ const addConfigRedirects = async function ({ redirects: configRedirects = [], ..
     warnRedirectsException(logs, error.message)
     return { ...config, redirects: [] }
   }
-}
-
-const getFileRedirects = async function (redirectsPath) {
-  const { redirects: fileRedirects, errors: fileParseErrors } = await parseFileRedirects(redirectsPath)
-  const { redirects: normalizedFileRedirects, errors: fileNormalizeErrors } = normalizeAllRedirects(fileRedirects)
-  return { normalizedFileRedirects, fileParseErrors, fileNormalizeErrors }
-}
-
-const normalizeAllRedirects = function (redirects) {
-  return normalizeRedirects(redirects, { minimal: true })
 }
 
 module.exports = { addRedirects, addConfigRedirects }
