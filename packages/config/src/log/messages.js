@@ -59,15 +59,16 @@ ${errorMessage}`,
   )
 }
 
-const getErrorMessage = function ({ message }) {
-  return message
-}
-
 const warnHeadersException = function (logs, errorMessage) {
   logWarning(logs, `Error while parsing headers: ${errorMessage}`)
 }
 
-const warnRedirectsParsing = function (logs, errorMessage) {
+const warnRedirectsParsing = function (logs, errors) {
+  if (errors.length === 0) {
+    return
+  }
+
+  const errorMessage = errors.map(getErrorMessage).join('\n\n')
   logWarning(
     logs,
     `
@@ -77,6 +78,14 @@ ${errorMessage}`,
   )
 }
 
+const warnRedirectsException = function (logs, errorMessage) {
+  logWarning(logs, `Error while parsing redirects: ${errorMessage}`)
+}
+
+const getErrorMessage = function ({ message }) {
+  return message
+}
+
 module.exports = {
   warnLegacyFunctionsDirectory,
   warnContextPluginConfig,
@@ -84,4 +93,5 @@ module.exports = {
   warnHeadersParsing,
   warnHeadersException,
   warnRedirectsParsing,
+  warnRedirectsException,
 }
