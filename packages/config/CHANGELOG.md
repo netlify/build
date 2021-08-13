@@ -1,5 +1,26 @@
 # Changelog
 
+### [15.1.7](https://www.github.com/netlify/build/compare/config-v15.1.6...config-v15.1.7) (2021-08-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency netlify-headers-parser to ^2.1.1 ([#3462](https://www.github.com/netlify/build/issues/3462)) ([4a0f19f](https://www.github.com/netlify/build/commit/4a0f19fcbe8ae0ab1a81ccb24897238675350964))
+
+### [15.1.6](https://www.github.com/netlify/build/compare/config-v15.1.5...config-v15.1.6) (2021-08-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency netlify-redirect-parser to v10 ([#3460](https://www.github.com/netlify/build/issues/3460)) ([c9a9ecc](https://www.github.com/netlify/build/commit/c9a9ecc960ca73039d1e28d5f1413fb4f530dbb8))
+
+### [15.1.5](https://www.github.com/netlify/build/compare/config-v15.1.4...config-v15.1.5) (2021-08-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency netlify-headers-parser to ^2.1.0 ([#3458](https://www.github.com/netlify/build/issues/3458)) ([e7665ec](https://www.github.com/netlify/build/commit/e7665ecb7bc1960ca19ba2717a2b2d608ae83bb6))
+
 ### [15.1.4](https://www.github.com/netlify/build/compare/config-v15.1.3...config-v15.1.4) (2021-08-13)
 
 

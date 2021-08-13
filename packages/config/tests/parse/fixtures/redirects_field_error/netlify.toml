@@ -1,2 +1,9 @@
 [[redirects]]
 from = "/from"
+
+[[redirects]]
+from = "/.netlify/from"
+
+[[redirects]]
+from = "/from"
+to = "/to"
