@@ -1,13 +1,16 @@
 'use strict'
 
+const { copyFile } = require('fs')
+const { promisify } = require('util')
+
 const test = require('ava')
-// @todo replace with `fs.copyFile()` after dropping support for Node 8
-const cpFile = require('cp-file')
 const del = require('del')
 const pathExists = require('path-exists')
 
 const { updateConfig } = require('../..')
 const { runFixture } = require('../helpers/main')
+
+const pCopyFile = promisify(copyFile)
 
 const FIXTURES_DIR = `${__dirname}/fixtures`
 
@@ -52,7 +55,7 @@ const initFixtureDir = async function (fixtureName) {
 // directory to use in tests
 const copyIfExists = async function (fixturePath, tempPath) {
   if (await pathExists(fixturePath)) {
-    await cpFile(fixturePath, tempPath)
+    await pCopyFile(fixturePath, tempPath)
     return
   }
 
