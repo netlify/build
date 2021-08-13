@@ -39,7 +39,10 @@
       "packages/**/tests/**/tests.js"
     ],
     "verbose": true,
-    "timeout": "60s"
+    "timeout": "60s",
+    "environmentVariables": {
+      "FORCE_COLOR": "1"
+    }
   },
   "husky": {
     "hooks": {

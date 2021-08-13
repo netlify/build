@@ -30,7 +30,7 @@ test('Netlify CI', async (t) => {
 })
 
 test('No TTY', async (t) => {
-  const { returnValue } = await runFixture(t, 'parent', { ...opts, flags: { dry: true } })
+  const { returnValue } = await runFixture(t, 'parent', { ...opts, env: { FORCE_COLOR: '0' }, flags: { dry: true } })
   t.false(hasAnsi(returnValue))
 })
 
