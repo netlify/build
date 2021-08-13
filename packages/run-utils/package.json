@@ -47,7 +47,7 @@
   },
   "devDependencies": {
     "ava": "^3.15.0",
-    "semver": "^6.3.0"
+    "semver": "^7.0.0"
   },
   "engines": {
     "node": ">=10.18.0"
