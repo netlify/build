@@ -1,5 +1,19 @@
 # Changelog
 
+## [15.2.0](https://www.github.com/netlify/build/compare/config-v15.1.9...config-v15.2.0) (2021-08-13)
+
+
+### Features
+
+* simplify headers parsing ([#3468](https://www.github.com/netlify/build/issues/3468)) ([ff601ff](https://www.github.com/netlify/build/commit/ff601ffbabafb0ebe28695b3135d5a922e06a57d))
+
+### [15.1.9](https://www.github.com/netlify/build/compare/config-v15.1.8...config-v15.1.9) (2021-08-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency netlify-redirect-parser to ^10.1.0 ([#3473](https://www.github.com/netlify/build/issues/3473)) ([2ac8555](https://www.github.com/netlify/build/commit/2ac85554e455150434a4d5f3ea6b00268deb30c5))
+
 ### [15.1.8](https://www.github.com/netlify/build/compare/config-v15.1.7...config-v15.1.8) (2021-08-13)
 
 

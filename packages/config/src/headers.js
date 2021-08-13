@@ -2,7 +2,7 @@
 
 const { resolve } = require('path')
 
-const { parseFileHeaders, mergeHeaders, normalizeHeaders } = require('netlify-headers-parser')
+const { parseAllHeaders } = require('netlify-headers-parser')
 
 const { warnHeadersParsing, warnHeadersException } = require('./log/messages')
 
@@ -17,13 +17,7 @@ const HEADERS_FILENAME = '_headers'
 
 const addConfigHeaders = async function ({ headers: configHeaders = [], ...config }, headersPath, logs) {
   try {
-    const { headers: normalizedConfigHeaders, errors: configNormalizeErrors } = normalizeHeaders(configHeaders)
-    const { normalizedFileHeaders, fileParseErrors, fileNormalizeErrors } = await getFileHeaders(headersPath)
-    const { headers, errors: mergeErrors } = mergeHeaders({
-      fileHeaders: normalizedFileHeaders,
-      configHeaders: normalizedConfigHeaders,
-    })
-    const errors = [...configNormalizeErrors, ...fileParseErrors, ...fileNormalizeErrors, ...mergeErrors]
+    const { headers, errors } = await parseAllHeaders({ headersFiles: [headersPath], configHeaders })
     warnHeadersParsing(logs, errors)
     return { ...config, headers }
     // @todo remove this failsafe once the code is stable
@@ -31,12 +25,6 @@ const addConfigHeaders = async function ({ headers: configHeaders = [], ...confi
     warnHeadersException(logs, error.message)
     return { ...config, headers: [] }
   }
-}
-
-const getFileHeaders = async function (headersPath) {
-  const { headers: fileHeaders, errors: fileParseErrors } = await parseFileHeaders(headersPath)
-  const { headers: normalizedFileHeaders, errors: fileNormalizeErrors } = normalizeHeaders(fileHeaders)
-  return { normalizedFileHeaders, fileParseErrors, fileNormalizeErrors }
 }
 
 module.exports = { addHeaders, addConfigHeaders }
