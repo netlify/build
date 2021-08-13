@@ -2,7 +2,8 @@
 
 const { join, resolve } = require('path')
 
-const { zipFunctions } = require('@netlify/zip-it-and-ship-it')
+// We can't use destructuring for zisi as we rely on spies for the `zipFunctions` method within our tests
+const zipItAndShipIt = require('@netlify/zip-it-and-ship-it')
 const mapObject = require('map-obj')
 const pathExists = require('path-exists')
 
@@ -77,7 +78,7 @@ const zipFunctionsAndLogResults = async ({
     log(logs, '')
 
     const sourceDirectories = [internalFunctionsSrc, functionsSrc].filter(Boolean)
-    const results = await zipFunctions(sourceDirectories, functionsDist, zisiParameters)
+    const results = await zipItAndShipIt.zipFunctions(sourceDirectories, functionsDist, zisiParameters)
 
     logBundleResults({ logs, results })
 
