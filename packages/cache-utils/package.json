@@ -48,7 +48,7 @@
     "del": "^5.1.0",
     "get-stream": "^6.0.0",
     "globby": "^10.0.2",
-    "locate-path": "^5.0.0",
+    "locate-path": "^6.0.0",
     "make-dir": "^3.1.0",
     "move-file": "^2.0.0",
     "path-exists": "^4.0.0",
