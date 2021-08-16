@@ -68,7 +68,7 @@
     "netlify-headers-parser": "^2.1.1",
     "netlify-redirect-parser": "^11.0.0",
     "omit.js": "^2.0.2",
-    "p-locate": "^4.1.0",
+    "p-locate": "^5.0.0",
     "path-exists": "^4.0.0",
     "path-type": "^4.0.0",
     "toml": "^3.0.0",
