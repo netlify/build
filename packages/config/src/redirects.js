@@ -15,7 +15,7 @@ const addRedirects = async function (config, logs) {
 
 const REDIRECTS_FILENAME = '_redirects'
 
-const addConfigRedirects = async function ({ redirects: configRedirects = [], ...config }, redirectsPath, logs) {
+const addConfigRedirects = async function ({ redirects: configRedirects, ...config }, redirectsPath, logs) {
   try {
     const { redirects, errors } = await parseAllRedirects({
       redirectsFiles: [redirectsPath],
