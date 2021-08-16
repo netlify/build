@@ -1,5 +1,12 @@
 # Changelog
 
+### [15.3.1](https://www.github.com/netlify/build/compare/config-v15.3.0...config-v15.3.1) (2021-08-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency netlify-redirect-parser to v11 ([#3481](https://www.github.com/netlify/build/issues/3481)) ([38ecd1d](https://www.github.com/netlify/build/commit/38ecd1d75fa7a9262abe7a989b784ca95ebd0348))
+
 ## [15.3.0](https://www.github.com/netlify/build/compare/config-v15.2.0...config-v15.3.0) (2021-08-13)
 
 
