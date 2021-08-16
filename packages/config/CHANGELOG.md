@@ -1,5 +1,12 @@
 # Changelog
 
+### [15.3.2](https://www.github.com/netlify/build/compare/config-v15.3.1...config-v15.3.2) (2021-08-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency p-locate to v5 ([#3495](https://www.github.com/netlify/build/issues/3495)) ([ce07fbc](https://www.github.com/netlify/build/commit/ce07fbccc5e93224e7adab5dc039f9534a49f06b))
+
 ### [15.3.1](https://www.github.com/netlify/build/compare/config-v15.3.0...config-v15.3.1) (2021-08-13)
 
 
