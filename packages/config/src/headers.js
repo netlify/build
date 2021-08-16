@@ -15,7 +15,7 @@ const addHeaders = async function (config, logs) {
 
 const HEADERS_FILENAME = '_headers'
 
-const addConfigHeaders = async function ({ headers: configHeaders = [], ...config }, headersPath, logs) {
+const addConfigHeaders = async function ({ headers: configHeaders, ...config }, headersPath, logs) {
   try {
     const { headers, errors } = await parseAllHeaders({ headersFiles: [headersPath], configHeaders })
     warnHeadersParsing(logs, errors)
