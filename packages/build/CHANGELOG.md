@@ -1,5 +1,13 @@
 # Changelog
 
+### [18.2.9](https://www.github.com/netlify/build/compare/build-v18.2.8...build-v18.2.9) (2021-08-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency p-locate to v5 ([#3495](https://www.github.com/netlify/build/issues/3495)) ([ce07fbc](https://www.github.com/netlify/build/commit/ce07fbccc5e93224e7adab5dc039f9534a49f06b))
+* **deps:** update dependency pretty-ms to v7 ([#3498](https://www.github.com/netlify/build/issues/3498)) ([435629a](https://www.github.com/netlify/build/commit/435629a8f2368582cc1b01b12298911ccb548a70))
+
 ### [18.2.8](https://www.github.com/netlify/build/compare/build-v18.2.7...build-v18.2.8) (2021-08-13)
 
 
