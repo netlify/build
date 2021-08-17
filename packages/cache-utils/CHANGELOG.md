@@ -1,5 +1,13 @@
 # Changelog
 
+### [2.0.2](https://www.github.com/netlify/build/compare/cache-utils-v2.0.1...cache-utils-v2.0.2) (2021-08-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency locate-path to v6 ([#3490](https://www.github.com/netlify/build/issues/3490)) ([523b049](https://www.github.com/netlify/build/commit/523b0496c90e4c80fcabd406022a2423b12d0a90))
+* **deps:** update dependency move-file to v2 ([#3492](https://www.github.com/netlify/build/issues/3492)) ([9a71aab](https://www.github.com/netlify/build/commit/9a71aab0b9fdddbc56718b8956ecc0c6e427a8a0))
+
 ### [2.0.1](https://www.github.com/netlify/build/compare/cache-utils-v2.0.0...cache-utils-v2.0.1) (2021-08-13)
 
 

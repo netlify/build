@@ -1,5 +1,14 @@
 # Changelog
 
+### [18.2.10](https://www.github.com/netlify/build/compare/build-v18.2.9...build-v18.2.10) (2021-08-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency is-plain-obj to v3 ([#3489](https://www.github.com/netlify/build/issues/3489)) ([b353eec](https://www.github.com/netlify/build/commit/b353eece861296ef18de8e19855a6b2e30ac4fba))
+* **deps:** update dependency locate-path to v6 ([#3490](https://www.github.com/netlify/build/issues/3490)) ([523b049](https://www.github.com/netlify/build/commit/523b0496c90e4c80fcabd406022a2423b12d0a90))
+* **deps:** update dependency pkg-dir to v5 ([#3497](https://www.github.com/netlify/build/issues/3497)) ([7a0ec32](https://www.github.com/netlify/build/commit/7a0ec3273e486956fae3be63c8808062569cee50))
+
 ### [18.2.9](https://www.github.com/netlify/build/compare/build-v18.2.8...build-v18.2.9) (2021-08-16)
 
 

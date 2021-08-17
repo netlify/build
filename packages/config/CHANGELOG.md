@@ -1,5 +1,15 @@
 # Changelog
 
+### [15.3.4](https://www.github.com/netlify/build/compare/config-v15.3.3...config-v15.3.4) (2021-08-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency is-plain-obj to v3 ([#3489](https://www.github.com/netlify/build/issues/3489)) ([b353eec](https://www.github.com/netlify/build/commit/b353eece861296ef18de8e19855a6b2e30ac4fba))
+* **deps:** update dependency netlify-headers-parser to ^3.0.1 ([#3508](https://www.github.com/netlify/build/issues/3508)) ([10dbcf8](https://www.github.com/netlify/build/commit/10dbcf87362eb6045a6adfca81a0e4dd638ef567))
+* **deps:** update dependency netlify-redirect-parser to ^11.0.1 ([#3506](https://www.github.com/netlify/build/issues/3506)) ([c07443c](https://www.github.com/netlify/build/commit/c07443c1168f6b81fa8cf80eb418eb9b89d22350))
+* **deps:** update dependency netlify-redirect-parser to ^11.0.2 ([#3509](https://www.github.com/netlify/build/issues/3509)) ([0a412c1](https://www.github.com/netlify/build/commit/0a412c109f9f7ee17596a8d8f546a43c0a54e8c0))
+
 ### [15.3.3](https://www.github.com/netlify/build/compare/config-v15.3.2...config-v15.3.3) (2021-08-16)
 
 
