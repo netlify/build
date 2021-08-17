@@ -1,5 +1,12 @@
 # Changelog
 
+### [15.3.6](https://www.github.com/netlify/build/compare/config-v15.3.5...config-v15.3.6) (2021-08-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency netlify-headers-parser to v4 ([#3518](https://www.github.com/netlify/build/issues/3518)) ([9b6f234](https://www.github.com/netlify/build/commit/9b6f2349c0ebb3fb4c7c2148274d4120edc39a3a))
+
 ### [15.3.5](https://www.github.com/netlify/build/compare/config-v15.3.4...config-v15.3.5) (2021-08-17)
 
 
