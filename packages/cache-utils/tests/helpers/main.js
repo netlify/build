@@ -18,12 +18,27 @@ const createTmpDir = async function (opts) {
   return path
 }
 
-const createTmpFile = async function (opts) {
+const createTmpFile = async function ({ name, ...opts } = {}) {
   const tmpDir = await createTmpDir(opts)
-  const filename = basename(await tmpName())
+  const filename = name || basename(await tmpName())
   const tmpFile = join(tmpDir, filename)
   await pWriteFile(tmpFile, '')
   return [tmpFile, tmpDir]
+}
+
+// Create multiple temporary files with a particular or random name, i.e.
+// createTmpFiles([{name: 'test'}, {} {}]) => creates 3 files, one of them named test, under the same temporary dir
+const createTmpFiles = async function (files, opts) {
+  const tmpDir = await createTmpDir(opts)
+  const tmpFiles = await Promise.all(
+    files.map(async ({ name }) => {
+      const filename = name || basename(await tmpName())
+      const tmpFile = join(tmpDir, filename)
+      await pWriteFile(tmpFile, '')
+      return tmpFile
+    }),
+  )
+  return [tmpFiles, tmpDir]
 }
 
 const PREFIX = 'test-cache-utils-'
@@ -39,5 +54,6 @@ module.exports = {
   pReaddir,
   createTmpDir,
   createTmpFile,
+  createTmpFiles,
   removeFiles,
 }
