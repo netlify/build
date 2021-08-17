@@ -86,6 +86,10 @@
       "allowedVersions": "<4"
     },
     {
+      "matchPackageNames": ["os-name"],
+      "allowedVersions": "<5"
+    },
+    {
       "matchPackageNames": ["string-width"],
       "allowedVersions": "<5"
     },
