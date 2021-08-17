@@ -6,16 +6,15 @@ const { parseAllRedirects } = require('netlify-redirect-parser')
 
 const { warnRedirectsParsing, warnRedirectsException } = require('./log/messages')
 
-// Add `config.redirects`
-const addRedirects = async function (config, logs) {
-  const redirectsPath = resolve(config.build.publish, REDIRECTS_FILENAME)
-  const configWithRedirects = await addConfigRedirects(config, redirectsPath, logs)
-  return { config: configWithRedirects, redirectsPath }
+// Retrieve path to `_redirects` file (even if it does not exist yet)
+const getRedirectsPath = function ({ build: { publish } }) {
+  return resolve(publish, REDIRECTS_FILENAME)
 }
 
 const REDIRECTS_FILENAME = '_redirects'
 
-const addConfigRedirects = async function ({ redirects: configRedirects, ...config }, redirectsPath, logs) {
+// Add `config.redirects`
+const addRedirects = async function ({ redirects: configRedirects, ...config }, redirectsPath, logs) {
   try {
     const { redirects, errors } = await parseAllRedirects({
       redirectsFiles: [redirectsPath],
@@ -31,4 +30,4 @@ const addConfigRedirects = async function ({ redirects: configRedirects, ...conf
   }
 }
 
-module.exports = { addRedirects, addConfigRedirects }
+module.exports = { getRedirectsPath, addRedirects }

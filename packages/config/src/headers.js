@@ -6,16 +6,15 @@ const { parseAllHeaders } = require('netlify-headers-parser')
 
 const { warnHeadersParsing, warnHeadersException } = require('./log/messages')
 
-// Add `config.headers`
-const addHeaders = async function (config, logs) {
-  const headersPath = resolve(config.build.publish, HEADERS_FILENAME)
-  const configWithHeaders = await addConfigHeaders(config, headersPath, logs)
-  return { config: configWithHeaders, headersPath }
+// Retrieve path to `_headers` file (even if it does not exist yet)
+const getHeadersPath = function ({ build: { publish } }) {
+  return resolve(publish, HEADERS_FILENAME)
 }
 
 const HEADERS_FILENAME = '_headers'
 
-const addConfigHeaders = async function ({ headers: configHeaders, ...config }, headersPath, logs) {
+// Add `config.headers`
+const addHeaders = async function ({ headers: configHeaders, ...config }, headersPath, logs) {
   try {
     const { headers, errors } = await parseAllHeaders({ headersFiles: [headersPath], configHeaders })
     warnHeadersParsing(logs, errors)
@@ -27,4 +26,4 @@ const addConfigHeaders = async function ({ headers: configHeaders, ...config }, 
   }
 }
 
-module.exports = { addHeaders, addConfigHeaders }
+module.exports = { getHeadersPath, addHeaders }

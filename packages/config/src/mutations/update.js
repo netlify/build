@@ -7,10 +7,10 @@ const makeDir = require('make-dir')
 const pathExists = require('path-exists')
 
 const { ensureConfigPriority } = require('../context')
-const { addConfigHeaders } = require('../headers')
+const { addHeaders } = require('../headers')
 const { mergeConfigs } = require('../merge')
 const { parseOptionalConfig } = require('../parse')
-const { addConfigRedirects } = require('../redirects')
+const { addRedirects } = require('../redirects')
 const { simplifyConfig } = require('../simplify')
 const { serializeToml } = require('../utils/toml')
 
@@ -33,8 +33,8 @@ const updateConfig = async function (
   const inlineConfig = applyMutations({}, configMutations)
   const normalizedInlineConfig = ensureConfigPriority(inlineConfig, context, branch)
   const updatedConfig = await mergeWithConfig(normalizedInlineConfig, configPath)
-  const configWithHeaders = await addConfigHeaders(updatedConfig, headersPath, logs)
-  const finalConfig = await addConfigRedirects(configWithHeaders, redirectsPath, logs)
+  const configWithHeaders = await addHeaders(updatedConfig, headersPath, logs)
+  const finalConfig = await addRedirects(configWithHeaders, redirectsPath, logs)
   const simplifiedConfig = simplifyConfig(finalConfig)
   await backupConfig({ buildDir, configPath, headersPath, redirectsPath })
   await Promise.all([
