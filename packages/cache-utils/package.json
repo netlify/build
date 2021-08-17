@@ -51,7 +51,7 @@
     "locate-path": "^6.0.0",
     "make-dir": "^3.1.0",
     "move-file": "^2.0.0",
-    "path-exists": "^4.0.0",
+    "path-exists": "^5.0.0",
     "readdirp": "^3.4.0"
   },
   "devDependencies": {
