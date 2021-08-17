@@ -59,10 +59,6 @@ ${errorMessage}`,
   )
 }
 
-const warnHeadersException = function (logs, errorMessage) {
-  logWarning(logs, `Error while parsing headers: ${errorMessage}`)
-}
-
 const warnRedirectsParsing = function (logs, errors) {
   if (errors.length === 0) {
     return
@@ -78,10 +74,6 @@ ${errorMessage}`,
   )
 }
 
-const warnRedirectsException = function (logs, errorMessage) {
-  logWarning(logs, `Error while parsing redirects: ${errorMessage}`)
-}
-
 const getErrorMessage = function ({ message }) {
   return message
 }
@@ -91,7 +83,5 @@ module.exports = {
   warnContextPluginConfig,
   throwContextPluginsConfig,
   warnHeadersParsing,
-  warnHeadersException,
   warnRedirectsParsing,
-  warnRedirectsException,
 }
