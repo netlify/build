@@ -1,5 +1,12 @@
 # Changelog
 
+### [15.3.5](https://www.github.com/netlify/build/compare/config-v15.3.4...config-v15.3.5) (2021-08-17)
+
+
+### Bug Fixes
+
+* refactor headers and redirects logic ([#3511](https://www.github.com/netlify/build/issues/3511)) ([1f026bf](https://www.github.com/netlify/build/commit/1f026bf368a6624ed512af3a6f1b7f216dcbb3b3))
+
 ### [15.3.4](https://www.github.com/netlify/build/compare/config-v15.3.3...config-v15.3.4) (2021-08-16)
 
 

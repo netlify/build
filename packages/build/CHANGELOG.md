@@ -1,5 +1,12 @@
 # Changelog
 
+### [18.2.12](https://www.github.com/netlify/build/compare/build-v18.2.11...build-v18.2.12) (2021-08-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency os-name to v5 ([#3493](https://www.github.com/netlify/build/issues/3493)) ([47b724b](https://www.github.com/netlify/build/commit/47b724b9a5c6b724356ccfc4106257c1fbe2a69e))
+
 ### [18.2.11](https://www.github.com/netlify/build/compare/build-v18.2.10...build-v18.2.11) (2021-08-17)
 
 
