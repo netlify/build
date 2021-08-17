@@ -13,7 +13,7 @@ const { parseDefaultConfig } = require('./default')
 const { getEnv } = require('./env/main')
 const { EVENTS } = require('./events')
 const { resolveConfigPaths } = require('./files')
-const { addHeaders } = require('./headers')
+const { getHeadersPath, addHeaders } = require('./headers')
 const { getInlineConfig } = require('./inline_config')
 const { cleanupConfig } = require('./log/cleanup')
 const { logResult } = require('./log/main')
@@ -25,7 +25,7 @@ const { UI_ORIGIN, CONFIG_ORIGIN, INLINE_ORIGIN } = require('./origin')
 const { parseConfig } = require('./parse')
 const { getConfigPath } = require('./path')
 // eslint-disable-next-line import/max-dependencies
-const { addRedirects } = require('./redirects')
+const { getRedirectsPath, addRedirects } = require('./redirects')
 
 // Load the configuration file.
 // Takes an optional configuration file path as input and return the resolved
@@ -232,8 +232,10 @@ const getFullConfig = async function ({
       buildDir,
       base: baseA,
     } = await resolveFiles({ config: configA, repositoryRoot, base, baseRelDir })
-    const { config: configC, headersPath } = await addHeaders(configB, logs)
-    const { config: configD, redirectsPath } = await addRedirects(configC, logs)
+    const headersPath = getHeadersPath(configB)
+    const configC = await addHeaders(configB, headersPath, logs)
+    const redirectsPath = getRedirectsPath(configC)
+    const configD = await addRedirects(configC, redirectsPath, logs)
     return { configPath, config: configD, buildDir, base: baseA, redirectsPath, headersPath }
   } catch (error) {
     const configName = configPath === undefined ? '' : ` file ${configPath}`
