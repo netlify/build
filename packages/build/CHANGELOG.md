@@ -1,5 +1,12 @@
 # Changelog
 
+### [18.2.11](https://www.github.com/netlify/build/compare/build-v18.2.10...build-v18.2.11) (2021-08-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency log-process-errors to v6 ([#3491](https://www.github.com/netlify/build/issues/3491)) ([c7f1dd4](https://www.github.com/netlify/build/commit/c7f1dd4d4ded87e39cc97b3cb8f53e825e4b4f8b))
+
 ### [18.2.10](https://www.github.com/netlify/build/compare/build-v18.2.9...build-v18.2.10) (2021-08-16)
 
 
