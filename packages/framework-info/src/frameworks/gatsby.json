@@ -17,7 +17,7 @@
     "directory": "public"
   },
   "staticAssetsDirectory": "static",
-  "env": { "GATSBY_LOGGER": "yurnalist" },
+  "env": { "GATSBY_LOGGER": "yurnalist", "GATSBY_PRECOMPILE_DEVELOP_FUNCTIONS": "true" },
   "plugins": [
     {
       "packageName": "@netlify/plugin-gatsby",
