@@ -18,11 +18,9 @@ const createTmpDir = async function (opts) {
   return path
 }
 
+// Utility method to create a single temporary file and directory
 const createTmpFile = async function ({ name, ...opts } = {}) {
-  const tmpDir = await createTmpDir(opts)
-  const filename = name || basename(await tmpName())
-  const tmpFile = join(tmpDir, filename)
-  await pWriteFile(tmpFile, '')
+  const [[tmpFile], tmpDir] = await createTmpFiles([{ name }], opts)
   return [tmpFile, tmpDir]
 }
 
