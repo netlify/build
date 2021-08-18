@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.0.3](https://www.github.com/netlify/build/compare/cache-utils-v2.0.2...cache-utils-v2.0.3) (2021-08-18)
+
+
+### Bug Fixes
+
+* **cache-utils:** don't cache junk files nor list them as cached ([#3516](https://www.github.com/netlify/build/issues/3516)) ([2aa9641](https://www.github.com/netlify/build/commit/2aa96413cdd3daf8fa73a9ac26ee2f6c85fc89b7))
+
 ### [2.0.2](https://www.github.com/netlify/build/compare/cache-utils-v2.0.1...cache-utils-v2.0.2) (2021-08-16)
 
 
