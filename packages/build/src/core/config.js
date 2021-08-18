@@ -44,6 +44,7 @@ const getConfigOpts = function ({
   mode,
   offline,
   deployId,
+  buildId,
   testOpts,
   featureFlags,
 }) {
@@ -59,6 +60,7 @@ const getConfigOpts = function ({
     token,
     siteId,
     deployId,
+    buildId,
     mode,
     offline,
     env: envOpt,

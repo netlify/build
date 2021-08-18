@@ -34,6 +34,10 @@ test('DEPLOY_ID environment variables is set with --deploy-id', async (t) => {
   await runFixture(t, 'deploy_id', { flags: { deployId: 'test' } })
 })
 
+test('BUILD_ID environment variables is set with --build-id', async (t) => {
+  await runFixture(t, 'build_id', { flags: { buildId: 'test-build' } })
+})
+
 test('CONTEXT environment variables is set with --context', async (t) => {
   await runFixture(t, 'context', { flags: { context: 'test' } })
 })
