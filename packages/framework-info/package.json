@@ -1,6 +1,6 @@
 {
   "name": "@netlify/framework-info",
-  "version": "5.9.0",
+  "version": "5.9.1",
   "description": "Framework detection utility",
   "main": "./src/main.js",
   "browser": "./dist/index.js",
