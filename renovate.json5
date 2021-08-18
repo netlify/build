@@ -66,6 +66,10 @@
 
     // Cannot be upgraded until we use ES modules natively (requires Node >=12.20.0)
     {
+      "matchPackageNames": ["junk"],
+      "allowedVersions": "<4"
+    },
+    {
       "matchPackageNames": ["ansi-escapes"],
       "allowedVersions": "<5"
     },

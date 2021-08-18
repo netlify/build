@@ -1,5 +1,12 @@
 # Changelog
 
+## [18.3.0](https://www.github.com/netlify/build/compare/build-v18.2.12...build-v18.3.0) (2021-08-18)
+
+
+### Features
+
+* **telemetry:** report both build and deploy ids ([#3520](https://www.github.com/netlify/build/issues/3520)) ([97e36bd](https://www.github.com/netlify/build/commit/97e36bd5c93753fb958ea3e9e7829a7ca3d1e54b))
+
 ### [18.2.12](https://www.github.com/netlify/build/compare/build-v18.2.11...build-v18.2.12) (2021-08-17)
 
 

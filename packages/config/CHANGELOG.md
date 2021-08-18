@@ -1,5 +1,12 @@
 # Changelog
 
+### [15.3.8](https://www.github.com/netlify/build/compare/config-v15.3.7...config-v15.3.8) (2021-08-18)
+
+
+### Bug Fixes
+
+* duplicate code ([#3526](https://www.github.com/netlify/build/issues/3526)) ([74e8879](https://www.github.com/netlify/build/commit/74e8879916851be8d22b308008e9d793c15895e8))
+
 ### [15.3.7](https://www.github.com/netlify/build/compare/config-v15.3.6...config-v15.3.7) (2021-08-17)
 
 

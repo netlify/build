@@ -198,6 +198,27 @@ test('Telemetry reports no framework if none is provided', async (t) => {
   t.is(telemetryRequests[0].body.properties.framework, undefined)
 })
 
+test('Telemetry reports the build id if given via BUILD_ID', async (t) => {
+  const buildId = 'test-build-id'
+  const { telemetryRequests } = await runWithApiMock(t, 'success', { env: { BUILD_ID: buildId } })
+  t.is(telemetryRequests.length, 1)
+  t.is(telemetryRequests[0].body.properties.buildId, buildId)
+})
+
+test('Telemetry reports a deploy id if given via DEPLOY_ID', async (t) => {
+  const deployId = 'test-deploy-id'
+  const { telemetryRequests } = await runWithApiMock(t, 'success', { env: { DEPLOY_ID: deployId } })
+  t.is(telemetryRequests.length, 1)
+  t.is(telemetryRequests[0].body.properties.deployId, deployId)
+})
+
+test('Telemetry reports a deploy id if given via --deployId flag', async (t) => {
+  const deployId = 'test-deploy-id'
+  const { telemetryRequests } = await runWithApiMock(t, 'success', { deployId })
+  t.is(telemetryRequests.length, 1)
+  t.is(telemetryRequests[0].body.properties.deployId, deployId)
+})
+
 test('Telemetry calls timeout by default', async (t) => {
   const { telemetryRequests } = await runWithApiMock(t, 'success', {
     // We want to rely on the default timeout value

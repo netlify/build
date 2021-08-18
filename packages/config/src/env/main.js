@@ -135,7 +135,6 @@ const READONLY_ENV = [
   'CACHED_COMMIT_REF',
   'COMMIT_REF',
   'CONTEXT',
-  'DEPLOY_ID',
   'HEAD',
   'REPOSITORY_URL',
   'URL',
@@ -145,7 +144,7 @@ const READONLY_ENV = [
   'NETLIFY',
   'NETLIFY_LOCAL',
 
-  // Not set in local builds because there is CI build/deploy, incoming hooks nor PR
+  // Not set in local builds because there is no CI build/deploy, incoming hooks nor PR
   'BUILD_ID',
   'DEPLOY_ID',
   'DEPLOY_PRIME_URL',
