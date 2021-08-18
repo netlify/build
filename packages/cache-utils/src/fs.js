@@ -6,6 +6,7 @@ const { promisify } = require('util')
 
 const cpy = require('cpy')
 const globby = require('globby')
+const junk = require('junk')
 const moveFile = require('move-file')
 
 const pStat = promisify(stat)
@@ -33,8 +34,9 @@ const isEmptyDir = async function ({ srcGlob, cwd, isDir }) {
     return false
   }
 
-  const files = await globby(srcGlob, { cwd, ignoreJunk: true })
-  return files.length === 0
+  const files = await globby(srcGlob, { cwd })
+  const filteredFiles = files.filter((file) => junk.not(basename(file)))
+  return filteredFiles.length === 0
 }
 
 // Get globbing pattern with files to move/copy

@@ -1,6 +1,6 @@
 {
   "name": "@netlify/cache-utils",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "Utility for caching files in Netlify Build",
   "main": "src/main.js",
   "files": [
@@ -48,6 +48,7 @@
     "del": "^5.1.0",
     "get-stream": "^6.0.0",
     "globby": "^10.0.2",
+    "junk": "^3.1.0",
     "locate-path": "^6.0.0",
     "make-dir": "^3.1.0",
     "move-file": "^2.0.0",
