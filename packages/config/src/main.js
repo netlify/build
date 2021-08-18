@@ -53,6 +53,7 @@ const resolveConfig = async function (opts) {
     branch,
     siteId,
     deployId,
+    buildId,
     baseRelDir,
     mode,
     debug,
@@ -92,6 +93,7 @@ const resolveConfig = async function (opts) {
     buildDir,
     branch,
     deployId,
+    buildId,
     context,
   })
 
