@@ -52,8 +52,20 @@ const { getSeverity } = require('./severity')
  * @returns {string[]} buildResult.logs - When using the `buffer` option, all log messages
  */
 const build = async function (flags = {}) {
-  const { errorMonitor, framework, mode, logs, debug, testOpts, statsdOpts, dry, telemetry, ...flagsA } =
-    startBuild(flags)
+  const {
+    errorMonitor,
+    framework,
+    mode,
+    logs,
+    debug,
+    testOpts,
+    statsdOpts,
+    dry,
+    telemetry,
+    buildId,
+    deployId,
+    ...flagsA
+  } = startBuild(flags)
   const errorParams = { errorMonitor, mode, logs, debug, testOpts }
 
   try {
@@ -68,6 +80,8 @@ const build = async function (flags = {}) {
       configMutations,
     } = await execBuild({
       ...flagsA,
+      buildId,
+      deployId,
       dry,
       errorMonitor,
       mode,
@@ -86,6 +100,8 @@ const build = async function (flags = {}) {
     })
     const { success, severityCode, status } = getSeverity('success')
     await telemetryReport({
+      buildId,
+      deployId,
       status,
       commandsCount,
       pluginsOptions,
@@ -103,6 +119,8 @@ const build = async function (flags = {}) {
     const { pluginsOptions, siteInfo, userNodeVersion } = errorParams
     const { success, severityCode, status } = getSeverity(severity)
     await telemetryReport({
+      buildId,
+      deployId,
       status,
       pluginsOptions,
       siteInfo,
@@ -624,6 +642,8 @@ const handleBuildSuccess = async function ({ framework, dry, logs, timers, durat
 
 // Handles the calls and errors of telemetry reports
 const telemetryReport = async function ({
+  deployId,
+  buildId,
   status,
   commandsCount,
   pluginsOptions,
@@ -637,6 +657,8 @@ const telemetryReport = async function ({
 }) {
   try {
     await trackBuildComplete({
+      deployId,
+      buildId,
       status,
       commandsCount,
       pluginsOptions,
