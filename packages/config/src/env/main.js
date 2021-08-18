@@ -13,12 +13,23 @@ const { getGitEnv } = require('./git')
 // meant so that local builds can mimic production builds
 // TODO: add `netlify.toml` `build.environment`, after normalization
 // TODO: add `CONTEXT` and others
-const getEnv = async function ({ mode, config, siteInfo, accounts, addons, buildDir, branch, deployId, context }) {
+const getEnv = async function ({
+  mode,
+  config,
+  siteInfo,
+  accounts,
+  addons,
+  buildDir,
+  branch,
+  deployId,
+  buildId,
+  context,
+}) {
   if (mode === 'buildbot') {
     return {}
   }
 
-  const generalEnv = await getGeneralEnv({ siteInfo, buildDir, branch, deployId, context })
+  const generalEnv = await getGeneralEnv({ siteInfo, buildDir, branch, deployId, buildId, context })
   const [accountEnv, addonsEnv, uiEnv, configFileEnv] = getUserEnv({ config, siteInfo, accounts, addons })
 
   // Sources of environment variables, in descending order of precedence.
@@ -64,6 +75,7 @@ const getGeneralEnv = async function ({
   buildDir,
   branch,
   deployId,
+  buildId,
   context,
 }) {
   const gitEnv = await getGitEnv(buildDir, branch)
@@ -71,6 +83,7 @@ const getGeneralEnv = async function ({
     SITE_ID: id,
     SITE_NAME: name,
     DEPLOY_ID: deployId,
+    BUILD_ID: buildId,
     URL: url,
     REPOSITORY_URL,
     CONTEXT: context,

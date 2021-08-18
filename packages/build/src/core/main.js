@@ -171,6 +171,7 @@ const tExecBuild = async function ({
   mode,
   offline,
   deployId,
+  buildId,
   testOpts,
   errorMonitor,
   errorParams,
@@ -196,6 +197,7 @@ const tExecBuild = async function ({
     mode,
     offline,
     deployId,
+    buildId,
     testOpts,
     featureFlags,
   })

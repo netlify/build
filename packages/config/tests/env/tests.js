@@ -201,6 +201,14 @@ test('Sets DEPLOY_ID environment variable', async (t) => {
   t.is(DEPLOY_ID.value, 'test')
 })
 
+test('Sets BUILD_ID environment variable', async (t) => {
+  const {
+    env: { BUILD_ID },
+  } = await getFixtureConfig(t, 'empty', { flags: { buildId: 'test-build' } })
+  t.deepEqual(BUILD_ID.sources, ['general'])
+  t.is(BUILD_ID.value, 'test-build')
+})
+
 test('Sets SITE_ID environment variable', async (t) => {
   const {
     env: { SITE_ID },
