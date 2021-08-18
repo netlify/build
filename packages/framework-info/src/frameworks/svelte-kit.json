@@ -14,8 +14,9 @@
   },
   "build": {
     "command": "svelte-kit build",
-    "directory": "static"
+    "directory": "build"
   },
+  "staticAssetsDirectory": "static",
   "env": {},
   "plugins": []
 }
