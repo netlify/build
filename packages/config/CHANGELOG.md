@@ -1,5 +1,12 @@
 # Changelog
 
+### [15.4.1](https://www.github.com/netlify/build/compare/config-v15.4.0...config-v15.4.1) (2021-08-19)
+
+
+### Bug Fixes
+
+* remove unused error handlers ([#3510](https://www.github.com/netlify/build/issues/3510)) ([2beefcd](https://www.github.com/netlify/build/commit/2beefcd6cfdeab7642fe02266828730637d865d8))
+
 ## [15.4.0](https://www.github.com/netlify/build/compare/config-v15.3.8...config-v15.4.0) (2021-08-18)
 
 
