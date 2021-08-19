@@ -1,5 +1,12 @@
 # Changelog
 
+## [15.4.0](https://www.github.com/netlify/build/compare/config-v15.3.8...config-v15.4.0) (2021-08-18)
+
+
+### Features
+
+* **build-id:** add a `build-id` flag and expose `BUILD_ID` based on said flag ([#3527](https://www.github.com/netlify/build/issues/3527)) ([94a4a03](https://www.github.com/netlify/build/commit/94a4a03f337d3c2195f4b4a1912f778893ebf485))
+
 ### [15.3.8](https://www.github.com/netlify/build/compare/config-v15.3.7...config-v15.3.8) (2021-08-18)
 
 
