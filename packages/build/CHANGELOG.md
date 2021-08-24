@@ -1,5 +1,14 @@
 # Changelog
 
+### [18.4.3](https://www.github.com/netlify/build/compare/build-v18.4.2...build-v18.4.3) (2021-08-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^3.4.0 ([#3544](https://www.github.com/netlify/build/issues/3544)) ([978f4d1](https://www.github.com/netlify/build/commit/978f4d19723cad958c3a293cc875bc8cf33c5692))
+* **deps:** update dependency @netlify/plugins-list to ^3.5.0 ([#3546](https://www.github.com/netlify/build/issues/3546)) ([72c067a](https://www.github.com/netlify/build/commit/72c067a7eed0b2ccb0cdc6b1b34cb8618e4afef4))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.20.0 ([#3551](https://www.github.com/netlify/build/issues/3551)) ([fd2d891](https://www.github.com/netlify/build/commit/fd2d89196ad01882c396894d8f968310bb6bc172))
+
 ### [18.4.2](https://www.github.com/netlify/build/compare/build-v18.4.1...build-v18.4.2) (2021-08-20)
 
 
