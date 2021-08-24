@@ -7,7 +7,8 @@ const pathExists = require('path-exists')
 
 const { resolveUpdatedConfig } = require('../core/config')
 const { addErrorInfo } = require('../error/info')
-const { logConfigMutations, logConfigOnUpdate } = require('../log/messages/config')
+const { logConfigOnUpdate } = require('../log/messages/config')
+const { logConfigMutations } = require('../log/messages/mutations')
 
 // If `netlifyConfig` was updated or `_redirects` was created, the configuration
 // is updated by calling `@netlify/config` again.
