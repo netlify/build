@@ -1,5 +1,12 @@
 # Changelog
 
+## [18.5.0](https://www.github.com/netlify/build/compare/build-v18.4.3...build-v18.5.0) (2021-08-24)
+
+
+### Features
+
+* add `--buildersDistDir` flag ([#3552](https://www.github.com/netlify/build/issues/3552)) ([49037dd](https://www.github.com/netlify/build/commit/49037dd01e29094255a11ae78ba330c0166348fe))
+
 ### [18.4.3](https://www.github.com/netlify/build/compare/build-v18.4.2...build-v18.4.3) (2021-08-24)
 
 
