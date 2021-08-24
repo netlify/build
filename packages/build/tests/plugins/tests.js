@@ -1,6 +1,6 @@
 'use strict'
 
-const { writeFile, copyFile } = require('fs')
+const { writeFile, copyFile, readdir } = require('fs')
 const { normalize } = require('path')
 const { platform, version } = require('process')
 const { promisify } = require('util')
@@ -16,10 +16,11 @@ const { removeDir } = require('../helpers/dir')
 const { runFixture, FIXTURES_DIR } = require('../helpers/main')
 const { startServer } = require('../helpers/server')
 const { startTcpServer } = require('../helpers/tcp_server')
-const { getTempDir } = require('../helpers/temp')
+const { getTempName } = require('../helpers/temp')
 
 const pWriteFile = promisify(writeFile)
 const pCopyFile = promisify(copyFile)
+const pReaddir = promisify(readdir)
 
 test('Pass netlifyConfig to plugins', async (t) => {
   await runFixture(t, 'config_valid')
@@ -713,9 +714,12 @@ test('Functions: invalid package.json', async (t) => {
 })
 
 test('Functions: --functionsDistDir', async (t) => {
-  const functionsDistDir = await getTempDir()
+  const functionsDistDir = await getTempName()
   try {
     await runFixture(t, 'simple', { flags: { functionsDistDir } })
+    t.true(await pathExists(functionsDistDir))
+    const files = await pReaddir(functionsDistDir)
+    t.is(files.length, 1)
   } finally {
     await removeDir(functionsDistDir)
   }
