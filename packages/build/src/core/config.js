@@ -8,15 +8,8 @@ const mapObj = require('map-obj')
 const { getChildEnv } = require('../env/main')
 const { addApiErrorHandlers } = require('../error/api')
 const { addErrorInfo } = require('../error/info')
-const {
-  logBuildDir,
-  logConfigPath,
-  logConfig,
-  logContext,
-  logConfigOnUpload,
-  logHeadersOnUpload,
-  logRedirectsOnUpload,
-} = require('../log/messages/config')
+const { logBuildDir, logConfigPath, logConfig, logContext } = require('../log/messages/config')
+const { logConfigOnUpload, logHeadersOnUpload, logRedirectsOnUpload } = require('../log/messages/mutations')
 const { measureDuration } = require('../time/main')
 const { getPackageJson } = require('../utils/package')
 
