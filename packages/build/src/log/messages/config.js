@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 'use strict'
 
 const { readFile } = require('fs')
@@ -42,6 +43,7 @@ const TEST_FLAGS = ['buffer', 'telemetry']
 const INTERNAL_FLAGS = [
   'nodePath',
   'functionsDistDir',
+  'buildersDistDir',
   'defaultConfig',
   'cachedConfigPath',
   'sendStatus',
@@ -189,3 +191,4 @@ module.exports = {
   logHeadersOnUpload,
   logRedirectsOnUpload,
 }
+/* eslint-enable max-lines */

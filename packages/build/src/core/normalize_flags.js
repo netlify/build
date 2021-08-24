@@ -42,6 +42,7 @@ const getDefaultFlags = function ({ env: envOpt = {} }, combinedEnv) {
     offline: false,
     telemetry: false,
     functionsDistDir: DEFAULT_FUNCTIONS_DIST,
+    buildersDistDir: DEFAULT_BUILDERS_DIST,
     cacheDir: DEFAULT_CACHE_DIR,
     deployId: combinedEnv.DEPLOY_ID,
     buildId: combinedEnv.BUILD_ID,
@@ -64,6 +65,7 @@ const computeTelemetry = function (flags, envOpts) {
 
 const REQUIRE_MODE = 'require'
 const DEFAULT_FUNCTIONS_DIST = '.netlify/functions/'
+const DEFAULT_BUILDERS_DIST = '.netlify/builders/'
 const DEFAULT_CACHE_DIR = '.netlify/cache/'
 const DEFAULT_STATSD_PORT = 8125
 

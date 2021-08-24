@@ -725,6 +725,15 @@ test('Functions: --functionsDistDir', async (t) => {
   }
 })
 
+test('Functions: --buildersDistDir', async (t) => {
+  const buildersDistDir = await getTempName()
+  try {
+    await runFixture(t, 'simple', { flags: { buildersDistDir } })
+  } finally {
+    await removeDir(buildersDistDir)
+  }
+})
+
 const EDGE_HANDLERS_LOCAL_DIR = '.netlify/edge-handlers'
 const EDGE_HANDLERS_MANIFEST = 'manifest.json'
 
