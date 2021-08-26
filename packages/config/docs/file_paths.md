@@ -68,7 +68,7 @@ When unset:
 
 Directory where the site's built assets are output
 
-Set using the `build.publish` property in `netlify.toml` or the UI build setting.
+Set using the `build.publish` property in `netlify.toml` or the UI build settings.
 
 This defaults to the build directory.
 
@@ -76,7 +76,12 @@ This defaults to the build directory.
 
 Location of the Netlify Functions source files.
 
-Set using the `build.functions` property in `netlify.toml` or the UI build setting.
+Its value is (from highest to lowest priority):
+
+- `functions.directory` property in `netlify.toml`
+- `build.functions` property in `netlify.toml`
+- "Functions directory" UI build settings
+- `netlify/functions`, providing this directory exists
 
 Can be `undefined`.
 
