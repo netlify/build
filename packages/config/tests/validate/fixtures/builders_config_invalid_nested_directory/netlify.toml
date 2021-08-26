@@ -1,0 +1,2 @@
+[builders.my-builder]
+directory = "test"

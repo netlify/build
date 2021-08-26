@@ -2,7 +2,7 @@
 
 const { throwConfigMutationError } = require('../error')
 const { EVENTS } = require('../events')
-const { WILDCARD_ALL, FUNCTION_CONFIG_PROPERTIES } = require('../functions_config')
+const { WILDCARD_ALL, FUNCTION_LIKE_CONFIG_PROPERTIES } = require('../functions_config')
 const { setProp } = require('../utils/set')
 
 const { getPropName } = require('./config_prop_name')
@@ -35,19 +35,20 @@ const validateEvent = function (lastEvent, event, propName) {
   }
 }
 
-// `functions['*'].*` has higher priority than `functions.*` so we convert the
-// latter to the former.
-const denormalizeFunctionsTopProps = function (
-  { functions, functions: { [WILDCARD_ALL]: wildcardProps } = {}, ...inlineConfig },
+// `functions|builders['*'].*` has higher priority than `functions|builders.*`
+// so we convert the latter to the former.
+const denormalizeFunctionLikeTopProps = function (
+  propName,
+  { [propName]: props, [propName]: { [WILDCARD_ALL]: wildcardProps } = {}, ...inlineConfig },
   value,
   [, key],
 ) {
-  return FUNCTION_CONFIG_PROPERTIES.has(key)
+  return FUNCTION_LIKE_CONFIG_PROPERTIES.has(key)
     ? {
         ...inlineConfig,
-        functions: { ...functions, [WILDCARD_ALL]: { ...wildcardProps, [key]: value } },
+        [propName]: { ...props, [WILDCARD_ALL]: { ...wildcardProps, [key]: value } },
       }
-    : { ...inlineConfig, functions: { ...functions, [key]: value } }
+    : { ...inlineConfig, [propName]: { ...props, [key]: value } }
 }
 
 // List of properties that are not read-only.
@@ -73,8 +74,10 @@ const MUTABLE_PROPS = {
   'build.services': { lastEvent: 'onPostBuild' },
   'build.services.*': { lastEvent: 'onPostBuild' },
   edge_handlers: { lastEvent: 'onPostBuild' },
-  'functions.*': { lastEvent: 'onBuild', denormalize: denormalizeFunctionsTopProps },
+  'functions.*': { lastEvent: 'onBuild', denormalize: denormalizeFunctionLikeTopProps.bind(undefined, 'functions') },
   'functions.*.*': { lastEvent: 'onBuild' },
+  'builders.*': { lastEvent: 'onBuild', denormalize: denormalizeFunctionLikeTopProps.bind(undefined, 'builders') },
+  'builders.*.*': { lastEvent: 'onBuild' },
   headers: { lastEvent: 'onPostBuild' },
   redirects: { lastEvent: 'onPostBuild' },
 }

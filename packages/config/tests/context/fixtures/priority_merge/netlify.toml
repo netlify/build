@@ -15,3 +15,12 @@ external_node_modules = ["module-two"]
 
 [context.testBranch.functions]
 external_node_modules = ["module-three"]
+
+[builders]
+external_node_modules = ["module-one"]
+
+[context.production.builders]
+external_node_modules = ["module-two"]
+
+[context.testBranch.builders]
+external_node_modules = ["module-three"]
