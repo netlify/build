@@ -1,0 +1,3 @@
+[builders]
+external_node_modules = ["module-one", "module-two"]
+node_bundler = "esbuild"

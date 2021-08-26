@@ -53,6 +53,10 @@ test('Assign default functions if functions.directory is not defined and default
   await runFixture(t, 'default_functions_not_defined')
 })
 
+test('Assign default builders if builders.directory is not defined and default directory exists', async (t) => {
+  await runFixture(t, 'default_builders_not_defined')
+})
+
 test('Assign default functions if functions.directory is not defined and the legacy default directory exists', async (t) => {
   await runFixture(t, 'legacy_default_functions_not_defined')
 })
@@ -61,8 +65,16 @@ test('Does not assign default functions if default functions directory does not 
   await runFixture(t, 'default_functions_not_defined_directory_not_found')
 })
 
+test('Does not assign default builders if default builders directory does not exist', async (t) => {
+  await runFixture(t, 'default_builders_not_defined_directory_not_found')
+})
+
 test('Does not assign default functions if functions.directory is defined', async (t) => {
   await runFixture(t, 'default_functions_defined')
+})
+
+test('Does not assign default builders if builders.directory is defined', async (t) => {
+  await runFixture(t, 'default_builders_defined')
 })
 
 test('Does not assign default functions if build.functions is defined', async (t) => {
@@ -73,8 +85,16 @@ test('Gives priority to functions.star over functions when defined first', async
   await runFixture(t, 'default_functions_star_priority_first')
 })
 
+test('Gives priority to builders.star over builders when defined first', async (t) => {
+  await runFixture(t, 'default_builders_star_priority_first')
+})
+
 test('Gives priority to functions.star over functions when defined last', async (t) => {
   await runFixture(t, 'default_functions_star_priority_last')
+})
+
+test('Gives priority to builders.star over builders when defined last', async (t) => {
+  await runFixture(t, 'default_builders_star_priority_last')
 })
 
 test('Assign default edge-handlers if build.edge_handlers is not defined', async (t) => {
@@ -89,16 +109,32 @@ test('Normalizes function configurations defined at the top level', async (t) =>
   await runFixture(t, 'function_config_top_level')
 })
 
+test('Normalizes builders configurations defined at the top level', async (t) => {
+  await runFixture(t, 'builders_config_top_level')
+})
+
 test('Normalizes function configurations defined at different levels', async (t) => {
   await runFixture(t, 'function_config_all_levels')
+})
+
+test('Normalizes builders configurations defined at different levels', async (t) => {
+  await runFixture(t, 'builders_config_all_levels')
 })
 
 test('Handles function configuration objects for functions with the same name as one of the configuration properties', async (t) => {
   await runFixture(t, 'function_config_ambiguous')
 })
 
+test('Handles builders configuration objects for builders with the same name as one of the configuration properties', async (t) => {
+  await runFixture(t, 'builders_config_ambiguous')
+})
+
 test('Collects paths from `included_files` defined at different levels', async (t) => {
   await runFixture(t, 'function_config_included_files')
+})
+
+test('Collects paths from `included_files` defined at different levels in builders', async (t) => {
+  await runFixture(t, 'builders_config_included_files')
 })
 
 test('Merges plugins in netlify.toml and defaultConfig', async (t) => {

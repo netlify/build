@@ -1,0 +1,7 @@
+[builders]
+directory = "two"
+ignored_node_modules = ["testTwo"]
+
+[builders."*"]
+directory = "one"
+external_node_modules = ["testOne"]

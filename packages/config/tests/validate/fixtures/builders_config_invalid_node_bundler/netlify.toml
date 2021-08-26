@@ -1,0 +1,2 @@
+[builders]
+node_bundler = "magicpack"

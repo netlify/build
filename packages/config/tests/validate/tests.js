@@ -188,6 +188,38 @@ test('functions.directory: defined on the main functions object', async (t) => {
   await runFixture(t, 'function_config_invalid_nested_directory')
 })
 
+test('builders: object', async (t) => {
+  await runFixture(t, 'builders_config_invalid_root')
+})
+
+test('builders block: object', async (t) => {
+  await runFixture(t, 'builders_config_invalid_builders_block')
+})
+
+test('builders.external_node_modules: array of strings', async (t) => {
+  await runFixture(t, 'builders_config_invalid_external_modules')
+})
+
+test('builders.included_files: is array of strings', async (t) => {
+  await runFixture(t, 'builders_config_invalid_included_files_1')
+})
+
+test('builders.included_files: does not contain paths outside of the root directory', async (t) => {
+  await runFixture(t, 'builders_config_invalid_included_files_2')
+})
+
+test('builders.ignored_node_modules: array of strings', async (t) => {
+  await runFixture(t, 'builders_config_invalid_ignored_modules')
+})
+
+test('builders.node_bundler: one of supported bundlers', async (t) => {
+  await runFixture(t, 'builders_config_invalid_node_bundler')
+})
+
+test('builders.directory: defined on the main builders object', async (t) => {
+  await runFixture(t, 'builders_config_invalid_nested_directory')
+})
+
 test('Validates defaultConfig', async (t) => {
   const defaultConfig = { build: { command: false } }
   await runFixture(t, 'empty', { flags: { defaultConfig } })

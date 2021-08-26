@@ -94,6 +94,26 @@ In:
 - The production builds: this is a temporary directory inside `/tmp`
 - The CLI: this is `.netlify/functions/`, relative to the build directory
 
+## Builder functions source directory
+
+Location of the Netlify Builder functions source files.
+
+Its value is (from highest to lowest priority):
+
+- `builders.directory` property in `netlify.toml`
+- `netlify/builders`, providing this directory exists
+
+Can be `undefined`.
+
+## Builder functions destination directory
+
+Where Netlify Functions are bundled.
+
+In:
+
+- The production builds: this is a temporary directory inside `/tmp`
+- The CLI: this is `.netlify/builders/`, relative to the build directory
+
 ## Edge handlers source directory
 
 Location of the Edge handlers source files.

@@ -9,3 +9,9 @@ node_bundler = "esbuild"
 
 [context.production.functions]
 node_bundler = "zisi"
+
+[builders]
+node_bundler = "esbuild"
+
+[context.production.builders]
+node_bundler = "zisi"

@@ -1,0 +1,2 @@
+[builders]
+my_builder = "I should not be a string"

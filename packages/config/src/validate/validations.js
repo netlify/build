@@ -81,22 +81,14 @@ const PRE_CONTEXT_VALIDATIONS = [
 // Validations done before normalization
 const PRE_NORMALIZE_VALIDATIONS = [
   ...ORIGIN_VALIDATIONS,
-  {
-    property: 'functions',
+  ...['functions', 'builders'].map((propName) => ({
+    property: propName,
     check: isPlainObj,
     message: 'must be an object.',
     example: () => ({
       functions: { external_node_modules: ['module-one', 'module-two'] },
     }),
-  },
-  {
-    property: 'functions',
-    check: isPlainObj,
-    message: 'must be an object.',
-    example: () => ({
-      functions: { ignored_node_modules: ['module-one', 'module-two'] },
-    }),
-  },
+  })),
 ]
 
 const EXAMPLE_PORT = 80
@@ -192,61 +184,63 @@ const POST_NORMALIZE_VALIDATIONS = [
     ...insideRootCheck,
     example: (edgeHandlers) => ({ build: { edge_handlers: removeParentDots(edgeHandlers) } }),
   },
-  {
-    property: 'functions.*',
-    check: isPlainObj,
-    message: 'must be an object.',
-    example: (value, key, prevPath) => ({
-      functions: { [prevPath[1]]: { external_node_modules: ['module-one', 'module-two'] } },
-    }),
-  },
-  {
-    property: 'functions.*.external_node_modules',
-    check: isArrayOfStrings,
-    message: 'must be an array of strings.',
-    example: (value, key, prevPath) => ({
-      functions: { [prevPath[1]]: { external_node_modules: ['module-one', 'module-two'] } },
-    }),
-  },
-  {
-    property: 'functions.*.ignored_node_modules',
-    check: isArrayOfStrings,
-    message: 'must be an array of strings.',
-    example: (value, key, prevPath) => ({
-      functions: { [prevPath[1]]: { ignored_node_modules: ['module-one', 'module-two'] } },
-    }),
-  },
-  {
-    property: 'functions.*.included_files',
-    check: isArrayOfStrings,
-    message: 'must be an array of strings.',
-    example: (value, key, prevPath) => ({
-      functions: { [prevPath[1]]: { included_files: ['directory-one/file1', 'directory-two/**/*.jpg'] } },
-    }),
-  },
-  {
-    property: 'functions.*.included_files.*',
-    ...insideRootCheck,
-    example: (value, key, prevPath) => ({
-      functions: { [prevPath[1]]: { included_files: ['directory-one/file1', 'directory-two/**/*.jpg'] } },
-    }),
-  },
-  {
-    property: 'functions.*.node_bundler',
-    check: (value) => bundlers.includes(value),
-    message: `must be one of: ${bundlers.join(', ')}`,
-    example: (value, key, prevPath) => ({
-      functions: { [prevPath[1]]: { node_bundler: bundlers[0] } },
-    }),
-  },
-  {
-    property: 'functions.*.directory',
-    check: (value, key, prevPath) => prevPath[1] === FUNCTIONS_CONFIG_WILDCARD_ALL,
-    message: 'must be defined on the main `functions` object.',
-    example: () => ({
-      functions: { directory: 'my-functions' },
-    }),
-  },
+  ...['functions', 'builders'].flatMap((propName) => [
+    {
+      property: `${propName}.*`,
+      check: isPlainObj,
+      message: 'must be an object.',
+      example: (value, key, prevPath) => ({
+        [propName]: { [prevPath[1]]: { external_node_modules: ['module-one', 'module-two'] } },
+      }),
+    },
+    {
+      property: `${propName}.*.external_node_modules`,
+      check: isArrayOfStrings,
+      message: 'must be an array of strings.',
+      example: (value, key, prevPath) => ({
+        [propName]: { [prevPath[1]]: { external_node_modules: ['module-one', 'module-two'] } },
+      }),
+    },
+    {
+      property: `${propName}.*.ignored_node_modules`,
+      check: isArrayOfStrings,
+      message: 'must be an array of strings.',
+      example: (value, key, prevPath) => ({
+        [propName]: { [prevPath[1]]: { ignored_node_modules: ['module-one', 'module-two'] } },
+      }),
+    },
+    {
+      property: `${propName}.*.included_files`,
+      check: isArrayOfStrings,
+      message: 'must be an array of strings.',
+      example: (value, key, prevPath) => ({
+        [propName]: { [prevPath[1]]: { included_files: ['directory-one/file1', 'directory-two/**/*.jpg'] } },
+      }),
+    },
+    {
+      property: `${propName}.*.included_files.*`,
+      ...insideRootCheck,
+      example: (value, key, prevPath) => ({
+        [propName]: { [prevPath[1]]: { included_files: ['directory-one/file1', 'directory-two/**/*.jpg'] } },
+      }),
+    },
+    {
+      property: `${propName}.*.node_bundler`,
+      check: (value) => bundlers.includes(value),
+      message: `must be one of: ${bundlers.join(', ')}`,
+      example: (value, key, prevPath) => ({
+        [propName]: { [prevPath[1]]: { node_bundler: bundlers[0] } },
+      }),
+    },
+    {
+      property: `${propName}.*.directory`,
+      check: (value, key, prevPath) => prevPath[1] === FUNCTIONS_CONFIG_WILDCARD_ALL,
+      message: `must be defined on the main "${propName}" object.`,
+      example: () => ({
+        [propName]: { directory: `my-${propName}` },
+      }),
+    },
+  ]),
   {
     property: 'functionsDirectory',
     check: isString,
