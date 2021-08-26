@@ -1,5 +1,12 @@
 # Changelog
 
+## [15.5.0](https://www.github.com/netlify/build/compare/config-v15.4.1...config-v15.5.0) (2021-08-26)
+
+
+### Features
+
+* add `builders.*` and `builders.directory` configuration properties to `@netlify/config` ([#3560](https://www.github.com/netlify/build/issues/3560)) ([4e9b757](https://www.github.com/netlify/build/commit/4e9b757efcdeec5477cd278ec57feb02dbe49248))
+
 ### [15.4.1](https://www.github.com/netlify/build/compare/config-v15.4.0...config-v15.4.1) (2021-08-19)
 
 
