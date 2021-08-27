@@ -1,5 +1,13 @@
 # Changelog
 
+### [18.7.2](https://www.github.com/netlify/build/compare/build-v18.7.1...build-v18.7.2) (2021-08-27)
+
+
+### Bug Fixes
+
+* internal functions directory ([#3564](https://www.github.com/netlify/build/issues/3564)) ([11144f4](https://www.github.com/netlify/build/commit/11144f4728147fe59a4ffef7e0fc18274e48d913))
+* revert `utils.functions.add()` fix ([#3570](https://www.github.com/netlify/build/issues/3570)) ([4f247d1](https://www.github.com/netlify/build/commit/4f247d15c0e06783332736a98757eb575113123b))
+
 ### [18.7.1](https://www.github.com/netlify/build/compare/build-v18.7.0...build-v18.7.1) (2021-08-27)
 
 
