@@ -45,7 +45,7 @@ const getConstants = async function ({
     INTERNAL_FUNCTIONS_SRC: '.netlify/functions-internal',
     // The directory where internal builders (i.e. generated programmatically
     // via plugins or others) live
-    INTERNAL_BUILDERS_SRC,
+    INTERNAL_BUILDERS_SRC: `${buildDir}/${INTERNAL_BUILDERS_SRC}`,
   }
   const constantsA = await addMutableConstants({ constants, buildDir, netlifyConfig })
   return constantsA
@@ -153,6 +153,7 @@ const CONSTANT_PATHS = new Set([
   'FUNCTIONS_SRC',
   'FUNCTIONS_DIST',
   'BUILDERS_SRC',
+  'INTERNAL_BUILDERS_SRC',
   'EDGE_HANDLERS_SRC',
   'CACHE_DIR',
 ])
