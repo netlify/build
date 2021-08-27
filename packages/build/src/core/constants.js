@@ -43,10 +43,15 @@ const getConstants = async function ({
     // The directory where internal functions (i.e. generated programmatically
     // via plugins or others) live.
     INTERNAL_FUNCTIONS_SRC: '.netlify/functions-internal',
+    // The directory where internal builders (i.e. generated programmatically
+    // via plugins or others) live
+    INTERNAL_BUILDERS_SRC,
   }
   const constantsA = await addMutableConstants({ constants, buildDir, netlifyConfig })
   return constantsA
 }
+
+const INTERNAL_BUILDERS_SRC = '.netlify/builders-internal'
 
 // Retrieve constants which might change during the build if a plugin modifies
 // `netlifyConfig` or creates some default directories.
@@ -57,6 +62,9 @@ const addMutableConstants = async function ({
   netlifyConfig: {
     build: { publish, edge_handlers: edgeHandlers },
     functionsDirectory,
+    builders: {
+      '*': { directory: buildersDirectory },
+    },
   },
 }) {
   const constantsA = {
@@ -65,6 +73,8 @@ const addMutableConstants = async function ({
     PUBLISH_DIR: publish,
     // The directory where function source code lives
     FUNCTIONS_SRC: functionsDirectory,
+    // The directory where builders source code lives
+    BUILDERS_SRC: buildersDirectory,
     // The directory where edge handlers source code lives
     EDGE_HANDLERS_SRC: edgeHandlers,
   }
@@ -93,6 +103,7 @@ const DEFAULT_PATHS = [
   // @todo Remove once we drop support for the legacy default functions directory.
   { constantName: 'FUNCTIONS_SRC', defaultPath: 'netlify-automatic-functions' },
   { constantName: 'FUNCTIONS_SRC', defaultPath: 'netlify/functions' },
+  { constantName: 'BUILDERS_SRC', defaultPath: 'netlify/builders' },
   { constantName: 'EDGE_HANDLERS_SRC', defaultPath: 'netlify/edge-handlers' },
 ]
 
@@ -141,6 +152,7 @@ const CONSTANT_PATHS = new Set([
   'PUBLISH_DIR',
   'FUNCTIONS_SRC',
   'FUNCTIONS_DIST',
+  'BUILDERS_SRC',
   'EDGE_HANDLERS_SRC',
   'CACHE_DIR',
 ])
