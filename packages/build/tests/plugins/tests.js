@@ -623,6 +623,10 @@ test('constants.FUNCTIONS_SRC created dynamically', async (t) => {
   await runFixture(t, 'functions_src_dynamic', { copyRoot: { git: false } })
 })
 
+test('constants.INTERNAL_FUNCTIONS_SRC default value', async (t) => {
+  await runFixture(t, 'internal_functions_src_default')
+})
+
 test('constants.FUNCTIONS_DIST', async (t) => {
   await runFixture(t, 'functions_dist')
 })
@@ -1644,9 +1648,14 @@ test('Utils are defined', async (t) => {
 })
 
 test('Can run utils', async (t) => {
-  await removeDir(`${FIXTURES_DIR}/functions/functions`)
-  await runFixture(t, 'functions')
-  await removeDir(`${FIXTURES_DIR}/functions/functions`)
+  const functionsInternalDir = `${FIXTURES_DIR}/functions_add/.netlify/functions-internal`
+  await removeDir(functionsInternalDir)
+  try {
+    await runFixture(t, 'functions_add')
+  } finally {
+    t.true(await pathExists(functionsInternalDir))
+    await removeDir(functionsInternalDir)
+  }
 })
 
 test('Can run list util', async (t) => {
