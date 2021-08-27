@@ -1,5 +1,12 @@
 # Changelog
 
+### [18.7.1](https://www.github.com/netlify/build/compare/build-v18.7.0...build-v18.7.1) (2021-08-27)
+
+
+### Bug Fixes
+
+* file path resolution of `INTERNAL_BUILDERS_SRC` ([#3566](https://www.github.com/netlify/build/issues/3566)) ([2b614b2](https://www.github.com/netlify/build/commit/2b614b2fd5ed5bed7e753b6e16b90135033e2de3))
+
 ## [18.7.0](https://www.github.com/netlify/build/compare/build-v18.6.0...build-v18.7.0) (2021-08-27)
 
 
