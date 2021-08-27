@@ -1,5 +1,12 @@
 # Changelog
 
+## [18.7.0](https://www.github.com/netlify/build/compare/build-v18.6.0...build-v18.7.0) (2021-08-27)
+
+
+### Features
+
+* add `builders` configuration to `@netlify/build` ([#3563](https://www.github.com/netlify/build/issues/3563)) ([daecb3b](https://www.github.com/netlify/build/commit/daecb3b2f95a690f9454ca8ab6e76d2d671ea574))
+
 ## [18.6.0](https://www.github.com/netlify/build/compare/build-v18.5.0...build-v18.6.0) (2021-08-26)
 
 
