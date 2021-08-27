@@ -1,0 +1,5 @@
+[builders]
+directory = "builders"
+
+[[plugins]]
+package = "./plugin"
