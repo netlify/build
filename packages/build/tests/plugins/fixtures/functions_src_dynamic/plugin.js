@@ -10,20 +10,17 @@ const pRmdir = promisify(rmdir)
 const DEFAULT_FUNCTIONS_SRC = 'netlify/functions'
 
 module.exports = {
-  async onPreBuild({ constants: { FUNCTIONS_SRC, INTERNAL_FUNCTIONS_SRC } }) {
+  async onPreBuild({ constants: { FUNCTIONS_SRC } }) {
     console.log(FUNCTIONS_SRC === undefined)
-    console.log(INTERNAL_FUNCTIONS_SRC)
     await pMkdir(dirname(DEFAULT_FUNCTIONS_SRC))
     await pMkdir(DEFAULT_FUNCTIONS_SRC)
   },
-  async onBuild({ constants: { FUNCTIONS_SRC, INTERNAL_FUNCTIONS_SRC } }) {
+  async onBuild({ constants: { FUNCTIONS_SRC } }) {
     console.log(FUNCTIONS_SRC)
-    console.log(INTERNAL_FUNCTIONS_SRC)
     await pRmdir(DEFAULT_FUNCTIONS_SRC)
     await pRmdir(dirname(DEFAULT_FUNCTIONS_SRC))
   },
-  onPostBuild({ constants: { FUNCTIONS_SRC, INTERNAL_FUNCTIONS_SRC } }) {
+  onPostBuild({ constants: { FUNCTIONS_SRC } }) {
     console.log(FUNCTIONS_SRC === undefined)
-    console.log(INTERNAL_FUNCTIONS_SRC)
   },
 }

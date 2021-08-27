@@ -41,8 +41,8 @@ const getConstants = async function ({
     // The Netlify API host
     NETLIFY_API_HOST: apiHost,
     // The directory where internal functions (i.e. generated programmatically
-    // via plugins or others) live.
-    INTERNAL_FUNCTIONS_SRC: '.netlify/functions-internal',
+    // via plugins or others) live
+    INTERNAL_FUNCTIONS_SRC: `${buildDir}/${INTERNAL_FUNCTIONS_SRC}`,
     // The directory where internal builders (i.e. generated programmatically
     // via plugins or others) live
     INTERNAL_BUILDERS_SRC: `${buildDir}/${INTERNAL_BUILDERS_SRC}`,
@@ -51,6 +51,7 @@ const getConstants = async function ({
   return constantsA
 }
 
+const INTERNAL_FUNCTIONS_SRC = '.netlify/functions-internal'
 const INTERNAL_BUILDERS_SRC = '.netlify/builders-internal'
 
 // Retrieve constants which might change during the build if a plugin modifies
@@ -152,6 +153,7 @@ const CONSTANT_PATHS = new Set([
   'PUBLISH_DIR',
   'FUNCTIONS_SRC',
   'FUNCTIONS_DIST',
+  'INTERNAL_FUNCTIONS_SRC',
   'BUILDERS_SRC',
   'INTERNAL_BUILDERS_SRC',
   'EDGE_HANDLERS_SRC',
