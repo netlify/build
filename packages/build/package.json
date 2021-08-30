@@ -74,7 +74,7 @@
     "is-plain-obj": "^3.0.0",
     "js-yaml": "^4.0.0",
     "keep-func-props": "^3.0.0",
-    "locate-path": "^6.0.0",
+    "locate-path": "^7.0.0",
     "log-process-errors": "^6.0.0",
     "make-dir": "^3.0.2",
     "map-obj": "^4.0.0",
