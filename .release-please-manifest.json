@@ -1,7 +1,7 @@
 {
-  "packages/build": "18.7.2",
+  "packages/build": "18.7.3",
   "packages/cache-utils": "2.0.3",
-  "packages/config": "15.5.0",
+  "packages/config": "15.5.1",
   "packages/functions-utils": "2.0.7",
   "packages/git-utils": "2.0.1",
   "packages/run-utils": "2.0.1"
