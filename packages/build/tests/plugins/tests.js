@@ -465,6 +465,10 @@ test('netlifyConfig mutations fail correctly on symbols', async (t) => {
   await runFixture(t, 'config_mutate_symbol')
 })
 
+test('netlifyConfig mutations fail if the syntax is invalid', async (t) => {
+  await runFixture(t, 'config_mutate_invalid_syntax')
+})
+
 test('--saveConfig saves the configuration changes as netlify.toml', async (t) => {
   const fixtureDir = `${FIXTURES_DIR}/config_save_changes`
   const fixtureConfigPath = `${fixtureDir}/netlify.toml`

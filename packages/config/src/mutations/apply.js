@@ -1,6 +1,6 @@
 'use strict'
 
-const { throwConfigMutationError } = require('../error')
+const { throwUserError } = require('../error')
 const { EVENTS } = require('../events')
 const { WILDCARD_ALL, FUNCTION_LIKE_CONFIG_PROPERTIES } = require('../functions_config')
 const { setProp } = require('../utils/set')
@@ -20,7 +20,7 @@ const applyMutations = function (inlineConfig, configMutations) {
 const applyMutation = function (inlineConfig, { keys, value, event }) {
   const propName = getPropName(keys)
   if (!(propName in MUTABLE_PROPS)) {
-    throwConfigMutationError(`"netlifyConfig.${propName}" is read-only.`)
+    throwUserError(`"netlifyConfig.${propName}" is read-only.`)
   }
 
   const { lastEvent, denormalize } = MUTABLE_PROPS[propName]
@@ -31,7 +31,7 @@ const applyMutation = function (inlineConfig, { keys, value, event }) {
 
 const validateEvent = function (lastEvent, event, propName) {
   if (EVENTS.indexOf(lastEvent) < EVENTS.indexOf(event)) {
-    throwConfigMutationError(`"netlifyConfig.${propName}" cannot be modified after "${lastEvent}".`)
+    throwUserError(`"netlifyConfig.${propName}" cannot be modified after "${lastEvent}".`)
   }
 }
 

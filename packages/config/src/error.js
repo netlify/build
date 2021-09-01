@@ -8,12 +8,6 @@ const throwUserError = function (messageOrError, error) {
   throw errorA
 }
 
-const throwConfigMutationError = function (messageOrError, error) {
-  const errorA = getError(messageOrError, error)
-  errorA.type = CONFIG_MUTATION_ERROR_TYPE
-  throw errorA
-}
-
 // Can pass either `message`, `error` or `message, error`
 const getError = function (messageOrError, error) {
   if (messageOrError instanceof Error) {
@@ -30,11 +24,9 @@ const getError = function (messageOrError, error) {
 
 // Check `error.type`
 const isUserError = function (error) {
-  return error instanceof Error && NON_SYSTEM_ERROR_TYPES.has(error.type)
+  return error instanceof Error && error.type === USER_ERROR_TYPE
 }
 
 const USER_ERROR_TYPE = 'userError'
-const CONFIG_MUTATION_ERROR_TYPE = 'configMutation'
-const NON_SYSTEM_ERROR_TYPES = new Set([USER_ERROR_TYPE, CONFIG_MUTATION_ERROR_TYPE])
 
-module.exports = { throwUserError, throwConfigMutationError, isUserError }
+module.exports = { throwUserError, isUserError }

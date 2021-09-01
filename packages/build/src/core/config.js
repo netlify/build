@@ -111,13 +111,7 @@ const resolveInitialConfig = async function (configOpts, cachedConfig, cachedCon
   try {
     return await resolveConfig({ ...configOpts, cachedConfig, cachedConfigPath })
   } catch (error) {
-    if (error.type === 'userError') {
-      // We need to mutate the `error` directly to preserve its `name`, `stack`, etc.
-      // eslint-disable-next-line fp/no-delete
-      delete error.type
-      addErrorInfo(error, { type: 'resolveConfig' })
-    }
-    throw error
+    throw getConfigError(error, 'resolveConfig')
   }
 }
 
@@ -139,14 +133,20 @@ const resolveUpdatedConfig = async function (configOpts, configMutations) {
   try {
     return await resolveConfig({ ...configOpts, configMutations, debug: false })
   } catch (error) {
-    if (error.type === 'configMutation') {
-      // We need to mutate the `error` directly to preserve its `name`, `stack`, etc.
-      // eslint-disable-next-line fp/no-delete
-      delete error.type
-      addErrorInfo(error, { type: 'pluginValidation' })
-    }
-    throw error
+    throw getConfigError(error, 'pluginValidation')
   }
+}
+
+const getConfigError = function (error, type) {
+  if (error.type !== 'userError') {
+    return error
+  }
+
+  // We need to mutate the `error` directly to preserve its `name`, `stack`, etc.
+  // eslint-disable-next-line fp/no-delete
+  delete error.type
+  addErrorInfo(error, { type })
+  return error
 }
 
 // If the configuration was changed, persist it to `netlify.toml`.
