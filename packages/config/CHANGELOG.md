@@ -1,5 +1,12 @@
 # Changelog
 
+### [15.5.1](https://www.github.com/netlify/build/compare/config-v15.5.0...config-v15.5.1) (2021-09-01)
+
+
+### Bug Fixes
+
+* error handling of syntax errors in plugin configuration changes ([#3586](https://www.github.com/netlify/build/issues/3586)) ([56d902d](https://www.github.com/netlify/build/commit/56d902d88353b5b836ca4124b94532fb744470fc))
+
 ## [15.5.0](https://www.github.com/netlify/build/compare/config-v15.4.1...config-v15.5.0) (2021-08-26)
 
 

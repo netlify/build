@@ -1,5 +1,13 @@
 # Changelog
 
+### [18.7.3](https://www.github.com/netlify/build/compare/build-v18.7.2...build-v18.7.3) (2021-09-01)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^3.6.0 ([#3582](https://www.github.com/netlify/build/issues/3582)) ([a7bdb43](https://www.github.com/netlify/build/commit/a7bdb433242791fb3bb6bb4f32ce9c5c2eb0f907))
+* error handling of syntax errors in plugin configuration changes ([#3586](https://www.github.com/netlify/build/issues/3586)) ([56d902d](https://www.github.com/netlify/build/commit/56d902d88353b5b836ca4124b94532fb744470fc))
+
 ### [18.7.2](https://www.github.com/netlify/build/compare/build-v18.7.1...build-v18.7.2) (2021-08-27)
 
 
