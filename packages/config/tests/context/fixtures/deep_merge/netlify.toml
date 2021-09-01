@@ -9,9 +9,3 @@ node_bundler = "esbuild"
 
 [context.testContext.functions.my-function]
 node_bundler = "zisi"
-
-[builders.my-builder]
-node_bundler = "esbuild"
-
-[context.testContext.builders.my-builder]
-node_bundler = "zisi"

@@ -104,13 +104,7 @@ Default: Current Node.js binary`,
   },
   functionsDistDir: {
     string: true,
-    describe: `Path to the directory where packaged regular functions are kept.
-Default: automatically guessed`,
-    hidden: true,
-  },
-  buildersDistDir: {
-    string: true,
-    describe: `Path to the directory where packaged builders functions are kept.
+    describe: `Path to the directory where packaged functions are kept.
 Default: automatically guessed`,
     hidden: true,
   },

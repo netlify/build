@@ -1,8 +1,0 @@
-[builders]
-included_files = ["from-top"]
-
-[builders.my_builder]
-included_files = ["!from-glob/two", "from-builder"]
-
-[builders."my_prefix_*"]
-included_files = ["!from-top/one", "from-glob"]

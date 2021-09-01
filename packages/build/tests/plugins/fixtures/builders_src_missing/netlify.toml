@@ -1,5 +1,0 @@
-[builders]
-directory = "missing"
-
-[[plugins]]
-package = "./plugin"

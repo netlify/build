@@ -1,5 +1,0 @@
-[builders]
-directory = "test"
-
-[[plugins]]
-package = "./plugin"

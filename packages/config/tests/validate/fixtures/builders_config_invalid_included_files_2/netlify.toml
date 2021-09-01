@@ -1,2 +1,0 @@
-[builders]
-included_files = ["directory-1", "../outside-of-root"]

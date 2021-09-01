@@ -25,7 +25,6 @@ const cleanupConfig = function ({
   baseRelDir,
   functions,
   functionsDirectory,
-  builders,
 }) {
   const environmentA = cleanupEnvironment(environment)
   const build = {
@@ -50,7 +49,6 @@ const cleanupConfig = function ({
     baseRelDir,
     functions,
     functionsDirectory,
-    builders,
   })
   return netlifyConfig
 }

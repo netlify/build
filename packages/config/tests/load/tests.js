@@ -133,12 +133,6 @@ test('--configMutations can mutate functions top-level properties', async (t) =>
   })
 })
 
-test('--configMutations can mutate builders top-level properties', async (t) => {
-  await runFixture(t, 'empty', {
-    flags: { configMutations: [{ keys: ['builders', 'directory'], value: 'testMutation', event: 'onPreBuild' }] },
-  })
-})
-
 test('--cachedConfig CLI flags', async (t) => {
   const { returnValue } = await runFixture(t, 'cached_config', { snapshot: false })
   await runFixture(t, 'cached_config', { flags: { cachedConfig: returnValue }, useBinary: true })

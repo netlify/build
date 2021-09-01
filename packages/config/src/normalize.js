@@ -1,6 +1,6 @@
 'use strict'
 
-const { normalizeFunctionsProps, normalizeFunctionsLikeProps, WILDCARD_ALL } = require('./functions_config')
+const { normalizeFunctionsProps, WILDCARD_ALL } = require('./functions_config')
 const { mergeConfigs } = require('./merge')
 const { DEFAULT_ORIGIN } = require('./origin')
 const { removeFalsy } = require('./utils/remove_falsy')
@@ -8,18 +8,10 @@ const { removeFalsy } = require('./utils/remove_falsy')
 // Normalize configuration object
 const normalizeConfig = function (config) {
   const configA = removeEmpty(config)
-  const { build, functions, builders, plugins, ...configB } = mergeConfigs([DEFAULT_CONFIG, configA])
+  const { build, functions, plugins, ...configB } = mergeConfigs([DEFAULT_CONFIG, configA])
   const { build: buildA, functions: functionsA, functionsDirectoryProps } = normalizeFunctionsProps(build, functions)
-  const buildersA = normalizeFunctionsLikeProps(builders)
   const pluginsA = plugins.map(normalizePlugin)
-  return {
-    ...configB,
-    build: buildA,
-    functions: functionsA,
-    builders: buildersA,
-    plugins: pluginsA,
-    ...functionsDirectoryProps,
-  }
+  return { ...configB, build: buildA, functions: functionsA, plugins: pluginsA, ...functionsDirectoryProps }
 }
 
 // Remove empty strings.
@@ -38,7 +30,6 @@ const DEFAULT_CONFIG = {
     services: {},
   },
   functions: { [WILDCARD_ALL]: {} },
-  builders: { [WILDCARD_ALL]: {} },
   plugins: [],
 }
 

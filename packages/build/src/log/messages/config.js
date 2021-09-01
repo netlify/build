@@ -36,7 +36,6 @@ const TEST_FLAGS = ['buffer', 'telemetry']
 const INTERNAL_FLAGS = [
   'nodePath',
   'functionsDistDir',
-  'buildersDistDir',
   'defaultConfig',
   'cachedConfigPath',
   'sendStatus',

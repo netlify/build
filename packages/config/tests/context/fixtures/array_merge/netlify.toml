@@ -9,9 +9,3 @@ external_node_modules = ["module-one", "module-two"]
 
 [context.production.functions]
 external_node_modules = ["module-three", "module-four"]
-
-[builders]
-external_node_modules = ["module-one", "module-two"]
-
-[context.production.builders]
-external_node_modules = ["module-three", "module-four"]

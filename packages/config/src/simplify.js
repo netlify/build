@@ -9,7 +9,6 @@ const { removeFalsy } = require('./utils/remove_falsy')
 const simplifyConfig = function ({
   build: { environment, processing: { css, html, images, js, ...processing } = {}, services, ...build } = {},
   functions,
-  builders,
   plugins,
   headers,
   redirects,
@@ -34,7 +33,6 @@ const simplifyConfig = function ({
   return removeFalsy({
     ...config,
     ...removeEmptyObject(simplifyFunctions(functions), 'functions'),
-    ...removeEmptyObject(simplifyBuilders(builders), 'builders'),
     ...removeEmptyObject(buildA, 'build'),
     ...removeEmptyArray(plugins, 'plugins'),
     ...removeEmptyArray(headers, 'headers'),
@@ -63,14 +61,6 @@ const simplifyFunctions = function (functions) {
 
 const simplifyFunction = function (functions, [key, value]) {
   return { ...functions, ...removeEmptyObject(value, key) }
-}
-
-const simplifyBuilders = function (builders) {
-  return isPlainObj(builders) ? Object.entries(builders).reduce(simplifyBuilder, {}) : builders
-}
-
-const simplifyBuilder = function (builders, [key, value]) {
-  return { ...builders, ...removeEmptyObject(value, key) }
 }
 
 const simplifyRedirects = function (redirects) {
