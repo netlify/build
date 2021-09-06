@@ -59,6 +59,48 @@ ${errorMessage}`,
   )
 }
 
+// Headers with different cases are not currently the way users probably
+// intend them to be, so we print a warning message.
+// See issue at https://github.com/netlify/build/issues/2290
+const warnHeadersCaseSensitivity = function (logs, headers) {
+  const headersNames = getHeadersNames(headers)
+  const headersNamesWithCase = headersNames.map(addHeaderLowerCase)
+  const differentCaseHeader = headersNamesWithCase.find(hasHeaderCaseDuplicate)
+  if (differentCaseHeader === undefined) {
+    return
+  }
+
+  const { headerName } = headersNamesWithCase.find((headerProps) =>
+    isHeaderCaseDuplicate(headerProps, differentCaseHeader),
+  )
+  logWarning(
+    logs,
+    `
+Warning: the same header is set twice with different cases: "${headerName}" and "${differentCaseHeader.headerName}"`,
+  )
+}
+
+const getHeadersNames = function (headers) {
+  return [...new Set(headers.flatMap(getHeaderNames))]
+}
+
+const getHeaderNames = function ({ values = {} }) {
+  return Object.keys(values)
+}
+
+const addHeaderLowerCase = function (headerName) {
+  const lowerHeaderName = headerName.toLowerCase()
+  return { headerName, lowerHeaderName }
+}
+
+const hasHeaderCaseDuplicate = function ({ lowerHeaderName }, index, headersNamesWithCase) {
+  return headersNamesWithCase.slice(index + 1).some((headerProps) => headerProps.lowerHeaderName === lowerHeaderName)
+}
+
+const isHeaderCaseDuplicate = function ({ headerName, lowerHeaderName }, differentCaseHeader) {
+  return differentCaseHeader.headerName !== headerName && differentCaseHeader.lowerHeaderName === lowerHeaderName
+}
+
 const warnRedirectsParsing = function (logs, errors) {
   if (errors.length === 0) {
     return
@@ -83,5 +125,6 @@ module.exports = {
   warnContextPluginConfig,
   throwContextPluginsConfig,
   warnHeadersParsing,
+  warnHeadersCaseSensitivity,
   warnRedirectsParsing,
 }

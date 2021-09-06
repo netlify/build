@@ -94,3 +94,7 @@ test('Headers - does not use headers file when using inlineConfig with identical
     flags: { inlineConfig: { headers: [{ for: '/path', values: { test: 'one' } }] } },
   })
 })
+
+test('Headers - duplicate case', async (t) => {
+  await runFixture(t, 'headers_duplicate_case')
+})

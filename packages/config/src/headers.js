@@ -4,7 +4,7 @@ const { resolve } = require('path')
 
 const { parseAllHeaders } = require('netlify-headers-parser')
 
-const { warnHeadersParsing } = require('./log/messages')
+const { warnHeadersParsing, warnHeadersCaseSensitivity } = require('./log/messages')
 
 // Retrieve path to `_headers` file (even if it does not exist yet)
 const getHeadersPath = function ({ build: { publish } }) {
@@ -21,6 +21,7 @@ const addHeaders = async function ({ headers: configHeaders, ...config }, header
     minimal: true,
   })
   warnHeadersParsing(logs, errors)
+  warnHeadersCaseSensitivity(logs, headers)
   return { ...config, headers }
 }
 
