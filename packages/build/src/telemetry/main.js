@@ -60,8 +60,7 @@ const trackBuildComplete = async function ({
 const track = async function ({ payload, config: { origin, writeKey, timeout } }) {
   const url = `${origin}/track`
   await got.post(url, {
-    json: true,
-    body: payload,
+    json: payload,
     timeout,
     retry: 0,
     headers: { Authorization: `Basic ${writeKey}` },
