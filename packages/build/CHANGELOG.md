@@ -1,5 +1,12 @@
 # Changelog
 
+### [18.7.4](https://www.github.com/netlify/build/compare/build-v18.7.3...build-v18.7.4) (2021-09-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency got to v10 ([#3488](https://www.github.com/netlify/build/issues/3488)) ([6be8f2b](https://www.github.com/netlify/build/commit/6be8f2bd3b48c18c5ce58d1a2f2189c9c0c9b3c2))
+
 ### [18.7.3](https://www.github.com/netlify/build/compare/build-v18.7.2...build-v18.7.3) (2021-09-01)
 
 
