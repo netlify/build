@@ -33,7 +33,7 @@ const getPluginsList = async function ({ debug, logs, testOpts: { pluginsListUrl
 
 const fetchPluginsList = async function ({ logs, pluginsListUrl }) {
   try {
-    const { body } = await got(pluginsListUrl, { json: true, timeout: PLUGINS_LIST_TIMEOUT })
+    const { body } = await got(pluginsListUrl, { responseType: 'json', timeout: PLUGINS_LIST_TIMEOUT })
 
     if (!isValidPluginsList(body)) {
       throw new Error(`Request succeeded but with an invalid response:\n${JSON.stringify(body, null, 2)}`)
