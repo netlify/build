@@ -10,16 +10,18 @@ const WILDCARD_ALL = '*'
 // Removing the legacy `functions` from the `build` block.
 // Looking for a default directory in the `functions` block, separating it
 // from the rest of the configuration if it exists.
-const normalizeFunctionsProps = function ({ functions: v1FunctionsDirectory, ...build }, functions) {
-  const functionsA = normalizeFunctionsLikeProps(functions)
+const normalizeFunctionsProps = function (
+  { functions: v1FunctionsDirectory, ...build },
+  { [WILDCARD_ALL]: wildcardProps, ...functions },
+) {
+  const functionsA = Object.entries(functions).reduce(normalizeFunctionsProp, { [WILDCARD_ALL]: wildcardProps })
   const { directory: functionsDirectory, functions: functionsB } = extractFunctionsDirectory(functionsA)
   const functionsDirectoryProps = getFunctionsDirectoryProps({ functionsDirectory, v1FunctionsDirectory })
   return { build, functions: functionsB, functionsDirectoryProps }
 }
 
-// Normalizes a functions|builders configuration object, so that the first level
-// of keys represents function|builders expressions mapped to a configuration
-// object.
+// Normalizes a functions configuration object, so that the first level of keys
+// represents function expressions mapped to a configuration object.
 //
 // Example input:
 // {
@@ -37,21 +39,17 @@ const normalizeFunctionsProps = function ({ functions: v1FunctionsDirectory, ...
 // that to be the case if the value is an object where all keys are also
 // config properties. If not, it's simply a function with the same name
 // as one of the config properties.
-const normalizeFunctionsLikeProps = function ({ [WILDCARD_ALL]: wildcardProps, ...builders }) {
-  return Object.entries(builders).reduce(normalizeFunctionsLikeProp, { [WILDCARD_ALL]: wildcardProps })
-}
-
-const normalizeFunctionsLikeProp = (props, [propName, propValue]) =>
+const normalizeFunctionsProp = (functions, [propName, propValue]) =>
   isConfigProperty(propName) && !isConfigLeaf(propValue)
-    ? { ...props, [WILDCARD_ALL]: { [propName]: propValue, ...props[WILDCARD_ALL] } }
-    : { ...props, [propName]: propValue }
+    ? { ...functions, [WILDCARD_ALL]: { [propName]: propValue, ...functions[WILDCARD_ALL] } }
+    : { ...functions, [propName]: propValue }
 
-const isConfigLeaf = (functionLikeConfig) =>
-  isPlainObj(functionLikeConfig) && Object.keys(functionLikeConfig).every(isConfigProperty)
+const isConfigLeaf = (functionConfig) =>
+  isPlainObj(functionConfig) && Object.keys(functionConfig).every(isConfigProperty)
 
-const isConfigProperty = (propName) => FUNCTION_LIKE_CONFIG_PROPERTIES.has(propName)
+const isConfigProperty = (propName) => FUNCTION_CONFIG_PROPERTIES.has(propName)
 
-const FUNCTION_LIKE_CONFIG_PROPERTIES = new Set([
+const FUNCTION_CONFIG_PROPERTIES = new Set([
   'directory',
   'external_node_modules',
   'ignored_node_modules',
@@ -85,10 +83,4 @@ const getFunctionsDirectoryProps = ({ functionsDirectory, v1FunctionsDirectory }
   return {}
 }
 
-module.exports = {
-  normalizeFunctionsProps,
-  normalizeFunctionsLikeProps,
-  bundlers,
-  WILDCARD_ALL,
-  FUNCTION_LIKE_CONFIG_PROPERTIES,
-}
+module.exports = { normalizeFunctionsProps, bundlers, WILDCARD_ALL, FUNCTION_CONFIG_PROPERTIES }

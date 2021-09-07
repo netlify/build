@@ -635,38 +635,6 @@ test('constants.FUNCTIONS_DIST', async (t) => {
   await runFixture(t, 'functions_dist')
 })
 
-test('constants.BUILDERS_SRC default value', async (t) => {
-  await runFixture(t, 'builders_src_default')
-})
-
-test('constants.BUILDERS_SRC relative path', async (t) => {
-  await runFixture(t, 'builders_src_relative')
-})
-
-test('constants.BUILDERS_SRC dynamic is ignored if BUILDERS_SRC is specified', async (t) => {
-  await runFixture(t, 'builders_src_dynamic_ignore', { copyRoot: { git: false } })
-})
-
-test('constants.BUILDERS_SRC dynamic should bundle builders', async (t) => {
-  await runFixture(t, 'builders_src_dynamic_bundle', { copyRoot: { git: false } })
-})
-
-test('constants.BUILDERS_SRC automatic value', async (t) => {
-  await runFixture(t, 'builders_src_auto')
-})
-
-test('constants.BUILDERS_SRC missing path', async (t) => {
-  await runFixture(t, 'builders_src_missing')
-})
-
-test('constants.BUILDERS_SRC created dynamically', async (t) => {
-  await runFixture(t, 'builders_src_dynamic', { copyRoot: { git: false } })
-})
-
-test('constants.INTERNAL_BUILDERS_SRC default value', async (t) => {
-  await runFixture(t, 'internal_builders_src_default')
-})
-
 test('constants.CACHE_DIR local', async (t) => {
   await runFixture(t, 'cache')
 })
@@ -762,15 +730,6 @@ test('Functions: --functionsDistDir', async (t) => {
     t.is(files.length, 1)
   } finally {
     await removeDir(functionsDistDir)
-  }
-})
-
-test('Functions: --buildersDistDir', async (t) => {
-  const buildersDistDir = await getTempName()
-  try {
-    await runFixture(t, 'simple', { flags: { buildersDistDir } })
-  } finally {
-    await removeDir(buildersDistDir)
   }
 })
 

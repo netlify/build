@@ -5,7 +5,6 @@ const { resolve } = require('path')
 const { get, set, delete: deleteProp } = require('dot-prop')
 const pathExists = require('path-exists')
 
-const { WILDCARD_ALL } = require('./functions_config')
 const { mergeConfigs } = require('./merge')
 const { isTruthy } = require('./utils/remove_falsy')
 
@@ -20,7 +19,7 @@ const resolveConfigPaths = async function ({ config, repositoryRoot, buildDir, b
 
 // All file paths in the configuration file are are relative to `buildDir`
 // (if `baseRelDir` is `true`).
-const FILE_PATH_CONFIG_PROPS = ['functionsDirectory', 'builders.*.directory', 'build.publish', 'build.edge_handlers']
+const FILE_PATH_CONFIG_PROPS = ['functionsDirectory', 'build.publish', 'build.edge_handlers']
 
 const resolvePaths = function (config, propNames, baseRel) {
   return propNames.reduce((configA, propName) => resolvePathProp(configA, propName, baseRel), config)
@@ -70,10 +69,6 @@ const DEFAULT_PATHS = [
   {
     getConfig: (directory) => ({ functionsDirectory: directory, functionsDirectoryOrigin: 'default' }),
     defaultPath: 'netlify/functions',
-  },
-  {
-    getConfig: (directory) => ({ builders: { [WILDCARD_ALL]: { directory, directoryOrigin: 'default' } } }),
-    defaultPath: 'netlify/builders',
   },
   { getConfig: (directory) => ({ build: { edge_handlers: directory } }), defaultPath: 'netlify/edge-handlers' },
 ]

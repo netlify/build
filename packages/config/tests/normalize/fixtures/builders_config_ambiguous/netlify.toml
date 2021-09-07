@@ -1,3 +1,0 @@
-# A builder named "external_node_modules"
-[builders.external_node_modules]
-external_node_modules = ["module-three"]
