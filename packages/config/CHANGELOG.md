@@ -1,5 +1,12 @@
 # Changelog
 
+### [15.5.2](https://www.github.com/netlify/build/compare/config-v15.5.1...config-v15.5.2) (2021-09-07)
+
+
+### Bug Fixes
+
+* add warning message when the same header is used with different cases ([#3590](https://www.github.com/netlify/build/issues/3590)) ([bd4b373](https://www.github.com/netlify/build/commit/bd4b373c34e88821d8bf537933bd26e8674e866c))
+
 ### [15.5.1](https://www.github.com/netlify/build/compare/config-v15.5.0...config-v15.5.1) (2021-09-01)
 
 
