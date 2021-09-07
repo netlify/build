@@ -1,5 +1,12 @@
 # Changelog
 
+## [18.8.0](https://www.github.com/netlify/build/compare/build-v18.7.4...build-v18.8.0) (2021-09-07)
+
+
+### Features
+
+* remove `builders` and `buildersDistDir` ([#3581](https://www.github.com/netlify/build/issues/3581)) ([d27906b](https://www.github.com/netlify/build/commit/d27906bc1390dbeb6ebc64279ce7475d418a8514))
+
 ### [18.7.4](https://www.github.com/netlify/build/compare/build-v18.7.3...build-v18.7.4) (2021-09-06)
 
 
