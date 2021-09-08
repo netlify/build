@@ -1,5 +1,12 @@
 # Changelog
 
+### [15.6.1](https://www.github.com/netlify/build/compare/config-v15.6.0...config-v15.6.1) (2021-09-08)
+
+
+### Bug Fixes
+
+* monitor whether headers with different cases have the same path ([#3594](https://www.github.com/netlify/build/issues/3594)) ([029ff7d](https://www.github.com/netlify/build/commit/029ff7dd833fcabcb1e28c01443ff6e52267bcd6))
+
 ## [15.6.0](https://www.github.com/netlify/build/compare/config-v15.5.2...config-v15.6.0) (2021-09-07)
 
 
