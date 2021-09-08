@@ -63,38 +63,36 @@ ${errorMessage}`,
 // intend them to be, so we print a warning message.
 // See issue at https://github.com/netlify/build/issues/2290
 const warnHeadersCaseSensitivity = function (logs, headers) {
-  const headersNames = getHeadersNames(headers)
-  const headersNamesWithCase = headersNames.map(addHeaderLowerCase)
-  const differentCaseHeader = headersNamesWithCase.find(hasHeaderCaseDuplicate)
+  const headersA = headers.flatMap(getHeaderNames).filter(isNotDuplicateHeaderName).map(addHeaderLowerCase)
+  const differentCaseHeader = headersA.find(hasHeaderCaseDuplicate)
   if (differentCaseHeader === undefined) {
     return
   }
 
-  const { headerName } = headersNamesWithCase.find((headerProps) =>
-    isHeaderCaseDuplicate(headerProps, differentCaseHeader),
-  )
+  const { forPath, headerName } = headersA.find((header) => isHeaderCaseDuplicate(header, differentCaseHeader))
+  const sameForPath = forPath === differentCaseHeader.forPath ? ` for "${forPath}"` : ''
   logWarning(
     logs,
     `
-Warning: the same header is set twice with different cases: "${headerName}" and "${differentCaseHeader.headerName}"`,
+Warning: the same header is set twice with different cases${sameForPath}: "${headerName}" and "${differentCaseHeader.headerName}"`,
   )
 }
 
-const getHeadersNames = function (headers) {
-  return [...new Set(headers.flatMap(getHeaderNames))]
+const getHeaderNames = function ({ for: forPath, values = {} }) {
+  return Object.keys(values).map((headerName) => ({ forPath, headerName }))
 }
 
-const getHeaderNames = function ({ values = {} }) {
-  return Object.keys(values)
+const isNotDuplicateHeaderName = function ({ headerName }, index, headers) {
+  return headers.slice(index + 1).every((header) => header.headerName !== headerName)
 }
 
-const addHeaderLowerCase = function (headerName) {
+const addHeaderLowerCase = function ({ forPath, headerName }) {
   const lowerHeaderName = headerName.toLowerCase()
-  return { headerName, lowerHeaderName }
+  return { forPath, headerName, lowerHeaderName }
 }
 
-const hasHeaderCaseDuplicate = function ({ lowerHeaderName }, index, headersNamesWithCase) {
-  return headersNamesWithCase.slice(index + 1).some((headerProps) => headerProps.lowerHeaderName === lowerHeaderName)
+const hasHeaderCaseDuplicate = function ({ lowerHeaderName }, index, headers) {
+  return headers.slice(index + 1).some((header) => header.lowerHeaderName === lowerHeaderName)
 }
 
 const isHeaderCaseDuplicate = function ({ headerName, lowerHeaderName }, differentCaseHeader) {
