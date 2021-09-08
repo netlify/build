@@ -28,6 +28,7 @@ const runFixtureCommon = async function (
     env: envOption = {},
     normalize: normalizeOption = !isPrint(),
     snapshot = true,
+    cwd,
     repositoryRoot = `${FIXTURES_DIR}/${fixtureName}`,
     copyRoot,
     mainFunc,
@@ -45,6 +46,7 @@ const runFixtureCommon = async function (
     useBinary,
     mainFlags,
     commandEnv,
+    cwd,
     fixtureName,
     copyRoot,
     copyRootDir,
@@ -93,13 +95,14 @@ const runCommand = async function ({
   useBinary,
   mainFlags,
   commandEnv,
+  cwd,
   fixtureName,
   copyRoot,
   copyRoot: { branch } = {},
   copyRootDir,
 }) {
   if (copyRoot === undefined) {
-    return execCommand({ mainFunc, binaryPath, useBinary, mainFlags, commandEnv })
+    return execCommand({ mainFunc, binaryPath, useBinary, mainFlags, commandEnv, cwd })
   }
 
   try {
@@ -109,26 +112,27 @@ const runCommand = async function ({
       await execa.command(`git checkout -b ${branch}`, { cwd: copyRootDir })
     }
 
-    return await execCommand({ mainFunc, binaryPath, useBinary, mainFlags, commandEnv })
+    return await execCommand({ mainFunc, binaryPath, useBinary, mainFlags, commandEnv, cwd })
   } finally {
     await removeDir(copyRootDir)
   }
 }
 
-const execCommand = function ({ mainFunc, binaryPath, useBinary, mainFlags, commandEnv }) {
+const execCommand = function ({ mainFunc, binaryPath, useBinary, mainFlags, commandEnv, cwd }) {
   if (useBinary) {
-    return execCliCommand({ binaryPath, mainFlags, commandEnv })
+    return execCliCommand({ binaryPath, mainFlags, commandEnv, cwd })
   }
 
   return execMainFunc({ mainFunc, mainFlags, commandEnv })
 }
 
-const execCliCommand = async function ({ binaryPath, mainFlags, commandEnv }) {
+const execCliCommand = async function ({ binaryPath, mainFlags, commandEnv, cwd }) {
   const cliFlags = getCliFlags(mainFlags)
   const { all, exitCode } = await execa(binaryPath, cliFlags, {
     all: true,
     reject: false,
     env: commandEnv,
+    cwd,
   })
   return { returnValue: all, exitCode }
 }
