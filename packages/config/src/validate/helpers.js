@@ -29,7 +29,7 @@ const checkValidProperty = function (value, propNames) {
   return Object.keys(value).every((propName) => propNames.includes(propName))
 }
 
-// Ensure paths specified by users in the configuration file are not targetting
+// Ensure `build.base` specified by users in the configuration file are not targetting
 // files outside the repository root directory.
 const isInsideRoot = function (path) {
   return !normalize(path).startsWith('..')
@@ -38,6 +38,17 @@ const isInsideRoot = function (path) {
 const insideRootCheck = {
   check: isInsideRoot,
   message: 'must be inside the root directory.',
+}
+
+// Ensure paths specified by users in the configuration file are not targetting
+// files outside the build directory.
+const isInsideBuildDir = function (path) {
+  return !normalize(path).startsWith('..')
+}
+
+const insideBuildDirCheck = {
+  check: isInsideBuildDir,
+  message: 'must be inside the build directory.',
 }
 
 // Used in examples to show how to fix the above check
@@ -58,6 +69,7 @@ module.exports = {
   isString,
   validProperties,
   insideRootCheck,
+  insideBuildDirCheck,
   removeParentDots,
   functionsDirectoryCheck,
 }

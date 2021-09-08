@@ -172,7 +172,7 @@ test('functions.included_files: is array of strings', async (t) => {
   await runFixture(t, 'function_config_invalid_included_files_1')
 })
 
-test('functions.included_files: does not contain paths outside of the root directory', async (t) => {
+test('functions.included_files: does not contain paths outside of the build directory', async (t) => {
   await runFixture(t, 'function_config_invalid_included_files_2')
 })
 

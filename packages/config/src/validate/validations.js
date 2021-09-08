@@ -13,6 +13,7 @@ const {
   isString,
   validProperties,
   insideRootCheck,
+  insideBuildDirCheck,
   removeParentDots,
 } = require('./helpers')
 
@@ -167,7 +168,7 @@ const POST_NORMALIZE_VALIDATIONS = [
   },
   {
     property: 'build.publish',
-    ...insideRootCheck,
+    ...insideBuildDirCheck,
     example: (publish) => ({ build: { publish: removeParentDots(publish) } }),
   },
   {
@@ -178,7 +179,7 @@ const POST_NORMALIZE_VALIDATIONS = [
   },
   {
     property: 'build.functions',
-    ...insideRootCheck,
+    ...insideBuildDirCheck,
     example: (functions) => ({ build: { functions: removeParentDots(functions) } }),
   },
   {
@@ -189,7 +190,7 @@ const POST_NORMALIZE_VALIDATIONS = [
   },
   {
     property: 'build.edge_handlers',
-    ...insideRootCheck,
+    ...insideBuildDirCheck,
     example: (edgeHandlers) => ({ build: { edge_handlers: removeParentDots(edgeHandlers) } }),
   },
   {
@@ -226,7 +227,7 @@ const POST_NORMALIZE_VALIDATIONS = [
   },
   {
     property: 'functions.*.included_files.*',
-    ...insideRootCheck,
+    ...insideBuildDirCheck,
     example: (value, key, prevPath) => ({
       functions: { [prevPath[1]]: { included_files: ['directory-one/file1', 'directory-two/**/*.jpg'] } },
     }),
@@ -258,7 +259,7 @@ const POST_NORMALIZE_VALIDATIONS = [
   },
   {
     property: 'functionsDirectory',
-    ...insideRootCheck,
+    ...insideBuildDirCheck,
     ...functionsDirectoryCheck,
     example: (publish) => ({ functions: { directory: removeParentDots(publish) } }),
   },
