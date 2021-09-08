@@ -95,6 +95,10 @@ test('Headers - does not use headers file when using inlineConfig with identical
   })
 })
 
-test('Headers - duplicate case', async (t) => {
-  await runFixture(t, 'headers_duplicate_case')
+test('Headers - duplicate case in same path', async (t) => {
+  await runFixture(t, 'headers_duplicate_case_same')
+})
+
+test('Headers - duplicate case in different paths', async (t) => {
+  await runFixture(t, 'headers_duplicate_case_different')
 })
