@@ -8,7 +8,7 @@ const getInitialBase = function ({
   defaultConfig: { build: { base: defaultBase } = {} },
   inlineConfig: { build: { base: initialBase = defaultBase } = {} },
 }) {
-  return resolvePath(repositoryRoot, initialBase)
+  return resolveBase(repositoryRoot, initialBase)
 }
 
 // Two config files can be used:
@@ -23,7 +23,11 @@ const getInitialBase = function ({
 // If the second file has a `base` property, it is ignored, i.e. it is not
 // recursive.
 const getBase = function (base, repositoryRoot, config) {
-  return base === undefined ? resolvePath(repositoryRoot, config.build.base) : base
+  return base === undefined ? resolveBase(repositoryRoot, config.build.base) : base
+}
+
+const resolveBase = function (repositoryRoot, base) {
+  return resolvePath(repositoryRoot, repositoryRoot, base, 'build.base')
 }
 
 // Also `config.build.base`.

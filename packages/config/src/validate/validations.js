@@ -6,15 +6,7 @@ const validateNpmPackageName = require('validate-npm-package-name')
 
 const { bundlers, WILDCARD_ALL: FUNCTIONS_CONFIG_WILDCARD_ALL } = require('../functions_config')
 
-const {
-  functionsDirectoryCheck,
-  isArrayOfObjects,
-  isArrayOfStrings,
-  isString,
-  validProperties,
-  insideRootCheck,
-  removeParentDots,
-} = require('./helpers')
+const { functionsDirectoryCheck, isArrayOfObjects, isArrayOfStrings, isString, validProperties } = require('./helpers')
 
 // List of validations performed on the configuration file.
 // Validation are performed in order: parent should be before children.
@@ -155,20 +147,10 @@ const POST_NORMALIZE_VALIDATIONS = [
     example: () => ({ build: { base: 'packages/project' } }),
   },
   {
-    property: 'build.base',
-    ...insideRootCheck,
-    example: (base) => ({ build: { base: removeParentDots(base) } }),
-  },
-  {
     property: 'build.publish',
     check: isString,
     message: 'must be a string.',
     example: () => ({ build: { publish: 'dist' } }),
-  },
-  {
-    property: 'build.publish',
-    ...insideRootCheck,
-    example: (publish) => ({ build: { publish: removeParentDots(publish) } }),
   },
   {
     property: 'build.functions',
@@ -177,20 +159,10 @@ const POST_NORMALIZE_VALIDATIONS = [
     example: () => ({ build: { functions: 'functions' } }),
   },
   {
-    property: 'build.functions',
-    ...insideRootCheck,
-    example: (functions) => ({ build: { functions: removeParentDots(functions) } }),
-  },
-  {
     property: 'build.edge_handlers',
     check: isString,
     message: 'must be a string.',
     example: () => ({ build: { edge_handlers: 'edge-handlers' } }),
-  },
-  {
-    property: 'build.edge_handlers',
-    ...insideRootCheck,
-    example: (edgeHandlers) => ({ build: { edge_handlers: removeParentDots(edgeHandlers) } }),
   },
   {
     property: 'functions.*',
@@ -225,13 +197,6 @@ const POST_NORMALIZE_VALIDATIONS = [
     }),
   },
   {
-    property: 'functions.*.included_files.*',
-    ...insideRootCheck,
-    example: (value, key, prevPath) => ({
-      functions: { [prevPath[1]]: { included_files: ['directory-one/file1', 'directory-two/**/*.jpg'] } },
-    }),
-  },
-  {
     property: 'functions.*.node_bundler',
     check: (value) => bundlers.includes(value),
     message: `must be one of: ${bundlers.join(', ')}`,
@@ -255,12 +220,6 @@ const POST_NORMALIZE_VALIDATIONS = [
     example: () => ({
       functions: { directory: 'my-functions' },
     }),
-  },
-  {
-    property: 'functionsDirectory',
-    ...insideRootCheck,
-    ...functionsDirectoryCheck,
-    example: (publish) => ({ functions: { directory: removeParentDots(publish) } }),
   },
 ]
 
