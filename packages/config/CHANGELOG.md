@@ -1,5 +1,12 @@
 # Changelog
 
+### [15.6.2](https://www.github.com/netlify/build/compare/config-v15.6.1...config-v15.6.2) (2021-09-09)
+
+
+### Bug Fixes
+
+* repository root directory validation ([#3598](https://www.github.com/netlify/build/issues/3598)) ([57a45fd](https://www.github.com/netlify/build/commit/57a45fd65a9705c95d8b71575bdb5d7b0d7dfed7))
+
 ### [15.6.1](https://www.github.com/netlify/build/compare/config-v15.6.0...config-v15.6.1) (2021-09-08)
 
 
