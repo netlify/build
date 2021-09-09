@@ -29,6 +29,10 @@ test('--repository-root', async (t) => {
   await runFixture(t, '', { flags: { repositoryRoot: `${FIXTURES_DIR}/empty` } })
 })
 
+test('--repository-root with cwd', async (t) => {
+  await runFixture(t, '', { flags: { repositoryRoot: 'empty' }, cwd: FIXTURES_DIR, useBinary: true })
+})
+
 test('No .git', async (t) => {
   await runFixture(t, 'empty', { copyRoot: { cwd: true, git: false } })
 })
