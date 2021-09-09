@@ -69,6 +69,14 @@ test('build.publish: parent directory', async (t) => {
   await runFixture(t, 'build_publish_parent')
 })
 
+test('build.publish: can be outside of build directory', async (t) => {
+  await runFixture(t, 'build_publish_parent_build')
+})
+
+test('build.publish: cannot be outside of root repository', async (t) => {
+  await runFixture(t, 'build_publish_parent_root')
+})
+
 test('build.functions: string', async (t) => {
   await runFixture(t, 'build_functions_string')
 })
@@ -169,11 +177,7 @@ test('functions.external_node_modules: array of strings', async (t) => {
 })
 
 test('functions.included_files: is array of strings', async (t) => {
-  await runFixture(t, 'function_config_invalid_included_files_1')
-})
-
-test('functions.included_files: does not contain paths outside of the root directory', async (t) => {
-  await runFixture(t, 'function_config_invalid_included_files_2')
+  await runFixture(t, 'function_config_invalid_included_files')
 })
 
 test('functions.ignored_node_modules: array of strings', async (t) => {
