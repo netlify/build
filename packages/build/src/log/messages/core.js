@@ -42,6 +42,14 @@ const logTimer = function (logs, durationNs, timerName) {
   log(logs, THEME.dimWords(`(${timerName} completed in ${duration})`))
 }
 
+const logMissingSideFile = function (logs, sideFile, publish) {
+  logWarning(
+    logs,
+    `
+A "${sideFile}" file is present in the repository but is missing in the publish directory "${publish}".`,
+  )
+}
+
 // @todo use `terminal-link` (https://github.com/sindresorhus/terminal-link)
 // instead of `ansi-escapes` once
 // https://github.com/jamestalmage/supports-hyperlinks/pull/12 is fixed
@@ -68,5 +76,6 @@ module.exports = {
   logBuildError,
   logBuildSuccess,
   logTimer,
+  logMissingSideFile,
   logLingeringProcesses,
 }

@@ -281,6 +281,48 @@ test('--apiHost is used to set Netlify API host', async (t) => {
   t.snapshot(requests)
 })
 
+test('Print warning when redirects file is missing from publish directory', async (t) => {
+  await runFixture(t, 'missing_redirects_warning', {
+    flags: { featureFlags: { netlify_build_warning_missing_headers: true } },
+  })
+})
+
+test('Does not print warning for missing redirects file without the feature flag', async (t) => {
+  await runFixture(t, 'missing_redirects_warning', {
+    flags: { featureFlags: { netlify_build_warning_missing_headers: false } },
+  })
+})
+
+test('Does not print warning when redirects file is not missing from publish directory', async (t) => {
+  await runFixture(t, 'missing_redirects_present', {
+    flags: { featureFlags: { netlify_build_warning_missing_headers: true } },
+  })
+})
+
+test('Does not print warning when redirects file is missing both from the build directory', async (t) => {
+  await runFixture(t, 'missing_redirects_absent', {
+    flags: { featureFlags: { netlify_build_warning_missing_headers: true } },
+  })
+})
+
+test('Does not print warning when redirects file is missing both from the build directory and the publish directory', async (t) => {
+  await runFixture(t, 'missing_redirects_none', {
+    flags: { featureFlags: { netlify_build_warning_missing_headers: true } },
+  })
+})
+
+test('Print warning for missing redirects file even with a base directory', async (t) => {
+  await runFixture(t, 'missing_redirects_base', {
+    flags: { featureFlags: { netlify_build_warning_missing_headers: true } },
+  })
+})
+
+test('Print warning when headers file is missing from publish directory', async (t) => {
+  await runFixture(t, 'missing_headers_warning', {
+    flags: { featureFlags: { netlify_build_warning_missing_headers: true } },
+  })
+})
+
 test('Print warning on lingering processes', async (t) => {
   const { returnValue } = await runFixture(t, 'lingering', {
     flags: { testOpts: { silentLingeringProcesses: false }, mode: 'buildbot' },

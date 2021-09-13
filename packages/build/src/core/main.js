@@ -24,6 +24,7 @@ const { getConfigOpts, loadConfig } = require('./config')
 const { getConstants } = require('./constants')
 const { doDryRun } = require('./dry')
 const { warnOnLingeringProcesses } = require('./lingering')
+const { warnOnMissingSideFiles } = require('./missing_side_file')
 const { normalizeFlags } = require('./normalize_flags')
 const { getSeverity } = require('./severity')
 
@@ -528,7 +529,10 @@ const initAndRunBuild = async function ({
       featureFlags,
     })
 
-    await warnOnLingeringProcesses({ mode, logs, testOpts })
+    await Promise.all([
+      warnOnMissingSideFiles({ buildDir, netlifyConfig: netlifyConfigA, logs, featureFlags }),
+      warnOnLingeringProcesses({ mode, logs, testOpts }),
+    ])
 
     return {
       commandsCount,
