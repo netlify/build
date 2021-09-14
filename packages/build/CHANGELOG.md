@@ -1,5 +1,12 @@
 # Changelog
 
+## [18.9.0](https://www.github.com/netlify/build/compare/build-v18.8.0...build-v18.9.0) (2021-09-14)
+
+
+### Features
+
+* warn when `_headers`/`_redirects` file is missing ([#3608](https://www.github.com/netlify/build/issues/3608)) ([254a03b](https://www.github.com/netlify/build/commit/254a03b17bbeed7bc14a27b3be384357c1f72216))
+
 ## [18.8.0](https://www.github.com/netlify/build/compare/build-v18.7.4...build-v18.8.0) (2021-09-07)
 
 
