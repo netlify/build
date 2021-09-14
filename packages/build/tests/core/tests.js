@@ -299,7 +299,7 @@ test('Does not print warning when redirects file is not missing from publish dir
   })
 })
 
-test('Does not print warning when redirects file is missing both from the build directory', async (t) => {
+test('Does not print warning when redirects file is missing from the build directory', async (t) => {
   await runFixture(t, 'missing_redirects_absent', {
     flags: { featureFlags: { netlify_build_warning_missing_headers: true } },
   })
