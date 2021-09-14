@@ -16,12 +16,7 @@ const warnOnMissingSideFiles = async function ({
     build: { publish },
   },
   logs,
-  featureFlags,
 }) {
-  if (!featureFlags.netlify_build_warning_missing_headers) {
-    return
-  }
-
   await Promise.all(SIDE_FILES.map((sideFile) => warnOnMissingSideFile({ logs, sideFile, buildDir, publish })))
 }
 
