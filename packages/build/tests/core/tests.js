@@ -22,6 +22,12 @@ const { startServer } = require('../helpers/server')
 const pWriteFile = promisify(writeFile)
 const pUnlink = promisify(unlink)
 
+test.afterEach.always(() => {
+  if (zipItAndShipIt.zipFunctions.restore) {
+    zipItAndShipIt.zipFunctions.restore()
+  }
+})
+
 test('--help', async (t) => {
   await runFixture(t, '', { flags: { help: true }, useBinary: true })
 })
@@ -314,19 +320,17 @@ test.serial('Successfully builds ES module function with feature flag', async (t
 
   const { args: callArgs } = spy.getCall(0)
   t.true(callArgs[2].featureFlags.defaultEsModulesToEsbuild)
-
-  zipItAndShipIt.zipFunctions.restore()
 })
 
-test.serial('Fails build for ES module function if feature flag is off', async (t) => {
+test.serial(`Doesn't fail build for ES module function if feature flag is off`, async (t) => {
   const spy = sinon.spy(zipItAndShipIt, 'zipFunctions')
 
-  await runFixture(t, 'functions_es_modules')
+  await runFixture(t, 'functions_es_modules', {
+    flags: { featureFlags: { buildbot_es_modules_esbuild: false } },
+  })
 
   const { args: callArgs } = spy.getCall(0)
   t.false(callArgs[2].featureFlags.defaultEsModulesToEsbuild)
-
-  zipItAndShipIt.zipFunctions.restore()
 })
 
 test('Print warning on lingering processes', async (t) => {
@@ -410,8 +414,6 @@ test.serial('`rustTargetDirectory` is passed to zip-it-and-ship-it only when run
     join(FIXTURES_DIR, fixtureWithoutConfig, '.netlify', 'rust-functions-cache', '[name]'),
   )
   t.is(call4Args[2].config['*'].rustTargetDirectory, undefined)
-
-  zipItAndShipIt.zipFunctions.restore()
 })
 
 test('Does not generate a `manifest.json` file when the feature flag is not enabled', async (t) => {
