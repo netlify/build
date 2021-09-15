@@ -19,6 +19,7 @@ const getFeatureFlag = function (name) {
 const DEFAULT_FEATURE_FLAGS = {
   zisiEsbuildDynamicImports: env.NETLIFY_EXPERIMENTAL_PROCESS_DYNAMIC_IMPORTS === 'true',
   netlify_build_warning_missing_headers: false,
+  buildbot_es_modules_esbuild: false,
 }
 
 module.exports = { normalizeCliFeatureFlags, DEFAULT_FEATURE_FLAGS }

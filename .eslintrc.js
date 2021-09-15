@@ -12,6 +12,7 @@ module.exports = {
     'import/no-extraneous-dependencies': 0,
     'import/no-unresolved': 0,
     'node/no-missing-require': 0,
+    'node/no-missing-import': 0,
 
     // eslint-plugin-ava needs to know where test files are located
     'ava/no-ignored-test-files': [2, { files: ['tests/**/*.js', '!tests/{helpers,fixtures}/**/*.{js,json}'] }],
@@ -64,7 +65,7 @@ module.exports = {
       },
     },
     {
-      files: ['**/fixtures/handlers_*/**/*.js'],
+      files: ['**/fixtures/handlers_*/**/*.js', '**/fixtures/*es_module*/**/*.js'],
       parserOptions: {
         sourceType: 'module',
       },

@@ -323,6 +323,30 @@ test('Print warning when headers file is missing from publish directory', async 
   })
 })
 
+test.serial('Successfully builds ES module function with feature flag', async (t) => {
+  const spy = sinon.spy(zipItAndShipIt, 'zipFunctions')
+
+  await runFixture(t, 'functions_es_modules', {
+    flags: { featureFlags: { buildbot_es_modules_esbuild: true } },
+  })
+
+  const { args: callArgs } = spy.getCall(0)
+  t.true(callArgs[2].featureFlags.defaultEsModulesToEsbuild)
+
+  zipItAndShipIt.zipFunctions.restore()
+})
+
+test.serial('Fails build for ES module function if feature flag is off', async (t) => {
+  const spy = sinon.spy(zipItAndShipIt, 'zipFunctions')
+
+  await runFixture(t, 'functions_es_modules')
+
+  const { args: callArgs } = spy.getCall(0)
+  t.false(callArgs[2].featureFlags.defaultEsModulesToEsbuild)
+
+  zipItAndShipIt.zipFunctions.restore()
+})
+
 test('Print warning on lingering processes', async (t) => {
   const { returnValue } = await runFixture(t, 'lingering', {
     flags: { testOpts: { silentLingeringProcesses: false }, mode: 'buildbot' },
@@ -404,6 +428,8 @@ test.serial('`rustTargetDirectory` is passed to zip-it-and-ship-it only when run
     join(FIXTURES_DIR, fixtureWithoutConfig, '.netlify', 'rust-functions-cache', '[name]'),
   )
   t.is(call4Args[2].config['*'].rustTargetDirectory, undefined)
+
+  zipItAndShipIt.zipFunctions.restore()
 })
 
 test('Does not generate a `manifest.json` file when the feature flag is not enabled', async (t) => {
