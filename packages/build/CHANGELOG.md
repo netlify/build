@@ -1,5 +1,12 @@
 # Changelog
 
+## [18.10.0](https://www.github.com/netlify/build/compare/build-v18.9.1...build-v18.10.0) (2021-09-15)
+
+
+### Features
+
+* remove `netlify_build_warning_missing_headers` feature flag ([#3612](https://www.github.com/netlify/build/issues/3612)) ([fd255b0](https://www.github.com/netlify/build/commit/fd255b0029cc40b0bf99782228b9c78892c2b550))
+
 ### [18.9.1](https://www.github.com/netlify/build/compare/build-v18.9.0...build-v18.9.1) (2021-09-15)
 
 
