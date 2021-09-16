@@ -1,6 +1,6 @@
 'use strict'
 
-const { cwd, version, platform } = require('process')
+const { cwd, version } = require('process')
 
 const test = require('ava')
 const hasAnsi = require('has-ansi')
@@ -77,7 +77,7 @@ test('build.cancelBuild() API call no token', async (t) => {
 
 // Node `util.inspect()` output is different from Node 10, leading to
 // inconsistent test snapshots
-// TODO: remove once dropping Node 10
+// @todo: remove once dropping Node 10
 if (!version.startsWith('v10.')) {
   test('build.cancelBuild() API call failure', async (t) => {
     await runFixture(t, 'cancel', {
@@ -311,12 +311,14 @@ test('Plugin errors can have a toJSON() method', async (t) => {
 })
 
 // Process exit is different on Windows
-// TODO: re-enable. This test is currently randomly failing.
-if (platform !== 'win32') {
-  test.skip('Early exit', async (t) => {
-    await runFixture(t, 'early_exit')
-  })
-}
+// @todo: re-enable. This test is currently randomly failing.
+// @todo: uncomment after upgrading to Ava v4.
+// See https://github.com/netlify/build/issues/3615
+// if (platform !== 'win32') {
+//   test.skip('Early exit', async (t) => {
+//     await runFixture(t, 'early_exit')
+//   })
+// }
 
 test('Print stack trace of plugin errors', async (t) => {
   await runFixture(t, 'plugin_stack')
