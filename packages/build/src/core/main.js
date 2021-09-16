@@ -530,7 +530,7 @@ const initAndRunBuild = async function ({
     })
 
     await Promise.all([
-      warnOnMissingSideFiles({ buildDir, netlifyConfig: netlifyConfigA, logs, featureFlags }),
+      warnOnMissingSideFiles({ buildDir, netlifyConfig: netlifyConfigA, logs }),
       warnOnLingeringProcesses({ mode, logs, testOpts }),
     ])
 
