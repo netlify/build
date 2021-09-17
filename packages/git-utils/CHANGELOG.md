@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.0.2](https://www.github.com/netlify/build/compare/git-utils-v2.0.1...git-utils-v2.0.2) (2021-09-17)
+
+
+### Bug Fixes
+
+* `utils.git` crashes when commit messages or authors have uncommon characters ([#3623](https://www.github.com/netlify/build/issues/3623)) ([895a06c](https://www.github.com/netlify/build/commit/895a06cc998f3f75c3fd204f887fad9c0e45e67d))
+
 ### [2.0.1](https://www.github.com/netlify/build/compare/git-utils-v2.0.0...git-utils-v2.0.1) (2021-08-12)
 
 
