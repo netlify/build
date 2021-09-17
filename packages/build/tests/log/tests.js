@@ -3,7 +3,7 @@
 const test = require('ava')
 const { red } = require('chalk')
 const hasAnsi = require('has-ansi')
-const isCI = require('is-ci')
+// const isCI = require('is-ci')
 
 const { runFixture } = require('../helpers/main')
 
@@ -35,16 +35,18 @@ test('No TTY', async (t) => {
 })
 
 // In GitHub actions, `update-notifier` is never enabled
-if (!isCI) {
-  test.skip('Print a warning when using an old version through Netlify CLI', async (t) => {
-    // We need to unset some environment variables which would otherwise disable `update-notifier`
-    await runFixture(t, 'error', {
-      flags: { mode: 'cli', testOpts: { oldCliLogs: true } },
-      env: { NODE_ENV: '' },
-      useBinary: true,
-    })
-  })
-}
+// @todo: uncomment after upgrading to Ava v4.
+// See https://github.com/netlify/build/issues/3615
+// if (!isCI) {
+//   test('Print a warning when using an old version through Netlify CLI', async (t) => {
+//     // We need to unset some environment variables which would otherwise disable `update-notifier`
+//     await runFixture(t, 'error', {
+//       flags: { mode: 'cli', testOpts: { oldCliLogs: true } },
+//       env: { NODE_ENV: '' },
+//       useBinary: true,
+//     })
+//   })
+// }
 
 test('Logs whether the build commands came from the UI', async (t) => {
   const defaultConfig = { build: { command: 'node --invalid' } }
