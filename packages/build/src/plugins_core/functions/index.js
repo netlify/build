@@ -56,8 +56,11 @@ const getZisiParameters = ({ buildDir, featureFlags, functionsConfig, functionsD
     expression,
     normalizeFunctionConfig({ buildDir, featureFlags, functionConfig: object, isRunningLocally }),
   ])
+  const zisiFeatureFlags = {
+    defaultEsModulesToEsbuild: featureFlags.buildbot_es_modules_esbuild,
+  }
 
-  return { basePath: buildDir, config, manifest }
+  return { basePath: buildDir, config, manifest, featureFlags: zisiFeatureFlags }
 }
 
 const zipFunctionsAndLogResults = async ({
