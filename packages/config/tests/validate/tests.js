@@ -192,6 +192,10 @@ test('functions.directory: defined on the main functions object', async (t) => {
   await runFixture(t, 'function_config_invalid_nested_directory')
 })
 
+test('functions.schedule: supported syntax', async (t) => {
+  await runFixture(t, 'function_config_invalid_schedule')
+})
+
 test('Validates defaultConfig', async (t) => {
   const defaultConfig = { build: { command: false } }
   await runFixture(t, 'empty', { flags: { defaultConfig } })

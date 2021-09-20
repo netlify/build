@@ -6,7 +6,14 @@ const validateNpmPackageName = require('validate-npm-package-name')
 
 const { bundlers, WILDCARD_ALL: FUNCTIONS_CONFIG_WILDCARD_ALL } = require('../functions_config')
 
-const { functionsDirectoryCheck, isArrayOfObjects, isArrayOfStrings, isString, validProperties } = require('./helpers')
+const {
+  functionsDirectoryCheck,
+  isArrayOfObjects,
+  isArrayOfStrings,
+  isString,
+  validProperties,
+  isCronExpression,
+} = require('./helpers')
 
 // List of validations performed on the configuration file.
 // Validation are performed in order: parent should be before children.
@@ -210,6 +217,14 @@ const POST_NORMALIZE_VALIDATIONS = [
     message: 'must be defined on the main `functions` object.',
     example: () => ({
       functions: { directory: 'my-functions' },
+    }),
+  },
+  {
+    property: 'functions.*.schedule',
+    check: isCronExpression,
+    message: 'must be valid cron syntax.',
+    example: (value, key, prevPath) => ({
+      functions: { [prevPath[1]]: { schedule: '5 4 * * *' } },
     }),
   },
   {

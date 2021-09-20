@@ -1,5 +1,6 @@
 'use strict'
 
+const CronParser = require('cron-parser')
 const isPlainObj = require('is-plain-obj')
 
 const isArrayOfObjects = function (value) {
@@ -12,6 +13,15 @@ const isArrayOfStrings = function (value) {
 
 const isString = function (value) {
   return typeof value === 'string'
+}
+
+const isCronExpression = function (value) {
+  try {
+    CronParser.parseExpression(value)
+    return true
+  } catch (error) {
+    return false
+  }
 }
 
 // Check an object valid properties, including legacy ones
@@ -38,4 +48,5 @@ module.exports = {
   isString,
   validProperties,
   functionsDirectoryCheck,
+  isCronExpression,
 }
