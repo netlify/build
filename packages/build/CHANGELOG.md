@@ -1,5 +1,17 @@
 # Changelog
 
+## [18.11.0](https://www.github.com/netlify/build/compare/build-v18.10.0...build-v18.11.0) (2021-09-20)
+
+
+### Features
+
+* **build:** pass ES module feature flag to zisi ([#3619](https://www.github.com/netlify/build/issues/3619)) ([5002fc4](https://www.github.com/netlify/build/commit/5002fc4ed0ec63ae89dbd2f43e21446097226afc))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.21.1 ([#3633](https://www.github.com/netlify/build/issues/3633)) ([5f70b85](https://www.github.com/netlify/build/commit/5f70b850f470c18d8b015b0e150b598fe8c8a571))
+
 ## [18.10.0](https://www.github.com/netlify/build/compare/build-v18.9.1...build-v18.10.0) (2021-09-15)
 
 
