@@ -53,6 +53,9 @@ After submitting the pull request, please make sure the Continuous Integration c
 
 ## Releasing
 
+For more details, please refer to the
+[shared npm release process](https://github.com/netlify/team-dev#npm-packages-release-process) (internal use only)
+
 `release-please` creates an aggregated release PR that contains all packages that were changed from the last release.
 When you merge this PR, it will automatically publish the relevant packages to `npm` in the correct order.
 
@@ -85,14 +88,19 @@ updating `@netlify/build` and let Renovate bundle those two changes together whe
 
 When `@netlify/build` or `@netlify/config` is published to npm, Renovate will automatically create a release PR in the
 buildbot after a short while. Once the Jenkins build has passed and finished building, the PR can be tested in
-production by updating the `Site.build_image` property of any test Site. This can be done with the following Netlify CLI
-commands:
+production by updating the `Site.build_image` property of any test Site. This can be done with the following
+[Netlify CLI commands](https://github.com/netlify/buildbot#using-netlify-cli-or-netlify-api):
 
 ```bash
 netlify api updateSite --data='{ "site_id": "{{siteId}}", "body": { "build_image": "{{buildImage}}" }}'
 ```
 
 The `{{buildImage}}` can be the buildbot commit hash or `git` branch name.
+
+_Note:_ Once the `release-please` GitHub action has completed on main (not on the release-please PR,
+[example](https://github.com/netlify/build/actions/runs/1254006395)), you can tick the last checkbox on
+[the `buildbot` Dependency Dashboard](https://github.com/netlify/buildbot/issues/912) to force-generate a `buildbot`
+release PR.
 
 ## Beta release
 
