@@ -1,6 +1,8 @@
 'use strict'
 
+const fs = require('fs')
 const { join, resolve } = require('path')
+const { promisify } = require('util')
 
 // We can't use destructuring for zisi as we rely on spies for the `zipFunctions` method within our tests
 const zipItAndShipIt = require('@netlify/zip-it-and-ship-it')
@@ -17,6 +19,8 @@ const {
 const { getZipError } = require('./error')
 const { getUserAndInternalFunctions, validateFunctionsSrc } = require('./utils')
 
+const pWriteFile = promisify(fs.writeFile)
+
 // Returns `true` if at least one of the functions has been configured to use
 // esbuild.
 const isUsingEsbuild = (functionsConfig = {}) =>
@@ -30,6 +34,7 @@ const normalizeFunctionConfig = ({ buildDir, featureFlags, functionConfig = {}, 
   includedFiles: functionConfig.included_files,
   includedFilesBasePath: buildDir,
   ignoredNodeModules: functionConfig.ignored_node_modules,
+  schedule: functionConfig.schedule,
 
   // When the user selects esbuild as the Node bundler, we still want to use
   // the legacy ZISI bundler as a fallback. Rather than asking the user to
@@ -63,6 +68,22 @@ const getZisiParameters = ({ buildDir, featureFlags, functionsConfig, functionsD
   return { basePath: buildDir, config, manifest, featureFlags: zisiFeatureFlags }
 }
 
+// TODO: is this the best place for this logic? should this live elsewhere, e.g. in its own plugin?
+const writeToScheduleFile = async (zisiResult) => {
+  const schedule = zisiResult
+    .filter(({ config }) => Boolean(config.schedule))
+    .map(({ name, config }) => ({ route: `.netlify/functions/${name}`, schedule: config.schedule }))
+
+  if (schedule.length === 0) {
+    return
+  }
+
+  const scheduleFile = JSON.stringify(schedule, null, 2)
+
+  // TODO: what's the exact path where we should write? somewhere in .netlify? in the root dir?
+  await pWriteFile('./_schedule', scheduleFile)
+}
+
 const zipFunctionsAndLogResults = async ({
   buildDir,
   featureFlags,
@@ -83,6 +104,7 @@ const zipFunctionsAndLogResults = async ({
     const sourceDirectories = [internalFunctionsSrc, functionsSrc].filter(Boolean)
     const results = await zipItAndShipIt.zipFunctions(sourceDirectories, functionsDist, zisiParameters)
 
+    writeToScheduleFile(results)
     logBundleResults({ logs, results })
 
     return { bundler }
