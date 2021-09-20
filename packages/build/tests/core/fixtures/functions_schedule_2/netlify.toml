@@ -1,0 +1,2 @@
+[functions.foo]
+  schedule = "i am not a cron, im a pokemon"

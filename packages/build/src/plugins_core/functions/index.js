@@ -81,7 +81,7 @@ const writeToScheduleFile = async (dir, zisiResult) => {
   const scheduleFile = JSON.stringify(schedule, null, 2)
 
   // TODO: what's the exact path where we should write? somewhere in .netlify? in the root dir?
-  await pWriteFile(join(dir, "_schedule"), scheduleFile)
+  await pWriteFile(join(dir, '_schedule'), scheduleFile)
 }
 
 const zipFunctionsAndLogResults = async ({
