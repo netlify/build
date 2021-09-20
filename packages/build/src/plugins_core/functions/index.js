@@ -69,7 +69,7 @@ const getZisiParameters = ({ buildDir, featureFlags, functionsConfig, functionsD
 }
 
 // TODO: is this the best place for this logic? should this live elsewhere, e.g. in its own plugin?
-const writeToScheduleFile = async (zisiResult) => {
+const writeToScheduleFile = async (dir, zisiResult) => {
   const schedule = zisiResult
     .filter(({ config }) => Boolean(config.schedule))
     .map(({ name, config }) => ({ name, schedule: config.schedule }))
@@ -81,7 +81,7 @@ const writeToScheduleFile = async (zisiResult) => {
   const scheduleFile = JSON.stringify(schedule, null, 2)
 
   // TODO: what's the exact path where we should write? somewhere in .netlify? in the root dir?
-  await pWriteFile('./_schedule', scheduleFile)
+  await pWriteFile(join(dir, "_schedule"), scheduleFile)
 }
 
 const zipFunctionsAndLogResults = async ({
@@ -104,7 +104,7 @@ const zipFunctionsAndLogResults = async ({
     const sourceDirectories = [internalFunctionsSrc, functionsSrc].filter(Boolean)
     const results = await zipItAndShipIt.zipFunctions(sourceDirectories, functionsDist, zisiParameters)
 
-    await writeToScheduleFile(results)
+    await writeToScheduleFile(buildDir, results)
     logBundleResults({ logs, results })
 
     return { bundler }
