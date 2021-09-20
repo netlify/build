@@ -72,7 +72,7 @@ const getZisiParameters = ({ buildDir, featureFlags, functionsConfig, functionsD
 const writeToScheduleFile = async (zisiResult) => {
   const schedule = zisiResult
     .filter(({ config }) => Boolean(config.schedule))
-    .map(({ name, config }) => ({ route: `.netlify/functions/${name}`, schedule: config.schedule }))
+    .map(({ name, config }) => ({ name, schedule: config.schedule }))
 
   if (schedule.length === 0) {
     return
