@@ -222,7 +222,7 @@ const POST_NORMALIZE_VALIDATIONS = [
   {
     property: 'functions.*.schedule',
     check: isCronExpression,
-    message: 'must be valid cron syntax.',
+    message: 'must be valid cron syntax (see https://ntl.fyi/cron-syntax).',
     example: (value, key, prevPath) => ({
       functions: { [prevPath[1]]: { schedule: '5 4 * * *' } },
     }),
