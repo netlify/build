@@ -54,7 +54,7 @@ After submitting the pull request, please make sure the Continuous Integration c
 ## Releasing
 
 For more details, please refer to the
-[shared npm release process](https://github.com/netlify/team-dev#npm-packages-release-process) (internal use only)
+[shared npm release process](https://github.com/netlify/team-dev#npm-packages-release-process) (internal use only).
 
 `release-please` creates an aggregated release PR that contains all packages that were changed from the last release.
 When you merge this PR, it will automatically publish the relevant packages to `npm` in the correct order.
