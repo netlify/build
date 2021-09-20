@@ -58,6 +58,7 @@ const getZisiParameters = ({ buildDir, featureFlags, functionsConfig, functionsD
   ])
   const zisiFeatureFlags = {
     defaultEsModulesToEsbuild: featureFlags.buildbot_es_modules_esbuild,
+    parseWithEsbuild: featureFlags.buildbot_zisi_esbuild_parser,
   }
 
   return { basePath: buildDir, config, manifest, featureFlags: zisiFeatureFlags }

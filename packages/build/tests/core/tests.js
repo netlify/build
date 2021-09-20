@@ -333,6 +333,20 @@ test.serial(`Doesn't fail build for ES module function if feature flag is off`, 
   t.false(callArgs[2].featureFlags.defaultEsModulesToEsbuild)
 })
 
+test.serial('Passes `parseWithEsbuild` feature flag to zip-it-and-ship-it', async (t) => {
+  const spy = sinon.spy(zipItAndShipIt, 'zipFunctions')
+
+  await runFixture(t, 'core', { snapshot: false })
+  await runFixture(t, 'core', {
+    flags: { featureFlags: { buildbot_zisi_esbuild_parser: true } },
+    snapshot: false,
+  })
+
+  t.is(spy.callCount, 2)
+  t.false(spy.firstCall.args[2].featureFlags.parseWithEsbuild)
+  t.true(spy.secondCall.args[2].featureFlags.parseWithEsbuild)
+})
+
 test('Print warning on lingering processes', async (t) => {
   const { returnValue } = await runFixture(t, 'lingering', {
     flags: { testOpts: { silentLingeringProcesses: false }, mode: 'buildbot' },
