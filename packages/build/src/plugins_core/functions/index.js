@@ -104,7 +104,7 @@ const zipFunctionsAndLogResults = async ({
     const sourceDirectories = [internalFunctionsSrc, functionsSrc].filter(Boolean)
     const results = await zipItAndShipIt.zipFunctions(sourceDirectories, functionsDist, zisiParameters)
 
-    writeToScheduleFile(results)
+    await writeToScheduleFile(results)
     logBundleResults({ logs, results })
 
     return { bundler }
