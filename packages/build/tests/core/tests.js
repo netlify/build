@@ -361,16 +361,16 @@ test('Functions config is passed to zip-it-and-ship-it (3)', async (t) => {
   await runFixture(t, 'functions_config_3')
 })
 
-test('Functions schedule is parsed (1)', async (t) => {
-  await runFixture(t, 'functions_schedule_1')
+test('Functions schedule is parsed (cron_human_readable)', async (t) => {
+  await runFixture(t, 'functions_schedule_cron_human_readable')
 })
 
-test('Functions schedule is parsed (2)', async (t) => {
-  await runFixture(t, 'functions_schedule_2')
+test('Functions schedule is parsed (gibberish)', async (t) => {
+  await runFixture(t, 'functions_schedule_gibberish')
 })
 
-test('Functions schedule is parsed (3)', async (t) => {
-  await runFixture(t, 'functions_schedule_3')
+test('Functions schedule is parsed (cron_valid)', async (t) => {
+  await runFixture(t, 'functions_schedule_cron_valid')
 })
 
 test('Shows notice about bundling errors and warnings coming from esbuild', async (t) => {
