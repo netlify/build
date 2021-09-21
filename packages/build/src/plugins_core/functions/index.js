@@ -69,7 +69,7 @@ const getZisiParameters = ({ buildDir, featureFlags, functionsConfig, functionsD
 }
 
 // TODO: is this the best place for this logic? should this live elsewhere, e.g. in its own plugin?
-const writeToScheduleFile = async (dir, zisiResult) => {
+const writeToScheduleFile = async (buildDir, zisiResult) => {
   const schedule = zisiResult
     .filter(({ config }) => Boolean(config.schedule))
     .map(({ name, config }) => ({ name, schedule: config.schedule }))
