@@ -1,12 +1,5 @@
 # Changelog
 
-## [18.12.0](https://www.github.com/netlify/build/compare/build-v18.11.2...build-v18.12.0) (2021-09-21)
-
-
-### Features
-
-* use internal functions directory in functions utils ([#3630](https://www.github.com/netlify/build/issues/3630)) ([7a17b00](https://www.github.com/netlify/build/commit/7a17b007852436b5e259c2fffde58f90abb7ab2c))
-
 ### [18.11.2](https://www.github.com/netlify/build/compare/build-v18.11.1...build-v18.11.2) (2021-09-21)
 
 

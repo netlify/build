@@ -1,12 +1,5 @@
 # Changelog
 
-## [2.1.0](https://www.github.com/netlify/build/compare/functions-utils-v2.0.10...functions-utils-v2.1.0) (2021-09-21)
-
-
-### Features
-
-* use internal functions directory in functions utils ([#3630](https://www.github.com/netlify/build/issues/3630)) ([7a17b00](https://www.github.com/netlify/build/commit/7a17b007852436b5e259c2fffde58f90abb7ab2c))
-
 ### [2.0.10](https://www.github.com/netlify/build/compare/functions-utils-v2.0.9...functions-utils-v2.0.10) (2021-09-21)
 
 
