@@ -1611,7 +1611,7 @@ test('Utils are defined', async (t) => {
 })
 
 test('Can run utils', async (t) => {
-  const functionsDir = `${FIXTURES_DIR}/functions_add/functions`
+  const functionsDir = `${FIXTURES_DIR}/functions_add/.netlify/functions-internal`
   await removeDir(functionsDir)
   try {
     await runFixture(t, 'functions_add')
