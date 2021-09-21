@@ -1,5 +1,12 @@
 # Changelog
 
+### [18.11.2](https://www.github.com/netlify/build/compare/build-v18.11.1...build-v18.11.2) (2021-09-21)
+
+
+### Bug Fixes
+
+* remove zisiEsbuildDynamicImports feature flag ([#3638](https://www.github.com/netlify/build/issues/3638)) ([c7a139d](https://www.github.com/netlify/build/commit/c7a139dcdbac344b5501b8c742163c3ab188ed34))
+
 ### [18.11.1](https://www.github.com/netlify/build/compare/build-v18.11.0...build-v18.11.1) (2021-09-21)
 
 
