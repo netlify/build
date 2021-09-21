@@ -40,10 +40,8 @@ const getSrcGlob = async function (src, srcBasename) {
   return srcBasename
 }
 
-const isEmptyArray = (input) => Array.isArray(input) && input.length === 0
-
 const list = async function (functionsSrc, { fail = defaultFail } = {}) {
-  if (functionsSrc === undefined || isEmptyArray(functionsSrc)) {
+  if (functionsSrc === undefined || functionsSrc.length === 0) {
     return fail('No function directory was specified')
   }
 
@@ -55,7 +53,7 @@ const list = async function (functionsSrc, { fail = defaultFail } = {}) {
 }
 
 const listAll = async function (functionsSrc, { fail = defaultFail } = {}) {
-  if (functionsSrc === undefined || isEmptyArray(functionsSrc)) {
+  if (functionsSrc === undefined || functionsSrc.length === 0) {
     return fail('No function directory was specified')
   }
 
