@@ -1,5 +1,12 @@
 # Changelog
 
+### [15.6.3](https://www.github.com/netlify/build/compare/config-v15.6.2...config-v15.6.3) (2021-09-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency netlify to ^8.0.1 ([#3644](https://www.github.com/netlify/build/issues/3644)) ([a69f777](https://www.github.com/netlify/build/commit/a69f77791b0910abe98e4fb5fddc220295920363))
+
 ### [15.6.2](https://www.github.com/netlify/build/compare/config-v15.6.1...config-v15.6.2) (2021-09-09)
 
 
