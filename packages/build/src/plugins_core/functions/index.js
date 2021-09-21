@@ -25,7 +25,7 @@ const isUsingEsbuild = (functionsConfig = {}) =>
 // The function configuration keys returned by @netlify/config are not an exact
 // match to the properties that @netlify/zip-it-and-ship-it expects. We do that
 // translation here.
-const normalizeFunctionConfig = ({ buildDir, featureFlags, functionConfig = {}, isRunningLocally }) => ({
+const normalizeFunctionConfig = ({ buildDir, functionConfig = {}, isRunningLocally }) => ({
   externalNodeModules: functionConfig.external_node_modules,
   includedFiles: functionConfig.included_files,
   includedFilesBasePath: buildDir,
@@ -38,11 +38,6 @@ const normalizeFunctionConfig = ({ buildDir, featureFlags, functionConfig = {}, 
   // fallback behavior ourselves. We do this by transforming the value
   // `esbuild` into `esbuild_zisi`, which zip-it-and-ship-it understands.
   nodeBundler: functionConfig.node_bundler === 'esbuild' ? 'esbuild_zisi' : functionConfig.node_bundler,
-
-  // With the `zisiEsbuildDynamicImports` feature flag, zip-it-and-ship-it will
-  // resolve dynamic import expressions by injecting shim files to make the
-  // expressions resolve to the right paths at runtime.
-  processDynamicNodeImports: Boolean(featureFlags.zisiEsbuildDynamicImports),
 
   // If the build is running in buildbot, we set the Rust target directory to a
   // path that will get cached in between builds, allowing us to speed up the
