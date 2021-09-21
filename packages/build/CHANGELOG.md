@@ -1,5 +1,31 @@
 # Changelog
 
+### [18.11.2](https://www.github.com/netlify/build/compare/build-v18.11.1...build-v18.11.2) (2021-09-21)
+
+
+### Bug Fixes
+
+* remove zisiEsbuildDynamicImports feature flag ([#3638](https://www.github.com/netlify/build/issues/3638)) ([c7a139d](https://www.github.com/netlify/build/commit/c7a139dcdbac344b5501b8c742163c3ab188ed34))
+
+### [18.11.1](https://www.github.com/netlify/build/compare/build-v18.11.0...build-v18.11.1) (2021-09-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.22.0 ([#3634](https://www.github.com/netlify/build/issues/3634)) ([e1175a3](https://www.github.com/netlify/build/commit/e1175a37c5d1af72bf3298a1060cfd1bf2d4cf07))
+
+## [18.11.0](https://www.github.com/netlify/build/compare/build-v18.10.0...build-v18.11.0) (2021-09-20)
+
+
+### Features
+
+* **build:** pass ES module feature flag to zisi ([#3619](https://www.github.com/netlify/build/issues/3619)) ([5002fc4](https://www.github.com/netlify/build/commit/5002fc4ed0ec63ae89dbd2f43e21446097226afc))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.21.1 ([#3633](https://www.github.com/netlify/build/issues/3633)) ([5f70b85](https://www.github.com/netlify/build/commit/5f70b850f470c18d8b015b0e150b598fe8c8a571))
+
 ## [18.10.0](https://www.github.com/netlify/build/compare/build-v18.9.1...build-v18.10.0) (2021-09-15)
 
 

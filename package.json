@@ -6,7 +6,6 @@
   "main": "index.js",
   "author": "Netlify Inc.",
   "scripts": {
-    "installOldNpm": "npm install && lerna bootstrap --no-ci",
     "test": "run-s format test:dev",
     "format": "run-s format:check-fix:*",
     "format:ci": "run-s format:check:*",
@@ -81,9 +80,8 @@
   "devDependencies": {
     "@commitlint/cli": "^13.0.0",
     "@commitlint/config-conventional": "^13.0.0",
-    "@netlify/eslint-config-node": "^3.2.8",
+    "@netlify/eslint-config-node": "^3.2.10",
     "ava": "^3.15.0",
-    "lerna": "^4.0.0",
     "nyc": "^15.0.0"
   },
   "engines": {
