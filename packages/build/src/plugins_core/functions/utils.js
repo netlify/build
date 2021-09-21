@@ -1,12 +1,13 @@
 'use strict'
 
-const { stat } = require('fs')
-const { relative } = require('path')
+const { stat, writeFile } = require('fs')
+const { relative, join } = require('path')
 const { promisify } = require('util')
 
 const { listFunctions } = require('@netlify/zip-it-and-ship-it')
 
 const pStat = promisify(stat)
+const pWriteFile = promisify(writeFile)
 
 const { addErrorInfo } = require('../../error/info')
 
@@ -64,4 +65,19 @@ const validateFunctionsSrc = async function ({ functionsSrc, relativeFunctionsSr
   }
 }
 
-module.exports = { getUserAndInternalFunctions, validateFunctionsSrc }
+const writeToScheduleFile = async (buildDir, zisiResult) => {
+  const schedule = zisiResult
+    .filter(({ config }) => Boolean(config.schedule))
+    .map(({ name, config }) => ({ name, schedule: config.schedule }))
+
+  if (schedule.length === 0) {
+    return
+  }
+
+  const scheduleFile = JSON.stringify(schedule, null, 2)
+
+  // TODO: what's the exact path where we should write? somewhere in .netlify? in the root dir?
+  await pWriteFile(join(buildDir, '_schedule'), scheduleFile)
+}
+
+module.exports = { getUserAndInternalFunctions, validateFunctionsSrc, writeToScheduleFile }

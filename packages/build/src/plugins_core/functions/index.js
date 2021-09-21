@@ -1,8 +1,6 @@
 'use strict'
 
-const fs = require('fs')
 const { join, resolve } = require('path')
-const { promisify } = require('util')
 
 // We can't use destructuring for zisi as we rely on spies for the `zipFunctions` method within our tests
 const zipItAndShipIt = require('@netlify/zip-it-and-ship-it')
@@ -17,9 +15,7 @@ const {
 } = require('../../log/messages/core_commands')
 
 const { getZipError } = require('./error')
-const { getUserAndInternalFunctions, validateFunctionsSrc } = require('./utils')
-
-const pWriteFile = promisify(fs.writeFile)
+const { getUserAndInternalFunctions, validateFunctionsSrc, writeToScheduleFile } = require('./utils')
 
 // Returns `true` if at least one of the functions has been configured to use
 // esbuild.
@@ -66,22 +62,6 @@ const getZisiParameters = ({ buildDir, featureFlags, functionsConfig, functionsD
   }
 
   return { basePath: buildDir, config, manifest, featureFlags: zisiFeatureFlags }
-}
-
-// TODO: is this the best place for this logic? should this live elsewhere, e.g. in its own plugin?
-const writeToScheduleFile = async (buildDir, zisiResult) => {
-  const schedule = zisiResult
-    .filter(({ config }) => Boolean(config.schedule))
-    .map(({ name, config }) => ({ name, schedule: config.schedule }))
-
-  if (schedule.length === 0) {
-    return
-  }
-
-  const scheduleFile = JSON.stringify(schedule, null, 2)
-
-  // TODO: what's the exact path where we should write? somewhere in .netlify? in the root dir?
-  await pWriteFile(join(dir, '_schedule'), scheduleFile)
 }
 
 const zipFunctionsAndLogResults = async ({
