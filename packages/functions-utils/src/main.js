@@ -26,13 +26,8 @@ const add = async function (src, dist, { fail = defaultFail } = {}) {
   }
 
   const srcBasename = basename(src)
-  const functionsDist = `${dist}/${srcBasename}`
-  if (await pathExists(functionsDist)) {
-    return fail(`Function file or directory already exists at "${functionsDist}"`)
-  }
-
   const srcGlob = await getSrcGlob(src, srcBasename)
-  await cpy(srcGlob, dist, { cwd: dirname(src), parents: true, overwrite: false })
+  await cpy(srcGlob, dist, { cwd: dirname(src), parents: true, overwrite: true })
 }
 
 const getSrcGlob = async function (src, srcBasename) {
@@ -46,7 +41,7 @@ const getSrcGlob = async function (src, srcBasename) {
 }
 
 const list = async function (functionsSrc, { fail = defaultFail } = {}) {
-  if (functionsSrc === undefined) {
+  if (functionsSrc === undefined || functionsSrc.length === 0) {
     return fail('No function directory was specified')
   }
 
@@ -58,7 +53,7 @@ const list = async function (functionsSrc, { fail = defaultFail } = {}) {
 }
 
 const listAll = async function (functionsSrc, { fail = defaultFail } = {}) {
-  if (functionsSrc === undefined) {
+  if (functionsSrc === undefined || functionsSrc.length === 0) {
     return fail('No function directory was specified')
   }
 
