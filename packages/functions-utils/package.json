@@ -43,7 +43,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@netlify/zip-it-and-ship-it": "^4.23.1",
+    "@netlify/zip-it-and-ship-it": "^4.23.2",
     "cpy": "^8.1.0",
     "path-exists": "^4.0.0"
   },
