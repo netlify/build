@@ -1,5 +1,12 @@
 # Changelog
 
+### [18.13.3](https://www.github.com/netlify/build/compare/build-v18.13.2...build-v18.13.3) (2021-09-27)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^3.6.2 ([#3664](https://www.github.com/netlify/build/issues/3664)) ([99e472c](https://www.github.com/netlify/build/commit/99e472c2be55764bd0459232dce29b5c8401ffed))
+
 ### [18.13.2](https://www.github.com/netlify/build/compare/build-v18.13.1...build-v18.13.2) (2021-09-27)
 
 
