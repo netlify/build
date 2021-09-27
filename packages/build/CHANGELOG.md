@@ -1,5 +1,13 @@
 # Changelog
 
+### [18.13.2](https://www.github.com/netlify/build/compare/build-v18.13.1...build-v18.13.2) (2021-09-27)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^3.6.1 ([#3656](https://www.github.com/netlify/build/issues/3656)) ([b8f89da](https://www.github.com/netlify/build/commit/b8f89da94ea515e63ffa0babaece6430b00fca7b))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.23.1 ([#3663](https://www.github.com/netlify/build/issues/3663)) ([64cf36d](https://www.github.com/netlify/build/commit/64cf36db8dc441e1670c4b73fa4e74c6d526f4cc))
+
 ### [18.13.1](https://www.github.com/netlify/build/compare/build-v18.13.0...build-v18.13.1) (2021-09-23)
 
 
