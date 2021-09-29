@@ -13,19 +13,27 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macOS-latest, windows-latest]
-        node-version: ['10.18.0', '*']
-        exclude:
-          - os: macOS-latest
+        node-version: ['*']
+        install-command: ['npm ci']
+        include:
+          # We test on the oldest supported Node.js version, but only with a
+          # single combination (Ubuntu)
+          - os: ubuntu-latest
             node-version: '10.18.0'
-          - os: windows-latest
-            node-version: '10.18.0'
+            install-command: npm ci
+          # The buildbot pins Netlify Build's dependencies, like `npm ci`.
+          # But other consumers do not, like `npm install`.
+          # So we test both.
+          - os: ubuntu-latest
+            node-version: '*'
+            install-command: npm install --no-package-lock
       fail-fast: false
     steps:
       # Sets an output parameter if this is a release PR
       - name: Check for release
         id: release-check
         run: echo "::set-output name=IS_RELEASE::true"
-        if: "${{ startsWith(github.head_ref, 'release-') }}"
+        if: ${{ startsWith(github.head_ref, 'release-') }}
       - name: Git checkout
         uses: actions/checkout@v2
         with:
@@ -38,18 +46,18 @@ jobs:
           check-latest: true
       - name: Install npm@7
         run: npm install -g npm@7
-        if: "${{ matrix.node-version == '10.18.0' }}"
+        if: ${{ matrix.node-version == '10.18.0' }}
       - name: Install dependencies
-        run: npm ci
+        run: ${{ matrix.install-command }}
       - name: Linting
         run: npm run format:ci
-        if: "${{ matrix.node-version == '*' && !steps.release-check.outputs.IS_RELEASE }}"
+        if: ${{ matrix.node-version == '*' && !steps.release-check.outputs.IS_RELEASE }}
       - name: Tests
         run: npm run test:ci
-        if: '${{ !steps.release-check.outputs.IS_RELEASE }}'
+        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Get test coverage flags
         id: test-coverage-flags
-        if: '${{ !steps.release-check.outputs.IS_RELEASE }}'
+        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
         run: |-
           os=${{ matrix.os }}
           node=${{ matrix.node-version }}
@@ -57,7 +65,7 @@ jobs:
           echo "::set-output name=node::node_${node//[.*]/}"
         shell: bash
       - uses: codecov/codecov-action@v2
-        if: '${{ !steps.release-check.outputs.IS_RELEASE }}'
+        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
         with:
           file: coverage/coverage-final.json
           flags: ${{ steps.test-coverage-flags.outputs.os }},${{ steps.test-coverage-flags.outputs.node }}
