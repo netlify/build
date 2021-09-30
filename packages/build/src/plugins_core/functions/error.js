@@ -108,6 +108,7 @@ const getModuleNameFromZISIError = function (error) {
 // Netlify Functions has a `package.json` but no `node_modules`
 const lacksNodeModules = async function (functionsSrc) {
   return (
+    functionsSrc !== undefined &&
     (await hasFunctionRootFile('package.json', functionsSrc)) &&
     !(await hasFunctionRootFile('node_modules', functionsSrc))
   )
