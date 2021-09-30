@@ -1,5 +1,12 @@
 # Changelog
 
+### [18.13.6](https://www.github.com/netlify/build/compare/build-v18.13.5...build-v18.13.6) (2021-09-30)
+
+
+### Bug Fixes
+
+* check for functionsSrc in "module not found" error ([#3674](https://www.github.com/netlify/build/issues/3674)) ([34f771f](https://www.github.com/netlify/build/commit/34f771f384234fa5dfd50f605c8c4dfa2c7d7656))
+
 ### [18.13.5](https://www.github.com/netlify/build/compare/build-v18.13.4...build-v18.13.5) (2021-09-29)
 
 
