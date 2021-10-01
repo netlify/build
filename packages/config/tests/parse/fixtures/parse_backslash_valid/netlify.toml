@@ -1,0 +1,2 @@
+[build]
+ignore = "test \\[this\\]\ntest \" \b \t \n \f \r \u0000 \U00000000"
