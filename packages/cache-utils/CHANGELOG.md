@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.0.4](https://www.github.com/netlify/build/compare/cache-utils-v2.0.3...cache-utils-v2.0.4) (2021-10-01)
+
+
+### Bug Fixes
+
+* **deps:** update dependency globby to v11 ([#3487](https://www.github.com/netlify/build/issues/3487)) ([6776522](https://www.github.com/netlify/build/commit/677652284d345b5d0db4344a93c92546559735c1))
+
 ### [2.0.3](https://www.github.com/netlify/build/compare/cache-utils-v2.0.2...cache-utils-v2.0.3) (2021-08-18)
 
 
