@@ -1,5 +1,12 @@
 # Changelog
 
+### [15.6.4](https://www.github.com/netlify/build/compare/config-v15.6.3...config-v15.6.4) (2021-10-04)
+
+
+### Bug Fixes
+
+* warn when using odd backslash sequences in netlify.toml ([#3677](https://www.github.com/netlify/build/issues/3677)) ([d3029ac](https://www.github.com/netlify/build/commit/d3029ac8de1e270c2fc2717ed24786506cd112cc))
+
 ### [15.6.3](https://www.github.com/netlify/build/compare/config-v15.6.2...config-v15.6.3) (2021-09-21)
 
 

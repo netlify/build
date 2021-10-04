@@ -1,5 +1,12 @@
 # Changelog
 
+### [18.13.7](https://www.github.com/netlify/build/compare/build-v18.13.6...build-v18.13.7) (2021-10-04)
+
+
+### Bug Fixes
+
+* warn when using odd backslash sequences in netlify.toml ([#3677](https://www.github.com/netlify/build/issues/3677)) ([d3029ac](https://www.github.com/netlify/build/commit/d3029ac8de1e270c2fc2717ed24786506cd112cc))
+
 ### [18.13.6](https://www.github.com/netlify/build/compare/build-v18.13.5...build-v18.13.6) (2021-09-30)
 
 
