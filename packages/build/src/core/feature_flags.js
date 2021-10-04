@@ -17,6 +17,7 @@ const getFeatureFlag = function (name) {
 const DEFAULT_FEATURE_FLAGS = {
   buildbot_es_modules_esbuild: false,
   buildbot_zisi_esbuild_parser: false,
+  netlify_config_toml_backslash: false,
 }
 
 module.exports = { normalizeCliFeatureFlags, DEFAULT_FEATURE_FLAGS }

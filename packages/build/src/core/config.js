@@ -162,6 +162,7 @@ const saveUpdatedConfig = async function ({
   headersPath,
   redirectsPath,
   logs,
+  featureFlags,
   context,
   branch,
   debug,
@@ -171,7 +172,16 @@ const saveUpdatedConfig = async function ({
     return
   }
 
-  await updateConfig(configMutations, { buildDir, configPath, headersPath, redirectsPath, context, branch, logs })
+  await updateConfig(configMutations, {
+    buildDir,
+    configPath,
+    headersPath,
+    redirectsPath,
+    context,
+    branch,
+    logs,
+    featureFlags,
+  })
 
   await logConfigOnUpload({ logs, configPath, debug })
   await logHeadersOnUpload({ logs, headersPath, debug })

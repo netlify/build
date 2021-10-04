@@ -24,7 +24,7 @@ const pCopyFile = promisify(copyFile)
 // If `netlify.toml` does not exist, creates it. Otherwise, merges the changes.
 const updateConfig = async function (
   configMutations,
-  { buildDir, configPath, headersPath, redirectsPath, context, branch, logs },
+  { buildDir, configPath, headersPath, redirectsPath, context, branch, logs, featureFlags = {} },
 ) {
   if (configMutations.length === 0) {
     return
@@ -32,7 +32,7 @@ const updateConfig = async function (
 
   const inlineConfig = applyMutations({}, configMutations)
   const normalizedInlineConfig = ensureConfigPriority(inlineConfig, context, branch)
-  const updatedConfig = await mergeWithConfig(normalizedInlineConfig, configPath)
+  const updatedConfig = await mergeWithConfig({ normalizedInlineConfig, configPath, logs, featureFlags })
   const configWithHeaders = await addHeaders(updatedConfig, headersPath, logs)
   const finalConfig = await addRedirects(configWithHeaders, redirectsPath, logs)
   const simplifiedConfig = simplifyConfig(finalConfig)
@@ -45,8 +45,8 @@ const updateConfig = async function (
 }
 
 // If `netlify.toml` exists, deeply merges the configuration changes.
-const mergeWithConfig = async function (normalizedInlineConfig, configPath) {
-  const config = await parseOptionalConfig(configPath)
+const mergeWithConfig = async function ({ normalizedInlineConfig, configPath, logs, featureFlags }) {
+  const config = await parseOptionalConfig(configPath, logs, featureFlags)
   const updatedConfig = mergeConfigs([config, normalizedInlineConfig])
   return updatedConfig
 }

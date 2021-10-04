@@ -59,6 +59,10 @@ const NORMALIZE_REGEXPS = [
         return unixify(`${prefix}/test/socket`)
       }
 
+      if (isEscapeSequence(fullPath)) {
+        return `${prefix}${fullPath}`
+      }
+
       // If the path is relative inside the root directory, there's no need to
       // transform it.
       if (fullPath.startsWith('./')) {
@@ -129,5 +133,13 @@ const NORMALIZE_REGEXPS = [
   // esbuild error messages
   [/(Could not resolve "[^"]+") \([^)]+\)/g, '$1'],
 ]
+
+// Check if what appears to be a Windows file paths is actually an escape
+// sequence like \n
+const isEscapeSequence = function (string) {
+  return string.length <= 2 || UNICODE_BACKSLASH_SEQUENCE.test(string)
+}
+
+const UNICODE_BACKSLASH_SEQUENCE = /^\/u\d+/iu
 
 module.exports = { normalizeOutput }

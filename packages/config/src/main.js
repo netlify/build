@@ -58,6 +58,7 @@ const resolveConfig = async function (opts) {
     mode,
     debug,
     logs,
+    featureFlags,
   } = await normalizeOpts(optsA)
 
   const { siteInfo, accounts, addons } = await getSiteInfo({ api, siteId, mode, testOpts })
@@ -82,6 +83,7 @@ const resolveConfig = async function (opts) {
     inlineConfig: inlineConfigA,
     baseRelDir: baseRelDirA,
     logs,
+    featureFlags,
   })
 
   const env = await getEnv({
@@ -150,6 +152,7 @@ const loadConfig = async function ({
   inlineConfig,
   baseRelDir,
   logs,
+  featureFlags,
 }) {
   const initialBase = getInitialBase({ repositoryRoot, defaultConfig, inlineConfig })
   const { configPath, config, buildDir, base, redirectsPath, headersPath } = await getFullConfig({
@@ -163,6 +166,7 @@ const loadConfig = async function ({
     baseRelDir,
     configBase: initialBase,
     logs,
+    featureFlags,
   })
 
   // No second pass needed if:
@@ -193,6 +197,7 @@ const loadConfig = async function ({
     configBase: base,
     base,
     logs,
+    featureFlags,
   })
   return {
     configPath: configPathA,
@@ -216,11 +221,12 @@ const getFullConfig = async function ({
   configBase,
   base,
   logs,
+  featureFlags,
 }) {
   const configPath = await getConfigPath({ configOpt, cwd, repositoryRoot, configBase })
 
   try {
-    const config = await parseConfig(configPath)
+    const config = await parseConfig(configPath, logs, featureFlags)
     const configA = mergeAndNormalizeConfig({
       config,
       defaultConfig,
