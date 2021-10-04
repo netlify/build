@@ -113,7 +113,7 @@
     "del": "^6.0.0",
     "get-bin-path": "^5.1.0",
     "get-node": "^11.0.2",
-    "get-port": "^5.1.1",
+    "get-port": "^6.0.0",
     "get-stream": "^6.0.0",
     "has-ansi": "^4.0.0",
     "is-ci": "^3.0.0",
