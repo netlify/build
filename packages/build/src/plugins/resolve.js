@@ -34,7 +34,6 @@ const resolvePluginsPath = async function ({
   )
   const pluginsOptionsB = addPluginsNodeVersion({
     pluginsOptions: pluginsOptionsA,
-    mode,
     nodePath,
     userNodeVersion,
     logs,
