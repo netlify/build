@@ -11,12 +11,12 @@ const { addErrorInfo } = require('../error/info')
 
 // Local plugins and `package.json`-installed plugins use user's preferred Node.js version if higher than our minimum
 // supported version (Node v10). Else default to the system Node version.
-// Local builds use user's preferred Node.js version.
-// Other plugins use `@netlify/build` Node.js version.
-const addPluginsNodeVersion = function ({ pluginsOptions, mode, nodePath, userNodeVersion }) {
+// Local and programmatic builds use `@netlify/build` Node.js version, which is
+// usually the system's Node.js version.
+const addPluginsNodeVersion = function ({ pluginsOptions, nodePath, userNodeVersion }) {
   const currentNodeVersion = cleanVersion(currentVersion)
   return pluginsOptions.map((pluginOptions) =>
-    addPluginNodeVersion({ pluginOptions, currentNodeVersion, userNodeVersion, mode, nodePath }),
+    addPluginNodeVersion({ pluginOptions, currentNodeVersion, userNodeVersion, nodePath }),
   )
 }
 
@@ -25,14 +25,10 @@ const addPluginNodeVersion = function ({
   pluginOptions: { loadedFrom },
   currentNodeVersion,
   userNodeVersion,
-  mode,
   nodePath,
 }) {
   if (loadedFrom === 'local' || loadedFrom === 'package.json') {
     return nonUIPluginNodeVersion({ pluginOptions, currentNodeVersion, userNodeVersion, nodePath })
-  }
-  if (loadedFrom !== 'core' && mode !== 'buildbot') {
-    return { ...pluginOptions, nodePath, nodeVersion: userNodeVersion }
   }
 
   return { ...pluginOptions, nodePath: execPath, nodeVersion: currentNodeVersion }
