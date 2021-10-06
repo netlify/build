@@ -80,7 +80,6 @@ const build = async function (flags = {}) {
       durationNs,
       configMutations,
       bundledFunctions,
-      buildDir,
     } = await execBuild({
       ...flagsA,
       buildId,
@@ -115,7 +114,6 @@ const build = async function (flags = {}) {
       framework,
       testOpts,
       errorParams,
-      buildDir,
       bundledFunctions,
     })
     return { success, severityCode, netlifyConfig: netlifyConfigA, logs, configMutations }
@@ -297,7 +295,6 @@ const tExecBuild = async function ({
     timers: timersB,
     configMutations,
     bundledFunctions,
-    buildDir,
   }
 }
 
@@ -680,7 +677,6 @@ const telemetryReport = async function ({
   framework,
   testOpts,
   errorParams,
-  buildDir,
   bundledFunctions,
 }) {
   try {
@@ -696,7 +692,6 @@ const telemetryReport = async function ({
       userNodeVersion,
       framework,
       testOpts,
-      buildDir,
       bundledFunctions,
     })
   } catch (error) {

@@ -1,20 +1,13 @@
 'use strict'
 
-const { dirname, extname, relative, resolve } = require('path')
+const { extname } = require('path')
 
-const createBundlingTelemetryObject = ({ buildDir, internalFunctionsSrc: relativeInternalFunctionsSrc, functions }) => {
-  if (buildDir === undefined || relativeInternalFunctionsSrc === undefined) {
-    return []
-  }
+const { INTERNAL_FUNCTIONS_SRC: internalFunctionsSrc } = require('../core/constants')
 
-  const internalFunctionsSrc = resolve(buildDir, relativeInternalFunctionsSrc)
+const createBundlingTelemetryObject = ({ functions = [] }) =>
+  functions.map((functionData) => createBundlingTelemetryObjectForFunction({ functionData, internalFunctionsSrc }))
 
-  return functions.map((functionData) =>
-    createBundlingTelemetryObjectForFunction({ functionData, internalFunctionsSrc }),
-  )
-}
-
-const createBundlingTelemetryObjectForFunction = ({ functionData, internalFunctionsSrc }) => {
+const createBundlingTelemetryObjectForFunction = ({ functionData }) => {
   const {
     bundler = 'default',
     config = {},
@@ -25,7 +18,7 @@ const createBundlingTelemetryObjectForFunction = ({ functionData, internalFuncti
   } = functionData
   const { externalNodeModules = [] } = config
   const isBuiltFromSource = !['', '.zip'].includes(extname(mainFile))
-  const isInternal = isInternalFunction({ internalFunctionsSrc, mainFile })
+  const isInternal = mainFile.includes(internalFunctionsSrc)
   const nativeModuleNames = Object.keys(nativeNodeModules)
 
   return {
@@ -38,8 +31,5 @@ const createBundlingTelemetryObjectForFunction = ({ functionData, internalFuncti
     runtime,
   }
 }
-
-const isInternalFunction = ({ internalFunctionsSrc, mainFile }) =>
-  internalFunctionsSrc !== undefined && !relative(dirname(mainFile), internalFunctionsSrc).startsWith('..')
 
 module.exports = { createBundlingTelemetryObject }

@@ -6,7 +6,6 @@ const got = require('got')
 const osName = require('os-name')
 
 const { version: buildVersion } = require('../../package.json')
-const { INTERNAL_FUNCTIONS_SRC: internalFunctionsSrc } = require('../core/constants')
 const { addErrorInfo } = require('../error/info')
 const { roundTimerToMillisecs } = require('../time/measure')
 
@@ -32,7 +31,6 @@ const trackBuildComplete = async function ({
   userNodeVersion,
   framework,
   testOpts: { telemetryOrigin = DEFAULT_TELEMETRY_CONFIG.origin, telemetryTimeout = DEFAULT_TELEMETRY_CONFIG.timeout },
-  buildDir,
   bundledFunctions,
 }) {
   if (!telemetry) {
@@ -50,7 +48,6 @@ const trackBuildComplete = async function ({
       siteInfo,
       userNodeVersion,
       framework,
-      buildDir,
       bundledFunctions,
     })
     await track({
@@ -87,13 +84,10 @@ const getPayload = function ({
   userNodeVersion,
   siteInfo = {},
   framework,
-  buildDir,
   bundledFunctions: functions,
 }) {
   const bundledFunctions = createBundlingTelemetryObject({
-    buildDir,
     functions,
-    internalFunctionsSrc,
   })
   return {
     userId: 'buildbot_user',
