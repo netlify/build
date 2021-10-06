@@ -35,10 +35,10 @@ const fireCoreCommand = async function ({
     const configSideFiles = await listConfigSideFiles([headersPath, redirectsPath])
     const childEnvA = setEnvChanges(envChanges, { ...childEnv })
     const {
+      bundledFunctions,
       newEnvChanges = {},
       configMutations: newConfigMutations = [],
       tags,
-      telemetry,
     } = await coreCommand({
       configPath,
       buildDir,
@@ -77,13 +77,13 @@ const fireCoreCommand = async function ({
       debug,
     })
     return {
+      bundledFunctions,
       newEnvChanges,
       netlifyConfig: netlifyConfigA,
       configMutations: configMutationsA,
       headersPath: headersPathA,
       redirectsPath: redirectsPathA,
       tags,
-      telemetry,
     }
   } catch (newError) {
     if (!isBuildError(newError)) {

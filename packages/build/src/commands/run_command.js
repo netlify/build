@@ -84,9 +84,9 @@ const runCommand = async function ({
     redirectsPath: redirectsPathA = redirectsPath,
     newError,
     newStatus,
-    telemetry,
     timers: timersA,
     durationNs,
+    bundledFunctions,
   } = await fireCommand({
     event,
     childProcess,
@@ -141,10 +141,10 @@ const runCommand = async function ({
     redirectsPath: redirectsPathA,
     logs,
     debug,
-    telemetry,
     timers: timersA,
     durationNs,
     testOpts,
+    bundledFunctions,
   })
   return { ...newValues, newIndex: index + 1 }
 }

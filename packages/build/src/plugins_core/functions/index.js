@@ -15,7 +15,6 @@ const {
 } = require('../../log/messages/core_commands')
 
 const { getZipError } = require('./error')
-const { createTelemetryObject } = require('./telemetry')
 const { getUserAndInternalFunctions, validateFunctionsSrc } = require('./utils')
 
 // Returns `true` if at least one of the functions has been configured to use
@@ -79,11 +78,10 @@ const zipFunctionsAndLogResults = async ({
 
     const sourceDirectories = [internalFunctionsSrc, functionsSrc].filter(Boolean)
     const results = await zipItAndShipIt.zipFunctions(sourceDirectories, functionsDist, zisiParameters)
-    const telemetry = createTelemetryObject({ functions: results, internalFunctionsSrc })
 
     logBundleResults({ logs, results })
 
-    return { bundler, telemetry }
+    return { bundler, results }
   } catch (error) {
     throw await getZipError(error, functionsSrc)
   }
@@ -136,7 +134,7 @@ const coreCommand = async function ({
     return {}
   }
 
-  const { bundler, telemetry } = await zipFunctionsAndLogResults({
+  const { bundler, results } = await zipFunctionsAndLogResults({
     buildDir,
     featureFlags,
     functionsConfig: netlifyConfig.functions,
@@ -148,11 +146,9 @@ const coreCommand = async function ({
   })
 
   return {
+    bundledFunctions: results,
     tags: {
       bundler,
-    },
-    telemetry: {
-      functionsBundling: telemetry,
     },
   }
 }

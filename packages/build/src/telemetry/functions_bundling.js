@@ -1,11 +1,20 @@
 'use strict'
 
-const { dirname, extname, relative } = require('path')
+const { dirname, extname, relative, resolve } = require('path')
 
-const createTelemetryObject = ({ functions, internalFunctionsSrc }) =>
-  functions.map((functionData) => createTelemetryObjectForFunction({ functionData, internalFunctionsSrc }))
+const createBundlingTelemetryObject = ({ buildDir, internalFunctionsSrc: relativeInternalFunctionsSrc, functions }) => {
+  if (buildDir === undefined || relativeInternalFunctionsSrc === undefined) {
+    return []
+  }
 
-const createTelemetryObjectForFunction = ({ functionData, internalFunctionsSrc }) => {
+  const internalFunctionsSrc = resolve(buildDir, relativeInternalFunctionsSrc)
+
+  return functions.map((functionData) =>
+    createBundlingTelemetryObjectForFunction({ functionData, internalFunctionsSrc }),
+  )
+}
+
+const createBundlingTelemetryObjectForFunction = ({ functionData, internalFunctionsSrc }) => {
   const {
     bundler = 'default',
     config = {},
@@ -33,4 +42,4 @@ const createTelemetryObjectForFunction = ({ functionData, internalFunctionsSrc }
 const isInternalFunction = ({ internalFunctionsSrc, mainFile }) =>
   internalFunctionsSrc !== undefined && !relative(dirname(mainFile), internalFunctionsSrc).startsWith('..')
 
-module.exports = { createTelemetryObject }
+module.exports = { createBundlingTelemetryObject }

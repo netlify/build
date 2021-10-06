@@ -76,10 +76,12 @@ const build = async function (flags = {}) {
       siteInfo,
       userNodeVersion,
       commandsCount,
-      telemetry: commandTelemetry,
       timers,
       durationNs,
       configMutations,
+      bundledFunctions,
+      constants,
+      buildDir,
     } = await execBuild({
       ...flagsA,
       buildId,
@@ -103,7 +105,6 @@ const build = async function (flags = {}) {
     const { success, severityCode, status } = getSeverity('success')
     await telemetryReport({
       buildId,
-      commandTelemetry,
       deployId,
       status,
       commandsCount,
@@ -115,6 +116,9 @@ const build = async function (flags = {}) {
       framework,
       testOpts,
       errorParams,
+      buildDir,
+      bundledFunctions,
+      constants,
     })
     return { success, severityCode, netlifyConfig: netlifyConfigA, logs, configMutations }
   } catch (error) {
@@ -251,9 +255,9 @@ const tExecBuild = async function ({
     pluginsOptions: pluginsOptionsA,
     netlifyConfig: netlifyConfigA,
     commandsCount,
-    telemetry,
     timers: timersB,
     configMutations,
+    bundledFunctions,
   } = await runAndReportBuild({
     pluginsOptions,
     netlifyConfig,
@@ -292,9 +296,11 @@ const tExecBuild = async function ({
     siteInfo,
     userNodeVersion,
     commandsCount,
-    telemetry,
     timers: timersB,
     configMutations,
+    bundledFunctions,
+    constants,
+    buildDir,
   }
 }
 
@@ -340,9 +346,9 @@ const runAndReportBuild = async function ({
       statuses,
       pluginsOptions: pluginsOptionsA,
       failedPlugins,
-      telemetry,
       timers: timersA,
       configMutations,
+      bundledFunctions,
     } = await initAndRunBuild({
       pluginsOptions,
       netlifyConfig,
@@ -410,9 +416,9 @@ const runAndReportBuild = async function ({
       pluginsOptions: pluginsOptionsA,
       netlifyConfig: netlifyConfigA,
       commandsCount,
-      telemetry,
       timers: timersA,
       configMutations,
+      bundledFunctions,
     }
   } catch (error) {
     const [{ statuses }] = getErrorInfo(error)
@@ -502,9 +508,9 @@ const initAndRunBuild = async function ({
       netlifyConfig: netlifyConfigA,
       statuses,
       failedPlugins,
-      telemetry,
       timers: timersC,
       configMutations,
+      bundledFunctions,
     } = await runBuild({
       childProcesses,
       pluginsOptions: pluginsOptionsA,
@@ -547,9 +553,9 @@ const initAndRunBuild = async function ({
       statuses,
       pluginsOptions: pluginsOptionsA,
       failedPlugins,
-      telemetry,
       timers: timersC,
       configMutations,
+      bundledFunctions,
     }
   } finally {
     stopPlugins(childProcesses)
@@ -608,9 +614,9 @@ const runBuild = async function ({
     netlifyConfig: netlifyConfigA,
     statuses,
     failedPlugins,
-    telemetry,
     timers: timersB,
     configMutations,
+    bundledFunctions,
   } = await runCommands({
     commands,
     buildbotServerSocket,
@@ -645,9 +651,9 @@ const runBuild = async function ({
     netlifyConfig: netlifyConfigA,
     statuses,
     failedPlugins,
-    telemetry,
     timers: timersB,
     configMutations,
+    bundledFunctions,
   }
 }
 
@@ -665,7 +671,6 @@ const handleBuildSuccess = async function ({ framework, dry, logs, timers, durat
 
 // Handles the calls and errors of telemetry reports
 const telemetryReport = async function ({
-  commandTelemetry,
   deployId,
   buildId,
   status,
@@ -678,6 +683,9 @@ const telemetryReport = async function ({
   framework,
   testOpts,
   errorParams,
+  buildDir,
+  bundledFunctions,
+  constants = {},
 }) {
   try {
     await trackBuildComplete({
@@ -685,7 +693,6 @@ const telemetryReport = async function ({
       buildId,
       status,
       commandsCount,
-      commandTelemetry,
       pluginsOptions,
       durationNs,
       siteInfo,
@@ -693,6 +700,9 @@ const telemetryReport = async function ({
       userNodeVersion,
       framework,
       testOpts,
+      buildDir,
+      bundledFunctions,
+      constants,
     })
   } catch (error) {
     await handleBuildError(error, errorParams)

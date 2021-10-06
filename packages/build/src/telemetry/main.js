@@ -9,6 +9,8 @@ const { version: buildVersion } = require('../../package.json')
 const { addErrorInfo } = require('../error/info')
 const { roundTimerToMillisecs } = require('../time/measure')
 
+const { createBundlingTelemetryObject } = require('./functions_bundling')
+
 const DEFAULT_TELEMETRY_TIMEOUT = 1200
 const DEFAULT_TELEMETRY_CONFIG = {
   origin: 'https://api.segment.io/v1',
@@ -18,7 +20,6 @@ const DEFAULT_TELEMETRY_CONFIG = {
 
 // Send telemetry request when build completes
 const trackBuildComplete = async function ({
-  commandTelemetry,
   deployId,
   buildId,
   status,
@@ -30,6 +31,9 @@ const trackBuildComplete = async function ({
   userNodeVersion,
   framework,
   testOpts: { telemetryOrigin = DEFAULT_TELEMETRY_CONFIG.origin, telemetryTimeout = DEFAULT_TELEMETRY_CONFIG.timeout },
+  buildDir,
+  bundledFunctions,
+  constants,
 }) {
   if (!telemetry) {
     return
@@ -37,7 +41,6 @@ const trackBuildComplete = async function ({
 
   try {
     const payload = getPayload({
-      commandTelemetry,
       deployId,
       buildId,
       status,
@@ -47,6 +50,9 @@ const trackBuildComplete = async function ({
       siteInfo,
       userNodeVersion,
       framework,
+      buildDir,
+      bundledFunctions,
+      constants,
     })
     await track({
       payload,
@@ -82,7 +88,16 @@ const getPayload = function ({
   userNodeVersion,
   siteInfo = {},
   framework,
+  buildDir,
+  bundledFunctions,
+  constants = {},
 }) {
+  const { INTERNAL_FUNCTIONS_SRC: internalFunctionsSrc } = constants
+  const functionsBundling = createBundlingTelemetryObject({
+    buildDir,
+    functions: bundledFunctions,
+    internalFunctionsSrc,
+  })
   return {
     userId: 'buildbot_user',
     event: 'build:ci_build_process_completed',
@@ -106,6 +121,7 @@ const getPayload = function ({
         pluginCount: pluginsOptions.length,
       }),
       ...(durationNs !== undefined && { duration: roundTimerToMillisecs(durationNs) }),
+      ...(functionsBundling.length !== 0 && { functionsBundling }),
     },
   }
 }
