@@ -84,6 +84,7 @@ const runCommand = async function ({
     redirectsPath: redirectsPathA = redirectsPath,
     newError,
     newStatus,
+    telemetry,
     timers: timersA,
     durationNs,
   } = await fireCommand({
@@ -140,6 +141,7 @@ const runCommand = async function ({
     redirectsPath: redirectsPathA,
     logs,
     debug,
+    telemetry,
     timers: timersA,
     durationNs,
     testOpts,

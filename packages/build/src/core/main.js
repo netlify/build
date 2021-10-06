@@ -76,6 +76,7 @@ const build = async function (flags = {}) {
       siteInfo,
       userNodeVersion,
       commandsCount,
+      telemetry: commandTelemetry,
       timers,
       durationNs,
       configMutations,
@@ -102,6 +103,7 @@ const build = async function (flags = {}) {
     const { success, severityCode, status } = getSeverity('success')
     await telemetryReport({
       buildId,
+      commandTelemetry,
       deployId,
       status,
       commandsCount,
@@ -249,6 +251,7 @@ const tExecBuild = async function ({
     pluginsOptions: pluginsOptionsA,
     netlifyConfig: netlifyConfigA,
     commandsCount,
+    telemetry,
     timers: timersB,
     configMutations,
   } = await runAndReportBuild({
@@ -289,6 +292,7 @@ const tExecBuild = async function ({
     siteInfo,
     userNodeVersion,
     commandsCount,
+    telemetry,
     timers: timersB,
     configMutations,
   }
@@ -336,6 +340,7 @@ const runAndReportBuild = async function ({
       statuses,
       pluginsOptions: pluginsOptionsA,
       failedPlugins,
+      telemetry,
       timers: timersA,
       configMutations,
     } = await initAndRunBuild({
@@ -405,6 +410,7 @@ const runAndReportBuild = async function ({
       pluginsOptions: pluginsOptionsA,
       netlifyConfig: netlifyConfigA,
       commandsCount,
+      telemetry,
       timers: timersA,
       configMutations,
     }
@@ -496,6 +502,7 @@ const initAndRunBuild = async function ({
       netlifyConfig: netlifyConfigA,
       statuses,
       failedPlugins,
+      telemetry,
       timers: timersC,
       configMutations,
     } = await runBuild({
@@ -540,6 +547,7 @@ const initAndRunBuild = async function ({
       statuses,
       pluginsOptions: pluginsOptionsA,
       failedPlugins,
+      telemetry,
       timers: timersC,
       configMutations,
     }
@@ -600,6 +608,7 @@ const runBuild = async function ({
     netlifyConfig: netlifyConfigA,
     statuses,
     failedPlugins,
+    telemetry,
     timers: timersB,
     configMutations,
   } = await runCommands({
@@ -631,7 +640,15 @@ const runBuild = async function ({
     featureFlags,
   })
 
-  return { commandsCount, netlifyConfig: netlifyConfigA, statuses, failedPlugins, timers: timersB, configMutations }
+  return {
+    commandsCount,
+    netlifyConfig: netlifyConfigA,
+    statuses,
+    failedPlugins,
+    telemetry,
+    timers: timersB,
+    configMutations,
+  }
 }
 
 // Logs and reports that a build successfully ended
@@ -648,6 +665,7 @@ const handleBuildSuccess = async function ({ framework, dry, logs, timers, durat
 
 // Handles the calls and errors of telemetry reports
 const telemetryReport = async function ({
+  commandTelemetry,
   deployId,
   buildId,
   status,
@@ -667,6 +685,7 @@ const telemetryReport = async function ({
       buildId,
       status,
       commandsCount,
+      commandTelemetry,
       pluginsOptions,
       durationNs,
       siteInfo,

@@ -231,3 +231,9 @@ test('Telemetry calls timeout by default', async (t) => {
   })
   t.is(telemetryRequests.length, 0)
 })
+
+test('Telemetry reports data about functions bundling', async (t) => {
+  const { telemetryRequests } = await runWithApiMock(t, 'functions_bundling')
+  const snapshot = telemetryRequests.map(normalizeSnapshot)
+  t.snapshot(snapshot)
+})

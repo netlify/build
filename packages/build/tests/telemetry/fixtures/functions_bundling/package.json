@@ -1,0 +1,8 @@
+{
+  "name": "telemetry-functions-bundling-fixture",
+  "version": "1.0.0",
+  "dependencies": {
+    "dynamic-import-module": "1.0.0",
+    "native-module": "1.0.0"
+  }
+}

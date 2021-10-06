@@ -1,0 +1,9 @@
+[functions]
+directory = "functions"
+
+[functions.function_two]
+node_bundler = "esbuild"
+
+[functions.function_three]
+external_node_modules = ["module-1"]
+node_bundler = "esbuild"

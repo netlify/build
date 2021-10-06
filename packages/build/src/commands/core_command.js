@@ -38,6 +38,7 @@ const fireCoreCommand = async function ({
       newEnvChanges = {},
       configMutations: newConfigMutations = [],
       tags,
+      telemetry,
     } = await coreCommand({
       configPath,
       buildDir,
@@ -82,6 +83,7 @@ const fireCoreCommand = async function ({
       headersPath: headersPathA,
       redirectsPath: redirectsPathA,
       tags,
+      telemetry,
     }
   } catch (newError) {
     if (!isBuildError(newError)) {

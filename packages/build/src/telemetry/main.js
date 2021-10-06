@@ -18,6 +18,7 @@ const DEFAULT_TELEMETRY_CONFIG = {
 
 // Send telemetry request when build completes
 const trackBuildComplete = async function ({
+  commandTelemetry,
   deployId,
   buildId,
   status,
@@ -36,6 +37,7 @@ const trackBuildComplete = async function ({
 
   try {
     const payload = getPayload({
+      commandTelemetry,
       deployId,
       buildId,
       status,
@@ -70,6 +72,7 @@ const track = async function ({ payload, config: { origin, writeKey, timeout } }
 // Retrieve telemetry information
 // siteInfo can be empty if the build fails during the get config step
 const getPayload = function ({
+  commandTelemetry,
   deployId,
   buildId,
   status,
@@ -85,6 +88,7 @@ const getPayload = function ({
     event: 'build:ci_build_process_completed',
     timestamp: Date.now(),
     properties: {
+      ...commandTelemetry,
       deployId,
       buildId,
       status,

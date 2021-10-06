@@ -47,6 +47,7 @@ const runCommands = async function ({
     netlifyConfig: netlifyConfigC,
     statuses: statusesB,
     failedPlugins: failedPluginsA,
+    telemetry,
     timers: timersC,
     configMutations: configMutationsB,
   } = await pReduce(
@@ -62,6 +63,7 @@ const runCommands = async function ({
         headersPath: headersPathA,
         redirectsPath: redirectsPathA,
         statuses,
+        telemetry: telemetryA,
         timers: timersA,
       },
       {
@@ -88,6 +90,7 @@ const runCommands = async function ({
         headersPath: headersPathB = headersPathA,
         redirectsPath: redirectsPathB = redirectsPathA,
         newStatus,
+        telemetry: telemetryB,
         timers: timersB = timersA,
       } = await runCommand({
         event,
@@ -144,6 +147,7 @@ const runCommands = async function ({
         headersPath: headersPathB,
         redirectsPath: redirectsPathB,
         statuses: statusesA,
+        telemetry: { ...telemetryA, ...telemetryB },
         timers: timersB,
       }
     },
@@ -172,6 +176,7 @@ const runCommands = async function ({
     netlifyConfig: netlifyConfigC,
     statuses: statusesB,
     failedPlugins: failedPluginsA,
+    telemetry,
     timers: timersC,
     configMutations: configMutationsB,
   }
