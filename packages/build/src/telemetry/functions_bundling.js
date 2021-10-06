@@ -4,8 +4,14 @@ const { extname } = require('path')
 
 const { INTERNAL_FUNCTIONS_SRC: internalFunctionsSrc } = require('../core/constants')
 
+const compareFunctions = ({ name: nameA }, { name: nameB }) => (nameA < nameB ? -1 : 1)
+
 const createBundlingTelemetryObject = ({ functions = [] }) =>
-  functions.map((functionData) => createBundlingTelemetryObjectForFunction({ functionData, internalFunctionsSrc }))
+  // It's safe to use `.sort()` as we're operating on a new array.
+  // eslint-disable-next-line fp/no-mutating-methods
+  [...functions]
+    .sort(compareFunctions)
+    .map((functionData) => createBundlingTelemetryObjectForFunction({ functionData, internalFunctionsSrc }))
 
 const createBundlingTelemetryObjectForFunction = ({ functionData }) => {
   const {
