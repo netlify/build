@@ -12,6 +12,7 @@ const createTelemetryObjectForFunction = ({ functionData, internalFunctionsSrc }
     mainFile = '',
     nativeNodeModules = {},
     nodeModulesWithDynamicImports = [],
+    runtime = 'default',
   } = functionData
   const { externalNodeModules = [] } = config
   const isBuiltFromSource = !['', '.zip'].includes(extname(mainFile))
@@ -25,6 +26,7 @@ const createTelemetryObjectForFunction = ({ functionData, internalFunctionsSrc }
     isInternal,
     nativeModuleNames,
     nodeModulesWithDynamicImports,
+    runtime,
   }
 }
 
