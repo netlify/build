@@ -148,4 +148,4 @@ const CONSTANT_PATHS = new Set([
   'CACHE_DIR',
 ])
 
-module.exports = { getConstants, addMutableConstants }
+module.exports = { getConstants, addMutableConstants, INTERNAL_FUNCTIONS_SRC }
