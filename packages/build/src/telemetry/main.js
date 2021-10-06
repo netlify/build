@@ -89,13 +89,13 @@ const getPayload = function ({
   siteInfo = {},
   framework,
   buildDir,
-  bundledFunctions,
+  bundledFunctions: functions,
   constants = {},
 }) {
   const { INTERNAL_FUNCTIONS_SRC: internalFunctionsSrc } = constants
-  const functionsBundling = createBundlingTelemetryObject({
+  const bundledFunctions = createBundlingTelemetryObject({
     buildDir,
-    functions: bundledFunctions,
+    functions,
     internalFunctionsSrc,
   })
   return {
@@ -121,7 +121,7 @@ const getPayload = function ({
         pluginCount: pluginsOptions.length,
       }),
       ...(durationNs !== undefined && { duration: roundTimerToMillisecs(durationNs) }),
-      ...(functionsBundling.length !== 0 && { functionsBundling }),
+      ...(bundledFunctions.length !== 0 && { bundledFunctions }),
     },
   }
 }
