@@ -1,5 +1,12 @@
 # Changelog
 
+### [15.6.5](https://www.github.com/netlify/build/compare/config-v15.6.4...config-v15.6.5) (2021-10-07)
+
+
+### Bug Fixes
+
+* `@netlify/config` user errors ([#3696](https://www.github.com/netlify/build/issues/3696)) ([b4c4125](https://www.github.com/netlify/build/commit/b4c4125a46e3ca9176a2b209e054bda9513f5aba))
+
 ### [15.6.4](https://www.github.com/netlify/build/compare/config-v15.6.3...config-v15.6.4) (2021-10-04)
 
 
