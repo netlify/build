@@ -13,6 +13,7 @@ const { addErrorInfo } = require('../error/info')
 // supported version (Node v10). Else default to the system Node version.
 // Local and programmatic builds use `@netlify/build` Node.js version, which is
 // usually the system's Node.js version.
+// If the user Node version does not satisfy our supported engine range use our own system Node version
 const addPluginsNodeVersion = function ({ pluginsOptions, nodePath, userNodeVersion }) {
   const currentNodeVersion = cleanVersion(currentVersion)
   return pluginsOptions.map((pluginOptions) =>
@@ -27,19 +28,10 @@ const addPluginNodeVersion = function ({
   userNodeVersion,
   nodePath,
 }) {
-  if (loadedFrom === 'local' || loadedFrom === 'package.json') {
-    return nonUIPluginNodeVersion({ pluginOptions, currentNodeVersion, userNodeVersion, nodePath })
-  }
-
-  return { ...pluginOptions, nodePath: execPath, nodeVersion: currentNodeVersion }
-}
-
-const nonUIPluginNodeVersion = function ({ pluginOptions, currentNodeVersion, userNodeVersion, nodePath }) {
-  // If the user Node version does not satisfy our supported engine range use our own system Node version
-  if (!satisfies(userNodeVersion, nodeVersionSupportedRange)) {
-    return { ...pluginOptions, nodePath: execPath, nodeVersion: currentNodeVersion }
-  }
-  return { ...pluginOptions, nodePath, nodeVersion: userNodeVersion }
+  return (loadedFrom === 'local' || loadedFrom === 'package.json') &&
+    satisfies(userNodeVersion, nodeVersionSupportedRange)
+    ? { ...pluginOptions, nodePath, nodeVersion: userNodeVersion }
+    : { ...pluginOptions, nodePath: execPath, nodeVersion: currentNodeVersion }
 }
 
 // Ensure Node.js version is compatible with plugin's `engines.node`
