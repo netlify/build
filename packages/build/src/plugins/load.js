@@ -6,28 +6,28 @@ const { measureDuration } = require('../time/main')
 
 const { callChild } = require('./ipc')
 
-// Retrieve all plugins commands
+// Retrieve all plugins steps
 // Can use either a module name or a file path to the plugin.
 const loadPlugins = async function ({ pluginsOptions, childProcesses, packageJson, timers, debug }) {
   return pluginsOptions.length === 0
-    ? { pluginsCommands: [], timers }
+    ? { pluginsSteps: [], timers }
     : await loadAllPlugins({ pluginsOptions, childProcesses, packageJson, timers, debug })
 }
 
 const tLoadAllPlugins = async function ({ pluginsOptions, childProcesses, packageJson, debug }) {
-  const pluginsCommands = await Promise.all(
+  const pluginsSteps = await Promise.all(
     pluginsOptions.map((pluginOptions, index) =>
       loadPlugin(pluginOptions, { childProcesses, index, packageJson, debug }),
     ),
   )
-  const pluginsCommandsA = pluginsCommands.flat()
-  return { pluginsCommands: pluginsCommandsA }
+  const pluginsStepsA = pluginsSteps.flat()
+  return { pluginsSteps: pluginsStepsA }
 }
 
 // Only performed if there are some plugins
 const loadAllPlugins = measureDuration(tLoadAllPlugins, 'load_plugins')
 
-// Retrieve plugin commands for one plugin.
+// Retrieve plugin steps for one plugin.
 // Do it by executing the plugin `load` event handler.
 const loadPlugin = async function (
   { packageName, pluginPackageJson, pluginPackageJson: { version } = {}, pluginPath, inputs, loadedFrom, origin },
@@ -37,8 +37,8 @@ const loadPlugin = async function (
   const loadEvent = 'load'
 
   try {
-    const { pluginCommands } = await callChild(childProcess, 'load', { pluginPath, inputs, packageJson })
-    const pluginCommandsA = pluginCommands.map(({ event }) => ({
+    const { pluginSteps } = await callChild(childProcess, 'load', { pluginPath, inputs, packageJson })
+    const pluginStepsA = pluginSteps.map(({ event }) => ({
       event,
       packageName,
       loadedFrom,
@@ -46,7 +46,7 @@ const loadPlugin = async function (
       pluginPackageJson,
       childProcess,
     }))
-    return pluginCommandsA
+    return pluginStepsA
   } catch (error) {
     addErrorInfo(error, {
       plugin: { packageName, pluginPackageJson },

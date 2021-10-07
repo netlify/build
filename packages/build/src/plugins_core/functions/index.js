@@ -8,11 +8,7 @@ const mapObject = require('map-obj')
 const pathExists = require('path-exists')
 
 const { log } = require('../../log/logger')
-const {
-  logBundleResults,
-  logFunctionsNonExistingDir,
-  logFunctionsToBundle,
-} = require('../../log/messages/core_commands')
+const { logBundleResults, logFunctionsNonExistingDir, logFunctionsToBundle } = require('../../log/messages/core_steps')
 
 const { getZipError } = require('./error')
 const { getUserAndInternalFunctions, validateFunctionsSrc } = require('./utils')
@@ -89,7 +85,7 @@ const zipFunctionsAndLogResults = async ({
 
 // Plugin to package Netlify functions with @netlify/zip-it-and-ship-it
 // eslint-disable-next-line complexity
-const coreCommand = async function ({
+const coreStep = async function ({
   constants: {
     INTERNAL_FUNCTIONS_SRC: relativeInternalFunctionsSrc,
     IS_LOCAL: isRunningLocally,
@@ -152,7 +148,7 @@ const coreCommand = async function ({
   }
 }
 
-// We run this core command if at least one of the functions directories (the
+// We run this core step if at least one of the functions directories (the
 // one configured by the user or the internal one) exists. We use a dynamic
 // `condition` because the directories might be created by the build command
 // or plugins.
@@ -170,10 +166,10 @@ const hasFunctionsDirectories = async function ({ buildDir, constants: { INTERNA
 
 const bundleFunctions = {
   event: 'onBuild',
-  coreCommand,
-  coreCommandId: 'functions_bundling',
-  coreCommandName: 'Functions bundling',
-  coreCommandDescription: () => 'Functions bundling',
+  coreStep,
+  coreStepId: 'functions_bundling',
+  coreStepName: 'Functions bundling',
+  coreStepDescription: () => 'Functions bundling',
   condition: hasFunctionsDirectories,
 }
 

@@ -8,8 +8,8 @@ const { getSuccessStatus } = require('../status/success')
 const { getPluginErrorType } = require('./error')
 const { updateNetlifyConfig, listConfigSideFiles } = require('./update_config')
 
-// Fire a plugin command
-const firePluginCommand = async function ({
+// Fire a plugin step
+const firePluginStep = async function ({
   event,
   childProcess,
   packageName,
@@ -24,7 +24,7 @@ const firePluginCommand = async function ({
   headersPath,
   redirectsPath,
   constants,
-  commands,
+  steps,
   error,
   logs,
   debug,
@@ -61,7 +61,7 @@ const firePluginCommand = async function ({
       logs,
       debug,
     })
-    const newStatus = getSuccessStatus(status, { commands, event, packageName })
+    const newStatus = getSuccessStatus(status, { steps, event, packageName })
     return {
       newEnvChanges,
       netlifyConfig: netlifyConfigA,
@@ -83,4 +83,4 @@ const firePluginCommand = async function ({
   }
 }
 
-module.exports = { firePluginCommand }
+module.exports = { firePluginStep }

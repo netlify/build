@@ -29,8 +29,8 @@ const getFunctionsBundlingLocation = function ({ functionName }) {
   return `While bundling Function "${functionName}"`
 }
 
-const getCoreCommandLocation = function ({ coreCommandName }) {
-  return `During ${coreCommandName}`
+const getCoreStepLocation = function ({ coreStepName }) {
+  return `During ${coreStepName}`
 }
 
 const getBuildFailLocation = function ({ event, packageName, loadedFrom, origin }) {
@@ -54,7 +54,7 @@ const getApiLocation = function ({ endpoint, parameters }) {
 const LOCATIONS = {
   buildCommand: getBuildCommandLocation,
   functionsBundling: getFunctionsBundlingLocation,
-  coreCommand: getCoreCommandLocation,
+  coreStep: getCoreStepLocation,
   buildFail: getBuildFailLocation,
   api: getApiLocation,
 }

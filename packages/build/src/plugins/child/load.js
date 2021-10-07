@@ -7,21 +7,21 @@ const { validatePlugin } = require('./validate')
 // This also requires the plugin file and fire its top-level function.
 // This also validates the plugin.
 // Do it when parent requests it using the `load` event.
-// Also figure out the list of plugin commands. This is also passed to the parent.
+// Also figure out the list of plugin steps. This is also passed to the parent.
 const load = function ({ pluginPath, inputs, packageJson }) {
   const logic = getLogic({ pluginPath, inputs })
 
   validatePlugin(logic)
 
-  const pluginCommands = getPluginCommands(logic)
+  const pluginSteps = getPluginSteps(logic)
 
   // Context passed to every event handler
-  const context = { pluginCommands, inputs, packageJson }
+  const context = { pluginSteps, inputs, packageJson }
 
-  return { pluginCommands, context }
+  return { pluginSteps, context }
 }
 
-const getPluginCommands = function (logic) {
+const getPluginSteps = function (logic) {
   return Object.entries(logic)
     .filter(isEventHandler)
     .map(([event, method]) => ({ event, method }))

@@ -94,12 +94,12 @@ Default: true`,
   dry: {
     alias: 'dry-run',
     boolean: true,
-    describe: `Run in dry mode, i.e. printing commands without executing them.
+    describe: `Run in dry mode, i.e. printing steps without executing them.
 Default: false`,
   },
   nodePath: {
     string: true,
-    describe: `Path to the Node.js binary to use in user commands and build plugins.
+    describe: `Path to the Node.js binary to use in the build command and plugins.
 Default: Current Node.js binary`,
   },
   functionsDistDir: {

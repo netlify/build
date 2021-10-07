@@ -1,19 +1,19 @@
 'use strict'
 
-const { logCommandSuccess } = require('../log/messages/commands')
 const { logTimer } = require('../log/messages/core')
+const { logStepSuccess } = require('../log/messages/steps')
 
-const { handleCommandError } = require('./error')
+const { handleStepError } = require('./error')
 
-// Retrieve the return value of a build command or plugin event handler
-const getCommandReturn = function ({
+// Retrieve the return value of a step
+const getStepReturn = function ({
   event,
   packageName,
   newError,
   newEnvChanges,
   newStatus,
-  coreCommand,
-  coreCommandName: timerName = `${packageName} ${event}`,
+  coreStep,
+  coreStepName: timerName = `${packageName} ${event}`,
   childEnv,
   mode,
   api,
@@ -30,7 +30,7 @@ const getCommandReturn = function ({
   testOpts,
 }) {
   if (newError !== undefined) {
-    return handleCommandError({
+    return handleStepError({
       event,
       newError,
       childEnv,
@@ -38,7 +38,7 @@ const getCommandReturn = function ({
       api,
       errorMonitor,
       deployId,
-      coreCommand,
+      coreStep,
       netlifyConfig,
       logs,
       debug,
@@ -46,11 +46,11 @@ const getCommandReturn = function ({
     })
   }
 
-  logCommandSuccess(logs)
+  logStepSuccess(logs)
 
   logTimer(logs, durationNs, timerName)
 
   return { newEnvChanges, netlifyConfig, configMutations, headersPath, redirectsPath, newStatus, timers }
 }
 
-module.exports = { getCommandReturn }
+module.exports = { getStepReturn }

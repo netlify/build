@@ -8,9 +8,9 @@ const { getUtils } = require('./utils')
 // Run a specific plugin event handler
 const run = async function (
   { event, error, constants, envChanges, netlifyConfig },
-  { pluginCommands, inputs, packageJson },
+  { pluginSteps, inputs, packageJson },
 ) {
-  const { method } = pluginCommands.find((pluginCommand) => pluginCommand.event === event)
+  const { method } = pluginSteps.find((pluginStep) => pluginStep.event === event)
   const runState = {}
   const utils = getUtils({ event, constants, runState })
   const netlifyConfigCopy = cloneNetlifyConfig(netlifyConfig)

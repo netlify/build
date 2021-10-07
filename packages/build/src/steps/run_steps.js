@@ -6,15 +6,15 @@ const pReduce = require('p-reduce')
 const { addErrorInfo } = require('../error/info')
 const { addStatus } = require('../status/add')
 
-const { runCommand } = require('./run_command')
+const { runStep } = require('./run_step')
 
-// Run all commands.
-// Each command can change some state: last `error`, environment variables changes,
+// Run all steps.
+// Each step can change some state: last `error`, environment variables changes,
 // list of `failedPlugins` (that ran `utils.build.failPlugin()`).
 // If an error arises, runs `onError` events.
 // Runs `onEnd` events at the end, whether an error was thrown or not.
-const runCommands = async function ({
-  commands,
+const runSteps = async function ({
+  steps,
   buildbotServerSocket,
   events,
   configPath,
@@ -42,7 +42,7 @@ const runCommands = async function ({
   featureFlags,
 }) {
   const {
-    index: commandsCount,
+    index: stepsCount,
     error: errorA,
     netlifyConfig: netlifyConfigC,
     statuses: statusesB,
@@ -50,7 +50,7 @@ const runCommands = async function ({
     timers: timersC,
     configMutations: configMutationsB,
   } = await pReduce(
-    commands,
+    steps,
     async (
       {
         index,
@@ -68,10 +68,10 @@ const runCommands = async function ({
         event,
         childProcess,
         packageName,
-        coreCommand,
-        coreCommandId,
-        coreCommandName,
-        coreCommandDescription,
+        coreStep,
+        coreStepId,
+        coreStepName,
+        coreStepDescription,
         pluginPackageJson,
         loadedFrom,
         origin,
@@ -89,14 +89,14 @@ const runCommands = async function ({
         redirectsPath: redirectsPathB = redirectsPathA,
         newStatus,
         timers: timersB = timersA,
-      } = await runCommand({
+      } = await runStep({
         event,
         childProcess,
         packageName,
-        coreCommand,
-        coreCommandId,
-        coreCommandName,
-        coreCommandDescription,
+        coreStep,
+        coreStepId,
+        coreStepName,
+        coreStepDescription,
         pluginPackageJson,
         loadedFrom,
         origin,
@@ -111,7 +111,7 @@ const runCommands = async function ({
         branch,
         envChanges,
         constants,
-        commands,
+        steps,
         buildbotServerSocket,
         events,
         mode,
@@ -168,7 +168,7 @@ const runCommands = async function ({
   }
 
   return {
-    commandsCount,
+    stepsCount,
     netlifyConfig: netlifyConfigC,
     statuses: statusesB,
     failedPlugins: failedPluginsA,
@@ -177,5 +177,5 @@ const runCommands = async function ({
   }
 }
 
-module.exports = { runCommands }
+module.exports = { runSteps }
 /* eslint-enable max-lines */
