@@ -7,7 +7,7 @@ const mapObj = require('map-obj')
 
 const { getChildEnv } = require('../env/main')
 const { addApiErrorHandlers } = require('../error/api')
-const { addErrorInfo } = require('../error/info')
+const { changeErrorType } = require('../error/info')
 const { logBuildDir, logConfigPath, logConfig, logContext } = require('../log/messages/config')
 const { logConfigOnUpload, logHeadersOnUpload, logRedirectsOnUpload } = require('../log/messages/mutations')
 const { measureDuration } = require('../time/main')
@@ -108,11 +108,7 @@ const loadConfig = measureDuration(tLoadConfig, 'resolve_config')
 // In the buildbot and CLI, we re-use the already parsed `@netlify/config`
 // return value which is passed as `cachedConfig`/`cachedConfigPath`.
 const resolveInitialConfig = async function (configOpts, cachedConfig, cachedConfigPath) {
-  try {
-    return await resolveConfig({ ...configOpts, cachedConfig, cachedConfigPath })
-  } catch (error) {
-    throw getConfigError(error, 'resolveConfig')
-  }
+  return await resolveConfig({ ...configOpts, cachedConfig, cachedConfigPath })
 }
 
 const logConfigInfo = function ({ logs, configPath, buildDir, netlifyConfig, context, debug }) {
@@ -133,20 +129,9 @@ const resolveUpdatedConfig = async function (configOpts, configMutations) {
   try {
     return await resolveConfig({ ...configOpts, configMutations, debug: false })
   } catch (error) {
-    throw getConfigError(error, 'pluginValidation')
+    changeErrorType(error, 'resolveConfig', 'pluginValidation')
+    throw error
   }
-}
-
-const getConfigError = function (error, type) {
-  if (error.type !== 'userError') {
-    return error
-  }
-
-  // We need to mutate the `error` directly to preserve its `name`, `stack`, etc.
-  // eslint-disable-next-line fp/no-delete
-  delete error.type
-  addErrorInfo(error, { type })
-  return error
 }
 
 // If the configuration was changed, persist it to `netlify.toml`.
