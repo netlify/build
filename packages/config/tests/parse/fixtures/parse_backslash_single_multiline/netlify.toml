@@ -1,0 +1,5 @@
+[build]
+ignore = '''
+  test ' " """ \q \
+  test
+'''
