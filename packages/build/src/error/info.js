@@ -27,6 +27,14 @@ const getErrorInfo = function (error) {
   return [errorInfo, errorA]
 }
 
+// Change error type from one to another
+const changeErrorType = function (error, oldType, newType) {
+  const [{ type }] = getErrorInfo(error)
+  if (type === oldType) {
+    addErrorInfo(error, { type: newType })
+  }
+}
+
 const isBuildError = function (error) {
   return canHaveErrorInfo(error) && error[CUSTOM_ERROR_KEY] !== undefined
 }
@@ -39,4 +47,4 @@ const canHaveErrorInfo = function (error) {
 
 const CUSTOM_ERROR_KEY = 'customErrorInfo'
 
-module.exports = { addDefaultErrorInfo, addErrorInfo, getErrorInfo, isBuildError, CUSTOM_ERROR_KEY }
+module.exports = { addDefaultErrorInfo, addErrorInfo, getErrorInfo, changeErrorType, isBuildError, CUSTOM_ERROR_KEY }

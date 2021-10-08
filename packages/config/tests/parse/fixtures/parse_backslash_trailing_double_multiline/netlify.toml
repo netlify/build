@@ -1,0 +1,5 @@
+[build]
+ignore = """
+  trailing backslash \
+  test
+"""

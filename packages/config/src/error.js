@@ -1,10 +1,10 @@
 'use strict'
 
 // We distinguish between errors thrown intentionally and uncaught exceptions
-// (such as bugs) with a `type` property.
+// (such as bugs) with a `customErrorInfo.type` property.
 const throwUserError = function (messageOrError, error) {
   const errorA = getError(messageOrError, error)
-  errorA.type = USER_ERROR_TYPE
+  errorA[CUSTOM_ERROR_KEY] = { type: USER_ERROR_TYPE }
   throw errorA
 }
 
@@ -22,11 +22,19 @@ const getError = function (messageOrError, error) {
   return error
 }
 
-// Check `error.type`
 const isUserError = function (error) {
-  return error instanceof Error && error.type === USER_ERROR_TYPE
+  return (
+    canHaveErrorInfo(error) && error[CUSTOM_ERROR_KEY] !== undefined && error[CUSTOM_ERROR_KEY].type === USER_ERROR_TYPE
+  )
 }
 
-const USER_ERROR_TYPE = 'userError'
+// Exceptions that are not objects (including `Error` instances) cannot have an
+// `CUSTOM_ERROR_KEY` property
+const canHaveErrorInfo = function (error) {
+  return error != null
+}
+
+const CUSTOM_ERROR_KEY = 'customErrorInfo'
+const USER_ERROR_TYPE = 'resolveConfig'
 
 module.exports = { throwUserError, isUserError }

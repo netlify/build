@@ -65,13 +65,16 @@ const validateTomlBlackslashes = function (logs, configString, featureFlags) {
     return
   }
 
-  const [invalidSequence] = result
+  const [, invalidTripleSequence, invalidSequence = invalidTripleSequence] = result
   warnTomlBackslashes(logs, invalidSequence)
 }
 
 // The TOML specification forbids unrecognized backslash sequences. However,
 // `toml-node` does not respect the specification and do not fail on those.
 // Therefore, we print a warning message.
-const INVALID_TOML_BLACKSLASH = /(?<!\\)\\[^"\\btnfruU]/u
+// This only applies to " and """ strings, not ' nor '''
+// Also, """ strings can use trailing backslashes.
+const INVALID_TOML_BLACKSLASH =
+  /= *(?:(?:""".*(?<!\\)(\\[^"\\btnfruU\n]).*""")|(?:"(?!").*(?<!\\)(\\[^"\\btnfruU]).*"))/su
 
 module.exports = { parseConfig, parseOptionalConfig }
