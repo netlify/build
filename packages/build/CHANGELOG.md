@@ -1,5 +1,34 @@
 # Changelog
 
+### [18.13.11](https://www.github.com/netlify/build/compare/build-v18.13.10...build-v18.13.11) (2021-10-07)
+
+
+### Bug Fixes
+
+* `@netlify/config` user errors ([#3696](https://www.github.com/netlify/build/issues/3696)) ([b4c4125](https://www.github.com/netlify/build/commit/b4c4125a46e3ca9176a2b209e054bda9513f5aba))
+
+### [18.13.10](https://www.github.com/netlify/build/compare/build-v18.13.9...build-v18.13.10) (2021-10-07)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.23.6 ([#3699](https://www.github.com/netlify/build/issues/3699)) ([ebf3385](https://www.github.com/netlify/build/commit/ebf33850f60f318ffd137c9838d3d3139c8abe28))
+
+### [18.13.9](https://www.github.com/netlify/build/compare/build-v18.13.8...build-v18.13.9) (2021-10-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.23.5 ([#3693](https://www.github.com/netlify/build/issues/3693)) ([3f417f4](https://www.github.com/netlify/build/commit/3f417f4088baa7c6090d86440c06a2df8a66b1cd))
+
+### [18.13.8](https://www.github.com/netlify/build/compare/build-v18.13.7...build-v18.13.8) (2021-10-05)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.23.4 ([#3687](https://www.github.com/netlify/build/issues/3687)) ([a6ab7b9](https://www.github.com/netlify/build/commit/a6ab7b9dbfebd21bcedcb5dbada4d1620cd6192a))
+* simplify plugin's Node.js version in local builds ([#3691](https://www.github.com/netlify/build/issues/3691)) ([bd0b102](https://www.github.com/netlify/build/commit/bd0b1024d3e7bb6c69493e12eb0f75876f11c9ec))
+
 ### [18.13.7](https://www.github.com/netlify/build/compare/build-v18.13.6...build-v18.13.7) (2021-10-04)
 
 
