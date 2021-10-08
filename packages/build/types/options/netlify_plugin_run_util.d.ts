@@ -1,4 +1,4 @@
-import { Options as ExecaOptions } from 'execa'
+import { Options as ExecaOptions, ExecaChildProcess } from 'execa'
 
 type NetlifyPluginRunUtilOptions = Omit<ExecaOptions, 'preferLocal'> & {
   /**
@@ -7,11 +7,7 @@ type NetlifyPluginRunUtilOptions = Omit<ExecaOptions, 'preferLocal'> & {
   preferLocal?: ExecaOptions['preferLocal']
 }
 
-interface NetlifyPluginRunUtilResult {
-  stdout: string
-  stderr: string
-  exitCode: number
-}
+type NetlifyPluginRunUtilResult = ExecaChildProcess
 
 /**
  * Run commands and processes

@@ -1,73 +1,5 @@
+import { NetlifyConfig } from './config/netlify_config'
 import { NetlifyPluginUtils } from './options/netlify_plugin_utils'
-import { Many } from './utils/many'
-
-type HttpStatusCode = number
-
-interface Redirect {
-  from: string
-  to: string
-  status?: HttpStatusCode
-  force: boolean
-  signed?: string
-  query: Partial<Record<string, string>>
-  headers: Partial<Record<string, string>>
-  conditions: Record<'language' | 'role' | 'country', readonly string[]>
-}
-
-interface Header {
-  for: string
-  values: Partial<Record<string, Many<string>>>
-}
-
-interface EdgeHandler {
-  path?: `/${string}`
-  handler: string
-}
-
-/* eslint-disable camelcase -- some properties are named in snake case in this API */
-interface NetlifyConfig {
-  /**
-   * array of redirects with their modifiable options
-   */
-  redirects: readonly Redirect[]
-  /**
-   * array of headers with their modifiable options
-   */
-  headers: readonly Header[]
-  /**
-   * array of Edge Handlers with their modifiable options
-   */
-  edge_handlers: readonly EdgeHandler[]
-  /**
-   * object with options for modifying [functions](https://docs.netlify.com/configure-builds/file-based-configuration/#functions)
-   */
-  functions: {
-    /**
-     * string that includes the path to a site’s [functions directory](https://docs.netlify.com/functions/configure-and-deploy/#configure-the-functions-folder)
-     */
-    directory: string
-  }
-  build: {
-    /**
-     * string that includes a site’s [build command](https://docs.netlify.com/configure-builds/get-started/#definitions)
-     */
-    command: string
-    /**
-     * string that includes the path to a site’s [Edge Handlers directory](https://docs.netlify.com/edge-handlers/configure-and-build/#choose-an-edge-handlers-directory)
-     */
-    edge_handlers: string
-    /**
-     * object that contains a site’s [environment variables](https://docs.netlify.com/configure-builds/environment-variables/#netlify-configuration-variables)
-     */
-    environment: Partial<Record<string, string>>
-    /**
-     * object that includes options for [post processing](https://docs.netlify.com/configure-builds/file-based-configuration/#post-processing) HTML, CSS, JavaScript, and images
-     */
-    processing: Record<string, unknown>
-  }
-}
-
-/* eslint-enable camelcase */
 
 export interface NetlifyPluginOptions {
   constants: {
@@ -113,7 +45,7 @@ export interface NetlifyPluginOptions {
    */
   netlifyConfig: NetlifyConfig
   /**
-   * When an event handler executes, the contents of the `package.json` in a site’s base directory get passed to a plugin.
+   * When an event handler executes, the contents of the `package.json` in a site's base directory get passed to a plugin.
    * The data fields are normalized to prevent plugin errors. If the site has no `package.json`, the argument is an empty object.
    */
   packageJson: Partial<Record<string, string>>
