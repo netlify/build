@@ -1,4 +1,4 @@
-import { NetlifyEvent } from './NetlifyEvent'
+import { NetlifyEvent } from './netlify_event'
 
 export interface NetlifyPlugin {
   /**
