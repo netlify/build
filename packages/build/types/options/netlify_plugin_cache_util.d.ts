@@ -1,9 +1,11 @@
+import { Many } from '../utils/many'
+
 /**
  * Cache files between builds
  */
 export type NetlifyPluginCacheUtil = {
   save(
-    path: string | readonly string[],
+    path: Many<string>,
     options?: {
       ttl?: number
       digests?: string[]
@@ -26,7 +28,7 @@ export type NetlifyPluginCacheUtil = {
 } & Record<
   'restore' | 'remove' | 'has',
   (
-    path: string | readonly string[],
+    path: Many<string>,
     options?: {
       /**
        * @default `process.cwd()`

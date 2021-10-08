@@ -1,4 +1,5 @@
 import { NetlifyEvent } from './netlify_event'
+import { NetlifyPluginOptions } from './netlify_plugin_options'
 
 export interface NetlifyPlugin {
   /**
@@ -16,7 +17,7 @@ export interface NetlifyPlugin {
   /**
    * runs when an error occurs in the build or deploy stage, failing the build. Can’t be used to prevent a build from being deployed.
    */
-  onError?: NetlifyEvent
+  onError?: NetlifyEvent<NetlifyPluginOptions & { error: Error }>
   /**
    * runs when the deploy succeeds. Can’t be used to prevent a build from being deployed.
    */
@@ -24,5 +25,5 @@ export interface NetlifyPlugin {
   /**
    * runs after completion of the deploy stage, regardless of build error or success; is useful for resources cleanup. Can’t be used to prevent a build from being deployed.
    */
-  onEnd?: NetlifyEvent
+  onEnd?: NetlifyEvent<NetlifyPluginOptions & { error?: Error }>
 }

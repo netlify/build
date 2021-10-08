@@ -1,5 +1,10 @@
-interface NetlifyPluginRunUtilOptions {
-  env?: Partial<Record<string, string>>
+import { Options as ExecaOptions } from 'execa'
+
+type NetlifyPluginRunUtilOptions = Omit<ExecaOptions, 'preferLocal'> & {
+  /**
+   * @default true
+   */
+  preferLocal?: ExecaOptions['preferLocal']
 }
 
 interface NetlifyPluginRunUtilResult {
