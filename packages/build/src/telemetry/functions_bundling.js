@@ -6,17 +6,18 @@ const { INTERNAL_FUNCTIONS_SRC: internalFunctionsSrc } = require('../core/consta
 
 const createBundlingTelemetryObject = ({ functions = [] }) =>
   functions.reduce(createBundlingTelemetryObjectForFunction, {
-    built_source: 0,
     external_modules: [],
-    internal_functions: 0,
+    internal: 0,
     native_modules: [],
     total: functions.length,
   })
 
+// eslint-disable-next-line complexity
 const createBundlingTelemetryObjectForFunction = (aggregatedData, functionData) => {
   const { bundler = 'default', config = {}, mainFile = '', nativeNodeModules = {}, runtime = 'default' } = functionData
   const bundlerKey = `bundler_${bundler}`
   const runtimeKey = `runtime_${runtime}`
+  const runtimeSourceKey = `runtime_${runtime}_source`
   const { externalNodeModules = [] } = config
   const isBuiltFromSource = !['', '.zip'].includes(extname(mainFile))
   const isInternal = mainFile.includes(internalFunctionsSrc)
@@ -27,9 +28,9 @@ const createBundlingTelemetryObjectForFunction = (aggregatedData, functionData) 
     ...aggregatedData,
     [bundlerKey]: (aggregatedData[bundlerKey] || 0) + 1,
     [runtimeKey]: (aggregatedData[runtimeKey] || 0) + 1,
-    built_source: aggregatedData.built_source + (isBuiltFromSource ? 1 : 0),
+    [runtimeSourceKey]: (aggregatedData[runtimeSourceKey] || 0) + (isBuiltFromSource ? 1 : 0),
     external_modules: [...externalModules],
-    internal_functions: aggregatedData.internal_functions + (isInternal ? 1 : 0),
+    internal: aggregatedData.internal + (isInternal ? 1 : 0),
     native_modules: [...nativeModules],
   }
 }
