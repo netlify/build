@@ -89,6 +89,7 @@ const getPayload = function ({
   const bundledFunctions = createBundlingTelemetryObject({
     functions,
   })
+
   return {
     userId: 'buildbot_user',
     event: 'build:ci_build_process_completed',
@@ -112,7 +113,7 @@ const getPayload = function ({
         pluginCount: pluginsOptions.length,
       }),
       ...(durationNs !== undefined && { duration: roundTimerToMillisecs(durationNs) }),
-      ...(bundledFunctions.length !== 0 && { bundledFunctions }),
+      ...(bundledFunctions.total !== 0 && { bundledFunctions }),
     },
   }
 }
