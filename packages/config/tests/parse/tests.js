@@ -70,6 +70,12 @@ test('Configuration file - invalid backslash sequences in multiline single quote
   })
 })
 
+test('Configuration file - detecting invalid backslash sequences in TOML does not misinterpret equal signs', async (t) => {
+  await runFixture(t, 'parse_backslash_equal', {
+    flags: { featureFlags: { netlify_config_toml_backslash: true } },
+  })
+})
+
 test('Redirects - redirects file', async (t) => {
   await runFixture(t, 'redirects_file')
 })
