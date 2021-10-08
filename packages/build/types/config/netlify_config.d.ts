@@ -18,7 +18,7 @@ interface Redirect {
 
 interface Header {
   for: string
-  values: Partial<Record<string, Many<string>>>
+  values: Partial<Record<string, Many<string, 'mutable'>>>
 }
 
 interface EdgeHandler {
