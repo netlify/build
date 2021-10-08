@@ -11,7 +11,7 @@ export interface Build {
   /**
    * Includes a site's [build command](https://docs.netlify.com/configure-builds/get-started/#definitions)
    */
-  command: string | undefined
+  command?: string
 
   /**
    * the path to your static content folder
@@ -24,12 +24,12 @@ export interface Build {
    * Allows specifying a Bash command that will be run from the base directory to determine whether the site needs rebuilding or not.
    * Check out our [ignore builds](https://docs.netlify.com/configure-builds/common-configurations/ignore-builds/) doc for more information on the default ignore behavior and details about constructing a custom ignore command.
    */
-  ignore: string | undefined
+  ignore?: string
 
   /**
    * Includes the path to a site's [Edge Handlers directory](https://docs.netlify.com/edge-handlers/configure-and-build/#choose-an-edge-handlers-directory)
    */
-  edge_handlers: string | undefined
+  edge_handlers?: string
   /**
    * Contains a site's [environment variables](https://docs.netlify.com/configure-builds/environment-variables/#netlify-configuration-variables)
    */
@@ -40,18 +40,18 @@ export interface Build {
   processing: {
     skip_processing?: boolean
     css: {
-      bundle: boolean | undefined
-      minify: boolean | undefined
+      bundle?: boolean
+      minify?: boolean
     }
     js: {
-      bundle: boolean | undefined
-      minify: boolean | undefined
+      bundle?: boolean
+      minify?: boolean
     }
     html: {
-      pretty_url: boolean | undefined
+      pretty_url?: boolean
     }
     images: {
-      compress: boolean | undefined
+      compress?: boolean
     }
   }
 
