@@ -17,6 +17,7 @@ const FRAMEWORKS = [
   require('./next.json'),
   require('./blitz.json'),
   require('./nuxt.json'),
+  require('./nuxt3.json'),
   require('./phenomic.json'),
   require('./react-static.json'),
   require('./redwoodjs.json'),
