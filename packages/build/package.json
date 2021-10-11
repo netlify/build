@@ -3,6 +3,7 @@
   "version": "18.13.12",
   "description": "Netlify build module",
   "main": "src/core/main.js",
+  "types": "types/index.d.ts",
   "bin": {
     "netlify-build": "./src/core/bin.js"
   },
