@@ -1,5 +1,12 @@
 # Changelog
 
+## [18.14.0](https://www.github.com/netlify/build/compare/build-v18.13.12...build-v18.14.0) (2021-10-11)
+
+
+### Features
+
+* **build:** add TypeScript types for plugins ([#3698](https://www.github.com/netlify/build/issues/3698)) ([539934d](https://www.github.com/netlify/build/commit/539934da8c71566744dff8440a02cb85716afd6b))
+
 ### [18.13.12](https://www.github.com/netlify/build/compare/build-v18.13.11...build-v18.13.12) (2021-10-11)
 
 
