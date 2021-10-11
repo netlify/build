@@ -1,5 +1,12 @@
 # Changelog
 
+### [18.14.1](https://www.github.com/netlify/build/compare/build-v18.14.0...build-v18.14.1) (2021-10-11)
+
+
+### Bug Fixes
+
+* rename `command` to `step` in build logs ([#3714](https://www.github.com/netlify/build/issues/3714)) ([fbcbb40](https://www.github.com/netlify/build/commit/fbcbb406d51568cbf6333465c6b7c0d202d93ffc))
+
 ## [18.14.0](https://www.github.com/netlify/build/compare/build-v18.13.12...build-v18.14.0) (2021-10-11)
 
 
