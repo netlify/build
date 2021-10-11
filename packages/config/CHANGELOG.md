@@ -1,5 +1,12 @@
 # Changelog
 
+### [15.6.7](https://www.github.com/netlify/build/compare/config-v15.6.6...config-v15.6.7) (2021-10-11)
+
+
+### Bug Fixes
+
+* warning message for TOML escape sequences ([#3705](https://www.github.com/netlify/build/issues/3705)) ([ed16d0d](https://www.github.com/netlify/build/commit/ed16d0d72efc95e112d8d2f90dbac98bde68ff69))
+
 ### [15.6.6](https://www.github.com/netlify/build/compare/config-v15.6.5...config-v15.6.6) (2021-10-08)
 
 
