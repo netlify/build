@@ -1,6 +1,6 @@
 {
   "name": "@netlify/build",
-  "version": "18.13.11",
+  "version": "18.13.12",
   "description": "Netlify build module",
   "main": "src/core/main.js",
   "types": "types/index.d.ts",
@@ -60,7 +60,7 @@
     "@netlify/plugin-edge-handlers": "^1.11.22",
     "@netlify/plugins-list": "^4.0.0",
     "@netlify/run-utils": "^2.0.0",
-    "@netlify/zip-it-and-ship-it": "^4.23.6",
+    "@netlify/zip-it-and-ship-it": "^4.24.0",
     "@sindresorhus/slugify": "^1.1.0",
     "@ungap/from-entries": "^0.2.1",
     "ansi-escapes": "^4.3.2",
