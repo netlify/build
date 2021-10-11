@@ -5,8 +5,8 @@ const { arrowDown } = require('figures')
 const { logMessage, logSubHeader } = require('../logger')
 const { THEME } = require('../theme')
 
-const logDryRunStart = function ({ logs, eventWidth, commandsCount }) {
-  const columnWidth = getDryColumnWidth(eventWidth, commandsCount)
+const logDryRunStart = function ({ logs, eventWidth, stepsCount }) {
+  const columnWidth = getDryColumnWidth(eventWidth, stepsCount)
   const line = '─'.repeat(columnWidth)
   const secondLine = '─'.repeat(columnWidth)
 
@@ -23,19 +23,19 @@ ${THEME.header(`┌─${line}─┬─${secondLine}─┐
   )
 }
 
-const logDryRunCommand = function ({
+const logDryRunStep = function ({
   logs,
-  command: { event, packageName, coreCommandDescription },
+  step: { event, packageName, coreStepDescription },
   index,
   netlifyConfig,
   eventWidth,
-  commandsCount,
+  stepsCount,
 }) {
-  const columnWidth = getDryColumnWidth(eventWidth, commandsCount)
-  const fullName = getFullName(coreCommandDescription, netlifyConfig, packageName)
+  const columnWidth = getDryColumnWidth(eventWidth, stepsCount)
+  const fullName = getFullName(coreStepDescription, netlifyConfig, packageName)
   const line = '─'.repeat(columnWidth)
   const countText = `${index + 1}. `
-  const downArrow = commandsCount === index + 1 ? '  ' : ` ${arrowDown}`
+  const downArrow = stepsCount === index + 1 ? '  ' : ` ${arrowDown}`
   const eventWidthA = columnWidth - countText.length - downArrow.length
 
   logMessage(
@@ -46,14 +46,14 @@ ${THEME.header(`└─${line}─┘ `)}`,
   )
 }
 
-const getFullName = function (coreCommandDescription, netlifyConfig, packageName) {
-  return coreCommandDescription === undefined
+const getFullName = function (coreStepDescription, netlifyConfig, packageName) {
+  return coreStepDescription === undefined
     ? `Plugin ${THEME.highlightWords(packageName)}`
-    : coreCommandDescription({ netlifyConfig })
+    : coreStepDescription({ netlifyConfig })
 }
 
-const getDryColumnWidth = function (eventWidth, commandsCount) {
-  const symbolsWidth = `${commandsCount}`.length + COLUMN_EXTRA_WIDTH
+const getDryColumnWidth = function (eventWidth, stepsCount) {
+  const symbolsWidth = `${stepsCount}`.length + COLUMN_EXTRA_WIDTH
   return Math.max(eventWidth + symbolsWidth, DRY_HEADER_NAMES[1].length)
 }
 
@@ -66,6 +66,6 @@ const logDryRunEnd = function (logs) {
 
 module.exports = {
   logDryRunStart,
-  logDryRunCommand,
+  logDryRunStep,
   logDryRunEnd,
 }

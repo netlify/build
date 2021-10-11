@@ -3,8 +3,6 @@
 /* eslint-disable max-lines, import/max-dependencies */
 require('../utils/polyfills')
 
-const { getCommands } = require('../commands/get')
-const { runCommands } = require('../commands/run_commands')
 const { handleBuildError } = require('../error/handle')
 const { getErrorInfo } = require('../error/info')
 const { startErrorMonitor } = require('../error/monitor/start')
@@ -16,6 +14,8 @@ const { pinPlugins } = require('../plugins/pinned_version')
 const { startPlugins, stopPlugins } = require('../plugins/spawn')
 const { addCorePlugins } = require('../plugins_core/add')
 const { reportStatuses } = require('../status/report')
+const { getSteps } = require('../steps/get')
+const { runSteps } = require('../steps/run_steps')
 const { trackBuildComplete } = require('../telemetry/main')
 const { initTimers, measureDuration } = require('../time/main')
 const { reportTimers } = require('../time/report')
@@ -42,8 +42,8 @@ const { getSeverity } = require('./severity')
  * @param  {string} [flags.deployId] - Netlify Deploy ID
  * @param  {string} [flags.context] - Build context
  * @param  {string} [flags.branch] - Repository branch
- * @param  {boolean} [flags.dry=false] - Run in dry mode, i.e. printing commands without executing them
- * @param  {string} [flags.nodePath] - Path to the Node.js binary to use in user commands and build plugins
+ * @param  {boolean} [flags.dry=false] - Run in dry mode, i.e. printing steps without executing them
+ * @param  {string} [flags.nodePath] - Path to the Node.js binary to use in the build command and plugins
  * @param  {boolean} [flags.buffer=false] - Buffer output instead of printing it
  *
  * @returns {object} buildResult
@@ -75,7 +75,7 @@ const build = async function (flags = {}) {
       netlifyConfig: netlifyConfigA,
       siteInfo,
       userNodeVersion,
-      commandsCount,
+      stepsCount,
       timers,
       durationNs,
       configMutations,
@@ -104,7 +104,7 @@ const build = async function (flags = {}) {
       buildId,
       deployId,
       status,
-      commandsCount,
+      stepsCount,
       pluginsOptions,
       durationNs,
       siteInfo,
@@ -248,7 +248,7 @@ const tExecBuild = async function ({
   const {
     pluginsOptions: pluginsOptionsA,
     netlifyConfig: netlifyConfigA,
-    commandsCount,
+    stepsCount,
     timers: timersB,
     configMutations,
   } = await runAndReportBuild({
@@ -288,7 +288,7 @@ const tExecBuild = async function ({
     netlifyConfig: netlifyConfigA,
     siteInfo,
     userNodeVersion,
-    commandsCount,
+    stepsCount,
     timers: timersB,
     configMutations,
   }
@@ -331,7 +331,7 @@ const runAndReportBuild = async function ({
 }) {
   try {
     const {
-      commandsCount,
+      stepsCount,
       netlifyConfig: netlifyConfigA,
       statuses,
       pluginsOptions: pluginsOptionsA,
@@ -404,7 +404,7 @@ const runAndReportBuild = async function ({
     return {
       pluginsOptions: pluginsOptionsA,
       netlifyConfig: netlifyConfigA,
-      commandsCount,
+      stepsCount,
       timers: timersA,
       configMutations,
     }
@@ -492,7 +492,7 @@ const initAndRunBuild = async function ({
 
   try {
     const {
-      commandsCount,
+      stepsCount,
       netlifyConfig: netlifyConfigA,
       statuses,
       failedPlugins,
@@ -535,7 +535,7 @@ const initAndRunBuild = async function ({
     ])
 
     return {
-      commandsCount,
+      stepsCount,
       netlifyConfig: netlifyConfigA,
       statuses,
       pluginsOptions: pluginsOptionsA,
@@ -580,7 +580,7 @@ const runBuild = async function ({
   testOpts,
   featureFlags,
 }) {
-  const { pluginsCommands, timers: timersA } = await loadPlugins({
+  const { pluginsSteps, timers: timersA } = await loadPlugins({
     pluginsOptions,
     childProcesses,
     packageJson,
@@ -588,22 +588,22 @@ const runBuild = async function ({
     debug,
   })
 
-  const { commands, events } = getCommands(pluginsCommands)
+  const { steps, events } = getSteps(pluginsSteps)
 
   if (dry) {
-    await doDryRun({ buildDir, commands, netlifyConfig, constants, buildbotServerSocket, logs })
+    await doDryRun({ buildDir, steps, netlifyConfig, constants, buildbotServerSocket, logs })
     return { netlifyConfig }
   }
 
   const {
-    commandsCount,
+    stepsCount,
     netlifyConfig: netlifyConfigA,
     statuses,
     failedPlugins,
     timers: timersB,
     configMutations,
-  } = await runCommands({
-    commands,
+  } = await runSteps({
+    steps,
     buildbotServerSocket,
     events,
     configPath,
@@ -631,7 +631,7 @@ const runBuild = async function ({
     featureFlags,
   })
 
-  return { commandsCount, netlifyConfig: netlifyConfigA, statuses, failedPlugins, timers: timersB, configMutations }
+  return { stepsCount, netlifyConfig: netlifyConfigA, statuses, failedPlugins, timers: timersB, configMutations }
 }
 
 // Logs and reports that a build successfully ended
@@ -651,7 +651,7 @@ const telemetryReport = async function ({
   deployId,
   buildId,
   status,
-  commandsCount,
+  stepsCount,
   pluginsOptions,
   durationNs,
   siteInfo,
@@ -666,7 +666,7 @@ const telemetryReport = async function ({
       deployId,
       buildId,
       status,
-      commandsCount,
+      stepsCount,
       pluginsOptions,
       durationNs,
       siteInfo,

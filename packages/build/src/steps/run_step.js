@@ -2,23 +2,23 @@
 'use strict'
 
 const { addMutableConstants } = require('../core/constants')
-const { logCommand } = require('../log/messages/commands')
+const { logStepStart } = require('../log/messages/steps')
 const { runsAlsoOnBuildFailure, runsOnlyOnBuildFailure } = require('../plugins/events')
 const { measureDuration, normalizeTimerName } = require('../time/main')
 
-const { fireCoreCommand } = require('./core_command')
-const { firePluginCommand } = require('./plugin')
-const { getCommandReturn } = require('./return')
+const { fireCoreStep } = require('./core_step')
+const { firePluginStep } = require('./plugin')
+const { getStepReturn } = require('./return')
 
-// Run a command (shell or plugin)
-const runCommand = async function ({
+// Run a step (core, build command or plugin)
+const runStep = async function ({
   event,
   childProcess,
   packageName,
-  coreCommand,
-  coreCommandId,
-  coreCommandName,
-  coreCommandDescription,
+  coreStep,
+  coreStepId,
+  coreStepName,
+  coreStepDescription,
   pluginPackageJson,
   loadedFrom,
   origin,
@@ -33,7 +33,7 @@ const runCommand = async function ({
   branch,
   envChanges,
   constants,
-  commands,
+  steps,
   buildbotServerSocket,
   events,
   mode,
@@ -58,7 +58,7 @@ const runCommand = async function ({
   const constantsA = await addMutableConstants({ constants, buildDir, netlifyConfig })
 
   if (
-    !(await shouldRunCommand({
+    !(await shouldRunStep({
       event,
       packageName,
       error,
@@ -73,9 +73,9 @@ const runCommand = async function ({
     return {}
   }
 
-  logCommand({ logs, event, packageName, coreCommandDescription, index, error, netlifyConfig })
+  logStepStart({ logs, event, packageName, coreStepDescription, index, error, netlifyConfig })
 
-  const fireCommand = getFireCommand(packageName, coreCommandId, event)
+  const fireStep = getFireStep(packageName, coreStepId, event)
   const {
     newEnvChanges,
     netlifyConfig: netlifyConfigA = netlifyConfig,
@@ -86,15 +86,15 @@ const runCommand = async function ({
     newStatus,
     timers: timersA,
     durationNs,
-  } = await fireCommand({
+  } = await fireStep({
     event,
     childProcess,
     packageName,
     pluginPackageJson,
     loadedFrom,
     origin,
-    coreCommand,
-    coreCommandName,
+    coreStep,
+    coreStepName,
     configPath,
     buildDir,
     repositoryRoot,
@@ -104,7 +104,7 @@ const runCommand = async function ({
     branch,
     envChanges,
     constants: constantsA,
-    commands,
+    steps,
     buildbotServerSocket,
     events,
     error,
@@ -121,14 +121,14 @@ const runCommand = async function ({
     featureFlags,
   })
 
-  const newValues = await getCommandReturn({
+  const newValues = await getStepReturn({
     event,
     packageName,
     newError,
     newEnvChanges,
     newStatus,
-    coreCommand,
-    coreCommandName,
+    coreStep,
+    coreStepName,
     childEnv,
     mode,
     api,
@@ -178,7 +178,7 @@ const runCommand = async function ({
 // or available. However, one might be created by a build plugin, in which case,
 // those core plugins should be triggered. We use a dynamic `condition()` to
 // model this behavior.
-const shouldRunCommand = async function ({
+const shouldRunStep = async function ({
   event,
   packageName,
   error,
@@ -203,25 +203,25 @@ const shouldRunCommand = async function ({
   return !runsOnlyOnBuildFailure(event)
 }
 
-// Wrap command function to measure its time
-const getFireCommand = function (packageName, coreCommandId, event) {
-  if (coreCommandId !== undefined) {
-    return measureDuration(tFireCommand, coreCommandId)
+// Wrap step function to measure its time
+const getFireStep = function (packageName, coreStepId, event) {
+  if (coreStepId !== undefined) {
+    return measureDuration(tFireStep, coreStepId)
   }
 
   const parentTag = normalizeTimerName(packageName)
-  return measureDuration(tFireCommand, event, { parentTag, category: 'pluginEvent' })
+  return measureDuration(tFireStep, event, { parentTag, category: 'pluginEvent' })
 }
 
-const tFireCommand = function ({
+const tFireStep = function ({
   event,
   childProcess,
   packageName,
   pluginPackageJson,
   loadedFrom,
   origin,
-  coreCommand,
-  coreCommandName,
+  coreStep,
+  coreStepName,
   configPath,
   buildDir,
   repositoryRoot,
@@ -231,7 +231,7 @@ const tFireCommand = function ({
   branch,
   envChanges,
   constants,
-  commands,
+  steps,
   buildbotServerSocket,
   events,
   error,
@@ -246,10 +246,10 @@ const tFireCommand = function ({
   redirectsPath,
   featureFlags,
 }) {
-  if (coreCommand !== undefined) {
-    return fireCoreCommand({
-      coreCommand,
-      coreCommandName,
+  if (coreStep !== undefined) {
+    return fireCoreStep({
+      coreStep,
+      coreStepName,
       configPath,
       buildDir,
       repositoryRoot,
@@ -274,7 +274,7 @@ const tFireCommand = function ({
     })
   }
 
-  return firePluginCommand({
+  return firePluginStep({
     event,
     childProcess,
     packageName,
@@ -289,12 +289,12 @@ const tFireCommand = function ({
     headersPath,
     redirectsPath,
     constants,
-    commands,
+    steps,
     error,
     logs,
     debug,
   })
 }
 
-module.exports = { runCommand }
+module.exports = { runStep }
 /* eslint-enable max-lines */

@@ -75,7 +75,7 @@ module.exports = {
     },
 
     // @todo As it stands, this rule is problematic with methods that get+send
-    // many parameters, such as `runCommand` in `src/commands/run_command.js`.
+    // many parameters, such as `runStep` in `src/steps/run_step.js`.
     // We should discuss whether we want to keep this rule or discontinue it.
     {
       files: ['packages/build/**/*.js'],

@@ -10,7 +10,7 @@ const {
   deploySiteWithBuildbotClient,
 } = require('./buildbot_client')
 
-const coreCommand = async function ({
+const coreStep = async function ({
   buildDir,
   configPath,
   repositoryRoot,
@@ -67,10 +67,10 @@ const shouldDeploy = function ({ buildbotServerSocket }) {
 
 const deploySite = {
   event: 'onPostBuild',
-  coreCommand,
-  coreCommandId: 'deploy_site',
-  coreCommandName: 'Deploy site',
-  coreCommandDescription: () => 'Deploy site',
+  coreStep,
+  coreStepId: 'deploy_site',
+  coreStepName: 'Deploy site',
+  coreStepDescription: () => 'Deploy site',
   condition: shouldDeploy,
 }
 

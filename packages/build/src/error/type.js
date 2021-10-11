@@ -141,13 +141,13 @@ const TYPES = {
     severity: 'error',
   },
 
-  // Core command internal error
-  coreCommand: {
-    title: ({ location: { coreCommandName } }) => `Internal error during "${coreCommandName}"`,
+  // Core step internal error
+  coreStep: {
+    title: ({ location: { coreStepName } }) => `Internal error during "${coreStepName}"`,
     stackType: 'stack',
     showErrorProps: true,
     rawStack: true,
-    locationType: 'coreCommand',
+    locationType: 'coreStep',
     severity: 'error',
   },
 

@@ -52,7 +52,7 @@ const INTERNAL_FUNCTIONS_SRC = '.netlify/functions-internal'
 
 // Retrieve constants which might change during the build if a plugin modifies
 // `netlifyConfig` or creates some default directories.
-// Unlike readonly constants, this is called again before each command.
+// Unlike readonly constants, this is called again before each build step.
 const addMutableConstants = async function ({
   constants,
   buildDir,

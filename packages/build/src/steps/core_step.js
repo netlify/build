@@ -5,10 +5,10 @@ const { addErrorInfo, isBuildError } = require('../error/info')
 
 const { updateNetlifyConfig, listConfigSideFiles } = require('./update_config')
 
-// Fire a core command
-const fireCoreCommand = async function ({
-  coreCommand,
-  coreCommandName,
+// Fire a core step
+const fireCoreStep = async function ({
+  coreStep,
+  coreStepName,
   configPath,
   buildDir,
   repositoryRoot,
@@ -38,7 +38,7 @@ const fireCoreCommand = async function ({
       newEnvChanges = {},
       configMutations: newConfigMutations = [],
       tags,
-    } = await coreCommand({
+    } = await coreStep({
       configPath,
       buildDir,
       repositoryRoot,
@@ -85,10 +85,10 @@ const fireCoreCommand = async function ({
     }
   } catch (newError) {
     if (!isBuildError(newError)) {
-      addErrorInfo(newError, { type: 'coreCommand', location: { coreCommandName } })
+      addErrorInfo(newError, { type: 'coreStep', location: { coreStepName } })
     }
     return { newError }
   }
 }
 
-module.exports = { fireCoreCommand }
+module.exports = { fireCoreStep }

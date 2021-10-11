@@ -6,11 +6,11 @@ const execa = require('execa')
 
 const { addErrorInfo } = require('../error/info')
 const { getBuildCommandDescription } = require('../log/description')
-const { logBuildCommandStart } = require('../log/messages/commands')
+const { logBuildCommandStart } = require('../log/messages/steps')
 const { getBuildCommandStdio, handleBuildCommandOutput } = require('../log/stream')
 
 // Fire `build.command`
-const coreCommand = async function ({
+const coreStep = async function ({
   configPath,
   buildDir,
   nodePath,
@@ -51,7 +51,7 @@ const coreCommand = async function ({
 // We use Bash on Unix and `cmd.exe` on Windows
 const SHELL = platform === 'win32' ? true : 'bash'
 
-const coreCommandDescription = function ({
+const coreStepDescription = function ({
   netlifyConfig: {
     build: { commandOrigin: buildCommandOrigin },
   },
@@ -69,10 +69,10 @@ const hasBuildCommand = function ({
 
 const buildCommandCore = {
   event: 'onBuild',
-  coreCommand,
-  coreCommandId: 'build_command',
-  coreCommandName: 'build.command',
-  coreCommandDescription,
+  coreStep,
+  coreStepId: 'build_command',
+  coreStepName: 'build.command',
+  coreStepDescription,
   condition: hasBuildCommand,
 }
 

@@ -13,7 +13,7 @@ const { isSoftFailEvent } = require('../plugins/events')
 //    stop, but are still reported, and prevent future events from the same
 //    plugin.
 // This also computes error statuses that are sent to the API.
-const handleCommandError = function ({
+const handleStepError = function ({
   event,
   newError,
   childEnv,
@@ -21,14 +21,14 @@ const handleCommandError = function ({
   api,
   errorMonitor,
   deployId,
-  coreCommand,
+  coreStep,
   netlifyConfig,
   logs,
   debug,
   testOpts,
 }) {
-  // Core commands do not report error statuses
-  if (coreCommand !== undefined) {
+  // Core steps do not report error statuses
+  if (coreStep !== undefined) {
     return { newError }
   }
 
@@ -103,4 +103,4 @@ const isCorePluginBug = function (error, loadedFrom) {
   return severity === 'warning' && loadedFrom === 'core'
 }
 
-module.exports = { handleCommandError, getPluginErrorType }
+module.exports = { handleStepError, getPluginErrorType }

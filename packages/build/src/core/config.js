@@ -123,7 +123,7 @@ const logConfigInfo = function ({ logs, configPath, buildDir, netlifyConfig, con
 // normalized.
 // We use `debug: false` to avoid any debug logs. Otherwise every configuration
 // change would create debug logs which would be too verbose.
-// Errors are propagated and assigned to the specific plugin or core command
+// Errors are propagated and assigned to the specific plugin or core step
 // which changed the configuration.
 const resolveUpdatedConfig = async function (configOpts, configMutations) {
   try {

@@ -36,7 +36,7 @@ const pushBuildCommandOutput = function (output, logsArray) {
   logsArray.push(output)
 }
 
-// Start plugin command output
+// Start plugin step output
 const pipePluginOutput = function (childProcess, logs) {
   if (logs === undefined) {
     return streamOutput(childProcess)
@@ -45,7 +45,7 @@ const pipePluginOutput = function (childProcess, logs) {
   return pushOutputToLogs(childProcess, logs)
 }
 
-// Stop streaming/buffering plugin command output
+// Stop streaming/buffering plugin step output
 const unpipePluginOutput = async function (childProcess, logs, listeners) {
   // Let `childProcess` `stdout` and `stderr` flush before stopping redirecting
   await pSetTimeout(0)

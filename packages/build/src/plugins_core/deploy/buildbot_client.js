@@ -88,9 +88,7 @@ const getDeployDir = function ({ buildDir, repositoryRoot, constants: { PUBLISH_
 const handleDeployError = function (error, errorType) {
   const errorA = new Error(`Deploy did not succeed: ${error}`)
   const errorInfo =
-    errorType === 'user'
-      ? { type: 'resolveConfig' }
-      : { type: 'coreCommand', location: { coreCommandName: 'Deploy site' } }
+    errorType === 'user' ? { type: 'resolveConfig' } : { type: 'coreStep', location: { coreStepName: 'Deploy site' } }
   addErrorInfo(errorA, errorInfo)
   throw errorA
 }
