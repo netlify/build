@@ -17,7 +17,12 @@
     "directory": "public"
   },
   "staticAssetsDirectory": "static",
-  "env": { "GATSBY_LOGGER": "yurnalist", "GATSBY_PRECOMPILE_DEVELOP_FUNCTIONS": "true" },
+  "env": {
+    "GATSBY_LOGGER": "yurnalist",
+    "GATSBY_PRECOMPILE_DEVELOP_FUNCTIONS": "true",
+    "AWS_LAMBDA_JS_RUNTIME": "nodejs14.x",
+    "NODE_VERSION": "14"
+  },
   "plugins": [
     {
       "packageName": "@netlify/plugin-gatsby",
