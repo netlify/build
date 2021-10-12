@@ -104,6 +104,7 @@ const coreStep = async function ({
   const internalFunctionsSrcExists = await pathExists(internalFunctionsSrc)
   const functionsSrcExists = await validateFunctionsSrc({ functionsSrc, logs, relativeFunctionsSrc })
   const [userFunctions = [], internalFunctions = []] = await getUserAndInternalFunctions({
+    featureFlags,
     functionsSrc,
     functionsSrcExists,
     internalFunctionsSrc,

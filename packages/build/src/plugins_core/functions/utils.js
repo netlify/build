@@ -10,16 +10,19 @@ const pStat = promisify(stat)
 
 const { addErrorInfo } = require('../../error/info')
 
-const getFunctionPaths = async function (functionsSrc) {
+// Returns the `mainFile` of each function found in `functionsSrc`, relative to
+// `functionsSrc`.
+const getRelativeFunctionMainFiles = async function ({ featureFlags, functionsSrc }) {
   if (functionsSrc === undefined) {
     return []
   }
 
-  const functions = await listFunctions(functionsSrc)
+  const functions = await listFunctions(functionsSrc, { featureFlags })
   return functions.map(({ mainFile }) => relative(functionsSrc, mainFile))
 }
 
 const getUserAndInternalFunctions = ({
+  featureFlags,
   functionsSrc,
   functionsSrcExists,
   internalFunctionsSrc,
@@ -30,7 +33,7 @@ const getUserAndInternalFunctions = ({
     internalFunctionsSrcExists ? internalFunctionsSrc : undefined,
   ]
 
-  return Promise.all(paths.map((path) => path && getFunctionPaths(path)))
+  return Promise.all(paths.map((path) => path && getRelativeFunctionMainFiles({ featureFlags, functionsSrc: path })))
 }
 
 // Returns `true` if the functions directory exists and is valid. Returns
