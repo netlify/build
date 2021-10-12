@@ -10,6 +10,8 @@ const pStat = promisify(stat)
 
 const { addErrorInfo } = require('../../error/info')
 
+const { getZisiFeatureFlags } = require('./feature_flags')
+
 // Returns the `mainFile` of each function found in `functionsSrc`, relative to
 // `functionsSrc`.
 const getRelativeFunctionMainFiles = async function ({ featureFlags, functionsSrc }) {
@@ -17,7 +19,8 @@ const getRelativeFunctionMainFiles = async function ({ featureFlags, functionsSr
     return []
   }
 
-  const functions = await listFunctions(functionsSrc, { featureFlags })
+  const zisiFeatureFlags = getZisiFeatureFlags(featureFlags)
+  const functions = await listFunctions(functionsSrc, { featureFlags: zisiFeatureFlags })
   return functions.map(({ mainFile }) => relative(functionsSrc, mainFile))
 }
 
