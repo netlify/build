@@ -9,7 +9,8 @@
   },
   "files": [
     "src/**/*.js",
-    "src/**/*.yml"
+    "src/**/*.yml",
+    "types/**/*.d.ts"
   ],
   "author": "Netlify Inc.",
   "contributors": [
