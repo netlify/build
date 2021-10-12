@@ -361,6 +361,22 @@ test.serial('Passes `buildGoSource` feature flag to zip-it-and-ship-it', async (
   t.true(spy.secondCall.args[2].featureFlags.buildGoSource)
 })
 
+test.serial('Passes the right base path properties to zip-it-and-ship-it', async (t) => {
+  const spy = sinon.spy(zipItAndShipIt, 'zipFunctions')
+  const fixtureName = 'core'
+
+  await runFixture(t, fixtureName, { snapshot: false })
+
+  t.is(spy.callCount, 1)
+
+  // eslint-disable-next-line prefer-destructuring
+  const { basePath, config, repositoryRoot } = spy.firstCall.args[2]
+
+  t.is(basePath, `${FIXTURES_DIR}/${fixtureName}`)
+  t.is(config['*'].includedFilesBasePath, `${FIXTURES_DIR}/${fixtureName}`)
+  t.is(repositoryRoot, `${FIXTURES_DIR}/${fixtureName}`)
+})
+
 test('Print warning on lingering processes', async (t) => {
   const { returnValue } = await runFixture(t, 'lingering', {
     flags: { testOpts: { silentLingeringProcesses: false }, mode: 'buildbot' },
