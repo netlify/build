@@ -40,6 +40,12 @@ const normalizeFunctionConfig = ({ buildDir, functionConfig = {}, isRunningLocal
   rustTargetDirectory: isRunningLocally ? undefined : resolve(buildDir, '.netlify', 'rust-functions-cache', '[name]'),
 })
 
+const zisiFeatureFlagMappings = {
+  defaultEsModulesToEsbuild: 'buildbot_es_modules_esbuild',
+  parseWithEsbuild: 'buildbot_zisi_esbuild_parser',
+  buildGoSource: 'buildbot_build_go_functions',
+}
+
 const getZisiParameters = ({ buildDir, featureFlags, functionsConfig, functionsDist, isRunningLocally }) => {
   const isManifestEnabled = featureFlags.functionsBundlingManifest === true
   const manifest = isManifestEnabled && isRunningLocally ? join(functionsDist, 'manifest.json') : undefined
@@ -47,13 +53,16 @@ const getZisiParameters = ({ buildDir, featureFlags, functionsConfig, functionsD
     expression,
     normalizeFunctionConfig({ buildDir, featureFlags, functionConfig: object, isRunningLocally }),
   ])
-  const zisiFeatureFlags = {
-    buildGoSource: featureFlags.buildbot_build_go_functions,
-    defaultEsModulesToEsbuild: featureFlags.buildbot_es_modules_esbuild,
-    parseWithEsbuild: featureFlags.buildbot_zisi_esbuild_parser,
-  }
 
-  return { basePath: buildDir, config, manifest, featureFlags: zisiFeatureFlags }
+  return {
+    basePath: buildDir,
+    config,
+    manifest,
+    featureFlags: mapObject(zisiFeatureFlagMappings, (zisiFlagName, buildbotFlagName) => [
+      zisiFlagName,
+      featureFlags[buildbotFlagName],
+    ]),
+  }
 }
 
 const zipFunctionsAndLogResults = async ({
@@ -174,4 +183,4 @@ const bundleFunctions = {
   condition: hasFunctionsDirectories,
 }
 
-module.exports = { bundleFunctions }
+module.exports = { bundleFunctions, zisiFeatureFlagMappings }

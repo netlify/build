@@ -15,6 +15,7 @@ const { tmpName } = require('tmp-promise')
 
 const { runFixture: runFixtureConfig } = require('../../../config/tests/helpers/main')
 const { version: netlifyBuildVersion } = require('../../package.json')
+const { zisiFeatureFlagMappings } = require('../../src/plugins_core/functions/index')
 const { removeDir } = require('../helpers/dir')
 const { runFixture, FIXTURES_DIR } = require('../helpers/main')
 const { startServer } = require('../helpers/server')
@@ -333,32 +334,20 @@ test.serial(`Doesn't fail build for ES module function if feature flag is off`, 
   t.false(callArgs[2].featureFlags.defaultEsModulesToEsbuild)
 })
 
-test.serial('Passes `parseWithEsbuild` feature flag to zip-it-and-ship-it', async (t) => {
-  const spy = sinon.spy(zipItAndShipIt, 'zipFunctions')
+Object.entries(zisiFeatureFlagMappings).forEach(([zisiFlagName, buildbotFlagName]) => {
+  test.serial(`Passes '${zisiFlagName}' feature flag to zip-it-and-ship-it'`, async (t) => {
+    const spy = sinon.spy(zipItAndShipIt, 'zipFunctions')
 
-  await runFixture(t, 'core', { snapshot: false })
-  await runFixture(t, 'core', {
-    flags: { featureFlags: { buildbot_zisi_esbuild_parser: true } },
-    snapshot: false,
+    await runFixture(t, 'core', { snapshot: false })
+    await runFixture(t, 'core', {
+      flags: { featureFlags: { [buildbotFlagName]: true } },
+      snapshot: false,
+    })
+
+    t.is(spy.callCount, 2)
+    t.false(spy.firstCall.args[2].featureFlags[zisiFlagName])
+    t.true(spy.secondCall.args[2].featureFlags[zisiFlagName])
   })
-
-  t.is(spy.callCount, 2)
-  t.false(spy.firstCall.args[2].featureFlags.parseWithEsbuild)
-  t.true(spy.secondCall.args[2].featureFlags.parseWithEsbuild)
-})
-
-test.serial('Passes `buildGoSource` feature flag to zip-it-and-ship-it', async (t) => {
-  const spy = sinon.spy(zipItAndShipIt, 'zipFunctions')
-
-  await runFixture(t, 'core', { snapshot: false })
-  await runFixture(t, 'core', {
-    flags: { featureFlags: { buildbot_build_go_functions: true } },
-    snapshot: false,
-  })
-
-  t.is(spy.callCount, 2)
-  t.false(spy.firstCall.args[2].featureFlags.buildGoSource)
-  t.true(spy.secondCall.args[2].featureFlags.buildGoSource)
 })
 
 test('Print warning on lingering processes', async (t) => {
