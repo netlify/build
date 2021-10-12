@@ -1,5 +1,12 @@
 # Changelog
 
+### [18.15.2](https://www.github.com/netlify/build/compare/build-v18.15.1...build-v18.15.2) (2021-10-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^4.0.1 ([#3724](https://www.github.com/netlify/build/issues/3724)) ([d501051](https://www.github.com/netlify/build/commit/d5010517adb33635f0c26a04ee39a9422636cb1f))
+
 ### [18.15.1](https://www.github.com/netlify/build/compare/build-v18.15.0...build-v18.15.1) (2021-10-12)
 
 
