@@ -1,5 +1,12 @@
 # Changelog
 
+### [18.15.1](https://www.github.com/netlify/build/compare/build-v18.15.0...build-v18.15.1) (2021-10-12)
+
+
+### Bug Fixes
+
+* **build:** add missing types folder to files field in package.json ([#3716](https://www.github.com/netlify/build/issues/3716)) ([29d7d61](https://www.github.com/netlify/build/commit/29d7d61b6fdac0c7d3710baeadf1858740de65ac))
+
 ## [18.15.0](https://www.github.com/netlify/build/compare/build-v18.14.1...build-v18.15.0) (2021-10-12)
 
 
