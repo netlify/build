@@ -347,6 +347,20 @@ test.serial('Passes `parseWithEsbuild` feature flag to zip-it-and-ship-it', asyn
   t.true(spy.secondCall.args[2].featureFlags.parseWithEsbuild)
 })
 
+test.serial('Passes `buildGoSource` feature flag to zip-it-and-ship-it', async (t) => {
+  const spy = sinon.spy(zipItAndShipIt, 'zipFunctions')
+
+  await runFixture(t, 'core', { snapshot: false })
+  await runFixture(t, 'core', {
+    flags: { featureFlags: { buildbot_build_go_functions: true } },
+    snapshot: false,
+  })
+
+  t.is(spy.callCount, 2)
+  t.false(spy.firstCall.args[2].featureFlags.buildGoSource)
+  t.true(spy.secondCall.args[2].featureFlags.buildGoSource)
+})
+
 test('Print warning on lingering processes', async (t) => {
   const { returnValue } = await runFixture(t, 'lingering', {
     flags: { testOpts: { silentLingeringProcesses: false }, mode: 'buildbot' },
