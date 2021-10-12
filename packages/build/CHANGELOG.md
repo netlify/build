@@ -1,5 +1,12 @@
 # Changelog
 
+## [18.15.0](https://www.github.com/netlify/build/compare/build-v18.14.1...build-v18.15.0) (2021-10-12)
+
+
+### Features
+
+* add `buildbot_build_go_functions` feature flag ([#3717](https://www.github.com/netlify/build/issues/3717)) ([d6cfa9b](https://www.github.com/netlify/build/commit/d6cfa9b624686c763fc77927c5fafd9b9816b3e9))
+
 ### [18.14.1](https://www.github.com/netlify/build/compare/build-v18.14.0...build-v18.14.1) (2021-10-11)
 
 
