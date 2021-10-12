@@ -48,6 +48,7 @@ const getZisiParameters = ({ buildDir, featureFlags, functionsConfig, functionsD
     normalizeFunctionConfig({ buildDir, featureFlags, functionConfig: object, isRunningLocally }),
   ])
   const zisiFeatureFlags = {
+    buildGoSource: featureFlags.buildbot_build_go_functions,
     defaultEsModulesToEsbuild: featureFlags.buildbot_es_modules_esbuild,
     parseWithEsbuild: featureFlags.buildbot_zisi_esbuild_parser,
   }
