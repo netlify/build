@@ -1,5 +1,13 @@
 # Changelog
 
+## [18.16.0](https://www.github.com/netlify/build/compare/build-v18.15.3...build-v18.16.0) (2021-10-13)
+
+
+### Features
+
+* allow `nft` as a value for `node_bundler` ([#3720](https://www.github.com/netlify/build/issues/3720)) ([248c69c](https://www.github.com/netlify/build/commit/248c69c838fa2defa366dbb3d4b4c4c7786d6af5))
+* pass `featureFlags` to `listFunctions` call ([#3727](https://www.github.com/netlify/build/issues/3727)) ([088ff1b](https://www.github.com/netlify/build/commit/088ff1bba18be6e49447ba2b250f1cb5f5d3af22))
+
 ### [18.15.3](https://www.github.com/netlify/build/compare/build-v18.15.2...build-v18.15.3) (2021-10-13)
 
 
