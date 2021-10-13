@@ -8,3 +8,6 @@ node_bundler = "zisi"
 
 [functions."my_prefix_*"]
 external_node_modules = ["module-four"]
+
+[functions."other_prefix_*"]
+node_bundler = "nft"
