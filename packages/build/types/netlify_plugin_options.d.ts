@@ -2,7 +2,7 @@ import { NetlifyConfig } from './config/netlify_config'
 import { NetlifyPluginUtils } from './options/netlify_plugin_utils'
 import { JSONValue } from './utils/json_value'
 
-export interface NetlifyPluginOptions {
+export interface NetlifyPluginOptions<TInputs extends Record<string, JSONValue> = Partial<Record<string, JSONValue>>> {
   constants: {
     /**
      * path to the Netlify configuration file.
@@ -43,7 +43,7 @@ export interface NetlifyPluginOptions {
   /**
    * If your plugin requires additional values from the user, you can specify these requirements in an `inputs` array in the plugin’s [`manifest.yml` file](https://docs.netlify.com/configure-builds/build-plugins/create-plugins/#anatomy-of-a-plugin).
    */
-  inputs: Partial<Record<string, JSONValue>>
+  inputs: TInputs
   /**
    * @see https://docs.netlify.com/configure-builds/build-plugins/create-plugins/#netlifyconfig
    */
