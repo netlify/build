@@ -4,7 +4,7 @@ const isPlainObj = require('is-plain-obj')
 
 const { isDefined } = require('./utils/remove_falsy')
 
-const bundlers = ['esbuild', 'zisi']
+const bundlers = ['esbuild', 'nft', 'zisi']
 const WILDCARD_ALL = '*'
 
 // Removing the legacy `functions` from the `build` block.
