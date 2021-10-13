@@ -11,6 +11,7 @@ const { log } = require('../../log/logger')
 const { logBundleResults, logFunctionsNonExistingDir, logFunctionsToBundle } = require('../../log/messages/core_steps')
 
 const { getZipError } = require('./error')
+const { getZisiFeatureFlags } = require('./feature_flags')
 const { getUserAndInternalFunctions, validateFunctionsSrc } = require('./utils')
 
 // Returns `true` if at least one of the functions has been configured to use
@@ -54,11 +55,7 @@ const getZisiParameters = ({
     expression,
     normalizeFunctionConfig({ buildDir, featureFlags, functionConfig: object, isRunningLocally }),
   ])
-  const zisiFeatureFlags = {
-    buildGoSource: featureFlags.buildbot_build_go_functions,
-    defaultEsModulesToEsbuild: featureFlags.buildbot_es_modules_esbuild,
-    parseWithEsbuild: featureFlags.buildbot_zisi_esbuild_parser,
-  }
+  const zisiFeatureFlags = getZisiFeatureFlags(featureFlags)
 
   return { basePath: buildDir, config, manifest, featureFlags: zisiFeatureFlags, repositoryRoot }
 }
@@ -120,6 +117,7 @@ const coreStep = async function ({
   const internalFunctionsSrcExists = await pathExists(internalFunctionsSrc)
   const functionsSrcExists = await validateFunctionsSrc({ functionsSrc, logs, relativeFunctionsSrc })
   const [userFunctions = [], internalFunctions = []] = await getUserAndInternalFunctions({
+    featureFlags,
     functionsSrc,
     functionsSrcExists,
     internalFunctionsSrc,
