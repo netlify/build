@@ -19,3 +19,9 @@ workflows:
           version: '16.10'
           # If you are using yarn, change the line below from "npm" to "yarn"
           pkg-manager: npm
+
+          steps:
+            - checkout
+            - run: npm ci
+            - run: npm run format:ci
+            - run: npm run test:ci
