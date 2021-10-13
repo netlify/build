@@ -1,5 +1,12 @@
 # Changelog
 
+## [18.17.0](https://www.github.com/netlify/build/compare/build-v18.16.0...build-v18.17.0) (2021-10-13)
+
+
+### Features
+
+* **build:** add opt-in support for generics for better type-safety for plugins' `inputs` ([#3728](https://www.github.com/netlify/build/issues/3728)) ([86c896b](https://www.github.com/netlify/build/commit/86c896b3850bf0ab031844f6eafefea0dc731eac))
+
 ## [18.16.0](https://www.github.com/netlify/build/compare/build-v18.15.3...build-v18.16.0) (2021-10-13)
 
 
