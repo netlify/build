@@ -41,7 +41,14 @@ const normalizeFunctionConfig = ({ buildDir, functionConfig = {}, isRunningLocal
   rustTargetDirectory: isRunningLocally ? undefined : resolve(buildDir, '.netlify', 'rust-functions-cache', '[name]'),
 })
 
-const getZisiParameters = ({ buildDir, featureFlags, functionsConfig, functionsDist, isRunningLocally }) => {
+const getZisiParameters = ({
+  buildDir,
+  featureFlags,
+  functionsConfig,
+  functionsDist,
+  isRunningLocally,
+  repositoryRoot,
+}) => {
   const isManifestEnabled = featureFlags.functionsBundlingManifest === true
   const manifest = isManifestEnabled && isRunningLocally ? join(functionsDist, 'manifest.json') : undefined
   const config = mapObject(functionsConfig, (expression, object) => [
@@ -50,7 +57,7 @@ const getZisiParameters = ({ buildDir, featureFlags, functionsConfig, functionsD
   ])
   const zisiFeatureFlags = getZisiFeatureFlags(featureFlags)
 
-  return { basePath: buildDir, config, manifest, featureFlags: zisiFeatureFlags }
+  return { basePath: buildDir, config, manifest, featureFlags: zisiFeatureFlags, repositoryRoot }
 }
 
 const zipFunctionsAndLogResults = async ({
@@ -62,8 +69,16 @@ const zipFunctionsAndLogResults = async ({
   internalFunctionsSrc,
   isRunningLocally,
   logs,
+  repositoryRoot,
 }) => {
-  const zisiParameters = getZisiParameters({ buildDir, featureFlags, functionsConfig, functionsDist, isRunningLocally })
+  const zisiParameters = getZisiParameters({
+    buildDir,
+    featureFlags,
+    functionsConfig,
+    functionsDist,
+    isRunningLocally,
+    repositoryRoot,
+  })
   const bundler = isUsingEsbuild(functionsConfig) ? 'esbuild' : 'zisi'
 
   try {
@@ -94,6 +109,7 @@ const coreStep = async function ({
   logs,
   netlifyConfig,
   featureFlags,
+  repositoryRoot,
 }) {
   const functionsSrc = relativeFunctionsSrc === undefined ? undefined : resolve(buildDir, relativeFunctionsSrc)
   const functionsDist = resolve(buildDir, relativeFunctionsDist)
@@ -138,6 +154,7 @@ const coreStep = async function ({
     internalFunctionsSrc,
     isRunningLocally,
     logs,
+    repositoryRoot,
   })
 
   return {
