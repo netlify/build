@@ -11,6 +11,7 @@ const { log } = require('../../log/logger')
 const { logBundleResults, logFunctionsNonExistingDir, logFunctionsToBundle } = require('../../log/messages/core_steps')
 
 const { getZipError } = require('./error')
+const { getZisiFeatureFlags } = require('./feature_flags')
 const { getUserAndInternalFunctions, validateFunctionsSrc } = require('./utils')
 
 // Returns `true` if at least one of the functions has been configured to use
@@ -40,20 +41,23 @@ const normalizeFunctionConfig = ({ buildDir, functionConfig = {}, isRunningLocal
   rustTargetDirectory: isRunningLocally ? undefined : resolve(buildDir, '.netlify', 'rust-functions-cache', '[name]'),
 })
 
-const getZisiParameters = ({ buildDir, featureFlags, functionsConfig, functionsDist, isRunningLocally }) => {
+const getZisiParameters = ({
+  buildDir,
+  featureFlags,
+  functionsConfig,
+  functionsDist,
+  isRunningLocally,
+  repositoryRoot,
+}) => {
   const isManifestEnabled = featureFlags.functionsBundlingManifest === true
   const manifest = isManifestEnabled && isRunningLocally ? join(functionsDist, 'manifest.json') : undefined
   const config = mapObject(functionsConfig, (expression, object) => [
     expression,
     normalizeFunctionConfig({ buildDir, featureFlags, functionConfig: object, isRunningLocally }),
   ])
-  const zisiFeatureFlags = {
-    buildGoSource: featureFlags.buildbot_build_go_functions,
-    defaultEsModulesToEsbuild: featureFlags.buildbot_es_modules_esbuild,
-    parseWithEsbuild: featureFlags.buildbot_zisi_esbuild_parser,
-  }
+  const zisiFeatureFlags = getZisiFeatureFlags(featureFlags)
 
-  return { basePath: buildDir, config, manifest, featureFlags: zisiFeatureFlags }
+  return { basePath: buildDir, config, manifest, featureFlags: zisiFeatureFlags, repositoryRoot }
 }
 
 const zipFunctionsAndLogResults = async ({
@@ -65,8 +69,16 @@ const zipFunctionsAndLogResults = async ({
   internalFunctionsSrc,
   isRunningLocally,
   logs,
+  repositoryRoot,
 }) => {
-  const zisiParameters = getZisiParameters({ buildDir, featureFlags, functionsConfig, functionsDist, isRunningLocally })
+  const zisiParameters = getZisiParameters({
+    buildDir,
+    featureFlags,
+    functionsConfig,
+    functionsDist,
+    isRunningLocally,
+    repositoryRoot,
+  })
   const bundler = isUsingEsbuild(functionsConfig) ? 'esbuild' : 'zisi'
 
   try {
@@ -97,6 +109,7 @@ const coreStep = async function ({
   logs,
   netlifyConfig,
   featureFlags,
+  repositoryRoot,
 }) {
   const functionsSrc = relativeFunctionsSrc === undefined ? undefined : resolve(buildDir, relativeFunctionsSrc)
   const functionsDist = resolve(buildDir, relativeFunctionsDist)
@@ -104,6 +117,7 @@ const coreStep = async function ({
   const internalFunctionsSrcExists = await pathExists(internalFunctionsSrc)
   const functionsSrcExists = await validateFunctionsSrc({ functionsSrc, logs, relativeFunctionsSrc })
   const [userFunctions = [], internalFunctions = []] = await getUserAndInternalFunctions({
+    featureFlags,
     functionsSrc,
     functionsSrcExists,
     internalFunctionsSrc,
@@ -140,6 +154,7 @@ const coreStep = async function ({
     internalFunctionsSrc,
     isRunningLocally,
     logs,
+    repositoryRoot,
   })
 
   return {

@@ -1,5 +1,12 @@
 # Changelog
 
+## [15.7.0](https://www.github.com/netlify/build/compare/config-v15.6.7...config-v15.7.0) (2021-10-13)
+
+
+### Features
+
+* allow `nft` as a value for `node_bundler` ([#3720](https://www.github.com/netlify/build/issues/3720)) ([248c69c](https://www.github.com/netlify/build/commit/248c69c838fa2defa366dbb3d4b4c4c7786d6af5))
+
 ### [15.6.7](https://www.github.com/netlify/build/compare/config-v15.6.6...config-v15.6.7) (2021-10-11)
 
 

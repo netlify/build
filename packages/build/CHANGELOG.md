@@ -1,5 +1,41 @@
 # Changelog
 
+## [18.17.0](https://www.github.com/netlify/build/compare/build-v18.16.0...build-v18.17.0) (2021-10-13)
+
+
+### Features
+
+* **build:** add opt-in support for generics for better type-safety for plugins' `inputs` ([#3728](https://www.github.com/netlify/build/issues/3728)) ([86c896b](https://www.github.com/netlify/build/commit/86c896b3850bf0ab031844f6eafefea0dc731eac))
+
+## [18.16.0](https://www.github.com/netlify/build/compare/build-v18.15.3...build-v18.16.0) (2021-10-13)
+
+
+### Features
+
+* allow `nft` as a value for `node_bundler` ([#3720](https://www.github.com/netlify/build/issues/3720)) ([248c69c](https://www.github.com/netlify/build/commit/248c69c838fa2defa366dbb3d4b4c4c7786d6af5))
+* pass `featureFlags` to `listFunctions` call ([#3727](https://www.github.com/netlify/build/issues/3727)) ([088ff1b](https://www.github.com/netlify/build/commit/088ff1bba18be6e49447ba2b250f1cb5f5d3af22))
+
+### [18.15.3](https://www.github.com/netlify/build/compare/build-v18.15.2...build-v18.15.3) (2021-10-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.25.0 ([#3729](https://www.github.com/netlify/build/issues/3729)) ([c7f55e8](https://www.github.com/netlify/build/commit/c7f55e881909fa26964eda3fc6534bfdc2d5bbe0))
+
+### [18.15.2](https://www.github.com/netlify/build/compare/build-v18.15.1...build-v18.15.2) (2021-10-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^4.0.1 ([#3724](https://www.github.com/netlify/build/issues/3724)) ([d501051](https://www.github.com/netlify/build/commit/d5010517adb33635f0c26a04ee39a9422636cb1f))
+
+### [18.15.1](https://www.github.com/netlify/build/compare/build-v18.15.0...build-v18.15.1) (2021-10-12)
+
+
+### Bug Fixes
+
+* **build:** add missing types folder to files field in package.json ([#3716](https://www.github.com/netlify/build/issues/3716)) ([29d7d61](https://www.github.com/netlify/build/commit/29d7d61b6fdac0c7d3710baeadf1858740de65ac))
+
 ## [18.15.0](https://www.github.com/netlify/build/compare/build-v18.14.1...build-v18.15.0) (2021-10-12)
 
 
