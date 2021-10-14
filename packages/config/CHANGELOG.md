@@ -1,5 +1,12 @@
 # Changelog
 
+### [15.7.1](https://www.github.com/netlify/build/compare/config-v15.7.0...config-v15.7.1) (2021-10-14)
+
+
+### Bug Fixes
+
+* improve TOML invalid escape sequence detection ([#3723](https://www.github.com/netlify/build/issues/3723)) ([6d64488](https://www.github.com/netlify/build/commit/6d64488f82f15cc1e3c3864065527d3e2742f6c7))
+
 ## [15.7.0](https://www.github.com/netlify/build/compare/config-v15.6.7...config-v15.7.0) (2021-10-13)
 
 
