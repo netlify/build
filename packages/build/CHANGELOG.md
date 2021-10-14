@@ -1,5 +1,12 @@
 # Changelog
 
+### [18.17.1](https://www.github.com/netlify/build/compare/build-v18.17.0...build-v18.17.1) (2021-10-14)
+
+
+### Bug Fixes
+
+* improve build logs related to plugin event handlers ([#3721](https://www.github.com/netlify/build/issues/3721)) ([e1a33fe](https://www.github.com/netlify/build/commit/e1a33fe72adbeb1e85d0bbf09f47d7b709571588))
+
 ## [18.17.0](https://www.github.com/netlify/build/compare/build-v18.16.0...build-v18.17.0) (2021-10-13)
 
 
