@@ -12,9 +12,7 @@ const logStepStart = function ({ logs, event, packageName, coreStepDescription, 
 }
 
 const getDescription = function ({ coreStepDescription, netlifyConfig, packageName, event }) {
-  return coreStepDescription === undefined
-    ? `${event} step from ${packageName}`
-    : coreStepDescription({ netlifyConfig })
+  return coreStepDescription === undefined ? `${packageName} (${event} event)` : coreStepDescription({ netlifyConfig })
 }
 
 const logBuildCommandStart = function (logs, buildCommand) {
