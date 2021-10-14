@@ -75,6 +75,6 @@ const validateTomlBlackslashes = function (logs, configString, featureFlags) {
 // This only applies to " and """ strings, not ' nor '''
 // Also, """ strings can use trailing backslashes.
 const INVALID_TOML_BLACKSLASH =
-  /\n[a-zA-Z]+ *= *(?:(?:""".*(?<!\\)(\\[^"\\btnfruU\n]).*""")|(?:"(?!").*(?<!\\)(\\[^"\\btnfruU]).*"))/su
+  /\n[a-zA-Z]+ *= *(?:(?:""".*(?<!\\)(\\[^"\\btnfruU\n]).*""")|(?:"(?!")[^\n]*(?<!\\)(\\[^"\\btnfruU])[^\n]*"))/su
 
 module.exports = { parseConfig, parseOptionalConfig }
