@@ -14,8 +14,6 @@ const getFeatureFlag = function (name) {
 }
 
 // Default values for feature flags
-const DEFAULT_FEATURE_FLAGS = {
-  netlify_config_toml_backslash: false,
-}
+const DEFAULT_FEATURE_FLAGS = {}
 
 module.exports = { normalizeCliFeatureFlags, DEFAULT_FEATURE_FLAGS }

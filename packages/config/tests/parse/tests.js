@@ -22,58 +22,36 @@ test('Configuration file - parsing error', async (t) => {
 })
 
 test('Configuration file - valid backslash sequences in TOML should not warn', async (t) => {
-  const { returnValue } = await runFixture(t, 'parse_backslash_valid', {
-    flags: { featureFlags: { netlify_config_toml_backslash: true } },
-  })
+  const { returnValue } = await runFixture(t, 'parse_backslash_valid')
   t.true(returnValue.includes('\\\\[this\\\\]\\ntest \\" \\b \\t \\n \\f \\r \\u0000 \\u0000'))
 })
 
-test('Configuration file - invalid backslash sequences in TOML without feature flag should not warn', async (t) => {
-  await runFixture(t, 'parse_backslash_double', {
-    flags: { featureFlags: { netlify_config_toml_backslash: false } },
-  })
-})
-
 test('Configuration file - invalid backslash sequences in double quote strings in TOML should warn', async (t) => {
-  await runFixture(t, 'parse_backslash_double', {
-    flags: { featureFlags: { netlify_config_toml_backslash: true } },
-  })
+  await runFixture(t, 'parse_backslash_double')
 })
 
 test('Configuration file - trailing backslashes in double quote strings in TOML should warn', async (t) => {
-  await runFixture(t, 'parse_backslash_trailing_double', {
-    flags: { featureFlags: { netlify_config_toml_backslash: true } },
-  })
+  await runFixture(t, 'parse_backslash_trailing_double')
 })
 
 test('Configuration file - invalid backslash sequences in multiline double quote strings in TOML should warn', async (t) => {
-  await runFixture(t, 'parse_backslash_double_multiline', {
-    flags: { featureFlags: { netlify_config_toml_backslash: true } },
-  })
+  await runFixture(t, 'parse_backslash_double_multiline')
 })
 
 test('Configuration file - trailing backslashes in multiline double quotes strings in TOML should not warn', async (t) => {
-  await runFixture(t, 'parse_backslash_trailing_double_multiline', {
-    flags: { featureFlags: { netlify_config_toml_backslash: true } },
-  })
+  await runFixture(t, 'parse_backslash_trailing_double_multiline')
 })
 
 test('Configuration file - invalid backslash sequences in single quote strings in TOML should not warn', async (t) => {
-  await runFixture(t, 'parse_backslash_single', {
-    flags: { featureFlags: { netlify_config_toml_backslash: true } },
-  })
+  await runFixture(t, 'parse_backslash_single')
 })
 
 test('Configuration file - invalid backslash sequences in multiline single quote strings in TOML should not warn', async (t) => {
-  await runFixture(t, 'parse_backslash_single_multiline', {
-    flags: { featureFlags: { netlify_config_toml_backslash: true } },
-  })
+  await runFixture(t, 'parse_backslash_single_multiline')
 })
 
 test('Configuration file - detecting invalid backslash sequences in TOML does not misinterpret equal signs', async (t) => {
-  await runFixture(t, 'parse_backslash_equal', {
-    flags: { featureFlags: { netlify_config_toml_backslash: true } },
-  })
+  await runFixture(t, 'parse_backslash_equal')
 })
 
 test('Redirects - redirects file', async (t) => {

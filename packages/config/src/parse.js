@@ -12,7 +12,7 @@ const { parseToml } = require('./utils/toml')
 const pReadFile = promisify(readFile)
 
 // Load the configuration file and parse it (TOML)
-const parseConfig = async function (configPath, logs, featureFlags) {
+const parseConfig = async function (configPath, logs) {
   if (configPath === undefined) {
     return {}
   }
@@ -21,23 +21,23 @@ const parseConfig = async function (configPath, logs, featureFlags) {
     throwUserError('Configuration file does not exist')
   }
 
-  return await readConfigPath(configPath, logs, featureFlags)
+  return await readConfigPath(configPath, logs)
 }
 
 // Same but `configPath` is required and `configPath` might point to a
 // non-existing file.
-const parseOptionalConfig = async function (configPath, logs, featureFlags) {
+const parseOptionalConfig = async function (configPath, logs) {
   if (!(await pathExists(configPath))) {
     return {}
   }
 
-  return await readConfigPath(configPath, logs, featureFlags)
+  return await readConfigPath(configPath, logs)
 }
 
-const readConfigPath = async function (configPath, logs, featureFlags) {
+const readConfigPath = async function (configPath, logs) {
   const configString = await readConfig(configPath)
 
-  validateTomlBlackslashes(logs, configString, featureFlags)
+  validateTomlBlackslashes(logs, configString)
 
   try {
     return parseToml(configString)
@@ -55,11 +55,7 @@ const readConfig = async function (configPath) {
   }
 }
 
-const validateTomlBlackslashes = function (logs, configString, featureFlags) {
-  if (!featureFlags.netlify_config_toml_backslash) {
-    return
-  }
-
+const validateTomlBlackslashes = function (logs, configString) {
   const result = INVALID_TOML_BLACKSLASH.exec(configString)
   if (result === null) {
     return
