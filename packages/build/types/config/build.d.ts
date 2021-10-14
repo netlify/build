@@ -2,7 +2,7 @@ import { JSONValue } from '../utils/json_value'
 
 interface NetlifyPlugin {
   package: string
-  inputs: JSONValue
+  inputs: Partial<Record<string, JSONValue>>
 }
 
 /* eslint-disable camelcase -- some properties are named in snake case in this API */

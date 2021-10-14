@@ -1,4 +1,5 @@
 [build]
+command = "test"
 ignore = """
   trailing backslash \
   test
