@@ -1,5 +1,12 @@
 # Changelog
 
+### [15.7.2](https://www.github.com/netlify/build/compare/config-v15.7.1...config-v15.7.2) (2021-10-15)
+
+
+### Bug Fixes
+
+* force release ([#3738](https://www.github.com/netlify/build/issues/3738)) ([a8db88d](https://www.github.com/netlify/build/commit/a8db88d31ffdbe97e10657059f67316a8cb4cb68))
+
 ### [15.7.1](https://www.github.com/netlify/build/compare/config-v15.7.0...config-v15.7.1) (2021-10-14)
 
 
