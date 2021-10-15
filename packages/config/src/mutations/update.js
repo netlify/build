@@ -32,7 +32,7 @@ const updateConfig = async function (
 
   const inlineConfig = applyMutations({}, configMutations)
   const normalizedInlineConfig = ensureConfigPriority(inlineConfig, context, branch)
-  const updatedConfig = await mergeWithConfig({ normalizedInlineConfig, configPath, logs })
+  const updatedConfig = await mergeWithConfig(normalizedInlineConfig, configPath)
   const configWithHeaders = await addHeaders(updatedConfig, headersPath, logs)
   const finalConfig = await addRedirects(configWithHeaders, redirectsPath, logs)
   const simplifiedConfig = simplifyConfig(finalConfig)
@@ -45,8 +45,8 @@ const updateConfig = async function (
 }
 
 // If `netlify.toml` exists, deeply merges the configuration changes.
-const mergeWithConfig = async function ({ normalizedInlineConfig, configPath, logs }) {
-  const config = await parseOptionalConfig(configPath, logs)
+const mergeWithConfig = async function (normalizedInlineConfig, configPath) {
+  const config = await parseOptionalConfig(configPath)
   const updatedConfig = mergeConfigs([config, normalizedInlineConfig])
   return updatedConfig
 }
