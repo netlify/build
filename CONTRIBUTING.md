@@ -87,8 +87,13 @@ updating `@netlify/build` and let Renovate bundle those two changes together whe
 ### Buildbot
 
 When `@netlify/build` or `@netlify/config` is published to npm, Renovate will automatically create a release PR in the
-buildbot after a short while. Once the Jenkins build has passed and finished building, the PR can be tested in
-production by updating the `Site.build_image` property of any test Site. This can be done with the following
+buildbot after a short while.
+
+Unless the release does not contain any production code changes, that PR should be directly tested and merged by the
+person who made the `@netlify/build` or `@netlify/config` release.
+
+Once the Jenkins build has passed and finished building, the PR can be tested in production by updating the
+`Site.build_image` property of any test Site. This can be done with the following
 [Netlify CLI commands](https://github.com/netlify/buildbot#using-netlify-cli-or-netlify-api):
 
 ```bash
