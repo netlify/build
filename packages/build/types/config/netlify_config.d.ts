@@ -7,13 +7,13 @@ type HttpStatusCode = number
 
 interface Redirect {
   from: string
-  to: string
+  to?: string
   status?: HttpStatusCode
-  force: boolean
+  force?: boolean
   signed?: string
-  query: Partial<Record<string, string>>
-  headers: Partial<Record<string, string>>
-  conditions: Record<'language' | 'role' | 'country', readonly string[]>
+  query?: Partial<Record<string, string>>
+  headers?: Partial<Record<string, string>>
+  conditions?: Record<'language' | 'role' | 'country', readonly string[]>
 }
 
 interface Header {
