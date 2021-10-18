@@ -1,6 +1,6 @@
 {
   "name": "@netlify/config",
-  "version": "15.7.1",
+  "version": "15.7.3",
   "description": "Netlify config module",
   "main": "src/main.js",
   "bin": {
@@ -29,11 +29,11 @@
     "deployment",
     "es6",
     "serverless",
+    "ci",
+    "plugins",
     "continuous-integration",
     "continuous-delivery",
-    "ci",
     "continuous-deployment",
-    "plugins",
     "continuous-testing",
     "netlify-plugin",
     "netlify"
@@ -64,7 +64,7 @@
     "js-yaml": "^4.0.0",
     "make-dir": "^3.1.0",
     "map-obj": "^4.0.0",
-    "netlify": "^8.0.1",
+    "netlify": "^8.0.2",
     "netlify-headers-parser": "^4.0.1",
     "netlify-redirect-parser": "^11.0.2",
     "omit.js": "^2.0.2",
