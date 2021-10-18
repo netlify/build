@@ -1,5 +1,12 @@
 # Changelog
 
+### [18.17.5](https://www.github.com/netlify/build/compare/build-v18.17.4...build-v18.17.5) (2021-10-18)
+
+
+### Bug Fixes
+
+* optionality in types of `Redirect` ([#3749](https://www.github.com/netlify/build/issues/3749)) ([568516f](https://www.github.com/netlify/build/commit/568516f6a8ea5546de5a62181832f12745761fc2))
+
 ### [18.17.4](https://www.github.com/netlify/build/compare/build-v18.17.3...build-v18.17.4) (2021-10-18)
 
 
