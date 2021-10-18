@@ -1,8 +1,9 @@
+import { PluginInputs } from './config/inputs'
 import { NetlifyConfig } from './config/netlify_config'
 import { NetlifyPluginUtils } from './options/netlify_plugin_utils'
 import { JSONValue } from './utils/json_value'
 
-export interface NetlifyPluginOptions<TInputs extends Record<string, JSONValue> = Partial<Record<string, JSONValue>>> {
+export interface NetlifyPluginOptions<TInputs extends PluginInputs = PluginInputs> {
   constants: {
     /**
      * path to the Netlify configuration file.
