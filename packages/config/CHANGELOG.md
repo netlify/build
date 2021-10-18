@@ -1,5 +1,12 @@
 # Changelog
 
+### [15.7.4](https://www.github.com/netlify/build/compare/config-v15.7.3...config-v15.7.4) (2021-10-18)
+
+
+### Bug Fixes
+
+* fail on invalid backslash sequences in netlify.toml ([#3739](https://www.github.com/netlify/build/issues/3739)) ([c973688](https://www.github.com/netlify/build/commit/c9736883fa2966d9dcc6a4b9e089a3e7cbc8c53d))
+
 ### [15.7.3](https://www.github.com/netlify/build/compare/config-v15.7.2...config-v15.7.3) (2021-10-18)
 
 
