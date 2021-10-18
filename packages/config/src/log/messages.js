@@ -4,11 +4,10 @@ const { throwUserError } = require('../error')
 
 const { logWarning } = require('./logger')
 
-const warnTomlBackslashes = function (logs, invalidSequence) {
-  logWarning(
-    logs,
+const throwOnInvalidTomlSequence = function (invalidSequence) {
+  throwUserError(
     `In netlify.toml, the following backslash should be escaped: ${invalidSequence}
-The following will be used instead: \\${invalidSequence}`,
+The following should be used instead: \\${invalidSequence}`,
   )
 }
 
@@ -127,7 +126,7 @@ const getErrorMessage = function ({ message }) {
 }
 
 module.exports = {
-  warnTomlBackslashes,
+  throwOnInvalidTomlSequence,
   warnLegacyFunctionsDirectory,
   warnContextPluginConfig,
   throwContextPluginsConfig,

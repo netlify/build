@@ -21,32 +21,32 @@ test('Configuration file - parsing error', async (t) => {
   await runFixture(t, 'parse_error')
 })
 
-test('Configuration file - valid backslash sequences in TOML should not warn', async (t) => {
+test('Configuration file - valid backslash sequences in TOML should not fail', async (t) => {
   const { returnValue } = await runFixture(t, 'parse_backslash_valid')
   t.true(returnValue.includes('\\\\[this\\\\]\\ntest \\" \\b \\t \\n \\f \\r \\u0000 \\u0000'))
 })
 
-test('Configuration file - invalid backslash sequences in double quote strings in TOML should warn', async (t) => {
+test('Configuration file - invalid backslash sequences in double quote strings in TOML should fail', async (t) => {
   await runFixture(t, 'parse_backslash_double')
 })
 
-test('Configuration file - trailing backslashes in double quote strings in TOML should warn', async (t) => {
+test('Configuration file - trailing backslashes in double quote strings in TOML should fail', async (t) => {
   await runFixture(t, 'parse_backslash_trailing_double')
 })
 
-test('Configuration file - invalid backslash sequences in multiline double quote strings in TOML should warn', async (t) => {
+test('Configuration file - invalid backslash sequences in multiline double quote strings in TOML should fail', async (t) => {
   await runFixture(t, 'parse_backslash_double_multiline')
 })
 
-test('Configuration file - trailing backslashes in multiline double quotes strings in TOML should not warn', async (t) => {
+test('Configuration file - trailing backslashes in multiline double quotes strings in TOML should not fail', async (t) => {
   await runFixture(t, 'parse_backslash_trailing_double_multiline')
 })
 
-test('Configuration file - invalid backslash sequences in single quote strings in TOML should not warn', async (t) => {
+test('Configuration file - invalid backslash sequences in single quote strings in TOML should not fail', async (t) => {
   await runFixture(t, 'parse_backslash_single')
 })
 
-test('Configuration file - invalid backslash sequences in multiline single quote strings in TOML should not warn', async (t) => {
+test('Configuration file - invalid backslash sequences in multiline single quote strings in TOML should not fail', async (t) => {
   await runFixture(t, 'parse_backslash_single_multiline')
 })
 

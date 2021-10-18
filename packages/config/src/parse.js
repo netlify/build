@@ -6,13 +6,13 @@ const { promisify } = require('util')
 const pathExists = require('path-exists')
 
 const { throwUserError } = require('./error')
-const { warnTomlBackslashes } = require('./log/messages')
+const { throwOnInvalidTomlSequence } = require('./log/messages')
 const { parseToml } = require('./utils/toml')
 
 const pReadFile = promisify(readFile)
 
 // Load the configuration file and parse it (TOML)
-const parseConfig = async function (configPath, logs) {
+const parseConfig = async function (configPath) {
   if (configPath === undefined) {
     return {}
   }
@@ -21,23 +21,23 @@ const parseConfig = async function (configPath, logs) {
     throwUserError('Configuration file does not exist')
   }
 
-  return await readConfigPath(configPath, logs)
+  return await readConfigPath(configPath)
 }
 
 // Same but `configPath` is required and `configPath` might point to a
 // non-existing file.
-const parseOptionalConfig = async function (configPath, logs) {
+const parseOptionalConfig = async function (configPath) {
   if (!(await pathExists(configPath))) {
     return {}
   }
 
-  return await readConfigPath(configPath, logs)
+  return await readConfigPath(configPath)
 }
 
-const readConfigPath = async function (configPath, logs) {
+const readConfigPath = async function (configPath) {
   const configString = await readConfig(configPath)
 
-  validateTomlBlackslashes(logs, configString)
+  validateTomlBlackslashes(configString)
 
   try {
     return parseToml(configString)
@@ -55,14 +55,14 @@ const readConfig = async function (configPath) {
   }
 }
 
-const validateTomlBlackslashes = function (logs, configString) {
+const validateTomlBlackslashes = function (configString) {
   const result = INVALID_TOML_BLACKSLASH.exec(configString)
   if (result === null) {
     return
   }
 
   const [, invalidTripleSequence, invalidSequence = invalidTripleSequence] = result
-  warnTomlBackslashes(logs, invalidSequence)
+  throwOnInvalidTomlSequence(invalidSequence)
 }
 
 // The TOML specification forbids unrecognized backslash sequences. However,
