@@ -1,5 +1,12 @@
 # Changelog
 
+### [18.17.4](https://www.github.com/netlify/build/compare/build-v18.17.3...build-v18.17.4) (2021-10-18)
+
+
+### Bug Fixes
+
+* **build:** allow specifying plugin options from NetlifyPlugin definition ([#3745](https://www.github.com/netlify/build/issues/3745)) ([b27e7c9](https://www.github.com/netlify/build/commit/b27e7c930f9280ccf7ec602e962760115d46ee90))
+
 ### [18.17.3](https://www.github.com/netlify/build/compare/build-v18.17.2...build-v18.17.3) (2021-10-18)
 
 
