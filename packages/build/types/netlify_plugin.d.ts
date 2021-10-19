@@ -1,8 +1,8 @@
+import { PluginInputs } from './config/inputs'
 import { NetlifyEvent } from './netlify_event'
 import { NetlifyPluginOptions } from './netlify_plugin_options'
-import { JSONValue } from './utils/json_value'
 
-export interface NetlifyPlugin<TInputs extends Record<string, JSONValue> = Partial<Record<string, JSONValue>>> {
+export interface NetlifyPlugin<TInputs extends PluginInputs = PluginInputs> {
   /**
    * Runs before the build command is executed.
    */
