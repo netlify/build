@@ -22,12 +22,6 @@ const { startServer } = require('../helpers/server')
 const pWriteFile = promisify(writeFile)
 const pUnlink = promisify(unlink)
 
-test.afterEach.always(() => {
-  if (zipItAndShipIt.zipFunctions.restore) {
-    zipItAndShipIt.zipFunctions.restore()
-  }
-})
-
 test('--help', async (t) => {
   await runFixture(t, '', { flags: { help: true }, useBinary: true })
 })
@@ -312,29 +306,37 @@ test('Print warning when headers file is missing from publish directory', async 
 })
 
 test.serial('Successfully builds ES module function with feature flag', async (t) => {
-  const spy = sinon.spy(zipItAndShipIt, 'zipFunctions')
+  const mockZipFunctions = sinon.stub().resolves()
+  const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').get(() => mockZipFunctions)
 
   await runFixture(t, 'functions_es_modules', {
     flags: { featureFlags: { buildbot_es_modules_esbuild: true } },
   })
 
-  const { args: callArgs } = spy.getCall(0)
+  stub.restore()
+
+  const { args: callArgs } = mockZipFunctions.getCall(0)
+
   t.true(callArgs[2].featureFlags.defaultEsModulesToEsbuild)
 })
 
 test.serial(`Doesn't fail build for ES module function if feature flag is off`, async (t) => {
-  const spy = sinon.spy(zipItAndShipIt, 'zipFunctions')
+  const mockZipFunctions = sinon.stub().resolves()
+  const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').get(() => mockZipFunctions)
 
   await runFixture(t, 'functions_es_modules', {
     flags: { featureFlags: { buildbot_es_modules_esbuild: false } },
   })
 
-  const { args: callArgs } = spy.getCall(0)
+  stub.restore()
+
+  const { args: callArgs } = mockZipFunctions.getCall(0)
   t.false(callArgs[2].featureFlags.defaultEsModulesToEsbuild)
 })
 
 test.serial('Passes `parseWithEsbuild` feature flag to zip-it-and-ship-it', async (t) => {
-  const spy = sinon.spy(zipItAndShipIt, 'zipFunctions')
+  const mockZipFunctions = sinon.stub().resolves()
+  const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').get(() => mockZipFunctions)
 
   await runFixture(t, 'core', { snapshot: false })
   await runFixture(t, 'core', {
@@ -342,13 +344,16 @@ test.serial('Passes `parseWithEsbuild` feature flag to zip-it-and-ship-it', asyn
     snapshot: false,
   })
 
-  t.is(spy.callCount, 2)
-  t.false(spy.firstCall.args[2].featureFlags.parseWithEsbuild)
-  t.true(spy.secondCall.args[2].featureFlags.parseWithEsbuild)
+  stub.restore()
+
+  t.is(mockZipFunctions.callCount, 2)
+  t.false(mockZipFunctions.firstCall.args[2].featureFlags.parseWithEsbuild)
+  t.true(mockZipFunctions.secondCall.args[2].featureFlags.parseWithEsbuild)
 })
 
 test.serial('Passes `buildGoSource` feature flag to zip-it-and-ship-it', async (t) => {
-  const spy = sinon.spy(zipItAndShipIt, 'zipFunctions')
+  const mockZipFunctions = sinon.stub().resolves()
+  const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').get(() => mockZipFunctions)
 
   await runFixture(t, 'core', { snapshot: false })
   await runFixture(t, 'core', {
@@ -356,22 +361,27 @@ test.serial('Passes `buildGoSource` feature flag to zip-it-and-ship-it', async (
     snapshot: false,
   })
 
-  t.is(spy.callCount, 2)
-  t.false(spy.firstCall.args[2].featureFlags.buildGoSource)
-  t.true(spy.secondCall.args[2].featureFlags.buildGoSource)
+  stub.restore()
+
+  t.is(mockZipFunctions.callCount, 2)
+  t.false(mockZipFunctions.firstCall.args[2].featureFlags.buildGoSource)
+  t.true(mockZipFunctions.secondCall.args[2].featureFlags.buildGoSource)
 })
 
 test.serial('Passes the right base path properties to zip-it-and-ship-it', async (t) => {
-  const spy = sinon.spy(zipItAndShipIt, 'zipFunctions')
+  const mockZipFunctions = sinon.stub().resolves()
+  const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').get(() => mockZipFunctions)
   const fixtureName = 'core'
   const fixtureDir = join(FIXTURES_DIR, fixtureName)
 
   await runFixture(t, fixtureName, { snapshot: false })
 
-  t.is(spy.callCount, 1)
+  stub.restore()
+
+  t.is(mockZipFunctions.callCount, 1)
 
   // eslint-disable-next-line prefer-destructuring
-  const { basePath, config, repositoryRoot } = spy.firstCall.args[2]
+  const { basePath, config, repositoryRoot } = mockZipFunctions.firstCall.args[2]
 
   t.is(basePath, fixtureDir)
   t.is(config['*'].includedFilesBasePath, fixtureDir)
@@ -435,19 +445,22 @@ test.serial('`rustTargetDirectory` is passed to zip-it-and-ship-it only when run
   const fixtureWithConfig = 'functions_config_1'
   const fixtureWithoutConfig = 'functions_internal_missing'
   const runCount = 4
-  const spy = sinon.spy(zipItAndShipIt, 'zipFunctions')
+  const mockZipFunctions = sinon.stub().resolves()
+  const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').get(() => mockZipFunctions)
 
   await runFixture(t, fixtureWithConfig, { flags: { mode: 'buildbot' }, snapshot: false })
   await runFixture(t, fixtureWithConfig, { snapshot: false })
   await runFixture(t, fixtureWithoutConfig, { flags: { mode: 'buildbot' }, snapshot: false })
   await runFixture(t, fixtureWithoutConfig, { snapshot: false })
 
-  t.is(spy.callCount, runCount)
+  stub.restore()
 
-  const { args: call1Args } = spy.getCall(0)
-  const { args: call2Args } = spy.getCall(1)
-  const { args: call3Args } = spy.getCall(2)
-  const { args: call4Args } = spy.getCall(3)
+  t.is(mockZipFunctions.callCount, runCount)
+
+  const { args: call1Args } = mockZipFunctions.getCall(0)
+  const { args: call2Args } = mockZipFunctions.getCall(1)
+  const { args: call3Args } = mockZipFunctions.getCall(2)
+  const { args: call4Args } = mockZipFunctions.getCall(3)
 
   t.is(
     call1Args[2].config['*'].rustTargetDirectory,
