@@ -39,6 +39,9 @@ const normalizeFunctionConfig = ({ buildDir, functionConfig = {}, isRunningLocal
   // path that will get cached in between builds, allowing us to speed up the
   // build process.
   rustTargetDirectory: isRunningLocally ? undefined : resolve(buildDir, '.netlify', 'rust-functions-cache', '[name]'),
+
+  // TODO: feature-flag this
+  schedule: functionConfig.schedule,
 })
 
 const getZisiParameters = ({
