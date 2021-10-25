@@ -22,7 +22,7 @@ const isUsingEsbuild = (functionsConfig = {}) =>
 // The function configuration keys returned by @netlify/config are not an exact
 // match to the properties that @netlify/zip-it-and-ship-it expects. We do that
 // translation here.
-const normalizeFunctionConfig = ({ buildDir, functionConfig = {}, isRunningLocally }) => ({
+const normalizeFunctionConfig = ({ buildDir, functionConfig = {}, isRunningLocally, featureFlags }) => ({
   externalNodeModules: functionConfig.external_node_modules,
   includedFiles: functionConfig.included_files,
   includedFilesBasePath: buildDir,
@@ -40,8 +40,7 @@ const normalizeFunctionConfig = ({ buildDir, functionConfig = {}, isRunningLocal
   // build process.
   rustTargetDirectory: isRunningLocally ? undefined : resolve(buildDir, '.netlify', 'rust-functions-cache', '[name]'),
 
-  // TODO: feature-flag this
-  schedule: functionConfig.schedule,
+  schedule: featureFlags.buildbot_schedule_property ? functionConfig.schedule : undefined,
 })
 
 const getZisiParameters = ({

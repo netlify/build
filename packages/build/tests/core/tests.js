@@ -368,22 +368,21 @@ test.serial('Passes `buildGoSource` feature flag to zip-it-and-ship-it', async (
   t.true(mockZipFunctions.secondCall.args[2].featureFlags.buildGoSource)
 })
 
-test.serial('Passes `schedule` field to zip-it-and-ship-it', async (t) => {
+test.serial('Passes `schedule` field to zip-it-and-ship-it if feature-flag is enabled', async (t) => {
   const mockZipFunctions = sinon.stub().resolves()
   const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').get(() => mockZipFunctions)
 
   await runFixture(t, 'schedule', { snapshot: false })
-  // TODO: test feature-flag
-  // await runFixture(t, 'schedule', {
-  //   flags: { featureFlags: { buildbot_build_go_functions: true } },
-  //   snapshot: false,
-  // })
+  await runFixture(t, 'schedule', {
+    flags: { featureFlags: { buildbot_schedule_property: true } },
+    snapshot: false,
+  })
 
   stub.restore()
 
-  t.is(mockZipFunctions.callCount, 1)
-  t.is(mockZipFunctions.firstCall.args[2].config.test.schedule, '@daily')
-  // t.true(mockZipFunctions.secondCall.args[2].featureFlags.buildGoSource)
+  t.is(mockZipFunctions.callCount, 2)
+  t.is(mockZipFunctions.firstCall.args[2].config.test.schedule, undefined)
+  t.is(mockZipFunctions.secondCall.args[2].config.test.schedule, '@daily')
 })
 
 test.serial('Passes the right base path properties to zip-it-and-ship-it', async (t) => {
