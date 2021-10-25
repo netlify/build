@@ -1,12 +1,26 @@
 /* eslint-disable max-lines */
 'use strict'
 
+const CronParser = require('cron-parser')
 const isPlainObj = require('is-plain-obj')
 const validateNpmPackageName = require('validate-npm-package-name')
 
 const { bundlers, WILDCARD_ALL: FUNCTIONS_CONFIG_WILDCARD_ALL } = require('../functions_config')
 
 const { functionsDirectoryCheck, isArrayOfObjects, isArrayOfStrings, isString, validProperties } = require('./helpers')
+
+/**
+ * @param {string} cron
+ * @returns {boolean}
+ */
+const isValidCronExpression = (cron) => {
+  try {
+    CronParser.parseExpression(cron)
+    return true
+  } catch (error) {
+    return false
+  }
+}
 
 // List of validations performed on the configuration file.
 // Validation are performed in order: parent should be before children.
@@ -210,6 +224,14 @@ const POST_NORMALIZE_VALIDATIONS = [
     message: 'must be defined on the main `functions` object.',
     example: () => ({
       functions: { directory: 'my-functions' },
+    }),
+  },
+  {
+    property: 'functions.*.schedule',
+    check: isValidCronExpression,
+    message: 'must be a valid cron expression.',
+    example: (value, key, prevPath) => ({
+      functions: { [prevPath[1]]: { schedule: '5 4 * * *' } },
     }),
   },
   {
