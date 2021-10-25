@@ -22,7 +22,7 @@ const isUsingEsbuild = (functionsConfig = {}) =>
 // The function configuration keys returned by @netlify/config are not an exact
 // match to the properties that @netlify/zip-it-and-ship-it expects. We do that
 // translation here.
-const normalizeFunctionConfig = ({ buildDir, functionConfig = {}, isRunningLocally, featureFlags }) => ({
+const normalizeFunctionConfig = ({ buildDir, featureFlags, functionConfig = {}, isRunningLocally }) => ({
   externalNodeModules: functionConfig.external_node_modules,
   includedFiles: functionConfig.included_files,
   includedFilesBasePath: buildDir,
