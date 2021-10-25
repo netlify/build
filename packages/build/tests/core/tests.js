@@ -368,6 +368,24 @@ test.serial('Passes `buildGoSource` feature flag to zip-it-and-ship-it', async (
   t.true(mockZipFunctions.secondCall.args[2].featureFlags.buildGoSource)
 })
 
+test.serial('Passes `schedule` field to zip-it-and-ship-it', async (t) => {
+  const mockZipFunctions = sinon.stub().resolves()
+  const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').get(() => mockZipFunctions)
+
+  await runFixture(t, 'schedule', { snapshot: false })
+  // TODO: test feature-flag
+  // await runFixture(t, 'schedule', {
+  //   flags: { featureFlags: { buildbot_build_go_functions: true } },
+  //   snapshot: false,
+  // })
+
+  stub.restore()
+
+  t.is(mockZipFunctions.callCount, 1)
+  t.is(mockZipFunctions.firstCall.args[2].config.test.schedule, '@daily')
+  // t.true(mockZipFunctions.secondCall.args[2].featureFlags.buildGoSource)
+})
+
 test.serial('Passes the right base path properties to zip-it-and-ship-it', async (t) => {
   const mockZipFunctions = sinon.stub().resolves()
   const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').get(() => mockZipFunctions)
