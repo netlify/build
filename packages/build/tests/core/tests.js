@@ -374,7 +374,7 @@ test.serial('Passes `schedule` field to zip-it-and-ship-it if feature-flag is en
 
   await runFixture(t, 'schedule', { snapshot: false })
   await runFixture(t, 'schedule', {
-    flags: { featureFlags: { buildbot_schedule_property: true } },
+    flags: { featureFlags: { buildbot_scheduled_functions: true } },
     snapshot: false,
   })
 

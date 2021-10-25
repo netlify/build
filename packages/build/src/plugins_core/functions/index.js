@@ -40,7 +40,7 @@ const normalizeFunctionConfig = ({ buildDir, functionConfig = {}, isRunningLocal
   // build process.
   rustTargetDirectory: isRunningLocally ? undefined : resolve(buildDir, '.netlify', 'rust-functions-cache', '[name]'),
 
-  schedule: featureFlags.buildbot_schedule_property ? functionConfig.schedule : undefined,
+  schedule: featureFlags.buildbot_scheduled_functions ? functionConfig.schedule : undefined,
 })
 
 const getZisiParameters = ({

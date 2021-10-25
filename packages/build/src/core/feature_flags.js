@@ -18,7 +18,7 @@ const DEFAULT_FEATURE_FLAGS = {
   buildbot_build_go_functions: false,
   buildbot_es_modules_esbuild: false,
   buildbot_zisi_esbuild_parser: false,
-  buildbot_schedule_property: false,
+  buildbot_scheduled_functions: false,
 }
 
 module.exports = { normalizeCliFeatureFlags, DEFAULT_FEATURE_FLAGS }
