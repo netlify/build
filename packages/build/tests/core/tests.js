@@ -334,40 +334,6 @@ test.serial(`Doesn't fail build for ES module function if feature flag is off`, 
   t.false(callArgs[2].featureFlags.defaultEsModulesToEsbuild)
 })
 
-test.serial('Passes `parseWithEsbuild` feature flag to zip-it-and-ship-it', async (t) => {
-  const mockZipFunctions = sinon.stub().resolves()
-  const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').get(() => mockZipFunctions)
-
-  await runFixture(t, 'core', { snapshot: false })
-  await runFixture(t, 'core', {
-    flags: { featureFlags: { buildbot_zisi_esbuild_parser: true } },
-    snapshot: false,
-  })
-
-  stub.restore()
-
-  t.is(mockZipFunctions.callCount, 2)
-  t.false(mockZipFunctions.firstCall.args[2].featureFlags.parseWithEsbuild)
-  t.true(mockZipFunctions.secondCall.args[2].featureFlags.parseWithEsbuild)
-})
-
-test.serial('Passes `buildGoSource` feature flag to zip-it-and-ship-it', async (t) => {
-  const mockZipFunctions = sinon.stub().resolves()
-  const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').get(() => mockZipFunctions)
-
-  await runFixture(t, 'core', { snapshot: false })
-  await runFixture(t, 'core', {
-    flags: { featureFlags: { buildbot_build_go_functions: true } },
-    snapshot: false,
-  })
-
-  stub.restore()
-
-  t.is(mockZipFunctions.callCount, 2)
-  t.false(mockZipFunctions.firstCall.args[2].featureFlags.buildGoSource)
-  t.true(mockZipFunctions.secondCall.args[2].featureFlags.buildGoSource)
-})
-
 test.serial('Passes the right base path properties to zip-it-and-ship-it', async (t) => {
   const mockZipFunctions = sinon.stub().resolves()
   const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').get(() => mockZipFunctions)
@@ -386,6 +352,38 @@ test.serial('Passes the right base path properties to zip-it-and-ship-it', async
   t.is(basePath, fixtureDir)
   t.is(config['*'].includedFilesBasePath, fixtureDir)
   t.is(repositoryRoot, fixtureDir)
+})
+
+test.serial('Passes the right feature flags to zip-it-and-ship-it', async (t) => {
+  const mockZipFunctions = sinon.stub().resolves()
+  const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').get(() => mockZipFunctions)
+
+  await runFixture(t, 'core', { snapshot: false })
+  await runFixture(t, 'core', {
+    flags: { featureFlags: { buildbot_zisi_trace_nft: true } },
+    snapshot: false,
+  })
+  await runFixture(t, 'core', {
+    flags: { featureFlags: { buildbot_build_go_functions: true } },
+    snapshot: false,
+  })
+  await runFixture(t, 'core', {
+    flags: { featureFlags: { buildbot_zisi_esbuild_parser: true } },
+    snapshot: false,
+  })
+
+  stub.restore()
+
+  // eslint-disable-next-line no-magic-numbers
+  t.is(mockZipFunctions.callCount, 4)
+
+  t.false(mockZipFunctions.getCall(0).args[2].featureFlags.traceWithNft)
+  t.false(mockZipFunctions.getCall(0).args[2].featureFlags.buildGoSource)
+  t.false(mockZipFunctions.getCall(0).args[2].featureFlags.parseWithEsbuild)
+
+  t.true(mockZipFunctions.getCall(1).args[2].featureFlags.traceWithNft)
+  t.true(mockZipFunctions.getCall(2).args[2].featureFlags.buildGoSource)
+  t.true(mockZipFunctions.getCall(3).args[2].featureFlags.parseWithEsbuild)
 })
 
 test('Print warning on lingering processes', async (t) => {

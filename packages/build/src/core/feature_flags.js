@@ -17,6 +17,7 @@ const getFeatureFlag = function (name) {
 const DEFAULT_FEATURE_FLAGS = {
   buildbot_build_go_functions: false,
   buildbot_es_modules_esbuild: false,
+  buildbot_zisi_trace_nft: false,
   buildbot_zisi_esbuild_parser: false,
 }
 
