@@ -1,5 +1,19 @@
 # Changelog
 
+## [18.18.0](https://www.github.com/netlify/build/compare/build-v18.17.7...build-v18.18.0) (2021-10-26)
+
+
+### Features
+
+* add `buildbot_zisi_trace_nft` feature flag ([#3765](https://www.github.com/netlify/build/issues/3765)) ([f2ea534](https://www.github.com/netlify/build/commit/f2ea534f1ddbaa4ffe0586cde0a2076e3ffff177))
+
+### [18.17.7](https://www.github.com/netlify/build/compare/build-v18.17.6...build-v18.17.7) (2021-10-25)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.27.0 ([#3763](https://www.github.com/netlify/build/issues/3763)) ([ee73e3d](https://www.github.com/netlify/build/commit/ee73e3d492b6d03a4865912bf7d4912a584b1550))
+
 ### [18.17.6](https://www.github.com/netlify/build/compare/build-v18.17.5...build-v18.17.6) (2021-10-21)
 
 
