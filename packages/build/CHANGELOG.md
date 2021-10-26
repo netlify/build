@@ -1,5 +1,12 @@
 # Changelog
 
+## [18.19.0](https://www.github.com/netlify/build/compare/build-v18.18.0...build-v18.19.0) (2021-10-26)
+
+
+### Features
+
+* pass through functions[].schedule property to ZISI ([#3761](https://www.github.com/netlify/build/issues/3761)) ([d3ccdc4](https://www.github.com/netlify/build/commit/d3ccdc4b9844a5b0e6397434189007e059b386f7))
+
 ## [18.18.0](https://www.github.com/netlify/build/compare/build-v18.17.7...build-v18.18.0) (2021-10-26)
 
 
