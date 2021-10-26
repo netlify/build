@@ -1,0 +1,5 @@
+[functions]
+directory = "functions"
+
+[functions.test]
+schedule="@daily"
