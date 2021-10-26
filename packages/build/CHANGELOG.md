@@ -1,5 +1,12 @@
 # Changelog
 
+## [18.18.0](https://www.github.com/netlify/build/compare/build-v18.17.7...build-v18.18.0) (2021-10-26)
+
+
+### Features
+
+* add `buildbot_zisi_trace_nft` feature flag ([#3765](https://www.github.com/netlify/build/issues/3765)) ([f2ea534](https://www.github.com/netlify/build/commit/f2ea534f1ddbaa4ffe0586cde0a2076e3ffff177))
+
 ### [18.17.7](https://www.github.com/netlify/build/compare/build-v18.17.6...build-v18.17.7) (2021-10-25)
 
 
