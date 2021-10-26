@@ -354,28 +354,33 @@ test.serial('Passes the right base path properties to zip-it-and-ship-it', async
   t.is(repositoryRoot, fixtureDir)
 })
 
+// eslint-disable-next-line max-statements
 test.serial('Passes the right feature flags to zip-it-and-ship-it', async (t) => {
   const mockZipFunctions = sinon.stub().resolves()
   const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').get(() => mockZipFunctions)
 
-  await runFixture(t, 'core', { snapshot: false })
-  await runFixture(t, 'core', {
+  await runFixture(t, 'schedule', { snapshot: false })
+  await runFixture(t, 'schedule', {
     flags: { featureFlags: { buildbot_zisi_trace_nft: true } },
     snapshot: false,
   })
-  await runFixture(t, 'core', {
+  await runFixture(t, 'schedule', {
     flags: { featureFlags: { buildbot_build_go_functions: true } },
     snapshot: false,
   })
-  await runFixture(t, 'core', {
+  await runFixture(t, 'schedule', {
     flags: { featureFlags: { buildbot_zisi_esbuild_parser: true } },
+    snapshot: false,
+  })
+  await runFixture(t, 'schedule', {
+    flags: { featureFlags: { buildbot_scheduled_functions: true } },
     snapshot: false,
   })
 
   stub.restore()
 
   // eslint-disable-next-line no-magic-numbers
-  t.is(mockZipFunctions.callCount, 4)
+  t.is(mockZipFunctions.callCount, 5)
 
   t.false(mockZipFunctions.getCall(0).args[2].featureFlags.traceWithNft)
   t.false(mockZipFunctions.getCall(0).args[2].featureFlags.buildGoSource)
@@ -384,23 +389,10 @@ test.serial('Passes the right feature flags to zip-it-and-ship-it', async (t) =>
   t.true(mockZipFunctions.getCall(1).args[2].featureFlags.traceWithNft)
   t.true(mockZipFunctions.getCall(2).args[2].featureFlags.buildGoSource)
   t.true(mockZipFunctions.getCall(3).args[2].featureFlags.parseWithEsbuild)
-})
 
-test.serial('Passes `schedule` field to zip-it-and-ship-it if feature-flag is enabled', async (t) => {
-  const mockZipFunctions = sinon.stub().resolves()
-  const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').get(() => mockZipFunctions)
-
-  await runFixture(t, 'schedule', { snapshot: false })
-  await runFixture(t, 'schedule', {
-    flags: { featureFlags: { buildbot_scheduled_functions: true } },
-    snapshot: false,
-  })
-
-  stub.restore()
-
-  t.is(mockZipFunctions.callCount, 2)
-  t.is(mockZipFunctions.firstCall.args[2].config.test.schedule, undefined)
-  t.is(mockZipFunctions.secondCall.args[2].config.test.schedule, '@daily')
+  t.is(mockZipFunctions.getCall(0).args[2].config.test.schedule, undefined)
+  // eslint-disable-next-line no-magic-numbers
+  t.is(mockZipFunctions.getCall(4).args[2].config.test.schedule, '@daily')
 })
 
 test('Print warning on lingering processes', async (t) => {
