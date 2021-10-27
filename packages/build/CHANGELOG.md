@@ -1,5 +1,14 @@
 # Changelog
 
+### [18.19.2](https://www.github.com/netlify/build/compare/build-v18.19.1...build-v18.19.2) (2021-10-27)
+
+
+### Bug Fixes
+
+* `plugins` TypeScript types ([#3772](https://www.github.com/netlify/build/issues/3772)) ([2d73d5d](https://www.github.com/netlify/build/commit/2d73d5d37c86dea8098efbce4750f2e0858f12a0))
+* `utils.build.*` TypeScript types ([#3773](https://www.github.com/netlify/build/issues/3773)) ([982da11](https://www.github.com/netlify/build/commit/982da11fb78d67d32a841c1929cf4d23005350a0))
+* `utils.cache.list()` TypeScript types ([#3774](https://www.github.com/netlify/build/issues/3774)) ([c0e28bc](https://www.github.com/netlify/build/commit/c0e28bcad3ee37f88d8fe7f455cfc0f9ba43265a))
+
 ### [18.19.1](https://www.github.com/netlify/build/compare/build-v18.19.0...build-v18.19.1) (2021-10-27)
 
 
