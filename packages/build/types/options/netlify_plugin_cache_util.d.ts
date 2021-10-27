@@ -15,7 +15,7 @@ export type NetlifyPluginCacheUtil = {
       cwd?: string
     },
   ): Promise<boolean>
-  list(options: {
+  list(options?: {
     /**
      * @default `process.cwd()`
      */
