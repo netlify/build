@@ -3,5 +3,5 @@
  */
 export type NetlifyPluginBuildUtil = Record<
   'failBuild' | 'failPlugin' | 'cancelBuild',
-  (message: string, options?: { error: Error }) => void
+  (message: string, options?: { error?: Error }) => void
 >
