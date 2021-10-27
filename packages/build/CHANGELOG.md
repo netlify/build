@@ -1,5 +1,20 @@
 # Changelog
 
+### [18.19.1](https://www.github.com/netlify/build/compare/build-v18.19.0...build-v18.19.1) (2021-10-27)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.28.0 ([#3768](https://www.github.com/netlify/build/issues/3768)) ([1c06d60](https://www.github.com/netlify/build/commit/1c06d60f85500511fb4a7f7d6a55cec6d1cc3827))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.28.1 ([#3770](https://www.github.com/netlify/build/issues/3770)) ([48858eb](https://www.github.com/netlify/build/commit/48858eb2adfafdcf7cb739dca97a765a1c66c964))
+
+## [18.19.0](https://www.github.com/netlify/build/compare/build-v18.18.0...build-v18.19.0) (2021-10-26)
+
+
+### Features
+
+* pass through functions[].schedule property to ZISI ([#3761](https://www.github.com/netlify/build/issues/3761)) ([d3ccdc4](https://www.github.com/netlify/build/commit/d3ccdc4b9844a5b0e6397434189007e059b386f7))
+
 ## [18.18.0](https://www.github.com/netlify/build/compare/build-v18.17.7...build-v18.18.0) (2021-10-26)
 
 

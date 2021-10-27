@@ -1,5 +1,12 @@
 # Changelog
 
+## [15.8.0](https://www.github.com/netlify/build/compare/config-v15.7.5...config-v15.8.0) (2021-10-26)
+
+
+### Features
+
+* pass through functions[].schedule property to ZISI ([#3761](https://www.github.com/netlify/build/issues/3761)) ([d3ccdc4](https://www.github.com/netlify/build/commit/d3ccdc4b9844a5b0e6397434189007e059b386f7))
+
 ### [15.7.5](https://www.github.com/netlify/build/compare/config-v15.7.4...config-v15.7.5) (2021-10-21)
 
 
