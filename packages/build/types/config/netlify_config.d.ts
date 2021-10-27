@@ -2,6 +2,7 @@ import { Many } from '../utils/many'
 
 import { Build } from './build'
 import { Functions } from './functions'
+import { PluginInputs } from './inputs'
 
 type HttpStatusCode = number
 
@@ -26,6 +27,11 @@ interface EdgeHandler {
   handler: string
 }
 
+interface NetlifyPlugin {
+  package: string
+  inputs: PluginInputs
+}
+
 /* eslint-disable camelcase -- some properties are named in snake case in this API */
 
 interface NetlifyConfig {
@@ -46,6 +52,7 @@ interface NetlifyConfig {
    */
   functions: Functions
   build: Build
+  plugins: readonly NetlifyPlugin[]
 }
 
 /* eslint-enable camelcase */

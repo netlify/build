@@ -1,10 +1,3 @@
-import { PluginInputs } from './inputs'
-
-interface NetlifyPlugin {
-  package: string
-  inputs: PluginInputs
-}
-
 /* eslint-disable camelcase -- some properties are named in snake case in this API */
 
 export interface Build {
@@ -54,8 +47,6 @@ export interface Build {
       compress?: boolean
     }
   }
-
-  plugins: readonly NetlifyPlugin[]
 }
 
 /* eslint-enable camelcase */
