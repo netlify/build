@@ -1,5 +1,12 @@
 # Changelog
 
+## [18.20.0](https://www.github.com/netlify/build/compare/build-v18.19.2...build-v18.20.0) (2021-10-28)
+
+
+### Features
+
+* test Build plugins TypeScript types ([#3775](https://www.github.com/netlify/build/issues/3775)) ([1ee449c](https://www.github.com/netlify/build/commit/1ee449c430bf9c656dc20d5f896fdbfb7e60e327))
+
 ### [18.19.2](https://www.github.com/netlify/build/compare/build-v18.19.1...build-v18.19.2) (2021-10-27)
 
 
