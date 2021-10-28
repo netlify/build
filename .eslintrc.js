@@ -83,5 +83,15 @@ module.exports = {
         'max-lines-per-function': 'off',
       },
     },
+    {
+      files: ['**/test-d/**/*.ts'],
+      rules: {
+        // We use `tsd` which sometimes require declaring variables without
+        // using them
+        '@typescript-eslint/no-unused-vars': 0,
+        // Allow self-imports
+        'node/no-extraneous-import': 0,
+      },
+    },
   ],
 }
