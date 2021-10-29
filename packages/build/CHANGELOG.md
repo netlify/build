@@ -1,5 +1,12 @@
 # Changelog
 
+### [18.20.1](https://www.github.com/netlify/build/compare/build-v18.20.0...build-v18.20.1) (2021-10-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^4.1.0 ([#3779](https://www.github.com/netlify/build/issues/3779)) ([881dc26](https://www.github.com/netlify/build/commit/881dc261dd99159ca97ebfafbcefab4c782f3692))
+
 ## [18.20.0](https://www.github.com/netlify/build/compare/build-v18.19.2...build-v18.20.0) (2021-10-28)
 
 
