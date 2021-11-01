@@ -21,7 +21,10 @@ const getRelativeFunctionMainFiles = async function ({ featureFlags, functionsSr
 
   const zisiFeatureFlags = getZisiFeatureFlags(featureFlags)
   const functions = await listFunctions(functionsSrc, { featureFlags: zisiFeatureFlags })
-  return functions.map(({ mainFile }) => relative(functionsSrc, mainFile))
+  const dedupedFunctions = new Map(functions.map((func) => [func.name, func]))
+  const relativeMainFiles = [...dedupedFunctions.values()].map(({ mainFile }) => relative(functionsSrc, mainFile))
+
+  return relativeMainFiles
 }
 
 const getUserAndInternalFunctions = ({
