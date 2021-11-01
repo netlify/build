@@ -13,7 +13,7 @@ jobs:
         with:
           private-key: ${{ secrets.TOKENS_PRIVATE_KEY }}
           app-id: ${{ secrets.TOKENS_APP_ID }}
-      - uses: GoogleCloudPlatform/release-please-action@413fe37430c970809b98336e2f4e7e9a4e8abbab
+      - uses: GoogleCloudPlatform/release-please-action@02b1eccf92f8814b84ffa08ad26eeae01c0ab1cf
         id: release
         with:
           token: ${{ steps.get-token.outputs.token }}
