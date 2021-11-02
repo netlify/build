@@ -22,8 +22,12 @@ const NORMALIZE_REGEXPS = [
   // Zero width space characters due to a bug in buildbot:
   // https://github.com/netlify/buildbot/issues/595
   [/\u{200B}/gu, ''],
+  // Some error messages have one less newline on Windows.
+  // "but got 0" is the end of one of them (from `tsc`) used in one test.
+  [/(but got 0.)\r\n/gu, '$1\n\n'],
   // Windows specifics
   [/\r\n/gu, '\n'],
+  [/\\r\\n/gu, '\\n'],
   [/\\{1,2}/gu, '/'],
   [/Program Files/gu, 'ProgramFiles'],
   [new RegExp(tick, 'g'), '√'],
