@@ -1643,3 +1643,24 @@ test('Validate plugin event handler names', async (t) => {
 test('Validate plugin event handler function', async (t) => {
   await runFixture(t, 'handler_function')
 })
+
+test('Transpile TypeScript local plugins', async (t) => {
+  await runFixture(t, 'ts_transpile')
+})
+
+// Node `util.inspect()` output is different from Node 10, leading to
+// inconsistent test snapshots
+// @todo: remove once dropping Node 10
+if (!version.startsWith('v10.')) {
+  test('Type-checks TypeScript local plugins', async (t) => {
+    await runFixture(t, 'ts_type_check')
+  })
+}
+
+test('Type-checks TypeScript local plugins using tsconfig.json', async (t) => {
+  await runFixture(t, 'ts_type_check_tsconfig')
+})
+
+test('Does not transpile already transpiled local plugins', async (t) => {
+  await runFixture(t, 'ts_transpile_already')
+})
