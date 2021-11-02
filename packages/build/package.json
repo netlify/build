@@ -1,6 +1,6 @@
 {
   "name": "@netlify/build",
-  "version": "18.20.1",
+  "version": "18.21.1",
   "description": "Netlify build module",
   "main": "src/core/main.js",
   "types": "types/index.d.ts",
@@ -61,7 +61,7 @@
     "@netlify/plugin-edge-handlers": "^1.11.22",
     "@netlify/plugins-list": "^4.1.0",
     "@netlify/run-utils": "^2.0.0",
-    "@netlify/zip-it-and-ship-it": "^4.28.1",
+    "@netlify/zip-it-and-ship-it": "^4.28.2",
     "@sindresorhus/slugify": "^1.1.0",
     "@ungap/from-entries": "^0.2.1",
     "ansi-escapes": "^4.3.2",
@@ -103,6 +103,7 @@
     "strip-ansi": "^6.0.0",
     "supports-color": "^8.0.0",
     "tmp-promise": "^3.0.2",
+    "ts-node": "^10.4.0",
     "update-notifier": "^5.0.0",
     "uuid": "^8.0.0",
     "yargs": "^15.3.1"

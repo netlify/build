@@ -20,6 +20,11 @@ export interface NetlifyPluginOptions<TInputs extends PluginInputs = PluginInput
      */
     FUNCTIONS_SRC?: string
     /**
+     * the directory where internal function source code lives. This is where build plugins should place auto-generated functions.
+     * `undefined` if the version of @netlify/build does not support internal functions
+     */
+    INTERNAL_FUNCTIONS_SRC?: string
+    /**
      * the directory where built serverless functions are placed before deployment. Its value is always defined, but the target might not have been created yet.
      */
     FUNCTIONS_DIST: string
