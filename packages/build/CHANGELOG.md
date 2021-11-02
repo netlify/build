@@ -1,5 +1,13 @@
 # Changelog
 
+## [18.21.0](https://www.github.com/netlify/build/compare/build-v18.20.1...build-v18.21.0) (2021-11-02)
+
+
+### Features
+
+* allow TypeScript with local plugins ([#3778](https://www.github.com/netlify/build/issues/3778)) ([25f2790](https://www.github.com/netlify/build/commit/25f2790c58aa60a5c04a89848c148a241087dda4))
+* **build:** add INTERNAL_FUNCTIONS_SRC to types ([#3797](https://www.github.com/netlify/build/issues/3797)) ([d29a789](https://www.github.com/netlify/build/commit/d29a7898ef82fe196a75ee1c84c6888036c649d6))
+
 ### [18.20.1](https://www.github.com/netlify/build/compare/build-v18.20.0...build-v18.20.1) (2021-10-29)
 
 
