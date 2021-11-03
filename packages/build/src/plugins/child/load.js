@@ -1,6 +1,7 @@
 'use strict'
 
 const { getLogic } = require('./logic')
+const { registerTypeScript } = require('./typescript')
 const { validatePlugin } = require('./validate')
 
 // Load context passed to every plugin method.
@@ -9,6 +10,7 @@ const { validatePlugin } = require('./validate')
 // Do it when parent requests it using the `load` event.
 // Also figure out the list of plugin steps. This is also passed to the parent.
 const load = function ({ pluginPath, inputs, packageJson }) {
+  registerTypeScript(pluginPath)
   const logic = getLogic({ pluginPath, inputs })
 
   validatePlugin(logic)
