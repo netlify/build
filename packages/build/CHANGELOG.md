@@ -1,5 +1,27 @@
 # Changelog
 
+### [18.21.2](https://www.github.com/netlify/build/compare/build-v18.21.1...build-v18.21.2) (2021-11-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.28.3 ([#3803](https://www.github.com/netlify/build/issues/3803)) ([a18cb09](https://www.github.com/netlify/build/commit/a18cb0941f34cbf9e18deb6ee1b741496a8d4414))
+
+### [18.21.1](https://www.github.com/netlify/build/compare/build-v18.21.0...build-v18.21.1) (2021-11-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.28.2 ([#3801](https://www.github.com/netlify/build/issues/3801)) ([6c9dbe5](https://www.github.com/netlify/build/commit/6c9dbe5850ff909fb53344c98e8a6bc80ac860f3))
+
+## [18.21.0](https://www.github.com/netlify/build/compare/build-v18.20.1...build-v18.21.0) (2021-11-02)
+
+
+### Features
+
+* allow TypeScript with local plugins ([#3778](https://www.github.com/netlify/build/issues/3778)) ([25f2790](https://www.github.com/netlify/build/commit/25f2790c58aa60a5c04a89848c148a241087dda4))
+* **build:** add INTERNAL_FUNCTIONS_SRC to types ([#3797](https://www.github.com/netlify/build/issues/3797)) ([d29a789](https://www.github.com/netlify/build/commit/d29a7898ef82fe196a75ee1c84c6888036c649d6))
+
 ### [18.20.1](https://www.github.com/netlify/build/compare/build-v18.20.0...build-v18.20.1) (2021-10-29)
 
 
