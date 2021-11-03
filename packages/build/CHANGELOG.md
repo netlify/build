@@ -1,5 +1,12 @@
 # Changelog
 
+### [18.21.3](https://www.github.com/netlify/build/compare/build-v18.21.2...build-v18.21.3) (2021-11-03)
+
+
+### Bug Fixes
+
+* report TOML parsing errors as user errors ([#3807](https://www.github.com/netlify/build/issues/3807)) ([ed2d084](https://www.github.com/netlify/build/commit/ed2d0848724263674316783073374cc03eacbb66))
+
 ### [18.21.2](https://www.github.com/netlify/build/compare/build-v18.21.1...build-v18.21.2) (2021-11-02)
 
 
