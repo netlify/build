@@ -270,6 +270,14 @@ test('Report build logs URLs', async (t) => {
   })
 })
 
+test('TOML parsing errors', async (t) => {
+  await runFixture(t, 'toml_parsing')
+})
+
+test('Invalid error instances', async (t) => {
+  await runFixture(t, 'invalid_instance')
+})
+
 test('Top-level errors', async (t) => {
   await runFixture(t, 'top')
 })
