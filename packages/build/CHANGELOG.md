@@ -1,5 +1,12 @@
 # Changelog
 
+### [18.21.5](https://www.github.com/netlify/build/compare/build-v18.21.4...build-v18.21.5) (2021-11-05)
+
+
+### Bug Fixes
+
+* updates to plugin options types ([#3812](https://www.github.com/netlify/build/issues/3812)) ([8419eab](https://www.github.com/netlify/build/commit/8419eab6389ada0b0967eacf39deef33d041a700))
+
 ### [18.21.4](https://www.github.com/netlify/build/compare/build-v18.21.3...build-v18.21.4) (2021-11-04)
 
 
