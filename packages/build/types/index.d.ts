@@ -1,6 +1,6 @@
 export { NetlifyPlugin } from './netlify_plugin'
 export { NetlifyPluginOptions } from './netlify_plugin_options'
-export { NetlifyEventHandler } from './netlify_event_handler'
+export { OnBuild, OnEnd, OnError, OnPostBuild, OnPreBuild, OnSuccess } from './netlify_event_handler'
 export { NetlifyConfig } from './config/netlify_config'
 export { NetlifyPluginUtils } from './options'
 export { NetlifyPluginConstants } from './netlify_plugin_constants'
