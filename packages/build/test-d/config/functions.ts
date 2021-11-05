@@ -12,7 +12,6 @@ const testNetlifyConfigFunctions: onPreBuild = function ({
 
   if (functions.node_bundler === 'esbuild') {
     expectType<string[] | undefined>(functions.external_node_modules)
-    expectType<string[] | undefined>(functions.included_files)
     expectType<string[] | undefined>(functions.ignored_node_modules)
   } else {
     expectError(functions.external_node_modules)
