@@ -1,1 +1,1 @@
-export * from './netlify_plugin_utils'
+export { NetlifyPluginUtils } from './netlify_plugin_utils'

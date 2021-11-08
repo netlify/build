@@ -1,5 +1,62 @@
 # Changelog
 
+### [18.21.7](https://www.github.com/netlify/build/compare/build-v18.21.6...build-v18.21.7) (2021-11-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.29.1 ([#3827](https://www.github.com/netlify/build/issues/3827)) ([646ac65](https://www.github.com/netlify/build/commit/646ac6548ad48c54614945e87ad3608e771747d7))
+
+### [18.21.6](https://www.github.com/netlify/build/compare/build-v18.21.5...build-v18.21.6) (2021-11-05)
+
+
+### Bug Fixes
+
+* export more build plugin types ([#3816](https://www.github.com/netlify/build/issues/3816)) ([51b34f1](https://www.github.com/netlify/build/commit/51b34f12fbe32fdfa5c84456017af0f5e1284993))
+
+### [18.21.5](https://www.github.com/netlify/build/compare/build-v18.21.4...build-v18.21.5) (2021-11-05)
+
+
+### Bug Fixes
+
+* updates to plugin options types ([#3812](https://www.github.com/netlify/build/issues/3812)) ([8419eab](https://www.github.com/netlify/build/commit/8419eab6389ada0b0967eacf39deef33d041a700))
+
+### [18.21.4](https://www.github.com/netlify/build/compare/build-v18.21.3...build-v18.21.4) (2021-11-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.29.0 ([#3813](https://www.github.com/netlify/build/issues/3813)) ([7cbc5a8](https://www.github.com/netlify/build/commit/7cbc5a8874e821fec1e474ed493c9feb55dbd504))
+
+### [18.21.3](https://www.github.com/netlify/build/compare/build-v18.21.2...build-v18.21.3) (2021-11-03)
+
+
+### Bug Fixes
+
+* report TOML parsing errors as user errors ([#3807](https://www.github.com/netlify/build/issues/3807)) ([ed2d084](https://www.github.com/netlify/build/commit/ed2d0848724263674316783073374cc03eacbb66))
+
+### [18.21.2](https://www.github.com/netlify/build/compare/build-v18.21.1...build-v18.21.2) (2021-11-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.28.3 ([#3803](https://www.github.com/netlify/build/issues/3803)) ([a18cb09](https://www.github.com/netlify/build/commit/a18cb0941f34cbf9e18deb6ee1b741496a8d4414))
+
+### [18.21.1](https://www.github.com/netlify/build/compare/build-v18.21.0...build-v18.21.1) (2021-11-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.28.2 ([#3801](https://www.github.com/netlify/build/issues/3801)) ([6c9dbe5](https://www.github.com/netlify/build/commit/6c9dbe5850ff909fb53344c98e8a6bc80ac860f3))
+
+## [18.21.0](https://www.github.com/netlify/build/compare/build-v18.20.1...build-v18.21.0) (2021-11-02)
+
+
+### Features
+
+* allow TypeScript with local plugins ([#3778](https://www.github.com/netlify/build/issues/3778)) ([25f2790](https://www.github.com/netlify/build/commit/25f2790c58aa60a5c04a89848c148a241087dda4))
+* **build:** add INTERNAL_FUNCTIONS_SRC to types ([#3797](https://www.github.com/netlify/build/issues/3797)) ([d29a789](https://www.github.com/netlify/build/commit/d29a7898ef82fe196a75ee1c84c6888036c649d6))
+
 ### [18.20.1](https://www.github.com/netlify/build/compare/build-v18.20.0...build-v18.20.1) (2021-10-29)
 
 
