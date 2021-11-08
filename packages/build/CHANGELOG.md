@@ -1,5 +1,12 @@
 # Changelog
 
+### [18.21.8](https://www.github.com/netlify/build/compare/build-v18.21.7...build-v18.21.8) (2021-11-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency memoize-one to v6 ([#3785](https://www.github.com/netlify/build/issues/3785)) ([a201789](https://www.github.com/netlify/build/commit/a2017899c70b28049ee877980ee65525991264ec))
+
 ### [18.21.7](https://www.github.com/netlify/build/compare/build-v18.21.6...build-v18.21.7) (2021-11-08)
 
 
