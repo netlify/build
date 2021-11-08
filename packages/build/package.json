@@ -80,7 +80,7 @@
     "log-process-errors": "^6.0.0",
     "make-dir": "^3.0.2",
     "map-obj": "^4.0.0",
-    "memoize-one": "^5.2.1",
+    "memoize-one": "^6.0.0",
     "os-name": "^4.0.1",
     "p-event": "^4.1.0",
     "p-every": "^2.0.0",
