@@ -1,5 +1,12 @@
 # Changelog
 
+### [18.21.6](https://www.github.com/netlify/build/compare/build-v18.21.5...build-v18.21.6) (2021-11-05)
+
+
+### Bug Fixes
+
+* export more build plugin types ([#3816](https://www.github.com/netlify/build/issues/3816)) ([51b34f1](https://www.github.com/netlify/build/commit/51b34f12fbe32fdfa5c84456017af0f5e1284993))
+
 ### [18.21.5](https://www.github.com/netlify/build/compare/build-v18.21.4...build-v18.21.5) (2021-11-05)
 
 
