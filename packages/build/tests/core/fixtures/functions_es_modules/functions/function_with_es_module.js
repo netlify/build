@@ -1,3 +1,1 @@
-import { foo } from '../helper'
-
-export default foo
+export { foo as default } from '../helper'
