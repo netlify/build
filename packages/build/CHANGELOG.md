@@ -1,5 +1,12 @@
 # Changelog
 
+### [18.21.7](https://www.github.com/netlify/build/compare/build-v18.21.6...build-v18.21.7) (2021-11-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.29.1 ([#3827](https://www.github.com/netlify/build/issues/3827)) ([646ac65](https://www.github.com/netlify/build/commit/646ac6548ad48c54614945e87ad3608e771747d7))
+
 ### [18.21.6](https://www.github.com/netlify/build/compare/build-v18.21.5...build-v18.21.6) (2021-11-05)
 
 
