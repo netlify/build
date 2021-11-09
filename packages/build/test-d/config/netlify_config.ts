@@ -1,39 +1,47 @@
+import { OnPreBuild, NetlifyConfig } from '@netlify/build'
 import { expectAssignable, expectType } from 'tsd'
 
 import { JSONValue } from '../../types/utils/json_value'
-import { onPreBuild } from '../netlify_plugin'
 
-const testNetlifyConfigPlugins: onPreBuild = function ({
+const testNetlifyConfigPlugins: OnPreBuild = function ({
   netlifyConfig: {
     plugins: [plugin],
   },
+}: {
+  netlifyConfig: NetlifyConfig
 }) {
   expectType<string>(plugin.package)
   expectType<JSONValue | undefined>(plugin.inputs.testVar)
 }
 
-const testNetlifyConfigEdgeHandlers: onPreBuild = function ({
+const testNetlifyConfigEdgeHandlers: OnPreBuild = function ({
   netlifyConfig: {
     edge_handlers: [edgeHandler],
   },
+}: {
+  netlifyConfig: NetlifyConfig
 }) {
   expectAssignable<string | undefined>(edgeHandler.path)
   expectType<string>(edgeHandler.handler)
 }
 
-const testNetlifyConfigHeaders: onPreBuild = function ({
+const testNetlifyConfigHeaders: OnPreBuild = function ({
   netlifyConfig: {
     headers: [header],
   },
+}: {
+  netlifyConfig: NetlifyConfig
 }) {
   expectType<string>(header.for)
   expectType<string | string[] | undefined>(header.values.testVar)
 }
 
-const testNetlifyConfigRedirects: onPreBuild = function ({
+const testNetlifyConfigRedirects: OnPreBuild = function ({
   netlifyConfig: {
     redirects: [redirect],
   },
+}: {
+  netlifyConfig: NetlifyConfig
 }) {
   expectType<string>(redirect.from)
   expectType<string | undefined>(redirect.to)

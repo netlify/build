@@ -1,8 +1,7 @@
+import { OnPreBuild } from '@netlify/build'
 import { expectAssignable, expectType, expectError } from 'tsd'
 
-import { onPreBuild } from '../netlify_plugin'
-
-const testNetlifyConfigFunctions: onPreBuild = function ({
+const testNetlifyConfigFunctions: OnPreBuild = function ({
   netlifyConfig: {
     functions: { '*': functions },
   },
