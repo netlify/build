@@ -1,10 +1,9 @@
+import { NetlifyPluginConstants, NetlifyPluginOptions, OnPreBuild } from '@netlify/build'
 import { expectType } from 'tsd'
 
 import { JSONValue } from '../types/utils/json_value'
 
-import { onPreBuild } from './netlify_plugin'
-
-const testConstants: onPreBuild = function ({ constants }) {
+const testConstants: OnPreBuild = function ({ constants }: { constants: NetlifyPluginConstants }) {
   expectType<string | undefined>(constants.CONFIG_PATH)
   expectType<string>(constants.PUBLISH_DIR)
   expectType<string | undefined>(constants.FUNCTIONS_SRC)
@@ -16,6 +15,6 @@ const testConstants: onPreBuild = function ({ constants }) {
   expectType<string>(constants.SITE_ID)
 }
 
-const testPackageJson: onPreBuild = function ({ packageJson }) {
+const testPackageJson: OnPreBuild = function ({ packageJson }: NetlifyPluginOptions) {
   expectType<JSONValue | undefined>(packageJson.version)
 }
