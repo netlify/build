@@ -25,7 +25,7 @@ const logSizeWarnings = ({ results, logs }) => {
     logErrorSubHeader(logs, `Function ${name} exceeds size limit of 50mb`)
 
     if (bundler === 'zisi') {
-      logMessage(`You're using the default bundler, and could benefit from esbuild: https://ntl.fyi/try-esbuild`)
+      logMessage(logs, `You're using the default bundler, and could benefit from esbuild: https://ntl.fyi/try-esbuild`)
     } else {
       logMessage(
         logs,

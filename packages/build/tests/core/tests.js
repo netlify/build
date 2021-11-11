@@ -1,6 +1,6 @@
 'use strict'
 
-const { unlink, writeFile } = require('fs')
+const { unlink, writeFile, createWriteStream } = require('fs')
 const { join } = require('path')
 const { kill, platform } = require('process')
 const { promisify } = require('util')
@@ -429,6 +429,26 @@ test('Shows notice about bundling errors and warnings coming from esbuild', asyn
 
 test('Shows notice about modules with dynamic imports and suggests the usage of `functions.external_node_modules`', async (t) => {
   await runFixture(t, 'esbuild_errors_2')
+})
+
+const generate250mbFile = (path) => {
+  const file = createWriteStream(path, { encoding: 'utf8' })
+
+  file.write('module.exports = `')
+  // eslint-disable-next-line no-magic-numbers
+  Array.from({ length: 5000000 }).forEach(() => {
+    // eslint-disable-next-line no-magic-numbers
+    file.write(Math.random().toFixed(50).slice(2))
+  })
+  file.write('`')
+
+  file.close()
+}
+
+test('Shows notice about zip size being too big', async (t) => {
+  generate250mbFile(join(__dirname, 'fixtures', 'zip_too_big', 'veryLargeFile.js'))
+
+  await runFixture(t, 'zip_too_big')
 })
 
 test('Bundles functions from the `.netlify/functions-internal` directory', async (t) => {
