@@ -66,7 +66,7 @@ const logBundleResults = ({ logs, results = [] }) => {
     logModulesWithDynamicImports({ logs, modulesWithDynamicImports })
   }
 
-  logSizeWarnings(results)
+  logSizeWarnings({ results, logs })
 }
 
 const logFunctionsNonExistingDir = function (logs, relativeFunctionsSrc) {
