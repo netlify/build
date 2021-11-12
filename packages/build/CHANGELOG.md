@@ -1,5 +1,17 @@
 # Changelog
 
+## [18.22.0](https://www.github.com/netlify/build/compare/build-v18.21.10...build-v18.22.0) (2021-11-12)
+
+
+### Features
+
+* pass `nftTranspile` feature flag to ZISI ([#3817](https://www.github.com/netlify/build/issues/3817)) ([ef015e5](https://www.github.com/netlify/build/commit/ef015e533b7b8fb777b9e9ab808e281ffef5004a))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.29.4 ([#3841](https://www.github.com/netlify/build/issues/3841)) ([6beaad0](https://www.github.com/netlify/build/commit/6beaad06db6639aa620335eed7881b610f20684b))
+
 ### [18.21.10](https://www.github.com/netlify/build/compare/build-v18.21.9...build-v18.21.10) (2021-11-11)
 
 
