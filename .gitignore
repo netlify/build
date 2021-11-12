@@ -19,4 +19,3 @@ packages/*/package-lock.json
 !**/fixtures/**/plugins_cache*/.netlify
 !**/fixtures/**/pin_*/.netlify
 !**/fixtures/**/functions_*/.netlify
-packages/build/tests/core/fixtures/zip_too_big/veryLargeFile.js

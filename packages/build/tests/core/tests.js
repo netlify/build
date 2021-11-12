@@ -446,9 +446,15 @@ const generate250mbFile = (path) => {
 }
 
 test('Shows notice about zip size being too big', async (t) => {
-  generate250mbFile(join(__dirname, 'fixtures', 'zip_too_big', 'veryLargeFile.js'))
+  const veryLargeFile = join(__dirname, 'fixtures', 'zip_too_big', 'veryLargeFile.js')
 
-  await runFixture(t, 'zip_too_big')
+  try {
+    generate250mbFile(veryLargeFile)
+
+    await runFixture(t, 'zip_too_big')
+  } finally {
+    await pUnlink(veryLargeFile)
+  }
 })
 
 test('Bundles functions from the `.netlify/functions-internal` directory', async (t) => {
