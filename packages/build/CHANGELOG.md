@@ -1,5 +1,48 @@
 # Changelog
 
+### [18.21.10](https://www.github.com/netlify/build/compare/build-v18.21.9...build-v18.21.10) (2021-11-11)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^4.2.0 ([#3830](https://www.github.com/netlify/build/issues/3830)) ([fb28a97](https://www.github.com/netlify/build/commit/fb28a97a43f70bb6a16feffb4bcba44b921e64fd))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.29.3 ([#3835](https://www.github.com/netlify/build/issues/3835)) ([d5347d0](https://www.github.com/netlify/build/commit/d5347d05fa6d1a4ea54dd27fb7c6f29568724589))
+
+### [18.21.9](https://www.github.com/netlify/build/compare/build-v18.21.8...build-v18.21.9) (2021-11-11)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.29.2 ([#3833](https://www.github.com/netlify/build/issues/3833)) ([90652ad](https://www.github.com/netlify/build/commit/90652ad4ef85807ddfe030d8912d1dfb475b1f51))
+
+### [18.21.8](https://www.github.com/netlify/build/compare/build-v18.21.7...build-v18.21.8) (2021-11-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency memoize-one to v6 ([#3785](https://www.github.com/netlify/build/issues/3785)) ([a201789](https://www.github.com/netlify/build/commit/a2017899c70b28049ee877980ee65525991264ec))
+
+### [18.21.7](https://www.github.com/netlify/build/compare/build-v18.21.6...build-v18.21.7) (2021-11-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.29.1 ([#3827](https://www.github.com/netlify/build/issues/3827)) ([646ac65](https://www.github.com/netlify/build/commit/646ac6548ad48c54614945e87ad3608e771747d7))
+
+### [18.21.6](https://www.github.com/netlify/build/compare/build-v18.21.5...build-v18.21.6) (2021-11-05)
+
+
+### Bug Fixes
+
+* export more build plugin types ([#3816](https://www.github.com/netlify/build/issues/3816)) ([51b34f1](https://www.github.com/netlify/build/commit/51b34f12fbe32fdfa5c84456017af0f5e1284993))
+
+### [18.21.5](https://www.github.com/netlify/build/compare/build-v18.21.4...build-v18.21.5) (2021-11-05)
+
+
+### Bug Fixes
+
+* updates to plugin options types ([#3812](https://www.github.com/netlify/build/issues/3812)) ([8419eab](https://www.github.com/netlify/build/commit/8419eab6389ada0b0967eacf39deef33d041a700))
+
 ### [18.21.4](https://www.github.com/netlify/build/compare/build-v18.21.3...build-v18.21.4) (2021-11-04)
 
 
