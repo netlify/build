@@ -29,7 +29,7 @@ const updateNetlifyConfig = async function ({
   }
 
   validateConfigMutations(newConfigMutations)
-  logConfigMutations(logs, newConfigMutations)
+  logConfigMutations(logs, newConfigMutations, debug)
   const configMutationsA = [...configMutations, ...newConfigMutations]
   const {
     config: netlifyConfigA,

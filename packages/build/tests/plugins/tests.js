@@ -122,6 +122,10 @@ test('netlifyConfig.functions mutations can add new functions configs', async (t
   await runFixture(t, 'config_mutate_functions_new')
 })
 
+test('netlifyConfig.functions mutations are only logged in debug mode', async (t) => {
+  await runFixture(t, 'config_mutate_functions_no_log_debug', { flags: { debug: false } })
+})
+
 // Node 10 prints different snapshots due to change of behavior with
 // `util.inspect()`
 // @todo remove once Node 10 support is removed
