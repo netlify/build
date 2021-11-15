@@ -1,5 +1,12 @@
 # Changelog
 
+## [18.23.0](https://www.github.com/netlify/build/compare/build-v18.22.0...build-v18.23.0) (2021-11-15)
+
+
+### Features
+
+* warn about large function bundles ([#3831](https://www.github.com/netlify/build/issues/3831)) ([994695c](https://www.github.com/netlify/build/commit/994695cb8e758a9648ab6490e019b7c8755d0a48))
+
 ## [18.22.0](https://www.github.com/netlify/build/compare/build-v18.21.10...build-v18.22.0) (2021-11-12)
 
 

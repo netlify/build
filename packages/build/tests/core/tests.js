@@ -433,6 +433,29 @@ test('Shows notice about modules with dynamic imports and suggests the usage of 
   await runFixture(t, 'esbuild_errors_2')
 })
 
+const generate250mbFile = async (path) => {
+  await pWriteFile(
+    path,
+    // eslint-disable-next-line no-magic-numbers
+    `module.exports = '${Array.from({ length: 5000000 })
+      // eslint-disable-next-line no-magic-numbers
+      .map(() => Math.random().toFixed(50))
+      .join('')}'`,
+  )
+}
+
+test('Shows notice about zip size being too big', async (t) => {
+  const veryLargeFile = join(__dirname, 'fixtures', 'zip_too_big', 'veryLargeFile.js')
+
+  try {
+    await generate250mbFile(veryLargeFile)
+
+    await runFixture(t, 'zip_too_big')
+  } finally {
+    await pUnlink(veryLargeFile)
+  }
+})
+
 test('Bundles functions from the `.netlify/functions-internal` directory', async (t) => {
   await runFixture(t, 'functions_internal')
 })
