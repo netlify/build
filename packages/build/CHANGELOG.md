@@ -1,5 +1,14 @@
 # Changelog
 
+### [18.23.1](https://www.github.com/netlify/build/compare/build-v18.23.0...build-v18.23.1) (2021-11-17)
+
+
+### Bug Fixes
+
+* allow `interface`s to be used as Plugins generics inputs ([#3850](https://www.github.com/netlify/build/issues/3850)) ([8935b8e](https://www.github.com/netlify/build/commit/8935b8e4153623f3029d843d6e8d766acc12cf4c))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.29.5 ([#3853](https://www.github.com/netlify/build/issues/3853)) ([1177871](https://www.github.com/netlify/build/commit/11778716953fce48e946d8f12b2e6f6b9a0d1ad3))
+* improve verbosity of `netlifyConfig.functions.*` changes ([#3843](https://www.github.com/netlify/build/issues/3843)) ([a4c1949](https://www.github.com/netlify/build/commit/a4c1949cece6ba107c493bab3fc3a21c9411125e))
+
 ## [18.23.0](https://www.github.com/netlify/build/compare/build-v18.22.0...build-v18.23.0) (2021-11-15)
 
 
