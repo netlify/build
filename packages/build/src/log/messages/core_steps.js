@@ -2,7 +2,7 @@
 
 const path = require('path')
 
-const { log, logArray, logErrorSubHeader, logWarningSubHeader, logMessage } = require('../logger')
+const { log, logArray, logErrorSubHeader, logWarningSubHeader } = require('../logger')
 const { THEME } = require('../theme')
 
 const logBundleResultFunctions = ({ functions, headerMessage, logs, error }) => {
@@ -15,24 +15,6 @@ const logBundleResultFunctions = ({ functions, headerMessage, logs, error }) => 
   }
 
   logArray(logs, functionNames)
-}
-
-const MAX_AWS_ZIP_SIZE = 50000000
-
-const logSizeWarnings = ({ results, logs }) => {
-  const oversizedFunctions = results.filter(({ size }) => size > MAX_AWS_ZIP_SIZE)
-  oversizedFunctions.forEach(({ name, bundler }) => {
-    logErrorSubHeader(logs, `Function ${name} exceeds size limit of 50mb`)
-
-    if (bundler === 'zisi') {
-      logMessage(logs, `You're using the default bundler, and could benefit from esbuild: https://ntl.fyi/try-esbuild`)
-    } else {
-      logMessage(
-        logs,
-        `To debug, run \`$ netlify build\` locally and examine the contents of .netlify/functions/${name}.zip`,
-      )
-    }
-  })
 }
 
 const logBundleResults = ({ logs, results = [] }) => {
@@ -65,8 +47,6 @@ const logBundleResults = ({ logs, results = [] }) => {
   if (modulesWithDynamicImports.length !== 0) {
     logModulesWithDynamicImports({ logs, modulesWithDynamicImports })
   }
-
-  logSizeWarnings({ results, logs })
 }
 
 const logFunctionsNonExistingDir = function (logs, relativeFunctionsSrc) {
