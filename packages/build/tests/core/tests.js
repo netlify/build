@@ -384,7 +384,7 @@ test.serial('Passes the right feature flags to zip-it-and-ship-it', async (t) =>
   stub.restore()
 
   // eslint-disable-next-line no-magic-numbers
-  t.is(mockZipFunctions.callCount, 5)
+  t.is(mockZipFunctions.callCount, 6)
 
   t.false(mockZipFunctions.getCall(0).args[2].featureFlags.traceWithNft)
   t.false(mockZipFunctions.getCall(0).args[2].featureFlags.buildGoSource)
