@@ -9,9 +9,9 @@ const { validatePlugin } = require('./validate')
 // This also validates the plugin.
 // Do it when parent requests it using the `load` event.
 // Also figure out the list of plugin steps. This is also passed to the parent.
-const load = function ({ pluginPath, inputs, packageJson }) {
+const load = async function ({ pluginPath, inputs, packageJson }) {
   registerTypeScript(pluginPath)
-  const logic = getLogic({ pluginPath, inputs })
+  const logic = await getLogic({ pluginPath, inputs })
 
   validatePlugin(logic)
 

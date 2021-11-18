@@ -1,5 +1,6 @@
 'use strict'
 
+const { serializeObject } = require('../../log/serialize')
 const { getErrorInfo } = require('../info')
 const { getTypeInfo } = require('../type')
 
@@ -17,7 +18,7 @@ const getFullErrorInfo = function ({ error, colors, debug }) {
     stack,
     errorProps,
     errorInfo,
-    errorInfo: { location = {}, plugin = {} },
+    errorInfo: { location = {}, plugin = {}, tsConfig },
     severity,
     title,
     stackType,
@@ -31,10 +32,28 @@ const getFullErrorInfo = function ({ error, colors, debug }) {
   const { message: messageA, stack: stackA } = getStackInfo({ message, stack, stackType, rawStack, severity, debug })
 
   const pluginInfo = getPluginInfo(plugin, location)
+  const tsConfigInfo = getTsConfigInfo(tsConfig)
   const locationInfo = getLocationInfo({ stack: stackA, location, locationType })
   const errorPropsA = getErrorProps({ errorProps, showErrorProps, colors })
 
-  return { ...basicErrorInfo, title: titleA, message: messageA, pluginInfo, locationInfo, errorProps: errorPropsA }
+  return {
+    ...basicErrorInfo,
+    title: titleA,
+    message: messageA,
+    tsConfigInfo,
+    pluginInfo,
+    locationInfo,
+    errorProps: errorPropsA,
+  }
+}
+
+// Serialize the `tsConfig` error information
+const getTsConfigInfo = function (tsConfig) {
+  if (tsConfig === undefined) {
+    return
+  }
+
+  return serializeObject(tsConfig)
 }
 
 // Parse error instance into all the basic properties containing information

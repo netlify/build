@@ -4,19 +4,20 @@ const { THEME } = require('../../log/theme')
 
 // Serialize an error object into a title|body string to print in logs
 const serializeLogError = function ({
-  fullErrorInfo: { title, severity, message, pluginInfo, locationInfo, errorProps },
+  fullErrorInfo: { title, severity, message, pluginInfo, locationInfo, tsConfigInfo, errorProps },
 }) {
-  const body = getBody({ message, pluginInfo, locationInfo, errorProps, severity })
+  const body = getBody({ message, pluginInfo, locationInfo, tsConfigInfo, errorProps, severity })
   return { title, body }
 }
 
-const getBody = function ({ message, pluginInfo, locationInfo, errorProps, severity }) {
+const getBody = function ({ message, pluginInfo, locationInfo, tsConfigInfo, errorProps, severity }) {
   if (severity === 'none') {
     return message
   }
 
   return Object.entries({
     message,
+    tsConfigInfo,
     pluginInfo,
     locationInfo,
     errorProps,
@@ -38,6 +39,7 @@ const LOG_BLOCK_NAMES = {
   message: 'Error message',
   pluginInfo: 'Plugin details',
   locationInfo: 'Error location',
+  tsConfigInfo: 'TypeScript configuration',
   errorProps: 'Error properties',
 }
 
