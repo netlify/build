@@ -1,5 +1,17 @@
 # Changelog
 
+## [18.24.0](https://www.github.com/netlify/build/compare/build-v18.23.1...build-v18.24.0) (2021-11-18)
+
+
+### Features
+
+* add `buildbot_nft_transpile_esm` feature flag ([#3854](https://www.github.com/netlify/build/issues/3854)) ([b0b270d](https://www.github.com/netlify/build/commit/b0b270d55a9421591759d6118911aa36b98f8fe7))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.30.0 ([#3856](https://www.github.com/netlify/build/issues/3856)) ([08394d2](https://www.github.com/netlify/build/commit/08394d28108e5992d519a5b8f85d5e9e2b76d465))
+
 ### [18.23.1](https://www.github.com/netlify/build/compare/build-v18.23.0...build-v18.23.1) (2021-11-17)
 
 
