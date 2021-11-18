@@ -376,11 +376,15 @@ test.serial('Passes the right feature flags to zip-it-and-ship-it', async (t) =>
     flags: { featureFlags: { buildbot_scheduled_functions: true } },
     snapshot: false,
   })
+  await runFixture(t, 'schedule', {
+    flags: { featureFlags: { buildbot_nft_transpile_esm: true } },
+    snapshot: false,
+  })
 
   stub.restore()
 
   // eslint-disable-next-line no-magic-numbers
-  t.is(mockZipFunctions.callCount, 5)
+  t.is(mockZipFunctions.callCount, 6)
 
   t.false(mockZipFunctions.getCall(0).args[2].featureFlags.traceWithNft)
   t.false(mockZipFunctions.getCall(0).args[2].featureFlags.buildGoSource)
@@ -391,6 +395,8 @@ test.serial('Passes the right feature flags to zip-it-and-ship-it', async (t) =>
   t.true(mockZipFunctions.getCall(1).args[2].featureFlags.nftTranspile)
   t.true(mockZipFunctions.getCall(2).args[2].featureFlags.buildGoSource)
   t.true(mockZipFunctions.getCall(3).args[2].featureFlags.parseWithEsbuild)
+  // eslint-disable-next-line no-magic-numbers
+  t.true(mockZipFunctions.getCall(5).args[2].featureFlags.nftTranspile)
 
   t.is(mockZipFunctions.getCall(0).args[2].config.test.schedule, undefined)
   // eslint-disable-next-line no-magic-numbers
