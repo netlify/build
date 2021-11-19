@@ -26,7 +26,17 @@ const addTsErrorInfo = async function (error, pluginPath) {
     return
   }
 
-  const { stdout } = await execa.command('ts-node --show-config')
+  const { stdout } = await execa.command('ts-node --show-config', {
+    // `ts-node` is located inside `@netlify/build` `node_modules` directory.
+    // `preferLocal: true` ensures any parent `node_modules/.bin/` directory
+    // is searched.
+    // It does so starting from `localDir`, which defaults to `process.cwd()`.
+    // The current directory is the plugin's main file's directory.
+    // Therefore it needs to be changed to `__dirname` to be able to find
+    // `ts-node` binary.
+    localDir: __dirname,
+    preferLocal: true,
+  })
   const tsConfig = safeJsonParse(stdout)
   addErrorInfo(error, { tsConfig })
 }
