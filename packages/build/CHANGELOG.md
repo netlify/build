@@ -1,5 +1,12 @@
 # Changelog
 
+## [18.25.0](https://www.github.com/netlify/build/compare/build-v18.24.0...build-v18.25.0) (2021-11-19)
+
+
+### Features
+
+* add TypeScript error information on type failures ([#3857](https://www.github.com/netlify/build/issues/3857)) ([ccf032b](https://www.github.com/netlify/build/commit/ccf032b121bd3b6ea1e04655ccbb7602668b26e2))
+
 ## [18.24.0](https://www.github.com/netlify/build/compare/build-v18.23.1...build-v18.24.0) (2021-11-18)
 
 
