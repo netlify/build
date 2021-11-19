@@ -226,7 +226,7 @@ if (!version.startsWith('v10.')) {
   // that is hard to normalize in test snapshots.
   if (platform !== 'win32') {
     test('Report TypeScript error', async (t) => {
-      await runFixture(t, 'typescript', { flags })
+      await runFixture(t, 'typescript', { flags, copyRoot: { git: false } })
     })
   }
 
