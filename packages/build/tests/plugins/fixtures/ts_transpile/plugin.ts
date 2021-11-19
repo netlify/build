@@ -1,5 +1,5 @@
-import { NetlifyPlugin } from '@netlify/build'
+import { OnPreBuild } from '@netlify/build'
 
-export const onPreBuild: NetlifyPlugin['onPreBuild'] = function ({ constants: { IS_LOCAL } }) {
+export const onPreBuild: OnPreBuild = function ({ constants: { IS_LOCAL } }) {
   console.log(typeof IS_LOCAL === 'boolean')
 }
