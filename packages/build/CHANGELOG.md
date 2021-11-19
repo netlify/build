@@ -1,5 +1,12 @@
 # Changelog
 
+### [18.25.1](https://www.github.com/netlify/build/compare/build-v18.25.0...build-v18.25.1) (2021-11-19)
+
+
+### Bug Fixes
+
+* calling `ts-node` in production ([#3859](https://www.github.com/netlify/build/issues/3859)) ([53f1409](https://www.github.com/netlify/build/commit/53f1409bca91119ee79c784c9d3b52f9235503e2))
+
 ## [18.25.0](https://www.github.com/netlify/build/compare/build-v18.24.0...build-v18.25.0) (2021-11-19)
 
 
