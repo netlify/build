@@ -1,6 +1,6 @@
 'use strict'
 
-const { cwd, version } = require('process')
+const { cwd, version, platform } = require('process')
 
 const test = require('ava')
 const hasAnsi = require('has-ansi')
@@ -222,6 +222,14 @@ test.serial('Report API error', async (t) => {
 // Node v10 uses a different error message format
 // TODO: remove once dropping Node 10
 if (!version.startsWith('v10.')) {
+  // ts-node prints error messages differently on Windows and does so in a way
+  // that is hard to normalize in test snapshots.
+  if (platform !== 'win32') {
+    test('Report TypeScript error', async (t) => {
+      await runFixture(t, 'typescript', { flags })
+    })
+  }
+
   test('Report dependencies error', async (t) => {
     await runFixture(t, 'dependencies', { flags })
   })

@@ -10,7 +10,14 @@ const printEventForTest = function (
     groupingHash,
     severity,
     unhandled,
-    _metadata: { location, plugin: { packageName, homepage } = {}, pluginPackageJson, env: { BUILD_ID } = {}, other },
+    _metadata: {
+      location,
+      plugin: { packageName, homepage } = {},
+      pluginPackageJson,
+      tsConfig,
+      env: { BUILD_ID } = {},
+      other,
+    },
   },
   logs,
 ) {
@@ -26,6 +33,7 @@ const printEventForTest = function (
       packageName,
       pluginPackageJson: pluginPackageJson !== undefined,
       homepage,
+      tsConfig,
       BUILD_ID,
       other,
     },
