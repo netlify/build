@@ -178,7 +178,7 @@ test('Validate plugin event handler function', async (t) => {
 })
 
 test('Transpile TypeScript local plugins', async (t) => {
-  await runFixture(t, 'ts_transpile')
+  await runFixture(t, 'ts_transpile', { copyRoot: { git: false } })
 })
 
 test('Type-checks TypeScript local plugins', async (t) => {
