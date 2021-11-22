@@ -2,7 +2,6 @@
 
 const { extname } = require('path')
 
-const execa = require('execa')
 const { register } = require('ts-node')
 
 const { addErrorInfo } = require('../../error/info')
@@ -16,39 +15,23 @@ const registerTypeScript = function (pluginPath) {
     return
   }
 
-  register()
+  return register()
 }
 
 // On TypeScript errors, adds information about the `ts-node` configuration,
 // which includes the resolved `tsconfig.json`.
-const addTsErrorInfo = async function (error, pluginPath) {
-  if (!isTypeScriptPlugin(pluginPath)) {
+const addTsErrorInfo = function (error, tsNodeService) {
+  if (tsNodeService === undefined) {
     return
   }
 
-  const { stdout } = await execa.command('ts-node --show-config', {
-    // `ts-node` is located inside `@netlify/build` `node_modules` directory.
-    // `preferLocal: true` ensures any parent `node_modules/.bin/` directory
-    // is searched.
-    // It does so starting from `localDir`, which defaults to `process.cwd()`.
-    // The current directory is the plugin's main file's directory.
-    // Therefore it needs to be changed to `__dirname` to be able to find
-    // `ts-node` binary.
-    localDir: __dirname,
-    preferLocal: true,
-  })
-  const tsConfig = safeJsonParse(stdout)
-  addErrorInfo(error, { tsConfig })
-}
-
-// The output of `ts-node --show-config` should be JSON.
-// This is just a failsafe.
-const safeJsonParse = function (stdout) {
-  try {
-    return JSON.parse(stdout)
-  } catch (error) {
-    return { stdout, parsingError: error.message }
-  }
+  const {
+    config: {
+      raw: { compilerOptions },
+    },
+    options: tsNodeOptions,
+  } = tsNodeService
+  addErrorInfo(error, { tsConfig: { compilerOptions, tsNodeOptions } })
 }
 
 const isTypeScriptPlugin = function (pluginPath) {

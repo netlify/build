@@ -4,18 +4,18 @@ const { addTsErrorInfo } = require('./typescript')
 
 // Require the plugin file and fire its top-level function.
 // The returned object is the `logic` which includes all event handlers.
-const getLogic = async function ({ pluginPath, inputs }) {
-  const logic = await requireLogic(pluginPath)
+const getLogic = function ({ pluginPath, inputs, tsNodeService }) {
+  const logic = requireLogic(pluginPath, tsNodeService)
   const logicA = loadLogic({ logic, inputs })
   return logicA
 }
 
-const requireLogic = async function (pluginPath) {
+const requireLogic = function (pluginPath, tsNodeService) {
   try {
     // eslint-disable-next-line node/global-require, import/no-dynamic-require
     return require(pluginPath)
   } catch (error) {
-    await addTsErrorInfo(error, pluginPath)
+    addTsErrorInfo(error, tsNodeService)
     error.message = `Could not import plugin:\n${error.message}`
     throw error
   }
