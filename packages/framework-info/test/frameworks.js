@@ -135,7 +135,8 @@ each(FRAMEWORKS, (info, framework) => {
 
 test('each json file should be required in main.js FRAMEWORKS', async (t) => {
   const dir = `${__dirname}/../src/frameworks`
-  const jsonFiles = (await pReadDir(dir)).filter((file) => path.extname(file) === '.json')
+  const filenames = await pReadDir(dir)
+  const jsonFiles = filenames.filter((filename) => path.extname(filename) === '.json')
 
   const mainFile = await pReadFile(`${dir}/main.js`, 'utf8')
 
