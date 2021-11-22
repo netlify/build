@@ -209,7 +209,7 @@ test('--dry with build.command but no netlify.toml', async (t) => {
   await runFixture(t, 'none', { flags: { dry: true, defaultConfig: { build: { command: 'echo' } } } })
 })
 
-const CHILD_NODE_VERSION = '10.17.0'
+const CHILD_NODE_VERSION = '12.19.0'
 const VERY_OLD_NODE_VERSION = '4.0.0'
 
 // Try `get-node` several times because it sometimes fails due to network failures

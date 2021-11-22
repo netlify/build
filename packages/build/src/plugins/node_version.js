@@ -10,7 +10,7 @@ const {
 const { addErrorInfo } = require('../error/info')
 
 // Local plugins and `package.json`-installed plugins use user's preferred Node.js version if higher than our minimum
-// supported version (Node v10). Else default to the system Node version.
+// supported version. Else default to the system Node version.
 // Local and programmatic builds use `@netlify/build` Node.js version, which is
 // usually the system's Node.js version.
 // If the user Node version does not satisfy our supported engine range use our own system Node version
