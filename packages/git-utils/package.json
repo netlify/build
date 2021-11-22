@@ -43,7 +43,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "execa": "^5.1.1",
+    "execa": "^6.0.0",
     "map-obj": "^4.0.0",
     "micromatch": "^4.0.2",
     "moize": "^6.0.0",
