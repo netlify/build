@@ -63,7 +63,6 @@
     "@netlify/run-utils": "^2.0.0",
     "@netlify/zip-it-and-ship-it": "^4.30.0",
     "@sindresorhus/slugify": "^1.1.0",
-    "@ungap/from-entries": "^0.2.1",
     "ansi-escapes": "^4.3.2",
     "array-flat-polyfill": "^1.0.1",
     "chalk": "^4.1.2",

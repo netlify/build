@@ -1,6 +1,5 @@
 'use strict'
 
-const fromEntries = require('@ungap/from-entries')
 const omit = require('omit.js').default
 
 const { removeFalsy } = require('../utils/remove_falsy')
@@ -65,7 +64,7 @@ const getEnv = async function ({
     })
   })
 
-  return fromEntries(env)
+  return Object.fromEntries(env)
 }
 
 // Environment variables not set by users, but meant to mimic the production
