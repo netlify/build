@@ -1,5 +1,12 @@
 # Changelog
 
+### [18.25.2](https://www.github.com/netlify/build/compare/build-v18.25.1...build-v18.25.2) (2021-11-22)
+
+
+### Bug Fixes
+
+* simplify plugin types debugging ([#3862](https://www.github.com/netlify/build/issues/3862)) ([79ab338](https://www.github.com/netlify/build/commit/79ab338ffe8ce530e3ce0079d61b3b39e68f1cc9))
+
 ### [18.25.1](https://www.github.com/netlify/build/compare/build-v18.25.0...build-v18.25.1) (2021-11-19)
 
 
