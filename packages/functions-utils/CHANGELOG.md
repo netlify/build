@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.0.0](https://www.github.com/netlify/build/compare/functions-utils-v2.1.22...functions-utils-v3.0.0) (2021-11-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* drop support for Node 10 (#3873)
+
+### Miscellaneous Chores
+
+* drop support for Node 10 ([#3873](https://www.github.com/netlify/build/issues/3873)) ([ae8224d](https://www.github.com/netlify/build/commit/ae8224da8bca4f8c216afb6723664eb7095f1e98))
+
 ### [2.1.22](https://www.github.com/netlify/build/compare/functions-utils-v2.1.21...functions-utils-v2.1.22) (2021-11-18)
 
 

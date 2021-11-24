@@ -1,5 +1,16 @@
 # Changelog
 
+## [16.0.0](https://www.github.com/netlify/build/compare/config-v15.8.2...config-v16.0.0) (2021-11-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* drop support for Node 10 (#3873)
+
+### Miscellaneous Chores
+
+* drop support for Node 10 ([#3873](https://www.github.com/netlify/build/issues/3873)) ([ae8224d](https://www.github.com/netlify/build/commit/ae8224da8bca4f8c216afb6723664eb7095f1e98))
+
 ### [15.8.2](https://www.github.com/netlify/build/compare/config-v15.8.1...config-v15.8.2) (2021-11-03)
 
 
