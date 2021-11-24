@@ -1375,7 +1375,7 @@ test.serial('Compatibility order take precedence over the `featureFlag` property
 })
 
 const getNodePath = function (nodeVersion) {
-  return `/home/ether/.nvm/versions/node/v${nodeVersion}/bin/node`
+  return `/home/user/.nvm/versions/node/v${nodeVersion}/bin/node`
 }
 
 const runWithUpdatePluginMock = async function (t, fixture, { flags, status, sendStatus = true, testPlugin } = {}) {
@@ -1541,7 +1541,7 @@ test('Validate --node-path unsupported version does not fail when no plugins are
 })
 
 test('Validate --node-path version is supported by the plugin', async (t) => {
-  const nodePath = getNodePath('12.0.0')
+  const nodePath = getNodePath('14.14.0')
   await runFixture(t, 'engines', {
     flags: { nodePath },
   })
@@ -1553,8 +1553,8 @@ test('Validate --node-path exists', async (t) => {
   })
 })
 
-test('Provided --node-path version is unused in buildbot for local plugin executions if <10.18.0', async (t) => {
-  const nodePath = getNodePath('10.17.0')
+test('Provided --node-path version is unused in buildbot for local plugin executions if older than supported version', async (t) => {
+  const nodePath = getNodePath('12.19.0')
   await runFixture(t, 'version_greater_than_minimum', {
     flags: { nodePath, mode: 'buildbot' },
   })

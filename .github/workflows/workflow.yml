@@ -19,7 +19,7 @@ jobs:
           # We test on the oldest supported Node.js version, but only with a
           # single combination (Ubuntu)
           - os: ubuntu-latest
-            node-version: '10.18.0'
+            node-version: '12.20.0'
             install-command: npm ci
           # The buildbot pins Netlify Build's dependencies, like `npm ci`.
           # But other consumers do not, like `npm install`.
@@ -46,7 +46,7 @@ jobs:
           check-latest: true
       - name: Install npm@7
         run: npm install -g npm@7
-        if: ${{ matrix.node-version == '10.18.0' }}
+        if: ${{ matrix.node-version == '12.20.0' }}
       - name: Install dependencies
         run: ${{ matrix.install-command }}
       - name: Linting
