@@ -4,19 +4,5 @@
   semanticCommits: true,
   dependencyDashboard: true,
   automerge: true,
-  // Those cannot be upgraded until we drop support for Node 10
-  packageRules: [
-    {
-      matchPackageNames: ['read-pkg-up'],
-      allowedVersions: '<8',
-    },
-    {
-      matchPackageNames: ['is-plain-obj'],
-      allowedVersions: '<4',
-    },
-    {
-      matchPackageNames: ['test-each'],
-      allowedVersions: '<3',
-    },
-  ],
+  packageRules: [],
 }
