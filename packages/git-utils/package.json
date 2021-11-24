@@ -1,6 +1,6 @@
 {
   "name": "@netlify/git-utils",
-  "version": "2.0.2",
+  "version": "3.0.0",
   "description": "Utility for dealing with modified, created, deleted files since a git commit",
   "main": "src/main.js",
   "files": [
