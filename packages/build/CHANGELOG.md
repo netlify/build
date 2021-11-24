@@ -1,5 +1,12 @@
 # Changelog
 
+### [19.0.1](https://www.github.com/netlify/build/compare/build-v19.0.0...build-v19.0.1) (2021-11-24)
+
+
+### Bug Fixes
+
+* netlify build dependencies ([#3877](https://www.github.com/netlify/build/issues/3877)) ([1a3f8ea](https://www.github.com/netlify/build/commit/1a3f8ea0827da2ff78d0832c2a016eca2c27af2e))
+
 ## [19.0.0](https://www.github.com/netlify/build/compare/build-v18.25.2...build-v19.0.0) (2021-11-24)
 
 
