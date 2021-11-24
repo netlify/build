@@ -1,5 +1,12 @@
 # Changelog
 
+### [19.0.2](https://www.github.com/netlify/build/compare/build-v19.0.1...build-v19.0.2) (2021-11-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to v5 ([#3876](https://www.github.com/netlify/build/issues/3876)) ([ea7dfef](https://www.github.com/netlify/build/commit/ea7dfefa63a2c48b6201719b77253d45e2f3e68c))
+
 ### [19.0.1](https://www.github.com/netlify/build/compare/build-v19.0.0...build-v19.0.1) (2021-11-24)
 
 
