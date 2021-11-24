@@ -1,5 +1,7 @@
 'use strict'
 
+const filterObj = require('filter-obj')
+
 const { getLogic } = require('./logic')
 const { registerTypeScript } = require('./typescript')
 const { validatePlugin } = require('./validate')
@@ -15,21 +17,16 @@ const load = function ({ pluginPath, inputs, packageJson }) {
 
   validatePlugin(logic)
 
-  const pluginSteps = getPluginSteps(logic)
+  const methods = filterObj(logic, isEventHandler)
+  const events = Object.keys(methods)
 
   // Context passed to every event handler
-  const context = { pluginSteps, inputs, packageJson }
+  const context = { methods, inputs, packageJson }
 
-  return { pluginSteps, context }
+  return { events, context }
 }
 
-const getPluginSteps = function (logic) {
-  return Object.entries(logic)
-    .filter(isEventHandler)
-    .map(([event, method]) => ({ event, method }))
-}
-
-const isEventHandler = function ([, value]) {
+const isEventHandler = function (event, value) {
   return typeof value === 'function'
 }
 
