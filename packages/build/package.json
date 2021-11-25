@@ -58,7 +58,7 @@
     "@netlify/config": "^16.0.0",
     "@netlify/functions-utils": "^3.0.0",
     "@netlify/git-utils": "^3.0.0",
-    "@netlify/plugin-edge-handlers": "^1.11.22",
+    "@netlify/plugin-edge-handlers": "^2.0.0",
     "@netlify/plugins-list": "^5.0.0",
     "@netlify/run-utils": "^3.0.0",
     "@netlify/zip-it-and-ship-it": "^5.0.0",
