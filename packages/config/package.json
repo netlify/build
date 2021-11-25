@@ -1,6 +1,6 @@
 {
   "name": "@netlify/config",
-  "version": "16.0.0",
+  "version": "16.0.4",
   "description": "Netlify config module",
   "main": "src/main.js",
   "bin": {
@@ -49,8 +49,6 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@ungap/from-entries": "^0.2.1",
-    "array-flat-polyfill": "^1.0.1",
     "chalk": "^4.1.2",
     "cron-parser": "^4.1.0",
     "deepmerge": "^4.2.2",
@@ -65,9 +63,9 @@
     "js-yaml": "^4.0.0",
     "make-dir": "^3.1.0",
     "map-obj": "^4.0.0",
-    "netlify": "^8.0.4",
-    "netlify-headers-parser": "^4.0.1",
-    "netlify-redirect-parser": "^11.0.3",
+    "netlify": "^9.0.0",
+    "netlify-headers-parser": "^5.0.0",
+    "netlify-redirect-parser": "^12.0.0",
     "omit.js": "^2.0.2",
     "p-locate": "^5.0.0",
     "path-exists": "^4.0.0",

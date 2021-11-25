@@ -6,8 +6,6 @@ const process = require('process')
 const filterObj = require('filter-obj')
 const yargs = require('yargs')
 
-require('../utils/polyfills')
-
 const { normalizeCliFeatureFlags } = require('./feature_flags')
 const { FLAGS } = require('./flags')
 const build = require('./main')

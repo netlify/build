@@ -1,6 +1,6 @@
 {
   "name": "@netlify/cache-utils",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Utility for caching files in Netlify Build",
   "main": "src/main.js",
   "files": [
@@ -43,7 +43,6 @@
   },
   "license": "MIT",
   "dependencies": {
-    "array-flat-polyfill": "^1.0.1",
     "cpy": "^8.1.0",
     "del": "^5.1.0",
     "get-stream": "^6.0.0",

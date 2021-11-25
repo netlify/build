@@ -1,5 +1,41 @@
 # Changelog
 
+### [19.0.5](https://www.github.com/netlify/build/compare/build-v19.0.4...build-v19.0.5) (2021-11-25)
+
+
+### Bug Fixes
+
+* remove @ungap/from-entries ([#3882](https://www.github.com/netlify/build/issues/3882)) ([56fb539](https://www.github.com/netlify/build/commit/56fb5399ac48a1889ef039318d24e0aef19126f3))
+* remove `array-flat-polyfill` ([#3883](https://www.github.com/netlify/build/issues/3883)) ([a70ee72](https://www.github.com/netlify/build/commit/a70ee72ba481e7ab15da357773ef9033d5b9ddeb))
+
+### [19.0.4](https://www.github.com/netlify/build/compare/build-v19.0.3...build-v19.0.4) (2021-11-25)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugin-edge-handlers to v2 ([#3888](https://www.github.com/netlify/build/issues/3888)) ([8f9ca41](https://www.github.com/netlify/build/commit/8f9ca418d4c62e94a5255e1d02601f02bfec46ad))
+
+### [19.0.3](https://www.github.com/netlify/build/compare/build-v19.0.2...build-v19.0.3) (2021-11-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v5 ([#3884](https://www.github.com/netlify/build/issues/3884)) ([d617aa1](https://www.github.com/netlify/build/commit/d617aa1c4aeb75968392dcefcd0e15d42c2d653b))
+
+### [19.0.2](https://www.github.com/netlify/build/compare/build-v19.0.1...build-v19.0.2) (2021-11-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to v5 ([#3876](https://www.github.com/netlify/build/issues/3876)) ([ea7dfef](https://www.github.com/netlify/build/commit/ea7dfefa63a2c48b6201719b77253d45e2f3e68c))
+
+### [19.0.1](https://www.github.com/netlify/build/compare/build-v19.0.0...build-v19.0.1) (2021-11-24)
+
+
+### Bug Fixes
+
+* netlify build dependencies ([#3877](https://www.github.com/netlify/build/issues/3877)) ([1a3f8ea](https://www.github.com/netlify/build/commit/1a3f8ea0827da2ff78d0832c2a016eca2c27af2e))
+
 ## [19.0.0](https://www.github.com/netlify/build/compare/build-v18.25.2...build-v19.0.0) (2021-11-24)
 
 
