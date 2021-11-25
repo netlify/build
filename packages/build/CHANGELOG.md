@@ -1,5 +1,12 @@
 # Changelog
 
+### [19.0.6](https://www.github.com/netlify/build/compare/build-v19.0.5...build-v19.0.6) (2021-11-25)
+
+
+### Bug Fixes
+
+* force release ([#3896](https://www.github.com/netlify/build/issues/3896)) ([23e3781](https://www.github.com/netlify/build/commit/23e378177e6656ddc06be3fe76b894dcef54cc0f))
+
 ### [19.0.5](https://www.github.com/netlify/build/compare/build-v19.0.4...build-v19.0.5) (2021-11-25)
 
 
