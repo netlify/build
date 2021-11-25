@@ -36,8 +36,8 @@
     "ci",
     "plugins",
     "continuous-integration",
-    "continuous-delivery",
     "continuous-deployment",
+    "continuous-delivery",
     "continuous-testing",
     "netlify-plugin",
     "netlify"
