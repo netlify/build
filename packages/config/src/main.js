@@ -1,8 +1,6 @@
 /* eslint-disable max-lines */
 'use strict'
 
-require('./utils/polyfills')
-
 const { getApiClient } = require('./api/client')
 const { getSiteInfo } = require('./api/site_info')
 const { getInitialBase, getBase, addBase } = require('./base')

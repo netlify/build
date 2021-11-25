@@ -64,7 +64,6 @@
     "@netlify/zip-it-and-ship-it": "^5.0.0",
     "@sindresorhus/slugify": "^1.1.0",
     "ansi-escapes": "^4.3.2",
-    "array-flat-polyfill": "^1.0.1",
     "chalk": "^4.1.2",
     "clean-stack": "^3.0.1",
     "execa": "^5.1.1",

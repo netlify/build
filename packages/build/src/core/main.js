@@ -1,8 +1,6 @@
 'use strict'
 
 /* eslint-disable max-lines, import/max-dependencies */
-require('../utils/polyfills')
-
 const { handleBuildError } = require('../error/handle')
 const { getErrorInfo } = require('../error/info')
 const { startErrorMonitor } = require('../error/monitor/start')
