@@ -39,6 +39,7 @@ const startPlugin = async function ({ pluginDir, nodePath, buildDir, childEnv })
     execPath: nodePath,
     env: childEnv,
     extendEnv: false,
+    serialization: 'advanced',
   })
 
   try {
