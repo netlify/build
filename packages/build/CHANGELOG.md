@@ -1,5 +1,13 @@
 # Changelog
 
+### [19.0.5](https://www.github.com/netlify/build/compare/build-v19.0.4...build-v19.0.5) (2021-11-25)
+
+
+### Bug Fixes
+
+* remove @ungap/from-entries ([#3882](https://www.github.com/netlify/build/issues/3882)) ([56fb539](https://www.github.com/netlify/build/commit/56fb5399ac48a1889ef039318d24e0aef19126f3))
+* remove `array-flat-polyfill` ([#3883](https://www.github.com/netlify/build/issues/3883)) ([a70ee72](https://www.github.com/netlify/build/commit/a70ee72ba481e7ab15da357773ef9033d5b9ddeb))
+
 ### [19.0.4](https://www.github.com/netlify/build/compare/build-v19.0.3...build-v19.0.4) (2021-11-25)
 
 
