@@ -1,5 +1,12 @@
 # Changelog
 
+### [19.0.4](https://www.github.com/netlify/build/compare/build-v19.0.3...build-v19.0.4) (2021-11-25)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugin-edge-handlers to v2 ([#3888](https://www.github.com/netlify/build/issues/3888)) ([8f9ca41](https://www.github.com/netlify/build/commit/8f9ca418d4c62e94a5255e1d02601f02bfec46ad))
+
 ### [19.0.3](https://www.github.com/netlify/build/compare/build-v19.0.2...build-v19.0.3) (2021-11-24)
 
 
