@@ -1,5 +1,12 @@
 # Changelog
 
+### [3.0.1](https://www.github.com/netlify/build/compare/cache-utils-v3.0.0...cache-utils-v3.0.1) (2021-11-25)
+
+
+### Bug Fixes
+
+* remove `array-flat-polyfill` ([#3883](https://www.github.com/netlify/build/issues/3883)) ([a70ee72](https://www.github.com/netlify/build/commit/a70ee72ba481e7ab15da357773ef9033d5b9ddeb))
+
 ## [3.0.0](https://www.github.com/netlify/build/compare/cache-utils-v2.0.4...cache-utils-v3.0.0) (2021-11-24)
 
 
