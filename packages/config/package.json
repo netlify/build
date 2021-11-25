@@ -49,7 +49,6 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@ungap/from-entries": "^0.2.1",
     "array-flat-polyfill": "^1.0.1",
     "chalk": "^4.1.2",
     "cron-parser": "^4.1.0",
