@@ -113,10 +113,9 @@ const sendEventToParent = async function (callId, payload) {
   await promisify(process.send.bind(process))([callId, payload])
 }
 
-// Errors are not serializable through `child_process` `ipc` so we need to
-// convert from/to plain objects.
-// TODO: use `child_process.spawn()` `serialization: 'advanced'` option after
-// dropping support for Node.js <=12.6.0
+// Error static properties are not serializable through `child_process`
+// (which uses `v8.serialize()` under the hood) so we need to convert from/to
+// plain objects.
 const serializePayload = function ({ error = {}, error: { name } = {}, ...payload }) {
   if (name === undefined) {
     return payload

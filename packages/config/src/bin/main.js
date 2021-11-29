@@ -10,8 +10,6 @@ const { stableStringify } = require('fast-safe-stringify')
 const makeDir = require('make-dir')
 const omit = require('omit.js').default
 
-require('../utils/polyfills')
-
 const { isUserError } = require('../error')
 const resolveConfig = require('../main')
 

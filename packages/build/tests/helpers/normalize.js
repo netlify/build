@@ -125,6 +125,10 @@ const NORMALIZE_REGEXPS = [
   // npm install logs look different on Node 8.3.0
   [/\snpm ERR! 404([^]*npm ERR! 404)?.*/g, ''],
   [/No valid versions/g, 'No versions'],
+  // TypeScript ES proposals differ per Node versions
+  [/es\d{4}/g, 'es2000'],
+  [/.*es(2000\.|1).*\n/g, ''],
+  [/^(\s+"es2000"),/gm, '$1'],
   // Empty lines
   [/^ +$/gm, ''],
   // Hexadecimal identifiers, like commit hash

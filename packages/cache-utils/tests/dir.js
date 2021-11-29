@@ -17,7 +17,8 @@ test('Should allow changing the cache directory', async (t) => {
     const srcFile = `${srcDir}/test`
     await pWriteFile(srcFile, '')
     t.true(await cacheUtils.save(srcFile, { cacheDir }))
-    t.is((await pReaddir(cacheDir)).length, 1)
+    const cachedFiles = await pReaddir(cacheDir)
+    t.is(cachedFiles.length, 1)
     await removeFiles(srcFile)
     t.true(await cacheUtils.restore(srcFile, { cacheDir }))
     t.true(await pathExists(srcFile))

@@ -1,7 +1,5 @@
 'use strict'
 
-require('../../utils/polyfills')
-
 const { setInspectColors } = require('../../log/colors')
 const { sendEventToParent, getEventsFromParent } = require('../ipc')
 

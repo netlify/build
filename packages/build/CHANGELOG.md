@@ -1,5 +1,177 @@
 # Changelog
 
+### [19.0.6](https://www.github.com/netlify/build/compare/build-v19.0.5...build-v19.0.6) (2021-11-25)
+
+
+### Bug Fixes
+
+* force release ([#3896](https://www.github.com/netlify/build/issues/3896)) ([23e3781](https://www.github.com/netlify/build/commit/23e378177e6656ddc06be3fe76b894dcef54cc0f))
+
+### [19.0.5](https://www.github.com/netlify/build/compare/build-v19.0.4...build-v19.0.5) (2021-11-25)
+
+
+### Bug Fixes
+
+* remove @ungap/from-entries ([#3882](https://www.github.com/netlify/build/issues/3882)) ([56fb539](https://www.github.com/netlify/build/commit/56fb5399ac48a1889ef039318d24e0aef19126f3))
+* remove `array-flat-polyfill` ([#3883](https://www.github.com/netlify/build/issues/3883)) ([a70ee72](https://www.github.com/netlify/build/commit/a70ee72ba481e7ab15da357773ef9033d5b9ddeb))
+
+### [19.0.4](https://www.github.com/netlify/build/compare/build-v19.0.3...build-v19.0.4) (2021-11-25)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugin-edge-handlers to v2 ([#3888](https://www.github.com/netlify/build/issues/3888)) ([8f9ca41](https://www.github.com/netlify/build/commit/8f9ca418d4c62e94a5255e1d02601f02bfec46ad))
+
+### [19.0.3](https://www.github.com/netlify/build/compare/build-v19.0.2...build-v19.0.3) (2021-11-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v5 ([#3884](https://www.github.com/netlify/build/issues/3884)) ([d617aa1](https://www.github.com/netlify/build/commit/d617aa1c4aeb75968392dcefcd0e15d42c2d653b))
+
+### [19.0.2](https://www.github.com/netlify/build/compare/build-v19.0.1...build-v19.0.2) (2021-11-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to v5 ([#3876](https://www.github.com/netlify/build/issues/3876)) ([ea7dfef](https://www.github.com/netlify/build/commit/ea7dfefa63a2c48b6201719b77253d45e2f3e68c))
+
+### [19.0.1](https://www.github.com/netlify/build/compare/build-v19.0.0...build-v19.0.1) (2021-11-24)
+
+
+### Bug Fixes
+
+* netlify build dependencies ([#3877](https://www.github.com/netlify/build/issues/3877)) ([1a3f8ea](https://www.github.com/netlify/build/commit/1a3f8ea0827da2ff78d0832c2a016eca2c27af2e))
+
+## [19.0.0](https://www.github.com/netlify/build/compare/build-v18.25.2...build-v19.0.0) (2021-11-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* drop support for Node 10 (#3873)
+
+### Miscellaneous Chores
+
+* drop support for Node 10 ([#3873](https://www.github.com/netlify/build/issues/3873)) ([ae8224d](https://www.github.com/netlify/build/commit/ae8224da8bca4f8c216afb6723664eb7095f1e98))
+
+### [18.25.2](https://www.github.com/netlify/build/compare/build-v18.25.1...build-v18.25.2) (2021-11-22)
+
+
+### Bug Fixes
+
+* simplify plugin types debugging ([#3862](https://www.github.com/netlify/build/issues/3862)) ([79ab338](https://www.github.com/netlify/build/commit/79ab338ffe8ce530e3ce0079d61b3b39e68f1cc9))
+
+### [18.25.1](https://www.github.com/netlify/build/compare/build-v18.25.0...build-v18.25.1) (2021-11-19)
+
+
+### Bug Fixes
+
+* calling `ts-node` in production ([#3859](https://www.github.com/netlify/build/issues/3859)) ([53f1409](https://www.github.com/netlify/build/commit/53f1409bca91119ee79c784c9d3b52f9235503e2))
+
+## [18.25.0](https://www.github.com/netlify/build/compare/build-v18.24.0...build-v18.25.0) (2021-11-19)
+
+
+### Features
+
+* add TypeScript error information on type failures ([#3857](https://www.github.com/netlify/build/issues/3857)) ([ccf032b](https://www.github.com/netlify/build/commit/ccf032b121bd3b6ea1e04655ccbb7602668b26e2))
+
+## [18.24.0](https://www.github.com/netlify/build/compare/build-v18.23.1...build-v18.24.0) (2021-11-18)
+
+
+### Features
+
+* add `buildbot_nft_transpile_esm` feature flag ([#3854](https://www.github.com/netlify/build/issues/3854)) ([b0b270d](https://www.github.com/netlify/build/commit/b0b270d55a9421591759d6118911aa36b98f8fe7))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.30.0 ([#3856](https://www.github.com/netlify/build/issues/3856)) ([08394d2](https://www.github.com/netlify/build/commit/08394d28108e5992d519a5b8f85d5e9e2b76d465))
+
+### [18.23.1](https://www.github.com/netlify/build/compare/build-v18.23.0...build-v18.23.1) (2021-11-17)
+
+
+### Bug Fixes
+
+* allow `interface`s to be used as Plugins generics inputs ([#3850](https://www.github.com/netlify/build/issues/3850)) ([8935b8e](https://www.github.com/netlify/build/commit/8935b8e4153623f3029d843d6e8d766acc12cf4c))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.29.5 ([#3853](https://www.github.com/netlify/build/issues/3853)) ([1177871](https://www.github.com/netlify/build/commit/11778716953fce48e946d8f12b2e6f6b9a0d1ad3))
+* improve verbosity of `netlifyConfig.functions.*` changes ([#3843](https://www.github.com/netlify/build/issues/3843)) ([a4c1949](https://www.github.com/netlify/build/commit/a4c1949cece6ba107c493bab3fc3a21c9411125e))
+
+## [18.23.0](https://www.github.com/netlify/build/compare/build-v18.22.0...build-v18.23.0) (2021-11-15)
+
+
+### Features
+
+* warn about large function bundles ([#3831](https://www.github.com/netlify/build/issues/3831)) ([994695c](https://www.github.com/netlify/build/commit/994695cb8e758a9648ab6490e019b7c8755d0a48))
+
+## [18.22.0](https://www.github.com/netlify/build/compare/build-v18.21.10...build-v18.22.0) (2021-11-12)
+
+
+### Features
+
+* pass `nftTranspile` feature flag to ZISI ([#3817](https://www.github.com/netlify/build/issues/3817)) ([ef015e5](https://www.github.com/netlify/build/commit/ef015e533b7b8fb777b9e9ab808e281ffef5004a))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.29.4 ([#3841](https://www.github.com/netlify/build/issues/3841)) ([6beaad0](https://www.github.com/netlify/build/commit/6beaad06db6639aa620335eed7881b610f20684b))
+
+### [18.21.10](https://www.github.com/netlify/build/compare/build-v18.21.9...build-v18.21.10) (2021-11-11)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^4.2.0 ([#3830](https://www.github.com/netlify/build/issues/3830)) ([fb28a97](https://www.github.com/netlify/build/commit/fb28a97a43f70bb6a16feffb4bcba44b921e64fd))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.29.3 ([#3835](https://www.github.com/netlify/build/issues/3835)) ([d5347d0](https://www.github.com/netlify/build/commit/d5347d05fa6d1a4ea54dd27fb7c6f29568724589))
+
+### [18.21.9](https://www.github.com/netlify/build/compare/build-v18.21.8...build-v18.21.9) (2021-11-11)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.29.2 ([#3833](https://www.github.com/netlify/build/issues/3833)) ([90652ad](https://www.github.com/netlify/build/commit/90652ad4ef85807ddfe030d8912d1dfb475b1f51))
+
+### [18.21.8](https://www.github.com/netlify/build/compare/build-v18.21.7...build-v18.21.8) (2021-11-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency memoize-one to v6 ([#3785](https://www.github.com/netlify/build/issues/3785)) ([a201789](https://www.github.com/netlify/build/commit/a2017899c70b28049ee877980ee65525991264ec))
+
+### [18.21.7](https://www.github.com/netlify/build/compare/build-v18.21.6...build-v18.21.7) (2021-11-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.29.1 ([#3827](https://www.github.com/netlify/build/issues/3827)) ([646ac65](https://www.github.com/netlify/build/commit/646ac6548ad48c54614945e87ad3608e771747d7))
+
+### [18.21.6](https://www.github.com/netlify/build/compare/build-v18.21.5...build-v18.21.6) (2021-11-05)
+
+
+### Bug Fixes
+
+* export more build plugin types ([#3816](https://www.github.com/netlify/build/issues/3816)) ([51b34f1](https://www.github.com/netlify/build/commit/51b34f12fbe32fdfa5c84456017af0f5e1284993))
+
+### [18.21.5](https://www.github.com/netlify/build/compare/build-v18.21.4...build-v18.21.5) (2021-11-05)
+
+
+### Bug Fixes
+
+* updates to plugin options types ([#3812](https://www.github.com/netlify/build/issues/3812)) ([8419eab](https://www.github.com/netlify/build/commit/8419eab6389ada0b0967eacf39deef33d041a700))
+
+### [18.21.4](https://www.github.com/netlify/build/compare/build-v18.21.3...build-v18.21.4) (2021-11-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.29.0 ([#3813](https://www.github.com/netlify/build/issues/3813)) ([7cbc5a8](https://www.github.com/netlify/build/commit/7cbc5a8874e821fec1e474ed493c9feb55dbd504))
+
+### [18.21.3](https://www.github.com/netlify/build/compare/build-v18.21.2...build-v18.21.3) (2021-11-03)
+
+
+### Bug Fixes
+
+* report TOML parsing errors as user errors ([#3807](https://www.github.com/netlify/build/issues/3807)) ([ed2d084](https://www.github.com/netlify/build/commit/ed2d0848724263674316783073374cc03eacbb66))
+
 ### [18.21.2](https://www.github.com/netlify/build/compare/build-v18.21.1...build-v18.21.2) (2021-11-02)
 
 

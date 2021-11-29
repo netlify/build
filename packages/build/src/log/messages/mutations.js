@@ -9,11 +9,22 @@ const { log, logMessage, logSubHeader } = require('../logger')
 
 const pReadFile = promisify(readFile)
 
-const logConfigMutations = function (logs, newConfigMutations) {
-  newConfigMutations.forEach(({ keysString, value }) => {
+const logConfigMutations = function (logs, newConfigMutations, debug) {
+  const configMutationsToLog = debug ? newConfigMutations : newConfigMutations.filter(shouldLogConfigMutation)
+  configMutationsToLog.forEach(({ keysString, value }) => {
     logConfigMutation(logs, keysString, value)
   })
 }
+
+// Some configuration mutations are only logged in debug mode
+const shouldLogConfigMutation = function ({ keysString }) {
+  return !HIDDEN_PROPS.some((hiddenProp) => keysString.startsWith(hiddenProp))
+}
+
+// `functions` is an object which can have thousands of properties, one per
+// function file. This can be very verbose, especially for plugins which create
+// many function files like Essential Next.js
+const HIDDEN_PROPS = ['functions']
 
 const logConfigMutation = function (logs, keysString, value) {
   const newValue = shouldHideConfigValue(keysString) ? '' : ` to ${inspect(value, { colors: false })}`

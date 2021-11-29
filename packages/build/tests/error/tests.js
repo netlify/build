@@ -1,6 +1,6 @@
 'use strict'
 
-const { cwd, version } = require('process')
+const { cwd, platform } = require('process')
 
 const test = require('ava')
 const hasAnsi = require('has-ansi')
@@ -75,16 +75,11 @@ test('build.cancelBuild() API call no token', async (t) => {
   t.is(requests.length, 0)
 })
 
-// Node `util.inspect()` output is different from Node 10, leading to
-// inconsistent test snapshots
-// @todo: remove once dropping Node 10
-if (!version.startsWith('v10.')) {
-  test('build.cancelBuild() API call failure', async (t) => {
-    await runFixture(t, 'cancel', {
-      flags: { token: 'test', deployId: 'test', testOpts: { host: '...', env: false } },
-    })
+test('build.cancelBuild() API call failure', async (t) => {
+  await runFixture(t, 'cancel', {
+    flags: { token: 'test', deployId: 'test', testOpts: { host: '...', env: false } },
   })
-}
+})
 
 test('build.cancelBuild() is not available within post-deploy events', async (t) => {
   await runFixture(t, 'cancel_post_deploy')
@@ -219,13 +214,17 @@ test.serial('Report API error', async (t) => {
   })
 })
 
-// Node v10 uses a different error message format
-// TODO: remove once dropping Node 10
-if (!version.startsWith('v10.')) {
-  test('Report dependencies error', async (t) => {
-    await runFixture(t, 'dependencies', { flags })
+// ts-node prints error messages differently on Windows and does so in a way
+// that is hard to normalize in test snapshots.
+if (platform !== 'win32') {
+  test('Report TypeScript error', async (t) => {
+    await runFixture(t, 'typescript', { flags, copyRoot: { git: false } })
   })
 }
+
+test('Report dependencies error', async (t) => {
+  await runFixture(t, 'dependencies', { flags })
+})
 
 test('Report buildbot mode as releaseStage', async (t) => {
   await runFixture(t, 'command', { flags: { ...flags, mode: 'buildbot' }, useBinary: true })
@@ -268,6 +267,14 @@ test('Report build logs URLs', async (t) => {
     env: { DEPLOY_ID: 'testDeployId', SITE_NAME: 'testSiteName' },
     useBinary: true,
   })
+})
+
+test('TOML parsing errors', async (t) => {
+  await runFixture(t, 'toml_parsing')
+})
+
+test('Invalid error instances', async (t) => {
+  await runFixture(t, 'invalid_instance')
 })
 
 test('Top-level errors', async (t) => {
@@ -345,13 +352,8 @@ test('Print stack trace of validation errors', async (t) => {
   await runFixture(t, '', { flags: { config: '/invalid' } })
 })
 
-// Node `util.inspect()` output is different from Node 10, leading to
-// inconsistent test snapshots
-// TODO: remove once dropping Node 10
-if (!version.startsWith('v10.')) {
-  test('Redact API token on errors', async (t) => {
-    await runFixture(t, 'api_token_redact', {
-      flags: { token: '0123456789abcdef', deployId: 'test', mode: 'buildbot', testOpts: { host: '...' } },
-    })
+test('Redact API token on errors', async (t) => {
+  await runFixture(t, 'api_token_redact', {
+    flags: { token: '0123456789abcdef', deployId: 'test', mode: 'buildbot', testOpts: { host: '...' } },
   })
-}
+})

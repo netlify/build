@@ -1,16 +1,26 @@
 'use strict'
 
-// Ensure error is an `Error` instance
+// Ensure error is an `Error` instance.
+// If is an `Error` instance but is missing usual `Error` properties, we make
+// sure its static properties are preserved.
 const normalizeError = function (error) {
   if (Array.isArray(error)) {
     return normalizeArray(error)
   }
 
-  if (error instanceof Error && typeof error.message === 'string' && typeof error.stack === 'string') {
-    return error
+  if (!(error instanceof Error)) {
+    return new Error(String(error))
   }
 
-  return new Error(String(error))
+  if (typeof error.message !== 'string') {
+    error.message = String(error)
+  }
+
+  if (typeof error.stack !== 'string') {
+    Error.captureStackTrace(error, normalizeError)
+  }
+
+  return error
 }
 
 // Some libraries throw arrays of Errors

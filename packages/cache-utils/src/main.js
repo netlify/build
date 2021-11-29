@@ -1,7 +1,5 @@
 'use strict'
 
-require('./utils/polyfills')
-
 const del = require('del')
 
 const { getCacheDir } = require('./dir')

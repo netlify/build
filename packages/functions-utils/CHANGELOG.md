@@ -1,5 +1,72 @@
 # Changelog
 
+### [3.0.1](https://www.github.com/netlify/build/compare/functions-utils-v3.0.0...functions-utils-v3.0.1) (2021-11-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v5 ([#3884](https://www.github.com/netlify/build/issues/3884)) ([d617aa1](https://www.github.com/netlify/build/commit/d617aa1c4aeb75968392dcefcd0e15d42c2d653b))
+
+## [3.0.0](https://www.github.com/netlify/build/compare/functions-utils-v2.1.22...functions-utils-v3.0.0) (2021-11-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* drop support for Node 10 (#3873)
+
+### Miscellaneous Chores
+
+* drop support for Node 10 ([#3873](https://www.github.com/netlify/build/issues/3873)) ([ae8224d](https://www.github.com/netlify/build/commit/ae8224da8bca4f8c216afb6723664eb7095f1e98))
+
+### [2.1.22](https://www.github.com/netlify/build/compare/functions-utils-v2.1.21...functions-utils-v2.1.22) (2021-11-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.30.0 ([#3856](https://www.github.com/netlify/build/issues/3856)) ([08394d2](https://www.github.com/netlify/build/commit/08394d28108e5992d519a5b8f85d5e9e2b76d465))
+
+### [2.1.21](https://www.github.com/netlify/build/compare/functions-utils-v2.1.20...functions-utils-v2.1.21) (2021-11-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.29.5 ([#3853](https://www.github.com/netlify/build/issues/3853)) ([1177871](https://www.github.com/netlify/build/commit/11778716953fce48e946d8f12b2e6f6b9a0d1ad3))
+
+### [2.1.20](https://www.github.com/netlify/build/compare/functions-utils-v2.1.19...functions-utils-v2.1.20) (2021-11-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.29.4 ([#3841](https://www.github.com/netlify/build/issues/3841)) ([6beaad0](https://www.github.com/netlify/build/commit/6beaad06db6639aa620335eed7881b610f20684b))
+
+### [2.1.19](https://www.github.com/netlify/build/compare/functions-utils-v2.1.18...functions-utils-v2.1.19) (2021-11-11)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.29.3 ([#3835](https://www.github.com/netlify/build/issues/3835)) ([d5347d0](https://www.github.com/netlify/build/commit/d5347d05fa6d1a4ea54dd27fb7c6f29568724589))
+
+### [2.1.18](https://www.github.com/netlify/build/compare/functions-utils-v2.1.17...functions-utils-v2.1.18) (2021-11-11)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.29.2 ([#3833](https://www.github.com/netlify/build/issues/3833)) ([90652ad](https://www.github.com/netlify/build/commit/90652ad4ef85807ddfe030d8912d1dfb475b1f51))
+
+### [2.1.17](https://www.github.com/netlify/build/compare/functions-utils-v2.1.16...functions-utils-v2.1.17) (2021-11-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.29.1 ([#3827](https://www.github.com/netlify/build/issues/3827)) ([646ac65](https://www.github.com/netlify/build/commit/646ac6548ad48c54614945e87ad3608e771747d7))
+
+### [2.1.16](https://www.github.com/netlify/build/compare/functions-utils-v2.1.15...functions-utils-v2.1.16) (2021-11-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^4.29.0 ([#3813](https://www.github.com/netlify/build/issues/3813)) ([7cbc5a8](https://www.github.com/netlify/build/commit/7cbc5a8874e821fec1e474ed493c9feb55dbd504))
+
 ### [2.1.15](https://www.github.com/netlify/build/compare/functions-utils-v2.1.14...functions-utils-v2.1.15) (2021-11-02)
 
 

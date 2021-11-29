@@ -1,5 +1,52 @@
 # Changelog
 
+### [16.0.4](https://www.github.com/netlify/build/compare/config-v16.0.3...config-v16.0.4) (2021-11-25)
+
+
+### Bug Fixes
+
+* remove @ungap/from-entries ([#3882](https://www.github.com/netlify/build/issues/3882)) ([56fb539](https://www.github.com/netlify/build/commit/56fb5399ac48a1889ef039318d24e0aef19126f3))
+* remove `array-flat-polyfill` ([#3883](https://www.github.com/netlify/build/issues/3883)) ([a70ee72](https://www.github.com/netlify/build/commit/a70ee72ba481e7ab15da357773ef9033d5b9ddeb))
+
+### [16.0.3](https://www.github.com/netlify/build/compare/config-v16.0.2...config-v16.0.3) (2021-11-25)
+
+
+### Bug Fixes
+
+* **deps:** update dependency netlify-headers-parser to v5 ([#3892](https://www.github.com/netlify/build/issues/3892)) ([d35a540](https://www.github.com/netlify/build/commit/d35a540e076ad5daff3e69877738a9be02d654c3))
+
+### [16.0.2](https://www.github.com/netlify/build/compare/config-v16.0.1...config-v16.0.2) (2021-11-25)
+
+
+### Bug Fixes
+
+* **deps:** update dependency netlify-redirect-parser to v12 ([#3890](https://www.github.com/netlify/build/issues/3890)) ([7858056](https://www.github.com/netlify/build/commit/78580562e6806decec261a4f9e49892d20e0e9e0))
+
+### [16.0.1](https://www.github.com/netlify/build/compare/config-v16.0.0...config-v16.0.1) (2021-11-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency netlify to v9 ([#3886](https://www.github.com/netlify/build/issues/3886)) ([319865e](https://www.github.com/netlify/build/commit/319865e5799d92910c5a16cf8ef4527e0eeb755b))
+
+## [16.0.0](https://www.github.com/netlify/build/compare/config-v15.8.2...config-v16.0.0) (2021-11-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* drop support for Node 10 (#3873)
+
+### Miscellaneous Chores
+
+* drop support for Node 10 ([#3873](https://www.github.com/netlify/build/issues/3873)) ([ae8224d](https://www.github.com/netlify/build/commit/ae8224da8bca4f8c216afb6723664eb7095f1e98))
+
+### [15.8.2](https://www.github.com/netlify/build/compare/config-v15.8.1...config-v15.8.2) (2021-11-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency netlify-redirect-parser to ^11.0.3 ([#3809](https://www.github.com/netlify/build/issues/3809)) ([5d62189](https://www.github.com/netlify/build/commit/5d621897961f7bb244c25de1e12684e2130b18cb))
+
 ### [15.8.1](https://www.github.com/netlify/build/compare/config-v15.8.0...config-v15.8.1) (2021-11-03)
 
 
