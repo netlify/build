@@ -1,5 +1,12 @@
 # Changelog
 
+### [19.0.7](https://www.github.com/netlify/build/compare/build-v19.0.6...build-v19.0.7) (2021-11-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^5.1.0 ([#3900](https://www.github.com/netlify/build/issues/3900)) ([5a1063e](https://www.github.com/netlify/build/commit/5a1063ebc864d8d467e7d340c6132f65d5e57fc3))
+
 ### [19.0.6](https://www.github.com/netlify/build/compare/build-v19.0.5...build-v19.0.6) (2021-11-25)
 
 
