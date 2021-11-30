@@ -11,6 +11,9 @@ module.exports = {
     // https://github.com/benmosher/eslint-plugin-import/issues/1986
     'import/no-extraneous-dependencies': 0,
     'import/no-unresolved': 0,
+    // TODO: remove once bug in eslint-plugin-node is fixed:
+    // https://github.com/mysticatea/eslint-plugin-node/issues/250
+    'node/no-unsupported-features/es-syntax': [2, { ignores: ['modules', 'dynamicImport'] }],
     'node/no-missing-require': 0,
     'node/no-missing-import': 0,
 
