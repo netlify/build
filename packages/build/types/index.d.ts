@@ -4,3 +4,4 @@ export { OnBuild, OnEnd, OnError, OnPostBuild, OnPreBuild, OnSuccess } from './n
 export { NetlifyConfig } from './config/netlify_config'
 export { NetlifyPluginUtils } from './options'
 export { NetlifyPluginConstants } from './netlify_plugin_constants'
+export { ListedFunction, ListedFunctionFile } from './options/netlify_plugin_functions_util'
