@@ -1,5 +1,12 @@
 # Changelog
 
+### [19.0.8](https://www.github.com/netlify/build/compare/build-v19.0.7...build-v19.0.8) (2021-12-01)
+
+
+### Bug Fixes
+
+* correct redirect conditions type ([#3908](https://www.github.com/netlify/build/issues/3908)) ([0bdb973](https://www.github.com/netlify/build/commit/0bdb973287e689866b3a32aeff2109f664b49b20))
+
 ### [19.0.7](https://www.github.com/netlify/build/compare/build-v19.0.6...build-v19.0.7) (2021-11-29)
 
 
