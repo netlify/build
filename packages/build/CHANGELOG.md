@@ -1,5 +1,16 @@
 # Changelog
 
+## [20.0.0](https://www.github.com/netlify/build/compare/build-v19.0.8...build-v20.0.0) (2021-12-01)
+
+
+### ⚠ BREAKING CHANGES
+
+* support pure ES modules in Build plugins (#3906)
+
+### Features
+
+* support pure ES modules in Build plugins ([#3906](https://www.github.com/netlify/build/issues/3906)) ([2899378](https://www.github.com/netlify/build/commit/289937848b3e4b028d8fcc69f17b197740d2d192))
+
 ### [19.0.8](https://www.github.com/netlify/build/compare/build-v19.0.7...build-v19.0.8) (2021-12-01)
 
 
