@@ -9,7 +9,6 @@ const testUtilsFunctionsList: OnPreBuild = function ({
   utils: NetlifyPluginUtils
 }) {
   expectType<Promise<ListedFunction[]>>(list())
-  list()
 }
 
 const testUtilsListAll: OnPreBuild = function ({
@@ -20,7 +19,6 @@ const testUtilsListAll: OnPreBuild = function ({
   utils: NetlifyPluginUtils
 }) {
   expectType<Promise<ListedFunctionFile[]>>(listAll())
-  listAll()
 }
 
 const testUtilsFunctionsAdd: OnPreBuild = function ({
@@ -31,5 +29,4 @@ const testUtilsFunctionsAdd: OnPreBuild = function ({
   utils: NetlifyPluginUtils
 }) {
   expectType<Promise<void>>(add('functionName'))
-  add('functionName')
 }
