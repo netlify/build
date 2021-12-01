@@ -1,7 +1,5 @@
 'use strict'
 
-const isPlainObj = require('is-plain-obj')
-
 const { addErrorInfo } = require('../../error/info')
 const { serializeArray } = require('../../log/serialize')
 const { EVENTS } = require('../events')
@@ -9,7 +7,9 @@ const { EVENTS } = require('../events')
 // Validate the shape of a plugin return value
 const validatePlugin = function (logic) {
   try {
-    if (!isPlainObj(logic)) {
+    // This validation must work with the return value of `import()` which has
+    // a `Module` prototype, not `Object`
+    if (typeof logic !== 'object' || logic === null) {
       throw new Error('Plugin must be an object or a function')
     }
 
