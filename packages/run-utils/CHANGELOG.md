@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.0.0](https://www.github.com/netlify/build/compare/run-utils-v2.0.1...run-utils-v3.0.0) (2021-11-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* drop support for Node 10 (#3873)
+
+### Miscellaneous Chores
+
+* drop support for Node 10 ([#3873](https://www.github.com/netlify/build/issues/3873)) ([ae8224d](https://www.github.com/netlify/build/commit/ae8224da8bca4f8c216afb6723664eb7095f1e98))
+
 ### [2.0.1](https://www.github.com/netlify/build/compare/run-utils-v2.0.0...run-utils-v2.0.1) (2021-08-12)
 
 

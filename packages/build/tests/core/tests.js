@@ -209,7 +209,7 @@ test('--dry with build.command but no netlify.toml', async (t) => {
   await runFixture(t, 'none', { flags: { dry: true, defaultConfig: { build: { command: 'echo' } } } })
 })
 
-const CHILD_NODE_VERSION = '10.17.0'
+const CHILD_NODE_VERSION = '12.19.0'
 const VERY_OLD_NODE_VERSION = '4.0.0'
 
 // Try `get-node` several times because it sometimes fails due to network failures
@@ -376,11 +376,15 @@ test.serial('Passes the right feature flags to zip-it-and-ship-it', async (t) =>
     flags: { featureFlags: { buildbot_scheduled_functions: true } },
     snapshot: false,
   })
+  await runFixture(t, 'schedule', {
+    flags: { featureFlags: { buildbot_nft_transpile_esm: true } },
+    snapshot: false,
+  })
 
   stub.restore()
 
   // eslint-disable-next-line no-magic-numbers
-  t.is(mockZipFunctions.callCount, 5)
+  t.is(mockZipFunctions.callCount, 6)
 
   t.false(mockZipFunctions.getCall(0).args[2].featureFlags.traceWithNft)
   t.false(mockZipFunctions.getCall(0).args[2].featureFlags.buildGoSource)
@@ -391,6 +395,8 @@ test.serial('Passes the right feature flags to zip-it-and-ship-it', async (t) =>
   t.true(mockZipFunctions.getCall(1).args[2].featureFlags.nftTranspile)
   t.true(mockZipFunctions.getCall(2).args[2].featureFlags.buildGoSource)
   t.true(mockZipFunctions.getCall(3).args[2].featureFlags.parseWithEsbuild)
+  // eslint-disable-next-line no-magic-numbers
+  t.true(mockZipFunctions.getCall(5).args[2].featureFlags.nftTranspile)
 
   t.is(mockZipFunctions.getCall(0).args[2].config.test.schedule, undefined)
   // eslint-disable-next-line no-magic-numbers
@@ -431,29 +437,6 @@ test('Shows notice about bundling errors and warnings coming from esbuild', asyn
 
 test('Shows notice about modules with dynamic imports and suggests the usage of `functions.external_node_modules`', async (t) => {
   await runFixture(t, 'esbuild_errors_2')
-})
-
-const generate250mbFile = async (path) => {
-  await pWriteFile(
-    path,
-    // eslint-disable-next-line no-magic-numbers
-    `module.exports = '${Array.from({ length: 5000000 })
-      // eslint-disable-next-line no-magic-numbers
-      .map(() => Math.random().toFixed(50))
-      .join('')}'`,
-  )
-}
-
-test('Shows notice about zip size being too big', async (t) => {
-  const veryLargeFile = join(__dirname, 'fixtures', 'zip_too_big', 'veryLargeFile.js')
-
-  try {
-    await generate250mbFile(veryLargeFile)
-
-    await runFixture(t, 'zip_too_big')
-  } finally {
-    await pUnlink(veryLargeFile)
-  }
 })
 
 test('Bundles functions from the `.netlify/functions-internal` directory', async (t) => {

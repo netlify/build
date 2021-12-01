@@ -1,10 +1,10 @@
-import { PluginInputs } from './config/inputs'
+import { PluginInputs, StringKeys } from './config/inputs'
 import { NetlifyConfig } from './config/netlify_config'
 import { NetlifyPluginConstants } from './netlify_plugin_constants'
 import { NetlifyPluginUtils } from './options/netlify_plugin_utils'
 import { JSONValue } from './utils/json_value'
 
-export interface NetlifyPluginOptions<TInputs extends PluginInputs = PluginInputs> {
+export interface NetlifyPluginOptions<TInputs extends PluginInputs<StringKeys<TInputs>> = PluginInputs> {
   /**
    * If your plugin requires additional values from the user, you can specify these requirements in an `inputs` array in the plugin’s [`manifest.yml` file](https://docs.netlify.com/configure-builds/build-plugins/create-plugins/#anatomy-of-a-plugin).
    */

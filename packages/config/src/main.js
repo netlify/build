@@ -1,8 +1,6 @@
 /* eslint-disable max-lines */
 'use strict'
 
-require('./utils/polyfills')
-
 const { getApiClient } = require('./api/client')
 const { getSiteInfo } = require('./api/site_info')
 const { getInitialBase, getBase, addBase } = require('./base')
@@ -34,7 +32,7 @@ const resolveConfig = async function (opts) {
   const { cachedConfig, cachedConfigPath, host, scheme, pathPrefix, testOpts, token, offline, ...optsA } =
     addDefaultOpts(opts)
   // `api` is not JSON-serializable, so we cannot cache it inside `cachedConfig`
-  const api = getApiClient({ token, offline, host, scheme, pathPrefix, testOpts })
+  const api = await getApiClient({ token, offline, host, scheme, pathPrefix, testOpts })
 
   const parsedCachedConfig = await getCachedConfig({ cachedConfig, cachedConfigPath, token, api })
   if (parsedCachedConfig !== undefined) {

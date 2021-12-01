@@ -1,6 +1,6 @@
 {
   "name": "@netlify/run-utils",
-  "version": "2.0.1",
+  "version": "3.0.0",
   "description": "Utility for running commands inside Netlify Build",
   "main": "src/main.js",
   "files": [
@@ -50,6 +50,6 @@
     "semver": "^7.0.0"
   },
   "engines": {
-    "node": ">=10.18.0"
+    "node": "^12.20.0 || ^14.14.0 || >=16.0.0"
   }
 }

@@ -6,11 +6,8 @@ const { cloneNetlifyConfig, getConfigMutations } = require('./diff')
 const { getUtils } = require('./utils')
 
 // Run a specific plugin event handler
-const run = async function (
-  { event, error, constants, envChanges, netlifyConfig },
-  { pluginSteps, inputs, packageJson },
-) {
-  const { method } = pluginSteps.find((pluginStep) => pluginStep.event === event)
+const run = async function ({ event, error, constants, envChanges, netlifyConfig }, { methods, inputs, packageJson }) {
+  const method = methods[event]
   const runState = {}
   const utils = getUtils({ event, constants, runState })
   const netlifyConfigCopy = cloneNetlifyConfig(netlifyConfig)

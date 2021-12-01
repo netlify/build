@@ -14,7 +14,7 @@ interface Redirect {
   signed?: string
   query?: Partial<Record<string, string>>
   headers?: Partial<Record<string, string>>
-  conditions?: Record<'language' | 'role' | 'country', readonly string[]>
+  conditions?: Partial<Record<'Language' | 'Role' | 'Country' | 'Cookie', readonly string[]>>
 }
 
 interface Header {

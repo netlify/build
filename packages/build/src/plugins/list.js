@@ -1,8 +1,6 @@
 'use strict'
 
 const { pluginsList: oldPluginsList, pluginsUrl } = require('@netlify/plugins-list')
-// TODO: replace with `Object.fromEntries()` after dropping Node <12.0.0
-const fromEntries = require('@ungap/from-entries')
 const got = require('got')
 const isPlainObj = require('is-plain-obj')
 
@@ -60,7 +58,7 @@ const isValidPluginsList = function (pluginsList) {
 }
 
 const normalizePluginsList = function (pluginsList) {
-  return fromEntries(pluginsList.map(normalizePluginItem))
+  return Object.fromEntries(pluginsList.map(normalizePluginItem))
 }
 
 // `version` in `plugins.json` is the latest version.

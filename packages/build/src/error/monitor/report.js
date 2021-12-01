@@ -60,11 +60,11 @@ const getGroupingHash = function (group, error, type) {
   return `${group}\n${messageA}`
 }
 
-const getMetadata = function ({ location, plugin }, childEnv, groupingHash) {
+const getMetadata = function ({ location, plugin, tsConfig }, childEnv, groupingHash) {
   const pluginMetadata = getPluginMetadata({ location, plugin })
   const envMetadata = getEnvMetadata(childEnv)
   const locationMetadata = getLocationMetadata(location, envMetadata)
-  return { location: locationMetadata, ...pluginMetadata, env: envMetadata, other: { groupingHash } }
+  return { location: locationMetadata, ...pluginMetadata, tsConfig, env: envMetadata, other: { groupingHash } }
 }
 
 const getPluginMetadata = function ({ location, plugin }) {

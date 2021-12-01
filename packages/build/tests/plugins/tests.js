@@ -2,7 +2,7 @@
 
 const { writeFile, copyFile, readdir } = require('fs')
 const { normalize } = require('path')
-const { platform, version } = require('process')
+const { platform } = require('process')
 const { promisify } = require('util')
 
 const { pluginsList } = require('@netlify/plugins-list')
@@ -126,300 +126,295 @@ test('netlifyConfig.functions mutations are only logged in debug mode', async (t
   await runFixture(t, 'config_mutate_functions_no_log_debug', { flags: { debug: false } })
 })
 
-// Node 10 prints different snapshots due to change of behavior with
-// `util.inspect()`
-// @todo remove once Node 10 support is removed
-if (!version.startsWith('v10.')) {
-  test('netlifyConfig properties are deeply readonly by default', async (t) => {
-    await runFixture(t, 'config_readonly_deep')
-  })
+test('netlifyConfig properties are deeply readonly by default', async (t) => {
+  await runFixture(t, 'config_readonly_deep')
+})
 
-  test('netlifyConfig is updated when headers file is created by a plugin', async (t) => {
-    const headersFile = `${FIXTURES_DIR}/config_create_headers_plugin/_headers`
+test('netlifyConfig is updated when headers file is created by a plugin', async (t) => {
+  const headersFile = `${FIXTURES_DIR}/config_create_headers_plugin/_headers`
+  await del(headersFile)
+  try {
+    await runFixture(t, 'config_create_headers_plugin')
+  } finally {
     await del(headersFile)
-    try {
-      await runFixture(t, 'config_create_headers_plugin')
-    } finally {
-      await del(headersFile)
-    }
-  })
+  }
+})
 
-  test('netlifyConfig is updated when headers file is created by a plugin and publish was changed', async (t) => {
-    const headersFile = `${FIXTURES_DIR}/config_create_headers_plugin_dynamic/test/_headers`
+test('netlifyConfig is updated when headers file is created by a plugin and publish was changed', async (t) => {
+  const headersFile = `${FIXTURES_DIR}/config_create_headers_plugin_dynamic/test/_headers`
+  await del(headersFile)
+  try {
+    await runFixture(t, 'config_create_headers_plugin_dynamic')
+  } finally {
     await del(headersFile)
-    try {
-      await runFixture(t, 'config_create_headers_plugin_dynamic')
-    } finally {
-      await del(headersFile)
-    }
-  })
+  }
+})
 
-  test('netlifyConfig is updated when headers file is created by a build command', async (t) => {
-    const headersFile = `${FIXTURES_DIR}/config_create_headers_command/_headers`
+test('netlifyConfig is updated when headers file is created by a build command', async (t) => {
+  const headersFile = `${FIXTURES_DIR}/config_create_headers_command/_headers`
+  await del(headersFile)
+  try {
+    await runFixture(t, 'config_create_headers_command')
+  } finally {
     await del(headersFile)
-    try {
-      await runFixture(t, 'config_create_headers_command')
-    } finally {
-      await del(headersFile)
-    }
-  })
+  }
+})
 
-  test('netlifyConfig is updated when headers file is created by a build command and publish was changed', async (t) => {
-    const headersFile = `${FIXTURES_DIR}/config_create_headers_command_dynamic/test/_headers`
+test('netlifyConfig is updated when headers file is created by a build command and publish was changed', async (t) => {
+  const headersFile = `${FIXTURES_DIR}/config_create_headers_command_dynamic/test/_headers`
+  await del(headersFile)
+  try {
+    await runFixture(t, 'config_create_headers_command_dynamic')
+  } finally {
     await del(headersFile)
-    try {
-      await runFixture(t, 'config_create_headers_command_dynamic')
-    } finally {
-      await del(headersFile)
-    }
-  })
+  }
+})
 
-  test('netlifyConfig is updated when redirects file is created by a plugin', async (t) => {
-    const redirectsFile = `${FIXTURES_DIR}/config_create_redirects_plugin/_redirects`
+test('netlifyConfig is updated when redirects file is created by a plugin', async (t) => {
+  const redirectsFile = `${FIXTURES_DIR}/config_create_redirects_plugin/_redirects`
+  await del(redirectsFile)
+  try {
+    await runFixture(t, 'config_create_redirects_plugin')
+  } finally {
     await del(redirectsFile)
-    try {
-      await runFixture(t, 'config_create_redirects_plugin')
-    } finally {
-      await del(redirectsFile)
-    }
-  })
+  }
+})
 
-  test('netlifyConfig is updated when redirects file is created by a plugin and publish was changed', async (t) => {
-    const redirectsFile = `${FIXTURES_DIR}/config_create_redirects_plugin_dynamic/test/_redirects`
+test('netlifyConfig is updated when redirects file is created by a plugin and publish was changed', async (t) => {
+  const redirectsFile = `${FIXTURES_DIR}/config_create_redirects_plugin_dynamic/test/_redirects`
+  await del(redirectsFile)
+  try {
+    await runFixture(t, 'config_create_redirects_plugin_dynamic')
+  } finally {
     await del(redirectsFile)
-    try {
-      await runFixture(t, 'config_create_redirects_plugin_dynamic')
-    } finally {
-      await del(redirectsFile)
-    }
-  })
+  }
+})
 
-  test('netlifyConfig is updated when redirects file is created by a build command', async (t) => {
-    const redirectsFile = `${FIXTURES_DIR}/config_create_redirects_command/_redirects`
+test('netlifyConfig is updated when redirects file is created by a build command', async (t) => {
+  const redirectsFile = `${FIXTURES_DIR}/config_create_redirects_command/_redirects`
+  await del(redirectsFile)
+  try {
+    await runFixture(t, 'config_create_redirects_command')
+  } finally {
     await del(redirectsFile)
-    try {
-      await runFixture(t, 'config_create_redirects_command')
-    } finally {
-      await del(redirectsFile)
-    }
-  })
+  }
+})
 
-  test('netlifyConfig is updated when redirects file is created by a build command and publish was changed', async (t) => {
-    const redirectsFile = `${FIXTURES_DIR}/config_create_redirects_command_dynamic/test/_redirects`
+test('netlifyConfig is updated when redirects file is created by a build command and publish was changed', async (t) => {
+  const redirectsFile = `${FIXTURES_DIR}/config_create_redirects_command_dynamic/test/_redirects`
+  await del(redirectsFile)
+  try {
+    await runFixture(t, 'config_create_redirects_command_dynamic')
+  } finally {
     await del(redirectsFile)
-    try {
-      await runFixture(t, 'config_create_redirects_command_dynamic')
-    } finally {
-      await del(redirectsFile)
-    }
-  })
+  }
+})
 
-  test('netlifyConfig.processing can be assigned all at once', async (t) => {
-    await runFixture(t, 'config_mutate_processing_all')
-  })
+test('netlifyConfig.processing can be assigned all at once', async (t) => {
+  await runFixture(t, 'config_mutate_processing_all')
+})
 
-  test('netlifyConfig.processing can be assigned individually', async (t) => {
-    await runFixture(t, 'config_mutate_processing_prop')
-  })
+test('netlifyConfig.processing can be assigned individually', async (t) => {
+  await runFixture(t, 'config_mutate_processing_prop')
+})
 
-  test('netlifyConfig.headers can be assigned all at once', async (t) => {
-    await runFixture(t, 'config_mutate_headers_all')
-  })
+test('netlifyConfig.headers can be assigned all at once', async (t) => {
+  await runFixture(t, 'config_mutate_headers_all')
+})
 
-  test('netlifyConfig.headers can be modified before headers file has been added', async (t) => {
-    const headersPath = `${FIXTURES_DIR}/config_mutate_headers_before/_headers`
+test('netlifyConfig.headers can be modified before headers file has been added', async (t) => {
+  const headersPath = `${FIXTURES_DIR}/config_mutate_headers_before/_headers`
+  await del(headersPath)
+  try {
+    await runFixture(t, 'config_mutate_headers_before')
+  } finally {
     await del(headersPath)
+  }
+})
+
+test('netlifyConfig.headers can be modified after headers file has been added', async (t) => {
+  await runFixture(t, 'config_mutate_headers_after')
+})
+
+test('--saveConfig deletes headers file if headers were changed', async (t) => {
+  const fixtureDir = `${FIXTURES_DIR}/config_save_headers`
+  const fixtureConfigPath = `${fixtureDir}/netlify.toml`
+  const configPath = `${fixtureDir}/test_netlify.toml`
+  const fixtureHeadersPath = `${fixtureDir}/_headers_file`
+  const headersPath = `${fixtureDir}/_headers`
+  await Promise.all([pCopyFile(fixtureConfigPath, configPath), pCopyFile(fixtureHeadersPath, headersPath)])
+  const { address, stopServer } = await startDeployServer()
+  try {
     try {
-      await runFixture(t, 'config_mutate_headers_before')
+      await runFixture(t, 'config_save_headers', {
+        flags: {
+          buildbotServerSocket: address,
+          config: configPath,
+          saveConfig: true,
+          context: 'production',
+          branch: 'main',
+        },
+      })
     } finally {
-      await del(headersPath)
+      await stopServer()
     }
-  })
+  } finally {
+    await del(headersPath)
+  }
+})
 
-  test('netlifyConfig.headers can be modified after headers file has been added', async (t) => {
-    await runFixture(t, 'config_mutate_headers_after')
-  })
-
-  test('--saveConfig deletes headers file if headers were changed', async (t) => {
-    const fixtureDir = `${FIXTURES_DIR}/config_save_headers`
-    const fixtureConfigPath = `${fixtureDir}/netlify.toml`
-    const configPath = `${fixtureDir}/test_netlify.toml`
-    const fixtureHeadersPath = `${fixtureDir}/_headers_file`
-    const headersPath = `${fixtureDir}/_headers`
-    await Promise.all([pCopyFile(fixtureConfigPath, configPath), pCopyFile(fixtureHeadersPath, headersPath)])
-    const { address, stopServer } = await startDeployServer()
+test('--saveConfig deletes headers file if any configuration property was changed', async (t) => {
+  const fixtureDir = `${FIXTURES_DIR}/config_delete_headers`
+  const fixtureConfigPath = `${fixtureDir}/netlify.toml`
+  const configPath = `${fixtureDir}/test_netlify.toml`
+  const fixtureHeadersPath = `${fixtureDir}/_headers_file`
+  const headersPath = `${fixtureDir}/_headers`
+  await Promise.all([pCopyFile(fixtureConfigPath, configPath), pCopyFile(fixtureHeadersPath, headersPath)])
+  const { address, stopServer } = await startDeployServer()
+  try {
     try {
-      try {
-        await runFixture(t, 'config_save_headers', {
-          flags: {
-            buildbotServerSocket: address,
-            config: configPath,
-            saveConfig: true,
-            context: 'production',
-            branch: 'main',
-          },
-        })
-      } finally {
-        await stopServer()
-      }
+      await runFixture(t, 'config_delete_headers', {
+        flags: {
+          buildbotServerSocket: address,
+          config: configPath,
+          saveConfig: true,
+          context: 'production',
+          branch: 'main',
+        },
+      })
     } finally {
-      await del(headersPath)
+      await stopServer()
     }
-  })
+  } finally {
+    await del(headersPath)
+  }
+})
 
-  test('--saveConfig deletes headers file if any configuration property was changed', async (t) => {
-    const fixtureDir = `${FIXTURES_DIR}/config_delete_headers`
-    const fixtureConfigPath = `${fixtureDir}/netlify.toml`
-    const configPath = `${fixtureDir}/test_netlify.toml`
-    const fixtureHeadersPath = `${fixtureDir}/_headers_file`
-    const headersPath = `${fixtureDir}/_headers`
-    await Promise.all([pCopyFile(fixtureConfigPath, configPath), pCopyFile(fixtureHeadersPath, headersPath)])
-    const { address, stopServer } = await startDeployServer()
+test('Erroneous headers created by a build command are handled', async (t) => {
+  const fixtureDir = `${FIXTURES_DIR}/config_create_headers_command_error`
+  const fixtureConfigPath = `${fixtureDir}/netlify.toml`
+  const configPath = `${fixtureDir}/test_netlify.toml`
+  const headersPath = `${fixtureDir}/_headers`
+  await pCopyFile(fixtureConfigPath, configPath)
+  const { address, stopServer } = await startDeployServer()
+  try {
     try {
-      try {
-        await runFixture(t, 'config_delete_headers', {
-          flags: {
-            buildbotServerSocket: address,
-            config: configPath,
-            saveConfig: true,
-            context: 'production',
-            branch: 'main',
-          },
-        })
-      } finally {
-        await stopServer()
-      }
+      await runFixture(t, 'config_create_headers_command_error', {
+        flags: {
+          buildbotServerSocket: address,
+          config: configPath,
+          saveConfig: true,
+          context: 'production',
+          branch: 'main',
+        },
+        useBinary: true,
+      })
     } finally {
-      await del(headersPath)
+      await stopServer()
     }
-  })
+  } finally {
+    await del(headersPath)
+  }
+})
 
-  test('Erroneous headers created by a build command are handled', async (t) => {
-    const fixtureDir = `${FIXTURES_DIR}/config_create_headers_command_error`
-    const fixtureConfigPath = `${fixtureDir}/netlify.toml`
-    const configPath = `${fixtureDir}/test_netlify.toml`
-    const headersPath = `${fixtureDir}/_headers`
-    await pCopyFile(fixtureConfigPath, configPath)
-    const { address, stopServer } = await startDeployServer()
+test('Erroneous headers created by a plugin are handled', async (t) => {
+  const fixtureDir = `${FIXTURES_DIR}/config_create_headers_plugin_error`
+  const fixtureConfigPath = `${fixtureDir}/netlify.toml`
+  const configPath = `${fixtureDir}/test_netlify.toml`
+  const headersPath = `${fixtureDir}/_headers`
+  await pCopyFile(fixtureConfigPath, configPath)
+  const { address, stopServer } = await startDeployServer()
+  try {
     try {
-      try {
-        await runFixture(t, 'config_create_headers_command_error', {
-          flags: {
-            buildbotServerSocket: address,
-            config: configPath,
-            saveConfig: true,
-            context: 'production',
-            branch: 'main',
-          },
-          useBinary: true,
-        })
-      } finally {
-        await stopServer()
-      }
+      await runFixture(t, 'config_create_headers_plugin_error', {
+        flags: {
+          buildbotServerSocket: address,
+          config: configPath,
+          saveConfig: true,
+          context: 'production',
+          branch: 'main',
+        },
+        useBinary: true,
+      })
     } finally {
-      await del(headersPath)
+      await stopServer()
     }
-  })
+  } finally {
+    await del(headersPath)
+  }
+})
 
-  test('Erroneous headers created by a plugin are handled', async (t) => {
-    const fixtureDir = `${FIXTURES_DIR}/config_create_headers_plugin_error`
-    const fixtureConfigPath = `${fixtureDir}/netlify.toml`
-    const configPath = `${fixtureDir}/test_netlify.toml`
-    const headersPath = `${fixtureDir}/_headers`
-    await pCopyFile(fixtureConfigPath, configPath)
-    const { address, stopServer } = await startDeployServer()
-    try {
-      try {
-        await runFixture(t, 'config_create_headers_plugin_error', {
-          flags: {
-            buildbotServerSocket: address,
-            config: configPath,
-            saveConfig: true,
-            context: 'production',
-            branch: 'main',
-          },
-          useBinary: true,
-        })
-      } finally {
-        await stopServer()
-      }
-    } finally {
-      await del(headersPath)
-    }
-  })
+test('netlifyConfig.redirects can be assigned all at once', async (t) => {
+  await runFixture(t, 'config_mutate_redirects_all')
+})
 
-  test('netlifyConfig.redirects can be assigned all at once', async (t) => {
-    await runFixture(t, 'config_mutate_redirects_all')
-  })
-
-  test('netlifyConfig.redirects can be modified before redirects file has been added', async (t) => {
-    const redirectsPath = `${FIXTURES_DIR}/config_mutate_redirects_before/_redirects`
+test('netlifyConfig.redirects can be modified before redirects file has been added', async (t) => {
+  const redirectsPath = `${FIXTURES_DIR}/config_mutate_redirects_before/_redirects`
+  await del(redirectsPath)
+  try {
+    await runFixture(t, 'config_mutate_redirects_before')
+  } finally {
     await del(redirectsPath)
-    try {
-      await runFixture(t, 'config_mutate_redirects_before')
-    } finally {
-      await del(redirectsPath)
-    }
-  })
+  }
+})
 
-  test('netlifyConfig.redirects can be modified after redirects file has been added', async (t) => {
-    await runFixture(t, 'config_mutate_redirects_after')
-  })
+test('netlifyConfig.redirects can be modified after redirects file has been added', async (t) => {
+  await runFixture(t, 'config_mutate_redirects_after')
+})
 
-  test('--saveConfig deletes redirects file if redirects were changed', async (t) => {
-    const fixtureDir = `${FIXTURES_DIR}/config_save_redirects`
-    const fixtureConfigPath = `${fixtureDir}/netlify.toml`
-    const configPath = `${fixtureDir}/test_netlify.toml`
-    const fixtureRedirectsPath = `${fixtureDir}/_redirects_file`
-    const redirectsPath = `${fixtureDir}/_redirects`
-    await Promise.all([pCopyFile(fixtureConfigPath, configPath), pCopyFile(fixtureRedirectsPath, redirectsPath)])
-    const { address, stopServer } = await startDeployServer()
+test('--saveConfig deletes redirects file if redirects were changed', async (t) => {
+  const fixtureDir = `${FIXTURES_DIR}/config_save_redirects`
+  const fixtureConfigPath = `${fixtureDir}/netlify.toml`
+  const configPath = `${fixtureDir}/test_netlify.toml`
+  const fixtureRedirectsPath = `${fixtureDir}/_redirects_file`
+  const redirectsPath = `${fixtureDir}/_redirects`
+  await Promise.all([pCopyFile(fixtureConfigPath, configPath), pCopyFile(fixtureRedirectsPath, redirectsPath)])
+  const { address, stopServer } = await startDeployServer()
+  try {
     try {
-      try {
-        await runFixture(t, 'config_save_redirects', {
-          flags: {
-            buildbotServerSocket: address,
-            config: configPath,
-            saveConfig: true,
-            context: 'production',
-            branch: 'main',
-          },
-        })
-      } finally {
-        await stopServer()
-      }
+      await runFixture(t, 'config_save_redirects', {
+        flags: {
+          buildbotServerSocket: address,
+          config: configPath,
+          saveConfig: true,
+          context: 'production',
+          branch: 'main',
+        },
+      })
     } finally {
-      await del(redirectsPath)
+      await stopServer()
     }
-  })
+  } finally {
+    await del(redirectsPath)
+  }
+})
 
-  test('--saveConfig deletes redirects file if any configuration property was changed', async (t) => {
-    const fixtureDir = `${FIXTURES_DIR}/config_delete_redirects`
-    const fixtureConfigPath = `${fixtureDir}/netlify.toml`
-    const configPath = `${fixtureDir}/test_netlify.toml`
-    const fixtureRedirectsPath = `${fixtureDir}/_redirects_file`
-    const redirectsPath = `${fixtureDir}/_redirects`
-    await Promise.all([pCopyFile(fixtureConfigPath, configPath), pCopyFile(fixtureRedirectsPath, redirectsPath)])
-    const { address, stopServer } = await startDeployServer()
+test('--saveConfig deletes redirects file if any configuration property was changed', async (t) => {
+  const fixtureDir = `${FIXTURES_DIR}/config_delete_redirects`
+  const fixtureConfigPath = `${fixtureDir}/netlify.toml`
+  const configPath = `${fixtureDir}/test_netlify.toml`
+  const fixtureRedirectsPath = `${fixtureDir}/_redirects_file`
+  const redirectsPath = `${fixtureDir}/_redirects`
+  await Promise.all([pCopyFile(fixtureConfigPath, configPath), pCopyFile(fixtureRedirectsPath, redirectsPath)])
+  const { address, stopServer } = await startDeployServer()
+  try {
     try {
-      try {
-        await runFixture(t, 'config_delete_redirects', {
-          flags: {
-            buildbotServerSocket: address,
-            config: configPath,
-            saveConfig: true,
-            context: 'production',
-            branch: 'main',
-          },
-        })
-      } finally {
-        await stopServer()
-      }
+      await runFixture(t, 'config_delete_redirects', {
+        flags: {
+          buildbotServerSocket: address,
+          config: configPath,
+          saveConfig: true,
+          context: 'production',
+          branch: 'main',
+        },
+      })
     } finally {
-      await del(redirectsPath)
+      await stopServer()
     }
-  })
-}
+  } finally {
+    await del(redirectsPath)
+  }
+})
 
 test('netlifyConfig.build.command can be changed', async (t) => {
   await runFixture(t, 'config_mutate_build_command_change')
@@ -1375,7 +1370,7 @@ test.serial('Compatibility order take precedence over the `featureFlag` property
 })
 
 const getNodePath = function (nodeVersion) {
-  return `/home/ether/.nvm/versions/node/v${nodeVersion}/bin/node`
+  return `/home/user/.nvm/versions/node/v${nodeVersion}/bin/node`
 }
 
 const runWithUpdatePluginMock = async function (t, fixture, { flags, status, sendStatus = true, testPlugin } = {}) {
@@ -1501,13 +1496,9 @@ test('Does not pin netlify.toml-only plugin versions if there are no matching pl
   await runWithPluginRunsMock(t, 'pin_config_success', { pluginRuns: [{ package: TEST_PLUGIN_NAME }] })
 })
 
-// Node 10 `util.inspect()` prints the API error differently
-// @todo remove after removing support for Node 10
-if (!version.startsWith('v10.')) {
-  test('Fails the build when pinning netlify.toml-only plugin versions and the API request fails', async (t) => {
-    await runWithPluginRunsMock(t, 'pin_config_success', { status: 400 })
-  })
-}
+test('Fails the build when pinning netlify.toml-only plugin versions and the API request fails', async (t) => {
+  await runWithPluginRunsMock(t, 'pin_config_success', { status: 400 })
+})
 
 test('Does not pin netlify.toml-only plugin versions if already pinned', async (t) => {
   await runWithPluginRunsMock(t, 'pin_config_success', {
@@ -1541,7 +1532,7 @@ test('Validate --node-path unsupported version does not fail when no plugins are
 })
 
 test('Validate --node-path version is supported by the plugin', async (t) => {
-  const nodePath = getNodePath('12.0.0')
+  const nodePath = getNodePath('14.14.0')
   await runFixture(t, 'engines', {
     flags: { nodePath },
   })
@@ -1553,8 +1544,8 @@ test('Validate --node-path exists', async (t) => {
   })
 })
 
-test('Provided --node-path version is unused in buildbot for local plugin executions if <10.18.0', async (t) => {
-  const nodePath = getNodePath('10.17.0')
+test('Provided --node-path version is unused in buildbot for local plugin executions if older than supported version', async (t) => {
+  const nodePath = getNodePath('12.19.0')
   await runFixture(t, 'version_greater_than_minimum', {
     flags: { nodePath, mode: 'buildbot' },
   })
@@ -1652,14 +1643,9 @@ test('Transpile TypeScript local plugins', async (t) => {
   await runFixture(t, 'ts_transpile')
 })
 
-// Node `util.inspect()` output is different from Node 10, leading to
-// inconsistent test snapshots
-// @todo: remove once dropping Node 10
-if (!version.startsWith('v10.')) {
-  test('Type-checks TypeScript local plugins', async (t) => {
-    await runFixture(t, 'ts_type_check')
-  })
-}
+test('Type-checks TypeScript local plugins', async (t) => {
+  await runFixture(t, 'ts_type_check')
+})
 
 test('Type-checks TypeScript local plugins using tsconfig.json', async (t) => {
   await runFixture(t, 'ts_type_check_tsconfig')

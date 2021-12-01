@@ -37,8 +37,8 @@ const loadPlugin = async function (
   const loadEvent = 'load'
 
   try {
-    const { pluginSteps } = await callChild(childProcess, 'load', { pluginPath, inputs, packageJson })
-    const pluginStepsA = pluginSteps.map(({ event }) => ({
+    const { events } = await callChild(childProcess, 'load', { pluginPath, inputs, packageJson })
+    const pluginSteps = events.map((event) => ({
       event,
       packageName,
       loadedFrom,
@@ -46,7 +46,7 @@ const loadPlugin = async function (
       pluginPackageJson,
       childProcess,
     }))
-    return pluginStepsA
+    return pluginSteps
   } catch (error) {
     addErrorInfo(error, {
       plugin: { packageName, pluginPackageJson },
