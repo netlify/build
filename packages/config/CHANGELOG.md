@@ -1,5 +1,12 @@
 # Changelog
 
+### [16.0.5](https://www.github.com/netlify/build/compare/config-v16.0.4...config-v16.0.5) (2021-11-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency netlify to v10 ([#3905](https://www.github.com/netlify/build/issues/3905)) ([f4a0e3c](https://www.github.com/netlify/build/commit/f4a0e3cdd8c9d71cdadf3dd3ede8575640ca0b4e))
+
 ### [16.0.4](https://www.github.com/netlify/build/compare/config-v16.0.3...config-v16.0.4) (2021-11-25)
 
 
