@@ -1,5 +1,12 @@
 # Changelog
 
+### [20.0.1](https://www.github.com/netlify/build/compare/build-v20.0.0...build-v20.0.1) (2021-12-01)
+
+
+### Bug Fixes
+
+* add types for `utils.functions` ([#3851](https://www.github.com/netlify/build/issues/3851)) ([d46dfb1](https://www.github.com/netlify/build/commit/d46dfb1601a0e3278a07cdeccb4676329f4c0ba1))
+
 ## [20.0.0](https://www.github.com/netlify/build/compare/build-v19.0.8...build-v20.0.0) (2021-12-01)
 
 
