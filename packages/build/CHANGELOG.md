@@ -1,5 +1,37 @@
 # Changelog
 
+### [20.0.1](https://www.github.com/netlify/build/compare/build-v20.0.0...build-v20.0.1) (2021-12-01)
+
+
+### Bug Fixes
+
+* add types for `utils.functions` ([#3851](https://www.github.com/netlify/build/issues/3851)) ([d46dfb1](https://www.github.com/netlify/build/commit/d46dfb1601a0e3278a07cdeccb4676329f4c0ba1))
+
+## [20.0.0](https://www.github.com/netlify/build/compare/build-v19.0.8...build-v20.0.0) (2021-12-01)
+
+
+### ⚠ BREAKING CHANGES
+
+* support pure ES modules in Build plugins (#3906)
+
+### Features
+
+* support pure ES modules in Build plugins ([#3906](https://www.github.com/netlify/build/issues/3906)) ([2899378](https://www.github.com/netlify/build/commit/289937848b3e4b028d8fcc69f17b197740d2d192))
+
+### [19.0.8](https://www.github.com/netlify/build/compare/build-v19.0.7...build-v19.0.8) (2021-12-01)
+
+
+### Bug Fixes
+
+* correct redirect conditions type ([#3908](https://www.github.com/netlify/build/issues/3908)) ([0bdb973](https://www.github.com/netlify/build/commit/0bdb973287e689866b3a32aeff2109f664b49b20))
+
+### [19.0.7](https://www.github.com/netlify/build/compare/build-v19.0.6...build-v19.0.7) (2021-11-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^5.1.0 ([#3900](https://www.github.com/netlify/build/issues/3900)) ([5a1063e](https://www.github.com/netlify/build/commit/5a1063ebc864d8d467e7d340c6132f65d5e57fc3))
+
 ### [19.0.6](https://www.github.com/netlify/build/compare/build-v19.0.5...build-v19.0.6) (2021-11-25)
 
 

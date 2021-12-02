@@ -1013,6 +1013,10 @@ test('plugin.onEnd can be used in several plugins', async (t) => {
   await runFixture(t, 'end_several')
 })
 
+test('Can use pure ES modules with local plugins', async (t) => {
+  await runFixture(t, 'es_modules_local')
+})
+
 test('Local plugins', async (t) => {
   await runFixture(t, 'local')
 })
