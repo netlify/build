@@ -1,5 +1,12 @@
 # Changelog
 
+### [16.0.7](https://www.github.com/netlify/build/compare/config-v16.0.6...config-v16.0.7) (2021-12-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency netlify-headers-parser to v6 ([#3921](https://www.github.com/netlify/build/issues/3921)) ([b3b3f3b](https://www.github.com/netlify/build/commit/b3b3f3bb7b3002827bc55a0d84bf4cbd1997d71f))
+
 ### [16.0.6](https://www.github.com/netlify/build/compare/config-v16.0.5...config-v16.0.6) (2021-12-02)
 
 
