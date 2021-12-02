@@ -1,5 +1,12 @@
 # Changelog
 
+### [16.0.6](https://www.github.com/netlify/build/compare/config-v16.0.5...config-v16.0.6) (2021-12-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency netlify-redirect-parser to v13 ([#3919](https://www.github.com/netlify/build/issues/3919)) ([ac34875](https://www.github.com/netlify/build/commit/ac348752a1e6b584d0cebd9c34ed2df3d5f8474e))
+
 ### [16.0.5](https://www.github.com/netlify/build/compare/config-v16.0.4...config-v16.0.5) (2021-11-30)
 
 
