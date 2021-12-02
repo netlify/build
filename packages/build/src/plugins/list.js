@@ -1,8 +1,10 @@
 'use strict'
 
-const { pluginsList: oldPluginsList, pluginsUrl } = require('@netlify/plugins-list')
 const got = require('got')
 const isPlainObj = require('is-plain-obj')
+
+// TODO: use static `import` after migrating this repository to pure ES modules
+const netlifyPluginsList = import('@netlify/plugins-list')
 
 const { logPluginsList } = require('../log/messages/plugins')
 const { logPluginsFetchError } = require('../log/messages/plugins')
@@ -16,14 +18,16 @@ const { CONDITIONS } = require('./compatibility')
 // make this request is somewhat ok (in the 100ms range).
 // We only fetch this plugins list when needed, i.e. we defer it as much as
 // possible.
-const getPluginsList = async function ({ debug, logs, testOpts: { pluginsListUrl = pluginsUrl } }) {
+const getPluginsList = async function ({ debug, logs, testOpts: { pluginsListUrl } }) {
   // We try not to mock in integration tests. However, sending a request for
   // each test would be too slow and make tests unreliable.
   if (pluginsListUrl === 'test') {
     return []
   }
 
-  const pluginsList = await fetchPluginsList({ logs, pluginsListUrl })
+  const { pluginsUrl } = await netlifyPluginsList
+  const pluginsListUrlA = pluginsListUrl === undefined ? pluginsUrl : pluginsListUrl
+  const pluginsList = await fetchPluginsList({ logs, pluginsListUrl: pluginsListUrlA })
   const pluginsListA = normalizePluginsList(pluginsList)
   logPluginsList({ pluginsList: pluginsListA, debug, logs })
   return pluginsListA
@@ -46,6 +50,7 @@ const fetchPluginsList = async function ({ logs, pluginsListUrl }) {
     //    buildbot release.
   } catch (error) {
     logPluginsFetchError(logs, error.message)
+    const { pluginsList: oldPluginsList } = await netlifyPluginsList
     return oldPluginsList
   }
 }
