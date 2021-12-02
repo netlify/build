@@ -5,12 +5,14 @@ const { normalize } = require('path')
 const { platform } = require('process')
 const { promisify } = require('util')
 
-const { pluginsList } = require('@netlify/plugins-list')
 const test = require('ava')
 const cpy = require('cpy')
 const del = require('del')
 const pathExists = require('path-exists')
 const { spy } = require('sinon')
+
+// TODO: use static `import` after migrating this repository to pure ES modules
+const netlifyPluginsList = import('@netlify/plugins-list')
 
 const { removeDir } = require('../helpers/dir')
 const { runFixture, FIXTURES_DIR } = require('../helpers/main')
@@ -1054,15 +1056,11 @@ test('Do not allow overriding core plugins', async (t) => {
   await runFixture(t, 'core_override')
 })
 
-const runWithApiMock = async function (
-  t,
-  fixtureName,
-  { testPlugin, response = getPluginsList(testPlugin), ...flags } = {},
-  status = 200,
-) {
+const runWithApiMock = async function (t, fixtureName, { testPlugin, response, ...flags } = {}, status = 200) {
+  const responseA = response === undefined ? await getPluginsList(testPlugin) : response
   const { scheme, host, stopServer } = await startServer({
     path: PLUGINS_LIST_URL,
-    response,
+    response: responseA,
     status,
   })
   try {
@@ -1079,7 +1077,8 @@ const runWithApiMock = async function (
 
 // We use a specific plugin in tests. We hardcode its version to keep the tests
 // stable even when new versions of that plugin are published.
-const getPluginsList = function (testPlugin = DEFAULT_TEST_PLUGIN) {
+const getPluginsList = async function (testPlugin = DEFAULT_TEST_PLUGIN) {
+  const { pluginsList } = await netlifyPluginsList
   return pluginsList.map((plugin) => getPlugin(plugin, testPlugin))
 }
 
@@ -1380,7 +1379,7 @@ const getNodePath = function (nodeVersion) {
 const runWithUpdatePluginMock = async function (t, fixture, { flags, status, sendStatus = true, testPlugin } = {}) {
   const { scheme, host, requests, stopServer } = await startServer([
     { path: UPDATE_PLUGIN_PATH, status },
-    { path: PLUGINS_LIST_URL, response: getPluginsList(testPlugin), status: 200 },
+    { path: PLUGINS_LIST_URL, response: await getPluginsList(testPlugin), status: 200 },
   ])
   try {
     await runFixture(t, fixture, {
@@ -1464,7 +1463,7 @@ const runWithPluginRunsMock = async function (
 ) {
   const { scheme, host, requests, stopServer } = await startServer([
     { path: PLUGIN_RUNS_PATH, response: pluginRuns, status },
-    { path: PLUGINS_LIST_URL, response: getPluginsList(testPlugin), status: 200 },
+    { path: PLUGINS_LIST_URL, response: await getPluginsList(testPlugin), status: 200 },
   ])
   try {
     await runFixture(t, fixture, {
