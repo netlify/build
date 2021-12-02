@@ -1,5 +1,12 @@
 # Changelog
 
+### [20.0.3](https://www.github.com/netlify/build/compare/build-v20.0.2...build-v20.0.3) (2021-12-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugin-edge-handlers to v3 ([#3915](https://www.github.com/netlify/build/issues/3915)) ([a1d085f](https://www.github.com/netlify/build/commit/a1d085f4c62a2dc876d0f5bdf1c5849423755287))
+
 ### [20.0.2](https://www.github.com/netlify/build/compare/build-v20.0.1...build-v20.0.2) (2021-12-02)
 
 
