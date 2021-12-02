@@ -1,5 +1,12 @@
 # Changelog
 
+### [20.0.4](https://www.github.com/netlify/build/compare/build-v20.0.3...build-v20.0.4) (2021-12-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to v6 ([#3916](https://www.github.com/netlify/build/issues/3916)) ([4410ce9](https://www.github.com/netlify/build/commit/4410ce903f01beaefb8a9c188169fecd4ab08365))
+
 ### [20.0.3](https://www.github.com/netlify/build/compare/build-v20.0.2...build-v20.0.3) (2021-12-02)
 
 
