@@ -1,5 +1,12 @@
 # Changelog
 
+### [20.0.2](https://www.github.com/netlify/build/compare/build-v20.0.1...build-v20.0.2) (2021-12-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^5.2.0 ([#3912](https://www.github.com/netlify/build/issues/3912)) ([52d6ec4](https://www.github.com/netlify/build/commit/52d6ec475efaecc21b0c0b9015c1486ee99e0b31))
+
 ### [20.0.1](https://www.github.com/netlify/build/compare/build-v20.0.0...build-v20.0.1) (2021-12-01)
 
 
