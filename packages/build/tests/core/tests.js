@@ -1,4 +1,3 @@
-/* eslint-disable no-magic-numbers */
 'use strict'
 
 const { unlink, writeFile } = require('fs')
@@ -537,4 +536,3 @@ test('Generates a `manifest.json` file when running outside of buildbot', async 
   t.is(typeof timestamp, 'number')
   t.is(manifestVersion, 1)
 })
-/* eslint-enable no-magic-numbers */

@@ -93,5 +93,11 @@ module.exports = {
         'node/no-extraneous-import': 0,
       },
     },
+    {
+      files: ['packages/*/tests/**/*.js'],
+      rules: {
+        'no-magic-numbers': 'off',
+      },
+    },
   ],
 }
