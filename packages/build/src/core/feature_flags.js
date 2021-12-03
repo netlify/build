@@ -20,6 +20,7 @@ const DEFAULT_FEATURE_FLAGS = {
   buildbot_zisi_trace_nft: false,
   buildbot_zisi_esbuild_parser: false,
   buildbot_scheduled_functions: false,
+  zisi_parse_isc: false,
 }
 
 module.exports = { normalizeCliFeatureFlags, DEFAULT_FEATURE_FLAGS }
