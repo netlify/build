@@ -384,10 +384,14 @@ test.serial('Passes the right feature flags to zip-it-and-ship-it', async (t) =>
     flags: { featureFlags: { zisi_parse_isc: true } },
     snapshot: false,
   })
+  await runFixture(t, 'schedule', {
+    flags: { featureFlags: { this_is_a_mock_flag: true, and_another_one: true } },
+    snapshot: false,
+  })
 
   stub.restore()
 
-  t.is(mockZipFunctions.callCount, 7)
+  t.is(mockZipFunctions.callCount, 8)
 
   t.false(mockZipFunctions.getCall(0).args[2].featureFlags.traceWithNft)
   t.false(mockZipFunctions.getCall(0).args[2].featureFlags.buildGoSource)
@@ -395,6 +399,8 @@ test.serial('Passes the right feature flags to zip-it-and-ship-it', async (t) =>
   t.is(mockZipFunctions.getCall(0).args[2].config.test.schedule, undefined)
   t.false(mockZipFunctions.getCall(0).args[2].featureFlags.nftTranspile)
   t.false(mockZipFunctions.getCall(0).args[2].featureFlags.parseISC)
+  t.is(mockZipFunctions.getCall(0).args[2].featureFlags.this_is_a_mock_flag, undefined)
+  t.is(mockZipFunctions.getCall(0).args[2].featureFlags.and_another_one, undefined)
 
   t.true(mockZipFunctions.getCall(1).args[2].featureFlags.traceWithNft)
   t.true(mockZipFunctions.getCall(1).args[2].featureFlags.nftTranspile)
@@ -403,6 +409,8 @@ test.serial('Passes the right feature flags to zip-it-and-ship-it', async (t) =>
   t.is(mockZipFunctions.getCall(4).args[2].config.test.schedule, '@daily')
   t.true(mockZipFunctions.getCall(5).args[2].featureFlags.nftTranspile)
   t.true(mockZipFunctions.getCall(6).args[2].featureFlags.parseISC)
+  t.true(mockZipFunctions.getCall(7).args[2].featureFlags.this_is_a_mock_flag)
+  t.true(mockZipFunctions.getCall(7).args[2].featureFlags.and_another_one)
 })
 
 test('Print warning on lingering processes', async (t) => {
