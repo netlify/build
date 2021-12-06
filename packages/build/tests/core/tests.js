@@ -228,7 +228,6 @@ const getNodeBinary = async function (nodeVersion, retries = 1) {
 const MAX_RETRIES = 10
 
 // Memoize `get-node`
-// eslint-disable-next-line no-magic-numbers
 const mGetNode = moize(getNodeBinary, { isPromise: true, maxSize: 1e3 })
 
 test('--node-path is used by build.command', async (t) => {
@@ -380,27 +379,37 @@ test.serial('Passes the right feature flags to zip-it-and-ship-it', async (t) =>
     flags: { featureFlags: { buildbot_nft_transpile_esm: true } },
     snapshot: false,
   })
+  await runFixture(t, 'schedule', {
+    flags: { featureFlags: { zisi_parse_isc: true } },
+    snapshot: false,
+  })
+  await runFixture(t, 'schedule', {
+    flags: { featureFlags: { this_is_a_mock_flag: true, and_another_one: true } },
+    snapshot: false,
+  })
 
   stub.restore()
 
-  // eslint-disable-next-line no-magic-numbers
-  t.is(mockZipFunctions.callCount, 6)
+  t.is(mockZipFunctions.callCount, 8)
 
   t.false(mockZipFunctions.getCall(0).args[2].featureFlags.traceWithNft)
   t.false(mockZipFunctions.getCall(0).args[2].featureFlags.buildGoSource)
   t.false(mockZipFunctions.getCall(0).args[2].featureFlags.parseWithEsbuild)
+  t.is(mockZipFunctions.getCall(0).args[2].config.test.schedule, undefined)
   t.false(mockZipFunctions.getCall(0).args[2].featureFlags.nftTranspile)
+  t.false(mockZipFunctions.getCall(0).args[2].featureFlags.parseISC)
+  t.is(mockZipFunctions.getCall(0).args[2].featureFlags.this_is_a_mock_flag, undefined)
+  t.is(mockZipFunctions.getCall(0).args[2].featureFlags.and_another_one, undefined)
 
   t.true(mockZipFunctions.getCall(1).args[2].featureFlags.traceWithNft)
   t.true(mockZipFunctions.getCall(1).args[2].featureFlags.nftTranspile)
   t.true(mockZipFunctions.getCall(2).args[2].featureFlags.buildGoSource)
   t.true(mockZipFunctions.getCall(3).args[2].featureFlags.parseWithEsbuild)
-  // eslint-disable-next-line no-magic-numbers
-  t.true(mockZipFunctions.getCall(5).args[2].featureFlags.nftTranspile)
-
-  t.is(mockZipFunctions.getCall(0).args[2].config.test.schedule, undefined)
-  // eslint-disable-next-line no-magic-numbers
   t.is(mockZipFunctions.getCall(4).args[2].config.test.schedule, '@daily')
+  t.true(mockZipFunctions.getCall(5).args[2].featureFlags.nftTranspile)
+  t.true(mockZipFunctions.getCall(6).args[2].featureFlags.parseISC)
+  t.true(mockZipFunctions.getCall(7).args[2].featureFlags.this_is_a_mock_flag)
+  t.true(mockZipFunctions.getCall(7).args[2].featureFlags.and_another_one)
 })
 
 test('Print warning on lingering processes', async (t) => {
