@@ -1,5 +1,12 @@
 # Changelog
 
+## [20.1.0](https://www.github.com/netlify/build/compare/build-v20.0.4...build-v20.1.0) (2021-12-06)
+
+
+### Features
+
+* pass additional feature flags to zip-it-and-ship-it ([#3925](https://www.github.com/netlify/build/issues/3925)) ([96ff2a8](https://www.github.com/netlify/build/commit/96ff2a8e83d6aad7340694ff026c46574268f5ad))
+
 ### [20.0.4](https://www.github.com/netlify/build/compare/build-v20.0.3...build-v20.0.4) (2021-12-02)
 
 
