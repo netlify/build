@@ -38,6 +38,7 @@
       const getFrameworks = async () => {
         try {
           const context = await getContext()
+          // eslint-disable-next-line no-undef
           const frameworks = await frameworkInfo.listFrameworks(context)
           const body = document.querySelector('body')
           frameworks.forEach((framework) => {
