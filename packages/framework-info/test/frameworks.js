@@ -1,15 +1,13 @@
-const fs = require('fs')
+const { promises: fs } = require('fs')
 const path = require('path')
-const util = require('util')
 
 const Ajv = require('ajv').default
 const test = require('ava')
 const { each } = require('test-each')
 
-const { FRAMEWORKS } = require('../src/frameworks/main')
+const { FRAMEWORKS } = require('../build/frameworks')
 
-const pReadDir = util.promisify(fs.readdir)
-const pReadFile = util.promisify(fs.readFile)
+const FRAMEWORKS_DIR = `${__dirname}/../src/frameworks/`
 
 const ajv = new Ajv({})
 
@@ -134,12 +132,11 @@ each(FRAMEWORKS, (info, framework) => {
 })
 
 test('each json file should be required in main.js FRAMEWORKS', async (t) => {
-  const dir = `${__dirname}/../src/frameworks`
-  const filenames = await pReadDir(dir)
+  const filenames = await fs.readdir(FRAMEWORKS_DIR)
   const jsonFiles = filenames.filter((filename) => path.extname(filename) === '.json')
 
-  const mainFile = await pReadFile(`${dir}/main.js`, 'utf8')
-
-  const missing = jsonFiles.filter((file) => !mainFile.includes(`./${file}`))
-  t.deepEqual(missing, [])
+  t.is(FRAMEWORKS.length, jsonFiles.length)
+  FRAMEWORKS.forEach(({ id }) => {
+    t.true(filenames.includes(`${id}.json`))
+  })
 })

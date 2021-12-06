@@ -31,8 +31,10 @@ jobs:
       - name: Install dependencies
         # Cypress has a postinstall script that doesn't work on older Node.js versions
         run: npm ci --ignore-scripts
+      - name: Build For All
+        run: npm run build:json
       - name: Build For Browser
-        run: npm run build
+        run: npm run build:browser
         if: "${{ matrix.node-version == '*' }}"
       - name: Linting
         run: npm run format:ci

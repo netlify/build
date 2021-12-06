@@ -6,16 +6,18 @@
   "browser": "./dist/index.js",
   "files": [
     "dist/index.js",
-    "src/**/*.js",
-    "src/**/*.json"
+    "build/*.js",
+    "src/**/*.js"
   ],
   "scripts": {
     "prepublishOnly": "npm ci && run-s build test",
     "build": "run-s build:*",
-    "build:core": "webpack --config scripts/webpack.config.core.js",
-    "build:site-react": "webpack --config scripts/webpack.config.site.js",
-    "build:site-vanilla": "cpy site/vanilla/index.html dist/vanilla",
-    "build:site-root": "cpy site/index.html dist",
+    "build:json": "node scripts/transform_json.js",
+    "build:browser": "run-s build:browser:*",
+    "build:browser:core": "webpack --config scripts/webpack.config.core.js",
+    "build:browser:site-react": "webpack --config scripts/webpack.config.site.js",
+    "build:browser:site-vanilla": "cpy site/vanilla/index.html dist/vanilla",
+    "build:browser:site-root": "cpy site/index.html dist",
     "develop:site-react": "webpack serve --config scripts/webpack.config.site.js",
     "test": "npm run format && npm run test:dev",
     "format": "run-s format:check-fix:*",

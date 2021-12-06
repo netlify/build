@@ -1,8 +1,9 @@
 const pFilter = require('p-filter')
 
+const { FRAMEWORKS } = require('../build/frameworks')
+
 const { usesFramework } = require('./detect')
 const { getDevCommands } = require('./dev')
-const { FRAMEWORKS } = require('./frameworks/main')
 const { getPackageJsonContent } = require('./package')
 const { getPlugins } = require('./plugins')
 const { getRunScriptCommand } = require('./run_script')
