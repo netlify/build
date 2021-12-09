@@ -507,23 +507,32 @@ test('Does not generate a `manifest.json` file when the feature flag is not enab
   t.false(await pathExists(`${FIXTURES_DIR}/${fixtureName}/.netlify/functions/manifest.json`))
 })
 
-test('Does not generate a `manifest.json` file when running in buildbot', async (t) => {
-  const fixtureName = 'functions_internal_no_manifest_1'
-
-  await removeDir(`${FIXTURES_DIR}/${fixtureName}/.netlify/functions`)
-  await runFixture(t, fixtureName, {
-    flags: { featureFlags: { functionsBundlingManifest: true }, mode: 'buildbot' },
-    snapshot: false,
-  })
-
-  t.false(await pathExists(`${FIXTURES_DIR}/${fixtureName}/.netlify/functions/manifest.json`))
-})
-
 test('Generates a `manifest.json` file when running outside of buildbot', async (t) => {
   const fixtureName = 'functions_internal_manifest'
 
   await removeDir(`${FIXTURES_DIR}/${fixtureName}/.netlify/functions`)
-  await runFixture(t, fixtureName, { flags: { featureFlags: { functionsBundlingManifest: true }, mode: 'cli' } })
+  await runFixture(t, fixtureName, { flags: { mode: 'cli' }, snapshot: false })
+
+  const manifestPath = `${FIXTURES_DIR}/${fixtureName}/.netlify/functions/manifest.json`
+
+  t.true(await pathExists(manifestPath))
+
+  // eslint-disable-next-line import/no-dynamic-require, node/global-require
+  const { functions, timestamp, version: manifestVersion } = require(manifestPath)
+
+  t.is(functions.length, 3)
+  t.is(typeof timestamp, 'number')
+  t.is(manifestVersion, 1)
+})
+
+test('Generates a `manifest.json` file when the `buildbot_create_functions_manifest` feature flag is set', async (t) => {
+  const fixtureName = 'functions_internal_manifest'
+
+  await removeDir(`${FIXTURES_DIR}/${fixtureName}/.netlify/functions`)
+  await runFixture(t, fixtureName, {
+    flags: { featureFlags: { buildbot_create_functions_manifest: true } },
+    snapshot: false,
+  })
 
   const manifestPath = `${FIXTURES_DIR}/${fixtureName}/.netlify/functions/manifest.json`
 
