@@ -78,11 +78,17 @@ const getGeneralEnv = async function ({
   context,
 }) {
   const gitEnv = await getGitEnv(buildDir, branch)
+
+  const DEPLOY_ID = deployId || 0
+  const BUILD_ID = buildId || 0
+
   return removeFalsy({
     SITE_ID: id,
     SITE_NAME: name,
-    DEPLOY_ID: deployId,
-    BUILD_ID: buildId,
+    DEPLOY_ID,
+    BUILD_ID,
+    DEPLOY_URL: `https://${DEPLOY_ID}--${name}.netlify.app`,
+    DEPLOY_PRIME_URL: `https://${branch}-${BUILD_ID}--${name}.netlify.app`,
     URL: url,
     REPOSITORY_URL,
     CONTEXT: context,
