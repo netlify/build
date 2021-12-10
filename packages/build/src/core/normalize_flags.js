@@ -41,6 +41,7 @@ const getDefaultFlags = function ({ env: envOpt = {} }, combinedEnv) {
     mode: REQUIRE_MODE,
     offline: false,
     telemetry: false,
+    verbose: Boolean(combinedEnv.NETLIFY_BUILD_DEBUG),
     functionsDistDir: DEFAULT_FUNCTIONS_DIST,
     cacheDir: DEFAULT_CACHE_DIR,
     deployId: combinedEnv.DEPLOY_ID,

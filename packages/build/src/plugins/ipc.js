@@ -8,16 +8,23 @@ const { v4: uuidv4 } = require('uuid')
 
 const { jsonToError, errorToJson } = require('../error/build')
 const { addErrorInfo } = require('../error/info')
+const {
+  logSendingEventToChild,
+  logSentEventToChild,
+  logReceivedEventFromChild,
+  logSendingEventToParent,
+} = require('../log/messages/ipc')
 
 // Send event from child to parent process then wait for response
 // We need to fire them in parallel because `process.send()` can be slow
 // to await, i.e. child might send response before parent start listening for it
-const callChild = async function (childProcess, eventName, payload) {
+const callChild = async function ({ childProcess, eventName, payload, logs, verbose }) {
   const callId = uuidv4()
   const [response] = await Promise.all([
     getEventFromChild(childProcess, callId),
-    sendEventToChild(childProcess, callId, eventName, payload),
+    sendEventToChild({ childProcess, callId, eventName, payload, logs, verbose }),
   ])
+  logReceivedEventFromChild(logs, verbose)
   return response
 }
 
@@ -84,9 +91,13 @@ Plugin methods should instead:
   - on failure: call utils.build.failPlugin() or utils.build.failBuild()`
 
 // Send event from parent to child process
-const sendEventToChild = async function (childProcess, callId, eventName, payload) {
+const sendEventToChild = async function ({ childProcess, callId, eventName, payload, logs, verbose }) {
+  logSendingEventToChild(logs, verbose)
+
   const payloadA = serializePayload(payload)
   await promisify(childProcess.send.bind(childProcess))([callId, eventName, payloadA])
+
+  logSentEventToChild(logs, verbose)
 }
 
 // Respond to events from parent to child process.
@@ -109,7 +120,8 @@ const getEventsFromParent = function (callback) {
 }
 
 // Send event from child to parent process
-const sendEventToParent = async function (callId, payload) {
+const sendEventToParent = async function (callId, payload, verbose, error) {
+  logSendingEventToParent(verbose, error)
   await promisify(process.send.bind(process))([callId, payload])
 }
 

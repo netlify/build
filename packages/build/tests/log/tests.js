@@ -52,3 +52,11 @@ test('Logs whether the build commands came from the UI', async (t) => {
   const defaultConfig = { build: { command: 'node --invalid' } }
   await runFixture(t, 'empty', { flags: { defaultConfig } })
 })
+
+test('The verbose flag enables verbosity', async (t) => {
+  await runFixture(t, 'verbose', { flags: { verbose: true } })
+})
+
+test('Verbosity works with plugin errors', async (t) => {
+  await runFixture(t, 'verbose_error', { flags: { verbose: true } })
+})

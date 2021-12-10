@@ -50,6 +50,7 @@ const runStep = async function ({
   redirectsPath,
   logs,
   debug,
+  verbose,
   saveConfig,
   timers,
   testOpts,
@@ -110,6 +111,7 @@ const runStep = async function ({
     error,
     logs,
     debug,
+    verbose,
     saveConfig,
     timers,
     errorParams,
@@ -237,6 +239,7 @@ const tFireStep = function ({
   error,
   logs,
   debug,
+  verbose,
   saveConfig,
   errorParams,
   configOpts,
@@ -293,6 +296,7 @@ const tFireStep = function ({
     error,
     logs,
     debug,
+    verbose,
   })
 }
 

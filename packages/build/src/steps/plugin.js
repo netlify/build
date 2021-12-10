@@ -1,6 +1,7 @@
 'use strict'
 
 const { addErrorInfo } = require('../error/info')
+const { logStepCompleted } = require('../log/messages/ipc')
 const { pipePluginOutput, unpipePluginOutput } = require('../log/stream')
 const { callChild } = require('../plugins/ipc')
 const { getSuccessStatus } = require('../status/success')
@@ -28,6 +29,7 @@ const firePluginStep = async function ({
   error,
   logs,
   debug,
+  verbose,
 }) {
   const listeners = pipePluginOutput(childProcess, logs)
 
@@ -37,12 +39,12 @@ const firePluginStep = async function ({
       newEnvChanges,
       configMutations: newConfigMutations,
       status,
-    } = await callChild(childProcess, 'run', {
-      event,
-      error,
-      envChanges,
-      netlifyConfig,
-      constants,
+    } = await callChild({
+      childProcess,
+      eventName: 'run',
+      payload: { event, error, envChanges, netlifyConfig, constants },
+      logs,
+      verbose,
     })
     const {
       netlifyConfig: netlifyConfigA,
@@ -80,6 +82,7 @@ const firePluginStep = async function ({
     return { newError }
   } finally {
     await unpipePluginOutput(childProcess, logs, listeners)
+    logStepCompleted(logs, verbose)
   }
 }
 
