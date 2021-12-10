@@ -8,11 +8,11 @@ const { normalizeError } = require('../../error/parse/normalize')
 const { sendEventToParent } = require('../ipc')
 
 // Handle any top-level error and communicate it back to parent
-const handleError = async function (error) {
+const handleError = async function (error, verbose) {
   const errorA = normalizeError(error)
   addDefaultErrorInfo(errorA, { type: 'pluginInternal' })
   const errorPayload = errorToJson(errorA)
-  await sendEventToParent('error', errorPayload)
+  await sendEventToParent('error', errorPayload, verbose, errorA)
 }
 
 // On uncaught exceptions and unhandled rejections, print the stack trace.
