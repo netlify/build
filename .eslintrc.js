@@ -8,8 +8,14 @@ module.exports = {
     strict: 2,
 
     // eslint-plugin-ava needs to know where test files are located
-    'ava/no-ignored-test-files': [2, { files: ['tests/**/*.js', '!tests/{helpers,fixtures}/**/*.{js,json}'] }],
-    'ava/no-import-test-files': [2, { files: ['tests/**/*.js', '!tests/{helpers,fixtures}/**/*.{js,json}'] }],
+    'ava/no-ignored-test-files': [
+      2,
+      { files: ['tests/**/*.{cjs,mjs,js}', '!tests/{helpers,fixtures}/**/*.{cjs,mjs,js,json}'] },
+    ],
+    'ava/no-import-test-files': [
+      2,
+      { files: ['tests/**/*.{cjs,mjs,js}', '!tests/{helpers,fixtures}/**/*.{cjs,mjs,js,json}'] },
+    ],
 
     // Avoid state mutation except for some known state variables
     'fp/no-mutating-methods': [
@@ -52,7 +58,7 @@ module.exports = {
   overrides: [
     ...overrides,
     {
-      files: ['**/fixtures/**/*.js'],
+      files: ['**/fixtures/**/*.{cjs,mjs,js}'],
       rules: {
         'import/no-unresolved': 0,
       },
@@ -64,6 +70,7 @@ module.exports = {
       },
       rules: {
         'node/no-unsupported-features/es-syntax': 0,
+        'ava/no-import-test-files': 0,
       },
     },
 
@@ -71,7 +78,7 @@ module.exports = {
     // many parameters, such as `runStep` in `src/steps/run_step.js`.
     // We should discuss whether we want to keep this rule or discontinue it.
     {
-      files: ['packages/build/**/*.js'],
+      files: ['packages/build/**/*.{cjs,mjs,js}'],
       rules: {
         'max-lines-per-function': 'off',
       },
@@ -87,9 +94,20 @@ module.exports = {
       },
     },
     {
-      files: ['packages/*/tests/**/*.js'],
+      files: ['packages/*/tests/**/*.{cjs,mjs,js}'],
       rules: {
         'no-magic-numbers': 'off',
+      },
+    },
+
+    // Those packages are using pure ES modules
+    {
+      files: ['packages/run-utils/**/*.{cjs,mjs,js}'],
+      parserOptions: {
+        sourceType: 'module',
+      },
+      rules: {
+        'import/extensions': [2, 'ignorePackages'],
       },
     },
   ],

@@ -1,10 +1,7 @@
-'use strict'
+import { argv } from 'process'
 
-const {
-  argv: [, , command, options],
-} = require('process')
+import { runCommand } from '../../src/main.js'
 
-const run = require('../..')
-
+const [, , command, options] = argv
 const optionsA = options === undefined ? options : JSON.parse(options)
-run.command(command, optionsA)
+runCommand(command, optionsA)
