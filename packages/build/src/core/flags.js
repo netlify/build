@@ -134,7 +134,12 @@ Default: false`,
   },
   debug: {
     boolean: true,
-    describe: 'Print debugging information',
+    describe: 'Print user-facing debugging information',
+    hidden: true,
+  },
+  verbose: {
+    boolean: true,
+    describe: 'Print internal debugging information',
     hidden: true,
   },
   sendStatus: {

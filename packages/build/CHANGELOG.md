@@ -1,5 +1,19 @@
 # Changelog
 
+## [20.3.0](https://www.github.com/netlify/build/compare/build-v20.2.0...build-v20.3.0) (2021-12-10)
+
+
+### Features
+
+* add a verbose flag ([#3934](https://www.github.com/netlify/build/issues/3934)) ([d7c9fd1](https://www.github.com/netlify/build/commit/d7c9fd1dc9d566e732a94c2455e9d2a993210bc3))
+
+## [20.2.0](https://www.github.com/netlify/build/compare/build-v20.1.0...build-v20.2.0) (2021-12-09)
+
+
+### Features
+
+* add `buildbot_create_functions_manifest` feature flag ([#3806](https://www.github.com/netlify/build/issues/3806)) ([d6e69ad](https://www.github.com/netlify/build/commit/d6e69ad2c5d5629b4c325df65e3024afe57c1d11))
+
 ## [20.1.0](https://www.github.com/netlify/build/compare/build-v20.0.4...build-v20.1.0) (2021-12-06)
 
 

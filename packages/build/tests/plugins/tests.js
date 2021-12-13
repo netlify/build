@@ -725,7 +725,7 @@ test('Functions: invalid package.json', async (t) => {
 test('Functions: --functionsDistDir', async (t) => {
   const functionsDistDir = await getTempName()
   try {
-    await runFixture(t, 'simple', { flags: { functionsDistDir } })
+    await runFixture(t, 'simple', { flags: { mode: 'buildbot', functionsDistDir } })
     t.true(await pathExists(functionsDistDir))
     const files = await pReaddir(functionsDistDir)
     t.is(files.length, 1)

@@ -51,8 +51,8 @@ const getZisiParameters = ({
   isRunningLocally,
   repositoryRoot,
 }) => {
-  const isManifestEnabled = featureFlags.functionsBundlingManifest === true
-  const manifest = isManifestEnabled && isRunningLocally ? join(functionsDist, 'manifest.json') : undefined
+  const isManifestEnabled = isRunningLocally || featureFlags.buildbot_create_functions_manifest === true
+  const manifest = isManifestEnabled ? join(functionsDist, 'manifest.json') : undefined
   const config = mapObject(functionsConfig, (expression, object) => [
     expression,
     normalizeFunctionConfig({ buildDir, featureFlags, functionConfig: object, isRunningLocally }),
