@@ -28,6 +28,7 @@ const getEnv = async function ({
     return {}
   }
 
+  // only reached if `mode === 'cli'` Therefore it is only passed locally
   const generalEnv = await getGeneralEnv({ siteInfo, buildDir, branch, deployId, buildId, context })
   const [accountEnv, addonsEnv, uiEnv, configFileEnv] = getUserEnv({ config, siteInfo, accounts, addons })
 
