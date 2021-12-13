@@ -58,7 +58,7 @@ module.exports = {
       },
     },
     {
-      files: ['**/fixtures/handlers_*/**/*.js', '**/fixtures/*es_module*/**/*.js'],
+      files: ['**/fixtures/**/*edge-handlers*/**/*.js', '**/fixtures/*es_module*/**/*.js'],
       parserOptions: {
         sourceType: 'module',
       },
