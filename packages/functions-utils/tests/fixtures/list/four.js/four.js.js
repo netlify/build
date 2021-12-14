@@ -1,3 +1,2 @@
-'use strict'
-
-module.exports = true
+const value = true
+export default value

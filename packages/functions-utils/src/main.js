@@ -1,18 +1,16 @@
-'use strict'
+import { stat } from 'fs'
+import { basename, dirname } from 'path'
+import { promisify } from 'util'
 
-const { stat } = require('fs')
-const { basename, dirname } = require('path')
-const { promisify } = require('util')
-
-const { listFunctions, listFunctionsFiles } = require('@netlify/zip-it-and-ship-it')
-const cpy = require('cpy')
-const pathExists = require('path-exists')
+import { listFunctions, listFunctionsFiles } from '@netlify/zip-it-and-ship-it'
+import cpy from 'cpy'
+import pathExists from 'path-exists'
 
 const pStat = promisify(stat)
 
 // Add a Netlify Function file to the `functions` directory so it is processed
 // by `@netlify/plugin-functions-core`
-const add = async function (src, dist, { fail = defaultFail } = {}) {
+export const add = async function (src, dist, { fail = defaultFail } = {}) {
   if (src === undefined) {
     return fail('No function source directory was specified')
   }
@@ -40,7 +38,7 @@ const getSrcGlob = async function (src, srcBasename) {
   return srcBasename
 }
 
-const list = async function (functionsSrc, { fail = defaultFail } = {}) {
+export const list = async function (functionsSrc, { fail = defaultFail } = {}) {
   if (functionsSrc === undefined || functionsSrc.length === 0) {
     return fail('No function directory was specified')
   }
@@ -52,7 +50,7 @@ const list = async function (functionsSrc, { fail = defaultFail } = {}) {
   }
 }
 
-const listAll = async function (functionsSrc, { fail = defaultFail } = {}) {
+export const listAll = async function (functionsSrc, { fail = defaultFail } = {}) {
   if (functionsSrc === undefined || functionsSrc.length === 0) {
     return fail('No function directory was specified')
   }
@@ -67,5 +65,3 @@ const listAll = async function (functionsSrc, { fail = defaultFail } = {}) {
 const defaultFail = function (message) {
   throw new Error(message)
 }
-
-module.exports = { add, list, listAll }

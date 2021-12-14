@@ -1,3 +1,1 @@
-'use strict'
-
-module.exports = require('./three')
+export { value as default } from './three.js'
