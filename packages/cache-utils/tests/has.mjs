@@ -1,17 +1,15 @@
-'use strict'
+import test from 'ava'
 
-const test = require('ava')
+import { has, save } from '../src/main.js'
 
-const cacheUtils = require('..')
-
-const { createTmpDir, createTmpFile, createTmpFiles, removeFiles } = require('./helpers/main')
+import { createTmpDir, createTmpFile, createTmpFiles, removeFiles } from './helpers/main.js'
 
 test('Should allow checking if one file is cached', async (t) => {
   const [cacheDir, [srcFile, srcDir]] = await Promise.all([createTmpDir(), createTmpFile()])
   try {
-    t.false(await cacheUtils.has(srcFile, { cacheDir }))
-    t.true(await cacheUtils.save(srcFile, { cacheDir }))
-    t.true(await cacheUtils.has(srcFile, { cacheDir }))
+    t.false(await has(srcFile, { cacheDir }))
+    t.true(await save(srcFile, { cacheDir }))
+    t.true(await has(srcFile, { cacheDir }))
   } finally {
     await removeFiles([cacheDir, srcDir])
   }
@@ -24,9 +22,9 @@ test('Should allow checking if several files are cached', async (t) => {
     createTmpFile(),
   ])
   try {
-    t.false(await cacheUtils.has([srcFile, otherSrcFile], { cacheDir }))
-    t.true(await cacheUtils.save([srcFile, otherSrcFile], { cacheDir }))
-    t.true(await cacheUtils.has([srcFile, otherSrcFile], { cacheDir }))
+    t.false(await has([srcFile, otherSrcFile], { cacheDir }))
+    t.true(await save([srcFile, otherSrcFile], { cacheDir }))
+    t.true(await has([srcFile, otherSrcFile], { cacheDir }))
   } finally {
     await removeFiles([cacheDir, srcDir, otherSrcDir])
   }
@@ -39,11 +37,11 @@ test('Should not list junk files as cached nor cache them', async (t) => {
     createTmpFiles([{ name: '.DS_Store' }, {}, {}]),
   ])
   try {
-    t.false(await cacheUtils.has(junkFile, { cacheDir }))
-    t.true(await cacheUtils.save(srcFilesDir, { cacheDir }))
-    t.false(await cacheUtils.has(junkFile, { cacheDir }))
-    t.true(await cacheUtils.has(srcFile, { cacheDir }))
-    t.true(await cacheUtils.has(otherSrcFile, { cacheDir }))
+    t.false(await has(junkFile, { cacheDir }))
+    t.true(await save(srcFilesDir, { cacheDir }))
+    t.false(await has(junkFile, { cacheDir }))
+    t.true(await has(srcFile, { cacheDir }))
+    t.true(await has(otherSrcFile, { cacheDir }))
   } finally {
     await removeFiles([cacheDir, srcFilesDir])
   }
@@ -58,16 +56,16 @@ test('Should not list empty directories as cached nor cache them', async (t) => 
     createTmpDir(),
   ])
   try {
-    t.false(await cacheUtils.has(junkFile, { cacheDir }))
-    t.false(await cacheUtils.save(junkFileDir, { cacheDir }))
-    t.false(await cacheUtils.has(junkFile, { cacheDir }))
-    t.false(await cacheUtils.save(emptyDir, { cacheDir }))
-    t.false(await cacheUtils.has(emptyDir, { cacheDir }))
+    t.false(await has(junkFile, { cacheDir }))
+    t.false(await save(junkFileDir, { cacheDir }))
+    t.false(await has(junkFile, { cacheDir }))
+    t.false(await save(emptyDir, { cacheDir }))
+    t.false(await has(emptyDir, { cacheDir }))
   } finally {
     await removeFiles([cacheDir, junkFileDir, emptyDir])
   }
 })
 
 test('Should allow checking if one file is cached without an options object', async (t) => {
-  t.is(typeof (await cacheUtils.has('doesNotExist')), 'boolean')
+  t.is(typeof (await has('doesNotExist')), 'boolean')
 })

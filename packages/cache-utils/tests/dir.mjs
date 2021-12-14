@@ -1,13 +1,11 @@
-'use strict'
+import { cwd as getCwd, chdir } from 'process'
 
-const { cwd: getCwd, chdir } = require('process')
+import test from 'ava'
+import pathExists from 'path-exists'
 
-const test = require('ava')
-const pathExists = require('path-exists')
+import { save, restore } from '../src/main.js'
 
-const cacheUtils = require('..')
-
-const { pWriteFile, pReaddir, createTmpDir, removeFiles } = require('./helpers/main')
+import { pWriteFile, pReaddir, createTmpDir, removeFiles } from './helpers/main.js'
 
 test('Should allow changing the cache directory', async (t) => {
   const [cacheDir, srcDir] = await Promise.all([createTmpDir(), createTmpDir()])
@@ -16,11 +14,11 @@ test('Should allow changing the cache directory', async (t) => {
   try {
     const srcFile = `${srcDir}/test`
     await pWriteFile(srcFile, '')
-    t.true(await cacheUtils.save(srcFile, { cacheDir }))
+    t.true(await save(srcFile, { cacheDir }))
     const cachedFiles = await pReaddir(cacheDir)
     t.is(cachedFiles.length, 1)
     await removeFiles(srcFile)
-    t.true(await cacheUtils.restore(srcFile, { cacheDir }))
+    t.true(await restore(srcFile, { cacheDir }))
     t.true(await pathExists(srcFile))
   } finally {
     chdir(currentDir)

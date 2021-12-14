@@ -1,18 +1,16 @@
-'use strict'
+import { stat } from 'fs'
+import { basename, dirname } from 'path'
+import { promisify } from 'util'
 
-const { stat } = require('fs')
-const { basename, dirname } = require('path')
-const { promisify } = require('util')
-
-const cpy = require('cpy')
-const globby = require('globby')
-const junk = require('junk')
-const moveFile = require('move-file')
+import cpy from 'cpy'
+import globby from 'globby'
+import junk from 'junk'
+import moveFile from 'move-file'
 
 const pStat = promisify(stat)
 
 // Move or copy a cached file/directory from/to a local one
-const moveCacheFile = async function (src, dest, move) {
+export const moveCacheFile = async function (src, dest, move) {
   // Moving is faster but removes the source files locally
   if (move) {
     return moveFile(src, dest, { overwrite: false })
@@ -23,7 +21,7 @@ const moveCacheFile = async function (src, dest, move) {
 }
 
 // Non-existing files and empty directories are always skipped
-const hasFiles = async function (src) {
+export const hasFiles = async function (src) {
   const { srcGlob, cwd, isDir } = await getSrcGlob(src)
   return srcGlob !== undefined && !(await isEmptyDir({ srcGlob, cwd, isDir }))
 }
@@ -63,5 +61,3 @@ const getStat = async function (src) {
     return await pStat(src)
   } catch (error) {}
 }
-
-module.exports = { moveCacheFile, hasFiles }

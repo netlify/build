@@ -1,22 +1,20 @@
-'use strict'
+import { writeFile, readFile } from 'fs'
+import { dirname } from 'path'
+import { promisify } from 'util'
 
-const { writeFile, readFile } = require('fs')
-const { dirname } = require('path')
-const { promisify } = require('util')
+import del from 'del'
+import makeDir from 'make-dir'
+import pathExists from 'path-exists'
 
-const del = require('del')
-const makeDir = require('make-dir')
-const pathExists = require('path-exists')
-
-const { getExpires, checkExpires } = require('./expire')
-const { getHash } = require('./hash')
+import { getExpires, checkExpires } from './expire.js'
+import { getHash } from './hash.js'
 
 const pWriteFile = promisify(writeFile)
 const pReadFile = promisify(readFile)
 
 // Retrieve cache manifest of a file to cache, which contains the file/directory
 // contents hash and the `expires` date.
-const getManifestInfo = async function ({ cachePath, move, ttl, digests }) {
+export const getManifestInfo = async function ({ cachePath, move, ttl, digests }) {
   const manifestPath = getManifestPath(cachePath)
   const expires = getExpires(ttl)
   const hash = await getHash(digests, move)
@@ -37,13 +35,13 @@ const isIdentical = async function ({ hash, manifestPath, manifestString }) {
 }
 
 // Persist the cache manifest to filesystem
-const writeManifest = async function ({ manifestPath, manifestString }) {
+export const writeManifest = async function ({ manifestPath, manifestString }) {
   await makeDir(dirname(manifestPath))
   await pWriteFile(manifestPath, manifestString)
 }
 
 // Remove the cache manifest from filesystem
-const removeManifest = async function (cachePath) {
+export const removeManifest = async function (cachePath) {
   const manifestPath = getManifestPath(cachePath)
   await del(manifestPath, { force: true })
 }
@@ -53,14 +51,14 @@ const getManifestPath = function (cachePath) {
   return `${cachePath}${CACHE_EXTENSION}`
 }
 
-const isManifest = function (filePath) {
+export const isManifest = function (filePath) {
   return filePath.endsWith(CACHE_EXTENSION)
 }
 
 const CACHE_EXTENSION = '.netlify.cache.json'
 
 // Check whether a file/directory is expired by checking its cache manifest
-const isExpired = async function (cachePath) {
+export const isExpired = async function (cachePath) {
   const manifestPath = getManifestPath(cachePath)
   if (!(await pathExists(manifestPath))) {
     return false
@@ -76,5 +74,3 @@ const readManifest = async function (cachePath) {
   const manifest = JSON.parse(manifestString)
   return manifest
 }
-
-module.exports = { getManifestInfo, writeManifest, removeManifest, isManifest, isExpired }
