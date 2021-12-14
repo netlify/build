@@ -1,10 +1,8 @@
-'use strict'
-
-const { git } = require('./exec')
+import { git } from './exec.js'
 
 // Return information on each commit since the `base` commit, such as SHA,
 // parent commits, author, committer and commit message
-const getCommits = function (base, head, cwd) {
+export const getCommits = function (base, head, cwd) {
   const stdout = git(['log', `--pretty=${GIT_PRETTY_FORMAT}`, `${base}...${head}`], cwd)
   const commits = stdout.split('\n').map(getCommit)
   return commits
@@ -33,5 +31,3 @@ const getCommit = function (line) {
 const GIT_PRETTY_SEPARATOR = '\u001E'
 // List of commit fields we want to retrieve
 const GIT_PRETTY_FORMAT = ['%H', '%p', '%an', '%ae', '%ai', '%cn', '%ce', '%ci', '%f'].join(GIT_PRETTY_SEPARATOR)
-
-module.exports = { getCommits }

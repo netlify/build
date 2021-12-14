@@ -2,7 +2,6 @@
 
 const { bindOpts: cacheBindOpts } = require('@netlify/cache-utils')
 const { add: functionsAdd, list: functionsList, listAll: functionsListAll } = require('@netlify/functions-utils')
-const getGitUtils = require('@netlify/git-utils')
 
 const { failBuild, failPlugin, cancelBuild, failPluginWithWarning } = require('../error')
 const { isSoftFailEvent } = require('../events')
@@ -10,11 +9,12 @@ const { isSoftFailEvent } = require('../events')
 const { addLazyProp } = require('./lazy')
 const { show } = require('./status')
 
+const gitUtilsPromise = import('@netlify/git-utils')
 const runUtilsPromise = import('@netlify/run-utils')
 
 // Retrieve the `utils` argument.
 const getUtils = async function ({ event, constants: { FUNCTIONS_SRC, INTERNAL_FUNCTIONS_SRC, CACHE_DIR }, runState }) {
-  const { run, runCommand } = await runUtilsPromise
+  const [{ getGitUtils }, { run, runCommand }] = await Promise.all([gitUtilsPromise, runUtilsPromise])
   // eslint-disable-next-line fp/no-mutation
   run.command = runCommand
 

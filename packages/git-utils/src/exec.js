@@ -1,10 +1,8 @@
-'use strict'
+import process from 'process'
 
-const process = require('process')
-
-const execa = require('execa')
-const moize = require('moize')
-const pathExists = require('path-exists')
+import execa from 'execa'
+import moize from 'moize'
+import pathExists from 'path-exists'
 
 // Fires the `git` binary. Memoized.
 const mGit = function (args, cwd) {
@@ -21,7 +19,7 @@ const mGit = function (args, cwd) {
 }
 
 // eslint-disable-next-line no-magic-numbers
-const git = moize(mGit, { isDeepEqual: true, maxSize: 1e3 })
+export const git = moize(mGit, { isDeepEqual: true, maxSize: 1e3 })
 
 const safeGetCwd = function (cwd) {
   const cwdA = getCwdValue(cwd)
@@ -44,5 +42,3 @@ const getCwdValue = function (cwd) {
     throw new Error('Current directory does not exist')
   }
 }
-
-module.exports = { git }

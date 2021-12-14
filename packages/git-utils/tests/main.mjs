@@ -1,10 +1,8 @@
-'use strict'
+import { env, chdir, cwd as getCwd } from 'process'
 
-const { env, chdir, cwd: getCwd } = require('process')
+import test from 'ava'
 
-const test = require('ava')
-
-const getGitUtils = require('..')
+import { getGitUtils } from '../src/main.js'
 
 // Runs the git utils against very old commits of @netlify/build so that the
 // tests are stable. The following are static statistics for that git range.
@@ -15,6 +13,7 @@ const DEFAULT_OPTS = { base: BASE, head: HEAD }
 
 test('Should define all its methods and properties', (t) => {
   const git = getGitUtils(DEFAULT_OPTS)
+  // eslint-disable-next-line fp/no-mutating-methods
   t.deepEqual(Object.keys(git).sort(), [
     'commits',
     'createdFiles',
@@ -55,10 +54,12 @@ const LINES_OF_CODE = 163
 
 test.serial('Should allow using the environment variable CACHED_COMMIT_REF', (t) => {
   try {
+    // eslint-disable-next-line fp/no-mutation
     env.CACHED_COMMIT_REF = BASE
     const { linesOfCode } = getGitUtils({ head: HEAD })
     t.is(linesOfCode, LINES_OF_CODE)
   } finally {
+    // eslint-disable-next-line fp/no-delete
     delete env.CACHED_COMMIT_REF
   }
 })
