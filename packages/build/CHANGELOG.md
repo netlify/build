@@ -1,5 +1,13 @@
 # Changelog
 
+### [20.3.1](https://www.github.com/netlify/build/compare/build-v20.3.0...build-v20.3.1) (2021-12-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.1.0 ([#3938](https://www.github.com/netlify/build/issues/3938)) ([96a3ffd](https://www.github.com/netlify/build/commit/96a3ffdaeaf782f71d3a12a9fb7c35fc0ccb843b))
+* **deps:** update dependency @netlify/plugins-list to ^6.2.0 ([#3941](https://www.github.com/netlify/build/issues/3941)) ([04aa29d](https://www.github.com/netlify/build/commit/04aa29d711e406ec3db3fdd9c6186301b7f4cd15))
+
 ## [20.3.0](https://www.github.com/netlify/build/compare/build-v20.2.0...build-v20.3.0) (2021-12-10)
 
 
