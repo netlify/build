@@ -1,8 +1,6 @@
-'use strict'
+import test from 'ava'
 
-const test = require('ava')
-
-const { runFixture } = require('../helpers/main')
+import { runFixture } from '../helpers/main.js'
 
 test('Context with context CLI flag', async (t) => {
   await runFixture(t, 'context_flag', { flags: { context: 'testContext' } })

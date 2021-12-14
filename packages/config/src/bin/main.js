@@ -1,19 +1,18 @@
 #!/usr/bin/env node
-'use strict'
 
-const { writeFile } = require('fs')
-const { dirname } = require('path')
-const process = require('process')
-const { promisify } = require('util')
+import { writeFile } from 'fs'
+import { dirname } from 'path'
+import process from 'process'
+import { promisify } from 'util'
 
-const { stableStringify } = require('fast-safe-stringify')
-const makeDir = require('make-dir')
-const omit = require('omit.js').default
+import fastSafeStringify from 'fast-safe-stringify'
+import makeDir from 'make-dir'
+import omit from 'omit.js'
 
-const { isUserError } = require('../error')
-const resolveConfig = require('../main')
+import { isUserError } from '../error.js'
+import { resolveConfig } from '../main.js'
 
-const { parseFlags } = require('./flags')
+import { parseFlags } from './flags.js'
 
 const pWriteFile = promisify(writeFile)
 
@@ -33,8 +32,8 @@ const DEFAULT_OUTPUT = '-'
 // The result is output as JSON on success (exit code 0)
 const handleCliSuccess = async function (result, stable, output) {
   const resultA = serializeApi(result)
-  const resultB = omit(resultA, SECRET_PROPERTIES)
-  const stringifyFunc = stable ? stableStringify : JSON.stringify
+  const resultB = omit.default(resultA, SECRET_PROPERTIES)
+  const stringifyFunc = stable ? fastSafeStringify.stableStringify : JSON.stringify
   const resultJson = stringifyFunc(resultB, null, 2)
   await outputResult(resultJson, output)
   process.exitCode = 0

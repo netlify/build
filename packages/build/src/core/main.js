@@ -595,7 +595,7 @@ const runBuild = async function ({
     verbose,
   })
 
-  const { steps, events } = getSteps(pluginsSteps)
+  const { steps, events } = await getSteps(pluginsSteps)
 
   if (dry) {
     await doDryRun({ buildDir, steps, netlifyConfig, constants, buildbotServerSocket, logs })

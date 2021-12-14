@@ -1,14 +1,14 @@
 'use strict'
 
-const { EVENTS } = require('../plugins/events')
+const { listEvents } = require('../plugins/events')
 const { buildCommandCore } = require('../plugins_core/build_command')
 const { deploySite } = require('../plugins_core/deploy')
 const { bundleFunctions } = require('../plugins_core/functions')
 
 // Get all build steps
-const getSteps = function (steps) {
+const getSteps = async function (steps) {
   const stepsA = addCoreSteps(steps)
-  const stepsB = sortSteps(stepsA)
+  const stepsB = await sortSteps(stepsA)
   const events = getEvents(stepsB)
   return { steps: stepsB, events }
 }
@@ -18,7 +18,8 @@ const addCoreSteps = function (steps) {
 }
 
 // Sort plugin steps by event order.
-const sortSteps = function (steps) {
+const sortSteps = async function (steps) {
+  const EVENTS = await listEvents()
   return EVENTS.flatMap((event) => steps.filter((step) => step.event === event))
 }
 

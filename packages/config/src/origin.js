@@ -1,16 +1,14 @@
-'use strict'
-
-const { isTruthy } = require('./utils/remove_falsy')
+import { isTruthy } from './utils/remove_falsy.js'
 
 // `build.commandOrigin`, `build.publishOrigin` and `plugins[*].origin` constants
-const UI_ORIGIN = 'ui'
-const CONFIG_ORIGIN = 'config'
-const DEFAULT_ORIGIN = 'default'
-const INLINE_ORIGIN = 'inline'
+export const UI_ORIGIN = 'ui'
+export const CONFIG_ORIGIN = 'config'
+export const DEFAULT_ORIGIN = 'default'
+export const INLINE_ORIGIN = 'inline'
 
 // Add `build.commandOrigin`, `build.publishOrigin` and `plugins[*].origin`.
 // This shows whether those properties came from the `ui` or from the `config`.
-const addOrigins = function (config, origin) {
+export const addOrigins = function (config, origin) {
   const configA = addBuildCommandOrigin({ config, origin })
   const configB = addBuildPublishOrigin({ config: configA, origin })
   const configC = addConfigPluginOrigin({ config: configB, origin })
@@ -38,5 +36,3 @@ const addHeadersOrigin = function ({ config, config: { headers }, origin }) {
 const addRedirectsOrigin = function ({ config, config: { redirects }, origin }) {
   return isTruthy(redirects) ? { ...config, redirectsOrigin: origin } : config
 }
-
-module.exports = { addOrigins, UI_ORIGIN, CONFIG_ORIGIN, DEFAULT_ORIGIN, INLINE_ORIGIN }

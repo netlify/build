@@ -1,18 +1,14 @@
-'use strict'
+import { copyFile } from 'fs'
+import { promisify } from 'util'
 
-const { copyFile } = require('fs')
-const { promisify } = require('util')
+import test from 'ava'
+import del from 'del'
+import pathExists from 'path-exists'
 
-const test = require('ava')
-const del = require('del')
-const pathExists = require('path-exists')
-
-const { updateConfig } = require('../..')
-const { runFixture } = require('../helpers/main')
+import { updateConfig } from '../../src/main.js'
+import { runFixture, FIXTURES_DIR } from '../helpers/main.js'
 
 const pCopyFile = promisify(copyFile)
-
-const FIXTURES_DIR = `${__dirname}/fixtures`
 
 // Call the main function
 const runUpdateConfig = async function (fixtureName, { configMutations = [buildCommandMutation], ...opts } = {}) {

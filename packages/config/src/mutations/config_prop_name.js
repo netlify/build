@@ -1,7 +1,5 @@
-'use strict'
-
 // Retrieve normalized property name
-const getPropName = function (keys) {
+export const getPropName = function (keys) {
   return keys.reduce(normalizeDynamicProp, '')
 }
 
@@ -16,5 +14,3 @@ const normalizeDynamicProp = function (propName, key) {
 
 // Properties with dynamic children
 const DYNAMIC_OBJECT_PROPS = new Set(['build.services', 'build.environment', 'functions', 'functions.*'])
-
-module.exports = { getPropName }

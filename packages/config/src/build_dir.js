@@ -1,15 +1,13 @@
-'use strict'
+import { isDirectory } from 'path-type'
 
-const { isDirectory } = require('path-type')
-
-const { throwUserError } = require('./error')
+import { throwUserError } from './error.js'
 
 // Retrieve the build directory used to resolve most paths.
 // This is (in priority order):
 //  - `build.base`
 //  - `--repositoryRoot`
 //  - the current directory (default value of `--repositoryRoot`)
-const getBuildDir = async function (repositoryRoot, base) {
+export const getBuildDir = async function (repositoryRoot, base) {
   const buildDir = base === undefined ? repositoryRoot : base
   await checkBuildDir(buildDir, repositoryRoot)
   return buildDir
@@ -26,5 +24,3 @@ const checkBuildDir = async function (buildDir, repositoryRoot) {
 
   throwUserError(`Base directory does not exist: ${buildDir}`)
 }
-
-module.exports = { getBuildDir }

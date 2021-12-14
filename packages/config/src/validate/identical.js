@@ -1,13 +1,11 @@
-'use strict'
-
-const { throwUserError } = require('../error')
+import { throwUserError } from '../error.js'
 
 // Validate that plugin are configured only once per origin
 // (`netlify.toml` or UI).
 // Exception: context-specific configuration since we allow context-specific
 // overrides. This does not validate them since contexts have not been merged
 // yet.
-const validateIdenticalPlugins = function ({ plugins = [] }) {
+export const validateIdenticalPlugins = function ({ plugins = [] }) {
   plugins.filter(hasIdenticalPlugin).forEach(throwIndenticalPlugin)
 }
 
@@ -20,5 +18,3 @@ const throwIndenticalPlugin = function ({ package: packageName, origin }) {
 }
 
 const ORIGINS = { config: 'netlify.toml', ui: 'the app' }
-
-module.exports = { validateIdenticalPlugins }

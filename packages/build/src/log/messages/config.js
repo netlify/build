@@ -1,11 +1,11 @@
 'use strict'
 
-const { cleanupConfig } = require('@netlify/config')
-
 const { DEFAULT_FEATURE_FLAGS } = require('../../core/feature_flags')
 const { omit } = require('../../utils/omit')
 const { logMessage, logObject, logSubHeader } = require('../logger')
 const { THEME } = require('../theme')
+
+const netlifyConfigPromise = import('@netlify/config')
 
 const logFlags = function (logs, flags, { debug }) {
   const flagsA = cleanFeatureFlags(flags)
@@ -69,29 +69,32 @@ const logConfigPath = function (logs, configPath = NO_CONFIG_MESSAGE) {
 
 const NO_CONFIG_MESSAGE = 'No config file was defined: using default values.'
 
-const logConfig = function ({ logs, netlifyConfig, debug }) {
+const logConfig = async function ({ logs, netlifyConfig, debug }) {
   if (!debug) {
     return
   }
 
+  const { cleanupConfig } = await netlifyConfigPromise
   logSubHeader(logs, 'Resolved config')
   logObject(logs, cleanupConfig(netlifyConfig))
 }
 
-const logConfigOnUpdate = function ({ logs, netlifyConfig, debug }) {
+const logConfigOnUpdate = async function ({ logs, netlifyConfig, debug }) {
   if (!debug) {
     return
   }
 
+  const { cleanupConfig } = await netlifyConfigPromise
   logSubHeader(logs, 'Updated config')
   logObject(logs, cleanupConfig(netlifyConfig))
 }
 
-const logConfigOnError = function ({ logs, netlifyConfig, severity }) {
+const logConfigOnError = async function ({ logs, netlifyConfig, severity }) {
   if (netlifyConfig === undefined || severity === 'none') {
     return
   }
 
+  const { cleanupConfig } = await netlifyConfigPromise
   logMessage(logs, THEME.errorSubHeader('Resolved config'))
   logObject(logs, cleanupConfig(netlifyConfig))
 }

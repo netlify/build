@@ -1,9 +1,7 @@
-'use strict'
-
-const { resolvePath } = require('./files')
+import { resolvePath } from './files.js'
 
 // Retrieve the first `base` directory used to load the first config file.
-const getInitialBase = function ({
+export const getInitialBase = function ({
   repositoryRoot,
   defaultConfig: { build: { base: defaultBase } = {} },
   inlineConfig: { build: { base: initialBase = defaultBase } = {} },
@@ -22,7 +20,7 @@ const getInitialBase = function ({
 //  - To resolve file paths
 // If the second file has a `base` property, it is ignored, i.e. it is not
 // recursive.
-const getBase = function (base, repositoryRoot, config) {
+export const getBase = function (base, repositoryRoot, config) {
   return base === undefined ? resolveBase(repositoryRoot, config.build.base) : base
 }
 
@@ -31,8 +29,6 @@ const resolveBase = function (repositoryRoot, base) {
 }
 
 // Also `config.build.base`.
-const addBase = function (config, base) {
+export const addBase = function (config, base) {
   return { ...config, build: { ...config.build, base } }
 }
-
-module.exports = { getInitialBase, getBase, addBase }

@@ -1,13 +1,11 @@
-'use strict'
-
-const isPlainObj = require('is-plain-obj')
+import isPlainObj from 'is-plain-obj'
 
 // Set a property deeply using an array of `keys` which can be either strings
 // (object properties) or integers (array indices).
 // Adds default values when intermediary properties are undefined or have the
 // wrong type. Also extends arrays when they are too small for a given index.
 // Does not mutate.
-const setProp = function (parent, keys, value) {
+export const setProp = function (parent, keys, value) {
   if (keys.length === 0) {
     return value
   }
@@ -33,5 +31,3 @@ const setObjectProp = function (parent, [key, ...keys], value) {
   const newValue = setProp(objectParent[key], keys, value)
   return { ...objectParent, [key]: newValue }
 }
-
-module.exports = { setProp }

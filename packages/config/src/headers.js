@@ -1,21 +1,19 @@
-'use strict'
+import { resolve } from 'path'
 
-const { resolve } = require('path')
+import { warnHeadersParsing, warnHeadersCaseSensitivity } from './log/messages.js'
 
 // TODO: use static `import` after migrating this repository to pure ES modules
 const netlifyHeadersParser = import('netlify-headers-parser')
 
-const { warnHeadersParsing, warnHeadersCaseSensitivity } = require('./log/messages')
-
 // Retrieve path to `_headers` file (even if it does not exist yet)
-const getHeadersPath = function ({ build: { publish } }) {
+export const getHeadersPath = function ({ build: { publish } }) {
   return resolve(publish, HEADERS_FILENAME)
 }
 
 const HEADERS_FILENAME = '_headers'
 
 // Add `config.headers`
-const addHeaders = async function ({ headers: configHeaders, ...config }, headersPath, logs) {
+export const addHeaders = async function ({ headers: configHeaders, ...config }, headersPath, logs) {
   const { parseAllHeaders } = await netlifyHeadersParser
   const { headers, errors } = await parseAllHeaders({
     headersFiles: [headersPath],
@@ -26,5 +24,3 @@ const addHeaders = async function ({ headers: configHeaders, ...config }, header
   warnHeadersCaseSensitivity(logs, headers)
   return { ...config, headers }
 }
-
-module.exports = { getHeadersPath, addHeaders }

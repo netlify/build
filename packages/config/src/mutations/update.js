@@ -1,20 +1,18 @@
-'use strict'
+import { writeFile, unlink, copyFile } from 'fs'
+import { promisify } from 'util'
 
-const { writeFile, unlink, copyFile } = require('fs')
-const { promisify } = require('util')
+import makeDir from 'make-dir'
+import pathExists from 'path-exists'
 
-const makeDir = require('make-dir')
-const pathExists = require('path-exists')
+import { ensureConfigPriority } from '../context.js'
+import { addHeaders } from '../headers.js'
+import { mergeConfigs } from '../merge.js'
+import { parseOptionalConfig } from '../parse.js'
+import { addRedirects } from '../redirects.js'
+import { simplifyConfig } from '../simplify.js'
+import { serializeToml } from '../utils/toml.js'
 
-const { ensureConfigPriority } = require('../context')
-const { addHeaders } = require('../headers')
-const { mergeConfigs } = require('../merge')
-const { parseOptionalConfig } = require('../parse')
-const { addRedirects } = require('../redirects')
-const { simplifyConfig } = require('../simplify')
-const { serializeToml } = require('../utils/toml')
-
-const { applyMutations } = require('./apply')
+import { applyMutations } from './apply.js'
 
 const pWriteFile = promisify(writeFile)
 const pUnlink = promisify(unlink)
@@ -22,7 +20,7 @@ const pCopyFile = promisify(copyFile)
 
 // Persist configuration changes to `netlify.toml`.
 // If `netlify.toml` does not exist, creates it. Otherwise, merges the changes.
-const updateConfig = async function (
+export const updateConfig = async function (
   configMutations,
   { buildDir, configPath, headersPath, redirectsPath, context, branch, logs },
 ) {
@@ -81,7 +79,7 @@ const backupConfig = async function ({ buildDir, configPath, headersPath, redire
   ])
 }
 
-const restoreConfig = async function (configMutations, { buildDir, configPath, headersPath, redirectsPath }) {
+export const restoreConfig = async function (configMutations, { buildDir, configPath, headersPath, redirectsPath }) {
   if (configMutations.length === 0) {
     return
   }
@@ -123,5 +121,3 @@ const copyOrDelete = async function (src, dest) {
 
   await deleteNoError(dest)
 }
-
-module.exports = { updateConfig, restoreConfig }

@@ -1,8 +1,6 @@
-'use strict'
+import test from 'ava'
 
-const test = require('ava')
-
-const { runFixture } = require('../helpers/main')
+import { runFixture } from '../helpers/main.js'
 
 test('Base from defaultConfig', async (t) => {
   const defaultConfig = { build: { base: 'base' } }
