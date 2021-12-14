@@ -8,3 +8,4 @@ dist
 build
 cypress/videos
 cypress/screenshots
+.DS_Store

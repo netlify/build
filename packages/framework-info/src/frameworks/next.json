@@ -14,7 +14,7 @@
   },
   "build": {
     "command": "next build",
-    "directory": "out"
+    "directory": ".next"
   },
   "env": {},
   "plugins": [

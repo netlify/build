@@ -14,7 +14,7 @@
   },
   "build": {
     "command": "nx build",
-    "directory": "apps/<app name>/out"
+    "directory": "dist/apps/<app name>/.next"
   },
   "env": {},
   "plugins": [
