@@ -1,5 +1,12 @@
 # Changelog
 
+### [22.0.1](https://www.github.com/netlify/build/compare/build-v22.0.0...build-v22.0.1) (2021-12-15)
+
+
+### Bug Fixes
+
+* upgrade `git-utils` to `4.0.0` ([d298142](https://www.github.com/netlify/build/commit/d298142f3a58cb24097a66bad0460702f4182695))
+
 ## [22.0.0](https://www.github.com/netlify/build/compare/build-v21.0.1...build-v22.0.0) (2021-12-15)
 
 
