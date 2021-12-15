@@ -1,5 +1,12 @@
 # Changelog
 
+### [24.0.1](https://www.github.com/netlify/build/compare/build-v24.0.0...build-v24.0.1) (2021-12-15)
+
+
+### Bug Fixes
+
+* upgrade `cache-utils` to `4.0.0` ([23915a3](https://www.github.com/netlify/build/commit/23915a37b3d4c72a2c018338a8546a9abd4eec2d))
+
 ## [24.0.0](https://www.github.com/netlify/build/compare/build-v23.0.1...build-v24.0.0) (2021-12-15)
 
 
