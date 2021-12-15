@@ -1,5 +1,16 @@
 # Changelog
 
+## [25.0.0](https://www.github.com/netlify/build/compare/build-v24.0.1...build-v25.0.0) (2021-12-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* use pure ES modules with `@netlify/config` (#3945)
+
+### Miscellaneous Chores
+
+* use pure ES modules with `@netlify/config` ([#3945](https://www.github.com/netlify/build/issues/3945)) ([96a2cfd](https://www.github.com/netlify/build/commit/96a2cfd8ea8024c570dad0f74dce4ebaa7b39659))
+
 ### [24.0.1](https://www.github.com/netlify/build/compare/build-v24.0.0...build-v24.0.1) (2021-12-15)
 
 

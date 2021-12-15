@@ -1,6 +1,6 @@
 {
   "name": "@netlify/config",
-  "version": "16.0.7",
+  "version": "17.0.0",
   "description": "Netlify config module",
   "type": "module",
   "exports": "./src/main.js",
