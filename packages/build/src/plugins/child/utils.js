@@ -1,20 +1,20 @@
 'use strict'
 
-const { bindOpts: cacheBindOpts } = require('@netlify/cache-utils')
-
 const { failBuild, failPlugin, cancelBuild, failPluginWithWarning } = require('../error')
 const { isSoftFailEvent } = require('../events')
 
 const { addLazyProp } = require('./lazy')
 const { show } = require('./status')
 
-const gitUtilsPromise = import('@netlify/git-utils')
+const cacheUtilsPromise = import('@netlify/cache-utils')
 const functionsUtilsPromise = import('@netlify/functions-utils')
+const gitUtilsPromise = import('@netlify/git-utils')
 const runUtilsPromise = import('@netlify/run-utils')
 
 // Retrieve the `utils` argument.
 const getUtils = async function ({ event, constants: { FUNCTIONS_SRC, INTERNAL_FUNCTIONS_SRC, CACHE_DIR }, runState }) {
-  const [functionsUtils, { getGitUtils }, { run, runCommand }] = await Promise.all([
+  const [cacheUtils, functionsUtils, { getGitUtils }, { run, runCommand }] = await Promise.all([
+    cacheUtilsPromise,
     functionsUtilsPromise,
     gitUtilsPromise,
     runUtilsPromise,
@@ -23,7 +23,7 @@ const getUtils = async function ({ event, constants: { FUNCTIONS_SRC, INTERNAL_F
   run.command = runCommand
 
   const build = getBuildUtils(event)
-  const cache = getCacheUtils(CACHE_DIR)
+  const cache = getCacheUtils(cacheUtils, CACHE_DIR)
   const functions = getFunctionsUtils(functionsUtils, FUNCTIONS_SRC, INTERNAL_FUNCTIONS_SRC)
   const status = getStatusUtils(runState)
   const utils = { build, cache, run, functions, status }
@@ -43,8 +43,8 @@ const getBuildUtils = function (event) {
   return { failBuild, failPlugin, cancelBuild }
 }
 
-const getCacheUtils = function (CACHE_DIR) {
-  return cacheBindOpts({ cacheDir: CACHE_DIR })
+const getCacheUtils = function (cacheUtils, CACHE_DIR) {
+  return cacheUtils.bindOpts({ cacheDir: CACHE_DIR })
 }
 
 const getFunctionsUtils = function (functionsUtils, FUNCTIONS_SRC, INTERNAL_FUNCTIONS_SRC) {

@@ -1,17 +1,15 @@
-'use strict'
+import test from 'ava'
 
-const test = require('ava')
+import { save, remove, restore } from '../src/main.js'
 
-const cacheUtils = require('..')
-
-const { createTmpDir, createTmpFile, removeFiles } = require('./helpers/main')
+import { createTmpDir, createTmpFile, removeFiles } from './helpers/main.js'
 
 test('Should allow removing one cached file', async (t) => {
   const [cacheDir, [srcFile, srcDir]] = await Promise.all([createTmpDir(), createTmpFile()])
   try {
-    t.true(await cacheUtils.save(srcFile, { cacheDir }))
-    t.true(await cacheUtils.remove(srcFile, { cacheDir }))
-    t.false(await cacheUtils.restore(srcFile, { cacheDir }))
+    t.true(await save(srcFile, { cacheDir }))
+    t.true(await remove(srcFile, { cacheDir }))
+    t.false(await restore(srcFile, { cacheDir }))
   } finally {
     await removeFiles([cacheDir, srcDir])
   }
@@ -24,14 +22,14 @@ test('Should allow removing several cached files', async (t) => {
     createTmpFile(),
   ])
   try {
-    t.true(await cacheUtils.save([srcFile, otherSrcFile], { cacheDir }))
-    t.true(await cacheUtils.remove([srcFile, otherSrcFile], { cacheDir }))
-    t.false(await cacheUtils.restore([srcFile, otherSrcFile], { cacheDir }))
+    t.true(await save([srcFile, otherSrcFile], { cacheDir }))
+    t.true(await remove([srcFile, otherSrcFile], { cacheDir }))
+    t.false(await restore([srcFile, otherSrcFile], { cacheDir }))
   } finally {
     await removeFiles([cacheDir, srcDir, otherSrcDir])
   }
 })
 
 test('Should ignore when trying to remove non-cached files', async (t) => {
-  t.false(await cacheUtils.remove('nonExisting'))
+  t.false(await remove('nonExisting'))
 })

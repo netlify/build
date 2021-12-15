@@ -103,8 +103,9 @@ module.exports = {
     // Those packages are using pure ES modules
     {
       files: [
-        'packages/git-utils/**/*.{cjs,mjs,js}',
+        'packages/cache-utils/**/*.{cjs,mjs,js}',
         'packages/functions-utils/**/*.{cjs,mjs,js}',
+        'packages/git-utils/**/*.{cjs,mjs,js}',
         'packages/run-utils/**/*.{cjs,mjs,js}',
       ],
       parserOptions: {
