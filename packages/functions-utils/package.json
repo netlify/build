@@ -2,7 +2,9 @@
   "name": "@netlify/functions-utils",
   "version": "3.0.3",
   "description": "Utility for adding Functions files in Netlify Build",
-  "main": "src/main.js",
+  "type": "module",
+  "exports": "./src/main.js",
+  "main": "./src/main.js",
   "files": [
     "src/**/*.js"
   ],
