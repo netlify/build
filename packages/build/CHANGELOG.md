@@ -1,5 +1,12 @@
 # Changelog
 
+### [20.3.2](https://www.github.com/netlify/build/compare/build-v20.3.1...build-v20.3.2) (2021-12-15)
+
+
+### Bug Fixes
+
+* load plugin utilities directly ([#3937](https://www.github.com/netlify/build/issues/3937)) ([b8c708d](https://www.github.com/netlify/build/commit/b8c708d04b6982fe06b79e6f60d27638c4a22514))
+
 ### [20.3.1](https://www.github.com/netlify/build/compare/build-v20.3.0...build-v20.3.1) (2021-12-14)
 
 
