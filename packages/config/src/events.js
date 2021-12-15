@@ -1,7 +1,5 @@
-'use strict'
-
 // List of build plugins events
-const EVENTS = [
+export const EVENTS = [
   // Before build command
   'onPreBuild',
   // After build command, before Functions bundling
@@ -15,5 +13,3 @@ const EVENTS = [
   // After build error or success
   'onEnd',
 ]
-
-module.exports = { EVENTS }

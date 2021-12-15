@@ -1,9 +1,7 @@
-'use strict'
+import test from 'ava'
+import hasAnsi from 'has-ansi'
 
-const test = require('ava')
-const hasAnsi = require('has-ansi')
-
-const { runFixture } = require('../helpers/main')
+import { runFixture } from '../helpers/main.js'
 
 test('Prints some information in debug mode', async (t) => {
   await runFixture(t, 'simple', { flags: { debug: true } })

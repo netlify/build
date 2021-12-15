@@ -1,8 +1,6 @@
-'use strict'
+import test from 'ava'
 
-const test = require('ava')
-
-const { runFixture, FIXTURES_DIR, startServer } = require('../helpers/main')
+import { runFixture, FIXTURES_DIR, startServer } from '../helpers/main.js'
 
 const SITE_INFO_PATH = '/api/v1/sites/test'
 const SITE_INFO_DATA = { url: 'test', name: 'test-name', build_settings: { repo_url: 'test' } }

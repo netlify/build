@@ -1,11 +1,9 @@
-'use strict'
-
-const { addBuildSettings } = require('./api/build_settings')
-const { logDefaultConfig } = require('./log/main')
+import { addBuildSettings } from './api/build_settings.js'
+import { logDefaultConfig } from './log/main.js'
 
 // Retrieve default configuration file. It has less priority and it also does
 // not get normalized, merged with contexts, etc.
-const parseDefaultConfig = function ({ defaultConfig, base, baseRelDir, siteInfo, logs, debug }) {
+export const parseDefaultConfig = function ({ defaultConfig, base, baseRelDir, siteInfo, logs, debug }) {
   const defaultConfigB = addDefaultConfigBase(defaultConfig, base)
   const { defaultConfig: defaultConfigC, baseRelDir: baseRelDirA = DEFAULT_BASE_REL_DIR } = addBuildSettings({
     defaultConfig: defaultConfigB,
@@ -31,5 +29,3 @@ const addDefaultConfigBase = function (defaultConfig, base) {
 // it could be retrieved from the `siteInfo`, which is why the default value
 // is assigned later than other properties.
 const DEFAULT_BASE_REL_DIR = true
-
-module.exports = { parseDefaultConfig }

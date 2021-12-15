@@ -1,15 +1,13 @@
-'use strict'
+import isPlainObj from 'is-plain-obj'
+import mapObj from 'map-obj'
 
-const isPlainObj = require('is-plain-obj')
-const mapObj = require('map-obj')
-
-const { mergeConfigs } = require('./merge')
-const { normalizeBeforeConfigMerge } = require('./merge_normalize')
-const { validateContextsPluginsConfig } = require('./validate/context')
-const { validatePreContextConfig } = require('./validate/main')
+import { mergeConfigs } from './merge.js'
+import { normalizeBeforeConfigMerge } from './merge_normalize.js'
+import { validateContextsPluginsConfig } from './validate/context.js'
+import { validatePreContextConfig } from './validate/main.js'
 
 // Validate and normalize `config.context.*`
-const normalizeContextProps = function ({ config, config: { context: contextProps }, origin }) {
+export const normalizeContextProps = function ({ config, config: { context: contextProps }, origin }) {
   if (contextProps === undefined) {
     return config
   }
@@ -27,7 +25,7 @@ const normalizeContextProps = function ({ config, config: { context: contextProp
 // Merge `config.context.{CONTEXT|BRANCH}.*` to `config.build.*` or `config.*`
 // CONTEXT is the `--context` CLI flag.
 // BRANCH is the `--branch` CLI flag.
-const mergeContext = function ({
+export const mergeContext = function ({
   config: { context: contextProps, ...config },
   config: { plugins },
   context,
@@ -88,7 +86,7 @@ const isEdgeHandlersConfig = function (key, value) {
 // some properties are not handled context-sensitively by the API.
 // Takes into account that `context.{context}.build.*` is the same as
 // `context.{context}.*`
-const ensureConfigPriority = function ({ build = {}, ...config }, context, branch) {
+export const ensureConfigPriority = function ({ build = {}, ...config }, context, branch) {
   return {
     ...config,
     build,
@@ -99,5 +97,3 @@ const ensureConfigPriority = function ({ build = {}, ...config }, context, branc
     },
   }
 }
-
-module.exports = { normalizeContextProps, mergeContext, ensureConfigPriority }

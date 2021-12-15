@@ -1,23 +1,14 @@
-'use strict'
-
-const {
-  cyan: { bold: cyanBold },
-  cyan,
-  red: { bold: redBold },
-  yellowBright,
-} = require('chalk')
+import chalk from 'chalk'
 
 // Color theme. Please use this instead of requiring chalk directly, to ensure
 // consistent colors.
-const THEME = {
+export const THEME = {
   // Single lines used as subheaders
-  subHeader: cyanBold,
+  subHeader: chalk.cyan.bold,
   // Single lines used as subheaders indicating an error
-  errorSubHeader: redBold,
+  errorSubHeader: chalk.red.bold,
   // Same for warnings
-  warningLine: yellowBright,
+  warningLine: chalk.yellowBright,
   // One of several words that should be highlighted inside a line
-  highlightWords: cyan,
+  highlightWords: chalk.cyan,
 }
-
-module.exports = { THEME }

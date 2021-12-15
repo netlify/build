@@ -1,7 +1,5 @@
-'use strict'
-
-const { readFile } = require('fs')
-const { promisify } = require('util')
+import { readFile } from 'fs'
+import { promisify } from 'util'
 
 const pReadFile = promisify(readFile)
 
@@ -11,7 +9,7 @@ const pReadFile = promisify(readFile)
 //  - first calls @netlify/config since it needs configuration property
 //  - later calls @netlify/build, which runs @netlify/config under the hood
 // This is also used by Netlify CLI.
-const getCachedConfig = async function ({ cachedConfig, cachedConfigPath, token, api }) {
+export const getCachedConfig = async function ({ cachedConfig, cachedConfigPath, token, api }) {
   const parsedCachedConfig = await parseCachedConfig(cachedConfig, cachedConfigPath)
   // The CLI does not print some properties when they are not serializable or
   // are confidential. Those will be missing from `cachedConfig`. The caller
@@ -32,5 +30,3 @@ const parseCachedConfig = async function (cachedConfig, cachedConfigPath) {
     return JSON.parse(await pReadFile(cachedConfigPath, 'utf8'))
   }
 }
-
-module.exports = { getCachedConfig }

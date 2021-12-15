@@ -1,8 +1,6 @@
 /* eslint-disable max-lines */
 'use strict'
 
-const resolveConfig = require('@netlify/config')
-const { updateConfig, restoreConfig } = require('@netlify/config')
 const mapObj = require('map-obj')
 
 const { getChildEnv } = require('../env/main')
@@ -14,6 +12,8 @@ const { measureDuration } = require('../time/main')
 const { getPackageJson } = require('../utils/package')
 
 const { getUserNodeVersion } = require('./user_node_version')
+
+const netlifyConfigPromise = import('@netlify/config')
 
 // Retrieve immutable options passed to `@netlify/config`.
 // This does not include options which might change during the course of the
@@ -78,7 +78,7 @@ const tLoadConfig = async function ({ configOpts, cachedConfig, cachedConfigPath
     siteInfo,
     env,
   } = await resolveInitialConfig(configOpts, cachedConfig, cachedConfigPath)
-  logConfigInfo({ logs, configPath, buildDir, netlifyConfig, context: contextA, debug })
+  await logConfigInfo({ logs, configPath, buildDir, netlifyConfig, context: contextA, debug })
 
   const apiA = addApiErrorHandlers(api)
   const envValues = mapObj(env, (key, { value }) => [key, value])
@@ -108,13 +108,14 @@ const loadConfig = measureDuration(tLoadConfig, 'resolve_config')
 // In the buildbot and CLI, we re-use the already parsed `@netlify/config`
 // return value which is passed as `cachedConfig`/`cachedConfigPath`.
 const resolveInitialConfig = async function (configOpts, cachedConfig, cachedConfigPath) {
+  const { resolveConfig } = await netlifyConfigPromise
   return await resolveConfig({ ...configOpts, cachedConfig, cachedConfigPath })
 }
 
-const logConfigInfo = function ({ logs, configPath, buildDir, netlifyConfig, context, debug }) {
+const logConfigInfo = async function ({ logs, configPath, buildDir, netlifyConfig, context, debug }) {
   logBuildDir(logs, buildDir)
   logConfigPath(logs, configPath)
-  logConfig({ logs, netlifyConfig, debug })
+  await logConfig({ logs, netlifyConfig, debug })
   logContext(logs, context)
 }
 
@@ -126,6 +127,7 @@ const logConfigInfo = function ({ logs, configPath, buildDir, netlifyConfig, con
 // Errors are propagated and assigned to the specific plugin or core step
 // which changed the configuration.
 const resolveUpdatedConfig = async function (configOpts, configMutations) {
+  const { resolveConfig } = await netlifyConfigPromise
   try {
     return await resolveConfig({ ...configOpts, configMutations, debug: false })
   } catch (error) {
@@ -156,6 +158,7 @@ const saveUpdatedConfig = async function ({
     return
   }
 
+  const { updateConfig } = await netlifyConfigPromise
   await updateConfig(configMutations, {
     buildDir,
     configPath,
@@ -184,6 +187,7 @@ const restoreUpdatedConfig = async function ({
     return
   }
 
+  const { restoreConfig } = await netlifyConfigPromise
   await restoreConfig(configMutations, { buildDir, configPath, headersPath, redirectsPath })
 }
 

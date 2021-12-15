@@ -1,17 +1,15 @@
-'use strict'
+import { throwUserError } from '../error.js'
 
-const { throwUserError } = require('../error')
+import { logWarning } from './logger.js'
 
-const { logWarning } = require('./logger')
-
-const throwOnInvalidTomlSequence = function (invalidSequence) {
+export const throwOnInvalidTomlSequence = function (invalidSequence) {
   throwUserError(
     `In netlify.toml, the following backslash should be escaped: ${invalidSequence}
 The following should be used instead: \\${invalidSequence}`,
   )
 }
 
-const warnLegacyFunctionsDirectory = ({ config = {}, logs }) => {
+export const warnLegacyFunctionsDirectory = ({ config = {}, logs }) => {
   const { functionsDirectory, functionsDirectoryOrigin } = config
 
   if (functionsDirectoryOrigin !== 'config-v1') {
@@ -29,7 +27,7 @@ We recommend updating netlify.toml to set the functions directory under [functio
   )
 }
 
-const warnContextPluginConfig = function (logs, packageName, context) {
+export const warnContextPluginConfig = function (logs, packageName, context) {
   logWarning(
     logs,
     `
@@ -38,7 +36,7 @@ To run "${packageName}" in the ${context} context only, uninstall the plugin fro
   )
 }
 
-const throwContextPluginsConfig = function (packageName, context) {
+export const throwContextPluginsConfig = function (packageName, context) {
   throwUserError(
     `
 "${packageName}" is installed in the UI, which means that it runs in all deploy contexts, regardless of file-based configuration.
@@ -51,7 +49,7 @@ To run "${packageName}" in all contexts, please remove the following section fro
   )
 }
 
-const warnHeadersParsing = function (logs, errors) {
+export const warnHeadersParsing = function (logs, errors) {
   if (errors.length === 0) {
     return
   }
@@ -69,7 +67,7 @@ ${errorMessage}`,
 // Headers with different cases are not currently the way users probably
 // intend them to be, so we print a warning message.
 // See issue at https://github.com/netlify/build/issues/2290
-const warnHeadersCaseSensitivity = function (logs, headers) {
+export const warnHeadersCaseSensitivity = function (logs, headers) {
   const headersA = headers.flatMap(getHeaderNames).filter(isNotDuplicateHeaderName).map(addHeaderLowerCase)
   const differentCaseHeader = headersA.find(hasHeaderCaseDuplicate)
   if (differentCaseHeader === undefined) {
@@ -106,7 +104,7 @@ const isHeaderCaseDuplicate = function ({ headerName, lowerHeaderName }, differe
   return differentCaseHeader.headerName !== headerName && differentCaseHeader.lowerHeaderName === lowerHeaderName
 }
 
-const warnRedirectsParsing = function (logs, errors) {
+export const warnRedirectsParsing = function (logs, errors) {
   if (errors.length === 0) {
     return
   }
@@ -123,14 +121,4 @@ ${errorMessage}`,
 
 const getErrorMessage = function ({ message }) {
   return message
-}
-
-module.exports = {
-  throwOnInvalidTomlSequence,
-  warnLegacyFunctionsDirectory,
-  warnContextPluginConfig,
-  throwContextPluginsConfig,
-  warnHeadersParsing,
-  warnHeadersCaseSensitivity,
-  warnRedirectsParsing,
 }

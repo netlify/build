@@ -1,6 +1,4 @@
-'use strict'
-
-const { throwUserError } = require('../error')
+import { throwUserError } from '../error.js'
 
 // Retrieve Netlify Site information, if available.
 // Used to retrieve local build environment variables and UI build settings.
@@ -9,7 +7,7 @@ const { throwUserError } = require('../error')
 // Requires knowing the `siteId` and having the access `token`.
 // Silently ignore API errors. For example the network connection might be down,
 // but local builds should still work regardless.
-const getSiteInfo = async function ({ api, siteId, mode, testOpts: { env: testEnv = true } = {} }) {
+export const getSiteInfo = async function ({ api, siteId, mode, testOpts: { env: testEnv = true } = {} }) {
   if (api === undefined || mode === 'buildbot' || !testEnv) {
     const siteInfo = siteId === undefined ? {} : { id: siteId }
     return { siteInfo, accounts: [], addons: [] }
@@ -59,5 +57,3 @@ const getAddons = async function (api, siteId) {
 }
 
 const ERROR_CALL_TO_ACTION = `Double-check your login status with 'netlify status' or contact support with details of your error.`
-
-module.exports = { getSiteInfo }

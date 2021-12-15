@@ -1,22 +1,20 @@
-'use strict'
+import { resolve } from 'path'
+import process from 'process'
 
-const { resolve } = require('path')
-const process = require('process')
+import { isDirectory } from 'path-type'
 
-const { isDirectory } = require('path-type')
+import { throwUserError } from '../error.js'
+import { getBufferLogs } from '../log/logger.js'
+import { logOpts } from '../log/main.js'
+import { removeFalsy } from '../utils/remove_falsy.js'
 
-const { throwUserError } = require('../error')
-const { getBufferLogs } = require('../log/logger')
-const { logOpts } = require('../log/main')
-const { removeFalsy } = require('../utils/remove_falsy')
-
-const { getBaseOverride } = require('./base')
-const { getBranch } = require('./branch')
-const { DEFAULT_FEATURE_FLAGS } = require('./feature_flags')
-const { getRepositoryRoot } = require('./repository_root')
+import { getBaseOverride } from './base.js'
+import { getBranch } from './branch.js'
+import { DEFAULT_FEATURE_FLAGS } from './feature_flags.js'
+import { getRepositoryRoot } from './repository_root.js'
 
 // Assign default options
-const addDefaultOpts = function (opts = {}) {
+export const addDefaultOpts = function (opts = {}) {
   const rawOpts = removeFalsy(opts)
 
   const defaultOpts = getDefaultOpts(rawOpts)
@@ -74,7 +72,7 @@ const getDefaultCwd = function (cwdOpt) {
 }
 
 // Normalize options
-const normalizeOpts = async function (opts) {
+export const normalizeOpts = async function (opts) {
   const repositoryRoot = await getRepositoryRoot(opts)
   const optsA = { ...opts, repositoryRoot }
 
@@ -106,5 +104,3 @@ const normalizeDir = async function (opts, optName) {
   }
   return { [optName]: resolvedPath }
 }
-
-module.exports = { addDefaultOpts, normalizeOpts }

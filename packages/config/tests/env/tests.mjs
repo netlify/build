@@ -1,8 +1,7 @@
-'use strict'
+/* eslint-disable max-lines */
+import test from 'ava'
 
-const test = require('ava')
-
-const { getFixtureConfig, startServer } = require('../helpers/main')
+import { getFixtureConfig, startServer } from '../helpers/main.js'
 
 // List of API endpoints to mock
 const SITE_INFO_PATH = '/api/v1/sites/test'
@@ -445,3 +444,4 @@ test('Does not allow overridding readonly environment variables', async (t) => {
   } = await getFixtureConfig(t, 'readonly')
   t.is(REVIEW_ID, undefined)
 })
+/* eslint-enable max-lines */

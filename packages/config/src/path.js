@@ -1,17 +1,15 @@
-'use strict'
+import { resolve } from 'path'
 
-const { resolve } = require('path')
-
-const findUp = require('find-up')
-const pLocate = require('p-locate')
-const pathExists = require('path-exists')
+import findUp from 'find-up'
+import pLocate from 'p-locate'
+import pathExists from 'path-exists'
 
 // Configuration location can be:
 //  - a local path with the --config CLI flag
 //  - a `netlify.*` file in the `repositoryRoot/{base}`
 //  - a `netlify.*` file in the `repositoryRoot`
 //  - a `netlify.*` file in the current directory or any parent
-const getConfigPath = async function ({ configOpt, cwd, repositoryRoot, configBase }) {
+export const getConfigPath = async function ({ configOpt, cwd, repositoryRoot, configBase }) {
   const configPath = await pLocate(
     [
       searchConfigOpt(cwd, configOpt),
@@ -52,5 +50,3 @@ const searchConfigFile = async function (cwd) {
 }
 
 const FILENAME = 'netlify.toml'
-
-module.exports = { getConfigPath }

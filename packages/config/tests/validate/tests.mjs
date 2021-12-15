@@ -1,8 +1,7 @@
-'use strict'
+/* eslint-disable max-lines */
+import test from 'ava'
 
-const test = require('ava')
-
-const { runFixture } = require('../helpers/main')
+import { runFixture } from '../helpers/main.js'
 
 test('plugins: not array', async (t) => {
   await runFixture(t, 'plugins_not_array')
@@ -201,3 +200,4 @@ test('Validates inlineConfig', async (t) => {
   const inlineConfig = { build: { command: false } }
   await runFixture(t, 'empty', { flags: { inlineConfig } })
 })
+/* eslint-enable max-lines */

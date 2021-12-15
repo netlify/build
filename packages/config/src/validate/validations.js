@@ -1,13 +1,12 @@
 /* eslint-disable max-lines */
-'use strict'
 
-const CronParser = require('cron-parser')
-const isPlainObj = require('is-plain-obj')
-const validateNpmPackageName = require('validate-npm-package-name')
+import CronParser from 'cron-parser'
+import isPlainObj from 'is-plain-obj'
+import validateNpmPackageName from 'validate-npm-package-name'
 
-const { bundlers, WILDCARD_ALL: FUNCTIONS_CONFIG_WILDCARD_ALL } = require('../functions_config')
+import { bundlers, WILDCARD_ALL as FUNCTIONS_CONFIG_WILDCARD_ALL } from '../functions_config.js'
 
-const { functionsDirectoryCheck, isArrayOfObjects, isArrayOfStrings, isString, validProperties } = require('./helpers')
+import { functionsDirectoryCheck, isArrayOfObjects, isArrayOfStrings, isString, validProperties } from './helpers.js'
 
 /**
  * @param {string} cron
@@ -38,7 +37,7 @@ const isValidCronExpression = (cron) => {
 // We use this instead of JSON schema (or others) to get nicer error messages.
 
 // Validations done before case normalization
-const PRE_CASE_NORMALIZE_VALIDATIONS = [
+export const PRE_CASE_NORMALIZE_VALIDATIONS = [
   {
     property: 'build',
     check: isPlainObj,
@@ -66,10 +65,10 @@ const ORIGIN_VALIDATIONS = [
 ]
 
 // Validations done before `defaultConfig` merge
-const PRE_MERGE_VALIDATIONS = [...ORIGIN_VALIDATIONS]
+export const PRE_MERGE_VALIDATIONS = [...ORIGIN_VALIDATIONS]
 
 // Validations done before context merge
-const PRE_CONTEXT_VALIDATIONS = [
+export const PRE_CONTEXT_VALIDATIONS = [
   {
     property: 'context',
     check: isPlainObj,
@@ -85,7 +84,7 @@ const PRE_CONTEXT_VALIDATIONS = [
 ]
 
 // Validations done before normalization
-const PRE_NORMALIZE_VALIDATIONS = [
+export const PRE_NORMALIZE_VALIDATIONS = [
   ...ORIGIN_VALIDATIONS,
   {
     property: 'functions',
@@ -108,7 +107,7 @@ const PRE_NORMALIZE_VALIDATIONS = [
 const EXAMPLE_PORT = 80
 
 // Validations done after normalization
-const POST_NORMALIZE_VALIDATIONS = [
+export const POST_NORMALIZE_VALIDATIONS = [
   {
     property: 'plugins.*',
     ...validProperties(['package', 'pinned_version', 'inputs'], ['origin']),
@@ -244,12 +243,4 @@ const POST_NORMALIZE_VALIDATIONS = [
     }),
   },
 ]
-
-module.exports = {
-  PRE_CASE_NORMALIZE_VALIDATIONS,
-  PRE_MERGE_VALIDATIONS,
-  PRE_CONTEXT_VALIDATIONS,
-  PRE_NORMALIZE_VALIDATIONS,
-  POST_NORMALIZE_VALIDATIONS,
-}
 /* eslint-enable max-lines */
