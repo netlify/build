@@ -1,5 +1,16 @@
 # Changelog
 
+## [21.0.0](https://www.github.com/netlify/build/compare/build-v20.3.2...build-v21.0.0) (2021-12-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* use pure ES modules with `run-utils` (#3936)
+
+### Miscellaneous Chores
+
+* use pure ES modules with `run-utils` ([#3936](https://www.github.com/netlify/build/issues/3936)) ([d2365aa](https://www.github.com/netlify/build/commit/d2365aa096b924bb95c98fe7cfc4fbae13cee14a))
+
 ### [20.3.2](https://www.github.com/netlify/build/compare/build-v20.3.1...build-v20.3.2) (2021-12-15)
 
 
