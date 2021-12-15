@@ -1,5 +1,12 @@
 # Changelog
 
+### [21.0.1](https://www.github.com/netlify/build/compare/build-v21.0.0...build-v21.0.1) (2021-12-15)
+
+
+### Bug Fixes
+
+* upgrade `run-utils` to `4.0.0` ([d242934](https://www.github.com/netlify/build/commit/d2429342b2d02d2b92b39344c1840bdd2a1adebe))
+
 ## [21.0.0](https://www.github.com/netlify/build/compare/build-v20.3.2...build-v21.0.0) (2021-12-15)
 
 
