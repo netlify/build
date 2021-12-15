@@ -1,5 +1,16 @@
 # Changelog
 
+## [22.0.0](https://www.github.com/netlify/build/compare/build-v21.0.1...build-v22.0.0) (2021-12-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* use pure ES modules with `git-utils` (#3943)
+
+### Miscellaneous Chores
+
+* use pure ES modules with `git-utils` ([#3943](https://www.github.com/netlify/build/issues/3943)) ([59a9189](https://www.github.com/netlify/build/commit/59a918987c5ba9755c3e684d12e82879dbbe8b54))
+
 ### [21.0.1](https://www.github.com/netlify/build/compare/build-v21.0.0...build-v21.0.1) (2021-12-15)
 
 

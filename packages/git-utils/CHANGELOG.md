@@ -1,5 +1,16 @@
 # Changelog
 
+## [4.0.0](https://www.github.com/netlify/build/compare/git-utils-v3.0.0...git-utils-v4.0.0) (2021-12-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* use pure ES modules with `git-utils` (#3943)
+
+### Miscellaneous Chores
+
+* use pure ES modules with `git-utils` ([#3943](https://www.github.com/netlify/build/issues/3943)) ([59a9189](https://www.github.com/netlify/build/commit/59a918987c5ba9755c3e684d12e82879dbbe8b54))
+
 ## [3.0.0](https://www.github.com/netlify/build/compare/git-utils-v2.0.2...git-utils-v3.0.0) (2021-11-24)
 
 
