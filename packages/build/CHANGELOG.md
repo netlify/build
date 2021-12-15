@@ -1,5 +1,16 @@
 # Changelog
 
+## [24.0.0](https://www.github.com/netlify/build/compare/build-v23.0.1...build-v24.0.0) (2021-12-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* use pure ES modules with `cache-utils` (#3944)
+
+### Miscellaneous Chores
+
+* use pure ES modules with `cache-utils` ([#3944](https://www.github.com/netlify/build/issues/3944)) ([ca0ac3b](https://www.github.com/netlify/build/commit/ca0ac3b79acd62fd8a9ee37777fdfba6851b23ce))
+
 ### [23.0.1](https://www.github.com/netlify/build/compare/build-v23.0.0...build-v23.0.1) (2021-12-15)
 
 
