@@ -1,5 +1,16 @@
 # Changelog
 
+## [17.0.0](https://www.github.com/netlify/build/compare/config-v16.0.7...config-v17.0.0) (2021-12-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* use pure ES modules with `@netlify/config` (#3945)
+
+### Miscellaneous Chores
+
+* use pure ES modules with `@netlify/config` ([#3945](https://www.github.com/netlify/build/issues/3945)) ([96a2cfd](https://www.github.com/netlify/build/commit/96a2cfd8ea8024c570dad0f74dce4ebaa7b39659))
+
 ### [16.0.7](https://www.github.com/netlify/build/compare/config-v16.0.6...config-v16.0.7) (2021-12-02)
 
 
