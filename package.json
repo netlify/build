@@ -40,7 +40,7 @@
       "packages/**/tests/**/tests.js"
     ],
     "verbose": true,
-    "timeout": "60s",
+    "timeout": "120s",
     "environmentVariables": {
       "FORCE_COLOR": "1"
     }

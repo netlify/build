@@ -1,5 +1,10 @@
 'use strict'
 
+const { bindOpts: cacheBindOpts } = require('@netlify/cache-utils')
+const { add: functionsAdd, list: functionsList, listAll: functionsListAll } = require('@netlify/functions-utils')
+const getGitUtils = require('@netlify/git-utils')
+const run = require('@netlify/run-utils')
+
 const { failBuild, failPlugin, cancelBuild, failPluginWithWarning } = require('../error')
 const { isSoftFailEvent } = require('../events')
 
@@ -9,12 +14,11 @@ const { show } = require('./status')
 // Retrieve the `utils` argument.
 const getUtils = function ({ event, constants: { FUNCTIONS_SRC, INTERNAL_FUNCTIONS_SRC, CACHE_DIR }, runState }) {
   const build = getBuildUtils(event)
-  const utils = { build }
-  addLazyProp(utils, 'git', getGitUtils)
-  addLazyProp(utils, 'cache', getCacheUtils.bind(null, CACHE_DIR))
-  addLazyProp(utils, 'run', getRunUtils)
-  addLazyProp(utils, 'functions', getFunctionsUtils.bind(null, FUNCTIONS_SRC, INTERNAL_FUNCTIONS_SRC))
-  addLazyProp(utils, 'status', getStatusUtils.bind(null, runState))
+  const cache = getCacheUtils(CACHE_DIR)
+  const functions = getFunctionsUtils(FUNCTIONS_SRC, INTERNAL_FUNCTIONS_SRC)
+  const status = getStatusUtils(runState)
+  const utils = { build, cache, run, functions, status }
+  addLazyProp(utils, 'git', () => getGitUtils())
   return utils
 }
 
@@ -30,29 +34,15 @@ const getBuildUtils = function (event) {
   return { failBuild, failPlugin, cancelBuild }
 }
 
-const getGitUtils = function () {
-  // eslint-disable-next-line node/global-require
-  return require('@netlify/git-utils')()
-}
-
 const getCacheUtils = function (CACHE_DIR) {
-  // eslint-disable-next-line node/global-require
-  const cacheUtils = require('@netlify/cache-utils')
-  return cacheUtils.bindOpts({ cacheDir: CACHE_DIR })
-}
-
-const getRunUtils = function () {
-  // eslint-disable-next-line node/global-require
-  return require('@netlify/run-utils')
+  return cacheBindOpts({ cacheDir: CACHE_DIR })
 }
 
 const getFunctionsUtils = function (FUNCTIONS_SRC, INTERNAL_FUNCTIONS_SRC) {
   const functionsDirectories = [INTERNAL_FUNCTIONS_SRC, FUNCTIONS_SRC].filter(Boolean)
-  // eslint-disable-next-line node/global-require
-  const functionsUtils = require('@netlify/functions-utils')
-  const add = (src) => functionsUtils.add(src, INTERNAL_FUNCTIONS_SRC, { fail: failBuild })
-  const list = functionsUtils.list.bind(null, functionsDirectories, { fail: failBuild })
-  const listAll = functionsUtils.listAll.bind(null, functionsDirectories, { fail: failBuild })
+  const add = (src) => functionsAdd(src, INTERNAL_FUNCTIONS_SRC, { fail: failBuild })
+  const list = functionsList.bind(null, functionsDirectories, { fail: failBuild })
+  const listAll = functionsListAll.bind(null, functionsDirectories, { fail: failBuild })
   return { add, list, listAll }
 }
 
