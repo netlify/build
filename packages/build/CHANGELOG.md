@@ -1,5 +1,12 @@
 # Changelog
 
+### [25.0.1](https://www.github.com/netlify/build/compare/build-v25.0.0...build-v25.0.1) (2021-12-15)
+
+
+### Bug Fixes
+
+* upgrade `@netlify/config` ([5afa49c](https://www.github.com/netlify/build/commit/5afa49c9179bfe57678a12fc59a00e7ad583a002))
+
 ## [25.0.0](https://www.github.com/netlify/build/compare/build-v24.0.1...build-v25.0.0) (2021-12-15)
 
 
