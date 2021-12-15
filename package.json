@@ -28,16 +28,16 @@
     "prepublishOnly:test": "run-local \"npm test\""
   },
   "config": {
-    "eslint": "--ignore-path .gitignore --ignore-pattern \"packages/*/tests/**/snapshots/*.md\" --cache --format=codeframe --max-warnings=0 \"{packages,.github}/**/*.{js,md,html}\" \"*.{js,md,html}\" \".*.{js,md,html}\"",
-    "prettier": "--ignore-path .gitignore --loglevel=warn \"{packages,.github}/**/*.{js,md,yml,json,html}\" \"*.{js,yml,json,html}\" \".*.{js,yml,json,html}\" \"!**/package-lock.json\" \"!**/CHANGELOG.md\" \"!package-lock.json\" \"!.release-please-manifest.json\" \"!.github/**/*.md\""
+    "eslint": "--ignore-path .gitignore --ignore-pattern \"packages/*/tests/**/snapshots/*.md\" --cache --format=codeframe --max-warnings=0 \"{packages,.github}/**/*.{cjs,mjs,js,md,html}\" \"*.{cjs,mjs,js,md,html}\" \".*.{cjs,mjs,js,md,html}\"",
+    "prettier": "--ignore-path .gitignore --loglevel=warn \"{packages,.github}/**/*.{cjs,mjs,js,md,yml,json,html}\" \"*.{cjs,mjs,js,yml,json,html}\" \".*.{cjs,mjs,js,yml,json,html}\" \"!**/package-lock.json\" \"!**/CHANGELOG.md\" \"!package-lock.json\" \"!.release-please-manifest.json\" \"!.github/**/*.md\""
   },
   "workspaces": [
     "packages/*"
   ],
   "ava": {
     "files": [
-      "packages/**/tests/*.js",
-      "packages/**/tests/**/tests.js"
+      "packages/**/tests/*.{cjs,mjs,js}",
+      "packages/**/tests/**/tests.{cjs,mjs,js}"
     ],
     "verbose": true,
     "timeout": "120s",

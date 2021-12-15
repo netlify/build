@@ -1,11 +1,9 @@
-'use strict'
+import process from 'process'
 
-const process = require('process')
-
-const execa = require('execa')
+import execa from 'execa'
 
 // Run a command, with arguments being an array
-const run = function (file, args, options) {
+export const run = function (file, args, options) {
   const [argsA, optionsA] = parseArgs(args, options)
   const optionsB = { ...DEFAULT_OPTIONS, ...optionsA }
   const childProcess = execa(file, argsA, optionsB)
@@ -14,7 +12,7 @@ const run = function (file, args, options) {
 }
 
 // Run a command, with file + arguments being a single string
-const runCommand = function (command, options) {
+export const runCommand = function (command, options) {
   const optionsA = { ...DEFAULT_OPTIONS, ...options }
   const childProcess = execa.command(command, optionsA)
   redirectOutput(childProcess, optionsA)
@@ -46,9 +44,3 @@ const redirectOutput = function (childProcess, { stdio, stdout, stderr }) {
   childProcess.stdout.pipe(process.stdout)
   childProcess.stderr.pipe(process.stderr)
 }
-
-// Needed to add a property to the function
-// eslint-disable-next-line fp/no-mutation
-run.command = runCommand
-
-module.exports = run

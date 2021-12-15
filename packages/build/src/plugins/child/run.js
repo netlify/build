@@ -13,7 +13,7 @@ const run = async function (
 ) {
   const method = methods[event]
   const runState = {}
-  const utils = getUtils({ event, constants, runState })
+  const utils = await getUtils({ event, constants, runState })
   const netlifyConfigCopy = cloneNetlifyConfig(netlifyConfig)
   const runOptions = { utils, constants, inputs, netlifyConfig: netlifyConfigCopy, packageJson, error }
 

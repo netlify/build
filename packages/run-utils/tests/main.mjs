@@ -1,14 +1,13 @@
-'use strict'
+import { platform } from 'process'
+import { fileURLToPath } from 'url'
 
-const { platform } = require('process')
+import test from 'ava'
+import execa from 'execa'
+import semver from 'semver'
 
-const test = require('ava')
-const execa = require('execa')
-const { valid: validVersion } = require('semver')
+import { run, runCommand } from '../src/main.js'
 
-const run = require('..')
-
-const FIXTURES_DIR = `${__dirname}/fixtures`
+const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 const RUN_FILE = `${FIXTURES_DIR}/run.js`
 
 const runInChildProcess = function (command, options) {
@@ -18,12 +17,12 @@ const runInChildProcess = function (command, options) {
 
 test('Should expose several methods', (t) => {
   t.is(typeof run, 'function')
-  t.is(typeof run.command, 'function')
+  t.is(typeof runCommand, 'function')
 })
 
 test('Can run a command as a single string', async (t) => {
-  const { stdout } = await run.command('ava --version', { stdio: 'pipe' })
-  t.truthy(validVersion(stdout))
+  const { stdout } = await runCommand('ava --version', { stdio: 'pipe' })
+  t.truthy(semver.valid(stdout))
 })
 
 // `echo` in `cmd.exe` is different from Unix
@@ -41,12 +40,12 @@ if (platform !== 'win32') {
 
 test('Can run local binaries', async (t) => {
   const { stdout } = await run('ava', ['--version'], { stdio: 'pipe' })
-  t.truthy(validVersion(stdout))
+  t.truthy(semver.valid(stdout))
 })
 
 test('Should redirect stdout/stderr to parent', async (t) => {
   const { stdout } = await runInChildProcess('ava --version')
-  t.truthy(validVersion(stdout))
+  t.truthy(semver.valid(stdout))
 })
 
 test('Should not redirect stdout/stderr to parent when using "stdio" option', async (t) => {
