@@ -54,7 +54,7 @@
   "license": "MIT",
   "dependencies": {
     "@bugsnag/js": "^7.0.0",
-    "@netlify/cache-utils": "^3.0.0",
+    "@netlify/cache-utils": "^4.0.0",
     "@netlify/config": "^16.0.0",
     "@netlify/functions-utils": "^4.0.0",
     "@netlify/git-utils": "^4.0.0",
