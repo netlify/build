@@ -1,5 +1,12 @@
 # Changelog
 
+### [23.0.1](https://www.github.com/netlify/build/compare/build-v23.0.0...build-v23.0.1) (2021-12-15)
+
+
+### Bug Fixes
+
+* upgrade `@netlify/functions-utils` to `4.0.0` ([ce736f8](https://www.github.com/netlify/build/commit/ce736f80dfaedfe8fa4efac4e4dc540773b22646))
+
 ## [23.0.0](https://www.github.com/netlify/build/compare/build-v22.0.1...build-v23.0.0) (2021-12-15)
 
 
