@@ -1,13 +1,11 @@
-'use strict'
-
-const { getCommits } = require('./commits')
-const { getDiffFiles } = require('./diff')
-const { fileMatch } = require('./match')
-const { getBase, getHead } = require('./refs')
-const { getLinesOfCode } = require('./stats')
+import { getCommits } from './commits.js'
+import { getDiffFiles } from './diff.js'
+import { fileMatch } from './match.js'
+import { getBase, getHead } from './refs.js'
+import { getLinesOfCode } from './stats.js'
 
 // Main entry point to the git utilities
-const getGitUtils = function ({ base, head, cwd } = {}) {
+export const getGitUtils = function ({ base, head, cwd } = {}) {
   const headA = getHead(cwd, head)
   const baseA = getBase(base, headA, cwd)
   const { modifiedFiles, createdFiles, deletedFiles } = getDiffFiles(baseA, headA, cwd)
@@ -16,5 +14,3 @@ const getGitUtils = function ({ base, head, cwd } = {}) {
   const fileMatchA = fileMatch.bind(null, { modifiedFiles, createdFiles, deletedFiles })
   return { modifiedFiles, createdFiles, deletedFiles, commits, linesOfCode, fileMatch: fileMatchA }
 }
-
-module.exports = getGitUtils

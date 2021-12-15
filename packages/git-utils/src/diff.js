@@ -1,10 +1,8 @@
-'use strict'
-
-const { git } = require('./exec')
+import { git } from './exec.js'
 
 // Return the list of modified|created|deleted files according to git, between
 // the `base` commit and the `HEAD`
-const getDiffFiles = function (base, head, cwd) {
+export const getDiffFiles = function (base, head, cwd) {
   const stdout = git(['diff', '--name-status', '--no-renames', `${base}...${head}`], cwd)
   const files = stdout.split('\n').map(getDiffFile).filter(Boolean)
 
@@ -36,5 +34,3 @@ const getFilesByType = function (files, type) {
 const getFilepath = function ({ filepath }) {
   return filepath
 }
-
-module.exports = { getDiffFiles }

@@ -1,11 +1,9 @@
-'use strict'
+import { env } from 'process'
 
-const { env } = require('process')
-
-const { git } = require('./exec')
+import { git } from './exec.js'
 
 // Retrieve the `head` commit
-const getHead = function (cwd, head = 'HEAD') {
+export const getHead = function (cwd, head = 'HEAD') {
   const result = checkRef(head, cwd)
   if (result.error !== undefined) {
     throwError('head', result)
@@ -14,7 +12,7 @@ const getHead = function (cwd, head = 'HEAD') {
 }
 
 // Retrieve the `base` commit
-const getBase = function (base, head, cwd) {
+export const getBase = function (base, head, cwd) {
   const refs = getBaseRefs(base, head)
   const { ref } = findRef(refs, cwd)
   return ref
@@ -63,5 +61,3 @@ const throwError = function (name, { ref, error: { message, stderr } }) {
   const messageA = `Invalid ${name} commit ${ref}\n${messages}`
   throw new Error(messageA)
 }
-
-module.exports = { getBase, getHead }
