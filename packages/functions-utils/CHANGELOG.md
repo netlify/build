@@ -1,5 +1,16 @@
 # Changelog
 
+## [4.0.0](https://www.github.com/netlify/build/compare/functions-utils-v3.0.3...functions-utils-v4.0.0) (2021-12-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* use pure ES modules with functions-utils (#3942)
+
+### Miscellaneous Chores
+
+* use pure ES modules with functions-utils ([#3942](https://www.github.com/netlify/build/issues/3942)) ([590caad](https://www.github.com/netlify/build/commit/590caadbb6eaf304ad317b10bfce92ce1b0527a2))
+
 ### [3.0.3](https://www.github.com/netlify/build/compare/functions-utils-v3.0.2...functions-utils-v3.0.3) (2021-12-02)
 
 
