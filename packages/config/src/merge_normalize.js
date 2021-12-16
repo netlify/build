@@ -1,21 +1,19 @@
-'use strict'
-
-const { normalizeConfigCase } = require('./case')
-const { normalizeConfig } = require('./normalize')
-const { addOrigins } = require('./origin')
-const { validateIdenticalPlugins } = require('./validate/identical')
-const {
+import { normalizeConfigCase } from './case.js'
+import { normalizeConfig } from './normalize.js'
+import { addOrigins } from './origin.js'
+import { validateIdenticalPlugins } from './validate/identical.js'
+import {
   validatePreCaseNormalize,
   validatePreMergeConfig,
   validatePreNormalizeConfig,
   validatePostNormalizeConfig,
-} = require('./validate/main')
+} from './validate/main.js'
 
 // Perform validation and normalization logic to apply to all of:
 //  - config, defaultConfig, inlineConfig
 //  - context-specific configs
 // Therefore, this is performing before merging those together.
-const normalizeBeforeConfigMerge = function (config, origin) {
+export const normalizeBeforeConfigMerge = function (config, origin) {
   validatePreCaseNormalize(config)
   const configA = normalizeConfigCase(config)
   validatePreMergeConfig(configA)
@@ -25,14 +23,9 @@ const normalizeBeforeConfigMerge = function (config, origin) {
 }
 
 // Validation and normalization logic performed after merging
-const normalizeAfterConfigMerge = function (config) {
+export const normalizeAfterConfigMerge = function (config) {
   validatePreNormalizeConfig(config)
   const configA = normalizeConfig(config)
   validatePostNormalizeConfig(configA)
   return configA
-}
-
-module.exports = {
-  normalizeBeforeConfigMerge,
-  normalizeAfterConfigMerge,
 }

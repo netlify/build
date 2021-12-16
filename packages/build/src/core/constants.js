@@ -2,11 +2,12 @@
 
 const { relative, normalize } = require('path')
 
-const { getCacheDir } = require('@netlify/cache-utils')
 const mapObj = require('map-obj')
 const pathExists = require('path-exists')
 
 const { version } = require('../../package.json')
+
+const cacheUtilsPromise = import('@netlify/cache-utils')
 
 // Retrieve constants passed to plugins
 const getConstants = async function ({
@@ -21,6 +22,7 @@ const getConstants = async function ({
   mode,
 }) {
   const isLocal = mode !== 'buildbot'
+  const { getCacheDir } = await cacheUtilsPromise
   const normalizedCacheDir = getCacheDir({ cacheDir, cwd: buildDir })
 
   const constants = {

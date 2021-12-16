@@ -1,18 +1,16 @@
-'use strict'
+import { readFile } from 'fs'
+import { promisify } from 'util'
 
-const { readFile } = require('fs')
-const { promisify } = require('util')
+import pathExists from 'path-exists'
 
-const pathExists = require('path-exists')
-
-const { throwUserError } = require('./error')
-const { throwOnInvalidTomlSequence } = require('./log/messages')
-const { parseToml } = require('./utils/toml')
+import { throwUserError } from './error.js'
+import { throwOnInvalidTomlSequence } from './log/messages.js'
+import { parseToml } from './utils/toml.js'
 
 const pReadFile = promisify(readFile)
 
 // Load the configuration file and parse it (TOML)
-const parseConfig = async function (configPath) {
+export const parseConfig = async function (configPath) {
   if (configPath === undefined) {
     return {}
   }
@@ -26,7 +24,7 @@ const parseConfig = async function (configPath) {
 
 // Same but `configPath` is required and `configPath` might point to a
 // non-existing file.
-const parseOptionalConfig = async function (configPath) {
+export const parseOptionalConfig = async function (configPath) {
   if (!(await pathExists(configPath))) {
     return {}
   }
@@ -72,5 +70,3 @@ const validateTomlBlackslashes = function (configString) {
 // Also, """ strings can use trailing backslashes.
 const INVALID_TOML_BLACKSLASH =
   /\n[a-zA-Z]+ *= *(?:(?:""".*(?<!\\)(\\[^"\\btnfruU\n]).*""")|(?:"(?!")[^\n]*(?<!\\)(\\[^"\\btnfruU])[^\n]*"))/su
-
-module.exports = { parseConfig, parseOptionalConfig }

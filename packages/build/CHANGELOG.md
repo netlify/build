@@ -1,5 +1,48 @@
 # Changelog
 
+### [25.0.1](https://www.github.com/netlify/build/compare/build-v25.0.0...build-v25.0.1) (2021-12-15)
+
+
+### Bug Fixes
+
+* upgrade `@netlify/config` ([5afa49c](https://www.github.com/netlify/build/commit/5afa49c9179bfe57678a12fc59a00e7ad583a002))
+
+## [25.0.0](https://www.github.com/netlify/build/compare/build-v24.0.1...build-v25.0.0) (2021-12-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* use pure ES modules with `@netlify/config` (#3945)
+
+### Miscellaneous Chores
+
+* use pure ES modules with `@netlify/config` ([#3945](https://www.github.com/netlify/build/issues/3945)) ([96a2cfd](https://www.github.com/netlify/build/commit/96a2cfd8ea8024c570dad0f74dce4ebaa7b39659))
+
+### [24.0.1](https://www.github.com/netlify/build/compare/build-v24.0.0...build-v24.0.1) (2021-12-15)
+
+
+### Bug Fixes
+
+* upgrade `cache-utils` to `4.0.0` ([23915a3](https://www.github.com/netlify/build/commit/23915a37b3d4c72a2c018338a8546a9abd4eec2d))
+
+## [24.0.0](https://www.github.com/netlify/build/compare/build-v23.0.1...build-v24.0.0) (2021-12-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* use pure ES modules with `cache-utils` (#3944)
+
+### Miscellaneous Chores
+
+* use pure ES modules with `cache-utils` ([#3944](https://www.github.com/netlify/build/issues/3944)) ([ca0ac3b](https://www.github.com/netlify/build/commit/ca0ac3b79acd62fd8a9ee37777fdfba6851b23ce))
+
+### [23.0.1](https://www.github.com/netlify/build/compare/build-v23.0.0...build-v23.0.1) (2021-12-15)
+
+
+### Bug Fixes
+
+* upgrade `@netlify/functions-utils` to `4.0.0` ([ce736f8](https://www.github.com/netlify/build/commit/ce736f80dfaedfe8fa4efac4e4dc540773b22646))
+
 ## [23.0.0](https://www.github.com/netlify/build/compare/build-v22.0.1...build-v23.0.0) (2021-12-15)
 
 

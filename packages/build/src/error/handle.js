@@ -26,7 +26,7 @@ const handleBuildError = async function (
   removeErrorColors(error)
   // Some errors, such as telemetry ones, should not be logged
   if (basicErrorInfo.showInBuildLog) {
-    logBuildError({ error, netlifyConfig, mode, logs, debug, testOpts })
+    await logBuildError({ error, netlifyConfig, mode, logs, debug, testOpts })
   }
   logOldCliVersionError({ mode, testOpts })
   await reportBuildError({ error, errorMonitor, childEnv, logs, testOpts })

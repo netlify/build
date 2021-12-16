@@ -1,10 +1,8 @@
-'use strict'
+import omit from 'omit.js'
 
-const omit = require('omit.js').default
+import { removeFalsy } from '../utils/remove_falsy.js'
 
-const { removeFalsy } = require('../utils/remove_falsy')
-
-const { getGitEnv } = require('./git')
+import { getGitEnv } from './git.js'
 
 // Retrieve this site's environment variable. Also take into account team-wide
 // environment variables and addons.
@@ -12,7 +10,7 @@ const { getGitEnv } = require('./git')
 // meant so that local builds can mimic production builds
 // TODO: add `netlify.toml` `build.environment`, after normalization
 // TODO: add `CONTEXT` and others
-const getEnv = async function ({
+export const getEnv = async function ({
   mode,
   config,
   siteInfo,
@@ -138,7 +136,7 @@ const getConfigFileEnv = function ({
 
 // Some environment variables cannot be overridden by configuration
 const cleanUserEnv = function (userEnv) {
-  return omit(userEnv, READONLY_ENV)
+  return omit.default(userEnv, READONLY_ENV)
 }
 
 const READONLY_ENV = [
@@ -170,5 +168,3 @@ const READONLY_ENV = [
   'PULL_REQUEST',
   'REVIEW_ID',
 ]
-
-module.exports = { getEnv }

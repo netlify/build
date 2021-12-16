@@ -1,11 +1,9 @@
-'use strict'
-
-const { DEFAULT_FEATURE_FLAGS } = require('../options/feature_flags')
-const { removeEmptyArray } = require('../simplify')
-const { removeFalsy } = require('../utils/remove_falsy')
+import { DEFAULT_FEATURE_FLAGS } from '../options/feature_flags.js'
+import { removeEmptyArray } from '../simplify.js'
+import { removeFalsy } from '../utils/remove_falsy.js'
 
 // Use an allowlist to prevent printing confidential values.
-const cleanupConfigOpts = function ({
+export const cleanupConfigOpts = function ({
   config,
   cwd,
   context,
@@ -43,5 +41,3 @@ const cleanFeatureFlags = function (featureFlags) {
 const shouldPrintFeatureFlag = function ([featureFlagName, enabled]) {
   return enabled && featureFlagName in DEFAULT_FEATURE_FLAGS
 }
-
-module.exports = { cleanupConfigOpts }

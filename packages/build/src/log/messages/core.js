@@ -20,14 +20,14 @@ const logBuildStart = function (logs) {
   logMessage(logs, `${name} ${version}`)
 }
 
-const logBuildError = function ({ error, netlifyConfig, mode, logs, debug, testOpts }) {
+const logBuildError = async function ({ error, netlifyConfig, mode, logs, debug, testOpts }) {
   const fullErrorInfo = getFullErrorInfo({ error, colors: true, debug })
   const { severity } = fullErrorInfo
   const { title, body } = serializeLogError({ fullErrorInfo })
   const logHeaderFunc = getLogHeaderFunc(error)
   logHeaderFunc(logs, title)
   logMessage(logs, `\n${body}\n`)
-  logConfigOnError({ logs, netlifyConfig, severity })
+  await logConfigOnError({ logs, netlifyConfig, severity })
   logOldCliVersionError({ mode, testOpts })
 }
 

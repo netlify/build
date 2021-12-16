@@ -15,7 +15,7 @@ const load = async function ({ pluginPath, inputs, packageJson, verbose }) {
   const tsNodeService = registerTypeScript(pluginPath)
   const logic = await getLogic({ pluginPath, inputs, tsNodeService })
 
-  validatePlugin(logic)
+  await validatePlugin(logic)
 
   const methods = filterObj(logic, isEventHandler)
   const events = Object.keys(methods)

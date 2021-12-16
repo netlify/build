@@ -1,13 +1,12 @@
 /* eslint-disable max-lines */
-'use strict'
 
-const filterObj = require('filter-obj')
-const yargs = require('yargs')
+import filterObj from 'filter-obj'
+import yargs from 'yargs'
 
-const { normalizeCliFeatureFlags } = require('../options/feature_flags')
+import { normalizeCliFeatureFlags } from '../options/feature_flags.js'
 
 // Parse CLI flags
-const parseFlags = function () {
+export const parseFlags = function () {
   const { featureFlags: cliFeatureFlags = '', ...flags } = yargs.options(FLAGS).usage(USAGE).parse()
   const featureFlags = normalizeCliFeatureFlags(cliFeatureFlags)
   const flagsA = { ...flags, featureFlags }
@@ -133,7 +132,7 @@ Default: true`,
     describe: `Environment in which this is loaded. Can be:
   - 'buildbot': within Netlify Buildbot
   - 'cli': within Netlify CLI
-  - 'require': through require('@netlify/config')`,
+  - 'require': through import('@netlify/config')`,
     hidden: true,
   },
   debug: {
@@ -172,6 +171,4 @@ const isUserFlag = function (key, value) {
 }
 
 const INTERNAL_KEYS = new Set(['help', 'version', '_', '$0'])
-
-module.exports = { parseFlags }
 /* eslint-enable max-lines */

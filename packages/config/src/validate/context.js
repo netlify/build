@@ -1,7 +1,5 @@
-'use strict'
-
-const { warnContextPluginConfig, throwContextPluginsConfig } = require('../log/messages')
-const { UI_ORIGIN } = require('../origin')
+import { warnContextPluginConfig, throwContextPluginsConfig } from '../log/messages.js'
+import { UI_ORIGIN } from '../origin.js'
 
 // The only reason to specify both `[[plugins]]` and
 // `[[contexts.{context}.plugins]]` is to configure context-specific plugin
@@ -14,7 +12,7 @@ const { UI_ORIGIN } = require('../origin')
 //  - `package` is the only property in `[[contexts.{context}.plugins]]`, i.e.
 //    there are no context-specific `inputs`
 //  - The current build is not in `context`
-const validateContextsPluginsConfig = function ({ contextProps, plugins, contexts, logs }) {
+export const validateContextsPluginsConfig = function ({ contextProps, plugins, contexts, logs }) {
   Object.entries(contextProps).forEach(([givenContext, givenContextProps]) => {
     validateContextPluginsConfig({ givenContextProps, plugins, givenContext, contexts, logs })
   })
@@ -57,5 +55,3 @@ const isContextFreePlugin = function (plugins, packageName) {
 const isPluginConfigError = function (contexts, givenContext, inputs) {
   return contexts.every((context) => context !== givenContext) && Object.keys(inputs).length === 0
 }
-
-module.exports = { validateContextsPluginsConfig }

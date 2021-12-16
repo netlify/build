@@ -36,7 +36,7 @@ const updateNetlifyConfig = async function ({
     headersPath: headersPathA,
     redirectsPath: redirectsPathA,
   } = await resolveUpdatedConfig(configOpts, configMutationsA)
-  logConfigOnUpdate({ logs, netlifyConfig: netlifyConfigA, debug })
+  await logConfigOnUpdate({ logs, netlifyConfig: netlifyConfigA, debug })
   // eslint-disable-next-line fp/no-mutation,no-param-reassign
   errorParams.netlifyConfig = netlifyConfigA
   return {

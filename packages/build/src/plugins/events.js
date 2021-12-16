@@ -1,6 +1,11 @@
 'use strict'
 
-const { EVENTS } = require('@netlify/config')
+const netlifyConfigPromise = import('@netlify/config')
+
+const listEvents = async function () {
+  const { EVENTS } = await netlifyConfigPromise
+  return EVENTS
+}
 
 const isAmongEvents = function (events, event) {
   return events.includes(event)
@@ -19,7 +24,7 @@ const runsOnlyOnBuildFailure = isAmongEvents.bind(null, ['onError'])
 const runsAfterDeploy = isAmongEvents.bind(null, ['onSuccess', 'onEnd'])
 
 module.exports = {
-  EVENTS,
+  listEvents,
   isSoftFailEvent,
   runsAlsoOnBuildFailure,
   runsOnlyOnBuildFailure,

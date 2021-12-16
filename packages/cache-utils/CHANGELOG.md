@@ -1,5 +1,16 @@
 # Changelog
 
+## [4.0.0](https://www.github.com/netlify/build/compare/cache-utils-v3.0.1...cache-utils-v4.0.0) (2021-12-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* use pure ES modules with `cache-utils` (#3944)
+
+### Miscellaneous Chores
+
+* use pure ES modules with `cache-utils` ([#3944](https://www.github.com/netlify/build/issues/3944)) ([ca0ac3b](https://www.github.com/netlify/build/commit/ca0ac3b79acd62fd8a9ee37777fdfba6851b23ce))
+
 ### [3.0.1](https://www.github.com/netlify/build/compare/cache-utils-v3.0.0...cache-utils-v3.0.1) (2021-11-25)
 
 

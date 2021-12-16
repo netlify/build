@@ -1,12 +1,10 @@
-'use strict'
-
-const { normalizeFunctionsProps, WILDCARD_ALL } = require('./functions_config')
-const { mergeConfigs } = require('./merge')
-const { DEFAULT_ORIGIN } = require('./origin')
-const { removeFalsy } = require('./utils/remove_falsy')
+import { normalizeFunctionsProps, WILDCARD_ALL } from './functions_config.js'
+import { mergeConfigs } from './merge.js'
+import { DEFAULT_ORIGIN } from './origin.js'
+import { removeFalsy } from './utils/remove_falsy.js'
 
 // Normalize configuration object
-const normalizeConfig = function (config) {
+export const normalizeConfig = function (config) {
   const configA = removeEmpty(config)
   const { build, functions, plugins, ...configB } = mergeConfigs([DEFAULT_CONFIG, configA])
   const { build: buildA, functions: functionsA, functionsDirectoryProps } = normalizeFunctionsProps(build, functions)
@@ -36,5 +34,3 @@ const DEFAULT_CONFIG = {
 const normalizePlugin = function ({ inputs = {}, ...plugin }) {
   return removeFalsy({ ...plugin, inputs })
 }
-
-module.exports = { normalizeConfig }

@@ -1,17 +1,15 @@
-'use strict'
+import { resolve, relative, parse } from 'path'
 
-const { resolve, relative, parse } = require('path')
+import dotProp from 'dot-prop'
+import pathExists from 'path-exists'
 
-const { get, set, delete: deleteProp } = require('dot-prop')
-const pathExists = require('path-exists')
-
-const { throwUserError } = require('./error')
-const { mergeConfigs } = require('./merge')
-const { isTruthy } = require('./utils/remove_falsy')
+import { throwUserError } from './error.js'
+import { mergeConfigs } from './merge.js'
+import { isTruthy } from './utils/remove_falsy.js'
 
 // Make configuration paths relative to `buildDir` and converts them to
 // absolute paths
-const resolveConfigPaths = async function ({ config, repositoryRoot, buildDir, baseRelDir }) {
+export const resolveConfigPaths = async function ({ config, repositoryRoot, buildDir, baseRelDir }) {
   const baseRel = baseRelDir ? buildDir : repositoryRoot
   const configA = resolvePaths(config, FILE_PATH_CONFIG_PROPS, baseRel, repositoryRoot)
   const configB = await addDefaultPaths(configA, repositoryRoot, baseRel)
@@ -27,17 +25,17 @@ const resolvePaths = function (config, propNames, baseRel, repositoryRoot) {
 }
 
 const resolvePathProp = function (config, propName, baseRel, repositoryRoot) {
-  const path = get(config, propName)
+  const path = dotProp.get(config, propName)
 
   if (!isTruthy(path)) {
-    deleteProp(config, propName)
+    dotProp.delete(config, propName)
     return config
   }
 
-  return set(config, propName, resolvePath(repositoryRoot, baseRel, path, propName))
+  return dotProp.set(config, propName, resolvePath(repositoryRoot, baseRel, path, propName))
 }
 
-const resolvePath = function (repositoryRoot, baseRel, originalPath, propName) {
+export const resolvePath = function (repositoryRoot, baseRel, originalPath, propName) {
   if (!isTruthy(originalPath)) {
     return
   }
@@ -107,5 +105,3 @@ const addDefaultPath = async function ({ repositoryRoot, baseRel, defaultPath, g
 
   return getConfig(absolutePath)
 }
-
-module.exports = { resolveConfigPaths, resolvePath }

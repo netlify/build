@@ -1,6 +1,6 @@
 {
   "name": "@netlify/build",
-  "version": "23.0.0",
+  "version": "25.0.1",
   "description": "Netlify build module",
   "main": "src/core/main.js",
   "types": "types/index.d.ts",
@@ -54,9 +54,9 @@
   "license": "MIT",
   "dependencies": {
     "@bugsnag/js": "^7.0.0",
-    "@netlify/cache-utils": "^3.0.0",
-    "@netlify/config": "^16.0.0",
-    "@netlify/functions-utils": "^3.0.0",
+    "@netlify/cache-utils": "^4.0.0",
+    "@netlify/config": "^17.0.0",
+    "@netlify/functions-utils": "^4.0.0",
     "@netlify/git-utils": "^4.0.0",
     "@netlify/plugin-edge-handlers": "^3.0.0",
     "@netlify/plugins-list": "^6.2.0",
@@ -112,6 +112,7 @@
     "ava": "^3.15.0",
     "cpy": "^8.1.0",
     "del": "^6.0.0",
+    "fast-safe-stringify": "^2.0.7",
     "get-bin-path": "^5.1.0",
     "get-node": "^11.0.2",
     "get-port": "^5.1.1",

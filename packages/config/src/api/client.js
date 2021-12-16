@@ -1,12 +1,10 @@
-'use strict'
+import { removeUndefined } from '../utils/remove_falsy.js'
 
 // TODO: use static `import` after migrating `@netlify/config` to pure ES modules
 const jsClient = import('netlify')
 
-const { removeUndefined } = require('../utils/remove_falsy')
-
 // Retrieve Netlify API client, if an access token was passed
-const getApiClient = async function ({ token, offline, testOpts = {}, host, scheme, pathPrefix }) {
+export const getApiClient = async function ({ token, offline, testOpts = {}, host, scheme, pathPrefix }) {
   if (!token || offline) {
     return
   }
@@ -17,5 +15,3 @@ const getApiClient = async function ({ token, offline, testOpts = {}, host, sche
   const api = new NetlifyAPI(token, parameters)
   return api
 }
-
-module.exports = { getApiClient }

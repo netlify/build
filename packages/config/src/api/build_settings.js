@@ -1,12 +1,10 @@
-'use strict'
-
-const { removeFalsy } = require('../utils/remove_falsy')
+import { removeFalsy } from '../utils/remove_falsy.js'
 
 // Netlify UI build settings are used as default configuration values in
 // production. In local builds, we retrieve them with `getSite` (`siteInfo`)
 // instead.
 // This also includes UI-installed plugins.
-const addBuildSettings = function ({
+export const addBuildSettings = function ({
   defaultConfig,
   baseRelDir,
   siteInfo: { build_settings: buildSettings, plugins },
@@ -41,5 +39,3 @@ const normalizeUiPlugin = function ({ package: packageName, inputs, pinned_versi
 const getBaseRelDir = function ({ base_rel_dir: siteBaseRelDir }, baseRelDir = siteBaseRelDir) {
   return Boolean(baseRelDir)
 }
-
-module.exports = { addBuildSettings }

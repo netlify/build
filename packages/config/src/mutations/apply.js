@@ -1,11 +1,9 @@
-'use strict'
+import { throwUserError } from '../error.js'
+import { EVENTS } from '../events.js'
+import { WILDCARD_ALL, FUNCTION_CONFIG_PROPERTIES } from '../functions_config.js'
+import { setProp } from '../utils/set.js'
 
-const { throwUserError } = require('../error')
-const { EVENTS } = require('../events')
-const { WILDCARD_ALL, FUNCTION_CONFIG_PROPERTIES } = require('../functions_config')
-const { setProp } = require('../utils/set')
-
-const { getPropName } = require('./config_prop_name')
+import { getPropName } from './config_prop_name.js'
 
 // Apply a series of mutations to `inlineConfig`.
 // Meant to be used to apply configuration changes at build time.
@@ -13,7 +11,7 @@ const { getPropName } = require('./config_prop_name')
 // normalization. Therefore, this function also denormalizes (reverts that
 // normalization) so that the final `config` object can be serialized back to
 // a `netlify.toml`.
-const applyMutations = function (inlineConfig, configMutations) {
+export const applyMutations = function (inlineConfig, configMutations) {
   return configMutations.reduce(applyMutation, inlineConfig)
 }
 
@@ -78,5 +76,3 @@ const MUTABLE_PROPS = {
   headers: { lastEvent: 'onPostBuild' },
   redirects: { lastEvent: 'onPostBuild' },
 }
-
-module.exports = { applyMutations }

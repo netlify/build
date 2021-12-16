@@ -94,6 +94,24 @@ module.exports = {
       },
     },
     {
+      // **/*.md/*.js references code blocks inside markdown files
+      files: ['**/*.md/*.js'],
+      rules: {
+        // Allow self-imports
+        'node/no-extraneous-import': 0,
+      },
+    },
+    // `@netlify/config` currently imports some test helpers from
+    // `@netlify/build`.
+    // This is creating linting issues, but only on Windows for some reason.
+    {
+      files: ['packages/config/tests/helpers/main.js'],
+      rules: {
+        'import/named': 0,
+      },
+    },
+
+    {
       files: ['packages/*/tests/**/*.{cjs,mjs,js}'],
       rules: {
         'no-magic-numbers': 'off',
@@ -103,8 +121,10 @@ module.exports = {
     // Those packages are using pure ES modules
     {
       files: [
-        'packages/git-utils/**/*.{cjs,mjs,js}',
+        'packages/cache-utils/**/*.{cjs,mjs,js}',
+        'packages/config/**/*.{cjs,mjs,js}',
         'packages/functions-utils/**/*.{cjs,mjs,js}',
+        'packages/git-utils/**/*.{cjs,mjs,js}',
         'packages/run-utils/**/*.{cjs,mjs,js}',
       ],
       parserOptions: {

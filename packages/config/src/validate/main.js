@@ -1,39 +1,37 @@
-'use strict'
+import { throwUserError } from '../error.js'
+import { THEME } from '../log/theme.js'
 
-const { throwUserError } = require('../error')
-const { THEME } = require('../log/theme')
-
-const { getExample } = require('./example')
-const {
+import { getExample } from './example.js'
+import {
   PRE_CASE_NORMALIZE_VALIDATIONS,
   PRE_MERGE_VALIDATIONS,
   PRE_CONTEXT_VALIDATIONS,
   PRE_NORMALIZE_VALIDATIONS,
   POST_NORMALIZE_VALIDATIONS,
-} = require('./validations')
+} from './validations.js'
 
 // Validate the configuration file, before case normalization.
-const validatePreCaseNormalize = function (config) {
+export const validatePreCaseNormalize = function (config) {
   validateConfig(config, PRE_CASE_NORMALIZE_VALIDATIONS)
 }
 
 // Validate the configuration file, before `defaultConfig` merge.
-const validatePreMergeConfig = function (config) {
+export const validatePreMergeConfig = function (config) {
   validateConfig(config, PRE_MERGE_VALIDATIONS)
 }
 
 // Validate the configuration file, before context merge.
-const validatePreContextConfig = function (config) {
+export const validatePreContextConfig = function (config) {
   validateConfig(config, PRE_CONTEXT_VALIDATIONS)
 }
 
 // Validate the configuration file, before normalization.
-const validatePreNormalizeConfig = function (config) {
+export const validatePreNormalizeConfig = function (config) {
   validateConfig(config, PRE_NORMALIZE_VALIDATIONS)
 }
 
 // Validate the configuration file, after normalization.
-const validatePostNormalizeConfig = function (config) {
+export const validatePostNormalizeConfig = function (config) {
   validateConfig(config, POST_NORMALIZE_VALIDATIONS)
 }
 
@@ -142,12 +140,4 @@ const validateChildProp = function ({ childProp, value, nextPath, propPath, prev
     propPath: `${propPath}.${childProp}`,
     key: childProp,
   })
-}
-
-module.exports = {
-  validatePreCaseNormalize,
-  validatePreMergeConfig,
-  validatePreContextConfig,
-  validatePreNormalizeConfig,
-  validatePostNormalizeConfig,
 }

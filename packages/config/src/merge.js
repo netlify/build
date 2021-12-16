@@ -1,16 +1,14 @@
-'use strict'
+import deepmerge from 'deepmerge'
+import isPlainObj from 'is-plain-obj'
 
-const deepmerge = require('deepmerge')
-const isPlainObj = require('is-plain-obj')
-
-const { groupBy } = require('./utils/group')
-const { removeUndefined } = require('./utils/remove_falsy')
+import { groupBy } from './utils/group.js'
+import { removeUndefined } from './utils/remove_falsy.js'
 
 // Merge an array of configuration objects.
 // Last items have higher priority.
 // Configuration objects are deeply merged.
 //   - Arrays are overridden, not concatenated.
-const mergeConfigs = function (configs) {
+export const mergeConfigs = function (configs) {
   const cleanedConfigs = configs.map(removeUndefinedProps)
   return deepmerge.all(cleanedConfigs, { arrayMerge })
 }
@@ -53,5 +51,3 @@ const mergePluginConfigs = function (plugins) {
 const mergePluginsPair = function (pluginA, pluginB) {
   return deepmerge(pluginA, pluginB, { arrayMerge })
 }
-
-module.exports = { mergeConfigs }
