@@ -1,4 +1,3 @@
-/* eslint-disable max-lines */
 import test from 'ava'
 
 import { runFixture } from '../helpers/main.js'
@@ -200,4 +199,3 @@ test('Validates inlineConfig', async (t) => {
   const inlineConfig = { build: { command: false } }
   await runFixture(t, 'empty', { flags: { inlineConfig } })
 })
-/* eslint-enable max-lines */

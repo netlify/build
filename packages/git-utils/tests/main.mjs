@@ -13,7 +13,6 @@ const DEFAULT_OPTS = { base: BASE, head: HEAD }
 
 test('Should define all its methods and properties', (t) => {
   const git = getGitUtils(DEFAULT_OPTS)
-  // eslint-disable-next-line fp/no-mutating-methods
   t.deepEqual(Object.keys(git).sort(), [
     'commits',
     'createdFiles',
@@ -54,12 +53,10 @@ const LINES_OF_CODE = 163
 
 test.serial('Should allow using the environment variable CACHED_COMMIT_REF', (t) => {
   try {
-    // eslint-disable-next-line fp/no-mutation
     env.CACHED_COMMIT_REF = BASE
     const { linesOfCode } = getGitUtils({ head: HEAD })
     t.is(linesOfCode, LINES_OF_CODE)
   } finally {
-    // eslint-disable-next-line fp/no-delete
     delete env.CACHED_COMMIT_REF
   }
 })

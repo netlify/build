@@ -1,4 +1,3 @@
-/* eslint-disable max-lines */
 import test from 'ava'
 
 import { getFixtureConfig, startServer } from '../helpers/main.js'
@@ -444,4 +443,3 @@ test('Does not allow overridding readonly environment variables', async (t) => {
   } = await getFixtureConfig(t, 'readonly')
   t.is(REVIEW_ID, undefined)
 })
-/* eslint-enable max-lines */
