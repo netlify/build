@@ -5,7 +5,7 @@ const { relative, normalize } = require('path')
 const mapObj = require('map-obj')
 const pathExists = require('path-exists')
 
-const { version } = require('../../package.json')
+const { ROOT_PACKAGE_JSON } = require('../utils/json')
 
 const cacheUtilsPromise = import('@netlify/cache-utils')
 
@@ -35,7 +35,7 @@ const getConstants = async function ({
     // Boolean indicating whether the build was run locally (Netlify CLI) or in the production CI
     IS_LOCAL: isLocal,
     // The version of Netlify Build
-    NETLIFY_BUILD_VERSION: version,
+    NETLIFY_BUILD_VERSION: ROOT_PACKAGE_JSON.version,
     // The Netlify Site ID
     SITE_ID: siteId,
     // The Netlify API access token

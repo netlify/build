@@ -3,6 +3,7 @@ const pEvery = require('p-every')
 const pLocate = require('p-locate')
 const { satisfies, clean: cleanVersion } = require('semver')
 
+const { importJsonFile } = require('../utils/json')
 const { resolvePath } = require('../utils/resolve')
 
 // Retrieve the `expectedVersion` of a plugin:
@@ -107,8 +108,7 @@ const siteDependencyTest = async function ({ dependencyName, allowedVersion, sit
   try {
     // if this is a range we need to get the exact version
     const packageJsonPath = await resolvePath(`${dependencyName}/package.json`, buildDir)
-    // eslint-disable-next-line node/global-require, import/no-dynamic-require
-    const { version } = require(packageJsonPath)
+    const { version } = await importJsonFile(packageJsonPath)
     return satisfies(version, allowedVersion)
   } catch (error) {
     return false

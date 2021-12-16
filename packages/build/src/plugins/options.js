@@ -2,9 +2,9 @@
 
 const { dirname } = require('path')
 
-const corePackageJson = require('../../package.json')
 const { installLocalPluginsDependencies } = require('../install/local')
 const { measureDuration } = require('../time/main')
+const { ROOT_PACKAGE_JSON } = require('../utils/json')
 const { getPackageJson } = require('../utils/package')
 
 const { useManifest } = require('./manifest/main')
@@ -83,10 +83,9 @@ const isNotRedundantCorePlugin = function (pluginOptionsA, index, pluginsOptions
 // Retrieve information about @netlify/build when an error happens there and not
 // in a plugin
 const getSpawnInfo = function () {
-  const { name } = corePackageJson
   return {
-    plugin: { packageName: name, pluginPackageJson: corePackageJson },
-    location: { event: 'load', packageName: name, loadedFrom: 'core', origin: 'core' },
+    plugin: { packageName: ROOT_PACKAGE_JSON.name, pluginPackageJson: ROOT_PACKAGE_JSON },
+    location: { event: 'load', packageName: ROOT_PACKAGE_JSON.name, loadedFrom: 'core', origin: 'core' },
   }
 }
 

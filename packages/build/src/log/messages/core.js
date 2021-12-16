@@ -3,10 +3,10 @@
 const { link } = require('ansi-escapes')
 const prettyMs = require('pretty-ms')
 
-const { name, version } = require('../../../package.json')
 const { getFullErrorInfo } = require('../../error/parse/parse')
 const { serializeLogError } = require('../../error/parse/serialize_log')
 const { roundTimerToMillisecs } = require('../../time/measure')
+const { ROOT_PACKAGE_JSON } = require('../../utils/json')
 const { getLogHeaderFunc } = require('../header_func')
 const { log, logMessage, logWarning, logHeader, logSubHeader, logWarningArray } = require('../logger')
 const { logOldCliVersionError } = require('../old_version')
@@ -17,7 +17,7 @@ const { logConfigOnError } = require('./config')
 const logBuildStart = function (logs) {
   logHeader(logs, 'Netlify Build')
   logSubHeader(logs, 'Version')
-  logMessage(logs, `${name} ${version}`)
+  logMessage(logs, `${ROOT_PACKAGE_JSON.name} ${ROOT_PACKAGE_JSON.version}`)
 }
 
 const logBuildError = async function ({ error, netlifyConfig, mode, logs, debug, testOpts }) {

@@ -5,9 +5,9 @@ const { platform } = require('process')
 const got = require('got')
 const osName = require('os-name')
 
-const { version: buildVersion } = require('../../package.json')
 const { addErrorInfo } = require('../error/info')
 const { roundTimerToMillisecs } = require('../time/measure')
+const { ROOT_PACKAGE_JSON } = require('../utils/json')
 
 const DEFAULT_TELEMETRY_TIMEOUT = 1200
 const DEFAULT_TELEMETRY_CONFIG = {
@@ -89,7 +89,7 @@ const getPayload = function ({
       buildId,
       status,
       steps: stepsCount,
-      buildVersion,
+      buildVersion: ROOT_PACKAGE_JSON.version,
       // We're passing the node version set by the buildbot/user which will run the `build.command` and
       // the `package.json`/locally defined plugins
       nodeVersion: userNodeVersion,

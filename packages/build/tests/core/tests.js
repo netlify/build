@@ -14,6 +14,7 @@ const sinon = require('sinon')
 const { tmpName } = require('tmp-promise')
 
 const { version: netlifyBuildVersion } = require('../../package.json')
+const { importJsonFile } = require('../../src/utils/json')
 const { runFixtureConfig } = require('../helpers/config')
 const { removeDir } = require('../helpers/dir')
 const { runFixture, FIXTURES_DIR } = require('../helpers/main')
@@ -517,8 +518,7 @@ test('Generates a `manifest.json` file when running outside of buildbot', async 
 
   t.true(await pathExists(manifestPath))
 
-  // eslint-disable-next-line import/no-dynamic-require, node/global-require
-  const { functions, timestamp, version: manifestVersion } = require(manifestPath)
+  const { functions, timestamp, version: manifestVersion } = await importJsonFile(manifestPath)
 
   t.is(functions.length, 3)
   t.is(typeof timestamp, 'number')
@@ -538,8 +538,7 @@ test('Generates a `manifest.json` file when the `buildbot_create_functions_manif
 
   t.true(await pathExists(manifestPath))
 
-  // eslint-disable-next-line import/no-dynamic-require, node/global-require
-  const { functions, timestamp, version: manifestVersion } = require(manifestPath)
+  const { functions, timestamp, version: manifestVersion } = await importJsonFile(manifestPath)
 
   t.is(functions.length, 3)
   t.is(typeof timestamp, 'number')
