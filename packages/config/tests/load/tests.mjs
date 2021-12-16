@@ -1,4 +1,3 @@
-/* eslint-disable max-lines */
 import { unlink, writeFile } from 'fs'
 import { relative } from 'path'
 import { cwd } from 'process'
@@ -197,4 +196,3 @@ test('featureFlags can be used in the CLI', async (t) => {
 test('featureFlags can be not used', async (t) => {
   await runFixture(t, 'empty', { flags: { featureFlags: undefined, debug: true } })
 })
-/* eslint-enable max-lines */
