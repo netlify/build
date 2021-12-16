@@ -39,8 +39,8 @@ jobs:
         if: ${{ steps.release.outputs['packages/run-utils--version'] }}
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-      - run: npm publish packages/function-utils/
-        if: ${{ steps.release.outputs['packages/function-utils--version'] }}
+      - run: npm publish packages/functions-utils/
+        if: ${{ steps.release.outputs['packages/functions-utils--version'] }}
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       - run: npm publish packages/cache-utils/
