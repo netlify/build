@@ -88,7 +88,7 @@
     "@babel/core": "^7.12.10",
     "@babel/preset-env": "^7.12.10",
     "@babel/preset-react": "^7.12.10",
-    "@netlify/eslint-config-node": "^4.0.0",
+    "@netlify/eslint-config-node": "^4.0.1",
     "ava": "^3.0.0",
     "babel-loader": "^8.2.2",
     "cpy": "^8.1.0",
