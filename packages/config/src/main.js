@@ -31,7 +31,7 @@ export const resolveConfig = async function (opts) {
   const { cachedConfig, cachedConfigPath, host, scheme, pathPrefix, testOpts, token, offline, ...optsA } =
     addDefaultOpts(opts)
   // `api` is not JSON-serializable, so we cannot cache it inside `cachedConfig`
-  const api = await getApiClient({ token, offline, host, scheme, pathPrefix, testOpts })
+  const api = getApiClient({ token, offline, host, scheme, pathPrefix, testOpts })
 
   const parsedCachedConfig = await getCachedConfig({ cachedConfig, cachedConfigPath, token, api })
   if (parsedCachedConfig !== undefined) {
