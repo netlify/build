@@ -1,13 +1,11 @@
-'use strict'
+import { platform } from 'process'
 
-const { platform } = require('process')
+import got from 'got'
+import osName from 'os-name'
 
-const got = require('got')
-const osName = require('os-name')
-
-const { addErrorInfo } = require('../error/info')
-const { roundTimerToMillisecs } = require('../time/measure')
-const { ROOT_PACKAGE_JSON } = require('../utils/json')
+import { addErrorInfo } from '../error/info.js'
+import { roundTimerToMillisecs } from '../time/measure.js'
+import { ROOT_PACKAGE_JSON } from '../utils/json.js'
 
 const DEFAULT_TELEMETRY_TIMEOUT = 1200
 const DEFAULT_TELEMETRY_CONFIG = {
@@ -17,7 +15,7 @@ const DEFAULT_TELEMETRY_CONFIG = {
 }
 
 // Send telemetry request when build completes
-const trackBuildComplete = async function ({
+export const trackBuildComplete = async function ({
   deployId,
   buildId,
   status,
@@ -136,5 +134,3 @@ const getInstallType = function (origin, loadedFrom) {
 
   return loadedFrom
 }
-
-module.exports = { trackBuildComplete }

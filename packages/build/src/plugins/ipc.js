@@ -1,24 +1,22 @@
-'use strict'
+import process from 'process'
+import { promisify } from 'util'
 
-const process = require('process')
-const { promisify } = require('util')
+import pEvent from 'p-event'
+import { v4 as uuidv4 } from 'uuid'
 
-const pEvent = require('p-event')
-const { v4: uuidv4 } = require('uuid')
-
-const { jsonToError, errorToJson } = require('../error/build')
-const { addErrorInfo } = require('../error/info')
-const {
+import { jsonToError, errorToJson } from '../error/build.js'
+import { addErrorInfo } from '../error/info.js'
+import {
   logSendingEventToChild,
   logSentEventToChild,
   logReceivedEventFromChild,
   logSendingEventToParent,
-} = require('../log/messages/ipc')
+} from '../log/messages/ipc.js'
 
 // Send event from child to parent process then wait for response
 // We need to fire them in parallel because `process.send()` can be slow
 // to await, i.e. child might send response before parent start listening for it
-const callChild = async function ({ childProcess, eventName, payload, logs, verbose }) {
+export const callChild = async function ({ childProcess, eventName, payload, logs, verbose }) {
   const callId = uuidv4()
   const [response] = await Promise.all([
     getEventFromChild(childProcess, callId),
@@ -36,7 +34,7 @@ const callChild = async function ({ childProcess, eventName, payload, logs, verb
 //  - child process `exit`
 // In the later two cases, we propagate the error.
 // We need to make `p-event` listeners are properly cleaned up too.
-const getEventFromChild = async function (childProcess, callId) {
+export const getEventFromChild = async function (childProcess, callId) {
   if (childProcessHasExited(childProcess)) {
     throw getChildExitError('Could not receive event from child process because it already exited.')
   }
@@ -104,7 +102,7 @@ const sendEventToChild = async function ({ childProcess, callId, eventName, payl
 // This runs forever until `childProcess.kill()` is called.
 // We need to use `new Promise()` and callbacks because this runs forever.
 // eslint-disable-next-line promise/prefer-await-to-callbacks
-const getEventsFromParent = function (callback) {
+export const getEventsFromParent = function (callback) {
   return new Promise((resolve, reject) => {
     process.on('message', async (message) => {
       try {
@@ -120,7 +118,7 @@ const getEventsFromParent = function (callback) {
 }
 
 // Send event from child to parent process
-const sendEventToParent = async function (callId, payload, verbose, error) {
+export const sendEventToParent = async function (callId, payload, verbose, error) {
   logSendingEventToParent(verbose, error)
   await promisify(process.send.bind(process))([callId, payload])
 }
@@ -144,11 +142,4 @@ const parsePayload = function ({ error = {}, error: { name } = {}, ...payload })
 
   const errorA = jsonToError(error)
   return { ...payload, error: errorA }
-}
-
-module.exports = {
-  callChild,
-  getEventFromChild,
-  getEventsFromParent,
-  sendEventToParent,
 }

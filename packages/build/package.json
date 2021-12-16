@@ -2,7 +2,9 @@
   "name": "@netlify/build",
   "version": "25.0.3",
   "description": "Netlify build module",
-  "main": "src/core/main.js",
+  "type": "module",
+  "exports": "./src/core/main.js",
+  "main": "./src/core/main.js",
   "types": "types/index.d.ts",
   "bin": {
     "netlify-build": "./src/core/bin.js"

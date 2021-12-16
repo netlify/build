@@ -1,12 +1,10 @@
-'use strict'
+import slugify from '@sindresorhus/slugify'
+import keepFuncProps from 'keep-func-props'
 
-const slugify = require('@sindresorhus/slugify')
-const keepFuncProps = require('keep-func-props')
-
-const { startTimer, endTimer } = require('./measure')
+import { startTimer, endTimer } from './measure.js'
 
 // Initialize the `timers` array
-const initTimers = function () {
+export const initTimers = function () {
   return []
 }
 
@@ -29,10 +27,10 @@ const kMeasureDuration = function (func, stageTag, { parentTag, category } = {})
 }
 
 // Ensure the wrapped function `name` is not `anonymous` in stack traces
-const measureDuration = keepFuncProps(kMeasureDuration)
+export const measureDuration = keepFuncProps(kMeasureDuration)
 
 // Create a new object representing a completed timer
-const createTimer = function (
+export const createTimer = function (
   stageTag,
   durationNs,
   { metricName = DEFAULT_METRIC_NAME, parentTag = TOP_PARENT_TAG, category, tags } = {},
@@ -41,12 +39,10 @@ const createTimer = function (
 }
 
 const DEFAULT_METRIC_NAME = 'buildbot.build.stage.duration'
-const TOP_PARENT_TAG = 'run_netlify_build'
+export const TOP_PARENT_TAG = 'run_netlify_build'
 
 // Make sure the timer name does not include special characters.
 // For example, the `packageName` of local plugins includes dots.
-const normalizeTimerName = function (name) {
+export const normalizeTimerName = function (name) {
   return slugify(name, { separator: '_' })
 }
-
-module.exports = { initTimers, measureDuration, normalizeTimerName, createTimer, TOP_PARENT_TAG }

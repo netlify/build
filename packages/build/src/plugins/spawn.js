@@ -1,15 +1,15 @@
-'use strict'
+import { fileURLToPath } from 'url'
 
-const execa = require('execa')
+import execa from 'execa'
 
-const { addErrorInfo } = require('../error/info')
-const { logLoadingPlugins, logOutdatedPlugins, logIncompatiblePlugins } = require('../log/messages/compatibility')
-const { measureDuration } = require('../time/main')
+import { addErrorInfo } from '../error/info.js'
+import { logLoadingPlugins, logOutdatedPlugins, logIncompatiblePlugins } from '../log/messages/compatibility.js'
+import { measureDuration } from '../time/main.js'
 
-const { getEventFromChild } = require('./ipc')
-const { getSpawnInfo } = require('./options')
+import { getEventFromChild } from './ipc.js'
+import { getSpawnInfo } from './options.js'
 
-const CHILD_MAIN_FILE = `${__dirname}/child/main.js`
+const CHILD_MAIN_FILE = fileURLToPath(new URL('child/main.js', import.meta.url))
 
 // Start child processes used by all plugins
 // We fire plugins through child processes so that:
@@ -28,7 +28,7 @@ const tStartPlugins = async function ({ pluginsOptions, buildDir, childEnv, logs
   return { childProcesses }
 }
 
-const startPlugins = measureDuration(tStartPlugins, 'start_plugins')
+export const startPlugins = measureDuration(tStartPlugins, 'start_plugins')
 
 const startPlugin = async function ({ pluginDir, nodePath, buildDir, childEnv }) {
   const childProcess = execa.node(CHILD_MAIN_FILE, {
@@ -53,7 +53,7 @@ const startPlugin = async function ({ pluginDir, nodePath, buildDir, childEnv })
 }
 
 // Stop all plugins child processes
-const stopPlugins = function (childProcesses) {
+export const stopPlugins = function (childProcesses) {
   childProcesses.forEach(stopPlugin)
 }
 
@@ -64,5 +64,3 @@ const stopPlugin = function ({ childProcess }) {
 
   childProcess.kill()
 }
-
-module.exports = { startPlugins, stopPlugins }

@@ -1,30 +1,26 @@
-'use strict'
+import { bindOpts as cacheBindOpts } from '@netlify/cache-utils'
+import { add as functionsAdd, list as functionsList, listAll as functionsListAll } from '@netlify/functions-utils'
+import { getGitUtils } from '@netlify/git-utils'
+import { run, runCommand } from '@netlify/run-utils'
 
-const { failBuild, failPlugin, cancelBuild, failPluginWithWarning } = require('../error')
-const { isSoftFailEvent } = require('../events')
+import { failBuild, failPlugin, cancelBuild, failPluginWithWarning } from '../error.js'
+import { isSoftFailEvent } from '../events.js'
 
-const { addLazyProp } = require('./lazy')
-const { show } = require('./status')
-
-const cacheUtilsPromise = import('@netlify/cache-utils')
-const functionsUtilsPromise = import('@netlify/functions-utils')
-const gitUtilsPromise = import('@netlify/git-utils')
-const runUtilsPromise = import('@netlify/run-utils')
+import { addLazyProp } from './lazy.js'
+import { show } from './status.js'
 
 // Retrieve the `utils` argument.
-const getUtils = async function ({ event, constants: { FUNCTIONS_SRC, INTERNAL_FUNCTIONS_SRC, CACHE_DIR }, runState }) {
-  const [cacheUtils, functionsUtils, { getGitUtils }, { run, runCommand }] = await Promise.all([
-    cacheUtilsPromise,
-    functionsUtilsPromise,
-    gitUtilsPromise,
-    runUtilsPromise,
-  ])
+export const getUtils = function ({
+  event,
+  constants: { FUNCTIONS_SRC, INTERNAL_FUNCTIONS_SRC, CACHE_DIR },
+  runState,
+}) {
   // eslint-disable-next-line fp/no-mutation
   run.command = runCommand
 
   const build = getBuildUtils(event)
-  const cache = getCacheUtils(cacheUtils, CACHE_DIR)
-  const functions = getFunctionsUtils(functionsUtils, FUNCTIONS_SRC, INTERNAL_FUNCTIONS_SRC)
+  const cache = getCacheUtils(CACHE_DIR)
+  const functions = getFunctionsUtils(FUNCTIONS_SRC, INTERNAL_FUNCTIONS_SRC)
   const status = getStatusUtils(runState)
   const utils = { build, cache, run, functions, status }
   addLazyProp(utils, 'git', () => getGitUtils())
@@ -43,20 +39,18 @@ const getBuildUtils = function (event) {
   return { failBuild, failPlugin, cancelBuild }
 }
 
-const getCacheUtils = function (cacheUtils, CACHE_DIR) {
-  return cacheUtils.bindOpts({ cacheDir: CACHE_DIR })
+const getCacheUtils = function (CACHE_DIR) {
+  return cacheBindOpts({ cacheDir: CACHE_DIR })
 }
 
-const getFunctionsUtils = function (functionsUtils, FUNCTIONS_SRC, INTERNAL_FUNCTIONS_SRC) {
+const getFunctionsUtils = function (FUNCTIONS_SRC, INTERNAL_FUNCTIONS_SRC) {
   const functionsDirectories = [INTERNAL_FUNCTIONS_SRC, FUNCTIONS_SRC].filter(Boolean)
-  const add = (src) => functionsUtils.add(src, INTERNAL_FUNCTIONS_SRC, { fail: failBuild })
-  const list = functionsUtils.list.bind(null, functionsDirectories, { fail: failBuild })
-  const listAll = functionsUtils.listAll.bind(null, functionsDirectories, { fail: failBuild })
+  const add = (src) => functionsAdd(src, INTERNAL_FUNCTIONS_SRC, { fail: failBuild })
+  const list = functionsList.bind(null, functionsDirectories, { fail: failBuild })
+  const listAll = functionsListAll.bind(null, functionsDirectories, { fail: failBuild })
   return { add, list, listAll }
 }
 
 const getStatusUtils = function (runState) {
   return { show: show.bind(undefined, runState) }
 }
-
-module.exports = { getUtils }

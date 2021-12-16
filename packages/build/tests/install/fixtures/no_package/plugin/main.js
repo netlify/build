@@ -1,8 +1,6 @@
-'use strict'
+import avg from 'math-avg'
 
-const avg = require('math-avg')
-
-module.exports = {
+export default {
   onPreBuild() {
     console.log(avg([1, 2]))
   },

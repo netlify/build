@@ -1,8 +1,6 @@
-'use strict'
+import psList from 'ps-list'
 
-const psList = require('ps-list')
-
-const { logLingeringProcesses } = require('../log/messages/core')
+import { logLingeringProcesses } from '../log/messages/core.js'
 
 // Print a warning when some build processes are still running.
 // We cannot rely on using the process tree:
@@ -20,7 +18,11 @@ const { logLingeringProcesses } = require('../log/messages/core')
 // Therefore, we run this in a controlled environment only (the buildbot) and
 // exclude specific processes manually. This is a lesser evil, although still
 // quite hacky.
-const warnOnLingeringProcesses = async function ({ mode, logs, testOpts: { silentLingeringProcesses = false } }) {
+export const warnOnLingeringProcesses = async function ({
+  mode,
+  logs,
+  testOpts: { silentLingeringProcesses = false },
+}) {
   if (mode !== 'buildbot' || silentLingeringProcesses) {
     return
   }
@@ -81,5 +83,3 @@ const IGNORED_COMMANDS = [
   'jest-worker',
   'broccoli-babel-transpiler',
 ]
-
-module.exports = { warnOnLingeringProcesses }

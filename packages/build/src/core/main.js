@@ -1,30 +1,28 @@
-'use strict'
-
 /* eslint-disable max-lines, import/max-dependencies */
-const { handleBuildError } = require('../error/handle')
-const { getErrorInfo } = require('../error/info')
-const { startErrorMonitor } = require('../error/monitor/start')
-const { getBufferLogs } = require('../log/logger')
-const { logBuildStart, logTimer, logBuildSuccess } = require('../log/messages/core')
-const { loadPlugins } = require('../plugins/load')
-const { getPluginsOptions } = require('../plugins/options')
-const { pinPlugins } = require('../plugins/pinned_version')
-const { startPlugins, stopPlugins } = require('../plugins/spawn')
-const { addCorePlugins } = require('../plugins_core/add')
-const { reportStatuses } = require('../status/report')
-const { getSteps } = require('../steps/get')
-const { runSteps } = require('../steps/run_steps')
-const { trackBuildComplete } = require('../telemetry/main')
-const { initTimers, measureDuration } = require('../time/main')
-const { reportTimers } = require('../time/report')
+import { handleBuildError } from '../error/handle.js'
+import { getErrorInfo } from '../error/info.js'
+import { startErrorMonitor } from '../error/monitor/start.js'
+import { getBufferLogs } from '../log/logger.js'
+import { logBuildStart, logTimer, logBuildSuccess } from '../log/messages/core.js'
+import { loadPlugins } from '../plugins/load.js'
+import { getPluginsOptions } from '../plugins/options.js'
+import { pinPlugins } from '../plugins/pinned_version.js'
+import { startPlugins, stopPlugins } from '../plugins/spawn.js'
+import { addCorePlugins } from '../plugins_core/add.js'
+import { reportStatuses } from '../status/report.js'
+import { getSteps } from '../steps/get.js'
+import { runSteps } from '../steps/run_steps.js'
+import { trackBuildComplete } from '../telemetry/main.js'
+import { initTimers, measureDuration } from '../time/main.js'
+import { reportTimers } from '../time/report.js'
 
-const { getConfigOpts, loadConfig } = require('./config')
-const { getConstants } = require('./constants')
-const { doDryRun } = require('./dry')
-const { warnOnLingeringProcesses } = require('./lingering')
-const { warnOnMissingSideFiles } = require('./missing_side_file')
-const { normalizeFlags } = require('./normalize_flags')
-const { getSeverity } = require('./severity')
+import { getConfigOpts, loadConfig } from './config.js'
+import { getConstants } from './constants.js'
+import { doDryRun } from './dry.js'
+import { warnOnLingeringProcesses } from './lingering.js'
+import { warnOnMissingSideFiles } from './missing_side_file.js'
+import { normalizeFlags } from './normalize_flags.js'
+import { getSeverity } from './severity.js'
 
 /**
  * Main entry point of Netlify Build.
@@ -50,7 +48,7 @@ const { getSeverity } = require('./severity')
  * 0 (success), 1 (build cancelled), 2 (user error), 3 (plugin error), 4 (system error). Can be used as exit code.
  * @returns {string[]} buildResult.logs - When using the `buffer` option, all log messages
  */
-const build = async function (flags = {}) {
+export default async function buildSite(flags = {}) {
   const {
     errorMonitor,
     framework,
@@ -595,7 +593,7 @@ const runBuild = async function ({
     verbose,
   })
 
-  const { steps, events } = await getSteps(pluginsSteps)
+  const { steps, events } = getSteps(pluginsSteps)
 
   if (dry) {
     await doDryRun({ buildDir, steps, netlifyConfig, constants, buildbotServerSocket, logs })
@@ -687,6 +685,4 @@ const telemetryReport = async function ({
     await handleBuildError(error, errorParams)
   }
 }
-
-module.exports = build
 /* eslint-enable max-lines, import/max-dependencies */

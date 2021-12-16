@@ -1,13 +1,11 @@
-'use strict'
+import chalk from 'chalk'
 
-const { red } = require('chalk')
-
-module.exports = {
+export default {
   onBuild({
     utils: {
       status: { show },
     },
   }) {
-    show({ summary: red('summary') })
+    show({ summary: chalk.red('summary') })
   },
 }

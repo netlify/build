@@ -1,26 +1,26 @@
-'use strict'
+import { normalize } from 'path'
+import { env } from 'process'
 
-require('log-process-errors/build/register/ava')
+import test from 'ava'
+import chalk from 'chalk'
+import cpy from 'cpy'
+import execa from 'execa'
+import isPlainObj from 'is-plain-obj'
+import logProcessErrors from 'log-process-errors'
 
-const { normalize } = require('path')
-const { env } = require('process')
+import { createRepoDir, removeDir } from './dir.js'
+import { normalizeOutput } from './normalize.js'
 
-const test = require('ava')
-const { magentaBright } = require('chalk')
-const cpy = require('cpy')
-const execa = require('execa')
-const isPlainObj = require('is-plain-obj')
-
-const { createRepoDir, removeDir } = require('./dir')
-const { normalizeOutput } = require('./normalize')
-const { startServer } = require('./server')
+export { startServer } from './server.js'
 
 const testFile = test.meta.file
-const FIXTURES_DIR = normalize(`${testFile}/../fixtures`)
+export const FIXTURES_DIR = normalize(`${testFile}/../fixtures`)
+
+logProcessErrors({ testing: 'ava' })
 
 // Run a CLI using a fixture directory, then snapshot the output.
 // Options: see tests/README.md
-const runFixtureCommon = async function (
+export const runFixtureCommon = async function (
   t,
   fixtureName,
   {
@@ -205,7 +205,7 @@ const normalizeOutputString = function (outputString, normalizeOption) {
 
 const printOutput = function (t, normalizedReturn) {
   console.log(`
-${magentaBright.bold(`${LINE}
+${chalk.magentaBright.bold(`${LINE}
   ${t.title}
 ${LINE}`)}
 
@@ -229,5 +229,3 @@ const IGNORE_REGEXPS = [
 const isPrint = function () {
   return env.PRINT === '1'
 }
-
-module.exports = { runFixtureCommon, FIXTURES_DIR, startServer }

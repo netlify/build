@@ -1,5 +1,3 @@
-'use strict'
-
-const { env } = require('process')
+import { env } from 'process'
 
 console.log(env.BUGSNAG_KEY)

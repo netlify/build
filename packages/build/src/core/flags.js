@@ -1,9 +1,7 @@
-'use strict'
-
 /* eslint eslint-comments/no-use: off, max-lines: off */
 
 // All CLI flags
-const FLAGS = {
+export const FLAGS = {
   config: {
     string: true,
     describe: `Path to the configuration file.
@@ -129,7 +127,7 @@ Default: false`,
     describe: `Environment in which this is loaded. Can be:
   - 'buildbot': within Netlify Buildbot
   - 'cli': within Netlify CLI
-  - 'require': through require('@netlify/build')`,
+  - 'require': through import('@netlify/build')`,
     hidden: true,
   },
   debug: {
@@ -184,5 +182,3 @@ Default: false`,
     describe: 'Buffer output instead of printing it',
   },
 }
-
-module.exports = { FLAGS }

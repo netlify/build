@@ -1,11 +1,9 @@
-'use strict'
-
-const { writeFile } = require('fs')
-const { promisify } = require('util')
+import { writeFile } from 'fs'
+import { promisify } from 'util'
 
 const pWriteFile = promisify(writeFile)
 
-module.exports = {
+export default {
   onPreBuild({ netlifyConfig }) {
     // eslint-disable-next-line no-param-reassign
     netlifyConfig.build.publish = 'test'

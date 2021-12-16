@@ -1,12 +1,10 @@
-'use strict'
+import { logTimer } from '../log/messages/core.js'
+import { logStepSuccess } from '../log/messages/steps.js'
 
-const { logTimer } = require('../log/messages/core')
-const { logStepSuccess } = require('../log/messages/steps')
-
-const { handleStepError } = require('./error')
+import { handleStepError } from './error.js'
 
 // Retrieve the return value of a step
-const getStepReturn = function ({
+export const getStepReturn = function ({
   event,
   packageName,
   newError,
@@ -52,5 +50,3 @@ const getStepReturn = function ({
 
   return { newEnvChanges, netlifyConfig, configMutations, headersPath, redirectsPath, newStatus, timers }
 }
-
-module.exports = { getStepReturn }

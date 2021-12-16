@@ -1,3 +1,1 @@
-'use strict'
-
-module.exports = require('does-not-exist')
+export { default } from 'does-not-exist'

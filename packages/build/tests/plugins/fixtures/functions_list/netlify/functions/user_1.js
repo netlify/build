@@ -1,3 +1,1 @@
-'use strict'
-
-module.exports = () => true
+export default () => true

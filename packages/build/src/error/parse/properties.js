@@ -1,11 +1,9 @@
-'use strict'
+import { inspect } from 'util'
 
-const { inspect } = require('util')
-
-const { omit } = require('../../utils/omit')
+import { omit } from '../../utils/omit.js'
 
 // In uncaught exceptions, print error static properties
-const getErrorProps = function ({ errorProps, showErrorProps, colors }) {
+export const getErrorProps = function ({ errorProps, showErrorProps, colors }) {
   if (!showErrorProps) {
     return
   }
@@ -23,5 +21,3 @@ const INSPECT_MAX_DEPTH = 5
 
 // Remove error static properties that should not be logged
 const CLEANED_ERROR_PROPS = ['requireStack']
-
-module.exports = { getErrorProps }

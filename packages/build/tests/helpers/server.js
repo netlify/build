@@ -1,9 +1,7 @@
-'use strict'
+import { createServer } from 'http'
+import { promisify } from 'util'
 
-const { createServer } = require('http')
-const { promisify } = require('util')
-
-const getStream = require('get-stream')
+import getStream from 'get-stream'
 
 const setTimeoutPromise = promisify(setTimeout)
 
@@ -15,7 +13,7 @@ const setTimeoutPromise = promisify(setTimeout)
 // response: json payload response (defaults to {})
 // status: http status code (defaults to 200)
 // wait: number used to induce a certain time delay in milliseconds in the response (defaults to undefined)
-const startServer = async function (handler) {
+export const startServer = async function (handler) {
   const handlers = Array.isArray(handler) ? handler : [handler]
   const requests = []
   const server = createServer((req, res) => requestHandler({ req, res, requests, handlers }))
@@ -86,5 +84,3 @@ const getResponseBody = function ({ response, requestBody }) {
   const responseBody = typeof response === 'function' ? response(requestBody) : response
   return JSON.stringify(responseBody, null, 2)
 }
-
-module.exports = { startServer }

@@ -1,6 +1,4 @@
-'use strict'
-
-module.exports = {
+export default {
   onPreBuild({ constants: { SITE_ID } }) {
     console.log(SITE_ID)
   },

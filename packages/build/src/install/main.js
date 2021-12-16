@@ -1,19 +1,17 @@
-'use strict'
+import { homedir } from 'os'
 
-const { homedir } = require('os')
+import execa from 'execa'
+import pathExists from 'path-exists'
 
-const execa = require('execa')
-const pathExists = require('path-exists')
-
-const { addErrorInfo } = require('../error/info')
+import { addErrorInfo } from '../error/info.js'
 
 // Install Node.js dependencies in a specific directory
-const installDependencies = function ({ packageRoot, isLocal }) {
+export const installDependencies = function ({ packageRoot, isLocal }) {
   return runCommand({ packageRoot, isLocal, type: 'install' })
 }
 
 // Add new Node.js dependencies, with exact semver ranges
-const addExactDependencies = function ({ packageRoot, isLocal, packages }) {
+export const addExactDependencies = function ({ packageRoot, isLocal, packages }) {
   return runCommand({ packageRoot, packages, isLocal, type: 'addExact' })
 }
 
@@ -81,5 +79,3 @@ const isNotNpmLogMessage = function (line) {
   return NPM_LOG_MESSAGES.every((message) => !line.includes(message))
 }
 const NPM_LOG_MESSAGES = ['complete log of this run', '-debug.log']
-
-module.exports = { installDependencies, addExactDependencies }

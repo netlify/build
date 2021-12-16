@@ -1,6 +1,4 @@
-'use strict'
+import mod1 from 'test'
+import mod2 from 'test_2'
 
-const mod1 = require('test')
-const mod2 = require('test_2')
-
-module.exports = [mod1('netlify'), mod2('netlify')]
+export default [mod1('netlify'), mod2('netlify')]

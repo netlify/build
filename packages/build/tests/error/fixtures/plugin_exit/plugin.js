@@ -1,8 +1,6 @@
-'use strict'
+import { exit } from 'process'
 
-const { exit } = require('process')
-
-module.exports = {
+export default {
   onPreBuild() {
     exit(1)
   },

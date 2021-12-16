@@ -1,12 +1,10 @@
-'use strict'
+import isPlainObj from 'is-plain-obj'
+import mapObj from 'map-obj'
 
-const isPlainObj = require('is-plain-obj')
-const mapObj = require('map-obj')
-
-const { addErrorInfo } = require('../../error/info')
+import { addErrorInfo } from '../../error/info.js'
 
 // Report status information to the UI
-const show = function (runState, showArgs) {
+export const show = function (runState, showArgs) {
   validateShowArgs(showArgs)
   const { title, summary, text } = removeEmptyStrings(showArgs)
   runState.status = { state: 'success', title, summary, text }
@@ -67,5 +65,3 @@ const removeEmptyString = function (key, value) {
 
   return [key, value]
 }
-
-module.exports = { show }

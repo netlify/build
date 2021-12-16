@@ -1,7 +1,5 @@
-'use strict'
-
 // From CLI `--featureFlags=a,b,c` to programmatic `{ a: true, b: true, c: true }`
-const normalizeCliFeatureFlags = function (cliFeatureFlags) {
+export const normalizeCliFeatureFlags = function (cliFeatureFlags) {
   return Object.assign({}, ...cliFeatureFlags.split(',').filter(isNotEmpty).map(getFeatureFlag))
 }
 
@@ -14,7 +12,7 @@ const getFeatureFlag = function (name) {
 }
 
 // Default values for feature flags
-const DEFAULT_FEATURE_FLAGS = {
+export const DEFAULT_FEATURE_FLAGS = {
   buildbot_build_go_functions: false,
   buildbot_create_functions_manifest: false,
   buildbot_es_modules_esbuild: false,
@@ -23,5 +21,3 @@ const DEFAULT_FEATURE_FLAGS = {
   buildbot_scheduled_functions: false,
   zisi_parse_isc: false,
 }
-
-module.exports = { normalizeCliFeatureFlags, DEFAULT_FEATURE_FLAGS }

@@ -1,18 +1,16 @@
-'use strict'
+import { promisify } from 'util'
 
-const { promisify } = require('util')
+import StatsdClient from 'statsd-client'
 
-const StatsdClient = require('statsd-client')
-
-const { addAggregatedTimers } = require('./aggregate')
-const { roundTimerToMillisecs } = require('./measure')
+import { addAggregatedTimers } from './aggregate.js'
+import { roundTimerToMillisecs } from './measure.js'
 
 // TODO: replace with `timers/promises` after dropping Node < 15.0.0
 const pSetTimeout = promisify(setTimeout)
 
 // Record the duration of a build phase, for monitoring.
 // Sends to statsd daemon.
-const reportTimers = async function ({ timers, statsdOpts: { host, port }, framework }) {
+export const reportTimers = async function ({ timers, statsdOpts: { host, port }, framework }) {
   if (host === undefined) {
     return
   }
@@ -59,5 +57,3 @@ const closeClient = async function (client) {
 
 // See https://github.com/msiebuhr/node-statsd-client/blob/45a93ee4c94ca72f244a40b06cb542d4bd7c3766/lib/EphemeralSocket.js#L81
 const CLOSE_TIMEOUT = 11
-
-module.exports = { reportTimers }

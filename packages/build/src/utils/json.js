@@ -1,12 +1,11 @@
-'use strict'
+import { promises as fs, readFileSync } from 'fs'
+import { fileURLToPath } from 'url'
 
-const { promises: fs, readFileSync } = require('fs')
-
-const ROOT_PACKAGE_JSON_PATH = `${__dirname}/../../package.json`
+const ROOT_PACKAGE_JSON_PATH = fileURLToPath(new URL('../../package.json', import.meta.url))
 
 // TODO: Replace with dynamic `import()` once it is supported without
 // experimental flags
-const importJsonFile = async function (filePath) {
+export const importJsonFile = async function (filePath) {
   const fileContents = await fs.readFile(filePath, 'utf8')
   return JSON.parse(fileContents)
 }
@@ -17,6 +16,4 @@ const importJsonFileSync = function (filePath) {
   return JSON.parse(fileContents)
 }
 
-const ROOT_PACKAGE_JSON = importJsonFileSync(ROOT_PACKAGE_JSON_PATH)
-
-module.exports = { importJsonFile, ROOT_PACKAGE_JSON }
+export const ROOT_PACKAGE_JSON = importJsonFileSync(ROOT_PACKAGE_JSON_PATH)

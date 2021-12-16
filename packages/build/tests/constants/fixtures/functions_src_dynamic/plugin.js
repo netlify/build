@@ -1,15 +1,13 @@
-'use strict'
-
-const { mkdir, rmdir } = require('fs')
-const { dirname } = require('path')
-const { promisify } = require('util')
+import { mkdir, rmdir } from 'fs'
+import { dirname } from 'path'
+import { promisify } from 'util'
 
 const pMkdir = promisify(mkdir)
 const pRmdir = promisify(rmdir)
 
 const DEFAULT_FUNCTIONS_SRC = 'netlify/functions'
 
-module.exports = {
+export default {
   async onPreBuild({ constants: { FUNCTIONS_SRC } }) {
     console.log(FUNCTIONS_SRC === undefined)
     await pMkdir(dirname(DEFAULT_FUNCTIONS_SRC))

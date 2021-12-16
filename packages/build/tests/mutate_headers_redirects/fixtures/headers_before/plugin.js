@@ -1,14 +1,13 @@
-'use strict'
-
-const { copyFile } = require('fs')
-const { promisify } = require('util')
+import { copyFile } from 'fs'
+import { fileURLToPath } from 'url'
+import { promisify } from 'util'
 
 const pCopyFile = promisify(copyFile)
 
-const fixtureHeadersPath = `${__dirname}/headers_file`
-const headersPath = `${__dirname}/_headers`
+const fixtureHeadersPath = fileURLToPath(new URL('headers_file', import.meta.url))
+const headersPath = fileURLToPath(new URL('_headers', import.meta.url))
 
-module.exports = {
+export default {
   onPreBuild({ netlifyConfig }) {
     // eslint-disable-next-line no-param-reassign
     netlifyConfig.headers = [...netlifyConfig.headers, { for: '/path', values: { test: 'two' } }]

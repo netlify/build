@@ -1,11 +1,7 @@
-'use strict'
+import { env } from 'process'
 
-const {
-  env: { CONTEXT },
-} = require('process')
-
-module.exports = {
+export default {
   onPreBuild() {
-    console.log(CONTEXT)
+    console.log(env.CONTEXT)
   },
 }

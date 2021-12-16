@@ -1,6 +1,4 @@
-'use strict'
-
-module.exports = {
+export default {
   onPreBuild({ inputs: { test } }) {
     console.log(test)
   },

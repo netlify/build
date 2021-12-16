@@ -1,10 +1,8 @@
-'use strict'
-
-const { cancelBuild } = require('../error/cancel')
-const { handleBuildError } = require('../error/handle')
-const { getFullErrorInfo, parseErrorInfo } = require('../error/parse/parse')
-const { serializeErrorStatus } = require('../error/parse/serialize_status')
-const { isSoftFailEvent } = require('../plugins/events')
+import { cancelBuild } from '../error/cancel.js'
+import { handleBuildError } from '../error/handle.js'
+import { getFullErrorInfo, parseErrorInfo } from '../error/parse/parse.js'
+import { serializeErrorStatus } from '../error/parse/serialize_status.js'
+import { isSoftFailEvent } from '../plugins/events.js'
 
 // Handle build command errors and plugin errors:
 //  - usually, propagate the error to make the build stop.
@@ -13,7 +11,7 @@ const { isSoftFailEvent } = require('../plugins/events')
 //    stop, but are still reported, and prevent future events from the same
 //    plugin.
 // This also computes error statuses that are sent to the API.
-const handleStepError = function ({
+export const handleStepError = function ({
   event,
   newError,
   childEnv,
@@ -90,7 +88,7 @@ const handleFailBuild = function ({ fullErrorInfo, newError }) {
 }
 
 // Unlike community plugins, core plugin bugs should be handled as system errors
-const getPluginErrorType = function (error, loadedFrom) {
+export const getPluginErrorType = function (error, loadedFrom) {
   if (!isCorePluginBug(error, loadedFrom)) {
     return {}
   }
@@ -102,5 +100,3 @@ const isCorePluginBug = function (error, loadedFrom) {
   const { severity } = parseErrorInfo(error)
   return severity === 'warning' && loadedFrom === 'core'
 }
-
-module.exports = { handleStepError, getPluginErrorType }

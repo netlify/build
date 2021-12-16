@@ -1,9 +1,7 @@
-'use strict'
-
-const { cleanStacks } = require('./clean_stack')
+import { cleanStacks } from './clean_stack.js'
 
 // Retrieve the stack trace
-const getStackInfo = function ({ message, stack, stackType, rawStack, severity, debug }) {
+export const getStackInfo = function ({ message, stack, stackType, rawStack, severity, debug }) {
   const { message: messageA, stack: stackA } = splitStackInfo({ message, stack, stackType })
   const messageB = severity === 'none' ? messageA.replace(SUCCESS_ERROR_NAME, '') : messageA
   const stackB = cleanStacks({ stack: stackA, rawStack, debug })
@@ -43,5 +41,3 @@ const isStackTrace = function (line) {
 }
 
 const SUCCESS_ERROR_NAME = 'Error: '
-
-module.exports = { getStackInfo }

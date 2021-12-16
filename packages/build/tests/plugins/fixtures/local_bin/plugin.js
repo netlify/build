@@ -1,8 +1,6 @@
-'use strict'
+import execa from 'execa'
 
-const execa = require('execa')
-
-module.exports = {
+export default {
   async onPreBuild() {
     await execa('atob', ['dGVzdA=='], { stdio: 'inherit' })
   },

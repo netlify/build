@@ -1,11 +1,9 @@
-'use strict'
+import { parseErrorInfo } from '../error/parse/parse.js'
 
-const { parseErrorInfo } = require('../error/parse/parse')
-
-const { logHeader, logErrorHeader } = require('./logger')
+import { logHeader, logErrorHeader } from './logger.js'
 
 // Retrieve successful or error header depending on whether `error` exists
-const getLogHeaderFunc = function (error) {
+export const getLogHeaderFunc = function (error) {
   if (error === undefined) {
     return logHeader
   }
@@ -17,5 +15,3 @@ const getLogHeaderFunc = function (error) {
 
   return logErrorHeader
 }
-
-module.exports = { getLogHeaderFunc }

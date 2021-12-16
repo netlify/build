@@ -1,11 +1,9 @@
-'use strict'
-
-const { addErrorInfo } = require('../../error/info')
-const { serializeArray } = require('../../log/serialize')
-const { listEvents } = require('../events')
+import { addErrorInfo } from '../../error/info.js'
+import { serializeArray } from '../../log/serialize.js'
+import { EVENTS } from '../events.js'
 
 // Validate the shape of a plugin return value
-const validatePlugin = async function (logic) {
+export const validatePlugin = function (logic) {
   try {
     // This validation must work with the return value of `import()` which has
     // a `Module` prototype, not `Object`
@@ -13,9 +11,8 @@ const validatePlugin = async function (logic) {
       throw new Error('Plugin must be an object or a function')
     }
 
-    const EVENTS = await listEvents()
     Object.entries(logic).forEach(([propName, value]) => {
-      validateEventHandler(value, propName, EVENTS)
+      validateEventHandler(value, propName)
     })
   } catch (error) {
     addErrorInfo(error, { type: 'pluginValidation' })
@@ -24,7 +21,7 @@ const validatePlugin = async function (logic) {
 }
 
 // All other properties are event handlers
-const validateEventHandler = function (value, propName, EVENTS) {
+const validateEventHandler = function (value, propName) {
   if (!EVENTS.includes(propName)) {
     throw new Error(`Invalid event '${propName}'.
 Please use a valid event name. One of:
@@ -35,5 +32,3 @@ ${serializeArray(EVENTS)}`)
     throw new TypeError(`Invalid event handler '${propName}': must be a function`)
   }
 }
-
-module.exports = { validatePlugin }

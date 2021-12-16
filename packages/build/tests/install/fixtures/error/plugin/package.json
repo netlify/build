@@ -1,6 +1,7 @@
 {
   "name": "plugin_deps_plugin_error",
   "version": "0.0.1",
+  "type": "module",
   "description": "test",
   "license": "MIT",
   "repository": "test",

@@ -1,6 +1,4 @@
-'use strict'
-
-module.exports = {
+export default {
   onPreBuild({ netlifyConfig }) {
     // eslint-disable-next-line no-param-reassign
     netlifyConfig.build.command = 'node --version'

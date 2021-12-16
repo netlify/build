@@ -1,9 +1,7 @@
-'use strict'
+import chalk from 'chalk'
 
-const { red } = require('chalk')
-
-module.exports = {
+export default {
   onPreBuild() {
-    throw new Error(red('ColorTest'))
+    throw new Error(chalk.red('ColorTest'))
   },
 }

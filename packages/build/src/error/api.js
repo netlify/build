@@ -1,12 +1,10 @@
-'use strict'
+import isPlainObj from 'is-plain-obj'
+import mapObj from 'map-obj'
 
-const isPlainObj = require('is-plain-obj')
-const mapObj = require('map-obj')
-
-const { addErrorInfo } = require('./info')
+import { addErrorInfo } from './info.js'
 
 // Wrap `api.*` methods so that they add more error information
-const addApiErrorHandlers = function (api) {
+export const addApiErrorHandlers = function (api) {
   if (api === undefined) {
     return
   }
@@ -46,5 +44,3 @@ const redactError = function (error) {
 }
 
 const HEX_REGEXP = /[\da-f]{6,}/g
-
-module.exports = { addApiErrorHandlers }

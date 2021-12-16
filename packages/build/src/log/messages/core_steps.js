@@ -1,9 +1,7 @@
-'use strict'
+import path from 'path'
 
-const path = require('path')
-
-const { log, logArray, logErrorSubHeader, logWarningSubHeader } = require('../logger')
-const { THEME } = require('../theme')
+import { log, logArray, logErrorSubHeader, logWarningSubHeader } from '../logger.js'
+import { THEME } from '../theme.js'
 
 const logBundleResultFunctions = ({ functions, headerMessage, logs, error }) => {
   const functionNames = functions.map(({ path: functionPath }) => path.basename(functionPath))
@@ -17,7 +15,7 @@ const logBundleResultFunctions = ({ functions, headerMessage, logs, error }) => 
   logArray(logs, functionNames)
 }
 
-const logBundleResults = ({ logs, results = [] }) => {
+export const logBundleResults = ({ logs, results = [] }) => {
   const resultsWithErrors = results.filter(({ bundlerErrors }) => bundlerErrors && bundlerErrors.length !== 0)
   const resultsWithWarnings = results.filter(
     ({ bundler, bundlerWarnings }) => bundler === 'esbuild' && bundlerWarnings && bundlerWarnings.length !== 0,
@@ -49,12 +47,12 @@ const logBundleResults = ({ logs, results = [] }) => {
   }
 }
 
-const logFunctionsNonExistingDir = function (logs, relativeFunctionsSrc) {
+export const logFunctionsNonExistingDir = function (logs, relativeFunctionsSrc) {
   log(logs, `The Netlify Functions setting targets a non-existing directory: ${relativeFunctionsSrc}`)
 }
 
 // Print the list of Netlify Functions about to be bundled
-const logFunctionsToBundle = function ({
+export const logFunctionsToBundle = function ({
   logs,
   userFunctions,
   userFunctionsSrc,
@@ -95,17 +93,11 @@ const logModulesWithDynamicImports = ({ logs, modulesWithDynamicImports }) => {
     `\n  Because files included with dynamic expressions aren't bundled with your serverless functions by default,
   this may result in an error when invoking a function. To resolve this error, you can mark these Node.js
   modules as external in the [functions] section of your \`netlify.toml\` configuration file:
-  
+
   [functions]
     external_node_modules = [${externalNodeModules}]
 
   Visit https://ntl.fyi/dynamic-imports for more information.
   `,
   )
-}
-
-module.exports = {
-  logBundleResults,
-  logFunctionsToBundle,
-  logFunctionsNonExistingDir,
 }

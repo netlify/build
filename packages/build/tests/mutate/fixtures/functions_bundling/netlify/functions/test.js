@@ -1,7 +1,5 @@
-'use strict'
+import body from 'does_not_exist'
 
-const body = require('does_not_exist')
-
-module.exports.handler = function handler() {
+export const handler = function handler() {
   return { statusCode: 200, body }
 }

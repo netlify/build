@@ -1,15 +1,13 @@
-'use strict'
+import { dirname } from 'path'
 
-const { dirname } = require('path')
+import readdirp from 'readdirp'
 
-const readdirp = require('readdirp')
+import { logInstallFunctionDependencies } from '../log/messages/install.js'
 
-const { logInstallFunctionDependencies } = require('../log/messages/install')
-
-const { installDependencies } = require('./main')
+import { installDependencies } from './main.js'
 
 // Install dependencies of Netlify Functions
-const installFunctionDependencies = async function (functionsSrc, isLocal) {
+export const installFunctionDependencies = async function (functionsSrc, isLocal) {
   const packagePaths = await getPackagePaths(functionsSrc)
   if (packagePaths.length === 0) {
     return
@@ -28,5 +26,3 @@ const getPackagePaths = function (functionsSrc) {
 const getPackageRoot = function ({ fullPath }) {
   return dirname(fullPath)
 }
-
-module.exports = { installFunctionDependencies }

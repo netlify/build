@@ -1,9 +1,7 @@
-'use strict'
+import { env, kill } from 'process'
+import { promisify } from 'util'
 
-const { env, kill } = require('process')
-const { promisify } = require('util')
-
-const processExists = require('process-exists')
+import processExists from 'process-exists'
 
 // TODO: replace with `timers/promises` after dropping Node < 15.0.0
 const pSetTimeout = promisify(setTimeout)
@@ -11,7 +9,7 @@ const pSetTimeout = promisify(setTimeout)
 // 100ms
 const PROCESS_TIMEOUT = 1e2
 
-module.exports = {
+export default {
   async onBuild() {
     kill(env.TEST_PID)
 

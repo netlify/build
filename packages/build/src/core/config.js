@@ -1,19 +1,15 @@
-/* eslint-disable max-lines */
-'use strict'
+import { resolveConfig, updateConfig, restoreConfig } from '@netlify/config'
+import mapObj from 'map-obj'
 
-const mapObj = require('map-obj')
+import { getChildEnv } from '../env/main.js'
+import { addApiErrorHandlers } from '../error/api.js'
+import { changeErrorType } from '../error/info.js'
+import { logBuildDir, logConfigPath, logConfig, logContext } from '../log/messages/config.js'
+import { logConfigOnUpload, logHeadersOnUpload, logRedirectsOnUpload } from '../log/messages/mutations.js'
+import { measureDuration } from '../time/main.js'
+import { getPackageJson } from '../utils/package.js'
 
-const { getChildEnv } = require('../env/main')
-const { addApiErrorHandlers } = require('../error/api')
-const { changeErrorType } = require('../error/info')
-const { logBuildDir, logConfigPath, logConfig, logContext } = require('../log/messages/config')
-const { logConfigOnUpload, logHeadersOnUpload, logRedirectsOnUpload } = require('../log/messages/mutations')
-const { measureDuration } = require('../time/main')
-const { getPackageJson } = require('../utils/package')
-
-const { getUserNodeVersion } = require('./user_node_version')
-
-const netlifyConfigPromise = import('@netlify/config')
+import { getUserNodeVersion } from './user_node_version.js'
 
 // Retrieve immutable options passed to `@netlify/config`.
 // This does not include options which might change during the course of the
@@ -22,7 +18,7 @@ const netlifyConfigPromise = import('@netlify/config')
 //    the build
 //  - If plugins change the configuration, `configMutations` is used instead
 // In both cases, almost all options should remain the same.
-const getConfigOpts = function ({
+export const getConfigOpts = function ({
   config,
   defaultConfig,
   cwd,
@@ -78,7 +74,7 @@ const tLoadConfig = async function ({ configOpts, cachedConfig, cachedConfigPath
     siteInfo,
     env,
   } = await resolveInitialConfig(configOpts, cachedConfig, cachedConfigPath)
-  await logConfigInfo({ logs, configPath, buildDir, netlifyConfig, context: contextA, debug })
+  logConfigInfo({ logs, configPath, buildDir, netlifyConfig, context: contextA, debug })
 
   const apiA = addApiErrorHandlers(api)
   const envValues = mapObj(env, (key, { value }) => [key, value])
@@ -102,20 +98,19 @@ const tLoadConfig = async function ({ configOpts, cachedConfig, cachedConfigPath
   }
 }
 
-const loadConfig = measureDuration(tLoadConfig, 'resolve_config')
+export const loadConfig = measureDuration(tLoadConfig, 'resolve_config')
 
 // Retrieve initial configuration.
 // In the buildbot and CLI, we re-use the already parsed `@netlify/config`
 // return value which is passed as `cachedConfig`/`cachedConfigPath`.
 const resolveInitialConfig = async function (configOpts, cachedConfig, cachedConfigPath) {
-  const { resolveConfig } = await netlifyConfigPromise
   return await resolveConfig({ ...configOpts, cachedConfig, cachedConfigPath })
 }
 
-const logConfigInfo = async function ({ logs, configPath, buildDir, netlifyConfig, context, debug }) {
+const logConfigInfo = function ({ logs, configPath, buildDir, netlifyConfig, context, debug }) {
   logBuildDir(logs, buildDir)
   logConfigPath(logs, configPath)
-  await logConfig({ logs, netlifyConfig, debug })
+  logConfig({ logs, netlifyConfig, debug })
   logContext(logs, context)
 }
 
@@ -126,8 +121,7 @@ const logConfigInfo = async function ({ logs, configPath, buildDir, netlifyConfi
 // change would create debug logs which would be too verbose.
 // Errors are propagated and assigned to the specific plugin or core step
 // which changed the configuration.
-const resolveUpdatedConfig = async function (configOpts, configMutations) {
-  const { resolveConfig } = await netlifyConfigPromise
+export const resolveUpdatedConfig = async function (configOpts, configMutations) {
   try {
     return await resolveConfig({ ...configOpts, configMutations, debug: false })
   } catch (error) {
@@ -141,7 +135,7 @@ const resolveUpdatedConfig = async function (configOpts, configMutations) {
 // This is only done when `saveConfig` is `true`. This allows performing this
 // in the buildbot but not in local builds, since only the latter run in a
 // container and we want to avoid saving files on local machines.
-const saveUpdatedConfig = async function ({
+export const saveUpdatedConfig = async function ({
   configMutations,
   buildDir,
   repositoryRoot,
@@ -158,7 +152,6 @@ const saveUpdatedConfig = async function ({
     return
   }
 
-  const { updateConfig } = await netlifyConfigPromise
   await updateConfig(configMutations, {
     buildDir,
     configPath,
@@ -174,7 +167,7 @@ const saveUpdatedConfig = async function ({
   await logRedirectsOnUpload({ logs, redirectsPath, debug })
 }
 
-const restoreUpdatedConfig = async function ({
+export const restoreUpdatedConfig = async function ({
   configMutations,
   buildDir,
   repositoryRoot,
@@ -187,15 +180,5 @@ const restoreUpdatedConfig = async function ({
     return
   }
 
-  const { restoreConfig } = await netlifyConfigPromise
   await restoreConfig(configMutations, { buildDir, configPath, headersPath, redirectsPath })
 }
-
-module.exports = {
-  getConfigOpts,
-  loadConfig,
-  resolveUpdatedConfig,
-  saveUpdatedConfig,
-  restoreUpdatedConfig,
-}
-/* eslint-enable max-lines */

@@ -1,6 +1,4 @@
-'use strict'
-
-module.exports = {
+export default {
   onPreBuild({ netlifyConfig }) {
     // eslint-disable-next-line no-param-reassign
     netlifyConfig.edge_handlers = [{ path: '/two', handler: 'two' }]

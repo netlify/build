@@ -1,16 +1,14 @@
-'use strict'
+import { addErrorInfo } from '../error/info.js'
+import { logStepCompleted } from '../log/messages/ipc.js'
+import { pipePluginOutput, unpipePluginOutput } from '../log/stream.js'
+import { callChild } from '../plugins/ipc.js'
+import { getSuccessStatus } from '../status/success.js'
 
-const { addErrorInfo } = require('../error/info')
-const { logStepCompleted } = require('../log/messages/ipc')
-const { pipePluginOutput, unpipePluginOutput } = require('../log/stream')
-const { callChild } = require('../plugins/ipc')
-const { getSuccessStatus } = require('../status/success')
-
-const { getPluginErrorType } = require('./error')
-const { updateNetlifyConfig, listConfigSideFiles } = require('./update_config')
+import { getPluginErrorType } from './error.js'
+import { updateNetlifyConfig, listConfigSideFiles } from './update_config.js'
 
 // Fire a plugin step
-const firePluginStep = async function ({
+export const firePluginStep = async function ({
   event,
   childProcess,
   packageName,
@@ -85,5 +83,3 @@ const firePluginStep = async function ({
     logStepCompleted(logs, verbose)
   }
 }
-
-module.exports = { firePluginStep }

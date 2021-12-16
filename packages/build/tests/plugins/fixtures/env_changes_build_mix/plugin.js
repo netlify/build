@@ -1,8 +1,6 @@
-'use strict'
+import { env } from 'process'
 
-const { env } = require('process')
-
-module.exports = {
+export default {
   onPreBuild({
     netlifyConfig: {
       build: { environment },

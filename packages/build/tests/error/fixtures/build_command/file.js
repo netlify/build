@@ -1,5 +1,3 @@
-'use strict'
-
-const { exit } = require('process')
+import { exit } from 'process'
 
 exit(1)

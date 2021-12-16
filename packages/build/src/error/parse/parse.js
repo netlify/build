@@ -1,17 +1,15 @@
-'use strict'
+import { serializeObject } from '../../log/serialize.js'
+import { getErrorInfo } from '../info.js'
+import { getTypeInfo } from '../type.js'
 
-const { serializeObject } = require('../../log/serialize')
-const { getErrorInfo } = require('../info')
-const { getTypeInfo } = require('../type')
-
-const { getLocationInfo } = require('./location')
-const { normalizeError } = require('./normalize')
-const { getPluginInfo } = require('./plugin')
-const { getErrorProps } = require('./properties')
-const { getStackInfo } = require('./stack')
+import { getLocationInfo } from './location.js'
+import { normalizeError } from './normalize.js'
+import { getPluginInfo } from './plugin.js'
+import { getErrorProps } from './properties.js'
+import { getStackInfo } from './stack.js'
 
 // Add additional type-specific error information
-const getFullErrorInfo = function ({ error, colors, debug }) {
+export const getFullErrorInfo = function ({ error, colors, debug }) {
   const basicErrorInfo = parseErrorInfo(error)
   const {
     message,
@@ -57,7 +55,7 @@ const getTsConfigInfo = function (tsConfig) {
 }
 
 // Parse error instance into all the basic properties containing information
-const parseErrorInfo = function (error) {
+export const parseErrorInfo = function (error) {
   const { message, stack, ...errorProps } = normalizeError(error)
   const [errorInfo, errorPropsA] = getErrorInfo(errorProps)
   const {
@@ -97,5 +95,3 @@ const getTitle = function (title, errorInfo) {
 
   return title(errorInfo)
 }
-
-module.exports = { getFullErrorInfo, parseErrorInfo }

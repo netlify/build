@@ -1,14 +1,11 @@
-'use strict'
+import semver from 'semver'
 
-const { lt: ltVersion } = require('semver')
+import { isPreviousMajor } from '../../utils/semver.js'
+import { getPluginOrigin } from '../description.js'
+import { logArray, logSubHeader, logWarningArray, logWarningSubHeader } from '../logger.js'
+import { THEME } from '../theme.js'
 
-const { isPreviousMajor } = require('../../utils/semver')
-const { getPluginOrigin } = require('../description')
-const { logArray, logSubHeader } = require('../logger')
-const { logWarningArray, logWarningSubHeader } = require('../logger')
-const { THEME } = require('../theme')
-
-const logLoadingPlugins = function (logs, pluginsOptions, debug) {
+export const logLoadingPlugins = function (logs, pluginsOptions, debug) {
   const loadingPlugins = pluginsOptions
     .filter(isNotCorePlugin)
     .map((pluginOptions) => getPluginDescription(pluginOptions, debug))
@@ -72,7 +69,7 @@ const getVersionField = function ([versionFieldName, version]) {
 
 // Print a warning message when old versions plugins are used.
 // This can only happen when they are installed to `package.json`.
-const logOutdatedPlugins = function (logs, pluginsOptions) {
+export const logOutdatedPlugins = function (logs, pluginsOptions) {
   const outdatedPlugins = pluginsOptions.filter(hasOutdatedVersion).map(getOutdatedPlugin)
 
   if (outdatedPlugins.length === 0) {
@@ -84,7 +81,7 @@ const logOutdatedPlugins = function (logs, pluginsOptions) {
 }
 
 const hasOutdatedVersion = function ({ pluginPackageJson: { version }, latestVersion }) {
-  return version !== undefined && latestVersion !== undefined && ltVersion(version, latestVersion)
+  return version !== undefined && latestVersion !== undefined && semver.lt(version, latestVersion)
 }
 
 const getOutdatedPlugin = function ({
@@ -124,7 +121,7 @@ const getUpgradeInstruction = function (loadedFrom, origin) {
 // Print a warning message when plugins are using a version that is too recent
 // and does not meet some `compatibility` expectations.
 // This can only happen when they are installed to `package.json`.
-const logIncompatiblePlugins = function (logs, pluginsOptions) {
+export const logIncompatiblePlugins = function (logs, pluginsOptions) {
   const incompatiblePlugins = pluginsOptions.filter(hasIncompatibleVersion).map(getIncompatiblePlugin)
 
   if (incompatiblePlugins.length === 0) {
@@ -164,10 +161,4 @@ const getIncompatiblePlugin = function ({
 // or an empty string
 const getVersionedPackage = function (packageName, version = '') {
   return version === '' ? '' : `@${version}`
-}
-
-module.exports = {
-  logLoadingPlugins,
-  logOutdatedPlugins,
-  logIncompatiblePlugins,
 }

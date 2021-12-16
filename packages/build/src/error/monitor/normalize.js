@@ -1,9 +1,7 @@
-'use strict'
-
 // We group errors by `error.message`. However some `error.message` contain
 // unique IDs, etc. which defeats that grouping. So we normalize those to make
 // them consistent
-const normalizeGroupingMessage = function (message, type) {
+export const normalizeGroupingMessage = function (message, type) {
   const messageA = removeDependenciesLogs(message, type)
   return NORMALIZE_REGEXPS.reduce(normalizeMessage, messageA)
 }
@@ -57,7 +55,7 @@ const NORMALIZE_REGEXPS = [
   [/(Required inputs for plugin).*/gm, '$1'],
   // Netlify Functions validation check
   [/(should target a directory, not a regular file):.*/, '$1'],
-  // zip-it-and-ship-it error when there is a `require()` but dependencies
+  // zip-it-and-ship-it error when there is an `import()` but dependencies
   // were not installed
   [/(Cannot find module) '([^']+)'/g, "$1 'moduleName'"],
   [/(A Netlify Function is using) "[^"]+"/g, '$1 "moduleName"'],
@@ -77,5 +75,3 @@ const NORMALIZE_REGEXPS = [
   // Multiple empty lines
   [/^\s*$/gm, ''],
 ]
-
-module.exports = { normalizeGroupingMessage }
