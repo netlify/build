@@ -3,6 +3,7 @@
 const test = require('ava')
 const { spy } = require('sinon')
 
+const { importJsonFile } = require('../../src/utils/json')
 const { removeDir } = require('../helpers/dir')
 const { runFixture, FIXTURES_DIR } = require('../helpers/main')
 
@@ -16,7 +17,7 @@ const getEdgeHandlersPaths = function (fixtureName) {
 }
 
 const loadEdgeHandlerBundle = async function ({ outputDir, manifestPath }) {
-  const bundlePath = getEdgeHandlerBundlePath({ outputDir, manifestPath })
+  const bundlePath = await getEdgeHandlerBundlePath({ outputDir, manifestPath })
 
   try {
     return requireEdgeHandleBundle(bundlePath)
@@ -25,9 +26,8 @@ const loadEdgeHandlerBundle = async function ({ outputDir, manifestPath }) {
   }
 }
 
-const getEdgeHandlerBundlePath = function ({ outputDir, manifestPath }) {
-  // eslint-disable-next-line node/global-require, import/no-dynamic-require
-  const { sha } = require(manifestPath)
+const getEdgeHandlerBundlePath = async function ({ outputDir, manifestPath }) {
+  const { sha } = await importJsonFile(manifestPath)
   return `${outputDir}/${sha}`
 }
 

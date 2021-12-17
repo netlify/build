@@ -3,6 +3,7 @@
 const { satisfies } = require('semver')
 
 const { addErrorInfo } = require('../error/info')
+const { importJsonFile } = require('../utils/json')
 const { resolvePath } = require('../utils/resolve')
 
 const { getExpectedVersion } = require('./compatibility')
@@ -95,8 +96,7 @@ const isMissingVersion = async function ({ autoPluginsDir, packageName, pluginPa
 
 const getAutoPluginVersion = async function (packageName, autoPluginsDir) {
   const packageJsonPath = await resolvePath(`${packageName}/package.json`, autoPluginsDir)
-  // eslint-disable-next-line node/global-require, import/no-dynamic-require
-  const { version } = require(packageJsonPath)
+  const { version } = await importJsonFile(packageJsonPath)
   return version
 }
 

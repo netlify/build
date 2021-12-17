@@ -1,5 +1,19 @@
 # Changelog
 
+### [25.0.3](https://www.github.com/netlify/build/compare/build-v25.0.2...build-v25.0.3) (2021-12-17)
+
+
+### Bug Fixes
+
+* use ESM-compatible JSON imports ([#3964](https://www.github.com/netlify/build/issues/3964)) ([91b9063](https://www.github.com/netlify/build/commit/91b90632d5f32e6b3e372ac10ffbadbb0c36dc87))
+
+### [25.0.2](https://www.github.com/netlify/build/compare/build-v25.0.1...build-v25.0.2) (2021-12-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^5.3.0 ([#3961](https://www.github.com/netlify/build/issues/3961)) ([e1edaf3](https://www.github.com/netlify/build/commit/e1edaf36c325e4a0f5e3f9ef4da971544cc5e697))
+
 ### [25.0.1](https://www.github.com/netlify/build/compare/build-v25.0.0...build-v25.0.1) (2021-12-15)
 
 
