@@ -4,7 +4,7 @@ const { stdout } = require('process')
 
 const UpdateNotifier = require('update-notifier')
 
-const CORE_PACKAGE_JSON = require('../../package.json')
+const { ROOT_PACKAGE_JSON } = require('../utils/json')
 
 // Many build errors happen in local builds that do not use the latest version
 // of `@netlify/build`. We print a warning message on those.
@@ -32,10 +32,10 @@ const getCorePackageJson = function (testOpts) {
     // eslint-disable-next-line fp/no-mutation
     stdout.isTTY = true
 
-    return { ...CORE_PACKAGE_JSON, version: '0.0.1' }
+    return { ...ROOT_PACKAGE_JSON, version: '0.0.1' }
   }
 
-  return CORE_PACKAGE_JSON
+  return ROOT_PACKAGE_JSON
 }
 
 const OLD_VERSION_MESSAGE = `Please update netlify-cli to its latest version.

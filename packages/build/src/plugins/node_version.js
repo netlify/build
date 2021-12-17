@@ -4,10 +4,8 @@ const { version: currentVersion, execPath } = require('process')
 
 const { satisfies, clean: cleanVersion } = require('semver')
 
-const {
-  engines: { node: nodeVersionSupportedRange },
-} = require('../../package.json')
 const { addErrorInfo } = require('../error/info')
+const { ROOT_PACKAGE_JSON } = require('../utils/json')
 
 // Local plugins and `package.json`-installed plugins use user's preferred Node.js version if higher than our minimum
 // supported version. Else default to the system Node version.
@@ -29,7 +27,7 @@ const addPluginNodeVersion = function ({
   nodePath,
 }) {
   return (loadedFrom === 'local' || loadedFrom === 'package.json') &&
-    satisfies(userNodeVersion, nodeVersionSupportedRange)
+    satisfies(userNodeVersion, ROOT_PACKAGE_JSON.engines.node)
     ? { ...pluginOptions, nodePath, nodeVersion: userNodeVersion }
     : { ...pluginOptions, nodePath: execPath, nodeVersion: currentNodeVersion }
 }

@@ -3,8 +3,8 @@
 const Bugsnag = require('@bugsnag/js')
 const memoizeOne = require('memoize-one')
 
-const { name, version } = require('../../../package.json')
 const { log } = require('../../log/logger')
+const { ROOT_PACKAGE_JSON } = require('../../utils/json')
 
 const projectRoot = `${__dirname}/../../..`
 
@@ -20,8 +20,8 @@ const startErrorMonitor = function ({ flags: { mode }, logs, bugsnagKey }) {
   try {
     const errorMonitor = startBugsnag({
       apiKey: bugsnagKey,
-      appVersion: `${name} ${version}`,
-      appType: name,
+      appVersion: `${ROOT_PACKAGE_JSON.name} ${ROOT_PACKAGE_JSON.version}`,
+      appType: ROOT_PACKAGE_JSON.name,
       releaseStage,
       logger,
       projectRoot,
