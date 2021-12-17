@@ -1,5 +1,12 @@
 # Changelog
 
+### [25.0.3](https://www.github.com/netlify/build/compare/build-v25.0.2...build-v25.0.3) (2021-12-17)
+
+
+### Bug Fixes
+
+* use ESM-compatible JSON imports ([#3964](https://www.github.com/netlify/build/issues/3964)) ([91b9063](https://www.github.com/netlify/build/commit/91b90632d5f32e6b3e372ac10ffbadbb0c36dc87))
+
 ### [25.0.2](https://www.github.com/netlify/build/compare/build-v25.0.1...build-v25.0.2) (2021-12-16)
 
 
