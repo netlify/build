@@ -1,5 +1,12 @@
 # Changelog
 
+### [17.0.1](https://www.github.com/netlify/build/compare/config-v17.0.0...config-v17.0.1) (2021-12-17)
+
+
+### Bug Fixes
+
+* use static imports with `@netlify/config` ([#3963](https://www.github.com/netlify/build/issues/3963)) ([1689b7d](https://www.github.com/netlify/build/commit/1689b7d2bb40bc8049ca5675a1f3059ca8289cfa))
+
 ## [17.0.0](https://www.github.com/netlify/build/compare/config-v16.0.7...config-v17.0.0) (2021-12-15)
 
 
