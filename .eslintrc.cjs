@@ -1,9 +1,10 @@
-'use strict'
-
 const { overrides } = require('@netlify/eslint-config-node')
 
 module.exports = {
   extends: ['plugin:fp/recommended', '@netlify/eslint-config-node'],
+  parserOptions: {
+    sourceType: 'module',
+  },
   rules: {
     strict: 2,
 
@@ -54,32 +55,17 @@ module.exports = {
         ],
       },
     ],
+    'import/extensions': [2, 'ignorePackages'],
   },
   overrides: [
     ...overrides,
     {
-      files: ['**/tests.{cjs,mjs,js}', '**/tests/**/*.{cjs,mjs,js}'],
-      rules: {
-        'node/no-missing-import': 0,
-      },
-    },
-    {
       files: ['**/fixtures/**/*.{cjs,mjs,js}'],
       rules: {
         'import/no-unresolved': 0,
+        'node/no-missing-import': 0,
       },
     },
-    {
-      files: ['**/fixtures/**/*edge-handlers*/**/*.js', '**/fixtures/*es_module*/**/*.js'],
-      parserOptions: {
-        sourceType: 'module',
-      },
-      rules: {
-        'node/no-unsupported-features/es-syntax': 0,
-        'ava/no-import-test-files': 0,
-      },
-    },
-
     // @todo As it stands, this rule is problematic with methods that get+send
     // many parameters, such as `runStep` in `src/steps/run_step.js`.
     // We should discuss whether we want to keep this rule or discontinue it.
@@ -121,31 +107,6 @@ module.exports = {
       files: ['packages/build/tests/**/fixtures/**/*.{mjs,js}'],
       rules: {
         'import/no-anonymous-default-export': 0,
-      },
-    },
-
-    {
-      files: ['packages/*/tests/**/*.{cjs,mjs,js}'],
-      rules: {
-        'no-magic-numbers': 'off',
-      },
-    },
-
-    // Those packages are using pure ES modules
-    {
-      files: [
-        'packages/build/**/*.{cjs,mjs,js}',
-        'packages/cache-utils/**/*.{cjs,mjs,js}',
-        'packages/config/**/*.{cjs,mjs,js}',
-        'packages/functions-utils/**/*.{cjs,mjs,js}',
-        'packages/git-utils/**/*.{cjs,mjs,js}',
-        'packages/run-utils/**/*.{cjs,mjs,js}',
-      ],
-      parserOptions: {
-        sourceType: 'module',
-      },
-      rules: {
-        'import/extensions': [2, 'ignorePackages'],
       },
     },
   ],

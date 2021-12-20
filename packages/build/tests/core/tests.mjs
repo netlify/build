@@ -226,7 +226,8 @@ const getNodeBinary = async function (nodeVersion, retries = 1) {
 const MAX_RETRIES = 10
 
 // Memoize `get-node`
-const mGetNode = moize(getNodeBinary, { isPromise: true, maxSize: 1e3 })
+const GET_NODE_MOIZE_MAX_SIZE = 1e3
+const mGetNode = moize(getNodeBinary, { isPromise: true, maxSize: GET_NODE_MOIZE_MAX_SIZE })
 
 test('--node-path is used by build.command', async (t) => {
   const { path } = await mGetNode(CHILD_NODE_VERSION)
@@ -357,7 +358,7 @@ test.serial('Passes the right base path properties to zip-it-and-ship-it', async
   t.is(repositoryRoot, fixtureDir)
 })
 
-// eslint-disable-next-line max-statements
+/* eslint-disable max-statements, no-magic-numbers */
 test.serial('Passes the right feature flags to zip-it-and-ship-it', async (t) => {
   // eslint-disable-next-line import/no-named-as-default-member
   const mockZipFunctions = sinon.stub().resolves()
@@ -417,6 +418,7 @@ test.serial('Passes the right feature flags to zip-it-and-ship-it', async (t) =>
   t.true(mockZipFunctions.getCall(7).args[2].featureFlags.this_is_a_mock_flag)
   t.true(mockZipFunctions.getCall(7).args[2].featureFlags.and_another_one)
 })
+/* eslint-enable max-statements, no-magic-numbers */
 
 test('Print warning on lingering processes', async (t) => {
   const { returnValue } = await runFixture(t, 'lingering', {
