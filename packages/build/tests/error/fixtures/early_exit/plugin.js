@@ -1,8 +1,6 @@
-'use strict'
+import { env, pid } from 'process'
 
-const { env, pid } = require('process')
-
-module.exports = {
+export default {
   onPreBuild() {
     env.TEST_PID = pid
   },

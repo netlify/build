@@ -1,6 +1,4 @@
-'use strict'
+import mathAvg from 'math-avg'
+import sharp from 'sharp'
 
-const mathAvg = require('math-avg')
-const sharp = require('sharp')
-
-module.exports = () => [mathAvg([]), sharp()]
+export default () => [mathAvg([]), sharp()]

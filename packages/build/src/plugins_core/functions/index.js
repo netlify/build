@@ -1,18 +1,15 @@
-'use strict'
+import { join, resolve } from 'path'
 
-const { join, resolve } = require('path')
+import { zipFunctions } from '@netlify/zip-it-and-ship-it'
+import mapObject from 'map-obj'
+import pathExists from 'path-exists'
 
-// We can't use destructuring for zisi as we rely on spies for the `zipFunctions` method within our tests
-const zipItAndShipIt = require('@netlify/zip-it-and-ship-it')
-const mapObject = require('map-obj')
-const pathExists = require('path-exists')
+import { log } from '../../log/logger.js'
+import { logBundleResults, logFunctionsNonExistingDir, logFunctionsToBundle } from '../../log/messages/core_steps.js'
 
-const { log } = require('../../log/logger')
-const { logBundleResults, logFunctionsNonExistingDir, logFunctionsToBundle } = require('../../log/messages/core_steps')
-
-const { getZipError } = require('./error')
-const { getZisiFeatureFlags } = require('./feature_flags')
-const { getUserAndInternalFunctions, validateFunctionsSrc } = require('./utils')
+import { getZipError } from './error.js'
+import { getZisiFeatureFlags } from './feature_flags.js'
+import { getUserAndInternalFunctions, validateFunctionsSrc } from './utils.js'
 
 // Returns `true` if at least one of the functions has been configured to use
 // esbuild.
@@ -182,7 +179,7 @@ const hasFunctionsDirectories = async function ({ buildDir, constants: { INTERNA
   return await pathExists(internalFunctionsSrc)
 }
 
-const bundleFunctions = {
+export const bundleFunctions = {
   event: 'onBuild',
   coreStep,
   coreStepId: 'functions_bundling',
@@ -191,4 +188,13 @@ const bundleFunctions = {
   condition: hasFunctionsDirectories,
 }
 
-module.exports = { bundleFunctions }
+// Named imports with ES modules cannot be mocked (unlike CommonJS) because
+// they are bound at load time.
+// However, some of our tests are asserting which arguments are passed to
+// `zip-it-and-ship-it` methods. Therefore, we need to use an intermediary
+// function and export them so tests can use it.
+export const zipItAndShipIt = {
+  async zipFunctions(...args) {
+    return await zipFunctions(...args)
+  },
+}

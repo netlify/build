@@ -1,19 +1,17 @@
-'use strict'
+import { getNewEnvChanges, setEnvChanges } from '../../env/changes.js'
+import { logPluginMethodStart, logPluginMethodEnd } from '../../log/messages/ipc.js'
 
-const { getNewEnvChanges, setEnvChanges } = require('../../env/changes')
-const { logPluginMethodStart, logPluginMethodEnd } = require('../../log/messages/ipc')
-
-const { cloneNetlifyConfig, getConfigMutations } = require('./diff')
-const { getUtils } = require('./utils')
+import { cloneNetlifyConfig, getConfigMutations } from './diff.js'
+import { getUtils } from './utils.js'
 
 // Run a specific plugin event handler
-const run = async function (
+export const run = async function (
   { event, error, constants, envChanges, netlifyConfig },
   { methods, inputs, packageJson, verbose },
 ) {
   const method = methods[event]
   const runState = {}
-  const utils = await getUtils({ event, constants, runState })
+  const utils = getUtils({ event, constants, runState })
   const netlifyConfigCopy = cloneNetlifyConfig(netlifyConfig)
   const runOptions = { utils, constants, inputs, netlifyConfig: netlifyConfigCopy, packageJson, error }
 
@@ -28,5 +26,3 @@ const run = async function (
   const configMutations = getConfigMutations(netlifyConfig, netlifyConfigCopy, event)
   return { ...runState, newEnvChanges, configMutations }
 }
-
-module.exports = { run }

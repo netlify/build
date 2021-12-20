@@ -1,41 +1,26 @@
-'use strict'
-
-const {
-  cyanBright: { bold: cyanBrightBold },
-  cyan: { bold: cyanBold },
-  cyan,
-  redBright: { bold: redBrightBold },
-  redBright,
-  red: { bold: redBold },
-  yellowBright: { bold: yellowBrightBold },
-  yellowBright,
-  yellow: { bold: yellowBold },
-  gray,
-} = require('chalk')
+import chalk from 'chalk'
 
 // Color theme. Please use this instead of requiring chalk directly, to ensure
 // consistent colors.
-const THEME = {
+export const THEME = {
   // Main headers
-  header: cyanBrightBold,
+  header: chalk.cyanBright.bold,
   // Single lines used as subheaders
-  subHeader: cyanBold,
+  subHeader: chalk.cyan.bold,
   // One of several words that should be highlighted inside a line
-  highlightWords: cyan,
+  highlightWords: chalk.cyan,
   // Same for errors
-  errorHeader: redBrightBold,
-  errorSubHeader: redBold,
-  errorLine: redBright,
-  errorHighlightWords: redBrightBold,
+  errorHeader: chalk.redBright.bold,
+  errorSubHeader: chalk.red.bold,
+  errorLine: chalk.redBright,
+  errorHighlightWords: chalk.redBright.bold,
   // Same for warnings
-  warningHeader: yellowBrightBold,
-  warningSubHeader: yellowBold,
-  warningLine: yellowBright,
-  warningHighlightWords: yellowBrightBold,
+  warningHeader: chalk.yellowBright.bold,
+  warningSubHeader: chalk.yellow.bold,
+  warningLine: chalk.yellowBright,
+  warningHighlightWords: chalk.yellowBright.bold,
   // One of several words that should be dimmed inside a line
-  dimWords: gray,
+  dimWords: chalk.gray,
   // No colors
   none: (string) => string,
 }
-
-module.exports = { THEME }

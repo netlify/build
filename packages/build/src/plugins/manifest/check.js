@@ -1,12 +1,10 @@
-'use strict'
-
-const { addErrorInfo } = require('../../error/info')
-const { serializeObject } = require('../../log/serialize')
-const { THEME } = require('../../log/theme')
+import { addErrorInfo } from '../../error/info.js'
+import { serializeObject } from '../../log/serialize.js'
+import { THEME } from '../../log/theme.js'
 
 // Check that plugin inputs match the validation specified in "manifest.yml"
 // Also assign default values
-const checkInputs = function ({
+export const checkInputs = function ({
   inputs,
   manifest: { inputs: rules = [] },
   packageName,
@@ -106,5 +104,3 @@ const addInputError = function ({ error, name, packageName, pluginPackageJson, l
     location: { event: 'load', packageName, input: name, loadedFrom, origin },
   })
 }
-
-module.exports = { checkInputs }

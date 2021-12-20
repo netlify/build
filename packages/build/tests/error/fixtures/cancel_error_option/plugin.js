@@ -1,10 +1,8 @@
-'use strict'
-
 const getError = function () {
   return new Error('innerTest')
 }
 
-module.exports = {
+export default {
   onPreBuild({
     utils: {
       build: { cancelBuild },

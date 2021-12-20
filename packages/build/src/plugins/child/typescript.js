@@ -1,16 +1,14 @@
-'use strict'
+import { extname } from 'path'
 
-const { extname } = require('path')
+import { register } from 'ts-node'
 
-const { register } = require('ts-node')
-
-const { addErrorInfo } = require('../../error/info')
+import { addErrorInfo } from '../../error/info.js'
 
 // Allow local plugins to be written with TypeScript.
 // Local plugins cannot be transpiled by the build command since they can be run
 // before it. Therefore, we type-check and transpile them automatically using
 // `ts-node`.
-const registerTypeScript = function (pluginPath) {
+export const registerTypeScript = function (pluginPath) {
   if (!isTypeScriptPlugin(pluginPath)) {
     return
   }
@@ -20,7 +18,7 @@ const registerTypeScript = function (pluginPath) {
 
 // On TypeScript errors, adds information about the `ts-node` configuration,
 // which includes the resolved `tsconfig.json`.
-const addTsErrorInfo = function (error, tsNodeService) {
+export const addTsErrorInfo = function (error, tsNodeService) {
   if (tsNodeService === undefined) {
     return
   }
@@ -39,5 +37,3 @@ const isTypeScriptPlugin = function (pluginPath) {
 }
 
 const TYPESCRIPT_EXTENSIONS = new Set(['.ts', '.tsx', '.mts', '.cts'])
-
-module.exports = { registerTypeScript, addTsErrorInfo }

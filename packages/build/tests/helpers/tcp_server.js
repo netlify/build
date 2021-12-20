@@ -1,13 +1,11 @@
-'use strict'
+import { createServer } from 'net'
+import { promisify } from 'util'
 
-const { createServer } = require('net')
-const { promisify } = require('util')
-
-const getPort = require('get-port')
-const { tmpName } = require('tmp-promise')
+import getPort from 'get-port'
+import { tmpName } from 'tmp-promise'
 
 // Start a TCP server to mock calls.
-const startTcpServer = async function ({ response = '', useUnixSocket = true } = {}) {
+export const startTcpServer = async function ({ response = '', useUnixSocket = true } = {}) {
   const requests = []
   const { connectionOpts, address } = await getConnectionOpts({ useUnixSocket })
   const server = createServer(onConnection.bind(null, { response, requests }))
@@ -41,5 +39,3 @@ const onNewRequest = function ({ response, requests, socket }, data) {
   const serializedResponse = json ? JSON.stringify(response, null, 2) : response
   socket.write(serializedResponse)
 }
-
-module.exports = { startTcpServer }

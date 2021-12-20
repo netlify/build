@@ -1,6 +1,4 @@
-'use strict'
-
-module.exports = {}
+export default {}
 
 const throwError = function () {
   throw new Error('test')

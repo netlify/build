@@ -1,6 +1,4 @@
-'use strict'
-
-module.exports = {
+export default {
   onBuild() {
     const error = new Error('test')
     error.test = true

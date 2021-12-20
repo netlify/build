@@ -1,11 +1,9 @@
-'use strict'
+import { dirname } from 'path'
 
-const { dirname } = require('path')
-
-const readPkgUp = require('read-pkg-up')
+import readPkgUp from 'read-pkg-up'
 
 // Retrieve `package.json` from a specific directory
-const getPackageJson = async function (cwd, { normalize } = {}) {
+export const getPackageJson = async function (cwd, { normalize } = {}) {
   const packageObj = await getPackageObj({ cwd, normalize })
   if (packageObj === undefined) {
     return { packageJson: {} }
@@ -23,5 +21,3 @@ const getPackageObj = async function ({ cwd, normalize = true }) {
     // thrown. We return `undefined` then.
   } catch (error) {}
 }
-
-module.exports = { getPackageJson }

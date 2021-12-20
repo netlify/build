@@ -1,15 +1,13 @@
-'use strict'
+import { dirname } from 'path'
 
-const { dirname } = require('path')
+import { installLocalPluginsDependencies } from '../install/local.js'
+import { measureDuration } from '../time/main.js'
+import { ROOT_PACKAGE_JSON } from '../utils/json.js'
+import { getPackageJson } from '../utils/package.js'
 
-const { installLocalPluginsDependencies } = require('../install/local')
-const { measureDuration } = require('../time/main')
-const { ROOT_PACKAGE_JSON } = require('../utils/json')
-const { getPackageJson } = require('../utils/package')
-
-const { useManifest } = require('./manifest/main')
-const { checkNodeVersion } = require('./node_version')
-const { resolvePluginsPath } = require('./resolve')
+import { useManifest } from './manifest/main.js'
+import { checkNodeVersion } from './node_version.js'
+import { resolvePluginsPath } from './resolve.js'
 
 // Load core plugins and user plugins
 const tGetPluginsOptions = async function ({
@@ -51,7 +49,7 @@ const tGetPluginsOptions = async function ({
   return { pluginsOptions: pluginsOptionsC }
 }
 
-const getPluginsOptions = measureDuration(tGetPluginsOptions, 'get_plugins_options')
+export const getPluginsOptions = measureDuration(tGetPluginsOptions, 'get_plugins_options')
 
 // Retrieve plugin's main file path.
 // Then load plugin's `package.json` and `manifest.yml`.
@@ -82,11 +80,9 @@ const isNotRedundantCorePlugin = function (pluginOptionsA, index, pluginsOptions
 
 // Retrieve information about @netlify/build when an error happens there and not
 // in a plugin
-const getSpawnInfo = function () {
+export const getSpawnInfo = function () {
   return {
     plugin: { packageName: ROOT_PACKAGE_JSON.name, pluginPackageJson: ROOT_PACKAGE_JSON },
     location: { event: 'load', packageName: ROOT_PACKAGE_JSON.name, loadedFrom: 'core', origin: 'core' },
   }
 }
-
-module.exports = { getPluginsOptions, getSpawnInfo }

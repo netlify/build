@@ -1,18 +1,16 @@
-'use strict'
+import { isDeepStrictEqual } from 'util'
 
-const { isDeepStrictEqual } = require('util')
+import pFilter from 'p-filter'
+import pathExists from 'path-exists'
 
-const pFilter = require('p-filter')
-const pathExists = require('path-exists')
-
-const { resolveUpdatedConfig } = require('../core/config')
-const { addErrorInfo } = require('../error/info')
-const { logConfigOnUpdate } = require('../log/messages/config')
-const { logConfigMutations } = require('../log/messages/mutations')
+import { resolveUpdatedConfig } from '../core/config.js'
+import { addErrorInfo } from '../error/info.js'
+import { logConfigOnUpdate } from '../log/messages/config.js'
+import { logConfigMutations } from '../log/messages/mutations.js'
 
 // If `netlifyConfig` was updated or `_redirects` was created, the configuration
 // is updated by calling `@netlify/config` again.
-const updateNetlifyConfig = async function ({
+export const updateNetlifyConfig = async function ({
   configOpts,
   netlifyConfig,
   headersPath,
@@ -36,7 +34,7 @@ const updateNetlifyConfig = async function ({
     headersPath: headersPathA,
     redirectsPath: redirectsPathA,
   } = await resolveUpdatedConfig(configOpts, configMutationsA)
-  await logConfigOnUpdate({ logs, netlifyConfig: netlifyConfigA, debug })
+  logConfigOnUpdate({ logs, netlifyConfig: netlifyConfigA, debug })
   // eslint-disable-next-line fp/no-mutation,no-param-reassign
   errorParams.netlifyConfig = netlifyConfigA
   return {
@@ -67,7 +65,7 @@ const haveConfigSideFilesChanged = async function (configSideFiles, headersPath,
 // This is useful when applying configuration mutations since those files
 // sometimes have higher priority and should therefore be deleted in order to
 // apply any configuration update on `netlify.toml`.
-const listConfigSideFiles = async function (sideFiles) {
+export const listConfigSideFiles = async function (sideFiles) {
   const configSideFiles = await pFilter(sideFiles, pathExists)
   // eslint-disable-next-line fp/no-mutating-methods
   return configSideFiles.sort()
@@ -93,5 +91,3 @@ const validateConfigMutation = function ({ value, keysString }) {
 Please set this property to a specific value instead.`)
   }
 }
-
-module.exports = { updateNetlifyConfig, listConfigSideFiles }

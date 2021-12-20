@@ -1,12 +1,7 @@
-'use strict'
+import { execPath, env } from 'process'
 
-const {
-  execPath,
-  env: { TEST_NODE_PATH },
-} = require('process')
-
-module.exports = {
+export default {
   onPreBuild() {
-    console.log(`expect execPath to equal TEST_NODE_PATH. Got '${execPath === TEST_NODE_PATH}'`)
+    console.log(`expect execPath to equal TEST_NODE_PATH. Got '${execPath === env.TEST_NODE_PATH}'`)
   },
 }

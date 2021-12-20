@@ -1,11 +1,13 @@
-'use strict'
+import { fileURLToPath } from 'url'
 
-module.exports = {
+const TEST_FILE = fileURLToPath(new URL('test', import.meta.url))
+
+export default {
   async onPreBuild({
     utils: {
       functions: { add },
     },
   }) {
-    await add(`${__dirname}/test`)
+    await add(TEST_FILE)
   },
 }

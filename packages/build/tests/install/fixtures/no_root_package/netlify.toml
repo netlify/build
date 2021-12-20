@@ -2,4 +2,4 @@
 package = "@netlify/plugin-local-install-core"
 
 [[plugins]]
-package = "./plugin/main.js"
+package = "./plugin/main.mjs"

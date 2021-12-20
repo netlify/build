@@ -1,11 +1,7 @@
-'use strict'
+import { env } from 'process'
 
-const {
-  env: { BRANCH },
-} = require('process')
-
-module.exports = {
+export default {
   onPreBuild() {
-    console.log(BRANCH)
+    console.log(env.BRANCH)
   },
 }

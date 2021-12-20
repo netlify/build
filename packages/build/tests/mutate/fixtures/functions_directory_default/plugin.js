@@ -1,6 +1,4 @@
-'use strict'
-
-module.exports = {
+export default {
   onPreBuild({ netlifyConfig, constants: { FUNCTIONS_SRC } }) {
     console.log(FUNCTIONS_SRC)
     // eslint-disable-next-line no-param-reassign

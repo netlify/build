@@ -1,15 +1,13 @@
-'use strict'
+import readdirp from 'readdirp'
 
-const readdirp = require('readdirp')
-
-const { addErrorInfo } = require('../../error/info')
+import { addErrorInfo } from '../../error/info.js'
 
 const MODULE_NOT_FOUND_CODE = 'MODULE_NOT_FOUND'
 const MODULE_NOT_FOUND_ESBUILD_REGEXP = /^Could not resolve ['"]([^'"]+)/
 const MODULE_NOT_FOUND_REGEXP = /Cannot find module ['"]([^'"]+)/
 
 // Handle errors coming from zip-it-and-ship-it
-const getZipError = async function (error, functionsSrc) {
+export const getZipError = async function (error, functionsSrc) {
   const moduleNotFoundError = await getModuleNotFoundError(error, functionsSrc)
 
   if (moduleNotFoundError) {
@@ -151,7 +149,7 @@ package = "@netlify/plugin-functions-install-core"
 }
 
 // We need to load the site's `package.json` when bundling Functions. This is
-// because `optionalDependencies` can make `require()` fail, but we don't want
+// because `optionalDependencies` can make `import()` fail, but we don't want
 // to error then. However, if the `package.json` is invalid, we fail the build.
 const isPackageJsonError = function (error) {
   return error.message.includes(PACKAGE_JSON_ORIGINAL_MESSAGE)
@@ -163,5 +161,3 @@ const getPackageJsonError = function (error) {
   addErrorInfo(error, { type: 'resolveConfig' })
   return error
 }
-
-module.exports = { getZipError }

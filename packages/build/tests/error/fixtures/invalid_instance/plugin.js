@@ -1,6 +1,4 @@
-'use strict'
-
-module.exports = {
+export default {
   onPreBuild() {
     const error = new TypeError('message')
     error.staticProperty = true

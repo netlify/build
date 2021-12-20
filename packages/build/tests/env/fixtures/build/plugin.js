@@ -1,11 +1,7 @@
-'use strict'
+import { env } from 'process'
 
-const {
-  env: { TEST },
-} = require('process')
-
-module.exports = {
+export default {
   onPreBuild() {
-    console.log(TEST)
+    console.log(env.TEST)
   },
 }

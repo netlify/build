@@ -1,9 +1,7 @@
-'use strict'
-
 // Ensure error is an `Error` instance.
 // If is an `Error` instance but is missing usual `Error` properties, we make
 // sure its static properties are preserved.
-const normalizeError = function (error) {
+export const normalizeError = function (error) {
   if (Array.isArray(error)) {
     return normalizeArray(error)
   }
@@ -29,5 +27,3 @@ const normalizeArray = function (errorArray) {
   error.errors = errors
   return error
 }
-
-module.exports = { normalizeError }

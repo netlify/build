@@ -1,10 +1,8 @@
-'use strict'
-
-const { listCorePlugins, isCorePlugin } = require('./list')
+import { listCorePlugins, isCorePlugin } from './list.js'
 
 // Add core plugins and user plugins together.
 // Do not allow user override of core plugins.
-const addCorePlugins = function ({ netlifyConfig: { plugins }, constants }) {
+export const addCorePlugins = function ({ netlifyConfig: { plugins }, constants }) {
   const corePlugins = listCorePlugins(constants)
   const allCorePlugins = corePlugins
     .map((corePlugin) => addCoreProperties(corePlugin, plugins))
@@ -49,5 +47,3 @@ const normalizePluginOptions = function ({
 }) {
   return { packageName, pluginPath, pinnedVersion, loadedFrom, origin, inputs }
 }
-
-module.exports = { addCorePlugins }

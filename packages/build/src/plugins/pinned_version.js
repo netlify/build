@@ -1,11 +1,9 @@
-'use strict'
-
-const { handleBuildError } = require('../error/handle')
-const { getMajorVersion } = require('../utils/semver')
+import { handleBuildError } from '../error/handle.js'
+import { getMajorVersion } from '../utils/semver.js'
 
 // Retrieve plugin's pinned major versions by fetching the latest `PluginRun`
 // Only applies to `netlify.toml`-only installed plugins.
-const addPinnedVersions = async function ({ pluginsOptions, api, siteInfo: { id: siteId }, sendStatus }) {
+export const addPinnedVersions = async function ({ pluginsOptions, api, siteInfo: { id: siteId }, sendStatus }) {
   if (!sendStatus || api === undefined || !siteId) {
     return pluginsOptions
   }
@@ -40,7 +38,7 @@ const addPinnedVersion = function (pluginOptions, pluginRuns) {
 
 // Send an API request to pin plugins' major versions.
 // Only applies to UI-installed plugins.
-const pinPlugins = async function ({
+export const pinPlugins = async function ({
   pluginsOptions,
   failedPlugins,
   api,
@@ -131,5 +129,3 @@ const pinPlugin = async function ({
 const shouldIgnoreError = function ({ status }) {
   return status === 404
 }
-
-module.exports = { addPinnedVersions, pinPlugins }

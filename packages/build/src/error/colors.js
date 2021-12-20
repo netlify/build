@@ -1,9 +1,7 @@
-'use strict'
-
-const stripAnsi = require('strip-ansi')
+import stripAnsi from 'strip-ansi'
 
 // Remove ANSI sequences from `error.message`
-const removeErrorColors = function (error) {
+export const removeErrorColors = function (error) {
   if (!(error instanceof Error)) {
     return
   }
@@ -11,5 +9,3 @@ const removeErrorColors = function (error) {
   error.message = stripAnsi(error.message)
   error.stack = stripAnsi(error.stack)
 }
-
-module.exports = { removeErrorColors }

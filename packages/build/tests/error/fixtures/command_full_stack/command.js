@@ -1,6 +1,4 @@
-'use strict'
-
-const { exit } = require('process')
+import { exit } from 'process'
 
 const test = function () {
   console.log(new Error('test'))

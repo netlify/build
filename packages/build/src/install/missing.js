@@ -1,16 +1,14 @@
-'use strict'
+import { writeFile, unlink } from 'fs'
+import { normalize } from 'path'
+import { promisify } from 'util'
 
-const { writeFile, unlink } = require('fs')
-const { normalize } = require('path')
-const { promisify } = require('util')
+import makeDir from 'make-dir'
+import pathExists from 'path-exists'
+import { isFile } from 'path-type'
 
-const makeDir = require('make-dir')
-const pathExists = require('path-exists')
-const { isFile } = require('path-type')
+import { logInstallMissingPlugins } from '../log/messages/install.js'
 
-const { logInstallMissingPlugins } = require('../log/messages/install')
-
-const { addExactDependencies } = require('./main')
+import { addExactDependencies } from './main.js'
 
 const pWriteFile = promisify(writeFile)
 const pUnlink = promisify(unlink)
@@ -20,7 +18,7 @@ const pUnlink = promisify(unlink)
 // options. We do not allow configure the package manager nor its options.
 // Users requiring `yarn` or custom npm/yarn flags should install the plugin in
 // their `package.json`.
-const installMissingPlugins = async function ({ missingPlugins, autoPluginsDir, mode, logs }) {
+export const installMissingPlugins = async function ({ missingPlugins, autoPluginsDir, mode, logs }) {
   const packages = missingPlugins.map(getPackage)
   logInstallMissingPlugins(logs, packages)
 
@@ -72,5 +70,3 @@ const AUTO_PLUGINS_PACKAGE_JSON = {
   author: 'Netlify',
   license: 'MIT',
 }
-
-module.exports = { installMissingPlugins }

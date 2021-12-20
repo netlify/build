@@ -1,5 +1,3 @@
-'use strict'
-
-module.exports = function testPlugin() {
+export default function testPlugin() {
   throw new Error('test')
 }

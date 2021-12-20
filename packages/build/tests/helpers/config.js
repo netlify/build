@@ -1,20 +1,19 @@
-'use strict'
+import { fileURLToPath } from 'url'
 
-const fastSafeStringify = require('fast-safe-stringify')
-const { getBinPath } = require('get-bin-path')
+import { resolveConfig } from '@netlify/config'
+import fastSafeStringify from 'fast-safe-stringify'
+import { getBinPath } from 'get-bin-path'
 
 // Tests require the full monorepo to be present at the moment
 // TODO: split tests utility into its own package
-const { runFixtureCommon } = require('./common')
+import { runFixtureCommon } from './common.js'
 
-const netlifyConfigPromise = import('@netlify/config')
-
-const NETLIFY_CONFIG_ROOT_DIR = `${__dirname}/../../../config`
+const NETLIFY_CONFIG_ROOT_DIR = fileURLToPath(new URL('../../../config', import.meta.url))
 const BINARY_PATH = getBinPath({ cwd: NETLIFY_CONFIG_ROOT_DIR })
 
 // Run fixture using `@netlify/config`.
 // This is inside `@netlify/build`'s repository since it needs it as well.
-const runFixtureConfig = async function (t, fixtureName, { flags = {}, env, ...opts } = {}) {
+export const runFixtureConfig = async function (t, fixtureName, { flags = {}, env, ...opts } = {}) {
   const flagsA = {
     stable: true,
     buffer: true,
@@ -37,7 +36,6 @@ const DEFAULT_TEST_FEATURE_FLAGS = {}
 
 // In tests, make the return value stable so it can be snapshot
 const mainFunc = async function (flags) {
-  const { resolveConfig } = await netlifyConfigPromise
   const { logs: { stdout = [], stderr = [] } = {}, ...result } = await resolveConfig(flags)
   const resultA = serializeApi(result)
   const resultB = fastSafeStringify.stableStringify(resultA, null, 2)
@@ -52,5 +50,3 @@ const serializeApi = function ({ api, ...result }) {
 
   return { ...result, hasApi: true }
 }
-
-module.exports = { runFixtureConfig }

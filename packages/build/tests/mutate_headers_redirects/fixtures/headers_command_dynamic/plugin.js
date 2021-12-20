@@ -1,6 +1,4 @@
-'use strict'
-
-module.exports = {
+export default {
   onPreBuild({ netlifyConfig: { headers, build } }) {
     console.log(headers)
     // eslint-disable-next-line no-param-reassign

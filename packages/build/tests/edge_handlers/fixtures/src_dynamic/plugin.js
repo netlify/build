@@ -1,15 +1,13 @@
-'use strict'
-
-const { mkdir, rmdir } = require('fs')
-const { dirname } = require('path')
-const { promisify } = require('util')
+import { mkdir, rmdir } from 'fs'
+import { dirname } from 'path'
+import { promisify } from 'util'
 
 const pMkdir = promisify(mkdir)
 const pRmdir = promisify(rmdir)
 
 const DEFAULT_EDGE_HANDLERS_SRC = 'netlify/edge-handlers'
 
-module.exports = {
+export default {
   async onPreBuild({ constants: { EDGE_HANDLERS_SRC } }) {
     console.log(EDGE_HANDLERS_SRC === undefined)
     await pMkdir(dirname(DEFAULT_EDGE_HANDLERS_SRC))

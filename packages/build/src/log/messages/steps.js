@@ -1,10 +1,8 @@
-'use strict'
+import { getLogHeaderFunc } from '../header_func.js'
+import { log, logMessage } from '../logger.js'
+import { THEME } from '../theme.js'
 
-const { getLogHeaderFunc } = require('../header_func')
-const { log, logMessage } = require('../logger')
-const { THEME } = require('../theme')
-
-const logStepStart = function ({ logs, event, packageName, coreStepDescription, index, error, netlifyConfig }) {
+export const logStepStart = function ({ logs, event, packageName, coreStepDescription, index, error, netlifyConfig }) {
   const description = getDescription({ coreStepDescription, netlifyConfig, packageName, event })
   const logHeaderFunc = getLogHeaderFunc(error)
   logHeaderFunc(logs, `${index + 1}. ${description}`)
@@ -15,16 +13,10 @@ const getDescription = function ({ coreStepDescription, netlifyConfig, packageNa
   return coreStepDescription === undefined ? `${packageName} (${event} event)` : coreStepDescription({ netlifyConfig })
 }
 
-const logBuildCommandStart = function (logs, buildCommand) {
+export const logBuildCommandStart = function (logs, buildCommand) {
   log(logs, THEME.highlightWords(`$ ${buildCommand}`))
 }
 
-const logStepSuccess = function (logs) {
+export const logStepSuccess = function (logs) {
   logMessage(logs, '')
-}
-
-module.exports = {
-  logStepStart,
-  logBuildCommandStart,
-  logStepSuccess,
 }

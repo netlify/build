@@ -1,11 +1,9 @@
-'use strict'
+import { setInspectColors } from '../../log/colors.js'
+import { sendEventToParent, getEventsFromParent } from '../ipc.js'
 
-const { setInspectColors } = require('../../log/colors')
-const { sendEventToParent, getEventsFromParent } = require('../ipc')
-
-const { handleProcessErrors, handleError } = require('./error')
-const { load } = require('./load')
-const { run } = require('./run')
+import { handleProcessErrors, handleError } from './error.js'
+import { load } from './load.js'
+import { run } from './run.js'
 
 // Boot plugin child process.
 const bootPlugin = async function () {

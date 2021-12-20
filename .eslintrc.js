@@ -58,6 +58,12 @@ module.exports = {
   overrides: [
     ...overrides,
     {
+      files: ['**/tests.{cjs,mjs,js}', '**/tests/**/*.{cjs,mjs,js}'],
+      rules: {
+        'node/no-missing-import': 0,
+      },
+    },
+    {
       files: ['**/fixtures/**/*.{cjs,mjs,js}'],
       rules: {
         'import/no-unresolved': 0,
@@ -110,6 +116,13 @@ module.exports = {
         'import/named': 0,
       },
     },
+    // TODO: remove once we use named exports in test fixtures
+    {
+      files: ['packages/build/tests/**/fixtures/**/*.{mjs,js}'],
+      rules: {
+        'import/no-anonymous-default-export': 0,
+      },
+    },
 
     {
       files: ['packages/*/tests/**/*.{cjs,mjs,js}'],
@@ -121,6 +134,7 @@ module.exports = {
     // Those packages are using pure ES modules
     {
       files: [
+        'packages/build/**/*.{cjs,mjs,js}',
         'packages/cache-utils/**/*.{cjs,mjs,js}',
         'packages/config/**/*.{cjs,mjs,js}',
         'packages/functions-utils/**/*.{cjs,mjs,js}',

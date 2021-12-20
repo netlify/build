@@ -1,13 +1,11 @@
-'use strict'
+import safeJsonStringify from 'safe-json-stringify'
 
-const safeJsonStringify = require('safe-json-stringify')
-
-const { CUSTOM_ERROR_KEY } = require('./info')
+import { CUSTOM_ERROR_KEY } from './info.js'
 
 // Retrieve error information from child process and re-build it in current
 // process. We need this since errors static properties are not kept by
 // `v8.serialize()`.
-const jsonToError = function ({ name, message, stack, ...errorProps }) {
+export const jsonToError = function ({ name, message, stack, ...errorProps }) {
   // eslint-disable-next-line unicorn/error-message
   const error = new Error('')
 
@@ -36,11 +34,9 @@ const assignErrorProp = function (error, name, value) {
 }
 
 // Inverse of `jsonToError()`.
-const errorToJson = function ({ name, message, stack, [CUSTOM_ERROR_KEY]: customError, ...errorProps }) {
+export const errorToJson = function ({ name, message, stack, [CUSTOM_ERROR_KEY]: customError, ...errorProps }) {
   return {
     ...safeJsonStringify.ensureProperties(errorProps),
     ...safeJsonStringify.ensureProperties({ name, message, stack, [CUSTOM_ERROR_KEY]: customError }),
   }
 }
-
-module.exports = { jsonToError, errorToJson }

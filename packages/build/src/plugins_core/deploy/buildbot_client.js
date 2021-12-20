@@ -1,16 +1,14 @@
-'use strict'
+import net from 'net'
+import { normalize, resolve, relative } from 'path'
+import { promisify } from 'util'
 
-const net = require('net')
-const { normalize, resolve, relative } = require('path')
-const { promisify } = require('util')
+import pEvent from 'p-event'
 
-const pEvent = require('p-event')
+import { addErrorInfo } from '../../error/info.js'
+import { runsAfterDeploy } from '../../plugins/events.js'
+import { addAsyncErrorMessage } from '../../utils/errors.js'
 
-const { addErrorInfo } = require('../../error/info')
-const { runsAfterDeploy } = require('../../plugins/events')
-const { addAsyncErrorMessage } = require('../../utils/errors')
-
-const createBuildbotClient = function (buildbotServerSocket) {
+export const createBuildbotClient = function (buildbotServerSocket) {
   const connectionOpts = getConnectionOpts(buildbotServerSocket)
   const client = net.createConnection(connectionOpts)
   return client
@@ -30,9 +28,9 @@ const eConnectBuildbotClient = async function (client) {
   await pEvent(client, 'connect')
 }
 
-const connectBuildbotClient = addAsyncErrorMessage(eConnectBuildbotClient, 'Could not connect to buildbot')
+export const connectBuildbotClient = addAsyncErrorMessage(eConnectBuildbotClient, 'Could not connect to buildbot')
 
-const closeBuildbotClient = async function (client) {
+export const closeBuildbotClient = async function (client) {
   if (client.destroyed) {
     return
   }
@@ -56,7 +54,7 @@ const getNextParsedResponsePromise = addAsyncErrorMessage(
   'Invalid response from buildbot',
 )
 
-const deploySiteWithBuildbotClient = async function ({ client, events, buildDir, repositoryRoot, constants }) {
+export const deploySiteWithBuildbotClient = async function ({ client, events, buildDir, repositoryRoot, constants }) {
   const action = shouldWaitForPostProcessing(events) ? 'deploySiteAndAwaitLive' : 'deploySite'
   const deployDir = getDeployDir({ buildDir, repositoryRoot, constants })
   const payload = { action, deployDir }
@@ -101,11 +99,4 @@ const shouldWaitForPostProcessing = function (events) {
 
 const hasPostDeployLogic = function (event) {
   return runsAfterDeploy(event)
-}
-
-module.exports = {
-  createBuildbotClient,
-  connectBuildbotClient,
-  closeBuildbotClient,
-  deploySiteWithBuildbotClient,
 }

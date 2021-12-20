@@ -1,6 +1,4 @@
-'use strict'
-
 const moduleName = 'test'
+const returnValue = await import(moduleName)
 
-// eslint-disable-next-line import/no-dynamic-require
-module.exports = require(moduleName)
+export default returnValue

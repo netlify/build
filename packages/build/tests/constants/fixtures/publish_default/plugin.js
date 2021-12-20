@@ -1,9 +1,10 @@
-'use strict'
+import { resolve } from 'path'
+import { fileURLToPath } from 'url'
 
-const { resolve } = require('path')
+const CURRENT_DIR = fileURLToPath(new URL('.', import.meta.url))
 
-module.exports = {
+export default {
   onPreBuild({ constants: { PUBLISH_DIR } }) {
-    console.log(PUBLISH_DIR, resolve(PUBLISH_DIR) === resolve(__dirname))
+    console.log(PUBLISH_DIR, resolve(PUBLISH_DIR) === resolve(CURRENT_DIR))
   },
 }

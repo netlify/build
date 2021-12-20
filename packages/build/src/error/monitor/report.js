@@ -1,21 +1,19 @@
-'use strict'
+import { type as osType, freemem, totalmem } from 'os'
+import { promisify } from 'util'
 
-const { type: osType, freemem, totalmem } = require('os')
-const { promisify } = require('util')
+import osName from 'os-name'
 
-const osName = require('os-name')
+import { getEnvMetadata } from '../../env/metadata.js'
+import { log } from '../../log/logger.js'
+import { parseErrorInfo } from '../parse/parse.js'
+import { getHomepage } from '../parse/plugin.js'
 
-const { getEnvMetadata } = require('../../env/metadata')
-const { log } = require('../../log/logger')
-const { parseErrorInfo } = require('../parse/parse')
-const { getHomepage } = require('../parse/plugin')
-
-const { getLocationMetadata } = require('./location')
-const { normalizeGroupingMessage } = require('./normalize')
-const { printEventForTest } = require('./print')
+import { getLocationMetadata } from './location.js'
+import { normalizeGroupingMessage } from './normalize.js'
+import { printEventForTest } from './print.js'
 
 // Report a build failure for monitoring purpose
-const reportBuildError = async function ({ error, errorMonitor, childEnv, logs, testOpts }) {
+export const reportBuildError = async function ({ error, errorMonitor, childEnv, logs, testOpts }) {
   if (errorMonitor === undefined) {
     return
   }
@@ -130,5 +128,3 @@ const onError = function (event, eventProps) {
   })
   return true
 }
-
-module.exports = { reportBuildError }

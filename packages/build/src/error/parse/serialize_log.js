@@ -1,9 +1,7 @@
-'use strict'
-
-const { THEME } = require('../../log/theme')
+import { THEME } from '../../log/theme.js'
 
 // Serialize an error object into a title|body string to print in logs
-const serializeLogError = function ({
+export const serializeLogError = function ({
   fullErrorInfo: { title, severity, message, pluginInfo, locationInfo, tsConfigInfo, errorProps },
 }) {
   const body = getBody({ message, pluginInfo, locationInfo, tsConfigInfo, errorProps, severity })
@@ -42,5 +40,3 @@ const LOG_BLOCK_NAMES = {
   tsConfigInfo: 'TypeScript configuration',
   errorProps: 'Error properties',
 }
-
-module.exports = { serializeLogError }

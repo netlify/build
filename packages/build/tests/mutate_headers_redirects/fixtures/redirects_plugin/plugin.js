@@ -1,11 +1,9 @@
-'use strict'
-
-const { writeFile } = require('fs')
-const { promisify } = require('util')
+import { writeFile } from 'fs'
+import { promisify } from 'util'
 
 const pWriteFile = promisify(writeFile)
 
-module.exports = {
+export default {
   async onPreBuild({ netlifyConfig: { redirects }, constants: { PUBLISH_DIR } }) {
     console.log(redirects)
     await pWriteFile(`${PUBLISH_DIR}/_redirects`, '/from /to')

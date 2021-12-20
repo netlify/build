@@ -1,17 +1,15 @@
-'use strict'
+import { stdout } from 'process'
 
-const { stdout } = require('process')
+import UpdateNotifier from 'update-notifier'
 
-const UpdateNotifier = require('update-notifier')
-
-const { ROOT_PACKAGE_JSON } = require('../utils/json')
+import { ROOT_PACKAGE_JSON } from '../utils/json.js'
 
 // Many build errors happen in local builds that do not use the latest version
 // of `@netlify/build`. We print a warning message on those.
 // We only print this when Netlify CLI has been used. Programmatic usage might
 // come from a deep dependency calling `@netlify/build` and user might not be
 // able to take any upgrade action, making the message noisy.
-const logOldCliVersionError = function ({ mode, testOpts }) {
+export const logOldCliVersionError = function ({ mode, testOpts }) {
   if (mode !== 'cli') {
     return
   }
@@ -41,5 +39,3 @@ const getCorePackageJson = function (testOpts) {
 const OLD_VERSION_MESSAGE = `Please update netlify-cli to its latest version.
 If netlify-cli is already the latest version,
 please update your dependencies lock file instead.`
-
-module.exports = { logOldCliVersionError }

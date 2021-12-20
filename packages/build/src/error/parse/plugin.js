@@ -1,8 +1,6 @@
-'use strict'
-
 // Retrieve plugin's package.json details to include in error messages.
 // Please note `pluginPackageJson` has been normalized by `normalize-package-data`.
-const getPluginInfo = function ({ pluginPackageJson = {} }, { packageName, loadedFrom }) {
+export const getPluginInfo = function ({ pluginPackageJson = {} }, { packageName, loadedFrom }) {
   if (Object.keys(pluginPackageJson).length === 0) {
     return
   }
@@ -38,7 +36,7 @@ const getVersion = function ({ version }) {
   return version
 }
 
-const getHomepage = function (pluginPackageJson = {}, { loadedFrom } = {}) {
+export const getHomepage = function (pluginPackageJson = {}, { loadedFrom } = {}) {
   return (
     getRepository(pluginPackageJson) ||
     getNpmLink(pluginPackageJson, { loadedFrom }) ||
@@ -70,5 +68,3 @@ const FIELDS = {
   'npm link': getNpmLink,
   'Report issues': getIssuesLink,
 }
-
-module.exports = { getPluginInfo, getHomepage }

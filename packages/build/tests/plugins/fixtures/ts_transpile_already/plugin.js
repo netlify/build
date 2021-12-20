@@ -1,5 +1,3 @@
-'use strict'
-
 const onPreBuild = function () {
   console.log('JavaScript')
 }

@@ -1,12 +1,13 @@
-'use strict'
-
-const { writeFile } = require('fs')
-const { promisify } = require('util')
+import { writeFile } from 'fs'
+import { fileURLToPath } from 'url'
+import { promisify } from 'util'
 
 const pWriteFile = promisify(writeFile)
 
+const headersPath = fileURLToPath(new URL('_headers', import.meta.url))
+
 const buildCommand = async function () {
-  await pWriteFile(`${__dirname}/_headers`, '/path\n  test: one')
+  await pWriteFile(headersPath, '/path\n  test: one')
 }
 
 buildCommand()

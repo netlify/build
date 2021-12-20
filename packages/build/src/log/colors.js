@@ -1,16 +1,12 @@
-'use strict'
+import { inspect } from 'util'
 
-const {
-  inspect: { defaultOptions },
-} = require('util')
-
-const supportsColor = require('supports-color')
+import supportsColor from 'supports-color'
 
 // Plugin child processes use `stdio: 'pipe'` so they are always
 // non-interactive even if the parent is an interactive TTY. This means they
 // would normally lose colors. If the parent has colors, we pass an environment
 // variable to the child process to force colors.
-const getParentColorEnv = function () {
+export const getParentColorEnv = function () {
   if (!hasColors()) {
     return {}
   }
@@ -23,18 +19,16 @@ const getParentColorEnv = function () {
 // `process.stdout.hasColors` which is always `undefined` when the TTY is
 // non-interactive. So we need to set `util.inspect.defaultOptions.colors`
 // manually both in plugin processes.
-const setInspectColors = function () {
+export const setInspectColors = function () {
   if (!hasColors()) {
     return
   }
 
   // `inspect.defaultOptions` requires direct mutation
   // eslint-disable-next-line fp/no-mutation
-  defaultOptions.colors = true
+  inspect.defaultOptions.colors = true
 }
 
 const hasColors = function () {
   return supportsColor.stdout !== false
 }
-
-module.exports = { getParentColorEnv, setInspectColors }

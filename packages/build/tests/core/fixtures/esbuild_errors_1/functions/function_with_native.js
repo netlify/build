@@ -1,3 +1,3 @@
-'use strict'
+const returnValue = await import('test')
 
-module.exports = require('test')
+export default returnValue

@@ -1,8 +1,6 @@
-'use strict'
+import pathExists from 'path-exists'
 
-const pathExists = require('path-exists')
-
-module.exports = {
+export default {
   async onPreBuild({ constants: { PUBLISH_DIR } }) {
     console.log(PUBLISH_DIR, await pathExists(PUBLISH_DIR))
   },

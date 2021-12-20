@@ -1,6 +1,4 @@
-'use strict'
-
-module.exports = {
+export default {
   /* eslint-disable no-param-reassign */
   onPreBuild({ netlifyConfig }) {
     netlifyConfig.build.processing.css = { bundle: true, minify: true }

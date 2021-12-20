@@ -1,0 +1,8 @@
+{
+  "name": "test",
+  "type": "commonjs",
+  "description": "test",
+  "license": "MIT",
+  "repository": "test",
+  "dependencies": {}
+}

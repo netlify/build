@@ -1,6 +1,4 @@
-'use strict'
-
-module.exports = {
+export default {
   onPreBuild({ netlifyConfig: { redirects } }) {
     console.log(redirects)
   },

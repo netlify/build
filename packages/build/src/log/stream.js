@@ -1,7 +1,5 @@
-'use strict'
-
-const { stdout, stderr } = require('process')
-const { promisify } = require('util')
+import { stdout, stderr } from 'process'
+import { promisify } from 'util'
 
 // TODO: replace with `timers/promises` after dropping Node < 15.0.0
 const pSetTimeout = promisify(setTimeout)
@@ -10,7 +8,7 @@ const pSetTimeout = promisify(setTimeout)
 // which solves many problems. However we can only do it in build.command.
 // Plugins have several events, so need to be switch on and off instead.
 // In buffer mode (`logs` not `undefined`), `pipe` is necessary.
-const getBuildCommandStdio = function (logs) {
+export const getBuildCommandStdio = function (logs) {
   if (logs !== undefined) {
     return 'pipe'
   }
@@ -19,7 +17,7 @@ const getBuildCommandStdio = function (logs) {
 }
 
 // Add build command output
-const handleBuildCommandOutput = function ({ stdout: commandStdout, stderr: commandStderr }, logs) {
+export const handleBuildCommandOutput = function ({ stdout: commandStdout, stderr: commandStderr }, logs) {
   if (logs === undefined) {
     return
   }
@@ -37,7 +35,7 @@ const pushBuildCommandOutput = function (output, logsArray) {
 }
 
 // Start plugin step output
-const pipePluginOutput = function (childProcess, logs) {
+export const pipePluginOutput = function (childProcess, logs) {
   if (logs === undefined) {
     return streamOutput(childProcess)
   }
@@ -46,7 +44,7 @@ const pipePluginOutput = function (childProcess, logs) {
 }
 
 // Stop streaming/buffering plugin step output
-const unpipePluginOutput = async function (childProcess, logs, listeners) {
+export const unpipePluginOutput = async function (childProcess, logs, listeners) {
   // Let `childProcess` `stdout` and `stderr` flush before stopping redirecting
   await pSetTimeout(0)
 
@@ -84,11 +82,4 @@ const logsListener = function (logs, chunk) {
 const unpushOutputToLogs = function (childProcess, logs, { stdoutListener, stderrListener }) {
   childProcess.stdout.removeListener('data', stdoutListener)
   childProcess.stderr.removeListener('data', stderrListener)
-}
-
-module.exports = {
-  getBuildCommandStdio,
-  handleBuildCommandOutput,
-  pipePluginOutput,
-  unpipePluginOutput,
 }

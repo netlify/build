@@ -1,9 +1,7 @@
-'use strict'
-
-const stripAnsi = require('strip-ansi')
+import stripAnsi from 'strip-ansi'
 
 // Remove colors from statuses
-const removeStatusesColors = function (statuses) {
+export const removeStatusesColors = function (statuses) {
   return statuses.map(removeStatusColors)
 }
 
@@ -23,5 +21,3 @@ const removeAttrColor = function (status, attribute) {
   const valueA = stripAnsi(value)
   return { [attribute]: valueA }
 }
-
-module.exports = { removeStatusesColors }

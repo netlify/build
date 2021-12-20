@@ -1,15 +1,13 @@
-'use strict'
+import { readFile } from 'fs'
+import { inspect, promisify } from 'util'
 
-const { readFile } = require('fs')
-const { inspect, promisify } = require('util')
+import pathExists from 'path-exists'
 
-const pathExists = require('path-exists')
-
-const { log, logMessage, logSubHeader } = require('../logger')
+import { log, logMessage, logSubHeader } from '../logger.js'
 
 const pReadFile = promisify(readFile)
 
-const logConfigMutations = function (logs, newConfigMutations, debug) {
+export const logConfigMutations = function (logs, newConfigMutations, debug) {
   const configMutationsToLog = debug ? newConfigMutations : newConfigMutations.filter(shouldLogConfigMutation)
   configMutationsToLog.forEach(({ keysString, value }) => {
     logConfigMutation(logs, keysString, value)
@@ -37,7 +35,7 @@ const shouldHideConfigValue = function (keysString) {
 
 const SECRET_PROPS = ['build.environment']
 
-const logConfigOnUpload = async function ({ logs, configPath, debug }) {
+export const logConfigOnUpload = async function ({ logs, configPath, debug }) {
   if (!debug) {
     return
   }
@@ -53,7 +51,7 @@ const logConfigOnUpload = async function ({ logs, configPath, debug }) {
   logMessage(logs, configContents.trim())
 }
 
-const logHeadersOnUpload = async function ({ logs, headersPath, debug }) {
+export const logHeadersOnUpload = async function ({ logs, headersPath, debug }) {
   if (!debug) {
     return
   }
@@ -69,7 +67,7 @@ const logHeadersOnUpload = async function ({ logs, headersPath, debug }) {
   logMessage(logs, headersContents.trim())
 }
 
-const logRedirectsOnUpload = async function ({ logs, redirectsPath, debug }) {
+export const logRedirectsOnUpload = async function ({ logs, redirectsPath, debug }) {
   if (!debug) {
     return
   }
@@ -83,11 +81,4 @@ const logRedirectsOnUpload = async function ({ logs, redirectsPath, debug }) {
 
   const redirectsContents = await pReadFile(redirectsPath, 'utf8')
   logMessage(logs, `${redirectsContents.trim()}\n`)
-}
-
-module.exports = {
-  logConfigMutations,
-  logConfigOnUpload,
-  logHeadersOnUpload,
-  logRedirectsOnUpload,
 }

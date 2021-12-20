@@ -1,18 +1,16 @@
-'use strict'
+import { readFile } from 'fs'
+import { promisify } from 'util'
 
-const { readFile } = require('fs')
-const { promisify } = require('util')
+import { load as loadYaml, JSON_SCHEMA } from 'js-yaml'
 
-const { load: loadYaml, JSON_SCHEMA } = require('js-yaml')
+import { addErrorInfo } from '../../error/info.js'
 
-const { addErrorInfo } = require('../../error/info')
-
-const { validateManifest } = require('./validate')
+import { validateManifest } from './validate.js'
 
 const pReadFile = promisify(readFile)
 
 // Load "manifest.yml" using its file path
-const loadManifest = async function ({ manifestPath, packageName, pluginPackageJson, loadedFrom, origin }) {
+export const loadManifest = async function ({ manifestPath, packageName, pluginPackageJson, loadedFrom, origin }) {
   try {
     const rawManifest = await loadRawManifest(manifestPath)
     const manifest = await parseManifest(rawManifest)
@@ -44,5 +42,3 @@ const parseManifest = async function (rawManifest) {
     throw new Error(`Could not parse plugin's "manifest.yml"\n${error.message}`)
   }
 }
-
-module.exports = { loadManifest }

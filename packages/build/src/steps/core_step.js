@@ -1,12 +1,10 @@
-'use strict'
+import { setEnvChanges } from '../env/changes.js'
+import { addErrorInfo, isBuildError } from '../error/info.js'
 
-const { setEnvChanges } = require('../env/changes')
-const { addErrorInfo, isBuildError } = require('../error/info')
-
-const { updateNetlifyConfig, listConfigSideFiles } = require('./update_config')
+import { updateNetlifyConfig, listConfigSideFiles } from './update_config.js'
 
 // Fire a core step
-const fireCoreStep = async function ({
+export const fireCoreStep = async function ({
   coreStep,
   coreStepName,
   configPath,
@@ -90,5 +88,3 @@ const fireCoreStep = async function ({
     return { newError }
   }
 }
-
-module.exports = { fireCoreStep }

@@ -1,10 +1,8 @@
-'use strict'
-
-const { getBuildCommandDescription, getPluginOrigin } = require('../../log/description')
+import { getBuildCommandDescription, getPluginOrigin } from '../../log/description.js'
 
 // Retrieve an error's location to print in logs.
 // Each error type has its own logic (or none if there's no location to print).
-const getLocationInfo = function ({ stack, location, locationType }) {
+export const getLocationInfo = function ({ stack, location, locationType }) {
   // No location to print
   if (locationType === undefined && stack === undefined) {
     return
@@ -58,5 +56,3 @@ const LOCATIONS = {
   buildFail: getBuildFailLocation,
   api: getApiLocation,
 }
-
-module.exports = { getLocationInfo }

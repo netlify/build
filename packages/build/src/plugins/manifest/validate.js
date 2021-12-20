@@ -1,11 +1,9 @@
-'use strict'
+import isPlainObj from 'is-plain-obj'
 
-const isPlainObj = require('is-plain-obj')
-
-const { THEME } = require('../../log/theme')
+import { THEME } from '../../log/theme.js'
 
 // Validate `manifest.yml` syntax
-const validateManifest = function (manifest, rawManifest) {
+export const validateManifest = function (manifest, rawManifest) {
   try {
     validateBasic(manifest)
     validateUnknownProps(manifest)
@@ -108,5 +106,3 @@ const validateInputRequired = function ({ required }) {
     throw new Error('"required" property must be a boolean')
   }
 }
-
-module.exports = { validateManifest }

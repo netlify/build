@@ -1,8 +1,6 @@
-'use strict'
-
 const STRING_LENGTH = 1e3
 
-module.exports = {
+export default {
   onPreBuild() {
     console.log('a'.repeat(STRING_LENGTH))
     console.error('b'.repeat(STRING_LENGTH))

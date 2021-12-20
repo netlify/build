@@ -1,5 +1,3 @@
-'use strict'
+import mathAvg from 'math-avg'
 
-const mathAvg = require('math-avg')
-
-module.exports = () => mathAvg([])
+export default () => mathAvg([])

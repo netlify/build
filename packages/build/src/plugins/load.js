@@ -1,14 +1,20 @@
-'use strict'
+import { addErrorInfo } from '../error/info.js'
+import { addPluginLoadErrorStatus } from '../status/load_error.js'
+import { measureDuration } from '../time/main.js'
 
-const { addErrorInfo } = require('../error/info')
-const { addPluginLoadErrorStatus } = require('../status/load_error')
-const { measureDuration } = require('../time/main')
-
-const { callChild } = require('./ipc')
+import { callChild } from './ipc.js'
 
 // Retrieve all plugins steps
 // Can use either a module name or a file path to the plugin.
-const loadPlugins = async function ({ pluginsOptions, childProcesses, packageJson, timers, logs, debug, verbose }) {
+export const loadPlugins = async function ({
+  pluginsOptions,
+  childProcesses,
+  packageJson,
+  timers,
+  logs,
+  debug,
+  verbose,
+}) {
   return pluginsOptions.length === 0
     ? { pluginsSteps: [], timers }
     : await loadAllPlugins({ pluginsOptions, childProcesses, packageJson, timers, logs, debug, verbose })
@@ -62,5 +68,3 @@ const loadPlugin = async function (
     throw error
   }
 }
-
-module.exports = { loadPlugins }

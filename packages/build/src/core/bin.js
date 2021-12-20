@@ -1,15 +1,14 @@
 #!/usr/bin/env node
-'use strict'
 
-const process = require('process')
+import process from 'process'
 
-const filterObj = require('filter-obj')
-const yargs = require('yargs')
+import filterObj from 'filter-obj'
+import yargs from 'yargs'
 
-const { normalizeCliFeatureFlags } = require('./feature_flags')
-const { FLAGS } = require('./flags')
-const build = require('./main')
-const { FALLBACK_SEVERITY_ENTRY } = require('./severity')
+import { normalizeCliFeatureFlags } from './feature_flags.js'
+import { FLAGS } from './flags.js'
+import build from './main.js'
+import { FALLBACK_SEVERITY_ENTRY } from './severity.js'
 
 // CLI entry point.
 // Before adding logic to this file, please consider adding it to the main
