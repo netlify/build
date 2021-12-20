@@ -1,5 +1,16 @@
 # Changelog
 
+## [26.0.0](https://www.github.com/netlify/build/compare/build-v25.0.3...build-v26.0.0) (2021-12-20)
+
+
+### ⚠ BREAKING CHANGES
+
+* use pure ES modules with `@netlify/build` (#3967)
+
+### Miscellaneous Chores
+
+* use pure ES modules with `@netlify/build` ([#3967](https://www.github.com/netlify/build/issues/3967)) ([0fd5d1f](https://www.github.com/netlify/build/commit/0fd5d1fea070a7b1af2bbe40e11093da04b2efae))
+
 ### [25.0.3](https://www.github.com/netlify/build/compare/build-v25.0.2...build-v25.0.3) (2021-12-17)
 
 
