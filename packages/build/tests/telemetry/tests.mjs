@@ -222,9 +222,11 @@ test('Telemetry calls timeout by default', async (t) => {
     // We want to rely on the default timeout value
     disableTelemetryTimeout: false,
     // Introduce an arbitrary large timeout on the server side so that we can validate the client timeout works
-    waitTelemetryServer: 5 * 60 * 1000,
+    waitTelemetryServer: WAIT_TELEMETRY_SERVER,
     // The error monitor snapshot should contain the timeout error
     snapshot: true,
   })
   t.is(telemetryRequests.length, 0)
 })
+
+const WAIT_TELEMETRY_SERVER = 3e5
