@@ -107,10 +107,10 @@ test('Should allow "fail" option to customize failures', async (t) => {
   t.is(typeof fail.firstCall.firstArg, 'string')
 })
 
-const normalizeFiles = function (fixtureDir, { name, mainFile, runtime, extension, srcFile }) {
+const normalizeFiles = function (fixtureDir, { name, mainFile, runtime, extension, srcFile, schedule }) {
   const mainFileA = normalize(`${fixtureDir}/${mainFile}`)
   const srcFileA = srcFile === undefined ? {} : { srcFile: normalize(`${fixtureDir}/${srcFile}`) }
-  return { name, mainFile: mainFileA, runtime, extension, ...srcFileA }
+  return { name, mainFile: mainFileA, runtime, extension, schedule, ...srcFileA }
 }
 
 test('Can list function main files with list()', async (t) => {
