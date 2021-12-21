@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "description": "Netlify build module",
-  "main": "index.js",
+  "type": "module",
   "author": "Netlify Inc.",
   "scripts": {
     "test": "run-s format test:dev",
