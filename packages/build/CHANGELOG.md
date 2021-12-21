@@ -1,5 +1,13 @@
 # Changelog
 
+### [26.0.2](https://www.github.com/netlify/build/compare/build-v26.0.1...build-v26.0.2) (2021-12-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^5.4.0 ([#3973](https://www.github.com/netlify/build/issues/3973)) ([5ad9d82](https://www.github.com/netlify/build/commit/5ad9d8204cef3e401e09ca845a129fa73c837581))
+* use pure ES modules at the monorepo top level ([#3970](https://www.github.com/netlify/build/issues/3970)) ([922ddc5](https://www.github.com/netlify/build/commit/922ddc5a0a52bc2ae39f5ec3e1f4aee597357706))
+
 ### [26.0.1](https://www.github.com/netlify/build/compare/build-v26.0.0...build-v26.0.1) (2021-12-21)
 
 
