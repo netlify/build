@@ -1,5 +1,12 @@
 # Changelog
 
+### [17.0.2](https://www.github.com/netlify/build/compare/config-v17.0.1...config-v17.0.2) (2021-12-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency netlify to ^10.1.0 ([#3974](https://www.github.com/netlify/build/issues/3974)) ([e58b818](https://www.github.com/netlify/build/commit/e58b818568f6285b57cec874e257088dbb6d7d05))
+
 ### [17.0.1](https://www.github.com/netlify/build/compare/config-v17.0.0...config-v17.0.1) (2021-12-17)
 
 
