@@ -106,7 +106,7 @@
     "ts-node": "^10.4.0",
     "update-notifier": "^5.0.0",
     "uuid": "^8.0.0",
-    "yargs": "^15.3.1"
+    "yargs": "^17.3.0"
   },
   "devDependencies": {
     "@netlify/nock-udp": "^1.0.0",

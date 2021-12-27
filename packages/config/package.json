@@ -75,7 +75,7 @@
     "toml": "^3.0.0",
     "tomlify-j0.4": "^3.0.0",
     "validate-npm-package-name": "^3.0.0",
-    "yargs": "^15.3.0"
+    "yargs": "^17.3.0"
   },
   "devDependencies": {
     "ava": "^3.15.0",
