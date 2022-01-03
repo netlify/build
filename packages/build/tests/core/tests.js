@@ -379,10 +379,6 @@ test.serial('Passes the right feature flags to zip-it-and-ship-it', async (t) =>
     snapshot: false,
   })
   await runFixture(t, 'schedule', {
-    flags: { featureFlags: { buildbot_scheduled_functions: true } },
-    snapshot: false,
-  })
-  await runFixture(t, 'schedule', {
     flags: { featureFlags: { buildbot_nft_transpile_esm: true } },
     snapshot: false,
   })
@@ -397,12 +393,12 @@ test.serial('Passes the right feature flags to zip-it-and-ship-it', async (t) =>
 
   stub.restore()
 
-  t.is(mockZipFunctions.callCount, 8)
+  t.is(mockZipFunctions.callCount, 7)
 
   t.false(mockZipFunctions.getCall(0).args[2].featureFlags.traceWithNft)
   t.false(mockZipFunctions.getCall(0).args[2].featureFlags.buildGoSource)
   t.false(mockZipFunctions.getCall(0).args[2].featureFlags.parseWithEsbuild)
-  t.is(mockZipFunctions.getCall(0).args[2].config.test.schedule, undefined)
+  t.is(mockZipFunctions.getCall(0).args[2].config.test.schedule, '@daily')
   t.false(mockZipFunctions.getCall(0).args[2].featureFlags.nftTranspile)
   t.false(mockZipFunctions.getCall(0).args[2].featureFlags.parseISC)
   t.is(mockZipFunctions.getCall(0).args[2].featureFlags.this_is_a_mock_flag, undefined)
@@ -412,11 +408,10 @@ test.serial('Passes the right feature flags to zip-it-and-ship-it', async (t) =>
   t.true(mockZipFunctions.getCall(1).args[2].featureFlags.nftTranspile)
   t.true(mockZipFunctions.getCall(2).args[2].featureFlags.buildGoSource)
   t.true(mockZipFunctions.getCall(3).args[2].featureFlags.parseWithEsbuild)
-  t.is(mockZipFunctions.getCall(4).args[2].config.test.schedule, '@daily')
-  t.true(mockZipFunctions.getCall(5).args[2].featureFlags.nftTranspile)
-  t.true(mockZipFunctions.getCall(6).args[2].featureFlags.parseISC)
-  t.true(mockZipFunctions.getCall(7).args[2].featureFlags.this_is_a_mock_flag)
-  t.true(mockZipFunctions.getCall(7).args[2].featureFlags.and_another_one)
+  t.true(mockZipFunctions.getCall(4).args[2].featureFlags.nftTranspile)
+  t.true(mockZipFunctions.getCall(5).args[2].featureFlags.parseISC)
+  t.true(mockZipFunctions.getCall(6).args[2].featureFlags.this_is_a_mock_flag)
+  t.true(mockZipFunctions.getCall(6).args[2].featureFlags.and_another_one)
 })
 /* eslint-enable max-statements, no-magic-numbers */
 
