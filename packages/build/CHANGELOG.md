@@ -1,5 +1,12 @@
 # Changelog
 
+## [26.1.0](https://github.com/netlify/build/compare/build-v26.0.2...build-v26.1.0) (2022-01-03)
+
+
+### Features
+
+* remove `buildbot_scheduled_functions` feature flag ([#3997](https://github.com/netlify/build/issues/3997)) ([20d8b63](https://github.com/netlify/build/commit/20d8b634385563810e750b1152e48fd3dea38917))
+
 ### [26.0.2](https://www.github.com/netlify/build/compare/build-v26.0.1...build-v26.0.2) (2021-12-21)
 
 
