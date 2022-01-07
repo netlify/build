@@ -57,7 +57,6 @@ const runSpecs = async () => {
   const errors = []
   for (const version of versions) {
     try {
-      // eslint-disable-next-line no-await-in-loop
       await runCypress(version)
     } catch (error) {
       errors.push(errors)
