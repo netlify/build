@@ -109,7 +109,7 @@ const siteDependencyTest = async function ({ dependencyName, allowedVersion, sit
     const packageJsonPath = await resolvePath(`${dependencyName}/package.json`, buildDir)
     const { version } = await importJsonFile(packageJsonPath)
     return semver.satisfies(version, allowedVersion)
-  } catch (error) {
+  } catch {
     return false
   }
 }

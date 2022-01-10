@@ -51,7 +51,7 @@ const cleanStackLine = function (lines, line) {
 const getCwd = function () {
   try {
     return cwd()
-  } catch (error) {
+  } catch {
     return ''
   }
 }

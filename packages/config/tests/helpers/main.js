@@ -8,7 +8,7 @@ export const getFixtureConfig = async function (t, fixtureName, opts) {
   const { returnValue } = await runFixtureConfig(t, fixtureName, { snapshot: false, ...opts })
   try {
     return JSON.parse(returnValue)
-  } catch (error) {
+  } catch {
     return returnValue
   }
 }

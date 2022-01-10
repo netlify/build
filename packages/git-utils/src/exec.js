@@ -38,7 +38,7 @@ const getCwdValue = function (cwd) {
 
   try {
     return process.cwd()
-  } catch (error) {
+  } catch {
     throw new Error('Current directory does not exist')
   }
 }

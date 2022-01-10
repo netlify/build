@@ -30,5 +30,5 @@ const createGit = async function (cwd, git) {
 export const removeDir = async function (dir) {
   try {
     await del(dir, { force: true })
-  } catch (error) {}
+  } catch {}
 }
