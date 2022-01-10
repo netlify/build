@@ -20,7 +20,7 @@ const transformFrameworks = async function () {
 
 const transformFramework = async function (frameworkName) {
   const frameworkUrl = `${FRAMEWORKS_DIR}${frameworkName}.json`
-  const jsonContents = await fs.readFile(frameworkUrl, 'utf8')
+  const jsonContents = await fs.readFile(frameworkUrl)
   const contents = JSON.parse(jsonContents)
   return contents
 }

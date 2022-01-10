@@ -58,7 +58,7 @@ const runSpecs = async () => {
   for (const version of versions) {
     try {
       await runCypress(version)
-    } catch (error) {
+    } catch {
       errors.push(errors)
     }
   }

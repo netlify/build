@@ -51,7 +51,7 @@ const POLLING_STRATEGY_SCHEMA = {
   },
 }
 
-const MAX_PORT = 65535
+const MAX_PORT = 65_535
 const FRAMEWORK_JSON_SCHEMA = {
   type: 'object',
   required: ['id', 'name', 'category', 'detect', 'dev', 'build', 'env'],

@@ -18,7 +18,7 @@ const getPackageJson = async (projectDir) => {
     }
 
     return { packageJson, packageJsonPath }
-  } catch (error) {
+  } catch {
     return {}
   }
 }
