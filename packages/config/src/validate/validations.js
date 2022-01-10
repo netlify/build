@@ -16,7 +16,7 @@ const isValidCronExpression = (cron) => {
   try {
     CronParser.parseExpression(cron)
     return true
-  } catch (error) {
+  } catch {
     return false
   }
 }

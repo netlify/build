@@ -110,7 +110,7 @@ const backupFile = async function (original, backup) {
 const deleteNoError = async (path) => {
   try {
     await pUnlink(path)
-  } catch (_) {}
+  } catch {}
 }
 
 const copyOrDelete = async function (src, dest) {

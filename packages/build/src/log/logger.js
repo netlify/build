@@ -45,7 +45,7 @@ const serializeIndentedArray = function (array) {
 }
 
 const serializeIndentedItem = function (item) {
-  return indentString(item, INDENT_SIZE + 1).trimLeft()
+  return indentString(item, INDENT_SIZE + 1).trimStart()
 }
 
 export const logError = function (logs, string, opts) {

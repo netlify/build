@@ -13,7 +13,7 @@ export const safeGetCwd = async function (cwdOpt) {
     }
 
     return cwd
-  } catch (error) {
+  } catch {
     return ''
   }
 }
