@@ -86,7 +86,7 @@ const FRAMEWORK_JSON_SCHEMA = {
       oneOf: [
         {
           type: 'object',
-          required: ['command', 'port', 'pollingStrategies'],
+          required: ['command'],
           additionalProperties: false,
           properties: {
             command: COMMAND_SCHEMA,

@@ -21,6 +21,7 @@ module.exports.FRAMEWORK_NAMES = [
   'phenomic',
   'react-static',
   'redwoodjs',
+  'remix',
   'stencil',
   'vuepress',
   'assemble',

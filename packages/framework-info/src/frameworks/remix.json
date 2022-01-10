@@ -1,0 +1,19 @@
+{
+  "id": "remix",
+  "name": "Remix",
+  "category": "static_site_generator",
+  "detect": {
+    "npmDependencies": ["remix", "@remix-run/netlify"],
+    "excludedNpmDependencies": [],
+    "configFiles": ["remix.config.mjs"]
+  },
+  "dev": {
+    "command": "remix watch"
+  },
+  "build": {
+    "command": "remix build",
+    "directory": "public"
+  },
+  "env": {},
+  "plugins": []
+}
