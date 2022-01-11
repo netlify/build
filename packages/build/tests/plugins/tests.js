@@ -19,6 +19,10 @@ test('Can use pure ES modules with local plugins', async (t) => {
   await runFixture(t, 'es_modules_local')
 })
 
+test('Can use pure ES modules with module plugins', async (t) => {
+  await runFixture(t, 'es_modules_module')
+})
+
 test('Can use CommonJS with local plugins', async (t) => {
   await runFixture(t, 'commonjs_local')
 })
