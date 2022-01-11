@@ -20,7 +20,7 @@
     "test:dev": "run-s test:dev:*",
     "test:ci": "run-s test:ci:*",
     "test:dev:ava": "ava",
-    "test:ci:ava": "nyc -r lcovonly -r text -r json ava",
+    "test:ci:ava": "c8 -r lcovonly -r text -r json ava",
     "prepublishOnly": "run-s prepublishOnly:*",
     "prepublishOnly:checkout": "run-local \"git checkout main\"",
     "prepublishOnly:pull": "run-local \"git pull\"",
@@ -80,11 +80,9 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@commitlint/cli": "^16.0.0",
-    "@commitlint/config-conventional": "^16.0.0",
     "@netlify/eslint-config-node": "^4.1.0",
     "ava": "^3.15.0",
-    "nyc": "^15.0.0",
+    "c8": "^7.11.0",
     "tsd": "^0.19.0"
   },
   "engines": {
