@@ -59,5 +59,5 @@ const getSrcGlob = async function (src) {
 const getStat = async function (src) {
   try {
     return await pStat(src)
-  } catch (error) {}
+  } catch {}
 }

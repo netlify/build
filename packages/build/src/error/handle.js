@@ -51,7 +51,7 @@ const isCancelCrash = async function (error) {
     const cwd = getCwd()
     return !(await pathExists(cwd))
     // `process.cwd()` fails when the current directory does not exist
-  } catch (error_) {
+  } catch {
     return true
   }
 }

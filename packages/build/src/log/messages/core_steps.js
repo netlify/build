@@ -21,7 +21,7 @@ export const logBundleResults = ({ logs, results = [] }) => {
     ({ bundler, bundlerWarnings }) => bundler === 'esbuild' && bundlerWarnings && bundlerWarnings.length !== 0,
   )
   const modulesWithDynamicImports = [
-    ...new Set(results.map((result) => result.nodeModulesWithDynamicImports || []).flat()),
+    ...new Set(results.flatMap((result) => result.nodeModulesWithDynamicImports || [])),
   ]
 
   if (resultsWithErrors.length !== 0) {

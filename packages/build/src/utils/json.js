@@ -6,7 +6,7 @@ const ROOT_PACKAGE_JSON_PATH = fileURLToPath(new URL('../../package.json', impor
 // TODO: Replace with dynamic `import()` once it is supported without
 // experimental flags
 export const importJsonFile = async function (filePath) {
-  const fileContents = await fs.readFile(filePath, 'utf8')
+  const fileContents = await fs.readFile(filePath)
   return JSON.parse(fileContents)
 }
 

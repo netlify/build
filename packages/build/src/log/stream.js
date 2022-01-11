@@ -76,7 +76,7 @@ const pushOutputToLogs = function (childProcess, logs) {
 }
 
 const logsListener = function (logs, chunk) {
-  logs.push(chunk.toString().trimRight())
+  logs.push(chunk.toString().trimEnd())
 }
 
 const unpushOutputToLogs = function (childProcess, logs, { stdoutListener, stderrListener }) {

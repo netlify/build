@@ -70,7 +70,7 @@ const getRequestBody = async function (req) {
   const rawBody = await getStream(req)
   try {
     return JSON.parse(rawBody)
-  } catch (error) {
+  } catch {
     return rawBody
   }
 }

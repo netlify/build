@@ -19,5 +19,5 @@ const git = async function (args, cwd) {
   try {
     const { stdout } = await execa('git', args, { cwd })
     return stdout
-  } catch (error) {}
+  } catch {}
 }
