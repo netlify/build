@@ -1,7 +1,5 @@
-import { writeFile, unlink, copyFile } from 'fs'
-import { promisify } from 'util'
+import { promises as fs } from 'fs'
 
-import makeDir from 'make-dir'
 import pathExists from 'path-exists'
 
 import { ensureConfigPriority } from '../context.js'
@@ -13,10 +11,6 @@ import { simplifyConfig } from '../simplify.js'
 import { serializeToml } from '../utils/toml.js'
 
 import { applyMutations } from './apply.js'
-
-const pWriteFile = promisify(writeFile)
-const pUnlink = promisify(unlink)
-const pCopyFile = promisify(copyFile)
 
 // Persist configuration changes to `netlify.toml`.
 // If `netlify.toml` does not exist, creates it. Otherwise, merges the changes.
@@ -52,7 +46,7 @@ const mergeWithConfig = async function (normalizedInlineConfig, configPath) {
 // Serialize the changes to `netlify.toml`
 const saveConfig = async function (configPath, simplifiedConfig) {
   const serializedConfig = serializeToml(simplifiedConfig)
-  await pWriteFile(configPath, serializedConfig)
+  await fs.writeFile(configPath, serializedConfig)
 }
 
 // Deletes `_headers/_redirects` since they are merged to `netlify.toml`,
@@ -62,7 +56,7 @@ const deleteSideFile = async function (filePath) {
     return
   }
 
-  await pUnlink(filePath)
+  await fs.unlink(filePath)
 }
 
 // Modifications to `netlify.toml` and `_headers/_redirects` are only meant for
@@ -71,7 +65,7 @@ const deleteSideFile = async function (filePath) {
 // We do this by backing them up inside some sibling directory.
 const backupConfig = async function ({ buildDir, configPath, headersPath, redirectsPath }) {
   const tempDir = getTempDir(buildDir)
-  await makeDir(tempDir)
+  await fs.mkdir(tempDir, { recursive: true })
   await Promise.all([
     backupFile(configPath, `${tempDir}/netlify.toml`),
     backupFile(headersPath, `${tempDir}/_headers`),
@@ -104,18 +98,18 @@ const backupFile = async function (original, backup) {
     return
   }
 
-  await pCopyFile(original, backup)
+  await fs.copyFile(original, backup)
 }
 
 const deleteNoError = async (path) => {
   try {
-    await pUnlink(path)
+    await fs.unlink(path)
   } catch {}
 }
 
 const copyOrDelete = async function (src, dest) {
   if (await pathExists(src)) {
-    await pCopyFile(src, dest)
+    await fs.copyFile(src, dest)
     return
   }
 

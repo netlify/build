@@ -1,6 +1,5 @@
-import { writeFile, readFile, unlink } from 'fs'
+import { promises as fs } from 'fs'
 import { fileURLToPath } from 'url'
-import { promisify } from 'util'
 
 import test from 'ava'
 import del from 'del'
@@ -10,10 +9,6 @@ import { tmpName as getTmpName } from 'tmp-promise'
 import { runFixture, FIXTURES_DIR } from '../helpers/main.js'
 
 const INVALID_CONFIG_PATH = fileURLToPath(new URL('invalid', import.meta.url))
-
-const pWriteFile = promisify(writeFile)
-const pReadFile = promisify(readFile)
-const pUnlink = promisify(unlink)
 
 test('--help', async (t) => {
   await runFixture(t, '', { flags: { help: true }, useBinary: true })
@@ -47,11 +42,11 @@ test('Write on file with the --output flag', async (t) => {
   const output = await getTmpName({ dir: 'netlify-build-test' })
   try {
     await runFixture(t, 'empty', { flags: { output }, useBinary: true, snapshot: false })
-    const content = await pReadFile(output)
+    const content = await fs.readFile(output)
     const { context } = JSON.parse(content)
     t.is(context, 'production')
   } finally {
-    await pUnlink(output)
+    await fs.unlink(output)
   }
 })
 
@@ -61,7 +56,7 @@ test('Do not write on stdout with the --output flag', async (t) => {
     const { returnValue } = await runFixture(t, 'empty', { flags: { output }, useBinary: true, snapshot: false })
     t.is(returnValue, '')
   } finally {
-    await pUnlink(output)
+    await fs.unlink(output)
   }
 })
 
@@ -76,7 +71,7 @@ if (isCI) {
     await del(bigNetlify, { force: true })
     try {
       const bigContent = getBigNetlifyContent()
-      await pWriteFile(bigNetlify, bigContent)
+      await fs.writeFile(bigNetlify, bigContent)
       const { returnValue } = await runFixture(t, 'big', { snapshot: false, useBinary: true })
       t.notThrows(() => {
         JSON.parse(returnValue)

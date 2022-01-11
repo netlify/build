@@ -1,16 +1,11 @@
-import { writeFile, readFile } from 'fs'
+import { promises as fs } from 'fs'
 import { dirname } from 'path'
-import { promisify } from 'util'
 
 import del from 'del'
-import makeDir from 'make-dir'
 import pathExists from 'path-exists'
 
 import { getExpires, checkExpires } from './expire.js'
 import { getHash } from './hash.js'
-
-const pWriteFile = promisify(writeFile)
-const pReadFile = promisify(readFile)
 
 // Retrieve cache manifest of a file to cache, which contains the file/directory
 // contents hash and the `expires` date.
@@ -30,14 +25,14 @@ const isIdentical = async function ({ hash, manifestPath, manifestString }) {
     return false
   }
 
-  const oldManifestString = await pReadFile(manifestPath, 'utf8')
+  const oldManifestString = await fs.readFile(manifestPath, 'utf8')
   return oldManifestString === manifestString
 }
 
 // Persist the cache manifest to filesystem
 export const writeManifest = async function ({ manifestPath, manifestString }) {
-  await makeDir(dirname(manifestPath))
-  await pWriteFile(manifestPath, manifestString)
+  await fs.mkdir(dirname(manifestPath), { recursive: true })
+  await fs.writeFile(manifestPath, manifestString)
 }
 
 // Remove the cache manifest from filesystem
@@ -70,7 +65,7 @@ export const isExpired = async function (cachePath) {
 
 const readManifest = async function (cachePath) {
   const manifestPath = getManifestPath(cachePath)
-  const manifestString = await pReadFile(manifestPath, 'utf8')
+  const manifestString = await fs.readFile(manifestPath)
   const manifest = JSON.parse(manifestString)
   return manifest
 }

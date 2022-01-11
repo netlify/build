@@ -1,17 +1,12 @@
-import { writeFile, unlink } from 'fs'
+import { promises as fs } from 'fs'
 import { normalize } from 'path'
-import { promisify } from 'util'
 
-import makeDir from 'make-dir'
 import pathExists from 'path-exists'
 import { isFile } from 'path-type'
 
 import { logInstallMissingPlugins } from '../log/messages/install.js'
 
 import { addExactDependencies } from './main.js'
-
-const pWriteFile = promisify(writeFile)
-const pUnlink = promisify(unlink)
 
 // Automatically install plugins if not already installed.
 // Since this is done under the hood, we always use `npm` with specific `npm`
@@ -45,10 +40,10 @@ const ensureDir = async function (logs, autoPluginsDir) {
   // If `.netlify` exists but is not a directory, we remove it first
   const autoPluginsParent = normalize(`${autoPluginsDir}/..`)
   if (await isFile(autoPluginsParent)) {
-    await pUnlink(autoPluginsParent)
+    await fs.unlink(autoPluginsParent)
   }
 
-  await makeDir(autoPluginsDir)
+  await fs.mkdir(autoPluginsDir, { recursive: true })
 }
 
 // Create a dummy `package.json` so we can run `npm install` and get a lock file
@@ -59,7 +54,7 @@ const createPackageJson = async function (autoPluginsDir) {
   }
 
   const packageJsonContent = JSON.stringify(AUTO_PLUGINS_PACKAGE_JSON, null, 2)
-  await pWriteFile(packageJsonPath, packageJsonContent)
+  await fs.writeFile(packageJsonPath, packageJsonContent)
 }
 
 const AUTO_PLUGINS_PACKAGE_JSON = {

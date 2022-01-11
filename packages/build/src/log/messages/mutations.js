@@ -1,11 +1,9 @@
-import { readFile } from 'fs'
-import { inspect, promisify } from 'util'
+import { promises as fs } from 'fs'
+import { inspect } from 'util'
 
 import pathExists from 'path-exists'
 
 import { log, logMessage, logSubHeader } from '../logger.js'
-
-const pReadFile = promisify(readFile)
 
 export const logConfigMutations = function (logs, newConfigMutations, debug) {
   const configMutationsToLog = debug ? newConfigMutations : newConfigMutations.filter(shouldLogConfigMutation)
@@ -47,7 +45,7 @@ export const logConfigOnUpload = async function ({ logs, configPath, debug }) {
     return
   }
 
-  const configContents = await pReadFile(configPath, 'utf8')
+  const configContents = await fs.readFile(configPath, 'utf8')
   logMessage(logs, configContents.trim())
 }
 
@@ -63,7 +61,7 @@ export const logHeadersOnUpload = async function ({ logs, headersPath, debug }) 
     return
   }
 
-  const headersContents = await pReadFile(headersPath, 'utf8')
+  const headersContents = await fs.readFile(headersPath, 'utf8')
   logMessage(logs, headersContents.trim())
 }
 
@@ -79,6 +77,6 @@ export const logRedirectsOnUpload = async function ({ logs, redirectsPath, debug
     return
   }
 
-  const redirectsContents = await pReadFile(redirectsPath, 'utf8')
+  const redirectsContents = await fs.readFile(redirectsPath, 'utf8')
   logMessage(logs, `${redirectsContents.trim()}\n`)
 }

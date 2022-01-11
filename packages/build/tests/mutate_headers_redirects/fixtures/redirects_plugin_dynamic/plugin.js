@@ -1,7 +1,4 @@
-import { writeFile } from 'fs'
-import { promisify } from 'util'
-
-const pWriteFile = promisify(writeFile)
+import { promises as fs } from 'fs'
 
 export default {
   onPreBuild({ netlifyConfig }) {
@@ -11,7 +8,7 @@ export default {
   async onBuild({ netlifyConfig: { redirects }, constants: { PUBLISH_DIR } }) {
     console.log(redirects)
     console.log(PUBLISH_DIR)
-    await pWriteFile(`${PUBLISH_DIR}/_redirects`, '/from /to')
+    await fs.writeFile(`${PUBLISH_DIR}/_redirects`, '/from /to')
   },
   onPostBuild({ netlifyConfig: { redirects } }) {
     console.log(redirects)

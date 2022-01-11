@@ -1,20 +1,16 @@
 #!/usr/bin/env node
 
-import { writeFile } from 'fs'
+import { promises as fs } from 'fs'
 import { dirname } from 'path'
 import process from 'process'
-import { promisify } from 'util'
 
 import fastSafeStringify from 'fast-safe-stringify'
-import makeDir from 'make-dir'
 import omit from 'omit.js'
 
 import { isUserError } from '../error.js'
 import { resolveConfig } from '../main.js'
 
 import { parseFlags } from './flags.js'
-
-const pWriteFile = promisify(writeFile)
 
 // CLI entry point
 const runCli = async function () {
@@ -45,8 +41,8 @@ const outputResult = async function (resultJson, output) {
     return
   }
 
-  await makeDir(dirname(output))
-  await pWriteFile(output, resultJson)
+  await fs.mkdir(dirname(output), { recursive: true })
+  await fs.writeFile(output, resultJson)
 }
 
 // `api` is not JSON-serializable, so we remove it

@@ -1,7 +1,6 @@
-import { unlink, writeFile } from 'fs'
+import { promises as fs } from 'fs'
 import { join } from 'path'
 import { kill, platform } from 'process'
-import { promisify } from 'util'
 
 import test from 'ava'
 import getNode from 'get-node'
@@ -16,9 +15,6 @@ import { runFixtureConfig } from '../helpers/config.js'
 import { removeDir } from '../helpers/dir.js'
 import { runFixture, FIXTURES_DIR } from '../helpers/main.js'
 import { startServer } from '../helpers/server.js'
-
-const pWriteFile = promisify(writeFile)
-const pUnlink = promisify(unlink)
 
 test('--help', async (t) => {
   await runFixture(t, '', { flags: { help: true }, useBinary: true })
@@ -150,7 +146,7 @@ test('--cachedConfigPath CLI flag', async (t) => {
     })
     await runFixture(t, 'cached_config', { flags: { cachedConfigPath, context: 'test' }, useBinary: true })
   } finally {
-    await pUnlink(cachedConfigPath)
+    await fs.unlink(cachedConfigPath)
   }
 })
 
@@ -164,10 +160,10 @@ test('--cachedConfigPath', async (t) => {
   const cachedConfigPath = await tmpName()
   try {
     const { returnValue } = await runFixtureConfig(t, 'cached_config', { snapshot: false })
-    await pWriteFile(cachedConfigPath, returnValue)
+    await fs.writeFile(cachedConfigPath, returnValue)
     await runFixture(t, 'cached_config', { flags: { cachedConfigPath, context: 'test' } })
   } finally {
-    await pUnlink(cachedConfigPath)
+    await fs.unlink(cachedConfigPath)
   }
 })
 

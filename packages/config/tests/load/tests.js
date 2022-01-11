@@ -1,16 +1,12 @@
-import { unlink, writeFile } from 'fs'
+import { promises as fs } from 'fs'
 import { relative } from 'path'
 import { cwd } from 'process'
-import { promisify } from 'util'
 
 import test from 'ava'
 import { tmpName } from 'tmp-promise'
 
 import { resolveConfig } from '../../src/main.js'
 import { runFixture, FIXTURES_DIR } from '../helpers/main.js'
-
-const pWriteFile = promisify(writeFile)
-const pUnlink = promisify(unlink)
 
 test('Empty configuration', async (t) => {
   await runFixture(t, 'empty')
@@ -142,7 +138,7 @@ test('--cachedConfigPath CLI flag', async (t) => {
     await runFixture(t, 'cached_config', { flags: { output: cachedConfigPath }, snapshot: false, useBinary: true })
     await runFixture(t, 'cached_config', { flags: { cachedConfigPath, context: 'test' }, useBinary: true })
   } finally {
-    await pUnlink(cachedConfigPath)
+    await fs.unlink(cachedConfigPath)
   }
 })
 
@@ -156,10 +152,10 @@ test('--cachedConfigPath', async (t) => {
   const cachedConfigPath = await tmpName()
   try {
     const { returnValue } = await runFixture(t, 'cached_config', { snapshot: false })
-    await pWriteFile(cachedConfigPath, returnValue)
+    await fs.writeFile(cachedConfigPath, returnValue)
     await runFixture(t, 'cached_config', { flags: { cachedConfigPath, context: 'test' } })
   } finally {
-    await pUnlink(cachedConfigPath)
+    await fs.unlink(cachedConfigPath)
   }
 })
 
