@@ -1,10 +1,7 @@
-import { realpath } from 'fs'
+import { promises as fs } from 'fs'
 import { dirname, relative, sep } from 'path'
-import { promisify } from 'util'
 
 import pathExists from 'path-exists'
-
-const pRealpath = promisify(realpath)
 
 // Retrieve `base` override.
 // This uses any directory below `repositoryRoot` and above (or equal to)
@@ -17,7 +14,7 @@ export const getBaseOverride = async function ({ repositoryRoot, cwd }) {
     return {}
   }
 
-  const [repositoryRootA, cwdA] = await Promise.all([pRealpath(repositoryRoot), pRealpath(cwd)])
+  const [repositoryRootA, cwdA] = await Promise.all([fs.realpath(repositoryRoot), fs.realpath(cwd)])
   const basePaths = getBasePaths(repositoryRootA, cwdA)
   const basePath = await locatePath(basePaths)
 
