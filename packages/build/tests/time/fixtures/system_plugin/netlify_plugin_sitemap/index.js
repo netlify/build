@@ -1,4 +1,3 @@
-export default {
-  onBuild() {},
-  onPostBuild() {},
-}
+export const onBuild = function () {}
+
+export const onPostBuild = function () {}

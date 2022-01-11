@@ -1,9 +1,7 @@
-export default {
-  onBuild({
-    utils: {
-      build: { cancelBuild },
-    },
-  }) {
-    cancelBuild('error')
+export const onBuild = function ({
+  utils: {
+    build: { cancelBuild },
   },
+}) {
+  cancelBuild('error')
 }

@@ -1,12 +1,11 @@
-export default {
-  onBuild({
-    utils: {
-      build: { failPlugin },
-    },
-  }) {
-    failPlugin('onBuild')
+export const onBuild = function ({
+  utils: {
+    build: { failPlugin },
   },
-  onEnd() {
-    console.log('onEnd')
-  },
+}) {
+  failPlugin('onBuild')
+}
+
+export const onEnd = function () {
+  console.log('onEnd')
 }

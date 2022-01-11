@@ -1,5 +1,3 @@
-export default {
-  onEnd() {
-    console.log('onEnd two')
-  },
+export const onEnd = function () {
+  console.log('onEnd two')
 }

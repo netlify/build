@@ -1,8 +1,7 @@
-export default {
-  onPreBuild({ netlifyConfig: { headers } }) {
-    console.log(headers)
-  },
-  onBuild({ netlifyConfig: { headers } }) {
-    console.log(headers)
-  },
+export const onPreBuild = function ({ netlifyConfig: { headers } }) {
+  console.log(headers)
+}
+
+export const onBuild = function ({ netlifyConfig: { headers } }) {
+  console.log(headers)
 }

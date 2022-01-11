@@ -1,5 +1,3 @@
-export default {
-  onPreBuild({ inputs: { one } }) {
-    console.log(one)
-  },
+export const onPreBuild = function ({ inputs: { one } }) {
+  console.log(one)
 }

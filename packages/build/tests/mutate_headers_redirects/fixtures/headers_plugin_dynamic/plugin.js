@@ -1,16 +1,16 @@
 import { promises as fs } from 'fs'
 
-export default {
-  onPreBuild({ netlifyConfig }) {
-    // eslint-disable-next-line no-param-reassign
-    netlifyConfig.build.publish = 'test'
-  },
-  async onBuild({ netlifyConfig: { headers }, constants: { PUBLISH_DIR } }) {
-    console.log(headers)
-    console.log(PUBLISH_DIR)
-    await fs.writeFile(`${PUBLISH_DIR}/_headers`, '/path\n  test: one')
-  },
-  onPostBuild({ netlifyConfig: { headers } }) {
-    console.log(headers)
-  },
+export const onPreBuild = function ({ netlifyConfig }) {
+  // eslint-disable-next-line no-param-reassign
+  netlifyConfig.build.publish = 'test'
+}
+
+export const onBuild = async function ({ netlifyConfig: { headers }, constants: { PUBLISH_DIR } }) {
+  console.log(headers)
+  console.log(PUBLISH_DIR)
+  await fs.writeFile(`${PUBLISH_DIR}/_headers`, '/path\n  test: one')
+}
+
+export const onPostBuild = function ({ netlifyConfig: { headers } }) {
+  console.log(headers)
 }

@@ -1,9 +1,7 @@
-export default {
-  onEnd({
-    utils: {
-      build: { cancelBuild },
-    },
-  }) {
-    cancelBuild('test')
+export const onEnd = function ({
+  utils: {
+    build: { cancelBuild },
   },
+}) {
+  cancelBuild('test')
 }

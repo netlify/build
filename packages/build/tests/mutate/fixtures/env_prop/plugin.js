@@ -1,13 +1,12 @@
-export default {
-  onPreBuild({ netlifyConfig }) {
-    // eslint-disable-next-line no-param-reassign
-    netlifyConfig.build.environment.TEST_TWO = 'two'
+export const onPreBuild = function ({ netlifyConfig }) {
+  // eslint-disable-next-line no-param-reassign
+  netlifyConfig.build.environment.TEST_TWO = 'two'
+}
+
+export const onBuild = function ({
+  netlifyConfig: {
+    build: { environment },
   },
-  onBuild({
-    netlifyConfig: {
-      build: { environment },
-    },
-  }) {
-    console.log(environment)
-  },
+}) {
+  console.log(environment)
 }

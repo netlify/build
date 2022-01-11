@@ -1,9 +1,7 @@
-export default {
-  onPreBuild({
-    utils: {
-      build: { failPlugin },
-    },
-  }) {
-    failPlugin('test')
+export const onPreBuild = function ({
+  utils: {
+    build: { failPlugin },
   },
+}) {
+  failPlugin('test')
 }

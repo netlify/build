@@ -1,5 +1,3 @@
-export default {
-  onPostBuild() {
-    console.log('test')
-  },
+export const onPostBuild = function () {
+  console.log('test')
 }

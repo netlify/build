@@ -1,5 +1,3 @@
-export default {
-  onSuccess() {
-    throw new Error('test')
-  },
+export const onSuccess = function () {
+  throw new Error('test')
 }

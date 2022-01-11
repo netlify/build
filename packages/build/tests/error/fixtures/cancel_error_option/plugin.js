@@ -2,13 +2,11 @@ const getError = function () {
   return new Error('innerTest')
 }
 
-export default {
-  onPreBuild({
-    utils: {
-      build: { cancelBuild },
-    },
-  }) {
-    const error = getError()
-    cancelBuild('test', { error })
+export const onPreBuild = function ({
+  utils: {
+    build: { cancelBuild },
   },
+}) {
+  const error = getError()
+  cancelBuild('test', { error })
 }

@@ -1,10 +1,9 @@
-export default {
-  onPreBuild({ netlifyConfig: { headers, build } }) {
-    console.log(headers)
-    // eslint-disable-next-line no-param-reassign
-    build.publish = 'test'
-  },
-  onBuild({ netlifyConfig: { headers } }) {
-    console.log(headers)
-  },
+export const onPreBuild = function ({ netlifyConfig: { headers, build } }) {
+  console.log(headers)
+  // eslint-disable-next-line no-param-reassign
+  build.publish = 'test'
+}
+
+export const onBuild = function ({ netlifyConfig: { headers } }) {
+  console.log(headers)
 }

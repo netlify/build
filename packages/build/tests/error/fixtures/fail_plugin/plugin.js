@@ -1,13 +1,12 @@
-export default {
-  onPreBuild({
-    utils: {
-      build: { failPlugin },
-    },
-  }) {
-    failPlugin('test')
-    console.log('onPreBuild')
+export const onPreBuild = function ({
+  utils: {
+    build: { failPlugin },
   },
-  onBuild() {
-    console.log('onBuild')
-  },
+}) {
+  failPlugin('test')
+  console.log('onPreBuild')
+}
+
+export const onBuild = function () {
+  console.log('onBuild')
 }

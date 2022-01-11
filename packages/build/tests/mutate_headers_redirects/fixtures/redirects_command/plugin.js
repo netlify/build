@@ -1,8 +1,7 @@
-export default {
-  onPreBuild({ netlifyConfig: { redirects } }) {
-    console.log(redirects)
-  },
-  onBuild({ netlifyConfig: { redirects } }) {
-    console.log(redirects)
-  },
+export const onPreBuild = function ({ netlifyConfig: { redirects } }) {
+  console.log(redirects)
+}
+
+export const onBuild = function ({ netlifyConfig: { redirects } }) {
+  console.log(redirects)
 }

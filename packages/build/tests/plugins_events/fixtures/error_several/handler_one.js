@@ -1,5 +1,3 @@
-export default {
-  onError() {
-    throw new Error('onError')
-  },
+export const onError = function () {
+  throw new Error('onError')
 }

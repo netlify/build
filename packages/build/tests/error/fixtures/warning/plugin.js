@@ -7,10 +7,8 @@ const pSetTimeout = promisify(setTimeout)
 // 1 second
 const WARNING_TIMEOUT = 1e3
 
-export default {
-  async onPreBuild() {
-    emitWarning('test')
-    console.log('onPreBuild')
-    await pSetTimeout(WARNING_TIMEOUT)
-  },
+export const onPreBuild = async function () {
+  emitWarning('test')
+  console.log('onPreBuild')
+  await pSetTimeout(WARNING_TIMEOUT)
 }

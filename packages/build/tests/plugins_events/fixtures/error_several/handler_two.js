@@ -1,5 +1,3 @@
-export default {
-  onError({ error: { message } }) {
-    console.log(message)
-  },
+export const onError = function ({ error: { message } }) {
+  console.log(message)
 }

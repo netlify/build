@@ -1,5 +1,3 @@
-export default {
-  onPreBuild({ constants: { PUBLISH_DIR } }) {
-    console.log(PUBLISH_DIR)
-  },
+export const onPreBuild = function ({ constants: { PUBLISH_DIR } }) {
+  console.log(PUBLISH_DIR)
 }

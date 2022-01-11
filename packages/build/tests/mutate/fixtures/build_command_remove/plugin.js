@@ -1,6 +1,4 @@
-export default {
-  onPreBuild({ netlifyConfig: { build } }) {
-    // eslint-disable-next-line no-param-reassign
-    build.command = ''
-  },
+export const onPreBuild = function ({ netlifyConfig: { build } }) {
+  // eslint-disable-next-line no-param-reassign
+  build.command = ''
 }

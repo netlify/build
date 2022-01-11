@@ -1,8 +1,7 @@
-export default {
-  onBuild() {
-    throw new Error('onBuild')
-  },
-  onEnd() {
-    console.log('onEnd')
-  },
+export const onBuild = function () {
+  throw new Error('onBuild')
+}
+
+export const onEnd = function () {
+  console.log('onEnd')
 }

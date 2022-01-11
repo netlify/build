@@ -1,7 +1,5 @@
 import avg from 'math-avg'
 
-export default {
-  onPreBuild() {
-    console.log(avg([1, 2]))
-  },
+export const onPreBuild = function () {
+  console.log(avg([1, 2]))
 }

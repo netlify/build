@@ -1,9 +1,7 @@
-export default {
-  onEnd({
-    utils: {
-      build: { failBuild },
-    },
-  }) {
-    failBuild('test')
+export const onEnd = function ({
+  utils: {
+    build: { failBuild },
   },
+}) {
+  failBuild('test')
 }

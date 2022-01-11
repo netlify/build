@@ -1,8 +1,7 @@
-export default {
-  onPreBuild() {
-    console.log('onPreBuild')
-  },
-  onBuild() {
-    console.log('onBuild')
-  },
+export const onPreBuild = function () {
+  console.log('onPreBuild')
+}
+
+export const onBuild = function () {
+  console.log('onBuild')
 }

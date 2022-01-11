@@ -1,7 +1,5 @@
 import execa from 'execa'
 
-export default {
-  async onPreBuild() {
-    await execa('atob', ['dGVzdA=='], { stdio: 'inherit' })
-  },
+export const onPreBuild = async function () {
+  await execa('atob', ['dGVzdA=='], { stdio: 'inherit' })
 }

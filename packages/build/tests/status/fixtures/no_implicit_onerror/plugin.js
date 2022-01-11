@@ -1,3 +1,1 @@
-export default {
-  onError() {},
-}
+export const onError = function () {}

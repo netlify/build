@@ -1,9 +1,7 @@
-export default {
-  onBuild({
-    utils: {
-      build: { failPlugin },
-    },
-  }) {
-    failPlugin('error')
+export const onBuild = function ({
+  utils: {
+    build: { failPlugin },
   },
+}) {
+  failPlugin('error')
 }
