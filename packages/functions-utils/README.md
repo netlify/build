@@ -11,11 +11,9 @@ This allows plugins to:
 # Example
 
 ```js
-module.exports = {
-  // Add a Netlify Functions file or directory to a build
-  async onPreBuild({ utils }) {
-    await utils.functions.add('./path/to/function')
-  },
+// Add a Netlify Functions file or directory to a build
+export const onPreBuild = async function ({ utils }) {
+  await utils.functions.add('./path/to/function')
 }
 ```
 

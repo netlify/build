@@ -8,20 +8,19 @@ Utility for caching files in Netlify Build.
 ## Simple
 
 ```js
-module.exports = {
-  // Restore file/directory cached in previous builds.
-  // Does not do anything if:
-  //  - the file/directory already exists locally
-  //  - the file/directory has not been cached yet
-  async onPreBuild({ utils }) {
-    await utils.cache.restore('./path/to/file')
-  },
-  // Cache file/directory for future builds.
-  // Does not do anything if:
-  //  - the file/directory does not exist locally
-  async onPostBuild({ utils }) {
-    await utils.cache.save('./path/to/file')
-  },
+// Restore file/directory cached in previous builds.
+// Does not do anything if:
+//  - the file/directory already exists locally
+//  - the file/directory has not been cached yet
+export const onPreBuild = async function ({ utils }) {
+  await utils.cache.restore('./path/to/file')
+}
+
+// Cache file/directory for future builds.
+// Does not do anything if:
+//  - the file/directory does not exist locally
+export const onPostBuild = async function ({ utils }) {
+  await utils.cache.save('./path/to/file')
 }
 ```
 
@@ -29,13 +28,12 @@ module.exports = {
 
 ```js
 // Restore/cache several files/directories
-module.exports = {
-  async onPreBuild({ utils }) {
-    await utils.cache.restore(['./path/to/file', './path/to/other'])
-  },
-  async onPostBuild({ utils }) {
-    await utils.cache.save(['./path/to/file', './path/to/other'])
-  },
+export const onPreBuild = async function ({ utils }) {
+  await utils.cache.restore(['./path/to/file', './path/to/other'])
+}
+
+export const onPostBuild = async function ({ utils }) {
+  await utils.cache.save(['./path/to/file', './path/to/other'])
 }
 ```
 
@@ -64,14 +62,13 @@ Only cache the file/directory for a specific amount of time.
 
 ```js
 // Only cache the following file/directory for 1 hour
-module.exports = {
-  async onPreBuild({ utils }) {
-    await utils.cache.restore('./path/to/file')
-  },
-  async onPostBuild({ utils }) {
-    const ttl = 3600
-    await utils.cache.save('./path/to/file', { ttl })
-  },
+export const onPreBuild = async function ({ utils }) {
+  await utils.cache.restore('./path/to/file')
+}
+
+export const onPostBuild = async function ({ utils }) {
+  const ttl = 3600
+  await utils.cache.save('./path/to/file', { ttl })
 }
 ```
 
@@ -88,15 +85,14 @@ speeds up caching.
 // contents has changed. This will speed up cache saving.
 // For example, `package-lock.json` and `yarn.lock` are digest files for the
 // `node_modules` directory.
-module.exports = {
-  async onPreBuild({ utils }) {
-    await utils.cache.restore('node_modules')
-  },
-  async onPostBuild({ utils }) {
-    await utils.cache.save('node_modules', {
-      digests: ['package-lock.json', 'yarn.lock'],
-    })
-  },
+export const onPreBuild = async function ({ utils }) {
+  await utils.cache.restore('node_modules')
+}
+
+export const onPostBuild = async function ({ utils }) {
+  await utils.cache.save('node_modules', {
+    digests: ['package-lock.json', 'yarn.lock'],
+  })
 }
 ```
 
@@ -139,10 +135,8 @@ Remove a file/directory from the cache. Useful for cache invalidation.
 Returns `false` if the file/directory was not cached yet. Returns `true` otherwise.
 
 ```js
-module.exports = {
-  async onPostBuild({ utils }) {
-    await utils.cache.remove('./path/to/file')
-  },
+export const onPostBuild = async function ({ utils }) {
+  await utils.cache.remove('./path/to/file')
 }
 ```
 
@@ -167,23 +161,22 @@ Returns whether a file/directory is currently cached.
 // previously cached or not
 const path = './path/to/file'
 
-module.exports = {
-  async onPreBuild({ utils }) {
-    if (!(await utils.cache.has(path))) {
-      console.log(`File ${path} not cached`)
-      return
-    }
+export const onPreBuild = async function ({ utils }) {
+  if (!(await utils.cache.has(path))) {
+    console.log(`File ${path} not cached`)
+    return
+  }
 
-    console.log(`About to restore cached file ${path}...`)
-    if (await utils.cache.restore('./path/to/file')) {
-      console.log(`Restored cached file ${path}`)
-    }
-  },
-  async onPostBuild({ utils }) {
-    if (await utils.cache.save('./path/to/file')) {
-      console.log(`Saved cached file ${path}`)
-    }
-  },
+  console.log(`About to restore cached file ${path}...`)
+  if (await utils.cache.restore('./path/to/file')) {
+    console.log(`Restored cached file ${path}`)
+  }
+}
+
+export const onPostBuild = async function ({ utils }) {
+  if (await utils.cache.save('./path/to/file')) {
+    console.log(`Saved cached file ${path}`)
+  }
 }
 ```
 
@@ -204,11 +197,9 @@ Returns the absolute paths of the files currently cached. Those are the paths of
 being restored), not while being cached.
 
 ```js
-module.exports = {
-  async onPreBuild({ utils }) {
-    const files = await utils.cache.list()
-    console.log('Cached files', files)
-  },
+export const onPreBuild = async function ({ utils }) {
+  const files = await utils.cache.list()
+  console.log('Cached files', files)
 }
 ```
 
