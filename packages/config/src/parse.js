@@ -1,13 +1,10 @@
-import { readFile } from 'fs'
-import { promisify } from 'util'
+import { promises as fs } from 'fs'
 
 import pathExists from 'path-exists'
 
 import { throwUserError } from './error.js'
 import { throwOnInvalidTomlSequence } from './log/messages.js'
 import { parseToml } from './utils/toml.js'
-
-const pReadFile = promisify(readFile)
 
 // Load the configuration file and parse it (TOML)
 export const parseConfig = async function (configPath) {
@@ -47,7 +44,7 @@ const readConfigPath = async function (configPath) {
 // Reach the configuration file's raw content
 const readConfig = async function (configPath) {
   try {
-    return await pReadFile(configPath, 'utf8')
+    return await fs.readFile(configPath, 'utf8')
   } catch (error) {
     throwUserError('Could not read configuration file', error)
   }

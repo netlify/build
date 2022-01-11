@@ -1,13 +1,10 @@
-import { readFile } from 'fs'
-import { promisify } from 'util'
+import { promises as fs } from 'fs'
 
 import { load as loadYaml, JSON_SCHEMA } from 'js-yaml'
 
 import { addErrorInfo } from '../../error/info.js'
 
 import { validateManifest } from './validate.js'
-
-const pReadFile = promisify(readFile)
 
 // Load "manifest.yml" using its file path
 export const loadManifest = async function ({ manifestPath, packageName, pluginPackageJson, loadedFrom, origin }) {
@@ -28,7 +25,7 @@ export const loadManifest = async function ({ manifestPath, packageName, pluginP
 
 const loadRawManifest = async function (manifestPath) {
   try {
-    return await pReadFile(manifestPath, 'utf8')
+    return await fs.readFile(manifestPath, 'utf8')
   } catch (error) {
     error.message = `Could not load plugin's "manifest.yml"\n${error.message}`
     throw error

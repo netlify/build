@@ -1,7 +1,4 @@
-import { readFile } from 'fs'
-import { promisify } from 'util'
-
-const pReadFile = promisify(readFile)
+import { promises as fs } from 'fs'
 
 // Performance optimization when @netlify/config caller has already previously
 // called it and cached the result.
@@ -27,6 +24,6 @@ const parseCachedConfig = async function (cachedConfig, cachedConfigPath) {
   }
 
   if (cachedConfigPath !== undefined) {
-    return JSON.parse(await pReadFile(cachedConfigPath, 'utf8'))
+    return JSON.parse(await fs.readFile(cachedConfigPath))
   }
 }

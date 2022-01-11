@@ -1,5 +1,4 @@
-import { writeFile, readdir } from 'fs'
-import { promisify } from 'util'
+import { promises as fs } from 'fs'
 
 import test from 'ava'
 import del from 'del'
@@ -8,9 +7,6 @@ import pathExists from 'path-exists'
 import { removeDir } from '../helpers/dir.js'
 import { runFixture, FIXTURES_DIR } from '../helpers/main.js'
 import { getTempName } from '../helpers/temp.js'
-
-const pWriteFile = promisify(writeFile)
-const pReaddir = promisify(readdir)
 
 test('Functions: missing source directory', async (t) => {
   await runFixture(t, 'missing')
@@ -42,7 +38,7 @@ test('Functions: invalid package.json', async (t) => {
   const packageJsonPath = `${FIXTURES_DIR}/${fixtureName}/package.json`
   // We need to create that file during tests. Otherwise, ESLint fails when
   // detecting an invalid *.json file.
-  await pWriteFile(packageJsonPath, '{{}')
+  await fs.writeFile(packageJsonPath, '{{}')
   try {
     await runFixture(t, fixtureName)
   } finally {
@@ -55,7 +51,7 @@ test('Functions: --functionsDistDir', async (t) => {
   try {
     await runFixture(t, 'simple', { flags: { mode: 'buildbot', functionsDistDir } })
     t.true(await pathExists(functionsDistDir))
-    const files = await pReaddir(functionsDistDir)
+    const files = await fs.readdir(functionsDistDir)
     t.is(files.length, 1)
   } finally {
     await removeDir(functionsDistDir)

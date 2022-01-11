@@ -78,7 +78,6 @@
     "keep-func-props": "^3.0.0",
     "locate-path": "^6.0.0",
     "log-process-errors": "^6.0.0",
-    "make-dir": "^3.0.2",
     "map-obj": "^4.0.0",
     "memoize-one": "^6.0.0",
     "os-name": "^4.0.1",

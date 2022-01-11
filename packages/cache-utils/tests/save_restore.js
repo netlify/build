@@ -1,10 +1,11 @@
+import { promises as fs } from 'fs'
+
 import test from 'ava'
-import makeDir from 'make-dir'
 import pathExists from 'path-exists'
 
 import { save, restore, bindOpts, getCacheDir } from '../src/main.js'
 
-import { pWriteFile, pReadFile, createTmpDir, createTmpFile, removeFiles } from './helpers/main.js'
+import { createTmpDir, createTmpFile, removeFiles } from './helpers/main.js'
 
 test('Should expose several methods', (t) => {
   t.is(typeof bindOpts, 'function')
@@ -43,7 +44,7 @@ test('Should cache and restore one directory', async (t) => {
   const [cacheDir, srcDir] = await Promise.all([createTmpDir(), createTmpDir()])
   try {
     const srcFile = `${srcDir}/test`
-    await pWriteFile(srcFile, '')
+    await fs.writeFile(srcFile, '')
     t.true(await save(srcDir, { cacheDir }))
     await removeFiles(srcDir)
     t.true(await restore(srcDir, { cacheDir }))
@@ -56,12 +57,12 @@ test('Should cache and restore one directory', async (t) => {
 test('Should keep file contents when caching files', async (t) => {
   const [cacheDir, [srcFile, srcDir]] = await Promise.all([createTmpDir(), createTmpFile()])
   try {
-    await pWriteFile(srcFile, 'test')
+    await fs.writeFile(srcFile, 'test')
     t.true(await save(srcFile, { cacheDir }))
     await removeFiles(srcFile)
     t.true(await restore(srcFile, { cacheDir }))
     t.true(await pathExists(srcFile))
-    t.is(await pReadFile(srcFile, 'utf8'), 'test')
+    t.is(await fs.readFile(srcFile, 'utf8'), 'test')
   } finally {
     await removeFiles([cacheDir, srcDir])
   }
@@ -70,12 +71,12 @@ test('Should keep file contents when caching files', async (t) => {
 test('Should overwrite files on restore', async (t) => {
   const [cacheDir, [srcFile, srcDir]] = await Promise.all([createTmpDir(), createTmpFile()])
   try {
-    await pWriteFile(srcFile, 'test')
+    await fs.writeFile(srcFile, 'test')
     t.true(await save(srcFile, { cacheDir }))
-    await pWriteFile(srcFile, 'newTest')
+    await fs.writeFile(srcFile, 'newTest')
     t.true(await restore(srcFile, { cacheDir }))
     t.true(await pathExists(srcFile))
-    t.is(await pReadFile(srcFile, 'utf8'), 'test')
+    t.is(await fs.readFile(srcFile, 'utf8'), 'test')
   } finally {
     await removeFiles([cacheDir, srcDir])
   }
@@ -104,7 +105,7 @@ test('Should skip empty directories on restore', async (t) => {
   try {
     const srcDir = 'test'
     const cacheSubDir = `${cacheDir}/cwd/${srcDir}`
-    await makeDir(cacheSubDir)
+    await fs.mkdir(cacheSubDir, { recursive: true })
 
     t.false(await restore(srcDir, { cacheDir }))
   } finally {
@@ -116,7 +117,7 @@ test('Should skip deep empty directories on save', async (t) => {
   const [cacheDir, srcDir] = await Promise.all([createTmpDir(), createTmpDir()])
   try {
     const srcSubDir = `${srcDir}/test`
-    await makeDir(srcSubDir)
+    await fs.mkdir(srcSubDir, { recursive: true })
 
     t.false(await save(srcSubDir, { cacheDir }))
   } finally {
@@ -131,7 +132,7 @@ test('Should skip deep empty directories on restore', async (t) => {
     const srcDir = 'test'
     const srcSubDir = `${srcDir}/test`
     const cacheSubDir = `${cacheDir}/cwd/${srcSubDir}`
-    await makeDir(cacheSubDir)
+    await fs.mkdir(cacheSubDir, { recursive: true })
 
     t.false(await restore(srcDir, { cacheDir }))
   } finally {

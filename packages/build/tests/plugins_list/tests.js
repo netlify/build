@@ -1,5 +1,4 @@
-import { writeFile } from 'fs'
-import { promisify } from 'util'
+import { promises as fs } from 'fs'
 
 import { pluginsList } from '@netlify/plugins-list'
 import test from 'ava'
@@ -8,8 +7,6 @@ import cpy from 'cpy'
 import { removeDir } from '../helpers/dir.js'
 import { runFixture, FIXTURES_DIR } from '../helpers/main.js'
 import { startServer } from '../helpers/server.js'
-
-const pWriteFile = promisify(writeFile)
 
 const runWithApiMock = async function (
   t,
@@ -105,7 +102,7 @@ test('Can require site dependencies when using .netlify/plugins/', async (t) => 
 
 test('Works with .netlify being a regular file', async (t) => {
   const dotNetlifyFile = `${FIXTURES_DIR}/plugins_cache_regular_file/.netlify`
-  await pWriteFile(dotNetlifyFile, '')
+  await fs.writeFile(dotNetlifyFile, '')
   try {
     await runWithApiMock(t, 'plugins_cache_regular_file')
   } finally {
