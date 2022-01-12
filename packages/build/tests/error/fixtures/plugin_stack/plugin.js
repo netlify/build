@@ -1,5 +1,3 @@
-export default {
-  onPreBuild() {
-    throw new Error('test')
-  },
+export const onPreBuild = function () {
+  throw new Error('test')
 }

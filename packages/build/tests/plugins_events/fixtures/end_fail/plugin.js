@@ -1,5 +1,3 @@
-export default {
-  onEnd() {
-    throw new Error('onEnd')
-  },
+export const onEnd = function () {
+  throw new Error('onEnd')
 }

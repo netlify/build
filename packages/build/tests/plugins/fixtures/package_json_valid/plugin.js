@@ -1,5 +1,3 @@
-export default {
-  onPreBuild({ packageJson: { name } }) {
-    console.log(name)
-  },
+export const onPreBuild = function ({ packageJson: { name } }) {
+  console.log(name)
 }

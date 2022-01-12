@@ -1,5 +1,3 @@
-export default {
-  onBuild({ netlifyConfig }) {
-    console.log(netlifyConfig.functionsDirectory)
-  },
+export const onBuild = function ({ netlifyConfig }) {
+  console.log(netlifyConfig.functionsDirectory)
 }

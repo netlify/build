@@ -1,3 +1,1 @@
-export default {
-  onBuild() {},
-}
+export const onBuild = function () {}

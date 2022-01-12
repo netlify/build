@@ -1,5 +1,3 @@
-export default {
-  onPreBuild({ constants: { CACHE_DIR } }) {
-    console.log(CACHE_DIR)
-  },
+export const onPreBuild = function ({ constants: { CACHE_DIR } }) {
+  console.log(CACHE_DIR)
 }

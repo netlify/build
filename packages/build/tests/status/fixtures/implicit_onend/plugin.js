@@ -1,4 +1,3 @@
-export default {
-  onBuild() {},
-  onEnd() {},
-}
+export const onBuild = function () {}
+
+export const onEnd = function () {}

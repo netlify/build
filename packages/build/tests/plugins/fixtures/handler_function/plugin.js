@@ -1,3 +1,1 @@
-export default {
-  onBuild: false,
-}
+export const onBuild = false

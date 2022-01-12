@@ -1,5 +1,3 @@
-export default {
-  onPreBuild({ constants: { CONFIG_PATH } }) {
-    console.log(CONFIG_PATH)
-  },
+export const onPreBuild = function ({ constants: { CONFIG_PATH } }) {
+  console.log(CONFIG_PATH)
 }

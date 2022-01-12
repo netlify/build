@@ -1,5 +1,3 @@
-export default {
-  onPreBuild({ constants: { FUNCTIONS_DIST } }) {
-    console.log(FUNCTIONS_DIST)
-  },
+export const onPreBuild = function ({ constants: { FUNCTIONS_DIST } }) {
+  console.log(FUNCTIONS_DIST)
 }

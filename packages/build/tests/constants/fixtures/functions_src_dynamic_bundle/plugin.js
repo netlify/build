@@ -6,9 +6,7 @@ const pMkdir = promisify(mkdir)
 
 const DEFAULT_FUNCTIONS_SRC = 'netlify/functions'
 
-export default {
-  async onPreBuild() {
-    await pMkdir(dirname(DEFAULT_FUNCTIONS_SRC))
-    await pMkdir(DEFAULT_FUNCTIONS_SRC)
-  },
+export const onPreBuild = async function () {
+  await pMkdir(dirname(DEFAULT_FUNCTIONS_SRC))
+  await pMkdir(DEFAULT_FUNCTIONS_SRC)
 }

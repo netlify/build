@@ -1,16 +1,15 @@
-export default {
-  onBuild({
-    utils: {
-      status: { show },
-    },
-  }) {
-    show({ summary: 'onBuild' })
+export const onBuild = function ({
+  utils: {
+    status: { show },
   },
-  onSuccess({
-    utils: {
-      status: { show },
-    },
-  }) {
-    show({ summary: 'onSuccess' })
+}) {
+  show({ summary: 'onBuild' })
+}
+
+export const onSuccess = function ({
+  utils: {
+    status: { show },
   },
+}) {
+  show({ summary: 'onSuccess' })
 }

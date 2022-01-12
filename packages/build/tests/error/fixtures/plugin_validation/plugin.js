@@ -1,3 +1,1 @@
-export default {
-  invalid() {},
-}
+export const invalid = function () {}

@@ -1,3 +1,1 @@
-export default {
-  onInvalid() {},
-}
+export const onInvalid = function () {}

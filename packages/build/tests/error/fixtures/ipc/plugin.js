@@ -1,8 +1,7 @@
 import { exit } from 'process'
 
-export default {
-  onPreBuild() {
-    exit()
-  },
-  onBuild() {},
+export const onPreBuild = function () {
+  exit()
 }
+
+export const onBuild = function () {}

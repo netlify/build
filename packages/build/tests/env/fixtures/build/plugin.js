@@ -1,7 +1,5 @@
 import { env } from 'process'
 
-export default {
-  onPreBuild() {
-    console.log(env.TEST)
-  },
+export const onPreBuild = function () {
+  console.log(env.TEST)
 }

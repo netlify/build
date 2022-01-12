@@ -1,7 +1,5 @@
 import { env } from 'process'
 
-export default {
-  onPreBuild() {
-    console.log(env.CONTEXT)
-  },
+export const onPreBuild = function () {
+  console.log(env.CONTEXT)
 }

@@ -1,5 +1,3 @@
-export default {
-  onSuccess() {
-    console.log('onSuccess')
-  },
+export const onSuccess = function () {
+  console.log('onSuccess')
 }

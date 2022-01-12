@@ -1,5 +1,3 @@
-export default {
-  onPreBuild({ utils: { git } }) {
-    console.log(git.modifiedFiles)
-  },
+export const onPreBuild = function ({ utils: { git } }) {
+  console.log(git.modifiedFiles)
 }

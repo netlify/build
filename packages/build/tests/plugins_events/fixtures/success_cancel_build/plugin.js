@@ -1,12 +1,11 @@
-export default {
-  onBuild({
-    utils: {
-      build: { cancelBuild },
-    },
-  }) {
-    cancelBuild('onBuild')
+export const onBuild = function ({
+  utils: {
+    build: { cancelBuild },
   },
-  onSuccess() {
-    console.log('onSuccess')
-  },
+}) {
+  cancelBuild('onBuild')
+}
+
+export const onSuccess = function () {
+  console.log('onSuccess')
 }
