@@ -5,7 +5,7 @@
   "detect": {
     "npmDependencies": ["remix", "@remix-run/netlify"],
     "excludedNpmDependencies": [],
-    "configFiles": ["remix.config.mjs"]
+    "configFiles": ["remix.config.js"]
   },
   "dev": {
     "command": "remix watch"
