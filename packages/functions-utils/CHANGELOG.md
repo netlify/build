@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.0](https://github.com/netlify/build/compare/functions-utils-v4.0.3...functions-utils-v4.1.0) (2022-01-12)
+
+
+### Features
+
+* update `README.md` to use ES modules with plugins ([#4023](https://github.com/netlify/build/issues/4023)) ([a96e05b](https://github.com/netlify/build/commit/a96e05b0fddbcd33cbc684b1e37994666419eafe))
+
 ### [4.0.3](https://www.github.com/netlify/build/compare/functions-utils-v4.0.2...functions-utils-v4.0.3) (2021-12-21)
 
 

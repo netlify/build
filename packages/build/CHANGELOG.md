@@ -1,5 +1,14 @@
 # Changelog
 
+### [26.1.1](https://github.com/netlify/build/compare/build-v26.1.0...build-v26.1.1) (2022-01-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugin-edge-handlers to ^3.0.1 ([#4015](https://github.com/netlify/build/issues/4015)) ([c1fdcb8](https://github.com/netlify/build/commit/c1fdcb881fb95d475e6258da7867a4c4afa3be19))
+* **deps:** update dependency @netlify/plugin-edge-handlers to ^3.0.2 ([#4017](https://github.com/netlify/build/issues/4017)) ([6a72a10](https://github.com/netlify/build/commit/6a72a109701b1b70570d0f3fcb9e754ae528ddc1))
+* **deps:** update dependency @netlify/plugins-list to ^6.2.1 ([#4026](https://github.com/netlify/build/issues/4026)) ([dad851a](https://github.com/netlify/build/commit/dad851aca78444dda61b1809cda85682156f0c4d))
+
 ## [26.1.0](https://www.github.com/netlify/build/compare/build-v26.0.2...build-v26.1.0) (2022-01-03)
 
 
