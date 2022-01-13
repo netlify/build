@@ -1,14 +1,11 @@
-import { stat } from 'fs'
+import { promises as fs } from 'fs'
 import { relative } from 'path'
-import { promisify } from 'util'
 
 import { listFunctions } from '@netlify/zip-it-and-ship-it'
 
 import { addErrorInfo } from '../../error/info.js'
 
 import { getZisiFeatureFlags } from './feature_flags.js'
-
-const pStat = promisify(stat)
 
 // Returns the `mainFile` of each function found in `functionsSrc`, relative to
 // `functionsSrc`.
@@ -46,7 +43,7 @@ export const validateFunctionsSrc = async function ({ functionsSrc, relativeFunc
   }
 
   try {
-    const stats = await pStat(functionsSrc)
+    const stats = await fs.stat(functionsSrc)
 
     if (stats.isDirectory()) {
       return true

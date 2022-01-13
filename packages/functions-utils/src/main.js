@@ -1,12 +1,9 @@
-import { stat } from 'fs'
+import { promises as fs } from 'fs'
 import { basename, dirname } from 'path'
-import { promisify } from 'util'
 
 import { listFunctions, listFunctionsFiles } from '@netlify/zip-it-and-ship-it'
 import cpy from 'cpy'
 import pathExists from 'path-exists'
-
-const pStat = promisify(stat)
 
 // Add a Netlify Function file to the `functions` directory so it is processed
 // by `@netlify/plugin-functions-core`
@@ -29,7 +26,7 @@ export const add = async function (src, dist, { fail = defaultFail } = {}) {
 }
 
 const getSrcGlob = async function (src, srcBasename) {
-  const srcStat = await pStat(src)
+  const srcStat = await fs.stat(src)
 
   if (srcStat.isDirectory()) {
     return `${srcBasename}/**`
