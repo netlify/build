@@ -1,13 +1,10 @@
-import { stat } from 'fs'
+import { promises as fs } from 'fs'
 import { basename, dirname } from 'path'
-import { promisify } from 'util'
 
 import cpy from 'cpy'
 import globby from 'globby'
 import junk from 'junk'
 import moveFile from 'move-file'
-
-const pStat = promisify(stat)
 
 // Move or copy a cached file/directory from/to a local one
 export const moveCacheFile = async function (src, dest, move) {
@@ -58,6 +55,6 @@ const getSrcGlob = async function (src) {
 
 const getStat = async function (src) {
   try {
-    return await pStat(src)
+    return await fs.stat(src)
   } catch {}
 }
