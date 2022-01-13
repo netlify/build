@@ -1,5 +1,12 @@
 # Changelog
 
+### [26.1.2](https://github.com/netlify/build/compare/build-v26.1.1...build-v26.1.2) (2022-01-13)
+
+
+### Bug Fixes
+
+* use fs promises directly ([#4030](https://github.com/netlify/build/issues/4030)) ([02c4309](https://github.com/netlify/build/commit/02c4309a8325a7bf69f7170d2a1fe992a31edff7))
+
 ### [26.1.1](https://github.com/netlify/build/compare/build-v26.1.0...build-v26.1.1) (2022-01-12)
 
 
