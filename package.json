@@ -21,6 +21,7 @@
     "test:ci": "run-s test:ci:*",
     "test:dev:ava": "ava",
     "test:ci:ava": "c8 -r lcovonly -r text -r json ava",
+    "prepare": "husky install node_modules/@netlify/eslint-config-node/.husky/",
     "prepublishOnly": "run-s prepublishOnly:*",
     "prepublishOnly:checkout": "run-local \"git checkout main\"",
     "prepublishOnly:pull": "run-local \"git pull\"",
@@ -43,12 +44,6 @@
     "timeout": "120s",
     "environmentVariables": {
       "FORCE_COLOR": "1"
-    }
-  },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
-      "pre-push": "npm run format"
     }
   },
   "keywords": [
