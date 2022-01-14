@@ -1,6 +1,5 @@
 node_modules
 yarn-error.log
-.nyc_output
 coverage
 .eslintcache
 .vscode
@@ -8,4 +7,5 @@ dist
 build
 cypress/videos
 cypress/screenshots
+cypress/support
 .DS_Store
