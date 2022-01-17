@@ -1,5 +1,16 @@
 # Changelog
 
+### [17.0.4](https://github.com/netlify/build/compare/config-v17.0.3...config-v17.0.4) (2022-01-17)
+
+
+### Bug Fixes
+
+* **deps:** update del to v6.0.0 ([#4036](https://github.com/netlify/build/issues/4036)) ([f5e076c](https://github.com/netlify/build/commit/f5e076c7152aeadcddfa3805548fd160a416d3dc))
+* **deps:** update dependency netlify to ^10.1.2 ([#4039](https://github.com/netlify/build/issues/4039)) ([f337985](https://github.com/netlify/build/commit/f33798590e98efbc7168793cb4f7ae13e4bd4115))
+* **deps:** update dependency netlify-headers-parser to ^6.0.1 ([#4044](https://github.com/netlify/build/issues/4044)) ([8079d17](https://github.com/netlify/build/commit/8079d174caff8d1d6c36b2f9bca010f8a1a90bdd))
+* **deps:** update dependency netlify-redirect-parser to ^13.0.1 ([#4043](https://github.com/netlify/build/issues/4043)) ([4a8d0dc](https://github.com/netlify/build/commit/4a8d0dca58a3c93fbcbe42a6a4185848f893cd26))
+* **deps:** update yargs to v16.0.0 ([#4037](https://github.com/netlify/build/issues/4037)) ([3d1a433](https://github.com/netlify/build/commit/3d1a433a2b8e401a3ede6225465fa25cc82dd553))
+
 ### [17.0.3](https://www.github.com/netlify/build/compare/config-v17.0.2...config-v17.0.3) (2022-01-05)
 
 
