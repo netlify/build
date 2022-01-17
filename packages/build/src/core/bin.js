@@ -4,6 +4,7 @@ import process from 'process'
 
 import filterObj from 'filter-obj'
 import yargs from 'yargs'
+import { hideBin } from 'yargs/helpers'
 
 import { normalizeCliFeatureFlags } from './feature_flags.js'
 import { FLAGS } from './flags.js'
@@ -30,7 +31,10 @@ const runCli = async function () {
 }
 
 const parseFlags = function () {
-  const { featureFlags: cliFeatureFlags = '', ...flags } = yargs.options(FLAGS).usage(USAGE).parse()
+  const { featureFlags: cliFeatureFlags = '', ...flags } = yargs(hideBin(process.argv))
+    .options(FLAGS)
+    .usage(USAGE)
+    .parse()
   const featureFlags = normalizeCliFeatureFlags(cliFeatureFlags)
   return { ...flags, featureFlags }
 }
