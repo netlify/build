@@ -1,13 +1,19 @@
 /* eslint-disable max-lines */
 
+import process from 'process'
+
 import filterObj from 'filter-obj'
 import yargs from 'yargs'
+import { hideBin } from 'yargs/helpers'
 
 import { normalizeCliFeatureFlags } from '../options/feature_flags.js'
 
 // Parse CLI flags
 export const parseFlags = function () {
-  const { featureFlags: cliFeatureFlags = '', ...flags } = yargs.options(FLAGS).usage(USAGE).parse()
+  const { featureFlags: cliFeatureFlags = '', ...flags } = yargs(hideBin(process.argv))
+    .options(FLAGS)
+    .usage(USAGE)
+    .parse()
   const featureFlags = normalizeCliFeatureFlags(cliFeatureFlags)
   const flagsA = { ...flags, featureFlags }
   const flagsB = filterObj(flagsA, isUserFlag)
