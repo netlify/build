@@ -60,7 +60,7 @@
     "@netlify/config": "^17.0.0",
     "@netlify/functions-utils": "^4.0.0",
     "@netlify/git-utils": "^4.0.0",
-    "@netlify/plugin-edge-handlers": "^3.0.3",
+    "@netlify/plugin-edge-handlers": "^3.0.4",
     "@netlify/plugins-list": "^6.2.1",
     "@netlify/run-utils": "^4.0.0",
     "@netlify/zip-it-and-ship-it": "^5.4.0",
@@ -105,7 +105,7 @@
     "ts-node": "^10.4.0",
     "update-notifier": "^5.0.0",
     "uuid": "^8.0.0",
-    "yargs": "^15.3.1"
+    "yargs": "^16.0.0"
   },
   "devDependencies": {
     "@netlify/nock-udp": "^1.0.0",
