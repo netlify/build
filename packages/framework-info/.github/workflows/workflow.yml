@@ -30,7 +30,7 @@ jobs:
           check-latest: true
       - name: Install dependencies
         # Cypress has a postinstall script that doesn't work on older Node.js versions
-        run: npm ci --ignore-scripts
+        run: npm ci --no-audit --ignore-scripts
       - name: Build For All
         run: npm run build:json
       - name: Build For Browser
@@ -74,7 +74,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
       - name: Install dependencies
-        run: npm install
+        run: npm ci --no-audit
       - name: Build For Browser
         run: npm run build
       - name: Tests

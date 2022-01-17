@@ -10,6 +10,7 @@
     "src/**/*.js"
   ],
   "scripts": {
+    "prepare": "husky install node_modules/@netlify/eslint-config-node/.husky/",
     "prepublishOnly": "npm ci && run-s build test",
     "build": "run-s build:*",
     "build:json": "node scripts/transform_json.js",
@@ -34,12 +35,6 @@
     "test:ci": "run-s test:ci:*",
     "test:ci:ava": "c8 -r lcovonly -r text -r json ava",
     "test:ci:cypress": "node cypress/run.js"
-  },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
-      "pre-push": "npm run format"
-    }
   },
   "keywords": [
     "dependency-management",
@@ -98,6 +93,7 @@
     "del": "^6.0.0",
     "execa": "^5.0.0",
     "html-webpack-plugin": "^5.0.0",
+    "husky": "^7.0.4",
     "is-ci": "^3.0.0",
     "node-static": "^0.7.11",
     "path-browserify": "^1.0.1",
