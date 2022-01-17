@@ -10,7 +10,7 @@ import sinon from 'sinon'
 import { tmpName } from 'tmp-promise'
 
 import { zipItAndShipIt } from '../../src/plugins_core/functions/index.js'
-import { importJsonFile, ROOT_PACKAGE_JSON } from '../../src/utils/json.js'
+import { importJsonFile } from '../../src/utils/json.js'
 import { runFixtureConfig } from '../helpers/config.js'
 import { removeDir } from '../helpers/dir.js'
 import { runFixture, FIXTURES_DIR } from '../helpers/main.js'
@@ -22,8 +22,10 @@ test('--help', async (t) => {
 
 test('--version', async (t) => {
   const { returnValue } = await runFixture(t, '', { flags: { version: true }, useBinary: true, cwd: FIXTURES_DIR })
-  t.is(returnValue, ROOT_PACKAGE_JSON.version)
+  t.regex(returnValue, VERSION_REGEXP)
 })
+
+const VERSION_REGEXP = /^\d+\.\d+\.\d+/
 
 test('Exit code is 0 on success', async (t) => {
   const { exitCode } = await runFixture(t, 'empty', { useBinary: true, snapshot: false })
