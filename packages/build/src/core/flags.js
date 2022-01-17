@@ -1,5 +1,9 @@
 /* eslint eslint-comments/no-use: off, max-lines: off */
 
+const jsonParse = function (value) {
+  return value === undefined ? undefined : JSON.parse(value)
+}
+
 // All CLI flags
 export const FLAGS = {
   config: {
@@ -12,7 +16,7 @@ Defaults to any netlify.toml in the git repository root directory or the base di
     describe: `JSON configuration object containing default values.
 Each configuration default value is used unless overriden through the main configuration file.
 Default: none.`,
-    coerce: JSON.parse,
+    coerce: jsonParse,
     hidden: true,
   },
   cachedConfig: {
@@ -21,7 +25,7 @@ Default: none.`,
 or when using @netlify/config programmatically.
 This is done as a performance optimization to cache the configuration loading logic.
 Default: none.`,
-    coerce: JSON.parse,
+    coerce: jsonParse,
     hidden: true,
   },
   cachedConfigPath: {
