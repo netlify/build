@@ -1,5 +1,12 @@
 # Changelog
 
+### [26.1.5](https://github.com/netlify/build/compare/build-v26.1.4...build-v26.1.5) (2022-01-18)
+
+
+### Bug Fixes
+
+* upgrade Yargs to v17 ([#4045](https://github.com/netlify/build/issues/4045)) ([cce8fda](https://github.com/netlify/build/commit/cce8fda7c9eb77bd607c92c1c4d3aa88496ab4d0))
+
 ### [26.1.4](https://github.com/netlify/build/compare/build-v26.1.3...build-v26.1.4) (2022-01-17)
 
 
