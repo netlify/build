@@ -1,5 +1,12 @@
 # Changelog
 
+### [17.0.6](https://github.com/netlify/build/compare/config-v17.0.5...config-v17.0.6) (2022-01-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency dot-prop to v6 ([#4057](https://github.com/netlify/build/issues/4057)) ([fb173c0](https://github.com/netlify/build/commit/fb173c096310fc354867567eff27b4c4cabd0d8b))
+
 ### [17.0.5](https://github.com/netlify/build/compare/config-v17.0.4...config-v17.0.5) (2022-01-18)
 
 

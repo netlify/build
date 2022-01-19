@@ -1,5 +1,17 @@
 # Changelog
 
+## [26.2.0](https://github.com/netlify/build/compare/build-v26.1.7...build-v26.2.0) (2022-01-19)
+
+
+### Features
+
+* pass `zipGo` property to ZISI ([#4058](https://github.com/netlify/build/issues/4058)) ([1f45942](https://github.com/netlify/build/commit/1f45942711ed7b1e980c80b01a66077cf57a9e63))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^5.5.0 ([#4055](https://github.com/netlify/build/issues/4055)) ([63b6374](https://github.com/netlify/build/commit/63b63747094fec205416e6c505206b607dcd4912))
+
 ### [26.1.7](https://github.com/netlify/build/compare/build-v26.1.6...build-v26.1.7) (2022-01-19)
 
 
