@@ -44,9 +44,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
           check-latest: true
-      - name: Install npm@7
-        run: npm install -g npm@7
-        if: ${{ matrix.node-version == '12.20.0' }}
       - name: Install dependencies
         run: ${{ matrix.install-command }}
       - name: Linting
