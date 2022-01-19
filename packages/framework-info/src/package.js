@@ -1,7 +1,7 @@
-const filterObj = require('filter-obj')
-const isPlainObj = require('is-plain-obj')
+import filterObj from 'filter-obj'
+import isPlainObj from 'is-plain-obj'
 
-const getPackageJsonContent = function ({ packageJson }) {
+export const getPackageJsonContent = function ({ packageJson }) {
   if (packageJson === undefined) {
     return { npmDependencies: [], scripts: {} }
   }
@@ -37,5 +37,3 @@ const getScripts = function ({ scripts }) {
 const isValidScript = function (key, value) {
   return typeof value === 'string'
 }
-
-module.exports = { getPackageJsonContent }

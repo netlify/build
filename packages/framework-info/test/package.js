@@ -1,11 +1,11 @@
-const test = require('ava')
-const cpy = require('cpy')
-const del = require('del')
-const { dir: getTmpDir } = require('tmp-promise')
+import test from 'ava'
+import cpy from 'cpy'
+import del from 'del'
+import { dir as getTmpDir } from 'tmp-promise'
 
-const { listFrameworks } = require('../src/main')
+import { listFrameworks } from '../src/main.js'
 
-const { getFrameworks, FIXTURES_DIR } = require('./helpers/main')
+import { getFrameworks, FIXTURES_DIR } from './helpers/main.js'
 
 test('Should detect package.json in parent directories', async (t) => {
   const frameworks = await getFrameworks('parent_package/parent')

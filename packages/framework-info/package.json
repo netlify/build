@@ -2,12 +2,16 @@
   "name": "@netlify/framework-info",
   "version": "8.0.2",
   "description": "Framework detection utility",
-  "main": "./src/main.js",
-  "browser": "./dist/index.js",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "exports": {
+    "node": "./src/main.js",
+    "default": "./dist/index.cjs"
+  },
   "files": [
-    "dist/index.js",
     "build/*.js",
-    "src/**/*.js"
+    "src/**/*.js",
+    "dist/index.cjs"
   ],
   "scripts": {
     "prepare": "husky install node_modules/@netlify/eslint-config-node/.husky/",
@@ -66,8 +70,8 @@
     "url": "https://github.com/netlify/framework-info/issues"
   },
   "config": {
-    "eslint": "--ignore-path .gitignore --cache --format=codeframe --max-warnings=0 \"{src,site,scripts,test,cypress}/**/*.{js,jsx,html}\" --ignore-pattern \"test/fixtures/**/*\"",
-    "prettier": "--ignore-path .gitignore --loglevel warn \"{src,site,scripts,test,cypress}/**/*.js\" \"*.{js,md,yml,json}\" \"!package-lock.json\" \"!CHANGELOG.md\""
+    "eslint": "--ignore-path .gitignore --cache --format=codeframe --max-warnings=0 \"{src,site,scripts,test,cypress}/**/*.{cjs,mjs,js,jsx,html}\" --ignore-pattern \"test/fixtures/**/*\"",
+    "prettier": "--ignore-path .gitignore --loglevel warn \"{src,site,scripts,test,cypress}/**/*.{cjs,mjs,js}\" \"*.{cjs,mjs,js,md,yml,json}\" \"!package-lock.json\" \"!CHANGELOG.md\""
   },
   "dependencies": {
     "ajv": "^8.0.0",
@@ -117,5 +121,8 @@
   ],
   "engines": {
     "node": "^12.20.0 || ^14.14.0 || >=16.0.0"
+  },
+  "ava": {
+    "verbose": true
   }
 }

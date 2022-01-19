@@ -1,13 +1,13 @@
-const { promises: fs } = require('fs')
-const path = require('path')
+import { promises as fs } from 'fs'
+import { extname } from 'path'
 
-const Ajv = require('ajv').default
-const test = require('ava')
-const { each } = require('test-each')
+import Ajv from 'ajv'
+import test from 'ava'
+import { each } from 'test-each'
 
-const { FRAMEWORKS } = require('../build/frameworks')
+import { FRAMEWORKS } from '../build/frameworks.js'
 
-const FRAMEWORKS_DIR = `${__dirname}/../src/frameworks/`
+const FRAMEWORKS_DIR = new URL('../src/frameworks/', import.meta.url)
 
 const ajv = new Ajv({})
 
@@ -133,7 +133,7 @@ each(FRAMEWORKS, (info, framework) => {
 
 test('each json file should be required in main.js FRAMEWORKS', async (t) => {
   const filenames = await fs.readdir(FRAMEWORKS_DIR)
-  const jsonFiles = filenames.filter((filename) => path.extname(filename) === '.json')
+  const jsonFiles = filenames.filter((filename) => extname(filename) === '.json')
 
   t.is(FRAMEWORKS.length, jsonFiles.length)
   FRAMEWORKS.forEach(({ id }) => {

@@ -1,8 +1,8 @@
-const { version: nodeVersion } = require('process')
+import { version as nodeVersion } from 'process'
 
-const test = require('ava')
+import test from 'ava'
 
-const { getFrameworks } = require('./helpers/main')
+import { getFrameworks } from './helpers/main.js'
 
 test('Should detect dependencies', async (t) => {
   const frameworks = await getFrameworks('dependencies')

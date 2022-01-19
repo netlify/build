@@ -3,7 +3,7 @@
 //   - `package.json` `scripts` containing `framework.dev.command`
 //   - `package.json` `scripts` whose names are among `NPM_DEV_SCRIPTS`
 //   - `framework.dev.command`
-const getDevCommands = function ({ frameworkDevCommand, scripts, runScriptCommand }) {
+export const getDevCommands = function ({ frameworkDevCommand, scripts, runScriptCommand }) {
   if (frameworkDevCommand === undefined) {
     return []
   }
@@ -66,5 +66,3 @@ const isExcludedScript = function (scriptValue) {
 }
 
 const EXCLUDED_SCRIPTS = ['netlify dev']
-
-module.exports = { getDevCommands }

@@ -23,7 +23,7 @@ If you're looking for a way to run `framework-info` via CLI check the
 # Example (Node.js)
 
 ```js
-const { listFrameworks, hasFramework, getFramework } = require('@netlify/framework-info')
+import { listFrameworks, hasFramework, getFramework } from '@netlify/framework-info'
 
 console.log(await listFrameworks({ projectDir: './path/to/gatsby/website' }))
 // [

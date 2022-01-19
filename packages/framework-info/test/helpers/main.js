@@ -1,20 +1,20 @@
-const { listFrameworks, getFramework: getFrameworkLib, hasFramework: hasFrameworkLib } = require('../../src/main')
+import { fileURLToPath } from 'url'
 
-const FIXTURES_DIR = `${__dirname}/../fixtures`
+import { listFrameworks, getFramework as getFrameworkLib, hasFramework as hasFrameworkLib } from '../../src/main.js'
+
+export const FIXTURES_DIR = fileURLToPath(new URL('../fixtures', import.meta.url))
 
 const getOptions = (fixtureName) => ({ projectDir: `${FIXTURES_DIR}/${fixtureName}` })
 
 // Fire the main function with a specific fixture
-const getFrameworks = function (fixtureName) {
+export const getFrameworks = function (fixtureName) {
   return listFrameworks(getOptions(fixtureName))
 }
 
-const getFramework = function (fixtureName, frameworkId) {
+export const getFramework = function (fixtureName, frameworkId) {
   return getFrameworkLib(frameworkId, getOptions(fixtureName))
 }
 
-const hasFramework = function (fixtureName, frameworkId) {
+export const hasFramework = function (fixtureName, frameworkId) {
   return hasFrameworkLib(frameworkId, getOptions(fixtureName))
 }
-
-module.exports = { getFrameworks, getFramework, hasFramework, FIXTURES_DIR }

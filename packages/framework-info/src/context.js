@@ -1,8 +1,8 @@
-const { cwd, version } = require('process')
+import { cwd, version } from 'process'
 
-const isPlainObj = require('is-plain-obj')
-const locatePath = require('locate-path')
-const readPkgUp = require('read-pkg-up')
+import isPlainObj from 'is-plain-obj'
+import locatePath from 'locate-path'
+import readPkgUp from 'read-pkg-up'
 
 const getPackageJson = async (projectDir) => {
   try {
@@ -23,7 +23,7 @@ const getPackageJson = async (projectDir) => {
   }
 }
 
-const getContext = async ({ projectDir = cwd(), nodeVersion = version } = {}) => {
+export const getContext = async ({ projectDir = cwd(), nodeVersion = version } = {}) => {
   const { packageJson, packageJsonPath = projectDir } = await getPackageJson(projectDir)
   return {
     pathExists: async (path) => (await locatePath([path], { type: 'file', cwd: projectDir })) !== undefined,
@@ -32,5 +32,3 @@ const getContext = async ({ projectDir = cwd(), nodeVersion = version } = {}) =>
     nodeVersion,
   }
 }
-
-module.exports = { getContext }

@@ -1,10 +1,13 @@
-const http = require('http')
-const process = require('process')
+import http from 'http'
+import process from 'process'
+import { fileURLToPath } from 'url'
 
-const execa = require('execa')
-const isCI = require('is-ci')
-const nodeStatic = require('node-static')
-const puppeteer = require('puppeteer')
+import execa from 'execa'
+import isCI from 'is-ci'
+import nodeStatic from 'node-static'
+import puppeteer from 'puppeteer'
+
+const DIST_DIR = fileURLToPath(new URL('../dist', import.meta.url))
 
 const versions = [
   {
@@ -28,7 +31,7 @@ const getBrowserPath = async ({ product, version, host }) => {
 
 const SERVER_PORT = 8080
 const getServer = async () => {
-  const file = new nodeStatic.Server(`${__dirname}/../dist`)
+  const file = new nodeStatic.Server(DIST_DIR)
   return await new Promise((resolve) => {
     const server = http.createServer((req, res) => {
       file.serve(req, res)

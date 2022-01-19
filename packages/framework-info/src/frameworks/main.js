@@ -1,7 +1,7 @@
 // We purposely order the following array to ensure the most relevant framework
 // is always first, if several frameworks are detected at once.
 // Therefore, we cannot use `fs.readdir()`.
-module.exports.FRAMEWORK_NAMES = [
+export const FRAMEWORK_NAMES = [
   // Static site generators
   'astro',
   'docusaurus',

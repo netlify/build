@@ -1,7 +1,7 @@
-const { dirname } = require('path')
+import { dirname } from 'path'
 
 // Retrieve the command to run `package.json` `scripts` commands
-const getRunScriptCommand = async function ({ pathExists, packageJsonPath }) {
+export const getRunScriptCommand = async function ({ pathExists, packageJsonPath }) {
   const yarnExists = await pathExists(`${dirname(packageJsonPath)}/yarn.lock`)
   if (yarnExists) {
     return 'yarn'
@@ -9,5 +9,3 @@ const getRunScriptCommand = async function ({ pathExists, packageJsonPath }) {
 
   return 'npm run'
 }
-
-module.exports = { getRunScriptCommand }

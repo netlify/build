@@ -1,5 +1,5 @@
-const { getContext } = require('./context')
-const { listFrameworks: list, hasFramework: has, getFramework: get } = require('./core')
+import { getContext } from './context.js'
+import { listFrameworks as list, hasFramework as has, getFramework as get } from './core.js'
 
 /**
  * @typedef {object} Options
@@ -36,7 +36,7 @@ const { listFrameworks: list, hasFramework: has, getFramework: get } = require('
  *
  * @returns {Framework[]} frameworks - Frameworks used by a project
  */
-const listFrameworks = async function (opts) {
+export const listFrameworks = async function (opts) {
   const context = await getContext(opts)
   return await list(context)
 }
@@ -49,7 +49,7 @@ const listFrameworks = async function (opts) {
  *
  * @returns {boolean} result - Whether the project uses this framework
  */
-const hasFramework = async function (frameworkId, options) {
+export const hasFramework = async function (frameworkId, options) {
   const context = await getContext(options)
   return await has(frameworkId, context)
 }
@@ -62,9 +62,7 @@ const hasFramework = async function (frameworkId, options) {
  *
  * @returns {Framework} framework - Framework used by a project
  */
-const getFramework = async function (frameworkId, options) {
+export const getFramework = async function (frameworkId, options) {
   const context = await getContext(options)
   return await get(frameworkId, context)
 }
-
-module.exports = { listFrameworks, hasFramework, getFramework }

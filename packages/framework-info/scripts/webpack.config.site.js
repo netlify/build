@@ -1,12 +1,14 @@
-const path = require('path')
+import { fileURLToPath } from 'url'
 
-const HtmlWebpackPlugin = require('html-webpack-plugin')
+import HtmlWebpackPlugin from 'html-webpack-plugin'
 
-const siteDir = path.resolve(`${__dirname}/../site/react`)
-const outDir = path.resolve(`${__dirname}/../dist/react`)
+const SITE_DIR = new URL('../site/react/', import.meta.url)
+const SITE_ENTRY_JSX = fileURLToPath(new URL('index.jsx', SITE_DIR))
+const SITE_ENTRY_HTML = fileURLToPath(new URL('index.html', SITE_DIR))
+const OUT_DIR = fileURLToPath(new URL('../dist/react/', import.meta.url))
 
-module.exports = {
-  entry: `${siteDir}/index.jsx`,
+const webpackConfig = {
+  entry: SITE_ENTRY_JSX,
   devtool: 'source-map',
   module: {
     rules: [
@@ -21,13 +23,15 @@ module.exports = {
     extensions: ['.js', '.jsx'],
   },
   output: {
-    path: outDir,
+    path: OUT_DIR,
     filename: 'index.js',
   },
   plugins: [
     new HtmlWebpackPlugin({
       minify: false,
-      template: `${siteDir}/index.html`,
+      template: SITE_ENTRY_HTML,
     }),
   ],
 }
+
+export default webpackConfig

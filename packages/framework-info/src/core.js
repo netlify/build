@@ -1,16 +1,15 @@
-const pFilter = require('p-filter')
+import pFilter from 'p-filter'
 
-const { FRAMEWORKS } = require('../build/frameworks')
+import { FRAMEWORKS } from '../build/frameworks.js'
 
-const { usesFramework } = require('./detect')
-const { getDevCommands } = require('./dev')
-const { getPackageJsonContent } = require('./package')
-const { getPlugins } = require('./plugins')
-const { getRunScriptCommand } = require('./run_script')
+import { usesFramework } from './detect.js'
+import { getDevCommands } from './dev.js'
+import { getPackageJsonContent } from './package.js'
+import { getPlugins } from './plugins.js'
+import { getRunScriptCommand } from './run_script.js'
 
 const getContext = (context) => {
   const { pathExists, packageJson, packageJsonPath = '.', nodeVersion } = context
-
   return { pathExists, packageJson, packageJsonPath, nodeVersion }
 }
 
@@ -66,7 +65,7 @@ const getContext = (context) => {
  *
  * @returns {Framework[]} frameworks - Frameworks used by a project
  */
-const listFrameworks = async function (context) {
+export const listFrameworks = async function (context) {
   const { pathExists, packageJson, packageJsonPath, nodeVersion } = getContext(context)
   const { npmDependencies, scripts, runScriptCommand } = await getProjectInfo({
     pathExists,
@@ -88,7 +87,7 @@ const listFrameworks = async function (context) {
  *
  * @returns {boolean} result - Whether the project uses this framework
  */
-const hasFramework = async function (frameworkId, context) {
+export const hasFramework = async function (frameworkId, context) {
   const framework = getFrameworkById(frameworkId)
   const { pathExists, packageJson, packageJsonPath } = getContext(context)
   const { npmDependencies } = await getProjectInfo({ pathExists, packageJson, packageJsonPath })
@@ -104,7 +103,7 @@ const hasFramework = async function (frameworkId, context) {
  *
  * @returns {Framework} framework - Framework used by a project
  */
-const getFramework = async function (frameworkId, context) {
+export const getFramework = async function (frameworkId, context) {
   const framework = getFrameworkById(frameworkId)
   const { pathExists, packageJson, packageJsonPath, nodeVersion } = getContext(context)
   const { scripts, runScriptCommand } = await getProjectInfo({
@@ -165,5 +164,3 @@ const getFrameworkInfo = function (
     plugins: recommendedPlugins,
   }
 }
-
-module.exports = { listFrameworks, hasFramework, getFramework }

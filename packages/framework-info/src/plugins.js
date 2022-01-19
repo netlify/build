@@ -1,5 +1,5 @@
-const Ajv = require('ajv').default
-const semver = require('semver')
+import Ajv from 'ajv'
+import semver from 'semver'
 
 const MIN_NODE_VERSION_KEYWORD = {
   keyword: 'minNodeVersion',
@@ -10,10 +10,8 @@ const MIN_NODE_VERSION_KEYWORD = {
 const ajv = new Ajv({})
 ajv.addKeyword(MIN_NODE_VERSION_KEYWORD)
 
-const getPlugins = function (plugins, { nodeVersion }) {
+export const getPlugins = function (plugins, { nodeVersion }) {
   return plugins
     .filter(({ condition }) => ajv.validate(condition, { nodeVersion }))
     .map(({ packageName }) => packageName)
 }
-
-module.exports = { getPlugins }
