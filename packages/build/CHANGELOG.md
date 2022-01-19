@@ -1,5 +1,12 @@
 # Changelog
 
+### [26.1.7](https://github.com/netlify/build/compare/build-v26.1.6...build-v26.1.7) (2022-01-19)
+
+
+### Bug Fixes
+
+* **deps:** add missing ts-node peer dependencies ([#4052](https://github.com/netlify/build/issues/4052)) ([51a48e8](https://github.com/netlify/build/commit/51a48e82095f4d87064824071fee254dd1603fda))
+
 ### [26.1.6](https://github.com/netlify/build/compare/build-v26.1.5...build-v26.1.6) (2022-01-18)
 
 
