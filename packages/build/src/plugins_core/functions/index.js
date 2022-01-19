@@ -24,6 +24,7 @@ const normalizeFunctionConfig = ({ buildDir, functionConfig = {}, isRunningLocal
   includedFiles: functionConfig.included_files,
   includedFilesBasePath: buildDir,
   ignoredNodeModules: functionConfig.ignored_node_modules,
+  schedule: functionConfig.schedule,
 
   // When the user selects esbuild as the Node bundler, we still want to use
   // the legacy ZISI bundler as a fallback. Rather than asking the user to
@@ -37,7 +38,9 @@ const normalizeFunctionConfig = ({ buildDir, functionConfig = {}, isRunningLocal
   // build process.
   rustTargetDirectory: isRunningLocally ? undefined : resolve(buildDir, '.netlify', 'rust-functions-cache', '[name]'),
 
-  schedule: functionConfig.schedule,
+  // Go functions should be zipped only when building locally. When running in
+  // buildbot, the Go API client will handle the zipping.
+  zipGo: isRunningLocally ? true : undefined,
 })
 
 const getZisiParameters = ({

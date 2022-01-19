@@ -334,7 +334,7 @@ test.serial(`Doesn't fail build for ES module function if feature flag is off`, 
   t.false(callArgs[2].featureFlags.defaultEsModulesToEsbuild)
 })
 
-test.serial('Passes the right base path properties to zip-it-and-ship-it', async (t) => {
+test.serial('Passes the right properties to zip-it-and-ship-it', async (t) => {
   // eslint-disable-next-line import/no-named-as-default-member
   const mockZipFunctions = sinon.stub().resolves()
   // eslint-disable-next-line import/no-named-as-default-member
@@ -343,17 +343,24 @@ test.serial('Passes the right base path properties to zip-it-and-ship-it', async
   const fixtureDir = join(FIXTURES_DIR, fixtureName)
 
   await runFixture(t, fixtureName, { snapshot: false })
+  await runFixture(t, fixtureName, { flags: { mode: 'buildbot' }, snapshot: false })
 
   stub.restore()
 
-  t.is(mockZipFunctions.callCount, 1)
+  t.is(mockZipFunctions.callCount, 2)
 
   // eslint-disable-next-line prefer-destructuring
-  const { basePath, config, repositoryRoot } = mockZipFunctions.firstCall.args[2]
+  const params1 = mockZipFunctions.firstCall.args[2]
 
-  t.is(basePath, fixtureDir)
-  t.is(config['*'].includedFilesBasePath, fixtureDir)
-  t.is(repositoryRoot, fixtureDir)
+  t.is(params1.basePath, fixtureDir)
+  t.true(params1.config['*'].zipGo)
+  t.is(params1.config['*'].includedFilesBasePath, fixtureDir)
+  t.is(params1.repositoryRoot, fixtureDir)
+
+  // eslint-disable-next-line prefer-destructuring
+  const params2 = mockZipFunctions.secondCall.args[2]
+
+  t.is(params2.config['*'].zipGo, undefined)
 })
 
 /* eslint-disable max-statements, no-magic-numbers */
