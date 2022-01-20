@@ -8,7 +8,7 @@ module.exports = {
     sourceType: 'module',
   },
   rules: {
-    'import/extensions': [2, 'ignorePackages'],
+    'node/no-missing-import': 'off',
   },
   overrides: [...overrides],
 }

@@ -1,8 +1,8 @@
 {
-  "name": "@netlify/deno-installer",
+  "name": "@netlify/deno-bridge",
   "private": true,
   "version": "1.0.0",
-  "description": "A Node package to install the Deno CLI on demand",
+  "description": "A Node module to install and interact with the Deno CLI",
   "type": "module",
   "main": "./src/main.js",
   "exports": "./src/main.js",
@@ -30,32 +30,54 @@
     "test:ci:ava": "nyc -r lcovonly -r text -r json ava"
   },
   "config": {
-    "eslint": "--ignore-path .gitignore --cache --format=codeframe --max-warnings=0 \"{src,scripts,.github}/**/*.{js,ts,md,html}\" \"*.{js,ts,md,html}\" \".*.{js,ts,md,html}\"",
+    "eslint": "--ignore-path .gitignore --cache --format=codeframe --max-warnings=0 \"{src,scripts,.github}/**/*.{js,ts,md,html}\" \"*.{js,ts,md,html}\"",
     "prettier": "--ignore-path .gitignore --loglevel=warn \"{src,scripts,.github}/**/*.{js,ts,md,yml,json,html}\" \"*.{js,ts,yml,json,html}\" \".*.{js,ts,yml,json,html}\" \"!**/package-lock.json\" \"!package-lock.json\""
   },
   "ava": {
-    "verbose": true
+    "files": [
+      "test/**/*.ts"
+    ],
+    "extensions": {
+      "ts": "module"
+    },
+    "nodeArguments": [
+      "--loader=ts-node/esm",
+      "--no-warnings"
+    ]
   },
   "keywords": [],
   "license": "MIT",
-  "repository": "netlify/deno-installer",
+  "repository": "netlify/deno-bridge",
   "bugs": {
-    "url": "https://github.com/netlify/deno-installer/issues"
+    "url": "https://github.com/netlify/deno-bridge/issues"
   },
   "author": "Netlify Inc.",
   "directories": {
     "test": "test"
   },
   "devDependencies": {
+    "@ava/typescript": "^3.0.1",
     "@commitlint/cli": "^16.0.0",
     "@commitlint/config-conventional": "^16.0.0",
     "@netlify/eslint-config-node": "^4.1.5",
-    "ava": "^3.0.0",
+    "@types/semver": "^7.3.9",
+    "@types/sinon": "^10.0.8",
+    "ava": "^4.0.1",
     "husky": "^7.0.4",
     "nyc": "^15.0.0",
+    "sinon": "^12.0.1",
+    "tmp-promise": "^3.0.3",
+    "ts-node": "^10.4.0",
     "typescript": "^4.5.4"
   },
   "engines": {
     "node": "^12.20.0 || ^14.14.0 || >=16.0.0"
+  },
+  "dependencies": {
+    "env-paths": "^3.0.0",
+    "execa": "^6.0.0",
+    "node-fetch": "^3.1.1",
+    "node-stream-zip": "^1.15.0",
+    "semver": "^7.3.5"
   }
 }
