@@ -37,10 +37,6 @@ const normalizeFunctionConfig = ({ buildDir, functionConfig = {}, isRunningLocal
   // path that will get cached in between builds, allowing us to speed up the
   // build process.
   rustTargetDirectory: isRunningLocally ? undefined : resolve(buildDir, '.netlify', 'rust-functions-cache', '[name]'),
-
-  // Go functions should be zipped only when building locally. When running in
-  // buildbot, the Go API client will handle the zipping.
-  zipGo: isRunningLocally ? true : undefined,
 })
 
 const getZisiParameters = ({
