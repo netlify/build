@@ -1,7 +1,7 @@
-[![Build](https://github.com/netlify/deno-bridge/workflows/Build/badge.svg)](https://github.com/netlify/deno-bridge/actions)
-[![Node](https://img.shields.io/node/v/@netlify/deno-bridge.svg?logo=node.js)](https://www.npmjs.com/package/@netlify/deno-bridge)
+[![Build](https://github.com/netlify/edge-bundler/workflows/Build/badge.svg)](https://github.com/netlify/edge-bundler/actions)
+[![Node](https://img.shields.io/node/v/@netlify/edge-bundler.svg?logo=node.js)](https://www.npmjs.com/package/@netlify/edge-bundler)
 
-# Deno Bridge
+# Edge Bundler
 
 This module allows you to interact with the Deno CLI programmatically in a Node application. It's also capable of downloading the CLI on-demand and caching it for subsequent invocations.
 
@@ -10,13 +10,13 @@ This module allows you to interact with the Deno CLI programmatically in a Node 
 1. Install this module as a dependency in your project
 
     ```
-    npm install @netlify/deno-bridge --save
+    npm install @netlify/edge-bundler --save
     ```
 
 2. Import it and create an instance of the Deno Bridge
 
     ```js
-    import { DenoBridge } from '@netlify/deno-bridge'
+    import { DenoBridge } from '@netlify/edge-bundler'
 
     const deno = new DenoBridge()
     ```

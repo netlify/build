@@ -1,6 +1,8 @@
 {
-  "name": "@netlify/deno-bridge",
-  "private": true,
+  "name": "@netlify/edge-bundler",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "version": "1.0.0",
   "description": "A Node module to install and interact with the Deno CLI",
   "type": "module",
@@ -47,9 +49,9 @@
   },
   "keywords": [],
   "license": "MIT",
-  "repository": "netlify/deno-bridge",
+  "repository": "netlify/edge-bundler",
   "bugs": {
-    "url": "https://github.com/netlify/deno-bridge/issues"
+    "url": "https://github.com/netlify/edge-bundler/issues"
   },
   "author": "Netlify Inc.",
   "directories": {
@@ -68,7 +70,6 @@
     "husky": "^7.0.4",
     "nyc": "^15.0.0",
     "sinon": "^12.0.1",
-    "tmp-promise": "^3.0.3",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.4"
   },
@@ -81,6 +82,7 @@
     "glob-to-regexp": "^0.4.1",
     "node-fetch": "^3.1.1",
     "node-stream-zip": "^1.15.0",
-    "semver": "^7.3.5"
+    "semver": "^7.3.5",
+    "tmp-promise": "^3.0.3"
   }
 }
