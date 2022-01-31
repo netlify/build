@@ -4,7 +4,7 @@ import test from 'ava'
 import { spy } from 'sinon'
 import tmp from 'tmp-promise'
 
-import { DenoBridge } from '../src/deno.js'
+import { DenoBridge } from '../src/bridge.js'
 
 test('Downloads the Deno CLI on demand and caches it for subsequent calls', async (t) => {
   const tmpDir = await tmp.dir()
@@ -19,8 +19,10 @@ test('Downloads the Deno CLI on demand and caches it for subsequent calls', asyn
   const { stdout: output1 } = await deno.run(['help'])
   const { stdout: output2 } = await deno.run(['help'])
 
-  t.true(output1.includes('A modern JavaScript and TypeScript runtime'))
-  t.true(output2.includes('A modern JavaScript and TypeScript runtime'))
+  const expectedOutput = /^deno [\d.]+/
+
+  t.regex(output1, expectedOutput)
+  t.regex(output2, expectedOutput)
   t.is(beforeDownload.callCount, 1)
   t.is(afterDownload.callCount, 1)
 

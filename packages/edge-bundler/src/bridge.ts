@@ -1,11 +1,14 @@
-import fs from 'fs'
+import { promises as fs } from 'fs'
 import path from 'path'
 
 import { execa } from 'execa'
 import semver from 'semver'
 
+import { bundle } from './bundler.js'
+import type { Declaration } from './declaration.js'
 import { download } from './downloader.js'
 import { getPathInHome } from './home_path.js'
+import { generateManifest } from './manifest.js'
 import { getBinaryExtension } from './platform.js'
 
 const DENO_VERSION_FILE = 'version.txt'
@@ -51,13 +54,13 @@ class DenoBridge {
     }
   }
 
-  async getCachedBinary() {
+  private async getCachedBinary() {
     const versionFilePath = path.join(this.cacheDirectory, DENO_VERSION_FILE)
 
     let cachedVersion
 
     try {
-      cachedVersion = await fs.promises.readFile(versionFilePath, 'utf8')
+      cachedVersion = await fs.readFile(versionFilePath, 'utf8')
     } catch {
       return
     }
@@ -71,7 +74,7 @@ class DenoBridge {
     return path.join(this.cacheDirectory, binaryName)
   }
 
-  async getGlobalBinary() {
+  private async getGlobalBinary() {
     if (!this.useGlobal) {
       return
     }
@@ -86,12 +89,12 @@ class DenoBridge {
     return globalBinaryName
   }
 
-  async getRemoteBinary() {
+  private async getRemoteBinary() {
     if (this.onBeforeDownload) {
       this.onBeforeDownload()
     }
 
-    await fs.promises.mkdir(this.cacheDirectory, { recursive: true })
+    await fs.mkdir(this.cacheDirectory, { recursive: true })
 
     const binaryPath = await download(this.cacheDirectory)
     const version = await DenoBridge.getBinaryVersion(binaryPath)
@@ -107,6 +110,25 @@ class DenoBridge {
     }
 
     return binaryPath
+  }
+
+  private async writeVersionFile(version: string) {
+    const versionFilePath = path.join(this.cacheDirectory, DENO_VERSION_FILE)
+
+    await fs.writeFile(versionFilePath, version)
+  }
+
+  async bundle(sourceDirectories: string[], distDirectory: string, declarations: Declaration[]) {
+    await fs.rm(distDirectory, { force: true, recursive: true })
+
+    const { bundlePath, handlers, preBundlePath } = await bundle(sourceDirectories, distDirectory)
+    const relativeBundlePath = path.relative(distDirectory, bundlePath)
+    const manifestContents = generateManifest(relativeBundlePath, handlers, declarations)
+    const manifestPath = path.join(distDirectory, 'manifest.json')
+
+    await this.run(['bundle', preBundlePath, bundlePath])
+    await fs.writeFile(manifestPath, JSON.stringify(manifestContents))
+    await fs.unlink(preBundlePath)
   }
 
   async getBinaryPath(): Promise<string> {
@@ -129,12 +151,6 @@ class DenoBridge {
     const binaryPath = await this.getBinaryPath()
 
     return await execa(binaryPath, args)
-  }
-
-  async writeVersionFile(version: string) {
-    const versionFilePath = path.join(this.cacheDirectory, DENO_VERSION_FILE)
-
-    await fs.promises.writeFile(versionFilePath, version)
   }
 }
 
