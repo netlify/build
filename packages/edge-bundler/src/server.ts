@@ -9,7 +9,7 @@ const serve = async (port: number, sourceDirectories: string[], declarations: De
   const distDirectory = await tmpName()
   const { preBundlePath } = await preBundle(sourceDirectories, distDirectory)
 
-  console.log({ port })
+  console.log({ port, declarations })
 
   return deno.run(['run', '-A', '--unstable', preBundlePath, port.toString()], { wait: false })
 }
