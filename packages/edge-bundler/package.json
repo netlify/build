@@ -3,8 +3,8 @@
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   },
-  "version": "0.1.0",
-  "description": "A Node module to install and interact with the Deno CLI",
+  "version": "0.1.1",
+  "description": "Intelligently prepare Netlify Edge Handlers for deployment",
   "type": "module",
   "main": "./dist/index.js",
   "exports": "./dist/index.js",
