@@ -14,7 +14,6 @@ interface HandlerLine {
 }
 
 interface BundleOptions {
-  declarations?: Declaration[]
   onAfterDownload?: LifecycleHook
   onBeforeDownload?: LifecycleHook
 }
@@ -22,7 +21,8 @@ interface BundleOptions {
 const bundle = async (
   sourceDirectories: string[],
   distDirectory: string,
-  { declarations = [], onAfterDownload, onBeforeDownload }: BundleOptions = {},
+  declarations: Declaration[] = [],
+  { onAfterDownload, onBeforeDownload }: BundleOptions = {},
 ) => {
   const deno = new DenoBridge({
     onAfterDownload,
