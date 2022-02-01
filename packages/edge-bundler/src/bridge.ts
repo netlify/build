@@ -1,8 +1,10 @@
 import { promises as fs } from 'fs'
 import path from 'path'
+import process from 'process'
 
 import { execa } from 'execa'
 import semver from 'semver'
+import { tmpName } from 'tmp-promise'
 
 import { bundle } from './bundler.js'
 import type { Declaration } from './declaration.js'
@@ -119,16 +121,17 @@ class DenoBridge {
   }
 
   async bundle(sourceDirectories: string[], distDirectory: string, declarations: Declaration[]) {
-    await fs.rm(distDirectory, { force: true, recursive: true })
-
     const { bundlePath, handlers, preBundlePath } = await bundle(sourceDirectories, distDirectory)
     const relativeBundlePath = path.relative(distDirectory, bundlePath)
     const manifestContents = generateManifest(relativeBundlePath, handlers, declarations)
     const manifestPath = path.join(distDirectory, 'manifest.json')
 
-    await this.run(['bundle', preBundlePath, bundlePath])
     await fs.writeFile(manifestPath, JSON.stringify(manifestContents))
+
+    await this.run(['bundle', preBundlePath, bundlePath])
     await fs.unlink(preBundlePath)
+
+    return { bundlePath, manifestPath, preBundlePath }
   }
 
   async getBinaryPath(): Promise<string> {
@@ -147,10 +150,24 @@ class DenoBridge {
     return this.getRemoteBinary()
   }
 
-  async run(args: string[]) {
+  async run(args: string[], { wait = true }: { wait?: boolean } = {}) {
     const binaryPath = await this.getBinaryPath()
+    const runDeno = execa(binaryPath, args)
 
-    return await execa(binaryPath, args)
+    runDeno.stderr?.pipe(process.stdout)
+
+    if (!wait) {
+      return runDeno
+    }
+
+    await runDeno
+  }
+
+  async serve(port: number, sourceDirectories: string[], declarations: Declaration[]) {
+    const distDirectory = await tmpName()
+    const { preBundlePath } = await bundle(sourceDirectories, distDirectory)
+
+    return this.run(['run', '-A', '--unstable', preBundlePath, port.toString()], { wait: false })
   }
 }
 

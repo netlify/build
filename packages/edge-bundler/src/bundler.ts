@@ -11,26 +11,29 @@ interface HandlerLine {
 }
 
 const bundle = async (sourceDirectories: string[], distDirectory: string) => {
+  await fs.rm(distDirectory, { force: true, recursive: true })
   await fs.mkdir(distDirectory, { recursive: true })
 
   const handlers = await findHandlers(sourceDirectories)
   const lines = handlers.map((handler, index) => generateHandlerReference(handler, index, distDirectory))
-  const bundleContents = generateBundle(lines)
-  const hash = await getStringHash(bundleContents)
-  const preBundlePath = join(distDirectory, `${hash}-pre.ts`)
-  const bundlePath = join(distDirectory, `${hash}.ts`)
+  const entrypoint = generateEntrypoint(lines)
+  const hash = await getStringHash(entrypoint)
+  const preBundlePath = join(distDirectory, `${hash}-pre.js`)
+  const bundlePath = join(distDirectory, `${hash}.js`)
 
-  await fs.writeFile(preBundlePath, bundleContents)
+  await fs.writeFile(preBundlePath, entrypoint)
 
   return { handlers, preBundlePath, bundlePath }
 }
 
-const generateBundle = (lines: HandlerLine[]) => {
+const generateEntrypoint = (lines: HandlerLine[]) => {
+  const bootImport = 'import { boot } from "https://dinosaurs:are-the-future!@edge-bootstrap.netlify.app/index.ts";'
   const importLines = lines.map(({ importLine }) => importLine).join('\n')
   const exportLines = lines.map(({ exportLine }) => exportLine).join(', ')
   const exportDeclaration = `const handlers = {${exportLines}};`
+  const defaultExport = 'boot(handlers);'
 
-  return `${importLines}\n\n${exportDeclaration}\n\nexport default handlers;`
+  return [bootImport, importLines, exportDeclaration, defaultExport].join('\n\n')
 }
 
 const generateHandlerReference = (handler: Handler, index: number, targetDirectory: string): HandlerLine => {
