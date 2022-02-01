@@ -3,7 +3,7 @@
 
 # Edge Bundler
 
-This module allows you to interact with the Deno CLI programmatically in a Node application. It's also capable of downloading the CLI on-demand and caching it for subsequent invocations.
+Intelligently prepare Netlify Edge Handlers for deployment.
 
 ## Usage
 
@@ -13,18 +13,27 @@ This module allows you to interact with the Deno CLI programmatically in a Node 
     npm install @netlify/edge-bundler --save
     ```
 
-2. Import it and create an instance of the Deno Bridge
+2. Import it and create a bundle from a directory of Edge Handlers and a list of declarations.
 
     ```js
-    import { DenoBridge } from '@netlify/edge-bundler'
+    import { bundle } from '@netlify/edge-bundler'
 
-    const deno = new DenoBridge()
-    ```
+    // List of directories to search for Edge Handlers.
+    const sourceDirectories = [
+        "/repo/netlify/edge-handlers",
+        "/repo/.netlify/edge-handlers"
+    ]
 
-3. Run a command
+    // Directory where bundle should be placed.
+    const distDirectory = "/repo/.netlify/edge-handlers-dist"
 
-    ```js
-    const { stdout } = await deno.run(['help'])
+    // List of Edge Handlers declarations.
+    const declarations = [
+        {handler: "user-1", path: "/blog/*"},
+        {handler: "internal-2", path: "/"}
+    ]
+
+    await bundle(sourceDirectories, distDirectory, declarations)
     ```
 ## Contributors
 
