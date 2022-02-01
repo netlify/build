@@ -144,13 +144,6 @@ class DenoBridge {
 
     return await runDeno
   }
-
-  // async serve(port: number, sourceDirectories: string[], declarations: Declaration[]) {
-  //   const distDirectory = await tmpName()
-  //   const { preBundlePath } = await bundle(sourceDirectories, distDirectory)
-
-  //   return this.run(['run', '-A', '--unstable', preBundlePath, port.toString()], { wait: false })
-  // }
 }
 
 export { DenoBridge, LifecycleHook }

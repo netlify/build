@@ -29,18 +29,11 @@ const bundle = async (
     onBeforeDownload,
   })
 
-  await fs.rm(distDirectory, { force: true, recursive: true })
-  await fs.mkdir(distDirectory, { recursive: true })
-
-  const handlers = await findHandlers(sourceDirectories)
-  const entrypoint = generateEntrypoint(handlers, distDirectory)
-  const entrypointHash = await getStringHash(entrypoint)
-  const preBundlePath = join(distDirectory, `${entrypointHash}-pre.js`)
+  const { entrypointHash, handlers, preBundlePath } = await preBundle(sourceDirectories, distDirectory)
   const bundleFilename = `${entrypointHash}.js`
   const bundlePath = join(distDirectory, bundleFilename)
   const manifest = await writeManifest(bundleFilename, handlers, distDirectory, declarations)
 
-  await fs.writeFile(preBundlePath, entrypoint)
   await deno.run(['bundle', preBundlePath, bundlePath])
   await fs.unlink(preBundlePath)
 
@@ -69,6 +62,24 @@ const generateHandlerReference = (handler: Handler, index: number, targetDirecto
   }
 }
 
+const preBundle = async (sourceDirectories: string[], distDirectory: string) => {
+  await fs.rm(distDirectory, { force: true, recursive: true })
+  await fs.mkdir(distDirectory, { recursive: true })
+
+  const handlers = await findHandlers(sourceDirectories)
+  const entrypoint = generateEntrypoint(handlers, distDirectory)
+  const entrypointHash = getStringHash(entrypoint)
+  const preBundlePath = join(distDirectory, `${entrypointHash}-pre.js`)
+
+  await fs.writeFile(preBundlePath, entrypoint)
+
+  return {
+    entrypointHash,
+    handlers,
+    preBundlePath,
+  }
+}
+
 const writeManifest = (
   bundleFilename: string,
   handlers: Handler[],
@@ -81,4 +92,4 @@ const writeManifest = (
   return fs.writeFile(manifestPath, JSON.stringify(manifest))
 }
 
-export { bundle }
+export { bundle, preBundle }
