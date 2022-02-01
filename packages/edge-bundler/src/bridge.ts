@@ -4,13 +4,9 @@ import process from 'process'
 
 import { execa } from 'execa'
 import semver from 'semver'
-import { tmpName } from 'tmp-promise'
 
-import { bundle } from './bundler.js'
-import type { Declaration } from './declaration.js'
 import { download } from './downloader.js'
 import { getPathInHome } from './home_path.js'
-import { generateManifest } from './manifest.js'
 import { getBinaryExtension } from './platform.js'
 
 const DENO_VERSION_FILE = 'version.txt'
@@ -120,20 +116,6 @@ class DenoBridge {
     await fs.writeFile(versionFilePath, version)
   }
 
-  async bundle(sourceDirectories: string[], distDirectory: string, declarations: Declaration[]) {
-    const { bundlePath, handlers, preBundlePath } = await bundle(sourceDirectories, distDirectory)
-    const relativeBundlePath = path.relative(distDirectory, bundlePath)
-    const manifestContents = generateManifest(relativeBundlePath, handlers, declarations)
-    const manifestPath = path.join(distDirectory, 'manifest.json')
-
-    await fs.writeFile(manifestPath, JSON.stringify(manifestContents))
-
-    await this.run(['bundle', preBundlePath, bundlePath])
-    await fs.unlink(preBundlePath)
-
-    return { bundlePath, manifestPath, preBundlePath }
-  }
-
   async getBinaryPath(): Promise<string> {
     const globalPath = await this.getGlobalBinary()
 
@@ -163,12 +145,12 @@ class DenoBridge {
     await runDeno
   }
 
-  async serve(port: number, sourceDirectories: string[], declarations: Declaration[]) {
-    const distDirectory = await tmpName()
-    const { preBundlePath } = await bundle(sourceDirectories, distDirectory)
+  // async serve(port: number, sourceDirectories: string[], declarations: Declaration[]) {
+  //   const distDirectory = await tmpName()
+  //   const { preBundlePath } = await bundle(sourceDirectories, distDirectory)
 
-    return this.run(['run', '-A', '--unstable', preBundlePath, port.toString()], { wait: false })
-  }
+  //   return this.run(['run', '-A', '--unstable', preBundlePath, port.toString()], { wait: false })
+  // }
 }
 
-export { DenoBridge }
+export { DenoBridge, LifecycleHook }
