@@ -3,7 +3,7 @@
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   },
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "A Node module to install and interact with the Deno CLI",
   "type": "module",
   "main": "./dist/index.js",
