@@ -142,7 +142,7 @@ class DenoBridge {
       return runDeno
     }
 
-    await runDeno
+    return await runDeno
   }
 
   // async serve(port: number, sourceDirectories: string[], declarations: Declaration[]) {
