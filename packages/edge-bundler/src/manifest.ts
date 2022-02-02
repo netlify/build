@@ -4,7 +4,7 @@ import type { Declaration } from './declaration.js'
 import { Handler } from './handler.js'
 import { nonNullable } from './utils/non_nullable.js'
 
-const generateManifest = (bundlePath: string, handlers: Handler[], declarations: Declaration[]) => {
+const generateManifest = (bundlePath: string, handlers: Handler[], declarations: Declaration[] = []) => {
   const handlersWithRoutes = handlers.map((handler) => {
     const declaration = declarations.find((candidate) => candidate.handler === handler.name)
 
@@ -13,10 +13,11 @@ const generateManifest = (bundlePath: string, handlers: Handler[], declarations:
     }
 
     const pattern = 'pattern' in declaration ? new RegExp(declaration.pattern) : globToRegExp(declaration.path)
+    const serializablePattern = pattern.source.replace(/\\\//g, '/')
 
     return {
       handler: handler.name,
-      pattern: pattern.toString(),
+      pattern: serializablePattern,
     }
   })
   const manifest = {
