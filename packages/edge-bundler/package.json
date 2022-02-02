@@ -3,7 +3,7 @@
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   },
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Intelligently prepare Netlify Edge Handlers for deployment",
   "type": "module",
   "main": "./dist/index.js",
