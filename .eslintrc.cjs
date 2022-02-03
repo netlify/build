@@ -1,10 +1,7 @@
-const { overrides } = require('@netlify/eslint-config-node')
+const { overrides } = require('@netlify/eslint-config-node/.eslintrc_esm.cjs')
 
 module.exports = {
-  extends: ['plugin:fp/recommended', '@netlify/eslint-config-node'],
-  parserOptions: {
-    sourceType: 'module',
-  },
+  extends: ['plugin:fp/recommended', '@netlify/eslint-config-node/.eslintrc_esm.cjs'],
   rules: {
     strict: 2,
 
@@ -55,7 +52,6 @@ module.exports = {
         ],
       },
     ],
-    'import/extensions': [2, 'ignorePackages'],
   },
   overrides: [
     ...overrides,
