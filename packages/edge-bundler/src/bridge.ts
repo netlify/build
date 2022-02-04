@@ -10,7 +10,7 @@ import { getPathInHome } from './home_path.js'
 import { getBinaryExtension } from './platform.js'
 
 const DENO_VERSION_FILE = 'version.txt'
-const DENO_VERSION_RANGE = '^1.17.2'
+const DENO_VERSION_RANGE = '^1.18.2'
 
 type LifecycleHook = () => void | Promise<void>
 
@@ -136,7 +136,8 @@ class DenoBridge {
     const binaryPath = await this.getBinaryPath()
     const runDeno = execa(binaryPath, args)
 
-    runDeno.stderr?.pipe(process.stdout)
+    runDeno.stdout?.pipe(process.stdout)
+    runDeno.stderr?.pipe(process.stderr)
 
     if (!wait) {
       return runDeno
@@ -146,4 +147,5 @@ class DenoBridge {
   }
 }
 
-export { DenoBridge, LifecycleHook }
+export { DenoBridge }
+export type { LifecycleHook }
