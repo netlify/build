@@ -2,15 +2,21 @@ import { tmpName } from 'tmp-promise';
 import { DenoBridge } from './bridge.js';
 import { preBundle } from './bundler.js';
 import { generateManifest } from './manifest.js';
-const serve = async (port, sourceDirectories, declarations) => {
-    const deno = new DenoBridge();
+const serve = async (port, sourceDirectories, { onAfterDownload, onBeforeDownload } = {}) => {
+    const deno = new DenoBridge({
+        onAfterDownload,
+        onBeforeDownload,
+    });
     const distDirectory = await tmpName();
     const { handlers, preBundlePath } = await preBundle(sourceDirectories, distDirectory);
-    const manifest = generateManifest(preBundlePath, handlers, declarations);
+    const getManifest = (declarations) => generateManifest(preBundlePath, handlers, declarations);
+    // Wait for the binary to be downloaded if needed.
+    await deno.getBinaryPath();
     // TODO: Add `--no-clear-screen` when https://github.com/denoland/deno/pull/13454 is released.
-    deno.run(['run', '-A', '--unstable', '--watch', preBundlePath, port.toString()], { wait: false });
+    const flags = ['-A', '--unstable', '--watch'];
+    deno.run(['run', ...flags, preBundlePath, port.toString()], { wait: false });
     return {
-        manifest,
+        getManifest,
     };
 };
 export { serve };

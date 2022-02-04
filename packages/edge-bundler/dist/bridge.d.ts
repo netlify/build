@@ -23,4 +23,5 @@ declare class DenoBridge {
         wait?: boolean;
     }): Promise<import("execa").ExecaReturnValue<string>>;
 }
-export { DenoBridge, LifecycleHook };
+export { DenoBridge };
+export type { LifecycleHook };

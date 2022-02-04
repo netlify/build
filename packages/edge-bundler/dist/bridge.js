@@ -7,7 +7,7 @@ import { download } from './downloader.js';
 import { getPathInHome } from './home_path.js';
 import { getBinaryExtension } from './platform.js';
 const DENO_VERSION_FILE = 'version.txt';
-const DENO_VERSION_RANGE = '^1.17.2';
+const DENO_VERSION_RANGE = '^1.18.2';
 class DenoBridge {
     constructor(options = {}) {
         var _a, _b, _c;
@@ -88,10 +88,11 @@ class DenoBridge {
         return this.getRemoteBinary();
     }
     async run(args, { wait = true } = {}) {
-        var _a;
+        var _a, _b;
         const binaryPath = await this.getBinaryPath();
         const runDeno = execa(binaryPath, args);
-        (_a = runDeno.stderr) === null || _a === void 0 ? void 0 : _a.pipe(process.stdout);
+        (_a = runDeno.stdout) === null || _a === void 0 ? void 0 : _a.pipe(process.stdout);
+        (_b = runDeno.stderr) === null || _b === void 0 ? void 0 : _b.pipe(process.stderr);
         if (!wait) {
             return runDeno;
         }
