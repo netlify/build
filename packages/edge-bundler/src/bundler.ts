@@ -53,12 +53,12 @@ const generateEntrypoint = (handlers: Handler[], distDirectory: string) => {
 
 const generateHandlerReference = (handler: Handler, index: number, targetDirectory: string): HandlerLine => {
   const importName = `handler${index}`
-  const exportLine = `"${handler.name}": ${importName}.handler`
+  const exportLine = `"${handler.name}": ${importName}`
   const relativePath = relative(targetDirectory, handler.path)
 
   return {
     exportLine,
-    importLine: `import * as ${importName} from "${relativePath}";`,
+    importLine: `import ${importName} from "${relativePath}";`,
   }
 }
 
