@@ -28,11 +28,11 @@ const generateEntrypoint = (handlers, distDirectory) => {
 };
 const generateHandlerReference = (handler, index, targetDirectory) => {
     const importName = `handler${index}`;
-    const exportLine = `"${handler.name}": ${importName}.handler`;
+    const exportLine = `"${handler.name}": ${importName}`;
     const relativePath = relative(targetDirectory, handler.path);
     return {
         exportLine,
-        importLine: `import * as ${importName} from "${relativePath}";`,
+        importLine: `import ${importName} from "${relativePath}";`,
     };
 };
 const preBundle = async (sourceDirectories, distDirectory) => {
