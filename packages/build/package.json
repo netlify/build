@@ -100,7 +100,7 @@
     "semver": "^7.0.0",
     "statsd-client": "0.4.7",
     "string-width": "^4.2.0",
-    "strip-ansi": "^6.0.0",
+    "strip-ansi": "^7.0.0",
     "supports-color": "^8.0.0",
     "tmp-promise": "^3.0.2",
     "ts-node": "^10.4.0",
