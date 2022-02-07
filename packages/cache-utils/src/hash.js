@@ -2,7 +2,7 @@ import { createHash } from 'crypto'
 import { createReadStream } from 'fs'
 
 import getStream from 'get-stream'
-import locatePath from 'locate-path'
+import { locatePath } from 'locate-path'
 
 // Caching a big directory like `node_modules` is slow. However those can
 // sometime be represented by a digest file such as `package-lock.json`. If this
