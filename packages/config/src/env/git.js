@@ -1,4 +1,4 @@
-import execa from 'execa'
+import { execa } from 'execa'
 
 import { removeFalsy } from '../utils/remove_falsy.js'
 

@@ -1,6 +1,6 @@
 import process from 'process'
 
-import execa from 'execa'
+import { execaSync } from 'execa'
 import moize from 'moize'
 import pathExists from 'path-exists'
 
@@ -8,7 +8,7 @@ import pathExists from 'path-exists'
 const mGit = function (args, cwd) {
   const cwdA = safeGetCwd(cwd)
   try {
-    const { stdout } = execa.sync('git', args, { cwd: cwdA })
+    const { stdout } = execaSync('git', args, { cwd: cwdA })
     return stdout
   } catch (error) {
     // The child process `error.message` includes stderr and stdout output which most of the times contains duplicate

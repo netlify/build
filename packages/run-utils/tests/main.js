@@ -2,7 +2,7 @@ import { platform } from 'process'
 import { fileURLToPath } from 'url'
 
 import test from 'ava'
-import execa from 'execa'
+import { execa } from 'execa'
 import semver from 'semver'
 
 import { run, runCommand } from '../src/main.js'

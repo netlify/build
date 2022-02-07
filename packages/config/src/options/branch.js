@@ -1,4 +1,4 @@
-import execa from 'execa'
+import { execaCommand } from 'execa'
 
 // Find out git branch among (in priority order):
 //   - `branch` option
@@ -26,7 +26,7 @@ export const getBranch = async function ({ branch, repositoryRoot }) {
 
 const getGitBranch = async function (repositoryRoot, gitRef) {
   try {
-    const { stdout } = await execa.command(`git rev-parse --abbrev-ref ${gitRef}`, { cwd: repositoryRoot })
+    const { stdout } = await execaCommand(`git rev-parse --abbrev-ref ${gitRef}`, { cwd: repositoryRoot })
     return stdout
   } catch {}
 }
