@@ -76,7 +76,7 @@
     "ajv": "^8.0.0",
     "filter-obj": "^3.0.0",
     "is-plain-obj": "^4.0.0",
-    "locate-path": "^6.0.0",
+    "locate-path": "^7.0.0",
     "p-filter": "^3.0.0",
     "p-locate": "^6.0.0",
     "read-pkg-up": "^9.0.0",
