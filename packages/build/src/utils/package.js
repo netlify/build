@@ -1,6 +1,6 @@
 import { dirname } from 'path'
 
-import readPkgUp from 'read-pkg-up'
+import { readPackageUp } from 'read-pkg-up'
 
 // Retrieve `package.json` from a specific directory
 export const getPackageJson = async function (cwd, { normalize } = {}) {
@@ -16,7 +16,7 @@ export const getPackageJson = async function (cwd, { normalize } = {}) {
 
 const getPackageObj = async function ({ cwd, normalize = true }) {
   try {
-    return await readPkgUp({ cwd, normalize })
+    return await readPackageUp({ cwd, normalize })
     // If the `package.json` is invalid and `normalize` is `true`, an error is
     // thrown. We return `undefined` then.
   } catch {}
