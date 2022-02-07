@@ -67,7 +67,7 @@
     "@sindresorhus/slugify": "^1.1.0",
     "@types/node": "^16.0.0",
     "ansi-escapes": "^4.3.2",
-    "chalk": "^4.1.2",
+    "chalk": "^5.0.0",
     "clean-stack": "^3.0.1",
     "execa": "^5.1.1",
     "figures": "^3.2.0",
