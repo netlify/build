@@ -2,7 +2,7 @@ import http from 'http'
 import process from 'process'
 import { fileURLToPath } from 'url'
 
-import execa from 'execa'
+import { execa } from 'execa'
 import isCI from 'is-ci'
 import nodeStatic from 'node-static'
 import puppeteer from 'puppeteer'
