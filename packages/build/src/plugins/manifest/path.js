@@ -1,4 +1,4 @@
-import locatePath from 'locate-path'
+import { locatePath } from 'locate-path'
 
 import { addErrorInfo } from '../../error/info.js'
 
