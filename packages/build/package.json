@@ -103,7 +103,7 @@
     "strip-ansi": "^7.0.0",
     "supports-color": "^8.0.0",
     "tmp-promise": "^3.0.2",
-    "ts-node": "^10.4.0",
+    "ts-node": "10.4.0",
     "typescript": "^4.5.4",
     "update-notifier": "^5.0.0",
     "uuid": "^8.0.0",

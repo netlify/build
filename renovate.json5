@@ -4,5 +4,12 @@
   semanticCommits: true,
   dependencyDashboard: true,
   automerge: true,
-  packageRules: [],
+  packageRules: [
+    // `ts-node@10.5.0` is currently failing with our code
+    {
+      matchManagers: ['npm'],
+      matchPackageNames: ['ts-node'],
+      allowedVersions: '<=10.4.0',
+    },
+  ],
 }
