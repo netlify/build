@@ -2,7 +2,7 @@ import { promises as fs } from 'fs'
 import { dirname } from 'path'
 
 import del from 'del'
-import pathExists from 'path-exists'
+import { pathExists } from 'path-exists'
 
 import { getExpires, checkExpires } from './expire.js'
 import { getHash } from './hash.js'

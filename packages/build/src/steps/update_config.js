@@ -1,7 +1,7 @@
 import { isDeepStrictEqual } from 'util'
 
 import pFilter from 'p-filter'
-import pathExists from 'path-exists'
+import { pathExists } from 'path-exists'
 
 import { resolveUpdatedConfig } from '../core/config.js'
 import { addErrorInfo } from '../error/info.js'

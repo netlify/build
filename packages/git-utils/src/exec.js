@@ -2,7 +2,7 @@ import process from 'process'
 
 import { execaSync } from 'execa'
 import moize from 'moize'
-import pathExists from 'path-exists'
+import { pathExistsSync } from 'path-exists'
 
 // Fires the `git` binary. Memoized.
 const mGit = function (args, cwd) {
@@ -24,7 +24,7 @@ export const git = moize(mGit, { isDeepEqual: true, maxSize: 1e3 })
 const safeGetCwd = function (cwd) {
   const cwdA = getCwdValue(cwd)
 
-  if (!pathExists.sync(cwdA)) {
+  if (!pathExistsSync(cwdA)) {
     throw new Error(`Current directory does not exist: ${cwdA}`)
   }
 
