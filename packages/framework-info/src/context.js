@@ -2,11 +2,11 @@ import { cwd, version } from 'process'
 
 import isPlainObj from 'is-plain-obj'
 import locatePath from 'locate-path'
-import readPkgUp from 'read-pkg-up'
+import { readPackageUp } from 'read-pkg-up'
 
 const getPackageJson = async (projectDir) => {
   try {
-    const result = await readPkgUp({ cwd: projectDir, normalize: false })
+    const result = await readPackageUp({ cwd: projectDir, normalize: false })
     if (result === undefined) {
       return {}
     }
