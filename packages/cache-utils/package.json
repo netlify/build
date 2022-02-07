@@ -52,7 +52,7 @@
     "junk": "^3.1.0",
     "locate-path": "^7.0.0",
     "move-file": "^2.0.0",
-    "path-exists": "^4.0.0",
+    "path-exists": "^5.0.0",
     "readdirp": "^3.4.0"
   },
   "devDependencies": {
