@@ -1,6 +1,6 @@
 import { fileURLToPath } from 'url'
 
-import execa from 'execa'
+import { execaNode } from 'execa'
 
 import { addErrorInfo } from '../error/info.js'
 import { logLoadingPlugins, logOutdatedPlugins, logIncompatiblePlugins } from '../log/messages/compatibility.js'
@@ -31,7 +31,7 @@ const tStartPlugins = async function ({ pluginsOptions, buildDir, childEnv, logs
 export const startPlugins = measureDuration(tStartPlugins, 'start_plugins')
 
 const startPlugin = async function ({ pluginDir, nodePath, buildDir, childEnv }) {
-  const childProcess = execa.node(CHILD_MAIN_FILE, {
+  const childProcess = execaNode(CHILD_MAIN_FILE, {
     cwd: buildDir,
     preferLocal: true,
     localDir: pluginDir,
