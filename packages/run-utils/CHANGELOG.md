@@ -1,5 +1,12 @@
 # Changelog
 
+### [4.0.1](https://github.com/netlify/build/compare/run-utils-v4.0.0...run-utils-v4.0.1) (2022-02-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency execa to v6 ([#4094](https://github.com/netlify/build/issues/4094)) ([4511447](https://github.com/netlify/build/commit/4511447230ae5b582821b40499ae29d97af0aeae))
+
 ## [4.0.0](https://www.github.com/netlify/build/compare/run-utils-v3.0.0...run-utils-v4.0.0) (2021-12-15)
 
 

@@ -1,5 +1,29 @@
 # Changelog
 
+### [26.2.4](https://github.com/netlify/build/compare/build-v26.2.3...build-v26.2.4) (2022-02-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugin-edge-handlers to ^3.0.6 ([#4130](https://github.com/netlify/build/issues/4130)) ([dd4bb09](https://github.com/netlify/build/commit/dd4bb0963b9f4a47bdb4175c300a9ce4b313d52e))
+* **deps:** update dependency @netlify/plugins-list to ^6.7.0 ([#4086](https://github.com/netlify/build/issues/4086)) ([8abd92c](https://github.com/netlify/build/commit/8abd92c7d51420167dbbed54f4dec58144ae6c07))
+* **deps:** update dependency @netlify/plugins-list to ^6.9.0 ([#4132](https://github.com/netlify/build/issues/4132)) ([2662c4f](https://github.com/netlify/build/commit/2662c4f553a5d5e70820e2e1257ca78663fc7722))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v5.7.0 ([#4131](https://github.com/netlify/build/issues/4131)) ([b045f61](https://github.com/netlify/build/commit/b045f6186459f77faff1ae4ff9109761873b60ea))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v5.7.1 ([#4137](https://github.com/netlify/build/issues/4137)) ([9d1ac08](https://github.com/netlify/build/commit/9d1ac08989308f244888b70fd01591207ce146d9))
+* **deps:** update dependency chalk to v5 ([#4092](https://github.com/netlify/build/issues/4092)) ([332a533](https://github.com/netlify/build/commit/332a5333b30fa01791689f8af080cc38c147cc98))
+* **deps:** update dependency execa to v6 ([#4094](https://github.com/netlify/build/issues/4094)) ([4511447](https://github.com/netlify/build/commit/4511447230ae5b582821b40499ae29d97af0aeae))
+* **deps:** update dependency filter-obj to v3 ([#4095](https://github.com/netlify/build/issues/4095)) ([cf364ea](https://github.com/netlify/build/commit/cf364ea6f4563a0377180ddc47c24621a81423ab))
+* **deps:** update dependency is-plain-obj to v4 ([#4117](https://github.com/netlify/build/issues/4117)) ([14585b0](https://github.com/netlify/build/commit/14585b0089376bfbf04cb9746a23aec4faf925c6))
+* **deps:** update dependency locate-path to v7 ([#4097](https://github.com/netlify/build/issues/4097)) ([b4b451f](https://github.com/netlify/build/commit/b4b451f2016ce255ac6634c6ebfa9078cd5e8b3f))
+* **deps:** update dependency map-obj to v5 ([#4120](https://github.com/netlify/build/issues/4120)) ([179269f](https://github.com/netlify/build/commit/179269ffe3f8747f320c5484ed67254d493d6997))
+* **deps:** update dependency netlify to v11 ([#4136](https://github.com/netlify/build/issues/4136)) ([e26e0ae](https://github.com/netlify/build/commit/e26e0aed973ba68ec9cee6ca5c709848739d1f05))
+* **deps:** update dependency p-filter to v3 ([#4100](https://github.com/netlify/build/issues/4100)) ([098268b](https://github.com/netlify/build/commit/098268b7a2a4e9f09f86c11b2fcf0c4bc9e8cfd0))
+* **deps:** update dependency p-locate to v6 ([#4101](https://github.com/netlify/build/issues/4101)) ([fea08d3](https://github.com/netlify/build/commit/fea08d31917c04cfb645f42638a94ebc09a400e3))
+* **deps:** update dependency path-exists to v5 ([#4102](https://github.com/netlify/build/issues/4102)) ([744421d](https://github.com/netlify/build/commit/744421d89d6e773bd96d82d3ceeb561ee5d7f3db))
+* **deps:** update dependency read-pkg-up to v9 ([#4125](https://github.com/netlify/build/issues/4125)) ([c04862e](https://github.com/netlify/build/commit/c04862e711ef7366b53b175af7ed127bdf1c61b6))
+* **deps:** update dependency strip-ansi to v7 ([#4127](https://github.com/netlify/build/issues/4127)) ([87c1bc6](https://github.com/netlify/build/commit/87c1bc65c01f339895d77372037482c213840882))
+* pin `ts-node` version ([#4133](https://github.com/netlify/build/issues/4133)) ([aa461ad](https://github.com/netlify/build/commit/aa461ade5eff697559c212a65181d346e011f0ab))
+
 ### [26.2.3](https://github.com/netlify/build/compare/build-v26.2.2...build-v26.2.3) (2022-02-03)
 
 
