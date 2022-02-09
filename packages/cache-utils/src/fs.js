@@ -3,7 +3,7 @@ import { basename, dirname } from 'path'
 
 import cpy from 'cpy'
 import globby from 'globby'
-import junk from 'junk'
+import { isNotJunk } from 'junk'
 import moveFile from 'move-file'
 
 // Move or copy a cached file/directory from/to a local one
@@ -30,7 +30,7 @@ const isEmptyDir = async function ({ srcGlob, cwd, isDir }) {
   }
 
   const files = await globby(srcGlob, { cwd })
-  const filteredFiles = files.filter((file) => junk.not(basename(file)))
+  const filteredFiles = files.filter((file) => isNotJunk(basename(file)))
   return filteredFiles.length === 0
 }
 
