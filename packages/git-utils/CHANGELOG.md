@@ -1,5 +1,14 @@
 # Changelog
 
+### [4.1.1](https://github.com/netlify/build/compare/git-utils-v4.1.0...git-utils-v4.1.1) (2022-02-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency execa to v6 ([#4094](https://github.com/netlify/build/issues/4094)) ([4511447](https://github.com/netlify/build/commit/4511447230ae5b582821b40499ae29d97af0aeae))
+* **deps:** update dependency map-obj to v5 ([#4120](https://github.com/netlify/build/issues/4120)) ([179269f](https://github.com/netlify/build/commit/179269ffe3f8747f320c5484ed67254d493d6997))
+* **deps:** update dependency path-exists to v5 ([#4102](https://github.com/netlify/build/issues/4102)) ([744421d](https://github.com/netlify/build/commit/744421d89d6e773bd96d82d3ceeb561ee5d7f3db))
+
 ## [4.1.0](https://github.com/netlify/build/compare/git-utils-v4.0.0...git-utils-v4.1.0) (2022-01-12)
 
 

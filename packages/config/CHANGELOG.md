@@ -1,5 +1,20 @@
 # Changelog
 
+### [17.0.7](https://github.com/netlify/build/compare/config-v17.0.6...config-v17.0.7) (2022-02-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency chalk to v5 ([#4092](https://github.com/netlify/build/issues/4092)) ([332a533](https://github.com/netlify/build/commit/332a5333b30fa01791689f8af080cc38c147cc98))
+* **deps:** update dependency execa to v6 ([#4094](https://github.com/netlify/build/issues/4094)) ([4511447](https://github.com/netlify/build/commit/4511447230ae5b582821b40499ae29d97af0aeae))
+* **deps:** update dependency filter-obj to v3 ([#4095](https://github.com/netlify/build/issues/4095)) ([cf364ea](https://github.com/netlify/build/commit/cf364ea6f4563a0377180ddc47c24621a81423ab))
+* **deps:** update dependency is-plain-obj to v4 ([#4117](https://github.com/netlify/build/issues/4117)) ([14585b0](https://github.com/netlify/build/commit/14585b0089376bfbf04cb9746a23aec4faf925c6))
+* **deps:** update dependency map-obj to v5 ([#4120](https://github.com/netlify/build/issues/4120)) ([179269f](https://github.com/netlify/build/commit/179269ffe3f8747f320c5484ed67254d493d6997))
+* **deps:** update dependency netlify to v11 ([#4136](https://github.com/netlify/build/issues/4136)) ([e26e0ae](https://github.com/netlify/build/commit/e26e0aed973ba68ec9cee6ca5c709848739d1f05))
+* **deps:** update dependency netlify-redirect-parser to ^13.0.2 ([#4135](https://github.com/netlify/build/issues/4135)) ([fc5a2d0](https://github.com/netlify/build/commit/fc5a2d047c431a3266b20c7ebbcdd6a1abca0612))
+* **deps:** update dependency p-locate to v6 ([#4101](https://github.com/netlify/build/issues/4101)) ([fea08d3](https://github.com/netlify/build/commit/fea08d31917c04cfb645f42638a94ebc09a400e3))
+* **deps:** update dependency path-exists to v5 ([#4102](https://github.com/netlify/build/issues/4102)) ([744421d](https://github.com/netlify/build/commit/744421d89d6e773bd96d82d3ceeb561ee5d7f3db))
+
 ### [17.0.6](https://github.com/netlify/build/compare/config-v17.0.5...config-v17.0.6) (2022-01-19)
 
 

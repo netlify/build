@@ -2,7 +2,7 @@ import { resolve } from 'path'
 
 import findUp from 'find-up'
 import pLocate from 'p-locate'
-import pathExists from 'path-exists'
+import { pathExists } from 'path-exists'
 
 // Configuration location can be:
 //  - a local path with the --config CLI flag

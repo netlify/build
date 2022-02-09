@@ -3,7 +3,7 @@ import { platform } from 'process'
 
 import test from 'ava'
 import del from 'del'
-import pathExists from 'path-exists'
+import { pathExists } from 'path-exists'
 
 import { runFixture, FIXTURES_DIR } from '../helpers/main.js'
 import { startTcpServer } from '../helpers/tcp_server.js'
