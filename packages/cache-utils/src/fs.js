@@ -4,7 +4,7 @@ import { basename, dirname } from 'path'
 import cpy from 'cpy'
 import { globby } from 'globby'
 import { isNotJunk } from 'junk'
-import moveFile from 'move-file'
+import { moveFile } from 'move-file'
 
 // Move or copy a cached file/directory from/to a local one
 export const moveCacheFile = async function (src, dest, move) {
