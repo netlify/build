@@ -2,7 +2,7 @@ import net from 'net'
 import { normalize, resolve, relative } from 'path'
 import { promisify } from 'util'
 
-import pEvent from 'p-event'
+import { pEvent } from 'p-event'
 
 import { addErrorInfo } from '../../error/info.js'
 import { runsAfterDeploy } from '../../plugins/events.js'
