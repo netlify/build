@@ -57,7 +57,7 @@
     "dot-prop": "^6.0.0",
     "execa": "^6.0.0",
     "fast-safe-stringify": "^2.0.7",
-    "figures": "^3.2.0",
+    "figures": "^4.0.0",
     "filter-obj": "^3.0.0",
     "find-up": "^5.0.0",
     "indent-string": "^4.0.0",
