@@ -1,7 +1,7 @@
 import { promises as fs } from 'fs'
 import { dirname, relative, sep } from 'path'
 
-import pathExists from 'path-exists'
+import { pathExists } from 'path-exists'
 
 // Retrieve `base` override.
 // This uses any directory below `repositoryRoot` and above (or equal to)

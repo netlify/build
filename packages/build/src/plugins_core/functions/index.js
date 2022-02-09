@@ -2,7 +2,7 @@ import { join, resolve } from 'path'
 
 import { zipFunctions } from '@netlify/zip-it-and-ship-it'
 import mapObject from 'map-obj'
-import pathExists from 'path-exists'
+import { pathExists } from 'path-exists'
 
 import { log } from '../../log/logger.js'
 import { logBundleResults, logFunctionsNonExistingDir, logFunctionsToBundle } from '../../log/messages/core_steps.js'

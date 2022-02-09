@@ -2,7 +2,7 @@ import { promises as fs } from 'fs'
 
 import test from 'ava'
 import del from 'del'
-import pathExists from 'path-exists'
+import { pathExists } from 'path-exists'
 
 import { removeDir } from '../helpers/dir.js'
 import { runFixture, FIXTURES_DIR } from '../helpers/main.js'

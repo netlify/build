@@ -1,7 +1,7 @@
 import { resolve, relative, parse } from 'path'
 
 import dotProp from 'dot-prop'
-import pathExists from 'path-exists'
+import { pathExists } from 'path-exists'
 
 import { throwUserError } from './error.js'
 import { mergeConfigs } from './merge.js'

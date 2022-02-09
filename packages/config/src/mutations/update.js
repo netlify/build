@@ -1,6 +1,6 @@
 import { promises as fs } from 'fs'
 
-import pathExists from 'path-exists'
+import { pathExists } from 'path-exists'
 
 import { ensureConfigPriority } from '../context.js'
 import { addHeaders } from '../headers.js'
