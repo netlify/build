@@ -89,7 +89,7 @@
     "p-reduce": "^3.0.0",
     "path-exists": "^5.0.0",
     "path-type": "^5.0.0",
-    "pkg-dir": "^5.0.0",
+    "pkg-dir": "^6.0.0",
     "pretty-ms": "^7.0.0",
     "ps-list": "^7.0.0",
     "read-pkg-up": "^9.0.0",
