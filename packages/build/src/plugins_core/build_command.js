@@ -1,6 +1,6 @@
 import { platform } from 'process'
 
-import execa from 'execa'
+import { execa } from 'execa'
 
 import { addErrorInfo } from '../error/info.js'
 import { getBuildCommandDescription } from '../log/description.js'
