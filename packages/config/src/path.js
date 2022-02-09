@@ -1,6 +1,6 @@
 import { resolve } from 'path'
 
-import findUp from 'find-up'
+import { findUp } from 'find-up'
 import pLocate from 'p-locate'
 import { pathExists } from 'path-exists'
 
