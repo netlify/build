@@ -2,7 +2,7 @@ import { homedir } from 'os'
 import { platform } from 'process'
 
 import test from 'ava'
-import pathExists from 'path-exists'
+import { pathExists } from 'path-exists'
 
 import { save, restore } from '../src/main.js'
 

@@ -52,6 +52,8 @@ module.exports = {
         ],
       },
     ],
+    // `eslint-plugin-node` seems to have a bug finding `chalk`
+    'node/no-missing-import': [2, { allowModules: ['chalk'] }],
   },
   overrides: [
     ...overrides,

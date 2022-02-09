@@ -4,7 +4,7 @@ import { fileURLToPath, pathToFileURL } from 'url'
 import test from 'ava'
 import cpy from 'cpy'
 import del from 'del'
-import pathExists from 'path-exists'
+import { pathExists } from 'path-exists'
 import { spy } from 'sinon'
 import sortOn from 'sort-on'
 

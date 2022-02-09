@@ -5,7 +5,7 @@ import { kill, platform } from 'process'
 import test from 'ava'
 import getNode from 'get-node'
 import moize from 'moize'
-import pathExists from 'path-exists'
+import { pathExists } from 'path-exists'
 import sinon from 'sinon'
 import { tmpName } from 'tmp-promise'
 

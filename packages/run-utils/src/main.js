@@ -1,6 +1,6 @@
 import process from 'process'
 
-import execa from 'execa'
+import { execa, execaCommand } from 'execa'
 
 // Run a command, with arguments being an array
 export const run = function (file, args, options) {
@@ -14,7 +14,7 @@ export const run = function (file, args, options) {
 // Run a command, with file + arguments being a single string
 export const runCommand = function (command, options) {
   const optionsA = { ...DEFAULT_OPTIONS, ...options }
-  const childProcess = execa.command(command, optionsA)
+  const childProcess = execaCommand(command, optionsA)
   redirectOutput(childProcess, optionsA)
   return childProcess
 }
