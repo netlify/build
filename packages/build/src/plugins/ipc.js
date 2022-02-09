@@ -1,7 +1,7 @@
 import process from 'process'
 import { promisify } from 'util'
 
-import pEvent from 'p-event'
+import { pEvent } from 'p-event'
 import { v4 as uuidv4 } from 'uuid'
 
 import { jsonToError, errorToJson } from '../error/build.js'
