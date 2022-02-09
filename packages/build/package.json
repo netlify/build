@@ -99,7 +99,7 @@
     "safe-json-stringify": "^1.2.0",
     "semver": "^7.0.0",
     "statsd-client": "0.4.7",
-    "string-width": "^4.2.0",
+    "string-width": "^5.0.0",
     "strip-ansi": "^7.0.0",
     "supports-color": "^8.0.0",
     "tmp-promise": "^3.0.2",
