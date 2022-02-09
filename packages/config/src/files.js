@@ -1,6 +1,6 @@
 import { resolve, relative, parse } from 'path'
 
-import dotProp from 'dot-prop'
+import { getProperty, setProperty, deleteProperty } from 'dot-prop'
 import { pathExists } from 'path-exists'
 
 import { throwUserError } from './error.js'
@@ -25,14 +25,14 @@ const resolvePaths = function (config, propNames, baseRel, repositoryRoot) {
 }
 
 const resolvePathProp = function (config, propName, baseRel, repositoryRoot) {
-  const path = dotProp.get(config, propName)
+  const path = getProperty(config, propName)
 
   if (!isTruthy(path)) {
-    dotProp.delete(config, propName)
+    deleteProperty(config, propName)
     return config
   }
 
-  return dotProp.set(config, propName, resolvePath(repositoryRoot, baseRel, path, propName))
+  return setProperty(config, propName, resolvePath(repositoryRoot, baseRel, path, propName))
 }
 
 export const resolvePath = function (repositoryRoot, baseRel, originalPath, propName) {
