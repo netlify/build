@@ -1,6 +1,6 @@
 import { promises as fs } from 'fs'
 
-import pathExists from 'path-exists'
+import { pathExists } from 'path-exists'
 
 import { throwUserError } from './error.js'
 import { throwOnInvalidTomlSequence } from './log/messages.js'

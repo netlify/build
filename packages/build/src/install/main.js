@@ -1,7 +1,7 @@
 import { homedir } from 'os'
 
-import execa from 'execa'
-import pathExists from 'path-exists'
+import { execa } from 'execa'
+import { pathExists } from 'path-exists'
 
 import { addErrorInfo } from '../error/info.js'
 
