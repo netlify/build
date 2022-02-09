@@ -76,7 +76,7 @@
     "indent-string": "^4.0.0",
     "is-plain-obj": "^4.0.0",
     "js-yaml": "^4.0.0",
-    "keep-func-props": "^3.0.0",
+    "keep-func-props": "^4.0.0",
     "locate-path": "^7.0.0",
     "log-process-errors": "^7.0.0",
     "map-obj": "^5.0.0",
