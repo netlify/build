@@ -81,7 +81,7 @@
     "log-process-errors": "^7.0.0",
     "map-obj": "^5.0.0",
     "memoize-one": "^6.0.0",
-    "os-name": "^4.0.1",
+    "os-name": "^5.0.0",
     "p-event": "^4.1.0",
     "p-every": "^2.0.0",
     "p-filter": "^3.0.0",
