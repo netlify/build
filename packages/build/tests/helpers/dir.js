@@ -1,5 +1,5 @@
 import del from 'del'
-import execa from 'execa'
+import { execaCommand } from 'execa'
 
 import { getTempDir } from './temp.js'
 
@@ -16,12 +16,12 @@ const createGit = async function (cwd, git) {
     return
   }
 
-  await execa.command('git init', { cwd })
-  await execa.command('git config user.email test@test.com', { cwd })
-  await execa.command('git config user.name test', { cwd })
-  await execa.command('git commit --no-gpg-sign --allow-empty -m one', { cwd })
-  await execa.command('git config --unset user.email', { cwd })
-  await execa.command('git config --unset user.name', { cwd })
+  await execaCommand('git init', { cwd })
+  await execaCommand('git config user.email test@test.com', { cwd })
+  await execaCommand('git config user.name test', { cwd })
+  await execaCommand('git commit --no-gpg-sign --allow-empty -m one', { cwd })
+  await execaCommand('git config --unset user.email', { cwd })
+  await execaCommand('git config --unset user.name', { cwd })
 }
 
 // Removing a directory sometimes fails on Windows in CI due to Windows

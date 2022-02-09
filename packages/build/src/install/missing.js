@@ -1,7 +1,7 @@
 import { promises as fs } from 'fs'
 import { normalize } from 'path'
 
-import pathExists from 'path-exists'
+import { pathExists } from 'path-exists'
 import { isFile } from 'path-type'
 
 import { logInstallMissingPlugins } from '../log/messages/install.js'

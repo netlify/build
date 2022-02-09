@@ -4,7 +4,7 @@ import { env } from 'process'
 import test from 'ava'
 import chalk from 'chalk'
 import cpy from 'cpy'
-import execa from 'execa'
+import { execa, execaCommand } from 'execa'
 import isPlainObj from 'is-plain-obj'
 import logProcessErrors from 'log-process-errors'
 
@@ -109,7 +109,7 @@ const runCommand = async function ({
     await cpy('**', copyRootDir, { cwd: `${FIXTURES_DIR}/${fixtureName}`, parents: true })
 
     if (branch !== undefined) {
-      await execa.command(`git checkout -b ${branch}`, { cwd: copyRootDir })
+      await execaCommand(`git checkout -b ${branch}`, { cwd: copyRootDir })
     }
 
     return await execCommand({ mainFunc, binaryPath, useBinary, mainFlags, commandEnv, cwd })
