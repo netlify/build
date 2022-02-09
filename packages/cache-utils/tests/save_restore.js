@@ -1,7 +1,7 @@
 import { promises as fs } from 'fs'
 
 import test from 'ava'
-import pathExists from 'path-exists'
+import { pathExists } from 'path-exists'
 
 import { save, restore, bindOpts, getCacheDir } from '../src/main.js'
 

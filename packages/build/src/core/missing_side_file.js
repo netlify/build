@@ -1,6 +1,6 @@
 import { relative } from 'path'
 
-import pathExists from 'path-exists'
+import { pathExists } from 'path-exists'
 
 import { logMissingSideFile } from '../log/messages/core.js'
 

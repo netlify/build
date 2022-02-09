@@ -1,5 +1,13 @@
 # Changelog
 
+### [4.1.3](https://github.com/netlify/build/compare/cache-utils-v4.1.2...cache-utils-v4.1.3) (2022-02-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency locate-path to v7 ([#4097](https://github.com/netlify/build/issues/4097)) ([b4b451f](https://github.com/netlify/build/commit/b4b451f2016ce255ac6634c6ebfa9078cd5e8b3f))
+* **deps:** update dependency path-exists to v5 ([#4102](https://github.com/netlify/build/issues/4102)) ([744421d](https://github.com/netlify/build/commit/744421d89d6e773bd96d82d3ceeb561ee5d7f3db))
+
 ### [4.1.2](https://github.com/netlify/build/compare/cache-utils-v4.1.1...cache-utils-v4.1.2) (2022-01-17)
 
 

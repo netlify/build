@@ -1,7 +1,7 @@
 // import { version } from 'process'
 
 import test from 'ava'
-import pathExists from 'path-exists'
+import { pathExists } from 'path-exists'
 // import semver from 'semver'
 
 import { removeDir } from '../helpers/dir.js'
