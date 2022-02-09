@@ -78,7 +78,7 @@
     "js-yaml": "^4.0.0",
     "keep-func-props": "^3.0.0",
     "locate-path": "^7.0.0",
-    "log-process-errors": "^6.0.0",
+    "log-process-errors": "^7.0.0",
     "map-obj": "^5.0.0",
     "memoize-one": "^6.0.0",
     "os-name": "^4.0.1",
