@@ -1,6 +1,6 @@
 import { dirname } from 'path'
 
-import findUp from 'find-up'
+import { findUp } from 'find-up'
 
 // Find out repository root among (in priority order):
 //  - `repositoryRoot` option
