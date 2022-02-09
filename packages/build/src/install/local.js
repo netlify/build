@@ -1,4 +1,4 @@
-import pkgDir from 'pkg-dir'
+import { packageDirectory } from 'pkg-dir'
 
 import { logInstallLocalPluginsDeps } from '../log/messages/install.js'
 
@@ -57,6 +57,6 @@ const hasPackageDir = function ({ packageDir }) {
 
 // We only install dependencies of local plugins that have their own `package.json`
 const removeMainRoot = async function (localPluginsOptions, buildDir) {
-  const mainPackageDir = await pkgDir(buildDir)
+  const mainPackageDir = await packageDirectory({ cwd: buildDir })
   return localPluginsOptions.filter(({ packageDir }) => packageDir !== mainPackageDir)
 }
