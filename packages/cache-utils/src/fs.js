@@ -2,7 +2,7 @@ import { promises as fs } from 'fs'
 import { basename, dirname } from 'path'
 
 import cpy from 'cpy'
-import globby from 'globby'
+import { globby } from 'globby'
 import { isNotJunk } from 'junk'
 import { moveFile } from 'move-file'
 
