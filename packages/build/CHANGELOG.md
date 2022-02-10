@@ -1,5 +1,27 @@
 # Changelog
 
+### [26.2.7](https://github.com/netlify/build/compare/build-v26.2.6...build-v26.2.7) (2022-02-10)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.10.1 ([#4145](https://github.com/netlify/build/issues/4145)) ([ecc70c6](https://github.com/netlify/build/commit/ecc70c65d36412f91ab0167298da917de41787ba))
+* **deps:** update dependency @sindresorhus/slugify to v2 ([#4110](https://github.com/netlify/build/issues/4110)) ([9fae79c](https://github.com/netlify/build/commit/9fae79c3edc6cb2d3bc272e10f2c8305df24eefb))
+* **deps:** update dependency ansi-escapes to v5 ([#4111](https://github.com/netlify/build/issues/4111)) ([177cdb8](https://github.com/netlify/build/commit/177cdb88507d32ec2e16c75042d19ddc067f7793))
+* **deps:** update dependency clean-stack to v4 ([#4112](https://github.com/netlify/build/issues/4112)) ([3a46c8b](https://github.com/netlify/build/commit/3a46c8b3100a2b43883133553dc153f8b9080bf9))
+* **deps:** update dependency figures to v4 ([#4113](https://github.com/netlify/build/issues/4113)) ([c472081](https://github.com/netlify/build/commit/c472081f053acdea3f68363c76355c6a9d0f380b))
+* **deps:** update dependency indent-string to v5 ([#4116](https://github.com/netlify/build/issues/4116)) ([7726316](https://github.com/netlify/build/commit/77263163fa3c1019301a3393a04f25311718baed))
+* **deps:** update dependency keep-func-props to v4 ([#4096](https://github.com/netlify/build/issues/4096)) ([6a426ac](https://github.com/netlify/build/commit/6a426aca1c04a0b4d4aeb979ec541ab70743f2db))
+* **deps:** update dependency log-process-errors to v7 ([#4119](https://github.com/netlify/build/issues/4119)) ([427a172](https://github.com/netlify/build/commit/427a17219d88891cb407f7ffa75fed703f9f7ec6))
+* **deps:** update dependency os-name to v5 ([#4098](https://github.com/netlify/build/issues/4098)) ([aa958d3](https://github.com/netlify/build/commit/aa958d3f6cf16f83cff9cb2989bf45c706491a94))
+* **deps:** update dependency p-event to v5 ([#4099](https://github.com/netlify/build/issues/4099)) ([795d10b](https://github.com/netlify/build/commit/795d10b6e52b5a4a963045a3c0e13c8472b0d21d))
+* **deps:** update dependency p-reduce to v3 ([#4122](https://github.com/netlify/build/issues/4122)) ([b05d8e0](https://github.com/netlify/build/commit/b05d8e0770e8ddfd55b9c110d5ed4c236a74d65a))
+* **deps:** update dependency path-type to v5 ([#4123](https://github.com/netlify/build/issues/4123)) ([c8e6eba](https://github.com/netlify/build/commit/c8e6eba2526c76325fcd20aceac1c073cb4bd37b))
+* **deps:** update dependency pkg-dir to v6 ([#4124](https://github.com/netlify/build/issues/4124)) ([05b4f7c](https://github.com/netlify/build/commit/05b4f7c58b52749abac6a23a5a0f27b497f4eb5d))
+* **deps:** update dependency ps-list to v8 ([#4103](https://github.com/netlify/build/issues/4103)) ([b50a5f4](https://github.com/netlify/build/commit/b50a5f486a068c4d279eede2665929160685ed14))
+* **deps:** update dependency string-width to v5 ([#4126](https://github.com/netlify/build/issues/4126)) ([5da575f](https://github.com/netlify/build/commit/5da575f1aa0ec68eae2681a73fdbd11c91d41c7c))
+* **deps:** update dependency supports-color to v9 ([#4128](https://github.com/netlify/build/issues/4128)) ([723ef7d](https://github.com/netlify/build/commit/723ef7db5a8fde971226233a1a64cc5a20bba717))
+
 ### [26.2.6](https://github.com/netlify/build/compare/build-v26.2.5...build-v26.2.6) (2022-02-08)
 
 
