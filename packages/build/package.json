@@ -123,7 +123,7 @@
     "has-ansi": "^5.0.0",
     "is-ci": "^3.0.0",
     "moize": "^6.0.0",
-    "path-key": "^3.1.1",
+    "path-key": "^4.0.0",
     "process-exists": "^5.0.0",
     "sinon": "^13.0.0",
     "yarn": "^1.22.4"
