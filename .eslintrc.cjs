@@ -107,5 +107,13 @@ module.exports = {
         'import/no-anonymous-default-export': 0,
       },
     },
+    // Disabling certain rules for test files.
+    {
+      files: ['packages/build/tests/**/*.{mjs,js}'],
+      rules: {
+        'max-statements': 'off',
+        'no-magic-numbers': 'off',
+      },
+    },
   ],
 }

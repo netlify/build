@@ -343,7 +343,11 @@ test.serial('Passes the right properties to zip-it-and-ship-it', async (t) => {
   const fixtureDir = join(FIXTURES_DIR, fixtureName)
 
   await runFixture(t, fixtureName, { snapshot: false })
-  await runFixture(t, fixtureName, { flags: { mode: 'buildbot' }, snapshot: false })
+  await runFixture(t, fixtureName, {
+    env: { AWS_LAMBDA_JS_RUNTIME: 'nodejs00.x' },
+    flags: { mode: 'buildbot' },
+    snapshot: false,
+  })
 
   stub.restore()
 
@@ -355,15 +359,16 @@ test.serial('Passes the right properties to zip-it-and-ship-it', async (t) => {
   t.is(params1.basePath, fixtureDir)
   t.true(params1.config['*'].zipGo)
   t.is(params1.config['*'].includedFilesBasePath, fixtureDir)
+  t.is(params1.config['*'].nodeVersion, undefined)
   t.is(params1.repositoryRoot, fixtureDir)
 
   // eslint-disable-next-line prefer-destructuring
   const params2 = mockZipFunctions.secondCall.args[2]
 
+  t.is(params2.config['*'].nodeVersion, 'nodejs00.x')
   t.is(params2.config['*'].zipGo, undefined)
 })
 
-/* eslint-disable max-statements, no-magic-numbers */
 test.serial('Passes the right feature flags to zip-it-and-ship-it', async (t) => {
   // eslint-disable-next-line import/no-named-as-default-member
   const mockZipFunctions = sinon.stub().resolves()
@@ -418,7 +423,6 @@ test.serial('Passes the right feature flags to zip-it-and-ship-it', async (t) =>
   t.true(mockZipFunctions.getCall(6).args[2].featureFlags.this_is_a_mock_flag)
   t.true(mockZipFunctions.getCall(6).args[2].featureFlags.and_another_one)
 })
-/* eslint-enable max-statements, no-magic-numbers */
 
 test('Print warning on lingering processes', async (t) => {
   const { returnValue } = await runFixture(t, 'lingering', {
@@ -472,7 +476,6 @@ test('Bundles functions from the `.netlify/functions-internal` directory even if
   await runFixture(t, 'functions_user_missing')
 })
 
-// eslint-disable-next-line max-statements
 test.serial('`rustTargetDirectory` is passed to zip-it-and-ship-it only when running in buildbot', async (t) => {
   const fixtureWithConfig = 'functions_config_1'
   const fixtureWithoutConfig = 'functions_internal_missing'
