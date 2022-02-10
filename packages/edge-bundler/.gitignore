@@ -10,4 +10,4 @@ node_modules
 /coverage
 /build
 .vscode
-#/dist <- Add this back in
+/dist

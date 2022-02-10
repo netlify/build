@@ -1,5 +1,5 @@
 {
-  "name": "@netlify/edge-bundler",
+  "name": "@netlify-labs/edge-bundler",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   },
@@ -49,9 +49,9 @@
   },
   "keywords": [],
   "license": "MIT",
-  "repository": "netlify/edge-bundler",
+  "repository": "netlify-labs/edge-bundler",
   "bugs": {
-    "url": "https://github.com/netlify/edge-bundler/issues"
+    "url": "https://github.com/netlify-labs/edge-bundler/issues"
   },
   "author": "Netlify Inc.",
   "directories": {
