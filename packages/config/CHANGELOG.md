@@ -1,5 +1,16 @@
 # Changelog
 
+### [17.0.8](https://github.com/netlify/build/compare/config-v17.0.7...config-v17.0.8) (2022-02-10)
+
+
+### Bug Fixes
+
+* **deps:** update dependency dot-prop to v7 ([#4093](https://github.com/netlify/build/issues/4093)) ([4ab89f7](https://github.com/netlify/build/commit/4ab89f7717a24ff282d917b5a7d56acd1b4ee369))
+* **deps:** update dependency figures to v4 ([#4113](https://github.com/netlify/build/issues/4113)) ([c472081](https://github.com/netlify/build/commit/c472081f053acdea3f68363c76355c6a9d0f380b))
+* **deps:** update dependency find-up to v6 ([#4114](https://github.com/netlify/build/issues/4114)) ([50c9901](https://github.com/netlify/build/commit/50c990185f002d63e5cb369ca68e7b901466726c))
+* **deps:** update dependency indent-string to v5 ([#4116](https://github.com/netlify/build/issues/4116)) ([7726316](https://github.com/netlify/build/commit/77263163fa3c1019301a3393a04f25311718baed))
+* **deps:** update dependency path-type to v5 ([#4123](https://github.com/netlify/build/issues/4123)) ([c8e6eba](https://github.com/netlify/build/commit/c8e6eba2526c76325fcd20aceac1c073cb4bd37b))
+
 ### [17.0.7](https://github.com/netlify/build/compare/config-v17.0.6...config-v17.0.7) (2022-02-08)
 
 
