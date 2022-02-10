@@ -1,5 +1,14 @@
 # Changelog
 
+### [4.1.4](https://github.com/netlify/build/compare/cache-utils-v4.1.3...cache-utils-v4.1.4) (2022-02-10)
+
+
+### Bug Fixes
+
+* **deps:** update dependency globby to v13 ([#4115](https://github.com/netlify/build/issues/4115)) ([cf7dc00](https://github.com/netlify/build/commit/cf7dc00e2b1c2d1993f347fa36c416fbd4dc7c4a))
+* **deps:** update dependency junk to v4 ([#4118](https://github.com/netlify/build/issues/4118)) ([705b492](https://github.com/netlify/build/commit/705b492f346ad3dcd3b6a58b147ad124db94ccd2))
+* **deps:** update dependency move-file to v3 ([#4121](https://github.com/netlify/build/issues/4121)) ([5bdbca4](https://github.com/netlify/build/commit/5bdbca4300d404f40f6ab27e303c10f44088ef5a))
+
 ### [4.1.3](https://github.com/netlify/build/compare/cache-utils-v4.1.2...cache-utils-v4.1.3) (2022-02-08)
 
 

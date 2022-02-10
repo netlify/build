@@ -1,6 +1,6 @@
 {
   "name": "@netlify/build",
-  "version": "26.2.6",
+  "version": "26.2.7",
   "description": "Netlify build module",
   "type": "module",
   "exports": "./src/core/main.js",
@@ -91,7 +91,7 @@
     "path-type": "^5.0.0",
     "pkg-dir": "^6.0.0",
     "pretty-ms": "^7.0.0",
-    "ps-list": "^7.0.0",
+    "ps-list": "^8.0.0",
     "read-pkg-up": "^9.0.0",
     "readdirp": "^3.4.0",
     "resolve": "^2.0.0-next.1",
@@ -123,7 +123,7 @@
     "has-ansi": "^5.0.0",
     "is-ci": "^3.0.0",
     "moize": "^6.0.0",
-    "path-key": "^3.1.1",
+    "path-key": "^4.0.0",
     "process-exists": "^5.0.0",
     "sinon": "^13.0.0",
     "yarn": "^1.22.4"
