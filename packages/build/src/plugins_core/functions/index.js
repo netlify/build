@@ -1,69 +1,23 @@
-import { join, resolve } from 'path'
+import { resolve } from 'path'
 
 import { zipFunctions } from '@netlify/zip-it-and-ship-it'
-import mapObject from 'map-obj'
 import { pathExists } from 'path-exists'
 
 import { log } from '../../log/logger.js'
 import { logBundleResults, logFunctionsNonExistingDir, logFunctionsToBundle } from '../../log/messages/core_steps.js'
 
 import { getZipError } from './error.js'
-import { getZisiFeatureFlags } from './feature_flags.js'
 import { getUserAndInternalFunctions, validateFunctionsSrc } from './utils.js'
+import { getZisiParameters } from './zisi.js'
 
 // Returns `true` if at least one of the functions has been configured to use
 // esbuild.
 const isUsingEsbuild = (functionsConfig = {}) =>
   Object.values(functionsConfig).some((configObject) => configObject.node_bundler === 'esbuild')
 
-// The function configuration keys returned by @netlify/config are not an exact
-// match to the properties that @netlify/zip-it-and-ship-it expects. We do that
-// translation here.
-const normalizeFunctionConfig = ({ buildDir, functionConfig = {}, isRunningLocally }) => ({
-  externalNodeModules: functionConfig.external_node_modules,
-  includedFiles: functionConfig.included_files,
-  includedFilesBasePath: buildDir,
-  ignoredNodeModules: functionConfig.ignored_node_modules,
-  schedule: functionConfig.schedule,
-
-  // When the user selects esbuild as the Node bundler, we still want to use
-  // the legacy ZISI bundler as a fallback. Rather than asking the user to
-  // make this decision, we abstract that complexity away by injecting the
-  // fallback behavior ourselves. We do this by transforming the value
-  // `esbuild` into `esbuild_zisi`, which zip-it-and-ship-it understands.
-  nodeBundler: functionConfig.node_bundler === 'esbuild' ? 'esbuild_zisi' : functionConfig.node_bundler,
-
-  // If the build is running in buildbot, we set the Rust target directory to a
-  // path that will get cached in between builds, allowing us to speed up the
-  // build process.
-  rustTargetDirectory: isRunningLocally ? undefined : resolve(buildDir, '.netlify', 'rust-functions-cache', '[name]'),
-
-  // Go functions should be zipped only when building locally. When running in
-  // buildbot, the Go API client will handle the zipping.
-  zipGo: isRunningLocally ? true : undefined,
-})
-
-const getZisiParameters = ({
-  buildDir,
-  featureFlags,
-  functionsConfig,
-  functionsDist,
-  isRunningLocally,
-  repositoryRoot,
-}) => {
-  const isManifestEnabled = isRunningLocally || featureFlags.buildbot_create_functions_manifest === true
-  const manifest = isManifestEnabled ? join(functionsDist, 'manifest.json') : undefined
-  const config = mapObject(functionsConfig, (expression, object) => [
-    expression,
-    normalizeFunctionConfig({ buildDir, featureFlags, functionConfig: object, isRunningLocally }),
-  ])
-  const zisiFeatureFlags = getZisiFeatureFlags(featureFlags)
-
-  return { basePath: buildDir, config, manifest, featureFlags: zisiFeatureFlags, repositoryRoot }
-}
-
 const zipFunctionsAndLogResults = async ({
   buildDir,
+  childEnv,
   featureFlags,
   functionsConfig,
   functionsDist,
@@ -75,6 +29,7 @@ const zipFunctionsAndLogResults = async ({
 }) => {
   const zisiParameters = getZisiParameters({
     buildDir,
+    childEnv,
     featureFlags,
     functionsConfig,
     functionsDist,
@@ -101,6 +56,7 @@ const zipFunctionsAndLogResults = async ({
 // Plugin to package Netlify functions with @netlify/zip-it-and-ship-it
 // eslint-disable-next-line complexity
 const coreStep = async function ({
+  childEnv,
   constants: {
     INTERNAL_FUNCTIONS_SRC: relativeInternalFunctionsSrc,
     IS_LOCAL: isRunningLocally,
@@ -149,6 +105,7 @@ const coreStep = async function ({
 
   const { bundler } = await zipFunctionsAndLogResults({
     buildDir,
+    childEnv,
     featureFlags,
     functionsConfig: netlifyConfig.functions,
     functionsDist,
