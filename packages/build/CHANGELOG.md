@@ -1,5 +1,12 @@
 # Changelog
 
+## [26.3.0](https://github.com/netlify/build/compare/build-v26.2.7...build-v26.3.0) (2022-02-11)
+
+
+### Features
+
+* pass `nodeVersion` property to zip-it-and-ship-it ([#4146](https://github.com/netlify/build/issues/4146)) ([23c7ffe](https://github.com/netlify/build/commit/23c7ffe6a1a8cd7aa04d087274224a8d4dc8b9c1))
+
 ### [26.2.7](https://github.com/netlify/build/compare/build-v26.2.6...build-v26.2.7) (2022-02-10)
 
 
