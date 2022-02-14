@@ -1,5 +1,12 @@
 # Changelog
 
+### [17.0.9](https://github.com/netlify/build/compare/config-v17.0.8...config-v17.0.9) (2022-02-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency netlify-headers-parser to ^6.0.2 ([#4155](https://github.com/netlify/build/issues/4155)) ([1ddeb28](https://github.com/netlify/build/commit/1ddeb2886e9cfd9001dfa91c94271a355d6374ac))
+
 ### [17.0.8](https://github.com/netlify/build/compare/config-v17.0.7...config-v17.0.8) (2022-02-10)
 
 
