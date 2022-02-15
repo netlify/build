@@ -1,5 +1,13 @@
 # Changelog
 
+### [26.3.3](https://github.com/netlify/build/compare/build-v26.3.2...build-v26.3.3) (2022-02-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.11.0 ([#4157](https://github.com/netlify/build/issues/4157)) ([161c145](https://github.com/netlify/build/commit/161c14567f5c3637884d598c5877d842cccf0337))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v5.8.0 ([#4160](https://github.com/netlify/build/issues/4160)) ([1cdbab7](https://github.com/netlify/build/commit/1cdbab77884dad4c5d1f21f433bf373b59b8cce4))
+
 ### [26.3.2](https://github.com/netlify/build/compare/build-v26.3.1...build-v26.3.2) (2022-02-14)
 
 
