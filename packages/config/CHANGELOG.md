@@ -1,5 +1,12 @@
 # Changelog
 
+### [17.0.12](https://github.com/netlify/build/compare/config-v17.0.11...config-v17.0.12) (2022-02-21)
+
+
+### Bug Fixes
+
+* **config-redirects:** revert 216213fc2f6f5ff9b61c3bb3a71afac7d7099ebf ([#4178](https://github.com/netlify/build/issues/4178)) ([7a7c82a](https://github.com/netlify/build/commit/7a7c82aee6ce2017afba1e5c3faad5678b5f1f85))
+
 ### [17.0.11](https://github.com/netlify/build/compare/config-v17.0.10...config-v17.0.11) (2022-02-21)
 
 
