@@ -16,7 +16,7 @@ export const handleError = async function (error, verbose) {
 // On uncaught exceptions and unhandled rejections, print the stack trace.
 // Also, prevent child processes from crashing on uncaught exceptions.
 export const handleProcessErrors = function () {
-  logProcessErrors({ log: handleProcessError, exitOn: [], level: { multipleResolves: 'silent' } })
+  logProcessErrors({ log: handleProcessError, exitOn: [] })
 }
 
 const handleProcessError = async function (error, level, originalError) {
