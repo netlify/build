@@ -33,8 +33,8 @@ export const simplifyConfig = function ({
     ...removeEmptyObject(simplifyFunctions(functions), 'functions'),
     ...removeEmptyObject(buildA, 'build'),
     ...removeEmptyArray(plugins, 'plugins'),
-    ...removeEmptyArray(truncateArray(headers), 'headers'),
-    ...removeEmptyArray(simplifyRedirects(truncateArray(redirects)), 'redirects'),
+    ...removeEmptyArray(headers, 'headers'),
+    ...removeEmptyArray(simplifyRedirects(redirects), 'redirects'),
     ...removeEmptyObject(simplifyContexts(context), 'context'),
   })
 }
@@ -84,14 +84,6 @@ const simplifyRedirect = function (redirect) {
 const removeDefaultValue = function (value, propName, defaultValue) {
   return value === defaultValue ? {} : { [propName]: value }
 }
-
-// `headers` and `redirects` can be very long, which can take several minutes
-// to print in the build logs. We truncate them before logging.
-const truncateArray = function (array) {
-  return !Array.isArray(array) || array.length < MAX_ARRAY_LENGTH ? array : array.slice(0, MAX_ARRAY_LENGTH)
-}
-
-const MAX_ARRAY_LENGTH = 100
 
 export const removeEmptyObject = function (object, propName) {
   if (!isPlainObj(object)) {
