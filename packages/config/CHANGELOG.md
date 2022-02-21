@@ -1,5 +1,12 @@
 # Changelog
 
+### [17.0.10](https://github.com/netlify/build/compare/config-v17.0.9...config-v17.0.10) (2022-02-21)
+
+
+### Bug Fixes
+
+* truncate long headers and redirects in build logs ([#4172](https://github.com/netlify/build/issues/4172)) ([216213f](https://github.com/netlify/build/commit/216213fc2f6f5ff9b61c3bb3a71afac7d7099ebf))
+
 ### [17.0.9](https://github.com/netlify/build/compare/config-v17.0.8...config-v17.0.9) (2022-02-14)
 
 
