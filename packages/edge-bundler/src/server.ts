@@ -26,8 +26,7 @@ const serve = async (
   // Wait for the binary to be downloaded if needed.
   await deno.getBinaryPath()
 
-  // TODO: Add `--no-clear-screen` when https://github.com/denoland/deno/pull/13454 is released.
-  const flags = ['-A', '--unstable', '--watch']
+  const flags = ['-A', '--unstable', '--no-clear-screen', '--watch', '--no-prompt']
 
   deno.run(['run', ...flags, preBundlePath, port.toString()], { wait: false })
 

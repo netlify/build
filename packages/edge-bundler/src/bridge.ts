@@ -10,7 +10,7 @@ import { getPathInHome } from './home_path.js'
 import { getBinaryExtension } from './platform.js'
 
 const DENO_VERSION_FILE = 'version.txt'
-const DENO_VERSION_RANGE = '^1.18.2'
+const DENO_VERSION_RANGE = '^1.19.0'
 
 type LifecycleHook = () => void | Promise<void>
 
