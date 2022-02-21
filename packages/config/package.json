@@ -19,8 +19,8 @@
     "prepublishOnly": "cd ../../ && npm run prepublishOnly"
   },
   "keywords": [
-    "nodejs",
     "javascript",
+    "nodejs",
     "windows",
     "macos",
     "linux",
