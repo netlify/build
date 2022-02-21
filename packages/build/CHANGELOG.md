@@ -1,5 +1,13 @@
 # Changelog
 
+### [26.3.4](https://github.com/netlify/build/compare/build-v26.3.3...build-v26.3.4) (2022-02-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency log-process-errors to v8 ([#4169](https://github.com/netlify/build/issues/4169)) ([1693621](https://github.com/netlify/build/commit/1693621caeccc8367ec3290d50e0f6d39d764843))
+* truncate long headers and redirects in build logs ([#4172](https://github.com/netlify/build/issues/4172)) ([216213f](https://github.com/netlify/build/commit/216213fc2f6f5ff9b61c3bb3a71afac7d7099ebf))
+
 ### [26.3.3](https://github.com/netlify/build/compare/build-v26.3.2...build-v26.3.3) (2022-02-15)
 
 
