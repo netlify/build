@@ -1,10 +1,23 @@
 import globToRegExp from 'glob-to-regexp'
 
+import type { BundleAlternate } from './bundle_alternate.js'
 import type { Declaration } from './declaration.js'
 import { Handler } from './handler.js'
 import { nonNullable } from './utils/non_nullable.js'
 
-const generateManifest = (bundlePath: string, handlers: Handler[], declarations: Declaration[] = []) => {
+interface GenerateManifestOptions {
+  bundleAlternates?: BundleAlternate[]
+  bundlePath: string
+  handlers: Handler[]
+  declarations?: Declaration[]
+}
+
+const generateManifest = ({
+  bundleAlternates = [],
+  bundlePath,
+  declarations = [],
+  handlers,
+}: GenerateManifestOptions) => {
   const handlersWithRoutes = handlers.map((handler) => {
     const declaration = declarations.find((candidate) => candidate.handler === handler.name)
 
@@ -22,6 +35,7 @@ const generateManifest = (bundlePath: string, handlers: Handler[], declarations:
   })
   const manifest = {
     bundle: bundlePath,
+    bundle_alternates: bundleAlternates,
     handlers: handlersWithRoutes.filter(nonNullable),
   }
 

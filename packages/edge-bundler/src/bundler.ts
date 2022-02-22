@@ -1,8 +1,11 @@
 import { promises as fs } from 'fs'
 import { join, relative } from 'path'
+import { pathToFileURL } from 'url'
 
 import { DenoBridge, LifecycleHook } from './bridge.js'
+import type { BundleAlternate } from './bundle_alternate.js'
 import type { Declaration } from './declaration.js'
+import { getESZIPBundler } from './eszip.js'
 import { findHandlers } from './finder.js'
 import { Handler } from './handler.js'
 import { generateManifest } from './manifest.js'
@@ -30,14 +33,28 @@ const bundle = async (
   })
 
   const { entrypointHash, handlers, preBundlePath } = await preBundle(sourceDirectories, distDirectory)
-  const bundleFilename = `${entrypointHash}.js`
-  const bundlePath = join(distDirectory, bundleFilename)
-  const manifest = await writeManifest(bundleFilename, handlers, distDirectory, declarations)
+  const preBundleFileURL = pathToFileURL(preBundlePath).toString()
 
-  await deno.run(['bundle', preBundlePath, bundlePath])
+  const bundleAlternates: BundleAlternate[] = ['js', 'eszip2']
+  const manifest = await writeManifest({
+    bundleAlternates,
+    bundlePath: entrypointHash,
+    declarations,
+    distDirectory,
+    handlers,
+  })
+
+  const eszipBundlePath = join(distDirectory, `${entrypointHash}.eszip2`)
+  const jsBundlePath = join(distDirectory, `${entrypointHash}.js`)
+
+  await Promise.all([
+    deno.run(['run', '-A', getESZIPBundler(), preBundleFileURL, eszipBundlePath]),
+    deno.run(['bundle', preBundlePath, jsBundlePath]),
+  ])
+
   await fs.unlink(preBundlePath)
 
-  return { bundlePath, handlers, manifest, preBundlePath }
+  return { handlers, manifest, preBundlePath }
 }
 
 const generateEntrypoint = (handlers: Handler[], distDirectory: string) => {
@@ -80,13 +97,22 @@ const preBundle = async (sourceDirectories: string[], distDirectory: string) => 
   }
 }
 
-const writeManifest = (
-  bundleFilename: string,
-  handlers: Handler[],
-  distDirectory: string,
-  declarations: Declaration[] = [],
-) => {
-  const manifest = generateManifest(bundleFilename, handlers, declarations)
+interface WriteManifestOptions {
+  bundleAlternates: BundleAlternate[]
+  bundlePath: string
+  declarations: Declaration[]
+  distDirectory: string
+  handlers: Handler[]
+}
+
+const writeManifest = ({
+  bundleAlternates,
+  bundlePath,
+  declarations = [],
+  distDirectory,
+  handlers,
+}: WriteManifestOptions) => {
+  const manifest = generateManifest({ bundleAlternates, bundlePath, declarations, handlers })
   const manifestPath = join(distDirectory, 'manifest.json')
 
   return fs.writeFile(manifestPath, JSON.stringify(manifest))
