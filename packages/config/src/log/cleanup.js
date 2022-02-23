@@ -48,7 +48,9 @@ export const cleanupConfig = function ({
     functions,
     functionsDirectory,
   })
-  return netlifyConfig
+  const netlifyConfigA = truncateArray(netlifyConfig, 'headers')
+  const netlifyConfigB = truncateArray(netlifyConfigA, 'redirects')
+  return netlifyConfigB
 }
 
 export const cleanupEnvironment = function (environment) {
@@ -77,3 +79,14 @@ const cleanupPlugin = function ({ package: packageName, origin, inputs = {} }) {
 const isPublicInput = function (key, input) {
   return typeof input === 'boolean'
 }
+
+// `headers` and `redirects` can be very long, which can take several minutes
+// to print in the build logs. We truncate them before logging.
+const truncateArray = function (netlifyConfig, propName) {
+  const array = netlifyConfig[propName]
+  return Array.isArray(array) && array.length > MAX_ARRAY_LENGTH
+    ? { ...netlifyConfig, [propName]: array.slice(0, MAX_ARRAY_LENGTH) }
+    : netlifyConfig
+}
+
+const MAX_ARRAY_LENGTH = 100
