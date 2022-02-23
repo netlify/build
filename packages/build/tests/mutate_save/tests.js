@@ -196,6 +196,60 @@ test('--saveConfig saves the configuration changes as netlify.toml', async (t) =
   }
 })
 
+test('--saveConfig does not truncate high amount of redirects', async (t) => {
+  const fixtureDir = `${FIXTURES_DIR}/many_redirects`
+  const fixtureConfigPath = `${fixtureDir}/netlify.toml`
+  const configPath = `${fixtureDir}/test_netlify.toml`
+  await fs.copyFile(fixtureConfigPath, configPath)
+  const { address, stopServer } = await startDeployServer({
+    async onRequest() {
+      const newConfigContents = await fs.readFile(configPath, 'utf8')
+      t.true(newConfigContents.includes('999'))
+    },
+  })
+  try {
+    await runFixture(t, 'many_redirects', {
+      flags: {
+        buildbotServerSocket: address,
+        config: configPath,
+        saveConfig: true,
+        context: 'production',
+        branch: 'main',
+      },
+      snapshot: false,
+    })
+  } finally {
+    await stopServer()
+  }
+})
+
+test('--saveConfig does not truncate high amount of headers', async (t) => {
+  const fixtureDir = `${FIXTURES_DIR}/many_headers`
+  const fixtureConfigPath = `${fixtureDir}/netlify.toml`
+  const configPath = `${fixtureDir}/test_netlify.toml`
+  await fs.copyFile(fixtureConfigPath, configPath)
+  const { address, stopServer } = await startDeployServer({
+    async onRequest() {
+      const newConfigContents = await fs.readFile(configPath, 'utf8')
+      t.true(newConfigContents.includes('999'))
+    },
+  })
+  try {
+    await runFixture(t, 'many_headers', {
+      flags: {
+        buildbotServerSocket: address,
+        config: configPath,
+        saveConfig: true,
+        context: 'production',
+        branch: 'main',
+      },
+      snapshot: false,
+    })
+  } finally {
+    await stopServer()
+  }
+})
+
 test('--saveConfig is required to save the configuration changes as netlify.toml', async (t) => {
   const fixtureDir = `${FIXTURES_DIR}/save_none`
   const fixtureConfigPath = `${fixtureDir}/netlify.toml`
