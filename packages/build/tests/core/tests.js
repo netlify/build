@@ -511,15 +511,6 @@ test.serial('`rustTargetDirectory` is passed to zip-it-and-ship-it only when run
   t.is(call4Args[2].config['*'].rustTargetDirectory, undefined)
 })
 
-test('Does not generate a `manifest.json` file when the feature flag is not enabled', async (t) => {
-  const fixtureName = 'functions_internal_no_manifest_2'
-
-  await removeDir(`${FIXTURES_DIR}/${fixtureName}/.netlify/functions`)
-  await runFixture(t, fixtureName, { flags: { mode: 'buildbot' }, snapshot: false })
-
-  t.false(await pathExists(`${FIXTURES_DIR}/${fixtureName}/.netlify/functions/manifest.json`))
-})
-
 test('Generates a `manifest.json` file when running outside of buildbot', async (t) => {
   const fixtureName = 'functions_internal_manifest'
 
