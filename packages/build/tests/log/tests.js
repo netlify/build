@@ -58,3 +58,13 @@ test('The verbose flag enables verbosity', async (t) => {
 test('Verbosity works with plugin errors', async (t) => {
   await runFixture(t, 'verbose_error', { flags: { verbose: true } })
 })
+
+test.skip('Does not truncate long headers in logs', async (t) => {
+  const { returnValue } = await runFixture(t, 'truncate_headers', { snapshot: false })
+  t.false(returnValue.includes('999'))
+})
+
+test.skip('Does not truncate long redirects in logs', async (t) => {
+  const { returnValue } = await runFixture(t, 'truncate_redirects', { snapshot: false })
+  t.false(returnValue.includes('999'))
+})
