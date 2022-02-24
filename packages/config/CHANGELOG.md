@@ -1,5 +1,12 @@
 # Changelog
 
+### [17.0.15](https://github.com/netlify/build/compare/config-v17.0.14...config-v17.0.15) (2022-02-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency netlify-redirect-parser to v13.0.4 ([#4177](https://github.com/netlify/build/issues/4177)) ([cfebc70](https://github.com/netlify/build/commit/cfebc7027eaba58484c4d80e54c6a9c3b65369eb))
+
 ### [17.0.14](https://github.com/netlify/build/compare/config-v17.0.13...config-v17.0.14) (2022-02-24)
 
 

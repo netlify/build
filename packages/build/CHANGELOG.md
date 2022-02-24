@@ -1,5 +1,12 @@
 # Changelog
 
+### [26.3.8](https://github.com/netlify/build/compare/build-v26.3.7...build-v26.3.8) (2022-02-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency netlify-redirect-parser to v13.0.4 ([#4177](https://github.com/netlify/build/issues/4177)) ([cfebc70](https://github.com/netlify/build/commit/cfebc7027eaba58484c4d80e54c6a9c3b65369eb))
+
 ### [26.3.7](https://github.com/netlify/build/compare/build-v26.3.6...build-v26.3.7) (2022-02-24)
 
 
