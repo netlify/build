@@ -52,7 +52,7 @@ test('Functions: --functionsDistDir', async (t) => {
     await runFixture(t, 'simple', { flags: { mode: 'buildbot', functionsDistDir } })
     t.true(await pathExists(functionsDistDir))
     const files = await fs.readdir(functionsDistDir)
-    t.is(files.length, 1)
+    t.is(files.length, 2)
   } finally {
     await removeDir(functionsDistDir)
   }
