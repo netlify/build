@@ -1,5 +1,13 @@
 # Changelog
 
+### [26.3.6](https://github.com/netlify/build/compare/build-v26.3.5...build-v26.3.6) (2022-02-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.13.1 ([#4180](https://github.com/netlify/build/issues/4180)) ([990f435](https://github.com/netlify/build/commit/990f435459bdc635be2c67bb03175a03f3ad1988))
+* truncate headers/redirects in logs ([#4183](https://github.com/netlify/build/issues/4183)) ([2471c49](https://github.com/netlify/build/commit/2471c49ede2aeaaaf4233c42020bc66448af8427))
+
 ### [26.3.5](https://github.com/netlify/build/compare/build-v26.3.4...build-v26.3.5) (2022-02-21)
 
 
