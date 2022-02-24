@@ -55,6 +55,7 @@ export const resolveConfig = async function (opts) {
     mode,
     debug,
     logs,
+    featureFlags,
   } = await normalizeOpts(optsA)
 
   const { siteInfo, accounts, addons } = await getSiteInfo({ api, siteId, mode, testOpts })
@@ -79,6 +80,7 @@ export const resolveConfig = async function (opts) {
     inlineConfig: inlineConfigA,
     baseRelDir: baseRelDirA,
     logs,
+    featureFlags,
   })
 
   const env = await getEnv({
@@ -147,6 +149,7 @@ const loadConfig = async function ({
   inlineConfig,
   baseRelDir,
   logs,
+  featureFlags,
 }) {
   const initialBase = getInitialBase({ repositoryRoot, defaultConfig, inlineConfig })
   const { configPath, config, buildDir, base, redirectsPath, headersPath } = await getFullConfig({
@@ -160,6 +163,7 @@ const loadConfig = async function ({
     baseRelDir,
     configBase: initialBase,
     logs,
+    featureFlags,
   })
 
   // No second pass needed if:
@@ -190,6 +194,7 @@ const loadConfig = async function ({
     configBase: base,
     base,
     logs,
+    featureFlags,
   })
   return {
     configPath: configPathA,
@@ -213,6 +218,7 @@ const getFullConfig = async function ({
   configBase,
   base,
   logs,
+  featureFlags,
 }) {
   const configPath = await getConfigPath({ configOpt, cwd, repositoryRoot, configBase })
 
@@ -232,9 +238,9 @@ const getFullConfig = async function ({
       base: baseA,
     } = await resolveFiles({ config: configA, repositoryRoot, base, baseRelDir })
     const headersPath = getHeadersPath(configB)
-    const configC = await addHeaders(configB, headersPath, logs)
+    const configC = await addHeaders({ config: configB, headersPath, logs, featureFlags })
     const redirectsPath = getRedirectsPath(configC)
-    const configD = await addRedirects(configC, redirectsPath, logs)
+    const configD = await addRedirects({ config: configC, redirectsPath, logs, featureFlags })
     return { configPath, config: configD, buildDir, base: baseA, redirectsPath, headersPath }
   } catch (error) {
     const configName = configPath === undefined ? '' : ` file ${configPath}`
