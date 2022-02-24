@@ -456,7 +456,7 @@ test('Shows notice about bundling errors and warnings coming from esbuild', asyn
   await runFixture(t, 'esbuild_errors_1')
 })
 
-test('Shows notice about modules with dynamic imports and suggests the usage of `functions.external_node_modules`', async (t) => {
+test.only('Shows notice about modules with dynamic imports and suggests the usage of `functions.external_node_modules`', async (t) => {
   await runFixture(t, 'esbuild_errors_2')
 })
 
