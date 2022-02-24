@@ -527,23 +527,3 @@ test('Generates a `manifest.json` file when running outside of buildbot', async 
   t.is(typeof timestamp, 'number')
   t.is(manifestVersion, 1)
 })
-
-test('Generates a `manifest.json` file when the `buildbot_create_functions_manifest` feature flag is set', async (t) => {
-  const fixtureName = 'functions_internal_manifest'
-
-  await removeDir(`${FIXTURES_DIR}/${fixtureName}/.netlify/functions`)
-  await runFixture(t, fixtureName, {
-    flags: { featureFlags: { buildbot_create_functions_manifest: true } },
-    snapshot: false,
-  })
-
-  const manifestPath = `${FIXTURES_DIR}/${fixtureName}/.netlify/functions/manifest.json`
-
-  t.true(await pathExists(manifestPath))
-
-  const { functions, timestamp, version: manifestVersion } = await importJsonFile(manifestPath)
-
-  t.is(functions.length, 3)
-  t.is(typeof timestamp, 'number')
-  t.is(manifestVersion, 1)
-})
