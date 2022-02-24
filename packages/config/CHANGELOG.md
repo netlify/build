@@ -1,5 +1,12 @@
 # Changelog
 
+### [17.0.13](https://github.com/netlify/build/compare/config-v17.0.12...config-v17.0.13) (2022-02-24)
+
+
+### Bug Fixes
+
+* truncate headers/redirects in logs ([#4183](https://github.com/netlify/build/issues/4183)) ([2471c49](https://github.com/netlify/build/commit/2471c49ede2aeaaaf4233c42020bc66448af8427))
+
 ### [17.0.12](https://github.com/netlify/build/compare/config-v17.0.11...config-v17.0.12) (2022-02-21)
 
 
