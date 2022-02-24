@@ -1,5 +1,13 @@
 # Changelog
 
+### [26.3.7](https://github.com/netlify/build/compare/build-v26.3.6...build-v26.3.7) (2022-02-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v5.9.0 ([#4187](https://github.com/netlify/build/issues/4187)) ([aa00e62](https://github.com/netlify/build/commit/aa00e62b1d03840d0ed91f89f98e5ee25cbb3e95))
+* pass feature flags to `netlify-redirect-parser` and `netlify-headers-parser` ([#4184](https://github.com/netlify/build/issues/4184)) ([ed87a71](https://github.com/netlify/build/commit/ed87a7174e4c73552a7ba8c8ae08a1075fdd433c))
+
 ### [26.3.6](https://github.com/netlify/build/compare/build-v26.3.5...build-v26.3.6) (2022-02-24)
 
 
