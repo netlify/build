@@ -1,5 +1,12 @@
 # Changelog
 
+### [17.0.14](https://github.com/netlify/build/compare/config-v17.0.13...config-v17.0.14) (2022-02-24)
+
+
+### Bug Fixes
+
+* pass feature flags to `netlify-redirect-parser` and `netlify-headers-parser` ([#4184](https://github.com/netlify/build/issues/4184)) ([ed87a71](https://github.com/netlify/build/commit/ed87a7174e4c73552a7ba8c8ae08a1075fdd433c))
+
 ### [17.0.13](https://github.com/netlify/build/compare/config-v17.0.12...config-v17.0.13) (2022-02-24)
 
 
