@@ -14,8 +14,7 @@ export const getZisiParameters = ({
   repositoryRoot,
 }) => {
   const nodeVersion = childEnv.AWS_LAMBDA_JS_RUNTIME
-  const isManifestEnabled = isRunningLocally || featureFlags.buildbot_create_functions_manifest === true
-  const manifest = isManifestEnabled ? join(functionsDist, 'manifest.json') : undefined
+  const manifest = join(functionsDist, 'manifest.json')
   const config = mapObject(functionsConfig, (expression, object) => [
     expression,
     normalizeFunctionConfig({ buildDir, featureFlags, functionConfig: object, isRunningLocally, nodeVersion }),
