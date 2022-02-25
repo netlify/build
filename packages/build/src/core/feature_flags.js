@@ -18,6 +18,5 @@ export const DEFAULT_FEATURE_FLAGS = {
   buildbot_es_modules_esbuild: false,
   buildbot_zisi_trace_nft: false,
   buildbot_zisi_esbuild_parser: false,
-  redirects_parser_normalize_status: false,
   zisi_parse_isc: false,
 }
