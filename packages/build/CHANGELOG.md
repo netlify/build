@@ -1,5 +1,19 @@
 # Changelog
 
+### [26.3.10](https://github.com/netlify/build/compare/build-v26.3.9...build-v26.3.10) (2022-02-25)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.14.0 ([#4193](https://github.com/netlify/build/issues/4193)) ([a52dc78](https://github.com/netlify/build/commit/a52dc7852270f7704bb5fbe2b5798077736b06c2))
+
+### [26.3.9](https://github.com/netlify/build/compare/build-v26.3.8...build-v26.3.9) (2022-02-25)
+
+
+### Bug Fixes
+
+* remove manifest feat flag check ([#4185](https://github.com/netlify/build/issues/4185)) ([ed15696](https://github.com/netlify/build/commit/ed15696950c98fdeeb1897bef7b3c801ab29d6ca))
+
 ### [26.3.8](https://github.com/netlify/build/compare/build-v26.3.7...build-v26.3.8) (2022-02-24)
 
 
