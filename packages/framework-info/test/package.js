@@ -15,7 +15,7 @@ test('Should detect package.json in parent directories', async (t) => {
 test('Should work without a package.json', async (t) => {
   const { path: tmpDir } = await getTmpDir()
   try {
-    await cpy('**', tmpDir, { cwd: `${FIXTURES_DIR}/no_package`, parents: true })
+    await cpy(`${FIXTURES_DIR}/no_package/**`, tmpDir)
     const frameworks = await listFrameworks({ projectDir: tmpDir })
     t.is(frameworks.length, 1)
   } finally {
