@@ -52,7 +52,7 @@
     "path-exists": "^5.0.0"
   },
   "devDependencies": {
-    "ava": "^3.15.0"
+    "ava": "^4.0.0"
   },
   "engines": {
     "node": "^12.20.0 || ^14.14.0 || >=16.0.0"
