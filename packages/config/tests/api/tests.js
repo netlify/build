@@ -3,11 +3,11 @@ import test from 'ava'
 import { runFixture, FIXTURES_DIR, startServer } from '../helpers/main.js'
 
 const SITE_INFO_PATH = '/api/v1/sites/test'
-const SITE_INFO_DATA = { url: 'test', name: 'test-name', build_settings: { repo_url: 'test' } }
+const SITE_INFO_DATA = { ssl_url: 'test', name: 'test-name', build_settings: { repo_url: 'test' } }
 const SITE_INFO_ERROR = { error: 'invalid' }
 
 const SITE_INFO_BUILD_SETTINGS = {
-  url: 'test',
+  ssl_url: 'test',
   name: 'test-name',
   build_settings: {
     cmd: 'testCommand',
@@ -20,11 +20,11 @@ const SITE_INFO_BUILD_SETTINGS = {
   plugins: [{ package: 'netlify-plugin-test', pinned_version: '1', inputs: { test: true } }],
 }
 const SITE_INFO_BASE_REL_DIR = {
-  url: 'test',
+  ssl_url: 'test',
   build_settings: { base_rel_dir: false },
 }
 const SITE_INFO_BUILD_SETTINGS_NULL = {
-  url: 'test',
+  ssl_url: 'test',
   build_settings: { cmd: null, dir: null, functions_dir: null, base: null, env: null, base_rel_dir: null },
 }
 
