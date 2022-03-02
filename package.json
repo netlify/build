@@ -42,6 +42,7 @@
     ],
     "verbose": true,
     "timeout": "120s",
+    "workerThreads": false,
     "environmentVariables": {
       "FORCE_COLOR": "1"
     }
