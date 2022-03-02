@@ -1,5 +1,6 @@
 import { normalize } from 'path'
 import { env } from 'process'
+import { fileURLToPath } from 'url'
 
 import test from 'ava'
 import chalk from 'chalk'
@@ -13,7 +14,7 @@ import { normalizeOutput } from './normalize.js'
 
 export { startServer } from './server.js'
 
-const testFile = test.meta.file
+const testFile = fileURLToPath(test.meta.file)
 export const FIXTURES_DIR = normalize(`${testFile}/../fixtures`)
 
 logProcessErrors({ testing: 'ava' })

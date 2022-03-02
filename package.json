@@ -42,6 +42,7 @@
     ],
     "verbose": true,
     "timeout": "120s",
+    "workerThreads": false,
     "environmentVariables": {
       "FORCE_COLOR": "1"
     }
@@ -76,7 +77,7 @@
   "license": "MIT",
   "devDependencies": {
     "@netlify/eslint-config-node": "^5.1.6",
-    "ava": "^3.15.0",
+    "ava": "^4.0.0",
     "c8": "^7.11.0",
     "husky": "^7.0.4",
     "tsd": "^0.19.0"
