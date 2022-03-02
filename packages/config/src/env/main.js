@@ -68,7 +68,7 @@ export const getEnv = async function ({
 // Environment variables not set by users, but meant to mimic the production
 // environment.
 const getGeneralEnv = async function ({
-  siteInfo: { id, name, url, build_settings: { repo_url: REPOSITORY_URL } = {} },
+  siteInfo: { id, name, ssl_url: sslUrl, build_settings: { repo_url: REPOSITORY_URL } = {} },
   buildDir,
   branch,
   deployId,
@@ -81,7 +81,7 @@ const getGeneralEnv = async function ({
     SITE_NAME: name,
     DEPLOY_ID: deployId,
     BUILD_ID: buildId,
-    URL: url,
+    URL: sslUrl,
     REPOSITORY_URL,
     CONTEXT: context,
     NETLIFY_LOCAL: 'true',

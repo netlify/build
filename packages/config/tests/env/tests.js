@@ -10,7 +10,7 @@ const LIST_ADDONS_PATH = '/api/v1/sites/test/service-instances'
 // List of API mock URLs, responses and status codes
 const SITE_INFO_RESPONSE_URL = {
   path: SITE_INFO_PATH,
-  response: { url: 'test' },
+  response: { ssl_url: 'test' },
 }
 const SITE_INFO_RESPONSE_NAME = {
   path: SITE_INFO_PATH,
