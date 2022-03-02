@@ -1,5 +1,12 @@
 # Changelog
 
+### [26.3.14](https://github.com/netlify/build/compare/build-v26.3.13...build-v26.3.14) (2022-03-02)
+
+
+### Bug Fixes
+
+* add deploy-related environment variables to local builds ([#4209](https://github.com/netlify/build/issues/4209)) ([a1b2133](https://github.com/netlify/build/commit/a1b21332847fc8de15bd45453eaa355347b0820b))
+
 ### [26.3.13](https://github.com/netlify/build/compare/build-v26.3.12...build-v26.3.13) (2022-03-02)
 
 
