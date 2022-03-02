@@ -21,10 +21,12 @@ const SITE_INFO_BUILD_SETTINGS = {
 }
 const SITE_INFO_BASE_REL_DIR = {
   ssl_url: 'test',
+  name: 'test-name',
   build_settings: { base_rel_dir: false },
 }
 const SITE_INFO_BUILD_SETTINGS_NULL = {
   ssl_url: 'test',
+  name: 'test-name',
   build_settings: { cmd: null, dir: null, functions_dir: null, base: null, env: null, base_rel_dir: null },
 }
 
