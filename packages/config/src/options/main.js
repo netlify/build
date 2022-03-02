@@ -44,7 +44,8 @@ const getDefaultOpts = function ({ env: envOpt = {}, cwd: cwdOpt, defaultConfig 
     host: combinedEnv.NETLIFY_API_HOST,
     token: combinedEnv.NETLIFY_AUTH_TOKEN,
     siteId: combinedEnv.NETLIFY_SITE_ID,
-    deployId: combinedEnv.DEPLOY_ID,
+    deployId: combinedEnv.DEPLOY_ID || DEFAULT_DEPLOY_ID,
+    buildId: combinedEnv.BUILD_ID || DEFAULT_BUILD_ID,
     mode: 'require',
     offline: false,
     debug: getDefaultDebug(combinedEnv, defaultConfig),
@@ -54,6 +55,10 @@ const getDefaultOpts = function ({ env: envOpt = {}, cwd: cwdOpt, defaultConfig 
     configMutations: [],
   }
 }
+
+// Local builds do not have any deploys, so some dummy ids are used instead
+const DEFAULT_DEPLOY_ID = '0'
+const DEFAULT_BUILD_ID = '0'
 
 // --debug can be set using an environment variable `NETLIFY_BUILD_DEBUG` either
 // locally or in the UI build settings

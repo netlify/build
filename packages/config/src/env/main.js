@@ -68,7 +68,8 @@ export const getEnv = async function ({
 // Environment variables not set by users, but meant to mimic the production
 // environment.
 const getGeneralEnv = async function ({
-  siteInfo: { id, name, ssl_url: sslUrl, build_settings: { repo_url: REPOSITORY_URL } = {} },
+  siteInfo,
+  siteInfo: { id, name },
   buildDir,
   branch,
   deployId,
@@ -76,13 +77,13 @@ const getGeneralEnv = async function ({
   context,
 }) {
   const gitEnv = await getGitEnv(buildDir, branch)
+  const deployUrls = getDeployUrls({ siteInfo, branch, deployId })
   return removeFalsy({
     SITE_ID: id,
     SITE_NAME: name,
     DEPLOY_ID: deployId,
     BUILD_ID: buildId,
-    URL: sslUrl,
-    REPOSITORY_URL,
+    ...deployUrls,
     CONTEXT: context,
     NETLIFY_LOCAL: 'true',
     ...gitEnv,
@@ -95,6 +96,23 @@ const getGeneralEnv = async function ({
     NEXT_TELEMETRY_DISABLED: '1',
   })
 }
+
+const getDeployUrls = function ({
+  siteInfo: { name = DEFAULT_SITE_NAME, ssl_url: sslUrl, build_settings: { repo_url: REPOSITORY_URL } = {} },
+  branch,
+  deployId,
+}) {
+  return {
+    URL: sslUrl,
+    REPOSITORY_URL,
+    DEPLOY_PRIME_URL: `https://${branch}--${name}${NETLIFY_DEFAULT_DOMAIN}`,
+    DEPLOY_URL: `https://${deployId}--${name}${NETLIFY_DEFAULT_DOMAIN}`,
+  }
+}
+
+const NETLIFY_DEFAULT_DOMAIN = '.netlify.app'
+// `site.name` is `undefined` when there is no token or siteId
+const DEFAULT_SITE_NAME = 'site-name'
 
 // Environment variables specified by the user
 const getUserEnv = function ({ config, siteInfo, accounts, addons }) {
@@ -155,10 +173,6 @@ const READONLY_ENV = [
   'NETLIFY_LOCAL',
 
   // Not set in local builds because there is no CI build/deploy, incoming hooks nor PR
-  'BUILD_ID',
-  'DEPLOY_ID',
-  'DEPLOY_PRIME_URL',
-  'DEPLOY_URL',
   'INCOMING_HOOK_BODY',
   'INCOMING_HOOK_TITLE',
   'INCOMING_HOOK_URL',
