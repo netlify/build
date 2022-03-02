@@ -1,5 +1,19 @@
 # Changelog
 
+### [26.3.12](https://github.com/netlify/build/compare/build-v26.3.11...build-v26.3.12) (2022-02-28)
+
+
+### Bug Fixes
+
+* remove feature flag `redirects_parser_normalize_status` ([#4190](https://github.com/netlify/build/issues/4190)) ([29a001e](https://github.com/netlify/build/commit/29a001ea17f431d8c374057146f4272527113ce4))
+
+### [26.3.11](https://github.com/netlify/build/compare/build-v26.3.10...build-v26.3.11) (2022-02-28)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugin-edge-handlers to ^3.0.7 ([#4201](https://github.com/netlify/build/issues/4201)) ([0c99c98](https://github.com/netlify/build/commit/0c99c98f8724f4ab8d02c23bb2070c7d73d19854))
+
 ### [26.3.10](https://github.com/netlify/build/compare/build-v26.3.9...build-v26.3.10) (2022-02-25)
 
 
