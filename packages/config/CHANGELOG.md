@@ -1,5 +1,12 @@
 # Changelog
 
+### [17.0.18](https://github.com/netlify/build/compare/config-v17.0.17...config-v17.0.18) (2022-03-02)
+
+
+### Bug Fixes
+
+* add deploy-related environment variables to local builds ([#4209](https://github.com/netlify/build/issues/4209)) ([a1b2133](https://github.com/netlify/build/commit/a1b21332847fc8de15bd45453eaa355347b0820b))
+
 ### [17.0.17](https://github.com/netlify/build/compare/config-v17.0.16...config-v17.0.17) (2022-03-02)
 
 
