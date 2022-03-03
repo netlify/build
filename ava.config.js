@@ -28,7 +28,7 @@ const config = {
   environmentVariables: {
     FORCE_COLOR: '1',
   },
-  // we only sort in CI to split efficiency across machines
+  // we only sort in CI to split efficiently across machines
   ...(isCI && { sortTestFiles }),
 }
 
