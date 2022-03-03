@@ -18,10 +18,10 @@ const generateManifest = ({
   declarations = [],
   handlers,
 }: GenerateManifestOptions) => {
-  const handlersWithRoutes = handlers.map((handler) => {
-    const declaration = declarations.find((candidate) => candidate.handler === handler.name)
+  const handlersWithRoutes = declarations.map((declaration) => {
+    const handler = handlers.find(({ name }) => declaration.handler === name)
 
-    if (declaration === undefined) {
+    if (handler === undefined) {
       return
     }
 
