@@ -20,9 +20,9 @@ const serve = async (
     onBeforeDownload,
   })
   const distDirectory = await tmpName()
-  const { handlers, preBundlePath } = await preBundle(sourceDirectories, distDirectory)
+  const { handlers, preBundlePath } = await preBundle(sourceDirectories, distDirectory, 'dev.js')
   const getManifest = (declarations: Declaration[]) =>
-    generateManifest({ bundlePath: preBundlePath, declarations, handlers })
+    generateManifest({ bundleHash: preBundlePath, declarations, handlers })
 
   // Wait for the binary to be downloaded if needed.
   await deno.getBinaryPath()

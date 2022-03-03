@@ -7,14 +7,14 @@ import { nonNullable } from './utils/non_nullable.js'
 
 interface GenerateManifestOptions {
   bundleAlternates?: BundleAlternate[]
-  bundlePath: string
+  bundleHash: string
   handlers: Handler[]
   declarations?: Declaration[]
 }
 
 const generateManifest = ({
   bundleAlternates = [],
-  bundlePath,
+  bundleHash,
   declarations = [],
   handlers,
 }: GenerateManifestOptions) => {
@@ -34,7 +34,7 @@ const generateManifest = ({
     }
   })
   const manifest = {
-    bundle: bundlePath,
+    bundle: bundleHash,
     bundle_alternates: bundleAlternates,
     handlers: handlersWithRoutes.filter(nonNullable),
   }

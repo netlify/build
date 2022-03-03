@@ -3,6 +3,8 @@ import { join, relative } from 'path'
 import { env } from 'process'
 import { pathToFileURL } from 'url'
 
+import { v4 as uuidv4 } from 'uuid'
+
 import { DenoBridge, LifecycleHook } from './bridge.js'
 import type { BundleAlternate } from './bundle_alternate.js'
 import type { Declaration } from './declaration.js'
@@ -10,7 +12,7 @@ import { getESZIPBundler } from './eszip.js'
 import { findHandlers } from './finder.js'
 import { Handler } from './handler.js'
 import { generateManifest } from './manifest.js'
-import { getStringHash } from './utils/sha256.js'
+import { getFileHash } from './utils/sha256.js'
 
 interface HandlerLine {
   exportLine: string
@@ -33,42 +35,70 @@ const bundle = async (
     onBeforeDownload,
   })
 
-  const { entrypointHash, handlers, preBundlePath } = await preBundle(sourceDirectories, distDirectory)
-  const bundlePath = join(distDirectory, entrypointHash)
+  // The name of the bundle will be the hash of its contents, which we can't
+  // compute until we run the bundle process. For now, we'll use a random ID
+  // to create the bundle artifacts and rename them later.
+  const buildID = uuidv4()
+  const { handlers, preBundlePath } = await preBundle(sourceDirectories, distDirectory, `${buildID}-pre.js`)
   const bundleAlternates: BundleAlternate[] = ['js']
-  const bundleOps = [bundleJS(deno, preBundlePath, bundlePath)]
+  const bundleOps = [bundleJS(deno, preBundlePath, distDirectory, buildID)]
 
   if (env.BUNDLE_ESZIP) {
     bundleAlternates.push('eszip2')
-    bundleOps.push(bundleESZIP(deno, preBundlePath, bundlePath))
+    bundleOps.push(bundleESZIP(deno, preBundlePath, distDirectory, buildID))
   }
 
+  const bundleHash = await createFinalBundles(bundleOps, distDirectory, buildID)
   const manifest = await writeManifest({
     bundleAlternates,
-    bundlePath: entrypointHash,
+    bundleHash,
     declarations,
     distDirectory,
     handlers,
   })
 
-  await Promise.all(bundleOps)
   await fs.unlink(preBundlePath)
 
   return { handlers, manifest, preBundlePath }
 }
 
-const bundleESZIP = (deno: DenoBridge, preBundlePath: string, bundlePath: string) => {
+const bundleESZIP = async (deno: DenoBridge, preBundlePath: string, distDirectory: string, buildID: string) => {
+  const extension = '.eszip2'
   const preBundleFileURL = pathToFileURL(preBundlePath).toString()
-  const eszipBundlePath = `${bundlePath}.eszip2`
+  const eszipBundlePath = join(distDirectory, `${buildID}${extension}`)
   const bundler = getESZIPBundler()
 
-  return deno.run(['run', '-A', bundler, preBundleFileURL, eszipBundlePath])
+  await deno.run(['run', '-A', bundler, preBundleFileURL, eszipBundlePath])
+
+  return extension
 }
 
-const bundleJS = (deno: DenoBridge, preBundlePath: string, bundlePath: string) => {
-  const jsBundlePath = `${bundlePath}.js`
+const bundleJS = async (deno: DenoBridge, preBundlePath: string, distDirectory: string, buildID: string) => {
+  const extension = '.js'
+  const jsBundlePath = join(distDirectory, `${buildID}${extension}`)
 
-  return deno.run(['bundle', preBundlePath, jsBundlePath])
+  await deno.run(['bundle', preBundlePath, jsBundlePath])
+
+  return extension
+}
+
+const createFinalBundles = async (bundleOps: Promise<string>[], distDirectory: string, buildID: string) => {
+  const bundleExtensions = await Promise.all(bundleOps)
+
+  // We want to generate a fingerprint of the handlers and their dependencies,
+  // so let's compute a SHA256 hash of the bundle. That hash will be different
+  // for the various artifacts we produce, so we can just take the first one.
+  const bundleHash = await getFileHash(join(distDirectory, `${buildID}${bundleExtensions[0]}`))
+  const renameOps = bundleExtensions.map((extension) => {
+    const tempBundlePath = join(distDirectory, `${buildID}${extension}`)
+    const finalBundlePath = join(distDirectory, `${bundleHash}${extension}`)
+
+    return fs.rename(tempBundlePath, finalBundlePath)
+  })
+
+  await Promise.all(renameOps)
+
+  return bundleHash
 }
 
 const generateEntrypoint = (handlers: Handler[], distDirectory: string) => {
@@ -93,19 +123,17 @@ const generateHandlerReference = (handler: Handler, index: number, targetDirecto
   }
 }
 
-const preBundle = async (sourceDirectories: string[], distDirectory: string) => {
+const preBundle = async (sourceDirectories: string[], distDirectory: string, preBundleName: string) => {
   await fs.rm(distDirectory, { force: true, recursive: true })
   await fs.mkdir(distDirectory, { recursive: true })
 
   const handlers = await findHandlers(sourceDirectories)
   const entrypoint = generateEntrypoint(handlers, distDirectory)
-  const entrypointHash = getStringHash(entrypoint)
-  const preBundlePath = join(distDirectory, `${entrypointHash}-pre.js`)
+  const preBundlePath = join(distDirectory, preBundleName)
 
   await fs.writeFile(preBundlePath, entrypoint)
 
   return {
-    entrypointHash,
     handlers,
     preBundlePath,
   }
@@ -113,7 +141,7 @@ const preBundle = async (sourceDirectories: string[], distDirectory: string) => 
 
 interface WriteManifestOptions {
   bundleAlternates: BundleAlternate[]
-  bundlePath: string
+  bundleHash: string
   declarations: Declaration[]
   distDirectory: string
   handlers: Handler[]
@@ -121,12 +149,12 @@ interface WriteManifestOptions {
 
 const writeManifest = ({
   bundleAlternates,
-  bundlePath,
+  bundleHash,
   declarations = [],
   distDirectory,
   handlers,
 }: WriteManifestOptions) => {
-  const manifest = generateManifest({ bundleAlternates, bundlePath, declarations, handlers })
+  const manifest = generateManifest({ bundleAlternates, bundleHash, declarations, handlers })
   const manifestPath = join(distDirectory, 'manifest.json')
 
   return fs.writeFile(manifestPath, JSON.stringify(manifest))

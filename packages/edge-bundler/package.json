@@ -66,6 +66,7 @@
     "@types/node": "^17.0.10",
     "@types/semver": "^7.3.9",
     "@types/sinon": "^10.0.8",
+    "@types/uuid": "^8.3.4",
     "ava": "^4.0.1",
     "husky": "^7.0.4",
     "nyc": "^15.0.0",
@@ -83,6 +84,7 @@
     "node-fetch": "^3.1.1",
     "node-stream-zip": "^1.15.0",
     "semver": "^7.3.5",
-    "tmp-promise": "^3.0.3"
+    "tmp-promise": "^3.0.3",
+    "uuid": "^8.3.2"
   }
 }

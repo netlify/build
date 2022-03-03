@@ -1,13 +1,23 @@
 import crypto from 'crypto'
+import fs from 'fs'
 
-const getStringHash = (input: string) => {
-  const shasum = crypto.createHash('sha256')
+const getFileHash = (path: string): Promise<string> => {
+  const hash = crypto.createHash('sha256')
 
-  shasum.update(input)
+  hash.setEncoding('hex')
 
-  const hash = shasum.digest('hex')
+  return new Promise((resolve, reject) => {
+    const file = fs.createReadStream(path)
 
-  return hash
+    file.on('end', () => {
+      hash.end()
+
+      resolve(hash.read())
+    })
+    file.on('error', reject)
+
+    file.pipe(hash)
+  })
 }
 
-export { getStringHash }
+export { getFileHash }
