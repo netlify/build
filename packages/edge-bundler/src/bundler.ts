@@ -1,5 +1,6 @@
 import { promises as fs } from 'fs'
 import { join, relative } from 'path'
+import { env } from 'process'
 import { pathToFileURL } from 'url'
 
 import { DenoBridge, LifecycleHook } from './bridge.js'
@@ -33,9 +34,15 @@ const bundle = async (
   })
 
   const { entrypointHash, handlers, preBundlePath } = await preBundle(sourceDirectories, distDirectory)
-  const preBundleFileURL = pathToFileURL(preBundlePath).toString()
+  const bundlePath = join(distDirectory, entrypointHash)
+  const bundleAlternates: BundleAlternate[] = ['js']
+  const bundleOps = [bundleJS(deno, preBundlePath, bundlePath)]
 
-  const bundleAlternates: BundleAlternate[] = ['js', 'eszip2']
+  if (env.BUNDLE_ESZIP) {
+    bundleAlternates.push('eszip2')
+    bundleOps.push(bundleESZIP(deno, preBundlePath, bundlePath))
+  }
+
   const manifest = await writeManifest({
     bundleAlternates,
     bundlePath: entrypointHash,
@@ -44,17 +51,24 @@ const bundle = async (
     handlers,
   })
 
-  const eszipBundlePath = join(distDirectory, `${entrypointHash}.eszip2`)
-  const jsBundlePath = join(distDirectory, `${entrypointHash}.js`)
-
-  await Promise.all([
-    deno.run(['run', '-A', getESZIPBundler(), preBundleFileURL, eszipBundlePath]),
-    deno.run(['bundle', preBundlePath, jsBundlePath]),
-  ])
-
+  await Promise.all(bundleOps)
   await fs.unlink(preBundlePath)
 
   return { handlers, manifest, preBundlePath }
+}
+
+const bundleESZIP = (deno: DenoBridge, preBundlePath: string, bundlePath: string) => {
+  const preBundleFileURL = pathToFileURL(preBundlePath).toString()
+  const eszipBundlePath = `${bundlePath}.eszip2`
+  const bundler = getESZIPBundler()
+
+  return deno.run(['run', '-A', bundler, preBundleFileURL, eszipBundlePath])
+}
+
+const bundleJS = (deno: DenoBridge, preBundlePath: string, bundlePath: string) => {
+  const jsBundlePath = `${bundlePath}.js`
+
+  return deno.run(['bundle', preBundlePath, jsBundlePath])
 }
 
 const generateEntrypoint = (handlers: Handler[], distDirectory: string) => {
