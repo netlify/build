@@ -1,4 +1,4 @@
-import { promises as fs } from 'fs'
+import fs from 'fs'
 import path from 'path'
 import process from 'process'
 
@@ -6,7 +6,8 @@ import process from 'process'
 import { isCI } from 'ci-info'
 
 // `tests-metadata.json` is created by running `npm run test:measure`
-const testData = JSON.parse(await fs.readFile('tests-metadata.json'))
+// eslint-disable-next-line node/no-sync
+const testData = JSON.parse(fs.readFileSync('tests-metadata.json'))
 
 const getOrder = (file) => {
   const fileRelative = path.relative(process.cwd(), file)
