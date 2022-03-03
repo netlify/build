@@ -6,7 +6,7 @@ import { globby } from 'globby'
 
 import config from '../ava.config.js'
 
-const CI_MACHINES = 4
+const CI_MACHINES = 3
 
 const measureDuration = async () => {
   const testFiles = await globby(config.files)

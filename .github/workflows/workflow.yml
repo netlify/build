@@ -42,7 +42,7 @@ jobs:
         os: [ubuntu-latest, macOS-latest, windows-latest]
         node-version: ['lts/*', '12.20.0']
         install-command: ['npm ci', 'npm install --no-package-lock']
-        machine: ['0', '1', '2', '3']
+        machine: ['0', '1', '2']
         include:
           # We test on the oldest supported Node.js version, but only with a
           # single combination (Ubuntu)
@@ -58,10 +58,6 @@ jobs:
             node-version: '12.20.0'
             install-command: npm ci
             machine: '2'
-          - os: ubuntu-latest
-            node-version: '12.20.0'
-            install-command: npm ci
-            machine: '3'
           # The buildbot pins Netlify Build's dependencies, like `npm ci`.
           # But other consumers do not, like `npm install`.
           # So we test both.
@@ -77,10 +73,6 @@ jobs:
             node-version: 'lts/*'
             install-command: npm install --no-package-lock
             machine: '2'
-          - os: ubuntu-latest
-            node-version: 'lts/*'
-            install-command: npm install --no-package-lock
-            machine: '3'
       fail-fast: false
     steps:
       # Sets an output parameter if this is a release PR
@@ -111,7 +103,7 @@ jobs:
         env:
           # split tests across multiple machines
           CI_NODE_INDEX: ${{ matrix.machine }}
-          CI_NODE_TOTAL: 4
+          CI_NODE_TOTAL: 3
       - name: Get test coverage flags
         id: test-coverage-flags
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
