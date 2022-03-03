@@ -20,6 +20,7 @@
     "test:dev": "run-s test:dev:*",
     "test:ci": "run-s test:ci:*",
     "test:dev:ava": "ava",
+    "test:measure": "node tools/tests_duration.mjs",
     "test:ci:ava": "c8 -r lcovonly -r text -r json ava",
     "prepare": "husky install node_modules/@netlify/eslint-config-node/.husky/",
     "prepublishOnly": "run-s prepublishOnly:*",
@@ -35,18 +36,6 @@
   "workspaces": [
     "packages/*"
   ],
-  "ava": {
-    "files": [
-      "packages/**/tests/*.{cjs,mjs,js}",
-      "packages/**/tests/**/tests.{cjs,mjs,js}"
-    ],
-    "verbose": true,
-    "timeout": "120s",
-    "workerThreads": false,
-    "environmentVariables": {
-      "FORCE_COLOR": "1"
-    }
-  },
   "keywords": [
     "nodejs",
     "javascript",
@@ -77,8 +66,11 @@
   "license": "MIT",
   "devDependencies": {
     "@netlify/eslint-config-node": "^5.1.6",
-    "ava": "^4.0.0",
+    "ava": "https://github.com/avajs/ava",
     "c8": "^7.11.0",
+    "ci-info": "^3.3.0",
+    "execa": "^6.1.0",
+    "globby": "^13.1.1",
     "husky": "^7.0.4",
     "tsd": "^0.19.0"
   },
