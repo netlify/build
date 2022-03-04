@@ -8,13 +8,10 @@ import config from '../ava.config.js'
 
 const CI_MACHINES = 3
 
-const measureDuration = async () => {
+const measureDurations = async () => {
   const testFiles = await globby(config.files)
 
-  const result = {
-    totalDuration: 0,
-    durations: new Map(),
-  }
+  const durations = new Map()
   // eslint-disable-next-line fp/no-loops
   for (const testFile of testFiles) {
     const startTime = performance.now()
@@ -24,16 +21,13 @@ const measureDuration = async () => {
 
     const duration = endTime - startTime
     console.log(`Test file '${testFile}' finished running in ${duration} milliseconds.`)
-    result.durations.set(testFile, duration)
-    // eslint-disable-next-line fp/no-mutation
-    result.totalDuration += duration
+    durations.set(testFile, duration)
   }
 
-  return result
+  return durations
 }
 
-const distributeToMachines = ({ durations, totalDuration }) => {
-  const budget = totalDuration / CI_MACHINES
+const distributeToMachines = (durations) => {
   const filesMachines = new Map()
 
   // we implement a greedy algorithm to distribute the tests to the CI machines
@@ -46,10 +40,10 @@ const distributeToMachines = ({ durations, totalDuration }) => {
     filesMachines.set(file, { machine, duration })
   }
 
-  return { filesMachines }
+  return filesMachines
 }
 
-const getOrder = ({ filesMachines }) => {
+const getOrder = (filesMachines) => {
   // eslint-disable-next-line fp/no-mutating-methods
   const orderArray = [...filesMachines.entries()]
     .sort(([file1, { machine: machine1 }], [file2, { machine: machine2 }]) => {
@@ -60,13 +54,13 @@ const getOrder = ({ filesMachines }) => {
     })
     .map(([file, { machine }], index) => ({ file, order: index, machine }))
 
-  return { order: Object.fromEntries(orderArray.map(({ file, order, machine }) => [file, { order, machine }])) }
+  return Object.fromEntries(orderArray.map(({ file, order, machine }) => [file, { order, machine }]))
 }
 
 const main = async () => {
-  const { durations, totalDuration } = await measureDuration()
-  const { filesMachines } = distributeToMachines({ durations, totalDuration })
-  const { order } = getOrder({ filesMachines })
+  const durations = await measureDurations()
+  const filesMachines = distributeToMachines(durations)
+  const order = getOrder(filesMachines)
 
   await fs.writeFile('tests-metadata.json', `${JSON.stringify(order, null, 2)}\n`)
 }
