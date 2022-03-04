@@ -36,18 +36,14 @@ const distributeToMachines = ({ durations, totalDuration }) => {
   const budget = totalDuration / CI_MACHINES
   const filesMachines = new Map()
 
-  const state = {
-    currentBudget: 0,
-    currentMachine: 0,
-  }
+  // we implement a greedy algorithm to distribute the tests to the CI machines
+  const descendingDurations = [...durations.entries()].sort(([_, duration1], [__, duration2]) => duration2 - duration1)
+  const machinesSums = new Array(CI_MACHINES).fill(0)
   // eslint-disable-next-line fp/no-loops
-  for (const [file, duration] of durations.entries()) {
-    if (state.currentBudget + duration > budget) {
-      state.currentBudget = 0
-      state.currentMachine += 1
-    }
-    state.currentBudget += duration
-    filesMachines.set(file, { machine: state.currentMachine, duration })
+  for (const [file, duration] of descendingDurations) {
+    const machine = machinesSums.indexOf(Math.min(...machinesSums))
+    machinesSums[machine] += duration
+    filesMachines.set(file, { machine, duration })
   }
 
   return { filesMachines }
