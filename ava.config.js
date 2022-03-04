@@ -10,7 +10,7 @@ import { isCI } from 'ci-info'
 const testData = JSON.parse(fs.readFileSync('tests-metadata.json'))
 
 const getOrder = (file) => {
-  const fileRelative = path.relative(process.cwd(), file)
+  const fileRelative = path.relative(process.cwd(), file).replace(/\\/g, '/')
   if (testData[fileRelative]) {
     return testData[fileRelative].order
   }
