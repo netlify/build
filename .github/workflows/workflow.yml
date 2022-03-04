@@ -40,8 +40,8 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macOS-latest, windows-latest]
-        node-version: ['lts/*', '12.20.0']
-        install-command: ['npm ci', 'npm install --no-package-lock']
+        node-version: ['lts/*']
+        install-command: ['npm ci']
         machine: ['0', '1', '2']
         include:
           # We test on the oldest supported Node.js version, but only with a
