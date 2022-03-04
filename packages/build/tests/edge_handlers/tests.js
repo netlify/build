@@ -70,7 +70,8 @@ test('constants.EDGE_HANDLERS_SRC dynamic is ignored if EDGE_HANDLERS_SRC is spe
   await runFixture(t, 'src_dynamic_ignore', { copyRoot: { git: false } })
 })
 
-test('Edge handlers: simple setup', async (t) => {
+// loadEdgeHandlerBundle modifies the global object, so we need to run tests that use it in serial
+test.serial('Edge handlers: simple setup', async (t) => {
   const { outputDir, manifestPath } = getEdgeHandlersPaths('simple')
   await runFixture(t, 'simple')
 
@@ -79,7 +80,8 @@ test('Edge handlers: simple setup', async (t) => {
   t.deepEqual(onRequest('test'), [true, 'test', 'test'])
 })
 
-test('Edge handlers: can configure directory', async (t) => {
+// loadEdgeHandlerBundle modifies the global object, so we need to run tests that use it in serial
+test.serial('Edge handlers: can configure directory', async (t) => {
   const { outputDir, manifestPath } = getEdgeHandlersPaths('custom_dir')
   await runFixture(t, 'custom_dir')
 
