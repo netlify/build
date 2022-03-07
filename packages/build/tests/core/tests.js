@@ -480,7 +480,6 @@ test('Removes duplicate function names from the list of processed functions', as
   await runFixture(t, 'functions_duplicate_names')
 })
 
-// eslint-disable-next-line max-statements
 test.serial('`rustTargetDirectory` is passed to zip-it-and-ship-it only when running in buildbot', async (t) => {
   const fixtureWithConfig = 'functions_config_1'
   const fixtureWithoutConfig = 'functions_internal_missing'
