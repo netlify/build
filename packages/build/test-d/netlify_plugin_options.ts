@@ -10,6 +10,7 @@ const testConstants: OnPreBuild = function ({ constants }: { constants: NetlifyP
   expectType<string | undefined>(constants.INTERNAL_FUNCTIONS_SRC)
   expectType<string>(constants.FUNCTIONS_DIST)
   expectType<string | undefined>(constants.EDGE_HANDLERS_SRC)
+  expectType<string>(constants.EDGE_HANDLERS_DIST)
   expectType<boolean>(constants.IS_LOCAL)
   expectType<string>(constants.NETLIFY_BUILD_VERSION)
   expectType<string>(constants.SITE_ID)

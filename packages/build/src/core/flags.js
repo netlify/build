@@ -110,6 +110,12 @@ Default: Current Node.js binary`,
 Default: automatically guessed`,
     hidden: true,
   },
+  edgeHandlersDistDir: {
+    string: true,
+    describe: `Path to the directory where packaged Edge Handlers are kept.
+Default: automatically guessed`,
+    hidden: true,
+  },
   cacheDir: {
     string: true,
     describe: `Path to the cache directory.
