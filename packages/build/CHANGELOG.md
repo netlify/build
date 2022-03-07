@@ -1,5 +1,17 @@
 # Changelog
 
+## [26.4.0](https://github.com/netlify/build/compare/build-v26.3.14...build-v26.4.0) (2022-03-07)
+
+
+### Features
+
+* add edgeHandlersDistDir flag and EDGE_HANDLERS_DIST constant ([#4221](https://github.com/netlify/build/issues/4221)) ([152b7d5](https://github.com/netlify/build/commit/152b7d54b81d39041c7031aa52a53f5f3ccc408a))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.16.0 ([#4211](https://github.com/netlify/build/issues/4211)) ([273edd9](https://github.com/netlify/build/commit/273edd978f982531392a5d2e2bc45849ab72a19a))
+
 ### [26.3.14](https://github.com/netlify/build/compare/build-v26.3.13...build-v26.3.14) (2022-03-02)
 
 
