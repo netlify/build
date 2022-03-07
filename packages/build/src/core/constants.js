@@ -11,6 +11,7 @@ export const getConstants = async function ({
   configPath,
   buildDir,
   functionsDistDir,
+  edgeHandlersDistDir,
   cacheDir,
   netlifyConfig,
   siteInfo: { id: siteId },
@@ -26,6 +27,8 @@ export const getConstants = async function ({
     CONFIG_PATH: configPath,
     // The directory where built serverless functions are placed before deployment
     FUNCTIONS_DIST: functionsDistDir,
+    // The directory where built Edge Handlers are placed before deployment
+    EDGE_HANDLERS_DIST: edgeHandlersDistDir,
     // Path to the Netlify build cache folder
     CACHE_DIR: normalizedCacheDir,
     // Boolean indicating whether the build was run locally (Netlify CLI) or in the production CI
@@ -142,6 +145,7 @@ const CONSTANT_PATHS = new Set([
   'FUNCTIONS_SRC',
   'FUNCTIONS_DIST',
   'INTERNAL_FUNCTIONS_SRC',
+  'EDGE_HANDLERS_DIST',
   'EDGE_HANDLERS_SRC',
   'CACHE_DIR',
 ])

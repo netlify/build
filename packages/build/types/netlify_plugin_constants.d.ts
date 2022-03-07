@@ -23,6 +23,10 @@ export interface NetlifyPluginConstants {
    */
   FUNCTIONS_DIST: string
   /**
+   * the directory where built Edge Handlers are placed before deployment. Its value is always defined, but the target might not have been created yet.
+   */
+  EDGE_HANDLERS_DIST: string
+  /**
    * the directory where Edge Handlers source code lives.
    * `undefined` if no `netlify/edge-handlers` directory exists in the base directory and if not specified in `netlify.toml`.
    */
