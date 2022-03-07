@@ -1,12 +1,10 @@
-'use strict'
-
-const { EVENTS } = require('../plugins/events')
-const { buildCommandCore } = require('../plugins_core/build_command')
-const { deploySite } = require('../plugins_core/deploy')
-const { bundleFunctions } = require('../plugins_core/functions')
+import { EVENTS } from '../plugins/events.js'
+import { buildCommandCore } from '../plugins_core/build_command.js'
+import { deploySite } from '../plugins_core/deploy/index.js'
+import { bundleFunctions } from '../plugins_core/functions/index.js'
 
 // Get all build steps
-const getSteps = function (steps) {
+export const getSteps = function (steps) {
   const stepsA = addCoreSteps(steps)
   const stepsB = sortSteps(stepsA)
   const events = getEvents(stepsB)
@@ -31,5 +29,3 @@ const getEvents = function (steps) {
 const getEvent = function ({ event }) {
   return event
 }
-
-module.exports = { getSteps }

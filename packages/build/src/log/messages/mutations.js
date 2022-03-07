@@ -1,15 +1,11 @@
-'use strict'
+import { promises as fs } from 'fs'
+import { inspect } from 'util'
 
-const { readFile } = require('fs')
-const { inspect, promisify } = require('util')
+import { pathExists } from 'path-exists'
 
-const pathExists = require('path-exists')
+import { log, logMessage, logSubHeader } from '../logger.js'
 
-const { log, logMessage, logSubHeader } = require('../logger')
-
-const pReadFile = promisify(readFile)
-
-const logConfigMutations = function (logs, newConfigMutations, debug) {
+export const logConfigMutations = function (logs, newConfigMutations, debug) {
   const configMutationsToLog = debug ? newConfigMutations : newConfigMutations.filter(shouldLogConfigMutation)
   configMutationsToLog.forEach(({ keysString, value }) => {
     logConfigMutation(logs, keysString, value)
@@ -37,7 +33,7 @@ const shouldHideConfigValue = function (keysString) {
 
 const SECRET_PROPS = ['build.environment']
 
-const logConfigOnUpload = async function ({ logs, configPath, debug }) {
+export const logConfigOnUpload = async function ({ logs, configPath, debug }) {
   if (!debug) {
     return
   }
@@ -49,11 +45,11 @@ const logConfigOnUpload = async function ({ logs, configPath, debug }) {
     return
   }
 
-  const configContents = await pReadFile(configPath, 'utf8')
+  const configContents = await fs.readFile(configPath, 'utf8')
   logMessage(logs, configContents.trim())
 }
 
-const logHeadersOnUpload = async function ({ logs, headersPath, debug }) {
+export const logHeadersOnUpload = async function ({ logs, headersPath, debug }) {
   if (!debug) {
     return
   }
@@ -65,11 +61,11 @@ const logHeadersOnUpload = async function ({ logs, headersPath, debug }) {
     return
   }
 
-  const headersContents = await pReadFile(headersPath, 'utf8')
+  const headersContents = await fs.readFile(headersPath, 'utf8')
   logMessage(logs, headersContents.trim())
 }
 
-const logRedirectsOnUpload = async function ({ logs, redirectsPath, debug }) {
+export const logRedirectsOnUpload = async function ({ logs, redirectsPath, debug }) {
   if (!debug) {
     return
   }
@@ -81,13 +77,6 @@ const logRedirectsOnUpload = async function ({ logs, redirectsPath, debug }) {
     return
   }
 
-  const redirectsContents = await pReadFile(redirectsPath, 'utf8')
+  const redirectsContents = await fs.readFile(redirectsPath, 'utf8')
   logMessage(logs, `${redirectsContents.trim()}\n`)
-}
-
-module.exports = {
-  logConfigMutations,
-  logConfigOnUpload,
-  logHeadersOnUpload,
-  logRedirectsOnUpload,
 }

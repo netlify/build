@@ -1,6 +1,4 @@
-'use strict'
-
-const execa = require('execa')
+import { execaCommand } from 'execa'
 
 // Find out git branch among (in priority order):
 //   - `branch` option
@@ -8,7 +6,7 @@ const execa = require('execa')
 //   - `HEAD` branch (using `git`)
 //   - `main` (using `git`)
 //   - 'master' (fallback)
-const getBranch = async function ({ branch, repositoryRoot }) {
+export const getBranch = async function ({ branch, repositoryRoot }) {
   if (branch) {
     return branch
   }
@@ -28,11 +26,9 @@ const getBranch = async function ({ branch, repositoryRoot }) {
 
 const getGitBranch = async function (repositoryRoot, gitRef) {
   try {
-    const { stdout } = await execa.command(`git rev-parse --abbrev-ref ${gitRef}`, { cwd: repositoryRoot })
+    const { stdout } = await execaCommand(`git rev-parse --abbrev-ref ${gitRef}`, { cwd: repositoryRoot })
     return stdout
-  } catch (error) {}
+  } catch {}
 }
 
 const FALLBACK_BRANCH = 'master'
-
-module.exports = { getBranch }

@@ -1,11 +1,9 @@
-'use strict'
+import { env } from 'process'
 
-const { env } = require('process')
-
-const filterObj = require('filter-obj')
+import filterObj from 'filter-obj'
 
 // Retrieve enviroment variables used in error monitoring
-const getEnvMetadata = function (childEnv = env) {
+export const getEnvMetadata = function (childEnv = env) {
   return filterObj(childEnv, isEnvMetadata)
 }
 
@@ -81,5 +79,3 @@ const ENVIRONMENT_VARIABLES = new Set([
   'GIT_LFS_ENABLED',
   'GIT_LFS_FETCH_INCLUDE',
 ])
-
-module.exports = { getEnvMetadata }

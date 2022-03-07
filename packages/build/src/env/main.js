@@ -1,14 +1,12 @@
-'use strict'
+import { env } from 'process'
 
-const { env } = require('process')
+import filterObj from 'filter-obj'
 
-const filterObj = require('filter-obj')
-
-const { getParentColorEnv } = require('../log/colors')
+import { getParentColorEnv } from '../log/colors.js'
 
 // Retrieve the environment variables passed to plugins and `build.command`
 // When run locally, this tries to emulate the production environment.
-const getChildEnv = function ({ envOpt, env: allConfigEnv }) {
+export const getChildEnv = function ({ envOpt, env: allConfigEnv }) {
   const parentColorEnv = getParentColorEnv()
   const parentEnv = { ...env, ...allConfigEnv, ...envOpt, ...parentColorEnv }
   return filterObj(parentEnv, shouldKeepEnv)
@@ -19,5 +17,3 @@ const shouldKeepEnv = function (key) {
 }
 
 const REMOVED_PARENT_ENV = new Set(['bugsnag_key'])
-
-module.exports = { getChildEnv }

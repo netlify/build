@@ -1,6 +1,3 @@
-'use strict'
+export const onBuild = function () {}
 
-module.exports = {
-  onBuild() {},
-  onEnd() {},
-}
+export const onEnd = function () {}

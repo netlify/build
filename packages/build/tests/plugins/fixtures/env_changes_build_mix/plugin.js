@@ -1,21 +1,18 @@
-'use strict'
+import { env } from 'process'
 
-const { env } = require('process')
+export const onPreBuild = function ({
+  netlifyConfig: {
+    build: { environment },
+  },
+}) {
+  // eslint-disable-next-line no-param-reassign
+  environment.TEST_ONE = 'one_environment'
+  env.TEST_ONE = 'one_env'
+  // eslint-disable-next-line no-param-reassign
+  environment.TEST_TWO = 'two'
+  env.LANGUAGE = ''
+}
 
-module.exports = {
-  onPreBuild({
-    netlifyConfig: {
-      build: { environment },
-    },
-  }) {
-    // eslint-disable-next-line no-param-reassign
-    environment.TEST_ONE = 'one_environment'
-    env.TEST_ONE = 'one_env'
-    // eslint-disable-next-line no-param-reassign
-    environment.TEST_TWO = 'two'
-    env.LANGUAGE = ''
-  },
-  onBuild() {
-    console.log(env.TEST_ONE, env.TEST_TWO, env.LANGUAGE)
-  },
+export const onBuild = function () {
+  console.log(env.TEST_ONE, env.TEST_TWO, env.LANGUAGE)
 }

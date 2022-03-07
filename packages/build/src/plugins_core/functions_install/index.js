@@ -1,11 +1,9 @@
-'use strict'
+import { pathExists } from 'path-exists'
 
-const pathExists = require('path-exists')
-
-const { installFunctionDependencies } = require('../../install/functions')
+import { installFunctionDependencies } from '../../install/functions.js'
 
 // Plugin to package Netlify functions with @netlify/zip-it-and-ship-it
-const onPreBuild = async function ({ constants: { FUNCTIONS_SRC, IS_LOCAL } }) {
+export const onPreBuild = async function ({ constants: { FUNCTIONS_SRC, IS_LOCAL } }) {
   if (!(await pathExists(FUNCTIONS_SRC))) {
     return {}
   }
@@ -13,5 +11,3 @@ const onPreBuild = async function ({ constants: { FUNCTIONS_SRC, IS_LOCAL } }) {
   await installFunctionDependencies(FUNCTIONS_SRC, IS_LOCAL)
   return {}
 }
-
-module.exports = { onPreBuild }

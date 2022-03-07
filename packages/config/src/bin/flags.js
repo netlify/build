@@ -1,18 +1,27 @@
 /* eslint-disable max-lines */
-'use strict'
 
-const filterObj = require('filter-obj')
-const yargs = require('yargs')
+import process from 'process'
 
-const { normalizeCliFeatureFlags } = require('../options/feature_flags')
+import filterObj from 'filter-obj'
+import yargs from 'yargs'
+import { hideBin } from 'yargs/helpers'
+
+import { normalizeCliFeatureFlags } from '../options/feature_flags.js'
 
 // Parse CLI flags
-const parseFlags = function () {
-  const { featureFlags: cliFeatureFlags = '', ...flags } = yargs.options(FLAGS).usage(USAGE).parse()
+export const parseFlags = function () {
+  const { featureFlags: cliFeatureFlags = '', ...flags } = yargs(hideBin(process.argv))
+    .options(FLAGS)
+    .usage(USAGE)
+    .parse()
   const featureFlags = normalizeCliFeatureFlags(cliFeatureFlags)
   const flagsA = { ...flags, featureFlags }
   const flagsB = filterObj(flagsA, isUserFlag)
   return flagsB
+}
+
+const jsonParse = function (value) {
+  return value === undefined ? undefined : JSON.parse(value)
 }
 
 // List of CLI flags
@@ -27,7 +36,7 @@ Defaults to any netlify.toml in the git repository root directory or the base di
     describe: `JSON configuration object containing default values.
 Each configuration default value is used unless overriden through the main configuration file.
 Default: none.`,
-    coerce: JSON.parse,
+    coerce: jsonParse,
     hidden: true,
   },
   cachedConfig: {
@@ -36,7 +45,7 @@ Default: none.`,
 or when using @netlify/config programmatically.
 This is done as a performance optimization to cache the configuration loading logic.
 Default: none.`,
-    coerce: JSON.parse,
+    coerce: jsonParse,
     hidden: true,
   },
   cachedConfigPath: {
@@ -51,7 +60,7 @@ Default: none.`,
     string: true,
     describe: `JSON configuration object overriding the configuration file and other settings.
 Default: none.`,
-    coerce: JSON.parse,
+    coerce: jsonParse,
     hidden: true,
   },
   configMutations: {
@@ -62,7 +71,7 @@ Each change must be an object with three properties:
   - "value": new value of that property
   - "event": build event when this change was applied, e.g. "onPreBuild"
 Default: empty array.`,
-    coerce: JSON.parse,
+    coerce: jsonParse,
     hidden: true,
   },
   cwd: {
@@ -133,7 +142,7 @@ Default: true`,
     describe: `Environment in which this is loaded. Can be:
   - 'buildbot': within Netlify Buildbot
   - 'cli': within Netlify CLI
-  - 'require': through require('@netlify/config')`,
+  - 'require': through import('@netlify/config')`,
     hidden: true,
   },
   debug: {
@@ -172,6 +181,4 @@ const isUserFlag = function (key, value) {
 }
 
 const INTERNAL_KEYS = new Set(['help', 'version', '_', '$0'])
-
-module.exports = { parseFlags }
 /* eslint-enable max-lines */

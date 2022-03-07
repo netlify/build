@@ -1,9 +1,9 @@
-'use strict'
-const pEvery = require('p-every')
-const pLocate = require('p-locate')
-const { satisfies, clean: cleanVersion } = require('semver')
+import pEvery from 'p-every'
+import pLocate from 'p-locate'
+import semver from 'semver'
 
-const { resolvePath } = require('../utils/resolve')
+import { importJsonFile } from '../utils/json.js'
+import { resolvePath } from '../utils/resolve.js'
 
 // Retrieve the `expectedVersion` of a plugin:
 //  - This is the version which should be run
@@ -14,7 +14,7 @@ const { resolvePath } = require('../utils/resolve')
 //  - This is the same logic except it does not use version pinning
 //  - This is only used to print a warning message when the `compatibleVersion`
 //    is older than the currently used version.
-const getExpectedVersion = async function ({ versions, nodeVersion, packageJson, buildDir, pinnedVersion }) {
+export const getExpectedVersion = async function ({ versions, nodeVersion, packageJson, buildDir, pinnedVersion }) {
   const { version, conditions } = await getCompatibleEntry({
     versions,
     nodeVersion,
@@ -42,7 +42,7 @@ const getExpectedVersion = async function ({ versions, nodeVersion, packageJson,
 //  - Otherwise, use `latestVersion`
 const getCompatibleEntry = async function ({ versions, nodeVersion, packageJson, buildDir, pinnedVersion }) {
   if (pinnedVersion !== undefined) {
-    return versions.find(({ version }) => satisfies(version, pinnedVersion)) || { version: pinnedVersion }
+    return versions.find(({ version }) => semver.satisfies(version, pinnedVersion)) || { version: pinnedVersion }
   }
 
   const versionsWithConditions = versions.filter(hasConditions)
@@ -76,7 +76,7 @@ const getConditionWarning = function ({ type, condition }) {
 // Plugins can use `compatibility.{version}.nodeVersion: 'allowedNodeVersion'`
 // to deliver different plugin versions based on the Node.js version
 const nodeVersionTest = function (allowedNodeVersion, { nodeVersion }) {
-  return satisfies(nodeVersion, allowedNodeVersion)
+  return semver.satisfies(nodeVersion, allowedNodeVersion)
 }
 
 const nodeVersionWarning = function (allowedNodeVersion) {
@@ -100,17 +100,16 @@ const siteDependencyTest = async function ({ dependencyName, allowedVersion, sit
   }
 
   // if this is a valid version we can apply the rule directly
-  if (cleanVersion(siteDependency) !== null) {
-    return satisfies(siteDependency, allowedVersion)
+  if (semver.clean(siteDependency) !== null) {
+    return semver.satisfies(siteDependency, allowedVersion)
   }
 
   try {
     // if this is a range we need to get the exact version
     const packageJsonPath = await resolvePath(`${dependencyName}/package.json`, buildDir)
-    // eslint-disable-next-line node/global-require, import/no-dynamic-require
-    const { version } = require(packageJsonPath)
-    return satisfies(version, allowedVersion)
-  } catch (error) {
+    const { version } = await importJsonFile(packageJsonPath)
+    return semver.satisfies(version, allowedVersion)
+  } catch {
     return false
   }
 }
@@ -123,9 +122,7 @@ const siteDependencyWarning = function ([dependencyName, allowedVersion]) {
   return `${dependencyName}@${allowedVersion}`
 }
 
-const CONDITIONS = {
+export const CONDITIONS = {
   nodeVersion: { test: nodeVersionTest, warning: nodeVersionWarning },
   siteDependencies: { test: siteDependenciesTest, warning: siteDependenciesWarning },
 }
-
-module.exports = { getExpectedVersion, CONDITIONS }

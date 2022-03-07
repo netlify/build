@@ -1,0 +1,12 @@
+{
+  "name": "test-plugin",
+  "description": "test",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "author": "Netlify",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://test.com"
+  }
+}

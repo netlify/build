@@ -1,8 +1,13 @@
-'use strict'
+import { createRequire } from 'module'
+import { fileURLToPath } from 'url'
 
-const { LOCAL_INSTALL_PLUGIN_NAME } = require('../install/local')
+import { LOCAL_INSTALL_PLUGIN_NAME } from '../install/local.js'
 
-const FUNCTIONS_INSTALL_PLUGIN = `${__dirname}/functions_install/index.js`
+// TODO: use `import.resolve()` once it is available without any experimental
+// flags
+const require = createRequire(import.meta.url)
+
+const FUNCTIONS_INSTALL_PLUGIN = fileURLToPath(new URL('functions_install/index.js', import.meta.url))
 
 // List of core plugin names
 const FUNCTIONS_INSTALL_PLUGIN_NAME = '@netlify/plugin-functions-install-core'
@@ -12,7 +17,7 @@ const CORE_PLUGINS = new Set([FUNCTIONS_INSTALL_PLUGIN_NAME, LOCAL_INSTALL_PLUGI
 const EDGE_HANDLERS_PLUGIN_PATH = require.resolve(EDGE_HANDLERS_PLUGIN_NAME)
 
 // Plugins that are installed and enabled by default
-const listCorePlugins = function ({ FUNCTIONS_SRC, EDGE_HANDLERS_SRC }) {
+export const listCorePlugins = function ({ FUNCTIONS_SRC, EDGE_HANDLERS_SRC }) {
   const functionsInstallPlugin = getFunctionsInstallPlugin(FUNCTIONS_SRC)
   const edgeHandlersPlugin = getEdgeHandlersPlugin(EDGE_HANDLERS_SRC)
   return [functionsInstallPlugin, edgeHandlersPlugin].filter(Boolean)
@@ -38,8 +43,6 @@ const getEdgeHandlersPlugin = function (EDGE_HANDLERS_SRC) {
   return { package: EDGE_HANDLERS_PLUGIN_NAME, pluginPath: EDGE_HANDLERS_PLUGIN_PATH }
 }
 
-const isCorePlugin = function (packageName) {
+export const isCorePlugin = function (packageName) {
   return CORE_PLUGINS.has(packageName)
 }
-
-module.exports = { listCorePlugins, isCorePlugin }

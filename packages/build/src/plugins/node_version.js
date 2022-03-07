@@ -1,21 +1,17 @@
-'use strict'
+import { version as currentVersion, execPath } from 'process'
 
-const { version: currentVersion, execPath } = require('process')
+import semver from 'semver'
 
-const { satisfies, clean: cleanVersion } = require('semver')
-
-const {
-  engines: { node: nodeVersionSupportedRange },
-} = require('../../package.json')
-const { addErrorInfo } = require('../error/info')
+import { addErrorInfo } from '../error/info.js'
+import { ROOT_PACKAGE_JSON } from '../utils/json.js'
 
 // Local plugins and `package.json`-installed plugins use user's preferred Node.js version if higher than our minimum
 // supported version. Else default to the system Node version.
 // Local and programmatic builds use `@netlify/build` Node.js version, which is
 // usually the system's Node.js version.
 // If the user Node version does not satisfy our supported engine range use our own system Node version
-const addPluginsNodeVersion = function ({ pluginsOptions, nodePath, userNodeVersion }) {
-  const currentNodeVersion = cleanVersion(currentVersion)
+export const addPluginsNodeVersion = function ({ pluginsOptions, nodePath, userNodeVersion }) {
+  const currentNodeVersion = semver.clean(currentVersion)
   return pluginsOptions.map((pluginOptions) =>
     addPluginNodeVersion({ pluginOptions, currentNodeVersion, userNodeVersion, nodePath }),
   )
@@ -29,18 +25,18 @@ const addPluginNodeVersion = function ({
   nodePath,
 }) {
   return (loadedFrom === 'local' || loadedFrom === 'package.json') &&
-    satisfies(userNodeVersion, nodeVersionSupportedRange)
+    semver.satisfies(userNodeVersion, ROOT_PACKAGE_JSON.engines.node)
     ? { ...pluginOptions, nodePath, nodeVersion: userNodeVersion }
     : { ...pluginOptions, nodePath: execPath, nodeVersion: currentNodeVersion }
 }
 
 // Ensure Node.js version is compatible with plugin's `engines.node`
-const checkNodeVersion = function ({
+export const checkNodeVersion = function ({
   nodeVersion,
   packageName,
   pluginPackageJson: { engines: { node: pluginNodeVersionRange } = {} } = {},
 }) {
-  if (pluginNodeVersionRange && !satisfies(nodeVersion, pluginNodeVersionRange)) {
+  if (pluginNodeVersionRange && !semver.satisfies(nodeVersion, pluginNodeVersionRange)) {
     throwUserError(
       `The Node.js version is ${nodeVersion} but the plugin "${packageName}" requires ${pluginNodeVersionRange}`,
     )
@@ -52,5 +48,3 @@ const throwUserError = function (message) {
   addErrorInfo(error, { type: 'resolveConfig' })
   throw error
 }
-
-module.exports = { addPluginsNodeVersion, checkNodeVersion }

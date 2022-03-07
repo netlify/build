@@ -1,19 +1,20 @@
-'use strict'
+import { delimiter, normalize } from 'path'
+import { env } from 'process'
+import { fileURLToPath } from 'url'
 
-const { delimiter, normalize } = require('path')
-const { env } = require('process')
+import { getBinPath } from 'get-bin-path'
+import pathKey from 'path-key'
 
-const { getBinPath } = require('get-bin-path')
-const pathKey = require('path-key')
+import netlifyBuild from '../../src/core/main.js'
 
-const netlifyBuild = require('../..')
+import { runFixtureCommon } from './common.js'
 
-const { runFixtureCommon, FIXTURES_DIR } = require('./common')
+export { FIXTURES_DIR } from './common.js'
 
-const ROOT_DIR = `${__dirname}/../..`
+const ROOT_DIR = fileURLToPath(new URL('../..', import.meta.url))
 const BUILD_BIN_DIR = normalize(`${ROOT_DIR}/node_modules/.bin`)
 
-const runFixture = async function (
+export const runFixture = async function (
   t,
   fixtureName,
   { flags = {}, env: envOption = {}, programmatic = false, ...opts } = {},
@@ -50,5 +51,3 @@ const getNetlifyBuildLogs = async function (flags) {
 
 // Use a top-level promise so it's only performed once at load time
 const BINARY_PATH = getBinPath({ cwd: ROOT_DIR })
-
-module.exports = { runFixture, FIXTURES_DIR }

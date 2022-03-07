@@ -1,15 +1,13 @@
-'use strict'
+import { join } from 'path'
 
-const { join } = require('path')
+import readdirp from 'readdirp'
 
-const readdirp = require('readdirp')
-
-const { getCacheDir } = require('./dir')
-const { isManifest } = require('./manifest')
-const { getBases } = require('./path')
+import { getCacheDir } from './dir.js'
+import { isManifest } from './manifest.js'
+import { getBases } from './path.js'
 
 // List all cached files/directories, at the top-level
-const list = async function ({ cacheDir, cwd: cwdOpt, depth = DEFAULT_DEPTH } = {}) {
+export const list = async function ({ cacheDir, cwd: cwdOpt, depth = DEFAULT_DEPTH } = {}) {
   const bases = await getBases(cwdOpt)
   const cacheDirA = getCacheDir({ cacheDir, cwd: cwdOpt })
   const files = await Promise.all(bases.map(({ name, base }) => listBase({ name, base, cacheDir: cacheDirA, depth })))
@@ -29,5 +27,3 @@ const listBase = async function ({ name, base, cacheDir, depth }) {
 const fileFilter = function ({ basename }) {
   return !isManifest(basename)
 }
-
-module.exports = { list }

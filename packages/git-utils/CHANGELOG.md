@@ -1,5 +1,32 @@
 # Changelog
 
+### [4.1.1](https://github.com/netlify/build/compare/git-utils-v4.1.0...git-utils-v4.1.1) (2022-02-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency execa to v6 ([#4094](https://github.com/netlify/build/issues/4094)) ([4511447](https://github.com/netlify/build/commit/4511447230ae5b582821b40499ae29d97af0aeae))
+* **deps:** update dependency map-obj to v5 ([#4120](https://github.com/netlify/build/issues/4120)) ([179269f](https://github.com/netlify/build/commit/179269ffe3f8747f320c5484ed67254d493d6997))
+* **deps:** update dependency path-exists to v5 ([#4102](https://github.com/netlify/build/issues/4102)) ([744421d](https://github.com/netlify/build/commit/744421d89d6e773bd96d82d3ceeb561ee5d7f3db))
+
+## [4.1.0](https://github.com/netlify/build/compare/git-utils-v4.0.0...git-utils-v4.1.0) (2022-01-12)
+
+
+### Features
+
+* update `README.md` to use ES modules with plugins ([#4023](https://github.com/netlify/build/issues/4023)) ([a96e05b](https://github.com/netlify/build/commit/a96e05b0fddbcd33cbc684b1e37994666419eafe))
+
+## [4.0.0](https://www.github.com/netlify/build/compare/git-utils-v3.0.0...git-utils-v4.0.0) (2021-12-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* use pure ES modules with `git-utils` (#3943)
+
+### Miscellaneous Chores
+
+* use pure ES modules with `git-utils` ([#3943](https://www.github.com/netlify/build/issues/3943)) ([59a9189](https://www.github.com/netlify/build/commit/59a918987c5ba9755c3e684d12e82879dbbe8b54))
+
 ## [3.0.0](https://www.github.com/netlify/build/compare/git-utils-v2.0.2...git-utils-v3.0.0) (2021-11-24)
 
 

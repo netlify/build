@@ -1,7 +1,3 @@
-'use strict'
-
-module.exports = {
-  onEnd() {
-    throw new Error('test')
-  },
+export const onEnd = function () {
+  throw new Error('test')
 }

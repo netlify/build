@@ -1,13 +1,11 @@
-'use strict'
+import { homedir } from 'os'
+import { resolve, isAbsolute, join, sep } from 'path'
 
-const { homedir } = require('os')
-const { resolve, isAbsolute, join, sep } = require('path')
-
-const { getCacheDir } = require('./dir')
-const { safeGetCwd } = require('./utils/cwd')
+import { getCacheDir } from './dir.js'
+import { safeGetCwd } from './utils/cwd.js'
 
 // Find the paths of the file before/after caching
-const parsePath = async function ({ path, cacheDir, cwdOpt }) {
+export const parsePath = async function ({ path, cacheDir, cwdOpt }) {
   const srcPath = await getSrcPath(path, cwdOpt)
   const cachePath = await getCachePath({ srcPath, cacheDir, cwdOpt })
   return { srcPath, cachePath }
@@ -94,7 +92,7 @@ const parseBase = function (name, base, srcPath) {
   return { name, relPath }
 }
 
-const getBases = async function (cwdOpt) {
+export const getBases = async function (cwdOpt) {
   const cwdBase = await getCwdBase(cwdOpt)
   return [...cwdBase, { name: 'home', base: homedir() }, { name: 'root', base: sep }]
 }
@@ -107,5 +105,3 @@ const getCwdBase = async function (cwdOpt) {
 
   return [{ name: 'cwd', base: cwd }]
 }
-
-module.exports = { parsePath, getBases }

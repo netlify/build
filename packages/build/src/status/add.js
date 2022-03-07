@@ -1,7 +1,5 @@
-'use strict'
-
 // Merge plugin status to the list of plugin statuses.
-const addStatus = function ({ newStatus, statuses, event, packageName, pluginPackageJson: { version } = {} }) {
+export const addStatus = function ({ newStatus, statuses, event, packageName, pluginPackageJson: { version } = {} }) {
   // Either:
   //  - `build.command`
   //  - no status was set
@@ -36,5 +34,3 @@ const canOverrideStatus = function (formerStatus, newStatus) {
 
 // Possible status states, ordered by severity.
 const STATES = ['success', 'canceled_plugin', 'failed_plugin', 'failed_build']
-
-module.exports = { addStatus }

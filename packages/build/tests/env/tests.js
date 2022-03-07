@@ -1,10 +1,8 @@
-'use strict'
+import { platform } from 'process'
 
-const { platform } = require('process')
+import test from 'ava'
 
-const test = require('ava')
-
-const { runFixture } = require('../helpers/main')
+import { runFixture } from '../helpers/main.js'
 
 test('Environment variables are set in plugins', async (t) => {
   await runFixture(t, 'plugin')

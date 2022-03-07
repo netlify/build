@@ -1,5 +1,1 @@
-'use strict'
-
-module.exports = {
-  onInvalid() {},
-}
+export const onInvalid = function () {}

@@ -1,12 +1,10 @@
-'use strict'
+import isPlainObj from 'is-plain-obj'
+import mapObj from 'map-obj'
 
-const isPlainObj = require('is-plain-obj')
-const mapObj = require('map-obj')
-
-const { removeFalsy } = require('./utils/remove_falsy')
+import { removeFalsy } from './utils/remove_falsy.js'
 
 // Removes default values (empty objects and arrays) from the configuration.
-const simplifyConfig = function ({
+export const simplifyConfig = function ({
   build: { environment, processing: { css, html, images, js, ...processing } = {}, services, ...build } = {},
   functions,
   plugins,
@@ -87,7 +85,7 @@ const removeDefaultValue = function (value, propName, defaultValue) {
   return value === defaultValue ? {} : { [propName]: value }
 }
 
-const removeEmptyObject = function (object, propName) {
+export const removeEmptyObject = function (object, propName) {
   if (!isPlainObj(object)) {
     return {}
   }
@@ -96,12 +94,10 @@ const removeEmptyObject = function (object, propName) {
   return Object.keys(objectA).length === 0 ? {} : { [propName]: objectA }
 }
 
-const removeEmptyArray = function (array, propName) {
+export const removeEmptyArray = function (array, propName) {
   if (!Array.isArray(array)) {
     return {}
   }
 
   return array.length === 0 ? {} : { [propName]: array }
 }
-
-module.exports = { simplifyConfig, removeEmptyObject, removeEmptyArray }

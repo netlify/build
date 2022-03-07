@@ -1,11 +1,9 @@
-'use strict'
+import { version as currentVersion, execPath } from 'process'
 
-const { version: currentVersion, execPath } = require('process')
+import { execa } from 'execa'
+import semver from 'semver'
 
-const execa = require('execa')
-const { clean: cleanVersion } = require('semver')
-
-const { addErrorInfo } = require('../error/info')
+import { addErrorInfo } from '../error/info.js'
 
 // Retrieve Node.js version if the Node.js path is using nvm.
 // `node.exe` on Windows, `bin/node` on Unix.
@@ -13,11 +11,11 @@ const NVM_NODE_VERSION_REGEXP = /[/\\]v(\d+\.\d+\.\d+)[/\\](bin[/\\]node|node.ex
 
 // Retrieve Node.js version from current process
 const getCurrentNodeVersion = function () {
-  return cleanVersion(currentVersion)
+  return semver.clean(currentVersion)
 }
 
 // Retrieve Node.js version from `--node-path` or fallback to extracting the current Node.js process version
-const getUserNodeVersion = async function (nodePath) {
+export const getUserNodeVersion = async function (nodePath) {
   // No `--node-path` CLI flag, use the current node process version
   if (nodePath === execPath) {
     return getCurrentNodeVersion()
@@ -31,7 +29,7 @@ const getUserNodeVersion = async function (nodePath) {
 
   // Fallback to actually running `node --version` with the given nodePath
   const { stdout } = await execa(nodePath, ['--version'], { reject: false })
-  const version = cleanVersion(stdout)
+  const version = semver.clean(stdout)
 
   if (version === null) {
     const error = new Error(`Invalid --node-path CLI flag: ${nodePath}`)
@@ -41,5 +39,3 @@ const getUserNodeVersion = async function (nodePath) {
 
   return version
 }
-
-module.exports = { getUserNodeVersion }

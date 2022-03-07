@@ -1,10 +1,8 @@
-'use strict'
-
-const { runsOnlyOnBuildFailure } = require('../plugins/events')
+import { runsOnlyOnBuildFailure } from '../plugins/events.js'
 
 // The last event handler of a plugin (except for `onError` and `onEnd`)
 // defaults to `utils.status.show({ state: 'success' })` without any `summary`.
-const getSuccessStatus = function (newStatus, { steps, event, packageName }) {
+export const getSuccessStatus = function (newStatus, { steps, event, packageName }) {
   if (newStatus === undefined && isLastNonErrorStep({ steps, event, packageName })) {
     return IMPLICIT_STATUS
   }
@@ -18,5 +16,3 @@ const isLastNonErrorStep = function ({ steps, event, packageName }) {
 }
 
 const IMPLICIT_STATUS = { state: 'success', implicit: true }
-
-module.exports = { getSuccessStatus }

@@ -1,9 +1,7 @@
-'use strict'
+import test from 'ava'
 
-const test = require('ava')
-
-const { runFixture } = require('../helpers/main')
-const { startServer } = require('../helpers/server')
+import { runFixture } from '../helpers/main.js'
+import { startServer } from '../helpers/server.js'
 
 const STATUS_PATH = '/api/v1/deploys/test/plugin_runs'
 

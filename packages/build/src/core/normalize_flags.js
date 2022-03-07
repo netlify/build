@@ -1,14 +1,12 @@
-'use strict'
+import { env, execPath } from 'process'
 
-const { env, execPath } = require('process')
+import { logFlags } from '../log/messages/config.js'
+import { removeFalsy } from '../utils/remove_falsy.js'
 
-const { logFlags } = require('../log/messages/config')
-const { removeFalsy } = require('../utils/remove_falsy')
-
-const { DEFAULT_FEATURE_FLAGS } = require('./feature_flags')
+import { DEFAULT_FEATURE_FLAGS } from './feature_flags.js'
 
 // Normalize CLI flags
-const normalizeFlags = function (flags, logs) {
+export const normalizeFlags = function (flags, logs) {
   const rawFlags = removeFalsy(flags)
 
   // Combine the flags object env with the process.env
@@ -41,6 +39,7 @@ const getDefaultFlags = function ({ env: envOpt = {} }, combinedEnv) {
     mode: REQUIRE_MODE,
     offline: false,
     telemetry: false,
+    verbose: Boolean(combinedEnv.NETLIFY_BUILD_DEBUG),
     functionsDistDir: DEFAULT_FUNCTIONS_DIST,
     cacheDir: DEFAULT_CACHE_DIR,
     deployId: combinedEnv.DEPLOY_ID,
@@ -66,5 +65,3 @@ const REQUIRE_MODE = 'require'
 const DEFAULT_FUNCTIONS_DIST = '.netlify/functions/'
 const DEFAULT_CACHE_DIR = '.netlify/cache/'
 const DEFAULT_STATSD_PORT = 8125
-
-module.exports = { normalizeFlags }

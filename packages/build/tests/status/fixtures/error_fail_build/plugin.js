@@ -1,11 +1,7 @@
-'use strict'
-
-module.exports = {
-  onBuild({
-    utils: {
-      build: { failBuild },
-    },
-  }) {
-    failBuild('error')
+export const onBuild = function ({
+  utils: {
+    build: { failBuild },
   },
+}) {
+  failBuild('error')
 }

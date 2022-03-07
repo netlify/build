@@ -1,9 +1,7 @@
-'use strict'
+import { cwd } from 'process'
 
-const { cwd } = require('process')
-
-const cleanStack = require('clean-stack')
-const stripAnsi = require('strip-ansi')
+import cleanStack from 'clean-stack'
+import stripAnsi from 'strip-ansi'
 
 // Clean stack traces:
 //  - remove our internal code, e.g. the logic spawning plugins
@@ -13,7 +11,7 @@ const stripAnsi = require('strip-ansi')
 // Keep non stack trace lines as is.
 // We do not use libraries that patch `Error.prepareStackTrace()` because they
 // tend to create issues.
-const cleanStacks = function ({ stack, rawStack, debug }) {
+export const cleanStacks = function ({ stack, rawStack, debug }) {
   if (stack === undefined) {
     return
   }
@@ -53,7 +51,7 @@ const cleanStackLine = function (lines, line) {
 const getCwd = function () {
   try {
     return cwd()
-  } catch (error) {
+  } catch {
     return ''
   }
 }
@@ -87,5 +85,3 @@ const normalizePathSlashes = function (line) {
 }
 
 const BACKLASH_REGEXP = /\\/g
-
-module.exports = { cleanStacks }

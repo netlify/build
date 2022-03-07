@@ -1,11 +1,7 @@
-'use strict'
-
-module.exports = {
-  onPreBuild({
-    utils: {
-      status: { show },
-    },
-  }) {
-    show({ summary: 'summary', text: 'text' })
+export const onPreBuild = function ({
+  utils: {
+    status: { show },
   },
+}) {
+  show({ summary: 'summary', text: 'text' })
 }

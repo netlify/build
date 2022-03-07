@@ -1,11 +1,9 @@
-'use strict'
+import figures from 'figures'
 
-const { arrowDown } = require('figures')
+import { logMessage, logSubHeader } from '../logger.js'
+import { THEME } from '../theme.js'
 
-const { logMessage, logSubHeader } = require('../logger')
-const { THEME } = require('../theme')
-
-const logDryRunStart = function ({ logs, eventWidth, stepsCount }) {
+export const logDryRunStart = function ({ logs, eventWidth, stepsCount }) {
   const columnWidth = getDryColumnWidth(eventWidth, stepsCount)
   const line = '─'.repeat(columnWidth)
   const secondLine = '─'.repeat(columnWidth)
@@ -23,7 +21,7 @@ ${THEME.header(`┌─${line}─┬─${secondLine}─┐
   )
 }
 
-const logDryRunStep = function ({
+export const logDryRunStep = function ({
   logs,
   step: { event, packageName, coreStepDescription },
   index,
@@ -35,7 +33,7 @@ const logDryRunStep = function ({
   const fullName = getFullName(coreStepDescription, netlifyConfig, packageName)
   const line = '─'.repeat(columnWidth)
   const countText = `${index + 1}. `
-  const downArrow = stepsCount === index + 1 ? '  ' : ` ${arrowDown}`
+  const downArrow = stepsCount === index + 1 ? '  ' : ` ${figures.arrowDown}`
   const eventWidthA = columnWidth - countText.length - downArrow.length
 
   logMessage(
@@ -60,12 +58,6 @@ const getDryColumnWidth = function (eventWidth, stepsCount) {
 const COLUMN_EXTRA_WIDTH = 4
 const DRY_HEADER_NAMES = ['Event', 'Location']
 
-const logDryRunEnd = function (logs) {
+export const logDryRunEnd = function (logs) {
   logMessage(logs, `\nIf this looks good to you, run \`netlify build\` to execute the build\n`)
-}
-
-module.exports = {
-  logDryRunStart,
-  logDryRunStep,
-  logDryRunEnd,
 }

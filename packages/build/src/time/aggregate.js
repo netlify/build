@@ -1,13 +1,11 @@
-'use strict'
-
-const { createTimer, TOP_PARENT_TAG } = require('./main')
+import { createTimer, TOP_PARENT_TAG } from './main.js'
 
 // Some timers are computed based on others:
 //   - `others` is `total` minus the other timers
 //   - `run_plugins` is the sum of all plugins
 //   - `run_netlify_build_per_type` aggregates timers but per system/plugin/user
 //   - each plugin timer is the sum of its event handlers
-const addAggregatedTimers = function (timers) {
+export const addAggregatedTimers = function (timers) {
   const timersA = addRunPluginsTimer(timers)
   const timersB = addPluginTimers(timersA)
   const timersC = addOthersTimers(timersB)
@@ -146,5 +144,3 @@ const getTimerDuration = function ({ durationNs }) {
 const reduceSum = function (sum, number) {
   return sum + number
 }
-
-module.exports = { addAggregatedTimers }

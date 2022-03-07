@@ -1,16 +1,14 @@
-'use strict'
+import isPlainObj from 'is-plain-obj'
 
-const isPlainObj = require('is-plain-obj')
+import { isDefined } from './utils/remove_falsy.js'
 
-const { isDefined } = require('./utils/remove_falsy')
-
-const bundlers = ['esbuild', 'nft', 'zisi']
-const WILDCARD_ALL = '*'
+export const bundlers = ['esbuild', 'nft', 'zisi']
+export const WILDCARD_ALL = '*'
 
 // Removing the legacy `functions` from the `build` block.
 // Looking for a default directory in the `functions` block, separating it
 // from the rest of the configuration if it exists.
-const normalizeFunctionsProps = function (
+export const normalizeFunctionsProps = function (
   { functions: v1FunctionsDirectory, ...build },
   { [WILDCARD_ALL]: wildcardProps, ...functions },
 ) {
@@ -49,7 +47,7 @@ const isConfigLeaf = (functionConfig) =>
 
 const isConfigProperty = (propName) => FUNCTION_CONFIG_PROPERTIES.has(propName)
 
-const FUNCTION_CONFIG_PROPERTIES = new Set([
+export const FUNCTION_CONFIG_PROPERTIES = new Set([
   'directory',
   'external_node_modules',
   'ignored_node_modules',
@@ -83,5 +81,3 @@ const getFunctionsDirectoryProps = ({ functionsDirectory, v1FunctionsDirectory }
 
   return {}
 }
-
-module.exports = { normalizeFunctionsProps, bundlers, WILDCARD_ALL, FUNCTION_CONFIG_PROPERTIES }

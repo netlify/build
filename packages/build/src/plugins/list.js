@@ -1,13 +1,10 @@
-'use strict'
+import { pluginsUrl, pluginsList as oldPluginsList } from '@netlify/plugins-list'
+import got from 'got'
+import isPlainObj from 'is-plain-obj'
 
-const { pluginsList: oldPluginsList, pluginsUrl } = require('@netlify/plugins-list')
-const got = require('got')
-const isPlainObj = require('is-plain-obj')
+import { logPluginsList, logPluginsFetchError } from '../log/messages/plugins.js'
 
-const { logPluginsList } = require('../log/messages/plugins')
-const { logPluginsFetchError } = require('../log/messages/plugins')
-
-const { CONDITIONS } = require('./compatibility')
+import { CONDITIONS } from './compatibility.js'
 
 // Retrieve the list of plugins officially vetted by us and displayed in our
 // plugins directory UI.
@@ -16,14 +13,15 @@ const { CONDITIONS } = require('./compatibility')
 // make this request is somewhat ok (in the 100ms range).
 // We only fetch this plugins list when needed, i.e. we defer it as much as
 // possible.
-const getPluginsList = async function ({ debug, logs, testOpts: { pluginsListUrl = pluginsUrl } }) {
+export const getPluginsList = async function ({ debug, logs, testOpts: { pluginsListUrl } }) {
   // We try not to mock in integration tests. However, sending a request for
   // each test would be too slow and make tests unreliable.
   if (pluginsListUrl === 'test') {
     return []
   }
 
-  const pluginsList = await fetchPluginsList({ logs, pluginsListUrl })
+  const pluginsListUrlA = pluginsListUrl === undefined ? pluginsUrl : pluginsListUrl
+  const pluginsList = await fetchPluginsList({ logs, pluginsListUrl: pluginsListUrlA })
   const pluginsListA = normalizePluginsList(pluginsList)
   logPluginsList({ pluginsList: pluginsListA, debug, logs })
   return pluginsListA
@@ -86,5 +84,3 @@ const isCondition = function ([type]) {
 const normalizeCondition = function ([type, condition]) {
   return { type, condition }
 }
-
-module.exports = { getPluginsList }

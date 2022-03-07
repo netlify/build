@@ -1,11 +1,9 @@
-'use strict'
+import { versions } from 'process'
 
-const { versions } = require('process')
+import test from 'ava'
 
-const test = require('ava')
-
-const { runFixture } = require('../helpers/main')
-const { startServer } = require('../helpers/server')
+import { runFixture } from '../helpers/main.js'
+import { startServer } from '../helpers/server.js'
 
 const TELEMETRY_PATH = '/track'
 const BUGSNAG_TEST_KEY = '00000000000000000000000000000000'
@@ -224,10 +222,11 @@ test('Telemetry calls timeout by default', async (t) => {
     // We want to rely on the default timeout value
     disableTelemetryTimeout: false,
     // Introduce an arbitrary large timeout on the server side so that we can validate the client timeout works
-    // eslint-disable-next-line no-magic-numbers
-    waitTelemetryServer: 5 * 60 * 1000,
+    waitTelemetryServer: WAIT_TELEMETRY_SERVER,
     // The error monitor snapshot should contain the timeout error
     snapshot: true,
   })
   t.is(telemetryRequests.length, 0)
 })
+
+const WAIT_TELEMETRY_SERVER = 3e5

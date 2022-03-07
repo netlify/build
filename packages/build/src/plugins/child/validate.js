@@ -1,11 +1,9 @@
-'use strict'
-
-const { addErrorInfo } = require('../../error/info')
-const { serializeArray } = require('../../log/serialize')
-const { EVENTS } = require('../events')
+import { addErrorInfo } from '../../error/info.js'
+import { serializeArray } from '../../log/serialize.js'
+import { EVENTS } from '../events.js'
 
 // Validate the shape of a plugin return value
-const validatePlugin = function (logic) {
+export const validatePlugin = function (logic) {
   try {
     // This validation must work with the return value of `import()` which has
     // a `Module` prototype, not `Object`
@@ -34,5 +32,3 @@ ${serializeArray(EVENTS)}`)
     throw new TypeError(`Invalid event handler '${propName}': must be a function`)
   }
 }
-
-module.exports = { validatePlugin }

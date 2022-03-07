@@ -1,19 +1,17 @@
 /* eslint-disable max-lines */
-'use strict'
+import pReduce from 'p-reduce'
 
-const pReduce = require('p-reduce')
+import { addErrorInfo } from '../error/info.js'
+import { addStatus } from '../status/add.js'
 
-const { addErrorInfo } = require('../error/info')
-const { addStatus } = require('../status/add')
-
-const { runStep } = require('./run_step')
+import { runStep } from './run_step.js'
 
 // Run all steps.
 // Each step can change some state: last `error`, environment variables changes,
 // list of `failedPlugins` (that ran `utils.build.failPlugin()`).
 // If an error arises, runs `onError` events.
 // Runs `onEnd` events at the end, whether an error was thrown or not.
-const runSteps = async function ({
+export const runSteps = async function ({
   steps,
   buildbotServerSocket,
   events,
@@ -36,6 +34,7 @@ const runSteps = async function ({
   configOpts,
   logs,
   debug,
+  verbose,
   saveConfig,
   timers,
   testOpts,
@@ -128,6 +127,7 @@ const runSteps = async function ({
         redirectsPath: redirectsPathA,
         logs,
         debug,
+        verbose,
         saveConfig,
         timers: timersA,
         testOpts,
@@ -176,6 +176,4 @@ const runSteps = async function ({
     configMutations: configMutationsB,
   }
 }
-
-module.exports = { runSteps }
 /* eslint-enable max-lines */

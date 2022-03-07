@@ -1,17 +1,15 @@
 /* eslint-disable max-lines */
-'use strict'
+import { addMutableConstants } from '../core/constants.js'
+import { logStepStart } from '../log/messages/steps.js'
+import { runsAlsoOnBuildFailure, runsOnlyOnBuildFailure } from '../plugins/events.js'
+import { measureDuration, normalizeTimerName } from '../time/main.js'
 
-const { addMutableConstants } = require('../core/constants')
-const { logStepStart } = require('../log/messages/steps')
-const { runsAlsoOnBuildFailure, runsOnlyOnBuildFailure } = require('../plugins/events')
-const { measureDuration, normalizeTimerName } = require('../time/main')
-
-const { fireCoreStep } = require('./core_step')
-const { firePluginStep } = require('./plugin')
-const { getStepReturn } = require('./return')
+import { fireCoreStep } from './core_step.js'
+import { firePluginStep } from './plugin.js'
+import { getStepReturn } from './return.js'
 
 // Run a step (core, build command or plugin)
-const runStep = async function ({
+export const runStep = async function ({
   event,
   childProcess,
   packageName,
@@ -50,6 +48,7 @@ const runStep = async function ({
   redirectsPath,
   logs,
   debug,
+  verbose,
   saveConfig,
   timers,
   testOpts,
@@ -110,6 +109,7 @@ const runStep = async function ({
     error,
     logs,
     debug,
+    verbose,
     saveConfig,
     timers,
     errorParams,
@@ -237,6 +237,7 @@ const tFireStep = function ({
   error,
   logs,
   debug,
+  verbose,
   saveConfig,
   errorParams,
   configOpts,
@@ -293,8 +294,7 @@ const tFireStep = function ({
     error,
     logs,
     debug,
+    verbose,
   })
 }
-
-module.exports = { runStep }
 /* eslint-enable max-lines */

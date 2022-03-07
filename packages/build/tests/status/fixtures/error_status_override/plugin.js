@@ -1,28 +1,27 @@
-'use strict'
+export const onBuild = function () {
+  throw new Error('onBuild')
+}
 
-module.exports = {
-  onBuild() {
-    throw new Error('onBuild')
+export const onSuccess = function ({
+  utils: {
+    status: { show },
   },
-  onSuccess({
-    utils: {
-      status: { show },
-    },
-  }) {
-    show({ summary: 'summary' })
+}) {
+  show({ summary: 'summary' })
+}
+
+export const onError = function ({
+  utils: {
+    status: { show },
   },
-  onError({
-    utils: {
-      status: { show },
-    },
-  }) {
-    show({ summary: 'summary' })
+}) {
+  show({ summary: 'summary' })
+}
+
+export const onEnd = function ({
+  utils: {
+    status: { show },
   },
-  onEnd({
-    utils: {
-      status: { show },
-    },
-  }) {
-    show({ summary: 'summary' })
-  },
+}) {
+  show({ summary: 'summary' })
 }

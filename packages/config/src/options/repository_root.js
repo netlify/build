@@ -1,14 +1,12 @@
-'use strict'
+import { dirname } from 'path'
 
-const { dirname } = require('path')
-
-const findUp = require('find-up')
+import { findUp } from 'find-up'
 
 // Find out repository root among (in priority order):
 //  - `repositoryRoot` option
 //  - find a `.git` directory up from `cwd`
 //  - `cwd` (fallback)
-const getRepositoryRoot = async function ({ repositoryRoot, cwd }) {
+export const getRepositoryRoot = async function ({ repositoryRoot, cwd }) {
   if (repositoryRoot !== undefined) {
     return repositoryRoot
   }
@@ -21,5 +19,3 @@ const getRepositoryRoot = async function ({ repositoryRoot, cwd }) {
 
   return dirname(repositoryRootA)
 }
-
-module.exports = { getRepositoryRoot }

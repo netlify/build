@@ -1,19 +1,15 @@
-/* eslint-disable max-lines */
-'use strict'
+import { resolveConfig, updateConfig, restoreConfig } from '@netlify/config'
+import mapObj from 'map-obj'
 
-const resolveConfig = require('@netlify/config')
-const { updateConfig, restoreConfig } = require('@netlify/config')
-const mapObj = require('map-obj')
+import { getChildEnv } from '../env/main.js'
+import { addApiErrorHandlers } from '../error/api.js'
+import { changeErrorType } from '../error/info.js'
+import { logBuildDir, logConfigPath, logConfig, logContext } from '../log/messages/config.js'
+import { logConfigOnUpload, logHeadersOnUpload, logRedirectsOnUpload } from '../log/messages/mutations.js'
+import { measureDuration } from '../time/main.js'
+import { getPackageJson } from '../utils/package.js'
 
-const { getChildEnv } = require('../env/main')
-const { addApiErrorHandlers } = require('../error/api')
-const { changeErrorType } = require('../error/info')
-const { logBuildDir, logConfigPath, logConfig, logContext } = require('../log/messages/config')
-const { logConfigOnUpload, logHeadersOnUpload, logRedirectsOnUpload } = require('../log/messages/mutations')
-const { measureDuration } = require('../time/main')
-const { getPackageJson } = require('../utils/package')
-
-const { getUserNodeVersion } = require('./user_node_version')
+import { getUserNodeVersion } from './user_node_version.js'
 
 // Retrieve immutable options passed to `@netlify/config`.
 // This does not include options which might change during the course of the
@@ -22,7 +18,7 @@ const { getUserNodeVersion } = require('./user_node_version')
 //    the build
 //  - If plugins change the configuration, `configMutations` is used instead
 // In both cases, almost all options should remain the same.
-const getConfigOpts = function ({
+export const getConfigOpts = function ({
   config,
   defaultConfig,
   cwd,
@@ -102,7 +98,7 @@ const tLoadConfig = async function ({ configOpts, cachedConfig, cachedConfigPath
   }
 }
 
-const loadConfig = measureDuration(tLoadConfig, 'resolve_config')
+export const loadConfig = measureDuration(tLoadConfig, 'resolve_config')
 
 // Retrieve initial configuration.
 // In the buildbot and CLI, we re-use the already parsed `@netlify/config`
@@ -125,7 +121,7 @@ const logConfigInfo = function ({ logs, configPath, buildDir, netlifyConfig, con
 // change would create debug logs which would be too verbose.
 // Errors are propagated and assigned to the specific plugin or core step
 // which changed the configuration.
-const resolveUpdatedConfig = async function (configOpts, configMutations) {
+export const resolveUpdatedConfig = async function (configOpts, configMutations) {
   try {
     return await resolveConfig({ ...configOpts, configMutations, debug: false })
   } catch (error) {
@@ -139,7 +135,7 @@ const resolveUpdatedConfig = async function (configOpts, configMutations) {
 // This is only done when `saveConfig` is `true`. This allows performing this
 // in the buildbot but not in local builds, since only the latter run in a
 // container and we want to avoid saving files on local machines.
-const saveUpdatedConfig = async function ({
+export const saveUpdatedConfig = async function ({
   configMutations,
   buildDir,
   repositoryRoot,
@@ -147,6 +143,7 @@ const saveUpdatedConfig = async function ({
   headersPath,
   redirectsPath,
   logs,
+  featureFlags,
   context,
   branch,
   debug,
@@ -164,6 +161,7 @@ const saveUpdatedConfig = async function ({
     context,
     branch,
     logs,
+    featureFlags,
   })
 
   await logConfigOnUpload({ logs, configPath, debug })
@@ -171,7 +169,7 @@ const saveUpdatedConfig = async function ({
   await logRedirectsOnUpload({ logs, redirectsPath, debug })
 }
 
-const restoreUpdatedConfig = async function ({
+export const restoreUpdatedConfig = async function ({
   configMutations,
   buildDir,
   repositoryRoot,
@@ -186,12 +184,3 @@ const restoreUpdatedConfig = async function ({
 
   await restoreConfig(configMutations, { buildDir, configPath, headersPath, redirectsPath })
 }
-
-module.exports = {
-  getConfigOpts,
-  loadConfig,
-  resolveUpdatedConfig,
-  saveUpdatedConfig,
-  restoreUpdatedConfig,
-}
-/* eslint-enable max-lines */

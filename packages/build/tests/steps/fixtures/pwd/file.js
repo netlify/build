@@ -1,5 +1,7 @@
-'use strict'
+import { resolve } from 'path'
+import { cwd } from 'process'
+import { fileURLToPath } from 'url'
 
-const { cwd } = require('process')
+const CURRENT_DIR = fileURLToPath(new URL('.', import.meta.url))
 
-console.log(cwd() === __dirname)
+console.log(cwd() === resolve(CURRENT_DIR))

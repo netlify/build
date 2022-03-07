@@ -1,7 +1,5 @@
-'use strict'
-
 // Add information related to an error without colliding with existing properties
-const addDefaultErrorInfo = function (error, info) {
+export const addDefaultErrorInfo = function (error, info) {
   if (!canHaveErrorInfo(error)) {
     return
   }
@@ -10,7 +8,7 @@ const addDefaultErrorInfo = function (error, info) {
 }
 
 // Retrieve error information added by our system
-const addErrorInfo = function (error, info) {
+export const addErrorInfo = function (error, info) {
   if (!canHaveErrorInfo(error)) {
     return
   }
@@ -18,7 +16,7 @@ const addErrorInfo = function (error, info) {
   error[CUSTOM_ERROR_KEY] = { ...error[CUSTOM_ERROR_KEY], ...info }
 }
 
-const getErrorInfo = function (error) {
+export const getErrorInfo = function (error) {
   if (!isBuildError(error)) {
     return [{}, error]
   }
@@ -28,14 +26,14 @@ const getErrorInfo = function (error) {
 }
 
 // Change error type from one to another
-const changeErrorType = function (error, oldType, newType) {
+export const changeErrorType = function (error, oldType, newType) {
   const [{ type }] = getErrorInfo(error)
   if (type === oldType) {
     addErrorInfo(error, { type: newType })
   }
 }
 
-const isBuildError = function (error) {
+export const isBuildError = function (error) {
   return canHaveErrorInfo(error) && error[CUSTOM_ERROR_KEY] !== undefined
 }
 
@@ -45,6 +43,4 @@ const canHaveErrorInfo = function (error) {
   return error != null
 }
 
-const CUSTOM_ERROR_KEY = 'customErrorInfo'
-
-module.exports = { addDefaultErrorInfo, addErrorInfo, getErrorInfo, changeErrorType, isBuildError, CUSTOM_ERROR_KEY }
+export const CUSTOM_ERROR_KEY = 'customErrorInfo'

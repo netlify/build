@@ -13,14 +13,14 @@ jobs:
         with:
           private-key: ${{ secrets.TOKENS_PRIVATE_KEY }}
           app-id: ${{ secrets.TOKENS_APP_ID }}
-      - uses: GoogleCloudPlatform/release-please-action@02b1eccf92f8814b84ffa08ad26eeae01c0ab1cf
+      - uses: GoogleCloudPlatform/release-please-action@v3
         id: release
         with:
           token: ${{ steps.get-token.outputs.token }}
           command: manifest
       - uses: actions/checkout@v2
         if: ${{ steps.release.outputs.releases_created }}
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           cache: 'npm'
           node-version: '*'
@@ -39,8 +39,8 @@ jobs:
         if: ${{ steps.release.outputs['packages/run-utils--version'] }}
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-      - run: npm publish packages/function-utils/
-        if: ${{ steps.release.outputs['packages/function-utils--version'] }}
+      - run: npm publish packages/functions-utils/
+        if: ${{ steps.release.outputs['packages/functions-utils--version'] }}
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       - run: npm publish packages/cache-utils/

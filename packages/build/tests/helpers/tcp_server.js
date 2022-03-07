@@ -1,16 +1,14 @@
-'use strict'
+import { createServer } from 'net'
+import { promisify } from 'util'
 
-const { createServer } = require('net')
-const { promisify } = require('util')
-
-const getPort = require('get-port')
-const { tmpName } = require('tmp-promise')
+import getPort from 'get-port'
+import { tmpName } from 'tmp-promise'
 
 // Start a TCP server to mock calls.
-const startTcpServer = async function ({ response = '', useUnixSocket = true } = {}) {
+export const startTcpServer = async function ({ response = '', useUnixSocket = true, onRequest } = {}) {
   const requests = []
   const { connectionOpts, address } = await getConnectionOpts({ useUnixSocket })
-  const server = createServer(onConnection.bind(null, { response, requests }))
+  const server = createServer(onConnection.bind(null, { response, requests, onRequest }))
   await promisify(server.listen.bind(server))(connectionOpts)
 
   const stopServer = promisify(server.close.bind(server))
@@ -28,18 +26,20 @@ const getConnectionOpts = async function ({ useUnixSocket }) {
   return { connectionOpts: { host, port }, address: `${host}:${port}` }
 }
 
-const onConnection = function ({ response, requests }, socket) {
-  socket.on('data', onNewRequest.bind(null, { response, requests, socket }))
+const onConnection = function ({ response, requests, onRequest }, socket) {
+  socket.on('data', onNewRequest.bind(null, { response, requests, onRequest, socket }))
 }
 
-const onNewRequest = function ({ response, requests, socket }, data) {
+const onNewRequest = async function ({ response, requests, onRequest, socket }, data) {
   const json = typeof response !== 'string'
   const dataString = data.toString()
   const parsedData = json ? JSON.parse(dataString) : dataString
   requests.push(parsedData)
 
+  if (onRequest !== undefined) {
+    await onRequest(parsedData)
+  }
+
   const serializedResponse = json ? JSON.stringify(response, null, 2) : response
   socket.write(serializedResponse)
 }
-
-module.exports = { startTcpServer }

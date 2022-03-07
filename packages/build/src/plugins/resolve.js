@@ -1,19 +1,17 @@
-'use strict'
+import { addErrorInfo } from '../error/info.js'
+import { installMissingPlugins } from '../install/missing.js'
+import { resolvePath, tryResolvePath } from '../utils/resolve.js'
 
-const { addErrorInfo } = require('../error/info')
-const { installMissingPlugins } = require('../install/missing')
-const { resolvePath, tryResolvePath } = require('../utils/resolve')
-
-const { addExpectedVersions } = require('./expected_version')
-const { addPluginsNodeVersion } = require('./node_version')
-const { addPinnedVersions } = require('./pinned_version')
+import { addExpectedVersions } from './expected_version.js'
+import { addPluginsNodeVersion } from './node_version.js'
+import { addPinnedVersions } from './pinned_version.js'
 
 // Try to find plugins in four places, by priority order:
 //  - already loaded (core plugins)
 //  - local plugin
 //  - external plugin already installed in `node_modules`, most likely through `package.json`
 //  - automatically installed by us, to `.netlify/plugins/`
-const resolvePluginsPath = async function ({
+export const resolvePluginsPath = async function ({
   pluginsOptions,
   siteInfo,
   buildDir,
@@ -152,5 +150,3 @@ const resolveMissingPluginPath = async function ({ pluginOptions, pluginOptions:
 const isMissingPlugin = function ({ isMissing }) {
   return isMissing
 }
-
-module.exports = { resolvePluginsPath }

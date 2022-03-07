@@ -1,9 +1,5 @@
-'use strict'
-
-module.exports = {
-  onBuild() {
-    const error = new Error('test')
-    error.test = true
-    throw error
-  },
+export const onBuild = function () {
+  const error = new Error('test')
+  error.test = true
+  throw error
 }

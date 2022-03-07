@@ -1,14 +1,12 @@
-'use strict'
+import { env } from 'process'
 
-const { env } = require('process')
-
-const filterObj = require('filter-obj')
-const mapObj = require('map-obj')
+import filterObj from 'filter-obj'
+import mapObj from 'map-obj'
 
 // If plugins modify `process.env`, this is propagated in other plugins and in
 // `build.command`. Since those are different processes, we figure out when they
 // do this and communicate the new `process.env` to other processes.
-const getNewEnvChanges = function (envBefore, netlifyConfig, netlifyConfigCopy) {
+export const getNewEnvChanges = function (envBefore, netlifyConfig, netlifyConfigCopy) {
   const processEnvChanges = diffEnv(envBefore, env)
   const netlifyConfigEnvChanges = diffEnv(netlifyConfig.build.environment, netlifyConfigCopy.build.environment)
   return { ...processEnvChanges, ...netlifyConfigEnvChanges }
@@ -31,7 +29,7 @@ const setToNull = function (name) {
 
 // Set `process.env` changes from a previous different plugin.
 // Can also merge with a `currentEnv` plain object instead of `process.env`.
-const setEnvChanges = function (envChanges, currentEnv = env) {
+export const setEnvChanges = function (envChanges, currentEnv = env) {
   Object.entries(envChanges).forEach(([name, value]) => {
     setEnvChange(name, value, currentEnv)
   })
@@ -52,5 +50,3 @@ const setEnvChange = function (name, value, currentEnv) {
 
   currentEnv[name] = value
 }
-
-module.exports = { getNewEnvChanges, setEnvChanges }

@@ -1,11 +1,5 @@
-'use strict'
+import { env } from 'process'
 
-const {
-  env: { DEPLOY_ID },
-} = require('process')
-
-module.exports = {
-  onPreBuild() {
-    console.log(DEPLOY_ID)
-  },
+export const onPreBuild = function () {
+  console.log(env.DEPLOY_ID)
 }

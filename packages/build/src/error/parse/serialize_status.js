@@ -1,7 +1,5 @@
-'use strict'
-
 // Serialize an error object to `statuses` properties
-const serializeErrorStatus = function ({ fullErrorInfo: { title, message, locationInfo, errorProps }, state }) {
+export const serializeErrorStatus = function ({ fullErrorInfo: { title, message, locationInfo, errorProps }, state }) {
   const text = getText({ locationInfo, errorProps })
   return { state, title, summary: message, text }
 }
@@ -23,5 +21,3 @@ const getErrorProps = function (errorProps) {
 
   return `Error properties:\n${errorProps}`
 }
-
-module.exports = { serializeErrorStatus }

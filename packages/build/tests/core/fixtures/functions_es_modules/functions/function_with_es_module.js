@@ -1,1 +1,1 @@
-export { foo as default } from '../helper'
+export { foo as default } from '../helper.js'

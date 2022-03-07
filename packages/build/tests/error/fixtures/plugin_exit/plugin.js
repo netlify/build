@@ -1,12 +1,9 @@
-'use strict'
+import { exit } from 'process'
 
-const { exit } = require('process')
+export const onPreBuild = function () {
+  exit(1)
+}
 
-module.exports = {
-  onPreBuild() {
-    exit(1)
-  },
-  onBuild() {
-    console.log('test')
-  },
+export const onBuild = function () {
+  console.log('test')
 }

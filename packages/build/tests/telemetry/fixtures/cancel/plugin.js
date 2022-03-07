@@ -1,11 +1,7 @@
-'use strict'
-
-module.exports = {
-  onBuild({
-    utils: {
-      build: { cancelBuild },
-    },
-  }) {
-    cancelBuild('test')
+export const onBuild = function ({
+  utils: {
+    build: { cancelBuild },
   },
+}) {
+  cancelBuild('test')
 }

@@ -1,11 +1,9 @@
-'use strict'
+import filterObj from 'filter-obj'
 
-const filterObj = require('filter-obj')
-
-const { simplifyConfig } = require('../simplify')
+import { simplifyConfig } from '../simplify.js'
 
 // Make sure we are not printing secret values. Use an allow list.
-const cleanupConfig = function ({
+export const cleanupConfig = function ({
   build: {
     base,
     command,
@@ -50,10 +48,12 @@ const cleanupConfig = function ({
     functions,
     functionsDirectory,
   })
-  return netlifyConfig
+  const netlifyConfigA = truncateArray(netlifyConfig, 'headers')
+  const netlifyConfigB = truncateArray(netlifyConfigA, 'redirects')
+  return netlifyConfigB
 }
 
-const cleanupEnvironment = function (environment) {
+export const cleanupEnvironment = function (environment) {
   return Object.keys(environment).filter((key) => !BUILDBOT_ENVIRONMENT.has(key))
 }
 
@@ -80,4 +80,13 @@ const isPublicInput = function (key, input) {
   return typeof input === 'boolean'
 }
 
-module.exports = { cleanupConfig, cleanupEnvironment }
+// `headers` and `redirects` can be very long, which can take several minutes
+// to print in the build logs. We truncate them before logging.
+const truncateArray = function (netlifyConfig, propName) {
+  const array = netlifyConfig[propName]
+  return Array.isArray(array) && array.length > MAX_ARRAY_LENGTH
+    ? { ...netlifyConfig, [propName]: array.slice(0, MAX_ARRAY_LENGTH) }
+    : netlifyConfig
+}
+
+const MAX_ARRAY_LENGTH = 100

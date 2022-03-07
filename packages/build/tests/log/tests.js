@@ -1,11 +1,9 @@
-'use strict'
+import test from 'ava'
+import chalk from 'chalk'
+import hasAnsi from 'has-ansi'
+// import isCI from 'is-ci'
 
-const test = require('ava')
-const { red } = require('chalk')
-const hasAnsi = require('has-ansi')
-// const isCI = require('is-ci')
-
-const { runFixture } = require('../helpers/main')
+import { runFixture } from '../helpers/main.js'
 
 // Common options for color-related tests
 const opts = { snapshot: false, normalize: false, useBinary: true }
@@ -17,7 +15,7 @@ test('Colors in parent process', async (t) => {
 
 test('Colors in child process', async (t) => {
   const { returnValue } = await runFixture(t, 'child', { ...opts, env: { FORCE_COLOR: '1' } })
-  t.true(returnValue.includes(red('onPreBuild')))
+  t.true(returnValue.includes(chalk.red('onPreBuild')))
 })
 
 test('Netlify CI', async (t) => {
@@ -51,4 +49,22 @@ test('No TTY', async (t) => {
 test('Logs whether the build commands came from the UI', async (t) => {
   const defaultConfig = { build: { command: 'node --invalid' } }
   await runFixture(t, 'empty', { flags: { defaultConfig } })
+})
+
+test('The verbose flag enables verbosity', async (t) => {
+  await runFixture(t, 'verbose', { flags: { verbose: true } })
+})
+
+test('Verbosity works with plugin errors', async (t) => {
+  await runFixture(t, 'verbose_error', { flags: { verbose: true } })
+})
+
+test('Does not truncate long headers in logs', async (t) => {
+  const { returnValue } = await runFixture(t, 'truncate_headers', { snapshot: false })
+  t.false(returnValue.includes('999'))
+})
+
+test('Does not truncate long redirects in logs', async (t) => {
+  const { returnValue } = await runFixture(t, 'truncate_redirects', { snapshot: false })
+  t.false(returnValue.includes('999'))
 })

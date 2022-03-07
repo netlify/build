@@ -1,5 +1,3 @@
-'use strict'
+import missing from './missing.js'
 
-const missing = require('./missing')
-
-module.exports = () => missing()
+export default () => missing()

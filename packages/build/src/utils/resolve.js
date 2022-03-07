@@ -1,9 +1,13 @@
-'use strict'
+import { createRequire } from 'module'
 
-const resolveLib = require('resolve')
+import { async as resolveLib } from 'resolve'
+
+// TODO: use `import.resolve()` once it is available without any experimental
+// flags
+const require = createRequire(import.meta.url)
 
 // Like `resolvePath()` but does not throw
-const tryResolvePath = async function (path, basedir) {
+export const tryResolvePath = async function (path, basedir) {
   try {
     const resolvedPath = await resolvePath(path, basedir)
     return { path: resolvedPath }
@@ -13,13 +17,13 @@ const tryResolvePath = async function (path, basedir) {
 }
 
 // This throws if the package cannot be found
-const resolvePath = async function (path, basedir) {
+export const resolvePath = async function (path, basedir) {
   try {
     return await resolvePathWithBasedir(path, basedir)
     // Fallback.
     // `resolve` sometimes gives unhelpful error messages.
     // https://github.com/browserify/resolve/issues/223
-  } catch (error) {
+  } catch {
     return require.resolve(path, { paths: [basedir] })
   }
 }
@@ -40,5 +44,3 @@ const resolvePathWithBasedir = function (path, basedir) {
     })
   })
 }
-
-module.exports = { tryResolvePath, resolvePath }

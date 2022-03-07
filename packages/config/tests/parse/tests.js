@@ -1,10 +1,8 @@
-'use strict'
+import { platform } from 'process'
 
-const { platform } = require('process')
+import test from 'ava'
 
-const test = require('ava')
-
-const { runFixture, FIXTURES_DIR } = require('../helpers/main')
+import { runFixture, FIXTURES_DIR } from '../helpers/main.js'
 
 test('Configuration file - netlify.toml', async (t) => {
   await runFixture(t, 'toml')

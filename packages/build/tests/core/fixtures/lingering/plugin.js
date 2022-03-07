@@ -1,10 +1,9 @@
-'use strict'
+import { spawn } from 'child_process'
+import { fileURLToPath } from 'url'
 
-const { spawn } = require('child_process')
+const FOREVER_SCRIPT = fileURLToPath(new URL('forever.js', import.meta.url))
 
-module.exports = {
-  onPreBuild() {
-    const { pid } = spawn('node', [`${__dirname}/forever.js`], { detached: true, stdio: 'ignore' })
-    console.log(`PID: ${pid}`)
-  },
+export const onPreBuild = function () {
+  const { pid } = spawn('node', [FOREVER_SCRIPT], { detached: true, stdio: 'ignore' })
+  console.log(`PID: ${pid}`)
 }

@@ -1,12 +1,10 @@
-'use strict'
+import indentString from 'indent-string'
 
-const indentString = require('indent-string')
-
-const { THEME } = require('../log/theme')
-const { serializeToml } = require('../utils/toml')
+import { THEME } from '../log/theme.js'
+import { serializeToml } from '../utils/toml.js'
 
 // Print invalid value and example netlify.toml
-const getExample = function ({ value, key, prevPath, example, formatInvalid }) {
+export const getExample = function ({ value, key, prevPath, example, formatInvalid }) {
   const exampleA = typeof example === 'function' ? example(value, key, prevPath) : example
   return `
 ${THEME.errorSubHeader('Invalid syntax')}
@@ -37,5 +35,3 @@ const setInvalidValuePart = function (value, part) {
 
   return value === undefined ? {} : { [part]: value }
 }
-
-module.exports = { getExample }

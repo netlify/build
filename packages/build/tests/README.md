@@ -60,9 +60,9 @@ Every test follows this template:
 <!-- eslint-disable-next-line ava/no-ignored-test-files -->
 
 ```js
-const test = require('ava')
+import test from 'ava'
 
-const { runFixture } = require('../../helpers/main')
+import { runFixture } from '../../helpers/main.js'
 
 test('test title', async (t) => {
   await runFixture(t, 'fixture_name')
@@ -72,12 +72,9 @@ test('test title', async (t) => {
 This calls under the hood:
 
 ```js
-const netlifyBuild = require('@netlify/build')
+import netlifyBuild from '@netlify/build'
 
-const runTest = async function () {
-  const output = await netlifyBuild({ repositoryRoot: './fixtures/fixture_name' })
-  return output
-}
+const output = await netlifyBuild({ repositoryRoot: './fixtures/fixture_name' })
 ```
 
 Then snapshots the output.

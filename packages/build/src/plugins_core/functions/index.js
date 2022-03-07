@@ -1,69 +1,23 @@
-'use strict'
+import { resolve } from 'path'
 
-const { join, resolve } = require('path')
+import { zipFunctions } from '@netlify/zip-it-and-ship-it'
+import { pathExists } from 'path-exists'
 
-// We can't use destructuring for zisi as we rely on spies for the `zipFunctions` method within our tests
-const zipItAndShipIt = require('@netlify/zip-it-and-ship-it')
-const mapObject = require('map-obj')
-const pathExists = require('path-exists')
+import { log } from '../../log/logger.js'
+import { logBundleResults, logFunctionsNonExistingDir, logFunctionsToBundle } from '../../log/messages/core_steps.js'
 
-const { log } = require('../../log/logger')
-const { logBundleResults, logFunctionsNonExistingDir, logFunctionsToBundle } = require('../../log/messages/core_steps')
-
-const { getZipError } = require('./error')
-const { getZisiFeatureFlags } = require('./feature_flags')
-const { getUserAndInternalFunctions, validateFunctionsSrc } = require('./utils')
+import { getZipError } from './error.js'
+import { getUserAndInternalFunctions, validateFunctionsSrc } from './utils.js'
+import { getZisiParameters } from './zisi.js'
 
 // Returns `true` if at least one of the functions has been configured to use
 // esbuild.
 const isUsingEsbuild = (functionsConfig = {}) =>
   Object.values(functionsConfig).some((configObject) => configObject.node_bundler === 'esbuild')
 
-// The function configuration keys returned by @netlify/config are not an exact
-// match to the properties that @netlify/zip-it-and-ship-it expects. We do that
-// translation here.
-const normalizeFunctionConfig = ({ buildDir, featureFlags, functionConfig = {}, isRunningLocally }) => ({
-  externalNodeModules: functionConfig.external_node_modules,
-  includedFiles: functionConfig.included_files,
-  includedFilesBasePath: buildDir,
-  ignoredNodeModules: functionConfig.ignored_node_modules,
-
-  // When the user selects esbuild as the Node bundler, we still want to use
-  // the legacy ZISI bundler as a fallback. Rather than asking the user to
-  // make this decision, we abstract that complexity away by injecting the
-  // fallback behavior ourselves. We do this by transforming the value
-  // `esbuild` into `esbuild_zisi`, which zip-it-and-ship-it understands.
-  nodeBundler: functionConfig.node_bundler === 'esbuild' ? 'esbuild_zisi' : functionConfig.node_bundler,
-
-  // If the build is running in buildbot, we set the Rust target directory to a
-  // path that will get cached in between builds, allowing us to speed up the
-  // build process.
-  rustTargetDirectory: isRunningLocally ? undefined : resolve(buildDir, '.netlify', 'rust-functions-cache', '[name]'),
-
-  schedule: featureFlags.buildbot_scheduled_functions ? functionConfig.schedule : undefined,
-})
-
-const getZisiParameters = ({
-  buildDir,
-  featureFlags,
-  functionsConfig,
-  functionsDist,
-  isRunningLocally,
-  repositoryRoot,
-}) => {
-  const isManifestEnabled = featureFlags.functionsBundlingManifest === true
-  const manifest = isManifestEnabled && isRunningLocally ? join(functionsDist, 'manifest.json') : undefined
-  const config = mapObject(functionsConfig, (expression, object) => [
-    expression,
-    normalizeFunctionConfig({ buildDir, featureFlags, functionConfig: object, isRunningLocally }),
-  ])
-  const zisiFeatureFlags = getZisiFeatureFlags(featureFlags)
-
-  return { basePath: buildDir, config, manifest, featureFlags: zisiFeatureFlags, repositoryRoot }
-}
-
 const zipFunctionsAndLogResults = async ({
   buildDir,
+  childEnv,
   featureFlags,
   functionsConfig,
   functionsDist,
@@ -75,6 +29,7 @@ const zipFunctionsAndLogResults = async ({
 }) => {
   const zisiParameters = getZisiParameters({
     buildDir,
+    childEnv,
     featureFlags,
     functionsConfig,
     functionsDist,
@@ -101,6 +56,7 @@ const zipFunctionsAndLogResults = async ({
 // Plugin to package Netlify functions with @netlify/zip-it-and-ship-it
 // eslint-disable-next-line complexity
 const coreStep = async function ({
+  childEnv,
   constants: {
     INTERNAL_FUNCTIONS_SRC: relativeInternalFunctionsSrc,
     IS_LOCAL: isRunningLocally,
@@ -149,6 +105,7 @@ const coreStep = async function ({
 
   const { bundler } = await zipFunctionsAndLogResults({
     buildDir,
+    childEnv,
     featureFlags,
     functionsConfig: netlifyConfig.functions,
     functionsDist,
@@ -182,7 +139,7 @@ const hasFunctionsDirectories = async function ({ buildDir, constants: { INTERNA
   return await pathExists(internalFunctionsSrc)
 }
 
-const bundleFunctions = {
+export const bundleFunctions = {
   event: 'onBuild',
   coreStep,
   coreStepId: 'functions_bundling',
@@ -191,4 +148,13 @@ const bundleFunctions = {
   condition: hasFunctionsDirectories,
 }
 
-module.exports = { bundleFunctions }
+// Named imports with ES modules cannot be mocked (unlike CommonJS) because
+// they are bound at load time.
+// However, some of our tests are asserting which arguments are passed to
+// `zip-it-and-ship-it` methods. Therefore, we need to use an intermediary
+// function and export them so tests can use it.
+export const zipItAndShipIt = {
+  async zipFunctions(...args) {
+    return await zipFunctions(...args)
+  },
+}

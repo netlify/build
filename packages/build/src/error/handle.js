@@ -1,19 +1,17 @@
-'use strict'
+import { cwd as getCwd } from 'process'
 
-const { cwd: getCwd } = require('process')
+import { pathExists } from 'path-exists'
 
-const pathExists = require('path-exists')
+import { logBuildError } from '../log/messages/core.js'
+import { logOldCliVersionError } from '../log/old_version.js'
 
-const { logBuildError } = require('../log/messages/core')
-const { logOldCliVersionError } = require('../log/old_version')
-
-const { removeErrorColors } = require('./colors')
-const { getErrorInfo } = require('./info')
-const { reportBuildError } = require('./monitor/report')
-const { parseErrorInfo } = require('./parse/parse')
+import { removeErrorColors } from './colors.js'
+import { getErrorInfo } from './info.js'
+import { reportBuildError } from './monitor/report.js'
+import { parseErrorInfo } from './parse/parse.js'
 
 // Logs and reports a build failure
-const handleBuildError = async function (
+export const handleBuildError = async function (
   error,
   { errorMonitor, netlifyConfig, childEnv, mode, logs, debug, testOpts },
 ) {
@@ -53,9 +51,7 @@ const isCancelCrash = async function (error) {
     const cwd = getCwd()
     return !(await pathExists(cwd))
     // `process.cwd()` fails when the current directory does not exist
-  } catch (error_) {
+  } catch {
     return true
   }
 }
-
-module.exports = { handleBuildError }

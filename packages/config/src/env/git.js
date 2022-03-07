@@ -1,13 +1,11 @@
-'use strict'
+import { execa } from 'execa'
 
-const execa = require('execa')
-
-const { removeFalsy } = require('../utils/remove_falsy')
+import { removeFalsy } from '../utils/remove_falsy.js'
 
 // Retrieve git-related information for use in environment variables.
 // git is optional and there might be not git repository.
 // We purposely keep this decoupled from the git utility.
-const getGitEnv = async function (buildDir, branch) {
+export const getGitEnv = async function (buildDir, branch) {
   const [COMMIT_REF, CACHED_COMMIT_REF] = await Promise.all([
     git(['rev-parse', 'HEAD'], buildDir),
     git(['rev-parse', 'HEAD^'], buildDir),
@@ -21,7 +19,5 @@ const git = async function (args, cwd) {
   try {
     const { stdout } = await execa('git', args, { cwd })
     return stdout
-  } catch (error) {}
+  } catch {}
 }
-
-module.exports = { getGitEnv }

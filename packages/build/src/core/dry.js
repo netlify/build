@@ -1,12 +1,10 @@
-'use strict'
+import pFilter from 'p-filter'
 
-const pFilter = require('p-filter')
-
-const { logDryRunStart, logDryRunStep, logDryRunEnd } = require('../log/messages/dry')
-const { runsOnlyOnBuildFailure } = require('../plugins/events')
+import { logDryRunStart, logDryRunStep, logDryRunEnd } from '../log/messages/dry.js'
+import { runsOnlyOnBuildFailure } from '../plugins/events.js'
 
 // If the `dry` flag is specified, do a dry run
-const doDryRun = async function ({ buildDir, steps, netlifyConfig, constants, buildbotServerSocket, logs }) {
+export const doDryRun = async function ({ buildDir, steps, netlifyConfig, constants, buildbotServerSocket, logs }) {
   const successSteps = await pFilter(steps, ({ event, condition }) =>
     shouldIncludeStep({ buildDir, event, condition, netlifyConfig, constants, buildbotServerSocket }),
   )
@@ -39,5 +37,3 @@ const shouldIncludeStep = async function ({
 const getEventLength = function ({ event }) {
   return event.length
 }
-
-module.exports = { doDryRun }

@@ -1,9 +1,7 @@
-'use strict'
+import { intercept, cleanAll } from '@netlify/nock-udp'
+import test from 'ava'
 
-const { intercept, cleanAll } = require('@netlify/nock-udp')
-const test = require('ava')
-
-const { runFixture } = require('../helpers/main')
+import { runFixture } from '../helpers/main.js'
 
 test.after(() => {
   cleanAll()

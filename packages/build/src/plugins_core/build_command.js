@@ -1,13 +1,11 @@
-'use strict'
+import { platform } from 'process'
 
-const { platform } = require('process')
+import { execa } from 'execa'
 
-const execa = require('execa')
-
-const { addErrorInfo } = require('../error/info')
-const { getBuildCommandDescription } = require('../log/description')
-const { logBuildCommandStart } = require('../log/messages/steps')
-const { getBuildCommandStdio, handleBuildCommandOutput } = require('../log/stream')
+import { addErrorInfo } from '../error/info.js'
+import { getBuildCommandDescription } from '../log/description.js'
+import { logBuildCommandStart } from '../log/messages/steps.js'
+import { getBuildCommandStdio, handleBuildCommandOutput } from '../log/stream.js'
 
 // Fire `build.command`
 const coreStep = async function ({
@@ -67,7 +65,7 @@ const hasBuildCommand = function ({
   return buildCommand !== undefined && buildCommand !== ''
 }
 
-const buildCommandCore = {
+export const buildCommandCore = {
   event: 'onBuild',
   coreStep,
   coreStepId: 'build_command',
@@ -75,5 +73,3 @@ const buildCommandCore = {
   coreStepDescription,
   condition: hasBuildCommand,
 }
-
-module.exports = { buildCommandCore }

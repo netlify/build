@@ -1,38 +1,37 @@
 /* eslint-disable max-lines */
-'use strict'
+import { getApiClient } from './api/client.js'
+import { getSiteInfo } from './api/site_info.js'
+import { getInitialBase, getBase, addBase } from './base.js'
+import { getBuildDir } from './build_dir.js'
+import { getCachedConfig } from './cached_config.js'
+import { normalizeContextProps, mergeContext } from './context.js'
+import { parseDefaultConfig } from './default.js'
+import { getEnv } from './env/main.js'
+import { resolveConfigPaths } from './files.js'
+import { getHeadersPath, addHeaders } from './headers.js'
+import { getInlineConfig } from './inline_config.js'
+import { logResult } from './log/main.js'
+import { mergeConfigs } from './merge.js'
+import { normalizeBeforeConfigMerge, normalizeAfterConfigMerge } from './merge_normalize.js'
+import { addDefaultOpts, normalizeOpts } from './options/main.js'
+import { UI_ORIGIN, CONFIG_ORIGIN, INLINE_ORIGIN } from './origin.js'
+import { parseConfig } from './parse.js'
+import { getConfigPath } from './path.js'
+import { getRedirectsPath, addRedirects } from './redirects.js'
 
-const { getApiClient } = require('./api/client')
-const { getSiteInfo } = require('./api/site_info')
-const { getInitialBase, getBase, addBase } = require('./base')
-const { getBuildDir } = require('./build_dir')
-const { getCachedConfig } = require('./cached_config')
-const { normalizeContextProps, mergeContext } = require('./context')
-const { parseDefaultConfig } = require('./default')
-const { getEnv } = require('./env/main')
-const { EVENTS } = require('./events')
-const { resolveConfigPaths } = require('./files')
-const { getHeadersPath, addHeaders } = require('./headers')
-const { getInlineConfig } = require('./inline_config')
-const { cleanupConfig } = require('./log/cleanup')
-const { logResult } = require('./log/main')
-const { mergeConfigs } = require('./merge')
-const { normalizeBeforeConfigMerge, normalizeAfterConfigMerge } = require('./merge_normalize')
-const { updateConfig, restoreConfig } = require('./mutations/update')
-const { addDefaultOpts, normalizeOpts } = require('./options/main')
-const { UI_ORIGIN, CONFIG_ORIGIN, INLINE_ORIGIN } = require('./origin')
-const { parseConfig } = require('./parse')
-const { getConfigPath } = require('./path')
+export { EVENTS } from './events.js'
+export { cleanupConfig } from './log/cleanup.js'
 // eslint-disable-next-line import/max-dependencies
-const { getRedirectsPath, addRedirects } = require('./redirects')
+export { updateConfig, restoreConfig } from './mutations/update.js'
 
 // Load the configuration file.
 // Takes an optional configuration file path as input and return the resolved
 // `config` together with related properties such as the `configPath`.
-const resolveConfig = async function (opts) {
+export const resolveConfig = async function (opts) {
   const { cachedConfig, cachedConfigPath, host, scheme, pathPrefix, testOpts, token, offline, ...optsA } =
     addDefaultOpts(opts)
   // `api` is not JSON-serializable, so we cannot cache it inside `cachedConfig`
-  const api = await getApiClient({ token, offline, host, scheme, pathPrefix, testOpts })
+  const api = getApiClient({ token, offline, host, scheme, pathPrefix, testOpts })
 
   const parsedCachedConfig = await getCachedConfig({ cachedConfig, cachedConfigPath, token, api })
   if (parsedCachedConfig !== undefined) {
@@ -56,6 +55,7 @@ const resolveConfig = async function (opts) {
     mode,
     debug,
     logs,
+    featureFlags,
   } = await normalizeOpts(optsA)
 
   const { siteInfo, accounts, addons } = await getSiteInfo({ api, siteId, mode, testOpts })
@@ -80,6 +80,7 @@ const resolveConfig = async function (opts) {
     inlineConfig: inlineConfigA,
     baseRelDir: baseRelDirA,
     logs,
+    featureFlags,
   })
 
   const env = await getEnv({
@@ -148,6 +149,7 @@ const loadConfig = async function ({
   inlineConfig,
   baseRelDir,
   logs,
+  featureFlags,
 }) {
   const initialBase = getInitialBase({ repositoryRoot, defaultConfig, inlineConfig })
   const { configPath, config, buildDir, base, redirectsPath, headersPath } = await getFullConfig({
@@ -161,6 +163,7 @@ const loadConfig = async function ({
     baseRelDir,
     configBase: initialBase,
     logs,
+    featureFlags,
   })
 
   // No second pass needed if:
@@ -191,6 +194,7 @@ const loadConfig = async function ({
     configBase: base,
     base,
     logs,
+    featureFlags,
   })
   return {
     configPath: configPathA,
@@ -214,6 +218,7 @@ const getFullConfig = async function ({
   configBase,
   base,
   logs,
+  featureFlags,
 }) {
   const configPath = await getConfigPath({ configOpt, cwd, repositoryRoot, configBase })
 
@@ -233,9 +238,9 @@ const getFullConfig = async function ({
       base: baseA,
     } = await resolveFiles({ config: configA, repositoryRoot, base, baseRelDir })
     const headersPath = getHeadersPath(configB)
-    const configC = await addHeaders(configB, headersPath, logs)
+    const configC = await addHeaders({ config: configB, headersPath, logs, featureFlags })
     const redirectsPath = getRedirectsPath(configC)
-    const configD = await addRedirects(configC, redirectsPath, logs)
+    const configD = await addRedirects({ config: configC, redirectsPath, logs, featureFlags })
     return { configPath, config: configD, buildDir, base: baseA, redirectsPath, headersPath }
   } catch (error) {
     const configName = configPath === undefined ? '' : ` file ${configPath}`
@@ -278,12 +283,4 @@ const resolveFiles = async function ({ config, repositoryRoot, base, baseRelDir 
   const configB = addBase(configA, baseA)
   return { config: configB, buildDir, base: baseA }
 }
-
-module.exports = resolveConfig
-// TODO: on next major release, export a single object instead of mutating the
-// top-level function
-module.exports.cleanupConfig = cleanupConfig
-module.exports.updateConfig = updateConfig
-module.exports.restoreConfig = restoreConfig
-module.exports.EVENTS = EVENTS
 /* eslint-enable max-lines */

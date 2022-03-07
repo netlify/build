@@ -1,30 +1,22 @@
-'use strict'
+import { promises as fs } from 'fs'
 
-const { writeFile, unlink, copyFile } = require('fs')
-const { promisify } = require('util')
+import { pathExists } from 'path-exists'
 
-const makeDir = require('make-dir')
-const pathExists = require('path-exists')
+import { ensureConfigPriority } from '../context.js'
+import { addHeaders } from '../headers.js'
+import { mergeConfigs } from '../merge.js'
+import { parseOptionalConfig } from '../parse.js'
+import { addRedirects } from '../redirects.js'
+import { simplifyConfig } from '../simplify.js'
+import { serializeToml } from '../utils/toml.js'
 
-const { ensureConfigPriority } = require('../context')
-const { addHeaders } = require('../headers')
-const { mergeConfigs } = require('../merge')
-const { parseOptionalConfig } = require('../parse')
-const { addRedirects } = require('../redirects')
-const { simplifyConfig } = require('../simplify')
-const { serializeToml } = require('../utils/toml')
-
-const { applyMutations } = require('./apply')
-
-const pWriteFile = promisify(writeFile)
-const pUnlink = promisify(unlink)
-const pCopyFile = promisify(copyFile)
+import { applyMutations } from './apply.js'
 
 // Persist configuration changes to `netlify.toml`.
 // If `netlify.toml` does not exist, creates it. Otherwise, merges the changes.
-const updateConfig = async function (
+export const updateConfig = async function (
   configMutations,
-  { buildDir, configPath, headersPath, redirectsPath, context, branch, logs },
+  { buildDir, configPath, headersPath, redirectsPath, context, branch, logs, featureFlags },
 ) {
   if (configMutations.length === 0) {
     return
@@ -33,8 +25,8 @@ const updateConfig = async function (
   const inlineConfig = applyMutations({}, configMutations)
   const normalizedInlineConfig = ensureConfigPriority(inlineConfig, context, branch)
   const updatedConfig = await mergeWithConfig(normalizedInlineConfig, configPath)
-  const configWithHeaders = await addHeaders(updatedConfig, headersPath, logs)
-  const finalConfig = await addRedirects(configWithHeaders, redirectsPath, logs)
+  const configWithHeaders = await addHeaders({ config: updatedConfig, headersPath, logs, featureFlags })
+  const finalConfig = await addRedirects({ config: configWithHeaders, redirectsPath, logs, featureFlags })
   const simplifiedConfig = simplifyConfig(finalConfig)
   await backupConfig({ buildDir, configPath, headersPath, redirectsPath })
   await Promise.all([
@@ -54,7 +46,7 @@ const mergeWithConfig = async function (normalizedInlineConfig, configPath) {
 // Serialize the changes to `netlify.toml`
 const saveConfig = async function (configPath, simplifiedConfig) {
   const serializedConfig = serializeToml(simplifiedConfig)
-  await pWriteFile(configPath, serializedConfig)
+  await fs.writeFile(configPath, serializedConfig)
 }
 
 // Deletes `_headers/_redirects` since they are merged to `netlify.toml`,
@@ -64,7 +56,7 @@ const deleteSideFile = async function (filePath) {
     return
   }
 
-  await pUnlink(filePath)
+  await fs.unlink(filePath)
 }
 
 // Modifications to `netlify.toml` and `_headers/_redirects` are only meant for
@@ -73,7 +65,7 @@ const deleteSideFile = async function (filePath) {
 // We do this by backing them up inside some sibling directory.
 const backupConfig = async function ({ buildDir, configPath, headersPath, redirectsPath }) {
   const tempDir = getTempDir(buildDir)
-  await makeDir(tempDir)
+  await fs.mkdir(tempDir, { recursive: true })
   await Promise.all([
     backupFile(configPath, `${tempDir}/netlify.toml`),
     backupFile(headersPath, `${tempDir}/_headers`),
@@ -81,7 +73,7 @@ const backupConfig = async function ({ buildDir, configPath, headersPath, redire
   ])
 }
 
-const restoreConfig = async function (configMutations, { buildDir, configPath, headersPath, redirectsPath }) {
+export const restoreConfig = async function (configMutations, { buildDir, configPath, headersPath, redirectsPath }) {
   if (configMutations.length === 0) {
     return
   }
@@ -106,22 +98,20 @@ const backupFile = async function (original, backup) {
     return
   }
 
-  await pCopyFile(original, backup)
+  await fs.copyFile(original, backup)
 }
 
 const deleteNoError = async (path) => {
   try {
-    await pUnlink(path)
-  } catch (_) {}
+    await fs.unlink(path)
+  } catch {}
 }
 
 const copyOrDelete = async function (src, dest) {
   if (await pathExists(src)) {
-    await pCopyFile(src, dest)
+    await fs.copyFile(src, dest)
     return
   }
 
   await deleteNoError(dest)
 }
-
-module.exports = { updateConfig, restoreConfig }

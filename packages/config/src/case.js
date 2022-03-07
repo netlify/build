@@ -1,7 +1,5 @@
-'use strict'
-
 // Some properties can be optionally capitalized. We normalize them to lowercase
-const normalizeConfigCase = function ({ Build, build = Build, ...config }) {
+export const normalizeConfigCase = function ({ Build, build = Build, ...config }) {
   const buildA = normalizeBuildCase(build)
   return { ...config, build: buildA }
 }
@@ -37,5 +35,3 @@ const normalizeBuildCase = function ({
     publish,
   }
 }
-
-module.exports = { normalizeConfigCase }

@@ -1,19 +1,18 @@
-'use strict'
+import { env } from 'process'
 
-const { env } = require('process')
+export const onPreBuild = function () {
+  env.TEST_ONE = 'one'
+}
 
-module.exports = {
-  onPreBuild() {
-    env.TEST_ONE = 'one'
-  },
-  onBuild() {
-    console.log(env.TEST_ONE)
-    throw new Error('onBuild')
-  },
-  onError() {
-    console.log(env.TEST_ONE)
-  },
-  onEnd() {
-    console.log(env.TEST_ONE)
-  },
+export const onBuild = function () {
+  console.log(env.TEST_ONE)
+  throw new Error('onBuild')
+}
+
+export const onError = function () {
+  console.log(env.TEST_ONE)
+}
+
+export const onEnd = function () {
+  console.log(env.TEST_ONE)
 }

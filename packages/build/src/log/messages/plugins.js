@@ -1,8 +1,6 @@
-'use strict'
+import { log, logArray, logWarning, logSubHeader } from '../logger.js'
 
-const { log, logArray, logWarning, logSubHeader } = require('../logger')
-
-const logPluginsFetchError = function (logs, message) {
+export const logPluginsFetchError = function (logs, message) {
   logWarning(
     logs,
     `
@@ -11,7 +9,7 @@ ${message}`,
   )
 }
 
-const logPluginsList = function ({ pluginsList, debug, logs }) {
+export const logPluginsList = function ({ pluginsList, debug, logs }) {
   if (!debug) {
     return
   }
@@ -27,7 +25,7 @@ const getPluginsListItem = function ([packageName, versions]) {
   return `${packageName}@${versions[0].version}`
 }
 
-const logFailPluginWarning = function (methodName, event) {
+export const logFailPluginWarning = function (methodName, event) {
   logWarning(
     undefined,
     `Plugin error: since "${event}" happens after deploy, the build has already succeeded and cannot fail anymore. This plugin should either:
@@ -36,13 +34,6 @@ const logFailPluginWarning = function (methodName, event) {
   )
 }
 
-const logDeploySuccess = function (logs) {
+export const logDeploySuccess = function (logs) {
   log(logs, 'Site deploy was successfully initiated')
-}
-
-module.exports = {
-  logPluginsFetchError,
-  logPluginsList,
-  logFailPluginWarning,
-  logDeploySuccess,
 }

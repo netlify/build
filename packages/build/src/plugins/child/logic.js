@@ -1,12 +1,13 @@
-'use strict'
+import { createRequire } from 'module'
+import { pathToFileURL } from 'url'
 
-const { pathToFileURL } = require('url')
+import { addTsErrorInfo } from './typescript.js'
 
-const { addTsErrorInfo } = require('./typescript')
+const require = createRequire(import.meta.url)
 
 // Require the plugin file and fire its top-level function.
 // The returned object is the `logic` which includes all event handlers.
-const getLogic = async function ({ pluginPath, inputs, tsNodeService }) {
+export const getLogic = async function ({ pluginPath, inputs, tsNodeService }) {
   const logic = await importLogic(pluginPath, tsNodeService)
   const logicA = loadLogic({ logic, inputs })
   return logicA
@@ -18,7 +19,7 @@ const importLogic = async function (pluginPath, tsNodeService) {
     // which is currently making it impossible for local plugins to use both
     // pure ES modules and TypeScript.
     if (tsNodeService !== undefined) {
-      // eslint-disable-next-line node/global-require, import/no-dynamic-require
+      // eslint-disable-next-line import/no-dynamic-require
       return require(pluginPath)
     }
 
@@ -54,5 +55,3 @@ const loadLogic = function ({ logic, inputs }) {
     throw error
   }
 }
-
-module.exports = { getLogic }

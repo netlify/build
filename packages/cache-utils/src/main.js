@@ -1,12 +1,13 @@
-'use strict'
+import del from 'del'
 
-const del = require('del')
+import { getCacheDir } from './dir.js'
+import { moveCacheFile, hasFiles } from './fs.js'
+import { list } from './list.js'
+import { getManifestInfo, writeManifest, removeManifest, isExpired } from './manifest.js'
+import { parsePath } from './path.js'
 
-const { getCacheDir } = require('./dir')
-const { moveCacheFile, hasFiles } = require('./fs')
-const { list } = require('./list')
-const { getManifestInfo, writeManifest, removeManifest, isExpired } = require('./manifest')
-const { parsePath } = require('./path')
+export { getCacheDir } from './dir.js'
+export { list } from './list.js'
 
 // Cache a file
 const saveOne = async function (
@@ -84,13 +85,13 @@ const allowMany = async function (func, paths, ...args) {
   return results.some(Boolean)
 }
 
-const save = allowMany.bind(null, saveOne)
-const restore = allowMany.bind(null, restoreOne)
-const remove = allowMany.bind(null, removeOne)
-const has = allowMany.bind(null, hasOne)
+export const save = allowMany.bind(null, saveOne)
+export const restore = allowMany.bind(null, restoreOne)
+export const remove = allowMany.bind(null, removeOne)
+export const has = allowMany.bind(null, hasOne)
 
 // Change `opts` default values
-const bindOpts = function (opts) {
+export const bindOpts = function (opts) {
   return {
     save: (paths, optsA) => save(paths, { ...opts, ...optsA }),
     restore: (paths, optsA) => restore(paths, { ...opts, ...optsA }),
@@ -100,5 +101,3 @@ const bindOpts = function (opts) {
     getCacheDir: (optsA) => getCacheDir({ ...opts, ...optsA }),
   }
 }
-
-module.exports = { save, restore, remove, has, list, getCacheDir, bindOpts }

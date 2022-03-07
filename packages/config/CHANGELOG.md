@@ -1,5 +1,172 @@
 # Changelog
 
+### [17.0.18](https://github.com/netlify/build/compare/config-v17.0.17...config-v17.0.18) (2022-03-02)
+
+
+### Bug Fixes
+
+* add deploy-related environment variables to local builds ([#4209](https://github.com/netlify/build/issues/4209)) ([a1b2133](https://github.com/netlify/build/commit/a1b21332847fc8de15bd45453eaa355347b0820b))
+
+### [17.0.17](https://github.com/netlify/build/compare/config-v17.0.16...config-v17.0.17) (2022-03-02)
+
+
+### Bug Fixes
+
+* `URL` environment variable in local builds ([#4208](https://github.com/netlify/build/issues/4208)) ([ca52d08](https://github.com/netlify/build/commit/ca52d08624180be75e1161472c567172e8373151))
+
+### [17.0.16](https://github.com/netlify/build/compare/config-v17.0.15...config-v17.0.16) (2022-02-28)
+
+
+### Bug Fixes
+
+* **deps:** update dependency netlify-redirect-parser to v13.0.5 ([#4203](https://github.com/netlify/build/issues/4203)) ([6f8b097](https://github.com/netlify/build/commit/6f8b0973fa3eedc47a3438869df1ecb5de8ff36f))
+
+### [17.0.15](https://github.com/netlify/build/compare/config-v17.0.14...config-v17.0.15) (2022-02-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency netlify-redirect-parser to v13.0.4 ([#4177](https://github.com/netlify/build/issues/4177)) ([cfebc70](https://github.com/netlify/build/commit/cfebc7027eaba58484c4d80e54c6a9c3b65369eb))
+
+### [17.0.14](https://github.com/netlify/build/compare/config-v17.0.13...config-v17.0.14) (2022-02-24)
+
+
+### Bug Fixes
+
+* pass feature flags to `netlify-redirect-parser` and `netlify-headers-parser` ([#4184](https://github.com/netlify/build/issues/4184)) ([ed87a71](https://github.com/netlify/build/commit/ed87a7174e4c73552a7ba8c8ae08a1075fdd433c))
+
+### [17.0.13](https://github.com/netlify/build/compare/config-v17.0.12...config-v17.0.13) (2022-02-24)
+
+
+### Bug Fixes
+
+* truncate headers/redirects in logs ([#4183](https://github.com/netlify/build/issues/4183)) ([2471c49](https://github.com/netlify/build/commit/2471c49ede2aeaaaf4233c42020bc66448af8427))
+
+### [17.0.12](https://github.com/netlify/build/compare/config-v17.0.11...config-v17.0.12) (2022-02-21)
+
+
+### Bug Fixes
+
+* **config-redirects:** revert 216213fc2f6f5ff9b61c3bb3a71afac7d7099ebf ([#4178](https://github.com/netlify/build/issues/4178)) ([7a7c82a](https://github.com/netlify/build/commit/7a7c82aee6ce2017afba1e5c3faad5678b5f1f85))
+
+### [17.0.11](https://github.com/netlify/build/compare/config-v17.0.10...config-v17.0.11) (2022-02-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency netlify-redirect-parser to ^13.0.3 ([#4173](https://github.com/netlify/build/issues/4173)) ([f69ba2b](https://github.com/netlify/build/commit/f69ba2ba2074933610cc11889a3acf35a1e36a8b))
+
+### [17.0.10](https://github.com/netlify/build/compare/config-v17.0.9...config-v17.0.10) (2022-02-21)
+
+
+### Bug Fixes
+
+* truncate long headers and redirects in build logs ([#4172](https://github.com/netlify/build/issues/4172)) ([216213f](https://github.com/netlify/build/commit/216213fc2f6f5ff9b61c3bb3a71afac7d7099ebf))
+
+### [17.0.9](https://github.com/netlify/build/compare/config-v17.0.8...config-v17.0.9) (2022-02-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency netlify-headers-parser to ^6.0.2 ([#4155](https://github.com/netlify/build/issues/4155)) ([1ddeb28](https://github.com/netlify/build/commit/1ddeb2886e9cfd9001dfa91c94271a355d6374ac))
+
+### [17.0.8](https://github.com/netlify/build/compare/config-v17.0.7...config-v17.0.8) (2022-02-10)
+
+
+### Bug Fixes
+
+* **deps:** update dependency dot-prop to v7 ([#4093](https://github.com/netlify/build/issues/4093)) ([4ab89f7](https://github.com/netlify/build/commit/4ab89f7717a24ff282d917b5a7d56acd1b4ee369))
+* **deps:** update dependency figures to v4 ([#4113](https://github.com/netlify/build/issues/4113)) ([c472081](https://github.com/netlify/build/commit/c472081f053acdea3f68363c76355c6a9d0f380b))
+* **deps:** update dependency find-up to v6 ([#4114](https://github.com/netlify/build/issues/4114)) ([50c9901](https://github.com/netlify/build/commit/50c990185f002d63e5cb369ca68e7b901466726c))
+* **deps:** update dependency indent-string to v5 ([#4116](https://github.com/netlify/build/issues/4116)) ([7726316](https://github.com/netlify/build/commit/77263163fa3c1019301a3393a04f25311718baed))
+* **deps:** update dependency path-type to v5 ([#4123](https://github.com/netlify/build/issues/4123)) ([c8e6eba](https://github.com/netlify/build/commit/c8e6eba2526c76325fcd20aceac1c073cb4bd37b))
+
+### [17.0.7](https://github.com/netlify/build/compare/config-v17.0.6...config-v17.0.7) (2022-02-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency chalk to v5 ([#4092](https://github.com/netlify/build/issues/4092)) ([332a533](https://github.com/netlify/build/commit/332a5333b30fa01791689f8af080cc38c147cc98))
+* **deps:** update dependency execa to v6 ([#4094](https://github.com/netlify/build/issues/4094)) ([4511447](https://github.com/netlify/build/commit/4511447230ae5b582821b40499ae29d97af0aeae))
+* **deps:** update dependency filter-obj to v3 ([#4095](https://github.com/netlify/build/issues/4095)) ([cf364ea](https://github.com/netlify/build/commit/cf364ea6f4563a0377180ddc47c24621a81423ab))
+* **deps:** update dependency is-plain-obj to v4 ([#4117](https://github.com/netlify/build/issues/4117)) ([14585b0](https://github.com/netlify/build/commit/14585b0089376bfbf04cb9746a23aec4faf925c6))
+* **deps:** update dependency map-obj to v5 ([#4120](https://github.com/netlify/build/issues/4120)) ([179269f](https://github.com/netlify/build/commit/179269ffe3f8747f320c5484ed67254d493d6997))
+* **deps:** update dependency netlify to v11 ([#4136](https://github.com/netlify/build/issues/4136)) ([e26e0ae](https://github.com/netlify/build/commit/e26e0aed973ba68ec9cee6ca5c709848739d1f05))
+* **deps:** update dependency netlify-redirect-parser to ^13.0.2 ([#4135](https://github.com/netlify/build/issues/4135)) ([fc5a2d0](https://github.com/netlify/build/commit/fc5a2d047c431a3266b20c7ebbcdd6a1abca0612))
+* **deps:** update dependency p-locate to v6 ([#4101](https://github.com/netlify/build/issues/4101)) ([fea08d3](https://github.com/netlify/build/commit/fea08d31917c04cfb645f42638a94ebc09a400e3))
+* **deps:** update dependency path-exists to v5 ([#4102](https://github.com/netlify/build/issues/4102)) ([744421d](https://github.com/netlify/build/commit/744421d89d6e773bd96d82d3ceeb561ee5d7f3db))
+
+### [17.0.6](https://github.com/netlify/build/compare/config-v17.0.5...config-v17.0.6) (2022-01-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency dot-prop to v6 ([#4057](https://github.com/netlify/build/issues/4057)) ([fb173c0](https://github.com/netlify/build/commit/fb173c096310fc354867567eff27b4c4cabd0d8b))
+
+### [17.0.5](https://github.com/netlify/build/compare/config-v17.0.4...config-v17.0.5) (2022-01-18)
+
+
+### Bug Fixes
+
+* upgrade Yargs to v17 ([#4045](https://github.com/netlify/build/issues/4045)) ([cce8fda](https://github.com/netlify/build/commit/cce8fda7c9eb77bd607c92c1c4d3aa88496ab4d0))
+
+### [17.0.4](https://github.com/netlify/build/compare/config-v17.0.3...config-v17.0.4) (2022-01-17)
+
+
+### Bug Fixes
+
+* **deps:** update del to v6.0.0 ([#4036](https://github.com/netlify/build/issues/4036)) ([f5e076c](https://github.com/netlify/build/commit/f5e076c7152aeadcddfa3805548fd160a416d3dc))
+* **deps:** update dependency netlify to ^10.1.2 ([#4039](https://github.com/netlify/build/issues/4039)) ([f337985](https://github.com/netlify/build/commit/f33798590e98efbc7168793cb4f7ae13e4bd4115))
+* **deps:** update dependency netlify-headers-parser to ^6.0.1 ([#4044](https://github.com/netlify/build/issues/4044)) ([8079d17](https://github.com/netlify/build/commit/8079d174caff8d1d6c36b2f9bca010f8a1a90bdd))
+* **deps:** update dependency netlify-redirect-parser to ^13.0.1 ([#4043](https://github.com/netlify/build/issues/4043)) ([4a8d0dc](https://github.com/netlify/build/commit/4a8d0dca58a3c93fbcbe42a6a4185848f893cd26))
+* **deps:** update yargs to v16.0.0 ([#4037](https://github.com/netlify/build/issues/4037)) ([3d1a433](https://github.com/netlify/build/commit/3d1a433a2b8e401a3ede6225465fa25cc82dd553))
+
+### [17.0.3](https://www.github.com/netlify/build/compare/config-v17.0.2...config-v17.0.3) (2022-01-05)
+
+
+### Bug Fixes
+
+* **deps:** update dependency netlify to ^10.1.1 ([#4001](https://www.github.com/netlify/build/issues/4001)) ([0779269](https://www.github.com/netlify/build/commit/07792699b2acdf0da28d00c594fe0c0df016994e))
+
+### [17.0.2](https://www.github.com/netlify/build/compare/config-v17.0.1...config-v17.0.2) (2021-12-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency netlify to ^10.1.0 ([#3974](https://www.github.com/netlify/build/issues/3974)) ([e58b818](https://www.github.com/netlify/build/commit/e58b818568f6285b57cec874e257088dbb6d7d05))
+
+### [17.0.1](https://www.github.com/netlify/build/compare/config-v17.0.0...config-v17.0.1) (2021-12-17)
+
+
+### Bug Fixes
+
+* use static imports with `@netlify/config` ([#3963](https://www.github.com/netlify/build/issues/3963)) ([1689b7d](https://www.github.com/netlify/build/commit/1689b7d2bb40bc8049ca5675a1f3059ca8289cfa))
+
+## [17.0.0](https://www.github.com/netlify/build/compare/config-v16.0.7...config-v17.0.0) (2021-12-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* use pure ES modules with `@netlify/config` (#3945)
+
+### Miscellaneous Chores
+
+* use pure ES modules with `@netlify/config` ([#3945](https://www.github.com/netlify/build/issues/3945)) ([96a2cfd](https://www.github.com/netlify/build/commit/96a2cfd8ea8024c570dad0f74dce4ebaa7b39659))
+
+### [16.0.7](https://www.github.com/netlify/build/compare/config-v16.0.6...config-v16.0.7) (2021-12-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency netlify-headers-parser to v6 ([#3921](https://www.github.com/netlify/build/issues/3921)) ([b3b3f3b](https://www.github.com/netlify/build/commit/b3b3f3bb7b3002827bc55a0d84bf4cbd1997d71f))
+
+### [16.0.6](https://www.github.com/netlify/build/compare/config-v16.0.5...config-v16.0.6) (2021-12-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency netlify-redirect-parser to v13 ([#3919](https://www.github.com/netlify/build/issues/3919)) ([ac34875](https://www.github.com/netlify/build/commit/ac348752a1e6b584d0cebd9c34ed2df3d5f8474e))
+
 ### [16.0.5](https://www.github.com/netlify/build/compare/config-v16.0.4...config-v16.0.5) (2021-11-30)
 
 

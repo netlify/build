@@ -1,15 +1,15 @@
-'use strict'
+import { fileURLToPath } from 'url'
 
-const Bugsnag = require('@bugsnag/js')
-const memoizeOne = require('memoize-one')
+import Bugsnag from '@bugsnag/js'
+import memoizeOne from 'memoize-one'
 
-const { name, version } = require('../../../package.json')
-const { log } = require('../../log/logger')
+import { log } from '../../log/logger.js'
+import { ROOT_PACKAGE_JSON } from '../../utils/json.js'
 
-const projectRoot = `${__dirname}/../../..`
+const projectRoot = fileURLToPath(new URL('../../..', import.meta.url))
 
 // Start a client to monitor errors
-const startErrorMonitor = function ({ flags: { mode }, logs, bugsnagKey }) {
+export const startErrorMonitor = function ({ flags: { mode }, logs, bugsnagKey }) {
   if (!bugsnagKey) {
     return
   }
@@ -20,8 +20,8 @@ const startErrorMonitor = function ({ flags: { mode }, logs, bugsnagKey }) {
   try {
     const errorMonitor = startBugsnag({
       apiKey: bugsnagKey,
-      appVersion: `${name} ${version}`,
-      appType: name,
+      appVersion: `${ROOT_PACKAGE_JSON.name} ${ROOT_PACKAGE_JSON.version}`,
+      appType: ROOT_PACKAGE_JSON.name,
       releaseStage,
       logger,
       projectRoot,
@@ -67,5 +67,3 @@ const getLogger = function (logs, isTest) {
 }
 
 const noop = function () {}
-
-module.exports = { startErrorMonitor }

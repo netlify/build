@@ -1,9 +1,5 @@
-'use strict'
+import chalk from 'chalk'
 
-const { red } = require('chalk')
-
-module.exports = {
-  onPreBuild() {
-    console.log(red('onPreBuild'))
-  },
+export const onPreBuild = function () {
+  console.log(chalk.red('onPreBuild'))
 }

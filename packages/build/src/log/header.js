@@ -1,9 +1,7 @@
-'use strict'
-
-const stringWidth = require('string-width')
+import stringWidth from 'string-width'
 
 // Print a rectangular header
-const getHeader = function (message) {
+export const getHeader = function (message) {
   const messageWidth = stringWidth(message)
   const headerWidth = Math.max(HEADER_MIN_WIDTH, messageWidth)
   const line = '─'.repeat(headerWidth + PADDING_WIDTH * 2)
@@ -16,5 +14,3 @@ ${line}`
 
 const HEADER_MIN_WIDTH = 60
 const PADDING_WIDTH = 2
-
-module.exports = { getHeader }

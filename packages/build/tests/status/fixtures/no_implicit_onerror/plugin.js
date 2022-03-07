@@ -1,5 +1,1 @@
-'use strict'
-
-module.exports = {
-  onError() {},
-}
+export const onError = function () {}

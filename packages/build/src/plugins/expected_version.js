@@ -1,17 +1,16 @@
-'use strict'
+import semver from 'semver'
 
-const { satisfies } = require('semver')
+import { addErrorInfo } from '../error/info.js'
+import { importJsonFile } from '../utils/json.js'
+import { resolvePath } from '../utils/resolve.js'
 
-const { addErrorInfo } = require('../error/info')
-const { resolvePath } = require('../utils/resolve')
-
-const { getExpectedVersion } = require('./compatibility')
-const { getPluginsList } = require('./list')
+import { getExpectedVersion } from './compatibility.js'
+import { getPluginsList } from './list.js'
 
 // When using plugins in our official list, those are installed in .netlify/plugins/
 // We ensure that the last version that's been approved is always the one being used.
 // We also ensure that the plugin is our official list.
-const addExpectedVersions = async function ({
+export const addExpectedVersions = async function ({
   pluginsOptions,
   autoPluginsDir,
   packageJson,
@@ -89,14 +88,13 @@ const isMissingVersion = async function ({ autoPluginsDir, packageName, pluginPa
     // Plugin was not previously installed
     (pluginPath === undefined ||
       // Plugin was previously installed but a different version should be used
-      !satisfies(await getAutoPluginVersion(packageName, autoPluginsDir), expectedVersion))
+      !semver.satisfies(await getAutoPluginVersion(packageName, autoPluginsDir), expectedVersion))
   )
 }
 
 const getAutoPluginVersion = async function (packageName, autoPluginsDir) {
   const packageJsonPath = await resolvePath(`${packageName}/package.json`, autoPluginsDir)
-  // eslint-disable-next-line node/global-require, import/no-dynamic-require
-  const { version } = require(packageJsonPath)
+  const { version } = await importJsonFile(packageJsonPath)
   return version
 }
 
@@ -119,5 +117,3 @@ Please run "npm install -D ${packageName}" or "yarn add -D ${packageName}".`,
   addErrorInfo(error, { type: 'resolveConfig' })
   throw error
 }
-
-module.exports = { addExpectedVersions }

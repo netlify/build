@@ -16,16 +16,16 @@ npm install @netlify/config
 
 # Usage (Node.js)
 
-## getNetlifyConfig(options?)
+## resolveConfig(options?)
 
 `options`: `object?`\
 _Return value_: `Promise<object>`
 
 ```js
-const getNetlifyConfig = require('@netlify/config')
+import { resolveConfig } from '@netlify/config'
 
 const exampleFunction = async function () {
-  const { config, configPath, buildDir, context, branch, token, siteInfo } = await getNetlifyConfig(options)
+  const { config, configPath, buildDir, context, branch, token, siteInfo } = await resolveConfig(options)
   // {
   // "siteInfo": {
   //   "id": "418b94bc-93cd-411a-937a-ae4c734f17c4",
@@ -375,6 +375,6 @@ Site's environment variables. Each environment variable value is an object with 
 $ netlify-config
 ```
 
-Like [`getNetlifyConfig()`](getnetlifyconfigoptions), but in the CLI. The return value is printed on `stdout`.
+Like [`resolveConfig()`](resolveconfig), but in the CLI. The return value is printed on `stdout`.
 
 The CLI flags use the same options.

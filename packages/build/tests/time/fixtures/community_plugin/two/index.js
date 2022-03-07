@@ -1,6 +1,3 @@
-'use strict'
+export const onBuild = function () {}
 
-module.exports = {
-  onBuild() {},
-  onPostBuild() {},
-}
+export const onPostBuild = function () {}

@@ -1,13 +1,11 @@
-'use strict'
+import { addPluginLoadErrorStatus } from '../../status/load_error.js'
 
-const { addPluginLoadErrorStatus } = require('../../status/load_error')
-
-const { checkInputs } = require('./check')
-const { loadManifest } = require('./load')
-const { getManifestPath } = require('./path')
+import { checkInputs } from './check.js'
+import { loadManifest } from './load.js'
+import { getManifestPath } from './path.js'
 
 // Load plugin's `manifest.yml`
-const useManifest = async function (
+export const useManifest = async function (
   { packageName, loadedFrom, origin, inputs },
   { pluginDir, packageDir, pluginPackageJson, pluginPackageJson: { version }, debug },
 ) {
@@ -22,5 +20,3 @@ const useManifest = async function (
     throw error
   }
 }
-
-module.exports = { useManifest }

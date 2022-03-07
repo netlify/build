@@ -1,10 +1,8 @@
-'use strict'
-
-const { parse: loadToml } = require('toml')
-const tomlify = require('tomlify-j0.4')
+import { parse as loadToml } from 'toml'
+import tomlify from 'tomlify-j0.4'
 
 // Parse from TOML to JavaScript
-const parseToml = function (configString) {
+export const parseToml = function (configString) {
   const config = loadToml(configString)
   // `toml.parse()` returns a object with `null` prototype deeply, which can
   // sometimes create problems with some utilities. We convert it.
@@ -14,7 +12,7 @@ const parseToml = function (configString) {
 }
 
 // Serialize JavaScript object to TOML
-const serializeToml = function (object) {
+export const serializeToml = function (object) {
   return tomlify.toToml(object, { space: 2, replace: replaceTomlValue })
 }
 
@@ -23,5 +21,3 @@ const serializeToml = function (object) {
 const replaceTomlValue = function (key, value) {
   return Number.isInteger(value) ? String(value) : false
 }
-
-module.exports = { parseToml, serializeToml }

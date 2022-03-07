@@ -1,5 +1,460 @@
 # Changelog
 
+### [26.3.14](https://github.com/netlify/build/compare/build-v26.3.13...build-v26.3.14) (2022-03-02)
+
+
+### Bug Fixes
+
+* add deploy-related environment variables to local builds ([#4209](https://github.com/netlify/build/issues/4209)) ([a1b2133](https://github.com/netlify/build/commit/a1b21332847fc8de15bd45453eaa355347b0820b))
+
+### [26.3.13](https://github.com/netlify/build/compare/build-v26.3.12...build-v26.3.13) (2022-03-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.15.0 ([#4205](https://github.com/netlify/build/issues/4205)) ([6505597](https://github.com/netlify/build/commit/65055974766ac0761eb62b28c4f85b2b169eea8a))
+
+### [26.3.12](https://github.com/netlify/build/compare/build-v26.3.11...build-v26.3.12) (2022-02-28)
+
+
+### Bug Fixes
+
+* remove feature flag `redirects_parser_normalize_status` ([#4190](https://github.com/netlify/build/issues/4190)) ([29a001e](https://github.com/netlify/build/commit/29a001ea17f431d8c374057146f4272527113ce4))
+
+### [26.3.11](https://github.com/netlify/build/compare/build-v26.3.10...build-v26.3.11) (2022-02-28)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugin-edge-handlers to ^3.0.7 ([#4201](https://github.com/netlify/build/issues/4201)) ([0c99c98](https://github.com/netlify/build/commit/0c99c98f8724f4ab8d02c23bb2070c7d73d19854))
+
+### [26.3.10](https://github.com/netlify/build/compare/build-v26.3.9...build-v26.3.10) (2022-02-25)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.14.0 ([#4193](https://github.com/netlify/build/issues/4193)) ([a52dc78](https://github.com/netlify/build/commit/a52dc7852270f7704bb5fbe2b5798077736b06c2))
+
+### [26.3.9](https://github.com/netlify/build/compare/build-v26.3.8...build-v26.3.9) (2022-02-25)
+
+
+### Bug Fixes
+
+* remove manifest feat flag check ([#4185](https://github.com/netlify/build/issues/4185)) ([ed15696](https://github.com/netlify/build/commit/ed15696950c98fdeeb1897bef7b3c801ab29d6ca))
+
+### [26.3.8](https://github.com/netlify/build/compare/build-v26.3.7...build-v26.3.8) (2022-02-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency netlify-redirect-parser to v13.0.4 ([#4177](https://github.com/netlify/build/issues/4177)) ([cfebc70](https://github.com/netlify/build/commit/cfebc7027eaba58484c4d80e54c6a9c3b65369eb))
+
+### [26.3.7](https://github.com/netlify/build/compare/build-v26.3.6...build-v26.3.7) (2022-02-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v5.9.0 ([#4187](https://github.com/netlify/build/issues/4187)) ([aa00e62](https://github.com/netlify/build/commit/aa00e62b1d03840d0ed91f89f98e5ee25cbb3e95))
+* pass feature flags to `netlify-redirect-parser` and `netlify-headers-parser` ([#4184](https://github.com/netlify/build/issues/4184)) ([ed87a71](https://github.com/netlify/build/commit/ed87a7174e4c73552a7ba8c8ae08a1075fdd433c))
+
+### [26.3.6](https://github.com/netlify/build/compare/build-v26.3.5...build-v26.3.6) (2022-02-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.13.1 ([#4180](https://github.com/netlify/build/issues/4180)) ([990f435](https://github.com/netlify/build/commit/990f435459bdc635be2c67bb03175a03f3ad1988))
+* truncate headers/redirects in logs ([#4183](https://github.com/netlify/build/issues/4183)) ([2471c49](https://github.com/netlify/build/commit/2471c49ede2aeaaaf4233c42020bc66448af8427))
+
+### [26.3.5](https://github.com/netlify/build/compare/build-v26.3.4...build-v26.3.5) (2022-02-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.12.0 ([#4164](https://github.com/netlify/build/issues/4164)) ([efdbb02](https://github.com/netlify/build/commit/efdbb027e0a321ae13b54b3d3c13432ec87df43a))
+
+### [26.3.4](https://github.com/netlify/build/compare/build-v26.3.3...build-v26.3.4) (2022-02-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency log-process-errors to v8 ([#4169](https://github.com/netlify/build/issues/4169)) ([1693621](https://github.com/netlify/build/commit/1693621caeccc8367ec3290d50e0f6d39d764843))
+* truncate long headers and redirects in build logs ([#4172](https://github.com/netlify/build/issues/4172)) ([216213f](https://github.com/netlify/build/commit/216213fc2f6f5ff9b61c3bb3a71afac7d7099ebf))
+
+### [26.3.3](https://github.com/netlify/build/compare/build-v26.3.2...build-v26.3.3) (2022-02-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.11.0 ([#4157](https://github.com/netlify/build/issues/4157)) ([161c145](https://github.com/netlify/build/commit/161c14567f5c3637884d598c5877d842cccf0337))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v5.8.0 ([#4160](https://github.com/netlify/build/issues/4160)) ([1cdbab7](https://github.com/netlify/build/commit/1cdbab77884dad4c5d1f21f433bf373b59b8cce4))
+
+### [26.3.2](https://github.com/netlify/build/compare/build-v26.3.1...build-v26.3.2) (2022-02-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v5.7.5 ([#4154](https://github.com/netlify/build/issues/4154)) ([e7598e9](https://github.com/netlify/build/commit/e7598e9364cd617565b71149b96c6cdf3c0ba65d))
+
+### [26.3.1](https://github.com/netlify/build/compare/build-v26.3.0...build-v26.3.1) (2022-02-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.10.2 ([#4148](https://github.com/netlify/build/issues/4148)) ([9c605b2](https://github.com/netlify/build/commit/9c605b246c9b02f4dbddf3b083147a1a78c81577))
+
+## [26.3.0](https://github.com/netlify/build/compare/build-v26.2.7...build-v26.3.0) (2022-02-11)
+
+
+### Features
+
+* pass `nodeVersion` property to zip-it-and-ship-it ([#4146](https://github.com/netlify/build/issues/4146)) ([23c7ffe](https://github.com/netlify/build/commit/23c7ffe6a1a8cd7aa04d087274224a8d4dc8b9c1))
+
+### [26.2.7](https://github.com/netlify/build/compare/build-v26.2.6...build-v26.2.7) (2022-02-10)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.10.1 ([#4145](https://github.com/netlify/build/issues/4145)) ([ecc70c6](https://github.com/netlify/build/commit/ecc70c65d36412f91ab0167298da917de41787ba))
+* **deps:** update dependency @sindresorhus/slugify to v2 ([#4110](https://github.com/netlify/build/issues/4110)) ([9fae79c](https://github.com/netlify/build/commit/9fae79c3edc6cb2d3bc272e10f2c8305df24eefb))
+* **deps:** update dependency ansi-escapes to v5 ([#4111](https://github.com/netlify/build/issues/4111)) ([177cdb8](https://github.com/netlify/build/commit/177cdb88507d32ec2e16c75042d19ddc067f7793))
+* **deps:** update dependency clean-stack to v4 ([#4112](https://github.com/netlify/build/issues/4112)) ([3a46c8b](https://github.com/netlify/build/commit/3a46c8b3100a2b43883133553dc153f8b9080bf9))
+* **deps:** update dependency figures to v4 ([#4113](https://github.com/netlify/build/issues/4113)) ([c472081](https://github.com/netlify/build/commit/c472081f053acdea3f68363c76355c6a9d0f380b))
+* **deps:** update dependency indent-string to v5 ([#4116](https://github.com/netlify/build/issues/4116)) ([7726316](https://github.com/netlify/build/commit/77263163fa3c1019301a3393a04f25311718baed))
+* **deps:** update dependency keep-func-props to v4 ([#4096](https://github.com/netlify/build/issues/4096)) ([6a426ac](https://github.com/netlify/build/commit/6a426aca1c04a0b4d4aeb979ec541ab70743f2db))
+* **deps:** update dependency log-process-errors to v7 ([#4119](https://github.com/netlify/build/issues/4119)) ([427a172](https://github.com/netlify/build/commit/427a17219d88891cb407f7ffa75fed703f9f7ec6))
+* **deps:** update dependency os-name to v5 ([#4098](https://github.com/netlify/build/issues/4098)) ([aa958d3](https://github.com/netlify/build/commit/aa958d3f6cf16f83cff9cb2989bf45c706491a94))
+* **deps:** update dependency p-event to v5 ([#4099](https://github.com/netlify/build/issues/4099)) ([795d10b](https://github.com/netlify/build/commit/795d10b6e52b5a4a963045a3c0e13c8472b0d21d))
+* **deps:** update dependency p-reduce to v3 ([#4122](https://github.com/netlify/build/issues/4122)) ([b05d8e0](https://github.com/netlify/build/commit/b05d8e0770e8ddfd55b9c110d5ed4c236a74d65a))
+* **deps:** update dependency path-type to v5 ([#4123](https://github.com/netlify/build/issues/4123)) ([c8e6eba](https://github.com/netlify/build/commit/c8e6eba2526c76325fcd20aceac1c073cb4bd37b))
+* **deps:** update dependency pkg-dir to v6 ([#4124](https://github.com/netlify/build/issues/4124)) ([05b4f7c](https://github.com/netlify/build/commit/05b4f7c58b52749abac6a23a5a0f27b497f4eb5d))
+* **deps:** update dependency ps-list to v8 ([#4103](https://github.com/netlify/build/issues/4103)) ([b50a5f4](https://github.com/netlify/build/commit/b50a5f486a068c4d279eede2665929160685ed14))
+* **deps:** update dependency string-width to v5 ([#4126](https://github.com/netlify/build/issues/4126)) ([5da575f](https://github.com/netlify/build/commit/5da575f1aa0ec68eae2681a73fdbd11c91d41c7c))
+* **deps:** update dependency supports-color to v9 ([#4128](https://github.com/netlify/build/issues/4128)) ([723ef7d](https://github.com/netlify/build/commit/723ef7db5a8fde971226233a1a64cc5a20bba717))
+
+### [26.2.6](https://github.com/netlify/build/compare/build-v26.2.5...build-v26.2.6) (2022-02-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v5.7.4 ([#4142](https://github.com/netlify/build/issues/4142)) ([de8221b](https://github.com/netlify/build/commit/de8221bac66a8ae530612a4fc35ed1d15c92beb8))
+
+### [26.2.5](https://github.com/netlify/build/compare/build-v26.2.4...build-v26.2.5) (2022-02-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v5.7.2 ([#4140](https://github.com/netlify/build/issues/4140)) ([a984eb0](https://github.com/netlify/build/commit/a984eb0293d6ca4150f4ba450b52dcc792462882))
+
+### [26.2.4](https://github.com/netlify/build/compare/build-v26.2.3...build-v26.2.4) (2022-02-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugin-edge-handlers to ^3.0.6 ([#4130](https://github.com/netlify/build/issues/4130)) ([dd4bb09](https://github.com/netlify/build/commit/dd4bb0963b9f4a47bdb4175c300a9ce4b313d52e))
+* **deps:** update dependency @netlify/plugins-list to ^6.7.0 ([#4086](https://github.com/netlify/build/issues/4086)) ([8abd92c](https://github.com/netlify/build/commit/8abd92c7d51420167dbbed54f4dec58144ae6c07))
+* **deps:** update dependency @netlify/plugins-list to ^6.9.0 ([#4132](https://github.com/netlify/build/issues/4132)) ([2662c4f](https://github.com/netlify/build/commit/2662c4f553a5d5e70820e2e1257ca78663fc7722))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v5.7.0 ([#4131](https://github.com/netlify/build/issues/4131)) ([b045f61](https://github.com/netlify/build/commit/b045f6186459f77faff1ae4ff9109761873b60ea))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v5.7.1 ([#4137](https://github.com/netlify/build/issues/4137)) ([9d1ac08](https://github.com/netlify/build/commit/9d1ac08989308f244888b70fd01591207ce146d9))
+* **deps:** update dependency chalk to v5 ([#4092](https://github.com/netlify/build/issues/4092)) ([332a533](https://github.com/netlify/build/commit/332a5333b30fa01791689f8af080cc38c147cc98))
+* **deps:** update dependency execa to v6 ([#4094](https://github.com/netlify/build/issues/4094)) ([4511447](https://github.com/netlify/build/commit/4511447230ae5b582821b40499ae29d97af0aeae))
+* **deps:** update dependency filter-obj to v3 ([#4095](https://github.com/netlify/build/issues/4095)) ([cf364ea](https://github.com/netlify/build/commit/cf364ea6f4563a0377180ddc47c24621a81423ab))
+* **deps:** update dependency is-plain-obj to v4 ([#4117](https://github.com/netlify/build/issues/4117)) ([14585b0](https://github.com/netlify/build/commit/14585b0089376bfbf04cb9746a23aec4faf925c6))
+* **deps:** update dependency locate-path to v7 ([#4097](https://github.com/netlify/build/issues/4097)) ([b4b451f](https://github.com/netlify/build/commit/b4b451f2016ce255ac6634c6ebfa9078cd5e8b3f))
+* **deps:** update dependency map-obj to v5 ([#4120](https://github.com/netlify/build/issues/4120)) ([179269f](https://github.com/netlify/build/commit/179269ffe3f8747f320c5484ed67254d493d6997))
+* **deps:** update dependency netlify to v11 ([#4136](https://github.com/netlify/build/issues/4136)) ([e26e0ae](https://github.com/netlify/build/commit/e26e0aed973ba68ec9cee6ca5c709848739d1f05))
+* **deps:** update dependency p-filter to v3 ([#4100](https://github.com/netlify/build/issues/4100)) ([098268b](https://github.com/netlify/build/commit/098268b7a2a4e9f09f86c11b2fcf0c4bc9e8cfd0))
+* **deps:** update dependency p-locate to v6 ([#4101](https://github.com/netlify/build/issues/4101)) ([fea08d3](https://github.com/netlify/build/commit/fea08d31917c04cfb645f42638a94ebc09a400e3))
+* **deps:** update dependency path-exists to v5 ([#4102](https://github.com/netlify/build/issues/4102)) ([744421d](https://github.com/netlify/build/commit/744421d89d6e773bd96d82d3ceeb561ee5d7f3db))
+* **deps:** update dependency read-pkg-up to v9 ([#4125](https://github.com/netlify/build/issues/4125)) ([c04862e](https://github.com/netlify/build/commit/c04862e711ef7366b53b175af7ed127bdf1c61b6))
+* **deps:** update dependency strip-ansi to v7 ([#4127](https://github.com/netlify/build/issues/4127)) ([87c1bc6](https://github.com/netlify/build/commit/87c1bc65c01f339895d77372037482c213840882))
+* pin `ts-node` version ([#4133](https://github.com/netlify/build/issues/4133)) ([aa461ad](https://github.com/netlify/build/commit/aa461ade5eff697559c212a65181d346e011f0ab))
+
+### [26.2.3](https://github.com/netlify/build/compare/build-v26.2.2...build-v26.2.3) (2022-02-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.4.1 ([#4074](https://github.com/netlify/build/issues/4074)) ([8358efa](https://github.com/netlify/build/commit/8358efaae8c866df656d803427855aaa444bb41a))
+* **deps:** update dependency @netlify/plugins-list to ^6.5.0 ([#4080](https://github.com/netlify/build/issues/4080)) ([bcec21d](https://github.com/netlify/build/commit/bcec21d432e68d0db9cb5a8534d1f4de22b48a83))
+* **deps:** update dependency @netlify/plugins-list to ^6.6.0 ([#4085](https://github.com/netlify/build/issues/4085)) ([7afc52b](https://github.com/netlify/build/commit/7afc52bbddac12ba326c595e678a5262cda8a6df))
+
+### [26.2.2](https://github.com/netlify/build/compare/build-v26.2.1...build-v26.2.2) (2022-01-27)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.3.2 ([#4060](https://github.com/netlify/build/issues/4060)) ([b7118e9](https://github.com/netlify/build/commit/b7118e9f69589075152d119303f917a62760671e))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v5.5.2 ([#4073](https://github.com/netlify/build/issues/4073)) ([eaf1360](https://github.com/netlify/build/commit/eaf1360657511c7551cc1c2866f6486e16a136ca))
+
+### [26.2.1](https://github.com/netlify/build/compare/build-v26.2.0...build-v26.2.1) (2022-01-26)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v5.5.0 ([#4068](https://github.com/netlify/build/issues/4068)) ([9fcb419](https://github.com/netlify/build/commit/9fcb4190d482a7fc5e9f5f4e2e6be13cad6323b9))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v5.5.1 ([#4070](https://github.com/netlify/build/issues/4070)) ([02b3bde](https://github.com/netlify/build/commit/02b3bde678aa35bfaceebd6ca288e2221d0fdce0))
+* pin zip-it-and-ship-it to v5.4.1 ([#4066](https://github.com/netlify/build/issues/4066)) ([75819aa](https://github.com/netlify/build/commit/75819aacf554bb0c21d053365947db5fc209deea))
+* pin zip-it-and-ship-it to v5.4.1 ([#4071](https://github.com/netlify/build/issues/4071)) ([ec8a057](https://github.com/netlify/build/commit/ec8a05711a5746fb985225f59b5856c6da70f4fd))
+
+## [26.2.0](https://github.com/netlify/build/compare/build-v26.1.7...build-v26.2.0) (2022-01-19)
+
+
+### Features
+
+* pass `zipGo` property to ZISI ([#4058](https://github.com/netlify/build/issues/4058)) ([1f45942](https://github.com/netlify/build/commit/1f45942711ed7b1e980c80b01a66077cf57a9e63))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^5.5.0 ([#4055](https://github.com/netlify/build/issues/4055)) ([63b6374](https://github.com/netlify/build/commit/63b63747094fec205416e6c505206b607dcd4912))
+
+### [26.1.7](https://github.com/netlify/build/compare/build-v26.1.6...build-v26.1.7) (2022-01-19)
+
+
+### Bug Fixes
+
+* **deps:** add missing ts-node peer dependencies ([#4052](https://github.com/netlify/build/issues/4052)) ([51a48e8](https://github.com/netlify/build/commit/51a48e82095f4d87064824071fee254dd1603fda))
+
+### [26.1.6](https://github.com/netlify/build/compare/build-v26.1.5...build-v26.1.6) (2022-01-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^5.4.1 ([#4050](https://github.com/netlify/build/issues/4050)) ([2a1a4e2](https://github.com/netlify/build/commit/2a1a4e298ff0e282a772be648f01eecaa449017e))
+
+### [26.1.5](https://github.com/netlify/build/compare/build-v26.1.4...build-v26.1.5) (2022-01-18)
+
+
+### Bug Fixes
+
+* upgrade Yargs to v17 ([#4045](https://github.com/netlify/build/issues/4045)) ([cce8fda](https://github.com/netlify/build/commit/cce8fda7c9eb77bd607c92c1c4d3aa88496ab4d0))
+
+### [26.1.4](https://github.com/netlify/build/compare/build-v26.1.3...build-v26.1.4) (2022-01-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugin-edge-handlers to ^3.0.4 ([#4038](https://github.com/netlify/build/issues/4038)) ([c474463](https://github.com/netlify/build/commit/c474463c0ef1fb85ce4d6c0da81414d05fa51408))
+* **deps:** update dependency @netlify/plugins-list to ^6.3.0 ([#4041](https://github.com/netlify/build/issues/4041)) ([b8871ac](https://github.com/netlify/build/commit/b8871ac6992533688eb91063d7cbe084d5de019d))
+* **deps:** update yargs to v16.0.0 ([#4037](https://github.com/netlify/build/issues/4037)) ([3d1a433](https://github.com/netlify/build/commit/3d1a433a2b8e401a3ede6225465fa25cc82dd553))
+
+### [26.1.3](https://github.com/netlify/build/compare/build-v26.1.2...build-v26.1.3) (2022-01-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugin-edge-handlers to ^3.0.3 ([#4032](https://github.com/netlify/build/issues/4032)) ([ff0793a](https://github.com/netlify/build/commit/ff0793ae44493b2c6bab7b6b007bc7cc578b9bdf))
+
+### [26.1.2](https://github.com/netlify/build/compare/build-v26.1.1...build-v26.1.2) (2022-01-13)
+
+
+### Bug Fixes
+
+* use fs promises directly ([#4030](https://github.com/netlify/build/issues/4030)) ([02c4309](https://github.com/netlify/build/commit/02c4309a8325a7bf69f7170d2a1fe992a31edff7))
+
+### [26.1.1](https://github.com/netlify/build/compare/build-v26.1.0...build-v26.1.1) (2022-01-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugin-edge-handlers to ^3.0.1 ([#4015](https://github.com/netlify/build/issues/4015)) ([c1fdcb8](https://github.com/netlify/build/commit/c1fdcb881fb95d475e6258da7867a4c4afa3be19))
+* **deps:** update dependency @netlify/plugin-edge-handlers to ^3.0.2 ([#4017](https://github.com/netlify/build/issues/4017)) ([6a72a10](https://github.com/netlify/build/commit/6a72a109701b1b70570d0f3fcb9e754ae528ddc1))
+* **deps:** update dependency @netlify/plugins-list to ^6.2.1 ([#4026](https://github.com/netlify/build/issues/4026)) ([dad851a](https://github.com/netlify/build/commit/dad851aca78444dda61b1809cda85682156f0c4d))
+
+## [26.1.0](https://www.github.com/netlify/build/compare/build-v26.0.2...build-v26.1.0) (2022-01-03)
+
+
+### Features
+
+* remove `buildbot_scheduled_functions` feature flag ([#3997](https://www.github.com/netlify/build/issues/3997)) ([20d8b63](https://www.github.com/netlify/build/commit/20d8b634385563810e750b1152e48fd3dea38917))
+
+### [26.0.2](https://www.github.com/netlify/build/compare/build-v26.0.1...build-v26.0.2) (2021-12-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^5.4.0 ([#3973](https://www.github.com/netlify/build/issues/3973)) ([5ad9d82](https://www.github.com/netlify/build/commit/5ad9d8204cef3e401e09ca845a129fa73c837581))
+* use pure ES modules at the monorepo top level ([#3970](https://www.github.com/netlify/build/issues/3970)) ([922ddc5](https://www.github.com/netlify/build/commit/922ddc5a0a52bc2ae39f5ec3e1f4aee597357706))
+
+### [26.0.1](https://www.github.com/netlify/build/compare/build-v26.0.0...build-v26.0.1) (2021-12-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^5.3.1 ([#3971](https://www.github.com/netlify/build/issues/3971)) ([7b9ca99](https://www.github.com/netlify/build/commit/7b9ca99f82bacda4c09780f1bae290da77894e17))
+
+## [26.0.0](https://www.github.com/netlify/build/compare/build-v25.0.3...build-v26.0.0) (2021-12-20)
+
+
+### ⚠ BREAKING CHANGES
+
+* use pure ES modules with `@netlify/build` (#3967)
+
+### Miscellaneous Chores
+
+* use pure ES modules with `@netlify/build` ([#3967](https://www.github.com/netlify/build/issues/3967)) ([0fd5d1f](https://www.github.com/netlify/build/commit/0fd5d1fea070a7b1af2bbe40e11093da04b2efae))
+
+### [25.0.3](https://www.github.com/netlify/build/compare/build-v25.0.2...build-v25.0.3) (2021-12-17)
+
+
+### Bug Fixes
+
+* use ESM-compatible JSON imports ([#3964](https://www.github.com/netlify/build/issues/3964)) ([91b9063](https://www.github.com/netlify/build/commit/91b90632d5f32e6b3e372ac10ffbadbb0c36dc87))
+
+### [25.0.2](https://www.github.com/netlify/build/compare/build-v25.0.1...build-v25.0.2) (2021-12-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^5.3.0 ([#3961](https://www.github.com/netlify/build/issues/3961)) ([e1edaf3](https://www.github.com/netlify/build/commit/e1edaf36c325e4a0f5e3f9ef4da971544cc5e697))
+
+### [25.0.1](https://www.github.com/netlify/build/compare/build-v25.0.0...build-v25.0.1) (2021-12-15)
+
+
+### Bug Fixes
+
+* upgrade `@netlify/config` ([5afa49c](https://www.github.com/netlify/build/commit/5afa49c9179bfe57678a12fc59a00e7ad583a002))
+
+## [25.0.0](https://www.github.com/netlify/build/compare/build-v24.0.1...build-v25.0.0) (2021-12-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* use pure ES modules with `@netlify/config` (#3945)
+
+### Miscellaneous Chores
+
+* use pure ES modules with `@netlify/config` ([#3945](https://www.github.com/netlify/build/issues/3945)) ([96a2cfd](https://www.github.com/netlify/build/commit/96a2cfd8ea8024c570dad0f74dce4ebaa7b39659))
+
+### [24.0.1](https://www.github.com/netlify/build/compare/build-v24.0.0...build-v24.0.1) (2021-12-15)
+
+
+### Bug Fixes
+
+* upgrade `cache-utils` to `4.0.0` ([23915a3](https://www.github.com/netlify/build/commit/23915a37b3d4c72a2c018338a8546a9abd4eec2d))
+
+## [24.0.0](https://www.github.com/netlify/build/compare/build-v23.0.1...build-v24.0.0) (2021-12-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* use pure ES modules with `cache-utils` (#3944)
+
+### Miscellaneous Chores
+
+* use pure ES modules with `cache-utils` ([#3944](https://www.github.com/netlify/build/issues/3944)) ([ca0ac3b](https://www.github.com/netlify/build/commit/ca0ac3b79acd62fd8a9ee37777fdfba6851b23ce))
+
+### [23.0.1](https://www.github.com/netlify/build/compare/build-v23.0.0...build-v23.0.1) (2021-12-15)
+
+
+### Bug Fixes
+
+* upgrade `@netlify/functions-utils` to `4.0.0` ([ce736f8](https://www.github.com/netlify/build/commit/ce736f80dfaedfe8fa4efac4e4dc540773b22646))
+
+## [23.0.0](https://www.github.com/netlify/build/compare/build-v22.0.1...build-v23.0.0) (2021-12-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* use pure ES modules with functions-utils (#3942)
+
+### Miscellaneous Chores
+
+* use pure ES modules with functions-utils ([#3942](https://www.github.com/netlify/build/issues/3942)) ([590caad](https://www.github.com/netlify/build/commit/590caadbb6eaf304ad317b10bfce92ce1b0527a2))
+
+### [22.0.1](https://www.github.com/netlify/build/compare/build-v22.0.0...build-v22.0.1) (2021-12-15)
+
+
+### Bug Fixes
+
+* upgrade `git-utils` to `4.0.0` ([d298142](https://www.github.com/netlify/build/commit/d298142f3a58cb24097a66bad0460702f4182695))
+
+## [22.0.0](https://www.github.com/netlify/build/compare/build-v21.0.1...build-v22.0.0) (2021-12-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* use pure ES modules with `git-utils` (#3943)
+
+### Miscellaneous Chores
+
+* use pure ES modules with `git-utils` ([#3943](https://www.github.com/netlify/build/issues/3943)) ([59a9189](https://www.github.com/netlify/build/commit/59a918987c5ba9755c3e684d12e82879dbbe8b54))
+
+### [21.0.1](https://www.github.com/netlify/build/compare/build-v21.0.0...build-v21.0.1) (2021-12-15)
+
+
+### Bug Fixes
+
+* upgrade `run-utils` to `4.0.0` ([d242934](https://www.github.com/netlify/build/commit/d2429342b2d02d2b92b39344c1840bdd2a1adebe))
+
+## [21.0.0](https://www.github.com/netlify/build/compare/build-v20.3.2...build-v21.0.0) (2021-12-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* use pure ES modules with `run-utils` (#3936)
+
+### Miscellaneous Chores
+
+* use pure ES modules with `run-utils` ([#3936](https://www.github.com/netlify/build/issues/3936)) ([d2365aa](https://www.github.com/netlify/build/commit/d2365aa096b924bb95c98fe7cfc4fbae13cee14a))
+
+### [20.3.2](https://www.github.com/netlify/build/compare/build-v20.3.1...build-v20.3.2) (2021-12-15)
+
+
+### Bug Fixes
+
+* load plugin utilities directly ([#3937](https://www.github.com/netlify/build/issues/3937)) ([b8c708d](https://www.github.com/netlify/build/commit/b8c708d04b6982fe06b79e6f60d27638c4a22514))
+
+### [20.3.1](https://www.github.com/netlify/build/compare/build-v20.3.0...build-v20.3.1) (2021-12-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.1.0 ([#3938](https://www.github.com/netlify/build/issues/3938)) ([96a3ffd](https://www.github.com/netlify/build/commit/96a3ffdaeaf782f71d3a12a9fb7c35fc0ccb843b))
+* **deps:** update dependency @netlify/plugins-list to ^6.2.0 ([#3941](https://www.github.com/netlify/build/issues/3941)) ([04aa29d](https://www.github.com/netlify/build/commit/04aa29d711e406ec3db3fdd9c6186301b7f4cd15))
+
+## [20.3.0](https://www.github.com/netlify/build/compare/build-v20.2.0...build-v20.3.0) (2021-12-10)
+
+
+### Features
+
+* add a verbose flag ([#3934](https://www.github.com/netlify/build/issues/3934)) ([d7c9fd1](https://www.github.com/netlify/build/commit/d7c9fd1dc9d566e732a94c2455e9d2a993210bc3))
+
+## [20.2.0](https://www.github.com/netlify/build/compare/build-v20.1.0...build-v20.2.0) (2021-12-09)
+
+
+### Features
+
+* add `buildbot_create_functions_manifest` feature flag ([#3806](https://www.github.com/netlify/build/issues/3806)) ([d6e69ad](https://www.github.com/netlify/build/commit/d6e69ad2c5d5629b4c325df65e3024afe57c1d11))
+
+## [20.1.0](https://www.github.com/netlify/build/compare/build-v20.0.4...build-v20.1.0) (2021-12-06)
+
+
+### Features
+
+* pass additional feature flags to zip-it-and-ship-it ([#3925](https://www.github.com/netlify/build/issues/3925)) ([96ff2a8](https://www.github.com/netlify/build/commit/96ff2a8e83d6aad7340694ff026c46574268f5ad))
+
+### [20.0.4](https://www.github.com/netlify/build/compare/build-v20.0.3...build-v20.0.4) (2021-12-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to v6 ([#3916](https://www.github.com/netlify/build/issues/3916)) ([4410ce9](https://www.github.com/netlify/build/commit/4410ce903f01beaefb8a9c188169fecd4ab08365))
+
+### [20.0.3](https://www.github.com/netlify/build/compare/build-v20.0.2...build-v20.0.3) (2021-12-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugin-edge-handlers to v3 ([#3915](https://www.github.com/netlify/build/issues/3915)) ([a1d085f](https://www.github.com/netlify/build/commit/a1d085f4c62a2dc876d0f5bdf1c5849423755287))
+
+### [20.0.2](https://www.github.com/netlify/build/compare/build-v20.0.1...build-v20.0.2) (2021-12-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^5.2.0 ([#3912](https://www.github.com/netlify/build/issues/3912)) ([52d6ec4](https://www.github.com/netlify/build/commit/52d6ec475efaecc21b0c0b9015c1486ee99e0b31))
+
 ### [20.0.1](https://www.github.com/netlify/build/compare/build-v20.0.0...build-v20.0.1) (2021-12-01)
 
 

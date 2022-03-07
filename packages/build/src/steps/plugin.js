@@ -1,15 +1,14 @@
-'use strict'
+import { addErrorInfo } from '../error/info.js'
+import { logStepCompleted } from '../log/messages/ipc.js'
+import { pipePluginOutput, unpipePluginOutput } from '../log/stream.js'
+import { callChild } from '../plugins/ipc.js'
+import { getSuccessStatus } from '../status/success.js'
 
-const { addErrorInfo } = require('../error/info')
-const { pipePluginOutput, unpipePluginOutput } = require('../log/stream')
-const { callChild } = require('../plugins/ipc')
-const { getSuccessStatus } = require('../status/success')
-
-const { getPluginErrorType } = require('./error')
-const { updateNetlifyConfig, listConfigSideFiles } = require('./update_config')
+import { getPluginErrorType } from './error.js'
+import { updateNetlifyConfig, listConfigSideFiles } from './update_config.js'
 
 // Fire a plugin step
-const firePluginStep = async function ({
+export const firePluginStep = async function ({
   event,
   childProcess,
   packageName,
@@ -28,6 +27,7 @@ const firePluginStep = async function ({
   error,
   logs,
   debug,
+  verbose,
 }) {
   const listeners = pipePluginOutput(childProcess, logs)
 
@@ -37,12 +37,12 @@ const firePluginStep = async function ({
       newEnvChanges,
       configMutations: newConfigMutations,
       status,
-    } = await callChild(childProcess, 'run', {
-      event,
-      error,
-      envChanges,
-      netlifyConfig,
-      constants,
+    } = await callChild({
+      childProcess,
+      eventName: 'run',
+      payload: { event, error, envChanges, netlifyConfig, constants },
+      logs,
+      verbose,
     })
     const {
       netlifyConfig: netlifyConfigA,
@@ -80,7 +80,6 @@ const firePluginStep = async function ({
     return { newError }
   } finally {
     await unpipePluginOutput(childProcess, logs, listeners)
+    logStepCompleted(logs, verbose)
   }
 }
-
-module.exports = { firePluginStep }

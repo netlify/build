@@ -1,26 +1,19 @@
-'use strict'
+import { promises as fs } from 'fs'
+import { normalize } from 'path'
 
-const { writeFile, unlink } = require('fs')
-const { normalize } = require('path')
-const { promisify } = require('util')
+import { pathExists } from 'path-exists'
+import { isFile } from 'path-type'
 
-const makeDir = require('make-dir')
-const pathExists = require('path-exists')
-const { isFile } = require('path-type')
+import { logInstallMissingPlugins } from '../log/messages/install.js'
 
-const { logInstallMissingPlugins } = require('../log/messages/install')
-
-const { addExactDependencies } = require('./main')
-
-const pWriteFile = promisify(writeFile)
-const pUnlink = promisify(unlink)
+import { addExactDependencies } from './main.js'
 
 // Automatically install plugins if not already installed.
 // Since this is done under the hood, we always use `npm` with specific `npm`
 // options. We do not allow configure the package manager nor its options.
 // Users requiring `yarn` or custom npm/yarn flags should install the plugin in
 // their `package.json`.
-const installMissingPlugins = async function ({ missingPlugins, autoPluginsDir, mode, logs }) {
+export const installMissingPlugins = async function ({ missingPlugins, autoPluginsDir, mode, logs }) {
   const packages = missingPlugins.map(getPackage)
   logInstallMissingPlugins(logs, packages)
 
@@ -47,10 +40,10 @@ const ensureDir = async function (logs, autoPluginsDir) {
   // If `.netlify` exists but is not a directory, we remove it first
   const autoPluginsParent = normalize(`${autoPluginsDir}/..`)
   if (await isFile(autoPluginsParent)) {
-    await pUnlink(autoPluginsParent)
+    await fs.unlink(autoPluginsParent)
   }
 
-  await makeDir(autoPluginsDir)
+  await fs.mkdir(autoPluginsDir, { recursive: true })
 }
 
 // Create a dummy `package.json` so we can run `npm install` and get a lock file
@@ -61,7 +54,7 @@ const createPackageJson = async function (autoPluginsDir) {
   }
 
   const packageJsonContent = JSON.stringify(AUTO_PLUGINS_PACKAGE_JSON, null, 2)
-  await pWriteFile(packageJsonPath, packageJsonContent)
+  await fs.writeFile(packageJsonPath, packageJsonContent)
 }
 
 const AUTO_PLUGINS_PACKAGE_JSON = {
@@ -72,5 +65,3 @@ const AUTO_PLUGINS_PACKAGE_JSON = {
   author: 'Netlify',
   license: 'MIT',
 }
-
-module.exports = { installMissingPlugins }

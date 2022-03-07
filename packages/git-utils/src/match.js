@@ -1,11 +1,9 @@
-'use strict'
-
-const mapObj = require('map-obj')
-const micromatch = require('micromatch')
+import mapObj from 'map-obj'
+import micromatch from 'micromatch'
 
 // Return functions that return modified|created|deleted files filtered by a
 // globbing pattern
-const fileMatch = function ({ modifiedFiles, createdFiles, deletedFiles }, ...patterns) {
+export const fileMatch = function ({ modifiedFiles, createdFiles, deletedFiles }, ...patterns) {
   const matchFiles = {
     modified: modifiedFiles,
     created: createdFiles,
@@ -14,5 +12,3 @@ const fileMatch = function ({ modifiedFiles, createdFiles, deletedFiles }, ...pa
   }
   return mapObj(matchFiles, (key, paths) => [key, micromatch(paths, patterns)])
 }
-
-module.exports = { fileMatch }

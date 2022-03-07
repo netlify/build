@@ -1,15 +1,13 @@
-'use strict'
+import { relative, normalize } from 'path'
 
-const { relative, normalize } = require('path')
+import { getCacheDir } from '@netlify/cache-utils'
+import mapObj from 'map-obj'
+import { pathExists } from 'path-exists'
 
-const { getCacheDir } = require('@netlify/cache-utils')
-const mapObj = require('map-obj')
-const pathExists = require('path-exists')
-
-const { version } = require('../../package.json')
+import { ROOT_PACKAGE_JSON } from '../utils/json.js'
 
 // Retrieve constants passed to plugins
-const getConstants = async function ({
+export const getConstants = async function ({
   configPath,
   buildDir,
   functionsDistDir,
@@ -33,7 +31,7 @@ const getConstants = async function ({
     // Boolean indicating whether the build was run locally (Netlify CLI) or in the production CI
     IS_LOCAL: isLocal,
     // The version of Netlify Build
-    NETLIFY_BUILD_VERSION: version,
+    NETLIFY_BUILD_VERSION: ROOT_PACKAGE_JSON.version,
     // The Netlify Site ID
     SITE_ID: siteId,
     // The Netlify API access token
@@ -53,7 +51,7 @@ const INTERNAL_FUNCTIONS_SRC = '.netlify/functions-internal'
 // Retrieve constants which might change during the build if a plugin modifies
 // `netlifyConfig` or creates some default directories.
 // Unlike readonly constants, this is called again before each build step.
-const addMutableConstants = async function ({
+export const addMutableConstants = async function ({
   constants,
   buildDir,
   netlifyConfig: {
@@ -147,5 +145,3 @@ const CONSTANT_PATHS = new Set([
   'EDGE_HANDLERS_SRC',
   'CACHE_DIR',
 ])
-
-module.exports = { getConstants, addMutableConstants }

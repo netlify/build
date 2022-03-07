@@ -62,7 +62,7 @@ When you merge this PR, it will automatically publish the relevant packages to `
 Packages dependencies graph:
 
 ```sh
-@netlify/zip-it-and-ship-it -> @netlify/function-utils
+@netlify/zip-it-and-ship-it -> @netlify/functions-utils
                             -> @netlify/build
                             -> netlify-cli
 js-client                   -> @netlify/config

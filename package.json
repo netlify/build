@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "description": "Netlify build module",
-  "main": "index.js",
+  "type": "module",
   "author": "Netlify Inc.",
   "scripts": {
     "test": "run-s format test:dev",
@@ -20,7 +20,8 @@
     "test:dev": "run-s test:dev:*",
     "test:ci": "run-s test:ci:*",
     "test:dev:ava": "ava",
-    "test:ci:ava": "nyc -r lcovonly -r text -r json ava",
+    "test:ci:ava": "c8 -r lcovonly -r text -r json ava",
+    "prepare": "husky install node_modules/@netlify/eslint-config-node/.husky/",
     "prepublishOnly": "run-s prepublishOnly:*",
     "prepublishOnly:checkout": "run-local \"git checkout main\"",
     "prepublishOnly:pull": "run-local \"git pull\"",
@@ -28,27 +29,22 @@
     "prepublishOnly:test": "run-local \"npm test\""
   },
   "config": {
-    "eslint": "--ignore-path .gitignore --ignore-pattern \"packages/*/tests/**/snapshots/*.md\" --cache --format=codeframe --max-warnings=0 \"{packages,.github}/**/*.{js,md,html}\" \"*.{js,md,html}\" \".*.{js,md,html}\"",
-    "prettier": "--ignore-path .gitignore --loglevel=warn \"{packages,.github}/**/*.{js,md,yml,json,html}\" \"*.{js,yml,json,html}\" \".*.{js,yml,json,html}\" \"!**/package-lock.json\" \"!**/CHANGELOG.md\" \"!package-lock.json\" \"!.release-please-manifest.json\" \"!.github/**/*.md\""
+    "eslint": "--ignore-path .gitignore --ignore-pattern \"packages/*/tests/**/snapshots/*.md\" --cache --format=codeframe --max-warnings=0 \"{packages,.github}/**/*.{cjs,mjs,js,md,html}\" \"*.{cjs,mjs,js,md,html}\" \".*.{cjs,mjs,js,md,html}\"",
+    "prettier": "--ignore-path .gitignore --loglevel=warn \"{packages,.github}/**/*.{cjs,mjs,js,md,yml,json,html}\" \"*.{cjs,mjs,js,yml,json,html}\" \".*.{cjs,mjs,js,yml,json,html}\" \"!**/package-lock.json\" \"!**/CHANGELOG.md\" \"!package-lock.json\" \"!.release-please-manifest.json\" \"!.github/**/*.md\""
   },
   "workspaces": [
     "packages/*"
   ],
   "ava": {
     "files": [
-      "packages/**/tests/*.js",
-      "packages/**/tests/**/tests.js"
+      "packages/**/tests/*.{cjs,mjs,js}",
+      "packages/**/tests/**/tests.{cjs,mjs,js}"
     ],
     "verbose": true,
-    "timeout": "60s",
+    "timeout": "120s",
+    "workerThreads": false,
     "environmentVariables": {
       "FORCE_COLOR": "1"
-    }
-  },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
-      "pre-push": "npm run format"
     }
   },
   "keywords": [
@@ -80,11 +76,10 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@commitlint/cli": "^15.0.0",
-    "@commitlint/config-conventional": "^15.0.0",
-    "@netlify/eslint-config-node": "^3.3.10",
-    "ava": "^3.15.0",
-    "nyc": "^15.0.0",
+    "@netlify/eslint-config-node": "^5.1.6",
+    "ava": "^4.0.0",
+    "c8": "^7.11.0",
+    "husky": "^7.0.4",
     "tsd": "^0.19.0"
   },
   "engines": {

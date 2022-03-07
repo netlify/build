@@ -1,25 +1,24 @@
-'use strict'
+import { normalize } from 'path'
+import { fileURLToPath, pathToFileURL } from 'url'
 
-const { normalize } = require('path')
+import test from 'ava'
+import cpy from 'cpy'
+import del from 'del'
+import { pathExists } from 'path-exists'
+import { spy } from 'sinon'
+import sortOn from 'sort-on'
 
-const test = require('ava')
-const cpy = require('cpy')
-const del = require('del')
-const pathExists = require('path-exists')
-const { spy } = require('sinon')
-const sortOn = require('sort-on')
+import { add, list, listAll } from '../src/main.js'
 
-const { add, list, listAll } = require('..')
+import { getDist, createDist, removeDist } from './helpers/main.js'
 
-const { getDist, createDist, removeDist } = require('./helpers/main')
-
-const FIXTURES_DIR = `${__dirname}/fixtures`
+const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
 test('Should copy a source file to a dist directory', async (t) => {
   const dist = await getDist()
   try {
-    await add(`${FIXTURES_DIR}/file/test.js`, dist)
-    t.true(await pathExists(`${dist}/test.js`))
+    await add(`${FIXTURES_DIR}/file/test.mjs`, dist)
+    t.true(await pathExists(`${dist}/test.mjs`))
   } finally {
     await removeDist(dist)
   }
@@ -63,14 +62,14 @@ test('Should throw when source points to non-existing file', async (t) => {
 })
 
 test('Should throw when dist is undefined', async (t) => {
-  await t.throwsAsync(add(`${FIXTURES_DIR}/file/test.js`))
+  await t.throwsAsync(add(`${FIXTURES_DIR}/file/test.mjs`))
 })
 
 test('Should copy a source file even if dist directory already exists', async (t) => {
   const dist = await createDist()
   try {
-    await add(`${FIXTURES_DIR}/file/test.js`, dist)
-    t.true(await pathExists(`${dist}/test.js`))
+    await add(`${FIXTURES_DIR}/file/test.mjs`, dist)
+    t.true(await pathExists(`${dist}/test.mjs`))
   } finally {
     await removeDist(dist)
   }
@@ -80,27 +79,23 @@ test('Should overwrite dist file if it already exists', async (t) => {
   const dist = await getDist()
   const fixtureDir = `${FIXTURES_DIR}/file`
 
-  await cpy(`${fixtureDir}/test.js`, fixtureDir, { rename: 'test.js.backup' })
+  await cpy(`${fixtureDir}/test.mjs`, fixtureDir, { rename: 'test.mjs.backup' })
 
   try {
-    await add(`${fixtureDir}/test.js`, dist)
+    await add(`${fixtureDir}/test.mjs`, dist)
 
-    // eslint-disable-next-line import/no-dynamic-require, node/global-require
-    const func1 = require(`${dist}/test.js`)
+    const { func1 } = await import(`${pathToFileURL(`${dist}/test.mjs`).href}?one`)
 
-    await cpy(`${fixtureDir}/test_2.js`, fixtureDir, { rename: 'test.js' })
-    await add(`${fixtureDir}/test.js`, dist)
+    await cpy(`${fixtureDir}/test_2.mjs`, fixtureDir, { rename: 'test.mjs' })
+    await add(`${fixtureDir}/test.mjs`, dist)
 
-    delete require.cache[require.resolve(`${dist}/test.js`)]
-
-    // eslint-disable-next-line import/no-dynamic-require, node/global-require
-    const func2 = require(`${dist}/test.js`)
+    const { func2 } = await import(`${pathToFileURL(`${dist}/test.mjs`).href}?two`)
 
     t.is(func1(), 'one')
     t.is(func2(), 'two')
   } finally {
-    await cpy(`${fixtureDir}/test.js.backup`, fixtureDir, { rename: 'test.js' })
-    await del(`${fixtureDir}/test.js.backup`, { force: true })
+    await cpy(`${fixtureDir}/test.mjs.backup`, fixtureDir, { rename: 'test.mjs' })
+    await del(`${fixtureDir}/test.mjs.backup`, { force: true })
     await removeDist(dist)
   }
 })
@@ -112,10 +107,10 @@ test('Should allow "fail" option to customize failures', async (t) => {
   t.is(typeof fail.firstCall.firstArg, 'string')
 })
 
-const normalizeFiles = function (fixtureDir, { name, mainFile, runtime, extension, srcFile }) {
+const normalizeFiles = function (fixtureDir, { name, mainFile, runtime, extension, srcFile, schedule }) {
   const mainFileA = normalize(`${fixtureDir}/${mainFile}`)
   const srcFileA = srcFile === undefined ? {} : { srcFile: normalize(`${fixtureDir}/${srcFile}`) }
-  return { name, mainFile: mainFileA, runtime, extension, ...srcFileA }
+  return { name, mainFile: mainFileA, runtime, extension, schedule, ...srcFileA }
 }
 
 test('Can list function main files with list()', async (t) => {

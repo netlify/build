@@ -4,7 +4,6 @@ research
 terraform
 .netlify
 yarn-error.log
-.nyc_output
 coverage
 .eslintcache
 .cache

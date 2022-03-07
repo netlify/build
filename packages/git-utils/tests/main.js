@@ -1,10 +1,8 @@
-'use strict'
+import { env, chdir, cwd as getCwd } from 'process'
 
-const { env, chdir, cwd: getCwd } = require('process')
+import test from 'ava'
 
-const test = require('ava')
-
-const getGitUtils = require('..')
+import { getGitUtils } from '../src/main.js'
 
 // Runs the git utils against very old commits of @netlify/build so that the
 // tests are stable. The following are static statistics for that git range.

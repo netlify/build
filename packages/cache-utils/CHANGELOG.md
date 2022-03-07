@@ -1,5 +1,54 @@
 # Changelog
 
+### [4.1.4](https://github.com/netlify/build/compare/cache-utils-v4.1.3...cache-utils-v4.1.4) (2022-02-10)
+
+
+### Bug Fixes
+
+* **deps:** update dependency globby to v13 ([#4115](https://github.com/netlify/build/issues/4115)) ([cf7dc00](https://github.com/netlify/build/commit/cf7dc00e2b1c2d1993f347fa36c416fbd4dc7c4a))
+* **deps:** update dependency junk to v4 ([#4118](https://github.com/netlify/build/issues/4118)) ([705b492](https://github.com/netlify/build/commit/705b492f346ad3dcd3b6a58b147ad124db94ccd2))
+* **deps:** update dependency move-file to v3 ([#4121](https://github.com/netlify/build/issues/4121)) ([5bdbca4](https://github.com/netlify/build/commit/5bdbca4300d404f40f6ab27e303c10f44088ef5a))
+
+### [4.1.3](https://github.com/netlify/build/compare/cache-utils-v4.1.2...cache-utils-v4.1.3) (2022-02-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency locate-path to v7 ([#4097](https://github.com/netlify/build/issues/4097)) ([b4b451f](https://github.com/netlify/build/commit/b4b451f2016ce255ac6634c6ebfa9078cd5e8b3f))
+* **deps:** update dependency path-exists to v5 ([#4102](https://github.com/netlify/build/issues/4102)) ([744421d](https://github.com/netlify/build/commit/744421d89d6e773bd96d82d3ceeb561ee5d7f3db))
+
+### [4.1.2](https://github.com/netlify/build/compare/cache-utils-v4.1.1...cache-utils-v4.1.2) (2022-01-17)
+
+
+### Bug Fixes
+
+* **deps:** update del to v6.0.0 ([#4036](https://github.com/netlify/build/issues/4036)) ([f5e076c](https://github.com/netlify/build/commit/f5e076c7152aeadcddfa3805548fd160a416d3dc))
+
+### [4.1.1](https://github.com/netlify/build/compare/cache-utils-v4.1.0...cache-utils-v4.1.1) (2022-01-13)
+
+
+### Bug Fixes
+
+* use fs promises directly ([#4030](https://github.com/netlify/build/issues/4030)) ([02c4309](https://github.com/netlify/build/commit/02c4309a8325a7bf69f7170d2a1fe992a31edff7))
+
+## [4.1.0](https://github.com/netlify/build/compare/cache-utils-v4.0.0...cache-utils-v4.1.0) (2022-01-12)
+
+
+### Features
+
+* update `README.md` to use ES modules with plugins ([#4023](https://github.com/netlify/build/issues/4023)) ([a96e05b](https://github.com/netlify/build/commit/a96e05b0fddbcd33cbc684b1e37994666419eafe))
+
+## [4.0.0](https://www.github.com/netlify/build/compare/cache-utils-v3.0.1...cache-utils-v4.0.0) (2021-12-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* use pure ES modules with `cache-utils` (#3944)
+
+### Miscellaneous Chores
+
+* use pure ES modules with `cache-utils` ([#3944](https://www.github.com/netlify/build/issues/3944)) ([ca0ac3b](https://www.github.com/netlify/build/commit/ca0ac3b79acd62fd8a9ee37777fdfba6851b23ce))
+
 ### [3.0.1](https://www.github.com/netlify/build/compare/cache-utils-v3.0.0...cache-utils-v3.0.1) (2021-11-25)
 
 

@@ -1,11 +1,5 @@
-'use strict'
+import { env } from 'process'
 
-const {
-  env: { LC_ALL },
-} = require('process')
-
-module.exports = {
-  onPreBuild() {
-    console.log(LC_ALL)
-  },
+export const onPreBuild = function () {
+  console.log(env.LC_ALL)
 }

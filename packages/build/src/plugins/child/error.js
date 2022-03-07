@@ -1,24 +1,22 @@
-'use strict'
+import logProcessErrors from 'log-process-errors'
 
-const logProcessErrors = require('log-process-errors')
-
-const { errorToJson } = require('../../error/build')
-const { addDefaultErrorInfo, isBuildError } = require('../../error/info')
-const { normalizeError } = require('../../error/parse/normalize')
-const { sendEventToParent } = require('../ipc')
+import { errorToJson } from '../../error/build.js'
+import { addDefaultErrorInfo, isBuildError } from '../../error/info.js'
+import { normalizeError } from '../../error/parse/normalize.js'
+import { sendEventToParent } from '../ipc.js'
 
 // Handle any top-level error and communicate it back to parent
-const handleError = async function (error) {
+export const handleError = async function (error, verbose) {
   const errorA = normalizeError(error)
   addDefaultErrorInfo(errorA, { type: 'pluginInternal' })
   const errorPayload = errorToJson(errorA)
-  await sendEventToParent('error', errorPayload)
+  await sendEventToParent('error', errorPayload, verbose, errorA)
 }
 
 // On uncaught exceptions and unhandled rejections, print the stack trace.
 // Also, prevent child processes from crashing on uncaught exceptions.
-const handleProcessErrors = function () {
-  logProcessErrors({ log: handleProcessError, exitOn: [], level: { multipleResolves: 'silent' } })
+export const handleProcessErrors = function () {
+  logProcessErrors({ log: handleProcessError, exitOn: [] })
 }
 
 const handleProcessError = async function (error, level, originalError) {
@@ -32,5 +30,3 @@ const handleProcessError = async function (error, level, originalError) {
 
   await handleError(errorA)
 }
-
-module.exports = { handleError, handleProcessErrors }

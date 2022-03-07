@@ -1,11 +1,9 @@
-'use strict'
+import { locatePath } from 'locate-path'
 
-const locatePath = require('locate-path')
-
-const { addErrorInfo } = require('../../error/info')
+import { addErrorInfo } from '../../error/info.js'
 
 // Retrieve "manifest.yml" path for a specific plugin
-const getManifestPath = async function ({ pluginDir, packageDir, packageName }) {
+export const getManifestPath = async function ({ pluginDir, packageDir, packageName }) {
   const dirs = [pluginDir, packageDir]
     .filter(Boolean)
     .flatMap((dir) => MANIFEST_FILENAMES.map((filename) => `${dir}/${filename}`))
@@ -31,5 +29,3 @@ This might mean:
 }
 
 const MANIFEST_FILENAMES = ['manifest.yml', 'manifest.yaml']
-
-module.exports = { getManifestPath }

@@ -1,16 +1,14 @@
-'use strict'
+import { relative } from 'path'
 
-const { relative } = require('path')
+import { pathExists } from 'path-exists'
 
-const pathExists = require('path-exists')
-
-const { logMissingSideFile } = require('../log/messages/core')
+import { logMissingSideFile } from '../log/messages/core.js'
 
 // Some files like `_headers` and `_redirects` must be copied to the publish
 // directory to be used in production. When those are present in the repository
 // but not in the publish directory, this most likely indicates that the build
 // command accidentally forgot to copy those. We then print a warning message.
-const warnOnMissingSideFiles = async function ({
+export const warnOnMissingSideFiles = async function ({
   buildDir,
   netlifyConfig: {
     build: { publish },
@@ -29,5 +27,3 @@ const warnOnMissingSideFile = async function ({ logs, sideFile, buildDir, publis
 
   logMissingSideFile(logs, sideFile, relative(buildDir, publish))
 }
-
-module.exports = { warnOnMissingSideFiles }

@@ -1,12 +1,10 @@
-'use strict'
+import { normalize } from 'path'
+import process from 'process'
 
-const { normalize } = require('path')
-const process = require('process')
-
-const pathExists = require('path-exists')
+import { pathExists } from 'path-exists'
 
 // Like `process.cwd()` but safer when current directory is wrong
-const safeGetCwd = async function (cwdOpt) {
+export const safeGetCwd = async function (cwdOpt) {
   try {
     const cwd = getCwdValue(cwdOpt)
 
@@ -15,7 +13,7 @@ const safeGetCwd = async function (cwdOpt) {
     }
 
     return cwd
-  } catch (error) {
+  } catch {
     return ''
   }
 }
@@ -23,5 +21,3 @@ const safeGetCwd = async function (cwdOpt) {
 const getCwdValue = function (cwdOpt = process.cwd()) {
   return normalize(cwdOpt)
 }
-
-module.exports = { safeGetCwd }

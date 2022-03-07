@@ -1,13 +1,11 @@
-'use strict'
+import { cleanupConfig } from '@netlify/config'
 
-const { cleanupConfig } = require('@netlify/config')
+import { DEFAULT_FEATURE_FLAGS } from '../../core/feature_flags.js'
+import { omit } from '../../utils/omit.js'
+import { logMessage, logObject, logSubHeader } from '../logger.js'
+import { THEME } from '../theme.js'
 
-const { DEFAULT_FEATURE_FLAGS } = require('../../core/feature_flags')
-const { omit } = require('../../utils/omit')
-const { logMessage, logObject, logSubHeader } = require('../logger')
-const { THEME } = require('../theme')
-
-const logFlags = function (logs, flags, { debug }) {
+export const logFlags = function (logs, flags, { debug }) {
   const flagsA = cleanFeatureFlags(flags)
   const hiddenFlags = debug ? HIDDEN_DEBUG_FLAGS : HIDDEN_FLAGS
   const flagsB = omit(flagsA, hiddenFlags)
@@ -57,19 +55,19 @@ const INTERNAL_FLAGS = [
 const HIDDEN_FLAGS = [...SECURE_FLAGS, ...TEST_FLAGS, ...INTERNAL_FLAGS]
 const HIDDEN_DEBUG_FLAGS = [...SECURE_FLAGS, ...TEST_FLAGS]
 
-const logBuildDir = function (logs, buildDir) {
+export const logBuildDir = function (logs, buildDir) {
   logSubHeader(logs, 'Current directory')
   logMessage(logs, buildDir)
 }
 
-const logConfigPath = function (logs, configPath = NO_CONFIG_MESSAGE) {
+export const logConfigPath = function (logs, configPath = NO_CONFIG_MESSAGE) {
   logSubHeader(logs, 'Config file')
   logMessage(logs, configPath)
 }
 
 const NO_CONFIG_MESSAGE = 'No config file was defined: using default values.'
 
-const logConfig = function ({ logs, netlifyConfig, debug }) {
+export const logConfig = function ({ logs, netlifyConfig, debug }) {
   if (!debug) {
     return
   }
@@ -78,7 +76,7 @@ const logConfig = function ({ logs, netlifyConfig, debug }) {
   logObject(logs, cleanupConfig(netlifyConfig))
 }
 
-const logConfigOnUpdate = function ({ logs, netlifyConfig, debug }) {
+export const logConfigOnUpdate = function ({ logs, netlifyConfig, debug }) {
   if (!debug) {
     return
   }
@@ -87,7 +85,7 @@ const logConfigOnUpdate = function ({ logs, netlifyConfig, debug }) {
   logObject(logs, cleanupConfig(netlifyConfig))
 }
 
-const logConfigOnError = function ({ logs, netlifyConfig, severity }) {
+export const logConfigOnError = function ({ logs, netlifyConfig, severity }) {
   if (netlifyConfig === undefined || severity === 'none') {
     return
   }
@@ -96,21 +94,11 @@ const logConfigOnError = function ({ logs, netlifyConfig, severity }) {
   logObject(logs, cleanupConfig(netlifyConfig))
 }
 
-const logContext = function (logs, context) {
+export const logContext = function (logs, context) {
   if (context === undefined) {
     return
   }
 
   logSubHeader(logs, 'Context')
   logMessage(logs, context)
-}
-
-module.exports = {
-  logFlags,
-  logBuildDir,
-  logConfigPath,
-  logConfig,
-  logConfigOnUpdate,
-  logConfigOnError,
-  logContext,
 }

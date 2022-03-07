@@ -1,6 +1,4 @@
-'use strict'
+import module1 from '@netlify/imaginary-module-one'
+import module2 from '@netlify/imaginary-module-two'
 
-const module1 = require('@netlify/imaginary-module-one')
-const module2 = require('@netlify/imaginary-module-two')
-
-module.exports = () => [module1, module2]
+export default () => [module1, module2]

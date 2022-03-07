@@ -1,12 +1,11 @@
-'use strict'
+import { relative } from 'path'
+import { fileURLToPath } from 'url'
 
-const { relative, resolve } = require('path')
-
-const { tick, pointer, arrowDown } = require('figures')
-const stripAnsi = require('strip-ansi')
+import figures from 'figures'
+import stripAnsi from 'strip-ansi'
 
 // Normalize log output so it can be snapshot consistently across test runs
-const normalizeOutput = function (output) {
+export const normalizeOutput = function (output) {
   const outputA = stripAnsi(output)
   return NORMALIZE_REGEXPS.reduce(replaceOutput, outputA)
 }
@@ -15,7 +14,7 @@ const replaceOutput = function (output, [regExp, replacement]) {
   return output.replace(regExp, replacement)
 }
 
-const rootPath = resolve(__dirname, '../../../..')
+const rootPath = fileURLToPath(new URL('../../../..', import.meta.url))
 const unixify = (path) => path.replace(/\\/gu, '/')
 
 const NORMALIZE_REGEXPS = [
@@ -30,9 +29,9 @@ const NORMALIZE_REGEXPS = [
   [/\\r\\n/gu, '\\n'],
   [/\\{1,2}/gu, '/'],
   [/Program Files/gu, 'ProgramFiles'],
-  [new RegExp(tick, 'g'), '√'],
-  [new RegExp(pointer, 'g'), '>'],
-  [new RegExp(arrowDown, 'g'), '↓'],
+  [new RegExp(figures.tick, 'g'), '√'],
+  [new RegExp(figures.pointer, 'g'), '>'],
+  [new RegExp(figures.arrowDown, 'g'), '↓'],
   [/⚠/gu, '‼'],
   // A bug in nyc (https://github.com/istanbuljs/istanbuljs/issues/141) is
   // creating those error messages on Windows. This happens randomly and
@@ -45,7 +44,7 @@ const NORMALIZE_REGEXPS = [
   // Normalizes any paths so that they're relative to process.cwd().
   [
     /(^|[ "'(=])((?:\.{0,2}|([A-Z]:))(\/[^ "')\n]+))/gm,
-    // eslint-disable-next-line complexity, max-params, max-statements
+    // eslint-disable-next-line complexity, max-params
     (_, prefix, pathMatch, winDrive, pathTrail) => {
       // If we're dealing with a Windows path, we discard the drive letter.
       const fullPath = winDrive ? pathTrail : pathMatch
@@ -125,6 +124,8 @@ const NORMALIZE_REGEXPS = [
   // npm install logs look different on Node 8.3.0
   [/\snpm ERR! 404([^]*npm ERR! 404)?.*/g, ''],
   [/No valid versions/g, 'No versions'],
+  // npm error logs are shown differently in CI
+  [/\s*npm ERR!\s+\/external\/path/g, ''],
   // TypeScript ES proposals differ per Node versions
   [/es\d{4}/g, 'es2000'],
   [/.*es(2000\.|1).*\n/g, ''],
@@ -149,5 +150,3 @@ const isEscapeSequence = function (string) {
 }
 
 const UNICODE_BACKSLASH_SEQUENCE = /^\/u\d+/iu
-
-module.exports = { normalizeOutput }

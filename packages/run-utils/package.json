@@ -1,8 +1,10 @@
 {
   "name": "@netlify/run-utils",
-  "version": "3.0.0",
+  "version": "4.0.1",
   "description": "Utility for running commands inside Netlify Build",
-  "main": "src/main.js",
+  "type": "module",
+  "exports": "./src/main.js",
+  "main": "./src/main.js",
   "files": [
     "src/**/*.js"
   ],
@@ -43,10 +45,10 @@
   },
   "license": "MIT",
   "dependencies": {
-    "execa": "^5.1.1"
+    "execa": "^6.0.0"
   },
   "devDependencies": {
-    "ava": "^3.15.0",
+    "ava": "^4.0.0",
     "semver": "^7.0.0"
   },
   "engines": {

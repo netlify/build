@@ -1,6 +1,4 @@
-'use strict'
-
-module.exports = {}
+export const onPreBuild = function () {}
 
 const throwError = function () {
   throw new Error('test')

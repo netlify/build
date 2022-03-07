@@ -1,5 +1,138 @@
 # Changelog
 
+### [4.1.12](https://github.com/netlify/build/compare/functions-utils-v4.1.11...functions-utils-v4.1.12) (2022-02-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v5.9.0 ([#4187](https://github.com/netlify/build/issues/4187)) ([aa00e62](https://github.com/netlify/build/commit/aa00e62b1d03840d0ed91f89f98e5ee25cbb3e95))
+
+### [4.1.11](https://github.com/netlify/build/compare/functions-utils-v4.1.10...functions-utils-v4.1.11) (2022-02-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v5.8.0 ([#4160](https://github.com/netlify/build/issues/4160)) ([1cdbab7](https://github.com/netlify/build/commit/1cdbab77884dad4c5d1f21f433bf373b59b8cce4))
+
+### [4.1.10](https://github.com/netlify/build/compare/functions-utils-v4.1.9...functions-utils-v4.1.10) (2022-02-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v5.7.5 ([#4154](https://github.com/netlify/build/issues/4154)) ([e7598e9](https://github.com/netlify/build/commit/e7598e9364cd617565b71149b96c6cdf3c0ba65d))
+
+### [4.1.9](https://github.com/netlify/build/compare/functions-utils-v4.1.8...functions-utils-v4.1.9) (2022-02-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v5.7.4 ([#4142](https://github.com/netlify/build/issues/4142)) ([de8221b](https://github.com/netlify/build/commit/de8221bac66a8ae530612a4fc35ed1d15c92beb8))
+
+### [4.1.8](https://github.com/netlify/build/compare/functions-utils-v4.1.7...functions-utils-v4.1.8) (2022-02-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v5.7.2 ([#4140](https://github.com/netlify/build/issues/4140)) ([a984eb0](https://github.com/netlify/build/commit/a984eb0293d6ca4150f4ba450b52dcc792462882))
+
+### [4.1.7](https://github.com/netlify/build/compare/functions-utils-v4.1.6...functions-utils-v4.1.7) (2022-02-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v5.7.0 ([#4131](https://github.com/netlify/build/issues/4131)) ([b045f61](https://github.com/netlify/build/commit/b045f6186459f77faff1ae4ff9109761873b60ea))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v5.7.1 ([#4137](https://github.com/netlify/build/issues/4137)) ([9d1ac08](https://github.com/netlify/build/commit/9d1ac08989308f244888b70fd01591207ce146d9))
+* **deps:** update dependency path-exists to v5 ([#4102](https://github.com/netlify/build/issues/4102)) ([744421d](https://github.com/netlify/build/commit/744421d89d6e773bd96d82d3ceeb561ee5d7f3db))
+
+### [4.1.6](https://github.com/netlify/build/compare/functions-utils-v4.1.5...functions-utils-v4.1.6) (2022-01-27)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v5.5.2 ([#4073](https://github.com/netlify/build/issues/4073)) ([eaf1360](https://github.com/netlify/build/commit/eaf1360657511c7551cc1c2866f6486e16a136ca))
+
+### [4.1.5](https://github.com/netlify/build/compare/functions-utils-v4.1.4...functions-utils-v4.1.5) (2022-01-26)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v5.5.1 ([#4070](https://github.com/netlify/build/issues/4070)) ([02b3bde](https://github.com/netlify/build/commit/02b3bde678aa35bfaceebd6ca288e2221d0fdce0))
+* pin zip-it-and-ship-it to v5.4.1 ([#4071](https://github.com/netlify/build/issues/4071)) ([ec8a057](https://github.com/netlify/build/commit/ec8a05711a5746fb985225f59b5856c6da70f4fd))
+
+### [4.1.4](https://github.com/netlify/build/compare/functions-utils-v4.1.3...functions-utils-v4.1.4) (2022-01-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^5.5.0 ([#4055](https://github.com/netlify/build/issues/4055)) ([63b6374](https://github.com/netlify/build/commit/63b63747094fec205416e6c505206b607dcd4912))
+
+### [4.1.3](https://github.com/netlify/build/compare/functions-utils-v4.1.2...functions-utils-v4.1.3) (2022-01-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^5.4.1 ([#4050](https://github.com/netlify/build/issues/4050)) ([2a1a4e2](https://github.com/netlify/build/commit/2a1a4e298ff0e282a772be648f01eecaa449017e))
+
+### [4.1.2](https://github.com/netlify/build/compare/functions-utils-v4.1.1...functions-utils-v4.1.2) (2022-01-17)
+
+
+### Bug Fixes
+
+* **deps:** update del to v6.0.0 ([#4036](https://github.com/netlify/build/issues/4036)) ([f5e076c](https://github.com/netlify/build/commit/f5e076c7152aeadcddfa3805548fd160a416d3dc))
+
+### [4.1.1](https://github.com/netlify/build/compare/functions-utils-v4.1.0...functions-utils-v4.1.1) (2022-01-13)
+
+
+### Bug Fixes
+
+* use fs promises directly ([#4030](https://github.com/netlify/build/issues/4030)) ([02c4309](https://github.com/netlify/build/commit/02c4309a8325a7bf69f7170d2a1fe992a31edff7))
+
+## [4.1.0](https://github.com/netlify/build/compare/functions-utils-v4.0.3...functions-utils-v4.1.0) (2022-01-12)
+
+
+### Features
+
+* update `README.md` to use ES modules with plugins ([#4023](https://github.com/netlify/build/issues/4023)) ([a96e05b](https://github.com/netlify/build/commit/a96e05b0fddbcd33cbc684b1e37994666419eafe))
+
+### [4.0.3](https://www.github.com/netlify/build/compare/functions-utils-v4.0.2...functions-utils-v4.0.3) (2021-12-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^5.4.0 ([#3973](https://www.github.com/netlify/build/issues/3973)) ([5ad9d82](https://www.github.com/netlify/build/commit/5ad9d8204cef3e401e09ca845a129fa73c837581))
+
+### [4.0.2](https://www.github.com/netlify/build/compare/functions-utils-v4.0.1...functions-utils-v4.0.2) (2021-12-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^5.3.1 ([#3971](https://www.github.com/netlify/build/issues/3971)) ([7b9ca99](https://www.github.com/netlify/build/commit/7b9ca99f82bacda4c09780f1bae290da77894e17))
+
+### [4.0.1](https://www.github.com/netlify/build/compare/functions-utils-v4.0.0...functions-utils-v4.0.1) (2021-12-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^5.3.0 ([#3961](https://www.github.com/netlify/build/issues/3961)) ([e1edaf3](https://www.github.com/netlify/build/commit/e1edaf36c325e4a0f5e3f9ef4da971544cc5e697))
+
+## [4.0.0](https://www.github.com/netlify/build/compare/functions-utils-v3.0.3...functions-utils-v4.0.0) (2021-12-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* use pure ES modules with functions-utils (#3942)
+
+### Miscellaneous Chores
+
+* use pure ES modules with functions-utils ([#3942](https://www.github.com/netlify/build/issues/3942)) ([590caad](https://www.github.com/netlify/build/commit/590caadbb6eaf304ad317b10bfce92ce1b0527a2))
+
+### [3.0.3](https://www.github.com/netlify/build/compare/functions-utils-v3.0.2...functions-utils-v3.0.3) (2021-12-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^5.2.0 ([#3912](https://www.github.com/netlify/build/issues/3912)) ([52d6ec4](https://www.github.com/netlify/build/commit/52d6ec475efaecc21b0c0b9015c1486ee99e0b31))
+
 ### [3.0.2](https://www.github.com/netlify/build/compare/functions-utils-v3.0.1...functions-utils-v3.0.2) (2021-11-29)
 
 

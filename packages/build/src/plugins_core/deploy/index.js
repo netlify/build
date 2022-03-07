@@ -1,14 +1,12 @@
-'use strict'
+import { saveUpdatedConfig, restoreUpdatedConfig } from '../../core/config.js'
+import { logDeploySuccess } from '../../log/messages/plugins.js'
 
-const { saveUpdatedConfig, restoreUpdatedConfig } = require('../../core/config')
-const { logDeploySuccess } = require('../../log/messages/plugins')
-
-const {
+import {
   createBuildbotClient,
   connectBuildbotClient,
   closeBuildbotClient,
   deploySiteWithBuildbotClient,
-} = require('./buildbot_client')
+} from './buildbot_client.js'
 
 const coreStep = async function ({
   buildDir,
@@ -18,6 +16,7 @@ const coreStep = async function ({
   buildbotServerSocket,
   events,
   logs,
+  featureFlags,
   context,
   branch,
   configMutations,
@@ -37,6 +36,7 @@ const coreStep = async function ({
       headersPath,
       redirectsPath,
       logs,
+      featureFlags,
       context,
       branch,
       debug,
@@ -63,7 +63,7 @@ const shouldDeploy = function ({ buildbotServerSocket }) {
   return buildbotServerSocket !== undefined
 }
 
-const deploySite = {
+export const deploySite = {
   event: 'onPostBuild',
   coreStep,
   coreStepId: 'deploy_site',
@@ -71,5 +71,3 @@ const deploySite = {
   coreStepDescription: () => 'Deploy site',
   condition: shouldDeploy,
 }
-
-module.exports = { deploySite }

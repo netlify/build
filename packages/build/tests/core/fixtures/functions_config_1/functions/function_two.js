@@ -1,7 +1,5 @@
-'use strict'
+import module1 from '@netlify/imaginary-module-one'
+import module3 from '@netlify/imaginary-module-three'
+import module2 from '@netlify/imaginary-module-two'
 
-const module1 = require('@netlify/imaginary-module-one')
-const module3 = require('@netlify/imaginary-module-three')
-const module2 = require('@netlify/imaginary-module-two')
-
-module.exports = () => [module1, module2, module3]
+export default () => [module1, module2, module3]

@@ -1,9 +1,11 @@
-'use strict'
-
 /* eslint eslint-comments/no-use: off, max-lines: off */
 
+const jsonParse = function (value) {
+  return value === undefined ? undefined : JSON.parse(value)
+}
+
 // All CLI flags
-const FLAGS = {
+export const FLAGS = {
   config: {
     string: true,
     describe: `Path to the configuration file.
@@ -14,7 +16,7 @@ Defaults to any netlify.toml in the git repository root directory or the base di
     describe: `JSON configuration object containing default values.
 Each configuration default value is used unless overriden through the main configuration file.
 Default: none.`,
-    coerce: JSON.parse,
+    coerce: jsonParse,
     hidden: true,
   },
   cachedConfig: {
@@ -23,7 +25,7 @@ Default: none.`,
 or when using @netlify/config programmatically.
 This is done as a performance optimization to cache the configuration loading logic.
 Default: none.`,
-    coerce: JSON.parse,
+    coerce: jsonParse,
     hidden: true,
   },
   cachedConfigPath: {
@@ -129,12 +131,17 @@ Default: false`,
     describe: `Environment in which this is loaded. Can be:
   - 'buildbot': within Netlify Buildbot
   - 'cli': within Netlify CLI
-  - 'require': through require('@netlify/build')`,
+  - 'require': through import('@netlify/build')`,
     hidden: true,
   },
   debug: {
     boolean: true,
-    describe: 'Print debugging information',
+    describe: 'Print user-facing debugging information',
+    hidden: true,
+  },
+  verbose: {
+    boolean: true,
+    describe: 'Print internal debugging information',
     hidden: true,
   },
   sendStatus: {
@@ -179,5 +186,3 @@ Default: false`,
     describe: 'Buffer output instead of printing it',
   },
 }
-
-module.exports = { FLAGS }

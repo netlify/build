@@ -1,7 +1,3 @@
-'use strict'
-
-module.exports = {
-  onPreBuild({ inputs: { one } }) {
-    console.log(one)
-  },
+export const onPreBuild = function ({ inputs: { one } }) {
+  console.log(one)
 }

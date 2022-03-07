@@ -1,7 +1,5 @@
-'use strict'
-
 // Retrieve plugin's location and build logs
-const getLocationMetadata = function (location, envMetadata) {
+export const getLocationMetadata = function (location, envMetadata) {
   const buildLogs = getBuildLogs(envMetadata)
 
   if (buildLogs === undefined && location === undefined) {
@@ -21,5 +19,3 @@ const getBuildLogs = function ({ SITE_NAME, DEPLOY_ID }) {
 }
 
 const NETLIFY_ORIGIN = 'https://app.netlify.com'
-
-module.exports = { getLocationMetadata }

@@ -1,8 +1,6 @@
-'use strict'
+import test from 'ava'
 
-const test = require('ava')
-
-const { getFixtureConfig, startServer } = require('../helpers/main')
+import { getFixtureConfig, startServer } from '../helpers/main.js'
 
 // List of API endpoints to mock
 const SITE_INFO_PATH = '/api/v1/sites/test'
@@ -12,7 +10,7 @@ const LIST_ADDONS_PATH = '/api/v1/sites/test/service-instances'
 // List of API mock URLs, responses and status codes
 const SITE_INFO_RESPONSE_URL = {
   path: SITE_INFO_PATH,
-  response: { url: 'test' },
+  response: { ssl_url: 'test' },
 }
 const SITE_INFO_RESPONSE_NAME = {
   path: SITE_INFO_PATH,
@@ -201,12 +199,28 @@ test('Sets DEPLOY_ID environment variable', async (t) => {
   t.is(DEPLOY_ID.value, 'test')
 })
 
+test('Sets default DEPLOY_ID environment variable', async (t) => {
+  const {
+    env: { DEPLOY_ID },
+  } = await getFixtureConfig(t, 'empty')
+  t.deepEqual(DEPLOY_ID.sources, ['general'])
+  t.is(DEPLOY_ID.value, '0')
+})
+
 test('Sets BUILD_ID environment variable', async (t) => {
   const {
     env: { BUILD_ID },
   } = await getFixtureConfig(t, 'empty', { flags: { buildId: 'test-build' } })
   t.deepEqual(BUILD_ID.sources, ['general'])
   t.is(BUILD_ID.value, 'test-build')
+})
+
+test('Sets default BUILD_ID environment variable', async (t) => {
+  const {
+    env: { BUILD_ID },
+  } = await getFixtureConfig(t, 'empty')
+  t.deepEqual(BUILD_ID.sources, ['general'])
+  t.is(BUILD_ID.value, '0')
 })
 
 test('Sets SITE_ID environment variable', async (t) => {
@@ -253,6 +267,22 @@ test('Sets REPOSITORY_URL environment variable', async (t) => {
   } = await runWithMockServer(t, SITE_INFO_RESPONSE_REPO_URL, { flags: AUTH_FLAGS })
   t.deepEqual(REPOSITORY_URL.sources, ['general'])
   t.is(REPOSITORY_URL.value, 'test')
+})
+
+test('Sets DEPLOY_URL environment variable', async (t) => {
+  const {
+    env: { DEPLOY_URL },
+  } = await runWithMockServer(t, SITE_INFO_RESPONSE_NAME, { flags: { ...AUTH_FLAGS, deployId: 'test' } })
+  t.deepEqual(DEPLOY_URL.sources, ['general'])
+  t.is(DEPLOY_URL.value, `https://test--test-name.netlify.app`)
+})
+
+test('Sets DEPLOY_PRIME_URL environment variable', async (t) => {
+  const {
+    env: { DEPLOY_PRIME_URL },
+  } = await runWithMockServer(t, SITE_INFO_RESPONSE_NAME, { flags: { ...AUTH_FLAGS, branch: 'test' } })
+  t.deepEqual(DEPLOY_PRIME_URL.sources, ['general'])
+  t.is(DEPLOY_PRIME_URL.value, `https://test--test-name.netlify.app`)
 })
 
 test('Does not set NETLIFY_LOCAL environment variable in production', async (t) => {

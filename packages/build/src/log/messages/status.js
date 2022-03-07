@@ -1,9 +1,7 @@
-'use strict'
+import { logMessage, logHeader, logSubHeader } from '../logger.js'
+import { THEME } from '../theme.js'
 
-const { logMessage, logHeader, logSubHeader } = require('../logger')
-const { THEME } = require('../theme')
-
-const logStatuses = function (logs, statuses) {
+export const logStatuses = function (logs, statuses) {
   logHeader(logs, 'Summary')
   statuses.forEach((status) => {
     logStatus(logs, status)
@@ -15,8 +13,4 @@ const logStatus = function (logs, { packageName, title = `Plugin ${packageName} 
   const body = text === undefined ? summary : `${summary}\n${THEME.dimWords(text)}`
   logSubHeader(logs, titleA)
   logMessage(logs, body)
-}
-
-module.exports = {
-  logStatuses,
 }

@@ -1,14 +1,12 @@
-'use strict'
+import { isDeepStrictEqual } from 'util'
 
-const { isDeepStrictEqual } = require('util')
-
-const isPlainObj = require('is-plain-obj')
-const rfdc = require('rfdc')
+import isPlainObj from 'is-plain-obj'
+import rfdc from 'rfdc'
 
 const clone = rfdc()
 
 // Copy `netlifyConfig` so we can compare before/after mutating it
-const cloneNetlifyConfig = function (netlifyConfig) {
+export const cloneNetlifyConfig = function (netlifyConfig) {
   return clone(netlifyConfig)
 }
 
@@ -20,7 +18,7 @@ const cloneNetlifyConfig = function (netlifyConfig) {
 //  - Apply the change to `netlifyConfig` in the parent process so it can
 //    run `@netlify/config` to normalize and validate the new values
 // `configMutations` is passed to parent process as JSON
-const getConfigMutations = function (netlifyConfig, netlifyConfigCopy, event) {
+export const getConfigMutations = function (netlifyConfig, netlifyConfigCopy, event) {
   const configMutations = diffObjects(netlifyConfig, netlifyConfigCopy, [])
   return configMutations.map((configMutation) => getConfigMutation(configMutation, event))
 }
@@ -55,5 +53,3 @@ const getConfigMutation = function ({ keys, value }, event) {
     event,
   }
 }
-
-module.exports = { cloneNetlifyConfig, getConfigMutations }

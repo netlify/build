@@ -1,25 +1,20 @@
-'use strict'
+import { promises as fs } from 'fs'
+import { dirname, relative, sep } from 'path'
 
-const { realpath } = require('fs')
-const { dirname, relative, sep } = require('path')
-const { promisify } = require('util')
-
-const pathExists = require('path-exists')
-
-const pRealpath = promisify(realpath)
+import { pathExists } from 'path-exists'
 
 // Retrieve `base` override.
 // This uses any directory below `repositoryRoot` and above (or equal to)
 // `cwd` that has a `.netlify` or `netlify.toml`. This allows Netlify CLI users
 // to `cd` into monorepo directories to change their base and build directories.
 // Do all checks in parallel for speed
-const getBaseOverride = async function ({ repositoryRoot, cwd }) {
+export const getBaseOverride = async function ({ repositoryRoot, cwd }) {
   // Performance optimization
   if (repositoryRoot === cwd) {
     return {}
   }
 
-  const [repositoryRootA, cwdA] = await Promise.all([pRealpath(repositoryRoot), pRealpath(cwd)])
+  const [repositoryRootA, cwdA] = await Promise.all([fs.realpath(repositoryRoot), fs.realpath(cwd)])
   const basePaths = getBasePaths(repositoryRootA, cwdA)
   const basePath = await locatePath(basePaths)
 
@@ -69,5 +64,3 @@ const returnIfExists = async function (path) {
 
   return path
 }
-
-module.exports = { getBaseOverride }

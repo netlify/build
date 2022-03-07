@@ -1,18 +1,13 @@
-'use strict'
+import { promises as fs } from 'fs'
 
-const { readFile } = require('fs')
-const { promisify } = require('util')
+import { pathExists } from 'path-exists'
 
-const pathExists = require('path-exists')
-
-const { throwUserError } = require('./error')
-const { throwOnInvalidTomlSequence } = require('./log/messages')
-const { parseToml } = require('./utils/toml')
-
-const pReadFile = promisify(readFile)
+import { throwUserError } from './error.js'
+import { throwOnInvalidTomlSequence } from './log/messages.js'
+import { parseToml } from './utils/toml.js'
 
 // Load the configuration file and parse it (TOML)
-const parseConfig = async function (configPath) {
+export const parseConfig = async function (configPath) {
   if (configPath === undefined) {
     return {}
   }
@@ -26,7 +21,7 @@ const parseConfig = async function (configPath) {
 
 // Same but `configPath` is required and `configPath` might point to a
 // non-existing file.
-const parseOptionalConfig = async function (configPath) {
+export const parseOptionalConfig = async function (configPath) {
   if (!(await pathExists(configPath))) {
     return {}
   }
@@ -49,7 +44,7 @@ const readConfigPath = async function (configPath) {
 // Reach the configuration file's raw content
 const readConfig = async function (configPath) {
   try {
-    return await pReadFile(configPath, 'utf8')
+    return await fs.readFile(configPath, 'utf8')
   } catch (error) {
     throwUserError('Could not read configuration file', error)
   }
@@ -72,5 +67,3 @@ const validateTomlBlackslashes = function (configString) {
 // Also, """ strings can use trailing backslashes.
 const INVALID_TOML_BLACKSLASH =
   /\n[a-zA-Z]+ *= *(?:(?:""".*(?<!\\)(\\[^"\\btnfruU\n]).*""")|(?:"(?!")[^\n]*(?<!\\)(\\[^"\\btnfruU])[^\n]*"))/su
-
-module.exports = { parseConfig, parseOptionalConfig }

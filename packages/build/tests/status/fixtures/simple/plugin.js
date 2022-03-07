@@ -1,11 +1,7 @@
-'use strict'
-
-module.exports = {
-  onBuild({
-    utils: {
-      status: { show },
-    },
-  }) {
-    show({ summary: 'summary' })
+export const onBuild = function ({
+  utils: {
+    status: { show },
   },
+}) {
+  show({ summary: 'summary' })
 }

@@ -1,16 +1,11 @@
-'use strict'
+import { promises as fs } from 'fs'
+import { relative } from 'path'
 
-const { stat } = require('fs')
-const { relative } = require('path')
-const { promisify } = require('util')
+import { listFunctions } from '@netlify/zip-it-and-ship-it'
 
-const { listFunctions } = require('@netlify/zip-it-and-ship-it')
+import { addErrorInfo } from '../../error/info.js'
 
-const pStat = promisify(stat)
-
-const { addErrorInfo } = require('../../error/info')
-
-const { getZisiFeatureFlags } = require('./feature_flags')
+import { getZisiFeatureFlags } from './feature_flags.js'
 
 // Returns the `mainFile` of each function found in `functionsSrc`, relative to
 // `functionsSrc`.
@@ -27,7 +22,7 @@ const getRelativeFunctionMainFiles = async function ({ featureFlags, functionsSr
   return relativeMainFiles
 }
 
-const getUserAndInternalFunctions = ({
+export const getUserAndInternalFunctions = ({
   featureFlags,
   functionsSrc,
   functionsSrcExists,
@@ -45,13 +40,13 @@ const getUserAndInternalFunctions = ({
 // Returns `true` if the functions directory exists and is valid. Returns
 // `false` if it doesn't exist. Throws an error if it's invalid or can't
 // be accessed.
-const validateFunctionsSrc = async function ({ functionsSrc, relativeFunctionsSrc }) {
+export const validateFunctionsSrc = async function ({ functionsSrc, relativeFunctionsSrc }) {
   if (functionsSrc === undefined) {
     return false
   }
 
   try {
-    const stats = await pStat(functionsSrc)
+    const stats = await fs.stat(functionsSrc)
 
     if (stats.isDirectory()) {
       return true
@@ -72,5 +67,3 @@ const validateFunctionsSrc = async function ({ functionsSrc, relativeFunctionsSr
     throw error
   }
 }
-
-module.exports = { getUserAndInternalFunctions, validateFunctionsSrc }

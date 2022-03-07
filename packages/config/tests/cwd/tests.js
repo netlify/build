@@ -1,11 +1,9 @@
-'use strict'
+import { relative } from 'path'
+import { cwd } from 'process'
 
-const { relative } = require('path')
-const { cwd } = require('process')
+import test from 'ava'
 
-const test = require('ava')
-
-const { runFixture, FIXTURES_DIR } = require('../helpers/main')
+import { runFixture, FIXTURES_DIR } from '../helpers/main.js'
 
 test('--cwd with no config', async (t) => {
   await runFixture(t, '', { flags: { cwd: `${FIXTURES_DIR}/empty`, defaultConfig: { build: { publish: '/' } } } })

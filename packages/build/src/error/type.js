@@ -1,7 +1,5 @@
-'use strict'
-
 // Retrieve error-type specific information
-const getTypeInfo = function ({ type }) {
+export const getTypeInfo = function ({ type }) {
   const typeA = TYPES[type] === undefined ? DEFAULT_TYPE : type
   return { type: typeA, ...TYPES[typeA] }
 }
@@ -182,5 +180,3 @@ const TYPES = {
 
 // When no error type matches, it's an uncaught exception, i.e. a bug
 const DEFAULT_TYPE = 'exception'
-
-module.exports = { getTypeInfo }

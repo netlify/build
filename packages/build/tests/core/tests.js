@@ -1,35 +1,31 @@
-'use strict'
+import { promises as fs } from 'fs'
+import { join } from 'path'
+import { kill, platform } from 'process'
 
-const { unlink, writeFile } = require('fs')
-const { join } = require('path')
-const { kill, platform } = require('process')
-const { promisify } = require('util')
+import test from 'ava'
+import getNode from 'get-node'
+import moize from 'moize'
+import { pathExists } from 'path-exists'
+import sinon from 'sinon'
+import { tmpName } from 'tmp-promise'
 
-const zipItAndShipIt = require('@netlify/zip-it-and-ship-it')
-const test = require('ava')
-const getNode = require('get-node')
-const moize = require('moize')
-const pathExists = require('path-exists')
-const sinon = require('sinon')
-const { tmpName } = require('tmp-promise')
-
-const { runFixture: runFixtureConfig } = require('../../../config/tests/helpers/main')
-const { version: netlifyBuildVersion } = require('../../package.json')
-const { removeDir } = require('../helpers/dir')
-const { runFixture, FIXTURES_DIR } = require('../helpers/main')
-const { startServer } = require('../helpers/server')
-
-const pWriteFile = promisify(writeFile)
-const pUnlink = promisify(unlink)
+import { zipItAndShipIt } from '../../src/plugins_core/functions/index.js'
+import { importJsonFile } from '../../src/utils/json.js'
+import { runFixtureConfig } from '../helpers/config.js'
+import { removeDir } from '../helpers/dir.js'
+import { runFixture, FIXTURES_DIR } from '../helpers/main.js'
+import { startServer } from '../helpers/server.js'
 
 test('--help', async (t) => {
   await runFixture(t, '', { flags: { help: true }, useBinary: true })
 })
 
 test('--version', async (t) => {
-  const { returnValue } = await runFixture(t, '', { flags: { version: true }, useBinary: true })
-  t.is(returnValue, netlifyBuildVersion)
+  const { returnValue } = await runFixture(t, '', { flags: { version: true }, useBinary: true, cwd: FIXTURES_DIR })
+  t.regex(returnValue, VERSION_REGEXP)
 })
+
+const VERSION_REGEXP = /^\d+\.\d+\.\d+/
 
 test('Exit code is 0 on success', async (t) => {
   const { exitCode } = await runFixture(t, 'empty', { useBinary: true, snapshot: false })
@@ -152,7 +148,7 @@ test('--cachedConfigPath CLI flag', async (t) => {
     })
     await runFixture(t, 'cached_config', { flags: { cachedConfigPath, context: 'test' }, useBinary: true })
   } finally {
-    await pUnlink(cachedConfigPath)
+    await fs.unlink(cachedConfigPath)
   }
 })
 
@@ -166,10 +162,10 @@ test('--cachedConfigPath', async (t) => {
   const cachedConfigPath = await tmpName()
   try {
     const { returnValue } = await runFixtureConfig(t, 'cached_config', { snapshot: false })
-    await pWriteFile(cachedConfigPath, returnValue)
+    await fs.writeFile(cachedConfigPath, returnValue)
     await runFixture(t, 'cached_config', { flags: { cachedConfigPath, context: 'test' } })
   } finally {
-    await pUnlink(cachedConfigPath)
+    await fs.unlink(cachedConfigPath)
   }
 })
 
@@ -228,8 +224,8 @@ const getNodeBinary = async function (nodeVersion, retries = 1) {
 const MAX_RETRIES = 10
 
 // Memoize `get-node`
-// eslint-disable-next-line no-magic-numbers
-const mGetNode = moize(getNodeBinary, { isPromise: true, maxSize: 1e3 })
+const GET_NODE_MOIZE_MAX_SIZE = 1e3
+const mGetNode = moize(getNodeBinary, { isPromise: true, maxSize: GET_NODE_MOIZE_MAX_SIZE })
 
 test('--node-path is used by build.command', async (t) => {
   const { path } = await mGetNode(CHILD_NODE_VERSION)
@@ -306,7 +302,9 @@ test('Print warning when headers file is missing from publish directory', async 
 })
 
 test.serial('Successfully builds ES module function with feature flag', async (t) => {
+  // eslint-disable-next-line import/no-named-as-default-member
   const mockZipFunctions = sinon.stub().resolves()
+  // eslint-disable-next-line import/no-named-as-default-member
   const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').get(() => mockZipFunctions)
 
   await runFixture(t, 'functions_es_modules', {
@@ -321,7 +319,9 @@ test.serial('Successfully builds ES module function with feature flag', async (t
 })
 
 test.serial(`Doesn't fail build for ES module function if feature flag is off`, async (t) => {
+  // eslint-disable-next-line import/no-named-as-default-member
   const mockZipFunctions = sinon.stub().resolves()
+  // eslint-disable-next-line import/no-named-as-default-member
   const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').get(() => mockZipFunctions)
 
   await runFixture(t, 'functions_es_modules', {
@@ -334,29 +334,45 @@ test.serial(`Doesn't fail build for ES module function if feature flag is off`, 
   t.false(callArgs[2].featureFlags.defaultEsModulesToEsbuild)
 })
 
-test.serial('Passes the right base path properties to zip-it-and-ship-it', async (t) => {
+test.serial('Passes the right properties to zip-it-and-ship-it', async (t) => {
+  // eslint-disable-next-line import/no-named-as-default-member
   const mockZipFunctions = sinon.stub().resolves()
+  // eslint-disable-next-line import/no-named-as-default-member
   const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').get(() => mockZipFunctions)
   const fixtureName = 'core'
   const fixtureDir = join(FIXTURES_DIR, fixtureName)
 
   await runFixture(t, fixtureName, { snapshot: false })
+  await runFixture(t, fixtureName, {
+    env: { AWS_LAMBDA_JS_RUNTIME: 'nodejs00.x' },
+    flags: { mode: 'buildbot' },
+    snapshot: false,
+  })
 
   stub.restore()
 
-  t.is(mockZipFunctions.callCount, 1)
+  t.is(mockZipFunctions.callCount, 2)
 
   // eslint-disable-next-line prefer-destructuring
-  const { basePath, config, repositoryRoot } = mockZipFunctions.firstCall.args[2]
+  const params1 = mockZipFunctions.firstCall.args[2]
 
-  t.is(basePath, fixtureDir)
-  t.is(config['*'].includedFilesBasePath, fixtureDir)
-  t.is(repositoryRoot, fixtureDir)
+  t.is(params1.basePath, fixtureDir)
+  t.true(params1.config['*'].zipGo)
+  t.is(params1.config['*'].includedFilesBasePath, fixtureDir)
+  t.is(params1.config['*'].nodeVersion, undefined)
+  t.is(params1.repositoryRoot, fixtureDir)
+
+  // eslint-disable-next-line prefer-destructuring
+  const params2 = mockZipFunctions.secondCall.args[2]
+
+  t.is(params2.config['*'].nodeVersion, 'nodejs00.x')
+  t.is(params2.config['*'].zipGo, undefined)
 })
 
-// eslint-disable-next-line max-statements
 test.serial('Passes the right feature flags to zip-it-and-ship-it', async (t) => {
+  // eslint-disable-next-line import/no-named-as-default-member
   const mockZipFunctions = sinon.stub().resolves()
+  // eslint-disable-next-line import/no-named-as-default-member
   const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').get(() => mockZipFunctions)
 
   await runFixture(t, 'schedule', { snapshot: false })
@@ -373,34 +389,39 @@ test.serial('Passes the right feature flags to zip-it-and-ship-it', async (t) =>
     snapshot: false,
   })
   await runFixture(t, 'schedule', {
-    flags: { featureFlags: { buildbot_scheduled_functions: true } },
+    flags: { featureFlags: { buildbot_nft_transpile_esm: true } },
     snapshot: false,
   })
   await runFixture(t, 'schedule', {
-    flags: { featureFlags: { buildbot_nft_transpile_esm: true } },
+    flags: { featureFlags: { zisi_parse_isc: true } },
+    snapshot: false,
+  })
+  await runFixture(t, 'schedule', {
+    flags: { featureFlags: { this_is_a_mock_flag: true, and_another_one: true } },
     snapshot: false,
   })
 
   stub.restore()
 
-  // eslint-disable-next-line no-magic-numbers
-  t.is(mockZipFunctions.callCount, 6)
+  t.is(mockZipFunctions.callCount, 7)
 
   t.false(mockZipFunctions.getCall(0).args[2].featureFlags.traceWithNft)
   t.false(mockZipFunctions.getCall(0).args[2].featureFlags.buildGoSource)
   t.false(mockZipFunctions.getCall(0).args[2].featureFlags.parseWithEsbuild)
+  t.is(mockZipFunctions.getCall(0).args[2].config.test.schedule, '@daily')
   t.false(mockZipFunctions.getCall(0).args[2].featureFlags.nftTranspile)
+  t.false(mockZipFunctions.getCall(0).args[2].featureFlags.parseISC)
+  t.is(mockZipFunctions.getCall(0).args[2].featureFlags.this_is_a_mock_flag, undefined)
+  t.is(mockZipFunctions.getCall(0).args[2].featureFlags.and_another_one, undefined)
 
   t.true(mockZipFunctions.getCall(1).args[2].featureFlags.traceWithNft)
   t.true(mockZipFunctions.getCall(1).args[2].featureFlags.nftTranspile)
   t.true(mockZipFunctions.getCall(2).args[2].featureFlags.buildGoSource)
   t.true(mockZipFunctions.getCall(3).args[2].featureFlags.parseWithEsbuild)
-  // eslint-disable-next-line no-magic-numbers
-  t.true(mockZipFunctions.getCall(5).args[2].featureFlags.nftTranspile)
-
-  t.is(mockZipFunctions.getCall(0).args[2].config.test.schedule, undefined)
-  // eslint-disable-next-line no-magic-numbers
-  t.is(mockZipFunctions.getCall(4).args[2].config.test.schedule, '@daily')
+  t.true(mockZipFunctions.getCall(4).args[2].featureFlags.nftTranspile)
+  t.true(mockZipFunctions.getCall(5).args[2].featureFlags.parseISC)
+  t.true(mockZipFunctions.getCall(6).args[2].featureFlags.this_is_a_mock_flag)
+  t.true(mockZipFunctions.getCall(6).args[2].featureFlags.and_another_one)
 })
 
 test('Print warning on lingering processes', async (t) => {
@@ -464,7 +485,9 @@ test.serial('`rustTargetDirectory` is passed to zip-it-and-ship-it only when run
   const fixtureWithConfig = 'functions_config_1'
   const fixtureWithoutConfig = 'functions_internal_missing'
   const runCount = 4
+  // eslint-disable-next-line import/no-named-as-default-member
   const mockZipFunctions = sinon.stub().resolves()
+  // eslint-disable-next-line import/no-named-as-default-member
   const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').get(() => mockZipFunctions)
 
   await runFixture(t, fixtureWithConfig, { flags: { mode: 'buildbot' }, snapshot: false })
@@ -493,39 +516,37 @@ test.serial('`rustTargetDirectory` is passed to zip-it-and-ship-it only when run
   t.is(call4Args[2].config['*'].rustTargetDirectory, undefined)
 })
 
-test('Does not generate a `manifest.json` file when the feature flag is not enabled', async (t) => {
-  const fixtureName = 'functions_internal_no_manifest_2'
-
-  await removeDir(`${FIXTURES_DIR}/${fixtureName}/.netlify/functions`)
-  await runFixture(t, fixtureName, { flags: { mode: 'buildbot' }, snapshot: false })
-
-  t.false(await pathExists(`${FIXTURES_DIR}/${fixtureName}/.netlify/functions/manifest.json`))
-})
-
-test('Does not generate a `manifest.json` file when running in buildbot', async (t) => {
-  const fixtureName = 'functions_internal_no_manifest_1'
-
-  await removeDir(`${FIXTURES_DIR}/${fixtureName}/.netlify/functions`)
-  await runFixture(t, fixtureName, {
-    flags: { featureFlags: { functionsBundlingManifest: true }, mode: 'buildbot' },
-    snapshot: false,
-  })
-
-  t.false(await pathExists(`${FIXTURES_DIR}/${fixtureName}/.netlify/functions/manifest.json`))
-})
-
 test('Generates a `manifest.json` file when running outside of buildbot', async (t) => {
   const fixtureName = 'functions_internal_manifest'
 
   await removeDir(`${FIXTURES_DIR}/${fixtureName}/.netlify/functions`)
-  await runFixture(t, fixtureName, { flags: { featureFlags: { functionsBundlingManifest: true }, mode: 'cli' } })
+  await runFixture(t, fixtureName, { flags: { mode: 'cli' }, snapshot: false })
 
   const manifestPath = `${FIXTURES_DIR}/${fixtureName}/.netlify/functions/manifest.json`
 
   t.true(await pathExists(manifestPath))
 
-  // eslint-disable-next-line import/no-dynamic-require, node/global-require
-  const { functions, timestamp, version: manifestVersion } = require(manifestPath)
+  const { functions, timestamp, version: manifestVersion } = await importJsonFile(manifestPath)
+
+  t.is(functions.length, 3)
+  t.is(typeof timestamp, 'number')
+  t.is(manifestVersion, 1)
+})
+
+test('Generates a `manifest.json` file when the `buildbot_create_functions_manifest` feature flag is set', async (t) => {
+  const fixtureName = 'functions_internal_manifest'
+
+  await removeDir(`${FIXTURES_DIR}/${fixtureName}/.netlify/functions`)
+  await runFixture(t, fixtureName, {
+    flags: { featureFlags: { buildbot_create_functions_manifest: true } },
+    snapshot: false,
+  })
+
+  const manifestPath = `${FIXTURES_DIR}/${fixtureName}/.netlify/functions/manifest.json`
+
+  t.true(await pathExists(manifestPath))
+
+  const { functions, timestamp, version: manifestVersion } = await importJsonFile(manifestPath)
 
   t.is(functions.length, 3)
   t.is(typeof timestamp, 'number')

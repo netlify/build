@@ -1,6 +1,4 @@
-'use strict'
-
-const getBuildCommandDescription = function (buildCommandOrigin) {
+export const getBuildCommandDescription = function (buildCommandOrigin) {
   return BUILD_COMMAND_DESCRIPTIONS[buildCommandOrigin]
 }
 
@@ -11,7 +9,7 @@ const BUILD_COMMAND_DESCRIPTIONS = {
 }
 
 // Retrieve human-friendly plugin origin
-const getPluginOrigin = function (loadedFrom, origin) {
+export const getPluginOrigin = function (loadedFrom, origin) {
   const originName = PLUGIN_ORIGINS[origin]
 
   if (loadedFrom === 'package.json') {
@@ -26,5 +24,3 @@ const PLUGIN_ORIGINS = {
   ui: 'Netlify app',
   config: 'netlify.toml',
 }
-
-module.exports = { getBuildCommandDescription, getPluginOrigin }

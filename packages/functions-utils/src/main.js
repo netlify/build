@@ -1,18 +1,13 @@
-'use strict'
+import { promises as fs } from 'fs'
+import { basename, dirname } from 'path'
 
-const { stat } = require('fs')
-const { basename, dirname } = require('path')
-const { promisify } = require('util')
-
-const { listFunctions, listFunctionsFiles } = require('@netlify/zip-it-and-ship-it')
-const cpy = require('cpy')
-const pathExists = require('path-exists')
-
-const pStat = promisify(stat)
+import { listFunctions, listFunctionsFiles } from '@netlify/zip-it-and-ship-it'
+import cpy from 'cpy'
+import { pathExists } from 'path-exists'
 
 // Add a Netlify Function file to the `functions` directory so it is processed
 // by `@netlify/plugin-functions-core`
-const add = async function (src, dist, { fail = defaultFail } = {}) {
+export const add = async function (src, dist, { fail = defaultFail } = {}) {
   if (src === undefined) {
     return fail('No function source directory was specified')
   }
@@ -31,7 +26,7 @@ const add = async function (src, dist, { fail = defaultFail } = {}) {
 }
 
 const getSrcGlob = async function (src, srcBasename) {
-  const srcStat = await pStat(src)
+  const srcStat = await fs.stat(src)
 
   if (srcStat.isDirectory()) {
     return `${srcBasename}/**`
@@ -40,7 +35,7 @@ const getSrcGlob = async function (src, srcBasename) {
   return srcBasename
 }
 
-const list = async function (functionsSrc, { fail = defaultFail } = {}) {
+export const list = async function (functionsSrc, { fail = defaultFail } = {}) {
   if (functionsSrc === undefined || functionsSrc.length === 0) {
     return fail('No function directory was specified')
   }
@@ -52,7 +47,7 @@ const list = async function (functionsSrc, { fail = defaultFail } = {}) {
   }
 }
 
-const listAll = async function (functionsSrc, { fail = defaultFail } = {}) {
+export const listAll = async function (functionsSrc, { fail = defaultFail } = {}) {
   if (functionsSrc === undefined || functionsSrc.length === 0) {
     return fail('No function directory was specified')
   }
@@ -67,5 +62,3 @@ const listAll = async function (functionsSrc, { fail = defaultFail } = {}) {
 const defaultFail = function (message) {
   throw new Error(message)
 }
-
-module.exports = { add, list, listAll }

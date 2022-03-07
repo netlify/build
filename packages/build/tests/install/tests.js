@@ -1,13 +1,11 @@
-'use strict'
+// import { version } from 'process'
 
-// const { version } = require('process')
+import test from 'ava'
+import { pathExists } from 'path-exists'
+// import semver from 'semver'
 
-const test = require('ava')
-const pathExists = require('path-exists')
-// const { gte: gteVersion } = require('semver')
-
-const { removeDir } = require('../helpers/dir')
-const { runFixture, FIXTURES_DIR } = require('../helpers/main')
+import { removeDir } from '../helpers/dir.js'
+import { runFixture, FIXTURES_DIR } from '../helpers/main.js'
 
 // Run fixture and ensure:
 //  - specific directories exist after run
@@ -96,7 +94,7 @@ test('Install local plugin dependencies: with npm', async (t) => {
 // @todo: enable those tests for Node <14.0.0
 // @todo: uncomment after upgrading to Ava v4.
 // See https://github.com/netlify/build/issues/3615
-// if (gteVersion(version, '14.0.0')) {
+// if (semver.gteVersion(version, '14.0.0')) {
 //   test.skip('Install local plugin dependencies: with yarn locally', async (t) => {
 //     await runInstallFixture(t, 'yarn', [`${FIXTURES_DIR}/yarn/plugin/node_modules/`], { useBinary: true })
 //   })

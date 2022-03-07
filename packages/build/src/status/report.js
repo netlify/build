@@ -1,12 +1,10 @@
-'use strict'
+import { handleBuildError } from '../error/handle.js'
+import { logStatuses } from '../log/messages/status.js'
 
-const { handleBuildError } = require('../error/handle')
-const { logStatuses } = require('../log/messages/status')
-
-const { removeStatusesColors } = require('./colors')
+import { removeStatusesColors } from './colors.js'
 
 // Report plugin statuses to the console and API
-const reportStatuses = async function ({
+export const reportStatuses = async function ({
   statuses,
   childEnv,
   api,
@@ -128,5 +126,3 @@ const sendApiStatus = async function ({
     await handleBuildError(error, { errorMonitor, netlifyConfig, childEnv, mode, logs, debug, testOpts })
   }
 }
-
-module.exports = { reportStatuses }
