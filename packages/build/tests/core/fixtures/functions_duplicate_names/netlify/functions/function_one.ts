@@ -1,3 +1,1 @@
-const handler = () => true
-
-export default handler
+export const handler = () => true
