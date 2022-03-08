@@ -44,7 +44,7 @@ export const getConstants = async function ({
     // The directory where internal functions (i.e. generated programmatically
     // via plugins or others) live
     INTERNAL_FUNCTIONS_SRC: `${buildDir}/${INTERNAL_FUNCTIONS_SRC}`,
-    // The directory where internal functions (i.e. generated programmatically
+    // The directory where internal Edge Handlers (i.e. generated programmatically
     // via plugins or others) live
     INTERNAL_EDGE_HANDLERS_SRC: `${buildDir}/${INTERNAL_EDGE_HANDLERS_SRC}`,
   }
