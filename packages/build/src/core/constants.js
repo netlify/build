@@ -44,11 +44,15 @@ export const getConstants = async function ({
     // The directory where internal functions (i.e. generated programmatically
     // via plugins or others) live
     INTERNAL_FUNCTIONS_SRC: `${buildDir}/${INTERNAL_FUNCTIONS_SRC}`,
+    // The directory where internal Edge Handlers (i.e. generated programmatically
+    // via plugins or others) live
+    INTERNAL_EDGE_HANDLERS_SRC: `${buildDir}/${INTERNAL_EDGE_HANDLERS_SRC}`,
   }
   const constantsA = await addMutableConstants({ constants, buildDir, netlifyConfig })
   return constantsA
 }
 
+const INTERNAL_EDGE_HANDLERS_SRC = '.netlify/edge-handlers'
 const INTERNAL_FUNCTIONS_SRC = '.netlify/functions-internal'
 
 // Retrieve constants which might change during the build if a plugin modifies
@@ -144,6 +148,7 @@ const CONSTANT_PATHS = new Set([
   'PUBLISH_DIR',
   'FUNCTIONS_SRC',
   'FUNCTIONS_DIST',
+  'INTERNAL_EDGE_HANDLERS_SRC',
   'INTERNAL_FUNCTIONS_SRC',
   'EDGE_HANDLERS_DIST',
   'EDGE_HANDLERS_SRC',

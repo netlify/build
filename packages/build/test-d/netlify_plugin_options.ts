@@ -7,6 +7,7 @@ const testConstants: OnPreBuild = function ({ constants }: { constants: NetlifyP
   expectType<string | undefined>(constants.CONFIG_PATH)
   expectType<string>(constants.PUBLISH_DIR)
   expectType<string | undefined>(constants.FUNCTIONS_SRC)
+  expectType<string | undefined>(constants.INTERNAL_EDGE_HANDLERS_SRC)
   expectType<string | undefined>(constants.INTERNAL_FUNCTIONS_SRC)
   expectType<string>(constants.FUNCTIONS_DIST)
   expectType<string | undefined>(constants.EDGE_HANDLERS_SRC)
