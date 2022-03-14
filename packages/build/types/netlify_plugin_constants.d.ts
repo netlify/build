@@ -14,6 +14,11 @@ export interface NetlifyPluginConstants {
    */
   FUNCTIONS_SRC?: string
   /**
+   * the directory where internal Edge Handlers source code lives. This is where build plugins should place auto-generated handlers.
+   * `undefined` if the version of @netlify/build does not support internal Edge Handlers
+   */
+  INTERNAL_EDGE_HANDLERS_SRC?: string
+  /**
    * the directory where internal function source code lives. This is where build plugins should place auto-generated functions.
    * `undefined` if the version of @netlify/build does not support internal functions
    */
@@ -22,6 +27,10 @@ export interface NetlifyPluginConstants {
    * the directory where built serverless functions are placed before deployment. Its value is always defined, but the target might not have been created yet.
    */
   FUNCTIONS_DIST: string
+  /**
+   * the directory where built Edge Handlers are placed before deployment. Its value is always defined, but the target might not have been created yet.
+   */
+  EDGE_HANDLERS_DIST: string
   /**
    * the directory where Edge Handlers source code lives.
    * `undefined` if no `netlify/edge-handlers` directory exists in the base directory and if not specified in `netlify.toml`.
