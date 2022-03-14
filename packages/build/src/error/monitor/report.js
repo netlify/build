@@ -89,7 +89,10 @@ const getApp = function () {
 // But we change it back after Bugsnag is done reporting.
 const updateErrorName = function (error, type) {
   const { name } = error
-  error.name = type
+  // This might fail if `name` is a getter or is non-writable.
+  try {
+    error.name = type
+  } catch {}
   return name
 }
 
