@@ -6,11 +6,20 @@ const DEFAULT_IMPORTS = {
   'netlify:edge': 'https://dinosaurs:are-the-future!@edge-bootstrap.netlify.app/v1/index.ts',
 }
 
+interface ImportMapFile {
+  imports: Record<string, string>
+  scopes?: Record<string, string>
+}
+
 class ImportMap {
   imports: Record<string, string>
 
-  constructor() {
-    this.imports = DEFAULT_IMPORTS
+  constructor(input: ImportMapFile[] = []) {
+    const inputImports = input.reduce((acc, { imports }) => ({ ...acc, ...imports }), {})
+
+    // `DEFAULT_IMPORTS` must come last because we want our internal imports to
+    // take precedence.
+    this.imports = { ...inputImports, ...DEFAULT_IMPORTS }
   }
 
   getContents() {
@@ -37,3 +46,4 @@ class ImportMap {
 }
 
 export { ImportMap }
+export type { ImportMapFile }

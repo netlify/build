@@ -11,7 +11,7 @@ import type { Declaration } from './declaration.js'
 import { getESZIPBundler } from './eszip.js'
 import { findHandlers } from './finder.js'
 import { Handler } from './handler.js'
-import { ImportMap } from './import_map.js'
+import { ImportMap, ImportMapFile } from './import_map.js'
 import { generateManifest } from './manifest.js'
 import { getFileHash } from './utils/sha256.js'
 
@@ -21,7 +21,8 @@ interface HandlerLine {
 }
 
 interface BundleOptions {
-  importMapPath?: string
+  distImportMapPath?: string
+  importMaps?: ImportMapFile[]
   onAfterDownload?: LifecycleHook
   onBeforeDownload?: LifecycleHook
 }
@@ -38,7 +39,7 @@ const bundle = async (
   sourceDirectories: string[],
   distDirectory: string,
   declarations: Declaration[] = [],
-  { importMapPath, onAfterDownload, onBeforeDownload }: BundleOptions = {},
+  { distImportMapPath, importMaps, onAfterDownload, onBeforeDownload }: BundleOptions = {},
 ) => {
   const deno = new DenoBridge({
     onAfterDownload,
@@ -49,7 +50,10 @@ const bundle = async (
   // compute until we run the bundle process. For now, we'll use a random ID
   // to create the bundle artifacts and rename them later.
   const buildID = uuidv4()
-  const importMap = new ImportMap()
+
+  // Creating an ImportMap instance with any import maps supplied by the user,
+  // if any.
+  const importMap = new ImportMap(importMaps)
   const { handlers, preBundlePath } = await preBundle(sourceDirectories, distDirectory, `${buildID}-pre.js`)
   const bundleAlternates: BundleAlternate[] = ['js']
   const bundleOps = [bundleJS({ buildID, deno, distDirectory, importMap, preBundlePath })]
@@ -70,8 +74,8 @@ const bundle = async (
 
   await fs.unlink(preBundlePath)
 
-  if (importMapPath) {
-    await importMap.writeToFile(importMapPath)
+  if (distImportMapPath) {
+    await importMap.writeToFile(distImportMapPath)
   }
 
   return { handlers, manifest, preBundlePath }
