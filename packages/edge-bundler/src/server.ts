@@ -3,9 +3,11 @@ import { tmpName } from 'tmp-promise'
 import { DenoBridge, LifecycleHook } from './bridge.js'
 import { preBundle } from './bundler.js'
 import type { Declaration } from './declaration.js'
+import { ImportMap } from './import_map.js'
 import { generateManifest } from './manifest.js'
 
 interface ServeOptions {
+  importMapPath?: string
   onAfterDownload?: LifecycleHook
   onBeforeDownload?: LifecycleHook
 }
@@ -13,7 +15,7 @@ interface ServeOptions {
 const serve = async (
   port: number,
   sourceDirectories: string[],
-  { onAfterDownload, onBeforeDownload }: ServeOptions = {},
+  { importMapPath, onAfterDownload, onBeforeDownload }: ServeOptions = {},
 ) => {
   const deno = new DenoBridge({
     onAfterDownload,
@@ -27,9 +29,14 @@ const serve = async (
   // Wait for the binary to be downloaded if needed.
   await deno.getBinaryPath()
 
-  const flags = ['-A', '--unstable', '--no-clear-screen', '--watch', '--no-prompt']
+  const importMap = new ImportMap()
+  const flags = ['-A', '--unstable', '--no-clear-screen', '--watch', `--import-map=${importMap.toDataURL()}`]
 
   deno.run(['run', ...flags, preBundlePath, port.toString()], { wait: false })
+
+  if (importMapPath) {
+    await importMap.writeToFile(importMapPath)
+  }
 
   return {
     getManifest,

@@ -11,6 +11,7 @@ import type { Declaration } from './declaration.js'
 import { getESZIPBundler } from './eszip.js'
 import { findHandlers } from './finder.js'
 import { Handler } from './handler.js'
+import { ImportMap } from './import_map.js'
 import { generateManifest } from './manifest.js'
 import { getFileHash } from './utils/sha256.js'
 
@@ -20,15 +21,24 @@ interface HandlerLine {
 }
 
 interface BundleOptions {
+  importMapPath?: string
   onAfterDownload?: LifecycleHook
   onBeforeDownload?: LifecycleHook
+}
+
+interface BundleAlternateOptions {
+  buildID: string
+  deno: DenoBridge
+  distDirectory: string
+  importMap: ImportMap
+  preBundlePath: string
 }
 
 const bundle = async (
   sourceDirectories: string[],
   distDirectory: string,
   declarations: Declaration[] = [],
-  { onAfterDownload, onBeforeDownload }: BundleOptions = {},
+  { importMapPath, onAfterDownload, onBeforeDownload }: BundleOptions = {},
 ) => {
   const deno = new DenoBridge({
     onAfterDownload,
@@ -39,13 +49,14 @@ const bundle = async (
   // compute until we run the bundle process. For now, we'll use a random ID
   // to create the bundle artifacts and rename them later.
   const buildID = uuidv4()
+  const importMap = new ImportMap()
   const { handlers, preBundlePath } = await preBundle(sourceDirectories, distDirectory, `${buildID}-pre.js`)
   const bundleAlternates: BundleAlternate[] = ['js']
-  const bundleOps = [bundleJS(deno, preBundlePath, distDirectory, buildID)]
+  const bundleOps = [bundleJS({ buildID, deno, distDirectory, importMap, preBundlePath })]
 
   if (env.BUNDLE_ESZIP) {
     bundleAlternates.push('eszip2')
-    bundleOps.push(bundleESZIP(deno, preBundlePath, distDirectory, buildID))
+    bundleOps.push(bundleESZIP({ buildID, deno, distDirectory, importMap, preBundlePath }))
   }
 
   const bundleHash = await createFinalBundles(bundleOps, distDirectory, buildID)
@@ -59,10 +70,14 @@ const bundle = async (
 
   await fs.unlink(preBundlePath)
 
+  if (importMapPath) {
+    await importMap.writeToFile(importMapPath)
+  }
+
   return { handlers, manifest, preBundlePath }
 }
 
-const bundleESZIP = async (deno: DenoBridge, preBundlePath: string, distDirectory: string, buildID: string) => {
+const bundleESZIP = async ({ buildID, deno, distDirectory, preBundlePath }: BundleAlternateOptions) => {
   const extension = '.eszip2'
   const preBundleFileURL = pathToFileURL(preBundlePath).toString()
   const eszipBundlePath = join(distDirectory, `${buildID}${extension}`)
@@ -73,11 +88,11 @@ const bundleESZIP = async (deno: DenoBridge, preBundlePath: string, distDirector
   return extension
 }
 
-const bundleJS = async (deno: DenoBridge, preBundlePath: string, distDirectory: string, buildID: string) => {
+const bundleJS = async ({ buildID, deno, distDirectory, importMap, preBundlePath }: BundleAlternateOptions) => {
   const extension = '.js'
   const jsBundlePath = join(distDirectory, `${buildID}${extension}`)
 
-  await deno.run(['bundle', preBundlePath, jsBundlePath])
+  await deno.run(['bundle', `--import-map=${importMap.toDataURL()}`, preBundlePath, jsBundlePath])
 
   return extension
 }
