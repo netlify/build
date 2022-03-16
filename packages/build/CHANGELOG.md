@@ -1,5 +1,17 @@
 # Changelog
 
+## [26.5.0](https://github.com/netlify/build/compare/build-v26.4.0...build-v26.5.0) (2022-03-14)
+
+
+### Features
+
+* add `INTERNAL_EDGE_HANDLERS_SRC` constant ([#4222](https://github.com/netlify/build/issues/4222)) ([e969998](https://github.com/netlify/build/commit/e969998469e187b37d8423c809f589350dd3c158))
+
+
+### Bug Fixes
+
+* handle non-writable `error.name` ([#4227](https://github.com/netlify/build/issues/4227)) ([2128d21](https://github.com/netlify/build/commit/2128d217825d09a16111fbf01647e87d597bd8c9))
+
 ## [26.4.0](https://github.com/netlify/build/compare/build-v26.3.14...build-v26.4.0) (2022-03-07)
 
 
