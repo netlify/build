@@ -11,5 +11,14 @@ module.exports = {
   rules: {
     'node/no-missing-import': 'off',
   },
-  overrides: [...overrides],
+  overrides: [
+    ...overrides,
+    {
+      files: ['test/**/*.ts'],
+      rules: {
+        'max-statements': 'off',
+        'no-magic-numbers': 'off',
+      },
+    },
+  ],
 }

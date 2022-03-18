@@ -5,6 +5,7 @@ import { pathToFileURL } from 'url'
 
 import { v4 as uuidv4 } from 'uuid'
 
+import { getBootstrapImport } from './bootstrap.js'
 import { DenoBridge, LifecycleHook } from './bridge.js'
 import type { BundleAlternate } from './bundle_alternate.js'
 import type { Declaration } from './declaration.js'
@@ -122,7 +123,7 @@ const createFinalBundles = async (bundleOps: Promise<string>[], distDirectory: s
 
 const generateEntrypoint = (handlers: Handler[], distDirectory: string) => {
   const lines = handlers.map((handler, index) => generateHandlerReference(handler, index, distDirectory))
-  const bootImport = 'import { boot } from "https://dinosaurs:are-the-future!@edge-bootstrap.netlify.app/index.ts";'
+  const bootImport = getBootstrapImport()
   const importLines = lines.map(({ importLine }) => importLine).join('\n')
   const exportLines = lines.map(({ exportLine }) => exportLine).join(', ')
   const exportDeclaration = `const handlers = {${exportLines}};`
