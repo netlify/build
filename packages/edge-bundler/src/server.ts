@@ -7,6 +7,7 @@ import { ImportMap, ImportMapFile } from './import_map.js'
 import { generateManifest } from './manifest.js'
 
 interface ServeOptions {
+  debug?: boolean
   distImportMapPath?: string
   importMaps?: ImportMapFile[]
   onAfterDownload?: LifecycleHook
@@ -16,7 +17,7 @@ interface ServeOptions {
 const serve = async (
   port: number,
   sourceDirectories: string[],
-  { distImportMapPath, importMaps, onAfterDownload, onBeforeDownload }: ServeOptions = {},
+  { debug, distImportMapPath, importMaps, onAfterDownload, onBeforeDownload }: ServeOptions = {},
 ) => {
   const deno = new DenoBridge({
     onAfterDownload,
@@ -34,6 +35,10 @@ const serve = async (
   // if any.
   const importMap = new ImportMap(importMaps)
   const flags = ['-A', '--unstable', '--no-clear-screen', '--watch', `--import-map=${importMap.toDataURL()}`]
+
+  if (debug) {
+    flags.push('--log-level=debug')
+  }
 
   deno.run(['run', ...flags, preBundlePath, port.toString()], { wait: false })
 
