@@ -3,6 +3,7 @@ import { join, relative } from 'path'
 import { env } from 'process'
 import { pathToFileURL } from 'url'
 
+import del from 'del'
 import { v4 as uuidv4 } from 'uuid'
 
 import { getBootstrapImport } from './bootstrap.js'
@@ -144,7 +145,7 @@ const generateHandlerReference = (handler: Handler, index: number, targetDirecto
 }
 
 const preBundle = async (sourceDirectories: string[], distDirectory: string, preBundleName: string) => {
-  await fs.rm(distDirectory, { force: true, recursive: true })
+  await del(distDirectory, { force: true })
   await fs.mkdir(distDirectory, { recursive: true })
 
   const handlers = await findHandlers(sourceDirectories)
