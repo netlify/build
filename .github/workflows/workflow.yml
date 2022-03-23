@@ -13,6 +13,8 @@ jobs:
       matrix:
         os: [ubuntu-latest, macOS-latest, windows-latest]
         node-version: ['*']
+    env:
+      PACKAGES_TOKEN: ${{ secrets.PACKAGES_TOKEN }}
     steps:
       # Sets an output parameter if this is a release PR
       - name: Check for release
@@ -37,6 +39,8 @@ jobs:
   test:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
+    env:
+      PACKAGES_TOKEN: ${{ secrets.PACKAGES_TOKEN }}
     strategy:
       matrix:
         os: [ubuntu-latest, macOS-latest, windows-latest]
@@ -112,6 +116,7 @@ jobs:
           # split tests across multiple machines
           CI_NODE_INDEX: ${{ matrix.machine }}
           CI_NODE_TOTAL: 4
+          PACKAGES_TOKEN: ${{ secrets.PACKAGES_TOKEN }}
       - name: Get test coverage flags
         id: test-coverage-flags
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
