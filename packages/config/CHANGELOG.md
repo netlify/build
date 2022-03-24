@@ -1,5 +1,12 @@
 # Changelog
 
+### [17.0.19](https://github.com/netlify/build/compare/config-v17.0.18...config-v17.0.19) (2022-03-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency netlify to ^11.0.1 ([#4238](https://github.com/netlify/build/issues/4238)) ([014cc56](https://github.com/netlify/build/commit/014cc56112c9f8fa2c1246dced7354bac4761ac2))
+
 ### [17.0.18](https://github.com/netlify/build/compare/config-v17.0.17...config-v17.0.18) (2022-03-02)
 
 
