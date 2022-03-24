@@ -198,7 +198,7 @@ focus on actual system bugs, we enforce some strict configuration
 [validation](https://github.com/netlify/build/blob/558fe8869f47ecc84d05bd4d26d32df00f47a3b9/packages/config/src/validate/validations.js#L40).
 Error messages are printed in the build logs with a nice format and examples on how to fix them. This logic relies on
 declaring each configuration property's shape and example values
-[in the following file](https://github.com/netlify/build/blob/main/packages/config/src/validate/validations.js#L40).
+[in the following file](https://github.com/netlify/build/blob/558fe8869f47ecc84d05bd4d26d32df00f47a3b9/packages/config/src/validate/validations.js#L40).
 This requires some (sometimes tedious) maintenance, but improves the developer experience.
 
 The configuration object is normalized, which includes:
