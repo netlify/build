@@ -1,10 +1,10 @@
 interface DeclarationWithPath {
-  handler: string
+  function: string
   path: string
 }
 
 interface DeclarationWithPattern {
-  handler: string
+  function: string
   pattern: string
 }
 

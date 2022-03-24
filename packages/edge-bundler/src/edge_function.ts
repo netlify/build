@@ -1,4 +1,4 @@
-export interface Handler {
+export interface EdgeFunction {
   name: string
   path: string
 }

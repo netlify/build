@@ -10,14 +10,14 @@ import { getBootstrapImport } from './bootstrap.js'
 import { DenoBridge, LifecycleHook } from './bridge.js'
 import type { BundleAlternate } from './bundle_alternate.js'
 import type { Declaration } from './declaration.js'
+import { EdgeFunction } from './edge_function.js'
 import { getESZIPBundler } from './eszip.js'
-import { findHandlers } from './finder.js'
-import { Handler } from './handler.js'
+import { findFunctions } from './finder.js'
 import { ImportMap, ImportMapFile } from './import_map.js'
 import { generateManifest } from './manifest.js'
 import { getFileHash } from './utils/sha256.js'
 
-interface HandlerLine {
+interface FunctionLine {
   exportLine: string
   importLine: string
 }
@@ -56,7 +56,7 @@ const bundle = async (
   // Creating an ImportMap instance with any import maps supplied by the user,
   // if any.
   const importMap = new ImportMap(importMaps)
-  const { handlers, preBundlePath } = await preBundle(sourceDirectories, distDirectory, `${buildID}-pre.js`)
+  const { functions, preBundlePath } = await preBundle(sourceDirectories, distDirectory, `${buildID}-pre.js`)
   const bundleAlternates: BundleAlternate[] = ['js']
   const bundleOps = [bundleJS({ buildID, deno, distDirectory, importMap, preBundlePath })]
 
@@ -71,7 +71,7 @@ const bundle = async (
     bundleHash,
     declarations,
     distDirectory,
-    handlers,
+    functions,
   })
 
   await fs.unlink(preBundlePath)
@@ -80,7 +80,7 @@ const bundle = async (
     await importMap.writeToFile(distImportMapPath)
   }
 
-  return { handlers, manifest, preBundlePath }
+  return { functions, manifest, preBundlePath }
 }
 
 const bundleESZIP = async ({ buildID, deno, distDirectory, preBundlePath }: BundleAlternateOptions) => {
@@ -106,7 +106,7 @@ const bundleJS = async ({ buildID, deno, distDirectory, importMap, preBundlePath
 const createFinalBundles = async (bundleOps: Promise<string>[], distDirectory: string, buildID: string) => {
   const bundleExtensions = await Promise.all(bundleOps)
 
-  // We want to generate a fingerprint of the handlers and their dependencies,
+  // We want to generate a fingerprint of the functions and their dependencies,
   // so let's compute a SHA256 hash of the bundle. That hash will be different
   // for the various artifacts we produce, so we can just take the first one.
   const bundleHash = await getFileHash(join(distDirectory, `${buildID}${bundleExtensions[0]}`))
@@ -122,21 +122,21 @@ const createFinalBundles = async (bundleOps: Promise<string>[], distDirectory: s
   return bundleHash
 }
 
-const generateEntrypoint = (handlers: Handler[], distDirectory: string) => {
-  const lines = handlers.map((handler, index) => generateHandlerReference(handler, index, distDirectory))
+const generateEntrypoint = (functions: EdgeFunction[], distDirectory: string) => {
+  const lines = functions.map((func, index) => generateFunctionReference(func, index, distDirectory))
   const bootImport = getBootstrapImport()
   const importLines = lines.map(({ importLine }) => importLine).join('\n')
   const exportLines = lines.map(({ exportLine }) => exportLine).join(', ')
-  const exportDeclaration = `const handlers = {${exportLines}};`
-  const defaultExport = 'boot(handlers);'
+  const exportDeclaration = `const functions = {${exportLines}};`
+  const defaultExport = 'boot(functions);'
 
   return [bootImport, importLines, exportDeclaration, defaultExport].join('\n\n')
 }
 
-const generateHandlerReference = (handler: Handler, index: number, targetDirectory: string): HandlerLine => {
-  const importName = `handler${index}`
-  const exportLine = `"${handler.name}": ${importName}`
-  const relativePath = relative(targetDirectory, handler.path)
+const generateFunctionReference = (func: EdgeFunction, index: number, targetDirectory: string): FunctionLine => {
+  const importName = `func${index}`
+  const exportLine = `"${func.name}": ${importName}`
+  const relativePath = relative(targetDirectory, func.path)
 
   return {
     exportLine,
@@ -148,14 +148,14 @@ const preBundle = async (sourceDirectories: string[], distDirectory: string, pre
   await del(distDirectory, { force: true })
   await fs.mkdir(distDirectory, { recursive: true })
 
-  const handlers = await findHandlers(sourceDirectories)
-  const entrypoint = generateEntrypoint(handlers, distDirectory)
+  const functions = await findFunctions(sourceDirectories)
+  const entrypoint = generateEntrypoint(functions, distDirectory)
   const preBundlePath = join(distDirectory, preBundleName)
 
   await fs.writeFile(preBundlePath, entrypoint)
 
   return {
-    handlers,
+    functions,
     preBundlePath,
   }
 }
@@ -165,7 +165,7 @@ interface WriteManifestOptions {
   bundleHash: string
   declarations: Declaration[]
   distDirectory: string
-  handlers: Handler[]
+  functions: EdgeFunction[]
 }
 
 const writeManifest = ({
@@ -173,9 +173,9 @@ const writeManifest = ({
   bundleHash,
   declarations = [],
   distDirectory,
-  handlers,
+  functions,
 }: WriteManifestOptions) => {
-  const manifest = generateManifest({ bundleAlternates, bundleHash, declarations, handlers })
+  const manifest = generateManifest({ bundleAlternates, bundleHash, declarations, functions })
   const manifestPath = join(distDirectory, 'manifest.json')
 
   return fs.writeFile(manifestPath, JSON.stringify(manifest))

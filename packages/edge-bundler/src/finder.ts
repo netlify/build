@@ -1,18 +1,18 @@
 import { promises as fs } from 'fs'
 import { basename, extname, join } from 'path'
 
-import { Handler } from './handler.js'
+import { EdgeFunction } from './edge_function.js'
 import { nonNullable } from './utils/non_nullable.js'
 
 const ALLOWED_EXTENSIONS = new Set(['.js', '.ts'])
 
-const findHandlerInDirectory = async (directory: string): Promise<Handler | undefined> => {
+const findFunctionInDirectory = async (directory: string): Promise<EdgeFunction | undefined> => {
   const name = basename(directory)
   const candidatePaths = [`${name}.js`, `index.js`, `${name}.ts`, `index.ts`].map((filename) =>
     join(directory, filename),
   )
 
-  let handlerPath
+  let functionPath
 
   for (const candidatePath of candidatePaths) {
     try {
@@ -20,7 +20,7 @@ const findHandlerInDirectory = async (directory: string): Promise<Handler | unde
 
       // eslint-disable-next-line max-depth
       if (stats.isFile()) {
-        handlerPath = candidatePath
+        functionPath = candidatePath
 
         break
       }
@@ -29,21 +29,21 @@ const findHandlerInDirectory = async (directory: string): Promise<Handler | unde
     }
   }
 
-  if (handlerPath === undefined) {
+  if (functionPath === undefined) {
     return
   }
 
   return {
     name,
-    path: handlerPath,
+    path: functionPath,
   }
 }
 
-const findHandlerInPath = async (path: string): Promise<Handler | undefined> => {
+const findFunctionInPath = async (path: string): Promise<EdgeFunction | undefined> => {
   const stats = await fs.stat(path)
 
   if (stats.isDirectory()) {
-    return findHandlerInDirectory(path)
+    return findFunctionInDirectory(path)
   }
 
   const extension = extname(path)
@@ -53,7 +53,7 @@ const findHandlerInPath = async (path: string): Promise<Handler | undefined> => 
   }
 }
 
-const findHandlersInDirectory = async (baseDirectory: string) => {
+const findFunctionsInDirectory = async (baseDirectory: string) => {
   let items: string[] = []
 
   try {
@@ -62,15 +62,15 @@ const findHandlersInDirectory = async (baseDirectory: string) => {
     // no-op
   }
 
-  const handlers = await Promise.all(items.map((item) => findHandlerInPath(join(baseDirectory, item))))
+  const functions = await Promise.all(items.map((item) => findFunctionInPath(join(baseDirectory, item))))
 
-  return handlers.filter(nonNullable)
+  return functions.filter(nonNullable)
 }
 
-const findHandlers = async (directories: string[]) => {
-  const handlers = await Promise.all(directories.map(findHandlersInDirectory))
+const findFunctions = async (directories: string[]) => {
+  const functions = await Promise.all(directories.map(findFunctionsInDirectory))
 
-  return handlers.flat()
+  return functions.flat()
 }
 
-export { findHandlers }
+export { findFunctions }

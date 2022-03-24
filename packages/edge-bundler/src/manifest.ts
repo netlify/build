@@ -2,13 +2,13 @@ import globToRegExp from 'glob-to-regexp'
 
 import type { BundleAlternate } from './bundle_alternate.js'
 import type { Declaration } from './declaration.js'
-import { Handler } from './handler.js'
+import { EdgeFunction } from './edge_function.js'
 import { nonNullable } from './utils/non_nullable.js'
 
 interface GenerateManifestOptions {
   bundleAlternates?: BundleAlternate[]
   bundleHash: string
-  handlers: Handler[]
+  functions: EdgeFunction[]
   declarations?: Declaration[]
 }
 
@@ -16,12 +16,12 @@ const generateManifest = ({
   bundleAlternates = [],
   bundleHash,
   declarations = [],
-  handlers,
+  functions,
 }: GenerateManifestOptions) => {
-  const handlersWithRoutes = declarations.map((declaration) => {
-    const handler = handlers.find(({ name }) => declaration.handler === name)
+  const functionsWithRoutes = declarations.map((declaration) => {
+    const func = functions.find(({ name }) => declaration.function === name)
 
-    if (handler === undefined) {
+    if (func === undefined) {
       return
     }
 
@@ -29,14 +29,14 @@ const generateManifest = ({
     const serializablePattern = pattern.source.replace(/\\\//g, '/')
 
     return {
-      handler: handler.name,
+      function: func.name,
       pattern: serializablePattern,
     }
   })
   const manifest = {
     bundle: bundleHash,
     bundle_alternates: bundleAlternates,
-    handlers: handlersWithRoutes.filter(nonNullable),
+    functions: functionsWithRoutes.filter(nonNullable),
   }
 
   return manifest
