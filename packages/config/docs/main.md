@@ -12,9 +12,9 @@ Note: while `@netlify/build` share the same monorepo, it has a very distinct pur
 At the moment, `@netlify/config` is used by four parts of Netlify's architecture. It might also be used by additional
 consumers in the future, including outside of Netlify.
 
-It is possible to distinguish between those different consumers using the
-[`mode` flag](../README.md#mode) which is set to `"buildbot"`,
-`"cli"` or `"require"` by each of them. However, we try to limit the usage of that flag as much as possible:
+It is possible to distinguish between those different consumers using the [`mode` flag](../README.md#mode) which is set
+to `"buildbot"`, `"cli"` or `"require"` by each of them. However, we try to limit the usage of that flag as much as
+possible:
 
 - Instead, we want those different modes to behave as similarly to each other as possible, especially Netlify CLI and
   buildbot.
@@ -124,9 +124,9 @@ UI build settings are passed to `@netlify/config` using
 
 In the buildbot, this is populated
 [with some values](https://github.com/netlify/buildbot/blob/7383bb8971c718de9618a700ec5049cb71af7102/bot/buildbot.go#L135-L144)
-coming from the Bitballoon API.
+coming from the backend API.
 
-When called from the Netlify CLI, API calls to Bitballoon
+When called from the Netlify CLI, API calls to the backend
 [are being made](https://github.com/netlify/build/blob/558fe8869f47ecc84d05bd4d26d32df00f47a3b9/packages/config/src/api/site_info.js#L24)
 to retrieve
 [those values](https://github.com/netlify/build/blob/558fe8869f47ecc84d05bd4d26d32df00f47a3b9/packages/config/src/api/build_settings.js#L7).
