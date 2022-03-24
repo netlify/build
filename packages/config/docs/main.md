@@ -13,7 +13,7 @@ At the moment, `@netlify/config` is used by four parts of Netlify's architecture
 consumers in the future, including outside of Netlify.
 
 It is possible to distinguish between those different consumers using the
-[`mode` flag](https://github.com/netlify/build/blob/main/packages/config/README.md#mode) which is set to `"buildbot"`,
+[`mode` flag](../README.md#mode) which is set to `"buildbot"`,
 `"cli"` or `"require"` by each of them. However, we try to limit the usage of that flag as much as possible:
 
 - Instead, we want those different modes to behave as similarly to each other as possible, especially Netlify CLI and
