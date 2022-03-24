@@ -70,6 +70,14 @@ test('constants.EDGE_HANDLERS_SRC dynamic is ignored if EDGE_HANDLERS_SRC is spe
   await runFixture(t, 'src_dynamic_ignore', { copyRoot: { git: false } })
 })
 
+test('constants.EDGE_HANDLERS_DIST default value', async (t) => {
+  await runFixture(t, 'print_dist')
+})
+
+test('constants.EDGE_HANDLERS_DIST custom value', async (t) => {
+  await runFixture(t, 'print_dist', { flags: { mode: 'buildbot', edgeHandlersDistDir: '/another/path' } })
+})
+
 // loadEdgeHandlerBundle modifies the global object, so we need to run tests that use it in serial
 test.serial('Edge handlers: simple setup', async (t) => {
   const { outputDir, manifestPath } = getEdgeHandlersPaths('simple')

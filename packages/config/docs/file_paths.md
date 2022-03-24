@@ -1,3 +1,5 @@
+# File paths in the Netlify configuration
+
 This document explains some of the main file paths used in a Netlify site. This is mostly intended for code
 contributors.
 
@@ -46,7 +48,7 @@ The following directories are searched (from highest to lowest priority):
 - Any parent directory to the current directory
 
 If the `netlify.toml` specifies a `base` directory, the configuration file is searched for a second time using the
-`base` directory instead (\*).
+`base` directory instead.
 
 ## Absolute paths
 
@@ -61,12 +63,12 @@ Boolean flag intended for backward compatibility. This is set for any sites crea
 
 When unset:
 
-- The points marked with (\*) above do not apply
+- The second pass when searching `netlify.toml` described above does not apply
 - Paths in `netlify.toml` are relative to the repository root instead of the build directory
 
 ## Publish directory
 
-Directory where the site's built assets are output
+Directory where the site's built assets are output.
 
 Set using the `build.publish` property in `netlify.toml` or the UI build settings.
 

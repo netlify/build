@@ -105,3 +105,7 @@ test('constants.NETLIFY_API_HOST', async (t) => {
 test('constants.NETLIFY_API_HOST default value is set to api.netlify.com', async (t) => {
   await runFixture(t, 'netlify_api_host')
 })
+
+test('constants.INTERNAL_EDGE_HANDLERS_SRC default value', async (t) => {
+  await runFixture(t, 'internal_edge_handlers_src')
+})

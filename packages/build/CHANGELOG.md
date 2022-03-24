@@ -1,5 +1,38 @@
 # Changelog
 
+### [26.5.1](https://github.com/netlify/build/compare/build-v26.5.0...build-v26.5.1) (2022-03-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.16.1 ([#4228](https://github.com/netlify/build/issues/4228)) ([41182e0](https://github.com/netlify/build/commit/41182e027328ba4a99cf9d2f6d21e2086521b5aa))
+* **deps:** update dependency @netlify/plugins-list to ^6.17.0 ([#4237](https://github.com/netlify/build/issues/4237)) ([1ee5b47](https://github.com/netlify/build/commit/1ee5b47e54fbf709781d3a546d002f6fc95f8e43))
+* non-writable `error.message` inside plugins ([#4234](https://github.com/netlify/build/issues/4234)) ([509efdf](https://github.com/netlify/build/commit/509efdfe5fd41bdbeb3b9e930b07ac984531b785))
+
+## [26.5.0](https://github.com/netlify/build/compare/build-v26.4.0...build-v26.5.0) (2022-03-14)
+
+
+### Features
+
+* add `INTERNAL_EDGE_HANDLERS_SRC` constant ([#4222](https://github.com/netlify/build/issues/4222)) ([e969998](https://github.com/netlify/build/commit/e969998469e187b37d8423c809f589350dd3c158))
+
+
+### Bug Fixes
+
+* handle non-writable `error.name` ([#4227](https://github.com/netlify/build/issues/4227)) ([2128d21](https://github.com/netlify/build/commit/2128d217825d09a16111fbf01647e87d597bd8c9))
+
+## [26.4.0](https://github.com/netlify/build/compare/build-v26.3.14...build-v26.4.0) (2022-03-07)
+
+
+### Features
+
+* add edgeHandlersDistDir flag and EDGE_HANDLERS_DIST constant ([#4221](https://github.com/netlify/build/issues/4221)) ([152b7d5](https://github.com/netlify/build/commit/152b7d54b81d39041c7031aa52a53f5f3ccc408a))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.16.0 ([#4211](https://github.com/netlify/build/issues/4211)) ([273edd9](https://github.com/netlify/build/commit/273edd978f982531392a5d2e2bc45849ab72a19a))
+
 ### [26.3.14](https://github.com/netlify/build/compare/build-v26.3.13...build-v26.3.14) (2022-03-02)
 
 

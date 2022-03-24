@@ -3,30 +3,84 @@ on:
   # Ensure GitHub actions are not run twice for same commits
   push:
     branches: [main]
-    tags: ['*']
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
   build:
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 30
+    timeout-minutes: 10
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macOS-latest, windows-latest]
+        node-version: ['*']
+    steps:
+      # Sets an output parameter if this is a release PR
+      - name: Check for release
+        id: release-check
+        run: echo "::set-output name=IS_RELEASE::true"
+        if: ${{ startsWith(github.head_ref, 'release-') }}
+      - name: Git checkout
+        uses: actions/checkout@v3
+        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
+      - name: Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
+      - name: Install dependencies
+        run: npm ci
+        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
+      - name: Linting
+        run: npm run format:ci
+        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
+  test:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
     strategy:
       matrix:
         os: [ubuntu-latest, macOS-latest, windows-latest]
         node-version: ['*']
         install-command: ['npm ci']
+        machine: ['0', '1', '2', '3']
         include:
           # We test on the oldest supported Node.js version, but only with a
           # single combination (Ubuntu)
           - os: ubuntu-latest
             node-version: '12.20.0'
             install-command: npm ci
+            machine: '0'
+          - os: ubuntu-latest
+            node-version: '12.20.0'
+            install-command: npm ci
+            machine: '1'
+          - os: ubuntu-latest
+            node-version: '12.20.0'
+            install-command: npm ci
+            machine: '2'
+          - os: ubuntu-latest
+            node-version: '12.20.0'
+            install-command: npm ci
+            machine: '3'
           # The buildbot pins Netlify Build's dependencies, like `npm ci`.
           # But other consumers do not, like `npm install`.
           # So we test both.
           - os: ubuntu-latest
             node-version: '*'
             install-command: npm install --no-package-lock
+            machine: '0'
+          - os: ubuntu-latest
+            node-version: '*'
+            install-command: npm install --no-package-lock
+            machine: '1'
+          - os: ubuntu-latest
+            node-version: '*'
+            install-command: npm install --no-package-lock
+            machine: '2'
+          - os: ubuntu-latest
+            node-version: '*'
+            install-command: npm install --no-package-lock
+            machine: '3'
       fail-fast: false
     steps:
       # Sets an output parameter if this is a release PR
@@ -35,26 +89,29 @@ jobs:
         run: echo "::set-output name=IS_RELEASE::true"
         if: ${{ startsWith(github.head_ref, 'release-') }}
       - name: Git checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
+        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-          check-latest: true
+        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Install npm@7
         run: npm install -g npm@7
-        if: ${{ matrix.node-version == '12.20.0' }}
+        if: ${{ matrix.node-version == '12.20.0' && !steps.release-check.outputs.IS_RELEASE }}
       - name: Install dependencies
         run: ${{ matrix.install-command }}
-      - name: Linting
-        run: npm run format:ci
-        if: ${{ matrix.node-version == '*' && !steps.release-check.outputs.IS_RELEASE }}
+        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Tests
         run: npm run test:ci
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
+        env:
+          # split tests across multiple machines
+          CI_NODE_INDEX: ${{ matrix.machine }}
+          CI_NODE_TOTAL: 4
       - name: Get test coverage flags
         id: test-coverage-flags
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
