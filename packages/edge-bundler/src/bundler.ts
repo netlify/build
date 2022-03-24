@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 import { getBootstrapImport } from './bootstrap.js'
 import { DenoBridge, LifecycleHook } from './bridge.js'
-import type { BundleAlternate } from './bundle_alternate.js'
+import type { Bundle } from './bundle.js'
 import type { Declaration } from './declaration.js'
 import { EdgeFunction } from './edge_function.js'
 import { getESZIPBundler } from './eszip.js'
@@ -29,7 +29,7 @@ interface BundleOptions {
   onBeforeDownload?: LifecycleHook
 }
 
-interface BundleAlternateOptions {
+interface BundleWithFormatOptions {
   buildID: string
   deno: DenoBridge
   distDirectory: string
@@ -57,18 +57,18 @@ const bundle = async (
   // if any.
   const importMap = new ImportMap(importMaps)
   const { functions, preBundlePath } = await preBundle(sourceDirectories, distDirectory, `${buildID}-pre.js`)
-  const bundleAlternates: BundleAlternate[] = ['js']
   const bundleOps = [bundleJS({ buildID, deno, distDirectory, importMap, preBundlePath })]
 
   if (env.BUNDLE_ESZIP) {
-    bundleAlternates.push('eszip2')
     bundleOps.push(bundleESZIP({ buildID, deno, distDirectory, importMap, preBundlePath }))
   }
 
-  const bundleHash = await createFinalBundles(bundleOps, distDirectory, buildID)
+  const bundles = await Promise.all(bundleOps)
+
+  await createFinalBundles(bundles, distDirectory, buildID)
+
   const manifest = await writeManifest({
-    bundleAlternates,
-    bundleHash,
+    bundles,
     declarations,
     distDirectory,
     functions,
@@ -83,7 +83,12 @@ const bundle = async (
   return { functions, manifest, preBundlePath }
 }
 
-const bundleESZIP = async ({ buildID, deno, distDirectory, preBundlePath }: BundleAlternateOptions) => {
+const bundleESZIP = async ({
+  buildID,
+  deno,
+  distDirectory,
+  preBundlePath,
+}: BundleWithFormatOptions): Promise<Bundle> => {
   const extension = '.eszip2'
   const preBundleFileURL = pathToFileURL(preBundlePath).toString()
   const eszipBundlePath = join(distDirectory, `${buildID}${extension}`)
@@ -91,35 +96,37 @@ const bundleESZIP = async ({ buildID, deno, distDirectory, preBundlePath }: Bund
 
   await deno.run(['run', '-A', bundler, preBundleFileURL, eszipBundlePath])
 
-  return extension
+  const hash = await getFileHash(eszipBundlePath)
+
+  return { extension, format: 'eszip2', hash }
 }
 
-const bundleJS = async ({ buildID, deno, distDirectory, importMap, preBundlePath }: BundleAlternateOptions) => {
+const bundleJS = async ({
+  buildID,
+  deno,
+  distDirectory,
+  importMap,
+  preBundlePath,
+}: BundleWithFormatOptions): Promise<Bundle> => {
   const extension = '.js'
   const jsBundlePath = join(distDirectory, `${buildID}${extension}`)
 
   await deno.run(['bundle', `--import-map=${importMap.toDataURL()}`, preBundlePath, jsBundlePath])
 
-  return extension
+  const hash = await getFileHash(jsBundlePath)
+
+  return { extension, format: 'js', hash }
 }
 
-const createFinalBundles = async (bundleOps: Promise<string>[], distDirectory: string, buildID: string) => {
-  const bundleExtensions = await Promise.all(bundleOps)
-
-  // We want to generate a fingerprint of the functions and their dependencies,
-  // so let's compute a SHA256 hash of the bundle. That hash will be different
-  // for the various artifacts we produce, so we can just take the first one.
-  const bundleHash = await getFileHash(join(distDirectory, `${buildID}${bundleExtensions[0]}`))
-  const renameOps = bundleExtensions.map((extension) => {
+const createFinalBundles = async (bundles: Bundle[], distDirectory: string, buildID: string) => {
+  const renamingOps = bundles.map(async ({ extension, hash }) => {
     const tempBundlePath = join(distDirectory, `${buildID}${extension}`)
-    const finalBundlePath = join(distDirectory, `${bundleHash}${extension}`)
+    const finalBundlePath = join(distDirectory, `${hash}${extension}`)
 
-    return fs.rename(tempBundlePath, finalBundlePath)
+    await fs.rename(tempBundlePath, finalBundlePath)
   })
 
-  await Promise.all(renameOps)
-
-  return bundleHash
+  await Promise.all(renamingOps)
 }
 
 const generateEntrypoint = (functions: EdgeFunction[], distDirectory: string) => {
@@ -161,21 +168,14 @@ const preBundle = async (sourceDirectories: string[], distDirectory: string, pre
 }
 
 interface WriteManifestOptions {
-  bundleAlternates: BundleAlternate[]
-  bundleHash: string
+  bundles: Bundle[]
   declarations: Declaration[]
   distDirectory: string
   functions: EdgeFunction[]
 }
 
-const writeManifest = ({
-  bundleAlternates,
-  bundleHash,
-  declarations = [],
-  distDirectory,
-  functions,
-}: WriteManifestOptions) => {
-  const manifest = generateManifest({ bundleAlternates, bundleHash, declarations, functions })
+const writeManifest = ({ bundles, declarations = [], distDirectory, functions }: WriteManifestOptions) => {
+  const manifest = generateManifest({ bundles, declarations, functions })
   const manifestPath = join(distDirectory, 'manifest.json')
 
   return fs.writeFile(manifestPath, JSON.stringify(manifest))
