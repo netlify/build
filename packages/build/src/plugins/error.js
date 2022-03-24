@@ -36,7 +36,10 @@ const normalizeError = function (type, func, message, { error } = {}) {
 
 const getError = function (error, message, func) {
   if (error instanceof Error) {
-    error.message = `${message}\n${error.message}`
+    // This might fail if `name` is a getter or is non-writable.
+    try {
+      error.message = `${message}\n${error.message}`
+    } catch {}
     return error
   }
 
