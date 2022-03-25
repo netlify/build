@@ -1,0 +1,5 @@
+[build]
+edge_functions = "test"
+
+[[plugins]]
+package = "./plugin"

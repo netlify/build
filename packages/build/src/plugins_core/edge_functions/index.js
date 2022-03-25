@@ -5,24 +5,26 @@ import { pathExists } from 'path-exists'
 
 import { parseManifest } from './lib/internal_manifest.js'
 
+const IMPORT_MAP_FILENAME = 'edge-functions-import-map.json'
+
 const coreStep = async function ({
   buildDir,
   constants: {
-    EDGE_HANDLERS_DIST: distDirectory,
-    EDGE_HANDLERS_SRC: srcDirectory,
-    INTERNAL_EDGE_HANDLERS_SRC: internalSrcDirectory,
+    EDGE_FUNCTIONS_DIST: distDirectory,
+    EDGE_FUNCTIONS_SRC: srcDirectory,
+    INTERNAL_EDGE_FUNCTIONS_SRC: internalSrcDirectory,
   },
   netlifyConfig,
 }) {
-  const { edge_handlers: configDeclarations = [] } = netlifyConfig
-  const edgeHandlersDistPath = resolve(buildDir, distDirectory)
+  const { edge_functions: configDeclarations = [] } = netlifyConfig
+  const distPath = resolve(buildDir, distDirectory)
   const internalSourcePath = resolve(buildDir, internalSrcDirectory)
-  const distImportMapPath = join(dirname(internalSourcePath), 'edge-handlers-import-map.json')
+  const distImportMapPath = join(dirname(internalSourcePath), IMPORT_MAP_FILENAME)
   const sourcePaths = [internalSourcePath, srcDirectory && resolve(srcDirectory)].filter(Boolean)
   const { declarations: internalDeclarations, importMap } = await parseManifest(internalSourcePath)
   const declarations = [...configDeclarations, ...internalDeclarations]
 
-  await bundle(sourcePaths, edgeHandlersDistPath, declarations, {
+  await bundle(sourcePaths, distPath, declarations, {
     distImportMapPath,
     importMaps: [importMap].filter(Boolean),
   })
@@ -36,15 +38,15 @@ const coreStep = async function ({
 // or plugins.
 const hasEdgeFunctionsDirectories = async function ({
   buildDir,
-  constants: { INTERNAL_EDGE_HANDLERS_SRC, EDGE_HANDLERS_SRC },
+  constants: { INTERNAL_EDGE_FUNCTIONS_SRC, EDGE_FUNCTIONS_SRC },
 }) {
-  const hasFunctionsSrc = EDGE_HANDLERS_SRC !== undefined && EDGE_HANDLERS_SRC !== ''
+  const hasFunctionsSrc = EDGE_FUNCTIONS_SRC !== undefined && EDGE_FUNCTIONS_SRC !== ''
 
   if (hasFunctionsSrc) {
     return true
   }
 
-  const internalFunctionsSrc = resolve(buildDir, INTERNAL_EDGE_HANDLERS_SRC)
+  const internalFunctionsSrc = resolve(buildDir, INTERNAL_EDGE_FUNCTIONS_SRC)
 
   return await pathExists(internalFunctionsSrc)
 }

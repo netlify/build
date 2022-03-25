@@ -13,7 +13,7 @@ const parseManifest = async (internalSourceDirectory) => {
     }
 
     const result = {
-      declarations: manifest.edge_handlers,
+      declarations: manifest.functions,
     }
 
     if (manifest.import_map) {

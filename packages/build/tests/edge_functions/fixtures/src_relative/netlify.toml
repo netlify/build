@@ -1,0 +1,5 @@
+[build]
+edge_functions = "custom-edge-functions"
+
+[[plugins]]
+package = "./plugin"

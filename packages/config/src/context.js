@@ -54,14 +54,14 @@ const addNamespacedProperty = function (contextConfig, [key, value]) {
 }
 
 const isBuildProperty = function (key, value) {
-  return BUILD_PROPERTIES.has(key) && !isFunctionsConfig(key, value) && !isEdgeHandlersConfig(key, value)
+  return BUILD_PROPERTIES.has(key) && !isFunctionsConfig(key, value) && !isEdgeFunctionsConfig(key, value)
 }
 
 // All properties in `config.build.*`
 const BUILD_PROPERTIES = new Set([
   'base',
   'command',
-  'edge_handlers',
+  'edge_functions',
   'environment',
   'functions',
   'ignore',
@@ -75,10 +75,10 @@ const isFunctionsConfig = function (key, value) {
   return key === 'functions' && isPlainObj(value)
 }
 
-// `config.edge_handlers` is an array of objects while
-// `config.build.edge_handlers` is a string.
-const isEdgeHandlersConfig = function (key, value) {
-  return key === 'edge_handlers' && Array.isArray(value)
+// `config.edge_functions` is an array of objects while
+// `config.build.edge_functions` is a string.
+const isEdgeFunctionsConfig = function (key, value) {
+  return key === 'edge_functions' && Array.isArray(value)
 }
 
 // Ensure that `inlineConfig` has higher priority than context properties by

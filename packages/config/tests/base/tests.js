@@ -12,13 +12,13 @@ test('Base from configuration file property', async (t) => {
   const {
     buildDir,
     config: {
-      build: { base, edge_handlers: edgeHandlers, publish },
+      build: { base, edge_functions: edgeFunctions, publish },
       functionsDirectory,
     },
   } = JSON.parse(returnValue)
   t.is(base, buildDir)
   t.true(functionsDirectory.startsWith(buildDir))
-  t.true(edgeHandlers.startsWith(buildDir))
+  t.true(edgeFunctions.startsWith(buildDir))
   t.true(publish.startsWith(buildDir))
 })
 
@@ -31,13 +31,13 @@ test('BaseRelDir feature flag', async (t) => {
   const {
     buildDir,
     config: {
-      build: { base, edge_handlers: edgeHandlers, publish },
+      build: { base, edge_functions: edgeFunctions, publish },
       functionsDirectory,
     },
   } = JSON.parse(returnValue)
   t.is(base, buildDir)
   t.false(functionsDirectory.startsWith(buildDir))
-  t.false(edgeHandlers.startsWith(buildDir))
+  t.false(edgeFunctions.startsWith(buildDir))
   t.false(publish.startsWith(buildDir))
 })
 

@@ -15,8 +15,8 @@ test('Some properties can be capitalized even when merged with defaultConfig', a
     Build: {
       Base: 'base',
       Command: 'gulp build default',
+      Edge_functions: 'edgeFunctions',
       Functions: 'functions',
-      Edge_handlers: 'edgeHandlers',
       Ignore: 'doIgnore',
       Publish: 'publish',
       Environment: { TEST: 'test' },
@@ -75,12 +75,12 @@ test('Gives priority to functions.star over functions when defined last', async 
   await runFixture(t, 'default_functions_star_priority_last')
 })
 
-test('Assign default edge-handlers if build.edge_handlers is not defined', async (t) => {
-  await runFixture(t, 'default_handlers_not_defined')
+test('Assign default edge-functions if build.edge_functions is not defined', async (t) => {
+  await runFixture(t, 'default_edge_functions_not_defined')
 })
 
-test('Does not assign default edge-handlers if build.edge_handlers is defined', async (t) => {
-  await runFixture(t, 'default_handlers_defined')
+test('Does not assign default edge-functions if build.edge_functions is defined', async (t) => {
+  await runFixture(t, 'default_edge_functions_defined')
 })
 
 test('Normalizes function configurations defined at the top level', async (t) => {

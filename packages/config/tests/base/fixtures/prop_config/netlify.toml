@@ -1,7 +1,7 @@
 [build]
 base = "/base"
 command = "echo command"
-edge_handlers = "edge-handlers"
+edge_functions = "edge-functions"
 publish = "publish"
 
 [functions]
