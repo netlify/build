@@ -78,7 +78,7 @@ const isNotRedundantCorePlugin = function (pluginOptionsA, index, pluginsOptions
   )
 }
 
-// Retrieve information about @netlify/build when an error happens there and not
+// Retrieve information about @netlify-labs/build-internal when an error happens there and not
 // in a plugin
 export const getSpawnInfo = function () {
   return {

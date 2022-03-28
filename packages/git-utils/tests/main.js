@@ -4,7 +4,7 @@ import test from 'ava'
 
 import { getGitUtils } from '../src/main.js'
 
-// Runs the git utils against very old commits of @netlify/build so that the
+// Runs the git utils against very old commits of @netlify-labs/build-internal so that the
 // tests are stable. The following are static statistics for that git range.
 const BASE = '6bdf580f'
 const HEAD = '152867c2'

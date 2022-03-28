@@ -1,4 +1,4 @@
-import { NetlifyPluginConstants, NetlifyPluginOptions, OnPreBuild } from '@netlify/build'
+import { NetlifyPluginConstants, NetlifyPluginOptions, OnPreBuild } from '@netlify-labs/build-internal'
 import { expectType } from 'tsd'
 
 import { JSONValue } from '../types/utils/json_value'

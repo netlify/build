@@ -1,4 +1,4 @@
-import { resolveConfig, updateConfig, restoreConfig } from '@netlify/config'
+import { resolveConfig, updateConfig, restoreConfig } from '@netlify-labs/config-internal'
 import mapObj from 'map-obj'
 
 import { getChildEnv } from '../env/main.js'

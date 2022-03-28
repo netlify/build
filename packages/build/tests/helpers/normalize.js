@@ -18,6 +18,9 @@ const rootPath = fileURLToPath(new URL('../../../..', import.meta.url))
 const unixify = (path) => path.replace(/\\/gu, '/')
 
 const NORMALIZE_REGEXPS = [
+  // Remove once we stop using the private package.
+  [/@netlify-labs\/build-internal/gu, '@netlify/build'],
+  [/github.com\/netlify-labs\/build-internal/gu, 'github.com/netlify/build'],
   // Zero width space characters due to a bug in buildbot:
   // https://github.com/netlify/buildbot/issues/595
   [/\u{200B}/gu, ''],

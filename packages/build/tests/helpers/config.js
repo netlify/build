@@ -1,6 +1,6 @@
 import { fileURLToPath } from 'url'
 
-import { resolveConfig } from '@netlify/config'
+import { resolveConfig } from '@netlify-labs/config-internal'
 import fastSafeStringify from 'fast-safe-stringify'
 import { getBinPath } from 'get-bin-path'
 
@@ -12,7 +12,7 @@ const NETLIFY_CONFIG_ROOT_DIR = fileURLToPath(new URL('../../../config', import.
 const BINARY_PATH = getBinPath({ cwd: NETLIFY_CONFIG_ROOT_DIR })
 
 // Run fixture using `@netlify/config`.
-// This is inside `@netlify/build`'s repository since it needs it as well.
+// This is inside `@netlify-labs/build-internal`'s repository since it needs it as well.
 export const runFixtureConfig = async function (t, fixtureName, { flags = {}, env, ...opts } = {}) {
   const flagsA = {
     stable: true,

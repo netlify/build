@@ -13,7 +13,7 @@ import { logLingeringProcesses } from '../log/messages/core.js'
 //    spawned just before the build commands ends.
 // We cannot list processes before and after the build command and use the
 // difference.
-//  - This is because other processes (unrelated to @netlify/build) might be
+//  - This is because other processes (unrelated to @netlify-labs/build-internal) might be
 //    running at the same time. This includes OS background processes.
 // Therefore, we run this in a controlled environment only (the buildbot) and
 // exclude specific processes manually. This is a lesser evil, although still
@@ -69,10 +69,10 @@ const IGNORED_COMMANDS = [
   /buildbot.*\[node]/,
   // buildbot's main Bash script
   '/opt/build-bin/build',
-  // `@netlify/build` binary itself
+  // `@netlify-labs/build-internal` binary itself
   'netlify-build',
-  // Plugin child processes spawned by @netlify/build
-  '@netlify/build',
+  // Plugin child processes spawned by @netlify-labs/build-internal
+  '@netlify-labs/build-internal',
   // Shown for parent processes with currently running child processes.
   // Happens on `ps` itself.
   'defunct',

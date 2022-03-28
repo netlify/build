@@ -1,4 +1,4 @@
-import { OnPreBuild } from '@netlify/build'
+import { OnPreBuild } from '@netlify-labs/build-internal'
 import { expectAssignable, expectError, expectType } from 'tsd'
 
 import { JSONValue } from '../../types/utils/json_value'

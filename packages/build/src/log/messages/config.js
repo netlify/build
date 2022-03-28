@@ -1,4 +1,4 @@
-import { cleanupConfig } from '@netlify/config'
+import { cleanupConfig } from '@netlify-labs/config-internal'
 
 import { DEFAULT_FEATURE_FLAGS } from '../../core/feature_flags.js'
 import { omit } from '../../utils/omit.js'
@@ -13,7 +13,7 @@ export const logFlags = function (logs, flags, { debug }) {
   logObject(logs, flagsB)
 }
 
-// We only show feature flags related to `@netlify/build`.
+// We only show feature flags related to `@netlify-labs/build-internal`.
 // Also, we only print enabled feature flags.
 const cleanFeatureFlags = function ({ featureFlags = {}, ...flags }) {
   const cleanedFeatureFlags = Object.entries(featureFlags)

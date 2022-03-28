@@ -1,4 +1,4 @@
-import { NetlifyPluginUtils, OnPreBuild } from '@netlify/build'
+import { NetlifyPluginUtils, OnPreBuild } from '@netlify-labs/build-internal'
 import { expectType } from 'tsd'
 
 const testUtilsGit: OnPreBuild = function ({ utils: { git } }: { utils: NetlifyPluginUtils }) {

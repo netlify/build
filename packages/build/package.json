@@ -1,6 +1,9 @@
 {
-  "name": "@netlify/build",
-  "version": "26.5.0",
+  "name": "@netlify-labs/build-internal",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "version": "27.0.3",
   "description": "Netlify build module",
   "type": "module",
   "exports": "./src/core/main.js",
@@ -19,9 +22,6 @@
     "David Wells <hello@davidwells.io> (https://davidwells.io/)",
     "Swyx <swyx@netlify.com> (https://www.swyx.io)"
   ],
-  "scripts": {
-    "prepublishOnly": "cd ../../ && npm run prepublishOnly"
-  },
   "keywords": [
     "nodejs",
     "javascript",
@@ -44,21 +44,21 @@
     "netlify-plugin",
     "netlify"
   ],
-  "homepage": "https://github.com/netlify/build",
+  "homepage": "https://github.com/netlify-labs/build-internal",
   "repository": {
     "type": "git",
-    "url": "https://github.com/netlify/build.git",
+    "url": "https://github.com/netlify-labs/build-internal.git",
     "directory": "packages/build"
   },
   "bugs": {
-    "url": "https://github.com/netlify/build/issues"
+    "url": "https://github.com/netlify-labs/build-internal/issues"
   },
   "license": "MIT",
   "dependencies": {
     "@bugsnag/js": "^7.0.0",
-    "@netlify-labs/edge-bundler": "^0.6.0",
+    "@netlify-labs/edge-bundler": "^0.6.1",
     "@netlify/cache-utils": "^4.0.0",
-    "@netlify/config": "^17.0.0",
+    "@netlify-labs/config-internal": "^17.0.18",
     "@netlify/functions-utils": "^4.0.0",
     "@netlify/git-utils": "^4.0.0",
     "@netlify/plugins-list": "^6.16.1",

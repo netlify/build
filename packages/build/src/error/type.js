@@ -149,7 +149,7 @@ const TYPES = {
     severity: 'error',
   },
 
-  // Request error when `@netlify/build` was calling Netlify API
+  // Request error when `@netlify-labs/build-internal` was calling Netlify API
   api: {
     title: ({ location: { endpoint } }) => `API error on "${endpoint}"`,
     stackType: 'message',
@@ -158,7 +158,7 @@ const TYPES = {
     severity: 'error',
   },
 
-  // `@netlify/build` threw an uncaught exception
+  // `@netlify-labs/build-internal` threw an uncaught exception
   exception: {
     title: 'Core internal error',
     stackType: 'stack',
