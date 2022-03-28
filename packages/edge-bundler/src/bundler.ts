@@ -1,26 +1,21 @@
 import { promises as fs } from 'fs'
-import { join, relative } from 'path'
+import { join } from 'path'
 import { env } from 'process'
 import { pathToFileURL } from 'url'
 
 import del from 'del'
 import { v4 as uuidv4 } from 'uuid'
 
-import { getBootstrapImport } from './bootstrap.js'
 import { DenoBridge, LifecycleHook } from './bridge.js'
 import type { Bundle } from './bundle.js'
 import type { Declaration } from './declaration.js'
 import { EdgeFunction } from './edge_function.js'
+import { generateEntryPoint } from './entry_point'
 import { getESZIPBundler } from './eszip.js'
 import { findFunctions } from './finder.js'
 import { ImportMap, ImportMapFile } from './import_map.js'
 import { generateManifest } from './manifest.js'
 import { getFileHash } from './utils/sha256.js'
-
-interface FunctionLine {
-  exportLine: string
-  importLine: string
-}
 
 interface BundleOptions {
   distImportMapPath?: string
@@ -129,34 +124,12 @@ const createFinalBundles = async (bundles: Bundle[], distDirectory: string, buil
   await Promise.all(renamingOps)
 }
 
-const generateEntrypoint = (functions: EdgeFunction[], distDirectory: string) => {
-  const lines = functions.map((func, index) => generateFunctionReference(func, index, distDirectory))
-  const bootImport = getBootstrapImport()
-  const importLines = lines.map(({ importLine }) => importLine).join('\n')
-  const exportLines = lines.map(({ exportLine }) => exportLine).join(', ')
-  const exportDeclaration = `const functions = {${exportLines}};`
-  const defaultExport = 'boot(functions);'
-
-  return [bootImport, importLines, exportDeclaration, defaultExport].join('\n\n')
-}
-
-const generateFunctionReference = (func: EdgeFunction, index: number, targetDirectory: string): FunctionLine => {
-  const importName = `func${index}`
-  const exportLine = `"${func.name}": ${importName}`
-  const relativePath = relative(targetDirectory, func.path)
-
-  return {
-    exportLine,
-    importLine: `import ${importName} from "${relativePath}";`,
-  }
-}
-
 const preBundle = async (sourceDirectories: string[], distDirectory: string, preBundleName: string) => {
   await del(distDirectory, { force: true })
   await fs.mkdir(distDirectory, { recursive: true })
 
   const functions = await findFunctions(sourceDirectories)
-  const entrypoint = generateEntrypoint(functions, distDirectory)
+  const entrypoint = generateEntryPoint(functions)
   const preBundlePath = join(distDirectory, preBundleName)
 
   await fs.writeFile(preBundlePath, entrypoint)
