@@ -64,7 +64,7 @@ jobs:
           node-version: '*'
           cache: 'npm'
           check-latest: true
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           # Browsers are downloaded under node_modules
           path: |
