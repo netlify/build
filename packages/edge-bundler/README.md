@@ -3,7 +3,7 @@
 
 # Edge Bundler
 
-Intelligently prepare Netlify Edge Handlers for deployment.
+Intelligently prepare Netlify Edge Functions for deployment.
 
 ## Usage
 
@@ -13,24 +13,24 @@ Intelligently prepare Netlify Edge Handlers for deployment.
     npm install @netlify-labs/edge-bundler --save
     ```
 
-2. Import it and create a bundle from a directory of Edge Handlers and a list of declarations.
+2. Import it and create a bundle from a directory of Edge Functions and a list of declarations.
 
     ```js
     import { bundle } from '@netlify-labs/edge-bundler'
 
-    // List of directories to search for Edge Handlers.
+    // List of directories to search for Edge Functions.
     const sourceDirectories = [
-        "/repo/netlify/edge-handlers",
-        "/repo/.netlify/edge-handlers"
+        "/repo/netlify/edge-functions",
+        "/repo/.netlify/edge-functions"
     ]
 
     // Directory where bundle should be placed.
-    const distDirectory = "/repo/.netlify/edge-handlers-dist"
+    const distDirectory = "/repo/.netlify/edge-functions-dist"
 
-    // List of Edge Handlers declarations.
+    // List of Edge Functions declarations.
     const declarations = [
-        {handler: "user-1", path: "/blog/*"},
-        {handler: "internal-2", path: "/"}
+        {function: "user-1", path: "/blog/*"},
+        {function: "internal-2", path: "/"}
     ]
 
     await bundle(sourceDirectories, distDirectory, declarations)
