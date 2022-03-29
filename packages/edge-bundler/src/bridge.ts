@@ -116,24 +116,26 @@ class DenoBridge {
     await fs.writeFile(versionFilePath, version)
   }
 
-  async getBinaryPath(): Promise<string> {
+  async getBinaryPath() {
     const globalPath = await this.getGlobalBinary()
 
     if (globalPath !== undefined) {
-      return globalPath
+      return { global: true, path: globalPath }
     }
 
     const cachedPath = await this.getCachedBinary()
 
     if (cachedPath !== undefined) {
-      return cachedPath
+      return { global: false, path: cachedPath }
     }
 
-    return this.getRemoteBinary()
+    const downloadedPath = await this.getRemoteBinary()
+
+    return { global: false, path: downloadedPath }
   }
 
   async run(args: string[], { wait = true }: { wait?: boolean } = {}) {
-    const binaryPath = await this.getBinaryPath()
+    const { path: binaryPath } = await this.getBinaryPath()
     const runDeno = execa(binaryPath, args)
 
     runDeno.stdout?.pipe(process.stdout)
