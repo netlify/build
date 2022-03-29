@@ -3,6 +3,7 @@ import { tmpName } from 'tmp-promise'
 import { DenoBridge, LifecycleHook } from './bridge.js'
 import { preBundle } from './bundler.js'
 import type { Declaration } from './declaration.js'
+import { findFunctions } from './finder.js'
 import { ImportMap, ImportMapFile } from './import_map.js'
 import { generateManifest } from './manifest.js'
 
@@ -24,7 +25,8 @@ const serve = async (
     onBeforeDownload,
   })
   const distDirectory = await tmpName()
-  const { functions, preBundlePath } = await preBundle(sourceDirectories, distDirectory, 'dev.js')
+  const functions = await findFunctions(sourceDirectories)
+  const preBundlePath = await preBundle(functions, distDirectory, 'dev.js')
   const getManifest = (declarations: Declaration[]) => generateManifest({ bundles: [], declarations, functions })
 
   // Wait for the binary to be downloaded if needed.

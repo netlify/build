@@ -18,6 +18,7 @@ import { generateManifest } from './manifest.js'
 import { getFileHash } from './utils/sha256.js'
 
 interface BundleOptions {
+  debug?: boolean
   distImportMapPath?: string
   importMaps?: ImportMapFile[]
   onAfterDownload?: LifecycleHook
@@ -26,6 +27,7 @@ interface BundleOptions {
 
 interface BundleWithFormatOptions {
   buildID: string
+  debug?: boolean
   deno: DenoBridge
   distDirectory: string
   importMap: ImportMap
@@ -36,7 +38,7 @@ const bundle = async (
   sourceDirectories: string[],
   distDirectory: string,
   declarations: Declaration[] = [],
-  { distImportMapPath, importMaps, onAfterDownload, onBeforeDownload }: BundleOptions = {},
+  { debug, distImportMapPath, importMaps, onAfterDownload, onBeforeDownload }: BundleOptions = {},
 ) => {
   const deno = new DenoBridge({
     onAfterDownload,
@@ -51,8 +53,9 @@ const bundle = async (
   // Creating an ImportMap instance with any import maps supplied by the user,
   // if any.
   const importMap = new ImportMap(importMaps)
-  const { functions, preBundlePath } = await preBundle(sourceDirectories, distDirectory, `${buildID}-pre.js`)
-  const bundleOps = [bundleJS({ buildID, deno, distDirectory, importMap, preBundlePath })]
+  const functions = await findFunctions(sourceDirectories)
+  const preBundlePath = await preBundle(functions, distDirectory, `${buildID}-pre.js`)
+  const bundleOps = [bundleJS({ debug, buildID, deno, distDirectory, importMap, preBundlePath })]
 
   if (env.BUNDLE_ESZIP) {
     bundleOps.push(bundleESZIP({ buildID, deno, distDirectory, importMap, preBundlePath }))
@@ -98,6 +101,7 @@ const bundleESZIP = async ({
 
 const bundleJS = async ({
   buildID,
+  debug,
   deno,
   distDirectory,
   importMap,
@@ -105,8 +109,13 @@ const bundleJS = async ({
 }: BundleWithFormatOptions): Promise<Bundle> => {
   const extension = '.js'
   const jsBundlePath = join(distDirectory, `${buildID}${extension}`)
+  const flags = [`--import-map=${importMap.toDataURL()}`]
 
-  await deno.run(['bundle', `--import-map=${importMap.toDataURL()}`, preBundlePath, jsBundlePath])
+  if (!debug) {
+    flags.push('--quiet')
+  }
+
+  await deno.run(['bundle', ...flags, preBundlePath, jsBundlePath])
 
   const hash = await getFileHash(jsBundlePath)
 
@@ -124,20 +133,16 @@ const createFinalBundles = async (bundles: Bundle[], distDirectory: string, buil
   await Promise.all(renamingOps)
 }
 
-const preBundle = async (sourceDirectories: string[], distDirectory: string, preBundleName: string) => {
+const preBundle = async (functions: EdgeFunction[], distDirectory: string, preBundleName: string) => {
   await del(distDirectory, { force: true })
   await fs.mkdir(distDirectory, { recursive: true })
 
-  const functions = await findFunctions(sourceDirectories)
   const entrypoint = generateEntryPoint(functions)
   const preBundlePath = join(distDirectory, preBundleName)
 
   await fs.writeFile(preBundlePath, entrypoint)
 
-  return {
-    functions,
-    preBundlePath,
-  }
+  return preBundlePath
 }
 
 interface WriteManifestOptions {
