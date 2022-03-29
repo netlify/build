@@ -9,7 +9,6 @@ import { DenoBridge } from '../src/bridge.js'
 test('Downloads the Deno CLI on demand and caches it for subsequent calls', async (t) => {
   // TODO: Mock HTTP call to Deno source, so that we don't need to download
   // the actual package as part of the test.
-  // eslint-disable-next-line no-magic-numbers
   t.timeout(20_000)
 
   const tmpDir = await tmp.dir()

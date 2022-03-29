@@ -94,14 +94,17 @@ class DenoBridge {
 
     await fs.mkdir(this.cacheDirectory, { recursive: true })
 
-    const binaryPath = await download(this.cacheDirectory)
-    const version = await DenoBridge.getBinaryVersion(binaryPath)
+    const binaryPath = await download(this.cacheDirectory, this.versionRange)
+    const downloadedVersion = await DenoBridge.getBinaryVersion(binaryPath)
 
-    if (version === undefined) {
+    // We should never get here, because it means that `DENO_VERSION_RANGE` is
+    // a malformed semver range. If this does happen, let's throw an error so
+    // that the tests catch it.
+    if (downloadedVersion === undefined) {
       throw new Error('Could not read downloaded binary')
     }
 
-    await this.writeVersionFile(version)
+    await this.writeVersionFile(downloadedVersion)
 
     if (this.onAfterDownload) {
       this.onAfterDownload()
