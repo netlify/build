@@ -2,11 +2,11 @@ import fs from 'fs'
 import path from 'path'
 import process from 'process'
 
-// eslint-disable-next-line node/no-unpublished-import
+// eslint-disable-next-line n/no-unpublished-import
 import { isCI } from 'ci-info'
 
 // `tests-metadata.json` is created by running `npm run test:measure`
-// eslint-disable-next-line node/no-sync
+// eslint-disable-next-line n/no-sync
 const testData = JSON.parse(fs.readFileSync('tests-metadata.json'))
 
 const getOrder = (file) => {
