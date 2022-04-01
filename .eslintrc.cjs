@@ -53,7 +53,7 @@ module.exports = {
       },
     ],
     // `eslint-plugin-node` seems to have a bug finding `chalk`
-    'node/no-missing-import': [2, { allowModules: ['chalk'] }],
+    'n/no-missing-import': [2, { allowModules: ['chalk'] }],
   },
   overrides: [
     ...overrides,
@@ -61,7 +61,7 @@ module.exports = {
       files: ['**/fixtures/**/*.{cjs,mjs,js}'],
       rules: {
         'import/no-unresolved': 0,
-        'node/no-missing-import': 0,
+        'n/no-missing-import': 0,
       },
     },
     // @todo As it stands, this rule is problematic with methods that get+send
@@ -80,7 +80,7 @@ module.exports = {
         // using them
         '@typescript-eslint/no-unused-vars': 0,
         // Allow self-imports
-        'node/no-extraneous-import': 0,
+        'n/no-extraneous-import': 0,
       },
     },
     {
@@ -88,7 +88,7 @@ module.exports = {
       files: ['**/*.md/*.js'],
       rules: {
         // Allow self-imports
-        'node/no-extraneous-import': 0,
+        'n/no-extraneous-import': 0,
       },
     },
     // `@netlify/config` currently imports some test helpers from
