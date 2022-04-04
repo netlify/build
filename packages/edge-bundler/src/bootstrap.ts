@@ -1,7 +1,7 @@
 import { env } from 'process'
 
 const BOOTSTRAP_LATEST =
-  'https://dinosaurs:are-the-future!@623c91447947b7000844416d--edge-bootstrap.netlify.app/index.ts'
+  'https://dinosaurs:are-the-future!@624accb72787800009364b4f--edge-bootstrap.netlify.app/index.ts'
 
 const getBootstrapURL = () => env.NETLIFY_EDGE_BOOTSTRAP ?? BOOTSTRAP_LATEST
 
