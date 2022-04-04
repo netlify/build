@@ -1,7 +1,9 @@
 import { dirname, join, resolve } from 'path'
 
-import { bundle } from '@netlify-labs/edge-bundler'
+import { bundle, find } from '@netlify-labs/edge-bundler'
 import { pathExists } from 'path-exists'
+
+import { logFunctionsToBundle } from '../../log/messages/core_steps.js'
 
 import { parseManifest } from './lib/internal_manifest.js'
 
@@ -14,17 +16,24 @@ const coreStep = async function ({
     EDGE_FUNCTIONS_SRC: srcDirectory,
     INTERNAL_EDGE_FUNCTIONS_SRC: internalSrcDirectory,
   },
+  debug,
+  logs,
   netlifyConfig,
 }) {
   const { edge_functions: configDeclarations = [] } = netlifyConfig
   const distPath = resolve(buildDir, distDirectory)
-  const internalSourcePath = resolve(buildDir, internalSrcDirectory)
-  const distImportMapPath = join(dirname(internalSourcePath), IMPORT_MAP_FILENAME)
-  const sourcePaths = [internalSourcePath, srcDirectory && resolve(srcDirectory)].filter(Boolean)
-  const { declarations: internalDeclarations, importMap } = await parseManifest(internalSourcePath)
+  const internalSrcPath = resolve(buildDir, internalSrcDirectory)
+  const distImportMapPath = join(dirname(internalSrcPath), IMPORT_MAP_FILENAME)
+  const srcPath = srcDirectory ? resolve(buildDir, srcDirectory) : undefined
+  const sourcePaths = [internalSrcPath, srcPath].filter(Boolean)
+
+  logFunctions({ internalSrcDirectory, internalSrcPath, logs, srcDirectory, srcPath })
+
+  const { declarations: internalDeclarations, importMap } = await parseManifest(internalSrcPath)
   const declarations = [...configDeclarations, ...internalDeclarations]
 
   await bundle(sourcePaths, distPath, declarations, {
+    debug,
     distImportMapPath,
     importMaps: [importMap].filter(Boolean),
   })
@@ -49,6 +58,28 @@ const hasEdgeFunctionsDirectories = async function ({
   const internalFunctionsSrc = resolve(buildDir, INTERNAL_EDGE_FUNCTIONS_SRC)
 
   return await pathExists(internalFunctionsSrc)
+}
+
+const logFunctions = async ({
+  internalSrcDirectory,
+  internalSrcPath,
+  logs,
+  srcDirectory: userFunctionsSrc,
+  srcPath,
+}) => {
+  const [userFunctions, internalFunctions] = await Promise.all([find([srcPath]), find([internalSrcPath])])
+  const userFunctionsSrcExists = await pathExists(srcPath)
+  const internalFunctionsSrc = internalSrcDirectory
+
+  logFunctionsToBundle({
+    logs,
+    userFunctions: userFunctions.map(({ name }) => name),
+    userFunctionsSrc,
+    userFunctionsSrcExists,
+    internalFunctions: internalFunctions.map(({ name }) => name),
+    internalFunctionsSrc,
+    type: 'Edge Functions',
+  })
 }
 
 export const bundleEdgeFunctions = {
