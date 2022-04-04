@@ -1,5 +1,12 @@
 # Changelog
 
+### [17.0.20](https://github.com/netlify/build/compare/config-v17.0.19...config-v17.0.20) (2022-04-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency validate-npm-package-name to v4 ([#4252](https://github.com/netlify/build/issues/4252)) ([b43b6f4](https://github.com/netlify/build/commit/b43b6f40a016012ff5c818fa94698a800475c81d))
+
 ### [17.0.19](https://github.com/netlify/build/compare/config-v17.0.18...config-v17.0.19) (2022-03-23)
 
 

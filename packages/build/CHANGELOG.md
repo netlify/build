@@ -1,5 +1,13 @@
 # Changelog
 
+### [26.5.2](https://github.com/netlify/build/compare/build-v26.5.1...build-v26.5.2) (2022-04-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.18.0 ([#4245](https://github.com/netlify/build/issues/4245)) ([57a56ff](https://github.com/netlify/build/commit/57a56ff37cbf668f5ce4784a0684fddc348af347))
+* **deps:** update dependency @netlify/plugins-list to ^6.18.1 ([#4247](https://github.com/netlify/build/issues/4247)) ([0011a47](https://github.com/netlify/build/commit/0011a47bd7148396b2ed78483f8892813b903f37))
+
 ### [26.5.1](https://github.com/netlify/build/compare/build-v26.5.0...build-v26.5.1) (2022-03-23)
 
 
