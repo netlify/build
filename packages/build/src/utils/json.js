@@ -16,4 +16,12 @@ const importJsonFileSync = function (filePath) {
   return JSON.parse(fileContents)
 }
 
-export const ROOT_PACKAGE_JSON = importJsonFileSync(ROOT_PACKAGE_JSON_PATH)
+export const ROOT_PACKAGE_JSON = {
+  ...importJsonFileSync(ROOT_PACKAGE_JSON_PATH),
+
+  // We're hardcoding this while we're using `@netlify-labs/build-internal`, so
+  // that all consumers continue to see the package name as `@netlify/build`.
+  //
+  // TODO: Remove once we decommission the private package.
+  name: '@netlify/build',
+}
