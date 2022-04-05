@@ -34,7 +34,7 @@ const TEST_FLAGS = ['buffer', 'telemetry']
 const INTERNAL_FLAGS = [
   'nodePath',
   'functionsDistDir',
-  'edgeHandlersDistDir',
+  'edgeFunctionsDistDir',
   'defaultConfig',
   'cachedConfigPath',
   'sendStatus',

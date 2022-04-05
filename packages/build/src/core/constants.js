@@ -11,7 +11,7 @@ export const getConstants = async function ({
   configPath,
   buildDir,
   functionsDistDir,
-  edgeHandlersDistDir,
+  edgeFunctionsDistDir,
   cacheDir,
   netlifyConfig,
   siteInfo: { id: siteId },
@@ -27,8 +27,8 @@ export const getConstants = async function ({
     CONFIG_PATH: configPath,
     // The directory where built serverless functions are placed before deployment
     FUNCTIONS_DIST: functionsDistDir,
-    // The directory where built Edge Handlers are placed before deployment
-    EDGE_FUNCTIONS_DIST: edgeHandlersDistDir,
+    // The directory where built Edge Functions are placed before deployment
+    EDGE_FUNCTIONS_DIST: edgeFunctionsDistDir,
     // Path to the Netlify build cache folder
     CACHE_DIR: normalizedCacheDir,
     // Boolean indicating whether the build was run locally (Netlify CLI) or in the production CI
@@ -44,7 +44,7 @@ export const getConstants = async function ({
     // The directory where internal functions (i.e. generated programmatically
     // via plugins or others) live
     INTERNAL_FUNCTIONS_SRC: `${buildDir}/${INTERNAL_FUNCTIONS_SRC}`,
-    // The directory where internal Edge Handlers (i.e. generated programmatically
+    // The directory where internal Edge Functions (i.e. generated programmatically
     // via plugins or others) live
     INTERNAL_EDGE_FUNCTIONS_SRC: `${buildDir}/${INTERNAL_EDGE_FUNCTIONS_SRC}`,
   }
@@ -72,7 +72,7 @@ export const addMutableConstants = async function ({
     PUBLISH_DIR: publish,
     // The directory where function source code lives
     FUNCTIONS_SRC: functionsDirectory,
-    // The directory where edge handlers source code lives
+    // The directory where Edge Functions source code lives
     EDGE_FUNCTIONS_SRC: edgeFunctions,
   }
   const constantsB = await addDefaultConstants(constantsA, buildDir)

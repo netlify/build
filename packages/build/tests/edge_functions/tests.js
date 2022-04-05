@@ -53,7 +53,9 @@ test('constants.EDGE_FUNCTIONS_DIST default value', async (t) => {
 })
 
 test('constants.EDGE_FUNCTIONS_DIST custom value', async (t) => {
-  await runFixture(t, 'print_dist', { flags: { debug: false, mode: 'buildbot', edgeHandlersDistDir: '/another/path' } })
+  await runFixture(t, 'print_dist', {
+    flags: { debug: false, mode: 'buildbot', edgeFunctionsDistDir: '/another/path' },
+  })
 })
 
 test('builds Edge Functions from the user-defined directory', async (t) => {
