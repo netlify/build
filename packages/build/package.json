@@ -3,7 +3,7 @@
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   },
-  "version": "27.1.1",
+  "version": "27.1.2",
   "description": "Netlify build module",
   "type": "module",
   "exports": "./src/core/main.js",
