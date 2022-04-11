@@ -85,6 +85,7 @@
     "glob-to-regexp": "^0.4.1",
     "node-fetch": "^3.1.1",
     "node-stream-zip": "^1.15.0",
+    "p-wait-for": "^4.1.0",
     "semver": "^7.3.5",
     "tmp-promise": "^3.0.3",
     "uuid": "^8.3.2"

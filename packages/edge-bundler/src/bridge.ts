@@ -2,7 +2,7 @@ import { promises as fs } from 'fs'
 import path from 'path'
 import process from 'process'
 
-import { execa } from 'execa'
+import { execa, ExecaChildProcess } from 'execa'
 import semver from 'semver'
 
 import { download } from './downloader.js'
@@ -20,6 +20,14 @@ interface DenoOptions {
   onBeforeDownload?: LifecycleHook
   useGlobal?: boolean
   versionRange?: string
+}
+
+interface ProcessRef {
+  ps?: ExecaChildProcess<string>
+}
+
+interface RunOptions {
+  pipeOutput?: boolean
 }
 
 class DenoBridge {
@@ -113,6 +121,17 @@ class DenoBridge {
     return binaryPath
   }
 
+  private static runWithBinary(binaryPath: string, args: string[], pipeOutput?: boolean) {
+    const runDeno = execa(binaryPath, args)
+
+    if (pipeOutput) {
+      runDeno.stdout?.pipe(process.stdout)
+      runDeno.stderr?.pipe(process.stderr)
+    }
+
+    return runDeno
+  }
+
   private async writeVersionFile(version: string) {
     const versionFilePath = path.join(this.cacheDirectory, DENO_VERSION_FILE)
 
@@ -137,20 +156,26 @@ class DenoBridge {
     return { global: false, path: downloadedPath }
   }
 
-  async run(args: string[], { wait = true }: { wait?: boolean } = {}) {
+  // Runs the Deno CLI in the background and returns a reference to the child
+  // process, awaiting its execution.
+  async run(args: string[], { pipeOutput }: RunOptions = {}) {
     const { path: binaryPath } = await this.getBinaryPath()
-    const runDeno = execa(binaryPath, args)
 
-    runDeno.stdout?.pipe(process.stdout)
-    runDeno.stderr?.pipe(process.stderr)
+    return DenoBridge.runWithBinary(binaryPath, args, pipeOutput)
+  }
 
-    if (!wait) {
-      return runDeno
+  // Runs the Deno CLI in the background, assigning a reference of the child
+  // process to a `ps` property in the `ref` argument, if one is supplied.
+  async runInBackground(args: string[], pipeOutput?: boolean, ref?: ProcessRef) {
+    const { path: binaryPath } = await this.getBinaryPath()
+    const ps = DenoBridge.runWithBinary(binaryPath, args, pipeOutput)
+
+    if (ref !== undefined) {
+      // eslint-disable-next-line no-param-reassign
+      ref.ps = ps
     }
-
-    return await runDeno
   }
 }
 
 export { DenoBridge }
-export type { LifecycleHook }
+export type { LifecycleHook, ProcessRef }

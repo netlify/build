@@ -36,7 +36,7 @@ const bundleESZIP = async ({
     flags.push('--quiet')
   }
 
-  await deno.run(['run', ...flags, bundler, JSON.stringify(payload)])
+  await deno.run(['run', ...flags, bundler, JSON.stringify(payload)], { pipeOutput: true })
 
   const hash = await getFileHash(destPath)
 

@@ -10,7 +10,7 @@ import { getPackageVersion } from './package_json.js'
 import { nonNullable } from './utils/non_nullable.js'
 
 interface GenerateManifestOptions {
-  bundles: Bundle[]
+  bundles?: Bundle[]
   functions: EdgeFunction[]
   declarations?: Declaration[]
 }
@@ -22,7 +22,7 @@ interface Manifest {
   routes: { function: string; pattern: string }[]
 }
 
-const generateManifest = ({ bundles, declarations = [], functions }: GenerateManifestOptions) => {
+const generateManifest = ({ bundles = [], declarations = [], functions }: GenerateManifestOptions) => {
   const routes = declarations.map((declaration) => {
     const func = functions.find(({ name }) => declaration.function === name)
 
