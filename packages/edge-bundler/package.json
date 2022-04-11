@@ -78,6 +78,7 @@
     "node": "^12.20.0 || ^14.14.0 || >=16.0.0"
   },
   "dependencies": {
+    "common-path-prefix": "^3.0.0",
     "del": "^6.0.0",
     "env-paths": "^3.0.0",
     "execa": "^6.0.0",

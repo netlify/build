@@ -1,23 +1,21 @@
 import { promises as fs } from 'fs'
 import { join } from 'path'
 import { env } from 'process'
-import { pathToFileURL } from 'url'
 
-import del from 'del'
+import commonPathPrefix from 'common-path-prefix'
 import { v4 as uuidv4 } from 'uuid'
 
 import { DenoBridge, LifecycleHook } from './bridge.js'
 import type { Bundle } from './bundle.js'
 import type { Declaration } from './declaration.js'
-import { EdgeFunction } from './edge_function.js'
-import { generateEntryPoint } from './entry_point.js'
-import { getESZIPBundler } from './eszip.js'
 import { findFunctions } from './finder.js'
+import { bundleESZIP } from './formats/eszip.js'
+import { bundleJS } from './formats/javascript.js'
 import { ImportMap, ImportMapFile } from './import_map.js'
-import { generateManifest } from './manifest.js'
-import { getFileHash } from './utils/sha256.js'
+import { writeManifest } from './manifest.js'
 
 interface BundleOptions {
+  cacheDirectory?: string
   debug?: boolean
   distImportMapPath?: string
   importMaps?: ImportMapFile[]
@@ -25,25 +23,18 @@ interface BundleOptions {
   onBeforeDownload?: LifecycleHook
 }
 
-interface BundleWithFormatOptions {
-  buildID: string
-  debug?: boolean
-  deno: DenoBridge
-  distDirectory: string
-  importMap: ImportMap
-  preBundlePath: string
-}
-
 const bundle = async (
   sourceDirectories: string[],
   distDirectory: string,
   declarations: Declaration[] = [],
-  { debug, distImportMapPath, importMaps, onAfterDownload, onBeforeDownload }: BundleOptions = {},
+  { cacheDirectory, debug, distImportMapPath, importMaps, onAfterDownload, onBeforeDownload }: BundleOptions = {},
 ) => {
   const deno = new DenoBridge({
+    cacheDirectory,
     onAfterDownload,
     onBeforeDownload,
   })
+  const basePath = commonPathPrefix(sourceDirectories)
 
   // The name of the bundle will be the hash of its contents, which we can't
   // compute until we run the bundle process. For now, we'll use a random ID
@@ -54,72 +45,49 @@ const bundle = async (
   // if any.
   const importMap = new ImportMap(importMaps)
   const functions = await findFunctions(sourceDirectories)
-  const preBundlePath = await preBundle(functions, distDirectory, `${buildID}-pre.js`)
-  const bundleOps = [bundleJS({ debug, buildID, deno, distDirectory, importMap, preBundlePath })]
+  const bundleOps = [
+    bundleJS({
+      buildID,
+      debug,
+      deno,
+      distDirectory,
+      functions,
+      importMap,
+    }),
+  ]
 
   if (env.BUNDLE_ESZIP) {
-    bundleOps.push(bundleESZIP({ buildID, deno, distDirectory, importMap, preBundlePath }))
+    bundleOps.push(
+      bundleESZIP({
+        basePath,
+        buildID,
+        debug,
+        deno,
+        distDirectory,
+        functions,
+      }),
+    )
   }
 
   const bundles = await Promise.all(bundleOps)
 
+  // The final file name of the bundles contains a SHA256 hash of the contents,
+  // which we can only compute now that the files have been generated. So let's
+  // rename the bundles to their permanent names.
   await createFinalBundles(bundles, distDirectory, buildID)
 
-  const manifest = await writeManifest({
+  await writeManifest({
     bundles,
     declarations,
     distDirectory,
     functions,
   })
 
-  await fs.unlink(preBundlePath)
-
   if (distImportMapPath) {
     await importMap.writeToFile(distImportMapPath)
   }
 
-  return { functions, manifest, preBundlePath }
-}
-
-const bundleESZIP = async ({
-  buildID,
-  deno,
-  distDirectory,
-  preBundlePath,
-}: BundleWithFormatOptions): Promise<Bundle> => {
-  const extension = '.eszip2'
-  const preBundleFileURL = pathToFileURL(preBundlePath).toString()
-  const eszipBundlePath = join(distDirectory, `${buildID}${extension}`)
-  const bundler = getESZIPBundler()
-
-  await deno.run(['run', '-A', bundler, preBundleFileURL, eszipBundlePath])
-
-  const hash = await getFileHash(eszipBundlePath)
-
-  return { extension, format: 'eszip2', hash }
-}
-
-const bundleJS = async ({
-  buildID,
-  debug,
-  deno,
-  distDirectory,
-  importMap,
-  preBundlePath,
-}: BundleWithFormatOptions): Promise<Bundle> => {
-  const extension = '.js'
-  const jsBundlePath = join(distDirectory, `${buildID}${extension}`)
-  const flags = [`--import-map=${importMap.toDataURL()}`]
-
-  if (!debug) {
-    flags.push('--quiet')
-  }
-
-  await deno.run(['bundle', ...flags, preBundlePath, jsBundlePath])
-
-  const hash = await getFileHash(jsBundlePath)
-
-  return { extension, format: 'js', hash }
+  return { functions }
 }
 
 const createFinalBundles = async (bundles: Bundle[], distDirectory: string, buildID: string) => {
@@ -133,30 +101,4 @@ const createFinalBundles = async (bundles: Bundle[], distDirectory: string, buil
   await Promise.all(renamingOps)
 }
 
-const preBundle = async (functions: EdgeFunction[], distDirectory: string, preBundleName: string) => {
-  await del(distDirectory, { force: true })
-  await fs.mkdir(distDirectory, { recursive: true })
-
-  const entrypoint = generateEntryPoint(functions)
-  const preBundlePath = join(distDirectory, preBundleName)
-
-  await fs.writeFile(preBundlePath, entrypoint)
-
-  return preBundlePath
-}
-
-interface WriteManifestOptions {
-  bundles: Bundle[]
-  declarations: Declaration[]
-  distDirectory: string
-  functions: EdgeFunction[]
-}
-
-const writeManifest = ({ bundles, declarations = [], distDirectory, functions }: WriteManifestOptions) => {
-  const manifest = generateManifest({ bundles, declarations, functions })
-  const manifestPath = join(distDirectory, 'manifest.json')
-
-  return fs.writeFile(manifestPath, JSON.stringify(manifest))
-}
-
-export { bundle, preBundle }
+export { bundle }

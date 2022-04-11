@@ -1,3 +1,6 @@
+import { promises as fs } from 'fs'
+import { join } from 'path'
+
 import globToRegExp from 'glob-to-regexp'
 
 import type { Bundle } from './bundle.js'
@@ -48,4 +51,18 @@ const generateManifest = ({ bundles, declarations = [], functions }: GenerateMan
   return manifest
 }
 
-export { generateManifest, Manifest }
+interface WriteManifestOptions {
+  bundles: Bundle[]
+  declarations: Declaration[]
+  distDirectory: string
+  functions: EdgeFunction[]
+}
+
+const writeManifest = ({ bundles, declarations = [], distDirectory, functions }: WriteManifestOptions) => {
+  const manifest = generateManifest({ bundles, declarations, functions })
+  const manifestPath = join(distDirectory, 'manifest.json')
+
+  return fs.writeFile(manifestPath, JSON.stringify(manifest))
+}
+
+export { generateManifest, Manifest, writeManifest }
