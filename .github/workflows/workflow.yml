@@ -121,7 +121,7 @@ jobs:
           echo "::set-output name=os::${os/-latest/}"
           echo "::set-output name=node::node_${node//[.*]/}"
         shell: bash
-      - uses: codecov/codecov-action@v2
+      - uses: codecov/codecov-action@v3
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
         with:
           file: coverage/coverage-final.json
