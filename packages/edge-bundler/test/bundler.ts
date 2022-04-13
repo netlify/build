@@ -22,8 +22,6 @@ test('Produces a JavaScript bundle and a manifest file', async (t) => {
   const result = await bundle([sourceDirectory], tmpDir.path, declarations)
   const generatedFiles = await fs.readdir(tmpDir.path)
 
-  console.log({ result, generatedFiles })
-
   t.is(result.functions.length, 1)
   t.is(generatedFiles.length, 2)
 
