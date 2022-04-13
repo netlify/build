@@ -7,6 +7,8 @@ import { logFunctionsToBundle } from '../../log/messages/core_steps.js'
 
 import { parseManifest } from './lib/internal_manifest.js'
 
+// TODO: Replace this with a custom cache directory.
+const DENO_CLI_CACHE_DIRECTORY = '.netlify/plugins/deno-cli'
 const IMPORT_MAP_FILENAME = 'edge-functions-import-map.json'
 
 const coreStep = async function ({
@@ -15,8 +17,10 @@ const coreStep = async function ({
     EDGE_FUNCTIONS_DIST: distDirectory,
     EDGE_FUNCTIONS_SRC: srcDirectory,
     INTERNAL_EDGE_FUNCTIONS_SRC: internalSrcDirectory,
+    IS_LOCAL: isRunningLocally,
   },
   debug,
+  featureFlags,
   logs,
   netlifyConfig,
 }) {
@@ -32,9 +36,16 @@ const coreStep = async function ({
   const { declarations: internalDeclarations, importMap } = await parseManifest(internalSrcPath)
   const declarations = [...configDeclarations, ...internalDeclarations]
 
+  // If we're running in buildbot and the feature flag is enabled, we set the
+  // Deno cache dir to a directory that is persisted between builds.
+  const cacheDirectory =
+    !isRunningLocally && featureFlags.edge_functions_cache_cli ? resolve(buildDir, DENO_CLI_CACHE_DIRECTORY) : undefined
+
   await bundle(sourcePaths, distPath, declarations, {
+    cacheDirectory,
     debug,
     distImportMapPath,
+    featureFlags,
     importMaps: [importMap].filter(Boolean),
   })
 
