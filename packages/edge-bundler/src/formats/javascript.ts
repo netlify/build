@@ -13,7 +13,7 @@ import type { FormatFunction } from '../server/server.js'
 import { getFileHash } from '../utils/sha256.js'
 
 const BOOTSTRAP_LATEST =
-  'https://dinosaurs:are-the-future!@624accb72787800009364b4f--edge-bootstrap.netlify.app/index.ts'
+  'https://dinosaurs:are-the-future!@6256b369f54728000a74a8d5--edge-bootstrap.netlify.app/bootstrap/index-combined.ts'
 
 interface BundleJSOptions {
   buildID: string
@@ -145,4 +145,4 @@ const getProductionEntryPoint = (functions: EdgeFunction[]) => {
   return [bootImport, importLines, exportDeclaration, defaultExport].join('\n\n')
 }
 
-export { bundleJS, generateStage2 }
+export { bundleJS, generateStage2, getBootstrapURL }

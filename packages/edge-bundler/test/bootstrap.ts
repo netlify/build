@@ -4,22 +4,10 @@ import { env } from 'process'
 import test from 'ava'
 import fetch, { Headers } from 'node-fetch'
 
-import { getBootstrapImport } from '../src/bootstrap.js'
-
-const importURLRegex = /^import { boot } from "(.*)";$/m
+import { getBootstrapURL } from '../src/formats/javascript.js'
 
 test.serial('Imports the bootstrap layer from a valid URL', async (t) => {
-  const importLine = getBootstrapImport()
-  const match = importLine.match(importURLRegex)
-  const url = match?.[1]
-
-  if (url === undefined) {
-    t.fail('Import expression is invalid')
-
-    return
-  }
-
-  const importURL = new URL(url)
+  const importURL = new URL(getBootstrapURL())
   const headers = new Headers()
 
   // `node-fetch` doesn't let us send credentials as part of the URL, so we
@@ -46,18 +34,8 @@ test.serial(
 
     env.NETLIFY_EDGE_BOOTSTRAP = mockURL
 
-    const importLine = getBootstrapImport()
-    const match = importLine.match(importURLRegex)
-    const url = match?.[1]
+    t.is(getBootstrapURL(), mockURL)
 
     env.NETLIFY_EDGE_BOOTSTRAP = undefined
-
-    if (url === undefined) {
-      t.fail('Import expression is invalid')
-
-      return
-    }
-
-    t.is(url, mockURL)
   },
 )
