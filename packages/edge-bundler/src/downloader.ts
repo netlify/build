@@ -21,7 +21,12 @@ const download = async (targetDirectory: string, versionRange: string) => {
   })
 
   await extractBinaryFromZip(zipPath, binaryPath, binaryName)
-  await fs.promises.unlink(zipPath)
+
+  try {
+    await fs.promises.unlink(zipPath)
+  } catch {
+    // no-op
+  }
 
   return binaryPath
 }

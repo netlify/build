@@ -33,6 +33,7 @@ interface RunOptions {
 
 class DenoBridge {
   cacheDirectory: string
+  currentDownload?: ReturnType<DenoBridge['downloadBinary']>
   debug: boolean
   onAfterDownload?: LifecycleHook
   onBeforeDownload?: LifecycleHook
@@ -46,6 +47,34 @@ class DenoBridge {
     this.onBeforeDownload = options.onBeforeDownload
     this.useGlobal = options.useGlobal ?? true
     this.versionRange = options.versionRange ?? DENO_VERSION_RANGE
+  }
+
+  private async downloadBinary() {
+    if (this.onBeforeDownload) {
+      this.onBeforeDownload()
+    }
+
+    await fs.mkdir(this.cacheDirectory, { recursive: true })
+
+    this.log(`Downloading Deno CLI to ${this.cacheDirectory}...`)
+
+    const binaryPath = await download(this.cacheDirectory, this.versionRange)
+    const downloadedVersion = await DenoBridge.getBinaryVersion(binaryPath)
+
+    // We should never get here, because it means that `DENO_VERSION_RANGE` is
+    // a malformed semver range. If this does happen, let's throw an error so
+    // that the tests catch it.
+    if (downloadedVersion === undefined) {
+      throw new Error('Could not read downloaded binary')
+    }
+
+    await this.writeVersionFile(downloadedVersion)
+
+    if (this.onAfterDownload) {
+      this.onAfterDownload()
+    }
+
+    return binaryPath
   }
 
   static async getBinaryVersion(binaryPath: string) {
@@ -98,30 +127,12 @@ class DenoBridge {
     return globalBinaryName
   }
 
-  private async getRemoteBinary() {
-    if (this.onBeforeDownload) {
-      this.onBeforeDownload()
+  private getRemoteBinary() {
+    if (this.currentDownload === undefined) {
+      this.currentDownload = this.downloadBinary()
     }
 
-    await fs.mkdir(this.cacheDirectory, { recursive: true })
-
-    const binaryPath = await download(this.cacheDirectory, this.versionRange)
-    const downloadedVersion = await DenoBridge.getBinaryVersion(binaryPath)
-
-    // We should never get here, because it means that `DENO_VERSION_RANGE` is
-    // a malformed semver range. If this does happen, let's throw an error so
-    // that the tests catch it.
-    if (downloadedVersion === undefined) {
-      throw new Error('Could not read downloaded binary')
-    }
-
-    await this.writeVersionFile(downloadedVersion)
-
-    if (this.onAfterDownload) {
-      this.onAfterDownload()
-    }
-
-    return binaryPath
+    return this.currentDownload
   }
 
   private log(...data: unknown[]) {
@@ -165,8 +176,6 @@ class DenoBridge {
 
       return { global: false, path: cachedPath }
     }
-
-    this.log('Downloading Deno CLI...')
 
     const downloadedPath = await this.getRemoteBinary()
 
