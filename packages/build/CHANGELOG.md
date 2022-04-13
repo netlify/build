@@ -1,5 +1,29 @@
 # Changelog
 
+### [26.5.3](https://github.com/netlify/build/compare/build-v26.5.2...build-v26.5.3) (2022-04-11)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.19.0 ([#4255](https://github.com/netlify/build/issues/4255)) ([0ed0111](https://github.com/netlify/build/commit/0ed011118cd7cb3cb796dfb3c4357e55cfd41252))
+
+### [26.5.2](https://github.com/netlify/build/compare/build-v26.5.1...build-v26.5.2) (2022-04-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.18.0 ([#4245](https://github.com/netlify/build/issues/4245)) ([57a56ff](https://github.com/netlify/build/commit/57a56ff37cbf668f5ce4784a0684fddc348af347))
+* **deps:** update dependency @netlify/plugins-list to ^6.18.1 ([#4247](https://github.com/netlify/build/issues/4247)) ([0011a47](https://github.com/netlify/build/commit/0011a47bd7148396b2ed78483f8892813b903f37))
+
+### [26.5.1](https://github.com/netlify/build/compare/build-v26.5.0...build-v26.5.1) (2022-03-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.16.1 ([#4228](https://github.com/netlify/build/issues/4228)) ([41182e0](https://github.com/netlify/build/commit/41182e027328ba4a99cf9d2f6d21e2086521b5aa))
+* **deps:** update dependency @netlify/plugins-list to ^6.17.0 ([#4237](https://github.com/netlify/build/issues/4237)) ([1ee5b47](https://github.com/netlify/build/commit/1ee5b47e54fbf709781d3a546d002f6fc95f8e43))
+* non-writable `error.message` inside plugins ([#4234](https://github.com/netlify/build/issues/4234)) ([509efdf](https://github.com/netlify/build/commit/509efdfe5fd41bdbeb3b9e930b07ac984531b785))
+
 ## [26.5.0](https://github.com/netlify/build/compare/build-v26.4.0...build-v26.5.0) (2022-03-14)
 
 
