@@ -9,6 +9,7 @@
   "main": "./dist/index.js",
   "exports": "./dist/index.js",
   "files": [
+    "deno/**",
     "dist/**/*.js",
     "dist/**/*.d.ts"
   ],
