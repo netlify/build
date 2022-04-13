@@ -23,6 +23,10 @@ jobs:
     steps:
       - name: Git checkout
         uses: actions/checkout@v2
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
       - name: Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:

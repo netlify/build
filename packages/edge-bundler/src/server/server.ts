@@ -91,6 +91,7 @@ const serve = async ({
   port,
 }: ServeOptions) => {
   const deno = new DenoBridge({
+    debug,
     onAfterDownload,
     onBeforeDownload,
   })

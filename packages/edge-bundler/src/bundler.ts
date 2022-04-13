@@ -1,6 +1,5 @@
 import { promises as fs } from 'fs'
 import { join } from 'path'
-import { env } from 'process'
 
 import commonPathPrefix from 'common-path-prefix'
 import { v4 as uuidv4 } from 'uuid'
@@ -8,6 +7,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { DenoBridge, LifecycleHook } from './bridge.js'
 import type { Bundle } from './bundle.js'
 import type { Declaration } from './declaration.js'
+import { FeatureFlags, getFlags } from './feature_flags.js'
 import { findFunctions } from './finder.js'
 import { bundleESZIP } from './formats/eszip.js'
 import { bundleJS } from './formats/javascript.js'
@@ -18,6 +18,7 @@ interface BundleOptions {
   cacheDirectory?: string
   debug?: boolean
   distImportMapPath?: string
+  featureFlags?: FeatureFlags
   importMaps?: ImportMapFile[]
   onAfterDownload?: LifecycleHook
   onBeforeDownload?: LifecycleHook
@@ -27,14 +28,24 @@ const bundle = async (
   sourceDirectories: string[],
   distDirectory: string,
   declarations: Declaration[] = [],
-  { cacheDirectory, debug, distImportMapPath, importMaps, onAfterDownload, onBeforeDownload }: BundleOptions = {},
+  {
+    cacheDirectory,
+    debug,
+    distImportMapPath,
+    featureFlags: inputFeatureFlags,
+    importMaps,
+    onAfterDownload,
+    onBeforeDownload,
+  }: BundleOptions = {},
 ) => {
+  const featureFlags = getFlags(inputFeatureFlags)
   const deno = new DenoBridge({
+    debug,
     cacheDirectory,
     onAfterDownload,
     onBeforeDownload,
   })
-  const basePath = commonPathPrefix(sourceDirectories)
+  const basePath = getBasePath(sourceDirectories)
 
   // The name of the bundle will be the hash of its contents, which we can't
   // compute until we run the bundle process. For now, we'll use a random ID
@@ -56,7 +67,7 @@ const bundle = async (
     }),
   ]
 
-  if (env.BUNDLE_ESZIP) {
+  if (featureFlags.edge_functions_produce_eszip) {
     bundleOps.push(
       bundleESZIP({
         basePath,
@@ -99,6 +110,16 @@ const createFinalBundles = async (bundles: Bundle[], distDirectory: string, buil
   })
 
   await Promise.all(renamingOps)
+}
+
+const getBasePath = (sourceDirectories: string[]) => {
+  // `common-path-prefix` returns an empty string when called with a single
+  // path, so we check for that case and return the path itself instead.
+  if (sourceDirectories.length === 1) {
+    return sourceDirectories[0]
+  }
+
+  return commonPathPrefix(sourceDirectories)
 }
 
 export { bundle }

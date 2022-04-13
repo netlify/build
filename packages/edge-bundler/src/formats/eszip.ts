@@ -1,4 +1,5 @@
 import { join, resolve } from 'path'
+import { fileURLToPath } from 'url'
 
 import { DenoBridge } from '../bridge.js'
 import type { Bundle } from '../bundle.js'
@@ -44,7 +45,8 @@ const bundleESZIP = async ({
 }
 
 const getESZIPBundler = () => {
-  const { pathname } = new URL(import.meta.url)
+  const url = new URL(import.meta.url)
+  const pathname = fileURLToPath(url)
   const bundlerPath = resolve(pathname, '../../../deno/bundle.ts')
 
   return bundlerPath

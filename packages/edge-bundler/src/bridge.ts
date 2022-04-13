@@ -16,6 +16,7 @@ type LifecycleHook = () => void | Promise<void>
 
 interface DenoOptions {
   cacheDirectory?: string
+  debug?: boolean
   onAfterDownload?: LifecycleHook
   onBeforeDownload?: LifecycleHook
   useGlobal?: boolean
@@ -32,6 +33,7 @@ interface RunOptions {
 
 class DenoBridge {
   cacheDirectory: string
+  debug: boolean
   onAfterDownload?: LifecycleHook
   onBeforeDownload?: LifecycleHook
   useGlobal: boolean
@@ -39,6 +41,7 @@ class DenoBridge {
 
   constructor(options: DenoOptions = {}) {
     this.cacheDirectory = options.cacheDirectory ?? getPathInHome('deno-cli')
+    this.debug = options.debug ?? false
     this.onAfterDownload = options.onAfterDownload
     this.onBeforeDownload = options.onBeforeDownload
     this.useGlobal = options.useGlobal ?? true
@@ -121,6 +124,14 @@ class DenoBridge {
     return binaryPath
   }
 
+  private log(...data: unknown[]) {
+    if (!this.debug) {
+      return
+    }
+
+    console.log(...data)
+  }
+
   private static runWithBinary(binaryPath: string, args: string[], pipeOutput?: boolean) {
     const runDeno = execa(binaryPath, args)
 
@@ -142,14 +153,20 @@ class DenoBridge {
     const globalPath = await this.getGlobalBinary()
 
     if (globalPath !== undefined) {
+      this.log('Using global installation of Deno CLI')
+
       return { global: true, path: globalPath }
     }
 
     const cachedPath = await this.getCachedBinary()
 
     if (cachedPath !== undefined) {
+      this.log('Using cached Deno CLI from', cachedPath)
+
       return { global: false, path: cachedPath }
     }
+
+    this.log('Downloading Deno CLI...')
 
     const downloadedPath = await this.getRemoteBinary()
 

@@ -37,7 +37,8 @@
   },
   "ava": {
     "files": [
-      "test/**/*.ts"
+      "test/**/*.ts",
+      "!test/fixtures/**"
     ],
     "extensions": {
       "ts": "module"
