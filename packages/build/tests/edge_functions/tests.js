@@ -58,21 +58,21 @@ test('constants.EDGE_FUNCTIONS_DIST custom value', async (t) => {
   })
 })
 
-test('builds Edge Functions from the user-defined directory', async (t) => {
+test.serial('builds Edge Functions from the user-defined directory', async (t) => {
   const fixtureName = 'functions_user'
 
   await runFixture(t, 'functions_user', { flags: { debug: false, mode: 'buildbot' } })
   await assertManifest(t, fixtureName)
 })
 
-test('builds Edge Functions from the internal directory', async (t) => {
+test.serial('builds Edge Functions from the internal directory', async (t) => {
   const fixtureName = 'functions_internal'
 
   await runFixture(t, 'functions_internal', { flags: { debug: false, mode: 'buildbot' } })
   await assertManifest(t, fixtureName)
 })
 
-test('builds Edge Functions from both the user and the internal directoriws', async (t) => {
+test.serial('builds Edge Functions from both the user and the internal directoriws', async (t) => {
   const fixtureName = 'functions_user_internal'
 
   await runFixture(t, fixtureName, { flags: { debug: false, mode: 'buildbot' } })
