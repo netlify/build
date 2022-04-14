@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url'
 import test from 'ava'
 import tmp from 'tmp-promise'
 
+import { BundleError } from '../src/bundle_error.js'
 import { bundle } from '../src/bundler.js'
 
 const url = new URL(import.meta.url)
@@ -68,4 +69,35 @@ test('Produces an additional ESZIP bundle when the `edge_functions_produce_eszip
   t.true(generatedFiles.includes(bundles[1].asset))
 
   await fs.rmdir(tmpDir.path, { recursive: true })
+})
+
+test('Adds a custom error property to bundling errors', async (t) => {
+  const sourceDirectory = resolve(dirname, '..', 'fixtures', 'invalid_functions', 'functions')
+  const tmpDir = await tmp.dir()
+  const declarations = [
+    {
+      function: 'func1',
+      path: '/func1',
+    },
+  ]
+
+  try {
+    await bundle([sourceDirectory], tmpDir.path, declarations)
+
+    t.fail('Expected bundling to throw')
+  } catch (error: unknown) {
+    if (error instanceof BundleError) {
+      t.deepEqual(error.customErrorInfo, {
+        location: {
+          format: 'javascript',
+          runtime: 'deno',
+        },
+        type: 'functionsBundling',
+      })
+    } else {
+      t.fail('Expected custom error')
+    }
+  } finally {
+    await fs.rmdir(tmpDir.path, { recursive: true })
+  }
 })

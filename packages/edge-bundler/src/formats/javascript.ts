@@ -7,6 +7,7 @@ import del from 'del'
 
 import { DenoBridge } from '../bridge.js'
 import type { Bundle } from '../bundle.js'
+import { wrapBundleError } from '../bundle_error.js'
 import { EdgeFunction } from '../edge_function.js'
 import { ImportMap } from '../import_map.js'
 import type { FormatFunction } from '../server/server.js'
@@ -22,6 +23,14 @@ interface BundleJSOptions {
   distDirectory: string
   functions: EdgeFunction[]
   importMap: ImportMap
+}
+
+const bundle = async (options: BundleJSOptions) => {
+  try {
+    return await bundleJS(options)
+  } catch (error: unknown) {
+    throw wrapBundleError(error, { format: 'javascript' })
+  }
 }
 
 const bundleJS = async ({
@@ -145,4 +154,4 @@ const getProductionEntryPoint = (functions: EdgeFunction[]) => {
   return [bootImport, importLines, exportDeclaration, defaultExport].join('\n\n')
 }
 
-export { bundleJS, generateStage2, getBootstrapURL }
+export { bundle, generateStage2, getBootstrapURL }

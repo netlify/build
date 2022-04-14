@@ -3,6 +3,7 @@ import { fileURLToPath } from 'url'
 
 import { DenoBridge } from '../bridge.js'
 import type { Bundle } from '../bundle.js'
+import { wrapBundleError } from '../bundle_error.js'
 import { EdgeFunction } from '../edge_function.js'
 import { getFileHash } from '../utils/sha256.js'
 
@@ -13,6 +14,14 @@ interface BundleESZIPOptions {
   deno: DenoBridge
   distDirectory: string
   functions: EdgeFunction[]
+}
+
+const bundle = async (options: BundleESZIPOptions) => {
+  try {
+    return await bundleESZIP(options)
+  } catch (error: unknown) {
+    throw wrapBundleError(error, { format: 'eszip' })
+  }
 }
 
 const bundleESZIP = async ({
@@ -52,4 +61,4 @@ const getESZIPBundler = () => {
   return bundlerPath
 }
 
-export { bundleESZIP }
+export { bundle }
