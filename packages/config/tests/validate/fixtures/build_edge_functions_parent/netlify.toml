@@ -1,0 +1,2 @@
+[build]
+edge_functions = "../../edge_functions_dir"

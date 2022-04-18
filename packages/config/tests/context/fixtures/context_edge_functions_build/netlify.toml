@@ -1,0 +1,5 @@
+[build]
+edge_functions = "/src"
+
+[context.production]
+edge_functions = "/srcTest"

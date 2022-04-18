@@ -83,12 +83,12 @@ test('build.functions: parent directory', async (t) => {
   await runFixture(t, 'build_functions_parent')
 })
 
-test('build.edge_handlers: string', async (t) => {
-  await runFixture(t, 'build_edge_handlers_string')
+test('build.edge_functions: string', async (t) => {
+  await runFixture(t, 'build_edge_functions_string')
 })
 
-test('build.edge_handlers: parent directory', async (t) => {
-  await runFixture(t, 'build_edge_handlers_parent')
+test('build.edge_functions: parent directory', async (t) => {
+  await runFixture(t, 'build_edge_functions_parent')
 })
 
 test('build.base: string', async (t) => {

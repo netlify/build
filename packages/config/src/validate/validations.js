@@ -172,10 +172,10 @@ export const POST_NORMALIZE_VALIDATIONS = [
     example: () => ({ build: { functions: 'functions' } }),
   },
   {
-    property: 'build.edge_handlers',
+    property: 'build.edge_functions',
     check: isString,
     message: 'must be a string.',
-    example: () => ({ build: { edge_handlers: 'edge-handlers' } }),
+    example: () => ({ build: { edge_functions: 'edge-functions' } }),
   },
   {
     property: 'functions.*',

@@ -110,9 +110,9 @@ Default: Current Node.js binary`,
 Default: automatically guessed`,
     hidden: true,
   },
-  edgeHandlersDistDir: {
+  edgeFunctionsDistDir: {
     string: true,
-    describe: `Path to the directory where packaged Edge Handlers are kept.
+    describe: `Path to the directory where packaged Edge Functions are kept.
 Default: automatically guessed`,
     hidden: true,
   },

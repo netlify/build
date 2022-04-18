@@ -142,12 +142,12 @@ test('netlifyConfig.build.publish mutations are used by constants.PUBLISH_DIR', 
   await runFixture(t, 'publish_constants')
 })
 
-test('netlifyConfig.build.edge_handlers mutations are used by constants.EDGE_HANDLERS_SRC', async (t) => {
-  await runFixture(t, 'edge_handlers_constants')
+test('netlifyConfig.build.edge_functions mutations are used by constants.EDGE_FUNCTIONS_SRC', async (t) => {
+  await runFixture(t, 'edge_functions_constants')
 })
 
-test('netlifyConfig.edge_handlers can be assigned all at once', async (t) => {
-  await runFixture(t, 'edge_handlers_all')
+test('netlifyConfig.edge_functions can be assigned all at once', async (t) => {
+  await runFixture(t, 'edge_functions_all')
 })
 
 test('netlifyConfig.services can be assigned all at once', async (t) => {

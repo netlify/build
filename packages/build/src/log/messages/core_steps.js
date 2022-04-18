@@ -59,9 +59,10 @@ export const logFunctionsToBundle = function ({
   userFunctionsSrcExists,
   internalFunctions,
   internalFunctionsSrc,
+  type = 'Functions',
 }) {
   if (internalFunctions.length !== 0) {
-    log(logs, `Packaging Functions from ${THEME.highlightWords(internalFunctionsSrc)} directory:`)
+    log(logs, `Packaging ${type} from ${THEME.highlightWords(internalFunctionsSrc)} directory:`)
     logArray(logs, internalFunctions, { indent: false })
   }
 
@@ -70,7 +71,7 @@ export const logFunctionsToBundle = function ({
   }
 
   if (userFunctions.length === 0) {
-    log(logs, `No Functions were found in ${THEME.highlightWords(userFunctionsSrc)} directory`)
+    log(logs, `No ${type} were found in ${THEME.highlightWords(userFunctionsSrc)} directory`)
 
     return
   }
@@ -79,7 +80,7 @@ export const logFunctionsToBundle = function ({
     log(logs, '')
   }
 
-  log(logs, `Packaging Functions from ${THEME.highlightWords(userFunctionsSrc)} directory:`)
+  log(logs, `Packaging ${type} from ${THEME.highlightWords(userFunctionsSrc)} directory:`)
   logArray(logs, userFunctions, { indent: false })
 }
 
