@@ -19,6 +19,9 @@
     "David Wells <hello@davidwells.io> (https://davidwells.io/)",
     "Swyx <swyx@netlify.com> (https://www.swyx.io)"
   ],
+  "scripts": {
+    "prepublishOnly": "cd ../../ && npm run prepublishOnly"
+  },
   "keywords": [
     "nodejs",
     "javascript",

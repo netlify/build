@@ -15,6 +15,9 @@
   "contributors": [
     "David Wells <hello@davidwells.io> (https://davidwells.io/)"
   ],
+  "scripts": {
+    "prepublishOnly": "cd ../../ && npm run prepublishOnly"
+  },
   "keywords": [
     "javascript",
     "nodejs",
