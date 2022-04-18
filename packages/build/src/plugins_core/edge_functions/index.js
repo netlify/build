@@ -1,6 +1,6 @@
 import { dirname, join, resolve } from 'path'
 
-import { bundle, find } from '@netlify-labs/edge-bundler'
+import { bundle, find } from '@netlify/edge-bundler'
 import { pathExists } from 'path-exists'
 
 import { logFunctionsToBundle } from '../../log/messages/core_steps.js'

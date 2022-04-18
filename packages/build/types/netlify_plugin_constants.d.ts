@@ -15,12 +15,12 @@ export interface NetlifyPluginConstants {
   FUNCTIONS_SRC?: string
   /**
    * the directory where internal Edge Handlers source code lives. This is where build plugins should place auto-generated handlers.
-   * `undefined` if the version of @netlify-labs/build-internal does not support internal Edge Handlers
+   * `undefined` if the version of @netlify/build does not support internal Edge Handlers
    */
   INTERNAL_EDGE_HANDLERS_SRC?: string
   /**
    * the directory where internal function source code lives. This is where build plugins should place auto-generated functions.
-   * `undefined` if the version of @netlify-labs/build-internal does not support internal functions
+   * `undefined` if the version of @netlify/build does not support internal functions
    */
   INTERNAL_FUNCTIONS_SRC?: string
   /**

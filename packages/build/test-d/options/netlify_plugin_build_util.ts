@@ -1,4 +1,4 @@
-import { OnPreBuild, NetlifyPluginUtils } from '@netlify-labs/build-internal'
+import { OnPreBuild, NetlifyPluginUtils } from '@netlify/build'
 
 const testUtilsBuildFailBuild: OnPreBuild = function ({
   utils: {

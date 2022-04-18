@@ -1,4 +1,4 @@
-import { OnPreBuild, NetlifyPluginUtils, ListedFunction, ListedFunctionFile } from '@netlify-labs/build-internal'
+import { OnPreBuild, NetlifyPluginUtils, ListedFunction, ListedFunctionFile } from '@netlify/build'
 import { expectType } from 'tsd'
 
 const testUtilsFunctionsList: OnPreBuild = function ({

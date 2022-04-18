@@ -37,14 +37,14 @@
     "netlify-plugin",
     "netlify"
   ],
-  "homepage": "https://github.com/netlify-labs/build-internal",
+  "homepage": "https://github.com/netlify/build",
   "repository": {
     "type": "git",
-    "url": "https://github.com/netlify-labs/build-internal.git",
+    "url": "https://github.com/netlify/build.git",
     "directory": "packages/config"
   },
   "bugs": {
-    "url": "https://github.com/netlify-labs/build-internal/issues"
+    "url": "https://github.com/netlify/build/issues"
   },
   "license": "MIT",
   "dependencies": {

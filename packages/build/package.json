@@ -41,21 +41,21 @@
     "netlify-plugin",
     "netlify"
   ],
-  "homepage": "https://github.com/netlify-labs/build-internal",
+  "homepage": "https://github.com/netlify/build",
   "repository": {
     "type": "git",
-    "url": "https://github.com/netlify-labs/build-internal.git",
+    "url": "https://github.com/netlify/build.git",
     "directory": "packages/build"
   },
   "bugs": {
-    "url": "https://github.com/netlify-labs/build-internal/issues"
+    "url": "https://github.com/netlify/build/issues"
   },
   "license": "MIT",
   "dependencies": {
     "@bugsnag/js": "^7.0.0",
-    "@netlify-labs/edge-bundler": "^0.11.0",
+    "@netlify/edge-bundler": "^0.12.0",
     "@netlify/cache-utils": "^4.0.0",
-    "@netlify-labs/config-internal": "^17.0.18",
+    "@netlify/config": "^17.0.20",
     "@netlify/functions-utils": "^4.0.0",
     "@netlify/git-utils": "^4.0.0",
     "@netlify/plugins-list": "^6.19.0",

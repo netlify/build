@@ -1,4 +1,4 @@
-import { NetlifyPluginUtils, OnPreBuild } from '@netlify-labs/build-internal'
+import { NetlifyPluginUtils, OnPreBuild } from '@netlify/build'
 import { expectAssignable, expectError } from 'tsd'
 
 const testUtilsRun: OnPreBuild = function ({ utils: { run } }: { utils: NetlifyPluginUtils }) {

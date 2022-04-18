@@ -5,7 +5,7 @@ import { cleanupConfigOpts } from './options.js'
 // Log options in debug mode.
 export const logOpts = function (opts, { logs, debug, cachedConfig, cachedConfigPath }) {
   // In production, print those in the first call to `@netlify/config`, not the
-  // second one done inside `@netlify-labs/build-internal`
+  // second one done inside `@netlify/build`
   if (!debug || cachedConfig !== undefined || cachedConfigPath !== undefined) {
     return
   }

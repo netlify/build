@@ -1,4 +1,4 @@
-import { OnPreBuild } from '@netlify-labs/build-internal'
+import { OnPreBuild } from '@netlify/build'
 import { expectType } from 'tsd'
 
 const testNetlifyConfigBuild: OnPreBuild = function ({ netlifyConfig: { build } }) {

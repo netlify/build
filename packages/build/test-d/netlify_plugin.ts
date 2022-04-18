@@ -1,12 +1,4 @@
-import {
-  NetlifyPlugin,
-  OnPreBuild,
-  OnBuild,
-  OnPostBuild,
-  OnError,
-  OnSuccess,
-  OnEnd,
-} from '@netlify-labs/build-internal'
+import { NetlifyPlugin, OnPreBuild, OnBuild, OnPostBuild, OnError, OnSuccess, OnEnd } from '@netlify/build'
 import { expectAssignable, expectType } from 'tsd'
 
 const testEventNames = function () {

@@ -4,7 +4,7 @@ import { promises as fs } from 'fs'
 // called it and cached the result.
 // This is used by the buildbot which:
 //  - first calls @netlify/config since it needs configuration property
-//  - later calls @netlify-labs/build-internal, which runs @netlify/config under the hood
+//  - later calls @netlify/build, which runs @netlify/config under the hood
 // This is also used by Netlify CLI.
 export const getCachedConfig = async function ({ cachedConfig, cachedConfigPath, token, api }) {
   const parsedCachedConfig = await parseCachedConfig(cachedConfig, cachedConfigPath)

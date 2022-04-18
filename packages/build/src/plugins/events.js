@@ -1,4 +1,4 @@
-export { EVENTS } from '@netlify-labs/config-internal'
+export { EVENTS } from '@netlify/config'
 
 const isAmongEvents = function (events, event) {
   return events.includes(event)

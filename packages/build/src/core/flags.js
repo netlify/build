@@ -137,7 +137,7 @@ Default: false`,
     describe: `Environment in which this is loaded. Can be:
   - 'buildbot': within Netlify Buildbot
   - 'cli': within Netlify CLI
-  - 'require': through import('@netlify-labs/build-internal')`,
+  - 'require': through import('@netlify/build')`,
     hidden: true,
   },
   debug: {
