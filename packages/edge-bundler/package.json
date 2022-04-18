@@ -1,8 +1,5 @@
 {
-  "name": "@netlify-labs/edge-bundler",
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
-  },
+  "name": "@netlify/edge-bundler",
   "version": "0.11.0",
   "description": "Intelligently prepare Netlify Edge Functions for deployment",
   "type": "module",
