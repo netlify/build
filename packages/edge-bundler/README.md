@@ -1,5 +1,5 @@
 [![Build](https://github.com/netlify/edge-bundler/workflows/Build/badge.svg)](https://github.com/netlify/edge-bundler/actions)
-[![Node](https://img.shields.io/node/v/@netlify-labs/edge-bundler.svg?logo=node.js)](https://www.npmjs.com/package/@netlify-labs/edge-bundler)
+[![Node](https://img.shields.io/node/v/@netlify/edge-bundler.svg?logo=node.js)](https://www.npmjs.com/package/@netlify/edge-bundler)
 
 # Edge Bundler
 
@@ -10,13 +10,13 @@ Intelligently prepare Netlify Edge Functions for deployment.
 1. Install this module as a dependency in your project
 
     ```
-    npm install @netlify-labs/edge-bundler --save
+    npm install @netlify/edge-bundler --save
     ```
 
 2. Import it and create a bundle from a directory of Edge Functions and a list of declarations.
 
     ```js
-    import { bundle } from '@netlify-labs/edge-bundler'
+    import { bundle } from '@netlify/edge-bundler'
 
     // List of directories to search for Edge Functions.
     const sourceDirectories = [
