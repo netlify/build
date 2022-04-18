@@ -1,5 +1,16 @@
 # Changelog
 
+## [18.0.0](https://github.com/netlify/build/compare/config-v17.0.20...config-v18.0.0) (2022-04-18)
+
+
+### ⚠ BREAKING CHANGES
+
+* rename Edge Handlers (#4263)
+
+### Features
+
+* rename Edge Handlers ([#4263](https://github.com/netlify/build/issues/4263)) ([49c2805](https://github.com/netlify/build/commit/49c28057b671aefcc66e76840b44f469aa293ae6))
+
 ### [17.0.20](https://github.com/netlify/build/compare/config-v17.0.19...config-v17.0.20) (2022-04-04)
 
 

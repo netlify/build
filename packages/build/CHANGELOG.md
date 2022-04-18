@@ -1,5 +1,16 @@
 # Changelog
 
+## [27.0.0](https://github.com/netlify/build/compare/build-v26.5.3...build-v27.0.0) (2022-04-18)
+
+
+### ⚠ BREAKING CHANGES
+
+* rename Edge Handlers (#4263)
+
+### Features
+
+* rename Edge Handlers ([#4263](https://github.com/netlify/build/issues/4263)) ([49c2805](https://github.com/netlify/build/commit/49c28057b671aefcc66e76840b44f469aa293ae6))
+
 ### [26.5.3](https://github.com/netlify/build/compare/build-v26.5.2...build-v26.5.3) (2022-04-11)
 
 
