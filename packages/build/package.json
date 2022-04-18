@@ -1,9 +1,6 @@
 {
-  "name": "@netlify-labs/build-internal",
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
-  },
-  "version": "27.5.0",
+  "name": "@netlify/build",
+  "version": "26.5.3",
   "description": "Netlify build module",
   "type": "module",
   "exports": "./src/core/main.js",
