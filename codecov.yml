@@ -7,7 +7,9 @@ coverage:
       enable_partials: true
   status:
     patch:
-      informational: true
+      default:
+        informational: true
     project:
-      informational: true
+      default:
+        informational: true
 comment: false
