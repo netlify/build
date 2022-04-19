@@ -58,7 +58,7 @@
     "@bugsnag/js": "^7.0.0",
     "@netlify/edge-bundler": "^0.12.0",
     "@netlify/cache-utils": "^4.0.0",
-    "@netlify/config": "^17.0.20",
+    "@netlify/config": "^18.0.0",
     "@netlify/functions-utils": "^4.0.0",
     "@netlify/git-utils": "^4.0.0",
     "@netlify/plugins-list": "^6.19.0",
