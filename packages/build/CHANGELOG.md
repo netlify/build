@@ -1,5 +1,12 @@
 # Changelog
 
+### [27.0.1](https://github.com/netlify/build/compare/build-v27.0.0...build-v27.0.1) (2022-04-19)
+
+
+### Bug Fixes
+
+* update `@netlify/config` to 18.0.0 ([#4265](https://github.com/netlify/build/issues/4265)) ([a262044](https://github.com/netlify/build/commit/a2620440f9eb39f5db6c8fa238cc22aa6b2c377f))
+
 ## [27.0.0](https://github.com/netlify/build/compare/build-v26.5.3...build-v27.0.0) (2022-04-18)
 
 
