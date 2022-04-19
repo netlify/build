@@ -41,7 +41,7 @@ const getDefaultFlags = function ({ env: envOpt = {} }, combinedEnv) {
     telemetry: false,
     verbose: Boolean(combinedEnv.NETLIFY_BUILD_DEBUG),
     functionsDistDir: DEFAULT_FUNCTIONS_DIST,
-    edgeHandlersDistDir: DEFAULT_EDGE_HANDLERS_DIST,
+    edgeFunctionsDistDir: DEFAULT_EDGE_FUNCTIONS_DIST,
     cacheDir: DEFAULT_CACHE_DIR,
     deployId: combinedEnv.DEPLOY_ID,
     buildId: combinedEnv.BUILD_ID,
@@ -63,7 +63,7 @@ const computeTelemetry = function (flags, envOpts) {
 }
 
 const REQUIRE_MODE = 'require'
-const DEFAULT_EDGE_HANDLERS_DIST = '.netlify/edge-handlers-dist/'
+const DEFAULT_EDGE_FUNCTIONS_DIST = '.netlify/edge-functions-dist/'
 const DEFAULT_FUNCTIONS_DIST = '.netlify/functions/'
 const DEFAULT_CACHE_DIR = '.netlify/cache/'
 const DEFAULT_STATSD_PORT = 8125

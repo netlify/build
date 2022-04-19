@@ -159,7 +159,7 @@ export const runStep = async function ({
 //
 // Otherwise, most failures will make the build fail. This includes:
 //   - the build command failed
-//   - Functions or Edge handlers bundling failed
+//   - Functions or Edge Functions bundling failed
 //   - the deploy failed (deploying files to our CDN)
 //   - a plugin `onPreBuild`, `onBuild` or `onPostBuild` event handler failed.
 //     This includes uncaught exceptions and using `utils.build.failBuild()`
@@ -173,8 +173,8 @@ export const runStep = async function ({
 //
 // Finally, some plugins (only core plugins for the moment) might be enabled or
 // not depending on whether a specific action is happening during the build,
-// such as creating a file. For example, the Functions and Edge handlers core
-// plugins are disabled if no Functions or Edge handlers directory is specified
+// such as creating a file. For example, the Functions and Edge Functions core
+// plugins are disabled if no Functions or Edge Functions directory is specified
 // or available. However, one might be created by a build plugin, in which case,
 // those core plugins should be triggered. We use a dynamic `condition()` to
 // model this behavior.

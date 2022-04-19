@@ -1,8 +1,8 @@
 [Build]
 Base = "base"
 Command = "gulp build"
+Edge_functions = "edge-functions"
 Functions = "functions"
-Edge_handlers = "edge-handlers"
 Ignore = "doIgnore"
 Publish = "publish"
 

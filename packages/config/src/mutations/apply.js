@@ -51,7 +51,7 @@ const denormalizeFunctionsTopProps = function (
 // List of properties that are not read-only.
 const MUTABLE_PROPS = {
   'build.command': { lastEvent: 'onPreBuild' },
-  'build.edge_handlers': { lastEvent: 'onPostBuild' },
+  'build.edge_functions': { lastEvent: 'onPostBuild' },
   'build.environment': { lastEvent: 'onPostBuild' },
   'build.environment.*': { lastEvent: 'onPostBuild' },
   'build.functions': { lastEvent: 'onBuild' },
@@ -70,7 +70,7 @@ const MUTABLE_PROPS = {
   'build.publish': { lastEvent: 'onPostBuild' },
   'build.services': { lastEvent: 'onPostBuild' },
   'build.services.*': { lastEvent: 'onPostBuild' },
-  edge_handlers: { lastEvent: 'onPostBuild' },
+  edge_functions: { lastEvent: 'onPostBuild' },
   'functions.*': { lastEvent: 'onBuild', denormalize: denormalizeFunctionsTopProps },
   'functions.*.*': { lastEvent: 'onBuild' },
   headers: { lastEvent: 'onPostBuild' },
