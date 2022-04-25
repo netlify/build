@@ -1,7 +1,6 @@
 import { coreStep } from '../plugins_core/edge_functions/index.js'
 
-
-const runCoreStep = async (bundleType, options) =>{
+const runCoreStep = async (bundleType, options) => {
   try {
     if (bundleType === 'edgeFunctionsBundling') {
       return await coreStep(options)
@@ -11,4 +10,4 @@ const runCoreStep = async (bundleType, options) =>{
   }
 }
 
-export default runCoreStep;
+export default runCoreStep
