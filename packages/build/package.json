@@ -3,7 +3,10 @@
   "version": "27.0.1",
   "description": "Netlify build module",
   "type": "module",
-  "exports": "./src/core/main.js",
+  "exports": {
+    ".": "./src/core/main.js",
+    "./src/steps": "./src/steps/index.js"
+  },
   "main": "./src/core/main.js",
   "types": "types/index.d.ts",
   "bin": {

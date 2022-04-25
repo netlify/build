@@ -11,7 +11,7 @@ import { parseManifest } from './lib/internal_manifest.js'
 const DENO_CLI_CACHE_DIRECTORY = '.netlify/plugins/deno-cli'
 const IMPORT_MAP_FILENAME = 'edge-functions-import-map.json'
 
-const coreStep = async function ({
+export const coreStep = async function ({
   buildDir,
   constants: {
     EDGE_FUNCTIONS_DIST: distDirectory,
