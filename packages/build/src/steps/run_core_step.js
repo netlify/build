@@ -9,7 +9,6 @@ import { startErrorMonitor } from '../error/monitor/start.js'
 import { getBufferLogs } from '../log/logger.js'
 import { logBuildStart } from '../log/messages/core.js'
 import { bundleEdgeFunctions } from '../plugins_core/edge_functions/index.js'
-import { bundleFunctions } from '../plugins_core/functions/index.js'
 import { reportStatuses } from '../status/report.js'
 
 import { runSteps } from './run_steps.js'
@@ -83,11 +82,6 @@ const getBuildSteps = function (buildSteps) {
   if (buildSteps.includes('edgeFunctionsBundling')) {
     // eslint-disable-next-line fp/no-mutating-methods
     allSteps.push(bundleEdgeFunctions)
-  }
-
-  if (buildSteps.includes('netlifyFunctionsBundling')) {
-    // eslint-disable-next-line fp/no-mutating-methods
-    allSteps.push(bundleFunctions)
   }
 
   return allSteps
