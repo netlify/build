@@ -12,7 +12,7 @@ export const getSteps = function (steps) {
   return { steps: stepsB, events }
 }
 
-const addCoreSteps = function (steps) {
+export const addCoreSteps = function (steps) {
   return [buildCommandCore, ...steps, bundleFunctions, bundleEdgeFunctions, deploySite]
 }
 

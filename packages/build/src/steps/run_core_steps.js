@@ -8,14 +8,15 @@ import { getErrorInfo } from '../error/info.js'
 import { startErrorMonitor } from '../error/monitor/start.js'
 import { getBufferLogs } from '../log/logger.js'
 import { logBuildStart } from '../log/messages/core.js'
-import { bundleEdgeFunctions } from '../plugins_core/edge_functions/index.js'
 import { reportStatuses } from '../status/report.js'
 
+import { addCoreSteps } from './get.js'
 import { runSteps } from './run_steps.js'
 
 /**
- * Executes specified build steps for functions
+ * Runs specific core steps for a build and returns whether it succeeded or not.
  *
+ * @param  {array} [buildSteps] - an array of build steps to run
  * @param  {object} [flags] - build configuration CLI flags
  * @param  {string} [flags.config] - Path to the configuration file
  * @param  {string} [flags.cwd] - Current directory. Used to retrieve the configuration file
@@ -36,9 +37,8 @@ import { runSteps } from './run_steps.js'
  * 0 (success), 1 (build cancelled), 2 (user error), 3 (plugin error), 4 (system error). Can be used as exit code.
  * @returns {string[]} buildResult.logs - When using the `buffer` option, all log messages
  */
-export default async function runCoreStep(buildSteps, flags = {}) {
+export const runCoreSteps = async(buildSteps, flags = {}) => {
   const { errorMonitor, mode, logs, debug, ...flagsA } = startBuild(flags)
-
   const errorParams = { errorMonitor, mode, logs, debug }
 
   try {
@@ -51,13 +51,11 @@ export default async function runCoreStep(buildSteps, flags = {}) {
       errorParams,
       buildSteps,
     })
-
     const { success, severityCode } = getSeverity('success')
 
     return { success, severityCode, netlifyConfig: netlifyConfigA, configMutations, logs }
   } catch (error) {
     const { severity } = await handleBuildError(error, errorParams)
-
     const { success, severityCode } = getSeverity(severity)
 
     return { success, severityCode, logs }
@@ -70,19 +68,13 @@ const startBuild = function (flags) {
   logBuildStart(logs)
 
   const { bugsnagKey, ...flagsA } = normalizeFlags(flags, logs)
-
   const errorMonitor = startErrorMonitor({ flags: flagsA, logs, bugsnagKey })
 
   return { ...flagsA, errorMonitor, logs }
 }
 
 const getBuildSteps = function (buildSteps) {
-  const allSteps = []
-
-  if (buildSteps.includes('edgeFunctionsBundling')) {
-    // eslint-disable-next-line fp/no-mutating-methods
-    allSteps.push(bundleEdgeFunctions)
-  }
+  const allSteps = addCoreSteps([]).filter(({ coreStepId }) => buildSteps.includes(coreStepId))
 
   return allSteps
 }
@@ -110,7 +102,6 @@ const executeBuildStep = async function ({
     mode,
     repositoryRoot,
   })
-
   const {
     netlifyConfig,
     buildDir,
@@ -126,7 +117,6 @@ const executeBuildStep = async function ({
     nodePath,
     timers: [],
   })
-
   const constants = await getConstants({
     buildDir,
     functionsDistDir,
