@@ -16,7 +16,7 @@ import { runSteps } from './run_steps.js'
 /**
  * Runs specific core steps for a build and returns whether it succeeded or not.
  *
- * @param  {array} [buildSteps] - an array of build steps to run
+ * @param  {string[]} [buildSteps] - a string array of build steps to run
  * @param  {object} [flags] - build configuration CLI flags
  * @param  {string} [flags.config] - Path to the configuration file
  * @param  {string} [flags.cwd] - Current directory. Used to retrieve the configuration file
