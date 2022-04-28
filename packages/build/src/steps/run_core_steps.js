@@ -37,7 +37,7 @@ import { runSteps } from './run_steps.js'
  * 0 (success), 1 (build cancelled), 2 (user error), 3 (plugin error), 4 (system error). Can be used as exit code.
  * @returns {string[]} buildResult.logs - When using the `buffer` option, all log messages
  */
-export const runCoreSteps = async(buildSteps, flags = {}) => {
+export const runCoreSteps = async (buildSteps, flags = {}) => {
   const { errorMonitor, mode, logs, debug, ...flagsA } = startBuild(flags)
   const errorParams = { errorMonitor, mode, logs, debug }
 
