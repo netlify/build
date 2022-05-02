@@ -476,6 +476,10 @@ test('Bundles functions from the `.netlify/functions-internal` directory even if
   await runFixture(t, 'functions_user_missing')
 })
 
+test('Removes duplicate function names from the list of processed functions', async (t) => {
+  await runFixture(t, 'functions_duplicate_names')
+})
+
 test.serial('`rustTargetDirectory` is passed to zip-it-and-ship-it only when running in buildbot', async (t) => {
   const fixtureWithConfig = 'functions_config_1'
   const fixtureWithoutConfig = 'functions_internal_missing'
