@@ -1,5 +1,15 @@
 # Changelog
 
+### [27.0.2](https://github.com/netlify/build/compare/build-v27.0.1...build-v27.0.2) (2022-05-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.20.0 ([#4268](https://github.com/netlify/build/issues/4268)) ([7f8324b](https://github.com/netlify/build/commit/7f8324be1bb1dc905b605526d2f3f30a9b607305))
+* **deps:** update dependency @netlify/plugins-list to ^6.21.0 ([#4272](https://github.com/netlify/build/issues/4272)) ([73bfde0](https://github.com/netlify/build/commit/73bfde0c99e641ab05bf5bdeb73b433ddac9121e))
+* **deps:** update dependency @netlify/plugins-list to ^6.22.0 ([#4273](https://github.com/netlify/build/issues/4273)) ([4ed357f](https://github.com/netlify/build/commit/4ed357f6a81b0e761b54a2dac08e0ea69f0b8dca))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v5.9.1 ([#4267](https://github.com/netlify/build/issues/4267)) ([e2447bf](https://github.com/netlify/build/commit/e2447bf44c4e60e629e4061cb5dcf7d127f60b33))
+
 ### [27.0.1](https://github.com/netlify/build/compare/build-v27.0.0...build-v27.0.1) (2022-04-19)
 
 
