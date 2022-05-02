@@ -63,7 +63,7 @@
     "@netlify/git-utils": "^4.0.0",
     "@netlify/plugins-list": "^6.22.0",
     "@netlify/run-utils": "^4.0.0",
-    "@netlify/zip-it-and-ship-it": "5.9.0",
+    "@netlify/zip-it-and-ship-it": "5.9.1",
     "@sindresorhus/slugify": "^2.0.0",
     "@types/node": "^16.0.0",
     "ansi-escapes": "^5.0.0",
