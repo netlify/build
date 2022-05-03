@@ -22,7 +22,7 @@ interface PrepareServerOptions {
 const prepareServer = ({
   deno,
   distDirectory,
-  flags,
+  flags: denoFlags,
   formatExportTypeError,
   formatImportError,
   port,
@@ -56,7 +56,9 @@ const prepareServer = ({
       // no-op
     }
 
-    await deno.runInBackground(['run', ...flags, stage2Path, port.toString()], true, processRef)
+    const bootstrapFlags = ['--port', port.toString()]
+
+    await deno.runInBackground(['run', ...denoFlags, stage2Path, ...bootstrapFlags], true, processRef)
 
     const success = await waitForServer(port, processRef.ps)
 
@@ -70,6 +72,7 @@ const prepareServer = ({
 }
 
 interface ServeOptions {
+  certificatePath?: string
   debug?: boolean
   distImportMapPath?: string
   importMaps?: ImportMapFile[]
@@ -81,6 +84,7 @@ interface ServeOptions {
 }
 
 const serve = async ({
+  certificatePath,
   debug,
   distImportMapPath,
   formatExportTypeError,
@@ -108,13 +112,24 @@ const serve = async ({
   const importMap = new ImportMap(importMaps)
   const flags = ['--allow-all', '--unstable', `--import-map=${importMap.toDataURL()}`]
 
+  if (certificatePath) {
+    flags.push(`--cert=${certificatePath}`)
+  }
+
   if (debug) {
     flags.push('--log-level=debug')
   } else {
     flags.push('--quiet')
   }
 
-  const server = await prepareServer({ deno, distDirectory, flags, formatExportTypeError, formatImportError, port })
+  const server = await prepareServer({
+    deno,
+    distDirectory,
+    flags,
+    formatExportTypeError,
+    formatImportError,
+    port,
+  })
 
   if (distImportMapPath) {
     await importMap.writeToFile(distImportMapPath)
