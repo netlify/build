@@ -10,7 +10,7 @@ import { getBufferLogs } from '../log/logger.js'
 import { logBuildStart } from '../log/messages/core.js'
 import { reportStatuses } from '../status/report.js'
 
-import { addCoreSteps } from './get.js'
+import { getSteps } from './get.js'
 import { runSteps } from './run_steps.js'
 
 /**
@@ -74,7 +74,7 @@ const startBuild = function (flags) {
 }
 
 const getBuildSteps = function (buildSteps) {
-  const allSteps = addCoreSteps([]).filter(({ coreStepId }) => buildSteps.includes(coreStepId))
+  const allSteps = getSteps([]).steps.filter(({ coreStepId }) => buildSteps.includes(coreStepId))
 
   return allSteps
 }
