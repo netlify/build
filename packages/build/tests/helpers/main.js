@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url'
 import { getBinPath } from 'get-bin-path'
 import pathKey from 'path-key'
 
-import netlifyBuild from '../../src/core/main.js'
+import netlifyBuild, { runCoreSteps } from '../../src/core/main.js'
 
 import { runFixtureCommon } from './common.js'
 
@@ -39,7 +39,14 @@ export const runFixture = async function (
     ...envOption,
   }
   const mainFunc = programmatic ? netlifyBuild : getNetlifyBuildLogs
-  return runFixtureCommon(t, fixtureName, { ...opts, flags: flagsA, env: envOptionA, mainFunc, binaryPath })
+  return runFixtureCommon(t, fixtureName, {
+    ...opts,
+    flags: flagsA,
+    env: envOptionA,
+    mainFunc,
+    binaryPath,
+    runCoreStepsFunc: runCoreSteps,
+  })
 }
 
 const DEFAULT_TEST_FEATURE_FLAGS = {}

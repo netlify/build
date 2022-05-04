@@ -24,6 +24,8 @@ import { warnOnMissingSideFiles } from './missing_side_file.js'
 import { normalizeFlags } from './normalize_flags.js'
 import { getSeverity } from './severity.js'
 
+export { runCoreSteps } from '../steps/run_core_steps.js'
+
 /**
  * Main entry point of Netlify Build.
  * Runs a builds and returns whether it succeeded or not.
