@@ -1,5 +1,12 @@
 # Changelog
 
+## [27.1.0](https://github.com/netlify/build/compare/build-v27.0.3...build-v27.1.0) (2022-05-04)
+
+
+### Features
+
+* export function to bundle edge functions ([#4271](https://github.com/netlify/build/issues/4271)) ([704438f](https://github.com/netlify/build/commit/704438ffa2289eb0d898992af34e8f9ae7099f6c))
+
 ### [27.0.3](https://github.com/netlify/build/compare/build-v27.0.2...build-v27.0.3) (2022-05-04)
 
 
