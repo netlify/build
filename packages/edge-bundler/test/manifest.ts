@@ -23,7 +23,7 @@ test('Generates a manifest with different bundles', (t) => {
     { asset: bundle1.hash + bundle1.extension, format: bundle1.format },
     { asset: bundle2.hash + bundle2.extension, format: bundle2.format },
   ]
-  const expectedRoutes = [{ function: 'func-1', pattern: '^/f1$' }]
+  const expectedRoutes = [{ function: 'func-1', pattern: '^/f1/?$' }]
 
   t.deepEqual(manifest.bundles, expectedBundles)
   t.deepEqual(manifest.routes, expectedRoutes)
@@ -43,7 +43,7 @@ test('Excludes functions for which there are function files but no matching conf
   const declarations = [{ function: 'func-1', path: '/f1' }]
   const manifest = generateManifest({ bundles: [bundle1], declarations, functions })
 
-  const expectedRoutes = [{ function: 'func-1', pattern: '^/f1$' }]
+  const expectedRoutes = [{ function: 'func-1', pattern: '^/f1/?$' }]
 
   t.deepEqual(manifest.routes, expectedRoutes)
 })
@@ -61,7 +61,7 @@ test('Excludes functions for which there are config declarations but no matching
   ]
   const manifest = generateManifest({ bundles: [bundle1], declarations, functions })
 
-  const expectedRoutes = [{ function: 'func-2', pattern: '^/f2$' }]
+  const expectedRoutes = [{ function: 'func-2', pattern: '^/f2/?$' }]
 
   t.deepEqual(manifest.routes, expectedRoutes)
 })
@@ -71,7 +71,7 @@ test('Generates a manifest without bundles', (t) => {
   const declarations = [{ function: 'func-1', path: '/f1' }]
   const manifest = generateManifest({ bundles: [], declarations, functions })
 
-  const expectedRoutes = [{ function: 'func-1', pattern: '^/f1$' }]
+  const expectedRoutes = [{ function: 'func-1', pattern: '^/f1/?$' }]
 
   t.deepEqual(manifest.bundles, [])
   t.deepEqual(manifest.routes, expectedRoutes)

@@ -30,7 +30,7 @@ const generateManifest = ({ bundles = [], declarations = [], functions }: Genera
       return
     }
 
-    const pattern = 'pattern' in declaration ? new RegExp(declaration.pattern) : globToRegExp(declaration.path)
+    const pattern = getRegularExpression(declaration)
     const serializablePattern = pattern.source.replace(/\\\//g, '/')
 
     return {
@@ -49,6 +49,23 @@ const generateManifest = ({ bundles = [], declarations = [], functions }: Genera
   }
 
   return manifest
+}
+
+const getRegularExpression = (declaration: Declaration) => {
+  if ('pattern' in declaration) {
+    return new RegExp(declaration.pattern)
+  }
+
+  // We use the global flag so that `globToRegExp` will not wrap the expression
+  // with `^` and `$`. We'll do that ourselves.
+  const regularExpression = globToRegExp(declaration.path, { flags: 'g' })
+
+  // Wrapping the expression source with `^` and `$`. Also, adding an optional
+  // trailing slash, so that a declaration of `path: "/foo"` matches requests
+  // for both `/foo` and `/foo/`.
+  const normalizedSource = `^${regularExpression.source}\\/?$`
+
+  return new RegExp(normalizedSource)
 }
 
 interface WriteManifestOptions {
