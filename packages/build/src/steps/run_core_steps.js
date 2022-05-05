@@ -1,4 +1,3 @@
-/* eslint-disable max-lines */
 import { getConfigOpts, loadConfig } from '../core/config.js'
 import { getConstants } from '../core/constants.js'
 import { normalizeFlags } from '../core/normalize_flags.js'
@@ -193,4 +192,3 @@ const runBuildStep = async function ({
 
   return { netlifyConfig: netlifyConfigA, configMutations }
 }
-/* eslint-enable max-lines */
