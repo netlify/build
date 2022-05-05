@@ -158,6 +158,7 @@ const executeBuildStep = async function ({
       errorMonitor,
       logs,
       debug,
+      pluginsOptions: []
     })
 
     throw error
@@ -176,24 +177,20 @@ const runBuildStep = async function ({
   buildSteps,
   repositoryRoot,
 }) {
-  try {
-    const { netlifyConfig: netlifyConfigA, configMutations } = await runSteps({
-      steps: getBuildSteps(buildSteps),
-      buildDir,
-      nodePath,
-      constants,
-      netlifyConfig,
-      logs,
-      debug,
-      timers: [],
-      featureFlags,
-      childEnv,
-      repositoryRoot,
-    })
+  const { netlifyConfig: netlifyConfigA, configMutations } = await runSteps({
+    steps: getBuildSteps(buildSteps),
+    buildDir,
+    nodePath,
+    constants,
+    netlifyConfig,
+    logs,
+    debug,
+    timers: [],
+    featureFlags,
+    childEnv,
+    repositoryRoot,
+  })
 
-    return { netlifyConfig: netlifyConfigA, configMutations }
-  } catch (error) {
-    console.error(error)
-  }
+  return { netlifyConfig: netlifyConfigA, configMutations }
 }
 /* eslint-enable max-lines */
