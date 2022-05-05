@@ -1,15 +1,35 @@
+import { Buffer } from 'buffer'
 import fs from 'fs'
+import { createRequire } from 'module'
+import { platform } from 'process'
+import { PassThrough } from 'stream'
 
 import test from 'ava'
+import nock from 'nock'
 import { spy } from 'sinon'
 import tmp from 'tmp-promise'
 
 import { DenoBridge } from '../src/bridge.js'
+import { getPlatformTarget } from '../src/platform.js'
+
+const require = createRequire(import.meta.url)
+const archiver = require('archiver')
 
 test('Downloads the Deno CLI on demand and caches it for subsequent calls', async (t) => {
-  // TODO: Mock HTTP call to Deno source, so that we don't need to download
-  // the actual package as part of the test.
-  t.timeout(20_000)
+  const latestVersion = '1.20.3'
+  const mockBinaryOutput = `#!/usr/bin/env node\n\nconsole.log("deno ${latestVersion}")`
+  const data = new PassThrough()
+  const archive = archiver('zip', { zlib: { level: 9 } })
+
+  archive.pipe(data)
+  archive.append(Buffer.from(mockBinaryOutput), { name: platform === 'win32' ? 'deno.exe' : 'deno' })
+  archive.finalize()
+
+  const target = getPlatformTarget()
+  const latestReleaseMock = nock('https://dl.deno.land').get('/release-latest.txt').reply(200, `v${latestVersion}`)
+  const downloadMock = nock('https://dl.deno.land')
+    .get(`/release/v${latestVersion}/deno-${target}.zip`)
+    .reply(200, () => data)
 
   const tmpDir = await tmp.dir()
   const beforeDownload = spy()
@@ -24,6 +44,8 @@ test('Downloads the Deno CLI on demand and caches it for subsequent calls', asyn
   const output2 = await deno.run(['help'])
   const expectedOutput = /^deno [\d.]+/
 
+  t.true(latestReleaseMock.isDone())
+  t.true(downloadMock.isDone())
   t.regex(output1?.stdout ?? '', expectedOutput)
   t.regex(output2?.stdout ?? '', expectedOutput)
   t.is(beforeDownload.callCount, 1)
