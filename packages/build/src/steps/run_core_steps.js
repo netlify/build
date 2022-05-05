@@ -158,7 +158,7 @@ const executeBuildStep = async function ({
       errorMonitor,
       logs,
       debug,
-      pluginsOptions: []
+      pluginsOptions: [],
     })
 
     throw error
