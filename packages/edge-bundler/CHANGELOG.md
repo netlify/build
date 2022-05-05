@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/netlify/edge-bundler/compare/v1.0.0...v1.1.0) (2022-05-05)
+
+
+### Features
+
+* add trailing slash to regular expressions ([#22](https://github.com/netlify/edge-bundler/issues/22)) ([ffc12a4](https://github.com/netlify/edge-bundler/commit/ffc12a4e9b909a1278bc04d5fd590eb8087cd04b))
+
 ## 1.0.0 (2022-05-03)
 
 
