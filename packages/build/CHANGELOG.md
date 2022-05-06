@@ -1,5 +1,15 @@
 # Changelog
 
+### [27.1.1](https://github.com/netlify/build/compare/build-v27.1.0...build-v27.1.1) (2022-05-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to ^1.1.0 ([#4286](https://github.com/netlify/build/issues/4286)) ([415ef80](https://github.com/netlify/build/commit/415ef8074393b8d28621381879a8d22bf77c91b4))
+* **deps:** update dependency @netlify/plugins-list to ^6.23.0 ([#4283](https://github.com/netlify/build/issues/4283)) ([44877e2](https://github.com/netlify/build/commit/44877e2e848acae6b9d51f09f51c64e124f404be))
+* **deps:** update dependency @netlify/plugins-list to ^6.24.0 ([#4285](https://github.com/netlify/build/issues/4285)) ([3f3f1d5](https://github.com/netlify/build/commit/3f3f1d5a4a3bd3f90326356c0750912293d126f5))
+* fix report errors in runCoreSteps ([#4287](https://github.com/netlify/build/issues/4287)) ([2b685ea](https://github.com/netlify/build/commit/2b685eae7b4dba5899bb7e7f65a1f5a50fc99307))
+
 ## [27.1.0](https://github.com/netlify/build/compare/build-v27.0.3...build-v27.1.0) (2022-05-04)
 
 
