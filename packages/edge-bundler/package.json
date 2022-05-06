@@ -48,9 +48,9 @@
   },
   "keywords": [],
   "license": "MIT",
-  "repository": "netlify-labs/edge-bundler",
+  "repository": "netlify/edge-bundler",
   "bugs": {
-    "url": "https://github.com/netlify-labs/edge-bundler/issues"
+    "url": "https://github.com/netlify/edge-bundler/issues"
   },
   "author": "Netlify Inc.",
   "directories": {
