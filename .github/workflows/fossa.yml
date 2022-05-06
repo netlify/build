@@ -30,8 +30,6 @@ jobs:
         run: |-
           sed -i "${line_number}s|.*|  project: git@github.com:${GITHUB_REPOSITORY}.git|" .fossa.yml
           cat .fossa.yml
-          sed -i '$d' .fossa.yml
-          echo -e "cli:\n  paths:\n    exclude:\n      - packages/build/tests" >> .fossa.yml
       - name: Upload dependencies
         run: fossa analyze --debug
         env:
