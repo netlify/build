@@ -1,4 +1,3 @@
-/* eslint-disable max-lines */
 import { getConfigOpts, loadConfig } from '../core/config.js'
 import { getConstants } from '../core/constants.js'
 import { normalizeFlags } from '../core/normalize_flags.js'
@@ -158,6 +157,7 @@ const executeBuildStep = async function ({
       errorMonitor,
       logs,
       debug,
+      pluginsOptions: [],
     })
 
     throw error
@@ -176,24 +176,19 @@ const runBuildStep = async function ({
   buildSteps,
   repositoryRoot,
 }) {
-  try {
-    const { netlifyConfig: netlifyConfigA, configMutations } = await runSteps({
-      steps: getBuildSteps(buildSteps),
-      buildDir,
-      nodePath,
-      constants,
-      netlifyConfig,
-      logs,
-      debug,
-      timers: [],
-      featureFlags,
-      childEnv,
-      repositoryRoot,
-    })
+  const { netlifyConfig: netlifyConfigA, configMutations } = await runSteps({
+    steps: getBuildSteps(buildSteps),
+    buildDir,
+    nodePath,
+    constants,
+    netlifyConfig,
+    logs,
+    debug,
+    timers: [],
+    featureFlags,
+    childEnv,
+    repositoryRoot,
+  })
 
-    return { netlifyConfig: netlifyConfigA, configMutations }
-  } catch (error) {
-    console.error(error)
-  }
+  return { netlifyConfig: netlifyConfigA, configMutations }
 }
-/* eslint-enable max-lines */
