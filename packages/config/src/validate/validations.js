@@ -102,6 +102,17 @@ export const PRE_NORMALIZE_VALIDATIONS = [
       functions: { ignored_node_modules: ['module-one', 'module-two'] },
     }),
   },
+  {
+    property: 'edge_functions',
+    check: isArrayOfObjects,
+    message: 'must be an array of objects.',
+    example: () => ({
+      edge_functions: [
+        { path: './hello', function: 'hello' },
+        { path: './auth', function: 'auth' },
+      ],
+    }),
+  },
 ]
 
 const EXAMPLE_PORT = 80
