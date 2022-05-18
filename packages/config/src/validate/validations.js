@@ -108,8 +108,8 @@ export const PRE_NORMALIZE_VALIDATIONS = [
     message: 'must be an array of objects.',
     example: () => ({
       edge_functions: [
-        { path: './hello', function: 'hello' },
-        { path: './auth', function: 'auth' },
+        { path: '/hello', function: 'hello' },
+        { path: '/auth', function: 'auth' },
       ],
     }),
   },
@@ -252,6 +252,41 @@ export const POST_NORMALIZE_VALIDATIONS = [
     example: () => ({
       functions: { directory: 'my-functions' },
     }),
+  },
+  {
+    property: 'edge_functions.*',
+    ...validProperties(['path', 'function'], []),
+    example: () => ({ edge_functions: [{ path: '/hello', function: 'hello' }] }),
+  },
+  {
+    property: 'edge_functions.*',
+    check: (edgeFunction) => edgeFunction.path !== undefined,
+    message: '"path" property is required.',
+    example: () => ({ edge_functions: [{ path: '/hello', function: 'hello' }] }),
+  },
+  {
+    property: 'edge_functions.*',
+    check: (edgeFunction) => edgeFunction.function !== undefined,
+    message: '"function" property is required.',
+    example: () => ({ edge_functions: [{ path: '/hello', function: 'hello' }] }),
+  },
+  {
+    property: 'edge_functions.*.path',
+    check: isString,
+    message: 'must be a string.',
+    example: () => ({ edge_functions: [{ path: '/hello', function: 'hello' }] }),
+  },
+  {
+    property: 'edge_functions.*.function',
+    check: isString,
+    message: 'must be a string.',
+    example: () => ({ edge_functions: [{ path: '/hello', function: 'hello' }] }),
+  },
+  {
+    property: 'edge_functions.*.path',
+    check: (pathName) => pathName.startsWith('/'),
+    message: 'must be a valid path.',
+    example: () => ({ edge_functions: [{ path: '/hello', function: 'hello' }] }),
   },
 ]
 /* eslint-enable max-lines */
