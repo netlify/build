@@ -1,5 +1,13 @@
 # Changelog
 
+### [27.1.3](https://github.com/netlify/build/compare/build-v27.1.2...build-v27.1.3) (2022-05-19)
+
+
+### Bug Fixes
+
+* validate edge_functions in config ([24c8d27](https://github.com/netlify/build/commit/24c8d27479aec574380fd12ca2d8b578d56da702))
+* validate edge_functions in config ([#4291](https://github.com/netlify/build/issues/4291)) ([24c8d27](https://github.com/netlify/build/commit/24c8d27479aec574380fd12ca2d8b578d56da702))
+
 ### [27.1.2](https://github.com/netlify/build/compare/build-v27.1.1...build-v27.1.2) (2022-05-18)
 
 
