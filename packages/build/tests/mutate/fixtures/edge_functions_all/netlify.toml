@@ -2,5 +2,5 @@
 package = "./plugin"
 
 [[edge_functions]]
-handler = "one"
+function = "one"
 path = "/one"

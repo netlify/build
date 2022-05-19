@@ -199,3 +199,27 @@ test('Validates inlineConfig', async (t) => {
   const inlineConfig = { build: { command: false } }
   await runFixture(t, 'empty', { flags: { inlineConfig } })
 })
+
+test('edge_functions: not array', async (t) => {
+  await runFixture(t, 'edge_functions_not_array')
+})
+
+test('edge_functions: not array of objects', async (t) => {
+  await runFixture(t, 'edge_functions_not_array_of_objects')
+})
+
+test('edge_functions.any: unknown properties', async (t) => {
+  await runFixture(t, 'edge_functions_unknown_props')
+})
+
+test('edge_functions.any: missing properties', async (t) => {
+  await runFixture(t, 'edge_functions_missing_props')
+})
+
+test('edge_functions.any.path: invalid path', async (t) => {
+  await runFixture(t, 'edge_functions_invalid_path')
+})
+
+test('edge_functions.any.function: not a string', async (t) => {
+  await runFixture(t, 'edge_functions_not_a_string')
+})
