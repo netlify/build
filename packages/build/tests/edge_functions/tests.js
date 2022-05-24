@@ -85,3 +85,12 @@ test('bundles Edge Functions via runCoreSteps function', async (t) => {
   await runFixture(t, fixtureName, { flags: { buildSteps: ['edge_functions_bundling'], useRunCoreSteps: true } })
   await assertManifest(t, fixtureName)
 })
+
+test('handles failure when bundling Edge Functions via runCoreSteps function', async (t) => {
+  const { returnValue } = await runFixture(t, 'functions_invalid', {
+    flags: { buildSteps: ['edge_functions_bundling'], useRunCoreSteps: true },
+    snapshot: false,
+  })
+
+  t.true(returnValue.includes("The module's source code could not be parsed"))
+})

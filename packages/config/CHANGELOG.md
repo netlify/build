@@ -1,5 +1,13 @@
 # Changelog
 
+### [18.0.1](https://github.com/netlify/build/compare/config-v18.0.0...config-v18.0.1) (2022-05-19)
+
+
+### Bug Fixes
+
+* validate edge_functions in config ([24c8d27](https://github.com/netlify/build/commit/24c8d27479aec574380fd12ca2d8b578d56da702))
+* validate edge_functions in config ([#4291](https://github.com/netlify/build/issues/4291)) ([24c8d27](https://github.com/netlify/build/commit/24c8d27479aec574380fd12ca2d8b578d56da702))
+
 ## [18.0.0](https://github.com/netlify/build/compare/config-v17.0.20...config-v18.0.0) (2022-04-18)
 
 
