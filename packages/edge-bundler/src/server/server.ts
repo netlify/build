@@ -71,10 +71,21 @@ const prepareServer = ({
   return startIsolate
 }
 
+interface InspectSettings {
+  // Inspect mode enabled
+  enabled: boolean
+
+  // Pause on breakpoints (i.e. "--brk")
+  pause: boolean
+
+  // Host/port override (optional)
+  address?: string
+}
 interface ServeOptions {
   certificatePath?: string
   debug?: boolean
   distImportMapPath?: string
+  inspectSettings?: InspectSettings
   importMaps?: ImportMapFile[]
   onAfterDownload?: LifecycleHook
   onBeforeDownload?: LifecycleHook
@@ -83,10 +94,12 @@ interface ServeOptions {
   port: number
 }
 
+// eslint-disable-next-line complexity, max-statements
 const serve = async ({
   certificatePath,
   debug,
   distImportMapPath,
+  inspectSettings,
   formatExportTypeError,
   formatImportError,
   importMaps,
@@ -120,6 +133,14 @@ const serve = async ({
     flags.push('--log-level=debug')
   } else {
     flags.push('--quiet')
+  }
+
+  if (inspectSettings && inspectSettings.enabled) {
+    if (inspectSettings.pause) {
+      flags.push(inspectSettings.address ? `--inspect-brk=${inspectSettings.address}` : '--inspect-brk')
+    } else {
+      flags.push(inspectSettings.address ? `--inspect=${inspectSettings.address}` : '--inspect')
+    }
   }
 
   const server = await prepareServer({
