@@ -23,10 +23,10 @@ jobs:
           echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       - name: Set env
-        run: touch .fossa.yml && echo "line_number=$(grep -n "project" .fossa.yml | cut -f1 -d:)" >> $GITHUB_ENV
+        run: |-
+          echo "version: 3" > .fossa.yml && echo "line_number=$(grep -n "project" .fossa.yml | cut -f1 -d:)" >> $GITHUB_ENV
       - name: Configuration
         run: |-
-          echo -e "version: 3" .fossa.yml
           sed -i '$d' "${line_number}s|.*|  project: git@github.com:${GITHUB_REPOSITORY}.git|" >> .fossa.yml
           cat .fossa.yml
       - name: Upload dependencies
