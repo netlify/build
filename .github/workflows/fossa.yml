@@ -12,7 +12,6 @@ defaults:
 
 jobs:
   fossa:
-    version: 3
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
