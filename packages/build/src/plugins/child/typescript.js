@@ -27,8 +27,14 @@ export const addTsErrorInfo = function (error, tsNodeService) {
     config: {
       raw: { compilerOptions },
     },
-    options: tsNodeOptions,
+    options: realTsNodeOptions,
   } = tsNodeService
+
+  // filter out functions as they cannot be serialized
+  const tsNodeOptions = Object.fromEntries(
+    Object.entries(realTsNodeOptions).filter(([, val]) => typeof val !== 'function'),
+  )
+
   addErrorInfo(error, { tsConfig: { compilerOptions, tsNodeOptions } })
 }
 
