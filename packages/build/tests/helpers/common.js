@@ -35,6 +35,9 @@ export const runFixtureCommon = async function (
     mainFunc,
     binaryPath,
     useBinary = false,
+    runCoreStepsFunc,
+    buildSteps,
+    useRunCoreSteps,
   } = {},
 ) {
   const forceColor = isPrint() ? { FORCE_COLOR: '1' } : {}
@@ -51,6 +54,9 @@ export const runFixtureCommon = async function (
     fixtureName,
     copyRoot,
     copyRootDir,
+    runCoreStepsFunc,
+    buildSteps,
+    useRunCoreSteps,
   })
 
   doTestAction({ t, returnValue, normalizeOption, snapshot })
@@ -101,9 +107,22 @@ const runCommand = async function ({
   copyRoot,
   copyRoot: { branch } = {},
   copyRootDir,
+  runCoreStepsFunc,
+  buildSteps,
+  useRunCoreSteps,
 }) {
   if (copyRoot === undefined) {
-    return execCommand({ mainFunc, binaryPath, useBinary, mainFlags, commandEnv, cwd })
+    return execCommand({
+      mainFunc,
+      binaryPath,
+      useBinary,
+      mainFlags,
+      commandEnv,
+      cwd,
+      runCoreStepsFunc,
+      buildSteps,
+      useRunCoreSteps,
+    })
   }
 
   try {
@@ -113,15 +132,39 @@ const runCommand = async function ({
       await execaCommand(`git checkout -b ${branch}`, { cwd: copyRootDir })
     }
 
-    return await execCommand({ mainFunc, binaryPath, useBinary, mainFlags, commandEnv, cwd })
+    return await execCommand({
+      mainFunc,
+      binaryPath,
+      useBinary,
+      mainFlags,
+      commandEnv,
+      cwd,
+      runCoreStepsFunc,
+      buildSteps,
+      useRunCoreSteps,
+    })
   } finally {
     await removeDir(copyRootDir)
   }
 }
 
-const execCommand = function ({ mainFunc, binaryPath, useBinary, mainFlags, commandEnv, cwd }) {
+const execCommand = function ({
+  mainFunc,
+  binaryPath,
+  useBinary,
+  mainFlags,
+  commandEnv,
+  cwd,
+  runCoreStepsFunc,
+  buildSteps,
+  useRunCoreSteps,
+}) {
   if (useBinary) {
     return execCliCommand({ binaryPath, mainFlags, commandEnv, cwd })
+  }
+
+  if (useRunCoreSteps) {
+    return execRunCoreStepsFunc({ runCoreStepsFunc, mainFlags, buildSteps })
   }
 
   return execMainFunc({ mainFunc, mainFlags, commandEnv })
@@ -167,6 +210,16 @@ const isEnabledFeatureFlag = function ([, enabled]) {
 const execMainFunc = async function ({ mainFunc, mainFlags, commandEnv }) {
   try {
     const returnValue = await mainFunc({ ...mainFlags, env: commandEnv })
+    return { returnValue }
+  } catch (error) {
+    const returnValue = error.message
+    return { returnValue }
+  }
+}
+
+const execRunCoreStepsFunc = async function ({ runCoreStepsFunc, mainFlags, buildSteps }) {
+  try {
+    const returnValue = await runCoreStepsFunc(buildSteps, { ...mainFlags })
     return { returnValue }
   } catch (error) {
     const returnValue = error.message

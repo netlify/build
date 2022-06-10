@@ -1,5 +1,55 @@
 # Changelog
 
+### [27.1.3](https://github.com/netlify/build/compare/build-v27.1.2...build-v27.1.3) (2022-05-19)
+
+
+### Bug Fixes
+
+* validate edge_functions in config ([24c8d27](https://github.com/netlify/build/commit/24c8d27479aec574380fd12ca2d8b578d56da702))
+* validate edge_functions in config ([#4291](https://github.com/netlify/build/issues/4291)) ([24c8d27](https://github.com/netlify/build/commit/24c8d27479aec574380fd12ca2d8b578d56da702))
+
+### [27.1.2](https://github.com/netlify/build/compare/build-v27.1.1...build-v27.1.2) (2022-05-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.25.0 ([#4292](https://github.com/netlify/build/issues/4292)) ([d0e5f13](https://github.com/netlify/build/commit/d0e5f133025735dcf0a2a49d584136b323738f1b))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v5.9.2 ([#4295](https://github.com/netlify/build/issues/4295)) ([b24094f](https://github.com/netlify/build/commit/b24094f24e0754d3b988eb1c786190815c253dc2))
+
+### [27.1.1](https://github.com/netlify/build/compare/build-v27.1.0...build-v27.1.1) (2022-05-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to ^1.1.0 ([#4286](https://github.com/netlify/build/issues/4286)) ([415ef80](https://github.com/netlify/build/commit/415ef8074393b8d28621381879a8d22bf77c91b4))
+* **deps:** update dependency @netlify/plugins-list to ^6.23.0 ([#4283](https://github.com/netlify/build/issues/4283)) ([44877e2](https://github.com/netlify/build/commit/44877e2e848acae6b9d51f09f51c64e124f404be))
+* **deps:** update dependency @netlify/plugins-list to ^6.24.0 ([#4285](https://github.com/netlify/build/issues/4285)) ([3f3f1d5](https://github.com/netlify/build/commit/3f3f1d5a4a3bd3f90326356c0750912293d126f5))
+* fix report errors in runCoreSteps ([#4287](https://github.com/netlify/build/issues/4287)) ([2b685ea](https://github.com/netlify/build/commit/2b685eae7b4dba5899bb7e7f65a1f5a50fc99307))
+
+## [27.1.0](https://github.com/netlify/build/compare/build-v27.0.3...build-v27.1.0) (2022-05-04)
+
+
+### Features
+
+* export function to bundle edge functions ([#4271](https://github.com/netlify/build/issues/4271)) ([704438f](https://github.com/netlify/build/commit/704438ffa2289eb0d898992af34e8f9ae7099f6c))
+
+### [27.0.3](https://github.com/netlify/build/compare/build-v27.0.2...build-v27.0.3) (2022-05-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v1 ([#4280](https://github.com/netlify/build/issues/4280)) ([b840344](https://github.com/netlify/build/commit/b840344f8a74fd486a2754828c1d9eca957d3132))
+
+### [27.0.2](https://github.com/netlify/build/compare/build-v27.0.1...build-v27.0.2) (2022-05-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.20.0 ([#4268](https://github.com/netlify/build/issues/4268)) ([7f8324b](https://github.com/netlify/build/commit/7f8324be1bb1dc905b605526d2f3f30a9b607305))
+* **deps:** update dependency @netlify/plugins-list to ^6.21.0 ([#4272](https://github.com/netlify/build/issues/4272)) ([73bfde0](https://github.com/netlify/build/commit/73bfde0c99e641ab05bf5bdeb73b433ddac9121e))
+* **deps:** update dependency @netlify/plugins-list to ^6.22.0 ([#4273](https://github.com/netlify/build/issues/4273)) ([4ed357f](https://github.com/netlify/build/commit/4ed357f6a81b0e761b54a2dac08e0ea69f0b8dca))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v5.9.1 ([#4267](https://github.com/netlify/build/issues/4267)) ([e2447bf](https://github.com/netlify/build/commit/e2447bf44c4e60e629e4061cb5dcf7d127f60b33))
+
 ### [27.0.1](https://github.com/netlify/build/compare/build-v27.0.0...build-v27.0.1) (2022-04-19)
 
 

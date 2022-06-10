@@ -34,7 +34,15 @@ const assignErrorProp = function (error, name, value) {
 }
 
 // Inverse of `jsonToError()`.
-export const errorToJson = function ({ name, message, stack, [CUSTOM_ERROR_KEY]: customError, ...errorProps }) {
+export const errorToJson = function (error) {
+  const { name, message, stack, [CUSTOM_ERROR_KEY]: customError, ...errorProps } = error
+
+  // diagnosticText is not enumerable in TSError so we need to grab it manually. destructuring won't work.
+  if (error.diagnosticText) {
+    // eslint-disable-next-line fp/no-mutation
+    errorProps.diagnosticText = error.diagnosticText
+  }
+
   return {
     ...safeJsonStringify.ensureProperties(errorProps),
     ...safeJsonStringify.ensureProperties({ name, message, stack, [CUSTOM_ERROR_KEY]: customError }),
