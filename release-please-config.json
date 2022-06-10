@@ -7,5 +7,6 @@
     "packages/functions-utils": {},
     "packages/git-utils": {},
     "packages/run-utils": {}
-  }
+  },
+  "plugins": ["node-workspace"]
 }
