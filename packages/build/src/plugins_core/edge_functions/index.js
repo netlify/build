@@ -5,6 +5,7 @@ import { pathExists } from 'path-exists'
 
 import { logFunctionsToBundle } from '../../log/messages/core_steps.js'
 
+import { validateEdgeManifest } from './lib/edge_functions_manifest.js'
 import { parseManifest } from './lib/internal_manifest.js'
 
 // TODO: Replace this with a custom cache directory.
@@ -40,6 +41,8 @@ const coreStep = async function ({
   // Deno cache dir to a directory that is persisted between builds.
   const cacheDirectory =
     !isRunningLocally && featureFlags.edge_functions_cache_cli ? resolve(buildDir, DENO_CLI_CACHE_DIRECTORY) : undefined
+
+  await validateEdgeManifest(distPath)
 
   await bundle(sourcePaths, distPath, declarations, {
     cacheDirectory,
