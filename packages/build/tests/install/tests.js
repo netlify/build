@@ -83,7 +83,8 @@ test('Functions: does not print warnings when dependency was local', async (t) =
   t.false(await pathExists(`${FIXTURES_DIR}/local_dep/functions/node_modules/`))
 })
 
-test('Functions: install dependencies handles errors', async (t) => {
+// Broken with npm 8.11 til 8.12, enable once newer npm version is standard in gh actions
+test.skip('Functions: install dependencies handles errors', async (t) => {
   await runInstallFixture(t, 'functions_error', [])
 })
 
@@ -107,7 +108,8 @@ test('Install local plugin dependencies: with npm', async (t) => {
 //   })
 // }
 
-test('Install local plugin dependencies: propagate errors', async (t) => {
+// Broken with npm 8.11 til 8.12, enable once newer npm version is standard in gh actions
+test.skip('Install local plugin dependencies: propagate errors', async (t) => {
   await runFixture(t, 'error')
 })
 
