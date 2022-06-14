@@ -1,0 +1,21 @@
+{
+  "id": "solid-start",
+  "name": "Solid Start",
+  "category": "static_site_generator",
+  "detect": {
+    "npmDependencies": ["solid-start"],
+    "excludedNpmDependencies": [],
+    "configFiles": []
+  },
+  "dev": {
+    "command": "solid-start dev",
+    "port": 3000,
+    "pollingStrategies": [{ "name": "TCP" }]
+  },
+  "build": {
+    "command": "solid-start build",
+    "directory": "netlify"
+  },
+  "env": {},
+  "plugins": []
+}

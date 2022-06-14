@@ -1,10 +1,10 @@
 {
-  "id": "vite",
-  "name": "Vite",
-  "category": "build_tool",
+  "id": "qwik",
+  "name": "Qwik",
+  "category": "static_site_generator",
   "detect": {
-    "npmDependencies": ["vite"],
-    "excludedNpmDependencies": ["@shopify/hydrogen", "@builderio/qwik", "solid-start"],
+    "npmDependencies": ["@builder.io/qwik"],
+    "excludedNpmDependencies": [],
     "configFiles": []
   },
   "dev": {
@@ -13,7 +13,7 @@
     "pollingStrategies": [{ "name": "TCP" }]
   },
   "build": {
-    "command": "vite build",
+    "command": "npm run build",
     "directory": "dist"
   },
   "env": {},

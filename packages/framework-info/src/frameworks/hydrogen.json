@@ -1,0 +1,21 @@
+{
+  "id": "hydrogen",
+  "name": "Hydrogen",
+  "category": "static_site_generator",
+  "detect": {
+    "npmDependencies": ["@shopify/hydrogen"],
+    "excludedNpmDependencies": [],
+    "configFiles": []
+  },
+  "dev": {
+    "command": "vite",
+    "port": 3000,
+    "pollingStrategies": [{ "name": "TCP" }]
+  },
+  "build": {
+    "command": "npm run build",
+    "directory": "dist/client"
+  },
+  "env": {},
+  "plugins": []
+}
