@@ -1,6 +1,6 @@
 {
   "name": "@netlify/build",
-  "version": "27.1.3",
+  "version": "27.1.4",
   "description": "Netlify build module",
   "type": "module",
   "exports": "./src/core/main.js",
@@ -59,7 +59,7 @@
     "@netlify/edge-bundler": "^1.2.0",
     "@netlify/cache-utils": "^4.0.0",
     "@netlify/config": "^18.0.0",
-    "@netlify/functions-utils": "^4.0.0",
+    "@netlify/functions-utils": "^4.1.15",
     "@netlify/git-utils": "^4.0.0",
     "@netlify/plugins-list": "^6.27.0",
     "@netlify/run-utils": "^4.0.0",

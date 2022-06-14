@@ -1,5 +1,23 @@
 # Changelog
 
+## [27.1.4](https://github.com/netlify/build/compare/build-v27.1.3...build-v27.1.4) (2022-06-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to ^1.2.0 ([#4307](https://github.com/netlify/build/issues/4307)) ([62dd1f2](https://github.com/netlify/build/commit/62dd1f212ae0635deb73b6ea712ad10125c301c0))
+* **deps:** update dependency @netlify/plugins-list to ^6.27.0 ([#4308](https://github.com/netlify/build/issues/4308)) ([4b8e83b](https://github.com/netlify/build/commit/4b8e83b7a751a7ea7bc4972cf208ba4999bdb683))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v5.10.0 ([#4311](https://github.com/netlify/build/issues/4311)) ([741b113](https://github.com/netlify/build/commit/741b11387c5a8b2d8b5d3d79778234c1f3b64763))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v5.10.2 ([#4316](https://github.com/netlify/build/issues/4316)) ([1453ead](https://github.com/netlify/build/commit/1453ead32e4498eb2cd78238f6fe3d459184d727))
+* fix compatibility with latest versions of ts-node ([#4314](https://github.com/netlify/build/issues/4314)) ([cedb140](https://github.com/netlify/build/commit/cedb140b182f54ff2cec0cb78567e61d634d7e11))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^4.0.0 to ^4.1.15
+
 ### [27.1.3](https://github.com/netlify/build/compare/build-v27.1.2...build-v27.1.3) (2022-05-19)
 
 
