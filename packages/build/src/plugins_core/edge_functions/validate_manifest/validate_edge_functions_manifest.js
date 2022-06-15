@@ -83,10 +83,8 @@ const coreStep = async function ({ buildDir, constants: { EDGE_FUNCTIONS_DIST: d
     const isValidationErr = error instanceof Ajv.ValidationError
     const parsedErr = isValidationErr ? error.errors : error
 
-    // console.dir for pretty printing and syntax highlighting
-    console.dir(parsedErr, { depth: null, colors: true })
     addErrorInfo(parsedErr, { type: 'coreStep' })
-    throw new Error(isValidationErr ? JSON.stringify(parsedErr) : parsedErr)
+    throw new Error(isValidationErr ? JSON.stringify(parsedErr, null, 2) : parsedErr)
   }
 
   return {}
