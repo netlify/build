@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.1](https://github.com/netlify/edge-bundler/compare/v1.2.0...v1.2.1) (2022-06-13)
+
+- updated edge-functions-bootstrap version (https://github.com/netlify/edge-bundler/pull/43)
+
+### Bug Fixes
+
+* **deps:** update dependency del to v6.1.1 ([#38](https://github.com/netlify/edge-bundler/issues/38)) ([e16b8a3](https://github.com/netlify/edge-bundler/commit/e16b8a3320043a2693092b6917955ad0010dddb0))
+
 ### [1.2.0](https://github.com/netlify/edge-bundler/compare/v1.1.0...v1.2.0) (2022-05-25)
 
 
