@@ -1,5 +1,13 @@
 # Changelog
 
+## [27.1.5](https://github.com/netlify/build/compare/build-v27.1.4...build-v27.1.5) (2022-06-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to ^1.2.1 ([#4324](https://github.com/netlify/build/issues/4324)) ([d74da8f](https://github.com/netlify/build/commit/d74da8f3bc7c5d66e6091d6b1184ef1cf094be1a))
+* **deps:** update dependency @netlify/plugins-list to ^6.28.0 ([#4322](https://github.com/netlify/build/issues/4322)) ([24561cc](https://github.com/netlify/build/commit/24561cc94ea9bb0ba44ae88c48799a542911546d))
+
 ## [27.1.4](https://github.com/netlify/build/compare/build-v27.1.3...build-v27.1.4) (2022-06-14)
 
 
