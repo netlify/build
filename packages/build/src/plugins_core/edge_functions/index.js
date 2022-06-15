@@ -5,8 +5,10 @@ import { pathExists } from 'path-exists'
 
 import { logFunctionsToBundle } from '../../log/messages/core_steps.js'
 
-import { validateEdgeManifest } from './lib/edge_functions_manifest.js'
 import { parseManifest } from './lib/internal_manifest.js'
+import { hasEdgeFunctionsDirectories } from './utils.js'
+
+export { validateEdgeFunctionsManifest } from './validate_manifest/validate_edge_functions_manifest.js'
 
 // TODO: Replace this with a custom cache directory.
 const DENO_CLI_CACHE_DIRECTORY = '.netlify/plugins/deno-cli'
@@ -42,8 +44,6 @@ const coreStep = async function ({
   const cacheDirectory =
     !isRunningLocally && featureFlags.edge_functions_cache_cli ? resolve(buildDir, DENO_CLI_CACHE_DIRECTORY) : undefined
 
-  await validateEdgeManifest(distPath)
-
   await bundle(sourcePaths, distPath, declarations, {
     cacheDirectory,
     debug,
@@ -53,25 +53,6 @@ const coreStep = async function ({
   })
 
   return {}
-}
-
-// We run this core step if at least one of the functions directories (the
-// one configured by the user or the internal one) exists. We use a dynamic
-// `condition` because the directories might be created by the build command
-// or plugins.
-const hasEdgeFunctionsDirectories = async function ({
-  buildDir,
-  constants: { INTERNAL_EDGE_FUNCTIONS_SRC, EDGE_FUNCTIONS_SRC },
-}) {
-  const hasFunctionsSrc = EDGE_FUNCTIONS_SRC !== undefined && EDGE_FUNCTIONS_SRC !== ''
-
-  if (hasFunctionsSrc) {
-    return true
-  }
-
-  const internalFunctionsSrc = resolve(buildDir, INTERNAL_EDGE_FUNCTIONS_SRC)
-
-  return await pathExists(internalFunctionsSrc)
 }
 
 const logFunctions = async ({
