@@ -79,12 +79,13 @@ const coreStep = async function ({ buildDir, constants: { EDGE_FUNCTIONS_DIST: d
 
     console.log(manifestData)
   } catch (error) {
-    const parsedErr = error instanceof Ajv.ValidationError ? error.errors : error
+    const isValidationErr = error instanceof Ajv.ValidationError
+    const parsedErr = isValidationErr ? error.errors : error
 
     // console.dir for pretty printing and syntax highlighting
     console.dir(parsedErr, { depth: null, colors: true })
     addErrorInfo(parsedErr, { type: 'coreStep' })
-    throw new Error(JSON.stringify(parsedErr))
+    throw new Error(isValidationErr ? JSON.stringify(parsedErr) : parsedErr)
   }
 
   return {}
