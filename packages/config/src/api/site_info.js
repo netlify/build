@@ -7,6 +7,7 @@ import { throwUserError } from '../error.js'
 // Requires knowing the `siteId` and having the access `token`.
 // Silently ignore API errors. For example the network connection might be down,
 // but local builds should still work regardless.
+// eslint-disable-next-line complexity
 export const getSiteInfo = async function ({ api, siteId, mode, testOpts: { env: testEnv = true } = {} }) {
   if (api === undefined || mode === 'buildbot' || !testEnv) {
     const siteInfo = siteId === undefined ? {} : { id: siteId }
@@ -18,6 +19,13 @@ export const getSiteInfo = async function ({ api, siteId, mode, testOpts: { env:
     getAccounts(api),
     getAddons(api, siteId),
   ])
+
+  if (siteInfo.use_envelope) {
+    const envelope = await getEnvelope(api, siteInfo.account_slug, siteId)
+    // eslint-disable-next-line fp/no-mutation
+    siteInfo.build_settings.env = envelope
+  }
+
   return { siteInfo, accounts, addons }
 }
 
@@ -31,6 +39,26 @@ const getSite = async function (api, siteId) {
     return { ...site, id: siteId }
   } catch (error) {
     throwUserError(`Failed retrieving site data for site ${siteId}: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
+  }
+}
+
+const getEnvelope = async function (api, accountId, siteId) {
+  try {
+    const environmentVariables = await api.getEnvVars({ accountId, siteId })
+    // eslint-disable-next-line fp/no-mutating-methods
+    const envVars = environmentVariables
+      .sort((left, right) => (left.key.toLowerCase() < right.key.toLowerCase() ? -1 : 1))
+      .reduce((acc, cur) => {
+        const envVar = cur.values.find((val) => ['dev', 'all'].includes(val.context))
+        if (envVar && envVar.value) {
+          // eslint-disable-next-line fp/no-mutation, no-param-reassign
+          acc[cur.key] = envVar.value
+        }
+        return acc
+      }, {})
+    return envVars
+  } catch (error) {
+    throwUserError(`Failed retrieving envelope for site ${siteId}: ${error.message}. ${ERROR_CALL_TO_ACTION}`)
   }
 }
 
