@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/netlify/edge-bundler/compare/v1.2.1...v1.3.0) (2022-06-21)
+
+
+### Features
+
+* remove feature flag eszip ([#50](https://github.com/netlify/edge-bundler/issues/50)) ([da6377b](https://github.com/netlify/edge-bundler/commit/da6377bd6b2ed57215c64f185526e8b881522b1b))
+
 ## [1.2.1](https://github.com/netlify/edge-bundler/compare/v1.2.0...v1.2.1) (2022-06-13)
 
 - updated edge-functions-bootstrap version (https://github.com/netlify/edge-bundler/pull/43)
