@@ -4,6 +4,7 @@ import { bundle, find } from '@netlify/edge-bundler'
 import { pathExists } from 'path-exists'
 
 import { logFunctionsToBundle } from '../../log/messages/core_steps.js'
+import { logEdgeManifest } from '../../log/messages/edge_manifest.js'
 
 import { parseManifest } from './lib/internal_manifest.js'
 
@@ -41,13 +42,15 @@ const coreStep = async function ({
   const cacheDirectory =
     !isRunningLocally && featureFlags.edge_functions_cache_cli ? resolve(buildDir, DENO_CLI_CACHE_DIRECTORY) : undefined
 
-  await bundle(sourcePaths, distPath, declarations, {
+  const { manifest } = await bundle(sourcePaths, distPath, declarations, {
     cacheDirectory,
     debug,
     distImportMapPath,
     featureFlags,
     importMaps: [importMap].filter(Boolean),
   })
+
+  logEdgeManifest({ manifest, logs, debug })
 
   return {}
 }
