@@ -24,6 +24,7 @@ interface BundleOptions {
   onBeforeDownload?: LifecycleHook
 }
 
+// eslint-disable-next-line max-statements
 const bundle = async (
   sourceDirectories: string[],
   distDirectory: string,
@@ -56,16 +57,7 @@ const bundle = async (
   // if any.
   const importMap = new ImportMap(importMaps)
   const functions = await findFunctions(sourceDirectories)
-  const bundleOps = [
-    bundleJS({
-      buildID,
-      debug,
-      deno,
-      distDirectory,
-      functions,
-      importMap,
-    }),
-  ]
+  const bundleOps = []
 
   if (featureFlags.edge_functions_produce_eszip) {
     bundleOps.push(
@@ -76,6 +68,17 @@ const bundle = async (
         deno,
         distDirectory,
         functions,
+      }),
+    )
+  } else {
+    bundleOps.push(
+      bundleJS({
+        buildID,
+        debug,
+        deno,
+        distDirectory,
+        functions,
+        importMap,
       }),
     )
   }
