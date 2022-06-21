@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/netlify/edge-bundler/compare/v1.3.0...v1.4.0) (2022-06-21)
+
+
+### Features
+
+* return generated manifest object ([#48](https://github.com/netlify/edge-bundler/issues/48)) ([a9eadcf](https://github.com/netlify/edge-bundler/commit/a9eadcf74b3baef606afb0ab43535fe4368d3b58))
+
 ## [1.3.0](https://github.com/netlify/edge-bundler/compare/v1.2.1...v1.3.0) (2022-06-21)
 
 
