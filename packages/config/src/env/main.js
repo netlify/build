@@ -1,8 +1,8 @@
 import omit from 'omit.js'
 
-import { getEnvelope } from '../env/envelope.js'
 import { removeFalsy } from '../utils/remove_falsy.js'
 
+import { getEnvelope } from './envelope.js'
 import { getGitEnv } from './git.js'
 
 // Retrieve this site's environment variable. Also take into account team-wide
