@@ -34,6 +34,7 @@ test('Produces a JavaScript bundle and a manifest file', async (t) => {
   t.is(bundles.length, 1)
   t.is(bundles[0].format, 'js')
   t.true(generatedFiles.includes(bundles[0].asset))
+  t.deepEqual(result.manifest, manifest)
 
   await fs.rmdir(tmpDir.path, { recursive: true })
 })

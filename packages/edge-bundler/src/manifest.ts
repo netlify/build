@@ -75,11 +75,13 @@ interface WriteManifestOptions {
   functions: EdgeFunction[]
 }
 
-const writeManifest = ({ bundles, declarations = [], distDirectory, functions }: WriteManifestOptions) => {
+const writeManifest = async ({ bundles, declarations = [], distDirectory, functions }: WriteManifestOptions) => {
   const manifest = generateManifest({ bundles, declarations, functions })
   const manifestPath = join(distDirectory, 'manifest.json')
 
-  return fs.writeFile(manifestPath, JSON.stringify(manifest))
+  await fs.writeFile(manifestPath, JSON.stringify(manifest))
+
+  return manifest
 }
 
 export { generateManifest, Manifest, writeManifest }
