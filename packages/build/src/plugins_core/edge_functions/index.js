@@ -1,3 +1,4 @@
+import { promises as fs } from 'fs'
 import { dirname, join, resolve } from 'path'
 
 import { bundle, find } from '@netlify/edge-bundler'
@@ -40,6 +41,9 @@ const coreStep = async function ({
   // Deno cache dir to a directory that is persisted between builds.
   const cacheDirectory =
     !isRunningLocally && featureFlags.edge_functions_cache_cli ? resolve(buildDir, DENO_CLI_CACHE_DIRECTORY) : undefined
+
+  // Edge Bundler expects the dist directory to exist.
+  await fs.mkdir(distPath, { recursive: true })
 
   await bundle(sourcePaths, distPath, declarations, {
     cacheDirectory,
