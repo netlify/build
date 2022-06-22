@@ -1,6 +1,6 @@
 import { tmpName } from 'tmp-promise'
 
-import { DenoBridge, LifecycleHook, ProcessRef } from '../bridge.js'
+import { DenoBridge, OnAfterDownloadHook, OnBeforeDownloadHook, ProcessRef } from '../bridge.js'
 import type { EdgeFunction } from '../edge_function.js'
 import { generateStage2 } from '../formats/javascript.js'
 import { ImportMap, ImportMapFile } from '../import_map.js'
@@ -87,8 +87,8 @@ interface ServeOptions {
   distImportMapPath?: string
   inspectSettings?: InspectSettings
   importMaps?: ImportMapFile[]
-  onAfterDownload?: LifecycleHook
-  onBeforeDownload?: LifecycleHook
+  onAfterDownload?: OnAfterDownloadHook
+  onBeforeDownload?: OnBeforeDownloadHook
   formatExportTypeError?: FormatFunction
   formatImportError?: FormatFunction
   port: number
