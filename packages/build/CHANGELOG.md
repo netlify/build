@@ -1,5 +1,12 @@
 # Changelog
 
+## [27.2.0](https://github.com/netlify/build/compare/build-v27.1.6...build-v27.2.0) (2022-06-22)
+
+
+### Features
+
+* ensure edge functions dist directory exists ([#4335](https://github.com/netlify/build/issues/4335)) ([dc950d2](https://github.com/netlify/build/commit/dc950d27adfa39106fbc89c802f4ec5ffc36c976))
+
 ## [27.1.6](https://github.com/netlify/build/compare/build-v27.1.5...build-v27.1.6) (2022-06-21)
 
 
