@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.1](https://github.com/netlify/edge-bundler/compare/v1.4.0...v1.4.1) (2022-06-22)
+
+
+### Bug Fixes
+
+* add error state to onAfterDownload ([#42](https://github.com/netlify/edge-bundler/issues/42)) ([2cb24ac](https://github.com/netlify/edge-bundler/commit/2cb24ac72568f119ac4b1497bd732d76a99905a0))
+
 ## [1.4.0](https://github.com/netlify/edge-bundler/compare/v1.3.0...v1.4.0) (2022-06-21)
 
 
