@@ -152,10 +152,10 @@ package = "@netlify/plugin-functions-install-core"
 // because `optionalDependencies` can make `import()` fail, but we don't want
 // to error then. However, if the `package.json` is invalid, we fail the build.
 const isPackageJsonError = function (error) {
-  return error.message.includes(PACKAGE_JSON_ORIGINAL_MESSAGE)
+  return PACKAGE_JSON_ORIGINAL_MESSAGES.some((msg) => error.message.includes(msg))
 }
 
-const PACKAGE_JSON_ORIGINAL_MESSAGE = 'is invalid JSON'
+const PACKAGE_JSON_ORIGINAL_MESSAGES = ['is invalid JSON', 'in JSON at position']
 
 const getPackageJsonError = function (error) {
   addErrorInfo(error, { type: 'resolveConfig' })
