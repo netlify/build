@@ -51,7 +51,7 @@ class DenoBridge {
   }
 
   private async downloadBinary() {
-    this.onBeforeDownload?.()
+    await this.onBeforeDownload?.()
 
     await fs.mkdir(this.cacheDirectory, { recursive: true })
 
@@ -68,14 +68,14 @@ class DenoBridge {
         'There was a problem setting up the Edge Functions environment. To try a manual installation, visit https://ntl.fyi/install-deno.',
       )
 
-      this.onAfterDownload?.(error)
+      await this.onAfterDownload?.(error)
 
       throw error
     }
 
     await this.writeVersionFile(downloadedVersion)
 
-    this.onAfterDownload?.()
+    await this.onAfterDownload?.()
 
     return binaryPath
   }
