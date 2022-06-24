@@ -6,6 +6,8 @@ import { getFixtureConfig, startServer } from '../helpers/main.js'
 const SITE_INFO_PATH = '/api/v1/sites/test'
 const LIST_ACCOUNTS_PATH = '/api/v1/accounts'
 const LIST_ADDONS_PATH = '/api/v1/sites/test/service-instances'
+const TEAM_ENVELOPE_PATH = '/api/v1/accounts/team/env'
+const SITE_ENVELOPE_PATH = '/api/v1/accounts/team/env?site_id=test'
 
 // List of API mock URLs, responses and status codes
 const SITE_INFO_RESPONSE_URL = {
@@ -68,6 +70,53 @@ const LIST_ADDONS_RESPONSE_ERROR = {
 const LIST_ADDONS_RESPONSE_WRONG_SHAPE = {
   path: LIST_ADDONS_PATH,
   response: {},
+}
+const SITE_INFO_WITH_ENVELOPE = {
+  path: SITE_INFO_PATH,
+  response: {
+    account_id: 'team',
+    account_slug: 'team',
+    build_settings: {
+      env: { MONGO_ENV_VAR: 'should_not_be_defined' },
+    },
+    id: 'test',
+    ssl_url: 'test',
+    use_envelope: true,
+  },
+}
+const TEAM_ENVELOPE_RESPONSE = {
+  path: TEAM_ENVELOPE_PATH,
+  response: [
+    {
+      key: 'SHARED_ENV_VAR',
+      scopes: ['build'],
+      values: [
+        {
+          context: 'all',
+          value: 'ENVELOPE_TEAM_ALL',
+        },
+      ],
+    },
+  ],
+}
+const SITE_ENVELOPE_RESPONSE = {
+  path: SITE_ENVELOPE_PATH,
+  response: [
+    {
+      key: 'SITE_ENV_VAR',
+      scopes: ['functions'],
+      values: [
+        {
+          context: 'dev',
+          value: 'ENVELOPE_SITE_DEV',
+        },
+        {
+          context: 'production',
+          value: 'ENVELOPE_SITE_PROD',
+        },
+      ],
+    },
+  ],
 }
 
 // List of authenticating-related CLI flags
@@ -259,6 +308,19 @@ test('Sets URL environment variable', async (t) => {
   } = await runWithMockServer(t, SITE_INFO_RESPONSE_URL, { flags: AUTH_FLAGS })
   t.deepEqual(URL.sources, ['general'])
   t.is(URL.value, 'test')
+})
+
+test.only('Sets environment variables when configured to use Envelope', async (t) => {
+  const { env } = await runWithMockServer(
+    t,
+    [SITE_INFO_WITH_ENVELOPE, SITE_ENVELOPE_RESPONSE, TEAM_ENVELOPE_RESPONSE],
+    { flags: AUTH_FLAGS },
+  )
+  t.deepEqual(env.URL.sources, ['general'])
+  t.is(env.URL.value, 'test')
+  t.is(env.SHARED_ENV_VAR.value, 'ENVELOPE_TEAM_ALL')
+  t.is(env.SITE_ENV_VAR.value, 'ENVELOPE_SITE_DEV')
+  t.is(env.MONGO_ENV_VAR, undefined)
 })
 
 test('Sets REPOSITORY_URL environment variable', async (t) => {
