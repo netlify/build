@@ -1,5 +1,18 @@
 # Changelog
 
+## [4.2.0](https://github.com/netlify/build/compare/functions-utils-v4.1.15...functions-utils-v4.2.0) (2022-06-24)
+
+
+### Features
+
+* cleanup `buildbot_build_go_functions, `zisi_parse_isc` and `buildbot_nft_transpile_esm` feature flags ([#4325](https://github.com/netlify/build/issues/4325)) ([9a25714](https://github.com/netlify/build/commit/9a2571472902b300803f583701c86a941eb3b532))
+
+
+### Bug Fixes
+
+* **deps:** update @netlify/zip-it-and-ship-it to 5.11.0 ([9a25714](https://github.com/netlify/build/commit/9a2571472902b300803f583701c86a941eb3b532))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v5.11.1 ([#4326](https://github.com/netlify/build/issues/4326)) ([26f919a](https://github.com/netlify/build/commit/26f919a050354088a322e3a304379fce4aac97d6))
+
 ## [4.1.15](https://github.com/netlify/build/compare/functions-utils-v4.1.14...functions-utils-v4.1.15) (2022-06-14)
 
 

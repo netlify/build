@@ -1,5 +1,27 @@
 # Changelog
 
+## [27.3.0](https://github.com/netlify/build/compare/build-v27.2.0...build-v27.3.0) (2022-06-24)
+
+
+### Features
+
+* cleanup `buildbot_build_go_functions, `zisi_parse_isc` and `buildbot_nft_transpile_esm` feature flags ([#4325](https://github.com/netlify/build/issues/4325)) ([9a25714](https://github.com/netlify/build/commit/9a2571472902b300803f583701c86a941eb3b532))
+
+
+### Bug Fixes
+
+* **deps:** update @netlify/zip-it-and-ship-it to 5.11.0 ([9a25714](https://github.com/netlify/build/commit/9a2571472902b300803f583701c86a941eb3b532))
+* **deps:** update dependency @netlify/edge-bundler to ^1.4.1 ([#4333](https://github.com/netlify/build/issues/4333)) ([e1768e1](https://github.com/netlify/build/commit/e1768e1a25bb1f9213f228990a7a357c29cc4099))
+* **deps:** update dependency @netlify/plugins-list to ^6.29.0 ([#4339](https://github.com/netlify/build/issues/4339)) ([306bde7](https://github.com/netlify/build/commit/306bde78057bb6798ca3c1bb32a4fff307c24110))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v5.11.1 ([#4326](https://github.com/netlify/build/issues/4326)) ([26f919a](https://github.com/netlify/build/commit/26f919a050354088a322e3a304379fce4aac97d6))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^4.1.15 to ^4.2.0
+
 ## [27.2.0](https://github.com/netlify/build/compare/build-v27.1.6...build-v27.2.0) (2022-06-22)
 
 
