@@ -1,5 +1,12 @@
 # Changelog
 
+## [18.1.0](https://github.com/netlify/build/compare/config-v18.0.2...config-v18.1.0) (2022-06-24)
+
+
+### Features
+
+* pull environment variables from envelope if a site has opted in ([#4329](https://github.com/netlify/build/issues/4329)) ([adc3e89](https://github.com/netlify/build/commit/adc3e89f2f88f99aafb4644bfe9b083b76cb3253))
+
 ## [18.0.2](https://github.com/netlify/build/compare/config-v18.0.1...config-v18.0.2) (2022-06-21)
 
 
