@@ -84,6 +84,7 @@ export const resolveConfig = async function (opts) {
   })
 
   const env = await getEnv({
+    api,
     mode,
     config,
     siteInfo,
