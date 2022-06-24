@@ -2,6 +2,9 @@ import { throwUserError } from '../error.js'
 import { ERROR_CALL_TO_ACTION } from '../log/messages.js'
 
 export const getEnvelope = async function ({ api, accountId, siteId }) {
+  if (accountId === undefined) {
+    return {}
+  }
   try {
     const environmentVariables = await api.getEnvVars({ accountId, siteId })
     // eslint-disable-next-line fp/no-mutating-methods
