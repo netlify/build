@@ -310,7 +310,7 @@ test('Sets URL environment variable', async (t) => {
   t.is(URL.value, 'test')
 })
 
-test.only('Sets environment variables when configured to use Envelope', async (t) => {
+test('Sets environment variables when configured to use Envelope', async (t) => {
   const { env } = await runWithMockServer(
     t,
     [SITE_INFO_WITH_ENVELOPE, SITE_ENVELOPE_RESPONSE, TEAM_ENVELOPE_RESPONSE],
