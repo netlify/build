@@ -1,4 +1,4 @@
-import { logMessage, logArray, logSubHeader } from '../logger.js'
+import { logMessage, logSubHeader } from '../logger.js'
 
 export const logEdgeManifest = ({ logs, manifest }) => {
   logSubHeader(logs, 'Edge Functions Manifest')
