@@ -2,7 +2,7 @@ import { Buffer } from 'buffer'
 import { promises as fs } from 'fs'
 import { dirname } from 'path'
 
-const DEFAULT_IMPORTS = {
+const INTERNAL_IMPORTS = {
   'netlify:edge': 'https://edge-bootstrap.netlify.app/v1/index.ts',
 }
 
@@ -17,9 +17,9 @@ class ImportMap {
   constructor(input: ImportMapFile[] = []) {
     const inputImports = input.reduce((acc, { imports }) => ({ ...acc, ...imports }), {})
 
-    // `DEFAULT_IMPORTS` must come last because we want our internal imports to
-    // take precedence.
-    this.imports = { ...inputImports, ...DEFAULT_IMPORTS }
+    // `INTERNAL_IMPORTS` must come last,
+    // because we need to guarantee `netlify:edge` isn't user-defined.
+    this.imports = { ...inputImports, ...INTERNAL_IMPORTS }
   }
 
   getContents() {
