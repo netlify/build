@@ -43,7 +43,6 @@ const coreStep = async function ({
   const cacheDirectory =
     !isRunningLocally && featureFlags.edge_functions_cache_cli ? resolve(buildDir, DENO_CLI_CACHE_DIRECTORY) : undefined
 
-
   // Edge Bundler expects the dist directory to exist.
   await fs.mkdir(distPath, { recursive: true })
 
@@ -55,7 +54,9 @@ const coreStep = async function ({
     importMaps: [importMap].filter(Boolean),
   })
 
-  logEdgeManifest({ manifest, logs, debug })
+  if (debug) {
+    logEdgeManifest({ manifest, logs, debug })
+  }
 
   return {}
 }
