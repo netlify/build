@@ -1,7 +1,7 @@
-import { logMessage, logArray } from '../logger.js'
+import { logMessage, logArray, logSubHeader } from '../logger.js'
 
 export const logEdgeManifest = ({ logs, manifest }) => {
-  logMessage(logs, 'Edge Functions Manifest:')
-  logArray(logs, manifest)
+  logSubHeader(logs, 'Edge Functions Manifest')
+  logMessage(logs, JSON.stringify(manifest))
   logMessage(logs, '')
 }
