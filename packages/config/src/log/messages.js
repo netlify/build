@@ -2,6 +2,8 @@ import { throwUserError } from '../error.js'
 
 import { logWarning } from './logger.js'
 
+export const ERROR_CALL_TO_ACTION = `Double-check your login status with 'netlify status' or contact support with details of your error.`
+
 export const throwOnInvalidTomlSequence = function (invalidSequence) {
   throwUserError(
     `In netlify.toml, the following backslash should be escaped: ${invalidSequence}

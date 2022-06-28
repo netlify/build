@@ -2,6 +2,7 @@ import omit from 'omit.js'
 
 import { removeFalsy } from '../utils/remove_falsy.js'
 
+import { getEnvelope } from './envelope.js'
 import { getGitEnv } from './git.js'
 
 // Retrieve this site's environment variable. Also take into account team-wide
@@ -11,6 +12,7 @@ import { getGitEnv } from './git.js'
 // TODO: add `netlify.toml` `build.environment`, after normalization
 // TODO: add `CONTEXT` and others
 export const getEnv = async function ({
+  api,
   mode,
   config,
   siteInfo,
@@ -27,7 +29,7 @@ export const getEnv = async function ({
   }
 
   const generalEnv = await getGeneralEnv({ siteInfo, buildDir, branch, deployId, buildId, context })
-  const [accountEnv, addonsEnv, uiEnv, configFileEnv] = getUserEnv({ config, siteInfo, accounts, addons })
+  const [accountEnv, addonsEnv, uiEnv, configFileEnv] = await getUserEnv({ api, config, siteInfo, accounts, addons })
 
   // Sources of environment variables, in descending order of precedence.
   const sources = [
@@ -115,8 +117,8 @@ const NETLIFY_DEFAULT_DOMAIN = '.netlify.app'
 const DEFAULT_SITE_NAME = 'site-name'
 
 // Environment variables specified by the user
-const getUserEnv = function ({ config, siteInfo, accounts, addons }) {
-  const accountEnv = getAccountEnv({ siteInfo, accounts })
+const getUserEnv = async function ({ api, config, siteInfo, accounts, addons }) {
+  const accountEnv = await getAccountEnv({ api, siteInfo, accounts })
   const addonsEnv = getAddonsEnv(addons)
   const uiEnv = getUiEnv({ siteInfo })
   const configFileEnv = getConfigFileEnv({ config })
@@ -124,8 +126,12 @@ const getUserEnv = function ({ config, siteInfo, accounts, addons }) {
 }
 
 // Account-wide environment variables
-const getAccountEnv = function ({ siteInfo: { account_slug: accountSlug }, accounts }) {
-  const { site_env: siteEnv = {} } = accounts.find(({ slug }) => slug === accountSlug) || {}
+const getAccountEnv = async function ({ api, siteInfo, accounts }) {
+  if (siteInfo.use_envelope) {
+    const envelope = await getEnvelope({ api, accountId: siteInfo.account_slug })
+    return envelope
+  }
+  const { site_env: siteEnv = {} } = accounts.find(({ slug }) => slug === siteInfo.account_slug) || {}
   return siteEnv
 }
 

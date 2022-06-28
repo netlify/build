@@ -13,11 +13,9 @@ const getFeatureFlag = function (name) {
 
 // Default values for feature flags
 export const DEFAULT_FEATURE_FLAGS = {
-  buildbot_build_go_functions: false,
   buildbot_es_modules_esbuild: false,
   buildbot_zisi_trace_nft: false,
   buildbot_zisi_esbuild_parser: false,
   edge_functions_cache_cli: false,
   edge_functions_produce_eszip: false,
-  zisi_parse_isc: false,
 }
