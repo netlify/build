@@ -24,14 +24,6 @@ interface BundleJSOptions {
   importMap: ImportMap
 }
 
-const bundle = async (options: BundleJSOptions) => {
-  try {
-    return await bundleJS(options)
-  } catch (error: unknown) {
-    throw wrapBundleError(error, { format: 'javascript' })
-  }
-}
-
 const bundleJS = async ({
   buildID,
   debug,
@@ -49,7 +41,12 @@ const bundleJS = async ({
     flags.push('--quiet')
   }
 
-  await deno.run(['bundle', ...flags, stage2Path, jsBundlePath], { pipeOutput: true })
+  try {
+    await deno.run(['bundle', ...flags, stage2Path, jsBundlePath], { pipeOutput: true })
+  } catch (error: unknown) {
+    throw wrapBundleError(error, { format: 'javascript' })
+  }
+
   await fs.unlink(stage2Path)
 
   const hash = await getFileHash(jsBundlePath)
@@ -153,4 +150,4 @@ const getProductionEntryPoint = (functions: EdgeFunction[]) => {
   return [bootImport, importLines, exportDeclaration, defaultExport].join('\n\n')
 }
 
-export { bundle, generateStage2, getBootstrapURL }
+export { bundleJS as bundle, generateStage2, getBootstrapURL }

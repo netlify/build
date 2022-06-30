@@ -16,14 +16,6 @@ interface BundleESZIPOptions {
   functions: EdgeFunction[]
 }
 
-const bundle = async (options: BundleESZIPOptions) => {
-  try {
-    return await bundleESZIP(options)
-  } catch (error: unknown) {
-    throw wrapBundleError(error, { format: 'eszip' })
-  }
-}
-
 const bundleESZIP = async ({
   basePath,
   buildID,
@@ -46,7 +38,11 @@ const bundleESZIP = async ({
     flags.push('--quiet')
   }
 
-  await deno.run(['run', ...flags, bundler, JSON.stringify(payload)], { pipeOutput: true })
+  try {
+    await deno.run(['run', ...flags, bundler, JSON.stringify(payload)], { pipeOutput: true })
+  } catch (error: unknown) {
+    throw wrapBundleError(error, { format: 'eszip' })
+  }
 
   const hash = await getFileHash(destPath)
 
@@ -61,4 +57,4 @@ const getESZIPBundler = () => {
   return bundlerPath
 }
 
-export { bundle }
+export { bundleESZIP as bundle }

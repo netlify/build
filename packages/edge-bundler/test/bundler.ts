@@ -70,7 +70,7 @@ test('Produces only a ESZIP bundle when the `edge_functions_produce_eszip` featu
   await fs.rmdir(tmpDir.path, { recursive: true })
 })
 
-test('Adds a custom error property to bundling errors', async (t) => {
+test('Adds a custom error property to user errors during bundling', async (t) => {
   const sourceDirectory = resolve(dirname, '..', 'fixtures', 'invalid_functions', 'functions')
   const tmpDir = await tmp.dir()
   const declarations = [
@@ -98,5 +98,16 @@ test('Adds a custom error property to bundling errors', async (t) => {
     }
   } finally {
     await fs.rmdir(tmpDir.path, { recursive: true })
+  }
+})
+
+test('Does not add a custom error property to system errors during bundling', async (t) => {
+  try {
+    // @ts-expect-error Sending bad input to `bundle` to force a system error.
+    await bundle([123, 321], tmpDir.path, declarations)
+
+    t.fail('Expected bundling to throw')
+  } catch (error: unknown) {
+    t.false(error instanceof BundleError)
   }
 })
