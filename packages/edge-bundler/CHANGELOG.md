@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.2](https://github.com/netlify/edge-bundler/compare/v1.4.1...v1.4.2) (2022-06-30)
+
+
+### Bug Fixes
+
+* await lifecycle hooks as they might return promises ([#56](https://github.com/netlify/edge-bundler/issues/56)) ([01b53c6](https://github.com/netlify/edge-bundler/commit/01b53c600d26ae62bd996a3b707a3a0f6c668744))
+
 ## [1.4.1](https://github.com/netlify/edge-bundler/compare/v1.4.0...v1.4.1) (2022-06-22)
 
 
