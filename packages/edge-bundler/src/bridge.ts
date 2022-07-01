@@ -138,14 +138,6 @@ class DenoBridge {
     return this.currentDownload
   }
 
-  private log(...data: unknown[]) {
-    if (!this.debug) {
-      return
-    }
-
-    console.log(...data)
-  }
-
   private static runWithBinary(binaryPath: string, args: string[], pipeOutput?: boolean) {
     const runDeno = execa(binaryPath, args)
 
@@ -183,6 +175,14 @@ class DenoBridge {
     const downloadedPath = await this.getRemoteBinary()
 
     return { global: false, path: downloadedPath }
+  }
+
+  log(...data: unknown[]) {
+    if (!this.debug) {
+      return
+    }
+
+    console.log(...data)
   }
 
   // Runs the Deno CLI in the background and returns a reference to the child

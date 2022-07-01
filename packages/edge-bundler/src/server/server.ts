@@ -4,6 +4,7 @@ import { DenoBridge, OnAfterDownloadHook, OnBeforeDownloadHook, ProcessRef } fro
 import type { EdgeFunction } from '../edge_function.js'
 import { generateStage2 } from '../formats/javascript.js'
 import { ImportMap, ImportMapFile } from '../import_map.js'
+import { ensureLatestTypes } from '../types.js'
 
 import { killProcess, waitForServer } from './util.js'
 
@@ -94,7 +95,6 @@ interface ServeOptions {
   port: number
 }
 
-// eslint-disable-next-line complexity, max-statements
 const serve = async ({
   certificatePath,
   debug,
@@ -119,6 +119,9 @@ const serve = async ({
 
   // Wait for the binary to be downloaded if needed.
   await deno.getBinaryPath()
+
+  // Downloading latest types if needed.
+  await ensureLatestTypes(deno)
 
   // Creating an ImportMap instance with any import maps supplied by the user,
   // if any.

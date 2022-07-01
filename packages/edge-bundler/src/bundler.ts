@@ -14,6 +14,7 @@ import { bundle as bundleESZIP } from './formats/eszip.js'
 import { bundle as bundleJS } from './formats/javascript.js'
 import { ImportMap, ImportMapFile } from './import_map.js'
 import { writeManifest } from './manifest.js'
+import { ensureLatestTypes } from './types.js'
 
 interface BundleOptions {
   cacheDirectory?: string
@@ -97,6 +98,8 @@ const bundle = async (
     onBeforeDownload,
   })
   const basePath = getBasePath(sourceDirectories)
+
+  await ensureLatestTypes(deno)
 
   // The name of the bundle will be the hash of its contents, which we can't
   // compute until we run the bundle process. For now, we'll use a random ID
