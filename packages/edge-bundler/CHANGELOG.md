@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.3](https://github.com/netlify/edge-bundler/compare/v1.4.2...v1.4.3) (2022-06-30)
+
+
+### Bug Fixes
+
+* improve user/system error boundaries ([#63](https://github.com/netlify/edge-bundler/issues/63)) ([a7ac87a](https://github.com/netlify/edge-bundler/commit/a7ac87a4f29964097dd0489b0d5c636530d71fda))
+
 ## [1.4.2](https://github.com/netlify/edge-bundler/compare/v1.4.1...v1.4.2) (2022-06-30)
 
 
