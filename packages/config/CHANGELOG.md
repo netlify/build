@@ -1,5 +1,26 @@
 # Changelog
 
+## [18.1.1](https://github.com/netlify/build/compare/config-v18.1.0...config-v18.1.1) (2022-06-30)
+
+
+### Bug Fixes
+
+* return an empty object rather than throwing swallowed error ([#4354](https://github.com/netlify/build/issues/4354)) ([ef94762](https://github.com/netlify/build/commit/ef94762c1318a9a83b0d6ac78e86108109b7afa4))
+
+## [18.1.0](https://github.com/netlify/build/compare/config-v18.0.2...config-v18.1.0) (2022-06-24)
+
+
+### Features
+
+* pull environment variables from envelope if a site has opted in ([#4329](https://github.com/netlify/build/issues/4329)) ([adc3e89](https://github.com/netlify/build/commit/adc3e89f2f88f99aafb4644bfe9b083b76cb3253))
+
+## [18.0.2](https://github.com/netlify/build/compare/config-v18.0.1...config-v18.0.2) (2022-06-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency netlify to ^11.0.2 ([#4327](https://github.com/netlify/build/issues/4327)) ([817ad3d](https://github.com/netlify/build/commit/817ad3dda86a2f98504f07dca7f952ee1af85217))
+
 ### [18.0.1](https://github.com/netlify/build/compare/config-v18.0.0...config-v18.0.1) (2022-05-19)
 
 
