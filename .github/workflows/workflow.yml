@@ -109,6 +109,8 @@ jobs:
       - name: Install dependencies
         run: ${{ matrix.install-command }}
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
       - name: Tests
         run: npm run test:ci
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
