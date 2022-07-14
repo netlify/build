@@ -1,6 +1,6 @@
 {
   "name": "@netlify/build",
-  "version": "27.3.4",
+  "version": "27.4.0",
   "description": "Netlify build module",
   "type": "module",
   "exports": "./src/core/main.js",

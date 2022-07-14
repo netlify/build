@@ -12,6 +12,13 @@
   * dependencies
     * @netlify/config bumped from ^18.1.0 to ^18.1.1
 
+## [27.4.0](https://github.com/netlify/build/compare/build-v27.3.4...build-v27.4.0) (2022-07-14)
+
+
+### Features
+
+* log manifest out whilst in debug mode ([#4331](https://github.com/netlify/build/issues/4331)) ([9639b5c](https://github.com/netlify/build/commit/9639b5c71e10e83a63f2fed3be6f7a3d2d5620d6))
+
 ## [27.3.4](https://github.com/netlify/build/compare/build-v27.3.3...build-v27.3.4) (2022-07-13)
 
 
