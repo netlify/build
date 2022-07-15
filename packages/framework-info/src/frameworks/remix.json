@@ -8,7 +8,7 @@
     "configFiles": ["remix.config.js"]
   },
   "dev": {
-    "command": "remix watch"
+    "command": "remix dev"
   },
   "build": {
     "command": "remix build",
