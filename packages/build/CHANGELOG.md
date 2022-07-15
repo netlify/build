@@ -12,6 +12,14 @@
   * dependencies
     * @netlify/config bumped from ^18.1.0 to ^18.1.1
 
+## [27.4.1](https://github.com/netlify/build/compare/build-v27.4.0...build-v27.4.1) (2022-07-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to ^1.6.0 ([#4377](https://github.com/netlify/build/issues/4377)) ([8f43342](https://github.com/netlify/build/commit/8f43342eb3d37e7e0a98926b31372caac7e2cd2a))
+* **deps:** update dependency @netlify/plugins-list to ^6.34.0 ([#4373](https://github.com/netlify/build/issues/4373)) ([f2e834e](https://github.com/netlify/build/commit/f2e834ed57acd48e471af765e6747b948838115b))
+
 ## [27.4.0](https://github.com/netlify/build/compare/build-v27.3.4...build-v27.4.0) (2022-07-14)
 
 
