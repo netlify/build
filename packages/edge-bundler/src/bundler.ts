@@ -58,6 +58,7 @@ const createBundleOps = ({
         deno,
         distDirectory,
         functions,
+        importMap,
       }),
     )
   } else {

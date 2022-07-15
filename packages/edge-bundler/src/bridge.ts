@@ -53,7 +53,7 @@ class DenoBridge {
   private async downloadBinary() {
     await this.onBeforeDownload?.()
 
-    await fs.mkdir(this.cacheDirectory, { recursive: true })
+    await this.ensureCacheDirectory()
 
     this.log(`Downloading Deno CLI to ${this.cacheDirectory}...`)
 
@@ -150,9 +150,15 @@ class DenoBridge {
   }
 
   private async writeVersionFile(version: string) {
+    await this.ensureCacheDirectory()
+
     const versionFilePath = path.join(this.cacheDirectory, DENO_VERSION_FILE)
 
     await fs.writeFile(versionFilePath, version)
+  }
+
+  async ensureCacheDirectory() {
+    await fs.mkdir(this.cacheDirectory, { recursive: true })
   }
 
   async getBinaryPath() {

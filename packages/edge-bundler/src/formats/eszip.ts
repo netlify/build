@@ -5,6 +5,7 @@ import { DenoBridge } from '../bridge.js'
 import type { Bundle } from '../bundle.js'
 import { wrapBundleError } from '../bundle_error.js'
 import { EdgeFunction } from '../edge_function.js'
+import { ImportMap } from '../import_map.js'
 import { getFileHash } from '../utils/sha256.js'
 
 interface BundleESZIPOptions {
@@ -14,6 +15,7 @@ interface BundleESZIPOptions {
   deno: DenoBridge
   distDirectory: string
   functions: EdgeFunction[]
+  importMap: ImportMap
 }
 
 const bundleESZIP = async ({
@@ -23,6 +25,7 @@ const bundleESZIP = async ({
   deno,
   distDirectory,
   functions,
+  importMap,
 }: BundleESZIPOptions): Promise<Bundle> => {
   const extension = '.eszip'
   const destPath = join(distDirectory, `${buildID}${extension}`)
@@ -31,6 +34,7 @@ const bundleESZIP = async ({
     basePath,
     destPath,
     functions,
+    imports: importMap.imports,
   }
   const flags = ['--allow-all']
 

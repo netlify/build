@@ -3,7 +3,7 @@ import { promises as fs } from 'fs'
 import { dirname } from 'path'
 
 const INTERNAL_IMPORTS = {
-  'netlify:edge': 'https://edge-bootstrap.netlify.app/v1/index.ts',
+  'netlify:edge': 'https://edge.netlify.com/v1/index.ts',
 }
 
 interface ImportMapFile {

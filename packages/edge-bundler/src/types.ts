@@ -69,6 +69,8 @@ const getRemoteVersion = async (typesURL: string) => {
 }
 
 const writeVersionFile = async (deno: DenoBridge, version: string) => {
+  await deno.ensureCacheDirectory()
+
   const versionFilePath = join(deno.cacheDirectory, 'types-version.txt')
 
   await fs.writeFile(versionFilePath, version)
