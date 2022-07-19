@@ -1,5 +1,12 @@
 # Changelog
 
+## [18.1.1](https://github.com/netlify/build/compare/config-v18.1.0...config-v18.1.1) (2022-06-30)
+
+
+### Bug Fixes
+
+* return an empty object rather than throwing swallowed error ([#4354](https://github.com/netlify/build/issues/4354)) ([ef94762](https://github.com/netlify/build/commit/ef94762c1318a9a83b0d6ac78e86108109b7afa4))
+
 ## [18.1.0](https://github.com/netlify/build/compare/config-v18.0.2...config-v18.1.0) (2022-06-24)
 
 

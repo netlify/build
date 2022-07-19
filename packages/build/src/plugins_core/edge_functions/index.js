@@ -5,6 +5,7 @@ import { bundle, find } from '@netlify/edge-bundler'
 import { pathExists } from 'path-exists'
 
 import { logFunctionsToBundle } from '../../log/messages/core_steps.js'
+import { logEdgeManifest } from '../../log/messages/edge_manifest.js'
 
 import { parseManifest } from './lib/internal_manifest.js'
 
@@ -45,13 +46,17 @@ const coreStep = async function ({
   // Edge Bundler expects the dist directory to exist.
   await fs.mkdir(distPath, { recursive: true })
 
-  await bundle(sourcePaths, distPath, declarations, {
+  const { manifest } = await bundle(sourcePaths, distPath, declarations, {
     cacheDirectory,
     debug,
     distImportMapPath,
     featureFlags,
     importMaps: [importMap].filter(Boolean),
   })
+
+  if (debug) {
+    logEdgeManifest({ manifest, logs, debug })
+  }
 
   return {}
 }
