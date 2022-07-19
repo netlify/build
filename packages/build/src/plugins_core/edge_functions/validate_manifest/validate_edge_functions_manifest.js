@@ -67,7 +67,10 @@ const validateManifest = async (manifestData) => {
   await validate(manifestData)
 }
 
-export const validateEdgeFunctionsManifest = async function ({ buildDir, constants: { EDGE_FUNCTIONS_DIST: distDirectory } }) {
+export const validateEdgeFunctionsManifest = async function ({
+  buildDir,
+  constants: { EDGE_FUNCTIONS_DIST: distDirectory },
+}) {
   try {
     const edgeFunctionsDistPath = resolve(buildDir, distDirectory)
     const manifestPath = join(edgeFunctionsDistPath, 'manifest.json')
