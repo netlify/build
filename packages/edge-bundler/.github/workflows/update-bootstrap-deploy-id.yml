@@ -22,11 +22,11 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
         with:
-          title: 'chore: update edge-bundler-bootstrap'
+          title: 'feat: update edge-bundler-bootstrap'
           body:
             'Updates edge-bundler-bootstrap to [`${{ inputs.bootstrap_deploy_id
             }}`](https://app.netlify.com/sites/edge-bootstrap/deploys/${{ inputs.bootstrap_deploy_id }}).'
-          commit-message: 'chore: update edge-bundler-bootstrap'
+          commit-message: 'feat: update edge-bundler-bootstrap'
           branch: update-edge-bundler-bootstrap
           delete-branch: true
           labels: 'type: chore'
