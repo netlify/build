@@ -12,6 +12,21 @@
   * dependencies
     * @netlify/config bumped from ^18.1.0 to ^18.1.1
 
+## [27.4.2](https://github.com/netlify/build/compare/build-v27.4.1...build-v27.4.2) (2022-07-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.35.0 ([#4380](https://github.com/netlify/build/issues/4380)) ([76aee64](https://github.com/netlify/build/commit/76aee64bf5ae192f3c7bd41c9c5a4b9f7d4ed8e3))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v5.13.2 ([#4379](https://github.com/netlify/build/issues/4379)) ([238d4f0](https://github.com/netlify/build/commit/238d4f095498b12b8c8abaaf9021e0405e4189cd))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^4.2.1 to ^4.2.2
+
 ## [27.4.1](https://github.com/netlify/build/compare/build-v27.4.0...build-v27.4.1) (2022-07-15)
 
 
