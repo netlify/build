@@ -94,19 +94,3 @@ test('handles failure when bundling Edge Functions via runCoreSteps function', a
 
   t.true(returnValue.includes("The module's source code could not be parsed"))
 })
-
-test('validates Edge Functions manifest.json without error', async (t) => {
-  const fixtureName = 'functions_manifest_validate'
-  const { returnValue } = await runFixture(t, fixtureName, {
-    flags: { debug: false, mode: 'buildbot' },
-    snapshot: false,
-  })
-
-  await assertManifest(t, fixtureName)
-
-  const manifestPath = join(FIXTURES_DIR, fixtureName, '.netlify', 'edge-functions-dist', 'manifest.json')
-  const manifestData = JSON.parse(await fs.readFile(manifestPath))
-
-  // check for bundler_version value
-  t.true(returnValue.includes(Object.values(manifestData)[2]))
-})
