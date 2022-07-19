@@ -5,7 +5,6 @@ import { join, resolve } from 'path'
 import Ajv from 'ajv'
 
 import { addErrorInfo } from '../../../error/info.js'
-import { hasEdgeFunctionsDirectories } from '../utils.js'
 
 const require = createRequire(import.meta.url)
 const ajv = new Ajv({ allErrors: true })
@@ -68,7 +67,7 @@ const validateManifest = async (manifestData) => {
   await validate(manifestData)
 }
 
-const coreStep = async function ({ buildDir, constants: { EDGE_FUNCTIONS_DIST: distDirectory } }) {
+export const validateEdgeFunctionsManifest = async function ({ buildDir, constants: { EDGE_FUNCTIONS_DIST: distDirectory } }) {
   try {
     const edgeFunctionsDistPath = resolve(buildDir, distDirectory)
     const manifestPath = join(edgeFunctionsDistPath, 'manifest.json')
@@ -85,13 +84,4 @@ const coreStep = async function ({ buildDir, constants: { EDGE_FUNCTIONS_DIST: d
   }
 
   return {}
-}
-
-export const validateEdgeFunctionsManifest = {
-  event: 'onBuild',
-  coreStep,
-  coreStepId: 'edge_functions_manifest_validation',
-  coreStepName: 'Edge Functions manifest validation',
-  coreStepDescription: () => 'Edge Functions manifest validation',
-  condition: hasEdgeFunctionsDirectories,
 }
