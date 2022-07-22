@@ -9,3 +9,6 @@ package = "./three.js"
 
 [[plugins]]
 package = "./four.js"
+
+[[plugins]]
+package = "./five.js"
