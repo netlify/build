@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/netlify/edge-bundler/compare/v1.6.0...v1.7.0) (2022-07-22)
+
+
+### Features
+
+* accept `basePath` parameter ([#76](https://github.com/netlify/edge-bundler/issues/76)) ([a1c95cc](https://github.com/netlify/edge-bundler/commit/a1c95cc1e8013f9f37a11db40ed937e58897264f))
+
 ## [1.6.0](https://github.com/netlify/edge-bundler/compare/v1.5.0...v1.6.0) (2022-07-15)
 
 
