@@ -18,6 +18,7 @@ const validateShowArgs = function (showArgs) {
     validateShowArgsKeys(otherArgs)
     Object.entries({ title, summary, text }).forEach(validateStringArg)
     validateShowArgsSummary(summary)
+    validateShowArgsExtraData(extraData)
   } catch (error) {
     error.message = `utils.status.show() ${error.message}`
     addErrorInfo(error, { type: 'pluginValidation' })
@@ -51,6 +52,12 @@ const validateStringArg = function ([key, value]) {
 const validateShowArgsSummary = function (summary) {
   if (summary === undefined || summary.trim() === '') {
     throw new Error('requires specifying a "summary" property')
+  }
+}
+
+const validateShowArgsExtraData = function (extraData) {
+  if (extraData !== undefined && Array.isArray(extraData) === false) {
+    throw new TypeError('provided extra data must be an array')
   }
 }
 
