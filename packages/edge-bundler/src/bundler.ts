@@ -17,6 +17,7 @@ import { writeManifest } from './manifest.js'
 import { ensureLatestTypes } from './types.js'
 
 interface BundleOptions {
+  basePath?: string
   cacheDirectory?: string
   debug?: boolean
   distImportMapPath?: string
@@ -82,6 +83,7 @@ const bundle = async (
   distDirectory: string,
   declarations: Declaration[] = [],
   {
+    basePath: inputBasePath,
     cacheDirectory,
     debug,
     distImportMapPath,
@@ -98,7 +100,7 @@ const bundle = async (
     onAfterDownload,
     onBeforeDownload,
   })
-  const basePath = getBasePath(sourceDirectories)
+  const basePath = getBasePath(sourceDirectories, inputBasePath)
 
   await ensureLatestTypes(deno)
 
@@ -155,7 +157,12 @@ const createFinalBundles = async (bundles: Bundle[], distDirectory: string, buil
   await Promise.all(renamingOps)
 }
 
-const getBasePath = (sourceDirectories: string[]) => {
+const getBasePath = (sourceDirectories: string[], inputBasePath?: string) => {
+  // If there's a specific base path supplied, that takes precedence.
+  if (inputBasePath !== undefined) {
+    return inputBasePath
+  }
+
   // `common-path-prefix` returns an empty string when called with a single
   // path, so we check for that case and return the path itself instead.
   if (sourceDirectories.length === 1) {

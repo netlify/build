@@ -22,6 +22,7 @@ test('Produces a JavaScript bundle and a manifest file', async (t) => {
     },
   ]
   const result = await bundle([sourceDirectory], tmpDir.path, declarations, {
+    basePath: fixturesDir,
     importMaps: [
       {
         imports: {
@@ -58,6 +59,7 @@ test('Produces only a ESZIP bundle when the `edge_functions_produce_eszip` featu
     },
   ]
   const result = await bundle([sourceDirectory], tmpDir.path, declarations, {
+    basePath: fixturesDir,
     featureFlags: {
       edge_functions_produce_eszip: true,
     },
