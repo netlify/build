@@ -207,3 +207,11 @@ test('utils.status.show() text should be a string', async (t) => {
 test('utils.status.show() text can be empty', async (t) => {
   await runUtilsStatusShow(t, { title: 'title', summary: 'summary', text: ' ' })
 })
+
+test('utils.status.show() extraData can be empty', async (t) => {
+  await runUtilsStatusShow(t, { title: 'title', summary: 'summary', text: ' ', extraData: [] })
+})
+
+test('utils.status.show() extraData should be an array', async (t) => {
+  await runUtilsStatusShow(t, { title: 'title', summary: 'summary', text: ' ', extraData: '' })
+})
