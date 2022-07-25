@@ -1,14 +1,13 @@
 import { promises as fs } from 'fs'
-import { createRequire } from 'module'
 import { join, resolve } from 'path'
 
 import Ajv from 'ajv'
+import ajvErrors from 'ajv-errors'
 
 import { addErrorInfo } from '../../../error/info.js'
 
-const require = createRequire(import.meta.url)
 const ajv = new Ajv({ allErrors: true })
-require('ajv-errors')(ajv)
+ajvErrors(ajv)
 
 // regex pattern for manifest route pattern
 // checks if the pattern string starts with ^ and ends with $
