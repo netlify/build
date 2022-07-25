@@ -12,6 +12,25 @@
   * dependencies
     * @netlify/config bumped from ^18.1.0 to ^18.1.1
 
+## [27.5.0](https://github.com/netlify/build/compare/build-v27.4.2...build-v27.5.0) (2022-07-25)
+
+
+### Features
+
+* Add a way to pass extra data to the show util ([#4386](https://github.com/netlify/build/issues/4386)) ([9722e36](https://github.com/netlify/build/commit/9722e36e9d9557e42ac33d1a7e31e55c9f7c1ae4))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to ^1.7.0 ([#4387](https://github.com/netlify/build/issues/4387)) ([6c42e43](https://github.com/netlify/build/commit/6c42e434a0f15e954073dc225d2c54afb50abc79))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^18.1.1 to ^18.1.2
+
 ## [27.4.2](https://github.com/netlify/build/compare/build-v27.4.1...build-v27.4.2) (2022-07-19)
 
 
