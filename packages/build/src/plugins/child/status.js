@@ -6,18 +6,19 @@ import { addErrorInfo } from '../../error/info.js'
 // Report status information to the UI
 export const show = function (runState, showArgs) {
   validateShowArgs(showArgs)
-  const { title, summary, text } = removeEmptyStrings(showArgs)
-  runState.status = { state: 'success', title, summary, text }
+  const { title, summary, text, extraData } = removeEmptyStrings(showArgs)
+  runState.status = { state: 'success', title, summary, text, extraData }
 }
 
 // Validate arguments of `utils.status.show()`
 const validateShowArgs = function (showArgs) {
   try {
     validateShowArgsObject(showArgs)
-    const { title, summary, text, ...otherArgs } = showArgs
+    const { title, summary, text, extraData, ...otherArgs } = showArgs
     validateShowArgsKeys(otherArgs)
     Object.entries({ title, summary, text }).forEach(validateStringArg)
     validateShowArgsSummary(summary)
+    validateShowArgsExtraData(extraData)
   } catch (error) {
     error.message = `utils.status.show() ${error.message}`
     addErrorInfo(error, { type: 'pluginValidation' })
@@ -51,6 +52,12 @@ const validateStringArg = function ([key, value]) {
 const validateShowArgsSummary = function (summary) {
   if (summary === undefined || summary.trim() === '') {
     throw new Error('requires specifying a "summary" property')
+  }
+}
+
+const validateShowArgsExtraData = function (extraData) {
+  if (extraData !== undefined && Array.isArray(extraData) === false) {
+    throw new TypeError('provided extra data must be an array')
   }
 }
 
