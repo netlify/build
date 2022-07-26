@@ -46,4 +46,3 @@ test('should detect extra property in manifest', async (t) => {
 
   t.is(error.message, extraPropErrMsg)
 })
-
