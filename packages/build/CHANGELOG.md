@@ -12,6 +12,19 @@
   * dependencies
     * @netlify/config bumped from ^18.1.0 to ^18.1.1
 
+## [27.6.0](https://github.com/netlify/build/compare/build-v27.5.0...build-v27.6.0) (2022-07-28)
+
+
+### Features
+
+* pass build dir to edge functions bundling ([#4392](https://github.com/netlify/build/issues/4392)) ([13a5de7](https://github.com/netlify/build/commit/13a5de705bc46d5b7812e92aaa87e7f90f30f7c9))
+* validate Edge Functions manifest ([#4319](https://github.com/netlify/build/issues/4319)) ([f3942ea](https://github.com/netlify/build/commit/f3942eac3e6c020fa52f60661f5300a0a0f45d27))
+
+
+### Bug Fixes
+
+* fix error message for edge function bundling errors ([#4393](https://github.com/netlify/build/issues/4393)) ([28e584c](https://github.com/netlify/build/commit/28e584c71190fab4e092d4d9553041951b13a799))
+
 ## [27.5.0](https://github.com/netlify/build/compare/build-v27.4.2...build-v27.5.0) (2022-07-25)
 
 
