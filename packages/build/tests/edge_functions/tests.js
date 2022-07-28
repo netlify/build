@@ -79,6 +79,10 @@ test.serial('builds Edge Functions from both the user and the internal directori
   await assertManifest(t, fixtureName)
 })
 
+test.serial('handles failure when bundling Edge Functions', async (t) => {
+  await runFixture(t, 'functions_invalid', { flags: { debug: false } })
+})
+
 test('bundles Edge Functions via runCoreSteps function', async (t) => {
   const fixtureName = 'functions_user'
 

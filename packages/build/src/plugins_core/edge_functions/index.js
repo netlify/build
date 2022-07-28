@@ -7,6 +7,7 @@ import { pathExists } from 'path-exists'
 import { logFunctionsToBundle } from '../../log/messages/core_steps.js'
 import { logEdgeManifest } from '../../log/messages/edge_manifest.js'
 
+import { tagBundlingError } from './lib/error.js'
 import { parseManifest } from './lib/internal_manifest.js'
 import { validateEdgeFunctionsManifest } from './validate_manifest/validate_edge_functions_manifest.js'
 
@@ -14,7 +15,7 @@ import { validateEdgeFunctionsManifest } from './validate_manifest/validate_edge
 const DENO_CLI_CACHE_DIRECTORY = '.netlify/plugins/deno-cli'
 const IMPORT_MAP_FILENAME = 'edge-functions-import-map.json'
 
-// eslint-disable-next-line max-statements
+// eslint-disable-next-line complexity, max-statements
 const coreStep = async function ({
   buildDir,
   constants: {
@@ -48,17 +49,23 @@ const coreStep = async function ({
   // Edge Bundler expects the dist directory to exist.
   await fs.mkdir(distPath, { recursive: true })
 
-  const { manifest } = await bundle(sourcePaths, distPath, declarations, {
-    basePath: buildDir,
-    cacheDirectory,
-    debug,
-    distImportMapPath,
-    featureFlags,
-    importMaps: [importMap].filter(Boolean),
-  })
+  try {
+    const { manifest } = await bundle(sourcePaths, distPath, declarations, {
+      basePath: buildDir,
+      cacheDirectory,
+      debug,
+      distImportMapPath,
+      featureFlags,
+      importMaps: [importMap].filter(Boolean),
+    })
 
-  if (debug) {
-    logEdgeManifest({ manifest, logs, debug })
+    if (debug) {
+      logEdgeManifest({ manifest, logs, debug })
+    }
+  } catch (error) {
+    tagBundlingError(error)
+
+    throw error
   }
 
   await validateEdgeFunctionsManifest({ buildDir, constants: { EDGE_FUNCTIONS_DIST: distDirectory } })

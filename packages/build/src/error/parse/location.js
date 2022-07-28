@@ -23,8 +23,12 @@ const getBuildCommandLocation = function ({ buildCommand, buildCommandOrigin }) 
 ${buildCommand}`
 }
 
-const getFunctionsBundlingLocation = function ({ functionName }) {
-  return `While bundling Function "${functionName}"`
+const getFunctionsBundlingLocation = function ({ functionName, functionType }) {
+  if (functionType === 'edge') {
+    return 'While bundling edge function'
+  }
+
+  return `While bundling function "${functionName}"`
 }
 
 const getCoreStepLocation = function ({ coreStepName }) {
