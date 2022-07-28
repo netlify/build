@@ -142,7 +142,7 @@ const NORMALIZE_REGEXPS = [
   // esbuild error messages
   [/(Could not resolve "[^"]+") \([^)]+\)/g, '$1'],
   // Base64-encoded string
-  [/data:.*;base64,([a-zA-Z\d])+/g, 'BASE64_STRING'],
+  [/data:.*;base64,([a-zA-Z\d=])+/g, 'BASE64_STRING'],
 ]
 
 // Check if what appears to be a Windows file paths is actually an escape
