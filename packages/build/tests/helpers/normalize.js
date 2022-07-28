@@ -132,8 +132,8 @@ const NORMALIZE_REGEXPS = [
   [/^(\s+"es2000"),/gm, '$1'],
   // Empty lines
   [/^ +$/gm, ''],
-  // Hexadecimal identifiers, like commit hash
-  [/[a-fA-F\d]{8,}/gm, 'HEXADECIMAL_ID'],
+  // Hexadecimal identifiers, like commit hash or UUID
+  [/[a-fA-F-\d]{8,}/gm, 'HEXADECIMAL_ID'],
   // HTTP errors are shown differently in Node 8
   [/ \.\.\.:443/g, ''],
   // List of available plugins from `plugins.json`.
@@ -141,6 +141,8 @@ const NORMALIZE_REGEXPS = [
   [/(Available plugins)[^>]*/m, '$1\n\n'],
   // esbuild error messages
   [/(Could not resolve "[^"]+") \([^)]+\)/g, '$1'],
+  // Base64-encoded string
+  [/data:.*;base64,([a-zA-Z\d])+/g, 'BASE64_STRING'],
 ]
 
 // Check if what appears to be a Windows file paths is actually an escape

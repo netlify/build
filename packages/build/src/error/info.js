@@ -33,6 +33,12 @@ export const changeErrorType = function (error, oldType, newType) {
   }
 }
 
+export const getErrorType = function (error) {
+  const [{ type }] = getErrorInfo(error)
+
+  return type
+}
+
 export const isBuildError = function (error) {
   return canHaveErrorInfo(error) && error[CUSTOM_ERROR_KEY] !== undefined
 }

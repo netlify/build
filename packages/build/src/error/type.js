@@ -81,7 +81,13 @@ const TYPES = {
 
   // User error during Functions bundling
   functionsBundling: {
-    title: ({ location: { functionName } }) => `Bundling of Function "${functionName}" failed`,
+    title: ({ location: { functionName, functionType } }) => {
+      if (functionType === 'edge') {
+        return 'Bundling of edge function failed'
+      }
+
+      return `Bundling of function "${functionName}" failed`
+    },
     stackType: 'none',
     locationType: 'functionsBundling',
     severity: 'info',

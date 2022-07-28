@@ -4,6 +4,7 @@ import { dirname, join, resolve } from 'path'
 import { bundle, find } from '@netlify/edge-bundler'
 import { pathExists } from 'path-exists'
 
+import { CUSTOM_ERROR_KEY, getErrorType, isBuildError } from '../../error/info.js'
 import { logFunctionsToBundle } from '../../log/messages/core_steps.js'
 import { logEdgeManifest } from '../../log/messages/edge_manifest.js'
 
@@ -14,7 +15,7 @@ import { validateEdgeFunctionsManifest } from './validate_manifest/validate_edge
 const DENO_CLI_CACHE_DIRECTORY = '.netlify/plugins/deno-cli'
 const IMPORT_MAP_FILENAME = 'edge-functions-import-map.json'
 
-// eslint-disable-next-line max-statements
+// eslint-disable-next-line complexity, max-statements
 const coreStep = async function ({
   buildDir,
   constants: {
@@ -48,17 +49,28 @@ const coreStep = async function ({
   // Edge Bundler expects the dist directory to exist.
   await fs.mkdir(distPath, { recursive: true })
 
-  const { manifest } = await bundle(sourcePaths, distPath, declarations, {
-    basePath: buildDir,
-    cacheDirectory,
-    debug,
-    distImportMapPath,
-    featureFlags,
-    importMaps: [importMap].filter(Boolean),
-  })
+  try {
+    const { manifest } = await bundle(sourcePaths, distPath, declarations, {
+      basePath: buildDir,
+      cacheDirectory,
+      debug,
+      distImportMapPath,
+      featureFlags,
+      importMaps: [importMap].filter(Boolean),
+    })
 
-  if (debug) {
-    logEdgeManifest({ manifest, logs, debug })
+    if (debug) {
+      logEdgeManifest({ manifest, logs, debug })
+    }
+  } catch (error) {
+    // If we have a custom error tagged with `functionsBundling` (which happens
+    // if there is an issue with user code), we tag it as coming from an edge
+    // function, so we can adjust the downstream error messages accordingly.
+    if (isBuildError(error) && getErrorType(error) === 'functionsBundling') {
+      error[CUSTOM_ERROR_KEY].location.functionType = 'edge'
+    }
+
+    throw error
   }
 
   await validateEdgeFunctionsManifest({ buildDir, constants: { EDGE_FUNCTIONS_DIST: distDirectory } })
