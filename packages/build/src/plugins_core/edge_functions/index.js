@@ -4,10 +4,10 @@ import { dirname, join, resolve } from 'path'
 import { bundle, find } from '@netlify/edge-bundler'
 import { pathExists } from 'path-exists'
 
-import { CUSTOM_ERROR_KEY, getErrorType, isBuildError } from '../../error/info.js'
 import { logFunctionsToBundle } from '../../log/messages/core_steps.js'
 import { logEdgeManifest } from '../../log/messages/edge_manifest.js'
 
+import { tagBundlingError } from './lib/error.js'
 import { parseManifest } from './lib/internal_manifest.js'
 import { validateEdgeFunctionsManifest } from './validate_manifest/validate_edge_functions_manifest.js'
 
@@ -63,12 +63,7 @@ const coreStep = async function ({
       logEdgeManifest({ manifest, logs, debug })
     }
   } catch (error) {
-    // If we have a custom error tagged with `functionsBundling` (which happens
-    // if there is an issue with user code), we tag it as coming from an edge
-    // function, so we can adjust the downstream error messages accordingly.
-    if (isBuildError(error) && getErrorType(error) === 'functionsBundling') {
-      error[CUSTOM_ERROR_KEY].location.functionType = 'edge'
-    }
+    tagBundlingError(error)
 
     throw error
   }
