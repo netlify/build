@@ -8,11 +8,13 @@ import { logFunctionsToBundle } from '../../log/messages/core_steps.js'
 import { logEdgeManifest } from '../../log/messages/edge_manifest.js'
 
 import { parseManifest } from './lib/internal_manifest.js'
+import { validateEdgeFunctionsManifest } from './validate_manifest/validate_edge_functions_manifest.js'
 
 // TODO: Replace this with a custom cache directory.
 const DENO_CLI_CACHE_DIRECTORY = '.netlify/plugins/deno-cli'
 const IMPORT_MAP_FILENAME = 'edge-functions-import-map.json'
 
+// eslint-disable-next-line max-statements
 const coreStep = async function ({
   buildDir,
   constants: {
@@ -58,6 +60,8 @@ const coreStep = async function ({
   if (debug) {
     logEdgeManifest({ manifest, logs, debug })
   }
+
+  await validateEdgeFunctionsManifest({ buildDir, constants: { EDGE_FUNCTIONS_DIST: distDirectory } })
 
   return {}
 }
