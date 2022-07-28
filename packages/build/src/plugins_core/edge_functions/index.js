@@ -49,6 +49,7 @@ const coreStep = async function ({
   await fs.mkdir(distPath, { recursive: true })
 
   const { manifest } = await bundle(sourcePaths, distPath, declarations, {
+    basePath: buildDir,
     cacheDirectory,
     debug,
     distImportMapPath,
