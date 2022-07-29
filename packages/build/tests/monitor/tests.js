@@ -108,7 +108,7 @@ test('Report build logs URLs', async (t) => {
   })
 })
 
-test('When an error has a `normalizedMessage` property, its value is used as the grouping hash', async (t) => {
+test.serial('When an error has a `normalizedMessage` property, its value is used as the grouping hash', async (t) => {
   const customError = new Error('Cannot assign value "foo" to const "bar"')
 
   customError[CUSTOM_ERROR_KEY] = {
