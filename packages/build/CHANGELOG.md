@@ -12,6 +12,19 @@
   * dependencies
     * @netlify/config bumped from ^18.1.0 to ^18.1.1
 
+## [27.7.0](https://github.com/netlify/build/compare/build-v27.6.0...build-v27.7.0) (2022-07-29)
+
+
+### Features
+
+* add support for custom hashing group in errors ([#4394](https://github.com/netlify/build/issues/4394)) ([531bc4a](https://github.com/netlify/build/commit/531bc4a1c4e44687493dca8717eb8ed6f383a740))
+* improve error normalisation logic ([#4396](https://github.com/netlify/build/issues/4396)) ([f829af1](https://github.com/netlify/build/commit/f829af1dd05159d8f5dbde54fb453e5a49b4db9b))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to ^1.8.0 ([#4397](https://github.com/netlify/build/issues/4397)) ([b94a59e](https://github.com/netlify/build/commit/b94a59e286be1cff6f769055cd87e1c06bd1b52e))
+
 ## [27.6.0](https://github.com/netlify/build/compare/build-v27.5.0...build-v27.6.0) (2022-07-28)
 
 
