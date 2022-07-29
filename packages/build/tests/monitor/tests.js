@@ -132,7 +132,7 @@ test('Error messages are normalized', (t) => {
   const cases = [
     [
       'functionsBundling Command failed with exit code 1: /opt/build/repo/.netlify/plugins/deno-cli/deno bundle --import-map=data:application/json;base64,eyJpbXBvcnRzIjp7Im5ldGxpZnk6ZWRnZSI6Imh0dHBzOi8vZWRnZS5uZXRsaWZ5LmNvbS92MS9pbmRleC50cyJ9fQ== --quiet /tmp/edge-62e3a15d47b3340008b4b904/e6c2a079-8110-438d-b03d-ec2d2b6ca178-pre.js /tmp/edge-62e3a15d47b3340008b4b904/e6c2a079-8110-438d-b03d-ec2d2b6ca178.js',
-      'functionsBundling Command failed with exit code 0: /file/path bundle --import-map=dataURI --quiet /file/path /tmp/edghex/hex.js',
+      'functionsBundling Command failed with exit code 0: /file/path bundle --import-map=dataURI --quiet /file/path /file/path',
     ],
 
     [

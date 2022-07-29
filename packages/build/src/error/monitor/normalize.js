@@ -34,7 +34,7 @@ const NORMALIZE_REGEXPS = [
   // Base64 URL
   [/(data:[^;]+;base64),[\w+/-=]+/g, 'dataURI'],
   // File paths
-  [/(["'`, ]|^)([^"'`, \n]*[/\\][^"'`, \n]*)(["'`, ]|$)/gm, '$1/file/path$3'],
+  [/(["'`, ]|^)([^"'`, \n]*[/\\][^"'`, \n]*)(?=["'`, ]|$)/gm, '$1/file/path'],
   // Semantic versions
   [/\d+\.\d+\.\d+(-\d+)?/g, '1.0.0'],
   [/version "[^"]+"/g, 'version "1.0.0"'],
