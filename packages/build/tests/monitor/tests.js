@@ -109,6 +109,10 @@ test('Report build logs URLs', async (t) => {
   })
 })
 
+test.serial('Normalizes error messages resulting from functions bundling', async (t) => {
+  await runFixture(t, 'function_bundling_error', { flags })
+})
+
 test.serial('When an error has a `normalizedMessage` property, its value is used as the grouping hash', async (t) => {
   const customError = new Error('Cannot assign value "foo" to const "bar"')
 
@@ -136,8 +140,8 @@ test('Error messages are normalized', (t) => {
     ],
 
     [
-      'Bundling of function "server" failed\nBuild failed with 1 error: .netlify/functions-internal/server/node_modules/ufo/package.json:41:1: ERROR: Expected end of file but found ","',
-      'Bundling of function "functionName" failed\nBuild failed with 0 error: /file/path ERROR: Expected end of file but found ","',
+      'Build failed with 1 error: .netlify/functions-internal/server/node_modules/ufo/package.json:41:1: ERROR: Expected end of file but found ","',
+      'Build failed with 0 error: /file/path ERROR: Expected end of file but found ","',
     ],
   ]
 

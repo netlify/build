@@ -88,6 +88,7 @@ const TYPES = {
 
       return `Bundling of function "${functionName}" failed`
     },
+    group: ({ functionType }) => ['Bundling of', functionType, 'function failed'].filter(Boolean).join(' '),
     stackType: 'none',
     locationType: 'functionsBundling',
     severity: 'info',
