@@ -74,6 +74,4 @@ const NORMALIZE_REGEXPS = [
   [/(Parse Error):[^]*/, '$1'],
   // Multiple empty lines
   [/^\s*$/gm, ''],
-  // Function bundling errors
-  [/Bundling of function "([^"]+)" failed/gm, 'Bundling of function "functionName" failed'],
 ]
