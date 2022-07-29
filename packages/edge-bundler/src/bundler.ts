@@ -4,7 +4,7 @@ import { join } from 'path'
 import commonPathPrefix from 'common-path-prefix'
 import { v4 as uuidv4 } from 'uuid'
 
-import { DenoBridge, OnAfterDownloadHook, OnBeforeDownloadHook } from './bridge.js'
+import { DenoBridge, DenoOptions, OnAfterDownloadHook, OnBeforeDownloadHook } from './bridge.js'
 import type { Bundle } from './bundle.js'
 import type { Declaration } from './declaration.js'
 import { EdgeFunction } from './edge_function.js'
@@ -94,12 +94,18 @@ const bundle = async (
   }: BundleOptions = {},
 ) => {
   const featureFlags = getFlags(inputFeatureFlags)
-  const deno = new DenoBridge({
+  const options: DenoOptions = {
     debug,
     cacheDirectory,
     onAfterDownload,
     onBeforeDownload,
-  })
+  }
+
+  if (cacheDirectory !== undefined && featureFlags.edge_functions_cache_deno_dir) {
+    options.denoDir = join(cacheDirectory, 'deno_dir')
+  }
+
+  const deno = new DenoBridge(options)
   const basePath = getBasePath(sourceDirectories, inputBasePath)
 
   await ensureLatestTypes(deno)
@@ -173,3 +179,4 @@ const getBasePath = (sourceDirectories: string[], inputBasePath?: string) => {
 }
 
 export { bundle }
+export type { BundleOptions }

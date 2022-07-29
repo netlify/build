@@ -2,7 +2,7 @@ import { promises as fs } from 'fs'
 import path from 'path'
 import process from 'process'
 
-import { execa, ExecaChildProcess } from 'execa'
+import { execa, ExecaChildProcess, Options } from 'execa'
 import semver from 'semver'
 
 import { download } from './downloader.js'
@@ -18,6 +18,7 @@ type OnAfterDownloadHook = (error?: Error) => void | Promise<void>
 interface DenoOptions {
   cacheDirectory?: string
   debug?: boolean
+  denoDir?: string
   onAfterDownload?: OnAfterDownloadHook
   onBeforeDownload?: OnBeforeDownloadHook
   useGlobal?: boolean
@@ -36,6 +37,7 @@ class DenoBridge {
   cacheDirectory: string
   currentDownload?: ReturnType<DenoBridge['downloadBinary']>
   debug: boolean
+  denoDir?: string
   onAfterDownload?: OnAfterDownloadHook
   onBeforeDownload?: OnBeforeDownloadHook
   useGlobal: boolean
@@ -44,6 +46,7 @@ class DenoBridge {
   constructor(options: DenoOptions = {}) {
     this.cacheDirectory = options.cacheDirectory ?? getPathInHome('deno-cli')
     this.debug = options.debug ?? false
+    this.denoDir = options.denoDir
     this.onAfterDownload = options.onAfterDownload
     this.onBeforeDownload = options.onBeforeDownload
     this.useGlobal = options.useGlobal ?? true
@@ -138,8 +141,8 @@ class DenoBridge {
     return this.currentDownload
   }
 
-  private static runWithBinary(binaryPath: string, args: string[], pipeOutput?: boolean) {
-    const runDeno = execa(binaryPath, args)
+  private static runWithBinary(binaryPath: string, args: string[], options?: Options, pipeOutput?: boolean) {
+    const runDeno = execa(binaryPath, args, options)
 
     if (pipeOutput) {
       runDeno.stdout?.pipe(process.stdout)
@@ -183,6 +186,16 @@ class DenoBridge {
     return { global: false, path: downloadedPath }
   }
 
+  getEnvironmentVariables() {
+    const env: Record<string, string> = {}
+
+    if (this.denoDir !== undefined) {
+      env.DENO_DIR = this.denoDir
+    }
+
+    return env
+  }
+
   log(...data: unknown[]) {
     if (!this.debug) {
       return
@@ -195,15 +208,19 @@ class DenoBridge {
   // process, awaiting its execution.
   async run(args: string[], { pipeOutput }: RunOptions = {}) {
     const { path: binaryPath } = await this.getBinaryPath()
+    const env = this.getEnvironmentVariables()
+    const options = { env }
 
-    return DenoBridge.runWithBinary(binaryPath, args, pipeOutput)
+    return DenoBridge.runWithBinary(binaryPath, args, options, pipeOutput)
   }
 
   // Runs the Deno CLI in the background, assigning a reference of the child
   // process to a `ps` property in the `ref` argument, if one is supplied.
   async runInBackground(args: string[], pipeOutput?: boolean, ref?: ProcessRef) {
     const { path: binaryPath } = await this.getBinaryPath()
-    const ps = DenoBridge.runWithBinary(binaryPath, args, pipeOutput)
+    const env = this.getEnvironmentVariables()
+    const options = { env }
+    const ps = DenoBridge.runWithBinary(binaryPath, args, options, pipeOutput)
 
     if (ref !== undefined) {
       // eslint-disable-next-line no-param-reassign
@@ -213,4 +230,4 @@ class DenoBridge {
 }
 
 export { DenoBridge }
-export type { OnAfterDownloadHook, OnBeforeDownloadHook, ProcessRef }
+export type { DenoOptions, OnAfterDownloadHook, OnBeforeDownloadHook, ProcessRef }
