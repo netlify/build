@@ -5,6 +5,7 @@ import hasAnsi from 'has-ansi'
 import sinon from 'sinon'
 
 import { CUSTOM_ERROR_KEY } from '../../src/error/info.js'
+import { normalizeGroupingMessage } from '../../src/error/monitor/normalize.js'
 import { zipItAndShipIt } from '../../src/plugins_core/functions/index.js'
 import { runFixture } from '../helpers/main.js'
 
@@ -123,4 +124,24 @@ test.serial('When an error has a `normalizedMessage` property, its value is used
   await runFixture(t, 'function_bundling_error', { flags })
 
   stub.restore()
+})
+
+test('Error messages are normalized', (t) => {
+  // Test cases are arrays with two elements: the first one is the original
+  // error, the second one is the expected result after normalization.
+  const cases = [
+    [
+      'functionsBundling Command failed with exit code 1: /opt/build/repo/.netlify/plugins/deno-cli/deno bundle --import-map=data:application/json;base64,eyJpbXBvcnRzIjp7Im5ldGxpZnk6ZWRnZSI6Imh0dHBzOi8vZWRnZS5uZXRsaWZ5LmNvbS92MS9pbmRleC50cyJ9fQ== --quiet /tmp/edge-62e3a15d47b3340008b4b904/e6c2a079-8110-438d-b03d-ec2d2b6ca178-pre.js /tmp/edge-62e3a15d47b3340008b4b904/e6c2a079-8110-438d-b03d-ec2d2b6ca178.js',
+      'functionsBundling Command failed with exit code 0: /file/path bundle --import-map=dataURI --quiet /file/path /file/path',
+    ],
+
+    [
+      'Bundling of function "server" failed\nBuild failed with 1 error: .netlify/functions-internal/server/node_modules/ufo/package.json:41:1: ERROR: Expected end of file but found ","',
+      'Bundling of function "functionName" failed\nBuild failed with 0 error: /file/path ERROR: Expected end of file but found ","',
+    ],
+  ]
+
+  cases.forEach(([original, expected]) => {
+    t.is(normalizeGroupingMessage(original), expected)
+  })
 })
