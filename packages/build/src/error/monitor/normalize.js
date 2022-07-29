@@ -32,7 +32,7 @@ const normalizeMessage = function (message, [regExp, replacement]) {
 
 const NORMALIZE_REGEXPS = [
   // Base64 URL
-  [/(data:[^;]+;base64),[\w+/-]+/g, 'dataURI'],
+  [/(data:[^;]+;base64),[\w+/-=]+/g, 'dataURI'],
   // File paths
   [/(["'`, ]|^)([^"'`, \n]*[/\\][^"'`, \n]*)(["'`, ]|$)/gm, '$1/file/path$3'],
   // Semantic versions
@@ -45,7 +45,7 @@ const NORMALIZE_REGEXPS = [
   // Numbers, e.g. number of issues/problems
   [/\d+/g, '0'],
   // Hexadecimal strings
-  [/[\da-fA-F]{6,}/g, 'hex'],
+  [/[\da-fA-F-]{6,}/g, 'hex'],
   // On unknown inputs, we print the inputs
   [/(does not accept any inputs but you specified: ).*/, '$1'],
   [/(Unknown inputs for plugin).*/, '$1'],
@@ -74,4 +74,6 @@ const NORMALIZE_REGEXPS = [
   [/(Parse Error):[^]*/, '$1'],
   // Multiple empty lines
   [/^\s*$/gm, ''],
+  // Function bundling errors
+  [/Bundling of function "([^"]+)" failed/gm, 'Bundling of function "functionName" failed'],
 ]
