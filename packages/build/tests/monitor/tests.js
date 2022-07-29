@@ -2,7 +2,10 @@ import { platform } from 'process'
 
 import test from 'ava'
 import hasAnsi from 'has-ansi'
+import sinon from 'sinon'
 
+import { CUSTOM_ERROR_KEY } from '../../src/error/info.js'
+import { zipItAndShipIt } from '../../src/plugins_core/functions/index.js'
 import { runFixture } from '../helpers/main.js'
 
 const BUGSNAG_TEST_KEY = '00000000000000000000000000000000'
@@ -103,4 +106,21 @@ test('Report build logs URLs', async (t) => {
     env: { DEPLOY_ID: 'testDeployId', SITE_NAME: 'testSiteName' },
     useBinary: true,
   })
+})
+
+test.serial('When an error has a `normalizedMessage` property, its value is used as the grouping hash', async (t) => {
+  const customError = new Error('Cannot assign value "foo" to const "bar"')
+
+  customError[CUSTOM_ERROR_KEY] = {
+    normalizedMessage: 'custom-grouping-hash',
+    location: { bundler: 'esbuild', functionName: 'trouble', runtime: 'js' },
+    type: 'functionsBundling',
+  }
+
+  // eslint-disable-next-line import/no-named-as-default-member
+  const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').throws(customError)
+
+  await runFixture(t, 'function_bundling_error', { flags })
+
+  stub.restore()
 })
