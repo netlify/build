@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.0](https://github.com/netlify/edge-bundler/compare/v1.7.0...v1.8.0) (2022-07-29)
+
+
+### Features
+
+* add support for `denoDir` parameter ([#80](https://github.com/netlify/edge-bundler/issues/80)) ([b5dd4a7](https://github.com/netlify/edge-bundler/commit/b5dd4a71ccddefff5cf7c7d69ee71128f5d9e6ee))
+
 ## [1.7.0](https://github.com/netlify/edge-bundler/compare/v1.6.0...v1.7.0) (2022-07-22)
 
 
