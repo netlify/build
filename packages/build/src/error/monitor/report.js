@@ -21,7 +21,7 @@ export const reportBuildError = async function ({ error, errorMonitor, childEnv,
   const { errorInfo, type, severity, title, group = title } = parseErrorInfo(error)
   const severityA = getSeverity(severity, errorInfo)
   const groupA = getGroup(group, errorInfo)
-  const groupingHash = getGroupingHash(groupA, error, type)
+  const groupingHash = getGroupingHash(groupA, error, type, errorInfo)
   const metadata = getMetadata(errorInfo, childEnv, groupingHash)
   const app = getApp()
   const eventProps = getEventProps({ severity: severityA, group: groupA, groupingHash, metadata, app })
@@ -52,7 +52,12 @@ const getGroup = function (group, errorInfo) {
   return group(errorInfo)
 }
 
-const getGroupingHash = function (group, error, type) {
+const getGroupingHash = function (group, error, type, errorInfo = {}) {
+  // If the error has a `normalizedMessage`, we use it as the grouping hash.
+  if (errorInfo.normalizedMessage) {
+    return errorInfo.normalizedMessage
+  }
+
   const message = error instanceof Error && typeof error.message === 'string' ? error.message : String(error)
   const messageA = normalizeGroupingMessage(message, type)
   return `${group}\n${messageA}`
