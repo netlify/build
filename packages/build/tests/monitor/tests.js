@@ -109,7 +109,12 @@ test('Report build logs URLs', async (t) => {
 })
 
 test('Normalizes error messages resulting from bundling edge functions', async (t) => {
-  await runFixture(t, 'edge_function_error', { flags })
+  await runFixture(t, 'edge_function_error', {
+    flags: {
+      ...flags,
+      debug: false,
+    },
+  })
 })
 
 test.serial('Normalizes error messages resulting from bundling TypeScript serverless functions', async (t) => {
