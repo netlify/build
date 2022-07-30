@@ -120,7 +120,7 @@ test('Normalizes error messages resulting from bundling edge functions', async (
 test.serial('Normalizes error messages resulting from bundling TypeScript serverless functions', async (t) => {
   const customError = new Error(`Build failed with 2 errors:
   .netlify/functions-internal/server/chunks/app/server.mjs:6046:43: ERROR: Cannot assign to "foo" because it is a constant
-  .netlify/functions-internal/server/node_modules/@vue-leaflet/vue-leaflet/dist/vue-leaflet.cjs.js:89:87: ERROR: No loader is configured for ".node" files: .netlify/functions-internal/server/node_modules/bar/dist/baz.node`)
+  .netlify/functions-internal/server/node_modules/some-module/dist/mod.cjs.js:89:87: ERROR: No loader is configured for ".node" files: .netlify/functions-internal/server/node_modules/some-module/dist/binary.node`)
 
   customError[CUSTOM_ERROR_KEY] = {
     location: { bundler: 'esbuild', functionName: 'trouble', runtime: 'js' },
