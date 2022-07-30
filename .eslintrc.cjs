@@ -111,6 +111,7 @@ module.exports = {
     {
       files: ['packages/build/tests/**/*.{mjs,js}'],
       rules: {
+        'import/no-named-as-default-member': 'off',
         'max-statements': 'off',
         'no-magic-numbers': 'off',
       },
