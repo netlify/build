@@ -302,9 +302,7 @@ test('Print warning when headers file is missing from publish directory', async 
 })
 
 test.serial('Successfully builds ES module function with feature flag', async (t) => {
-  // eslint-disable-next-line import/no-named-as-default-member
   const mockZipFunctions = sinon.stub().resolves()
-  // eslint-disable-next-line import/no-named-as-default-member
   const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').get(() => mockZipFunctions)
 
   await runFixture(t, 'functions_es_modules', {
@@ -319,9 +317,7 @@ test.serial('Successfully builds ES module function with feature flag', async (t
 })
 
 test.serial(`Doesn't fail build for ES module function if feature flag is off`, async (t) => {
-  // eslint-disable-next-line import/no-named-as-default-member
   const mockZipFunctions = sinon.stub().resolves()
-  // eslint-disable-next-line import/no-named-as-default-member
   const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').get(() => mockZipFunctions)
 
   await runFixture(t, 'functions_es_modules', {
@@ -335,9 +331,7 @@ test.serial(`Doesn't fail build for ES module function if feature flag is off`, 
 })
 
 test.serial('Passes the right properties to zip-it-and-ship-it', async (t) => {
-  // eslint-disable-next-line import/no-named-as-default-member
   const mockZipFunctions = sinon.stub().resolves()
-  // eslint-disable-next-line import/no-named-as-default-member
   const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').get(() => mockZipFunctions)
   const fixtureName = 'core'
   const fixtureDir = join(FIXTURES_DIR, fixtureName)
@@ -370,9 +364,7 @@ test.serial('Passes the right properties to zip-it-and-ship-it', async (t) => {
 })
 
 test.serial('Passes the right feature flags to zip-it-and-ship-it', async (t) => {
-  // eslint-disable-next-line import/no-named-as-default-member
   const mockZipFunctions = sinon.stub().resolves()
-  // eslint-disable-next-line import/no-named-as-default-member
   const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').get(() => mockZipFunctions)
 
   await runFixture(t, 'schedule', { snapshot: false })
@@ -461,9 +453,7 @@ test.serial('`rustTargetDirectory` is passed to zip-it-and-ship-it only when run
   const fixtureWithConfig = 'functions_config_1'
   const fixtureWithoutConfig = 'functions_internal_missing'
   const runCount = 4
-  // eslint-disable-next-line import/no-named-as-default-member
   const mockZipFunctions = sinon.stub().resolves()
-  // eslint-disable-next-line import/no-named-as-default-member
   const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').get(() => mockZipFunctions)
 
   await runFixture(t, fixtureWithConfig, { flags: { mode: 'buildbot' }, snapshot: false })
