@@ -88,7 +88,7 @@ const TYPES = {
 
       return `Bundling of function "${functionName}" failed`
     },
-    group: ({ location: { functionType = 'serverless' } }) => `'Bundling of ${functionType} function failed`,
+    group: ({ location: { functionType = 'serverless' } }) => `Bundling of ${functionType} function failed`,
     stackType: 'none',
     locationType: 'functionsBundling',
     severity: 'info',
