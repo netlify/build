@@ -12,6 +12,13 @@
   * dependencies
     * @netlify/config bumped from ^18.1.0 to ^18.1.1
 
+## [27.8.1](https://github.com/netlify/build/compare/build-v27.8.0...build-v27.8.1) (2022-08-01)
+
+
+### Bug Fixes
+
+* remove extraneous character from error group ([#4403](https://github.com/netlify/build/issues/4403)) ([2cde5d3](https://github.com/netlify/build/commit/2cde5d3c1953c7277052c3ba24ebcca6f0adf4a9))
+
 ## [27.8.0](https://github.com/netlify/build/compare/build-v27.7.0...build-v27.8.0) (2022-08-01)
 
 
