@@ -5,7 +5,6 @@ import hasAnsi from 'has-ansi'
 import sinon from 'sinon'
 
 import { CUSTOM_ERROR_KEY } from '../../src/error/info.js'
-import { normalizeGroupingMessage } from '../../src/error/monitor/normalize.js'
 import { zipItAndShipIt } from '../../src/plugins_core/functions/index.js'
 import { runFixture } from '../helpers/main.js'
 
@@ -109,8 +108,61 @@ test('Report build logs URLs', async (t) => {
   })
 })
 
-test.serial('Normalizes error messages resulting from functions bundling', async (t) => {
-  await runFixture(t, 'function_bundling_error', { flags })
+test('Normalizes error messages resulting from bundling edge functions', async (t) => {
+  await runFixture(t, 'edge_function_error', {
+    flags: {
+      ...flags,
+      debug: false,
+    },
+  })
+})
+
+test.serial('Normalizes error messages resulting from bundling TypeScript serverless functions', async (t) => {
+  const customError = new Error(`Build failed with 2 errors:
+  .netlify/functions-internal/server/chunks/app/server.mjs:6046:43: ERROR: Cannot assign to "foo" because it is a constant
+  .netlify/functions-internal/server/node_modules/some-module/dist/mod.cjs.js:89:87: ERROR: No loader is configured for ".node" files: .netlify/functions-internal/server/node_modules/some-module/dist/binary.node`)
+
+  customError[CUSTOM_ERROR_KEY] = {
+    location: { bundler: 'esbuild', functionName: 'trouble', runtime: 'js' },
+    type: 'functionsBundling',
+  }
+
+  const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').throws(customError)
+
+  await runFixture(t, 'serverless_function', { flags })
+
+  stub.restore()
+})
+
+test.serial('Normalizes error messages resulting from bundling Rust serverless functions', async (t) => {
+  const customError =
+    new Error(`Command failed with exit code 101: cargo build --target x86_64-unknown-linux-musl --release
+  Updating crates.io index
+Downloading crates ...
+Downloaded tokio v1.20.0
+Downloaded tower v0.4.13
+Downloaded serde v1.0.140
+ Compiling tokio v1.20.0
+ Compiling tower v0.4.13
+ Compiling serde v1.0.140 (/opt/build/repo/netlify/functions/json-response)
+error: expected one of \`!\` or \`::\`, found keyword \`use\`
+--> src/main.rs:2:1
+|
+1 | KB
+|   - expected one of \`!\` or \`::\`
+2 | use aws_lambda_events::{
+| ^^^ unexpected token`)
+
+  customError[CUSTOM_ERROR_KEY] = {
+    location: { functionName: 'trouble', runtime: 'rs' },
+    type: 'functionsBundling',
+  }
+
+  const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').throws(customError)
+
+  await runFixture(t, 'serverless_function', { flags })
+
+  stub.restore()
 })
 
 test.serial('When an error has a `normalizedMessage` property, its value is used as the grouping hash', async (t) => {
@@ -122,30 +174,9 @@ test.serial('When an error has a `normalizedMessage` property, its value is used
     type: 'functionsBundling',
   }
 
-  // eslint-disable-next-line import/no-named-as-default-member
   const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').throws(customError)
 
-  await runFixture(t, 'function_bundling_error', { flags })
+  await runFixture(t, 'serverless_function', { flags })
 
   stub.restore()
-})
-
-test('Error messages are normalized', (t) => {
-  // Test cases are arrays with two elements: the first one is the original
-  // error, the second one is the expected result after normalization.
-  const cases = [
-    [
-      'functionsBundling Command failed with exit code 1: /opt/build/repo/.netlify/plugins/deno-cli/deno bundle --import-map=data:application/json;base64,eyJpbXBvcnRzIjp7Im5ldGxpZnk6ZWRnZSI6Imh0dHBzOi8vZWRnZS5uZXRsaWZ5LmNvbS92MS9pbmRleC50cyJ9fQ== --quiet /tmp/edge-62e3a15d47b3340008b4b904/e6c2a079-8110-438d-b03d-ec2d2b6ca178-pre.js /tmp/edge-62e3a15d47b3340008b4b904/e6c2a079-8110-438d-b03d-ec2d2b6ca178.js',
-      'functionsBundling Command failed with exit code 0: /file/path bundle --import-map=dataURI --quiet /file/path /file/path',
-    ],
-
-    [
-      'Build failed with 1 error: .netlify/functions-internal/server/node_modules/ufo/package.json:41:1: ERROR: Expected end of file but found ","',
-      'Build failed with 0 error: /file/path ERROR: Expected end of file but found ","',
-    ],
-  ]
-
-  cases.forEach(([original, expected]) => {
-    t.is(normalizeGroupingMessage(original), expected)
-  })
 })

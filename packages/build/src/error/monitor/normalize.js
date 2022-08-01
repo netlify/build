@@ -3,7 +3,15 @@
 // them consistent
 export const normalizeGroupingMessage = function (message, type) {
   const messageA = removeDependenciesLogs(message, type)
-  return NORMALIZE_REGEXPS.reduce(normalizeMessage, messageA)
+  const messageB = NORMALIZE_REGEXPS.reduce(normalizeMessage, messageA)
+
+  // If this is a functions bundling error, we'll use additional normalization
+  // rules to group errors more aggressively.
+  if (type === 'functionsBundling') {
+    return FUNCTIONS_BUNDLING_REGEXPS.reduce(normalizeMessage, messageB)
+  }
+
+  return messageB
 }
 
 // Discard debug/info installation information
@@ -74,4 +82,15 @@ const NORMALIZE_REGEXPS = [
   [/(Parse Error):[^]*/, '$1'],
   // Multiple empty lines
   [/^\s*$/gm, ''],
+]
+
+const FUNCTIONS_BUNDLING_REGEXPS = [
+  // String literals and identifiers
+  [/"([^"]+)"/g, '""'],
+  [/'([^']+)'/g, "''"],
+  [/`([^`]+)`/g, '``'],
+
+  // Rust crates
+  [/(?:Downloaded \S+ v[\d.]+\s*)+/gm, 'Downloaded crates'],
+  [/(?:Compiling \S+ v[\d.]+\s*)+/gm, 'Compiled crates'],
 ]

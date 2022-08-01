@@ -43,11 +43,14 @@ const NORMALIZE_REGEXPS = [
   [/(packages\/.*\/fixtures\/.*\.(?:js|ts))(:(\d)+:(\d)+:)/g, '$1'],
   // Normalizes any paths so that they're relative to process.cwd().
   [
-    /(^|[ "'(=])((?:\.{0,2}|([A-Z]:))(\/[^ "')\n]+))/gm,
+    /(^|[ "'(=])((?:\.{0,2}|([A-Z]:)|file:\/\/)(\/[^ "')\n]+))/gm,
     // eslint-disable-next-line complexity, max-params
     (_, prefix, pathMatch, winDrive, pathTrail) => {
+      // If we're dealing with a file URL, we convert it to a path.
+      const path = pathMatch.startsWith('file://') ? fileURLToPath(pathMatch) : pathMatch
+
       // If we're dealing with a Windows path, we discard the drive letter.
-      const fullPath = winDrive ? pathTrail : pathMatch
+      const fullPath = winDrive ? pathTrail : path
       const tmpDirMatch = fullPath.match(/netlify-build-tmp-dir\d+(.*)/)
 
       // If this is a temporary directory with a randomly-generated name, we
