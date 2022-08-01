@@ -12,6 +12,18 @@
   * dependencies
     * @netlify/config bumped from ^18.1.0 to ^18.1.1
 
+## [27.8.0](https://github.com/netlify/build/compare/build-v27.7.0...build-v27.8.0) (2022-08-01)
+
+
+### Features
+
+* improve normalization of function bundling errors ([#4400](https://github.com/netlify/build/issues/4400)) ([5481309](https://github.com/netlify/build/commit/548130957f46814cca16df556bbca386b921a4ef))
+
+
+### Bug Fixes
+
+* group function bundling errors ([#4398](https://github.com/netlify/build/issues/4398)) ([1bbb3e2](https://github.com/netlify/build/commit/1bbb3e2147be30b7fe0d146b5a16f5ffd44a74b8))
+
 ## [27.7.0](https://github.com/netlify/build/compare/build-v27.6.0...build-v27.7.0) (2022-07-29)
 
 
