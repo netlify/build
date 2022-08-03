@@ -5,7 +5,6 @@ import { bundle, find } from '@netlify/edge-bundler'
 import { pathExists } from 'path-exists'
 
 import { logFunctionsToBundle } from '../../log/messages/core_steps.js'
-import { logEdgeManifest } from '../../log/messages/edge_manifest.js'
 
 import { tagBundlingError } from './lib/error.js'
 import { parseManifest } from './lib/internal_manifest.js'
@@ -15,7 +14,7 @@ import { validateEdgeFunctionsManifest } from './validate_manifest/validate_edge
 const DENO_CLI_CACHE_DIRECTORY = '.netlify/plugins/deno-cli'
 const IMPORT_MAP_FILENAME = 'edge-functions-import-map.json'
 
-// eslint-disable-next-line complexity, max-statements
+// eslint-disable-next-line max-statements
 const coreStep = async function ({
   buildDir,
   constants: {
@@ -25,6 +24,7 @@ const coreStep = async function ({
     IS_LOCAL: isRunningLocally,
   },
   debug,
+  systemLog,
   featureFlags,
   logs,
   netlifyConfig,
@@ -59,9 +59,7 @@ const coreStep = async function ({
       importMaps: [importMap].filter(Boolean),
     })
 
-    if (debug) {
-      logEdgeManifest({ manifest, logs, debug })
-    }
+    systemLog('Edge Functions manifest:', manifest)
   } catch (error) {
     tagBundlingError(error)
 

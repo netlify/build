@@ -1,3 +1,5 @@
+import { createWriteStream } from 'fs'
+
 import figures from 'figures'
 import indentString from 'indent-string'
 
@@ -104,4 +106,37 @@ export const logErrorSubHeader = function (logs, string, opts) {
 // Print a sub-section header, when a warning happened
 export const logWarningSubHeader = function (logs, string, opts) {
   logSubHeader(logs, string, { color: THEME.warningSubHeader, ...opts })
+}
+
+// Combines an array of elements into a single string, separated by a space,
+// and with basic serialization of non-string types
+const reduceLogLines = function (lines) {
+  return lines
+    .map((input) => {
+      if (typeof input === 'object') {
+        return JSON.stringify(input)
+      }
+
+      return input.toString()
+    })
+    .join(' ')
+}
+
+// Builds a function for logging data to the system logger (i.e. hidden from
+// the user-facing build logs)
+export const getSystemLogger = function (logs, debug, systemLogFile) {
+  // If there's not a file descriptor (or it's set to 0, matching stdout), we
+  // send debug lines to the normal logger. The same happens if the `debug`
+  // flag is used, since that means we want to print logs to stdout.
+  if (!systemLogFile || debug) {
+    return (...args) => log(logs, reduceLogLines(args))
+  }
+
+  const fileDescriptor = createWriteStream(null, { fd: systemLogFile })
+
+  fileDescriptor.on('error', () => {
+    logError(logs, 'Could not write to system log file')
+  })
+
+  return (...args) => fileDescriptor.write(reduceLogLines(args))
 }

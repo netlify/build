@@ -2,7 +2,7 @@
 import { handleBuildError } from '../error/handle.js'
 import { getErrorInfo } from '../error/info.js'
 import { startErrorMonitor } from '../error/monitor/start.js'
-import { getBufferLogs } from '../log/logger.js'
+import { getBufferLogs, getSystemLogger } from '../log/logger.js'
 import { logBuildStart, logTimer, logBuildSuccess } from '../log/messages/core.js'
 import { loadPlugins } from '../plugins/load.js'
 import { getPluginsOptions } from '../plugins/options.js'
@@ -57,6 +57,7 @@ export default async function buildSite(flags = {}) {
     mode,
     logs,
     debug,
+    systemLogFile,
     testOpts,
     statsdOpts,
     dry,
@@ -80,6 +81,7 @@ export default async function buildSite(flags = {}) {
     } = await execBuild({
       ...flagsA,
       buildId,
+      systemLogFile,
       deployId,
       dry,
       errorMonitor,
@@ -163,6 +165,7 @@ const tExecBuild = async function ({
   baseRelDir,
   env: envOpt,
   debug,
+  systemLogFile,
   verbose,
   nodePath,
   functionsDistDir,
@@ -241,6 +244,7 @@ const tExecBuild = async function ({
     mode,
     testOpts,
   })
+  const systemLog = getSystemLogger(logs, debug, systemLogFile)
   const pluginsOptions = addCorePlugins({ netlifyConfig, constants })
   // `errorParams` is purposely stateful
   // eslint-disable-next-line fp/no-mutating-assign
@@ -276,6 +280,7 @@ const tExecBuild = async function ({
     errorParams,
     logs,
     debug,
+    systemLog,
     verbose,
     timers: timersA,
     sendStatus,
@@ -325,6 +330,7 @@ const runAndReportBuild = async function ({
   errorParams,
   logs,
   debug,
+  systemLog,
   verbose,
   timers,
   sendStatus,
@@ -365,6 +371,7 @@ const runAndReportBuild = async function ({
       errorParams,
       logs,
       debug,
+      systemLog,
       verbose,
       timers,
       sendStatus,
@@ -457,6 +464,7 @@ const initAndRunBuild = async function ({
   errorParams,
   logs,
   debug,
+  systemLog,
   verbose,
   sendStatus,
   saveConfig,
@@ -528,6 +536,7 @@ const initAndRunBuild = async function ({
       errorParams,
       logs,
       debug,
+      systemLog,
       verbose,
       saveConfig,
       timers: timersB,
@@ -581,6 +590,7 @@ const runBuild = async function ({
   errorParams,
   logs,
   debug,
+  systemLog,
   verbose,
   saveConfig,
   timers,
@@ -634,6 +644,7 @@ const runBuild = async function ({
     configOpts,
     logs,
     debug,
+    systemLog,
     verbose,
     saveConfig,
     timers: timersA,

@@ -145,6 +145,11 @@ Default: false`,
     describe: 'Print user-facing debugging information',
     hidden: true,
   },
+  systemLogFile: {
+    type: 'number',
+    describe: 'File descriptor to where system logs should be piped',
+    hidden: true,
+  },
   verbose: {
     boolean: true,
     describe: 'Print internal debugging information',
