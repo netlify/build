@@ -48,6 +48,7 @@ export const runStep = async function ({
   redirectsPath,
   logs,
   debug,
+  systemLog,
   verbose,
   saveConfig,
   timers,
@@ -109,6 +110,7 @@ export const runStep = async function ({
     error,
     logs,
     debug,
+    systemLog,
     verbose,
     saveConfig,
     timers,
@@ -140,6 +142,7 @@ export const runStep = async function ({
     redirectsPath: redirectsPathA,
     logs,
     debug,
+    systemLog,
     timers: timersA,
     durationNs,
     testOpts,
@@ -237,6 +240,7 @@ const tFireStep = function ({
   error,
   logs,
   debug,
+  systemLog,
   verbose,
   saveConfig,
   errorParams,
@@ -271,6 +275,7 @@ const tFireStep = function ({
       redirectsPath,
       featureFlags,
       debug,
+      systemLog,
       saveConfig,
     })
   }
@@ -294,6 +299,7 @@ const tFireStep = function ({
     error,
     logs,
     debug,
+    systemLog,
     verbose,
   })
 }

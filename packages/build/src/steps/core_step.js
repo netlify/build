@@ -27,6 +27,7 @@ export const fireCoreStep = async function ({
   redirectsPath,
   featureFlags,
   debug,
+  systemLog,
   saveConfig,
 }) {
   try {
@@ -54,6 +55,7 @@ export const fireCoreStep = async function ({
       redirectsPath,
       featureFlags,
       debug,
+      systemLog,
       saveConfig,
     })
     const {
