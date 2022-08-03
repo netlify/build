@@ -12,6 +12,13 @@
   * dependencies
     * @netlify/config bumped from ^18.1.0 to ^18.1.1
 
+## [27.9.0](https://github.com/netlify/build/compare/build-v27.8.1...build-v27.9.0) (2022-08-03)
+
+
+### Features
+
+* add support for system logger ([#4406](https://github.com/netlify/build/issues/4406)) ([6f89dcf](https://github.com/netlify/build/commit/6f89dcf83a772f69884d1d4faf4bdd597a76246b))
+
 ## [27.8.1](https://github.com/netlify/build/compare/build-v27.8.0...build-v27.8.1) (2022-08-01)
 
 
