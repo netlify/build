@@ -125,13 +125,22 @@ const reduceLogLines = function (lines) {
 // Builds a function for logging data to the system logger (i.e. hidden from
 // the user-facing build logs)
 export const getSystemLogger = function (logs, debug, systemLogFile) {
-  // If there's not a file descriptor (or it's set to 0, matching stdout), we
-  // send debug lines to the normal logger. The same happens if the `debug`
-  // flag is used, since that means we want to print logs to stdout.
-  if (!systemLogFile || debug) {
+  // If the `debug` flag is used, we return a function that pipes system logs
+  // to the regular logger, as the intention is for them to end up in stdout.
+  if (debug) {
     return (...args) => log(logs, reduceLogLines(args))
   }
 
+  // If there's not a file descriptor configured for system logs and `debug`
+  // is not set, we return a no-op function that will swallow the errors.
+  if (!systemLogFile) {
+    return () => {
+      // no-op
+    }
+  }
+
+  // Return a function that writes to the file descriptor configured for system
+  // logs.
   const fileDescriptor = createWriteStream(null, { fd: systemLogFile })
 
   fileDescriptor.on('error', () => {
