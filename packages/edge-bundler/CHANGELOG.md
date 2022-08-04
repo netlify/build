@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.0](https://github.com/netlify/edge-bundler/compare/v1.8.0...v1.9.0) (2022-08-04)
+
+
+### Features
+
+* add support for system logger ([#85](https://github.com/netlify/edge-bundler/issues/85)) ([9188bd7](https://github.com/netlify/edge-bundler/commit/9188bd70887d0abb868cca03f18cdd538d8ba7a2))
+
 ## [1.8.0](https://github.com/netlify/edge-bundler/compare/v1.7.0...v1.8.0) (2022-07-29)
 
 
