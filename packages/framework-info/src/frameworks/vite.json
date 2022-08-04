@@ -4,7 +4,7 @@
   "category": "build_tool",
   "detect": {
     "npmDependencies": ["vite"],
-    "excludedNpmDependencies": ["@shopify/hydrogen", "@builderio/qwik", "solid-start"],
+    "excludedNpmDependencies": ["@shopify/hydrogen", "@builder.io/qwik", "solid-start"],
     "configFiles": []
   },
   "dev": {
