@@ -4,10 +4,11 @@ import { join } from 'path'
 import fetch from 'node-fetch'
 
 import type { DenoBridge } from './bridge.js'
+import type { Logger } from './logger.js'
 
 const TYPES_URL = 'https://edge.netlify.com'
 
-const ensureLatestTypes = async (deno: DenoBridge, customTypesURL?: string) => {
+const ensureLatestTypes = async (deno: DenoBridge, logger: Logger, customTypesURL?: string) => {
   const typesURL = customTypesURL ?? TYPES_URL
 
   let [localVersion, remoteVersion] = [await getLocalVersion(deno), '']
@@ -15,23 +16,23 @@ const ensureLatestTypes = async (deno: DenoBridge, customTypesURL?: string) => {
   try {
     remoteVersion = await getRemoteVersion(typesURL)
   } catch (error) {
-    deno.log('Could not check latest version of types:', error)
+    logger.system('Could not check latest version of types:', error)
 
     return
   }
 
   if (localVersion === remoteVersion) {
-    deno.log('Local version of types is up-to-date:', localVersion)
+    logger.system('Local version of types is up-to-date:', localVersion)
 
     return
   }
 
-  deno.log('Local version of types is outdated, updating:', localVersion)
+  logger.system('Local version of types is outdated, updating:', localVersion)
 
   try {
     await deno.run(['cache', '-r', typesURL])
   } catch (error) {
-    deno.log('Could not download latest types:', error)
+    logger.system('Could not download latest types:', error)
 
     return
   }

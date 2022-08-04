@@ -7,7 +7,12 @@ import { stub } from 'sinon'
 import tmp from 'tmp-promise'
 
 import { DenoBridge } from '../src/bridge.js'
+import { getLogger } from '../src/logger.js'
 import { ensureLatestTypes } from '../src/types.js'
+
+const testLogger = getLogger(() => {
+  // no-op
+})
 
 test('`ensureLatestTypes` updates the Deno CLI cache if the local version of types is outdated', async (t) => {
   const mockURL = 'https://edge.netlify'
@@ -17,11 +22,12 @@ test('`ensureLatestTypes` updates the Deno CLI cache if the local version of typ
   const tmpDir = await tmp.dir()
   const deno = new DenoBridge({
     cacheDirectory: tmpDir.path,
+    logger: testLogger,
   })
 
   const mock = stub(deno, 'run').resolves()
 
-  await ensureLatestTypes(deno, mockURL)
+  await ensureLatestTypes(deno, testLogger, mockURL)
 
   const versionFile = await fs.readFile(join(tmpDir.path, 'types-version.txt'), 'utf8')
 
@@ -47,10 +53,11 @@ test('`ensureLatestTypes` does not update the Deno CLI cache if the local versio
   const latestVersionMock = nock(mockURL).get('/version.txt').reply(200, mockVersion)
   const deno = new DenoBridge({
     cacheDirectory: tmpDir.path,
+    logger: testLogger,
   })
   const mock = stub(deno, 'run').resolves()
 
-  await ensureLatestTypes(deno, mockURL)
+  await ensureLatestTypes(deno, testLogger, mockURL)
 
   t.true(latestVersionMock.isDone())
   t.is(mock.callCount, 0)
@@ -67,11 +74,12 @@ test('`ensureLatestTypes` does not throw if the types URL is not available', asy
   const tmpDir = await tmp.dir()
   const deno = new DenoBridge({
     cacheDirectory: tmpDir.path,
+    logger: testLogger,
   })
 
   const mock = stub(deno, 'run').resolves()
 
-  await ensureLatestTypes(deno, mockURL)
+  await ensureLatestTypes(deno, testLogger, mockURL)
 
   t.true(latestVersionMock.isDone())
   t.is(mock.callCount, 0)

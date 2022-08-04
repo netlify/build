@@ -13,6 +13,7 @@ import { findFunctions } from './finder.js'
 import { bundle as bundleESZIP } from './formats/eszip.js'
 import { bundle as bundleJS } from './formats/javascript.js'
 import { ImportMap, ImportMapFile } from './import_map.js'
+import { getLogger, LogFunction } from './logger.js'
 import { writeManifest } from './manifest.js'
 import { ensureLatestTypes } from './types.js'
 
@@ -25,6 +26,7 @@ interface BundleOptions {
   importMaps?: ImportMapFile[]
   onAfterDownload?: OnAfterDownloadHook
   onBeforeDownload?: OnBeforeDownloadHook
+  systemLogger?: LogFunction
 }
 
 interface BundleFormatOptions {
@@ -91,12 +93,15 @@ const bundle = async (
     importMaps,
     onAfterDownload,
     onBeforeDownload,
+    systemLogger,
   }: BundleOptions = {},
 ) => {
+  const logger = getLogger(systemLogger, debug)
   const featureFlags = getFlags(inputFeatureFlags)
   const options: DenoOptions = {
     debug,
     cacheDirectory,
+    logger,
     onAfterDownload,
     onBeforeDownload,
   }
@@ -108,7 +113,7 @@ const bundle = async (
   const deno = new DenoBridge(options)
   const basePath = getBasePath(sourceDirectories, inputBasePath)
 
-  await ensureLatestTypes(deno)
+  await ensureLatestTypes(deno, logger)
 
   // The name of the bundle will be the hash of its contents, which we can't
   // compute until we run the bundle process. For now, we'll use a random ID

@@ -7,6 +7,7 @@ import semver from 'semver'
 
 import { download } from './downloader.js'
 import { getPathInHome } from './home_path.js'
+import { Logger } from './logger.js'
 import { getBinaryExtension } from './platform.js'
 
 const DENO_VERSION_FILE = 'version.txt'
@@ -19,6 +20,7 @@ interface DenoOptions {
   cacheDirectory?: string
   debug?: boolean
   denoDir?: string
+  logger: Logger
   onAfterDownload?: OnAfterDownloadHook
   onBeforeDownload?: OnBeforeDownloadHook
   useGlobal?: boolean
@@ -38,15 +40,17 @@ class DenoBridge {
   currentDownload?: ReturnType<DenoBridge['downloadBinary']>
   debug: boolean
   denoDir?: string
+  logger: Logger
   onAfterDownload?: OnAfterDownloadHook
   onBeforeDownload?: OnBeforeDownloadHook
   useGlobal: boolean
   versionRange: string
 
-  constructor(options: DenoOptions = {}) {
+  constructor(options: DenoOptions) {
     this.cacheDirectory = options.cacheDirectory ?? getPathInHome('deno-cli')
     this.debug = options.debug ?? false
     this.denoDir = options.denoDir
+    this.logger = options.logger
     this.onAfterDownload = options.onAfterDownload
     this.onBeforeDownload = options.onBeforeDownload
     this.useGlobal = options.useGlobal ?? true
@@ -58,10 +62,10 @@ class DenoBridge {
 
     await this.ensureCacheDirectory()
 
-    this.log(`Downloading Deno CLI to ${this.cacheDirectory}...`)
+    this.logger.system(`Downloading Deno CLI to ${this.cacheDirectory}`)
 
     const binaryPath = await download(this.cacheDirectory, this.versionRange)
-    const downloadedVersion = await DenoBridge.getBinaryVersion(binaryPath)
+    const downloadedVersion = await this.getBinaryVersion(binaryPath)
 
     // We should never get here, because it means that `DENO_VERSION_RANGE` is
     // a malformed semver range. If this does happen, let's throw an error so
@@ -83,7 +87,7 @@ class DenoBridge {
     return binaryPath
   }
 
-  static async getBinaryVersion(binaryPath: string) {
+  private async getBinaryVersion(binaryPath: string) {
     try {
       const { stdout } = await execa(binaryPath, ['--version'])
       const version = stdout.match(/^deno ([\d.]+)/)
@@ -93,8 +97,8 @@ class DenoBridge {
       }
 
       return version[1]
-    } catch {
-      // no-op
+    } catch (error) {
+      this.logger.system('Error checking Deno binary version', error)
     }
   }
 
@@ -124,7 +128,7 @@ class DenoBridge {
     }
 
     const globalBinaryName = 'deno'
-    const globalVersion = await DenoBridge.getBinaryVersion(globalBinaryName)
+    const globalVersion = await this.getBinaryVersion(globalBinaryName)
 
     if (globalVersion === undefined || !semver.satisfies(globalVersion, this.versionRange)) {
       return
@@ -168,7 +172,7 @@ class DenoBridge {
     const globalPath = await this.getGlobalBinary()
 
     if (globalPath !== undefined) {
-      this.log('Using global installation of Deno CLI')
+      this.logger.system('Using global installation of Deno CLI')
 
       return { global: true, path: globalPath }
     }
@@ -176,7 +180,7 @@ class DenoBridge {
     const cachedPath = await this.getCachedBinary()
 
     if (cachedPath !== undefined) {
-      this.log('Using cached Deno CLI from', cachedPath)
+      this.logger.system('Using cached Deno CLI from', cachedPath)
 
       return { global: false, path: cachedPath }
     }
@@ -194,14 +198,6 @@ class DenoBridge {
     }
 
     return env
-  }
-
-  log(...data: unknown[]) {
-    if (!this.debug) {
-      return
-    }
-
-    console.log(...data)
   }
 
   // Runs the Deno CLI in the background and returns a reference to the child

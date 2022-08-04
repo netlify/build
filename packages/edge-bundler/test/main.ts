@@ -10,8 +10,12 @@ import { spy } from 'sinon'
 import tmp from 'tmp-promise'
 
 import { DenoBridge } from '../src/bridge.js'
+import { getLogger } from '../src/logger.js'
 import { getPlatformTarget } from '../src/platform.js'
 
+const testLogger = getLogger(() => {
+  // no-op
+})
 const require = createRequire(import.meta.url)
 const archiver = require('archiver')
 
@@ -36,6 +40,7 @@ test('Downloads the Deno CLI on demand and caches it for subsequent calls', asyn
   const afterDownload = spy()
   const deno = new DenoBridge({
     cacheDirectory: tmpDir.path,
+    logger: testLogger,
     onBeforeDownload: beforeDownload,
     onAfterDownload: afterDownload,
     useGlobal: false,
