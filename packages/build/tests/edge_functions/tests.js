@@ -102,14 +102,14 @@ test('handles failure when bundling Edge Functions via runCoreSteps function', a
   t.true(returnValue.includes("The module's source code could not be parsed"))
 })
 
-test.serial('outputs manifest contents if debug is true', async (t) => {
+test.serial('writes manifest contents to stdout if `debug` is set', async (t) => {
   const { returnValue } = await runFixture(t, 'functions_user', {
     flags: { debug: true, mode: 'buildbot', buildSteps: ['edge_functions_bundling'], useRunCoreSteps: true },
   })
   t.true(returnValue.includes('Edge Functions manifest'))
 })
 
-test.serial('writes manifest contents to system logs', async (t) => {
+test.serial('writes manifest contents to system logs if `systemLogFile` is set', async (t) => {
   const { fd, cleanup, path } = await tmp.file()
 
   await runFixture(t, 'functions_user', {
