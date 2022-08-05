@@ -115,7 +115,7 @@ test.serial('writes manifest contents to stdout if `debug` is set', async (t) =>
 
   t.regex(
     returnValue,
-    /Edge Functions manifest: {"bundles":\[{"asset":"[a-fA-F\d]{64}\.js","format":"js"}],"routes":\[{"function":"function-1","pattern":"\^\/one\/\?\$"}],"bundler_version":"1\.8\.0"}/,
+    /Edge Functions manifest: {"bundles":\[{"asset":"[a-fA-F\d]{64}\.js","format":"js"}],"routes":\[{"function":"function-1","pattern":"\^\/one\/\?\$"}],"bundler_version":"\d+\.\d+\.\d+"}/,
   )
 })
 
