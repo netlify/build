@@ -112,7 +112,11 @@ test.serial('writes manifest contents to stdout if `debug` is set', async (t) =>
     },
     snapshot: false,
   })
-  t.true(returnValue.includes('Edge Functions manifest'))
+
+  t.regex(
+    returnValue,
+    /Edge Functions manifest: {"bundles":\[{"asset":"[a-fA-F\d]{64}\.js","format":"js"}],"routes":\[{"function":"function-1","pattern":"\^\/one\/\?\$"}],"bundler_version":"1\.8\.0"}/,
+  )
 })
 
 test.serial('writes manifest contents to system logs if `systemLogFile` is set', async (t) => {
