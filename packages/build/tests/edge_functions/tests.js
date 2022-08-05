@@ -104,7 +104,13 @@ test('handles failure when bundling Edge Functions via runCoreSteps function', a
 
 test.serial('writes manifest contents to stdout if `debug` is set', async (t) => {
   const { returnValue } = await runFixture(t, 'functions_user', {
-    flags: { debug: true, mode: 'buildbot', buildSteps: ['edge_functions_bundling'], useRunCoreSteps: true },
+    flags: {
+      debug: true,
+      mode: 'buildbot',
+      buildSteps: ['edge_functions_bundling'],
+      useRunCoreSteps: true,
+    },
+    snapshot: false,
   })
   t.true(returnValue.includes('Edge Functions manifest'))
 })
