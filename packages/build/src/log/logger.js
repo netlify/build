@@ -113,11 +113,21 @@ export const logWarningSubHeader = function (logs, string, opts) {
 const reduceLogLines = function (lines) {
   return lines
     .map((input) => {
-      if (typeof input === 'object') {
-        return JSON.stringify(input)
+      if (input instanceof Error) {
+        return `${input.message} ${input.stack}`
       }
 
-      return input.toString()
+      if (typeof input === 'object') {
+        try {
+          return JSON.stringify(input)
+        } catch {
+          // Value could not be serialized to JSON, so we return the string
+          // representation.
+          return String(input)
+        }
+      }
+
+      return String(input)
     })
     .join(' ')
 }
