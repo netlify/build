@@ -14,7 +14,7 @@ test('System logger writes to file descriptor', async (t) => {
 
   systemLog('Hello world', { object: true, problem: false })
 
-  t.is(await fs.readFile(path, 'utf8'), 'Hello world {"object":true,"problem":false}')
+  t.is(await fs.readFile(path, 'utf8'), 'Hello world {"object":true,"problem":false}\n')
   t.is(mockProcess.stdout.length, 0)
 
   await cleanup()

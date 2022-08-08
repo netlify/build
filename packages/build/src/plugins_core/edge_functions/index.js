@@ -57,6 +57,7 @@ const coreStep = async function ({
       distImportMapPath,
       featureFlags,
       importMaps: [importMap].filter(Boolean),
+      systemLogger: systemLog,
     })
 
     systemLog('Edge Functions manifest:', manifest)
