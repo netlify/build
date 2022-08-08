@@ -86,17 +86,14 @@ const getDeployDir = function ({ buildDir, repositoryRoot, constants: { PUBLISH_
 const handleDeployError = function (error, errorType) {
   const errorIs422 = error.includes('422')
 
-  let errMsg;
-  if (errorIs422) {
-    errMsg = `
+  const errMsg = errorIs422
+    ? `
     File upload failed because of mismatched SHAs.
     This can happen when files are changed after the deployment process has started but before they are uploaded.
 
     Error: ${error}
     `
-  } else {
-    errMsg = `Deploy did not succeed: ${error}`
-  }
+    : `Deploy did not succeed: ${error}`
 
   const errorA = new Error(errMsg)
   const errorInfo =
