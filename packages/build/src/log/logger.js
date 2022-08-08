@@ -157,5 +157,5 @@ export const getSystemLogger = function (logs, debug, systemLogFile) {
     logError(logs, 'Could not write to system log file')
   })
 
-  return (...args) => fileDescriptor.write(`${reduceLogLines(args)}\n`)
+  return (...args) => fileDescriptor.write(reduceLogLines(args))
 }
