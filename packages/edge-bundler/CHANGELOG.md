@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.0](https://github.com/netlify/edge-bundler/compare/v1.9.0...v1.10.0) (2022-08-08)
+
+
+### Features
+
+* use default logger in DenoBridge ([#89](https://github.com/netlify/edge-bundler/issues/89)) ([50b91e7](https://github.com/netlify/edge-bundler/commit/50b91e7298f0a9fddff4bb9d662e3fa1b1fd81f9))
+
 ## [1.9.0](https://github.com/netlify/edge-bundler/compare/v1.8.0...v1.9.0) (2022-08-04)
 
 
