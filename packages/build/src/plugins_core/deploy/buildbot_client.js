@@ -84,7 +84,21 @@ const getDeployDir = function ({ buildDir, repositoryRoot, constants: { PUBLISH_
 
 // We distinguish between user errors and system errors during deploys
 const handleDeployError = function (error, errorType) {
-  const errorA = new Error(`Deploy did not succeed: ${error}`)
+  const errorIs422 = error.includes('422')
+
+  let errMsg;
+  if (errorIs422) {
+    errMsg = `
+    File upload failed because of mismatched SHAs.
+    This can happen when files are changed after the deployment process has started but before they are uploaded.
+
+    Error: ${error}
+    `
+  } else {
+    errMsg = `Deploy did not succeed: ${error}`
+  }
+
+  const errorA = new Error(errMsg)
   const errorInfo =
     errorType === 'user' ? { type: 'resolveConfig' } : { type: 'coreStep', location: { coreStepName: 'Deploy site' } }
   addErrorInfo(errorA, errorInfo)
