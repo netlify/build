@@ -12,6 +12,19 @@
   * dependencies
     * @netlify/config bumped from ^18.1.0 to ^18.1.1
 
+## [27.11.0](https://github.com/netlify/build/compare/build-v27.10.0...build-v27.11.0) (2022-08-08)
+
+
+### Features
+
+* improve serialization of system log input ([#4414](https://github.com/netlify/build/issues/4414)) ([a873036](https://github.com/netlify/build/commit/a8730361b0da842351bb7586f858c85465f5f8c2))
+* set Edge Bundler system logger behind feature flag ([#4415](https://github.com/netlify/build/issues/4415)) ([390c989](https://github.com/netlify/build/commit/390c989a87207b1316dd5b70544b3b40f50b6fd9))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to ^1.10.0 ([#4417](https://github.com/netlify/build/issues/4417)) ([e1a806a](https://github.com/netlify/build/commit/e1a806a078f35eae9bce04d45cef232dc2ae8a73))
+
 ## [27.10.0](https://github.com/netlify/build/compare/build-v27.9.1...build-v27.10.0) (2022-08-08)
 
 
