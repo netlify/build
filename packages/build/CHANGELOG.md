@@ -12,6 +12,18 @@
   * dependencies
     * @netlify/config bumped from ^18.1.0 to ^18.1.1
 
+## [27.10.0](https://github.com/netlify/build/compare/build-v27.9.1...build-v27.10.0) (2022-08-08)
+
+
+### Features
+
+* pass system logger to Edge Bundler ([#4410](https://github.com/netlify/build/issues/4410)) ([86fbb13](https://github.com/netlify/build/commit/86fbb13b2ac3be9b9702b482fe7359a234bee43d))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to ^1.9.0 ([#4411](https://github.com/netlify/build/issues/4411)) ([ad01334](https://github.com/netlify/build/commit/ad0133457a09466e02efccfbee87905d7e2ca62e))
+
 ## [27.9.1](https://github.com/netlify/build/compare/build-v27.9.0...build-v27.9.1) (2022-08-04)
 
 
