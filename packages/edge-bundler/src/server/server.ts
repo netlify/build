@@ -30,7 +30,7 @@ const prepareServer = ({
   port,
 }: PrepareServerOptions) => {
   const processRef: ProcessRef = {}
-  const startIsolate = async (newFunctions: EdgeFunction[]) => {
+  const startIsolate = async (newFunctions: EdgeFunction[], env: NodeJS.ProcessEnv = {}) => {
     if (processRef?.ps !== undefined) {
       await killProcess(processRef.ps)
     }
@@ -60,7 +60,14 @@ const prepareServer = ({
 
     const bootstrapFlags = ['--port', port.toString()]
 
-    await deno.runInBackground(['run', ...denoFlags, stage2Path, ...bootstrapFlags], true, processRef)
+    // We set `extendEnv: false` to avoid polluting the edge function context
+    // with variables from the user's system, since those will not be available
+    // in the production environment.
+    await deno.runInBackground(['run', ...denoFlags, stage2Path, ...bootstrapFlags], processRef, {
+      pipeOutput: true,
+      env,
+      extendEnv: false,
+    })
 
     const success = await waitForServer(port, processRef.ps)
 

@@ -17,7 +17,7 @@ const archiver = require('archiver')
 
 test('Downloads the Deno CLI on demand and caches it for subsequent calls', async (t) => {
   const latestVersion = '1.20.3'
-  const mockBinaryOutput = `#!/usr/bin/env node\n\nconsole.log("deno ${latestVersion}")`
+  const mockBinaryOutput = `#!/usr/bin/env sh\n\necho "deno ${latestVersion}"`
   const data = new PassThrough()
   const archive = archiver('zip', { zlib: { level: 9 } })
 
