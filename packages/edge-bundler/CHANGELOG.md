@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.0](https://github.com/netlify/edge-bundler/compare/v1.10.0...v1.11.0) (2022-08-09)
+
+
+### Features
+
+* allow setting environment variables and disable extending in DenoServer ([#82](https://github.com/netlify/edge-bundler/issues/82)) ([3b9af3d](https://github.com/netlify/edge-bundler/commit/3b9af3dc0bf39a74adad1d96574aae8ba0adb2e8))
+
 ## [1.10.0](https://github.com/netlify/edge-bundler/compare/v1.9.0...v1.10.0) (2022-08-08)
 
 
