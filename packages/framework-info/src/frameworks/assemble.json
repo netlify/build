@@ -13,5 +13,10 @@
     "directory": "dist"
   },
   "env": {},
+  "logo": {
+    "default": "/logos/assemble/default.svg",
+    "light": "/logos/assemble/default.svg",
+    "dark": "/logos/assemble/default.svg"
+  },
   "plugins": []
 }

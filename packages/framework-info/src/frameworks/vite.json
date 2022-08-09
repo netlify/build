@@ -16,6 +16,11 @@
     "command": "vite build",
     "directory": "dist"
   },
+  "logo": {
+    "default": "/logos/vite/default.svg",
+    "light": "/logos/vite/default.svg",
+    "dark": "/logos/vite/default.svg"
+  },
   "env": {},
   "plugins": []
 }

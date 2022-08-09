@@ -16,6 +16,11 @@
     "command": "blitz build",
     "directory": "out"
   },
+  "logo": {
+    "default": "/logos/blitz/light.svg",
+    "light": "/logos/blitz/light.svg",
+    "dark": "/logos/blitz/dark.svg"
+  },
   "env": {},
   "plugins": []
 }

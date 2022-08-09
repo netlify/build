@@ -25,6 +25,11 @@
     "directory": "web/dist"
   },
   "staticAssetsDirectory": "public",
+  "logo": {
+    "default": "/logos/redwoodjs/default.svg",
+    "light": "/logos/redwoodjs/default.svg",
+    "dark": "/logos/redwoodjs/default.svg"
+  },
   "env": {},
   "plugins": []
 }

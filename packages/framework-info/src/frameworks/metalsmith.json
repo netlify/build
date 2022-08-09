@@ -12,6 +12,11 @@
     "command": "metalsmith",
     "directory": "build"
   },
+  "logo": {
+    "default": "/logos/metalsmith/default.svg",
+    "light": "/logos/metalsmith/default.svg",
+    "dark": "/logos/metalsmith/default.svg"
+  },
   "env": {},
   "plugins": []
 }

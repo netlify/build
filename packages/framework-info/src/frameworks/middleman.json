@@ -16,6 +16,11 @@
     "command": "bundle exec middleman build",
     "directory": "build"
   },
+  "logo": {
+    "default": "/logos/middleman/default.svg",
+    "light": "/logos/middleman/default.svg",
+    "dark": "/logos/middleman/default.svg"
+  },
   "env": {},
   "plugins": []
 }

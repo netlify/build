@@ -16,6 +16,11 @@
     "command": "npm run build",
     "directory": "dist"
   },
+  "logo": {
+    "default": "/logos/qwik/default.svg",
+    "light": "/logos/qwik/default.svg",
+    "dark": "/logos/qwik/default.svg"
+  },
   "env": {},
   "plugins": []
 }

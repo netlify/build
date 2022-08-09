@@ -12,6 +12,11 @@
     "command": "grunt build",
     "directory": "dist"
   },
+  "logo": {
+    "default": "/logos/grunt/default.svg",
+    "light": "/logos/grunt/default.svg",
+    "dark": "/logos/grunt/default.svg"
+  },
   "env": {},
   "plugins": []
 }

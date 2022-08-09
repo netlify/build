@@ -16,6 +16,11 @@
     "command": "npm run build",
     "directory": "public"
   },
+  "logo": {
+    "default": "/logos/svelte-kit/default.svg",
+    "light": "/logos/svelte-kit/default.svg",
+    "dark": "/logos/svelte-kit/default.svg"
+  },
   "env": {},
   "plugins": []
 }

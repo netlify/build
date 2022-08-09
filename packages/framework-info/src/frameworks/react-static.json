@@ -16,6 +16,11 @@
     "command": "react-static build",
     "directory": "dist"
   },
+  "logo": {
+    "default": "/logos/react-static/default.png",
+    "light": "/logos/react-static/default.png",
+    "dark": "/logos/react-static/default.png"
+  },
   "env": {},
   "plugins": []
 }

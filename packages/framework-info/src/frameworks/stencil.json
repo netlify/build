@@ -16,6 +16,11 @@
     "command": "stencil build",
     "directory": "www"
   },
+  "logo": {
+    "default": "/logos/stencil/light.svg",
+    "light": "/logos/stencil/light.svg",
+    "dark": "/logos/stencil/dark.svg"
+  },
   "env": { "BROWSER": "none", "PORT": "3000" },
   "plugins": []
 }

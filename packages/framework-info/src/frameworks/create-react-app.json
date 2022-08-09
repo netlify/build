@@ -17,6 +17,11 @@
     "directory": "build"
   },
   "staticAssetsDirectory": "public",
+  "logo": {
+    "default": "/logos/create-react-app/default.svg",
+    "light": "/logos/create-react-app/default.svg",
+    "dark": "/logos/create-react-app/default.svg"
+  },
   "env": { "BROWSER": "none", "PORT": "3000" },
   "plugins": []
 }

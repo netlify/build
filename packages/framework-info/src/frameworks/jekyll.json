@@ -16,6 +16,11 @@
     "command": "bundle exec jekyll build",
     "directory": "_site"
   },
+  "logo": {
+    "default": "/logos/jekyll/dark.svg",
+    "light": "/logos/jekyll/light.svg",
+    "dark": "/logos/jekyll/dark.svg"
+  },
   "env": {},
   "plugins": []
 }

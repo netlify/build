@@ -16,6 +16,11 @@
     "command": "solid-start build",
     "directory": "netlify"
   },
+  "logo": {
+    "default": "/logos/solid-start/default.svg",
+    "light": "/logos/solid-start/default.svg",
+    "dark": "/logos/solid-start/default.svg"
+  },
   "env": {},
   "plugins": []
 }

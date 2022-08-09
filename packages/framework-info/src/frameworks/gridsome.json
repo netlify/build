@@ -16,6 +16,11 @@
     "command": "gridsome build",
     "directory": "dist"
   },
+  "logo": {
+    "default": "/logos/gridsome/default.svg",
+    "light": "/logos/gridsome/light.svg",
+    "dark": "/logos/gridsome/dark.svg"
+  },
   "env": {},
   "plugins": []
 }

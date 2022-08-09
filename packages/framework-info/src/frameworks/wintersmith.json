@@ -16,6 +16,11 @@
     "command": "wintersmith build",
     "directory": "build"
   },
+  "logo": {
+    "default": "/logos/wintersmith/default.svg",
+    "light": "/logos/wintersmith/default.svg",
+    "dark": "/logos/wintersmith/default.svg"
+  },
   "env": {},
   "plugins": []
 }

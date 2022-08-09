@@ -17,6 +17,11 @@
     "directory": "build"
   },
   "staticAssetsDirectory": "static",
+  "logo": {
+    "default": "/logos/docusaurus/default.svg",
+    "light": "/logos/docusaurus/default.svg",
+    "dark": "/logos/docusaurus/default.svg"
+  },
   "env": { "BROWSER": "none" },
   "plugins": []
 }

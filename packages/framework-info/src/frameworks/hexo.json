@@ -16,6 +16,11 @@
     "command": "hexo generate",
     "directory": "public"
   },
+  "logo": {
+    "default": "/logos/hexo/default.svg",
+    "light": "/logos/hexo/light.svg",
+    "dark": "/logos/hexo/dark.svg"
+  },
   "env": {},
   "plugins": []
 }

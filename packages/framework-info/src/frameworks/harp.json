@@ -16,6 +16,11 @@
     "command": "harp compile",
     "directory": "www"
   },
+  "logo": {
+    "default": "/logos/harp/default.svg",
+    "light": "/logos/harp/default.svg",
+    "dark": "/logos/harp/default.svg"
+  },
   "env": {},
   "plugins": []
 }

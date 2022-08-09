@@ -16,6 +16,11 @@
     "command": "npm run build",
     "directory": "dist/client"
   },
+  "logo": {
+    "default": "/logos/hydrogen/default.svg",
+    "light": "/logos/hydrogen/default.svg",
+    "dark": "/logos/hydrogen/default.svg"
+  },
   "env": {},
   "plugins": []
 }

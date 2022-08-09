@@ -16,6 +16,11 @@
     "command": "phenomic build",
     "directory": "public"
   },
+  "logo": {
+    "default": "/logos/phenomic/default.svg",
+    "light": "/logos/phenomic/default.svg",
+    "dark": "/logos/phenomic/default.svg"
+  },
   "env": {},
   "plugins": []
 }

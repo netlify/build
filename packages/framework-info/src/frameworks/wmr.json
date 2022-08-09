@@ -16,6 +16,11 @@
     "command": "wmr build",
     "directory": "dist"
   },
+  "logo": {
+    "default": "/logos/wmr/default.svg",
+    "light": "/logos/wmr/default.svg",
+    "dark": "/logos/wmr/default.svg"
+  },
   "env": {},
   "plugins": []
 }

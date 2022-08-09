@@ -16,6 +16,11 @@
     "command": "expo build:web",
     "directory": "web-build"
   },
+  "logo": {
+    "default": "/logos/expo/default.svg",
+    "light": "/logos/expo/light.svg",
+    "dark": "/logos/expo/dark.svg"
+  },
   "env": {},
   "plugins": []
 }

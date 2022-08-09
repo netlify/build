@@ -16,6 +16,11 @@
     "command": "ember build",
     "directory": "dist"
   },
+  "logo": {
+    "default": "/logos/ember/default.svg",
+    "light": "/logos/ember/light.svg",
+    "dark": "/logos/ember/dark.svg"
+  },
   "env": {},
   "plugins": []
 }

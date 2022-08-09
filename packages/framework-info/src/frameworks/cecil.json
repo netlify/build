@@ -17,5 +17,10 @@
     "directory": "_site"
   },
   "env": {},
+  "logo": {
+    "default": "/logos/cecil/default.svg",
+    "light": "/logos/cecil/default.svg",
+    "dark": "/logos/cecil/default.svg"
+  },
   "plugins": []
 }

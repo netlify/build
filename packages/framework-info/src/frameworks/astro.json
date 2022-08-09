@@ -18,5 +18,10 @@
   },
   "staticAssetsDirectory": "public",
   "env": {},
+  "logo": {
+    "default": "/logos/astro/light.svg",
+    "light": "/logos/astro/light.svg",
+    "dark": "/logos/astro/dark.svg"
+  },
   "plugins": []
 }

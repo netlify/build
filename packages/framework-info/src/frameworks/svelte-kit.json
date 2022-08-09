@@ -16,6 +16,11 @@
     "command": "svelte-kit build",
     "directory": "build"
   },
+  "logo": {
+    "default": "/logos/svelte-kit/default.svg",
+    "light": "/logos/svelte-kit/default.svg",
+    "dark": "/logos/svelte-kit/default.svg"
+  },
   "staticAssetsDirectory": "static",
   "env": {},
   "plugins": []

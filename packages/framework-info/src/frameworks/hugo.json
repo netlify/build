@@ -16,6 +16,11 @@
     "command": "hugo",
     "directory": "public"
   },
+  "logo": {
+    "default": "/logos/hugo/default.svg",
+    "light": "/logos/hugo/default.svg",
+    "dark": "/logos/hugo/default.svg"
+  },
   "env": {},
   "plugins": []
 }

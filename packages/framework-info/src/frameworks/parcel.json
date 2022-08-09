@@ -16,6 +16,11 @@
     "command": "parcel build",
     "directory": "dist"
   },
+  "logo": {
+    "default": "/logos/parcel/default.svg",
+    "light": "/logos/parcel/default.svg",
+    "dark": "/logos/parcel/default.svg"
+  },
   "env": {},
   "plugins": []
 }

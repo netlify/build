@@ -16,6 +16,11 @@
     "command": "ng build --prod",
     "directory": "dist/"
   },
+  "logo": {
+    "default": "/logos/angular/default.svg",
+    "light": "/logos/angular/default.svg",
+    "dark": "/logos/angular/default.svg"
+  },
   "env": {},
   "plugins": []
 }

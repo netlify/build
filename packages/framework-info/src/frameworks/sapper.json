@@ -16,6 +16,11 @@
     "command": "sapper export",
     "directory": "__sapper__/export"
   },
+  "logo": {
+    "default": "/logos/sapper/default.svg",
+    "light": "/logos/sapper/default.svg",
+    "dark": "/logos/sapper/default.svg"
+  },
   "staticAssetsDirectory": "static",
   "env": {},
   "plugins": []

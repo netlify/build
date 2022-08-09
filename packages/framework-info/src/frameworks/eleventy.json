@@ -16,6 +16,11 @@
     "command": "eleventy",
     "directory": "_site"
   },
+  "logo": {
+    "default": "/logos/eleventy/default.svg",
+    "light": "/logos/eleventy/default.svg",
+    "dark": "/logos/eleventy/default.svg"
+  },
   "env": {},
   "plugins": []
 }

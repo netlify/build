@@ -16,6 +16,11 @@
     "command": "nuxt generate",
     "directory": "dist"
   },
+  "logo": {
+    "default": "/logos/nuxt/default.svg",
+    "light": "/logos/nuxt/light.svg",
+    "dark": "/logos/nuxt/dark.svg"
+  },
   "env": {},
   "plugins": []
 }

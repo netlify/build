@@ -17,5 +17,10 @@
     "directory": "public"
   },
   "env": {},
+  "logo": {
+    "default": "/logos/brunch/default.svg",
+    "light": "/logos/brunch/default.svg",
+    "dark": "/logos/brunch/default.svg"
+  },
   "plugins": []
 }

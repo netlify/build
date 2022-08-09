@@ -16,6 +16,11 @@
     "command": "roots compile",
     "directory": "public"
   },
+  "logo": {
+    "default": "/logos/roots/default.svg",
+    "light": "/logos/roots/default.svg",
+    "dark": "/logos/roots/default.svg"
+  },
   "env": {},
   "plugins": []
 }

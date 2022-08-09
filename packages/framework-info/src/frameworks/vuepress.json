@@ -16,6 +16,11 @@
     "command": "vuepress build",
     "directory": ".vuepress/dist"
   },
+  "logo": {
+    "default": "/logos/vuepress/default.svg",
+    "light": "/logos/vuepress/default.svg",
+    "dark": "/logos/vuepress/default.svg"
+  },
   "env": {},
   "plugins": []
 }

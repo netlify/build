@@ -16,6 +16,11 @@
     "command": "next build",
     "directory": ".next"
   },
+  "logo": {
+    "default":"/logos/nextjs/light.svg",
+    "light":"/logos/nextjs/light.svg",
+    "dark":"/logos/nextjs/dark.svg"
+  },
   "env": {},
   "plugins": [
     {

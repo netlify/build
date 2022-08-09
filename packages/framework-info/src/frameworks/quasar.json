@@ -16,6 +16,11 @@
     "command": "quasar build",
     "directory": "dist/spa"
   },
+  "logo": {
+    "default": "/logos/quasar/default.svg",
+    "light": "/logos/quasar/default.svg",
+    "dark": "/logos/quasar/default.svg"
+  },
   "env": {},
   "plugins": []
 }

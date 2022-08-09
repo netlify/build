@@ -16,6 +16,11 @@
     "command": "vue-cli-service build",
     "directory": "dist"
   },
+  "logo": {
+    "default": "/logos/vue/default.svg",
+    "light": "/logos/vue/default.svg",
+    "dark": "/logos/vue/default.svg"
+  },
   "env": {},
   "plugins": []
 }

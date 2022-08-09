@@ -12,6 +12,11 @@
     "command": "gulp build",
     "directory": "dist"
   },
+  "logo": {
+    "default": "/logos/gulp/default.svg",
+    "light": "/logos/gulp/default.svg",
+    "dark": "/logos/gulp/default.svg"
+  },
   "env": {},
   "plugins": []
 }
