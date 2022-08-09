@@ -118,6 +118,15 @@ const FRAMEWORK_JSON_SCHEMA = {
       type: 'object',
       additionalProperties: { type: 'string' },
     },
+    logo: {
+      type: 'object',
+      additionalProperties: false,
+      properties: {
+        default: { type: 'string' },
+        light: { type: 'string' },
+        dark: { type: 'string' },
+      },
+    },
     plugins: {
       type: 'array',
       items: PLUGIN_SCHEMA,

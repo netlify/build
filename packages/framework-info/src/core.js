@@ -147,6 +147,7 @@ const getFrameworkInfo = function (
     build: { command: frameworkBuildCommand, directory },
     staticAssetsDirectory,
     env,
+    logo,
     plugins,
   },
   { scripts, runScriptCommand, nodeVersion },
@@ -161,6 +162,7 @@ const getFrameworkInfo = function (
     build: { commands: [frameworkBuildCommand], directory },
     staticAssetsDirectory,
     env,
+    logo,
     plugins: recommendedPlugins,
   }
 }

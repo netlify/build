@@ -21,7 +21,6 @@
     "build:browser": "run-s build:browser:*",
     "build:browser:core": "webpack --config scripts/webpack.config.core.js",
     "build:browser:site-root": "cpy index.html ../dist",
-    "develop:site-react": "webpack serve --config scripts/webpack.config.site.js",
     "test": "npm run format && npm run test:dev",
     "format": "run-s format:check-fix:*",
     "format:ci": "run-s format:check:*",
