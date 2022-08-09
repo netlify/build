@@ -1,4 +1,4 @@
-import { writeStage2 } from 'https://62d144a15553b50009af7ac6--edge.netlify.com/bundler/mod.ts'
+import { writeStage2 } from 'https://62ea8d05a6858300091547ed--edge.netlify.com/bundler/mod.ts'
 
 const [payload] = Deno.args
 const { basePath, destPath, functions, imports } = JSON.parse(payload)
