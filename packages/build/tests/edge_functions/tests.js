@@ -124,7 +124,6 @@ test.serial('writes manifest contents to system logs if `systemLogFile` is set',
 
   await runFixture(t, 'functions_user', {
     flags: { debug: false, mode: 'buildbot', systemLogFile: fd },
-    snapshot: false,
   })
 
   const fileContents = await fs.readFile(path, 'utf8')
