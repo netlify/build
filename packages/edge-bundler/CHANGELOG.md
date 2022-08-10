@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.1](https://github.com/netlify/edge-bundler/compare/v1.12.0...v1.12.1) (2022-08-10)
+
+
+### Bug Fixes
+
+* ensure PATH is always set ([#93](https://github.com/netlify/edge-bundler/issues/93)) ([2f71c57](https://github.com/netlify/edge-bundler/commit/2f71c5752d7ef869d3bf106b78c26bebfd9e32b2))
+
 ## [1.12.0](https://github.com/netlify/edge-bundler/compare/v1.11.0...v1.12.0) (2022-08-09)
 
 
