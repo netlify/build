@@ -3,6 +3,7 @@ import path from 'path'
 import process from 'process'
 
 import { execa, ExecaChildProcess, Options } from 'execa'
+import pathKey from 'path-key'
 import semver from 'semver'
 
 import { download } from './downloader.js'
@@ -198,6 +199,9 @@ class DenoBridge {
     if (this.denoDir !== undefined) {
       env.DENO_DIR = this.denoDir
     }
+
+    // Ensure PATH is always set as otherwise we are not able to find the global deno binary
+    env[pathKey()] = inputEnv[pathKey({ env: inputEnv })] || process.env[pathKey()]
 
     return env
   }
