@@ -52,6 +52,7 @@ const INTERNAL_FLAGS = [
   'mode',
   'apiHost',
   'cacheDir',
+  'systemLogFile',
 ]
 const HIDDEN_FLAGS = [...SECURE_FLAGS, ...TEST_FLAGS, ...INTERNAL_FLAGS]
 const HIDDEN_DEBUG_FLAGS = [...SECURE_FLAGS, ...TEST_FLAGS]
