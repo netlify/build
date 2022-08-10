@@ -1,6 +1,6 @@
 {
   "name": "@netlify/build",
-  "version": "27.11.1",
+  "version": "27.11.2",
   "description": "Netlify build module",
   "type": "module",
   "exports": "./src/core/main.js",
@@ -56,7 +56,7 @@
   "license": "MIT",
   "dependencies": {
     "@bugsnag/js": "^7.0.0",
-    "@netlify/edge-bundler": "^1.12.0",
+    "@netlify/edge-bundler": "^1.12.1",
     "@netlify/cache-utils": "^4.0.0",
     "@netlify/config": "^18.1.2",
     "@netlify/functions-utils": "^4.2.3",
