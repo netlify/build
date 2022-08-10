@@ -103,14 +103,15 @@ test('handles failure when bundling Edge Functions via runCoreSteps function', a
 })
 
 test.serial('writes manifest contents to stdout if `debug` is set', async (t) => {
+  // This file descriptor doesn't exist, but it won't be used anyway since
+  // `debug` is set.
+  const systemLogFile = 7
   const { returnValue } = await runFixture(t, 'functions_user', {
     flags: {
       debug: true,
       mode: 'buildbot',
-      buildSteps: ['edge_functions_bundling'],
-      useRunCoreSteps: true,
+      systemLogFile,
     },
-    snapshot: false,
   })
 
   t.regex(
