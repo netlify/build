@@ -5,7 +5,7 @@ import { getSeverity } from '../core/severity.js'
 import { handleBuildError } from '../error/handle.js'
 import { getErrorInfo } from '../error/info.js'
 import { startErrorMonitor } from '../error/monitor/start.js'
-import { getBufferLogs } from '../log/logger.js'
+import { getBufferLogs, getSystemLogger } from '../log/logger.js'
 import { logBuildStart } from '../log/messages/core.js'
 import { reportStatuses } from '../status/report.js'
 
@@ -39,6 +39,7 @@ import { runSteps } from './run_steps.js'
 export const runCoreSteps = async (buildSteps, flags = {}) => {
   const { errorMonitor, mode, logs, debug, ...flagsA } = startBuild(flags)
   const errorParams = { errorMonitor, mode, logs, debug }
+  const systemLog = getSystemLogger(logs, debug)
 
   try {
     const { netlifyConfig: netlifyConfigA, configMutations } = await executeBuildStep({
@@ -49,6 +50,7 @@ export const runCoreSteps = async (buildSteps, flags = {}) => {
       debug,
       errorParams,
       buildSteps,
+      systemLog,
     })
     const { success, severityCode } = getSeverity('success')
 
@@ -93,6 +95,7 @@ const executeBuildStep = async function ({
   featureFlags,
   buildSteps,
   repositoryRoot,
+  systemLog,
 }) {
   const configOpts = getConfigOpts({
     config,
@@ -140,6 +143,7 @@ const executeBuildStep = async function ({
       childEnv,
       buildSteps,
       repositoryRoot: repositoryRootA,
+      systemLog,
     })
 
     return {
@@ -175,6 +179,7 @@ const runBuildStep = async function ({
   childEnv,
   buildSteps,
   repositoryRoot,
+  systemLog,
 }) {
   const { netlifyConfig: netlifyConfigA, configMutations } = await runSteps({
     steps: getBuildSteps(buildSteps),
@@ -186,9 +191,10 @@ const runBuildStep = async function ({
     debug,
     timers: [],
     featureFlags,
+    // eslint-disable-next-line max-lines
     childEnv,
     repositoryRoot,
+    systemLog,
   })
-
   return { netlifyConfig: netlifyConfigA, configMutations }
 }
