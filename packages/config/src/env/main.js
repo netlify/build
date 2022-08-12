@@ -53,18 +53,26 @@ export const getEnv = async function ({
 
         env.set(key, {
           sources: [...envSources, source.key],
-          value,
+          value: convertToString(value),
         })
       } else {
         env.set(key, {
           sources: [source.key],
-          value: source.values[key],
+          value: convertToString(source.values[key]),
         })
       }
     })
   })
 
   return Object.fromEntries(env)
+}
+
+const convertToString = (value) => {
+  if (typeof value === 'string') {
+    return value
+  }
+
+  return value.toString()
 }
 
 // Environment variables not set by users, but meant to mimic the production
