@@ -18,4 +18,5 @@ export const DEFAULT_FEATURE_FLAGS = {
   buildbot_zisi_esbuild_parser: false,
   edge_functions_cache_cli: false,
   edge_functions_produce_eszip: false,
+  edge_functions_system_logger: false,
 }

@@ -3,6 +3,7 @@ import { join } from 'path'
 
 import test from 'ava'
 import { pathExists } from 'path-exists'
+import tmp from 'tmp-promise'
 
 import { FIXTURES_DIR, runFixture } from '../helpers/main.js'
 
@@ -86,7 +87,9 @@ test.serial('handles failure when bundling Edge Functions', async (t) => {
 test('bundles Edge Functions via runCoreSteps function', async (t) => {
   const fixtureName = 'functions_user'
 
-  await runFixture(t, fixtureName, { flags: { buildSteps: ['edge_functions_bundling'], useRunCoreSteps: true } })
+  await runFixture(t, fixtureName, {
+    flags: { buildSteps: ['edge_functions_bundling'], debug: false, useRunCoreSteps: true },
+  })
   await assertManifest(t, fixtureName)
 })
 
@@ -99,9 +102,37 @@ test('handles failure when bundling Edge Functions via runCoreSteps function', a
   t.true(returnValue.includes("The module's source code could not be parsed"))
 })
 
-test.serial('outputs manifest contents if debug is true', async (t) => {
+test.serial('writes manifest contents to stdout if `debug` is set', async (t) => {
   const { returnValue } = await runFixture(t, 'functions_user', {
-    flags: { debug: true, mode: 'buildbot', buildSteps: ['edge_functions_bundling'], useRunCoreSteps: true },
+    flags: {
+      debug: true,
+      mode: 'buildbot',
+      buildSteps: ['edge_functions_bundling'],
+      useRunCoreSteps: true,
+    },
+    snapshot: false,
   })
-  t.true(returnValue.includes('Edge Functions manifest'))
+
+  t.regex(
+    returnValue,
+    /Edge Functions manifest: {"bundles":\[{"asset":"[a-fA-F\d]{64}\.js","format":"js"}],"routes":\[{"function":"function-1","pattern":"\^\/one\/\?\$"}],"bundler_version":"\d+\.\d+\.\d+"}/,
+  )
+})
+
+test.serial('writes manifest contents to system logs if `systemLogFile` is set', async (t) => {
+  const { fd, cleanup, path } = await tmp.file()
+
+  await runFixture(t, 'functions_user', {
+    flags: { debug: false, mode: 'buildbot', systemLogFile: fd },
+    snapshot: false,
+  })
+
+  const fileContents = await fs.readFile(path, 'utf8')
+
+  await cleanup()
+
+  t.regex(
+    fileContents,
+    /Edge Functions manifest: {"bundles":\[{"asset":"[a-fA-F\d]{64}\.js","format":"js"}],"routes":\[{"function":"function-1","pattern":"\^\/one\/\?\$"}],"bundler_version":"\d+\.\d+\.\d+"}/,
+  )
 })

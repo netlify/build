@@ -4,6 +4,7 @@ import test from 'ava'
 import tmp from 'tmp-promise'
 
 import { getSystemLogger } from '../../../src/log/logger.js'
+import { normalizeOutput } from '../../helpers/normalize.js'
 
 test('System logger writes to file descriptor', async (t) => {
   const { fd, cleanup, path } = await tmp.file()
@@ -11,10 +12,13 @@ test('System logger writes to file descriptor', async (t) => {
     stdout: [],
   }
   const systemLog = getSystemLogger(mockProcess, false, fd)
+  const error = new Error('Something went wrong')
 
-  systemLog('Hello world', { object: true, problem: false })
+  systemLog('Hello world', { object: true, problem: false }, error)
 
-  t.is(await fs.readFile(path, 'utf8'), 'Hello world {"object":true,"problem":false}')
+  const output = normalizeOutput(await fs.readFile(path, 'utf8'))
+
+  t.snapshot(output)
   t.is(mockProcess.stdout.length, 0)
 
   await cleanup()
@@ -26,11 +30,14 @@ test('System logger does not write to file descriptor when `debug: true`', async
     stdout: [],
   }
   const systemLog = getSystemLogger(mockProcess, true, fd)
+  const error = new Error('Something went wrong')
 
-  systemLog('Hello world', { object: true, problem: false })
+  systemLog('Hello world', { object: true, problem: false }, error)
+
+  const output = normalizeOutput(mockProcess.stdout[0])
 
   t.is(mockProcess.stdout.length, 1)
-  t.is(mockProcess.stdout[0], 'Hello world {"object":true,"problem":false}')
+  t.snapshot(output)
   t.is(await fs.readFile(path, 'utf8'), '')
 
   await cleanup()

@@ -143,11 +143,11 @@ test('netlifyConfig.build.publish mutations are used by constants.PUBLISH_DIR', 
 })
 
 test('netlifyConfig.build.edge_functions mutations are used by constants.EDGE_FUNCTIONS_SRC', async (t) => {
-  await runFixture(t, 'edge_functions_constants')
+  await runFixture(t, 'edge_functions_constants', { flags: { debug: false } })
 })
 
 test('netlifyConfig.edge_functions can be assigned all at once', async (t) => {
-  await runFixture(t, 'edge_functions_all')
+  await runFixture(t, 'edge_functions_all', { flags: { debug: false } })
 })
 
 test('netlifyConfig.services can be assigned all at once', async (t) => {
