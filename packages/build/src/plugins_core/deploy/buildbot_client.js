@@ -84,7 +84,7 @@ const getDeployDir = function ({ buildDir, repositoryRoot, constants: { PUBLISH_
 
 // We distinguish between user errors and system errors during deploys
 const handleDeployError = function (error, errorType) {
-  const errorIs422 = error.includes('422')
+  const errorIs422 = error.code === '422'
 
   const errMsg = errorIs422
     ? `
