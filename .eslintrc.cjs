@@ -4,7 +4,7 @@ module.exports = {
   extends: ['plugin:fp/recommended', '@netlify/eslint-config-node/.eslintrc_esm.cjs'],
   rules: {
     strict: 2,
-
+    'max-lines': 'off',
     // eslint-plugin-ava needs to know where test files are located
     'ava/no-ignored-test-files': [
       2,

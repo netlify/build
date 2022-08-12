@@ -1,4 +1,3 @@
-/* eslint-disable max-lines */
 import { getApiClient } from './api/client.js'
 import { getSiteInfo } from './api/site_info.js'
 import { getInitialBase, getBase, addBase } from './base.js'
@@ -284,4 +283,3 @@ const resolveFiles = async function ({ config, repositoryRoot, base, baseRelDir 
   const configB = addBase(configA, baseA)
   return { config: configB, buildDir, base: baseA }
 }
-/* eslint-enable max-lines */

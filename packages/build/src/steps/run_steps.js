@@ -1,4 +1,3 @@
-/* eslint-disable max-lines */
 import pReduce from 'p-reduce'
 
 import { addErrorInfo } from '../error/info.js'
@@ -178,4 +177,3 @@ export const runSteps = async function ({
     configMutations: configMutationsB,
   }
 }
-/* eslint-enable max-lines */
