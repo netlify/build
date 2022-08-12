@@ -1,5 +1,13 @@
 # Changelog
 
+## [18.1.4](https://github.com/netlify/build/compare/config-v18.1.3...config-v18.1.4) (2022-08-12)
+
+
+### Bug Fixes
+
+* coerce environment variable to string ([ffbb164](https://github.com/netlify/build/commit/ffbb164ab7618449f7a0f66b2c5ca0d47ea492b1))
+* coerce environment variable to string ([#4413](https://github.com/netlify/build/issues/4413)) ([ffbb164](https://github.com/netlify/build/commit/ffbb164ab7618449f7a0f66b2c5ca0d47ea492b1))
+
 ## [18.1.3](https://github.com/netlify/build/compare/config-v18.1.2...config-v18.1.3) (2022-08-12)
 
 
