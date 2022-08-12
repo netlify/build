@@ -191,10 +191,10 @@ const runBuildStep = async function ({
     debug,
     timers: [],
     featureFlags,
-    // eslint-disable-next-line max-lines
     childEnv,
     repositoryRoot,
     systemLog,
   })
+
   return { netlifyConfig: netlifyConfigA, configMutations }
 }
