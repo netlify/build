@@ -12,6 +12,12 @@
   * dependencies
     * @netlify/config bumped from ^18.1.0 to ^18.1.1
 
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^18.1.3 to ^18.1.4
+
 ## [27.11.3](https://github.com/netlify/build/compare/build-v27.11.2...build-v27.11.3) (2022-08-12)
 
 
