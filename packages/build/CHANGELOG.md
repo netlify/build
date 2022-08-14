@@ -12,6 +12,27 @@
   * dependencies
     * @netlify/config bumped from ^18.1.0 to ^18.1.1
 
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^18.1.3 to ^18.1.4
+
+## [27.11.3](https://github.com/netlify/build/compare/build-v27.11.2...build-v27.11.3) (2022-08-12)
+
+
+### Bug Fixes
+
+* hide `systemLogFile` flag from output ([#4427](https://github.com/netlify/build/issues/4427)) ([1337b1b](https://github.com/netlify/build/commit/1337b1b3d43bc1dce7d1e82a10159cfcd4f72c15))
+* pass system log to runCoreSteps ([#4429](https://github.com/netlify/build/issues/4429)) ([9a42605](https://github.com/netlify/build/commit/9a4260543464201210a1cfc143bc6d4411ef2d82))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^18.1.2 to ^18.1.3
+
 ## [27.11.2](https://github.com/netlify/build/compare/build-v27.11.1...build-v27.11.2) (2022-08-10)
 
 

@@ -1,5 +1,20 @@
 # Changelog
 
+## [18.1.4](https://github.com/netlify/build/compare/config-v18.1.3...config-v18.1.4) (2022-08-12)
+
+
+### Bug Fixes
+
+* coerce environment variable to string ([ffbb164](https://github.com/netlify/build/commit/ffbb164ab7618449f7a0f66b2c5ca0d47ea492b1))
+* coerce environment variable to string ([#4413](https://github.com/netlify/build/issues/4413)) ([ffbb164](https://github.com/netlify/build/commit/ffbb164ab7618449f7a0f66b2c5ca0d47ea492b1))
+
+## [18.1.3](https://github.com/netlify/build/compare/config-v18.1.2...config-v18.1.3) (2022-08-12)
+
+
+### Bug Fixes
+
+* pass system log to runCoreSteps ([#4429](https://github.com/netlify/build/issues/4429)) ([9a42605](https://github.com/netlify/build/commit/9a4260543464201210a1cfc143bc6d4411ef2d82))
+
 ## [18.1.2](https://github.com/netlify/build/compare/config-v18.1.1...config-v18.1.2) (2022-07-25)
 
 

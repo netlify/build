@@ -1,4 +1,4 @@
-/* eslint-disable max-lines, import/max-dependencies */
+/* eslint-disable import/max-dependencies */
 import { handleBuildError } from '../error/handle.js'
 import { getErrorInfo } from '../error/info.js'
 import { startErrorMonitor } from '../error/monitor/start.js'
@@ -700,4 +700,4 @@ const telemetryReport = async function ({
     await handleBuildError(error, errorParams)
   }
 }
-/* eslint-enable max-lines, import/max-dependencies */
+/* eslint-enable import/max-dependencies */
