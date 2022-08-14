@@ -1,5 +1,3 @@
-/* eslint-disable max-lines */
-
 import process from 'process'
 
 import filterObj from 'filter-obj'
@@ -181,4 +179,3 @@ const isUserFlag = function (key, value) {
 }
 
 const INTERNAL_KEYS = new Set(['help', 'version', '_', '$0'])
-/* eslint-enable max-lines */

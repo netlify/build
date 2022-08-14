@@ -1,5 +1,3 @@
-/* eslint-disable max-lines */
-
 import CronParser from 'cron-parser'
 import isPlainObj from 'is-plain-obj'
 import validateNpmPackageName from 'validate-npm-package-name'
@@ -289,4 +287,3 @@ export const POST_NORMALIZE_VALIDATIONS = [
     example: () => ({ edge_functions: [{ path: '/hello', function: 'hello' }] }),
   },
 ]
-/* eslint-enable max-lines */

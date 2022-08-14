@@ -1,4 +1,3 @@
-/* eslint-disable max-lines */
 import { addMutableConstants } from '../core/constants.js'
 import { logStepStart } from '../log/messages/steps.js'
 import { runsAlsoOnBuildFailure, runsOnlyOnBuildFailure } from '../plugins/events.js'
@@ -303,4 +302,3 @@ const tFireStep = function ({
     verbose,
   })
 }
-/* eslint-enable max-lines */

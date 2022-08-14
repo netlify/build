@@ -384,6 +384,15 @@ test('Sets config file empty environment variables', async (t) => {
   t.is(TEST.value, '')
 })
 
+test('Coerces environment variables to string', async (t) => {
+  const {
+    env: { NETLIFY_NEXT_SKIP_PLUGIN, PYTHON_VERSION },
+  } = await getFixtureConfig(t, 'file_env_not_string')
+
+  t.is(PYTHON_VERSION.value, '3.9')
+  t.is(NETLIFY_NEXT_SKIP_PLUGIN.value, 'true')
+})
+
 test('Merges all environment variables', async (t) => {
   const {
     env: { TEST, LANG },
