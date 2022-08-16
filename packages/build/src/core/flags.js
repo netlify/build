@@ -196,4 +196,9 @@ Default: false`,
     boolean: true,
     describe: 'Buffer output instead of printing it',
   },
+  timeline: {
+    string: true,
+    describe: 'The sequence of lifecycle events to run',
+    hidden: true,
+  },
 }
