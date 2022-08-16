@@ -18,7 +18,7 @@ import { parseConfig } from './parse.js'
 import { getConfigPath } from './path.js'
 import { getRedirectsPath, addRedirects } from './redirects.js'
 
-export { EVENTS } from './events.js'
+export { DEV_EVENTS, EVENTS } from './events.js'
 export { cleanupConfig } from './log/cleanup.js'
 // eslint-disable-next-line import/max-dependencies
 export { updateConfig, restoreConfig } from './mutations/update.js'
