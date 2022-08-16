@@ -74,7 +74,7 @@ export const startDev = async (devCommand, flags = {}) => {
     })
     return { success, severityCode, netlifyConfig: netlifyConfigA, logs, configMutations }
   } catch (error) {
-    const { severity } = await handleBuildError(error, errorParams)
+    const { severity, message, stack } = await handleBuildError(error, errorParams)
     const { pluginsOptions, siteInfo, userNodeVersion } = errorParams
     const { success, severityCode, status } = getSeverity(severity)
     await telemetryReport({
@@ -89,7 +89,7 @@ export const startDev = async (devCommand, flags = {}) => {
       testOpts,
       errorParams,
     })
-    return { success, severityCode, logs }
+    return { success, severityCode, logs, error: { message, stack } }
   }
 }
 

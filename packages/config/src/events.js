@@ -17,10 +17,6 @@ export const EVENTS = [
 export const DEV_EVENTS = [
   // Before dev command
   'onPreDev',
-
   // The dev command
   'onDev',
-
-  // After dev command
-  'onPostDev',
 ]
