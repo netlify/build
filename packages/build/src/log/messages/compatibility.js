@@ -10,7 +10,7 @@ export const logRuntime = (logs, pluginOptions) => {
 
   // Once we have more runtimes, this harcoded check should be removed
   if (runtimes.length > 1) {
-    logSubHeader(logs, 'Using Next.JS Runtime')
+    logSubHeader(logs, 'Using Next.js Runtime')
   }
 }
 
@@ -36,7 +36,7 @@ const isNotCorePlugin = function ({ origin }) {
 
 const isRuntime = function ({ packageName }) {
   // Make this a bit more robust in the future
-  return ['@netlify/nextjs-runtime'].includes(packageName)
+  return ['@netlify/next-runtime'].includes(packageName)
 }
 
 const getPluginDescription = function (
