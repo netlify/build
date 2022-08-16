@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url'
 import { getBinPath } from 'get-bin-path'
 import pathKey from 'path-key'
 
-import netlifyBuild, { runCoreSteps } from '../../src/core/main.js'
+import netlifyBuild, { runCoreSteps, startDev } from '../../src/core/main.js'
 
 import { runFixtureCommon } from './common.js'
 
@@ -17,7 +17,7 @@ const BUILD_BIN_DIR = normalize(`${ROOT_DIR}/node_modules/.bin`)
 export const runFixture = async function (
   t,
   fixtureName,
-  { flags = {}, env: envOption = {}, programmatic = false, ...opts } = {},
+  { flags = {}, env: envOption = {}, programmatic = false, devCommand, ...opts } = {},
 ) {
   const binaryPath = await BINARY_PATH
   const flagsA = {
@@ -38,7 +38,8 @@ export const runFixture = async function (
     [pathKey()]: `${env[pathKey()]}${delimiter}${BUILD_BIN_DIR}`,
     ...envOption,
   }
-  const mainFunc = programmatic ? netlifyBuild : getNetlifyBuildLogs
+  const entryPoint = flagsA.timeline === 'dev' ? startDev.bind(null, devCommand) : netlifyBuild
+  const mainFunc = programmatic ? entryPoint : getNetlifyBuildLogs.bind(null, entryPoint)
   return runFixtureCommon(t, fixtureName, {
     ...opts,
     flags: flagsA,
@@ -51,8 +52,8 @@ export const runFixture = async function (
 
 const DEFAULT_TEST_FEATURE_FLAGS = {}
 
-const getNetlifyBuildLogs = async function (flags) {
-  const { logs } = await netlifyBuild(flags)
+const getNetlifyBuildLogs = async function (entryPoint, flags) {
+  const { logs } = await entryPoint(flags)
   return [logs.stdout.join('\n'), logs.stderr.join('\n')].filter(Boolean).join('\n\n')
 }
 

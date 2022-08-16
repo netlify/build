@@ -1,4 +1,5 @@
 import test from 'ava'
+import sinon from 'sinon'
 
 import { runFixture } from '../helpers/main.js'
 
@@ -76,4 +77,19 @@ test('plugin.onEnd and plugin.onError can be used together', async (t) => {
 
 test('plugin.onEnd can be used in several plugins', async (t) => {
   await runFixture(t, 'end_several')
+})
+
+test('Does not run `*Dev` events on the build timeline', async (t) => {
+  await runFixture(t, 'dev_and_build')
+})
+
+test('Runs the `*Dev` events and not the `*Build` events on the dev timeline', async (t) => {
+  const devCommand = sinon.stub().resolves()
+
+  await runFixture(t, 'dev_and_build', {
+    flags: { timeline: 'dev' },
+    devCommand,
+  })
+
+  t.is(devCommand.callCount, 1)
 })
