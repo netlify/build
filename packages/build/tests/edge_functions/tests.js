@@ -5,6 +5,7 @@ import test from 'ava'
 import { pathExists } from 'path-exists'
 import tmp from 'tmp-promise'
 
+import { importJsonFile } from '../../src/utils/json.js'
 import { FIXTURES_DIR, runFixture } from '../helpers/main.js'
 
 const assertManifest = async (t, fixtureName) => {
@@ -135,4 +136,18 @@ test.serial('writes manifest contents to system logs if `systemLogFile` is set',
     fileContents,
     /Edge Functions manifest: {"bundles":\[{"asset":"[a-fA-F\d]{64}\.js","format":"js"}],"routes":\[{"function":"function-1","pattern":"\^\/one\/\?\$"}],"bundler_version":"\d+\.\d+\.\d+"}/,
   )
+})
+
+test.only('build plugins can manipulate netlifyToml.edge_functions array', async (t) => {
+  const fixtureName = 'functions_plugin_mutations'
+
+  await runFixture(t, fixtureName, {
+    flags: { debug: false },
+  })
+  await assertManifest(t, fixtureName)
+  const manifestPath = join(FIXTURES_DIR, fixtureName, '.netlify', 'edge-functions-dist', 'manifest.json')
+
+  const { routes } = await importJsonFile(manifestPath)
+
+  t.deepEqual(routes, [{ function: 'mutated-function', pattern: '^/test-test/?$' }])
 })
