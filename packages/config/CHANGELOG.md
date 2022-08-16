@@ -1,5 +1,12 @@
 # Changelog
 
+## [18.2.0](https://github.com/netlify/build/compare/config-v18.1.4...config-v18.2.0) (2022-08-16)
+
+
+### Features
+
+* add `onPreDev` and `onDev` events ([#4431](https://github.com/netlify/build/issues/4431)) ([0f03fee](https://github.com/netlify/build/commit/0f03fee82241223a897e87d9c840909781fed288))
+
 ## [18.1.4](https://github.com/netlify/build/compare/config-v18.1.3...config-v18.1.4) (2022-08-12)
 
 
