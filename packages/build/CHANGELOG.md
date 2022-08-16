@@ -18,6 +18,18 @@
   * dependencies
     * @netlify/config bumped from ^18.1.3 to ^18.1.4
 
+## [27.12.0](https://github.com/netlify/build/compare/build-v27.11.5...build-v27.12.0) (2022-08-16)
+
+
+### Features
+
+* improve messaging around runtimes in log outputs ([#4436](https://github.com/netlify/build/issues/4436)) ([3e391e7](https://github.com/netlify/build/commit/3e391e7b5983d17345c8aa13e3835f7530e55cde))
+
+
+### Bug Fixes
+
+* handle 422 ([#4418](https://github.com/netlify/build/issues/4418)) ([1bb9c69](https://github.com/netlify/build/commit/1bb9c6981f9c91b0bd35163f89c41b39c1d7c195))
+
 ## [27.11.5](https://github.com/netlify/build/compare/build-v27.11.4...build-v27.11.5) (2022-08-16)
 
 
