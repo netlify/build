@@ -138,7 +138,7 @@ test.serial('writes manifest contents to system logs if `systemLogFile` is set',
   )
 })
 
-test.only('build plugins can manipulate netlifyToml.edge_functions array', async (t) => {
+test('build plugins can manipulate netlifyToml.edge_functions array', async (t) => {
   const fixtureName = 'functions_plugin_mutations'
 
   await runFixture(t, fixtureName, {
