@@ -30,6 +30,7 @@ export const startDev = async (devCommand, flags = {}) => {
   } catch (error) {
     const { severity, message, stack } = await handleBuildError(error, errorParams)
     const { success, severityCode } = getSeverity(severity)
+
     return { success, severityCode, logs, error: { message, stack } }
   }
 }
