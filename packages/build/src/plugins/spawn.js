@@ -3,7 +3,12 @@ import { fileURLToPath } from 'url'
 import { execaNode } from 'execa'
 
 import { addErrorInfo } from '../error/info.js'
-import { logLoadingPlugins, logOutdatedPlugins, logIncompatiblePlugins } from '../log/messages/compatibility.js'
+import {
+  logRuntime,
+  logLoadingPlugins,
+  logOutdatedPlugins,
+  logIncompatiblePlugins,
+} from '../log/messages/compatibility.js'
 import { measureDuration } from '../time/main.js'
 
 import { getEventFromChild } from './ipc.js'
@@ -18,6 +23,7 @@ const CHILD_MAIN_FILE = fileURLToPath(new URL('child/main.js', import.meta.url))
 //  - logs can be buffered which allows manipulating them for log shipping,
 //    transforming and parallel plugins
 const tStartPlugins = async function ({ pluginsOptions, buildDir, childEnv, logs, debug }) {
+  logRuntime(logs, pluginsOptions)
   logLoadingPlugins(logs, pluginsOptions, debug)
   logOutdatedPlugins(logs, pluginsOptions)
   logIncompatiblePlugins(logs, pluginsOptions)
