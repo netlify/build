@@ -18,6 +18,20 @@
   * dependencies
     * @netlify/config bumped from ^18.1.3 to ^18.1.4
 
+## [27.13.0](https://github.com/netlify/build/compare/build-v27.12.0...build-v27.13.0) (2022-08-16)
+
+
+### Features
+
+* add `onPreDev` and `onDev` events ([#4431](https://github.com/netlify/build/issues/4431)) ([0f03fee](https://github.com/netlify/build/commit/0f03fee82241223a897e87d9c840909781fed288))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^18.1.4 to ^18.2.0
+
 ## [27.12.0](https://github.com/netlify/build/compare/build-v27.11.5...build-v27.12.0) (2022-08-16)
 
 
