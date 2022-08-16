@@ -1,6 +1,6 @@
 import { addErrorInfo } from '../../error/info.js'
 import { serializeArray } from '../../log/serialize.js'
-import { EVENTS } from '../events.js'
+import { DEV_EVENTS, EVENTS } from '../events.js'
 
 // Validate the shape of a plugin return value
 export const validatePlugin = function (logic) {
@@ -22,7 +22,7 @@ export const validatePlugin = function (logic) {
 
 // All other properties are event handlers
 const validateEventHandler = function (value, propName) {
-  if (!EVENTS.includes(propName)) {
+  if (!EVENTS.includes(propName) && !DEV_EVENTS.includes(propName)) {
     throw new Error(`Invalid event '${propName}'.
 Please use a valid event name. One of:
 ${serializeArray(EVENTS)}`)

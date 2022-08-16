@@ -13,3 +13,14 @@ export const EVENTS = [
   // After build error or success
   'onEnd',
 ]
+
+export const DEV_EVENTS = [
+  // Before dev command
+  'onPreDev',
+
+  // The dev command
+  'onDev',
+
+  // After dev command
+  'onPostDev',
+]
