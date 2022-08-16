@@ -80,14 +80,14 @@ test('plugin.onEnd can be used in several plugins', async (t) => {
 })
 
 test('Does not run `*Dev` events on the build timeline', async (t) => {
-  await runFixture(t, 'dev_and_build')
+  await runFixture(t, 'dev_and_build', { flags: { debug: false } })
 })
 
 test('Runs the `*Dev` events and not the `*Build` events on the dev timeline', async (t) => {
   const devCommand = sinon.stub().resolves()
 
   await runFixture(t, 'dev_and_build', {
-    flags: { timeline: 'dev' },
+    flags: { debug: false, timeline: 'dev' },
     devCommand,
   })
 
