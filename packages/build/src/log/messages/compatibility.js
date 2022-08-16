@@ -8,7 +8,7 @@ import { THEME } from '../theme.js'
 export const logRuntime = (logs, pluginOptions) => {
   const runtimes = pluginOptions.filter(isRuntime)
 
-  // Once we have more runtimes, this harcoded check should be removed
+  // Once we have more runtimes, this hardcoded check should be removed
   if (runtimes.length > 1) {
     logSubHeader(logs, 'Using Next.js Runtime')
   }
