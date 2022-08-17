@@ -198,3 +198,7 @@ test('Type-checks TypeScript local plugins using tsconfig.json', async (t) => {
 test('Does not transpile already transpiled local plugins', async (t) => {
   await runFixture(t, 'ts_transpile_already')
 })
+
+test('Plugins which export a factory function receive the inputs and a metadata object', async (t) => {
+  await runFixture(t, 'dynamic_plugin')
+})
