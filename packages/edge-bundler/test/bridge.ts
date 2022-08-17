@@ -69,7 +69,7 @@ test.serial('Does not inherit environment variables if `extendEnv` is false', as
   referenceOutput?.stdout.split('\n').forEach((line) => {
     output = output.replace(line.trim(), '')
   })
-  output = output.trim().replace(/\n+/, '\n')
+  output = output.trim().replace(/\n+/g, '\n')
 
   t.is(output, 'LULU=LALA')
 
@@ -101,9 +101,10 @@ test.serial('Does inherit environment variables if `extendEnv` is true', async (
   referenceOutput?.stdout.split('\n').forEach((line) => {
     output = output.replace(line.trim(), '')
   })
-  output = output.trim().replace(/\n+/, '\n')
+  // lets remove holes, split lines and sort lines by name, as different OSes might order them different
+  const environmentVariables = output.trim().replace(/\n+/g, '\n').split('\n').sort()
 
-  t.is(output, 'LULU=LALA\nTADA=TUDU')
+  t.deepEqual(environmentVariables, ['LULU=LALA', 'TADA=TUDU'])
 
   await fs.promises.rmdir(tmpDir.path, { recursive: true })
 })
@@ -133,9 +134,10 @@ test.serial('Does inherit environment variables if `extendEnv` is not set', asyn
   referenceOutput?.stdout.split('\n').forEach((line) => {
     output = output.replace(line.trim(), '')
   })
-  output = output.trim().replace(/\n+/, '\n')
+  // lets remove holes, split lines and sort lines by name, as different OSes might order them different
+  const environmentVariables = output.trim().replace(/\n+/g, '\n').split('\n').sort()
 
-  t.is(output, 'LULU=LALA\nTADA=TUDU')
+  t.deepEqual(environmentVariables, ['LULU=LALA', 'TADA=TUDU'])
 
   await fs.promises.rmdir(tmpDir.path, { recursive: true })
 })
