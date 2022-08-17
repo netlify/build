@@ -66,7 +66,7 @@ const coreStep = async function ({ buildDir, constants, debug, systemLog, featur
   await validateEdgeFunctionsManifest({ buildDir, constants: { EDGE_FUNCTIONS_DIST: distDirectory } })
 
   if (!isRunningLocally) {
-    const logsLink = `https://app.netlify.com/sites/${env.SITE_NAME}/edge-handlers?scope=deployid:${env.DEPLOY_ID}`
+    const logsLink = `https://app.netlify.com/sites/${env.SITE_NAME}/edge-functions?scope=deployid:${env.DEPLOY_ID}`
     const summaryText = `${declarations.length} Edge Functions deployed. [Watch Logs](${logsLink})`
     utils.status.show({ summary: summaryText, title: 'Edge Functions' })
   }
