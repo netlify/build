@@ -67,7 +67,7 @@ const coreStep = async function ({ buildDir, constants, debug, systemLog, featur
 
   if (!isRunningLocally) {
     const logsLink = `https://app.netlify.com/sites/${env.SITE_NAME}/edge-functions?scope=deployid:${env.DEPLOY_ID}`
-    const summaryText = `${declarations.length} Edge Functions deployed. [Watch Logs](${logsLink})`
+    const summaryText = `${declarations.length} edge functions deployed. [Watch Logs](${logsLink})`
     utils.status.show({ summary: summaryText, title: 'Edge Functions' })
   }
 
