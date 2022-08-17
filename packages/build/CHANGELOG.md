@@ -18,6 +18,14 @@
   * dependencies
     * @netlify/config bumped from ^18.1.3 to ^18.1.4
 
+## [27.14.0](https://github.com/netlify/build/compare/build-v27.13.0...build-v27.14.0) (2022-08-17)
+
+
+### Features
+
+* don't stop child processes of plugins in dev timeline ([#4444](https://github.com/netlify/build/issues/4444)) ([a5c5934](https://github.com/netlify/build/commit/a5c593451fe47d7e4ffa86357af8124f9e2a1efb))
+* pass metadata object to dynamic plugins ([#4442](https://github.com/netlify/build/issues/4442)) ([d7a2194](https://github.com/netlify/build/commit/d7a2194734f809aa290e186d9488d2d42b43f59c))
+
 ## [27.13.0](https://github.com/netlify/build/compare/build-v27.12.0...build-v27.13.0) (2022-08-16)
 
 
