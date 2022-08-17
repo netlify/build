@@ -87,9 +87,18 @@ const isEdgeFunctionsConfig = function (key, value) {
 // Takes into account that `context.{context}.build.*` is the same as
 // `context.{context}.*`
 export const ensureConfigPriority = function ({ build = {}, ...config }, context, branch) {
-  return {
+  const base = {
     ...config,
     build,
+  }
+
+  // remove the redirects to not have context specific redirects.
+  // The redirects should be only on the root level.
+  // eslint-disable-next-line fp/no-delete, no-param-reassign
+  delete config.redirects
+
+  return {
+    ...base,
     context: {
       ...config.context,
       [context]: { ...config, ...build, build },
