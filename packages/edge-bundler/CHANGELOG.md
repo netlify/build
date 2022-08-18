@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.13.0](https://github.com/netlify/edge-bundler/compare/v1.12.1...v1.13.0) (2022-08-18)
+
+
+### Features
+
+* update edge-bundler-bootstrap ([#96](https://github.com/netlify/edge-bundler/issues/96)) ([5bc3973](https://github.com/netlify/edge-bundler/commit/5bc39734d63eed506c07fab83f821c526b06b61c))
+
+
+### Bug Fixes
+
+* implement retries for Deno CLI download and additional logging ([#100](https://github.com/netlify/edge-bundler/issues/100)) ([489cbd3](https://github.com/netlify/edge-bundler/commit/489cbd3fbc1cadaa0aa1da288204b6534705ed3a))
+
 ## [1.12.1](https://github.com/netlify/edge-bundler/compare/v1.12.0...v1.12.1) (2022-08-10)
 
 
