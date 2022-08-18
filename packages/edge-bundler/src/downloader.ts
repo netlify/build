@@ -3,13 +3,15 @@ import path from 'path'
 
 import fetch from 'node-fetch'
 import StreamZip from 'node-stream-zip'
+import pRetry from 'p-retry'
 import semver from 'semver'
 
+import { Logger } from './logger.js'
 import { getBinaryExtension, getPlatformTarget } from './platform.js'
 
-const download = async (targetDirectory: string, versionRange: string) => {
+const download = async (targetDirectory: string, versionRange: string, logger: Logger) => {
   const zipPath = path.join(targetDirectory, 'deno-cli-latest.zip')
-  const data = await downloadVersion(versionRange)
+  const data = await downloadVersionWithRetry(versionRange, logger)
   const binaryName = `deno${getBinaryExtension()}`
   const binaryPath = path.join(targetDirectory, binaryName)
   const file = fs.createWriteStream(zipPath)
@@ -42,6 +44,14 @@ const downloadVersion = async (versionRange: string) => {
 
   return res.body
 }
+
+const downloadVersionWithRetry = async (versionRange: string, logger: Logger) =>
+  await pRetry(async () => await downloadVersion(versionRange), {
+    retries: 3,
+    onFailedAttempt: (error) => {
+      logger.system('Deno CLI download retry attempt error', error)
+    },
+  })
 
 const extractBinaryFromZip = async (zipPath: string, binaryPath: string, binaryName: string) => {
   const { async: StreamZipAsync } = StreamZip

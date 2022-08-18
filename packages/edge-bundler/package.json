@@ -86,6 +86,7 @@
     "glob-to-regexp": "^0.4.1",
     "node-fetch": "^3.1.1",
     "node-stream-zip": "^1.15.0",
+    "p-retry": "^5.1.1",
     "p-wait-for": "^4.1.0",
     "path-key": "^4.0.0",
     "semver": "^7.3.5",
