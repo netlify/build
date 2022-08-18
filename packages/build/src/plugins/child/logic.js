@@ -1,6 +1,9 @@
 import { createRequire } from 'module'
 import { pathToFileURL } from 'url'
 
+import { ROOT_PACKAGE_JSON } from '../../utils/json.js'
+import { DEV_EVENTS, EVENTS } from '../events.js'
+
 import { addTsErrorInfo } from './typescript.js'
 
 const require = createRequire(import.meta.url)
@@ -48,8 +51,13 @@ const loadLogic = function ({ logic, inputs }) {
     return logic
   }
 
+  const metadata = {
+    events: new Set([...DEV_EVENTS, ...EVENTS]),
+    version: ROOT_PACKAGE_JSON.version,
+  }
+
   try {
-    return logic(inputs)
+    return logic(inputs, metadata)
   } catch (error) {
     error.message = `Could not load plugin:\n${error.message}`
     throw error

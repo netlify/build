@@ -455,7 +455,12 @@ const initAndRunBuild = async function ({
       configMutations,
     }
   } finally {
-    stopPlugins(childProcesses)
+    // Terminate the child processes of plugins so that they don't linger after
+    // the build is finished. The exception is when running in the dev timeline
+    // since those are long-running events by nature.
+    if (timeline !== 'dev') {
+      stopPlugins(childProcesses)
+    }
   }
 }
 
