@@ -20,8 +20,10 @@ export const getZisiParameters = ({
     normalizeFunctionConfig({ buildDir, featureFlags, functionConfig: object, isRunningLocally, nodeVersion }),
   ])
   const zisiFeatureFlags = getZisiFeatureFlags(featureFlags)
+  // Only internal functions are allowed to have a json config file
+  const configFileDirectories = [resolve(buildDir, '.netlify', 'functions-internal')]
 
-  return { basePath: buildDir, config, manifest, featureFlags: zisiFeatureFlags, repositoryRoot }
+  return { basePath: buildDir, config, manifest, featureFlags: zisiFeatureFlags, repositoryRoot, configFileDirectories }
 }
 
 // The function configuration keys returned by @netlify/config are not an exact
