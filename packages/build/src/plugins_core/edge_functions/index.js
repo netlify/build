@@ -1,12 +1,10 @@
 import { promises as fs } from 'fs'
 import { dirname, join, resolve } from 'path'
-import { env } from 'process'
 
 import { bundle, find } from '@netlify/edge-bundler'
 import { pathExists } from 'path-exists'
 
 import { logFunctionsToBundle } from '../../log/messages/core_steps.js'
-import { getUtils } from '../../plugins/child/utils.js'
 
 import { tagBundlingError } from './lib/error.js'
 import { parseManifest } from './lib/internal_manifest.js'
@@ -17,20 +15,26 @@ const DENO_CLI_CACHE_DIRECTORY = '.netlify/plugins/deno-cli'
 const IMPORT_MAP_FILENAME = 'edge-functions-import-map.json'
 
 // eslint-disable-next-line complexity, max-statements
-const coreStep = async function ({ buildDir, constants, debug, systemLog, featureFlags, logs, netlifyConfig }) {
-  const {
+const coreStep = async function ({
+  buildDir,
+  constants: {
     EDGE_FUNCTIONS_DIST: distDirectory,
     EDGE_FUNCTIONS_SRC: srcDirectory,
     INTERNAL_EDGE_FUNCTIONS_SRC: internalSrcDirectory,
     IS_LOCAL: isRunningLocally,
-  } = constants
+  },
+  debug,
+  systemLog,
+  featureFlags,
+  logs,
+  netlifyConfig,
+}) {
   const { edge_functions: configDeclarations = [] } = netlifyConfig
   const distPath = resolve(buildDir, distDirectory)
   const internalSrcPath = resolve(buildDir, internalSrcDirectory)
   const distImportMapPath = join(dirname(internalSrcPath), IMPORT_MAP_FILENAME)
   const srcPath = srcDirectory ? resolve(buildDir, srcDirectory) : undefined
   const sourcePaths = [internalSrcPath, srcPath].filter(Boolean)
-  const utils = getUtils({ event: 'onBuild', constants, runState: {} })
 
   logFunctions({ internalSrcDirectory, internalSrcPath, logs, srcDirectory, srcPath })
 
@@ -64,12 +68,6 @@ const coreStep = async function ({ buildDir, constants, debug, systemLog, featur
   }
 
   await validateEdgeFunctionsManifest({ buildDir, constants: { EDGE_FUNCTIONS_DIST: distDirectory } })
-
-  if (!isRunningLocally) {
-    const logsLink = `https://app.netlify.com/sites/${env.SITE_NAME}/edge-functions?scope=deployid:${env.DEPLOY_ID}`
-    const summaryText = `${declarations.length} edge functions deployed. [Watch Logs](${logsLink})`
-    utils.status.show({ summary: summaryText, title: 'Edge Functions' })
-  }
 
   return {}
 }
