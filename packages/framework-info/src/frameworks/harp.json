@@ -18,7 +18,7 @@
   },
   "logo": {
     "default": "/logos/harp/default.svg",
-    "light": "/logos/harp/default.svg",
+    "light": "/logos/harp/light.svg",
     "dark": "/logos/harp/default.svg"
   },
   "env": {},
