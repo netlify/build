@@ -10,7 +10,9 @@ export const logRuntime = (logs, pluginOptions) => {
 
   // Once we have more runtimes, this hardcoded check should be removed
   if (runtimes.length > 1) {
-    logSubHeader(logs, 'Using Next.js Runtime')
+    const [nextRuntime] = runtimes
+
+    logSubHeader(logs, `Using Next.js Runtime - v${nextRuntime.pluginPackageJson.version}`)
   }
 }
 
@@ -19,8 +21,7 @@ export const logLoadingPlugins = function (logs, pluginsOptions, debug) {
     .filter(isNotCorePlugin)
     // We don't want to show runtimes as plugins
     .filter((plugin) => !isRuntime(plugin))
-    .map((pluginOptions) => getPluginDescription(pluginOptions, debug))
-
+    .map((pluginOptions) => getPluginDescription(pluginOptions, debug))``
   if (loadingPlugins.length === 0) {
     return
   }
