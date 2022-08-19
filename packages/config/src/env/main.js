@@ -68,6 +68,10 @@ export const getEnv = async function ({
 }
 
 const convertToString = (value) => {
+  if (value === null || value === undefined) {
+    return value
+  }
+
   if (typeof value === 'string') {
     return value
   }
