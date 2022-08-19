@@ -33,7 +33,7 @@ export const getExpectedVersion = async function ({ versions, nodeVersion, packa
 //  - After their first successful run, plugins are pinned by their major
 //    version which is passed as `pinnedVersion` to the next builds.
 // When the plugin does not have a `pinnedVersion`, we use the most recent
-// `compatibility` entry whith a successful condition.
+// `compatibility` entry with a successful condition.
 // When the plugin has a `pinnedVersion`, we do not use the `compatibility`
 // conditions. Instead, we just use the most recent entry with a `version`
 // matching `pinnedVersion`.
@@ -42,7 +42,12 @@ export const getExpectedVersion = async function ({ versions, nodeVersion, packa
 //  - Otherwise, use `latestVersion`
 const getCompatibleEntry = async function ({ versions, nodeVersion, packageJson, buildDir, pinnedVersion }) {
   if (pinnedVersion !== undefined) {
-    return versions.find(({ version }) => semver.satisfies(version, pinnedVersion)) || { version: pinnedVersion }
+    // invalid semver versions are coerced to valid ones (e.g 4.17.1-runtime.7 -> 4.17.1)
+    return (
+      versions.find(({ version }) => semver.satisfies(semver.coerce(version), pinnedVersion)) || {
+        version: pinnedVersion,
+      }
+    )
   }
 
   const versionsWithConditions = versions.filter(hasConditions)
