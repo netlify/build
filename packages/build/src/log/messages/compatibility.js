@@ -22,6 +22,7 @@ export const logLoadingPlugins = function (logs, pluginsOptions, debug) {
     // We don't want to show runtimes as plugins
     .filter((plugin) => !isRuntime(plugin))
     .map((pluginOptions) => getPluginDescription(pluginOptions, debug))
+
   if (loadingPlugins.length === 0) {
     return
   }
