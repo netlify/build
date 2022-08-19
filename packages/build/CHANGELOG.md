@@ -24,6 +24,13 @@
   * dependencies
     * @netlify/config bumped from ^18.2.0 to ^18.2.1
 
+## [27.15.5](https://github.com/netlify/build/compare/build-v27.15.4...build-v27.15.5) (2022-08-19)
+
+
+### Bug Fixes
+
+* include next runtime version in subheader ([#4457](https://github.com/netlify/build/issues/4457)) ([faefd17](https://github.com/netlify/build/commit/faefd174da25726011580ed9e6747de51c3af9bd))
+
 ## [27.15.4](https://github.com/netlify/build/compare/build-v27.15.3...build-v27.15.4) (2022-08-19)
 
 
