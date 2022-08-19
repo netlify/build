@@ -18,6 +18,13 @@
   * dependencies
     * @netlify/config bumped from ^18.1.3 to ^18.1.4
 
+## [27.15.2](https://github.com/netlify/build/compare/build-v27.15.1...build-v27.15.2) (2022-08-19)
+
+
+### Bug Fixes
+
+* revert feat: use utils.status.show to add no of edge functions to deploy summary ([#4443](https://github.com/netlify/build/issues/4443)) ([#4452](https://github.com/netlify/build/issues/4452)) ([856e361](https://github.com/netlify/build/commit/856e361f9b6646469ca8752598f0e486fc3c5b4a))
+
 ## [27.15.1](https://github.com/netlify/build/compare/build-v27.15.0...build-v27.15.1) (2022-08-18)
 
 
