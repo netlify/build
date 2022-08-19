@@ -18,6 +18,28 @@
   * dependencies
     * @netlify/config bumped from ^18.1.3 to ^18.1.4
 
+## [27.15.2](https://github.com/netlify/build/compare/build-v27.15.1...build-v27.15.2) (2022-08-19)
+
+
+### Bug Fixes
+
+* revert feat: use utils.status.show to add no of edge functions to deploy summary ([#4443](https://github.com/netlify/build/issues/4443)) ([#4452](https://github.com/netlify/build/issues/4452)) ([856e361](https://github.com/netlify/build/commit/856e361f9b6646469ca8752598f0e486fc3c5b4a))
+
+## [27.15.1](https://github.com/netlify/build/compare/build-v27.15.0...build-v27.15.1) (2022-08-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to ^1.13.0 ([#4450](https://github.com/netlify/build/issues/4450)) ([2b5a306](https://github.com/netlify/build/commit/2b5a306ac11d3769792ba138053da26565cba7fb))
+
+## [27.15.0](https://github.com/netlify/build/compare/build-v27.14.0...build-v27.15.0) (2022-08-18)
+
+
+### Features
+
+* add existing nextjs plugin as a runtime ([#4447](https://github.com/netlify/build/issues/4447)) ([3850ef0](https://github.com/netlify/build/commit/3850ef0e93295b2386c5037d56e08bc45269ed4f))
+* use utils.status.show to add no of edge functions to deploy summary ([#4443](https://github.com/netlify/build/issues/4443)) ([b662da0](https://github.com/netlify/build/commit/b662da04715b560a52d9fa79bdeeb4feb32a58ce))
+
 ## [27.14.0](https://github.com/netlify/build/compare/build-v27.13.0...build-v27.14.0) (2022-08-17)
 
 
