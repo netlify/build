@@ -1,5 +1,12 @@
 # Changelog
 
+## [18.2.2](https://github.com/netlify/build/compare/config-v18.2.1...config-v18.2.2) (2022-08-19)
+
+
+### Bug Fixes
+
+* don't create context specific redirects ([#4446](https://github.com/netlify/build/issues/4446)) ([3d6d811](https://github.com/netlify/build/commit/3d6d811f788771f2a2fbd05289f11f8ec27cf389))
+
 ## [18.2.1](https://github.com/netlify/build/compare/config-v18.2.0...config-v18.2.1) (2022-08-19)
 
 
