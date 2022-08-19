@@ -1,5 +1,12 @@
 # Changelog
 
+## [18.2.1](https://github.com/netlify/build/compare/config-v18.2.0...config-v18.2.1) (2022-08-19)
+
+
+### Bug Fixes
+
+* null check ([#4454](https://github.com/netlify/build/issues/4454)) ([355c6d3](https://github.com/netlify/build/commit/355c6d30b6cb2aeb29762450ea0757a556473de6))
+
 ## [18.2.0](https://github.com/netlify/build/compare/config-v18.1.4...config-v18.2.0) (2022-08-16)
 
 
