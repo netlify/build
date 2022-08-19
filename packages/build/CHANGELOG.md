@@ -24,6 +24,13 @@
   * dependencies
     * @netlify/config bumped from ^18.2.0 to ^18.2.1
 
+## [27.15.6](https://github.com/netlify/build/compare/build-v27.15.5...build-v27.15.6) (2022-08-19)
+
+
+### Bug Fixes
+
+* update semver logic ([#4459](https://github.com/netlify/build/issues/4459)) ([3b191c8](https://github.com/netlify/build/commit/3b191c86eaedb733d8fdde4c7982fd4a3883047a))
+
 ## [27.15.5](https://github.com/netlify/build/compare/build-v27.15.4...build-v27.15.5) (2022-08-19)
 
 
