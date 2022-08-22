@@ -42,12 +42,11 @@ export const getExpectedVersion = async function ({ versions, nodeVersion, packa
 //  - Otherwise, use `latestVersion`
 const getCompatibleEntry = async function ({ versions, nodeVersion, packageJson, buildDir, pinnedVersion }) {
   if (pinnedVersion !== undefined) {
-    // invalid semver versions are coerced to valid ones (e.g 4.17.1-runtime.7 -> 4.17.1)
-    return (
-      versions.find(({ version }) => semver.satisfies(semver.coerce(version), pinnedVersion)) || {
-        version: pinnedVersion,
-      }
+    const matchingVersion = versions.find(({ version }) =>
+      semver.satisfies(version, pinnedVersion, { includePrerelease: true }),
     )
+
+    return matchingVersion || { version: pinnedVersion }
   }
 
   const versionsWithConditions = versions.filter(hasConditions)
