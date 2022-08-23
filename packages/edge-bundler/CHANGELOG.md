@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.14.0](https://github.com/netlify/edge-bundler/compare/v1.13.0...v1.14.0) (2022-08-22)
+
+
+### Features
+
+* inline stage 2 ESZIP bundler ([#102](https://github.com/netlify/edge-bundler/issues/102)) ([5df5291](https://github.com/netlify/edge-bundler/commit/5df529197e7feea8b5fb80658f002ad267d74da3))
+
 ## [1.13.0](https://github.com/netlify/edge-bundler/compare/v1.12.1...v1.13.0) (2022-08-18)
 
 
