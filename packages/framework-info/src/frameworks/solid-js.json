@@ -1,0 +1,26 @@
+{
+  "id": "solid-js",
+  "name": "SolidJS",
+  "category": "static_site_generator",
+  "detect": {
+    "npmDependencies": ["solid-js"],
+    "excludedNpmDependencies": ["solid-start"],
+    "configFiles": []
+  },
+  "dev": {
+    "command": "npm run dev",
+    "port": 3000,
+    "pollingStrategies": [{ "name": "TCP" }]
+  },
+  "build": {
+    "command": "npm run build",
+    "directory": "netlify"
+  },
+  "logo": {
+    "default": "/logos/solid-js/default.svg",
+    "light": "/logos/solid-js/default.svg",
+    "dark": "/logos/solid-js/dark.svg"
+  },
+  "env": {},
+  "plugins": []
+}

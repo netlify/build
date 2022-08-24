@@ -24,6 +24,7 @@ export const FRAMEWORK_NAMES = [
   'react-static',
   'redwoodjs',
   'remix',
+  'solid-js',
   'solid-start',
   'stencil',
   'vuepress',
