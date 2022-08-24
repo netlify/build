@@ -1,5 +1,6 @@
 import semver from 'semver'
 
+import { isRuntime } from '../../utils/runtime.js'
 import { isPreviousMajor } from '../../utils/semver.js'
 import { getPluginOrigin } from '../description.js'
 import { logArray, logSubHeader, logWarningArray, logWarningSubHeader } from '../logger.js'
@@ -34,11 +35,6 @@ export const logLoadingPlugins = function (logs, pluginsOptions, debug) {
 // We only logs plugins explicitly enabled by users
 const isNotCorePlugin = function ({ origin }) {
   return origin !== 'core'
-}
-
-const isRuntime = function ({ packageName }) {
-  // Make this a bit more robust in the future
-  return ['@netlify/next-runtime', '@netlify/plugin-nextjs'].includes(packageName)
 }
 
 const getPluginDescription = function (
