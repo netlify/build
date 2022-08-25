@@ -24,6 +24,29 @@
   * dependencies
     * @netlify/config bumped from ^18.2.0 to ^18.2.1
 
+## [27.16.0](https://github.com/netlify/build/compare/build-v27.15.7...build-v27.16.0) (2022-08-25)
+
+
+### Features
+
+* add reference to runtime when installing missing packages ([#4464](https://github.com/netlify/build/issues/4464)) ([3517670](https://github.com/netlify/build/commit/3517670bee6d657f0f01a97414eee7b0cb0f3443))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.40.0 ([#4468](https://github.com/netlify/build/issues/4468)) ([461e529](https://github.com/netlify/build/commit/461e529e54a496ab1c894e7b145266e5cc6b997e))
+* **deps:** update dependency @netlify/plugins-list to ^6.41.0 ([#4471](https://github.com/netlify/build/issues/4471)) ([6d554f2](https://github.com/netlify/build/commit/6d554f25ff3b34014c0f29f6cbafbe0c28e1b67d))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v6 ([#4469](https://github.com/netlify/build/issues/4469)) ([a2c787d](https://github.com/netlify/build/commit/a2c787d5af504bba876ab905fad8af59881b94f0))
+* length check for runtimes used ([#4466](https://github.com/netlify/build/issues/4466)) ([90fb0b8](https://github.com/netlify/build/commit/90fb0b819a9e9cb9ede8002cbfc0ab4989256689))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^18.2.2 to ^18.2.3
+    * @netlify/functions-utils bumped from ^4.2.4 to ^4.2.5
+
 ## [27.15.7](https://github.com/netlify/build/compare/build-v27.15.6...build-v27.15.7) (2022-08-23)
 
 

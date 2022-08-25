@@ -1,5 +1,12 @@
 # Changelog
 
+## [18.2.3](https://github.com/netlify/build/compare/config-v18.2.2...config-v18.2.3) (2022-08-25)
+
+
+### Bug Fixes
+
+* **deps:** update dependency netlify to ^12.0.1 ([#4467](https://github.com/netlify/build/issues/4467)) ([44b7009](https://github.com/netlify/build/commit/44b70093f58f65683caf669f45b0ad7232b29571))
+
 ## [18.2.2](https://github.com/netlify/build/compare/config-v18.2.1...config-v18.2.2) (2022-08-19)
 
 
