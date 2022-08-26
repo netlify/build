@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.14.1](https://github.com/netlify/edge-bundler/compare/v1.14.0...v1.14.1) (2022-08-26)
+
+
+### Bug Fixes
+
+* fix deno download retry logic ([#104](https://github.com/netlify/edge-bundler/issues/104)) ([270290c](https://github.com/netlify/edge-bundler/commit/270290c9bd4ec1734522f24f3c17db93d83ecc48))
+
 ## [1.14.0](https://github.com/netlify/edge-bundler/compare/v1.13.0...v1.14.0) (2022-08-22)
 
 
