@@ -92,7 +92,7 @@
     "path-exists": "^5.0.0",
     "path-type": "^5.0.0",
     "pkg-dir": "^6.0.0",
-    "pretty-ms": "^7.0.0",
+    "pretty-ms": "^8.0.0",
     "ps-list": "^8.0.0",
     "read-pkg-up": "^9.0.0",
     "readdirp": "^3.4.0",
