@@ -51,7 +51,7 @@
   },
   "devDependencies": {
     "ava": "^4.0.0",
-    "del": "^6.0.0",
+    "del": "^7.0.0",
     "sinon": "^13.0.0",
     "sort-on": "^5.0.0",
     "tmp-promise": "^3.0.0"
