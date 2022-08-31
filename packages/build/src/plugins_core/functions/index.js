@@ -1,4 +1,6 @@
-import { resolve } from 'path'
+import { promises as fs } from 'fs'
+import path, { resolve } from 'path'
+import process from 'process'
 
 import { zipFunctions } from '@netlify/zip-it-and-ship-it'
 import { pathExists } from 'path-exists'
@@ -26,6 +28,7 @@ const zipFunctionsAndLogResults = async ({
   isRunningLocally,
   logs,
   repositoryRoot,
+  publishDir,
 }) => {
   const zisiParameters = getZisiParameters({
     buildDir,
@@ -44,6 +47,13 @@ const zipFunctionsAndLogResults = async ({
 
     const sourceDirectories = [internalFunctionsSrc, functionsSrc].filter(Boolean)
     const results = await zipItAndShipIt.zipFunctions(sourceDirectories, functionsDist, zisiParameters)
+    if (process.env.NF_BUNDLE_FOR_FLY === 'true') {
+      const destDir = path.join(publishDir, '.netlify/internal/fly-functions')
+      await fs.mkdir(destDir, { recursive: true })
+      await Promise.all(
+        results.map((result) => fs.copyFile(result.path, path.join(destDir, path.basename(result.path)))),
+      )
+    }
 
     logBundleResults({ logs, results })
 
@@ -62,6 +72,7 @@ const coreStep = async function ({
     IS_LOCAL: isRunningLocally,
     FUNCTIONS_SRC: relativeFunctionsSrc,
     FUNCTIONS_DIST: relativeFunctionsDist,
+    PUBLISH_DIR: publishDir,
   },
   buildDir,
   logs,
@@ -114,6 +125,7 @@ const coreStep = async function ({
     isRunningLocally,
     logs,
     repositoryRoot,
+    publishDir,
   })
 
   return {
