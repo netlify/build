@@ -1,3 +1,4 @@
+/* eslint-disable max-statements */
 import { promises as fs } from 'fs'
 import path, { resolve } from 'path'
 import process from 'process'
@@ -5,8 +6,9 @@ import process from 'process'
 import { zipFunctions } from '@netlify/zip-it-and-ship-it'
 import { pathExists } from 'path-exists'
 
-import { log } from '../../log/logger.js'
+import { log, logArray } from '../../log/logger.js'
 import { logBundleResults, logFunctionsNonExistingDir, logFunctionsToBundle } from '../../log/messages/core_steps.js'
+import { THEME } from '../../log/theme.js'
 
 import { getZipError } from './error.js'
 import { getUserAndInternalFunctions, validateFunctionsSrc } from './utils.js'
@@ -51,8 +53,15 @@ const zipFunctionsAndLogResults = async ({
       const destDir = path.join(publishDir, '.netlify/internal/fly-functions')
       await fs.mkdir(destDir, { recursive: true })
       await Promise.all(
-        results.map((result) => fs.copyFile(result.path, path.join(destDir, path.basename(result.path)))),
+        results.map(
+          (result) =>
+            result.runtime === 'js' && fs.copyFile(result.path, path.join(destDir, path.basename(result.path))),
+        ),
       )
+      const files = await fs.readdir(destDir)
+
+      log(logs, `${THEME.highlightWords('NF_BUNDLE_FOR_FLY')} enabled for the following functions:`)
+      logArray(logs, files)
     }
 
     logBundleResults({ logs, results })
@@ -170,3 +179,4 @@ export const zipItAndShipIt = {
     return await zipFunctions(...args)
   },
 }
+/* eslint-enable  max-statements */
