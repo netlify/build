@@ -14,10 +14,10 @@ export interface NetlifyPluginConstants {
    */
   FUNCTIONS_SRC?: string
   /**
-   * the directory where internal Edge Handlers source code lives. This is where build plugins should place auto-generated handlers.
-   * `undefined` if the version of @netlify/build does not support internal Edge Handlers
+   * the directory where internal Edge Functions source code lives. This is where build plugins should place auto-generated functions.
+   * `undefined` if the version of @netlify/build does not support internal Edge Functions
    */
-  INTERNAL_EDGE_HANDLERS_SRC?: string
+  INTERNAL_EDGE_FUNCTIONS_SRC?: string
   /**
    * the directory where internal function source code lives. This is where build plugins should place auto-generated functions.
    * `undefined` if the version of @netlify/build does not support internal functions
@@ -28,14 +28,14 @@ export interface NetlifyPluginConstants {
    */
   FUNCTIONS_DIST: string
   /**
-   * the directory where built Edge Handlers are placed before deployment. Its value is always defined, but the target might not have been created yet.
+   * the directory where built Edge Functions are placed before deployment. Its value is always defined, but the target might not have been created yet.
    */
-  EDGE_HANDLERS_DIST: string
+  EDGE_FUNCTIONS_DIST: string
   /**
-   * the directory where Edge Handlers source code lives.
-   * `undefined` if no `netlify/edge-handlers` directory exists in the base directory and if not specified in `netlify.toml`.
+   * the directory where Edge Functions source code lives.
+   * `undefined` if no `netlify/edge-functions` directory exists.
    */
-  EDGE_HANDLERS_SRC?: string
+  EDGE_FUNCTIONS_SRC?: string
   /**
    * boolean indicating whether the build was [run locally](https://docs.netlify.com/cli/get-started/#run-builds-locally) or on Netlify
    */
