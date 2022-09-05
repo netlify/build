@@ -211,7 +211,11 @@ const VERY_OLD_NODE_VERSION = '4.0.0'
 // Try `get-node` several times because it sometimes fails due to network failures
 const getNodeBinary = async function (nodeVersion, retries = 1) {
   try {
-    return await getNode(nodeVersion)
+    return await getNode(nodeVersion, {
+      // there is no old node version for arm64 and MacOSX
+      // just override it to always use x64 as it does not actually uses it.
+      arch: 'x64',
+    })
   } catch (error) {
     if (retries < MAX_RETRIES) {
       return getNodeBinary(nodeVersion, retries + 1)
