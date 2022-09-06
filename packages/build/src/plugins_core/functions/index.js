@@ -33,6 +33,7 @@ const zipFunctionsAndLogResults = async ({
     featureFlags,
     functionsConfig,
     functionsDist,
+    internalFunctionsSrc,
     isRunningLocally,
     repositoryRoot,
   })
