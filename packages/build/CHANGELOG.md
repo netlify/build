@@ -24,6 +24,13 @@
   * dependencies
     * @netlify/config bumped from ^18.2.0 to ^18.2.1
 
+## [27.17.0](https://github.com/netlify/build/compare/build-v27.16.2...build-v27.17.0) (2022-09-06)
+
+
+### Features
+
+* activate deployment configuration API ([#4449](https://github.com/netlify/build/issues/4449)) ([85b13b9](https://github.com/netlify/build/commit/85b13b914cbe232764e069e98e56542c7a93b552))
+
 ## [27.16.2](https://github.com/netlify/build/compare/build-v27.16.1...build-v27.16.2) (2022-09-06)
 
 
