@@ -24,6 +24,20 @@
   * dependencies
     * @netlify/config bumped from ^18.2.0 to ^18.2.1
 
+## [27.17.1](https://github.com/netlify/build/compare/build-v27.17.0...build-v27.17.1) (2022-09-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^7.1.0 ([#4488](https://github.com/netlify/build/issues/4488)) ([baccfe9](https://github.com/netlify/build/commit/baccfe931012e48449607407f180ddf2c960a53a))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^4.2.6 to ^4.2.7
+
 ## [27.17.0](https://github.com/netlify/build/compare/build-v27.16.2...build-v27.17.0) (2022-09-06)
 
 
