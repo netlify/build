@@ -6,11 +6,11 @@ import { getZisiFeatureFlags } from './feature_flags.js'
 
 export const getZisiParameters = ({
   buildDir,
-  constants: { INTERNAL_FUNCTIONS_SRC: internalFunctionsSrc },
   childEnv,
   featureFlags,
   functionsConfig,
   functionsDist,
+  internalFunctionsSrc,
   isRunningLocally,
   repositoryRoot,
 }) => {
@@ -22,7 +22,7 @@ export const getZisiParameters = ({
   ])
   const zisiFeatureFlags = getZisiFeatureFlags(featureFlags)
   // Only internal functions are allowed to have a json config file
-  const configFileDirectories = [resolve(buildDir, internalFunctionsSrc)]
+  const configFileDirectories = [resolve(internalFunctionsSrc)]
 
   return { basePath: buildDir, config, manifest, featureFlags: zisiFeatureFlags, repositoryRoot, configFileDirectories }
 }
