@@ -7,7 +7,6 @@ import { logArray, logSubHeader, logWarningArray, logWarningSubHeader } from '..
 import { THEME } from '../theme.js'
 
 export const logRuntime = (logs, pluginOptions) => {
-
   const runtimes = pluginOptions.filter(isRuntime)
   // Once we have more runtimes, this hardcoded check should be removed
   if (runtimes.length !== 0) {
