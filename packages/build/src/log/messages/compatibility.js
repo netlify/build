@@ -14,7 +14,7 @@ export const logRuntime = (logs, pluginOptions) => {
   logMessage(logs, 'DEBUG logRuntime runtimes found')
   logArray(logs, runtimes)
   // Once we have more runtimes, this hardcoded check should be removed
-  if (runtimes.length > 0) {
+  if (runtimes.length !== 0) {
     const [nextRuntime] = runtimes
 
     logSubHeader(logs, `Using Next.js Runtime - v${nextRuntime.pluginPackageJson.version}`)
