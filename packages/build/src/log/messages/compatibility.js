@@ -12,7 +12,7 @@ export const logRuntime = (logs, pluginOptions) => {
 
   const runtimes = pluginOptions.filter(isRuntime)
   logMessage(logs, 'DEBUG logRuntime runtimes found')
-  logArray(logs, runtimes)
+  logObject(logs, runtimes)
   // Once we have more runtimes, this hardcoded check should be removed
   if (runtimes.length !== 0) {
     const [nextRuntime] = runtimes
