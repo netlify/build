@@ -6,7 +6,9 @@ import { logArray, logSubHeader, logWarningArray, logWarningSubHeader } from '..
 import { THEME } from '../theme.js'
 
 export const logRuntime = (logs, pluginOptions) => {
-  console.log('DEBUG logRuntime', pluginOptions)
+  logMessage(logs, 'DEBUG logRuntime')
+  logObject(logs, pluginsOptions)
+
   const runtimes = pluginOptions.filter(isRuntime)
 
   // Once we have more runtimes, this hardcoded check should be removed
@@ -18,7 +20,8 @@ export const logRuntime = (logs, pluginOptions) => {
 }
 
 export const logLoadingPlugins = function (logs, pluginsOptions, debug) {
-  console.log('DEBUG logLoadingPlugins', pluginsOptions)
+  logMessage(logs, 'DEBUG logLoadingPlugins')
+  logObject(logs, pluginsOptions)
   const loadingPlugins = pluginsOptions
     .filter(isNotCorePlugin)
     // We don't want to show runtimes as plugins

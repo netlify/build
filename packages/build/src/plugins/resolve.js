@@ -125,9 +125,14 @@ const validateLocalPluginPath = function (error, localPackageName) {
 // Install plugins from the official list that have not been previously installed.
 // Print a warning if they have not been installed through the UI.
 const handleMissingPlugins = async function ({ pluginsOptions, autoPluginsDir, mode, logs }) {
-  console.log('DEBUG handleMissingPlugins', pluginsOptions)
+  logMessage(logs, 'DEBUG handleMissingPlugins')
+  logObject(logs, pluginsOptions)
+
+  
   const missingPlugins = pluginsOptions.filter(isMissingPlugin)
-  console.log('DEBUG handleMissingPlugins - are there any missing?', missingPlugins)
+  logMessage(logs, 'DEBUG handleMissingPlugins - are there any missing?')
+  logObject(logs, missingPlugins)
+  
   if (missingPlugins.length === 0) {
     return pluginsOptions
   }
