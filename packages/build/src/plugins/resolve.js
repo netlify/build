@@ -1,6 +1,6 @@
 import { addErrorInfo } from '../error/info.js'
 import { installMissingPlugins } from '../install/missing.js'
-import { logMessage, logObject } from "../log/logger.js"
+import { logMessage, logObject } from '../log/logger.js'
 import { resolvePath, tryResolvePath } from '../utils/resolve.js'
 
 import { addExpectedVersions } from './expected_version.js'
@@ -129,11 +129,10 @@ const handleMissingPlugins = async function ({ pluginsOptions, autoPluginsDir, m
   logMessage(logs, 'DEBUG handleMissingPlugins')
   logObject(logs, pluginsOptions)
 
-  
   const missingPlugins = pluginsOptions.filter(isMissingPlugin)
   logMessage(logs, 'DEBUG handleMissingPlugins - are there any missing?')
   logObject(logs, missingPlugins)
-  
+
   if (missingPlugins.length === 0) {
     return pluginsOptions
   }
