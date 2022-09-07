@@ -1,6 +1,6 @@
-import { logMessage, logObject } from "../log/logger"
 import { addErrorInfo } from '../error/info.js'
 import { installMissingPlugins } from '../install/missing.js'
+import { logMessage, logObject } from "../log/logger.js"
 import { resolvePath, tryResolvePath } from '../utils/resolve.js'
 
 import { addExpectedVersions } from './expected_version.js'
