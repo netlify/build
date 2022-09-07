@@ -1,6 +1,6 @@
 import { promises as fs } from 'fs'
 import { join } from 'path'
-import { kill, platform } from 'process'
+import { arch, kill, platform } from 'process'
 
 import test from 'ava'
 import getNode from 'get-node'
@@ -211,7 +211,11 @@ const VERY_OLD_NODE_VERSION = '4.0.0'
 // Try `get-node` several times because it sometimes fails due to network failures
 const getNodeBinary = async function (nodeVersion, retries = 1) {
   try {
-    return await getNode(nodeVersion)
+    return await getNode(nodeVersion, {
+      // there is no old node version for arm64 and MacOSX
+      // just override it to always use x64 as it does not actually uses it.
+      arch: platform === 'darwin' && arch === 'arm64' ? 'x64' : arch,
+    })
   } catch (error) {
     if (retries < MAX_RETRIES) {
       return getNodeBinary(nodeVersion, retries + 1)
@@ -480,6 +484,34 @@ test.serial('`rustTargetDirectory` is passed to zip-it-and-ship-it only when run
     join(FIXTURES_DIR, fixtureWithoutConfig, '.netlify', 'rust-functions-cache', '[name]'),
   )
   t.is(call4Args[2].config['*'].rustTargetDirectory, undefined)
+})
+
+test.serial('configFileDirectories is passed to zip-it-and-ship-it', async (t) => {
+  const fixture = 'functions_config_json'
+  const runCount = 1
+  const mockZipFunctions = sinon.stub().resolves()
+  const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').get(() => mockZipFunctions)
+
+  await runFixture(t, fixture, { flags: { mode: 'buildbot' }, snapshot: false })
+
+  stub.restore()
+
+  t.is(mockZipFunctions.callCount, runCount)
+
+  const { args: call1Args } = mockZipFunctions.getCall(0)
+
+  t.deepEqual(call1Args[2].configFileDirectories, [join(FIXTURES_DIR, fixture, '.netlify', 'functions-internal')])
+})
+
+test.serial('zip-it-and-ship-it runs without error when loading json config files', async (t) => {
+  const fixture = 'functions_config_json'
+
+  await runFixture(t, fixture, {
+    flags: {
+      mode: 'buildbot',
+      featureFlags: { project_deploy_configuration_api_use_per_function_configuration_files: true },
+    },
+  })
 })
 
 test('Generates a `manifest.json` file when running outside of buildbot', async (t) => {

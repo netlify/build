@@ -24,6 +24,86 @@
   * dependencies
     * @netlify/config bumped from ^18.2.0 to ^18.2.1
 
+## [27.17.1](https://github.com/netlify/build/compare/build-v27.17.0...build-v27.17.1) (2022-09-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^7.1.0 ([#4488](https://github.com/netlify/build/issues/4488)) ([baccfe9](https://github.com/netlify/build/commit/baccfe931012e48449607407f180ddf2c960a53a))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^4.2.6 to ^4.2.7
+
+## [27.17.0](https://github.com/netlify/build/compare/build-v27.16.2...build-v27.17.0) (2022-09-06)
+
+
+### Features
+
+* activate deployment configuration API ([#4449](https://github.com/netlify/build/issues/4449)) ([85b13b9](https://github.com/netlify/build/commit/85b13b914cbe232764e069e98e56542c7a93b552))
+
+## [27.16.2](https://github.com/netlify/build/compare/build-v27.16.1...build-v27.16.2) (2022-09-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v7 ([#4485](https://github.com/netlify/build/issues/4485)) ([e885c87](https://github.com/netlify/build/commit/e885c87e0423655c6b68b5170ed17eb8d10c5c59))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^4.2.5 to ^4.2.6
+
+## [27.16.1](https://github.com/netlify/build/compare/build-v27.16.0...build-v27.16.1) (2022-08-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to ^1.14.1 ([#4473](https://github.com/netlify/build/issues/4473)) ([21e2ca0](https://github.com/netlify/build/commit/21e2ca087b0e5f678f088d5ee4b757bb653fd0f9))
+
+## [27.16.0](https://github.com/netlify/build/compare/build-v27.15.7...build-v27.16.0) (2022-08-25)
+
+
+### Features
+
+* add reference to runtime when installing missing packages ([#4464](https://github.com/netlify/build/issues/4464)) ([3517670](https://github.com/netlify/build/commit/3517670bee6d657f0f01a97414eee7b0cb0f3443))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.40.0 ([#4468](https://github.com/netlify/build/issues/4468)) ([461e529](https://github.com/netlify/build/commit/461e529e54a496ab1c894e7b145266e5cc6b997e))
+* **deps:** update dependency @netlify/plugins-list to ^6.41.0 ([#4471](https://github.com/netlify/build/issues/4471)) ([6d554f2](https://github.com/netlify/build/commit/6d554f25ff3b34014c0f29f6cbafbe0c28e1b67d))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v6 ([#4469](https://github.com/netlify/build/issues/4469)) ([a2c787d](https://github.com/netlify/build/commit/a2c787d5af504bba876ab905fad8af59881b94f0))
+* length check for runtimes used ([#4466](https://github.com/netlify/build/issues/4466)) ([90fb0b8](https://github.com/netlify/build/commit/90fb0b819a9e9cb9ede8002cbfc0ab4989256689))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^18.2.2 to ^18.2.3
+    * @netlify/functions-utils bumped from ^4.2.4 to ^4.2.5
+
+## [27.15.7](https://github.com/netlify/build/compare/build-v27.15.6...build-v27.15.7) (2022-08-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to ^1.14.0 ([#4463](https://github.com/netlify/build/issues/4463)) ([4b1811b](https://github.com/netlify/build/commit/4b1811b0f12bfae9a7c3919ee3b7793d0e100559))
+* improve prerelease matching in plugin list ([#4461](https://github.com/netlify/build/issues/4461)) ([33a3bf6](https://github.com/netlify/build/commit/33a3bf67cef33b3bab83a780a64ccc84c18a21e2))
+
+## [27.15.6](https://github.com/netlify/build/compare/build-v27.15.5...build-v27.15.6) (2022-08-19)
+
+
+### Bug Fixes
+
+* update semver logic ([#4459](https://github.com/netlify/build/issues/4459)) ([3b191c8](https://github.com/netlify/build/commit/3b191c86eaedb733d8fdde4c7982fd4a3883047a))
+
 ## [27.15.5](https://github.com/netlify/build/compare/build-v27.15.4...build-v27.15.5) (2022-08-19)
 
 

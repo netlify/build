@@ -4,6 +4,7 @@ import { pluginsList } from '@netlify/plugins-list'
 import test from 'ava'
 import cpy from 'cpy'
 
+import { getExpectedVersion } from '../../src/plugins/compatibility.js'
 import { removeDir } from '../helpers/dir.js'
 import { runFixture, FIXTURES_DIR } from '../helpers/main.js'
 import { startServer } from '../helpers/server.js'
@@ -476,4 +477,32 @@ test('Does not pin netlify.toml-only plugin versions if there are no API token',
 
 test('Does not pin netlify.toml-only plugin versions if there are no site ID', async (t) => {
   await runWithPluginRunsMock(t, 'pin_config_success', { flags: { siteId: '' } })
+})
+
+test('`getExpectedVersion` matches prerelease versions', async (t) => {
+  const versions = [
+    {
+      version: '1.0.0',
+      conditions: [],
+    },
+    {
+      version: '0.3.1-rc.1',
+      conditions: [],
+    },
+    {
+      version: '0.3.0',
+      conditions: [],
+    },
+  ]
+
+  const { version: version1 } = await getExpectedVersion({
+    versions,
+  })
+  const { version: version2 } = await getExpectedVersion({
+    versions,
+    pinnedVersion: '0',
+  })
+
+  t.is(version1, '1.0.0')
+  t.is(version2, '0.3.1-rc.1')
 })
