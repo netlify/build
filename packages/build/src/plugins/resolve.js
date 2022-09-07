@@ -1,3 +1,4 @@
+import { logMessage, logObject } from "../log/logger"
 import { addErrorInfo } from '../error/info.js'
 import { installMissingPlugins } from '../install/missing.js'
 import { resolvePath, tryResolvePath } from '../utils/resolve.js'
@@ -5,7 +6,6 @@ import { resolvePath, tryResolvePath } from '../utils/resolve.js'
 import { addExpectedVersions } from './expected_version.js'
 import { addPluginsNodeVersion } from './node_version.js'
 import { addPinnedVersions } from './pinned_version.js'
-import { logMessage, logObject } from '../'
 
 // Try to find plugins in four places, by priority order:
 //  - already loaded (core plugins)

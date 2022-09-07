@@ -8,7 +8,7 @@ import { THEME } from '../theme.js'
 
 export const logRuntime = (logs, pluginOptions) => {
   logMessage(logs, 'DEBUG logRuntime')
-  logObject(logs, pluginsOptions)
+  logObject(logs, pluginOptions)
 
   const runtimes = pluginOptions.filter(isRuntime)
 
