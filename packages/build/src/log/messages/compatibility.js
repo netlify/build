@@ -3,16 +3,12 @@ import semver from 'semver'
 import { isRuntime } from '../../utils/runtime.js'
 import { isPreviousMajor } from '../../utils/semver.js'
 import { getPluginOrigin } from '../description.js'
-import { logArray, logSubHeader, logWarningArray, logWarningSubHeader, logMessage, logObject } from '../logger.js'
+import { logArray, logSubHeader, logWarningArray, logWarningSubHeader } from '../logger.js'
 import { THEME } from '../theme.js'
 
 export const logRuntime = (logs, pluginOptions) => {
-  logMessage(logs, 'DEBUG logRuntime')
-  logObject(logs, pluginOptions)
 
   const runtimes = pluginOptions.filter(isRuntime)
-  logMessage(logs, 'DEBUG logRuntime runtimes found')
-  logObject(logs, runtimes)
   // Once we have more runtimes, this hardcoded check should be removed
   if (runtimes.length !== 0) {
     const [nextRuntime] = runtimes
@@ -22,8 +18,6 @@ export const logRuntime = (logs, pluginOptions) => {
 }
 
 export const logLoadingPlugins = function (logs, pluginsOptions, debug) {
-  logMessage(logs, 'DEBUG logLoadingPlugins')
-  logObject(logs, pluginsOptions)
   const loadingPlugins = pluginsOptions
     .filter(isNotCorePlugin)
     // We don't want to show runtimes as plugins
