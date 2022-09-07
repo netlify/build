@@ -3,7 +3,7 @@ import semver from 'semver'
 import { isRuntime } from '../../utils/runtime.js'
 import { isPreviousMajor } from '../../utils/semver.js'
 import { getPluginOrigin } from '../description.js'
-import { logArray, logSubHeader, logWarningArray, logWarningSubHeader } from '../logger.js'
+import { logArray, logSubHeader, logWarningArray, logWarningSubHeader, logMessage, logObject } from '../logger.js'
 import { THEME } from '../theme.js'
 
 export const logRuntime = (logs, pluginOptions) => {
