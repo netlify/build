@@ -22,9 +22,9 @@ interface Header {
   values: Partial<Record<string, Many<string, 'mutable'>>>
 }
 
-interface EdgeHandler {
+interface EdgeFunction {
   path?: `/${string}`
-  handler: string
+  function: string
 }
 
 interface NetlifyPlugin {
@@ -44,9 +44,9 @@ interface NetlifyConfig {
    */
   headers: Header[]
   /**
-   * array of Edge Handlers with their modifiable options
+   * array of Edge Functions with their modifiable options
    */
-  edge_handlers: EdgeHandler[]
+  edge_functions: EdgeFunction[]
   /**
    * object with options for modifying [functions](https://docs.netlify.com/configure-builds/file-based-configuration/#functions)
    */
