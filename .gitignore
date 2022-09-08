@@ -8,6 +8,7 @@ coverage
 .eslintcache
 .cache
 .vscode
+lib
 packages/*/package-lock.json
 **/fixtures/**/test_netlify.toml
 **/fixtures/**/test_headers

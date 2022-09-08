@@ -3,19 +3,24 @@
   "version": "18.2.3",
   "description": "Netlify config module",
   "type": "module",
-  "exports": "./src/main.js",
-  "main": "./src/main.js",
+  "exports": "./lib/main.js",
+  "main": "./lib/main.js",
   "bin": {
-    "netlify-config": "src/bin/main.js"
+    "netlify-config": "lib/bin/main.js"
   },
   "files": [
-    "src/**/*.js"
+    "lib/**/*",
+    "CHANGELOG.md",
+    "LICENSE",
+    "README.md"
   ],
   "author": "Netlify Inc.",
   "contributors": [
     "David Wells <hello@davidwells.io> (https://davidwells.io/)"
   ],
   "scripts": {
+    "prebuild": "rm -rf lib",
+    "build": "tsc && chmod +x ./lib/bin/main.js",
     "prepublishOnly": "cd ../../ && npm run prepublishOnly"
   },
   "keywords": [
@@ -77,6 +82,7 @@
     "yargs": "^17.3.1"
   },
   "devDependencies": {
+    "@netlify/netlitest-helper": "latest",
     "ava": "^4.0.0",
     "del": "^6.0.0",
     "has-ansi": "^5.0.0",

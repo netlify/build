@@ -1,0 +1,8 @@
+{
+  "name": "@netlify/test-helpers",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "exports": "./index.js",
+  "main": "./index.js"
+}

@@ -4,8 +4,14 @@ import { fileMatch } from './match.js'
 import { getBase, getHead } from './refs.js'
 import { getLinesOfCode } from './stats.js'
 
+type getGitUtilsParams = {
+  base?: string
+  head?: string
+  cwd?: string
+}
+
 // Main entry point to the git utilities
-export const getGitUtils = function ({ base, head, cwd } = {}) {
+export function getGitUtils({ base, head, cwd }: getGitUtilsParams = {}) {
   const headA = getHead(cwd, head)
   const baseA = getBase(base, headA, cwd)
   const { modifiedFiles, createdFiles, deletedFiles } = getDiffFiles(baseA, headA, cwd)

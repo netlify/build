@@ -42,7 +42,7 @@ test('Write on file with the --output flag', async (t) => {
   const output = await getTmpName({ dir: 'netlify-build-test' })
   try {
     await runFixture(t, 'empty', { flags: { output }, useBinary: true, snapshot: false })
-    const content = await fs.readFile(output)
+    const content = await fs.readFile(output, 'utf-8')
     const { context } = JSON.parse(content)
     t.is(context, 'production')
   } finally {
