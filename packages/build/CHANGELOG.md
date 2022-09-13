@@ -24,6 +24,19 @@
   * dependencies
     * @netlify/config bumped from ^18.2.0 to ^18.2.1
 
+## [27.18.0](https://github.com/netlify/build/compare/build-v27.17.2...build-v27.18.0) (2022-09-13)
+
+
+### Features
+
+* add support for edge functions import maps with ESZIP ([#4508](https://github.com/netlify/build/issues/4508)) ([ef794b4](https://github.com/netlify/build/commit/ef794b4372c1d89e3e008d57354cb582b56ebc7e))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.43.0 ([#4497](https://github.com/netlify/build/issues/4497)) ([2ab7070](https://github.com/netlify/build/commit/2ab7070d02753dc28ddb237c5ec9e9235ce5172d))
+* **deps:** update dependency @netlify/plugins-list to ^6.44.0 ([#4499](https://github.com/netlify/build/issues/4499)) ([3a9554a](https://github.com/netlify/build/commit/3a9554a0a45f35c6c42dc9af6d287937e20c6309))
+
 ## [27.17.2](https://github.com/netlify/build/compare/build-v27.17.1...build-v27.17.2) (2022-09-08)
 
 
