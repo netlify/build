@@ -1,0 +1,10 @@
+{
+  "functions": [
+    {
+      "function": "function-1",
+      "path": "/*"
+    }
+  ],
+  "import_map": "../../import-map.json",
+  "version": 1
+}
