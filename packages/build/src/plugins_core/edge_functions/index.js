@@ -38,7 +38,7 @@ const coreStep = async function ({
 
   logFunctions({ internalSrcDirectory, internalSrcPath, logs, srcDirectory, srcPath })
 
-  const { declarations: internalDeclarations, importMap } = await parseManifest(internalSrcPath)
+  const { declarations: internalDeclarations, importMap } = await parseManifest(internalSrcPath, systemLog)
   const declarations = [...configDeclarations, ...internalDeclarations]
 
   // If we're running in buildbot and the feature flag is enabled, we set the
