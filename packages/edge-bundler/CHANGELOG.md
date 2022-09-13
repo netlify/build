@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/netlify/edge-bundler/compare/v1.14.1...v2.0.0) (2022-09-13)
+
+
+### ⚠ BREAKING CHANGES
+
+* `importMaps` now expects a `baseURL` containing the URL of the import map file
+
+### Features
+
+* add support for import maps with ESZIP ([#109](https://github.com/netlify/edge-bundler/issues/109)) ([19031eb](https://github.com/netlify/edge-bundler/commit/19031eb4923fd37de0c004b67c542ea8b1aff374))
+
 ## [1.14.1](https://github.com/netlify/edge-bundler/compare/v1.14.0...v1.14.1) (2022-08-26)
 
 
