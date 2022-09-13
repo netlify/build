@@ -70,7 +70,9 @@ test.serial('builds Edge Functions from the user-defined directory', async (t) =
 test.serial('builds Edge Functions from the internal directory', async (t) => {
   const fixtureName = 'functions_internal'
 
-  await runFixture(t, 'functions_internal', { flags: { debug: false, mode: 'buildbot' } })
+  await runFixture(t, 'functions_internal', {
+    flags: { debug: false, featureFlags: { edge_functions_produce_eszip: true }, mode: 'buildbot' },
+  })
   await assertManifest(t, fixtureName)
 })
 

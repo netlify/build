@@ -1,7 +1,8 @@
 import { promises as fs } from 'fs'
 import { dirname, join, resolve } from 'path'
+import { pathToFileURL } from 'url'
 
-const parseManifest = async (internalSourceDirectory) => {
+const parseManifest = async (internalSourceDirectory, systemLog) => {
   const manifestPath = join(internalSourceDirectory, 'manifest.json')
 
   try {
@@ -22,13 +23,18 @@ const parseManifest = async (internalSourceDirectory) => {
 
       return {
         ...result,
-        importMap,
+        importMap: {
+          baseURL: pathToFileURL(importMapPath),
+          ...importMap,
+        },
       }
     }
 
     return result
-  } catch {
-    // no-op
+  } catch (error) {
+    if (error.code !== 'ENOENT') {
+      systemLog('Error while parsing internal edge functions manifest:', error)
+    }
   }
 
   return {
