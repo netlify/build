@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/netlify/edge-bundler/compare/v2.0.0...v2.0.1) (2022-09-13)
+
+
+### Bug Fixes
+
+* move `stage2.ts` to `src` ([#113](https://github.com/netlify/edge-bundler/issues/113)) ([0d14125](https://github.com/netlify/edge-bundler/commit/0d141253bdda65ba9bc31f5452b4c0a915f14416))
+
 ## [2.0.0](https://github.com/netlify/edge-bundler/compare/v1.14.1...v2.0.0) (2022-09-13)
 
 
