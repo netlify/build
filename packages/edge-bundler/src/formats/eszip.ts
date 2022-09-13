@@ -1,12 +1,12 @@
 import { join, resolve } from 'path'
 import { fileURLToPath } from 'url'
 
-import type { WriteStage2Options } from '../../common/stage2.js'
 import { DenoBridge } from '../bridge.js'
 import type { Bundle } from '../bundle.js'
 import { wrapBundleError } from '../bundle_error.js'
 import { EdgeFunction } from '../edge_function.js'
 import { ImportMap } from '../import_map.js'
+import type { WriteStage2Options } from '../stage2.js'
 import { getFileHash } from '../utils/sha256.js'
 
 interface BundleESZIPOptions {
