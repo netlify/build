@@ -1,21 +1,10 @@
-import { build, LoadResponse } from 'https://deno.land/x/eszip@v0.18.0/mod.ts'
+import { build, LoadResponse } from 'https://deno.land/x/eszip@v0.28.0/mod.ts'
 
 import * as path from 'https://deno.land/std@0.127.0/path/mod.ts'
 
+import type { InputFunction, WriteStage2Options } from '../../common/stage2.ts'
 import { PUBLIC_SPECIFIER, STAGE2_SPECIFIER, virtualRoot } from './consts.ts'
 import { inlineModule, loadFromVirtualRoot, loadWithRetry } from './common.ts'
-
-interface InputFunction {
-  name: string
-  path: string
-}
-
-interface WriteStage2Options {
-  basePath: string
-  destPath: string
-  functions: InputFunction[]
-  imports?: Record<string, string>
-}
 
 const getFunctionReference = (basePath: string, func: InputFunction, index: number) => {
   const importName = `func${index}`
@@ -44,7 +33,7 @@ const getVirtualPath = (basePath: string, filePath: string) => {
   return url
 }
 
-const stage2Loader = (basePath: string, functions: InputFunction[], imports: Record<string, string> = {}) => {
+const stage2Loader = (basePath: string, functions: InputFunction[]) => {
   return async (specifier: string): Promise<LoadResponse | undefined> => {
     if (specifier === STAGE2_SPECIFIER) {
       const stage2Entry = getStage2Entry(basePath, functions)
@@ -59,10 +48,6 @@ const stage2Loader = (basePath: string, functions: InputFunction[], imports: Rec
       }
     }
 
-    if (imports[specifier] !== undefined) {
-      return await loadWithRetry(imports[specifier])
-    }
-
     if (specifier.startsWith(virtualRoot)) {
       return loadFromVirtualRoot(specifier, virtualRoot, basePath)
     }
@@ -71,9 +56,9 @@ const stage2Loader = (basePath: string, functions: InputFunction[], imports: Rec
   }
 }
 
-const writeStage2 = async ({ basePath, destPath, functions, imports }: WriteStage2Options) => {
-  const loader = stage2Loader(basePath, functions, imports)
-  const bytes = await build([STAGE2_SPECIFIER], loader)
+const writeStage2 = async ({ basePath, destPath, functions, importMapURL }: WriteStage2Options) => {
+  const loader = stage2Loader(basePath, functions)
+  const bytes = await build([STAGE2_SPECIFIER], loader, importMapURL)
 
   return await Deno.writeFile(destPath, bytes)
 }

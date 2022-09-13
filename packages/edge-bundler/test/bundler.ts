@@ -25,6 +25,7 @@ test('Produces a JavaScript bundle and a manifest file', async (t) => {
     basePath: fixturesDir,
     importMaps: [
       {
+        baseURL: pathToFileURL(join(fixturesDir, 'import-map.json')),
         imports: {
           'alias:helper': pathToFileURL(join(fixturesDir, 'helper.ts')).toString(),
         },
@@ -65,6 +66,7 @@ test('Produces only a ESZIP bundle when the `edge_functions_produce_eszip` featu
     },
     importMaps: [
       {
+        baseURL: pathToFileURL(join(fixturesDir, 'import-map.json')),
         imports: {
           'alias:helper': pathToFileURL(join(fixturesDir, 'helper.ts')).toString(),
         },
@@ -145,6 +147,7 @@ test('Uses the cache directory as the `DENO_DIR` value if the `edge_functions_ca
     cacheDirectory: cacheDir.path,
     importMaps: [
       {
+        baseURL: pathToFileURL(join(fixturesDir, 'import-map.json')),
         imports: {
           'alias:helper': pathToFileURL(join(fixturesDir, 'helper.ts')).toString(),
         },
@@ -179,4 +182,44 @@ test('Uses the cache directory as the `DENO_DIR` value if the `edge_functions_ca
   t.true(denoDir2.includes('gen'))
 
   await fs.rmdir(outDir.path, { recursive: true })
+})
+
+test('Supports import maps with relative paths', async (t) => {
+  const sourceDirectory = resolve(fixturesDir, 'project_1', 'functions')
+  const tmpDir = await tmp.dir()
+  const declarations = [
+    {
+      function: 'func1',
+      path: '/func1',
+    },
+  ]
+  const result = await bundle([sourceDirectory], tmpDir.path, declarations, {
+    basePath: fixturesDir,
+    featureFlags: {
+      edge_functions_produce_eszip: true,
+    },
+    importMaps: [
+      {
+        baseURL: pathToFileURL(join(fixturesDir, 'import-map.json')),
+        imports: {
+          'alias:helper': './helper.ts',
+        },
+      },
+    ],
+  })
+  const generatedFiles = await fs.readdir(tmpDir.path)
+
+  t.is(result.functions.length, 1)
+  t.is(generatedFiles.length, 2)
+
+  // eslint-disable-next-line unicorn/prefer-json-parse-buffer
+  const manifestFile = await fs.readFile(resolve(tmpDir.path, 'manifest.json'), 'utf8')
+  const manifest = JSON.parse(manifestFile)
+  const { bundles } = manifest
+
+  t.is(bundles.length, 1)
+  t.is(bundles[0].format, 'eszip2')
+  t.true(generatedFiles.includes(bundles[0].asset))
+
+  await fs.rmdir(tmpDir.path, { recursive: true })
 })

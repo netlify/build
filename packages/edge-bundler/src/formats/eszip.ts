@@ -1,6 +1,7 @@
 import { join, resolve } from 'path'
 import { fileURLToPath } from 'url'
 
+import type { WriteStage2Options } from '../../common/stage2.js'
 import { DenoBridge } from '../bridge.js'
 import type { Bundle } from '../bundle.js'
 import { wrapBundleError } from '../bundle_error.js'
@@ -30,11 +31,11 @@ const bundleESZIP = async ({
   const extension = '.eszip'
   const destPath = join(distDirectory, `${buildID}${extension}`)
   const bundler = getESZIPBundler()
-  const payload = {
+  const payload: WriteStage2Options = {
     basePath,
     destPath,
     functions,
-    imports: importMap.imports,
+    importMapURL: importMap.toDataURL(),
   }
   const flags = ['--allow-all']
 
