@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.3](https://github.com/netlify/edge-bundler/compare/v2.0.2...v2.0.3) (2022-09-14)
+
+
+### Bug Fixes
+
+* fix `getPackageVersion` ([#118](https://github.com/netlify/edge-bundler/issues/118)) ([d57335a](https://github.com/netlify/edge-bundler/commit/d57335a1f91289bc4b18881b50f1fab705b68ae2))
+
 ## [2.0.2](https://github.com/netlify/edge-bundler/compare/v2.0.1...v2.0.2) (2022-09-14)
 
 
