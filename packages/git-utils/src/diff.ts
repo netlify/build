@@ -2,7 +2,7 @@ import { git } from './exec.js'
 
 // Return the list of modified|created|deleted files according to git, between
 // the `base` commit and the `HEAD`
-export const getDiffFiles = function (base, head, cwd) {
+export const getDiffFiles = function (base: string, head: string, cwd: string) {
   const stdout = git(['diff', '--name-status', '--no-renames', `${base}...${head}`], cwd)
   const files = stdout.split('\n').map(getDiffFile).filter(Boolean)
 
@@ -13,7 +13,7 @@ export const getDiffFiles = function (base, head, cwd) {
 }
 
 // Parse each `git diff` line
-const getDiffFile = function (line) {
+const getDiffFile = function (line: string): File {
   const result = DIFF_FILE_REGEXP.exec(line)
 
   // Happens for example when `base` is invalid
@@ -27,10 +27,15 @@ const getDiffFile = function (line) {
 
 const DIFF_FILE_REGEXP = /([ADM])\s+(.*)/
 
-const getFilesByType = function (files, type) {
+const getFilesByType = function (files: File[], type: string): string[] {
   return files.filter((file) => file.type === type).map(getFilepath)
 }
 
-const getFilepath = function ({ filepath }) {
+const getFilepath = function ({ filepath }): string {
   return filepath
+}
+
+type File = {
+  filepath: string
+  type: string
 }

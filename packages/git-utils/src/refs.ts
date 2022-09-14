@@ -3,7 +3,7 @@ import { env } from 'process'
 import { git } from './exec.js'
 
 // Retrieve the `head` commit
-export const getHead = function (cwd, head = 'HEAD') {
+export const getHead = function (cwd: string, head = 'HEAD') {
   const result = checkRef(head, cwd)
   if (result.error !== undefined) {
     throwError('head', result)
@@ -12,13 +12,13 @@ export const getHead = function (cwd, head = 'HEAD') {
 }
 
 // Retrieve the `base` commit
-export const getBase = function (base, head, cwd) {
+export const getBase = function (base: string, head: string, cwd: string) {
   const refs = getBaseRefs(base, head)
   const { ref } = findRef(refs, cwd)
   return ref
 }
 
-const getBaseRefs = function (base, head) {
+const getBaseRefs = function (base: string, head: string) {
   if (base !== undefined) {
     return [base]
   }
@@ -33,7 +33,7 @@ const getBaseRefs = function (base, head) {
 }
 
 // Use the first commit that exists
-const findRef = function (refs, cwd) {
+const findRef = function (refs: string[], cwd: string) {
   const results = refs.map((ref) => checkRef(ref, cwd))
   const result = results.find(refExists)
   if (result === undefined) {
@@ -43,21 +43,35 @@ const findRef = function (refs, cwd) {
 }
 
 // Check if a commit exists
-const checkRef = function (ref, cwd) {
+const checkRef = function (ref, cwd): CheckedRef {
   try {
     git(['rev-parse', ref], cwd)
     return { ref }
   } catch (error) {
-    return { ref, error }
+    return {
+      ref,
+      error,
+    }
   }
 }
 
-const refExists = function ({ error }) {
+const refExists = function ({ error }: { ref: string; error: Error }) {
   return error === undefined
 }
 
-const throwError = function (name, { ref, error: { message, stderr } }) {
+const throwError = function (name: string, { ref, error }: CheckedRef) {
+  const { message, stderr } = error
   const messages = [message, stderr].filter(Boolean).join('\n')
   const messageA = `Invalid ${name} commit ${ref}\n${messages}`
   throw new Error(messageA)
+}
+
+type CheckedRef = {
+  ref: string
+  error?: Error
+}
+
+type Error = {
+  message: string
+  stderr: string
 }

@@ -1,11 +1,11 @@
 import process from 'process'
 
 import { execaSync } from 'execa'
-import moize from 'moize'
+import moize from 'moize/mjs/index.mjs'
 import { pathExistsSync } from 'path-exists'
 
 // Fires the `git` binary. Memoized.
-const mGit = function (args, cwd) {
+const mGit = function (args: string[], cwd: string) {
   const cwdA = safeGetCwd(cwd)
   try {
     const { stdout } = execaSync('git', args, { cwd: cwdA })
@@ -21,7 +21,7 @@ const mGit = function (args, cwd) {
 // eslint-disable-next-line no-magic-numbers
 export const git = moize(mGit, { isDeepEqual: true, maxSize: 1e3 })
 
-const safeGetCwd = function (cwd) {
+const safeGetCwd = function (cwd: string) {
   const cwdA = getCwdValue(cwd)
 
   if (!pathExistsSync(cwdA)) {
@@ -31,7 +31,7 @@ const safeGetCwd = function (cwd) {
   return cwdA
 }
 
-const getCwdValue = function (cwd) {
+const getCwdValue = function (cwd: string) {
   if (cwd !== undefined) {
     return cwd
   }
