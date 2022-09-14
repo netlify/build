@@ -2,7 +2,7 @@ import { platform } from 'process'
 import { fileURLToPath } from 'url'
 
 import test from 'ava'
-import { execa } from 'execa'
+import { execa, Options } from 'execa'
 import semver from 'semver'
 
 import { run, runCommand } from '../src/main.js'
@@ -10,7 +10,7 @@ import { run, runCommand } from '../src/main.js'
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 const RUN_FILE = `${FIXTURES_DIR}/run.js`
 
-const runInChildProcess = function (command, options) {
+const runInChildProcess = function (command: string, options: Options = new Object()) {
   const optionsA = options === undefined ? [] : [JSON.stringify(options)]
   return execa('node', [RUN_FILE, command, ...optionsA])
 }
@@ -28,7 +28,7 @@ test('Can run a command as a single string', async (t) => {
 // `echo` in `cmd.exe` is different from Unix
 if (platform !== 'win32') {
   test('Can run with no arguments', async (t) => {
-    const { stdout } = await run('echo', { stdio: 'pipe' })
+    const { stdout } = await run('echo', [], { stdio: 'pipe' })
     t.is(stdout.trim(), '')
   })
 

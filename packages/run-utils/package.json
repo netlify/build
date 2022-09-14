@@ -50,6 +50,7 @@
     "execa": "^6.0.0"
   },
   "devDependencies": {
+    "@types/execa": "^2.0.0",
     "ava": "^4.0.0",
     "semver": "^7.0.0"
   },

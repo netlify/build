@@ -16,7 +16,8 @@
   ],
   "author": "Netlify Inc.",
   "contributors": [
-    "David Wells <hello@davidwells.io> (https://davidwells.io/)"
+    "David Wells <hello@davidwells.io> (https://davidwells.io/)",
+    "Japheth Obala <j-obala@outlook.com> (http://japhethobala.com)"
   ],
   "scripts": {
     "prebuild": "rm -rf lib",
