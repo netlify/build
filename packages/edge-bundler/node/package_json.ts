@@ -1,19 +1,27 @@
 import { readFileSync } from 'fs'
-import { dirname, join } from 'path'
+import { join } from 'path'
+import { fileURLToPath } from 'url'
 
-import { findUpSync } from 'find-up'
+import { findUpSync, pathExistsSync } from 'find-up'
 
 const getPackagePath = () => {
-  const packageJSONPath = findUpSync('package.json', { cwd: import.meta.url })
+  const packagePath = findUpSync(
+    (directory: string) => {
+      if (pathExistsSync(join(directory, 'package.json'))) {
+        return directory
+      }
+    },
+    { cwd: fileURLToPath(import.meta.url), type: 'directory' },
+  )
 
   // We should never get here, but let's show a somewhat useful error message.
-  if (packageJSONPath === undefined) {
+  if (packagePath === undefined) {
     throw new Error(
       'Could not find `package.json` for `@netlify/edge-bundler`. Please try running `npm install` to reinstall your dependencies.',
     )
   }
 
-  return dirname(packageJSONPath)
+  return packagePath
 }
 
 const getPackageVersion = () => {
