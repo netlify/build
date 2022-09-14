@@ -2,7 +2,7 @@ import { git } from './exec.js'
 
 // Return information on each commit since the `base` commit, such as SHA,
 // parent commits, author, committer and commit message
-export const getCommits = function (base: string, head: string, cwd): Commit[] {
+export const getCommits = function (base: string, head: string, cwd: string): Commit[] {
   const stdout = git(['log', `--pretty=${GIT_PRETTY_FORMAT}`, `${base}...${head}`], cwd)
   const commits = stdout.split('\n').map(getCommit)
   return commits
