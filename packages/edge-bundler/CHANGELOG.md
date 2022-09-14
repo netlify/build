@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.5](https://github.com/netlify/edge-bundler/compare/v2.0.4...v2.0.5) (2022-09-14)
+
+
+### Bug Fixes
+
+* convert file URL to path ([#123](https://github.com/netlify/edge-bundler/issues/123)) ([ff78c96](https://github.com/netlify/edge-bundler/commit/ff78c9637c3279d3a339abda82cc5a30ae3b452a))
+
 ## [2.0.4](https://github.com/netlify/edge-bundler/compare/v2.0.3...v2.0.4) (2022-09-14)
 
 
