@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.0.2](https://github.com/netlify/edge-bundler/compare/v2.0.1...v2.0.2) (2022-09-14)
+
+
+### Bug Fixes
+
+* create shared directory ([#117](https://github.com/netlify/edge-bundler/issues/117)) ([9a21c18](https://github.com/netlify/edge-bundler/commit/9a21c1826395fe42e8e443931773a4c7f0b17108))
+* **deps:** update dependency uuid to v9 ([#111](https://github.com/netlify/edge-bundler/issues/111)) ([0525b27](https://github.com/netlify/edge-bundler/commit/0525b27743f5203cd274890e02718a8eda0dd93f))
+
 ## [2.0.1](https://github.com/netlify/edge-bundler/compare/v2.0.0...v2.0.1) (2022-09-13)
 
 
