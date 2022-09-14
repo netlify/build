@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.4](https://github.com/netlify/edge-bundler/compare/v2.0.3...v2.0.4) (2022-09-14)
+
+
+### Bug Fixes
+
+* use right location for Deno bundler ([#120](https://github.com/netlify/edge-bundler/issues/120)) ([a8a9f5d](https://github.com/netlify/edge-bundler/commit/a8a9f5d213d45ab8200e08ee6b2159a8b2c2351f))
+
 ## [2.0.3](https://github.com/netlify/edge-bundler/compare/v2.0.2...v2.0.3) (2022-09-14)
 
 
