@@ -3,12 +3,13 @@
   "version": "2.0.1",
   "description": "Intelligently prepare Netlify Edge Functions for deployment",
   "type": "module",
-  "main": "./dist/index.js",
-  "exports": "./dist/index.js",
+  "main": "./dist/node/index.js",
+  "exports": "./dist/node/index.js",
   "files": [
     "deno/**",
     "dist/**/*.js",
-    "dist/**/*.d.ts"
+    "dist/**/*.d.ts",
+    "shared/**"
   ],
   "scripts": {
     "build": "tsc",
@@ -30,8 +31,8 @@
     "test:ci:ava": "nyc -r lcovonly -r text -r json ava"
   },
   "config": {
-    "eslint": "--ignore-path .gitignore --cache --format=codeframe --max-warnings=0 \"{src,scripts,.github}/**/*.{js,ts,md,html}\" \"*.{js,ts,md,html}\"",
-    "prettier": "--ignore-path .gitignore --loglevel=warn \"{src,scripts,.github}/**/*.{js,ts,md,yml,json,html}\" \"*.{js,ts,yml,json,html}\" \".*.{js,ts,yml,json,html}\" \"!**/package-lock.json\" \"!package-lock.json\""
+    "eslint": "--ignore-path .gitignore --cache --format=codeframe --max-warnings=0 \"{node,scripts,.github}/**/*.{js,ts,md,html}\" \"*.{js,ts,md,html}\"",
+    "prettier": "--ignore-path .gitignore --loglevel=warn \"{node,scripts,.github}/**/*.{js,ts,md,yml,json,html}\" \"*.{js,ts,yml,json,html}\" \".*.{js,ts,yml,json,html}\" \"!**/package-lock.json\" \"!package-lock.json\""
   },
   "ava": {
     "files": [

@@ -4,7 +4,7 @@ import { env } from 'process'
 import test from 'ava'
 import fetch, { Headers } from 'node-fetch'
 
-import { getBootstrapURL } from '../src/formats/javascript.js'
+import { getBootstrapURL } from '../node/formats/javascript.js'
 
 test.serial('Imports the bootstrap layer from a valid URL', async (t) => {
   const importURL = new URL(getBootstrapURL())

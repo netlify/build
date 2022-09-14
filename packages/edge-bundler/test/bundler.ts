@@ -5,8 +5,8 @@ import { fileURLToPath, pathToFileURL } from 'url'
 import test from 'ava'
 import tmp from 'tmp-promise'
 
-import { BundleError } from '../src/bundle_error.js'
-import { bundle, BundleOptions } from '../src/bundler.js'
+import { BundleError } from '../node/bundle_error.js'
+import { bundle, BundleOptions } from '../node/bundler.js'
 
 const url = new URL(import.meta.url)
 const dirname = fileURLToPath(url)

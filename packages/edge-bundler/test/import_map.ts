@@ -1,6 +1,6 @@
 import test from 'ava'
 
-import { ImportMap } from '../src/import_map.js'
+import { ImportMap } from '../node/import_map.js'
 
 test('Handles import maps with full URLs without specifying a base URL', (t) => {
   const inputFile1 = {

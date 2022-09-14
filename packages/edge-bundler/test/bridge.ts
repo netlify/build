@@ -9,8 +9,8 @@ import nock from 'nock'
 import { spy } from 'sinon'
 import tmp, { DirectoryResult } from 'tmp-promise'
 
-import { DenoBridge } from '../src/bridge.js'
-import { getPlatformTarget } from '../src/platform.js'
+import { DenoBridge } from '../node/bridge.js'
+import { getPlatformTarget } from '../node/platform.js'
 
 const require = createRequire(import.meta.url)
 const archiver = require('archiver')

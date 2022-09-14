@@ -2,7 +2,7 @@ import { build, LoadResponse } from 'https://deno.land/x/eszip@v0.28.0/mod.ts'
 
 import * as path from 'https://deno.land/std@0.127.0/path/mod.ts'
 
-import type { InputFunction, WriteStage2Options } from '../../src/stage2.ts'
+import type { InputFunction, WriteStage2Options } from '../../shared/stage2.ts'
 import { PUBLIC_SPECIFIER, STAGE2_SPECIFIER, virtualRoot } from './consts.ts'
 import { inlineModule, loadFromVirtualRoot, loadWithRetry } from './common.ts'
 

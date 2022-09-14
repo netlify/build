@@ -8,12 +8,11 @@ import { execa } from 'execa'
 import nock from 'nock'
 import tmp from 'tmp-promise'
 
-import { download } from '../src/downloader.js'
-import { getLogger } from '../src/logger.js'
-import { getPlatformTarget } from '../src/platform.js'
+import { download } from '../node/downloader.js'
+import { getLogger } from '../node/logger.js'
+import { getPlatformTarget } from '../node/platform.js'
 
-const testLogger = getLogger(() => {
-})
+const testLogger = getLogger(() => {})
 
 const streamError = () => {
   const stream = new PassThrough()
