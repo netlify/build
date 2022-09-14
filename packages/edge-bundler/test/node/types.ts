@@ -6,9 +6,9 @@ import nock from 'nock'
 import { stub } from 'sinon'
 import tmp from 'tmp-promise'
 
-import { DenoBridge } from '../node/bridge.js'
-import { getLogger } from '../node/logger.js'
-import { ensureLatestTypes } from '../node/types.js'
+import { DenoBridge } from '../../node/bridge.js'
+import { getLogger } from '../../node/logger.js'
+import { ensureLatestTypes } from '../../node/types.js'
 
 const testLogger = getLogger(() => {
   // no-op

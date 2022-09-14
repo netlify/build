@@ -14,16 +14,28 @@ const getFunctionReference = (basePath: string, func: InputFunction, index: numb
   return {
     exportLine,
     importLine: `import ${importName} from "${url}";`,
+    metadata: {
+      url,
+    },
+    name: func.name,
   }
 }
 
-const getStage2Entry = (basePath: string, functions: InputFunction[]) => {
+export const getStage2Entry = (basePath: string, functions: InputFunction[]) => {
   const lines = functions.map((func, index) => getFunctionReference(basePath, func, index))
   const importLines = lines.map(({ importLine }) => importLine).join('\n')
   const exportLines = lines.map(({ exportLine }) => exportLine).join(', ')
-  const exportDeclaration = `export const functions = {${exportLines}};`
+  const metadata = lines.reduce(
+    (acc, { metadata, name }) => ({
+      ...acc,
+      [name]: metadata,
+    }),
+    {},
+  )
+  const functionsExport = `export const functions = {${exportLines}};`
+  const metadataExport = `export const metadata = ${JSON.stringify(metadata)};`
 
-  return [importLines, exportDeclaration].join('\n\n')
+  return [importLines, functionsExport, metadataExport].join('\n\n')
 }
 
 const getVirtualPath = (basePath: string, filePath: string) => {

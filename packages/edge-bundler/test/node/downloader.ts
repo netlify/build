@@ -8,10 +8,11 @@ import { execa } from 'execa'
 import nock from 'nock'
 import tmp from 'tmp-promise'
 
-import { download } from '../node/downloader.js'
-import { getLogger } from '../node/logger.js'
-import { getPlatformTarget } from '../node/platform.js'
+import { download } from '../../node/downloader.js'
+import { getLogger } from '../../node/logger.js'
+import { getPlatformTarget } from '../../node/platform.js'
 
+// eslint-disable-next-line @typescript-eslint/no-empty-function
 const testLogger = getLogger(() => {})
 
 const streamError = () => {
@@ -64,7 +65,7 @@ test.serial('tries downloading binary up to 4 times', async (t) => {
     .get(zipPath)
     // 1 second delay
     .delayBody(1000)
-    .replyWithFile(200, platform === 'win32' ? './test/fixtures/deno.win.zip' : './test/fixtures/deno.zip', {
+    .replyWithFile(200, platform === 'win32' ? './test/node/fixtures/deno.win.zip' : './test/node/fixtures/deno.zip', {
       'Content-Type': 'application/zip',
     })
 

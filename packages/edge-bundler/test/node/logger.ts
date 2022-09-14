@@ -1,7 +1,7 @@
 import test from 'ava'
 import { stub } from 'sinon'
 
-import { getLogger } from '../node/logger.js'
+import { getLogger } from '../../node/logger.js'
 
 const consoleLog = console.log
 

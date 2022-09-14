@@ -28,6 +28,7 @@
     "test:dev": "run-s build test:dev:*",
     "test:ci": "run-s build test:ci:*",
     "test:dev:ava": "ava",
+    "test:dev:deno": "deno test --allow-all test/deno",
     "test:ci:ava": "nyc -r lcovonly -r text -r json ava"
   },
   "config": {
@@ -36,8 +37,8 @@
   },
   "ava": {
     "files": [
-      "test/**/*.ts",
-      "!test/fixtures/**"
+      "test/node/**/*.ts",
+      "!test/node/fixtures/**"
     ],
     "extensions": {
       "ts": "module"
@@ -55,7 +56,7 @@
   },
   "author": "Netlify Inc.",
   "directories": {
-    "test": "test"
+    "test": "test/node"
   },
   "devDependencies": {
     "@ava/typescript": "^3.0.1",

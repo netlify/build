@@ -2,7 +2,7 @@ import { env } from 'process'
 
 import test from 'ava'
 
-import { generateManifest } from '../node/manifest.js'
+import { generateManifest } from '../../node/manifest.js'
 
 test('Generates a manifest with different bundles', (t) => {
   const bundle1 = {
