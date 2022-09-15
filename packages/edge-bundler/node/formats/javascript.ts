@@ -108,24 +108,30 @@ const getLocalEntryPoint = (
   }: GetLocalEntryPointOptions,
 ) => {
   const bootImport = `import { boot } from "${getBootstrapURL()}";`
-  const declaration = `const functions = {};`
-  const imports = functions.map(
-    (func) => `
-  try {
-    const { default: func } = await import("${pathToFileURL(func.path)}");
-
-    if (typeof func === "function") {
-      functions["${func.name}"] = func;
-    } else {
-      console.log(${JSON.stringify(formatExportTypeError(func.name))});
+  const declaration = `const functions = {}; const metadata = {};`
+  const imports = functions.map((func) => {
+    const url = pathToFileURL(func.path)
+    const metadata = {
+      url,
     }
-  } catch (error) {
-    console.log(${JSON.stringify(formatImportError(func.name))});
-    console.error(error);
-  }
-  `,
-  )
-  const bootCall = `boot(functions);`
+
+    return `
+      try {
+        const { default: func } = await import("${url}");
+    
+        if (typeof func === "function") {
+          functions["${func.name}"] = func;
+          metadata["${func.name}"] = ${JSON.stringify(metadata)}
+        } else {
+          console.log(${JSON.stringify(formatExportTypeError(func.name))});
+        }
+      } catch (error) {
+        console.log(${JSON.stringify(formatImportError(func.name))});
+        console.error(error);
+      }
+      `
+  })
+  const bootCall = `boot(functions, metadata);`
 
   return [bootImport, declaration, ...imports, bootCall].join('\n\n')
 }
@@ -150,4 +156,4 @@ const getProductionEntryPoint = (functions: EdgeFunction[]) => {
   return [bootImport, importLines, exportDeclaration, defaultExport].join('\n\n')
 }
 
-export { bundleJS as bundle, generateStage2, getBootstrapURL }
+export { bundleJS as bundle, generateStage2, getBootstrapURL, getLocalEntryPoint }
