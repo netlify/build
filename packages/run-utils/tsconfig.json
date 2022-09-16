@@ -3,6 +3,5 @@
   "compilerOptions": {
     "outDir": "lib" /* Specify an output folder for all emitted files. */
   },
-  "include": ["src/**/*.js", "src/**/*.ts", "tests/**/*.ts", "tests/**/*.js"],
-  "exclude": ["tests/**/fixtures"]
+  "include": ["src/**/*.js", "src/**/*.ts", "tests/**/*.ts", "tests/**/*.js"]
 }

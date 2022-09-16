@@ -11,7 +11,7 @@
   "author": "Netlify Inc.",
   "scripts": {
     "prebuild": "rm -rf lib",
-    "build": "tsc",
+    "build": "tsc && node tests/helpers/copyToLib.js",
     "prepublishOnly": "cd ../../ && npm run prepublishOnly"
   },
   "keywords": [
