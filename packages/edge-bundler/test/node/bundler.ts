@@ -1,8 +1,10 @@
 import { promises as fs } from 'fs'
 import { join, resolve } from 'path'
+import process from 'process'
 import { fileURLToPath, pathToFileURL } from 'url'
 
 import test from 'ava'
+import del from 'del'
 import tmp from 'tmp-promise'
 
 import { BundleError } from '../../node/bundle_error.js'
@@ -222,4 +224,64 @@ test('Supports import maps with relative paths', async (t) => {
   t.true(generatedFiles.includes(bundles[0].asset))
 
   await fs.rmdir(tmpDir.path, { recursive: true })
+})
+
+test.serial('Ignores any user-defined `deno.json` files', async (t) => {
+  const fixtureDir = join(fixturesDir, 'project_1')
+  const tmpDir = await tmp.dir()
+  const declarations = [
+    {
+      function: 'func1',
+      path: '/func1',
+    },
+  ]
+
+  // Creating an import map file that rewires the URL of the Deno registry to
+  // an invalid location.
+  const importMapFile = await tmp.file()
+  const importMap = {
+    imports: {
+      'https://deno.land/': 'https://black.hole/',
+    },
+  }
+
+  await fs.writeFile(importMapFile.path, JSON.stringify(importMap))
+
+  // Deno configuration files need to be in the current working directory.
+  // There's not a great way for us to set the working directory of the `deno`
+  // process that we'll run, so our best bet is to write the file to whatever
+  // is the current working directory now and then clean it up.
+  const denoConfigPath = join(process.cwd(), 'deno.json')
+  const denoConfig = {
+    importMap: importMapFile.path,
+  }
+
+  // Let's ensure we're not overwriting a `deno.json` file that happens to be
+  // in the current working directory.
+  await t.throwsAsync(
+    () => fs.access(denoConfigPath),
+    { code: 'ENOENT' },
+    `The file at '${denoConfigPath} would be overwritten by this test. Please move the file to a different location and try again.'`,
+  )
+
+  await fs.writeFile(denoConfigPath, JSON.stringify(denoConfig))
+
+  await t.notThrowsAsync(() =>
+    bundle([join(fixtureDir, 'functions')], tmpDir.path, declarations, {
+      basePath: fixturesDir,
+      featureFlags: {
+        edge_functions_produce_eszip: true,
+      },
+      importMaps: [
+        {
+          baseURL: pathToFileURL(join(fixturesDir, 'import-map.json')),
+          imports: {
+            'alias:helper': pathToFileURL(join(fixturesDir, 'helper.ts')).toString(),
+          },
+        },
+      ],
+    }),
+  )
+
+  await del([tmpDir.path, denoConfigPath, importMapFile.path], { force: true })
 })

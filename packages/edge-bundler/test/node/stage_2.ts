@@ -6,7 +6,6 @@ import { pathToFileURL } from 'url'
 import test from 'ava'
 import del from 'del'
 import { execa } from 'execa'
-import semver from 'semver'
 import tmp from 'tmp-promise'
 
 import { getLocalEntryPoint } from '../../node/formats/javascript.js'

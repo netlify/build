@@ -37,7 +37,7 @@ const bundleESZIP = async ({
     functions,
     importMapURL: importMap.toDataURL(),
   }
-  const flags = ['--allow-all']
+  const flags = ['--allow-all', '--no-config']
 
   if (!debug) {
     flags.push('--quiet')

@@ -143,6 +143,7 @@ const serve = async ({
     '--unstable',
     `--import-map=${importMap.toDataURL()}`,
     '--v8-flags=--disallow-code-generation-from-strings',
+    '--no-config',
   ]
 
   if (certificatePath) {
