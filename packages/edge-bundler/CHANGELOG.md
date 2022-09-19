@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.1.0](https://github.com/netlify/edge-bundler/compare/v2.0.5...v2.1.0) (2022-09-19)
+
+
+### Features
+
+* add `functions` level to `metadata` object ([#129](https://github.com/netlify/edge-bundler/issues/129)) ([45cf3b2](https://github.com/netlify/edge-bundler/commit/45cf3b2ee2b70c2e1a97f589e99ed1fdb4644312))
+* export `metadata` object in local stage 2 ([#126](https://github.com/netlify/edge-bundler/issues/126)) ([ed7503a](https://github.com/netlify/edge-bundler/commit/ed7503a2a16540db9e8cc378c8e628f883d36077))
+* export `metadata` object in stage 2 ([#122](https://github.com/netlify/edge-bundler/issues/122)) ([99214c7](https://github.com/netlify/edge-bundler/commit/99214c7e49d2819c19c3b324083640bd240b22d7))
+
+
+### Bug Fixes
+
+* run `deno` with `--no-config` ([#128](https://github.com/netlify/edge-bundler/issues/128)) ([c5ee57c](https://github.com/netlify/edge-bundler/commit/c5ee57c55dfffd85c28930937418aceaf0104ad5))
+
 ## [2.0.5](https://github.com/netlify/edge-bundler/compare/v2.0.4...v2.0.5) (2022-09-14)
 
 
