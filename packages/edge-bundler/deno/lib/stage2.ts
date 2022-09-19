@@ -6,7 +6,30 @@ import type { InputFunction, WriteStage2Options } from '../../shared/stage2.ts'
 import { PUBLIC_SPECIFIER, STAGE2_SPECIFIER, virtualRoot } from './consts.ts'
 import { inlineModule, loadFromVirtualRoot, loadWithRetry } from './common.ts'
 
-const getFunctionReference = (basePath: string, func: InputFunction, index: number) => {
+interface FunctionReference {
+  exportLine: string
+  importLine: string
+  metadata: {
+    url: URL
+  }
+  name: string
+}
+
+const getMetadata = (references: FunctionReference[]) => {
+  const functions = references.reduce(
+    (acc, { metadata, name }) => ({
+      ...acc,
+      [name]: metadata,
+    }),
+    {},
+  )
+
+  return {
+    functions,
+  }
+}
+
+const getFunctionReference = (basePath: string, func: InputFunction, index: number): FunctionReference => {
   const importName = `func${index}`
   const exportLine = `"${func.name}": ${importName}`
   const url = getVirtualPath(basePath, func.path)
@@ -25,13 +48,7 @@ export const getStage2Entry = (basePath: string, functions: InputFunction[]) => 
   const lines = functions.map((func, index) => getFunctionReference(basePath, func, index))
   const importLines = lines.map(({ importLine }) => importLine).join('\n')
   const exportLines = lines.map(({ exportLine }) => exportLine).join(', ')
-  const metadata = lines.reduce(
-    (acc, { metadata, name }) => ({
-      ...acc,
-      [name]: metadata,
-    }),
-    {},
-  )
+  const metadata = getMetadata(lines)
   const functionsExport = `export const functions = {${exportLines}};`
   const metadataExport = `export const metadata = ${JSON.stringify(metadata)};`
 

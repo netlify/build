@@ -59,7 +59,7 @@ test('`getLocalEntryPoint` returns a valid stage 2 file for local development', 
 
   for (const func of functions) {
     t.is(responses[func.name], func.response)
-    t.is(metadata[func.name].url, pathToFileURL(func.path).toString())
+    t.is(metadata.functions[func.name].url, pathToFileURL(func.path).toString())
   }
 
   await del(tmpDir, { force: true })

@@ -41,10 +41,11 @@ Deno.test('`getStage2Entry` returns a valid stage 2 file', async () => {
   const normalizedStage2 = stage2.replaceAll(virtualRoot, `${baseURL.href}/`)
 
   const stage2Path = join(directory, 'stage2.ts')
+  const stage2URL = pathToFileURL(stage2Path)
 
   await Deno.writeTextFile(stage2Path, normalizedStage2)
 
-  const mod = await import(stage2Path)
+  const mod = await import(stage2URL.href)
 
   await Deno.remove(directory, { recursive: true })
 
@@ -52,6 +53,6 @@ Deno.test('`getStage2Entry` returns a valid stage 2 file', async () => {
     const result = await mod.functions[func.name]()
 
     assertEquals(await result.text(), func.response)
-    assertEquals(mod.metadata[func.name].url, pathToFileURL(func.path).toString())
+    assertEquals(mod.metadata.functions[func.name].url, pathToFileURL(func.path).toString())
   }
 })
