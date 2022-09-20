@@ -6,17 +6,18 @@ import { PassThrough } from 'stream'
 
 import test from 'ava'
 import nock from 'nock'
+import semver from 'semver'
 import { spy } from 'sinon'
 import tmp from 'tmp-promise'
 
-import { DenoBridge } from '../../node/bridge.js'
+import { DenoBridge, DENO_VERSION_RANGE } from '../../node/bridge.js'
 import { getPlatformTarget } from '../../node/platform.js'
 
 const require = createRequire(import.meta.url)
 const archiver = require('archiver')
 
 test('Downloads the Deno CLI on demand and caches it for subsequent calls', async (t) => {
-  const latestVersion = '1.20.3'
+  const latestVersion = semver.minVersion(DENO_VERSION_RANGE)?.version ?? ''
   const mockBinaryOutput = `#!/usr/bin/env sh\n\necho "deno ${latestVersion}"`
   const data = new PassThrough()
   const archive = archiver('zip', { zlib: { level: 9 } })

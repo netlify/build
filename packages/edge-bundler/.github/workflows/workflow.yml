@@ -26,7 +26,8 @@ jobs:
       - name: Setup Deno
         uses: denoland/setup-deno@v1
         with:
-          deno-version: v1.x
+          # Should match the `DENO_VERSION_RANGE` constant in `node/bridge.ts`.
+          deno-version: v1.22.0
       - name: Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:

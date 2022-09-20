@@ -12,7 +12,7 @@ import { getLogger, Logger } from './logger.js'
 import { getBinaryExtension } from './platform.js'
 
 const DENO_VERSION_FILE = 'version.txt'
-const DENO_VERSION_RANGE = '^1.20.3'
+const DENO_VERSION_RANGE = '^1.22.0'
 
 type OnBeforeDownloadHook = () => void | Promise<void>
 type OnAfterDownloadHook = (error?: Error) => void | Promise<void>
@@ -241,5 +241,5 @@ class DenoBridge {
   }
 }
 
-export { DenoBridge }
+export { DENO_VERSION_RANGE, DenoBridge }
 export type { DenoOptions, OnAfterDownloadHook, OnBeforeDownloadHook, ProcessRef }

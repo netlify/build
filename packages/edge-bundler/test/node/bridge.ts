@@ -6,17 +6,18 @@ import { PassThrough } from 'stream'
 
 import test from 'ava'
 import nock from 'nock'
+import semver from 'semver'
 import { spy } from 'sinon'
 import tmp, { DirectoryResult } from 'tmp-promise'
 
-import { DenoBridge } from '../../node/bridge.js'
+import { DenoBridge, DENO_VERSION_RANGE } from '../../node/bridge.js'
 import { getPlatformTarget } from '../../node/platform.js'
 
 const require = createRequire(import.meta.url)
 const archiver = require('archiver')
 
 const getMockDenoBridge = function (tmpDir: DirectoryResult, mockBinaryOutput: string) {
-  const latestVersion = '1.20.3'
+  const latestVersion = semver.minVersion(DENO_VERSION_RANGE)?.version ?? ''
   const data = new PassThrough()
   const archive = archiver('zip', { zlib: { level: 9 } })
 
