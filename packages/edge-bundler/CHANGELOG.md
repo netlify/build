@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.2.0](https://github.com/netlify/edge-bundler/compare/v2.1.0...v2.2.0) (2022-09-20)
+
+
+### Features
+
+* add tests for `serve` functionality ([#116](https://github.com/netlify/edge-bundler/issues/116)) ([ed001bc](https://github.com/netlify/edge-bundler/commit/ed001bcc643f249976dcf8a1d8ff1bba14619f6c))
+
+
+### Bug Fixes
+
+* require version 1.22.0 of the Deno CLI ([#132](https://github.com/netlify/edge-bundler/issues/132)) ([8c15ca7](https://github.com/netlify/edge-bundler/commit/8c15ca72427e26d46b9c6c19de8429fda2dccc4c))
+
 ## [2.1.0](https://github.com/netlify/edge-bundler/compare/v2.0.5...v2.1.0) (2022-09-19)
 
 
