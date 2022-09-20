@@ -164,7 +164,7 @@ const serve = async ({
     }
   }
 
-  const server = await prepareServer({
+  const server = prepareServer({
     deno,
     distDirectory,
     flags,
