@@ -10,7 +10,8 @@
   ],
   "author": "Netlify Inc.",
   "scripts": {
-    "prepublishOnly": "cd ../../ && npm run prepublishOnly"
+    "prepublishOnly": "cd ../../ && npm run prepublishOnly",
+    "build": "cp -a src lib/"
   },
   "keywords": [
     "nodejs",

@@ -20,7 +20,8 @@
     "Swyx <swyx@netlify.com> (https://www.swyx.io)"
   ],
   "scripts": {
-    "prepublishOnly": "cd ../../ && npm run prepublishOnly"
+    "prepublishOnly": "cd ../../ && npm run prepublishOnly",
+    "build": "cp -a src lib/"
   },
   "keywords": [
     "nodejs",

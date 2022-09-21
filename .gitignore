@@ -9,6 +9,7 @@ coverage
 .cache
 .vscode
 packages/*/package-lock.json
+packages/*/lib/
 **/fixtures/**/test_netlify.toml
 **/fixtures/**/test_headers
 **/fixtures/**/test_redirects
