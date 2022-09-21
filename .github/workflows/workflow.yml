@@ -112,6 +112,9 @@ jobs:
       - name: Install dependencies
         run: ${{ matrix.install-command }}
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
+      - name: Build Packages
+        run: npx lerna run build
+        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Tests
         run: npm run test:ci
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
