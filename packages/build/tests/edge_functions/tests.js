@@ -105,6 +105,31 @@ test('handles failure when bundling Edge Functions via runCoreSteps function', a
   t.true(returnValue.includes("The module's source code could not be parsed"))
 })
 
+test('error message when bundling invalid Edge Function with eszip is human-readable', async (t) => {
+  const { returnValue } = await runFixture(t, 'functions_invalid', {
+    flags: {
+      buildSteps: ['edge_functions_bundling'],
+      featureFlags: { edge_functions_produce_eszip: true },
+      useRunCoreSteps: true,
+    },
+    snapshot: false,
+  })
+
+  // Example of what we're testing for:
+  //
+  // error: Uncaught (in promise) Error: The module's source code could not be parsed: Expected '{', got 'async' at file:///root/netlify/edge-functions/functions-1.ts:2:8
+  //             const ret = new Error(getStringFromWasm0(arg0, arg1));
+  //                         ^
+  //           at __wbg_new_651776e932b7e9c7 (https://deno.land/x/eszip@v0.28.0/eszip_wasm.generated.js:313:19)
+  //           at <anonymous> (https://deno.land/x/eszip@v0.28.0/eszip_wasm_bg.wasm:1:78732)
+  //           at <anonymous> (https://deno.land/x/eszip@v0.28.0/eszip_wasm_bg.wasm:1:1463894)
+  //           at <anonymous> (https://deno.land/x/eszip@v0.28.0/eszip_wasm_bg.wasm:1:1957066)
+  //           at __wbg_adapter_18 (https://deno.land/x/eszip@v0.28.0/eszip_wasm.generated.js:144:6)
+  //           at real (https://deno.land/x/eszip@v0.28.0/eszip_wasm.generated.js:128:14)
+  //
+  t.false(returnValue.includes('at <anonymous>'))
+})
+
 test.serial('writes manifest contents to stdout if `debug` is set', async (t) => {
   // This file descriptor doesn't exist, but it won't be used anyway since
   // `debug` is set.
