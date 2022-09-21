@@ -32,7 +32,7 @@ jobs:
         run: npm ci
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Build workspaces
-        run: npm run build --workspaces
+        run: npx lerna run build
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Linting
         run: npm run format:ci
@@ -110,7 +110,7 @@ jobs:
         run: npm install -g npm@7
         if: ${{ matrix.node-version == '12.20.0' && !steps.release-check.outputs.IS_RELEASE }}
       - name: Build workspaces
-        run: npm run build --workspaces
+        run: npx lerna run build
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: Install dependencies
         run: ${{ matrix.install-command }}
