@@ -3,10 +3,10 @@
   "version": "4.1.1",
   "description": "Utility for dealing with modified, created, deleted files since a git commit",
   "type": "module",
-  "exports": "./src/main.js",
-  "main": "./src/main.js",
+  "exports": "./lib/src/main.js",
+  "main": "./lib/src/main.js",
   "files": [
-    "src/**/*.js"
+    "lib/src/**/*.js"
   ],
   "author": "Netlify Inc.",
   "scripts": {

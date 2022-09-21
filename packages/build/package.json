@@ -3,15 +3,15 @@
   "version": "27.18.4",
   "description": "Netlify build module",
   "type": "module",
-  "exports": "./src/core/main.js",
-  "main": "./src/core/main.js",
+  "exports": "./lib/src/core/main.js",
+  "main": "./lib/src/core/main.js",
   "types": "types/index.d.ts",
   "bin": {
-    "netlify-build": "./src/core/bin.js"
+    "netlify-build": "./lib/src/core/bin.js"
   },
   "files": [
-    "src/**/*.js",
-    "src/**/*.yml",
+    "lib/src/**/*.js",
+    "lib/src/**/*.yml",
     "types/**/*.d.ts"
   ],
   "author": "Netlify Inc.",

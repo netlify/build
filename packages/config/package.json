@@ -3,13 +3,13 @@
   "version": "18.2.3",
   "description": "Netlify config module",
   "type": "module",
-  "exports": "./src/main.js",
-  "main": "./src/main.js",
+  "exports": "./lib/src/main.js",
+  "main": "./lib/src/main.js",
   "bin": {
-    "netlify-config": "src/bin/main.js"
+    "netlify-config": "lib/src/bin/main.js"
   },
   "files": [
-    "src/**/*.js"
+    "lib/src/**/*.js"
   ],
   "author": "Netlify Inc.",
   "contributors": [
