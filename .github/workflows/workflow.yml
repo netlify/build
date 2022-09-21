@@ -34,6 +34,9 @@ jobs:
       - name: Linting
         run: npm run format:ci
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
+      - name: Build Packages
+        run: npx lerna run build
+        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
   test:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
