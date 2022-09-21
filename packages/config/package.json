@@ -3,13 +3,13 @@
   "version": "18.2.3",
   "description": "Netlify config module",
   "type": "module",
-  "exports": "./lib/src/main.js",
-  "main": "./lib/src/main.js",
+  "exports": "./lib/main.js",
+  "main": "./lib/main.js",
   "bin": {
-    "netlify-config": "lib/src/bin/main.js"
+    "netlify-config": "lib/bin/main.js"
   },
   "files": [
-    "lib/src/**/*.js"
+    "lib/**/*.js"
   ],
   "author": "Netlify Inc.",
   "contributors": [
@@ -17,8 +17,7 @@
   ],
   "scripts": {
     "prepublishOnly": "cd ../../ && npm run prepublishOnly",
-    "prebuild": "rm -rf lib && mkdir lib",
-    "build": "npm run prebuild && cp -a src lib/src/"
+    "build": "cp -a src lib/"
   },
   "keywords": [
     "javascript",

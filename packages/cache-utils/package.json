@@ -3,16 +3,15 @@
   "version": "4.1.4",
   "description": "Utility for caching files in Netlify Build",
   "type": "module",
-  "exports": "./lib/src/main.js",
-  "main": "./lib/src/main.js",
+  "exports": "./lib/main.js",
+  "main": "./lib/main.js",
   "files": [
-    "lib/src/**/*.js"
+    "lib/**/*.js"
   ],
   "author": "Netlify Inc.",
   "scripts": {
     "prepublishOnly": "cd ../../ && npm run prepublishOnly",
-    "prebuild": "rm -rf lib && mkdir lib",
-    "build": "npm run prebuild && cp -a src lib/src/"
+    "build": "cp -a src lib/"
   },
   "keywords": [
     "nodejs",
