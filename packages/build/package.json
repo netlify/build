@@ -21,7 +21,7 @@
   ],
   "scripts": {
     "prepublishOnly": "cd ../../ && npm run prepublishOnly",
-    "build": "cp -a src lib/"
+    "build": "mkdir lib && cp -a src lib/src/ && cp package.json lib/"
   },
   "keywords": [
     "nodejs",

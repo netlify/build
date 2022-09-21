@@ -11,7 +11,7 @@
   "author": "Netlify Inc.",
   "scripts": {
     "prepublishOnly": "cd ../../ && npm run prepublishOnly",
-    "build": "cp -a src lib/"
+    "build": "mkdir lib && cp -a src lib/src/"
   },
   "keywords": [
     "nodejs",
