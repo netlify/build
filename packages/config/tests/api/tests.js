@@ -1,138 +1,170 @@
+import { normalize } from 'path'
+import { fileURLToPath } from 'url'
+
+import { Fixture, normalizeOutput } from '@netlify/testing'
 import test from 'ava'
 
-import { runFixture, FIXTURES_DIR, startServer } from '../helpers/main.js'
-
 const SITE_INFO_PATH = '/api/v1/sites/test'
-const SITE_INFO_DATA = { ssl_url: 'test', name: 'test-name', build_settings: { repo_url: 'test' } }
-const SITE_INFO_ERROR = { error: 'invalid' }
+const SITE_INFO_DATA = {
+  path: SITE_INFO_PATH,
+  response: { ssl_url: 'test', name: 'test-name', build_settings: { repo_url: 'test' } },
+}
+const SITE_INFO_ERROR = {
+  path: SITE_INFO_PATH,
+  response: { error: 'invalid' },
+  status: 400,
+}
 
 const SITE_INFO_BUILD_SETTINGS = {
-  ssl_url: 'test',
-  name: 'test-name',
-  build_settings: {
-    cmd: 'testCommand',
-    dir: 'testPublish',
-    functions_dir: 'testFunctions',
-    base: 'base',
-    env: { TEST_ENV: 'test' },
-    base_rel_dir: false,
+  path: SITE_INFO_PATH,
+  response: {
+    ssl_url: 'test',
+    name: 'test-name',
+    build_settings: {
+      cmd: 'testCommand',
+      dir: 'testPublish',
+      functions_dir: 'testFunctions',
+      base: 'base',
+      env: { TEST_ENV: 'test' },
+      base_rel_dir: false,
+    },
+    plugins: [{ package: 'netlify-plugin-test', pinned_version: '1', inputs: { test: true } }],
   },
-  plugins: [{ package: 'netlify-plugin-test', pinned_version: '1', inputs: { test: true } }],
 }
 const SITE_INFO_BASE_REL_DIR = {
-  ssl_url: 'test',
-  name: 'test-name',
-  build_settings: { base_rel_dir: false },
+  path: SITE_INFO_PATH,
+  response: {
+    ssl_url: 'test',
+    name: 'test-name',
+    build_settings: { base_rel_dir: false },
+  },
 }
 const SITE_INFO_BUILD_SETTINGS_NULL = {
-  ssl_url: 'test',
-  name: 'test-name',
-  build_settings: { cmd: null, dir: null, functions_dir: null, base: null, env: null, base_rel_dir: null },
-}
-
-const runWithMockServer = async function (t, fixtureName, { response, status, flags }) {
-  const { scheme, host, stopServer } = await startServer({ path: SITE_INFO_PATH, response, status })
-  try {
-    await runFixture(t, fixtureName, { flags: { testOpts: { scheme, host }, ...flags } })
-  } finally {
-    await stopServer()
-  }
+  path: SITE_INFO_PATH,
+  response: {
+    ssl_url: 'test',
+    name: 'test-name',
+    build_settings: { cmd: null, dir: null, functions_dir: null, base: null, env: null, base_rel_dir: null },
+  },
 }
 
 test('--token', async (t) => {
-  await runFixture(t, 'empty', { flags: { token: 'test', testOpts: { env: false } } })
+  const output = await new Fixture('./fixtures/empty')
+    .withFlags({ token: 'test', testOpts: { env: false } })
+    .runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('--token in CLI', async (t) => {
-  await runFixture(t, 'empty', { flags: { token: 'test', testOpts: { env: false } }, useBinary: true })
+  const { output } = await new Fixture('./fixtures/empty')
+    .withFlags({ token: 'test', testOpts: { env: false } })
+    .runBinary()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('NETLIFY_AUTH_TOKEN environment variable', async (t) => {
-  await runFixture(t, 'empty', { flags: { testOpts: { env: false } }, env: { NETLIFY_AUTH_TOKEN: 'test' } })
+  const output = await new Fixture('./fixtures/empty')
+    .withFlags({ testOpts: { env: false } })
+    .withEnv({ NETLIFY_AUTH_TOKEN: 'test' })
+    .runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('--site-id', async (t) => {
-  await runFixture(t, 'empty', { flags: { siteId: 'test' } })
+  const output = await new Fixture('./fixtures/empty').withFlags({ siteId: 'test' }).runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('NETLIFY_SITE_ID environment variable', async (t) => {
-  await runFixture(t, 'empty', { env: { NETLIFY_SITE_ID: 'test' } })
+  const output = await new Fixture('./fixtures/empty').withEnv({ NETLIFY_SITE_ID: 'test' }).runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Environment variable siteInfo success', async (t) => {
-  await runWithMockServer(t, 'empty', { response: SITE_INFO_DATA, flags: { token: 'test', siteId: 'test' } })
+  const { output } = await new Fixture('./fixtures/empty')
+    .withFlags({ token: 'test', siteId: 'test' })
+    .runServer(SITE_INFO_DATA)
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Environment variable siteInfo API error', async (t) => {
-  await runWithMockServer(t, 'empty', {
-    response: SITE_INFO_ERROR,
-    status: 400,
-    flags: { token: 'test', siteId: 'test' },
-  })
+  const { output } = await new Fixture('./fixtures/empty')
+    .withFlags({ token: 'test', siteId: 'test' })
+    .runServer(SITE_INFO_ERROR)
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Environment variable siteInfo no token', async (t) => {
-  await runWithMockServer(t, 'empty', { response: SITE_INFO_DATA, flags: { siteId: 'test' } })
+  const { output } = await new Fixture('./fixtures/empty').withFlags({ siteId: 'test' }).runServer(SITE_INFO_DATA)
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Environment variable siteInfo no siteId', async (t) => {
-  await runWithMockServer(t, 'empty', { response: SITE_INFO_DATA, flags: { token: 'test' } })
+  const { output } = await new Fixture('./fixtures/empty').withFlags({ token: 'test' }).runServer(SITE_INFO_DATA)
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Environment variable siteInfo offline', async (t) => {
-  await runWithMockServer(t, 'empty', {
-    response: SITE_INFO_DATA,
-    flags: { siteId: 'test', token: 'test', offline: true },
-  })
+  const { output } = await new Fixture('./fixtures/empty')
+    .withFlags({ siteId: 'test', token: 'test', offline: true })
+    .runServer(SITE_INFO_DATA)
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Environment variable siteInfo CI', async (t) => {
-  await runWithMockServer(t, 'empty', {
-    response: SITE_INFO_DATA,
-    flags: { token: 'test', siteId: 'test', mode: 'buildbot' },
-  })
+  const { output } = await new Fixture('./fixtures/empty')
+    .withFlags({ token: 'test', siteId: 'test', mode: 'buildbot' })
+    .runServer(SITE_INFO_DATA)
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Build settings can be null', async (t) => {
-  await runWithMockServer(t, 'empty', {
-    response: SITE_INFO_BUILD_SETTINGS_NULL,
-    flags: { token: 'test', siteId: 'test' },
-  })
+  const { output } = await new Fixture('./fixtures/empty')
+    .withFlags({ token: 'test', siteId: 'test' })
+    .runServer(SITE_INFO_BUILD_SETTINGS_NULL)
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Use build settings if a siteId and token are provided', async (t) => {
-  await runWithMockServer(t, 'base', { response: SITE_INFO_BUILD_SETTINGS, flags: { token: 'test', siteId: 'test' } })
+  const { output } = await new Fixture('./fixtures/base')
+    .withFlags({ token: 'test', siteId: 'test' })
+    .runServer(SITE_INFO_BUILD_SETTINGS)
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Build settings have low merging priority', async (t) => {
-  await runWithMockServer(t, 'build_settings', {
-    response: SITE_INFO_BUILD_SETTINGS,
-    flags: { token: 'test', siteId: 'test', baseRelDir: true },
-  })
+  const { output } = await new Fixture('./fixtures/build_settings')
+    .withFlags({ token: 'test', siteId: 'test', baseRelDir: true })
+    .runServer(SITE_INFO_BUILD_SETTINGS)
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Build settings are not used without a token', async (t) => {
-  await runWithMockServer(t, 'base', { response: SITE_INFO_BUILD_SETTINGS, flags: { siteId: 'test' } })
+  const { output } = await new Fixture('./fixtures/base')
+    .withFlags({ siteId: 'test' })
+    .runServer(SITE_INFO_BUILD_SETTINGS)
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Build settings are not used without a siteId', async (t) => {
-  await runWithMockServer(t, 'base', { response: SITE_INFO_BUILD_SETTINGS, flags: { token: 'test' } })
+  const { output } = await new Fixture('./fixtures/base')
+    .withFlags({ token: 'test' })
+    .runServer(SITE_INFO_BUILD_SETTINGS)
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Build settings are not used in CI', async (t) => {
-  await runWithMockServer(t, 'base', {
-    response: SITE_INFO_BUILD_SETTINGS,
-    flags: { token: 'test', siteId: 'test', mode: 'buildbot' },
-  })
+  const { output } = await new Fixture('./fixtures/base')
+    .withFlags({ token: 'test', siteId: 'test', mode: 'buildbot' })
+    .runServer(SITE_INFO_BUILD_SETTINGS)
+  t.snapshot(normalizeOutput(output))
 })
 
 test('baseRelDir is true if build.base is overridden', async (t) => {
-  await runWithMockServer(t, 'build_base_override', {
-    response: SITE_INFO_BASE_REL_DIR,
-    flags: {
-      cwd: `${FIXTURES_DIR}/build_base_override/subdir`,
-      token: 'test',
-      siteId: 'test',
-    },
-  })
+  const fixturesDir = normalize(`${fileURLToPath(test.meta.file)}/../fixtures`)
+
+  const { output } = await new Fixture('./fixtures/build_base_override')
+    .withFlags({ cwd: `${fixturesDir}/build_base_override/subdir`, token: 'test', siteId: 'test' })
+    .runServer(SITE_INFO_BASE_REL_DIR)
+  t.snapshot(normalizeOutput(output))
 })

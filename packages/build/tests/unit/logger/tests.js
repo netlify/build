@@ -18,7 +18,7 @@ test('System logger writes to file descriptor', async (t) => {
 
   const output = normalizeOutput(await fs.readFile(path, 'utf8'))
 
-  t.snapshot(output)
+  t.snapshot(normalizeOutput(output))
   t.is(mockProcess.stdout.length, 0)
 
   await cleanup()
@@ -37,7 +37,7 @@ test('System logger does not write to file descriptor when `debug: true`', async
   const output = normalizeOutput(mockProcess.stdout[0])
 
   t.is(mockProcess.stdout.length, 1)
-  t.snapshot(output)
+  t.snapshot(normalizeOutput(output))
   t.is(await fs.readFile(path, 'utf8'), '')
 
   await cleanup()

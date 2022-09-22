@@ -5,7 +5,6 @@ const fixtureRedirectsPath = fileURLToPath(new URL('_redirects_file', import.met
 const redirectsPath = fileURLToPath(new URL('_redirects', import.meta.url))
 
 export const onPreBuild = function ({ netlifyConfig }) {
-  // eslint-disable-next-line no-param-reassign
   netlifyConfig.redirects = [...netlifyConfig.redirects, { from: '/one', to: '/two' }]
 }
 

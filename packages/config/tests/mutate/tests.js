@@ -1,11 +1,14 @@
 import { promises as fs } from 'fs'
+import { fileURLToPath } from 'url'
 
+import { Fixture, normalizeOutput } from '@netlify/testing'
 import test from 'ava'
 import del from 'del'
 import { pathExists } from 'path-exists'
 
 import { updateConfig } from '../../lib/main.js'
-import { runFixture, FIXTURES_DIR } from '../helpers/main.js'
+
+const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
 // Call the main function
 const runUpdateConfig = async function (fixtureName, { configMutations = [buildCommandMutation], ...opts } = {}) {
@@ -64,7 +67,8 @@ test('updateConfig() saves netlify.toml', async (t) => {
 
 test('updateConfig() updates the configuration so it can be read again', async (t) => {
   const { configPath } = await runUpdateConfig('update')
-  await runFixture(t, 'update', { flags: { config: configPath } })
+  const output = await new Fixture('./fixtures/update').withFlags({ config: configPath }).runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('updateConfig() is a noop when where are no config mutations', async (t) => {
@@ -74,12 +78,14 @@ test('updateConfig() is a noop when where are no config mutations', async (t) =>
 
 test('updateConfig() has higher priority than context properties', async (t) => {
   const { configPath } = await runUpdateConfig('context')
-  await runFixture(t, 'context', { flags: { config: configPath } })
+  const output = await new Fixture('./fixtures/context').withFlags({ config: configPath }).runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('updateConfig() merges with the existing netlify.toml', async (t) => {
   const { configPath } = await runUpdateConfig('merge')
-  await runFixture(t, 'merge', { flags: { config: configPath } })
+  const output = await new Fixture('./fixtures/merge').withFlags({ config: configPath }).runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('updateConfig() deletes _redirects when redirects were changed', async (t) => {
