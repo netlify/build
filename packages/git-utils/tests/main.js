@@ -2,7 +2,7 @@ import { env, chdir, cwd as getCwd } from 'process'
 
 import test from 'ava'
 
-import { getGitUtils } from '../src/main.js'
+import { getGitUtils } from '../lib/main.js'
 
 // Runs the git utils against very old commits of @netlify/build so that the
 // tests are stable. The following are static statistics for that git range.

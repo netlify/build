@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url'
 import { getBinPath } from 'get-bin-path'
 import pathKey from 'path-key'
 
-import netlifyBuild, { runCoreSteps, startDev } from '../../src/core/main.js'
+import netlifyBuild, { runCoreSteps, startDev } from '../../lib/core/main.js'
 
 import { runFixtureCommon } from './common.js'
 

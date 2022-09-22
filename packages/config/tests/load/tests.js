@@ -5,7 +5,7 @@ import { cwd } from 'process'
 import test from 'ava'
 import { tmpName } from 'tmp-promise'
 
-import { resolveConfig } from '../../src/main.js'
+import { resolveConfig } from '../../lib/main.js'
 import { runFixture, FIXTURES_DIR } from '../helpers/main.js'
 
 test('Empty configuration', async (t) => {

@@ -5,7 +5,7 @@ import test from 'ava'
 import { pathExists } from 'path-exists'
 import tmp from 'tmp-promise'
 
-import { importJsonFile } from '../../src/utils/json.js'
+import { importJsonFile } from '../../lib/utils/json.js'
 import { FIXTURES_DIR, runFixture } from '../helpers/main.js'
 
 const assertManifest = async (t, fixtureName) => {

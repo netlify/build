@@ -8,7 +8,7 @@ import { pathExists } from 'path-exists'
 import { spy } from 'sinon'
 import sortOn from 'sort-on'
 
-import { add, list, listAll } from '../src/main.js'
+import { add, list, listAll } from '../lib/main.js'
 
 import { getDist, createDist, removeDist } from './helpers/main.js'
 
