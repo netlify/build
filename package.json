@@ -22,6 +22,8 @@
     "test:dev:ava": "ava",
     "test:measure": "node tools/tests_duration.mjs",
     "test:ci:ava": "c8 -r lcovonly -r text -r json ava --concurrency 1",
+    "pretest:dev": "npx lerna run build",
+    "pretest:ci": "npx lerna run build",
     "prepare": "husky install node_modules/@netlify/eslint-config-node/.husky/",
     "prepublishOnly": "run-s prepublishOnly:*",
     "prepublishOnly:checkout": "run-local \"git checkout main\"",
@@ -75,6 +77,20 @@
     "lerna": "^5.5.2",
     "nx": "^14.7.8",
     "tsd": "^0.24.0"
+  },
+  "nx": {
+    "targets": {
+      "build": {
+        "outputs": [
+          "build/lib",
+          "cache-utils/lib",
+          "config/lib",
+          "functions-utils/lib",
+          "git-utils/lib",
+          "run-utils/lib"
+        ]
+      }
+    }
   },
   "engines": {
     "node": "^12.20.0 || ^14.14.0 || >=16.0.0"
