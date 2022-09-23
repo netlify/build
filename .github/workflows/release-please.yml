@@ -29,6 +29,7 @@ jobs:
         if: ${{ steps.release.outputs.releases_created }}
       - name: Build workspaces
         run: npx lerna run build
+        if: ${{ steps.release.outputs.releases_created }}
       - name: Install dependencies
         run: npm install
         if: ${{ steps.release.outputs.releases_created }}
