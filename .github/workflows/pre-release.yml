@@ -38,6 +38,8 @@ jobs:
         run: git config --global user.name github-actions
       - name: Setup git email
         run: git config --global user.email github-actions@github.com
+      - name: Build packages
+        run: npx lerna run build
       - name: Create fake .git in package subdirectory
         # See https://github.com/npm/cli/issues/2010,https://github.com/npm/npm/issues/9111
         run: mkdir packages/${{ steps.extract.outputs.package }}/.git
