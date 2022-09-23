@@ -80,12 +80,12 @@
     "targets": {
       "build": {
         "outputs": [
-            "build/lib", 
-            "cache-utils/lib", 
-            "config/lib", 
-            "functions-utils/lib", 
-            "git-utils/lib", 
-            "run-utils/lib"
+          "build/lib",
+          "cache-utils/lib",
+          "config/lib",
+          "functions-utils/lib",
+          "git-utils/lib",
+          "run-utils/lib"
         ]
       }
     }
