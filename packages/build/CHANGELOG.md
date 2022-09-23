@@ -24,6 +24,13 @@
   * dependencies
     * @netlify/config bumped from ^18.2.0 to ^18.2.1
 
+## [27.18.5](https://github.com/netlify/build/compare/build-v27.18.4...build-v27.18.5) (2022-09-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.46.0 ([#4526](https://github.com/netlify/build/issues/4526)) ([2c5a9d0](https://github.com/netlify/build/commit/2c5a9d065a9aa19f93f8030800e48f12e1c03c7a))
+
 ## [27.18.4](https://github.com/netlify/build/compare/build-v27.18.3...build-v27.18.4) (2022-09-20)
 
 
