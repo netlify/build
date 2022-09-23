@@ -4,8 +4,8 @@ import test from 'ava'
 import hasAnsi from 'has-ansi'
 import sinon from 'sinon'
 
-import { CUSTOM_ERROR_KEY } from '../../src/error/info.js'
-import { zipItAndShipIt } from '../../src/plugins_core/functions/index.js'
+import { CUSTOM_ERROR_KEY } from '../../lib/error/info.js'
+import { zipItAndShipIt } from '../../lib/plugins_core/functions/index.js'
 import { runFixture } from '../helpers/main.js'
 
 const BUGSNAG_TEST_KEY = '00000000000000000000000000000000'

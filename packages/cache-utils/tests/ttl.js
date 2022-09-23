@@ -1,6 +1,6 @@
 import test from 'ava'
 
-import { save, has, restore } from '../src/main.js'
+import { save, has, restore } from '../lib/main.js'
 
 import { pSetTimeout, createTmpDir, createTmpFile, removeFiles } from './helpers/main.js'
 

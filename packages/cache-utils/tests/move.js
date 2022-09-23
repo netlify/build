@@ -1,7 +1,7 @@
 import test from 'ava'
 import { pathExists } from 'path-exists'
 
-import { save, restore } from '../src/main.js'
+import { save, restore } from '../lib/main.js'
 
 import { createTmpDir, createTmpFile, removeFiles } from './helpers/main.js'
 

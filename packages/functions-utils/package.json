@@ -3,14 +3,15 @@
   "version": "4.2.9",
   "description": "Utility for adding Functions files in Netlify Build",
   "type": "module",
-  "exports": "./src/main.js",
-  "main": "./src/main.js",
+  "exports": "./lib/main.js",
+  "main": "./lib/main.js",
   "files": [
-    "src/**/*.js"
+    "lib/**/*.js"
   ],
   "author": "Netlify Inc.",
   "scripts": {
-    "prepublishOnly": "cd ../../ && npm run prepublishOnly"
+    "prepublishOnly": "cd ../../ && npm run prepublishOnly",
+    "build": "cp -a src lib/"
   },
   "keywords": [
     "nodejs",

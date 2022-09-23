@@ -4,7 +4,7 @@ import { pluginsList } from '@netlify/plugins-list'
 import test from 'ava'
 import cpy from 'cpy'
 
-import { getExpectedVersion } from '../../src/plugins/compatibility.js'
+import { getExpectedVersion } from '../../lib/plugins/compatibility.js'
 import { removeDir } from '../helpers/dir.js'
 import { runFixture, FIXTURES_DIR } from '../helpers/main.js'
 import { startServer } from '../helpers/server.js'

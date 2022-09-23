@@ -3,20 +3,21 @@
   "version": "18.2.3",
   "description": "Netlify config module",
   "type": "module",
-  "exports": "./src/main.js",
-  "main": "./src/main.js",
+  "exports": "./lib/main.js",
+  "main": "./lib/main.js",
   "bin": {
-    "netlify-config": "src/bin/main.js"
+    "netlify-config": "lib/bin/main.js"
   },
   "files": [
-    "src/**/*.js"
+    "lib/**/*.js"
   ],
   "author": "Netlify Inc.",
   "contributors": [
     "David Wells <hello@davidwells.io> (https://davidwells.io/)"
   ],
   "scripts": {
-    "prepublishOnly": "cd ../../ && npm run prepublishOnly"
+    "prepublishOnly": "cd ../../ && npm run prepublishOnly",
+    "build": "cp -a src lib/"
   },
   "keywords": [
     "javascript",

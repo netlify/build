@@ -4,7 +4,7 @@ import test from 'ava'
 import del from 'del'
 import { pathExists } from 'path-exists'
 
-import { updateConfig } from '../../src/main.js'
+import { updateConfig } from '../../lib/main.js'
 import { runFixture, FIXTURES_DIR } from '../helpers/main.js'
 
 // Call the main function
