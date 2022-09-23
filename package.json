@@ -76,6 +76,20 @@
     "nx": "^14.7.8",
     "tsd": "^0.24.0"
   },
+  "nx": {
+    "targets": {
+      "build": {
+        "outputs": [
+            "build/lib", 
+            "cache-utils/lib", 
+            "config/lib", 
+            "functions-utils/lib", 
+            "git-utils/lib", 
+            "run-utils/lib"
+        ]
+      }
+    }
+  },
   "engines": {
     "node": "^12.20.0 || ^14.14.0 || >=16.0.0"
   }
