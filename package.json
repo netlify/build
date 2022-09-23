@@ -22,6 +22,8 @@
     "test:dev:ava": "ava",
     "test:measure": "node tools/tests_duration.mjs",
     "test:ci:ava": "c8 -r lcovonly -r text -r json ava --concurrency 1",
+    "pretest:dev": "npx lerna run build",
+    "pretest:ci": "npx lerna run build",
     "prepare": "husky install node_modules/@netlify/eslint-config-node/.husky/",
     "prepublishOnly": "run-s prepublishOnly:*",
     "prepublishOnly:checkout": "run-local \"git checkout main\"",
