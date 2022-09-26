@@ -6,5 +6,14 @@
         "cacheableOperations": ["build", "test"]
       }
     }
+  },
+  "targetDefaults": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["{projectRoot}/lib"]
+    },
+    "test": {
+      "dependsOn": ["build"]
+    }
   }
 }
