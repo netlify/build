@@ -1,5 +1,13 @@
 # Changelog
 
+## [18.2.4](https://github.com/netlify/build/compare/config-v18.2.3...config-v18.2.4) (2022-09-26)
+
+
+### Bug Fixes
+
+* build packages with lerna  ([#4524](https://github.com/netlify/build/issues/4524)) ([f74e385](https://github.com/netlify/build/commit/f74e385ffb7ffe7f3bfd5c3f80edc1b3249ca343))
+* lerna caching ([#4533](https://github.com/netlify/build/issues/4533)) ([4af0e1a](https://github.com/netlify/build/commit/4af0e1a9e0e5851e1d25b4acf41d1c4a98322019))
+
 ## [18.2.3](https://github.com/netlify/build/compare/config-v18.2.2...config-v18.2.3) (2022-08-25)
 
 
