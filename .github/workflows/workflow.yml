@@ -115,6 +115,12 @@ jobs:
       - name: Build workspaces
         run: npx lerna run build
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
+      - name: debug
+        run: |
+          npm --version
+          node --version
+          npx netlify-build --version
+          npx netlify-config --version
       - name: Tests
         run: npm run test:ci
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
