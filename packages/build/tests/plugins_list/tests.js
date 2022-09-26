@@ -93,7 +93,7 @@ test('Uses fallback when the plugins fetch succeeds with an invalid response', a
   await runWithApiMock(t, 'plugins_cache', { response: { error: 'test' } })
 })
 
-test.only('Can execute local binaries when using .netlify/plugins/', async (t) => {
+test('Can execute local binaries when using .netlify/plugins/', async (t) => {
   await runWithApiMock(t, 'plugins_cache_bin')
 })
 
