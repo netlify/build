@@ -106,8 +106,8 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
-      - name: Install npm@7
-        run: npm install -g npm@7
+      - name: Install npm@8 # this is needed for proper npm workspaces support as on 12.20 per default npm 6 is installed
+        run: npm install -g npm@8
         if: ${{ matrix.node-version == '12.20.0' && !steps.release-check.outputs.IS_RELEASE }}
       - name: Install dependencies
         run: ${{ matrix.install-command }}
