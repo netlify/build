@@ -119,9 +119,6 @@ jobs:
         run: |
           npm --version
           node --version
-
-          ls -lah packages/config/lib/bin
-          ls -lah packages/build/lib/bin
       - name: Tests
         run: npm run test:ci
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
