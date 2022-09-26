@@ -113,7 +113,7 @@ jobs:
         run: ${{ matrix.install-command }}
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - name: boostrap lerna
-        run: npx lerna boostrap
+        run: npx lerna bootstrap
       - name: Build workspaces
         run: npx lerna run build
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
