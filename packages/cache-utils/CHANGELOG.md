@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.1.5](https://github.com/netlify/build/compare/cache-utils-v4.1.4...cache-utils-v4.1.5) (2022-09-26)
+
+
+### Bug Fixes
+
+* build packages with lerna  ([#4524](https://github.com/netlify/build/issues/4524)) ([f74e385](https://github.com/netlify/build/commit/f74e385ffb7ffe7f3bfd5c3f80edc1b3249ca343))
+* lerna caching ([#4533](https://github.com/netlify/build/issues/4533)) ([4af0e1a](https://github.com/netlify/build/commit/4af0e1a9e0e5851e1d25b4acf41d1c4a98322019))
+
 ### [4.1.4](https://github.com/netlify/build/compare/cache-utils-v4.1.3...cache-utils-v4.1.4) (2022-02-10)
 
 

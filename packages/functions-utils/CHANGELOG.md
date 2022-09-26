@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.2.10](https://github.com/netlify/build/compare/functions-utils-v4.2.9...functions-utils-v4.2.10) (2022-09-26)
+
+
+### Bug Fixes
+
+* build packages with lerna  ([#4524](https://github.com/netlify/build/issues/4524)) ([f74e385](https://github.com/netlify/build/commit/f74e385ffb7ffe7f3bfd5c3f80edc1b3249ca343))
+* lerna caching ([#4533](https://github.com/netlify/build/issues/4533)) ([4af0e1a](https://github.com/netlify/build/commit/4af0e1a9e0e5851e1d25b4acf41d1c4a98322019))
+
 ## [4.2.9](https://github.com/netlify/build/compare/functions-utils-v4.2.8...functions-utils-v4.2.9) (2022-09-16)
 
 
