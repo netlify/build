@@ -58,7 +58,7 @@ test('--token', async (t) => {
 test('--token in CLI', async (t) => {
   const { output } = await new Fixture('./fixtures/empty')
     .withFlags({ token: 'test', testOpts: { env: false } })
-    .runBinary()
+    .runConfigBinary()
   t.snapshot(normalizeOutput(output))
 })
 
@@ -83,80 +83,80 @@ test('NETLIFY_SITE_ID environment variable', async (t) => {
 test('Environment variable siteInfo success', async (t) => {
   const { output } = await new Fixture('./fixtures/empty')
     .withFlags({ token: 'test', siteId: 'test' })
-    .runServer(SITE_INFO_DATA)
+    .runConfigServer(SITE_INFO_DATA)
   t.snapshot(normalizeOutput(output))
 })
 
 test('Environment variable siteInfo API error', async (t) => {
   const { output } = await new Fixture('./fixtures/empty')
     .withFlags({ token: 'test', siteId: 'test' })
-    .runServer(SITE_INFO_ERROR)
+    .runConfigServer(SITE_INFO_ERROR)
   t.snapshot(normalizeOutput(output))
 })
 
 test('Environment variable siteInfo no token', async (t) => {
-  const { output } = await new Fixture('./fixtures/empty').withFlags({ siteId: 'test' }).runServer(SITE_INFO_DATA)
+  const { output } = await new Fixture('./fixtures/empty').withFlags({ siteId: 'test' }).runConfigServer(SITE_INFO_DATA)
   t.snapshot(normalizeOutput(output))
 })
 
 test('Environment variable siteInfo no siteId', async (t) => {
-  const { output } = await new Fixture('./fixtures/empty').withFlags({ token: 'test' }).runServer(SITE_INFO_DATA)
+  const { output } = await new Fixture('./fixtures/empty').withFlags({ token: 'test' }).runConfigServer(SITE_INFO_DATA)
   t.snapshot(normalizeOutput(output))
 })
 
 test('Environment variable siteInfo offline', async (t) => {
   const { output } = await new Fixture('./fixtures/empty')
     .withFlags({ siteId: 'test', token: 'test', offline: true })
-    .runServer(SITE_INFO_DATA)
+    .runConfigServer(SITE_INFO_DATA)
   t.snapshot(normalizeOutput(output))
 })
 
 test('Environment variable siteInfo CI', async (t) => {
   const { output } = await new Fixture('./fixtures/empty')
     .withFlags({ token: 'test', siteId: 'test', mode: 'buildbot' })
-    .runServer(SITE_INFO_DATA)
+    .runConfigServer(SITE_INFO_DATA)
   t.snapshot(normalizeOutput(output))
 })
 
 test('Build settings can be null', async (t) => {
   const { output } = await new Fixture('./fixtures/empty')
     .withFlags({ token: 'test', siteId: 'test' })
-    .runServer(SITE_INFO_BUILD_SETTINGS_NULL)
+    .runConfigServer(SITE_INFO_BUILD_SETTINGS_NULL)
   t.snapshot(normalizeOutput(output))
 })
 
 test('Use build settings if a siteId and token are provided', async (t) => {
   const { output } = await new Fixture('./fixtures/base')
     .withFlags({ token: 'test', siteId: 'test' })
-    .runServer(SITE_INFO_BUILD_SETTINGS)
+    .runConfigServer(SITE_INFO_BUILD_SETTINGS)
   t.snapshot(normalizeOutput(output))
 })
 
 test('Build settings have low merging priority', async (t) => {
   const { output } = await new Fixture('./fixtures/build_settings')
     .withFlags({ token: 'test', siteId: 'test', baseRelDir: true })
-    .runServer(SITE_INFO_BUILD_SETTINGS)
+    .runConfigServer(SITE_INFO_BUILD_SETTINGS)
   t.snapshot(normalizeOutput(output))
 })
 
 test('Build settings are not used without a token', async (t) => {
   const { output } = await new Fixture('./fixtures/base')
     .withFlags({ siteId: 'test' })
-    .runServer(SITE_INFO_BUILD_SETTINGS)
+    .runConfigServer(SITE_INFO_BUILD_SETTINGS)
   t.snapshot(normalizeOutput(output))
 })
 
 test('Build settings are not used without a siteId', async (t) => {
   const { output } = await new Fixture('./fixtures/base')
     .withFlags({ token: 'test' })
-    .runServer(SITE_INFO_BUILD_SETTINGS)
+    .runConfigServer(SITE_INFO_BUILD_SETTINGS)
   t.snapshot(normalizeOutput(output))
 })
 
 test('Build settings are not used in CI', async (t) => {
   const { output } = await new Fixture('./fixtures/base')
     .withFlags({ token: 'test', siteId: 'test', mode: 'buildbot' })
-    .runServer(SITE_INFO_BUILD_SETTINGS)
+    .runConfigServer(SITE_INFO_BUILD_SETTINGS)
   t.snapshot(normalizeOutput(output))
 })
 
@@ -165,6 +165,6 @@ test('baseRelDir is true if build.base is overridden', async (t) => {
 
   const { output } = await new Fixture('./fixtures/build_base_override')
     .withFlags({ cwd: `${fixturesDir}/build_base_override/subdir`, token: 'test', siteId: 'test' })
-    .runServer(SITE_INFO_BASE_REL_DIR)
+    .runConfigServer(SITE_INFO_BASE_REL_DIR)
   t.snapshot(normalizeOutput(output))
 })

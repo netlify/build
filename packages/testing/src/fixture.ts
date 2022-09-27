@@ -9,6 +9,7 @@ import { execa, execaCommand } from 'execa'
 import stringify from 'fast-safe-stringify'
 import { getBinPathSync } from 'get-bin-path'
 import isPlainObj from 'is-plain-obj'
+import { merge } from 'lodash-es'
 
 import { createRepoDir, removeDir } from './dir.js'
 import { ServerHandler, startServer, Request } from './server.js'
@@ -17,17 +18,33 @@ const require = createRequire(import.meta.url)
 
 export class Fixture {
   flags: Record<string, unknown> = {
-    stable: true,
     buffer: true,
-    branch: 'branch',
     featureFlags: {},
+  }
+
+  /** list of flags that are used for @netlify/config for testing */
+  configFlags: Record<string, unknown> = {
+    stable: true,
+    branch: 'branch',
+  }
+
+  /** list of flags that are used for @netlify/build for testing */
+  buildFlags: Record<string, unknown> = {
+    debug: true,
+    testOpts: {
+      silentLingeringProcesses: true,
+      pluginsListUrl: 'test',
+    },
   }
 
   env = {
     // Ensure local environment variables aren't used during development
-    // TODO: check this one
-    // BUILD_TELEMETRY_DISABLED: '',
     NETLIFY_AUTH_TOKEN: '',
+  }
+
+  // TODO: check if needed
+  buildEnv: Record<string, string> = {
+    BUILD_TELEMETRY_DISABLED: '',
   }
 
   copyRootDir: string
@@ -59,13 +76,13 @@ export class Fixture {
 
   /** Adds environment variables that are used for the execution  */
   withEnv(env: Record<string, string> = {}): this {
-    this.env = { ...this.env, ...env }
+    this.env = merge(this.env, env)
     return this
   }
 
   /** Adds flags that are used for the execution  */
   withFlags(flags: Record<string, unknown> = {}): this {
-    this.flags = { ...this.flags, ...flags }
+    this.flags = merge(this.flags, flags)
     return this
   }
 
@@ -96,14 +113,8 @@ export class Fixture {
   }
 
   /** Returns a JSON.parsed output of the runBinary function */
-  async runBinaryAsObject(): Promise<object> {
-    const { output } = await this.runBinary()
-    return JSON.parse(output)
-  }
-
-  /** Returns a JSON.parsed output of the runServer function */
-  async runServerAsObject(handler: ServerHandler): Promise<object> {
-    const { output } = await this.runServer(handler)
+  async runConfigBinaryAsObject(): Promise<object> {
+    const { output } = await this.runConfigBinary()
     return JSON.parse(output)
   }
 
@@ -115,7 +126,7 @@ export class Fixture {
         logs: { stdout = [], stderr = [] } = {},
         api,
         ...result
-      } = await resolveConfig({ ...this.flags, env: this.env })
+      } = await resolveConfig(merge(this.configFlags, this.flags, { env: this.env }))
       const resultA = api === undefined ? result : { ...result, hasApi: true }
       const resultB = stringify.default.stableStringify(resultA, null, 2)
       return [stdout.join('\n'), stderr.join('\n'), resultB].filter(Boolean).join('\n\n')
@@ -126,10 +137,33 @@ export class Fixture {
     }
   }
 
-  async runBinary(cwd?: string) {
+  async runWithBuild(): Promise<string> {
+    // eslint-disable-next-line import/no-extraneous-dependencies, n/no-extraneous-import
+    const { default: build } = await import('@netlify/build')
+
+    const { logs } = await build(merge(this.buildFlags, this.flags))
+    return [logs.stdout.join('\n'), logs.stderr.join('\n')].filter(Boolean).join('\n\n')
+  }
+
+  runConfigBinary(cwd?: string) {
+    return this.runBinary(this.configBinaryPath, cwd, this.configFlags)
+  }
+
+  runBuildBinary(cwd?: string) {
+    return this.runBinary(this.buildBinaryPath, cwd, this.buildFlags)
+  }
+
+  private async runBinary(
+    binary: string,
+    cwd?: string,
+    flags: Record<string, unknown> = {},
+  ): Promise<{
+    output: string
+    exitCode: number
+  }> {
     try {
-      const cliFlags = getCliFlags(this.flags)
-      const { all: output, exitCode } = await execa(this.configBinaryPath, cliFlags, {
+      const cliFlags = getCliFlags(merge(flags, this.flags))
+      const { all: output, exitCode } = await execa(binary, cliFlags, {
         all: true,
         reject: false,
         env: this.env,
@@ -141,11 +175,31 @@ export class Fixture {
     }
   }
 
-  async runServer(handler: ServerHandler): Promise<{ output: string; requests: Request[] }> {
+  /** Run the @netlify/build wrapped with a server and and the provided handler */
+  runBuildServer(handler: ServerHandler): Promise<{ output: string; requests: Request[] }> {
+    return this.runServer(this.runWithBuild, handler)
+  }
+
+  /** Run the @netlify/config wrapped with a server and and the provided handler */
+  runConfigServer(handler: ServerHandler): Promise<{ output: string; requests: Request[] }> {
+    return this.runServer(this.runWithConfig, handler)
+  }
+
+  /** Returns a JSON.parsed output of the runConfigServer function */
+  async runConfigServerAsObject(handler: ServerHandler): Promise<object> {
+    const { output } = await this.runConfigServer(handler)
+    return JSON.parse(output)
+  }
+
+  /** Runs a server and stops it with the provided function and the handler */
+  private async runServer(
+    fn: () => Promise<string>,
+    handler: ServerHandler,
+  ): Promise<{ output: string; requests: Request[] }> {
     const { scheme, host, requests, stopServer } = await startServer(handler)
     try {
       this.withFlags({ testOpts: { scheme, host } })
-      const output = await this.runWithConfig()
+      const output = await fn.bind(this)()
       return { output, requests }
     } finally {
       await stopServer()
