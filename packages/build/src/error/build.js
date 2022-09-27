@@ -29,7 +29,7 @@ const ERROR_PROPS = ['name', 'message', 'stack']
 
 const assignErrorProp = function (error, name, value) {
   // `Object.defineProperty()` requires direct mutation
-  // eslint-disable-next-line fp/no-mutating-methods
+
   Object.defineProperty(error, name, { value, enumerable: false, writable: true, configurable: true })
 }
 
@@ -39,7 +39,6 @@ export const errorToJson = function (error) {
 
   // diagnosticText is not enumerable in TSError so we need to grab it manually. destructuring won't work.
   if (error.diagnosticText) {
-    // eslint-disable-next-line fp/no-mutation
     errorProps.diagnosticText = error.diagnosticText
   }
 

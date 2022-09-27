@@ -385,7 +385,7 @@ const initAndRunBuild = async function ({
     testOpts,
     featureFlags,
   })
-  // eslint-disable-next-line fp/no-mutation, no-param-reassign
+
   errorParams.pluginsOptions = pluginsOptionsA
 
   const { childProcesses, timers: timersB } = await startPlugins({
