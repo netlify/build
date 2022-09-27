@@ -66,7 +66,7 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@netlify/eslint-config-node": "^6.0.0",
+    "@netlify/eslint-config-node": "^7.0.0",
     "ava": "^4.1.0",
     "c8": "^7.11.0",
     "ci-info": "^3.3.0",
