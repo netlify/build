@@ -5,11 +5,12 @@
   "type": "module",
   "exports": "./lib/core/main.js",
   "main": "./lib/core/main.js",
-  "types": "types/index.d.ts",
+  "types": "./types/index.d.ts",
   "bin": {
-    "netlify-build": "./lib/core/bin.js"
+    "netlify-build": "./bin.js"
   },
   "files": [
+    "bin.js",
     "lib/**/*.js",
     "lib/**/*.yml",
     "types/**/*.d.ts"
