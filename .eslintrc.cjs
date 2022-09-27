@@ -109,6 +109,7 @@ module.exports = {
         'n/no-missing-import': 'off',
       },
     },
+    { files: ['**/*.js'], rules: { 'import/extensions': ['error', 'ignorePackages', { ts: 'never' }] } },
     {
       files: ['**/*.ts'],
       rules: {

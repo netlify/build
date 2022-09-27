@@ -5,6 +5,7 @@
   "type": "module",
   "exports": "./lib/main.js",
   "main": "./lib/main.js",
+  "types": "./lib/main.d.ts",
   "bin": {
     "netlify-config": "./bin.js"
   },
@@ -19,7 +20,7 @@
   "scripts": {
     "prepublishOnly": "cd ../../ && npm run prepublishOnly",
     "prebuild": "rm -rf lib",
-    "build": "cp -a src lib/"
+    "build": "tsc"
   },
   "keywords": [
     "javascript",
