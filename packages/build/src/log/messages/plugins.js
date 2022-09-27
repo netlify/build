@@ -14,7 +14,6 @@ export const logPluginsList = function ({ pluginsList, debug, logs }) {
     return
   }
 
-  // eslint-disable-next-line fp/no-mutating-methods
   const pluginsListArray = Object.entries(pluginsList).map(getPluginsListItem).sort()
 
   logSubHeader(logs, 'Available plugins')

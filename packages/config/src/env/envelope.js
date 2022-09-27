@@ -4,7 +4,7 @@ export const getEnvelope = async function ({ api, accountId, siteId }) {
   }
   try {
     const environmentVariables = await api.getEnvVars({ accountId, siteId })
-    // eslint-disable-next-line fp/no-mutating-methods
+
     const sortedEnvVarsFromDevContext = environmentVariables
       .sort((left, right) => (left.key.toLowerCase() < right.key.toLowerCase() ? -1 : 1))
       .reduce((acc, cur) => {

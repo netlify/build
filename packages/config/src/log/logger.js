@@ -21,7 +21,7 @@ export const log = function (logs, string, { color } = {}) {
 
   if (logs !== undefined) {
     // `logs` is a stateful variable
-    // eslint-disable-next-line fp/no-mutating-methods
+
     logs.stderr.push(stringB)
     return
   }

@@ -1,21 +1,23 @@
+import { Fixture, normalizeOutput } from '@netlify/testing'
 import test from 'ava'
 
-import { runFixture } from '../helpers/main.js'
-
 test('Base from defaultConfig', async (t) => {
-  const defaultConfig = { build: { base: 'base' } }
-  await runFixture(t, 'default_config', { flags: { defaultConfig } })
+  const output = await new Fixture('./fixtures/default_config')
+    .withFlags({ defaultConfig: { build: { base: 'base' } } })
+    .runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Base from configuration file property', async (t) => {
-  const { returnValue } = await runFixture(t, 'prop_config')
+  const output = await new Fixture('./fixtures/prop_config').runWithConfig()
+  t.snapshot(normalizeOutput(output))
   const {
     buildDir,
     config: {
       build: { base, edge_functions: edgeFunctions, publish },
       functionsDirectory,
     },
-  } = JSON.parse(returnValue)
+  } = JSON.parse(output)
   t.is(base, buildDir)
   t.true(functionsDirectory.startsWith(buildDir))
   t.true(edgeFunctions.startsWith(buildDir))
@@ -23,36 +25,47 @@ test('Base from configuration file property', async (t) => {
 })
 
 test('Base logic is not recursive', async (t) => {
-  await runFixture(t, 'recursive')
+  const output = await new Fixture('./fixtures/recursive').runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('BaseRelDir feature flag', async (t) => {
-  const { returnValue } = await runFixture(t, 'prop_config', { flags: { baseRelDir: false } })
+  const output = await new Fixture('./fixtures/prop_config').withFlags({ baseRelDir: false }).runWithConfig()
+  t.snapshot(normalizeOutput(output))
   const {
     buildDir,
     config: {
       build: { base, edge_functions: edgeFunctions, publish },
       functionsDirectory,
     },
-  } = JSON.parse(returnValue)
+  } = JSON.parse(output)
   t.is(base, buildDir)
+
   t.false(functionsDirectory.startsWith(buildDir))
   t.false(edgeFunctions.startsWith(buildDir))
   t.false(publish.startsWith(buildDir))
 })
 
 test('Base directory does not exist', async (t) => {
-  await runFixture(t, 'base_invalid')
+  const output = await new Fixture('./fixtures/base_invalid').runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Use "base" as default value for "publish"', async (t) => {
-  await runFixture(t, 'base_without_publish')
+  const output = await new Fixture('./fixtures/base_without_publish').runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Use "base" as "publish" when it is an empty string', async (t) => {
-  await runFixture(t, 'base_without_publish', { flags: { defaultConfig: { build: { publish: '' } } } })
+  const output = await new Fixture('./fixtures/base_without_publish')
+    .withFlags({ defaultConfig: { build: { publish: '' } } })
+    .runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Use "base" as "publish" when it is /', async (t) => {
-  await runFixture(t, 'base_without_publish', { flags: { defaultConfig: { build: { publish: '/' } } } })
+  const output = await new Fixture('./fixtures/base_without_publish')
+    .withFlags({ defaultConfig: { build: { publish: '/' } } })
+    .runWithConfig()
+  t.snapshot(normalizeOutput(output))
 })

@@ -27,7 +27,7 @@ const getCorePackageJson = function (testOpts) {
     // `update-notifier` does not do anything if not in a TTY.
     // In tests, we need to monkey patch this
     // Mutation is required due to how `stdout.isTTY` works
-    // eslint-disable-next-line fp/no-mutation
+
     stdout.isTTY = true
 
     return { ...ROOT_PACKAGE_JSON, version: '0.0.1' }

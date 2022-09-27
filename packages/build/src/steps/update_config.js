@@ -35,7 +35,7 @@ export const updateNetlifyConfig = async function ({
     redirectsPath: redirectsPathA,
   } = await resolveUpdatedConfig(configOpts, configMutationsA)
   logConfigOnUpdate({ logs, netlifyConfig: netlifyConfigA, debug })
-  // eslint-disable-next-line fp/no-mutation,no-param-reassign
+
   errorParams.netlifyConfig = netlifyConfigA
   return {
     netlifyConfig: netlifyConfigA,
@@ -67,7 +67,7 @@ const haveConfigSideFilesChanged = async function (configSideFiles, headersPath,
 // apply any configuration update on `netlify.toml`.
 export const listConfigSideFiles = async function (sideFiles) {
   const configSideFiles = await pFilter(sideFiles, pathExists)
-  // eslint-disable-next-line fp/no-mutating-methods
+
   return configSideFiles.sort()
 }
 
