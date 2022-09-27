@@ -12,7 +12,10 @@
       "dependsOn": ["^build"],
       "outputs": ["{projectRoot}/lib"]
     },
-    "test": {
+    "test:dev": {
+      "dependsOn": ["build"]
+    },
+    "test:ci": {
       "dependsOn": ["build"]
     }
   }
