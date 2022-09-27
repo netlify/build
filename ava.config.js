@@ -6,8 +6,8 @@ import process from 'process'
 import { isCI } from 'ci-info'
 
 // `tests-metadata.json` is created by running `npm run test:measure`
-
-const testData = JSON.parse(fs.readFileSync('../../tests-metadata.json'))
+// eslint-disable-next-line n/no-sync
+const testData = JSON.parse(fs.readFileSync(''))
 
 const getOrder = (file) => {
   const fileRelative = path.relative(process.cwd(), file).replace(/\\/g, '/')
