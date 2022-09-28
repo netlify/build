@@ -4,19 +4,19 @@ import { createRequire } from 'module'
 import { platform } from 'process'
 import { PassThrough } from 'stream'
 
-import test from 'ava'
 import nock from 'nock'
 import semver from 'semver'
 import { spy } from 'sinon'
 import tmp from 'tmp-promise'
+import { test, expect } from 'vitest'
 
-import { DenoBridge, DENO_VERSION_RANGE } from '../../node/bridge.js'
-import { getPlatformTarget } from '../../node/platform.js'
+import { DenoBridge, DENO_VERSION_RANGE } from './bridge.js'
+import { getPlatformTarget } from './platform.js'
 
 const require = createRequire(import.meta.url)
 const archiver = require('archiver')
 
-test('Downloads the Deno CLI on demand and caches it for subsequent calls', async (t) => {
+test('Downloads the Deno CLI on demand and caches it for subsequent calls', async () => {
   const latestVersion = semver.minVersion(DENO_VERSION_RANGE)?.version ?? ''
   const mockBinaryOutput = `#!/usr/bin/env sh\n\necho "deno ${latestVersion}"`
   const data = new PassThrough()
@@ -45,12 +45,12 @@ test('Downloads the Deno CLI on demand and caches it for subsequent calls', asyn
   const output2 = await deno.run(['help'])
   const expectedOutput = /^deno [\d.]+/
 
-  t.true(latestReleaseMock.isDone())
-  t.true(downloadMock.isDone())
-  t.regex(output1?.stdout ?? '', expectedOutput)
-  t.regex(output2?.stdout ?? '', expectedOutput)
-  t.is(beforeDownload.callCount, 1)
-  t.is(afterDownload.callCount, 1)
+  expect(latestReleaseMock.isDone()).toBe(true)
+  expect(downloadMock.isDone()).toBe(true)
+  expect(output1?.stdout ?? '').toMatch(expectedOutput)
+  expect(output2?.stdout ?? '').toMatch(expectedOutput)
+  expect(beforeDownload.callCount).toBe(1)
+  expect(afterDownload.callCount).toBe(1)
 
   await fs.promises.rmdir(tmpDir.path, { recursive: true })
 })

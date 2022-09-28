@@ -1,8 +1,8 @@
-import test from 'ava'
+import { test, expect } from 'vitest'
 
-import { ImportMap } from '../../node/import_map.js'
+import { ImportMap } from './import_map.js'
 
-test('Handles import maps with full URLs without specifying a base URL', (t) => {
+test('Handles import maps with full URLs without specifying a base URL', () => {
   const inputFile1 = {
     baseURL: new URL('file:///some/path/import-map.json'),
     imports: {
@@ -19,12 +19,12 @@ test('Handles import maps with full URLs without specifying a base URL', (t) => 
   const map = new ImportMap([inputFile1, inputFile2])
   const { imports } = JSON.parse(map.getContents())
 
-  t.is(imports['netlify:edge'], 'https://edge.netlify.com/v1/index.ts')
-  t.is(imports['alias:jamstack'], 'https://jamstack.org/')
-  t.is(imports['alias:pets'], 'https://petsofnetlify.com/')
+  expect(imports['netlify:edge']).toBe('https://edge.netlify.com/v1/index.ts')
+  expect(imports['alias:jamstack']).toBe('https://jamstack.org/')
+  expect(imports['alias:pets']).toBe('https://petsofnetlify.com/')
 })
 
-test('Handles import maps with relative paths', (t) => {
+test('Handles import maps with relative paths', () => {
   const inputFile1 = {
     baseURL: new URL('file:///Users/jane-doe/my-site/import-map.json'),
     imports: {
@@ -35,6 +35,6 @@ test('Handles import maps with relative paths', (t) => {
   const map = new ImportMap([inputFile1])
   const { imports } = JSON.parse(map.getContents())
 
-  t.is(imports['netlify:edge'], 'https://edge.netlify.com/v1/index.ts')
-  t.is(imports['alias:pets'], 'file:///Users/jane-doe/my-site/heart/pets/')
+  expect(imports['netlify:edge']).toBe('https://edge.netlify.com/v1/index.ts')
+  expect(imports['alias:pets']).toBe('file:///Users/jane-doe/my-site/heart/pets/')
 })

@@ -17,7 +17,7 @@ module.exports = {
   overrides: [
     ...overrides,
     {
-      files: ['test/node/**/*.ts'],
+      files: ['node/**/*.test.ts', 'vitest.config.ts'],
       rules: {
         'max-statements': 'off',
         'no-magic-numbers': 'off',

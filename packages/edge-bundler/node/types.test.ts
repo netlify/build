@@ -1,20 +1,20 @@
 import { promises as fs } from 'fs'
 import { join } from 'path'
 
-import test from 'ava'
 import nock from 'nock'
 import { stub } from 'sinon'
 import tmp from 'tmp-promise'
+import { test, expect } from 'vitest'
 
-import { DenoBridge } from '../../node/bridge.js'
-import { getLogger } from '../../node/logger.js'
-import { ensureLatestTypes } from '../../node/types.js'
+import { DenoBridge } from './bridge.js'
+import { getLogger } from './logger.js'
+import { ensureLatestTypes } from './types.js'
 
 const testLogger = getLogger(() => {
   // no-op
 })
 
-test('`ensureLatestTypes` updates the Deno CLI cache if the local version of types is outdated', async (t) => {
+test('`ensureLatestTypes` updates the Deno CLI cache if the local version of types is outdated', async () => {
   const mockURL = 'https://edge.netlify'
   const mockVersion = '123456789'
   const latestVersionMock = nock(mockURL).get('/version.txt').reply(200, mockVersion)
@@ -31,17 +31,17 @@ test('`ensureLatestTypes` updates the Deno CLI cache if the local version of typ
 
   const versionFile = await fs.readFile(join(tmpDir.path, 'types-version.txt'), 'utf8')
 
-  t.true(latestVersionMock.isDone())
-  t.is(mock.callCount, 1)
-  t.deepEqual(mock.firstCall.firstArg, ['cache', '-r', mockURL])
-  t.is(versionFile, mockVersion)
+  expect(latestVersionMock.isDone()).toBe(true)
+  expect(mock.callCount).toBe(1)
+  expect(mock.firstCall.firstArg).toEqual(['cache', '-r', mockURL])
+  expect(versionFile).toBe(mockVersion)
 
   mock.restore()
 
   await fs.rmdir(tmpDir.path, { recursive: true })
 })
 
-test('`ensureLatestTypes` does not update the Deno CLI cache if the local version of types is up-to-date', async (t) => {
+test('`ensureLatestTypes` does not update the Deno CLI cache if the local version of types is up-to-date', async () => {
   const mockURL = 'https://edge.netlify'
   const mockVersion = '987654321'
 
@@ -59,15 +59,15 @@ test('`ensureLatestTypes` does not update the Deno CLI cache if the local versio
 
   await ensureLatestTypes(deno, testLogger, mockURL)
 
-  t.true(latestVersionMock.isDone())
-  t.is(mock.callCount, 0)
+  expect(latestVersionMock.isDone()).toBe(true)
+  expect(mock.callCount).toBe(0)
 
   mock.restore()
 
   await fs.rmdir(tmpDir.path, { recursive: true })
 })
 
-test('`ensureLatestTypes` does not throw if the types URL is not available', async (t) => {
+test('`ensureLatestTypes` does not throw if the types URL is not available', async () => {
   const mockURL = 'https://edge.netlify'
   const latestVersionMock = nock(mockURL).get('/version.txt').reply(500)
 
@@ -81,8 +81,8 @@ test('`ensureLatestTypes` does not throw if the types URL is not available', asy
 
   await ensureLatestTypes(deno, testLogger, mockURL)
 
-  t.true(latestVersionMock.isDone())
-  t.is(mock.callCount, 0)
+  expect(latestVersionMock.isDone()).toBe(true)
+  expect(mock.callCount).toBe(0)
 
   mock.restore()
 

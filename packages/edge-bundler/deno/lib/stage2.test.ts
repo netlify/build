@@ -3,8 +3,8 @@ import { assertEquals, assertStringIncludes } from 'https://deno.land/std@0.127.
 import { join } from 'https://deno.land/std@0.155.0/path/mod.ts'
 import { pathToFileURL } from 'https://deno.land/std@0.155.0/node/url.ts'
 
-import { getStage2Entry } from '../../deno/lib/stage2.ts'
-import { virtualRoot } from '../../deno/lib/consts.ts'
+import { getStage2Entry } from './stage2.ts'
+import { virtualRoot } from './consts.ts'
 
 Deno.test('`getStage2Entry` returns a valid stage 2 file', async () => {
   const directory = await Deno.makeTempDir()

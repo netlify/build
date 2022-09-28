@@ -1,17 +1,14 @@
-import { join, resolve } from 'path'
-import { fileURLToPath } from 'url'
+import { join } from 'path'
 
-import test from 'ava'
 import getPort from 'get-port'
 import fetch from 'node-fetch'
+import { test, expect } from 'vitest'
 
-import { serve } from '../src/index.js'
+import { fixturesDir } from '../test/util.js'
 
-const url = new URL(import.meta.url)
-const dirname = fileURLToPath(url)
-const fixturesDir = resolve(dirname, '..', 'fixtures')
+import { serve } from './index.js'
 
-test.serial('bundler serving functionality', async (t) => {
+test('bundler serving functionality', async () => {
   const port = await getPort()
   const server = await serve({
     port,
@@ -29,7 +26,7 @@ test.serial('bundler serving functionality', async (t) => {
     },
   )
 
-  t.true(success)
+  expect(success).toBe(true)
 
   const response = await fetch(`http://0.0.0.0:${port}/foo`, {
     headers: {
@@ -38,8 +35,8 @@ test.serial('bundler serving functionality', async (t) => {
       'X-NF-Request-ID': 'foo',
     },
   })
-  t.is(response.status, 200)
+  expect(response.status).toBe(200)
 
   const body = (await response.json()) as Record<string, string>
-  t.is(body.very_secret_secret, 'i love netlify')
+  expect(body.very_secret_secret).toBe('i love netlify')
 })

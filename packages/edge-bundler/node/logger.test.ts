@@ -1,7 +1,7 @@
-import test from 'ava'
 import { stub } from 'sinon'
+import { afterEach, test, expect } from 'vitest'
 
-import { getLogger } from '../../node/logger.js'
+import { getLogger } from './logger.js'
 
 const consoleLog = console.log
 
@@ -9,12 +9,12 @@ const noopLogger = () => {
   // no-op
 }
 
-test.afterEach.always(() => {
+afterEach(() => {
   // Restoring global `console.log`.
   console.log = consoleLog
 })
 
-test.serial('Prints user logs to stdout', (t) => {
+test('Prints user logs to stdout', () => {
   const mockConsoleLog = stub()
   console.log = mockConsoleLog
 
@@ -24,12 +24,12 @@ test.serial('Prints user logs to stdout', (t) => {
   logger1.user('Hello with `debug: true`')
   logger2.user('Hello with `debug: false`')
 
-  t.is(mockConsoleLog.callCount, 2)
-  t.is(mockConsoleLog.firstCall.firstArg, 'Hello with `debug: true`')
-  t.is(mockConsoleLog.secondCall.firstArg, 'Hello with `debug: false`')
+  expect(mockConsoleLog.callCount).toBe(2)
+  expect(mockConsoleLog.firstCall.firstArg).toBe('Hello with `debug: true`')
+  expect(mockConsoleLog.secondCall.firstArg).toBe('Hello with `debug: false`')
 })
 
-test.serial('Prints system logs to the system logger provided', (t) => {
+test('Prints system logs to the system logger provided', () => {
   const mockSystemLog = stub()
   const mockConsoleLog = stub()
   console.log = mockSystemLog
@@ -40,13 +40,13 @@ test.serial('Prints system logs to the system logger provided', (t) => {
   logger1.system('Hello with `debug: true`')
   logger2.system('Hello with `debug: false`')
 
-  t.is(mockConsoleLog.callCount, 0)
-  t.is(mockSystemLog.callCount, 2)
-  t.is(mockSystemLog.firstCall.firstArg, 'Hello with `debug: true`')
-  t.is(mockSystemLog.secondCall.firstArg, 'Hello with `debug: false`')
+  expect(mockConsoleLog.callCount).toBe(0)
+  expect(mockSystemLog.callCount).toBe(2)
+  expect(mockSystemLog.firstCall.firstArg).toBe('Hello with `debug: true`')
+  expect(mockSystemLog.secondCall.firstArg).toBe('Hello with `debug: false`')
 })
 
-test.serial('Prints system logs to stdout if there is no system logger provided and `debug` is enabled', (t) => {
+test('Prints system logs to stdout if there is no system logger provided and `debug` is enabled', () => {
   const mockConsoleLog = stub()
   console.log = mockConsoleLog
 
@@ -56,6 +56,6 @@ test.serial('Prints system logs to stdout if there is no system logger provided 
   logger1.system('Hello with `debug: true`')
   logger2.system('Hello with `debug: false`')
 
-  t.is(mockConsoleLog.callCount, 1)
-  t.is(mockConsoleLog.firstCall.firstArg, 'Hello with `debug: true`')
+  expect(mockConsoleLog.callCount).toBe(1)
+  expect(mockConsoleLog.firstCall.firstArg).toBe('Hello with `debug: true`')
 })

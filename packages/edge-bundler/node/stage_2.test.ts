@@ -3,14 +3,14 @@ import { join } from 'path'
 import process from 'process'
 import { pathToFileURL } from 'url'
 
-import test from 'ava'
 import del from 'del'
 import { execa } from 'execa'
 import tmp from 'tmp-promise'
+import { test, expect } from 'vitest'
 
-import { getLocalEntryPoint } from '../../node/formats/javascript.js'
+import { getLocalEntryPoint } from './formats/javascript.js'
 
-test('`getLocalEntryPoint` returns a valid stage 2 file for local development', async (t) => {
+test('`getLocalEntryPoint` returns a valid stage 2 file for local development', async () => {
   const { path: tmpDir } = await tmp.dir()
 
   // This is a fake bootstrap that we'll create just for the purpose of logging
@@ -52,13 +52,13 @@ test('`getLocalEntryPoint` returns a valid stage 2 file for local development', 
 
   const { stdout, stderr } = await execa('deno', ['run', '--allow-all', stage2Path])
 
-  t.is(stderr, '')
+  expect(stderr).toBe('')
 
   const { metadata, responses } = JSON.parse(stdout)
 
   for (const func of functions) {
-    t.is(responses[func.name], func.response)
-    t.is(metadata.functions[func.name].url, pathToFileURL(func.path).toString())
+    expect(responses[func.name]).toBe(func.response)
+    expect(metadata.functions[func.name].url).toBe(pathToFileURL(func.path).toString())
   }
 
   await del(tmpDir, { force: true })

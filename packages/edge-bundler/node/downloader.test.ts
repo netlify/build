@@ -2,15 +2,16 @@ import { promises as fs } from 'fs'
 import { platform } from 'process'
 import { PassThrough } from 'stream'
 
-// eslint-disable-next-line ava/use-test
-import testFn, { TestFn } from 'ava'
 import { execa } from 'execa'
 import nock from 'nock'
 import tmp from 'tmp-promise'
+import { beforeEach, afterEach, test, expect, TestContext as VitestTestContext } from 'vitest'
 
-import { download } from '../../node/downloader.js'
-import { getLogger } from '../../node/logger.js'
-import { getPlatformTarget } from '../../node/platform.js'
+import { fixturesDir } from '../test/util.js'
+
+import { download } from './downloader.js'
+import { getLogger } from './logger.js'
+import { getPlatformTarget } from './platform.js'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 const testLogger = getLogger(() => {})
@@ -23,22 +24,22 @@ const streamError = () => {
   return stream
 }
 
-interface Context {
+interface TestContext extends VitestTestContext {
   tmpDir: string
 }
-const test = testFn as TestFn<Context>
 
-test.beforeEach(async (t) => {
+beforeEach(async (ctx: TestContext) => {
   const tmpDir = await tmp.dir()
-  t.context = { tmpDir: tmpDir.path }
+
+  // eslint-disable-next-line no-param-reassign
+  ctx.tmpDir = tmpDir.path
 })
 
-test.afterEach(async (t) => {
-  await fs.rmdir(t.context.tmpDir, { recursive: true })
+afterEach(async (ctx: TestContext) => {
+  await fs.rmdir(ctx.tmpDir, { recursive: true })
 })
 
-test.serial('tries downloading binary up to 4 times', async (t) => {
-  t.timeout(15_000)
+test('tries downloading binary up to 4 times', async (ctx: TestContext) => {
   nock.disableNetConnect()
 
   const version = '99.99.99'
@@ -65,21 +66,22 @@ test.serial('tries downloading binary up to 4 times', async (t) => {
     .get(zipPath)
     // 1 second delay
     .delayBody(1000)
-    .replyWithFile(200, platform === 'win32' ? './test/node/fixtures/deno.win.zip' : './test/node/fixtures/deno.zip', {
+    .replyWithFile(200, platform === 'win32' ? `${fixturesDir}/deno.win.zip` : `${fixturesDir}/deno.zip`, {
       'Content-Type': 'application/zip',
     })
 
-  const deno = await download(t.context.tmpDir, `^${version}`, testLogger)
+  const deno = await download(ctx.tmpDir, `^${version}`, testLogger)
 
-  t.true(latestVersionMock.isDone())
-  t.truthy(deno)
+  expect(latestVersionMock.isDone()).toBe(true)
+  expect(deno).toBeTruthy()
 
   const res = await execa(deno)
-  t.is(res.stdout, 'hello')
+  expect(res.stdout).toBe('hello')
 })
 
-test.serial('fails downloading binary after 4th time', async (t) => {
-  t.timeout(15_000)
+test('fails downloading binary after 4th time', async (ctx: TestContext) => {
+  expect.assertions(2)
+
   nock.disableNetConnect()
 
   const version = '99.99.99'
@@ -106,15 +108,18 @@ test.serial('fails downloading binary after 4th time', async (t) => {
     .get(zipPath)
     .reply(500)
 
-  await t.throwsAsync(() => download(t.context.tmpDir, `^${version}`, testLogger), {
-    message: /Download failed with status code 500/,
-  })
+  try {
+    await download(ctx.tmpDir, `^${version}`, testLogger)
+  } catch (error) {
+    expect(error).toMatch(/Download failed with status code 500/)
+  }
 
-  t.true(latestVersionMock.isDone())
+  expect(latestVersionMock.isDone()).toBe(true)
 })
 
-test.serial('fails downloading if response stream throws error', async (t) => {
-  t.timeout(15_000)
+test('fails downloading if response stream throws error', async (ctx: TestContext) => {
+  expect.assertions(2)
+
   nock.disableNetConnect()
 
   const version = '99.99.99'
@@ -142,9 +147,11 @@ test.serial('fails downloading if response stream throws error', async (t) => {
     .get(zipPath)
     .reply(200, streamError)
 
-  await t.throwsAsync(() => download(t.context.tmpDir, `^${version}`, testLogger), {
-    message: /stream error/,
-  })
+  try {
+    await download(ctx.tmpDir, `^${version}`, testLogger)
+  } catch (error) {
+    expect(error).toMatch(/stream error/)
+  }
 
-  t.true(latestVersionMock.isDone())
+  expect(latestVersionMock.isDone()).toBe(true)
 })

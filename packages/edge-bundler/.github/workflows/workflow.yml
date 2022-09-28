@@ -6,14 +6,6 @@ on:
     tags: ['*']
   pull_request:
     types: [opened, synchronize, reopened]
-  workflow_dispatch:
-    inputs:
-      debug_enabled:
-        type: boolean
-        description:
-          'Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)'
-        required: false
-        default: false
 jobs:
   build:
     runs-on: ${{ matrix.os }}
@@ -21,12 +13,12 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macOS-latest, windows-latest]
-        node-version: [12.20.0, '*']
+        node-version: [14.14.0, '*']
         exclude:
           - os: macOS-latest
-            node-version: 12.20.0
+            node-version: 14.14.0
           - os: windows-latest
-            node-version: 12.20.0
+            node-version: 14.14.0
       fail-fast: false
     steps:
       - name: Git checkout
@@ -36,10 +28,6 @@ jobs:
         with:
           # Should match the `DENO_VERSION_RANGE` constant in `node/bridge.ts`.
           deno-version: v1.22.0
-      # Enable tmate debugging of manually-triggered workflows if the input option was provided
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
       - name: Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:

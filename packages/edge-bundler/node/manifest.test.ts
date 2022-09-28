@@ -1,10 +1,10 @@
 import { env } from 'process'
 
-import test from 'ava'
+import { test, expect } from 'vitest'
 
-import { generateManifest } from '../../node/manifest.js'
+import { generateManifest } from './manifest.js'
 
-test('Generates a manifest with different bundles', (t) => {
+test('Generates a manifest with different bundles', () => {
   const bundle1 = {
     extension: '.ext1',
     format: 'format1',
@@ -25,12 +25,12 @@ test('Generates a manifest with different bundles', (t) => {
   ]
   const expectedRoutes = [{ function: 'func-1', pattern: '^/f1/?$' }]
 
-  t.deepEqual(manifest.bundles, expectedBundles)
-  t.deepEqual(manifest.routes, expectedRoutes)
-  t.is(manifest.bundler_version, env.npm_package_version as string)
+  expect(manifest.bundles).toEqual(expectedBundles)
+  expect(manifest.routes).toEqual(expectedRoutes)
+  expect(manifest.bundler_version).toBe(env.npm_package_version as string)
 })
 
-test('Excludes functions for which there are function files but no matching config declarations', (t) => {
+test('Excludes functions for which there are function files but no matching config declarations', () => {
   const bundle1 = {
     extension: '.ext2',
     format: 'format1',
@@ -45,10 +45,10 @@ test('Excludes functions for which there are function files but no matching conf
 
   const expectedRoutes = [{ function: 'func-1', pattern: '^/f1/?$' }]
 
-  t.deepEqual(manifest.routes, expectedRoutes)
+  expect(manifest.routes).toEqual(expectedRoutes)
 })
 
-test('Excludes functions for which there are config declarations but no matching function files', (t) => {
+test('Excludes functions for which there are config declarations but no matching function files', () => {
   const bundle1 = {
     extension: '.ext2',
     format: 'format1',
@@ -63,17 +63,17 @@ test('Excludes functions for which there are config declarations but no matching
 
   const expectedRoutes = [{ function: 'func-2', pattern: '^/f2/?$' }]
 
-  t.deepEqual(manifest.routes, expectedRoutes)
+  expect(manifest.routes).toEqual(expectedRoutes)
 })
 
-test('Generates a manifest without bundles', (t) => {
+test('Generates a manifest without bundles', () => {
   const functions = [{ name: 'func-1', path: '/path/to/func-1.ts' }]
   const declarations = [{ function: 'func-1', path: '/f1' }]
   const manifest = generateManifest({ bundles: [], declarations, functions })
 
   const expectedRoutes = [{ function: 'func-1', pattern: '^/f1/?$' }]
 
-  t.deepEqual(manifest.bundles, [])
-  t.deepEqual(manifest.routes, expectedRoutes)
-  t.is(manifest.bundler_version, env.npm_package_version as string)
+  expect(manifest.bundles).toEqual([])
+  expect(manifest.routes).toEqual(expectedRoutes)
+  expect(manifest.bundler_version).toBe(env.npm_package_version as string)
 })

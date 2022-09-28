@@ -1,20 +1,18 @@
 import { promises as fs } from 'fs'
 import { join, resolve } from 'path'
 import process from 'process'
-import { fileURLToPath, pathToFileURL } from 'url'
+import { pathToFileURL } from 'url'
 
-import test from 'ava'
 import del from 'del'
 import tmp from 'tmp-promise'
+import { test, expect } from 'vitest'
 
-import { BundleError } from '../../node/bundle_error.js'
-import { bundle, BundleOptions } from '../../node/bundler.js'
+import { fixturesDir } from '../test/util.js'
 
-const url = new URL(import.meta.url)
-const dirname = fileURLToPath(url)
-const fixturesDir = resolve(dirname, '..', 'fixtures')
+import { BundleError } from './bundle_error.js'
+import { bundle, BundleOptions } from './bundler.js'
 
-test('Produces a JavaScript bundle and a manifest file', async (t) => {
+test('Produces a JavaScript bundle and a manifest file', async () => {
   const sourceDirectory = resolve(fixturesDir, 'project_1', 'functions')
   const tmpDir = await tmp.dir()
   const declarations = [
@@ -36,23 +34,23 @@ test('Produces a JavaScript bundle and a manifest file', async (t) => {
   })
   const generatedFiles = await fs.readdir(tmpDir.path)
 
-  t.is(result.functions.length, 1)
-  t.is(generatedFiles.length, 2)
+  expect(result.functions.length).toBe(1)
+  expect(generatedFiles.length).toBe(2)
 
   // eslint-disable-next-line unicorn/prefer-json-parse-buffer
   const manifestFile = await fs.readFile(resolve(tmpDir.path, 'manifest.json'), 'utf8')
   const manifest = JSON.parse(manifestFile)
   const { bundles } = manifest
 
-  t.is(bundles.length, 1)
-  t.is(bundles[0].format, 'js')
-  t.true(generatedFiles.includes(bundles[0].asset))
-  t.deepEqual(result.manifest, manifest)
+  expect(bundles.length).toBe(1)
+  expect(bundles[0].format).toBe('js')
+  expect(generatedFiles.includes(bundles[0].asset)).toBe(true)
+  expect(result.manifest).toEqual(manifest)
 
   await fs.rmdir(tmpDir.path, { recursive: true })
-})
+}, 10_000)
 
-test('Produces only a ESZIP bundle when the `edge_functions_produce_eszip` feature flag is set', async (t) => {
+test('Produces only a ESZIP bundle when the `edge_functions_produce_eszip` feature flag is set', async () => {
   const sourceDirectory = resolve(fixturesDir, 'project_1', 'functions')
   const tmpDir = await tmp.dir()
   const declarations = [
@@ -77,22 +75,24 @@ test('Produces only a ESZIP bundle when the `edge_functions_produce_eszip` featu
   })
   const generatedFiles = await fs.readdir(tmpDir.path)
 
-  t.is(result.functions.length, 1)
-  t.is(generatedFiles.length, 2)
+  expect(result.functions.length).toBe(1)
+  expect(generatedFiles.length).toBe(2)
 
   // eslint-disable-next-line unicorn/prefer-json-parse-buffer
   const manifestFile = await fs.readFile(resolve(tmpDir.path, 'manifest.json'), 'utf8')
   const manifest = JSON.parse(manifestFile)
   const { bundles } = manifest
 
-  t.is(bundles.length, 1)
-  t.is(bundles[0].format, 'eszip2')
-  t.true(generatedFiles.includes(bundles[0].asset))
+  expect(bundles.length).toBe(1)
+  expect(bundles[0].format).toBe('eszip2')
+  expect(generatedFiles.includes(bundles[0].asset)).toBe(true)
 
   await fs.rmdir(tmpDir.path, { recursive: true })
-})
+}, 10_000)
 
-test('Adds a custom error property to user errors during bundling', async (t) => {
+test('Adds a custom error property to user errors during bundling', async () => {
+  expect.assertions(2)
+
   const sourceDirectory = resolve(fixturesDir, 'invalid_functions', 'functions')
   const tmpDir = await tmp.dir()
   const declarations = [
@@ -104,37 +104,32 @@ test('Adds a custom error property to user errors during bundling', async (t) =>
 
   try {
     await bundle([sourceDirectory], tmpDir.path, declarations)
-
-    t.fail('Expected bundling to throw')
-  } catch (error: unknown) {
-    if (error instanceof BundleError) {
-      t.deepEqual(error.customErrorInfo, {
-        location: {
-          format: 'javascript',
-          runtime: 'deno',
-        },
-        type: 'functionsBundling',
-      })
-    } else {
-      t.fail('Expected custom error')
-    }
-  } finally {
-    await fs.rmdir(tmpDir.path, { recursive: true })
+  } catch (error) {
+    expect(error).toBeInstanceOf(BundleError)
+    expect((error as BundleError).customErrorInfo).toEqual({
+      location: {
+        format: 'javascript',
+        runtime: 'deno',
+      },
+      type: 'functionsBundling',
+    })
   }
-})
+}, 10_000)
 
-test('Does not add a custom error property to system errors during bundling', async (t) => {
+test('Does not add a custom error property to system errors during bundling', async () => {
+  expect.assertions(1)
+
   try {
     // @ts-expect-error Sending bad input to `bundle` to force a system error.
     await bundle([123, 321], tmpDir.path, declarations)
-
-    t.fail('Expected bundling to throw')
-  } catch (error: unknown) {
-    t.false(error instanceof BundleError)
+  } catch (error) {
+    expect(error).not.toBeInstanceOf(BundleError)
   }
 })
 
-test('Uses the cache directory as the `DENO_DIR` value if the `edge_functions_cache_deno_dir` feature flag is set', async (t) => {
+test('Uses the cache directory as the `DENO_DIR` value if the `edge_functions_cache_deno_dir` feature flag is set', async () => {
+  expect.assertions(7)
+
   const sourceDirectory = resolve(fixturesDir, 'project_1', 'functions')
   const outDir = await tmp.dir()
   const cacheDir = await tmp.dir()
@@ -161,10 +156,14 @@ test('Uses the cache directory as the `DENO_DIR` value if the `edge_functions_ca
   const result1 = await bundle([sourceDirectory], outDir.path, declarations, options)
   const outFiles1 = await fs.readdir(outDir.path)
 
-  t.is(result1.functions.length, 1)
-  t.is(outFiles1.length, 2)
+  expect(result1.functions.length).toBe(1)
+  expect(outFiles1.length).toBe(2)
 
-  await t.throwsAsync(() => fs.readdir(join(cacheDir.path, 'deno_dir')))
+  try {
+    await fs.readdir(join(cacheDir.path, 'deno_dir'))
+  } catch (error) {
+    expect(error).toBeInstanceOf(Error)
+  }
 
   // Run #2, feature flag on: The directory should be populated.
   const result2 = await bundle([sourceDirectory], outDir.path, declarations, {
@@ -175,18 +174,18 @@ test('Uses the cache directory as the `DENO_DIR` value if the `edge_functions_ca
   })
   const outFiles2 = await fs.readdir(outDir.path)
 
-  t.is(result2.functions.length, 1)
-  t.is(outFiles2.length, 2)
+  expect(result2.functions.length).toBe(1)
+  expect(outFiles2.length).toBe(2)
 
   const denoDir2 = await fs.readdir(join(cacheDir.path, 'deno_dir'))
 
-  t.true(denoDir2.includes('deps'))
-  t.true(denoDir2.includes('gen'))
+  expect(denoDir2.includes('deps')).toBe(true)
+  expect(denoDir2.includes('gen')).toBe(true)
 
   await fs.rmdir(outDir.path, { recursive: true })
-})
+}, 10_000)
 
-test('Supports import maps with relative paths', async (t) => {
+test('Supports import maps with relative paths', async () => {
   const sourceDirectory = resolve(fixturesDir, 'project_1', 'functions')
   const tmpDir = await tmp.dir()
   const declarations = [
@@ -211,22 +210,22 @@ test('Supports import maps with relative paths', async (t) => {
   })
   const generatedFiles = await fs.readdir(tmpDir.path)
 
-  t.is(result.functions.length, 1)
-  t.is(generatedFiles.length, 2)
+  expect(result.functions.length).toBe(1)
+  expect(generatedFiles.length).toBe(2)
 
   // eslint-disable-next-line unicorn/prefer-json-parse-buffer
   const manifestFile = await fs.readFile(resolve(tmpDir.path, 'manifest.json'), 'utf8')
   const manifest = JSON.parse(manifestFile)
   const { bundles } = manifest
 
-  t.is(bundles.length, 1)
-  t.is(bundles[0].format, 'eszip2')
-  t.true(generatedFiles.includes(bundles[0].asset))
+  expect(bundles.length).toBe(1)
+  expect(bundles[0].format).toBe('eszip2')
+  expect(generatedFiles.includes(bundles[0].asset)).toBe(true)
 
   await fs.rmdir(tmpDir.path, { recursive: true })
-})
+}, 10_000)
 
-test.serial('Ignores any user-defined `deno.json` files', async (t) => {
+test('Ignores any user-defined `deno.json` files', async () => {
   const fixtureDir = join(fixturesDir, 'project_1')
   const tmpDir = await tmp.dir()
   const declarations = [
@@ -256,17 +255,22 @@ test.serial('Ignores any user-defined `deno.json` files', async (t) => {
     importMap: importMapFile.path,
   }
 
-  // Let's ensure we're not overwriting a `deno.json` file that happens to be
-  // in the current working directory.
-  await t.throwsAsync(
-    () => fs.access(denoConfigPath),
-    { code: 'ENOENT' },
-    `The file at '${denoConfigPath} would be overwritten by this test. Please move the file to a different location and try again.'`,
-  )
+  try {
+    await fs.access(denoConfigPath)
+
+    throw new Error(
+      `The file at '${denoConfigPath} would be overwritten by this test. Please move the file to a different location and try again.'`,
+    )
+  } catch (error) {
+    // @ts-expect-error Error is not typed
+    if (error.code !== 'ENOENT') {
+      throw error
+    }
+  }
 
   await fs.writeFile(denoConfigPath, JSON.stringify(denoConfig))
 
-  await t.notThrowsAsync(() =>
+  expect(() =>
     bundle([join(fixtureDir, 'functions')], tmpDir.path, declarations, {
       basePath: fixturesDir,
       featureFlags: {
@@ -281,7 +285,7 @@ test.serial('Ignores any user-defined `deno.json` files', async (t) => {
         },
       ],
     }),
-  )
+  ).not.toThrow()
 
   await del([tmpDir.path, denoConfigPath, importMapFile.path], { force: true })
-})
+}, 10_000)
