@@ -13,7 +13,6 @@
   },
   "scripts": {
     "prebuild": "rm -rf lib",
-    "test": "echo ''",
     "build": "tsc"
   },
   "devDependencies": {
