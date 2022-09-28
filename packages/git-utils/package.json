@@ -13,11 +13,8 @@
     "prepublishOnly": "cd ../../ && npm run prepublishOnly",
     "prebuild": "rm -rf lib",
     "build": "cp -a src lib/",
-    "test:dev": "run-s test:dev:*",
-    "test:ci": "run-s test:ci:*",
-    "test:dev:ava": "ava",
-    "test:measure": "node tools/tests_duration.mjs",
-    "test:ci:ava": "ava"
+    "test:dev": "ava",
+    "test:measure": "node tools/tests_duration.mjs"
   },
   "keywords": [
     "nodejs",
