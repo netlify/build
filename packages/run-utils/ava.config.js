@@ -1,4 +1,4 @@
-import baseConfig from '../../ava.config.js'
+import baseConfig from '../../ava.base.js'
 
 const config = {
   ...baseConfig,
