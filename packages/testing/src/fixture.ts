@@ -1,5 +1,6 @@
 import { existsSync } from 'fs'
 import { createRequire } from 'module'
+import { inspect } from 'node:util'
 import { normalize, delimiter } from 'path'
 import { env } from 'process'
 import { fileURLToPath } from 'url'
@@ -17,6 +18,7 @@ import { createRepoDir, removeDir } from './dir.js'
 import { ServerHandler, startServer, Request } from './server.js'
 
 const ROOT_DIR = fileURLToPath(new URL('../..', import.meta.url))
+
 const BUILD_BIN_DIR = normalize(`${ROOT_DIR}/node_modules/.bin`)
 
 const require = createRequire(import.meta.url)
@@ -28,19 +30,22 @@ export class Fixture {
   }
 
   /** list of flags that are used for @netlify/config for testing */
-  configFlags: Record<string, unknown> = {
+  configFlags = {
     stable: true,
     branch: 'branch',
   }
 
   /** list of flags that are used for @netlify/build for testing */
-  buildFlags: Record<string, unknown> = {
+  buildFlags = {
     debug: true,
     testOpts: {
       silentLingeringProcesses: true,
       pluginsListUrl: 'test',
     },
   }
+
+  /** flags set by `withFlags` */
+  private additionalFlags: Record<string, unknown> = {}
 
   env = {
     // Ensure local environment variables aren't used during development
@@ -65,6 +70,29 @@ export class Fixture {
   private buildBinaryPath = getBinPathSync({ cwd: require.resolve('@netlify/build') })
   private configBinaryPath = getBinPathSync({ cwd: require.resolve('@netlify/config') })
 
+  getConfigFlags(): Record<string, unknown> {
+    return {
+      ...this.flags,
+      ...this.configFlags,
+      ...this.additionalFlags,
+      env: this.env,
+    }
+  }
+
+  getBuildFlags(): Record<string, unknown> {
+    const { testOpts, ...rest } = this.additionalFlags
+    const flags = { ...this.flags, ...this.buildFlags, ...rest, env: { ...this.buildEnv, ...this.env } }
+
+    if (typeof testOpts === 'object') {
+      flags.testOpts = {
+        ...flags.testOpts,
+        ...testOpts,
+      }
+    }
+
+    return flags
+  }
+
   constructor(
     /**
      * a relative path from the test file to the fixture directory
@@ -86,13 +114,13 @@ export class Fixture {
 
   /** Adds environment variables that are used for the execution  */
   withEnv(environment: Record<string, string> = {}): this {
-    this.env = merge(this.env, environment)
+    this.env = { ...this.env, ...environment }
     return this
   }
 
   /** Adds flags that are used for the execution  */
   withFlags(flags: Record<string, unknown> = {}): this {
-    this.flags = merge(this.flags, flags)
+    this.additionalFlags = merge({}, this.additionalFlags, flags)
     return this
   }
 
@@ -132,11 +160,7 @@ export class Fixture {
   async runWithConfig(): Promise<string> {
     const { resolveConfig } = await import('@netlify/config')
     try {
-      const {
-        logs: { stdout = [], stderr = [] } = {},
-        api,
-        ...result
-      } = await resolveConfig(merge(this.configFlags, this.flags, { env: this.env }))
+      const { logs: { stdout = [], stderr = [] } = {}, api, ...result } = await resolveConfig(this.getConfigFlags())
       const resultA = api === undefined ? result : { ...result, hasApi: true }
       const resultB = stringify.default.stableStringify(resultA, null, 2)
       return [stdout.join('\n'), stderr.join('\n'), resultB].filter(Boolean).join('\n\n')
@@ -150,22 +174,21 @@ export class Fixture {
   /** Runs @netlify/build main function programmatic with the provided flags  */
   async runBuildProgrammatic(): Promise<object> {
     const { default: build } = await import('@netlify/build')
-    return await build(merge(this.buildFlags, this.flags))
+    return await build(this.getBuildFlags())
   }
 
   async runWithBuild(): Promise<string> {
     const { default: build } = await import('@netlify/build')
-
-    const { logs } = await build(merge(this.buildFlags, this.flags, { env: merge(this.buildEnv, this.env) }))
+    const { logs } = await build(this.getBuildFlags())
     return [logs.stdout.join('\n'), logs.stderr.join('\n')].filter(Boolean).join('\n\n')
   }
 
   runConfigBinary(cwd?: string) {
-    return this.runBinary(this.configBinaryPath, cwd, this.configFlags)
+    return this.runBinary(this.configBinaryPath, cwd, this.getConfigFlags())
   }
 
   runBuildBinary(cwd?: string) {
-    return this.runBinary(this.buildBinaryPath, cwd, this.buildFlags)
+    return this.runBinary(this.buildBinaryPath, cwd, this.getBuildFlags())
   }
 
   private async runBinary(
@@ -176,12 +199,13 @@ export class Fixture {
     output: string
     exitCode: number
   }> {
+    const { env: environment, ...remainingFlags } = flags
     try {
-      const cliFlags = getCliFlags(merge(flags, this.flags))
+      const cliFlags = getCliFlags(remainingFlags)
       const { all: output, exitCode } = await execa(binary, cliFlags, {
         all: true,
         reject: false,
-        env: this.env,
+        env: (environment as Record<string, string>) || {},
         cwd,
       })
       return { output, exitCode }

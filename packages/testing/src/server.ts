@@ -67,7 +67,6 @@ const requestHandler = async (
   requests.push({ url: req.url, method: req.method, headers: headersA, body: requestBody })
 
   const responseBody = getResponseBody(response, requestBody)
-
   res.statusCode = status
   res.setHeader('Content-Type', 'application/json')
 

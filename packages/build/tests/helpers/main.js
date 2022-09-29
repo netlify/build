@@ -1,6 +1,7 @@
 import { delimiter, normalize } from 'path'
 import { env } from 'process'
 import { fileURLToPath } from 'url'
+import { inspect } from 'util'
 
 import { getBinPath } from 'get-bin-path'
 import pathKey from 'path-key'
@@ -51,6 +52,7 @@ export const runFixture = async function (
 const DEFAULT_TEST_FEATURE_FLAGS = {}
 
 const getNetlifyBuildLogs = async function (entryPoint, flags) {
+  console.log(inspect(flags, false, 100, true))
   const { logs } = await entryPoint(flags)
   return [logs.stdout.join('\n'), logs.stderr.join('\n')].filter(Boolean).join('\n\n')
 }
