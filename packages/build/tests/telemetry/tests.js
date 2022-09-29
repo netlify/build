@@ -1,5 +1,6 @@
 import { versions } from 'process'
 
+import { Fixture } from '@netlify/testing'
 import test from 'ava'
 
 import { runFixture } from '../helpers/main.js'

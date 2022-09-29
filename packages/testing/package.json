@@ -16,6 +16,7 @@
     "build": "tsc"
   },
   "devDependencies": {
+    "@netlify/build": "latest",
     "@netlify/config": "latest",
     "@types/lodash-es": "^4.17.6",
     "ava": "^4.0.0",
@@ -28,6 +29,7 @@
     "get-stream": "^6.0.0",
     "is-plain-obj": "^4.0.0",
     "lodash-es": "^4.17.21",
+    "path-key": "^4.0.0",
     "strip-ansi": "^7.0.0"
   }
 }

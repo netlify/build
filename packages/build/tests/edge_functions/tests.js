@@ -1,12 +1,15 @@
 import { promises as fs } from 'fs'
 import { join } from 'path'
+import { fileURLToPath } from 'url'
 
 import test from 'ava'
 import { pathExists } from 'path-exists'
 import tmp from 'tmp-promise'
 
 import { importJsonFile } from '../../lib/utils/json.js'
-import { FIXTURES_DIR, runFixture } from '../helpers/main.js'
+import { runFixture } from '../helpers/main.js'
+
+const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
 const assertManifest = async (t, fixtureName) => {
   const distPath = join(FIXTURES_DIR, fixtureName, '.netlify', 'edge-functions-dist')

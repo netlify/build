@@ -1,12 +1,15 @@
 import { promises as fs } from 'fs'
+import { fileURLToPath } from 'url'
 
 import test from 'ava'
 import del from 'del'
 import { pathExists } from 'path-exists'
 
 import { removeDir } from '../helpers/dir.js'
-import { runFixture, FIXTURES_DIR } from '../helpers/main.js'
+import { runFixture } from '../helpers/main.js'
 import { getTempName } from '../helpers/temp.js'
+
+const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
 test('Functions: missing source directory', async (t) => {
   await runFixture(t, 'missing')

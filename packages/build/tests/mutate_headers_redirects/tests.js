@@ -1,7 +1,11 @@
+import { fileURLToPath } from 'url'
+
 import test from 'ava'
 import del from 'del'
 
-import { runFixture, FIXTURES_DIR } from '../helpers/main.js'
+import { runFixture } from '../helpers/main.js'
+
+const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
 test('netlifyConfig is updated when headers file is created by a plugin', async (t) => {
   const headersFile = `${FIXTURES_DIR}/headers_plugin/_headers`

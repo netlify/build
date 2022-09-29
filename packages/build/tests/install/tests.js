@@ -1,11 +1,15 @@
 // import { version } from 'process'
 
+import { fileURLToPath } from 'url'
+
 import test from 'ava'
 import { pathExists } from 'path-exists'
 // import semver from 'semver'
 
 import { removeDir } from '../helpers/dir.js'
-import { runFixture, FIXTURES_DIR } from '../helpers/main.js'
+import { runFixture } from '../helpers/main.js'
+
+const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
 // Run fixture and ensure:
 //  - specific directories exist after run

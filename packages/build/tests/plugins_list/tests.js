@@ -1,4 +1,5 @@
 import { promises as fs } from 'fs'
+import { fileURLToPath } from 'url'
 
 import { pluginsList } from '@netlify/plugins-list'
 import test from 'ava'
@@ -6,8 +7,10 @@ import cpy from 'cpy'
 
 import { getExpectedVersion } from '../../lib/plugins/compatibility.js'
 import { removeDir } from '../helpers/dir.js'
-import { runFixture, FIXTURES_DIR } from '../helpers/main.js'
+import { runFixture } from '../helpers/main.js'
 import { startServer } from '../helpers/server.js'
+
+const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
 const runWithApiMock = async function (
   t,

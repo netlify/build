@@ -1,7 +1,11 @@
+import { fileURLToPath } from 'url'
+
 import test from 'ava'
 
 import { removeDir } from '../helpers/dir.js'
-import { runFixture, FIXTURES_DIR } from '../helpers/main.js'
+import { runFixture } from '../helpers/main.js'
+
+const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
 test('Pass packageJson to plugins', async (t) => {
   await runFixture(t, 'package_json_valid')

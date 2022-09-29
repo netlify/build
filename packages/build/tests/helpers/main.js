@@ -9,8 +9,6 @@ import netlifyBuild, { runCoreSteps, startDev } from '../../lib/core/main.js'
 
 import { runFixtureCommon } from './common.js'
 
-export { FIXTURES_DIR } from './common.js'
-
 const ROOT_DIR = fileURLToPath(new URL('../..', import.meta.url))
 const BUILD_BIN_DIR = normalize(`${ROOT_DIR}/node_modules/.bin`)
 

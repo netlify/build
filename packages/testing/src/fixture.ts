@@ -1,6 +1,7 @@
 import { existsSync } from 'fs'
 import { createRequire } from 'module'
-import { normalize } from 'path'
+import { normalize, delimiter } from 'path'
+import { env } from 'process'
 import { fileURLToPath } from 'url'
 
 import test from 'ava'
@@ -10,9 +11,13 @@ import stringify from 'fast-safe-stringify'
 import { getBinPathSync } from 'get-bin-path'
 import isPlainObj from 'is-plain-obj'
 import { merge } from 'lodash-es'
+import pathKey from 'path-key'
 
 import { createRepoDir, removeDir } from './dir.js'
 import { ServerHandler, startServer, Request } from './server.js'
+
+const ROOT_DIR = fileURLToPath(new URL('../..', import.meta.url))
+const BUILD_BIN_DIR = normalize(`${ROOT_DIR}/node_modules/.bin`)
 
 const require = createRequire(import.meta.url)
 
@@ -45,6 +50,11 @@ export class Fixture {
   // TODO: check if needed
   buildEnv: Record<string, string> = {
     BUILD_TELEMETRY_DISABLED: '',
+    // Allows executing any locally installed Node modules inside tests,
+    // regardless of the current directory.
+    // This is needed for example to run `yarn` in tests in environments that
+    // do not have a global binary of `yarn`.
+    [pathKey()]: `${env[pathKey()]}${delimiter}${BUILD_BIN_DIR}`,
   }
 
   copyRootDir: string
@@ -75,8 +85,8 @@ export class Fixture {
   }
 
   /** Adds environment variables that are used for the execution  */
-  withEnv(env: Record<string, string> = {}): this {
-    this.env = merge(this.env, env)
+  withEnv(environment: Record<string, string> = {}): this {
+    this.env = merge(this.env, environment)
     return this
   }
 
@@ -137,11 +147,16 @@ export class Fixture {
     }
   }
 
+  /** Runs @netlify/build main function programmatic with the provided flags  */
+  async runBuildProgrammatic(): Promise<object> {
+    const { default: build } = await import('@netlify/build')
+    return await build(merge(this.buildFlags, this.flags))
+  }
+
   async runWithBuild(): Promise<string> {
-    // eslint-disable-next-line import/no-extraneous-dependencies, n/no-extraneous-import
     const { default: build } = await import('@netlify/build')
 
-    const { logs } = await build(merge(this.buildFlags, this.flags))
+    const { logs } = await build(merge(this.buildFlags, this.flags, { env: merge(this.buildEnv, this.env) }))
     return [logs.stdout.join('\n'), logs.stderr.join('\n')].filter(Boolean).join('\n\n')
   }
 

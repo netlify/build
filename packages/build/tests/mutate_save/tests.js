@@ -1,12 +1,15 @@
 import { promises as fs } from 'fs'
 import { platform } from 'process'
+import { fileURLToPath } from 'url'
 
 import test from 'ava'
 import del from 'del'
 import { pathExists } from 'path-exists'
 
-import { runFixture, FIXTURES_DIR } from '../helpers/main.js'
+import { runFixture } from '../helpers/main.js'
 import { startTcpServer } from '../helpers/tcp_server.js'
+
+const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
 const startDeployServer = function (opts = {}) {
   const useUnixSocket = platform !== 'win32'
