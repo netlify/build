@@ -4,7 +4,7 @@ import { cwd as getCwd, chdir } from 'process'
 import test from 'ava'
 import { pathExists } from 'path-exists'
 
-import { save, restore } from '../src/main.js'
+import { save, restore } from '../lib/main.js'
 
 import { createTmpDir, removeFiles } from './helpers/main.js'
 

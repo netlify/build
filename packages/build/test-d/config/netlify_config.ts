@@ -1,7 +1,7 @@
 import { OnPreBuild, NetlifyConfig } from '@netlify/build'
 import { expectAssignable, expectType } from 'tsd'
 
-import { JSONValue } from '../../types/utils/json_value'
+import type { JSONValue } from '../../types/utils/json_value'
 
 const testNetlifyConfigPlugins: OnPreBuild = function ({
   netlifyConfig: {
@@ -16,13 +16,13 @@ const testNetlifyConfigPlugins: OnPreBuild = function ({
 
 const testNetlifyConfigEdgeHandlers: OnPreBuild = function ({
   netlifyConfig: {
-    edge_handlers: [edgeHandler],
+    edge_functions: [edgeFunction],
   },
 }: {
   netlifyConfig: NetlifyConfig
 }) {
-  expectAssignable<string | undefined>(edgeHandler.path)
-  expectType<string>(edgeHandler.handler)
+  expectAssignable<string | undefined>(edgeFunction.path)
+  expectType<string>(edgeFunction.function)
 }
 
 const testNetlifyConfigHeaders: OnPreBuild = function ({

@@ -2,7 +2,7 @@ import { promises as fs } from 'fs'
 
 import test from 'ava'
 
-import { save, restore } from '../src/main.js'
+import { save, restore } from '../lib/main.js'
 
 import { createTmpDir, removeFiles } from './helpers/main.js'
 

@@ -1,6 +1,6 @@
 import test from 'ava'
 
-import { has, save } from '../src/main.js'
+import { has, save } from '../lib/main.js'
 
 import { createTmpDir, createTmpFile, createTmpFiles, removeFiles } from './helpers/main.js'
 

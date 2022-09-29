@@ -1,5 +1,34 @@
 # Changelog
 
+## [4.2.10](https://github.com/netlify/build/compare/functions-utils-v4.2.9...functions-utils-v4.2.10) (2022-09-26)
+
+
+### Bug Fixes
+
+* build packages with lerna  ([#4524](https://github.com/netlify/build/issues/4524)) ([f74e385](https://github.com/netlify/build/commit/f74e385ffb7ffe7f3bfd5c3f80edc1b3249ca343))
+* lerna caching ([#4533](https://github.com/netlify/build/issues/4533)) ([4af0e1a](https://github.com/netlify/build/commit/4af0e1a9e0e5851e1d25b4acf41d1c4a98322019))
+
+## [4.2.9](https://github.com/netlify/build/compare/functions-utils-v4.2.8...functions-utils-v4.2.9) (2022-09-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^7.1.2 ([#4512](https://github.com/netlify/build/issues/4512)) ([521c96d](https://github.com/netlify/build/commit/521c96d87cf49e87f22982bd61223a35401067e4))
+
+## [4.2.8](https://github.com/netlify/build/compare/functions-utils-v4.2.7...functions-utils-v4.2.8) (2022-09-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^7.1.1 ([#4494](https://github.com/netlify/build/issues/4494)) ([7a5dbd7](https://github.com/netlify/build/commit/7a5dbd71b3354089695472c5ecacd62cd00ea28a))
+
+## [4.2.7](https://github.com/netlify/build/compare/functions-utils-v4.2.6...functions-utils-v4.2.7) (2022-09-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^7.1.0 ([#4488](https://github.com/netlify/build/issues/4488)) ([baccfe9](https://github.com/netlify/build/commit/baccfe931012e48449607407f180ddf2c960a53a))
+
 ## [4.2.6](https://github.com/netlify/build/compare/functions-utils-v4.2.5...functions-utils-v4.2.6) (2022-09-06)
 
 

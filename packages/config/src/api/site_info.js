@@ -24,7 +24,7 @@ export const getSiteInfo = async function ({ api, siteId, mode, testOpts: { env:
 
   if (siteInfo.use_envelope) {
     const envelope = await getEnvelope({ api, accountId: siteInfo.account_slug, siteId })
-    // eslint-disable-next-line fp/no-mutation
+
     siteInfo.build_settings.env = envelope
   }
 

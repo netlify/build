@@ -1,22 +1,26 @@
 {
   "name": "@netlify/config",
-  "version": "18.2.3",
+  "version": "18.2.4",
   "description": "Netlify config module",
   "type": "module",
-  "exports": "./src/main.js",
-  "main": "./src/main.js",
+  "exports": "./lib/main.js",
+  "main": "./lib/main.js",
+  "types": "./lib/main.d.ts",
   "bin": {
-    "netlify-config": "src/bin/main.js"
+    "netlify-config": "./bin.js"
   },
   "files": [
-    "src/**/*.js"
+    "bin.js",
+    "lib/**/*.js"
   ],
   "author": "Netlify Inc.",
   "contributors": [
     "David Wells <hello@davidwells.io> (https://davidwells.io/)"
   ],
   "scripts": {
-    "prepublishOnly": "cd ../../ && npm run prepublishOnly"
+    "prepublishOnly": "cd ../../ && npm run prepublishOnly",
+    "prebuild": "rm -rf lib",
+    "build": "tsc"
   },
   "keywords": [
     "javascript",

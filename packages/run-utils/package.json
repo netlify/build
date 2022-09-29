@@ -1,16 +1,18 @@
 {
   "name": "@netlify/run-utils",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "description": "Utility for running commands inside Netlify Build",
   "type": "module",
-  "exports": "./src/main.js",
-  "main": "./src/main.js",
+  "exports": "./lib/main.js",
+  "main": "./lib/main.js",
   "files": [
-    "src/**/*.js"
+    "lib/**/*.js"
   ],
   "author": "Netlify Inc.",
   "scripts": {
-    "prepublishOnly": "cd ../../ && npm run prepublishOnly"
+    "prepublishOnly": "cd ../../ && npm run prepublishOnly",
+    "prebuild": "rm -rf lib",
+    "build": "cp -a src lib/"
   },
   "keywords": [
     "nodejs",

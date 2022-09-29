@@ -2,7 +2,7 @@ import process from 'process'
 
 import test from 'ava'
 
-import { list, save } from '../src/main.js'
+import { list, save } from '../lib/main.js'
 
 import { createTmpDir, createTmpFile, removeFiles } from './helpers/main.js'
 

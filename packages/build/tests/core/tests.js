@@ -9,8 +9,8 @@ import { pathExists } from 'path-exists'
 import sinon from 'sinon'
 import { tmpName } from 'tmp-promise'
 
-import { zipItAndShipIt } from '../../src/plugins_core/functions/index.js'
-import { importJsonFile } from '../../src/utils/json.js'
+import { zipItAndShipIt } from '../../lib/plugins_core/functions/index.js'
+import { importJsonFile } from '../../lib/utils/json.js'
 import { runFixtureConfig } from '../helpers/config.js'
 import { removeDir } from '../helpers/dir.js'
 import { runFixture, FIXTURES_DIR } from '../helpers/main.js'
@@ -484,6 +484,34 @@ test.serial('`rustTargetDirectory` is passed to zip-it-and-ship-it only when run
     join(FIXTURES_DIR, fixtureWithoutConfig, '.netlify', 'rust-functions-cache', '[name]'),
   )
   t.is(call4Args[2].config['*'].rustTargetDirectory, undefined)
+})
+
+test.serial('configFileDirectories is passed to zip-it-and-ship-it', async (t) => {
+  const fixture = 'functions_config_json'
+  const runCount = 1
+  const mockZipFunctions = sinon.stub().resolves()
+  const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').get(() => mockZipFunctions)
+
+  await runFixture(t, fixture, { flags: { mode: 'buildbot' }, snapshot: false })
+
+  stub.restore()
+
+  t.is(mockZipFunctions.callCount, runCount)
+
+  const { args: call1Args } = mockZipFunctions.getCall(0)
+
+  t.deepEqual(call1Args[2].configFileDirectories, [join(FIXTURES_DIR, fixture, '.netlify', 'functions-internal')])
+})
+
+test.serial('zip-it-and-ship-it runs without error when loading json config files', async (t) => {
+  const fixture = 'functions_config_json'
+
+  await runFixture(t, fixture, {
+    flags: {
+      mode: 'buildbot',
+      featureFlags: { project_deploy_configuration_api_use_per_function_configuration_files: true },
+    },
+  })
 })
 
 test('Generates a `manifest.json` file when running outside of buildbot', async (t) => {

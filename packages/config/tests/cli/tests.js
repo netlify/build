@@ -1,47 +1,54 @@
 import { promises as fs } from 'fs'
+import { normalize } from 'path'
 import { fileURLToPath } from 'url'
 
+import { Fixture, normalizeOutput } from '@netlify/testing'
 import test from 'ava'
 import del from 'del'
 import isCI from 'is-ci'
 import { tmpName as getTmpName } from 'tmp-promise'
 
-import { runFixture, FIXTURES_DIR } from '../helpers/main.js'
-
 const INVALID_CONFIG_PATH = fileURLToPath(new URL('invalid', import.meta.url))
 
 test('--help', async (t) => {
-  await runFixture(t, '', { flags: { help: true }, useBinary: true })
+  const { output } = await new Fixture().withFlags({ help: true }).runBinary()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('--version', async (t) => {
-  await runFixture(t, '', { flags: { version: true }, useBinary: true })
+  const { output } = await new Fixture().withFlags({ version: true }).runBinary()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Success', async (t) => {
-  await runFixture(t, 'empty', { useBinary: true })
+  const { output } = await new Fixture('./fixtures/empty').runBinary()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('User error', async (t) => {
-  await runFixture(t, 'empty', { flags: { config: INVALID_CONFIG_PATH }, useBinary: true })
+  const { output } = await new Fixture('./fixtures/empty').withFlags({ config: INVALID_CONFIG_PATH }).runBinary()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('CLI flags', async (t) => {
-  await runFixture(t, 'empty', { flags: { branch: 'test' }, useBinary: true })
+  const { output } = await new Fixture('./fixtures/empty').withFlags({ branch: 'test' }).runBinary()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Stabilitize output with the --stable flag', async (t) => {
-  await runFixture(t, 'empty', { flags: { stable: true }, useBinary: true })
+  const { output } = await new Fixture('./fixtures/empty').withFlags({ stable: true }).runBinary()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Does not stabilitize output without the --stable flag', async (t) => {
-  await runFixture(t, 'empty', { flags: { stable: false }, useBinary: true })
+  const { output } = await new Fixture('./fixtures/empty').withFlags({ stable: false }).runBinary()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Write on file with the --output flag', async (t) => {
   const output = await getTmpName({ dir: 'netlify-build-test' })
   try {
-    await runFixture(t, 'empty', { flags: { output }, useBinary: true, snapshot: false })
+    await new Fixture('./fixtures/empty').withFlags({ output }).runBinary()
     const content = await fs.readFile(output)
     const { context } = JSON.parse(content)
     t.is(context, 'production')
@@ -53,28 +60,30 @@ test('Write on file with the --output flag', async (t) => {
 test('Do not write on stdout with the --output flag', async (t) => {
   const output = await getTmpName({ dir: 'netlify-build-test' })
   try {
-    const { returnValue } = await runFixture(t, 'empty', { flags: { output }, useBinary: true, snapshot: false })
-    t.is(returnValue, '')
+    const result = await new Fixture('./fixtures/empty').withFlags({ output }).runBinary()
+    t.is(result.output, '')
   } finally {
     await fs.unlink(output)
   }
 })
 
 test('Write on stdout with the --output=- flag', async (t) => {
-  await runFixture(t, 'empty', { flags: { output: '-' }, useBinary: true })
+  const { output } = await new Fixture('./fixtures/empty').withFlags({ output: '-' }).runBinary()
+  t.snapshot(normalizeOutput(output))
 })
 
 // This test is too slow in local development
 if (isCI) {
   test('Handles big outputs', async (t) => {
-    const bigNetlify = `${FIXTURES_DIR}/big/netlify.toml`
+    const fixturesDir = normalize(`${fileURLToPath(test.meta.file)}/../fixtures`)
+    const bigNetlify = `${fixturesDir}/big/netlify.toml`
     await del(bigNetlify, { force: true })
     try {
       const bigContent = getBigNetlifyContent()
       await fs.writeFile(bigNetlify, bigContent)
-      const { returnValue } = await runFixture(t, 'big', { snapshot: false, useBinary: true })
+      const { output } = await new Fixture('./fixtures/big').withFlags({ output: '-' }).runBinary()
       t.notThrows(() => {
-        JSON.parse(returnValue)
+        JSON.parse(output)
       })
     } finally {
       await del(bigNetlify, { force: true })

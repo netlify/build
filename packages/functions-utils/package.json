@@ -1,16 +1,18 @@
 {
   "name": "@netlify/functions-utils",
-  "version": "4.2.6",
+  "version": "4.2.10",
   "description": "Utility for adding Functions files in Netlify Build",
   "type": "module",
-  "exports": "./src/main.js",
-  "main": "./src/main.js",
+  "exports": "./lib/main.js",
+  "main": "./lib/main.js",
   "files": [
-    "src/**/*.js"
+    "lib/**/*.js"
   ],
   "author": "Netlify Inc.",
   "scripts": {
-    "prepublishOnly": "cd ../../ && npm run prepublishOnly"
+    "prepublishOnly": "cd ../../ && npm run prepublishOnly",
+    "prebuild": "rm -rf lib",
+    "build": "cp -a src lib/"
   },
   "keywords": [
     "nodejs",
@@ -45,7 +47,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@netlify/zip-it-and-ship-it": "^7.0.0",
+    "@netlify/zip-it-and-ship-it": "^7.1.2",
     "cpy": "^8.1.0",
     "path-exists": "^5.0.0"
   },

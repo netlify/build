@@ -5,7 +5,7 @@ import memoizeOne from 'memoize-one'
 export const addLazyProp = function (object, propName, getFunc) {
   const mGetFunc = memoizeOne(getFunc, returnTrue)
   // Mutation is required due to the usage of `Object.defineProperty()`
-  // eslint-disable-next-line fp/no-mutating-methods
+
   Object.defineProperty(object, propName, {
     get: mGetFunc,
     enumerable: true,

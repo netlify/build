@@ -5,7 +5,7 @@ import test from 'ava'
 import { pathExists } from 'path-exists'
 import tmp from 'tmp-promise'
 
-import { importJsonFile } from '../../src/utils/json.js'
+import { importJsonFile } from '../../lib/utils/json.js'
 import { FIXTURES_DIR, runFixture } from '../helpers/main.js'
 
 const assertManifest = async (t, fixtureName) => {
@@ -70,7 +70,9 @@ test.serial('builds Edge Functions from the user-defined directory', async (t) =
 test.serial('builds Edge Functions from the internal directory', async (t) => {
   const fixtureName = 'functions_internal'
 
-  await runFixture(t, 'functions_internal', { flags: { debug: false, mode: 'buildbot' } })
+  await runFixture(t, 'functions_internal', {
+    flags: { debug: false, featureFlags: { edge_functions_produce_eszip: true }, mode: 'buildbot' },
+  })
   await assertManifest(t, fixtureName)
 })
 

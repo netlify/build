@@ -1,16 +1,18 @@
 {
   "name": "@netlify/git-utils",
-  "version": "4.1.1",
+  "version": "4.1.2",
   "description": "Utility for dealing with modified, created, deleted files since a git commit",
   "type": "module",
-  "exports": "./src/main.js",
-  "main": "./src/main.js",
+  "exports": "./lib/main.js",
+  "main": "./lib/main.js",
   "files": [
-    "src/**/*.js"
+    "lib/**/*.js"
   ],
   "author": "Netlify Inc.",
   "scripts": {
-    "prepublishOnly": "cd ../../ && npm run prepublishOnly"
+    "prepublishOnly": "cd ../../ && npm run prepublishOnly",
+    "prebuild": "rm -rf lib",
+    "build": "cp -a src lib/"
   },
   "keywords": [
     "nodejs",

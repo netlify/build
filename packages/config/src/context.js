@@ -94,7 +94,7 @@ export const ensureConfigPriority = function ({ build = {}, ...config }, context
 
   // remove the redirects to not have context specific redirects.
   // The redirects should be only on the root level.
-  // eslint-disable-next-line fp/no-delete, no-param-reassign
+
   delete config.redirects
 
   return {

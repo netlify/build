@@ -25,7 +25,7 @@ export const setInspectColors = function () {
   }
 
   // `inspect.defaultOptions` requires direct mutation
-  // eslint-disable-next-line fp/no-mutation
+
   inspect.defaultOptions.colors = true
 }
 

@@ -1,5 +1,4 @@
 export const onPreBuild = function ({ netlifyConfig }) {
-  // eslint-disable-next-line no-param-reassign
   netlifyConfig.edge_functions = [{ path: '/two', function: 'two' }]
 }
 

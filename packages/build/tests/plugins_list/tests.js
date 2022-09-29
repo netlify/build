@@ -4,7 +4,7 @@ import { pluginsList } from '@netlify/plugins-list'
 import test from 'ava'
 import cpy from 'cpy'
 
-import { getExpectedVersion } from '../../src/plugins/compatibility.js'
+import { getExpectedVersion } from '../../lib/plugins/compatibility.js'
 import { removeDir } from '../helpers/dir.js'
 import { runFixture, FIXTURES_DIR } from '../helpers/main.js'
 import { startServer } from '../helpers/server.js'
@@ -281,7 +281,10 @@ test.serial('Plugins can specify non-matching compatibility.siteDependencies ran
   await removeDir(`${FIXTURES_DIR}/plugins_compat_site_dependencies_range/.netlify`)
   await runWithApiMock(t, 'plugins_compat_site_dependencies_range', {
     testPlugin: {
-      compatibility: [{ version: '0.3.0' }, { version: '0.2.0', siteDependencies: { 'dependency-with-range': '<10' } }],
+      compatibility: [
+        { version: '0.3.0' },
+        { version: '0.2.0', siteDependencies: { '@netlify/dependency-with-range': '<10' } },
+      ],
     },
   })
 })

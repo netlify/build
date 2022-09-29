@@ -9,6 +9,7 @@ coverage
 .cache
 .vscode
 packages/*/package-lock.json
+packages/*/lib/
 **/fixtures/**/test_netlify.toml
 **/fixtures/**/test_headers
 **/fixtures/**/test_redirects
@@ -20,3 +21,5 @@ packages/*/package-lock.json
 !**/fixtures/**/plugins_cache*/.netlify
 !**/fixtures/**/pin_*/.netlify
 !**/fixtures/**/functions_*/.netlify
+!**/fixtures/**/functions_*/.netlify/edge-functions/manifest.json
+lib

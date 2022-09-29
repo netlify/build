@@ -1,7 +1,18 @@
-const { overrides } = require('@netlify/eslint-config-node/.eslintrc_esm.cjs')
-
 module.exports = {
   extends: ['plugin:fp/recommended', '@netlify/eslint-config-node/.eslintrc_esm.cjs'],
+  env: {
+    es2021: true,
+    node: true,
+  },
+  settings: {
+    'import/extensions': ['.js'],
+  },
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+  },
+  plugins: ['import', '@typescript-eslint'],
   rules: {
     strict: 2,
     'max-lines': 'off',
@@ -15,48 +26,20 @@ module.exports = {
       { files: ['tests/**/*.{cjs,mjs,js}', '!tests/{helpers,fixtures}/**/*.{cjs,mjs,js,json}'] },
     ],
 
-    // Avoid state mutation except for some known state variables
-    'fp/no-mutating-methods': [
-      2,
-      {
-        allowedObjects: [
-          'error',
-          'errorA',
-          'req',
-          'request',
-          'res',
-          'response',
-          'state',
-          'runState',
-          'logs',
-          'logsArray',
-          'currentEnv',
-          't',
-        ],
-      },
-    ],
-    'fp/no-mutation': [
-      2,
-      {
-        commonjs: true,
-        exceptions: [
-          { object: 'error' },
-          { object: 'errorA' },
-          { object: 'res' },
-          { object: 'state' },
-          { object: 'runState' },
-          { object: 'logs' },
-          { object: 'logsArray' },
-          { object: 'currentEnv' },
-          { object: 'process', property: 'exitCode' },
-        ],
-      },
-    ],
     // `eslint-plugin-node` seems to have a bug finding `chalk`
-    'n/no-missing-import': [2, { allowModules: ['chalk'] }],
+    // 'n/no-missing-import': [2, { allowModules: ['chalk'] }],
+    'n/no-missing-import': 'off',
+    'import/no-unresolved': 'off',
+    'n/no-unpublished-require': 'off',
+    'n/no-missing-require': 'off',
+    'unicorn/no-process-exit': 'off',
+    'fp/no-mutating-methods': 'off',
+    'no-param-reassign': 'off',
+    'fp/no-mutation': 'off',
+    'fp/no-delete': 'off',
   },
   overrides: [
-    ...overrides,
+    // ...overrides,
     {
       files: ['**/fixtures/**/*.{cjs,mjs,js}'],
       rules: {
@@ -114,6 +97,35 @@ module.exports = {
         'import/no-named-as-default-member': 'off',
         'max-statements': 'off',
         'no-magic-numbers': 'off',
+      },
+    },
+    {
+      files: ['packages/*/tests/**/*.{mjs,js}'],
+      rules: {
+        // @netlify/testing is a private package and therefore hoisted to the root without the need to ad it to devDependencies
+        'import/no-extraneous-dependencies': 'off',
+        'n/no-extraneous-import': 'off',
+        'import/no-unresolved': 'off',
+        'n/no-missing-import': 'off',
+      },
+    },
+    { files: ['**/*.js'], rules: { 'import/extensions': ['error', 'ignorePackages', { ts: 'never' }] } },
+    {
+      files: ['**/*.ts'],
+      rules: {
+        'import/no-absolute-path': ['error'],
+        'import/no-cycle': ['error', { ignoreExternal: true }],
+        'import/no-duplicates': ['error', { considerQueryString: true }],
+        'import/no-self-import': ['error'],
+        'import/no-mutable-exports': ['error'],
+        'import/no-useless-path-segments': ['error'],
+        'n/no-missing-import': 'off',
+        'fp/no-this': 'off',
+        'fp/no-mutation': 'off',
+        'fp/no-class': 'off',
+        'fp/no-mutating-methods': 'off',
+        // this is some weird override as the base rules are doing strange stuff should be: 'import/extensions': ['error', 'ignorePackages'],
+        'import/extensions': ['error', 'ignorePackages', { ts: 'never' }],
       },
     },
   ],
