@@ -26,6 +26,8 @@ const zipFunctionsAndLogResults = async ({
   isRunningLocally,
   logs,
   repositoryRoot,
+  debug,
+  systemLog
 }) => {
   const zisiParameters = getZisiParameters({
     buildDir,
@@ -35,6 +37,8 @@ const zipFunctionsAndLogResults = async ({
     functionsDist,
     isRunningLocally,
     repositoryRoot,
+    debug,
+    systemLog: featureFlags.serverless_functions_system_logger ? systemLog : undefined,
   })
   const bundler = isUsingEsbuild(functionsConfig) ? 'esbuild' : 'zisi'
 
@@ -64,6 +68,8 @@ const coreStep = async function ({
     FUNCTIONS_DIST: relativeFunctionsDist,
   },
   buildDir,
+  debug,
+  systemLog,
   logs,
   netlifyConfig,
   featureFlags,
@@ -114,6 +120,8 @@ const coreStep = async function ({
     isRunningLocally,
     logs,
     repositoryRoot,
+    debug,
+    systemLog
   })
 
   return {
