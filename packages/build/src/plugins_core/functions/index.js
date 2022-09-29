@@ -27,7 +27,7 @@ const zipFunctionsAndLogResults = async ({
   logs,
   repositoryRoot,
   debug,
-  systemLog
+  systemLog,
 }) => {
   const zisiParameters = getZisiParameters({
     buildDir,
@@ -121,7 +121,7 @@ const coreStep = async function ({
     logs,
     repositoryRoot,
     debug,
-    systemLog
+    systemLog,
   })
 
   return {
