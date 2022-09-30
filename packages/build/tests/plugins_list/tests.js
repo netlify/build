@@ -281,7 +281,10 @@ test.serial('Plugins can specify non-matching compatibility.siteDependencies ran
   await removeDir(`${FIXTURES_DIR}/plugins_compat_site_dependencies_range/.netlify`)
   await runWithApiMock(t, 'plugins_compat_site_dependencies_range', {
     testPlugin: {
-      compatibility: [{ version: '0.3.0' }, { version: '0.2.0', siteDependencies: { 'dependency-with-range': '<10' } }],
+      compatibility: [
+        { version: '0.3.0' },
+        { version: '0.2.0', siteDependencies: { '@netlify/dependency-with-range': '<10' } },
+      ],
     },
   })
 })
