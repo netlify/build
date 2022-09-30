@@ -51,7 +51,6 @@ export class Fixture {
     NETLIFY_AUTH_TOKEN: '',
   }
 
-  // TODO: check if needed
   buildEnv: Record<string, string> = {
     BUILD_TELEMETRY_DISABLED: '',
     // Allows executing any locally installed Node modules inside tests,
