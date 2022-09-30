@@ -2,13 +2,12 @@ import { promises as fs } from 'fs'
 import { fileURLToPath } from 'url'
 
 import { pluginsList } from '@netlify/plugins-list'
+import { Fixture, normalizeOutput, startServer } from '@netlify/testing'
 import test from 'ava'
 import cpy from 'cpy'
 
 import { getExpectedVersion } from '../../lib/plugins/compatibility.js'
 import { removeDir } from '../helpers/dir.js'
-import { runFixture } from '../helpers/main.js'
-import { startServer } from '../helpers/server.js'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
@@ -24,12 +23,13 @@ const runWithApiMock = async function (
     status,
   })
   try {
-    await runFixture(t, fixtureName, {
-      flags: {
+    const output = await new Fixture(`./fixtures/${fixtureName}`)
+      .withFlags({
         testOpts: { pluginsListUrl: `${scheme}://${host}`, ...flags.testOpts },
         ...flags,
-      },
-    })
+      })
+      .runWithBuild()
+    await t.snapshot(normalizeOutput(output))
   } finally {
     await stopServer()
   }
@@ -332,25 +332,25 @@ test.serial('Compatibility order take precedence over the `featureFlag` property
 })
 
 const runWithUpdatePluginMock = async function (t, fixture, { flags, status, sendStatus = true, testPlugin } = {}) {
-  const { scheme, host, requests, stopServer } = await startServer([
+  const { scheme, host, stopServer } = await startServer([
     { path: UPDATE_PLUGIN_PATH, status },
     { path: PLUGINS_LIST_URL, response: getPluginsList(testPlugin), status: 200 },
   ])
   try {
-    await runFixture(t, fixture, {
-      flags: {
+    const output = await new Fixture(`./fixtures/${fixture}`)
+      .withFlags({
         siteId: 'test',
         token: 'test',
         sendStatus,
         testOpts: { scheme, host, pluginsListUrl: `${scheme}://${host}` },
         defaultConfig: { plugins: [{ package: TEST_PLUGIN_NAME }] },
         ...flags,
-      },
-    })
+      })
+      .runWithBuild()
+    t.snapshot(normalizeOutput(output))
   } finally {
     await stopServer()
   }
-  t.snapshot(requests)
 }
 
 const UPDATE_PLUGIN_PATH = `/api/v1/sites/test/plugins/${TEST_PLUGIN_NAME}`
@@ -413,27 +413,27 @@ test('Pinning plugin versions takes into account the compatibility field', async
 
 const runWithPluginRunsMock = async function (
   t,
-  fixture,
+  fixtureName,
   { flags, status, sendStatus = true, testPlugin, pluginRuns = DEFAULT_TEST_PLUGIN_RUNS } = {},
 ) {
-  const { scheme, host, requests, stopServer } = await startServer([
+  const { scheme, host, stopServer } = await startServer([
     { path: PLUGIN_RUNS_PATH, response: pluginRuns, status },
     { path: PLUGINS_LIST_URL, response: getPluginsList(testPlugin), status: 200 },
   ])
   try {
-    await runFixture(t, fixture, {
-      flags: {
+    const output = await new Fixture(`./fixtures/${fixtureName}`)
+      .withFlags({
         siteId: 'test',
         token: 'test',
         sendStatus,
         testOpts: { scheme, host, pluginsListUrl: `${scheme}://${host}` },
         ...flags,
-      },
-    })
+      })
+      .runWithBuild()
+    await t.snapshot(normalizeOutput(output))
   } finally {
     await stopServer()
   }
-  t.snapshot(requests)
 }
 
 const PLUGIN_RUNS_PATH = `/api/v1/sites/test/plugin_runs/latest`

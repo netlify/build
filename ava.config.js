@@ -26,6 +26,7 @@ const config = {
   verbose: true,
   timeout: '120s',
   workerThreads: false,
+  ignoredByWatcher: ['packages/*/tests/*/fixtures/**'],
   environmentVariables: {
     FORCE_COLOR: '1',
   },

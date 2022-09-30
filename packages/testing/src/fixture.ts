@@ -1,6 +1,5 @@
 import { existsSync } from 'fs'
 import { createRequire } from 'module'
-import { inspect } from 'node:util'
 import { normalize, delimiter } from 'path'
 import { env } from 'process'
 import { fileURLToPath } from 'url'
@@ -180,6 +179,14 @@ export class Fixture {
   async runWithBuild(): Promise<string> {
     const { default: build } = await import('@netlify/build')
     const { logs } = await build(this.getBuildFlags())
+    return [logs.stdout.join('\n'), logs.stderr.join('\n')].filter(Boolean).join('\n\n')
+  }
+
+  // TODO: provide better typing if we know what's possible
+  async runDev(devCommand: unknown): Promise<string> {
+    const { startDev } = await import('@netlify/build')
+    const entryPoint = startDev.bind(null, devCommand)
+    const { logs } = await entryPoint(this.getBuildFlags())
     return [logs.stdout.join('\n'), logs.stderr.join('\n')].filter(Boolean).join('\n\n')
   }
 

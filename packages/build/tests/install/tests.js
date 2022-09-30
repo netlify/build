@@ -2,22 +2,26 @@
 
 import { fileURLToPath } from 'url'
 
+import { Fixture, normalizeOutput, removeDir } from '@netlify/testing'
 import test from 'ava'
 import { pathExists } from 'path-exists'
+import sinon from 'sinon'
 // import semver from 'semver'
-
-import { removeDir } from '../helpers/dir.js'
-import { runFixture } from '../helpers/main.js'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
 // Run fixture and ensure:
 //  - specific directories exist after run
 //  - specific directories are removed before/after test
-const runInstallFixture = async function (t, fixtureName, dirs, opts) {
+// TODO: once we have a test runner that supports before and after this would be way nicer to read to remove dirs there
+// eslint-disable-next-line max-params
+const runInstallFixture = async (t, fixtureName, dirs = [], flags = {}, binary = false) => {
   await removeDir(dirs)
   try {
-    await runFixture(t, fixtureName, opts)
+    const fixture = new Fixture(`./fixtures/${fixtureName}`).withFlags(flags)
+    const result = binary ? await fixture.runBuildBinary().then(({ output }) => output) : await fixture.runWithBuild()
+
+    t.snapshot(normalizeOutput(result))
     await Promise.all(
       dirs.map(async (dir) => {
         t.true(await pathExists(dir))
@@ -51,45 +55,52 @@ test('Functions: install dependencies with Yarn locally', async (t) => {
     t,
     'functions_yarn',
     [`${FIXTURES_DIR}/functions_yarn/.netlify/functions/`, `${FIXTURES_DIR}/functions_yarn/functions/node_modules/`],
-    { useBinary: true },
+    {},
+    true,
   )
 })
 
 test('Functions: install dependencies with Yarn in CI', async (t) => {
-  await runInstallFixture(t, 'functions_yarn_ci', [`${FIXTURES_DIR}/functions_yarn_ci/functions/node_modules/`], {
-    useBinary: true,
-    flags: { mode: 'buildbot', deployId: 'functions_yarn_ci' },
-  })
+  await runInstallFixture(
+    t,
+    'functions_yarn_ci',
+    [`${FIXTURES_DIR}/functions_yarn_ci/functions/node_modules/`],
+    {
+      mode: 'buildbot',
+      deployId: 'functions_yarn_ci',
+    },
+    true,
+  )
 })
 
 test('Functions: does not install dependencies unless opting in', async (t) => {
-  await runInstallFixture(t, 'optional', [])
+  await runInstallFixture(t, 'optional')
   t.false(await pathExists(`${FIXTURES_DIR}/optional/functions/node_modules/`))
 })
 
 test('Functions: does not install dependencies unless opting in (with esbuild)', async (t) => {
-  await runInstallFixture(t, 'optional-esbuild', [])
+  await runInstallFixture(t, 'optional-esbuild')
   t.false(await pathExists(`${FIXTURES_DIR}/optional-esbuild/functions/node_modules/`))
 })
 
 test('Functions: does not install dependencies unless opting in (with esbuild, many dependencies)', async (t) => {
-  await runInstallFixture(t, 'optional-many-esbuild', [])
+  await runInstallFixture(t, 'optional-many-esbuild')
   t.false(await pathExists(`${FIXTURES_DIR}/optional-many-esbuild/functions/node_modules/`))
 })
 
 test('Functions: does not print warnings when dependency was mispelled', async (t) => {
-  await runInstallFixture(t, 'mispelled_dep', [])
+  await runInstallFixture(t, 'mispelled_dep')
   t.false(await pathExists(`${FIXTURES_DIR}/mispelled_dep/functions/node_modules/`))
 })
 
 test('Functions: does not print warnings when dependency was local', async (t) => {
-  await runInstallFixture(t, 'local_dep', [])
+  await runInstallFixture(t, 'local_dep')
   t.false(await pathExists(`${FIXTURES_DIR}/local_dep/functions/node_modules/`))
 })
 
 // Broken with npm 8.11 til 8.12, enable once newer npm version is standard in gh actions
 test.skip('Functions: install dependencies handles errors', async (t) => {
-  await runInstallFixture(t, 'functions_error', [])
+  await runInstallFixture(t, 'functions_error')
 })
 
 test('Install local plugin dependencies: with npm', async (t) => {
@@ -114,21 +125,28 @@ test('Install local plugin dependencies: with npm', async (t) => {
 
 // Broken with npm 8.11 til 8.12, enable once newer npm version is standard in gh actions
 test.skip('Install local plugin dependencies: propagate errors', async (t) => {
-  await runFixture(t, 'error')
+  const output = await new Fixture('./fixtures/error').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Install local plugin dependencies: already installed', async (t) => {
-  await runFixture(t, 'already')
+  const output = await new Fixture('./fixtures/already').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Install local plugin dependencies: no package.json', async (t) => {
-  await runFixture(t, 'no_package')
+  const output = await new Fixture('./fixtures/no_package').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Install local plugin dependencies: no root package.json', async (t) => {
-  await runFixture(t, 'no_root_package', { copyRoot: {} })
+  const output = await new Fixture('./fixtures/no_root_package')
+    .withCopyRoot()
+    .then((fixture) => fixture.runWithBuild())
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Install local plugin dependencies: missing plugin in netlify.toml', async (t) => {
-  await runFixture(t, 'local_missing')
+  const output = await new Fixture('./fixtures/local_missing').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })

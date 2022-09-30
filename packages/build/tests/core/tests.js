@@ -3,7 +3,7 @@ import { join } from 'path'
 import { arch, kill, platform } from 'process'
 import { fileURLToPath } from 'url'
 
-import { Fixture, normalizeOutput } from '@netlify/testing'
+import { Fixture, normalizeOutput, startServer, removeDir } from '@netlify/testing'
 import test from 'ava'
 import getNode from 'get-node'
 import moize from 'moize'
@@ -11,10 +11,10 @@ import { pathExists } from 'path-exists'
 import sinon from 'sinon'
 import { tmpName } from 'tmp-promise'
 
-import { zipItAndShipIt } from '../../lib/plugins_core/functions/index.js'
+// TODO: this need to be done otherwise sinon cannot stub the @netlify/build package due to npm workspace symlinks
+// maybe we can change this if we have a better stubbing library with esm support.
+import { zipItAndShipIt } from '../../../testing/node_modules/@netlify/build/lib/plugins_core/functions/index.js'
 import { importJsonFile } from '../../lib/utils/json.js'
-import { removeDir } from '../helpers/dir.js'
-import { runFixture } from '../helpers/main.js'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
@@ -201,7 +201,7 @@ test('--branch', async (t) => {
 })
 
 test('--baseRelDir', async (t) => {
-  const output = await new Fixture('./fixtures/basereldir').withFlags({ baseRelDir: false }).runWithBuild()
+  const output = await new Fixture('./fixtures/basereldir').withFlags({ baseRelDir: false }).runWithConfig()
   t.snapshot(normalizeOutput(output))
 })
 
@@ -289,13 +289,23 @@ test('featureFlags can be not used', async (t) => {
   t.snapshot(normalizeOutput(output))
 })
 
-test('--apiHost is used to set Netlify API host', async (t) => {
-  const { output, requests } = await new Fixture('./fixtures/cancel')
-    .withFlags({ token: 'test', deployId: 'test' })
-    .runBuildServer({ path: '/api/v1/deploys/test/cancel' })
+const runWithApiMock = async function (t, flags = {}) {
+  const { scheme, host, requests, stopServer } = await startServer({ path: '/api/v1/deploys/test/cancel' })
+  try {
+    const output = await new Fixture('./fixtures/cancel')
+      .withFlags({ apiHost: host, testOpts: { scheme }, ...flags })
+      .runWithBuild()
+    t.snapshot(normalizeOutput(output))
+  } finally {
+    await stopServer()
+  }
+  return requests
+}
 
+test('--apiHost is used to set Netlify API host', async (t) => {
+  const requests = await runWithApiMock(t, { token: 'test', deployId: 'test' })
   t.is(requests.length, 1)
-  t.snapshot(normalizeOutput(output))
+  t.snapshot(requests)
 })
 
 test('Print warning when redirects file is missing from publish directory', async (t) => {
@@ -332,10 +342,9 @@ test.serial('Successfully builds ES module function with feature flag', async (t
   const mockZipFunctions = sinon.stub().resolves()
   const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').get(() => mockZipFunctions)
 
-  await runFixture(t, 'functions_es_modules', {
-    flags: { featureFlags: { buildbot_es_modules_esbuild: true } },
-  })
-  const output = await new Fixture('./fixtures/empty').runWithBuild()
+  const output = await new Fixture('./fixtures/functions_es_modules')
+    .withFlags({ featureFlags: { buildbot_es_modules_esbuild: true } })
+    .runWithBuild()
   t.snapshot(normalizeOutput(output))
 
   stub.restore()
@@ -349,10 +358,9 @@ test.serial(`Doesn't fail build for ES module function if feature flag is off`, 
   const mockZipFunctions = sinon.stub().resolves()
   const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').get(() => mockZipFunctions)
 
-  await runFixture(t, 'functions_es_modules', {
-    flags: { featureFlags: { buildbot_es_modules_esbuild: false } },
-  })
-  const output = await new Fixture('./fixtures/empty').runWithBuild()
+  const output = await new Fixture('./fixtures/functions_es_modules')
+    .withFlags({ featureFlags: { buildbot_es_modules_esbuild: false } })
+    .runWithBuild()
   t.snapshot(normalizeOutput(output))
 
   stub.restore()
@@ -364,17 +372,13 @@ test.serial(`Doesn't fail build for ES module function if feature flag is off`, 
 test.serial('Passes the right properties to zip-it-and-ship-it', async (t) => {
   const mockZipFunctions = sinon.stub().resolves()
   const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').get(() => mockZipFunctions)
-  const fixtureName = 'core'
-  const fixtureDir = join(FIXTURES_DIR, fixtureName)
+  const fixtureDir = join(FIXTURES_DIR, 'core')
 
-  await runFixture(t, fixtureName, { snapshot: false })
-  await runFixture(t, fixtureName, {
-    env: { AWS_LAMBDA_JS_RUNTIME: 'nodejs00.x' },
-    flags: { mode: 'buildbot' },
-    snapshot: false,
-  })
-  const output = await new Fixture('./fixtures/empty').runWithBuild()
-  t.snapshot(normalizeOutput(output))
+  await new Fixture('./fixtures/core').runWithBuild()
+  await new Fixture('./fixtures/core')
+    .withFlags({ mode: 'buildbot' })
+    .withEnv({ AWS_LAMBDA_JS_RUNTIME: 'nodejs00.x' })
+    .runWithBuild()
 
   stub.restore()
 
@@ -400,21 +404,14 @@ test.serial('Passes the right feature flags to zip-it-and-ship-it', async (t) =>
   const mockZipFunctions = sinon.stub().resolves()
   const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').get(() => mockZipFunctions)
 
-  await runFixture(t, 'schedule', { snapshot: false })
-  await runFixture(t, 'schedule', {
-    flags: { featureFlags: { buildbot_zisi_trace_nft: true } },
-    snapshot: false,
-  })
-  await runFixture(t, 'schedule', {
-    flags: { featureFlags: { buildbot_zisi_esbuild_parser: true } },
-    snapshot: false,
-  })
-  await runFixture(t, 'schedule', {
-    flags: { featureFlags: { this_is_a_mock_flag: true, and_another_one: true } },
-    snapshot: false,
-  })
-  const output = await new Fixture('./fixtures/empty').runWithBuild()
-  t.snapshot(normalizeOutput(output))
+  await new Fixture('./fixtures/schedule').runWithBuild()
+  await new Fixture('./fixtures/schedule').withFlags({ featureFlags: { buildbot_zisi_trace_nft: true } }).runWithBuild()
+  await new Fixture('./fixtures/schedule')
+    .withFlags({ featureFlags: { buildbot_zisi_esbuild_parser: true } })
+    .runWithBuild()
+  await new Fixture('./fixtures/schedule')
+    .withFlags({ featureFlags: { this_is_a_mock_flag: true, and_another_one: true } })
+    .runWithBuild()
 
   stub.restore()
 
@@ -493,19 +490,15 @@ test('Bundles functions from the `.netlify/functions-internal` directory even if
 })
 
 test.serial('`rustTargetDirectory` is passed to zip-it-and-ship-it only when running in buildbot', async (t) => {
-  const fixtureWithConfig = 'functions_config_1'
-  const fixtureWithoutConfig = 'functions_internal_missing'
   const runCount = 4
   const mockZipFunctions = sinon.stub().resolves()
   const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').get(() => mockZipFunctions)
 
-  await runFixture(t, fixtureWithConfig, { flags: { mode: 'buildbot' }, snapshot: false })
-  await runFixture(t, fixtureWithConfig, { snapshot: false })
-  await runFixture(t, fixtureWithoutConfig, { flags: { mode: 'buildbot' }, snapshot: false })
-  await runFixture(t, fixtureWithoutConfig, { snapshot: false })
+  await new Fixture('./fixtures/functions_config_1').withFlags({ mode: 'buildbot' }).runWithBuild()
+  await new Fixture('./fixtures/functions_config_1').runWithBuild()
+  await new Fixture('./fixtures/functions_internal_missing').withFlags({ mode: 'buildbot' }).runWithBuild()
+  await new Fixture('./fixtures/functions_internal_missing').runWithBuild()
 
-  const output = await new Fixture('./fixtures/empty').runWithBuild()
-  t.snapshot(normalizeOutput(output))
   stub.restore()
 
   t.is(mockZipFunctions.callCount, runCount)
@@ -517,33 +510,31 @@ test.serial('`rustTargetDirectory` is passed to zip-it-and-ship-it only when run
 
   t.is(
     call1Args[2].config['*'].rustTargetDirectory,
-    join(FIXTURES_DIR, fixtureWithConfig, '.netlify', 'rust-functions-cache', '[name]'),
+    join(FIXTURES_DIR, 'functions_config_1', '.netlify', 'rust-functions-cache', '[name]'),
   )
   t.is(call2Args[2].config['*'].rustTargetDirectory, undefined)
   t.is(
     call3Args[2].config['*'].rustTargetDirectory,
-    join(FIXTURES_DIR, fixtureWithoutConfig, '.netlify', 'rust-functions-cache', '[name]'),
+    join(FIXTURES_DIR, 'functions_internal_missing', '.netlify', 'rust-functions-cache', '[name]'),
   )
   t.is(call4Args[2].config['*'].rustTargetDirectory, undefined)
 })
 
 test.serial('configFileDirectories is passed to zip-it-and-ship-it', async (t) => {
-  const fixture = 'functions_config_json'
   const runCount = 1
   const mockZipFunctions = sinon.stub().resolves()
   const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').get(() => mockZipFunctions)
 
-  await runFixture(t, fixture, { flags: { mode: 'buildbot' }, snapshot: false })
-
-  const output = await new Fixture('./fixtures/empty').runWithBuild()
-  t.snapshot(normalizeOutput(output))
+  await new Fixture('./fixtures/functions_config_json').withFlags({ mode: 'buildbot' }).runWithBuild()
   stub.restore()
 
   t.is(mockZipFunctions.callCount, runCount)
 
   const { args: call1Args } = mockZipFunctions.getCall(0)
 
-  t.deepEqual(call1Args[2].configFileDirectories, [join(FIXTURES_DIR, fixture, '.netlify', 'functions-internal')])
+  t.deepEqual(call1Args[2].configFileDirectories, [
+    join(FIXTURES_DIR, 'functions_config_json/.netlify/functions-internal'),
+  ])
 })
 
 test.serial('zip-it-and-ship-it runs without error when loading json config files', async (t) => {
