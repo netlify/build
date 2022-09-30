@@ -1,5 +1,5 @@
 import { serializeObject } from '../../log/serialize.js'
-import { getErrorInfo } from '../info.js'
+import { getErrorInfo, getExtraErrorInfo } from '../info.js'
 import { getTypeInfo } from '../type.js'
 
 import { getLocationInfo } from './location.js'
@@ -23,6 +23,7 @@ export const getFullErrorInfo = function ({ error, colors, debug }) {
     locationType,
     showErrorProps,
     rawStack,
+    extraInfo,
   } = basicErrorInfo
 
   const titleA = getTitle(title, errorInfo)
@@ -42,6 +43,7 @@ export const getFullErrorInfo = function ({ error, colors, debug }) {
     pluginInfo,
     locationInfo,
     errorProps: errorPropsA,
+    extraInfo,
   }
 }
 
@@ -58,6 +60,7 @@ const getTsConfigInfo = function (tsConfig) {
 export const parseErrorInfo = function (error) {
   const { message, stack, ...errorProps } = normalizeError(error)
   const [errorInfo, errorPropsA] = getErrorInfo(errorProps)
+  const extraInfo = getExtraErrorInfo(errorInfo)
   const {
     type,
     severity,
@@ -83,6 +86,7 @@ export const parseErrorInfo = function (error) {
     showInBuildLog,
     showErrorProps,
     rawStack,
+    extraInfo,
   }
   return basicErrorInfo
 }

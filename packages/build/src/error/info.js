@@ -37,6 +37,11 @@ export const isBuildError = function (error) {
   return canHaveErrorInfo(error) && error[CUSTOM_ERROR_KEY] !== undefined
 }
 
+export const getExtraErrorInfo = function ({ extraInfo }) {
+  const info = extraInfo === undefined ? {} : extraInfo
+  return info
+}
+
 // Exceptions that are not objects (including `Error` instances) cannot have an
 // `CUSTOM_ERROR_KEY` property
 const canHaveErrorInfo = function (error) {
