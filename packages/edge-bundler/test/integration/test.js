@@ -1,5 +1,6 @@
 import assert from 'assert'
 import childProcess from 'child_process'
+import { promises as fs } from 'fs'
 import { createRequire } from 'module'
 import { join, resolve } from 'path'
 import process from 'process'
@@ -17,17 +18,20 @@ const functionsDir = resolve(fileURLToPath(import.meta.url), '..', 'functions')
 const pathsToCleanup = new Set()
 
 const installPackage = async () => {
-  console.log(`Getting package version from 'npm info'...`)
+  console.log(`Getting package version...`)
 
-  const { stdout: infoOutput } = await exec('npm info --json')
-  const { version } = JSON.parse(infoOutput)
+  const { name, version } = require('../../package.json')
+
+  console.log(`Running integration tests for ${name} v${version}...`)
+
   const { path } = await tmp.dir()
 
   console.log(`Creating tarball with 'npm pack'...`)
 
   await exec('npm pack --json')
 
-  const filename = join(process.cwd(), `netlify-edge-bundler-${version}.tgz`)
+  const normalizedName = name.replace(/@/, '').replace(/\W/g, '-')
+  const filename = join(process.cwd(), `${normalizedName}-${version}.tgz`)
 
   console.log(`Uncompressing the tarball at '${filename}'...`)
 
