@@ -1,5 +1,6 @@
 const defaultFlags: Record<string, boolean> = {
   edge_functions_cache_deno_dir: false,
+  edge_functions_config_export: false,
   edge_functions_produce_eszip: false,
 }
 

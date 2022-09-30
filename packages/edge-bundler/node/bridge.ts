@@ -36,6 +36,7 @@ interface RunOptions {
   pipeOutput?: boolean
   env?: NodeJS.ProcessEnv
   extendEnv?: boolean
+  rejectOnExitCode?: boolean
 }
 
 class DenoBridge {
@@ -214,10 +215,10 @@ class DenoBridge {
 
   // Runs the Deno CLI in the background and returns a reference to the child
   // process, awaiting its execution.
-  async run(args: string[], { pipeOutput, env: inputEnv, extendEnv = true }: RunOptions = {}) {
+  async run(args: string[], { pipeOutput, env: inputEnv, extendEnv = true, rejectOnExitCode = true }: RunOptions = {}) {
     const { path: binaryPath } = await this.getBinaryPath()
     const env = this.getEnvironmentVariables(inputEnv)
-    const options: Options = { env, extendEnv }
+    const options: Options = { env, extendEnv, reject: rejectOnExitCode }
 
     return DenoBridge.runWithBinary(binaryPath, args, options, pipeOutput)
   }

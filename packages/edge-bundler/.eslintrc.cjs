@@ -13,6 +13,7 @@ module.exports = {
     'max-lines': 'off',
     'max-statements': 'off',
     'node/no-missing-import': 'off',
+    'unicorn/prefer-json-parse-buffer': 'off',
   },
   overrides: [
     ...overrides,

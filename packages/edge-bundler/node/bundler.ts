@@ -6,7 +6,8 @@ import { v4 as uuidv4 } from 'uuid'
 
 import { DenoBridge, DenoOptions, OnAfterDownloadHook, OnBeforeDownloadHook } from './bridge.js'
 import type { Bundle } from './bundle.js'
-import type { Declaration } from './declaration.js'
+import { FunctionConfig, getFunctionConfig } from './config.js'
+import { Declaration, getDeclarationsFromConfig } from './declaration.js'
 import { EdgeFunction } from './edge_function.js'
 import { FeatureFlags, getFlags } from './feature_flags.js'
 import { findFunctions } from './finder.js'
@@ -40,7 +41,7 @@ interface BundleFormatOptions {
   basePath: string
 }
 
-const createBundleOps = ({
+const createBundle = ({
   basePath,
   buildID,
   debug,
@@ -50,40 +51,32 @@ const createBundleOps = ({
   importMap,
   featureFlags,
 }: BundleFormatOptions) => {
-  const bundleOps = []
-
   if (featureFlags.edge_functions_produce_eszip) {
-    bundleOps.push(
-      bundleESZIP({
-        basePath,
-        buildID,
-        debug,
-        deno,
-        distDirectory,
-        functions,
-        importMap,
-      }),
-    )
-  } else {
-    bundleOps.push(
-      bundleJS({
-        buildID,
-        debug,
-        deno,
-        distDirectory,
-        functions,
-        importMap,
-      }),
-    )
+    return bundleESZIP({
+      basePath,
+      buildID,
+      debug,
+      deno,
+      distDirectory,
+      functions,
+      importMap,
+    })
   }
 
-  return bundleOps
+  return bundleJS({
+    buildID,
+    debug,
+    deno,
+    distDirectory,
+    functions,
+    importMap,
+  })
 }
 
 const bundle = async (
   sourceDirectories: string[],
   distDirectory: string,
-  declarations: Declaration[] = [],
+  tomlDeclarations: Declaration[] = [],
   {
     basePath: inputBasePath,
     cacheDirectory,
@@ -124,8 +117,7 @@ const bundle = async (
   // if any.
   const importMap = new ImportMap(importMaps)
   const functions = await findFunctions(sourceDirectories)
-
-  const bundleOps = createBundleOps({
+  const functionBundle = await createBundle({
     basePath,
     buildID,
     debug,
@@ -136,15 +128,34 @@ const bundle = async (
     featureFlags,
   })
 
-  const bundles = await Promise.all(bundleOps)
-
   // The final file name of the bundles contains a SHA256 hash of the contents,
   // which we can only compute now that the files have been generated. So let's
   // rename the bundles to their permanent names.
-  await createFinalBundles(bundles, distDirectory, buildID)
+  await createFinalBundles([functionBundle], distDirectory, buildID)
+
+  // Retrieving a configuration object for each function.
+  const functionsConfig = await Promise.all(
+    functions.map((func) => {
+      if (!featureFlags.edge_functions_config_export) {
+        return {}
+      }
+
+      return getFunctionConfig(func, deno, logger)
+    }),
+  )
+
+  // Creating a hash of function names to configuration objects.
+  const functionsWithConfig = functions.reduce(
+    (acc, func, index) => ({ ...acc, [func.name]: functionsConfig[index] }),
+    {} as Record<string, FunctionConfig>,
+  )
+
+  // Creating a final declarations array by combining the TOML entries with the
+  // function configuration objects.
+  const declarations = getDeclarationsFromConfig(tomlDeclarations, functionsWithConfig)
 
   const manifest = await writeManifest({
-    bundles,
+    bundles: [functionBundle],
     declarations,
     distDirectory,
     functions,

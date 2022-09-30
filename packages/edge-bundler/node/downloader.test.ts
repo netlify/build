@@ -7,14 +7,10 @@ import nock from 'nock'
 import tmp from 'tmp-promise'
 import { beforeEach, afterEach, test, expect, TestContext as VitestTestContext } from 'vitest'
 
-import { fixturesDir } from '../test/util.js'
+import { fixturesDir, testLogger } from '../test/util.js'
 
 import { download } from './downloader.js'
-import { getLogger } from './logger.js'
 import { getPlatformTarget } from './platform.js'
-
-// eslint-disable-next-line @typescript-eslint/no-empty-function
-const testLogger = getLogger(() => {})
 
 const streamError = () => {
   const stream = new PassThrough()

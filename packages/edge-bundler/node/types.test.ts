@@ -6,13 +6,10 @@ import { stub } from 'sinon'
 import tmp from 'tmp-promise'
 import { test, expect } from 'vitest'
 
-import { DenoBridge } from './bridge.js'
-import { getLogger } from './logger.js'
-import { ensureLatestTypes } from './types.js'
+import { testLogger } from '../test/util.js'
 
-const testLogger = getLogger(() => {
-  // no-op
-})
+import { DenoBridge } from './bridge.js'
+import { ensureLatestTypes } from './types.js'
 
 test('`ensureLatestTypes` updates the Deno CLI cache if the local version of types is outdated', async () => {
   const mockURL = 'https://edge.netlify'
