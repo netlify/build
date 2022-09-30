@@ -25,7 +25,7 @@ const sortTestFiles = (file1, file2) => getOrder(file1) - getOrder(file2)
 const config = {
   files: ['packages/**/tests/*.{cjs,mjs,js}', 'packages/**/tests/**/tests.{cjs,mjs,js}'],
   verbose: true,
-  timeout: '120s',
+  timeout: '240s',
   workerThreads: false,
   environmentVariables: {
     FORCE_COLOR: '1',
