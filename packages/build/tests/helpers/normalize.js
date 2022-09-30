@@ -40,7 +40,7 @@ const NORMALIZE_REGEXPS = [
   [/EPERM: operation not permitted, rename .*\n/g, ''],
   // File paths
   [/Caching [.~]\//g, 'Caching '],
-  [/(packages\/.*\/fixtures\/.*\.(?:js|ts))(:(\d)+:(\d)+:)/g, '$1'],
+  [/(tests\/.*\/fixtures\/.*\.(?:js|ts))(:(\d)+:(\d)+:)/g, '$1'],
   // Normalizes any paths so that they're relative to process.cwd().
   [
     /(^|[ "'(=])((?:\.{0,2}|([A-Z]:)|file:\/\/)(\/[^ "')\n]+))/gm,
