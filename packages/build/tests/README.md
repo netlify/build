@@ -71,6 +71,8 @@ test('test title', async (t) => {
 
 This calls under the hood:
 
+<!-- eslint-disable-next-line import/default -->
+
 ```js
 import netlifyBuild from '@netlify/build'
 
