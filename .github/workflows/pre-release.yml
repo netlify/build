@@ -38,8 +38,6 @@ jobs:
         run: git config --global user.name github-actions
       - name: Setup git email
         run: git config --global user.email github-actions@github.com
-      - name: Build workspaces
-        run: npx lerna run build
       - name: Create fake .git in package subdirectory
         # See https://github.com/npm/cli/issues/2010,https://github.com/npm/npm/issues/9111
         run: mkdir packages/${{ steps.extract.outputs.package }}/.git
@@ -58,6 +56,8 @@ jobs:
         run: git push --follow-tags
       - name: Install dependencies
         run: npm install
+      - name: Build workspaces
+        run: npx lerna run build
       - run: npm publish packages/${{ steps.extract.outputs.package }}/ --tag=${{ steps.extract.outputs.tag }}
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}

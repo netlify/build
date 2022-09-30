@@ -21,7 +21,7 @@ test('Should expose several methods', (t) => {
 })
 
 test('Can run a command as a single string', async (t) => {
-  const { stdout } = await runCommand('ava --version', { stdio: 'pipe' })
+  const { stdout } = await runCommand('npx --version', { stdio: 'pipe' })
   t.truthy(semver.valid(stdout))
 })
 
@@ -39,12 +39,13 @@ if (platform !== 'win32') {
 }
 
 test('Can run local binaries', async (t) => {
-  const { stdout } = await run('ava', ['--version'], { stdio: 'pipe' })
+  const { stdout } = await run('npx', ['--version'], { stdio: 'pipe' })
+
   t.truthy(semver.valid(stdout))
 })
 
 test('Should redirect stdout/stderr to parent', async (t) => {
-  const { stdout } = await runInChildProcess('ava --version')
+  const { stdout } = await runInChildProcess('npx --version')
   t.truthy(semver.valid(stdout))
 })
 
