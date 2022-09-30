@@ -18,7 +18,7 @@
     "format:check-fix:tsd": "run-e format:check:tsd format:fix:tsd",
     "format:check:tsd": "tsd packages/build",
     "test:dev": "npx lerna run test",
-    "test:ci": "c8 -r lcovonly -r text -r json npx lerna run test",
+    "test:ci": "npx lerna run test:ci",
     "prepare": "husky install node_modules/@netlify/eslint-config-node/.husky/",
     "prepublishOnly": "run-s prepublishOnly:*",
     "prepublishOnly:checkout": "run-local \"git checkout main\"",

@@ -14,6 +14,7 @@
     "prebuild": "rm -rf lib",
     "build": "cp -a src lib/",
     "test": "ava",
+    "test:ci": "c8 -r lcovonly -r text -r json ava",
     "test:measure": "node tools/tests_duration.mjs"
   },
   "keywords": [
