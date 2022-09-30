@@ -111,19 +111,35 @@ export class Fixture {
     }
   }
 
-  /** Adds environment variables that are used for the execution  */
+  /**
+   * environment variables passed to child processes.
+   * To set environment variables in the parent process
+   */
   withEnv(environment: Record<string, string> = {}): this {
     this.env = { ...this.env, ...environment }
     return this
   }
 
-  /** Adds flags that are used for the execution  */
+  /** any flags/options passed to the main command  */
   withFlags(flags: Record<string, unknown> = {}): this {
     this.additionalFlags = merge({}, this.additionalFlags, flags)
     return this
   }
 
-  async withCopyRoot(copyRoot: object & { cwd?: boolean; git?: boolean; branch?: string } = {}): Promise<this> {
+  /**
+   * copy the fixture directory to a temporary directory.
+   * This is useful when no parent directory should have a `.git` or `package.json`.
+   */
+  async withCopyRoot(
+    // eslint-disable-next-line unicorn/no-object-as-default-parameter
+    copyRoot: {
+      cwd?: boolean
+      /** whether the copied directory should have a `.git`. Default: `true` */
+      git?: boolean
+      /** create a git branch after copy */
+      branch?: string
+    } = { git: true },
+  ): Promise<this> {
     this.copyRootDir = normalize(createRepoDir(copyRoot.git))
     await cpy('**', this.copyRootDir, { cwd: this.repositoryRoot, parents: true })
 
@@ -190,10 +206,12 @@ export class Fixture {
     return [logs.stdout.join('\n'), logs.stderr.join('\n')].filter(Boolean).join('\n\n')
   }
 
+  /** use the CLI entry point instead of the Node.js main function */
   runConfigBinary(cwd?: string) {
     return this.runBinary(this.configBinaryPath, cwd, this.getConfigFlags())
   }
 
+  /** use the CLI entry point instead of the Node.js main function */
   runBuildBinary(cwd?: string) {
     return this.runBinary(this.buildBinaryPath, cwd, this.getBuildFlags())
   }

@@ -66,7 +66,7 @@ const getAllTimerRequests = async function (t, fixtureName, flags = {}) {
   const port = '1234'
   const scope = intercept(`${host}:${port}`, { persist: true, allowUnknown: true })
 
-  // Since we're overriding globals via `nock-udp` our `runFixture` needs to run programmatically. `useBinary` here
+  // Since we're overriding globals via `nock-udp` our `Fixture` needs to run programmatically. `runBuildBinary` here
   // won't work
   await new Fixture(fixtureName).withFlags({ statsd: { host, port }, ...flags }).runWithBuild()
 

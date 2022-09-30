@@ -2,12 +2,11 @@ import { promises as fs } from 'fs'
 import { fileURLToPath } from 'url'
 
 import { pluginsList } from '@netlify/plugins-list'
-import { Fixture, normalizeOutput, startServer } from '@netlify/testing'
+import { Fixture, normalizeOutput, startServer, removeDir } from '@netlify/testing'
 import test from 'ava'
 import cpy from 'cpy'
 
 import { getExpectedVersion } from '../../lib/plugins/compatibility.js'
-import { removeDir } from '../helpers/dir.js'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 

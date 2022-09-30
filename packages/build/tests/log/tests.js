@@ -39,11 +39,11 @@ test('No TTY', async (t) => {
 // if (!isCI) {
 //   test('Print a warning when using an old version through Netlify CLI', async (t) => {
 //     // We need to unset some environment variables which would otherwise disable `update-notifier`
-//     await runFixture(t, 'error', {
-//       flags: { mode: 'cli', testOpts: { oldCliLogs: true } },
-//       env: { NODE_ENV: '' },
-//       useBinary: true,
-//     })
+//     const { output } = await new Fixture('./fixtures/error')
+//       .withFlags({ mode: 'cli', testOpts: { oldCliLogs: true } })
+//       .withEnv({ NODE_ENV: '' })
+//       .runBuildBinary()
+//     t.snapshot(normalizeOutput(output))
 //   })
 // }
 

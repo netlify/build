@@ -2,12 +2,10 @@ import { promises as fs } from 'fs'
 import { platform } from 'process'
 import { fileURLToPath } from 'url'
 
+import { Fixture, normalizeOutput, startTcpServer } from '@netlify/testing'
 import test from 'ava'
 import del from 'del'
 import { pathExists } from 'path-exists'
-
-import { runFixture } from '../helpers/main.js'
-import { startTcpServer } from '../helpers/tcp_server.js'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
@@ -26,15 +24,16 @@ test('--saveConfig deletes headers file if headers were changed', async (t) => {
   const { address, stopServer } = await startDeployServer()
   try {
     try {
-      await runFixture(t, 'save_headers', {
-        flags: {
+      const output = await new Fixture('./fixtures/save_headers')
+        .withFlags({
           buildbotServerSocket: address,
           config: configPath,
           saveConfig: true,
           context: 'production',
           branch: 'main',
-        },
-      })
+        })
+        .runWithBuild()
+      t.snapshot(normalizeOutput(output))
     } finally {
       await stopServer()
     }
@@ -53,15 +52,16 @@ test('--saveConfig deletes headers file if any configuration property was change
   const { address, stopServer } = await startDeployServer()
   try {
     try {
-      await runFixture(t, 'delete_headers', {
-        flags: {
+      const output = await new Fixture('./fixtures/delete_headers')
+        .withFlags({
           buildbotServerSocket: address,
           config: configPath,
           saveConfig: true,
           context: 'production',
           branch: 'main',
-        },
-      })
+        })
+        .runWithBuild()
+      t.snapshot(normalizeOutput(output))
     } finally {
       await stopServer()
     }
@@ -79,16 +79,16 @@ test('Erroneous headers created by a build command are handled', async (t) => {
   const { address, stopServer } = await startDeployServer()
   try {
     try {
-      await runFixture(t, 'headers_command_error', {
-        flags: {
+      const { output } = await new Fixture('./fixtures/headers_command_error')
+        .withFlags({
           buildbotServerSocket: address,
           config: configPath,
           saveConfig: true,
           context: 'production',
           branch: 'main',
-        },
-        useBinary: true,
-      })
+        })
+        .runBuildBinary()
+      t.snapshot(normalizeOutput(output))
     } finally {
       await stopServer()
     }
@@ -106,16 +106,16 @@ test('Erroneous headers created by a plugin are handled', async (t) => {
   const { address, stopServer } = await startDeployServer()
   try {
     try {
-      await runFixture(t, 'headers_plugin_error', {
-        flags: {
+      const { output } = await new Fixture('./fixtures/headers_plugin_error')
+        .withFlags({
           buildbotServerSocket: address,
           config: configPath,
           saveConfig: true,
           context: 'production',
           branch: 'main',
-        },
-        useBinary: true,
-      })
+        })
+        .runBuildBinary()
+      t.snapshot(normalizeOutput(output))
     } finally {
       await stopServer()
     }
@@ -134,15 +134,16 @@ test('--saveConfig deletes redirects file if redirects were changed', async (t) 
   const { address, stopServer } = await startDeployServer()
   try {
     try {
-      await runFixture(t, 'save_redirects', {
-        flags: {
+      const output = await new Fixture('./fixtures/save_redirects')
+        .withFlags({
           buildbotServerSocket: address,
           config: configPath,
           saveConfig: true,
           context: 'production',
           branch: 'main',
-        },
-      })
+        })
+        .runWithBuild()
+      t.snapshot(normalizeOutput(output))
     } finally {
       await stopServer()
     }
@@ -161,15 +162,16 @@ test('--saveConfig deletes redirects file if any configuration property was chan
   const { address, stopServer } = await startDeployServer()
   try {
     try {
-      await runFixture(t, 'delete_redirects', {
-        flags: {
+      const output = await new Fixture('./fixtures/delete_redirects')
+        .withFlags({
           buildbotServerSocket: address,
           config: configPath,
           saveConfig: true,
           context: 'production',
           branch: 'main',
-        },
-      })
+        })
+        .runWithBuild()
+      t.snapshot(normalizeOutput(output))
     } finally {
       await stopServer()
     }
@@ -185,15 +187,16 @@ test('--saveConfig saves the configuration changes as netlify.toml', async (t) =
   await fs.copyFile(fixtureConfigPath, configPath)
   const { address, stopServer } = await startDeployServer()
   try {
-    await runFixture(t, 'save_changes', {
-      flags: {
+    const output = await new Fixture('./fixtures/save_changes')
+      .withFlags({
         buildbotServerSocket: address,
         config: configPath,
         saveConfig: true,
         context: 'production',
         branch: 'main',
-      },
-    })
+      })
+      .runWithBuild()
+    t.snapshot(normalizeOutput(output))
   } finally {
     await stopServer()
   }
@@ -211,16 +214,15 @@ test('--saveConfig does not truncate high amount of redirects', async (t) => {
     },
   })
   try {
-    await runFixture(t, 'many_redirects', {
-      flags: {
+    await new Fixture('./fixtures/many_redirects')
+      .withFlags({
         buildbotServerSocket: address,
         config: configPath,
         saveConfig: true,
         context: 'production',
         branch: 'main',
-      },
-      snapshot: false,
-    })
+      })
+      .runWithBuild()
   } finally {
     await stopServer()
   }
@@ -238,16 +240,15 @@ test('--saveConfig does not truncate high amount of headers', async (t) => {
     },
   })
   try {
-    await runFixture(t, 'many_headers', {
-      flags: {
+    await new Fixture('./fixtures/many_headers')
+      .withFlags({
         buildbotServerSocket: address,
         config: configPath,
         saveConfig: true,
         context: 'production',
         branch: 'main',
-      },
-      snapshot: false,
-    })
+      })
+      .runWithBuild()
   } finally {
     await stopServer()
   }
@@ -260,9 +261,10 @@ test('--saveConfig is required to save the configuration changes as netlify.toml
   await fs.copyFile(fixtureConfigPath, configPath)
   const { address, stopServer } = await startDeployServer()
   try {
-    await runFixture(t, 'save_none', {
-      flags: { buildbotServerSocket: address, config: configPath, context: 'production', branch: 'main' },
-    })
+    const output = await new Fixture('./fixtures/save_none')
+      .withFlags({ buildbotServerSocket: address, config: configPath, context: 'production', branch: 'main' })
+      .runWithBuild()
+    t.snapshot(normalizeOutput(output))
   } finally {
     await stopServer()
   }
@@ -274,15 +276,16 @@ test('--saveConfig creates netlify.toml if it does not exist', async (t) => {
   await del(configPath)
   const { address, stopServer } = await startDeployServer()
   try {
-    await runFixture(t, 'save_empty', {
-      flags: {
+    const output = await new Fixture('./fixtures/save_empty')
+      .withFlags({
         buildbotServerSocket: address,
         saveConfig: true,
         context: 'production',
         branch: 'main',
         defaultConfig: { plugins: [{ package: './plugin.js' }] },
-      },
-    })
+      })
+      .runWithBuild()
+    t.snapshot(normalizeOutput(output))
     t.false(await pathExists(configPath))
   } finally {
     await stopServer()
@@ -296,15 +299,16 @@ test('--saveConfig gives higher priority to configuration changes than context p
   await fs.copyFile(fixtureConfigPath, configPath)
   const { address, stopServer } = await startDeployServer()
   try {
-    await runFixture(t, 'save_context', {
-      flags: {
+    const output = await new Fixture('./fixtures/save_context')
+      .withFlags({
         buildbotServerSocket: address,
         config: configPath,
         saveConfig: true,
         context: 'production',
         branch: 'main',
-      },
-    })
+      })
+      .runWithBuild()
+    t.snapshot(normalizeOutput(output))
   } finally {
     await stopServer()
   }
@@ -316,15 +320,16 @@ test('--saveConfig is performed before deploy', async (t) => {
   await del(configPath)
   const { address, stopServer } = await startDeployServer()
   try {
-    await runFixture(t, 'save_deploy', {
-      flags: {
+    const output = await new Fixture('./fixtures/save_deploy')
+      .withFlags({
         buildbotServerSocket: address,
         saveConfig: true,
         context: 'production',
         branch: 'main',
         defaultConfig: { plugins: [{ package: './plugin.js' }] },
-      },
-    })
+      })
+      .runWithBuild()
+    t.snapshot(normalizeOutput(output))
   } finally {
     await stopServer()
   }

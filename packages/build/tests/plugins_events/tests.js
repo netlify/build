@@ -2,8 +2,6 @@ import { Fixture, normalizeOutput } from '@netlify/testing'
 import test from 'ava'
 import sinon from 'sinon'
 
-import { runFixture } from '../helpers/main.js'
-
 test('plugin.onSuccess is triggered on success', async (t) => {
   const output = await new Fixture('./fixtures/success_ok').runWithBuild()
   t.snapshot(normalizeOutput(output))
