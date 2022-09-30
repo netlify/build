@@ -1,5 +1,5 @@
 import { serializeObject } from '../../log/serialize.js'
-import { getErrorInfo, getExtraErrorInfo } from '../info.js'
+import { getErrorInfo } from '../info.js'
 import { getTypeInfo } from '../type.js'
 
 import { getLocationInfo } from './location.js'
@@ -60,7 +60,7 @@ const getTsConfigInfo = function (tsConfig) {
 export const parseErrorInfo = function (error) {
   const { message, stack, ...errorProps } = normalizeError(error)
   const [errorInfo, errorPropsA] = getErrorInfo(errorProps)
-  const extraInfo = getExtraErrorInfo(errorInfo)
+  const { extraInfo } = errorInfo
   const {
     type,
     severity,
