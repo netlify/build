@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.0](https://github.com/netlify/edge-bundler/compare/v2.2.0...v2.3.0) (2022-09-30)
+
+
+### Features
+
+* add support for `config` export ([#133](https://github.com/netlify/edge-bundler/issues/133)) ([adb4f82](https://github.com/netlify/edge-bundler/commit/adb4f829d57e9a7d39741444b7f214f96d739f2b))
+
 ## [2.2.0](https://github.com/netlify/edge-bundler/compare/v2.1.0...v2.2.0) (2022-09-20)
 
 
