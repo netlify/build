@@ -99,7 +99,8 @@ test('Plugin errors can have a toJSON() method', async (t) => {
 // See https://github.com/netlify/build/issues/3615
 // if (platform !== 'win32') {
 //   test.skip('Early exit', async (t) => {
-//     await runFixture(t, 'early_exit')
+//     const output = await new Fixture('./fixtures/early_exit').runWithBuild()
+//     t.snapshot(normalizeOutput(output))
 //   })
 // }
 

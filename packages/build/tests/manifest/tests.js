@@ -1,8 +1,6 @@
 import { Fixture, normalizeOutput } from '@netlify/testing'
 import test from 'ava'
 
-import { runFixture } from '../helpers/main.js'
-
 test('manifest.yml check required inputs', async (t) => {
   const output = await new Fixture('./fixtures/required').runWithBuild()
   t.snapshot(normalizeOutput(output))
