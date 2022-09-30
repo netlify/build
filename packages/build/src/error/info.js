@@ -38,8 +38,8 @@ export const isBuildError = function (error) {
 }
 
 export const getExtraErrorInfo = function ({ extraInfo }) {
-  const info = extraInfo === undefined ? {} : extraInfo
-  return info
+  // const info = extraInfo === undefined ? {} : extraInfo
+  return extraInfo
 }
 
 // Exceptions that are not objects (including `Error` instances) cannot have an

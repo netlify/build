@@ -44,7 +44,6 @@ const getError = function (error, message, func) {
   }
 
   const errorA = new Error(message)
-  // include any extraData to a custom key on the error object
   // Do not include function itself in the stack trace
   Error.captureStackTrace(errorA, func)
   return errorA
