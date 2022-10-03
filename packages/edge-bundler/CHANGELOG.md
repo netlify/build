@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.4.0](https://github.com/netlify/edge-bundler/compare/v2.3.1...v2.4.0) (2022-10-03)
+
+
+### Features
+
+* update bootstrap latest to use latest version of bootstrap ([#146](https://github.com/netlify/edge-bundler/issues/146)) ([9aef2f7](https://github.com/netlify/edge-bundler/commit/9aef2f7a1791d83617dddc6c6ff37b44b3e2ef78))
+
 ## [2.3.1](https://github.com/netlify/edge-bundler/compare/v2.3.0...v2.3.1) (2022-10-03)
 
 
