@@ -3,6 +3,6 @@ export const onBuild = function ({
     build: { failBuild },
   },
 }) {
-  const extraInfo = { foo: 'bar' }
-  failBuild('error', { extraInfo })
+  const errorMetadata = { foo: 'bar' }
+  failBuild('error', { errorMetadata })
 }
