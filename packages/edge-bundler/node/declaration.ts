@@ -1,12 +1,15 @@
 import { FunctionConfig } from './config.js'
 
-interface DeclarationWithPath {
+interface BaseDeclaration {
   function: string
+  name?: string
+}
+
+type DeclarationWithPath = BaseDeclaration & {
   path: string
 }
 
-interface DeclarationWithPattern {
-  function: string
+type DeclarationWithPattern = BaseDeclaration & {
   pattern: string
 }
 

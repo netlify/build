@@ -30,6 +30,26 @@ test('Generates a manifest with different bundles', () => {
   expect(manifest.bundler_version).toBe(env.npm_package_version as string)
 })
 
+test('Generates a manifest with display names', () => {
+  const functions = [
+    { name: 'func-1', path: '/path/to/func-1.ts' },
+    { name: 'func-2', path: '/path/to/func-2.ts' },
+  ]
+  const declarations = [
+    { function: 'func-1', name: 'Display Name', path: '/f1/*' },
+    { function: 'func-2', path: '/f2/*' },
+  ]
+  const manifest = generateManifest({ bundles: [], declarations, functions })
+
+  const expectedRoutes = [
+    { function: 'func-1', name: 'Display Name', pattern: '^/f1/.*/?$' },
+    { function: 'func-2', pattern: '^/f2/.*/?$' },
+  ]
+
+  expect(manifest.routes).toEqual(expectedRoutes)
+  expect(manifest.bundler_version).toBe(env.npm_package_version as string)
+})
+
 test('Excludes functions for which there are function files but no matching config declarations', () => {
   const bundle1 = {
     extension: '.ext2',
