@@ -24,6 +24,13 @@
   * dependencies
     * @netlify/config bumped from ^18.2.0 to ^18.2.1
 
+## [27.19.0](https://github.com/netlify/build/compare/build-v27.18.6...build-v27.19.0) (2022-10-03)
+
+
+### Features
+
+* add optional errorMetadata to error utils ([#4552](https://github.com/netlify/build/issues/4552)) ([5ccaa05](https://github.com/netlify/build/commit/5ccaa0588f81314b41617b158b562d50983a6951))
+
 ## [27.18.6](https://github.com/netlify/build/compare/build-v27.18.5...build-v27.18.6) (2022-09-26)
 
 
