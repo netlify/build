@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.1](https://github.com/netlify/edge-bundler/compare/v2.3.0...v2.3.1) (2022-10-03)
+
+
+### Bug Fixes
+
+* use `allow-net` flag to run `config` function ([#144](https://github.com/netlify/edge-bundler/issues/144)) ([57d0edb](https://github.com/netlify/edge-bundler/commit/57d0edb52a63537b8dbdd0eaf50ef88689c6387f))
+
 ## [2.3.0](https://github.com/netlify/edge-bundler/compare/v2.2.0...v2.3.0) (2022-09-30)
 
 
