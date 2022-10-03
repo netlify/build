@@ -23,6 +23,7 @@ export const getFullErrorInfo = function ({ error, colors, debug }) {
     locationType,
     showErrorProps,
     rawStack,
+    errorMetadata,
   } = basicErrorInfo
 
   const titleA = getTitle(title, errorInfo)
@@ -42,6 +43,7 @@ export const getFullErrorInfo = function ({ error, colors, debug }) {
     pluginInfo,
     locationInfo,
     errorProps: errorPropsA,
+    errorMetadata,
   }
 }
 
@@ -58,6 +60,7 @@ const getTsConfigInfo = function (tsConfig) {
 export const parseErrorInfo = function (error) {
   const { message, stack, ...errorProps } = normalizeError(error)
   const [errorInfo, errorPropsA] = getErrorInfo(errorProps)
+  const { errorMetadata } = errorInfo
   const {
     type,
     severity,
@@ -83,6 +86,7 @@ export const parseErrorInfo = function (error) {
     showInBuildLog,
     showErrorProps,
     rawStack,
+    errorMetadata,
   }
   return basicErrorInfo
 }

@@ -156,6 +156,10 @@ test('report error statuses from plugin loads with other plugins loading', async
   await runWithApiMock(t, 'error_plugin_load')
 })
 
+test('report error statuses extraData from failBuild()', async (t) => {
+  await runWithApiMock(t, 'error_extra_info')
+})
+
 const runUtilsStatusShow = function (t, argument) {
   return runFixture(t, 'show_util', { env: { SHOW_ARG: JSON.stringify(argument) } })
 }
