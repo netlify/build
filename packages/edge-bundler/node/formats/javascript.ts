@@ -13,7 +13,7 @@ import { ImportMap } from '../import_map.js'
 import type { FormatFunction } from '../server/server.js'
 import { getFileHash } from '../utils/sha256.js'
 
-const BOOTSTRAP_LATEST = 'https://6335ada772145800075958c3--edge.netlify.com/bootstrap/index-combined.ts'
+const BOOTSTRAP_LATEST = 'https://633ac6453c579c0008ede8d8--edge.netlify.com/bootstrap/index-combined.ts'
 
 interface BundleJSOptions {
   buildID: string
