@@ -24,6 +24,18 @@
   * dependencies
     * @netlify/config bumped from ^18.2.0 to ^18.2.1
 
+## [27.20.0](https://github.com/netlify/build/compare/build-v27.19.1...build-v27.20.0) (2022-10-03)
+
+
+### Features
+
+* allow edge function schema to have a display name ([#4549](https://github.com/netlify/build/issues/4549)) ([f737c39](https://github.com/netlify/build/commit/f737c390d58f3e16695f692a05113412f1eed25c))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to ^2.5.0 ([#4562](https://github.com/netlify/build/issues/4562)) ([3d525f9](https://github.com/netlify/build/commit/3d525f918cf416247ff555033fdd5462697ed29a))
+
 ## [27.19.1](https://github.com/netlify/build/compare/build-v27.19.0...build-v27.19.1) (2022-10-03)
 
 
