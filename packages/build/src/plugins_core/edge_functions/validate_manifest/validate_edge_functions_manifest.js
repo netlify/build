@@ -35,7 +35,7 @@ const routesSchema = {
   type: 'object',
   required: ['function', 'pattern'],
   properties: {
-    displayName: { type: 'string' },
+    name: { type: 'string' },
     function: { type: 'string' },
     pattern: { type: 'string', format: 'regexPattern', errorMessage: `must match format ${normalizedPatternRegex}` },
   },
