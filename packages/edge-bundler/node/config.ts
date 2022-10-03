@@ -49,6 +49,7 @@ export const getFunctionConfig = async (func: EdgeFunction, deno: DenoBridge, lo
   const { exitCode, stderr, stdout } = await deno.run(
     [
       'run',
+      '--allow-net',
       '--allow-read',
       `--allow-write=${collector.path}`,
       '--quiet',
@@ -87,7 +88,7 @@ const logConfigError = (func: EdgeFunction, exitCode: number, stderr: string, lo
   switch (exitCode) {
     case ConfigExitCode.ImportError:
       log.user(`Could not load edge function at '${func.path}'`)
-      log.system(stderr)
+      log.user(stderr)
 
       break
 

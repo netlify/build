@@ -5,7 +5,9 @@ let func
 
 try {
   func = await import(functionURL)
-} catch {
+} catch (error) {
+  console.error(error)
+
   Deno.exit(exitCodes.ImportError)
 }
 
@@ -31,7 +33,9 @@ try {
   const result = JSON.stringify(config)
 
   await Deno.writeTextFile(new URL(collectorURL), result)
-} catch {
+} catch (error) {
+  console.error(error)
+
   Deno.exit(exitCodes.SerializationError)
 }
 
