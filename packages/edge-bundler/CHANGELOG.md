@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.0](https://github.com/netlify/edge-bundler/compare/v2.4.0...v2.5.0) (2022-10-03)
+
+
+### Features
+
+* allow display name in manifest ([#140](https://github.com/netlify/edge-bundler/issues/140)) ([0fc04e9](https://github.com/netlify/edge-bundler/commit/0fc04e9dcd3fc2e41e15b1e178d2209d658e7dfc))
+
 ## [2.4.0](https://github.com/netlify/edge-bundler/compare/v2.3.1...v2.4.0) (2022-10-03)
 
 
