@@ -8,13 +8,13 @@
     "configFiles": []
   },
   "dev": {
-    "command": "svelte-kit dev",
-    "port": 3000,
+    "command": "vite dev",
+    "port": 5173,
     "pollingStrategies": [{ "name": "TCP" }, { "name": "HTTP" }]
   },
   "build": {
-    "command": "svelte-kit build",
-    "directory": "build"
+    "command": "vite build",
+    "directory": ".svelte-kit"
   },
   "logo": {
     "default": "/logos/svelte-kit/default.svg",
