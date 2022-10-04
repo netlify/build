@@ -24,6 +24,39 @@
   * dependencies
     * @netlify/config bumped from ^18.2.0 to ^18.2.1
 
+## [27.20.1](https://github.com/netlify/build/compare/build-v27.20.0...build-v27.20.1) (2022-10-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to ^2.6.0 ([#4563](https://github.com/netlify/build/issues/4563)) ([ef21ea3](https://github.com/netlify/build/commit/ef21ea337ca20d158aa81767f3ac365e449b5966))
+
+## [27.20.0](https://github.com/netlify/build/compare/build-v27.19.1...build-v27.20.0) (2022-10-03)
+
+
+### Features
+
+* allow edge function schema to have a display name ([#4549](https://github.com/netlify/build/issues/4549)) ([f737c39](https://github.com/netlify/build/commit/f737c390d58f3e16695f692a05113412f1eed25c))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to ^2.5.0 ([#4562](https://github.com/netlify/build/issues/4562)) ([3d525f9](https://github.com/netlify/build/commit/3d525f918cf416247ff555033fdd5462697ed29a))
+
+## [27.19.1](https://github.com/netlify/build/compare/build-v27.19.0...build-v27.19.1) (2022-10-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to ^2.4.0 ([#4554](https://github.com/netlify/build/issues/4554)) ([196a5cf](https://github.com/netlify/build/commit/196a5cfce4a1665e49387900652f0a36ad184ead))
+
+## [27.19.0](https://github.com/netlify/build/compare/build-v27.18.6...build-v27.19.0) (2022-10-03)
+
+
+### Features
+
+* add optional errorMetadata to error utils ([#4552](https://github.com/netlify/build/issues/4552)) ([5ccaa05](https://github.com/netlify/build/commit/5ccaa0588f81314b41617b158b562d50983a6951))
+
 ## [27.18.6](https://github.com/netlify/build/compare/build-v27.18.5...build-v27.18.6) (2022-09-26)
 
 

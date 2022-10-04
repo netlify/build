@@ -279,6 +279,15 @@ test('report error statuses from plugin loads with other plugins loading', async
   t.snapshot(snapshots)
 })
 
+test('report error statuses extraData from failBuild()', async (t) => {
+  const { requests, output } = await new Fixture('./fixtures/error_extra_info')
+    .withFlags({ deployId: 'test', token: 'test', sendStatus: true })
+    .runBuildServer({ path: STATUS_PATH })
+  t.snapshot(normalizeOutput(output))
+  const snapshots = requests.map(normalizeRequest).sort(comparePackage)
+  t.snapshot(snapshots)
+})
+
 test('utils.status.show() does not fail', async (t) => {
   const output = await new Fixture('./fixtures/show_util')
     .withEnv({

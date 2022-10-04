@@ -134,6 +134,9 @@ jobs:
       - uses: codecov/codecov-action@v3
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
         with:
-          file: coverage/coverage-final.json
+          files:
+            packages/build/coverage/coverage-final.json, packages/config/coverage/coverage-final.json,
+            packages/cache-utils/coverage/coverage-final.json, packages/function-utils/coverage/coverage-final.json,
+            packages/git-utils/coverage/coverage-final.json, packages/run-utils/coverage/coverage-final.json
           flags: ${{ steps.test-coverage-flags.outputs.os }},${{ steps.test-coverage-flags.outputs.node }}
         continue-on-error: true

@@ -20,7 +20,10 @@
   "scripts": {
     "prepublishOnly": "cd ../../ && npm run prepublishOnly",
     "prebuild": "rm -rf lib",
-    "build": "tsc"
+    "build": "tsc",
+    "test": "ava",
+    "test:ci": "c8 -r lcovonly -r text -r json ava",
+    "test:measure": "node tools/tests_duration.mjs"
   },
   "keywords": [
     "javascript",

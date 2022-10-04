@@ -1,7 +1,10 @@
 // Serialize an error object to `statuses` properties
-export const serializeErrorStatus = function ({ fullErrorInfo: { title, message, locationInfo, errorProps }, state }) {
+export const serializeErrorStatus = function ({
+  fullErrorInfo: { title, message, locationInfo, errorProps, errorMetadata },
+  state,
+}) {
   const text = getText({ locationInfo, errorProps })
-  return { state, title, summary: message, text }
+  return { state, title, summary: message, text, extraData: errorMetadata }
 }
 
 const getText = function ({ locationInfo, errorProps }) {
