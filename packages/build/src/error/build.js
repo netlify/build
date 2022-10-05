@@ -6,13 +6,11 @@ import { CUSTOM_ERROR_KEY } from './info.js'
 // process. We need this since errors static properties are not kept by
 // `v8.serialize()`.
 export const jsonToError = function ({ name, message, stack, ...errorProps }) {
-  // eslint-disable-next-line unicorn/error-message
   const error = new Error('')
 
   assignErrorProps(error, { name, message, stack })
   // Assign static error properties (if any)
   // We need to mutate the `error` directly to preserve its `name`, `stack`, etc.
-  // eslint-disable-next-line fp/no-mutating-assign
   Object.assign(error, errorProps)
 
   return error

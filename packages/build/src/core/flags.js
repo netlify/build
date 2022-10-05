@@ -1,5 +1,3 @@
-/* eslint eslint-comments/no-use: off, max-lines: off */
-
 const jsonParse = function (value) {
   return value === undefined ? undefined : JSON.parse(value)
 }

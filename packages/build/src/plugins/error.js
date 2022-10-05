@@ -39,7 +39,9 @@ const getError = function (error, message, func) {
     // This might fail if `name` is a getter or is non-writable.
     try {
       error.message = `${message}\n${error.message}`
-    } catch {}
+    } catch {
+      // continue regardless error
+    }
     return error
   }
 

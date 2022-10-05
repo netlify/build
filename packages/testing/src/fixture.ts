@@ -138,7 +138,6 @@ export class Fixture {
    * This is useful when no parent directory should have a `.git` or `package.json`.
    */
   async withCopyRoot(
-    // eslint-disable-next-line unicorn/no-object-as-default-parameter
     copyRoot: {
       cwd?: boolean
       /** whether the copied directory should have a `.git`. Default: `true` */

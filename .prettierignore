@@ -1,0 +1,4 @@
+# don't format fixtures (sometimes faulty behaviour is desired)
+packages/*/tests/**/fixtures/**
+# don't lint outputs
+packages/*/lib
