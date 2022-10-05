@@ -20,7 +20,7 @@ import { getRedirectsPath, addRedirects } from './redirects.js'
 
 export { DEV_EVENTS, EVENTS } from './events.js'
 export { cleanupConfig } from './log/cleanup.js'
-// eslint-disable-next-line import/max-dependencies
+
 export { updateConfig, restoreConfig } from './mutations/update.js'
 
 // Load the configuration file.

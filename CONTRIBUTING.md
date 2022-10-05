@@ -53,8 +53,9 @@ After submitting the pull request, please make sure the Continuous Integration c
 
 ### Testing in CI
 
-To speed up CI, we load balance the tests across multiple machines. The information required to load balance the tests is stored in `tests-metadata.json`, and later used by our test [runner](ava.config.js#L10).
-To regenerate the data (e.g. when adding a new test file) run `npm test:measure` and commit the changes to GitHub.
+To speed up CI, we load balance the tests across multiple machines. The information required to load balance the tests
+is stored in `tests-metadata.json`, and later used by our test [runner](ava.config.js#L10). To regenerate the data (e.g.
+when adding a new test file) run `npm test:measure` and commit the changes to GitHub.
 
 ## Releasing
 

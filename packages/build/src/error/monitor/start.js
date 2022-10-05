@@ -66,4 +66,6 @@ const getLogger = function (logs, isTest) {
   return { debug: noop, info: noop, warn: logFunc, error: logFunc }
 }
 
-const noop = function () {}
+const noop = function () {
+  // this is a noop function
+}

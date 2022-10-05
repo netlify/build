@@ -56,5 +56,7 @@ const getSrcGlob = async function (src) {
 const getStat = async function (src) {
   try {
     return await fs.stat(src)
-  } catch {}
+  } catch {
+    // continue regardless error
+  }
 }

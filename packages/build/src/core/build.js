@@ -133,7 +133,6 @@ const tExecBuild = async function ({
   const systemLog = getSystemLogger(logs, debug, systemLogFile)
   const pluginsOptions = addCorePlugins({ netlifyConfig, constants })
   // `errorParams` is purposely stateful
-  // eslint-disable-next-line fp/no-mutating-assign
   Object.assign(errorParams, { netlifyConfig, pluginsOptions, siteInfo, childEnv, userNodeVersion })
 
   const {

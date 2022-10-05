@@ -19,5 +19,7 @@ const getPackageObj = async function ({ cwd, normalize = true }) {
     return await readPackageUp({ cwd, normalize })
     // If the `package.json` is invalid and `normalize` is `true`, an error is
     // thrown. We return `undefined` then.
-  } catch {}
+  } catch {
+    // continue regardless error
+  }
 }

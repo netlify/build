@@ -28,7 +28,9 @@ const getGitBranch = async function (repositoryRoot, gitRef) {
   try {
     const { stdout } = await execaCommand(`git rev-parse --abbrev-ref ${gitRef}`, { cwd: repositoryRoot })
     return stdout
-  } catch {}
+  } catch {
+    // continue regardless error
+  }
 }
 
 const FALLBACK_BRANCH = 'master'

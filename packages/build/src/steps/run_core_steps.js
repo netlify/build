@@ -128,7 +128,6 @@ const executeBuildStep = async function ({
     mode,
   })
 
-  // eslint-disable-next-line fp/no-mutating-assign
   Object.assign(errorParams, { netlifyConfig, siteInfo, childEnv, userNodeVersion })
 
   try {

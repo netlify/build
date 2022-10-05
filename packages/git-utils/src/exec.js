@@ -18,7 +18,6 @@ const mGit = function (args, cwd) {
   }
 }
 
-// eslint-disable-next-line no-magic-numbers
 export const git = moize(mGit, { isDeepEqual: true, maxSize: 1e3 })
 
 const safeGetCwd = function (cwd) {
