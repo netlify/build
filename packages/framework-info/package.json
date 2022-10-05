@@ -1,6 +1,6 @@
 {
   "name": "@netlify/framework-info",
-  "version": "9.2.0",
+  "version": "9.3.0",
   "description": "Framework detection utility",
   "type": "module",
   "main": "./dist/index.cjs",
