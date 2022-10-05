@@ -14,7 +14,6 @@ import { validateEdgeFunctionsManifest } from './validate_manifest/validate_edge
 const DENO_CLI_CACHE_DIRECTORY = '.netlify/plugins/deno-cli'
 const IMPORT_MAP_FILENAME = 'edge-functions-import-map.json'
 
-// eslint-disable-next-line complexity, max-statements
 const coreStep = async function ({
   buildDir,
   constants: {

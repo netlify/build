@@ -9,7 +9,7 @@ import { ERROR_CALL_TO_ACTION } from '../log/messages.js'
 // Requires knowing the `siteId` and having the access `token`.
 // Silently ignore API errors. For example the network connection might be down,
 // but local builds should still work regardless.
-// eslint-disable-next-line complexity
+
 export const getSiteInfo = async function ({ api, siteId, mode, testOpts: { env: testEnv = true } = {} }) {
   if (api === undefined || mode === 'buildbot' || !testEnv) {
     const siteInfo = siteId === undefined ? {} : { id: siteId }

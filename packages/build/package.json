@@ -24,6 +24,7 @@
     "prepublishOnly": "cd ../../ && npm run prepublishOnly",
     "prebuild": "rm -rf lib",
     "build": "cp -a src lib/",
+    "pretest": "tsd .",
     "test": "ava",
     "test:ci": "c8 -r lcovonly -r text -r json ava",
     "test:measure": "node tools/tests_duration.mjs"
@@ -62,9 +63,9 @@
   "license": "MIT",
   "dependencies": {
     "@bugsnag/js": "^7.0.0",
-    "@netlify/edge-bundler": "^2.6.0",
     "@netlify/cache-utils": "^4.1.5",
     "@netlify/config": "^18.2.4",
+    "@netlify/edge-bundler": "^2.6.0",
     "@netlify/functions-utils": "^4.2.10",
     "@netlify/git-utils": "^4.1.2",
     "@netlify/plugins-list": "^6.46.0",
@@ -121,6 +122,7 @@
     "@netlify/nock-udp": "^1.0.0",
     "atob": "^2.1.2",
     "ava": "^4.0.0",
+    "c8": "^7.12.0",
     "cpy": "^8.1.0",
     "del": "^6.0.0",
     "fast-safe-stringify": "^2.0.7",
@@ -134,6 +136,7 @@
     "path-key": "^4.0.0",
     "process-exists": "^5.0.0",
     "sinon": "^13.0.0",
+    "tsd": "^0.24.1",
     "yarn": "^1.22.4"
   },
   "engines": {

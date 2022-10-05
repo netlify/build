@@ -35,7 +35,7 @@ const NORMALIZE_REGEXPS = [
   // Normalizes any paths so that they're relative to process.cwd().
   [
     /(^|[ "'(=])((?:\.{0,2}|([A-Z]:)|file:\/\/)(\/[^ "')\n]+))/gm,
-    // eslint-disable-next-line complexity, max-params, max-statements
+
     (_, prefix, pathMatch, winDrive, pathTrail) => {
       // If we're dealing with a file URL, we convert it to a path.
       const path = pathMatch.startsWith('file://') ? fileURLToPath(pathMatch) : pathMatch

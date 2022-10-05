@@ -12,7 +12,7 @@ const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 //  - specific directories exist after run
 //  - specific directories are removed before/after test
 // TODO: once we have a test runner that supports before and after this would be way nicer to read to remove dirs there
-// eslint-disable-next-line max-params
+
 const runInstallFixture = async (t, fixtureName, dirs = [], flags = {}, binary = false) => {
   await removeDir(dirs)
   try {

@@ -55,7 +55,7 @@ const zipFunctionsAndLogResults = async ({
 }
 
 // Plugin to package Netlify functions with @netlify/zip-it-and-ship-it
-// eslint-disable-next-line complexity
+
 const coreStep = async function ({
   childEnv,
   constants: {

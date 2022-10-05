@@ -22,7 +22,6 @@ const importLogic = async function (pluginPath, tsNodeService) {
     // which is currently making it impossible for local plugins to use both
     // pure ES modules and TypeScript.
     if (tsNodeService !== undefined) {
-      // eslint-disable-next-line import/no-dynamic-require
       return require(pluginPath)
     }
 
