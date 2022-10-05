@@ -7,9 +7,8 @@
   "author": "Netlify Inc.",
   "scripts": {
     "prepare": "husky install",
-    "lint": "eslint --cache --ignore-path .gitignore --max-warnings=0 . --fix",
-    "lint:ci": "eslint --cache --ignore-path .gitignore --max-warnings=0 .",
-    "build": "lerna run build",
+    "lint": "eslint --cache --report-unused-disable-directives --ignore-path .gitignore --max-warnings=0 . --fix",
+    "lint:ci": "eslint --cache --report-unused-disable-directives --ignore-path .gitignore --max-warnings=0 .",
     "test": "lerna run test",
     "test:ci": "lerna run test:ci",
     "format": "prettier --write .",

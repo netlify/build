@@ -84,7 +84,6 @@ const runWithApiMock = async function (
     if (useBinary) {
       const { exitCode, output } = await fix.runBuildBinary()
 
-      // eslint-disable-next-line max-depth
       if (snapshot) {
         t.snapshot(normalizeOutput(output))
       }

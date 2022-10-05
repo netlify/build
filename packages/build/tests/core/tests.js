@@ -382,7 +382,6 @@ test.serial('Passes the right properties to zip-it-and-ship-it', async (t) => {
 
   t.is(mockZipFunctions.callCount, 2)
 
-  // eslint-disable-next-line prefer-destructuring
   const params1 = mockZipFunctions.firstCall.args[2]
 
   t.is(params1.basePath, fixtureDir)
@@ -391,7 +390,6 @@ test.serial('Passes the right properties to zip-it-and-ship-it', async (t) => {
   t.is(params1.config['*'].nodeVersion, undefined)
   t.is(params1.repositoryRoot, fixtureDir)
 
-  // eslint-disable-next-line prefer-destructuring
   const params2 = mockZipFunctions.secondCall.args[2]
 
   t.is(params2.config['*'].nodeVersion, 'nodejs00.x')
