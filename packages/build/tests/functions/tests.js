@@ -1,46 +1,52 @@
 import { promises as fs } from 'fs'
+import { fileURLToPath } from 'url'
 
+import { Fixture, normalizeOutput, removeDir, getTempName } from '@netlify/testing'
 import test from 'ava'
 import del from 'del'
 import { pathExists } from 'path-exists'
 
-import { removeDir } from '../helpers/dir.js'
-import { runFixture, FIXTURES_DIR } from '../helpers/main.js'
-import { getTempName } from '../helpers/temp.js'
+const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
 test('Functions: missing source directory', async (t) => {
-  await runFixture(t, 'missing')
+  const output = await new Fixture('./fixtures/missing').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Functions: must not be a regular file', async (t) => {
-  await runFixture(t, 'regular_file')
+  const output = await new Fixture('./fixtures/regular_file').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Functions: can be a symbolic link', async (t) => {
-  await runFixture(t, 'symlink')
+  const output = await new Fixture('./fixtures/symlink').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Functions: default directory', async (t) => {
-  await runFixture(t, 'default')
+  const output = await new Fixture('./fixtures/default').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Functions: simple setup', async (t) => {
   await removeDir(`${FIXTURES_DIR}/simple/.netlify/functions/`)
-  await runFixture(t, 'simple')
+  const output = await new Fixture('./fixtures/simple').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Functions: no functions', async (t) => {
-  await runFixture(t, 'none')
+  const output = await new Fixture('./fixtures/none').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Functions: invalid package.json', async (t) => {
-  const fixtureName = 'functions_package_json_invalid'
-  const packageJsonPath = `${FIXTURES_DIR}/${fixtureName}/package.json`
+  const packageJsonPath = `${FIXTURES_DIR}/functions_package_json_invalid/package.json`
   // We need to create that file during tests. Otherwise, ESLint fails when
   // detecting an invalid *.json file.
   await fs.writeFile(packageJsonPath, '{{}')
   try {
-    await runFixture(t, fixtureName)
+    const output = await new Fixture('./fixtures/functions_package_json_invalid').runWithBuild()
+    t.snapshot(normalizeOutput(output))
   } finally {
     await del(packageJsonPath)
   }
@@ -49,7 +55,10 @@ test('Functions: invalid package.json', async (t) => {
 test('Functions: --functionsDistDir', async (t) => {
   const functionsDistDir = await getTempName()
   try {
-    await runFixture(t, 'simple', { flags: { mode: 'buildbot', functionsDistDir } })
+    const output = await new Fixture('./fixtures/simple')
+      .withFlags({ mode: 'buildbot', functionsDistDir })
+      .runWithBuild()
+    t.snapshot(normalizeOutput(output))
     t.true(await pathExists(functionsDistDir))
     const files = await fs.readdir(functionsDistDir)
     // We're expecting two files: the function ZIP and the manifest.

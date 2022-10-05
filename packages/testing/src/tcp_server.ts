@@ -5,7 +5,8 @@ import getPort from 'get-port'
 import { tmpName } from 'tmp-promise'
 
 // Start a TCP server to mock calls.
-export const startTcpServer = async function ({ response = '', useUnixSocket = true, onRequest } = {}) {
+// eslint-disable-next-line unicorn/no-useless-undefined
+export const startTcpServer = async function ({ response = '', useUnixSocket = true, onRequest = undefined } = {}) {
   const requests = []
   const { connectionOpts, address } = await getConnectionOpts({ useUnixSocket })
   const server = createServer(onConnection.bind(null, { response, requests, onRequest }))

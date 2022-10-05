@@ -51,7 +51,7 @@ test('Prints colors', async (t) => {
   } = await new Fixture('./fixtures/simple')
     .withFlags({ debug: true })
     .withEnv({ FORCE_COLOR: '1' })
-    .runBinaryAsObject()
+    .runConfigBinaryAsObject()
 
   t.true(hasAnsi(stderr.join('\n')))
 })

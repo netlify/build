@@ -11,44 +11,44 @@ import { tmpName as getTmpName } from 'tmp-promise'
 const INVALID_CONFIG_PATH = fileURLToPath(new URL('invalid', import.meta.url))
 
 test('--help', async (t) => {
-  const { output } = await new Fixture().withFlags({ help: true }).runBinary()
+  const { output } = await new Fixture().withFlags({ help: true }).runConfigBinary()
   t.snapshot(normalizeOutput(output))
 })
 
 test('--version', async (t) => {
-  const { output } = await new Fixture().withFlags({ version: true }).runBinary()
+  const { output } = await new Fixture().withFlags({ version: true }).runConfigBinary()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Success', async (t) => {
-  const { output } = await new Fixture('./fixtures/empty').runBinary()
+  const { output } = await new Fixture('./fixtures/empty').runConfigBinary()
   t.snapshot(normalizeOutput(output))
 })
 
 test('User error', async (t) => {
-  const { output } = await new Fixture('./fixtures/empty').withFlags({ config: INVALID_CONFIG_PATH }).runBinary()
+  const { output } = await new Fixture('./fixtures/empty').withFlags({ config: INVALID_CONFIG_PATH }).runConfigBinary()
   t.snapshot(normalizeOutput(output))
 })
 
 test('CLI flags', async (t) => {
-  const { output } = await new Fixture('./fixtures/empty').withFlags({ branch: 'test' }).runBinary()
+  const { output } = await new Fixture('./fixtures/empty').withFlags({ branch: 'test' }).runConfigBinary()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Stabilitize output with the --stable flag', async (t) => {
-  const { output } = await new Fixture('./fixtures/empty').withFlags({ stable: true }).runBinary()
+  const { output } = await new Fixture('./fixtures/empty').withFlags({ stable: true }).runConfigBinary()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Does not stabilitize output without the --stable flag', async (t) => {
-  const { output } = await new Fixture('./fixtures/empty').withFlags({ stable: false }).runBinary()
+  const { output } = await new Fixture('./fixtures/empty').withFlags({ stable: false }).runConfigBinary()
   t.snapshot(normalizeOutput(output))
 })
 
 test('Write on file with the --output flag', async (t) => {
   const output = await getTmpName({ dir: 'netlify-build-test' })
   try {
-    await new Fixture('./fixtures/empty').withFlags({ output }).runBinary()
+    await new Fixture('./fixtures/empty').withFlags({ output }).runConfigBinary()
     const content = await fs.readFile(output)
     const { context } = JSON.parse(content)
     t.is(context, 'production')
@@ -60,7 +60,7 @@ test('Write on file with the --output flag', async (t) => {
 test('Do not write on stdout with the --output flag', async (t) => {
   const output = await getTmpName({ dir: 'netlify-build-test' })
   try {
-    const result = await new Fixture('./fixtures/empty').withFlags({ output }).runBinary()
+    const result = await new Fixture('./fixtures/empty').withFlags({ output }).runConfigBinary()
     t.is(result.output, '')
   } finally {
     await fs.unlink(output)
@@ -68,7 +68,7 @@ test('Do not write on stdout with the --output flag', async (t) => {
 })
 
 test('Write on stdout with the --output=- flag', async (t) => {
-  const { output } = await new Fixture('./fixtures/empty').withFlags({ output: '-' }).runBinary()
+  const { output } = await new Fixture('./fixtures/empty').withFlags({ output: '-' }).runConfigBinary()
   t.snapshot(normalizeOutput(output))
 })
 
@@ -81,7 +81,7 @@ if (isCI) {
     try {
       const bigContent = getBigNetlifyContent()
       await fs.writeFile(bigNetlify, bigContent)
-      const { output } = await new Fixture('./fixtures/big').withFlags({ output: '-' }).runBinary()
+      const { output } = await new Fixture('./fixtures/big').withFlags({ output: '-' }).runConfigBinary()
       t.notThrows(() => {
         JSON.parse(output)
       })
