@@ -22,8 +22,16 @@ const BUILD_BIN_DIR = normalize(`${ROOT_DIR}/node_modules/.bin`)
 
 const require = createRequire(import.meta.url)
 
+// TODO: this type should be moved to @netlify/build and @netlify/config as it's the main argument of the entry point
+type Flags = {
+  [key: string]: unknown
+  buffer?: boolean
+  featureFlags?: Record<string, unknown>
+  env: NodeJS.ProcessEnv
+}
+
 export class Fixture {
-  flags: Record<string, unknown> = {
+  flags: Partial<Flags> = {
     buffer: true,
     featureFlags: {},
   }
@@ -68,7 +76,7 @@ export class Fixture {
   private buildBinaryPath = getBinPathSync({ cwd: require.resolve('@netlify/build') })
   private configBinaryPath = getBinPathSync({ cwd: require.resolve('@netlify/config') })
 
-  getConfigFlags(): Record<string, unknown> {
+  getConfigFlags(): Flags {
     return {
       ...this.flags,
       ...this.configFlags,
@@ -77,7 +85,7 @@ export class Fixture {
     }
   }
 
-  getBuildFlags(): Record<string, unknown> {
+  getBuildFlags(): Flags {
     const { testOpts, ...rest } = this.additionalFlags
     const flags = { ...this.flags, ...this.buildFlags, ...rest, env: { ...this.buildEnv, ...this.env } }
 
@@ -218,7 +226,7 @@ export class Fixture {
   private async runBinary(
     binary: string,
     cwd?: string,
-    flags: Record<string, unknown> = {},
+    flags: Partial<Flags> = {},
   ): Promise<{
     output: string
     exitCode: number
@@ -229,7 +237,7 @@ export class Fixture {
       const { all: output, exitCode } = await execa(binary, cliFlags, {
         all: true,
         reject: false,
-        env: (environment as Record<string, string>) || {},
+        env: environment || {},
         cwd,
       })
       return { output, exitCode }
