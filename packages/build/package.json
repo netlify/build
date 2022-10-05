@@ -68,7 +68,7 @@
     "@netlify/edge-bundler": "^2.6.0",
     "@netlify/functions-utils": "^4.2.10",
     "@netlify/git-utils": "^4.1.2",
-    "@netlify/plugins-list": "^6.46.0",
+    "@netlify/plugins-list": "^6.48.0",
     "@netlify/run-utils": "^4.0.2",
     "@netlify/zip-it-and-ship-it": "^7.1.2",
     "@sindresorhus/slugify": "^2.0.0",
