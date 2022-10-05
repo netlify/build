@@ -5,11 +5,8 @@ import test from 'ava'
 import hasAnsi from 'has-ansi'
 import sinon from 'sinon'
 
-// TODO: this need to be done otherwise sinon cannot stub the @netlify/build package due to npm workspace symlinks
-// maybe we can change this if we have a better stubbing library with esm support.
-// Thx to Daniel Tschinder :D
-import { zipItAndShipIt } from '../../../testing/node_modules/@netlify/build/lib/plugins_core/functions/index.js'
 import { CUSTOM_ERROR_KEY } from '../../lib/error/info.js'
+import { zipItAndShipIt } from '../../lib/plugins_core/functions/index.js'
 
 const BUGSNAG_TEST_KEY = '00000000000000000000000000000000'
 

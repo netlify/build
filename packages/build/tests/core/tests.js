@@ -11,9 +11,7 @@ import { pathExists } from 'path-exists'
 import sinon from 'sinon'
 import { tmpName } from 'tmp-promise'
 
-// TODO: this need to be done otherwise sinon cannot stub the @netlify/build package due to npm workspace symlinks
-// maybe we can change this if we have a better stubbing library with esm support.
-import { zipItAndShipIt } from '../../../testing/node_modules/@netlify/build/lib/plugins_core/functions/index.js'
+import { zipItAndShipIt } from '../../lib/plugins_core/functions/index.js'
 import { importJsonFile } from '../../lib/utils/json.js'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
