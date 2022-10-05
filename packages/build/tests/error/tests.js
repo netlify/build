@@ -1,77 +1,96 @@
+import { Fixture, normalizeOutput } from '@netlify/testing'
 import test from 'ava'
 
-import { runFixture } from '../helpers/main.js'
-
 test('exception', async (t) => {
-  await runFixture(t, 'exception')
+  const output = await new Fixture('./fixtures/exception').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('exception with static properties', async (t) => {
-  await runFixture(t, 'exception_props')
+  const output = await new Fixture('./fixtures/exception_props').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('exception with circular references', async (t) => {
-  await runFixture(t, 'exception_circular')
+  const output = await new Fixture('./fixtures/exception_circular').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('exception that are strings', async (t) => {
-  await runFixture(t, 'exception_string')
+  const output = await new Fixture('./fixtures/exception_string').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('exception that are arrays', async (t) => {
-  await runFixture(t, 'exception_array')
+  const output = await new Fixture('./fixtures/exception_array').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Do not log secret values on build errors', async (t) => {
-  await runFixture(t, 'log_secret')
+  const output = await new Fixture('./fixtures/log_secret').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('TOML parsing errors', async (t) => {
-  await runFixture(t, 'toml_parsing')
+  const output = await new Fixture('./fixtures/toml_parsing').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Invalid error instances', async (t) => {
-  await runFixture(t, 'invalid_instance')
+  const output = await new Fixture('./fixtures/invalid_instance').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Top-level errors', async (t) => {
-  await runFixture(t, 'top')
+  const output = await new Fixture('./fixtures/top').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Top function errors local', async (t) => {
-  await runFixture(t, 'function')
+  const output = await new Fixture('./fixtures/function').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Node module all fields', async (t) => {
-  await runFixture(t, 'full')
+  const output = await new Fixture('./fixtures/full').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Node module partial fields', async (t) => {
-  await runFixture(t, 'partial')
+  const output = await new Fixture('./fixtures/partial').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('No repository root', async (t) => {
-  await runFixture(t, 'no_root', { copyRoot: { git: false } })
+  const output = await new Fixture('./fixtures/no_root')
+    .withCopyRoot({ git: false })
+    .then((fixture) => fixture.runWithBuild())
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Process warnings', async (t) => {
-  await runFixture(t, 'warning')
+  const output = await new Fixture('./fixtures/warning').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Uncaught exception', async (t) => {
-  await runFixture(t, 'uncaught')
+  const output = await new Fixture('./fixtures/uncaught').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Unhandled promises', async (t) => {
-  await runFixture(t, 'unhandled_promise')
+  const output = await new Fixture('./fixtures/unhandled_promise').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Exits in plugins', async (t) => {
-  await runFixture(t, 'plugin_exit')
+  const output = await new Fixture('./fixtures/plugin_exit').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('Plugin errors can have a toJSON() method', async (t) => {
-  await runFixture(t, 'plugin_error_to_json')
+  const output = await new Fixture('./fixtures/plugin_error_to_json').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 // Process exit is different on Windows
@@ -80,12 +99,14 @@ test('Plugin errors can have a toJSON() method', async (t) => {
 // See https://github.com/netlify/build/issues/3615
 // if (platform !== 'win32') {
 //   test.skip('Early exit', async (t) => {
-//     await runFixture(t, 'early_exit')
+//     const output = await new Fixture('./fixtures/early_exit').runWithBuild()
+//     t.snapshot(normalizeOutput(output))
 //   })
 // }
 
 test('Redact API token on errors', async (t) => {
-  await runFixture(t, 'api_token_redact', {
-    flags: { token: '0123456789abcdef', deployId: 'test', mode: 'buildbot', testOpts: { host: '...' } },
-  })
+  const output = await new Fixture('./fixtures/api_token_redact')
+    .withFlags({ token: '0123456789abcdef', deployId: 'test', mode: 'buildbot', testOpts: { host: '...' } })
+    .runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })

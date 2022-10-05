@@ -1,6 +1,7 @@
 import { existsSync } from 'fs'
 import { createRequire } from 'module'
-import { normalize } from 'path'
+import { normalize, delimiter } from 'path'
+import { env } from 'process'
 import { fileURLToPath } from 'url'
 
 import test from 'ava'
@@ -9,25 +10,62 @@ import { execa, execaCommand } from 'execa'
 import stringify from 'fast-safe-stringify'
 import { getBinPathSync } from 'get-bin-path'
 import isPlainObj from 'is-plain-obj'
+import { merge } from 'lodash-es'
+import pathKey from 'path-key'
 
 import { createRepoDir, removeDir } from './dir.js'
 import { ServerHandler, startServer, Request } from './server.js'
 
+const ROOT_DIR = fileURLToPath(new URL('../..', import.meta.url))
+
+const BUILD_BIN_DIR = normalize(`${ROOT_DIR}/node_modules/.bin`)
+
 const require = createRequire(import.meta.url)
 
+// TODO: this type should be moved to @netlify/build and @netlify/config as it's the main argument of the entry point
+type Flags = {
+  [key: string]: unknown
+  buffer?: boolean
+  featureFlags?: Record<string, unknown>
+  env: NodeJS.ProcessEnv
+}
+
 export class Fixture {
-  flags: Record<string, unknown> = {
-    stable: true,
+  flags: Partial<Flags> = {
     buffer: true,
-    branch: 'branch',
     featureFlags: {},
   }
 
+  /** list of flags that are used for @netlify/config for testing */
+  configFlags = {
+    stable: true,
+    branch: 'branch',
+  }
+
+  /** list of flags that are used for @netlify/build for testing */
+  buildFlags = {
+    debug: true,
+    testOpts: {
+      silentLingeringProcesses: true,
+      pluginsListUrl: 'test',
+    },
+  }
+
+  /** flags set by `withFlags` */
+  private additionalFlags: Record<string, unknown> = {}
+
   env = {
     // Ensure local environment variables aren't used during development
-    // TODO: check this one
-    // BUILD_TELEMETRY_DISABLED: '',
     NETLIFY_AUTH_TOKEN: '',
+  }
+
+  buildEnv: Record<string, string> = {
+    BUILD_TELEMETRY_DISABLED: '',
+    // Allows executing any locally installed Node modules inside tests,
+    // regardless of the current directory.
+    // This is needed for example to run `yarn` in tests in environments that
+    // do not have a global binary of `yarn`.
+    [pathKey()]: `${env[pathKey()]}${delimiter}${BUILD_BIN_DIR}`,
   }
 
   copyRootDir: string
@@ -37,6 +75,29 @@ export class Fixture {
   /** The binary of @netlify/build */
   private buildBinaryPath = getBinPathSync({ cwd: require.resolve('@netlify/build') })
   private configBinaryPath = getBinPathSync({ cwd: require.resolve('@netlify/config') })
+
+  getConfigFlags(): Flags {
+    return {
+      ...this.flags,
+      ...this.configFlags,
+      ...this.additionalFlags,
+      env: this.env,
+    }
+  }
+
+  getBuildFlags(): Flags {
+    const { testOpts, ...rest } = this.additionalFlags
+    const flags = { ...this.flags, ...this.buildFlags, ...rest, env: { ...this.buildEnv, ...this.env } }
+
+    if (typeof testOpts === 'object') {
+      flags.testOpts = {
+        ...flags.testOpts,
+        ...testOpts,
+      }
+    }
+
+    return flags
+  }
 
   constructor(
     /**
@@ -57,19 +118,35 @@ export class Fixture {
     }
   }
 
-  /** Adds environment variables that are used for the execution  */
-  withEnv(env: Record<string, string> = {}): this {
-    this.env = { ...this.env, ...env }
+  /**
+   * environment variables passed to child processes.
+   * To set environment variables in the parent process
+   */
+  withEnv(environment: Record<string, string> = {}): this {
+    this.env = { ...this.env, ...environment }
     return this
   }
 
-  /** Adds flags that are used for the execution  */
+  /** any flags/options passed to the main command  */
   withFlags(flags: Record<string, unknown> = {}): this {
-    this.flags = { ...this.flags, ...flags }
+    this.additionalFlags = merge({}, this.additionalFlags, flags)
     return this
   }
 
-  async withCopyRoot(copyRoot: object & { cwd?: boolean; git?: boolean; branch?: string } = {}): Promise<this> {
+  /**
+   * copy the fixture directory to a temporary directory.
+   * This is useful when no parent directory should have a `.git` or `package.json`.
+   */
+  async withCopyRoot(
+    // eslint-disable-next-line unicorn/no-object-as-default-parameter
+    copyRoot: {
+      cwd?: boolean
+      /** whether the copied directory should have a `.git`. Default: `true` */
+      git?: boolean
+      /** create a git branch after copy */
+      branch?: string
+    } = { git: true },
+  ): Promise<this> {
     this.copyRootDir = normalize(createRepoDir(copyRoot.git))
     await cpy('**', this.copyRootDir, { cwd: this.repositoryRoot, parents: true })
 
@@ -96,14 +173,8 @@ export class Fixture {
   }
 
   /** Returns a JSON.parsed output of the runBinary function */
-  async runBinaryAsObject(): Promise<object> {
-    const { output } = await this.runBinary()
-    return JSON.parse(output)
-  }
-
-  /** Returns a JSON.parsed output of the runServer function */
-  async runServerAsObject(handler: ServerHandler): Promise<object> {
-    const { output } = await this.runServer(handler)
+  async runConfigBinaryAsObject(): Promise<object> {
+    const { output } = await this.runConfigBinary()
     return JSON.parse(output)
   }
 
@@ -111,11 +182,7 @@ export class Fixture {
   async runWithConfig(): Promise<string> {
     const { resolveConfig } = await import('@netlify/config')
     try {
-      const {
-        logs: { stdout = [], stderr = [] } = {},
-        api,
-        ...result
-      } = await resolveConfig({ ...this.flags, env: this.env })
+      const { logs: { stdout = [], stderr = [] } = {}, api, ...result } = await resolveConfig(this.getConfigFlags())
       const resultA = api === undefined ? result : { ...result, hasApi: true }
       const resultB = stringify.default.stableStringify(resultA, null, 2)
       return [stdout.join('\n'), stderr.join('\n'), resultB].filter(Boolean).join('\n\n')
@@ -126,13 +193,51 @@ export class Fixture {
     }
   }
 
-  async runBinary(cwd?: string) {
+  /** Runs @netlify/build main function programmatic with the provided flags  */
+  async runBuildProgrammatic(): Promise<object> {
+    const { default: build } = await import('@netlify/build')
+    return await build(this.getBuildFlags())
+  }
+
+  async runWithBuild(): Promise<string> {
+    const { default: build } = await import('@netlify/build')
+    const { logs } = await build(this.getBuildFlags())
+    return [logs.stdout.join('\n'), logs.stderr.join('\n')].filter(Boolean).join('\n\n')
+  }
+
+  // TODO: provide better typing if we know what's possible
+  async runDev(devCommand: unknown): Promise<string> {
+    const { startDev } = await import('@netlify/build')
+    const entryPoint = startDev.bind(null, devCommand)
+    const { logs } = await entryPoint(this.getBuildFlags())
+    return [logs.stdout.join('\n'), logs.stderr.join('\n')].filter(Boolean).join('\n\n')
+  }
+
+  /** use the CLI entry point instead of the Node.js main function */
+  runConfigBinary(cwd?: string) {
+    return this.runBinary(this.configBinaryPath, cwd, this.getConfigFlags())
+  }
+
+  /** use the CLI entry point instead of the Node.js main function */
+  runBuildBinary(cwd?: string) {
+    return this.runBinary(this.buildBinaryPath, cwd, this.getBuildFlags())
+  }
+
+  private async runBinary(
+    binary: string,
+    cwd?: string,
+    flags: Partial<Flags> = {},
+  ): Promise<{
+    output: string
+    exitCode: number
+  }> {
+    const { env: environment, ...remainingFlags } = flags
     try {
-      const cliFlags = getCliFlags(this.flags)
-      const { all: output, exitCode } = await execa(this.configBinaryPath, cliFlags, {
+      const cliFlags = getCliFlags(remainingFlags)
+      const { all: output, exitCode } = await execa(binary, cliFlags, {
         all: true,
         reject: false,
-        env: this.env,
+        env: environment || {},
         cwd,
       })
       return { output, exitCode }
@@ -141,11 +246,31 @@ export class Fixture {
     }
   }
 
-  async runServer(handler: ServerHandler): Promise<{ output: string; requests: Request[] }> {
+  /** Run the @netlify/build wrapped with a server and and the provided handler */
+  runBuildServer(handler: ServerHandler): Promise<{ output: string; requests: Request[] }> {
+    return this.runServer(this.runWithBuild, handler)
+  }
+
+  /** Run the @netlify/config wrapped with a server and and the provided handler */
+  runConfigServer(handler: ServerHandler): Promise<{ output: string; requests: Request[] }> {
+    return this.runServer(this.runWithConfig, handler)
+  }
+
+  /** Returns a JSON.parsed output of the runConfigServer function */
+  async runConfigServerAsObject(handler: ServerHandler): Promise<object> {
+    const { output } = await this.runConfigServer(handler)
+    return JSON.parse(output)
+  }
+
+  /** Runs a server and stops it with the provided function and the handler */
+  private async runServer(
+    fn: () => Promise<string>,
+    handler: ServerHandler,
+  ): Promise<{ output: string; requests: Request[] }> {
     const { scheme, host, requests, stopServer } = await startServer(handler)
     try {
       this.withFlags({ testOpts: { scheme, host } })
-      const output = await this.runWithConfig()
+      const output = await fn.bind(this)()
       return { output, requests }
     } finally {
       await stopServer()

@@ -39,7 +39,7 @@ test('--repository-root', async (t) => {
 })
 
 test('--repository-root with cwd', async (t) => {
-  const { output } = await new Fixture().withFlags({ repositoryRoot: 'empty' }).runBinary(FIXTURES_DIR)
+  const { output } = await new Fixture().withFlags({ repositoryRoot: 'empty' }).runConfigBinary(FIXTURES_DIR)
   t.snapshot(normalizeOutput(output))
 })
 

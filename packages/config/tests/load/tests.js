@@ -41,7 +41,7 @@ test('--config with an invalid relative path', async (t) => {
 test('--defaultConfig CLI flag', async (t) => {
   const { output } = await new Fixture('./fixtures/default_merge')
     .withFlags({ defaultConfig: JSON.stringify({ build: { publish: 'publish' } }) })
-    .runBinary()
+    .runConfigBinary()
   t.snapshot(normalizeOutput(output))
 })
 
@@ -83,7 +83,7 @@ test('--defaultConfig ignores pinned versions that are empty strings', async (t)
 test('--inlineConfig CLI flag', async (t) => {
   const { output } = await new Fixture('./fixtures/default_merge')
     .withFlags({ inlineConfig: JSON.stringify({ build: { publish: 'publish' } }) })
-    .runBinary()
+    .runConfigBinary()
   t.snapshot(normalizeOutput(output))
 })
 
@@ -180,15 +180,17 @@ test('--configMutations can mutate functions top-level properties', async (t) =>
 
 test('--cachedConfig CLI flags', async (t) => {
   const returnValue = await new Fixture('./fixtures/cached_config').runWithConfig()
-  const { output } = await new Fixture('./fixtures/default_merge').withFlags({ cachedConfig: returnValue }).runBinary()
+  const { output } = await new Fixture('./fixtures/default_merge')
+    .withFlags({ cachedConfig: returnValue })
+    .runConfigBinary()
   t.snapshot(normalizeOutput(output))
 })
 
 test('--cachedConfigPath CLI flag', async (t) => {
   const cachedConfigPath = await tmpName()
   try {
-    await new Fixture('./fixtures/cached_config').withFlags({ output: cachedConfigPath }).runBinary()
-    await new Fixture('./fixtures/cached_config').withFlags({ cachedConfigPath, context: 'test' }).runBinary()
+    await new Fixture('./fixtures/cached_config').withFlags({ output: cachedConfigPath }).runConfigBinary()
+    await new Fixture('./fixtures/cached_config').withFlags({ cachedConfigPath, context: 'test' }).runConfigBinary()
     t.pass()
   } finally {
     await fs.unlink(cachedConfigPath)
@@ -256,7 +258,7 @@ test('featureFlags can be used programmatically', async (t) => {
 test('featureFlags can be used in the CLI', async (t) => {
   const { output } = await new Fixture('./fixtures/empty')
     .withFlags({ featureFlags: { test: true, testTwo: false } })
-    .runBinary()
+    .runConfigBinary()
   t.snapshot(normalizeOutput(output))
 })
 
