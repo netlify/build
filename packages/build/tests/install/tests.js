@@ -1,11 +1,10 @@
-// import { version } from 'process'
-
+import { version } from 'process'
 import { fileURLToPath } from 'url'
 
 import { Fixture, normalizeOutput, removeDir } from '@netlify/testing'
 import test from 'ava'
 import { pathExists } from 'path-exists'
-// import semver from 'semver'
+import semver from 'semver'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
@@ -97,8 +96,7 @@ test('Functions: does not print warnings when dependency was local', async (t) =
   t.false(await pathExists(`${FIXTURES_DIR}/local_dep/functions/node_modules/`))
 })
 
-// Broken with npm 8.11 til 8.12, enable once newer npm version is standard in gh actions
-test.skip('Functions: install dependencies handles errors', async (t) => {
+test('Functions: install dependencies handles errors', async (t) => {
   await runInstallFixture(t, 'functions_error')
 })
 
@@ -106,24 +104,20 @@ test('Install local plugin dependencies: with npm', async (t) => {
   await runInstallFixture(t, 'npm', [`${FIXTURES_DIR}/npm/plugin/node_modules/`])
 })
 
-// @todo: enable those tests for Node <14.0.0
-// @todo: uncomment after upgrading to Ava v4.
-// See https://github.com/netlify/build/issues/3615
-// if (semver.gteVersion(version, '14.0.0')) {
-//   test.skip('Install local plugin dependencies: with yarn locally', async (t) => {
-//     await runInstallFixture(t, 'yarn', [`${FIXTURES_DIR}/yarn/plugin/node_modules/`], { useBinary: true })
-//   })
+if (semver.satisfies(version, '>=14.0.0')) {
+  test('Install local plugin dependencies: with yarn locally', async (t) => {
+    await runInstallFixture(t, 'yarn', [`${FIXTURES_DIR}/yarn/plugin/node_modules/`], { useBinary: true })
+  })
 
-//   test.skip('Install local plugin dependencies: with yarn in CI', async (t) => {
-//     await runInstallFixture(t, 'yarn_ci', [`${FIXTURES_DIR}/yarn_ci/plugin/node_modules/`], {
-//       useBinary: true,
-//       flags: { mode: 'buildbot' },
-//     })
-//   })
-// }
+  test('Install local plugin dependencies: with yarn in CI', async (t) => {
+    await runInstallFixture(t, 'yarn_ci', [`${FIXTURES_DIR}/yarn_ci/plugin/node_modules/`], {
+      useBinary: true,
+      flags: { mode: 'buildbot' },
+    })
+  })
+}
 
-// Broken with npm 8.11 til 8.12, enable once newer npm version is standard in gh actions
-test.skip('Install local plugin dependencies: propagate errors', async (t) => {
+test('Install local plugin dependencies: propagate errors', async (t) => {
   const output = await new Fixture('./fixtures/error').runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
