@@ -1,4 +1,4 @@
-# Snapshot report for `packages/build/tests/plugins/tests.js`
+# Snapshot report for `tests/plugins/tests.js`
 
 The actual snapshot is saved in `tests.js.snap`.
 
