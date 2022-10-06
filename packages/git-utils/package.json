@@ -10,7 +10,6 @@
   ],
   "author": "Netlify Inc.",
   "scripts": {
-    "prepublishOnly": "cd ../../ && npm run prepublishOnly",
     "prebuild": "rm -rf lib",
     "build": "cp -a src lib/",
     "test:dev": "ava",
