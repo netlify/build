@@ -2,3 +2,5 @@
 packages/*/tests/**/fixtures/**
 # don't lint outputs
 packages/*/lib
+# don't lint changelog files as they get auto-generated
+CHANGELOG.md
