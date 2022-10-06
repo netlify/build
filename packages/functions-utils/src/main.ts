@@ -35,7 +35,7 @@ const getSrcGlob = async function (src, srcBasename) {
   return srcBasename
 }
 
-export const list = async function (functionsSrc, { fail = defaultFail } = {}) {
+export const list = async function (functionsSrc, { fail = defaultFail } = {} as any) {
   if (functionsSrc === undefined || functionsSrc.length === 0) {
     return fail('No function directory was specified')
   }
@@ -47,7 +47,7 @@ export const list = async function (functionsSrc, { fail = defaultFail } = {}) {
   }
 }
 
-export const listAll = async function (functionsSrc, { fail = defaultFail } = {}) {
+export const listAll = async function (functionsSrc, { fail = defaultFail } = {} as any) {
   if (functionsSrc === undefined || functionsSrc.length === 0) {
     return fail('No function directory was specified')
   }
