@@ -24,6 +24,20 @@
   - dependencies
     - @netlify/config bumped from ^18.2.0 to ^18.2.1
 
+## [27.20.2](https://github.com/netlify/build/compare/build-v27.20.1...build-v27.20.2) (2022-10-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.48.0 ([#4567](https://github.com/netlify/build/issues/4567)) ([9a2964c](https://github.com/netlify/build/commit/9a2964cf1689bfd9754ecfcb6944ddfb4ec8e19c))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/cache-utils bumped from ^4.1.5 to ^4.1.6
+
 ## [27.20.1](https://github.com/netlify/build/compare/build-v27.20.0...build-v27.20.1) (2022-10-03)
 
 ### Bug Fixes

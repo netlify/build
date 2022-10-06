@@ -18,7 +18,6 @@
     "David Wells <hello@davidwells.io> (https://davidwells.io/)"
   ],
   "scripts": {
-    "prepublishOnly": "cd ../../ && npm run prepublishOnly",
     "prebuild": "rm -rf lib",
     "build": "tsc",
     "test": "ava",
