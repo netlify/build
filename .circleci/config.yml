@@ -1,5 +1,9 @@
 version: 2.1
 
+orbs:
+  win: circleci/windows@5.0.0
+  node: circleci/node@5.0.3
+
 workflows:
   release:
     jobs:
@@ -19,7 +23,21 @@ workflows:
 
   'Test & Check 🕵️‍♀️':
     jobs:
-      - formatting
+      - formatting:
+          filters:
+            branches:
+              # don't run this job on a release PR branch
+              ignore: /^move-testing-.*$/
+      - test:
+          matrix:
+            parameters:
+              os: [linux, macos, windows]
+              node-version: ['12.20.0', '18.10.0']
+      - test-netlify-build:
+          matrix:
+            parameters:
+              os: [linux, macos, windows]
+              node-version: ['12.20.0', '18.10.0']
 
 executors:
   node:
@@ -27,25 +45,38 @@ executors:
       - image: cimg/node:18.10.0
   windows:
     machine:
-      image: windows-server-2019-vs2019:stable
-    resource_class: windows.xlarge
-    shell: powershell.exe -ExecutionPolicy Bypass
+      image: windows-server-2022-gui:current
+    resource_class: windows.large
+    shell: bash.exe
   linux:
     machine:
       image: ubuntu-2004:202201-02
-    resource_class: large
+    resource_class: medium
   macos:
     resource_class: macos.x86.medium.gen2 # new generation resources
     macos:
       xcode: 13.0.0
 
 commands:
+  install-deno:
+    steps:
+      - run:
+          name: Install deno
+          command: |
+            curl -fsSL https://deno.land/install.sh | bash -s v1.0.0
+
+            echo 'export DENO_INSTALL="/Users/distiller/.deno"' >> "$BASH_ENV"
+            echo 'export PATH="$DENO_INSTALL/bin:$PATH"' >> "$BASH_ENV"
+
+            source "$BASH_ENV"
+            deno --version
+
   npm-install-deps:
     parameters:
       command:
         description: The install command that is used
         type: string
-        default: npm ci
+        default: npm install
     steps:
       - restore_cache:
           keys:
@@ -94,3 +125,48 @@ jobs:
       - npm-install-deps
       - run: npm run format:ci
       - run: npm run lint:ci
+
+  test:
+    parameters:
+      os:
+        type: string
+      node-version:
+        type: string
+    executor: << parameters.os >>
+    steps:
+      - checkout
+      - node/install:
+          node-version: '<< parameters.node-version >>'
+      - run: nvm use << parameters.node-version >> # This is needed on windows machines
+      - run: node --version
+      - npm-install-deps
+      - run: |
+          ls -lah node_modules/@netlify
+      # - run: npx lerna bootstrap
+      - run: npm run build
+      # - run: npx nx affected --base=origin/main --target test:ci --exclude=@netlify/build
+
+  test-netlify-build:
+    parameters:
+      os:
+        type: string
+      node-version:
+        type: string
+    executor: << parameters.os >>
+    parallelism: 4
+    environment:
+      CI_NODE_INDEX: $CIRCLE_NODE_INDEX
+      CI_NODE_TOTAL: $CIRCLE_NODE_TOTAL
+    steps:
+      - checkout
+      - node/install:
+          node-version: '<< parameters.node-version >>'
+      - run: nvm use << parameters.node-version >> # This is needed on windows machines
+      - run: node --version
+      - npm-install-deps:
+          command: npm install
+      - run: |
+          echo CI_NODE_INDEX: $CI_NODE_INDEX
+          echo CI_NODE_TOTAL: $CI_NODE_TOTAL
+      - install-deno
+      - run: deno --version

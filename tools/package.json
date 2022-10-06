@@ -1,0 +1,11 @@
+{
+  "name": "tools",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Tooling for the mono repository",
+  "scripts": {},
+  "author": "Lukas Holzer <lukas.holzer@netlify.com>",
+  "license": "MIT",
+  "devDependencies": {}
+}
