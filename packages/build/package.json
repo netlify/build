@@ -24,7 +24,7 @@
     "prepublishOnly": "cd ../../ && npm run prepublishOnly",
     "prebuild": "rm -rf lib",
     "build": "tsc",
-    "pretest": "tsd .",
+    "pretes": "tsd .",
     "test": "ava",
     "test:ci": "c8 -r lcovonly -r text -r json ava",
     "test:measure": "node tools/tests_duration.mjs"
