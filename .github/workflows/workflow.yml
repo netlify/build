@@ -6,39 +6,6 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
-  build:
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 10
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macOS-latest, windows-latest]
-        node-version: ['*']
-    steps:
-      # Sets an output parameter if this is a release PR
-      - name: Check for release
-        id: release-check
-        run: echo "::set-output name=IS_RELEASE::true"
-        if: ${{ startsWith(github.head_ref, 'release-') }}
-      - name: Git checkout
-        uses: actions/checkout@v3
-        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
-      - name: Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
-      - name: Install dependencies
-        run: npm ci
-        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
-      - name: Build workspaces
-        run: npm run build
-        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
-      - name: Linting
-        run: |
-          npm run format:ci
-          npm run lint:ci
-        if: ${{ !steps.release-check.outputs.IS_RELEASE }}
   test:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
