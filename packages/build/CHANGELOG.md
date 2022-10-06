@@ -24,6 +24,13 @@
   - dependencies
     - @netlify/config bumped from ^18.2.0 to ^18.2.1
 
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^4.2.10 to ^4.2.11
+    * @netlify/git-utils bumped from ^4.1.2 to ^4.1.3
+
 ## [27.20.2](https://github.com/netlify/build/compare/build-v27.20.1...build-v27.20.2) (2022-10-06)
 
 

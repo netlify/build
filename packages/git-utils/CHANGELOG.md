@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.3](https://github.com/netlify/build/compare/git-utils-v4.1.2...git-utils-v4.1.3) (2022-10-06)
+
+
+### Bug Fixes
+
+* migrate to ts ([#4570](https://github.com/netlify/build/issues/4570)) ([9451924](https://github.com/netlify/build/commit/945192426ce9e0d7e14cf88a58a7de6277757cbb))
+
 ## [4.1.2](https://github.com/netlify/build/compare/git-utils-v4.1.1...git-utils-v4.1.2) (2022-09-26)
 
 ### Bug Fixes
