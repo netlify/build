@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.6](https://github.com/netlify/build/compare/cache-utils-v4.1.5...cache-utils-v4.1.6) (2022-10-06)
+
+
+### Bug Fixes
+
+* move the expire file of cache-utils to typescript ([#4574](https://github.com/netlify/build/issues/4574)) ([1321dc4](https://github.com/netlify/build/commit/1321dc4443f738107a83060a6760d8b8bd23edb5))
+
 ## [4.1.5](https://github.com/netlify/build/compare/cache-utils-v4.1.4...cache-utils-v4.1.5) (2022-09-26)
 
 ### Bug Fixes
