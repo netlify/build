@@ -13,12 +13,7 @@
     "test": "lerna run test",
     "test:ci": "lerna run test:ci",
     "format": "prettier --write .",
-    "format:ci": "prettier --check .",
-    "prepublishOnly": "run-s prepublishOnly:*",
-    "prepublishOnly:checkout": "run-local \"git checkout main\"",
-    "prepublishOnly:pull": "run-local \"git pull\"",
-    "prepublishOnly:install": "run-local \"npm ci\"",
-    "prepublishOnly:test": "run-local \"npm test\""
+    "format:ci": "prettier --check ."
   },
   "workspaces": [
     "packages/*"
