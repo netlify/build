@@ -67,6 +67,12 @@ jobs:
       - run: npm run build
       - run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
       - run: npx lerna publish from-package --yes --no-private
+      - run:
+          name: Create Github Release
+          command: |
+            npx release-please github-release \
+              --token "${GITHUB_RELEASES_TOKEN}" \
+              --repo-url "${CIRCLE_REPOSITORY_URL}" \
 
   release-please:
     description: Update and creates release PRs on the main branch
