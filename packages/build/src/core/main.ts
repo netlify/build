@@ -48,7 +48,7 @@ export default async function buildSite(flags = {}) {
     buildId,
     deployId,
     ...flagsA
-  } = startBuild(flags)
+  }: any = startBuild(flags)
   const errorParams = { errorMonitor, mode, logs, debug, testOpts }
 
   try {
@@ -99,8 +99,8 @@ export default async function buildSite(flags = {}) {
     })
     return { success, severityCode, netlifyConfig: netlifyConfigA, logs, configMutations }
   } catch (error) {
-    const { severity } = await handleBuildError(error, errorParams)
-    const { pluginsOptions, siteInfo, userNodeVersion } = errorParams
+    const { severity } = await handleBuildError(error, errorParams as any)
+    const { pluginsOptions, siteInfo, userNodeVersion }: any = errorParams
     const { success, severityCode, status } = getSeverity(severity)
     await telemetryReport({
       buildId,
@@ -144,7 +144,7 @@ const telemetryReport = async function ({
   framework,
   testOpts,
   errorParams,
-}) {
+}: any) {
   try {
     await trackBuildComplete({
       deployId,
