@@ -1,8 +1,6 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "module": "none",
-    "moduleResolution": "node",
     "outDir": "lib" /* Specify an output folder for all emitted files. */
   },
   "include": ["src/**/*.js", "src/**/*.ts"],
