@@ -24,9 +24,9 @@
     "prebuild": "rm -rf lib",
     "build": "cp -a src lib/",
     "pretest": "tsd .",
-    "test": "ava",
+    "test": "ava tests/time/tests.js",
     "test:ci": "c8 -r lcovonly -r text -r json ava",
-    "test:measure": "node tools/tests_duration.mjs"
+    "test:measure": "../../tools/tests-duration.js"
   },
   "keywords": [
     "nodejs",
