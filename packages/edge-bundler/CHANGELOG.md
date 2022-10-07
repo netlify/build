@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.7.0](https://github.com/netlify/edge-bundler/compare/v2.6.0...v2.7.0) (2022-10-07)
+
+
+### Features
+
+* vendor eszip Deno module ([#141](https://github.com/netlify/edge-bundler/issues/141)) ([cdec76c](https://github.com/netlify/edge-bundler/commit/cdec76c3faa65cfcbb8ea133fd7d3efc2fa8dd62))
+
 ## [2.6.0](https://github.com/netlify/edge-bundler/compare/v2.5.0...v2.6.0) (2022-10-03)
 
 
