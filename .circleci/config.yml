@@ -91,6 +91,7 @@ jobs:
     executor: node
     steps:
       - checkout
-      - npm-install-deps
+      - npm-install-deps:
+          command: npm install
       - run: npm run format:ci
       - run: npm run lint:ci
