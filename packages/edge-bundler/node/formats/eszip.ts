@@ -5,6 +5,7 @@ import { DenoBridge } from '../bridge.js'
 import type { Bundle } from '../bundle.js'
 import { wrapBundleError } from '../bundle_error.js'
 import { EdgeFunction } from '../edge_function.js'
+import { FeatureFlags } from '../feature_flags.js'
 import { ImportMap } from '../import_map.js'
 import { getPackagePath } from '../package_json.js'
 import { getFileHash } from '../utils/sha256.js'
@@ -15,6 +16,7 @@ interface BundleESZIPOptions {
   debug?: boolean
   deno: DenoBridge
   distDirectory: string
+  featureFlags: FeatureFlags
   functions: EdgeFunction[]
   importMap: ImportMap
 }
@@ -25,12 +27,13 @@ const bundleESZIP = async ({
   debug,
   deno,
   distDirectory,
+  featureFlags,
   functions,
   importMap,
 }: BundleESZIPOptions): Promise<Bundle> => {
   const extension = '.eszip'
   const destPath = join(distDirectory, `${buildID}${extension}`)
-  const bundler = getESZIPBundler()
+  const { bundler, importMap: bundlerImportMap } = getESZIPPaths()
   const payload: WriteStage2Options = {
     basePath,
     destPath,
@@ -41,6 +44,12 @@ const bundleESZIP = async ({
 
   if (!debug) {
     flags.push('--quiet')
+  }
+
+  // To actually vendor the eszip module, we need to supply the import map that
+  // redirects `https://deno.land/` URLs to the local files.
+  if (featureFlags.edge_functions_use_vendored_eszip) {
+    flags.push(`--import-map=${bundlerImportMap}`)
   }
 
   try {
@@ -54,11 +63,13 @@ const bundleESZIP = async ({
   return { extension, format: 'eszip2', hash }
 }
 
-const getESZIPBundler = () => {
-  const packagePath = getPackagePath()
-  const bundlerPath = join(packagePath, 'deno', 'bundle.ts')
+const getESZIPPaths = () => {
+  const denoPath = join(getPackagePath(), 'deno')
 
-  return bundlerPath
+  return {
+    bundler: join(denoPath, 'bundle.ts'),
+    importMap: join(denoPath, 'vendor', 'import_map.json'),
+  }
 }
 
 export { bundleESZIP as bundle }

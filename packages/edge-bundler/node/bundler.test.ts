@@ -47,7 +47,7 @@ test('Produces a JavaScript bundle and a manifest file', async () => {
   expect(result.manifest).toEqual(manifest)
 
   await fs.rmdir(tmpDir.path, { recursive: true })
-}, 10_000)
+})
 
 test('Produces only a ESZIP bundle when the `edge_functions_produce_eszip` feature flag is set', async () => {
   const sourceDirectory = resolve(fixturesDir, 'with_import_maps', 'functions')
@@ -86,7 +86,47 @@ test('Produces only a ESZIP bundle when the `edge_functions_produce_eszip` featu
   expect(generatedFiles.includes(bundles[0].asset)).toBe(true)
 
   await fs.rmdir(tmpDir.path, { recursive: true })
-}, 10_000)
+})
+
+test('Uses the vendored eszip module instead of fetching it from deno.land', async () => {
+  const sourceDirectory = resolve(fixturesDir, 'with_import_maps', 'functions')
+  const tmpDir = await tmp.dir()
+  const declarations = [
+    {
+      function: 'func1',
+      path: '/func1',
+    },
+  ]
+  const result = await bundle([sourceDirectory], tmpDir.path, declarations, {
+    basePath: fixturesDir,
+    featureFlags: {
+      edge_functions_produce_eszip: true,
+      edge_functions_use_vendored_eszip: true,
+    },
+    importMaps: [
+      {
+        baseURL: pathToFileURL(join(fixturesDir, 'import-map.json')),
+        imports: {
+          'alias:helper': pathToFileURL(join(fixturesDir, 'helper.ts')).toString(),
+        },
+      },
+    ],
+  })
+  const generatedFiles = await fs.readdir(tmpDir.path)
+
+  expect(result.functions.length).toBe(1)
+  expect(generatedFiles.length).toBe(2)
+
+  const manifestFile = await fs.readFile(resolve(tmpDir.path, 'manifest.json'), 'utf8')
+  const manifest = JSON.parse(manifestFile)
+  const { bundles } = manifest
+
+  expect(bundles.length).toBe(1)
+  expect(bundles[0].format).toBe('eszip2')
+  expect(generatedFiles.includes(bundles[0].asset)).toBe(true)
+
+  await fs.rmdir(tmpDir.path, { recursive: true })
+})
 
 test('Adds a custom error property to user errors during bundling', async () => {
   expect.assertions(2)
@@ -112,7 +152,7 @@ test('Adds a custom error property to user errors during bundling', async () => 
       type: 'functionsBundling',
     })
   }
-}, 10_000)
+})
 
 test('Does not add a custom error property to system errors during bundling', async () => {
   expect.assertions(1)
@@ -181,7 +221,7 @@ test('Uses the cache directory as the `DENO_DIR` value if the `edge_functions_ca
   expect(denoDir2.includes('gen')).toBe(true)
 
   await fs.rmdir(outDir.path, { recursive: true })
-}, 10_000)
+})
 
 test('Supports import maps with relative paths', async () => {
   const sourceDirectory = resolve(fixturesDir, 'with_import_maps', 'functions')
@@ -220,7 +260,7 @@ test('Supports import maps with relative paths', async () => {
   expect(generatedFiles.includes(bundles[0].asset)).toBe(true)
 
   await fs.rmdir(tmpDir.path, { recursive: true })
-}, 10_000)
+})
 
 test('Ignores any user-defined `deno.json` files', async () => {
   const fixtureDir = join(fixturesDir, 'with_import_maps')
@@ -285,4 +325,4 @@ test('Ignores any user-defined `deno.json` files', async () => {
   ).not.toThrow()
 
   await del([tmpDir.path, denoConfigPath, importMapFile.path], { force: true })
-}, 10_000)
+})
