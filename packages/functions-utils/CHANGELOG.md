@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.2.11](https://github.com/netlify/build/compare/functions-utils-v4.2.10...functions-utils-v4.2.11) (2022-10-06)
+
+
+### Bug Fixes
+
+* migrate functions-utils ([#4572](https://github.com/netlify/build/issues/4572)) ([7c30981](https://github.com/netlify/build/commit/7c309811801d34919c23ffc96b17169f2f74c75b))
+
 ## [4.2.10](https://github.com/netlify/build/compare/functions-utils-v4.2.9...functions-utils-v4.2.10) (2022-09-26)
 
 ### Bug Fixes
