@@ -4,3 +4,4 @@ packages/*/tests/**/fixtures/**
 packages/*/lib
 # don't lint changelog files as they get auto-generated
 CHANGELOG.md
+coverage

@@ -1,18 +1,17 @@
-/* eslint-disable node/no-unpublished-import */
+#!/usr/bin/env node
 import { promises as fs } from 'fs'
+import { resolve } from 'path'
 
 import { execa } from 'execa'
 import { globby } from 'globby'
 
-import config from '../ava.config.js'
-
 const CI_MACHINES = 4
 
 const measureDurations = async () => {
+  const { default: config } = await import(resolve('ava.config.js'))
   const testFiles = await globby(config.files)
 
   const durations = new Map()
-  // eslint-disable-next-line fp/no-loops
   for (const testFile of testFiles) {
     const startTime = performance.now()
     const { stdout } = await execa('ava', [testFile], { preferLocal: true, reject: false })
@@ -31,9 +30,8 @@ const distributeToMachines = (durations) => {
   const filesMachines = new Map()
 
   // we implement a greedy algorithm to distribute the tests to the CI machines
-  const descendingDurations = [...durations.entries()].sort(([_, duration1], [__, duration2]) => duration2 - duration1)
+  const descendingDurations = [...durations.entries()].sort(([, duration1], [, duration2]) => duration2 - duration1)
   const machinesSums = new Array(CI_MACHINES).fill(0)
-  // eslint-disable-next-line fp/no-loops
   for (const [file, duration] of descendingDurations) {
     const machine = machinesSums.indexOf(Math.min(...machinesSums))
     machinesSums[machine] += duration
@@ -44,7 +42,6 @@ const distributeToMachines = (durations) => {
 }
 
 const getOrder = (filesMachines) => {
-  // eslint-disable-next-line fp/no-mutating-methods
   const orderArray = [...filesMachines.entries()]
     .sort(([file1, { machine: machine1 }], [file2, { machine: machine2 }]) => {
       if (machine1 === machine2) {
@@ -66,5 +63,3 @@ const main = async () => {
 }
 
 main()
-
-/* eslint-enable node/no-unpublished-import */

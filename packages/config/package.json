@@ -21,9 +21,7 @@
     "prebuild": "rm -rf lib",
     "build": "tsc",
     "test": "ava",
-    "test:ci": "c8 -r lcovonly -r text -r json ava",
-    "test:measure": "node tools/tests_duration.mjs",
-    "lint": "eslint . --ignore-path ../../.gitignore"
+    "test:ci": "c8 -r lcovonly -r text -r json ava"
   },
   "keywords": [
     "javascript",
