@@ -13,7 +13,6 @@
   },
   "scripts": {
     "prebuild": "rm -rf lib",
-    "postbuild": "cd src && find ./ -name '*.yml' -exec rsync -R  {} ../lib/ \";\" && cd ..",
     "build": "tsc"
   },
   "devDependencies": {

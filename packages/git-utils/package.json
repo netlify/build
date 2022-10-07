@@ -13,7 +13,6 @@
   "scripts": {
     "prebuild": "rm -rf lib",
     "build": "tsc",
-    "postbuild": "cd src && find ./ -name '*.yml' -exec rsync -R  {} ../lib/ \";\" && cd ..",
     "test:dev": "ava",
     "test:ci": "c8 -r lcovonly -r text -r json ava",
     "test:measure": "node tools/tests_duration.mjs"

@@ -12,7 +12,6 @@
   "author": "Netlify Inc.",
   "scripts": {
     "prebuild": "rm -rf lib",
-    "postbuild": "cd src && find ./ -name '*.yml' -exec rsync -R  {} ../lib/ \";\" && cd ..",
     "build": "tsc",
     "test": "ava",
     "test:ci": "c8 -r lcovonly -r text -r json ava",
