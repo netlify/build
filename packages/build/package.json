@@ -25,7 +25,7 @@
     "postbuild": "cd src && find ./ -name '*.yml' -exec rsync -R  {} ../lib/ \";\" && cd ..",
     "build": "tsc",
     "pretest": "tsd .",
-    "test": "ava tests/time/tests.js",
+    "test": "ava",
     "test:ci": "c8 -r lcovonly -r text -r json ava",
     "test:measure": "../../tools/tests-duration.js"
   },
