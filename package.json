@@ -16,6 +16,7 @@
     "format:ci": "prettier --check ."
   },
   "workspaces": [
+    "tools",
     "packages/*"
   ],
   "keywords": [
@@ -55,8 +56,6 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-ava": "^13.2.0",
     "eslint-plugin-import": "^2.26.0",
-    "execa": "^6.1.0",
-    "globby": "^13.1.1",
     "husky": "^8.0.0",
     "lerna": "^5.5.2",
     "lint-staged": "^13.0.3",

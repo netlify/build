@@ -25,9 +25,9 @@
     "postbuild": "cd src && find ./ -name '*.yml' -exec rsync -R  {} ../lib/ \";\" && cd ..",
     "build": "tsc",
     "pretest": "tsd .",
-    "test": "ava",
+    "test": "ava tests/time/tests.js",
     "test:ci": "c8 -r lcovonly -r text -r json ava",
-    "test:measure": "node tools/tests_duration.mjs"
+    "test:measure": "../../tools/tests-duration.js"
   },
   "keywords": [
     "nodejs",
@@ -65,10 +65,10 @@
     "@bugsnag/js": "^7.0.0",
     "@netlify/cache-utils": "^4.1.6",
     "@netlify/config": "^18.2.4",
-    "@netlify/edge-bundler": "^2.6.0",
+    "@netlify/edge-bundler": "^2.7.0",
     "@netlify/functions-utils": "^4.2.11",
     "@netlify/git-utils": "^4.1.3",
-    "@netlify/plugins-list": "^6.48.0",
+    "@netlify/plugins-list": "^6.49.1",
     "@netlify/run-utils": "^4.0.2",
     "@netlify/zip-it-and-ship-it": "^7.1.2",
     "@sindresorhus/slugify": "^2.0.0",

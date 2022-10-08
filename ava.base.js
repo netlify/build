@@ -1,12 +1,11 @@
-import fs from 'fs'
+import fs, { existsSync } from 'fs'
 import path from 'path'
 import process from 'process'
-import { fileURLToPath } from 'url'
 
 import { isCI } from 'ci-info'
 
-// `tests-metadata.json` is created by running `npm run test:measure`
-const testData = JSON.parse(fs.readFileSync(fileURLToPath(new URL('tests-metadata.json', import.meta.url))))
+// `tests-metadata.json` is created by running `npx lerna run test:measure --scope @netlify/build`
+const testData = existsSync('tests-metadata.json') ? JSON.parse(fs.readFileSync('tests-metadata.json', 'utf-8')) : {}
 
 const getOrder = (file) => {
   const fileRelative = path.relative(process.cwd(), file).replace(/\\/g, '/')

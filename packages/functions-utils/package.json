@@ -14,8 +14,7 @@
     "prebuild": "rm -rf lib",
     "build": "tsc",
     "test": "ava",
-    "test:ci": "c8 -r lcovonly -r text -r json ava",
-    "test:measure": "node tools/tests_duration.mjs"
+    "test:ci": "c8 -r lcovonly -r text -r json ava"
   },
   "keywords": [
     "nodejs",
