@@ -1,6 +1,6 @@
 {
   "name": "@netlify/build",
-  "version": "27.20.5",
+  "version": "27.20.6",
   "description": "Netlify build module",
   "type": "module",
   "exports": "./lib/core/main.js",
@@ -64,7 +64,7 @@
   "dependencies": {
     "@bugsnag/js": "^7.0.0",
     "@netlify/cache-utils": "^4.1.6",
-    "@netlify/config": "^18.2.5",
+    "@netlify/config": "^18.2.6",
     "@netlify/edge-bundler": "^2.7.0",
     "@netlify/functions-utils": "^4.2.11",
     "@netlify/git-utils": "^4.1.4",
@@ -119,7 +119,7 @@
     "yargs": "^17.3.1"
   },
   "devDependencies": {
-    "@netlify/nock-udp": "^1.0.0",
+    "@netlify/nock-udp": "^2.0.0",
     "atob": "^2.1.2",
     "ava": "^4.0.0",
     "c8": "^7.12.0",
