@@ -1,6 +1,6 @@
 {
-  "packages/build": "27.20.3",
-  "packages/build-info": "4.0.10",
+  "packages/build": "27.20.4",
+  "packages/build-info": "4.0.11",
   "packages/cache-utils": "4.1.6",
   "packages/config": "18.2.4",
   "packages/functions-utils": "4.2.11",
