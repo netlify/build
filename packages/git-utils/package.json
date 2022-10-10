@@ -13,7 +13,7 @@
   "scripts": {
     "prebuild": "rm -rf lib",
     "build": "tsc",
-    "test:dev": "ava",
+    "test": "ava",
     "test:ci": "c8 -r lcovonly -r text -r json ava"
   },
   "keywords": [
