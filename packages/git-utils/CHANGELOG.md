@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.4](https://github.com/netlify/build/compare/git-utils-v4.1.3...git-utils-v4.1.4) (2022-10-10)
+
+
+### Bug Fixes
+
+* **headers-parser:** move headers-parser to monorepo and add types ([#4594](https://github.com/netlify/build/issues/4594)) ([b2d8078](https://github.com/netlify/build/commit/b2d8078349ba6bf09ad5ca3cbffd0018639a2042))
+
 ## [4.1.3](https://github.com/netlify/build/compare/git-utils-v4.1.2...git-utils-v4.1.3) (2022-10-06)
 
 
