@@ -1,0 +1,44 @@
+{
+  "name": "@netlify/build-info",
+  "version": "4.0.11",
+  "description": "Build info utility",
+  "type": "module",
+  "exports": "./lib/main.js",
+  "main": "./lib/main.js",
+  "types": "./lib/main.d.ts",
+  "bin": {
+    "build-info": "./bin.js"
+  },
+  "files": [
+    "bin.js",
+    "lib/**/*"
+  ],
+  "scripts": {
+    "prebuild": "rm -rf lib",
+    "build": "tsc",
+    "test": "ava",
+    "test:ci": "c8 -r lcovonly -r text -r json ava"
+  },
+  "keywords": [],
+  "license": "MIT",
+  "repository": "netlify/build-info",
+  "bugs": {
+    "url": "https://github.com/netlify/build/issues"
+  },
+  "author": "Netlify Inc.",
+  "dependencies": {
+    "@netlify/framework-info": "^9.3.0",
+    "@npmcli/map-workspaces": "^2.0.0",
+    "read-pkg": "^7.0.0",
+    "yargs": "^17.0.0"
+  },
+  "devDependencies": {
+    "ava": "^4.0.0",
+    "c8": "^7.11.0",
+    "execa": "^6.0.0",
+    "get-bin-path": "^6.0.0"
+  },
+  "engines": {
+    "node": "^12.20.0 || ^14.14.0 || >=16.0.0"
+  }
+}
