@@ -31,6 +31,22 @@
     * @netlify/functions-utils bumped from ^4.2.10 to ^4.2.11
     * @netlify/git-utils bumped from ^4.1.2 to ^4.1.3
 
+## [27.20.5](https://github.com/netlify/build/compare/build-v27.20.4...build-v27.20.5) (2022-10-10)
+
+
+### Bug Fixes
+
+* migrate build package to Typescript ([#4565](https://github.com/netlify/build/issues/4565)) ([8e26956](https://github.com/netlify/build/commit/8e26956ba602a3b869489ed7375c3788ef101bc1))
+* move js-client to mono repository and add types ([#4592](https://github.com/netlify/build/issues/4592)) ([7b7c926](https://github.com/netlify/build/commit/7b7c926390c4cb58f8d48688f7a8b928287a3184))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^18.2.4 to ^18.2.5
+    * @netlify/git-utils bumped from ^4.1.3 to ^4.1.4
+
 ## [27.20.4](https://github.com/netlify/build/compare/build-v27.20.3...build-v27.20.4) (2022-10-10)
 
 

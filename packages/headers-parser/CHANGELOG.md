@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.0.3](https://github.com/netlify/build/compare/netlify-headers-parser-v6.0.2...netlify-headers-parser-v6.0.3) (2022-10-10)
+
+
+### Bug Fixes
+
+* **headers-parser:** move headers-parser to monorepo and add types ([#4594](https://github.com/netlify/build/issues/4594)) ([b2d8078](https://github.com/netlify/build/commit/b2d8078349ba6bf09ad5ca3cbffd0018639a2042))
+
 ### [6.0.2](https://github.com/netlify/netlify-headers-parser/compare/v6.0.1...v6.0.2) (2022-02-14)
 
 

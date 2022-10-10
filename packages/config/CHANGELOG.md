@@ -1,5 +1,13 @@
 # Changelog
 
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^12.0.1 to ^12.0.2
+    * netlify-headers-parser bumped from ^6.0.2 to ^6.0.3
+    * netlify-redirect-parser bumped from 13.0.5 to ^13.0.6
+
 ## [18.2.4](https://github.com/netlify/build/compare/config-v18.2.3...config-v18.2.4) (2022-09-26)
 
 ### Bug Fixes
