@@ -31,6 +31,14 @@
     * @netlify/functions-utils bumped from ^4.2.10 to ^4.2.11
     * @netlify/git-utils bumped from ^4.1.2 to ^4.1.3
 
+## [27.20.4](https://github.com/netlify/build/compare/build-v27.20.3...build-v27.20.4) (2022-10-10)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to ^2.7.0 ([#4581](https://github.com/netlify/build/issues/4581)) ([cdfb574](https://github.com/netlify/build/commit/cdfb5747cfc012d997b3329536f48cc34c32690e))
+* **deps:** update dependency @netlify/plugins-list to ^6.49.1 ([#4579](https://github.com/netlify/build/issues/4579)) ([33109e1](https://github.com/netlify/build/commit/33109e1527234168659c59e76a699fc047a1b46b))
+
 ## [27.20.2](https://github.com/netlify/build/compare/build-v27.20.1...build-v27.20.2) (2022-10-06)
 
 

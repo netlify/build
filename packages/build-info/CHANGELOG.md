@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.0.11](https://github.com/netlify/build/compare/build-info-v4.0.10...build-info-v4.0.11) (2022-10-10)
+
+
+### Bug Fixes
+
+* move build-info to mono repository of netlify build ([#4584](https://github.com/netlify/build/issues/4584)) ([e058b6d](https://github.com/netlify/build/commit/e058b6d8ecb5c59cb63bca266912b96dcc519f92))
+
 ### [4.0.10](https://github.com/netlify/build-info/compare/v4.0.9...v4.0.10) (2022-02-21)
 
 
