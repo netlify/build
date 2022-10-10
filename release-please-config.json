@@ -2,6 +2,7 @@
   "bootstrap-sha": "13ed0b0053b77a11333203c537de08b7d97f0fd4",
   "packages": {
     "packages/build": {},
+    "packages/build-info": {},
     "packages/cache-utils": {},
     "packages/config": {},
     "packages/functions-utils": {},
