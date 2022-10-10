@@ -1,0 +1,45 @@
+{
+  "name": "netlify-redirect-parser",
+  "version": "13.0.5",
+  "description": "Parses netlify redirects into a js object representation",
+  "type": "module",
+  "exports": "./lib/index.js",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "files": [
+    "lib/**/*"
+  ],
+  "scripts": {
+    "prebuild": "rm -rf lib",
+    "build": "tsc",
+    "test": "ava",
+    "test:ci": "c8 -r lcovonly -r text -r json ava"
+  },
+  "keywords": [
+    "netlify"
+  ],
+  "engines": {
+    "node": "^12.20.0 || ^14.14.0 || >=16.0.0"
+  },
+  "author": "Netlify",
+  "license": "MIT",
+  "dependencies": {
+    "filter-obj": "^3.0.0",
+    "is-plain-obj": "^4.0.0",
+    "path-exists": "^5.0.0",
+    "toml": "^3.0.0"
+  },
+  "devDependencies": {
+    "ava": "^4.0.0",
+    "c8": "^7.11.0",
+    "test-each": "^4.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/netlify/build.git"
+  },
+  "bugs": {
+    "url": "https://github.com/netlify/build/issues"
+  },
+  "homepage": "https://github.com/netlify/build#readme"
+}

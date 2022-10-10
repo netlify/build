@@ -8,6 +8,7 @@
     "packages/functions-utils": {},
     "packages/git-utils": {},
     "packages/js-client": {},
+    "packages/redirect-parser": {},
     "packages/run-utils": {}
   },
   "plugins": ["node-workspace"]

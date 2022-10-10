@@ -1,0 +1,3 @@
+[[redirects]]
+  from = "http://www.example.com/old-path"
+  to = "http://www.example.com/new-path"
