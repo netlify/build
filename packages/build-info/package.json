@@ -19,12 +19,6 @@
     "test": "ava",
     "test:ci": "c8 -r lcovonly -r text -r json ava"
   },
-  "ava": {
-    "verbose": true,
-    "files": [
-      "!test/fixtures/**/*"
-    ]
-  },
   "keywords": [],
   "license": "MIT",
   "repository": "netlify/build-info",
