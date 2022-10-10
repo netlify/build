@@ -7,7 +7,7 @@ const config = {
   settings: {
     'import/extensions': ['.js'],
   },
-  extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended', 'plugin:ava/recommended', 'prettier'],
+  extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended', 'prettier'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 'latest',
@@ -56,14 +56,6 @@ const config = {
       files: ['packages/*/tests/**'],
       rules: {
         '@typescript-eslint/no-empty-function': 'off',
-        'ava/no-ignored-test-files': [
-          2,
-          { files: ['**/tests.js', 'tests/**/*.js', '!tests/{helpers,fixtures}/**/*.{cjs,mjs,js,json}'] },
-        ],
-        'ava/no-import-test-files': [
-          2,
-          { files: ['**/tests.js', 'tests/**/*.js', '!tests/{helpers,fixtures}/**/*.{cjs,mjs,js,json}'] },
-        ],
       },
     },
   ],
