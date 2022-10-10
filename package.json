@@ -54,7 +54,6 @@
     "ci-info": "^3.3.0",
     "eslint": "^8.24.0",
     "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-ava": "^13.2.0",
     "eslint-plugin-import": "^2.26.0",
     "husky": "^8.0.0",
     "lerna": "^5.5.2",

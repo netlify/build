@@ -85,7 +85,6 @@ test('Non-existing plugins', async (t) => {
   t.snapshot(normalizeOutput(output))
 })
 
-// eslint-disable-next-line ava/no-skip-test
 test.skip('Do not allow overriding core plugins', async (t) => {
   const output = await new Fixture('./fixtures/core_override').runWithBuild()
   t.snapshot(normalizeOutput(output))

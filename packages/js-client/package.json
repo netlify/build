@@ -1,0 +1,59 @@
+{
+  "name": "netlify",
+  "description": "Netlify Node.js API client",
+  "version": "12.0.1",
+  "type": "module",
+  "exports": "./lib/index.js",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "files": [
+    "lib/**"
+  ],
+  "scripts": {
+    "prebuild": "rm -rf lib",
+    "build": "tsc",
+    "test": "ava",
+    "test:ci": "c8 -r lcovonly -r text -r json ava"
+  },
+  "license": "MIT",
+  "author": "Netlify Inc.",
+  "contributors": [
+    "Mathias Biilmann <matt@netlify.com> (https://twitter.com/biilmann)",
+    "David Calavera <david@netlify.com> (https://twitter.com/calavera)",
+    "David Wells <david.wells@netlify.com> (https://davidwells.io/)",
+    "Bret Comnes <bcomnes@gmail.com> (https://bret.io)",
+    "Lukas Holzer <lukas.holzer@netlify.com> (https://twitter.com/luka5c0m)"
+  ],
+  "homepage": "https://github.com/netlify/build",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/netlify/build.git"
+  },
+  "bugs": {
+    "url": "https://github.com/netlify/build/issues"
+  },
+  "keywords": [
+    "api client",
+    "js client",
+    "netlify",
+    "node client"
+  ],
+  "dependencies": {
+    "@netlify/open-api": "^2.12.0",
+    "micro-api-client": "^3.3.0",
+    "node-fetch": "^3.0.0",
+    "omit.js": "^2.0.2",
+    "p-wait-for": "^4.0.0",
+    "qs": "^6.9.6"
+  },
+  "devDependencies": {
+    "ava": "^4.0.0",
+    "c8": "^7.11.0",
+    "from2-string": "^1.1.0",
+    "nock": "^13.0.0",
+    "uuid": "^8.3.2"
+  },
+  "engines": {
+    "node": "^12.20.0 || ^14.14.0 || >=16.0.0"
+  }
+}

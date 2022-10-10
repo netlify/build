@@ -4,7 +4,6 @@ import test from 'ava'
 
 import { validateEdgeFunctionsManifest } from '../../../lib/plugins_core/edge_functions/validate_manifest/validate_edge_functions_manifest.js'
 
-// eslint-disable-next-line ava/no-import-test-files
 import { extraPropErrMsg, invalidPatternMsg, missingPropErrMsg } from './util.js'
 
 const FIXTURES_DIR = fileURLToPath(new URL('unit_fixtures', import.meta.url))
