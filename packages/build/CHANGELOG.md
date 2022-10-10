@@ -31,6 +31,14 @@
     * @netlify/functions-utils bumped from ^4.2.10 to ^4.2.11
     * @netlify/git-utils bumped from ^4.1.2 to ^4.1.3
 
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^18.2.5 to ^18.2.6
+  * devDependencies
+    * @netlify/nock-udp bumped from ^1.0.0 to ^2.0.0
+
 ## [27.20.5](https://github.com/netlify/build/compare/build-v27.20.4...build-v27.20.5) (2022-10-10)
 
 
