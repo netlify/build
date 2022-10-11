@@ -6,6 +6,20 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
+  # Job to run change detection
+  changes:
+    runs-on: ubuntu-latest
+    # Set job outputs to values from filter step
+    outputs:
+      buildtest: ${{ steps.filter.outputs.buildtest }}
+    steps:
+      # For pull requests it's not necessary to checkout the code
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            buildtest:
+              - 'packages/build/**'
   test:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
@@ -49,6 +63,8 @@ jobs:
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
 
   test-build:
+    needs: changes
+    if: ${{ needs.changes.outputs.buildtest == 'true' }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     strategy:
