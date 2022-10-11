@@ -1,8 +1,13 @@
+import { exec } from 'child_process'
 import fs, { existsSync } from 'fs'
 import path from 'path'
 import process from 'process'
 
 import { isCI } from 'ci-info'
+
+if (process.argv.includes('-w')) {
+  exec('tsc -w')
+}
 
 // `tests-metadata.json` is created by running `npx lerna run test:measure --scope @netlify/build`
 const testData = existsSync('tests-metadata.json') ? JSON.parse(fs.readFileSync('tests-metadata.json', 'utf-8')) : {}
