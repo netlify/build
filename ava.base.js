@@ -1,12 +1,12 @@
-import { exec } from 'child_process'
 import fs, { existsSync } from 'fs'
 import path from 'path'
 import process from 'process'
 
 import { isCI } from 'ci-info'
+import { execaCommand } from 'execa'
 
 if (process.argv.includes('-w')) {
-  exec('tsc -w')
+  execaCommand('tsc -w', { cleanup: true })
 }
 
 // `tests-metadata.json` is created by running `npx lerna run test:measure --scope @netlify/build`
