@@ -1,5 +1,8 @@
+import baseConfig from '../../ava.base.js'
+
 const config = {
-  files: ['tests/*.js'],
+  ...baseConfig,
+  files: ['tests/*.{cjs,mjs,js,ts}', 'tests/**/tests.{cjs,mjs,js,ts}'],
   verbose: true,
 }
 
