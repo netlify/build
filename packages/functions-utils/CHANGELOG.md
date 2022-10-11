@@ -1,5 +1,16 @@
 # Changelog
 
+## [5.0.0](https://github.com/netlify/build/compare/functions-utils-v4.2.11...functions-utils-v5.0.0) (2022-10-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* drop node 12 support as it already reached EOL (#4599)
+
+### Bug Fixes
+
+* drop node 12 support as it already reached EOL ([#4599](https://github.com/netlify/build/issues/4599)) ([98d0d1e](https://github.com/netlify/build/commit/98d0d1e4db479fb9bb3a529de590f89aef7dd223))
+
 ## [4.2.11](https://github.com/netlify/build/compare/functions-utils-v4.2.10...functions-utils-v4.2.11) (2022-10-06)
 
 
