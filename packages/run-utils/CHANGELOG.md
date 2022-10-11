@@ -1,5 +1,16 @@
 # Changelog
 
+## [5.0.0](https://github.com/netlify/build/compare/run-utils-v4.0.2...run-utils-v5.0.0) (2022-10-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* drop node 12 support as it already reached EOL (#4599)
+
+### Bug Fixes
+
+* drop node 12 support as it already reached EOL ([#4599](https://github.com/netlify/build/issues/4599)) ([98d0d1e](https://github.com/netlify/build/commit/98d0d1e4db479fb9bb3a529de590f89aef7dd223))
+
 ## [4.0.2](https://github.com/netlify/build/compare/run-utils-v4.0.1...run-utils-v4.0.2) (2022-09-26)
 
 ### Bug Fixes

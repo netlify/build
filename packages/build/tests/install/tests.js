@@ -1,10 +1,8 @@
-import { version } from 'process'
 import { fileURLToPath } from 'url'
 
 import { Fixture, normalizeOutput, removeDir } from '@netlify/testing'
 import test from 'ava'
 import { pathExists } from 'path-exists'
-import semver from 'semver'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
@@ -104,18 +102,16 @@ test('Install local plugin dependencies: with npm', async (t) => {
   await runInstallFixture(t, 'npm', [`${FIXTURES_DIR}/npm/plugin/node_modules/`])
 })
 
-if (semver.satisfies(version, '>=14.0.0')) {
-  test('Install local plugin dependencies: with yarn locally', async (t) => {
-    await runInstallFixture(t, 'yarn', [`${FIXTURES_DIR}/yarn/plugin/node_modules/`], { useBinary: true })
-  })
+test('Install local plugin dependencies: with yarn locally', async (t) => {
+  await runInstallFixture(t, 'yarn', [`${FIXTURES_DIR}/yarn/plugin/node_modules/`], { useBinary: true })
+})
 
-  test('Install local plugin dependencies: with yarn in CI', async (t) => {
-    await runInstallFixture(t, 'yarn_ci', [`${FIXTURES_DIR}/yarn_ci/plugin/node_modules/`], {
-      useBinary: true,
-      flags: { mode: 'buildbot' },
-    })
+test('Install local plugin dependencies: with yarn in CI', async (t) => {
+  await runInstallFixture(t, 'yarn_ci', [`${FIXTURES_DIR}/yarn_ci/plugin/node_modules/`], {
+    useBinary: true,
+    flags: { mode: 'buildbot' },
   })
-}
+})
 
 test('Install local plugin dependencies: propagate errors', async (t) => {
   const output = await new Fixture('./fixtures/error').runWithBuild()

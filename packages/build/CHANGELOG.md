@@ -39,6 +39,30 @@
   * devDependencies
     * @netlify/nock-udp bumped from ^1.0.0 to ^2.0.0
 
+## [28.0.0](https://github.com/netlify/build/compare/build-v27.20.6...build-v28.0.0) (2022-10-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* drop node 12 support as it already reached EOL (#4599)
+
+### Bug Fixes
+
+* drop node 12 support as it already reached EOL ([#4599](https://github.com/netlify/build/issues/4599)) ([98d0d1e](https://github.com/netlify/build/commit/98d0d1e4db479fb9bb3a529de590f89aef7dd223))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/cache-utils bumped from ^4.1.6 to ^5.0.0
+    * @netlify/config bumped from ^18.2.6 to ^19.0.0
+    * @netlify/functions-utils bumped from ^4.2.11 to ^5.0.0
+    * @netlify/git-utils bumped from ^4.1.4 to ^5.0.0
+    * @netlify/run-utils bumped from ^4.0.2 to ^5.0.0
+  * devDependencies
+    * @netlify/nock-udp bumped from ^2.0.0 to ^3.0.0
+
 ## [27.20.5](https://github.com/netlify/build/compare/build-v27.20.4...build-v27.20.5) (2022-10-10)
 
 

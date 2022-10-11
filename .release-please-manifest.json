@@ -1,13 +1,13 @@
 {
-  "packages/build-info": "4.0.11",
-  "packages/build": "27.20.6",
-  "packages/cache-utils": "4.1.6",
-  "packages/config": "18.2.6",
-  "packages/functions-utils": "4.2.11",
-  "packages/git-utils": "4.1.4",
-  "packages/headers-parser": "6.0.3",
-  "packages/js-client": "12.0.3",
-  "packages/nock-udp": "2.0.0",
-  "packages/redirect-parser": "13.0.6",
-  "packages/run-utils": "4.0.2"
+  "packages/build-info": "5.0.0",
+  "packages/build": "28.0.0",
+  "packages/cache-utils": "5.0.0",
+  "packages/config": "19.0.0",
+  "packages/functions-utils": "5.0.0",
+  "packages/git-utils": "5.0.0",
+  "packages/headers-parser": "7.0.0",
+  "packages/js-client": "13.0.0",
+  "packages/nock-udp": "3.0.0",
+  "packages/redirect-parser": "14.0.0",
+  "packages/run-utils": "5.0.0"
 }
