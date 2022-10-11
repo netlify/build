@@ -1,5 +1,16 @@
 # Changelog
 
+## [5.0.0](https://github.com/netlify/build/compare/build-info-v4.0.11...build-info-v5.0.0) (2022-10-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* drop node 12 support as it already reached EOL (#4599)
+
+### Bug Fixes
+
+* drop node 12 support as it already reached EOL ([#4599](https://github.com/netlify/build/issues/4599)) ([98d0d1e](https://github.com/netlify/build/commit/98d0d1e4db479fb9bb3a529de590f89aef7dd223))
+
 ## [4.0.11](https://github.com/netlify/build/compare/build-info-v4.0.10...build-info-v4.0.11) (2022-10-10)
 
 
