@@ -13,6 +13,7 @@
     "prebuild": "rm -rf lib",
     "build": "tsc",
     "test": "ava",
+    "test:dev": "ava -w",
     "test:ci": "c8 -r lcovonly -r text -r json ava"
   },
   "license": "MIT",

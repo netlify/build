@@ -3,6 +3,12 @@ import path from 'path'
 import process from 'process'
 
 import { isCI } from 'ci-info'
+import * as execa from 'execa'
+
+const { execaCommand } = execa
+if (process.argv.includes('-w')) {
+  execaCommand('tsc -w', { cleanup: true })
+}
 
 // `tests-metadata.json` is created by running `npx lerna run test:measure --scope @netlify/build`
 const testData = existsSync('tests-metadata.json') ? JSON.parse(fs.readFileSync('tests-metadata.json', 'utf-8')) : {}

@@ -26,6 +26,7 @@
     "build": "tsc",
     "pretest": "tsd .",
     "test": "ava",
+    "test:dev": "ava -w",
     "test:ci": "c8 -r lcovonly -r text -r json ava",
     "test:measure": "../../tools/tests-duration.js"
   },
