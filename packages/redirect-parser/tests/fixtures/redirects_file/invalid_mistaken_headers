@@ -1,0 +1,3 @@
+# Protect backups with Basic Auth
+/backup/*
+    Basic-Auth: dev@terraeclipse.com:nud-feud-contour
