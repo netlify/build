@@ -2,6 +2,7 @@
 
 [![Coverage Status](https://codecov.io/gh/netlify/build/branch/main/graph/badge.svg)](https://codecov.io/gh/netlify/build)
 [![Build](https://github.com/netlify/build/workflows/Build/badge.svg)](https://github.com/netlify/build/actions)
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/netlify/build/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/netlify/build/tree/main)
 
 Netlify Build runs the build command and Build Plugins and bundles Netlify Functions.
 

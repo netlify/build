@@ -44,12 +44,7 @@ const getHost = (server: Server<typeof IncomingMessage, typeof ServerResponse>):
   return `localhost:${port}`
 }
 
-const requestHandler = async (
-  req: IncomingMessage,
-  res: ServerResponse<IncomingMessage>,
-  requests: Request[],
-  handlers: Handler[],
-) => {
+const requestHandler = async (req: IncomingMessage, res: ServerResponse, requests: Request[], handlers: Handler[]) => {
   const { response, status, wait } = getHandler(handlers, req.url)
   if (response === undefined) {
     res.end('')

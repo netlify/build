@@ -14,6 +14,26 @@
   * dependencies
     * netlify bumped from ^12.0.2 to ^12.0.3
 
+## [19.0.0](https://github.com/netlify/build/compare/config-v18.2.6...config-v19.0.0) (2022-10-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* drop node 12 support as it already reached EOL (#4599)
+
+### Bug Fixes
+
+* drop node 12 support as it already reached EOL ([#4599](https://github.com/netlify/build/issues/4599)) ([98d0d1e](https://github.com/netlify/build/commit/98d0d1e4db479fb9bb3a529de590f89aef7dd223))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^12.0.3 to ^13.0.0
+    * netlify-headers-parser bumped from ^6.0.3 to ^7.0.0
+    * netlify-redirect-parser bumped from ^13.0.6 to ^14.0.0
+
 ## [18.2.4](https://github.com/netlify/build/compare/config-v18.2.3...config-v18.2.4) (2022-09-26)
 
 ### Bug Fixes
