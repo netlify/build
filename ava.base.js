@@ -3,8 +3,9 @@ import path from 'path'
 import process from 'process'
 
 import { isCI } from 'ci-info'
-import { execaCommand } from 'execa'
+import * as execa from 'execa'
 
+const { execaCommand } = execa
 if (process.argv.includes('-w')) {
   execaCommand('tsc -w', { cleanup: true })
 }
