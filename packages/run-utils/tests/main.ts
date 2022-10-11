@@ -5,12 +5,12 @@ import test from 'ava'
 import { execa } from 'execa'
 import semver from 'semver'
 
-import { run, runCommand } from '../lib/main.js'
+import { run, runCommand } from '../src/main.js'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 const RUN_FILE = `${FIXTURES_DIR}/run.js`
 
-const runInChildProcess = function (command, options) {
+const runInChildProcess = (command: string, options?: Record<string, unknown>) => {
   const optionsA = options === undefined ? [] : [JSON.stringify(options)]
   return execa('node', [RUN_FILE, command, ...optionsA])
 }
