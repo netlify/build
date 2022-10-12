@@ -3,13 +3,20 @@ import { fileURLToPath } from 'url'
 import Bugsnag from '@bugsnag/js'
 import memoizeOne from 'memoize-one'
 
-import { log } from '../../log/logger.js'
+import type { BuildFlags } from '../../core/types.js'
+import { BufferedLogs, log } from '../../log/logger.js'
 import { ROOT_PACKAGE_JSON } from '../../utils/json.js'
 
 const projectRoot = fileURLToPath(new URL('../../..', import.meta.url))
 
 // Start a client to monitor errors
-export const startErrorMonitor = function ({ flags: { mode }, logs, bugsnagKey }) {
+export const startErrorMonitor = function (config: { flags: BuildFlags; logs: BufferedLogs; bugsnagKey: string }) {
+  const {
+    flags: { mode },
+    logs,
+    bugsnagKey,
+  } = config
+
   if (!bugsnagKey) {
     return
   }
@@ -48,6 +55,8 @@ const BUGSNAG_TEST_KEY = '00000000000000000000000000000000'
 // Bugsnag.start() caches a global instance and warns on duplicate calls.
 // This ensures the warning message is not shown when calling the main function
 // several times.
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 const startBugsnag = memoizeOne(Bugsnag.start.bind(Bugsnag), () => true)
 
 // Based the release stage on the `mode`
