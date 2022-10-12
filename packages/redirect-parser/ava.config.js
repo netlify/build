@@ -1,9 +1,10 @@
-import baseConfig from '../../ava.base.js'
-
 const config = {
-  ...baseConfig,
-  files: ['tests/*.{cjs,mjs,js,ts}', 'tests/**/tests.{cjs,mjs,js,ts}'],
+  files: ['tests/*.ts'],
   verbose: true,
+  extensions: {
+    ts: 'module',
+  },
+  nodeArguments: ['--loader=ts-node/esm'],
 }
 
 export default config
