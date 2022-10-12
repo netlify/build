@@ -634,7 +634,6 @@ test('Recreates a function body when handling API rate limiting', async (t) => {
   const retryAtMs = Date.now() + TEST_RATE_LIMIT_DELAY
   const retryAt = Math.ceil(retryAtMs / SECS_TO_MSECS)
   const expectedResponse = { test: 'test' }
-  // @ts-ignore: next-line
   const scope = nock(origin)
     .put(`${pathPrefix}/deploys/${deployId}/files/${path}`, body, { 'Content-Type': 'application/octet-stream' } as any)
     .reply(429, { retryAt }, { 'X-RateLimit-Reset': retryAt })
