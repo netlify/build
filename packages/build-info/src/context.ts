@@ -1,22 +1,34 @@
 import { resolve } from 'path'
 import { cwd } from 'process'
 
-import { readPackage } from 'read-pkg'
+import { readPackage, PackageJson } from 'read-pkg'
 
-const getPackageJson = async function (dir) {
+/**
+ * Reads a package.json up the tree starting at the provided directory
+ * @param cwd The current working directory where it tries to find the package.json
+ * @returns A parsed object of the package.json
+ */
+const getPackageJson = async (cwd: string): Promise<PackageJson> => {
   try {
-    const packageJson = await readPackage({ cwd: dir, normalize: false })
-    if (packageJson === undefined) {
-      return {}
-    }
-
-    return packageJson
+    return await readPackage({ cwd, normalize: false })
   } catch {
     return {}
   }
 }
 
-export const getContext = async function ({ projectDir = cwd(), rootDir = '' } = {}) {
+export type ContextOptions = {
+  projectDir?: string
+  rootDir?: string
+}
+
+export type Context = {
+  projectDir: string
+  rootDir: string
+  rootPackageJson: PackageJson
+}
+
+export const getContext = async (config: ContextOptions = {}): Promise<Context> => {
+  const { projectDir = cwd(), rootDir = '' } = config
   // Get the absolute dirs for both project and root
   // We resolve the projectDir from the rootDir
   const absoluteProjectDir = resolve(rootDir, projectDir)

@@ -1,21 +1,23 @@
 import mapWorkspaces from '@npmcli/map-workspaces'
 
-export const getWorkspaceInfo = async function ({ rootPackageJson, projectDir, rootDir }) {
-  if (!rootPackageJson.workspaces) {
+import type { Context } from './context.js'
+
+export const getWorkspaceInfo = async (context: Context) => {
+  if (!context.rootPackageJson.workspaces) {
     return
   }
 
   const workspacesMap = await mapWorkspaces({
-    cwd: rootDir || projectDir,
-    pkg: rootPackageJson,
+    cwd: context.rootDir || context.projectDir,
+    pkg: context.rootPackageJson,
   })
 
   const packages = [...workspacesMap.values()]
   // The provided project dir is a workspace package
-  const isWorkspace = packages.find((path) => projectDir === path)
+  const isWorkspace = packages.find((path) => context.projectDir === path)
 
   // The project dir is a collection of workspaces itself
-  const isRoot = !rootDir
+  const isRoot = !context.rootDir
 
   if (isWorkspace || isRoot) {
     return { isRoot, packages }

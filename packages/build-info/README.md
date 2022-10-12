@@ -1,6 +1,3 @@
-[![Build](https://github.com/netlify/build-info/workflows/Build/badge.svg)](https://github.com/netlify/build-info/actions)
-[![Node](https://img.shields.io/node/v/@netlify/build-info.svg?logo=node.js)](https://www.npmjs.com/package/@netlify/build-info)
-
 # Build Info
 
 Build information detection utility.
