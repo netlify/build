@@ -57,7 +57,7 @@ const getMockSocketSend = function ({ allowUnknown = false } = {}) {
 }
 
 export const isMocked = function () {
-  return Boolean(Socket.prototype.send.mocked)
+  return Boolean((Socket.prototype.send as any).mocked)
 }
 
 export const intercept = (address, { persist = false, startIntercept = true, allowUnknown = false } = {}) => {
@@ -76,6 +76,6 @@ export const restoreSocketSend = function () {
   Socket.prototype.send = originalSocketSend
 }
 
-export const interceptSocketSend = function ({ allowUnknown } = {}) {
-  Socket.prototype.send = getMockSocketSend({ allowUnknown })
+export const interceptSocketSend = function ({ allowUnknown }: any = {}) {
+  ;(Socket.prototype.send as any) = getMockSocketSend({ allowUnknown })
 }
