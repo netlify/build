@@ -539,7 +539,6 @@ test('Handles API rate limiting', async (t) => {
   const retryAtMs = Date.now() + TEST_RATE_LIMIT_DELAY
   const retryAt = Math.ceil(retryAtMs / SECS_TO_MSECS)
   const expectedResponse = { test: 'test' }
-  //@ts-ignore: next-line
   const scope = nock(origin)
     .get(`${pathPrefix}/accounts/${accountId}`)
     .reply(429, { retryAt }, { 'X-RateLimit-Reset': retryAt })
@@ -557,7 +556,6 @@ test('Handles API rate limiting', async (t) => {
 test('Handles API rate limiting when date is in the past', async (t) => {
   const accountId = uuidv4()
   const expectedResponse = { test: 'test' }
-  //@ts-ignore: next-line
   const scope = nock(origin)
     .get(`${pathPrefix}/accounts/${accountId}`)
     .reply(429, { retryAt: 0 }, { 'X-RateLimit-Reset': 0 })
@@ -591,7 +589,6 @@ test('Gives up retrying on API rate limiting after a timeout', async (t) => {
   const retryAt = Math.ceil(Date.now() / SECS_TO_MSECS)
   const expectedResponse = { test: 'test' }
   const times = 20
-  // @ts-ignore:next-line
   const scope = nock(origin)
     .get(`${pathPrefix}/accounts/${accountId}`)
     .times(times)
