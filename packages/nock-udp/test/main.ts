@@ -42,7 +42,7 @@ test.serial('Intercepting can optionally allow messages to unknown hosts', async
   interceptSocketSend({ allowUnknown: true })
   t.true(isMocked())
 
-  const client = createSocket('udp4')
+  const client: any = createSocket('udp4')
   client.send(buffer, 0, buffer.length, port, 'localhost')
   const msgs = await getMessages()
   t.is(msgs[0].toString(), buffer.toString())
@@ -62,7 +62,7 @@ test('Intercepting should stop after the first datagram received', async (t) => 
   const scope = intercept(`${host}:${port}`)
   t.false(scope.used)
 
-  const send = promisify(createSocket('udp4').send)
+  const send: any = promisify(createSocket('udp4').send)
   await send(buffer, 0, buffer.length, port, host)
   t.true(scope.used)
 
@@ -79,7 +79,7 @@ test('If persisted, interception should keep on going', async (t) => {
   const scope = intercept(`${host}:${port}`, { persist: true })
   t.false(scope.used)
 
-  const send = promisify(createSocket('udp4').send)
+  const send: any = promisify(createSocket('udp4').send)
   await send(buffer, 0, buffer.length, port, host)
   await send(buffer, 0, buffer.length, port, host)
 
@@ -100,7 +100,7 @@ test('Scope.clean should remove that single interception', async (t) => {
 
   scope2.clean()
 
-  const send = promisify(createSocket('udp4').send)
+  const send: any = promisify(createSocket('udp4').send)
   await send(buffer, 0, buffer.length, port, host1)
   await t.throwsAsync(async () => await send(buffer, 0, buffer.length, port, host2))
 })
