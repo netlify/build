@@ -30,10 +30,6 @@ const config = {
   verbose: true,
   timeout: '240s',
   workerThreads: false,
-  extensions: {
-    ts: 'module',
-  },
-  nodeArguments: ['--no-warnings', '--loader=ts-node/esm'],
   ignoredByWatcher: ['packages/*/tests/*/fixtures/**'],
   environmentVariables: {
     FORCE_COLOR: '1',
