@@ -1,6 +1,5 @@
 const config = {
-  files: ['src/**/*.test.ts'],
-  timeout: '240s',
+  files: ['src/*.test.ts'],
   verbose: true,
   workerThreads: false,
   extensions: {
