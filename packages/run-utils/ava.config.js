@@ -1,11 +1,10 @@
-import baseConfig from '../../ava.base.js'
-
 const config = {
-  ...baseConfig,
-  /*Remove extensions & nodeArguments after migrating tests to Typescript*/
-  extensions: undefined,
-  nodeArguments: undefined,
-  files: ['tests/*.{cjs,mjs,js}'],
+  verbose: true,
+  files: ['tests/*.ts'],
+  extensions: {
+    ts: 'module',
+  },
+  nodeArguments: ['--loader=ts-node/esm'],
 }
 
 export default config
