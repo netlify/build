@@ -9,11 +9,12 @@ import { removeErrorColors } from './colors.js'
 import { getErrorInfo } from './info.js'
 import { reportBuildError } from './monitor/report.js'
 import { parseErrorInfo } from './parse/parse.js'
+import { ErrorParam } from '../core/types.js'
 
 // Logs and reports a build failure
 export const handleBuildError = async function (
-  error,
-  { errorMonitor, netlifyConfig, childEnv, mode, logs, debug, testOpts },
+  error: Error,
+  { errorMonitor, netlifyConfig, childEnv, mode, logs, debug, testOpts }: ErrorParam,
 ) {
   const basicErrorInfo = parseErrorInfo(error)
 
