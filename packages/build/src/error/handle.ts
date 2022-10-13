@@ -2,6 +2,7 @@ import { cwd as getCwd } from 'process'
 
 import { pathExists } from 'path-exists'
 
+import { ErrorParam } from '../core/types.js'
 import { logBuildError } from '../log/messages/core.js'
 import { logOldCliVersionError } from '../log/old_version.js'
 
@@ -9,7 +10,6 @@ import { removeErrorColors } from './colors.js'
 import { getErrorInfo } from './info.js'
 import { reportBuildError } from './monitor/report.js'
 import { parseErrorInfo } from './parse/parse.js'
-import { ErrorParam } from '../core/types.js'
 
 // Logs and reports a build failure
 export const handleBuildError = async function (
