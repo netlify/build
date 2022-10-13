@@ -21,6 +21,7 @@ const config = {
     'packages/build/types/**',
     // don't lint fixtures
     'packages/*/tests/**/fixtures/**',
+    'packages/*/lib/**',
   ],
   rules: {
     // -----------------------------------------------------------
