@@ -1,6 +1,6 @@
 import { fileURLToPath } from 'url'
 
-import { parseAllRedirects } from '../../lib/index.js'
+import { parseAllRedirects } from '../../src/index.js'
 
 const FIXTURES_DIR = fileURLToPath(new URL('../fixtures', import.meta.url))
 
