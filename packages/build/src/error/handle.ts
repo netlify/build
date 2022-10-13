@@ -2,6 +2,7 @@ import { cwd as getCwd } from 'process'
 
 import { pathExists } from 'path-exists'
 
+import { ErrorParam } from '../core/types.js'
 import { logBuildError } from '../log/messages/core.js'
 import { logOldCliVersionError } from '../log/old_version.js'
 
@@ -12,8 +13,8 @@ import { parseErrorInfo } from './parse/parse.js'
 
 // Logs and reports a build failure
 export const handleBuildError = async function (
-  error,
-  { errorMonitor, netlifyConfig, childEnv, mode, logs, debug, testOpts },
+  error: Error,
+  { errorMonitor, netlifyConfig, childEnv, mode, logs, debug, testOpts }: ErrorParam,
 ) {
   const basicErrorInfo = parseErrorInfo(error)
 

@@ -1,3 +1,6 @@
+import { NetlifyConfig } from '../../types/index.js'
+
+export type Mode = 'buildbot' | 'cli' | 'require'
 export type BuildFlags = {
   /** Path to the configuration file */
   config?: string
@@ -29,5 +32,31 @@ export type BuildFlags = {
    */
   buffer?: boolean
 
-  mode?: 'buildbot' | 'cli' | 'require'
+  mode?: Mode
+}
+
+export type BuildResult = {
+  success: boolean
+  severityCode: SeverityCode
+  netlifyConfig?: NetlifyConfig
+  configMutations?: any
+  logs?: string[]
+}
+
+export enum SeverityCode {
+  success = 1,
+  buildCancelled,
+  userError,
+  pluginError,
+  systemError,
+}
+
+export type ErrorParam = {
+  errorMonitor: any
+  mode: Mode
+  logs: string[]
+  debug: any
+  testOpts?: any
+  childEnv?: any
+  netlifyConfig?: NetlifyConfig
 }

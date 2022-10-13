@@ -2,6 +2,7 @@ import { getConfigOpts, loadConfig } from '../core/config.js'
 import { getConstants } from '../core/constants.js'
 import { normalizeFlags } from '../core/normalize_flags.js'
 import { getSeverity } from '../core/severity.js'
+import { BuildFlags, BuildResult } from '../core/types.js'
 import { handleBuildError } from '../error/handle.js'
 import { getErrorInfo } from '../error/info.js'
 import { startErrorMonitor } from '../error/monitor/start.js'
@@ -14,30 +15,9 @@ import { runSteps } from './run_steps.js'
 
 /**
  * Runs specific core steps for a build and returns whether it succeeded or not.
- *
- * @param  {string[]} [buildSteps] - a string array of build steps to run
- * @param  {object} [flags] - build configuration CLI flags
- * @param  {string} [flags.config] - Path to the configuration file
- * @param  {string} [flags.cwd] - Current directory. Used to retrieve the configuration file
- * @param  {string} [flags.repositoryRoot] - Git repository root directory. Used to retrieve the configuration file.
- * @param  {string} [flags.apiHost] - Netlify API endpoint
- * @param  {string} [flags.token] - Netlify API token for authentication
- * @param  {string} [flags.siteId] - Netlify Site ID
- * @param  {string} [flags.deployId] - Netlify Deploy ID
- * @param  {string} [flags.context] - Build context
- * @param  {string} [flags.branch] - Repository branch
- * @param  {boolean} [flags.dry=false] - Run in dry mode, i.e. printing steps without executing them
- * @param  {string} [flags.nodePath] - Path to the Node.js binary to use in the build command and plugins
- * @param  {boolean} [flags.buffer=false] - Buffer output instead of printing it
- *
- * @returns {object} buildResult
- * @returns {boolean} buildResult.success - Whether build succeeded or failed
- * @returns {number} buildResult.severityCode - Build success/failure status among:
- * 0 (success), 1 (build cancelled), 2 (user error), 3 (plugin error), 4 (system error). Can be used as exit code.
- * @returns {string[]} buildResult.logs - When using the `buffer` option, all log messages
  */
-export const runCoreSteps = async (buildSteps, flags = {}) => {
-  const { errorMonitor, mode, logs, debug, ...flagsA } = startBuild(flags)
+export const runCoreSteps = async (buildSteps: string[], flags: BuildFlags = {}): Promise<BuildResult> => {
+  const { errorMonitor, mode, logs, debug, ...flagsA }: any = startBuild(flags)
   const errorParams = { errorMonitor, mode, logs, debug }
   const systemLog = getSystemLogger(logs, debug)
 
@@ -63,7 +43,7 @@ export const runCoreSteps = async (buildSteps, flags = {}) => {
   }
 }
 
-const startBuild = function (flags) {
+const startBuild = function (flags: BuildFlags) {
   const logs = getBufferLogs(flags)
 
   logBuildStart(logs)
@@ -103,7 +83,7 @@ const executeBuildStep = async function ({
     featureFlags,
     mode,
     repositoryRoot,
-  })
+  } as any)
   const {
     netlifyConfig,
     buildDir,
@@ -126,7 +106,7 @@ const executeBuildStep = async function ({
     netlifyConfig,
     siteInfo,
     mode,
-  })
+  } as any)
 
   Object.assign(errorParams, { netlifyConfig, siteInfo, childEnv, userNodeVersion })
 
@@ -161,7 +141,7 @@ const executeBuildStep = async function ({
       logs,
       debug,
       pluginsOptions: [],
-    })
+    } as any)
 
     throw error
   }
@@ -193,7 +173,7 @@ const runBuildStep = async function ({
     childEnv,
     repositoryRoot,
     systemLog,
-  })
+  } as any)
 
   return { netlifyConfig: netlifyConfigA, configMutations }
 }
