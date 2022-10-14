@@ -1,5 +1,5 @@
-import del from 'del'
 import { tmpName, dir as tmpDir } from 'tmp-promise'
+const PREFIX = 'test-functions-utils-'
 
 // Retrieve name of a temporary directory
 export const getDist = function () {
@@ -10,11 +10,4 @@ export const getDist = function () {
 export const createDist = async function () {
   const { path } = await tmpDir({ prefix: PREFIX })
   return path
-}
-
-const PREFIX = 'test-functions-utils-'
-
-// Remove temporary directory
-export const removeDist = async function (dir) {
-  await del(dir, { force: true })
 }

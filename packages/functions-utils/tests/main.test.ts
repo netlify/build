@@ -1,81 +1,80 @@
+import { rm } from 'fs/promises'
 import { normalize } from 'path'
 import { fileURLToPath, pathToFileURL } from 'url'
 
-import test from 'ava'
 import cpy from 'cpy'
-import del from 'del'
 import { pathExists } from 'path-exists'
-import { spy } from 'sinon'
 import sortOn from 'sort-on'
+import { expect, test, vi } from 'vitest'
 
-import { add, list, listAll } from '../lib/main.js'
+import { add, list, listAll } from '../src/main.js'
 
-import { getDist, createDist, removeDist } from './helpers/main.js'
+import { getDist, createDist } from './helpers/main.js'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
-test('Should copy a source file to a dist directory', async (t) => {
+test('Should copy a source file to a dist directory', async () => {
   const dist = await getDist()
   try {
     await add(`${FIXTURES_DIR}/file/test.mjs`, dist)
-    t.true(await pathExists(`${dist}/test.mjs`))
+    expect(await pathExists(`${dist}/test.mjs`)).toBe(true)
   } finally {
-    await removeDist(dist)
+    await rm(dist, { force: true, recursive: true })
   }
 })
 
-test('Should copy a source directory to a dist directory', async (t) => {
+test('Should copy a source directory to a dist directory', async () => {
   const dist = await getDist()
   try {
     await add(`${FIXTURES_DIR}/directory/test`, dist)
-    t.true(await pathExists(`${dist}/test/index.js`))
+    expect(await pathExists(`${dist}/test/index.js`)).toBe(true)
   } finally {
-    await removeDist(dist)
+    await rm(dist, { force: true, recursive: true })
   }
 })
 
-test('Should throw when source is undefined', async (t) => {
+test('Should throw when source is undefined', async () => {
   const dist = await getDist()
   try {
-    await t.throwsAsync(add(undefined, dist))
+    await expect(() => add(undefined, dist)).rejects.toThrow()
   } finally {
-    await removeDist(dist)
+    await rm(dist, { force: true, recursive: true })
   }
 })
 
-test('Should throw when source is empty array', async (t) => {
+test('Should throw when source is empty array', async () => {
   const dist = await getDist()
   try {
-    await t.throwsAsync(add([], dist))
+    await expect(() => add([] as any, dist)).rejects.toThrow()
   } finally {
-    await removeDist(dist)
+    await rm(dist, { force: true, recursive: true })
   }
 })
 
-test('Should throw when source points to non-existing file', async (t) => {
+test('Should throw when source points to non-existing file', async () => {
   const dist = await getDist()
   try {
-    await t.throwsAsync(add(`${FIXTURES_DIR}/file/doesNotExist.js`, dist))
+    await expect(() => add(`${FIXTURES_DIR}/file/doesNotExist.js`, dist)).rejects.toThrow()
   } finally {
-    await removeDist(dist)
+    await rm(dist, { force: true, recursive: true })
   }
 })
 
-test('Should throw when dist is undefined', async (t) => {
-  await t.throwsAsync(add(`${FIXTURES_DIR}/file/test.mjs`))
+test('Should throw when dist is undefined', async () => {
+  await expect(() => add(`${FIXTURES_DIR}/file/test.mjs`)).rejects.toThrow()
 })
 
-test('Should copy a source file even if dist directory already exists', async (t) => {
+test('Should copy a source file even if dist directory already exists', async () => {
   const dist = await createDist()
   try {
     await add(`${FIXTURES_DIR}/file/test.mjs`, dist)
-    t.true(await pathExists(`${dist}/test.mjs`))
+    expect(await pathExists(`${dist}/test.mjs`)).toBe(true)
   } finally {
-    await removeDist(dist)
+    await rm(dist, { force: true, recursive: true })
   }
 })
 
-test('Should overwrite dist file if it already exists', async (t) => {
+test('Should overwrite dist file if it already exists', async () => {
   const dist = await getDist()
   const fixtureDir = `${FIXTURES_DIR}/file`
 
@@ -91,20 +90,20 @@ test('Should overwrite dist file if it already exists', async (t) => {
 
     const { func2 } = await import(`${pathToFileURL(`${dist}/test.mjs`).href}?two`)
 
-    t.is(func1(), 'one')
-    t.is(func2(), 'two')
+    expect(func1()).toBe('one')
+    expect(func2()).toBe('two')
   } finally {
     await cpy(`${fixtureDir}/test.mjs.backup`, fixtureDir, { rename: 'test.mjs' })
-    await del(`${fixtureDir}/test.mjs.backup`, { force: true })
-    await removeDist(dist)
+    await rm(`${fixtureDir}/test.mjs.backup`, { force: true })
+    await rm(dist, { force: true, recursive: true })
   }
 })
 
-test('Should allow "fail" option to customize failures', async (t) => {
-  const fail = spy()
+test('Should allow "fail" option to customize failures', async () => {
+  const fail = vi.fn() as any
   await add(undefined, undefined, { fail })
-  t.true(fail.calledOnce)
-  t.is(typeof fail.firstCall.firstArg, 'string')
+  expect(fail).toHaveBeenCalledOnce()
+  expect(fail).toHaveBeenCalledWith('No function source directory was specified')
 })
 
 const normalizeFiles = function (fixtureDir, { name, mainFile, runtime, extension, srcFile, schedule }) {
@@ -113,11 +112,10 @@ const normalizeFiles = function (fixtureDir, { name, mainFile, runtime, extensio
   return { name, mainFile: mainFileA, runtime, extension, schedule, ...srcFileA }
 }
 
-test('Can list function main files with list()', async (t) => {
+test('Can list function main files with list()', async () => {
   const fixtureDir = `${FIXTURES_DIR}/list`
   const functions = await list(fixtureDir)
-  t.deepEqual(
-    sortOn(functions, ['mainFile', 'extension']),
+  expect(sortOn(functions, ['mainFile', 'extension'])).toEqual(
     [
       { name: 'four', mainFile: 'four.js/four.js.js', runtime: 'js', extension: '.js' },
       { name: 'one', mainFile: 'one/index.js', runtime: 'js', extension: '.js' },
@@ -129,11 +127,10 @@ test('Can list function main files with list()', async (t) => {
   )
 })
 
-test('Can list all function files with listAll()', async (t) => {
+test('Can list all function files with listAll()', async () => {
   const fixtureDir = `${FIXTURES_DIR}/list`
   const functions = await listAll(fixtureDir)
-  t.deepEqual(
-    sortOn(functions, ['mainFile', 'extension']),
+  expect(sortOn(functions, ['mainFile', 'extension'])).toEqual(
     [
       {
         name: 'four',
