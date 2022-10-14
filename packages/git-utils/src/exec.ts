@@ -1,7 +1,7 @@
 import process from 'process'
 
 import { execaSync } from 'execa'
-import moize from 'moize'
+import moize from 'moize/mjs/index.mjs'
 import { pathExistsSync } from 'path-exists'
 
 // Fires the `git` binary. Memoized.
