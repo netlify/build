@@ -65,7 +65,7 @@ export const isExpired = async function (cachePath) {
 
 const readManifest = async function (cachePath) {
   const manifestPath = getManifestPath(cachePath)
-  const manifestString = await fs.readFile(manifestPath)
+  const manifestString = await fs.readFile(manifestPath, 'utf-8')
   const manifest = JSON.parse(manifestString)
   return manifest
 }
