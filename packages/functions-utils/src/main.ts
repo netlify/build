@@ -7,7 +7,7 @@ import { pathExists } from 'path-exists'
 
 // Add a Netlify Function file to the `functions` directory so it is processed
 // by `@netlify/plugin-functions-core`
-export const add = async function (src, dist, { fail = defaultFail } = {}) {
+export const add = async function (src?: string, dist?: string, { fail = defaultFail } = {}) {
   if (src === undefined) {
     return fail('No function source directory was specified')
   }
