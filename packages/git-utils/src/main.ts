@@ -5,7 +5,15 @@ import { getBase, getHead } from './refs.js'
 import { getLinesOfCode } from './stats.js'
 
 // Main entry point to the git utilities
-export const getGitUtils = function ({ base, head, cwd } = {}) {
+export const getGitUtils = function ({
+  base,
+  head,
+  cwd,
+}: {
+  base?: string
+  head?: string
+  cwd?: string
+} = {}) {
   const headA = getHead(cwd, head)
   const baseA = getBase(base, headA, cwd)
   const { modifiedFiles, createdFiles, deletedFiles } = getDiffFiles(baseA, headA, cwd)
