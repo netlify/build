@@ -1,6 +1,6 @@
-import test from 'ava'
+import { test, expect } from 'vitest'
 
-import { save, has, restore } from '../lib/main.js'
+import { save, has, restore } from '../src/main.js'
 
 import { pSetTimeout, createTmpDir, createTmpFile, removeFiles } from './helpers/main.js'
 
@@ -8,35 +8,35 @@ import { pSetTimeout, createTmpDir, createTmpFile, removeFiles } from './helpers
 const TTL_TIMEOUT = 2e3
 
 // Relies on timing
-test.serial('Should allow a TTL on cached files', async (t) => {
+test('Should allow a TTL on cached files', async () => {
   const [cacheDir, [srcFile, srcDir]] = await Promise.all([createTmpDir(), createTmpFile()])
   try {
-    t.true(await save(srcFile, { cacheDir, ttl: 1 }))
+    expect(await save(srcFile, { cacheDir, ttl: 1 })).toBe(true)
     await pSetTimeout(TTL_TIMEOUT)
-    t.false(await has(srcFile, { cacheDir }))
-    t.false(await restore(srcFile, { cacheDir }))
+    expect(await has(srcFile, { cacheDir })).toBe(false)
+    expect(await restore(srcFile, { cacheDir })).toBe(false)
   } finally {
     await removeFiles([cacheDir, srcDir])
   }
 })
 
-test.serial('Should skip TTL when the value is invalid', async (t) => {
+test('Should skip TTL when the value is invalid', async () => {
   const [cacheDir, [srcFile, srcDir]] = await Promise.all([createTmpDir(), createTmpFile()])
   try {
-    t.true(await save(srcFile, { cacheDir, ttl: '1' }))
+    expect(await save(srcFile, { cacheDir, ttl: '1' })).toBe(true)
     await pSetTimeout(TTL_TIMEOUT)
-    t.true(await has(srcFile, { cacheDir }))
+    expect(await has(srcFile, { cacheDir })).toBe(true)
   } finally {
     await removeFiles([cacheDir, srcDir])
   }
 })
 
-test.serial('Should skip TTL when the value is negative', async (t) => {
+test('Should skip TTL when the value is negative', async () => {
   const [cacheDir, [srcFile, srcDir]] = await Promise.all([createTmpDir(), createTmpFile()])
   try {
-    t.true(await save(srcFile, { cacheDir, ttl: -1 }))
+    expect(await save(srcFile, { cacheDir, ttl: -1 })).toBe(true)
     await pSetTimeout(TTL_TIMEOUT)
-    t.true(await has(srcFile, { cacheDir }))
+    expect(await has(srcFile, { cacheDir })).toBe(true)
   } finally {
     await removeFiles([cacheDir, srcDir])
   }

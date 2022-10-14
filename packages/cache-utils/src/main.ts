@@ -12,7 +12,19 @@ export { list } from './list.js'
 // Cache a file
 const saveOne = async function (
   path,
-  { move = DEFAULT_MOVE, ttl = DEFAULT_TTL, digests = [], cacheDir, cwd: cwdOpt } = {},
+  {
+    move = DEFAULT_MOVE,
+    ttl = DEFAULT_TTL,
+    digests = [],
+    cacheDir,
+    cwd: cwdOpt,
+  }: {
+    cacheDir?: string
+    cwd?: string
+    move?: boolean
+    ttl?: number
+    digests?: any[]
+  } = {},
 ) {
   const { srcPath, cachePath } = await parsePath({ path, cacheDir, cwdOpt })
 
@@ -33,7 +45,18 @@ const saveOne = async function (
 }
 
 // Restore a cached file
-const restoreOne = async function (path, { move = DEFAULT_MOVE, cacheDir, cwd: cwdOpt } = {}) {
+const restoreOne = async function (
+  path,
+  {
+    move = DEFAULT_MOVE,
+    cacheDir,
+    cwd: cwdOpt,
+  }: {
+    cacheDir?: string
+    cwd?: string
+    move?: boolean
+  } = {},
+) {
   const { srcPath, cachePath } = await parsePath({ path, cacheDir, cwdOpt })
 
   if (!(await hasFiles(cachePath))) {
@@ -51,7 +74,16 @@ const restoreOne = async function (path, { move = DEFAULT_MOVE, cacheDir, cwd: c
 }
 
 // Remove the cache of a file
-const removeOne = async function (path, { cacheDir, cwd: cwdOpt } = {}) {
+const removeOne = async function (
+  path,
+  {
+    cacheDir,
+    cwd: cwdOpt,
+  }: {
+    cacheDir?: string
+    cwd?: string
+  } = {},
+) {
   const { cachePath } = await parsePath({ path, cacheDir, cwdOpt })
 
   if (!(await hasFiles(cachePath))) {
@@ -65,7 +97,16 @@ const removeOne = async function (path, { cacheDir, cwd: cwdOpt } = {}) {
 }
 
 // Check if a file is cached
-const hasOne = async function (path, { cacheDir, cwd: cwdOpt } = {}) {
+const hasOne = async function (
+  path,
+  {
+    cacheDir,
+    cwd: cwdOpt,
+  }: {
+    cacheDir?: string
+    cwd?: string
+  } = {},
+) {
   const { cachePath } = await parsePath({ path, cacheDir, cwdOpt })
 
   return (await hasFiles(cachePath)) && !(await isExpired(cachePath))
