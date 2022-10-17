@@ -6,6 +6,7 @@ import { updateNetlifyConfig, listConfigSideFiles } from './update_config.js'
 // Fire a core step
 export const fireCoreStep = async function ({
   coreStep,
+  coreStepId,
   coreStepName,
   configPath,
   buildDir,
@@ -87,6 +88,10 @@ export const fireCoreStep = async function ({
     if (!isBuildError(newError)) {
       addErrorInfo(newError, { type: 'coreStep', location: { coreStepName } })
     }
+
+    // always add the current stage
+    addErrorInfo(newError, { stage: coreStepId })
+
     return { newError }
   }
 }

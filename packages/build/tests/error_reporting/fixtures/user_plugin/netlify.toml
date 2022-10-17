@@ -1,0 +1,5 @@
+[build]
+command = "node --version"
+
+[[plugins]]
+package = "./plugin"

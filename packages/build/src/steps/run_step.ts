@@ -93,6 +93,7 @@ export const runStep = async function ({
     loadedFrom,
     origin,
     coreStep,
+    coreStepId,
     coreStepName,
     configPath,
     buildDir,
@@ -141,7 +142,6 @@ export const runStep = async function ({
     redirectsPath: redirectsPathA,
     logs,
     debug,
-    systemLog,
     timers: timersA,
     durationNs,
     testOpts,
@@ -223,6 +223,7 @@ const tFireStep = function ({
   loadedFrom,
   origin,
   coreStep,
+  coreStepId,
   coreStepName,
   configPath,
   buildDir,
@@ -253,6 +254,7 @@ const tFireStep = function ({
   if (coreStep !== undefined) {
     return fireCoreStep({
       coreStep,
+      coreStepId,
       coreStepName,
       configPath,
       buildDir,
@@ -298,7 +300,6 @@ const tFireStep = function ({
     error,
     logs,
     debug,
-    systemLog,
     verbose,
   })
 }

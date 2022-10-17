@@ -64,7 +64,7 @@ const isCommunityPluginTimer = function (timer) {
   return isPluginTimer(timer) && !isNetlifyMaintainedPlugin(getPluginTimerPackage(timer))
 }
 
-const isNetlifyMaintainedPlugin = function (pluginPackage) {
+export const isNetlifyMaintainedPlugin = function (pluginPackage) {
   return NETLIFY_MAINTAINED_PLUGINS.has(pluginPackage)
 }
 
@@ -108,7 +108,7 @@ const addTypeTimers = function (timers) {
 const TYPE_TIMERS = [
   { name: 'system', stages: ['resolve_config', 'get_plugins_options', 'start_plugins', 'others'] },
   { name: 'plugin', stages: ['load_plugins', 'run_plugins'] },
-  { name: 'user', stages: ['build_command', 'functions_bundling', 'deploy_site'] },
+  { name: 'user', stages: ['build_command', 'edge_functions_bundling', 'functions_bundling', 'deploy_site'] },
 ]
 
 const getTypeTimer = function (name, stages, topTimers) {
@@ -127,7 +127,7 @@ const isTopTimer = function ({ parentTag }) {
 }
 
 // Creates a timer that sums up the duration of several others
-const createSumTimer = function (timers, stageTag, parentTag) {
+const createSumTimer = function (timers, stageTag, parentTag?) {
   const durationNs = computeTimersDuration(timers)
   const timer = createTimer(stageTag, durationNs, { parentTag })
   return timer
