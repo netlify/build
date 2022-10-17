@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.8.0](https://github.com/netlify/edge-bundler/compare/v2.7.0...v2.8.0) (2022-10-17)
+
+
+### Features
+
+* support JSX and TSX in edge functions ([#161](https://github.com/netlify/edge-bundler/issues/161)) ([f1a9abb](https://github.com/netlify/edge-bundler/commit/f1a9abbb156ce45f784d2ce4bf7af3dc42daf21c))
+
+
+### Bug Fixes
+
+* **deps:** update dependency semver to v7.3.8 ([#155](https://github.com/netlify/edge-bundler/issues/155)) ([74b6afe](https://github.com/netlify/edge-bundler/commit/74b6afeb6604cb39c7d3a6e19b36c77fced335e4))
+
 ## [2.7.0](https://github.com/netlify/edge-bundler/compare/v2.6.0...v2.7.0) (2022-10-07)
 
 
