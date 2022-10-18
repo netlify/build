@@ -5,7 +5,7 @@ import { getErrorInfo } from './info.js'
 
 const TOP_PARENT_TAG = 'run_netlify_build'
 
-// Record the duration of a build phase, for monitoring.
+// Record error rates of the build phase for monitoring.
 // Sends to statsd daemon.
 export const reportError = async function ({
   error,
