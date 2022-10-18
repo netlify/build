@@ -14,6 +14,20 @@
   * dependencies
     * netlify bumped from ^12.0.2 to ^12.0.3
 
+## [19.0.1](https://github.com/netlify/build/compare/config-v19.0.0...config-v19.0.1) (2022-10-18)
+
+
+### Bug Fixes
+
+* run tsc -w if user runs ava -w ([#4601](https://github.com/netlify/build/issues/4601)) ([ebcc8a8](https://github.com/netlify/build/commit/ebcc8a86bc5324ab6c5450fbe396073215aaac6c))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.0.0 to ^13.0.1
+
 ## [19.0.0](https://github.com/netlify/build/compare/config-v18.2.6...config-v19.0.0) (2022-10-11)
 
 

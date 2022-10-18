@@ -39,6 +39,28 @@
   * devDependencies
     * @netlify/nock-udp bumped from ^1.0.0 to ^2.0.0
 
+## [28.0.1](https://github.com/netlify/build/compare/build-v28.0.0...build-v28.0.1) (2022-10-18)
+
+
+### Bug Fixes
+
+* **@netlify/build:** improve cli types for build cli ([#4610](https://github.com/netlify/build/issues/4610)) ([cf295a6](https://github.com/netlify/build/commit/cf295a60ca0d815870f6aa4573ee8d150c1b472f))
+* **build:** improve core step types ([#4612](https://github.com/netlify/build/issues/4612)) ([3a44a70](https://github.com/netlify/build/commit/3a44a70680387cad2a66eb6fa5da583431cb2413))
+* **deps:** update dependency @netlify/edge-bundler to ^2.8.0 ([#4630](https://github.com/netlify/build/issues/4630)) ([73f519e](https://github.com/netlify/build/commit/73f519e5fbe0dc0897c400b5a0c798621a295500))
+* **deps:** update dependency @netlify/plugins-list to ^6.50.0 ([#4631](https://github.com/netlify/build/issues/4631)) ([d771a3b](https://github.com/netlify/build/commit/d771a3b59946bf93314e8886df789bdcc4710a6e))
+* run tsc -w if user runs ava -w ([#4601](https://github.com/netlify/build/issues/4601)) ([ebcc8a8](https://github.com/netlify/build/commit/ebcc8a86bc5324ab6c5450fbe396073215aaac6c))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/cache-utils bumped from ^5.0.0 to ^5.0.1
+    * @netlify/config bumped from ^19.0.0 to ^19.0.1
+    * @netlify/functions-utils bumped from ^5.0.0 to ^5.0.1
+    * @netlify/git-utils bumped from ^5.0.0 to ^5.0.1
+    * @netlify/run-utils bumped from ^5.0.0 to ^5.0.1
+
 ## [28.0.0](https://github.com/netlify/build/compare/build-v27.20.6...build-v28.0.0) (2022-10-11)
 
 
