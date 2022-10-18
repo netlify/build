@@ -15,9 +15,9 @@
     "directory": "public"
   },
   "logo": {
-    "default": "/logos/hugo/default.svg",
-    "light": "/logos/hugo/light.svg",
-    "dark": "/logos/hugo/dark.svg"
+    "default": "/logos/remix/default.svg",
+    "light": "/logos/remix/light.svg",
+    "dark": "/logos/remix/dark.svg"
   },
   "env": {},
   "plugins": []
