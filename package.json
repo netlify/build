@@ -65,7 +65,7 @@
     "node": "^14.16.0 || >=16.0.0"
   },
   "lint-staged": {
-    "*.js": "eslint --ignore-path .gitignore --cache --fix",
+    "!(packages/*/tests/**/fixtures/**/*)*.+(j|t)s": "eslint --ignore-path .gitignore --cache --fix",
     "*": "prettier --write --ignore-unknown"
   }
 }

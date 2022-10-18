@@ -1,4 +1,5 @@
 import { handleBuildError } from '../error/handle.js'
+import { reportError } from '../error/report.js'
 import { logTimer, logBuildSuccess } from '../log/messages/core.js'
 import { trackBuildComplete } from '../telemetry/main.js'
 import { reportTimers } from '../time/report.js'
@@ -103,6 +104,8 @@ export default async function buildSite(flags: BuildFlags = {}): Promise<{
       testOpts,
       errorParams,
     })
+    await reportError({ error, framework, statsdOpts })
+
     return { success, severityCode, logs }
   }
 }
