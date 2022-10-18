@@ -1,9 +1,9 @@
 import { platform } from 'process'
 import { fileURLToPath } from 'url'
 
-import test from 'ava'
-import { execa } from 'execa'
+import { execaNode } from 'execa'
 import semver from 'semver'
+import { test, expect } from 'vitest'
 
 import { run, runCommand } from '../src/main.js'
 
@@ -12,54 +12,54 @@ const RUN_FILE = `${FIXTURES_DIR}/run.js`
 
 const runInChildProcess = (command: string, options?: Record<string, unknown>) => {
   const optionsA = options === undefined ? [] : [JSON.stringify(options)]
-  return execa('node', [RUN_FILE, command, ...optionsA])
+  return execaNode(RUN_FILE, [command, ...optionsA])
 }
 
-test('Should expose several methods', (t) => {
-  t.is(typeof run, 'function')
-  t.is(typeof runCommand, 'function')
+test('Should expose several methods', () => {
+  expect(typeof run).toBe('function')
+  expect(typeof runCommand).toBe('function')
 })
 
-test('Can run a command as a single string', async (t) => {
+test('Can run a command as a single string', async () => {
   const { stdout } = await runCommand('npx --version', { stdio: 'pipe' })
-  t.truthy(semver.valid(stdout))
+  expect(semver.valid(stdout)).toBeTruthy()
 })
 
 // `echo` in `cmd.exe` is different from Unix
 if (platform !== 'win32') {
-  test('Can run with no arguments', async (t) => {
+  test('Can run with no arguments', async () => {
     const { stdout } = await run('echo', { stdio: 'pipe' })
-    t.is(stdout.trim(), '')
+    expect(stdout.trim()).toBe('')
   })
 
-  test('Can run with no arguments nor options object', async (t) => {
+  test('Can run with no arguments nor options object', async () => {
     const { stdout } = await run('echo')
-    t.is(stdout.trim(), '')
+    expect(stdout.trim()).toBe('')
   })
 }
 
-test('Can run local binaries', async (t) => {
+test('Can run local binaries', async () => {
   const { stdout } = await run('npx', ['--version'], { stdio: 'pipe' })
 
-  t.truthy(semver.valid(stdout))
+  expect(semver.valid(stdout)).toBeTruthy()
 })
 
-test('Should redirect stdout/stderr to parent', async (t) => {
+test('Should redirect stdout/stderr to parent', async () => {
   const { stdout } = await runInChildProcess('npx --version')
-  t.truthy(semver.valid(stdout))
+  expect(semver.valid(stdout)).toBeTruthy()
 })
 
-test('Should not redirect stdout/stderr to parent when using "stdio" option', async (t) => {
+test('Should not redirect stdout/stderr to parent when using "stdio" option', async () => {
   const { stdout } = await runInChildProcess('ava --version', { stdio: 'pipe' })
-  t.is(stdout, '')
+  expect(stdout).toBe('')
 })
 
-test('Should not redirect stdout/stderr to parent when using "stdout" option', async (t) => {
+test('Should not redirect stdout/stderr to parent when using "stdout" option', async () => {
   const { stdout } = await runInChildProcess('ava --version', { stdout: 'pipe' })
-  t.is(stdout, '')
+  expect(stdout).toBe('')
 })
 
-test('Should not redirect stdout/stderr to parent when using "stderr" option', async (t) => {
+test('Should not redirect stdout/stderr to parent when using "stderr" option', async () => {
   const { stdout } = await runInChildProcess('ava --version', { stderr: 'pipe' })
-  t.is(stdout, '')
+  expect(stdout).toBe('')
 })
