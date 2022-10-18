@@ -9,7 +9,7 @@
   },
   "dev": {
     "command": "vite",
-    "port": 3000,
+    "port": 5173,
     "pollingStrategies": [{ "name": "TCP" }]
   },
   "build": {
