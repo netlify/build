@@ -2,13 +2,17 @@ import { relative } from 'path'
 import { cwd } from 'process'
 import { fileURLToPath } from 'url'
 
-import { execa } from 'execa'
+import { execa, execaNode } from 'execa'
 import { expect, test } from 'vitest'
 
 const FIXTURES_ABSOLUTE_PATH = fileURLToPath(new URL('fixtures', import.meta.url))
 const FIXTURES_RELATIVE_PATH = relative(cwd(), FIXTURES_ABSOLUTE_PATH)
 
 const runBinary = (...args: string[]) => {
+  if (process.env.CI) {
+    const binary = fileURLToPath(new URL('../bin.js', import.meta.url))
+    return execaNode(binary, args)
+  }
   const binary = fileURLToPath(new URL('../src/bin.ts', import.meta.url))
   return execa('node', ['--loader=ts-node/esm', '--no-warnings', binary, ...args])
 }
@@ -16,7 +20,8 @@ const runBinary = (...args: string[]) => {
 test('CLI --help flag', async () => {
   const { stdout } = await runBinary('--help')
 
-  expect(stdout).toMatchSnapshot()
+  // locally we run the typescript binary but the snapshot is run in CI as well
+  expect(stdout.replace('bin.ts', 'bin.js')).toMatchSnapshot()
 })
 
 test('CLI prints js-workspaces and frameworks in JSON format', async () => {
