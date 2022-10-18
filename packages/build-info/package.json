@@ -28,7 +28,7 @@
   },
   "author": "Netlify Inc.",
   "dependencies": {
-    "@netlify/framework-info": "^9.3.0",
+    "@netlify/framework-info": "github:netlify/framework-info#ep-detect-installed-version-of-framework",
     "@npmcli/map-workspaces": "^2.0.0",
     "read-pkg": "^7.0.0",
     "yargs": "^17.0.0"
