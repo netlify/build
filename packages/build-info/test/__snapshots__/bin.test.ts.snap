@@ -1,7 +1,7 @@
 // Vitest Snapshot v1
 
 exports[`CLI --help flag 1`] = `
-"bin.ts [OPTIONS...] [PROJECT_DIRECTORY]
+"bin.js [OPTIONS...] [PROJECT_DIRECTORY]
 
 Print relevant build information from a project.
 
