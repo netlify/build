@@ -1,5 +1,17 @@
 # Changelog
 
+## [5.1.0](https://github.com/netlify/build/compare/build-info-v5.0.0...build-info-v5.1.0) (2022-10-18)
+
+
+### Features
+
+* add proper types for @netlify/build-info ([#4611](https://github.com/netlify/build/issues/4611)) ([444fdb5](https://github.com/netlify/build/commit/444fdb5e214921dfbe6c29d94ba500a431820cbd))
+
+
+### Bug Fixes
+
+* run tsc -w if user runs ava -w ([#4601](https://github.com/netlify/build/issues/4601)) ([ebcc8a8](https://github.com/netlify/build/commit/ebcc8a86bc5324ab6c5450fbe396073215aaac6c))
+
 ## [5.0.0](https://github.com/netlify/build/compare/build-info-v4.0.11...build-info-v5.0.0) (2022-10-11)
 
 

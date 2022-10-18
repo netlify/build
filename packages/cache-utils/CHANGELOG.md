@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.0.1](https://github.com/netlify/build/compare/cache-utils-v5.0.0...cache-utils-v5.0.1) (2022-10-18)
+
+
+### Bug Fixes
+
+* run tsc -w if user runs ava -w ([#4601](https://github.com/netlify/build/issues/4601)) ([ebcc8a8](https://github.com/netlify/build/commit/ebcc8a86bc5324ab6c5450fbe396073215aaac6c))
+
 ## [5.0.0](https://github.com/netlify/build/compare/cache-utils-v4.1.6...cache-utils-v5.0.0) (2022-10-11)
 
 
