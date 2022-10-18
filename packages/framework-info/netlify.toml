@@ -3,4 +3,4 @@ command = "npm run build"
 publish = "assets"
 
   [build.environment]
-  NODE_VERSION = "12"
+  NODE_VERSION = "14"
