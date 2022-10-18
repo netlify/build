@@ -1,7 +1,8 @@
 import { addMutableConstants } from '../core/constants.js'
 import { logStepStart } from '../log/messages/steps.js'
 import { runsAlsoOnBuildFailure, runsOnlyOnBuildFailure } from '../plugins/events.js'
-import { measureDuration, normalizeTimerName } from '../time/main.js'
+import { normalizeTagName } from '../report/statsd.js'
+import { measureDuration } from '../time/main.js'
 
 import { fireCoreStep } from './core_step.js'
 import { firePluginStep } from './plugin.js'
@@ -206,12 +207,12 @@ const shouldRunStep = async function ({
 }
 
 // Wrap step function to measure its time
-const getFireStep = function (packageName, coreStepId, event) {
+const getFireStep = function (packageName?: string, coreStepId?: string, event?: string) {
   if (coreStepId !== undefined) {
     return measureDuration(tFireStep, coreStepId)
   }
 
-  const parentTag = normalizeTimerName(packageName)
+  const parentTag = normalizeTagName(packageName)
   return measureDuration(tFireStep, event, { parentTag, category: 'pluginEvent' })
 }
 

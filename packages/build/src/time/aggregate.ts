@@ -1,3 +1,5 @@
+import { isNetlifyMaintainedPlugin } from '../plugins/internal.js'
+
 import { createTimer, TOP_PARENT_TAG } from './main.js'
 
 // Some timers are computed based on others:
@@ -64,20 +66,6 @@ const isCommunityPluginTimer = function (timer) {
   return isPluginTimer(timer) && !isNetlifyMaintainedPlugin(getPluginTimerPackage(timer))
 }
 
-export const isNetlifyMaintainedPlugin = function (pluginPackage) {
-  return NETLIFY_MAINTAINED_PLUGINS.has(pluginPackage)
-}
-
-const NETLIFY_MAINTAINED_PLUGINS = new Set([
-  'netlify_plugin_gatsby_cache',
-  'netlify_plugin_sitemap',
-  'netlify_plugin_debug_cache',
-  'netlify_plugin_is_website_vulnerable',
-  'netlify_plugin_lighthouse',
-  'netlify_plugin_nextjs',
-  'netlify_plugin_gatsby',
-])
-
 const getPluginPackages = function (pluginsTimers) {
   const pluginPackages = pluginsTimers.map(getPluginTimerPackage)
   return [...new Set(pluginPackages)]
@@ -141,6 +129,6 @@ const getTimerDuration = function ({ durationNs }) {
   return durationNs
 }
 
-const reduceSum = function (sum, number) {
+const reduceSum = function (sum: number, number: number) {
   return sum + number
 }

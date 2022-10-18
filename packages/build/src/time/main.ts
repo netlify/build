@@ -1,4 +1,3 @@
-import slugify from '@sindresorhus/slugify'
 import keepFuncProps from 'keep-func-props'
 
 import { startTimer, endTimer } from './measure.js'
@@ -40,9 +39,3 @@ export const createTimer = function (
 
 const DEFAULT_METRIC_NAME = 'buildbot.build.stage.duration'
 export const TOP_PARENT_TAG = 'run_netlify_build'
-
-// Make sure the timer name does not include special characters.
-// For example, the `packageName` of local plugins includes dots.
-export const normalizeTimerName = function (name) {
-  return slugify(name, { separator: '_' })
-}
