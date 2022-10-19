@@ -1,10 +1,11 @@
+import { getBuildInfo } from '@netlify/build-info'
 import { resolveConfig, updateConfig, restoreConfig } from '@netlify/config'
 import mapObj from 'map-obj'
 
 import { getChildEnv } from '../env/main.js'
 import { addApiErrorHandlers } from '../error/api.js'
 import { changeErrorType } from '../error/info.js'
-import { logBuildDir, logConfigPath, logConfig, logContext } from '../log/messages/config.js'
+import { logBuildDir, logConfigPath, logConfig, logContext, logFrameworkVersion } from '../log/messages/config.js'
 import { logConfigOnUpload, logHeadersOnUpload, logRedirectsOnUpload } from '../log/messages/mutations.js'
 import { measureDuration } from '../time/main.js'
 import { getPackageJson } from '../utils/package.js'
@@ -74,7 +75,10 @@ const tLoadConfig = async function ({ configOpts, cachedConfig, cachedConfigPath
     siteInfo,
     env,
   } = await resolveInitialConfig(configOpts, cachedConfig, cachedConfigPath)
-  logConfigInfo({ logs, configPath, buildDir, netlifyConfig, context: contextA, debug })
+
+  const buildInfo = await getBuildInfo({ projectDir: buildDir })
+  const frameworkInfo = buildInfo.frameworks
+  logConfigInfo({ logs, configPath, buildDir, netlifyConfig, context: contextA, debug, frameworkInfo })
 
   const apiA = addApiErrorHandlers(api)
   const envValues = mapObj(env, (key, { value }) => [key, value])
@@ -107,11 +111,12 @@ const resolveInitialConfig = async function (configOpts, cachedConfig, cachedCon
   return await resolveConfig({ ...configOpts, cachedConfig, cachedConfigPath })
 }
 
-const logConfigInfo = function ({ logs, configPath, buildDir, netlifyConfig, context, debug }) {
+const logConfigInfo = function ({ logs, configPath, buildDir, netlifyConfig, context, debug, frameworkInfo }) {
   logBuildDir(logs, buildDir)
   logConfigPath(logs, configPath)
   logConfig({ logs, netlifyConfig, debug })
   logContext(logs, context)
+  logFrameworkVersion(logs, frameworkInfo)
 }
 
 // Retrieve the configuration after it's been changed.

@@ -63,6 +63,14 @@ export const logBuildDir = function (logs, buildDir) {
   logMessage(logs, buildDir)
 }
 
+export const logFrameworkVersion = function (logs, frameworkInfo = []) {
+  if (frameworkInfo.length > 0) logSubHeader(logs, 'Detected the following installed frameworks and their versions')
+
+  frameworkInfo.forEach((framework) => {
+    logMessage(logs, `${framework.id}@${framework.package.version}`)
+  })
+}
+
 export const logConfigPath = function (logs, configPath = NO_CONFIG_MESSAGE) {
   logSubHeader(logs, 'Config file')
   logMessage(logs, configPath)
