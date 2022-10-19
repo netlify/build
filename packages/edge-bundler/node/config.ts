@@ -6,6 +6,7 @@ import tmp from 'tmp-promise'
 
 import { DenoBridge } from './bridge.js'
 import { EdgeFunction } from './edge_function.js'
+import { ImportMap } from './import_map.js'
 import { Logger } from './logger.js'
 import { getPackagePath } from './package_json.js'
 
@@ -31,7 +32,7 @@ const getConfigExtractor = () => {
   return configExtractorPath
 }
 
-export const getFunctionConfig = async (func: EdgeFunction, deno: DenoBridge, log: Logger) => {
+export const getFunctionConfig = async (func: EdgeFunction, importMap: ImportMap, deno: DenoBridge, log: Logger) => {
   // The extractor is a Deno script that will import the function and run its
   // `config` export, if one exists.
   const extractorPath = getConfigExtractor()
@@ -53,6 +54,7 @@ export const getFunctionConfig = async (func: EdgeFunction, deno: DenoBridge, lo
       '--allow-read',
       `--allow-write=${collector.path}`,
       '--quiet',
+      `--import-map=${importMap.toDataURL()}`,
       extractorPath,
       pathToFileURL(func.path).href,
       pathToFileURL(collector.path).href,

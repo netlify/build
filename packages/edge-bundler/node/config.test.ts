@@ -1,5 +1,6 @@
 import { promises as fs } from 'fs'
 import { join, resolve } from 'path'
+import { pathToFileURL } from 'url'
 
 import del from 'del'
 import { stub } from 'sinon'
@@ -12,6 +13,14 @@ import { DenoBridge } from './bridge.js'
 import { bundle } from './bundler.js'
 import { getFunctionConfig } from './config.js'
 import type { Declaration } from './declaration.js'
+import { ImportMap } from './import_map.js'
+
+const importMapFile = {
+  baseURL: new URL('file:///some/path/import-map.json'),
+  imports: {
+    'alias:helper': pathToFileURL(join(fixturesDir, 'helper.ts')).toString(),
+  },
+}
 
 test('`getFunctionConfig` extracts configuration properties from function file', async () => {
   const { path: tmpDir } = await tmp.dir()
@@ -118,6 +127,7 @@ test('`getFunctionConfig` extracts configuration properties from function file',
         name: func.name,
         path,
       },
+      new ImportMap([importMapFile]),
       deno,
       logger,
     )
@@ -144,6 +154,7 @@ test('Ignores function paths from the in-source `config` function if the feature
     featureFlags: {
       edge_functions_produce_eszip: true,
     },
+    importMaps: [importMapFile],
   })
   const generatedFiles = await fs.readdir(tmpDir.path)
 
@@ -182,6 +193,7 @@ test('Loads function paths from the in-source `config` function', async () => {
       edge_functions_config_export: true,
       edge_functions_produce_eszip: true,
     },
+    importMaps: [importMapFile],
   })
   const generatedFiles = await fs.readdir(tmpDir.path)
 

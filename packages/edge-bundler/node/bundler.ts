@@ -141,7 +141,7 @@ const bundle = async (
         return {}
       }
 
-      return getFunctionConfig(func, deno, logger)
+      return getFunctionConfig(func, importMap, deno, logger)
     }),
   )
 

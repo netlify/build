@@ -20,6 +20,7 @@ module.exports = {
     {
       files: ['node/**/*.test.ts', 'vitest.config.ts'],
       rules: {
+        'max-lines-per-function': 'off',
         'max-statements': 'off',
         'no-magic-numbers': 'off',
       },
