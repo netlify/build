@@ -30,8 +30,8 @@
   "dependencies": {
     "@netlify/framework-info": "^9.3.0",
     "@npmcli/map-workspaces": "^2.0.0",
-    "read-pkg": "^7.0.0",
-    "yargs": "^17.0.0"
+    "read-pkg": "^7.1.0",
+    "yargs": "^17.6.0"
   },
   "devDependencies": {
     "@types/node": "^14.18.31",
