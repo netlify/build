@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url'
 
 import { test, expect } from 'vitest'
 
-import { getBuildInfo } from '../src/main.js'
+import { getBuildInfo } from '../src/get-build-info.js'
 
 const FIXTURES_ABSOLUTE_PATH = fileURLToPath(new URL('fixtures', import.meta.url))
 const FIXTURES_RELATIVE_PATH = relative(cwd(), FIXTURES_ABSOLUTE_PATH)
