@@ -1,4 +1,3 @@
-import slugify from '@sindresorhus/slugify'
 import keepFuncProps from 'keep-func-props'
 
 import { startTimer, endTimer } from './measure.js'
@@ -14,7 +13,7 @@ export const initTimers = function () {
 //   - return a plain object. This may or may not contain a modified `timers`.
 // The `durationNs` will be returned by the function. A new `timers` with the
 // additional duration timer will be returned as well.
-const kMeasureDuration = function (func, stageTag, { parentTag, category } = {}) {
+const kMeasureDuration = function (func, stageTag, { parentTag = undefined, category = undefined } = {}) {
   return async function measuredFunc({ timers, ...opts }, ...args) {
     const timerNs = startTimer()
     const { timers: timersA = timers, ...returnObject } = await func({ timers, ...opts }, ...args)
@@ -33,16 +32,10 @@ export const measureDuration = keepFuncProps(kMeasureDuration)
 export const createTimer = function (
   stageTag,
   durationNs,
-  { metricName = DEFAULT_METRIC_NAME, parentTag = TOP_PARENT_TAG, category, tags } = {},
+  { metricName = DEFAULT_METRIC_NAME, parentTag = TOP_PARENT_TAG, category = undefined, tags = undefined } = {},
 ) {
   return { metricName, stageTag, parentTag, durationNs, category, tags }
 }
 
 const DEFAULT_METRIC_NAME = 'buildbot.build.stage.duration'
 export const TOP_PARENT_TAG = 'run_netlify_build'
-
-// Make sure the timer name does not include special characters.
-// For example, the `packageName` of local plugins includes dots.
-export const normalizeTimerName = function (name) {
-  return slugify(name, { separator: '_' })
-}

@@ -14,6 +14,13 @@
   * dependencies
     * netlify bumped from ^12.0.2 to ^12.0.3
 
+## [19.0.2](https://github.com/netlify/build/compare/config-v19.0.1...config-v19.0.2) (2022-10-19)
+
+
+### Bug Fixes
+
+* **build,build-info,config:** enforce yargs version 17.6.0 as prior version do not support ESM ([#4641](https://github.com/netlify/build/issues/4641)) ([80c8558](https://github.com/netlify/build/commit/80c85581bd2bcc4a0dc05f8eeb1ffe77733fdf27))
+
 ## [19.0.1](https://github.com/netlify/build/compare/config-v19.0.0...config-v19.0.1) (2022-10-18)
 
 

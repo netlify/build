@@ -18,6 +18,14 @@ test('Does not send timings of community plugins', async (t) => {
   t.snapshot(await getTimerRequestsString(t, './fixtures/community_plugin'))
 })
 
+test('Sends timing for functions bundling', async (t) => {
+  t.snapshot(await getTimerRequestsString(t, './fixtures/functions_zisi'))
+})
+
+test('Sends timing for edge functions bundling', async (t) => {
+  t.snapshot(await getTimerRequestsString(t, './fixtures/edge_functions'))
+})
+
 test('Sends distribution metrics', async (t) => {
   const timerRequests = await getAllTimerRequests(t, './fixtures/simple')
   const includesDistributionRequests = timerRequests.some((timerRequest) => timerRequest.includes('|d|'))
