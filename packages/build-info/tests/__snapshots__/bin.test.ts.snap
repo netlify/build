@@ -1,9 +1,13 @@
 // Vitest Snapshot v1
 
 exports[`CLI --help flag 1`] = `
-"bin.js [OPTIONS...] [PROJECT_DIRECTORY]
+"bin.js [projectDir]
 
-Print relevant build information from a project.
+Commands:
+  bin.js print-workspaces [rootDir]  This command is used inside buildbot to ret
+                                     rieve a space separated list of relative pa
+                                     ckage paths
+  bin.js [projectDir]                                                  [default]
 
 Options:
   --help     Show help                                                 [boolean]

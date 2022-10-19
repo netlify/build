@@ -8,5 +8,10 @@ export default defineConfig({
     onConsoleLog: (log, type) => {
       process[type].write(log)
     },
+    setupFiles: ['tests/test-setup.ts'],
+    deps: {
+      // inline find-up to use memfs as well
+      inline: ['find-up', 'locate-path'],
+    },
   },
 })

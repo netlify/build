@@ -23,7 +23,7 @@
     "node": "^14.16.0 || >=16.0.0"
   },
   "author": "Netlify",
-  "license": "MIT",
+  "license": "MITs",
   "dependencies": {
     "escape-string-regexp": "^5.0.0",
     "is-plain-obj": "^4.0.0",
