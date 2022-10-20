@@ -10,14 +10,6 @@ import { splitResults } from './results.js'
 export const mergeRedirects = function ({ fileRedirects, configRedirects }) {
   const results = [...fileRedirects, ...configRedirects]
   const { redirects, errors } = splitResults(results)
-  const mergedRedirects = redirects.filter(isUniqueRedirect)
+  const mergedRedirects = [...new Set(redirects)]
   return { redirects: mergedRedirects, errors }
-}
-
-// Remove duplicates. This is especially likely considering `fileRedirects`
-// might have been previously merged to `configRedirects`, which happens when
-// `netlifyConfig.redirects` is modified by plugins.
-// The latest duplicate value is the one kept.
-const isUniqueRedirect = function (redirect, index, redirects) {
-  return !redirects.slice(index + 1).some((otherRedirect) => isDeepStrictEqual(redirect, otherRedirect))
 }
