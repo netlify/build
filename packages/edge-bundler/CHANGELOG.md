@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.9.0](https://github.com/netlify/edge-bundler/compare/v2.8.0...v2.9.0) (2022-10-20)
+
+
+### Features
+
+* add support for post-cache routes ([#165](https://github.com/netlify/edge-bundler/issues/165)) ([c7e530b](https://github.com/netlify/edge-bundler/commit/c7e530b910ba15e982fe5d8d1dd4324890687f24))
+
+
+### Bug Fixes
+
+* use import maps in config evaluation ([#166](https://github.com/netlify/edge-bundler/issues/166)) ([8e5ab76](https://github.com/netlify/edge-bundler/commit/8e5ab76ff01217068668e9c65d6cd9f6d2936029))
+
 ## [2.8.0](https://github.com/netlify/edge-bundler/compare/v2.7.0...v2.8.0) (2022-10-17)
 
 
