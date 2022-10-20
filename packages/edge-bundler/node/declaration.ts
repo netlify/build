@@ -2,6 +2,7 @@ import { FunctionConfig } from './config.js'
 
 interface BaseDeclaration {
   function: string
+  mode?: string
   name?: string
 }
 
@@ -31,7 +32,7 @@ export const getDeclarationsFromConfig = (
     if (path) {
       functionsVisited.add(declaration.function)
 
-      declarations.push({ function: declaration.function, path })
+      declarations.push({ ...declaration, path })
     } else {
       declarations.push(declaration)
     }
@@ -40,10 +41,10 @@ export const getDeclarationsFromConfig = (
   // Finally, we must create declarations for functions that are not declared
   // in the TOML at all.
   for (const name in functionsConfig) {
-    const { path } = functionsConfig[name]
+    const { path, ...config } = functionsConfig[name]
 
     if (!functionsVisited.has(name) && path) {
-      declarations.push({ function: name, path })
+      declarations.push({ ...config, function: name, path })
     }
   }
 

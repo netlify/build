@@ -4,6 +4,7 @@ import { join } from 'path'
 import globToRegExp from 'glob-to-regexp'
 
 import type { Bundle } from './bundle.js'
+import { Mode } from './config.js'
 import type { Declaration } from './declaration.js'
 import { EdgeFunction } from './edge_function.js'
 import { getPackageVersion } from './package_json.js'
@@ -15,15 +16,26 @@ interface GenerateManifestOptions {
   declarations?: Declaration[]
 }
 
+/* eslint-disable camelcase */
 interface Manifest {
-  // eslint-disable-next-line camelcase
   bundler_version: string
   bundles: { asset: string; format: string }[]
   routes: { function: string; name?: string; pattern: string }[]
+  post_cache_routes: { function: string; name?: string; pattern: string }[]
+}
+/* eslint-enable camelcase */
+
+interface Route {
+  function: string
+  name?: string
+  pattern: string
 }
 
 const generateManifest = ({ bundles = [], declarations = [], functions }: GenerateManifestOptions) => {
-  const routes = declarations.map((declaration) => {
+  const preCacheRoutes: Route[] = []
+  const postCacheRoutes: Route[] = []
+
+  declarations.forEach((declaration) => {
     const func = functions.find(({ name }) => declaration.function === name)
 
     if (func === undefined) {
@@ -32,11 +44,16 @@ const generateManifest = ({ bundles = [], declarations = [], functions }: Genera
 
     const pattern = getRegularExpression(declaration)
     const serializablePattern = pattern.source.replace(/\\\//g, '/')
-
-    return {
+    const route = {
       function: func.name,
       name: declaration.name,
       pattern: serializablePattern,
+    }
+
+    if (declaration.mode === Mode.AfterCache) {
+      postCacheRoutes.push(route)
+    } else {
+      preCacheRoutes.push(route)
     }
   })
   const manifestBundles = bundles.map(({ extension, format, hash }) => ({
@@ -45,7 +62,8 @@ const generateManifest = ({ bundles = [], declarations = [], functions }: Genera
   }))
   const manifest: Manifest = {
     bundles: manifestBundles,
-    routes: routes.filter(nonNullable),
+    routes: preCacheRoutes.filter(nonNullable),
+    post_cache_routes: postCacheRoutes.filter(nonNullable),
     bundler_version: getPackageVersion(),
   }
 

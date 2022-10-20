@@ -158,7 +158,7 @@ test('Ignores function paths from the in-source `config` function if the feature
   })
   const generatedFiles = await fs.readdir(tmpDir.path)
 
-  expect(result.functions.length).toBe(4)
+  expect(result.functions.length).toBe(6)
   expect(generatedFiles.length).toBe(2)
 
   const manifestFile = await fs.readFile(resolve(tmpDir.path, 'manifest.json'), 'utf8')
@@ -197,22 +197,26 @@ test('Loads function paths from the in-source `config` function', async () => {
   })
   const generatedFiles = await fs.readdir(tmpDir.path)
 
-  expect(result.functions.length).toBe(4)
+  expect(result.functions.length).toBe(6)
   expect(generatedFiles.length).toBe(2)
 
   const manifestFile = await fs.readFile(resolve(tmpDir.path, 'manifest.json'), 'utf8')
   const manifest = JSON.parse(manifestFile)
-  const { bundles, routes } = manifest
+  const { bundles, routes, post_cache_routes: postCacheRoutes } = manifest
 
   expect(bundles.length).toBe(1)
   expect(bundles[0].format).toBe('eszip2')
   expect(generatedFiles.includes(bundles[0].asset)).toBe(true)
 
-  expect(routes.length).toBe(4)
+  expect(routes.length).toBe(5)
   expect(routes[0]).toEqual({ function: 'framework-func2', pattern: '^/framework-func2/?$' })
   expect(routes[1]).toEqual({ function: 'user-func2', pattern: '^/user-func2/?$' })
   expect(routes[2]).toEqual({ function: 'framework-func1', pattern: '^/framework-func1/?$' })
   expect(routes[3]).toEqual({ function: 'user-func1', pattern: '^/user-func1/?$' })
+  expect(routes[4]).toEqual({ function: 'user-func3', pattern: '^/user-func3/?$' })
+
+  expect(postCacheRoutes.length).toBe(1)
+  expect(postCacheRoutes[0]).toEqual({ function: 'user-func4', pattern: '^/user-func4/?$' })
 
   await fs.rmdir(tmpDir.path, { recursive: true })
 })
