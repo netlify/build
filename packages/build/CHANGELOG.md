@@ -39,6 +39,13 @@
   * devDependencies
     * @netlify/nock-udp bumped from ^1.0.0 to ^2.0.0
 
+## [28.1.2](https://github.com/netlify/build/compare/build-v28.1.1...build-v28.1.2) (2022-10-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to ^2.9.0 ([#4645](https://github.com/netlify/build/issues/4645)) ([9aff7c1](https://github.com/netlify/build/commit/9aff7c100fd7d5678cf7be2001421db0ee5f99cf))
+
 ## [28.1.1](https://github.com/netlify/build/compare/build-v28.1.0...build-v28.1.1) (2022-10-19)
 
 
