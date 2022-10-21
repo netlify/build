@@ -1,5 +1,3 @@
-import { isDeepStrictEqual } from 'util'
-
 import { splitResults } from './results.js'
 
 // Merge headers from `_headers` with the ones from `netlify.toml`.
@@ -19,7 +17,6 @@ import { splitResults } from './results.js'
 export const mergeHeaders = function ({ fileHeaders, configHeaders }) {
   const results = [...fileHeaders, ...configHeaders]
   const { headers, errors } = splitResults(results)
-  // const mergedHeaders = headers.filter(isUniqueHeader)
   const mergedHeaders = removeDuplicates(headers)
   return { headers: mergedHeaders, errors }
 }
@@ -49,12 +46,4 @@ const generateHeaderKey = function (header) {
     if (value instanceof RegExp) return value.toString()
     return value
   })
-}
-
-// Remove duplicates. This is especially likely considering `fileHeaders` might
-// have been previously merged to `configHeaders`, which happens when
-// `netlifyConfig.headers` is modified by plugins.
-// The latest duplicate value is the one kept.
-const isUniqueHeader = function (header, index, headers) {
-  return !headers.slice(index + 1).some((otherHeader) => isDeepStrictEqual(header, otherHeader))
 }
