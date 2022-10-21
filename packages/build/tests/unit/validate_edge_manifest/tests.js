@@ -4,8 +4,6 @@ import test from 'ava'
 
 import { validateEdgeFunctionsManifest } from '../../../lib/plugins_core/edge_functions/validate_manifest/validate_edge_functions_manifest.js'
 
-import { extraPropErrMsg, invalidPatternMsg, missingPropErrMsg } from './util.js'
-
 const FIXTURES_DIR = fileURLToPath(new URL('unit_fixtures', import.meta.url))
 
 test('should validate valid manifest', async (t) => {
@@ -25,7 +23,7 @@ test('should detect invalid route pattern in manifest', async (t) => {
     }),
   )
 
-  t.is(error.message, invalidPatternMsg)
+  t.snapshot(error.message)
 })
 
 test('should detect missing property in manifest', async (t) => {
@@ -36,7 +34,7 @@ test('should detect missing property in manifest', async (t) => {
     }),
   )
 
-  t.is(error.message, missingPropErrMsg)
+  t.snapshot(error.message)
 })
 
 test('should detect extra property in manifest', async (t) => {
@@ -47,5 +45,5 @@ test('should detect extra property in manifest', async (t) => {
     }),
   )
 
-  t.is(error.message, extraPropErrMsg)
+  t.snapshot(error.message)
 })
