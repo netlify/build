@@ -1,5 +1,3 @@
-import { isDeepStrictEqual } from 'util'
-
 import { splitResults } from './results.js'
 
 // Merge redirects from `_redirects` with the ones from `netlify.toml`.
