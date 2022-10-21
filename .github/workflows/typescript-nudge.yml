@@ -2,9 +2,11 @@ on:
   pull_request:
     paths:
       - '**.js'
-      - '**.jsx'
+      - '**.cjs'
+      - '**.mjs'
       - '**.ts'
-      - '**.tsx'
+      - '**.mts'
+      - '**.cts'
 name: TypeScript conversion nudge
 jobs:
   Nudge-to-convert-to-TypeScript-if-JavaScript-found:
@@ -21,8 +23,8 @@ jobs:
           base_sha: ${{ github.event.pull_request.base.sha }}
           files: |
             **/*.js
-            **/*.jsx
-
+            **/*.cjs
+            **/*.mjs
       - name: 📃 List added files
         run: |
           for file in ${{ steps.changed-javascript-files.outputs.added_files }}; do
@@ -41,9 +43,9 @@ jobs:
           steps.changed-javascript-files.outputs.added_files != ''
         uses: thollander/actions-comment-pull-request@v1
         with:
-          message:
-            'This pull request adds or modifies JavaScript (`.js`, `.jsx`) files. Consider converting them to
-            TypeScript.'
+          message: |
+            This pull request adds or modifies JavaScript (`.js`, `.cjs`, `.mjs`) files.
+            Consider converting them to TypeScript.
           comment_includes: 'Consider converting them to TypeScript'
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -63,7 +65,7 @@ jobs:
         uses: thollander/actions-comment-pull-request@v1
         with:
           message: |
-            ~This pull request adds or modifies JavaScript (`.js`, `.jsx`) files. Consider converting them to TypeScript.~
+            ~This pull request adds or modifies JavaScript (`.js`, `.cjs`, `.mjs`) files. Consider converting them to TypeScript.~
             Thank you for converting JavaScript files to TypeScript 🎉"
           comment_includes: 'Consider converting them to TypeScript'
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
