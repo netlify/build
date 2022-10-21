@@ -14,16 +14,14 @@ export const mergeRedirects = function ({ fileRedirects, configRedirects }) {
   return { redirects: mergedRedirects, errors }
 }
 
-const removeDuplicates = function (redirects) {
-  const strRedirects = redirects.map((v) => JSON.stringify(v)).reverse()
-  const set = new Set(strRedirects)
-  return [...set].map((v) => JSON.parse(v)).reverse()
-}
-
 // Remove duplicates. This is especially likely considering `fileRedirects`
 // might have been previously merged to `configRedirects`, which happens when
 // `netlifyConfig.redirects` is modified by plugins.
-// The latest duplicate value is the one kept.
-const isUniqueRedirect = function (redirect, index, redirects) {
-  return !redirects.slice(index + 1).some((otherRedirect) => isDeepStrictEqual(redirect, otherRedirect))
+// The latest duplicate value is the one kept, hence why we need to reverse the
+// arrays in order to keep said logic.
+const removeDuplicates = function (redirects) {
+  const strRedirects = redirects.map((v) => JSON.stringify(v)).reverse()
+  // Set takes care of creating a set of non duplicate values and preserves order
+  const set = new Set(strRedirects)
+  return [...set].map((v) => JSON.parse(v)).reverse()
 }
