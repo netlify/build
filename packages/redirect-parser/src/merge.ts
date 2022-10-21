@@ -18,7 +18,7 @@ export const mergeRedirects = function ({ fileRedirects, configRedirects }) {
 // The latest duplicate value is the one kept, hence why we need to reverse the
 // arrays in order to keep said logic.
 const removeDuplicates = function (redirects) {
-  const strRedirects = redirects.map((v) => JSON.stringify(v)).reverse()
+  const strRedirects: [string] = redirects.map((v) => JSON.stringify(v)).reverse()
   // Set takes care of creating a set of non duplicate values and preserves order
   const set = new Set(strRedirects)
   return [...set].map((v) => JSON.parse(v)).reverse()
