@@ -105,3 +105,22 @@ test.each([
   const normalized = output.map((redirect) => normalizeRedirect(redirect, input))
   expect(redirects).toStrictEqual(normalized)
 })
+
+test('Merges large _redirects file with config redirects', async () => {
+  const configRedirects = [
+    {
+      from: '/base/some-1',
+      to: '/base/another-1',
+    },
+    {
+      from: 'from-unique-redirect',
+      to: 'to-unique-redirect',
+    },
+  ]
+  const { errors, redirects } = await parseRedirects({
+    redirectsFiles: ['large_45000_redirects_file'],
+    configRedirects,
+  })
+  expect(errors).length.to.be.eq(0)
+  expect(redirects).length.to.be.greaterThan(45000)
+})

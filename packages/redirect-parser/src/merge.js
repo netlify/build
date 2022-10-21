@@ -10,8 +10,14 @@ import { splitResults } from './results.js'
 export const mergeRedirects = function ({ fileRedirects, configRedirects }) {
   const results = [...fileRedirects, ...configRedirects]
   const { redirects, errors } = splitResults(results)
-  const mergedRedirects = redirects.filter(isUniqueRedirect)
+  const mergedRedirects = removeDuplicates(redirects)
   return { redirects: mergedRedirects, errors }
+}
+
+const removeDuplicates = function (redirects) {
+  const strRedirects = redirects.map((v) => JSON.stringify(v)).reverse()
+  const set = new Set(strRedirects)
+  return [...set].map((v) => JSON.parse(v)).reverse()
 }
 
 // Remove duplicates. This is especially likely considering `fileRedirects`
