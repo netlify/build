@@ -39,6 +39,13 @@
   * devDependencies
     * @netlify/nock-udp bumped from ^1.0.0 to ^2.0.0
 
+## [28.1.3](https://github.com/netlify/build/compare/build-v28.1.2...build-v28.1.3) (2022-10-21)
+
+
+### Bug Fixes
+
+* **build:** add post_cache_routes to edge validation schema ([#4649](https://github.com/netlify/build/issues/4649)) ([ab03fe2](https://github.com/netlify/build/commit/ab03fe2df96898cf3b39e47d4b419a316b94a695))
+
 ## [28.1.2](https://github.com/netlify/build/compare/build-v28.1.1...build-v28.1.2) (2022-10-20)
 
 
