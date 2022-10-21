@@ -19,8 +19,36 @@ import { splitResults } from './results.js'
 export const mergeHeaders = function ({ fileHeaders, configHeaders }) {
   const results = [...fileHeaders, ...configHeaders]
   const { headers, errors } = splitResults(results)
-  const mergedHeaders = headers.filter(isUniqueHeader)
+  // const mergedHeaders = headers.filter(isUniqueHeader)
+  const mergedHeaders = removeDuplicates(headers)
   return { headers: mergedHeaders, errors }
+}
+
+// Remove duplicates. This is especially likely considering `fileHeaders` might
+// have been previously merged to `configHeaders`, which happens when
+// `netlifyConfig.headers` is modified by plugins.
+// The latest duplicate value is the one kept hence why we reverse the arrays at
+// the beginning and at the end
+const removeDuplicates = function (headers) {
+  const uniqueHeaders = new Set()
+  const result = []
+  headers.reverse().forEach((h) => {
+    const key = generateHeaderKey(h)
+    if (uniqueHeaders.has(key)) return
+    uniqueHeaders.add(key)
+    result.push(h)
+  })
+  return result.reverse()
+}
+
+// We generate a unique header key based on JSON stringify. However because some
+// properties can be regexes, we need to replace those by their toString representation
+// given the default will be and empty object
+const generateHeaderKey = function (header) {
+  return JSON.stringify(header, (_, value) => {
+    if (value instanceof RegExp) return value.toString()
+    return value
+  })
 }
 
 // Remove duplicates. This is especially likely considering `fileHeaders` might
