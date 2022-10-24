@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.0.0](https://github.com/netlify/edge-bundler/compare/v2.9.0...v3.0.0) (2022-10-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* drop support for Node.js 12 and remove auto-labeling (#167)
+
+### Bug Fixes
+
+* drop support for Node.js 12 and remove auto-labeling ([#167](https://github.com/netlify/edge-bundler/issues/167)) ([53a6029](https://github.com/netlify/edge-bundler/commit/53a60290ac11308c640ac2e180c98b19a346a3e0))
+
 ## [2.9.0](https://github.com/netlify/edge-bundler/compare/v2.8.0...v2.9.0) (2022-10-20)
 
 
