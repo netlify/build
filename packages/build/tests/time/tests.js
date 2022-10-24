@@ -1,43 +1,50 @@
 import { intercept, cleanAll } from '@netlify/nock-udp'
+import { Fixture } from '@netlify/testing'
 import test from 'ava'
-
-import { runFixture } from '../helpers/main.js'
 
 test.after(() => {
   cleanAll()
 })
 
 test('Does not send plugin timings if no plugins', async (t) => {
-  t.snapshot(await getTimerRequestsString(t, 'simple'))
+  t.snapshot(await getTimerRequestsString(t, './fixtures/simple'))
 })
 
 test('Sends timings of Netlify maintained plugins', async (t) => {
-  t.snapshot(await getTimerRequestsString(t, 'system_plugin'))
+  t.snapshot(await getTimerRequestsString(t, './fixtures/system_plugin'))
 })
 
 test('Does not send timings of community plugins', async (t) => {
-  t.snapshot(await getTimerRequestsString(t, 'community_plugin'))
+  t.snapshot(await getTimerRequestsString(t, './fixtures/community_plugin'))
+})
+
+test('Sends timing for functions bundling', async (t) => {
+  t.snapshot(await getTimerRequestsString(t, './fixtures/functions_zisi'))
+})
+
+test('Sends timing for edge functions bundling', async (t) => {
+  t.snapshot(await getTimerRequestsString(t, './fixtures/edge_functions'))
 })
 
 test('Sends distribution metrics', async (t) => {
-  const timerRequests = await getAllTimerRequests(t, 'simple')
+  const timerRequests = await getAllTimerRequests(t, './fixtures/simple')
   const includesDistributionRequests = timerRequests.some((timerRequest) => timerRequest.includes('|d|'))
 
   t.true(includesDistributionRequests)
 })
 
 test('Allow passing --framework CLI flag', async (t) => {
-  const timerRequests = await getAllTimerRequests(t, 'simple', { framework: 'test' })
+  const timerRequests = await getAllTimerRequests(t, './fixtures/simple', { framework: 'test' })
   t.true(timerRequests.every((timerRequest) => timerRequest.includes('framework:test')))
 })
 
 test('Default --framework CLI flag to nothing', async (t) => {
-  const timerRequests = await getAllTimerRequests(t, 'simple')
+  const timerRequests = await getAllTimerRequests(t, './fixtures/simple')
   t.true(timerRequests.every((timerRequest) => !timerRequest.includes('framework:')))
 })
 
 test('Sends a `bundler: "zisi"` tag when no functions use the esbuild bundler', async (t) => {
-  const timerRequests = await getAllTimerRequests(t, 'functions_zisi')
+  const timerRequests = await getAllTimerRequests(t, './fixtures/functions_zisi')
   const functionsBundlingRequest = timerRequests.find((timerRequest) =>
     timerRequest.includes('stage:functions_bundling'),
   )
@@ -46,7 +53,7 @@ test('Sends a `bundler: "zisi"` tag when no functions use the esbuild bundler', 
 })
 
 test('Sends a `bundler: "esbuild"` tag when at least one function uses the esbuild bundler', async (t) => {
-  const timerRequests = await getAllTimerRequests(t, 'functions_esbuild')
+  const timerRequests = await getAllTimerRequests(t, './fixtures/functions_esbuild')
   const functionsBundlingRequest = timerRequests.find((timerRequest) =>
     timerRequest.includes('stage:functions_bundling'),
   )
@@ -67,12 +74,9 @@ const getAllTimerRequests = async function (t, fixtureName, flags = {}) {
   const port = '1234'
   const scope = intercept(`${host}:${port}`, { persist: true, allowUnknown: true })
 
-  // Since we're overriding globals via `nock-udp` our `runFixture` needs to run programmatically. `useBinary` here
+  // Since we're overriding globals via `nock-udp` our `Fixture` needs to run programmatically. `runBuildBinary` here
   // won't work
-  await runFixture(t, fixtureName, {
-    flags: { statsd: { host, port }, ...flags },
-    snapshot: false,
-  })
+  await new Fixture(fixtureName).withFlags({ statsd: { host, port }, ...flags }).runWithBuild()
 
   const timerRequests = scope.buffers.flatMap(flattenRequest)
   t.true(scope.used)

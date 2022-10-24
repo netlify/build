@@ -1,95 +1,117 @@
+import { Fixture, normalizeOutput } from '@netlify/testing'
 import test from 'ava'
 
-import { runFixture } from '../helpers/main.js'
-
 test('manifest.yml check required inputs', async (t) => {
-  await runFixture(t, 'required')
+  const output = await new Fixture('./fixtures/required').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('manifest.yml check unknown property when plugin has none', async (t) => {
-  await runFixture(t, 'unknown_none')
+  const output = await new Fixture('./fixtures/unknown_none').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('manifest.yml check unknown property when plugin has some', async (t) => {
-  await runFixture(t, 'unknown_some')
+  const output = await new Fixture('./fixtures/unknown_some').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('manifest.yml check default value', async (t) => {
-  await runFixture(t, 'default')
+  const output = await new Fixture('./fixtures/default').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('manifest.yml same directory', async (t) => {
-  await runFixture(t, 'same_directory')
+  const output = await new Fixture('./fixtures/same_directory').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('manifest.yml root directory', async (t) => {
-  await runFixture(t, 'root_directory')
+  const output = await new Fixture('./fixtures/root_directory').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('manifest.yml not root directory', async (t) => {
-  await runFixture(t, 'not_root_directory')
+  const output = await new Fixture('./fixtures/not_root_directory').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('manifest.yml missing', async (t) => {
-  await runFixture(t, 'missing')
+  const output = await new Fixture('./fixtures/missing').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('manifest.yml parse error', async (t) => {
-  await runFixture(t, 'parse_error')
+  const output = await new Fixture('./fixtures/parse_error').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('manifest.yml advanced YAML', async (t) => {
-  await runFixture(t, 'advanced_yaml')
+  const output = await new Fixture('./fixtures/advanced_yaml').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('manifest.yml plain object', async (t) => {
-  await runFixture(t, 'plain_object')
+  const output = await new Fixture('./fixtures/plain_object').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('manifest.yml unknown properties', async (t) => {
-  await runFixture(t, 'manifest_unknown')
+  const output = await new Fixture('./fixtures/manifest_unknown').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('manifest.yml name undefined', async (t) => {
-  await runFixture(t, 'name_undefined')
+  const output = await new Fixture('./fixtures/name_undefined').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('manifest.yml name is a string', async (t) => {
-  await runFixture(t, 'name_string')
+  const output = await new Fixture('./fixtures/name_string').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('manifest.yml inputs array', async (t) => {
-  await runFixture(t, 'inputs_array')
+  const output = await new Fixture('./fixtures/inputs_array').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('manifest.yml inputs array of objects', async (t) => {
-  await runFixture(t, 'inputs_array_objects')
+  const output = await new Fixture('./fixtures/inputs_array_objects').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('manifest.yml inputs unknown property', async (t) => {
-  await runFixture(t, 'inputs_unknown')
+  const output = await new Fixture('./fixtures/inputs_unknown').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('manifest.yml inputs name is undefined', async (t) => {
-  await runFixture(t, 'inputs_name_undefined')
+  const output = await new Fixture('./fixtures/inputs_name_undefined').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('manifest.yml inputs name is string', async (t) => {
-  await runFixture(t, 'inputs_name_string')
+  const output = await new Fixture('./fixtures/inputs_name_string').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('manifest.yml inputs description is a string', async (t) => {
-  await runFixture(t, 'inputs_description_string')
+  const output = await new Fixture('./fixtures/inputs_description_string').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('manifest.yml inputs required is a boolean', async (t) => {
-  await runFixture(t, 'inputs_required_boolean')
+  const output = await new Fixture('./fixtures/inputs_required_boolean').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('manifest.yml node module', async (t) => {
-  await runFixture(t, 'module')
+  const output = await new Fixture('./fixtures/module').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })
 
 test('manifest.yaml is a valid filename', async (t) => {
-  await runFixture(t, 'manifest_yaml')
+  const output = await new Fixture('./fixtures/manifest_yaml').runWithBuild()
+  t.snapshot(normalizeOutput(output))
 })

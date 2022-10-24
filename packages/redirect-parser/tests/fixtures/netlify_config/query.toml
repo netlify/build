@@ -1,0 +1,5 @@
+[[redirects]]
+  from = "/old-path"
+  to = "/new-path"
+  [redirects.query]
+  path = ":path"

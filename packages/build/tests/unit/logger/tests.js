@@ -1,10 +1,10 @@
 import { promises as fs } from 'fs'
 
+import { normalizeOutput } from '@netlify/testing'
 import test from 'ava'
 import tmp from 'tmp-promise'
 
 import { getSystemLogger } from '../../../lib/log/logger.js'
-import { normalizeOutput } from '../../helpers/normalize.js'
 
 test('System logger writes to file descriptor', async (t) => {
   const { fd, cleanup, path } = await tmp.file()

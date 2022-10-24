@@ -44,12 +44,7 @@ const getHost = (server: Server<typeof IncomingMessage, typeof ServerResponse>):
   return `localhost:${port}`
 }
 
-const requestHandler = async (
-  req: IncomingMessage,
-  res: ServerResponse<IncomingMessage>,
-  requests: Request[],
-  handlers: Handler[],
-) => {
+const requestHandler = async (req: IncomingMessage, res: ServerResponse, requests: Request[], handlers: Handler[]) => {
   const { response, status, wait } = getHandler(handlers, req.url)
   if (response === undefined) {
     res.end('')
@@ -67,7 +62,6 @@ const requestHandler = async (
   requests.push({ url: req.url, method: req.method, headers: headersA, body: requestBody })
 
   const responseBody = getResponseBody(response, requestBody)
-
   res.statusCode = status
   res.setHeader('Content-Type', 'application/json')
 

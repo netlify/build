@@ -31,11 +31,11 @@ const NORMALIZE_REGEXPS = [
   [/EPERM: operation not permitted, rename .*\n/g, ''],
   // File paths
   [/Caching [.~]\//g, 'Caching '],
-  [/(packages\/.*\/fixtures\/.*\.(?:js|ts))(:(\d)+:(\d)+:)/g, '$1'],
+  [/(tests\/.*\/fixtures\/.*\.(?:js|ts))(:(\d)+:(\d)+:)/g, '$1'],
   // Normalizes any paths so that they're relative to process.cwd().
   [
     /(^|[ "'(=])((?:\.{0,2}|([A-Z]:)|file:\/\/)(\/[^ "')\n]+))/gm,
-    // eslint-disable-next-line complexity, max-params, max-statements
+
     (_, prefix, pathMatch, winDrive, pathTrail) => {
       // If we're dealing with a file URL, we convert it to a path.
       const path = pathMatch.startsWith('file://') ? fileURLToPath(pathMatch) : pathMatch

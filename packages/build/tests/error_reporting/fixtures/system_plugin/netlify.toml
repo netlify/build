@@ -1,0 +1,5 @@
+[build]
+command = "node --version"
+
+[[plugins]]
+package = "./netlify_plugin_nextjs"

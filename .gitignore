@@ -8,6 +8,10 @@ coverage
 .eslintcache
 .cache
 .vscode
+.fleet
+
+lerna-debug.log
+
 packages/*/package-lock.json
 packages/*/lib/
 **/fixtures/**/test_netlify.toml

@@ -35,6 +35,7 @@ const routesSchema = {
   type: 'object',
   required: ['function', 'pattern'],
   properties: {
+    name: { type: 'string' },
     function: { type: 'string' },
     pattern: { type: 'string', format: 'regexPattern', errorMessage: `must match format ${normalizedPatternRegex}` },
   },
@@ -51,6 +52,10 @@ const edgeManifestSchema = {
       items: bundlesSchema,
     },
     routes: {
+      type: 'array',
+      items: routesSchema,
+    },
+    post_cache_routes: {
       type: 'array',
       items: routesSchema,
     },
