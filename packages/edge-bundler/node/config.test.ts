@@ -2,7 +2,7 @@ import { promises as fs } from 'fs'
 import { join, resolve } from 'path'
 import { pathToFileURL } from 'url'
 
-import del from 'del'
+import { deleteAsync } from 'del'
 import { stub } from 'sinon'
 import tmp from 'tmp-promise'
 import { test, expect } from 'vitest'
@@ -77,7 +77,7 @@ test('`getFunctionConfig` extracts configuration properties from function file',
       name: 'func5',
       source: `
           export default async () => new Response("Hello from function two")
-    
+
           export const config = () => {
             throw new Error('uh-oh')
           }
@@ -141,7 +141,7 @@ test('`getFunctionConfig` extracts configuration properties from function file',
     }
   }
 
-  await del(tmpDir, { force: true })
+  await deleteAsync(tmpDir, { force: true })
 })
 
 test('Ignores function paths from the in-source `config` function if the feature flag is off', async () => {

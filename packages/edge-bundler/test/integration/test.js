@@ -1,13 +1,12 @@
 import assert from 'assert'
 import childProcess from 'child_process'
-import { promises as fs } from 'fs'
 import { createRequire } from 'module'
 import { join, resolve } from 'path'
 import process from 'process'
 import { fileURLToPath, pathToFileURL } from 'url'
 import { promisify } from 'util'
 
-import del from 'del'
+import { deleteAsync } from 'del'
 import tar from 'tar'
 import tmp from 'tmp-promise'
 
@@ -81,7 +80,7 @@ const cleanup = async () => {
 
   console.log(`Cleaning up temporary files...`)
 
-  await del(directories, { force: true })
+  await deleteAsync(directories, { force: true })
 }
 
 installPackage()

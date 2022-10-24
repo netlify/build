@@ -3,7 +3,7 @@ import { join } from 'path'
 import process from 'process'
 import { pathToFileURL } from 'url'
 
-import del from 'del'
+import { deleteAsync } from 'del'
 import { execa } from 'execa'
 import tmp from 'tmp-promise'
 import { test, expect } from 'vitest'
@@ -61,6 +61,6 @@ test('`getLocalEntryPoint` returns a valid stage 2 file for local development', 
     expect(metadata.functions[func.name].url).toBe(pathToFileURL(func.path).toString())
   }
 
-  await del(tmpDir, { force: true })
+  await deleteAsync(tmpDir, { force: true })
   delete process.env.NETLIFY_EDGE_BOOTSTRAP
 })

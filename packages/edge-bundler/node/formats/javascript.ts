@@ -3,7 +3,7 @@ import { join } from 'path'
 import { env } from 'process'
 import { pathToFileURL } from 'url'
 
-import del from 'del'
+import { deleteAsync } from 'del'
 
 import { DenoBridge } from '../bridge.js'
 import type { Bundle } from '../bundle.js'
@@ -76,7 +76,7 @@ const generateStage2 = async ({
   functions,
   type = 'production',
 }: GenerateStage2Options) => {
-  await del(distDirectory, { force: true })
+  await deleteAsync(distDirectory, { force: true })
   await fs.mkdir(distDirectory, { recursive: true })
 
   const entryPoint =

@@ -3,7 +3,7 @@ import { join, resolve } from 'path'
 import process from 'process'
 import { pathToFileURL } from 'url'
 
-import del from 'del'
+import { deleteAsync } from 'del'
 import tmp from 'tmp-promise'
 import { test, expect } from 'vitest'
 
@@ -324,5 +324,5 @@ test('Ignores any user-defined `deno.json` files', async () => {
     }),
   ).not.toThrow()
 
-  await del([tmpDir.path, denoConfigPath, importMapFile.path], { force: true })
+  await deleteAsync([tmpDir.path, denoConfigPath, importMapFile.path], { force: true })
 })
