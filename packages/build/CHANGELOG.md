@@ -39,6 +39,34 @@
   * devDependencies
     * @netlify/nock-udp bumped from ^1.0.0 to ^2.0.0
 
+## [28.1.3](https://github.com/netlify/build/compare/build-v28.1.2...build-v28.1.3) (2022-10-21)
+
+
+### Bug Fixes
+
+* **build:** add post_cache_routes to edge validation schema ([#4649](https://github.com/netlify/build/issues/4649)) ([ab03fe2](https://github.com/netlify/build/commit/ab03fe2df96898cf3b39e47d4b419a316b94a695))
+
+## [28.1.2](https://github.com/netlify/build/compare/build-v28.1.1...build-v28.1.2) (2022-10-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to ^2.9.0 ([#4645](https://github.com/netlify/build/issues/4645)) ([9aff7c1](https://github.com/netlify/build/commit/9aff7c100fd7d5678cf7be2001421db0ee5f99cf))
+
+## [28.1.1](https://github.com/netlify/build/compare/build-v28.1.0...build-v28.1.1) (2022-10-19)
+
+
+### Bug Fixes
+
+* **build,build-info,config:** enforce yargs version 17.6.0 as prior version do not support ESM ([#4641](https://github.com/netlify/build/issues/4641)) ([80c8558](https://github.com/netlify/build/commit/80c85581bd2bcc4a0dc05f8eeb1ffe77733fdf27))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^19.0.1 to ^19.0.2
+
 ## [28.1.0](https://github.com/netlify/build/compare/build-v28.0.1...build-v28.1.0) (2022-10-18)
 
 
