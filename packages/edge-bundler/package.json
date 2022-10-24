@@ -49,8 +49,8 @@
     "test": "test/node"
   },
   "devDependencies": {
-    "@commitlint/cli": "^16.0.0",
-    "@commitlint/config-conventional": "^16.0.0",
+    "@commitlint/cli": "^17.0.0",
+    "@commitlint/config-conventional": "^17.0.0",
     "@netlify/eslint-config-node": "^4.1.7",
     "@types/glob-to-regexp": "^0.4.1",
     "@types/node": "^14.18.32",
