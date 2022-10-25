@@ -76,10 +76,10 @@ export const detectPackageManager = async (cwd?: string): Promise<PkgManagerFiel
   // return the found package manager
   if (lockFilePath) {
     const lockFile = basename(lockFilePath)
-    const pkgM = lockFileMap[lockFile]
+    const pkgManager = lockFileMap[lockFile]
     // check if it not got disabled
-    if (!(pkgM.forceEnvironment && process.env[pkgM.forceEnvironment] === 'false')) {
-      return pkgM
+    if (!(pkgManager.forceEnvironment && process.env[pkgManager.forceEnvironment] === 'false')) {
+      return pkgManager
     }
   }
 
