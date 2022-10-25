@@ -5,9 +5,9 @@ export default defineConfig({
     restoreMocks: true,
     environment: 'node',
     testTimeout: 10000,
-    onConsoleLog: (log, type) => {
-      process[type].write(log)
-    },
+    // onConsoleLog: (log, type) => {
+    //   process[type].write(log)
+    // },
     setupFiles: ['tests/test-setup.ts'],
     deps: {
       // this is to work inside memfs as well
