@@ -4,23 +4,7 @@ import { parseAllRedirects } from '../../src/index.js'
 
 const FIXTURES_DIR = fileURLToPath(new URL('../fixtures', import.meta.url))
 
-// Pass an `input` to the main method and assert its output
-export const validateSuccess = async function (t, { input, output }) {
-  const { redirects } = await parseRedirects(input)
-  t.deepEqual(
-    redirects,
-    output.map((redirect) => normalizeRedirect(redirect, input)),
-  )
-}
-
-// Pass an `input` to the main method and assert it fails with a specific error
-export const validateErrors = async function (t, { input, errorMessage }) {
-  const { errors } = await parseRedirects(input)
-  t.not(errors.length, 0)
-  t.true(errors.some((error) => errorMessage.test(error.message)))
-}
-
-const parseRedirects = async function ({ redirectsFiles, netlifyConfigPath, configRedirects, minimal }) {
+export const parseRedirects = async function ({ redirectsFiles, netlifyConfigPath, configRedirects, minimal }: any) {
   return await parseAllRedirects({
     ...(redirectsFiles && { redirectsFiles: redirectsFiles.map(addFileFixtureDir) }),
     ...(netlifyConfigPath && { netlifyConfigPath: addConfigFixtureDir(netlifyConfigPath) }),
@@ -38,7 +22,7 @@ const addConfigFixtureDir = function (name) {
 }
 
 // Assign default values to redirects
-const normalizeRedirect = function (redirect, { minimal }) {
+export const normalizeRedirect = function (redirect, { minimal }: any) {
   return {
     ...(minimal || ADDED_DEFAULT_REDIRECTS),
     ...DEFAULT_REDIRECT,
