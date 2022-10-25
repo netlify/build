@@ -2,7 +2,7 @@ import { relative } from 'path'
 import { cwd } from 'process'
 import { fileURLToPath } from 'url'
 
-import { test, expect } from 'vitest'
+import { expect, test } from 'vitest'
 
 import { getBuildInfo } from '../src/get-build-info.js'
 
