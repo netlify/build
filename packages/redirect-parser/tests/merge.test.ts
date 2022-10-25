@@ -1,4 +1,4 @@
-import { expect, test, bench } from 'vitest'
+import { expect, test } from 'vitest'
 
 import { normalizeRedirect, parseRedirects } from './helpers/main.js'
 
