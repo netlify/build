@@ -121,6 +121,6 @@ test('Merges large _redirects file with config redirects', async () => {
     redirectsFiles: ['large_45000_redirects_file'],
     configRedirects,
   })
-  expect(errors).length.to.be.eq(0)
+  expect(errors).toHaveLength(0)
   expect(redirects).length.to.be.greaterThan(45000)
 })

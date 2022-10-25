@@ -1,3 +1,5 @@
+import stringify from 'fast-safe-stringify'
+
 import { splitResults } from './results.js'
 
 // Merge redirects from `_redirects` with the ones from `netlify.toml`.
@@ -15,16 +17,17 @@ export const mergeRedirects = function ({ fileRedirects, configRedirects }) {
 // Remove duplicates. This is especially likely considering `fileRedirects`
 // might have been previously merged to `configRedirects`, which happens when
 // `netlifyConfig.redirects` is modified by plugins.
-// The latest duplicate value is the one kept, hence why we need to reverse the
-// arrays in order to keep said logic.
+// The latest duplicate value is the one kept, hence why we need to iterate the
+// array backwards
 const removeDuplicates = function (redirects) {
   const uniqueRedirects = new Set()
   const result = []
-  redirects.reverse().forEach((r) => {
-    const key = JSON.stringify(r)
-    if (uniqueRedirects.has(key)) return
+  for (let i = redirects.length - 1; i >= 0; i--) {
+    const r = redirects[i]
+    const key = stringify.default.stableStringify(r)
+    if (uniqueRedirects.has(key)) continue
     uniqueRedirects.add(key)
-    result.push(r)
-  })
-  return result.reverse()
+    result.unshift(r)
+  }
+  return result
 }
