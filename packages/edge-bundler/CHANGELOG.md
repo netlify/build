@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.0.1](https://github.com/netlify/edge-bundler/compare/v3.0.0...v3.0.1) (2022-10-26)
+
+
+### Bug Fixes
+
+* **deps:** update dependency del to v7 ([#172](https://github.com/netlify/edge-bundler/issues/172)) ([6e12a4a](https://github.com/netlify/edge-bundler/commit/6e12a4ac87077e09a95dd92f20057d80eb33429a))
+* run `config` export with `--allow-env` ([#174](https://github.com/netlify/edge-bundler/issues/174)) ([6020add](https://github.com/netlify/edge-bundler/commit/6020add051349ef086f1833ec2a7242c037bbb32))
+
 ## [3.0.0](https://github.com/netlify/edge-bundler/compare/v2.9.0...v3.0.0) (2022-10-24)
 
 
