@@ -57,6 +57,7 @@ export const getFunctionConfig = async (func: EdgeFunction, importMap: ImportMap
   const { exitCode, stderr, stdout } = await deno.run(
     [
       'run',
+      '--allow-env',
       '--allow-net',
       '--allow-read',
       `--allow-write=${collector.path}`,
