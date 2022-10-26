@@ -288,11 +288,9 @@ export const POST_NORMALIZE_VALIDATIONS = [
     example: () => ({ edge_functions: [{ path: '/hello', function: 'hello' }] }),
   },
   {
-    property: 'functions.*.mode',
+    property: 'edge_functions.*.mode',
     check: (value) => modes.includes(value),
     message: `must be one of: ${modes.join(', ')}`,
-    example: (value, key, prevPath) => ({
-      functions: { [prevPath[1]]: { mode: modes[0] } },
-    }),
+    example: () => ({ edge_functions: [{ mode: modes[0], path: '/hello', function: 'hello' }] }),
   },
 ]
