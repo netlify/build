@@ -1,5 +1,6 @@
 import { handleBuildError } from '../error/handle.js'
 import { reportError } from '../error/report.js'
+import { getSystemLogger } from '../log/logger.js'
 import { logTimer, logBuildSuccess } from '../log/messages/core.js'
 import { trackBuildComplete } from '../telemetry/main.js'
 import { reportTimers } from '../time/report.js'
@@ -40,6 +41,7 @@ export default async function buildSite(flags: BuildFlags = {}): Promise<{
     ...flagsA
   }: any = startBuild(flags)
   const errorParams = { errorMonitor, mode, logs, debug, testOpts }
+  const systemLog = getSystemLogger(logs, debug, systemLogFile)
 
   try {
     const {
@@ -71,6 +73,7 @@ export default async function buildSite(flags: BuildFlags = {}): Promise<{
       timers,
       durationNs,
       statsdOpts,
+      systemLog,
     })
     const { success, severityCode, status } = getSeverity('success')
     await telemetryReport({
@@ -111,14 +114,14 @@ export default async function buildSite(flags: BuildFlags = {}): Promise<{
 }
 
 // Logs and reports that a build successfully ended
-const handleBuildSuccess = async function ({ framework, dry, logs, timers, durationNs, statsdOpts }) {
+const handleBuildSuccess = async function ({ framework, dry, logs, timers, durationNs, statsdOpts, systemLog }) {
   if (dry) {
     return
   }
 
   logBuildSuccess(logs)
 
-  logTimer(logs, durationNs, 'Netlify Build')
+  logTimer(logs, durationNs, 'Netlify Build', systemLog)
   await reportTimers({ timers, statsdOpts, framework })
 }
 
