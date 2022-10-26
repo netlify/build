@@ -2,6 +2,7 @@ import CronParser from 'cron-parser'
 import isPlainObj from 'is-plain-obj'
 import validateNpmPackageName from 'validate-npm-package-name'
 
+import { modes } from '../edge_functions_config.js'
 import { bundlers, WILDCARD_ALL as FUNCTIONS_CONFIG_WILDCARD_ALL } from '../functions_config.js'
 
 import { functionsDirectoryCheck, isArrayOfObjects, isArrayOfStrings, isString, validProperties } from './helpers.js'
@@ -253,7 +254,7 @@ export const POST_NORMALIZE_VALIDATIONS = [
   },
   {
     property: 'edge_functions.*',
-    ...validProperties(['path', 'function'], []),
+    ...validProperties(['path', 'function', 'mode'], []),
     example: () => ({ edge_functions: [{ path: '/hello', function: 'hello' }] }),
   },
   {
@@ -285,5 +286,11 @@ export const POST_NORMALIZE_VALIDATIONS = [
     check: (pathName) => pathName.startsWith('/'),
     message: 'must be a valid path.',
     example: () => ({ edge_functions: [{ path: '/hello', function: 'hello' }] }),
+  },
+  {
+    property: 'edge_functions.*.mode',
+    check: (value) => modes.includes(value),
+    message: `must be one of: ${modes.join(', ')}`,
+    example: () => ({ edge_functions: [{ mode: modes[0], path: '/hello', function: 'hello' }] }),
   },
 ]

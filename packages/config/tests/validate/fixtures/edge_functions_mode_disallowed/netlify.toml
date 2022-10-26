@@ -1,0 +1,4 @@
+[[edge_functions]]
+function = "function2"
+mode = "this-wont-work"
+path = "/function2"

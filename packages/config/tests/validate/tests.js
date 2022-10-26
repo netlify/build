@@ -285,3 +285,13 @@ test('edge_functions.any.function: not a string', async (t) => {
   const output = await new Fixture('./fixtures/edge_functions_not_a_string').runWithConfig()
   t.snapshot(normalizeOutput(output))
 })
+
+test('edge_functions.any.mode: allowed values', async (t) => {
+  const output = await new Fixture('./fixtures/edge_functions_mode_allowed').runWithConfig()
+  t.snapshot(normalizeOutput(output))
+})
+
+test('edge_functions.any.mode: disallowed values', async (t) => {
+  const output = await new Fixture('./fixtures/edge_functions_mode_disallowed').runWithConfig()
+  t.snapshot(normalizeOutput(output))
+})
