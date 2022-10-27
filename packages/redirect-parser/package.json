@@ -13,8 +13,9 @@
     "prebuild": "rm -rf lib",
     "build": "tsc",
     "test": "vitest run",
+    "test:bench": "vitest bench",
     "test:dev": "vitest",
-    "test:ci": "vitest run --reporter=default"
+    "test:ci": "vitest run --reporter=default && vitest bench --run"
   },
   "keywords": [
     "netlify"
@@ -25,6 +26,7 @@
   "author": "Netlify",
   "license": "MIT",
   "dependencies": {
+    "fast-safe-stringify": "^2.1.1",
     "filter-obj": "^3.0.0",
     "is-plain-obj": "^4.0.0",
     "path-exists": "^5.0.0",
