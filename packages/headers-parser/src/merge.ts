@@ -1,3 +1,5 @@
+import stringify from 'fast-safe-stringify'
+
 import { splitResults } from './results.js'
 
 // Merge headers from `_headers` with the ones from `netlify.toml`.
@@ -24,17 +26,18 @@ export const mergeHeaders = function ({ fileHeaders, configHeaders }) {
 // Remove duplicates. This is especially likely considering `fileHeaders` might
 // have been previously merged to `configHeaders`, which happens when
 // `netlifyConfig.headers` is modified by plugins.
-// The latest duplicate value is the one kept hence why we reverse the arrays at
-// the beginning and at the end
+// The latest duplicate value is the one kept, hence why we need to iterate the
+// array backwards and reverse it at the end
 const removeDuplicates = function (headers) {
   const uniqueHeaders = new Set()
   const result = []
-  headers.reverse().forEach((h) => {
+  for (let i = headers.length - 1; i >= 0; i--) {
+    const h = headers[i]
     const key = generateHeaderKey(h)
-    if (uniqueHeaders.has(key)) return
+    if (uniqueHeaders.has(key)) continue
     uniqueHeaders.add(key)
     result.push(h)
-  })
+  }
   return result.reverse()
 }
 
@@ -42,7 +45,7 @@ const removeDuplicates = function (headers) {
 // properties can be regexes, we need to replace those by their toString representation
 // given the default will be and empty object
 const generateHeaderKey = function (header) {
-  return JSON.stringify(header, (_, value) => {
+  return stringify.default.stableStringify(header, (_, value) => {
     if (value instanceof RegExp) return value.toString()
     return value
   })

@@ -52,16 +52,3 @@ test.each([
   expect(errors).not.toHaveLength(0)
   expect(errors.some((error) => errorMessage.test(error.message))).toBeTruthy()
 })
-
-test('Handles and merges large set of headers', async () => {
-  const input = {
-    headersFiles: ['large_45000_headers_file'],
-    configHeaders: [
-      { for: '/base/some-1', values: { test: 'some-1' } },
-      { for: '/unique-header', values: { test: 'unique-value' } },
-    ],
-  }
-  const { headers, errors } = await parseHeaders(input)
-  expect(errors).toHaveLength(0)
-  expect(headers.length).to.be.greaterThan(45000)
-})
