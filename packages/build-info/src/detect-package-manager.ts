@@ -65,7 +65,6 @@ const lockFileMap = Object.values(AVAILABLE_PACKAGE_MANAGERS).reduce(
  * @returns The package manager that was detected
  */
 export const detectPackageManager = async (cwd?: string, stopAt?: string): Promise<PkgManagerFields> => {
-  console.log(cwd, stopAt)
   const pkgPaths = await findUpMultiple('package.json', { cwd, stopAt })
   for (const pkgPath of pkgPaths) {
     const { packageManager } = JSON.parse(readFileSync(pkgPath, 'utf-8'))
