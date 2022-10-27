@@ -2,9 +2,9 @@ import { relative } from 'path'
 import { cwd } from 'process'
 import { fileURLToPath } from 'url'
 
-import { test, expect } from 'vitest'
+import { expect, test } from 'vitest'
 
-import { getBuildInfo } from '../src/main.js'
+import { getBuildInfo } from '../src/get-build-info.js'
 
 const FIXTURES_ABSOLUTE_PATH = fileURLToPath(new URL('fixtures', import.meta.url))
 const FIXTURES_RELATIVE_PATH = relative(cwd(), FIXTURES_ABSOLUTE_PATH)
@@ -13,6 +13,7 @@ test('js-workspaces: project without package.json does not return workspaces inf
   const { jsWorkspaces } = await getBuildInfo({
     projectDir: `${FIXTURES_RELATIVE_PATH}/empty`,
   })
+
   expect(jsWorkspaces).toBe(undefined)
 })
 

@@ -23,7 +23,7 @@ export type ContextOptions = {
 
 export type Context = {
   projectDir: string
-  rootDir: string
+  rootDir?: string
   rootPackageJson: PackageJson
 }
 
