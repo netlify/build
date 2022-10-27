@@ -142,6 +142,7 @@ const getFrameworkInfo = function (
   {
     id,
     name,
+    detect,
     category,
     dev: { command: frameworkDevCommand, port, pollingStrategies },
     build: { command: frameworkBuildCommand, directory },
@@ -157,6 +158,10 @@ const getFrameworkInfo = function (
   return {
     id,
     name,
+    package: {
+      name: detect.npmDependencies[0],
+      version: 'unknown',
+    },
     category,
     dev: { commands: devCommands, port, pollingStrategies },
     build: { commands: [frameworkBuildCommand], directory },

@@ -1,29 +1,29 @@
-import { cwd, version } from 'process'
+import { cwd, version as nodejsVersion } from 'process'
 
 import isPlainObj from 'is-plain-obj'
 import { locatePath } from 'locate-path'
 import { readPackageUp } from 'read-pkg-up'
 
-const getPackageJson = async (projectDir) => {
+export const getPackageJson = async (projectDir) => {
   try {
     const result = await readPackageUp({ cwd: projectDir, normalize: false })
     if (result === undefined) {
       return {}
     }
 
-    const { packageJson, path: packageJsonPath } = result
+    const { version, packageJson, path: packageJsonPath } = result
 
     if (!isPlainObj(packageJson)) {
       return { packageJsonPath }
     }
 
-    return { packageJson, packageJsonPath }
+    return { version, packageJson, packageJsonPath }
   } catch {
     return {}
   }
 }
 
-export const getContext = async ({ projectDir = cwd(), nodeVersion = version } = {}) => {
+export const getContext = async ({ projectDir = cwd(), nodeVersion = nodejsVersion } = {}) => {
   const { packageJson, packageJsonPath = projectDir } = await getPackageJson(projectDir)
   return {
     pathExists: async (path) => (await locatePath([path], { type: 'file', cwd: projectDir })) !== undefined,

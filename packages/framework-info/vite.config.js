@@ -1,4 +1,4 @@
-import { fileURLToPath } from 'url'
+import { fileURLToPath } from 'node:url'
 import nodePolyfills from 'rollup-plugin-node-polyfills'
 
 const CORE_FILE = fileURLToPath(new URL('src/core.js', import.meta.url))
