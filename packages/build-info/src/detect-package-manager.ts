@@ -57,12 +57,25 @@ const lockFileMap = Object.values(AVAILABLE_PACKAGE_MANAGERS).reduce(
 
 /**
  * Detects the used package manager based on
- *  - a set environment variable that forces the usage
- *  - a lock file that is present in this directory or up in the tree for workspaces
+ * 1. packageManager field
+ * 2. environment variable that forces the usage
+ * 3. a lock file that is present in this directory or up in the tree for workspaces
  * @param cwd The current process working directory of the build
  * @returns The package manager that was detected
  */
 export const detectPackageManager = async (cwd?: string): Promise<PkgManagerFields> => {
+  const pkgPaths = await findUpMultiple('package.json', { cwd })
+  for (const pkgPath of pkgPaths) {
+    const { packageManager } = JSON.parse(readFileSync(pkgPath, 'utf-8'))
+    if (packageManager) {
+      //
+      const [parsed] = packageManager.split('@')
+      if (AVAILABLE_PACKAGE_MANAGERS[parsed]) {
+        return AVAILABLE_PACKAGE_MANAGERS[parsed]
+      }
+    }
+  }
+
   // the package manager can be enforced via an environment variable as well
   for (const pkgManager of Object.values(AVAILABLE_PACKAGE_MANAGERS)) {
     if (pkgManager.forceEnvironment && process.env[pkgManager.forceEnvironment] === 'true') {
@@ -80,18 +93,6 @@ export const detectPackageManager = async (cwd?: string): Promise<PkgManagerFiel
     // check if it not got disabled
     if (!(pkgManager.forceEnvironment && process.env[pkgManager.forceEnvironment] === 'false')) {
       return pkgManager
-    }
-  }
-
-  const pkgPaths = await findUpMultiple('package.json', { cwd })
-  for (const pkgPath of pkgPaths) {
-    const { packageManager } = JSON.parse(readFileSync(pkgPath, 'utf-8'))
-    if (packageManager) {
-      //
-      const [parsed] = packageManager.split('@')
-      if (AVAILABLE_PACKAGE_MANAGERS[parsed]) {
-        return AVAILABLE_PACKAGE_MANAGERS[parsed]
-      }
     }
   }
 

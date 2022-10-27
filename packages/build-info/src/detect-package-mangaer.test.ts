@@ -12,6 +12,16 @@ beforeEach(() => {
   process.env = { ...env }
 })
 
+test('should prefer the package manager property over the NETLIFY_USE_PNPM environment variable', async () => {
+  process.env.NETLIFY_USE_PNPM = 'true'
+
+  const cwd = mockFileSystem({
+    'package.json': JSON.stringify({ packageManager: 'yarn@3.2.1' }),
+  })
+  const { name } = await detectPackageManager(cwd)
+  expect(name).toBe('yarn')
+})
+
 test('should repsect the NETLIFY_USE_PNPM if no lock file is there', async () => {
   process.env.NETLIFY_USE_PNPM = 'true'
 
