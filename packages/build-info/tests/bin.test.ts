@@ -21,7 +21,7 @@ test('CLI --help flag', async () => {
   const { stdout } = await runBinary('--help')
 
   // locally we run the typescript binary but the snapshot is run in CI as well
-  expect(stdout.replace('bin.ts', 'bin.js')).toMatchSnapshot()
+  expect(stdout.replace(/bin\.ts/gm, 'bin.js')).toMatchSnapshot()
 })
 
 test('CLI prints js-workspaces and frameworks in JSON format', async () => {

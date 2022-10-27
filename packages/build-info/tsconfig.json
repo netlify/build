@@ -3,6 +3,6 @@
   "compilerOptions": {
     "outDir": "lib" /* Specify an output folder for all emitted files. */
   },
-  "include": ["src/**/*.js", "src/**/*.ts"],
-  "exclude": ["tests/**"]
+  "include": ["src/**/*.ts"],
+  "exclude": ["tests/**", "src/**/*.test.ts"]
 }
