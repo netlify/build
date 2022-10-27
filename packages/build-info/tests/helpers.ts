@@ -1,7 +1,10 @@
+import { execSync } from 'child_process'
 import { tmpdir } from 'os'
 import { join } from 'path'
+import { version } from 'process'
 import { fileURLToPath } from 'url'
 
+import { compare } from 'semver'
 import { vi } from 'vitest'
 
 /**
@@ -16,9 +19,16 @@ export const createFixture = async (fixture: string) => {
   const cwdSpy = vi.spyOn(process, 'cwd').mockReturnValue(cwd)
 
   try {
-    await fs.cp(fileURLToPath(new URL(`fixtures/${fixture}`, import.meta.url)), cwd, {
-      recursive: true,
-    })
+    const src = fileURLToPath(new URL(`fixtures/${fixture}`, import.meta.url))
+    // fs.cp is only supported in node 16.7+ as long as we have to maintain support for node 14
+    // we need a workaround for the tests (remove once support is dropped)
+    if (compare(version, '16.7.0') < 0) {
+      execSync(`cp -r ${src}/* ${cwd}`)
+    } else {
+      await fs.cp(src, cwd, {
+        recursive: true,
+      })
+    }
   } catch (error) {
     console.log(error?.message)
   }
