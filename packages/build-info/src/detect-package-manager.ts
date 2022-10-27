@@ -61,10 +61,12 @@ const lockFileMap = Object.values(AVAILABLE_PACKAGE_MANAGERS).reduce(
  * 2. environment variable that forces the usage
  * 3. a lock file that is present in this directory or up in the tree for workspaces
  * @param cwd The current process working directory of the build
+ * @param stopAt The repository root where it should stop looking up for package.json or lock files. (defaults to `path.parse(cwd).root`)
  * @returns The package manager that was detected
  */
-export const detectPackageManager = async (cwd?: string): Promise<PkgManagerFields> => {
-  const pkgPaths = await findUpMultiple('package.json', { cwd })
+export const detectPackageManager = async (cwd?: string, stopAt?: string): Promise<PkgManagerFields> => {
+  console.log(cwd, stopAt)
+  const pkgPaths = await findUpMultiple('package.json', { cwd, stopAt })
   for (const pkgPath of pkgPaths) {
     const { packageManager } = JSON.parse(readFileSync(pkgPath, 'utf-8'))
     if (packageManager) {
@@ -84,7 +86,7 @@ export const detectPackageManager = async (cwd?: string): Promise<PkgManagerFiel
   }
 
   // find the correct lock file the tree up
-  const lockFilePath = await findUp(Object.keys(lockFileMap), { cwd })
+  const lockFilePath = await findUp(Object.keys(lockFileMap), { cwd, stopAt })
   // if we found a lock file and the usage is not prohibited through an environment variable
   // return the found package manager
   if (lockFilePath) {
