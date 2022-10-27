@@ -18,7 +18,7 @@ export const mergeRedirects = function ({ fileRedirects, configRedirects }) {
 // might have been previously merged to `configRedirects`, which happens when
 // `netlifyConfig.redirects` is modified by plugins.
 // The latest duplicate value is the one kept, hence why we need to iterate the
-// array backwards
+// array backwards and reverse it at the end
 const removeDuplicates = function (redirects) {
   const uniqueRedirects = new Set()
   const result = []
@@ -27,7 +27,7 @@ const removeDuplicates = function (redirects) {
     const key = stringify.default.stableStringify(r)
     if (uniqueRedirects.has(key)) continue
     uniqueRedirects.add(key)
-    result.unshift(r)
+    result.push(r)
   }
-  return result
+  return result.reverse()
 }
