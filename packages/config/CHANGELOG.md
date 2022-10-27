@@ -14,6 +14,13 @@
   * dependencies
     * netlify bumped from ^12.0.2 to ^12.0.3
 
+## [19.1.0](https://github.com/netlify/build/compare/config-v19.0.2...config-v19.1.0) (2022-10-26)
+
+
+### Features
+
+* add `mode` property to edge functions config ([#4655](https://github.com/netlify/build/issues/4655)) ([c8078af](https://github.com/netlify/build/commit/c8078af81ab588a7dacebfca9a2bf42c6053ca33))
+
 ## [19.0.2](https://github.com/netlify/build/compare/config-v19.0.1...config-v19.0.2) (2022-10-19)
 
 

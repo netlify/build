@@ -55,6 +55,10 @@ const edgeManifestSchema = {
       type: 'array',
       items: routesSchema,
     },
+    post_cache_routes: {
+      type: 'array',
+      items: routesSchema,
+    },
     bundler_version: { type: 'string' },
   },
   additionalProperties: false,

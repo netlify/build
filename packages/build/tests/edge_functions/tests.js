@@ -135,10 +135,7 @@ test.serial('writes manifest contents to stdout if `debug` is set', async (t) =>
     .runWithBuild()
   t.snapshot(normalizeOutput(output))
 
-  t.regex(
-    output,
-    /Edge Functions manifest: {"bundles":\[{"asset":"[a-fA-F\d]{64}\.js","format":"js"}],"routes":\[{"function":"function-1","pattern":"\^\/one\/\?\$"}],"bundler_version":"\d+\.\d+\.\d+"}/,
-  )
+  t.regex(output, /Edge Functions manifest: \{/)
 })
 
 test.serial('writes manifest contents to system logs if `systemLogFile` is set', async (t) => {
@@ -153,10 +150,7 @@ test.serial('writes manifest contents to system logs if `systemLogFile` is set',
 
   await cleanup()
 
-  t.regex(
-    fileContents,
-    /Edge Functions manifest: {"bundles":\[{"asset":"[a-fA-F\d]{64}\.js","format":"js"}],"routes":\[{"function":"function-1","pattern":"\^\/one\/\?\$"}],"bundler_version":"\d+\.\d+\.\d+"}/,
-  )
+  t.regex(fileContents, /Edge Functions manifest: \{/)
 })
 
 test('build plugins can manipulate netlifyToml.edge_functions array', async (t) => {

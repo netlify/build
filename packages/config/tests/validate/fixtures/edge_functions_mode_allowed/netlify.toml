@@ -1,0 +1,4 @@
+[[edge_functions]]
+function = "function1"
+mode = "after-cache"
+path = "/function1"
