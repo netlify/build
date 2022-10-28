@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.0.1](https://github.com/netlify/build/compare/build-info-v6.0.0...build-info-v6.0.1) (2022-10-28)
+
+
+### Bug Fixes
+
+* add missing dependency yaml ([#4660](https://github.com/netlify/build/issues/4660)) ([ecc83cc](https://github.com/netlify/build/commit/ecc83ccee9d3ac662f955a800e89b4d6da5a3999))
+
 ## [6.0.0](https://github.com/netlify/build/compare/build-info-v5.1.1...build-info-v6.0.0) (2022-10-27)
 
 
