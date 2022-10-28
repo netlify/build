@@ -1,10 +1,11 @@
 import { tmpName } from 'tmp-promise'
 
 import { DenoBridge, OnAfterDownloadHook, OnBeforeDownloadHook, ProcessRef } from '../bridge.js'
+import { getFunctionConfig, FunctionConfig } from '../config.js'
 import type { EdgeFunction } from '../edge_function.js'
 import { generateStage2 } from '../formats/javascript.js'
 import { ImportMap, ImportMapFile } from '../import_map.js'
-import { getLogger, LogFunction } from '../logger.js'
+import { getLogger, LogFunction, Logger } from '../logger.js'
 import { ensureLatestTypes } from '../types.js'
 
 import { killProcess, waitForServer } from './util.js'
@@ -18,7 +19,13 @@ interface PrepareServerOptions {
   flags: string[]
   formatExportTypeError?: FormatFunction
   formatImportError?: FormatFunction
+  importMap: ImportMap
+  logger: Logger
   port: number
+}
+
+interface StartServerOptions {
+  getFunctionsConfig?: boolean
 }
 
 const prepareServer = ({
@@ -27,10 +34,16 @@ const prepareServer = ({
   flags: denoFlags,
   formatExportTypeError,
   formatImportError,
+  importMap,
+  logger,
   port,
 }: PrepareServerOptions) => {
   const processRef: ProcessRef = {}
-  const startIsolate = async (newFunctions: EdgeFunction[], env: NodeJS.ProcessEnv = {}) => {
+  const startServer = async (
+    functions: EdgeFunction[],
+    env: NodeJS.ProcessEnv = {},
+    options: StartServerOptions = {},
+  ) => {
     if (processRef?.ps !== undefined) {
       await killProcess(processRef.ps)
     }
@@ -40,7 +53,7 @@ const prepareServer = ({
     const stage2Path = await generateStage2({
       distDirectory,
       fileName: 'dev.js',
-      functions: newFunctions,
+      functions,
       formatExportTypeError,
       formatImportError,
       type: 'local',
@@ -69,15 +82,22 @@ const prepareServer = ({
       extendEnv: false,
     })
 
+    let functionsConfig: FunctionConfig[] = []
+
+    if (options.getFunctionsConfig) {
+      functionsConfig = await Promise.all(functions.map((func) => getFunctionConfig(func, importMap, deno, logger)))
+    }
+
     const success = await waitForServer(port, processRef.ps)
 
     return {
+      functionsConfig,
       graph,
       success,
     }
   }
 
-  return startIsolate
+  return startServer
 }
 
 interface InspectSettings {
@@ -170,6 +190,8 @@ const serve = async ({
     flags,
     formatExportTypeError,
     formatImportError,
+    importMap,
+    logger,
     port,
   })
 
