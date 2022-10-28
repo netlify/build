@@ -146,7 +146,6 @@ export const runStep = async function ({
     timers: timersA,
     durationNs,
     testOpts,
-    systemLog,
   })
   return { ...newValues, newIndex: index + 1 }
 }

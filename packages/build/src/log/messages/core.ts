@@ -1,5 +1,5 @@
 import ansiEscapes from 'ansi-escapes'
-import prettyMilliseconds from 'pretty-ms'
+import prettyMs from 'pretty-ms'
 
 import { getFullErrorInfo } from '../../error/parse/parse.js'
 import { serializeLogError } from '../../error/parse/serialize_log.js'
@@ -34,14 +34,10 @@ export const logBuildSuccess = function (logs) {
   logMessage(logs, '')
 }
 
-export const logTimer = function (logs, durationNs, timerName, systemLog) {
+export const logTimer = function (logs, durationNs, timerName) {
   const durationMs = roundTimerToMillisecs(durationNs)
-  const duration = prettyMilliseconds(durationMs)
+  const duration = prettyMs(durationMs)
   log(logs, THEME.dimWords(`(${timerName} completed in ${duration})`))
-  // e.g Build step duration: Edge Functions bundling completed in 7s 524ms
-  systemLog(
-    `Build step duration: ${timerName} completed in ${prettyMilliseconds(durationMs, { formatSubMilliseconds: true })}`,
-  )
 }
 
 export const logMissingSideFile = function (logs, sideFile, publish) {
