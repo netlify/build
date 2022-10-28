@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.0](https://github.com/netlify/edge-bundler/compare/v3.0.1...v3.1.0) (2022-10-28)
+
+
+### Features
+
+* get config in server mode ([#175](https://github.com/netlify/edge-bundler/issues/175)) ([ea47d4e](https://github.com/netlify/edge-bundler/commit/ea47d4e569faf8bb5c9b3afedb4eab403b1ba598))
+
 ## [3.0.1](https://github.com/netlify/edge-bundler/compare/v3.0.0...v3.0.1) (2022-10-26)
 
 
