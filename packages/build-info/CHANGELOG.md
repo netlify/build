@@ -1,5 +1,16 @@
 # Changelog
 
+## [6.0.0](https://github.com/netlify/build/compare/build-info-v5.1.1...build-info-v6.0.0) (2022-10-27)
+
+
+### ⚠ BREAKING CHANGES
+
+* add packageManger information + make jsWorkspace packagePaths relative (#4643)
+
+### Features
+
+* add packageManger information + make jsWorkspace packagePaths relative ([#4643](https://github.com/netlify/build/issues/4643)) ([1b4eed8](https://github.com/netlify/build/commit/1b4eed81cff9cdebc6c848476860835318afb7b8))
+
 ## [5.1.1](https://github.com/netlify/build/compare/build-info-v5.1.0...build-info-v5.1.1) (2022-10-19)
 
 
