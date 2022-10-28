@@ -11,7 +11,7 @@
   "files": [
     "build/*.js",
     "src/**/*.js",
-    "dist/index.cjs"
+    "dist/index.umd.cjs"
   ],
   "scripts": {
     "prepare": "husky install node_modules/@netlify/eslint-config-node/.husky/",
