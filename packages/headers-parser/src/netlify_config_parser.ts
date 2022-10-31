@@ -8,7 +8,7 @@ import { splitResults } from './results.js'
 // Parse `headers` field in "netlify.toml" to an array of objects.
 // This field is already an array of objects so it only validates and
 // normalizes it.
-export const parseConfigHeaders = async function (netlifyConfigPath) {
+export const parseConfigHeaders = async function (netlifyConfigPath: string) {
   if (!(await pathExists(netlifyConfigPath))) {
     return splitResults([])
   }
@@ -18,7 +18,7 @@ export const parseConfigHeaders = async function (netlifyConfigPath) {
 }
 
 // Load the configuration file and parse it (TOML)
-const parseConfig = async function (configPath) {
+const parseConfig = async function (configPath: string) {
   try {
     const configString = await fs.readFile(configPath, 'utf8')
     const config = loadToml(configString)

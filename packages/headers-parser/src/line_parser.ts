@@ -6,7 +6,7 @@ import { splitResults } from './results.js'
 
 // Parse `_headers` file to an array of objects following the same syntax as
 // the `headers` property in `netlify.toml`
-export const parseFileHeaders = async function (headersFile) {
+export const parseFileHeaders = async function (headersFile: string) {
   const results = await parseHeaders(headersFile)
   const { headers, errors: parseErrors } = splitResults(results)
   const { headers: reducedHeaders, errors: reducedErrors } = headers.reduce(reduceLine, { headers: [], errors: [] })
@@ -14,7 +14,7 @@ export const parseFileHeaders = async function (headersFile) {
   return { headers: reducedHeaders, errors }
 }
 
-const parseHeaders = async function (headersFile) {
+const parseHeaders = async function (headersFile: string) {
   if (!(await pathExists(headersFile))) {
     return []
   }
@@ -26,7 +26,7 @@ const parseHeaders = async function (headersFile) {
   return text.split('\n').map(normalizeLine).filter(hasHeader).map(parseLine).filter(Boolean)
 }
 
-const readHeadersFile = async function (headersFile) {
+const readHeadersFile = async function (headersFile: string) {
   try {
     return await fs.readFile(headersFile, 'utf-8')
   } catch {
@@ -34,7 +34,7 @@ const readHeadersFile = async function (headersFile) {
   }
 }
 
-const normalizeLine = function (line, index) {
+const normalizeLine = function (line: string, index: number) {
   return { line: line.trim(), index }
 }
 
@@ -53,7 +53,7 @@ ${error.message}`)
 }
 
 // Parse a single header line
-const parseHeaderLine = function (line) {
+const parseHeaderLine = function (line: string) {
   if (isPathLine(line)) {
     return { path: line }
   }
@@ -77,7 +77,7 @@ const parseHeaderLine = function (line) {
   return { name, value }
 }
 
-const isPathLine = function (line) {
+const isPathLine = function (line: string) {
   return line.startsWith('/')
 }
 
