@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.0.1](https://github.com/netlify/build/compare/netlify-headers-parser-v7.0.0...netlify-headers-parser-v7.0.1) (2022-11-01)
+
+
+### Bug Fixes
+
+* **headers-parser:** optimize merge of large headers files ([#4653](https://github.com/netlify/build/issues/4653)) ([d5af7da](https://github.com/netlify/build/commit/d5af7da18a2ca6f010ec0a741745a1a1a7a4a06b))
+
 ## [7.0.0](https://github.com/netlify/build/compare/netlify-headers-parser-v6.0.3...netlify-headers-parser-v7.0.0) (2022-10-11)
 
 
