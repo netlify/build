@@ -6,6 +6,10 @@ import { getPluginOrigin } from '../description.js'
 import { logArray, logSubHeader, logWarningArray, logWarningSubHeader } from '../logger.js'
 import { THEME } from '../theme.js'
 
+/**
+ * @typedef {import('../logger').BufferedLogs } BufferedLogs
+ */
+
 export const logRuntime = (logs, pluginOptions) => {
   const runtimes = pluginOptions.filter(isRuntime)
 
@@ -81,15 +85,21 @@ const getVersionField = function ([versionFieldName, version]) {
   return `${versionFieldName} ${version}`
 }
 
-// Print a warning message when old versions plugins are used.
-// This can only happen when they are installed to `package.json`.
-export const logOutdatedPlugins = function (logs, pluginsOptions) {
-  const outdatedPlugins = pluginsOptions.filter(hasOutdatedVersion).map(getOutdatedPlugin)
-
+/**
+ * Print a warning message when old versions plugins are used.
+ * This can only happen when they are installed to `package.json`.
+ *
+ * @param {BufferedLogs}} logs
+ * @param {object[]} outdatedPlugins
+ *
+ * @throws Error Throws an error if the Next runtime is >= 4.0.0 || < 4.26.0
+ */
+export const logOutdatedPlugins = function (logs, outdatedPlugins) {
   if (outdatedPlugins.length === 0) {
     return
   }
 
+  throwIfOutdatedNextRuntime(outdatedPlugins)
   logWarningSubHeader(logs, 'Outdated plugins')
   logWarningArray(logs, outdatedPlugins)
 }
@@ -144,6 +154,37 @@ export const logIncompatiblePlugins = function (logs, pluginsOptions) {
 
   logWarningSubHeader(logs, 'Incompatible plugins')
   logWarningArray(logs, incompatiblePlugins)
+}
+
+// TODO: This is temporary until we auto-install the Next runtime always for supported Next.js versions.
+const nextPluginVersionChecker = function (major, minor, patch) {
+  // maybe there's a semver package to check this
+
+  // version >= 4.0.0 && < 4.26.0
+  return (major === 4 && minor >= 0 && minor < 26) || (minor === 26 && patch === 0)
+}
+
+/**
+ * Throws an error if the Next runtime is >= 4.0.0 || < 4.26.0, otherwise returns.
+ *
+ * @param {object[]} outdatedPlugins
+ *
+ * @throws Error
+ */
+const throwIfOutdatedNextRuntime = function (outdatedPlugins) {
+  const nextOutdatedV4Plugin = outdatedPlugins.find(
+    (plugin) =>
+      plugin.package === '@netlify/plugin-nextjs' && nextPluginVersionChecker(...plugin.version.split('.').map(Number)),
+  )
+
+  if (!nextOutdatedV4Plugin) {
+    return
+  }
+
+  // Would need proper wording here.
+  throw new Error(
+    'The build cannot continue because the @netlify/plugin-nextjs plugin is out of date. Please upgrade to the latest version of the plugin by running "npm install @netlify/plugin-nextjs@latest" in your site directory. Contact support if you require further assistance.',
+  )
 }
 
 const hasIncompatibleVersion = function ({ pluginPackageJson: { version }, compatibleVersion, compatWarning }) {
