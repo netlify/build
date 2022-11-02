@@ -1,9 +1,10 @@
-import { version as currentVersion, execPath } from 'process'
+import { execPath, version as currentVersion } from 'process'
 
 import semver from 'semver'
 
-import { addErrorInfo } from '../error/info.js'
-import { ROOT_PACKAGE_JSON } from '../utils/json.js'
+// This node version is minimum required to use ESModules so if the user's preferred Node.js version is below that
+// we have to fall back to the system node version
+const MINIMUM_REQUIRED_NODE_VERSION = '^12.20.0 || ^14.14.0 || >=16.0.0'
 
 // Local plugins and `package.json`-installed plugins use user's preferred Node.js version if higher than our minimum
 // supported version. Else default to the system Node version.
@@ -25,26 +26,7 @@ const addPluginNodeVersion = function ({
   nodePath,
 }) {
   return (loadedFrom === 'local' || loadedFrom === 'package.json') &&
-    semver.satisfies(userNodeVersion, ROOT_PACKAGE_JSON.engines.node)
+    semver.satisfies(userNodeVersion, MINIMUM_REQUIRED_NODE_VERSION)
     ? { ...pluginOptions, nodePath, nodeVersion: userNodeVersion }
     : { ...pluginOptions, nodePath: execPath, nodeVersion: currentNodeVersion }
-}
-
-// Ensure Node.js version is compatible with plugin's `engines.node`
-export const checkNodeVersion = function ({
-  nodeVersion,
-  packageName,
-  pluginPackageJson: { engines: { node: pluginNodeVersionRange } = {} } = {},
-}) {
-  if (pluginNodeVersionRange && !semver.satisfies(nodeVersion, pluginNodeVersionRange)) {
-    throwUserError(
-      `The Node.js version is ${nodeVersion} but the plugin "${packageName}" requires ${pluginNodeVersionRange}`,
-    )
-  }
-}
-
-const throwUserError = function (message) {
-  const error = new Error(message)
-  addErrorInfo(error, { type: 'resolveConfig' })
-  throw error
 }
