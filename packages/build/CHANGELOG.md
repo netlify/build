@@ -51,6 +51,13 @@
   * dependencies
     * @netlify/config bumped from ^19.1.1 to ^19.1.2
 
+## [28.1.7](https://github.com/netlify/build/compare/build-v28.1.6...build-v28.1.7) (2022-11-02)
+
+
+### Bug Fixes
+
+* change minimum required node versions from plugins to not read from @netlify/build package.json ([#4665](https://github.com/netlify/build/issues/4665)) ([9eab1c3](https://github.com/netlify/build/commit/9eab1c3bc5a55bec9f42c0bc4d68075de3de94d5))
+
 ## [28.1.4](https://github.com/netlify/build/compare/build-v28.1.3...build-v28.1.4) (2022-10-26)
 
 
