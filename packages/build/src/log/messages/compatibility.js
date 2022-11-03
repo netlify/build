@@ -103,7 +103,7 @@ export const logOutdatedPlugins = function (logs, pluginsOptions, featureFlags) 
   }
 
   if (featureFlags.plugins_break_builds_with_unsupported_plugin_versions)
-    throwIfOutdatedNextRuntime(pluginsOptions.filter(hasOutdatedVersion))
+    throwIfUnsupportedPluginVersion(pluginsOptions.filter(hasOutdatedVersion))
   logWarningSubHeader(logs, 'Outdated plugins')
   logWarningArray(logs, outdatedPlugins)
 }
@@ -167,7 +167,7 @@ export const logIncompatiblePlugins = function (logs, pluginsOptions) {
  *
  * @throws Error
  */
-const throwIfOutdatedNextRuntime = function (outdatedPlugins) {
+const throwIfUnsupportedPluginVersion = function (outdatedPlugins) {
   let packageName
   let version
   let latestVersion
