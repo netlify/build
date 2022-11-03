@@ -119,19 +119,43 @@ const getOutdatedPlugin = function ({
   return `${THEME.warningHighlightWords(packageName)}${versionedPackage}: ${outdatedDescription}`
 }
 
-const getOutdatedDescription = function ({ latestVersion, migrationGuide, loadedFrom, origin, excludedVersionsRange }) {
-  const upgradeInstruction = getUpgradeInstruction(loadedFrom, origin, excludedVersionsRange, latestVersion)
-  if (migrationGuide === undefined) {
+const getOutdatedDescription = function ({
+  latestVersion,
+  migrationGuide,
+  loadedFrom,
+  origin,
+  excludedVersionsRange,
+  version,
+  packageName,
+}) {
+  const upgradeInstruction = getUpgradeInstruction(
+    loadedFrom,
+    origin,
+    excludedVersionsRange,
+    latestVersion,
+    version,
+    packageName,
+  )
+  if (excludedVersionsRange !== undefined || migrationGuide === undefined) {
     return `latest version is ${latestVersion}\n${upgradeInstruction}`
   }
 
   return `latest version is ${latestVersion}\nMigration guide: ${migrationGuide}\n${upgradeInstruction}`
 }
 
-const getUpgradeInstruction = function (loadedFrom, origin, excludedVersionsRange, latestVersion) {
+const getUpgradeInstruction = function (
+  loadedFrom,
+  origin,
+  excludedVersionsRange,
+  latestVersion,
+  version,
+  packageName,
+) {
   if (excludedVersionsRange !== undefined) {
-    return `Current plugin version is not supported. To upgrade this plugin,
-please update its version in "package.json" to a version outside of the range: ${excludedVersionsRange} and below ${latestVersion}`
+    return `We have blocked this build due to likely failure of this version of nextjs-runtime: ${packageName}${version}.
+Versions greater than 4.26.0 are recommended. To upgrade this plugin, please update its version in "package.json"
+to the latest version: ${latestVersion} or version above 4.26.0. If you cannot use a more recent version,
+please contact support at https://www.netlify.com/support for guidance.`
   }
 
   if (loadedFrom === 'package.json') {
@@ -231,6 +255,8 @@ const getExcludedVersion = function ({
     loadedFrom,
     origin,
     excludedVersionsRange,
+    version,
+    packageName,
   })
   return `${THEME.errorHighlightWords(packageName)}${versionedPackage} ${outdatedDescription}`
 }
