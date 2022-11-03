@@ -188,10 +188,10 @@ const throwIfUnsupportedPluginVersion = function (outdatedPlugins) {
   }
 
   const error = new Error(
-    `We have blocked this build due to likely failure of this version of nextjs-runtime: ${packageName}${version}.
-Versions greater than 4.26.0 are recommended. To upgrade this plugin, please update its version in "package.json"
-to the latest version: ${latestVersion} or a version above 4.26.0. If you cannot use a more recent version,
-please contact support at https://www.netlify.com/support for guidance.`,
+    `This site cannot be built because it is using an outdated version of the Next.js Runtime: ${packageName}@${version}.
+Versions greater than 4.26.0 are recommended. To upgrade this plugin, please update its version in "package.json" to the
+latest version: ${latestVersion}. If you cannot use a more recent version, please contact support at https://www.netlify.com/support
+for guidance.`,
   )
   addErrorInfo(error, { type: 'pluginUnsupportedVersion' })
   throw error
