@@ -1,5 +1,6 @@
 import semver from 'semver'
 
+import { addErrorInfo } from '../../error/info.js'
 import { isRuntime } from '../../utils/runtime.js'
 import { isPreviousMajor } from '../../utils/semver.js'
 import { getPluginOrigin } from '../description.js'
@@ -90,16 +91,19 @@ const getVersionField = function ([versionFieldName, version]) {
  * This can only happen when they are installed to `package.json`.
  *
  * @param {BufferedLogs}} logs
- * @param {object[]} outdatedPlugins
+ * @param {object[]} pluginsOptions
+ * @param {object[]} featureFlags
  *
  * @throws Error Throws an error if the Next runtime is >= 4.0.0 || < 4.26.0
  */
-export const logOutdatedPlugins = function (logs, outdatedPlugins) {
+export const logOutdatedPlugins = function (logs, pluginsOptions, featureFlags) {
+  const outdatedPlugins = pluginsOptions.filter(hasOutdatedVersion).map(getOutdatedPlugin)
   if (outdatedPlugins.length === 0) {
     return
   }
 
-  throwIfOutdatedNextRuntime(outdatedPlugins)
+  if (featureFlags.plugins_break_builds_with_unsupported_plugin_versions)
+    throwIfOutdatedNextRuntime(pluginsOptions.filter(hasOutdatedVersion))
   logWarningSubHeader(logs, 'Outdated plugins')
   logWarningArray(logs, outdatedPlugins)
 }
@@ -156,14 +160,6 @@ export const logIncompatiblePlugins = function (logs, pluginsOptions) {
   logWarningArray(logs, incompatiblePlugins)
 }
 
-// TODO: This is temporary until we auto-install the Next runtime always for supported Next.js versions.
-const nextPluginVersionChecker = function (major, minor, patch) {
-  // maybe there's a semver package to check this
-
-  // version >= 4.0.0 && < 4.26.0
-  return (major === 4 && minor >= 0 && minor < 26) || (minor === 26 && patch === 0)
-}
-
 /**
  * Throws an error if the Next runtime is >= 4.0.0 || < 4.26.0, otherwise returns.
  *
@@ -172,19 +168,33 @@ const nextPluginVersionChecker = function (major, minor, patch) {
  * @throws Error
  */
 const throwIfOutdatedNextRuntime = function (outdatedPlugins) {
-  const nextOutdatedV4Plugin = outdatedPlugins.find(
-    (plugin) =>
-      plugin.package === '@netlify/plugin-nextjs' && nextPluginVersionChecker(...plugin.version.split('.').map(Number)),
-  )
+  let packageName
+  let version
+  let latestVersion
+  const nextOutdatedV4Plugin = outdatedPlugins.find((plugin) => {
+    packageName = plugin.pluginPackageJson.name
+    version = plugin.pluginPackageJson.version
+    latestVersion = plugin.latestVersion
+    // https://github.com/npm/node-semver#hyphen-ranges-xyz---abc
+    // semver hyphen range is inclusive 4.0.0 - 4.25.0 is same as >= 4.0.0 || < 4.26.0;
+    return (
+      packageName === '@netlify/plugin-nextjs' &&
+      semver.satisfies(version, '4.0.0 - 4.25.0', { includePrerelease: true })
+    )
+  })
 
   if (!nextOutdatedV4Plugin) {
     return
   }
 
-  // Would need proper wording here.
-  throw new Error(
-    'The build cannot continue because the @netlify/plugin-nextjs plugin is out of date. Please upgrade to the latest version of the plugin by running "npm install @netlify/plugin-nextjs@latest" in your site directory. Contact support if you require further assistance.',
+  const error = new Error(
+    `We have blocked this build due to likely failure of this version of nextjs-runtime: ${packageName}${version}.
+Versions greater than 4.26.0 are recommended. To upgrade this plugin, please update its version in "package.json"
+to the latest version: ${latestVersion} or a version above 4.26.0. If you cannot use a more recent version,
+please contact support at https://www.netlify.com/support for guidance.`,
   )
+  addErrorInfo(error, { type: 'pluginUnsupportedVersion' })
+  throw error
 }
 
 const hasIncompatibleVersion = function ({ pluginPackageJson: { version }, compatibleVersion, compatWarning }) {

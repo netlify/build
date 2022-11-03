@@ -395,6 +395,7 @@ const initAndRunBuild = async function ({
     logs,
     debug,
     timers: timersA,
+    featureFlags,
   })
 
   try {
