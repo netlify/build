@@ -156,14 +156,6 @@ export const logIncompatiblePlugins = function (logs, pluginsOptions) {
   logWarningArray(logs, incompatiblePlugins)
 }
 
-// TODO: This is temporary until we auto-install the Next runtime always for supported Next.js versions.
-const nextPluginVersionChecker = function (major, minor, patch) {
-  // maybe there's a semver package to check this
-
-  // version >= 4.0.0 && < 4.26.0
-  return (major === 4 && minor >= 0 && minor < 26) || (minor === 26 && patch === 0)
-}
-
 /**
  * Throws an error if the Next runtime is >= 4.0.0 || < 4.26.0, otherwise returns.
  *
@@ -173,8 +165,7 @@ const nextPluginVersionChecker = function (major, minor, patch) {
  */
 const throwIfOutdatedNextRuntime = function (outdatedPlugins) {
   const nextOutdatedV4Plugin = outdatedPlugins.find(
-    (plugin) =>
-      plugin.package === '@netlify/plugin-nextjs' && nextPluginVersionChecker(...plugin.version.split('.').map(Number)),
+    (plugin) => plugin.package === '@netlify/plugin-nextjs' && semver.satisfies('4.0.0 - 4.26.0'),
   )
 
   if (!nextOutdatedV4Plugin) {
