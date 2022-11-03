@@ -235,7 +235,7 @@ const hasUnsupportedVersion = function ({ pluginPackageJson: { version }, manife
   // excludedVersionsRange is a range of versions that are not supported e.g 4.0.0 - 4.25.0
   // semver hyphen range is inclusive 4.0.0 - 4.25.0 is same as >= 4.0.0 || < 4.26.0;
   return (
-    version !== undefined && excludedVersionsRange !== undefined && semver.satisfies(version, excludedVersionsRange)
+    version !== undefined && excludedVersionsRange !== undefined && semver.satisfies(version, excludedVersionsRange, { includePrerelease: true })
   )
 }
 
