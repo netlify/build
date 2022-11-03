@@ -8,6 +8,7 @@ import {
   logLoadingPlugins,
   logOutdatedPlugins,
   logIncompatiblePlugins,
+  logUnsupportedPluginVersions,
 } from '../log/messages/compatibility.js'
 import { measureDuration } from '../time/main.js'
 
@@ -25,6 +26,7 @@ const CHILD_MAIN_FILE = fileURLToPath(new URL('child/main.js', import.meta.url))
 const tStartPlugins = async function ({ pluginsOptions, buildDir, childEnv, logs, debug }) {
   logRuntime(logs, pluginsOptions)
   logLoadingPlugins(logs, pluginsOptions, debug)
+  logUnsupportedPluginVersions(logs, pluginsOptions)
   logOutdatedPlugins(logs, pluginsOptions)
   logIncompatiblePlugins(logs, pluginsOptions)
 

@@ -9,6 +9,7 @@ export const validateManifest = function (manifest, rawManifest) {
     validateUnknownProps(manifest)
     validateName(manifest)
     validateInputs(manifest)
+    validateExcludedVersionsRange(manifest)
   } catch (error) {
     error.message = `Plugin's "manifest.yml" ${error.message}
 
@@ -31,7 +32,7 @@ const validateUnknownProps = function (manifest) {
   }
 }
 
-const VALID_PROPS = new Set(['name', 'inputs'])
+const VALID_PROPS = new Set(['name', 'inputs', 'excludedVersionsRange'])
 
 const validateName = function ({ name }) {
   if (name === undefined) {
@@ -53,6 +54,15 @@ const validateInputs = function ({ inputs }) {
   }
 
   inputs.forEach(validateInput)
+}
+
+const validateExcludedVersionsRange = function ({ excludedVersionsRange }) {
+  if (excludedVersionsRange === undefined) {
+    return
+  }
+  if (typeof excludedVersionsRange !== 'string') {
+    throw new TypeError('"excludedVersionsRange" property must be a string')
+  }
 }
 
 const isArrayOfObjects = function (objects) {

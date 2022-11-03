@@ -1,9 +1,17 @@
 import semver from 'semver'
 
+import { addErrorInfo } from '../../error/info.js'
 import { isRuntime } from '../../utils/runtime.js'
 import { isPreviousMajor } from '../../utils/semver.js'
 import { getPluginOrigin } from '../description.js'
-import { logArray, logSubHeader, logWarningArray, logWarningSubHeader } from '../logger.js'
+import {
+  logArray,
+  logErrorArray,
+  logErrorHeader,
+  logSubHeader,
+  logWarningArray,
+  logWarningSubHeader,
+} from '../logger.js'
 import { THEME } from '../theme.js'
 
 export const logRuntime = (logs, pluginOptions) => {
@@ -111,8 +119,8 @@ const getOutdatedPlugin = function ({
   return `${THEME.warningHighlightWords(packageName)}${versionedPackage}: ${outdatedDescription}`
 }
 
-const getOutdatedDescription = function ({ latestVersion, migrationGuide, loadedFrom, origin }) {
-  const upgradeInstruction = getUpgradeInstruction(loadedFrom, origin)
+const getOutdatedDescription = function ({ latestVersion, migrationGuide, loadedFrom, origin, excludedVersionsRange }) {
+  const upgradeInstruction = getUpgradeInstruction(loadedFrom, origin, excludedVersionsRange, latestVersion)
   if (migrationGuide === undefined) {
     return `latest version is ${latestVersion}\n${upgradeInstruction}`
   }
@@ -120,7 +128,12 @@ const getOutdatedDescription = function ({ latestVersion, migrationGuide, loaded
   return `latest version is ${latestVersion}\nMigration guide: ${migrationGuide}\n${upgradeInstruction}`
 }
 
-const getUpgradeInstruction = function (loadedFrom, origin) {
+const getUpgradeInstruction = function (loadedFrom, origin, excludedVersionsRange, latestVersion) {
+  if (excludedVersionsRange !== undefined) {
+    return `Current plugin version is not supported. To upgrade this plugin,
+please update its version in "package.json" to a version outside of the range: ${excludedVersionsRange} and below ${latestVersion}`
+  }
+
   if (loadedFrom === 'package.json') {
     return 'To upgrade this plugin, please update its version in "package.json"'
   }
@@ -175,4 +188,49 @@ const getIncompatiblePlugin = function ({
 // or an empty string
 const getVersionedPackage = function (packageName, version = '') {
   return version === '' ? '' : `@${version}`
+}
+
+// Print an error message when unsupported versions of plugins are used.
+// This can only happen when they are installed to `package.json`.
+export const logUnsupportedPluginVersions = function (logs, pluginsOptions) {
+  const unsupportedVersions = pluginsOptions.filter(hasUnsupportedVersion).map(getExcludedVersion)
+  if (unsupportedVersions.length === 0) {
+    return
+  }
+
+  logErrorHeader(logs, 'Unsupported plugin version(s)')
+  logErrorArray(logs, unsupportedVersions)
+
+  const error = new Error('Unsupported plugin version(s) detected')
+  addErrorInfo(error, { type: 'pluginUnsupportedVersion' })
+  throw error
+}
+
+const hasUnsupportedVersion = function ({ pluginPackageJson: { version }, manifest: { excludedVersionsRange } }) {
+  // https://github.com/npm/node-semver#hyphen-ranges-xyz---abc
+  // excludedVersionsRange is a range of versions that are not supported e.g 4.0.0 - 4.25.0
+  // semver hyphen range is inclusive 4.0.0 - 4.25.0 is same as >= 4.0.0 || < 4.26.0;
+  return (
+    version !== undefined && excludedVersionsRange !== undefined && semver.satisfies(version, excludedVersionsRange)
+  )
+}
+
+const getExcludedVersion = function ({
+  packageName,
+  pluginPackageJson: { version },
+  latestVersion,
+  migrationGuide,
+  loadedFrom,
+  origin,
+  manifest: { excludedVersionsRange },
+}) {
+  const versionedPackage = getVersionedPackage(packageName, version)
+  const outdatedDescription = getOutdatedDescription({
+    latestVersion,
+    migrationGuide,
+    loadedFrom,
+    origin,
+    excludedVersionsRange,
+  })
+  return `${THEME.errorHighlightWords(packageName)}${versionedPackage} ${outdatedDescription}`
 }
