@@ -87,6 +87,7 @@ const getVersionField = function ([versionFieldName, version]) {
 // Also throws an error if the Next runtime is >= 4.0.0 || < 4.26.0
 export const logOutdatedPlugins = function (logs: BufferedLogs, pluginsOptions, featureFlags) {
   const outdatedPlugins = pluginsOptions.filter(hasOutdatedVersion).map(getOutdatedPlugin)
+
   if (outdatedPlugins.length === 0) {
     return
   }
