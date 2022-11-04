@@ -1,6 +1,6 @@
 {
   "packages/build-info": "6.0.2",
-  "packages/build": "28.1.8",
+  "packages/build": "28.1.9",
   "packages/cache-utils": "5.0.1",
   "packages/config": "19.1.2",
   "packages/functions-utils": "5.0.2",

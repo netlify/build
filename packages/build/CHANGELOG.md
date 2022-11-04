@@ -51,6 +51,13 @@
   * dependencies
     * @netlify/config bumped from ^19.1.1 to ^19.1.2
 
+## [28.1.9](https://github.com/netlify/build/compare/build-v28.1.8...build-v28.1.9) (2022-11-04)
+
+
+### Bug Fixes
+
+* fix unsupported plugin version error message formatting ([#4674](https://github.com/netlify/build/issues/4674)) ([3733885](https://github.com/netlify/build/commit/3733885ffa192966ca74e601cf4634b84e098228))
+
 ## [28.1.8](https://github.com/netlify/build/compare/build-v28.1.7...build-v28.1.8) (2022-11-04)
 
 
