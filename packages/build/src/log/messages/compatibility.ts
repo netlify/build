@@ -4,7 +4,7 @@ import { addErrorInfo } from '../../error/info.js'
 import { isRuntime } from '../../utils/runtime.js'
 import { isPreviousMajor } from '../../utils/semver.js'
 import { getPluginOrigin } from '../description.js'
-import { logArray, logSubHeader, logWarningArray, logWarningSubHeader } from '../logger.js'
+import { BufferedLogs, logArray, logSubHeader, logWarningArray, logWarningSubHeader } from '../logger.js'
 import { THEME } from '../theme.js'
 
 export const logRuntime = (logs, pluginOptions) => {
@@ -82,17 +82,10 @@ const getVersionField = function ([versionFieldName, version]) {
   return `${versionFieldName} ${version}`
 }
 
-/**
- * Print a warning message when old versions plugins are used.
- * This can only happen when they are installed to `package.json`.
- *
- * @param { stdout: string[]; stderr: string[] } logs
- * @param {object[]} pluginsOptions
- * @param {object[]} featureFlags
- *
- * @throws Error Throws an error if the Next runtime is >= 4.0.0 || < 4.26.0
- */
-export const logOutdatedPlugins = function (logs, pluginsOptions, featureFlags) {
+// Print a warning message when old versions plugins are used.
+// This can only happen when they are installed to `package.json`.
+// Also throws an error if the Next runtime is >= 4.0.0 || < 4.26.0
+export const logOutdatedPlugins = function (logs: BufferedLogs, pluginsOptions, featureFlags) {
   const outdatedPlugins = pluginsOptions.filter(hasOutdatedVersion).map(getOutdatedPlugin)
   if (outdatedPlugins.length === 0) {
     return
