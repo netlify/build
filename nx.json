@@ -1,4 +1,12 @@
 {
+  "implicitDependencies": {
+    ".c8rc.json": "*",
+    "ava.base.js": ["@netlify/build", "@netlify/config", "netlify"],
+    "package.json": "*",
+    "package-lock.json": "*",
+    "nx.json": "*",
+    "tsconfig.base.json": "*"
+  },
   "tasksRunnerOptions": {
     "default": {
       "runner": "nx/tasks-runners/default",
