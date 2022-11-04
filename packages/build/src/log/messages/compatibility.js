@@ -7,10 +7,6 @@ import { getPluginOrigin } from '../description.js'
 import { logArray, logSubHeader, logWarningArray, logWarningSubHeader } from '../logger.js'
 import { THEME } from '../theme.js'
 
-/**
- * @typedef {import('../logger').BufferedLogs } BufferedLogs
- */
-
 export const logRuntime = (logs, pluginOptions) => {
   const runtimes = pluginOptions.filter(isRuntime)
 
@@ -90,7 +86,7 @@ const getVersionField = function ([versionFieldName, version]) {
  * Print a warning message when old versions plugins are used.
  * This can only happen when they are installed to `package.json`.
  *
- * @param {BufferedLogs}} logs
+ * @param { stdout: string[]; stderr: string[] } logs
  * @param {object[]} pluginsOptions
  * @param {object[]} featureFlags
  *
@@ -102,6 +98,7 @@ export const logOutdatedPlugins = function (logs, pluginsOptions, featureFlags) 
     return
   }
 
+  // TODO: remove feature flag once fully rolled out
   if (featureFlags.plugins_break_builds_with_unsupported_plugin_versions)
     throwIfUnsupportedPluginVersion(pluginsOptions.filter(hasOutdatedVersion))
   logWarningSubHeader(logs, 'Outdated plugins')
