@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.1](https://github.com/netlify/edge-bundler/compare/v3.1.0...v3.1.1) (2022-11-04)
+
+
+### Bug Fixes
+
+* remove disallow-code-generation-from-strings flag ([#177](https://github.com/netlify/edge-bundler/issues/177)) ([d344992](https://github.com/netlify/edge-bundler/commit/d34499214be4311e28b9b2292b9ba714cd01c06b))
+
 ## [3.1.0](https://github.com/netlify/edge-bundler/compare/v3.0.1...v3.1.0) (2022-10-28)
 
 
