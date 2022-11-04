@@ -158,13 +158,7 @@ const serve = async ({
   // Creating an ImportMap instance with any import maps supplied by the user,
   // if any.
   const importMap = new ImportMap(importMaps)
-  const flags = [
-    '--allow-all',
-    '--unstable',
-    `--import-map=${importMap.toDataURL()}`,
-    '--v8-flags=--disallow-code-generation-from-strings',
-    '--no-config',
-  ]
+  const flags = ['--allow-all', '--unstable', `--import-map=${importMap.toDataURL()}`, '--no-config']
 
   if (certificatePath) {
     flags.push(`--cert=${certificatePath}`)
