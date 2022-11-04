@@ -151,14 +151,8 @@ export const logIncompatiblePlugins = function (logs, pluginsOptions) {
   logWarningArray(logs, incompatiblePlugins)
 }
 
-/**
- * Throws an error if the Next runtime is >= 4.0.0 || < 4.26.0, otherwise returns.
- *
- * @param {object[]} outdatedPlugins
- *
- * @throws Error
- */
-const throwIfUnsupportedPluginVersion = function (outdatedPlugins) {
+// Throws an error if the Next runtime is >= 4.0.0 || < 4.26.0, otherwise returns.
+const throwIfUnsupportedPluginVersion = function (outdatedPlugins: any[]) {
   let packageName
   let version
   let latestVersion
