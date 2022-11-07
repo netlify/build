@@ -1,6 +1,6 @@
 {
   "name": "netlify-headers-parser",
-  "version": "7.0.0",
+  "version": "7.0.1",
   "description": "Parses Netlify headers into a JavaScript object representation",
   "type": "module",
   "exports": "./lib/index.js",
@@ -13,8 +13,9 @@
     "prebuild": "rm -rf lib",
     "build": "tsc",
     "test": "vitest run",
+    "test:bench": "vitest bench",
     "test:dev": "vitest",
-    "test:ci": "vitest run --reporter=default"
+    "test:ci": "vitest run --reporter=default && vitest bench --run"
   },
   "keywords": [
     "netlify"

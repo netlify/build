@@ -511,3 +511,9 @@ test('`getExpectedVersion` matches prerelease versions', async (t) => {
   t.is(version1, '1.0.0')
   t.is(version2, '0.3.1-rc.1')
 })
+
+test('Errors if unsupported Next.js Runtime plugin version is installed in package.json', async (t) => {
+  await runWithApiMock(t, 'plugins_unsupported_version_package_json', {
+    featureFlags: { plugins_break_builds_with_unsupported_plugin_versions: true },
+  })
+})

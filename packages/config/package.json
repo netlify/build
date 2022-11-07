@@ -1,6 +1,6 @@
 {
   "name": "@netlify/config",
-  "version": "19.1.1",
+  "version": "19.1.2",
   "description": "Netlify config module",
   "type": "module",
   "exports": "./lib/main.js",
@@ -71,7 +71,7 @@
     "js-yaml": "^4.0.0",
     "map-obj": "^5.0.0",
     "netlify": "^13.0.1",
-    "netlify-headers-parser": "^7.0.0",
+    "netlify-headers-parser": "^7.0.1",
     "netlify-redirect-parser": "^14.0.1",
     "omit.js": "^2.0.2",
     "p-locate": "^6.0.0",

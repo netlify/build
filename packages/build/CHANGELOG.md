@@ -45,6 +45,41 @@
   * dependencies
     * @netlify/config bumped from ^19.1.0 to ^19.1.1
 
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^19.1.1 to ^19.1.2
+
+## [28.1.9](https://github.com/netlify/build/compare/build-v28.1.8...build-v28.1.9) (2022-11-04)
+
+
+### Bug Fixes
+
+* fix unsupported plugin version error message formatting ([#4674](https://github.com/netlify/build/issues/4674)) ([3733885](https://github.com/netlify/build/commit/3733885ffa192966ca74e601cf4634b84e098228))
+
+## [28.1.8](https://github.com/netlify/build/compare/build-v28.1.7...build-v28.1.8) (2022-11-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v8 ([#4662](https://github.com/netlify/build/issues/4662)) ([764faf3](https://github.com/netlify/build/commit/764faf37778331042abede5d00efb8b8a2e37b1b))
+* fail builds if the Next.js Runtime version is &gt;= 4.0.0 && &lt; 4.26.0  ([#4672](https://github.com/netlify/build/issues/4672)) ([7ade56d](https://github.com/netlify/build/commit/7ade56d1aa11ed3c01a48bbf1ce3f21babc82790))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.0.1 to ^5.0.2
+
+## [28.1.7](https://github.com/netlify/build/compare/build-v28.1.6...build-v28.1.7) (2022-11-02)
+
+
+### Bug Fixes
+
+* change minimum required node versions from plugins to not read from @netlify/build package.json ([#4665](https://github.com/netlify/build/issues/4665)) ([9eab1c3](https://github.com/netlify/build/commit/9eab1c3bc5a55bec9f42c0bc4d68075de3de94d5))
+
 ## [28.1.4](https://github.com/netlify/build/compare/build-v28.1.3...build-v28.1.4) (2022-10-26)
 
 

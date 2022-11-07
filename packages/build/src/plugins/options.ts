@@ -1,12 +1,15 @@
 import { dirname } from 'path'
 
+import { PackageJson } from 'read-pkg-up'
+import semver from 'semver'
+
+import { addErrorInfo } from '../error/info.js'
 import { installLocalPluginsDependencies } from '../install/local.js'
 import { measureDuration } from '../time/main.js'
 import { ROOT_PACKAGE_JSON } from '../utils/json.js'
 import { getPackageJson } from '../utils/package.js'
 
 import { useManifest } from './manifest/main.js'
-import { checkNodeVersion } from './node_version.js'
 import { resolvePluginsPath } from './resolve.js'
 
 // Load core plugins and user plugins
@@ -60,7 +63,15 @@ const loadPluginFiles = async function ({
 }) {
   const pluginDir = dirname(pluginPath)
   const { packageDir, packageJson: pluginPackageJson } = await getPackageJson(pluginDir)
-  checkNodeVersion({ nodeVersion, packageName, pluginPackageJson })
+
+  // Ensure Node.js version is compatible with plugin's `engines.node`
+  const pluginNodeVersionRange = pluginPackageJson?.engines?.node
+  if (pluginNodeVersionRange && !semver.satisfies(nodeVersion, pluginNodeVersionRange)) {
+    throwUserError(
+      `The Node.js version is ${nodeVersion} but the plugin "${packageName}" requires ${pluginNodeVersionRange}`,
+    )
+  }
+
   const { manifest, inputs } = await useManifest(pluginOptions, { pluginDir, packageDir, pluginPackageJson, debug })
   return { ...pluginOptions, pluginDir, packageDir, pluginPackageJson, manifest, inputs }
 }
@@ -78,11 +89,25 @@ const isNotRedundantCorePlugin = function (pluginOptionsA, index, pluginsOptions
   )
 }
 
-// Retrieve information about @netlify/build when an error happens there and not
-// in a plugin
-export const getSpawnInfo = function () {
-  return {
-    plugin: { packageName: ROOT_PACKAGE_JSON.name, pluginPackageJson: ROOT_PACKAGE_JSON },
-    location: { event: 'load', packageName: ROOT_PACKAGE_JSON.name, loadedFrom: 'core', origin: 'core' },
+/**
+ * Retrieve information about @netlify/build when an error happens there and not
+ * in a plugin
+ */
+export const getSpawnInfo = (): {
+  plugin: { packageName: string; pluginPackageJson: PackageJson }
+  location: {
+    event: 'load'
+    packageName: string
+    loadedFrom: 'core'
+    origin: 'core'
   }
+} => ({
+  plugin: { packageName: ROOT_PACKAGE_JSON.name, pluginPackageJson: ROOT_PACKAGE_JSON },
+  location: { event: 'load', packageName: ROOT_PACKAGE_JSON.name, loadedFrom: 'core', origin: 'core' },
+})
+
+const throwUserError = function (message) {
+  const error = new Error(message)
+  addErrorInfo(error, { type: 'resolveConfig' })
+  throw error
 }
