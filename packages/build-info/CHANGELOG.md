@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.0.3](https://github.com/netlify/build/compare/build-info-v6.0.2...build-info-v6.0.3) (2022-11-07)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/framework-info to ^9.5.0 ([#4677](https://github.com/netlify/build/issues/4677)) ([1959fed](https://github.com/netlify/build/commit/1959fed93522c8d2e8ae49cdb337b1941eb9aebe))
+
 ## [6.0.2](https://github.com/netlify/build/compare/build-info-v6.0.1...build-info-v6.0.2) (2022-11-01)
 
 
