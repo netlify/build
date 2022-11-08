@@ -51,6 +51,20 @@
   * dependencies
     * @netlify/config bumped from ^19.1.1 to ^19.1.2
 
+## [28.1.11](https://github.com/netlify/build/compare/build-v28.1.10...build-v28.1.11) (2022-11-08)
+
+
+### Bug Fixes
+
+* **deps:** revert update dependency @netlify/zip-it-and-ship-it to v8 ([a596c3a](https://github.com/netlify/build/commit/a596c3aa761dc69d1a4bba1d05fb4073c24fa722))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.0.2 to ^5.0.3
+
 ## [28.1.10](https://github.com/netlify/build/compare/build-v28.1.9...build-v28.1.10) (2022-11-07)
 
 
