@@ -1,9 +1,10 @@
 import semver from 'semver'
 
+import { addErrorInfo } from '../../error/info.js'
 import { isRuntime } from '../../utils/runtime.js'
 import { isPreviousMajor } from '../../utils/semver.js'
 import { getPluginOrigin } from '../description.js'
-import { logArray, logSubHeader, logWarningArray, logWarningSubHeader } from '../logger.js'
+import { BufferedLogs, logArray, logSubHeader, logWarningArray, logWarningSubHeader } from '../logger.js'
 import { THEME } from '../theme.js'
 
 export const logRuntime = (logs, pluginOptions) => {
@@ -83,13 +84,17 @@ const getVersionField = function ([versionFieldName, version]) {
 
 // Print a warning message when old versions plugins are used.
 // This can only happen when they are installed to `package.json`.
-export const logOutdatedPlugins = function (logs, pluginsOptions) {
+// Also throws an error if the Next runtime is >= 4.0.0 || < 4.26.0
+export const logOutdatedPlugins = function (logs: BufferedLogs, pluginsOptions, featureFlags) {
   const outdatedPlugins = pluginsOptions.filter(hasOutdatedVersion).map(getOutdatedPlugin)
 
   if (outdatedPlugins.length === 0) {
     return
   }
 
+  // TODO: remove feature flag once fully rolled out
+  if (featureFlags.plugins_break_builds_with_unsupported_plugin_versions)
+    throwIfUnsupportedPluginVersion(pluginsOptions.filter(hasOutdatedVersion))
   logWarningSubHeader(logs, 'Outdated plugins')
   logWarningArray(logs, outdatedPlugins)
 }
@@ -144,6 +149,34 @@ export const logIncompatiblePlugins = function (logs, pluginsOptions) {
 
   logWarningSubHeader(logs, 'Incompatible plugins')
   logWarningArray(logs, incompatiblePlugins)
+}
+
+// Throws an error if the Next runtime is >= 4.0.0 || < 4.26.0, otherwise returns.
+const throwIfUnsupportedPluginVersion = function (outdatedPlugins: any[]) {
+  let packageName
+  let version
+  let latestVersion
+  const nextOutdatedV4Plugin = outdatedPlugins.find((plugin) => {
+    packageName = plugin.pluginPackageJson.name
+    version = plugin.pluginPackageJson.version
+    latestVersion = plugin.latestVersion
+    // https://github.com/npm/node-semver#hyphen-ranges-xyz---abc
+    // semver hyphen range is inclusive 4.0.0 - 4.25.0 is same as >= 4.0.0 || < 4.26.0;
+    return (
+      packageName === '@netlify/plugin-nextjs' &&
+      semver.satisfies(version, '4.0.0 - 4.25.0', { includePrerelease: true })
+    )
+  })
+
+  if (!nextOutdatedV4Plugin) {
+    return
+  }
+
+  const error = new Error(
+    `This site cannot be built because it is using an outdated version of the Next.js Runtime: ${packageName}@${version}. Versions greater than 4.26.0 are recommended. To upgrade this plugin, please update its version in "package.json" to the latest version: ${latestVersion}. If you cannot use a more recent version, please contact support at https://www.netlify.com/support for guidance.`,
+  )
+  addErrorInfo(error, { type: 'pluginUnsupportedVersion' })
+  throw error
 }
 
 const hasIncompatibleVersion = function ({ pluginPackageJson: { version }, compatibleVersion, compatWarning }) {

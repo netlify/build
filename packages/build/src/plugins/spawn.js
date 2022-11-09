@@ -22,10 +22,10 @@ const CHILD_MAIN_FILE = fileURLToPath(new URL('child/main.js', import.meta.url))
 //    (for both security and safety reasons)
 //  - logs can be buffered which allows manipulating them for log shipping,
 //    transforming and parallel plugins
-const tStartPlugins = async function ({ pluginsOptions, buildDir, childEnv, logs, debug }) {
+const tStartPlugins = async function ({ pluginsOptions, buildDir, childEnv, logs, debug, featureFlags }) {
   logRuntime(logs, pluginsOptions)
   logLoadingPlugins(logs, pluginsOptions, debug)
-  logOutdatedPlugins(logs, pluginsOptions)
+  logOutdatedPlugins(logs, pluginsOptions, featureFlags)
   logIncompatiblePlugins(logs, pluginsOptions)
 
   const childProcesses = await Promise.all(

@@ -70,6 +70,13 @@ const TYPES = {
     severity: 'info',
   },
 
+  // User package.json sets an unsupported plugin version
+  pluginUnsupportedVersion: {
+    title: 'Unsupported plugin version detected',
+    stackType: 'none',
+    severity: 'info',
+  },
+
   // `build.command` non-0 exit code
   buildCommand: {
     title: '"build.command" failed',

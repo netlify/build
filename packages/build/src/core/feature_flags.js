@@ -19,4 +19,7 @@ export const DEFAULT_FEATURE_FLAGS = {
   edge_functions_cache_cli: false,
   edge_functions_produce_eszip: false,
   edge_functions_system_logger: false,
+  // TODO: remove this flag once rolled out to everyone
+  // FF link: https://app.launchdarkly.com/default/production/features/plugins_break_builds_with_unsupported_plugin_versions/targeting
+  plugins_break_builds_with_unsupported_plugin_versions: false,
 }

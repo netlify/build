@@ -20,6 +20,12 @@
   * dependencies
     * netlify-redirect-parser bumped from ^14.0.0 to ^14.0.1
 
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify-headers-parser bumped from ^7.0.0 to ^7.0.1
+
 ## [19.1.0](https://github.com/netlify/build/compare/config-v19.0.2...config-v19.1.0) (2022-10-26)
 
 
