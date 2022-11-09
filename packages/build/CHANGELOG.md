@@ -51,6 +51,13 @@
   * dependencies
     * @netlify/config bumped from ^19.1.1 to ^19.1.2
 
+## [28.1.12](https://github.com/netlify/build/compare/build-v28.1.11...build-v28.1.12) (2022-11-09)
+
+
+### Bug Fixes
+
+* set up per build step duration system logging ([#4661](https://github.com/netlify/build/issues/4661)) ([2595c1d](https://github.com/netlify/build/commit/2595c1d94bb9fd0e390b2dd0fdb3a38dbe26bbbe))
+
 ## [28.1.11](https://github.com/netlify/build/compare/build-v28.1.10...build-v28.1.11) (2022-11-08)
 
 
