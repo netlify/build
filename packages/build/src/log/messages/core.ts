@@ -34,10 +34,11 @@ export const logBuildSuccess = function (logs) {
   logMessage(logs, '')
 }
 
-export const logTimer = function (logs, durationNs, timerName) {
+export const logTimer = function (logs, durationNs, timerName, systemLog) {
   const durationMs = roundTimerToMillisecs(durationNs)
   const duration = prettyMs(durationMs)
   log(logs, THEME.dimWords(`(${timerName} completed in ${duration})`))
+  systemLog(`Build step duration: ${timerName} completed in ${durationMs}ms`)
 }
 
 export const logMissingSideFile = function (logs, sideFile, publish) {
