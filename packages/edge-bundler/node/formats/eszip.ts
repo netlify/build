@@ -27,7 +27,6 @@ const bundleESZIP = async ({
   debug,
   deno,
   distDirectory,
-  featureFlags,
   functions,
   importMap,
 }: BundleESZIPOptions): Promise<Bundle> => {
@@ -48,9 +47,7 @@ const bundleESZIP = async ({
 
   // To actually vendor the eszip module, we need to supply the import map that
   // redirects `https://deno.land/` URLs to the local files.
-  if (featureFlags.edge_functions_use_vendored_eszip) {
-    flags.push(`--import-map=${bundlerImportMap}`)
-  }
+  flags.push(`--import-map=${bundlerImportMap}`)
 
   try {
     await deno.run(['run', ...flags, bundler, JSON.stringify(payload)], { pipeOutput: true })

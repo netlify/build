@@ -101,7 +101,6 @@ test('Uses the vendored eszip module instead of fetching it from deno.land', asy
     basePath: fixturesDir,
     featureFlags: {
       edge_functions_produce_eszip: true,
-      edge_functions_use_vendored_eszip: true,
     },
     importMaps: [
       {
