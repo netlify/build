@@ -6,9 +6,8 @@ import { PassThrough } from 'stream'
 
 import nock from 'nock'
 import semver from 'semver'
-import { spy } from 'sinon'
 import tmp from 'tmp-promise'
-import { test, expect } from 'vitest'
+import { test, expect, vi } from 'vitest'
 
 import { DenoBridge, DENO_VERSION_RANGE } from './bridge.js'
 import { getPlatformTarget } from './platform.js'
@@ -33,8 +32,8 @@ test('Downloads the Deno CLI on demand and caches it for subsequent calls', asyn
     .reply(200, () => data)
 
   const tmpDir = await tmp.dir()
-  const beforeDownload = spy()
-  const afterDownload = spy()
+  const beforeDownload = vi.fn()
+  const afterDownload = vi.fn()
   const deno = new DenoBridge({
     cacheDirectory: tmpDir.path,
     onBeforeDownload: beforeDownload,
@@ -49,8 +48,8 @@ test('Downloads the Deno CLI on demand and caches it for subsequent calls', asyn
   expect(downloadMock.isDone()).toBe(true)
   expect(output1?.stdout ?? '').toMatch(expectedOutput)
   expect(output2?.stdout ?? '').toMatch(expectedOutput)
-  expect(beforeDownload.callCount).toBe(1)
-  expect(afterDownload.callCount).toBe(1)
+  expect(beforeDownload).toHaveBeenCalledTimes(1)
+  expect(afterDownload).toHaveBeenCalledTimes(1)
 
   await fs.promises.rmdir(tmpDir.path, { recursive: true })
 })

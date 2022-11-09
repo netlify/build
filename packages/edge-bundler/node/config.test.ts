@@ -3,9 +3,8 @@ import { join, resolve } from 'path'
 import { pathToFileURL } from 'url'
 
 import { deleteAsync } from 'del'
-import { stub } from 'sinon'
 import tmp from 'tmp-promise'
-import { test, expect } from 'vitest'
+import { test, expect, vi } from 'vitest'
 
 import { fixturesDir } from '../test/util.js'
 
@@ -115,8 +114,8 @@ test('`getFunctionConfig` extracts configuration properties from function file',
 
   for (const func of functions) {
     const logger = {
-      user: stub().resolves(),
-      system: stub().resolves(),
+      user: vi.fn().mockResolvedValue(null),
+      system: vi.fn().mockResolvedValue(null),
     }
     const path = join(tmpDir, `${func.name}.js`)
 
@@ -135,9 +134,9 @@ test('`getFunctionConfig` extracts configuration properties from function file',
     expect(config).toEqual(func.expectedConfig)
 
     if (func.userLog) {
-      expect(logger.user.firstCall.firstArg).toMatch(func.userLog)
+      expect(logger.user).toHaveBeenNthCalledWith(1, expect.stringMatching(func.userLog))
     } else {
-      expect(logger.user.callCount).toBe(0)
+      expect(logger.user).not.toHaveBeenCalled()
     }
   }
 

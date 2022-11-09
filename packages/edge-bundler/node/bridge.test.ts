@@ -6,7 +6,6 @@ import { PassThrough } from 'stream'
 
 import nock from 'nock'
 import semver from 'semver'
-import { spy } from 'sinon'
 import tmp, { DirectoryResult } from 'tmp-promise'
 import { test, expect } from 'vitest'
 
@@ -34,13 +33,8 @@ const getMockDenoBridge = function (tmpDir: DirectoryResult, mockBinaryOutput: s
     .get(`/release/v${latestVersion}/deno-${target}.zip`)
     .reply(200, () => data)
 
-  const beforeDownload = spy()
-  const afterDownload = spy()
-
   return new DenoBridge({
     cacheDirectory: tmpDir.path,
-    onBeforeDownload: beforeDownload,
-    onAfterDownload: afterDownload,
     useGlobal: false,
   })
 }
