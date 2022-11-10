@@ -1,5 +1,16 @@
 # Changelog
 
+## [4.0.0](https://github.com/netlify/edge-bundler/compare/v3.1.1...v4.0.0) (2022-11-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* replace `mode` property with `cache` (#190)
+
+### Features
+
+* replace `mode` property with `cache` ([#190](https://github.com/netlify/edge-bundler/issues/190)) ([5ca08c2](https://github.com/netlify/edge-bundler/commit/5ca08c278d27e77679b98562e6fb5cefc3901791))
+
 ## [3.1.1](https://github.com/netlify/edge-bundler/compare/v3.1.0...v3.1.1) (2022-11-04)
 
 
