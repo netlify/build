@@ -26,6 +26,17 @@
   * dependencies
     * netlify-headers-parser bumped from ^7.0.0 to ^7.0.1
 
+## [20.0.0](https://github.com/netlify/build/compare/config-v19.1.2...config-v20.0.0) (2022-11-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* add `cache` config property to edge functions (#4686)
+
+### Features
+
+* add `cache` config property to edge functions ([#4686](https://github.com/netlify/build/issues/4686)) ([fecf2a1](https://github.com/netlify/build/commit/fecf2a19cdde8edea6aa847107da31c63f13ef60))
+
 ## [19.1.0](https://github.com/netlify/build/compare/config-v19.0.2...config-v19.1.0) (2022-10-26)
 
 
