@@ -2,7 +2,7 @@ import CronParser from 'cron-parser'
 import isPlainObj from 'is-plain-obj'
 import validateNpmPackageName from 'validate-npm-package-name'
 
-import { modes } from '../edge_functions_config.js'
+import { validations as edgeFunctionValidations } from '../edge_functions.js'
 import { bundlers, WILDCARD_ALL as FUNCTIONS_CONFIG_WILDCARD_ALL } from '../functions_config.js'
 
 import { functionsDirectoryCheck, isArrayOfObjects, isArrayOfStrings, isString, validProperties } from './helpers.js'
@@ -252,45 +252,5 @@ export const POST_NORMALIZE_VALIDATIONS = [
       functions: { directory: 'my-functions' },
     }),
   },
-  {
-    property: 'edge_functions.*',
-    ...validProperties(['path', 'function', 'mode'], []),
-    example: () => ({ edge_functions: [{ path: '/hello', function: 'hello' }] }),
-  },
-  {
-    property: 'edge_functions.*',
-    check: (edgeFunction) => edgeFunction.path !== undefined,
-    message: '"path" property is required.',
-    example: () => ({ edge_functions: [{ path: '/hello', function: 'hello' }] }),
-  },
-  {
-    property: 'edge_functions.*',
-    check: (edgeFunction) => edgeFunction.function !== undefined,
-    message: '"function" property is required.',
-    example: () => ({ edge_functions: [{ path: '/hello', function: 'hello' }] }),
-  },
-  {
-    property: 'edge_functions.*.path',
-    check: isString,
-    message: 'must be a string.',
-    example: () => ({ edge_functions: [{ path: '/hello', function: 'hello' }] }),
-  },
-  {
-    property: 'edge_functions.*.function',
-    check: isString,
-    message: 'must be a string.',
-    example: () => ({ edge_functions: [{ path: '/hello', function: 'hello' }] }),
-  },
-  {
-    property: 'edge_functions.*.path',
-    check: (pathName) => pathName.startsWith('/'),
-    message: 'must be a valid path.',
-    example: () => ({ edge_functions: [{ path: '/hello', function: 'hello' }] }),
-  },
-  {
-    property: 'edge_functions.*.mode',
-    check: (value) => modes.includes(value),
-    message: `must be one of: ${modes.join(', ')}`,
-    example: () => ({ edge_functions: [{ mode: modes[0], path: '/hello', function: 'hello' }] }),
-  },
+  ...edgeFunctionValidations,
 ]

@@ -1,4 +1,4 @@
 [[edge_functions]]
+cache = "manual"
 function = "function1"
-mode = "after-cache"
 path = "/function1"
