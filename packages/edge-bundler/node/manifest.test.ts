@@ -116,8 +116,8 @@ test('Generates a manifest with pre and post-cache routes', () => {
   ]
   const declarations = [
     { function: 'func-1', path: '/f1' },
-    { function: 'func-2', mode: 'not_a_supported_mode', path: '/f2' },
-    { function: 'func-3', mode: 'after-cache', path: '/f3' },
+    { function: 'func-2', cache: 'not_a_supported_value', path: '/f2' },
+    { function: 'func-3', cache: 'manual', path: '/f3' },
   ]
   const manifest = generateManifest({ bundles: [bundle1, bundle2], declarations, functions })
 

@@ -4,7 +4,7 @@ import { join } from 'path'
 import globToRegExp from 'glob-to-regexp'
 
 import type { Bundle } from './bundle.js'
-import { Mode } from './config.js'
+import { Cache } from './config.js'
 import type { Declaration } from './declaration.js'
 import { EdgeFunction } from './edge_function.js'
 import { getPackageVersion } from './package_json.js'
@@ -50,7 +50,7 @@ const generateManifest = ({ bundles = [], declarations = [], functions }: Genera
       pattern: serializablePattern,
     }
 
-    if (declaration.mode === Mode.AfterCache) {
+    if (declaration.cache === Cache.Manual) {
       postCacheRoutes.push(route)
     } else {
       preCacheRoutes.push(route)

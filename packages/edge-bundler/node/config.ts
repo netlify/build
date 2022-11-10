@@ -10,7 +10,6 @@ import { ImportMap } from './import_map.js'
 import { Logger } from './logger.js'
 import { getPackagePath } from './package_json.js'
 
-// eslint-disable-next-line no-shadow
 enum ConfigExitCode {
   Success = 0,
   UnhandledError = 1,
@@ -21,14 +20,13 @@ enum ConfigExitCode {
   SerializationError,
 }
 
-// eslint-disable-next-line no-shadow
-export const enum Mode {
-  BeforeCache = 'before-cache',
-  AfterCache = 'after-cache',
+export const enum Cache {
+  Off = 'off',
+  Manual = 'manual',
 }
 
 export interface FunctionConfig {
-  mode?: Mode
+  cache?: Cache
   path?: string
 }
 

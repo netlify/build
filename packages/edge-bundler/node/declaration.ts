@@ -1,8 +1,8 @@
 import { FunctionConfig } from './config.js'
 
 interface BaseDeclaration {
+  cache?: string
   function: string
-  mode?: string
   name?: string
 }
 
