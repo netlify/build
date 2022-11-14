@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.0.1](https://github.com/netlify/edge-bundler/compare/v4.0.0...v4.0.1) (2022-11-14)
+
+
+### Bug Fixes
+
+* log when module loading fails after max tries ([#193](https://github.com/netlify/edge-bundler/issues/193)) ([b25b4db](https://github.com/netlify/edge-bundler/commit/b25b4dbc0e59aade01fd74b23daf633acce3e476))
+
 ## [4.0.0](https://github.com/netlify/edge-bundler/compare/v3.1.1...v4.0.0) (2022-11-10)
 
 
