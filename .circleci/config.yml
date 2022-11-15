@@ -11,15 +11,15 @@ workflows:
 
   release-please:
     jobs:
-      - update-lockfile:
-        context: [shared-secrets]
-        requires:
-          - release-please
       - release-please:
           context: [shared-secrets]
           filters:
             branches:
               only: [main]
+      - update-lockfile:
+          context: [shared-secrets]
+          requires:
+            - release-please
 
   'Test & Check 🕵️‍♀️':
     jobs:
@@ -97,13 +97,13 @@ jobs:
       - run: git clone -b "release-please--branches--main" "$CIRCLE_REPOSITORY_URL" --depth=2
       - run: npm install
       - run:
-        name: Commit and push lockfile
-        command: |
-          git config user.name "$(git log -n 1 --pretty=format:%an)"
-          git config user.email "$(git log -n 1 --pretty=format:%ae)"
-          git add package-lock.json
-          git commit --amend --no-edit
-          git push --force
+          name: Commit and push lockfile
+          command: |
+            git config user.name "$(git log -n 1 --pretty=format:%an)" && \
+            git config user.email "$(git log -n 1 --pretty=format:%ae)" && \
+            git add package-lock.json && \
+            git commit --amend --no-edit && \
+            git push --force
 
   formatting:
     description: Checks if the codebase satisfies wit the lint and style rules
