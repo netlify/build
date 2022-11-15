@@ -20,6 +20,9 @@ workflows:
           context: [shared-secrets]
           requires:
             - release-please
+          filters:
+            branches:
+              only: [release-please--branches--main]
 
   'Test & Check 🕵️‍♀️':
     jobs:
