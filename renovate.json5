@@ -4,10 +4,6 @@
   semanticCommits: true,
   dependencyDashboard: true,
   automerge: true,
-  updateLockfiles: true,
-  lockFileMaintenance: {
-    enabled: true,
-  },
   packageRules: [
     // `ts-node@10.5.0` is currently failing with our code
     {
