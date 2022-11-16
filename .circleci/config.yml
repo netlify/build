@@ -16,6 +16,13 @@ workflows:
           filters:
             branches:
               only: [main]
+      - update-lockfile:
+          context: [shared-secrets]
+          requires:
+            - release-please
+          filters:
+            branches:
+              only: [release-please--branches--main]
 
   'Test & Check 🕵️‍♀️':
     jobs:
@@ -86,6 +93,22 @@ jobs:
               --token "${GITHUB_RELEASES_TOKEN}" \
               --repo-url "${CIRCLE_REPOSITORY_URL}" \
 
+  update-lockfile:
+    description: Update lockfile in a release please PR
+    executor: node
+    steps:
+      - checkout
+      - run: npm install
+      - run:
+          name: Commit and push lockfile
+          command: |
+            git remote remove origin
+            git remote add origin "https://${GITHUB_RELEASES_TOKEN}@github.com/netlify/build.git"
+            git config  user.email "33464286+netlify-jenkins@users.noreply.github.com"
+            git config  user.name "netlify-jenkins"
+            git add package-lock.json && \
+            git commit -m "chore: update lockfile [skip ci]" && \
+            git push --set-upstream origin release-please--branches--main
   formatting:
     description: Checks if the codebase satisfies wit the lint and style rules
     executor: node
