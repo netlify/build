@@ -16,10 +16,13 @@ workflows:
           filters:
             branches:
               only: [main]
+
+  # Workflow responsible for correctly updating the root lockfile for the release-please PR
+  # See: https://github.com/googleapis/release-please/issues/1101
+  release-pull-request:
+    jobs:
       - update-lockfile:
           context: [shared-secrets]
-          requires:
-            - release-please
           filters:
             branches:
               only: [release-please--branches--main]
