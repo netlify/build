@@ -18,11 +18,9 @@ workflows:
               only: [main]
       - update-lockfile:
           context: [shared-secrets]
-          requires:
-            - release-please
           filters:
             branches:
-              only: [release-please--branches--main]
+              only: [test-release-please]
 
   'Test & Check 🕵️‍♀️':
     jobs:
@@ -52,7 +50,7 @@ commands:
       command:
         description: The install command that is used
         type: string
-        default: npm ci
+        default: npm i
     steps:
       - restore_cache:
           keys:
@@ -97,13 +95,11 @@ jobs:
     description: Update lockfile in a release please PR
     executor: node
     steps:
-      - checkout
+      - run: git checkout --track test-release-please
       - run: npm install
       - run:
           name: Commit and push lockfile
           command: |
-            git config user.name "$(git log -n 1 --pretty=format:%an)" && \
-            git config user.email "$(git log -n 1 --pretty=format:%ae)" && \
             git add package-lock.json && \
             git commit --amend --no-edit && \
             git push --force
