@@ -51,6 +51,13 @@
   * dependencies
     * @netlify/config bumped from ^19.1.1 to ^19.1.2
 
+## [28.1.15](https://github.com/netlify/build/compare/build-v28.1.14...build-v28.1.15) (2022-11-16)
+
+
+### Bug Fixes
+
+* pin down edge bundler to release ([#4697](https://github.com/netlify/build/issues/4697)) ([6794064](https://github.com/netlify/build/commit/679406491fe312ccd9c4a492e810270fbab565f5))
+
 ## [28.1.14](https://github.com/netlify/build/compare/build-v28.1.13...build-v28.1.14) (2022-11-16)
 
 
