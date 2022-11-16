@@ -104,7 +104,7 @@ jobs:
             git config user.email "${GITHUB_RELEASES_TOKEN}" && \
             git branch --set-upstream-to=origin/test-release-please test-release-please
             git add package-lock.json && \
-            git commit --amend -m "update lockfile" && \
+            git commit --amend -m "chore: update lockfile" && \
             git push --force
 
   formatting:
