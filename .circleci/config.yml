@@ -97,7 +97,7 @@ jobs:
     description: Update lockfile in a release please PR
     executor: node
     steps:
-      - run: git clone -b "release-please--branches--main" "$CIRCLE_REPOSITORY_URL" --depth=2
+      - checkout
       - run: npm install
       - run:
           name: Commit and push lockfile
