@@ -136,3 +136,32 @@ test('Generates a manifest with pre and post-cache routes', () => {
   expect(manifest.post_cache_routes).toEqual(expectedPostCacheRoutes)
   expect(manifest.bundler_version).toBe(env.npm_package_version as string)
 })
+
+test('Generates a manifest with layers', () => {
+  const functions = [
+    { name: 'func-1', path: '/path/to/func-1.ts' },
+    { name: 'func-2', path: '/path/to/func-2.ts' },
+  ]
+  const declarations = [
+    { function: 'func-1', path: '/f1/*' },
+    { function: 'func-2', path: '/f2/*' },
+  ]
+  const expectedRoutes = [
+    { function: 'func-1', pattern: '^/f1/.*/?$' },
+    { function: 'func-2', pattern: '^/f2/.*/?$' },
+  ]
+  const layers = [
+    {
+      name: 'onion',
+      flag: 'edge_functions_onion_layer',
+    },
+  ]
+  const manifest1 = generateManifest({ bundles: [], declarations, functions })
+  const manifest2 = generateManifest({ bundles: [], declarations, functions, layers })
+
+  expect(manifest1.routes).toEqual(expectedRoutes)
+  expect(manifest1.layers).toEqual([])
+
+  expect(manifest2.routes).toEqual(expectedRoutes)
+  expect(manifest2.layers).toEqual(layers)
+})

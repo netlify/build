@@ -7,13 +7,15 @@ import type { Bundle } from './bundle.js'
 import { Cache } from './config.js'
 import type { Declaration } from './declaration.js'
 import { EdgeFunction } from './edge_function.js'
+import { Layer } from './layer.js'
 import { getPackageVersion } from './package_json.js'
 import { nonNullable } from './utils/non_nullable.js'
 
 interface GenerateManifestOptions {
   bundles?: Bundle[]
-  functions: EdgeFunction[]
   declarations?: Declaration[]
+  functions: EdgeFunction[]
+  layers?: Layer[]
 }
 
 /* eslint-disable camelcase */
@@ -22,6 +24,7 @@ interface Manifest {
   bundles: { asset: string; format: string }[]
   routes: { function: string; name?: string; pattern: string }[]
   post_cache_routes: { function: string; name?: string; pattern: string }[]
+  layers: { name: string; flag: string }[]
 }
 /* eslint-enable camelcase */
 
@@ -31,7 +34,7 @@ interface Route {
   pattern: string
 }
 
-const generateManifest = ({ bundles = [], declarations = [], functions }: GenerateManifestOptions) => {
+const generateManifest = ({ bundles = [], declarations = [], functions, layers = [] }: GenerateManifestOptions) => {
   const preCacheRoutes: Route[] = []
   const postCacheRoutes: Route[] = []
 
@@ -65,6 +68,7 @@ const generateManifest = ({ bundles = [], declarations = [], functions }: Genera
     routes: preCacheRoutes.filter(nonNullable),
     post_cache_routes: postCacheRoutes.filter(nonNullable),
     bundler_version: getPackageVersion(),
+    layers,
   }
 
   return manifest
@@ -92,10 +96,17 @@ interface WriteManifestOptions {
   declarations: Declaration[]
   distDirectory: string
   functions: EdgeFunction[]
+  layers?: Layer[]
 }
 
-const writeManifest = async ({ bundles, declarations = [], distDirectory, functions }: WriteManifestOptions) => {
-  const manifest = generateManifest({ bundles, declarations, functions })
+const writeManifest = async ({
+  bundles,
+  declarations = [],
+  distDirectory,
+  functions,
+  layers,
+}: WriteManifestOptions) => {
+  const manifest = generateManifest({ bundles, declarations, functions, layers })
   const manifestPath = join(distDirectory, 'manifest.json')
 
   await fs.writeFile(manifestPath, JSON.stringify(manifest))

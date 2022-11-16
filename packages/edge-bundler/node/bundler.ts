@@ -14,6 +14,7 @@ import { findFunctions } from './finder.js'
 import { bundle as bundleESZIP } from './formats/eszip.js'
 import { bundle as bundleJS } from './formats/javascript.js'
 import { ImportMap, ImportMapFile } from './import_map.js'
+import { Layer } from './layer.js'
 import { getLogger, LogFunction } from './logger.js'
 import { writeManifest } from './manifest.js'
 import { ensureLatestTypes } from './types.js'
@@ -25,6 +26,7 @@ interface BundleOptions {
   distImportMapPath?: string
   featureFlags?: FeatureFlags
   importMaps?: ImportMapFile[]
+  layers?: Layer[]
   onAfterDownload?: OnAfterDownloadHook
   onBeforeDownload?: OnBeforeDownloadHook
   systemLogger?: LogFunction
