@@ -100,12 +100,13 @@ jobs:
       - run:
           name: Commit and push lockfile
           command: |
-            git config user.name "${GITHUB_RELEASES_TOKEN}" && \
-            git config user.email "${GITHUB_RELEASES_TOKEN}" && \
-            git branch --set-upstream-to=origin/test-release-please test-release-please
+            git remote remove origin
+            git remote add origin "https://${GITHUB_RELEASES_TOKEN}@github.com/netlify/build.git"
+            git config  user.email "33464286+netlify-jenkins@users.noreply.github.com"
+            git config  user.name "netlify-jenkins"
             git add package-lock.json && \
-            git commit --amend -m "chore: update lockfile" && \
-            git push --force
+            git commit -m "chore: update lockfile [skip ci]" && \
+            git push --set-upstream origin test-release-please
 
   formatting:
     description: Checks if the codebase satisfies wit the lint and style rules
