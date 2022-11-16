@@ -96,15 +96,12 @@ jobs:
     executor: node
     steps:
       - checkout
-      - add_ssh_keys:
-          fingerprints:
-            - 'a8:63:99:a7:16:fa:73:22:fc:a3:91:4c:c9:49:87:68'
       - run: npm install
       - run:
           name: Commit and push lockfile
           command: |
-            git config user.name "$(git log -n 1 --pretty=format:%an)" && \
-            git config user.email "$(git log -n 1 --pretty=format:%ae)" && \
+            git config user.name "${GITHUB_RELEASES_TOKEN}" && \
+            git config user.email "${GITHUB_RELEASES_TOKEN}" && \
             git branch --set-upstream-to=origin/test-release-please test-release-please
             git add package-lock.json && \
             git commit --amend --no-edit && \
