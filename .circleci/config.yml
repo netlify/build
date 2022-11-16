@@ -95,11 +95,12 @@ jobs:
     description: Update lockfile in a release please PR
     executor: node
     steps:
-      - run: git checkout --track test-release-please
+      - checkout
       - run: npm install
       - run:
           name: Commit and push lockfile
           command: |
+            git branch --set-upstream-to=origin/test-release-please test-release-please
             git add package-lock.json && \
             git commit --amend --no-edit && \
             git push --force
