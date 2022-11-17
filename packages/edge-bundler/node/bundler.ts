@@ -87,6 +87,7 @@ const bundle = async (
     distImportMapPath,
     featureFlags: inputFeatureFlags,
     importMaps,
+    layers,
     onAfterDownload,
     onBeforeDownload,
     systemLogger,
@@ -162,6 +163,7 @@ const bundle = async (
     declarations,
     distDirectory,
     functions,
+    layers,
   })
 
   if (distImportMapPath) {

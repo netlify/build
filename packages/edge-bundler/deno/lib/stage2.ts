@@ -3,7 +3,7 @@ import { build, LoadResponse } from 'https://deno.land/x/eszip@v0.28.0/mod.ts'
 import * as path from 'https://deno.land/std@0.127.0/path/mod.ts'
 
 import type { InputFunction, WriteStage2Options } from '../../shared/stage2.ts'
-import { PUBLIC_SPECIFIER, STAGE2_SPECIFIER, virtualRoot } from './consts.ts'
+import { CUSTOM_LAYER_PREFIX, PUBLIC_SPECIFIER, STAGE2_SPECIFIER, virtualRoot } from './consts.ts'
 import { inlineModule, loadFromVirtualRoot, loadWithRetry } from './common.ts'
 
 interface FunctionReference {
@@ -70,7 +70,7 @@ const stage2Loader = (basePath: string, functions: InputFunction[]) => {
       return inlineModule(specifier, stage2Entry)
     }
 
-    if (specifier === PUBLIC_SPECIFIER) {
+    if (specifier === PUBLIC_SPECIFIER || specifier.startsWith(CUSTOM_LAYER_PREFIX)) {
       return {
         kind: 'external',
         specifier,
@@ -88,6 +88,9 @@ const stage2Loader = (basePath: string, functions: InputFunction[]) => {
 const writeStage2 = async ({ basePath, destPath, functions, importMapURL }: WriteStage2Options) => {
   const loader = stage2Loader(basePath, functions)
   const bytes = await build([STAGE2_SPECIFIER], loader, importMapURL)
+  const directory = path.dirname(destPath)
+
+  await Deno.mkdir(directory, { recursive: true })
 
   return await Deno.writeFile(destPath, bytes)
 }

@@ -325,3 +325,38 @@ test('Ignores any user-defined `deno.json` files', async () => {
 
   await deleteAsync([tmpDir.path, denoConfigPath, importMapFile.path], { force: true })
 })
+
+test('Processes a function that imports a custom layer', async () => {
+  const sourceDirectory = resolve(fixturesDir, 'with_layers', 'functions')
+  const tmpDir = await tmp.dir()
+  const declarations = [
+    {
+      function: 'func1',
+      path: '/func1',
+    },
+  ]
+  const layer = { name: 'test', flag: 'edge-functions-layer-test' }
+  const result = await bundle([sourceDirectory], tmpDir.path, declarations, {
+    basePath: fixturesDir,
+    featureFlags: {
+      edge_functions_produce_eszip: true,
+    },
+    layers: [layer],
+  })
+  const generatedFiles = await fs.readdir(tmpDir.path)
+
+  expect(result.functions.length).toBe(1)
+  expect(generatedFiles.length).toBe(2)
+
+  const manifestFile = await fs.readFile(resolve(tmpDir.path, 'manifest.json'), 'utf8')
+  const manifest = JSON.parse(manifestFile)
+  const { bundles, layers } = manifest
+
+  expect(bundles.length).toBe(1)
+  expect(bundles[0].format).toBe('eszip2')
+  expect(generatedFiles.includes(bundles[0].asset)).toBe(true)
+
+  expect(layers).toEqual([layer])
+
+  await fs.rmdir(tmpDir.path, { recursive: true })
+})
