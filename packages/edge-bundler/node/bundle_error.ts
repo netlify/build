@@ -25,6 +25,9 @@ class BundleError extends Error {
   }
 }
 
+/**
+ * BundleErrors are treated as user-error, so Netlify Team is not alerted about them.
+ */
 const wrapBundleError = (input: unknown, options: BundleErrorOptions) => {
   if (input instanceof Error) {
     return new BundleError(input, options)

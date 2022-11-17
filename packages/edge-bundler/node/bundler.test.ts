@@ -153,6 +153,32 @@ test('Adds a custom error property to user errors during bundling', async () => 
   }
 })
 
+test('Prints a nice error message when user tries importing NPM module', async () => {
+  expect.assertions(2)
+
+  const sourceDirectory = resolve(fixturesDir, 'imports_npm_module', 'functions')
+  const tmpDir = await tmp.dir()
+  const declarations = [
+    {
+      function: 'func1',
+      path: '/func1',
+    },
+  ]
+
+  try {
+    await bundle([sourceDirectory], tmpDir.path, declarations, {
+      featureFlags: {
+        edge_functions_produce_eszip: true,
+      },
+    })
+  } catch (error) {
+    expect(error).toBeInstanceOf(BundleError)
+    expect((error as BundleError).message).toEqual(
+      `It seems like you're trying to import an npm module. This is only supported in Deno via CDNs like esm.sh. Have you tried 'import mod from "https://esm.sh/p-retry"'?`,
+    )
+  }
+})
+
 test('Does not add a custom error property to system errors during bundling', async () => {
   expect.assertions(1)
 
