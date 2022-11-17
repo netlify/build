@@ -15,6 +15,7 @@ const parseManifest = async (internalSourceDirectory, systemLog) => {
 
     const result = {
       declarations: manifest.functions,
+      layers: manifest.layers,
     }
 
     if (manifest.import_map) {
@@ -39,6 +40,7 @@ const parseManifest = async (internalSourceDirectory, systemLog) => {
 
   return {
     declarations: [],
+    layers: [],
   }
 }
 

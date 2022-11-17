@@ -42,6 +42,18 @@ const routesSchema = {
   additionalProperties: false,
 }
 
+const layersSchema = {
+  $async: true,
+  type: 'object',
+  required: ['flag', 'name'],
+  properties: {
+    flag: { type: 'string' },
+    name: { type: 'string' },
+    local: { type: 'string' },
+  },
+  additionalProperties: false,
+}
+
 const edgeManifestSchema = {
   $async: true,
   type: 'object',
@@ -58,6 +70,10 @@ const edgeManifestSchema = {
     post_cache_routes: {
       type: 'array',
       items: routesSchema,
+    },
+    layers: {
+      type: 'array',
+      items: layersSchema,
     },
     bundler_version: { type: 'string' },
   },
