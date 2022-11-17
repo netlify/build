@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.0.4](https://github.com/netlify/build/compare/functions-utils-v5.0.3...functions-utils-v5.0.4) (2022-11-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v4.1.0 ([#4696](https://github.com/netlify/build/issues/4696)) ([f7044e0](https://github.com/netlify/build/commit/f7044e013804096dfb61ba0459226ff6d702ddf3))
+
 ## [5.0.3](https://github.com/netlify/build/compare/functions-utils-v5.0.2...functions-utils-v5.0.3) (2022-11-08)
 
 

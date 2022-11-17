@@ -51,6 +51,32 @@
   * dependencies
     * @netlify/config bumped from ^19.1.1 to ^19.1.2
 
+## [28.2.0](https://github.com/netlify/build/compare/build-v28.1.15...build-v28.2.0) (2022-11-17)
+
+
+### Features
+
+* add support for edge function layers ([#4701](https://github.com/netlify/build/issues/4701)) ([18ade09](https://github.com/netlify/build/commit/18ade097b705f16d97bb63fb771f838493a2df90))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v4.1.0 ([#4696](https://github.com/netlify/build/issues/4696)) ([f7044e0](https://github.com/netlify/build/commit/f7044e013804096dfb61ba0459226ff6d702ddf3))
+* update edge bundler to v4.2.0 ([#4703](https://github.com/netlify/build/issues/4703)) ([ab40c9a](https://github.com/netlify/build/commit/ab40c9a5d60d7356d3cb080d17aa71c0b9293172))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/cache-utils bumped from ^5.0.1 to ^5.0.2
+    * @netlify/config bumped from ^20.0.0 to ^20.0.1
+    * @netlify/functions-utils bumped from ^5.0.3 to ^5.0.4
+    * @netlify/git-utils bumped from ^5.0.1 to ^5.0.2
+    * @netlify/run-utils bumped from ^5.0.1 to ^5.0.2
+  * devDependencies
+    * @netlify/nock-udp bumped from ^3.0.0 to ^3.0.1
+
 ## [28.1.15](https://github.com/netlify/build/compare/build-v28.1.14...build-v28.1.15) (2022-11-16)
 
 

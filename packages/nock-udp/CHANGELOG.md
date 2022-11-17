@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.1](https://github.com/netlify/build/compare/nock-udp-v3.0.0...nock-udp-v3.0.1) (2022-11-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v4.1.0 ([#4696](https://github.com/netlify/build/issues/4696)) ([f7044e0](https://github.com/netlify/build/commit/f7044e013804096dfb61ba0459226ff6d702ddf3))
+
 ## [3.0.0](https://github.com/netlify/build/compare/nock-udp-v2.0.0...nock-udp-v3.0.0) (2022-10-11)
 
 
