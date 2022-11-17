@@ -1,5 +1,18 @@
 # Changelog
 
+## [4.2.0](https://github.com/netlify/edge-bundler/compare/v4.1.0...v4.2.0) (2022-11-17)
+
+
+### Features
+
+* add `layer:` prefix to ESZIP loader ([#201](https://github.com/netlify/edge-bundler/issues/201)) ([4d0e8dd](https://github.com/netlify/edge-bundler/commit/4d0e8dd31ae2c764cf12a318e8dc25ea7ccebc0b))
+* add detection + nice error message for npm import errors ([#195](https://github.com/netlify/edge-bundler/issues/195)) ([1389373](https://github.com/netlify/edge-bundler/commit/138937346db460bc90788049713a8f598bc196d2))
+
+
+### Bug Fixes
+
+* update bootstrap ([#202](https://github.com/netlify/edge-bundler/issues/202)) ([a314063](https://github.com/netlify/edge-bundler/commit/a314063469f966c8237cae808f1423e82e623d6a))
+
 ## [4.1.0](https://github.com/netlify/edge-bundler/compare/v4.0.2...v4.1.0) (2022-11-16)
 
 
