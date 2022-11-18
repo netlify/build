@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.3.2](https://github.com/netlify/edge-bundler/compare/v4.3.1...v4.3.2) (2022-11-18)
+
+
+### Bug Fixes
+
+* tag edge function signature errors as user errors ([#209](https://github.com/netlify/edge-bundler/issues/209)) ([5d5a50f](https://github.com/netlify/edge-bundler/commit/5d5a50f08e2c926ad5ab7cc75dd3c879cd91f91c))
+
 ## [4.3.1](https://github.com/netlify/edge-bundler/compare/v4.3.0...v4.3.1) (2022-11-18)
 
 
