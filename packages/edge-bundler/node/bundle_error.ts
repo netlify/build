@@ -2,9 +2,9 @@ interface BundleErrorOptions {
   format: string
 }
 
-const getCustomErrorInfo = (options: BundleErrorOptions) => ({
+const getCustomErrorInfo = (options?: BundleErrorOptions) => ({
   location: {
-    format: options.format,
+    format: options?.format,
     runtime: 'deno',
   },
   type: 'functionsBundling',
@@ -13,7 +13,7 @@ const getCustomErrorInfo = (options: BundleErrorOptions) => ({
 class BundleError extends Error {
   customErrorInfo: ReturnType<typeof getCustomErrorInfo>
 
-  constructor(originalError: Error, options: BundleErrorOptions) {
+  constructor(originalError: Error, options?: BundleErrorOptions) {
     super(originalError.message)
 
     this.customErrorInfo = getCustomErrorInfo(options)
@@ -28,7 +28,7 @@ class BundleError extends Error {
 /**
  * BundleErrors are treated as user-error, so Netlify Team is not alerted about them.
  */
-const wrapBundleError = (input: unknown, options: BundleErrorOptions) => {
+const wrapBundleError = (input: unknown, options?: BundleErrorOptions) => {
   if (input instanceof Error) {
     return new BundleError(input, options)
   }
