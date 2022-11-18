@@ -21,6 +21,9 @@ const importMapFile = {
   },
 }
 
+const invalidDefaultExportErr = (path: string) =>
+  `Default export in '${path}' must be a function. More on the Edge Functions API at https://ntl.fyi/edge-api.`
+
 test('`getFunctionConfig` extracts configuration properties from function file', async () => {
   const { path: tmpDir } = await tmp.dir()
   const deno = new DenoBridge({
@@ -218,4 +221,114 @@ test('Loads function paths from the in-source `config` function', async () => {
   expect(postCacheRoutes[0]).toEqual({ function: 'user-func4', pattern: '^/user-func4/?$' })
 
   await fs.rmdir(tmpDir.path, { recursive: true })
+})
+
+test('Passes validation if default export exists and is a function', async () => {
+  const { path: tmpDir } = await tmp.dir()
+  const deno = new DenoBridge({
+    cacheDirectory: tmpDir,
+  })
+
+  const func = {
+    name: 'func1',
+    source: `
+        const func = () => new Response("Hello world!")
+        export default func
+      `,
+  }
+
+  const logger = {
+    user: vi.fn().mockResolvedValue(null),
+    system: vi.fn().mockResolvedValue(null),
+  }
+  const path = join(tmpDir, `${func.name}.ts`)
+
+  await fs.writeFile(path, func.source)
+
+  expect(async () => {
+    await getFunctionConfig(
+      {
+        name: func.name,
+        path,
+      },
+      new ImportMap([importMapFile]),
+      deno,
+      logger,
+    )
+  }).not.toThrow()
+
+  await deleteAsync(tmpDir, { force: true })
+})
+
+test('Fails validation if default export is not function', async () => {
+  const { path: tmpDir } = await tmp.dir()
+  const deno = new DenoBridge({
+    cacheDirectory: tmpDir,
+  })
+
+  const func = {
+    name: 'func2',
+    source: `
+        const func = new Response("Hello world!")
+        export default func
+      `,
+  }
+
+  const logger = {
+    user: vi.fn().mockResolvedValue(null),
+    system: vi.fn().mockResolvedValue(null),
+  }
+  const path = join(tmpDir, `${func.name}.ts`)
+
+  await fs.writeFile(path, func.source)
+
+  const config = getFunctionConfig(
+    {
+      name: func.name,
+      path,
+    },
+    new ImportMap([importMapFile]),
+    deno,
+    logger,
+  )
+
+  await expect(config).rejects.toThrowError(invalidDefaultExportErr(path))
+
+  await deleteAsync(tmpDir, { force: true })
+})
+
+test('Fails validation if default export is not present', async () => {
+  const { path: tmpDir } = await tmp.dir()
+  const deno = new DenoBridge({
+    cacheDirectory: tmpDir,
+  })
+
+  const func = {
+    name: 'func3',
+    source: `
+        export const func = () => new Response("Hello world!")
+      `,
+  }
+
+  const logger = {
+    user: vi.fn().mockResolvedValue(null),
+    system: vi.fn().mockResolvedValue(null),
+  }
+  const path = join(tmpDir, `${func.name}.ts`)
+
+  await fs.writeFile(path, func.source)
+
+  const config = getFunctionConfig(
+    {
+      name: func.name,
+      path,
+    },
+    new ImportMap([importMapFile]),
+    deno,
+    logger,
+  )
+
+  await expect(config).rejects.toThrowError(invalidDefaultExportErr(path))
+
+  await deleteAsync(tmpDir, { force: true })
 })

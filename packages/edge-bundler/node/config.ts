@@ -18,6 +18,7 @@ enum ConfigExitCode {
   InvalidExport,
   RuntimeError,
   SerializationError,
+  InvalidDefaultExport,
 }
 
 export const enum Cache {
@@ -120,6 +121,11 @@ const logConfigError = (func: EdgeFunction, exitCode: number, stderr: string, lo
       log.user(`'config' function in edge function at '${func.path}' must return an object with primitive values only`)
 
       break
+
+    case ConfigExitCode.InvalidDefaultExport:
+      throw new Error(
+        `Default export in '${func.path}' must be a function. More on the Edge Functions API at https://ntl.fyi/edge-api.`,
+      )
 
     default:
       log.user(`Could not load configuration for edge function at '${func.path}'`)
