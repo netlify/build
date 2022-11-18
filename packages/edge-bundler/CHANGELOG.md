@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.3.0](https://github.com/netlify/edge-bundler/compare/v4.2.0...v4.3.0) (2022-11-18)
+
+
+### Features
+
+* validate edge function signature at build time ([#200](https://github.com/netlify/edge-bundler/issues/200)) ([2f81b01](https://github.com/netlify/edge-bundler/commit/2f81b019aa6df4f08bd3a450938880fc185ccc3d))
+
 ## [4.2.0](https://github.com/netlify/edge-bundler/compare/v4.1.0...v4.2.0) (2022-11-17)
 
 
