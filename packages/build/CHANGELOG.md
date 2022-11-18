@@ -51,6 +51,13 @@
   * dependencies
     * @netlify/config bumped from ^19.1.1 to ^19.1.2
 
+## [28.2.1](https://github.com/netlify/build/compare/build-v28.2.0...build-v28.2.1) (2022-11-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v4.3.0 ([#4708](https://github.com/netlify/build/issues/4708)) ([43de781](https://github.com/netlify/build/commit/43de78101e3f72a6761fc99042bd565b2c3621b9))
+
 ## [28.2.0](https://github.com/netlify/build/compare/build-v28.1.15...build-v28.2.0) (2022-11-17)
 
 
