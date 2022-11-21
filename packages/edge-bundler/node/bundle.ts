@@ -1,7 +1,10 @@
-interface Bundle {
-  extension: string
-  format: string
-  hash: string
+export enum BundleFormat {
+  ESZIP2 = 'eszip2',
+  JS = 'js',
 }
 
-export type { Bundle }
+export interface Bundle {
+  extension: string
+  format: BundleFormat
+  hash: string
+}

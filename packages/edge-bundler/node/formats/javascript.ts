@@ -6,7 +6,7 @@ import { pathToFileURL } from 'url'
 import { deleteAsync } from 'del'
 
 import { DenoBridge } from '../bridge.js'
-import type { Bundle } from '../bundle.js'
+import { Bundle, BundleFormat } from '../bundle.js'
 import { wrapBundleError } from '../bundle_error.js'
 import { EdgeFunction } from '../edge_function.js'
 import { ImportMap } from '../import_map.js'
@@ -52,7 +52,7 @@ const bundleJS = async ({
 
   const hash = await getFileHash(jsBundlePath)
 
-  return { extension, format: 'js', hash }
+  return { extension, format: BundleFormat.JS, hash }
 }
 
 const defaultFormatExportTypeError: FormatFunction = (name) =>

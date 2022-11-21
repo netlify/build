@@ -10,6 +10,7 @@ module.exports = {
   },
   rules: {
     complexity: 'off',
+    'import/extensions': 'off',
     'max-lines': 'off',
     'max-statements': 'off',
     'node/no-missing-import': 'off',

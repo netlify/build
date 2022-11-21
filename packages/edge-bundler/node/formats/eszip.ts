@@ -2,7 +2,7 @@ import { join } from 'path'
 
 import type { WriteStage2Options } from '../../shared/stage2.js'
 import { DenoBridge } from '../bridge.js'
-import type { Bundle } from '../bundle.js'
+import { Bundle, BundleFormat } from '../bundle.js'
 import { wrapBundleError } from '../bundle_error.js'
 import { EdgeFunction } from '../edge_function.js'
 import { FeatureFlags } from '../feature_flags.js'
@@ -58,7 +58,7 @@ const bundleESZIP = async ({
 
   const hash = await getFileHash(destPath)
 
-  return { extension, format: 'eszip2', hash }
+  return { extension, format: BundleFormat.ESZIP2, hash }
 }
 
 const getESZIPPaths = () => {

@@ -1,0 +1,176 @@
+// Vitest Snapshot v1
+
+exports[`bundle > should throw on additional property in bundle 1`] = `
+"Validation of Edge Functions manifest failed
+ADDTIONAL PROPERTY must NOT have additional properties
+
+  4 |       \\"asset\\": \\"f35baff44129a8f6be7db68590b2efd86ed4ba29000e2edbcaddc5d620d7d043.js\\",
+  5 |       \\"format\\": \\"js\\",
+> 6 |       \\"foo\\": \\"bar\\"
+    |       ^^^^^ 😲  foo is not expected to be here!
+  7 |     }
+  8 |   ],
+  9 |   \\"routes\\": ["
+`;
+
+exports[`bundle > should throw on invalid format 1`] = `
+"Validation of Edge Functions manifest failed
+ENUM must be equal to one of the allowed values
+(eszip2, js)
+
+  3 |     {
+  4 |       \\"asset\\": \\"f35baff44129a8f6be7db68590b2efd86ed4ba29000e2edbcaddc5d620d7d043.js\\",
+> 5 |       \\"format\\": \\"foo\\"
+    |                 ^^^^^ 👈🏽  Unexpected value, should be equal to one of the allowed values
+  6 |     }
+  7 |   ],
+  8 |   \\"routes\\": ["
+`;
+
+exports[`bundle > should throw on missing asset 1`] = `
+"Validation of Edge Functions manifest failed
+REQUIRED must have required property 'asset'
+
+  1 | {
+  2 |   \\"bundles\\": [
+> 3 |     {
+    |     ^ ☹️  asset is missing here!
+  4 |       \\"format\\": \\"js\\"
+  5 |     }
+  6 |   ],"
+`;
+
+exports[`bundle > should throw on missing format 1`] = `
+"Validation of Edge Functions manifest failed
+REQUIRED must have required property 'format'
+
+  1 | {
+  2 |   \\"bundles\\": [
+> 3 |     {
+    |     ^ ☹️  format is missing here!
+  4 |       \\"asset\\": \\"f35baff44129a8f6be7db68590b2efd86ed4ba29000e2edbcaddc5d620d7d043.js\\"
+  5 |     }
+  6 |   ],"
+`;
+
+exports[`layers > should throw on additional property 1`] = `
+"Validation of Edge Functions manifest failed
+ADDTIONAL PROPERTY must NOT have additional properties
+
+  25 |       \\"name\\": \\"name\\",
+  26 |       \\"local\\": \\"local\\",
+> 27 |       \\"foo\\": \\"bar\\"
+     |       ^^^^^ 😲  foo is not expected to be here!
+  28 |     }
+  29 |   ],
+  30 |   \\"bundler_version\\": \\"1.6.0\\""
+`;
+
+exports[`layers > should throw on missing flag 1`] = `
+"Validation of Edge Functions manifest failed
+REQUIRED must have required property 'flag'
+
+  21 |   ],
+  22 |   \\"layers\\": [
+> 23 |     {
+     |     ^ ☹️  flag is missing here!
+  24 |       \\"name\\": \\"name\\",
+  25 |       \\"local\\": \\"local\\"
+  26 |     }"
+`;
+
+exports[`layers > should throw on missing name 1`] = `
+"Validation of Edge Functions manifest failed
+REQUIRED must have required property 'name'
+
+  21 |   ],
+  22 |   \\"layers\\": [
+> 23 |     {
+     |     ^ ☹️  name is missing here!
+  24 |       \\"flag\\": \\"flag\\",
+  25 |       \\"local\\": \\"local\\"
+  26 |     }"
+`;
+
+exports[`route > should throw on additional property 1`] = `
+"Validation of Edge Functions manifest failed
+ADDTIONAL PROPERTY must NOT have additional properties
+
+  11 |       \\"function\\": \\"hello\\",
+  12 |       \\"pattern\\": \\"^/hello/?$\\",
+> 13 |       \\"foo\\": \\"bar\\"
+     |       ^^^^^ 😲  foo is not expected to be here!
+  14 |     }
+  15 |   ],
+  16 |   \\"post_cache_routes\\": ["
+`;
+
+exports[`route > should throw on invalid pattern 1`] = `
+"Validation of Edge Functions manifest failed
+FORMAT pattern needs to be a regex that starts with ^ and ends with $ without any additional slashes before and afterwards
+
+  10 |       \\"name\\": \\"name\\",
+  11 |       \\"function\\": \\"hello\\",
+> 12 |       \\"pattern\\": \\"/^/hello/?$/\\"
+     |                  ^^^^^^^^^^^^^^ 👈🏽  format pattern needs to be a regex that starts with ^ and ends with $ without any additional slashes before and afterwards
+  13 |     }
+  14 |   ],
+  15 |   \\"post_cache_routes\\": ["
+`;
+
+exports[`route > should throw on missing function 1`] = `
+"Validation of Edge Functions manifest failed
+REQUIRED must have required property 'function'
+
+   7 |   ],
+   8 |   \\"routes\\": [
+>  9 |     {
+     |     ^ ☹️  function is missing here!
+  10 |       \\"name\\": \\"name\\",
+  11 |       \\"pattern\\": \\"^/hello/?$\\"
+  12 |     }"
+`;
+
+exports[`route > should throw on missing pattern 1`] = `
+"Validation of Edge Functions manifest failed
+REQUIRED must have required property 'pattern'
+
+   7 |   ],
+   8 |   \\"routes\\": [
+>  9 |     {
+     |     ^ ☹️  pattern is missing here!
+  10 |       \\"name\\": \\"name\\",
+  11 |       \\"function\\": \\"hello\\"
+  12 |     }"
+`;
+
+exports[`should show multiple errors 1`] = `
+"Validation of Edge Functions manifest failed
+ADDTIONAL PROPERTY must NOT have additional properties
+
+  28 |   ],
+  29 |   \\"bundler_version\\": \\"1.6.0\\",
+> 30 |   \\"foo\\": \\"bar\\",
+     |   ^^^^^ 😲  foo is not expected to be here!
+  31 |   \\"baz\\": \\"bar\\"
+  32 | }
+
+ADDTIONAL PROPERTY must NOT have additional properties
+
+  29 |   \\"bundler_version\\": \\"1.6.0\\",
+  30 |   \\"foo\\": \\"bar\\",
+> 31 |   \\"baz\\": \\"bar\\"
+     |   ^^^^^ 😲  baz is not expected to be here!
+  32 | }"
+`;
+
+exports[`should throw on additional property on root level 1`] = `
+"Validation of Edge Functions manifest failed
+ADDTIONAL PROPERTY must NOT have additional properties
+
+  28 |   ],
+  29 |   \\"bundler_version\\": \\"1.6.0\\",
+> 30 |   \\"foo\\": \\"bar\\"
+     |   ^^^^^ 😲  foo is not expected to be here!
+  31 | }"
+`;

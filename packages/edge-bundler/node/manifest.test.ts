@@ -2,17 +2,18 @@ import { env } from 'process'
 
 import { test, expect } from 'vitest'
 
+import { BundleFormat } from './bundle.js'
 import { generateManifest } from './manifest.js'
 
 test('Generates a manifest with different bundles', () => {
   const bundle1 = {
     extension: '.ext1',
-    format: 'format1',
+    format: BundleFormat.ESZIP2,
     hash: '123456',
   }
   const bundle2 = {
     extension: '.ext2',
-    format: 'format2',
+    format: BundleFormat.ESZIP2,
     hash: '654321',
   }
   const functions = [{ name: 'func-1', path: '/path/to/func-1.ts' }]
@@ -53,7 +54,7 @@ test('Generates a manifest with display names', () => {
 test('Excludes functions for which there are function files but no matching config declarations', () => {
   const bundle1 = {
     extension: '.ext2',
-    format: 'format1',
+    format: BundleFormat.ESZIP2,
     hash: '123456',
   }
   const functions = [
@@ -71,7 +72,7 @@ test('Excludes functions for which there are function files but no matching conf
 test('Excludes functions for which there are config declarations but no matching function files', () => {
   const bundle1 = {
     extension: '.ext2',
-    format: 'format1',
+    format: BundleFormat.ESZIP2,
     hash: '123456',
   }
   const functions = [{ name: 'func-2', path: '/path/to/func-2.ts' }]
@@ -101,12 +102,12 @@ test('Generates a manifest without bundles', () => {
 test('Generates a manifest with pre and post-cache routes', () => {
   const bundle1 = {
     extension: '.ext1',
-    format: 'format1',
+    format: BundleFormat.ESZIP2,
     hash: '123456',
   }
   const bundle2 = {
     extension: '.ext2',
-    format: 'format2',
+    format: BundleFormat.ESZIP2,
     hash: '654321',
   }
   const functions = [
