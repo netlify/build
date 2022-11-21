@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.0.3](https://github.com/netlify/build/compare/netlify-headers-parser-v7.0.2...netlify-headers-parser-v7.0.3) (2022-11-21)
+
+
+### Bug Fixes
+
+* **deps:** 'fast-safe-stringify' to headers-parser ([#4700](https://github.com/netlify/build/issues/4700)) ([55ac49b](https://github.com/netlify/build/commit/55ac49b2064c0c357a86ec3a673579b49fa263db))
+
 ## [7.0.2](https://github.com/netlify/build/compare/netlify-headers-parser-v7.0.1...netlify-headers-parser-v7.0.2) (2022-11-17)
 
 
