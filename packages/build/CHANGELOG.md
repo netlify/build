@@ -51,6 +51,18 @@
   * dependencies
     * @netlify/config bumped from ^19.1.1 to ^19.1.2
 
+## [28.3.0](https://github.com/netlify/build/compare/build-v28.2.2...build-v28.3.0) (2022-11-21)
+
+
+### Features
+
+* move EF validation logic to edge-bundler ([#4710](https://github.com/netlify/build/issues/4710)) ([78b7554](https://github.com/netlify/build/commit/78b7554ae9f5ed1cfdaff0b70c9d57c7bd643bde))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v4.4.1 ([#4715](https://github.com/netlify/build/issues/4715)) ([ed5dd68](https://github.com/netlify/build/commit/ed5dd68c38502b3198ce23c88f81e57f3a8a41e0))
+
 ## [28.2.2](https://github.com/netlify/build/compare/build-v28.2.1...build-v28.2.2) (2022-11-18)
 
 
