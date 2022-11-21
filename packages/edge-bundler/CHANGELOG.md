@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.4.1](https://github.com/netlify/edge-bundler/compare/v4.4.0...v4.4.1) (2022-11-21)
+
+
+### Bug Fixes
+
+* update bootstrap to 637b7052e167bb00082f54f1 ([#215](https://github.com/netlify/edge-bundler/issues/215)) ([94ddc22](https://github.com/netlify/edge-bundler/commit/94ddc22ec4ae1f086be34a5babd413d0a8ba0ea6))
+
 ## [4.4.0](https://github.com/netlify/edge-bundler/compare/v4.3.2...v4.4.0) (2022-11-21)
 
 
