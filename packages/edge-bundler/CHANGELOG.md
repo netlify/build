@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.4.0](https://github.com/netlify/edge-bundler/compare/v4.3.2...v4.4.0) (2022-11-21)
+
+
+### Features
+
+* add manifest validation ([#208](https://github.com/netlify/edge-bundler/issues/208)) ([17ee035](https://github.com/netlify/edge-bundler/commit/17ee035f949db06d1c4c229e454fe553eae71ae0))
+
 ## [4.3.2](https://github.com/netlify/edge-bundler/compare/v4.3.1...v4.3.2) (2022-11-18)
 
 
