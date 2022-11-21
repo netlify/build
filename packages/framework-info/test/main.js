@@ -22,6 +22,11 @@ test('Should return the version of each framework when multiple are detected', a
   t.snapshot(frameworks)
 })
 
+test('Should return the version of a framework that is not detected by npm package', async (t) => {
+  const frameworks = await getFrameworks('no_package')
+  t.snapshot(frameworks)
+})
+
 test('Should return the version of the framework when the installed package is hoisted to the root project directory', async (t) => {
   const frameworks = await getFrameworks('monorepos/app1')
   t.snapshot(frameworks)

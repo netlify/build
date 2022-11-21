@@ -1,5 +1,5 @@
 import { join } from 'path'
-import { cwd, chdir } from 'process'
+import { cwd } from 'process'
 
 import { findUp } from 'find-up'
 
@@ -53,28 +53,22 @@ import { listFrameworks as list, hasFramework as has, getFramework as get } from
  * @returns {Promise<Framework>}
  */
 const getFrameworkVersion = async (projectDir, frameworkInfo) => {
-  // Need to change the CWD to the project directory in order to make sure we find and use the correct
-  // package.json
-  const originalCwd = cwd()
-  const returnToOriginalDirectory = () => {
-    chdir(originalCwd)
+  if (!frameworkInfo.package || !frameworkInfo.package.name) {
+    return frameworkInfo
   }
-  chdir(projectDir)
 
   const npmPackage = frameworkInfo.package.name
 
   // Get path of package.json for the installed framework. We need to traverse up the directories
   // in the event that the project uses something like npm workspaces, and the installed framework package
   // has been hoisted to the root directory of the project (which differs from the directory of the project/application being built)
-  const installedFrameworkPath = await findUp(join('node_modules', npmPackage, 'package.json'))
+  const installedFrameworkPath = await findUp(join('node_modules', npmPackage, 'package.json'), { cwd: projectDir })
   const { packageJson } = await getPackageJson(installedFrameworkPath)
-
-  returnToOriginalDirectory()
 
   return {
     ...frameworkInfo,
     package: {
-      name: frameworkInfo.package.name,
+      name: npmPackage,
       version: packageJson.version || 'unknown',
     },
   }
@@ -85,7 +79,7 @@ const getFrameworkVersion = async (projectDir, frameworkInfo) => {
  *
  * @param  {Options} options - Options
  *
- * @returns {Framework[]} frameworks - Frameworks used by a project
+ * @returns {Promise<Framework[]>} frameworks - Frameworks used by a project
  */
 export const listFrameworks = async function (opts) {
   const context = await getContext(opts)
@@ -96,7 +90,13 @@ export const listFrameworks = async function (opts) {
   const settledPromises = await Promise.allSettled(
     frameworkList.map((framework) => getFrameworkVersion(projectDir, framework)),
   )
-  const updatedList = settledPromises.map((result) => result.value)
+  const updatedList = settledPromises.map((result) => {
+    if (result.status === 'fulfilled') {
+      return result.value
+    }
+
+    throw result.reason
+  })
 
   return updatedList
 }
@@ -107,22 +107,22 @@ export const listFrameworks = async function (opts) {
  * @param {string} frameworkId - Id such as `"gatsby"`
  * @param  {Options} [options] - Context
  *
- * @returns {boolean} result - Whether the project uses this framework
+ * @returns {Promise<boolean>} result - Whether the project uses this framework
  */
 export const hasFramework = async function (frameworkId, options) {
   const context = await getContext(options)
-  return await has(frameworkId, context)
+  return has(frameworkId, context)
 }
 
 /**
  * Return some information about a framework used by a project.
  *
  * @param {string} frameworkId - Id such as `"gatsby"`
- * @param  {Context} [context] - Context
+ * @param  {Options} [options] - Context
  *
- * @returns {Framework} framework - Framework used by a project
+ * @returns {Promise<Framework>} framework - Framework used by a project
  */
 export const getFramework = async function (frameworkId, options) {
   const context = await getContext(options)
-  return await get(frameworkId, context)
+  return get(frameworkId, context)
 }

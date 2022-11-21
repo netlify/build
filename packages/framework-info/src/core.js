@@ -63,7 +63,7 @@ const getContext = (context) => {
  *
  * @param  {Context} context - Context
  *
- * @returns {Framework[]} frameworks - Frameworks used by a project
+ * @returns {Promise<Framework[]>} frameworks - Frameworks used by a project
  */
 export const listFrameworks = async function (context) {
   const { pathExists, packageJson, packageJsonPath, nodeVersion } = getContext(context)
@@ -85,7 +85,7 @@ export const listFrameworks = async function (context) {
  * @param {string} frameworkId - Id such as `"gatsby"`
  * @param  {Context} [context] - Context
  *
- * @returns {boolean} result - Whether the project uses this framework
+ * @returns {Promise<boolean>} result - Whether the project uses this framework
  */
 export const hasFramework = async function (frameworkId, context) {
   const framework = getFrameworkById(frameworkId)
@@ -101,7 +101,7 @@ export const hasFramework = async function (frameworkId, context) {
  * @param {string} frameworkId - Id such as `"gatsby"`
  * @param  {Context} [context] - Context
  *
- * @returns {Framework} framework - Framework used by a project
+ * @returns {Promise<Framework>} framework - Framework used by a project
  */
 export const getFramework = async function (frameworkId, context) {
   const framework = getFrameworkById(frameworkId)
