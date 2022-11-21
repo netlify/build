@@ -26,6 +26,22 @@
   * dependencies
     * netlify-headers-parser bumped from ^7.0.0 to ^7.0.1
 
+## [20.0.1](https://github.com/netlify/build/compare/config-v20.0.0...config-v20.0.1) (2022-11-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v4.1.0 ([#4696](https://github.com/netlify/build/issues/4696)) ([f7044e0](https://github.com/netlify/build/commit/f7044e013804096dfb61ba0459226ff6d702ddf3))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.0.1 to ^13.0.2
+    * netlify-headers-parser bumped from ^7.0.1 to ^7.0.2
+    * netlify-redirect-parser bumped from ^14.0.1 to ^14.0.2
+
 ## [20.0.0](https://github.com/netlify/build/compare/config-v19.1.2...config-v20.0.0) (2022-11-10)
 
 

@@ -15,33 +15,22 @@ test('should validate valid manifest', async (t) => {
   )
 })
 
-test('should detect invalid route pattern in manifest', async (t) => {
+test('should print error on invalid manifest', async (t) => {
   const error = await t.throwsAsync(
     validateEdgeFunctionsManifest({
       buildDir: FIXTURES_DIR,
-      constants: { EDGE_FUNCTIONS_DIST: 'invalid_manifest_wrong_route_pattern' },
+      constants: { EDGE_FUNCTIONS_DIST: 'invalid_manifest' },
     }),
   )
 
   t.snapshot(error.message)
 })
 
-test('should detect missing property in manifest', async (t) => {
+test('should print error on empty manifest', async (t) => {
   const error = await t.throwsAsync(
     validateEdgeFunctionsManifest({
       buildDir: FIXTURES_DIR,
-      constants: { EDGE_FUNCTIONS_DIST: 'invalid_manifest_missing_property' },
-    }),
-  )
-
-  t.snapshot(error.message)
-})
-
-test('should detect extra property in manifest', async (t) => {
-  const error = await t.throwsAsync(
-    validateEdgeFunctionsManifest({
-      buildDir: FIXTURES_DIR,
-      constants: { EDGE_FUNCTIONS_DIST: 'invalid_manifest_extra_property' },
+      constants: { EDGE_FUNCTIONS_DIST: 'empty_manifest' },
     }),
   )
 

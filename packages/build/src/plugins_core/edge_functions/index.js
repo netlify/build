@@ -37,7 +37,7 @@ const coreStep = async function ({
 
   logFunctions({ internalSrcDirectory, internalSrcPath, logs, srcDirectory, srcPath })
 
-  const { declarations: internalDeclarations, importMap } = await parseManifest(internalSrcPath, systemLog)
+  const { declarations: internalDeclarations, importMap, layers } = await parseManifest(internalSrcPath, systemLog)
   const declarations = [...configDeclarations, ...internalDeclarations]
 
   // If we're running in buildbot and the feature flag is enabled, we set the
@@ -56,6 +56,7 @@ const coreStep = async function ({
       distImportMapPath,
       featureFlags,
       importMaps: [importMap].filter(Boolean),
+      layers,
       systemLogger: featureFlags.edge_functions_system_logger ? systemLog : undefined,
     })
 

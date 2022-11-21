@@ -16,10 +16,13 @@ workflows:
           filters:
             branches:
               only: [main]
+
+  # Workflow responsible for correctly updating the root lockfile for the release-please PR
+  # See: https://github.com/googleapis/release-please/issues/1101
+  release-pull-request:
+    jobs:
       - update-lockfile:
           context: [shared-secrets]
-          requires:
-            - release-please
           filters:
             branches:
               only: [release-please--branches--main]
@@ -107,7 +110,7 @@ jobs:
             git config  user.email "33464286+netlify-jenkins@users.noreply.github.com"
             git config  user.name "netlify-jenkins"
             git add package-lock.json && \
-            git commit -m "chore: update lockfile [skip ci]" && \
+            git commit -m "chore: update lockfile" || true && \
             git push --set-upstream origin release-please--branches--main
   formatting:
     description: Checks if the codebase satisfies wit the lint and style rules
