@@ -1,3 +1,4 @@
+console.log('!!!! CHILD \n\n')
 import { setInspectColors } from '../../log/colors.js'
 import { sendEventToParent, getEventsFromParent } from '../ipc.js'
 

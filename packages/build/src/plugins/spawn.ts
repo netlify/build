@@ -1,3 +1,5 @@
+import { existsSync } from 'fs'
+import { join } from 'path'
 import { fileURLToPath } from 'url'
 
 import { execaNode } from 'execa'
@@ -29,15 +31,37 @@ const tStartPlugins = async function ({ pluginsOptions, buildDir, childEnv, logs
   logIncompatiblePlugins(logs, pluginsOptions)
 
   const childProcesses = await Promise.all(
-    pluginsOptions.map(({ pluginDir, nodePath }) => startPlugin({ pluginDir, nodePath, buildDir, childEnv })),
+    pluginsOptions.map(({ pluginDir, nodePath }) => startPlugin({ pluginDir, nodePath, buildDir, childEnv, debug })),
   )
   return { childProcesses }
 }
 
 export const startPlugins = measureDuration(tStartPlugins, 'start_plugins')
 
-const startPlugin = async function ({ pluginDir, nodePath, buildDir, childEnv }) {
-  const childProcess = execaNode(CHILD_MAIN_FILE, {
+const startPlugin = async function ({
+  pluginDir,
+  nodePath,
+  buildDir,
+  childEnv,
+  debug,
+}: {
+  pluginDir: string
+  nodePath: string
+  buildDir: string
+  childEnv: Record<string, string>
+  debug: boolean
+}) {
+  const nodeOptions: string[] = []
+
+  // Yarn Plug and play does not have node_modules anymore
+  // It is required to load the .pnp.cjs and call the setup function otherwise
+  // importing and resolving dependencies does not work anymore
+  // https://yarnpkg.com/features/pnp
+  if (existsSync(join(buildDir, '.pnp.cjs'))) {
+    nodeOptions.push(`--require ${join(buildDir, '.pnp.cjs')}`)
+  }
+
+  const childProcess = execaNode(CHILD_MAIN_FILE, [], {
     cwd: buildDir,
     preferLocal: true,
     localDir: pluginDir,
@@ -46,6 +70,7 @@ const startPlugin = async function ({ pluginDir, nodePath, buildDir, childEnv })
     env: childEnv,
     extendEnv: false,
     serialization: 'advanced',
+    ...(debug && { stdio: 'inherit' }), // in debug mode we want to log out all messages
   })
 
   try {
