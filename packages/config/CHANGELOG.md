@@ -26,6 +26,12 @@
   * dependencies
     * netlify-headers-parser bumped from ^7.0.0 to ^7.0.1
 
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify-headers-parser bumped from ^7.0.2 to ^7.0.3
+
 ## [20.0.1](https://github.com/netlify/build/compare/config-v20.0.0...config-v20.0.1) (2022-11-17)
 
 
