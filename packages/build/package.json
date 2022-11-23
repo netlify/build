@@ -1,6 +1,6 @@
 {
   "name": "@netlify/build",
-  "version": "28.3.1",
+  "version": "28.4.0",
   "description": "Netlify build module",
   "type": "module",
   "exports": "./lib/core/main.js",
@@ -109,6 +109,7 @@
     "string-width": "^5.0.0",
     "strip-ansi": "^7.0.0",
     "supports-color": "^9.0.0",
+    "terminal-link": "^3.0.0",
     "tmp-promise": "^3.0.2",
     "ts-node": "^10.6.0",
     "typescript": "^4.8.4",
