@@ -1,19 +1,24 @@
-import { resolve } from 'path'
+import { existsSync } from 'fs'
+import { dirname, join, resolve } from 'path'
 import { cwd } from 'process'
 
-import { readPackage, PackageJson } from 'read-pkg'
+import { findUp } from 'find-up'
+import { PackageJson, readPackage } from 'read-pkg'
 
 /**
- * Reads a package.json up the tree starting at the provided directory
- * @param cwd The current working directory where it tries to find the package.json
- * @returns A parsed object of the package.json
+ * Collects the root package.json if there is one.
  */
-const getPackageJson = async (cwd: string): Promise<PackageJson> => {
-  try {
-    return await readPackage({ cwd, normalize: false })
-  } catch {
-    return {}
+const getRootPackageJson = async (projectDir: string, rootDir: string): Promise<PackageJson> => {
+  if (existsSync(join(rootDir, 'package.json'))) {
+    return await readPackage({ cwd: rootDir, normalize: false })
   }
+
+  const json = await findUp('package.json', { cwd: projectDir, stopAt: rootDir })
+
+  if (json) {
+    return await readPackage({ cwd: dirname(json), normalize: false })
+  }
+  return {}
 }
 
 export type ContextOptions = {
@@ -23,7 +28,7 @@ export type ContextOptions = {
 
 export type Context = {
   projectDir: string
-  rootDir?: string
+  rootDir: string
   rootPackageJson: PackageJson
 }
 
@@ -34,7 +39,6 @@ export const getContext = async (config: ContextOptions = {}): Promise<Context> 
   const absoluteProjectDir = resolve(rootDir, projectDir)
   // If a relative absolute path is given we rely on cwd
   const absoluteRootDir = rootDir ? resolve(cwd(), rootDir) : undefined
-
   // We only pass through the root dir if it was provided and is actually different
   // from the project dir
   const validRootDir = absoluteRootDir && absoluteRootDir !== absoluteProjectDir ? absoluteRootDir : undefined
@@ -42,7 +46,7 @@ export const getContext = async (config: ContextOptions = {}): Promise<Context> 
   // If rootDir equals projectDir we'll be getting the projectDir package.json
   // Later on if we also need the projectDir package.json we can check for it
   // and only perform one resolution
-  const rootPackageJson = await getPackageJson(rootDir || projectDir)
+  const rootPackageJson = await getRootPackageJson(absoluteProjectDir, validRootDir || absoluteProjectDir)
   return {
     projectDir: absoluteProjectDir,
     rootDir: validRootDir,
