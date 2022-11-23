@@ -43,6 +43,6 @@ const redirectOutput = (childProcess: ExecaChildProcess<string>, options: Option
     return
   }
 
-  childProcess.stdout.pipe(process.stdout)
-  childProcess.stderr.pipe(process.stderr)
+  childProcess.stdout?.pipe(process.stdout)
+  childProcess.stderr?.pipe(process.stderr)
 }

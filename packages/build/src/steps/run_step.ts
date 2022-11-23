@@ -208,7 +208,7 @@ const shouldRunStep = async function ({
 }
 
 // Wrap step function to measure its time
-const getFireStep = function (packageName?: string, coreStepId?: string, event?: string) {
+const getFireStep = function (packageName: string, coreStepId?: string, event?: string) {
   if (coreStepId !== undefined) {
     return measureDuration(tFireStep, coreStepId)
   }

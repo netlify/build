@@ -15,7 +15,9 @@ export const normalizeHeaders = function (headers: any, minimal: boolean) {
     return splitResults([error])
   }
 
-  const results = headers.map((header, index) => parseHeader(header, index, minimal)).filter(Boolean)
+  const results = headers
+    .map((header, index) => parseHeader(header, index, minimal))
+    .filter<Header | Error>(Boolean as never)
   return splitResults(results)
 }
 

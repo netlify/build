@@ -4,9 +4,45 @@ import { logFlags } from '../log/messages/config.js'
 import { removeFalsy } from '../utils/remove_falsy.js'
 
 import { DEFAULT_FEATURE_FLAGS } from './feature_flags.js'
+import { BuildCLIFlags, Mode } from './types.js'
 
-// Normalize CLI flags
-export const normalizeFlags = function (flags, logs) {
+const REQUIRE_MODE: Mode = 'require'
+const DEFAULT_EDGE_FUNCTIONS_DIST = '.netlify/edge-functions-dist/'
+const DEFAULT_FUNCTIONS_DIST = '.netlify/functions/'
+const DEFAULT_CACHE_DIR = '.netlify/cache/'
+const DEFAULT_STATSD_PORT = 8125
+
+export type ResolvedFlags = {
+  env: Record<string, unknown>
+  token: string
+  mode: Mode
+  offline: boolean
+  telemetry: boolean
+  verbose: boolean
+  /** The dist directory of the functions @default `.netlify/functions/` */
+  functionsDistDir: string
+  /** The dist directory of the edge functions @default `.netlify/edge-functions-dist/` */
+  edgeFunctionsDistDir: string
+  /** The directory that is used for storing the cache @default `.netlify/cache/` */
+  cacheDir: string
+  debug: boolean
+  sendStatus: boolean
+  saveConfig: boolean
+  /** Netlify API endpoint @default `api.netlify.com` */
+  apiHost?: string
+  testOpts: Record<string, unknown>
+  statsd: { port: number }
+  timeline: 'build' | string
+  cachedConfig: Record<string, unknown>
+  siteId: string
+  dry: false
+  context: 'production' | string
+  statsdOpts: { port: 8125 }
+  bugsnagKey?: string
+}
+
+/** Normalize CLI flags  */
+export const normalizeFlags = function (flags: Partial<BuildCLIFlags>, logs): ResolvedFlags {
   const rawFlags = removeFalsy(flags)
 
   // Combine the flags object env with the process.env
@@ -23,7 +59,7 @@ export const normalizeFlags = function (flags, logs) {
     statsdOpts: { ...defaultFlags.statsd, ...rawFlags.statsd },
     featureFlags: { ...defaultFlags.featureFlags, ...rawFlags.featureFlags },
   }
-  const normalizedFlags = removeFalsy(mergedFlags)
+  const normalizedFlags = removeFalsy(mergedFlags) as any
 
   logFlags(logs, rawFlags, normalizedFlags)
 
@@ -62,9 +98,3 @@ const getDefaultFlags = function ({ env: envOpt = {} }, combinedEnv) {
 const computeTelemetry = function (flags, envOpts) {
   return envOpts.BUILD_TELEMETRY_DISABLED ? { telemetry: false } : { telemetry: flags.telemetry }
 }
-
-const REQUIRE_MODE = 'require'
-const DEFAULT_EDGE_FUNCTIONS_DIST = '.netlify/edge-functions-dist/'
-const DEFAULT_FUNCTIONS_DIST = '.netlify/functions/'
-const DEFAULT_CACHE_DIR = '.netlify/cache/'
-const DEFAULT_STATSD_PORT = 8125

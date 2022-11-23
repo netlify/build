@@ -81,7 +81,7 @@
     /* REMOVE THOSE ALL ONCE WE HAVE HANDCRAFTED TYPES */
     "strict": false /* Enable all strict type-checking options. */,
     "noImplicitAny": false /* Enable error reporting for expressions and declarations with an implied 'any' type. */,
-    "strictNullChecks": false /* When type checking, take into account 'null' and 'undefined'. */,
+    "strictNullChecks": true /* When type checking, take into account 'null' and 'undefined'. */,
     "strictFunctionTypes": false /* When assigning functions, check to ensure parameters and the return values are subtype-compatible. */,
     "strictBindCallApply": false /* Check that the arguments for 'bind', 'call', and 'apply' methods match the original function. */,
     "strictPropertyInitialization": false /* Check for class properties that are declared but not set in the constructor. */,

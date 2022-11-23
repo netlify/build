@@ -26,7 +26,7 @@ const require = createRequire(import.meta.url)
 type Flags = {
   [key: string]: unknown
   buffer?: boolean
-  featureFlags?: Record<string, unknown>
+  featureFlags?: Record<string, boolean>
   env: NodeJS.ProcessEnv
 }
 
@@ -183,7 +183,7 @@ export class Fixture {
     try {
       const { logs: { stdout = [], stderr = [] } = {}, api, ...result } = await resolveConfig(this.getConfigFlags())
       const resultA = api === undefined ? result : { ...result, hasApi: true }
-      const resultB = stringify.default.stableStringify(resultA, null, 2)
+      const resultB = stringify.default.stableStringify(resultA, undefined, 2)
       return [stdout.join('\n'), stderr.join('\n'), resultB].filter(Boolean).join('\n\n')
     } catch (error) {
       return errorToString(error)
@@ -214,11 +214,17 @@ export class Fixture {
 
   /** use the CLI entry point instead of the Node.js main function */
   runConfigBinary(cwd?: string) {
+    if (!this.configBinaryPath) {
+      throw new Error('Could not find binary file for @netlify/config')
+    }
     return this.runBinary(this.configBinaryPath, cwd, this.getConfigFlags())
   }
 
   /** use the CLI entry point instead of the Node.js main function */
   runBuildBinary(cwd?: string) {
+    if (!this.buildBinaryPath) {
+      throw new Error('Could not find binary file for @netlify/build')
+    }
     return this.runBinary(this.buildBinaryPath, cwd, this.getBuildFlags())
   }
 
@@ -239,7 +245,7 @@ export class Fixture {
         env: environment || {},
         cwd,
       })
-      return { output, exitCode }
+      return { output: output || '', exitCode }
     } finally {
       await this.cleanup()
     }
@@ -289,7 +295,7 @@ const getCliFlags = (mainFlags: Record<string, unknown>, prefix: string[] = []) 
 
 const getCliFlag = (name: string, value: unknown, prefix: string[]) => {
   if (name === 'featureFlags') {
-    const val = Object.entries(value)
+    const val = Object.entries(value as Record<string, boolean>)
       .filter(([, enabled]) => enabled)
       .join(',')
     return [`--${name}=${val}`]

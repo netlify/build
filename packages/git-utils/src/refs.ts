@@ -60,7 +60,7 @@ const throwError = function (
   name: string,
   {
     ref,
-    error: { message, stderr },
+    error,
   }: {
     ref: string
     error?: {
@@ -69,7 +69,7 @@ const throwError = function (
     }
   },
 ) {
-  const messages = [message, stderr].filter(Boolean).join('\n')
+  const messages = [error?.message, error?.stderr].filter(Boolean).join('\n')
   const messageA = `Invalid ${name} commit ${ref}\n${messages}`
   throw new Error(messageA)
 }

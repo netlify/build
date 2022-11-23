@@ -36,7 +36,7 @@ export const detectNpmOrYarnWorkspaceGlobs = (pkgJson: PackageJson): string[] =>
     return pkgJson.workspaces
   }
   if (typeof pkgJson.workspaces === 'object') {
-    return pkgJson.workspaces.packages
+    return pkgJson.workspaces.packages || []
   }
   return []
 }
