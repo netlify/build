@@ -4,7 +4,7 @@ import figures from 'figures'
 import indentString from 'indent-string'
 
 import { getHeader } from './header.js'
-import { serializeObject, serializeArray } from './serialize.js'
+import { serializeArray, serializeObject } from './serialize.js'
 import { THEME } from './theme.js'
 
 export type BufferedLogs = { stdout: string[]; stderr: string[] }
@@ -170,7 +170,7 @@ export const getSystemLogger = function (
 
   // Return a function that writes to the file descriptor configured for system
   // logs.
-  const fileDescriptor = createWriteStream(null, { fd: systemLogFile })
+  const fileDescriptor = createWriteStream('', { fd: systemLogFile })
 
   fileDescriptor.on('error', () => {
     logError(logs, 'Could not write to system log file')

@@ -18,12 +18,12 @@ import { doDryRun } from './dry.js'
 import { warnOnLingeringProcesses } from './lingering.js'
 import { warnOnMissingSideFiles } from './missing_side_file.js'
 import { normalizeFlags } from './normalize_flags.js'
-import type { BuildFlags } from './types.js'
+import type { BuildCLIFlags } from './types.js'
 
 // Performed on build start. Must be kept small and unlikely to fail since it
 // does not have proper error handling. Error handling relies on `errorMonitor`
 // being built, which relies itself on flags being normalized.
-export const startBuild = function (flags: BuildFlags) {
+export const startBuild = function (flags: Partial<BuildCLIFlags>) {
   const timers = initTimers()
 
   const logs = getBufferLogs(flags)

@@ -60,10 +60,13 @@ const getCachePath = async function ({ srcPath, cacheDir, cwdOpt }) {
 // The cached path is the path relative to the base which can be either the
 // current directory, the home directory or the root directory. Each is tried
 // in order.
-const findBase = async function (srcPath, cwdOpt) {
+const findBase = async function (srcPath: string, cwdOpt: string) {
   const bases = await getBases(cwdOpt)
   const srcPathA = normalizeWindows(srcPath)
-  return bases.map(({ name, base }) => parseBase(name, base, srcPathA)).find(Boolean)
+  return bases.map(({ name, base }) => parseBase(name, base, srcPathA)).find(Boolean) as {
+    name: string
+    relPath: string
+  }
 }
 
 // Windows drives are problematic:
@@ -92,12 +95,12 @@ const parseBase = function (name, base, srcPath) {
   return { name, relPath }
 }
 
-export const getBases = async function (cwdOpt) {
+export const getBases = async function (cwdOpt?: string) {
   const cwdBase = await getCwdBase(cwdOpt)
   return [...cwdBase, { name: 'home', base: homedir() }, { name: 'root', base: sep }]
 }
 
-const getCwdBase = async function (cwdOpt) {
+const getCwdBase = async function (cwdOpt?: string) {
   const cwd = await safeGetCwd(cwdOpt)
   if (cwd === '') {
     return []

@@ -21,7 +21,7 @@ export const mergeRedirects = function ({ fileRedirects, configRedirects }) {
 // array backwards and reverse it at the end
 const removeDuplicates = function (redirects) {
   const uniqueRedirects = new Set()
-  const result = []
+  const result: unknown[] = []
   for (let i = redirects.length - 1; i >= 0; i--) {
     const r = redirects[i]
     const key = stringify.default.stableStringify(r)

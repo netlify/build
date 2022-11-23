@@ -1,13 +1,11 @@
+import { startBuild } from '../core/build.js'
 import { getConfigOpts, loadConfig } from '../core/config.js'
 import { getConstants } from '../core/constants.js'
-import { normalizeFlags } from '../core/normalize_flags.js'
 import { getSeverity } from '../core/severity.js'
-import { BuildFlags, BuildResult } from '../core/types.js'
+import type { BuildCLIFlags, BuildResult } from '../core/types.js'
 import { handleBuildError } from '../error/handle.js'
 import { getErrorInfo } from '../error/info.js'
-import { startErrorMonitor } from '../error/monitor/start.js'
-import { getBufferLogs, getSystemLogger } from '../log/logger.js'
-import { logBuildStart } from '../log/messages/core.js'
+import { getSystemLogger } from '../log/logger.js'
 import { reportStatuses } from '../status/report.js'
 
 import { getSteps } from './get.js'
@@ -16,7 +14,7 @@ import { runSteps } from './run_steps.js'
 /**
  * Runs specific core steps for a build and returns whether it succeeded or not.
  */
-export const runCoreSteps = async (buildSteps: string[], flags: BuildFlags = {}): Promise<BuildResult> => {
+export const runCoreSteps = async (buildSteps: string[], flags: Partial<BuildCLIFlags> = {}): Promise<BuildResult> => {
   const { errorMonitor, mode, logs, debug, ...flagsA }: any = startBuild(flags)
   const errorParams = { errorMonitor, mode, logs, debug }
   const systemLog = getSystemLogger(logs, debug)
@@ -41,17 +39,6 @@ export const runCoreSteps = async (buildSteps: string[], flags: BuildFlags = {})
 
     return { success, severityCode, logs }
   }
-}
-
-const startBuild = function (flags: BuildFlags) {
-  const logs = getBufferLogs(flags)
-
-  logBuildStart(logs)
-
-  const { bugsnagKey, ...flagsA } = normalizeFlags(flags, logs)
-  const errorMonitor = startErrorMonitor({ flags: flagsA, logs, bugsnagKey })
-
-  return { ...flagsA, errorMonitor, logs }
 }
 
 const getBuildSteps = function (buildSteps) {

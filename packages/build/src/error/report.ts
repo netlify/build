@@ -32,7 +32,7 @@ export const reportError = async function ({
   const stage = pluginName ? errorInfo.location?.event : errorInfo.stage
   const client = await startClient(host, port)
 
-  const frameworkTag = framework === undefined ? {} : { framework }
+  const frameworkTag: { framework?: string } = framework === undefined ? {} : { framework }
   client.increment('buildbot.build.stage.error', 1, {
     stage: stage ?? 'system',
     parent,

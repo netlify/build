@@ -59,7 +59,9 @@ const requestHandler = async (req: IncomingMessage, res: ServerResponse, request
   const requestBody = await getRequestBody(req as any)
 
   const headersA = Object.keys(req.headers).sort().join(' ')
-  requests.push({ url: req.url, method: req.method, headers: headersA, body: requestBody })
+  if (req.url && req.method) {
+    requests.push({ url: req.url, method: req.method, headers: headersA, body: requestBody })
+  }
 
   const responseBody = getResponseBody(response, requestBody)
   res.statusCode = status

@@ -24,7 +24,7 @@ export const useManifest = async function (
     debug,
   }: {
     pluginDir: string
-    packageDir: string
+    packageDir?: string
     pluginPackageJson: PackageJson
     debug: boolean
   },

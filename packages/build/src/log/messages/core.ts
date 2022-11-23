@@ -12,7 +12,7 @@ import { THEME } from '../theme.js'
 
 import { logConfigOnError } from './config.js'
 
-export const logBuildStart = function (logs: BufferedLogs) {
+export const logBuildStart = function (logs?: BufferedLogs) {
   logHeader(logs, 'Netlify Build')
   logSubHeader(logs, 'Version')
   logMessage(logs, `${ROOT_PACKAGE_JSON.name} ${ROOT_PACKAGE_JSON.version}`)

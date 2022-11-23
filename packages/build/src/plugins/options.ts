@@ -101,10 +101,15 @@ export const getSpawnInfo = (): {
     loadedFrom: 'core'
     origin: 'core'
   }
-} => ({
-  plugin: { packageName: ROOT_PACKAGE_JSON.name, pluginPackageJson: ROOT_PACKAGE_JSON },
-  location: { event: 'load', packageName: ROOT_PACKAGE_JSON.name, loadedFrom: 'core', origin: 'core' },
-})
+} => {
+  // we know that this package.json has a name as it's ours
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const packageName = ROOT_PACKAGE_JSON.name!
+  return {
+    plugin: { packageName, pluginPackageJson: ROOT_PACKAGE_JSON },
+    location: { event: 'load', packageName, loadedFrom: 'core', origin: 'core' },
+  }
+}
 
 const throwUserError = function (message) {
   const error = new Error(message)
