@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.0.5](https://github.com/netlify/build/compare/build-info-v6.0.4...build-info-v6.0.5) (2022-11-23)
+
+
+### Bug Fixes
+
+* fixes an issue where the package manager detection is not working for yarn nested repositories ([#4718](https://github.com/netlify/build/issues/4718)) ([4884445](https://github.com/netlify/build/commit/4884445b9a0c9159f7a83d53cb845742ba2fb247))
+
 ## [6.0.4](https://github.com/netlify/build/compare/build-info-v6.0.3...build-info-v6.0.4) (2022-11-17)
 
 

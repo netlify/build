@@ -57,6 +57,13 @@
   * dependencies
     * @netlify/config bumped from ^20.0.1 to ^20.0.2
 
+## [28.4.1](https://github.com/netlify/build/compare/build-v28.4.0...build-v28.4.1) (2022-11-23)
+
+
+### Bug Fixes
+
+* fixes an issue where the package manager detection is not working for yarn nested repositories ([#4718](https://github.com/netlify/build/issues/4718)) ([4884445](https://github.com/netlify/build/commit/4884445b9a0c9159f7a83d53cb845742ba2fb247))
+
 ## [28.4.0](https://github.com/netlify/build/compare/build-v28.3.1...build-v28.4.0) (2022-11-22)
 
 
