@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.4.3](https://github.com/netlify/edge-bundler/compare/v4.4.2...v4.4.3) (2022-11-23)
+
+
+### Bug Fixes
+
+* deep merge in source and toml config ([#220](https://github.com/netlify/edge-bundler/issues/220)) ([e2789e3](https://github.com/netlify/edge-bundler/commit/e2789e3639fc92766efe8196aaa84366c54e84e9))
+
 ## [4.4.2](https://github.com/netlify/edge-bundler/compare/v4.4.1...v4.4.2) (2022-11-23)
 
 
