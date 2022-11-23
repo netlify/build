@@ -14,7 +14,7 @@ import { wrapNpmImportError } from '../npm_import_error.js'
 import type { FormatFunction } from '../server/server.js'
 import { getFileHash } from '../utils/sha256.js'
 
-const BOOTSTRAP_LATEST = 'https://637b7052e167bb00082f54f1--edge.netlify.com/bootstrap/index-combined.ts'
+const BOOTSTRAP_LATEST = 'https://637cf7ce9214b300099b3aa8--edge.netlify.com/bootstrap/index-combined.ts'
 
 interface BundleJSOptions {
   buildID: string
