@@ -1,6 +1,7 @@
 import process from 'process'
 import { promisify } from 'util'
 
+import type { ExecaChildProcess } from 'execa'
 import { pEvent } from 'p-event'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -34,7 +35,7 @@ export const callChild = async function ({ childProcess, eventName, payload, log
 //  - child process `exit`
 // In the later two cases, we propagate the error.
 // We need to make `p-event` listeners are properly cleaned up too.
-export const getEventFromChild = async function (childProcess, callId) {
+export const getEventFromChild = async function (childProcess: ExecaChildProcess<string>, callId: 'ready' | string) {
   if (childProcessHasExited(childProcess)) {
     throw getChildExitError('Could not receive event from child process because it already exited.')
   }
@@ -124,6 +125,8 @@ export const sendEventToParent = async function (callId, payload, verbose, error
 // Error static properties are not serializable through `child_process`
 // (which uses `v8.serialize()` under the hood) so we need to convert from/to
 // plain objects.
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
 const serializePayload = function ({ error = {}, error: { name } = {}, ...payload }) {
   if (name === undefined) {
     return payload
@@ -133,11 +136,13 @@ const serializePayload = function ({ error = {}, error: { name } = {}, ...payloa
   return { ...payload, error: errorA }
 }
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
 const parsePayload = function ({ error = {}, error: { name } = {}, ...payload }) {
   if (name === undefined) {
     return payload
   }
 
-  const errorA = jsonToError(error)
+  const errorA = jsonToError(error as any)
   return { ...payload, error: errorA }
 }

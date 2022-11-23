@@ -3,6 +3,7 @@ import { dirname } from 'path'
 import { PackageJson } from 'read-pkg-up'
 import semver from 'semver'
 
+import { Mode } from '../core/types.js'
 import { addErrorInfo } from '../error/info.js'
 import { installLocalPluginsDependencies } from '../install/local.js'
 import { measureDuration } from '../time/main.js'
@@ -11,6 +12,15 @@ import { getPackageJson } from '../utils/package.js'
 
 import { useManifest } from './manifest/main.js'
 import { resolvePluginsPath } from './resolve.js'
+
+export type PluginsOptions = {
+  packageName: string
+  pluginPath?: unknown
+  pinnedVersion: undefined
+  loadedFrom: undefined | 'auto_install' | string
+  origin: 'config' | string
+  inputs: Record<string, unknown>
+}
 
 // Load core plugins and user plugins
 const tGetPluginsOptions = async function ({
@@ -28,6 +38,13 @@ const tGetPluginsOptions = async function ({
   sendStatus,
   testOpts,
   featureFlags,
+}: {
+  pluginsOptions: PluginsOptions[]
+  mode: Mode
+  buildDir: string
+  nodePath: string
+  packageJson: PackageJson
+  [key: string]: any
 }) {
   const pluginsOptionsA = await resolvePluginsPath({
     pluginsOptions,
