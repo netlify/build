@@ -8,13 +8,13 @@ import { DenoBridge, DenoOptions, OnAfterDownloadHook, OnBeforeDownloadHook } fr
 import type { Bundle } from './bundle.js'
 import { FunctionConfig, getFunctionConfig } from './config.js'
 import { Declaration, getDeclarationsFromConfig } from './declaration.js'
+import { load as loadDeployConfig } from './deploy_config.js'
 import { EdgeFunction } from './edge_function.js'
 import { FeatureFlags, getFlags } from './feature_flags.js'
 import { findFunctions } from './finder.js'
 import { bundle as bundleESZIP } from './formats/eszip.js'
 import { bundle as bundleJS } from './formats/javascript.js'
-import { ImportMap, ImportMapFile } from './import_map.js'
-import { Layer } from './layer.js'
+import { ImportMap } from './import_map.js'
 import { getLogger, LogFunction } from './logger.js'
 import { writeManifest } from './manifest.js'
 import { ensureLatestTypes } from './types.js'
@@ -22,11 +22,10 @@ import { ensureLatestTypes } from './types.js'
 interface BundleOptions {
   basePath?: string
   cacheDirectory?: string
+  configPath?: string
   debug?: boolean
   distImportMapPath?: string
   featureFlags?: FeatureFlags
-  importMaps?: ImportMapFile[]
-  layers?: Layer[]
   onAfterDownload?: OnAfterDownloadHook
   onBeforeDownload?: OnBeforeDownloadHook
   systemLogger?: LogFunction
@@ -83,11 +82,10 @@ const bundle = async (
   {
     basePath: inputBasePath,
     cacheDirectory,
+    configPath,
     debug,
     distImportMapPath,
     featureFlags: inputFeatureFlags,
-    importMaps,
-    layers,
     onAfterDownload,
     onBeforeDownload,
     systemLogger,
@@ -117,9 +115,16 @@ const bundle = async (
   // to create the bundle artifacts and rename them later.
   const buildID = uuidv4()
 
-  // Creating an ImportMap instance with any import maps supplied by the user,
-  // if any.
-  const importMap = new ImportMap(importMaps)
+  // Loading any configuration options from the deploy configuration API, if it
+  // exists.
+  const deployConfig = await loadDeployConfig(configPath, logger)
+
+  const importMap = new ImportMap()
+
+  if (deployConfig.importMap) {
+    importMap.add(deployConfig.importMap)
+  }
+
   const functions = await findFunctions(sourceDirectories)
   const functionBundle = await createBundle({
     basePath,
@@ -154,16 +159,16 @@ const bundle = async (
     {} as Record<string, FunctionConfig>,
   )
 
-  // Creating a final declarations array by combining the TOML entries with the
-  // function configuration objects.
-  const declarations = getDeclarationsFromConfig(tomlDeclarations, functionsWithConfig)
+  // Creating a final declarations array by combining the TOML file with the
+  // deploy configuration API and the in-source configuration.
+  const declarations = getDeclarationsFromConfig(tomlDeclarations, functionsWithConfig, deployConfig)
 
   const manifest = await writeManifest({
     bundles: [functionBundle],
     declarations,
     distDirectory,
     functions,
-    layers,
+    layers: deployConfig.layers,
   })
 
   if (distImportMapPath) {

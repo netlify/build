@@ -3,6 +3,12 @@ import { test, expect } from 'vitest'
 import { FunctionConfig } from './config.js'
 import { getDeclarationsFromConfig } from './declaration.js'
 
+// TODO: Add tests with the deploy config.
+const deployConfig = {
+  declarations: [],
+  layers: [],
+}
+
 test('In source config takes precedence over netlify.toml config', () => {
   const tomlConfig = [
     { function: 'geolocation', path: '/geo', cache: 'off' },
@@ -19,7 +25,7 @@ test('In source config takes precedence over netlify.toml config', () => {
     { function: 'json', path: '/json', cache: 'off' },
   ]
 
-  const declarations = getDeclarationsFromConfig(tomlConfig, funcConfig)
+  const declarations = getDeclarationsFromConfig(tomlConfig, funcConfig, deployConfig)
 
   expect(declarations).toEqual(expectedDeclarations)
 })
@@ -40,7 +46,7 @@ test("Declarations don't break if no in source config is provided", () => {
     { function: 'json', path: '/json', cache: 'manual' },
   ]
 
-  const declarations = getDeclarationsFromConfig(tomlConfig, funcConfig)
+  const declarations = getDeclarationsFromConfig(tomlConfig, funcConfig, deployConfig)
 
   expect(declarations).toEqual(expectedDeclarations)
 })
@@ -63,10 +69,9 @@ test('In source config works independent of the netlify.toml file if a path is d
 
   const expectedDeclarationsWithoutISCPath = [{ function: 'geolocation', path: '/geo', cache: 'off' }]
 
-  const declarationsWithISCPath = getDeclarationsFromConfig(tomlConfig, funcConfigWithPath)
-
-  const declarationsWithoutISCPath = getDeclarationsFromConfig(tomlConfig, funcConfigWithoutPath)
-
+  const declarationsWithISCPath = getDeclarationsFromConfig(tomlConfig, funcConfigWithPath, deployConfig)
   expect(declarationsWithISCPath).toEqual(expectedDeclarationsWithISCPath)
+
+  const declarationsWithoutISCPath = getDeclarationsFromConfig(tomlConfig, funcConfigWithoutPath, deployConfig)
   expect(declarationsWithoutISCPath).toEqual(expectedDeclarationsWithoutISCPath)
 })

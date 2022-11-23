@@ -1,7 +1,6 @@
 import { promises as fs } from 'fs'
 import { join, resolve } from 'path'
 import process from 'process'
-import { pathToFileURL } from 'url'
 
 import { deleteAsync } from 'del'
 import tmp from 'tmp-promise'
@@ -11,6 +10,7 @@ import { fixturesDir } from '../test/util.js'
 
 import { BundleError } from './bundle_error.js'
 import { bundle, BundleOptions } from './bundler.js'
+import { isNodeError } from './utils/error.js'
 
 test('Produces a JavaScript bundle and a manifest file', async () => {
   const sourceDirectory = resolve(fixturesDir, 'with_import_maps', 'functions')
@@ -23,14 +23,7 @@ test('Produces a JavaScript bundle and a manifest file', async () => {
   ]
   const result = await bundle([sourceDirectory], tmpDir.path, declarations, {
     basePath: fixturesDir,
-    importMaps: [
-      {
-        baseURL: pathToFileURL(join(fixturesDir, 'import-map.json')),
-        imports: {
-          'alias:helper': pathToFileURL(join(fixturesDir, 'helper.ts')).toString(),
-        },
-      },
-    ],
+    configPath: join(sourceDirectory, 'config.json'),
   })
   const generatedFiles = await fs.readdir(tmpDir.path)
 
@@ -60,17 +53,10 @@ test('Produces only a ESZIP bundle when the `edge_functions_produce_eszip` featu
   ]
   const result = await bundle([sourceDirectory], tmpDir.path, declarations, {
     basePath: fixturesDir,
+    configPath: join(sourceDirectory, 'config.json'),
     featureFlags: {
       edge_functions_produce_eszip: true,
     },
-    importMaps: [
-      {
-        baseURL: pathToFileURL(join(fixturesDir, 'import-map.json')),
-        imports: {
-          'alias:helper': pathToFileURL(join(fixturesDir, 'helper.ts')).toString(),
-        },
-      },
-    ],
   })
   const generatedFiles = await fs.readdir(tmpDir.path)
 
@@ -99,17 +85,10 @@ test('Uses the vendored eszip module instead of fetching it from deno.land', asy
   ]
   const result = await bundle([sourceDirectory], tmpDir.path, declarations, {
     basePath: fixturesDir,
+    configPath: join(sourceDirectory, 'config.json'),
     featureFlags: {
       edge_functions_produce_eszip: true,
     },
-    importMaps: [
-      {
-        baseURL: pathToFileURL(join(fixturesDir, 'import-map.json')),
-        imports: {
-          'alias:helper': pathToFileURL(join(fixturesDir, 'helper.ts')).toString(),
-        },
-      },
-    ],
   })
   const generatedFiles = await fs.readdir(tmpDir.path)
 
@@ -205,14 +184,7 @@ test('Uses the cache directory as the `DENO_DIR` value if the `edge_functions_ca
   const options: BundleOptions = {
     basePath: fixturesDir,
     cacheDirectory: cacheDir.path,
-    importMaps: [
-      {
-        baseURL: pathToFileURL(join(fixturesDir, 'import-map.json')),
-        imports: {
-          'alias:helper': pathToFileURL(join(fixturesDir, 'helper.ts')).toString(),
-        },
-      },
-    ],
+    configPath: join(sourceDirectory, 'config.json'),
   }
 
   // Run #1, feature flag off: The directory should not be populated.
@@ -259,17 +231,10 @@ test('Supports import maps with relative paths', async () => {
   ]
   const result = await bundle([sourceDirectory], tmpDir.path, declarations, {
     basePath: fixturesDir,
+    configPath: join(sourceDirectory, 'config.json'),
     featureFlags: {
       edge_functions_produce_eszip: true,
     },
-    importMaps: [
-      {
-        baseURL: pathToFileURL(join(fixturesDir, 'import-map.json')),
-        imports: {
-          'alias:helper': './helper.ts',
-        },
-      },
-    ],
   })
   const generatedFiles = await fs.readdir(tmpDir.path)
 
@@ -324,8 +289,7 @@ test('Ignores any user-defined `deno.json` files', async () => {
       `The file at '${denoConfigPath} would be overwritten by this test. Please move the file to a different location and try again.'`,
     )
   } catch (error) {
-    // @ts-expect-error Error is not typed
-    if (error.code !== 'ENOENT') {
+    if (isNodeError(error) && error.code !== 'ENOENT') {
       throw error
     }
   }
@@ -335,17 +299,10 @@ test('Ignores any user-defined `deno.json` files', async () => {
   expect(() =>
     bundle([join(fixtureDir, 'functions')], tmpDir.path, declarations, {
       basePath: fixturesDir,
+      configPath: join(fixtureDir, 'functions', 'config.json'),
       featureFlags: {
         edge_functions_produce_eszip: true,
       },
-      importMaps: [
-        {
-          baseURL: pathToFileURL(join(fixturesDir, 'import-map.json')),
-          imports: {
-            'alias:helper': pathToFileURL(join(fixturesDir, 'helper.ts')).toString(),
-          },
-        },
-      ],
     }),
   ).not.toThrow()
 
@@ -364,10 +321,10 @@ test('Processes a function that imports a custom layer', async () => {
   const layer = { name: 'test', flag: 'edge-functions-layer-test' }
   const result = await bundle([sourceDirectory], tmpDir.path, declarations, {
     basePath: fixturesDir,
+    configPath: join(sourceDirectory, 'config.json'),
     featureFlags: {
       edge_functions_produce_eszip: true,
     },
-    layers: [layer],
   })
   const generatedFiles = await fs.readdir(tmpDir.path)
 
@@ -383,6 +340,39 @@ test('Processes a function that imports a custom layer', async () => {
   expect(generatedFiles.includes(bundles[0].asset)).toBe(true)
 
   expect(layers).toEqual([layer])
+
+  await fs.rmdir(tmpDir.path, { recursive: true })
+})
+
+test('Loads declarations and import maps from the deploy configuration', async () => {
+  const fixtureDir = resolve(fixturesDir, 'with_deploy_config')
+  const tmpDir = await tmp.dir()
+  const declarations = [
+    {
+      function: 'func1',
+      path: '/func1',
+    },
+  ]
+  const directories = [join(fixtureDir, 'netlify', 'edge-functions'), join(fixtureDir, '.netlify', 'edge-functions')]
+  const result = await bundle(directories, tmpDir.path, declarations, {
+    basePath: fixtureDir,
+    configPath: join(fixtureDir, '.netlify', 'edge-functions', 'config.json'),
+    featureFlags: {
+      edge_functions_produce_eszip: true,
+    },
+  })
+  const generatedFiles = await fs.readdir(tmpDir.path)
+
+  expect(result.functions.length).toBe(2)
+  expect(generatedFiles.length).toBe(2)
+
+  const manifestFile = await fs.readFile(resolve(tmpDir.path, 'manifest.json'), 'utf8')
+  const manifest = JSON.parse(manifestFile)
+  const { bundles } = manifest
+
+  expect(bundles.length).toBe(1)
+  expect(bundles[0].format).toBe('eszip2')
+  expect(generatedFiles.includes(bundles[0].asset)).toBe(true)
 
   await fs.rmdir(tmpDir.path, { recursive: true })
 })

@@ -1,6 +1,7 @@
 import { Buffer } from 'buffer'
 import { promises as fs } from 'fs'
 import { dirname } from 'path'
+import { pathToFileURL } from 'url'
 
 import { parse } from '@import-maps/resolve'
 
@@ -14,13 +15,34 @@ interface ImportMapFile {
   scopes?: Record<string, Record<string, string>>
 }
 
+// ImportMap can take several import map files and merge them into a final
+// import map object, also adding the internal imports in the right order.
 class ImportMap {
-  imports: Record<string, URL | null>
+  files: ImportMapFile[]
 
   constructor(files: ImportMapFile[] = []) {
-    let imports: ImportMap['imports'] = {}
+    this.files = []
 
     files.forEach((file) => {
+      this.add(file)
+    })
+  }
+
+  static resolve(importMapFile: ImportMapFile) {
+    const { baseURL, ...importMap } = importMapFile
+    const parsedImportMap = parse(importMap, baseURL)
+
+    return parsedImportMap
+  }
+
+  add(file: ImportMapFile) {
+    this.files.push(file)
+  }
+
+  getContents() {
+    let imports: Record<string, URL | null> = {}
+
+    this.files.forEach((file) => {
       const importMap = ImportMap.resolve(file)
 
       imports = { ...imports, ...importMap.imports }
@@ -33,20 +55,8 @@ class ImportMap {
 
       imports[specifier] = url
     })
-
-    this.imports = imports
-  }
-
-  static resolve(importMapFile: ImportMapFile) {
-    const { baseURL, ...importMap } = importMapFile
-    const parsedImportMap = parse(importMap, baseURL)
-
-    return parsedImportMap
-  }
-
-  getContents() {
     const contents = {
-      imports: this.imports,
+      imports,
     }
 
     return JSON.stringify(contents)
@@ -67,5 +77,26 @@ class ImportMap {
   }
 }
 
-export { ImportMap }
+const readFile = async (path: string): Promise<ImportMapFile> => {
+  const baseURL = pathToFileURL(path)
+
+  try {
+    const data = await fs.readFile(path, 'utf8')
+    const importMap = JSON.parse(data)
+
+    return {
+      ...importMap,
+      baseURL,
+    }
+  } catch {
+    // no-op
+  }
+
+  return {
+    baseURL,
+    imports: {},
+  }
+}
+
+export { ImportMap, readFile }
 export type { ImportMapFile }

@@ -1,4 +1,5 @@
 import { FunctionConfig } from './config.js'
+import type { DeployConfig } from './deploy_config.js'
 
 interface BaseDeclaration {
   cache?: string
@@ -19,19 +20,19 @@ type Declaration = DeclarationWithPath | DeclarationWithPattern
 export const getDeclarationsFromConfig = (
   tomlDeclarations: Declaration[],
   functionsConfig: Record<string, FunctionConfig>,
+  deployConfig: DeployConfig,
 ) => {
   const declarations: Declaration[] = []
   const functionsVisited: Set<string> = new Set()
 
-  // We start by iterating over all the TOML declarations. For any declaration
-  // for which we also have a function configuration object, we replace the
-  // defined config (currently path or cache or both) because that object takes
-  // precedence.
-  for (const declaration of tomlDeclarations) {
+  // We start by iterating over all the declarations in the TOML file and in
+  // the deploy configuration file. For any declaration for which we also have
+  // a function configuration object, we replace the path because that object
+  // takes precedence.
+  for (const declaration of [...tomlDeclarations, ...deployConfig.declarations]) {
     const config = functionsConfig[declaration.function] ?? {}
 
     functionsVisited.add(declaration.function)
-
     declarations.push({ ...declaration, ...config })
   }
 
