@@ -3,7 +3,7 @@ import { build, LoadResponse } from 'https://deno.land/x/eszip@v0.28.0/mod.ts'
 import * as path from 'https://deno.land/std@0.127.0/path/mod.ts'
 
 import type { InputFunction, WriteStage2Options } from '../../shared/stage2.ts'
-import { CUSTOM_LAYER_PREFIX, PUBLIC_SPECIFIER, STAGE2_SPECIFIER, virtualRoot } from './consts.ts'
+import { PUBLIC_SPECIFIER, STAGE2_SPECIFIER, virtualRoot } from './consts.ts'
 import { inlineModule, loadFromVirtualRoot, loadWithRetry } from './common.ts'
 
 interface FunctionReference {
@@ -62,7 +62,7 @@ const getVirtualPath = (basePath: string, filePath: string) => {
   return url
 }
 
-const stage2Loader = (basePath: string, functions: InputFunction[]) => {
+const stage2Loader = (basePath: string, functions: InputFunction[], externals: Set<string>) => {
   return async (specifier: string): Promise<LoadResponse | undefined> => {
     if (specifier === STAGE2_SPECIFIER) {
       const stage2Entry = getStage2Entry(basePath, functions)
@@ -70,7 +70,7 @@ const stage2Loader = (basePath: string, functions: InputFunction[]) => {
       return inlineModule(specifier, stage2Entry)
     }
 
-    if (specifier === PUBLIC_SPECIFIER || specifier.startsWith(CUSTOM_LAYER_PREFIX)) {
+    if (specifier === PUBLIC_SPECIFIER || externals.has(specifier)) {
       return {
         kind: 'external',
         specifier,
@@ -85,8 +85,8 @@ const stage2Loader = (basePath: string, functions: InputFunction[]) => {
   }
 }
 
-const writeStage2 = async ({ basePath, destPath, functions, importMapURL }: WriteStage2Options) => {
-  const loader = stage2Loader(basePath, functions)
+const writeStage2 = async ({ basePath, destPath, externals, functions, importMapURL }: WriteStage2Options) => {
+  const loader = stage2Loader(basePath, functions, new Set(externals))
   const bytes = await build([STAGE2_SPECIFIER], loader, importMapURL)
   const directory = path.dirname(destPath)
 

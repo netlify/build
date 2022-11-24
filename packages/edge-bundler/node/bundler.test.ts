@@ -271,7 +271,7 @@ test('Processes a function that imports a custom layer', async () => {
       path: '/func1',
     },
   ]
-  const layer = { name: 'test', flag: 'edge-functions-layer-test' }
+  const layer = { name: 'layer:test', flag: 'edge-functions-layer-test' }
   const result = await bundle([sourceDirectory], tmpDir.path, declarations, {
     basePath: fixturesDir,
     configPath: join(sourceDirectory, 'config.json'),

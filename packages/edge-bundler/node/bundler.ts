@@ -73,6 +73,9 @@ const bundle = async (
   // exists.
   const deployConfig = await loadDeployConfig(configPath, logger)
 
+  // Layers are marked as externals in the ESZIP, so that those specifiers are
+  // not actually included in the bundle.
+  const externals = deployConfig.layers.map((layer) => layer.name)
   const importMap = new ImportMap()
 
   if (deployConfig.importMap) {
@@ -86,9 +89,10 @@ const bundle = async (
     debug,
     deno,
     distDirectory,
+    externals,
     functions,
-    importMap,
     featureFlags,
+    importMap,
   })
 
   // The final file name of the bundles contains a SHA256 hash of the contents,

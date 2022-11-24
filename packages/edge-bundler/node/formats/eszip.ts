@@ -17,6 +17,7 @@ interface BundleESZIPOptions {
   debug?: boolean
   deno: DenoBridge
   distDirectory: string
+  externals: string[]
   featureFlags: FeatureFlags
   functions: EdgeFunction[]
   importMap: ImportMap
@@ -28,6 +29,7 @@ const bundleESZIP = async ({
   debug,
   deno,
   distDirectory,
+  externals,
   functions,
   importMap,
 }: BundleESZIPOptions): Promise<Bundle> => {
@@ -37,6 +39,7 @@ const bundleESZIP = async ({
   const payload: WriteStage2Options = {
     basePath,
     destPath,
+    externals,
     functions,
     importMapURL: importMap.toDataURL(),
   }

@@ -1,4 +1,4 @@
 {
-  "layers": [{ "name": "test", "flag": "edge-functions-layer-test" }],
+  "layers": [{ "name": "layer:test", "flag": "edge-functions-layer-test" }],
   "version": 1
 }

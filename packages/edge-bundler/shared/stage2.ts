@@ -6,6 +6,7 @@ export interface InputFunction {
 export interface WriteStage2Options {
   basePath: string
   destPath: string
+  externals: string[]
   functions: InputFunction[]
   importMapURL?: string
 }
