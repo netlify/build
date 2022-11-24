@@ -56,7 +56,6 @@ const prepareServer = ({
       functions,
       formatExportTypeError,
       formatImportError,
-      type: 'local',
     })
 
     try {

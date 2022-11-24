@@ -57,11 +57,7 @@ const bundleFunction = async (bundlerDir) => {
 
   console.log(`Bundling functions at '${functionsDir}'...`)
 
-  return await bundle([functionsDir], destPath, [{ function: 'func1', path: '/func1' }], {
-    featureFlags: {
-      edge_functions_produce_eszip: true,
-    },
-  })
+  return await bundle([functionsDir], destPath, [{ function: 'func1', path: '/func1' }])
 }
 
 const runAssertions = (bundleOutput) => {

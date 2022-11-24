@@ -9,11 +9,9 @@ import type { Bundle } from './bundle.js'
 import { FunctionConfig, getFunctionConfig } from './config.js'
 import { Declaration, getDeclarationsFromConfig } from './declaration.js'
 import { load as loadDeployConfig } from './deploy_config.js'
-import { EdgeFunction } from './edge_function.js'
 import { FeatureFlags, getFlags } from './feature_flags.js'
 import { findFunctions } from './finder.js'
 import { bundle as bundleESZIP } from './formats/eszip.js'
-import { bundle as bundleJS } from './formats/javascript.js'
 import { ImportMap } from './import_map.js'
 import { getLogger, LogFunction } from './logger.js'
 import { writeManifest } from './manifest.js'
@@ -29,50 +27,6 @@ interface BundleOptions {
   onAfterDownload?: OnAfterDownloadHook
   onBeforeDownload?: OnBeforeDownloadHook
   systemLogger?: LogFunction
-}
-
-interface BundleFormatOptions {
-  buildID: string
-  debug?: boolean
-  deno: DenoBridge
-  distDirectory: string
-  functions: EdgeFunction[]
-  featureFlags: FeatureFlags
-  importMap: ImportMap
-  basePath: string
-}
-
-const createBundle = ({
-  basePath,
-  buildID,
-  debug,
-  deno,
-  distDirectory,
-  functions,
-  importMap,
-  featureFlags,
-}: BundleFormatOptions) => {
-  if (featureFlags.edge_functions_produce_eszip) {
-    return bundleESZIP({
-      basePath,
-      buildID,
-      debug,
-      deno,
-      distDirectory,
-      featureFlags,
-      functions,
-      importMap,
-    })
-  }
-
-  return bundleJS({
-    buildID,
-    debug,
-    deno,
-    distDirectory,
-    functions,
-    importMap,
-  })
 }
 
 const bundle = async (
@@ -126,7 +80,7 @@ const bundle = async (
   }
 
   const functions = await findFunctions(sourceDirectories)
-  const functionBundle = await createBundle({
+  const functionBundle = await bundleESZIP({
     basePath,
     buildID,
     debug,

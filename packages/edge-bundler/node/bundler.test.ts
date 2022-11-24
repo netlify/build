@@ -12,7 +12,7 @@ import { BundleError } from './bundle_error.js'
 import { bundle, BundleOptions } from './bundler.js'
 import { isNodeError } from './utils/error.js'
 
-test('Produces a JavaScript bundle and a manifest file', async () => {
+test('Produces an ESZIP bundle', async () => {
   const sourceDirectory = resolve(fixturesDir, 'with_import_maps', 'functions')
   const tmpDir = await tmp.dir()
   const declarations = [
@@ -24,39 +24,6 @@ test('Produces a JavaScript bundle and a manifest file', async () => {
   const result = await bundle([sourceDirectory], tmpDir.path, declarations, {
     basePath: fixturesDir,
     configPath: join(sourceDirectory, 'config.json'),
-  })
-  const generatedFiles = await fs.readdir(tmpDir.path)
-
-  expect(result.functions.length).toBe(1)
-  expect(generatedFiles.length).toBe(2)
-
-  const manifestFile = await fs.readFile(resolve(tmpDir.path, 'manifest.json'), 'utf8')
-  const manifest = JSON.parse(manifestFile)
-  const { bundles } = manifest
-
-  expect(bundles.length).toBe(1)
-  expect(bundles[0].format).toBe('js')
-  expect(generatedFiles.includes(bundles[0].asset)).toBe(true)
-  expect(result.manifest).toEqual(manifest)
-
-  await fs.rmdir(tmpDir.path, { recursive: true })
-})
-
-test('Produces only a ESZIP bundle when the `edge_functions_produce_eszip` feature flag is set', async () => {
-  const sourceDirectory = resolve(fixturesDir, 'with_import_maps', 'functions')
-  const tmpDir = await tmp.dir()
-  const declarations = [
-    {
-      function: 'func1',
-      path: '/func1',
-    },
-  ]
-  const result = await bundle([sourceDirectory], tmpDir.path, declarations, {
-    basePath: fixturesDir,
-    configPath: join(sourceDirectory, 'config.json'),
-    featureFlags: {
-      edge_functions_produce_eszip: true,
-    },
   })
   const generatedFiles = await fs.readdir(tmpDir.path)
 
@@ -86,9 +53,6 @@ test('Uses the vendored eszip module instead of fetching it from deno.land', asy
   const result = await bundle([sourceDirectory], tmpDir.path, declarations, {
     basePath: fixturesDir,
     configPath: join(sourceDirectory, 'config.json'),
-    featureFlags: {
-      edge_functions_produce_eszip: true,
-    },
   })
   const generatedFiles = await fs.readdir(tmpDir.path)
 
@@ -124,7 +88,7 @@ test('Adds a custom error property to user errors during bundling', async () => 
     expect(error).toBeInstanceOf(BundleError)
     expect((error as BundleError).customErrorInfo).toEqual({
       location: {
-        format: 'javascript',
+        format: 'eszip',
         runtime: 'deno',
       },
       type: 'functionsBundling',
@@ -145,11 +109,7 @@ test('Prints a nice error message when user tries importing NPM module', async (
   ]
 
   try {
-    await bundle([sourceDirectory], tmpDir.path, declarations, {
-      featureFlags: {
-        edge_functions_produce_eszip: true,
-      },
-    })
+    await bundle([sourceDirectory], tmpDir.path, declarations)
   } catch (error) {
     expect(error).toBeInstanceOf(BundleError)
     expect((error as BundleError).message).toEqual(
@@ -170,7 +130,7 @@ test('Does not add a custom error property to system errors during bundling', as
 })
 
 test('Uses the cache directory as the `DENO_DIR` value if the `edge_functions_cache_deno_dir` feature flag is set', async () => {
-  expect.assertions(7)
+  expect.assertions(6)
 
   const sourceDirectory = resolve(fixturesDir, 'with_import_maps', 'functions')
   const outDir = await tmp.dir()
@@ -214,7 +174,6 @@ test('Uses the cache directory as the `DENO_DIR` value if the `edge_functions_ca
 
   const denoDir2 = await fs.readdir(join(cacheDir.path, 'deno_dir'))
 
-  expect(denoDir2.includes('deps')).toBe(true)
   expect(denoDir2.includes('gen')).toBe(true)
 
   await fs.rmdir(outDir.path, { recursive: true })
@@ -232,9 +191,6 @@ test('Supports import maps with relative paths', async () => {
   const result = await bundle([sourceDirectory], tmpDir.path, declarations, {
     basePath: fixturesDir,
     configPath: join(sourceDirectory, 'config.json'),
-    featureFlags: {
-      edge_functions_produce_eszip: true,
-    },
   })
   const generatedFiles = await fs.readdir(tmpDir.path)
 
@@ -300,9 +256,6 @@ test('Ignores any user-defined `deno.json` files', async () => {
     bundle([join(fixtureDir, 'functions')], tmpDir.path, declarations, {
       basePath: fixturesDir,
       configPath: join(fixtureDir, 'functions', 'config.json'),
-      featureFlags: {
-        edge_functions_produce_eszip: true,
-      },
     }),
   ).not.toThrow()
 
@@ -322,9 +275,6 @@ test('Processes a function that imports a custom layer', async () => {
   const result = await bundle([sourceDirectory], tmpDir.path, declarations, {
     basePath: fixturesDir,
     configPath: join(sourceDirectory, 'config.json'),
-    featureFlags: {
-      edge_functions_produce_eszip: true,
-    },
   })
   const generatedFiles = await fs.readdir(tmpDir.path)
 
@@ -357,9 +307,6 @@ test('Loads declarations and import maps from the deploy configuration', async (
   const result = await bundle(directories, tmpDir.path, declarations, {
     basePath: fixtureDir,
     configPath: join(fixtureDir, '.netlify', 'edge-functions', 'config.json'),
-    featureFlags: {
-      edge_functions_produce_eszip: true,
-    },
   })
   const generatedFiles = await fs.readdir(tmpDir.path)
 

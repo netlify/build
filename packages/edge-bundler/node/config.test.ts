@@ -154,9 +154,6 @@ test('Ignores function paths from the in-source `config` function if the feature
   const result = await bundle([internalDirectory, userDirectory], tmpDir.path, declarations, {
     basePath: fixturesDir,
     configPath: join(internalDirectory, 'config.json'),
-    featureFlags: {
-      edge_functions_produce_eszip: true,
-    },
   })
   const generatedFiles = await fs.readdir(tmpDir.path)
 
@@ -194,7 +191,6 @@ test('Loads function paths from the in-source `config` function', async () => {
     configPath: join(internalDirectory, 'config.json'),
     featureFlags: {
       edge_functions_config_export: true,
-      edge_functions_produce_eszip: true,
     },
   })
   const generatedFiles = await fs.readdir(tmpDir.path)

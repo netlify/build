@@ -1,1 +1,1 @@
-export default async () => new NotAResponse('Hello')
+export default async () => 
