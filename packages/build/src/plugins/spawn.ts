@@ -37,7 +37,7 @@ const tStartPlugins = async function ({ pluginsOptions, buildDir, childEnv, logs
 export const startPlugins = measureDuration(tStartPlugins, 'start_plugins')
 
 const startPlugin = async function ({ pluginDir, nodePath, buildDir, childEnv }) {
-  const childProcess = execaNode(CHILD_MAIN_FILE, {
+  const childProcess = execaNode(CHILD_MAIN_FILE, [], {
     cwd: buildDir,
     preferLocal: true,
     localDir: pluginDir,
@@ -45,7 +45,6 @@ const startPlugin = async function ({ pluginDir, nodePath, buildDir, childEnv })
     execPath: nodePath,
     env: childEnv,
     extendEnv: false,
-    // serialization: 'advanced',
   })
 
   try {
