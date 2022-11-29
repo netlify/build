@@ -66,7 +66,7 @@ const NORMALIZE_REGEXPS = [
         return unixify(`${prefix}${fullPath}`)
       }
 
-      const relativePath = relative(rootPath, fullPath)
+      const relativePath = relative(rootPath, (winDrive || '') + fullPath)
 
       if (relativePath === '') {
         return `${prefix}/`
