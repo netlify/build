@@ -57,6 +57,13 @@
   * dependencies
     * @netlify/config bumped from ^20.0.1 to ^20.0.2
 
+## [28.4.3](https://github.com/netlify/build/compare/build-v28.4.2...build-v28.4.3) (2022-11-29)
+
+
+### Bug Fixes
+
+* node18 support for netlify/build ([#4726](https://github.com/netlify/build/issues/4726)) ([28347ca](https://github.com/netlify/build/commit/28347ca7593e693d45d9d6a4d032b33459d2afc9))
+
 ## [28.4.2](https://github.com/netlify/build/compare/build-v28.4.1...build-v28.4.2) (2022-11-23)
 
 
