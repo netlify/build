@@ -253,6 +253,12 @@ test('Does not transpile already transpiled local plugins', async (t) => {
 })
 
 test('Plugins which export a factory function receive the inputs and a metadata object', async (t) => {
-  const output = await new Fixture('./fixtures/dynamic_plugin').runWithBuild()
+  const output = await new Fixture('./fixtures/dynamic_plugin')
+    .withFlags({
+      featureFlags: {
+        netlify_build_use_json_serialization_for_plugin_ipc: true,
+      },
+    })
+    .runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
