@@ -182,6 +182,7 @@ test.only('Normalizes error messages resulting from bundling edge functions', as
       bugsnagKey: BUGSNAG_TEST_KEY,
     })
     .runWithBuild()
+  console.log(output)
   t.snapshot(normalizeOutput(output))
 })
 
