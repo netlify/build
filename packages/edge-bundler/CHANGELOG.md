@@ -1,5 +1,24 @@
 # Changelog
 
+## [5.0.0](https://github.com/netlify/edge-bundler/compare/v4.4.3...v5.0.0) (2022-11-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* remove support for JavaScript bundles ([#224](https://github.com/netlify/edge-bundler/issues/224))
+* move internal config file to Edge Bundler ([#219](https://github.com/netlify/edge-bundler/issues/219))
+
+### Features
+
+* mark custom layers as `externals` ([#225](https://github.com/netlify/edge-bundler/issues/225)) ([a68607b](https://github.com/netlify/edge-bundler/commit/a68607bd5a5e83e4b62ec483e1ce3e7fd33f1ba1))
+* move internal config file to Edge Bundler ([#219](https://github.com/netlify/edge-bundler/issues/219)) ([08ce8a5](https://github.com/netlify/edge-bundler/commit/08ce8a591b105897f73a6e5c24d3d372e04ed574))
+* remove support for JavaScript bundles ([#224](https://github.com/netlify/edge-bundler/issues/224)) ([d8f45b1](https://github.com/netlify/edge-bundler/commit/d8f45b16ce4739b9f6938421098646d970ac5ad8))
+
+
+### Bug Fixes
+
+* **deps:** update dependency p-retry to v5.1.2 ([#228](https://github.com/netlify/edge-bundler/issues/228)) ([e8a54e1](https://github.com/netlify/edge-bundler/commit/e8a54e11ea0c4c3468a9cacc8bea032407b647f3))
+
 ## [4.4.3](https://github.com/netlify/edge-bundler/compare/v4.4.2...v4.4.3) (2022-11-23)
 
 
