@@ -37,6 +37,7 @@ const NORMALIZE_REGEXPS = [
     /(^|[ "'(=])((?:\.{0,2}|([A-Z]:)|file:\/\/)(\/[^ "')\n]+))/gm,
 
     (_, prefix, pathMatch, winDrive, pathTrail) => {
+      console.log('-> Path normalize:', { _, prefix, pathMatch, winDrive, pathTrail })
       // If we're dealing with a file URL, we convert it to a path.
       const path = pathMatch.startsWith('file://') ? fileURLToPath(pathMatch) : pathMatch
 
