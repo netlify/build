@@ -67,6 +67,7 @@ const NORMALIZE_REGEXPS = [
       }
 
       const relativePath = relative(rootPath, fullPath)
+      console.log('->', { rootPath, fullPath, relativePath })
 
       if (relativePath === '') {
         return `${prefix}/`

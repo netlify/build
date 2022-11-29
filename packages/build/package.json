@@ -27,7 +27,7 @@
     "pretest": "tsd .",
     "test": "ava",
     "test:dev": "ava -w",
-    "test:ci": "c8 -r lcovonly -r text -r json ava",
+    "test:ci": "c8 -r lcovonly -r text -r json ava tests/monitor/tests.js",
     "test:measure": "../../tools/tests-duration.js"
   },
   "keywords": [
