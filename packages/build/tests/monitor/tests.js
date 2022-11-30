@@ -174,7 +174,7 @@ test('Report build logs URLs', async (t) => {
   t.snapshot(normalizeOutput(output))
 })
 
-test.only('Normalizes error messages resulting from bundling edge functions', async (t) => {
+test('Normalizes error messages resulting from bundling edge functions', async (t) => {
   const output = await new Fixture('./fixtures/edge_function_error')
     .withFlags({
       debug: false,
@@ -182,7 +182,6 @@ test.only('Normalizes error messages resulting from bundling edge functions', as
       bugsnagKey: BUGSNAG_TEST_KEY,
     })
     .runWithBuild()
-  console.log(output)
   t.snapshot(normalizeOutput(output))
 })
 

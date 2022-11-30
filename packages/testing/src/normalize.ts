@@ -67,8 +67,6 @@ const NORMALIZE_REGEXPS = [
 
       const relativePath = unixify(relative(rootPath, fullPath))
 
-      console.log('-> REL', { relativePath, rootPath, fullPath, pathMatch, winDrive, pathTrail })
-
       if (relativePath === '') {
         return `${prefix}/`
       }
