@@ -4,8 +4,8 @@ import { fileURLToPath } from 'url'
 import figures from 'figures'
 import stripAnsi from 'strip-ansi'
 
+const rootPath = fileURLToPath(new URL('../../..', import.meta.url))
 const unixify = (path) => path.replace(/\\/gu, '/')
-const rootPath = unixify(fileURLToPath(new URL('../../..', import.meta.url)))
 const UNICODE_BACKSLASH_SEQUENCE = /^\/u\d+/iu
 
 const NORMALIZE_REGEXPS = [
@@ -38,21 +38,22 @@ const NORMALIZE_REGEXPS = [
 
     (_, prefix, pathMatch, winDrive, pathTrail) => {
       // If we're dealing with a file URL, we convert it to a path.
-      const path = unixify(pathMatch.startsWith('file://') ? fileURLToPath(pathMatch) : pathMatch)
+      const path = pathMatch.startsWith('file://') ? fileURLToPath(pathMatch) : pathMatch
 
-      const fullPath = winDrive ? `${winDrive}/${pathTrail}` : path
+      // If we're dealing with a Windows path, we discard the drive letter.
+      const fullPath = winDrive ? pathTrail : path
       const tmpDirMatch = fullPath.match(/netlify-build-tmp-dir\d+(.*)/)
 
       // If this is a temporary directory with a randomly-generated name, we
       // replace it with the string "tmp-dir" so that the result is consistent.
       if (tmpDirMatch) {
-        return `${prefix}/tmp-dir${tmpDirMatch[1]}`
+        return unixify(`${prefix}/tmp-dir${tmpDirMatch[1]}`)
       }
 
       // If this is a socket created for the test suite, we transform it to
       // "/test/socket".
       if (/netlify-test-socket-(.{6})$/.test(fullPath)) {
-        return `${prefix}/test/socket`
+        return unixify(`${prefix}/test/socket`)
       }
 
       if (isEscapeSequence(fullPath)) {
@@ -62,12 +63,10 @@ const NORMALIZE_REGEXPS = [
       // If the path is relative inside the root directory, there's no need to
       // transform it.
       if (fullPath.startsWith('./')) {
-        return `${prefix}${fullPath}`
+        return unixify(`${prefix}${fullPath}`)
       }
 
-      const relativePath = unixify(relative(rootPath, fullPath))
-
-      console.log('-> REL', { relativePath, rootPath, fullPath, pathMatch, winDrive, pathTrail })
+      const relativePath = relative(rootPath, fullPath)
 
       if (relativePath === '') {
         return `${prefix}/`
@@ -76,17 +75,17 @@ const NORMALIZE_REGEXPS = [
       // If this is a path to a node module, we're probably rendering a stack
       // trace that escaped the regex. We transform it to a deterministic path.
       if (/node_modules[/\\]/.test(relativePath)) {
-        return `${prefix}/node_module/path`
+        return unixify(`${prefix}/node_module/path`)
       }
 
       // If we're outside the root directory, we're potentially accessing
       // system directories that may vary from system to system, so we
       // normalize them to /external/path.
       if (relativePath.startsWith('..')) {
-        return `${prefix}/external/path`
+        return unixify(`${prefix}/external/path`)
       }
 
-      return `${prefix}${relativePath}`
+      return unixify(`${prefix}${relativePath}`)
     },
   ],
   // When serializing flags, Windows keep single quotes due to backslashes,
