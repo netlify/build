@@ -46,7 +46,14 @@ const NORMALIZE_REGEXPS = [
       // If this is a temporary directory with a randomly-generated name, we
       // replace it with the string "tmp-dir" so that the result is consistent.
       if (tmpDirMatch) {
-        console.log('-> 1', { prefix, fullPath, pathMatch, winDrive, pathTrail, tmpDirMatch })
+        console.log('-> 1', `${prefix}/tmp-dir${tmpDirMatch[1]}`, {
+          prefix,
+          fullPath,
+          pathMatch,
+          winDrive,
+          pathTrail,
+          tmpDirMatch,
+        })
 
         return `${prefix}/tmp-dir${tmpDirMatch[1]}`
       }
@@ -54,13 +61,13 @@ const NORMALIZE_REGEXPS = [
       // If this is a socket created for the test suite, we transform it to
       // "/test/socket".
       if (/netlify-test-socket-(.{6})$/.test(fullPath)) {
-        console.log('-> 2', { prefix, fullPath, pathMatch, winDrive, pathTrail })
+        console.log('-> 2', `${prefix}/test/socket`, { prefix, fullPath, pathMatch, winDrive, pathTrail })
 
         return `${prefix}/test/socket`
       }
 
       if (isEscapeSequence(fullPath)) {
-        console.log('-> 3', { prefix, fullPath, pathMatch, winDrive, pathTrail })
+        console.log('-> 3', `${prefix}${fullPath}`, { prefix, fullPath, pathMatch, winDrive, pathTrail })
 
         return `${prefix}${fullPath}`
       }
@@ -68,7 +75,7 @@ const NORMALIZE_REGEXPS = [
       // If the path is relative inside the root directory, there's no need to
       // transform it.
       if (fullPath.startsWith('./')) {
-        console.log('-> 4', { prefix, fullPath, pathMatch, winDrive, pathTrail })
+        console.log('-> 4', `${prefix}${fullPath}`, { prefix, fullPath, pathMatch, winDrive, pathTrail })
 
         return `${prefix}${fullPath}`
       }
@@ -76,7 +83,7 @@ const NORMALIZE_REGEXPS = [
       const relativePath = unixify(relative(rootPath, fullPath))
 
       if (relativePath === '') {
-        console.log('-> 5', { prefix, fullPath, pathMatch, winDrive, pathTrail })
+        console.log('-> 5', `${prefix}/`, { prefix, fullPath, pathMatch, winDrive, pathTrail })
 
         return `${prefix}/`
       }
@@ -84,7 +91,7 @@ const NORMALIZE_REGEXPS = [
       // If this is a path to a node module, we're probably rendering a stack
       // trace that escaped the regex. We transform it to a deterministic path.
       if (/node_modules[/\\]/.test(relativePath)) {
-        console.log('-> 6', { prefix, fullPath, pathMatch, winDrive, pathTrail })
+        console.log('-> 6', `${prefix}/node_module/path`, { prefix, fullPath, pathMatch, winDrive, pathTrail })
 
         return `${prefix}/node_module/path`
       }
@@ -93,12 +100,12 @@ const NORMALIZE_REGEXPS = [
       // system directories that may vary from system to system, so we
       // normalize them to /external/path.
       if (relativePath.startsWith('..')) {
-        console.log('-> 7', { prefix, fullPath, pathMatch, winDrive, pathTrail })
+        console.log('-> 7', `${prefix}/external/path`, { prefix, fullPath, pathMatch, winDrive, pathTrail })
 
         return `${prefix}/external/path`
       }
 
-      console.log('-> 8', { prefix, fullPath, pathMatch, winDrive, pathTrail })
+      console.log('-> 8', `${prefix}${relativePath}`, { prefix, fullPath, pathMatch, winDrive, pathTrail })
 
       return `${prefix}${relativePath}`
     },
