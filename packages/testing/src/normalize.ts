@@ -40,7 +40,7 @@ const NORMALIZE_REGEXPS = [
       // If we're dealing with a file URL, we convert it to a path.
       const path = unixify(pathMatch.startsWith('file://') ? fileURLToPath(pathMatch) : pathMatch)
 
-      const fullPath = winDrive ? `${pathTrail}` : path
+      const fullPath = path
       const tmpDirMatch = fullPath.match(/netlify-build-tmp-dir\d+(.*)/)
 
       // If this is a temporary directory with a randomly-generated name, we
