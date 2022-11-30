@@ -30,7 +30,7 @@
   },
   "author": "Netlify Inc.",
   "dependencies": {
-    "@netlify/framework-info": "^9.5.0",
+    "@netlify/framework-info": "^9.5.2",
     "@npmcli/map-workspaces": "^2.0.0",
     "find-up": "^6.3.0",
     "read-pkg": "^7.1.0",
