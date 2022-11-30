@@ -7,7 +7,6 @@ import { pathExists } from 'path-exists'
 import { logFunctionsToBundle } from '../../log/messages/core_steps.js'
 
 import { tagBundlingError } from './lib/error.js'
-import { parseManifest } from './lib/internal_manifest.js'
 import { validateEdgeFunctionsManifest } from './validate_manifest/validate_edge_functions_manifest.js'
 
 // TODO: Replace this with a custom cache directory.
@@ -28,7 +27,7 @@ const coreStep = async function ({
   logs,
   netlifyConfig,
 }) {
-  const { edge_functions: configDeclarations = [] } = netlifyConfig
+  const { edge_functions: declarations = [] } = netlifyConfig
   const distPath = resolve(buildDir, distDirectory)
   const internalSrcPath = resolve(buildDir, internalSrcDirectory)
   const distImportMapPath = join(dirname(internalSrcPath), IMPORT_MAP_FILENAME)
@@ -36,9 +35,6 @@ const coreStep = async function ({
   const sourcePaths = [internalSrcPath, srcPath].filter(Boolean)
 
   logFunctions({ internalSrcDirectory, internalSrcPath, logs, srcDirectory, srcPath })
-
-  const { declarations: internalDeclarations, importMap, layers } = await parseManifest(internalSrcPath, systemLog)
-  const declarations = [...configDeclarations, ...internalDeclarations]
 
   // If we're running in buildbot and the feature flag is enabled, we set the
   // Deno cache dir to a directory that is persisted between builds.
@@ -52,11 +48,10 @@ const coreStep = async function ({
     const { manifest } = await bundle(sourcePaths, distPath, declarations, {
       basePath: buildDir,
       cacheDirectory,
+      configPath: join(internalSrcPath, 'manifest.json'),
       debug,
       distImportMapPath,
       featureFlags,
-      importMaps: [importMap].filter(Boolean),
-      layers,
       systemLogger: featureFlags.edge_functions_system_logger ? systemLog : undefined,
     })
 

@@ -27,7 +27,7 @@
     "pretest": "tsd .",
     "test": "ava",
     "test:dev": "ava -w",
-    "test:ci": "c8 -r lcovonly -r text -r json ava",
+    "test:ci": "c8 -r lcovonly -r text -r json ava tests/monitor/tests.js",
     "test:measure": "../../tools/tests-duration.js"
   },
   "keywords": [
@@ -66,7 +66,7 @@
     "@bugsnag/js": "^7.0.0",
     "@netlify/cache-utils": "^5.0.2",
     "@netlify/config": "^20.0.2",
-    "@netlify/edge-bundler": "4.4.3",
+    "@netlify/edge-bundler": "5.0.0",
     "@netlify/functions-utils": "^5.0.4",
     "@netlify/git-utils": "^5.0.2",
     "@netlify/plugins-list": "^6.54.0",
