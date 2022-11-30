@@ -1,8 +1,8 @@
-import { relative } from 'path'
 import { fileURLToPath } from 'url'
 
 import figures from 'figures'
 import stripAnsi from 'strip-ansi'
+import upath from 'unix-path'
 
 const unixify = (path) => path.replace(/\\/gu, '/')
 const rootPath = unixify(fileURLToPath(new URL('../../..', import.meta.url)))
@@ -40,7 +40,7 @@ const NORMALIZE_REGEXPS = [
       // If we're dealing with a file URL, we convert it to a path.
       const path = unixify(pathMatch.startsWith('file://') ? fileURLToPath(pathMatch) : pathMatch)
 
-      const fullPath = winDrive ? `${winDrive}/${pathTrail}` : path
+      const fullPath = winDrive ? `${pathTrail}` : path
       const tmpDirMatch = fullPath.match(/netlify-build-tmp-dir\d+(.*)/)
 
       // If this is a temporary directory with a randomly-generated name, we
@@ -82,7 +82,7 @@ const NORMALIZE_REGEXPS = [
         return `${prefix}${fullPath}`
       }
 
-      const relativePath = unixify(relative(rootPath, fullPath))
+      const relativePath = unixify(upath.relative(rootPath, fullPath))
 
       if (relativePath === '') {
         console.log('-> 5', `${prefix}/`, {

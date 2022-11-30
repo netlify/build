@@ -35,6 +35,7 @@
     "path-key": "^4.0.0",
     "strip-ansi": "^7.0.0",
     "tmp-promise": "^3.0.2",
-    "typescript": "^4.8.4"
+    "typescript": "^4.8.4",
+    "unix-path": "^0.2.0"
   }
 }
