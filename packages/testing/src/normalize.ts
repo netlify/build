@@ -46,7 +46,7 @@ const NORMALIZE_REGEXPS = [
       // If this is a temporary directory with a randomly-generated name, we
       // replace it with the string "tmp-dir" so that the result is consistent.
       if (tmpDirMatch) {
-        console.log('-> 1', `${prefix}/tmp-dir${tmpDirMatch[1]}`, {
+        console.log(' -> 1', `${prefix}/tmp-dir${tmpDirMatch[1]}`, {
           prefix,
           fullPath,
           pathMatch,
