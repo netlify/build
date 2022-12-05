@@ -1,28 +1,57 @@
-import { readdirSync } from 'fs'
+import { readFileSync } from 'fs'
+import path from 'path'
 
-export const detectBuildSystem = (rootDir: string): string[] => {
+import { findUpSync } from 'find-up'
+import { PackageJson } from 'read-pkg'
+
+export const detectBuildSystem = (rootDir: string, baseDir: string): string[] => {
   const buildTools = Object.keys(BUILD_SYSTEMS)
-  const files = readdirSync(rootDir)
 
-  return buildTools.map((tool) => BUILD_SYSTEMS[tool](files))
+  return buildTools.map((tool) => BUILD_SYSTEMS[tool](rootDir, baseDir)).filter((tool) => tool != undefined)
+}
+
+type BuildSystem = {
+  name: string
+  version: string | undefined
 }
 
 const BUILD_SYSTEMS = {
-  nx: (files: string[]): string => {
+  nx: (rootDir: string, baseDir: string): BuildSystem | undefined => {
     const nx = ['nx.json']
+    const nxConfigPath = lookFor(nx, rootDir, baseDir)
 
-    if (configFilesExistsFor(nx, files)) return 'nx'
-    return ''
+    if (nxConfigPath) {
+      const pkgJson = getPkgJson(nxConfigPath)
+      const { devDependencies } = pkgJson
+
+      return {
+        name: 'nx',
+        version: devDependencies?.nx,
+      }
+    }
   },
-  lerna: (files: string[]): string => {
-    const lerna = ['lerna.json']
 
-    if (configFilesExistsFor(lerna, files)) return 'lerna'
-    return ''
+  lerna: (rootDir: string, baseDir: string): BuildSystem | undefined => {
+    const lerna = ['lerna.json']
+    const lernaConfigPath = lookFor(lerna, rootDir, baseDir)
+
+    if (lernaConfigPath) {
+      const pkgJson = getPkgJson(lernaConfigPath)
+      const { devDependencies } = pkgJson
+      return {
+        name: 'lerna',
+        version: devDependencies?.lerna,
+      }
+    }
   },
 }
 
-const configFilesExistsFor = (configFiles: string[], files: string[]): boolean => {
-  const foundConfigs = configFiles.filter((f) => files.includes(f))
-  return foundConfigs.length > 0
+const lookFor = (configFile: string[], rootDir: string, baseDir: string): string | undefined => {
+  return findUpSync(configFile, { cwd: baseDir, stopAt: rootDir })
+}
+
+const getPkgJson = (configPath: string): PackageJson => {
+  return JSON.parse(
+    readFileSync(new URL(path.join(path.dirname(configPath), 'package.json'), import.meta.url), 'utf-8'),
+  )
 }
