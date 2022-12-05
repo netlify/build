@@ -17,10 +17,6 @@ export type PluginsOptions = {
 }
 
 /**
- * @deprecated will be replaced with `MINIMUM_REQUIRED_NODE_VERSION` at the 5th. of December 2022
- */
-const OLD_MINIMUM_REQUIRED_NODE_VERSION = '^12.20.0 || ^14.14.0 || >=16.0.0'
-/**
  * This node version is minimum required to run the plugins code.
  * If the users preferred Node.js version is below that we have to fall back to the system node version
  */
@@ -57,14 +53,10 @@ const addPluginNodeVersion = function ({
     (loadedFrom === 'local' || loadedFrom === 'package.json') &&
     !semver.satisfies(userNodeVersion, MINIMUM_REQUIRED_NODE_VERSION)
   ) {
-    logWarningSubHeader(
-      logs,
-      `Warning: ${packageName} will be executed with Node.js version ${currentNodeVersion} in the future`,
-    )
+    logWarningSubHeader(logs, `Warning: ${packageName} will be executed with Node.js version ${currentNodeVersion}`)
     logWarning(
       logs,
-      `  The plugin cannot be executed with your defined Node.js version ${userNodeVersion} in the future.
-  Starting December 5th 2022 our minimum required Node version range for executing plugins will be: ${MINIMUM_REQUIRED_NODE_VERSION}
+      `  The plugin cannot be executed with your defined Node.js version ${userNodeVersion}
 
   Read more about our minimum required version in our ${link(
     'forums announcement',
@@ -74,7 +66,7 @@ const addPluginNodeVersion = function ({
   }
 
   return (loadedFrom === 'local' || loadedFrom === 'package.json') &&
-    semver.satisfies(userNodeVersion, OLD_MINIMUM_REQUIRED_NODE_VERSION)
+    semver.satisfies(userNodeVersion, MINIMUM_REQUIRED_NODE_VERSION)
     ? { ...pluginOptions, nodePath, nodeVersion: userNodeVersion }
     : { ...pluginOptions, nodePath: execPath, nodeVersion: currentNodeVersion }
 }
