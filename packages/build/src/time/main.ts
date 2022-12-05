@@ -2,6 +2,9 @@ import keepFuncProps from 'keep-func-props'
 
 import { startTimer, endTimer } from './measure.js'
 
+const DEFAULT_METRIC_NAME = 'buildbot.build.stage.duration'
+export const TOP_PARENT_TAG = 'run_netlify_build'
+
 // Initialize the `timers` array
 export const initTimers = function () {
   return []
@@ -36,6 +39,3 @@ export const createTimer = function (
 ) {
   return { metricName, stageTag, parentTag, durationNs, category, tags }
 }
-
-const DEFAULT_METRIC_NAME = 'buildbot.build.stage.duration'
-export const TOP_PARENT_TAG = 'run_netlify_build'

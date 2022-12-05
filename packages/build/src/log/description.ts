@@ -8,8 +8,8 @@ const BUILD_COMMAND_DESCRIPTIONS = {
   inline: 'build.command from a plugin',
 }
 
-// Retrieve human-friendly plugin origin
-export const getPluginOrigin = function (loadedFrom, origin) {
+/** Retrieve human-friendly plugin origin */
+export const getPluginOrigin = function (loadedFrom: 'package.json' | string, origin: string) {
   const originName = PLUGIN_ORIGINS[origin]
 
   if (loadedFrom === 'package.json') {
