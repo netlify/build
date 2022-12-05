@@ -29,15 +29,17 @@ const tStartPlugins = async function ({ pluginsOptions, buildDir, childEnv, logs
   logIncompatiblePlugins(logs, pluginsOptions)
 
   const childProcesses = await Promise.all(
-    pluginsOptions.map(({ pluginDir, nodePath }) => startPlugin({ pluginDir, nodePath, buildDir, childEnv })),
+    pluginsOptions.map(({ pluginDir, nodePath }) =>
+      startPlugin({ pluginDir, nodePath, buildDir, childEnv, featureFlags }),
+    ),
   )
   return { childProcesses }
 }
 
 export const startPlugins = measureDuration(tStartPlugins, 'start_plugins')
 
-const startPlugin = async function ({ pluginDir, nodePath, buildDir, childEnv }) {
-  const childProcess = execaNode(CHILD_MAIN_FILE, {
+const startPlugin = async function ({ pluginDir, nodePath, buildDir, childEnv, featureFlags }) {
+  const childProcess = execaNode(CHILD_MAIN_FILE, [], {
     cwd: buildDir,
     preferLocal: true,
     localDir: pluginDir,
@@ -45,7 +47,11 @@ const startPlugin = async function ({ pluginDir, nodePath, buildDir, childEnv })
     execPath: nodePath,
     env: childEnv,
     extendEnv: false,
-    serialization: 'advanced',
+    // Feature flag: https://app.launchdarkly.com/default/production/features/netlify_build_use_json_serialization_for_plugin_ipc/targeting
+    // TODO: remove feature flag once fully rolled out
+    ...(!featureFlags.netlify_build_use_json_serialization_for_plugin_ipc && {
+      serialization: 'advanced',
+    }),
   })
 
   try {

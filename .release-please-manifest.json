@@ -1,9 +1,9 @@
 {
-  "packages/build-info": "6.0.5",
-  "packages/build": "28.4.2",
+  "packages/build-info": "6.0.6",
+  "packages/build": "28.4.5",
   "packages/cache-utils": "5.0.2",
   "packages/config": "20.0.2",
-  "packages/functions-utils": "5.0.4",
+  "packages/functions-utils": "5.0.5",
   "packages/git-utils": "5.0.2",
   "packages/headers-parser": "7.0.3",
   "packages/js-client": "13.0.2",

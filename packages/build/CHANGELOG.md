@@ -57,6 +57,35 @@
   * dependencies
     * @netlify/config bumped from ^20.0.1 to ^20.0.2
 
+## [28.4.5](https://github.com/netlify/build/compare/build-v28.4.4...build-v28.4.5) (2022-11-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v5 ([#4730](https://github.com/netlify/build/issues/4730)) ([c1d7789](https://github.com/netlify/build/commit/c1d7789c87548b8b7c61e929ab48f6a46caa0d82))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^7.1.3 ([#4733](https://github.com/netlify/build/issues/4733)) ([1853dab](https://github.com/netlify/build/commit/1853dab80cba5ea905bad403d5f89b7064121192))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.0.4 to ^5.0.5
+
+## [28.4.4](https://github.com/netlify/build/compare/build-v28.4.3...build-v28.4.4) (2022-11-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v4.4.3 ([#4724](https://github.com/netlify/build/issues/4724)) ([1f40b21](https://github.com/netlify/build/commit/1f40b213b9cd8b24f6424586a88ef6ce35586cc4))
+
+## [28.4.3](https://github.com/netlify/build/compare/build-v28.4.2...build-v28.4.3) (2022-11-29)
+
+
+### Bug Fixes
+
+* node18 support for netlify/build ([#4726](https://github.com/netlify/build/issues/4726)) ([28347ca](https://github.com/netlify/build/commit/28347ca7593e693d45d9d6a4d032b33459d2afc9))
+
 ## [28.4.2](https://github.com/netlify/build/compare/build-v28.4.1...build-v28.4.2) (2022-11-23)
 
 
