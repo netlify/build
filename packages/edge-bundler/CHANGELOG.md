@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.1.0](https://github.com/netlify/edge-bundler/compare/v5.0.0...v5.1.0) (2022-12-05)
+
+
+### Features
+
+* Update BOOTSTRAP_URL ([#233](https://github.com/netlify/edge-bundler/issues/233)) ([078009d](https://github.com/netlify/edge-bundler/commit/078009dca1828df177429d5f9a506c8e7106c86e))
+
 ## [5.0.0](https://github.com/netlify/edge-bundler/compare/v4.4.3...v5.0.0) (2022-11-28)
 
 
