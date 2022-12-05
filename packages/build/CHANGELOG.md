@@ -57,6 +57,22 @@
   * dependencies
     * @netlify/config bumped from ^20.0.1 to ^20.0.2
 
+## [29.0.0](https://github.com/netlify/build/compare/build-v28.4.5...build-v29.0.0) (2022-12-05)
+
+
+### ⚠ BREAKING CHANGES
+
+* drop node 12 support for plugin execution ([#4741](https://github.com/netlify/build/issues/4741))
+
+### Features
+
+* drop node 12 support for plugin execution ([#4741](https://github.com/netlify/build/issues/4741)) ([c8d5a5e](https://github.com/netlify/build/commit/c8d5a5efd70585b631062c61ea9951a8358b59a4))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.58.0 ([#4734](https://github.com/netlify/build/issues/4734)) ([7d9db09](https://github.com/netlify/build/commit/7d9db098ee4982668fb9f663e019b5037166b016))
+
 ## [28.4.5](https://github.com/netlify/build/compare/build-v28.4.4...build-v28.4.5) (2022-11-30)
 
 
