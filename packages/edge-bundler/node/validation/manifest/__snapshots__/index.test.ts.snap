@@ -53,6 +53,21 @@ REQUIRED must have required property 'format'
   6 |   ],"
 `;
 
+exports[`import map URL > should throw on wrong type 1`] = `
+"Validation of Edge Functions manifest failed
+TYPE must be string
+
+  28 |   ],
+  29 |   \\"bundler_version\\": \\"1.6.0\\",
+> 30 |   \\"importMapURL\\": [
+     |                   ^
+> 31 |     \\"file:///root/.netlify/edge-functions-dist/import_map.json\\"
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 32 |   ]
+     | ^^^^ 👈🏽  type must be string
+  33 | }"
+`;
+
 exports[`layers > should throw on additional property 1`] = `
 "Validation of Edge Functions manifest failed
 ADDTIONAL PROPERTY must NOT have additional properties
