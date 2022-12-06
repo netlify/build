@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.3.2](https://github.com/netlify/edge-bundler/compare/v5.3.1...v5.3.2) (2022-12-06)
+
+
+### Bug Fixes
+
+* correct import_map attribute name in validation ([#241](https://github.com/netlify/edge-bundler/issues/241)) ([dfcd90f](https://github.com/netlify/edge-bundler/commit/dfcd90fc74a53112800c2db8c73e1cef374010ed))
+
 ## [5.3.1](https://github.com/netlify/edge-bundler/compare/v5.3.0...v5.3.1) (2022-12-06)
 
 
