@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.0.7](https://github.com/netlify/build/compare/build-info-v6.0.6...build-info-v6.0.7) (2022-12-06)
+
+
+### Bug Fixes
+
+* gracefully handle crashing framework info ([#4742](https://github.com/netlify/build/issues/4742)) ([9d0b1ac](https://github.com/netlify/build/commit/9d0b1aca2d355c48a0dbc21a660547b0e19b5ad7))
+
 ## [6.0.6](https://github.com/netlify/build/compare/build-info-v6.0.5...build-info-v6.0.6) (2022-11-30)
 
 
