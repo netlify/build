@@ -14,9 +14,18 @@ export type Info = {
 
 export const getBuildInfo = async (opts: ContextOptions) => {
   const context = await getContext(opts)
-  const info: Info = {
-    frameworks: await listFrameworks({ projectDir: context.projectDir }),
+  let frameworks: any[] = []
+
+  try {
+    // if the framework detection is crashing we should not crash the build info and package-manager
+    // detection
+    frameworks = await listFrameworks({ projectDir: context.projectDir })
+  } catch {
+    // TODO: build reporting to buildbot see: https://github.com/netlify/pillar-workflow/issues/1001
+    // noop
   }
+
+  const info: Info = { frameworks }
 
   // only if we find a root package.json we know this is a javascript workspace
   if (Object.keys(context.rootPackageJson).length > 0) {

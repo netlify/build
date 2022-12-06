@@ -3,11 +3,20 @@ import { afterEach, describe, expect, test } from 'vitest'
 import { getBuildInfo } from '../src/get-build-info.js'
 
 import { createFixture } from './helpers.js'
-
 // run tests inside temp directory to avoid side effects
 let cleanup: () => Promise<void>
 
 afterEach(async () => await cleanup())
+
+test('should not crash on invalid projects', async () => {
+  const fixture = await createFixture('invalid-project')
+  cleanup = fixture.cleanup
+  const { frameworks, packageManager } = await getBuildInfo({
+    projectDir: fixture.cwd,
+  })
+  expect(packageManager).toMatchInlineSnapshot
+  expect(frameworks).toEqual([])
+})
 
 describe('Golang', () => {
   test('should not detect anything inside a golang workspace', async () => {
@@ -124,5 +133,25 @@ describe('Frameworks', () => {
       projectDir: fixture.cwd,
     })
     expect(frameworks).toEqual([])
+  })
+
+  test('framework detection works correctly for npm pkg detected framework', async () => {
+    const fixture = await createFixture('next-project')
+    cleanup = fixture.cleanup
+    const { frameworks } = await getBuildInfo({
+      projectDir: fixture.cwd,
+    })
+    expect(frameworks).toHaveLength(1)
+    expect(frameworks).toEqual([expect.objectContaining({ id: 'next' })])
+  })
+
+  test('framework detection works correctly for static file detected framework', async () => {
+    const fixture = await createFixture('jekyll-project')
+    cleanup = fixture.cleanup
+    const { frameworks } = await getBuildInfo({
+      projectDir: fixture.cwd,
+    })
+    expect(frameworks).toHaveLength(1)
+    expect(frameworks).toEqual([expect.objectContaining({ id: 'jekyll' })])
   })
 })
