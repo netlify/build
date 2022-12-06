@@ -5,7 +5,7 @@
   "detect": {
     "npmDependencies": ["@11ty/eleventy"],
     "excludedNpmDependencies": [],
-    "configFiles": [".eleventy.js"]
+    "configFiles": [".eleventy.js","eleventy.config.js","eleventy.config.cjs"]
   },
   "dev": {
     "command": "eleventy --serve",
