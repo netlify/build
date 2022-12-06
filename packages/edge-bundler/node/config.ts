@@ -29,7 +29,7 @@ export const enum Cache {
 
 export interface FunctionConfig {
   cache?: Cache
-  path?: string
+  path?: string | string[]
 }
 
 const getConfigExtractor = () => {

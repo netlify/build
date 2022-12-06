@@ -29,6 +29,7 @@
     "test:dev": "run-s test:dev:*",
     "test:ci": "run-s test:ci:*",
     "test:dev:vitest": "cross-env FORCE_COLOR=0 vitest run",
+    "test:dev:vitest:watch": "cross-env FORCE_COLOR=0 vitest watch",
     "test:dev:deno": "deno test --allow-all deno",
     "test:ci:vitest": "cross-env FORCE_COLOR=0 vitest run",
     "test:ci:deno": "deno test --allow-all deno",
