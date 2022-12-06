@@ -46,7 +46,14 @@ export const getContext = async (config: ContextOptions = {}): Promise<Context> 
   // If rootDir equals projectDir we'll be getting the projectDir package.json
   // Later on if we also need the projectDir package.json we can check for it
   // and only perform one resolution
-  const rootPackageJson = await getRootPackageJson(absoluteProjectDir, validRootDir || absoluteProjectDir)
+  let rootPackageJson = {}
+
+  try {
+    rootPackageJson = await getRootPackageJson(absoluteProjectDir, validRootDir || absoluteProjectDir)
+  } catch {
+    // gracefully handle un-parseable package.json files
+    //noop
+  }
   return {
     projectDir: absoluteProjectDir,
     rootDir: validRootDir,
