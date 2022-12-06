@@ -134,4 +134,24 @@ describe('Frameworks', () => {
     })
     expect(frameworks).toEqual([])
   })
+
+  test('framework detection works correctly for npm pkg detected framework', async () => {
+    const fixture = await createFixture('next-project')
+    cleanup = fixture.cleanup
+    const { frameworks } = await getBuildInfo({
+      projectDir: fixture.cwd,
+    })
+    expect(frameworks).toHaveLength(1)
+    expect(frameworks).toEqual([expect.objectContaining({ id: 'next' })])
+  })
+
+  test('framework detection works correctly for static file detected framework', async () => {
+    const fixture = await createFixture('jekyll-project')
+    cleanup = fixture.cleanup
+    const { frameworks } = await getBuildInfo({
+      projectDir: fixture.cwd,
+    })
+    expect(frameworks).toHaveLength(1)
+    expect(frameworks).toEqual([expect.objectContaining({ id: 'jekyll' })])
+  })
 })
