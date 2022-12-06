@@ -1,5 +1,6 @@
-import { join } from 'path'
+import { join, relative } from 'path'
 
+import { virtualRoot } from '../../shared/consts.js'
 import type { WriteStage2Options } from '../../shared/stage2.js'
 import { DenoBridge } from '../bridge.js'
 import { Bundle, BundleFormat } from '../bundle.js'
@@ -36,22 +37,19 @@ const bundleESZIP = async ({
   const extension = '.eszip'
   const destPath = join(distDirectory, `${buildID}${extension}`)
   const { bundler, importMap: bundlerImportMap } = getESZIPPaths()
+  const importMapURL = await createUserImportMap(importMap, basePath, distDirectory)
   const payload: WriteStage2Options = {
     basePath,
     destPath,
     externals,
     functions,
-    importMapURL: importMap.toDataURL(),
+    importMapURL,
   }
-  const flags = ['--allow-all', '--no-config']
+  const flags = ['--allow-all', '--no-config', `--import-map=${bundlerImportMap}`]
 
   if (!debug) {
     flags.push('--quiet')
   }
-
-  // To actually vendor the eszip module, we need to supply the import map that
-  // redirects `https://deno.land/` URLs to the local files.
-  flags.push(`--import-map=${bundlerImportMap}`)
 
   try {
     await deno.run(['run', ...flags, bundler, JSON.stringify(payload)], { pipeOutput: true })
@@ -61,7 +59,20 @@ const bundleESZIP = async ({
 
   const hash = await getFileHash(destPath)
 
-  return { extension, format: BundleFormat.ESZIP2, hash }
+  return { extension, format: BundleFormat.ESZIP2, hash, importMapURL }
+}
+
+// Takes an import map, writes it to a file on disk, and gets its URL relative
+// to the ESZIP root (i.e. using the virtual root prefix).
+const createUserImportMap = async (importMap: ImportMap, basePath: string, distDirectory: string) => {
+  const destPath = join(distDirectory, 'import_map.json')
+
+  await importMap.writeToFile(destPath)
+
+  const relativePath = relative(basePath, destPath)
+  const importMapURL = new URL(relativePath, virtualRoot)
+
+  return importMapURL.toString()
 }
 
 const getESZIPPaths = () => {

@@ -6,7 +6,7 @@ import { deleteAsync } from 'del'
 import tmp from 'tmp-promise'
 import { test, expect, vi } from 'vitest'
 
-import { fixturesDir } from '../test/util.js'
+import { fixturesDir, useFixture } from '../test/util.js'
 
 import { DenoBridge } from './bridge.js'
 import { bundle } from './bundler.js'
@@ -147,20 +147,22 @@ test('`getFunctionConfig` extracts configuration properties from function file',
 })
 
 test('Ignores function paths from the in-source `config` function if the feature flag is off', async () => {
-  const userDirectory = resolve(fixturesDir, 'with_config', 'netlify', 'edge-functions')
-  const internalDirectory = resolve(fixturesDir, 'with_config', '.netlify', 'edge-functions')
-  const tmpDir = await tmp.dir()
+  const { basePath, cleanup, distPath } = await useFixture('with_config')
+  const userDirectory = resolve(basePath, 'netlify', 'edge-functions')
+  const internalDirectory = resolve(basePath, '.netlify', 'edge-functions')
   const declarations: Declaration[] = []
-  const result = await bundle([internalDirectory, userDirectory], tmpDir.path, declarations, {
-    basePath: fixturesDir,
+  const result = await bundle([internalDirectory, userDirectory], distPath, declarations, {
+    basePath,
     configPath: join(internalDirectory, 'config.json'),
   })
-  const generatedFiles = await fs.readdir(tmpDir.path)
+  const generatedFiles = await fs.readdir(distPath)
 
   expect(result.functions.length).toBe(6)
-  expect(generatedFiles.length).toBe(2)
 
-  const manifestFile = await fs.readFile(resolve(tmpDir.path, 'manifest.json'), 'utf8')
+  // ESZIP, manifest and import map.
+  expect(generatedFiles.length).toBe(3)
+
+  const manifestFile = await fs.readFile(resolve(distPath, 'manifest.json'), 'utf8')
   const manifest = JSON.parse(manifestFile)
   const { bundles, routes } = manifest
 
@@ -169,13 +171,13 @@ test('Ignores function paths from the in-source `config` function if the feature
   expect(generatedFiles.includes(bundles[0].asset)).toBe(true)
   expect(routes.length).toBe(0)
 
-  await fs.rmdir(tmpDir.path, { recursive: true })
+  await cleanup()
 })
 
 test('Loads function paths from the in-source `config` function', async () => {
-  const userDirectory = resolve(fixturesDir, 'with_config', 'netlify', 'edge-functions')
-  const internalDirectory = resolve(fixturesDir, 'with_config', '.netlify', 'edge-functions')
-  const tmpDir = await tmp.dir()
+  const { basePath, cleanup, distPath } = await useFixture('with_config')
+  const userDirectory = resolve(basePath, 'netlify', 'edge-functions')
+  const internalDirectory = resolve(basePath, '.netlify', 'edge-functions')
   const declarations: Declaration[] = [
     {
       function: 'framework-func2',
@@ -186,19 +188,21 @@ test('Loads function paths from the in-source `config` function', async () => {
       path: '/user-func2',
     },
   ]
-  const result = await bundle([internalDirectory, userDirectory], tmpDir.path, declarations, {
-    basePath: fixturesDir,
+  const result = await bundle([internalDirectory, userDirectory], distPath, declarations, {
+    basePath,
     configPath: join(internalDirectory, 'config.json'),
     featureFlags: {
       edge_functions_config_export: true,
     },
   })
-  const generatedFiles = await fs.readdir(tmpDir.path)
+  const generatedFiles = await fs.readdir(distPath)
 
   expect(result.functions.length).toBe(6)
-  expect(generatedFiles.length).toBe(2)
 
-  const manifestFile = await fs.readFile(resolve(tmpDir.path, 'manifest.json'), 'utf8')
+  // ESZIP, manifest and import map.
+  expect(generatedFiles.length).toBe(3)
+
+  const manifestFile = await fs.readFile(resolve(distPath, 'manifest.json'), 'utf8')
   const manifest = JSON.parse(manifestFile)
   const { bundles, routes, post_cache_routes: postCacheRoutes } = manifest
 
@@ -216,7 +220,7 @@ test('Loads function paths from the in-source `config` function', async () => {
   expect(postCacheRoutes.length).toBe(1)
   expect(postCacheRoutes[0]).toEqual({ function: 'user-func4', pattern: '^/user-func4/?$' })
 
-  await fs.rmdir(tmpDir.path, { recursive: true })
+  await cleanup()
 })
 
 test('Passes validation if default export exists and is a function', async () => {

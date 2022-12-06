@@ -126,6 +126,7 @@ const bundle = async (
     declarations,
     distDirectory,
     functions,
+    importMapURL: functionBundle.importMapURL,
     layers: deployConfig.layers,
   })
 

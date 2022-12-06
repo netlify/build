@@ -6,6 +6,7 @@ import process from 'process'
 import { fileURLToPath, pathToFileURL } from 'url'
 import { promisify } from 'util'
 
+import cpy from 'cpy'
 import { deleteAsync } from 'del'
 import tar from 'tar'
 import tmp from 'tmp-promise'
@@ -50,17 +51,31 @@ const bundleFunction = async (bundlerDir) => {
 
   const bundlerPath = require.resolve(bundlerDir)
   const bundlerURL = pathToFileURL(bundlerPath)
+  // eslint-disable-next-line import/no-dynamic-require
   const { bundle } = await import(bundlerURL)
-  const { path: destPath } = await tmp.dir()
+  const { path: basePath } = await tmp.dir()
 
-  pathsToCleanup.add(destPath)
+  console.log(`Copying test fixture to '${basePath}'...`)
 
-  console.log(`Bundling functions at '${functionsDir}'...`)
+  await cpy(`${functionsDir}/**`, join(basePath, 'functions'))
 
-  return await bundle([functionsDir], destPath, [{ function: 'func1', path: '/func1' }])
+  pathsToCleanup.add(basePath)
+
+  const destPath = join(basePath, '.netlify', 'edge-functions-dist')
+
+  console.log(`Bundling functions at '${basePath}'...`)
+
+  const bundleOutput = await bundle([join(basePath, 'functions')], destPath, [{ function: 'func1', path: '/func1' }], {
+    basePath,
+  })
+
+  return {
+    basePath,
+    bundleOutput,
+  }
 }
 
-const runAssertions = (bundleOutput) => {
+const runAssertions = ({ basePath, bundleOutput }) => {
   console.log('Running assertions on bundle output:')
   console.log(JSON.stringify(bundleOutput, null, 2))
 
@@ -68,7 +83,7 @@ const runAssertions = (bundleOutput) => {
 
   assert.equal(functions.length, 1)
   assert.equal(functions[0].name, 'func1')
-  assert.equal(functions[0].path, join(functionsDir, 'func1.ts'))
+  assert.equal(functions[0].path, join(basePath, 'functions', 'func1.ts'))
 }
 
 const cleanup = async () => {

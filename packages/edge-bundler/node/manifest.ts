@@ -15,6 +15,7 @@ interface GenerateManifestOptions {
   bundles?: Bundle[]
   declarations?: Declaration[]
   functions: EdgeFunction[]
+  importMapURL?: string
   layers?: Layer[]
 }
 
@@ -22,9 +23,10 @@ interface GenerateManifestOptions {
 interface Manifest {
   bundler_version: string
   bundles: { asset: string; format: string }[]
+  import_map?: string
+  layers: { name: string; flag: string }[]
   routes: { function: string; name?: string; pattern: string }[]
   post_cache_routes: { function: string; name?: string; pattern: string }[]
-  layers: { name: string; flag: string }[]
 }
 /* eslint-enable camelcase */
 
@@ -34,7 +36,13 @@ interface Route {
   pattern: string
 }
 
-const generateManifest = ({ bundles = [], declarations = [], functions, layers = [] }: GenerateManifestOptions) => {
+const generateManifest = ({
+  bundles = [],
+  declarations = [],
+  functions,
+  importMapURL,
+  layers = [],
+}: GenerateManifestOptions) => {
   const preCacheRoutes: Route[] = []
   const postCacheRoutes: Route[] = []
 
@@ -69,6 +77,7 @@ const generateManifest = ({ bundles = [], declarations = [], functions, layers =
     post_cache_routes: postCacheRoutes.filter(nonNullable),
     bundler_version: getPackageVersion(),
     layers,
+    import_map: importMapURL,
   }
 
   return manifest
@@ -96,6 +105,7 @@ interface WriteManifestOptions {
   declarations: Declaration[]
   distDirectory: string
   functions: EdgeFunction[]
+  importMapURL?: string
   layers?: Layer[]
 }
 
@@ -104,9 +114,10 @@ const writeManifest = async ({
   declarations = [],
   distDirectory,
   functions,
+  importMapURL,
   layers,
 }: WriteManifestOptions) => {
-  const manifest = generateManifest({ bundles, declarations, functions, layers })
+  const manifest = generateManifest({ bundles, declarations, functions, importMapURL, layers })
   const manifestPath = join(distDirectory, 'manifest.json')
 
   await fs.writeFile(manifestPath, JSON.stringify(manifest))

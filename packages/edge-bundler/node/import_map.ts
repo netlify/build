@@ -1,12 +1,12 @@
 import { Buffer } from 'buffer'
 import { promises as fs } from 'fs'
-import { dirname } from 'path'
-import { pathToFileURL } from 'url'
+import { dirname, isAbsolute, posix, relative, sep } from 'path'
+import { fileURLToPath, pathToFileURL } from 'url'
 
 import { parse } from '@import-maps/resolve'
 
 const INTERNAL_IMPORTS = {
-  'netlify:edge': new URL('https://edge.netlify.com/v1/index.ts'),
+  'netlify:edge': 'https://edge.netlify.com/v1/index.ts',
 }
 
 interface ImportMapFile {
@@ -28,22 +28,50 @@ class ImportMap {
     })
   }
 
-  static resolve(importMapFile: ImportMapFile) {
+  // Transforms an import map by making any relative paths use a different path
+  // as a base.
+  static resolve(importMapFile: ImportMapFile, rootPath?: string) {
     const { baseURL, ...importMap } = importMapFile
     const parsedImportMap = parse(importMap, baseURL)
+    const { imports = {} } = parsedImportMap
+    const newImports: Record<string, string> = {}
 
-    return parsedImportMap
+    Object.keys(imports).forEach((specifier) => {
+      const url = imports[specifier]
+
+      // If there's no URL, don't even add the specifier to the final imports.
+      if (url === null) {
+        return
+      }
+
+      // If this is a file URL, we might want to transform it to use another
+      // root path, as long as that root path is defined.
+      if (url.protocol === 'file:' && rootPath !== undefined) {
+        // We want to use POSIX paths for the import map regardless of the OS
+        // we're building in.
+        const path = relative(rootPath, fileURLToPath(url)).split(sep).join(posix.sep)
+        const value = isAbsolute(path) ? path : `.${posix.sep}${path}`
+
+        newImports[specifier] = value
+
+        return
+      }
+
+      newImports[specifier] = url.toString()
+    })
+
+    return { ...parsedImportMap, imports: newImports }
   }
 
   add(file: ImportMapFile) {
     this.files.push(file)
   }
 
-  getContents() {
-    let imports: Record<string, URL | null> = {}
+  getContents(rootPath?: string) {
+    let imports: Record<string, string> = {}
 
     this.files.forEach((file) => {
-      const importMap = ImportMap.resolve(file)
+      const importMap = ImportMap.resolve(file, rootPath)
 
       imports = { ...imports, ...importMap.imports }
     })
@@ -69,9 +97,11 @@ class ImportMap {
   }
 
   async writeToFile(path: string) {
-    await fs.mkdir(dirname(path), { recursive: true })
+    const distDirectory = dirname(path)
 
-    const contents = this.getContents()
+    await fs.mkdir(distDirectory, { recursive: true })
+
+    const contents = this.getContents(distDirectory)
 
     await fs.writeFile(path, contents)
   }
