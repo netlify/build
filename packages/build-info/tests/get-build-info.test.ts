@@ -3,11 +3,20 @@ import { afterEach, describe, expect, test } from 'vitest'
 import { getBuildInfo } from '../src/get-build-info.js'
 
 import { createFixture } from './helpers.js'
-
 // run tests inside temp directory to avoid side effects
 let cleanup: () => Promise<void>
 
 afterEach(async () => await cleanup())
+
+test('should not crash on invalid projects', async () => {
+  const fixture = await createFixture('invalid-project')
+  cleanup = fixture.cleanup
+  const { frameworks, packageManager } = await getBuildInfo({
+    projectDir: fixture.cwd,
+  })
+  expect(packageManager).toMatchInlineSnapshot
+  expect(frameworks).toEqual([])
+})
 
 describe('Golang', () => {
   test('should not detect anything inside a golang workspace', async () => {
