@@ -103,7 +103,7 @@ const BUILD_SYSTEMS = {
   },
 
   buck: async (baseDir: string, rootDir: string): Promise<BuildSystem | undefined> => {
-    const buck = ['.buckconfig']
+    const buck = ['.buckconfig', 'BUCK']
     const buckConfigPath = lookFor(buck, baseDir, rootDir)
 
     if (buckConfigPath) {
@@ -125,7 +125,7 @@ const BUILD_SYSTEMS = {
   },
 
   bazel: async (baseDir: string, rootDir: string): Promise<BuildSystem | undefined> => {
-    const bazel = ['.bazelrc']
+    const bazel = ['.bazelrc', 'WORKSPACE', 'WORKSPACE.bazel']
     const bazelConfigPath = lookFor(bazel, baseDir, rootDir)
 
     if (bazelConfigPath) {
