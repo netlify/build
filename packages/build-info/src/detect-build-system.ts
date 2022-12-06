@@ -9,14 +9,14 @@ export type BuildSystem = {
   version?: string | undefined
 }
 
-export const detectBuildSystems = (baseDir: string, rootDir?: string): BuildSystem[] => {
+export const detectBuildSystems = async (baseDir: string, rootDir?: string): Promise<BuildSystem[]> => {
   const buildTools = Object.keys(BUILD_SYSTEMS)
-
-  return buildTools.map((tool) => BUILD_SYSTEMS[tool](baseDir, rootDir)).filter((tool) => tool != undefined)
+  const buildSystems = await Promise.all(buildTools.map(async (tool) => await BUILD_SYSTEMS[tool](baseDir, rootDir)))
+  return buildSystems.filter((tool) => tool != undefined)
 }
 
 const BUILD_SYSTEMS = {
-  nx: (baseDir: string, rootDir?: string): BuildSystem | undefined => {
+  nx: async (baseDir: string, rootDir?: string): Promise<BuildSystem | undefined> => {
     const nx = ['nx.json']
     const nxConfigPath = lookFor(nx, baseDir, rootDir)
 
@@ -24,14 +24,14 @@ const BUILD_SYSTEMS = {
       const pkgJson = getPkgJson(nxConfigPath)
       const { devDependencies } = pkgJson
 
-      return {
+      return Promise.resolve({
         name: 'nx',
         version: devDependencies?.nx,
-      }
+      })
     }
   },
 
-  lerna: (baseDir: string, rootDir?: string): BuildSystem | undefined => {
+  lerna: async (baseDir: string, rootDir?: string): Promise<BuildSystem | undefined> => {
     const lerna = ['lerna.json']
     const lernaConfigPath = lookFor(lerna, baseDir, rootDir)
 
@@ -39,14 +39,14 @@ const BUILD_SYSTEMS = {
       const pkgJson = getPkgJson(lernaConfigPath)
       const { devDependencies } = pkgJson
 
-      return {
+      return Promise.resolve({
         name: 'lerna',
         version: devDependencies?.lerna,
-      }
+      })
     }
   },
 
-  turbo: (baseDir: string, rootDir?: string): BuildSystem | undefined => {
+  turbo: async (baseDir: string, rootDir?: string): Promise<BuildSystem | undefined> => {
     const turbo = ['turbo.json']
     const turboConfigPath = lookFor(turbo, baseDir, rootDir)
 
@@ -54,14 +54,14 @@ const BUILD_SYSTEMS = {
       const pkgJson = getPkgJson(turboConfigPath)
       const { devDependencies } = pkgJson
 
-      return {
+      return Promise.resolve({
         name: 'turbo',
         version: devDependencies?.turbo,
-      }
+      })
     }
   },
 
-  rush: (baseDir: string, rootDir?: string): BuildSystem | undefined => {
+  rush: async (baseDir: string, rootDir?: string): Promise<BuildSystem | undefined> => {
     const rush = ['rush.json']
     const rushConfigPath = lookFor(rush, baseDir, rootDir)
 
@@ -69,14 +69,14 @@ const BUILD_SYSTEMS = {
       const pkgJson = getPkgJson(rushConfigPath)
       const { devDependencies } = pkgJson
 
-      return {
+      return Promise.resolve({
         name: 'rush',
         version: devDependencies?.rush,
-      }
+      })
     }
   },
 
-  lage: (baseDir: string, rootDir?: string): BuildSystem | undefined => {
+  lage: async (baseDir: string, rootDir?: string): Promise<BuildSystem | undefined> => {
     const lage = ['lage.config.js']
     const lageConfigPath = lookFor(lage, baseDir, rootDir)
 
@@ -84,54 +84,54 @@ const BUILD_SYSTEMS = {
       const pkgJson = getPkgJson(lageConfigPath)
       const { devDependencies } = pkgJson
 
-      return {
+      return Promise.resolve({
         name: 'lage',
         version: devDependencies?.lage,
-      }
+      })
     }
   },
 
-  pants: (baseDir: string, rootDir: string): BuildSystem | undefined => {
+  pants: async (baseDir: string, rootDir: string): Promise<BuildSystem | undefined> => {
     const pants = ['pants.toml']
     const pantsConfigPath = lookFor(pants, baseDir, rootDir)
 
     if (pantsConfigPath) {
-      return {
+      return Promise.resolve({
         name: 'pants',
-      }
+      })
     }
   },
 
-  buck: (baseDir: string, rootDir: string): BuildSystem | undefined => {
+  buck: async (baseDir: string, rootDir: string): Promise<BuildSystem | undefined> => {
     const buck = ['.buckconfig']
     const buckConfigPath = lookFor(buck, baseDir, rootDir)
 
     if (buckConfigPath) {
-      return {
+      return Promise.resolve({
         name: 'buck',
-      }
+      })
     }
   },
 
-  gradle: (baseDir: string, rootDir: string): BuildSystem | undefined => {
+  gradle: async (baseDir: string, rootDir: string): Promise<BuildSystem | undefined> => {
     const gradle = ['build.gradle']
     const gradleConfigPath = lookFor(gradle, baseDir, rootDir)
 
     if (gradleConfigPath) {
-      return {
+      return Promise.resolve({
         name: 'gradle',
-      }
+      })
     }
   },
 
-  bazel: (baseDir: string, rootDir: string): BuildSystem | undefined => {
+  bazel: async (baseDir: string, rootDir: string): Promise<BuildSystem | undefined> => {
     const bazel = ['.bazelrc']
     const bazelConfigPath = lookFor(bazel, baseDir, rootDir)
 
     if (bazelConfigPath) {
-      return {
+      return Promise.resolve({
         name: 'bazel',
-      }
+      })
     }
   },
 }
