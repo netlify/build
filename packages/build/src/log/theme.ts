@@ -1,11 +1,13 @@
 import chalk from 'chalk'
 
-// Color theme. Please use this instead of requiring chalk directly, to ensure
-// consistent colors.
+/**
+ * Color theme. Please use this instead of requiring chalk directly,
+ * to ensure consistent colors.
+ */
 export const THEME = {
   // Main headers
   header: chalk.cyanBright.bold,
-  // Single lines used as subheaders
+  // Single lines used as sub-headers
   subHeader: chalk.cyan.bold,
   // One of several words that should be highlighted inside a line
   highlightWords: chalk.cyan,
