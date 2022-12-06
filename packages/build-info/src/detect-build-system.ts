@@ -9,13 +9,22 @@ export type BuildSystem = {
   version?: string | undefined
 }
 
+type BuildSystemHandler = (baseDir: string, rootDir?: string) => Promise<BuildSystem | undefined>
+
 export const detectBuildSystems = async (baseDir: string, rootDir?: string): Promise<BuildSystem[]> => {
   const buildTools = Object.keys(BUILD_SYSTEMS)
   const buildSystems = await Promise.all(buildTools.map(async (tool) => await BUILD_SYSTEMS[tool](baseDir, rootDir)))
-  return buildSystems.filter((tool) => tool != undefined)
+
+  return buildSystems.reduce((res, tool) => {
+    if (tool) {
+      res.push(tool)
+    }
+
+    return res
+  }, [] as BuildSystem[])
 }
 
-const BUILD_SYSTEMS = {
+const BUILD_SYSTEMS: Record<string, BuildSystemHandler> = {
   nx: async (baseDir: string, rootDir?: string): Promise<BuildSystem | undefined> => {
     const nx = ['nx.json']
     const nxConfigPath = lookFor(nx, baseDir, rootDir)
