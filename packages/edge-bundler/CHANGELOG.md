@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.3.1](https://github.com/netlify/edge-bundler/compare/v5.3.0...v5.3.1) (2022-12-06)
+
+
+### Bug Fixes
+
+* add `importMapURL` to manifest validation ([#239](https://github.com/netlify/edge-bundler/issues/239)) ([2ba1878](https://github.com/netlify/edge-bundler/commit/2ba1878765e219ba291bceb648bc50ee9bdb55c5))
+
 ## [5.3.0](https://github.com/netlify/edge-bundler/compare/v5.2.0...v5.3.0) (2022-12-06)
 
 
