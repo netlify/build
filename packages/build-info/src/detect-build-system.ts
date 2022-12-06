@@ -141,7 +141,5 @@ const lookFor = (configFile: string[], baseDir: string, rootDir?: string): strin
 }
 
 const getPkgJson = (configPath: string): PackageJson => {
-  return JSON.parse(
-    readFileSync(new URL(path.join(path.dirname(configPath), 'package.json'), import.meta.url), 'utf-8'),
-  )
+  return JSON.parse(readFileSync(path.join(path.dirname(configPath), 'package.json'), 'utf-8'))
 }
