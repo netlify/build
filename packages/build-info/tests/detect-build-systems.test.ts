@@ -1,6 +1,6 @@
 import { describe, expect, test, beforeEach } from 'vitest'
 
-import { detectBuildSystem } from '../src/detect-build-system.js'
+import { detectBuildSystems } from '../src/detect-build-system.js'
 
 import { mockFileSystem } from './mock-file-system.js'
 
@@ -17,7 +17,7 @@ describe('Build System Detection', () => {
       'nx.json': '',
     })
 
-    const buildSystems = detectBuildSystem(cwd, cwd)
+    const buildSystems = detectBuildSystems(cwd)
 
     expect(buildSystems[0]).toEqual({ name: 'nx', version: '^14.7.13' })
   })
@@ -28,7 +28,7 @@ describe('Build System Detection', () => {
       'lerna.json': '',
     })
 
-    const buildSystems = detectBuildSystem(cwd, cwd)
+    const buildSystems = detectBuildSystems(cwd)
     expect(buildSystems[0]).toEqual({ name: 'lerna', version: '^5.5.2' })
   })
 
@@ -38,7 +38,7 @@ describe('Build System Detection', () => {
       'turbo.json': '',
     })
 
-    const buildSystems = detectBuildSystem(cwd, cwd)
+    const buildSystems = detectBuildSystems(cwd)
     expect(buildSystems[0]).toEqual({ name: 'turbo', version: '^1.6.3' })
   })
 
@@ -48,7 +48,7 @@ describe('Build System Detection', () => {
       'rush.json': '',
     })
 
-    const buildSystems = detectBuildSystem(cwd, cwd)
+    const buildSystems = detectBuildSystems(cwd)
     expect(buildSystems[0]).toEqual({ name: 'rush', version: '^2.5.3' })
   })
 })

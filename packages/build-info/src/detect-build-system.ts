@@ -4,21 +4,21 @@ import path from 'path'
 import { findUpSync } from 'find-up'
 import { PackageJson } from 'read-pkg'
 
-export const detectBuildSystem = (rootDir: string, baseDir: string): string[] => {
-  const buildTools = Object.keys(BUILD_SYSTEMS)
-
-  return buildTools.map((tool) => BUILD_SYSTEMS[tool](rootDir, baseDir)).filter((tool) => tool != undefined)
-}
-
-type BuildSystem = {
+export type BuildSystem = {
   name: string
   version: string | undefined
 }
 
+export const detectBuildSystems = (baseDir: string, rootDir?: string): BuildSystem[] => {
+  const buildTools = Object.keys(BUILD_SYSTEMS)
+
+  return buildTools.map((tool) => BUILD_SYSTEMS[tool](baseDir, rootDir)).filter((tool) => tool != undefined)
+}
+
 const BUILD_SYSTEMS = {
-  nx: (rootDir: string, baseDir: string): BuildSystem | undefined => {
+  nx: (baseDir: string, rootDir?: string): BuildSystem | undefined => {
     const nx = ['nx.json']
-    const nxConfigPath = lookFor(nx, rootDir, baseDir)
+    const nxConfigPath = lookFor(nx, baseDir, rootDir)
 
     if (nxConfigPath) {
       const pkgJson = getPkgJson(nxConfigPath)
@@ -31,9 +31,9 @@ const BUILD_SYSTEMS = {
     }
   },
 
-  lerna: (rootDir: string, baseDir: string): BuildSystem | undefined => {
+  lerna: (baseDir: string, rootDir?: string): BuildSystem | undefined => {
     const lerna = ['lerna.json']
-    const lernaConfigPath = lookFor(lerna, rootDir, baseDir)
+    const lernaConfigPath = lookFor(lerna, baseDir, rootDir)
 
     if (lernaConfigPath) {
       const pkgJson = getPkgJson(lernaConfigPath)
@@ -46,9 +46,9 @@ const BUILD_SYSTEMS = {
     }
   },
 
-  turbo: (rootDir: string, baseDir: string): BuildSystem | undefined => {
+  turbo: (baseDir: string, rootDir?: string): BuildSystem | undefined => {
     const turbo = ['turbo.json']
-    const turboConfigPath = lookFor(turbo, rootDir, baseDir)
+    const turboConfigPath = lookFor(turbo, baseDir, rootDir)
 
     if (turboConfigPath) {
       const pkgJson = getPkgJson(turboConfigPath)
@@ -61,9 +61,9 @@ const BUILD_SYSTEMS = {
     }
   },
 
-  rush: (rootDir: string, baseDir: string): BuildSystem | undefined => {
+  rush: (baseDir: string, rootDir?: string): BuildSystem | undefined => {
     const rush = ['rush.json']
-    const rushConfigPath = lookFor(rush, rootDir, baseDir)
+    const rushConfigPath = lookFor(rush, baseDir, rootDir)
 
     if (rushConfigPath) {
       const pkgJson = getPkgJson(rushConfigPath)
@@ -77,7 +77,7 @@ const BUILD_SYSTEMS = {
   },
 }
 
-const lookFor = (configFile: string[], rootDir: string, baseDir: string): string | undefined => {
+const lookFor = (configFile: string[], baseDir: string, rootDir?: string): string | undefined => {
   return findUpSync(configFile, { cwd: baseDir, stopAt: rootDir })
 }
 
