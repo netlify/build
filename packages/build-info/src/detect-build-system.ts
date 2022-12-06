@@ -38,9 +38,40 @@ const BUILD_SYSTEMS = {
     if (lernaConfigPath) {
       const pkgJson = getPkgJson(lernaConfigPath)
       const { devDependencies } = pkgJson
+
       return {
         name: 'lerna',
         version: devDependencies?.lerna,
+      }
+    }
+  },
+
+  turbo: (rootDir: string, baseDir: string): BuildSystem | undefined => {
+    const turbo = ['turbo.json']
+    const turboConfigPath = lookFor(turbo, rootDir, baseDir)
+
+    if (turboConfigPath) {
+      const pkgJson = getPkgJson(turboConfigPath)
+      const { devDependencies } = pkgJson
+
+      return {
+        name: 'turbo',
+        version: devDependencies?.turbo,
+      }
+    }
+  },
+
+  rush: (rootDir: string, baseDir: string): BuildSystem | undefined => {
+    const rush = ['rush.json']
+    const rushConfigPath = lookFor(rush, rootDir, baseDir)
+
+    if (rushConfigPath) {
+      const pkgJson = getPkgJson(rushConfigPath)
+      const { devDependencies } = pkgJson
+
+      return {
+        name: 'rush',
+        version: devDependencies?.rush,
       }
     }
   },

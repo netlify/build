@@ -31,4 +31,24 @@ describe('Build System Detection', () => {
     const buildSystems = detectBuildSystem(cwd, cwd)
     expect(buildSystems[0]).toEqual({ name: 'lerna', version: '^5.5.2' })
   })
+
+  test('detects turbo when turbo.json is present', () => {
+    const cwd = mockFileSystem({
+      'package.json': JSON.stringify({ devDependencies: { turbo: '^1.6.3' } }),
+      'turbo.json': '',
+    })
+
+    const buildSystems = detectBuildSystem(cwd, cwd)
+    expect(buildSystems[0]).toEqual({ name: 'turbo', version: '^1.6.3' })
+  })
+
+  test('detects rush when rush.json is present', () => {
+    const cwd = mockFileSystem({
+      'package.json': JSON.stringify({ devDependencies: { rush: '^2.5.3' } }),
+      'rush.json': '',
+    })
+
+    const buildSystems = detectBuildSystem(cwd, cwd)
+    expect(buildSystems[0]).toEqual({ name: 'rush', version: '^2.5.3' })
+  })
 })
