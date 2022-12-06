@@ -61,4 +61,40 @@ describe('Build System Detection', () => {
     const buildSystems = detectBuildSystems(cwd)
     expect(buildSystems[0]).toEqual({ name: 'lage', version: '^1.5.0' })
   })
+
+  test('detects pants when pants.toml is present', () => {
+    const cwd = mockFileSystem({
+      'pants.toml': '',
+    })
+
+    const buildSystems = detectBuildSystems(cwd)
+    expect(buildSystems[0]).toEqual({ name: 'pants' })
+  })
+
+  test('detects buck when .buckconfig is present', () => {
+    const cwd = mockFileSystem({
+      '.buckconfig': '',
+    })
+
+    const buildSystems = detectBuildSystems(cwd)
+    expect(buildSystems[0]).toEqual({ name: 'buck' })
+  })
+
+  test('detects gradle when build.gradle is present', () => {
+    const cwd = mockFileSystem({
+      'build.gradle': '',
+    })
+
+    const buildSystems = detectBuildSystems(cwd)
+    expect(buildSystems[0]).toEqual({ name: 'gradle' })
+  })
+
+  test('detects bazel when .bazelrc is present', () => {
+    const cwd = mockFileSystem({
+      '.bazelrc': '',
+    })
+
+    const buildSystems = detectBuildSystems(cwd)
+    expect(buildSystems[0]).toEqual({ name: 'bazel' })
+  })
 })

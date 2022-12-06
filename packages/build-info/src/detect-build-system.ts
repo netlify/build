@@ -6,7 +6,7 @@ import { PackageJson } from 'read-pkg'
 
 export type BuildSystem = {
   name: string
-  version: string | undefined
+  version?: string | undefined
 }
 
 export const detectBuildSystems = (baseDir: string, rootDir?: string): BuildSystem[] => {
@@ -87,6 +87,50 @@ const BUILD_SYSTEMS = {
       return {
         name: 'lage',
         version: devDependencies?.lage,
+      }
+    }
+  },
+
+  pants: (baseDir: string, rootDir: string): BuildSystem | undefined => {
+    const pants = ['pants.toml']
+    const pantsConfigPath = lookFor(pants, baseDir, rootDir)
+
+    if (pantsConfigPath) {
+      return {
+        name: 'pants',
+      }
+    }
+  },
+
+  buck: (baseDir: string, rootDir: string): BuildSystem | undefined => {
+    const buck = ['.buckconfig']
+    const buckConfigPath = lookFor(buck, baseDir, rootDir)
+
+    if (buckConfigPath) {
+      return {
+        name: 'buck',
+      }
+    }
+  },
+
+  gradle: (baseDir: string, rootDir: string): BuildSystem | undefined => {
+    const gradle = ['build.gradle']
+    const gradleConfigPath = lookFor(gradle, baseDir, rootDir)
+
+    if (gradleConfigPath) {
+      return {
+        name: 'gradle',
+      }
+    }
+  },
+
+  bazel: (baseDir: string, rootDir: string): BuildSystem | undefined => {
+    const bazel = ['.bazelrc']
+    const bazelConfigPath = lookFor(bazel, baseDir, rootDir)
+
+    if (bazelConfigPath) {
+      return {
+        name: 'bazel',
       }
     }
   },
