@@ -51,4 +51,14 @@ describe('Build System Detection', () => {
     const buildSystems = detectBuildSystems(cwd)
     expect(buildSystems[0]).toEqual({ name: 'rush', version: '^2.5.3' })
   })
+
+  test('detects lage when lage.config.json is present', () => {
+    const cwd = mockFileSystem({
+      'package.json': JSON.stringify({ devDependencies: { lage: '^1.5.0' } }),
+      'lage.config.js': '',
+    })
+
+    const buildSystems = detectBuildSystems(cwd)
+    expect(buildSystems[0]).toEqual({ name: 'lage', version: '^1.5.0' })
+  })
 })

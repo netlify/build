@@ -75,6 +75,21 @@ const BUILD_SYSTEMS = {
       }
     }
   },
+
+  lage: (baseDir: string, rootDir?: string): BuildSystem | undefined => {
+    const lage = ['lage.config.js']
+    const lageConfigPath = lookFor(lage, baseDir, rootDir)
+
+    if (lageConfigPath) {
+      const pkgJson = getPkgJson(lageConfigPath)
+      const { devDependencies } = pkgJson
+
+      return {
+        name: 'lage',
+        version: devDependencies?.lage,
+      }
+    }
+  },
 }
 
 const lookFor = (configFile: string[], baseDir: string, rootDir?: string): string | undefined => {
