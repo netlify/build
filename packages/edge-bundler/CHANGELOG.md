@@ -1,5 +1,13 @@
 # Changelog
 
+## [5.3.0](https://github.com/netlify/edge-bundler/compare/v5.2.0...v5.3.0) (2022-12-06)
+
+
+### Features
+
+* save import map URL to manifest ([#235](https://github.com/netlify/edge-bundler/issues/235)) ([94c6ec6](https://github.com/netlify/edge-bundler/commit/94c6ec61fb3663790d4b2561794f4bdf25f2264c))
+* support for multiple paths in in source configuration ([#230](https://github.com/netlify/edge-bundler/issues/230)) ([d4ec906](https://github.com/netlify/edge-bundler/commit/d4ec906edd311c4b5b137c6f2d3e4b564190d835))
+
 ## [5.2.0](https://github.com/netlify/edge-bundler/compare/v5.1.0...v5.2.0) (2022-12-06)
 
 
