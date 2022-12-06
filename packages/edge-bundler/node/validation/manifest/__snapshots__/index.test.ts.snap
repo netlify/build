@@ -59,8 +59,8 @@ TYPE must be string
 
   28 |   ],
   29 |   \\"bundler_version\\": \\"1.6.0\\",
-> 30 |   \\"importMapURL\\": [
-     |                   ^
+> 30 |   \\"import_map\\": [
+     |                 ^
 > 31 |     \\"file:///root/.netlify/edge-functions-dist/import_map.json\\"
      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 > 32 |   ]

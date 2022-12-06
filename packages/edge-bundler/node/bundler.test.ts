@@ -11,6 +11,7 @@ import { useFixture } from '../test/util.js'
 import { BundleError } from './bundle_error.js'
 import { bundle, BundleOptions } from './bundler.js'
 import { isNodeError } from './utils/error.js'
+import { validateManifest } from './validation/manifest/index.js'
 
 test('Produces an ESZIP bundle', async () => {
   const { basePath, cleanup, distPath } = await useFixture('with_import_maps')
@@ -34,6 +35,7 @@ test('Produces an ESZIP bundle', async () => {
 
   const manifestFile = await fs.readFile(resolve(distPath, 'manifest.json'), 'utf8')
   const manifest = JSON.parse(manifestFile)
+  expect(() => validateManifest(manifest)).not.toThrowError()
   const { bundles, import_map: importMapURL } = manifest
 
   expect(bundles.length).toBe(1)

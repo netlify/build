@@ -147,14 +147,14 @@ describe('layers', () => {
 describe('import map URL', () => {
   test('should accept string value', () => {
     const manifest = getBaseManifest()
-    manifest.importMapURL = 'file:///root/.netlify/edge-functions-dist/import_map.json'
+    manifest.import_map = 'file:///root/.netlify/edge-functions-dist/import_map.json'
 
     expect(() => validateManifest(manifest)).not.toThrowError()
   })
 
   test('should throw on wrong type', () => {
     const manifest = getBaseManifest()
-    manifest.importMapURL = ['file:///root/.netlify/edge-functions-dist/import_map.json']
+    manifest.import_map = ['file:///root/.netlify/edge-functions-dist/import_map.json']
 
     expect(() => validateManifest(manifest)).toThrowErrorMatchingSnapshot()
   })
