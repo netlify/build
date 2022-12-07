@@ -41,7 +41,16 @@ const coreStep = async function ({
   const cacheDirectory =
     !isRunningLocally && featureFlags.edge_functions_cache_cli ? resolve(buildDir, DENO_CLI_CACHE_DIRECTORY) : undefined
 
-  // Edge Bundler expects the dist directory to exist.
+  // Cleaning up the dist directory, in case it has any artifacts from previous
+  // builds.
+  try {
+    await fs.rm(distPath, { recursive: true })
+  } catch {
+    // no-op
+  }
+
+  // Ensuring the dist directory actually exists before letting Edge Bundler
+  // write to it.
   await fs.mkdir(distPath, { recursive: true })
 
   try {
