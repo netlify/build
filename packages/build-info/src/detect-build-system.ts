@@ -25,7 +25,7 @@ export const detectBuildSystems = async (baseDir: string, rootDir?: string): Pro
 }
 
 const BUILD_SYSTEMS: Record<string, BuildSystemHandler> = {
-  nx: async (baseDir: string, rootDir?: string): Promise<BuildSystem | undefined> => {
+  nx: async (baseDir, rootDir) => {
     const nx = ['nx.json']
     const nxConfigPath = lookFor(nx, baseDir, rootDir)
 
@@ -40,7 +40,7 @@ const BUILD_SYSTEMS: Record<string, BuildSystemHandler> = {
     }
   },
 
-  lerna: async (baseDir: string, rootDir?: string): Promise<BuildSystem | undefined> => {
+  lerna: async (baseDir, rootDir) => {
     const lerna = ['lerna.json']
     const lernaConfigPath = lookFor(lerna, baseDir, rootDir)
 
@@ -55,7 +55,7 @@ const BUILD_SYSTEMS: Record<string, BuildSystemHandler> = {
     }
   },
 
-  turbo: async (baseDir: string, rootDir?: string): Promise<BuildSystem | undefined> => {
+  turbo: async (baseDir, rootDir) => {
     const turbo = ['turbo.json']
     const turboConfigPath = lookFor(turbo, baseDir, rootDir)
 
@@ -70,7 +70,7 @@ const BUILD_SYSTEMS: Record<string, BuildSystemHandler> = {
     }
   },
 
-  rush: async (baseDir: string, rootDir?: string): Promise<BuildSystem | undefined> => {
+  rush: async (baseDir, rootDir) => {
     const rush = ['rush.json']
     const rushConfigPath = lookFor(rush, baseDir, rootDir)
 
@@ -85,7 +85,7 @@ const BUILD_SYSTEMS: Record<string, BuildSystemHandler> = {
     }
   },
 
-  lage: async (baseDir: string, rootDir?: string): Promise<BuildSystem | undefined> => {
+  lage: async (baseDir, rootDir) => {
     const lage = ['lage.config.js']
     const lageConfigPath = lookFor(lage, baseDir, rootDir)
 
@@ -100,7 +100,7 @@ const BUILD_SYSTEMS: Record<string, BuildSystemHandler> = {
     }
   },
 
-  pants: async (baseDir: string, rootDir: string): Promise<BuildSystem | undefined> => {
+  pants: async (baseDir, rootDir) => {
     const pants = ['pants.toml']
     const pantsConfigPath = lookFor(pants, baseDir, rootDir)
 
@@ -111,7 +111,7 @@ const BUILD_SYSTEMS: Record<string, BuildSystemHandler> = {
     }
   },
 
-  buck: async (baseDir: string, rootDir: string): Promise<BuildSystem | undefined> => {
+  buck: async (baseDir, rootDir) => {
     const buck = ['.buckconfig', 'BUCK']
     const buckConfigPath = lookFor(buck, baseDir, rootDir)
 
@@ -122,7 +122,7 @@ const BUILD_SYSTEMS: Record<string, BuildSystemHandler> = {
     }
   },
 
-  gradle: async (baseDir: string, rootDir: string): Promise<BuildSystem | undefined> => {
+  gradle: async (baseDir, rootDir) => {
     const gradle = ['build.gradle']
     const gradleConfigPath = lookFor(gradle, baseDir, rootDir)
 
@@ -133,8 +133,8 @@ const BUILD_SYSTEMS: Record<string, BuildSystemHandler> = {
     }
   },
 
-  bazel: async (baseDir: string, rootDir: string): Promise<BuildSystem | undefined> => {
-    const bazel = ['.bazelrc', 'WORKSPACE', 'WORKSPACE.bazel']
+  bazel: async (baseDir, rootDir) => {
+    const bazel = ['.bazelrc', 'WORKSPACE', 'WORKSPACE.bazel', 'WORKSPACE.bazel']
     const bazelConfigPath = lookFor(bazel, baseDir, rootDir)
 
     if (bazelConfigPath) {
