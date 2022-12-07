@@ -43,7 +43,11 @@ const coreStep = async function ({
 
   // Cleaning up the dist directory, in case it has any artifacts from previous
   // builds.
-  await fs.rm(distPath, { recursive: true })
+  try {
+    await fs.rm(distPath, { recursive: true })
+  } catch {
+    // no-op
+  }
 
   // Ensuring the dist directory actually exists before letting Edge Bundler
   // write to it.
