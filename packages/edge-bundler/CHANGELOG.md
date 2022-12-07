@@ -1,5 +1,13 @@
 # Changelog
 
+## [5.3.3](https://github.com/netlify/edge-bundler/compare/v5.3.2...v5.3.3) (2022-12-07)
+
+
+### Bug Fixes
+
+* add guard for import map with extraneous dist directory ([#243](https://github.com/netlify/edge-bundler/issues/243)) ([f0ac6d0](https://github.com/netlify/edge-bundler/commit/f0ac6d050ce31566045cbf8339b6f2a556b484df))
+* generate valid file URL on Windows ([#245](https://github.com/netlify/edge-bundler/issues/245)) ([6a8a00b](https://github.com/netlify/edge-bundler/commit/6a8a00b0db5b82738774aec84336fc50326cc068))
+
 ## [5.3.2](https://github.com/netlify/edge-bundler/compare/v5.3.1...v5.3.2) (2022-12-06)
 
 
