@@ -69,8 +69,18 @@ const createUserImportMap = async (importMap: ImportMap, basePath: string, distD
 
   await importMap.writeToFile(destPath)
 
-  const relativePath = relative(basePath, destPath)
-  const importMapURL = new URL(relativePath, virtualRoot)
+  let virtualPath = relative(basePath, destPath)
+
+  // If the dist directory is not a child of the base path, we can't represent
+  // the relative path as a file URL (because something like 'file://../foo' is
+  // not valid). This should never happen, but it's best to leave the absolute
+  // path untransformed to avoid getting a build error due to a missing import
+  // map.
+  if (virtualPath.startsWith('..')) {
+    virtualPath = destPath
+  }
+
+  const importMapURL = new URL(virtualPath, virtualRoot)
 
   return importMapURL.toString()
 }
