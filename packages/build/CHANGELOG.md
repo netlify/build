@@ -57,6 +57,28 @@
   * dependencies
     * @netlify/config bumped from ^20.0.1 to ^20.0.2
 
+## [29.0.3](https://github.com/netlify/build/compare/build-v29.0.2...build-v29.0.3) (2022-12-07)
+
+
+### Bug Fixes
+
+* clear edge functions dist directory before build ([#4753](https://github.com/netlify/build/issues/4753)) ([867392c](https://github.com/netlify/build/commit/867392ced85c3b67d29239a0bca7b580a2b6c523))
+* **deps:** update dependency @netlify/edge-bundler to v5.3.3 ([#4755](https://github.com/netlify/build/issues/4755)) ([bcb4112](https://github.com/netlify/build/commit/bcb4112eb4b242ba2d9acf5c7cdc9c54b4159469))
+
+## [29.0.2](https://github.com/netlify/build/compare/build-v29.0.1...build-v29.0.2) (2022-12-07)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v5.3.2 ([#4751](https://github.com/netlify/build/issues/4751)) ([f065b05](https://github.com/netlify/build/commit/f065b05ed4777f061d8513f22cce04a2664309d5))
+
+## [29.0.1](https://github.com/netlify/build/compare/build-v29.0.0...build-v29.0.1) (2022-12-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v5.2.0 ([#4747](https://github.com/netlify/build/issues/4747)) ([044ad4a](https://github.com/netlify/build/commit/044ad4a62306dd55d83121a0662f738ea08c8fc6))
+
 ## [29.0.0](https://github.com/netlify/build/compare/build-v28.4.5...build-v29.0.0) (2022-12-05)
 
 
