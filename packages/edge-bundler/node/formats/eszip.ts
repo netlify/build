@@ -1,4 +1,5 @@
 import { join, relative } from 'path'
+import { pathToFileURL } from 'url'
 
 import { virtualRoot } from '../../shared/consts.js'
 import type { WriteStage2Options } from '../../shared/stage2.js'
@@ -69,7 +70,7 @@ const createUserImportMap = async (importMap: ImportMap, basePath: string, distD
 
   await importMap.writeToFile(destPath)
 
-  let virtualPath = relative(basePath, destPath)
+  const virtualPath = relative(basePath, destPath)
 
   // If the dist directory is not a child of the base path, we can't represent
   // the relative path as a file URL (because something like 'file://../foo' is
@@ -77,7 +78,7 @@ const createUserImportMap = async (importMap: ImportMap, basePath: string, distD
   // path untransformed to avoid getting a build error due to a missing import
   // map.
   if (virtualPath.startsWith('..')) {
-    virtualPath = destPath
+    return pathToFileURL(destPath).toString()
   }
 
   const importMapURL = new URL(virtualPath, virtualRoot)
