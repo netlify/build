@@ -57,7 +57,7 @@
     "@types/node": "^14.18.32",
     "@types/semver": "^7.3.9",
     "@types/sinon": "^10.0.8",
-    "@types/uuid": "^8.3.4",
+    "@types/uuid": "^9.0.0",
     "@vitest/coverage-c8": "^0.25.0",
     "archiver": "^5.3.1",
     "cpy": "^9.0.1",
