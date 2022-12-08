@@ -90,3 +90,13 @@ test('detects bazel when .bazelrc is present', async () => {
   const buildSystems = await detectBuildSystems(cwd)
   expect(buildSystems[0]).toEqual({ name: 'bazel' })
 })
+
+test('detects moonrepo when .moon directory is present', async () => {
+  const cwd = mockFileSystem({
+    'package.json': JSON.stringify({ devDependencies: { moon: '^0.5.1' } }),
+    '.moon/toolchain.yml': '',
+  })
+
+  const buildSystems = await detectBuildSystems(cwd)
+  expect(buildSystems[0]).toEqual({ name: 'moon', version: '^0.5.1' })
+})

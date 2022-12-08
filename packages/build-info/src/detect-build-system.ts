@@ -88,7 +88,6 @@ const BUILD_SYSTEMS: Record<string, BuildSystemHandler> = {
   lage: async (baseDir, rootDir) => {
     const lage = ['lage.config.js']
     const lageConfigPath = lookFor(lage, baseDir, rootDir)
-
     if (lageConfigPath) {
       const pkgJson = getPkgJson(lageConfigPath)
       const { devDependencies } = pkgJson
@@ -134,7 +133,7 @@ const BUILD_SYSTEMS: Record<string, BuildSystemHandler> = {
   },
 
   bazel: async (baseDir, rootDir) => {
-    const bazel = ['.bazelrc', 'WORKSPACE', 'WORKSPACE.bazel', 'WORKSPACE.bazel']
+    const bazel = ['.bazelrc', 'WORKSPACE', 'WORKSPACE.bazel', 'BUILD.bazel']
     const bazelConfigPath = lookFor(bazel, baseDir, rootDir)
 
     if (bazelConfigPath) {
@@ -143,10 +142,31 @@ const BUILD_SYSTEMS: Record<string, BuildSystemHandler> = {
       })
     }
   },
+
+  moon: async (baseDir, rootDir) => {
+    const moon = ['.moon']
+    const moonConfigPath = lookFor(moon, baseDir, rootDir, 'directory')
+    console.log(moonConfigPath)
+
+    if (moonConfigPath) {
+      const pkgJson = getPkgJson(moonConfigPath)
+      const { devDependencies } = pkgJson
+
+      return Promise.resolve({
+        name: 'moon',
+        version: devDependencies?.moon,
+      })
+    }
+  },
 }
 
-const lookFor = (configFile: string[], baseDir: string, rootDir?: string): string | undefined => {
-  return findUpSync(configFile, { cwd: baseDir, stopAt: rootDir })
+const lookFor = (
+  configFile: string[],
+  baseDir: string,
+  rootDir?: string,
+  type?: 'file' | 'directory',
+): string | undefined => {
+  return findUpSync(configFile, { cwd: baseDir, stopAt: rootDir, type: type })
 }
 
 const getPkgJson = (configPath: string): PackageJson => {
