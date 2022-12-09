@@ -6,7 +6,7 @@ import chalk from 'chalk'
  */
 export const THEME = {
   // Main headers
-  header: chalk.cyanBright.bold,
+  header: chalk.redBright.bold,
   // Single lines used as sub-headers
   subHeader: chalk.cyan.bold,
   // One of several words that should be highlighted inside a line
