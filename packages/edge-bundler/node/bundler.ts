@@ -4,6 +4,8 @@ import { join } from 'path'
 import commonPathPrefix from 'common-path-prefix'
 import { v4 as uuidv4 } from 'uuid'
 
+import { importMapSpecifier } from '../shared/consts.js'
+
 import { DenoBridge, DenoOptions, OnAfterDownloadHook, OnBeforeDownloadHook } from './bridge.js'
 import type { Bundle } from './bundle.js'
 import { FunctionConfig, getFunctionConfig } from './config.js'
@@ -126,7 +128,7 @@ const bundle = async (
     declarations,
     distDirectory,
     functions,
-    importMapURL: functionBundle.importMapURL,
+    importMap: importMapSpecifier,
     layers: deployConfig.layers,
   })
 

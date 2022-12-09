@@ -1,12 +1,12 @@
 import { promises as fs } from 'fs'
 import { join, resolve } from 'path'
 import process from 'process'
-import { pathToFileURL } from 'url'
 
 import { deleteAsync } from 'del'
 import tmp from 'tmp-promise'
 import { test, expect } from 'vitest'
 
+import { importMapSpecifier } from '../shared/consts.js'
 import { useFixture } from '../test/util.js'
 
 import { BundleError } from './bundle_error.js'
@@ -30,9 +30,7 @@ test('Produces an ESZIP bundle', async () => {
   const generatedFiles = await fs.readdir(distPath)
 
   expect(result.functions.length).toBe(1)
-
-  // ESZIP, manifest and import map.
-  expect(generatedFiles.length).toBe(3)
+  expect(generatedFiles.length).toBe(2)
 
   const manifestFile = await fs.readFile(resolve(distPath, 'manifest.json'), 'utf8')
   const manifest = JSON.parse(manifestFile)
@@ -43,7 +41,7 @@ test('Produces an ESZIP bundle', async () => {
   expect(bundles[0].format).toBe('eszip2')
   expect(generatedFiles.includes(bundles[0].asset)).toBe(true)
 
-  expect(importMapURL).toBe('file:///root/.netlify/edge-functions-dist/import_map.json')
+  expect(importMapURL).toBe(importMapSpecifier)
 
   await cleanup()
 })
@@ -64,9 +62,7 @@ test('Uses the vendored eszip module instead of fetching it from deno.land', asy
   const generatedFiles = await fs.readdir(distPath)
 
   expect(result.functions.length).toBe(1)
-
-  // ESZIP, manifest and import map.
-  expect(generatedFiles.length).toBe(3)
+  expect(generatedFiles.length).toBe(2)
 
   const manifestFile = await fs.readFile(resolve(distPath, 'manifest.json'), 'utf8')
   const manifest = JSON.parse(manifestFile)
@@ -165,9 +161,7 @@ test('Uses the cache directory as the `DENO_DIR` value if the `edge_functions_ca
   const outFiles1 = await fs.readdir(distPath)
 
   expect(result1.functions.length).toBe(1)
-
-  // ESZIP, manifest and import map.
-  expect(outFiles1.length).toBe(3)
+  expect(outFiles1.length).toBe(2)
 
   try {
     await fs.readdir(join(cacheDir.path, 'deno_dir'))
@@ -185,9 +179,7 @@ test('Uses the cache directory as the `DENO_DIR` value if the `edge_functions_ca
   const outFiles2 = await fs.readdir(distPath)
 
   expect(result2.functions.length).toBe(1)
-
-  // ESZIP, manifest and import map.
-  expect(outFiles2.length).toBe(3)
+  expect(outFiles2.length).toBe(2)
 
   const denoDir2 = await fs.readdir(join(cacheDir.path, 'deno_dir'))
 
@@ -212,9 +204,7 @@ test('Supports import maps with relative paths', async () => {
   const generatedFiles = await fs.readdir(distPath)
 
   expect(result.functions.length).toBe(1)
-
-  // ESZIP, manifest and import map.
-  expect(generatedFiles.length).toBe(3)
+  expect(generatedFiles.length).toBe(2)
 
   const manifestFile = await fs.readFile(resolve(distPath, 'manifest.json'), 'utf8')
   const manifest = JSON.parse(manifestFile)
@@ -299,9 +289,7 @@ test('Processes a function that imports a custom layer', async () => {
   const generatedFiles = await fs.readdir(distPath)
 
   expect(result.functions.length).toBe(1)
-
-  // ESZIP, manifest and import map.
-  expect(generatedFiles.length).toBe(3)
+  expect(generatedFiles.length).toBe(2)
 
   const manifestFile = await fs.readFile(resolve(distPath, 'manifest.json'), 'utf8')
   const manifest = JSON.parse(manifestFile)
@@ -332,9 +320,7 @@ test('Loads declarations and import maps from the deploy configuration', async (
   const generatedFiles = await fs.readdir(distPath)
 
   expect(result.functions.length).toBe(2)
-
-  // ESZIP, manifest and import map.
-  expect(generatedFiles.length).toBe(3)
+  expect(generatedFiles.length).toBe(2)
 
   const manifestFile = await fs.readFile(resolve(distPath, 'manifest.json'), 'utf8')
   const manifest = JSON.parse(manifestFile)
@@ -345,41 +331,4 @@ test('Loads declarations and import maps from the deploy configuration', async (
   expect(generatedFiles.includes(bundles[0].asset)).toBe(true)
 
   await cleanup()
-})
-
-test('Uses an absolute URL for the import map when the dist directory is not a child of the base path', async () => {
-  const { basePath, cleanup } = await useFixture('with_import_maps')
-  const { path: distPath } = await tmp.dir()
-  const declarations = [
-    {
-      function: 'func1',
-      path: '/func1',
-    },
-  ]
-  const sourceDirectory = join(basePath, 'functions')
-  const result = await bundle([sourceDirectory], distPath, declarations, {
-    basePath,
-    configPath: join(sourceDirectory, 'config.json'),
-  })
-  const generatedFiles = await fs.readdir(distPath)
-
-  expect(result.functions.length).toBe(1)
-
-  // ESZIP, manifest and import map.
-  expect(generatedFiles.length).toBe(3)
-
-  const manifestFile = await fs.readFile(resolve(distPath, 'manifest.json'), 'utf8')
-  const manifest = JSON.parse(manifestFile)
-  expect(() => validateManifest(manifest)).not.toThrowError()
-  const { bundles, import_map: importMapURL } = manifest
-
-  expect(bundles.length).toBe(1)
-  expect(bundles[0].format).toBe('eszip2')
-  expect(generatedFiles.includes(bundles[0].asset)).toBe(true)
-
-  const importMapPath = join(distPath, 'import_map.json')
-  expect(importMapURL).toBe(pathToFileURL(importMapPath).toString())
-
-  await cleanup()
-  await fs.rm(distPath, { recursive: true })
 })

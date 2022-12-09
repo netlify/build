@@ -1,6 +1,6 @@
 import { Buffer } from 'buffer'
 import { promises as fs } from 'fs'
-import { dirname, isAbsolute, posix, relative, sep } from 'path'
+import { dirname, posix, relative, sep } from 'path'
 import { fileURLToPath, pathToFileURL } from 'url'
 
 import { parse } from '@import-maps/resolve'
@@ -30,7 +30,7 @@ class ImportMap {
 
   // Transforms an import map by making any relative paths use a different path
   // as a base.
-  static resolve(importMapFile: ImportMapFile, rootPath?: string) {
+  static resolve(importMapFile: ImportMapFile, basePath?: string, prefix = 'file://') {
     const { baseURL, ...importMap } = importMapFile
     const parsedImportMap = parse(importMap, baseURL)
     const { imports = {} } = parsedImportMap
@@ -45,14 +45,28 @@ class ImportMap {
       }
 
       // If this is a file URL, we might want to transform it to use another
-      // root path, as long as that root path is defined.
-      if (url.protocol === 'file:' && rootPath !== undefined) {
+      // base path, as long as one is provided.
+      if (url.protocol === 'file:' && basePath !== undefined) {
+        const path = fileURLToPath(url)
+        const relativePath = relative(basePath, path)
+
+        if (relativePath.startsWith('..')) {
+          throw new Error(`Import map cannot reference '${path}' as it's outside of the base directory '${basePath}'`)
+        }
+
         // We want to use POSIX paths for the import map regardless of the OS
         // we're building in.
-        const path = relative(rootPath, fileURLToPath(url)).split(sep).join(posix.sep)
-        const value = isAbsolute(path) ? path : `.${posix.sep}${path}`
+        let normalizedPath = relativePath.split(sep).join(posix.sep)
 
-        newImports[specifier] = value
+        // If the original URL had a trailing slash, ensure the normalized path
+        // has one too.
+        if (normalizedPath !== '' && url.pathname.endsWith(posix.sep) && !normalizedPath.endsWith(posix.sep)) {
+          normalizedPath += posix.sep
+        }
+
+        const newURL = new URL(normalizedPath, prefix)
+
+        newImports[specifier] = newURL.toString()
 
         return
       }
@@ -67,11 +81,11 @@ class ImportMap {
     this.files.push(file)
   }
 
-  getContents(rootPath?: string) {
+  getContents(basePath?: string, prefix?: string) {
     let imports: Record<string, string> = {}
 
     this.files.forEach((file) => {
-      const importMap = ImportMap.resolve(file, rootPath)
+      const importMap = ImportMap.resolve(file, basePath, prefix)
 
       imports = { ...imports, ...importMap.imports }
     })
@@ -83,15 +97,15 @@ class ImportMap {
 
       imports[specifier] = url
     })
-    const contents = {
+
+    return {
       imports,
     }
-
-    return JSON.stringify(contents)
   }
 
   toDataURL() {
-    const encodedImportMap = Buffer.from(this.getContents()).toString('base64')
+    const data = JSON.stringify(this.getContents())
+    const encodedImportMap = Buffer.from(data).toString('base64')
 
     return `data:application/json;base64,${encodedImportMap}`
   }
@@ -103,7 +117,7 @@ class ImportMap {
 
     const contents = this.getContents(distDirectory)
 
-    await fs.writeFile(path, contents)
+    await fs.writeFile(path, JSON.stringify(contents))
   }
 }
 

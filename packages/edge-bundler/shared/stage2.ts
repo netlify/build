@@ -8,5 +8,5 @@ export interface WriteStage2Options {
   destPath: string
   externals: string[]
   functions: InputFunction[]
-  importMapURL?: string
+  importMapData?: string
 }

@@ -156,7 +156,7 @@ const serve = async ({
 
   // Creating an ImportMap instance with any import maps supplied by the user,
   // if any.
-  const importMap = new ImportMap(importMaps ?? [])
+  const importMap = new ImportMap(importMaps)
   const flags = ['--allow-all', '--unstable', `--import-map=${importMap.toDataURL()}`, '--no-config']
 
   if (certificatePath) {

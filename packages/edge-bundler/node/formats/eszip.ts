@@ -1,5 +1,4 @@
-import { join, relative } from 'path'
-import { pathToFileURL } from 'url'
+import { join } from 'path'
 
 import { virtualRoot } from '../../shared/consts.js'
 import type { WriteStage2Options } from '../../shared/stage2.js'
@@ -38,13 +37,13 @@ const bundleESZIP = async ({
   const extension = '.eszip'
   const destPath = join(distDirectory, `${buildID}${extension}`)
   const { bundler, importMap: bundlerImportMap } = getESZIPPaths()
-  const importMapURL = await createUserImportMap(importMap, basePath, distDirectory)
+  const importMapData = JSON.stringify(importMap.getContents(basePath, virtualRoot))
   const payload: WriteStage2Options = {
     basePath,
     destPath,
     externals,
     functions,
-    importMapURL,
+    importMapData,
   }
   const flags = ['--allow-all', '--no-config', `--import-map=${bundlerImportMap}`]
 
@@ -60,30 +59,7 @@ const bundleESZIP = async ({
 
   const hash = await getFileHash(destPath)
 
-  return { extension, format: BundleFormat.ESZIP2, hash, importMapURL }
-}
-
-// Takes an import map, writes it to a file on disk, and gets its URL relative
-// to the ESZIP root (i.e. using the virtual root prefix).
-const createUserImportMap = async (importMap: ImportMap, basePath: string, distDirectory: string) => {
-  const destPath = join(distDirectory, 'import_map.json')
-
-  await importMap.writeToFile(destPath)
-
-  const virtualPath = relative(basePath, destPath)
-
-  // If the dist directory is not a child of the base path, we can't represent
-  // the relative path as a file URL (because something like 'file://../foo' is
-  // not valid). This should never happen, but it's best to leave the absolute
-  // path untransformed to avoid getting a build error due to a missing import
-  // map.
-  if (virtualPath.startsWith('..')) {
-    return pathToFileURL(destPath).toString()
-  }
-
-  const importMapURL = new URL(virtualPath, virtualRoot)
-
-  return importMapURL.toString()
+  return { extension, format: BundleFormat.ESZIP2, hash }
 }
 
 const getESZIPPaths = () => {
