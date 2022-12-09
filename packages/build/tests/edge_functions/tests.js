@@ -18,16 +18,18 @@ const assertManifest = async (t, fixtureName) => {
 
   t.true(await pathExists(manifestPath))
 
-  const manifestFile = await fs.readFile(manifestPath)
-  const { bundles } = JSON.parse(manifestFile)
+  const manifestFile = await fs.readFile(manifestPath, 'utf8')
+  const manifest = JSON.parse(manifestFile)
 
   await Promise.all(
-    bundles.map(async (bundle) => {
+    manifest.bundles.map(async (bundle) => {
       const bundlePath = join(distPath, bundle.asset)
 
       t.true(await pathExists(bundlePath))
     }),
   )
+
+  return manifest
 }
 
 test('constants.EDGE_FUNCTIONS_SRC default value', async (t) => {
@@ -127,21 +129,25 @@ test('handles failure when bundling Edge Functions via runCoreSteps function', a
   t.true(output.includes("The module's source code could not be parsed"))
 })
 
-test.serial('writes manifest contents to stdout if `debug` is set', async (t) => {
-  // This file descriptor doesn't exist, but it won't be used anyway since
-  // `debug` is set.
-  const systemLogFile = 7
-  const output = await new Fixture('./fixtures/functions_user')
-    .withFlags({
-      debug: true,
-      mode: 'buildbot',
-      systemLogFile,
-    })
-    .runWithBuild()
-  t.snapshot(normalizeOutput(output))
+// TODO: Snapshot normalizer is not handling Windows paths correctly. Figure
+// out which regex is causing the problem and fix it.
+if (platform !== 'win32') {
+  test.serial('writes manifest contents to stdout if `debug` is set', async (t) => {
+    // This file descriptor doesn't exist, but it won't be used anyway since
+    // `debug` is set.
+    const systemLogFile = 7
+    const output = await new Fixture('./fixtures/functions_user')
+      .withFlags({
+        debug: true,
+        mode: 'buildbot',
+        systemLogFile,
+      })
+      .runWithBuild()
+    t.snapshot(normalizeOutput(output))
 
-  t.regex(output, /Edge Functions manifest: \{/)
-})
+    t.regex(output, /Edge Functions manifest: \{/)
+  })
+}
 
 test.serial('writes manifest contents to system logs if `systemLogFile` is set', async (t) => {
   const { fd, cleanup, path } = await tmp.file()
@@ -167,4 +173,26 @@ test('build plugins can manipulate netlifyToml.edge_functions array', async (t) 
   const { routes } = await importJsonFile(manifestPath)
 
   t.deepEqual(routes, [{ function: 'mutated-function', pattern: '^/test-test/?$' }])
+})
+
+test.serial('cleans up the edge functions dist directory before bundling', async (t) => {
+  const fixture = new Fixture('./fixtures/functions_user')
+  const distDirectory = join(fixture.repositoryRoot, '.netlify', 'edge-functions-dist')
+  const oldBundlePath = join(distDirectory, 'old.eszip')
+  const manifestPath = join(distDirectory, 'manifest.json')
+
+  await fs.writeFile(oldBundlePath, 'some-data')
+  await fs.writeFile(manifestPath, '{}')
+
+  t.true(await pathExists(oldBundlePath))
+  t.true(await pathExists(manifestPath))
+
+  await fixture.withFlags({ debug: false, mode: 'buildbot' }).runWithBuild()
+
+  const manifest = await assertManifest(t, 'functions_user')
+
+  t.is(manifest.bundles.length, 1)
+  t.not(manifest.bundles[0].asset, 'old.eszip')
+
+  t.false(await pathExists(oldBundlePath))
 })
