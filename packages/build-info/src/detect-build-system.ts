@@ -146,7 +146,6 @@ const BUILD_SYSTEMS: Record<string, BuildSystemHandler> = {
   moon: async (baseDir, rootDir) => {
     const moon = ['.moon']
     const moonConfigPath = lookFor(moon, baseDir, rootDir, 'directory')
-    console.log(moonConfigPath)
 
     if (moonConfigPath) {
       const pkgJson = getPkgJson(moonConfigPath)
