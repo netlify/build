@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.4.0](https://github.com/netlify/edge-bundler/compare/v5.3.3...v5.4.0) (2022-12-09)
+
+
+### Features
+
+* use `netlify:import-map` specifier ([#246](https://github.com/netlify/edge-bundler/issues/246)) ([9f2a947](https://github.com/netlify/edge-bundler/commit/9f2a9473c77727671f3bc2fd9c8d31058848dece))
+
 ## [5.3.3](https://github.com/netlify/edge-bundler/compare/v5.3.2...v5.3.3) (2022-12-07)
 
 
