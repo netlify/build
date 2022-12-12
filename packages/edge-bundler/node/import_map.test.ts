@@ -1,7 +1,9 @@
+import { promises as fs } from 'fs'
 import { join } from 'path'
 import { cwd } from 'process'
 import { pathToFileURL } from 'url'
 
+import tmp from 'tmp-promise'
 import { test, expect } from 'vitest'
 
 import { ImportMap } from './import_map.js'
@@ -84,4 +86,28 @@ test('Throws when an import map uses a relative path to reference a file outside
   expect(() => map.getContents(basePath)).toThrowError(
     `Import map cannot reference '${join(cwd(), 'file.js')}' as it's outside of the base directory '${basePath}'`,
   )
+})
+
+test('Writes import map file to disk', async () => {
+  const file = await tmp.file()
+  const basePath = join(cwd(), 'my-cool-site', 'import-map.json')
+  const inputFile1 = {
+    baseURL: pathToFileURL(basePath),
+    imports: {
+      'alias:pets': './heart/pets/file.ts',
+    },
+  }
+
+  const map = new ImportMap([inputFile1])
+
+  await map.writeToFile(file.path)
+
+  const createdFile = await fs.readFile(file.path, 'utf8')
+  const { imports } = JSON.parse(createdFile)
+  const expectedPath = join(cwd(), 'my-cool-site', 'heart', 'pets', 'file.ts')
+
+  await file.cleanup()
+
+  expect(imports['netlify:edge']).toBe('https://edge.netlify.com/v1/index.ts')
+  expect(imports['alias:pets']).toBe(pathToFileURL(expectedPath).toString())
 })

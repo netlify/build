@@ -115,7 +115,7 @@ class ImportMap {
 
     await fs.mkdir(distDirectory, { recursive: true })
 
-    const contents = this.getContents(distDirectory)
+    const contents = this.getContents()
 
     await fs.writeFile(path, JSON.stringify(contents))
   }
