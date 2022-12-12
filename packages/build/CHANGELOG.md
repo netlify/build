@@ -57,6 +57,22 @@
   * dependencies
     * @netlify/config bumped from ^20.0.1 to ^20.0.2
 
+## [29.0.4](https://github.com/netlify/build/compare/build-v29.0.3...build-v29.0.4) (2022-12-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v5.5.0 ([#4758](https://github.com/netlify/build/issues/4758)) ([5438138](https://github.com/netlify/build/commit/5438138c2f473a4fd4daad439da254a0d2dd191c))
+* **deps:** update dependency @netlify/plugins-list to ^6.59.0 ([#4760](https://github.com/netlify/build/issues/4760)) ([bb12dcb](https://github.com/netlify/build/commit/bb12dcbda41d975e31e96ba3738cc4f1b897181b))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v8 ([#4762](https://github.com/netlify/build/issues/4762)) ([ff32c26](https://github.com/netlify/build/commit/ff32c26444e0275ae3a20c5b28c08ed08af7a0a7))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.0.5 to ^5.0.6
+
 ## [29.0.3](https://github.com/netlify/build/compare/build-v29.0.2...build-v29.0.3) (2022-12-07)
 
 
