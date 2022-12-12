@@ -110,7 +110,7 @@ test('detects build system in a monorepo setup', async () => {
     'packages/server/server.js': '',
   })
 
-  const buildSystems = await detectBuildSystems('packages/website', cwd)
+  const buildSystems = await detectBuildSystems(path.join(cwd, 'packages/website'), cwd)
   expect(buildSystems[0]).toEqual({ name: 'turbo', version: '^1.6.3' })
 })
 
