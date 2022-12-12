@@ -1,3 +1,5 @@
+import path from 'path'
+
 import { expect, test } from 'vitest'
 
 import { detectBuildSystems } from '../src/detect-build-system.js'
@@ -120,6 +122,6 @@ test('detects multiple build systems in a monorepo setup', async () => {
     'build.gradle': '',
   })
 
-  const buildSystems = await detectBuildSystems('packages/website', cwd)
+  const buildSystems = await detectBuildSystems(path.join(cwd, 'packages/website'), cwd)
   expect(buildSystems).toEqual([{ name: 'lerna', version: '^2.5.3' }, { name: 'gradle' }])
 })
