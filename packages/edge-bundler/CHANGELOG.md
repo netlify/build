@@ -1,5 +1,17 @@
 # Changelog
 
+## [5.5.0](https://github.com/netlify/edge-bundler/compare/v5.4.0...v5.5.0) (2022-12-12)
+
+
+### Features
+
+* Update BOOTSTRAP_LATEST ([#254](https://github.com/netlify/edge-bundler/issues/254)) ([0f9e79a](https://github.com/netlify/edge-bundler/commit/0f9e79aca610141292707f75872b669ac9095eba))
+
+
+### Bug Fixes
+
+* do not transform paths when writing import map to disk ([#253](https://github.com/netlify/edge-bundler/issues/253)) ([277dc30](https://github.com/netlify/edge-bundler/commit/277dc3016490ab38525c0a67d750256e7c465da3))
+
 ## [5.4.0](https://github.com/netlify/edge-bundler/compare/v5.3.3...v5.4.0) (2022-12-09)
 
 
