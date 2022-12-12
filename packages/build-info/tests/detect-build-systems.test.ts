@@ -100,3 +100,14 @@ test('detects moonrepo when .moon directory is present', async () => {
   const buildSystems = await detectBuildSystems(cwd)
   expect(buildSystems[0]).toEqual({ name: 'moon', version: '^0.5.1' })
 })
+
+test('detects build system in a monorepo setup', async () => {
+  const cwd = mockFileSystem({
+    'packages/website/package.json': JSON.stringify({ devDependencies: { turbo: '^1.6.3' } }),
+    'packages/website/turbo.json': '',
+    'packages/server/server.js': '',
+  })
+
+  const buildSystems = await detectBuildSystems('packages/website', cwd)
+  expect(buildSystems[0]).toEqual({ name: 'turbo', version: '^1.6.3' })
+})
