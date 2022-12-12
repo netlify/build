@@ -64,6 +64,23 @@ const addPluginNodeVersion = function ({
   )}`,
     )
   }
+  console.log(`
+@@@@ -----
+  DEBUG:
+
+  PLUGIN packageName: ${pluginOptions.packageName}
+  PLUGIN origin: ${pluginOptions.origin}
+  PLUGIN pinnedVersion: ${pluginOptions.pinnedVersion}
+  PLUGIN pluginPath: ${pluginOptions.pluginPath}
+  ---
+  loadedFrom: ${loadedFrom}
+  currentNodeVersion: ${currentNodeVersion}
+  execPath: ${execPath}
+  userNodeVersion: ${userNodeVersion}
+  nodePath: ${nodePath}
+
+
+  `)
 
   return (loadedFrom === 'local' || loadedFrom === 'package.json') &&
     semver.satisfies(userNodeVersion, MINIMUM_REQUIRED_NODE_VERSION)
