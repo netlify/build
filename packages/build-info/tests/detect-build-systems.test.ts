@@ -111,3 +111,15 @@ test('detects build system in a monorepo setup', async () => {
   const buildSystems = await detectBuildSystems('packages/website', cwd)
   expect(buildSystems[0]).toEqual({ name: 'turbo', version: '^1.6.3' })
 })
+
+test('detects multiple build systems in a monorepo setup', async () => {
+  const cwd = mockFileSystem({
+    'packages/website/package.json': JSON.stringify({ devDependencies: { lerna: '^2.5.3' } }),
+    'packages/website/lerna.json': '',
+    'packages/server/server.js': '',
+    'build.gradle': '',
+  })
+
+  const buildSystems = await detectBuildSystems('packages/website', cwd)
+  expect(buildSystems).toEqual([{ name: 'lerna', version: '^2.5.3' }, { name: 'gradle' }])
+})
