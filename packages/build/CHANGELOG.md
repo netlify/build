@@ -57,6 +57,89 @@
   * dependencies
     * @netlify/config bumped from ^20.0.1 to ^20.0.2
 
+## [29.0.4](https://github.com/netlify/build/compare/build-v29.0.3...build-v29.0.4) (2022-12-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v5.5.0 ([#4758](https://github.com/netlify/build/issues/4758)) ([5438138](https://github.com/netlify/build/commit/5438138c2f473a4fd4daad439da254a0d2dd191c))
+* **deps:** update dependency @netlify/plugins-list to ^6.59.0 ([#4760](https://github.com/netlify/build/issues/4760)) ([bb12dcb](https://github.com/netlify/build/commit/bb12dcbda41d975e31e96ba3738cc4f1b897181b))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to v8 ([#4762](https://github.com/netlify/build/issues/4762)) ([ff32c26](https://github.com/netlify/build/commit/ff32c26444e0275ae3a20c5b28c08ed08af7a0a7))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.0.5 to ^5.0.6
+
+## [29.0.3](https://github.com/netlify/build/compare/build-v29.0.2...build-v29.0.3) (2022-12-07)
+
+
+### Bug Fixes
+
+* clear edge functions dist directory before build ([#4753](https://github.com/netlify/build/issues/4753)) ([867392c](https://github.com/netlify/build/commit/867392ced85c3b67d29239a0bca7b580a2b6c523))
+* **deps:** update dependency @netlify/edge-bundler to v5.3.3 ([#4755](https://github.com/netlify/build/issues/4755)) ([bcb4112](https://github.com/netlify/build/commit/bcb4112eb4b242ba2d9acf5c7cdc9c54b4159469))
+
+## [29.0.2](https://github.com/netlify/build/compare/build-v29.0.1...build-v29.0.2) (2022-12-07)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v5.3.2 ([#4751](https://github.com/netlify/build/issues/4751)) ([f065b05](https://github.com/netlify/build/commit/f065b05ed4777f061d8513f22cce04a2664309d5))
+
+## [29.0.1](https://github.com/netlify/build/compare/build-v29.0.0...build-v29.0.1) (2022-12-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v5.2.0 ([#4747](https://github.com/netlify/build/issues/4747)) ([044ad4a](https://github.com/netlify/build/commit/044ad4a62306dd55d83121a0662f738ea08c8fc6))
+
+## [29.0.0](https://github.com/netlify/build/compare/build-v28.4.5...build-v29.0.0) (2022-12-05)
+
+
+### ⚠ BREAKING CHANGES
+
+* drop node 12 support for plugin execution ([#4741](https://github.com/netlify/build/issues/4741))
+
+### Features
+
+* drop node 12 support for plugin execution ([#4741](https://github.com/netlify/build/issues/4741)) ([c8d5a5e](https://github.com/netlify/build/commit/c8d5a5efd70585b631062c61ea9951a8358b59a4))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.58.0 ([#4734](https://github.com/netlify/build/issues/4734)) ([7d9db09](https://github.com/netlify/build/commit/7d9db098ee4982668fb9f663e019b5037166b016))
+
+## [28.4.5](https://github.com/netlify/build/compare/build-v28.4.4...build-v28.4.5) (2022-11-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v5 ([#4730](https://github.com/netlify/build/issues/4730)) ([c1d7789](https://github.com/netlify/build/commit/c1d7789c87548b8b7c61e929ab48f6a46caa0d82))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^7.1.3 ([#4733](https://github.com/netlify/build/issues/4733)) ([1853dab](https://github.com/netlify/build/commit/1853dab80cba5ea905bad403d5f89b7064121192))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.0.4 to ^5.0.5
+
+## [28.4.4](https://github.com/netlify/build/compare/build-v28.4.3...build-v28.4.4) (2022-11-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v4.4.3 ([#4724](https://github.com/netlify/build/issues/4724)) ([1f40b21](https://github.com/netlify/build/commit/1f40b213b9cd8b24f6424586a88ef6ce35586cc4))
+
+## [28.4.3](https://github.com/netlify/build/compare/build-v28.4.2...build-v28.4.3) (2022-11-29)
+
+
+### Bug Fixes
+
+* node18 support for netlify/build ([#4726](https://github.com/netlify/build/issues/4726)) ([28347ca](https://github.com/netlify/build/commit/28347ca7593e693d45d9d6a4d032b33459d2afc9))
+
 ## [28.4.2](https://github.com/netlify/build/compare/build-v28.4.1...build-v28.4.2) (2022-11-23)
 
 

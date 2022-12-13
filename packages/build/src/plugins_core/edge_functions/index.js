@@ -7,7 +7,6 @@ import { pathExists } from 'path-exists'
 import { logFunctionsToBundle } from '../../log/messages/core_steps.js'
 
 import { tagBundlingError } from './lib/error.js'
-import { parseManifest } from './lib/internal_manifest.js'
 import { validateEdgeFunctionsManifest } from './validate_manifest/validate_edge_functions_manifest.js'
 
 // TODO: Replace this with a custom cache directory.
@@ -28,7 +27,7 @@ const coreStep = async function ({
   logs,
   netlifyConfig,
 }) {
-  const { edge_functions: configDeclarations = [] } = netlifyConfig
+  const { edge_functions: declarations = [] } = netlifyConfig
   const distPath = resolve(buildDir, distDirectory)
   const internalSrcPath = resolve(buildDir, internalSrcDirectory)
   const distImportMapPath = join(dirname(internalSrcPath), IMPORT_MAP_FILENAME)
@@ -37,26 +36,31 @@ const coreStep = async function ({
 
   logFunctions({ internalSrcDirectory, internalSrcPath, logs, srcDirectory, srcPath })
 
-  const { declarations: internalDeclarations, importMap, layers } = await parseManifest(internalSrcPath, systemLog)
-  const declarations = [...configDeclarations, ...internalDeclarations]
-
   // If we're running in buildbot and the feature flag is enabled, we set the
   // Deno cache dir to a directory that is persisted between builds.
   const cacheDirectory =
     !isRunningLocally && featureFlags.edge_functions_cache_cli ? resolve(buildDir, DENO_CLI_CACHE_DIRECTORY) : undefined
 
-  // Edge Bundler expects the dist directory to exist.
+  // Cleaning up the dist directory, in case it has any artifacts from previous
+  // builds.
+  try {
+    await fs.rm(distPath, { recursive: true })
+  } catch {
+    // no-op
+  }
+
+  // Ensuring the dist directory actually exists before letting Edge Bundler
+  // write to it.
   await fs.mkdir(distPath, { recursive: true })
 
   try {
     const { manifest } = await bundle(sourcePaths, distPath, declarations, {
       basePath: buildDir,
       cacheDirectory,
+      configPath: join(internalSrcPath, 'manifest.json'),
       debug,
       distImportMapPath,
       featureFlags,
-      importMaps: [importMap].filter(Boolean),
-      layers,
       systemLogger: featureFlags.edge_functions_system_logger ? systemLog : undefined,
     })
 

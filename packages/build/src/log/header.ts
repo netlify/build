@@ -1,7 +1,10 @@
 import stringWidth from 'string-width'
 
-// Print a rectangular header
-export const getHeader = function (message) {
+const HEADER_MIN_WIDTH = 60
+const PADDING_WIDTH = 2
+
+/** Print a rectangular header */
+export const getHeader = function (message: string) {
   const messageWidth = stringWidth(message)
   const headerWidth = Math.max(HEADER_MIN_WIDTH, messageWidth)
   const line = '─'.repeat(headerWidth + PADDING_WIDTH * 2)
@@ -11,6 +14,3 @@ export const getHeader = function (message) {
 ${paddingLeft}${message}${paddingRight}
 ${line}`
 }
-
-const HEADER_MIN_WIDTH = 60
-const PADDING_WIDTH = 2

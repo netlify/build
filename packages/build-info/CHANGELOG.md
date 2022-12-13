@@ -1,5 +1,26 @@
 # Changelog
 
+## [6.0.8](https://github.com/netlify/build/compare/build-info-v6.0.7...build-info-v6.0.8) (2022-12-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/framework-info to ^9.5.3 ([#4759](https://github.com/netlify/build/issues/4759)) ([53ceb57](https://github.com/netlify/build/commit/53ceb57c05c1498c5dfe77269f3730fcdff9a7c6))
+
+## [6.0.7](https://github.com/netlify/build/compare/build-info-v6.0.6...build-info-v6.0.7) (2022-12-06)
+
+
+### Bug Fixes
+
+* gracefully handle crashing framework info ([#4742](https://github.com/netlify/build/issues/4742)) ([9d0b1ac](https://github.com/netlify/build/commit/9d0b1aca2d355c48a0dbc21a660547b0e19b5ad7))
+
+## [6.0.6](https://github.com/netlify/build/compare/build-info-v6.0.5...build-info-v6.0.6) (2022-11-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/framework-info to ^9.5.2 ([#4729](https://github.com/netlify/build/issues/4729)) ([6d4b0cb](https://github.com/netlify/build/commit/6d4b0cbf734dd8b2ee7310e107cd4d2425047b41))
+
 ## [6.0.5](https://github.com/netlify/build/compare/build-info-v6.0.4...build-info-v6.0.5) (2022-11-23)
 
 
