@@ -32,6 +32,22 @@
   * dependencies
     * netlify-headers-parser bumped from ^7.0.2 to ^7.0.3
 
+## [20.1.0](https://github.com/netlify/build/compare/config-v20.0.2...config-v20.1.0) (2022-12-13)
+
+
+### Features
+
+* add build system detection ([#4763](https://github.com/netlify/build/issues/4763)) ([73bdb7b](https://github.com/netlify/build/commit/73bdb7bed7347cf6a8c4d729142c322297a0dce8))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.0.2 to ^13.1.0
+    * netlify-headers-parser bumped from ^7.0.3 to ^7.1.0
+    * netlify-redirect-parser bumped from ^14.0.2 to ^14.1.0
+
 ## [20.0.1](https://github.com/netlify/build/compare/config-v20.0.0...config-v20.0.1) (2022-11-17)
 
 

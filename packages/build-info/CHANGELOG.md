@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.1.0](https://github.com/netlify/build/compare/build-info-v6.0.8...build-info-v6.1.0) (2022-12-13)
+
+
+### Features
+
+* add build system detection ([#4763](https://github.com/netlify/build/issues/4763)) ([73bdb7b](https://github.com/netlify/build/commit/73bdb7bed7347cf6a8c4d729142c322297a0dce8))
+
 ## [6.0.8](https://github.com/netlify/build/compare/build-info-v6.0.7...build-info-v6.0.8) (2022-12-12)
 
 

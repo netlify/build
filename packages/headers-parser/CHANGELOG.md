@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.1.0](https://github.com/netlify/build/compare/netlify-headers-parser-v7.0.3...netlify-headers-parser-v7.1.0) (2022-12-13)
+
+
+### Features
+
+* add build system detection ([#4763](https://github.com/netlify/build/issues/4763)) ([73bdb7b](https://github.com/netlify/build/commit/73bdb7bed7347cf6a8c4d729142c322297a0dce8))
+
 ## [7.0.3](https://github.com/netlify/build/compare/netlify-headers-parser-v7.0.2...netlify-headers-parser-v7.0.3) (2022-11-21)
 
 

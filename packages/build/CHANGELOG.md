@@ -57,6 +57,26 @@
   * dependencies
     * @netlify/config bumped from ^20.0.1 to ^20.0.2
 
+## [29.1.0](https://github.com/netlify/build/compare/build-v29.0.4...build-v29.1.0) (2022-12-13)
+
+
+### Features
+
+* add build system detection ([#4763](https://github.com/netlify/build/issues/4763)) ([73bdb7b](https://github.com/netlify/build/commit/73bdb7bed7347cf6a8c4d729142c322297a0dce8))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/cache-utils bumped from ^5.0.2 to ^5.1.0
+    * @netlify/config bumped from ^20.0.2 to ^20.1.0
+    * @netlify/functions-utils bumped from ^5.0.6 to ^5.1.0
+    * @netlify/git-utils bumped from ^5.0.2 to ^5.1.0
+    * @netlify/run-utils bumped from ^5.0.2 to ^5.1.0
+  * devDependencies
+    * @netlify/nock-udp bumped from ^3.0.1 to ^3.1.0
+
 ## [29.0.4](https://github.com/netlify/build/compare/build-v29.0.3...build-v29.0.4) (2022-12-12)
 
 

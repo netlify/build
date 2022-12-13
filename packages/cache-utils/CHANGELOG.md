@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.1.0](https://github.com/netlify/build/compare/cache-utils-v5.0.2...cache-utils-v5.1.0) (2022-12-13)
+
+
+### Features
+
+* add build system detection ([#4763](https://github.com/netlify/build/issues/4763)) ([73bdb7b](https://github.com/netlify/build/commit/73bdb7bed7347cf6a8c4d729142c322297a0dce8))
+
 ## [5.0.2](https://github.com/netlify/build/compare/cache-utils-v5.0.1...cache-utils-v5.0.2) (2022-11-17)
 
 
