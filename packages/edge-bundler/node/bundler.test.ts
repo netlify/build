@@ -22,14 +22,15 @@ test('Produces an ESZIP bundle', async () => {
       path: '/func1',
     },
   ]
-  const sourceDirectory = join(basePath, 'functions')
-  const result = await bundle([sourceDirectory], distPath, declarations, {
+  const userDirectory = join(basePath, 'user-functions')
+  const internalDirectory = join(basePath, 'functions')
+  const result = await bundle([userDirectory, internalDirectory], distPath, declarations, {
     basePath,
-    configPath: join(sourceDirectory, 'config.json'),
+    configPath: join(internalDirectory, 'config.json'),
   })
   const generatedFiles = await fs.readdir(distPath)
 
-  expect(result.functions.length).toBe(1)
+  expect(result.functions.length).toBe(2)
   expect(generatedFiles.length).toBe(2)
 
   const manifestFile = await fs.readFile(resolve(distPath, 'manifest.json'), 'utf8')

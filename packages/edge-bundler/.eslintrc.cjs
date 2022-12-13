@@ -4,7 +4,7 @@ const { overrides } = require('@netlify/eslint-config-node')
 
 module.exports = {
   extends: '@netlify/eslint-config-node',
-  ignorePatterns: ['deno/**/*.ts', 'test/deno/**/*.ts'],
+  ignorePatterns: ['deno/**/*.ts', 'test/deno/**/*.ts', 'test/fixtures/**/*.ts'],
   parserOptions: {
     sourceType: 'module',
   },

@@ -10,11 +10,12 @@ import { DenoBridge, DenoOptions, OnAfterDownloadHook, OnBeforeDownloadHook } fr
 import type { Bundle } from './bundle.js'
 import { FunctionConfig, getFunctionConfig } from './config.js'
 import { Declaration, getDeclarationsFromConfig } from './declaration.js'
+import { getConfig as getDenoConfig } from './deno_config.js'
 import { load as loadDeployConfig } from './deploy_config.js'
 import { FeatureFlags, getFlags } from './feature_flags.js'
 import { findFunctions } from './finder.js'
 import { bundle as bundleESZIP } from './formats/eszip.js'
-import { ImportMap } from './import_map.js'
+import { ImportMap, readFile as readImportMapFile } from './import_map.js'
 import { getLogger, LogFunction } from './logger.js'
 import { writeManifest } from './manifest.js'
 import { ensureLatestTypes } from './types.js'
@@ -82,6 +83,17 @@ const bundle = async (
 
   if (deployConfig.importMap) {
     importMap.add(deployConfig.importMap)
+  }
+
+  // Look for a Deno config file and read it if one exists.
+  const denoConfig = await getDenoConfig(basePath)
+
+  // If the Deno config file defines an import map, read the file and add the
+  // imports to the global import map.
+  if (denoConfig?.importMap) {
+    const importMapFile = await readImportMapFile(denoConfig.importMap)
+
+    importMap.add(importMapFile)
   }
 
   const functions = await findFunctions(sourceDirectories)

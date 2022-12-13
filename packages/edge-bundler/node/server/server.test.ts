@@ -1,28 +1,47 @@
 import { join } from 'path'
+import { pathToFileURL } from 'url'
 
 import getPort from 'get-port'
 import fetch from 'node-fetch'
+import { v4 as uuidv4 } from 'uuid'
 import { test, expect } from 'vitest'
 
 import { fixturesDir } from '../../test/util.js'
 import { serve } from '../index.js'
 
 test('Starts a server and serves requests for edge functions', async () => {
+  const basePath = join(fixturesDir, 'serve_test')
+  const functionPaths = {
+    internal: join(basePath, '.netlify', 'edge-functions', 'greet.ts'),
+    user: join(basePath, 'netlify', 'edge-functions', 'echo_env.ts'),
+  }
   const port = await getPort()
+  const internalImportMap = {
+    baseURL: pathToFileURL(functionPaths.internal),
+    imports: {
+      'internal-helper': '../../helper.ts',
+    },
+  }
   const server = await serve({
+    basePath,
+    importMaps: [internalImportMap],
     port,
   })
-  const functionPath = join(fixturesDir, 'serve_test', 'echo_env.ts')
 
   const functions = [
     {
       name: 'echo_env',
-      path: functionPath,
+      path: functionPaths.user,
+    },
+    {
+      name: 'greet',
+      path: functionPaths.internal,
     },
   ]
   const options = {
     getFunctionsConfig: true,
   }
+
   const { functionsConfig, graph, success } = await server(
     functions,
     {
@@ -31,24 +50,34 @@ test('Starts a server and serves requests for edge functions', async () => {
     options,
   )
   expect(success).toBe(true)
+  expect(functionsConfig).toEqual([{ path: '/my-function' }, {}])
 
-  expect(functionsConfig).toEqual([{ path: '/my-function' }])
+  for (const key in functionPaths) {
+    const graphEntry = graph?.modules.some(
+      // @ts-expect-error TODO: Module graph is currently not typed
+      ({ kind, mediaType, local }) => kind === 'esm' && mediaType === 'TypeScript' && local === functionPaths[key],
+    )
 
-  const graphEntry = graph?.modules.some(
-    // @ts-expect-error TODO: Module graph is currently not typed
-    ({ kind, mediaType, local }) => kind === 'esm' && mediaType === 'TypeScript' && local === functionPath,
-  )
-  expect(graphEntry).toBe(true)
+    expect(graphEntry).toBe(true)
+  }
 
-  const response = await fetch(`http://0.0.0.0:${port}/foo`, {
+  const response1 = await fetch(`http://0.0.0.0:${port}/foo`, {
     headers: {
       'x-deno-functions': 'echo_env',
       'x-deno-pass': 'passthrough',
-      'X-NF-Request-ID': 'foo',
+      'X-NF-Request-ID': uuidv4(),
     },
   })
-  expect(response.status).toBe(200)
+  expect(response1.status).toBe(200)
+  expect(await response1.text()).toBe('I LOVE NETLIFY')
 
-  const body = (await response.json()) as Record<string, string>
-  expect(body.very_secret_secret).toBe('i love netlify')
+  const response2 = await fetch(`http://0.0.0.0:${port}/greet`, {
+    headers: {
+      'x-deno-functions': 'greet',
+      'x-deno-pass': 'passthrough',
+      'X-NF-Request-ID': uuidv4(),
+    },
+  })
+  expect(response2.status).toBe(200)
+  expect(await response2.text()).toBe('HELLO!')
 })

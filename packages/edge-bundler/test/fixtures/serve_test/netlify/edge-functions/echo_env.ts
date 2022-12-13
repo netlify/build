@@ -1,6 +1,8 @@
 import { Config } from 'https://edge.netlify.com'
 
-export default async () => new Response(JSON.stringify(Deno.env.toObject()))
+import { yell } from 'helper'
+
+export default () => new Response(yell(Deno.env.get('very_secret_secret') ?? ''))
 
 export const config: Config = () => ({
   path: '/my-function',
