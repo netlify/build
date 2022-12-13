@@ -1,5 +1,17 @@
 # Changelog
 
+## [6.0.0](https://github.com/netlify/edge-bundler/compare/v5.5.0...v6.0.0) (2022-12-13)
+
+
+### ⚠ BREAKING CHANGES
+
+* The `serve` export now requires a `basePath` parameter
+
+### Features
+
+* add support for user-defined import maps ([#256](https://github.com/netlify/edge-bundler/issues/256)) ([436e10e](https://github.com/netlify/edge-bundler/commit/436e10ecf3f8df3cd8da6d8b2d8d78110668c82d))
+* read Deno config behind feature flag ([#258](https://github.com/netlify/edge-bundler/issues/258)) ([5dc562a](https://github.com/netlify/edge-bundler/commit/5dc562a9a65081253c2702a890b0d01077e45fbe))
+
 ## [5.5.0](https://github.com/netlify/edge-bundler/compare/v5.4.0...v5.5.0) (2022-12-12)
 
 
