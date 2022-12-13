@@ -27,6 +27,8 @@ export const getBuildInfo = async (opts: ContextOptions) => {
   }
 
   try {
+    // if  buildSystem detection is crashing we should not crash the build info and package-manager
+    // detection
     buildSystems = await detectBuildSystems(context.projectDir, context.rootDir)
   } catch {
     // noop
