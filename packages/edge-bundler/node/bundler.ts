@@ -85,15 +85,17 @@ const bundle = async (
     importMap.add(deployConfig.importMap)
   }
 
-  // Look for a Deno config file and read it if one exists.
-  const denoConfig = await getDenoConfig(basePath)
+  if (featureFlags.edge_functions_read_deno_config) {
+    // Look for a Deno config file and read it if one exists.
+    const denoConfig = await getDenoConfig(basePath)
 
-  // If the Deno config file defines an import map, read the file and add the
-  // imports to the global import map.
-  if (denoConfig?.importMap) {
-    const importMapFile = await readImportMapFile(denoConfig.importMap)
+    // If the Deno config file defines an import map, read the file and add the
+    // imports to the global import map.
+    if (denoConfig?.importMap) {
+      const importMapFile = await readImportMapFile(denoConfig.importMap)
 
-    importMap.add(importMapFile)
+      importMap.add(importMapFile)
+    }
   }
 
   const functions = await findFunctions(sourceDirectories)

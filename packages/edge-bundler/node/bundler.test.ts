@@ -27,6 +27,9 @@ test('Produces an ESZIP bundle', async () => {
   const result = await bundle([userDirectory, internalDirectory], distPath, declarations, {
     basePath,
     configPath: join(internalDirectory, 'config.json'),
+    featureFlags: {
+      edge_functions_read_deno_config: true,
+    },
   })
   const generatedFiles = await fs.readdir(distPath)
 
