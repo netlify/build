@@ -21,9 +21,14 @@ export const getBuildInfo = async (opts: ContextOptions) => {
     // if the framework or buildSystem detection is crashing we should not crash the build info and package-manager
     // detection
     frameworks = await listFrameworks({ projectDir: context.projectDir })
-    buildSystems = await detectBuildSystems(context.projectDir, context.rootDir)
   } catch {
     // TODO: build reporting to buildbot see: https://github.com/netlify/pillar-workflow/issues/1001
+    // noop
+  }
+
+  try {
+    buildSystems = await detectBuildSystems(context.projectDir, context.rootDir)
+  } catch {
     // noop
   }
 
