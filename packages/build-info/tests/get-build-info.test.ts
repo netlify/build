@@ -29,7 +29,6 @@ describe('Golang', () => {
     })
     expect(info).toMatchInlineSnapshot(`
       {
-        "buildSystems": [],
         "frameworks": [],
       }
     `)

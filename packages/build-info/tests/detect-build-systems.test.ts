@@ -125,3 +125,14 @@ test('detects multiple build systems in a monorepo setup', async () => {
   const buildSystems = await detectBuildSystems(path.join(cwd, 'packages/website'), cwd)
   expect(buildSystems).toEqual([{ name: 'lerna', version: '^2.5.3' }, { name: 'gradle' }])
 })
+
+test('invalid package json handled gracefully', async () => {
+  const cwd = mockFileSystem({
+    'package.json': "{ 'devDependencies': { moon: '^0.5.1' } }",
+    '.moon/toolchain.yml': '',
+  })
+
+  const buildSystems = await detectBuildSystems(cwd)
+  console.log(buildSystems)
+  expect(buildSystems[0]).toEqual({ name: 'moon', version: undefined })
+})

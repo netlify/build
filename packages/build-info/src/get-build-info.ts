@@ -15,10 +15,9 @@ export type Info = {
 export const getBuildInfo = async (opts: ContextOptions) => {
   const context = await getContext(opts)
   let frameworks: any[] = []
-  let buildSystems: BuildSystem[] = []
 
   try {
-    // if the framework or buildSystem detection is crashing we should not crash the build info and package-manager
+    // if the framework  detection is crashing we should not crash the build info and package-manager
     // detection
     frameworks = await listFrameworks({ projectDir: context.projectDir })
   } catch {
@@ -26,19 +25,12 @@ export const getBuildInfo = async (opts: ContextOptions) => {
     // noop
   }
 
-  try {
-    // if  buildSystem detection is crashing we should not crash the build info and package-manager
-    // detection
-    buildSystems = await detectBuildSystems(context.projectDir, context.rootDir)
-  } catch {
-    // noop
-  }
-
-  const info: Info = { frameworks, buildSystems }
+  const info: Info = { frameworks }
 
   // only if we find a root package.json we know this is a javascript workspace
   if (Object.keys(context.rootPackageJson).length > 0) {
     info.packageManager = await detectPackageManager(context.projectDir, context.rootDir)
+    info.buildSystems = await detectBuildSystems(context.projectDir, context.rootDir)
     const workspaceInfo = await getWorkspaceInfo(info.packageManager, context)
     if (workspaceInfo) {
       info.jsWorkspaces = workspaceInfo
