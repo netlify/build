@@ -2,9 +2,8 @@ import { join } from 'path'
 
 import { beforeEach, describe, expect, test } from 'vitest'
 
+import { detectPackageManager } from '../src/detect-package-manager.js'
 import { mockFileSystem } from '../tests/mock-file-system.js'
-
-import { detectPackageManager } from './detect-package-manager.js'
 
 const env = { ...process.env }
 beforeEach(() => {
