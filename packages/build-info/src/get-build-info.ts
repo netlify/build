@@ -27,10 +27,11 @@ export const getBuildInfo = async (opts: ContextOptions) => {
 
   const info: Info = { frameworks }
 
+  info.buildSystems = await detectBuildSystems(context.projectDir, context.rootDir)
+
   // only if we find a root package.json we know this is a javascript workspace
   if (Object.keys(context.rootPackageJson).length > 0) {
     info.packageManager = await detectPackageManager(context.projectDir, context.rootDir)
-    info.buildSystems = await detectBuildSystems(context.projectDir, context.rootDir)
     const workspaceInfo = await getWorkspaceInfo(info.packageManager, context)
     if (workspaceInfo) {
       info.jsWorkspaces = workspaceInfo
