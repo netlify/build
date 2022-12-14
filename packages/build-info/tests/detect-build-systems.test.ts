@@ -133,6 +133,5 @@ test('invalid package json handled gracefully', async () => {
   })
 
   const buildSystems = await detectBuildSystems(cwd)
-  console.log(buildSystems)
   expect(buildSystems[0]).toEqual({ name: 'moon', version: undefined })
 })
