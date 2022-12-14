@@ -169,7 +169,7 @@ const lookFor = (
 }
 
 const getPkgJson = (configPath: string): PackageJson => {
-  let pkgJson: PackageJson = {};
+  let pkgJson: PackageJson = {}
   try {
     pkgJson = JSON.parse(readFileSync(path.join(path.dirname(configPath), 'package.json'), 'utf-8'))
   } catch {
