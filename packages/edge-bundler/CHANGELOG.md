@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.1.0](https://github.com/netlify/edge-bundler/compare/v6.0.0...v6.1.0) (2022-12-14)
+
+
+### Features
+
+* add system logging for Deno config file ([#259](https://github.com/netlify/edge-bundler/issues/259)) ([27a628c](https://github.com/netlify/edge-bundler/commit/27a628c544514598f03247ceeb136d6e4667b0c2))
+
 ## [6.0.0](https://github.com/netlify/edge-bundler/compare/v5.5.0...v6.0.0) (2022-12-13)
 
 
