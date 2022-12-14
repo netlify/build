@@ -3,6 +3,7 @@ import { join, resolve } from 'path'
 
 import { parse as parseJSONC } from 'jsonc-parser'
 
+import { Logger } from './logger.js'
 import { isNodeError } from './utils/error.js'
 
 interface DenoConfigFile {
@@ -11,8 +12,10 @@ interface DenoConfigFile {
 
 const filenames = ['deno.json', 'deno.jsonc']
 
-export const getConfig = async (basePath?: string) => {
+export const getConfig = async (logger: Logger, basePath?: string) => {
   if (basePath === undefined) {
+    logger.system('No base path specified, will not attempt to read Deno config')
+
     return
   }
 
@@ -21,9 +24,13 @@ export const getConfig = async (basePath?: string) => {
     const config = await getConfigFromFile(candidatePath)
 
     if (config !== undefined) {
+      logger.system('Loaded Deno config file from path', candidatePath)
+
       return normalizeConfig(config, basePath)
     }
   }
+
+  logger.system('No Deno config file found at base path', basePath)
 }
 
 const getConfigFromFile = async (filePath: string) => {

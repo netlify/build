@@ -162,7 +162,7 @@ const serve = async ({
   const importMap = new ImportMap(importMaps)
 
   // Look for a Deno config file and read it if one exists.
-  const denoConfig = await getDenoConfig(basePath)
+  const denoConfig = await getDenoConfig(logger, basePath)
 
   // If the Deno config file defines an import map, read the file and add the
   // imports to the global import map.

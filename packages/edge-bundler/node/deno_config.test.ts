@@ -4,11 +4,13 @@ import { join } from 'path'
 import tmp from 'tmp-promise'
 import { expect, test } from 'vitest'
 
+import { testLogger } from '../test/util.js'
+
 import { getConfig } from './deno_config.js'
 
 test('Returns `undefined` if no config file is found', async () => {
   const { cleanup, path } = await tmp.dir({ unsafeCleanup: true })
-  const config = await getConfig(path)
+  const config = await getConfig(testLogger, path)
 
   expect(config).toBeUndefined()
 
@@ -21,7 +23,7 @@ test('Returns an empty object if the config file cannot be parsed', async () => 
 
   await fs.writeFile(configPath, '{')
 
-  const config = await getConfig(path)
+  const config = await getConfig(testLogger, path)
 
   expect(config).toEqual({})
 
@@ -35,7 +37,7 @@ test('Throws a type error if the `importMap` contains anything other than a stri
 
   await fs.writeFile(configPath, data)
 
-  await expect(getConfig(path)).rejects.toThrowError(TypeError)
+  await expect(getConfig(testLogger, path)).rejects.toThrowError(TypeError)
 
   await cleanup()
 })
@@ -84,7 +86,7 @@ test('Excludes unsupported properties', async () => {
 
   await fs.writeFile(configPath, data)
 
-  const config = await getConfig(path)
+  const config = await getConfig(testLogger, path)
 
   expect(Object.keys(config ?? {})).toEqual(['importMap'])
 
@@ -98,7 +100,7 @@ test('Resolves `importMap` into an absolute path', async () => {
 
   await fs.writeFile(configPath, data)
 
-  const config = await getConfig(path)
+  const config = await getConfig(testLogger, path)
 
   expect(config).toEqual({ importMap: join(path, 'import_map.json') })
 
@@ -112,7 +114,7 @@ test('Supports JSONC', async () => {
 
   await fs.writeFile(configPath, `// This is a comment\n${data}`)
 
-  const config = await getConfig(path)
+  const config = await getConfig(testLogger, path)
 
   expect(config).toEqual({ importMap: join(path, 'import_map.json') })
 
