@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.1.1](https://github.com/netlify/build/compare/build-info-v6.1.0...build-info-v6.1.1) (2022-12-14)
+
+
+### Bug Fixes
+
+* separate detectBuildsystems and listFrameworks ([#4766](https://github.com/netlify/build/issues/4766)) ([7f4a2fa](https://github.com/netlify/build/commit/7f4a2faa1b28ecdd2b7d6128a47bf8e0f4a27ad6))
+
 ## [6.1.0](https://github.com/netlify/build/compare/build-info-v6.0.8...build-info-v6.1.0) (2022-12-13)
 
 
