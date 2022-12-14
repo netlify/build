@@ -169,5 +169,11 @@ const lookFor = (
 }
 
 const getPkgJson = (configPath: string): PackageJson => {
-  return JSON.parse(readFileSync(path.join(path.dirname(configPath), 'package.json'), 'utf-8'))
+  let pkgJson: PackageJson = {}
+  try {
+    pkgJson = JSON.parse(readFileSync(path.join(path.dirname(configPath), 'package.json'), 'utf-8'))
+  } catch {
+    // noop
+  }
+  return pkgJson
 }
