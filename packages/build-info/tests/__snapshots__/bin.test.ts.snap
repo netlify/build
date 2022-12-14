@@ -11,3 +11,15 @@ Options:
   --rootDir  The root directory of the project if different from projectDir
                                                                         [string]"
 `;
+
+exports[`CLI does not print js-workspaces if given a project without it 1`] = `
+"bin.js [projectDir]
+
+Print relevant build information from a project.
+
+Options:
+  --help     Show help                                                 [boolean]
+  --version  Show version number                                       [boolean]
+  --rootDir  The root directory of the project if different from projectDir
+                                                                        [string]"
+`;
