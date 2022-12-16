@@ -212,6 +212,14 @@ export const POST_NORMALIZE_VALIDATIONS = [
     }),
   },
   {
+    property: 'functions.*.import_map',
+    check: isString,
+    message: 'must be a string.',
+    example: (value, key, prevPath) => ({
+      functions: { [prevPath[1]]: { import_map: 'path/to/import_map.json' } },
+    }),
+  },
+  {
     property: 'functions.*.included_files',
     check: isArrayOfStrings,
     message: 'must be an array of strings.',

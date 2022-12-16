@@ -1,3 +1,4 @@
 [functions]
 external_node_modules = ["module-one", "module-two"]
+import_map = "import_map"
 node_bundler = "esbuild"

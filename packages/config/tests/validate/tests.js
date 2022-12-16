@@ -227,6 +227,11 @@ test('functions.included_files: is array of strings', async (t) => {
   t.snapshot(normalizeOutput(output))
 })
 
+test('functions.import_map: is string', async (t) => {
+  const output = await new Fixture('./fixtures/function_config_invalid_import_map').runWithConfig()
+  t.snapshot(normalizeOutput(output))
+})
+
 test('functions.ignored_node_modules: array of strings', async (t) => {
   const output = await new Fixture('./fixtures/function_config_invalid_ignored_modules').runWithConfig()
   t.snapshot(normalizeOutput(output))

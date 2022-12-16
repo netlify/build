@@ -1,0 +1,2 @@
+[functions]
+import_map = ["not", "a", "string"]
