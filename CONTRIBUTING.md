@@ -57,6 +57,29 @@ To speed up CI, we load balance the tests across multiple machines. The informat
 is stored in `tests-metadata.json`, and later used by our test [runner](ava.config.js#L10). To regenerate the data (e.g.
 when adding a new test file) run `npm test:measure` and commit the changes to GitHub.
 
+### Testing locally
+
+The `@netlify/testing` package will need to be built regardless of which package you are working on. In order to do this
+run the following from the root directory:
+
+```
+npm run build -- --scope=@netlify/testing
+```
+
+If you wish to build all of the projects for whatever reason, the command is `npm run build`.
+
+From there, you can run tests for a particular package by running:
+
+```
+npm run test -- --scope=<name of package as it appears in 'name' field in package.json>
+```
+
+For example, if you wished to run tests for the `build` package:
+
+```
+npm run test -- --scope=@netlify/build
+```
+
 ## Releasing
 
 For more details, please refer to the
