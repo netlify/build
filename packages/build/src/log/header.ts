@@ -10,7 +10,6 @@ export const getHeader = function (message: string) {
   const line = '─'.repeat(headerWidth + PADDING_WIDTH * 2)
   const paddingLeft = ' '.repeat(PADDING_WIDTH)
   const paddingRight = ' '.repeat(PADDING_WIDTH + headerWidth - messageWidth)
-  return `${line}
-${paddingLeft}${message}${paddingRight}
+  return `${paddingLeft}${message}${paddingRight}
 ${line}`
 }
