@@ -25,7 +25,7 @@ const CHILD_MAIN_FILE = fileURLToPath(new URL('child/main.js', import.meta.url))
 const tStartPlugins = async function ({ pluginsOptions, buildDir, childEnv, logs, debug, featureFlags }) {
   logRuntime(logs, pluginsOptions)
   logLoadingPlugins(logs, pluginsOptions, debug)
-  logOutdatedPlugins(logs, pluginsOptions, featureFlags)
+  logOutdatedPlugins(logs, pluginsOptions)
   logIncompatiblePlugins(logs, pluginsOptions)
 
   const childProcesses = await Promise.all(
