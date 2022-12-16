@@ -26,9 +26,9 @@ jobs:
           package=${package_tag%/*}
           tag=${package_tag#*/}
           version=${info##*/}
-          echo "::set-output name=package::${package}"
-          echo "::set-output name=tag::${tag}"
-          echo "::set-output name=version::${version}"
+          echo "package=${package}" >> $GITHUB_OUTPUT
+          echo "tag=${tag}" >> $GITHUB_OUTPUT
+          echo "version=${version}" >> $GITHUB_OUTPUT
       - name: Log extracted information
         run: |-
           echo package=${{ steps.extract.outputs.package }}
