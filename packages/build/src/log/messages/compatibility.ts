@@ -92,9 +92,6 @@ export const logOutdatedPlugins = function (logs: BufferedLogs, pluginsOptions, 
     return
   }
 
-  // TODO: remove feature flag once fully rolled out
-  if (featureFlags.plugins_break_builds_with_unsupported_plugin_versions)
-    throwIfUnsupportedPluginVersion(pluginsOptions.filter(hasOutdatedVersion))
   logWarningSubHeader(logs, 'Outdated plugins')
   logWarningArray(logs, outdatedPlugins)
 }
