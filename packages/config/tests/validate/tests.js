@@ -113,6 +113,11 @@ test('build.edge_functions: parent directory', async (t) => {
   t.snapshot(normalizeOutput(output))
 })
 
+test('build.edge_functions_import_map: string', async (t) => {
+  const output = await new Fixture('./fixtures/build_edge_functions_import_map').runWithConfig()
+  t.snapshot(normalizeOutput(output))
+})
+
 test('build.base: string', async (t) => {
   const output = await new Fixture('./fixtures/build_base_string').runWithConfig()
   t.snapshot(normalizeOutput(output))
@@ -224,11 +229,6 @@ test('functions.external_node_modules: array of strings', async (t) => {
 
 test('functions.included_files: is array of strings', async (t) => {
   const output = await new Fixture('./fixtures/function_config_invalid_included_files').runWithConfig()
-  t.snapshot(normalizeOutput(output))
-})
-
-test('functions.import_map: is string', async (t) => {
-  const output = await new Fixture('./fixtures/function_config_invalid_import_map').runWithConfig()
   t.snapshot(normalizeOutput(output))
 })
 
