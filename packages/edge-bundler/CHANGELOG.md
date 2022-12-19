@@ -1,5 +1,17 @@
 # Changelog
 
+## [7.0.0](https://github.com/netlify/edge-bundler/compare/v6.1.0...v7.0.0) (2022-12-19)
+
+
+### ⚠ BREAKING CHANGES
+
+* Both `bundle` and `serve` now expect an `importMapPaths` array containing a list of paths to any user-defined import map files
+
+### Features
+
+* add `importMapPaths` to `bundle` and `serve` ([#265](https://github.com/netlify/edge-bundler/issues/265)) ([dcbd7f7](https://github.com/netlify/edge-bundler/commit/dcbd7f7681f8971bd88e251669b7f09602ee0b9c))
+* log failures when loading import map files ([#267](https://github.com/netlify/edge-bundler/issues/267)) ([138690b](https://github.com/netlify/edge-bundler/commit/138690b5e490b5d577f07c529bcbfb1379be4811))
+
 ## [6.1.0](https://github.com/netlify/edge-bundler/compare/v6.0.0...v6.1.0) (2022-12-14)
 
 
