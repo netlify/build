@@ -81,6 +81,15 @@ const output = await netlifyBuild({ repositoryRoot: './fixtures/fixture_name' })
 
 ## Running tests
 
+Prerequisites:
+
+```
+npx lerna run build
+```
+
+To successfully run or update the snapshot tests, you need to
+[install deno](https://deno.land/manual@v1.29.1/getting_started/installation)
+
 To run all tests:
 
 ```
