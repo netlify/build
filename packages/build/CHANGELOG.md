@@ -57,6 +57,13 @@
   * dependencies
     * @netlify/config bumped from ^20.0.1 to ^20.0.2
 
+## [29.1.3](https://github.com/netlify/build/compare/build-v29.1.2...build-v29.1.3) (2022-12-19)
+
+
+### Bug Fixes
+
+* remove top header line from deploy sections ([#4770](https://github.com/netlify/build/issues/4770)) ([8b07791](https://github.com/netlify/build/commit/8b077915cc29ae919397d6830ba135e2c9c695de))
+
 ## [29.1.2](https://github.com/netlify/build/compare/build-v29.1.1...build-v29.1.2) (2022-12-16)
 
 
