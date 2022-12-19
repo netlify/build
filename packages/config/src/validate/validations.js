@@ -188,6 +188,14 @@ export const POST_NORMALIZE_VALIDATIONS = [
     example: () => ({ build: { edge_functions: 'edge-functions' } }),
   },
   {
+    property: 'build.edge_functions_import_map',
+    check: isString,
+    message: 'must be a string.',
+    example: () => ({
+      build: { edge_functions_import_map: 'path/to/import_map.json' },
+    }),
+  },
+  {
     property: 'functions.*',
     check: isPlainObj,
     message: 'must be an object.',
