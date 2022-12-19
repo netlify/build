@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.0.1](https://github.com/netlify/edge-bundler/compare/v7.0.0...v7.0.1) (2022-12-19)
+
+
+### Bug Fixes
+
+* read other import map paths when one doesn't exist ([#268](https://github.com/netlify/edge-bundler/issues/268)) ([8410c1c](https://github.com/netlify/edge-bundler/commit/8410c1caf9c57edf9ebb6874dd06750626d94a8d))
+
 ## [7.0.0](https://github.com/netlify/edge-bundler/compare/v6.1.0...v7.0.0) (2022-12-19)
 
 
