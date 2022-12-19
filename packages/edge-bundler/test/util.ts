@@ -17,14 +17,13 @@ const dirname = fileURLToPath(url)
 const fixturesDir = resolve(dirname, '..', 'fixtures')
 
 const useFixture = async (fixtureName: string) => {
-  const tmpDir = await tmp.dir()
-  const cleanup = () => fs.rmdir(tmpDir.path, { recursive: true })
+  const tmpDir = await tmp.dir({ unsafeCleanup: true })
   const fixtureDir = resolve(fixturesDir, fixtureName)
   const distPath = join(tmpDir.path, '.netlify', 'edge-functions-dist')
 
   return {
     basePath: fixtureDir,
-    cleanup,
+    cleanup: tmpDir.cleanup,
     distPath,
   }
 }

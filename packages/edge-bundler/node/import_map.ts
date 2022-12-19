@@ -124,7 +124,7 @@ class ImportMap {
   async addFiles(paths: (string | undefined)[], logger: Logger) {
     for (const path of paths) {
       if (path === undefined) {
-        return
+        continue
       }
 
       await this.addFile(path, logger)
