@@ -7,7 +7,7 @@ import tmp from 'tmp-promise'
 import { test, expect } from 'vitest'
 
 import { importMapSpecifier } from '../shared/consts.js'
-import { useFixture } from '../test/util.js'
+import { runESZIP, useFixture } from '../test/util.js'
 
 import { BundleError } from './bundle_error.js'
 import { bundle, BundleOptions } from './bundler.js'
@@ -27,13 +27,11 @@ test('Produces an ESZIP bundle', async () => {
   const result = await bundle([userDirectory, internalDirectory], distPath, declarations, {
     basePath,
     configPath: join(internalDirectory, 'config.json'),
-    featureFlags: {
-      edge_functions_read_deno_config: true,
-    },
+    importMapPaths: [join(userDirectory, 'import_map.json')],
   })
   const generatedFiles = await fs.readdir(distPath)
 
-  expect(result.functions.length).toBe(2)
+  expect(result.functions.length).toBe(3)
   expect(generatedFiles.length).toBe(2)
 
   const manifestFile = await fs.readFile(resolve(distPath, 'manifest.json'), 'utf8')
@@ -46,6 +44,14 @@ test('Produces an ESZIP bundle', async () => {
   expect(generatedFiles.includes(bundles[0].asset)).toBe(true)
 
   expect(importMapURL).toBe(importMapSpecifier)
+
+  const bundlePath = join(distPath, bundles[0].asset)
+
+  const { func1, func2, func3 } = await runESZIP(bundlePath)
+
+  expect(func1).toBe('HELLO, JANE DOE!')
+  expect(func2).toBe('Jane Doe')
+  expect(func3).toBe('hello, netlify!')
 
   await cleanup()
 })

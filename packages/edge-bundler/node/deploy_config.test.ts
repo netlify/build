@@ -1,7 +1,6 @@
 import { promises as fs } from 'fs'
 import { join } from 'path'
 import { cwd } from 'process'
-import { pathToFileURL } from 'url'
 
 import tmp from 'tmp-promise'
 import { test, expect } from 'vitest'
@@ -20,7 +19,7 @@ test('Returns an empty config object if there is no file at the given path', asy
 })
 
 test('Returns a config object with declarations, layers, and import map', async () => {
-  const importMapFile = await tmp.file()
+  const importMapFile = await tmp.file({ postfix: '.json' })
   const importMap = {
     imports: {
       'https://deno.land/': 'https://black.hole/',
@@ -52,9 +51,9 @@ test('Returns a config object with declarations, layers, and import map', async 
 
   const parsedConfig = await load(configFile.path, logger)
 
+  await importMapFile.cleanup()
+
   expect(parsedConfig.declarations).toEqual(config.functions)
   expect(parsedConfig.layers).toEqual(config.layers)
-  expect(parsedConfig.importMap).toBeTruthy()
-  expect(parsedConfig.importMap?.baseURL).toEqual(pathToFileURL(importMapFile.path))
-  expect(parsedConfig.importMap?.imports).toEqual(importMap.imports)
+  expect(parsedConfig.importMap).toBe(importMapFile.path)
 })

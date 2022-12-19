@@ -2,10 +2,9 @@ import { tmpName } from 'tmp-promise'
 
 import { DenoBridge, OnAfterDownloadHook, OnBeforeDownloadHook, ProcessRef } from '../bridge.js'
 import { getFunctionConfig, FunctionConfig } from '../config.js'
-import { getConfig as getDenoConfig } from '../deno_config.js'
 import type { EdgeFunction } from '../edge_function.js'
 import { generateStage2 } from '../formats/javascript.js'
-import { ImportMap, ImportMapFile, readFile as readImportMapFile } from '../import_map.js'
+import { ImportMap } from '../import_map.js'
 import { getLogger, LogFunction, Logger } from '../logger.js'
 import { ensureLatestTypes } from '../types.js'
 
@@ -111,12 +110,11 @@ interface InspectSettings {
   address?: string
 }
 interface ServeOptions {
-  basePath: string
   certificatePath?: string
   debug?: boolean
   distImportMapPath?: string
   inspectSettings?: InspectSettings
-  importMaps?: ImportMapFile[]
+  importMapPaths?: string[]
   onAfterDownload?: OnAfterDownloadHook
   onBeforeDownload?: OnBeforeDownloadHook
   formatExportTypeError?: FormatFunction
@@ -126,14 +124,13 @@ interface ServeOptions {
 }
 
 const serve = async ({
-  basePath,
   certificatePath,
   debug,
   distImportMapPath,
   inspectSettings,
   formatExportTypeError,
   formatImportError,
-  importMaps,
+  importMapPaths = [],
   onAfterDownload,
   onBeforeDownload,
   port,
@@ -157,20 +154,9 @@ const serve = async ({
   // Downloading latest types if needed.
   await ensureLatestTypes(deno, logger)
 
-  // Creating an ImportMap instance with any import maps supplied by the user,
-  // if any.
-  const importMap = new ImportMap(importMaps)
+  const importMap = new ImportMap()
 
-  // Look for a Deno config file and read it if one exists.
-  const denoConfig = await getDenoConfig(logger, basePath)
-
-  // If the Deno config file defines an import map, read the file and add the
-  // imports to the global import map.
-  if (denoConfig?.importMap) {
-    const importMapFile = await readImportMapFile(denoConfig.importMap)
-
-    importMap.add(importMapFile)
-  }
+  await importMap.addFiles(importMapPaths)
 
   const flags = ['--allow-all', '--unstable', `--import-map=${importMap.toDataURL()}`, '--no-config']
 

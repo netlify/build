@@ -10,12 +10,11 @@ import { DenoBridge, DenoOptions, OnAfterDownloadHook, OnBeforeDownloadHook } fr
 import type { Bundle } from './bundle.js'
 import { FunctionConfig, getFunctionConfig } from './config.js'
 import { Declaration, getDeclarationsFromConfig } from './declaration.js'
-import { getConfig as getDenoConfig } from './deno_config.js'
 import { load as loadDeployConfig } from './deploy_config.js'
 import { FeatureFlags, getFlags } from './feature_flags.js'
 import { findFunctions } from './finder.js'
 import { bundle as bundleESZIP } from './formats/eszip.js'
-import { ImportMap, readFile as readImportMapFile } from './import_map.js'
+import { ImportMap } from './import_map.js'
 import { getLogger, LogFunction } from './logger.js'
 import { writeManifest } from './manifest.js'
 import { ensureLatestTypes } from './types.js'
@@ -27,6 +26,7 @@ interface BundleOptions {
   debug?: boolean
   distImportMapPath?: string
   featureFlags?: FeatureFlags
+  importMapPaths?: (string | undefined)[]
   onAfterDownload?: OnAfterDownloadHook
   onBeforeDownload?: OnBeforeDownloadHook
   systemLogger?: LogFunction
@@ -43,6 +43,7 @@ const bundle = async (
     debug,
     distImportMapPath,
     featureFlags: inputFeatureFlags,
+    importMapPaths = [],
     onAfterDownload,
     onBeforeDownload,
     systemLogger,
@@ -81,22 +82,7 @@ const bundle = async (
   const externals = deployConfig.layers.map((layer) => layer.name)
   const importMap = new ImportMap()
 
-  if (deployConfig.importMap) {
-    importMap.add(deployConfig.importMap)
-  }
-
-  if (featureFlags.edge_functions_read_deno_config) {
-    // Look for a Deno config file and read it if one exists.
-    const denoConfig = await getDenoConfig(logger, basePath)
-
-    // If the Deno config file defines an import map, read the file and add the
-    // imports to the global import map.
-    if (denoConfig?.importMap) {
-      const importMapFile = await readImportMapFile(denoConfig.importMap)
-
-      importMap.add(importMapFile)
-    }
-  }
+  await importMap.addFiles([deployConfig?.importMap, ...importMapPaths])
 
   const functions = await findFunctions(sourceDirectories)
   const functionBundle = await bundleESZIP({

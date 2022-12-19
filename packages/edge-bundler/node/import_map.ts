@@ -9,32 +9,49 @@ const INTERNAL_IMPORTS = {
   'netlify:edge': 'https://edge.netlify.com/v1/index.ts',
 }
 
-interface ImportMapFile {
+type Imports = Record<string, string>
+
+interface ImportMapSource {
   baseURL: URL
-  imports: Record<string, string>
-  scopes?: Record<string, Record<string, string>>
+  imports: Imports
+  scopes?: Record<string, Imports>
 }
 
 // ImportMap can take several import map files and merge them into a final
 // import map object, also adding the internal imports in the right order.
 class ImportMap {
-  files: ImportMapFile[]
+  sources: ImportMapSource[]
 
-  constructor(files: ImportMapFile[] = []) {
-    this.files = []
+  constructor(sources: ImportMapSource[] = []) {
+    this.sources = []
 
-    files.forEach((file) => {
+    sources.forEach((file) => {
       this.add(file)
     })
   }
 
   // Transforms an import map by making any relative paths use a different path
   // as a base.
-  static resolve(importMapFile: ImportMapFile, basePath?: string, prefix = 'file://') {
-    const { baseURL, ...importMap } = importMapFile
+  static resolve(source: ImportMapSource, basePath?: string, prefix = 'file://') {
+    const { baseURL, ...importMap } = source
     const parsedImportMap = parse(importMap, baseURL)
-    const { imports = {} } = parsedImportMap
-    const newImports: Record<string, string> = {}
+    const { imports = {}, scopes = {} } = parsedImportMap
+    const resolvedImports = ImportMap.resolveImports(imports, basePath, prefix)
+    const resolvedScopes: Record<string, Imports> = {}
+
+    Object.keys(scopes).forEach((path) => {
+      const resolvedPath = ImportMap.resolvePath(new URL(path), basePath, prefix)
+
+      resolvedScopes[resolvedPath] = ImportMap.resolveImports(scopes[path], basePath, prefix)
+    })
+
+    return { ...parsedImportMap, imports: resolvedImports, scopes: resolvedScopes }
+  }
+
+  // Takes an imports object and resolves relative specifiers with a given base
+  // path and URL prefix.
+  static resolveImports(imports: Record<string, URL | null>, basePath?: string, prefix?: string) {
+    const resolvedImports: Record<string, string> = {}
 
     Object.keys(imports).forEach((specifier) => {
       const url = imports[specifier]
@@ -45,49 +62,81 @@ class ImportMap {
       }
 
       // If this is a file URL, we might want to transform it to use another
-      // base path, as long as one is provided.
-      if (url.protocol === 'file:' && basePath !== undefined) {
-        const path = fileURLToPath(url)
-        const relativePath = relative(basePath, path)
-
-        if (relativePath.startsWith('..')) {
-          throw new Error(`Import map cannot reference '${path}' as it's outside of the base directory '${basePath}'`)
-        }
-
-        // We want to use POSIX paths for the import map regardless of the OS
-        // we're building in.
-        let normalizedPath = relativePath.split(sep).join(posix.sep)
-
-        // If the original URL had a trailing slash, ensure the normalized path
-        // has one too.
-        if (normalizedPath !== '' && url.pathname.endsWith(posix.sep) && !normalizedPath.endsWith(posix.sep)) {
-          normalizedPath += posix.sep
-        }
-
-        const newURL = new URL(normalizedPath, prefix)
-
-        newImports[specifier] = newURL.toString()
+      // base path.
+      if (url.protocol === 'file:') {
+        resolvedImports[specifier] = ImportMap.resolvePath(url, basePath, prefix)
 
         return
       }
 
-      newImports[specifier] = url.toString()
+      resolvedImports[specifier] = url.toString()
     })
 
-    return { ...parsedImportMap, imports: newImports }
+    return resolvedImports
   }
 
-  add(file: ImportMapFile) {
-    this.files.push(file)
+  // Takes a URL, turns it into a path relative to the given base, and prepends
+  // a prefix (such as the virtual root prefix).
+  static resolvePath(url: URL, basePath?: string, prefix?: string) {
+    if (basePath === undefined) {
+      return url.toString()
+    }
+
+    const path = fileURLToPath(url)
+    const relativePath = relative(basePath, path)
+
+    if (relativePath.startsWith('..')) {
+      throw new Error(`Import map cannot reference '${path}' as it's outside of the base directory '${basePath}'`)
+    }
+
+    // We want to use POSIX paths for the import map regardless of the OS
+    // we're building in.
+    let normalizedPath = relativePath.split(sep).join(posix.sep)
+
+    // If the original URL had a trailing slash, ensure the normalized path
+    // has one too.
+    if (normalizedPath !== '' && url.pathname.endsWith(posix.sep) && !normalizedPath.endsWith(posix.sep)) {
+      normalizedPath += posix.sep
+    }
+
+    const newURL = new URL(normalizedPath, prefix)
+
+    return newURL.toString()
+  }
+
+  add(source: ImportMapSource) {
+    this.sources.push(source)
+  }
+
+  async addFile(path: string) {
+    const source = await readFile(path)
+
+    if (Object.keys(source.imports).length === 0) {
+      return
+    }
+
+    return this.add(source)
+  }
+
+  async addFiles(paths: (string | undefined)[]) {
+    for (const path of paths) {
+      if (path === undefined) {
+        return
+      }
+
+      await this.addFile(path)
+    }
   }
 
   getContents(basePath?: string, prefix?: string) {
-    let imports: Record<string, string> = {}
+    let imports: Imports = {}
+    let scopes: Record<string, Imports> = {}
 
-    this.files.forEach((file) => {
+    this.sources.forEach((file) => {
       const importMap = ImportMap.resolve(file, basePath, prefix)
 
       imports = { ...imports, ...importMap.imports }
+      scopes = { ...scopes, ...importMap.scopes }
     })
 
     // Internal imports must come last, because we need to guarantee that
@@ -100,6 +149,7 @@ class ImportMap {
 
     return {
       imports,
+      scopes,
     }
   }
 
@@ -121,7 +171,7 @@ class ImportMap {
   }
 }
 
-const readFile = async (path: string): Promise<ImportMapFile> => {
+const readFile = async (path: string): Promise<ImportMapSource> => {
   const baseURL = pathToFileURL(path)
 
   try {
@@ -143,4 +193,4 @@ const readFile = async (path: string): Promise<ImportMapFile> => {
 }
 
 export { ImportMap, readFile }
-export type { ImportMapFile }
+export type { ImportMapSource as ImportMapFile }
