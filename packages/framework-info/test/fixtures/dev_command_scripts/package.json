@@ -1,0 +1,13 @@
+{
+  "name": "test",
+  "version": "1.0.0",
+  "dependencies": {
+    "@quasar/app": "*"
+  },
+  "scripts": {
+    "another": "test quasar dev -p 8081 test",
+    "other": "testThree",
+    "start": "testTwo",
+    "dev": "test"
+  }
+}
