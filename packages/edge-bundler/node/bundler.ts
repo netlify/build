@@ -82,7 +82,7 @@ const bundle = async (
   const externals = deployConfig.layers.map((layer) => layer.name)
   const importMap = new ImportMap()
 
-  await importMap.addFiles([deployConfig?.importMap, ...importMapPaths])
+  await importMap.addFiles([deployConfig?.importMap, ...importMapPaths], logger)
 
   const functions = await findFunctions(sourceDirectories)
   const functionBundle = await bundleESZIP({

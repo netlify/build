@@ -1,5 +1,6 @@
 import { promises as fs } from 'fs'
 import { join, resolve } from 'path'
+import { stderr, stdout } from 'process'
 import { fileURLToPath, pathToFileURL } from 'url'
 
 import { execa } from 'execa'
@@ -47,7 +48,19 @@ const runESZIP = async (eszipPath: string) => {
   const tmpDir = await tmp.dir({ unsafeCleanup: true })
 
   // Extract ESZIP into temporary directory.
-  await execa('deno', ['run', '--allow-all', 'https://deno.land/x/eszip@v0.28.0/eszip.ts', 'x', eszipPath, tmpDir.path])
+  const extractCommand = execa('deno', [
+    'run',
+    '--allow-all',
+    'https://deno.land/x/eszip@v0.28.0/eszip.ts',
+    'x',
+    eszipPath,
+    tmpDir.path,
+  ])
+
+  extractCommand.stderr?.pipe(stderr)
+  extractCommand.stdout?.pipe(stdout)
+
+  await extractCommand
 
   const virtualRootPath = join(tmpDir.path, 'source', 'root')
   const stage2Path = join(virtualRootPath, '..', 'bootstrap-stage2')
@@ -63,17 +76,15 @@ const runESZIP = async (eszipPath: string) => {
   await fs.rename(stage2Path, `${stage2Path}.js`)
 
   // Run function that imports the extracted stage 2 and invokes each function.
-  const { stdout } = await execa('deno', [
-    'eval',
-    '--no-check',
-    '--import-map',
-    importMapPath,
-    inspectFunction(stage2Path),
-  ])
+  const evalCommand = execa('deno', ['eval', '--no-check', '--import-map', importMapPath, inspectFunction(stage2Path)])
+
+  evalCommand.stderr?.pipe(stderr)
+
+  const result = await evalCommand
 
   await tmpDir.cleanup()
 
-  return JSON.parse(stdout)
+  return JSON.parse(result.stdout)
 }
 
 export { fixturesDir, testLogger, runESZIP, useFixture }

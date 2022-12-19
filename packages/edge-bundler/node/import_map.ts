@@ -5,6 +5,9 @@ import { fileURLToPath, pathToFileURL } from 'url'
 
 import { parse } from '@import-maps/resolve'
 
+import { Logger } from './logger.js'
+import { isFileNotFoundError } from './utils/error.js'
+
 const INTERNAL_IMPORTS = {
   'netlify:edge': 'https://edge.netlify.com/v1/index.ts',
 }
@@ -108,8 +111,8 @@ class ImportMap {
     this.sources.push(source)
   }
 
-  async addFile(path: string) {
-    const source = await readFile(path)
+  async addFile(path: string, logger: Logger) {
+    const source = await readFile(path, logger)
 
     if (Object.keys(source.imports).length === 0) {
       return
@@ -118,13 +121,13 @@ class ImportMap {
     return this.add(source)
   }
 
-  async addFiles(paths: (string | undefined)[]) {
+  async addFiles(paths: (string | undefined)[], logger: Logger) {
     for (const path of paths) {
       if (path === undefined) {
         return
       }
 
-      await this.addFile(path)
+      await this.addFile(path, logger)
     }
   }
 
@@ -171,7 +174,7 @@ class ImportMap {
   }
 }
 
-const readFile = async (path: string): Promise<ImportMapSource> => {
+const readFile = async (path: string, logger: Logger): Promise<ImportMapSource> => {
   const baseURL = pathToFileURL(path)
 
   try {
@@ -182,8 +185,12 @@ const readFile = async (path: string): Promise<ImportMapSource> => {
       ...importMap,
       baseURL,
     }
-  } catch {
-    // no-op
+  } catch (error) {
+    if (isFileNotFoundError(error)) {
+      logger.system(`Did not find an import map file at '${path}'.`)
+    } else {
+      logger.user(`Error while loading import map at '${path}':`, error)
+    }
   }
 
   return {

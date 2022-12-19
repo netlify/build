@@ -4,7 +4,7 @@ import { dirname, resolve } from 'path'
 import type { Declaration } from './declaration.js'
 import type { Layer } from './layer.js'
 import type { Logger } from './logger.js'
-import { isNodeError } from './utils/error.js'
+import { isFileNotFoundError } from './utils/error.js'
 
 /* eslint-disable camelcase */
 interface DeployConfigFile {
@@ -35,7 +35,7 @@ export const load = async (path: string | undefined, logger: Logger): Promise<De
 
     return parse(config, path)
   } catch (error) {
-    if (isNodeError(error) && error.code !== 'ENOENT') {
+    if (!isFileNotFoundError(error)) {
       logger.system('Error while parsing internal edge functions manifest:', error)
     }
   }
