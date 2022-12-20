@@ -188,19 +188,19 @@ export const POST_NORMALIZE_VALIDATIONS = [
     example: () => ({ build: { edge_functions: 'edge-functions' } }),
   },
   {
-    property: 'build.deno_import_map',
-    check: isString,
-    message: 'must be a string.',
-    example: () => ({
-      build: { deno_import_map: 'path/to/import_map.json' },
-    }),
-  },
-  {
     property: 'functions.*',
     check: isPlainObj,
     message: 'must be an object.',
     example: (value, key, prevPath) => ({
       functions: { [prevPath[1]]: { external_node_modules: ['module-one', 'module-two'] } },
+    }),
+  },
+  {
+    property: 'functions.*.deno_import_map',
+    check: isString,
+    message: 'must be a string.',
+    example: (value, key, prevPath) => ({
+      functions: { [prevPath[1]]: { deno_import_map: 'path/to/import_map.json' } },
     }),
   },
   {

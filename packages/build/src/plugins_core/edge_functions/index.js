@@ -27,8 +27,8 @@ const coreStep = async function ({
   logs,
   netlifyConfig,
 }) {
-  const { build, edge_functions: declarations = [] } = netlifyConfig
-  const { deno_import_map: userDefinedImportMap } = build
+  const { edge_functions: declarations = [] } = netlifyConfig
+  const { deno_import_map: userDefinedImportMap } = netlifyConfig.functions['*']
   const distPath = resolve(buildDir, distDirectory)
   const internalSrcPath = resolve(buildDir, internalSrcDirectory)
   const distImportMapPath = join(dirname(internalSrcPath), IMPORT_MAP_FILENAME)

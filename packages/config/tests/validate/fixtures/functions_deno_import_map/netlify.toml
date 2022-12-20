@@ -1,2 +1,2 @@
-[build]
+[functions]
 deno_import_map = ["not", "a", "string"]

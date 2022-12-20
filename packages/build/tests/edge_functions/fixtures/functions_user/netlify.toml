@@ -1,4 +1,4 @@
-[build]
+[functions]
 deno_import_map = "netlify/edge-functions/import-map.json"
 
 [[edge_functions]]
