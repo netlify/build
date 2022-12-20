@@ -131,7 +131,31 @@ test('Prints a nice error message when user tries importing NPM module', async (
   } catch (error) {
     expect(error).toBeInstanceOf(BundleError)
     expect((error as BundleError).message).toEqual(
-      `It seems like you're trying to import an npm module. This is only supported in Deno via CDNs like esm.sh. Have you tried 'import mod from "https://esm.sh/p-retry"'?`,
+      `It seems like you're trying to import an npm module. This is only supported via CDNs like esm.sh. Have you tried 'import mod from "https://esm.sh/p-retry"'?`,
+    )
+  } finally {
+    await cleanup()
+  }
+})
+
+test('Prints a nice error message when user tries importing NPM module with npm: scheme', async () => {
+  expect.assertions(2)
+
+  const { basePath, cleanup, distPath } = await useFixture('imports_npm_module_scheme')
+  const sourceDirectory = join(basePath, 'functions')
+  const declarations = [
+    {
+      function: 'func1',
+      path: '/func1',
+    },
+  ]
+
+  try {
+    await bundle([sourceDirectory], distPath, declarations, { basePath })
+  } catch (error) {
+    expect(error).toBeInstanceOf(BundleError)
+    expect((error as BundleError).message).toEqual(
+      `It seems like you're trying to import an npm module. This is only supported via CDNs like esm.sh. Have you tried 'import mod from "https://esm.sh/p-retry"'?`,
     )
   } finally {
     await cleanup()
