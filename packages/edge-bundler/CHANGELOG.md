@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.1.0](https://github.com/netlify/edge-bundler/compare/v7.0.1...v7.1.0) (2022-12-20)
+
+
+### Features
+
+* add support for negative patterns ([#261](https://github.com/netlify/edge-bundler/issues/261)) ([646631a](https://github.com/netlify/edge-bundler/commit/646631af4593285ca8f081bd7581e5ecf0fe7de3))
+
 ## [7.0.1](https://github.com/netlify/edge-bundler/compare/v7.0.0...v7.0.1) (2022-12-19)
 
 
