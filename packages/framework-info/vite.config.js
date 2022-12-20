@@ -11,6 +11,9 @@ export default {
       path: 'rollup-plugin-node-polyfills/polyfills/path',
     },
   },
+  // Need to specify the directory because if this is invoked from the repository root,
+  // the 'dist' folder is created outside of the 'framework-info' directory
+  root: '.',
   build: {
     lib: {
       entry: CORE_FILE,
