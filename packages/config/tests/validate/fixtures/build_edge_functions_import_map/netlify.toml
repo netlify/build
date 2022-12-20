@@ -1,2 +1,0 @@
-[build]
-edge_functions_import_map = ["not", "a", "string"]
