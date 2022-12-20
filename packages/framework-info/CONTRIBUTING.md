@@ -5,24 +5,15 @@ Contributions are always welcome, no matter how large or small. Before contribut
 
 ## Setup
 
-> Install Node.js + npm on your system: https://nodejs.org/en/download/
+From the root of the repository:
 
 ```sh
-git clone git@github.com:netlify/framework-info.git
-cd framework-info
 npm install
-npm run build
-npm test
+npm run build -- --scope=@netlify/framework-info
+npm test -- --scope=@netlify/framework-info
 ```
 
 You can also use yarn.
-
-## Testing
-
-The following things are tested for:
-
-- Dependencies (used an unused)
-- Linting
 
 ## Releasing
 

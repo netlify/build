@@ -3,9 +3,6 @@ yarn-error.log
 .vscode
 dist
 build
-cypress/videos
-cypress/screenshots
-cypress/support
 .DS_Store
 
 # Local Netlify folder
