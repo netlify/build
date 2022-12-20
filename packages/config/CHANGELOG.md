@@ -32,6 +32,14 @@
   * dependencies
     * netlify-headers-parser bumped from ^7.0.2 to ^7.0.3
 
+## [20.2.0](https://github.com/netlify/build/compare/config-v20.1.0...config-v20.2.0) (2022-12-20)
+
+
+### Features
+
+* add `build.edge_functions_import_map` config property ([#4774](https://github.com/netlify/build/issues/4774)) ([03a9924](https://github.com/netlify/build/commit/03a9924ffef0bcae9136ee43bb3e09d9b9725c2f))
+* read import map from `functions.deno_import_map` config property ([#4782](https://github.com/netlify/build/issues/4782)) ([f1d8ebc](https://github.com/netlify/build/commit/f1d8ebc03b95d1e614ce64ad4083c3f7eb420c7b))
+
 ## [20.1.0](https://github.com/netlify/build/compare/config-v20.0.2...config-v20.1.0) (2022-12-13)
 
 
