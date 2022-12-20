@@ -57,6 +57,20 @@
   * dependencies
     * @netlify/config bumped from ^20.0.1 to ^20.0.2
 
+## [29.2.0](https://github.com/netlify/build/compare/build-v29.1.3...build-v29.2.0) (2022-12-20)
+
+
+### Features
+
+* read import map from `functions.deno_import_map` config property ([#4782](https://github.com/netlify/build/issues/4782)) ([f1d8ebc](https://github.com/netlify/build/commit/f1d8ebc03b95d1e614ce64ad4083c3f7eb420c7b))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.1.0 to ^20.2.0
+
 ## [29.1.3](https://github.com/netlify/build/compare/build-v29.1.2...build-v29.1.3) (2022-12-19)
 
 
