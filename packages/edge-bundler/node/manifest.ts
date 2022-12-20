@@ -20,13 +20,19 @@ interface GenerateManifestOptions {
 }
 
 /* eslint-disable camelcase */
+interface Route {
+  function: string
+  name?: string
+  pattern: string
+  excluded_pattern?: string
+}
 interface Manifest {
   bundler_version: string
   bundles: { asset: string; format: string }[]
   import_map?: string
   layers: { name: string; flag: string }[]
-  routes: { function: string; name?: string; pattern: string }[]
-  post_cache_routes: { function: string; name?: string; pattern: string }[]
+  routes: Route[]
+  post_cache_routes: Route[]
 }
 /* eslint-enable camelcase */
 
@@ -35,6 +41,8 @@ interface Route {
   name?: string
   pattern: string
 }
+
+const serializePattern = (regex: RegExp) => regex.source.replace(/\\\//g, '/')
 
 const generateManifest = ({
   bundles = [],
@@ -54,11 +62,14 @@ const generateManifest = ({
     }
 
     const pattern = getRegularExpression(declaration)
-    const serializablePattern = pattern.source.replace(/\\\//g, '/')
-    const route = {
+    const route: Route = {
       function: func.name,
       name: declaration.name,
-      pattern: serializablePattern,
+      pattern: serializePattern(pattern),
+    }
+    const excludedPattern = getExcludedRegularExpression(declaration)
+    if (excludedPattern) {
+      route.excluded_pattern = serializePattern(excludedPattern)
     }
 
     if (declaration.cache === Cache.Manual) {
@@ -83,14 +94,10 @@ const generateManifest = ({
   return manifest
 }
 
-const getRegularExpression = (declaration: Declaration) => {
-  if ('pattern' in declaration) {
-    return new RegExp(declaration.pattern)
-  }
-
+const pathToRegularExpression = (path: string) => {
   // We use the global flag so that `globToRegExp` will not wrap the expression
   // with `^` and `$`. We'll do that ourselves.
-  const regularExpression = globToRegExp(declaration.path, { flags: 'g' })
+  const regularExpression = globToRegExp(path, { flags: 'g' })
 
   // Wrapping the expression source with `^` and `$`. Also, adding an optional
   // trailing slash, so that a declaration of `path: "/foo"` matches requests
@@ -98,6 +105,24 @@ const getRegularExpression = (declaration: Declaration) => {
   const normalizedSource = `^${regularExpression.source}\\/?$`
 
   return new RegExp(normalizedSource)
+}
+
+const getRegularExpression = (declaration: Declaration) => {
+  if ('pattern' in declaration) {
+    return new RegExp(declaration.pattern)
+  }
+
+  return pathToRegularExpression(declaration.path)
+}
+
+const getExcludedRegularExpression = (declaration: Declaration) => {
+  if ('pattern' in declaration && declaration.excludedPattern) {
+    return new RegExp(declaration.excludedPattern)
+  }
+
+  if ('path' in declaration && declaration.excludedPath) {
+    return pathToRegularExpression(declaration.excludedPath)
+  }
 }
 
 interface WriteManifestOptions {

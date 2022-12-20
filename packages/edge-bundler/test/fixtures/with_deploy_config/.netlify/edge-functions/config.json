@@ -2,7 +2,8 @@
   "functions": [
     {
       "function": "func2",
-      "path": "/func2"
+      "path": "/func2/*",
+      "excludedPath": "/func2/skip"
     }
   ],
   "import_map": "import_map.json",

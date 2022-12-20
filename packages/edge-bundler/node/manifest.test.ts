@@ -3,6 +3,7 @@ import { env } from 'process'
 import { test, expect } from 'vitest'
 
 import { BundleFormat } from './bundle.js'
+import { Declaration } from './declaration.js'
 import { generateManifest } from './manifest.js'
 
 test('Generates a manifest with different bundles', () => {
@@ -45,6 +46,26 @@ test('Generates a manifest with display names', () => {
   const expectedRoutes = [
     { function: 'func-1', name: 'Display Name', pattern: '^/f1/.*/?$' },
     { function: 'func-2', pattern: '^/f2/.*/?$' },
+  ]
+
+  expect(manifest.routes).toEqual(expectedRoutes)
+  expect(manifest.bundler_version).toBe(env.npm_package_version as string)
+})
+
+test('Generates a manifest with excluded paths and patterns', () => {
+  const functions = [
+    { name: 'func-1', path: '/path/to/func-1.ts' },
+    { name: 'func-2', path: '/path/to/func-2.ts' },
+  ]
+  const declarations: Declaration[] = [
+    { function: 'func-1', name: 'Display Name', path: '/f1/*', excludedPath: '/f1/exclude' },
+    { function: 'func-2', pattern: '^/f2/.*/?$', excludedPattern: '^/f2/exclude$' },
+  ]
+  const manifest = generateManifest({ bundles: [], declarations, functions })
+
+  const expectedRoutes = [
+    { function: 'func-1', name: 'Display Name', pattern: '^/f1/.*/?$', excluded_pattern: '^/f1/exclude/?$' },
+    { function: 'func-2', pattern: '^/f2/.*/?$', excluded_pattern: '^/f2/exclude$' },
   ]
 
   expect(manifest.routes).toEqual(expectedRoutes)
