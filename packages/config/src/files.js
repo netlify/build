@@ -18,7 +18,12 @@ export const resolveConfigPaths = async function ({ config, repositoryRoot, buil
 
 // All file paths in the configuration file are are relative to `buildDir`
 // (if `baseRelDir` is `true`).
-const FILE_PATH_CONFIG_PROPS = ['functionsDirectory', 'build.publish', 'build.edge_functions']
+const FILE_PATH_CONFIG_PROPS = [
+  'functionsDirectory',
+  'functions.*.deno_import_map',
+  'build.publish',
+  'build.edge_functions',
+]
 
 const resolvePaths = function (config, propNames, baseRel, repositoryRoot) {
   return propNames.reduce((configA, propName) => resolvePathProp(configA, propName, baseRel, repositoryRoot), config)

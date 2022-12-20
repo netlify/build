@@ -113,11 +113,6 @@ test('build.edge_functions: parent directory', async (t) => {
   t.snapshot(normalizeOutput(output))
 })
 
-test('build.edge_functions_import_map: string', async (t) => {
-  const output = await new Fixture('./fixtures/build_edge_functions_import_map').runWithConfig()
-  t.snapshot(normalizeOutput(output))
-})
-
 test('build.base: string', async (t) => {
   const output = await new Fixture('./fixtures/build_base_string').runWithConfig()
   t.snapshot(normalizeOutput(output))
@@ -244,6 +239,11 @@ test('functions.node_bundler: one of supported bundlers', async (t) => {
 
 test('functions.directory: defined on the main functions object', async (t) => {
   const output = await new Fixture('./fixtures/function_config_invalid_nested_directory').runWithConfig()
+  t.snapshot(normalizeOutput(output))
+})
+
+test('functions.deno_import_map: string', async (t) => {
+  const output = await new Fixture('./fixtures/functions_deno_import_map').runWithConfig()
   t.snapshot(normalizeOutput(output))
 })
 
