@@ -1,6 +1,3 @@
-[![npm version](https://img.shields.io/npm/v/@netlify/framework-info.svg)](https://npmjs.org/package/@netlify/framework-info)
-[![Downloads](https://img.shields.io/npm/dm/@netlify/framework-info.svg)](https://www.npmjs.com/package/@netlify/framework-info)
-
 Framework detection utility.
 
 Detects which framework a specific website is using. The framework's build/dev commands, directories and server port are
