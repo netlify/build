@@ -113,8 +113,8 @@ test('build.edge_functions: parent directory', async (t) => {
   t.snapshot(normalizeOutput(output))
 })
 
-test('build.edge_functions_import_map: string', async (t) => {
-  const output = await new Fixture('./fixtures/build_edge_functions_import_map').runWithConfig()
+test('build.deno_import_map: string', async (t) => {
+  const output = await new Fixture('./fixtures/build_deno_import_map').runWithConfig()
   t.snapshot(normalizeOutput(output))
 })
 
