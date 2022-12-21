@@ -1,5 +1,21 @@
 # Changelog
 
+## [8.0.0](https://github.com/netlify/edge-bundler/compare/v7.1.0...v8.0.0) (2022-12-21)
+
+
+### ⚠ BREAKING CHANGES
+
+* make `config` export a plain object ([#273](https://github.com/netlify/edge-bundler/issues/273))
+
+### Features
+
+* make `config` export a plain object ([#273](https://github.com/netlify/edge-bundler/issues/273)) ([a6a48cf](https://github.com/netlify/edge-bundler/commit/a6a48cf1b64ff00e022e797e57c3bde89258a3a6))
+
+
+### Bug Fixes
+
+* print nice npm error message for npm: specifier as well ([#271](https://github.com/netlify/edge-bundler/issues/271)) ([70071de](https://github.com/netlify/edge-bundler/commit/70071de9ff6f0d89e455d868fd43e05ff83a3bfc))
+
 ## [7.1.0](https://github.com/netlify/edge-bundler/compare/v7.0.1...v7.1.0) (2022-12-20)
 
 
