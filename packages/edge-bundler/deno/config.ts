@@ -19,22 +19,12 @@ if (func.config === undefined) {
   Deno.exit(exitCodes.NoConfig)
 }
 
-if (typeof func.config !== 'function') {
+if (typeof func.config !== 'object') {
   Deno.exit(exitCodes.InvalidExport)
 }
 
-let config
-
 try {
-  config = await func.config()
-} catch (error) {
-  console.error(error)
-
-  Deno.exit(exitCodes.RuntimeError)
-}
-
-try {
-  const result = JSON.stringify(config)
+  const result = JSON.stringify(func.config)
 
   await Deno.writeTextFile(new URL(collectorURL), result)
 } catch (error) {

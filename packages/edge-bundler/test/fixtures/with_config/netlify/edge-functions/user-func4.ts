@@ -5,7 +5,7 @@ export default async () =>
     },
   })
 
-export const config = () => ({
+export const config = {
   cache: 'manual',
   path: '/user-func4',
-})
+}

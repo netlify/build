@@ -45,7 +45,7 @@ test('`getFunctionConfig` extracts configuration properties from function file',
       source: `
         export default async () => new Response("Hello from function two")
 
-        export const config = () => ({})
+        export const config = {}
       `,
     },
 
@@ -56,9 +56,9 @@ test('`getFunctionConfig` extracts configuration properties from function file',
       source: `
       export default async () => new Response("Hello from function two")
 
-      export const config = {}
+      export const config = () => ({})
     `,
-      userLog: /^'config' export in edge function at '(.*)' must be a function$/,
+      userLog: /^'config' export in edge function at '(.*)' must be an object$/,
     },
 
     // Config with a syntax error
@@ -73,20 +73,6 @@ test('`getFunctionConfig` extracts configuration properties from function file',
       userLog: /^Could not load edge function at '(.*)'$/,
     },
 
-    // Config that throws
-    {
-      expectedConfig: {},
-      name: 'func5',
-      source: `
-          export default async () => new Response("Hello from function two")
-
-          export const config = () => {
-            throw new Error('uh-oh')
-          }
-        `,
-      userLog: /^Error while running 'config' function in edge function at '(.*)'$/,
-    },
-
     // Config with `path`
     {
       expectedConfig: { path: '/home' },
@@ -94,24 +80,8 @@ test('`getFunctionConfig` extracts configuration properties from function file',
       source: `
         export default async () => new Response("Hello from function three")
 
-        export const config = () => ({ path: "/home" })
+        export const config = { path: "/home" }
       `,
-    },
-
-    // Config that prints to stdout
-    {
-      expectedConfig: { path: '/home' },
-      name: 'func7',
-      source: `
-        export default async () => new Response("Hello from function three")
-
-        export const config = () => {
-          console.log("Hello from config!")
-
-          return { path: "/home" }
-        }
-      `,
-      userLog: /^Hello from config!$/,
     },
   ]
 

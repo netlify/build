@@ -17,7 +17,6 @@ enum ConfigExitCode {
   ImportError,
   NoConfig,
   InvalidExport,
-  RuntimeError,
   SerializationError,
   InvalidDefaultExport,
 }
@@ -108,18 +107,12 @@ const logConfigError = (func: EdgeFunction, exitCode: number, stderr: string, lo
       break
 
     case ConfigExitCode.InvalidExport:
-      log.user(`'config' export in edge function at '${func.path}' must be a function`)
-
-      break
-
-    case ConfigExitCode.RuntimeError:
-      log.user(`Error while running 'config' function in edge function at '${func.path}'`)
-      log.user(stderr)
+      log.user(`'config' export in edge function at '${func.path}' must be an object`)
 
       break
 
     case ConfigExitCode.SerializationError:
-      log.user(`'config' function in edge function at '${func.path}' must return an object with primitive values only`)
+      log.user(`'config' object in edge function at '${func.path}' must contain primitive values only`)
 
       break
 

@@ -6,6 +6,6 @@ export default async () => {
   return new Response(greeting)
 }
 
-export const config = () => ({
+export const config = {
   path: '/framework-func1',
-})
+}
