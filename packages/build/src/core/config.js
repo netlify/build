@@ -59,7 +59,16 @@ export const getConfigOpts = function ({
 }
 
 // Retrieve configuration object
-const tLoadConfig = async function ({ configOpts, cachedConfig, cachedConfigPath, envOpt, debug, logs, nodePath }) {
+const tLoadConfig = async function ({
+  configOpts,
+  cachedConfig,
+  cachedConfigPath,
+  envOpt,
+  debug,
+  logs,
+  nodePath,
+  quiet,
+}) {
   const {
     configPath,
     headersPath,
@@ -74,7 +83,10 @@ const tLoadConfig = async function ({ configOpts, cachedConfig, cachedConfigPath
     siteInfo,
     env,
   } = await resolveInitialConfig(configOpts, cachedConfig, cachedConfigPath)
-  logConfigInfo({ logs, configPath, buildDir, netlifyConfig, context: contextA, debug })
+
+  if (!quiet) {
+    logConfigInfo({ logs, configPath, buildDir, netlifyConfig, context: contextA, debug })
+  }
 
   const apiA = addApiErrorHandlers(api)
   const envValues = mapObj(env, (key, { value }) => [key, value])

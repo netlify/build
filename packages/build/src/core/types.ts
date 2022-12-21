@@ -28,6 +28,11 @@ export type BuildCLIFlags = {
   cwd?: string
   /** A list of all the feature flags passed to netlify/build */
   featureFlags: Record<string, boolean>
+  /**
+   * Print only essential/error output
+   * @default false
+   */
+  quiet?: boolean
 }
 
 export type BuildResult = {
