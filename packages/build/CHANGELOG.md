@@ -57,6 +57,13 @@
   * dependencies
     * @netlify/config bumped from ^20.0.1 to ^20.0.2
 
+## [29.3.0](https://github.com/netlify/build/compare/build-v29.2.2...build-v29.3.0) (2022-12-22)
+
+
+### Features
+
+* add `quiet` flag ([#4788](https://github.com/netlify/build/issues/4788)) ([c58f966](https://github.com/netlify/build/commit/c58f9660a9f26157a405e3d46d33109cbb9ebc2a))
+
 ## [29.2.2](https://github.com/netlify/build/compare/build-v29.2.1...build-v29.2.2) (2022-12-21)
 
 
