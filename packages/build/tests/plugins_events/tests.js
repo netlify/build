@@ -112,3 +112,25 @@ test('Runs the `*Dev` events and not the `*Build` events on the dev timeline', a
 
   t.is(devCommand.callCount, 1)
 })
+
+test('Keeps output to a minimum in the `startDev` entrypoint when `quiet: true`', async (t) => {
+  const devCommand = sinon.stub().resolves()
+
+  const output = await new Fixture('./fixtures/dev_and_build')
+    .withFlags({ debug: false, quiet: true, timeline: 'dev' })
+    .runDev(devCommand)
+  t.snapshot(normalizeOutput(output))
+
+  t.is(devCommand.callCount, 1)
+})
+
+test('Shows error information in the `startDev` entrypoint even when `quiet: true`', async (t) => {
+  const devCommand = sinon.stub().resolves()
+
+  const output = await new Fixture('./fixtures/dev_with_error')
+    .withFlags({ debug: false, quiet: true, timeline: 'dev' })
+    .runDev(devCommand)
+  t.snapshot(normalizeOutput(output))
+
+  t.is(devCommand.callCount, 0)
+})
