@@ -152,6 +152,7 @@ export const saveUpdatedConfig = async function ({
   buildDir,
   repositoryRoot,
   configPath = `${repositoryRoot}/netlify.toml`,
+  outputConfigPath = configPath,
   headersPath,
   redirectsPath,
   logs,
@@ -168,6 +169,7 @@ export const saveUpdatedConfig = async function ({
   await updateConfig(configMutations, {
     buildDir,
     configPath,
+    outputConfigPath,
     headersPath,
     redirectsPath,
     context,
