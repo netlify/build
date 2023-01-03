@@ -59,7 +59,7 @@ const coreStep = async function ({
   }
 }
 
-const shouldDeploy = function ({ buildbotServerSocket }) {
+export const shouldDeploy = function ({ buildbotServerSocket }) {
   return buildbotServerSocket !== undefined
 }
 

@@ -32,6 +32,13 @@
   * dependencies
     * netlify-headers-parser bumped from ^7.0.2 to ^7.0.3
 
+## [20.3.0](https://github.com/netlify/build/compare/config-v20.2.0...config-v20.3.0) (2023-01-03)
+
+
+### Features
+
+* add `--outputConfigPath` flag ([#4792](https://github.com/netlify/build/issues/4792)) ([2eaf55c](https://github.com/netlify/build/commit/2eaf55cab91b51496f4224fb030c3b5c2ff19cd7))
+
 ## [20.2.0](https://github.com/netlify/build/compare/config-v20.1.0...config-v20.2.0) (2022-12-20)
 
 

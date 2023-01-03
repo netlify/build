@@ -163,6 +163,12 @@ Default: false`,
     describe: 'Whether configuration changes should be saved to netlify.toml',
     hidden: true,
   },
+  outputConfigPath: {
+    type: 'string',
+    describe:
+      'Path where to save the netlify.toml resulting from configuration changes. Only applicable if `saveConfig` is set. Defaults to "netlify.toml" in the root directory.',
+    hidden: true,
+  },
   testOpts: {
     describe: 'Options for testing only',
     hidden: true,

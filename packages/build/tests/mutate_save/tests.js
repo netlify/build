@@ -6,6 +6,7 @@ import { Fixture, normalizeOutput, startTcpServer } from '@netlify/testing'
 import test from 'ava'
 import del from 'del'
 import { pathExists } from 'path-exists'
+import tmp from 'tmp-promise'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
@@ -333,4 +334,30 @@ test('--saveConfig is performed before deploy', async (t) => {
   } finally {
     await stopServer()
   }
+})
+
+test('--saveConfig writes the mutated config to the path in --outputConfigPath', async (t) => {
+  const fixtureDir = `${FIXTURES_DIR}/save_changes`
+  const configPath = `${fixtureDir}/netlify.toml`
+  const configBeforeBuild = await fs.readFile(configPath, 'utf8')
+  const tempConfig = await tmp.file()
+  const output = await new Fixture('./fixtures/save_changes')
+    .withFlags({
+      saveConfig: true,
+      outputConfigPath: tempConfig.path,
+      context: 'production',
+      branch: 'main',
+      defaultConfig: { plugins: [{ package: './plugin.js' }] },
+    })
+    .runWithBuild()
+
+  t.snapshot(normalizeOutput(output))
+
+  const configAfterBuild = await fs.readFile(configPath, 'utf8')
+  const mutatedConfig = await fs.readFile(tempConfig.path, 'utf8')
+
+  await tempConfig.cleanup()
+
+  t.is(configAfterBuild, configBeforeBuild)
+  t.true(mutatedConfig.includes('command = "node --version"'))
 })

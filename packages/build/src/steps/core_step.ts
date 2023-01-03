@@ -9,6 +9,7 @@ export const fireCoreStep = async function ({
   coreStepId,
   coreStepName,
   configPath,
+  outputConfigPath,
   buildDir,
   repositoryRoot,
   constants,
@@ -40,6 +41,7 @@ export const fireCoreStep = async function ({
       tags,
     } = await coreStep({
       configPath,
+      outputConfigPath,
       buildDir,
       repositoryRoot,
       constants,

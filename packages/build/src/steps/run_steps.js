@@ -15,6 +15,7 @@ export const runSteps = async function ({
   buildbotServerSocket,
   events,
   configPath,
+  outputConfigPath,
   headersPath,
   redirectsPath,
   buildDir,
@@ -39,6 +40,7 @@ export const runSteps = async function ({
   timers,
   testOpts,
   featureFlags,
+  quiet,
 }) {
   const {
     index: stepsCount,
@@ -101,6 +103,7 @@ export const runSteps = async function ({
         origin,
         condition,
         configPath,
+        outputConfigPath,
         buildDir,
         repositoryRoot,
         nodePath,
@@ -133,6 +136,7 @@ export const runSteps = async function ({
         timers: timersA,
         testOpts,
         featureFlags,
+        quiet,
       })
       const statusesA = addStatus({ newStatus, statuses, event, packageName, pluginPackageJson })
       return {

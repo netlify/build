@@ -16,7 +16,17 @@ import { applyMutations } from './apply.js'
 // If `netlify.toml` does not exist, creates it. Otherwise, merges the changes.
 export const updateConfig = async function (
   configMutations,
-  { buildDir, configPath, headersPath, redirectsPath, context, branch, logs, featureFlags },
+  {
+    buildDir,
+    configPath,
+    headersPath,
+    outputConfigPath = configPath,
+    redirectsPath,
+    context,
+    branch,
+    logs,
+    featureFlags,
+  },
 ) {
   if (configMutations.length === 0) {
     return
@@ -28,9 +38,10 @@ export const updateConfig = async function (
   const configWithHeaders = await addHeaders({ config: updatedConfig, headersPath, logs, featureFlags })
   const finalConfig = await addRedirects({ config: configWithHeaders, redirectsPath, logs, featureFlags })
   const simplifiedConfig = simplifyConfig(finalConfig)
+
   await backupConfig({ buildDir, configPath, headersPath, redirectsPath })
   await Promise.all([
-    saveConfig(configPath, simplifiedConfig),
+    saveConfig(outputConfigPath, simplifiedConfig),
     deleteSideFile(headersPath),
     deleteSideFile(redirectsPath),
   ])

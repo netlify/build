@@ -57,6 +57,27 @@
   * dependencies
     * @netlify/config bumped from ^20.0.1 to ^20.0.2
 
+## [29.4.0](https://github.com/netlify/build/compare/build-v29.3.0...build-v29.4.0) (2023-01-03)
+
+
+### Features
+
+* add `--outputConfigPath` flag ([#4792](https://github.com/netlify/build/issues/4792)) ([2eaf55c](https://github.com/netlify/build/commit/2eaf55cab91b51496f4224fb030c3b5c2ff19cd7))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.2.0 to ^20.3.0
+
+## [29.3.0](https://github.com/netlify/build/compare/build-v29.2.2...build-v29.3.0) (2022-12-22)
+
+
+### Features
+
+* add `quiet` flag ([#4788](https://github.com/netlify/build/issues/4788)) ([c58f966](https://github.com/netlify/build/commit/c58f9660a9f26157a405e3d46d33109cbb9ebc2a))
+
 ## [29.2.2](https://github.com/netlify/build/compare/build-v29.2.1...build-v29.2.2) (2022-12-21)
 
 
