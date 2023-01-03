@@ -15,6 +15,7 @@
   ],
   "scripts": {
     "build": "run-s build:*",
+    "build:ts": "tsc",
     "build:json": "node scripts/transform_json.js",
     "build:browser": "run-s build:browser:*",
     "build:browser:core": "vite build",
@@ -82,6 +83,7 @@
     "rollup-plugin-node-polyfills": "^0.2.1",
     "test-each": "^4.0.0",
     "tmp-promise": "^3.0.2",
+    "typescript": "^4.9.4",
     "vite": "^3.1.6"
   },
   "engines": {
