@@ -3,6 +3,7 @@ import { buildCommandCore } from '../plugins_core/build_command.js'
 import { deploySite } from '../plugins_core/deploy/index.js'
 import { bundleEdgeFunctions } from '../plugins_core/edge_functions/index.js'
 import { bundleFunctions } from '../plugins_core/functions/index.js'
+import { saveArtifacts } from '../plugins_core/save_artifacts/index.js'
 
 // Get all build steps
 export const getSteps = function (steps) {
@@ -32,7 +33,7 @@ export const getDevSteps = function (command, steps) {
 }
 
 const addCoreSteps = function (steps) {
-  return [buildCommandCore, ...steps, bundleFunctions, bundleEdgeFunctions, deploySite]
+  return [buildCommandCore, ...steps, bundleFunctions, bundleEdgeFunctions, deploySite, saveArtifacts]
 }
 
 // Sort plugin steps by event order.

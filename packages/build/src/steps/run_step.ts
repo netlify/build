@@ -22,6 +22,7 @@ export const runStep = async function ({
   origin,
   condition,
   configPath,
+  outputConfigPath,
   buildDir,
   repositoryRoot,
   nodePath,
@@ -69,6 +70,7 @@ export const runStep = async function ({
       constants: constantsA,
       buildbotServerSocket,
       buildDir,
+      saveConfig,
     }))
   ) {
     return {}
@@ -100,6 +102,7 @@ export const runStep = async function ({
     coreStepId,
     coreStepName,
     configPath,
+    outputConfigPath,
     buildDir,
     repositoryRoot,
     nodePath,
@@ -196,10 +199,12 @@ const shouldRunStep = async function ({
   constants,
   buildbotServerSocket,
   buildDir,
+  saveConfig,
 }) {
   if (
     failedPlugins.includes(packageName) ||
-    (condition !== undefined && !(await condition({ buildDir, constants, buildbotServerSocket, netlifyConfig })))
+    (condition !== undefined &&
+      !(await condition({ buildDir, constants, buildbotServerSocket, netlifyConfig, saveConfig })))
   ) {
     return false
   }
@@ -232,6 +237,7 @@ const tFireStep = function ({
   coreStepId,
   coreStepName,
   configPath,
+  outputConfigPath,
   buildDir,
   repositoryRoot,
   nodePath,
@@ -263,6 +269,7 @@ const tFireStep = function ({
       coreStepId,
       coreStepName,
       configPath,
+      outputConfigPath,
       buildDir,
       repositoryRoot,
       constants,
