@@ -61,7 +61,9 @@ export const normalizeFlags = function (flags: Partial<BuildCLIFlags>, logs): Re
   }
   const normalizedFlags = removeFalsy(mergedFlags) as any
 
-  logFlags(logs, rawFlags, normalizedFlags)
+  if (!flags.quiet) {
+    logFlags(logs, rawFlags, normalizedFlags)
+  }
 
   return normalizedFlags
 }
@@ -90,6 +92,7 @@ const getDefaultFlags = function ({ env: envOpt = {} }, combinedEnv) {
     featureFlags: DEFAULT_FEATURE_FLAGS,
     statsd: { port: DEFAULT_STATSD_PORT },
     timeline: 'build',
+    quiet: false,
   }
 }
 

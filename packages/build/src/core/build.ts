@@ -27,7 +27,10 @@ export const startBuild = function (flags: Partial<BuildCLIFlags>) {
   const timers = initTimers()
 
   const logs = getBufferLogs(flags)
-  logBuildStart(logs)
+
+  if (!flags.quiet) {
+    logBuildStart(logs)
+  }
 
   const { bugsnagKey, ...flagsA } = normalizeFlags(flags, logs)
   const errorMonitor = startErrorMonitor({ flags: flagsA, logs, bugsnagKey })
@@ -40,6 +43,7 @@ const tExecBuild = async function ({
   defaultConfig,
   cachedConfig,
   cachedConfigPath,
+  outputConfigPath,
   cwd,
   repositoryRoot,
   apiHost,
@@ -72,6 +76,7 @@ const tExecBuild = async function ({
   featureFlags,
   timeline,
   devCommand,
+  quiet,
 }) {
   const configOpts = getConfigOpts({
     config,
@@ -117,6 +122,7 @@ const tExecBuild = async function ({
     logs,
     nodePath,
     timers,
+    quiet,
   })
   const constants = await getConstants({
     configPath,
@@ -148,6 +154,7 @@ const tExecBuild = async function ({
     configOpts,
     siteInfo,
     configPath,
+    outputConfigPath,
     headersPath,
     redirectsPath,
     buildDir,
@@ -177,6 +184,7 @@ const tExecBuild = async function ({
     featureFlags,
     timeline,
     devCommand,
+    quiet,
   })
   return {
     pluginsOptions: pluginsOptionsA,
@@ -198,6 +206,7 @@ export const runAndReportBuild = async function ({
   configOpts,
   siteInfo,
   configPath,
+  outputConfigPath,
   headersPath,
   redirectsPath,
   buildDir,
@@ -227,6 +236,7 @@ export const runAndReportBuild = async function ({
   featureFlags,
   timeline,
   devCommand,
+  quiet,
 }) {
   try {
     const {
@@ -243,6 +253,7 @@ export const runAndReportBuild = async function ({
       configOpts,
       siteInfo,
       configPath,
+      outputConfigPath,
       headersPath,
       redirectsPath,
       buildDir,
@@ -272,6 +283,7 @@ export const runAndReportBuild = async function ({
       featureFlags,
       timeline,
       devCommand,
+      quiet,
     })
     await Promise.all([
       reportStatuses({
@@ -338,6 +350,7 @@ const initAndRunBuild = async function ({
   configOpts,
   siteInfo,
   configPath,
+  outputConfigPath,
   headersPath,
   redirectsPath,
   buildDir,
@@ -367,6 +380,7 @@ const initAndRunBuild = async function ({
   featureFlags,
   timeline,
   devCommand,
+  quiet,
 }) {
   const { pluginsOptions: pluginsOptionsA, timers: timersA } = await getPluginsOptions({
     pluginsOptions,
@@ -396,6 +410,7 @@ const initAndRunBuild = async function ({
     debug,
     timers: timersA,
     featureFlags,
+    quiet,
   })
 
   try {
@@ -413,6 +428,7 @@ const initAndRunBuild = async function ({
       configOpts,
       packageJson,
       configPath,
+      outputConfigPath,
       headersPath,
       redirectsPath,
       buildDir,
@@ -439,6 +455,7 @@ const initAndRunBuild = async function ({
       featureFlags,
       timeline,
       devCommand,
+      quiet,
     })
 
     await Promise.all([
@@ -474,6 +491,7 @@ const runBuild = async function ({
   configOpts,
   packageJson,
   configPath,
+  outputConfigPath,
   headersPath,
   redirectsPath,
   buildDir,
@@ -500,6 +518,7 @@ const runBuild = async function ({
   featureFlags,
   timeline,
   devCommand,
+  quiet,
 }) {
   const { pluginsSteps, timers: timersA } = await loadPlugins({
     pluginsOptions,
@@ -530,6 +549,7 @@ const runBuild = async function ({
     buildbotServerSocket,
     events,
     configPath,
+    outputConfigPath,
     headersPath,
     redirectsPath,
     buildDir,
@@ -554,6 +574,7 @@ const runBuild = async function ({
     timers: timersA,
     testOpts,
     featureFlags,
+    quiet,
   })
 
   return { stepsCount, netlifyConfig: netlifyConfigA, statuses, failedPlugins, timers: timersB, configMutations }
