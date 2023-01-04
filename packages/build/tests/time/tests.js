@@ -43,13 +43,24 @@ test('Default --framework CLI flag to nothing', async (t) => {
   t.true(timerRequests.every((timerRequest) => !timerRequest.includes('framework:')))
 })
 
-test('Sends a `bundler: "zisi"` tag when no functions use the esbuild bundler', async (t) => {
+test('Sends a `bundler: "zisi"` tag when bundler set to zisi', async (t) => {
   const timerRequests = await getAllTimerRequests(t, './fixtures/functions_zisi')
   const functionsBundlingRequest = timerRequests.find((timerRequest) =>
     timerRequest.includes('stage:functions_bundling'),
   )
 
   t.true(functionsBundlingRequest.includes('bundler:zisi'))
+  t.false(functionsBundlingRequest.includes('bundler:zisi,zisi'))
+})
+
+test('Sends a `bundler: "nft"` tag when bundler set to nft', async (t) => {
+  const timerRequests = await getAllTimerRequests(t, './fixtures/functions_nft')
+  const functionsBundlingRequest = timerRequests.find((timerRequest) =>
+    timerRequest.includes('stage:functions_bundling'),
+  )
+
+  t.true(functionsBundlingRequest.includes('bundler:nft'))
+  t.false(functionsBundlingRequest.includes('bundler:nft,nft'))
 })
 
 test('Sends a `bundler: "esbuild"` tag when at least one function uses the esbuild bundler', async (t) => {
@@ -58,7 +69,7 @@ test('Sends a `bundler: "esbuild"` tag when at least one function uses the esbui
     timerRequest.includes('stage:functions_bundling'),
   )
 
-  t.true(functionsBundlingRequest.includes('bundler:esbuild'))
+  t.true(functionsBundlingRequest.includes('bundler:nft,esbuild'))
 })
 
 // Retrieve statsd packets sent to --statsd.host|port, and get their snapshot
