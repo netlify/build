@@ -1,8 +1,28 @@
+import dns from 'dns'
+
 import { intercept, cleanAll } from '@netlify/nock-udp'
 import { Fixture } from '@netlify/testing'
 import test from 'ava'
+import sinon from 'sinon'
+
+test.before(() => {
+  const origLookup = dns.lookup
+  // we have to stub dns lookup as hot-shots is caching dns and therefore calling dns.lookup directly
+  sinon.stub(dns, 'lookup').callsFake((host, options, cb) => {
+    if (cb === undefined) {
+      cb = options
+      options = {}
+    }
+    if (host.startsWith(`timetest.`)) {
+      cb(undefined, host, 4)
+    } else {
+      origLookup(host, options, cb)
+    }
+  })
+})
 
 test.after(() => {
+  dns.lookup.restore()
   cleanAll()
 })
 
@@ -50,7 +70,7 @@ test('Sends a `bundler: "zisi"` tag when bundler set to zisi', async (t) => {
   )
 
   t.true(functionsBundlingRequest.includes('bundler:zisi'))
-  t.false(functionsBundlingRequest.includes('bundler:zisi,zisi'))
+  t.false(functionsBundlingRequest.includes('bundler:zisi,bundler:zisi'))
 })
 
 test('Sends a `bundler: "nft"` tag when bundler set to nft', async (t) => {
@@ -60,7 +80,7 @@ test('Sends a `bundler: "nft"` tag when bundler set to nft', async (t) => {
   )
 
   t.true(functionsBundlingRequest.includes('bundler:nft'))
-  t.false(functionsBundlingRequest.includes('bundler:nft,nft'))
+  t.false(functionsBundlingRequest.includes('bundler:nft,bundler:nft'))
 })
 
 test('Sends a `bundler: "esbuild"` tag when at least one function uses the esbuild bundler', async (t) => {
@@ -69,7 +89,7 @@ test('Sends a `bundler: "esbuild"` tag when at least one function uses the esbui
     timerRequest.includes('stage:functions_bundling'),
   )
 
-  t.true(functionsBundlingRequest.includes('bundler:nft,esbuild'))
+  t.true(functionsBundlingRequest.includes('bundler:nft,bundler:esbuild'))
 })
 
 // Retrieve statsd packets sent to --statsd.host|port, and get their snapshot
@@ -81,7 +101,7 @@ const getTimerRequestsString = async function (t, fixtureName, flags) {
 
 const getAllTimerRequests = async function (t, fixtureName, flags = {}) {
   // Ensure there's no conflict between each test scope
-  const host = encodeURI(t.title)
+  const host = 'timetest.' + encodeURI(t.title)
   const port = '1234'
   const scope = intercept(`${host}:${port}`, { persist: true, allowUnknown: true })
 
