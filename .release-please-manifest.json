@@ -3,6 +3,7 @@
   "packages/build": "29.4.0",
   "packages/cache-utils": "5.1.0",
   "packages/config": "20.3.0",
+  "packages/framework-info": "9.5.3",
   "packages/functions-utils": "5.1.1",
   "packages/git-utils": "5.1.0",
   "packages/headers-parser": "7.1.0",
