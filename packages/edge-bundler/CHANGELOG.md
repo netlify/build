@@ -1,5 +1,12 @@
 # Changelog
 
+## [8.1.0](https://github.com/netlify/edge-bundler/compare/v8.0.0...v8.1.0) (2023-01-06)
+
+
+### Features
+
+* move excluded_patterns into function_config ([#274](https://github.com/netlify/edge-bundler/issues/274)) ([98ccb6f](https://github.com/netlify/edge-bundler/commit/98ccb6f2535f470cae7436b2f175d53eb8b9ef78))
+
 ## [8.0.0](https://github.com/netlify/edge-bundler/compare/v7.1.0...v8.0.0) (2022-12-21)
 
 
