@@ -359,14 +359,14 @@ test('Loads declarations and import maps from the deploy configuration', async (
 
   const manifestFile = await fs.readFile(resolve(distPath, 'manifest.json'), 'utf8')
   const manifest = JSON.parse(manifestFile)
-  const { bundles, routes } = manifest
+  const { bundles, function_config: functionConfig } = manifest
 
   expect(bundles.length).toBe(1)
   expect(bundles[0].format).toBe('eszip2')
   expect(generatedFiles.includes(bundles[0].asset)).toBe(true)
 
   // respects excludedPath from deploy config
-  expect(routes[1].excluded_pattern).toEqual('^/func2/skip/?$')
+  expect(functionConfig.func2).toEqual({ excluded_patterns: ['^/func2/skip/?$'] })
 
   await cleanup()
 })

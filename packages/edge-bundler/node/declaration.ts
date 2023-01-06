@@ -44,13 +44,13 @@ export const getDeclarationsFromConfig = (
       const paths = Array.isArray(config.path) ? config.path : [config.path]
 
       paths.forEach((path) => {
-        declarations.push({ ...declaration, ...config, path })
+        declarations.push({ ...declaration, cache: config.cache, path })
       })
 
       // With an in-source config without a path, add the config to the declaration
     } else {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { path, ...rest } = config
+      const { path, excludedPath, ...rest } = config
       declarations.push({ ...declaration, ...rest })
     }
 
@@ -60,15 +60,14 @@ export const getDeclarationsFromConfig = (
   // Finally, we must create declarations for functions that are not declared
   // in the TOML at all.
   for (const name in functionsConfig) {
-    const { ...config } = functionsConfig[name]
-    const { path } = functionsConfig[name]
+    const { cache, path } = functionsConfig[name]
 
     // If we have path specified create a declaration for each path
     if (!functionsVisited.has(name) && path) {
       const paths = Array.isArray(path) ? path : [path]
 
       paths.forEach((singlePath) => {
-        declarations.push({ ...config, function: name, path: singlePath })
+        declarations.push({ cache, function: name, path: singlePath })
       })
     }
   }

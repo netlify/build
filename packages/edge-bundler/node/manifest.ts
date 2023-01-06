@@ -4,27 +4,21 @@ import { join } from 'path'
 import globToRegExp from 'glob-to-regexp'
 
 import type { Bundle } from './bundle.js'
-import { Cache } from './config.js'
+import { Cache, FunctionConfig } from './config.js'
 import type { Declaration } from './declaration.js'
 import { EdgeFunction } from './edge_function.js'
 import { Layer } from './layer.js'
 import { getPackageVersion } from './package_json.js'
 import { nonNullable } from './utils/non_nullable.js'
 
-interface GenerateManifestOptions {
-  bundles?: Bundle[]
-  declarations?: Declaration[]
-  functions: EdgeFunction[]
-  importMap?: string
-  layers?: Layer[]
-}
-
 /* eslint-disable camelcase */
 interface Route {
   function: string
   name?: string
   pattern: string
-  excluded_pattern?: string
+}
+interface EdgeFunctionConfig {
+  excluded_patterns: string[]
 }
 interface Manifest {
   bundler_version: string
@@ -33,8 +27,19 @@ interface Manifest {
   layers: { name: string; flag: string }[]
   routes: Route[]
   post_cache_routes: Route[]
+  function_config: Record<string, EdgeFunctionConfig>
 }
+
 /* eslint-enable camelcase */
+
+interface GenerateManifestOptions {
+  bundles?: Bundle[]
+  declarations?: Declaration[]
+  functions: EdgeFunction[]
+  functionConfig?: Record<string, FunctionConfig>
+  importMap?: string
+  layers?: Layer[]
+}
 
 interface Route {
   function: string
@@ -44,15 +49,39 @@ interface Route {
 
 const serializePattern = (regex: RegExp) => regex.source.replace(/\\\//g, '/')
 
+const sanitizeEdgeFunctionConfig = (config: Record<string, EdgeFunctionConfig>): Record<string, EdgeFunctionConfig> => {
+  const newConfig: Record<string, EdgeFunctionConfig> = {}
+
+  for (const [name, functionConfig] of Object.entries(config)) {
+    if (functionConfig.excluded_patterns.length !== 0) {
+      newConfig[name] = functionConfig
+    }
+  }
+
+  return newConfig
+}
+
 const generateManifest = ({
   bundles = [],
   declarations = [],
   functions,
+  functionConfig = {},
   importMap,
   layers = [],
 }: GenerateManifestOptions) => {
   const preCacheRoutes: Route[] = []
   const postCacheRoutes: Route[] = []
+  const manifestFunctionConfig: Manifest['function_config'] = Object.fromEntries(
+    functions.map(({ name }) => [name, { excluded_patterns: [] }]),
+  )
+
+  for (const [name, { excludedPath }] of Object.entries(functionConfig)) {
+    if (excludedPath) {
+      const paths = Array.isArray(excludedPath) ? excludedPath : [excludedPath]
+      const excludedPatterns = paths.map(pathToRegularExpression).map(serializePattern)
+      manifestFunctionConfig[name].excluded_patterns.push(...excludedPatterns)
+    }
+  }
 
   declarations.forEach((declaration) => {
     const func = functions.find(({ name }) => declaration.function === name)
@@ -69,7 +98,7 @@ const generateManifest = ({
     }
     const excludedPattern = getExcludedRegularExpression(declaration)
     if (excludedPattern) {
-      route.excluded_pattern = serializePattern(excludedPattern)
+      manifestFunctionConfig[func.name].excluded_patterns.push(serializePattern(excludedPattern))
     }
 
     if (declaration.cache === Cache.Manual) {
@@ -89,6 +118,7 @@ const generateManifest = ({
     bundler_version: getPackageVersion(),
     layers,
     import_map: importMap,
+    function_config: sanitizeEdgeFunctionConfig(manifestFunctionConfig),
   }
 
   return manifest
@@ -125,24 +155,12 @@ const getExcludedRegularExpression = (declaration: Declaration) => {
   }
 }
 
-interface WriteManifestOptions {
-  bundles: Bundle[]
-  declarations: Declaration[]
+interface WriteManifestOptions extends GenerateManifestOptions {
   distDirectory: string
-  functions: EdgeFunction[]
-  importMap?: string
-  layers?: Layer[]
 }
 
-const writeManifest = async ({
-  bundles,
-  declarations = [],
-  distDirectory,
-  functions,
-  importMap,
-  layers,
-}: WriteManifestOptions) => {
-  const manifest = generateManifest({ bundles, declarations, functions, importMap, layers })
+const writeManifest = async ({ distDirectory, ...rest }: WriteManifestOptions) => {
+  const manifest = generateManifest(rest)
   const manifestPath = join(distDirectory, 'manifest.json')
 
   await fs.writeFile(manifestPath, JSON.stringify(manifest))

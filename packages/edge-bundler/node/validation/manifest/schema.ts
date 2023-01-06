@@ -24,6 +24,22 @@ const routesSchema = {
   additionalProperties: false,
 }
 
+const functionConfigSchema = {
+  type: 'object',
+  required: [],
+  properties: {
+    excluded_patterns: {
+      type: 'array',
+      items: {
+        type: 'string',
+        format: 'regexPattern',
+        errorMessage:
+          'excluded_patterns needs to be an array of regex that starts with ^ and ends with $ without any additional slashes before and afterwards',
+      },
+    },
+  },
+}
+
 const layersSchema = {
   type: 'object',
   required: ['flag', 'name'],
@@ -57,6 +73,7 @@ const edgeManifestSchema = {
     },
     import_map: { type: 'string' },
     bundler_version: { type: 'string' },
+    function_config: { type: 'object', items: functionConfigSchema },
   },
   additionalProperties: false,
 }
