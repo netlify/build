@@ -127,6 +127,7 @@ const tExecBuild = async function ({
   })
 
   const runtime = frameworkRuntime[framework]
+
   netlifyConfig.plugins.push({ package: runtime.package })
 
   const constants = await getConstants({
