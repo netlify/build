@@ -1,5 +1,12 @@
 # Changelog
 
+## [8.1.1](https://github.com/netlify/edge-bundler/compare/v8.1.0...v8.1.1) (2023-01-09)
+
+
+### Bug Fixes
+
+* **deps:** update dependency ajv to v8.12.0 ([#282](https://github.com/netlify/edge-bundler/issues/282)) ([2b7c766](https://github.com/netlify/edge-bundler/commit/2b7c7667dc84df47002c055ad8a30b5a5c2acdf6))
+
 ## [8.1.0](https://github.com/netlify/edge-bundler/compare/v8.0.0...v8.1.0) (2023-01-06)
 
 
