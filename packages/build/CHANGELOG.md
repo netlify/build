@@ -57,6 +57,13 @@
   * dependencies
     * @netlify/config bumped from ^20.0.1 to ^20.0.2
 
+## [29.4.1](https://github.com/netlify/build/compare/build-v29.4.0...build-v29.4.1) (2023-01-09)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.61.0 ([#4796](https://github.com/netlify/build/issues/4796)) ([1c508ec](https://github.com/netlify/build/commit/1c508ec9428f30e0a71ebde556d080b0c666524b))
+
 ## [29.4.0](https://github.com/netlify/build/compare/build-v29.3.0...build-v29.4.0) (2023-01-03)
 
 
