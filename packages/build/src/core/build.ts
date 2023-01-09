@@ -128,8 +128,9 @@ const tExecBuild = async function ({
 
   const runtime = supportedRuntimes[framework]
   const skip = childEnv[runtime.skipFlag]
+  const installedPlugins = netlifyConfig.plugins.map((plugin) => plugin.package)
 
-  if (runtime !== undefined && skip !== 'true') {
+  if (runtime !== undefined && skip !== 'true' && installedPlugins.contains(runtime.package)) {
     netlifyConfig.plugins.push({ package: runtime.package })
   }
 
