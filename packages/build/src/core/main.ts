@@ -1,3 +1,6 @@
+import { promises as fs } from 'fs'
+import { stdout } from 'process'
+
 import { handleBuildError } from '../error/handle.js'
 import { reportError } from '../error/report.js'
 import { getSystemLogger } from '../log/logger.js'
@@ -65,6 +68,7 @@ export default async function buildSite(flags: Partial<BuildCLIFlags> = {}): Pro
       debug,
       testOpts,
       errorParams,
+      framework,
     })
     await handleBuildSuccess({
       framework,

@@ -77,6 +77,7 @@ const tExecBuild = async function ({
   timeline,
   devCommand,
   quiet,
+  framework,
 }) {
   const configOpts = getConfigOpts({
     config,
@@ -124,6 +125,10 @@ const tExecBuild = async function ({
     timers,
     quiet,
   })
+
+  const runtime = frameworkRuntime[framework]
+  netlifyConfig.plugins.push({ package: runtime.package })
+
   const constants = await getConstants({
     configPath,
     buildDir,
@@ -578,4 +583,14 @@ const runBuild = async function ({
   })
 
   return { stepsCount, netlifyConfig: netlifyConfigA, statuses, failedPlugins, timers: timersB, configMutations }
+}
+
+type Runtime = {
+  package: string
+  skipFlag: string
+}
+
+const frameworkRuntime: Record<string, Runtime> = {
+  next: { package: '@netlify/plugin-nextjs', skipFlag: 'NETLIFY_NEXT_PLUGIN_SKIP' },
+  gatsby: { package: '@netlify/plugin-gatsby', skipFlag: 'NETLIFY_GATSBY_PLUGIN_SKIP' },
 }

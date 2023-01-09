@@ -34,7 +34,6 @@ export const resolveConfig = async function (opts) {
 
   const parsedCachedConfig = await getCachedConfig({ cachedConfig, cachedConfigPath, token, api })
   if (parsedCachedConfig !== undefined) {
-    parsedCachedConfig.config.plugins.push({ package: '@netlify/plugin-nextjs' })
     return parsedCachedConfig
   }
 

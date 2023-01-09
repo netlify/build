@@ -6,10 +6,10 @@ import filterObj from 'filter-obj'
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 
-import { normalizeCliFeatureFlags } from './feature_flags.js'
-import { FLAGS } from './flags.js'
-import build from './main.js'
-import { FALLBACK_SEVERITY_ENTRY } from './severity.js'
+import { normalizeCliFeatureFlags } from '../../lib/core/feature_flags.js'
+import { FLAGS } from '../../lib/core/flags.js'
+import build from '../../lib/core/main.js'
+import { FALLBACK_SEVERITY_ENTRY } from '../../lib/core/severity.js'
 
 // CLI entry point.
 // Before adding logic to this file, please consider adding it to the main
