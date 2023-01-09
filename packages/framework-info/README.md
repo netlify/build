@@ -11,7 +11,7 @@ The following frameworks are detected:
 - Build tools: Parcel, Brunch, Grunt, Gulp
 
 If you're looking for a way to run `framework-info` via CLI check the
-[`build-info`](https://github.com/netlify/build-info) project.
+[`build-info`](https://github.com/netlify/build/tree/main/packages/build-info) project.
 
 [Additions and updates are welcome!](#add-or-update-a-framework)
 
