@@ -126,9 +126,12 @@ const tExecBuild = async function ({
     quiet,
   })
 
-  const runtime = frameworkRuntime[framework]
+  const runtime = supportedRuntimes[framework]
+  const skip = childEnv[runtime.skipFlag]
 
-  netlifyConfig.plugins.push({ package: runtime.package })
+  if (runtime !== undefined && skip !== 'true') {
+    netlifyConfig.plugins.push({ package: runtime.package })
+  }
 
   const constants = await getConstants({
     configPath,
@@ -591,7 +594,7 @@ type Runtime = {
   skipFlag: string
 }
 
-const frameworkRuntime: Record<string, Runtime> = {
+const supportedRuntimes: Record<string, Runtime> = {
   next: { package: '@netlify/plugin-nextjs', skipFlag: 'NETLIFY_NEXT_PLUGIN_SKIP' },
   gatsby: { package: '@netlify/plugin-gatsby', skipFlag: 'NETLIFY_GATSBY_PLUGIN_SKIP' },
 }
