@@ -13,7 +13,6 @@ npm run build -- --scope=@netlify/framework-info
 npm test -- --scope=@netlify/framework-info
 ```
 
-
 ## Releasing
 
 Merge the release PR
