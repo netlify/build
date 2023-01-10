@@ -1,0 +1,21 @@
+{
+  "id": "docpad",
+  "name": "DocPad",
+  "category": "static_site_generator",
+  "detect": {
+    "npmDependencies": ["docpad"],
+    "excludedNpmDependencies": [],
+    "configFiles": []
+  },
+  "dev": {
+    "command": "docpad run",
+    "port": 9778,
+    "pollingStrategies": [{ "name": "TCP" }, { "name": "HTTP" }]
+  },
+  "build": {
+    "command": "docpad generate",
+    "directory": "out"
+  },
+  "env": {},
+  "plugins": []
+}

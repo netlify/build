@@ -1,0 +1,22 @@
+{
+  "id": "gulp",
+  "name": "gulp.js",
+  "category": "build_tool",
+  "detect": {
+    "npmDependencies": ["gulp"],
+    "excludedNpmDependencies": [],
+    "configFiles": []
+  },
+  "dev": {},
+  "build": {
+    "command": "gulp build",
+    "directory": "dist"
+  },
+  "logo": {
+    "default": "/logos/gulp/default.svg",
+    "light": "/logos/gulp/default.svg",
+    "dark": "/logos/gulp/default.svg"
+  },
+  "env": {},
+  "plugins": []
+}
