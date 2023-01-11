@@ -20,8 +20,10 @@ interface Timer {
   tags: Record<string, string | string[]>
 }
 
-// Record the duration of a build phase, for monitoring.
-// Sends to statsd daemon.
+/**
+ * Record the duration of a build phase, for monitoring.
+ * Sends to statsd daemon.
+ */
 export const reportTimers = async function (
   timers: Timer[],
   statsdOpts: InputStatsDOptions,
