@@ -47,12 +47,12 @@ const sendTimers = async function (timers: Timer[], statsdOpts: StatsDOptions, f
 const sendTimer = function (timer: Timer, client: StatsD, framework?: string): void {
   const { metricName, stageTag, parentTag, durationNs, tags } = timer
   const durationMs = roundTimerToMillisecs(durationNs)
-  const statsdTags: Tags = { stage: stageTag, parent: parentTag, ...tags }
+  const statsDTags: Tags = { stage: stageTag, parent: parentTag, ...tags }
 
   // Do not add a framework tag if empty string or null/undefined
   if (framework) {
-    statsdTags.framework = framework
+    statsDTags.framework = framework
   }
 
-  client.distribution(metricName, durationMs, formatTags(statsdTags))
+  client.distribution(metricName, durationMs, formatTags(statsDTags))
 }

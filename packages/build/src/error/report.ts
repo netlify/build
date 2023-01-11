@@ -37,16 +37,16 @@ export const reportError = async function (
 
   const parent = pluginName ? pluginName : TOP_PARENT_TAG
   const stage = pluginName ? errorInfo.location?.event : errorInfo.stage
-  const statsdTags: Tags = { stage: stage ?? 'system', parent }
+  const statsDTags: Tags = { stage: stage ?? 'system', parent }
 
   // Do not add a framework tag if empty string or null/undefined
   if (framework) {
-    statsdTags.framework = framework
+    statsDTags.framework = framework
   }
 
   const client = await startClient(statsdOpts)
 
-  client.increment('buildbot.build.stage.error', 1, formatTags(statsdTags))
+  client.increment('buildbot.build.stage.error', 1, formatTags(statsDTags))
 
   await closeClient(client)
 }
