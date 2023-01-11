@@ -73,7 +73,7 @@ const edgeManifestSchema = {
     },
     import_map: { type: 'string' },
     bundler_version: { type: 'string' },
-    function_config: { type: 'object', items: functionConfigSchema },
+    function_config: { type: 'object', additionalProperties: functionConfigSchema },
   },
   additionalProperties: false,
 }
