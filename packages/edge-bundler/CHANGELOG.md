@@ -1,5 +1,12 @@
 # Changelog
 
+## [8.1.2](https://github.com/netlify/edge-bundler/compare/v8.1.1...v8.1.2) (2023-01-11)
+
+
+### Bug Fixes
+
+* replace "items" with "additionalProperties" ([#284](https://github.com/netlify/edge-bundler/issues/284)) ([0fc76b7](https://github.com/netlify/edge-bundler/commit/0fc76b78ef9faf0b5c99ecdec4b7ef6910949a38))
+
 ## [8.1.1](https://github.com/netlify/edge-bundler/compare/v8.1.0...v8.1.1) (2023-01-09)
 
 
