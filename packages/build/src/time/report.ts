@@ -49,7 +49,8 @@ const sendTimer = function (timer: Timer, client: StatsD, framework?: string): v
   const durationMs = roundTimerToMillisecs(durationNs)
   const statsdTags: Tags = { stage: stageTag, parent: parentTag, ...tags }
 
-  if (framework != undefined) {
+  // Do not add a framework tag if empty string or null/undefined
+  if (framework) {
     statsdTags.framework = framework
   }
 

@@ -1,6 +1,9 @@
+import type { Tags } from 'hot-shots'
+
 import { isNetlifyMaintainedPlugin } from '../plugins/internal.js'
 import {
   closeClient,
+  formatTags,
   InputStatsDOptions,
   normalizeTagName,
   startClient,
@@ -34,14 +37,16 @@ export const reportError = async function (
 
   const parent = pluginName ? pluginName : TOP_PARENT_TAG
   const stage = pluginName ? errorInfo.location?.event : errorInfo.stage
+  const statsdTags: Tags = { stage: stage ?? 'system', parent }
+
+  // Do not add a framework tag if empty string or null/undefined
+  if (framework) {
+    statsdTags.framework = framework
+  }
+
   const client = await startClient(statsdOpts)
 
-  const frameworkTag: { framework?: string } = framework === undefined ? {} : { framework }
-  client.increment('buildbot.build.stage.error', 1, {
-    stage: stage ?? 'system',
-    parent,
-    ...frameworkTag,
-  })
+  client.increment('buildbot.build.stage.error', 1, formatTags(statsdTags))
 
   await closeClient(client)
 }
