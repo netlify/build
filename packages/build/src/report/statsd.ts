@@ -17,6 +17,8 @@ export const startClient = async function (host: string, port: number): Promise<
   })
 }
 
+// UDP packets are buffered and flushed every 10 seconds.
+// Close the client to force flushing all of them.
 export const closeClient = async function (client: StatsD): Promise<void> {
   await promisify(client.close.bind(client))()
 }
