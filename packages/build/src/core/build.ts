@@ -77,6 +77,7 @@ const tExecBuild = async function ({
   timeline,
   devCommand,
   quiet,
+  framework,
 }) {
   const configOpts = getConfigOpts({
     config,
@@ -124,6 +125,20 @@ const tExecBuild = async function ({
     timers,
     quiet,
   })
+
+  if (!featureFlags.includes('build_automatic_runtime') && framework) {
+    const runtime = supportedRuntimes[framework]
+
+    if (runtime !== undefined) {
+      const dontSkip = childEnv[runtime.skipFlag] !== 'true'
+      const installed = netlifyConfig.plugins.map((plugin) => plugin.package).includes(runtime.package)
+
+      if (!installed && dontSkip) {
+        netlifyConfig.plugins.push({ package: runtime.package })
+      }
+    }
+  }
+
   const constants = await getConstants({
     configPath,
     buildDir,
@@ -578,4 +593,14 @@ const runBuild = async function ({
   })
 
   return { stepsCount, netlifyConfig: netlifyConfigA, statuses, failedPlugins, timers: timersB, configMutations }
+}
+
+type Runtime = {
+  package: string
+  skipFlag: string
+}
+
+const supportedRuntimes: Record<string, Runtime> = {
+  next: { package: '@netlify/plugin-nextjs', skipFlag: 'NETLIFY_NEXT_PLUGIN_SKIP' },
+  gatsby: { package: '@netlify/plugin-gatsby', skipFlag: 'NETLIFY_GATSBY_PLUGIN_SKIP' },
 }
