@@ -12,7 +12,7 @@ test.before(() => {
     if (options === cb) {
       options = {}
     }
-    if (host.startsWith(`timetest.`)) {
+    if (host.startsWith(`errorreportingtest.`)) {
       cb(undefined, host, 4)
     } else {
       origLookup(host, options, cb)
@@ -50,7 +50,7 @@ const getTrackingRequestsString = async function (t, fixtureName, used = true) {
 
 const getAllTrackingRequests = async function (t, fixtureName, used) {
   // Ensure there's no conflict between each test scope
-  const host = `timetest.${encodeURI(t.title)}`
+  const host = `errorreportingtest.${encodeURI(t.title)}`
   const port = '1234'
   const scope = intercept(`${host}:${port}`, { persist: true, allowUnknown: true })
 
