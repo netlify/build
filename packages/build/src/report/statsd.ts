@@ -3,7 +3,20 @@ import { promisify } from 'util'
 import slugify from '@sindresorhus/slugify'
 import { StatsD } from 'hot-shots'
 
-export const startClient = async function (host: string, port: number): Promise<StatsD> {
+export interface InputStatsDOptions {
+  host?: string
+  port?: number
+}
+
+export type StatsDOptions = Required<InputStatsDOptions>
+
+export const validateStatsDOptions = function (statsdOpts: InputStatsDOptions): statsdOpts is StatsDOptions {
+  return !!(statsdOpts && statsdOpts.host && statsdOpts.port)
+}
+
+export const startClient = async function (statsdOpts: StatsDOptions): Promise<StatsD> {
+  const { host, port } = statsdOpts
+
   return new StatsD({
     host,
     port,
