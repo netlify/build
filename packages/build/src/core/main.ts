@@ -108,7 +108,7 @@ export default async function buildSite(flags: Partial<BuildCLIFlags> = {}): Pro
       testOpts,
       errorParams,
     })
-    await reportError({ error, framework, statsdOpts })
+    await reportError(error, statsdOpts, framework)
 
     return { success, severityCode, logs }
   }
@@ -123,7 +123,7 @@ const handleBuildSuccess = async function ({ framework, dry, logs, timers, durat
   logBuildSuccess(logs)
 
   logTimer(logs, durationNs, 'Netlify Build', systemLog)
-  await reportTimers({ timers, statsdOpts, framework })
+  await reportTimers(timers, statsdOpts, framework)
 }
 
 // Handles the calls and errors of telemetry reports

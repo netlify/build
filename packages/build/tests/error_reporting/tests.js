@@ -1,8 +1,27 @@
+import dns from 'dns'
+
 import { intercept, cleanAll } from '@netlify/nock-udp'
 import { Fixture } from '@netlify/testing'
 import test from 'ava'
+import sinon from 'sinon'
+
+test.before(() => {
+  const origLookup = dns.lookup
+  // we have to stub dns lookup as hot-shots is caching dns and therefore calling dns.lookup directly
+  sinon.stub(dns, 'lookup').callsFake((host, options, cb = options) => {
+    if (options === cb) {
+      options = {}
+    }
+    if (host.startsWith(`errorreportingtest.`)) {
+      cb(undefined, host, 4)
+    } else {
+      origLookup(host, options, cb)
+    }
+  })
+})
 
 test.after(() => {
+  dns.lookup.restore()
   cleanAll()
 })
 
@@ -31,7 +50,7 @@ const getTrackingRequestsString = async function (t, fixtureName, used = true) {
 
 const getAllTrackingRequests = async function (t, fixtureName, used) {
   // Ensure there's no conflict between each test scope
-  const host = encodeURI(t.title)
+  const host = `errorreportingtest.${encodeURI(t.title)}`
   const port = '1234'
   const scope = intercept(`${host}:${port}`, { persist: true, allowUnknown: true })
 
