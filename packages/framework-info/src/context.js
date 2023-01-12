@@ -11,13 +11,13 @@ export const getPackageJson = async (projectDir) => {
       return {}
     }
 
-    const { version, packageJson, path: packageJsonPath } = result
+    const { packageJson, path: packageJsonPath } = result
 
     if (!isPlainObj(packageJson)) {
       return { packageJsonPath }
     }
 
-    return { version, packageJson, packageJsonPath }
+    return { packageJson, packageJsonPath }
   } catch {
     return {}
   }
