@@ -86,8 +86,8 @@ const getFrameworkVersion = async (projectDir, frameworkInfo) => {
  *
  * @returns {Promise<Framework[]>} frameworks - Frameworks used by a project
  */
-export const listFrameworks = async function (opts) {
-  const context = await getContext(opts)
+export const listFrameworks = async function (opts = {}) {
+  const context = await getContext(opts.projectDir, opts.nodeVersion)
   const frameworkList = await list(context)
 
   const projectDir = opts && opts.projectDir ? opts.projectDir : cwd()
@@ -114,8 +114,8 @@ export const listFrameworks = async function (opts) {
  *
  * @returns {Promise<boolean>} result - Whether the project uses this framework
  */
-export const hasFramework = async function (frameworkId, options) {
-  const context = await getContext(options)
+export const hasFramework = async function (frameworkId, options = {}) {
+  const context = await getContext(options.projectDir, options.nodeVersion)
   return has(frameworkId, context)
 }
 
@@ -127,8 +127,8 @@ export const hasFramework = async function (frameworkId, options) {
  *
  * @returns {Promise<Framework>} framework - Framework used by a project
  */
-export const getFramework = async function (frameworkId, options) {
-  const context = await getContext(options)
+export const getFramework = async function (frameworkId, options = {}) {
+  const context = await getContext(options.projectDir, options.nodeVersion)
   return get(frameworkId, context)
 }
 
