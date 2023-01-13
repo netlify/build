@@ -128,7 +128,7 @@ const tExecBuild = async function ({
     quiet,
   })
 
-  if (featureFlags['build_automatic_runtime'] && framework) {
+  if (featureFlags.build_automatic_runtime && framework) {
     const runtime = supportedRuntimes[framework]
 
     if (runtime !== undefined) {
