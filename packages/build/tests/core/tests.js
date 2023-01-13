@@ -533,14 +533,17 @@ test.serial('configFileDirectories is passed to zip-it-and-ship-it', async (t) =
   ])
 })
 
-test.serial('internalSrcFolder is passed to zip-it-and-ship-it', async (t) => {
+test('internalSrcFolder is passed to zip-it-and-ship-it', async (t) => {
   const zipItAndShipItSpy = sinon.spy(zipItAndShipIt, 'zipFunctions')
 
   await new Fixture('./fixtures/functions_internal_src_folder').withFlags({ mode: 'buildbot' }).runWithBuild()
   zipItAndShipItSpy.restore()
   const { args: call1Args } = zipItAndShipItSpy.getCall(0)
-  const { functions } = await importJsonFile(call1Args[2].manifest)
 
+  const { internalSrcFolder, manifest } = call1Args[2]
+  const { functions } = await importJsonFile(manifest)
+
+  t.is(internalSrcFolder, join(FIXTURES_DIR, 'functions_internal_src_folder/.netlify/functions-internal'))
   t.is(functions[0].isInternal, true)
   t.is(functions[1].isInternal, false)
 })
