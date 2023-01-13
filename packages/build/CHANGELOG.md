@@ -57,6 +57,50 @@
   * dependencies
     * @netlify/config bumped from ^20.0.1 to ^20.0.2
 
+## [29.4.5](https://github.com/netlify/build/compare/build-v29.4.4...build-v29.4.5) (2023-01-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^8.4.0 ([#4816](https://github.com/netlify/build/issues/4816)) ([b679927](https://github.com/netlify/build/commit/b6799272b85a6df582f4ac64854a37f5cc8ce250))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.1.3 to ^5.1.4
+
+## [29.4.4](https://github.com/netlify/build/compare/build-v29.4.3...build-v29.4.4) (2023-01-12)
+
+
+### Bug Fixes
+
+* **deps:** revert update to dependency @netlify/zip-it-and-ship-it to ^8.3.0 ([#4814](https://github.com/netlify/build/issues/4814)) ([b077908](https://github.com/netlify/build/commit/b07790804adf6ea706b184372bcd04665e456f6e))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.1.2 to ^5.1.3
+
+## [29.4.3](https://github.com/netlify/build/compare/build-v29.4.2...build-v29.4.3) (2023-01-11)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v8.1.2 ([#4810](https://github.com/netlify/build/issues/4810)) ([3c0414e](https://github.com/netlify/build/commit/3c0414eb597ebf954090befafc6e25acd585d01b))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^8.3.0 ([#4808](https://github.com/netlify/build/issues/4808)) ([b89f409](https://github.com/netlify/build/commit/b89f40945ab9e7016e9a7a3d40a3c0c86941c98c))
+* replace statsd-client with hot-shots ([#4806](https://github.com/netlify/build/issues/4806)) ([18cfdbb](https://github.com/netlify/build/commit/18cfdbb305504f067fca5c4900847a171bcae903))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.1.1 to ^5.1.2
+
 ## [29.4.2](https://github.com/netlify/build/compare/build-v29.4.1...build-v29.4.2) (2023-01-10)
 
 
