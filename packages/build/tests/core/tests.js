@@ -534,16 +534,33 @@ test.serial('configFileDirectories is passed to zip-it-and-ship-it', async (t) =
 })
 
 test.serial('internalSrcFolder is passed to zip-it-and-ship-it', async (t) => {
-  const mockZipFunctions = sinon.stub().resolves()
-  const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').get(() => mockZipFunctions)
+  const zipItAndShipItSpy = sinon.spy(zipItAndShipIt, 'zipFunctions')
 
   await new Fixture('./fixtures/functions_internal_src_folder').withFlags({ mode: 'buildbot' }).runWithBuild()
-  stub.restore()
-  const { args: call1Args } = mockZipFunctions.getCall(0)
+  zipItAndShipItSpy.restore()
+  const { args: call1Args } = zipItAndShipItSpy.getCall(0)
   const { functions } = await importJsonFile(call1Args[2].manifest)
 
   t.is(functions[0].isInternal, true)
   t.is(functions[1].isInternal, false)
+})
+
+test.serial('functions can have a config with name passed to zip-it-and-ship-it', async (t) => {
+  const zipItAndShipItSpy = sinon.spy(zipItAndShipIt, 'zipFunctions')
+  await new Fixture('./fixtures/functions_display_name')
+    .withFlags({
+      mode: 'buildbot',
+      featureFlags: { project_deploy_configuration_api_use_per_function_configuration_files: true },
+    })
+    .runWithBuild()
+
+  zipItAndShipItSpy.restore()
+
+  const { args: call1Args } = zipItAndShipItSpy.getCall(0)
+  const { functions: functions } = await importJsonFile(call1Args[2].manifest)
+
+  t.is(functions[0].displayName, 'Function One')
+  t.is(functions[1].displayName, undefined)
 })
 
 test.serial('zip-it-and-ship-it runs without error when loading json config files', async (t) => {

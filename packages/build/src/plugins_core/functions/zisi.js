@@ -40,6 +40,7 @@ export const getZisiParameters = ({
 export const normalizeFunctionConfig = ({ buildDir, functionConfig = {}, isRunningLocally, nodeVersion }) => ({
   externalNodeModules: functionConfig.external_node_modules,
   includedFiles: functionConfig.included_files,
+  name: functionConfig.name,
   includedFilesBasePath: buildDir,
   ignoredNodeModules: functionConfig.ignored_node_modules,
   nodeVersion,
