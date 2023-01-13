@@ -533,6 +533,19 @@ test.serial('configFileDirectories is passed to zip-it-and-ship-it', async (t) =
   ])
 })
 
+test.serial('internalSrcFolder is passed to zip-it-and-ship-it', async (t) => {
+  const mockZipFunctions = sinon.stub().resolves()
+  const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').get(() => mockZipFunctions)
+
+  await new Fixture('./fixtures/functions_internal_src_folder').withFlags({ mode: 'buildbot' }).runWithBuild()
+  stub.restore()
+  const { args: call1Args } = mockZipFunctions.getCall(0)
+  const { functions } = await importJsonFile(call1Args[2].manifest)
+
+  t.is(functions[0].isInternal, true)
+  t.is(functions[1].isInternal, false)
+})
+
 test.serial('zip-it-and-ship-it runs without error when loading json config files', async (t) => {
   const output = await new Fixture('./fixtures/functions_config_json')
     .withFlags({
