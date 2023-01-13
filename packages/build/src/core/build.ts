@@ -1,3 +1,5 @@
+import { supportedRuntimes } from '@netlify/framework-info'
+
 import { getErrorInfo } from '../error/info.js'
 import { startErrorMonitor } from '../error/monitor/start.js'
 import { getBufferLogs, getSystemLogger } from '../log/logger.js'
@@ -130,10 +132,10 @@ const tExecBuild = async function ({
     const runtime = supportedRuntimes[framework]
 
     if (runtime !== undefined) {
-      const dontSkip = childEnv[runtime.skipFlag] !== 'true'
+      const skip = childEnv[runtime.skipFlag] === 'true'
       const installed = netlifyConfig.plugins.map((plugin) => plugin.package).includes(runtime.package)
 
-      if (!installed && dontSkip) {
+      if (!installed && !skip) {
         netlifyConfig.plugins.push({ package: runtime.package })
       }
     }
@@ -593,14 +595,4 @@ const runBuild = async function ({
   })
 
   return { stepsCount, netlifyConfig: netlifyConfigA, statuses, failedPlugins, timers: timersB, configMutations }
-}
-
-type Runtime = {
-  package: string
-  skipFlag: string
-}
-
-const supportedRuntimes: Record<string, Runtime> = {
-  next: { package: '@netlify/plugin-nextjs', skipFlag: 'NETLIFY_NEXT_PLUGIN_SKIP' },
-  gatsby: { package: '@netlify/plugin-gatsby', skipFlag: 'NETLIFY_GATSBY_PLUGIN_SKIP' },
 }
