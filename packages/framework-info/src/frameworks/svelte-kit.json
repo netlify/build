@@ -14,7 +14,7 @@
   },
   "build": {
     "command": "vite build",
-    "directory": ".svelte-kit"
+    "directory": "build"
   },
   "logo": {
     "default": "/logos/svelte-kit/default.svg",
