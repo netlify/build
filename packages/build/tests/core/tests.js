@@ -533,7 +533,7 @@ test.serial('configFileDirectories is passed to zip-it-and-ship-it', async (t) =
   ])
 })
 
-test('internalSrcFolder is passed to zip-it-and-ship-it', async (t) => {
+test.serial('internalSrcFolder is passed to zip-it-and-ship-it', async (t) => {
   const zipItAndShipItSpy = sinon.spy(zipItAndShipIt, 'zipFunctions')
 
   await new Fixture('./fixtures/functions_internal_src_folder').withFlags({ mode: 'buildbot' }).runWithBuild()
