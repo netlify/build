@@ -23,8 +23,15 @@ export const getZisiParameters = ({
   const zisiFeatureFlags = getZisiFeatureFlags(featureFlags)
   // Only internal functions are allowed to have a json config file
   const configFileDirectories = [resolve(internalFunctionsSrc)]
-
-  return { basePath: buildDir, config, manifest, featureFlags: zisiFeatureFlags, repositoryRoot, configFileDirectories }
+  return {
+    basePath: buildDir,
+    config,
+    manifest,
+    featureFlags: zisiFeatureFlags,
+    repositoryRoot,
+    configFileDirectories,
+    internalSrcFolder: internalFunctionsSrc,
+  }
 }
 
 // The function configuration keys returned by @netlify/config are not an exact
@@ -33,6 +40,7 @@ export const getZisiParameters = ({
 export const normalizeFunctionConfig = ({ buildDir, functionConfig = {}, isRunningLocally, nodeVersion }) => ({
   externalNodeModules: functionConfig.external_node_modules,
   includedFiles: functionConfig.included_files,
+  name: functionConfig.name,
   includedFilesBasePath: buildDir,
   ignoredNodeModules: functionConfig.ignored_node_modules,
   nodeVersion,
