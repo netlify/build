@@ -12,12 +12,11 @@ import { getZisiParameters } from './zisi.js'
 
 // Get a list of all unique bundlers in this run
 const getBundlers = (results: Awaited<ReturnType<typeof zipFunctions>> = []) =>
-  Array.from(
-    new Set(
-      results
-        .map((bundle) => (bundle.runtime === RuntimeType.JAVASCRIPT ? bundle.bundler : null))
-        .filter(Boolean) as NodeBundlerType[],
-    ),
+  // using a Set to filter duplicates
+  new Set(
+    results
+      .map((bundle) => (bundle.runtime === RuntimeType.JAVASCRIPT ? bundle.bundler : null))
+      .filter(Boolean) as NodeBundlerType[],
   )
 
 const zipFunctionsAndLogResults = async ({
@@ -50,7 +49,7 @@ const zipFunctionsAndLogResults = async ({
     const sourceDirectories = [internalFunctionsSrc, functionsSrc].filter(Boolean)
     const results = await zipItAndShipIt.zipFunctions(sourceDirectories, functionsDist, zisiParameters)
 
-    const bundlers = getBundlers(results)
+    const bundlers = Array.from(getBundlers(results))
 
     logBundleResults({ logs, results })
 
