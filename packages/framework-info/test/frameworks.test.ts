@@ -1,11 +1,11 @@
-import { promises as fs } from 'fs'
-import { extname } from 'path'
+import { fileURLToPath } from 'url'
 
 import Ajv from 'ajv'
-import test from 'ava'
-import { each } from 'test-each'
+import glob from 'fast-glob'
+import { describe, expect, test } from 'vitest'
 
-import { FRAMEWORKS } from '../build/frameworks.js'
+import { FRAMEWORK_NAMES } from '../src/frameworks/main.js'
+import { FRAMEWORKS } from '../src/generated/frameworks.js'
 
 const FRAMEWORKS_DIR = new URL('../src/frameworks/', import.meta.url)
 
@@ -134,18 +134,24 @@ const FRAMEWORK_JSON_SCHEMA = {
   },
 }
 
-each(FRAMEWORKS, (info, framework) => {
-  test(`Framework "${framework.id}" should have a valid shape`, (t) => {
-    t.is(validate(framework, FRAMEWORK_JSON_SCHEMA), true)
-  })
+test.each(FRAMEWORKS)('Framework $id should have a valid shape', (framework) => {
+  expect(validate(framework, FRAMEWORK_JSON_SCHEMA)).toBe(true)
 })
 
-test('each json file should be required in main.js FRAMEWORKS', async (t) => {
-  const filenames = await fs.readdir(FRAMEWORKS_DIR)
-  const jsonFiles = filenames.filter((filename) => extname(filename) === '.json')
+describe('JSON files', async () => {
+  const jsonFiles = await glob('*.json', { cwd: fileURLToPath(FRAMEWORKS_DIR) })
 
-  t.is(FRAMEWORKS.length, jsonFiles.length)
-  FRAMEWORKS.forEach(({ id }) => {
-    t.true(filenames.includes(`${id}.json`))
+  test('each json file should be required in main.ts FRAMEWORKS', async () => {
+    expect(FRAMEWORKS).toHaveLength(jsonFiles.length)
+    FRAMEWORKS.forEach(({ id }) => {
+      expect(jsonFiles).toContain(`${id}.json`)
+    })
+  })
+
+  test('each json file should be listed in main.ts FRAMEWORK_NAMES', async () => {
+    expect(FRAMEWORK_NAMES).toHaveLength(jsonFiles.length)
+    FRAMEWORK_NAMES.forEach((id) => {
+      expect(jsonFiles).toContain(`${id}.json`)
+    })
   })
 })

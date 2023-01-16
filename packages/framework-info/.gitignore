@@ -2,7 +2,7 @@ node_modules
 yarn-error.log
 .vscode
 dist
-build
+src/generated
 .DS_Store
 
 # Local Netlify folder

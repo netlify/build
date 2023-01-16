@@ -79,7 +79,7 @@ const loadPluginFiles = async function ({
 // Core plugins can only be included once.
 // For example, when testing core plugins, they might be included as local plugins,
 // in which case they should not be included twice.
-const isNotRedundantCorePlugin = function (pluginOptionsA, index, pluginsOptions) {
+const isNotRedundantCorePlugin = function (pluginOptionsA, _index, pluginsOptions) {
   return (
     pluginOptionsA.loadedFrom !== 'core' ||
     pluginsOptions.every(

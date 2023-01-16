@@ -1,21 +1,21 @@
 import { cwd, version as nodejsVersion } from 'process'
 
 import { locatePath } from 'locate-path'
-import { readPackageUp } from 'read-pkg-up'
+import { PackageJson, readPackageUp } from 'read-pkg-up'
 
-/*
 interface PackageJsonInfo {
   packageJson?: PackageJson
   packageJsonPath?: string
 }
 
-interface Context extends PackageJsonInfo {
-  pathExists: (path: string) => Promise<boolean>
+export type PathExists = (path: string) => Promise<boolean>
+
+export interface Context extends PackageJsonInfo {
+  pathExists: PathExists
   nodeVersion: string
 }
-*/
 
-export const getPackageJson = async (projectDir /*: string*/) /*: Promise<PackageJsonInfo>*/ => {
+export const getPackageJson = async (projectDir: string): Promise<PackageJsonInfo> => {
   try {
     const result = await readPackageUp({ cwd: projectDir, normalize: false })
     if (result === undefined) {
@@ -30,10 +30,7 @@ export const getPackageJson = async (projectDir /*: string*/) /*: Promise<Packag
   }
 }
 
-export const getContext = async (
-  projectDir /*: string*/ = cwd(),
-  nodeVersion /*: string*/ = nodejsVersion,
-) /*: Promise<Context>*/ => {
+export const getContext = async (projectDir: string = cwd(), nodeVersion: string = nodejsVersion): Promise<Context> => {
   const { packageJson, packageJsonPath = projectDir } = await getPackageJson(projectDir)
 
   return {

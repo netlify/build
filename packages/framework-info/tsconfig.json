@@ -1,8 +1,14 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "noEmit": true /* Specify an output folder for all emitted files. */
+    "outDir": "lib" /* Specify an output folder for all emitted files. */,
+    "strict": true,
+    "noImplicitAny": true,
+    "strictFunctionTypes": true,
+    "strictPropertyInitialization": true,
+    "useUnknownInCatchVariables": true,
+    "noImplicitReturns": true
   },
-  "include": ["src/**/*.ts", "src/**/*.js"],
-  "exclude": ["test/**"]
+  "include": ["src/**/*.ts"],
+  "exclude": ["tests/**"]
 }
