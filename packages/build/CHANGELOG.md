@@ -57,6 +57,15 @@
   * dependencies
     * @netlify/config bumped from ^20.0.1 to ^20.0.2
 
+## [29.5.0](https://github.com/netlify/build/compare/build-v29.4.5...build-v29.5.0) (2023-01-16)
+
+
+### Features
+
+* install framework runtime ([#4812](https://github.com/netlify/build/issues/4812)) ([5abc39d](https://github.com/netlify/build/commit/5abc39dfd074bfda52fef3222ee9d73c2ed98403))
+* Pass internalSrcFolder and name to zisi ([#4821](https://github.com/netlify/build/issues/4821)) ([ffffcdb](https://github.com/netlify/build/commit/ffffcdb790db7c8108061b1ab3497c75db124e4c))
+* send all bundlers to metric ([#4798](https://github.com/netlify/build/issues/4798)) ([cc55529](https://github.com/netlify/build/commit/cc555291679aedc468480251025e4d4a6dda882d))
+
 ## [29.4.5](https://github.com/netlify/build/compare/build-v29.4.4...build-v29.4.5) (2023-01-12)
 
 
