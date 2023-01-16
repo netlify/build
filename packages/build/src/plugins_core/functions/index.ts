@@ -1,6 +1,6 @@
 import { resolve } from 'path'
 
-import { zipFunctions } from '@netlify/zip-it-and-ship-it'
+import { NodeBundlerType, RuntimeType, zipFunctions } from '@netlify/zip-it-and-ship-it'
 import { pathExists } from 'path-exists'
 
 import { log } from '../../log/logger.js'
@@ -10,10 +10,14 @@ import { getZipError } from './error.js'
 import { getUserAndInternalFunctions, validateFunctionsSrc } from './utils.js'
 import { getZisiParameters } from './zisi.js'
 
-// Returns `true` if at least one of the functions has been configured to use
-// esbuild.
-const isUsingEsbuild = (functionsConfig = {}) =>
-  Object.values(functionsConfig).some((configObject) => configObject.node_bundler === 'esbuild')
+// Get a list of all unique bundlers in this run
+const getBundlers = (results: Awaited<ReturnType<typeof zipFunctions>> = []) =>
+  // using a Set to filter duplicates
+  new Set(
+    results
+      .map((bundle) => (bundle.runtime === RuntimeType.JAVASCRIPT ? bundle.bundler : null))
+      .filter(Boolean) as NodeBundlerType[],
+  )
 
 const zipFunctionsAndLogResults = async ({
   buildDir,
@@ -37,7 +41,6 @@ const zipFunctionsAndLogResults = async ({
     isRunningLocally,
     repositoryRoot,
   })
-  const bundler = isUsingEsbuild(functionsConfig) ? 'esbuild' : 'zisi'
 
   try {
     // Printing an empty line before bundling output.
@@ -46,9 +49,11 @@ const zipFunctionsAndLogResults = async ({
     const sourceDirectories = [internalFunctionsSrc, functionsSrc].filter(Boolean)
     const results = await zipItAndShipIt.zipFunctions(sourceDirectories, functionsDist, zisiParameters)
 
+    const bundlers = Array.from(getBundlers(results))
+
     logBundleResults({ logs, results })
 
-    return { bundler }
+    return { bundlers }
   } catch (error) {
     throw await getZipError(error, functionsSrc)
   }
@@ -74,7 +79,7 @@ const coreStep = async function ({
   const functionsDist = resolve(buildDir, relativeFunctionsDist)
   const internalFunctionsSrc = resolve(buildDir, relativeInternalFunctionsSrc)
   const internalFunctionsSrcExists = await pathExists(internalFunctionsSrc)
-  const functionsSrcExists = await validateFunctionsSrc({ functionsSrc, logs, relativeFunctionsSrc })
+  const functionsSrcExists = await validateFunctionsSrc({ functionsSrc, relativeFunctionsSrc })
   const [userFunctions = [], internalFunctions = []] = await getUserAndInternalFunctions({
     featureFlags,
     functionsSrc,
@@ -104,7 +109,7 @@ const coreStep = async function ({
     return {}
   }
 
-  const { bundler } = await zipFunctionsAndLogResults({
+  const { bundlers } = await zipFunctionsAndLogResults({
     buildDir,
     childEnv,
     featureFlags,
@@ -119,7 +124,7 @@ const coreStep = async function ({
 
   return {
     tags: {
-      bundler,
+      bundler: bundlers,
     },
   }
 }
@@ -155,7 +160,7 @@ export const bundleFunctions = {
 // `zip-it-and-ship-it` methods. Therefore, we need to use an intermediary
 // function and export them so tests can use it.
 export const zipItAndShipIt = {
-  async zipFunctions(...args) {
+  async zipFunctions(...args: Parameters<typeof zipFunctions>) {
     return await zipFunctions(...args)
   },
 }
