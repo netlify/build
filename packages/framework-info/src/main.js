@@ -126,3 +126,8 @@ export const getFramework = async function (frameworkId, options) {
   const context = await getContext(options)
   return get(frameworkId, context)
 }
+
+export const supportedRuntimes = {
+  next: { package: '@netlify/plugin-nextjs', skipFlag: 'NETLIFY_NEXT_PLUGIN_SKIP' },
+  gatsby: { package: '@netlify/plugin-gatsby', skipFlag: 'NETLIFY_GATSBY_PLUGIN_SKIP' },
+}
