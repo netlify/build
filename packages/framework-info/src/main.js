@@ -63,13 +63,18 @@ const getFrameworkVersion = async (projectDir, frameworkInfo) => {
   // in the event that the project uses something like npm workspaces, and the installed framework package
   // has been hoisted to the root directory of the project (which differs from the directory of the project/application being built)
   const installedFrameworkPath = await findUp(join('node_modules', npmPackage, 'package.json'), { cwd: projectDir })
+
+  if (!installedFrameworkPath) {
+    return frameworkInfo
+  }
+
   const { packageJson } = await getPackageJson(installedFrameworkPath)
 
   return {
     ...frameworkInfo,
     package: {
       name: npmPackage,
-      version: packageJson.version || 'unknown',
+      version: packageJson?.version || 'unknown',
     },
   }
 }
