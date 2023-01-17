@@ -8,7 +8,7 @@ import { deleteAsync } from 'del'
 import { EdgeFunction } from '../edge_function.js'
 import type { FormatFunction } from '../server/server.js'
 
-const BOOTSTRAP_LATEST = 'https://63c01cf32d59e80008a857fc--edge.netlify.com/bootstrap/index-combined.ts'
+const BOOTSTRAP_LATEST = 'https://63c67470ca761b0008582aff--edge.netlify.com/bootstrap/index-combined.ts'
 
 const defaultFormatExportTypeError: FormatFunction = (name) =>
   `The Edge Function "${name}" has failed to load. Does it have a function as the default export?`
