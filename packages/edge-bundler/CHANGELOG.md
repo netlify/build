@@ -1,5 +1,12 @@
 # Changelog
 
+## [8.2.1](https://github.com/netlify/edge-bundler/compare/v8.2.0...v8.2.1) (2023-01-17)
+
+
+### Bug Fixes
+
+* trigger another release, 8.2.0 didnt work ([#292](https://github.com/netlify/edge-bundler/issues/292)) ([1fcb47a](https://github.com/netlify/edge-bundler/commit/1fcb47ad95b2448f1a79b6f580e90fe4cb71b37d))
+
 ## [8.2.0](https://github.com/netlify/edge-bundler/compare/v8.1.2...v8.2.0) (2023-01-17)
 
 
