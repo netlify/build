@@ -1,5 +1,12 @@
 # Changelog
 
+## [8.2.0](https://github.com/netlify/edge-bundler/compare/v8.1.2...v8.2.0) (2023-01-17)
+
+
+### Features
+
+* rename x-deno- to x-nf- headers ([#290](https://github.com/netlify/edge-bundler/issues/290)) ([c6d8ae0](https://github.com/netlify/edge-bundler/commit/c6d8ae03e7773f16543935685ef32f9105071119))
+
 ## [8.1.2](https://github.com/netlify/edge-bundler/compare/v8.1.1...v8.1.2) (2023-01-11)
 
 
