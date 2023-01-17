@@ -18,6 +18,11 @@
   },
   "keywords": [],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/netlify/build.git",
+    "directory": "packages/nock-udp"
+  },
   "bugs": {
     "url": "https://github.com/netlify/build/issues"
   },
