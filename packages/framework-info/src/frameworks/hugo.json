@@ -5,7 +5,7 @@
   "detect": {
     "npmDependencies": [],
     "excludedNpmDependencies": [],
-    "configFiles": ["config.toml", "config.yaml"]
+    "configFiles": ["config.json", "config.toml", "config.yaml", "hugo.toml"]
   },
   "dev": {
     "command": "hugo server -w",
