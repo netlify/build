@@ -1,5 +1,12 @@
 # Changelog
 
+## [8.3.0](https://github.com/netlify/edge-bundler/compare/v8.2.1...v8.3.0) (2023-01-18)
+
+
+### Features
+
+* remove `--unstable` flag from `serve` flags ([#294](https://github.com/netlify/edge-bundler/issues/294)) ([cb4c75d](https://github.com/netlify/edge-bundler/commit/cb4c75d27303fcec207ade5fb51c740940b574f5))
+
 ## [8.2.1](https://github.com/netlify/edge-bundler/compare/v8.2.0...v8.2.1) (2023-01-17)
 
 
