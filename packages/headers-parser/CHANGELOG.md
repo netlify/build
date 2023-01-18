@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.1.1](https://github.com/netlify/build/compare/netlify-headers-parser-v7.1.0...netlify-headers-parser-v7.1.1) (2023-01-18)
+
+
+### Bug Fixes
+
+* correctly set repository in package.json files ([#4825](https://github.com/netlify/build/issues/4825)) ([f2612d6](https://github.com/netlify/build/commit/f2612d61e14ee2d9976a5ec37698976ac4331ad1))
+
 ## [7.1.0](https://github.com/netlify/build/compare/netlify-headers-parser-v7.0.3...netlify-headers-parser-v7.1.0) (2022-12-13)
 
 
