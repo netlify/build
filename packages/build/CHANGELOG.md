@@ -57,6 +57,24 @@
   * dependencies
     * @netlify/config bumped from ^20.0.1 to ^20.0.2
 
+## [29.5.1](https://github.com/netlify/build/compare/build-v29.5.0...build-v29.5.1) (2023-01-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v8.2.1 ([#4827](https://github.com/netlify/build/issues/4827)) ([3bcb535](https://github.com/netlify/build/commit/3bcb535843ce52bc618e224873ccd7589f8f883f))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^8.4.1 ([#4824](https://github.com/netlify/build/issues/4824)) ([4c48b9a](https://github.com/netlify/build/commit/4c48b9a21d15f0d454a590d868237c331e4e713c))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.3.0 to ^20.3.1
+    * @netlify/functions-utils bumped from ^5.1.4 to ^5.1.5
+  * devDependencies
+    * @netlify/nock-udp bumped from ^3.1.0 to ^3.1.1
+
 ## [29.5.0](https://github.com/netlify/build/compare/build-v29.4.5...build-v29.5.0) (2023-01-16)
 
 

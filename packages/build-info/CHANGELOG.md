@@ -12,6 +12,20 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.6.0 to ^9.7.0
 
+## [6.1.4](https://github.com/netlify/build/compare/build-info-v6.1.3...build-info-v6.1.4) (2023-01-18)
+
+
+### Bug Fixes
+
+* correctly set repository in package.json files ([#4825](https://github.com/netlify/build/issues/4825)) ([f2612d6](https://github.com/netlify/build/commit/f2612d61e14ee2d9976a5ec37698976ac4331ad1))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/framework-info bumped from ^9.7.0 to ^9.7.1
+
 ## [6.1.1](https://github.com/netlify/build/compare/build-info-v6.1.0...build-info-v6.1.1) (2022-12-14)
 
 
