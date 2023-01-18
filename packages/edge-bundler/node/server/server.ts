@@ -158,7 +158,7 @@ const serve = async ({
 
   await importMap.addFiles(importMapPaths, logger)
 
-  const flags = ['--allow-all', '--unstable', `--import-map=${importMap.toDataURL()}`, '--no-config']
+  const flags = ['--allow-all', `--import-map=${importMap.toDataURL()}`, '--no-config']
 
   if (certificatePath) {
     flags.push(`--cert=${certificatePath}`)
