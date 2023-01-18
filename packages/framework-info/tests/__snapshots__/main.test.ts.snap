@@ -243,3 +243,41 @@ exports[`getFrameworks > Should return the version of the framework when the ins
   },
 ]
 `;
+
+exports[`getFrameworks > Should work if version cannot be detected 1`] = `
+[
+  {
+    "build": {
+      "commands": [
+        "docpad generate",
+      ],
+      "directory": "out",
+    },
+    "category": "static_site_generator",
+    "dev": {
+      "commands": [
+        "docpad run",
+      ],
+      "pollingStrategies": [
+        {
+          "name": "TCP",
+        },
+        {
+          "name": "HTTP",
+        },
+      ],
+      "port": 9778,
+    },
+    "env": {},
+    "id": "docpad",
+    "logo": undefined,
+    "name": "DocPad",
+    "package": {
+      "name": "docpad",
+      "version": "unknown",
+    },
+    "plugins": [],
+    "staticAssetsDirectory": undefined,
+  },
+]
+`;
