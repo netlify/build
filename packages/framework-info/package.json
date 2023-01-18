@@ -14,8 +14,8 @@
   ],
   "scripts": {
     "build": "run-s build:*",
-    "build:ts": "tsc",
     "build:json": "node scripts/transform_json.js",
+    "build:ts": "tsc",
     "build:browser": "run-s build:browser:*",
     "build:browser:core": "vite build",
     "build:browser:site-root": "cpy index.html ./dist",
