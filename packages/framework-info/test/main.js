@@ -32,6 +32,11 @@ test('Should return the version of the framework when the installed package is h
   t.snapshot(frameworks)
 })
 
+test('Should work if version cannot be detected', async (t) => {
+  const frameworks = await getFrameworks('no-version')
+  t.snapshot(frameworks)
+})
+
 test('Should allow getting a specific framework', async (t) => {
   const framework = await getFramework('simple', 'sapper')
   t.snapshot(framework)
