@@ -292,12 +292,12 @@ test('Validates required path parameters', async (t) => {
 })
 
 test('Validates required query parameters', async (t) => {
-  const accountSlug = uuidv4()
-  const scope = nock(origin).post(`${pathPrefix}/${accountSlug}/members`).reply(200)
+  const zone_id = uuidv4()
+  const scope = nock(origin).post(`${pathPrefix}/dns_zones/${zone_id}/transfer`).reply(200)
 
   const client: any = getClient()
-  await t.throwsAsync(client.addMemberToAccount({ account_slug: accountSlug }), {
-    message: "Missing required query variable 'email'",
+  await t.throwsAsync(client.transferDnsZone({ zone_id }), {
+    message: "Missing required query variable 'account_id'",
   })
 
   t.false(scope.isDone())
