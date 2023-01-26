@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.1](https://github.com/netlify/build/compare/nock-udp-v3.1.0...nock-udp-v3.1.1) (2023-01-18)
+
+
+### Bug Fixes
+
+* correctly set repository in package.json files ([#4825](https://github.com/netlify/build/issues/4825)) ([f2612d6](https://github.com/netlify/build/commit/f2612d61e14ee2d9976a5ec37698976ac4331ad1))
+
 ## [3.1.0](https://github.com/netlify/build/compare/nock-udp-v3.0.1...nock-udp-v3.1.0) (2022-12-13)
 
 

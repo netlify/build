@@ -32,6 +32,20 @@
   * dependencies
     * netlify-headers-parser bumped from ^7.0.2 to ^7.0.3
 
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.1.0 to ^13.1.1
+    * netlify-headers-parser bumped from ^7.1.0 to ^7.1.1
+    * netlify-redirect-parser bumped from ^14.1.0 to ^14.1.1
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify bumped from ^13.1.1 to ^13.1.2
+
 ## [20.3.0](https://github.com/netlify/build/compare/config-v20.2.0...config-v20.3.0) (2023-01-03)
 
 

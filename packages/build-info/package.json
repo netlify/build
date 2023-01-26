@@ -1,6 +1,6 @@
 {
   "name": "@netlify/build-info",
-  "version": "6.1.2",
+  "version": "6.1.4",
   "description": "Build info utility",
   "type": "module",
   "exports": {
@@ -24,13 +24,17 @@
   },
   "keywords": [],
   "license": "MIT",
-  "repository": "netlify/build-info",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/netlify/build.git",
+    "directory": "packages/build-info"
+  },
   "bugs": {
     "url": "https://github.com/netlify/build/issues"
   },
   "author": "Netlify Inc.",
   "dependencies": {
-    "@netlify/framework-info": "^9.6.0",
+    "@netlify/framework-info": "^9.7.1",
     "@npmcli/map-workspaces": "^2.0.0",
     "find-up": "^6.3.0",
     "read-pkg": "^7.1.0",

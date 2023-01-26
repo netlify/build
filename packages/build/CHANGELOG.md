@@ -57,6 +57,48 @@
   * dependencies
     * @netlify/config bumped from ^20.0.1 to ^20.0.2
 
+## [29.5.2](https://github.com/netlify/build/compare/build-v29.5.1...build-v29.5.2) (2023-01-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v8.3.0 ([#4829](https://github.com/netlify/build/issues/4829)) ([9aeb01a](https://github.com/netlify/build/commit/9aeb01ae28c00290da53de492fd6ac888d35f64e))
+* **deps:** update dependency @netlify/edge-bundler to v8.4.0 ([#4831](https://github.com/netlify/build/issues/4831)) ([9761432](https://github.com/netlify/build/commit/9761432985714338727de4f12304e4ce67cc59ad))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.3.1 to ^20.3.2
+
+## [29.5.1](https://github.com/netlify/build/compare/build-v29.5.0...build-v29.5.1) (2023-01-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v8.2.1 ([#4827](https://github.com/netlify/build/issues/4827)) ([3bcb535](https://github.com/netlify/build/commit/3bcb535843ce52bc618e224873ccd7589f8f883f))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^8.4.1 ([#4824](https://github.com/netlify/build/issues/4824)) ([4c48b9a](https://github.com/netlify/build/commit/4c48b9a21d15f0d454a590d868237c331e4e713c))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.3.0 to ^20.3.1
+    * @netlify/functions-utils bumped from ^5.1.4 to ^5.1.5
+  * devDependencies
+    * @netlify/nock-udp bumped from ^3.1.0 to ^3.1.1
+
+## [29.5.0](https://github.com/netlify/build/compare/build-v29.4.5...build-v29.5.0) (2023-01-16)
+
+
+### Features
+
+* install framework runtime ([#4812](https://github.com/netlify/build/issues/4812)) ([5abc39d](https://github.com/netlify/build/commit/5abc39dfd074bfda52fef3222ee9d73c2ed98403))
+* Pass internalSrcFolder and name to zisi ([#4821](https://github.com/netlify/build/issues/4821)) ([ffffcdb](https://github.com/netlify/build/commit/ffffcdb790db7c8108061b1ab3497c75db124e4c))
+* send all bundlers to metric ([#4798](https://github.com/netlify/build/issues/4798)) ([cc55529](https://github.com/netlify/build/commit/cc555291679aedc468480251025e4d4a6dda882d))
+
 ## [29.4.5](https://github.com/netlify/build/compare/build-v29.4.4...build-v29.4.5) (2023-01-12)
 
 

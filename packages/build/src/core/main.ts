@@ -65,6 +65,7 @@ export default async function buildSite(flags: Partial<BuildCLIFlags> = {}): Pro
       debug,
       testOpts,
       errorParams,
+      framework,
     })
     await handleBuildSuccess({
       framework,

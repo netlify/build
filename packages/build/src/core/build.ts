@@ -1,3 +1,5 @@
+import { supportedRuntimes } from '@netlify/framework-info'
+
 import { getErrorInfo } from '../error/info.js'
 import { startErrorMonitor } from '../error/monitor/start.js'
 import { getBufferLogs, getSystemLogger } from '../log/logger.js'
@@ -77,6 +79,7 @@ const tExecBuild = async function ({
   timeline,
   devCommand,
   quiet,
+  framework,
 }) {
   const configOpts = getConfigOpts({
     config,
@@ -124,6 +127,20 @@ const tExecBuild = async function ({
     timers,
     quiet,
   })
+
+  if (featureFlags.build_automatic_runtime && framework) {
+    const runtime = supportedRuntimes[framework]
+
+    if (runtime !== undefined) {
+      const skip = childEnv[runtime.skipFlag] === 'true'
+      const installed = netlifyConfig.plugins.some((plugin) => plugin.package === runtime.package)
+
+      if (!installed && !skip) {
+        netlifyConfig.plugins.push({ package: runtime.package })
+      }
+    }
+  }
+
   const constants = await getConstants({
     configPath,
     buildDir,
