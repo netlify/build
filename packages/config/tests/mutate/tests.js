@@ -1,10 +1,9 @@
-import { promises as fs } from 'fs'
+import { existsSync, promises as fs } from 'fs'
 import { fileURLToPath } from 'url'
 
 import { Fixture, normalizeOutput } from '@netlify/testing'
 import test from 'ava'
 import del from 'del'
-import { pathExists } from 'path-exists'
 
 import { updateConfig } from '../../lib/main.js'
 
@@ -50,19 +49,19 @@ const initFixtureDir = async function (fixtureName) {
 // Create temporary copies of `netlify.toml` and `redirects` from the fixture
 // directory to use in tests
 const copyIfExists = async function (fixturePath, tempPath) {
-  if (await pathExists(fixturePath)) {
+  if (existsSync(fixturePath)) {
     await fs.copyFile(fixturePath, tempPath)
     return
   }
 
-  if (await pathExists(tempPath)) {
+  if (existsSync(tempPath)) {
     await del(tempPath)
   }
 }
 
 test('updateConfig() saves netlify.toml', async (t) => {
   const { configPath } = await runUpdateConfig('save')
-  t.true(await pathExists(configPath))
+  t.true(existsSync(configPath))
 })
 
 test('updateConfig() updates the configuration so it can be read again', async (t) => {
@@ -73,7 +72,7 @@ test('updateConfig() updates the configuration so it can be read again', async (
 
 test('updateConfig() is a noop when where are no config mutations', async (t) => {
   const { configPath } = await runUpdateConfig('noop', { configMutations: [] })
-  t.false(await pathExists(configPath))
+  t.false(existsSync(configPath))
 })
 
 test('updateConfig() has higher priority than context properties', async (t) => {
@@ -91,19 +90,19 @@ test('updateConfig() merges with the existing netlify.toml', async (t) => {
 test('updateConfig() deletes _redirects when redirects were changed', async (t) => {
   const { redirectsPath } = await runUpdateConfig('redirects_change', { configMutations: [redirectsMutation] })
   t.is(typeof redirectsPath, 'string')
-  t.false(await pathExists(redirectsPath))
+  t.false(existsSync(redirectsPath))
 })
 
 test('updateConfig() deletes _redirects on changes even if redirects were not changed', async (t) => {
   const { redirectsPath } = await runUpdateConfig('redirects_no_change')
   t.is(typeof redirectsPath, 'string')
-  t.false(await pathExists(redirectsPath))
+  t.false(existsSync(redirectsPath))
 })
 
 test('updateConfig() does not delete _redirects if it does not exist', async (t) => {
   const { redirectsPath } = await runUpdateConfig('redirects_none')
   t.is(typeof redirectsPath, 'string')
-  t.false(await pathExists(redirectsPath))
+  t.false(existsSync(redirectsPath))
 })
 
 test('updateConfig() does not delete _redirects if redirectsPath not provided', async (t) => {
@@ -112,25 +111,25 @@ test('updateConfig() does not delete _redirects if redirectsPath not provided', 
     redirectsPath: undefined,
   })
   t.is(typeof redirectsPath, 'string')
-  t.true(await pathExists(redirectsPath))
+  t.true(existsSync(redirectsPath))
 })
 
 test('updateConfig() deletes _headers when headers were changed', async (t) => {
   const { headersPath } = await runUpdateConfig('headers_change', { configMutations: [headersMutation] })
   t.is(typeof headersPath, 'string')
-  t.false(await pathExists(headersPath))
+  t.false(existsSync(headersPath))
 })
 
 test('updateConfig() deletes _headers on changes even if headers were not changed', async (t) => {
   const { headersPath } = await runUpdateConfig('headers_no_change')
   t.is(typeof headersPath, 'string')
-  t.false(await pathExists(headersPath))
+  t.false(existsSync(headersPath))
 })
 
 test('updateConfig() does not delete _headers if it does not exist', async (t) => {
   const { headersPath } = await runUpdateConfig('headers_none')
   t.is(typeof headersPath, 'string')
-  t.false(await pathExists(headersPath))
+  t.false(existsSync(headersPath))
 })
 
 test('updateConfig() does not delete _headers if headersPath not provided', async (t) => {
@@ -139,5 +138,5 @@ test('updateConfig() does not delete _headers if headersPath not provided', asyn
     headersPath: undefined,
   })
   t.is(typeof headersPath, 'string')
-  t.true(await pathExists(headersPath))
+  t.true(existsSync(headersPath))
 })
