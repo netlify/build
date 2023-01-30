@@ -79,7 +79,7 @@
     "execa": "^6.0.0",
     "figures": "^4.0.0",
     "filter-obj": "^3.0.0",
-    "got": "^11.0.0",
+    "got": "^12.0.0",
     "hot-shots": "9.3.0",
     "indent-string": "^5.0.0",
     "is-plain-obj": "^4.0.0",
