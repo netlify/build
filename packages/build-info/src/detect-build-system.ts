@@ -33,10 +33,10 @@ const BUILD_SYSTEMS: Record<string, BuildSystemHandler> = {
       const pkgJson = getPkgJson(nxConfigPath)
       const { devDependencies } = pkgJson
 
-      return Promise.resolve({
+      return {
         name: 'nx',
         version: devDependencies?.nx,
-      })
+      }
     }
   },
 
@@ -48,10 +48,10 @@ const BUILD_SYSTEMS: Record<string, BuildSystemHandler> = {
       const pkgJson = getPkgJson(lernaConfigPath)
       const { devDependencies } = pkgJson
 
-      return Promise.resolve({
+      return {
         name: 'lerna',
         version: devDependencies?.lerna,
-      })
+      }
     }
   },
 
@@ -63,10 +63,10 @@ const BUILD_SYSTEMS: Record<string, BuildSystemHandler> = {
       const pkgJson = getPkgJson(turboConfigPath)
       const { devDependencies } = pkgJson
 
-      return Promise.resolve({
+      return {
         name: 'turbo',
         version: devDependencies?.turbo,
-      })
+      }
     }
   },
 
@@ -78,10 +78,10 @@ const BUILD_SYSTEMS: Record<string, BuildSystemHandler> = {
       const pkgJson = getPkgJson(rushConfigPath)
       const { devDependencies } = pkgJson
 
-      return Promise.resolve({
+      return {
         name: 'rush',
         version: devDependencies?.rush,
-      })
+      }
     }
   },
 
@@ -92,10 +92,10 @@ const BUILD_SYSTEMS: Record<string, BuildSystemHandler> = {
       const pkgJson = getPkgJson(lageConfigPath)
       const { devDependencies } = pkgJson
 
-      return Promise.resolve({
+      return {
         name: 'lage',
         version: devDependencies?.lage,
-      })
+      }
     }
   },
 
@@ -104,9 +104,9 @@ const BUILD_SYSTEMS: Record<string, BuildSystemHandler> = {
     const pantsConfigPath = lookFor(pants, baseDir, rootDir)
 
     if (pantsConfigPath) {
-      return Promise.resolve({
+      return {
         name: 'pants',
-      })
+      }
     }
   },
 
@@ -115,9 +115,9 @@ const BUILD_SYSTEMS: Record<string, BuildSystemHandler> = {
     const buckConfigPath = lookFor(buck, baseDir, rootDir)
 
     if (buckConfigPath) {
-      return Promise.resolve({
+      return {
         name: 'buck',
-      })
+      }
     }
   },
 
@@ -126,9 +126,9 @@ const BUILD_SYSTEMS: Record<string, BuildSystemHandler> = {
     const gradleConfigPath = lookFor(gradle, baseDir, rootDir)
 
     if (gradleConfigPath) {
-      return Promise.resolve({
+      return {
         name: 'gradle',
-      })
+      }
     }
   },
 
@@ -137,12 +137,22 @@ const BUILD_SYSTEMS: Record<string, BuildSystemHandler> = {
     const bazelConfigPath = lookFor(bazel, baseDir, rootDir)
 
     if (bazelConfigPath) {
-      return Promise.resolve({
+      return {
         name: 'bazel',
-      })
+      }
     }
   },
 
+  nix: async (baseDir, rootDir) => {
+    const nix = ['default.nix', 'shell.nix', 'release.nix']
+    const nixConfigPath = lookFor(nix, baseDir, rootDir)
+
+    if (nixConfigPath) {
+      return {
+        name: 'nix',
+      }
+    }
+  },
   moon: async (baseDir, rootDir) => {
     const moon = ['.moon']
     const moonConfigPath = lookFor(moon, baseDir, rootDir, 'directory')
@@ -151,10 +161,10 @@ const BUILD_SYSTEMS: Record<string, BuildSystemHandler> = {
       const pkgJson = getPkgJson(moonConfigPath)
       const { devDependencies } = pkgJson
 
-      return Promise.resolve({
+      return {
         name: 'moon',
         version: devDependencies?.moon,
-      })
+      }
     }
   },
 }
