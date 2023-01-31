@@ -6,6 +6,9 @@ import { logPluginsList, logPluginsFetchError } from '../log/messages/plugins.js
 
 import { CONDITIONS } from './compatibility.js'
 
+// 1 minute HTTP request timeout
+const PLUGINS_LIST_TIMEOUT = 6e4
+
 // Retrieve the list of plugins officially vetted by us and displayed in our
 // plugins directory UI.
 // We fetch this list during each build (no caching) because we want new
@@ -29,7 +32,7 @@ export const getPluginsList = async function ({ debug, logs, testOpts: { plugins
 
 const fetchPluginsList = async function ({ logs, pluginsListUrl }) {
   try {
-    const { body } = await got(pluginsListUrl, { responseType: 'json', timeout: PLUGINS_LIST_TIMEOUT })
+    const { body } = await got(pluginsListUrl, { responseType: 'json', timeout: { request: PLUGINS_LIST_TIMEOUT } })
 
     if (!isValidPluginsList(body)) {
       throw new Error(`Request succeeded but with an invalid response:\n${JSON.stringify(body, null, 2)}`)
@@ -47,9 +50,6 @@ const fetchPluginsList = async function ({ logs, pluginsListUrl }) {
     return oldPluginsList
   }
 }
-
-// 1 minute HTTP request timeout
-const PLUGINS_LIST_TIMEOUT = 6e4
 
 const isValidPluginsList = function (pluginsList) {
   return Array.isArray(pluginsList) && pluginsList.every(isPlainObj)

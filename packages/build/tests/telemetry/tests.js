@@ -69,8 +69,8 @@ const runWithApiMock = async function (
     const fix = new Fixture(`./fixtures/${fixture}`).withEnv(env).withFlags({
       siteId: 'test',
       testOpts: {
-        // null disables the request timeout
-        telemetryTimeout: disableTelemetryTimeout ? null : undefined,
+        // {} disables all request timeouts
+        telemetryTimeout: disableTelemetryTimeout ? {} : undefined,
         telemetryOrigin: `${schemeTelemetry}://${hostTelemetry}`,
         // Any telemetry errors will be logged
         errorMonitor: true,
