@@ -33,7 +33,7 @@
     "toml": "^3.0.0"
   },
   "devDependencies": {
-    "@types/node": "^14.18.31",
+    "@types/node": "^18.8.3",
     "ts-node": "^10.9.1",
     "typescript": "^4.8.4",
     "vitest": "^0.24.1"
