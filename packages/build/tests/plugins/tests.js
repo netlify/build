@@ -198,6 +198,16 @@ test('Can run utils', async (t) => {
   }
 })
 
+test('Cache utils are caching .dot directories as well', async (t) => {
+  // cleanup cache first
+  await removeDir([`${FIXTURES_DIR}/cache_utils/dist`, `${FIXTURES_DIR}/cache_utils/.netlify`])
+  // generate cache
+  await new Fixture('./fixtures/cache_utils').runWithBuild()
+  // should have cached files in the output message
+  const output = await new Fixture('./fixtures/cache_utils').runWithBuild()
+  t.snapshot(normalizeOutput(output))
+})
+
 test('Can run list util', async (t) => {
   const output = await new Fixture('./fixtures/functions_list').runWithBuild()
   t.snapshot(normalizeOutput(output))
