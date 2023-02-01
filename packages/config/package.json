@@ -75,7 +75,6 @@
     "netlify-redirect-parser": "^14.1.1",
     "omit.js": "^2.0.2",
     "p-locate": "^6.0.0",
-    "path-exists": "^5.0.0",
     "path-type": "^5.0.0",
     "toml": "^3.0.0",
     "tomlify-j0.4": "^3.0.0",

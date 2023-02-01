@@ -27,7 +27,7 @@ const createGit = (cwd: string) => {
 // Removing a directory sometimes fails on Windows in CI due to Windows
 // directory locking.
 // This results in `EBUSY: resource busy or locked, rmdir /path/to/dir`
-export const removeDir = async function (dir) {
+export const removeDir = async function (dir: string | string[]) {
   try {
     await del(dir, { force: true })
   } catch {

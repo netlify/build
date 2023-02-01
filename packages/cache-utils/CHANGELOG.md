@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.1.1](https://github.com/netlify/build/compare/cache-utils-v5.1.0...cache-utils-v5.1.1) (2023-02-01)
+
+
+### Bug Fixes
+
+* fixes an issue where the cache could not save .dot directories ([#4843](https://github.com/netlify/build/issues/4843)) ([ccb3a00](https://github.com/netlify/build/commit/ccb3a005e69af2ed543d9f7af7c6e7284adb8265))
+
 ## [5.1.0](https://github.com/netlify/build/compare/cache-utils-v5.0.2...cache-utils-v5.1.0) (2022-12-13)
 
 
