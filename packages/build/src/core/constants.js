@@ -21,7 +21,6 @@ export const getConstants = async function ({
 }) {
   const isLocal = mode !== 'buildbot'
   const normalizedCacheDir = getCacheDir({ cacheDir, cwd: buildDir })
-
   const constants = {
     // Path to the Netlify configuration file
     CONFIG_PATH: configPath,
