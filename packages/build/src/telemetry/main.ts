@@ -1,6 +1,6 @@
 import { platform } from 'process'
 
-import got from 'got'
+import got, { OptionsOfTextResponseBody } from 'got'
 import osName from 'os-name'
 
 import { addErrorInfo } from '../error/info.js'
@@ -11,7 +11,7 @@ const DEFAULT_TELEMETRY_TIMEOUT = 1200
 const DEFAULT_TELEMETRY_CONFIG = {
   origin: 'https://api.segment.io/v1',
   writeKey: 'dWhlM1lYSlpNd1k5Uk9rcjFra2JSOEoybnRjZjl0YTI6',
-  timeout: DEFAULT_TELEMETRY_TIMEOUT,
+  timeout: { request: DEFAULT_TELEMETRY_TIMEOUT },
 }
 
 // Send telemetry request when build completes
@@ -44,23 +44,26 @@ export const trackBuildComplete = async function ({
       userNodeVersion,
       framework,
     })
-    await track({
-      payload,
-      config: { ...DEFAULT_TELEMETRY_CONFIG, origin: telemetryOrigin, timeout: telemetryTimeout },
-    })
+    await track(payload, { ...DEFAULT_TELEMETRY_CONFIG, origin: telemetryOrigin, timeout: telemetryTimeout })
   } catch (error) {
     addErrorInfo(error, { type: 'telemetry' })
     throw error
   }
 }
 
+interface TrackConfig {
+  origin: string
+  writeKey: string
+  timeout: OptionsOfTextResponseBody['timeout']
+}
+
 // Send track HTTP request to telemetry.
-const track = async function ({ payload, config: { origin, writeKey, timeout } }) {
+const track = async function (payload: Record<string, unknown>, { origin, writeKey, timeout }: TrackConfig) {
   const url = `${origin}/track`
   await got.post(url, {
     json: payload,
     timeout,
-    retry: 0,
+    retry: { limit: 0 },
     headers: { Authorization: `Basic ${writeKey}` },
   })
 }
@@ -75,7 +78,7 @@ const getPayload = function ({
   pluginsOptions,
   durationNs,
   userNodeVersion,
-  siteInfo = {},
+  siteInfo = { id: undefined },
   framework,
 }) {
   return {
@@ -121,7 +124,7 @@ const getPlugin = function ({
   loadedFrom,
   nodeVersion,
   pinnedVersion,
-  pluginPackageJson: { version } = {},
+  pluginPackageJson: { version } = { version: undefined },
 }) {
   const installType = getInstallType(origin, loadedFrom)
   return { name: packageName, installType, nodeVersion, pinnedVersion, version }
