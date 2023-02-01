@@ -57,6 +57,20 @@
   * dependencies
     * @netlify/config bumped from ^20.0.1 to ^20.0.2
 
+## [29.5.4](https://github.com/netlify/build/compare/build-v29.5.3...build-v29.5.4) (2023-02-01)
+
+
+### Bug Fixes
+
+* fixes an issue where the cache could not save .dot directories ([#4843](https://github.com/netlify/build/issues/4843)) ([ccb3a00](https://github.com/netlify/build/commit/ccb3a005e69af2ed543d9f7af7c6e7284adb8265))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/cache-utils bumped from ^5.1.0 to ^5.1.1
+
 ## [29.5.3](https://github.com/netlify/build/compare/build-v29.5.2...build-v29.5.3) (2023-02-01)
 
 
