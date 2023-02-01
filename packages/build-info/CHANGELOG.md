@@ -12,6 +12,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.6.0 to ^9.7.0
 
+## [6.2.0](https://github.com/netlify/build/compare/build-info-v6.1.4...build-info-v6.2.0) (2023-02-01)
+
+
+### Features
+
+* add detection for nix build system ([#4818](https://github.com/netlify/build/issues/4818)) ([e3c99a7](https://github.com/netlify/build/commit/e3c99a73194a7d06892bd62f48fd247fecef7032))
+
 ## [6.1.4](https://github.com/netlify/build/compare/build-info-v6.1.3...build-info-v6.1.4) (2023-01-18)
 
 

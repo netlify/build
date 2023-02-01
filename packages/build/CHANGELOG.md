@@ -57,6 +57,21 @@
   * dependencies
     * @netlify/config bumped from ^20.0.1 to ^20.0.2
 
+## [29.5.3](https://github.com/netlify/build/compare/build-v29.5.2...build-v29.5.3) (2023-02-01)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^8.5.0 ([#4842](https://github.com/netlify/build/issues/4842)) ([177d01b](https://github.com/netlify/build/commit/177d01b63023a226c5e8f37027eac18e63fd32be))
+* update dependency got to v12 [security] ([b382907](https://github.com/netlify/build/commit/b3829077546de867e3f478aaf07065c422bcc8ec))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.1.5 to ^5.1.6
+
 ## [29.5.2](https://github.com/netlify/build/compare/build-v29.5.1...build-v29.5.2) (2023-01-24)
 
 
