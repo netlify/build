@@ -1,7 +1,7 @@
+import { existsSync } from 'fs'
 import { resolve, relative, parse } from 'path'
 
 import { getProperty, setProperty, deleteProperty } from 'dot-prop'
-import { pathExists } from 'path-exists'
 
 import { throwUserError } from './error.js'
 import { mergeConfigs } from './merge.js'
@@ -9,10 +9,10 @@ import { isTruthy } from './utils/remove_falsy.js'
 
 // Make configuration paths relative to `buildDir` and converts them to
 // absolute paths
-export const resolveConfigPaths = async function ({ config, repositoryRoot, buildDir, baseRelDir }) {
+export const resolveConfigPaths = function ({ config, repositoryRoot, buildDir, baseRelDir }) {
   const baseRel = baseRelDir ? buildDir : repositoryRoot
   const configA = resolvePaths(config, FILE_PATH_CONFIG_PROPS, baseRel, repositoryRoot)
-  const configB = await addDefaultPaths(configA, repositoryRoot, baseRel)
+  const configB = addDefaultPaths(configA, repositoryRoot, baseRel)
   return configB
 }
 
@@ -72,14 +72,11 @@ const getWindowsDrive = function (path) {
 
 // Some configuration properties have default values that are only set if a
 // specific directory/file exists in the build directory
-const addDefaultPaths = async function (config, repositoryRoot, baseRel) {
-  const defaultPathsConfigs = await Promise.all(
-    DEFAULT_PATHS.map(({ defaultPath, getConfig, propName }) =>
-      addDefaultPath({ repositoryRoot, baseRel, defaultPath, getConfig, propName }),
-    ),
-  )
-  const defaultPathsConfigsA = defaultPathsConfigs.filter(Boolean)
-  return mergeConfigs([...defaultPathsConfigsA, config])
+const addDefaultPaths = function (config, repositoryRoot, baseRel) {
+  const defaultPathsConfigs = DEFAULT_PATHS.map(({ defaultPath, getConfig, propName }) =>
+    addDefaultPath({ repositoryRoot, baseRel, defaultPath, getConfig, propName }),
+  ).filter(Boolean)
+  return mergeConfigs([...defaultPathsConfigs, config])
 }
 
 const DEFAULT_PATHS = [
@@ -101,10 +98,10 @@ const DEFAULT_PATHS = [
   },
 ]
 
-const addDefaultPath = async function ({ repositoryRoot, baseRel, defaultPath, getConfig, propName }) {
+const addDefaultPath = function ({ repositoryRoot, baseRel, defaultPath, getConfig, propName }) {
   const absolutePath = resolvePath(repositoryRoot, baseRel, defaultPath, propName)
 
-  if (!(await pathExists(absolutePath))) {
+  if (!existsSync(absolutePath)) {
     return
   }
 

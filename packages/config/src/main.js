@@ -279,7 +279,7 @@ const normalizeConfigAndContext = function (config, origin) {
 const resolveFiles = async function ({ config, repositoryRoot, base, baseRelDir }) {
   const baseA = getBase(base, repositoryRoot, config)
   const buildDir = await getBuildDir(repositoryRoot, baseA)
-  const configA = await resolveConfigPaths({ config, repositoryRoot, buildDir, baseRelDir })
+  const configA = resolveConfigPaths({ config, repositoryRoot, buildDir, baseRelDir })
   const configB = addBase(configA, baseA)
   return { config: configB, buildDir, base: baseA }
 }
