@@ -1,7 +1,5 @@
-import { promises as fs } from 'fs'
+import { existsSync, promises as fs } from 'fs'
 import { dirname, relative, sep } from 'path'
-
-import { pathExists } from 'path-exists'
 
 // Retrieve `base` override.
 // This uses any directory below `repositoryRoot` and above (or equal to)
@@ -58,7 +56,7 @@ const locatePath = async function (paths) {
 }
 
 const returnIfExists = async function (path) {
-  if (!(await pathExists(path))) {
+  if (!existsSync(path)) {
     return
   }
 
