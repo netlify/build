@@ -1,6 +1,4 @@
-import { promises as fs } from 'fs'
-
-import { pathExists } from 'path-exists'
+import { existsSync, promises as fs } from 'fs'
 
 import { ensureConfigPriority } from '../context.js'
 import { addHeaders } from '../headers.js'
@@ -63,7 +61,7 @@ const saveConfig = async function (configPath, simplifiedConfig) {
 // Deletes `_headers/_redirects` since they are merged to `netlify.toml`,
 // to fix any priority problem.
 const deleteSideFile = async function (filePath) {
-  if (filePath === undefined || !(await pathExists(filePath))) {
+  if (filePath === undefined || !existsSync(filePath)) {
     return
   }
 
@@ -105,7 +103,7 @@ const backupFile = async function (original, backup) {
   // this makes sure we don't restore stale files
   await deleteNoError(backup)
 
-  if (!(await pathExists(original))) {
+  if (!existsSync(original)) {
     return
   }
 
@@ -121,7 +119,7 @@ const deleteNoError = async (path) => {
 }
 
 const copyOrDelete = async function (src, dest) {
-  if (await pathExists(src)) {
+  if (existsSync(src)) {
     await fs.copyFile(src, dest)
     return
   }

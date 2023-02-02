@@ -1,4 +1,4 @@
-import path from 'path'
+import path, { join } from 'path'
 
 import { expect, test } from 'vitest'
 
@@ -101,6 +101,18 @@ test('detects moonrepo when .moon directory is present', async () => {
 
   const buildSystems = await detectBuildSystems(cwd)
   expect(buildSystems[0]).toEqual({ name: 'moon', version: '^0.5.1' })
+})
+
+test('detects nix when .nix files are present', async () => {
+  const cwd = mockFileSystem({
+    'default.nix': '',
+    'other/shell.nix': '',
+  })
+
+  let buildSystems = await detectBuildSystems(cwd)
+  expect(buildSystems[0]).toEqual({ name: 'nix' })
+  buildSystems = await detectBuildSystems(join(cwd, 'other'))
+  expect(buildSystems[0]).toEqual({ name: 'nix' })
 })
 
 test('detects build system in a monorepo setup', async () => {

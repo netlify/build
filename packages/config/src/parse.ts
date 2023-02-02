@@ -1,28 +1,32 @@
-import { promises as fs } from 'fs'
-
-import { pathExists } from 'path-exists'
+import { existsSync, promises as fs } from 'fs'
 
 import { throwUserError } from './error.js'
 import { throwOnInvalidTomlSequence } from './log/messages.js'
 import { parseToml } from './utils/toml.js'
 
-// Load the configuration file and parse it (TOML)
-export const parseConfig = async function (configPath) {
+/**
+ * Load the configuration file and parse it (TOML)
+ * @param configPath The path to the toml file
+ * @returns
+ */
+export const parseConfig = async function (configPath?: string) {
   if (configPath === undefined) {
     return {}
   }
 
-  if (!(await pathExists(configPath))) {
+  if (!existsSync(configPath)) {
     throwUserError('Configuration file does not exist')
   }
 
   return await readConfigPath(configPath)
 }
 
-// Same but `configPath` is required and `configPath` might point to a
-// non-existing file.
+/**
+ * Same but `configPath` is required and `configPath` might point to a
+ * non-existing file.
+ */
 export const parseOptionalConfig = async function (configPath) {
-  if (!(await pathExists(configPath))) {
+  if (!existsSync(configPath)) {
     return {}
   }
 
@@ -41,7 +45,9 @@ const readConfigPath = async function (configPath) {
   }
 }
 
-// Reach the configuration file's raw content
+/**
+ * Reach the configuration file's raw content
+ */
 const readConfig = async function (configPath) {
   try {
     return await fs.readFile(configPath, 'utf8')
@@ -60,10 +66,12 @@ const validateTomlBlackslashes = function (configString) {
   throwOnInvalidTomlSequence(invalidSequence)
 }
 
-// The TOML specification forbids unrecognized backslash sequences. However,
-// `toml-node` does not respect the specification and do not fail on those.
-// Therefore, we print a warning message.
-// This only applies to " and """ strings, not ' nor '''
-// Also, """ strings can use trailing backslashes.
+/**
+ * The TOML specification forbids unrecognized backslash sequences. However,
+ * `toml-node` does not respect the specification and do not fail on those.
+ * Therefore, we print a warning message.
+ * This only applies to " and """ strings, not ' nor '''
+ * Also, """ strings can use trailing backslashes.
+ */
 const INVALID_TOML_BLACKSLASH =
   /\n[a-zA-Z]+ *= *(?:(?:""".*(?<!\\)(\\[^"\\btnfruU\n]).*""")|(?:"(?!")[^\n]*(?<!\\)(\\[^"\\btnfruU])[^\n]*"))/su

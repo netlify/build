@@ -1,13 +1,13 @@
 // We distinguish between errors thrown intentionally and uncaught exceptions
 // (such as bugs) with a `customErrorInfo.type` property.
-export const throwUserError = function (messageOrError, error) {
+export const throwUserError = function (messageOrError: string | Error, error?: Error) {
   const errorA = getError(messageOrError, error)
   errorA[CUSTOM_ERROR_KEY] = { type: USER_ERROR_TYPE }
   throw errorA
 }
 
 // Can pass either `message`, `error` or `message, error`
-const getError = function (messageOrError, error) {
+const getError = function (messageOrError: string | Error, error?: Error) {
   if (messageOrError instanceof Error) {
     return messageOrError
   }
