@@ -114,8 +114,12 @@ export const getFramework = async function (frameworkId, context) {
   const frameworkInfo = getFrameworkInfo(framework, { scripts, runScriptCommand, nodeVersion })
   return frameworkInfo
 }
-
-const getFrameworkById = function (frameworkId) {
+/**
+ * Gets the framework by its id
+ * @param {string} frameworkId - Id such as `"gatsby"`
+ * @returns
+ */
+export const getFrameworkById = function (frameworkId) {
   const framework = FRAMEWORKS.find(({ id }) => id === frameworkId)
   if (framework === undefined) {
     const frameworkIds = FRAMEWORKS.map((knownFramework) => getFrameworkId(knownFramework))
