@@ -27,7 +27,7 @@ const validateIncomingMsg = function (buffer, offset, length, address) {
 }
 
 const getMockSocketSend = function ({ allowUnknown = false } = {}) {
-  const mockSocketSend = function (buffer, offset, length, port, host, callback) {
+  const mockSocketSend = function (this: Socket, buffer, offset, length, port, host, callback) {
     const address = `${host}:${port}`
     if (allowUnknown && !intercepts[address]) {
       // We allow extraneous connections, fallback to original use

@@ -1,5 +1,6 @@
 // We purposely order the following array to ensure the most relevant framework
 // is always first, if several frameworks are detected at once.
+
 // Therefore, we cannot use `fs.readdir()`.
 export const FRAMEWORK_NAMES = [
   // Static site generators
@@ -56,4 +57,6 @@ export const FRAMEWORK_NAMES = [
   'gulp',
   'vite',
   'wmr',
-]
+] as const
+
+export type FrameworkName = typeof FRAMEWORK_NAMES[number]

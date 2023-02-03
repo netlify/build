@@ -15,7 +15,7 @@ export const getConfigPath = async function ({ configOpt, cwd, repositoryRoot, c
   const configPath = await pLocate(
     [
       searchConfigOpt(cwd, configOpt),
-      searchBaseConfigFile(repositoryRoot, configBase),
+      searchBaseConfigFile(configBase),
       searchConfigFile(repositoryRoot),
       findUp(FILENAME, { cwd }),
     ],
@@ -36,7 +36,7 @@ const searchConfigOpt = function (cwd: string, configOpt?: string) {
 /**
  * Look for `repositoryRoot/{base}/netlify.*`
  */
-const searchBaseConfigFile = function (repositoryRoot, configBase?: string) {
+const searchBaseConfigFile = function (configBase?: string) {
   if (configBase === undefined) {
     return
   }

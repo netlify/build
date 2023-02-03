@@ -1,4 +1,4 @@
-import { promises as fs } from 'fs'
+import { promises as fs, Stats } from 'fs'
 import { basename, dirname } from 'path'
 
 import cpy from 'cpy'
@@ -78,10 +78,11 @@ const getSrcGlob = async function (src: string): Promise<GlobOptions> {
   return baseOptions
 }
 
-const getStat = async (src: string) => {
+const getStat = async (src: string): Promise<Stats | undefined> => {
   try {
     return await fs.stat(src)
   } catch {
     // continue regardless error
+    return undefined
   }
 }

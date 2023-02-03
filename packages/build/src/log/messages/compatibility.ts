@@ -50,7 +50,7 @@ const getPluginDescription = function (
   },
   debug,
 ) {
-  const versionedPackage = getVersionedPackage(packageName, version)
+  const versionedPackage = getVersionedPackage(version)
   const pluginOrigin = getPluginOrigin(loadedFrom, origin)
   const description = `${THEME.highlightWords(packageName)}${versionedPackage} ${pluginOrigin}`
   if (!debug) {
@@ -106,7 +106,7 @@ const getOutdatedPlugin = function ({
   loadedFrom,
   origin,
 }) {
-  const versionedPackage = getVersionedPackage(packageName, version)
+  const versionedPackage = getVersionedPackage(version)
   const outdatedDescription = getOutdatedDescription({ latestVersion, migrationGuide, loadedFrom, origin })
   return `${THEME.warningHighlightWords(packageName)}${versionedPackage}: ${outdatedDescription}`
 }
@@ -165,7 +165,7 @@ const getIncompatiblePlugin = function ({
   compatibleVersion,
   compatWarning,
 }) {
-  const versionedPackage = getVersionedPackage(packageName, version)
+  const versionedPackage = getVersionedPackage(version)
   return `${THEME.warningHighlightWords(
     packageName,
   )}${versionedPackage}: version ${compatibleVersion} is the most recent version compatible with ${compatWarning}`
@@ -173,6 +173,6 @@ const getIncompatiblePlugin = function ({
 
 // Make sure we handle `package.json` with `version` being either `undefined`
 // or an empty string
-const getVersionedPackage = function (packageName, version = '') {
+const getVersionedPackage = function (version = '') {
   return version === '' ? '' : `@${version}`
 }

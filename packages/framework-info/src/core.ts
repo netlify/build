@@ -1,71 +1,26 @@
 import pFilter from 'p-filter'
+import type { PackageJson } from 'read-pkg-up'
 
-import { FRAMEWORKS } from '../build/frameworks.js'
-
+import type { Context, PathExists } from './context.js'
 import { usesFramework } from './detect.js'
 import { getDevCommands } from './dev.js'
+import type { FrameworkName } from './frameworks/main.js'
+import { FRAMEWORKS } from './generated/frameworks.js'
 import { getPackageJsonContent } from './package.js'
 import { getPlugins } from './plugins.js'
 import { getRunScriptCommand } from './run_script.js'
+import type { Framework, FrameworkDefinition } from './types.js'
 
-const getContext = (context) => {
+const getContext = (context: Context) => {
   const { pathExists, packageJson, packageJsonPath = '.', nodeVersion } = context
+
   return { pathExists, packageJson, packageJsonPath, nodeVersion }
 }
 
 /**
- * @typedef {object} PollingStrategy
- * @property {'TCP'|'HTTP'} name - Name of the polling strategy. Possible names - TCP,HTTP
- */
-
-/**
- * A callback to check if a path exists
- * @callback PathExists
- * @param {string} path
- * @returns {Promise<boolean>}
- */
-
-/**
- * @typedef {object} Context
- * @property {PathExists} pathExists - Checks if a path exists
- * @property {object} packageJson - Content of package.json
- * @property {string} [packageJsonPath='.'] - Path of package.json
- * @property {nodeVersion} [nodeVersion] - Node.js version of the runtime environment. Used to recommend Netlify build plugins
- */
-
-/**
- * @typedef {object} Dev
- * @property {string} commands - Dev command. There might be several alternatives or empty
- * @property {number} port - Server port
- * @property {PollingStrategy[]} pollingStrategies - Dev Server polling strategies
- */
-
-/**
- * @typedef {object} Build
- * @property {string} commands - Build command. There might be several alternatives
- * @property {string} directory - Relative path to the directory where files are built
- */
-
-/**
- * @typedef {object} Framework
- * @property {string} id - framework id such as `"gatsby"`
- * @property {string} name - framework name such as `"Gatsby"`
- * @property {string} category - Category among `"static_site_generator"`, `"frontend_framework"` and `"build_tool"`
- * @property {Dev} dev - Information about the dev command
- * @property {Build} build - Information about the build command
- * @property {string} staticAssetsDirectory - Directory where the framework stores static assets. Can be `undefined`
- * @property {object} env - Environment variables that should be set when calling the dev command
- * @property {string[]} plugins - A list of recommend Netlify build plugins to install for the framework
- */
-
-/**
  * Return all the frameworks used by a project.
- *
- * @param  {Context} context - Context
- *
- * @returns {Promise<Framework[]>} frameworks - Frameworks used by a project
  */
-export const listFrameworks = async function (context) {
+export const listFrameworks = async function (context: Context): Promise<Framework[]> {
   const { pathExists, packageJson, packageJsonPath, nodeVersion } = getContext(context)
   const { npmDependencies, scripts, runScriptCommand } = await getProjectInfo({
     pathExists,
@@ -81,13 +36,8 @@ export const listFrameworks = async function (context) {
 
 /**
  * Return whether a project uses a specific framework
- *
- * @param {string} frameworkId - Id such as `"gatsby"`
- * @param  {Context} [context] - Context
- *
- * @returns {Promise<boolean>} result - Whether the project uses this framework
  */
-export const hasFramework = async function (frameworkId, context) {
+export const hasFramework = async function (frameworkId: FrameworkName, context: Context): Promise<boolean> {
   const framework = getFrameworkById(frameworkId)
   const { pathExists, packageJson, packageJsonPath } = getContext(context)
   const { npmDependencies } = await getProjectInfo({ pathExists, packageJson, packageJsonPath })
@@ -97,13 +47,8 @@ export const hasFramework = async function (frameworkId, context) {
 
 /**
  * Return some information about a framework used by a project.
- *
- * @param {string} frameworkId - Id such as `"gatsby"`
- * @param  {Context} [context] - Context
- *
- * @returns {Promise<Framework>} framework - Framework used by a project
  */
-export const getFramework = async function (frameworkId, context) {
+export const getFramework = async function (frameworkId: FrameworkName, context: Context): Promise<Framework> {
   const framework = getFrameworkById(frameworkId)
   const { pathExists, packageJson, packageJsonPath, nodeVersion } = getContext(context)
   const { scripts, runScriptCommand } = await getProjectInfo({
@@ -119,7 +64,8 @@ export const getFramework = async function (frameworkId, context) {
  * @param {string} frameworkId - Id such as `"gatsby"`
  * @returns
  */
-export const getFrameworkById = function (frameworkId) {
+
+export const getFrameworkById = function (frameworkId: FrameworkName): FrameworkDefinition {
   const framework = FRAMEWORKS.find(({ id }) => id === frameworkId)
   if (framework === undefined) {
     const frameworkIds = FRAMEWORKS.map((knownFramework) => getFrameworkId(knownFramework))
@@ -127,17 +73,24 @@ export const getFrameworkById = function (frameworkId) {
       .join(', ')
     throw new Error(`Invalid framework "${frameworkId}". It should be one of: ${frameworkIds}`)
   }
+
   return framework
 }
 
-const getFrameworkId = function ({ id }) {
+const getFrameworkId = function ({ id }: FrameworkDefinition): string {
   return id
 }
 
-const getProjectInfo = async function ({ pathExists, packageJson, packageJsonPath }) {
-  const { npmDependencies, scripts } = await getPackageJsonContent({
-    packageJson,
-  })
+const getProjectInfo = async function ({
+  pathExists,
+  packageJson,
+  packageJsonPath,
+}: {
+  pathExists: PathExists
+  packageJson: PackageJson | undefined
+  packageJsonPath: string
+}) {
+  const { npmDependencies, scripts } = getPackageJsonContent(packageJson)
   const runScriptCommand = await getRunScriptCommand({ pathExists, packageJsonPath })
   return { npmDependencies, scripts, runScriptCommand }
 }
@@ -154,11 +107,20 @@ const getFrameworkInfo = function (
     env,
     logo,
     plugins,
+  }: FrameworkDefinition,
+  {
+    scripts,
+    runScriptCommand,
+    nodeVersion,
+  }: {
+    scripts: Record<string, string>
+    runScriptCommand: string
+    nodeVersion: string
   },
-  { scripts, runScriptCommand, nodeVersion },
-) {
+): Framework {
   const devCommands = getDevCommands({ frameworkDevCommand, scripts, runScriptCommand })
   const recommendedPlugins = getPlugins(plugins, { nodeVersion })
+
   return {
     id,
     name,
