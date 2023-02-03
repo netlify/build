@@ -18,7 +18,7 @@ If you're looking for a way to run `framework-info` via CLI check the
 # Example (Node.js)
 
 ```js
-import { listFrameworks, hasFramework, getFramework } from '@netlify/framework-info'
+import { listFrameworks, hasFramework, getFramework, getFrameworkById } from '@netlify/framework-info'
 
 console.log(await listFrameworks({ projectDir: './path/to/gatsby/website' }))
 // [
@@ -65,6 +65,24 @@ console.log(await hasFramework('vue', { projectDir: './path/to/vue/website' }))
 // true
 
 console.log(await getFramework('vue', { projectDir: './path/to/vue/website' }))
+// {
+//   id: 'vue',
+//   name: 'Vue.js',
+//   category: 'frontend_framework',
+//   dev: {
+//     commands: ['npm run serve'],
+//     port: 8080,
+//     pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }]
+//   },
+//   build: {
+//     commands: ['vue-cli-service build'],
+//     directory: 'dist'
+//   },
+//   env: {},
+//   plugins: []
+// }
+
+console.log(getFrameworkById('vue'))
 // {
 //   id: 'vue',
 //   name: 'Vue.js',
