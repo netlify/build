@@ -138,6 +138,11 @@ const tExecBuild = async function ({
       if (!installed && !skip) {
         netlifyConfig.plugins.push({ package: runtime.package })
       }
+
+      // ignore plugin
+      if (installed && skip) {
+        return netlifyConfig.plugins.some((plugin) => plugin.package != runtime.package)
+      }
     }
   }
 
