@@ -2,7 +2,7 @@ import { NetlifyConfig } from '../../types/index.js'
 
 export type Mode = 'buildbot' | 'cli' | 'require'
 
-export type BuildCLIFlags = {
+export interface BuildCLIFlags {
   cachedConfig: Record<string, unknown>
   /** Netlify Site ID */
   siteId: string
@@ -35,7 +35,7 @@ export type BuildCLIFlags = {
   quiet?: boolean
 }
 
-export type BuildResult = {
+export interface BuildResult {
   success: boolean
   severityCode: SeverityCode
   netlifyConfig?: NetlifyConfig
@@ -51,12 +51,16 @@ export enum SeverityCode {
   systemError,
 }
 
-export type ErrorParam = {
+export interface TestOptions {
+  errorMonitor?: any
+}
+
+export interface ErrorParam {
   errorMonitor: any
   mode: Mode
   logs: string[]
   debug: any
-  testOpts?: any
+  testOpts?: TestOptions
   childEnv?: any
   netlifyConfig?: NetlifyConfig
 }

@@ -4,7 +4,7 @@ import { logFlags } from '../log/messages/config.js'
 import { removeFalsy } from '../utils/remove_falsy.js'
 
 import { DEFAULT_FEATURE_FLAGS } from './feature_flags.js'
-import { BuildCLIFlags, Mode } from './types.js'
+import type { BuildCLIFlags, Mode, TestOptions } from './types.js'
 
 const REQUIRE_MODE: Mode = 'require'
 const DEFAULT_EDGE_FUNCTIONS_DIST = '.netlify/edge-functions-dist/'
@@ -30,7 +30,7 @@ export type ResolvedFlags = {
   saveConfig: boolean
   /** Netlify API endpoint @default `api.netlify.com` */
   apiHost?: string
-  testOpts: Record<string, unknown>
+  testOpts: TestOptions
   statsd: { port: number }
   timeline: 'build' | string
   cachedConfig: Record<string, unknown>
