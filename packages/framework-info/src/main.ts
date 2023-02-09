@@ -5,7 +5,7 @@ import { findUp } from 'find-up'
 
 import { getContext, getPackageJson } from './context.js'
 import { listFrameworks as list, hasFramework as has, getFramework as get } from './core.js'
-import type { FrameworkName } from './frameworks/main.js'
+import type { FrameworkName } from './generated/frameworkNames.js'
 import type { Framework } from './types.js'
 
 interface Options {

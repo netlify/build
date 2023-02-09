@@ -1,4 +1,4 @@
-import type { FrameworkName } from './frameworks/main.js'
+import type { FrameworkName } from './generated/frameworkNames.js'
 
 interface PollingStrategy {
   name: 'HTTP' | 'TCP'

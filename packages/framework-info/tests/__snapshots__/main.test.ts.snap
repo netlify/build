@@ -129,43 +129,6 @@ exports[`getFrameworks > Should return the version of each framework when multip
   {
     "build": {
       "commands": [
-        "vue-cli-service build",
-      ],
-      "directory": "dist",
-    },
-    "category": "frontend_framework",
-    "dev": {
-      "commands": [
-        "vue-cli-service serve",
-      ],
-      "pollingStrategies": [
-        {
-          "name": "TCP",
-        },
-        {
-          "name": "HTTP",
-        },
-      ],
-      "port": 8080,
-    },
-    "env": {},
-    "id": "vue",
-    "logo": {
-      "dark": "https://framework-info.netlify.app/logos/vue/default.svg",
-      "default": "https://framework-info.netlify.app/logos/vue/default.svg",
-      "light": "https://framework-info.netlify.app/logos/vue/default.svg",
-    },
-    "name": "Vue.js",
-    "package": {
-      "name": "@vue/cli-service",
-      "version": "1.2.3",
-    },
-    "plugins": [],
-    "staticAssetsDirectory": undefined,
-  },
-  {
-    "build": {
-      "commands": [
         "vuepress build",
       ],
       "directory": ".vuepress/dist",
@@ -196,6 +159,43 @@ exports[`getFrameworks > Should return the version of each framework when multip
     "package": {
       "name": "vuepress",
       "version": "4.5.6",
+    },
+    "plugins": [],
+    "staticAssetsDirectory": undefined,
+  },
+  {
+    "build": {
+      "commands": [
+        "vue-cli-service build",
+      ],
+      "directory": "dist",
+    },
+    "category": "frontend_framework",
+    "dev": {
+      "commands": [
+        "vue-cli-service serve",
+      ],
+      "pollingStrategies": [
+        {
+          "name": "TCP",
+        },
+        {
+          "name": "HTTP",
+        },
+      ],
+      "port": 8080,
+    },
+    "env": {},
+    "id": "vue",
+    "logo": {
+      "dark": "https://framework-info.netlify.app/logos/vue/default.svg",
+      "default": "https://framework-info.netlify.app/logos/vue/default.svg",
+      "light": "https://framework-info.netlify.app/logos/vue/default.svg",
+    },
+    "name": "Vue.js",
+    "package": {
+      "name": "@vue/cli-service",
+      "version": "1.2.3",
     },
     "plugins": [],
     "staticAssetsDirectory": undefined,

@@ -19,6 +19,7 @@
     "build:browser": "run-s build:browser:*",
     "build:browser:core": "vite build",
     "build:browser:site-root": "cpy index.html ./dist",
+    "pretest": "run-s prebuild",
     "test": "vitest run",
     "test:dev": "vitest",
     "test:ci": "vitest run --reporter=default"
