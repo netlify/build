@@ -46,6 +46,13 @@
   * dependencies
     * netlify bumped from ^13.1.1 to ^13.1.2
 
+## [20.3.3](https://github.com/netlify/build/compare/config-v20.3.2...config-v20.3.3) (2023-02-09)
+
+
+### Bug Fixes
+
+* migrate framework-info to TS and vitest and enable more strictness ([#4819](https://github.com/netlify/build/issues/4819)) ([5acb25b](https://github.com/netlify/build/commit/5acb25b3e1e8cd6d5fa85fdb76baea5a34a1131b))
+
 ## [20.3.0](https://github.com/netlify/build/compare/config-v20.2.0...config-v20.3.0) (2023-01-03)
 
 
