@@ -1,6 +1,6 @@
 {
   "name": "@netlify/build",
-  "version": "29.5.4",
+  "version": "29.5.5",
   "description": "Netlify build module",
   "type": "module",
   "exports": "./lib/core/main.js",
@@ -64,10 +64,10 @@
   "license": "MIT",
   "dependencies": {
     "@bugsnag/js": "^7.0.0",
-    "@netlify/cache-utils": "^5.1.1",
-    "@netlify/config": "^20.3.2",
+    "@netlify/cache-utils": "^5.1.2",
+    "@netlify/config": "^20.3.3",
     "@netlify/edge-bundler": "8.4.0",
-    "@netlify/functions-utils": "^5.1.6",
+    "@netlify/functions-utils": "^5.1.7",
     "@netlify/git-utils": "^5.1.0",
     "@netlify/plugins-list": "^6.65.0",
     "@netlify/run-utils": "^5.1.0",
@@ -117,7 +117,7 @@
     "yargs": "^17.6.0"
   },
   "devDependencies": {
-    "@netlify/nock-udp": "^3.1.1",
+    "@netlify/nock-udp": "^3.1.2",
     "@types/node": "^14.18.31",
     "atob": "^2.1.2",
     "ava": "^4.0.0",

@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.1.7](https://github.com/netlify/build/compare/functions-utils-v5.1.6...functions-utils-v5.1.7) (2023-02-09)
+
+
+### Bug Fixes
+
+* migrate framework-info to TS and vitest and enable more strictness ([#4819](https://github.com/netlify/build/issues/4819)) ([5acb25b](https://github.com/netlify/build/commit/5acb25b3e1e8cd6d5fa85fdb76baea5a34a1131b))
+
 ## [5.1.6](https://github.com/netlify/build/compare/functions-utils-v5.1.5...functions-utils-v5.1.6) (2023-02-01)
 
 

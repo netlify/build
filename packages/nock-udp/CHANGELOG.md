@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.2](https://github.com/netlify/build/compare/nock-udp-v3.1.1...nock-udp-v3.1.2) (2023-02-09)
+
+
+### Bug Fixes
+
+* migrate framework-info to TS and vitest and enable more strictness ([#4819](https://github.com/netlify/build/issues/4819)) ([5acb25b](https://github.com/netlify/build/commit/5acb25b3e1e8cd6d5fa85fdb76baea5a34a1131b))
+
 ## [3.1.1](https://github.com/netlify/build/compare/nock-udp-v3.1.0...nock-udp-v3.1.1) (2023-01-18)
 
 

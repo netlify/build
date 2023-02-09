@@ -57,6 +57,26 @@
   * dependencies
     * @netlify/config bumped from ^20.0.1 to ^20.0.2
 
+## [29.5.5](https://github.com/netlify/build/compare/build-v29.5.4...build-v29.5.5) (2023-02-09)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.65.0 ([#4811](https://github.com/netlify/build/issues/4811)) ([67ec846](https://github.com/netlify/build/commit/67ec8460a65e3a7c4822c001502113caf72668b6))
+* migrate framework-info to TS and vitest and enable more strictness ([#4819](https://github.com/netlify/build/issues/4819)) ([5acb25b](https://github.com/netlify/build/commit/5acb25b3e1e8cd6d5fa85fdb76baea5a34a1131b))
+* remove update-notifier as unhelpful ([#4856](https://github.com/netlify/build/issues/4856)) ([418914d](https://github.com/netlify/build/commit/418914dddd7ddb888b5cd16a281df6bc1e856f68))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/cache-utils bumped from ^5.1.1 to ^5.1.2
+    * @netlify/config bumped from ^20.3.2 to ^20.3.3
+    * @netlify/functions-utils bumped from ^5.1.6 to ^5.1.7
+  * devDependencies
+    * @netlify/nock-udp bumped from ^3.1.1 to ^3.1.2
+
 ## [29.5.4](https://github.com/netlify/build/compare/build-v29.5.3...build-v29.5.4) (2023-02-01)
 
 
