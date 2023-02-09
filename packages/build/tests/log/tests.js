@@ -2,7 +2,6 @@ import { Fixture, normalizeOutput } from '@netlify/testing'
 import test from 'ava'
 import chalk from 'chalk'
 import hasAnsi from 'has-ansi'
-// import isCI from 'is-ci'
 
 test('Colors in parent process', async (t) => {
   const { output } = await new Fixture('./fixtures/parent')
@@ -32,20 +31,6 @@ test('No TTY', async (t) => {
     .runBuildBinary()
   t.false(hasAnsi(output))
 })
-
-// In GitHub actions, `update-notifier` is never enabled
-// @todo: uncomment after upgrading to Ava v4.
-// See https://github.com/netlify/build/issues/3615
-// if (!isCI) {
-//   test('Print a warning when using an old version through Netlify CLI', async (t) => {
-//     // We need to unset some environment variables which would otherwise disable `update-notifier`
-//     const { output } = await new Fixture('./fixtures/error')
-//       .withFlags({ mode: 'cli', testOpts: { oldCliLogs: true } })
-//       .withEnv({ NODE_ENV: '' })
-//       .runBuildBinary()
-//     t.snapshot(normalizeOutput(output))
-//   })
-// }
 
 test('Logs whether the build commands came from the UI', async (t) => {
   const output = await new Fixture('./fixtures/empty')

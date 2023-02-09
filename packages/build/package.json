@@ -113,7 +113,6 @@
     "tmp-promise": "^3.0.2",
     "ts-node": "^10.6.0",
     "typescript": "^4.8.4",
-    "update-notifier": "^5.0.0",
     "uuid": "^8.0.0",
     "yargs": "^17.6.0"
   },
@@ -132,7 +131,6 @@
     "get-port": "^6.0.0",
     "get-stream": "^6.0.0",
     "has-ansi": "^5.0.0",
-    "is-ci": "^3.0.0",
     "moize": "^6.0.0",
     "path-key": "^4.0.0",
     "process-exists": "^5.0.0",

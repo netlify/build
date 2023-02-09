@@ -4,7 +4,6 @@ import { pathExists } from 'path-exists'
 
 import { ErrorParam } from '../core/types.js'
 import { logBuildError } from '../log/messages/core.js'
-import { logOldCliVersionError } from '../log/old_version.js'
 
 import { removeErrorColors } from './colors.js'
 import { getErrorInfo } from './info.js'
@@ -14,7 +13,7 @@ import { parseErrorInfo } from './parse/parse.js'
 // Logs and reports a build failure
 export const handleBuildError = async function (
   error: Error,
-  { errorMonitor, netlifyConfig, childEnv, mode, logs, debug, testOpts }: ErrorParam,
+  { errorMonitor, netlifyConfig, childEnv, logs, debug, testOpts }: ErrorParam,
 ) {
   const basicErrorInfo = parseErrorInfo(error)
 
@@ -25,9 +24,8 @@ export const handleBuildError = async function (
   removeErrorColors(error)
   // Some errors, such as telemetry ones, should not be logged
   if (basicErrorInfo.showInBuildLog) {
-    logBuildError({ error, netlifyConfig, mode, logs, debug, testOpts })
+    logBuildError({ error, netlifyConfig, logs, debug })
   }
-  logOldCliVersionError({ mode, testOpts })
   await reportBuildError({ error, errorMonitor, childEnv, logs, testOpts })
 
   return basicErrorInfo
