@@ -191,3 +191,20 @@ test('Generates a manifest with layers', () => {
   expect(manifest2.routes).toEqual(expectedRoutes)
   expect(manifest2.layers).toEqual(layers)
 })
+
+test('Throws an error if the regular expression contains a negative lookahead', () => {
+  const functions = [{ name: 'func-1', path: '/path/to/func-1.ts' }]
+  const declarations = [{ function: 'func-1', pattern: '^/\\w+(?=\\d)$' }]
+
+  expect(() => generateManifest({ bundles: [], declarations, functions })).toThrowError(
+    /^Could not parse path declaration of function 'func-1': Regular expressions with lookaheads are not supported$/,
+  )
+})
+
+test('Converts named capture groups to unnamed capture groups in regular expressions', () => {
+  const functions = [{ name: 'func-1', path: '/path/to/func-1.ts' }]
+  const declarations = [{ function: 'func-1', pattern: '^/(?<name>\\w+)$' }]
+  const manifest = generateManifest({ bundles: [], declarations, functions })
+
+  expect(manifest.routes).toEqual([{ function: 'func-1', pattern: '^/(\\w+)$' }])
+})

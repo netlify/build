@@ -1,3 +1,5 @@
+import regexpAST from 'regexp-tree'
+
 import { FunctionConfig } from './config.js'
 import type { DeployConfig } from './deploy_config.js'
 
@@ -73,6 +75,37 @@ export const getDeclarationsFromConfig = (
   }
 
   return declarations
+}
+
+// Validates and normalizes a pattern so that it's a valid regular expression
+// in Go, which is the engine used by our edge nodes.
+export const parsePattern = (pattern: string) => {
+  // Escaping forward slashes with back slashes.
+  const normalizedPattern = pattern.replace(/\//g, '\\/')
+  const regex = regexpAST.transform(`/${normalizedPattern}/`, {
+    Assertion(path) {
+      // Lookaheads are not supported. If we find one, throw an error.
+      if (path.node.kind === 'Lookahead') {
+        throw new Error('Regular expressions with lookaheads are not supported')
+      }
+    },
+
+    Group(path) {
+      // Named captured groups in JavaScript use a different syntax than in Go.
+      // If we find one, convert it to an unnamed capture group, which is valid
+      // in both engines.
+      if ('name' in path.node && path.node.name !== undefined) {
+        path.replace({
+          ...path.node,
+          name: undefined,
+          nameRaw: undefined,
+        })
+      }
+    },
+  })
+
+  // Strip leading and forward slashes.
+  return regex.toString().slice(1, -1)
 }
 
 export { Declaration, DeclarationWithPath, DeclarationWithPattern }
