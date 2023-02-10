@@ -1,5 +1,12 @@
 # Changelog
 
+## [8.5.0](https://github.com/netlify/edge-bundler/compare/v8.4.0...v8.5.0) (2023-02-10)
+
+
+### Features
+
+* validate pattern declarations ([#298](https://github.com/netlify/edge-bundler/issues/298)) ([d8c44a3](https://github.com/netlify/edge-bundler/commit/d8c44a363a6794950bf4d50cb691f0d6e6808a53))
+
 ## [8.4.0](https://github.com/netlify/edge-bundler/compare/v8.3.0...v8.4.0) (2023-01-18)
 
 
