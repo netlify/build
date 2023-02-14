@@ -1,5 +1,17 @@
 # Changelog
 
+## [8.6.0](https://github.com/netlify/edge-bundler/compare/v8.5.0...v8.6.0) (2023-02-14)
+
+
+### Features
+
+* wrap regex validation in feature flag ([#302](https://github.com/netlify/edge-bundler/issues/302)) ([862994b](https://github.com/netlify/edge-bundler/commit/862994b3e6047b5a80d3fdc4c2663566a965cf5c))
+
+
+### Bug Fixes
+
+* migrate to Github Action's output files ([#300](https://github.com/netlify/edge-bundler/issues/300)) ([bf54378](https://github.com/netlify/edge-bundler/commit/bf54378dd05fd9ef4f3eda4a796a0b6cafc7fb4b))
+
 ## [8.5.0](https://github.com/netlify/edge-bundler/compare/v8.4.0...v8.5.0) (2023-02-10)
 
 
