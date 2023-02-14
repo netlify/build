@@ -13,6 +13,7 @@ export default defineConfig({
   testDir: './e2e',
   /* Maximum time one test can run for. */
   timeout: 30 * 1000,
+  testMatch: /.*e2e\.ts/,
   expect: {
     /**
      * Maximum time expect() should wait for the condition to be met.
