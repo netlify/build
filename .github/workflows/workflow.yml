@@ -19,6 +19,8 @@ jobs:
           echo "IS_RELEASE=true" >> $env:GITHUB_OUTPUT
         if: ${{ startsWith(github.head_ref, 'release-') }}
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
       - uses: actions/setup-node@v3
         with:
