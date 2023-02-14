@@ -1,7 +1,4 @@
-import { readFileSync } from 'fs'
-import { basename } from 'path'
-
-import { findUp, findUpMultiple } from 'find-up'
+import type { Project } from '../project.js'
 
 // the value of the enum should match the values that can be specified inside the `packageManager` field of a `package.json`
 export const enum PkgManager {
@@ -60,43 +57,42 @@ const lockFileMap = Object.values(AVAILABLE_PACKAGE_MANAGERS).reduce(
  * 1. packageManager field
  * 2. environment variable that forces the usage
  * 3. a lock file that is present in this directory or up in the tree for workspaces
- * @param cwd The current process working directory of the build
- * @param stopAt The repository root where it should stop looking up for package.json or lock files. (defaults to `path.parse(cwd).root`)
- * @returns The package manager that was detected
  */
-export const detectPackageManager = async (cwd?: string, stopAt?: string): Promise<PkgManagerFields> => {
-  const pkgPaths = await findUpMultiple('package.json', { cwd, stopAt })
-  for (const pkgPath of pkgPaths) {
-    const { packageManager } = JSON.parse(readFileSync(pkgPath, 'utf-8'))
-    if (packageManager) {
-      //
-      const [parsed] = packageManager.split('@')
-      if (AVAILABLE_PACKAGE_MANAGERS[parsed]) {
-        return AVAILABLE_PACKAGE_MANAGERS[parsed]
+export const detectPackageManager = async (project: Project): Promise<PkgManagerFields> => {
+  try {
+    const pkgPaths = await project.fs.findUpMultiple('package.json', { cwd: project.baseDirectory })
+    for (const pkgPath of pkgPaths) {
+      const { packageManager } = await project.fs.readJSON<Record<string, string>>(pkgPath)
+      if (packageManager) {
+        const [parsed] = packageManager.split('@')
+        if (AVAILABLE_PACKAGE_MANAGERS[parsed]) {
+          return AVAILABLE_PACKAGE_MANAGERS[parsed]
+        }
       }
     }
-  }
 
-  // the package manager can be enforced via an environment variable as well
-  for (const pkgManager of Object.values(AVAILABLE_PACKAGE_MANAGERS)) {
-    if (pkgManager.forceEnvironment && process.env[pkgManager.forceEnvironment] === 'true') {
-      return pkgManager
+    // the package manager can be enforced via an environment variable as well
+    for (const pkgManager of Object.values(AVAILABLE_PACKAGE_MANAGERS)) {
+      if (pkgManager.forceEnvironment && project.getEnv(pkgManager.forceEnvironment) === 'true') {
+        return pkgManager
+      }
     }
-  }
 
-  // find the correct lock file the tree up
-  const lockFilePath = await findUp(Object.keys(lockFileMap), { cwd, stopAt })
-  // if we found a lock file and the usage is not prohibited through an environment variable
-  // return the found package manager
-  if (lockFilePath) {
-    const lockFile = basename(lockFilePath)
-    const pkgManager = lockFileMap[lockFile]
-    // check if it not got disabled
-    if (!(pkgManager.forceEnvironment && process.env[pkgManager.forceEnvironment] === 'false')) {
-      return pkgManager
+    // find the correct lock file the tree up
+    const lockFilePath = await project.fs.findUp(Object.keys(lockFileMap), { cwd: project.baseDirectory })
+    // if we found a lock file and the usage is not prohibited through an environment variable
+    // return the found package manager
+    if (lockFilePath) {
+      const lockFile = project.fs.basename(lockFilePath)
+      const pkgManager = lockFileMap[lockFile]
+      // check if it not got disabled
+      if (!(pkgManager.forceEnvironment && project.getEnv(pkgManager.forceEnvironment) === 'false')) {
+        return pkgManager
+      }
     }
+  } catch {
+    // noop
   }
-
   // always default to npm
   // TODO: add some reporting here to log that we fall backed
   return AVAILABLE_PACKAGE_MANAGERS[PkgManager.NPM]
