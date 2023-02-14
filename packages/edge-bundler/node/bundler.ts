@@ -127,6 +127,7 @@ const bundle = async (
     bundles: [functionBundle],
     declarations,
     distDirectory,
+    featureFlags,
     functions,
     functionConfig: functionsWithConfig,
     importMap: importMapSpecifier,
