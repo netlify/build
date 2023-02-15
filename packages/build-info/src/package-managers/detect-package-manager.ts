@@ -60,7 +60,10 @@ const lockFileMap = Object.values(AVAILABLE_PACKAGE_MANAGERS).reduce(
  */
 export const detectPackageManager = async (project: Project): Promise<PkgManagerFields> => {
   try {
-    const pkgPaths = await project.fs.findUpMultiple('package.json', { cwd: project.baseDirectory })
+    const pkgPaths = await project.fs.findUpMultiple('package.json', {
+      cwd: project.baseDirectory,
+      stopAt: project.root,
+    })
     for (const pkgPath of pkgPaths) {
       const { packageManager } = await project.fs.readJSON<Record<string, string>>(pkgPath)
       if (packageManager) {
@@ -79,7 +82,10 @@ export const detectPackageManager = async (project: Project): Promise<PkgManager
     }
 
     // find the correct lock file the tree up
-    const lockFilePath = await project.fs.findUp(Object.keys(lockFileMap), { cwd: project.baseDirectory })
+    const lockFilePath = await project.fs.findUp(Object.keys(lockFileMap), {
+      cwd: project.baseDirectory,
+      stopAt: project.root,
+    })
     // if we found a lock file and the usage is not prohibited through an environment variable
     // return the found package manager
     if (lockFilePath) {

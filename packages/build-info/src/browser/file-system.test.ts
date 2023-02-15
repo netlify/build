@@ -72,7 +72,7 @@ describe('Test with a WebFS', () => {
   })
 
   test('should detect a build system with a baseDirectory by walking up the tree', async ({ fs }) => {
-    const project = new Project(fs, '/', 'packages/build-info')
+    const project = new Project(fs, 'packages/build-info')
     const tool = await project.detectBuildSystem()
     expect(tool[0].id).toBe('nx')
     expect(tool[0].version).toBe('^1.2.3')
@@ -84,7 +84,7 @@ describe('Test with a WebFS', () => {
   })
 
   test('should detect the package manager with a base directory set', async ({ fs }) => {
-    const project = new Project(fs, '/', 'packages/build-info')
+    const project = new Project(fs, '/packages/build-info', '/')
     expect(await detectPackageManager(project)).toMatchObject({ name: 'pnpm', installCommand: 'pnpm install' })
   })
 

@@ -56,7 +56,7 @@ describe.concurrent('Test with a WebFS', () => {
   })
 
   test('should detect a build system with a baseDirectory by walking up the tree', async ({ fs }) => {
-    const project = new Project(fs, '/', 'packages/build-info')
+    const project = new Project(fs, 'packages/build-info')
     const tool = await project.detectBuildSystem()
     expect(tool[0].id).toBe('nx')
     expect(tool[0].version).toBe('^1.2.3')
@@ -68,7 +68,7 @@ describe.concurrent('Test with a WebFS', () => {
   })
 
   test('should detect the package manager with a base directory set', async ({ fs }) => {
-    const project = new Project(fs, '/', 'packages/build-info')
+    const project = new Project(fs, '/packages/build-info')
     expect(await detectPackageManager(project)).toMatchObject({ name: 'pnpm', installCommand: 'pnpm install' })
   })
 })
@@ -132,12 +132,16 @@ describe.concurrent('Test findUp functionality', () => {
   })
 
   test('findUp', async ({ fs }) => {
-    expect(await fs.findUp('package.json', { cwd: 'packages/build-info' })).toBe('packages/build-info/package.json')
+    expect(await fs.findUp('package.json', { cwd: 'packages/build-info' })).toBe('/packages/build-info/package.json')
     expect(await fs.findUp('package.json', { cwd: '/packages/build-info' })).toBe('/packages/build-info/package.json')
-    expect(await fs.findUp('package.json', { cwd: 'packages' })).toBe('package.json')
+    expect(await fs.findUp('package.json', { cwd: 'packages' })).toBe('/package.json')
     expect(await fs.findUp('package.json', { cwd: '/packages' })).toBe('/package.json')
     expect(await fs.findUp('package.json', { cwd: '/' })).toBe('/package.json')
     expect(await fs.findUp('build-info', { cwd: '/packages', type: 'directory' })).toBe('/packages/build-info')
+    expect(await fs.findUp('nx.json', { cwd: 'packages/build-info' })).toBe('/nx.json')
+    // should not find a file as we have the stopAt parameter
+    expect(await fs.findUp('nx.json', { cwd: 'packages/build-info', stopAt: 'packages' })).toBeUndefined()
+    expect(await fs.findUp('nx.json', { cwd: 'packages/build-info', stopAt: '/packages' })).toBeUndefined()
   })
 
   test('findUpMultiple', async ({ fs }) => {
@@ -154,5 +158,10 @@ describe.concurrent('Test findUp functionality', () => {
     expect(await fs.findUpMultiple('build-info', { cwd: '/packages', type: 'directory' })).toMatchObject([
       '/packages/build-info',
     ])
+    expect(await fs.findUpMultiple('nx.json', { cwd: 'packages/build-info' })).toHaveLength(1)
+    expect(await fs.findUpMultiple('nx.json', { cwd: 'packages/build-info' })).toMatchObject(['/nx.json'])
+    // should not find a file as we have the stopAt parameter
+    expect(await fs.findUpMultiple('nx.json', { cwd: 'packages/build-info', stopAt: 'packages' })).toHaveLength(0)
+    expect(await fs.findUpMultiple('nx.json', { cwd: 'packages/build-info', stopAt: '/packages' })).toHaveLength(0)
   })
 })

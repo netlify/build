@@ -8,7 +8,11 @@ export class Moon extends BaseBuildTool {
   configFiles = ['.moon']
 
   async detect(project: Project) {
-    const config = await project.fs.findUp(this.configFiles, { cwd: project.baseDirectory, type: 'directory' })
+    const config = await project.fs.findUp(this.configFiles, {
+      cwd: project.baseDirectory,
+      type: 'directory',
+      stopAt: project.root,
+    })
 
     if (config) {
       const pkgJson = await project.getPackageJSON(config)

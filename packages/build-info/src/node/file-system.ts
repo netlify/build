@@ -6,6 +6,11 @@ import { findUp, findUpMultiple } from 'find-up'
 import { DirType, FileSystem, findUpOptions } from '../file-system.js'
 
 export class NodeFS extends FileSystem {
+  constructor() {
+    super()
+    this.cwd = process.cwd()
+  }
+
   isAbsolute(path: string): boolean {
     return isAbsolute(path)
   }

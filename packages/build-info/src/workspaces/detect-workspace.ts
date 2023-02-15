@@ -20,7 +20,10 @@ export type WorkspaceInfo = {
  * https://pnpm.io/pnpm-workspace_yaml
  */
 export async function detectPnpmWorkspaceGlobs(project: Project): Promise<string[]> {
-  const workspaceFile = await project.fs.findUp('pnpm-workspace.yaml', { cwd: project.baseDirectory })
+  const workspaceFile = await project.fs.findUp('pnpm-workspace.yaml', {
+    cwd: project.baseDirectory,
+    stopAt: project.root,
+  })
   if (!workspaceFile) {
     return []
   }
@@ -49,7 +52,6 @@ export async function detectWorkspaces(project: Project): Promise<WorkspaceInfo 
     throw new Error('Please run the packageManager detection before calling the workspace detection!')
   }
   const pkgJSON = await project.getRootPackageJSON()
-
   const workspaceGlobs =
     project.packageManager.name === PkgManager.PNPM
       ? await detectPnpmWorkspaceGlobs(project)
@@ -59,9 +61,17 @@ export async function detectWorkspaces(project: Project): Promise<WorkspaceInfo 
     return
   }
 
+  const packages = await getWorkspacePackages(project, workspaceGlobs)
+  const isRoot = project.baseDirectory === project.jsWorkspaceRoot
+  // if the current base directory is not part of the detected workspace packages it's not part of this workspace
+  // and therefore return no workspace info
+  if (!isRoot && !packages.includes(project.baseDirectory)) {
+    return
+  }
+
   return {
-    isRoot: project.baseDirectory === project.jsWorkspaceRoot,
     rootDir: project.jsWorkspaceRoot,
-    packages: await getWorkspacePackages(project, workspaceGlobs),
+    isRoot,
+    packages,
   }
 }

@@ -27,7 +27,8 @@ async function findPackages(project: Project, dir: string, depth?: string) {
   const found: string[] = []
   let content: Record<string, DirType> = {}
   try {
-    content = await project.fs.readDir(dir, true)
+    const startDir = project.root ? project.fs.resolve(project.root, dir) : project.fs.resolve(dir)
+    content = await project.fs.readDir(startDir, true)
   } catch (err) {
     // noop
   }
@@ -69,9 +70,9 @@ export async function getWorkspacePackages(project: Project, patterns: string[])
     for (const pattern of patterns) {
       const matcher = new Minimatch(pattern)
       if (minimatch(result, matcher.pattern)) {
-        filtered.add(project.fs.resolve(result))
+        filtered.add(project.fs.resolve(project.jsWorkspaceRoot || '', result))
         if (matcher.negate) {
-          filtered.delete(project.fs.resolve(result))
+          filtered.delete(project.fs.resolve(project.jsWorkspaceRoot || '', result))
         }
       }
     }

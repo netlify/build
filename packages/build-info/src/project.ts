@@ -6,15 +6,14 @@ import type { FileSystem } from './file-system.js'
 import { detectPackageManager } from './package-managers/detect-package-manager.js'
 import type { PkgManagerFields } from './package-managers/detect-package-manager.js'
 import { detectWorkspaces } from './workspaces/detect-workspace.js'
-
 /**
  * The Project represents a Site in Netlify
  * The only configuration here needed is the path to the repository root and the optional baseDirectory
  */
 export class Project {
-  /** an absolute path of the repository root */
-  root: string
-  /** an absolute path of the base directory. Can be the same as the repository root if not set */
+  /** An optional repository root that tells us where to stop looking up */
+  root?: string
+  /** An absolute path  */
   baseDirectory: string
   packageManager: PkgManagerFields
   /** an absolute path of the root directory for js workspaces where the most top package.json is located */
@@ -22,14 +21,14 @@ export class Project {
   /** a representation of the current environment */
   #environment: Record<string, string | undefined> = {}
 
-  constructor(public fs: FileSystem, root: string, baseDirectory?: string) {
-    this.root = fs.resolve(root)
+  constructor(public fs: FileSystem, baseDirectory?: string, root?: string) {
+    this.baseDirectory = fs.resolve(root || '', baseDirectory !== undefined ? baseDirectory : fs.cwd)
+    this.root = root ? fs.resolve(fs.cwd, root) : undefined
 
-    this.baseDirectory = baseDirectory
-      ? fs.isAbsolute(baseDirectory)
-        ? baseDirectory
-        : fs.join(root, baseDirectory)
-      : root
+    // if the root and the base directory are the same unset the root again as its not a workspace
+    if (this.root === this.baseDirectory) {
+      this.root = undefined
+    }
 
     this.fs.cwd = this.baseDirectory
   }
@@ -48,7 +47,9 @@ export class Project {
   /** retrieves the root package.json file */
   async getRootPackageJSON(): Promise<PackageJson> {
     // get the most upper json file
-    const rootJSONPath = (await this.fs.findUpMultiple('package.json', { cwd: this.baseDirectory })).pop()
+    const rootJSONPath = (
+      await this.fs.findUpMultiple('package.json', { cwd: this.baseDirectory, stopAt: this.root })
+    ).pop()
     if (rootJSONPath) {
       this.jsWorkspaceRoot = this.fs.dirname(rootJSONPath)
       return this.fs.readJSON<PackageJson>(rootJSONPath)
@@ -57,7 +58,10 @@ export class Project {
   }
 
   async getPackageJSON(startDirectory?: string): Promise<PackageJson> {
-    const pkgPath = await this.fs.findUp('package.json', { cwd: startDirectory || this.baseDirectory })
+    const pkgPath = await this.fs.findUp('package.json', {
+      cwd: startDirectory || this.baseDirectory,
+      stopAt: this.root,
+    })
     if (pkgPath) {
       return this.fs.readJSON<PackageJson>(pkgPath)
     }

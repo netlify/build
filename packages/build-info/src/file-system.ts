@@ -37,6 +37,7 @@ export type File = TextFile | JSONFile | TOMLFile
 export type findUpOptions = {
   cwd?: string
   type?: DirType
+  stopAt?: string
 }
 
 export abstract class FileSystem {
@@ -162,7 +163,7 @@ export abstract class FileSystem {
 
   /** Find a file or directory by walking up parent directories. */
   async findUp(name: string | readonly string[], options: findUpOptions = {}): Promise<string | undefined> {
-    let startDir = options.cwd || this.cwd
+    let startDir = this.resolve(options.cwd || this.cwd)
 
     // function for a recursive call
     const readUp = async (): Promise<string | undefined> => {
@@ -183,7 +184,7 @@ export abstract class FileSystem {
         return this.join(startDir, found[0])
       }
 
-      if (startDir === '/') {
+      if (startDir === '/' || (options.stopAt && this.resolve(options.stopAt) === startDir)) {
         return
       }
 
@@ -197,7 +198,7 @@ export abstract class FileSystem {
 
   /** Find files or directories by walking up parent directories. */
   async findUpMultiple(name: string | readonly string[], options: findUpOptions = {}): Promise<string[]> {
-    let startDir = options.cwd || this.cwd
+    let startDir = this.resolve(options.cwd || this.cwd)
     const found: string[] = []
 
     // function for a recursive call
@@ -211,7 +212,7 @@ export abstract class FileSystem {
         }
       }
 
-      if (startDir === '/') {
+      if (startDir === '/' || (options.stopAt && this.resolve(options.stopAt) === startDir)) {
         return found
       }
 

@@ -10,7 +10,7 @@ beforeEach((ctx) => {
   ctx.fs = new NodeFS()
 })
 
-test.concurrent('detects bazel when .bazelrc is present', async ({ fs }) => {
+test('detects bazel when .bazelrc is present', async ({ fs }) => {
   const cwd = mockFileSystem({
     '.bazelrc': '',
   })
@@ -19,7 +19,7 @@ test.concurrent('detects bazel when .bazelrc is present', async ({ fs }) => {
   expect(detected[0]?.name).toBe('Bazel')
 })
 
-test.concurrent('detects bazel when BUILD.bazel is present', async ({ fs }) => {
+test('detects bazel when BUILD.bazel is present', async ({ fs }) => {
   const cwd = mockFileSystem({
     'BUILD.bazel': '',
   })
@@ -27,17 +27,17 @@ test.concurrent('detects bazel when BUILD.bazel is present', async ({ fs }) => {
   expect(detected[0]?.name).toBe('Bazel')
 })
 
-test.concurrent('detects bazel when BUILD.bazel is nested', async ({ fs }) => {
+test('detects bazel when BUILD.bazel is nested', async ({ fs }) => {
   const cwd = mockFileSystem({
     'BUILD.bazel': '',
     'other/test': '',
   })
-  const detected = await new Project(fs, join(cwd, 'other')).detectBuildSystem()
+  const detected = await new Project(fs, join(cwd, 'other'), cwd).detectBuildSystem()
 
   expect(detected[0]?.name).toBe('Bazel')
 })
 
-test.concurrent('detects bazel when WORKSPACE is present', async ({ fs }) => {
+test('detects bazel when WORKSPACE is present', async ({ fs }) => {
   const cwd = mockFileSystem({
     WORKSPACE: '',
   })

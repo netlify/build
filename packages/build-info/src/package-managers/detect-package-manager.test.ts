@@ -105,7 +105,7 @@ describe('workspaces package manager detection', () => {
       'pnpm-lock.yaml': '',
       'packages/astro-blog/package.json': '{}',
     })
-    const project = new Project(fs, join(cwd, 'packages/astro-blog'))
+    const project = new Project(fs, join(cwd, 'packages/astro-blog'), cwd)
     const { name } = await detectPackageManager(project)
     expect(name).toBe('pnpm')
   })
@@ -116,7 +116,7 @@ describe('workspaces package manager detection', () => {
       'packages/astro-blog/package.json': '{}',
       'yarn.lock': '',
     })
-    const project = new Project(fs, join(cwd, 'packages/astro-blog'))
+    const project = new Project(fs, join(cwd, 'packages/astro-blog'), cwd)
     const { name } = await detectPackageManager(project)
     expect(name).toBe('yarn')
   })

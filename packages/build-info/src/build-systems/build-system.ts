@@ -15,7 +15,7 @@ export abstract class BaseBuildTool implements BuildSystem {
   configFiles: string[] = []
 
   async detect(project: Project) {
-    const config = await project.fs.findUp(this.configFiles, { cwd: project.baseDirectory })
+    const config = await project.fs.findUp(this.configFiles, { cwd: project.baseDirectory, stopAt: project.root })
 
     if (config) {
       const pkgJson = await project.getPackageJSON(project.fs.dirname(config))
