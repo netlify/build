@@ -1,4 +1,6 @@
+import { Response } from 'node-fetch'
 import { beforeEach, describe, expect, test, vi } from 'vitest'
+// Once we only support node18 we can remove node-fetch
 
 import { GithubProvider, WebFS } from './browser/file-system.js'
 import { detectPackageManager } from './package-managers/detect-package-manager.js'
