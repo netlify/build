@@ -52,6 +52,31 @@ test('Generates a manifest with display names', () => {
   expect(manifest.bundler_version).toBe(env.npm_package_version as string)
 })
 
+test('Generates a manifest with a generator field', () => {
+  const functions = [
+    { name: 'func-1', path: '/path/to/func-1.ts' },
+    { name: 'func-2', path: '/path/to/func-2.ts' },
+    { name: 'func-3', path: '/path/to/func-3.ts' },
+  ]
+
+  const declarations = [
+    { function: 'func-1', generator: '@netlify/fake-plugin@1.0.0', path: '/f1/*' },
+    { function: 'func-2', path: '/f2/*' },
+    { function: 'func-3', generator: '@netlify/fake-plugin@1.0.0', cache: 'manual', path: '/f3' },
+  ]
+  const manifest = generateManifest({ bundles: [], declarations, functions })
+
+  const expectedRoutes = [
+    { function: 'func-1', generator: '@netlify/fake-plugin@1.0.0', pattern: '^/f1/.*/?$' },
+    { function: 'func-2', pattern: '^/f2/.*/?$' },
+  ]
+  const expectedPostCacheRoutes = [{ function: 'func-3', generator: '@netlify/fake-plugin@1.0.0', pattern: '^/f3/?$' }]
+
+  expect(manifest.routes).toEqual(expectedRoutes)
+  expect(manifest.post_cache_routes).toEqual(expectedPostCacheRoutes)
+  expect(manifest.bundler_version).toBe(env.npm_package_version as string)
+})
+
 test('Generates a manifest with excluded paths and patterns', () => {
   const functions = [
     { name: 'func-1', path: '/path/to/func-1.ts' },

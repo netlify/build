@@ -17,6 +17,7 @@ interface Route {
   function: string
   name?: string
   pattern: string
+  generator?: string
 }
 interface EdgeFunctionConfig {
   excluded_patterns: string[]
@@ -47,6 +48,7 @@ interface Route {
   function: string
   name?: string
   pattern: string
+  generator?: string
 }
 
 // JavaScript regular expressions are converted to strings with leading and
@@ -103,6 +105,7 @@ const generateManifest = ({
       function: func.name,
       name: declaration.name,
       pattern: serializePattern(pattern),
+      generator: declaration.generator,
     }
     const excludedPattern = getExcludedRegularExpression(
       declaration,

@@ -7,6 +7,7 @@ interface BaseDeclaration {
   cache?: string
   function: string
   name?: string
+  generator?: string
 }
 
 type DeclarationWithPath = BaseDeclaration & {
