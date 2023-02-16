@@ -1,5 +1,3 @@
-import { join } from 'path'
-
 import { beforeEach, expect, test } from 'vitest'
 
 import { mockFileSystem } from '../../tests/mock-file-system.js'
