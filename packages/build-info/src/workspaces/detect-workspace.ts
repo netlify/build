@@ -63,9 +63,10 @@ export async function detectWorkspaces(project: Project): Promise<WorkspaceInfo 
 
   const packages = await getWorkspacePackages(project, workspaceGlobs)
   const isRoot = project.baseDirectory === project.jsWorkspaceRoot
+  const relBaseDirectory = project.fs.relative(project.jsWorkspaceRoot, project.baseDirectory)
   // if the current base directory is not part of the detected workspace packages it's not part of this workspace
   // and therefore return no workspace info
-  if (!isRoot && !packages.includes(project.baseDirectory)) {
+  if (!isRoot && !packages.includes(relBaseDirectory)) {
     return
   }
 

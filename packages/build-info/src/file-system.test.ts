@@ -1,3 +1,5 @@
+import { relative } from 'path'
+
 import { Response } from 'node-fetch'
 import { beforeEach, describe, expect, test, vi } from 'vitest'
 // Once we only support node18 we can remove node-fetch
@@ -7,7 +9,7 @@ import { detectPackageManager } from './package-managers/detect-package-manager.
 import { Project } from './project.js'
 
 // This is a mock for the github api functionality to have consistent tests and no rate limiting
-global.fetch = vi.fn(async (url) => {
+global.fetch = vi.fn(async (url): Promise<any> => {
   switch (url) {
     case 'https://api.github.com/repos/netlify/build/contents/?ref=main':
       return new Response(
@@ -125,6 +127,40 @@ describe.concurrent('Test the platform independent base functionality', () => {
     expect(fs.dirname('filename.txt')).toBe('')
     expect(fs.dirname('/filename.txt')).toBe('/')
     expect(fs.dirname('/')).toBe('/')
+  })
+
+  test('relative should return the relative path between two paths', ({ fs }) => {
+    // always do a double test of the real path.relative and the independent implementation
+    fs.cwd = '/'
+    vi.spyOn(process, 'cwd').mockImplementation(() => '/')
+    expect(fs.relative('/a/b/c', '/a/b/c/d/e')).toBe('d/e')
+    expect(relative('/a/b/c', '/a/b/c/d/e')).toBe('d/e')
+
+    fs.cwd = '/x'
+    vi.spyOn(process, 'cwd').mockImplementation(() => '/x')
+    expect(fs.relative('/a/b/c', '/a/b/c/d/e')).toBe('d/e')
+    expect(relative('/a/b/c', '/a/b/c/d/e')).toBe('d/e')
+    expect(fs.relative('/a/b/c/d/e', '/a/b/c')).toBe('../..')
+    expect(relative('/a/b/c/d/e', '/a/b/c')).toBe('../..')
+
+    fs.cwd = '/a/b'
+    vi.spyOn(process, 'cwd').mockImplementation(() => '/a/b')
+    expect(fs.relative('c', 'e')).toBe('../e')
+    expect(relative('c', 'e')).toBe('../e')
+    expect(fs.relative('a.txt', 'b.txt')).toBe('../b.txt')
+    expect(relative('a.txt', 'b.txt')).toBe('../b.txt')
+    expect(fs.relative('', '')).toBe('')
+    expect(relative('', '')).toBe('')
+    expect(fs.relative('apps/web', 'apps/index.html')).toBe('../index.html')
+    expect(relative('apps/web', 'apps/index.html')).toBe('../index.html')
+    expect(fs.relative('apps/a/b/c/d', 'apps/index.html')).toBe('../../../../index.html')
+    expect(relative('apps/a/b/c/d', 'apps/index.html')).toBe('../../../../index.html')
+    expect(fs.relative('d', '/a/b/c')).toBe('../c')
+    expect(relative('d', '/a/b/c')).toBe('../c')
+    expect(fs.relative('c', '/a/b/c')).toBe('')
+    expect(relative('c', '/a/b/c')).toBe('')
+    expect(fs.relative('c/d', '/a/b/c')).toBe('..')
+    expect(relative('c/d', '/a/b/c')).toBe('..')
   })
 })
 

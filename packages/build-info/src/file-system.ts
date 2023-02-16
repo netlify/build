@@ -1,4 +1,10 @@
-class DefaultLogger {
+export interface Logger {
+  debug(...any: any[]): void
+  log(...any: any[]): void
+  error(...any: any[]): void
+}
+
+class DefaultLogger implements Logger {
   debug(...data: any[]) {
     // TODO: add reporting
     console.debug(...data)
@@ -11,18 +17,6 @@ class DefaultLogger {
   error(...data: any[]) {
     // TODO: on error add reporting
     console.error(...data)
-  }
-}
-
-export class NoopLogger {
-  debug() {
-    /** noop */
-  }
-  log() {
-    /** noop */
-  }
-  error() {
-    /** noop */
   }
 }
 
@@ -41,7 +35,7 @@ export type findUpOptions = {
 }
 
 export abstract class FileSystem {
-  logger = new DefaultLogger()
+  logger: Logger = new DefaultLogger()
 
   /**
    * This is a in memory representation of the parsed files
@@ -69,6 +63,46 @@ export abstract class FileSystem {
   /** returns the last portion of a path */
   basename(path: string): string {
     return this.join(path).split('/').pop() || ''
+  }
+
+  /** returns the relative path from to based on the current working directory */
+  relative(from: string, to: string): string {
+    const absoluteFrom = this.isAbsolute(from) ? from : this.join(this.cwd, from)
+    const absoluteTo = this.isAbsolute(to) ? to : this.join(this.cwd, to)
+
+    // if the paths are equal return an empty string
+    if (absoluteFrom === absoluteTo) {
+      return ''
+    }
+
+    const matching: string[] = []
+
+    // split by / excluding the starting slash
+    const fromParts = this.join(absoluteFrom).split(/(?<!^)\//gm)
+    const toParts = this.join(absoluteTo).split(/(?<!^)\//gm)
+    for (let i = 0, max = toParts.length; i < max; i++) {
+      if (toParts[i] === fromParts?.[i]) {
+        matching.push(toParts[i])
+      } else {
+        break
+      }
+    }
+
+    // calculate how many dirs we need to go up from the to path
+    const toUp = toParts.length - matching.length
+    const fromUp = fromParts.length - matching.length
+    // the max we have to go up
+    const up = Math.max(toUp, fromUp)
+
+    // if we have something from the 'from' to go up go up the max difference
+    const result = fromUp > 0 ? [...new Array<string>(up).fill('..')] : []
+
+    // if we have some parts left add them to the going up
+    if (toUp > 0) {
+      result.push(...toParts.slice(-toUp))
+    }
+
+    return result.join('/')
   }
 
   /** returns the directory name of a path */

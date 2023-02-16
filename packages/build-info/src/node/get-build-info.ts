@@ -1,6 +1,6 @@
 import { listFrameworks } from '@netlify/framework-info'
 
-import { NoopLogger } from '../file-system.js'
+import { Logger } from '../file-system.js'
 import { PkgManagerFields } from '../package-managers/detect-package-manager.js'
 import { Project } from '../project.js'
 import { WorkspaceInfo } from '../workspaces/detect-workspace.js'
@@ -15,6 +15,19 @@ export type Info = {
     name: string
     version?: string | undefined
   }[]
+}
+
+/** A noop logger that is used to not log anything (we use the stdout for parsing the json output) */
+export class NoopLogger implements Logger {
+  debug() {
+    /** noop */
+  }
+  log() {
+    /** noop */
+  }
+  error() {
+    /** noop */
+  }
 }
 
 /** Get the build info object that is used inside buildbot */

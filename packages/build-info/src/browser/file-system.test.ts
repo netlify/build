@@ -9,7 +9,7 @@ import { getWorkspacePackages } from '../workspaces/get-workspace-packages.js'
 import { GithubProvider, WebFS } from './file-system.js'
 
 // This is a mock for the github api functionality to have consistent tests and no rate limiting
-global.fetch = vi.fn(async (url) => {
+global.fetch = vi.fn(async (url): Promise<any> => {
   switch (url) {
     case 'https://api.github.com/repos/netlify/build/contents/?ref=main':
       return new Response(
@@ -93,6 +93,6 @@ describe('Test with a WebFS', () => {
   test('should get a list of all workspace packages', async ({ fs }) => {
     expect(
       await getWorkspacePackages(new Project(fs, '/'), ['tools', 'packages/*', '!packages/build-info']),
-    ).toMatchObject(['/tools', '/packages/build', '/packages/config'])
+    ).toMatchObject(['tools', 'packages/build', 'packages/config'])
   })
 })
