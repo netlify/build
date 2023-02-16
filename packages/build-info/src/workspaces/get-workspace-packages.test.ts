@@ -23,7 +23,7 @@ test('should map explicit directories', async ({ fs }) => {
 
   expect(
     await getWorkspacePackages(new Project(fs, cwd), ['apps/a', 'apps/b', '!apps/c', 'not-existing/*']),
-  ).toMatchObject([join('apps/a'), join('apps/b')])
+  ).toMatchObject(['apps/a', 'apps/b'])
 })
 
 test('should map a single star glob correctly', async ({ fs }) => {
@@ -35,11 +35,7 @@ test('should map a single star glob correctly', async ({ fs }) => {
     'apps/b/package.json': '',
     'apps/c/package.json': '',
   })
-  expect(await getWorkspacePackages(new Project(fs, cwd), ['apps/*'])).toMatchObject([
-    join('apps/a'),
-    join('apps/b'),
-    join('apps/c'),
-  ])
+  expect(await getWorkspacePackages(new Project(fs, cwd), ['apps/*'])).toMatchObject(['apps/a', 'apps/b', 'apps/c'])
 })
 
 test('should match deep packages with a globstar expression', async ({ fs }) => {
@@ -55,8 +51,8 @@ test('should match deep packages with a globstar expression', async ({ fs }) => 
     'test',
   )
   expect(await getWorkspacePackages(new Project(fs, cwd), ['apps/deep/**', '!apps/deep/a'])).toMatchObject([
-    join('apps/deep/b'),
-    join('apps/deep/c'),
+    'apps/deep/b',
+    'apps/deep/c',
   ])
 })
 
@@ -81,12 +77,12 @@ test('should map the project paths correctly', async ({ fs }) => {
   expect(
     await getWorkspacePackages(new Project(fs, cwd), ['tools', 'packages/*', '!packages/b', 'apps/**', '!apps/b']),
   ).toMatchObject([
-    join('tools'),
-    join('packages/a'),
-    join('apps/a'),
-    join('apps/c'),
-    join('apps/deep/d'),
-    join('apps/deep/deeper/e'),
-    join('apps/deep/deeper/f'),
+    'tools',
+    'packages/a',
+    'apps/a',
+    'apps/c',
+    'apps/deep/d',
+    'apps/deep/deeper/e',
+    'apps/deep/deeper/f',
   ])
 })
