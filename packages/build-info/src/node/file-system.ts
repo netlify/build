@@ -1,5 +1,5 @@
 import { promises as fs } from 'fs'
-import { isAbsolute, relative, resolve } from 'path'
+import { basename, dirname, isAbsolute, join, relative, resolve } from 'path'
 
 import { findUp, findUpMultiple } from 'find-up'
 
@@ -15,12 +15,24 @@ export class NodeFS extends FileSystem {
     return isAbsolute(path)
   }
 
+  dirname(path: string): string {
+    return dirname(path)
+  }
+
   resolve(...paths: string[]): string {
     return resolve(...paths)
   }
 
   relative(from: string, to: string): string {
     return relative(from, to)
+  }
+
+  basename(path: string): string {
+    return basename(path)
+  }
+
+  join(...segments: string[]): string {
+    return join(...segments)
   }
 
   async fileExists(path: string) {

@@ -70,9 +70,9 @@ export async function getWorkspacePackages(project: Project, patterns: string[])
     for (const pattern of patterns) {
       const matcher = new Minimatch(pattern)
       if (minimatch(result, matcher.pattern)) {
-        filtered.add(result)
+        filtered.add(project.fs.join(result))
         if (matcher.negate) {
-          filtered.delete(result)
+          filtered.delete(project.fs.join(result))
         }
       }
     }
