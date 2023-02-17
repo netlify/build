@@ -16,6 +16,7 @@ const getBaseManifest = (): Record<string, any> => ({
       name: 'name',
       function: 'hello',
       pattern: '^/hello/?$',
+      generator: '@netlify/fake-plugin@1.0.0',
     },
   ],
   post_cache_routes: [
@@ -23,6 +24,7 @@ const getBaseManifest = (): Record<string, any> => ({
       name: 'name',
       function: 'hello',
       pattern: '^/hello/?$',
+      generator: '@netlify/fake-plugin@1.0.0',
     },
   ],
   layers: [

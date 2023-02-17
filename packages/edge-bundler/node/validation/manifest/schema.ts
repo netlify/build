@@ -20,6 +20,7 @@ const routesSchema = {
       errorMessage:
         'pattern needs to be a regex that starts with ^ and ends with $ without any additional slashes before and afterwards',
     },
+    generator: { type: 'string' },
   },
   additionalProperties: false,
 }
