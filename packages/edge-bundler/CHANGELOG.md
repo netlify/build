@@ -1,5 +1,12 @@
 # Changelog
 
+## [8.7.0](https://github.com/netlify/edge-bundler/compare/v8.6.0...v8.7.0) (2023-02-17)
+
+
+### Features
+
+* add generator field to edge function manifest ([#304](https://github.com/netlify/edge-bundler/issues/304)) ([5a59fcc](https://github.com/netlify/edge-bundler/commit/5a59fcca588ec77a9613047943601a2641b4fc88))
+
 ## [8.6.0](https://github.com/netlify/edge-bundler/compare/v8.5.0...v8.6.0) (2023-02-14)
 
 
