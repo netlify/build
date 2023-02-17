@@ -1,6 +1,7 @@
 import { join, resolve } from 'path'
 import { cwd } from 'process'
 
+import { parse } from 'semver'
 import { afterEach, beforeEach, describe, expect, test } from 'vitest'
 
 import { createFixture } from '../tests/helpers.js'
@@ -13,6 +14,35 @@ beforeEach((ctx) => {
 })
 
 afterEach(async ({ cleanup }) => await cleanup?.())
+
+describe.concurrent('Setting the node.js version', () => {
+  test('should set the node version correctly by passing the process.version', async ({ fs }) => {
+    const project = new Project(fs)
+    expect(await project.getCurrentNodeVersion()).toBeNull()
+    await project.setNodeVersion('v18.0.1')
+    expect(await project.getCurrentNodeVersion()).toMatchObject({ major: 18, minor: 0, patch: 1 })
+  })
+
+  test('should set the node version correctly through an exact environment variable', async ({ fs }) => {
+    const project = new Project(fs).setEnvironment({ NODE_VERSION: '18.1.2' })
+    expect(await project.getCurrentNodeVersion()).toMatchObject({ major: 18, minor: 1, patch: 2 })
+  })
+
+  test('process node version should override environment variable', async ({ fs }) => {
+    const project = new Project(fs).setNodeVersion(process.version).setEnvironment({ NODE_VERSION: '1.2.3' })
+    expect(await project.getCurrentNodeVersion()).toMatchObject(parse(process.version) || '')
+  })
+
+  test('should set the node version correctly through an fuzzy environment variable', async ({ fs }) => {
+    const project = new Project(fs).setEnvironment({ NODE_VERSION: '18.x' })
+    expect(await project.getCurrentNodeVersion()).toMatchObject({ major: 18, minor: 0, patch: 0 })
+  })
+
+  test('should set the node version correctly through a coerced environment variable', async ({ fs }) => {
+    const project = new Project(fs).setEnvironment({ NODE_VERSION: '18' })
+    expect(await project.getCurrentNodeVersion()).toMatchObject({ major: 18, minor: 0, patch: 0 })
+  })
+})
 
 describe.concurrent('should resolve paths correctly', () => {
   test('if no options are provided root dir should be undefined and base directory should be the cwd', async ({

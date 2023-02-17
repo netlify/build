@@ -58,12 +58,18 @@ const lockFileMap = Object.values(AVAILABLE_PACKAGE_MANAGERS).reduce(
  * 2. environment variable that forces the usage
  * 3. a lock file that is present in this directory or up in the tree for workspaces
  */
-export const detectPackageManager = async (project: Project): Promise<PkgManagerFields> => {
+export const detectPackageManager = async (project: Project): Promise<PkgManagerFields | null> => {
   try {
     const pkgPaths = await project.fs.findUpMultiple('package.json', {
       cwd: project.baseDirectory,
       stopAt: project.root,
     })
+
+    // if there is no package json than there is no package manager to detect
+    if (!pkgPaths.length) {
+      return null
+    }
+
     for (const pkgPath of pkgPaths) {
       const { packageManager } = await project.fs.readJSON<Record<string, string>>(pkgPath)
       if (packageManager) {

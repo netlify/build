@@ -35,8 +35,7 @@ export async function getBuildInfo(projectDir?: string, rootDir?: string): Promi
   const fs = new NodeFS()
   // prevent logging in output as we use the stdout to capture the json
   fs.logger = new NoopLogger()
-  const project = new Project(fs, projectDir, rootDir)
-  project.setEnvironment(process.env)
+  const project = new Project(fs, projectDir, rootDir).setEnvironment(process.env).setNodeVersion(process.version)
   let frameworks: any[] = []
   try {
     // if the framework  detection is crashing we should not crash the build info and package-manager detection
