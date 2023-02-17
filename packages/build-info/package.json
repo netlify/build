@@ -37,7 +37,6 @@
   "author": "Netlify Inc.",
   "dependencies": {
     "@netlify/framework-info": "^9.8.1",
-    "@npmcli/map-workspaces": "^2.0.0",
     "find-up": "^6.3.0",
     "minimatch": "^6.2.0",
     "read-pkg": "^7.1.0",
@@ -50,7 +49,6 @@
     "@types/semver": "^7.3.13",
     "@vitest/coverage-c8": "^0.24.1",
     "@vitest/ui": "^0.24.3",
-    "esbuild": "^0.17.7",
     "execa": "^6.0.0",
     "memfs": "^3.4.7",
     "node-fetch": "^3.3.0",
