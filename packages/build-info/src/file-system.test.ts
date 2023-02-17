@@ -131,31 +131,33 @@ describe.concurrent('Test the platform independent base functionality', () => {
 
   test('relative should return the relative path between two paths', ({ fs }) => {
     // always do a double test of the real path.relative and the independent implementation
+    // The own implementation does not need a `join` as it's done in a webFS and therefore on windows it's still unix paths
+    // whereas the comparison (baseline from relative) needs the join to match on windows as well
     fs.cwd = '/'
     vi.spyOn(process, 'cwd').mockImplementation(() => '/')
-    expect(fs.relative('/a/b/c', '/a/b/c/d/e')).toBe(join('d/e'))
+    expect(fs.relative('/a/b/c', '/a/b/c/d/e')).toBe('d/e')
     expect(relative('/a/b/c', '/a/b/c/d/e')).toBe(join('d/e'))
 
     fs.cwd = '/x'
     vi.spyOn(process, 'cwd').mockImplementation(() => '/x')
-    expect(fs.relative('/a/b/c', '/a/b/c/d/e')).toBe(join('d/e'))
+    expect(fs.relative('/a/b/c', '/a/b/c/d/e')).toBe('d/e')
     expect(relative('/a/b/c', '/a/b/c/d/e')).toBe(join('d/e'))
-    expect(fs.relative('/a/b/c/d/e', '/a/b/c')).toBe(join('../..'))
+    expect(fs.relative('/a/b/c/d/e', '/a/b/c')).toBe('../..')
     expect(relative('/a/b/c/d/e', '/a/b/c')).toBe(join('../..'))
 
     fs.cwd = '/a/b'
     vi.spyOn(process, 'cwd').mockImplementation(() => '/a/b')
-    expect(fs.relative('c', 'e')).toBe(join('../e'))
+    expect(fs.relative('c', 'e')).toBe('../e')
     expect(relative('c', 'e')).toBe(join('../e'))
-    expect(fs.relative('a.txt', 'b.txt')).toBe(join('../b.txt'))
+    expect(fs.relative('a.txt', 'b.txt')).toBe('../b.txt')
     expect(relative('a.txt', 'b.txt')).toBe(join('../b.txt'))
     expect(fs.relative('', '')).toBe('')
     expect(relative('', '')).toBe('')
-    expect(fs.relative('apps/web', 'apps/index.html')).toBe(join('../index.html'))
+    expect(fs.relative('apps/web', 'apps/index.html')).toBe('../index.html')
     expect(relative('apps/web', 'apps/index.html')).toBe(join('../index.html'))
-    expect(fs.relative('apps/a/b/c/d', 'apps/index.html')).toBe(join('../../../../index.html'))
+    expect(fs.relative('apps/a/b/c/d', 'apps/index.html')).toBe('../../../../index.html')
     expect(relative('apps/a/b/c/d', 'apps/index.html')).toBe(join('../../../../index.html'))
-    expect(fs.relative('d', '/a/b/c')).toBe(join('../c'))
+    expect(fs.relative('d', '/a/b/c')).toBe('../c')
     expect(relative('d', '/a/b/c')).toBe(join('../c'))
     expect(fs.relative('c', '/a/b/c')).toBe('')
     expect(relative('c', '/a/b/c')).toBe('')
