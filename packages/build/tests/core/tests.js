@@ -533,24 +533,9 @@ test.serial('configFileDirectories is passed to zip-it-and-ship-it', async (t) =
   ])
 })
 
-test.serial('internalSrcFolder is passed to zip-it-and-ship-it', async (t) => {
+test.serial('functions can have a config with different parameters passed to zip-it-and-ship-it', async (t) => {
   const zipItAndShipItSpy = sinon.spy(zipItAndShipIt, 'zipFunctions')
-
-  await new Fixture('./fixtures/functions_internal_src_folder').withFlags({ mode: 'buildbot' }).runWithBuild()
-  zipItAndShipItSpy.restore()
-  const { args: call1Args } = zipItAndShipItSpy.getCall(0)
-
-  const { internalSrcFolder, manifest } = call1Args[2]
-  const { functions } = await importJsonFile(manifest)
-
-  t.is(internalSrcFolder, join(FIXTURES_DIR, 'functions_internal_src_folder/.netlify/functions-internal'))
-  t.is(functions[0].isInternal, true)
-  t.is(functions[1].isInternal, false)
-})
-
-test.serial('functions can have a config with name passed to zip-it-and-ship-it', async (t) => {
-  const zipItAndShipItSpy = sinon.spy(zipItAndShipIt, 'zipFunctions')
-  await new Fixture('./fixtures/functions_display_name')
+  const output = await new Fixture('./fixtures/functions_config_json')
     .withFlags({
       mode: 'buildbot',
       featureFlags: { project_deploy_configuration_api_use_per_function_configuration_files: true },
@@ -563,16 +548,9 @@ test.serial('functions can have a config with name passed to zip-it-and-ship-it'
   const { functions: functions } = await importJsonFile(call1Args[2].manifest)
 
   t.is(functions[0].displayName, 'Function One')
+  t.is(functions[0].generator, '@netlify/mock-plugin@1.0.0')
   t.is(functions[1].displayName, undefined)
-})
 
-test.serial('zip-it-and-ship-it runs without error when loading json config files', async (t) => {
-  const output = await new Fixture('./fixtures/functions_config_json')
-    .withFlags({
-      mode: 'buildbot',
-      featureFlags: { project_deploy_configuration_api_use_per_function_configuration_files: true },
-    })
-    .runWithBuild()
   t.snapshot(normalizeOutput(output))
 })
 
