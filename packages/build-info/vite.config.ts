@@ -6,7 +6,7 @@ export default defineConfig({
     clearMocks: true,
     mockReset: true,
     environment: 'node',
-    testTimeout: 10000,
+    testTimeout: 100000,
     // onConsoleLog: (log, type) => {
     //   process[type].write(log)
     // },

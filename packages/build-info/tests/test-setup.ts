@@ -2,6 +2,16 @@ import fs from 'fs'
 
 import { afterEach, vi } from 'vitest'
 
+import type { FileSystem } from '../src/file-system.js'
+
+declare module 'vitest' {
+  export interface TestContext {
+    fs: FileSystem
+    cwd: string
+    cleanup?: () => Promise<void>
+  }
+}
+
 vi.mock('fs', async () => {
   const unionFs: any = (await import('unionfs')).default
   const fs = await vi.importActual('fs')
@@ -15,5 +25,7 @@ vi.mock('fs', async () => {
 
 // cleanup after each test
 afterEach(() => {
-  ;(fs as any).reset()
+  if ('reset' in fs) {
+    ;(fs as any).reset()
+  }
 })
