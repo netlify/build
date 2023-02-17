@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.1.9](https://github.com/netlify/build/compare/functions-utils-v5.1.8...functions-utils-v5.1.9) (2023-02-17)
+
+
+### Bug Fixes
+
+* add test for generator field and remove internalSrcFolder usage ([#4857](https://github.com/netlify/build/issues/4857)) ([f1a0a5b](https://github.com/netlify/build/commit/f1a0a5b1fb6f128978b77d21e80a8c9404ad3528))
+
 ## [5.1.8](https://github.com/netlify/build/compare/functions-utils-v5.1.7...functions-utils-v5.1.8) (2023-02-14)
 
 

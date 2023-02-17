@@ -1,6 +1,6 @@
 {
   "name": "@netlify/build-info",
-  "version": "6.2.3",
+  "version": "6.3.0",
   "description": "Build info utility",
   "type": "module",
   "exports": {
@@ -36,7 +36,7 @@
   },
   "author": "Netlify Inc.",
   "dependencies": {
-    "@netlify/framework-info": "^9.8.1",
+    "@netlify/framework-info": "^9.8.2",
     "find-up": "^6.3.0",
     "minimatch": "^6.2.0",
     "read-pkg": "^7.1.0",
