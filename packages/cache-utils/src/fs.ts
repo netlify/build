@@ -1,7 +1,7 @@
 import { promises as fs, Stats } from 'fs'
 import { basename, dirname } from 'path'
 
-import cpy from 'cpy'
+import cpy, { Options as cpyOptions } from 'cpy'
 import { Options, globby } from 'globby'
 import { isNotJunk } from 'junk'
 import { moveFile } from 'move-file'
@@ -20,7 +20,7 @@ export const moveCacheFile = async function (src: string, dest: string, move = f
 
   const { srcGlob, ...options } = await getSrcGlob(src)
   if (srcGlob) {
-    return cpy(srcGlob, dirname(dest), { ...options, parents: true, overwrite: false })
+    return cpy(srcGlob, dirname(dest), { ...options, parents: true, overwrite: false } as cpyOptions)
   }
 }
 

@@ -51,7 +51,7 @@
   "license": "MIT",
   "dependencies": {
     "@netlify/zip-it-and-ship-it": "^8.7.0",
-    "cpy": "^8.1.0",
+    "cpy": "^9.0.1",
     "path-exists": "^5.0.0"
   },
   "devDependencies": {

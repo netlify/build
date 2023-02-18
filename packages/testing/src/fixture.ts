@@ -5,7 +5,7 @@ import { env } from 'process'
 import { fileURLToPath } from 'url'
 
 import test from 'ava'
-import cpy from 'cpy'
+import cpy, { Options as cpyOptions } from 'cpy'
 import { execa, execaCommand } from 'execa'
 import stringify from 'fast-safe-stringify'
 import { getBinPathSync } from 'get-bin-path'
@@ -147,7 +147,7 @@ export class Fixture {
     } = { git: true },
   ): Promise<this> {
     this.copyRootDir = normalize(createRepoDir(copyRoot.git))
-    await cpy('**', this.copyRootDir, { cwd: this.repositoryRoot, parents: true })
+    await cpy('**', this.copyRootDir, { cwd: this.repositoryRoot, parents: true } as cpyOptions)
 
     if (copyRoot.branch !== undefined) {
       await execaCommand(`git checkout -b ${copyRoot.branch}`, { cwd: this.copyRootDir })

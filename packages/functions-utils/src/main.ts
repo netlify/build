@@ -2,7 +2,7 @@ import { promises as fs } from 'fs'
 import { basename, dirname } from 'path'
 
 import { listFunctions, listFunctionsFiles } from '@netlify/zip-it-and-ship-it'
-import cpy from 'cpy'
+import cpy, { Options as cpyOptions } from 'cpy'
 import { pathExists } from 'path-exists'
 
 // Add a Netlify Function file to the `functions` directory so it is processed
@@ -22,7 +22,7 @@ export const add = async function (src?: string, dist?: string, { fail = default
 
   const srcBasename = basename(src)
   const srcGlob = await getSrcGlob(src, srcBasename)
-  await cpy(srcGlob, dist, { cwd: dirname(src), parents: true, overwrite: true })
+  await cpy(srcGlob, dist, { cwd: dirname(src), parents: true, overwrite: true } as cpyOptions)
 }
 
 const getSrcGlob = async function (src, srcBasename) {

@@ -72,7 +72,7 @@
   },
   "devDependencies": {
     "babel-loader": "^8.2.2",
-    "cpy": "^9.0.0",
+    "cpy": "^9.0.1",
     "cpy-cli": "^4.0.0",
     "del": "^6.0.0",
     "fast-glob": "^3.2.12",
