@@ -1,7 +1,5 @@
 import { gte } from 'semver'
 
-import { Project } from '../project.js'
-
 import { BaseFramework, Category, Framework } from './framework.js'
 
 export class Next extends BaseFramework implements Framework {
@@ -21,16 +19,22 @@ export class Next extends BaseFramework implements Framework {
     directory: '.next',
   }
 
-  async detect(project: Project)
-  async detect(project: Project): Promise<this | undefined> {
-    const detected = await super.detect(project)
+  logo = {
+    default: '/logos/nextjs/light.svg',
+    light: '/logos/nextjs/light.svg',
+    dark: '/logos/nextjs/dark.svg',
+  }
+
+  async detect()
+  async detect(): Promise<this | undefined> {
+    const detected = await super.detect()
 
     if (detected) {
-      const nodeVersion = await project.getCurrentNodeVersion()
+      const nodeVersion = await this.project.getCurrentNodeVersion()
       if (nodeVersion && gte(nodeVersion, '10.13.0')) {
         this.plugins.push('@netlify/plugin-nextjs')
       }
+      return this
     }
-    return detected
   }
 }

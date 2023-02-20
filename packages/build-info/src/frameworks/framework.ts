@@ -1,4 +1,5 @@
 import type { PackageJson } from 'read-pkg'
+import { SemVer, coerce, parse } from 'semver'
 
 import { Project } from '../project.js'
 
@@ -13,44 +14,64 @@ export type PollingStrategy = {
 }
 
 export interface Framework {
+  project: Project
+
   id: string
   name: string
   category: Category
   configFiles: string[]
   npmDependencies: string[]
-  version?: string
+  excludedNpmDependencies?: string[]
+  version?: SemVer
   staticAssetsDirectory?: string
   dev?: {
     command: string
-    port: number
-    pollingStrategies: PollingStrategy[]
+    port?: number
+    pollingStrategies?: PollingStrategy[]
   }
   build: {
     command: string
     directory: string
   }
+  logo?: {
+    default: string
+    light?: string
+    dark?: string
+  }
   plugins: string[]
   env: Record<string, string>
 
-  detect(project: Project): Promise<Framework | undefined>
+  detect(): Promise<Framework | undefined>
 }
 
-type VerboseDetection = { npmDependency: string } | { config: string }
+export type VerboseDetection = {
+  npmDependency?: { name: string; version?: SemVer }
+  config?: string
+}
 
 export abstract class BaseFramework {
-  id: string
-  name: string
-  category
+  version?: SemVer
   configFiles: string[] = []
   npmDependencies: string[] = []
   plugins: string[] = []
   env = {}
 
+  constructor(public project: Project) {}
+
   /** check if the npmDependencies are used inside the provided package.json */
-  protected npmDependenciesUsed(pkgJSON: PackageJson): string | undefined {
-    return [...Object.keys(pkgJSON.dependencies || {}), ...Object.keys(pkgJSON.devDependencies || {})].find((depName) =>
-      this.npmDependencies.includes(depName),
-    )
+  protected npmDependenciesUsed(pkgJSON: PackageJson): { name: string; version?: SemVer } | undefined {
+    const found = [
+      ...Object.entries(pkgJSON.dependencies || {}),
+      ...Object.entries(pkgJSON.devDependencies || {}),
+    ].find(([depName]) => this.npmDependencies.includes(depName))
+
+    if (found?.[0]) {
+      return {
+        name: found[0],
+        // coerce to parse syntax like ~0.1.2 or ^1.2.3
+        version: parse(coerce(found[1])) || undefined,
+      }
+    }
   }
 
   /**
@@ -59,27 +80,31 @@ export abstract class BaseFramework {
    * - if `excludedNpmDependencies` is set, none of them must be present in the `package.json` `dependencies|devDependencies`
    * - if `configFiles` is set, one of the files must exist
    */
-  async detect(project: Project): Promise<this | undefined>
-  async detect(project: Project, reason: true): Promise<VerboseDetection | undefined>
-  async detect(project: Project, reason?: true) {
+  async detect(): Promise<this | undefined>
+  async detect(reason: true): Promise<VerboseDetection | undefined>
+  async detect(reason?: true) {
     // detect if the framework occurs inside the package.json dependencies
     if (this.npmDependencies?.length) {
-      const pkg = await project.getPackageJSON()
+      const pkg = await this.project.getPackageJSON()
       const dep = this.npmDependenciesUsed(pkg)
       if (dep) {
+        this.version = dep.version
         if (reason) {
-          return { npmDependency: dep }
+          return { npmDependency: dep } as VerboseDetection
         }
         return this
       }
 
-      if (project.workspace?.isRoot === true) {
-        for (const pkg of project.workspace.packages) {
-          const pkgJSON = await project.fs.readJSON(project.fs.join(project.workspace.rootDir, pkg, 'package.json'))
+      if (this.project.workspace?.isRoot === true) {
+        for (const pkg of this.project.workspace.packages) {
+          const pkgJSON = await this.project.fs.readJSON(
+            this.project.fs.join(this.project.workspace.rootDir, pkg, 'package.json'),
+          )
           const dep = this.npmDependenciesUsed(pkgJSON)
           if (dep) {
+            this.version = dep.version
             if (reason) {
-              return { npmDependency: dep }
+              return { npmDependency: dep } as VerboseDetection
             }
             return this
           }
@@ -88,10 +113,13 @@ export abstract class BaseFramework {
     }
 
     if (this.configFiles?.length) {
-      const config = await project.fs.findUp(this.configFiles, { cwd: project.baseDirectory, stopAt: project.root })
+      const config = await this.project.fs.findUp(this.configFiles, {
+        cwd: this.project.baseDirectory,
+        stopAt: this.project.root,
+      })
       if (config) {
         if (reason) {
-          return { config }
+          return { config } as VerboseDetection
         }
         return this
       }

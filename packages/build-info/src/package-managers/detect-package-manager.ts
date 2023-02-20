@@ -12,6 +12,8 @@ export type PkgManagerFields = {
   name: PkgManager
   /** The package managers install command */
   installCommand: string
+  /** The package managers run command prefix */
+  runCommand: string
   /** The lock file a package manager is using */
   lockFile: string
   /** Environment variable that can be used to force the usage of a package manager even though there is no lock file or a different lock file */
@@ -27,18 +29,21 @@ const AVAILABLE_PACKAGE_MANAGERS: Record<PkgManager, PkgManagerFields> = {
   [PkgManager.YARN]: {
     name: PkgManager.YARN,
     installCommand: 'yarn install',
+    runCommand: 'yarn',
     lockFile: 'yarn.lock',
     forceEnvironment: 'NETLIFY_USE_YARN',
   },
   [PkgManager.PNPM]: {
     name: PkgManager.PNPM,
     installCommand: 'pnpm install',
+    runCommand: 'pnpm run',
     lockFile: 'pnpm-lock.yaml',
     forceEnvironment: 'NETLIFY_USE_PNPM',
   },
   [PkgManager.NPM]: {
     name: PkgManager.NPM,
     installCommand: 'npm install',
+    runCommand: 'npm run',
     lockFile: 'package-lock.json',
   },
 }

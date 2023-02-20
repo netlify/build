@@ -165,7 +165,7 @@ export class Project {
     await Promise.all([this.detectBuildSystem(), this.detectWorkspaces()])
 
     try {
-      const detected = await Promise.all(frameworks.map(async (Framework) => await new Framework().detect(this)))
+      const detected = await Promise.all(frameworks.map(async (Framework) => await new Framework(this).detect()))
       this.frameworks = detected.filter(Boolean) as Framework[]
       return this.frameworks
     } catch {

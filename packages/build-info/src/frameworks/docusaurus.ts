@@ -1,6 +1,4 @@
-import { Project } from '../project.js'
-
-import { BaseFramework, Category, Framework } from './framework.js'
+import { BaseFramework, Category, Framework, VerboseDetection } from './framework.js'
 
 export class Docusaurus extends BaseFramework implements Framework {
   id = 'docusaurus'
@@ -35,9 +33,9 @@ export class Docusaurus extends BaseFramework implements Framework {
 
   env = { BROWSER: 'none' }
 
-  async detect(project: Project)
-  async detect(project: Project): Promise<this | undefined> {
-    const detected = await super.detect(project, true)
+  async detect()
+  async detect(): Promise<this | undefined> {
+    const detected = await super.detect(true)
 
     if (detected) {
       if (this.isV1(detected)) {
@@ -51,7 +49,7 @@ export class Docusaurus extends BaseFramework implements Framework {
     }
   }
 
-  isV1(detected: { npmDependency?: string; config?: string }) {
-    return detected.config?.endsWith('siteConfig.js') || detected.npmDependency === 'docusaurus'
+  isV1(detected: VerboseDetection) {
+    return detected.config?.endsWith('siteConfig.js') || detected.npmDependency?.name === 'docusaurus'
   }
 }
