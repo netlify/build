@@ -8,10 +8,10 @@ import { WorkspaceInfo } from '../workspaces/detect-workspace.js'
 import { NodeFS } from './file-system.js'
 
 export type Info = {
-  jsWorkspaces?: WorkspaceInfo
-  packageManager?: PkgManagerFields
+  jsWorkspaces: WorkspaceInfo | null
+  packageManager: PkgManagerFields | null
   frameworks: unknown[]
-  buildSystems?: {
+  buildSystems: {
     name: string
     version?: string | undefined
   }[]
@@ -46,19 +46,21 @@ export async function getBuildInfo(projectDir?: string, rootDir?: string): Promi
   }
 
   const info: Info = {
-    frameworks,
+    packageManager: await project.detectPackageManager(),
+    jsWorkspaces: await project.detectWorkspaces(),
+    frameworks: await project.detectFrameworks(),
     buildSystems: await project.detectBuildSystem(),
   }
 
-  const pkgJSONPath = await project.getPackageJSON()
-  // only if we find a root package.json we know this is a javascript workspace
-  if (Object.keys(pkgJSONPath).length) {
-    info.packageManager = await project.detectPackageManager()
-    const workspaceInfo = await project.detectWorkspaces()
-    if (workspaceInfo) {
-      info.jsWorkspaces = workspaceInfo
-    }
-  }
+  // const pkgJSONPath = await project.getPackageJSON()
+  // // only if we find a root package.json we know this is a javascript workspace
+  // if (Object.keys(pkgJSONPath).length) {
+  //   info.packageManager = await project.detectPackageManager()
+  //   const workspaceInfo = await project.detectWorkspaces()
+  //   if (workspaceInfo) {
+  //     info.jsWorkspaces = workspaceInfo
+  //   }
+  // }
 
   return info
 }

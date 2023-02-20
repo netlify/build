@@ -50,11 +50,19 @@ export type VerboseDetection = {
 }
 
 export abstract class BaseFramework {
+  id: string
+  name: string
+  category: Category
+
   version?: SemVer
   configFiles: string[] = []
   npmDependencies: string[] = []
+  excludedNpmDependencies: string[] = []
   plugins: string[] = []
   env = {}
+
+  /** A list of paths inside a project where the framework got detected */
+  private detectedPaths: string[] = []
 
   constructor(public project: Project) {}
 
@@ -88,6 +96,9 @@ export abstract class BaseFramework {
       const pkg = await this.project.getPackageJSON()
       const dep = this.npmDependenciesUsed(pkg)
       if (dep) {
+        if (pkg.pkgPath) {
+          this.detectedPaths.push(pkg.pkgPath)
+        }
         this.version = dep.version
         if (reason) {
           return { npmDependency: dep } as VerboseDetection
@@ -102,6 +113,7 @@ export abstract class BaseFramework {
           )
           const dep = this.npmDependenciesUsed(pkgJSON)
           if (dep) {
+            this.detectedPaths.push(pkg)
             this.version = dep.version
             if (reason) {
               return { npmDependency: dep } as VerboseDetection
@@ -126,5 +138,14 @@ export abstract class BaseFramework {
     }
     // nothing detected
     return
+  }
+
+  /** This method will be called by the JSON.stringify */
+  toJSON() {
+    return {
+      name: this.name,
+      id: this.id,
+      paths: this.detectedPaths,
+    }
   }
 }

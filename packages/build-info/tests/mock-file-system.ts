@@ -13,7 +13,7 @@ export const osHomeDir = platform() === 'win32' ? 'C:\\Users\\test-user' : '/hom
  * @param folder Optional folder where it should be placed inside the osHomeDir
  * @returns The cwd where all files are placed in
  */
-export const mockFileSystem = (fileSystem: Record<string, string>, folder = ''): string => {
+export const mockFileSystem = (fileSystem: Record<string, string>, folder = 'test'): string => {
   ;(fs as any).reset?.()
   const vol = memfs.Volume.fromJSON(
     Object.entries(fileSystem).reduce(

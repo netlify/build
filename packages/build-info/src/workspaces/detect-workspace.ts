@@ -28,8 +28,12 @@ export async function detectPnpmWorkspaceGlobs(project: Project): Promise<string
     return []
   }
 
-  const { packages } = parse(await project.fs.readFile(workspaceFile))
-  return packages
+  try {
+    const { packages } = parse(await project.fs.readFile(workspaceFile))
+    return packages
+  } catch {
+    return []
+  }
 }
 
 /** Get the workspace globs from the package.json file */

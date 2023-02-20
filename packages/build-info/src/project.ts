@@ -133,7 +133,7 @@ export class Project {
     await this.detectPackageManager()
     try {
       this.workspace = await detectWorkspaces(this)
-      return detectWorkspaces(this)
+      return this.workspace
     } catch {
       return null
     }
@@ -162,7 +162,8 @@ export class Project {
     }
 
     // frameworks depend on build system and workspace detection so run it first
-    await Promise.all([this.detectBuildSystem(), this.detectWorkspaces()])
+    // await this.detectBuildSystem()
+    await this.detectWorkspaces()
 
     try {
       const detected = await Promise.all(frameworks.map(async (Framework) => await new Framework(this).detect()))

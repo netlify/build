@@ -38,6 +38,11 @@ export class Gatsby extends BaseFramework implements Framework {
   async detect(): Promise<this | undefined> {
     const detected = await super.detect()
     if (detected) {
+      if (this.version && gte(this.version, '5.0.0')) {
+        this.env.NODE_VERSION = '18'
+        this.env.AWS_LAMBDA_JS_RUNTIME = 'nodejs18.x'
+      }
+
       const nodeVersion = await this.project.getCurrentNodeVersion()
       if (nodeVersion && gte(nodeVersion, '12.13.0')) {
         this.plugins.push('@netlify/plugin-gatsby')

@@ -18,7 +18,14 @@ yargs(hideBin(argv))
       }),
     async ({ projectDir, rootDir }: Arguments<{ projectDir?: string; rootDir?: string }>) => {
       try {
-        console.log(JSON.stringify(await getBuildInfo(projectDir, rootDir), null, 2))
+        console.log(
+          JSON.stringify(
+            await getBuildInfo(projectDir, rootDir),
+            // hide null values from the string output
+            (_, value) => (value !== null ? value : undefined),
+            2,
+          ),
+        )
       } catch (error) {
         console.error(error)
         exit(1)
