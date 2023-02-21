@@ -4,7 +4,7 @@ import Ajv from 'ajv'
 import glob from 'fast-glob'
 import { describe, expect, test } from 'vitest'
 
-import { FRAMEWORK_NAMES } from '../src/frameworks/main.js'
+import { FRAMEWORK_NAMES } from '../src/generated/frameworkNames.js'
 import { FRAMEWORKS } from '../src/generated/frameworks.js'
 
 const FRAMEWORKS_DIR = new URL('../src/frameworks/', import.meta.url)

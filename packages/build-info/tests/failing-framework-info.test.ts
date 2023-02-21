@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 
-import { getBuildInfo } from '../src/get-build-info.js'
+import { getBuildInfo } from '../src/node/get-build-info.js'
 
 import { createFixture } from './helpers.js'
 
@@ -9,14 +9,12 @@ beforeEach(() => {
   // restore process environment variables
   process.env = { ...env }
 })
-// run tests inside temp directory to avoid side effects
-let cleanup: () => Promise<void>
 
-afterEach(async () => await cleanup())
+afterEach(async ({ cleanup }) => await cleanup?.())
 
-test('framework info should not crash build-info', async () => {
+test('framework info should not crash build-info', async (ctx) => {
   const fixture = await createFixture('pnpm-simple')
-  cleanup = fixture.cleanup
+  ctx.cleanup = fixture.cleanup
 
   vi.mock('@netlify/framework-info', () => ({
     listFrameworks: async () => {
@@ -24,17 +22,14 @@ test('framework info should not crash build-info', async () => {
     },
   }))
 
-  const { frameworks, packageManager } = await getBuildInfo({
-    projectDir: '',
-    rootDir: fixture.cwd,
-  })
+  const { frameworks, packageManager } = await getBuildInfo('', fixture.cwd)
   expect(packageManager?.name).toBe('pnpm')
   expect(frameworks).toEqual([])
 })
 
-test('framework info should not crash build-info and the detection should still work', async () => {
+test('framework info should not crash build-info and the detection should still work', async (ctx) => {
   const fixture = await createFixture('yarn-project')
-  cleanup = fixture.cleanup
+  ctx.cleanup = fixture.cleanup
 
   vi.mock('@netlify/framework-info', () => ({
     listFrameworks: async () => {
@@ -43,10 +38,7 @@ test('framework info should not crash build-info and the detection should still 
   }))
 
   process.env.NETLIFY_USE_PNPM = 'true'
-  const { frameworks, packageManager } = await getBuildInfo({
-    projectDir: '',
-    rootDir: fixture.cwd,
-  })
+  const { frameworks, packageManager } = await getBuildInfo('', fixture.cwd)
   expect(packageManager?.name).toBe('pnpm')
   expect(frameworks).toEqual([])
 })

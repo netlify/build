@@ -1,6 +1,6 @@
 {
   "name": "@netlify/framework-info",
-  "version": "9.7.2",
+  "version": "9.8.2",
   "description": "Framework detection utility",
   "type": "module",
   "main": "./dist/index.umd.cjs",
@@ -19,6 +19,7 @@
     "build:browser": "run-s build:browser:*",
     "build:browser:core": "vite build",
     "build:browser:site-root": "cpy index.html ./dist",
+    "pretest": "run-s prebuild",
     "test": "vitest run",
     "test:dev": "vitest",
     "test:ci": "vitest run --reporter=default"

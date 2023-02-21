@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.1.2](https://github.com/netlify/build/compare/cache-utils-v5.1.1...cache-utils-v5.1.2) (2023-02-09)
+
+
+### Bug Fixes
+
+* migrate framework-info to TS and vitest and enable more strictness ([#4819](https://github.com/netlify/build/issues/4819)) ([5acb25b](https://github.com/netlify/build/commit/5acb25b3e1e8cd6d5fa85fdb76baea5a34a1131b))
+
 ## [5.1.1](https://github.com/netlify/build/compare/cache-utils-v5.1.0...cache-utils-v5.1.1) (2023-02-01)
 
 

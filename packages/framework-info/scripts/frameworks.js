@@ -57,6 +57,4 @@ export const FRAMEWORK_NAMES = [
   'gulp',
   'vite',
   'wmr',
-] as const
-
-export type FrameworkName = typeof FRAMEWORK_NAMES[number]
+]

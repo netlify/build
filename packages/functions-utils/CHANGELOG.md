@@ -1,5 +1,26 @@
 # Changelog
 
+## [5.1.9](https://github.com/netlify/build/compare/functions-utils-v5.1.8...functions-utils-v5.1.9) (2023-02-17)
+
+
+### Bug Fixes
+
+* add test for generator field and remove internalSrcFolder usage ([#4857](https://github.com/netlify/build/issues/4857)) ([f1a0a5b](https://github.com/netlify/build/commit/f1a0a5b1fb6f128978b77d21e80a8c9404ad3528))
+
+## [5.1.8](https://github.com/netlify/build/compare/functions-utils-v5.1.7...functions-utils-v5.1.8) (2023-02-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^8.6.0 ([#4865](https://github.com/netlify/build/issues/4865)) ([7a87d04](https://github.com/netlify/build/commit/7a87d04ab3ddc097509625c9adb17531dbb28f1d))
+
+## [5.1.7](https://github.com/netlify/build/compare/functions-utils-v5.1.6...functions-utils-v5.1.7) (2023-02-09)
+
+
+### Bug Fixes
+
+* migrate framework-info to TS and vitest and enable more strictness ([#4819](https://github.com/netlify/build/issues/4819)) ([5acb25b](https://github.com/netlify/build/commit/5acb25b3e1e8cd6d5fa85fdb76baea5a34a1131b))
+
 ## [5.1.6](https://github.com/netlify/build/compare/functions-utils-v5.1.5...functions-utils-v5.1.6) (2023-02-01)
 
 

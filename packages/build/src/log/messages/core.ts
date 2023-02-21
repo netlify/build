@@ -7,7 +7,6 @@ import { roundTimerToMillisecs } from '../../time/measure.js'
 import { ROOT_PACKAGE_JSON } from '../../utils/json.js'
 import { getLogHeaderFunc } from '../header_func.js'
 import { log, logMessage, logWarning, logHeader, logSubHeader, logWarningArray, BufferedLogs } from '../logger.js'
-import { logOldCliVersionError } from '../old_version.js'
 import { THEME } from '../theme.js'
 
 import { logConfigOnError } from './config.js'
@@ -18,7 +17,7 @@ export const logBuildStart = function (logs?: BufferedLogs) {
   logMessage(logs, `${ROOT_PACKAGE_JSON.name} ${ROOT_PACKAGE_JSON.version}`)
 }
 
-export const logBuildError = function ({ error, netlifyConfig, mode, logs, debug, testOpts }) {
+export const logBuildError = function ({ error, netlifyConfig, logs, debug }) {
   const fullErrorInfo = getFullErrorInfo({ error, colors: true, debug })
   const { severity } = fullErrorInfo
   const { title, body } = serializeLogError({ fullErrorInfo })
@@ -26,7 +25,6 @@ export const logBuildError = function ({ error, netlifyConfig, mode, logs, debug
   logHeaderFunc(logs, title)
   logMessage(logs, `\n${body}\n`)
   logConfigOnError({ logs, netlifyConfig, severity })
-  logOldCliVersionError({ mode, testOpts })
 }
 
 export const logBuildSuccess = function (logs) {

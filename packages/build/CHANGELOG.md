@@ -57,6 +57,63 @@
   * dependencies
     * @netlify/config bumped from ^20.0.1 to ^20.0.2
 
+## [29.5.8](https://github.com/netlify/build/compare/build-v29.5.7...build-v29.5.8) (2023-02-17)
+
+
+### Bug Fixes
+
+* add test for generator field and remove internalSrcFolder usage ([#4857](https://github.com/netlify/build/issues/4857)) ([f1a0a5b](https://github.com/netlify/build/commit/f1a0a5b1fb6f128978b77d21e80a8c9404ad3528))
+* **deps:** update dependency @netlify/edge-bundler to v8.7.0 ([#4875](https://github.com/netlify/build/issues/4875)) ([26553fb](https://github.com/netlify/build/commit/26553fb3fa9b66274940eac006a115d163af7c89))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.1.8 to ^5.1.9
+
+## [29.5.7](https://github.com/netlify/build/compare/build-v29.5.6...build-v29.5.7) (2023-02-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v8.6.0 ([#4868](https://github.com/netlify/build/issues/4868)) ([0484c2a](https://github.com/netlify/build/commit/0484c2a541bf5e1eaf5eaec31aed2b7e30560398))
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^8.6.0 ([#4865](https://github.com/netlify/build/issues/4865)) ([7a87d04](https://github.com/netlify/build/commit/7a87d04ab3ddc097509625c9adb17531dbb28f1d))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.1.7 to ^5.1.8
+
+## [29.5.6](https://github.com/netlify/build/compare/build-v29.5.5...build-v29.5.6) (2023-02-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v8.5.0 ([#4860](https://github.com/netlify/build/issues/4860)) ([f48e900](https://github.com/netlify/build/commit/f48e9009214ae9c08a4c025e46747ec318313140))
+
+## [29.5.5](https://github.com/netlify/build/compare/build-v29.5.4...build-v29.5.5) (2023-02-09)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/plugins-list to ^6.65.0 ([#4811](https://github.com/netlify/build/issues/4811)) ([67ec846](https://github.com/netlify/build/commit/67ec8460a65e3a7c4822c001502113caf72668b6))
+* migrate framework-info to TS and vitest and enable more strictness ([#4819](https://github.com/netlify/build/issues/4819)) ([5acb25b](https://github.com/netlify/build/commit/5acb25b3e1e8cd6d5fa85fdb76baea5a34a1131b))
+* remove update-notifier as unhelpful ([#4856](https://github.com/netlify/build/issues/4856)) ([418914d](https://github.com/netlify/build/commit/418914dddd7ddb888b5cd16a281df6bc1e856f68))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/cache-utils bumped from ^5.1.1 to ^5.1.2
+    * @netlify/config bumped from ^20.3.2 to ^20.3.3
+    * @netlify/functions-utils bumped from ^5.1.6 to ^5.1.7
+  * devDependencies
+    * @netlify/nock-udp bumped from ^3.1.1 to ^3.1.2
+
 ## [29.5.4](https://github.com/netlify/build/compare/build-v29.5.3...build-v29.5.4) (2023-02-01)
 
 

@@ -51,12 +51,16 @@ export enum SeverityCode {
   systemError,
 }
 
+export type TestOptions = {
+  errorMonitor?: any
+}
+
 export type ErrorParam = {
   errorMonitor: any
   mode: Mode
   logs: string[]
   debug: any
-  testOpts?: any
+  testOpts?: TestOptions
   childEnv?: any
   netlifyConfig?: NetlifyConfig
 }

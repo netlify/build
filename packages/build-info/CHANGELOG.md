@@ -18,6 +18,32 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.7.1 to ^9.7.2
 
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/framework-info bumped from ^9.7.2 to ^9.8.0
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/framework-info bumped from ^9.8.0 to ^9.8.1
+
+## [6.3.0](https://github.com/netlify/build/compare/build-info-v6.2.3...build-info-v6.3.0) (2023-02-17)
+
+
+### Features
+
+* make build-info browser compatible ([#4869](https://github.com/netlify/build/issues/4869)) ([a1d247f](https://github.com/netlify/build/commit/a1d247f938ba4e5d150813e73835cbc91fa70fdd))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/framework-info bumped from ^9.8.1 to ^9.8.2
+
 ## [6.2.0](https://github.com/netlify/build/compare/build-info-v6.1.4...build-info-v6.2.0) (2023-02-01)
 
 
