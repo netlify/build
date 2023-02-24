@@ -1,0 +1,41 @@
+{
+  "name": "website",
+  "sourceRoot": "packages/website",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/next:build",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "root": "packages/website",
+        "outputPath": "dist/packages/website"
+      },
+      "configurations": {
+        "development": {
+          "outputPath": "packages/website"
+        },
+        "production": {}
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/next:server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "website:build",
+        "dev": true
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "website:build:development",
+          "dev": true
+        },
+        "production": {
+          "buildTarget": "website:build:production",
+          "dev": false
+        }
+      }
+    }
+  },
+  "tags": []
+}

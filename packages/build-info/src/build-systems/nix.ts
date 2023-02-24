@@ -7,8 +7,11 @@ export class Nix extends BaseBuildTool {
   name = 'Nix'
   configFiles = ['default.nix', 'shell.nix', 'release.nix']
 
-  async detect(project: Project) {
-    const config = await project.fs.findUp(this.configFiles, { cwd: project.baseDirectory, stopAt: project.root })
+  async detect() {
+    const config = await this.project.fs.findUp(this.configFiles, {
+      cwd: this.project.baseDirectory,
+      stopAt: this.project.root,
+    })
 
     if (config) {
       return this

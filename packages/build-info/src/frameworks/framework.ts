@@ -49,6 +49,19 @@ export type VerboseDetection = {
   config?: string
 }
 
+type DevServerSetting = {
+  command: string
+  /** The port the framework is served at */
+  frameworkPort: number
+  /** The directory that is used for static assets, to be served. Fallback to the build output directory */
+  dist: string
+  /** The name of the framework */
+  framework: string
+  pollingStrategies: string[]
+  /** list of necessary plugins */
+  plugins: string[]
+}
+
 export abstract class BaseFramework {
   id: string
   name: string
@@ -61,10 +74,12 @@ export abstract class BaseFramework {
   plugins: string[] = []
   env = {}
 
-  /** A list of paths inside a project where the framework got detected */
-  private detectedPaths: string[] = []
-
-  constructor(public project: Project) {}
+  constructor(
+    /** The current project inside we want to detect the framework */
+    public project: Project,
+    /** The location where the framework got detected */
+    public path?: string,
+  ) {}
 
   /** check if the npmDependencies are used inside the provided package.json */
   protected npmDependenciesUsed(pkgJSON: PackageJson): { name: string; version?: SemVer } | undefined {
@@ -89,38 +104,18 @@ export abstract class BaseFramework {
    * - if `configFiles` is set, one of the files must exist
    */
   async detect(): Promise<this | undefined>
-  async detect(reason: true): Promise<VerboseDetection | undefined>
-  async detect(reason?: true) {
+  async detect(verbose: true): Promise<VerboseDetection | undefined>
+  async detect(verbose?: true) {
     // detect if the framework occurs inside the package.json dependencies
     if (this.npmDependencies?.length) {
-      const pkg = await this.project.getPackageJSON()
+      const pkg = await this.project.getPackageJSON(this.path)
       const dep = this.npmDependenciesUsed(pkg)
       if (dep) {
-        if (pkg.pkgPath) {
-          this.detectedPaths.push(pkg.pkgPath)
-        }
         this.version = dep.version
-        if (reason) {
+        if (verbose) {
           return { npmDependency: dep } as VerboseDetection
         }
         return this
-      }
-
-      if (this.project.workspace?.isRoot === true) {
-        for (const pkg of this.project.workspace.packages) {
-          const pkgJSON = await this.project.fs.readJSON(
-            this.project.fs.join(this.project.workspace.rootDir, pkg, 'package.json'),
-          )
-          const dep = this.npmDependenciesUsed(pkgJSON)
-          if (dep) {
-            this.detectedPaths.push(pkg)
-            this.version = dep.version
-            if (reason) {
-              return { npmDependency: dep } as VerboseDetection
-            }
-            return this
-          }
-        }
       }
     }
 
@@ -130,7 +125,7 @@ export abstract class BaseFramework {
         stopAt: this.project.root,
       })
       if (config) {
-        if (reason) {
+        if (verbose) {
           return { config } as VerboseDetection
         }
         return this
@@ -145,7 +140,6 @@ export abstract class BaseFramework {
     return {
       name: this.name,
       id: this.id,
-      paths: this.detectedPaths,
     }
   }
 }

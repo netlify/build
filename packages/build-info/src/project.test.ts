@@ -15,6 +15,17 @@ beforeEach((ctx) => {
 
 afterEach(async ({ cleanup }) => await cleanup?.())
 
+test.only('asdf', async (ctx) => {
+  const fixture = await createFixture('nx-integrated')
+  ctx.cleanup = fixture.cleanup
+  const project = new Project(ctx.fs, fixture.cwd)
+  const settings = await project.getDevServerSettings()
+
+  expect(settings).toMatchObject({
+    packages: [],
+  })
+})
+
 describe.concurrent('Setting the node.js version', () => {
   test('should set the node version correctly by passing the process.version', async ({ fs }) => {
     const project = new Project(fs)

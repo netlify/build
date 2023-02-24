@@ -13,9 +13,9 @@ test('detect a Quasar project', async ({ fs }) => {
     'package.json': JSON.stringify({ dependencies: { '@quasar/app': 'latest' } }),
   })
   const detected = await new Project(fs, cwd).detectFrameworks()
-  expect(detected[0].id).toBe('quasar')
-  expect(detected[0].name).toBe('Quasar')
-  expect(detected[0].dev?.command).toBe('quasar dev -p 8081')
+  expect(detected?.[0].id).toBe('quasar')
+  expect(detected?.[0].name).toBe('Quasar')
+  expect(detected?.[0].dev?.command).toBe('quasar dev -p 8081')
 })
 
 test('detect a Quasar v0.17 project', async ({ fs }) => {
@@ -23,7 +23,7 @@ test('detect a Quasar v0.17 project', async ({ fs }) => {
     'package.json': JSON.stringify({ dependencies: { 'quasar-cli': '0.17.0' } }),
   })
   const detected = await new Project(fs, cwd).detectFrameworks()
-  expect(detected[0].id).toBe('quasar-v0.17')
-  expect(detected[0].name).toBe('Quasar')
-  expect(detected[0].dev?.command).toBe('quasar dev -p 8080')
+  expect(detected?.[0].id).toBe('quasar-v0.17')
+  expect(detected?.[0].name).toBe('Quasar')
+  expect(detected?.[0].dev?.command).toBe('quasar dev -p 8080')
 })

@@ -13,9 +13,9 @@ test('detect a docusarus v1 project based on the config file', async ({ fs }) =>
     'siteConfig.js': '',
   })
   const detected = await new Project(fs, cwd).detectFrameworks()
-  expect(detected[0].id).toBe('docusaurus')
-  expect(detected[0].build.command).toBe('docusaurus-build')
-  expect(detected[0].dev?.command).toBe('docusaurus-start')
+  expect(detected?.[0].id).toBe('docusaurus')
+  expect(detected?.[0].build.command).toBe('docusaurus-build')
+  expect(detected?.[0].dev?.command).toBe('docusaurus-start')
 })
 
 test('detect a docusarus v1 project based on the package.json', async ({ fs }) => {
@@ -23,9 +23,9 @@ test('detect a docusarus v1 project based on the package.json', async ({ fs }) =
     'package.json': JSON.stringify({ dependencies: { docusaurus: '^1.0.0' } }),
   })
   const detected = await new Project(fs, cwd).detectFrameworks()
-  expect(detected[0].id).toBe('docusaurus')
-  expect(detected[0].build.command).toBe('docusaurus-build')
-  expect(detected[0].dev?.command).toBe('docusaurus-start')
+  expect(detected?.[0].id).toBe('docusaurus')
+  expect(detected?.[0].build.command).toBe('docusaurus-build')
+  expect(detected?.[0].dev?.command).toBe('docusaurus-start')
 })
 
 test('detect a docusarus v2 project based on the config file', async ({ fs }) => {
@@ -33,10 +33,10 @@ test('detect a docusarus v2 project based on the config file', async ({ fs }) =>
     'docusaurus.config.js': '',
   })
   const detected = await new Project(fs, cwd).detectFrameworks()
-  expect(detected[0].id).toBe('docusaurus')
-  expect(detected[0].build.command).toBe('docusaurus build')
-  expect(detected[0].build.directory).toBe('build')
-  expect(detected[0].dev?.command).toBe('docusaurus start')
+  expect(detected?.[0].id).toBe('docusaurus')
+  expect(detected?.[0].build.command).toBe('docusaurus build')
+  expect(detected?.[0].build.directory).toBe('build')
+  expect(detected?.[0].dev?.command).toBe('docusaurus start')
 })
 
 test('detect a docusarus v2 project based on the package.json', async ({ fs }) => {
@@ -44,8 +44,8 @@ test('detect a docusarus v2 project based on the package.json', async ({ fs }) =
     'package.json': JSON.stringify({ dependencies: { '@docusaurus/core': '~2.0.0' } }),
   })
   const detected = await new Project(fs, cwd).detectFrameworks()
-  expect(detected[0].id).toBe('docusaurus')
-  expect(detected[0].build.command).toBe('docusaurus build')
-  expect(detected[0].build.directory).toBe('build')
-  expect(detected[0].dev?.command).toBe('docusaurus start')
+  expect(detected?.[0].id).toBe('docusaurus')
+  expect(detected?.[0].build.command).toBe('docusaurus build')
+  expect(detected?.[0].build.directory).toBe('build')
+  expect(detected?.[0].dev?.command).toBe('docusaurus start')
 })

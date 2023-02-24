@@ -1,7 +1,8 @@
-import { expect, test } from 'vitest'
+import { beforeEach, expect, test } from 'vitest'
 
 import { mockFileSystem } from '../../tests/mock-file-system.js'
-import { getBuildInfo } from '../node/get-build-info.js'
+import { NodeFS } from '../node/file-system.js'
+import { Project } from '../project.js'
 
 const PNPMWorkspace: Record<string, string> = {
   'pnpm-workspace.yaml': `packages:\n- packages/*`,
@@ -18,8 +19,16 @@ const PNPMWorkspace: Record<string, string> = {
   }),
 }
 
-test('should detect the frameworks correctly from a pnpm workspace repository root', async () => {
+beforeEach((ctx) => {
+  ctx.fs = new NodeFS()
+})
+
+test('should detect the frameworks correctly from a pnpm workspace repository root', async ({ fs }) => {
   const cwd = mockFileSystem(PNPMWorkspace)
-  const info = await getBuildInfo(cwd)
-  expect(info.frameworks).toHaveLength(2)
+  const project = new Project(fs, cwd)
+  const detection = await project.detectFrameworks()
+  expect(detection).toHaveLength(2)
+
+  // expect([...(detection?.values() || [])]).toEqual(expect.arrayContaining([{ id: 'astro' }]))
+  // expect(info.frameworks).toHaveLength(2)
 })

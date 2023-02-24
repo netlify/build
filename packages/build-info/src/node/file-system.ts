@@ -60,11 +60,6 @@ export class NodeFS extends FileSystem {
   }
 
   async readFile(path: string): Promise<string> {
-    const storedFile = this.getFile(path)
-    // no need to read again (just use the already stored file)
-    if (storedFile?.type === 'text') {
-      return storedFile.content
-    }
     return (await fs.readFile(resolve(path), 'utf-8')).toString()
   }
 

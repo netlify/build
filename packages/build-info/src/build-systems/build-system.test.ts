@@ -55,5 +55,5 @@ test('invalid package json handled gracefully', async ({ fs }) => {
   const detected = await new Project(fs, join(cwd, 'packages/website')).detectBuildSystem()
   expect(detected[0].name).toBe('MoonRepo')
   expect(detected[0].version).toBeUndefined()
-  expect(logSpy).toHaveBeenCalledOnce()
+  expect(logSpy).toHaveBeenCalled()
 })

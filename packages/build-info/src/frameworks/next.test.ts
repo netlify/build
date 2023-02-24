@@ -33,25 +33,25 @@ describe('simple Next.js project', async () => {
 
   test('should detect Next.js based on a simple package.json dependency', async ({ fs, cwd }) => {
     const detected = await new Project(fs, cwd).detectFrameworks()
-    expect(detected[0].id).toBe('next')
+    expect(detected?.[0].id).toBe('next')
   })
 
   test('Should not detect Next.js plugin for Next.js if no node version is defined', async ({ fs, cwd }) => {
     const detected = await new Project(fs, cwd).detectFrameworks()
-    expect(detected[0].id).toBe('next')
-    expect(detected[0].plugins).toHaveLength(0)
+    expect(detected?.[0].id).toBe('next')
+    expect(detected?.[0].plugins).toHaveLength(0)
   })
 
   test('Should not detect Next.js plugin for Next.js if when Node version < 10.13.0', async ({ fs, cwd }) => {
     const detected = await new Project(fs, cwd).setNodeVersion('v8.3.0').detectFrameworks()
-    expect(detected[0].id).toBe('next')
-    expect(detected[0].plugins).toHaveLength(0)
+    expect(detected?.[0].id).toBe('next')
+    expect(detected?.[0].plugins).toHaveLength(0)
   })
 
   test('Should detect Next.js plugin for Next.js if when Node version >= 10.13.0', async ({ fs, cwd }) => {
     const detected = await new Project(fs, cwd).setEnvironment({ NODE_VERSION: '18.x' }).detectFrameworks()
-    expect(detected[0].id).toBe('next')
-    expect(detected[0].plugins).toMatchObject(['@netlify/plugin-nextjs'])
+    expect(detected?.[0].id).toBe('next')
+    expect(detected?.[0].plugins).toMatchObject(['@netlify/plugin-nextjs'])
   })
 })
 
@@ -73,11 +73,11 @@ describe('Next.js Monorepo using PNPM', () => {
 
   test('should detect Next.js from an base directory inside a monorepo', async ({ fs, cwd }) => {
     const detected = await new Project(fs, join(cwd, 'apps/website'), cwd).detectFrameworks()
-    expect(detected[0].id).toBe('next')
+    expect(detected?.[0].id).toBe('next')
   })
 
   test('should detect Next.js from the root of a monorepo', async ({ fs, cwd }) => {
     const detected = await new Project(fs, cwd).detectFrameworks()
-    expect(detected[0].id).toBe('next')
+    expect(detected?.[0].id).toBe('next')
   })
 })

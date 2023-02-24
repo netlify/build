@@ -34,16 +34,39 @@ export type findUpOptions = {
   stopAt?: string
 }
 
+/** A platform independent version of path.join() */
+export function join(...segments: string[]): string {
+  let parts: string[] = []
+  for (let i = 0, max = segments.length; i < max; i++) {
+    // split the segments to parts by all kind of separator (forward and backward)
+    parts = parts.concat(segments[i].split(/[\\/]/g))
+  }
+
+  // resolve .. inside path segments
+  const resolvedParts: string[] = []
+  for (let i = 0, max = parts.length; i < max; i++) {
+    const part = parts[i]
+    // Remove leading and trailing slashes
+    // Also remove "." segments
+    if (!part || part === '.') continue
+    // Interpret ".." to pop the last segment
+    if (part === '..') {
+      resolvedParts.pop()
+    } else {
+      resolvedParts.push(part)
+    }
+  }
+  // Preserve the initial slash if there was one.
+  if (parts[0] === '') {
+    resolvedParts.unshift('')
+  }
+
+  return resolvedParts.join('/') || (resolvedParts.length ? '/' : '.')
+}
+
 export abstract class FileSystem {
   logger: Logger = new DefaultLogger()
 
-  /**
-   * This is a in memory representation of the parsed files
-   * The keys are always stored in posix style
-   * If the value is null then the file did not get read up in memory yet.
-   * If the value is a string it already got read up in mem.
-   */
-  files = new Map<string, File | null>()
   /** The current working directory will be set by the project */
   cwd = '/'
 
@@ -119,76 +142,13 @@ export abstract class FileSystem {
 
   /** A platform independent version of path.join() */
   join(...segments: string[]): string {
-    let parts: string[] = []
-    for (let i = 0, max = segments.length; i < max; i++) {
-      // split the segments to parts by all kind of separator (forward and backward)
-      parts = parts.concat(segments[i].split(/[\\/]/g))
-    }
-
-    // resolve .. inside path segments
-    const resolvedParts: string[] = []
-    for (let i = 0, max = parts.length; i < max; i++) {
-      const part = parts[i]
-      // Remove leading and trailing slashes
-      // Also remove "." segments
-      if (!part || part === '.') continue
-      // Interpret ".." to pop the last segment
-      if (part === '..') {
-        resolvedParts.pop()
-      } else {
-        resolvedParts.push(part)
-      }
-    }
-    // Preserve the initial slash if there was one.
-    if (parts[0] === '') {
-      resolvedParts.unshift('')
-    }
-
-    return resolvedParts.join('/') || (resolvedParts.length ? '/' : '.')
-  }
-
-  /** adds a file to the file map */
-  setFile(path: string, content: File): void {
-    this.files.set(path, content)
-  }
-
-  /** get a file from the file map */
-  getFile(path: string): File | null {
-    return this.files.get(path) || null
-  }
-
-  /** get a json file from the file map */
-  getJSONFile<T = Record<string, any>>(path: string): JSONFile<T> | null {
-    const file = this.files.get(path) || null
-    if (file?.type === 'json') {
-      return file as JSONFile<T>
-    }
-    return null
-  }
-
-  /** get a toml file from the file map */
-  getTOMLFile(path: string): TOMLFile | null {
-    const file = this.files.get(path) || null
-    if (file?.type === 'toml') {
-      return file
-    }
-    return null
-  }
-
-  /** Checks if a file is already in our in memory representation */
-  hasFile(path): boolean {
-    const resolvedPath = path
-    const file = this.files.get(resolvedPath)
-
-    return Boolean(file?.content)
+    return join(...segments)
   }
 
   /** Gracefully reads a file as JSON and parses it */
   async readJSON<V = Record<string, unknown>>(path: string): Promise<Partial<V>> {
     try {
-      const content = JSON.parse(await this.readFile(path))
-      this.files.set(path, { content, type: 'json' })
-      return content
+      return JSON.parse(await this.readFile(path))
     } catch (error) {
       this.logger.error(`Could not parse JSON file ${path}\n${error}`)
       return {}

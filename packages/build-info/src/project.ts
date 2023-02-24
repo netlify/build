@@ -26,8 +26,8 @@ export class Project {
   workspace: WorkspaceInfo | null
   /** The detected build-systems */
   buildSystems: BuildSystem[]
-  /** The detected frameworks */
-  frameworks: Framework[]
+  /** The detected frameworks for each path in a project */
+  frameworks: Map<string, Framework[]>
   /** a representation of the current environment */
   #environment: Record<string, string | undefined> = {}
 
@@ -128,9 +128,9 @@ export class Project {
     if (this.workspace !== undefined) {
       return this.workspace
     }
-
     // workspaces depend on package manager detection so run it first
     await this.detectPackageManager()
+
     try {
       this.workspace = await detectWorkspaces(this)
       return this.workspace
@@ -145,10 +145,21 @@ export class Project {
     if (this.buildSystems !== undefined) {
       return this.buildSystems
     }
+    // build systems depends on workspaces detection
+    await this.detectWorkspaces()
+
     try {
-      const detected = await Promise.all(buildSystems.map(async (BuildSystem) => await new BuildSystem().detect(this)))
-      this.buildSystems = detected.filter(Boolean) as BuildSystem[]
-      return this.buildSystems
+      const detected: any[] = []
+      // perform the detection in series to avoid having the same HTTP request in parallel.
+      // It's faster to perform one detection, do all the needed HTTP requests and reuse the results
+      // on consecutive runs.
+      for (const BuildSystem of buildSystems) {
+        const res = await new BuildSystem(this).detect()
+        if (res) {
+          detected.push(res.toJSON())
+        }
+      }
+      return detected
     } catch {
       return []
     }
@@ -158,19 +169,63 @@ export class Project {
   async detectFrameworks() {
     // if the workspace is undefined, the detection was not run.
     if (this.frameworks !== undefined) {
-      return this.frameworks
+      return [...this.frameworks.values()].flat()
     }
 
-    // frameworks depend on build system and workspace detection so run it first
-    // await this.detectBuildSystem()
-    await this.detectWorkspaces()
-
     try {
-      const detected = await Promise.all(frameworks.map(async (Framework) => await new Framework(this).detect()))
-      this.frameworks = detected.filter(Boolean) as Framework[]
-      return this.frameworks
+      // This needs to be run first
+      await this.detectBuildSystem()
+      this.frameworks = new Map()
+
+      if (this.workspace?.isRoot) {
+        for (const pkg of this.workspace.packages) {
+          this.frameworks.set(pkg, await this.detectFrameworksInPath(pkg))
+        }
+      } else {
+        this.frameworks.set('', await this.detectFrameworksInPath())
+      }
+
+      return [...this.frameworks.values()].flat()
+    } catch {
+      return null
+    }
+  }
+
+  private async detectFrameworksInPath(path?: string) {
+    try {
+      const detected: Framework[] = []
+      // perform the detection in series to avoid having the same HTTP request in parallel.
+      // It's faster to perform one detection, do all the needed HTTP requests and reuse the results
+      // on consecutive runs.
+      for (const Frameowk of frameworks) {
+        const res = await new Frameowk(this, path).detect()
+        if (res) {
+          detected.push(res)
+        }
+      }
+      return detected
     } catch {
       return []
     }
+  }
+
+  async getDevServerSettings() {
+    await this.detectFrameworks()
+
+    const buildSystem = this.buildSystems.find((system) => system.dev)
+
+    if (buildSystem) {
+      console.log(buildSystem)
+      // get the framework for the default build system
+      // if (this.frameworks.size > 1) {
+      // }
+      // console.log(this.frameworks)
+    }
+    // TODO return frameworks
+    // console.log(this)
+    // return {
+    //   command: '',
+    //   frameworkPort: number,
+    // }
   }
 }

@@ -5,7 +5,7 @@ import { BaseFramework, Category, Framework } from './framework.js'
 export class Next extends BaseFramework implements Framework {
   id = 'next'
   name = 'Next.js'
-  category = Category.FrontendFramework
+  category = Category.SSG
   npmDependencies = ['next']
 
   dev = {

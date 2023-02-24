@@ -7,15 +7,15 @@ export class Moon extends BaseBuildTool {
   name = 'MoonRepo'
   configFiles = ['.moon']
 
-  async detect(project: Project) {
-    const config = await project.fs.findUp(this.configFiles, {
-      cwd: project.baseDirectory,
+  async detect() {
+    const config = await this.project.fs.findUp(this.configFiles, {
+      cwd: this.project.baseDirectory,
       type: 'directory',
-      stopAt: project.root,
+      stopAt: this.project.root,
     })
 
     if (config) {
-      const pkgJson = await project.getPackageJSON(config)
+      const pkgJson = await this.project.getPackageJSON(config)
       this.version = pkgJson.devDependencies?.[this.id]
       return this
     }
