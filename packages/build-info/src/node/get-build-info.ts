@@ -48,7 +48,7 @@ export async function getBuildInfo(projectDir?: string, rootDir?: string): Promi
   const info: Info = {
     packageManager: await project.detectPackageManager(),
     jsWorkspaces: await project.detectWorkspaces(),
-    frameworks: await project.detectFrameworks(),
+    frameworks,
     buildSystems: await project.detectBuildSystem(),
   }
 

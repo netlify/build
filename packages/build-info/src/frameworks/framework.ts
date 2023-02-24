@@ -49,18 +49,18 @@ export type VerboseDetection = {
   config?: string
 }
 
-type DevServerSetting = {
-  command: string
-  /** The port the framework is served at */
-  frameworkPort: number
-  /** The directory that is used for static assets, to be served. Fallback to the build output directory */
-  dist: string
-  /** The name of the framework */
-  framework: string
-  pollingStrategies: string[]
-  /** list of necessary plugins */
-  plugins: string[]
-}
+// type DevServerSetting = {
+//   command: string
+//   /** The port the framework is served at */
+//   frameworkPort: number
+//   /** The directory that is used for static assets, to be served. Fallback to the build output directory */
+//   dist: string
+//   /** The name of the framework */
+//   framework: string
+//   pollingStrategies: string[]
+//   /** list of necessary plugins */
+//   plugins: string[]
+// }
 
 export abstract class BaseFramework {
   id: string

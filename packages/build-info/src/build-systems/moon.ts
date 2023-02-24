@@ -1,5 +1,3 @@
-import { Project } from '../project.js'
-
 import { BaseBuildTool } from './build-system.js'
 
 export class Moon extends BaseBuildTool {
