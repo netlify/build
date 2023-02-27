@@ -8,6 +8,7 @@
     "node": "./lib/main.js",
     "default": "./dist/index.umd.cjs"
   },
+  "types": "./lib/main.d.ts",
   "files": [
     "lib",
     "dist/index.umd.cjs"
