@@ -29,8 +29,8 @@ export const createFixture = async (fixture: string) => {
         recursive: true,
       })
     }
-  } catch (error) {
-    console.log(error?.message)
+  } catch {
+    // noop
   }
 
   return {

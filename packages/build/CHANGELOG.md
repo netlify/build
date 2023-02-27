@@ -57,6 +57,21 @@
   * dependencies
     * @netlify/config bumped from ^20.0.1 to ^20.0.2
 
+## [29.5.8](https://github.com/netlify/build/compare/build-v29.5.7...build-v29.5.8) (2023-02-17)
+
+
+### Bug Fixes
+
+* add test for generator field and remove internalSrcFolder usage ([#4857](https://github.com/netlify/build/issues/4857)) ([f1a0a5b](https://github.com/netlify/build/commit/f1a0a5b1fb6f128978b77d21e80a8c9404ad3528))
+* **deps:** update dependency @netlify/edge-bundler to v8.7.0 ([#4875](https://github.com/netlify/build/issues/4875)) ([26553fb](https://github.com/netlify/build/commit/26553fb3fa9b66274940eac006a115d163af7c89))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.1.8 to ^5.1.9
+
 ## [29.5.7](https://github.com/netlify/build/compare/build-v29.5.6...build-v29.5.7) (2023-02-14)
 
 

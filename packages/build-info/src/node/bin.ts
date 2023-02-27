@@ -1,4 +1,4 @@
-import { exit, argv } from 'process'
+import { argv, exit } from 'process'
 
 import yargs, { Arguments } from 'yargs'
 import { hideBin } from 'yargs/helpers'
@@ -18,8 +18,7 @@ yargs(hideBin(argv))
       }),
     async ({ projectDir, rootDir }: Arguments<{ projectDir?: string; rootDir?: string }>) => {
       try {
-        const buildInfo = await getBuildInfo({ projectDir, rootDir })
-        console.log(JSON.stringify(buildInfo, null, 2))
+        console.log(JSON.stringify(await getBuildInfo(projectDir, rootDir), null, 2))
       } catch (error) {
         console.error(error)
         exit(1)
