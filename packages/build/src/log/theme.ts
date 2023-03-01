@@ -6,11 +6,11 @@ import chalk from 'chalk'
  */
 export const THEME = {
   // Main headers
-  header: chalk.cyanBright.bold,
+  header: chalk.magentaBright.bold,
   // Single lines used as sub-headers
-  subHeader: chalk.cyan.bold,
+  subHeader: chalk.magenta.bold,
   // One of several words that should be highlighted inside a line
-  highlightWords: chalk.cyan,
+  highlightWords: chalk.magenta,
   // Same for errors
   errorHeader: chalk.redBright.bold,
   errorSubHeader: chalk.red.bold,
