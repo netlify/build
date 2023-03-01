@@ -16,7 +16,7 @@ describe('PNPM Workspaces', () => {
   })
 
   test('should detect a regular pnpm workspace from a package level', async ({ cwd }) => {
-    const info = await getBuildInfo('packages/website', cwd)
+    const info = await getBuildInfo({ projectDir: 'packages/website', rootDir: cwd })
     expect(info.packageManager?.name).toBe('pnpm')
     expect(info.jsWorkspaces?.isRoot).toBe(false)
     expect(info.jsWorkspaces?.packages).toEqual([join('packages/blog'), join('packages/website')])
@@ -24,7 +24,7 @@ describe('PNPM Workspaces', () => {
   })
 
   test('should detect a regular pnpm workspace from the root level', async ({ cwd }) => {
-    const info = await getBuildInfo(cwd)
+    const info = await getBuildInfo({ projectDir: cwd })
     expect(info.packageManager?.name).toBe('pnpm')
     expect(info.jsWorkspaces?.isRoot).toBe(true)
     expect(info.jsWorkspaces?.packages).toEqual([join('packages/blog'), join('packages/website')])
@@ -36,7 +36,7 @@ test('should detect a regular pnpm project with a lock file in the root', async 
   const fixture = await createFixture('pnpm-simple')
   ctx.cleanup = fixture.cleanup
 
-  const info = await getBuildInfo('', fixture.cwd)
+  const info = await getBuildInfo({ projectDir: '', rootDir: fixture.cwd })
   expect(info.packageManager?.name).toBe('pnpm')
 })
 
@@ -44,6 +44,6 @@ test('should detect a regular pnpm project that is nested in a sub-folder', asyn
   const fixture = await createFixture('pnpm-nested')
   ctx.cleanup = fixture.cleanup
 
-  const info = await getBuildInfo(`website`, fixture.cwd)
+  const info = await getBuildInfo({ projectDir: `website`, rootDir: fixture.cwd })
   expect(info.packageManager?.name).toBe('pnpm')
 })
