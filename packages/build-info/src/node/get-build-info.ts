@@ -31,11 +31,13 @@ export class NoopLogger implements Logger {
 }
 
 /** Get the build info object that is used inside buildbot */
-export async function getBuildInfo(config: {
-  projectDir?: string
-  rootDir?: string
-  featureFlags: Record<string, boolean>
-}): Promise<Info> {
+export async function getBuildInfo(
+  config: {
+    projectDir?: string
+    rootDir?: string
+    featureFlags?: Record<string, boolean>
+  } = { featureFlags: {} },
+): Promise<Info> {
   const fs = new NodeFS()
   // prevent logging in output as we use the stdout to capture the json
   fs.logger = new NoopLogger()
