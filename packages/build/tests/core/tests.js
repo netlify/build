@@ -538,7 +538,6 @@ test.serial('functions can have a config with different parameters passed to zip
   const output = await new Fixture('./fixtures/functions_config_json')
     .withFlags({
       mode: 'buildbot',
-      featureFlags: { project_deploy_configuration_api_use_per_function_configuration_files: true },
     })
     .runWithBuild()
 
