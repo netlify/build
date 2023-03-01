@@ -11,6 +11,7 @@ beforeEach((ctx) => {
 test('should not add the plugin if the node version is below 12.13.0', async ({ fs }) => {
   const cwd = mockFileSystem({
     'package.json': JSON.stringify({ dependencies: { gatsby: '^4.0.0' } }),
+    'gatsby-config.js': '',
   })
   const detected = await new Project(fs, cwd).setNodeVersion('12.12.9').detectFrameworks()
   expect(detected?.[0].id).toBe('gatsby')
@@ -20,6 +21,7 @@ test('should not add the plugin if the node version is below 12.13.0', async ({ 
 test('should detect a simple Gatsby project and add the plugin if the node version is large enough', async ({ fs }) => {
   const cwd = mockFileSystem({
     'package.json': JSON.stringify({ dependencies: { gatsby: '^4.0.0' } }),
+    'gatsby-config.js': '',
   })
   const detected = await new Project(fs, cwd).setNodeVersion('12.13.0').detectFrameworks()
   expect(detected?.[0].id).toBe('gatsby')
@@ -29,6 +31,7 @@ test('should detect a simple Gatsby project and add the plugin if the node versi
 test('should detect a simple Gatsby 4 project', async ({ fs }) => {
   const cwd = mockFileSystem({
     'package.json': JSON.stringify({ dependencies: { gatsby: '^4.0.0' } }),
+    'gatsby-config.js': '',
   })
   const detected = await new Project(fs, cwd).detectFrameworks()
   expect(detected?.[0].id).toBe('gatsby')
@@ -45,6 +48,7 @@ test('should detect a simple Gatsby 4 project', async ({ fs }) => {
 test('should detect a simple Gatsby 5 project', async ({ fs }) => {
   const cwd = mockFileSystem({
     'package.json': JSON.stringify({ dependencies: { gatsby: '^5.0.0' } }),
+    'gatsby-config.js': '',
   })
   const detected = await new Project(fs, cwd).detectFrameworks()
   expect(detected?.[0].id).toBe('gatsby')

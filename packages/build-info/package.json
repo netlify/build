@@ -36,6 +36,7 @@
   },
   "author": "Netlify Inc.",
   "dependencies": {
+    "@bugsnag/js": "^7.20.0",
     "@netlify/framework-info": "^9.8.1",
     "find-up": "^6.3.0",
     "minimatch": "^6.2.0",

@@ -2,9 +2,10 @@ import { join, resolve } from 'path'
 import { cwd } from 'process'
 
 import { parse } from 'semver'
-import { afterEach, beforeEach, describe, expect, test } from 'vitest'
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 
 import { createFixture } from '../tests/helpers.js'
+import { mockFileSystem } from '../tests/mock-file-system.js'
 
 import { NodeFS } from './node/file-system.js'
 import { Project } from './project.js'
@@ -15,18 +16,18 @@ beforeEach((ctx) => {
 
 afterEach(async ({ cleanup }) => await cleanup?.())
 
-test.only('asdf', async (ctx) => {
-  const fixture = await createFixture('nx-integrated')
-  ctx.cleanup = fixture.cleanup
-  const project = new Project(ctx.fs, fixture.cwd)
-  const settings = await project.getDevServerSettings()
+// test('asdf', async (ctx) => {
+//   const fixture = await createFixture('nx-integrated')
+//   ctx.cleanup = fixture.cleanup
+//   const project = new Project(ctx.fs, fixture.cwd)
+//   const settings = await project.getDevServerSettings()
 
-  expect(settings).toMatchObject({
-    packages: [],
-  })
-})
+//   expect(settings).toMatchObject({
+//     packages: [],
+//   })
+// })
 
-describe.concurrent('Setting the node.js version', () => {
+describe('Setting the node.js version', () => {
   test('should set the node version correctly by passing the process.version', async ({ fs }) => {
     const project = new Project(fs)
     expect(await project.getCurrentNodeVersion()).toBeNull()
@@ -51,7 +52,41 @@ describe.concurrent('Setting the node.js version', () => {
 
   test('should set the node version correctly through a coerced environment variable', async ({ fs }) => {
     const project = new Project(fs).setEnvironment({ NODE_VERSION: '18' })
+    const readFileSpy = vi.spyOn(fs, 'readFile')
     expect(await project.getCurrentNodeVersion()).toMatchObject({ major: 18, minor: 0, patch: 0 })
+    expect(readFileSpy).not.toHaveBeenCalled()
+  })
+
+  test('should get the node version through the .node_version file', async ({ fs }) => {
+    const cwd = mockFileSystem({ '.node_version': '18.x' })
+    const readFileSpy = vi.spyOn(fs, 'readFile')
+    const project = new Project(fs, cwd)
+    expect(await project.getCurrentNodeVersion()).toMatchObject({ major: 18, minor: 0, patch: 0 })
+    expect(readFileSpy).toHaveBeenCalledWith('.node_version')
+  })
+
+  test('should get the node version through the .nvmrc file', async ({ fs }) => {
+    const cwd = mockFileSystem({ '.nvmrc': '16.x' })
+    const readFileSpy = vi.spyOn(fs, 'readFile')
+    const project = new Project(fs, cwd)
+    expect(await project.getCurrentNodeVersion()).toMatchObject({ major: 16, minor: 0, patch: 0 })
+    expect(readFileSpy).toHaveBeenCalledWith('.nvmrc')
+  })
+
+  test('should prefer the manual set node version over the file', async ({ fs }) => {
+    const cwd = mockFileSystem({ '.nvmrc': '16.x' })
+    const readFileSpy = vi.spyOn(fs, 'readFile')
+    const project = new Project(fs, cwd).setNodeVersion('17.1.2')
+    expect(await project.getCurrentNodeVersion()).toMatchObject({ major: 17, minor: 1, patch: 2 })
+    expect(readFileSpy).not.toHaveBeenCalled()
+  })
+
+  // TODO: this test needs to be implemented
+  test.skip('should have a fallback node version if none is set', async ({ fs }) => {
+    const readFileSpy = vi.spyOn(fs, 'readFile')
+    const project = new Project(fs)
+    expect(await project.getCurrentNodeVersion()).toMatchObject({ major: 16, minor: 1, patch: 2 })
+    expect(readFileSpy).not.toHaveBeenCalled()
   })
 })
 

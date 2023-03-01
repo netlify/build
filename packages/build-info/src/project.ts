@@ -43,14 +43,22 @@ export class Project {
     if (this._nodeVersion) {
       return this._nodeVersion
     }
-    const nodeEnv = parse(coerce(this.getEnv('NODE_VERSION')), {
-      loose: true,
-    })
+    const nodeEnv = parse(coerce(this.getEnv('NODE_VERSION')), { loose: true })
     if (nodeEnv) {
       return nodeEnv
     }
 
-    // TODO: parse .nvm file as well
+    const nvmrc = await this.fs.gracefullyReadFile('.nvmrc')
+    if (nvmrc) {
+      return parse(coerce(nvmrc, { loose: true }))
+    }
+
+    const nodeVersion = await this.fs.gracefullyReadFile('.node_version')
+    if (nodeVersion) {
+      return parse(coerce(nodeVersion, { loose: true }))
+    }
+
+    // TODO: think of returning a default node version
     return null
   }
 
@@ -149,17 +157,27 @@ export class Project {
     await this.detectWorkspaces()
 
     try {
-      const detected: any[] = []
-      // perform the detection in series to avoid having the same HTTP request in parallel.
-      // It's faster to perform one detection, do all the needed HTTP requests and reuse the results
-      // on consecutive runs.
-      for (const BuildSystem of buildSystems) {
-        const res = await new BuildSystem(this).detect()
-        if (res) {
-          detected.push(res.toJSON())
+      // on node we can parallelize more
+      if (this.fs.getEnvironment() === 'node') {
+        const detected = (await Promise.all(buildSystems.map((BuildSystem) => new BuildSystem(this).detect()))).filter(
+          Boolean,
+        ) as BuildSystem[]
+
+        this.buildSystems = detected
+      } else {
+        // In the browser perform the detection in series to avoid having the same HTTP request in parallel.
+        // It's faster to perform one detection, do all the needed HTTP requests and reuse the results
+        // on consecutive runs.
+        const detected: BuildSystem[] = []
+        for (const BuildSystem of buildSystems) {
+          const res = await new BuildSystem(this).detect()
+          if (res) {
+            detected.push(res)
+          }
         }
+        this.buildSystems = detected
       }
-      return detected
+      return this.buildSystems
     } catch {
       return []
     }
@@ -179,10 +197,21 @@ export class Project {
 
       if (this.workspace?.isRoot) {
         for (const pkg of this.workspace.packages) {
-          this.frameworks.set(pkg, await this.detectFrameworksInPath(pkg))
+          this.frameworks.set(pkg, await this.detectFrameworksInPath(this.fs.join(this.workspace.rootDir, pkg)))
         }
       } else {
-        this.frameworks.set('', await this.detectFrameworksInPath())
+        // per default set on ''
+        let root = ''
+        // if the framework detection was run inside a baseDirectory of a workspace
+        // we still want to store the result in the correct package key of the frameworks map
+        if (this.workspace) {
+          const relBaseDirectory = this.fs.relative(this.workspace.rootDir, this.baseDirectory)
+
+          if (this.workspace.packages.includes(relBaseDirectory)) {
+            root = relBaseDirectory
+          }
+        }
+        this.frameworks.set(root, await this.detectFrameworksInPath())
       }
 
       return [...this.frameworks.values()].flat()
@@ -191,21 +220,33 @@ export class Project {
     }
   }
 
-  private async detectFrameworksInPath(path?: string) {
+  private async detectFrameworksInPath(path?: string): Promise<Framework[]> {
     try {
-      const detected: Framework[] = []
-      // perform the detection in series to avoid having the same HTTP request in parallel.
-      // It's faster to perform one detection, do all the needed HTTP requests and reuse the results
-      // on consecutive runs.
-      for (const Frameowk of frameworks) {
-        const res = await new Frameowk(this, path).detect()
-        if (res) {
-          detected.push(res)
+      // on node we can parallelize more
+      if (this.fs.getEnvironment() === 'node') {
+        return (await Promise.all(frameworks.map((Framework) => new Framework(this, path).detect()))).filter(Boolean)
+      } else {
+        // In the browser perform the detection in series to avoid having the same HTTP request in parallel.
+        // It's faster to perform one detection, do all the needed HTTP requests and reuse the results
+        // on consecutive runs.
+        const detected: Framework[] = []
+        for (const Framework of frameworks) {
+          const res = await new Framework(this, path).detect()
+          if (res) {
+            detected.push(res)
+          }
         }
+        return detected
       }
-      return detected
     } catch {
       return []
+    }
+  }
+
+  async getBuildSettings() {
+    return {
+      settings: {},
+      warnings: null,
     }
   }
 

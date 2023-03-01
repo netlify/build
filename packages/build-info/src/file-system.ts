@@ -70,6 +70,8 @@ export abstract class FileSystem {
   /** The current working directory will be set by the project */
   cwd = '/'
 
+  abstract getEnvironment(): 'browser' | 'node'
+
   abstract fileExists(path: string): Promise<boolean>
 
   abstract readDir(path: string): Promise<string[]>
@@ -143,6 +145,15 @@ export abstract class FileSystem {
   /** A platform independent version of path.join() */
   join(...segments: string[]): string {
     return join(...segments)
+  }
+
+  /** Gracefully reads the file and returns null if it does not exist */
+  async gracefullyReadFile(path: string): Promise<string | null> {
+    try {
+      return await this.readFile(path)
+    } catch {
+      return null
+    }
   }
 
   /** Gracefully reads a file as JSON and parses it */

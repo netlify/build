@@ -77,22 +77,86 @@ export abstract class BaseFramework {
   constructor(
     /** The current project inside we want to detect the framework */
     public project: Project,
-    /** The location where the framework got detected */
+    /** An absolute path considered as the baseDirectory for detection, prefer that over the project baseDirectory */
     public path?: string,
   ) {}
 
+  /** Retrieves the version of a npm package from the node_modules */
+  private async getVersionFromNodeModules(packageName: string): Promise<SemVer | undefined> {
+    // on the browser we can omit this check
+    if (this.project.fs.getEnvironment() === 'browser') {
+      return
+    }
+
+    try {
+      const packageJson = await this.project.fs.findUp(
+        this.project.fs.join('node_modules', packageName, 'package.json'),
+        {
+          cwd: this.path || this.project.baseDirectory,
+          stopAt: this.project.root,
+        },
+      )
+
+      if (packageJson) {
+        const { version } = await this.project.fs.readJSON(packageJson)
+
+        if (typeof version === 'string') {
+          return parse(version) || undefined
+        }
+      }
+    } catch {
+      // noop
+    }
+  }
+
   /** check if the npmDependencies are used inside the provided package.json */
-  protected npmDependenciesUsed(pkgJSON: PackageJson): { name: string; version?: SemVer } | undefined {
+  private async npmDependenciesUsed(pkgJSON: PackageJson): Promise<{ name: string; version?: SemVer } | undefined> {
     const found = [
       ...Object.entries(pkgJSON.dependencies || {}),
       ...Object.entries(pkgJSON.devDependencies || {}),
     ].find(([depName]) => this.npmDependencies.includes(depName))
 
     if (found?.[0]) {
+      const version = await this.getVersionFromNodeModules(found[0])
       return {
         name: found[0],
         // coerce to parse syntax like ~0.1.2 or ^1.2.3
-        version: parse(coerce(found[1])) || undefined,
+        version: version || parse(coerce(found[1])) || undefined,
+      }
+    }
+  }
+
+  /** detect if the framework occurs inside the package.json dependencies */
+  private async detectNpmDependency(): Promise<VerboseDetection | undefined | null> {
+    // if no dependency was specified for the framework return null
+    // to mark explicitly nothing to detect here.
+    if (this.npmDependencies.length === 0) {
+      return null
+    }
+
+    if (this.npmDependencies.length) {
+      const pkg = await this.project.getPackageJSON(this.path)
+      const dep = await this.npmDependenciesUsed(pkg)
+      if (dep) {
+        this.version = dep.version
+        return { npmDependency: dep }
+      }
+    }
+  }
+
+  /** detect if the framework config file is located somewhere up the tree */
+  private async detectConfigFile(): Promise<VerboseDetection | undefined | null> {
+    if (this.configFiles.length === 0) {
+      return null
+    }
+
+    if (this.configFiles?.length) {
+      const config = await this.project.fs.findUp(this.configFiles, {
+        cwd: this.path || this.project.baseDirectory,
+        stopAt: this.project.root,
+      })
+      if (config) {
+        return { config }
       }
     }
   }
@@ -106,40 +170,22 @@ export abstract class BaseFramework {
   async detect(): Promise<this | undefined>
   async detect(verbose: true): Promise<VerboseDetection | undefined>
   async detect(verbose?: true) {
-    // detect if the framework occurs inside the package.json dependencies
-    if (this.npmDependencies?.length) {
-      const pkg = await this.project.getPackageJSON(this.path)
-      const dep = this.npmDependenciesUsed(pkg)
-      if (dep) {
-        this.version = dep.version
-        if (verbose) {
-          return { npmDependency: dep } as VerboseDetection
-        }
-        return this
-      }
-    }
+    const npm = await this.detectNpmDependency()
+    const config = await this.detectConfigFile()
 
-    if (this.configFiles?.length) {
-      const config = await this.project.fs.findUp(this.configFiles, {
-        cwd: this.project.baseDirectory,
-        stopAt: this.project.root,
-      })
-      if (config) {
-        if (verbose) {
-          return { config } as VerboseDetection
-        }
-        return this
+    // if both conditions are met it's detected
+    // null would indicate that nothing was specified so just go for undefined
+    if (npm !== undefined && config !== undefined) {
+      if (verbose) {
+        return { ...npm, ...config }
       }
+      return this
     }
     // nothing detected
-    return
   }
 
   /** This method will be called by the JSON.stringify */
   toJSON() {
-    return {
-      name: this.name,
-      id: this.id,
-    }
+    return {}
   }
 }

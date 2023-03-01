@@ -52,9 +52,15 @@ export async function detectNpmOrYarnWorkspaceGlobs(pkgJSON: PackageJson): Promi
  * package paths and will indicate if it's the root of the workspace
  */
 export async function detectWorkspaces(project: Project): Promise<WorkspaceInfo | null> {
-  if (!project.packageManager) {
+  if (project.packageManager === undefined) {
     throw new Error('Please run the packageManager detection before calling the workspace detection!')
   }
+
+  // if it's null it indicates it was already run without any result so we can omit this here as well
+  if (project.packageManager === null) {
+    return null
+  }
+
   const pkgJSON = await project.getRootPackageJSON()
   const workspaceGlobs =
     project.packageManager.name === PkgManager.PNPM

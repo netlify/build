@@ -21,7 +21,8 @@ yargs(hideBin(argv))
         console.log(
           JSON.stringify(
             await getBuildInfo(projectDir, rootDir),
-            // hide null values from the string output
+            // hide null values from the string output as we use null to identify it has already run but did not detect anything
+            // undefined marks that it was never run
             (_, value) => (value !== null ? value : undefined),
             2,
           ),

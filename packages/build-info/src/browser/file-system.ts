@@ -40,6 +40,10 @@ export class WebFS extends FileSystem {
     super()
   }
 
+  getEnvironment() {
+    return 'browser' as const
+  }
+
   isAbsolute(path: string): boolean {
     return path.startsWith('/')
   }

@@ -5,7 +5,7 @@ import { BaseFramework, Category, Framework } from './framework.js'
 export class Gatsby extends BaseFramework implements Framework {
   id = 'gatsby'
   name = 'Gatsby'
-  configFiles = ['gatsby-config.js']
+  configFiles = ['gatsby-config.js', 'gatsby-config.ts']
   npmDependencies = ['gatsby']
   category = Category.SSG
   staticAssetsDirectory = 'static'

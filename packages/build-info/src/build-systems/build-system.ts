@@ -24,7 +24,7 @@ export abstract class BaseBuildTool implements BuildSystem {
 
   constructor(public project: Project) {}
 
-  async detect() {
+  async detect(): Promise<this | undefined> {
     const config = await this.project.fs.findUp(this.configFiles, {
       cwd: this.project.baseDirectory,
       stopAt: this.project.root,

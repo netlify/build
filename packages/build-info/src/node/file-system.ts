@@ -11,6 +11,10 @@ export class NodeFS extends FileSystem {
     this.cwd = process.cwd()
   }
 
+  getEnvironment() {
+    return 'node' as const
+  }
+
   isAbsolute(path: string): boolean {
     return isAbsolute(path)
   }

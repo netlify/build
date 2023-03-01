@@ -52,7 +52,6 @@ const getFrameworkVersion = async (projectDir: string, frameworkInfo: Framework)
 export const listFrameworks = async function (opts: Options = {}): Promise<Framework[]> {
   const context = await getContext(opts.projectDir, opts.nodeVersion)
   const frameworkList = await list(context)
-
   const projectDir = opts && opts.projectDir ? opts.projectDir : cwd()
 
   const settledPromises = await Promise.allSettled(
