@@ -1,5 +1,12 @@
 # Changelog
 
+## [8.8.1](https://github.com/netlify/edge-bundler/compare/v8.8.0...v8.8.1) (2023-03-02)
+
+
+### Bug Fixes
+
+* update std and eszip deps ([#316](https://github.com/netlify/edge-bundler/issues/316)) ([90a8a1d](https://github.com/netlify/edge-bundler/commit/90a8a1d2d34b31c48ad87dbf3f85da954f906289))
+
 ## [8.8.0](https://github.com/netlify/edge-bundler/compare/v8.7.0...v8.8.0) (2023-03-01)
 
 
