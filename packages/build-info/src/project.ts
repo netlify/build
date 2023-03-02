@@ -1,8 +1,10 @@
+import type { NotifiableError } from '@bugsnag/js'
 import type { PackageJson } from 'read-pkg'
 
 import type { BuildSystem } from './build-systems/build-system.js'
 import { buildSystems } from './build-systems/index.js'
 import type { FileSystem } from './file-system.js'
+import { report } from './metrics.js'
 import { detectPackageManager } from './package-managers/detect-package-manager.js'
 import type { PkgManagerFields } from './package-managers/detect-package-manager.js'
 import { detectWorkspaces } from './workspaces/detect-workspace.js'
@@ -44,6 +46,18 @@ export class Project {
     return this.#environment[key]
   }
 
+  /** Reports an error with additional metadata */
+  report(error: NotifiableError) {
+    report(error, {
+      metadata: {
+        build: {
+          baseDirectory: this.baseDirectory,
+          root: this.root,
+        },
+      },
+    })
+  }
+
   /** retrieves the root package.json file */
   async getRootPackageJSON(): Promise<PackageJson> {
     // get the most upper json file
@@ -78,7 +92,8 @@ export class Project {
   async detectWorkspaces() {
     try {
       return detectWorkspaces(this)
-    } catch {
+    } catch (error) {
+      this.report(error)
       return
     }
   }
@@ -90,7 +105,8 @@ export class Project {
         buildSystems.map(async (BuildSystem) => (await new BuildSystem().detect(this))?.toJSON()),
       )
       return detected.filter(Boolean) as BuildSystem[]
-    } catch {
+    } catch (error) {
+      this.report(error)
       return []
     }
   }

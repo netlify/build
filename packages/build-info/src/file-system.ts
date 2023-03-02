@@ -2,6 +2,8 @@ export interface Logger {
   debug(...any: any[]): void
   log(...any: any[]): void
   error(...any: any[]): void
+  info(...any: any[]): void
+  warn(...any: any[]): void
 }
 
 class DefaultLogger implements Logger {
@@ -17,6 +19,16 @@ class DefaultLogger implements Logger {
   error(...data: any[]) {
     // TODO: on error add reporting
     console.error(...data)
+  }
+
+  info(...data: any[]) {
+    // TODO: on error add reporting
+    console.info(...data)
+  }
+
+  warn(...data: any[]) {
+    // TODO: on error add reporting
+    console.warn(...data)
   }
 }
 
