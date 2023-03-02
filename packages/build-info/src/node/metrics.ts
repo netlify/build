@@ -11,7 +11,7 @@ export async function initializeMetrics(): Promise<void> {
   try {
     const { version } = JSON.parse(await readFile(pkgJSON, 'utf-8'))
     Bugsnag.start({
-      apiKey: process.env.BUGSNAG_KEY || '',
+      apiKey: process.env.BUGSNAG_KEY_BUILD_INFO || '',
       appVersion: version,
       releaseStage: 'production',
       enabledReleaseStages: ['production'],
