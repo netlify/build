@@ -1,3 +1,4 @@
+import type { NotifiableError } from '@bugsnag/js'
 import type { PackageJson } from 'read-pkg'
 import { SemVer, parse, coerce } from 'semver'
 
@@ -6,6 +7,7 @@ import { buildSystems } from './build-systems/index.js'
 import type { FileSystem } from './file-system.js'
 import { Framework } from './frameworks/framework.js'
 import { frameworks } from './frameworks/index.js'
+import { report } from './metrics.js'
 import { detectPackageManager } from './package-managers/detect-package-manager.js'
 import type { PkgManagerFields } from './package-managers/detect-package-manager.js'
 import { WorkspaceInfo, detectWorkspaces } from './workspaces/detect-workspace.js'
@@ -85,6 +87,18 @@ export class Project {
     return this.#environment[key]
   }
 
+  /** Reports an error with additional metadata */
+  report(error: NotifiableError) {
+    report(error, {
+      metadata: {
+        build: {
+          baseDirectory: this.baseDirectory,
+          root: this.root,
+        },
+      },
+    })
+  }
+
   /** retrieves the root package.json file */
   async getRootPackageJSON(): Promise<PackageJson> {
     // get the most upper json file
@@ -142,7 +156,8 @@ export class Project {
     try {
       this.workspace = await detectWorkspaces(this)
       return this.workspace
-    } catch {
+    } catch (error) {
+      this.report(error)
       return null
     }
   }
@@ -178,7 +193,8 @@ export class Project {
         this.buildSystems = detected
       }
       return this.buildSystems
-    } catch {
+    } catch (error) {
+      this.report(error)
       return []
     }
   }
@@ -215,7 +231,8 @@ export class Project {
       }
 
       return [...this.frameworks.values()].flat()
-    } catch {
+    } catch (error) {
+      this.report(error)
       return null
     }
   }

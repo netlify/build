@@ -107,8 +107,8 @@ export const detectPackageManager = async (project: Project): Promise<PkgManager
         return pkgManager
       }
     }
-  } catch {
-    // noop
+  } catch (error) {
+    project.report(error)
   }
   // always default to npm
   // TODO: add some reporting here to log that we fall backed

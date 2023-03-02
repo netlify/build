@@ -1,6 +1,7 @@
 import { listFrameworks } from '@netlify/framework-info'
 
 import { Logger } from '../file-system.js'
+import { report } from '../metrics.js'
 import { PkgManagerFields } from '../package-managers/detect-package-manager.js'
 import { Project } from '../project.js'
 import { WorkspaceInfo } from '../workspaces/detect-workspace.js'
@@ -28,6 +29,12 @@ export class NoopLogger implements Logger {
   error() {
     /** noop */
   }
+  info() {
+    /** noop */
+  }
+  warn() {
+    /** noop */
+  }
 }
 
 /** Get the build info object that is used inside buildbot */
@@ -48,9 +55,8 @@ export async function getBuildInfo(
   try {
     // if the framework  detection is crashing we should not crash the build info and package-manager detection
     frameworks = await listFrameworks({ projectDir: project.baseDirectory })
-  } catch {
-    // TODO: build reporting to buildbot see: https://github.com/netlify/pillar-workflow/issues/1001
-    // noop
+  } catch (error) {
+    report(error)
   }
 
   const info: Info = {

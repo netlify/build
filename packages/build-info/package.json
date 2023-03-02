@@ -1,6 +1,6 @@
 {
   "name": "@netlify/build-info",
-  "version": "6.4.0",
+  "version": "6.5.0",
   "description": "Build info utility",
   "type": "module",
   "exports": {
@@ -46,6 +46,7 @@
     "yargs": "^17.6.0"
   },
   "devDependencies": {
+    "@bugsnag/source-maps": "^2.3.1",
     "@playwright/test": "^1.30.0",
     "@types/node": "^18.14.2",
     "@types/semver": "^7.3.13",
