@@ -3,7 +3,10 @@ import { argv, exit } from 'process'
 import yargs, { Arguments } from 'yargs'
 import { hideBin } from 'yargs/helpers'
 
+import { report } from '../metrics.js'
+
 import { getBuildInfo } from './get-build-info.js'
+import { initializeMetrics } from './metrics.js'
 
 type Args = Arguments<{ projectDir?: string; rootDir?: string; featureFlags: Record<string, boolean> }>
 
@@ -29,10 +32,12 @@ yargs(hideBin(argv))
         },
       }),
     async ({ projectDir, rootDir, featureFlags }: Args) => {
+      // start bugsnag reporting
+      await initializeMetrics()
       try {
         console.log(JSON.stringify(await getBuildInfo({ projectDir, rootDir, featureFlags }), null, 2))
       } catch (error) {
-        console.error(error)
+        report(error)
         exit(1)
       }
     },

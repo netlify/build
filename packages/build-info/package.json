@@ -36,6 +36,7 @@
   },
   "author": "Netlify Inc.",
   "dependencies": {
+    "@bugsnag/js": "^7.20.0",
     "@netlify/framework-info": "^9.8.4",
     "find-up": "^6.3.0",
     "minimatch": "^6.2.0",
@@ -44,6 +45,7 @@
     "yargs": "^17.6.0"
   },
   "devDependencies": {
+    "@bugsnag/source-maps": "^2.3.1",
     "@playwright/test": "^1.30.0",
     "@types/node": "^18.14.2",
     "@types/semver": "^7.3.13",
