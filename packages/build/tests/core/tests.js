@@ -336,37 +336,6 @@ test('Print warning when headers file is missing from publish directory', async 
   t.snapshot(normalizeOutput(output))
 })
 
-test.serial('Successfully builds ES module function with feature flag', async (t) => {
-  const mockZipFunctions = sinon.stub().resolves()
-  const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').get(() => mockZipFunctions)
-
-  const output = await new Fixture('./fixtures/functions_es_modules')
-    .withFlags({ featureFlags: { buildbot_es_modules_esbuild: true } })
-    .runWithBuild()
-  t.snapshot(normalizeOutput(output))
-
-  stub.restore()
-
-  const { args: callArgs } = mockZipFunctions.getCall(0)
-
-  t.true(callArgs[2].featureFlags.defaultEsModulesToEsbuild)
-})
-
-test.serial(`Doesn't fail build for ES module function if feature flag is off`, async (t) => {
-  const mockZipFunctions = sinon.stub().resolves()
-  const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').get(() => mockZipFunctions)
-
-  const output = await new Fixture('./fixtures/functions_es_modules')
-    .withFlags({ featureFlags: { buildbot_es_modules_esbuild: false } })
-    .runWithBuild()
-  t.snapshot(normalizeOutput(output))
-
-  stub.restore()
-
-  const { args: callArgs } = mockZipFunctions.getCall(0)
-  t.false(callArgs[2].featureFlags.defaultEsModulesToEsbuild)
-})
-
 test.serial('Passes the right properties to zip-it-and-ship-it', async (t) => {
   const mockZipFunctions = sinon.stub().resolves()
   const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').get(() => mockZipFunctions)
