@@ -57,6 +57,40 @@
   * dependencies
     * @netlify/config bumped from ^20.0.1 to ^20.0.2
 
+## [29.6.2](https://github.com/netlify/build/compare/build-v29.6.1...build-v29.6.2) (2023-03-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v8.8.1 ([#4907](https://github.com/netlify/build/issues/4907)) ([723ee3e](https://github.com/netlify/build/commit/723ee3e93ee31e7b2656cc5dd82460ccddd8ae95))
+* **deps:** update dependency @netlify/plugins-list to ^6.66.0 ([#4908](https://github.com/netlify/build/issues/4908)) ([fac0ead](https://github.com/netlify/build/commit/fac0eadda23a70d569110687e8907985b55054b4))
+
+## [29.6.1](https://github.com/netlify/build/compare/build-v29.6.0...build-v29.6.1) (2023-03-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v8.8.0 ([#4902](https://github.com/netlify/build/issues/4902)) ([1afd888](https://github.com/netlify/build/commit/1afd8885a36bb274e512c9c82823f9e18d919584))
+
+## [29.6.0](https://github.com/netlify/build/compare/build-v29.5.8...build-v29.6.0) (2023-03-01)
+
+
+### Features
+
+* remove ff project_deploy_configuration_api_use_per_function_configuration_files + update zisi to 8.8.0 ([#4884](https://github.com/netlify/build/issues/4884)) ([a0776c7](https://github.com/netlify/build/commit/a0776c70192dc411218ebbecb5018c6b171e7977))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/zip-it-and-ship-it to ^8.9.0 ([#4899](https://github.com/netlify/build/issues/4899)) ([a1ab4ff](https://github.com/netlify/build/commit/a1ab4ffe433e82450649a75c07fb2aefb8a206be))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/functions-utils bumped from ^5.1.9 to ^5.2.0
+
 ## [29.5.8](https://github.com/netlify/build/compare/build-v29.5.7...build-v29.5.8) (2023-02-17)
 
 

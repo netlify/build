@@ -30,6 +30,33 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.0 to ^9.8.1
 
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/framework-info bumped from ^9.8.2 to ^9.8.3
+
+## [6.5.0](https://github.com/netlify/build/compare/build-info-v6.4.0...build-info-v6.5.0) (2023-03-02)
+
+
+### Features
+
+* add bugsnag error reporting for netlify/build-info ([#4905](https://github.com/netlify/build/issues/4905)) ([2109d29](https://github.com/netlify/build/commit/2109d2992bfdc555f92c6bfc49f9be6abed18422))
+
+## [6.4.0](https://github.com/netlify/build/compare/build-info-v6.3.1...build-info-v6.4.0) (2023-03-01)
+
+
+### Features
+
+* add feature flagging possibility to build-info ([#4897](https://github.com/netlify/build/issues/4897)) ([a81c24e](https://github.com/netlify/build/commit/a81c24e9547232f17e77c574ba3b5946459df600))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/framework-info bumped from ^9.8.3 to ^9.8.4
+
 ## [6.3.0](https://github.com/netlify/build/compare/build-info-v6.2.3...build-info-v6.3.0) (2023-02-17)
 
 
