@@ -1,0 +1,21 @@
+[context.production]
+base = 1
+command = 1
+publish = 1
+edge_functions = 1
+[context.production.any]
+ACCESS_TOKEN = "super secret"
+[context.production.plugins]
+package = "@netlify/plugin-sitemap"
+
+[context.deploy-preview.other]
+ACCESS_TOKEN = "not so secret"
+
+[context.deploy-preview.environment]
+ACCESS_TOKEN = 1
+
+[context.dev.this]
+NODE_ENV = "development"
+
+[context.feature.non]
+command = "make feature"

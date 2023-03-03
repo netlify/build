@@ -1,0 +1,13 @@
+[functions]
+directory = 1
+node_bundler = 1
+external_node_modules = 1
+included_files = 1
+deno_import_map = 1
+other = 1
+
+[functions."api_*"]
+external_node_modules = [1]
+included_files = [1]
+nay = 1
+schedule = 1

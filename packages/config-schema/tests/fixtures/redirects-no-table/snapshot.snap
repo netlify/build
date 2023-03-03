@@ -1,0 +1,14 @@
+{
+  "errors": [
+    {
+      "instancePath": "/redirects",
+      "keyword": "type",
+      "message": "must be array",
+      "params": {
+        "type": "array",
+      },
+      "schemaPath": "#/properties/redirects/type",
+    },
+  ],
+  "valid": false,
+}

@@ -1,0 +1,4 @@
+[template]
+incoming-hooks = 1
+other = 1
+environment = 1

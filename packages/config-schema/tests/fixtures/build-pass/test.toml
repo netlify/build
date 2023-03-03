@@ -1,0 +1,9 @@
+[build]
+base = "static/"
+publish = "build-output/"
+command = "echo 'hello'"
+edge_functions = "edge-functions-path/"
+functions = "folder"
+
+[build.environment]
+FOO = "FOO"

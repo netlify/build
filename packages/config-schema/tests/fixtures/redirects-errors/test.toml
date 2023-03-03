@@ -1,0 +1,22 @@
+[[redirects]]
+from = 1
+to = 1
+status = 600
+force = 1
+query = { path = 1 }
+conditions = { Cookie = [1], Language = [1], Country = [1], Role = [1] }
+headers = { X-From = 1 }
+signed = 1
+
+[[redirects]]
+from = "/search"
+conditions = { Language = ["bert"], Country = ["Norway"] }
+status = 99
+query = 1
+
+[[redirects]]
+from = "/search"
+conditions = 1
+
+[[redirects]]
+status = 222

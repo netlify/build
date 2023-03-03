@@ -1,0 +1,5 @@
+[template]
+incoming-hooks = [1]
+
+[template.environment]
+ASDFG = 1

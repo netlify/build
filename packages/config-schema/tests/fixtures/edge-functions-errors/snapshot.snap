@@ -1,0 +1,92 @@
+{
+  "errors": [
+    {
+      "instancePath": "/edge_functions/0/cache",
+      "keyword": "enum",
+      "message": "must be equal to one of the allowed values",
+      "params": {
+        "allowedValues": [
+          "off",
+          "manual",
+        ],
+      },
+      "schemaPath": "#/properties/edge_functions/items/properties/cache/enum",
+    },
+    {
+      "instancePath": "/edge_functions/0/function",
+      "keyword": "type",
+      "message": "must be string",
+      "params": {
+        "type": "string",
+      },
+      "schemaPath": "#/properties/edge_functions/items/properties/function/type",
+    },
+    {
+      "instancePath": "/edge_functions/0/path",
+      "keyword": "type",
+      "message": "must be string",
+      "params": {
+        "type": "string",
+      },
+      "schemaPath": "#/properties/edge_functions/items/properties/path/type",
+    },
+    {
+      "instancePath": "/edge_functions/1",
+      "keyword": "required",
+      "message": "must have required property 'path'",
+      "params": {
+        "missingProperty": "path",
+      },
+      "schemaPath": "#/properties/edge_functions/items/required",
+    },
+    {
+      "instancePath": "/edge_functions/1",
+      "keyword": "required",
+      "message": "must have required property 'function'",
+      "params": {
+        "missingProperty": "function",
+      },
+      "schemaPath": "#/properties/edge_functions/items/required",
+    },
+    {
+      "instancePath": "/edge_functions/1",
+      "keyword": "additionalProperties",
+      "message": "must NOT have additional properties",
+      "params": {
+        "additionalProperty": "other",
+      },
+      "schemaPath": "#/properties/edge_functions/items/additionalProperties",
+    },
+    {
+      "instancePath": "/edge_functions/1/cache",
+      "keyword": "type",
+      "message": "must be string",
+      "params": {
+        "type": "string",
+      },
+      "schemaPath": "#/properties/edge_functions/items/properties/cache/type",
+    },
+    {
+      "instancePath": "/edge_functions/1/cache",
+      "keyword": "enum",
+      "message": "must be equal to one of the allowed values",
+      "params": {
+        "allowedValues": [
+          "off",
+          "manual",
+        ],
+      },
+      "schemaPath": "#/properties/edge_functions/items/properties/cache/enum",
+    },
+    {
+      "instancePath": "/edge_functions/2/path",
+      "keyword": "pattern",
+      "message": "must match pattern \"^/.*\"",
+      "params": {
+        "pattern": "^/.*",
+      },
+      "schemaPath": "#/properties/edge_functions/items/properties/path/pattern",
+    },
+  ],
+  "valid": false,
+}

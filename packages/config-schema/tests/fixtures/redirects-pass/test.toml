@@ -1,0 +1,24 @@
+[[redirects]]
+from = "/old-path"
+to = "/new-path"
+status = 301
+force = false
+query = { path = ":path" }
+conditions = { Language = ["en"], Country = ["US"], Role = ["admin"] }
+
+[[redirects]]
+from = "/search"
+to = "https://api.mysearch.com"
+status = 200
+force = true
+headers = { X-From = "Netlify" }
+signed = "API_SIGNATURE_TOKEN"
+
+[[redirects]]
+from = "/search"
+status = 100
+conditions = { Language = ["en-US"] }
+
+[[redirects]]
+from = "/search"
+status = 599

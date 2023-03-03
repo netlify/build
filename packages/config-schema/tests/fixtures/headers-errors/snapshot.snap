@@ -1,0 +1,41 @@
+{
+  "errors": [
+    {
+      "instancePath": "/headers/0",
+      "keyword": "additionalProperties",
+      "message": "must NOT have additional properties",
+      "params": {
+        "additionalProperty": "other",
+      },
+      "schemaPath": "#/properties/headers/items/additionalProperties",
+    },
+    {
+      "instancePath": "/headers/0/for",
+      "keyword": "type",
+      "message": "must be string",
+      "params": {
+        "type": "string",
+      },
+      "schemaPath": "#/properties/headers/items/properties/for/type",
+    },
+    {
+      "instancePath": "/headers/0/values/X-Frame-Options",
+      "keyword": "type",
+      "message": "must be string",
+      "params": {
+        "type": "string",
+      },
+      "schemaPath": "#/properties/headers/items/properties/values/additionalProperties/type",
+    },
+    {
+      "instancePath": "/headers/1",
+      "keyword": "required",
+      "message": "must have required property 'for'",
+      "params": {
+        "missingProperty": "for",
+      },
+      "schemaPath": "#/properties/headers/items/required",
+    },
+  ],
+  "valid": false,
+}

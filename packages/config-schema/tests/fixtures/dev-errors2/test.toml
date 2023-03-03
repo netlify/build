@@ -1,0 +1,4 @@
+[dev]
+envFiles = [1]
+[dev.https]
+certFile = "cert.pem"

@@ -1,0 +1,6 @@
+[[plugins]]
+other = "my-npm-package"
+
+[plugins.more]
+breeds = ["pomeranian", "chihuahua", "bulldog"]
+any = "thing"

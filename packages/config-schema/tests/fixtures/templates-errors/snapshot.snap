@@ -1,0 +1,32 @@
+{
+  "errors": [
+    {
+      "instancePath": "/template",
+      "keyword": "additionalProperties",
+      "message": "must NOT have additional properties",
+      "params": {
+        "additionalProperty": "other",
+      },
+      "schemaPath": "#/properties/template/additionalProperties",
+    },
+    {
+      "instancePath": "/template/environment",
+      "keyword": "type",
+      "message": "must be object",
+      "params": {
+        "type": "object",
+      },
+      "schemaPath": "#/properties/template/properties/environment/type",
+    },
+    {
+      "instancePath": "/template/incoming-hooks",
+      "keyword": "type",
+      "message": "must be array",
+      "params": {
+        "type": "array",
+      },
+      "schemaPath": "#/properties/template/properties/incoming-hooks/type",
+    },
+  ],
+  "valid": false,
+}

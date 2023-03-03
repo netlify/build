@@ -1,0 +1,17 @@
+[[edge_functions]]
+path = "/admin"
+function = "auth"
+
+[[edge_functions]]
+path = "/*"
+cache = "off"
+function = "injector"
+
+[[edge_functions]]
+path = "/caching"
+cache = "manual"
+function = "injector"
+
+[[edge_functions]]
+path = "/"
+function = "injector"

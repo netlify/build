@@ -1,0 +1,23 @@
+{
+  "errors": [
+    {
+      "instancePath": "/dev/envFiles/0",
+      "keyword": "type",
+      "message": "must be string",
+      "params": {
+        "type": "string",
+      },
+      "schemaPath": "#/properties/dev/properties/envFiles/items/type",
+    },
+    {
+      "instancePath": "/dev/https",
+      "keyword": "required",
+      "message": "must have required property 'keyFile'",
+      "params": {
+        "missingProperty": "keyFile",
+      },
+      "schemaPath": "#/properties/dev/properties/https/required",
+    },
+  ],
+  "valid": false,
+}

@@ -1,0 +1,23 @@
+{
+  "errors": [
+    {
+      "instancePath": "/template/environment/ASDFG",
+      "keyword": "type",
+      "message": "must be string",
+      "params": {
+        "type": "string",
+      },
+      "schemaPath": "#/properties/template/properties/environment/additionalProperties/type",
+    },
+    {
+      "instancePath": "/template/incoming-hooks/0",
+      "keyword": "type",
+      "message": "must be string",
+      "params": {
+        "type": "string",
+      },
+      "schemaPath": "#/properties/template/properties/incoming-hooks/items/type",
+    },
+  ],
+  "valid": false,
+}
