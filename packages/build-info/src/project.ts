@@ -1,15 +1,15 @@
 import type { NotifiableError } from '@bugsnag/js'
 import type { PackageJson } from 'read-pkg'
-import { SemVer, parse, coerce } from 'semver'
+import { SemVer, coerce, parse } from 'semver'
 
 import type { BuildSystem } from './build-systems/build-system.js'
 import { buildSystems } from './build-systems/index.js'
 import type { FileSystem } from './file-system.js'
-import { DetectedFramework, Framework, sortFrameworksBasedOnAccuracy } from './frameworks/framework.js'
+import { DetectedFramework, Framework, filterByRelevance } from './frameworks/framework.js'
 import { frameworks } from './frameworks/index.js'
 import { report } from './metrics.js'
-import { detectPackageManager } from './package-managers/detect-package-manager.js'
 import type { PkgManagerFields } from './package-managers/detect-package-manager.js'
+import { detectPackageManager } from './package-managers/detect-package-manager.js'
 import { WorkspaceInfo, detectWorkspaces } from './workspaces/detect-workspace.js'
 /**
  * The Project represents a Site in Netlify
@@ -256,13 +256,13 @@ export class Project {
           }
         }
       }
-      // sort based on the accuracy
+      // sort based on the accuracy and drop un accurate results if something more accurate was found
       // from most accurate to least accurate
       // 1. a npm dependency was specified and matched
       // 2. only a config file was specified and matched
       // 3. an npm dependency was specified but matched over the config file (least accurate)
       // and prefer SSG over build tools
-      return detected.sort(sortFrameworksBasedOnAccuracy)
+      return filterByRelevance(detected)
     } catch {
       return []
     }

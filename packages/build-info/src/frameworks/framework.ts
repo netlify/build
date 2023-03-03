@@ -10,9 +10,10 @@ export enum Category {
 }
 
 export enum Accuracy {
-  NPM = 3, // Matched the npm dependency (highest accuracy on detecting it)
-  ConfigOnly = 2, // Only a config file was specified and matched
-  Config = 1, // Has npm dependencies specified as well but there it did not match (least resort)
+  NPM = 4, // Matched the npm dependency (highest accuracy on detecting it)
+  ConfigOnly = 3, // Only a config file was specified and matched
+  Config = 2, // Has npm dependencies specified as well but there it did not match (least resort)
+  NPMHoisted = 1, // Matched the npm dependency but in a folder up the provided path
 }
 
 export type PollingStrategy = {
@@ -67,6 +68,19 @@ export interface Framework {
 
 export type DetectedFramework = Omit<Framework, 'detected'> & { detected: Detection }
 
+/** Filters a list of detected frameworks by relevance, meaning we drop build tools if we find static site generators */
+export function filterByRelevance(detected: DetectedFramework[]) {
+  const filtered: DetectedFramework[] = []
+
+  for (const framework of detected.sort(sortFrameworksBasedOnAccuracy)) {
+    // only keep the frameworks on the highest accuracy level. (so if multiple SSG are detected use them but drop build tools)
+    if (filtered.length === 0 || filtered[0].detected.accuracy === framework.detected.accuracy) {
+      filtered.push(framework)
+    }
+  }
+  return filtered
+}
+
 /**
  * sort a list of frameworks based on the accuracy and on it's type (prefer static site generators over build tools)
  * from most accurate to least accurate
@@ -84,6 +98,13 @@ export function sortFrameworksBasedOnAccuracy(a: DetectedFramework, b: DetectedF
     }
   }
   return sort
+}
+
+/** Merges a list of detection results based on accuracy to get the one with the highest accuracy */
+export function mergeDetections(detections: Array<Detection | undefined>): Detection | undefined {
+  return detections
+    .filter(Boolean)
+    .sort((a: Detection, b: Detection) => (a.accuracy > b.accuracy ? -1 : a.accuracy < b.accuracy ? 1 : 0))?.[0]
 }
 
 export abstract class BaseFramework {
@@ -175,24 +196,38 @@ export abstract class BaseFramework {
   }
 
   /** detect if the framework occurs inside the package.json dependencies */
-  private async detectNpmDependency() {
+  private async detectNpmDependency(): Promise<Detection | undefined> {
     if (this.npmDependencies.length) {
-      const pkg = await this.project.getPackageJSON(this.path)
+      const startDir = this.path || this.project.baseDirectory
+      const pkg = await this.project.getPackageJSON(startDir)
       const dep = await this.npmDependenciesUsed(pkg)
       if (dep) {
         this.version = dep.version
-        return dep
+        return {
+          // if the match of the npm package was in a directory up we don't have a high accuracy
+          accuracy: this.project.fs.join(startDir, 'package.json') === pkg.pkgPath ? Accuracy.NPM : Accuracy.NPMHoisted,
+          package: dep,
+        }
       }
     }
   }
 
   /** detect if the framework config file is located somewhere up the tree */
-  private async detectConfigFile() {
+  private async detectConfigFile(): Promise<Detection | undefined> {
     if (this.configFiles?.length) {
-      return await this.project.fs.findUp(this.configFiles, {
+      const config = await this.project.fs.findUp(this.configFiles, {
         cwd: this.path || this.project.baseDirectory,
         stopAt: this.project.root,
       })
+
+      if (config) {
+        return {
+          // Have higher trust on a detection of a config file if there is no npm dependency specified for this framework
+          // otherwise the npm dependency should have already triggered the detection
+          accuracy: this.npmDependencies.length === 0 ? Accuracy.ConfigOnly : Accuracy.Config,
+          config,
+        }
+      }
     }
   }
 
@@ -205,15 +240,10 @@ export abstract class BaseFramework {
   async detect(): Promise<DetectedFramework | undefined> {
     const npm = await this.detectNpmDependency()
     const config = await this.detectConfigFile()
+    this.detected = mergeDetections([npm, config])
 
-    if (npm) {
-      return this.setDetected(Accuracy.NPM, npm)
-    }
-
-    if (config) {
-      // Have higher trust on a detection of a config file if there is no npm dependency specified for this framework
-      // otherwise the npm dependency should have already triggered the detection
-      return this.setDetected(this.npmDependencies.length === 0 ? Accuracy.ConfigOnly : Accuracy.Config, config)
+    if (this.detected) {
+      return this as DetectedFramework
     }
     // nothing detected
   }

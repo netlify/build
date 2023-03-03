@@ -5,7 +5,7 @@ import { join } from '../file-system.js'
 import { NodeFS } from '../node/file-system.js'
 import { Project } from '../project.js'
 
-import { Accuracy, DetectedFramework, sortFrameworksBasedOnAccuracy } from './framework.js'
+import { Accuracy, DetectedFramework, mergeDetections, sortFrameworksBasedOnAccuracy } from './framework.js'
 import { Grunt } from './grunt.js'
 import { Gulp } from './gulp.js'
 import { Hexo } from './hexo.js'
@@ -108,6 +108,33 @@ describe('detect framework version', () => {
         raw: '2.0.0', // fallback to the version from the package.json
       },
     })
+  })
+})
+
+describe('detection merging', () => {
+  test('return undefined if no detection is provided', () => {
+    expect(mergeDetections([undefined, undefined])).toBeUndefined()
+  })
+
+  test('merge a list of detections and prefer the config over a hoisted npm dependency', () => {
+    expect(
+      mergeDetections([
+        undefined,
+        { accuracy: Accuracy.NPMHoisted, package: { name: 'b' } },
+        { accuracy: Accuracy.Config, package: { name: 'c' } },
+      ]),
+    ).toMatchObject({ accuracy: Accuracy.Config, package: { name: 'c' } })
+  })
+
+  test('merge a list of detections and prefer the NPM direct match', () => {
+    expect(
+      mergeDetections([
+        undefined,
+        { accuracy: Accuracy.NPM, package: { name: 'a' } },
+        { accuracy: Accuracy.NPMHoisted, package: { name: 'b' } },
+        { accuracy: Accuracy.Config, package: { name: 'c' } },
+      ]),
+    ).toMatchObject({ accuracy: Accuracy.NPM, package: { name: 'a' } })
   })
 })
 
@@ -306,13 +333,12 @@ describe('workspace detection', () => {
     const detection = await project.detectFrameworks()
 
     expect(project.workspace).toBeNull()
-
-    expect(detection).toHaveLength(2)
-
+    // should not match hexo as it has a lower accuracy
+    expect(detection).toHaveLength(1)
     expect(detection?.[0]).toMatchObject({
       id: 'jekyll',
     })
-    expect(project.frameworks.get('')).toHaveLength(2)
+    expect(project.frameworks.get('')).toHaveLength(1)
     expect(project.frameworks.get('')).toEqual(
       expect.arrayContaining([
         expect.objectContaining({

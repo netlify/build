@@ -16,17 +16,6 @@ beforeEach((ctx) => {
 
 afterEach(async ({ cleanup }) => await cleanup?.())
 
-// test('asdf', async (ctx) => {
-//   const fixture = await createFixture('nx-integrated')
-//   ctx.cleanup = fixture.cleanup
-//   const project = new Project(ctx.fs, fixture.cwd)
-//   const settings = await project.getDevServerSettings()
-
-//   expect(settings).toMatchObject({
-//     packages: [],
-//   })
-// })
-
 describe('Setting the node.js version', () => {
   test('should set the node version correctly by passing the process.version', async ({ fs }) => {
     const project = new Project(fs)
@@ -175,4 +164,41 @@ test('extract the rootPackageJson from projectDir if no rootDir is provided', as
   const rootPackageJson = await project.getRootPackageJSON()
   expect(project.root).toBeUndefined()
   expect(rootPackageJson.name).toBe('js-workspaces')
+})
+
+describe('monorepo setup', () => {
+  test('should prefer accuracy of config files over root node modules in a monorepo', async (ctx) => {
+    const fixture = await createFixture('nx-integrated')
+    ctx.cleanup = fixture.cleanup
+    const project = new Project(ctx.fs, fixture.cwd)
+    await project.detectFrameworks()
+    expect([...project.frameworks.keys()]).toEqual(['packages/astro', 'packages/website'])
+    expect(project.frameworks.get('packages/astro')).toHaveLength(1)
+    expect(project.frameworks.get('packages/astro')).toEqual([
+      expect.objectContaining({
+        id: 'astro',
+      }),
+    ])
+    expect(project.frameworks.get('packages/website')).toHaveLength(1)
+    expect(project.frameworks.get('packages/website')).toEqual([
+      expect.objectContaining({
+        id: 'next',
+      }),
+    ])
+  })
+
+  test('should prefer accuracy of config files over root node modules in a monorepo from a base directory', async (ctx) => {
+    const fixture = await createFixture('nx-integrated')
+    ctx.cleanup = fixture.cleanup
+    const project = new Project(ctx.fs, join(fixture.cwd, 'packages/astro'))
+    await project.detectFrameworks()
+
+    expect([...project.frameworks.keys()]).toEqual(['packages/astro'])
+    expect(project.frameworks.get('packages/astro')).toHaveLength(1)
+    expect(project.frameworks.get('packages/astro')).toEqual([
+      expect.objectContaining({
+        id: 'astro',
+      }),
+    ])
+  })
 })
