@@ -1,6 +1,6 @@
 import { gte } from 'semver'
 
-import { BaseFramework, Category, Framework } from './framework.js'
+import { BaseFramework, Category, DetectedFramework, Framework } from './framework.js'
 
 export class Next extends BaseFramework implements Framework {
   id = 'next'
@@ -25,16 +25,15 @@ export class Next extends BaseFramework implements Framework {
     dark: '/logos/nextjs/dark.svg',
   }
 
-  async detect()
-  async detect(): Promise<this | undefined> {
-    const detected = await super.detect()
+  async detect(): Promise<DetectedFramework | undefined> {
+    await super.detect()
 
-    if (detected) {
+    if (this.detected) {
       const nodeVersion = await this.project.getCurrentNodeVersion()
       if (nodeVersion && gte(nodeVersion, '10.13.0')) {
         this.plugins.push('@netlify/plugin-nextjs')
       }
-      return this
+      return this as DetectedFramework
     }
   }
 }

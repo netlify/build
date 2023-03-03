@@ -1,4 +1,4 @@
-import { BaseFramework, Category, Framework, VerboseDetection } from './framework.js'
+import { BaseFramework, Category, DetectedFramework, Detection, Framework } from './framework.js'
 
 export class Nuxt extends BaseFramework implements Framework {
   id = 'nuxt'
@@ -23,12 +23,11 @@ export class Nuxt extends BaseFramework implements Framework {
     dark: '/logos/nuxt/dark.svg',
   }
 
-  async detect()
-  async detect(): Promise<this | undefined> {
-    const detected = await super.detect(true)
+  async detect(): Promise<DetectedFramework | undefined> {
+    await super.detect()
 
-    if (detected) {
-      if (this.isV3(detected)) {
+    if (this.detected) {
+      if (this.isV3(this.detected)) {
         this.name = 'Nuxt 3'
 
         const cmd = this.project.packageManager?.runCommand || 'npm run'
@@ -40,11 +39,11 @@ export class Nuxt extends BaseFramework implements Framework {
           NODE_VERSION: '14',
         }
       }
-      return this
+      return this as DetectedFramework
     }
   }
 
-  isV3(detected: VerboseDetection) {
-    return detected.npmDependency?.name === 'nuxt3' || detected.npmDependency?.version?.major === 3
+  isV3(detected: Detection) {
+    return detected.package?.name === 'nuxt3' || detected.package?.version?.major === 3
   }
 }

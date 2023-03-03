@@ -1,6 +1,6 @@
 import { gte } from 'semver'
 
-import { BaseFramework, Category, Framework } from './framework.js'
+import { BaseFramework, Category, DetectedFramework, Framework } from './framework.js'
 
 export class Gatsby extends BaseFramework implements Framework {
   id = 'gatsby'
@@ -34,10 +34,10 @@ export class Gatsby extends BaseFramework implements Framework {
     NODE_VERSION: '14',
   }
 
-  async detect()
-  async detect(): Promise<this | undefined> {
-    const detected = await super.detect()
-    if (detected) {
+  async detect(): Promise<DetectedFramework | undefined> {
+    await super.detect()
+
+    if (this.detected) {
       if (this.version && gte(this.version, '5.0.0')) {
         this.env.NODE_VERSION = '18'
         this.env.AWS_LAMBDA_JS_RUNTIME = 'nodejs18.x'
@@ -47,7 +47,7 @@ export class Gatsby extends BaseFramework implements Framework {
       if (nodeVersion && gte(nodeVersion, '12.13.0')) {
         this.plugins.push('@netlify/plugin-gatsby')
       }
-      return this
+      return this as DetectedFramework
     }
   }
 }

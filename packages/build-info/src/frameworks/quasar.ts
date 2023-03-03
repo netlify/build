@@ -1,4 +1,4 @@
-import { BaseFramework, Category, Framework, VerboseDetection } from './framework.js'
+import { BaseFramework, Category, DetectedFramework, Detection, Framework } from './framework.js'
 
 export class Quasar extends BaseFramework implements Framework {
   id = 'quasar'
@@ -23,22 +23,21 @@ export class Quasar extends BaseFramework implements Framework {
     dark: '/logos/quasar/default.svg',
   }
 
-  async detect()
-  async detect(): Promise<this | undefined> {
-    const detected = await super.detect(true)
+  async detect(): Promise<DetectedFramework | undefined> {
+    await super.detect()
 
-    if (detected) {
-      if (this.isV017(detected)) {
+    if (this.detected) {
+      if (this.isV017(this.detected)) {
         this.id = 'quasar-v0.17'
         this.build.directory = '.quasar'
         this.dev.command = 'quasar dev -p 8080'
         this.dev.port = 8080
       }
-      return this
+      return this as DetectedFramework
     }
   }
 
-  isV017(detected: VerboseDetection) {
-    return detected.npmDependency?.name === 'quasar-cli'
+  isV017(detected: Detection) {
+    return detected.package?.name === 'quasar-cli'
   }
 }

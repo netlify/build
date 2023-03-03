@@ -1,4 +1,4 @@
-import { BaseFramework, Category, Framework, VerboseDetection } from './framework.js'
+import { BaseFramework, Category, DetectedFramework, Detection, Framework } from './framework.js'
 
 export class Docusaurus extends BaseFramework implements Framework {
   id = 'docusaurus'
@@ -33,23 +33,22 @@ export class Docusaurus extends BaseFramework implements Framework {
 
   env = { BROWSER: 'none' }
 
-  async detect()
-  async detect(): Promise<this | undefined> {
-    const detected = await super.detect(true)
+  async detect(): Promise<DetectedFramework | undefined> {
+    await super.detect()
 
-    if (detected) {
-      if (this.isV1(detected)) {
+    if (this.detected) {
+      if (this.isV1(this.detected)) {
         this.build.command = 'docusaurus-build'
         this.build.directory = 'build/<project-name>'
 
         this.dev.command = 'docusaurus-start'
       }
 
-      return this
+      return this as DetectedFramework
     }
   }
 
-  isV1(detected: VerboseDetection) {
-    return detected.config?.endsWith('siteConfig.js') || detected.npmDependency?.name === 'docusaurus'
+  isV1(detected: Detection) {
+    return detected.config?.endsWith('siteConfig.js') || detected.package?.name === 'docusaurus'
   }
 }

@@ -5,7 +5,7 @@ import { SemVer, parse, coerce } from 'semver'
 import type { BuildSystem } from './build-systems/build-system.js'
 import { buildSystems } from './build-systems/index.js'
 import type { FileSystem } from './file-system.js'
-import { Framework } from './frameworks/framework.js'
+import { DetectedFramework, Framework, sortFrameworksBasedOnAccuracy } from './frameworks/framework.js'
 import { frameworks } from './frameworks/index.js'
 import { report } from './metrics.js'
 import { detectPackageManager } from './package-managers/detect-package-manager.js'
@@ -237,30 +237,40 @@ export class Project {
     }
   }
 
-  private async detectFrameworksInPath(path?: string): Promise<Framework[]> {
+  private async detectFrameworksInPath(path?: string): Promise<DetectedFramework[]> {
     try {
+      let detected: DetectedFramework[] = []
       // on node we can parallelize more
       if (this.fs.getEnvironment() === 'node') {
-        return (await Promise.all(frameworks.map((Framework) => new Framework(this, path).detect()))).filter(Boolean)
+        detected = (await Promise.all(frameworks.map((Framework) => new Framework(this, path).detect()))).filter(
+          Boolean,
+        ) as DetectedFramework[]
       } else {
         // In the browser perform the detection in series to avoid having the same HTTP request in parallel.
         // It's faster to perform one detection, do all the needed HTTP requests and reuse the results
         // on consecutive runs.
-        const detected: Framework[] = []
         for (const Framework of frameworks) {
           const res = await new Framework(this, path).detect()
           if (res) {
             detected.push(res)
           }
         }
-        return detected
       }
+      // sort based on the accuracy
+      // from most accurate to least accurate
+      // 1. a npm dependency was specified and matched
+      // 2. only a config file was specified and matched
+      // 3. an npm dependency was specified but matched over the config file (least accurate)
+      // and prefer SSG over build tools
+      return detected.sort(sortFrameworksBasedOnAccuracy)
     } catch {
       return []
     }
   }
 
   async getBuildSettings() {
+    await this.detectFrameworks()
+
     return {
       settings: {},
       warnings: null,

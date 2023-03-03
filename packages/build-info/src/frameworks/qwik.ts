@@ -12,14 +12,6 @@ export class Qwik extends BaseFramework implements Framework {
     pollingStrategies: [{ name: 'TCP' }],
   }
 
-  get build() {
-    const runCmd = this.project.packageManager?.runCommand || 'npm run'
-    return {
-      command: `${runCmd} build`,
-      directory: 'dist',
-    }
-  }
-
   logo = {
     default: '/logos/qwik/default.svg',
     light: '/logos/qwik/default.svg',

@@ -13,9 +13,9 @@ export class CreateReactApp extends BaseFramework implements Framework {
     pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }]
   }
 
-  build: {
-    command: 'react-scripts build'
-    directory: 'build'
+  build = {
+    command: 'react-scripts build',
+    directory: 'build',
   }
 
   logo = {

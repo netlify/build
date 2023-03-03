@@ -1,9 +1,18 @@
-import { beforeEach, expect, describe, test, vi } from 'vitest'
+import { beforeEach, describe, expect, test, vi } from 'vitest'
 
 import { mockFileSystem } from '../../tests/mock-file-system.js'
 import { join } from '../file-system.js'
 import { NodeFS } from '../node/file-system.js'
 import { Project } from '../project.js'
+
+import { Accuracy, DetectedFramework, sortFrameworksBasedOnAccuracy } from './framework.js'
+import { Grunt } from './grunt.js'
+import { Gulp } from './gulp.js'
+import { Hexo } from './hexo.js'
+import { Hydrogen } from './hydrogen.js'
+import { Jekyll } from './jekyll.js'
+import { Next } from './next.js'
+import { Vite } from './vite.js'
 
 const PNPMWorkspace: Record<string, string> = {
   'pnpm-workspace.yaml': `packages:\n- packages/*`,
@@ -12,7 +21,6 @@ const PNPMWorkspace: Record<string, string> = {
     scripts: { dev: 'astro dev', build: 'astro build' },
     dependencies: { astro: '^1.5.1' },
   }),
-  'packages/blog/astro.config.mjs': '',
   'packages/website/next.config.js': '',
   'packages/website/package.json': JSON.stringify({
     scripts: { dev: 'next dev', build: 'next build' },
@@ -36,7 +44,7 @@ beforeEach((ctx) => {
   ctx.fs = new NodeFS()
 })
 
-describe.only('detect framework version', () => {
+describe('detect framework version', () => {
   const eleventy: Record<string, string> = {
     'package.json': JSON.stringify({ devDependencies: { '@11ty/eleventy': '^2.0.0' } }),
     'eleventy.config.js': '',
@@ -100,6 +108,61 @@ describe.only('detect framework version', () => {
         raw: '2.0.0', // fallback to the version from the package.json
       },
     })
+  })
+})
+
+describe('framework sorting based on accuracy and type', () => {
+  let project: Project
+
+  beforeEach(({ fs }) => {
+    project = new Project(fs)
+  })
+
+  test('should prefer config only detection over config', () => {
+    const sorted: DetectedFramework[] = [
+      new Hexo(project).setDetected(Accuracy.Config, ''),
+      new Jekyll(project).setDetected(Accuracy.ConfigOnly, ''),
+    ].sort(sortFrameworksBasedOnAccuracy)
+    expect(sorted[0].id).toBe('jekyll')
+    expect(sorted[1].id).toBe('hexo')
+  })
+
+  test('should sort by accuracy', () => {
+    const sorted: DetectedFramework[] = [
+      new Hexo(project).setDetected(Accuracy.Config, ''),
+      new Next(project).setDetected(Accuracy.NPM, { name: 'next' }),
+      new Jekyll(project).setDetected(Accuracy.ConfigOnly, ''),
+    ].sort(sortFrameworksBasedOnAccuracy)
+
+    expect(sorted[0].id).toBe('next')
+    expect(sorted[1].id).toBe('jekyll')
+    expect(sorted[2].id).toBe('hexo')
+  })
+
+  test('should prefer static site generators over build tools but still prefer accuracy over type', () => {
+    const sorted: DetectedFramework[] = [
+      new Gulp(project).setDetected(Accuracy.NPM, { name: 'gulp' }),
+      new Vite(project).setDetected(Accuracy.NPM, { name: 'vite' }),
+      new Hexo(project).setDetected(Accuracy.Config, ''),
+      new Hydrogen(project).setDetected(Accuracy.NPM, { name: '@shopify/hydrogen' }),
+    ].sort(sortFrameworksBasedOnAccuracy)
+
+    expect(sorted[0].id).toBe('hydrogen')
+    expect(sorted[1].id).toBe('gulp')
+    expect(sorted[2].id).toBe('vite')
+    expect(sorted[3].id).toBe('hexo')
+  })
+
+  test('should keep the provided order when they have the same accuracy and type', () => {
+    const sorted: DetectedFramework[] = [
+      new Grunt(project).setDetected(Accuracy.NPM, { name: 'grunt' }),
+      new Gulp(project).setDetected(Accuracy.NPM, { name: 'gulp' }),
+      new Vite(project).setDetected(Accuracy.NPM, { name: 'vite' }),
+    ].sort(sortFrameworksBasedOnAccuracy)
+
+    expect(sorted[0].id).toBe('grunt')
+    expect(sorted[1].id).toBe('gulp')
+    expect(sorted[2].id).toBe('vite')
   })
 })
 
@@ -244,12 +307,12 @@ describe('workspace detection', () => {
 
     expect(project.workspace).toBeNull()
 
-    expect(detection).toHaveLength(1)
+    expect(detection).toHaveLength(2)
 
     expect(detection?.[0]).toMatchObject({
       id: 'jekyll',
     })
-    expect(project.frameworks.get('')).toHaveLength(1)
+    expect(project.frameworks.get('')).toHaveLength(2)
     expect(project.frameworks.get('')).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
