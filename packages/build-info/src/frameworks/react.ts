@@ -7,10 +7,10 @@ export class CreateReactApp extends BaseFramework implements Framework {
   category = Category.FrontendFramework
   staticAssetsDirectory = 'public'
 
-  dev: {
-    command: 'react-scripts start'
-    port: 3000
-    pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }]
+  dev = {
+    command: 'react-scripts start',
+    port: 3000,
+    pollingStrategies: [{ name: 'TCP' }, { name: 'HTTP' }],
   }
 
   build = {

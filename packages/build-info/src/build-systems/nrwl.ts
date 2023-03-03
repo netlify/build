@@ -1,15 +1,37 @@
 import { findPackages, identifyPackageFn } from '../workspaces/get-workspace-packages.js'
 
-import { BaseBuildTool } from './build-system.js'
+import { BaseBuildTool, Command } from './build-system.js'
 
 export class Nx extends BaseBuildTool {
   id = 'nx'
   name = 'Nx'
   configFiles = ['nx.json']
 
-  dev = {
-    commands: ['nx serve'],
-    port: 4200,
+  build = {}
+
+  /** Retrieves a list of possible commands for a package */
+  async getCommands(packagePath: string): Promise<Command[]> {
+    const { name, targets } = await this.project.fs.readJSON(this.project.fs.join(packagePath, 'project.json'))
+
+    if (name && targets) {
+      return Object.keys(targets).map((target) => {
+        let type: Command['type'] = 'unknown'
+
+        if (['dev', 'serve'].includes(target)) {
+          type = 'dev'
+        }
+
+        if (['build'].includes(target)) {
+          type = 'build'
+        }
+
+        return {
+          type,
+          command: `nx run ${name}:${target}`,
+        }
+      })
+    }
+    return []
   }
 
   async detect(): Promise<this | undefined> {

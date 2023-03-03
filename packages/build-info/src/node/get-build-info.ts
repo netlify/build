@@ -51,19 +51,23 @@ export async function getBuildInfo(
   const project = new Project(fs, config.projectDir, config.rootDir)
     .setEnvironment(process.env)
     .setNodeVersion(process.version)
-  let frameworks: any[] = []
-  try {
-    // if the framework  detection is crashing we should not crash the build info and package-manager detection
-    frameworks = await listFrameworks({ projectDir: project.baseDirectory })
-  } catch (error) {
-    report(error)
-  }
 
   const info: Info = {
     packageManager: await project.detectPackageManager(),
     jsWorkspaces: await project.detectWorkspaces(),
-    frameworks,
+    frameworks: [],
     buildSystems: await project.detectBuildSystem(),
+  }
+
+  if (config.featureFlags?.newDetection) {
+    info.frameworks = (await project.detectFrameworks()) || []
+  } else {
+    try {
+      // if the framework  detection is crashing we should not crash the build info and package-manager detection
+      info.frameworks = await listFrameworks({ projectDir: project.baseDirectory })
+    } catch (error) {
+      report(error)
+    }
   }
 
   // const pkgJSONPath = await project.getPackageJSON()

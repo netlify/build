@@ -1,11 +1,21 @@
 import { PollingStrategy } from '../frameworks/framework.js'
 import { Project } from '../project.js'
 
+export type Command = {
+  type: 'build' | 'dev' | 'unknown'
+  command: string
+}
+
 export interface BuildSystem {
   id: string
   name: string
   project: Project
   version?: string
+
+  build?: {
+    command: string
+    directory?: string
+  }
 
   dev?: {
     command: string
@@ -13,10 +23,12 @@ export interface BuildSystem {
     pollingStrategies?: PollingStrategy[]
   }
 
+  getCommands(path: string): Promise<Command[]>
+
   detect(): Promise<BuildSystem | undefined>
 }
 
-export abstract class BaseBuildTool implements BuildSystem {
+export abstract class BaseBuildTool {
   id: string
   name: string
   version?: string
@@ -39,6 +51,10 @@ export abstract class BaseBuildTool implements BuildSystem {
 
   /** Get's a JSON from the class information */
   toJSON() {
-    return { id: this.id, name: this.name, version: this.version }
+    return {
+      id: this.id,
+      name: this.name,
+      version: this.version,
+    }
   }
 }

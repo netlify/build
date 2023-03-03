@@ -112,17 +112,25 @@ export abstract class BaseFramework {
   name: string
   category: Category
   detected?: Detection
-
   version?: SemVer
   configFiles: string[] = []
   npmDependencies: string[] = []
   excludedNpmDependencies: string[] = []
   plugins: string[] = []
   env = {}
-
+  dev?: {
+    command: string
+    port?: number
+    pollingStrategies?: PollingStrategy[]
+  }
   build = {
     command: 'npm run build',
     directory: 'dist',
+  }
+  logo?: {
+    default: string
+    light?: string
+    dark?: string
   }
 
   constructor(
@@ -253,7 +261,18 @@ export abstract class BaseFramework {
     return {
       id: this.id,
       name: this.name,
-      version: this.version,
+      package: this.detected?.package
+        ? {
+            name: this.detected.package.name,
+            version: this.detected.package.version?.raw,
+          }
+        : undefined,
+      category: this.category,
+      dev: this.dev,
+      build: this.build,
+      env: this.env,
+      plugins: this.plugins,
+      logo: this.logo,
     }
   }
 }
