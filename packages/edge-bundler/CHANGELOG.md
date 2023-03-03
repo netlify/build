@@ -1,5 +1,12 @@
 # Changelog
 
+## [8.9.0](https://github.com/netlify/edge-bundler/compare/v8.8.1...v8.9.0) (2023-03-03)
+
+
+### Features
+
+* update bootstrap version ([#321](https://github.com/netlify/edge-bundler/issues/321)) ([88928c7](https://github.com/netlify/edge-bundler/commit/88928c7214012a6fd4ecf7641fb52fad8fa20d44))
+
 ## [8.8.1](https://github.com/netlify/edge-bundler/compare/v8.8.0...v8.8.1) (2023-03-02)
 
 
