@@ -59,8 +59,8 @@ export async function getBuildInfo(
     buildSystems: await project.detectBuildSystem(),
   }
 
-  if (config.featureFlags?.newDetection) {
-    info.frameworks = (await project.detectFrameworks()) || []
+  if (config.featureFlags?.newFrameworkDetection) {
+    info.frameworks = (await project.detectFrameworksInPath(project.baseDirectory)) || []
   } else {
     try {
       // if the framework  detection is crashing we should not crash the build info and package-manager detection
@@ -69,16 +69,6 @@ export async function getBuildInfo(
       report(error)
     }
   }
-
-  // const pkgJSONPath = await project.getPackageJSON()
-  // // only if we find a root package.json we know this is a javascript workspace
-  // if (Object.keys(pkgJSONPath).length) {
-  //   info.packageManager = await project.detectPackageManager()
-  //   const workspaceInfo = await project.detectWorkspaces()
-  //   if (workspaceInfo) {
-  //     info.jsWorkspaces = workspaceInfo
-  //   }
-  // }
 
   return info
 }

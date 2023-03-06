@@ -1,6 +1,0 @@
-[build]
-command = "vite build"
-publish = "assets"
-
-[build.environment]
-NODE_VERSION = "18"

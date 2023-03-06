@@ -5,7 +5,7 @@ export class Sapper extends BaseFramework implements Framework {
   name = 'Sapper'
   npmDependencies = ['sapper']
   category = Category.FrontendFramework
-  staticAssetsDirectory: 'static'
+  staticAssetsDirectory = 'static'
 
   dev = {
     command: 'sapper dev',

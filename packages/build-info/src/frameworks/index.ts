@@ -20,7 +20,7 @@ import { Hydrogen } from './hydrogen.js'
 import { Jekyll } from './jekyll.js'
 import { Metalsmith } from './metalsmith.js'
 import { Middleman } from './middleman.js'
-import { Next } from './next.js'
+import { Next, NextNx } from './next.js'
 import { Nuxt } from './nuxt.js'
 import { Parcel } from './parcel.js'
 import { Phenomic } from './phenomic.js'
@@ -56,6 +56,7 @@ export const frameworks = [
   Hydrogen,
   Jekyll,
   Middleman,
+  NextNx,
   Next,
   Blitz,
   Nuxt,

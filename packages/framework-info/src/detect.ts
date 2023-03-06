@@ -11,7 +11,6 @@ import type { FrameworkDefinition } from './types.js'
 //  - if `framework.configFiles` is set, one of the files must exist
 export const usesFramework = async function (
   {
-    id,
     detect: {
       npmDependencies: frameworkNpmDependencies,
       excludedNpmDependencies: frameworkExcludedNpmDependencies,
@@ -20,12 +19,11 @@ export const usesFramework = async function (
   }: FrameworkDefinition,
   { pathExists, npmDependencies }: { pathExists: PathExists; npmDependencies: string[] },
 ): Promise<boolean> {
-  const a =
+  return (
     usesNpmDependencies(frameworkNpmDependencies, npmDependencies) &&
     lacksExcludedNpmDependencies(frameworkExcludedNpmDependencies, npmDependencies) &&
     (await usesConfigFiles(configFiles, pathExists))
-  console.log(`detect ${id}`, a, configFiles, await usesConfigFiles(configFiles, pathExists))
-  return a
+  )
 }
 
 const usesNpmDependencies = function (frameworkNpmDependencies: string[], npmDependencies: string[]): boolean {

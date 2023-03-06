@@ -107,7 +107,7 @@ export function mergeDetections(detections: Array<Detection | undefined>): Detec
     .sort((a: Detection, b: Detection) => (a.accuracy > b.accuracy ? -1 : a.accuracy < b.accuracy ? 1 : 0))?.[0]
 }
 
-export abstract class BaseFramework {
+export abstract class BaseFramework implements Framework {
   id: string
   name: string
   category: Category
@@ -117,6 +117,7 @@ export abstract class BaseFramework {
   npmDependencies: string[] = []
   excludedNpmDependencies: string[] = []
   plugins: string[] = []
+  staticAssetsDirectory?: string
   env = {}
   dev?: {
     command: string
@@ -261,18 +262,29 @@ export abstract class BaseFramework {
     return {
       id: this.id,
       name: this.name,
-      package: this.detected?.package
-        ? {
-            name: this.detected.package.name,
-            version: this.detected.package.version?.raw,
-          }
-        : undefined,
+      package: {
+        name: this.detected?.package?.name || this.npmDependencies?.[0],
+        version: this.detected?.package?.version?.raw || 'unknown',
+      },
       category: this.category,
-      dev: this.dev,
-      build: this.build,
+      dev: {
+        command: [this.dev?.command],
+        port: this.dev?.port,
+        pollingStrategies: this.dev?.pollingStrategies,
+      },
+      build: {
+        command: [this.build.command],
+        directory: this.build.directory,
+      },
+      staticAssetsDirectory: this.staticAssetsDirectory,
       env: this.env,
+      logo: this.logo
+        ? Object.entries(this.logo).reduce(
+            (prev, [key, value]) => ({ ...prev, [key]: `https://framework-info.netlify.app${value}` }),
+            {},
+          )
+        : undefined,
       plugins: this.plugins,
-      logo: this.logo,
     }
   }
 }

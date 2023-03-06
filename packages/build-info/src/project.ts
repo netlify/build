@@ -5,7 +5,7 @@ import { SemVer, coerce, parse } from 'semver'
 import type { BuildSystem } from './build-systems/build-system.js'
 import { buildSystems } from './build-systems/index.js'
 import type { FileSystem } from './file-system.js'
-import { DetectedFramework, Framework, filterByRelevance } from './frameworks/framework.js'
+import { DetectedFramework, filterByRelevance } from './frameworks/framework.js'
 import { frameworks } from './frameworks/index.js'
 import { report } from './metrics.js'
 import type { PkgManagerFields } from './package-managers/detect-package-manager.js'
@@ -29,7 +29,7 @@ export class Project {
   /** The detected build-systems */
   buildSystems: BuildSystem[]
   /** The detected frameworks for each path in a project */
-  frameworks: Map<string, Framework[]>
+  frameworks: Map<string, DetectedFramework[]>
   /** a representation of the current environment */
   #environment: Record<string, string | undefined> = {}
 
@@ -237,7 +237,7 @@ export class Project {
     }
   }
 
-  private async detectFrameworksInPath(path?: string): Promise<DetectedFramework[]> {
+  async detectFrameworksInPath(path?: string): Promise<DetectedFramework[]> {
     try {
       let detected: DetectedFramework[] = []
       // on node we can parallelize more
@@ -266,40 +266,5 @@ export class Project {
     } catch {
       return []
     }
-  }
-
-  async combined() {
-    await this.detectBuildSystem()
-
-    // const buildSystem = this.buildSystems.find((b) => b.build)
-  }
-
-  async getBuildSettings() {
-    await this.detectFrameworks()
-
-    return {
-      settings: {},
-      warnings: null,
-    }
-  }
-
-  async getDevServerSettings() {
-    await this.detectFrameworks()
-
-    const buildSystem = this.buildSystems.find((system) => system.dev)
-
-    if (buildSystem) {
-      console.log(buildSystem)
-      // get the framework for the default build system
-      // if (this.frameworks.size > 1) {
-      // }
-      // console.log(this.frameworks)
-    }
-    // TODO return frameworks
-    // console.log(this)
-    // return {
-    //   command: '',
-    //   frameworkPort: number,
-    // }
   }
 }

@@ -6,7 +6,7 @@ export class RedwoodJS extends BaseFramework implements Framework {
   npmDependencies = ['@redwoodjs/core']
   configFiles = ['redwood.toml']
   category = Category.SSG
-  staticAssetsDirectory: 'public'
+  staticAssetsDirectory = 'public'
 
   dev = {
     // redwood only works with yarn
