@@ -23,7 +23,7 @@ export interface BuildSystem {
     pollingStrategies?: PollingStrategy[]
   }
 
-  getCommands(path: string): Promise<Command[]>
+  getCommands?(path: string): Promise<Command[]>
 
   detect(): Promise<BuildSystem | undefined>
 }

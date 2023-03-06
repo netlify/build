@@ -12,8 +12,8 @@ export class Assemble extends BaseFramework implements Framework {
   }
 
   logo = {
-    default: '/logos/assemble/default.svg',
-    light: '/logos/assemble/default.svg',
-    dark: '/logos/assemble/default.svg',
+    default: '/logos/assemble/default.png',
+    light: '/logos/assemble/default.png',
+    dark: '/logos/assemble/default.png',
   }
 }

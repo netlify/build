@@ -271,7 +271,7 @@ export class Project {
   async combined() {
     await this.detectBuildSystem()
 
-    const buildSystem = this.buildSystems.find((b) => b.build)
+    // const buildSystem = this.buildSystems.find((b) => b.build)
   }
 
   async getBuildSettings() {
