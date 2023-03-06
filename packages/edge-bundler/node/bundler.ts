@@ -59,7 +59,7 @@ const bundle = async (
     onBeforeDownload,
   }
 
-  if (cacheDirectory !== undefined && featureFlags.edge_functions_cache_deno_dir) {
+  if (cacheDirectory !== undefined) {
     options.denoDir = join(cacheDirectory, 'deno_dir')
   }
 
@@ -103,15 +103,7 @@ const bundle = async (
   await createFinalBundles([functionBundle], distDirectory, buildID)
 
   // Retrieving a configuration object for each function.
-  const functionsConfig = await Promise.all(
-    functions.map((func) => {
-      if (!featureFlags.edge_functions_config_export) {
-        return {}
-      }
-
-      return getFunctionConfig(func, importMap, deno, logger)
-    }),
-  )
+  const functionsConfig = await Promise.all(functions.map((func) => getFunctionConfig(func, importMap, deno, logger)))
 
   // Creating a hash of function names to configuration objects.
   const functionsWithConfig = functions.reduce(

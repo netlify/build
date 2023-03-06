@@ -116,32 +116,6 @@ test('`getFunctionConfig` extracts configuration properties from function file',
   await deleteAsync(tmpDir, { force: true })
 })
 
-test('Ignores function paths from the in-source `config` function if the feature flag is off', async () => {
-  const { basePath, cleanup, distPath } = await useFixture('with_config')
-  const userDirectory = resolve(basePath, 'netlify', 'edge-functions')
-  const internalDirectory = resolve(basePath, '.netlify', 'edge-functions')
-  const declarations: Declaration[] = []
-  const result = await bundle([internalDirectory, userDirectory], distPath, declarations, {
-    basePath,
-    configPath: join(internalDirectory, 'config.json'),
-  })
-  const generatedFiles = await fs.readdir(distPath)
-
-  expect(result.functions.length).toBe(7)
-  expect(generatedFiles.length).toBe(2)
-
-  const manifestFile = await fs.readFile(resolve(distPath, 'manifest.json'), 'utf8')
-  const manifest = JSON.parse(manifestFile)
-  const { bundles, routes } = manifest
-
-  expect(bundles.length).toBe(1)
-  expect(bundles[0].format).toBe('eszip2')
-  expect(generatedFiles.includes(bundles[0].asset)).toBe(true)
-  expect(routes.length).toBe(0)
-
-  await cleanup()
-})
-
 test('Loads function paths from the in-source `config` function', async () => {
   const { basePath, cleanup, distPath } = await useFixture('with_config')
   const userDirectory = resolve(basePath, 'netlify', 'edge-functions')
@@ -159,9 +133,6 @@ test('Loads function paths from the in-source `config` function', async () => {
   const result = await bundle([internalDirectory, userDirectory], distPath, declarations, {
     basePath,
     configPath: join(internalDirectory, 'config.json'),
-    featureFlags: {
-      edge_functions_config_export: true,
-    },
   })
   const generatedFiles = await fs.readdir(distPath)
 
