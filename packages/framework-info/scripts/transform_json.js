@@ -60,5 +60,5 @@ const FRAMEWORK_NAMES_FOOTER = ` as const
 
 export type FrameworkName = typeof FRAMEWORK_NAMES[number]`
 
-transformFrameworks()
-transformFrameworkNames()
+await transformFrameworks()
+await transformFrameworkNames()
