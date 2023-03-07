@@ -42,6 +42,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.4 to ^9.8.5
 
+## [6.6.0](https://github.com/netlify/build/compare/build-info-v6.5.1...build-info-v6.6.0) (2023-03-07)
+
+
+### Features
+
+* use dev cycle feature flagging ([#4919](https://github.com/netlify/build/issues/4919)) ([bddb57f](https://github.com/netlify/build/commit/bddb57faa0229cd51b3303544309bfa1f1df07c4))
+
 ## [6.5.0](https://github.com/netlify/build/compare/build-info-v6.4.0...build-info-v6.5.0) (2023-03-02)
 
 
