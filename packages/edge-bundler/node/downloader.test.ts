@@ -1,4 +1,4 @@
-import { promises as fs } from 'fs'
+import { rm } from 'fs/promises'
 import { platform } from 'process'
 import { PassThrough } from 'stream'
 
@@ -32,7 +32,7 @@ beforeEach(async (ctx: TestContext) => {
 })
 
 afterEach(async (ctx: TestContext) => {
-  await fs.rmdir(ctx.tmpDir, { recursive: true })
+  await rm(ctx.tmpDir, { force: true, recursive: true })
 })
 
 test('tries downloading binary up to 4 times', async (ctx: TestContext) => {

@@ -1,4 +1,4 @@
-import { promises as fs } from 'fs'
+import { readFile, rm, writeFile } from 'fs/promises'
 import { join } from 'path'
 
 import nock from 'nock'
@@ -26,7 +26,7 @@ test('`ensureLatestTypes` updates the Deno CLI cache if the local version of typ
 
   await ensureLatestTypes(deno, testLogger, mockURL)
 
-  const versionFile = await fs.readFile(join(tmpDir.path, 'types-version.txt'), 'utf8')
+  const versionFile = await readFile(join(tmpDir.path, 'types-version.txt'), 'utf8')
 
   expect(latestVersionMock.isDone()).toBe(true)
   expect(mock).toHaveBeenCalledTimes(1)
@@ -35,7 +35,7 @@ test('`ensureLatestTypes` updates the Deno CLI cache if the local version of typ
 
   mock.mockRestore()
 
-  await fs.rmdir(tmpDir.path, { recursive: true })
+  await rm(tmpDir.path, { force: true, recursive: true })
 })
 
 test('`ensureLatestTypes` does not update the Deno CLI cache if the local version of types is up-to-date', async () => {
@@ -45,7 +45,7 @@ test('`ensureLatestTypes` does not update the Deno CLI cache if the local versio
   const tmpDir = await tmp.dir()
   const versionFilePath = join(tmpDir.path, 'types-version.txt')
 
-  await fs.writeFile(versionFilePath, mockVersion)
+  await writeFile(versionFilePath, mockVersion)
 
   const latestVersionMock = nock(mockURL).get('/version.txt').reply(200, mockVersion)
   const deno = new DenoBridge({
@@ -63,7 +63,7 @@ test('`ensureLatestTypes` does not update the Deno CLI cache if the local versio
 
   mock.mockRestore()
 
-  await fs.rmdir(tmpDir.path, { recursive: true })
+  await rm(tmpDir.path, { force: true, recursive: true })
 })
 
 test('`ensureLatestTypes` does not throw if the types URL is not available', async () => {
@@ -86,5 +86,5 @@ test('`ensureLatestTypes` does not throw if the types URL is not available', asy
 
   mock.mockRestore()
 
-  await fs.rmdir(tmpDir.path, { recursive: true })
+  await rm(tmpDir.path, { force: true, recursive: true })
 })

@@ -1,5 +1,5 @@
 import { Buffer } from 'buffer'
-import fs from 'fs'
+import { rm } from 'fs/promises'
 import { createRequire } from 'module'
 import { platform, env } from 'process'
 import { PassThrough } from 'stream'
@@ -68,7 +68,7 @@ test('Does not inherit environment variables if `extendEnv` is false', async () 
 
   expect(output).toBe('LULU=LALA')
 
-  await fs.promises.rmdir(tmpDir.path, { recursive: true })
+  await rm(tmpDir.path, { force: true, recursive: true })
 })
 
 test('Does inherit environment variables if `extendEnv` is true', async () => {
@@ -101,7 +101,7 @@ test('Does inherit environment variables if `extendEnv` is true', async () => {
 
   expect(environmentVariables).toEqual(['LULU=LALA', 'TADA=TUDU'])
 
-  await fs.promises.rmdir(tmpDir.path, { recursive: true })
+  await rm(tmpDir.path, { force: true, recursive: true })
 })
 
 test('Does inherit environment variables if `extendEnv` is not set', async () => {
@@ -134,5 +134,5 @@ test('Does inherit environment variables if `extendEnv` is not set', async () =>
 
   expect(environmentVariables).toEqual(['LULU=LALA', 'TADA=TUDU'])
 
-  await fs.promises.rmdir(tmpDir.path, { recursive: true })
+  await rm(tmpDir.path, { force: true, recursive: true })
 })

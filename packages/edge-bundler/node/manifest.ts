@@ -12,7 +12,6 @@ import { Layer } from './layer.js'
 import { getPackageVersion } from './package_json.js'
 import { nonNullable } from './utils/non_nullable.js'
 
-/* eslint-disable camelcase */
 interface Route {
   function: string
   name?: string
@@ -31,8 +30,6 @@ interface Manifest {
   post_cache_routes: Route[]
   function_config: Record<string, EdgeFunctionConfig>
 }
-
-/* eslint-enable camelcase */
 
 interface GenerateManifestOptions {
   bundles?: Bundle[]

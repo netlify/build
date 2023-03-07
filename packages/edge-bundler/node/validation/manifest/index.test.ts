@@ -1,6 +1,11 @@
+import chalk from 'chalk'
 import { test, expect, describe } from 'vitest'
 
 import { validateManifest, ManifestValidationError } from './index.js'
+
+// We need to disable all color outputs for the tests as they are different on different platforms, CI, etc.
+// This only works if this is the same instance of chalk that better-ajv-errors uses
+chalk.level = 0
 
 // Factory so we have a new object per test
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

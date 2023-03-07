@@ -1,5 +1,5 @@
 import { Buffer } from 'buffer'
-import fs from 'fs'
+import { rm } from 'fs/promises'
 import { createRequire } from 'module'
 import { platform } from 'process'
 import { PassThrough } from 'stream'
@@ -51,5 +51,5 @@ test('Downloads the Deno CLI on demand and caches it for subsequent calls', asyn
   expect(beforeDownload).toHaveBeenCalledTimes(1)
   expect(afterDownload).toHaveBeenCalledTimes(1)
 
-  await fs.promises.rmdir(tmpDir.path, { recursive: true })
+  await rm(tmpDir.path, { force: true, recursive: true })
 })

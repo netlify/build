@@ -1,6 +1,6 @@
 import Ajv from 'ajv'
-import ajvErrors from 'ajv-errors'
 import type { ValidateFunction } from 'ajv/dist/core.js'
+import ajvErrors from 'ajv-errors'
 import betterAjvErrors from 'better-ajv-errors'
 
 import type { Manifest } from '../../manifest.js'

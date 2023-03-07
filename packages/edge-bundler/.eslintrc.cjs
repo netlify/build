@@ -15,6 +15,7 @@ module.exports = {
     'max-statements': 'off',
     'node/no-missing-import': 'off',
     'no-shadow': 'off',
+    'no-use-before-define': 'off',
     'unicorn/prefer-json-parse-buffer': 'off',
   },
   overrides: [
