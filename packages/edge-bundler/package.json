@@ -14,6 +14,7 @@
   ],
   "scripts": {
     "build": "tsc",
+    "build:dev": "tsc -w",
     "prepare": "husky install node_modules/@netlify/eslint-config-node/.husky/",
     "prepublishOnly": "npm ci && npm test",
     "prepack": "npm run build",
@@ -84,6 +85,7 @@
     "find-up": "^6.3.0",
     "get-port": "^6.1.2",
     "glob-to-regexp": "^0.4.1",
+    "is-path-inside": "^4.0.0",
     "jsonc-parser": "^3.2.0",
     "node-fetch": "^3.1.1",
     "node-stream-zip": "^1.15.0",

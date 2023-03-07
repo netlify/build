@@ -331,20 +331,26 @@ test('Loads declarations and import maps from the deploy configuration', async (
   const directories = [join(basePath, 'netlify', 'edge-functions'), join(basePath, '.netlify', 'edge-functions')]
   const result = await bundle(directories, distPath, declarations, {
     basePath,
-    configPath: join(basePath, '.netlify', 'edge-functions', 'config.json'),
+    configPath: join(basePath, '.netlify', 'edge-functions', 'manifest.json'),
+    internalSrcFolder: directories[1],
+    featureFlags: { edge_functions_config_export: true },
   })
   const generatedFiles = await fs.readdir(distPath)
 
-  expect(result.functions.length).toBe(2)
+  expect(result.functions.length).toBe(3)
   expect(generatedFiles.length).toBe(2)
 
   const manifestFile = await fs.readFile(resolve(distPath, 'manifest.json'), 'utf8')
   const manifest = JSON.parse(manifestFile)
-  const { bundles, function_config: functionConfig } = manifest
+  const { routes, bundles, function_config: functionConfig } = manifest
 
   expect(bundles.length).toBe(1)
   expect(bundles[0].format).toBe('eszip2')
   expect(generatedFiles.includes(bundles[0].asset)).toBe(true)
+  expect(routes[0].generator).toBeUndefined()
+  expect(routes[1].name).toBe('Function two')
+  expect(routes[1].generator).toBe('@netlify/fake-plugin@1.0.0')
+  expect(routes[2].generator).toBe('internalFunc')
 
   // respects excludedPath from deploy config
   expect(functionConfig.func2).toEqual({ excluded_patterns: ['^/func2/skip/?$'] })

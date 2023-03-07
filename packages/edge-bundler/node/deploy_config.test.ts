@@ -34,6 +34,7 @@ test('Returns a config object with declarations, layers, and import map', async 
       {
         function: 'func1',
         path: '/func1',
+        generator: 'internalFunc',
       },
     ],
     layers: [

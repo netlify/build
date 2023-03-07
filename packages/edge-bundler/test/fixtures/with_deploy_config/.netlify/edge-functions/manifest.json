@@ -3,6 +3,8 @@
     {
       "function": "func2",
       "path": "/func2/*",
+      "name": "Function two",
+      "generator": "@netlify/fake-plugin@1.0.0",
       "excludedPath": "/func2/skip"
     }
   ],
