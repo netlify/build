@@ -1,9 +1,10 @@
-const defaultFlags: Record<string, boolean> = {
+const defaultFlags = {
   edge_functions_fail_unsupported_regex: false,
+  edge_functions_invalid_config_throw: false,
 }
 
 type FeatureFlag = keyof typeof defaultFlags
-type FeatureFlags = Record<FeatureFlag, boolean>
+type FeatureFlags = Partial<Record<FeatureFlag, boolean>>
 
 const getFlags = (input: Record<string, boolean> = {}, flags = defaultFlags): FeatureFlags =>
   Object.entries(flags).reduce(

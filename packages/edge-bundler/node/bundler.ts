@@ -107,7 +107,9 @@ const bundle = async (
   await createFinalBundles([functionBundle], distDirectory, buildID)
 
   // Retrieving a configuration object for each function.
-  const functionsConfig = await Promise.all(functions.map((func) => getFunctionConfig(func, importMap, deno, logger)))
+  const functionsConfig = await Promise.all(
+    functions.map((func) => getFunctionConfig(func, importMap, deno, logger, featureFlags)),
+  )
 
   // Creating a hash of function names to configuration objects.
   const functionsWithConfig = functions.reduce(

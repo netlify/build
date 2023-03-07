@@ -297,7 +297,7 @@ test('Processes a function that imports a custom layer', async () => {
       path: '/func1',
     },
   ]
-  const layer = { name: 'layer:test', flag: 'edge-functions-layer-test' }
+  const layer = { name: 'https://edge-function-layer-template.netlify.app/mod.ts', flag: 'edge-functions-layer-test' }
   const result = await bundle([sourceDirectory], distPath, declarations, {
     basePath,
     configPath: join(sourceDirectory, 'config.json'),
@@ -333,7 +333,6 @@ test('Loads declarations and import maps from the deploy configuration', async (
     basePath,
     configPath: join(basePath, '.netlify', 'edge-functions', 'manifest.json'),
     internalSrcFolder: directories[1],
-    featureFlags: { edge_functions_config_export: true },
   })
   const generatedFiles = await fs.readdir(distPath)
 
@@ -370,7 +369,7 @@ test("Ignores entries in `importMapPaths` that don't point to an existing import
       helper: pathToFileURL(join(basePath, 'helper.ts')).toString(),
     },
     scopes: {
-      [pathToFileURL(join(sourceDirectory, 'func3')).toString()]: {
+      [pathToFileURL(join(sourceDirectory, 'func3/func3.ts')).toString()]: {
         helper: pathToFileURL(join(basePath, 'helper2.ts')).toString(),
       },
     },
