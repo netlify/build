@@ -1,5 +1,12 @@
 # Changelog
 
+## [8.11.0](https://github.com/netlify/edge-bundler/compare/v8.10.0...v8.11.0) (2023-03-08)
+
+
+### Features
+
+* propagate onError config property to manifest ([#328](https://github.com/netlify/edge-bundler/issues/328)) ([bd804b2](https://github.com/netlify/edge-bundler/commit/bd804b214b0aa4cb44437a4b87e6a21b3bad602b))
+
 ## [8.10.0](https://github.com/netlify/edge-bundler/compare/v8.9.0...v8.10.0) (2023-03-08)
 
 
