@@ -1,5 +1,18 @@
 # Changelog
 
+## [8.10.0](https://github.com/netlify/edge-bundler/compare/v8.9.0...v8.10.0) (2023-03-08)
+
+
+### Features
+
+* populate generator field if edge function is from a config file ([#312](https://github.com/netlify/edge-bundler/issues/312)) ([0ee2e1d](https://github.com/netlify/edge-bundler/commit/0ee2e1d79596d0f3b71c455c329cf81c9da84f92))
+* update bootstrap URL ([#329](https://github.com/netlify/edge-bundler/issues/329)) ([8b5dc3b](https://github.com/netlify/edge-bundler/commit/8b5dc3ba7a322bac53f820f4fbff82180af5337f))
+
+
+### Bug Fixes
+
+* throw errors when function or isc-config cannot be loaded ([#327](https://github.com/netlify/edge-bundler/issues/327)) ([cdac30d](https://github.com/netlify/edge-bundler/commit/cdac30d861b3bedd371c95e2914bee944777779d))
+
 ## [8.9.0](https://github.com/netlify/edge-bundler/compare/v8.8.1...v8.9.0) (2023-03-03)
 
 
