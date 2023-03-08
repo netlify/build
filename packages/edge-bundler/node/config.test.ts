@@ -100,6 +100,24 @@ const functions = [
     },
   },
   {
+    testName: 'config with correct onError',
+    expectedConfig: { onError: 'bypass' },
+    name: 'func5',
+    source: `
+      export default async () => new Response("Hello from function two")
+      export const config = { onError: "bypass" }
+    `,
+  },
+  {
+    testName: 'config with wrong onError',
+    name: 'func7',
+    source: `
+      export default async () => new Response("Hello from function two")
+      export const config = { onError: "foo" }
+    `,
+    error: /The 'onError' configuration property in edge function at .*/,
+  },
+  {
     testName: 'config with `path`',
     expectedConfig: { path: '/home' },
     name: 'func6',

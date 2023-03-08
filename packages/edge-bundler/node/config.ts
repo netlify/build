@@ -27,10 +27,19 @@ export const enum Cache {
   Manual = 'manual',
 }
 
+export type OnError = 'fail' | 'bypass' | `/${string}`
+
+export const isValidOnError = (value: unknown): value is OnError => {
+  if (typeof value === 'undefined') return true
+  if (typeof value !== 'string') return false
+  return value === 'fail' || value === 'bypass' || value.startsWith('/')
+}
+
 export interface FunctionConfig {
   cache?: Cache
   path?: string | string[]
   excludedPath?: string | string[]
+  onError?: OnError
 }
 
 const getConfigExtractor = () => {
@@ -89,17 +98,26 @@ export const getFunctionConfig = async (
     log.user(stdout)
   }
 
-  try {
-    const collectorData = await fs.readFile(collector.path, 'utf8')
+  let collectorData: FunctionConfig = {}
 
-    return JSON.parse(collectorData) as FunctionConfig
+  try {
+    const collectorDataJSON = await fs.readFile(collector.path, 'utf8')
+    collectorData = JSON.parse(collectorDataJSON) as FunctionConfig
   } catch {
     handleConfigError(func, ConfigExitCode.UnhandledError, stderr, log, featureFlags)
-
-    return {}
   } finally {
     await collector.cleanup()
   }
+
+  if (!isValidOnError(collectorData.onError)) {
+    throw new BundleError(
+      new Error(
+        `The 'onError' configuration property in edge function at '${func.path}' must be one of 'fail', 'bypass', or a path starting with '/'. Got '${collectorData.onError}'. More on the Edge Functions API at https://ntl.fyi/edge-api.`,
+      ),
+    )
+  }
+
+  return collectorData
 }
 
 const handleConfigError = (

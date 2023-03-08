@@ -20,6 +20,7 @@ interface Route {
 }
 interface EdgeFunctionConfig {
   excluded_patterns: string[]
+  on_error?: string
 }
 interface Manifest {
   bundler_version: string
@@ -41,13 +42,6 @@ interface GenerateManifestOptions {
   layers?: Layer[]
 }
 
-interface Route {
-  function: string
-  name?: string
-  pattern: string
-  generator?: string
-}
-
 // JavaScript regular expressions are converted to strings with leading and
 // trailing slashes, so any slashes inside the expression itself are escaped
 // as `//`. This function deserializes that back into a single slash, which
@@ -58,7 +52,7 @@ const sanitizeEdgeFunctionConfig = (config: Record<string, EdgeFunctionConfig>):
   const newConfig: Record<string, EdgeFunctionConfig> = {}
 
   for (const [name, functionConfig] of Object.entries(config)) {
-    if (functionConfig.excluded_patterns.length !== 0) {
+    if (functionConfig.excluded_patterns.length !== 0 || functionConfig.on_error) {
       newConfig[name] = functionConfig
     }
   }
@@ -81,12 +75,16 @@ const generateManifest = ({
     functions.map(({ name }) => [name, { excluded_patterns: [] }]),
   )
 
-  for (const [name, { excludedPath }] of Object.entries(functionConfig)) {
+  for (const [name, { excludedPath, onError }] of Object.entries(functionConfig)) {
     if (excludedPath) {
       const paths = Array.isArray(excludedPath) ? excludedPath : [excludedPath]
       const excludedPatterns = paths.map(pathToRegularExpression).map(serializePattern)
 
       manifestFunctionConfig[name].excluded_patterns.push(...excludedPatterns)
+    }
+
+    if (onError) {
+      manifestFunctionConfig[name].on_error = onError
     }
   }
 

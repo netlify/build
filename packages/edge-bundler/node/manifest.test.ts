@@ -3,6 +3,7 @@ import { env } from 'process'
 import { test, expect, vi } from 'vitest'
 
 import { BundleFormat } from './bundle.js'
+import { FunctionConfig } from './config.js'
 import { Declaration } from './declaration.js'
 import { generateManifest } from './manifest.js'
 
@@ -99,6 +100,26 @@ test('Generates a manifest with excluded paths and patterns', () => {
     'func-2': { excluded_patterns: ['^/f2/exclude$'] },
   })
   expect(manifest.bundler_version).toBe(env.npm_package_version as string)
+})
+
+test('Includes failure modes in manifest', () => {
+  const functions = [
+    { name: 'func-1', path: '/path/to/func-1.ts' },
+    { name: 'func-2', path: '/path/to/func-2.ts' },
+  ]
+  const declarations: Declaration[] = [
+    { function: 'func-1', name: 'Display Name', path: '/f1/*' },
+    { function: 'func-2', pattern: '^/f2/.*/?$' },
+  ]
+  const functionConfig: Record<string, FunctionConfig> = {
+    'func-1': {
+      onError: '/custom-error',
+    },
+  }
+  const manifest = generateManifest({ bundles: [], declarations, functions, functionConfig })
+  expect(manifest.function_config).toEqual({
+    'func-1': { excluded_patterns: [], on_error: '/custom-error' },
+  })
 })
 
 test('Excludes functions for which there are function files but no matching config declarations', () => {

@@ -38,6 +38,7 @@ const functionConfigSchema = {
           'excluded_patterns needs to be an array of regex that starts with ^ and ends with $ without any additional slashes before and afterwards',
       },
     },
+    on_error: { type: 'string' },
   },
 }
 
