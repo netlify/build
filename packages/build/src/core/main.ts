@@ -6,8 +6,8 @@ import { trackBuildComplete } from '../telemetry/main.js'
 import { reportTimers } from '../time/report.js'
 
 import { execBuild, startBuild } from './build.js'
+import type { ParsedCLIFlags } from './flags.js'
 import { getSeverity } from './severity.js'
-import { BuildCLIFlags } from './types.js'
 
 export { startDev } from './dev.js'
 export { runCoreSteps } from '../steps/run_core_steps.js'
@@ -18,7 +18,7 @@ export { runCoreSteps } from '../steps/run_core_steps.js'
  *
  * @param flags - build configuration CLI flags
  */
-export default async function buildSite(flags: Partial<BuildCLIFlags> = {}): Promise<{
+export default async function buildSite(flags: ParsedCLIFlags): Promise<{
   success: boolean
   severityCode: number
   logs: any

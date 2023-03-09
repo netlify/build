@@ -4,7 +4,8 @@ import { logFlags } from '../log/messages/config.js'
 import { removeFalsy } from '../utils/remove_falsy.js'
 
 import { DEFAULT_FEATURE_FLAGS } from './feature_flags.js'
-import type { BuildCLIFlags, Mode, TestOptions } from './types.js'
+import type { ParsedCLIFlags } from './flags.js'
+import type { Mode, TestOptions } from './types.js'
 
 const REQUIRE_MODE: Mode = 'require'
 const DEFAULT_EDGE_FUNCTIONS_DIST = '.netlify/edge-functions-dist/'
@@ -42,7 +43,7 @@ export type ResolvedFlags = {
 }
 
 /** Normalize CLI flags  */
-export const normalizeFlags = function (flags: Partial<BuildCLIFlags>, logs): ResolvedFlags {
+export const normalizeFlags = function (flags: ParsedCLIFlags, logs): ResolvedFlags {
   const rawFlags = removeFalsy(flags)
 
   // Combine the flags object env with the process.env

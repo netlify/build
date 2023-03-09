@@ -2,12 +2,7 @@
 
 import process from 'process'
 
-import filterObj from 'filter-obj'
-import yargs from 'yargs'
-import { hideBin } from 'yargs/helpers'
-
-import { normalizeCliFeatureFlags } from './feature_flags.js'
-import { FLAGS } from './flags.js'
+import { parseFlags } from './flags.js'
 import build from './main.js'
 import { FALLBACK_SEVERITY_ENTRY } from './severity.js'
 
@@ -16,43 +11,17 @@ import { FALLBACK_SEVERITY_ENTRY } from './severity.js'
 // programmatic command instead, so that the new logic is available when run
 // programmatically as well. This file should only contain logic that makes
 // sense only in CLI, such as CLI flags parsing and exit code.
-const runCli = async function () {
+async function runCli() {
   const flags = parseFlags()
-  const flagsA = filterObj(flags, isUserFlag)
-
   const state = { done: false }
   process.on('exit', onExit.bind(undefined, state))
 
-  const { severityCode, logs } = await build(flagsA)
+  const { severityCode, logs } = await build(flags)
   printLogs(logs)
   process.exitCode = severityCode
 
   state.done = true
 }
-
-const parseFlags = function () {
-  const { featureFlags: cliFeatureFlags = '', ...flags } = yargs(hideBin(process.argv))
-    .options(FLAGS)
-    .usage(USAGE)
-    .parse()
-  const featureFlags = normalizeCliFeatureFlags(cliFeatureFlags)
-  return { ...flags, featureFlags }
-}
-
-const USAGE = `netlify-build [OPTIONS...]
-
-Run Netlify Build system locally.
-
-Options can also be specified as environment variables prefixed with
-NETLIFY_BUILD_. For example the environment variable NETLIFY_BUILD_DRY=true can
-be used instead of the CLI flag --dry.`
-
-// Remove `yargs`-specific options, shortcuts, dash-cased and aliases
-const isUserFlag = function (key, value) {
-  return value !== undefined && !INTERNAL_KEYS.has(key) && key.length !== 1 && !key.includes('-')
-}
-
-const INTERNAL_KEYS = new Set(['help', 'version', '_', '$0', 'dryRun'])
 
 // Used mostly for testing
 const printLogs = function (logs) {

@@ -27,7 +27,9 @@
     "pretest": "tsd .",
     "test": "ava",
     "test:dev": "ava -w",
-    "test:ci": "c8 -r lcovonly -r text -r json ava",
+    "test:ci": "npm run ava:ci && npm run vitest:ci",
+    "ava:ci": "c8 -r lcovonly -r text -r json ava",
+    "vitest:ci": "vitest run --reporter=default",
     "test:measure": "../../tools/tests-duration.js"
   },
   "keywords": [
@@ -64,6 +66,7 @@
   "license": "MIT",
   "dependencies": {
     "@bugsnag/js": "^7.0.0",
+    "@devcycle/nodejs-server-sdk": "^1.8.0",
     "@netlify/cache-utils": "^5.1.2",
     "@netlify/config": "^20.3.3",
     "@netlify/edge-bundler": "8.9.0",
@@ -137,6 +140,7 @@
     "process-exists": "^5.0.0",
     "sinon": "^13.0.0",
     "tsd": "^0.24.1",
+    "vitest": "^0.29.0",
     "yarn": "^1.22.4"
   },
   "engines": {
