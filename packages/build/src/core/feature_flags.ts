@@ -1,4 +1,4 @@
-import { DVCUser, initialize } from '@devcycle/nodejs-server-sdk'
+import { DVCUser, initialize } from '@devcycle/devcycle-js-sdk'
 
 export type FeatureFlags = Record<string, boolean>
 
@@ -32,11 +32,12 @@ export async function getFeatureFlags(LDFeatureFlags: string, user?: DVCUser): P
       return ldParsed
     }
 
-    const dvcClient = await initialize(process.env.DEV_CYCLE_KEY).onClientInitialized()
-    const features = dvcClient.allFeatures(user)
+    const dvcClient = await initialize(process.env.DEV_CYCLE_KEY, user).onClientInitialized()
 
+    const features = dvcClient.allFeatures()
     return Object.values(features || {}).reduce((prev, feature) => ({ ...prev, [feature.key]: true }), ldParsed)
-  } catch {
+  } catch (err) {
+    console.log(err)
     return ldParsed
   }
 }
