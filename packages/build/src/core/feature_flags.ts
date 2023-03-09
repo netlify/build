@@ -1,3 +1,5 @@
+import { DVCUser, initialize } from '@devcycle/nodejs-server-sdk'
+
 export type FeatureFlags = Record<string, boolean>
 
 // From CLI `--featureFlags=a,b,c` to programmatic `{ a: true, b: true, c: true }`
@@ -19,4 +21,22 @@ export const DEFAULT_FEATURE_FLAGS: FeatureFlags = {
   buildbot_zisi_esbuild_parser: false,
   edge_functions_cache_cli: false,
   edge_functions_system_logger: false,
+}
+
+/** Get a list of feature flags */
+export async function getFeatureFlags(LDFeatureFlags: string, user?: DVCUser): Promise<FeatureFlags> {
+  const ldParsed = normalizeCliFeatureFlags(LDFeatureFlags)
+
+  try {
+    if (!ldParsed['netlify-build-use-dev-cycle'] || !process.env.DEV_CYCLE_KEY || !user?.user_id) {
+      return ldParsed
+    }
+
+    const dvcClient = await initialize(process.env.DEV_CYCLE_KEY).onClientInitialized()
+    const features = dvcClient.allFeatures(user)
+
+    return Object.values(features || {}).reduce((prev, feature) => ({ ...prev, [feature.key]: true }), ldParsed)
+  } catch {
+    return ldParsed
+  }
 }

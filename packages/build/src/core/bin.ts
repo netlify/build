@@ -6,10 +6,11 @@ import filterObj from 'filter-obj'
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 
-import { normalizeCliFeatureFlags } from './feature_flags.js'
+import { getFeatureFlags } from './feature_flags.js'
 import { FLAGS } from './flags.js'
 import build from './main.js'
 import { FALLBACK_SEVERITY_ENTRY } from './severity.js'
+import { BuildCLIFlags } from './types.js'
 
 // CLI entry point.
 // Before adding logic to this file, please consider adding it to the main
@@ -17,25 +18,27 @@ import { FALLBACK_SEVERITY_ENTRY } from './severity.js'
 // programmatically as well. This file should only contain logic that makes
 // sense only in CLI, such as CLI flags parsing and exit code.
 const runCli = async function () {
-  const flags = parseFlags()
+  const flags = await parseFlags()
   const flagsA = filterObj(flags, isUserFlag)
 
   const state = { done: false }
   process.on('exit', onExit.bind(undefined, state))
 
-  const { severityCode, logs } = await build(flagsA)
+  const { severityCode, logs } = await build(flagsA as BuildCLIFlags)
   printLogs(logs)
   process.exitCode = severityCode
 
   state.done = true
 }
 
-const parseFlags = function () {
+const parseFlags = async () => {
   const { featureFlags: cliFeatureFlags = '', ...flags } = yargs(hideBin(process.argv))
     .options(FLAGS)
     .usage(USAGE)
     .parse()
-  const featureFlags = normalizeCliFeatureFlags(cliFeatureFlags)
+
+  const featureFlags = await getFeatureFlags(cliFeatureFlags as string, flags.devCycleUser)
+  console.log(featureFlags)
   return { ...flags, featureFlags }
 }
 
@@ -80,4 +83,12 @@ const onExit = function ({ done }, exitCode) {
   process.exitCode = FALLBACK_SEVERITY_ENTRY.severityCode
 }
 
+// devCycle feature flag client is a long running process that stops netlify build from exiting
+// therefore we need to manually call the correct process exit state
 runCli()
+  .then(() => {
+    process.exit(0)
+  })
+  .catch(() => {
+    process.exit(1)
+  })
