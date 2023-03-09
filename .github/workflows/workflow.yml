@@ -95,7 +95,7 @@ jobs:
 
   test-build:
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 20
+    timeout-minutes: 30
     strategy:
       matrix:
         os: [ubuntu-latest, macOS-latest, windows-latest]
