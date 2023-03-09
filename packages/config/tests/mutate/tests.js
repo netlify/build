@@ -5,7 +5,7 @@ import { Fixture, normalizeOutput } from '@netlify/testing'
 import test from 'ava'
 import del from 'del'
 
-import { updateConfig } from '../../lib/main.js'
+import { updateConfig } from '../../lib/index.js'
 
 const FIXTURES_DIR = fileURLToPath(new URL('fixtures', import.meta.url))
 
