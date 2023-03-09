@@ -22,7 +22,7 @@ describe('Nx', () => {
     const project = new Project(ctx.fs, fixture.cwd)
     const [nx] = await project.detectBuildSystem()
 
-    expect(await nx.getCommands('packages/astro-not-existing')).toEqual([])
+    expect(await nx.getCommands?.('packages/astro-not-existing')).toEqual([])
   })
 
   test('Get the commands for a package', async (ctx) => {
@@ -31,14 +31,14 @@ describe('Nx', () => {
     const project = new Project(ctx.fs, fixture.cwd)
     const [nx] = await project.detectBuildSystem()
 
-    expect(await nx.getCommands('packages/astro')).toEqual([
+    expect(await nx.getCommands?.('packages/astro')).toEqual([
       { command: 'nx run astro:build', type: 'build' },
       { command: 'nx run astro:dev', type: 'dev' },
       { command: 'nx run astro:preview', type: 'unknown' },
       { command: 'nx run astro:check', type: 'unknown' },
       { command: 'nx run astro:sync', type: 'unknown' },
     ])
-    expect(await nx.getCommands('packages/website')).toEqual([
+    expect(await nx.getCommands?.('packages/website')).toEqual([
       { command: 'nx run website:build', type: 'build' },
       { command: 'nx run website:serve', type: 'dev' },
     ])
@@ -88,7 +88,7 @@ describe('Nx', () => {
     expect(detected[0]?.id).toBe('nx')
     expect(project.workspace).toMatchObject({
       isRoot: true,
-      packages: ['packages/website'],
+      packages: [join('packages/website')],
       rootDir: join(cwd, 'frontend'),
     })
   })

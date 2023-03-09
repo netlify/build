@@ -201,7 +201,7 @@ describe('workspace detection', () => {
 
     expect(project.workspace).toMatchObject({
       isRoot: true,
-      packages: ['packages/blog', 'packages/website'],
+      packages: [join('packages/blog'), join('packages/website')],
       rootDir: cwd,
     })
 
@@ -240,7 +240,7 @@ describe('workspace detection', () => {
 
     expect(project.workspace).toMatchObject({
       isRoot: true,
-      packages: ['packages/blog', 'packages/website'],
+      packages: [join('packages/blog'), join('packages/website')],
       rootDir: join(cwd, 'frontend'),
     })
 
@@ -305,7 +305,7 @@ describe('workspace detection', () => {
 
     expect(project.workspace).toMatchObject({
       isRoot: false,
-      packages: ['packages/blog', 'packages/website'],
+      packages: [join('packages/blog'), join('packages/website')],
       rootDir: join(cwd, 'frontend'), // The root of the js workspace is not the repo root
     })
 
