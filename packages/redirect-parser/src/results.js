@@ -9,7 +9,7 @@ const isError = function (result) {
   return result instanceof Error
 }
 
-// Concatenate an array of `{ redirects, erors }`
+// Concatenate an array of `{ redirects, errors }`
 export const concatResults = function (resultsArrays) {
   const redirects = resultsArrays.flatMap(getRedirects)
   const errors = resultsArrays.flatMap(getErrors)

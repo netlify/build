@@ -8,7 +8,7 @@ import type { Header } from './types.js'
 
 // Validate and normalize an array of `headers` objects.
 // This step is performed after `headers` have been parsed from either
-// `netlify.toml` or `_headerss`.
+// `netlify.toml` or `_headers`.
 export const normalizeHeaders = function (headers: any, minimal: boolean) {
   if (!Array.isArray(headers)) {
     const error = new TypeError(`Headers must be an array not: ${headers}`)

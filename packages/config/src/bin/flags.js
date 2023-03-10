@@ -32,7 +32,7 @@ Defaults to any netlify.toml in the git repository root directory or the base di
   defaultConfig: {
     string: true,
     describe: `JSON configuration object containing default values.
-Each configuration default value is used unless overriden through the main configuration file.
+Each configuration default value is used unless overridden through the main configuration file.
 Default: none.`,
     coerce: jsonParse,
     hidden: true,
@@ -65,7 +65,7 @@ Default: none.`,
     array: true,
     describe: `Array of changes to apply to the configuration.
 Each change must be an object with three properties:
-  - "keys": array of keys targetting the property to change
+  - "keys": array of keys targeting the property to change
   - "value": new value of that property
   - "event": build event when this change was applied, e.g. "onPreBuild"
 Default: empty array.`,

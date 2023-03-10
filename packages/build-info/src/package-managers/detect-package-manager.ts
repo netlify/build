@@ -16,7 +16,7 @@ export type PkgManagerFields = {
   lockFile: string
   /** Environment variable that can be used to force the usage of a package manager even though there is no lock file or a different lock file */
   forceEnvironment?: string
-  /** Flags that should be used for running the install command */
+  /** Flags that should be used for running the installation command */
   installFlags?: string[]
   /** A list of all cache locations for the package manager */
   cacheLocations?: string[]
@@ -91,7 +91,7 @@ export const detectPackageManager = async (project: Project): Promise<PkgManager
     if (lockFilePath) {
       const lockFile = project.fs.basename(lockFilePath)
       const pkgManager = lockFileMap[lockFile]
-      // check if it not got disabled
+      // check if it is not got disabled
       if (!(pkgManager.forceEnvironment && project.getEnv(pkgManager.forceEnvironment) === 'false')) {
         return pkgManager
       }

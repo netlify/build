@@ -24,7 +24,7 @@ export abstract class BaseBuildTool implements BuildSystem {
     }
   }
 
-  /** Get's a JSON from the class information */
+  /** Gets a JSON from the class information */
   toJSON() {
     return { id: this.id, name: this.name, version: this.version }
   }

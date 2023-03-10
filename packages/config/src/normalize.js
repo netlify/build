@@ -14,7 +14,7 @@ export const normalizeConfig = function (config) {
 
 // Remove empty strings.
 // This notably ensures that empty strings in the build command are removed.
-// Otherwise those would be run during builds, making the build fail.
+// Otherwise, those would be run during builds, making the build fail.
 const removeEmpty = function ({ build, ...config }) {
   return removeFalsy({ ...config, build: removeFalsy(build) })
 }

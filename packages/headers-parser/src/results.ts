@@ -11,7 +11,7 @@ const isError = function (result: any): result is Error {
   return result instanceof Error
 }
 
-// Concatenate an array of `{ headers, erors }`
+// Concatenate an array of `{ headers, errors }`
 export const concatResults = function (resultsArrays: { headers: Header[]; errors: Error[] }[]) {
   const headers = resultsArrays.flatMap(({ headers }) => headers)
   const errors = resultsArrays.flatMap(({ errors }) => errors)
