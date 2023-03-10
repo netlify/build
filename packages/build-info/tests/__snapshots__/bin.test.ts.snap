@@ -10,6 +10,5 @@ Options:
   --version       Show version number                                  [boolean]
   --rootDir       The root directory of the project if different from projectDir
                                                                         [string]
-  --devCycleUser  DevCycle user that is used for the feature flag client
-                                                        [string] [default: \\"{}\\"]"
+  --featureFlags  comma separated list of feature flags                 [string]"
 `;
