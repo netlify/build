@@ -35,7 +35,7 @@ const assignErrorProp = function (error, name, value) {
 export const errorToJson = function (error) {
   const { name, message, stack, [CUSTOM_ERROR_KEY]: customError, ...errorProps } = error
 
-  // diagnosticText is not enumerable in TSError so we need to grab it manually. destructuring won't work.
+  // diagnosticText is not enumerable in TSError, so we need to grab it manually. destructuring won't work.
   if (error.diagnosticText) {
     errorProps.diagnosticText = error.diagnosticText
   }

@@ -69,7 +69,7 @@ const deleteSideFile = async function (filePath) {
 }
 
 // Modifications to `netlify.toml` and `_headers/_redirects` are only meant for
-// the deploy API call. After it's been performed, we restore their former
+// the deployment API call. After it's been performed, we restore their former
 // state.
 // We do this by backing them up inside some sibling directory.
 const backupConfig = async function ({ buildDir, configPath, headersPath, redirectsPath }) {

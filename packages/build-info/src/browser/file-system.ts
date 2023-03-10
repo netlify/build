@@ -1,6 +1,6 @@
 import { DirType, FileSystem } from '../file-system.js'
 
-/** A sample implementation of a github provider */
+/** A sample implementation of a GitHub provider */
 export class GithubProvider {
   constructor(public repo: string, public branch?: string) {}
 
@@ -34,7 +34,7 @@ export class GithubProvider {
   }
 }
 
-/** A sample implementation of a web based file system that fetches from Github */
+/** A sample implementation of a web based file system that fetches from GitHub */
 export class WebFS extends FileSystem {
   constructor(public git: GithubProvider) {
     super()

@@ -5,7 +5,7 @@ import { logLingeringProcesses } from '../log/messages/core.js'
 // Print a warning when some build processes are still running.
 // We cannot rely on using the process tree:
 //  - This is because it is impossible to know whether a process was a child of
-//    of another once its parent process has exited. When that happens, the s
+//    another once its parent process has exited. When that happens, the s
 //    child becomes inherited by `init`, changing its `ppid`. The information
 //    about the original parent is then lost.
 //  - The only way to implement this would be to repeatedly list processes as

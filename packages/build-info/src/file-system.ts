@@ -50,7 +50,7 @@ export abstract class FileSystem {
   logger: Logger = new DefaultLogger()
 
   /**
-   * This is a in memory representation of the parsed files
+   * This is an in memory representation of the parsed files
    * The keys are always stored in posix style
    * If the value is null then the file did not get read up in memory yet.
    * If the value is a string it already got read up in mem.
@@ -106,7 +106,7 @@ export abstract class FileSystem {
     // the max we have to go up
     const up = Math.max(toUp, fromUp)
 
-    // if we have something from the 'from' to go up go up the max difference
+    // if we have something from the 'from' to go up the max difference
     const result = fromUp > 0 ? [...new Array<string>(up).fill('..')] : []
 
     // if we have some parts left add them to the going up

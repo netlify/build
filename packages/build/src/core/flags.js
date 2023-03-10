@@ -12,7 +12,7 @@ Defaults to any netlify.toml in the git repository root directory or the base di
   defaultConfig: {
     string: true,
     describe: `JSON configuration object containing default values.
-Each configuration default value is used unless overriden through the main configuration file.
+Each configuration default value is used unless overridden through the main configuration file.
 Default: none.`,
     coerce: jsonParse,
     hidden: true,
