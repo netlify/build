@@ -1,5 +1,9 @@
 # Changelog
 
+### Bug Fixes
+
+* Revert dev cycle feature flagging ([#4933](https://github.com/netlify/build/issues/4933)) ([a3f8bdf](https://github.com/netlify/build/commit/a3f8bdf6124de9b6d50b63a940a68e4ceec1c16f))
+
 ### Dependencies
 
 * The following workspace dependencies were updated

@@ -63,6 +63,27 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.4 to ^9.8.5
 
+## [29.6.6](https://github.com/netlify/build/compare/build-v29.6.5...build-v29.6.6) (2023-03-09)
+
+
+### Bug Fixes
+
+* **deps:** update dependency pretty-ms to v8 ([#4924](https://github.com/netlify/build/issues/4924)) ([03a8c49](https://github.com/netlify/build/commit/03a8c4925d3a0006b86c26a84d52766b5002238a))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.3.3 to ^20.3.4
+
+## [29.6.5](https://github.com/netlify/build/compare/build-v29.6.4...build-v29.6.5) (2023-03-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v8.11.0 ([#4923](https://github.com/netlify/build/issues/4923)) ([834abcc](https://github.com/netlify/build/commit/834abcca76c55426174a270a4e13fce823155ad9))
+
 ## [29.6.3](https://github.com/netlify/build/compare/build-v29.6.2...build-v29.6.3) (2023-03-03)
 
 

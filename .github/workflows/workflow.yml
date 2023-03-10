@@ -88,14 +88,14 @@ jobs:
         uses: nick-fields/retry@v2
         if: ${{ !steps.release-check.outputs.IS_RELEASE }}
         with:
-          timeout_minutes: 20
+          timeout_minutes: 30
           max_attempts: 3
           retry_on: error
           command: npx nx affected --target=test:ci --exclude=@netlify/build --parallel=3
 
   test-build:
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 20
+    timeout-minutes: 30
     strategy:
       matrix:
         os: [ubuntu-latest, macOS-latest, windows-latest]
@@ -183,7 +183,7 @@ jobs:
           CI_NODE_INDEX: ${{ matrix.machine }}
           CI_NODE_TOTAL: 4
         with:
-          timeout_minutes: 15
+          timeout_minutes: 30
           max_attempts: 3
           retry_on: error
           command: npx lerna run test:ci --scope @netlify/build

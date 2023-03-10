@@ -1,11 +1,11 @@
 {
   "name": "@netlify/config",
-  "version": "20.3.3",
+  "version": "20.3.4",
   "description": "Netlify config module",
   "type": "module",
-  "exports": "./lib/main.js",
-  "main": "./lib/main.js",
-  "types": "./lib/main.d.ts",
+  "exports": "./lib/index.js",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
   "bin": {
     "netlify-config": "./bin.js"
   },
