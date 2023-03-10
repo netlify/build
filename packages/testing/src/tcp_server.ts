@@ -2,7 +2,9 @@ import { createServer } from 'net'
 import { promisify } from 'util'
 
 import getPort from 'get-port'
-import { tmpName } from 'tmp-promise'
+import { promises as fs } from 'fs'
+import { tmpdir } from 'os'
+import { join } from 'path'
 
 // Start a TCP server to mock calls.
 export const startTcpServer = async function ({ response = '', useUnixSocket = true, onRequest = undefined } = {}) {
@@ -17,7 +19,7 @@ export const startTcpServer = async function ({ response = '', useUnixSocket = t
 
 const getConnectionOpts = async function ({ useUnixSocket }) {
   if (useUnixSocket) {
-    const path = await tmpName({ template: 'netlify-test-socket-XXXXXX' })
+    const path = await fs.mkdtemp(join(tmpdir(), 'netlify-test-socket-'))
     return { connectionOpts: { path }, address: path }
   }
 
