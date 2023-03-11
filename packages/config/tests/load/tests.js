@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url'
 
 import { Fixture, normalizeOutput } from '@netlify/testing'
 import test from 'ava'
-import { tmpName } from 'tmp-promise'
+
 
 import { resolveConfig } from '../../lib/main.js'
 

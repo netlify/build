@@ -9,7 +9,9 @@ import getNode from 'get-node'
 import moize from 'moize'
 import { pathExists } from 'path-exists'
 import sinon from 'sinon'
-import { tmpName } from 'tmp-promise'
+import { promises as fs } from 'fs'
+import { tmpdir } from 'os'
+
 
 import { zipItAndShipIt } from '../../lib/plugins_core/functions/index.js'
 import { importJsonFile } from '../../lib/utils/json.js'

@@ -1,10 +1,12 @@
+import { promises as fs } from 'fs'
+import { tmpdir } from 'os'
+import { join } from 'path'
+
 import { createServer } from 'net'
 import { promisify } from 'util'
 
 import getPort from 'get-port'
-import { promises as fs } from 'fs'
-import { tmpdir } from 'os'
-import { join } from 'path'
+
 
 // Start a TCP server to mock calls.
 export const startTcpServer = async function ({ response = '', useUnixSocket = true, onRequest = undefined } = {}) {
