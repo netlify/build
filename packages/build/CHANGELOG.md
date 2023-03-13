@@ -63,6 +63,32 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.4 to ^9.8.5
 
+## [29.6.8](https://github.com/netlify/build/compare/build-v29.6.7...build-v29.6.8) (2023-03-13)
+
+
+### Bug Fixes
+
+* pass internalSrcFolder to edge bundler ([#4940](https://github.com/netlify/build/issues/4940)) ([45b04e7](https://github.com/netlify/build/commit/45b04e77c62d36ddae10bcf7fb8332f11ad2c8c2))
+
+## [29.6.7](https://github.com/netlify/build/compare/build-v29.6.6...build-v29.6.7) (2023-03-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v8.11.1 ([#4936](https://github.com/netlify/build/issues/4936)) ([c98fb4f](https://github.com/netlify/build/commit/c98fb4f603e0230cca5099e0cf7a5cd410fc5f8d))
+* improve grammar and typos in comments ([#4922](https://github.com/netlify/build/issues/4922)) ([2e9d9c0](https://github.com/netlify/build/commit/2e9d9c06134f125aaf17bbbca0937cf43d3abae6))
+* pass internalSrcFolder to zisi ([#4939](https://github.com/netlify/build/issues/4939)) ([6166d89](https://github.com/netlify/build/commit/6166d891a7944f34bcc31eace47f07691a4ee627))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/cache-utils bumped from ^5.1.2 to ^5.1.3
+    * @netlify/config bumped from ^20.3.4 to ^20.3.5
+    * @netlify/functions-utils bumped from ^5.2.0 to ^5.2.1
+    * @netlify/git-utils bumped from ^5.1.0 to ^5.1.1
+
 ## [29.6.6](https://github.com/netlify/build/compare/build-v29.6.5...build-v29.6.6) (2023-03-09)
 
 
