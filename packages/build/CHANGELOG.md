@@ -63,6 +63,12 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.4 to ^9.8.5
 
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.3.5 to ^20.3.6
+
 ## [29.6.8](https://github.com/netlify/build/compare/build-v29.6.7...build-v29.6.8) (2023-03-13)
 
 
