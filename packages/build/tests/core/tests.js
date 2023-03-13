@@ -522,6 +522,21 @@ test.serial('functions can have a config with different parameters passed to zip
   t.snapshot(normalizeOutput(output))
 })
 
+test.serial('internalSrcFolder is passed to zip-it-and-ship-it and helps prefill the generator field', async (t) => {
+  const zipItAndShipItSpy = sinon.spy(zipItAndShipIt, 'zipFunctions')
+
+  await new Fixture('./fixtures/functions_internal_src_folder').withFlags({ mode: 'buildbot' }).runWithBuild()
+  zipItAndShipItSpy.restore()
+  const { args: call1Args } = zipItAndShipItSpy.getCall(0)
+
+  const { internalSrcFolder, manifest } = call1Args[2]
+  const { functions } = await importJsonFile(manifest)
+
+  t.is(internalSrcFolder, join(FIXTURES_DIR, 'functions_internal_src_folder/.netlify/functions-internal'))
+  t.is(functions[0].generator, 'internalFunc')
+  t.is(functions[1].generator, undefined)
+})
+
 test('Generates a `manifest.json` file when running outside of buildbot', async (t) => {
   await removeDir(`${FIXTURES_DIR}/functions_internal_manifest/.netlify/functions`)
   await new Fixture('./fixtures/functions_internal_manifest').withFlags({ mode: 'cli' }).runWithBuild()
