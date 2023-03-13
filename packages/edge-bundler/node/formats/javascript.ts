@@ -10,7 +10,7 @@ import type { FormatFunction } from '../server/server.js'
 const defaultFormatExportTypeError: FormatFunction = (name) =>
   `The Edge Function "${name}" has failed to load. Does it have a function as the default export?`
 
-const defaultFormatImpoortError: FormatFunction = (name) => `There was an error with Edge Function "${name}".`
+const defaultFormatImportError: FormatFunction = (name) => `There was an error with Edge Function "${name}".`
 
 interface GenerateStage2Options {
   bootstrapURL: string
@@ -54,7 +54,7 @@ const getLocalEntryPoint = (
   {
     bootstrapURL,
     formatExportTypeError = defaultFormatExportTypeError,
-    formatImportError = defaultFormatImpoortError,
+    formatImportError = defaultFormatImportError,
   }: GetLocalEntryPointOptions,
 ) => {
   const bootImport = `import { boot } from "${bootstrapURL}";`
