@@ -63,6 +63,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.4 to ^9.8.5
 
+## [29.6.8](https://github.com/netlify/build/compare/build-v29.6.7...build-v29.6.8) (2023-03-13)
+
+
+### Bug Fixes
+
+* pass internalSrcFolder to edge bundler ([#4940](https://github.com/netlify/build/issues/4940)) ([45b04e7](https://github.com/netlify/build/commit/45b04e77c62d36ddae10bcf7fb8332f11ad2c8c2))
+
 ## [29.6.7](https://github.com/netlify/build/compare/build-v29.6.6...build-v29.6.7) (2023-03-13)
 
 
