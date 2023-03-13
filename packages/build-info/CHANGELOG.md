@@ -46,6 +46,13 @@
   * dependencies
     * @netlify/framework-info bumped from ^9.8.4 to ^9.8.5
 
+## [6.6.1](https://github.com/netlify/build/compare/build-info-v6.6.0...build-info-v6.6.1) (2023-03-13)
+
+
+### Bug Fixes
+
+* improve grammar and typos in comments ([#4922](https://github.com/netlify/build/issues/4922)) ([2e9d9c0](https://github.com/netlify/build/commit/2e9d9c06134f125aaf17bbbca0937cf43d3abae6))
+
 ## [6.6.0](https://github.com/netlify/build/compare/build-info-v6.5.1...build-info-v6.6.0) (2023-03-07)
 
 
