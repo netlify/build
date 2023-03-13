@@ -1,5 +1,12 @@
 # Changelog
 
+## [8.12.0](https://github.com/netlify/edge-bundler/compare/v8.11.1...v8.12.0) (2023-03-13)
+
+
+### Features
+
+* export `mergeDeclarations` function ([#334](https://github.com/netlify/edge-bundler/issues/334)) ([a3b01c0](https://github.com/netlify/edge-bundler/commit/a3b01c08c5bcb734d7b66eedcdf45598abd87640))
+
 ## [8.11.1](https://github.com/netlify/edge-bundler/compare/v8.11.0...v8.11.1) (2023-03-10)
 
 
