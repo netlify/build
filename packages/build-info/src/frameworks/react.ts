@@ -1,7 +1,7 @@
 import { BaseFramework, Category, Framework } from './framework.js'
 
 export class CreateReactApp extends BaseFramework implements Framework {
-  id = 'create-react-app'
+  readonly id = 'create-react-app'
   name = 'Create React App'
   npmDependencies = ['react-scripts']
   category = Category.FrontendFramework

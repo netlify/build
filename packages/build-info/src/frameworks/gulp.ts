@@ -1,7 +1,7 @@
 import { BaseFramework, Category, Framework } from './framework.js'
 
 export class Gulp extends BaseFramework implements Framework {
-  id = 'gulp'
+  readonly id = 'gulp'
   name = 'gulp.js'
   npmDependencies = ['gulp']
   category = Category.BuildTool

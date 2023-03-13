@@ -1,7 +1,7 @@
 import { BaseFramework, Category, Framework } from './framework.js'
 
 export class DocPad extends BaseFramework implements Framework {
-  id = 'docpad'
+  readonly id = 'docpad'
   name = 'DocPad'
   npmDependencies = ['docpad']
   category = Category.SSG

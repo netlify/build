@@ -1,7 +1,7 @@
 import { BaseFramework, Category, Framework } from './framework.js'
 
 export class WMR extends BaseFramework implements Framework {
-  id = 'wmr'
+  readonly id = 'wmr'
   name = 'WMR'
   npmDependencies = ['wmr']
   category = Category.BuildTool

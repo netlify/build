@@ -8,8 +8,11 @@ import type { FileSystem } from './file-system.js'
 import { DetectedFramework, filterByRelevance } from './frameworks/framework.js'
 import { frameworks } from './frameworks/index.js'
 import { report } from './metrics.js'
-import type { PkgManagerFields } from './package-managers/detect-package-manager.js'
-import { detectPackageManager } from './package-managers/detect-package-manager.js'
+import {
+  AVAILABLE_PACKAGE_MANAGERS,
+  PkgManagerFields,
+  detectPackageManager,
+} from './package-managers/detect-package-manager.js'
 import { WorkspaceInfo, detectWorkspaces } from './workspaces/detect-workspace.js'
 /**
  * The Project represents a Site in Netlify
@@ -97,6 +100,12 @@ export class Project {
         },
       },
     })
+  }
+
+  /** Retrieve the run command for an npm script  */
+  getNpmScriptCommand(npmScript: string): string {
+    const runCmd = this.packageManager?.runCommand || AVAILABLE_PACKAGE_MANAGERS.npm.runCommand
+    return `${runCmd} ${npmScript}`
   }
 
   /** retrieves the root package.json file */

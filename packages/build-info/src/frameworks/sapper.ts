@@ -1,7 +1,7 @@
 import { BaseFramework, Category, Framework } from './framework.js'
 
 export class Sapper extends BaseFramework implements Framework {
-  id = 'sapper'
+  readonly id = 'sapper'
   name = 'Sapper'
   npmDependencies = ['sapper']
   category = Category.FrontendFramework

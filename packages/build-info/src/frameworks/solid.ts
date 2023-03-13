@@ -1,7 +1,7 @@
 import { BaseFramework, Category, Framework } from './framework.js'
 
 export class Solid extends BaseFramework implements Framework {
-  id = 'solid-js'
+  readonly id = 'solid-js'
   name = 'SolidJS'
   npmDependencies = ['solid-js']
   excludedNpmDependencies = ['solid-start']

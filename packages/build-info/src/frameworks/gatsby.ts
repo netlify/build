@@ -3,7 +3,7 @@ import { gte } from 'semver'
 import { BaseFramework, Category, DetectedFramework, Framework } from './framework.js'
 
 export class Gatsby extends BaseFramework implements Framework {
-  id = 'gatsby'
+  readonly id = 'gatsby'
   name = 'Gatsby'
   configFiles = ['gatsby-config.js', 'gatsby-config.ts']
   npmDependencies = ['gatsby']

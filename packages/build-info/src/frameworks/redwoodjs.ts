@@ -1,7 +1,7 @@
 import { BaseFramework, Category, Framework } from './framework.js'
 
 export class RedwoodJS extends BaseFramework implements Framework {
-  id = 'redwoodjs'
+  readonly id = 'redwoodjs'
   name = 'RedwoodJS'
   npmDependencies = ['@redwoodjs/core']
   configFiles = ['redwood.toml']

@@ -1,7 +1,7 @@
 import { BaseFramework, Category, Framework } from './framework.js'
 
 export class Zola extends BaseFramework implements Framework {
-  id = 'zola'
+  readonly id = 'zola'
   name = 'Zola'
   configFiles = ['config.toml']
   category = Category.SSG

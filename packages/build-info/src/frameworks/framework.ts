@@ -1,6 +1,7 @@
 import type { PackageJson } from 'read-pkg'
 import { SemVer, coerce, parse } from 'semver'
 
+import { getDevCommands } from '../get-dev-commands.js'
 import { Project } from '../project.js'
 
 export enum Category {
@@ -29,9 +30,12 @@ export type Detection = {
   accuracy: Accuracy
   /** The NPM package that was able to detect it (high accuracy) */
   package?: { name: string; version?: SemVer }
+  packageJSON?: PackageJson
   /** The config file that is associated with the framework */
   config?: string
 }
+
+export type FrameworkInfo = ReturnType<Framework['toJSON']>
 
 export interface Framework {
   project: Project
@@ -64,6 +68,28 @@ export interface Framework {
   env: Record<string, string>
 
   detect(): Promise<DetectedFramework | undefined>
+  toJSON(): {
+    id: string
+    name: string
+    category: Category
+    package: {
+      name?: string // if detected via config file the name can be empty
+      version: string | 'unknown'
+    }
+    dev: {
+      commands: string[]
+      port?: number
+      pollingStrategies?: PollingStrategy[]
+    }
+    build: {
+      commands: string[]
+      directory: string
+    }
+    staticAssetsDirectory?: string
+    env: Record<string, string>
+    logo?: Record<string, string>
+    plugins: string[]
+  }
 }
 
 export type DetectedFramework = Omit<Framework, 'detected'> & { detected: Detection }
@@ -189,12 +215,13 @@ export abstract class BaseFramework implements Framework {
 
   /** check if the npmDependencies are used inside the provided package.json */
   private async npmDependenciesUsed(pkgJSON: PackageJson): Promise<{ name: string; version?: SemVer } | undefined> {
-    const found = [
-      ...Object.entries(pkgJSON.dependencies || {}),
-      ...Object.entries(pkgJSON.devDependencies || {}),
-    ].find(([depName]) => this.npmDependencies.includes(depName))
+    const allDeps = [...Object.entries(pkgJSON.dependencies || {}), ...Object.entries(pkgJSON.devDependencies || {})]
 
-    if (found?.[0]) {
+    const found = allDeps.find(([depName]) => this.npmDependencies.includes(depName))
+    // check for excluded dependencies
+    const excluded = allDeps.some(([depName]) => this.excludedNpmDependencies.includes(depName))
+
+    if (!excluded && found?.[0]) {
       const version = await this.getVersionFromNodeModules(found[0])
       return {
         name: found[0],
@@ -216,6 +243,7 @@ export abstract class BaseFramework implements Framework {
           // if the match of the npm package was in a directory up we don't have a high accuracy
           accuracy: this.project.fs.join(startDir, 'package.json') === pkg.pkgPath ? Accuracy.NPM : Accuracy.NPMHoisted,
           package: dep,
+          packageJSON: pkg,
         }
       }
     }
@@ -257,6 +285,27 @@ export abstract class BaseFramework implements Framework {
     // nothing detected
   }
 
+  /**
+   * Retrieve framework's dev commands.
+   * We use, in priority order:
+   *   - `package.json` `scripts` containing the frameworks dev command
+   *   - `package.json` `scripts` whose names are among a list of common dev scripts like: `dev`, `serve`, `develop`, ...
+   *   -  The frameworks dev command
+   */
+  getDevCommands() {
+    // Some frameworks don't have a dev command
+    if (this.dev?.command === undefined) {
+      return []
+    }
+
+    const devCommands = getDevCommands(this.dev.command, this.detected?.packageJSON?.scripts as Record<string, string>)
+    if (devCommands.length > 0) {
+      return devCommands.map((command) => this.project.getNpmScriptCommand(command))
+    }
+
+    return [this.dev.command]
+  }
+
   /** This method will be called by the JSON.stringify */
   toJSON() {
     return {
@@ -268,12 +317,12 @@ export abstract class BaseFramework implements Framework {
       },
       category: this.category,
       dev: {
-        command: [this.dev?.command],
+        commands: this.getDevCommands(),
         port: this.dev?.port,
         pollingStrategies: this.dev?.pollingStrategies,
       },
       build: {
-        command: [this.build.command],
+        commands: [this.build.command],
         directory: this.build.directory,
       },
       staticAssetsDirectory: this.staticAssetsDirectory,

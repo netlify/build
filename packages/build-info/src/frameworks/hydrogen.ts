@@ -1,7 +1,7 @@
 import { BaseFramework, Category, Framework } from './framework.js'
 
 export class Hydrogen extends BaseFramework implements Framework {
-  id = 'hydrogen'
+  readonly id = 'hydrogen'
   name = 'Hydrogen'
   npmDependencies = ['@shopify/hydrogen']
   category = Category.SSG

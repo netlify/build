@@ -1,7 +1,7 @@
 import { BaseFramework, Category, Framework } from './framework.js'
 
 export class Jekyll extends BaseFramework implements Framework {
-  id = 'jekyll'
+  readonly id = 'jekyll'
   name = 'Jekyll'
   configFiles = ['_config.yml', '_config.yaml', '_config.toml']
   category = Category.SSG

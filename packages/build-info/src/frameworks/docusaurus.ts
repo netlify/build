@@ -1,7 +1,7 @@
 import { BaseFramework, Category, DetectedFramework, Detection, Framework } from './framework.js'
 
 export class Docusaurus extends BaseFramework implements Framework {
-  id = 'docusaurus'
+  readonly id = 'docusaurus'
   name = 'Docusaurus'
   configFiles = [
     'docusaurus.config.js', // v2

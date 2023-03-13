@@ -1,7 +1,7 @@
 import { BaseFramework, Category, Framework } from './framework.js'
 
 export class Phenomic extends BaseFramework implements Framework {
-  id = 'phenomic'
+  readonly id = 'phenomic'
   name = 'Phenomic'
   npmDependencies = ['@phenomic/core']
   category = Category.SSG

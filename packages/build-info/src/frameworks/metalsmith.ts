@@ -1,7 +1,7 @@
 import { BaseFramework, Category, Framework } from './framework.js'
 
 export class Metalsmith extends BaseFramework implements Framework {
-  id = 'metalsmith'
+  readonly id = 'metalsmith'
   name = 'Metalsmith'
   npmDependencies = ['metalsmith']
   category = Category.SSG

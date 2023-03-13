@@ -1,7 +1,7 @@
 import { BaseFramework, Category, Framework } from './framework.js'
 
 export class VuePress extends BaseFramework implements Framework {
-  id = 'vuepress'
+  readonly id = 'vuepress'
   name = 'VuePress'
   npmDependencies = ['vuepress']
   category = Category.SSG

@@ -3,10 +3,11 @@ import { gte } from 'semver'
 import { BaseFramework, Category, DetectedFramework, Framework } from './framework.js'
 
 export class Next extends BaseFramework implements Framework {
-  id = 'next'
+  readonly id = 'next'
   name = 'Next.js'
   category = Category.SSG
   npmDependencies = ['next']
+  excludedNpmDependencies = ['@nrwl/next']
   configFiles = ['next.config.js', 'next.config.mjs']
 
   dev = {
@@ -44,7 +45,7 @@ export class Next extends BaseFramework implements Framework {
  * Remove once the build system detection is fully combined with the framework detection.
  */
 export class NextNx extends BaseFramework implements Framework {
-  id = 'next-nx'
+  readonly id = 'next-nx'
   name = 'Next.js with Nx'
   category = Category.SSG
   npmDependencies = ['@nrwl/next']

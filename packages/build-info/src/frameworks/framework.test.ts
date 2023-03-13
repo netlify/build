@@ -44,6 +44,16 @@ beforeEach((ctx) => {
   ctx.fs = new NodeFS()
 })
 
+test('should return an empty array when no framework is detected', async ({ fs }) => {
+  const cwd = mockFileSystem({
+    '.gitkeep': '',
+    'package.json': JSON.stringify({ name: 'test', version: '1.0.0' }),
+  })
+  const project = new Project(fs, cwd)
+  const detection = await project.detectFrameworks()
+  expect(detection).toHaveLength(0)
+})
+
 describe('detect framework version', () => {
   const eleventy: Record<string, string> = {
     'package.json': JSON.stringify({ devDependencies: { '@11ty/eleventy': '^2.0.0' } }),
@@ -93,6 +103,45 @@ describe('detect framework version', () => {
     })
   })
 
+  test('node_modules version should override the one from the package.json', async ({ fs }) => {
+    const cwd = mockFileSystem({
+      'package.json': JSON.stringify({ dependencies: { sapper: '*' } }),
+      'node_modules/sapper/package.json': JSON.stringify({ version: '3.4.3' }),
+    })
+    const project = new Project(fs, cwd)
+    const detection = await project.detectFrameworks()
+    expect(detection).toHaveLength(1)
+    expect(detection?.[0]).toMatchObject({
+      id: 'sapper',
+      version: {
+        raw: '3.4.3',
+      },
+    })
+  })
+
+  test('should get the version from the node_modules for multiple frameworks', async ({ fs }) => {
+    const cwd = mockFileSystem({
+      'package.json': JSON.stringify({ dependencies: { '@vue/cli-service': '*', vuepress: '*' } }),
+      'node_modules/@vue/cli-service/package.json': JSON.stringify({ version: '1.2.3' }),
+      'node_modules/vuepress/package.json': JSON.stringify({ version: '4.5.6' }),
+    })
+    const project = new Project(fs, cwd)
+    const detection = await project.detectFrameworks()
+    expect(detection).toHaveLength(2)
+    expect(detection?.[0]).toMatchObject({
+      id: 'vuepress',
+      version: {
+        raw: '4.5.6',
+      },
+    })
+    expect(detection?.[1]).toMatchObject({
+      id: 'vue',
+      version: {
+        raw: '1.2.3',
+      },
+    })
+  })
+
   test('skip version from node_modules inside the browser', async ({ fs }) => {
     const cwd = mockFileSystem({
       ...eleventy,
@@ -106,6 +155,22 @@ describe('detect framework version', () => {
       id: 'eleventy',
       version: {
         raw: '2.0.0', // fallback to the version from the package.json
+      },
+    })
+  })
+
+  test('should get unknown version for a framework that is not detected by npm packages', async ({ fs }) => {
+    const cwd = mockFileSystem({
+      'config.rb': '',
+    })
+    const project = new Project(fs, cwd)
+    const detection = await project.detectFrameworks()
+    expect(detection).toHaveLength(1)
+    expect(detection?.[0].toJSON()).toMatchObject({
+      id: 'middleman',
+      package: {
+        name: undefined,
+        version: 'unknown',
       },
     })
   })
@@ -346,5 +411,234 @@ describe('workspace detection', () => {
         }),
       ]),
     )
+  })
+})
+
+describe('detection of frameworks', () => {
+  test('Should detect dependencies', async ({ fs }) => {
+    const cwd = mockFileSystem({
+      'package.json': JSON.stringify({ name: 'test', version: '1.0.0', dependencies: { sapper: '*', other: '*' } }),
+    })
+    const project = new Project(fs, cwd)
+    const detection = await project.detectFrameworks()
+    expect(detection).toHaveLength(1)
+    expect(detection?.[0]).toMatchObject({ id: 'sapper' })
+  })
+
+  test('Should detect devDependencies', async ({ fs }) => {
+    const cwd = mockFileSystem({
+      'package.json': JSON.stringify({ name: 'test', version: '1.0.0', devDependencies: { sapper: '*', other: '*' } }),
+    })
+    const project = new Project(fs, cwd)
+    const detection = await project.detectFrameworks()
+    expect(detection).toHaveLength(1)
+    expect(detection?.[0]).toMatchObject({ id: 'sapper' })
+  })
+
+  test('Should ignore empty framework.npmDependencies', async ({ fs }) => {
+    const cwd = mockFileSystem({
+      'config.rb': '',
+      'package.json': JSON.stringify({ name: 'test', version: '1.0.0' }),
+    })
+    const project = new Project(fs, cwd)
+    const detection = await project.detectFrameworks()
+    expect(detection).toHaveLength(1)
+    expect(detection?.[0]).toMatchObject({ id: 'middleman' })
+  })
+
+  test('Should detect any of several framework.npmDependencies', async ({ fs }) => {
+    const cwd = mockFileSystem({
+      'package.json': JSON.stringify({ dependencies: { parcel: '*' } }),
+    })
+    const project = new Project(fs, cwd)
+    const detection = await project.detectFrameworks()
+    expect(detection).toHaveLength(1)
+    expect(detection?.[0]).toMatchObject({ id: 'parcel' })
+  })
+
+  test('Should ignore if matching any framework.excludedNpmDependencies', async ({ fs }) => {
+    const cwd = mockFileSystem({
+      'package.json': JSON.stringify({ dependencies: { sapper: '*', svelte: '*' } }),
+    })
+    const project = new Project(fs, cwd)
+    const detection = await project.detectFrameworks()
+    expect(detection).toHaveLength(1)
+  })
+
+  test('Should detect config files', async ({ fs }) => {
+    const cwd = mockFileSystem({
+      'config.rb': '',
+      'package.json': JSON.stringify({ name: 'test', version: '1.0.0' }),
+    })
+    const project = new Project(fs, cwd)
+    const detection = await project.detectFrameworks()
+    expect(detection).toHaveLength(1)
+    expect(detection?.[0]).toMatchObject({ id: 'middleman' })
+  })
+})
+
+describe('dev commands', () => {
+  test('Should use package scripts as dev command', async ({ fs }) => {
+    const cwd = mockFileSystem({
+      'package.json': JSON.stringify({
+        dependencies: { '@quasar/app': '*' },
+        scripts: { other: 'testThree', start: 'testTwo', dev: 'test' },
+      }),
+    })
+    const project = new Project(fs, cwd)
+    const detection = await project.detectFrameworks()
+    expect(detection).toHaveLength(1)
+    expect(detection?.[0].toJSON().dev.commands).toEqual(['npm run dev', 'npm run start'])
+  })
+
+  test('Should allow package scripts names with colons', async ({ fs }) => {
+    const cwd = mockFileSystem({
+      'package.json': JSON.stringify({
+        dependencies: { '@quasar/app': '*' },
+        scripts: { 'docs:dev': 'test' },
+      }),
+    })
+    const project = new Project(fs, cwd)
+    const detection = await project.detectFrameworks()
+    expect(detection).toHaveLength(1)
+    expect(detection?.[0].toJSON().dev.commands).toEqual(['npm run docs:dev'])
+  })
+
+  test('Should use Yarn when there is a yarn.lock', async ({ fs }) => {
+    const cwd = mockFileSystem({
+      'yarn.lock': '',
+      'package.json': JSON.stringify({
+        dependencies: { '@quasar/app': '*' },
+        scripts: { other: 'testThree', start: 'testTwo', dev: 'test' },
+      }),
+    })
+    const project = new Project(fs, cwd)
+    const detection = await project.detectFrameworks()
+    expect(detection).toHaveLength(1)
+    expect(detection?.[0].toJSON().dev.commands).toEqual(['yarn dev', 'yarn start'])
+  })
+
+  test('Should use PNPM when there is a pnpm-lock.yaml', async ({ fs }) => {
+    const cwd = mockFileSystem({
+      'pnpm-lock.yaml': '',
+      'package.json': JSON.stringify({
+        dependencies: { '@quasar/app': '*' },
+        scripts: { other: 'testThree', start: 'testTwo', dev: 'test' },
+      }),
+    })
+    const project = new Project(fs, cwd)
+    const detection = await project.detectFrameworks()
+    expect(detection).toHaveLength(1)
+    expect(detection?.[0].toJSON().dev.commands).toEqual(['pnpm run dev', 'pnpm run start'])
+  })
+
+  test('Should use package scripts as dev command', async ({ fs }) => {
+    const cwd = mockFileSystem({
+      'package.json': JSON.stringify({
+        dependencies: { '@quasar/app': '*' },
+        scripts: { other: 'testThree', start: 'testTwo', dev: 'test' },
+      }),
+    })
+    const project = new Project(fs, cwd)
+    const detection = await project.detectFrameworks()
+    expect(detection).toHaveLength(1)
+    expect(detection?.[0].toJSON().dev.commands).toEqual(['npm run dev', 'npm run start'])
+  })
+
+  test('Should allow package scripts names with colons', async ({ fs }) => {
+    const cwd = mockFileSystem({
+      'package.json': JSON.stringify({
+        dependencies: { '@quasar/app': '*' },
+        scripts: { 'docs:dev': 'test' },
+      }),
+    })
+    const project = new Project(fs, cwd)
+    const detection = await project.detectFrameworks()
+    expect(detection).toHaveLength(1)
+    expect(detection?.[0].toJSON().dev.commands).toEqual(['npm run docs:dev'])
+  })
+
+  test('Should only use package scripts if it includes framework.dev.commands', async ({ fs }) => {
+    const cwd = mockFileSystem({
+      'package.json': JSON.stringify({
+        dependencies: { '@quasar/app': '*' },
+        scripts: { another: 'test quasar dev -p 8081 test', other: 'testThree', start: 'testTwo', dev: 'test' },
+      }),
+    })
+    const project = new Project(fs, cwd)
+    const detection = await project.detectFrameworks()
+    expect(detection).toHaveLength(1)
+    expect(detection?.[0].toJSON().dev.commands).toEqual(['npm run another'])
+  })
+
+  test('Should default dev.commands to framework.dev.commands', async ({ fs }) => {
+    const cwd = mockFileSystem({
+      'package.json': JSON.stringify({ dependencies: { sapper: '*' }, scripts: {} }),
+    })
+    const project = new Project(fs, cwd)
+    const detection = await project.detectFrameworks()
+    expect(detection).toHaveLength(1)
+    expect(detection?.[0].toJSON().dev.commands).toEqual(['sapper dev'])
+  })
+
+  test('Should sort scripts in the format *:<name>', async ({ fs }) => {
+    const cwd = mockFileSystem({
+      'package.json': JSON.stringify({
+        scripts: { 'site:build': 'rollup -c', 'site:start': 'sirv public', 'site:dev': 'rollup -c -w' },
+        devDependencies: { svelte: '^3.0.0' },
+      }),
+    })
+    const project = new Project(fs, cwd)
+    const detection = await project.detectFrameworks()
+    expect(detection).toHaveLength(1)
+    expect(detection?.[0].toJSON().dev.commands).toEqual([
+      'npm run site:dev',
+      'npm run site:start',
+      'npm run site:build',
+    ])
+  })
+
+  test('Should sort scripts when dev command is a substring of build command', async ({ fs }) => {
+    const cwd = mockFileSystem({
+      'package.json': JSON.stringify({
+        dependencies: { 'parcel-bundler': '^1.12.4' },
+        scripts: { build: 'parcel build index.html', dev: 'parcel index.html' },
+      }),
+    })
+    const project = new Project(fs, cwd)
+    const detection = await project.detectFrameworks()
+    expect(detection).toHaveLength(1)
+    expect(detection?.[0].toJSON().dev.commands).toEqual(['npm run dev', 'npm run build'])
+  })
+
+  test('Should prioritize dev over serve', async ({ fs }) => {
+    const cwd = mockFileSystem({
+      'package.json': JSON.stringify({
+        scripts: { dev: 'vite', build: 'vite build', serve: 'vite preview' },
+        devDependencies: { vite: '^2.1.5' },
+      }),
+    })
+    const project = new Project(fs, cwd)
+    const detection = await project.detectFrameworks()
+    expect(detection).toHaveLength(1)
+    expect(detection?.[0].toJSON().dev.commands).toEqual(['npm run dev', 'npm run serve', 'npm run build'])
+  })
+
+  test(`Should exclude 'netlify dev' script`, async ({ fs }) => {
+    const cwd = mockFileSystem({
+      'package.json': JSON.stringify({
+        dependencies: { 'react-scripts': '*' },
+        scripts: {
+          start: 'netlify dev',
+          build: 'react-scripts build',
+          test: 'react-scripts test',
+          eject: 'react-scripts eject',
+        },
+      }),
+    })
+    const project = new Project(fs, cwd)
+    const detection = await project.detectFrameworks()
+    expect(detection).toHaveLength(1)
+    expect(detection?.[0].toJSON().dev.commands).toEqual(['npm run build'])
   })
 })

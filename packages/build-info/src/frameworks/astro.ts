@@ -1,7 +1,7 @@
 import { BaseFramework, Category, Framework } from './framework.js'
 
 export class Astro extends BaseFramework implements Framework {
-  id = 'astro'
+  readonly id = 'astro'
   name = 'Astro'
   configFiles = ['astro.config.mjs']
   npmDependencies = ['astro']

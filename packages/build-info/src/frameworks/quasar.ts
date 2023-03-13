@@ -1,7 +1,7 @@
 import { BaseFramework, Category, DetectedFramework, Detection, Framework } from './framework.js'
 
 export class Quasar extends BaseFramework implements Framework {
-  id = 'quasar'
+  readonly id = 'quasar'
   name = 'Quasar'
   npmDependencies = ['@quasar/app', 'quasar-cli']
   category = Category.FrontendFramework
@@ -28,7 +28,7 @@ export class Quasar extends BaseFramework implements Framework {
 
     if (this.detected) {
       if (this.isV017(this.detected)) {
-        this.id = 'quasar-v0.17'
+        this.name = 'Quasar v0.17'
         this.build.directory = '.quasar'
         this.dev.command = 'quasar dev -p 8080'
         this.dev.port = 8080

@@ -1,7 +1,7 @@
 import { BaseFramework, Category, Framework } from './framework.js'
 
 export class Remix extends BaseFramework implements Framework {
-  id = 'remix'
+  readonly id = 'remix'
   name = 'Remix'
   npmDependencies = ['remix', '@remix-run/netlify', '@remix-run/netlify-edge']
   configFiles = ['remix.config.js']

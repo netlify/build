@@ -1,7 +1,7 @@
 import { BaseFramework, Category, Framework } from './framework.js'
 
 export class Expo extends BaseFramework implements Framework {
-  id = 'expo'
+  readonly id = 'expo'
   name = 'Expo'
   configFiles = ['app.json']
   npmDependencies = ['expo']

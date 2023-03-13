@@ -1,7 +1,7 @@
 import { BaseFramework, Category, Framework } from './framework.js'
 
 export class Angular extends BaseFramework implements Framework {
-  id = 'angular'
+  readonly id = 'angular'
   name = 'Angular'
   configFiles = ['angular.json']
   npmDependencies = ['@angular/cli']

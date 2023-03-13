@@ -25,7 +25,7 @@ export type PkgManagerFields = {
 }
 
 /** The definition of all available package managers */
-const AVAILABLE_PACKAGE_MANAGERS: Record<PkgManager, PkgManagerFields> = {
+export const AVAILABLE_PACKAGE_MANAGERS: Record<PkgManager, PkgManagerFields> = {
   [PkgManager.YARN]: {
     name: PkgManager.YARN,
     installCommand: 'yarn install',

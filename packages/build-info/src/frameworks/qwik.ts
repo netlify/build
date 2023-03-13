@@ -1,7 +1,7 @@
 import { BaseFramework, Category, Framework } from './framework.js'
 
 export class Qwik extends BaseFramework implements Framework {
-  id = 'qwik'
+  readonly id = 'qwik'
   name = 'Qwik'
   npmDependencies = ['@builder.io/qwik']
   category = Category.SSG

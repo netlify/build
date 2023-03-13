@@ -1,7 +1,7 @@
 import { BaseFramework, Category, Framework } from './framework.js'
 
 export class Roots extends BaseFramework implements Framework {
-  id = 'roots'
+  readonly id = 'roots'
   name = 'Roots'
   npmDependencies = ['roots']
   category = Category.SSG

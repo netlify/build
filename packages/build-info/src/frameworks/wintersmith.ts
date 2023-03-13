@@ -1,7 +1,7 @@
 import { BaseFramework, Category, Framework } from './framework.js'
 
 export class Wintersmith extends BaseFramework implements Framework {
-  id = 'wintersmith'
+  readonly id = 'wintersmith'
   name = 'Wintersmith'
   npmDependencies = ['wintersmith']
   configFiles = ['config.json']

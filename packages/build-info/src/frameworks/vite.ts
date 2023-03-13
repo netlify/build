@@ -1,7 +1,7 @@
 import { BaseFramework, Category, Framework } from './framework.js'
 
 export class Vite extends BaseFramework implements Framework {
-  id = 'vite'
+  readonly id = 'vite'
   name = 'Vite'
   npmDependencies = ['vite']
   excludedNpmDependencies = ['@shopify/hydrogen', '@builder.io/qwik', 'solid-start', 'solid-js', '@sveltejs/kit']

@@ -97,3 +97,7 @@ export const frameworks = [
   Vite,
   WMR,
 ]
+
+// To get a list of the names it's required that ALL Frameworks have the id property as `readonly`
+export type FrameworkName = InstanceType<typeof frameworks[number]>['id']
+export { FrameworkInfo } from './framework.js'

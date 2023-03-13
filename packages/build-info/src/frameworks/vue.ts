@@ -1,7 +1,7 @@
 import { BaseFramework, Category, Framework } from './framework.js'
 
 export class Vue extends BaseFramework implements Framework {
-  id = 'vue'
+  readonly id = 'vue'
   name = 'Vue.js'
   npmDependencies = ['@vue/cli-service']
   category = Category.FrontendFramework

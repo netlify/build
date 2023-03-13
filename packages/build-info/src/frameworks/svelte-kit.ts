@@ -1,7 +1,7 @@
 import { BaseFramework, Category, Framework } from './framework.js'
 
 export class SvelteKit extends BaseFramework implements Framework {
-  id = 'svelte-kit'
+  readonly id = 'svelte-kit'
   name = 'SvelteKit'
   npmDependencies = ['@sveltejs/kit']
   category = Category.FrontendFramework

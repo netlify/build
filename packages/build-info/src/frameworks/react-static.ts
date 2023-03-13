@@ -1,7 +1,7 @@
 import { BaseFramework, Category, Framework } from './framework.js'
 
 export class ReactStatic extends BaseFramework implements Framework {
-  id = 'react-static'
+  readonly id = 'react-static'
   name = 'React Static'
   npmDependencies = ['react-static']
   configFiles = ['static.config.js']

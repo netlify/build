@@ -1,7 +1,7 @@
 import { BaseFramework, Category, Framework } from './framework.js'
 
 export class Hexo extends BaseFramework implements Framework {
-  id = 'hexo'
+  readonly id = 'hexo'
   name = 'Hexo'
   configFiles = ['_config.yml']
   npmDependencies = ['hexo']

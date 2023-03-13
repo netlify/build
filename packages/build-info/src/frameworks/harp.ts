@@ -1,7 +1,7 @@
 import { BaseFramework, Category, Framework } from './framework.js'
 
 export class Harp extends BaseFramework implements Framework {
-  id = 'harp'
+  readonly id = 'harp'
   name = 'Harp'
   npmDependencies = ['harp']
   category = Category.SSG

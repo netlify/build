@@ -1,7 +1,7 @@
 import { BaseFramework, Category, Framework } from './framework.js'
 
 export class Eleventy extends BaseFramework implements Framework {
-  id = 'eleventy'
+  readonly id = 'eleventy'
   name = 'Eleventy'
   configFiles = ['.eleventy.js', 'eleventy.config.js', 'eleventy.config.cjs']
   npmDependencies = ['@11ty/eleventy']

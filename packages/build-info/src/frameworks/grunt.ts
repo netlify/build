@@ -1,7 +1,7 @@
 import { BaseFramework, Category, Framework } from './framework.js'
 
 export class Grunt extends BaseFramework implements Framework {
-  id = 'grunt'
+  readonly id = 'grunt'
   name = 'Grunt'
   npmDependencies = ['grunt']
   category = Category.BuildTool

@@ -1,7 +1,7 @@
 import { BaseFramework, Category, Framework } from './framework.js'
 
 export class Ember extends BaseFramework implements Framework {
-  id = 'ember'
+  readonly id = 'ember'
   name = 'Ember.js'
   configFiles = ['ember-cli-build.js']
   npmDependencies = ['ember-cli']

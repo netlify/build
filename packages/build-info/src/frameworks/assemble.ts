@@ -1,7 +1,7 @@
 import { BaseFramework, Category, Framework } from './framework.js'
 
 export class Assemble extends BaseFramework implements Framework {
-  id = 'assemble'
+  readonly id = 'assemble'
   name = 'Assemble'
   npmDependencies = ['assemble']
   category = Category.SSG

@@ -1,7 +1,7 @@
 import { BaseFramework, Category, Framework } from './framework.js'
 
 export class Cecil extends BaseFramework implements Framework {
-  id = 'cecil'
+  readonly id = 'cecil'
   name = 'Cecil'
   configFiles = ['config.yml']
   category = Category.SSG

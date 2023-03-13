@@ -1,7 +1,7 @@
 import { BaseFramework, Category, Framework } from './framework.js'
 
 export class Gridsome extends BaseFramework implements Framework {
-  id = 'gridsome'
+  readonly id = 'gridsome'
   name = 'Gridsome'
   configFiles = ['gridsome.config.js']
   npmDependencies = ['gridsome']

@@ -1,7 +1,7 @@
 import { BaseFramework, Category, Framework } from './framework.js'
 
 export class Brunch extends BaseFramework implements Framework {
-  id = 'brunch'
+  readonly id = 'brunch'
   name = 'Brunch'
   npmDependencies = ['brunch']
   configFiles = ['brunch-config.js']

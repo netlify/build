@@ -1,7 +1,7 @@
 import { BaseFramework, Category, Framework } from './framework.js'
 
 export class Blitz extends BaseFramework implements Framework {
-  id = 'blitz'
+  readonly id = 'blitz'
   name = 'Blitz.js'
   npmDependencies = ['blitz']
   category = Category.SSG

@@ -10,6 +10,42 @@ beforeEach((ctx) => {
   ctx.fs = new NodeFS()
 })
 
+describe('Next.js Plugin', () => {
+  beforeEach((ctx) => {
+    ctx.cwd = mockFileSystem({
+      'package.json': JSON.stringify({
+        name: 'my-next-app',
+        version: '0.1.0',
+        private: true,
+        scripts: {
+          dev: 'next dev',
+          build: 'next build',
+          start: 'next start',
+        },
+        dependencies: {
+          next: '10.0.5',
+          react: '17.0.1',
+          'react-dom': '17.0.1',
+        },
+      }),
+    })
+  })
+
+  test('Should detect Next.js plugin for Next.js if when Node version >= 10.13.0', async ({ fs, cwd }) => {
+    const project = new Project(fs, cwd).setNodeVersion('v10.13.0')
+    const frameworks = await project.detectFrameworks()
+    expect(frameworks?.[0].id).toBe('next')
+    expect(frameworks?.[0].plugins).toEqual(['@netlify/plugin-nextjs'])
+  })
+
+  test('Should not detect Next.js plugin for Next.js if when Node version < 10.13.0', async ({ fs, cwd }) => {
+    const project = new Project(fs, cwd).setNodeVersion('v8.3.1')
+    const frameworks = await project.detectFrameworks()
+    expect(frameworks?.[0].id).toBe('next')
+    expect(frameworks?.[0].plugins).toHaveLength(0)
+  })
+})
+
 describe('simple Next.js project', async () => {
   beforeEach((ctx) => {
     ctx.cwd = mockFileSystem({

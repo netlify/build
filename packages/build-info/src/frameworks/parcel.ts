@@ -1,7 +1,7 @@
 import { BaseFramework, Category, Framework } from './framework.js'
 
 export class Parcel extends BaseFramework implements Framework {
-  id = 'parcel'
+  readonly id = 'parcel'
   name = 'Parcel'
   npmDependencies = ['parcel-bundler', 'parcel']
   category = Category.BuildTool

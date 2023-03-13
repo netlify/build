@@ -1,7 +1,7 @@
 import { BaseFramework, Category, Framework } from './framework.js'
 
 export class Middleman extends BaseFramework implements Framework {
-  id = 'middleman'
+  readonly id = 'middleman'
   name = 'Middleman'
   configFiles = ['config.rb']
   category = Category.SSG

@@ -59,7 +59,7 @@ export async function getBuildInfo(
     buildSystems: await project.detectBuildSystem(),
   }
 
-  if (config.featureFlags?.newFrameworkDetection) {
+  if (config.featureFlags?.build_info_new_framework_detection) {
     info.frameworks = (await project.detectFrameworksInPath(project.baseDirectory)) || []
   } else {
     try {

@@ -1,7 +1,7 @@
 import { BaseFramework, Category, DetectedFramework, Detection, Framework } from './framework.js'
 
 export class Nuxt extends BaseFramework implements Framework {
-  id = 'nuxt'
+  readonly id = 'nuxt'
   name = 'Nuxt'
   npmDependencies = ['nuxt', 'nuxt-edge', 'nuxt3']
   category = Category.SSG
