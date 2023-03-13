@@ -49,7 +49,7 @@ export abstract class BaseBuildTool {
     }
   }
 
-  /** Get's a JSON from the class information */
+  /** Gets a JSON from the class information */
   toJSON() {
     return {
       id: this.id,

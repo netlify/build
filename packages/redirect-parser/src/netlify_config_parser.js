@@ -6,7 +6,7 @@ import { parse as loadToml } from 'toml'
 import { splitResults } from './results.js'
 
 // Parse `redirects` field in "netlify.toml" to an array of objects.
-// This field is already an array of objects so it only validates and
+// This field is already an array of objects, so it only validates and
 // normalizes it.
 export const parseConfigRedirects = async function (netlifyConfigPath) {
   if (!(await pathExists(netlifyConfigPath))) {

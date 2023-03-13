@@ -82,7 +82,7 @@ const isEdgeFunctionsConfig = function (key, value) {
 }
 
 // Ensure that `inlineConfig` has higher priority than context properties by
-// assigining it to `context.*`. Still keep it at the top-level as well since
+// assigning it to `context.*`. Still keep it at the top-level as well since
 // some properties are not handled context-sensitively by the API.
 // Takes into account that `context.{context}.build.*` is the same as
 // `context.{context}.*`

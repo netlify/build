@@ -35,7 +35,7 @@ export const handleBuildError = async function (
 // However, the process (and build) keeps going. Because no files exist anymore,
 // the build eventually crashes with a randomly odd error. Those should not be
 // logged nor reported.
-// However builds canceled with `utils.build.cancelBuild()` should still show
+// However, builds canceled with `utils.build.cancelBuild()` should still show
 // "Build canceled by ..."
 const isCancelCrash = async function (error) {
   const [{ type }] = getErrorInfo(error)

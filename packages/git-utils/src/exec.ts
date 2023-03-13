@@ -11,7 +11,7 @@ const mGit = function (args, cwd) {
     const { stdout } = execaSync('git', args, { cwd: cwdA })
     return stdout
   } catch (error) {
-    // The child process `error.message` includes stderr and stdout output which most of the times contains duplicate
+    // The child process `error.message` includes stderr and stdout output which most of the time contains duplicate
     // information. We rely on `error.shortMessage` instead.
     error.message = error.shortMessage
     throw error

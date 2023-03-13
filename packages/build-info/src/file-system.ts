@@ -131,7 +131,7 @@ export abstract class FileSystem {
     // the max we have to go up
     const up = Math.max(toUp, fromUp)
 
-    // if we have something from the 'from' to go up go up the max difference
+    // if we have something from the 'from' to go up the max difference
     const result = fromUp > 0 ? [...new Array<string>(up).fill('..')] : []
 
     // if we have some parts left add them to the going up

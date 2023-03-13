@@ -5,7 +5,7 @@ import { listFunctions, listFunctionsFiles } from '@netlify/zip-it-and-ship-it'
 import cpy from 'cpy'
 import { pathExists } from 'path-exists'
 
-// Add a Netlify Function file to the `functions` directory so it is processed
+// Add a Netlify Function file to the `functions` directory, so it is processed
 // by `@netlify/plugin-functions-core`
 export const add = async function (src?: string, dist?: string, { fail = defaultFail } = {}): Promise<void> {
   if (src === undefined) {

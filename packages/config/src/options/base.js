@@ -23,7 +23,7 @@ export const getBaseOverride = async function ({ repositoryRoot, cwd }) {
   // `base` starting with a `/` are relative to `repositoryRoot`, so we cannot
   // return an absolute path
   const base = relative(repositoryRoot, dirname(basePath))
-  // When `base` is explicitely overridden, `baseRelDir: true` makes more sense
+  // When `base` is explicitly overridden, `baseRelDir: true` makes more sense
   // since we want `publish`, `functions` and `edge_functions` to be relative to it.
   return { base, baseRelDir: true }
 }

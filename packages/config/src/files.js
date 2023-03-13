@@ -16,7 +16,7 @@ export const resolveConfigPaths = function ({ config, repositoryRoot, buildDir, 
   return configB
 }
 
-// All file paths in the configuration file are are relative to `buildDir`
+// All file paths in the configuration file are relative to `buildDir`
 // (if `baseRelDir` is `true`).
 const FILE_PATH_CONFIG_PROPS = [
   'functionsDirectory',
@@ -56,7 +56,7 @@ export const resolvePath = function (repositoryRoot, baseRel, originalPath, prop
 const LEADING_SLASH_REGEXP = /^\/+/
 
 // We ensure all file paths are within the repository root directory.
-// However we allow file paths to be outside of the build directory, since this
+// However, we allow file paths to be outside the build directory, since this
 // can be convenient in monorepo setups.
 const validateInsideRoot = function (originalPath, path, repositoryRoot, propName) {
   if (relative(repositoryRoot, path).startsWith('..') || getWindowsDrive(repositoryRoot) !== getWindowsDrive(path)) {
