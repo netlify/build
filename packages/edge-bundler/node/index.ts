@@ -1,5 +1,8 @@
 export { bundle } from './bundler.js'
 export { DenoBridge } from './bridge.js'
+export type { FunctionConfig } from './config.js'
+export { Declaration, mergeDeclarations } from './declaration.js'
+export type { EdgeFunction } from './edge_function.js'
 export { findFunctions as find } from './finder.js'
 export { generateManifest } from './manifest.js'
 export { serve } from './server/server.js'

@@ -1,6 +1,5 @@
 import { promises as fs } from 'fs'
 import { join } from 'path'
-import { env } from 'process'
 import { pathToFileURL } from 'url'
 
 import { deleteAsync } from 'del'
@@ -8,14 +7,13 @@ import { deleteAsync } from 'del'
 import { EdgeFunction } from '../edge_function.js'
 import type { FormatFunction } from '../server/server.js'
 
-const BOOTSTRAP_LATEST = 'https://640b5b066a2b9b0008e88cb0--edge.netlify.com/bootstrap/index-combined.ts'
-
 const defaultFormatExportTypeError: FormatFunction = (name) =>
   `The Edge Function "${name}" has failed to load. Does it have a function as the default export?`
 
 const defaultFormatImpoortError: FormatFunction = (name) => `There was an error with Edge Function "${name}".`
 
 interface GenerateStage2Options {
+  bootstrapURL: string
   distDirectory: string
   fileName: string
   formatExportTypeError?: FormatFunction
@@ -24,6 +22,7 @@ interface GenerateStage2Options {
 }
 
 const generateStage2 = async ({
+  bootstrapURL,
   distDirectory,
   fileName,
   formatExportTypeError,
@@ -33,7 +32,7 @@ const generateStage2 = async ({
   await deleteAsync(distDirectory, { force: true })
   await fs.mkdir(distDirectory, { recursive: true })
 
-  const entryPoint = getLocalEntryPoint(functions, { formatExportTypeError, formatImportError })
+  const entryPoint = getLocalEntryPoint(functions, { bootstrapURL, formatExportTypeError, formatImportError })
   const stage2Path = join(distDirectory, fileName)
 
   await fs.writeFile(stage2Path, entryPoint)
@@ -41,9 +40,8 @@ const generateStage2 = async ({
   return stage2Path
 }
 
-const getBootstrapURL = () => env.NETLIFY_EDGE_BOOTSTRAP ?? BOOTSTRAP_LATEST
-
 interface GetLocalEntryPointOptions {
+  bootstrapURL: string
   formatExportTypeError?: FormatFunction
   formatImportError?: FormatFunction
 }
@@ -54,11 +52,12 @@ interface GetLocalEntryPointOptions {
 const getLocalEntryPoint = (
   functions: EdgeFunction[],
   {
+    bootstrapURL,
     formatExportTypeError = defaultFormatExportTypeError,
     formatImportError = defaultFormatImpoortError,
   }: GetLocalEntryPointOptions,
 ) => {
-  const bootImport = `import { boot } from "${getBootstrapURL()}";`
+  const bootImport = `import { boot } from "${bootstrapURL}";`
   const declaration = `const functions = {}; const metadata = { functions: {} };`
   const imports = functions.map((func) => {
     const url = pathToFileURL(func.path)
@@ -87,4 +86,4 @@ const getLocalEntryPoint = (
   return [bootImport, declaration, ...imports, bootCall].join('\n\n')
 }
 
-export { generateStage2, getBootstrapURL, getLocalEntryPoint }
+export { generateStage2, getLocalEntryPoint }

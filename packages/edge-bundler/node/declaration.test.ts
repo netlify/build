@@ -1,13 +1,10 @@
 import { test, expect } from 'vitest'
 
 import { FunctionConfig } from './config.js'
-import { getDeclarationsFromConfig } from './declaration.js'
+import { Declaration, mergeDeclarations } from './declaration.js'
 
 // TODO: Add tests with the deploy config.
-const deployConfig = {
-  declarations: [],
-  layers: [],
-}
+const deployConfigDeclarations: Declaration[] = []
 
 test('In-source config takes precedence over netlify.toml config', () => {
   const tomlConfig = [
@@ -26,7 +23,7 @@ test('In-source config takes precedence over netlify.toml config', () => {
     { function: 'json', path: '/json', cache: 'off' },
   ]
 
-  const declarations = getDeclarationsFromConfig(tomlConfig, funcConfig, deployConfig)
+  const declarations = mergeDeclarations(tomlConfig, funcConfig, deployConfigDeclarations)
 
   expect(declarations).toEqual(expectedDeclarations)
 })
@@ -47,7 +44,7 @@ test("Declarations don't break if no in-source config is provided", () => {
     { function: 'json', path: '/json', cache: 'manual' },
   ]
 
-  const declarations = getDeclarationsFromConfig(tomlConfig, funcConfig, deployConfig)
+  const declarations = mergeDeclarations(tomlConfig, funcConfig, deployConfigDeclarations)
 
   expect(declarations).toEqual(expectedDeclarations)
 })
@@ -71,10 +68,10 @@ test('In-source config works independent of the netlify.toml file if a path is d
 
   const expectedDeclarationsWithoutISCPath = [{ function: 'geolocation', path: '/geo', cache: 'off' }]
 
-  const declarationsWithISCPath = getDeclarationsFromConfig(tomlConfig, funcConfigWithPath, deployConfig)
+  const declarationsWithISCPath = mergeDeclarations(tomlConfig, funcConfigWithPath, deployConfigDeclarations)
   expect(declarationsWithISCPath).toEqual(expectedDeclarationsWithISCPath)
 
-  const declarationsWithoutISCPath = getDeclarationsFromConfig(tomlConfig, funcConfigWithoutPath, deployConfig)
+  const declarationsWithoutISCPath = mergeDeclarations(tomlConfig, funcConfigWithoutPath, deployConfigDeclarations)
   expect(declarationsWithoutISCPath).toEqual(expectedDeclarationsWithoutISCPath)
 })
 
@@ -87,7 +84,7 @@ test('In-source config works if only the cache config property is set', () => {
 
   const expectedDeclarations = [{ function: 'geolocation', path: '/geo', cache: 'manual' }]
 
-  expect(getDeclarationsFromConfig(tomlConfig, funcConfig, deployConfig)).toEqual(expectedDeclarations)
+  expect(mergeDeclarations(tomlConfig, funcConfig, deployConfigDeclarations)).toEqual(expectedDeclarations)
 })
 
 test("In-source config path property works if it's not an array", () => {
@@ -99,7 +96,7 @@ test("In-source config path property works if it's not an array", () => {
 
   const expectedDeclarations = [{ function: 'json', path: '/json', cache: 'manual' }]
 
-  expect(getDeclarationsFromConfig(tomlConfig, funcConfig, deployConfig)).toEqual(expectedDeclarations)
+  expect(mergeDeclarations(tomlConfig, funcConfig, deployConfigDeclarations)).toEqual(expectedDeclarations)
 })
 
 test("In-source config path property works if it's not an array and it's not present in toml or deploy config", () => {
@@ -113,7 +110,7 @@ test("In-source config path property works if it's not an array and it's not pre
     { function: 'json', path: '/json-isc', cache: 'manual' },
   ]
 
-  expect(getDeclarationsFromConfig(tomlConfig, funcConfig, deployConfig)).toEqual(expectedDeclarations)
+  expect(mergeDeclarations(tomlConfig, funcConfig, deployConfigDeclarations)).toEqual(expectedDeclarations)
 })
 
 test('In-source config works if path property is an empty array with cache value specified', () => {
@@ -125,7 +122,7 @@ test('In-source config works if path property is an empty array with cache value
 
   const expectedDeclarations = [{ function: 'json', path: '/json-toml', cache: 'manual' }]
 
-  expect(getDeclarationsFromConfig(tomlConfig, funcConfig, deployConfig)).toEqual(expectedDeclarations)
+  expect(mergeDeclarations(tomlConfig, funcConfig, deployConfigDeclarations)).toEqual(expectedDeclarations)
 })
 
 test('netlify.toml-defined excludedPath are respected', () => {
@@ -135,7 +132,7 @@ test('netlify.toml-defined excludedPath are respected', () => {
 
   const expectedDeclarations = [{ function: 'geolocation', path: '/geo/*', excludedPath: '/geo/exclude' }]
 
-  const declarations = getDeclarationsFromConfig(tomlConfig, funcConfig, deployConfig)
+  const declarations = mergeDeclarations(tomlConfig, funcConfig, deployConfigDeclarations)
 
   expect(declarations).toEqual(expectedDeclarations)
 })

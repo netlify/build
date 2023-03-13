@@ -18,6 +18,7 @@ interface Route {
   pattern: string
   generator?: string
 }
+
 interface EdgeFunctionConfig {
   excluded_patterns: string[]
   on_error?: string

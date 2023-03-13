@@ -1,7 +1,6 @@
 import regexpAST from 'regexp-tree'
 
 import { FunctionConfig } from './config.js'
-import type { DeployConfig } from './deploy_config.js'
 
 interface BaseDeclaration {
   cache?: string
@@ -20,12 +19,12 @@ type DeclarationWithPattern = BaseDeclaration & {
   excludedPattern?: string
 }
 
-type Declaration = DeclarationWithPath | DeclarationWithPattern
+export type Declaration = DeclarationWithPath | DeclarationWithPattern
 
-export const getDeclarationsFromConfig = (
+export const mergeDeclarations = (
   tomlDeclarations: Declaration[],
   functionsConfig: Record<string, FunctionConfig>,
-  deployConfig: DeployConfig,
+  deployConfigDeclarations: Declaration[],
 ) => {
   const declarations: Declaration[] = []
   const functionsVisited: Set<string> = new Set()
@@ -34,26 +33,24 @@ export const getDeclarationsFromConfig = (
   // the deploy configuration file. For any declaration for which we also have
   // a function configuration object, we replace the path because that object
   // takes precedence.
-  for (const declaration of [...tomlDeclarations, ...deployConfig.declarations]) {
+  for (const declaration of [...tomlDeclarations, ...deployConfigDeclarations]) {
     const config = functionsConfig[declaration.function]
 
-    // If no config is found, add the declaration as is
     if (!config) {
+      // If no config is found, add the declaration as is.
       declarations.push(declaration)
-
-      // If we have a path specified as either a string or non-empty array
-      // create a declaration for each path
     } else if (config.path?.length) {
+      // If we have a path specified as either a string or non-empty array,
+      // create a declaration for each path.
       const paths = Array.isArray(config.path) ? config.path : [config.path]
 
       paths.forEach((path) => {
         declarations.push({ ...declaration, cache: config.cache, path })
       })
-
-      // With an in-source config without a path, add the config to the declaration
     } else {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // With an in-source config without a path, add the config to the declaration.
       const { path, excludedPath, ...rest } = config
+
       declarations.push({ ...declaration, ...rest })
     }
 
@@ -65,7 +62,7 @@ export const getDeclarationsFromConfig = (
   for (const name in functionsConfig) {
     const { cache, path } = functionsConfig[name]
 
-    // If we have path specified create a declaration for each path
+    // If we have a path specified, create a declaration for each path.
     if (!functionsVisited.has(name) && path) {
       const paths = Array.isArray(path) ? path : [path]
 
@@ -108,5 +105,3 @@ export const parsePattern = (pattern: string) => {
   // Strip leading and forward slashes.
   return regex.toString().slice(1, -1)
 }
-
-export { Declaration, DeclarationWithPath, DeclarationWithPattern }
