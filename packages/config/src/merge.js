@@ -17,7 +17,7 @@ const removeUndefinedProps = function ({ build = {}, ...config }) {
   return removeUndefined({ ...config, build: removeUndefined(build) })
 }
 
-// By default `deepmerge` concatenates arrays. We use the `arrayMerge` option
+// By default, `deepmerge` concatenates arrays. We use the `arrayMerge` option
 // to remove this behavior. Also, we merge some array properties differently,
 // such as `plugins`.
 const arrayMerge = function (arrayA, arrayB) {

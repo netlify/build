@@ -96,7 +96,7 @@ const getDefaultFlags = function ({ env: envOpt = {} }, combinedEnv) {
   }
 }
 
-// Compute the telemetry flag, it's disabled by default and we want to always disable it
+// Compute the telemetry flag, it's disabled by default, and we want to always disable it
 // if BUILD_TELEMETRY_DISABLED is passed.
 const computeTelemetry = function (flags, envOpts) {
   return envOpts.BUILD_TELEMETRY_DISABLED ? { telemetry: false } : { telemetry: flags.telemetry }

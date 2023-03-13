@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.1.3](https://github.com/netlify/build/compare/cache-utils-v5.1.2...cache-utils-v5.1.3) (2023-03-13)
+
+
+### Bug Fixes
+
+* improve grammar and typos in comments ([#4922](https://github.com/netlify/build/issues/4922)) ([2e9d9c0](https://github.com/netlify/build/commit/2e9d9c06134f125aaf17bbbca0937cf43d3abae6))
+
 ## [5.1.2](https://github.com/netlify/build/compare/cache-utils-v5.1.1...cache-utils-v5.1.2) (2023-02-09)
 
 

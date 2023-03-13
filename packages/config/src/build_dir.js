@@ -14,7 +14,7 @@ export const getBuildDir = async function (repositoryRoot, base) {
 }
 
 // The build directory is used as the current directory of build commands and
-// build plugins. Therefore it must exist.
+// build plugins. Therefore, it must exist.
 // We already check `repositoryRoot` earlier in the code, so only need to check
 // `buildDir` when it is the base directory instead.
 const checkBuildDir = async function (buildDir, repositoryRoot) {

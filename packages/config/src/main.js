@@ -18,11 +18,6 @@ import { parseConfig } from './parse.js'
 import { getConfigPath } from './path.js'
 import { getRedirectsPath, addRedirects } from './redirects.js'
 
-export { DEV_EVENTS, EVENTS } from './events.js'
-export { cleanupConfig } from './log/cleanup.js'
-
-export { updateConfig, restoreConfig } from './mutations/update.js'
-
 // Load the configuration file.
 // Takes an optional configuration file path as input and return the resolved
 // `config` together with related properties such as the `configPath`.

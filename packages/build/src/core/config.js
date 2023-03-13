@@ -129,7 +129,7 @@ const logConfigInfo = function ({ logs, configPath, buildDir, netlifyConfig, con
 // Retrieve the configuration after it's been changed.
 // This ensures any configuration changes done by plugins is validated and
 // normalized.
-// We use `debug: false` to avoid any debug logs. Otherwise every configuration
+// We use `debug: false` to avoid any debug logs. Otherwise, every configuration
 // change would create debug logs which would be too verbose.
 // Errors are propagated and assigned to the specific plugin or core step
 // which changed the configuration.
@@ -146,7 +146,7 @@ export const resolveUpdatedConfig = async function (configOpts, configMutations)
 // If `netlify.toml` does not exist, create it inside repository root.
 // This is only done when `saveConfig` is `true`. This allows performing this
 // in the buildbot but not in local builds, since only the latter run in a
-// container and we want to avoid saving files on local machines.
+// container, and we want to avoid saving files on local machines.
 export const saveUpdatedConfig = async function ({
   configMutations,
   buildDir,

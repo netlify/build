@@ -48,7 +48,7 @@ const removeDuplicates = function (headers: Header[]) {
   return result.reverse()
 }
 
-// We generate a unique header key based on JSON stringify. However because some
+// We generate a unique header key based on JSON stringify. However, because some
 // properties can be regexes, we need to replace those by their toString representation
 // given the default will be and empty object
 const generateHeaderKey = function (header: Header) {

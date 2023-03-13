@@ -336,37 +336,6 @@ test('Print warning when headers file is missing from publish directory', async 
   t.snapshot(normalizeOutput(output))
 })
 
-test.serial('Successfully builds ES module function with feature flag', async (t) => {
-  const mockZipFunctions = sinon.stub().resolves()
-  const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').get(() => mockZipFunctions)
-
-  const output = await new Fixture('./fixtures/functions_es_modules')
-    .withFlags({ featureFlags: { buildbot_es_modules_esbuild: true } })
-    .runWithBuild()
-  t.snapshot(normalizeOutput(output))
-
-  stub.restore()
-
-  const { args: callArgs } = mockZipFunctions.getCall(0)
-
-  t.true(callArgs[2].featureFlags.defaultEsModulesToEsbuild)
-})
-
-test.serial(`Doesn't fail build for ES module function if feature flag is off`, async (t) => {
-  const mockZipFunctions = sinon.stub().resolves()
-  const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').get(() => mockZipFunctions)
-
-  const output = await new Fixture('./fixtures/functions_es_modules')
-    .withFlags({ featureFlags: { buildbot_es_modules_esbuild: false } })
-    .runWithBuild()
-  t.snapshot(normalizeOutput(output))
-
-  stub.restore()
-
-  const { args: callArgs } = mockZipFunctions.getCall(0)
-  t.false(callArgs[2].featureFlags.defaultEsModulesToEsbuild)
-})
-
 test.serial('Passes the right properties to zip-it-and-ship-it', async (t) => {
   const mockZipFunctions = sinon.stub().resolves()
   const stub = sinon.stub(zipItAndShipIt, 'zipFunctions').get(() => mockZipFunctions)
@@ -551,6 +520,21 @@ test.serial('functions can have a config with different parameters passed to zip
   t.is(functions[1].displayName, undefined)
 
   t.snapshot(normalizeOutput(output))
+})
+
+test.serial('internalSrcFolder is passed to zip-it-and-ship-it and helps prefill the generator field', async (t) => {
+  const zipItAndShipItSpy = sinon.spy(zipItAndShipIt, 'zipFunctions')
+
+  await new Fixture('./fixtures/functions_internal_src_folder').withFlags({ mode: 'buildbot' }).runWithBuild()
+  zipItAndShipItSpy.restore()
+  const { args: call1Args } = zipItAndShipItSpy.getCall(0)
+
+  const { internalSrcFolder, manifest } = call1Args[2]
+  const { functions } = await importJsonFile(manifest)
+
+  t.is(internalSrcFolder, join(FIXTURES_DIR, 'functions_internal_src_folder/.netlify/functions-internal'))
+  t.is(functions[0].generator, 'internalFunc')
+  t.is(functions[1].generator, undefined)
 })
 
 test('Generates a `manifest.json` file when running outside of buildbot', async (t) => {

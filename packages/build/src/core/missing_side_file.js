@@ -4,7 +4,7 @@ import { pathExists } from 'path-exists'
 
 import { logMissingSideFile } from '../log/messages/core.js'
 
-// Some files like `_headers` and `_redirects` must be copied to the publish
+// Some files like `_headers` and `_redirects` must be copied to the publishing
 // directory to be used in production. When those are present in the repository
 // but not in the publish directory, this most likely indicates that the build
 // command accidentally forgot to copy those. We then print a warning message.

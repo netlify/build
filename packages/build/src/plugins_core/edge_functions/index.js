@@ -64,6 +64,7 @@ const coreStep = async function ({
       featureFlags,
       importMapPaths: [userDefinedImportMap],
       systemLogger: featureFlags.edge_functions_system_logger ? systemLog : undefined,
+      internalSrcFolder: internalSrcPath,
     })
 
     systemLog('Edge Functions manifest:', manifest)

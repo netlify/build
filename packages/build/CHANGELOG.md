@@ -57,6 +57,81 @@
   * dependencies
     * @netlify/config bumped from ^20.0.1 to ^20.0.2
 
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/framework-info bumped from ^9.8.4 to ^9.8.5
+
+## [29.6.8](https://github.com/netlify/build/compare/build-v29.6.7...build-v29.6.8) (2023-03-13)
+
+
+### Bug Fixes
+
+* pass internalSrcFolder to edge bundler ([#4940](https://github.com/netlify/build/issues/4940)) ([45b04e7](https://github.com/netlify/build/commit/45b04e77c62d36ddae10bcf7fb8332f11ad2c8c2))
+
+## [29.6.7](https://github.com/netlify/build/compare/build-v29.6.6...build-v29.6.7) (2023-03-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v8.11.1 ([#4936](https://github.com/netlify/build/issues/4936)) ([c98fb4f](https://github.com/netlify/build/commit/c98fb4f603e0230cca5099e0cf7a5cd410fc5f8d))
+* improve grammar and typos in comments ([#4922](https://github.com/netlify/build/issues/4922)) ([2e9d9c0](https://github.com/netlify/build/commit/2e9d9c06134f125aaf17bbbca0937cf43d3abae6))
+* pass internalSrcFolder to zisi ([#4939](https://github.com/netlify/build/issues/4939)) ([6166d89](https://github.com/netlify/build/commit/6166d891a7944f34bcc31eace47f07691a4ee627))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/cache-utils bumped from ^5.1.2 to ^5.1.3
+    * @netlify/config bumped from ^20.3.4 to ^20.3.5
+    * @netlify/functions-utils bumped from ^5.2.0 to ^5.2.1
+    * @netlify/git-utils bumped from ^5.1.0 to ^5.1.1
+
+## [29.6.6](https://github.com/netlify/build/compare/build-v29.6.5...build-v29.6.6) (2023-03-09)
+
+
+### Bug Fixes
+
+* **deps:** update dependency pretty-ms to v8 ([#4924](https://github.com/netlify/build/issues/4924)) ([03a8c49](https://github.com/netlify/build/commit/03a8c4925d3a0006b86c26a84d52766b5002238a))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.3.3 to ^20.3.4
+
+## [29.6.5](https://github.com/netlify/build/compare/build-v29.6.4...build-v29.6.5) (2023-03-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v8.11.0 ([#4923](https://github.com/netlify/build/issues/4923)) ([834abcc](https://github.com/netlify/build/commit/834abcca76c55426174a270a4e13fce823155ad9))
+
+## [29.6.3](https://github.com/netlify/build/compare/build-v29.6.2...build-v29.6.3) (2023-03-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v8.9.0 ([#4911](https://github.com/netlify/build/issues/4911)) ([0f4daa0](https://github.com/netlify/build/commit/0f4daa08aa686d6e80edf599e6cacc5294de5313))
+
+## [29.6.2](https://github.com/netlify/build/compare/build-v29.6.1...build-v29.6.2) (2023-03-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v8.8.1 ([#4907](https://github.com/netlify/build/issues/4907)) ([723ee3e](https://github.com/netlify/build/commit/723ee3e93ee31e7b2656cc5dd82460ccddd8ae95))
+* **deps:** update dependency @netlify/plugins-list to ^6.66.0 ([#4908](https://github.com/netlify/build/issues/4908)) ([fac0ead](https://github.com/netlify/build/commit/fac0eadda23a70d569110687e8907985b55054b4))
+
+## [29.6.1](https://github.com/netlify/build/compare/build-v29.6.0...build-v29.6.1) (2023-03-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v8.8.0 ([#4902](https://github.com/netlify/build/issues/4902)) ([1afd888](https://github.com/netlify/build/commit/1afd8885a36bb274e512c9c82823f9e18d919584))
+
 ## [29.6.0](https://github.com/netlify/build/compare/build-v29.5.8...build-v29.6.0) (2023-03-01)
 
 

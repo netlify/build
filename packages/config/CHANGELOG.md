@@ -46,6 +46,28 @@
   * dependencies
     * netlify bumped from ^13.1.1 to ^13.1.2
 
+## [20.3.5](https://github.com/netlify/build/compare/config-v20.3.4...config-v20.3.5) (2023-03-13)
+
+
+### Bug Fixes
+
+* improve grammar and typos in comments ([#4922](https://github.com/netlify/build/issues/4922)) ([2e9d9c0](https://github.com/netlify/build/commit/2e9d9c06134f125aaf17bbbca0937cf43d3abae6))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * netlify-headers-parser bumped from ^7.1.1 to ^7.1.2
+    * netlify-redirect-parser bumped from ^14.1.1 to ^14.1.2
+
+## [20.3.4](https://github.com/netlify/build/compare/config-v20.3.3...config-v20.3.4) (2023-03-09)
+
+
+### Bug Fixes
+
+* expose apply mutation to API surface ([#4932](https://github.com/netlify/build/issues/4932)) ([35c76f7](https://github.com/netlify/build/commit/35c76f7702d93dddcd6493eda463bdfd1a7ce005))
+
 ## [20.3.3](https://github.com/netlify/build/compare/config-v20.3.2...config-v20.3.3) (2023-02-09)
 
 

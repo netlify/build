@@ -1,5 +1,9 @@
 # Changelog
 
+### Bug Fixes
+
+* Revert dev cycle feature flagging ([#4933](https://github.com/netlify/build/issues/4933)) ([a3f8bdf](https://github.com/netlify/build/commit/a3f8bdf6124de9b6d50b63a940a68e4ceec1c16f))
+
 ### Dependencies
 
 * The following workspace dependencies were updated
@@ -35,6 +39,33 @@
 * The following workspace dependencies were updated
   * dependencies
     * @netlify/framework-info bumped from ^9.8.2 to ^9.8.3
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/framework-info bumped from ^9.8.4 to ^9.8.5
+
+## [6.6.1](https://github.com/netlify/build/compare/build-info-v6.6.0...build-info-v6.6.1) (2023-03-13)
+
+
+### Bug Fixes
+
+* improve grammar and typos in comments ([#4922](https://github.com/netlify/build/issues/4922)) ([2e9d9c0](https://github.com/netlify/build/commit/2e9d9c06134f125aaf17bbbca0937cf43d3abae6))
+
+## [6.6.0](https://github.com/netlify/build/compare/build-info-v6.5.1...build-info-v6.6.0) (2023-03-07)
+
+
+### Features
+
+* use dev cycle feature flagging ([#4919](https://github.com/netlify/build/issues/4919)) ([bddb57f](https://github.com/netlify/build/commit/bddb57faa0229cd51b3303544309bfa1f1df07c4))
+
+## [6.5.0](https://github.com/netlify/build/compare/build-info-v6.4.0...build-info-v6.5.0) (2023-03-02)
+
+
+### Features
+
+* add bugsnag error reporting for netlify/build-info ([#4905](https://github.com/netlify/build/issues/4905)) ([2109d29](https://github.com/netlify/build/commit/2109d2992bfdc555f92c6bfc49f9be6abed18422))
 
 ## [6.4.0](https://github.com/netlify/build/compare/build-info-v6.3.1...build-info-v6.4.0) (2023-03-01)
 

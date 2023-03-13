@@ -2,7 +2,7 @@ import { env } from 'process'
 
 import filterObj from 'filter-obj'
 
-// Retrieve enviroment variables used in error monitoring
+// Retrieve environment variables used in error monitoring
 export const getEnvMetadata = function (childEnv = env) {
   return filterObj(childEnv, isEnvMetadata)
 }
