@@ -1,3 +1,8 @@
+export const enum Environment {
+  Browser = 'browser',
+  Node = 'node',
+}
+
 export interface Logger {
   debug(...any: any[]): void
   log(...any: any[]): void
@@ -82,7 +87,7 @@ export abstract class FileSystem {
   /** The current working directory will be set by the project */
   cwd = '/'
 
-  abstract getEnvironment(): 'browser' | 'node'
+  abstract getEnvironment(): Environment
 
   abstract fileExists(path: string): Promise<boolean>
 

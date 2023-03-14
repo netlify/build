@@ -1,6 +1,7 @@
 import type { PackageJson } from 'read-pkg'
 import { SemVer, coerce, parse } from 'semver'
 
+import { Environment } from '../file-system.js'
 import { getDevCommands } from '../get-dev-commands.js'
 import { Project } from '../project.js'
 
@@ -188,7 +189,7 @@ export abstract class BaseFramework implements Framework {
   /** Retrieves the version of a npm package from the node_modules */
   private async getVersionFromNodeModules(packageName: string): Promise<SemVer | undefined> {
     // on the browser we can omit this check
-    if (this.project.fs.getEnvironment() === 'browser') {
+    if (this.project.fs.getEnvironment() === Environment.Browser) {
       return
     }
 

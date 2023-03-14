@@ -4,7 +4,7 @@ import { SemVer, coerce, parse } from 'semver'
 
 import type { BuildSystem } from './build-systems/build-system.js'
 import { buildSystems } from './build-systems/index.js'
-import type { FileSystem } from './file-system.js'
+import { Environment, FileSystem } from './file-system.js'
 import { DetectedFramework, filterByRelevance } from './frameworks/framework.js'
 import { frameworks } from './frameworks/index.js'
 import { report } from './metrics.js'
@@ -182,7 +182,7 @@ export class Project {
 
     try {
       // on node we can parallelize more
-      if (this.fs.getEnvironment() === 'node') {
+      if (this.fs.getEnvironment() === Environment.Node) {
         const detected = (await Promise.all(buildSystems.map((BuildSystem) => new BuildSystem(this).detect()))).filter(
           Boolean,
         ) as BuildSystem[]
@@ -250,7 +250,7 @@ export class Project {
     try {
       let detected: DetectedFramework[] = []
       // on node we can parallelize more
-      if (this.fs.getEnvironment() === 'node') {
+      if (this.fs.getEnvironment() === Environment.Node) {
         detected = (await Promise.all(frameworks.map((Framework) => new Framework(this, path).detect()))).filter(
           Boolean,
         ) as DetectedFramework[]

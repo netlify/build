@@ -3,7 +3,7 @@ import { basename, dirname, isAbsolute, join, relative, resolve } from 'path'
 
 import { findUp, findUpMultiple } from 'find-up'
 
-import { DirType, FileSystem, findUpOptions } from '../file-system.js'
+import { DirType, Environment, FileSystem, findUpOptions } from '../file-system.js'
 
 export class NodeFS extends FileSystem {
   constructor() {
@@ -12,7 +12,7 @@ export class NodeFS extends FileSystem {
   }
 
   getEnvironment() {
-    return 'node' as const
+    return Environment.Node
   }
 
   isAbsolute(path: string): boolean {

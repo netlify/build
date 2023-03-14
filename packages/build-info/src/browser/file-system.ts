@@ -1,4 +1,4 @@
-import { DirType, FileSystem } from '../file-system.js'
+import { DirType, Environment, FileSystem } from '../file-system.js'
 
 /** A sample implementation of a GitHub provider */
 export class GithubProvider {
@@ -41,7 +41,7 @@ export class WebFS extends FileSystem {
   }
 
   getEnvironment() {
-    return 'browser' as const
+    return Environment.Browser
   }
 
   isAbsolute(path: string): boolean {

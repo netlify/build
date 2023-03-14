@@ -25,7 +25,7 @@ test('should detect quick with yarn', async ({ fs }) => {
   })
   const detected = await new Project(fs, cwd).detectFrameworks()
   expect(detected?.[0].id).toBe('qwik')
-  expect(detected?.[0].build.command).toBe('yarn build')
+  expect(detected?.[0].build.command).toBe('yarn run build')
   expect(detected?.[0].build.directory).toBe('dist')
 })
 

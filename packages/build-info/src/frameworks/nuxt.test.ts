@@ -54,8 +54,8 @@ describe('Nuxt V3', () => {
     })
     const detected = await new Project(fs, cwd).detectFrameworks()
     expect(detected?.[0].id).toBe('nuxt')
-    expect(detected?.[0].build.command).toBe('yarn build')
-    expect(detected?.[0].dev?.command).toBe('yarn dev')
+    expect(detected?.[0].build.command).toBe('yarn run build')
+    expect(detected?.[0].dev?.command).toBe('yarn run dev')
     expect(detected?.[0].dev?.port).toBe(3000)
   })
 
@@ -67,8 +67,8 @@ describe('Nuxt V3', () => {
     const detected = await new Project(fs, cwd).detectFrameworks()
     expect(detected?.[0].id).toBe('nuxt')
     expect(detected?.[0].name).toBe('Nuxt 3')
-    expect(detected?.[0].build.command).toBe('yarn build')
-    expect(detected?.[0].dev?.command).toBe('yarn dev')
+    expect(detected?.[0].build.command).toBe('yarn run build')
+    expect(detected?.[0].dev?.command).toBe('yarn run dev')
   })
 
   test('nuxt3 should be package manager aware for pnpm', async ({ fs }) => {

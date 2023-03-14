@@ -29,7 +29,7 @@ export const AVAILABLE_PACKAGE_MANAGERS: Record<PkgManager, PkgManagerFields> = 
   [PkgManager.YARN]: {
     name: PkgManager.YARN,
     installCommand: 'yarn install',
-    runCommand: 'yarn',
+    runCommand: 'yarn run',
     lockFile: 'yarn.lock',
     forceEnvironment: 'NETLIFY_USE_YARN',
   },
