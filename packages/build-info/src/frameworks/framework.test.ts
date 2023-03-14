@@ -1,7 +1,8 @@
+import { join } from 'path'
+
 import { beforeEach, describe, expect, test, vi } from 'vitest'
 
 import { mockFileSystem } from '../../tests/mock-file-system.js'
-import { join } from '../file-system.js'
 import { NodeFS } from '../node/file-system.js'
 import { Project } from '../project.js'
 

@@ -58,7 +58,7 @@ test.beforeEach(async ({ page }) => {
   ])
 })
 
-test.only('Should detect nx on the root', async ({ page }) => {
+test('Should detect nx on the root', async ({ page }) => {
   await page.pause()
   expect(
     await page.evaluate(async () => {
