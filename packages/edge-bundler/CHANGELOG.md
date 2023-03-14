@@ -1,5 +1,12 @@
 # Changelog
 
+## [8.12.1](https://github.com/netlify/edge-bundler/compare/v8.12.0...v8.12.1) (2023-03-14)
+
+
+### Bug Fixes
+
+* ignore config blocks for undefined functions ([#337](https://github.com/netlify/edge-bundler/issues/337)) ([599c677](https://github.com/netlify/edge-bundler/commit/599c677689b9598ca1b69665e8b8fada5822f4a1))
+
 ## [8.12.0](https://github.com/netlify/edge-bundler/compare/v8.11.1...v8.12.0) (2023-03-13)
 
 
