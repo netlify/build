@@ -77,6 +77,11 @@ const generateManifest = ({
   )
 
   for (const [name, { excludedPath, onError }] of Object.entries(functionConfig)) {
+    // If the config block is for a function that is not defined, discard it.
+    if (manifestFunctionConfig[name] === undefined) {
+      continue
+    }
+
     if (excludedPath) {
       const paths = Array.isArray(excludedPath) ? excludedPath : [excludedPath]
       const excludedPatterns = paths.map(pathToRegularExpression).map(serializePattern)
