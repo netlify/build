@@ -46,6 +46,7 @@ import { Zola } from './zola.js'
 
 export const frameworks = [
   // Static site generators
+  NextNx,
   Astro,
   Docusaurus,
   Eleventy,
@@ -56,7 +57,6 @@ export const frameworks = [
   Hydrogen,
   Jekyll,
   Middleman,
-  NextNx,
   Next,
   Blitz,
   Nuxt,

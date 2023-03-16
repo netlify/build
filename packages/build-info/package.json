@@ -4,12 +4,12 @@
   "description": "Build info utility",
   "type": "module",
   "exports": {
-    ".": "./lib/index.js",
-    "./node": "./lib/node/index.js"
+    ".": "./lib/src/index.js",
+    "./node": "./lib/src/node/index.js"
   },
-  "browser": "./lib/index.js",
-  "main": "./lib/index.js",
-  "types": "./lib/index.d.ts",
+  "browser": "./lib/src/index.js",
+  "main": "./lib/src/index.js",
+  "types": "./lib/src/index.d.ts",
   "bin": {
     "build-info": "./bin.js"
   },

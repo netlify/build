@@ -1,8 +1,7 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "lib" /* Specify an output folder for all emitted files. */,
-    "rootDir": "src"
+    "outDir": "lib" /* Specify an output folder for all emitted files. */
   },
   "include": ["src/**/*.ts"],
   "exclude": ["tests/**", "src/**/*.test.ts"]
