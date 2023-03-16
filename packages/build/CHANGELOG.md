@@ -69,6 +69,14 @@
   * dependencies
     * @netlify/config bumped from ^20.3.5 to ^20.3.6
 
+## [29.6.10](https://github.com/netlify/build/compare/build-v29.6.9...build-v29.6.10) (2023-03-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v8.12.1 ([#4942](https://github.com/netlify/build/issues/4942)) ([d8ea189](https://github.com/netlify/build/commit/d8ea189382bce02bd28ac6ed631fc117b4dc36c5))
+* **deps:** update dependency ansi-escapes to v6 ([#4946](https://github.com/netlify/build/issues/4946)) ([3fb070e](https://github.com/netlify/build/commit/3fb070ebd5f61d7b85abd61ef0772a49f0856d78))
+
 ## [29.6.8](https://github.com/netlify/build/compare/build-v29.6.7...build-v29.6.8) (2023-03-13)
 
 
