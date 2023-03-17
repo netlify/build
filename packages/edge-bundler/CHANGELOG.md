@@ -1,5 +1,12 @@
 # Changelog
 
+## [8.12.2](https://github.com/netlify/edge-bundler/compare/v8.12.1...v8.12.2) (2023-03-17)
+
+
+### Bug Fixes
+
+* enforce leading slash in path and pattern ([#339](https://github.com/netlify/edge-bundler/issues/339)) ([5b1daf9](https://github.com/netlify/edge-bundler/commit/5b1daf94f6526c8eb465d406ae272c746cc2522a))
+
 ## [8.12.1](https://github.com/netlify/edge-bundler/compare/v8.12.0...v8.12.1) (2023-03-14)
 
 
