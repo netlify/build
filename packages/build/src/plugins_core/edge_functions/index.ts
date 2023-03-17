@@ -108,7 +108,7 @@ const logFunctions = async ({
   internalSrcDirectory: string
   internalSrcPath: string
   logs: any
-  srcDirectory: string
+  srcDirectory?: string
   srcPath?: string
 }): Promise<void> => {
   const [userFunctionsSrcExists, userFunctions, internalFunctions] = await Promise.all([
