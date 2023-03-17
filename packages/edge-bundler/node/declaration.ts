@@ -1,6 +1,6 @@
 import regexpAST from 'regexp-tree'
 
-import { FunctionConfig } from './config.js'
+import { FunctionConfig, Path } from './config.js'
 
 interface BaseDeclaration {
   cache?: string
@@ -10,8 +10,8 @@ interface BaseDeclaration {
 }
 
 type DeclarationWithPath = BaseDeclaration & {
-  path: string
-  excludedPath?: string
+  path: Path
+  excludedPath?: Path
 }
 
 type DeclarationWithPattern = BaseDeclaration & {

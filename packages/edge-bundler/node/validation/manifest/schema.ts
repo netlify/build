@@ -18,7 +18,7 @@ const routesSchema = {
       type: 'string',
       format: 'regexPattern',
       errorMessage:
-        'pattern needs to be a regex that starts with ^ and ends with $ without any additional slashes before and afterwards',
+        'pattern needs to be a regex that starts with ^ followed by / and ends with $ without any additional slashes before and afterwards',
     },
     generator: { type: 'string' },
   },
@@ -35,7 +35,7 @@ const functionConfigSchema = {
         type: 'string',
         format: 'regexPattern',
         errorMessage:
-          'excluded_patterns needs to be an array of regex that starts with ^ and ends with $ without any additional slashes before and afterwards',
+          'excluded_patterns needs to be an array of regex that starts with ^ followed by / and ends with $ without any additional slashes before and afterwards',
       },
     },
     on_error: { type: 'string' },

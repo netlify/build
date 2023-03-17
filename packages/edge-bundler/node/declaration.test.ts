@@ -7,7 +7,7 @@ import { Declaration, mergeDeclarations } from './declaration.js'
 const deployConfigDeclarations: Declaration[] = []
 
 test('In-source config takes precedence over netlify.toml config', () => {
-  const tomlConfig = [
+  const tomlConfig: Declaration[] = [
     { function: 'geolocation', path: '/geo', cache: 'off' },
     { function: 'json', path: '/json', cache: 'manual' },
   ]
@@ -29,7 +29,7 @@ test('In-source config takes precedence over netlify.toml config', () => {
 })
 
 test("Declarations don't break if no in-source config is provided", () => {
-  const tomlConfig = [
+  const tomlConfig: Declaration[] = [
     { function: 'geolocation', path: '/geo', cache: 'off' },
     { function: 'json', path: '/json', cache: 'manual' },
   ]
@@ -50,7 +50,7 @@ test("Declarations don't break if no in-source config is provided", () => {
 })
 
 test('In-source config works independent of the netlify.toml file if a path is defined and otherwise if no path is set', () => {
-  const tomlConfig = [{ function: 'geolocation', path: '/geo', cache: 'off' }]
+  const tomlConfig: Declaration[] = [{ function: 'geolocation', path: '/geo', cache: 'off' }]
 
   const funcConfigWithPath = {
     json: { path: ['/json', '/json-isc'], cache: 'off' },
@@ -76,7 +76,7 @@ test('In-source config works independent of the netlify.toml file if a path is d
 })
 
 test('In-source config works if only the cache config property is set', () => {
-  const tomlConfig = [{ function: 'geolocation', path: '/geo', cache: 'off' }]
+  const tomlConfig: Declaration[] = [{ function: 'geolocation', path: '/geo', cache: 'off' }]
 
   const funcConfig = {
     geolocation: { cache: 'manual' },
@@ -88,7 +88,7 @@ test('In-source config works if only the cache config property is set', () => {
 })
 
 test("In-source config path property works if it's not an array", () => {
-  const tomlConfig = [{ function: 'json', path: '/json-toml', cache: 'off' }]
+  const tomlConfig: Declaration[] = [{ function: 'json', path: '/json-toml', cache: 'off' }]
 
   const funcConfig = {
     json: { path: '/json', cache: 'manual' },
@@ -100,7 +100,7 @@ test("In-source config path property works if it's not an array", () => {
 })
 
 test("In-source config path property works if it's not an array and it's not present in toml or deploy config", () => {
-  const tomlConfig = [{ function: 'geolocation', path: '/geo', cache: 'off' }]
+  const tomlConfig: Declaration[] = [{ function: 'geolocation', path: '/geo', cache: 'off' }]
   const funcConfig = {
     json: { path: '/json-isc', cache: 'manual' },
   } as Record<string, FunctionConfig>
@@ -114,7 +114,7 @@ test("In-source config path property works if it's not an array and it's not pre
 })
 
 test('In-source config works if path property is an empty array with cache value specified', () => {
-  const tomlConfig = [{ function: 'json', path: '/json-toml', cache: 'off' }]
+  const tomlConfig: Declaration[] = [{ function: 'json', path: '/json-toml', cache: 'off' }]
 
   const funcConfig = {
     json: { path: [], cache: 'manual' },
@@ -126,7 +126,7 @@ test('In-source config works if path property is an empty array with cache value
 })
 
 test('netlify.toml-defined excludedPath are respected', () => {
-  const tomlConfig = [{ function: 'geolocation', path: '/geo/*', excludedPath: '/geo/exclude' }]
+  const tomlConfig: Declaration[] = [{ function: 'geolocation', path: '/geo/*', excludedPath: '/geo/exclude' }]
 
   const funcConfig = {}
 

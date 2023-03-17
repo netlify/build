@@ -1,5 +1,5 @@
 import chalk from 'chalk'
-import { test, expect, describe } from 'vitest'
+import { test, expect, describe, beforeEach, vi } from 'vitest'
 
 import { validateManifest, ManifestValidationError } from './index.js'
 
@@ -97,32 +97,57 @@ describe('bundle', () => {
 })
 
 describe('route', () => {
+  let freshValidateManifest: typeof validateManifest
+
+  beforeEach(async () => {
+    // reset all modules, to get a fresh AJV validator for FF changes
+    vi.resetModules()
+    const indexImport = await import('./index.js')
+    freshValidateManifest = indexImport.validateManifest
+  })
+
   test('should throw on additional property', () => {
     const manifest = getBaseManifest()
     manifest.routes[0].foo = 'bar'
 
-    expect(() => validateManifest(manifest)).toThrowErrorMatchingSnapshot()
+    expect(() => freshValidateManifest(manifest)).toThrowErrorMatchingSnapshot()
   })
 
   test('should throw on invalid pattern', () => {
     const manifest = getBaseManifest()
     manifest.routes[0].pattern = '/^/hello/?$/'
 
-    expect(() => validateManifest(manifest)).toThrowErrorMatchingSnapshot()
+    expect(() => freshValidateManifest(manifest)).toThrowErrorMatchingSnapshot()
+  })
+
+  test('should not throw on missing beginning slash without FF', () => {
+    const manifest = getBaseManifest()
+    manifest.routes[0].pattern = '^hello/?$'
+
+    expect(() => freshValidateManifest(manifest, { edge_functions_manifest_validate_slash: false })).not.toThrowError()
+  })
+
+  test('should throw on missing beginning slash with FF', () => {
+    const manifest = getBaseManifest()
+    manifest.routes[0].pattern = '^hello/?$'
+
+    expect(() =>
+      freshValidateManifest(manifest, { edge_functions_manifest_validate_slash: true }),
+    ).toThrowErrorMatchingSnapshot()
   })
 
   test('should throw on missing function', () => {
     const manifest = getBaseManifest()
     delete manifest.routes[0].function
 
-    expect(() => validateManifest(manifest)).toThrowErrorMatchingSnapshot()
+    expect(() => freshValidateManifest(manifest)).toThrowErrorMatchingSnapshot()
   })
 
   test('should throw on missing pattern', () => {
     const manifest = getBaseManifest()
     delete manifest.routes[0].pattern
 
-    expect(() => validateManifest(manifest)).toThrowErrorMatchingSnapshot()
+    expect(() => freshValidateManifest(manifest)).toThrowErrorMatchingSnapshot()
   })
 })
 

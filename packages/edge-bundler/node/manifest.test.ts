@@ -19,7 +19,7 @@ test('Generates a manifest with different bundles', () => {
     hash: '654321',
   }
   const functions = [{ name: 'func-1', path: '/path/to/func-1.ts' }]
-  const declarations = [{ function: 'func-1', path: '/f1' }]
+  const declarations: Declaration[] = [{ function: 'func-1', path: '/f1' }]
   const manifest = generateManifest({ bundles: [bundle1, bundle2], declarations, functions })
 
   const expectedBundles = [
@@ -38,7 +38,7 @@ test('Generates a manifest with display names', () => {
     { name: 'func-1', path: '/path/to/func-1.ts' },
     { name: 'func-2', path: '/path/to/func-2.ts' },
   ]
-  const declarations = [
+  const declarations: Declaration[] = [
     { function: 'func-1', name: 'Display Name', path: '/f1/*' },
     { function: 'func-2', path: '/f2/*' },
   ]
@@ -60,7 +60,7 @@ test('Generates a manifest with a generator field', () => {
     { name: 'func-3', path: '/path/to/func-3.ts' },
   ]
 
-  const declarations = [
+  const declarations: Declaration[] = [
     { function: 'func-1', generator: '@netlify/fake-plugin@1.0.0', path: '/f1/*' },
     { function: 'func-2', path: '/f2/*' },
     { function: 'func-3', generator: '@netlify/fake-plugin@1.0.0', cache: 'manual', path: '/f3' },
@@ -132,7 +132,7 @@ test('Excludes functions for which there are function files but no matching conf
     { name: 'func-1', path: '/path/to/func-1.ts' },
     { name: 'func-2', path: '/path/to/func-2.ts' },
   ]
-  const declarations = [{ function: 'func-1', path: '/f1' }]
+  const declarations: Declaration[] = [{ function: 'func-1', path: '/f1' }]
   const manifest = generateManifest({ bundles: [bundle1], declarations, functions })
 
   const expectedRoutes = [{ function: 'func-1', pattern: '^/f1/?$' }]
@@ -147,7 +147,7 @@ test('Excludes functions for which there are config declarations but no matching
     hash: '123456',
   }
   const functions = [{ name: 'func-2', path: '/path/to/func-2.ts' }]
-  const declarations = [
+  const declarations: Declaration[] = [
     { function: 'func-1', path: '/f1' },
     { function: 'func-2', path: '/f2' },
   ]
@@ -160,7 +160,7 @@ test('Excludes functions for which there are config declarations but no matching
 
 test('Generates a manifest without bundles', () => {
   const functions = [{ name: 'func-1', path: '/path/to/func-1.ts' }]
-  const declarations = [{ function: 'func-1', path: '/f1' }]
+  const declarations: Declaration[] = [{ function: 'func-1', path: '/f1' }]
   const manifest = generateManifest({ bundles: [], declarations, functions })
 
   const expectedRoutes = [{ function: 'func-1', pattern: '^/f1/?$' }]
@@ -186,7 +186,7 @@ test('Generates a manifest with pre and post-cache routes', () => {
     { name: 'func-2', path: '/path/to/func-2.ts' },
     { name: 'func-3', path: '/path/to/func-3.ts' },
   ]
-  const declarations = [
+  const declarations: Declaration[] = [
     { function: 'func-1', path: '/f1' },
     { function: 'func-2', cache: 'not_a_supported_value', path: '/f2' },
     { function: 'func-3', cache: 'manual', path: '/f3' },
@@ -214,7 +214,7 @@ test('Generates a manifest with layers', () => {
     { name: 'func-1', path: '/path/to/func-1.ts' },
     { name: 'func-2', path: '/path/to/func-2.ts' },
   ]
-  const declarations = [
+  const declarations: Declaration[] = [
     { function: 'func-1', path: '/f1/*' },
     { function: 'func-2', path: '/f2/*' },
   ]

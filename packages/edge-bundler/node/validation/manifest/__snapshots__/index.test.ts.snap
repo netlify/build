@@ -122,12 +122,25 @@ ADDTIONAL PROPERTY must NOT have additional properties
 
 exports[`route > should throw on invalid pattern 1`] = `
 "Validation of Edge Functions manifest failed
-FORMAT pattern needs to be a regex that starts with ^ and ends with $ without any additional slashes before and afterwards
+FORMAT pattern needs to be a regex that starts with ^ followed by / and ends with $ without any additional slashes before and afterwards
 
   10 |       \\"name\\": \\"name\\",
   11 |       \\"function\\": \\"hello\\",
 > 12 |       \\"pattern\\": \\"/^/hello/?$/\\",
-     |                  ^^^^^^^^^^^^^^ 👈🏽  format pattern needs to be a regex that starts with ^ and ends with $ without any additional slashes before and afterwards
+     |                  ^^^^^^^^^^^^^^ 👈🏽  format pattern needs to be a regex that starts with ^ followed by / and ends with $ without any additional slashes before and afterwards
+  13 |       \\"generator\\": \\"@netlify/fake-plugin@1.0.0\\"
+  14 |     }
+  15 |   ],"
+`;
+
+exports[`route > should throw on missing beginning slash with FF 1`] = `
+"Validation of Edge Functions manifest failed
+FORMAT pattern needs to be a regex that starts with ^ followed by / and ends with $ without any additional slashes before and afterwards
+
+  10 |       \\"name\\": \\"name\\",
+  11 |       \\"function\\": \\"hello\\",
+> 12 |       \\"pattern\\": \\"^hello/?$\\",
+     |                  ^^^^^^^^^^^ 👈🏽  format pattern needs to be a regex that starts with ^ followed by / and ends with $ without any additional slashes before and afterwards
   13 |       \\"generator\\": \\"@netlify/fake-plugin@1.0.0\\"
   14 |     }
   15 |   ],"

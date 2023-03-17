@@ -12,12 +12,13 @@ import { runESZIP, useFixture } from '../test/util.js'
 
 import { BundleError } from './bundle_error.js'
 import { bundle, BundleOptions } from './bundler.js'
+import { Declaration } from './declaration.js'
 import { isFileNotFoundError } from './utils/error.js'
 import { validateManifest } from './validation/manifest/index.js'
 
 test('Produces an ESZIP bundle', async () => {
   const { basePath, cleanup, distPath } = await useFixture('with_import_maps')
-  const declarations = [
+  const declarations: Declaration[] = [
     {
       function: 'func1',
       path: '/func1',
@@ -59,7 +60,7 @@ test('Produces an ESZIP bundle', async () => {
 
 test('Uses the vendored eszip module instead of fetching it from deno.land', async () => {
   const { basePath, cleanup, distPath } = await useFixture('with_import_maps')
-  const declarations = [
+  const declarations: Declaration[] = [
     {
       function: 'func1',
       path: '/func1',
@@ -91,7 +92,7 @@ test('Adds a custom error property to user errors during bundling', async () => 
 
   const { basePath, cleanup, distPath } = await useFixture('invalid_functions')
   const sourceDirectory = join(basePath, 'functions')
-  const declarations = [
+  const declarations: Declaration[] = [
     {
       function: 'func1',
       path: '/func1',
@@ -119,7 +120,7 @@ test('Prints a nice error message when user tries importing NPM module', async (
 
   const { basePath, cleanup, distPath } = await useFixture('imports_npm_module')
   const sourceDirectory = join(basePath, 'functions')
-  const declarations = [
+  const declarations: Declaration[] = [
     {
       function: 'func1',
       path: '/func1',
@@ -143,7 +144,7 @@ test('Prints a nice error message when user tries importing NPM module with npm:
 
   const { basePath, cleanup, distPath } = await useFixture('imports_npm_module_scheme')
   const sourceDirectory = join(basePath, 'functions')
-  const declarations = [
+  const declarations: Declaration[] = [
     {
       function: 'func1',
       path: '/func1',
@@ -179,7 +180,7 @@ test('Uses the cache directory as the `DENO_DIR` value', async () => {
   const { basePath, cleanup, distPath } = await useFixture('with_import_maps')
   const sourceDirectory = join(basePath, 'functions')
   const cacheDir = await tmp.dir()
-  const declarations = [
+  const declarations: Declaration[] = [
     {
       function: 'func1',
       path: '/func1',
@@ -207,7 +208,7 @@ test('Uses the cache directory as the `DENO_DIR` value', async () => {
 test('Supports import maps with relative paths', async () => {
   const { basePath, cleanup, distPath } = await useFixture('with_import_maps')
   const sourceDirectory = join(basePath, 'functions')
-  const declarations = [
+  const declarations: Declaration[] = [
     {
       function: 'func1',
       path: '/func1',
@@ -236,7 +237,7 @@ test('Supports import maps with relative paths', async () => {
 test('Ignores any user-defined `deno.json` files', async () => {
   const { basePath, cleanup, distPath } = await useFixture('with_import_maps')
   const sourceDirectory = join(basePath, 'functions')
-  const declarations = [
+  const declarations: Declaration[] = [
     {
       function: 'func1',
       path: '/func1',
@@ -291,7 +292,7 @@ test('Ignores any user-defined `deno.json` files', async () => {
 test('Processes a function that imports a custom layer', async () => {
   const { basePath, cleanup, distPath } = await useFixture('with_layers')
   const sourceDirectory = join(basePath, 'functions')
-  const declarations = [
+  const declarations: Declaration[] = [
     {
       function: 'func1',
       path: '/func1',
@@ -322,7 +323,7 @@ test('Processes a function that imports a custom layer', async () => {
 
 test('Loads declarations and import maps from the deploy configuration', async () => {
   const { basePath, cleanup, distPath } = await useFixture('with_deploy_config')
-  const declarations = [
+  const declarations: Declaration[] = [
     {
       function: 'func1',
       path: '/func1',

@@ -1,6 +1,7 @@
 const defaultFlags = {
   edge_functions_fail_unsupported_regex: false,
   edge_functions_invalid_config_throw: false,
+  edge_functions_manifest_validate_slash: false,
 }
 
 type FeatureFlag = keyof typeof defaultFlags

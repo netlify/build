@@ -27,6 +27,8 @@ export const enum Cache {
   Manual = 'manual',
 }
 
+export type Path = `/${string}`
+
 export type OnError = 'fail' | 'bypass' | `/${string}`
 
 export const isValidOnError = (value: unknown): value is OnError => {
@@ -37,8 +39,8 @@ export const isValidOnError = (value: unknown): value is OnError => {
 
 export interface FunctionConfig {
   cache?: Cache
-  path?: string | string[]
-  excludedPath?: string | string[]
+  path?: Path | Path[]
+  excludedPath?: Path | Path[]
   onError?: OnError
 }
 
