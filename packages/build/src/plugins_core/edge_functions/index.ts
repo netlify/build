@@ -109,11 +109,11 @@ const logFunctions = async ({
   internalSrcPath: string
   logs: any
   srcDirectory: string
-  srcPath: string
+  srcPath?: string
 }): Promise<void> => {
   const [userFunctionsSrcExists, userFunctions, internalFunctions] = await Promise.all([
-    pathExists(srcPath),
-    find([srcPath]),
+    srcPath ? pathExists(srcPath) : Promise.resolve(false),
+    srcPath ? find([srcPath]) : Promise.resolve([]),
     find([internalSrcPath]),
   ])
 
