@@ -33,7 +33,7 @@ const coreStep = async function ({
   const internalSrcPath = resolve(buildDir, internalSrcDirectory)
   const distImportMapPath = join(dirname(internalSrcPath), IMPORT_MAP_FILENAME)
   const srcPath = srcDirectory ? resolve(buildDir, srcDirectory) : undefined
-  const sourcePaths = [internalSrcPath, srcPath].filter(Boolean)
+  const sourcePaths = [internalSrcPath, srcPath].filter(Boolean) as string[]
 
   logFunctions({ internalSrcDirectory, internalSrcPath, logs, srcDirectory, srcPath })
 
@@ -74,7 +74,7 @@ const coreStep = async function ({
     throw error
   }
 
-  await validateEdgeFunctionsManifest({ buildDir, constants: { EDGE_FUNCTIONS_DIST: distDirectory } })
+  await validateEdgeFunctionsManifest({ buildDir, constants: { EDGE_FUNCTIONS_DIST: distDirectory }, featureFlags })
 
   return {}
 }
@@ -86,7 +86,7 @@ const coreStep = async function ({
 const hasEdgeFunctionsDirectories = async function ({
   buildDir,
   constants: { INTERNAL_EDGE_FUNCTIONS_SRC, EDGE_FUNCTIONS_SRC },
-}) {
+}): Promise<boolean> {
   const hasFunctionsSrc = EDGE_FUNCTIONS_SRC !== undefined && EDGE_FUNCTIONS_SRC !== ''
 
   if (hasFunctionsSrc) {
@@ -104,10 +104,18 @@ const logFunctions = async ({
   logs,
   srcDirectory: userFunctionsSrc,
   srcPath,
-}) => {
-  const [userFunctions, internalFunctions] = await Promise.all([find([srcPath]), find([internalSrcPath])])
-  const userFunctionsSrcExists = await pathExists(srcPath)
-  const internalFunctionsSrc = internalSrcDirectory
+}: {
+  internalSrcDirectory: string
+  internalSrcPath: string
+  logs: any
+  srcDirectory?: string
+  srcPath?: string
+}): Promise<void> => {
+  const [userFunctionsSrcExists, userFunctions, internalFunctions] = await Promise.all([
+    srcPath ? pathExists(srcPath) : Promise.resolve(false),
+    srcPath ? find([srcPath]) : Promise.resolve([]),
+    find([internalSrcPath]),
+  ])
 
   logFunctionsToBundle({
     logs,
@@ -115,7 +123,7 @@ const logFunctions = async ({
     userFunctionsSrc,
     userFunctionsSrcExists,
     internalFunctions: internalFunctions.map(({ name }) => name),
-    internalFunctionsSrc,
+    internalFunctionsSrc: internalSrcDirectory,
     type: 'Edge Functions',
   })
 }
