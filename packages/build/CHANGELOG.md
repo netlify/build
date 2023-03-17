@@ -69,6 +69,13 @@
   * dependencies
     * @netlify/config bumped from ^20.3.5 to ^20.3.6
 
+## [29.7.0](https://github.com/netlify/build/compare/build-v29.6.10...build-v29.7.0) (2023-03-17)
+
+
+### Features
+
+* support featureFlags in validateManifest ([#4944](https://github.com/netlify/build/issues/4944)) ([08ff4dd](https://github.com/netlify/build/commit/08ff4dd1284b8b1e341ce492e67898f573202c9a))
+
 ## [29.6.10](https://github.com/netlify/build/compare/build-v29.6.9...build-v29.6.10) (2023-03-15)
 
 
