@@ -1,4 +1,8 @@
 export default class ManifestValidationError extends Error {
+  customErrorInfo = {
+    type: 'functionsBundling',
+  }
+
   constructor(message: string | undefined) {
     super(`Validation of Edge Functions manifest failed\n${message}`)
 

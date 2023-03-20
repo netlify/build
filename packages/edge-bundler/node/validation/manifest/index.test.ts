@@ -51,6 +51,21 @@ test('should throw ManifestValidationError with correct message', () => {
   expect(() => validateManifest('manifest')).toThrowError(/^Validation of Edge Functions manifest failed/)
 })
 
+test('should throw ManifestValidationError with customErrorInfo', () => {
+  try {
+    validateManifest('manifest')
+  } catch (error) {
+    expect(error).toBeInstanceOf(ManifestValidationError)
+
+    const { customErrorInfo } = error as ManifestValidationError
+    expect(customErrorInfo).toBeDefined()
+    expect(customErrorInfo.type).toBe('functionsBundling')
+    return
+  }
+
+  expect.fail('should have thrown')
+})
+
 test('should throw on additional property on root level', () => {
   const manifest = getBaseManifest()
   manifest.foo = 'bar'
