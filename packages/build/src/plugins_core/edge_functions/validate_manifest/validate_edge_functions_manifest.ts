@@ -4,7 +4,7 @@ import { join, resolve } from 'path'
 import { ManifestValidationError, validateManifest } from '@netlify/edge-bundler'
 
 import type { FeatureFlags } from '../../../core/feature_flags.js'
-import { addErrorInfo } from '../../../error/info.js'
+import { tagBundlingError } from '../lib/error.js'
 
 export const validateEdgeFunctionsManifest = async function ({
   buildDir,
@@ -25,7 +25,7 @@ export const validateEdgeFunctionsManifest = async function ({
     validateManifest(manifestData, featureFlags)
   } catch (error) {
     if (error instanceof ManifestValidationError) {
-      addErrorInfo(error, { type: 'coreStep' })
+      tagBundlingError(error)
     }
 
     throw error
