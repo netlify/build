@@ -1,5 +1,12 @@
 # Changelog
 
+## [8.12.3](https://github.com/netlify/edge-bundler/compare/v8.12.2...v8.12.3) (2023-03-20)
+
+
+### Bug Fixes
+
+* mark validation error as user error ([4dec1b9](https://github.com/netlify/edge-bundler/commit/4dec1b961f5256fd63a220680d938d8f37567bd2))
+
 ## [8.12.2](https://github.com/netlify/edge-bundler/compare/v8.12.1...v8.12.2) (2023-03-17)
 
 
