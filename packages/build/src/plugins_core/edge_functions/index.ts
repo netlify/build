@@ -33,7 +33,7 @@ const coreStep = async function ({
   const internalSrcPath = resolve(buildDir, internalSrcDirectory)
   const distImportMapPath = join(dirname(internalSrcPath), IMPORT_MAP_FILENAME)
   const srcPath = srcDirectory ? resolve(buildDir, srcDirectory) : undefined
-  const sourcePaths = [internalSrcPath, srcPath].filter(Boolean) as string[]
+  const sourcePaths = [srcPath].filter(Boolean) as string[]
 
   logFunctions({ internalSrcDirectory, internalSrcPath, logs, srcDirectory, srcPath })
 
@@ -55,7 +55,7 @@ const coreStep = async function ({
   await fs.mkdir(distPath, { recursive: true })
 
   try {
-    const { manifest } = await bundle(sourcePaths, distPath, declarations, {
+    const { manifest } = await bundle(sourcePaths, internalSrcPath, distPath, declarations, {
       basePath: buildDir,
       cacheDirectory,
       configPath: join(internalSrcPath, 'manifest.json'),
@@ -64,7 +64,6 @@ const coreStep = async function ({
       featureFlags,
       importMapPaths: [userDefinedImportMap],
       systemLogger: featureFlags.edge_functions_system_logger ? systemLog : undefined,
-      internalSrcFolder: internalSrcPath,
     })
 
     systemLog('Edge Functions manifest:', manifest)
