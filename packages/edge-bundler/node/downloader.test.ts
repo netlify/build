@@ -5,12 +5,25 @@ import { PassThrough } from 'stream'
 import { execa } from 'execa'
 import nock from 'nock'
 import tmp from 'tmp-promise'
-import { beforeEach, afterEach, test, expect, TestContext as VitestTestContext } from 'vitest'
+import { beforeEach, afterEach, test, expect, TestContext as VitestTestContext, vi } from 'vitest'
 
 import { fixturesDir, testLogger } from '../test/util.js'
 
 import { download } from './downloader.js'
 import { getPlatformTarget } from './platform.js'
+
+// This changes the defaults for p-retry
+// minTimeout 1000 -> 10
+// factor 2 -> 1
+// This reduces the wait time in the tests from `2s, 4s, 8s` to `10ms, 10ms, 10ms` for 3 retries
+vi.mock('p-retry', async (importOriginal) => {
+  const pRetry = (await importOriginal()) as typeof import('p-retry')
+  type Params = Parameters<typeof pRetry.default>
+
+  return {
+    default: (func: Params[0], options: Params[1]) => pRetry.default(func, { minTimeout: 10, factor: 1, ...options }),
+  }
+})
 
 const streamError = () => {
   const stream = new PassThrough()
