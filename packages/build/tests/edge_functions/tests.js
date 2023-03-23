@@ -100,7 +100,7 @@ test.serial('builds Edge Functions from the internal directory', async (t) => {
   t.deepEqual(routes, [{ function: 'function-1', pattern: '^/.*/?$', generator: 'internalFunc' }])
 })
 
-test.serial('builds Edge Functions from both the user and the internal directoriws', async (t) => {
+test.serial('builds Edge Functions from both the user and the internal directories', async (t) => {
   const output = await new Fixture('./fixtures/functions_user_internal')
     .withFlags({ debug: false, mode: 'buildbot' })
     .runWithBuild()
@@ -116,6 +116,15 @@ if (platform !== 'win32') {
     t.snapshot(normalizeOutput(output))
   })
 }
+
+// Does not work because the validator is memoized in edge-bundler and the ff has no effect during runtime.
+// Enable test once removing FF
+test.serial.skip('handles failure when validating Edge Functions', async (t) => {
+  const output = await new Fixture('./fixtures/functions_validation_failed')
+    .withFlags({ debug: false, featureFlags: { edge_functions_manifest_validate_slash: true } })
+    .runWithBuild()
+  t.snapshot(normalizeOutput(output))
+})
 
 test('bundles Edge Functions via runCoreSteps function', async (t) => {
   const output = await new Fixture('./fixtures/functions_user')

@@ -3,14 +3,17 @@ import { join, resolve } from 'path'
 
 import { ManifestValidationError, validateManifest } from '@netlify/edge-bundler'
 
-import { addErrorInfo } from '../../../error/info.js'
+import type { FeatureFlags } from '../../../core/feature_flags.js'
+import { tagBundlingError } from '../lib/error.js'
 
 export const validateEdgeFunctionsManifest = async function ({
   buildDir,
   constants: { EDGE_FUNCTIONS_DIST: distDirectory },
+  featureFlags,
 }: {
   buildDir: string
   constants: { EDGE_FUNCTIONS_DIST: string }
+  featureFlags: FeatureFlags
 }) {
   const edgeFunctionsDistPath = resolve(buildDir, distDirectory)
   const manifestPath = join(edgeFunctionsDistPath, 'manifest.json')
@@ -19,10 +22,10 @@ export const validateEdgeFunctionsManifest = async function ({
   const manifestData = JSON.parse(data)
 
   try {
-    validateManifest(manifestData)
+    validateManifest(manifestData, featureFlags)
   } catch (error) {
     if (error instanceof ManifestValidationError) {
-      addErrorInfo(error, { type: 'coreStep' })
+      tagBundlingError(error)
     }
 
     throw error
