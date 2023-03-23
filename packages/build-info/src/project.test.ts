@@ -173,14 +173,14 @@ describe('monorepo setup', () => {
     const project = new Project(ctx.fs, fixture.cwd)
     await project.detectFrameworks()
     expect([...project.frameworks.keys()]).toEqual([join('packages/astro'), join('packages/website')])
-    expect(project.frameworks.get('packages/astro')).toHaveLength(1)
-    expect(project.frameworks.get('packages/astro')).toEqual([
+    expect(project.frameworks.get(join('packages/astro'))).toHaveLength(1)
+    expect(project.frameworks.get(join('packages/astro'))).toEqual([
       expect.objectContaining({
         id: 'astro',
       }),
     ])
-    expect(project.frameworks.get('packages/website')).toHaveLength(1)
-    expect(project.frameworks.get('packages/website')).toEqual([
+    expect(project.frameworks.get(join('packages/website'))).toHaveLength(1)
+    expect(project.frameworks.get(join('packages/website'))).toEqual([
       expect.objectContaining({
         id: 'next',
       }),
@@ -194,8 +194,8 @@ describe('monorepo setup', () => {
     await project.detectFrameworks()
 
     expect([...project.frameworks.keys()]).toEqual([join('packages/astro')])
-    expect(project.frameworks.get('packages/astro')).toHaveLength(1)
-    expect(project.frameworks.get('packages/astro')).toEqual([
+    expect(project.frameworks.get(join('packages/astro'))).toHaveLength(1)
+    expect(project.frameworks.get(join('packages/astro'))).toEqual([
       expect.objectContaining({
         id: 'astro',
       }),
