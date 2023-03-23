@@ -111,12 +111,12 @@ test('Includes failure modes in manifest', () => {
     { function: 'func-1', name: 'Display Name', path: '/f1/*' },
     { function: 'func-2', pattern: '^/f2/.*/?$' },
   ]
-  const functionConfig: Record<string, FunctionConfig> = {
+  const userFunctionConfig: Record<string, FunctionConfig> = {
     'func-1': {
       onError: '/custom-error',
     },
   }
-  const manifest = generateManifest({ bundles: [], declarations, functions, functionConfig })
+  const manifest = generateManifest({ bundles: [], declarations, functions, userFunctionConfig })
   expect(manifest.function_config).toEqual({
     'func-1': { excluded_patterns: [], on_error: '/custom-error' },
   })

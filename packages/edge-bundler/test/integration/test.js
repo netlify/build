@@ -14,6 +14,7 @@ import tmp from 'tmp-promise'
 const exec = promisify(childProcess.exec)
 const require = createRequire(import.meta.url)
 const functionsDir = resolve(fileURLToPath(import.meta.url), '..', 'functions')
+const internalFunctionsDir = resolve(fileURLToPath(import.meta.url), '..', 'internal-functions')
 
 const pathsToCleanup = new Set()
 
@@ -58,6 +59,7 @@ const bundleFunction = async (bundlerDir) => {
   console.log(`Copying test fixture to '${basePath}'...`)
 
   await cpy(`${functionsDir}/**`, join(basePath, 'functions'))
+  await cpy(`${internalFunctionsDir}/**`, join(basePath, 'internal-functions'))
 
   pathsToCleanup.add(basePath)
 
@@ -65,9 +67,15 @@ const bundleFunction = async (bundlerDir) => {
 
   console.log(`Bundling functions at '${basePath}'...`)
 
-  const bundleOutput = await bundle([join(basePath, 'functions')], destPath, [{ function: 'func1', path: '/func1' }], {
-    basePath,
-  })
+  const bundleOutput = await bundle(
+    [join(basePath, 'functions'), join(basePath, 'internal-functions')],
+    destPath,
+    [{ function: 'func1', path: '/func1' }],
+    {
+      basePath,
+      internalSrcFolder: join(basePath, 'internal-functions'),
+    },
+  )
 
   return {
     basePath,
@@ -81,9 +89,11 @@ const runAssertions = ({ basePath, bundleOutput }) => {
 
   const { functions } = bundleOutput
 
-  assert.equal(functions.length, 1)
-  assert.equal(functions[0].name, 'func1')
-  assert.equal(functions[0].path, join(basePath, 'functions', 'func1.ts'))
+  assert.strictEqual(functions.length, 2)
+  assert.strictEqual(functions[0].name, 'func2')
+  assert.strictEqual(functions[0].path, join(basePath, 'internal-functions', 'func2.ts'))
+  assert.strictEqual(functions[1].name, 'func1')
+  assert.strictEqual(functions[1].path, join(basePath, 'functions', 'func1.ts'))
 }
 
 const cleanup = async () => {

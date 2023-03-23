@@ -1,0 +1,38 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Deploy config takes precedence over user config 1`] = `
+[
+  {
+    "function": "user-a",
+    "path": "/path1",
+  },
+  {
+    "function": "user-b",
+    "path": "/path2",
+  },
+  {
+    "function": "framework-a",
+    "path": "/path1",
+  },
+  {
+    "function": "framework-b",
+    "path": "/path2",
+  },
+  {
+    "function": "framework-c",
+    "path": "/path1",
+  },
+  {
+    "function": "framework-c",
+    "path": "/path2",
+  },
+  {
+    "function": "user-c",
+    "path": "/path1",
+  },
+  {
+    "function": "user-c",
+    "path": "/path2",
+  },
+]
+`;

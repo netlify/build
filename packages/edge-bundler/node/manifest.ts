@@ -38,9 +38,10 @@ interface GenerateManifestOptions {
   declarations?: Declaration[]
   featureFlags?: FeatureFlags
   functions: EdgeFunction[]
-  functionConfig?: Record<string, FunctionConfig>
   importMap?: string
+  internalFunctionConfig?: Record<string, FunctionConfig>
   layers?: Layer[]
+  userFunctionConfig?: Record<string, FunctionConfig>
 }
 
 // JavaScript regular expressions are converted to strings with leading and
@@ -66,7 +67,8 @@ const generateManifest = ({
   declarations = [],
   featureFlags,
   functions,
-  functionConfig = {},
+  userFunctionConfig = {},
+  internalFunctionConfig = {},
   importMap,
   layers = [],
 }: GenerateManifestOptions) => {
@@ -76,7 +78,10 @@ const generateManifest = ({
     functions.map(({ name }) => [name, { excluded_patterns: [] }]),
   )
 
-  for (const [name, { excludedPath, onError }] of Object.entries(functionConfig)) {
+  for (const [name, { excludedPath, onError }] of Object.entries({
+    ...internalFunctionConfig,
+    ...userFunctionConfig,
+  })) {
     // If the config block is for a function that is not defined, discard it.
     if (manifestFunctionConfig[name] === undefined) {
       continue

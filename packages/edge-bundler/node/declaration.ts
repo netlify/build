@@ -23,7 +23,8 @@ export type Declaration = DeclarationWithPath | DeclarationWithPattern
 
 export const mergeDeclarations = (
   tomlDeclarations: Declaration[],
-  functionsConfig: Record<string, FunctionConfig>,
+  userFunctionsConfig: Record<string, FunctionConfig>,
+  internalFunctionsConfig: Record<string, FunctionConfig>,
   deployConfigDeclarations: Declaration[],
 ) => {
   const declarations: Declaration[] = []
@@ -34,7 +35,7 @@ export const mergeDeclarations = (
   // a function configuration object, we replace the path because that object
   // takes precedence.
   for (const declaration of [...tomlDeclarations, ...deployConfigDeclarations]) {
-    const config = functionsConfig[declaration.function]
+    const config = userFunctionsConfig[declaration.function] || internalFunctionsConfig[declaration.function]
 
     if (!config) {
       // If no config is found, add the declaration as is.
@@ -59,15 +60,19 @@ export const mergeDeclarations = (
 
   // Finally, we must create declarations for functions that are not declared
   // in the TOML at all.
-  for (const name in functionsConfig) {
-    const { cache, path } = functionsConfig[name]
+  for (const name in { ...internalFunctionsConfig, ...userFunctionsConfig }) {
+    const { cache, path } = internalFunctionsConfig[name] || userFunctionsConfig[name]
 
     // If we have a path specified, create a declaration for each path.
     if (!functionsVisited.has(name) && path) {
       const paths = Array.isArray(path) ? path : [path]
 
       paths.forEach((singlePath) => {
-        declarations.push({ cache, function: name, path: singlePath })
+        const declaration: Declaration = { function: name, path: singlePath }
+        if (cache) {
+          declaration.cache = cache
+        }
+        declarations.push(declaration)
       })
     }
   }
