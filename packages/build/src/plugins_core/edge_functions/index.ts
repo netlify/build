@@ -6,7 +6,6 @@ import { pathExists } from 'path-exists'
 
 import { logFunctionsToBundle } from '../../log/messages/core_steps.js'
 
-import { getEdgeFunctionStats } from './get_edge_function_stats.js'
 import { tagBundlingError } from './lib/error.js'
 import { validateEdgeFunctionsManifest } from './validate_manifest/validate_edge_functions_manifest.js'
 
@@ -81,13 +80,7 @@ const coreStep = async function ({
     featureFlags,
   })
 
-  // We gather data on the amount of EF's build and which were auto-generated
-  const efStats = getEdgeFunctionStats({
-    buildDir,
-    constants: { EDGE_FUNCTIONS_DIST: distDirectory },
-  })
-
-  return { tags: { ...efStats } }
+  return {}
 }
 
 // We run this core step if at least one of the functions directories (the
