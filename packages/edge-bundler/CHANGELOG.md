@@ -1,5 +1,13 @@
 # Changelog
 
+## [8.13.0](https://github.com/netlify/edge-bundler/compare/v8.12.3...v8.13.0) (2023-03-24)
+
+
+### Features
+
+* move non-route related ef configs to function_config in manifest ([#348](https://github.com/netlify/edge-bundler/issues/348)) ([c7b7042](https://github.com/netlify/edge-bundler/commit/c7b704212e4660ad90e6f1f5236db2eb9883b5c8))
+* split user and internal ISC function configs ([#347](https://github.com/netlify/edge-bundler/issues/347)) ([c85a861](https://github.com/netlify/edge-bundler/commit/c85a861eff2b54d6447db522f209d59871e60ab1))
+
 ## [8.12.3](https://github.com/netlify/edge-bundler/compare/v8.12.2...v8.12.3) (2023-03-20)
 
 
