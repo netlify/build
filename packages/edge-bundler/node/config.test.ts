@@ -127,6 +127,25 @@ const functions = [
         export const config = { path: "/home" }
       `,
   },
+  {
+    testName: 'config with path, generator, name and onError`',
+    expectedConfig: {
+      path: '/home',
+      generator: '@netlify/fake-plugin@1.0.0',
+      name: 'a displayName',
+      onError: 'bypass',
+    },
+    name: 'func6',
+    source: `
+        export default async () => new Response("Hello from function three")
+
+        export const config = { path: "/home",
+          generator: '@netlify/fake-plugin@1.0.0',
+          name: 'a displayName',
+          onError: 'bypass',
+        }
+      `,
+  },
 ]
 describe('`getFunctionConfig` extracts configuration properties from function file', () => {
   test.each(functions)('$testName', async (func) => {

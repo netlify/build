@@ -4,7 +4,7 @@ import { join } from 'path'
 import globToRegExp from 'glob-to-regexp'
 
 import type { Bundle } from './bundle.js'
-import { Cache, FunctionConfig } from './config.js'
+import { Cache, FunctionConfig, Path } from './config.js'
 import { Declaration, parsePattern } from './declaration.js'
 import { EdgeFunction } from './edge_function.js'
 import { FeatureFlags } from './feature_flags.js'
@@ -14,14 +14,14 @@ import { nonNullable } from './utils/non_nullable.js'
 
 interface Route {
   function: string
-  name?: string
   pattern: string
-  generator?: string
 }
 
 interface EdgeFunctionConfig {
   excluded_patterns: string[]
   on_error?: string
+  generator?: string
+  name?: string
 }
 interface Manifest {
   bundler_version: string
@@ -44,6 +44,14 @@ interface GenerateManifestOptions {
   userFunctionConfig?: Record<string, FunctionConfig>
 }
 
+const removeEmptyConfigValues = (functionConfig: EdgeFunctionConfig) =>
+  Object.entries(functionConfig).reduce((acc, [key, value]) => {
+    if (value && !(Array.isArray(value) && value.length === 0)) {
+      return { ...acc, [key]: value }
+    }
+    return acc
+  }, {} as EdgeFunctionConfig)
+
 // JavaScript regular expressions are converted to strings with leading and
 // trailing slashes, so any slashes inside the expression itself are escaped
 // as `//`. This function deserializes that back into a single slash, which
@@ -54,12 +62,27 @@ const sanitizeEdgeFunctionConfig = (config: Record<string, EdgeFunctionConfig>):
   const newConfig: Record<string, EdgeFunctionConfig> = {}
 
   for (const [name, functionConfig] of Object.entries(config)) {
-    if (functionConfig.excluded_patterns.length !== 0 || functionConfig.on_error) {
-      newConfig[name] = functionConfig
+    const newFunctionConfig = removeEmptyConfigValues(functionConfig)
+
+    if (Object.keys(newFunctionConfig).length !== 0) {
+      newConfig[name] = newFunctionConfig
     }
   }
 
   return newConfig
+}
+
+const addExcludedPatterns = (
+  name: string,
+  manifestFunctionConfig: Record<string, EdgeFunctionConfig>,
+  excludedPath?: Path | Path[],
+) => {
+  if (excludedPath) {
+    const paths = Array.isArray(excludedPath) ? excludedPath : [excludedPath]
+    const excludedPatterns = paths.map(pathToRegularExpression).map(serializePattern)
+
+    manifestFunctionConfig[name].excluded_patterns.push(...excludedPatterns)
+  }
 }
 
 const generateManifest = ({
@@ -78,25 +101,24 @@ const generateManifest = ({
     functions.map(({ name }) => [name, { excluded_patterns: [] }]),
   )
 
-  for (const [name, { excludedPath, onError }] of Object.entries({
-    ...internalFunctionConfig,
-    ...userFunctionConfig,
-  })) {
+  for (const [name, { excludedPath, onError }] of Object.entries(userFunctionConfig)) {
     // If the config block is for a function that is not defined, discard it.
     if (manifestFunctionConfig[name] === undefined) {
       continue
     }
+    addExcludedPatterns(name, manifestFunctionConfig, excludedPath)
 
-    if (excludedPath) {
-      const paths = Array.isArray(excludedPath) ? excludedPath : [excludedPath]
-      const excludedPatterns = paths.map(pathToRegularExpression).map(serializePattern)
+    manifestFunctionConfig[name] = { ...manifestFunctionConfig[name], on_error: onError }
+  }
 
-      manifestFunctionConfig[name].excluded_patterns.push(...excludedPatterns)
+  for (const [name, { excludedPath, path, onError, ...rest }] of Object.entries(internalFunctionConfig)) {
+    // If the config block is for a function that is not defined, discard it.
+    if (manifestFunctionConfig[name] === undefined) {
+      continue
     }
+    addExcludedPatterns(name, manifestFunctionConfig, excludedPath)
 
-    if (onError) {
-      manifestFunctionConfig[name].on_error = onError
-    }
+    manifestFunctionConfig[name] = { ...manifestFunctionConfig[name], on_error: onError, ...rest }
   }
 
   declarations.forEach((declaration) => {
@@ -109,9 +131,7 @@ const generateManifest = ({
     const pattern = getRegularExpression(declaration, featureFlags?.edge_functions_fail_unsupported_regex)
     const route: Route = {
       function: func.name,
-      name: declaration.name,
       pattern: serializePattern(pattern),
-      generator: declaration.generator,
     }
     const excludedPattern = getExcludedRegularExpression(
       declaration,

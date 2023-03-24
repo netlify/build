@@ -1,3 +1,4 @@
+import { IntegrationsConfig } from 'https://edge.netlify.com'
 import { greet } from 'alias:helper'
 
 export default async () => {
@@ -6,6 +7,6 @@ export default async () => {
   return new Response(greeting)
 }
 
-export const config = {
+export const config: IntegrationsConfig = {
   path: '/framework-func1',
 }

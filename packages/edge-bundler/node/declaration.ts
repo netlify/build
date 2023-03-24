@@ -5,6 +5,7 @@ import { FunctionConfig, Path } from './config.js'
 interface BaseDeclaration {
   cache?: string
   function: string
+  // todo: remove these two after a while and only support in-source config for non-route related configs
   name?: string
   generator?: string
 }

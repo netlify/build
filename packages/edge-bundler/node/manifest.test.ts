@@ -3,7 +3,7 @@ import { env } from 'process'
 import { test, expect, vi } from 'vitest'
 
 import { BundleFormat } from './bundle.js'
-import { FunctionConfig } from './config.js'
+import { Cache, FunctionConfig } from './config.js'
 import { Declaration } from './declaration.js'
 import { generateManifest } from './manifest.js'
 
@@ -34,48 +34,39 @@ test('Generates a manifest with different bundles', () => {
 })
 
 test('Generates a manifest with display names', () => {
-  const functions = [
-    { name: 'func-1', path: '/path/to/func-1.ts' },
-    { name: 'func-2', path: '/path/to/func-2.ts' },
-  ]
-  const declarations: Declaration[] = [
-    { function: 'func-1', name: 'Display Name', path: '/f1/*' },
-    { function: 'func-2', path: '/f2/*' },
-  ]
-  const manifest = generateManifest({ bundles: [], declarations, functions })
+  const functions = [{ name: 'func-1', path: '/path/to/func-1.ts' }]
+  const declarations: Declaration[] = [{ function: 'func-1', path: '/f1/*' }]
 
-  const expectedRoutes = [
-    { function: 'func-1', name: 'Display Name', pattern: '^/f1/.*/?$' },
-    { function: 'func-2', pattern: '^/f2/.*/?$' },
-  ]
+  const internalFunctionConfig: Record<string, FunctionConfig> = {
+    'func-1': {
+      name: 'Display Name',
+    },
+  }
+  const manifest = generateManifest({ bundles: [], declarations, functions, internalFunctionConfig })
 
+  const expectedRoutes = [{ function: 'func-1', pattern: '^/f1/.*/?$' }]
+  expect(manifest.function_config).toEqual({
+    'func-1': { name: 'Display Name' },
+  })
   expect(manifest.routes).toEqual(expectedRoutes)
   expect(manifest.bundler_version).toBe(env.npm_package_version as string)
 })
 
 test('Generates a manifest with a generator field', () => {
-  const functions = [
-    { name: 'func-1', path: '/path/to/func-1.ts' },
-    { name: 'func-2', path: '/path/to/func-2.ts' },
-    { name: 'func-3', path: '/path/to/func-3.ts' },
-  ]
+  const functions = [{ name: 'func-1', path: '/path/to/func-1.ts' }]
 
-  const declarations: Declaration[] = [
-    { function: 'func-1', generator: '@netlify/fake-plugin@1.0.0', path: '/f1/*' },
-    { function: 'func-2', path: '/f2/*' },
-    { function: 'func-3', generator: '@netlify/fake-plugin@1.0.0', cache: 'manual', path: '/f3' },
-  ]
-  const manifest = generateManifest({ bundles: [], declarations, functions })
+  const declarations: Declaration[] = [{ function: 'func-1', path: '/f1/*' }]
+  const internalFunctionConfig: Record<string, FunctionConfig> = {
+    'func-1': {
+      generator: '@netlify/fake-plugin@1.0.0',
+    },
+  }
+  const manifest = generateManifest({ bundles: [], declarations, functions, internalFunctionConfig })
 
-  const expectedRoutes = [
-    { function: 'func-1', generator: '@netlify/fake-plugin@1.0.0', pattern: '^/f1/.*/?$' },
-    { function: 'func-2', pattern: '^/f2/.*/?$' },
-  ]
-  const expectedPostCacheRoutes = [{ function: 'func-3', generator: '@netlify/fake-plugin@1.0.0', pattern: '^/f3/?$' }]
-
+  const expectedRoutes = [{ function: 'func-1', pattern: '^/f1/.*/?$' }]
+  const expectedFunctionConfig = { 'func-1': { generator: '@netlify/fake-plugin@1.0.0' } }
   expect(manifest.routes).toEqual(expectedRoutes)
-  expect(manifest.post_cache_routes).toEqual(expectedPostCacheRoutes)
-  expect(manifest.bundler_version).toBe(env.npm_package_version as string)
+  expect(manifest.function_config).toEqual(expectedFunctionConfig)
 })
 
 test('Generates a manifest with excluded paths and patterns', () => {
@@ -84,13 +75,13 @@ test('Generates a manifest with excluded paths and patterns', () => {
     { name: 'func-2', path: '/path/to/func-2.ts' },
   ]
   const declarations: Declaration[] = [
-    { function: 'func-1', name: 'Display Name', path: '/f1/*', excludedPath: '/f1/exclude' },
+    { function: 'func-1', path: '/f1/*', excludedPath: '/f1/exclude' },
     { function: 'func-2', pattern: '^/f2/.*/?$', excludedPattern: '^/f2/exclude$' },
   ]
   const manifest = generateManifest({ bundles: [], declarations, functions })
 
   const expectedRoutes = [
-    { function: 'func-1', name: 'Display Name', pattern: '^/f1/.*/?$' },
+    { function: 'func-1', pattern: '^/f1/.*/?$' },
     { function: 'func-2', pattern: '^/f2/.*/?$' },
   ]
 
@@ -102,13 +93,64 @@ test('Generates a manifest with excluded paths and patterns', () => {
   expect(manifest.bundler_version).toBe(env.npm_package_version as string)
 })
 
+test('Filters out internal in-source configurations in user created functions', () => {
+  const functions = [
+    { name: 'func-1', path: '/path/to/func-1.ts' },
+    { name: 'func-2', path: '/path/to/func-2.ts' },
+  ]
+  const declarations: Declaration[] = [
+    { function: 'func-1', path: '/f1/*' },
+    { function: 'func-2', pattern: '^/f2/.*/?$' },
+  ]
+  const userFunctionConfig: Record<string, FunctionConfig> = {
+    'func-1': {
+      onError: '/custom-error',
+      cache: Cache.Manual,
+      excludedPath: '/f1/exclude',
+      path: '/path/to/func-1.ts',
+      name: 'User function',
+      generator: 'fake-generator',
+    },
+  }
+  const internalFunctionConfig: Record<string, FunctionConfig> = {
+    'func-2': {
+      onError: 'bypass',
+      cache: Cache.Off,
+      excludedPath: '/f2/exclude',
+      path: '/path/to/func-2.ts',
+      name: 'Internal function',
+      generator: 'internal-generator',
+    },
+  }
+  const manifest = generateManifest({
+    bundles: [],
+    declarations,
+    functions,
+    userFunctionConfig,
+    internalFunctionConfig,
+  })
+  expect(manifest.function_config).toEqual({
+    'func-1': {
+      on_error: '/custom-error',
+      excluded_patterns: ['^/f1/exclude/?$'],
+    },
+    'func-2': {
+      on_error: 'bypass',
+      cache: Cache.Off,
+      name: 'Internal function',
+      generator: 'internal-generator',
+      excluded_patterns: ['^/f2/exclude/?$'],
+    },
+  })
+})
+
 test('Includes failure modes in manifest', () => {
   const functions = [
     { name: 'func-1', path: '/path/to/func-1.ts' },
     { name: 'func-2', path: '/path/to/func-2.ts' },
   ]
   const declarations: Declaration[] = [
-    { function: 'func-1', name: 'Display Name', path: '/f1/*' },
+    { function: 'func-1', path: '/f1/*' },
     { function: 'func-2', pattern: '^/f2/.*/?$' },
   ]
   const userFunctionConfig: Record<string, FunctionConfig> = {
@@ -118,7 +160,7 @@ test('Includes failure modes in manifest', () => {
   }
   const manifest = generateManifest({ bundles: [], declarations, functions, userFunctionConfig })
   expect(manifest.function_config).toEqual({
-    'func-1': { excluded_patterns: [], on_error: '/custom-error' },
+    'func-1': { on_error: '/custom-error' },
   })
 })
 

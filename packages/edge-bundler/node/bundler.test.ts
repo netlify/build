@@ -321,7 +321,7 @@ test('Processes a function that imports a custom layer', async () => {
   await cleanup()
 })
 
-test('Loads declarations and import maps from the deploy configuration', async () => {
+test('Loads declarations and import maps from the deploy configuration and in-source config', async () => {
   const { basePath, cleanup, distPath } = await useFixture('with_deploy_config')
   const declarations: Declaration[] = [
     {
@@ -342,18 +342,24 @@ test('Loads declarations and import maps from the deploy configuration', async (
 
   const manifestFile = await fs.readFile(resolve(distPath, 'manifest.json'), 'utf8')
   const manifest = JSON.parse(manifestFile)
-  const { routes, bundles, function_config: functionConfig } = manifest
-
+  const { bundles, function_config: functionConfig } = manifest
   expect(bundles.length).toBe(1)
   expect(bundles[0].format).toBe('eszip2')
   expect(generatedFiles.includes(bundles[0].asset)).toBe(true)
-  expect(routes[0].generator).toBeUndefined()
-  expect(routes[1].name).toBe('Function two')
-  expect(routes[1].generator).toBe('@netlify/fake-plugin@1.0.0')
-  expect(routes[2].generator).toBe('internalFunc')
 
   // respects excludedPath from deploy config
-  expect(functionConfig.func2).toEqual({ excluded_patterns: ['^/func2/skip/?$'] })
+  expect(functionConfig.func2).toEqual({
+    excluded_patterns: ['^/func2/skip/?$'],
+    name: 'Function two',
+    generator: '@netlify/fake-plugin@1.0.0',
+  })
+
+  // respects in-source config
+  expect(functionConfig.func3).toEqual({
+    name: 'in-config-function',
+    on_error: 'bypass',
+    generator: 'internalFunc',
+  })
 
   await cleanup()
 })

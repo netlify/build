@@ -29,7 +29,7 @@ export const enum Cache {
 
 export type Path = `/${string}`
 
-export type OnError = 'fail' | 'bypass' | `/${string}`
+export type OnError = 'fail' | 'bypass' | Path
 
 export const isValidOnError = (value: unknown): value is OnError => {
   if (typeof value === 'undefined') return true
@@ -42,6 +42,8 @@ export interface FunctionConfig {
   path?: Path | Path[]
   excludedPath?: Path | Path[]
   onError?: OnError
+  name?: string
+  generator?: string
 }
 
 const getConfigExtractor = () => {
