@@ -34,7 +34,7 @@ const coreStep = async function ({
   const distImportMapPath = join(dirname(internalSrcPath), IMPORT_MAP_FILENAME)
   const srcPath = srcDirectory ? resolve(buildDir, srcDirectory) : undefined
   const sourcePaths = [internalSrcPath, srcPath].filter(Boolean) as string[]
-
+  const metrics = []
   logFunctions({ internalSrcDirectory, internalSrcPath, logs, srcDirectory, srcPath })
 
   // If we're running in buildbot and the feature flag is enabled, we set the
@@ -66,7 +66,7 @@ const coreStep = async function ({
       systemLogger: featureFlags.edge_functions_system_logger ? systemLog : undefined,
       internalSrcFolder: internalSrcPath,
     })
-
+    getMetrics(manifest, metrics)
     systemLog('Edge Functions manifest:', manifest)
   } catch (error) {
     tagBundlingError(error)
@@ -80,9 +80,19 @@ const coreStep = async function ({
     featureFlags,
   })
 
-  return {}
+  return { metrics }
 }
 
+const getMetrics = (manifest, metrics) => {
+  const numGenEfs = Object.values(manifest.function_config).filter(
+    (config: { generator?: string }) => config.generator,
+  ).length
+  const totalEfs = manifest.routes.length + manifest.post_cache_routes.length
+  const numUserEfs = totalEfs - numGenEfs
+  if (totalEfs != 0) {
+    return metrics.push({ type: 'edge_functions', numGenEfs, numUserEfs })
+  }
+}
 // We run this core step if at least one of the functions directories (the
 // one configured by the user or the internal one) exists. We use a dynamic
 // `condition` because the directories might be created by the build command

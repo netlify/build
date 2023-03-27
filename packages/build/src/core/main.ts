@@ -54,6 +54,7 @@ export default async function buildSite(flags: Partial<BuildCLIFlags> = {}): Pro
       timers,
       durationNs,
       configMutations,
+      metrics,
     } = await execBuild({
       ...flagsA,
       buildId,
@@ -76,7 +77,7 @@ export default async function buildSite(flags: Partial<BuildCLIFlags> = {}): Pro
       durationNs,
       statsdOpts,
       systemLog,
-      netlifyConfig: netlifyConfigA,
+      metrics,
     })
     const { success, severityCode, status } = getSeverity('success')
     await telemetryReport({
@@ -125,7 +126,7 @@ const handleBuildSuccess = async function ({
   durationNs,
   statsdOpts,
   systemLog,
-  netlifyConfig,
+  metrics,
 }) {
   if (dry) {
     return
@@ -135,7 +136,7 @@ const handleBuildSuccess = async function ({
 
   logTimer(logs, durationNs, 'Netlify Build', systemLog)
   await reportTimers(timers, statsdOpts, framework)
-  await reportFunctions(statsdOpts, netlifyConfig)
+  await reportFunctions(statsdOpts, metrics)
 }
 
 // Handles the calls and errors of telemetry reports
