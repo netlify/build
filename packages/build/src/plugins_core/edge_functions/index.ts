@@ -4,6 +4,7 @@ import { dirname, join, resolve } from 'path'
 import { bundle, find } from '@netlify/edge-bundler'
 import { pathExists } from 'path-exists'
 
+import { Metrics } from '../../core/report_metrics.js'
 import { logFunctionsToBundle } from '../../log/messages/core_steps.js'
 
 import { tagBundlingError } from './lib/error.js'
@@ -78,7 +79,7 @@ const coreStep = async function ({
   }
 }
 
-const getMetrics = (manifest) => {
+const getMetrics = (manifest): Metrics => {
   const numGenEfs = Object.values(manifest.function_config).filter(
     (config: { generator?: string }) => config.generator,
   ).length
