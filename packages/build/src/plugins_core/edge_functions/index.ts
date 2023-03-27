@@ -34,7 +34,6 @@ const coreStep = async function ({
   const distImportMapPath = join(dirname(internalSrcPath), IMPORT_MAP_FILENAME)
   const srcPath = srcDirectory ? resolve(buildDir, srcDirectory) : undefined
   const sourcePaths = [internalSrcPath, srcPath].filter(Boolean) as string[]
-  const metrics = []
   logFunctions({ internalSrcDirectory, internalSrcPath, logs, srcDirectory, srcPath })
 
   // If we're running in buildbot and the feature flag is enabled, we set the
@@ -66,32 +65,30 @@ const coreStep = async function ({
       systemLogger: featureFlags.edge_functions_system_logger ? systemLog : undefined,
       internalSrcFolder: internalSrcPath,
     })
-    getMetrics(manifest, metrics)
+    const metrics = getMetrics(manifest)
+
     systemLog('Edge Functions manifest:', manifest)
+
+    await validateEdgeFunctionsManifest(manifest, featureFlags)
+    return { metrics }
   } catch (error) {
     tagBundlingError(error)
 
     throw error
   }
-
-  await validateEdgeFunctionsManifest({
-    buildDir,
-    constants: { EDGE_FUNCTIONS_DIST: distDirectory },
-    featureFlags,
-  })
-
-  return { metrics }
 }
 
-const getMetrics = (manifest, metrics) => {
+const getMetrics = (manifest) => {
   const numGenEfs = Object.values(manifest.function_config).filter(
     (config: { generator?: string }) => config.generator,
   ).length
   const totalEfs = manifest.routes.length + manifest.post_cache_routes.length
   const numUserEfs = totalEfs - numGenEfs
-  if (totalEfs != 0) {
-    return metrics.push({ type: 'edge_functions', numGenEfs, numUserEfs })
-  }
+
+  return [
+    { type: 'increment', name: 'buildbot.build.functions', value: numGenEfs, tags: { type: 'edge:generated' } },
+    { type: 'increment', name: 'buildbot.build.functions', value: numUserEfs, tags: { type: 'edge:user' } },
+  ]
 }
 // We run this core step if at least one of the functions directories (the
 // one configured by the user or the internal one) exists. We use a dynamic

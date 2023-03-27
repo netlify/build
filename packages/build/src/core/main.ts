@@ -2,11 +2,11 @@ import { handleBuildError } from '../error/handle.js'
 import { reportError } from '../error/report.js'
 import { getSystemLogger } from '../log/logger.js'
 import { logTimer, logBuildSuccess } from '../log/messages/core.js'
-import { reportFunctions } from '../plugins_core/report_functions.js'
 import { trackBuildComplete } from '../telemetry/main.js'
 import { reportTimers } from '../time/report.js'
 
 import { execBuild, startBuild } from './build.js'
+import { reportMetrics } from './report_metrics.js'
 import { getSeverity } from './severity.js'
 import { BuildCLIFlags } from './types.js'
 
@@ -136,7 +136,7 @@ const handleBuildSuccess = async function ({
 
   logTimer(logs, durationNs, 'Netlify Build', systemLog)
   await reportTimers(timers, statsdOpts, framework)
-  await reportFunctions(statsdOpts, metrics)
+  await reportMetrics(statsdOpts, metrics)
 }
 
 // Handles the calls and errors of telemetry reports
