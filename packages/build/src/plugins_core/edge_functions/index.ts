@@ -4,6 +4,7 @@ import { dirname, join, resolve } from 'path'
 import { bundle, find } from '@netlify/edge-bundler'
 import { pathExists } from 'path-exists'
 
+import { Metric } from '../../core/report_metrics.js'
 import { logFunctionsToBundle } from '../../log/messages/core_steps.js'
 
 import { tagBundlingError } from './lib/error.js'
@@ -34,7 +35,6 @@ const coreStep = async function ({
   const distImportMapPath = join(dirname(internalSrcPath), IMPORT_MAP_FILENAME)
   const srcPath = srcDirectory ? resolve(buildDir, srcDirectory) : undefined
   const sourcePaths = [internalSrcPath, srcPath].filter(Boolean) as string[]
-
   logFunctions({ internalSrcDirectory, internalSrcPath, logs, srcDirectory, srcPath })
 
   // If we're running in buildbot and the feature flag is enabled, we set the
@@ -66,19 +66,39 @@ const coreStep = async function ({
       systemLogger: featureFlags.edge_functions_system_logger ? systemLog : undefined,
       internalSrcFolder: internalSrcPath,
     })
+    const metrics = getMetrics(manifest)
 
     systemLog('Edge Functions manifest:', manifest)
+
+    await validateEdgeFunctionsManifest(manifest, featureFlags)
+    return { metrics }
   } catch (error) {
     tagBundlingError(error)
 
     throw error
   }
-
-  await validateEdgeFunctionsManifest({ buildDir, constants: { EDGE_FUNCTIONS_DIST: distDirectory }, featureFlags })
-
-  return {}
 }
 
+const getMetrics = (manifest): Metric[] => {
+  const numGenEfs = Object.values(manifest.function_config).filter(
+    (config: { generator?: string }) => config.generator,
+  ).length
+  const allRoutes = [...manifest.routes, ...manifest.post_cache_routes]
+  const totalEfs = [] as string[]
+
+  allRoutes.forEach((route) => {
+    if (!totalEfs.some((func) => func === route.function)) {
+      totalEfs.push(route.function)
+    }
+  })
+
+  const numUserEfs = totalEfs.length - numGenEfs
+
+  return [
+    { type: 'increment', name: 'buildbot.build.functions', value: numGenEfs, tags: { type: 'edge:generated' } },
+    { type: 'increment', name: 'buildbot.build.functions', value: numUserEfs, tags: { type: 'edge:user' } },
+  ]
+}
 // We run this core step if at least one of the functions directories (the
 // one configured by the user or the internal one) exists. We use a dynamic
 // `condition` because the directories might be created by the build command

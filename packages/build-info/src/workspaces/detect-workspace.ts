@@ -28,8 +28,12 @@ export async function detectPnpmWorkspaceGlobs(project: Project): Promise<string
     return []
   }
 
-  const { packages } = parse(await project.fs.readFile(workspaceFile))
-  return packages
+  try {
+    const { packages } = parse(await project.fs.readFile(workspaceFile))
+    return packages
+  } catch {
+    return []
+  }
 }
 
 /** Get the workspace globs from the package.json file */
@@ -47,10 +51,16 @@ export async function detectNpmOrYarnWorkspaceGlobs(pkgJSON: PackageJson): Promi
  * If it's a javascript workspace (npm, pnpm, yarn) it will retrieve a list of all
  * package paths and will indicate if it's the root of the workspace
  */
-export async function detectWorkspaces(project: Project): Promise<WorkspaceInfo | undefined> {
-  if (!project.packageManager) {
+export async function detectWorkspaces(project: Project): Promise<WorkspaceInfo | null> {
+  if (project.packageManager === undefined) {
     throw new Error('Please run the packageManager detection before calling the workspace detection!')
   }
+
+  // if it's null it indicates it was already run without any result so we can omit this here as well
+  if (project.packageManager === null) {
+    return null
+  }
+
   const pkgJSON = await project.getRootPackageJSON()
   const workspaceGlobs =
     project.packageManager.name === PkgManager.PNPM
@@ -58,7 +68,7 @@ export async function detectWorkspaces(project: Project): Promise<WorkspaceInfo 
       : await detectNpmOrYarnWorkspaceGlobs(pkgJSON)
 
   if (workspaceGlobs.length === 0) {
-    return
+    return null
   }
 
   const packages = await getWorkspacePackages(project, workspaceGlobs)
@@ -67,7 +77,7 @@ export async function detectWorkspaces(project: Project): Promise<WorkspaceInfo 
   // if the current base directory is not part of the detected workspace packages it's not part of this workspace
   // and therefore return no workspace info
   if (!isRoot && !packages.includes(relBaseDirectory)) {
-    return
+    return null
   }
 
   return {

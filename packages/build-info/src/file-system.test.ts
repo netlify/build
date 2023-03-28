@@ -82,22 +82,6 @@ describe.concurrent('Test the platform independent base functionality', () => {
     ctx.fs = new WebFS(new GithubProvider('netlify/build', 'main'))
   })
 
-  test('hasFile should check if the file exists', async ({ fs }) => {
-    expect(fs.hasFile('path/to/my/file')).toBe(false)
-    // just discover the file
-    fs.files.set('path/to/my/file', null)
-    expect(fs.hasFile('path/to/my/file')).toBe(false)
-
-    fs.files.set('path/to/my/file', { content: 'hello', type: 'text' })
-    expect(fs.hasFile('path/to/my/file')).toBe(true)
-  })
-
-  test('setFile should add a file to the fs', async ({ fs }) => {
-    expect(fs.hasFile('path/to/my/file')).toBe(false)
-    fs.setFile('path/to/my/file', { content: {}, type: 'json' })
-    expect(fs.hasFile('path/to/my/file')).toBe(true)
-  })
-
   test('join should join path segments and always replace to posix style', ({ fs }) => {
     expect(fs.join('a', 'b', 'c')).toBe('a/b/c')
     expect(fs.join('a', 'b/cd', 'e')).toBe('a/b/cd/e')

@@ -22,24 +22,54 @@ function getDirFromPattern(pattern: Minimatch): {
   return { dir: dir.join('/') }
 }
 
+export type identifyPackageFn = (options: {
+  entry: string
+  type: DirType
+  directory: string
+}) => Promise<boolean> | boolean
+
+const defaultIdentifyPackage: identifyPackageFn = ({ entry }) => entry === 'package.json'
+
 /** Find all packages inside a provided directory */
-async function findPackages(project: Project, dir: string, depth?: string) {
+export async function findPackages(
+  project: Project,
+  /**
+   * The relative directory it should start checking.
+   * If a jsWorkspaceRoot is set it will join it with it otherwise it tries to resolve based on the root
+   */
+  dir: string,
+  /** A function that identifies if a directory is a package. By default it checks if it has a package.json */
+  identifyPackage: identifyPackageFn,
+  /** The depth to look. It can be either a single star `*` for one directory depth or a `**` for deep checking */
+  depth?: string,
+) {
   const found: string[] = []
   let content: Record<string, DirType> = {}
+  const startDir = project.jsWorkspaceRoot
+    ? project.fs.resolve(project.jsWorkspaceRoot, dir)
+    : project.root
+    ? project.fs.resolve(project.root, dir)
+    : project.fs.resolve(dir)
   try {
-    const startDir = project.root ? project.fs.resolve(project.root, dir) : project.fs.resolve(dir)
     content = await project.fs.readDir(startDir, true)
   } catch (err) {
     // noop
   }
 
   for (const [part, type] of Object.entries(content)) {
-    if (part === 'package.json') {
+    if (await identifyPackage({ entry: part, type, directory: startDir })) {
       found.push(dir)
     }
 
     if (depth && type === 'directory') {
-      found.push(...(await findPackages(project, project.fs.join(dir, part), depth === '**' ? depth : undefined)))
+      found.push(
+        ...(await findPackages(
+          project,
+          project.fs.join(dir, part),
+          identifyPackage,
+          depth === '**' ? depth : undefined,
+        )),
+      )
     }
   }
   return found
@@ -59,7 +89,7 @@ export async function getWorkspacePackages(project: Project, patterns: string[])
       continue
     }
     const { dir, depth } = getDirFromPattern(matcher)
-    results.push(...(await findPackages(project, dir, depth)))
+    results.push(...(await findPackages(project, dir, defaultIdentifyPackage, depth)))
   }
 
   // initially add all results to the set

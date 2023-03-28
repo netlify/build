@@ -69,6 +69,27 @@
   * dependencies
     * @netlify/config bumped from ^20.3.5 to ^20.3.6
 
+## [29.8.0](https://github.com/netlify/build/compare/build-v29.7.2...build-v29.8.0) (2023-03-28)
+
+
+### Features
+
+* expose edge function stats to datadog on amount of EF's and generated EF's ([#4954](https://github.com/netlify/build/issues/4954)) ([f042617](https://github.com/netlify/build/commit/f04261733c1c3ce7b74b52a36f6599860f74d4d1))
+
+## [29.7.2](https://github.com/netlify/build/compare/build-v29.7.1...build-v29.7.2) (2023-03-27)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @netlify/edge-bundler to v8.13.0 ([#4957](https://github.com/netlify/build/issues/4957)) ([04cae0d](https://github.com/netlify/build/commit/04cae0dc20237bc0ea3dc6a35d4f2d6c5cbc97ce))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @netlify/config bumped from ^20.3.6 to ^20.3.7
+
 ## [29.7.1](https://github.com/netlify/build/compare/build-v29.7.0...build-v29.7.1) (2023-03-20)
 
 

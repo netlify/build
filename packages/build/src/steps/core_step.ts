@@ -39,6 +39,7 @@ export const fireCoreStep = async function ({
       newEnvChanges = {},
       configMutations: newConfigMutations = [],
       tags,
+      metrics,
     } = await coreStep({
       configPath,
       outputConfigPath,
@@ -85,6 +86,7 @@ export const fireCoreStep = async function ({
       headersPath: headersPathA,
       redirectsPath: redirectsPathA,
       tags,
+      metrics,
     }
   } catch (newError) {
     if (!isBuildError(newError)) {

@@ -3,12 +3,16 @@ import { basename, dirname, isAbsolute, join, relative, resolve } from 'path'
 
 import { findUp, findUpMultiple } from 'find-up'
 
-import { DirType, FileSystem, findUpOptions } from '../file-system.js'
+import { DirType, Environment, FileSystem, findUpOptions } from '../file-system.js'
 
 export class NodeFS extends FileSystem {
   constructor() {
     super()
     this.cwd = process.cwd()
+  }
+
+  getEnvironment() {
+    return Environment.Node
   }
 
   isAbsolute(path: string): boolean {
@@ -60,11 +64,6 @@ export class NodeFS extends FileSystem {
   }
 
   async readFile(path: string): Promise<string> {
-    const storedFile = this.getFile(path)
-    // no need to read again (just use the already stored file)
-    if (storedFile?.type === 'text') {
-      return storedFile.content
-    }
     return (await fs.readFile(resolve(path), 'utf-8')).toString()
   }
 
