@@ -4,7 +4,7 @@ import { dirname, join, resolve } from 'path'
 import { bundle, find } from '@netlify/edge-bundler'
 import { pathExists } from 'path-exists'
 
-import { Metrics } from '../../core/report_metrics.js'
+import { Metric } from '../../core/report_metrics.js'
 import { logFunctionsToBundle } from '../../log/messages/core_steps.js'
 
 import { tagBundlingError } from './lib/error.js'
@@ -79,12 +79,20 @@ const coreStep = async function ({
   }
 }
 
-const getMetrics = (manifest): Metrics => {
+const getMetrics = (manifest): Metric[] => {
   const numGenEfs = Object.values(manifest.function_config).filter(
     (config: { generator?: string }) => config.generator,
   ).length
-  const totalEfs = manifest.routes.length + manifest.post_cache_routes.length
-  const numUserEfs = totalEfs - numGenEfs
+  const allRoutes = [...manifest.routes, ...manifest.post_cache_routes]
+  const totalEfs = [] as string[]
+
+  allRoutes.forEach((route) => {
+    if (!totalEfs.some((func) => func === route.function)) {
+      totalEfs.push(route.function)
+    }
+  })
+
+  const numUserEfs = totalEfs.length - numGenEfs
 
   return [
     { type: 'increment', name: 'buildbot.build.functions', value: numGenEfs, tags: { type: 'edge:generated' } },
