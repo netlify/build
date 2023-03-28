@@ -4,12 +4,18 @@
   "description": "Build info utility",
   "type": "module",
   "exports": {
-    ".": "./lib/src/index.js",
-    "./node": "./lib/src/node/index.js"
+    ".": {
+      "import": "./lib/index.js",
+      "types": "./lib/index.d.ts"
+    },
+    "./node": {
+      "import": "./lib/node/index.js",
+      "types": "./lib/node/index.d.ts"
+    }
   },
-  "browser": "./lib/src/index.js",
-  "main": "./lib/src/index.js",
-  "types": "./lib/src/index.d.ts",
+  "browser": "./lib/index.js",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
   "bin": {
     "build-info": "./bin.js"
   },
@@ -18,7 +24,6 @@
     "lib/**/*"
   ],
   "scripts": {
-    "prebuild": "rm -rf lib",
     "build": "tsc --project tsconfig.build.json",
     "e2e": "playwright test",
     "test": "vitest run",
