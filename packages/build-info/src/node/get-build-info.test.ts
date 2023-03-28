@@ -1,15 +1,44 @@
-import { afterEach, describe, expect, test } from 'vitest'
+import { expect, test, afterEach, describe } from 'vitest'
 
-import { getBuildInfo } from '../src/node/get-build-info.js'
-
-import { createFixture } from './helpers.js'
+import { createFixture } from '../../tests/helpers.js'
+import { mockFileSystem } from '../../tests/mock-file-system.js'
+import { getBuildInfo } from '../node/get-build-info.js'
 
 afterEach(async ({ cleanup }) => await cleanup?.())
+
+test('should detect nothing in an empty project', async () => {
+  const cwd = mockFileSystem({})
+  const info = await getBuildInfo({ projectDir: cwd })
+  expect(info).toMatchInlineSnapshot(`
+    {
+      "buildSystems": [],
+      "frameworks": [],
+      "jsWorkspaces": null,
+      "packageManager": null,
+    }
+  `)
+})
+
+test('should detect nothing in a simple golang project', async () => {
+  const cwd = mockFileSystem({
+    'go.mod': '',
+    'main.go': '',
+  })
+  const info = await getBuildInfo({ projectDir: cwd })
+  expect(info).toMatchInlineSnapshot(`
+    {
+      "buildSystems": [],
+      "frameworks": [],
+      "jsWorkspaces": null,
+      "packageManager": null,
+    }
+  `)
+})
 
 test('should not crash on invalid projects', async (ctx) => {
   const fixture = await createFixture('invalid-project')
   ctx.cleanup = fixture.cleanup
-  const { frameworks, packageManager } = await getBuildInfo(fixture.cwd)
+  const { frameworks, packageManager } = await getBuildInfo({ projectDir: fixture.cwd })
   expect(packageManager).toMatchInlineSnapshot
   expect(frameworks).toEqual([])
 })
@@ -24,60 +53,62 @@ describe('Golang', () => {
       {
         "buildSystems": [],
         "frameworks": [],
+        "jsWorkspaces": null,
+        "packageManager": null,
       }
     `)
   })
 })
 
 describe('JavaScript Workspaces', () => {
-  test('js-workspaces: project without package.json does not return workspaces info', async (ctx) => {
+  test('project without package.json does not return workspaces info', async (ctx) => {
     const fixture = await createFixture('empty')
     ctx.cleanup = fixture.cleanup
     const { jsWorkspaces } = await getBuildInfo({ projectDir: fixture.cwd })
 
-    expect(jsWorkspaces).toBe(undefined)
+    expect(jsWorkspaces).toBeNull()
   })
 
-  test('js-workspaces: project without workspaces in package.json does not return workspaces info', async (ctx) => {
+  test('project without workspaces in package.json does not return workspaces info', async (ctx) => {
     const fixture = await createFixture('simple-package-json')
     ctx.cleanup = fixture.cleanup
     const { jsWorkspaces } = await getBuildInfo({ projectDir: fixture.cwd })
-    expect(jsWorkspaces).toBe(undefined)
+    expect(jsWorkspaces).toBeNull()
   })
 
-  test('js-workspaces: projectDir set to workspaces root returns workspace info and isRoot flag set to true', async (ctx) => {
+  test('projectDir set to workspaces root returns workspace info and isRoot flag set to true', async (ctx) => {
     const fixture = await createFixture('js-workspaces')
     ctx.cleanup = fixture.cleanup
     const { jsWorkspaces } = await getBuildInfo({ projectDir: fixture.cwd })
-    expect(jsWorkspaces).not.toBe(undefined)
+    expect(jsWorkspaces).not.toBeNull()
     expect(jsWorkspaces?.isRoot).toBe(true)
     expect(jsWorkspaces?.packages.length).toBe(2)
   })
 
-  test('js-workspaces: projectDir set to workspace dir returns workspace info and isRoot flag set to false', async (ctx) => {
+  test('projectDir set to workspace dir returns workspace info and isRoot flag set to false', async (ctx) => {
     const fixture = await createFixture('js-workspaces')
     ctx.cleanup = fixture.cleanup
     const { jsWorkspaces } = await getBuildInfo({ projectDir: 'packages/gatsby-site', rootDir: fixture.cwd })
-    expect(jsWorkspaces).not.toBe(undefined)
+    expect(jsWorkspaces).not.toBeNull()
     expect(jsWorkspaces?.isRoot).toBe(false)
     expect(jsWorkspaces?.packages.length).toBe(2)
   })
 
-  test('js-workspaces: if project is not part of a workspace return no workspace info', async (ctx) => {
+  test('if project is not part of a workspace return no workspace info', async (ctx) => {
     const fixture = await createFixture('js-workspaces')
     ctx.cleanup = fixture.cleanup
     const { jsWorkspaces } = await getBuildInfo({ projectDir: 'not-in-workspace', rootDir: fixture.cwd })
-    expect(jsWorkspaces).toBe(undefined)
+    expect(jsWorkspaces).toBeNull()
   })
 
-  test('js-workspaces: handles absolute paths correctly', async (ctx) => {
+  test('handles absolute paths correctly', async (ctx) => {
     const fixture = await createFixture('js-workspaces')
     ctx.cleanup = fixture.cleanup
     const { jsWorkspaces } = await getBuildInfo({
       projectDir: `${fixture.cwd}/packages/gatsby-site`,
       rootDir: fixture.cwd,
     })
-    expect(jsWorkspaces).not.toBe(undefined)
+    expect(jsWorkspaces).not.toBeNull()
     expect(jsWorkspaces?.isRoot).toBe(false)
     expect(jsWorkspaces?.packages.length).toBe(2)
   })
@@ -87,7 +118,7 @@ describe('JavaScript Workspaces', () => {
     ctx.cleanup = fixture.cleanup
 
     const { frameworks, jsWorkspaces } = await getBuildInfo({ projectDir: '', rootDir: fixture.cwd })
-    expect(jsWorkspaces).not.toBe(undefined)
+    expect(jsWorkspaces).not.toBeNull()
     expect(frameworks.length).toBe(1)
   })
 
@@ -99,7 +130,7 @@ describe('JavaScript Workspaces', () => {
       projectDir: 'packages/gatsby-site',
       rootDir: fixture.cwd,
     })
-    expect(jsWorkspaces).not.toBe(undefined)
+    expect(jsWorkspaces).not.toBeNull()
     expect(frameworks.length).toBe(1)
   })
 })

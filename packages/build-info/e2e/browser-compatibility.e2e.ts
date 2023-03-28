@@ -1,9 +1,9 @@
 import { test, expect } from '@playwright/test'
 
-import type { FileSystem } from '../src/file-system'
-import type { detectPackageManager } from '../src/package-managers/detect-package-manager'
-import type { Project } from '../src/project'
-import type { detectWorkspaces } from '../src/workspaces/detect-workspace'
+import type { FileSystem } from '../src/file-system.js'
+import type { detectPackageManager } from '../src/package-managers/detect-package-manager.js'
+import type { Project } from '../src/project.js'
+import type { detectWorkspaces } from '../src/workspaces/detect-workspace.js'
 
 declare const window: Window & {
   fs: FileSystem
@@ -59,7 +59,13 @@ test.beforeEach(async ({ page }) => {
 })
 
 test('Should detect nx on the root', async ({ page }) => {
-  expect(await page.evaluate(() => new window.project(window.fs, '/').detectBuildSystem())).toMatchObject([
+  await page.pause()
+  expect(
+    await page.evaluate(async () => {
+      console.log('here', window)
+      return new window.project(window.fs, '/').detectBuildSystem()
+    }),
+  ).toMatchObject([
     {
       id: 'nx',
       name: 'Nx',
