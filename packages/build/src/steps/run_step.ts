@@ -91,6 +91,7 @@ export const runStep = async function ({
     newStatus,
     timers: timersA,
     durationNs,
+    metrics,
   } = await fireStep({
     event,
     childProcess,
@@ -154,6 +155,7 @@ export const runStep = async function ({
     testOpts,
     systemLog,
     quiet,
+    metrics,
   })
   return { ...newValues, newIndex: index + 1 }
 }
